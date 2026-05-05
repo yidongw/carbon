@@ -85,14 +85,14 @@ const Breadcrumbs = () => {
       };
     })
     .filter(Boolean);
-
   const isMobile = useIsMobile();
+  const displayedBreadcrumbs = isMobile ? breadcrumbs.slice(0, 1) : breadcrumbs;
   const { company } = useUser();
   const mode = useMode();
   const logo = mode === "dark" ? company?.logoDarkIcon : company?.logoLightIcon;
 
   return (
-    <HStack className="items-center h-full hidden md:flex -ml-2" spacing={0}>
+    <HStack className="items-center h-full flex -ml-2" spacing={0}>
       <Button isIcon asChild variant="ghost" size="lg">
         <Link to="/">
           {logo ? (
@@ -109,11 +109,11 @@ const Breadcrumbs = () => {
 
       <BreadcrumbsBase className="line-clamp-1">
         {!isMobile && <CompanyBreadcrumb />}
-        {breadcrumbs.map((breadcrumb, i) => (
+        {displayedBreadcrumbs.map((breadcrumb, i) => (
           <BreadcrumbItem key={i}>
             <BreadcrumbLink
-              isCurrentPage={!breadcrumb?.to}
-              to={breadcrumb?.to ?? ""}
+              isCurrentPage={isMobile || !breadcrumb?.to}
+              to={isMobile ? "" : (breadcrumb?.to ?? "")}
             >
               {breadcrumb?.breadcrumb}
             </BreadcrumbLink>

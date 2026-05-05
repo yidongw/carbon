@@ -4,6 +4,8 @@ import {
   resolveLanguage
 } from "@carbon/locale";
 import {
+  Badge,
+  Avatar as CompanyAvatar,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuIcon,
@@ -16,6 +18,7 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
+  HStack,
   Switch,
   useDisclosure
 } from "@carbon/react";
@@ -25,6 +28,7 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { useLocale } from "@react-aria/i18n";
 import { useMemo, useState } from "react";
 import {
+  LuBuilding2,
   LuCheck,
   LuCreditCard,
   LuFileText,
@@ -38,9 +42,10 @@ import {
   LuUser
 } from "react-icons/lu";
 import { Form, Link, useFetcher } from "react-router";
-import { Avatar } from "~/components";
-import { usePermissions, useUser } from "~/hooks";
+import { Avatar as UserAvatar } from "~/components";
+import { usePermissions, useRouteData, useUser } from "~/hooks";
 import { useTheme } from "~/hooks/useTheme";
+import type { Company } from "~/modules/settings";
 import type { action } from "~/root";
 import { startModeTransition } from "~/utils/dom";
 import { path } from "~/utils/path";
@@ -48,6 +53,9 @@ import { path } from "~/utils/path";
 const AvatarMenu = () => {
   const { t } = useLingui();
   const user = useUser();
+  const routeData = useRouteData<{ company: Company; companies: Company[] }>(
+    path.to.authenticatedRoot
+  );
   const name = `${user.firstName} ${user.lastName}`;
   const { isOwner } = usePermissions();
   const edition = useEdition();
@@ -77,6 +85,7 @@ const AvatarMenu = () => {
     () => getSortedLanguageSelectOptions(locale),
     [locale]
   );
+  const canSwitchCompany = Boolean(routeData?.companies?.length);
 
   const onThemeChange = (t: string) => {
     const newTheme = themes.find((theme) => theme.name === t);
@@ -103,7 +112,7 @@ const AvatarMenu = () => {
     <>
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenuTrigger className="outline-none focus-visible:outline-none">
-          <Avatar path={user.avatarUrl} name={name} />
+          <UserAvatar path={user.avatarUrl} name={name} />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-64">
           <DropdownMenuLabel>{t`Signed in as ${name}`}</DropdownMenuLabel>
@@ -216,6 +225,58 @@ const AvatarMenu = () => {
               <Trans>Account Settings</Trans>
             </Link>
           </DropdownMenuItem>
+          {canSwitchCompany ? (
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>
+                <DropdownMenuIcon icon={<LuBuilding2 />} />
+                <Trans>Companies</Trans>
+              </DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                {routeData?.companies.map((company) => {
+                  const logo =
+                    mode === "dark"
+                      ? company.logoDarkIcon
+                      : company.logoLightIcon;
+                  const isCurrent = company.companyId === user.company.id;
+                  return (
+                    <Form
+                      key={company.companyId}
+                      method="post"
+                      action={path.to.companySwitch(company.companyId!)}
+                    >
+                      <DropdownMenuItem asChild disabled={isCurrent}>
+                        <button
+                          type="submit"
+                          className="flex w-full items-center justify-between"
+                        >
+                          <HStack>
+                            <CompanyAvatar
+                              size="xs"
+                              name={company.name ?? undefined}
+                              src={logo ?? undefined}
+                            />
+                            <span
+                              className={isCurrent ? "font-medium" : undefined}
+                            >
+                              {company.name}
+                            </span>
+                          </HStack>
+                          <HStack>
+                            <Badge variant="secondary" className="ml-2">
+                              {company.employeeType}
+                            </Badge>
+                            {isCurrent ? (
+                              <LuCheck className="h-4 w-4 shrink-0" />
+                            ) : null}
+                          </HStack>
+                        </button>
+                      </DropdownMenuItem>
+                    </Form>
+                  );
+                })}
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+          ) : null}
 
           {edition === Edition.Cloud && isOwner() && (
             <DropdownMenuItem asChild>

@@ -1493,6 +1493,7 @@ msgstr "उपलब्ध"
 msgid "Avg Days to Close"
 msgstr "बंद करने के लिए औसत दिन"
 
+#: apps/erp/app/components/Layout/Topbar/Topbar.tsx:31
 #: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteCompareDrawer.tsx:197
 #: apps/erp/app/routes/onboarding+/plan.tsx:272
 msgid "Back"
@@ -2173,7 +2174,7 @@ msgstr "घड़ी बंद करें"
 msgid "Clocked in since {0}"
 msgstr "{0} से घड़ी में है"
 
-#: apps/erp/app/components/Layout/Topbar/Search.tsx:395
+#: apps/erp/app/components/Layout/Topbar/Search.tsx:396
 #: apps/erp/app/components/TrainingPanel.tsx:45
 #: apps/erp/app/modules/inventory/ui/StockTransfers/StockTransferWizard.tsx:1301
 #: apps/erp/app/modules/production/ui/Jobs/JobMaterialsTable.tsx:616
@@ -2885,7 +2886,7 @@ msgstr "देश"
 #: apps/erp/app/components/Chat/ChatWidgets.tsx:44
 #: apps/erp/app/components/Form/Item.tsx:380
 #: apps/erp/app/components/Form/Items.tsx:123
-#: apps/erp/app/components/Layout/Topbar/Topbar.tsx:37
+#: apps/erp/app/components/Layout/Topbar/Topbar.tsx:55
 #: apps/erp/app/modules/documents/ui/Documents/DocumentsTable.tsx:597
 #: apps/erp/app/modules/inventory/ui/Kanbans/KanbansTable.tsx:167
 #: apps/erp/app/modules/inventory/ui/Kanbans/KanbansTable.tsx:244
@@ -6864,7 +6865,9 @@ msgstr "आइटम समूह"
 msgid "Item ID"
 msgstr "आइटम आईडी"
 
+#: apps/erp/app/modules/items/ui/Item/MakeMethodTools.tsx:241
 #: apps/erp/app/modules/production/ui/Jobs/JobMakeMethodTools.tsx:314
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteMakeMethodTools.tsx:282
 msgid "Item Master"
 msgstr "आइटम मास्टर"
 
@@ -8215,7 +8218,7 @@ msgid "Name"
 msgstr "नाम"
 
 #: apps/erp/app/components/Gantt/Gantt.tsx:809
-#: apps/erp/app/components/Layout/Topbar/Search.tsx:383
+#: apps/erp/app/components/Layout/Topbar/Search.tsx:384
 msgid "Navigate"
 msgstr "नेविगेट करें"
 
@@ -10677,7 +10680,7 @@ msgstr "प्राप्त मात्रा"
 msgid "Receiving Location"
 msgstr "प्राप्ति स्थान"
 
-#: apps/erp/app/components/Layout/Topbar/Search.tsx:223
+#: apps/erp/app/components/Layout/Topbar/Search.tsx:224
 #: apps/erp/app/modules/documents/ui/useDocumentsSubmodules.tsx:28
 #: apps/erp/app/routes/x+/traceability+/_index.tsx:193
 msgid "Recent"
@@ -11072,7 +11075,7 @@ msgstr "ट्रैक किए गए इकाइयों को उपल�
 msgid "Result"
 msgstr "परिणाम"
 
-#: apps/erp/app/components/Layout/Topbar/Search.tsx:285
+#: apps/erp/app/components/Layout/Topbar/Search.tsx:286
 msgid "Results"
 msgstr "परिणाम"
 
@@ -11674,7 +11677,7 @@ msgid "Scrap Reasons"
 msgstr "स्क्रैप कारण"
 
 #: apps/erp/app/components/Chat/ChatWidgets.tsx:33
-#: apps/erp/app/components/Layout/Topbar/Search.tsx:459
+#: apps/erp/app/components/Layout/Topbar/Search.tsx:468
 #: apps/erp/app/components/Table/components/TableHeader.tsx:297
 #: apps/erp/app/modules/inventory/ui/StockTransfers/StockTransferWizard.tsx:1005
 #: apps/erp/app/modules/items/ui/Item/ItemPlanningChart.tsx:554
@@ -11684,7 +11687,7 @@ msgstr "स्क्रैप कारण"
 msgid "Search"
 msgstr "खोज"
 
-#: apps/erp/app/components/Layout/Topbar/Search.tsx:202
+#: apps/erp/app/components/Layout/Topbar/Search.tsx:203
 msgid "Search across your workspace..."
 msgstr "अपने कार्यक्षेत्र में खोजें..."
 
@@ -11777,7 +11780,7 @@ msgstr "सेकंड/पीस"
 
 #: apps/erp/app/components/Form/Customer.tsx:49
 #: apps/erp/app/components/Form/CustomerLocation.tsx:85
-#: apps/erp/app/components/Layout/Topbar/Search.tsx:389
+#: apps/erp/app/components/Layout/Topbar/Search.tsx:390
 #: apps/erp/app/modules/purchasing/ui/Planning/PurchasingPlanningOrderDrawer.tsx:396
 #: apps/erp/app/modules/quality/ui/InboundInspections/ScanInspectionSample.tsx:129
 #: apps/erp/app/modules/quality/ui/InboundInspections/ScanInspectionSample.tsx:204
