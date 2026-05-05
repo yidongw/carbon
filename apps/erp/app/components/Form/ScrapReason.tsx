@@ -34,7 +34,7 @@ export const useScrapReasons = () => {
 
   const sharedProductionData = useRouteData<{
     scrapReasons: ScrapReasonType[];
-  }>(path.to.production);
+  }>(path.to.productionDashboard);
 
   const hasScrapReasonData = sharedProductionData?.scrapReasons;
 

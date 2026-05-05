@@ -3,6 +3,7 @@ import {
   LuBan,
   LuCreditCard,
   LuGlobe,
+  LuLayoutDashboard,
   LuList,
   LuPercent,
   LuShapes,
@@ -24,6 +25,16 @@ export default function useSalesSubmodules() {
   const permissions = usePermissions();
   const { addSavedViewsToRoutes } = useSavedViews();
   const salesRoutes: AuthenticatedRouteGroup[] = [
+    {
+      name: t`Dashboard`,
+      routes: [
+        {
+          name: t`Dashboard`,
+          to: path.to.salesDashboard,
+          icon: <LuLayoutDashboard />
+        }
+      ]
+    },
     {
       name: t`Manage`,
       routes: [

@@ -126,7 +126,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     const userDefaults = await getUserDefaults(client, userId, companyId);
     if (userDefaults.error) {
       throw redirect(
-        path.to.inventory,
+        path.to.inventoryQuantities,
         await flash(
           request,
           error(userDefaults.error, "Failed to load default location")
@@ -141,7 +141,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     const locations = await getLocationsList(client, companyId);
     if (locations.error || !locations.data?.length) {
       throw redirect(
-        path.to.inventory,
+        path.to.inventoryQuantities,
         await flash(
           request,
           error(locations.error, "Failed to load any locations")
