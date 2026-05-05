@@ -40,7 +40,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   if (inspections.error) {
     throw redirect(
-      path.to.quality,
+      path.to.qualityDashboard,
       await flash(
         request,
         error(inspections.error, "Failed to load inspections")

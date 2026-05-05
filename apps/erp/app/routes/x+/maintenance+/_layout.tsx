@@ -10,7 +10,7 @@ export const meta: MetaFunction = () => {
 
 export const handle: Handle = {
   breadcrumb: msg`Resources`,
-  to: path.to.resources,
+  to: path.to.resourcesDashboard,
   module: "resources"
 };
 

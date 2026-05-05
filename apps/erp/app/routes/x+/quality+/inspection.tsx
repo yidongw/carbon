@@ -11,7 +11,7 @@ import { getGenericQueryFilters } from "~/utils/query";
 
 export const handle: Handle = {
   breadcrumb: msg`Quality`,
-  to: path.to.quality
+  to: path.to.qualityDashboard
 };
 
 export async function loader({ request }: LoaderFunctionArgs) {
