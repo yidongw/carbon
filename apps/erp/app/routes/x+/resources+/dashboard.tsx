@@ -1,0 +1,775 @@
+import { requirePermissions } from "@carbon/auth/auth.server";
+import {
+  Badge,
+  Button,
+  Card,
+  CardAction,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  Combobox,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuIcon,
+  DropdownMenuItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+  Heading,
+  HStack,
+  IconButton,
+  Loading,
+  Skeleton,
+  Table,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+  VStack
+} from "@carbon/react";
+import type { ChartConfig } from "@carbon/react/Chart";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent
+} from "@carbon/react/Chart";
+import { formatDurationMilliseconds } from "@carbon/utils";
+import { getLocalTimeZone, parseDate, today } from "@internationalized/date";
+import { Trans, useLingui } from "@lingui/react/macro";
+import { useDateFormatter, useNumberFormatter } from "@react-aria/i18n";
+import type { DateRange } from "@react-types/datepicker";
+import { Suspense, useEffect, useMemo, useState } from "react";
+import { CSVLink } from "react-csv";
+import {
+  LuArrowUpRight,
+  LuCalendarClock,
+  LuChevronDown,
+  LuClock,
+  LuEllipsisVertical,
+  LuFile,
+  LuInbox,
+  LuTriangleAlert,
+  LuWrench
+} from "react-icons/lu";
+import type { LoaderFunctionArgs } from "react-router";
+import { Await, Link, useFetcher, useLoaderData } from "react-router";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { DateSelect, Empty, Hyperlink } from "~/components";
+import { useWorkCenters } from "~/components/Form/WorkCenters";
+import { CollapsibleSidebarTrigger } from "~/components/Layout/Navigation";
+import { useCurrencyFormatter } from "~/hooks/useCurrencyFormatter";
+import type { maintenanceSource } from "~/modules/resources/resources.models";
+import { MaintenanceKPIs } from "~/modules/resources/resources.models";
+import MaintenanceSource from "~/modules/resources/ui/Maintenance/MaintenanceSource";
+import MaintenanceStatus from "~/modules/resources/ui/Maintenance/MaintenanceStatus";
+import type { loader as kpiLoader } from "~/routes/api+/resources.kpi.$key";
+
+import { path } from "~/utils/path";
+
+const OPEN_STATUSES = ["Open", "Assigned", "In Progress"] as const;
+
+const chartConfig = {
+  value: {
+    color: "hsl(var(--primary))"
+  }
+} satisfies ChartConfig;
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  const { client, userId, companyId } = await requirePermissions(request, {
+    view: "resources"
+  });
+
+  const [openDispatches, openScheduled, openReactive, recentlyCreated] =
+    await Promise.all([
+      client
+        .from("maintenanceDispatch")
+        .select("id", { count: "exact" })
+        .in("status", OPEN_STATUSES)
+        .eq("companyId", companyId),
+      client
+        .from("maintenanceDispatch")
+        .select("id", { count: "exact" })
+        .in("status", OPEN_STATUSES)
+        .eq("source", "Scheduled")
+        .eq("companyId", companyId),
+      client
+        .from("maintenanceDispatch")
+        .select("id", { count: "exact" })
+        .in("status", OPEN_STATUSES)
+        .eq("source", "Reactive")
+        .eq("companyId", companyId),
+      client
+        .from("maintenanceDispatch")
+        .select(
+          "id, maintenanceDispatchId, status, source, priority, workCenterId, createdAt, assignee"
+        )
+        .eq("companyId", companyId)
+        .order("createdAt", { ascending: false })
+        .limit(10)
+    ]);
+
+  // Deferred promise for Assigned to Me
+  const assignedToMe = client
+    .from("maintenanceDispatch")
+    .select(
+      "id, maintenanceDispatchId, status, source, priority, workCenterId, createdAt"
+    )
+    .eq("companyId", companyId)
+    .eq("assignee", userId)
+    .in("status", OPEN_STATUSES)
+    .order("priority", { ascending: false })
+    .limit(10)
+    .then((result) => result.data ?? []);
+
+  return {
+    openDispatches: openDispatches.count ?? 0,
+    openScheduled: openScheduled.count ?? 0,
+    openReactive: openReactive.count ?? 0,
+    recentlyCreated: recentlyCreated.data ?? [],
+    assignedToMe
+  };
+}
+
+export default function MaintenanceDashboard() {
+  const { t } = useLingui();
+  const {
+    openDispatches,
+    openScheduled,
+    openReactive,
+    recentlyCreated,
+    assignedToMe
+  } = useLoaderData<typeof loader>();
+
+  const kpiFetcher = useFetcher<typeof kpiLoader>();
+  const isFetching = kpiFetcher.state !== "idle" || !kpiFetcher.data;
+
+  const dateFormatter = useDateFormatter({
+    month: "short",
+    day: "numeric"
+  });
+
+  const currencyFormatter = useCurrencyFormatter();
+  const numberFormatter = useNumberFormatter({
+    maximumFractionDigits: 0,
+    notation: "compact",
+    compactDisplay: "short"
+  });
+
+  const [workCenterId, setWorkCenterId] = useState<string>("all");
+  const workCenters = useWorkCenters();
+  const workCenterOptions = useMemo(() => {
+    return [
+      { label: t`All Work Centers`, value: "all" },
+      ...workCenters.map((wc) => ({
+        label: wc.label,
+        value: wc.value
+      }))
+    ];
+  }, [workCenters, t]);
+
+  const [interval, setInterval] = useState("month");
+  const [selectedKpi, setSelectedKpi] = useState("mttr");
+  const [dateRange, setDateRange] = useState<DateRange | null>(() => {
+    const end = today("UTC");
+    const start = end.add({ months: -1 });
+    return { start, end };
+  });
+
+  const selectedKpiData =
+    MaintenanceKPIs.find((k) => k.key === selectedKpi) || MaintenanceKPIs[0];
+
+  const kpiLabels: Record<string, string> = useMemo(
+    () => ({
+      mttr: t`Mean Time To Repair`,
+      mtbf: t`Mean Time Between Failures`,
+      sparePartCost: t`Spare Part Cost`,
+      worstPerformingMachines: t`Worst Performing Machines`,
+      sparePartConsumption: t`Spare Part Consumption`
+    }),
+    [t]
+  );
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: deps are intentionally limited
+  useEffect(() => {
+    kpiFetcher.load(
+      `${path.to.api.resourcesKpi(
+        selectedKpiData.key
+      )}?start=${dateRange?.start.toString()}&end=${dateRange?.end.toString()}&interval=${interval}${
+        workCenterId === "all" ? "" : `&workCenterId=${workCenterId}`
+      }`
+    );
+  }, [selectedKpi, dateRange, interval, selectedKpiData.key, workCenterId]);
+
+  const onIntervalChange = (value: string) => {
+    const end = today("UTC");
+    if (value === "week") {
+      const start = end.add({ days: -7 });
+      setDateRange({ start, end });
+    } else if (value === "month") {
+      const start = end.add({ months: -1 });
+      setDateRange({ start, end });
+    } else if (value === "quarter") {
+      const start = end.add({ months: -3 });
+      setDateRange({ start, end });
+    } else if (value === "year") {
+      const start = end.add({ years: -1 });
+      setDateRange({ start, end });
+    }
+
+    setInterval(value);
+  };
+
+  const totalData = useMemo(() => {
+    if (!kpiFetcher.data?.data) return null;
+
+    // For time-based KPIs (MTTR, MTBF), calculate weighted average
+    if (selectedKpi === "mttr" || selectedKpi === "mtbf") {
+      const nonZeroValues = kpiFetcher.data.data.filter((d) => d.value > 0);
+      if (nonZeroValues.length === 0) return { value: 0 };
+      return {
+        value:
+          nonZeroValues.reduce((acc, curr) => acc + curr.value, 0) /
+          nonZeroValues.length
+      };
+    }
+
+    // For worst performing machines, sum all failures
+    if (selectedKpi === "worstPerformingMachines") {
+      return {
+        value: kpiFetcher.data.data.reduce((acc, curr) => acc + curr.value, 0)
+      };
+    }
+
+    // For other KPIs, sum the values
+    return {
+      value: kpiFetcher.data.data.reduce((acc, curr) => acc + curr.value, 0)
+    };
+  }, [kpiFetcher.data?.data, selectedKpi]);
+
+  const previousTotalData = useMemo(() => {
+    if (!kpiFetcher.data?.previousPeriodData) return null;
+
+    // For time-based KPIs (MTTR, MTBF), calculate weighted average
+    if (selectedKpi === "mttr" || selectedKpi === "mtbf") {
+      const nonZeroValues = kpiFetcher.data.previousPeriodData.filter(
+        (d) => d.value > 0
+      );
+      if (nonZeroValues.length === 0) return { value: 0 };
+      return {
+        value:
+          nonZeroValues.reduce((acc, curr) => acc + curr.value, 0) /
+          nonZeroValues.length
+      };
+    }
+
+    if (selectedKpi === "worstPerformingMachines") {
+      return {
+        value: kpiFetcher.data.previousPeriodData.reduce(
+          (acc, curr) => acc + curr.value,
+          0
+        )
+      };
+    }
+
+    return {
+      value: kpiFetcher.data.previousPeriodData.reduce(
+        (acc, curr) => acc + curr.value,
+        0
+      )
+    };
+  }, [kpiFetcher.data?.previousPeriodData, selectedKpi]);
+
+  const total = totalData?.value ?? 0;
+  const previousTotal = previousTotalData?.value ?? 0;
+
+  const percentageChange =
+    previousTotal === 0
+      ? total > 0
+        ? 100
+        : 0
+      : ((total - previousTotal) / previousTotal) * 100;
+
+  // For MTTR, lower is better (faster repairs). For MTBF, higher is better (longer time between failures)
+  const isLowerBetter = selectedKpi === "mttr";
+  const isBadgePositive = isLowerBetter
+    ? percentageChange <= 0
+    : percentageChange >= 0;
+
+  const formatValue = (value: number) => {
+    // Time-based KPIs (MTTR, MTBF) - value is in seconds
+    if (selectedKpi === "mttr" || selectedKpi === "mtbf") {
+      return formatDurationMilliseconds(value * 1000, { style: "short" });
+    }
+    // Cost-based KPIs
+    if (selectedKpi === "sparePartCost") {
+      return currencyFormatter.format(value);
+    }
+    // Count-based KPIs
+    return numberFormatter.format(value);
+  };
+
+  const csvData = useMemo(() => {
+    if (!kpiFetcher.data?.data) return [];
+
+    if (selectedKpi === "worstPerformingMachines") {
+      return [
+        ["Work Center", "Failures"],
+        ...kpiFetcher.data.data.map((item) => [
+          "name" in item ? item.name : "",
+          item.value
+        ])
+      ];
+    }
+
+    return [
+      ["Date", "Value"],
+      ...kpiFetcher.data.data.map((item) => [
+        "date" in item
+          ? item.date
+          : "month" in item
+            ? item.month
+            : // @ts-ignore
+              item.monthKey,
+        item.value
+      ])
+    ];
+  }, [kpiFetcher.data?.data, selectedKpi]);
+
+  const csvFilename = useMemo(() => {
+    const startDate = dateRange?.start.toString();
+    const endDate = dateRange?.end.toString();
+    return `${(kpiLabels[selectedKpiData.key] ?? "").replace(/ /g, "_")}_${startDate}_to_${endDate}${
+      workCenterId === "all"
+        ? ""
+        : `_${workCenters.find((wc) => wc.value === workCenterId)?.label}`
+    }.csv`;
+  }, [
+    dateRange?.start,
+    dateRange?.end,
+    kpiLabels,
+    selectedKpiData.key,
+    workCenterId,
+    workCenters
+  ]);
+
+  return (
+    <div className="flex flex-col gap-4 w-full p-4 h-[calc(100dvh-var(--header-height))] overflow-y-auto scrollbar-thin scrollbar-thumb-rounded-full scrollbar-thumb-muted-foreground">
+      <HStack spacing={1}>
+        <CollapsibleSidebarTrigger />
+        <Heading size="h2">
+          <Trans>Dashboard</Trans>
+        </Heading>
+      </HStack>
+      <div className="grid w-full gap-4 grid-cols-1 lg:grid-cols-3">
+        <Card>
+          <CardHeader className="flex-row gap-2">
+            <LuWrench className="text-muted-foreground" />
+            <CardTitle>
+              <Trans>Open Dispatches</Trans>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <HStack className="justify-between w-full items-center">
+              <h3 className="text-5xl font-medium tracking-tighter">
+                {openDispatches}
+              </h3>
+              <Button
+                rightIcon={<LuArrowUpRight />}
+                variant="secondary"
+                asChild
+              >
+                <Link
+                  to={`${
+                    path.to.maintenanceDispatches
+                  }?filter=status:in:${OPEN_STATUSES.join(",")}`}
+                >
+                  <Trans>View Open</Trans>
+                </Link>
+              </Button>
+            </HStack>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex-row gap-2">
+            <LuCalendarClock className="text-muted-foreground" />
+            <CardTitle>
+              <Trans>Open Scheduled</Trans>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <HStack className="justify-between w-full items-center">
+              <h3 className="text-5xl font-medium tracking-tighter">
+                {openScheduled}
+              </h3>
+              <Button
+                rightIcon={<LuArrowUpRight />}
+                variant="secondary"
+                asChild
+              >
+                <Link
+                  to={`${
+                    path.to.maintenanceDispatches
+                  }?filter=status:in:${OPEN_STATUSES.join(",")}&filter=source:eq:Scheduled`}
+                >
+                  <Trans>View Scheduled</Trans>
+                </Link>
+              </Button>
+            </HStack>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex-row gap-2">
+            <LuTriangleAlert className="text-muted-foreground" />
+            <CardTitle>
+              <Trans>Open Reactive</Trans>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <HStack className="justify-between w-full items-center">
+              <h3 className="text-5xl font-medium tracking-tighter">
+                {openReactive}
+              </h3>
+              <Button
+                rightIcon={<LuArrowUpRight />}
+                variant="secondary"
+                asChild
+              >
+                <Link
+                  to={`${
+                    path.to.maintenanceDispatches
+                  }?filter=status:in:${OPEN_STATUSES.join(",")}&filter=source:eq:Reactive`}
+                >
+                  <Trans>View Reactive</Trans>
+                </Link>
+              </Button>
+            </HStack>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card>
+        <HStack className="justify-between items-center">
+          <CardHeader>
+            <div className="flex w-full justify-start items-center gap-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="secondary"
+                    rightIcon={<LuChevronDown />}
+                    className="hover:bg-background/80"
+                  >
+                    <span>{kpiLabels[selectedKpiData.key]}</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent side="bottom" align="start">
+                  <DropdownMenuRadioGroup
+                    value={selectedKpi}
+                    onValueChange={setSelectedKpi}
+                  >
+                    {MaintenanceKPIs.map((kpi) => (
+                      <DropdownMenuRadioItem key={kpi.key} value={kpi.key}>
+                        {kpiLabels[kpi.key]}
+                      </DropdownMenuRadioItem>
+                    ))}
+                  </DropdownMenuRadioGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <Combobox
+                asButton
+                value={workCenterId}
+                onChange={setWorkCenterId}
+                options={workCenterOptions}
+                size="sm"
+                className="min-w-[160px] gap-4"
+              />
+            </div>
+          </CardHeader>
+          <CardAction className="flex-row items-center gap-2">
+            <DateSelect
+              value={interval}
+              onValueChange={onIntervalChange}
+              dateRange={dateRange}
+              onDateRangeChange={setDateRange}
+            />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <IconButton
+                  variant="secondary"
+                  icon={<LuEllipsisVertical />}
+                  aria-label={t`More`}
+                />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem>
+                  <CSVLink
+                    data={csvData}
+                    filename={csvFilename}
+                    className="flex flex-row items-center gap-2"
+                  >
+                    <DropdownMenuIcon icon={<LuFile />} />
+                    <Trans>Export CSV</Trans>
+                  </CSVLink>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </CardAction>
+        </HStack>
+        <CardContent className="flex-col gap-4">
+          <VStack className="pl-[3px]" spacing={0}>
+            {isFetching ? (
+              <div className="flex flex-col gap-0.5 w-full">
+                <Skeleton className="h-8 w-[120px]" />
+                <Skeleton className="h-4 w-[50px]" />
+              </div>
+            ) : (
+              <>
+                <p className="text-3xl font-medium tracking-tighter">
+                  {formatValue(total)}
+                </p>
+                {isBadgePositive ? (
+                  <Badge variant="green">
+                    {percentageChange >= 0 ? "+" : ""}
+                    {percentageChange.toFixed(0)}%
+                  </Badge>
+                ) : (
+                  <Badge variant="red">
+                    {percentageChange >= 0 ? "+" : ""}
+                    {percentageChange.toFixed(0)}%
+                  </Badge>
+                )}
+              </>
+            )}
+          </VStack>
+          <Loading
+            isLoading={isFetching}
+            className="h-[30dvw] md:h-[23dvw] w-full"
+          >
+            {selectedKpi === "worstPerformingMachines" ? (
+              <ChartContainer
+                config={chartConfig}
+                className="aspect-auto h-[30dvw] md:h-[23dvw] w-full"
+              >
+                <BarChart
+                  accessibilityLayer
+                  layout="vertical"
+                  data={kpiFetcher.data?.data ?? []}
+                  margin={{ left: 20 }}
+                >
+                  <CartesianGrid horizontal={false} />
+                  <YAxis
+                    dataKey="name"
+                    type="category"
+                    tickLine={false}
+                    axisLine={false}
+                    width={150}
+                  />
+                  <XAxis type="number" tickLine={false} axisLine={false} />
+                  <ChartTooltip
+                    content={
+                      <ChartTooltipContent
+                        formatter={(value) =>
+                          `${numberFormatter.format(value as number)} failures`
+                        }
+                      />
+                    }
+                  />
+                  <Bar dataKey="value" fill="var(--color-value)" radius={2} />
+                </BarChart>
+              </ChartContainer>
+            ) : (
+              <ChartContainer
+                config={chartConfig}
+                className="aspect-auto h-[30dvw] md:h-[23dvw] w-full"
+              >
+                <BarChart accessibilityLayer data={kpiFetcher.data?.data ?? []}>
+                  <CartesianGrid vertical={false} />
+                  <YAxis
+                    dataKey="value"
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={(value) => {
+                      if (["mttr", "mtbf"].includes(selectedKpiData.key)) {
+                        return formatDurationMilliseconds(
+                          (value as number) * 1000,
+                          { style: "short" }
+                        );
+                      }
+                      if (["sparePartCost"].includes(selectedKpiData.key)) {
+                        return currencyFormatter.format(value as number);
+                      }
+                      return numberFormatter.format(value as number);
+                    }}
+                  />
+                  <XAxis
+                    dataKey={
+                      ["week", "month"].includes(interval) ? "date" : "month"
+                    }
+                    tickLine={false}
+                    tickMargin={8}
+                    minTickGap={32}
+                    axisLine={false}
+                    tickFormatter={(value) => {
+                      if (!value) return "";
+                      return ["week", "month"].includes(interval)
+                        ? dateFormatter.format(
+                            parseDate(value).toDate(getLocalTimeZone())
+                          )
+                        : value.slice(0, 3);
+                    }}
+                  />
+                  <ChartTooltip
+                    content={
+                      <ChartTooltipContent
+                        labelFormatter={
+                          ["week", "month"].includes(interval)
+                            ? (value) =>
+                                dateFormatter.format(
+                                  parseDate(value).toDate(getLocalTimeZone())
+                                )
+                            : (value) => (
+                                <span className="font-mono">{value}</span>
+                              )
+                        }
+                        formatter={(value) => {
+                          if (["mttr", "mtbf"].includes(selectedKpiData.key)) {
+                            return formatDurationMilliseconds(
+                              (value as number) * 1000
+                            );
+                          }
+                          if (selectedKpiData.key === "sparePartCost") {
+                            return currencyFormatter.format(value as number);
+                          }
+                          return numberFormatter.format(value as number);
+                        }}
+                      />
+                    }
+                  />
+                  <Bar dataKey="value" fill="var(--color-value)" radius={2} />
+                </BarChart>
+              </ChartContainer>
+            )}
+          </Loading>
+        </CardContent>
+      </Card>
+      <div className="grid w-full gap-4 grid-cols-1 lg:grid-cols-2">
+        <Card>
+          <CardHeader className="flex-row gap-2">
+            <LuClock className="text-muted-foreground" />
+            <CardTitle>
+              <Trans>Recently Created</Trans>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            <div className="min-h-[200px] max-h-[360px] w-full overflow-y-auto">
+              {recentlyCreated.length > 0 ? (
+                <DispatchTable data={recentlyCreated} />
+              ) : (
+                <div className="flex justify-center items-center h-full">
+                  <Empty />
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex-row gap-2">
+            <LuInbox className="text-muted-foreground" />
+            <CardTitle>
+              <Trans>Assigned to Me</Trans>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="min-h-[200px]">
+            <Suspense fallback={<Loading isLoading />}>
+              <Await
+                resolve={assignedToMe}
+                errorElement={
+                  <div>
+                    <Trans>Error loading assigned dispatches</Trans>
+                  </div>
+                }
+              >
+                {(dispatches) =>
+                  dispatches.length > 0 ? (
+                    <DispatchTable data={dispatches} />
+                  ) : (
+                    <div className="flex justify-center items-center h-full">
+                      <Empty />
+                    </div>
+                  )
+                }
+              </Await>
+            </Suspense>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+type DispatchRow = {
+  id: string;
+  maintenanceDispatchId: string;
+  status: (typeof OPEN_STATUSES)[number] | "Completed" | "Cancelled";
+  source: (typeof maintenanceSource)[number] | null;
+  priority: string | null;
+  workCenterId: string | null;
+};
+
+function DispatchTable({ data }: { data: DispatchRow[] }) {
+  const workCenters = useWorkCenters();
+
+  const getWorkCenterName = (workCenterId: string | null) => {
+    if (!workCenterId) return "-";
+    const wc = workCenters.find((w) => w.value === workCenterId);
+    return wc?.label ?? "-";
+  };
+
+  return (
+    <Table>
+      <Thead>
+        <Tr>
+          <Th>
+            <Trans>Dispatch</Trans>
+          </Th>
+          <Th>
+            <Trans>Status</Trans>
+          </Th>
+          <Th>
+            <Trans>Source</Trans>
+          </Th>
+          <Th>
+            <Trans>Work Center</Trans>
+          </Th>
+        </Tr>
+      </Thead>
+      <Tbody>
+        {data.map((dispatch) => (
+          <Tr key={dispatch.id}>
+            <Td>
+              <Hyperlink to={path.to.maintenanceDispatch(dispatch.id)}>
+                <HStack spacing={1}>
+                  <LuWrench className="size-4" />
+                  <span>{dispatch.maintenanceDispatchId}</span>
+                </HStack>
+              </Hyperlink>
+            </Td>
+            <Td>
+              <MaintenanceStatus status={dispatch.status} />
+            </Td>
+            <Td>
+              <MaintenanceSource
+                source={dispatch.source as (typeof maintenanceSource)[number]}
+              />
+            </Td>
+            <Td>{getWorkCenterName(dispatch.workCenterId)}</Td>
+          </Tr>
+        ))}
+      </Tbody>
+    </Table>
+  );
+}

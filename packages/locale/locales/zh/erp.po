@@ -212,9 +212,22 @@ msgstr "操作状态"
 msgid "Action Type"
 msgstr "操作类型"
 
+#: apps/erp/app/modules/quality/ui/useQualitySubmodules.tsx:102
 msgid "Action Types"
 msgstr "操作类型"
 
+#: apps/erp/app/components/Configurator/ConfigurationEditor/ConfigurationEditor.ee.tsx:348
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:260
+#: apps/erp/app/modules/inventory/ui/Kanbans/KanbansTable.tsx:600
+#: apps/erp/app/modules/items/ui/Item/BoMExplorer.tsx:174
+#: apps/erp/app/modules/items/ui/Item/BoMExplorer.tsx:406
+#: apps/erp/app/modules/production/ui/Jobs/JobBoMExplorer.tsx:166
+#: apps/erp/app/modules/production/ui/Projection/DemandProjectionTable.tsx:136
+#: apps/erp/app/modules/quality/ui/Actions/ActionsTable.tsx:246
+#: apps/erp/app/modules/quality/ui/Issue/ActionTasksList.tsx:121
+#: apps/erp/app/modules/quality/ui/useQualitySubmodules.tsx:41
+#: apps/erp/app/modules/settings/ui/Integrations/IntegrationForm.tsx:676
+#: apps/erp/app/routes/x+/quality+/actions.tsx:17
 msgid "Actions"
 msgstr "操作"
 
@@ -233,12 +246,14 @@ msgstr "激活工作中心"
 msgid "Active"
 msgstr "活跃"
 
+#: apps/erp/app/routes/x+/production+/dashboard.tsx:325
 msgid "Active Jobs"
 msgstr "活跃工作"
 
 msgid "Active Statuses"
 msgstr "活跃状态"
 
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:407
 msgid "Active Supplier Quotes"
 msgstr "活跃供应商报价"
 
@@ -422,6 +437,8 @@ msgstr "所有审计日志"
 msgid "All changes to auditable entities are being recorded."
 msgstr "所有可审计实体的更改都正在被记录。"
 
+#: apps/erp/app/modules/sales/ui/Pricing/PricingRuleForm.tsx:168
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:222
 msgid "All Customers"
 msgstr "所有客户"
 
@@ -437,12 +454,15 @@ msgstr "所有工作已完成"
 msgid "All members of selected groups and selected individuals will be able to approve requests"
 msgstr "所选组的所有成员和所选个人将能够批准请求"
 
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:279
 msgid "All Suppliers"
 msgstr "所有供应商"
 
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:317
 msgid "All Types"
 msgstr "所有类型"
 
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:163
 msgid "All Work Centers"
 msgstr "所有工作中心"
 
@@ -886,6 +906,10 @@ msgstr "分配给组"
 msgid "Assigned"
 msgstr "已分配"
 
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:717
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:928
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:683
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:707
 msgid "Assigned to Me"
 msgstr "分配给我"
 
@@ -895,6 +919,8 @@ msgstr "被指派人"
 msgid "Assignment"
 msgstr "分配"
 
+#: apps/erp/app/modules/resources/ui/useResourcesSubmodules.tsx:87
+#: apps/erp/app/routes/x+/resources+/assignments.tsx:47
 msgid "Assignments"
 msgstr "分配"
 
@@ -961,6 +987,7 @@ msgstr "当扫描看板时自动启动作业"
 msgid "Available"
 msgstr "可用"
 
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:466
 msgid "Avg Days to Close"
 msgstr "平均关闭天数"
 
@@ -1040,6 +1067,7 @@ msgid "Block, allow override"
 msgstr "阻止，允许覆盖"
 
 #. placeholder {0}: workCenter.blockingDispatchReadableId
+#: apps/erp/app/routes/x+/production+/dashboard.tsx:871
 msgid "Blocked by {0}"
 msgstr "被 {0} 阻止"
 
@@ -1115,6 +1143,8 @@ msgstr "校准状态"
 msgid "Calibration Supplier"
 msgstr "校准供应商"
 
+#: apps/erp/app/modules/quality/ui/useQualitySubmodules.tsx:73
+#: apps/erp/app/routes/x+/quality+/calibrations.tsx:17
 msgid "Calibrations"
 msgstr "校准"
 
@@ -1395,6 +1425,7 @@ msgstr "已完成数量"
 msgid "Completion Barcode"
 msgstr "完成条码"
 
+#: apps/erp/app/routes/x+/production+/dashboard.tsx:153
 msgid "Completion Time"
 msgstr "完成时间"
 
@@ -1407,6 +1438,19 @@ msgstr "配置参数"
 msgid "Configurator"
 msgstr "配置器"
 
+#: apps/erp/app/modules/accounting/ui/useAccountingSubmodules.tsx:77
+#: apps/erp/app/modules/inventory/ui/useInventorySubmodules.tsx:85
+#: apps/erp/app/modules/items/ui/Item/BillOfMaterial.tsx:524
+#: apps/erp/app/modules/items/ui/Item/BillOfProcess.tsx:840
+#: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:98
+#: apps/erp/app/modules/people/ui/usePeopleSubmodules.tsx:38
+#: apps/erp/app/modules/production/ui/Jobs/JobMakeMethodTools.tsx:308
+#: apps/erp/app/modules/production/ui/useProductionSubmodules.tsx:72
+#: apps/erp/app/modules/purchasing/ui/usePurchasingSubmodules.tsx:81
+#: apps/erp/app/modules/quality/ui/useQualitySubmodules.tsx:99
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteLineForm.tsx:507
+#: apps/erp/app/modules/sales/ui/useSalesSubmodules.tsx:70
+#: apps/erp/app/modules/users/ui/useUsersSubmodules.tsx:44
 msgid "Configure"
 msgstr "配置"
 
@@ -1522,6 +1566,7 @@ msgstr "联系人（可选）"
 msgid "Contacts"
 msgstr "联系人"
 
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:412
 msgid "Contained"
 msgstr "已控制"
 
@@ -1942,6 +1987,39 @@ msgstr "自定义字段"
 msgid "Custom Fields"
 msgstr "自定义字段"
 
+#: apps/erp/app/components/Form/Customer.tsx:48
+#: apps/erp/app/components/Layout/Topbar/CreateMenu.tsx:86
+#: apps/erp/app/modules/inventory/ui/Shipments/ShipmentsTable.tsx:243
+#: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoiceForm.tsx:198
+#: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoicesTable.tsx:87
+#: apps/erp/app/modules/items/ui/Item/CustomerPartForm.tsx:67
+#: apps/erp/app/modules/items/ui/Item/CustomerParts/CustomerParts.tsx:41
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:356
+#: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:271
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderDeliveryForm.tsx:160
+#: apps/erp/app/modules/quality/ui/Issue/IssueAssociations.tsx:356
+#: apps/erp/app/modules/sales/ui/Customer/CustomerForm.tsx:61
+#: apps/erp/app/modules/sales/ui/CustomerPortals/CustomerPortalForm.tsx:91
+#: apps/erp/app/modules/sales/ui/CustomerPortals/CustomerPortalsTable.tsx:36
+#: apps/erp/app/modules/sales/ui/Customers/CustomersTable.tsx:327
+#: apps/erp/app/modules/sales/ui/Pricing/DuplicatePriceListModal.tsx:118
+#: apps/erp/app/modules/sales/ui/Pricing/PriceOverrideForm.tsx:174
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteForm.tsx:164
+#: apps/erp/app/modules/sales/ui/Quotes/QuotesTable.tsx:97
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteToOrderDrawer.tsx:939
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderForm.tsx:171
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderShipmentForm.tsx:159
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrdersTable.tsx:141
+#: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQForm.tsx:156
+#: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQsTable.tsx:73
+#: apps/erp/app/modules/users/ui/Customers/CreateCustomerModal.tsx:76
+#: apps/erp/app/modules/users/ui/Customers/CustomerAccountsTable.tsx:150
+#: apps/erp/app/modules/users/ui/Customers/CustomerAccountsTable.tsx:325
+#: apps/erp/app/routes/x+/issue+/$id.tsx:153
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:660
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:732
+#: apps/erp/app/routes/x+/schedule+/dates.tsx:843
+#: apps/erp/app/routes/x+/schedule+/operations.tsx:471
 msgid "Customer"
 msgstr "客户"
 
@@ -2477,6 +2555,7 @@ msgstr "派遣"
 msgid "Dispatch ID"
 msgstr "调度ID"
 
+#: apps/erp/app/modules/resources/ui/useResourcesSubmodules.tsx:36
 msgid "Dispatches"
 msgstr "派遣"
 
@@ -2492,9 +2571,15 @@ msgstr "处置"
 msgid "Do you want to overwrite the user's current permissions with the default permissions for this employee type?"
 msgstr "您想用此员工类型的默认权限覆盖该用户的当前权限吗？"
 
+#: apps/erp/app/modules/quality/ui/Documents/QualityDocumentsTable.tsx:236
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:664
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:815
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:654
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:726
 msgid "Document"
 msgstr "文档"
 
+#: apps/erp/app/modules/quality/ui/useQualitySubmodules.tsx:88
 msgid "Document Control"
 msgstr "文件控制"
 
@@ -2535,6 +2620,7 @@ msgid "Drop your file here, or click to browse."
 msgstr "将文件拖放到此处，或点击浏览。"
 
 #. placeholder {0}: formatRelativeTime( convertDateStringToIsoString(dueDate) )
+#: apps/erp/app/routes/x+/production+/dashboard.tsx:966
 msgid "Due {0}"
 msgstr "截止日期 {0}"
 
@@ -2970,12 +3056,16 @@ msgstr "获取客户数据出错"
 msgid "Error fetching supplier data"
 msgstr "获取供应商数据出错"
 
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:692
 msgid "Error loading assigned dispatches"
 msgstr "加载已分配的派工单时出错"
 
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:726
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:716
 msgid "Error loading assigned documents"
 msgstr "加载分配的文档时出错"
 
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:943
 msgid "Error loading assigned issues"
 msgstr "加载分配的问题时出错"
 
@@ -3033,6 +3123,7 @@ msgstr "估计废料数量"
 msgid "Estimates vs Actual"
 msgstr "估计值与实际值"
 
+#: apps/erp/app/routes/x+/production+/dashboard.tsx:152
 msgid "Estimates vs Actuals"
 msgstr "估计值与实际值"
 
@@ -3124,6 +3215,11 @@ msgstr "过期追踪"
 msgid "Export"
 msgstr "导出"
 
+#: apps/erp/app/routes/x+/production+/dashboard.tsx:429
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:552
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:541
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:514
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:540
 msgid "Export CSV"
 msgstr "导出 CSV"
 
@@ -3422,6 +3518,9 @@ msgstr "上传缩略图失败"
 msgid "Failure Mode"
 msgstr "故障模式"
 
+#: apps/erp/app/modules/resources/ui/FailureModes/FailureModesTable.tsx:102
+#: apps/erp/app/modules/resources/ui/useResourcesSubmodules.tsx:48
+#: apps/erp/app/routes/x+/resources+/failure-modes.tsx:13
 msgid "Failure Modes"
 msgstr "故障模式"
 
@@ -3568,9 +3667,17 @@ msgstr "量具未找到"
 msgid "Gauge Type"
 msgstr "仪表类型"
 
+#: apps/erp/app/modules/quality/ui/GaugeTypes/GaugeTypesTable.tsx:89
+#: apps/erp/app/modules/quality/ui/useQualitySubmodules.tsx:108
+#: apps/erp/app/routes/x+/quality+/gauge-types.tsx:13
 msgid "Gauge Types"
 msgstr "量规类型"
 
+#: apps/erp/app/modules/quality/ui/Gauge/GaugesTable.tsx:384
+#: apps/erp/app/modules/quality/ui/useQualitySubmodules.tsx:76
+#: apps/erp/app/routes/x+/quality+/calibrations.$id.tsx:21
+#: apps/erp/app/routes/x+/quality+/gauges.$id.tsx:23
+#: apps/erp/app/routes/x+/quality+/gauges.tsx:13
 msgid "Gauges"
 msgstr "量规"
 
@@ -3718,6 +3825,7 @@ msgstr "仅处理中"
 msgid "In Progress"
 msgstr "进行中"
 
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:474
 msgid "in selected period"
 msgstr "在选定的时间段内"
 
@@ -3730,6 +3838,10 @@ msgstr "不活跃的操作将不会出现在选择列表中"
 msgid "Inbound Inspection"
 msgstr "入站检验"
 
+#: apps/erp/app/modules/quality/ui/InboundInspections/InboundInspectionsTable.tsx:173
+#: apps/erp/app/modules/quality/ui/useQualitySubmodules.tsx:65
+#: apps/erp/app/routes/x+/issue+/$id.tsx:168
+#: apps/erp/app/routes/x+/quality+/inbound-inspections.tsx:15
 msgid "Inbound Inspections"
 msgstr "入站检验"
 
@@ -3796,6 +3908,7 @@ msgstr "检验水平"
 msgid "Inspection Status"
 msgstr "检验状态"
 
+#: apps/erp/app/modules/quality/ui/useQualitySubmodules.tsx:62
 msgid "Inspections"
 msgstr "检验"
 
@@ -3907,6 +4020,10 @@ msgstr "是"
 msgid "is any of"
 msgstr "是以下任何一个"
 
+#: apps/erp/app/components/Layout/Topbar/CreateMenu.tsx:46
+#: apps/erp/app/modules/quality/ui/Actions/ActionsTable.tsx:48
+#: apps/erp/app/modules/quality/ui/Issue/IssuesTable.tsx:338
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:982
 msgid "Issue"
 msgstr "问题"
 
@@ -3928,24 +4045,40 @@ msgstr "问题目标"
 msgid "Issue title"
 msgstr "问题标题"
 
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:304
 msgid "Issue Trend"
 msgstr "问题趋势"
 
 msgid "Issue Type"
 msgstr "问题类型"
 
+#: apps/erp/app/modules/quality/ui/IssueTypes/IssueTypesTable.tsx:89
+#: apps/erp/app/modules/quality/ui/useQualitySubmodules.tsx:113
+#: apps/erp/app/routes/x+/quality+/issue-types.tsx:13
 msgid "Issue Types"
 msgstr "问题类型"
 
 msgid "Issue Workflow"
 msgstr "问题工作流"
 
+#: apps/erp/app/modules/quality/ui/IssueWorkflows/IssueWorkflowsTable.tsx:125
+#: apps/erp/app/modules/quality/ui/useQualitySubmodules.tsx:118
+#: apps/erp/app/routes/x+/issue-workflow+/$id.tsx:27
+#: apps/erp/app/routes/x+/quality+/issue-workflows.tsx:13
 msgid "Issue Workflows"
 msgstr "问题工作流"
 
 msgid "Issued Date"
 msgstr "签发日期"
 
+#: apps/erp/app/modules/quality/ui/Issue/IssuesTable.tsx:342
+#: apps/erp/app/modules/quality/ui/useQualitySubmodules.tsx:38
+#: apps/erp/app/modules/quality/ui/useQualitySubmodules.tsx:48
+#: apps/erp/app/routes/x+/issue+/$id.tsx:37
+#: apps/erp/app/routes/x+/issue+/new.tsx:28
+#: apps/erp/app/routes/x+/part+/$itemId.tsx:243
+#: apps/erp/app/routes/x+/quality+/issues.tsx:15
+#: apps/erp/app/routes/x+/tool+/$itemId.tsx:239
 msgid "Issues"
 msgstr "问题"
 
@@ -4015,9 +4148,24 @@ msgstr "工作单据"
 msgid "Job traveler PDFs include work instructions."
 msgstr "工作单据PDF包含工作说明。"
 
+#: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:687
+#: apps/erp/app/modules/production/ui/Schedule/Kanban/ScheuleNavigation.tsx:113
+#: apps/erp/app/modules/production/ui/useProductionSubmodules.tsx:35
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderLineJobs.tsx:122
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrdersTable.tsx:203
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrdersTable.tsx:293
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderSummary.tsx:489
+#: apps/erp/app/routes/x+/job+/$jobId.complete.tsx:14
+#: apps/erp/app/routes/x+/job+/$jobId.tsx:36
+#: apps/erp/app/routes/x+/job+/new.tsx:28
+#: apps/erp/app/routes/x+/part+/$itemId.tsx:249
+#: apps/erp/app/routes/x+/production+/jobs.tsx:17
+#: apps/erp/app/routes/x+/sales-order+/$orderId.$lineId.details.tsx:220
+#: apps/erp/app/routes/x+/tool+/$itemId.tsx:245
 msgid "Jobs"
 msgstr "工作"
 
+#: apps/erp/app/routes/x+/production+/dashboard.tsx:354
 msgid "Jobs Assigned to Me"
 msgstr "分配给我的工作"
 
@@ -4215,6 +4363,13 @@ msgstr "位置"
 msgid "Location Name"
 msgstr "位置名称"
 
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierLocations.tsx:84
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierSidebar/useSupplierSidebar.tsx:46
+#: apps/erp/app/modules/resources/ui/Locations/LocationsTable.tsx:172
+#: apps/erp/app/modules/resources/ui/useResourcesSubmodules.tsx:58
+#: apps/erp/app/modules/sales/ui/Customer/CustomerLocations.tsx:71
+#: apps/erp/app/modules/sales/ui/Customer/CustomerSidebar/useCustomerSidebar.tsx:47
+#: apps/erp/app/routes/x+/resources+/locations.tsx:14
 msgid "Locations"
 msgstr "位置"
 
@@ -4273,6 +4428,13 @@ msgstr "机器时间"
 msgid "Machine Unit"
 msgstr "机器单位"
 
+#: apps/erp/app/components/Layout/Topbar/CreateMenu.tsx:62
+#: apps/erp/app/modules/resources/ui/useResourcesSubmodules.tsx:33
+#: apps/erp/app/routes/x+/maintenance+/$dispatchId.tsx:29
+#: apps/erp/app/routes/x+/maintenance+/new.tsx:20
+#: apps/erp/app/routes/x+/part+/$itemId.tsx:264
+#: apps/erp/app/routes/x+/resources+/maintenance.tsx:17
+#: apps/erp/app/routes/x+/tool+/$itemId.tsx:260
 msgid "Maintenance"
 msgstr "维护"
 
@@ -4326,6 +4488,13 @@ msgstr "使此文档再次激活。"
 msgid "Makes this document active and visible."
 msgstr "使此文档处于活跃状态并可见。"
 
+#: apps/erp/app/modules/accounting/ui/useAccountingSubmodules.tsx:59
+#: apps/erp/app/modules/inventory/ui/useInventorySubmodules.tsx:26
+#: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:28
+#: apps/erp/app/modules/people/ui/usePeopleSubmodules.tsx:20
+#: apps/erp/app/modules/purchasing/ui/usePurchasingSubmodules.tsx:34
+#: apps/erp/app/modules/sales/ui/useSalesSubmodules.tsx:39
+#: apps/erp/app/modules/users/ui/useUsersSubmodules.tsx:13
 msgid "Manage"
 msgstr "管理"
 
@@ -4473,9 +4642,11 @@ msgstr "最大订单："
 msgid "MCP Command"
 msgstr "MCP 命令"
 
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:185
 msgid "Mean Time Between Failures"
 msgstr "平均故障间隔时间"
 
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:184
 msgid "Mean Time To Repair"
 msgstr "平均修复时间"
 
@@ -4645,6 +4816,7 @@ msgstr "名称"
 msgid "Navigate"
 msgstr "导航"
 
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:307
 msgid "NCRs by Type"
 msgstr "按类型分类的不符合项"
 
@@ -4956,6 +5128,8 @@ msgstr "未找到聊天"
 msgid "No comments yet. Be the first to add a comment."
 msgstr "还没有评论。成为第一个添加评论的人。"
 
+#: apps/erp/app/routes/x+/production+/dashboard.tsx:161
+#: apps/erp/app/routes/x+/production+/dashboard.tsx:162
 msgid "No completed jobs within range"
 msgstr "范围内没有已完成的工作"
 
@@ -5196,6 +5370,7 @@ msgstr "哎呀！您尝试访问的链接无效。"
 msgid "Open"
 msgstr "打开"
 
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:439
 msgid "Open Actions"
 msgstr "开放操作"
 
@@ -5205,33 +5380,42 @@ msgstr "打开聊天历史"
 msgid "Open Date"
 msgstr "开放日期"
 
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:369
 msgid "Open Dispatches"
 msgstr "未结派工单"
 
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:385
 msgid "Open Issues"
 msgstr "未解决的问题"
 
 msgid "Open menu"
 msgstr "打开菜单"
 
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:465
 msgid "Open Purchase Invoices"
 msgstr "未结采购发票"
 
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:436
 msgid "Open Purchase Orders"
 msgstr "未结采购订单"
 
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:424
 msgid "Open Quotes"
 msgstr "未结报价"
 
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:427
 msgid "Open Reactive"
 msgstr "开放反应"
 
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:395
 msgid "Open RFQs"
 msgstr "未结RFQ"
 
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:453
 msgid "Open Sales Orders"
 msgstr "未结销售订单"
 
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:398
 msgid "Open Scheduled"
 msgstr "开放计划"
 
@@ -5304,6 +5488,18 @@ msgstr "已订购"
 msgid "Ordering"
 msgstr "订购"
 
+#: apps/erp/app/modules/production/ui/Jobs/JobMaterialsTable.tsx:646
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierSidebar/useSupplierSidebar.tsx:94
+#: apps/erp/app/modules/purchasing/ui/usePurchasingSubmodules.tsx:44
+#: apps/erp/app/modules/sales/ui/Customer/CustomerSidebar/useCustomerSidebar.tsx:94
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteLinePricingHistory.tsx:98
+#: apps/erp/app/modules/sales/ui/useSalesSubmodules.tsx:60
+#: apps/erp/app/routes/x+/purchase-order+/$orderId.tsx:50
+#: apps/erp/app/routes/x+/purchase-order+/new.tsx:27
+#: apps/erp/app/routes/x+/purchasing+/orders.tsx:15
+#: apps/erp/app/routes/x+/sales-order+/$orderId.tsx:31
+#: apps/erp/app/routes/x+/sales-order+/new.tsx:17
+#: apps/erp/app/routes/x+/sales+/orders.tsx:15
 msgid "Orders"
 msgstr "订单"
 
@@ -5388,6 +5584,7 @@ msgstr "上级组"
 msgid "Parent Storage Unit"
 msgstr "父存储单元"
 
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:306
 msgid "Pareto by Type"
 msgstr "按类型的帕累托"
 
@@ -5511,6 +5708,10 @@ msgstr "件/分钟"
 msgid "Pinned"
 msgstr "已固定"
 
+#: apps/erp/app/modules/production/ui/useProductionSubmodules.tsx:50
+#: apps/erp/app/modules/purchasing/ui/usePurchasingSubmodules.tsx:70
+#: apps/erp/app/modules/quality/ui/InboundInspections/InboundInspectionLotView.tsx:181
+#: apps/erp/app/routes/x+/settings+/billing.tsx:216
 msgid "Plan"
 msgstr "计划"
 
@@ -5529,6 +5730,17 @@ msgstr "计划开始"
 msgid "Planned Start Time"
 msgstr "计划开始时间"
 
+#: apps/erp/app/modules/items/ui/Consumables/useConsumableNavigation.tsx:54
+#: apps/erp/app/modules/items/ui/Item/ItemPlanningForm.tsx:62
+#: apps/erp/app/modules/items/ui/Materials/useMaterialNavigation.tsx:54
+#: apps/erp/app/modules/items/ui/Parts/usePartNavigation.tsx:59
+#: apps/erp/app/modules/items/ui/Tools/useToolNavigation.tsx:58
+#: apps/erp/app/modules/production/ui/Planning/ProductionPlanningTable.tsx:500
+#: apps/erp/app/modules/production/ui/useProductionSubmodules.tsx:53
+#: apps/erp/app/modules/purchasing/ui/Planning/PurchasingPlanningTable.tsx:580
+#: apps/erp/app/modules/purchasing/ui/usePurchasingSubmodules.tsx:73
+#: apps/erp/app/routes/x+/production+/planning.tsx:22
+#: apps/erp/app/routes/x+/purchasing+/planning.tsx:22
 msgid "Planning"
 msgstr "规划"
 
@@ -5571,6 +5783,7 @@ msgstr "政策与程序"
 msgid "Portal Link"
 msgstr "门户链接"
 
+#: apps/erp/app/modules/sales/ui/useSalesSubmodules.tsx:73
 msgid "Portals"
 msgstr "门户"
 
@@ -5649,6 +5862,8 @@ msgstr "价格阶梯"
 msgid "Price List"
 msgstr "价格表"
 
+#: apps/erp/app/modules/sales/ui/Pricing/PriceListScopeEmpty.tsx:22
+#: apps/erp/app/modules/sales/ui/useSalesSubmodules.tsx:84
 msgid "Price Lists"
 msgstr "价格表"
 
@@ -5673,6 +5888,17 @@ msgstr "打印标签"
 msgid "Priorities"
 msgstr "优先级"
 
+#: apps/erp/app/modules/quality/ui/Issue/IssueForm.tsx:203
+#: apps/erp/app/modules/quality/ui/Issue/IssueProperties.tsx:371
+#: apps/erp/app/modules/quality/ui/Issue/IssuesTable.tsx:122
+#: apps/erp/app/modules/quality/ui/IssueWorkflows/IssueWorkflowForm.tsx:217
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchesTable.tsx:159
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchForm.tsx:160
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchProperties.tsx:283
+#: apps/erp/app/modules/resources/ui/MaintenanceSchedule/MaintenanceScheduleForm.tsx:179
+#: apps/erp/app/modules/resources/ui/MaintenanceSchedule/MaintenanceSchedulesTable.tsx:161
+#: apps/erp/app/modules/sales/ui/Pricing/PricingRuleForm.tsx:272
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:988
 msgid "Priority"
 msgstr "优先级"
 
@@ -5685,6 +5911,10 @@ msgstr "私密"
 msgid "Procedure"
 msgstr "程序"
 
+#: apps/erp/app/modules/production/ui/Procedures/ProceduresTable.tsx:228
+#: apps/erp/app/modules/production/ui/useProductionSubmodules.tsx:41
+#: apps/erp/app/routes/x+/procedure+/$id.tsx:31
+#: apps/erp/app/routes/x+/production+/procedures.tsx:14
 msgid "Procedures"
 msgstr "程序"
 
@@ -5697,6 +5927,14 @@ msgstr "流程名称"
 msgid "Process Type"
 msgstr "流程类型"
 
+#: apps/erp/app/modules/production/ui/Jobs/JobEstimatesVsActuals.tsx:267
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierSidebar/useSupplierSidebar.tsx:75
+#: apps/erp/app/modules/quality/ui/Issue/IssueTask.tsx:846
+#: apps/erp/app/modules/resources/ui/Processes/ProcessesTable.tsx:316
+#: apps/erp/app/modules/resources/ui/useResourcesSubmodules.tsx:64
+#: apps/erp/app/modules/resources/ui/WorkCenters/WorkCenterForm.tsx:112
+#: apps/erp/app/modules/resources/ui/WorkCenters/WorkCentersTable.tsx:132
+#: apps/erp/app/routes/x+/resources+/processes.tsx:14
 msgid "Processes"
 msgstr "流程"
 
@@ -5730,6 +5968,10 @@ msgstr "进度"
 msgid "Project"
 msgstr "项目"
 
+#: apps/erp/app/modules/items/ui/Item/ItemPlanningChart.tsx:343
+#: apps/erp/app/modules/items/ui/Item/ItemPlanningChart.tsx:360
+#: apps/erp/app/modules/production/ui/useProductionSubmodules.tsx:59
+#: apps/erp/app/routes/x+/production+/projections.tsx:19
 msgid "Projections"
 msgstr "预测"
 
@@ -5760,18 +6002,22 @@ msgstr "采购历史"
 msgid "Purchase Invoice"
 msgstr "采购发票"
 
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:303
 msgid "Purchase Invoice Amount"
 msgstr "采购发票金额"
 
 msgid "Purchase Invoice Line"
 msgstr "采购发票行"
 
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoicesTable.tsx:331
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:301
 msgid "Purchase Invoices"
 msgstr "采购发票"
 
 msgid "Purchase Order"
 msgstr "采购订单"
 
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:302
 msgid "Purchase Order Amount"
 msgstr "采购订单金额"
 
@@ -5790,6 +6036,13 @@ msgstr "采购订单位置"
 msgid "Purchase order removed successfully"
 msgstr "采购订单已成功删除"
 
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceHeader.tsx:285
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrdersTable.tsx:463
+#: apps/erp/app/modules/settings/ui/Approvals/ApprovalRules.tsx:51
+#: apps/erp/app/routes/x+/issue+/$id.tsx:119
+#: apps/erp/app/routes/x+/part+/$itemId.tsx:277
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:300
+#: apps/erp/app/routes/x+/tool+/$itemId.tsx:273
 msgid "Purchase Orders"
 msgstr "采购订单"
 
@@ -5857,6 +6110,10 @@ msgstr "质量"
 msgid "Quality Document approval rule"
 msgstr "质量文件审批规则"
 
+#: apps/erp/app/modules/quality/ui/Documents/QualityDocumentsTable.tsx:244
+#: apps/erp/app/modules/quality/ui/useQualitySubmodules.tsx:91
+#: apps/erp/app/modules/settings/ui/Approvals/ApprovalRules.tsx:93
+#: apps/erp/app/routes/x+/quality+/documents.tsx:14
 msgid "Quality Documents"
 msgstr "质量文件"
 
@@ -5938,6 +6195,19 @@ msgstr "报价单号"
 msgid "Quoted Date"
 msgstr "报价日期"
 
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierSidebar/useSupplierSidebar.tsx:88
+#: apps/erp/app/modules/purchasing/ui/usePurchasingSubmodules.tsx:38
+#: apps/erp/app/modules/sales/ui/Customer/CustomerSidebar/useCustomerSidebar.tsx:88
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteLinePricingHistory.tsx:101
+#: apps/erp/app/modules/sales/ui/Quotes/QuotesTable.tsx:323
+#: apps/erp/app/modules/sales/ui/useSalesSubmodules.tsx:54
+#: apps/erp/app/routes/x+/part+/$itemId.tsx:295
+#: apps/erp/app/routes/x+/quote+/$quoteId.tsx:45
+#: apps/erp/app/routes/x+/quote+/new.tsx:19
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:162
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:244
+#: apps/erp/app/routes/x+/sales+/quotes.tsx:15
+#: apps/erp/app/routes/x+/tool+/$itemId.tsx:291
 msgid "Quotes"
 msgstr "报价"
 
@@ -6020,6 +6290,10 @@ msgstr "收货地点"
 msgid "Recent"
 msgstr "最近"
 
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:654
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:908
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:663
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:644
 msgid "Recently Created"
 msgstr "最近创建"
 
@@ -6029,6 +6303,7 @@ msgstr "录音"
 msgid "Record deleted"
 msgstr "记录已删除"
 
+#: apps/erp/app/modules/quality/ui/useQualitySubmodules.tsx:81
 msgid "Records"
 msgstr "记录"
 
@@ -6313,6 +6588,19 @@ msgstr "询价单位置"
 msgid "RFQ Number"
 msgstr "询价单号"
 
+#: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQsTable.tsx:269
+#: apps/erp/app/modules/purchasing/ui/usePurchasingSubmodules.tsx:32
+#: apps/erp/app/modules/sales/ui/Customer/CustomerSidebar/useCustomerSidebar.tsx:82
+#: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQsTable.tsx:263
+#: apps/erp/app/modules/sales/ui/useSalesSubmodules.tsx:48
+#: apps/erp/app/routes/x+/purchasing-rfq+/$rfqId.tsx:27
+#: apps/erp/app/routes/x+/purchasing-rfq+/new.tsx:23
+#: apps/erp/app/routes/x+/purchasing+/rfqs.tsx:15
+#: apps/erp/app/routes/x+/sales-rfq+/$rfqId.tsx:32
+#: apps/erp/app/routes/x+/sales-rfq+/new.tsx:19
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:156
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:245
+#: apps/erp/app/routes/x+/sales+/rfqs.tsx:15
 msgid "RFQs"
 msgstr "询价单"
 
@@ -6403,6 +6691,13 @@ msgstr "销售订单位置"
 msgid "Sales Order Number"
 msgstr "销售订单号"
 
+#: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoiceHeader.tsx:257
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrdersTable.tsx:612
+#: apps/erp/app/routes/x+/issue+/$id.tsx:126
+#: apps/erp/app/routes/x+/part+/$itemId.tsx:311
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:168
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:247
+#: apps/erp/app/routes/x+/tool+/$itemId.tsx:307
 msgid "Sales Orders"
 msgstr "销售订单"
 
@@ -6466,6 +6761,9 @@ msgstr "扫描此行的跟踪ID"
 msgid "SCAR"
 msgstr "SCAR"
 
+#: apps/erp/app/modules/production/ui/useProductionSubmodules.tsx:65
+#: apps/erp/app/routes/x+/schedule+/dates.tsx:64
+#: apps/erp/app/routes/x+/schedule+/operations.tsx:64
 msgid "Schedule"
 msgstr "日程"
 
@@ -6478,6 +6776,7 @@ msgstr "定期维护"
 msgid "Scheduled Maintenances"
 msgstr "定时维护"
 
+#: apps/erp/app/modules/resources/ui/useResourcesSubmodules.tsx:42
 msgid "Schedules"
 msgstr "日程"
 
@@ -6502,6 +6801,9 @@ msgstr "每个工作的报废数量"
 msgid "Scrap Reason"
 msgstr "报废原因"
 
+#: apps/erp/app/modules/production/ui/ScrapReasons/ScrapReasonsTable.tsx:88
+#: apps/erp/app/modules/production/ui/useProductionSubmodules.tsx:75
+#: apps/erp/app/routes/x+/production+/scrap-reasons.tsx:13
 msgid "Scrap Reasons"
 msgstr "报废原因"
 
@@ -6994,9 +7296,20 @@ msgstr "按排序"
 msgid "Sort Descending"
 msgstr "按降序排序"
 
+#: apps/erp/app/modules/quality/ui/Issue/IssueForm.tsx:223
+#: apps/erp/app/modules/quality/ui/Issue/IssueProperties.tsx:333
+#: apps/erp/app/modules/quality/ui/Issue/IssuesTable.tsx:142
+#: apps/erp/app/modules/quality/ui/IssueWorkflows/IssueWorkflowForm.tsx:230
+#: apps/erp/app/modules/quality/ui/RiskRegister/RiskRegistersTable.tsx:125
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchesTable.tsx:121
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchForm.tsx:173
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchProperties.tsx:347
+#: apps/erp/app/modules/sales/ui/Pricing/PriceOverridesTable.tsx:225
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:743
 msgid "Source"
 msgstr "来源"
 
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:308
 msgid "Source Analysis"
 msgstr "来源分析"
 
@@ -7021,9 +7334,11 @@ msgstr "来源"
 msgid "Sourcing Type"
 msgstr "采购类型"
 
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:188
 msgid "Spare Part Consumption"
 msgstr "备件消耗"
 
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:186
 msgid "Spare Part Cost"
 msgstr "备件成本"
 
@@ -7105,9 +7420,57 @@ msgstr "州/省"
 msgid "Statistical acceptance failed, so the entire lot is considered non-conforming (ISO 9001:2015 §8.7). All {0} entities — {passes} sampled pass(es), {fails} failure(s), and {1} un-inspected — will be marked Rejected. An NCR will be opened automatically for MRB disposition."
 msgstr "统计验收失败，因此整个批次被视为不符合要求 (ISO 9001:2015 §8.7)。所有 {0} 个实体 — {passes} 个抽样合格品、{fails} 个不合格品和 {1} 个未检验品 — 将被标记为已拒收。不符合项报告 (NCR) 将自动开启以供物料评审委员会 (MRB) 处置。"
 
+#: apps/erp/app/modules/inventory/ui/Receipts/ReceiptsTable.tsx:152
+#: apps/erp/app/modules/inventory/ui/Shipments/ShipmentsTable.tsx:162
+#: apps/erp/app/modules/inventory/ui/StockTransfers/StockTransfersTable.tsx:95
+#: apps/erp/app/modules/inventory/ui/Traceability/TrackedEntitiesTable.tsx:122
+#: apps/erp/app/modules/inventory/ui/WarehouseTransfers/WarehouseTransfersTable.tsx:70
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoicesTable.tsx:135
+#: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoicesTable.tsx:129
+#: apps/erp/app/modules/items/ui/ItemRules/ItemRuleAssignments.tsx:160
+#: apps/erp/app/modules/items/ui/ItemRules/ItemRulesTable.tsx:78
+#: apps/erp/app/modules/people/ui/Timecards/TimecardsTable.tsx:142
+#: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:315
+#: apps/erp/app/modules/production/ui/Planning/ProductionPlanningOrderDrawer.tsx:374
+#: apps/erp/app/modules/production/ui/Procedures/ProcedureProperties.tsx:174
+#: apps/erp/app/modules/production/ui/Procedures/ProceduresTable.tsx:92
+#: apps/erp/app/modules/purchasing/ui/Planning/PurchasingPlanningOrderDrawer.tsx:621
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrdersTable.tsx:129
+#: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQsTable.tsx:102
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierHeader.tsx:241
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuotesTable.tsx:105
+#: apps/erp/app/modules/quality/ui/Documents/QualityDocumentProperties.tsx:202
+#: apps/erp/app/modules/quality/ui/Documents/QualityDocumentsTable.tsx:84
+#: apps/erp/app/modules/quality/ui/Gauge/GaugesTable.tsx:194
+#: apps/erp/app/modules/quality/ui/InboundInspections/InboundInspectionsTable.tsx:133
+#: apps/erp/app/modules/quality/ui/Issue/AssociatedItemsList.tsx:383
+#: apps/erp/app/modules/quality/ui/Issue/IssuesTable.tsx:83
+#: apps/erp/app/modules/quality/ui/RiskRegister/RiskRegisterForm.tsx:169
+#: apps/erp/app/modules/quality/ui/RiskRegister/RiskRegistersTable.tsx:140
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchesTable.tsx:139
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchProperties.tsx:204
+#: apps/erp/app/modules/resources/ui/MaintenanceSchedule/MaintenanceSchedulesTable.tsx:192
+#: apps/erp/app/modules/resources/ui/Training/TrainingAssignmentForm.tsx:378
+#: apps/erp/app/modules/resources/ui/Training/TrainingProperties.tsx:188
+#: apps/erp/app/modules/resources/ui/Training/TrainingsTable.tsx:62
+#: apps/erp/app/modules/sales/ui/Customer/CustomerHeader.tsx:130
+#: apps/erp/app/modules/sales/ui/Customers/CustomersTable.tsx:88
+#: apps/erp/app/modules/sales/ui/Quotes/QuotesTable.tsx:115
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrdersTable.tsx:158
+#: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQsTable.tsx:90
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:667
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:818
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:985
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:740
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:657
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:729
+#: apps/erp/app/routes/x+/schedule+/dates.tsx:848
+#: apps/erp/app/routes/x+/schedule+/operations.tsx:476
+#: apps/erp/app/routes/x+/settings+/billing.tsx:224
 msgid "Status"
 msgstr "状态"
 
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:305
 msgid "Status Distribution"
 msgstr "状态分布"
 
@@ -7222,6 +7585,9 @@ msgstr "建议"
 msgid "Suggestion Notifications"
 msgstr "建议通知"
 
+#: apps/erp/app/modules/resources/ui/Suggestions/SuggestionsTable.tsx:157
+#: apps/erp/app/modules/resources/ui/useResourcesSubmodules.tsx:92
+#: apps/erp/app/routes/x+/resources+/suggestions.tsx:15
 msgid "Suggestions"
 msgstr "建议"
 
@@ -7234,6 +7600,37 @@ msgstr "Supabase 提供了广泛的过滤器。"
 msgid "Supabase provides realtime functionality and broadcasts database changes to authorized users depending on Row Level Security (RLS) policies."
 msgstr "Supabase 提供实时功能，并根据行级安全 (RLS) 策略向授权用户广播数据库更改。"
 
+#: apps/erp/app/components/Layout/Topbar/CreateMenu.tsx:78
+#: apps/erp/app/modules/inventory/ui/Kanbans/KanbanForm.tsx:241
+#: apps/erp/app/modules/inventory/ui/Kanbans/KanbansTable.tsx:413
+#: apps/erp/app/modules/inventory/ui/Receipts/ReceiptsTable.tsx:213
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceForm.tsx:200
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoicesTable.tsx:93
+#: apps/erp/app/modules/items/ui/Item/BillOfProcess.tsx:1193
+#: apps/erp/app/modules/items/ui/Item/ItemCostHistoryChart.tsx:301
+#: apps/erp/app/modules/items/ui/Item/SupplierPartForm.tsx:179
+#: apps/erp/app/modules/items/ui/Item/SupplierParts/SupplierParts.tsx:45
+#: apps/erp/app/modules/production/ui/Jobs/JobBillOfProcess.tsx:2358
+#: apps/erp/app/modules/purchasing/ui/Planning/PurchasingPlanningOrderDrawer.tsx:338
+#: apps/erp/app/modules/purchasing/ui/Planning/PurchasingPlanningTable.tsx:336
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderForm.tsx:155
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrdersTable.tsx:112
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierProcessForm.tsx:113
+#: apps/erp/app/modules/purchasing/ui/Supplier/SuppliersTable.tsx:307
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteForm.tsx:157
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuotesTable.tsx:87
+#: apps/erp/app/modules/quality/ui/Issue/IssueAssociations.tsx:365
+#: apps/erp/app/modules/quality/ui/Issue/IssueTask.tsx:224
+#: apps/erp/app/modules/resources/ui/Contractors/ContractorForm.tsx:87
+#: apps/erp/app/modules/resources/ui/Contractors/ContractorsTable.tsx:51
+#: apps/erp/app/modules/resources/ui/Partners/PartnersTable.tsx:32
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteBillOfProcess.tsx:2025
+#: apps/erp/app/modules/users/ui/Suppliers/CreateSupplierModal/CreateSupplierModal.tsx:76
+#: apps/erp/app/modules/users/ui/Suppliers/SupplierAccountsTable/SuppliersAccountsTable.tsx:146
+#: apps/erp/app/modules/users/ui/Suppliers/SupplierAccountsTable/SuppliersAccountsTable.tsx:321
+#: apps/erp/app/routes/x+/issue+/$id.tsx:160
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:670
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:821
 msgid "Supplier"
 msgstr "供应商"
 
@@ -7273,6 +7670,7 @@ msgstr "供应商零件"
 msgid "Supplier Processes"
 msgstr "供应商流程"
 
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:309
 msgid "Supplier Quality"
 msgstr "供应商质量"
 
@@ -7285,6 +7683,12 @@ msgstr "供应商报价ID"
 msgid "Supplier Quote Notifications"
 msgstr "供应商报价通知"
 
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuotesTable.tsx:261
+#: apps/erp/app/routes/x+/part+/$itemId.tsx:326
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:299
+#: apps/erp/app/routes/x+/purchasing+/quotes.tsx:15
+#: apps/erp/app/routes/x+/supplier-quote+/$id.tsx:30
+#: apps/erp/app/routes/x+/tool+/$itemId.tsx:322
 msgid "Supplier Quotes"
 msgstr "供应商报价"
 
@@ -7315,6 +7719,21 @@ msgstr "供应商已更新"
 msgid "Supplier:"
 msgstr "供应商："
 
+#: apps/erp/app/modules/purchasing/ui/Planning/PurchasingPlanningOrderDrawer.tsx:326
+#: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQForm.tsx:83
+#: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQProperties.tsx:221
+#: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQsTable.tsx:66
+#: apps/erp/app/modules/purchasing/ui/Supplier/SuppliersTable.tsx:292
+#: apps/erp/app/modules/purchasing/ui/Supplier/SuppliersTable.tsx:312
+#: apps/erp/app/modules/purchasing/ui/usePurchasingSubmodules.tsx:37
+#: apps/erp/app/modules/resources/ui/Processes/ProcessesTable.tsx:149
+#: apps/erp/app/modules/resources/ui/Processes/ProcessForm.tsx:188
+#: apps/erp/app/modules/settings/ui/Approvals/ApprovalRules.tsx:138
+#: apps/erp/app/routes/x+/issue+/$id.tsx:161
+#: apps/erp/app/routes/x+/purchasing+/suppliers.tsx:16
+#: apps/erp/app/routes/x+/supplier+/$supplierId.tsx:22
+#: apps/erp/app/routes/x+/supplier+/new.tsx:16
+#: apps/erp/app/routes/x+/users+/suppliers.tsx:19
 msgid "Suppliers"
 msgstr "供应商"
 
@@ -7659,6 +8078,12 @@ msgstr "工具ID"
 msgid "Tools"
 msgstr "工具"
 
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceSummary.tsx:327
+#: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoiceSummary.tsx:312
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteSummary.tsx:637
+#: apps/erp/app/routes/share+/quote.$id.tsx:885
+#: apps/erp/app/routes/share+/quote.$id.tsx:1288
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:652
 msgid "Total"
 msgstr "总计"
 
@@ -7725,6 +8150,13 @@ msgstr "追踪类型"
 msgid "Tracking URL"
 msgstr "跟踪URL"
 
+#: apps/erp/app/modules/resources/ui/Training/TrainingAssignmentForm.tsx:454
+#: apps/erp/app/modules/resources/ui/Training/TrainingsTable.tsx:216
+#: apps/erp/app/modules/resources/ui/Training/TrainingsTable.tsx:220
+#: apps/erp/app/modules/resources/ui/useResourcesSubmodules.tsx:81
+#: apps/erp/app/routes/x+/resources+/assignments.tsx:105
+#: apps/erp/app/routes/x+/resources+/training.tsx:15
+#: apps/erp/app/routes/x+/training+/$id.tsx:33
 msgid "Training"
 msgstr "培训"
 
@@ -8039,18 +8471,28 @@ msgstr "版本"
 msgid "via Digital Quote"
 msgstr "通过数字报价"
 
+#: apps/erp/app/components/Documents.tsx:340
+#: apps/erp/app/modules/items/ui/Item/ItemDocuments.tsx:150
+#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:445
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:515
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:401
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:428
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:455
 msgid "View"
 msgstr "查看"
 
+#: apps/erp/app/routes/x+/production+/dashboard.tsx:343
 msgid "View Active Jobs"
 msgstr "查看活跃工作"
 
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:425
 msgid "View Active Quotes"
 msgstr "查看活跃报价"
 
 msgid "View All"
 msgstr "查看全部"
 
+#: apps/erp/app/routes/x+/production+/dashboard.tsx:369
 msgid "View Assigned Jobs"
 msgstr "查看分配的工作"
 
@@ -8084,24 +8526,32 @@ msgstr "查看问题"
 msgid "View Item Master"
 msgstr "查看物料主数据"
 
+#: apps/erp/app/modules/production/ui/Schedule/Kanban/components/ColumnCard.tsx:135
+#: apps/erp/app/routes/x+/production+/dashboard.tsx:879
 msgid "View maintenance dispatch"
 msgstr "查看维护派遣"
 
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:387
 msgid "View Open"
 msgstr "查看开放"
 
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:483
 msgid "View Open Invoices"
 msgstr "查看未结发票"
 
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:471
 msgid "View Open Orders"
 msgstr "查看未结订单"
 
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:454
 msgid "View Open POs"
 msgstr "查看开放采购订单"
 
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:442
 msgid "View Open Quotes"
 msgstr "查看未结报价"
 
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:413
 msgid "View Open RFQs"
 msgstr "查看未结束的询价单"
 
@@ -8114,12 +8564,14 @@ msgstr "查看生产事件"
 msgid "View Purchase Invoice"
 msgstr "查看采购发票"
 
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:445
 msgid "View Reactive"
 msgstr "查看反应性"
 
 msgid "View Receipt"
 msgstr "查看收据"
 
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:416
 msgid "View Scheduled"
 msgstr "查看已排期"
 
@@ -8249,6 +8701,7 @@ msgstr "网站"
 msgid "Wednesday"
 msgstr "星期三"
 
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:310
 msgid "Weeks Open"
 msgstr "周数开放"
 
@@ -8321,12 +8774,35 @@ msgstr "字标深色模式"
 msgid "Wordmark Light Mode"
 msgstr "字标浅色模式"
 
+#: apps/erp/app/modules/items/ui/Item/BillOfProcess.tsx:1246
+#: apps/erp/app/modules/items/ui/Item/BillOfProcess.tsx:1254
+#: apps/erp/app/modules/production/ui/Jobs/JobBillOfProcess.tsx:2415
+#: apps/erp/app/modules/production/ui/Jobs/ProductionEventForm.tsx:99
+#: apps/erp/app/modules/production/ui/Jobs/ProductionEventsTable.tsx:132
+#: apps/erp/app/modules/quality/ui/RiskRegister/RiskRegistersTable.tsx:187
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchesTable.tsx:90
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchExplorer.tsx:451
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchExplorer.tsx:522
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchForm.tsx:187
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchProperties.tsx:254
+#: apps/erp/app/modules/resources/ui/MaintenanceSchedule/MaintenanceScheduleForm.tsx:167
+#: apps/erp/app/modules/resources/ui/MaintenanceSchedule/MaintenanceSchedulesTable.tsx:109
+#: apps/erp/app/modules/resources/ui/WorkCenters/WorkCentersTable.tsx:106
+#: apps/erp/app/modules/resources/ui/WorkCenters/WorkCentersTable.tsx:322
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteBillOfProcess.tsx:2082
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:746
 msgid "Work Center"
 msgstr "工作中心"
 
+#: apps/erp/app/routes/x+/production+/dashboard.tsx:151
 msgid "Work Center Utilization"
 msgstr "工作中心利用率"
 
+#: apps/erp/app/modules/resources/ui/Processes/ProcessesTable.tsx:102
+#: apps/erp/app/modules/resources/ui/Processes/ProcessForm.tsx:142
+#: apps/erp/app/modules/resources/ui/useResourcesSubmodules.tsx:70
+#: apps/erp/app/modules/resources/ui/WorkCenters/WorkCentersTable.tsx:326
+#: apps/erp/app/routes/x+/resources+/work-centers.tsx:18
 msgid "Work Centers"
 msgstr "工作中心"
 
@@ -8348,6 +8824,7 @@ msgstr "工作班次跟踪处于活跃状态。"
 msgid "Workflow"
 msgstr "工作流"
 
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:187
 msgid "Worst Performing Machines"
 msgstr "性能最差的机器"
 

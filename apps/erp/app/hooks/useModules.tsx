@@ -32,13 +32,13 @@ export function useModules() {
     {
       permission: "sales",
       name: t`Sales`,
-      to: path.to.sales,
+      to: path.to.salesDashboard,
       icon: LuCrown
     },
     {
       permission: "production",
       name: t`Production`,
-      to: path.to.production,
+      to: path.to.productionDashboard,
       icon: LuFactory
     },
     {
@@ -50,19 +50,19 @@ export function useModules() {
     {
       permission: "inventory",
       name: t`Inventory`,
-      to: path.to.inventory,
+      to: path.to.inventoryQuantities,
       icon: LuBox
     },
     {
       permission: "purchasing",
       name: t`Purchasing`,
-      to: path.to.purchasing,
+      to: path.to.purchasingDashboard,
       icon: LuShoppingCart
     },
     {
       permission: "quality",
       name: t`Quality`,
-      to: path.to.quality,
+      to: path.to.qualityDashboard,
       icon: LuFolderCheck
     },
     {
@@ -80,7 +80,7 @@ export function useModules() {
     {
       permission: "resources",
       name: t`Resources`,
-      to: path.to.resources,
+      to: path.to.resourcesDashboard,
       icon: LuWrench
     },
     {

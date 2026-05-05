@@ -212,9 +212,22 @@ msgstr "Statut de l'action"
 msgid "Action Type"
 msgstr "Type d'action"
 
+#: apps/erp/app/modules/quality/ui/useQualitySubmodules.tsx:102
 msgid "Action Types"
 msgstr "Types d'actions"
 
+#: apps/erp/app/components/Configurator/ConfigurationEditor/ConfigurationEditor.ee.tsx:348
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:260
+#: apps/erp/app/modules/inventory/ui/Kanbans/KanbansTable.tsx:600
+#: apps/erp/app/modules/items/ui/Item/BoMExplorer.tsx:174
+#: apps/erp/app/modules/items/ui/Item/BoMExplorer.tsx:406
+#: apps/erp/app/modules/production/ui/Jobs/JobBoMExplorer.tsx:166
+#: apps/erp/app/modules/production/ui/Projection/DemandProjectionTable.tsx:136
+#: apps/erp/app/modules/quality/ui/Actions/ActionsTable.tsx:246
+#: apps/erp/app/modules/quality/ui/Issue/ActionTasksList.tsx:121
+#: apps/erp/app/modules/quality/ui/useQualitySubmodules.tsx:41
+#: apps/erp/app/modules/settings/ui/Integrations/IntegrationForm.tsx:676
+#: apps/erp/app/routes/x+/quality+/actions.tsx:17
 msgid "Actions"
 msgstr "Actions"
 
@@ -233,12 +246,14 @@ msgstr "Activer le centre de travail"
 msgid "Active"
 msgstr "Actif"
 
+#: apps/erp/app/routes/x+/production+/dashboard.tsx:325
 msgid "Active Jobs"
 msgstr "Tâches actives"
 
 msgid "Active Statuses"
 msgstr "Statuts actifs"
 
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:407
 msgid "Active Supplier Quotes"
 msgstr "Devis Fournisseurs Actifs"
 
@@ -422,6 +437,8 @@ msgstr "Tous les journaux d'audit"
 msgid "All changes to auditable entities are being recorded."
 msgstr "Tous les changements apportés aux entités vérifiables sont enregistrés."
 
+#: apps/erp/app/modules/sales/ui/Pricing/PricingRuleForm.tsx:168
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:222
 msgid "All Customers"
 msgstr "Tous les clients"
 
@@ -437,12 +454,15 @@ msgstr "Tous les travaux sont terminés"
 msgid "All members of selected groups and selected individuals will be able to approve requests"
 msgstr "Tous les membres des groupes sélectionnés et les individus sélectionnés pourront approuver les demandes"
 
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:279
 msgid "All Suppliers"
 msgstr "Tous les fournisseurs"
 
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:317
 msgid "All Types"
 msgstr "Tous les types"
 
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:163
 msgid "All Work Centers"
 msgstr "Tous les centres de travail"
 
@@ -886,6 +906,10 @@ msgstr "Assigner aux groupes"
 msgid "Assigned"
 msgstr "Assigné"
 
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:717
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:928
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:683
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:707
 msgid "Assigned to Me"
 msgstr "Assigné à moi"
 
@@ -895,6 +919,8 @@ msgstr "Assignataire"
 msgid "Assignment"
 msgstr "Affectation"
 
+#: apps/erp/app/modules/resources/ui/useResourcesSubmodules.tsx:87
+#: apps/erp/app/routes/x+/resources+/assignments.tsx:47
 msgid "Assignments"
 msgstr "Affectations"
 
@@ -961,6 +987,7 @@ msgstr "Démarrer automatiquement le travail lorsque le kanban est scanné"
 msgid "Available"
 msgstr "Disponible"
 
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:466
 msgid "Avg Days to Close"
 msgstr "Jours moy. pour fermer"
 
@@ -1040,6 +1067,7 @@ msgid "Block, allow override"
 msgstr "Bloquer, autoriser le remplacement"
 
 #. placeholder {0}: workCenter.blockingDispatchReadableId
+#: apps/erp/app/routes/x+/production+/dashboard.tsx:871
 msgid "Blocked by {0}"
 msgstr "Bloqué par {0}"
 
@@ -1115,6 +1143,8 @@ msgstr "État d'étalonnage"
 msgid "Calibration Supplier"
 msgstr "Fournisseur d'étalonnage"
 
+#: apps/erp/app/modules/quality/ui/useQualitySubmodules.tsx:73
+#: apps/erp/app/routes/x+/quality+/calibrations.tsx:17
 msgid "Calibrations"
 msgstr "Étalonnages"
 
@@ -1395,6 +1425,7 @@ msgstr "Quantité Complétée"
 msgid "Completion Barcode"
 msgstr "Code-barres d'achèvement"
 
+#: apps/erp/app/routes/x+/production+/dashboard.tsx:153
 msgid "Completion Time"
 msgstr "Temps d'exécution"
 
@@ -1407,6 +1438,19 @@ msgstr "Paramètres de configuration"
 msgid "Configurator"
 msgstr "Configurateur"
 
+#: apps/erp/app/modules/accounting/ui/useAccountingSubmodules.tsx:77
+#: apps/erp/app/modules/inventory/ui/useInventorySubmodules.tsx:85
+#: apps/erp/app/modules/items/ui/Item/BillOfMaterial.tsx:524
+#: apps/erp/app/modules/items/ui/Item/BillOfProcess.tsx:840
+#: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:98
+#: apps/erp/app/modules/people/ui/usePeopleSubmodules.tsx:38
+#: apps/erp/app/modules/production/ui/Jobs/JobMakeMethodTools.tsx:308
+#: apps/erp/app/modules/production/ui/useProductionSubmodules.tsx:72
+#: apps/erp/app/modules/purchasing/ui/usePurchasingSubmodules.tsx:81
+#: apps/erp/app/modules/quality/ui/useQualitySubmodules.tsx:99
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteLineForm.tsx:507
+#: apps/erp/app/modules/sales/ui/useSalesSubmodules.tsx:70
+#: apps/erp/app/modules/users/ui/useUsersSubmodules.tsx:44
 msgid "Configure"
 msgstr "Configurer"
 
@@ -1522,6 +1566,7 @@ msgstr "Contact (facultatif)"
 msgid "Contacts"
 msgstr "Contacts"
 
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:412
 msgid "Contained"
 msgstr "Contenu"
 
@@ -1942,6 +1987,39 @@ msgstr "Champ personnalisé"
 msgid "Custom Fields"
 msgstr "Champs personnalisés"
 
+#: apps/erp/app/components/Form/Customer.tsx:48
+#: apps/erp/app/components/Layout/Topbar/CreateMenu.tsx:86
+#: apps/erp/app/modules/inventory/ui/Shipments/ShipmentsTable.tsx:243
+#: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoiceForm.tsx:198
+#: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoicesTable.tsx:87
+#: apps/erp/app/modules/items/ui/Item/CustomerPartForm.tsx:67
+#: apps/erp/app/modules/items/ui/Item/CustomerParts/CustomerParts.tsx:41
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:356
+#: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:271
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderDeliveryForm.tsx:160
+#: apps/erp/app/modules/quality/ui/Issue/IssueAssociations.tsx:356
+#: apps/erp/app/modules/sales/ui/Customer/CustomerForm.tsx:61
+#: apps/erp/app/modules/sales/ui/CustomerPortals/CustomerPortalForm.tsx:91
+#: apps/erp/app/modules/sales/ui/CustomerPortals/CustomerPortalsTable.tsx:36
+#: apps/erp/app/modules/sales/ui/Customers/CustomersTable.tsx:327
+#: apps/erp/app/modules/sales/ui/Pricing/DuplicatePriceListModal.tsx:118
+#: apps/erp/app/modules/sales/ui/Pricing/PriceOverrideForm.tsx:174
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteForm.tsx:164
+#: apps/erp/app/modules/sales/ui/Quotes/QuotesTable.tsx:97
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteToOrderDrawer.tsx:939
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderForm.tsx:171
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderShipmentForm.tsx:159
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrdersTable.tsx:141
+#: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQForm.tsx:156
+#: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQsTable.tsx:73
+#: apps/erp/app/modules/users/ui/Customers/CreateCustomerModal.tsx:76
+#: apps/erp/app/modules/users/ui/Customers/CustomerAccountsTable.tsx:150
+#: apps/erp/app/modules/users/ui/Customers/CustomerAccountsTable.tsx:325
+#: apps/erp/app/routes/x+/issue+/$id.tsx:153
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:660
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:732
+#: apps/erp/app/routes/x+/schedule+/dates.tsx:843
+#: apps/erp/app/routes/x+/schedule+/operations.tsx:471
 msgid "Customer"
 msgstr "Client"
 
@@ -2477,6 +2555,7 @@ msgstr "Dépêche"
 msgid "Dispatch ID"
 msgstr "ID de Dispatch"
 
+#: apps/erp/app/modules/resources/ui/useResourcesSubmodules.tsx:36
 msgid "Dispatches"
 msgstr "Expéditions"
 
@@ -2492,9 +2571,15 @@ msgstr "Dispositions"
 msgid "Do you want to overwrite the user's current permissions with the default permissions for this employee type?"
 msgstr "Voulez-vous remplacer les permissions actuelles de l'utilisateur par les permissions par défaut pour ce type d'employé ?"
 
+#: apps/erp/app/modules/quality/ui/Documents/QualityDocumentsTable.tsx:236
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:664
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:815
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:654
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:726
 msgid "Document"
 msgstr "Document"
 
+#: apps/erp/app/modules/quality/ui/useQualitySubmodules.tsx:88
 msgid "Document Control"
 msgstr "Contrôle des documents"
 
@@ -2535,6 +2620,7 @@ msgid "Drop your file here, or click to browse."
 msgstr "Déposez votre fichier ici, ou cliquez pour parcourir."
 
 #. placeholder {0}: formatRelativeTime( convertDateStringToIsoString(dueDate) )
+#: apps/erp/app/routes/x+/production+/dashboard.tsx:966
 msgid "Due {0}"
 msgstr "Échéance {0}"
 
@@ -2970,12 +3056,16 @@ msgstr "Erreur lors de la récupération des données client"
 msgid "Error fetching supplier data"
 msgstr "Erreur lors de la récupération des données du fournisseur"
 
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:692
 msgid "Error loading assigned dispatches"
 msgstr "Erreur lors du chargement des dépannages assignés"
 
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:726
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:716
 msgid "Error loading assigned documents"
 msgstr "Erreur lors du chargement des documents assignés"
 
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:943
 msgid "Error loading assigned issues"
 msgstr "Erreur lors du chargement des problèmes assignés"
 
@@ -3033,6 +3123,7 @@ msgstr "Quantité de rebut estimée"
 msgid "Estimates vs Actual"
 msgstr "Estimations vs Réel"
 
+#: apps/erp/app/routes/x+/production+/dashboard.tsx:152
 msgid "Estimates vs Actuals"
 msgstr "Estimations vs Réalités"
 
@@ -3124,6 +3215,11 @@ msgstr "Traçabilité d'expiration"
 msgid "Export"
 msgstr "Exporter"
 
+#: apps/erp/app/routes/x+/production+/dashboard.tsx:429
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:552
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:541
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:514
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:540
 msgid "Export CSV"
 msgstr "Exporter CSV"
 
@@ -3422,6 +3518,9 @@ msgstr "Échec du téléchargement de la miniature"
 msgid "Failure Mode"
 msgstr "Mode de défaillance"
 
+#: apps/erp/app/modules/resources/ui/FailureModes/FailureModesTable.tsx:102
+#: apps/erp/app/modules/resources/ui/useResourcesSubmodules.tsx:48
+#: apps/erp/app/routes/x+/resources+/failure-modes.tsx:13
 msgid "Failure Modes"
 msgstr "Modes de défaillance"
 
@@ -3568,9 +3667,17 @@ msgstr "Jauge non trouvée"
 msgid "Gauge Type"
 msgstr "Type de jauge"
 
+#: apps/erp/app/modules/quality/ui/GaugeTypes/GaugeTypesTable.tsx:89
+#: apps/erp/app/modules/quality/ui/useQualitySubmodules.tsx:108
+#: apps/erp/app/routes/x+/quality+/gauge-types.tsx:13
 msgid "Gauge Types"
 msgstr "Types de jauge"
 
+#: apps/erp/app/modules/quality/ui/Gauge/GaugesTable.tsx:384
+#: apps/erp/app/modules/quality/ui/useQualitySubmodules.tsx:76
+#: apps/erp/app/routes/x+/quality+/calibrations.$id.tsx:21
+#: apps/erp/app/routes/x+/quality+/gauges.$id.tsx:23
+#: apps/erp/app/routes/x+/quality+/gauges.tsx:13
 msgid "Gauges"
 msgstr "Jauges"
 
@@ -3718,6 +3825,7 @@ msgstr "En cours uniquement"
 msgid "In Progress"
 msgstr "En cours"
 
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:474
 msgid "in selected period"
 msgstr "dans la période sélectionnée"
 
@@ -3730,6 +3838,10 @@ msgstr "Les actions inactives n'apparaîtront pas dans les listes de sélection"
 msgid "Inbound Inspection"
 msgstr "Inspection entrante"
 
+#: apps/erp/app/modules/quality/ui/InboundInspections/InboundInspectionsTable.tsx:173
+#: apps/erp/app/modules/quality/ui/useQualitySubmodules.tsx:65
+#: apps/erp/app/routes/x+/issue+/$id.tsx:168
+#: apps/erp/app/routes/x+/quality+/inbound-inspections.tsx:15
 msgid "Inbound Inspections"
 msgstr "Inspections entrantes"
 
@@ -3796,6 +3908,7 @@ msgstr "Niveau d'inspection"
 msgid "Inspection Status"
 msgstr "Statut d'inspection"
 
+#: apps/erp/app/modules/quality/ui/useQualitySubmodules.tsx:62
 msgid "Inspections"
 msgstr "Inspections"
 
@@ -3907,6 +4020,10 @@ msgstr "est"
 msgid "is any of"
 msgstr "est l'un de"
 
+#: apps/erp/app/components/Layout/Topbar/CreateMenu.tsx:46
+#: apps/erp/app/modules/quality/ui/Actions/ActionsTable.tsx:48
+#: apps/erp/app/modules/quality/ui/Issue/IssuesTable.tsx:338
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:982
 msgid "Issue"
 msgstr "Problème"
 
@@ -3928,24 +4045,40 @@ msgstr "Cible de problèmes"
 msgid "Issue title"
 msgstr "Titre du problème"
 
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:304
 msgid "Issue Trend"
 msgstr "Tendance des problèmes"
 
 msgid "Issue Type"
 msgstr "Type de problème"
 
+#: apps/erp/app/modules/quality/ui/IssueTypes/IssueTypesTable.tsx:89
+#: apps/erp/app/modules/quality/ui/useQualitySubmodules.tsx:113
+#: apps/erp/app/routes/x+/quality+/issue-types.tsx:13
 msgid "Issue Types"
 msgstr "Types de problèmes"
 
 msgid "Issue Workflow"
 msgstr "Flux de travail des problèmes"
 
+#: apps/erp/app/modules/quality/ui/IssueWorkflows/IssueWorkflowsTable.tsx:125
+#: apps/erp/app/modules/quality/ui/useQualitySubmodules.tsx:118
+#: apps/erp/app/routes/x+/issue-workflow+/$id.tsx:27
+#: apps/erp/app/routes/x+/quality+/issue-workflows.tsx:13
 msgid "Issue Workflows"
 msgstr "Flux de travail des problèmes"
 
 msgid "Issued Date"
 msgstr "Date d'émission"
 
+#: apps/erp/app/modules/quality/ui/Issue/IssuesTable.tsx:342
+#: apps/erp/app/modules/quality/ui/useQualitySubmodules.tsx:38
+#: apps/erp/app/modules/quality/ui/useQualitySubmodules.tsx:48
+#: apps/erp/app/routes/x+/issue+/$id.tsx:37
+#: apps/erp/app/routes/x+/issue+/new.tsx:28
+#: apps/erp/app/routes/x+/part+/$itemId.tsx:243
+#: apps/erp/app/routes/x+/quality+/issues.tsx:15
+#: apps/erp/app/routes/x+/tool+/$itemId.tsx:239
 msgid "Issues"
 msgstr "Problèmes"
 
@@ -4015,9 +4148,24 @@ msgstr "Bon de travail"
 msgid "Job traveler PDFs include work instructions."
 msgstr "Les PDF de bon de travail incluent les instructions de travail."
 
+#: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:687
+#: apps/erp/app/modules/production/ui/Schedule/Kanban/ScheuleNavigation.tsx:113
+#: apps/erp/app/modules/production/ui/useProductionSubmodules.tsx:35
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderLineJobs.tsx:122
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrdersTable.tsx:203
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrdersTable.tsx:293
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderSummary.tsx:489
+#: apps/erp/app/routes/x+/job+/$jobId.complete.tsx:14
+#: apps/erp/app/routes/x+/job+/$jobId.tsx:36
+#: apps/erp/app/routes/x+/job+/new.tsx:28
+#: apps/erp/app/routes/x+/part+/$itemId.tsx:249
+#: apps/erp/app/routes/x+/production+/jobs.tsx:17
+#: apps/erp/app/routes/x+/sales-order+/$orderId.$lineId.details.tsx:220
+#: apps/erp/app/routes/x+/tool+/$itemId.tsx:245
 msgid "Jobs"
 msgstr "Travaux"
 
+#: apps/erp/app/routes/x+/production+/dashboard.tsx:354
 msgid "Jobs Assigned to Me"
 msgstr "Tâches qui m'ont été assignées"
 
@@ -4215,6 +4363,13 @@ msgstr "Emplacement"
 msgid "Location Name"
 msgstr "Nom du lieu"
 
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierLocations.tsx:84
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierSidebar/useSupplierSidebar.tsx:46
+#: apps/erp/app/modules/resources/ui/Locations/LocationsTable.tsx:172
+#: apps/erp/app/modules/resources/ui/useResourcesSubmodules.tsx:58
+#: apps/erp/app/modules/sales/ui/Customer/CustomerLocations.tsx:71
+#: apps/erp/app/modules/sales/ui/Customer/CustomerSidebar/useCustomerSidebar.tsx:47
+#: apps/erp/app/routes/x+/resources+/locations.tsx:14
 msgid "Locations"
 msgstr "Emplacements"
 
@@ -4273,6 +4428,13 @@ msgstr "Temps machine"
 msgid "Machine Unit"
 msgstr "Unité de machine"
 
+#: apps/erp/app/components/Layout/Topbar/CreateMenu.tsx:62
+#: apps/erp/app/modules/resources/ui/useResourcesSubmodules.tsx:33
+#: apps/erp/app/routes/x+/maintenance+/$dispatchId.tsx:29
+#: apps/erp/app/routes/x+/maintenance+/new.tsx:20
+#: apps/erp/app/routes/x+/part+/$itemId.tsx:264
+#: apps/erp/app/routes/x+/resources+/maintenance.tsx:17
+#: apps/erp/app/routes/x+/tool+/$itemId.tsx:260
 msgid "Maintenance"
 msgstr "Maintenance"
 
@@ -4326,6 +4488,13 @@ msgstr "Rend ce document actif à nouveau."
 msgid "Makes this document active and visible."
 msgstr "Rend ce document actif et visible."
 
+#: apps/erp/app/modules/accounting/ui/useAccountingSubmodules.tsx:59
+#: apps/erp/app/modules/inventory/ui/useInventorySubmodules.tsx:26
+#: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:28
+#: apps/erp/app/modules/people/ui/usePeopleSubmodules.tsx:20
+#: apps/erp/app/modules/purchasing/ui/usePurchasingSubmodules.tsx:34
+#: apps/erp/app/modules/sales/ui/useSalesSubmodules.tsx:39
+#: apps/erp/app/modules/users/ui/useUsersSubmodules.tsx:13
 msgid "Manage"
 msgstr "Gérer"
 
@@ -4473,9 +4642,11 @@ msgstr "Commande maximale :"
 msgid "MCP Command"
 msgstr "Commande MCP"
 
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:185
 msgid "Mean Time Between Failures"
 msgstr "Temps moyen entre les défaillances"
 
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:184
 msgid "Mean Time To Repair"
 msgstr "Temps Moyen de Réparation"
 
@@ -4645,6 +4816,7 @@ msgstr "Nom"
 msgid "Navigate"
 msgstr "Naviguer"
 
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:307
 msgid "NCRs by Type"
 msgstr "NCRs par type"
 
@@ -4956,6 +5128,8 @@ msgstr "Aucun chat trouvé"
 msgid "No comments yet. Be the first to add a comment."
 msgstr "Aucun commentaire pour le moment. Soyez le premier à ajouter un commentaire."
 
+#: apps/erp/app/routes/x+/production+/dashboard.tsx:161
+#: apps/erp/app/routes/x+/production+/dashboard.tsx:162
 msgid "No completed jobs within range"
 msgstr "Aucun travail terminé dans la plage"
 
@@ -5196,6 +5370,7 @@ msgstr "Oups ! Le lien auquel vous essayez d'accéder n'est pas valide."
 msgid "Open"
 msgstr "Ouvrir"
 
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:439
 msgid "Open Actions"
 msgstr "Actions ouvertes"
 
@@ -5205,33 +5380,42 @@ msgstr "Ouvrir l'historique des conversations"
 msgid "Open Date"
 msgstr "Date d'ouverture"
 
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:369
 msgid "Open Dispatches"
 msgstr "Dépannages Ouverts"
 
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:385
 msgid "Open Issues"
 msgstr "Problèmes ouverts"
 
 msgid "Open menu"
 msgstr "Ouvrir le menu"
 
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:465
 msgid "Open Purchase Invoices"
 msgstr "Factures d'achat ouvertes"
 
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:436
 msgid "Open Purchase Orders"
 msgstr "Commandes d'achat ouvertes"
 
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:424
 msgid "Open Quotes"
 msgstr "Devis Ouverts"
 
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:427
 msgid "Open Reactive"
 msgstr "Réactif Ouvert"
 
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:395
 msgid "Open RFQs"
 msgstr "RFQ ouvertes"
 
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:453
 msgid "Open Sales Orders"
 msgstr "Commandes de vente ouvertes"
 
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:398
 msgid "Open Scheduled"
 msgstr "Planifiés ouverts"
 
@@ -5304,6 +5488,18 @@ msgstr "Commandé"
 msgid "Ordering"
 msgstr "Commande"
 
+#: apps/erp/app/modules/production/ui/Jobs/JobMaterialsTable.tsx:646
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierSidebar/useSupplierSidebar.tsx:94
+#: apps/erp/app/modules/purchasing/ui/usePurchasingSubmodules.tsx:44
+#: apps/erp/app/modules/sales/ui/Customer/CustomerSidebar/useCustomerSidebar.tsx:94
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteLinePricingHistory.tsx:98
+#: apps/erp/app/modules/sales/ui/useSalesSubmodules.tsx:60
+#: apps/erp/app/routes/x+/purchase-order+/$orderId.tsx:50
+#: apps/erp/app/routes/x+/purchase-order+/new.tsx:27
+#: apps/erp/app/routes/x+/purchasing+/orders.tsx:15
+#: apps/erp/app/routes/x+/sales-order+/$orderId.tsx:31
+#: apps/erp/app/routes/x+/sales-order+/new.tsx:17
+#: apps/erp/app/routes/x+/sales+/orders.tsx:15
 msgid "Orders"
 msgstr "Commandes"
 
@@ -5388,6 +5584,7 @@ msgstr "Groupe parent"
 msgid "Parent Storage Unit"
 msgstr "Unité de stockage parent"
 
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:306
 msgid "Pareto by Type"
 msgstr "Pareto par Type"
 
@@ -5511,6 +5708,10 @@ msgstr "Pièces/Minute"
 msgid "Pinned"
 msgstr "Épinglé"
 
+#: apps/erp/app/modules/production/ui/useProductionSubmodules.tsx:50
+#: apps/erp/app/modules/purchasing/ui/usePurchasingSubmodules.tsx:70
+#: apps/erp/app/modules/quality/ui/InboundInspections/InboundInspectionLotView.tsx:181
+#: apps/erp/app/routes/x+/settings+/billing.tsx:216
 msgid "Plan"
 msgstr "Plan"
 
@@ -5529,6 +5730,17 @@ msgstr "Début Prévu"
 msgid "Planned Start Time"
 msgstr "Heure de début prévue"
 
+#: apps/erp/app/modules/items/ui/Consumables/useConsumableNavigation.tsx:54
+#: apps/erp/app/modules/items/ui/Item/ItemPlanningForm.tsx:62
+#: apps/erp/app/modules/items/ui/Materials/useMaterialNavigation.tsx:54
+#: apps/erp/app/modules/items/ui/Parts/usePartNavigation.tsx:59
+#: apps/erp/app/modules/items/ui/Tools/useToolNavigation.tsx:58
+#: apps/erp/app/modules/production/ui/Planning/ProductionPlanningTable.tsx:500
+#: apps/erp/app/modules/production/ui/useProductionSubmodules.tsx:53
+#: apps/erp/app/modules/purchasing/ui/Planning/PurchasingPlanningTable.tsx:580
+#: apps/erp/app/modules/purchasing/ui/usePurchasingSubmodules.tsx:73
+#: apps/erp/app/routes/x+/production+/planning.tsx:22
+#: apps/erp/app/routes/x+/purchasing+/planning.tsx:22
 msgid "Planning"
 msgstr "Planification"
 
@@ -5571,6 +5783,7 @@ msgstr "Politique et Procédure"
 msgid "Portal Link"
 msgstr "Lien du portail"
 
+#: apps/erp/app/modules/sales/ui/useSalesSubmodules.tsx:73
 msgid "Portals"
 msgstr "Portails"
 
@@ -5649,6 +5862,8 @@ msgstr "Tranches de prix"
 msgid "Price List"
 msgstr "Liste de prix"
 
+#: apps/erp/app/modules/sales/ui/Pricing/PriceListScopeEmpty.tsx:22
+#: apps/erp/app/modules/sales/ui/useSalesSubmodules.tsx:84
 msgid "Price Lists"
 msgstr "Listes de prix"
 
@@ -5673,6 +5888,17 @@ msgstr "Imprimer l'étiquette"
 msgid "Priorities"
 msgstr "Priorités"
 
+#: apps/erp/app/modules/quality/ui/Issue/IssueForm.tsx:203
+#: apps/erp/app/modules/quality/ui/Issue/IssueProperties.tsx:371
+#: apps/erp/app/modules/quality/ui/Issue/IssuesTable.tsx:122
+#: apps/erp/app/modules/quality/ui/IssueWorkflows/IssueWorkflowForm.tsx:217
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchesTable.tsx:159
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchForm.tsx:160
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchProperties.tsx:283
+#: apps/erp/app/modules/resources/ui/MaintenanceSchedule/MaintenanceScheduleForm.tsx:179
+#: apps/erp/app/modules/resources/ui/MaintenanceSchedule/MaintenanceSchedulesTable.tsx:161
+#: apps/erp/app/modules/sales/ui/Pricing/PricingRuleForm.tsx:272
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:988
 msgid "Priority"
 msgstr "Priorité"
 
@@ -5685,6 +5911,10 @@ msgstr "Privé"
 msgid "Procedure"
 msgstr "Procédure"
 
+#: apps/erp/app/modules/production/ui/Procedures/ProceduresTable.tsx:228
+#: apps/erp/app/modules/production/ui/useProductionSubmodules.tsx:41
+#: apps/erp/app/routes/x+/procedure+/$id.tsx:31
+#: apps/erp/app/routes/x+/production+/procedures.tsx:14
 msgid "Procedures"
 msgstr "Procédures"
 
@@ -5697,6 +5927,14 @@ msgstr "Nom du processus"
 msgid "Process Type"
 msgstr "Type de processus"
 
+#: apps/erp/app/modules/production/ui/Jobs/JobEstimatesVsActuals.tsx:267
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierSidebar/useSupplierSidebar.tsx:75
+#: apps/erp/app/modules/quality/ui/Issue/IssueTask.tsx:846
+#: apps/erp/app/modules/resources/ui/Processes/ProcessesTable.tsx:316
+#: apps/erp/app/modules/resources/ui/useResourcesSubmodules.tsx:64
+#: apps/erp/app/modules/resources/ui/WorkCenters/WorkCenterForm.tsx:112
+#: apps/erp/app/modules/resources/ui/WorkCenters/WorkCentersTable.tsx:132
+#: apps/erp/app/routes/x+/resources+/processes.tsx:14
 msgid "Processes"
 msgstr "Processus"
 
@@ -5730,6 +5968,10 @@ msgstr "Progression"
 msgid "Project"
 msgstr "Projet"
 
+#: apps/erp/app/modules/items/ui/Item/ItemPlanningChart.tsx:343
+#: apps/erp/app/modules/items/ui/Item/ItemPlanningChart.tsx:360
+#: apps/erp/app/modules/production/ui/useProductionSubmodules.tsx:59
+#: apps/erp/app/routes/x+/production+/projections.tsx:19
 msgid "Projections"
 msgstr "Projections"
 
@@ -5760,18 +6002,22 @@ msgstr "Historique des achats"
 msgid "Purchase Invoice"
 msgstr "Facture d'achat"
 
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:303
 msgid "Purchase Invoice Amount"
 msgstr "Montant de la facture d'achat"
 
 msgid "Purchase Invoice Line"
 msgstr "Ligne de facture d'achat"
 
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoicesTable.tsx:331
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:301
 msgid "Purchase Invoices"
 msgstr "Factures d'achat"
 
 msgid "Purchase Order"
 msgstr "Bon de commande"
 
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:302
 msgid "Purchase Order Amount"
 msgstr "Montant de la commande d'achat"
 
@@ -5790,6 +6036,13 @@ msgstr "Localisation de la commande d'achat"
 msgid "Purchase order removed successfully"
 msgstr "Bon de commande supprimé avec succès"
 
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceHeader.tsx:285
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrdersTable.tsx:463
+#: apps/erp/app/modules/settings/ui/Approvals/ApprovalRules.tsx:51
+#: apps/erp/app/routes/x+/issue+/$id.tsx:119
+#: apps/erp/app/routes/x+/part+/$itemId.tsx:277
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:300
+#: apps/erp/app/routes/x+/tool+/$itemId.tsx:273
 msgid "Purchase Orders"
 msgstr "Bons de commande"
 
@@ -5857,6 +6110,10 @@ msgstr "Qualité"
 msgid "Quality Document approval rule"
 msgstr "Règle d'approbation des documents de qualité"
 
+#: apps/erp/app/modules/quality/ui/Documents/QualityDocumentsTable.tsx:244
+#: apps/erp/app/modules/quality/ui/useQualitySubmodules.tsx:91
+#: apps/erp/app/modules/settings/ui/Approvals/ApprovalRules.tsx:93
+#: apps/erp/app/routes/x+/quality+/documents.tsx:14
 msgid "Quality Documents"
 msgstr "Documents de Qualité"
 
@@ -5938,6 +6195,19 @@ msgstr "Numéro de devis"
 msgid "Quoted Date"
 msgstr "Date de devis"
 
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierSidebar/useSupplierSidebar.tsx:88
+#: apps/erp/app/modules/purchasing/ui/usePurchasingSubmodules.tsx:38
+#: apps/erp/app/modules/sales/ui/Customer/CustomerSidebar/useCustomerSidebar.tsx:88
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteLinePricingHistory.tsx:101
+#: apps/erp/app/modules/sales/ui/Quotes/QuotesTable.tsx:323
+#: apps/erp/app/modules/sales/ui/useSalesSubmodules.tsx:54
+#: apps/erp/app/routes/x+/part+/$itemId.tsx:295
+#: apps/erp/app/routes/x+/quote+/$quoteId.tsx:45
+#: apps/erp/app/routes/x+/quote+/new.tsx:19
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:162
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:244
+#: apps/erp/app/routes/x+/sales+/quotes.tsx:15
+#: apps/erp/app/routes/x+/tool+/$itemId.tsx:291
 msgid "Quotes"
 msgstr "Devis"
 
@@ -6020,6 +6290,10 @@ msgstr "Lieu de réception"
 msgid "Recent"
 msgstr "Récent"
 
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:654
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:908
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:663
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:644
 msgid "Recently Created"
 msgstr "Récemment créé"
 
@@ -6029,6 +6303,7 @@ msgstr "Enregistrer"
 msgid "Record deleted"
 msgstr "Enregistrement supprimé"
 
+#: apps/erp/app/modules/quality/ui/useQualitySubmodules.tsx:81
 msgid "Records"
 msgstr "Enregistrements"
 
@@ -6313,6 +6588,19 @@ msgstr "Localisation RFQ"
 msgid "RFQ Number"
 msgstr "Numéro de RFQ"
 
+#: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQsTable.tsx:269
+#: apps/erp/app/modules/purchasing/ui/usePurchasingSubmodules.tsx:32
+#: apps/erp/app/modules/sales/ui/Customer/CustomerSidebar/useCustomerSidebar.tsx:82
+#: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQsTable.tsx:263
+#: apps/erp/app/modules/sales/ui/useSalesSubmodules.tsx:48
+#: apps/erp/app/routes/x+/purchasing-rfq+/$rfqId.tsx:27
+#: apps/erp/app/routes/x+/purchasing-rfq+/new.tsx:23
+#: apps/erp/app/routes/x+/purchasing+/rfqs.tsx:15
+#: apps/erp/app/routes/x+/sales-rfq+/$rfqId.tsx:32
+#: apps/erp/app/routes/x+/sales-rfq+/new.tsx:19
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:156
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:245
+#: apps/erp/app/routes/x+/sales+/rfqs.tsx:15
 msgid "RFQs"
 msgstr "Appels d'offres"
 
@@ -6403,6 +6691,13 @@ msgstr "Localisation de la commande client"
 msgid "Sales Order Number"
 msgstr "Numéro de commande client"
 
+#: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoiceHeader.tsx:257
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrdersTable.tsx:612
+#: apps/erp/app/routes/x+/issue+/$id.tsx:126
+#: apps/erp/app/routes/x+/part+/$itemId.tsx:311
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:168
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:247
+#: apps/erp/app/routes/x+/tool+/$itemId.tsx:307
 msgid "Sales Orders"
 msgstr "Commandes de vente"
 
@@ -6466,6 +6761,9 @@ msgstr "Scannez l'ID de suivi pour cette ligne"
 msgid "SCAR"
 msgstr "SCAR"
 
+#: apps/erp/app/modules/production/ui/useProductionSubmodules.tsx:65
+#: apps/erp/app/routes/x+/schedule+/dates.tsx:64
+#: apps/erp/app/routes/x+/schedule+/operations.tsx:64
 msgid "Schedule"
 msgstr "Calendrier"
 
@@ -6478,6 +6776,7 @@ msgstr "Maintenance Planifiée"
 msgid "Scheduled Maintenances"
 msgstr "Maintenances Planifiées"
 
+#: apps/erp/app/modules/resources/ui/useResourcesSubmodules.tsx:42
 msgid "Schedules"
 msgstr "Calendriers"
 
@@ -6502,6 +6801,9 @@ msgstr "Quantité de rebut par travail"
 msgid "Scrap Reason"
 msgstr "Raison de rebut"
 
+#: apps/erp/app/modules/production/ui/ScrapReasons/ScrapReasonsTable.tsx:88
+#: apps/erp/app/modules/production/ui/useProductionSubmodules.tsx:75
+#: apps/erp/app/routes/x+/production+/scrap-reasons.tsx:13
 msgid "Scrap Reasons"
 msgstr "Raisons de rebut"
 
@@ -6994,9 +7296,20 @@ msgstr "Trier par"
 msgid "Sort Descending"
 msgstr "Trier par ordre décroissant"
 
+#: apps/erp/app/modules/quality/ui/Issue/IssueForm.tsx:223
+#: apps/erp/app/modules/quality/ui/Issue/IssueProperties.tsx:333
+#: apps/erp/app/modules/quality/ui/Issue/IssuesTable.tsx:142
+#: apps/erp/app/modules/quality/ui/IssueWorkflows/IssueWorkflowForm.tsx:230
+#: apps/erp/app/modules/quality/ui/RiskRegister/RiskRegistersTable.tsx:125
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchesTable.tsx:121
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchForm.tsx:173
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchProperties.tsx:347
+#: apps/erp/app/modules/sales/ui/Pricing/PriceOverridesTable.tsx:225
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:743
 msgid "Source"
 msgstr "Source"
 
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:308
 msgid "Source Analysis"
 msgstr "Analyse des sources"
 
@@ -7021,9 +7334,11 @@ msgstr "Sources"
 msgid "Sourcing Type"
 msgstr "Type d'approvisionnement"
 
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:188
 msgid "Spare Part Consumption"
 msgstr "Consommation de pièces de rechange"
 
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:186
 msgid "Spare Part Cost"
 msgstr "Coût des pièces de rechange"
 
@@ -7105,9 +7420,57 @@ msgstr "État / Province"
 msgid "Statistical acceptance failed, so the entire lot is considered non-conforming (ISO 9001:2015 §8.7). All {0} entities — {passes} sampled pass(es), {fails} failure(s), and {1} un-inspected — will be marked Rejected. An NCR will be opened automatically for MRB disposition."
 msgstr "L'acceptation statistique a échoué, de sorte que l'ensemble du lot est considéré comme non conforme (ISO 9001:2015 §8.7). Toutes les {0} entités — {passes} passage(s) échantillonné(s), {fails} défaillance(s) et {1} non inspectée(s) — seront marquées comme Rejetées. Un NCR sera ouvert automatiquement pour la disposition du MRB."
 
+#: apps/erp/app/modules/inventory/ui/Receipts/ReceiptsTable.tsx:152
+#: apps/erp/app/modules/inventory/ui/Shipments/ShipmentsTable.tsx:162
+#: apps/erp/app/modules/inventory/ui/StockTransfers/StockTransfersTable.tsx:95
+#: apps/erp/app/modules/inventory/ui/Traceability/TrackedEntitiesTable.tsx:122
+#: apps/erp/app/modules/inventory/ui/WarehouseTransfers/WarehouseTransfersTable.tsx:70
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoicesTable.tsx:135
+#: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoicesTable.tsx:129
+#: apps/erp/app/modules/items/ui/ItemRules/ItemRuleAssignments.tsx:160
+#: apps/erp/app/modules/items/ui/ItemRules/ItemRulesTable.tsx:78
+#: apps/erp/app/modules/people/ui/Timecards/TimecardsTable.tsx:142
+#: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:315
+#: apps/erp/app/modules/production/ui/Planning/ProductionPlanningOrderDrawer.tsx:374
+#: apps/erp/app/modules/production/ui/Procedures/ProcedureProperties.tsx:174
+#: apps/erp/app/modules/production/ui/Procedures/ProceduresTable.tsx:92
+#: apps/erp/app/modules/purchasing/ui/Planning/PurchasingPlanningOrderDrawer.tsx:621
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrdersTable.tsx:129
+#: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQsTable.tsx:102
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierHeader.tsx:241
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuotesTable.tsx:105
+#: apps/erp/app/modules/quality/ui/Documents/QualityDocumentProperties.tsx:202
+#: apps/erp/app/modules/quality/ui/Documents/QualityDocumentsTable.tsx:84
+#: apps/erp/app/modules/quality/ui/Gauge/GaugesTable.tsx:194
+#: apps/erp/app/modules/quality/ui/InboundInspections/InboundInspectionsTable.tsx:133
+#: apps/erp/app/modules/quality/ui/Issue/AssociatedItemsList.tsx:383
+#: apps/erp/app/modules/quality/ui/Issue/IssuesTable.tsx:83
+#: apps/erp/app/modules/quality/ui/RiskRegister/RiskRegisterForm.tsx:169
+#: apps/erp/app/modules/quality/ui/RiskRegister/RiskRegistersTable.tsx:140
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchesTable.tsx:139
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchProperties.tsx:204
+#: apps/erp/app/modules/resources/ui/MaintenanceSchedule/MaintenanceSchedulesTable.tsx:192
+#: apps/erp/app/modules/resources/ui/Training/TrainingAssignmentForm.tsx:378
+#: apps/erp/app/modules/resources/ui/Training/TrainingProperties.tsx:188
+#: apps/erp/app/modules/resources/ui/Training/TrainingsTable.tsx:62
+#: apps/erp/app/modules/sales/ui/Customer/CustomerHeader.tsx:130
+#: apps/erp/app/modules/sales/ui/Customers/CustomersTable.tsx:88
+#: apps/erp/app/modules/sales/ui/Quotes/QuotesTable.tsx:115
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrdersTable.tsx:158
+#: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQsTable.tsx:90
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:667
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:818
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:985
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:740
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:657
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:729
+#: apps/erp/app/routes/x+/schedule+/dates.tsx:848
+#: apps/erp/app/routes/x+/schedule+/operations.tsx:476
+#: apps/erp/app/routes/x+/settings+/billing.tsx:224
 msgid "Status"
 msgstr "Statut"
 
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:305
 msgid "Status Distribution"
 msgstr "Distribution du statut"
 
@@ -7222,6 +7585,9 @@ msgstr "Suggestion"
 msgid "Suggestion Notifications"
 msgstr "Notifications de suggestions"
 
+#: apps/erp/app/modules/resources/ui/Suggestions/SuggestionsTable.tsx:157
+#: apps/erp/app/modules/resources/ui/useResourcesSubmodules.tsx:92
+#: apps/erp/app/routes/x+/resources+/suggestions.tsx:15
 msgid "Suggestions"
 msgstr "Suggestions"
 
@@ -7234,6 +7600,37 @@ msgstr "Supabase fournit une large gamme de filtres."
 msgid "Supabase provides realtime functionality and broadcasts database changes to authorized users depending on Row Level Security (RLS) policies."
 msgstr "Supabase fournit une fonctionnalité en temps réel et diffuse les modifications de la base de données aux utilisateurs autorisés en fonction des politiques de sécurité au niveau des lignes (RLS)."
 
+#: apps/erp/app/components/Layout/Topbar/CreateMenu.tsx:78
+#: apps/erp/app/modules/inventory/ui/Kanbans/KanbanForm.tsx:241
+#: apps/erp/app/modules/inventory/ui/Kanbans/KanbansTable.tsx:413
+#: apps/erp/app/modules/inventory/ui/Receipts/ReceiptsTable.tsx:213
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceForm.tsx:200
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoicesTable.tsx:93
+#: apps/erp/app/modules/items/ui/Item/BillOfProcess.tsx:1193
+#: apps/erp/app/modules/items/ui/Item/ItemCostHistoryChart.tsx:301
+#: apps/erp/app/modules/items/ui/Item/SupplierPartForm.tsx:179
+#: apps/erp/app/modules/items/ui/Item/SupplierParts/SupplierParts.tsx:45
+#: apps/erp/app/modules/production/ui/Jobs/JobBillOfProcess.tsx:2358
+#: apps/erp/app/modules/purchasing/ui/Planning/PurchasingPlanningOrderDrawer.tsx:338
+#: apps/erp/app/modules/purchasing/ui/Planning/PurchasingPlanningTable.tsx:336
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderForm.tsx:155
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrdersTable.tsx:112
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierProcessForm.tsx:113
+#: apps/erp/app/modules/purchasing/ui/Supplier/SuppliersTable.tsx:307
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteForm.tsx:157
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuotesTable.tsx:87
+#: apps/erp/app/modules/quality/ui/Issue/IssueAssociations.tsx:365
+#: apps/erp/app/modules/quality/ui/Issue/IssueTask.tsx:224
+#: apps/erp/app/modules/resources/ui/Contractors/ContractorForm.tsx:87
+#: apps/erp/app/modules/resources/ui/Contractors/ContractorsTable.tsx:51
+#: apps/erp/app/modules/resources/ui/Partners/PartnersTable.tsx:32
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteBillOfProcess.tsx:2025
+#: apps/erp/app/modules/users/ui/Suppliers/CreateSupplierModal/CreateSupplierModal.tsx:76
+#: apps/erp/app/modules/users/ui/Suppliers/SupplierAccountsTable/SuppliersAccountsTable.tsx:146
+#: apps/erp/app/modules/users/ui/Suppliers/SupplierAccountsTable/SuppliersAccountsTable.tsx:321
+#: apps/erp/app/routes/x+/issue+/$id.tsx:160
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:670
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:821
 msgid "Supplier"
 msgstr "Fournisseur"
 
@@ -7273,6 +7670,7 @@ msgstr "Pièces du fournisseur"
 msgid "Supplier Processes"
 msgstr "Processus Fournisseur"
 
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:309
 msgid "Supplier Quality"
 msgstr "Qualité des fournisseurs"
 
@@ -7285,6 +7683,12 @@ msgstr "ID de devis fournisseur"
 msgid "Supplier Quote Notifications"
 msgstr "Notifications de devis fournisseur"
 
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuotesTable.tsx:261
+#: apps/erp/app/routes/x+/part+/$itemId.tsx:326
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:299
+#: apps/erp/app/routes/x+/purchasing+/quotes.tsx:15
+#: apps/erp/app/routes/x+/supplier-quote+/$id.tsx:30
+#: apps/erp/app/routes/x+/tool+/$itemId.tsx:322
 msgid "Supplier Quotes"
 msgstr "Devis Fournisseurs"
 
@@ -7315,6 +7719,21 @@ msgstr "Fournisseur mis à jour"
 msgid "Supplier:"
 msgstr "Fournisseur :"
 
+#: apps/erp/app/modules/purchasing/ui/Planning/PurchasingPlanningOrderDrawer.tsx:326
+#: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQForm.tsx:83
+#: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQProperties.tsx:221
+#: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQsTable.tsx:66
+#: apps/erp/app/modules/purchasing/ui/Supplier/SuppliersTable.tsx:292
+#: apps/erp/app/modules/purchasing/ui/Supplier/SuppliersTable.tsx:312
+#: apps/erp/app/modules/purchasing/ui/usePurchasingSubmodules.tsx:37
+#: apps/erp/app/modules/resources/ui/Processes/ProcessesTable.tsx:149
+#: apps/erp/app/modules/resources/ui/Processes/ProcessForm.tsx:188
+#: apps/erp/app/modules/settings/ui/Approvals/ApprovalRules.tsx:138
+#: apps/erp/app/routes/x+/issue+/$id.tsx:161
+#: apps/erp/app/routes/x+/purchasing+/suppliers.tsx:16
+#: apps/erp/app/routes/x+/supplier+/$supplierId.tsx:22
+#: apps/erp/app/routes/x+/supplier+/new.tsx:16
+#: apps/erp/app/routes/x+/users+/suppliers.tsx:19
 msgid "Suppliers"
 msgstr "Fournisseurs"
 
@@ -7659,6 +8078,12 @@ msgstr "ID Outil"
 msgid "Tools"
 msgstr "Outils"
 
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceSummary.tsx:327
+#: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoiceSummary.tsx:312
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteSummary.tsx:637
+#: apps/erp/app/routes/share+/quote.$id.tsx:885
+#: apps/erp/app/routes/share+/quote.$id.tsx:1288
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:652
 msgid "Total"
 msgstr "Total"
 
@@ -7725,6 +8150,13 @@ msgstr "Type de suivi"
 msgid "Tracking URL"
 msgstr "URL de suivi"
 
+#: apps/erp/app/modules/resources/ui/Training/TrainingAssignmentForm.tsx:454
+#: apps/erp/app/modules/resources/ui/Training/TrainingsTable.tsx:216
+#: apps/erp/app/modules/resources/ui/Training/TrainingsTable.tsx:220
+#: apps/erp/app/modules/resources/ui/useResourcesSubmodules.tsx:81
+#: apps/erp/app/routes/x+/resources+/assignments.tsx:105
+#: apps/erp/app/routes/x+/resources+/training.tsx:15
+#: apps/erp/app/routes/x+/training+/$id.tsx:33
 msgid "Training"
 msgstr "Formation"
 
@@ -8039,18 +8471,28 @@ msgstr "Versions"
 msgid "via Digital Quote"
 msgstr "via Devis Numérique"
 
+#: apps/erp/app/components/Documents.tsx:340
+#: apps/erp/app/modules/items/ui/Item/ItemDocuments.tsx:150
+#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:445
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:515
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:401
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:428
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:455
 msgid "View"
 msgstr "Afficher"
 
+#: apps/erp/app/routes/x+/production+/dashboard.tsx:343
 msgid "View Active Jobs"
 msgstr "Afficher les tâches actives"
 
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:425
 msgid "View Active Quotes"
 msgstr "Afficher les devis actifs"
 
 msgid "View All"
 msgstr "Afficher tout"
 
+#: apps/erp/app/routes/x+/production+/dashboard.tsx:369
 msgid "View Assigned Jobs"
 msgstr "Afficher les tâches assignées"
 
@@ -8084,24 +8526,32 @@ msgstr "Afficher le problème"
 msgid "View Item Master"
 msgstr "Afficher la fiche article"
 
+#: apps/erp/app/modules/production/ui/Schedule/Kanban/components/ColumnCard.tsx:135
+#: apps/erp/app/routes/x+/production+/dashboard.tsx:879
 msgid "View maintenance dispatch"
 msgstr "Afficher la dépêche de maintenance"
 
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:387
 msgid "View Open"
 msgstr "Afficher les ouvertes"
 
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:483
 msgid "View Open Invoices"
 msgstr "Afficher les factures ouvertes"
 
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:471
 msgid "View Open Orders"
 msgstr "Afficher les commandes ouvertes"
 
+#: apps/erp/app/routes/x+/purchasing+/dashboard.tsx:454
 msgid "View Open POs"
 msgstr "Afficher les bons de commande ouverts"
 
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:442
 msgid "View Open Quotes"
 msgstr "Afficher les devis ouverts"
 
+#: apps/erp/app/routes/x+/sales+/dashboard.tsx:413
 msgid "View Open RFQs"
 msgstr "Afficher les demandes de devis ouvertes"
 
@@ -8114,12 +8564,14 @@ msgstr "Afficher les événements de production"
 msgid "View Purchase Invoice"
 msgstr "Afficher la facture d'achat"
 
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:445
 msgid "View Reactive"
 msgstr "Afficher Réactif"
 
 msgid "View Receipt"
 msgstr "Afficher le reçu"
 
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:416
 msgid "View Scheduled"
 msgstr "Afficher planifiés"
 
@@ -8249,6 +8701,7 @@ msgstr "Site web"
 msgid "Wednesday"
 msgstr "Mercredi"
 
+#: apps/erp/app/routes/x+/quality+/dashboard.tsx:310
 msgid "Weeks Open"
 msgstr "Semaines ouvertes"
 
@@ -8321,12 +8774,35 @@ msgstr "Wordmark Mode Sombre"
 msgid "Wordmark Light Mode"
 msgstr "Wordmark Mode Clair"
 
+#: apps/erp/app/modules/items/ui/Item/BillOfProcess.tsx:1246
+#: apps/erp/app/modules/items/ui/Item/BillOfProcess.tsx:1254
+#: apps/erp/app/modules/production/ui/Jobs/JobBillOfProcess.tsx:2415
+#: apps/erp/app/modules/production/ui/Jobs/ProductionEventForm.tsx:99
+#: apps/erp/app/modules/production/ui/Jobs/ProductionEventsTable.tsx:132
+#: apps/erp/app/modules/quality/ui/RiskRegister/RiskRegistersTable.tsx:187
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchesTable.tsx:90
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchExplorer.tsx:451
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchExplorer.tsx:522
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchForm.tsx:187
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchProperties.tsx:254
+#: apps/erp/app/modules/resources/ui/MaintenanceSchedule/MaintenanceScheduleForm.tsx:167
+#: apps/erp/app/modules/resources/ui/MaintenanceSchedule/MaintenanceSchedulesTable.tsx:109
+#: apps/erp/app/modules/resources/ui/WorkCenters/WorkCentersTable.tsx:106
+#: apps/erp/app/modules/resources/ui/WorkCenters/WorkCentersTable.tsx:322
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteBillOfProcess.tsx:2082
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:746
 msgid "Work Center"
 msgstr "Centre de travail"
 
+#: apps/erp/app/routes/x+/production+/dashboard.tsx:151
 msgid "Work Center Utilization"
 msgstr "Utilisation du centre de travail"
 
+#: apps/erp/app/modules/resources/ui/Processes/ProcessesTable.tsx:102
+#: apps/erp/app/modules/resources/ui/Processes/ProcessForm.tsx:142
+#: apps/erp/app/modules/resources/ui/useResourcesSubmodules.tsx:70
+#: apps/erp/app/modules/resources/ui/WorkCenters/WorkCentersTable.tsx:326
+#: apps/erp/app/routes/x+/resources+/work-centers.tsx:18
 msgid "Work Centers"
 msgstr "Centres de travail"
 
@@ -8348,6 +8824,7 @@ msgstr "Le suivi des quarts de travail est actif."
 msgid "Workflow"
 msgstr "Flux de travail"
 
+#: apps/erp/app/routes/x+/resources+/dashboard.tsx:187
 msgid "Worst Performing Machines"
 msgstr "Machines les plus défaillantes"
 
