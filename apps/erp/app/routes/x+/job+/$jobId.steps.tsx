@@ -37,7 +37,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   if (stepRecords.error) {
     redirect(
-      path.to.production,
+      path.to.productionDashboard,
       await flash(
         request,
         error(stepRecords.error, "Failed to fetch job operation step records")

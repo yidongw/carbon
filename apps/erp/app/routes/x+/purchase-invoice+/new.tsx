@@ -21,7 +21,7 @@ import { path } from "~/utils/path";
 
 export const handle: Handle = {
   breadcrumb: msg`Purchasing`,
-  to: path.to.purchasing,
+  to: path.to.purchasingDashboard,
   module: "purchasing"
 };
 

@@ -54,7 +54,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   if (materials.error) {
     redirect(
-      path.to.production,
+      path.to.productionDashboard,
       await flash(
         request,
         error(materials.error, "Failed to fetch job materials")
