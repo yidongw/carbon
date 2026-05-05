@@ -39,7 +39,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   if (storageTypes.error) {
     console.error(storageTypes.error);
     throw redirect(
-      path.to.inventory,
+      path.to.inventoryQuantities,
       await flash(request, error(null, "Error loading storage types"))
     );
   }

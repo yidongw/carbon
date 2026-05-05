@@ -38,7 +38,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   if (materials.error) {
     redirect(
-      path.to.production,
+      path.to.productionDashboard,
       await flash(
         request,
         error(materials.error, "Failed to fetch method materials")

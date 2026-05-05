@@ -47,7 +47,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   if (suppliers.error) {
     redirect(
-      path.to.purchasing,
+      path.to.purchasingDashboard,
       await flash(request, error(suppliers.error, "Failed to fetch suppliers"))
     );
   }

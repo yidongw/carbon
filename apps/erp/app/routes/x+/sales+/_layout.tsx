@@ -14,7 +14,7 @@ export const meta: MetaFunction = () => {
 
 export const handle: Handle = {
   breadcrumb: msg`Sales`,
-  to: path.to.sales,
+  to: path.to.salesDashboard,
   module: "sales"
 };
 

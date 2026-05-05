@@ -45,7 +45,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   if (contractors.error) {
     throw redirect(
-      path.to.resources,
+      path.to.resourcesDashboard,
       await flash(
         request,
         error(contractors.error, "Failed to load contractors")

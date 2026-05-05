@@ -2,6 +2,7 @@ import { useLingui } from "@lingui/react/macro";
 import {
   LuChartLine,
   LuCirclePlay,
+  LuLayoutDashboard,
   LuListChecks,
   LuSquareChartGantt,
   LuSquareKanban,
@@ -17,6 +18,16 @@ export default function useProductionSubmodules() {
   const permissions = usePermissions();
 
   const productionRoutes: AuthenticatedRouteGroup[] = [
+    {
+      name: t`Dashboard`,
+      routes: [
+        {
+          name: t`Dashboard`,
+          to: path.to.productionDashboard,
+          icon: <LuLayoutDashboard />
+        }
+      ]
+    },
     {
       name: t`Production`,
       routes: [
