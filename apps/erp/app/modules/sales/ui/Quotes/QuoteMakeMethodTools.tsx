@@ -279,7 +279,7 @@ const QuoteMakeMethodTools = () => {
                 {itemLink && (
                   <MenubarItem leftIcon={<LuGitFork />} asChild>
                     <Link prefetch="intent" to={itemLink}>
-                      Item Master
+                      <Trans>Item Master</Trans>
                     </Link>
                   </MenubarItem>
                 )}
