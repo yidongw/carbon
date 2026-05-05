@@ -964,6 +964,9 @@ msgstr "उपलब्ध"
 msgid "Avg Days to Close"
 msgstr "बंद करने के लिए औसत दिन"
 
+#: apps/erp/app/components/Layout/Topbar/Topbar.tsx:31
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteCompareDrawer.tsx:197
+#: apps/erp/app/routes/onboarding+/plan.tsx:272
 msgid "Back"
 msgstr "वापस"
 
@@ -1266,6 +1269,18 @@ msgstr "घड़ी बंद करें"
 msgid "Clocked in since {0}"
 msgstr "{0} से घड़ी में है"
 
+#: apps/erp/app/components/Layout/Topbar/Search.tsx:396
+#: apps/erp/app/components/TrainingPanel.tsx:45
+#: apps/erp/app/modules/inventory/ui/StockTransfers/StockTransferWizard.tsx:1301
+#: apps/erp/app/modules/production/ui/Jobs/JobMaterialsTable.tsx:616
+#: apps/erp/app/modules/purchasing/ui/Planning/PurchasingPlanningOrderDrawer.tsx:760
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteHeader.tsx:551
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteSendModal.tsx:87
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteSendModal.tsx:178
+#: apps/erp/app/modules/quality/ui/InboundInspections/ScanInspectionSample.tsx:230
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteHeader.tsx:548
+#: apps/erp/app/modules/settings/ui/ApiKeys/ApiKeysForm.tsx:244
+#: apps/erp/app/modules/settings/ui/Integrations/IntegrationForm.tsx:721
 msgid "Close"
 msgstr "बंद करें"
 
@@ -1705,6 +1720,17 @@ msgstr "दस्तावेज़ लोड नहीं हो सके"
 msgid "Country"
 msgstr "देश"
 
+#: apps/erp/app/components/Chat/ChatWidgets.tsx:44
+#: apps/erp/app/components/Form/Item.tsx:380
+#: apps/erp/app/components/Form/Items.tsx:123
+#: apps/erp/app/components/Layout/Topbar/Topbar.tsx:55
+#: apps/erp/app/modules/documents/ui/Documents/DocumentsTable.tsx:597
+#: apps/erp/app/modules/inventory/ui/Kanbans/KanbansTable.tsx:167
+#: apps/erp/app/modules/inventory/ui/Kanbans/KanbansTable.tsx:244
+#: apps/erp/app/modules/items/ui/Item/UsedIn.tsx:227
+#: apps/erp/app/modules/production/ui/Jobs/JobMaterialsTable.tsx:752
+#: apps/erp/app/modules/quality/ui/Issue/Jira/CreateIssue.tsx:121
+#: apps/erp/app/modules/quality/ui/Issue/Linear/CreateIssue.tsx:100
 msgid "Create"
 msgstr "बनाएं"
 
@@ -3941,6 +3967,9 @@ msgstr "आइटम समूह"
 msgid "Item ID"
 msgstr "आइटम आईडी"
 
+#: apps/erp/app/modules/items/ui/Item/MakeMethodTools.tsx:241
+#: apps/erp/app/modules/production/ui/Jobs/JobMakeMethodTools.tsx:314
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteMakeMethodTools.tsx:282
 msgid "Item Master"
 msgstr "आइटम मास्टर"
 
@@ -4611,6 +4640,8 @@ msgstr "मेरा सहेजा गया दृश्य"
 msgid "Name"
 msgstr "नाम"
 
+#: apps/erp/app/components/Gantt/Gantt.tsx:809
+#: apps/erp/app/components/Layout/Topbar/Search.tsx:384
 msgid "Navigate"
 msgstr "नेविगेट करें"
 
@@ -5983,6 +6014,9 @@ msgstr "प्राप्त मात्रा"
 msgid "Receiving Location"
 msgstr "प्राप्ति स्थान"
 
+#: apps/erp/app/components/Layout/Topbar/Search.tsx:224
+#: apps/erp/app/modules/documents/ui/useDocumentsSubmodules.tsx:28
+#: apps/erp/app/routes/x+/traceability+/_index.tsx:193
 msgid "Recent"
 msgstr "हाल ही में"
 
@@ -6211,6 +6245,7 @@ msgstr "ट्रैक किए गए इकाइयों को उपल�
 msgid "Result"
 msgstr "परिणाम"
 
+#: apps/erp/app/components/Layout/Topbar/Search.tsx:286
 msgid "Results"
 msgstr "परिणाम"
 
@@ -6470,9 +6505,18 @@ msgstr "स्क्रैप कारण"
 msgid "Scrap Reasons"
 msgstr "स्क्रैप कारण"
 
+#: apps/erp/app/components/Chat/ChatWidgets.tsx:33
+#: apps/erp/app/components/Layout/Topbar/Search.tsx:468
+#: apps/erp/app/components/Table/components/TableHeader.tsx:297
+#: apps/erp/app/modules/inventory/ui/StockTransfers/StockTransferWizard.tsx:1005
+#: apps/erp/app/modules/items/ui/Item/ItemPlanningChart.tsx:554
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteExplorer.tsx:467
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderExplorer.tsx:369
+#: apps/erp/app/modules/settings/ui/Integrations/IntegrationsList.tsx:75
 msgid "Search"
 msgstr "खोज"
 
+#: apps/erp/app/components/Layout/Topbar/Search.tsx:203
 msgid "Search across your workspace..."
 msgstr "अपने कार्यक्षेत्र में खोजें..."
 
@@ -6525,6 +6569,17 @@ msgstr "खोजें..."
 msgid "Seconds/Piece"
 msgstr "सेकंड/पीस"
 
+#: apps/erp/app/components/Form/Customer.tsx:49
+#: apps/erp/app/components/Form/CustomerLocation.tsx:85
+#: apps/erp/app/components/Layout/Topbar/Search.tsx:390
+#: apps/erp/app/modules/purchasing/ui/Planning/PurchasingPlanningOrderDrawer.tsx:396
+#: apps/erp/app/modules/quality/ui/InboundInspections/ScanInspectionSample.tsx:129
+#: apps/erp/app/modules/quality/ui/InboundInspections/ScanInspectionSample.tsx:204
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceAddPartModal.tsx:382
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceAddPartModal.tsx:502
+#: packages/react/src/Combobox.tsx:148
+#: packages/react/src/CreateableCombobox.tsx:157
+#: packages/react/src/MultiSelect.tsx:178
 msgid "Select"
 msgstr "चुनें"
 

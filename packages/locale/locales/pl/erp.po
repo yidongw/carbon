@@ -965,6 +965,9 @@ msgstr "Dostępne"
 msgid "Avg Days to Close"
 msgstr "Średnia liczba dni do zamknięcia"
 
+#: apps/erp/app/components/Layout/Topbar/Topbar.tsx:31
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteCompareDrawer.tsx:197
+#: apps/erp/app/routes/onboarding+/plan.tsx:272
 msgid "Back"
 msgstr "Wstecz"
 
@@ -1267,6 +1270,18 @@ msgstr "Wyloguj się"
 msgid "Clocked in since {0}"
 msgstr "Zalogowany od {0}"
 
+#: apps/erp/app/components/Layout/Topbar/Search.tsx:396
+#: apps/erp/app/components/TrainingPanel.tsx:45
+#: apps/erp/app/modules/inventory/ui/StockTransfers/StockTransferWizard.tsx:1301
+#: apps/erp/app/modules/production/ui/Jobs/JobMaterialsTable.tsx:616
+#: apps/erp/app/modules/purchasing/ui/Planning/PurchasingPlanningOrderDrawer.tsx:760
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteHeader.tsx:551
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteSendModal.tsx:87
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteSendModal.tsx:178
+#: apps/erp/app/modules/quality/ui/InboundInspections/ScanInspectionSample.tsx:230
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteHeader.tsx:548
+#: apps/erp/app/modules/settings/ui/ApiKeys/ApiKeysForm.tsx:244
+#: apps/erp/app/modules/settings/ui/Integrations/IntegrationForm.tsx:721
 msgid "Close"
 msgstr "Zamknij"
 
@@ -1706,6 +1721,17 @@ msgstr "Nie udało się załadować dokumentów"
 msgid "Country"
 msgstr "Kraj"
 
+#: apps/erp/app/components/Chat/ChatWidgets.tsx:44
+#: apps/erp/app/components/Form/Item.tsx:380
+#: apps/erp/app/components/Form/Items.tsx:123
+#: apps/erp/app/components/Layout/Topbar/Topbar.tsx:55
+#: apps/erp/app/modules/documents/ui/Documents/DocumentsTable.tsx:597
+#: apps/erp/app/modules/inventory/ui/Kanbans/KanbansTable.tsx:167
+#: apps/erp/app/modules/inventory/ui/Kanbans/KanbansTable.tsx:244
+#: apps/erp/app/modules/items/ui/Item/UsedIn.tsx:227
+#: apps/erp/app/modules/production/ui/Jobs/JobMaterialsTable.tsx:752
+#: apps/erp/app/modules/quality/ui/Issue/Jira/CreateIssue.tsx:121
+#: apps/erp/app/modules/quality/ui/Issue/Linear/CreateIssue.tsx:100
 msgid "Create"
 msgstr "Utwórz"
 
@@ -3942,6 +3968,9 @@ msgstr "Grupy Pozycji"
 msgid "Item ID"
 msgstr "ID Przedmiotu"
 
+#: apps/erp/app/modules/items/ui/Item/MakeMethodTools.tsx:241
+#: apps/erp/app/modules/production/ui/Jobs/JobMakeMethodTools.tsx:314
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteMakeMethodTools.tsx:282
 msgid "Item Master"
 msgstr "Główny element"
 
@@ -4612,6 +4641,8 @@ msgstr "Mój zapisany widok"
 msgid "Name"
 msgstr "Nazwa"
 
+#: apps/erp/app/components/Gantt/Gantt.tsx:809
+#: apps/erp/app/components/Layout/Topbar/Search.tsx:384
 msgid "Navigate"
 msgstr "Nawiguj"
 
@@ -5984,6 +6015,9 @@ msgstr "Otrzymana Ilość"
 msgid "Receiving Location"
 msgstr "Lokalizacja odbioru"
 
+#: apps/erp/app/components/Layout/Topbar/Search.tsx:224
+#: apps/erp/app/modules/documents/ui/useDocumentsSubmodules.tsx:28
+#: apps/erp/app/routes/x+/traceability+/_index.tsx:193
 msgid "Recent"
 msgstr "Ostatnie"
 
@@ -6212,6 +6246,7 @@ msgstr "Przywróć śledzone jednostki do dostępnych"
 msgid "Result"
 msgstr "Wynik"
 
+#: apps/erp/app/components/Layout/Topbar/Search.tsx:286
 msgid "Results"
 msgstr "Wyniki"
 
@@ -6471,9 +6506,18 @@ msgstr "Przyczyna złomu"
 msgid "Scrap Reasons"
 msgstr "Przyczyny złomu"
 
+#: apps/erp/app/components/Chat/ChatWidgets.tsx:33
+#: apps/erp/app/components/Layout/Topbar/Search.tsx:468
+#: apps/erp/app/components/Table/components/TableHeader.tsx:297
+#: apps/erp/app/modules/inventory/ui/StockTransfers/StockTransferWizard.tsx:1005
+#: apps/erp/app/modules/items/ui/Item/ItemPlanningChart.tsx:554
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteExplorer.tsx:467
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderExplorer.tsx:369
+#: apps/erp/app/modules/settings/ui/Integrations/IntegrationsList.tsx:75
 msgid "Search"
 msgstr "Szukaj"
 
+#: apps/erp/app/components/Layout/Topbar/Search.tsx:203
 msgid "Search across your workspace..."
 msgstr "Szukaj w calym obszarze roboczym..."
 
@@ -6526,6 +6570,17 @@ msgstr "Szukaj..."
 msgid "Seconds/Piece"
 msgstr "Sekundy/Sztuka"
 
+#: apps/erp/app/components/Form/Customer.tsx:49
+#: apps/erp/app/components/Form/CustomerLocation.tsx:85
+#: apps/erp/app/components/Layout/Topbar/Search.tsx:390
+#: apps/erp/app/modules/purchasing/ui/Planning/PurchasingPlanningOrderDrawer.tsx:396
+#: apps/erp/app/modules/quality/ui/InboundInspections/ScanInspectionSample.tsx:129
+#: apps/erp/app/modules/quality/ui/InboundInspections/ScanInspectionSample.tsx:204
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceAddPartModal.tsx:382
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceAddPartModal.tsx:502
+#: packages/react/src/Combobox.tsx:148
+#: packages/react/src/CreateableCombobox.tsx:157
+#: packages/react/src/MultiSelect.tsx:178
 msgid "Select"
 msgstr "Wybierz"
 
