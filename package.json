@@ -70,7 +70,7 @@
     "lint": "turbo run lint",
     "lingui:check": "npm run lingui:extract && npm run lingui:compile",
     "lingui:compile": "lingui compile --namespace es",
-    "lingui:extract": "lingui extract --clean",
+    "lingui:extract": "tsx scripts/gen-seed-display-names.ts && lingui extract --clean",
     "novu:sync": "npx novu@latest sync --bridge-url https://app.carbon.ms/api/novu --secret-key $NOVU_SECRET_KEY --api-url https://api.novu.co",
     "postdb:build": "run-s generate:types generate:swagger",
     "postinstall": "patch-package",
