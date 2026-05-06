@@ -1,12 +1,14 @@
 import type { ComboboxProps } from "@carbon/form";
 import { CreatableCombobox } from "@carbon/form";
 import { useDisclosure, useMount } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import { useMemo, useRef, useState } from "react";
 import { useFetcher } from "react-router";
 import { Enumerable } from "~/components/Enumerable";
 import type { getCustomerTypesList } from "~/modules/sales";
 import { CustomerTypeForm } from "~/modules/sales/ui/CustomerTypes";
 import { path } from "~/utils/path";
+import { translateSeedDisplayName } from "~/utils/seedDataDisplayName";
 
 type CustomerTypeSelectProps = Omit<ComboboxProps, "options"> & {
   exclude?: string[];
@@ -59,6 +61,7 @@ CustomerType.displayName = "CustomerType";
 export default CustomerType;
 
 export const useCustomerTypes = () => {
+  const { i18n } = useLingui();
   const customerTypeFetcher =
     useFetcher<Awaited<ReturnType<typeof getCustomerTypesList>>>();
 
@@ -71,9 +74,9 @@ export const useCustomerTypes = () => {
 
     return dataSource.map((c) => ({
       value: c.id,
-      label: c.name
+      label: translateSeedDisplayName(c.name, i18n)
     }));
-  }, [customerTypeFetcher.data?.data]);
+  }, [customerTypeFetcher.data?.data, i18n]);
 
   return options;
 };
