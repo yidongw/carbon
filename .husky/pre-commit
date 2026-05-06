@@ -16,6 +16,7 @@ if git diff --cached --name-only | grep -qE '\.(tsx?|jsx?)$|\.po$'; then
     
     # Add compiled locale files to the commit
     git add packages/locale/locales/**/*.po
+    git add apps/erp/app/utils/seedDataDisplayName.ts
 fi
 
 # Regenerate MCP tools if any .service.ts file was modified

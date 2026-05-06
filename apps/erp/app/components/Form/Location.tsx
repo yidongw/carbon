@@ -2,12 +2,14 @@ import type { CreatableComboboxProps } from "@carbon/form";
 import { CreatableCombobox } from "@carbon/form";
 import { useDisclosure, useMount } from "@carbon/react";
 import { getLocalTimeZone } from "@internationalized/date";
+import { useLingui } from "@lingui/react/macro";
 import { useMemo, useRef, useState } from "react";
 import { useFetcher } from "react-router";
 import { useUser } from "~/hooks";
 import type { getLocationsList } from "~/modules/resources";
 import LocationForm from "~/modules/resources/ui/Locations/LocationForm";
 import { path } from "~/utils/path";
+import { translateSeedDisplayName } from "~/utils/seedDataDisplayName";
 import { Enumerable } from "../Enumerable";
 
 type LocationSelectProps = Omit<
@@ -77,6 +79,7 @@ Location.displayName = "Location";
 export default Location;
 
 export const useLocations = () => {
+  const { i18n } = useLingui();
   const locationFetcher =
     useFetcher<Awaited<ReturnType<typeof getLocationsList>>>();
 
@@ -89,10 +92,10 @@ export const useLocations = () => {
       locationFetcher.data?.data
         ? locationFetcher.data?.data.map((c) => ({
             value: c.id,
-            label: c.name
+            label: translateSeedDisplayName(c.name, i18n)
           }))
         : [],
-    [locationFetcher.data]
+    [locationFetcher.data, i18n]
   );
 
   return options;
