@@ -11897,6 +11897,233 @@ export type Database = {
           },
         ]
       }
+      itemPostingGroupConfigurationParameter: {
+        Row: {
+          companyId: string
+          configurationParameterGroupId: string | null
+          createdAt: string
+          createdBy: string
+          dataType: Database["public"]["Enums"]["configurationParameterDataType"]
+          id: string
+          itemPostingGroupId: string
+          key: string
+          label: string
+          listOptions: string[] | null
+          materialFormFilterId: string | null
+          sortOrder: number
+          updatedAt: string | null
+          updatedBy: string | null
+        }
+        Insert: {
+          companyId: string
+          configurationParameterGroupId?: string | null
+          createdAt?: string
+          createdBy: string
+          dataType: Database["public"]["Enums"]["configurationParameterDataType"]
+          id?: string
+          itemPostingGroupId: string
+          key: string
+          label: string
+          listOptions?: string[] | null
+          materialFormFilterId?: string | null
+          sortOrder?: number
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Update: {
+          companyId?: string
+          configurationParameterGroupId?: string | null
+          createdAt?: string
+          createdBy?: string
+          dataType?: Database["public"]["Enums"]["configurationParameterDataType"]
+          id?: string
+          itemPostingGroupId?: string
+          key?: string
+          label?: string
+          listOptions?: string[] | null
+          materialFormFilterId?: string | null
+          sortOrder?: number
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "itemPostingGroupConfigurationParameter_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "itemPostingGroupConfigurationParameter_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "itemPostingGroupConfigurationParameter_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "customFieldTables"
+            referencedColumns: ["companyId"]
+          },
+          {
+            foreignKeyName: "itemPostingGroupConfigurationParameter_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "integrations"
+            referencedColumns: ["companyId"]
+          },
+          {
+            foreignKeyName: "itemPostingGroupConfigurationParameter_configurationParameterGr"
+            columns: ["configurationParameterGroupId"]
+            isOneToOne: false
+            referencedRelation: "itemPostingGroupConfigurationParameterGroup"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "itemPostingGroupConfigurationParameter_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "itemPostingGroupConfigurationParameter_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "itemPostingGroupConfigurationParameter_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "itemPostingGroupConfigurationParameter_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "itemPostingGroupConfigurationParameter_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "itemPostingGroupConfigurationParameter_itemPostingGroupId_fkey"
+            columns: ["itemPostingGroupId"]
+            isOneToOne: false
+            referencedRelation: "itemPostingGroup"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "itemPostingGroupConfigurationParameter_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "itemPostingGroupConfigurationParameter_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "itemPostingGroupConfigurationParameter_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "itemPostingGroupConfigurationParameter_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "itemPostingGroupConfigurationParameter_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+        ]
+      }
+      itemPostingGroupConfigurationParameterGroup: {
+        Row: {
+          companyId: string
+          id: string
+          isUngrouped: boolean
+          itemPostingGroupId: string
+          name: string
+          sortOrder: number
+        }
+        Insert: {
+          companyId: string
+          id?: string
+          isUngrouped?: boolean
+          itemPostingGroupId: string
+          name: string
+          sortOrder?: number
+        }
+        Update: {
+          companyId?: string
+          id?: string
+          isUngrouped?: boolean
+          itemPostingGroupId?: string
+          name?: string
+          sortOrder?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "itemPostingGroupConfigurationParameterGroup_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "itemPostingGroupConfigurationParameterGroup_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "itemPostingGroupConfigurationParameterGroup_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "customFieldTables"
+            referencedColumns: ["companyId"]
+          },
+          {
+            foreignKeyName: "itemPostingGroupConfigurationParameterGroup_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "integrations"
+            referencedColumns: ["companyId"]
+          },
+          {
+            foreignKeyName: "itemPostingGroupConfigurationParameterGroup_itemPostingGroupId_"
+            columns: ["itemPostingGroupId"]
+            isOneToOne: false
+            referencedRelation: "itemPostingGroup"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       itemReplenishment: {
         Row: {
           companyId: string
@@ -42031,6 +42258,481 @@ export type Database = {
             referencedColumns: ["userId"]
           },
         ]
+      }
+      template: {
+        Row: {
+          id: string
+          name: string
+          description: string | null
+          companyId: string
+          createdBy: string | null
+          updatedBy: string | null
+          createdAt: string
+          updatedAt: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          description?: string | null
+          companyId: string
+          createdBy?: string | null
+          updatedBy?: string | null
+          createdAt?: string
+          updatedAt?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          description?: string | null
+          companyId?: string
+          createdBy?: string | null
+          updatedBy?: string | null
+          createdAt?: string
+          updatedAt?: string
+        }
+        Relationships: []
+      }
+      templateConfigurationParameter: {
+        Row: {
+          id: string
+          templateId: string
+          key: string
+          label: string
+          sortOrder: number
+          dataType: Database["public"]["Enums"]["configurationParameterDataType"]
+          listOptions: string[] | null
+          companyId: string
+          createdAt: string
+          createdBy: string
+          updatedAt: string | null
+          updatedBy: string | null
+          templateConfigurationParameterGroupId: string | null
+          materialFormFilterId: string | null
+        }
+        Insert: {
+          id?: string
+          templateId: string
+          key: string
+          label: string
+          sortOrder?: number
+          dataType: Database["public"]["Enums"]["configurationParameterDataType"]
+          listOptions?: string[] | null
+          companyId: string
+          createdAt?: string
+          createdBy: string
+          updatedAt?: string | null
+          updatedBy?: string | null
+          templateConfigurationParameterGroupId?: string | null
+          materialFormFilterId?: string | null
+        }
+        Update: {
+          id?: string
+          templateId?: string
+          key?: string
+          label?: string
+          sortOrder?: number
+          dataType?: Database["public"]["Enums"]["configurationParameterDataType"]
+          listOptions?: string[] | null
+          companyId?: string
+          createdAt?: string
+          createdBy?: string
+          updatedAt?: string | null
+          updatedBy?: string | null
+          templateConfigurationParameterGroupId?: string | null
+          materialFormFilterId?: string | null
+        }
+        Relationships: []
+      }
+      templateConfigurationParameterGroup: {
+        Row: {
+          id: string
+          templateId: string
+          name: string
+          sortOrder: number
+          isUngrouped: boolean
+          companyId: string
+        }
+        Insert: {
+          id?: string
+          templateId: string
+          name: string
+          sortOrder?: number
+          isUngrouped?: boolean
+          companyId: string
+        }
+        Update: {
+          id?: string
+          templateId?: string
+          name?: string
+          sortOrder?: number
+          isUngrouped?: boolean
+          companyId?: string
+        }
+        Relationships: []
+      }
+      templateConfigurationRule: {
+        Row: {
+          templateId: string
+          field: string
+          code: string
+          companyId: string
+          updatedAt: string
+          updatedBy: string | null
+        }
+        Insert: {
+          templateId: string
+          field: string
+          code: string
+          companyId: string
+          updatedAt?: string
+          updatedBy?: string | null
+        }
+        Update: {
+          templateId?: string
+          field?: string
+          code?: string
+          companyId?: string
+          updatedAt?: string
+          updatedBy?: string | null
+        }
+        Relationships: []
+      }
+      templateMakeMethod: {
+        Row: {
+          id: string
+          templateId: string
+          companyId: string
+          createdAt: string
+          createdBy: string
+          updatedAt: string | null
+          updatedBy: string | null
+          customFields: Json | null
+          status: Database["public"]["Enums"]["makeMethodStatus"]
+          tags: string[] | null
+          version: number
+        }
+        Insert: {
+          id?: string
+          templateId: string
+          companyId: string
+          createdAt?: string
+          createdBy: string
+          updatedAt?: string | null
+          updatedBy?: string | null
+          customFields?: Json | null
+          status?: Database["public"]["Enums"]["makeMethodStatus"]
+          tags?: string[] | null
+          version?: number
+        }
+        Update: {
+          id?: string
+          templateId?: string
+          companyId?: string
+          createdAt?: string
+          createdBy?: string
+          updatedAt?: string | null
+          updatedBy?: string | null
+          customFields?: Json | null
+          status?: Database["public"]["Enums"]["makeMethodStatus"]
+          tags?: string[] | null
+          version?: number
+        }
+        Relationships: []
+      }
+      templateMethodMaterial: {
+        Row: {
+          id: string
+          templateMakeMethodId: string
+          materialMakeMethodId: string | null
+          order: number
+          itemType: string
+          methodType: Database["public"]["Enums"]["methodType"]
+          sourcingType: Database["public"]["Enums"]["sourcingType"]
+          itemId: string
+          kit: boolean
+          methodOperationId: string | null
+          quantity: number
+          scrapQuantity: number
+          productionQuantity: number | null
+          unitOfMeasureCode: string
+          storageUnitIds: Json
+          companyId: string
+          createdAt: string
+          createdBy: string
+          updatedAt: string | null
+          updatedBy: string | null
+          customFields: Json | null
+          tags: string[] | null
+        }
+        Insert: {
+          id?: string
+          templateMakeMethodId: string
+          materialMakeMethodId?: string | null
+          order?: number
+          itemType?: string
+          methodType?: Database["public"]["Enums"]["methodType"]
+          sourcingType: Database["public"]["Enums"]["sourcingType"]
+          itemId: string
+          kit?: boolean
+          methodOperationId?: string | null
+          quantity: number
+          scrapQuantity?: number
+          unitOfMeasureCode: string
+          storageUnitIds?: Json
+          companyId: string
+          createdAt?: string
+          createdBy: string
+          updatedAt?: string | null
+          updatedBy?: string | null
+          customFields?: Json | null
+          tags?: string[] | null
+        }
+        Update: {
+          id?: string
+          templateMakeMethodId?: string
+          materialMakeMethodId?: string | null
+          order?: number
+          itemType?: string
+          methodType?: Database["public"]["Enums"]["methodType"]
+          sourcingType?: Database["public"]["Enums"]["sourcingType"]
+          itemId?: string
+          kit?: boolean
+          methodOperationId?: string | null
+          quantity?: number
+          scrapQuantity?: number
+          unitOfMeasureCode?: string
+          storageUnitIds?: Json
+          companyId?: string
+          createdAt?: string
+          createdBy?: string
+          updatedAt?: string | null
+          updatedBy?: string | null
+          customFields?: Json | null
+          tags?: string[] | null
+        }
+        Relationships: []
+      }
+      templateMethodOperation: {
+        Row: {
+          id: string
+          templateMakeMethodId: string
+          order: number
+          operationOrder: Database["public"]["Enums"]["methodOperationOrder"]
+          operationType: Database["public"]["Enums"]["operationType"]
+          description: string
+          processId: string
+          workCenterId: string | null
+          procedureId: string | null
+          setupTime: number
+          setupUnit: Database["public"]["Enums"]["factor"]
+          laborTime: number
+          laborUnit: Database["public"]["Enums"]["factor"]
+          machineTime: number
+          machineUnit: Database["public"]["Enums"]["factor"]
+          operationSupplierProcessId: string | null
+          operationMinimumCost: number | null
+          operationUnitCost: number | null
+          operationLeadTime: number | null
+          workInstruction: Json
+          tags: string[] | null
+          companyId: string
+          createdAt: string
+          createdBy: string
+          updatedAt: string | null
+          updatedBy: string | null
+          customFields: Json | null
+        }
+        Insert: {
+          id?: string
+          templateMakeMethodId: string
+          order?: number
+          operationOrder?: Database["public"]["Enums"]["methodOperationOrder"]
+          operationType?: Database["public"]["Enums"]["operationType"]
+          description?: string
+          processId: string
+          workCenterId?: string | null
+          procedureId?: string | null
+          setupTime?: number
+          setupUnit?: Database["public"]["Enums"]["factor"]
+          laborTime?: number
+          laborUnit?: Database["public"]["Enums"]["factor"]
+          machineTime?: number
+          machineUnit?: Database["public"]["Enums"]["factor"]
+          operationSupplierProcessId?: string | null
+          operationMinimumCost?: number | null
+          operationUnitCost?: number | null
+          operationLeadTime?: number | null
+          workInstruction?: Json
+          tags?: string[] | null
+          companyId: string
+          createdAt?: string
+          createdBy: string
+          updatedAt?: string | null
+          updatedBy?: string | null
+          customFields?: Json | null
+        }
+        Update: {
+          id?: string
+          templateMakeMethodId?: string
+          order?: number
+          operationOrder?: Database["public"]["Enums"]["methodOperationOrder"]
+          operationType?: Database["public"]["Enums"]["operationType"]
+          description?: string
+          processId?: string
+          workCenterId?: string | null
+          procedureId?: string | null
+          setupTime?: number
+          setupUnit?: Database["public"]["Enums"]["factor"]
+          laborTime?: number
+          laborUnit?: Database["public"]["Enums"]["factor"]
+          machineTime?: number
+          machineUnit?: Database["public"]["Enums"]["factor"]
+          operationSupplierProcessId?: string | null
+          operationMinimumCost?: number | null
+          operationUnitCost?: number | null
+          operationLeadTime?: number | null
+          workInstruction?: Json
+          tags?: string[] | null
+          companyId?: string
+          createdAt?: string
+          createdBy?: string
+          updatedAt?: string | null
+          updatedBy?: string | null
+          customFields?: Json | null
+        }
+        Relationships: []
+      }
+      templateMethodOperationParameter: {
+        Row: {
+          id: string
+          key: string
+          value: string
+          operationId: string
+          companyId: string
+          createdAt: string
+          createdBy: string
+          updatedAt: string | null
+          updatedBy: string | null
+        }
+        Insert: {
+          id?: string
+          key: string
+          value: string
+          operationId: string
+          companyId: string
+          createdAt?: string
+          createdBy: string
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Update: {
+          id?: string
+          key?: string
+          value?: string
+          operationId?: string
+          companyId?: string
+          createdAt?: string
+          createdBy?: string
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Relationships: []
+      }
+      templateMethodOperationStep: {
+        Row: {
+          id: string
+          operationId: string
+          companyId: string
+          createdAt: string
+          createdBy: string
+          updatedAt: string | null
+          updatedBy: string | null
+          sortOrder: number
+          name: string
+          description: Json | null
+          type: Database["public"]["Enums"]["procedureStepType"]
+          required: boolean | null
+          minValue: number | null
+          maxValue: number | null
+          listValues: string[] | null
+          fileTypes: string[] | null
+          unitOfMeasureCode: string | null
+        }
+        Insert: {
+          id?: string
+          operationId: string
+          companyId: string
+          createdAt?: string
+          createdBy: string
+          updatedAt?: string | null
+          updatedBy?: string | null
+          sortOrder?: number
+          name: string
+          description?: Json | null
+          type: Database["public"]["Enums"]["procedureStepType"]
+          required?: boolean | null
+          minValue?: number | null
+          maxValue?: number | null
+          listValues?: string[] | null
+          fileTypes?: string[] | null
+          unitOfMeasureCode?: string | null
+        }
+        Update: {
+          id?: string
+          operationId?: string
+          companyId?: string
+          createdAt?: string
+          createdBy?: string
+          updatedAt?: string | null
+          updatedBy?: string | null
+          sortOrder?: number
+          name?: string
+          description?: Json | null
+          type?: Database["public"]["Enums"]["procedureStepType"]
+          required?: boolean | null
+          minValue?: number | null
+          maxValue?: number | null
+          listValues?: string[] | null
+          fileTypes?: string[] | null
+          unitOfMeasureCode?: string | null
+        }
+        Relationships: []
+      }
+      templateMethodOperationTool: {
+        Row: {
+          id: string
+          operationId: string
+          toolId: string
+          quantity: number
+          companyId: string
+          createdAt: string
+          createdBy: string
+          updatedAt: string
+          updatedBy: string | null
+        }
+        Insert: {
+          id?: string
+          operationId: string
+          toolId: string
+          quantity?: number
+          companyId: string
+          createdAt?: string
+          createdBy: string
+          updatedAt?: string
+          updatedBy?: string | null
+        }
+        Update: {
+          id?: string
+          operationId?: string
+          toolId?: string
+          quantity?: number
+          companyId?: string
+          createdAt?: string
+          createdBy?: string
+          updatedAt?: string
+          updatedBy?: string | null
+        }
+        Relationships: []
       }
       terms: {
         Row: {
