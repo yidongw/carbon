@@ -13,7 +13,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
-msgstr "サプライヤーは、あなたに部品またはサービスを販売する企業または個人です。"
+msgstr ""
 
 #. placeholder {0}: fieldDef?.label ?? condition.field
 msgid "\"{0}\" isn't available on the selected surface(s). Pick another field."
@@ -89,10 +89,10 @@ msgid "1 day"
 msgstr "1日"
 
 msgid "1% 10 Net 30"
-msgstr ""
+msgstr "1% 10ネット30"
 
 msgid "2% 10 Net 30"
-msgstr ""
+msgstr "2% 10ネット30"
 
 msgid "3D Model"
 msgstr "3Dモデル"
@@ -224,7 +224,7 @@ msgid "Accumulated Amortization"
 msgstr ""
 
 msgid "Accumulated Depreciation"
-msgstr ""
+msgstr "減価償却累計額"
 
 msgid "Accumulated Depreciation on Disposal"
 msgstr ""
@@ -326,7 +326,7 @@ msgid "Add Company"
 msgstr "会社を追加"
 
 msgid "Add condition"
-msgstr "条件を追加"
+msgstr ""
 
 msgid "Add Contractor"
 msgstr "契約業者を追加"
@@ -338,7 +338,7 @@ msgid "Add Feature"
 msgstr ""
 
 msgid "Add from library…"
-msgstr "ライブラリから追加…"
+msgstr ""
 
 msgid "Add Group"
 msgstr "グループを追加"
@@ -386,7 +386,7 @@ msgid "Add Question"
 msgstr "質問を追加"
 
 msgid "Add Receipt"
-msgstr "領収書を追加"
+msgstr ""
 
 msgid "Add Required Actions"
 msgstr "必須アクションを追加"
@@ -401,13 +401,13 @@ msgid "Add Row"
 msgstr ""
 
 msgid "Add rule"
-msgstr "ルールを追加"
+msgstr ""
 
 msgid "Add Selector"
 msgstr ""
 
 msgid "Add Shipment"
-msgstr "配送を追加"
+msgstr ""
 
 msgid "Add Shipping"
 msgstr "配送を追加"
@@ -476,7 +476,7 @@ msgid "All Documents"
 msgstr "すべてのドキュメント"
 
 msgid "All Employees"
-msgstr ""
+msgstr "すべての従業員"
 
 msgid "All Items"
 msgstr "すべてのアイテム"
@@ -497,10 +497,10 @@ msgid "All Work Centers"
 msgstr "すべての作業センター"
 
 msgid "Allows acknowledge & continue"
-msgstr "確認して続行できます"
+msgstr ""
 
 msgid "Alpha"
-msgstr "アルファ"
+msgstr ""
 
 msgid "Always"
 msgstr "常に"
@@ -560,7 +560,7 @@ msgid "API keys for programmatic access to your Carbon data."
 msgstr ""
 
 msgid "Applies to"
-msgstr "適用対象"
+msgstr ""
 
 msgid "Applies to all"
 msgstr ""
@@ -701,7 +701,7 @@ msgstr "この操作から{name}属性を削除してもよろしいですか？
 #. placeholder {0}: account.name
 #. placeholder {1}: account.number ? ` (${account.number})` : ""
 msgid "Are you sure you want to delete the account: {0}{1}? This cannot be undone."
-msgstr "本当にアカウント {0}{1} を削除してもよろしいですか？この操作は取り消せません。"
+msgstr ""
 
 #. placeholder {0}: apiKey.name
 msgid "Are you sure you want to delete the API key: {0}? This cannot be undone."
@@ -943,10 +943,10 @@ msgid "Are you sure you want to revoke the invitations for these users?"
 msgstr "これらのユーザーの招待を取り消してもよろしいですか？"
 
 msgid "Are you sure you want to send an invite to these users?"
-msgstr "これらのユーザーに招待を送信してもよろしいですか?"
+msgstr ""
 
 msgid "Are you sure you want to send an invite to this user?"
-msgstr "このユーザーに招待を送信してもよろしいですか?"
+msgstr ""
 
 msgid "Are you sure you want to void this purchase invoice? This action will reverse all financial transactions and cannot be undone."
 msgstr "この購買請求書を無効にしてもよろしいですか？このアクションはすべての財務取引を取り消し、元に戻すことはできません。"
@@ -982,7 +982,7 @@ msgid "Asset Classes"
 msgstr ""
 
 msgid "Assets"
-msgstr ""
+msgstr "アセット"
 
 msgid "Assign printers to locations. Shipping, receiving, and work centers inherit the location default unless overridden."
 msgstr ""
@@ -1009,7 +1009,7 @@ msgid "Assignments"
 msgstr "割り当て"
 
 msgid "At least one condition must match"
-msgstr "少なくとも1つの条件が一致する必要があります"
+msgstr ""
 
 msgid "Attach File"
 msgstr "ファイルを添付"
@@ -1099,7 +1099,7 @@ msgid "Bad Debts Expense"
 msgstr ""
 
 msgid "Bag"
-msgstr ""
+msgstr "虫"
 
 msgid "Balance Sheet"
 msgstr "貸借対照表"
@@ -1108,19 +1108,19 @@ msgid "Balloon"
 msgstr ""
 
 msgid "Bank - Cash"
-msgstr ""
+msgstr "銀行-現金"
 
 msgid "Bank - Foreign Currency"
-msgstr ""
+msgstr "外貨"
 
 msgid "Bank - Local Currency"
-msgstr ""
+msgstr "現地通貨"
 
 msgid "Bank Charges & Fees"
 msgstr ""
 
 msgid "Base Currency"
-msgstr "基本通貨"
+msgstr "基本為替"
 
 msgid "Base Price"
 msgstr "基本価格"
@@ -1181,7 +1181,7 @@ msgid "Blocked by {0}"
 msgstr "{0}によってブロックされています"
 
 msgid "Blocks save until resolved"
-msgstr "解決されるまで保存をブロックします"
+msgstr ""
 
 msgid "BoM"
 msgstr "BoM"
@@ -1193,13 +1193,13 @@ msgid "BOM synced successfully"
 msgstr "BOMが正常に同期されました"
 
 msgid "Box"
-msgstr ""
+msgstr "ボックス"
 
 msgid "Breadcrumb"
 msgstr "パンくずリスト"
 
 msgid "Browse library"
-msgstr "ライブラリを参照"
+msgstr ""
 
 msgid "Bucket"
 msgstr "バケット"
@@ -1316,7 +1316,7 @@ msgid "Cannot place order - no supplier associated with this item"
 msgstr "注文を配置できません - このアイテムに関連付けられたサプライヤーがありません"
 
 msgid "Cannot post — shipment contains expired tracked entities."
-msgstr "投稿できません — 出荷に期限切れの追跡対象エンティティが含まれています。"
+msgstr ""
 
 msgid "Cannot send RFQ"
 msgstr "RFQを送信できません"
@@ -1355,7 +1355,7 @@ msgid "Carrier Account"
 msgstr "キャリアアカウント"
 
 msgid "Case"
-msgstr ""
+msgstr "症例"
 
 msgid "Cash & Bank"
 msgstr ""
@@ -1470,7 +1470,7 @@ msgid "Cloud-Hosted"
 msgstr "クラウドホスト"
 
 msgid "COD"
-msgstr ""
+msgstr "代金引換"
 
 msgid "Code"
 msgstr "コード"
@@ -1512,7 +1512,7 @@ msgid "Coming soon"
 msgstr "近日公開予定"
 
 msgid "comma-separated values"
-msgstr "カンマ区切りの値"
+msgstr ""
 
 msgid "Comment"
 msgstr "コメント"
@@ -1584,7 +1584,7 @@ msgid "Completion Time"
 msgstr "完了時間"
 
 msgid "Conditions"
-msgstr "条件"
+msgstr ""
 
 msgid "Configuration Parameters"
 msgstr "設定パラメータ"
@@ -1626,7 +1626,7 @@ msgid "Configure the default accounts used for various transaction types across 
 msgstr "様々なトランザクションタイプに使用されるデフォルトアカウントをシステム全体で設定します"
 
 msgid "Configure the start months for your fiscal and tax years"
-msgstr "会計年度と税務年度の開始月を設定します"
+msgstr ""
 
 msgid "Configure when purchased item costs should be updated from supplier transactions."
 msgstr ""
@@ -1711,7 +1711,7 @@ msgid "Containment"
 msgstr "封じ込め"
 
 msgid "Containment Action"
-msgstr ""
+msgstr "containment action"
 
 msgid "Contractor"
 msgstr "請負業者"
@@ -1771,7 +1771,7 @@ msgid "Copy document unique identifier"
 msgstr "ドキュメントの一意の識別子をコピー"
 
 msgid "Copy ID"
-msgstr "IDをコピー"
+msgstr "コピー ID"
 
 msgid "Copy issue number"
 msgstr "課題番号をコピー"
@@ -1879,19 +1879,19 @@ msgid "Correct Answers"
 msgstr "正解"
 
 msgid "Corrective Action"
-msgstr ""
+msgstr "対処方法"
 
 msgid "Cost Center"
-msgstr "コストセンター"
+msgstr ""
 
 msgid "Cost Centers"
-msgstr "コストセンター"
+msgstr ""
 
 msgid "Cost History"
 msgstr "コスト履歴"
 
 msgid "Cost of Goods Sold"
-msgstr ""
+msgstr "売上原価"
 
 msgid "Cost of Goods Sold - Direct"
 msgstr ""
@@ -1903,7 +1903,7 @@ msgid "Costing & Posting"
 msgstr "原価計算と転記"
 
 msgid "Costing Method"
-msgstr "原価計算方法"
+msgstr ""
 
 msgid "Could not analyze cropped region"
 msgstr ""
@@ -1970,7 +1970,7 @@ msgid "Create Kanban"
 msgstr "カンバンを作成"
 
 msgid "Create new rule"
-msgstr "新しいルールを作成"
+msgstr ""
 
 msgid "Create Quote Revision"
 msgstr "見積書リビジョンを作成"
@@ -1994,7 +1994,7 @@ msgid "Created"
 msgstr "作成日時"
 
 msgid "Created account"
-msgstr "アカウントを作成しました"
+msgstr ""
 
 msgid "Created At"
 msgstr "作成日時"
@@ -2089,7 +2089,7 @@ msgstr "ストレージタイプを作成しました"
 
 #. placeholder {0}: fetcher.data.data.name
 msgid "Created supplier: {0}"
-msgstr "仕入先を作成しました: {0}"
+msgstr ""
 
 msgid "Created tool"
 msgstr "ツールを作成しました"
@@ -2149,10 +2149,10 @@ msgid "Customer Accounts"
 msgstr "顧客アカウント"
 
 msgid "Customer Communication"
-msgstr ""
+msgstr "カスタマーコミュニケーション"
 
 msgid "Customer Complaint"
-msgstr ""
+msgstr "顧客からの苦情"
 
 msgid "Customer Contact"
 msgstr "顧客連絡先"
@@ -2191,7 +2191,7 @@ msgid "Customer Parts"
 msgstr "顧客部品"
 
 msgid "Customer Payment Discounts"
-msgstr ""
+msgstr "顧客支払い割引"
 
 msgid "Customer PO"
 msgstr "顧客PO"
@@ -2206,7 +2206,7 @@ msgid "Customer Portals"
 msgstr "顧客ポータル"
 
 msgid "Customer Prepayments"
-msgstr ""
+msgstr "顧客の前払い"
 
 msgid "Customer Revision"
 msgstr "顧客リビジョン"
@@ -2546,7 +2546,7 @@ msgid "Delete Rule"
 msgstr "ルールを削除"
 
 msgid "Delete Sales Invoice"
-msgstr "売上請求書を削除"
+msgstr ""
 
 msgid "Delete Sales Order"
 msgstr "販売注文を削除"
@@ -2657,7 +2657,7 @@ msgid "Depreciation & Amortization"
 msgstr ""
 
 msgid "Depreciation Expense"
-msgstr ""
+msgstr "減価償却費"
 
 msgid "Depreciation Run"
 msgstr ""
@@ -2672,7 +2672,7 @@ msgid "Description of Issue"
 msgstr "問題の説明"
 
 msgid "Design Error"
-msgstr ""
+msgstr "設計エラー"
 
 msgid "Detail"
 msgstr "詳細"
@@ -2696,7 +2696,7 @@ msgid "Dimensions"
 msgstr "寸法"
 
 msgid "Direct"
-msgstr "直接"
+msgstr ""
 
 msgid "Disabled"
 msgstr "無効"
@@ -2756,10 +2756,10 @@ msgid "Document:"
 msgstr "ドキュメント:"
 
 msgid "Documentation"
-msgstr ""
+msgstr "ドキュメンテーション"
 
 msgid "Documentation Error"
-msgstr ""
+msgstr "ドキュメンテーションのエラー"
 
 msgid "Documents"
 msgstr "ドキュメント"
@@ -2825,7 +2825,7 @@ msgid "Drop your file here, or click to browse."
 msgstr "ファイルをここにドラッグするか、クリックして参照してください。"
 
 msgid "Drum"
-msgstr ""
+msgstr "ドラム"
 
 msgid "Due"
 msgstr ""
@@ -2874,13 +2874,13 @@ msgid "e.g. Zebra 2x1"
 msgstr ""
 
 msgid "Each"
-msgstr ""
+msgstr "各"
 
 msgid "Edit"
 msgstr "編集"
 
 msgid "Edit Account"
-msgstr "アカウントを編集"
+msgstr ""
 
 msgid "Edit API Key"
 msgstr "APIキーを編集"
@@ -3045,7 +3045,7 @@ msgid "Edit Revision"
 msgstr "リビジョンを編集"
 
 msgid "Edit rule"
-msgstr "ルールを編集"
+msgstr ""
 
 msgid "Edit Rule"
 msgstr "ルールを編集"
@@ -3174,7 +3174,7 @@ msgid "Enable digital quotes for your company. This will allow you to send digit
 msgstr "貴社のデジタル見積もりを有効にします。これにより、顧客にデジタル見積もりを送信でき、顧客がオンラインで承認することができます。"
 
 msgid "Enable full accrual accounting with journal entries, financial reports, and general ledger posting."
-msgstr "完全な発生主義会計を有効にし、仕訳帳エントリ、財務報告書、および総勘定元帳への転記を行います。"
+msgstr ""
 
 msgid "Enable in Settings"
 msgstr "設定で有効にする"
@@ -3222,7 +3222,7 @@ msgid "End Time"
 msgstr "終了時刻"
 
 msgid "Enforce per-item validation and guidelines across receipts, shipments, transfers, and adjustments."
-msgstr "領収書、出荷、転送、および調整全体にわたって、品目ごとの検証とガイドラインを実施します。"
+msgstr ""
 
 msgid "Engineering Contact"
 msgstr "エンジニアリング担当者"
@@ -3258,10 +3258,10 @@ msgid "EORI"
 msgstr "EORI"
 
 msgid "Equipment Malfunction"
-msgstr ""
+msgstr "医療機器不具合"
 
 msgid "Equity"
-msgstr ""
+msgstr "自己資本"
 
 msgid "ERP, MES, QMS"
 msgstr "ERP、MES、QMS"
@@ -3357,7 +3357,7 @@ msgid "Events"
 msgstr "イベント"
 
 msgid "Every condition must match"
-msgstr "すべての条件が一致する必要があります"
+msgstr ""
 
 msgid "Everything from Starter"
 msgstr "スターターのすべての機能"
@@ -3369,7 +3369,7 @@ msgid "Exchange Rate"
 msgstr "為替レート"
 
 msgid "Exchange Rates"
-msgstr "為替レート"
+msgstr ""
 
 msgid "Expand"
 msgstr "展開"
@@ -3567,7 +3567,7 @@ msgstr "ストレージタイプの作成に失敗しました: {0}"
 
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create supplier: {0}"
-msgstr "サプライヤーの作成に失敗しました: {0}"
+msgstr ""
 
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create tool: {0}"
@@ -3783,7 +3783,7 @@ msgid "Fetch"
 msgstr "取得"
 
 msgid "Field"
-msgstr "フィールド"
+msgstr ""
 
 msgid "Field info"
 msgstr ""
@@ -3845,7 +3845,7 @@ msgid "Finish To"
 msgstr "完成先"
 
 msgid "Finished Goods"
-msgstr ""
+msgstr "[製品]"
 
 msgid "Finishes"
 msgstr "仕上げ"
@@ -3857,7 +3857,7 @@ msgid "First Operation"
 msgstr "最初の操作"
 
 msgid "Fiscal Year"
-msgstr "会計年度"
+msgstr ""
 
 msgid "Fiscal Year Settings"
 msgstr "会計年度設定"
@@ -3872,13 +3872,13 @@ msgid "Fixed Asset"
 msgstr ""
 
 msgid "Fixed Asset Acquisition Cost"
-msgstr ""
+msgstr "固定資産取得原価"
 
 msgid "Fixed Asset Acquisition Cost on Disposal"
-msgstr ""
+msgstr "廃棄時の固定資産取得原価"
 
 msgid "Fixed Assets"
-msgstr ""
+msgstr "固定資産"
 
 msgid "Fixed Reorder"
 msgstr "固定再注文"
@@ -3887,7 +3887,7 @@ msgid "Fixed Shelf Life"
 msgstr "固定棚卸し期間"
 
 msgid "Foot"
-msgstr ""
+msgstr "足"
 
 msgid "For growing businesses that need support"
 msgstr "成長中のビジネスをサポートするために"
@@ -3933,10 +3933,10 @@ msgid "Fully trained for"
 msgstr "完全に訓練済み"
 
 msgid "Gains and Losses on Disposal"
-msgstr ""
+msgstr "処分損益"
 
 msgid "Gallon"
-msgstr ""
+msgstr "ガロン"
 
 msgid "Gauge"
 msgstr "ゲージ"
@@ -3981,7 +3981,7 @@ msgid "Get Method"
 msgstr "メソッドを取得"
 
 msgid "GL Account"
-msgstr "GLアカウント"
+msgstr ""
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -4020,7 +4020,7 @@ msgid "Groups"
 msgstr "グループ"
 
 msgid "Headquarters"
-msgstr ""
+msgstr "本部"
 
 msgid "Help"
 msgstr "ヘルプ"
@@ -4140,7 +4140,7 @@ msgid "Inbox"
 msgstr "受信トレイ"
 
 msgid "Inch"
-msgstr ""
+msgstr "インチ"
 
 msgid "Include extra parts in shipment"
 msgstr "出荷に追加部品を含める"
@@ -4164,7 +4164,7 @@ msgid "Incoming"
 msgstr "入荷予定"
 
 msgid "Incoming Materials"
-msgstr ""
+msgstr "入ってくる原料"
 
 msgid "Incoterm"
 msgstr "インコターム"
@@ -4173,7 +4173,7 @@ msgid "Incoterm Location"
 msgstr "インコタームズの場所"
 
 msgid "Indirect"
-msgstr "間接"
+msgstr ""
 
 msgid "Indirect Materials & Services"
 msgstr ""
@@ -4188,7 +4188,7 @@ msgid "Insert rows"
 msgstr "行を挿入"
 
 msgid "Insert token"
-msgstr "トークンを挿入"
+msgstr ""
 
 msgid "Inspect"
 msgstr "検査"
@@ -4248,7 +4248,7 @@ msgid "Inter-Company Receivables"
 msgstr ""
 
 msgid "Intercompany"
-msgstr "企業間"
+msgstr ""
 
 msgid "Interest Expense"
 msgstr ""
@@ -4293,7 +4293,7 @@ msgid "Inventory Reserves / Allowances"
 msgstr ""
 
 msgid "Inventory Shipped Not Invoiced"
-msgstr ""
+msgstr "出荷された在庫は請求されていません"
 
 msgid "Inventory Tracking"
 msgstr "在庫追跡"
@@ -4492,7 +4492,7 @@ msgid "Join {0}"
 msgstr "{0}に参加"
 
 msgid "Journal Entries"
-msgstr "仕訳帳"
+msgstr ""
 
 msgid "Journal Entry"
 msgstr ""
@@ -4525,14 +4525,14 @@ msgid "Label"
 msgstr "ラベル"
 
 msgid "Label to complete the current operation for this kanban"
-msgstr "このカンバンの現在の操作を完了するためのラベル"
+msgstr ""
 
 #. placeholder {0}: row.original.replenishmentSystem === "Make" ? "Job" : "Order"
 msgid "Label to create a {0} for this kanban"
-msgstr "このカンバンの{0}を作成するためのラベル"
+msgstr ""
 
 msgid "Label to start the next operation for this kanban"
-msgstr "このカンバンの次の操作を開始するためのラベル"
+msgstr ""
 
 msgid "Labels"
 msgstr "ラベル"
@@ -4614,7 +4614,7 @@ msgid "Let's build something"
 msgstr "何か作ってみましょう"
 
 msgid "Let's set up your new company"
-msgstr "新しい会社をセットアップしましょう"
+msgstr ""
 
 msgid "Let's setup your account"
 msgstr "アカウントをセットアップしましょう"
@@ -4623,7 +4623,7 @@ msgid "Letter"
 msgstr "文字"
 
 msgid "Liabilities"
-msgstr ""
+msgstr "負債の部"
 
 msgid "Light"
 msgstr "ライト"
@@ -4676,7 +4676,7 @@ msgid "List Parameters"
 msgstr "リストパラメータ"
 
 msgid "Liter"
-msgstr ""
+msgstr "リットル"
 
 msgid "Live reloading"
 msgstr "ライブリロード中"
@@ -4779,7 +4779,7 @@ msgid "Maintenance"
 msgstr "メンテナンス"
 
 msgid "Maintenance Dispatch"
-msgstr ""
+msgstr "メンテナンス派遣"
 
 msgid "Maintenance Dispatch Notifications"
 msgstr "メンテナンスディスパッチ通知"
@@ -4788,7 +4788,7 @@ msgid "Maintenance Dispatches"
 msgstr "メンテナンスディスパッチ"
 
 msgid "Maintenance Expense"
-msgstr ""
+msgstr "メンテナンス費用"
 
 msgid "Maintenance Scheduling"
 msgstr "メンテナンススケジューリング"
@@ -4862,7 +4862,7 @@ msgid "Manufacturing"
 msgstr "製造"
 
 msgid "Manufacturing Defect"
-msgstr ""
+msgstr "製造上の欠陥？"
 
 msgid "Manufacturing Services Revenue"
 msgstr ""
@@ -4895,22 +4895,22 @@ msgid "Mark to delete"
 msgstr "削除対象にマーク"
 
 msgid "Match"
-msgstr "マッチ"
+msgstr ""
 
 msgid "Match all"
-msgstr "すべてに一致"
+msgstr ""
 
 msgid "Match all (AND)"
 msgstr ""
 
 msgid "Match any"
-msgstr "いずれかに一致"
+msgstr ""
 
 msgid "Match any (OR)"
 msgstr ""
 
 msgid "Match none"
-msgstr "いずれにも一致しない"
+msgstr ""
 
 msgid "matches"
 msgstr "一致する"
@@ -4952,7 +4952,7 @@ msgid "Material IDs"
 msgstr "材料ID"
 
 msgid "Material Issue"
-msgstr ""
+msgstr "重要な問題"
 
 msgid "Material Properties"
 msgstr ""
@@ -5024,10 +5024,10 @@ msgid "MES"
 msgstr ""
 
 msgid "Message"
-msgstr "メッセージ"
+msgstr ""
 
 msgid "Meter"
-msgstr ""
+msgstr "メートル"
 
 msgid "Method"
 msgstr "方法"
@@ -5197,16 +5197,16 @@ msgid "Negative Adjustment"
 msgstr "負の調整"
 
 msgid "Net 15"
-msgstr ""
+msgstr "NET 15"
 
 msgid "Net 30"
-msgstr ""
+msgstr "30日以内"
 
 msgid "Net 60"
-msgstr ""
+msgstr "ネット60"
 
 msgid "Net EOM 10th"
-msgstr ""
+msgstr "正味EOM 10位"
 
 msgid "Never"
 msgstr "なし"
@@ -5371,7 +5371,7 @@ msgid "New RFQ"
 msgstr "新しいRFQ"
 
 msgid "New rule"
-msgstr "新しいルール"
+msgstr ""
 
 msgid "New Rule"
 msgstr "新しいルール"
@@ -5410,10 +5410,13 @@ msgid "New Storage Unit"
 msgstr "新しい保管ユニット"
 
 msgid "New Supplier"
-msgstr "新しいサプライヤー"
+msgstr ""
 
 msgid "New Supplier Part"
 msgstr "新しいサプライヤー部品"
+
+msgid "New Template"
+msgstr ""
 
 msgid "New Timecard"
 msgstr "新しいタイムカード"
@@ -5437,7 +5440,7 @@ msgid "New Version"
 msgstr "新しいバージョン"
 
 msgid "New Warehouse Transfer"
-msgstr "新しい倉庫移動"
+msgstr ""
 
 msgid "New Webhook"
 msgstr "新しいWebhook"
@@ -5520,7 +5523,7 @@ msgid "No completed jobs within range"
 msgstr "範囲内に完了したジョブがありません"
 
 msgid "No condition may match"
-msgstr "条件が一致しない"
+msgstr ""
 
 msgid "No conversion is required"
 msgstr "変換は不要です"
@@ -5553,7 +5556,7 @@ msgid "No employees found"
 msgstr "従業員が見つかりません"
 
 msgid "No fields found."
-msgstr "フィールドが見つかりません。"
+msgstr ""
 
 msgid "No files"
 msgstr "ファイルなし"
@@ -5595,7 +5598,7 @@ msgid "No notes"
 msgstr "ノートなし"
 
 msgid "No operators."
-msgstr "オペレーターがありません。"
+msgstr ""
 
 msgid "No option found."
 msgstr "オプションが見つかりません。"
@@ -5655,7 +5658,7 @@ msgid "No results found"
 msgstr "検索結果が見つかりません"
 
 msgid "No rules assigned"
-msgstr "ルールが割り当てられていません"
+msgstr ""
 
 msgid "No samples inspected yet."
 msgstr "まだサンプルが検査されていません。"
@@ -5667,10 +5670,10 @@ msgid "No time entries for this week"
 msgstr "今週のタイムエントリがありません"
 
 msgid "No value needed"
-msgstr "値が不要です"
+msgstr ""
 
 msgid "No values available"
-msgstr "利用可能な値がありません"
+msgstr ""
 
 msgid "No work center utilization data within range"
 msgstr "範囲内に作業センターの稼働率データがありません"
@@ -5736,7 +5739,7 @@ msgid "Now let's set up your company"
 msgstr "それでは、あなたの会社をセットアップしましょう"
 
 msgid "Number"
-msgstr "数字"
+msgstr "番号"
 
 msgid "Number of inventory units per purchase unit"
 msgstr "購買単位あたりの在庫単位数"
@@ -5825,6 +5828,9 @@ msgstr "スケジュール済みを開く"
 msgid "Open task details"
 msgstr "タスク詳細を開く"
 
+msgid "Open Template"
+msgstr ""
+
 msgid "Operating Expenses"
 msgstr ""
 
@@ -5865,7 +5871,7 @@ msgid "Optional"
 msgstr "オプション"
 
 msgid "Optional context for this rule"
-msgstr "このルールのオプションコンテキスト"
+msgstr ""
 
 msgid "Options"
 msgstr "オプション"
@@ -5922,7 +5928,7 @@ msgid "Other Type"
 msgstr "その他のタイプ"
 
 msgid "Ounce"
-msgstr ""
+msgstr "オンス"
 
 msgid "Outgoing"
 msgstr "発送"
@@ -5976,7 +5982,7 @@ msgid "Overwrite the target manufacturing method with the quote method"
 msgstr "見積方法でターゲット製造方法を上書きします"
 
 msgid "Pack"
-msgstr ""
+msgstr "パック"
 
 msgid "Packing Slip"
 msgstr "梱包明細書"
@@ -5991,7 +5997,7 @@ msgid "Paid Date"
 msgstr "支払日"
 
 msgid "Pallet"
-msgstr ""
+msgstr "パレット"
 
 msgid "Parameters"
 msgstr "パラメータ"
@@ -6006,7 +6012,7 @@ msgid "Parent Department"
 msgstr "親部門"
 
 msgid "Parent Group"
-msgstr "親グループ"
+msgstr ""
 
 msgid "Parent Item"
 msgstr ""
@@ -6048,7 +6054,7 @@ msgid "Path"
 msgstr "パス"
 
 msgid "Payables"
-msgstr ""
+msgstr "買掛金"
 
 msgid "Payment"
 msgstr "支払い"
@@ -6078,7 +6084,7 @@ msgid "PDF Preview"
 msgstr ""
 
 msgid "PDF Watermark"
-msgstr "PDF透かし"
+msgstr ""
 
 msgid "Pending"
 msgstr "保留中"
@@ -6129,7 +6135,7 @@ msgid "Pick a column to sort by"
 msgstr "ソート対象の列を選択"
 
 msgid "Pick a customer or customer type to view their pricing."
-msgstr "顧客または顧客タイプを選択して、その価格を表示します。"
+msgstr "顧客または顧客タイプを選択して価格を表示します。"
 
 msgid "Pick a date or leave blank to clear it."
 msgstr "日付を選択するか、空白のままにしてクリアしてください。"
@@ -6258,7 +6264,7 @@ msgid "Potential Data Loss"
 msgstr "潜在的データ損失"
 
 msgid "Pound"
-msgstr ""
+msgstr "ポンド"
 
 msgid "Pre-filled for a new item when expiry is Fixed Duration."
 msgstr "有効期限が固定期間の場合、新しい品目に対して事前入力されます。"
@@ -6270,13 +6276,13 @@ msgid "Prefix"
 msgstr "プレフィックス"
 
 msgid "Prepaid/ Pro forma"
-msgstr ""
+msgstr "プリペイド/プロフォーマ"
 
 msgid "Prev"
 msgstr "前へ"
 
 msgid "Preventive Action"
-msgstr ""
+msgstr "予防措置"
 
 msgid "Preview"
 msgstr "プレビュー"
@@ -6377,7 +6383,7 @@ msgid "Process"
 msgstr "プロセス"
 
 msgid "Process Deviation"
-msgstr ""
+msgstr "プロセス逸脱"
 
 msgid "Process Name"
 msgstr "プロセス名"
@@ -6500,7 +6506,7 @@ msgid "Purchase Qty"
 msgstr "購入数量"
 
 msgid "Purchase Tax Payable"
-msgstr ""
+msgstr "購買税支払"
 
 msgid "Purchase to Order"
 msgstr "購入注文"
@@ -6521,20 +6527,20 @@ msgid "Purchasing Contact"
 msgstr "購買担当者"
 
 msgid "Purchasing RFQ"
-msgstr ""
+msgstr "購入RFQ"
 
 msgid "Purchasing Unit of Measure"
 msgstr "購買単位"
 
 msgid "Push record changes to external systems the moment they happen."
-msgstr "レコードの変更が発生した瞬間に外部システムにプッシュします。"
+msgstr ""
 
 #. placeholder {0}: row.original.replenishmentSystem === "Make" ? "Job" : "Order"
 msgid "QR Code to create a {0} for this kanban"
-msgstr "このカンバンの{0}を作成するためのQRコード"
+msgstr ""
 
 msgid "QR Code to start the next operation for this kanban"
-msgstr "このカンバンの次の操作を開始するためのQRコード"
+msgstr ""
 
 msgid "Qty"
 msgstr ""
@@ -6706,7 +6712,7 @@ msgid "Receipts"
 msgstr "領収書"
 
 msgid "Receivables"
-msgstr ""
+msgstr "売掛金"
 
 msgid "Receive"
 msgstr "受け取る"
@@ -6798,7 +6804,7 @@ msgid "Remove {0}"
 msgstr "{0}を削除"
 
 msgid "Remove condition"
-msgstr "条件を削除"
+msgstr ""
 
 msgid "Remove feature"
 msgstr ""
@@ -6983,7 +6989,7 @@ msgid "Results per page"
 msgstr "ページあたりの結果数"
 
 msgid "Retained Earnings"
-msgstr ""
+msgstr "利益剰余金"
 
 msgid "Retry"
 msgstr "再試行"
@@ -6995,7 +7001,7 @@ msgid "Rev {revision}"
 msgstr "Rev {revision}"
 
 msgid "Revenue"
-msgstr ""
+msgstr "収益"
 
 msgid "Reverse all inventory adjustments"
 msgstr "すべての在庫調整を取り消す"
@@ -7007,7 +7013,7 @@ msgid "Reverse any item ledger entries from this invoice"
 msgstr "このインボイスからのアイテム台帳エントリをすべて取り消す"
 
 msgid "Reverse Charge Tax Payable"
-msgstr ""
+msgstr "未払いのリバースチャージ税"
 
 msgid "Reverse the related journal entries"
 msgstr "関連する仕訳エントリを取り消す"
@@ -7032,7 +7038,7 @@ msgid "RFQ"
 msgstr "RFQ"
 
 msgid "RFQ (Sales)"
-msgstr ""
+msgstr "RFQ （セールス）"
 
 msgid "RFQ Date"
 msgstr "RFQ日付"
@@ -7071,13 +7077,13 @@ msgid "Role:"
 msgstr "役割:"
 
 msgid "Roll"
-msgstr ""
+msgstr "ロール"
 
 msgid "Root Cause Analysis"
-msgstr ""
+msgstr "OEEロス分析"
 
 msgid "Rounding Account"
-msgstr ""
+msgstr "四捨五入アカウント"
 
 msgid "Route all AP invoices to one address (e.g. corporate headquarters) instead of individual purchasers."
 msgstr ""
@@ -7089,7 +7095,7 @@ msgid "rows"
 msgstr "行"
 
 msgid "Rule"
-msgstr "ルール"
+msgstr ""
 
 msgid "Rule applies to every customer."
 msgstr "ルールはすべての顧客に適用されます。"
@@ -7101,7 +7107,7 @@ msgid "Rule Type"
 msgstr "ルールタイプ"
 
 msgid "Rules"
-msgstr "ルール"
+msgstr ""
 
 msgid "Run Test"
 msgstr "テストを実行"
@@ -7134,7 +7140,7 @@ msgid "Sales Contact"
 msgstr "営業担当者"
 
 msgid "Sales Discounts"
-msgstr ""
+msgstr "売上割引"
 
 msgid "Sales Funnel"
 msgstr "営業ファネル"
@@ -7176,7 +7182,7 @@ msgid "Sales Revenue"
 msgstr "売上収益"
 
 msgid "Sales Tax Payable"
-msgstr ""
+msgstr "売上税支払"
 
 msgid "Sample"
 msgstr "サンプル"
@@ -7221,7 +7227,7 @@ msgid "Scan or enter tracked entity ID, serial, or batch"
 msgstr "スキャンするか、追跡対象エンティティID、シリアル番号、またはバッチ番号を入力してください"
 
 msgid "Scan or search..."
-msgstr "スキャンまたは検索..."
+msgstr "または、検索"
 
 msgid "Scan or select a tracked entity from this lot and record the inspection result."
 msgstr "このロットから追跡対象エンティティをスキャンまたは選択し、検査結果を記録してください。"
@@ -7299,7 +7305,7 @@ msgid "Search employees..."
 msgstr "従業員を検索..."
 
 msgid "Search fields..."
-msgstr "フィールドを検索..."
+msgstr ""
 
 msgid "Search for existing or create a new one"
 msgstr "既存のものを検索するか、新しいものを作成してください"
@@ -7308,7 +7314,7 @@ msgid "Search Job"
 msgstr "ジョブを検索"
 
 msgid "Search operators..."
-msgstr "オペレーターを検索..."
+msgstr ""
 
 msgid "Search processes..."
 msgstr "プロセスを検索..."
@@ -7405,7 +7411,7 @@ msgid "Select Employee Type"
 msgstr "従業員タイプを選択"
 
 msgid "Select field"
-msgstr "フィールドを選択"
+msgstr ""
 
 msgid "Select Gauge"
 msgstr "ゲージを選択"
@@ -7438,16 +7444,16 @@ msgid "Select Supplier Type"
 msgstr "仕入先タイプを選択"
 
 msgid "Select surfaces"
-msgstr "サーフェスを選択"
+msgstr ""
 
 msgid "Select the groups that should complete this training"
 msgstr "このトレーニングを完了する必要があるグループを選択してください"
 
 msgid "Select value"
-msgstr "値を選択"
+msgstr ""
 
 msgid "Select values"
-msgstr "値を選択"
+msgstr ""
 
 msgid "Selected"
 msgstr "選択済み"
@@ -7469,10 +7475,10 @@ msgid "Send"
 msgstr "送信"
 
 msgid "Send Invite"
-msgstr "招待を送信"
+msgstr ""
 
 msgid "Send Invites"
-msgstr "招待を送信"
+msgstr ""
 
 msgid "Send RFQ to Suppliers"
 msgstr "RFQをサプライヤーに送信"
@@ -7514,7 +7520,7 @@ msgid "Serial/Batch #"
 msgstr "シリアル/バッチ #"
 
 msgid "Service Charge Account"
-msgstr ""
+msgstr "サービス料口座"
 
 msgid "Set Clock Out"
 msgstr "クロックアウトを設定"
@@ -7704,10 +7710,10 @@ msgid "Show sync options"
 msgstr "同期オプションを表示"
 
 msgid "Shown as a faint background behind every page of generated PDFs"
-msgstr "生成されたPDFの各ページの背景に薄く表示されます"
+msgstr ""
 
 msgid "Shown to the user when this rule fails."
-msgstr "このルールが失敗したときにユーザーに表示されます。"
+msgstr ""
 
 msgid "Sign in with Email"
 msgstr "メールでサインイン"
@@ -7905,7 +7911,7 @@ msgid "Steps"
 msgstr "ステップ"
 
 msgid "Stock Transfer"
-msgstr ""
+msgstr "株式譲渡"
 
 msgid "Stock Transfer ID"
 msgstr "在庫移動ID"
@@ -8043,7 +8049,7 @@ msgid "Supplier Invoice Number"
 msgstr "仕入先請求書番号"
 
 msgid "Supplier Issue"
-msgstr ""
+msgstr "サプライヤーの問題"
 
 msgid "Supplier Location"
 msgstr "仕入先の場所"
@@ -8052,7 +8058,7 @@ msgid "Supplier Order Number"
 msgstr "仕入先注文番号"
 
 msgid "Supplier Overview"
-msgstr "仕入先概要"
+msgstr ""
 
 msgid "Supplier Part ID"
 msgstr "仕入先部品ID"
@@ -8064,7 +8070,7 @@ msgid "Supplier Parts"
 msgstr "サプライヤー部品"
 
 msgid "Supplier Payment Discounts"
-msgstr ""
+msgstr "サプライヤー支払割引"
 
 msgid "Supplier Processes"
 msgstr "サプライヤープロセス"
@@ -8125,7 +8131,7 @@ msgid "Supports {0} files"
 msgstr "{0} ファイルに対応しています"
 
 msgid "Surfaces"
-msgstr "サーフェス"
+msgstr ""
 
 msgid "Suspected Failure Mode"
 msgstr "疑わしい故障モード"
@@ -8214,6 +8220,9 @@ msgstr "税:"
 msgid "Temperature"
 msgstr "温度"
 
+msgid "Template"
+msgstr ""
+
 msgid "Template ID"
 msgstr ""
 
@@ -8233,7 +8242,7 @@ msgid "Test Value"
 msgstr "テスト値"
 
 msgid "Testing Failure"
-msgstr ""
+msgstr "テストに失敗しました"
 
 msgid "Text size"
 msgstr ""
@@ -8257,7 +8266,7 @@ msgid "The endpoint that receives a POST request with the updated data when the 
 msgstr "テーブルが更新されたときに、更新されたデータを含むPOSTリクエストを受け取るエンドポイント"
 
 msgid "The following assemblies have no operations. Please assign an operation to each before releasing."
-msgstr "以下のアセンブリには操作がありません。リリースする前に、それぞれに操作を割り当ててください。"
+msgstr ""
 
 msgid "The following line items are missing prices or lead times:"
 msgstr "以下の行項目は価格またはリードタイムが不足しています:"
@@ -8476,7 +8485,7 @@ msgid "Tolerance (+/-)"
 msgstr "許容範囲 (+/-)"
 
 msgid "Ton"
-msgstr ""
+msgstr "トン"
 
 msgid "Tool"
 msgstr "工具"
@@ -8566,7 +8575,7 @@ msgid "Training Assignments"
 msgstr "研修割り当て"
 
 msgid "Training Issue"
-msgstr ""
+msgstr "トレーニングに関する問題"
 
 msgid "Trainings"
 msgstr "トレーニング"
@@ -8608,7 +8617,7 @@ msgid "Travel & Entertainment"
 msgstr ""
 
 msgid "Trial Balance"
-msgstr "試算表"
+msgstr ""
 
 msgid "Triggers"
 msgstr ""
@@ -8647,7 +8656,7 @@ msgid "Unapproved Supplier"
 msgstr "未承認サプライヤー"
 
 msgid "Unassign rule"
-msgstr "ルールの割り当てを解除"
+msgstr ""
 
 msgid "Unassigned"
 msgstr "未割り当て"
@@ -8761,7 +8770,7 @@ msgid "Updated"
 msgstr "更新済み"
 
 msgid "Updated account"
-msgstr "アカウントを更新しました"
+msgstr ""
 
 msgid "Updated At"
 msgstr "更新日時"
@@ -8773,7 +8782,7 @@ msgid "Updated successfully"
 msgstr "正常に更新されました"
 
 msgid "Upgrade"
-msgstr "アップグレード"
+msgstr ""
 
 msgid "Upgrade to Business"
 msgstr "ビジネスプランにアップグレード"
@@ -8902,7 +8911,7 @@ msgid "Vehicles"
 msgstr ""
 
 msgid "Verification"
-msgstr ""
+msgstr "検証"
 
 msgid "Verification Error"
 msgstr "認証エラー"
@@ -9079,7 +9088,7 @@ msgid "Warehouse Transfers"
 msgstr "倉庫間転送"
 
 msgid "Warn"
-msgstr "警告"
+msgstr ""
 
 msgid "Warn but allow"
 msgstr "警告するが許可する"
@@ -9217,7 +9226,7 @@ msgid "Work Centers"
 msgstr "作業センター"
 
 msgid "Work In Progress (WIP)"
-msgstr ""
+msgstr "進行中の作業（ WIP ）"
 
 msgid "Work Instructions"
 msgstr "作業指示"
@@ -9235,7 +9244,7 @@ msgid "Worst Performing Machines"
 msgstr "最も性能が低い機械"
 
 msgid "Yard"
-msgstr ""
+msgstr "ヤード"
 
 msgid "Year"
 msgstr "年"
