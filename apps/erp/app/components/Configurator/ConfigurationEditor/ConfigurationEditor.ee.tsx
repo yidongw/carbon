@@ -26,9 +26,9 @@ import {
   LuSquareFunction,
   LuTrash2
 } from "react-icons/lu";
-import { useFetcher, useParams } from "react-router";
-import type { action } from "~/routes/x+/part+/$itemId.rule";
-import { path } from "~/utils/path";
+import { useFetcher } from "react-router";
+import type { ConfigurationRuleBindings } from "~/modules/items";
+import type { action as configurationRuleAction } from "~/routes/x+/part+/$itemId.rule";
 import { ConfirmDelete } from "../../Modals";
 import type { Configuration, Parameter, ParameterInput } from "../types";
 import { typeMap } from "../types";
@@ -46,13 +46,15 @@ interface ConfiguratorProps {
   parameters: ParameterInput[];
   open: boolean;
   onClose: () => void;
+  configurationRuleBindings: ConfigurationRuleBindings;
 }
 
 export default function Configurator({
   configuration,
   open,
   parameters: defaultParameters,
-  onClose
+  onClose,
+  configurationRuleBindings
 }: ConfiguratorProps) {
   const { t } = useLingui();
   const { code: defaultCode, defaultValue, label, returnType } = configuration;
@@ -169,9 +171,10 @@ export default function Configurator({
     }
   }, [parameters, monaco, editor, returnType]);
 
-  const { itemId } = useParams();
-  if (!itemId) throw new Error("Could not find itemId");
-  const fetcher = useFetcher<typeof action>();
+  const saveRuleAction = configurationRuleBindings.save;
+  const deleteRuleAction = (field: string) =>
+    configurationRuleBindings.delete(field);
+  const fetcher = useFetcher<typeof configurationRuleAction>();
 
   const getCodeToSave = () => {
     const lines = code.split("\n");
@@ -200,7 +203,7 @@ export default function Configurator({
     formData.append("field", configuration.field);
     fetcher.submit(formData, {
       method: "post",
-      action: path.to.configurationRule(itemId)
+      action: saveRuleAction
     });
   };
 
@@ -426,7 +429,7 @@ export default function Configurator({
       {isActive && deleteDialog.isOpen && (
         <ConfirmDelete
           isOpen={deleteDialog.isOpen}
-          action={path.to.deleteConfigurationRule(itemId, configuration.field)}
+          action={deleteRuleAction(configuration.field)}
           name={label}
           text={t`Are you sure you want to deactivate the ${label} configuration rule?`}
           onCancel={deleteDialog.onClose}

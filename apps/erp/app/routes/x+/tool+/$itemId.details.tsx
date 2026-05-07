@@ -19,6 +19,8 @@ import {
   getMethodMaterialsByMakeMethod,
   getMethodOperationsByMakeMethodId,
   itemManufacturingValidator,
+  methodBindings,
+  partConfigurationRuleBindings,
   toolValidator,
   upsertItemManufacturing,
   upsertTool
@@ -231,6 +233,10 @@ export default function ToolDetailsRoute() {
             <>
               <BillOfMaterial
                 key={`bom:${itemId}`}
+                methodBindings={methodBindings(itemId)}
+                configurationRuleBindings={partConfigurationRuleBindings(
+                  itemId
+                )}
                 makeMethod={methodData.makeMethod}
                 // @ts-ignore
                 materials={methodData.methodMaterials ?? []}
@@ -240,6 +246,10 @@ export default function ToolDetailsRoute() {
               />
               <BillOfProcess
                 key={`bop:${itemId}`}
+                methodBindings={methodBindings(itemId)}
+                configurationRuleBindings={partConfigurationRuleBindings(
+                  itemId
+                )}
                 makeMethod={methodData.makeMethod}
                 // @ts-ignore
                 operations={methodData.methodOperations ?? []}

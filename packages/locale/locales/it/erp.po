@@ -13,7 +13,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
-msgstr "Un fornitore è un'azienda o una persona che ti vende parti o servizi."
+msgstr ""
 
 #. placeholder {0}: fieldDef?.label ?? condition.field
 msgid "\"{0}\" isn't available on the selected surface(s). Pick another field."
@@ -302,7 +302,7 @@ msgid "Add Company"
 msgstr "Aggiungi Azienda"
 
 msgid "Add condition"
-msgstr "Aggiungi condizione"
+msgstr ""
 
 msgid "Add Contractor"
 msgstr "Aggiungi Appaltatore"
@@ -314,7 +314,7 @@ msgid "Add Feature"
 msgstr ""
 
 msgid "Add from library…"
-msgstr "Aggiungi dalla libreria…"
+msgstr ""
 
 msgid "Add Group"
 msgstr "Aggiungi Gruppo"
@@ -362,7 +362,7 @@ msgid "Add Question"
 msgstr "Aggiungi Domanda"
 
 msgid "Add Receipt"
-msgstr "Aggiungi Ricevuta"
+msgstr ""
 
 msgid "Add Required Actions"
 msgstr "Aggiungi Azioni Richieste"
@@ -377,13 +377,13 @@ msgid "Add Row"
 msgstr ""
 
 msgid "Add rule"
-msgstr "Aggiungi regola"
+msgstr ""
 
 msgid "Add Selector"
 msgstr ""
 
 msgid "Add Shipment"
-msgstr "Aggiungi Spedizione"
+msgstr ""
 
 msgid "Add Shipping"
 msgstr "Aggiungi Spedizione"
@@ -467,10 +467,10 @@ msgid "All Work Centers"
 msgstr "Tutti i centri di lavoro"
 
 msgid "Allows acknowledge & continue"
-msgstr "Consente di riconoscere e continuare"
+msgstr ""
 
 msgid "Alpha"
-msgstr "Alpha"
+msgstr ""
 
 msgid "Always"
 msgstr "Sempre"
@@ -530,7 +530,7 @@ msgid "API keys for programmatic access to your Carbon data."
 msgstr ""
 
 msgid "Applies to"
-msgstr "Si applica a"
+msgstr ""
 
 msgid "Applies to all"
 msgstr ""
@@ -671,7 +671,7 @@ msgstr "Sei sicuro di voler eliminare l'attributo {name} da questa operazione? Q
 #. placeholder {0}: account.name
 #. placeholder {1}: account.number ? ` (${account.number})` : ""
 msgid "Are you sure you want to delete the account: {0}{1}? This cannot be undone."
-msgstr "Sei sicuro di voler eliminare l'account: {0}{1}? Questa azione non può essere annullata."
+msgstr ""
 
 #. placeholder {0}: apiKey.name
 msgid "Are you sure you want to delete the API key: {0}? This cannot be undone."
@@ -913,10 +913,10 @@ msgid "Are you sure you want to revoke the invitations for these users?"
 msgstr "Sei sicuro di voler revocare gli inviti per questi utenti?"
 
 msgid "Are you sure you want to send an invite to these users?"
-msgstr "Sei sicuro di voler inviare un invito a questi utenti?"
+msgstr ""
 
 msgid "Are you sure you want to send an invite to this user?"
-msgstr "Sei sicuro di voler inviare un invito a questo utente?"
+msgstr ""
 
 msgid "Are you sure you want to void this purchase invoice? This action will reverse all financial transactions and cannot be undone."
 msgstr "Sei sicuro di voler annullare questa fattura di acquisto? Questa azione invertirà tutte le transazioni finanziarie e non può essere annullata."
@@ -949,7 +949,7 @@ msgid "Asset Classes"
 msgstr ""
 
 msgid "Assets"
-msgstr ""
+msgstr "Assets"
 
 msgid "Assign printers to locations. Shipping, receiving, and work centers inherit the location default unless overridden."
 msgstr ""
@@ -979,7 +979,7 @@ msgid "Assigns this storage unit to a work center (lineside)"
 msgstr ""
 
 msgid "At least one condition must match"
-msgstr "Almeno una condizione deve corrispondere"
+msgstr ""
 
 msgid "Attach File"
 msgstr "Allega File"
@@ -1069,13 +1069,13 @@ msgid "Backflush"
 msgstr "Scarico automatico"
 
 msgid "Balance Sheet"
-msgstr "Bilancio"
+msgstr "Stato patrimoniale"
 
 msgid "Balloon"
 msgstr ""
 
 msgid "Base Currency"
-msgstr "Valuta di Base"
+msgstr "Valuta di base"
 
 msgid "Base Price"
 msgstr "Prezzo Base"
@@ -1136,7 +1136,7 @@ msgid "Blocked by {0}"
 msgstr "Bloccato da {0}"
 
 msgid "Blocks save until resolved"
-msgstr "Blocca il salvataggio fino alla risoluzione"
+msgstr ""
 
 msgid "BoM"
 msgstr "BoM"
@@ -1151,7 +1151,7 @@ msgid "Breadcrumb"
 msgstr "Breadcrumb"
 
 msgid "Browse library"
-msgstr "Sfoglia libreria"
+msgstr ""
 
 msgid "Bucket"
 msgstr "Bucket"
@@ -1262,7 +1262,7 @@ msgid "Cannot place order - no supplier associated with this item"
 msgstr "Impossibile effettuare l'ordine - nessun fornitore associato a questo articolo"
 
 msgid "Cannot post — shipment contains expired tracked entities."
-msgstr "Impossibile registrare — la spedizione contiene entità tracciate scadute."
+msgstr ""
 
 msgid "Cannot send RFQ"
 msgstr "Impossibile inviare RFQ"
@@ -1455,7 +1455,7 @@ msgid "Coming soon"
 msgstr "Disponibile presto"
 
 msgid "comma-separated values"
-msgstr "valori separati da virgola"
+msgstr ""
 
 msgid "Comment"
 msgstr "Commento"
@@ -1470,7 +1470,7 @@ msgid "Company"
 msgstr "Azienda"
 
 msgid "Company Name"
-msgstr "Nome Azienda"
+msgstr "Nome società"
 
 msgid "Company policy asks for a different person to inspect inbound items than the one who received them."
 msgstr "La politica aziendale richiede che una persona diversa ispezionare gli articoli in entrata rispetto a quella che li ha ricevuti."
@@ -1524,7 +1524,7 @@ msgid "Completion Time"
 msgstr "Tempo di completamento"
 
 msgid "Conditions"
-msgstr "Condizioni"
+msgstr ""
 
 msgid "Configuration Parameters"
 msgstr "Parametri di Configurazione"
@@ -1566,7 +1566,7 @@ msgid "Configure the default accounts used for various transaction types across 
 msgstr "Configura gli account predefiniti utilizzati per vari tipi di transazioni nel tuo sistema"
 
 msgid "Configure the start months for your fiscal and tax years"
-msgstr "Configura i mesi di inizio per i tuoi anni fiscali e fiscali"
+msgstr ""
 
 msgid "Configure when purchased item costs should be updated from supplier transactions."
 msgstr ""
@@ -1720,7 +1720,7 @@ msgid "Copy Job number"
 msgstr "Copia numero lavoro"
 
 msgid "Copy link"
-msgstr "Copia link"
+msgstr "Copiare link"
 
 msgid "Copy link to consumable"
 msgstr "Copia il collegamento al consumabile"
@@ -1816,10 +1816,10 @@ msgid "Correct Answers"
 msgstr "Risposte Corrette"
 
 msgid "Cost Center"
-msgstr "Centro di costo"
+msgstr ""
 
 msgid "Cost Centers"
-msgstr "Centri di Costo"
+msgstr ""
 
 msgid "Cost History"
 msgstr "Storico dei Costi"
@@ -1831,7 +1831,7 @@ msgid "Costing & Posting"
 msgstr "Determinazione costi e registrazione"
 
 msgid "Costing Method"
-msgstr "Metodo di Determinazione dei Costi"
+msgstr ""
 
 msgid "Could not analyze cropped region"
 msgstr ""
@@ -1898,7 +1898,7 @@ msgid "Create Kanban"
 msgstr "Crea Kanban"
 
 msgid "Create new rule"
-msgstr "Crea nuova regola"
+msgstr ""
 
 msgid "Create Quote Revision"
 msgstr "Crea Revisione Preventivo"
@@ -1922,7 +1922,7 @@ msgid "Created"
 msgstr "Creato"
 
 msgid "Created account"
-msgstr "Account creato"
+msgstr ""
 
 msgid "Created At"
 msgstr "Creato il"
@@ -2017,7 +2017,7 @@ msgstr "Tipo di archiviazione creato"
 
 #. placeholder {0}: fetcher.data.data.name
 msgid "Created supplier: {0}"
-msgstr "Fornitore creato: {0}"
+msgstr ""
 
 msgid "Created tool"
 msgstr "Strumento creato"
@@ -2453,7 +2453,7 @@ msgid "Delete Rule"
 msgstr "Elimina Regola"
 
 msgid "Delete Sales Invoice"
-msgstr "Elimina Fattura di Vendita"
+msgstr ""
 
 msgid "Delete Sales Order"
 msgstr "Elimina Ordine di Vendita"
@@ -2591,7 +2591,7 @@ msgid "Dimensions"
 msgstr "Dimensioni"
 
 msgid "Direct"
-msgstr "Diretto"
+msgstr ""
 
 msgid "Disabled"
 msgstr "Disabilitato"
@@ -2760,7 +2760,7 @@ msgid "Edit"
 msgstr "Modifica"
 
 msgid "Edit Account"
-msgstr "Modifica Account"
+msgstr ""
 
 msgid "Edit API Key"
 msgstr "Modifica Chiave API"
@@ -2928,7 +2928,7 @@ msgid "Edit Revision"
 msgstr "Modifica Revisione"
 
 msgid "Edit rule"
-msgstr "Modifica regola"
+msgstr ""
 
 msgid "Edit Rule"
 msgstr "Modifica Regola"
@@ -3057,7 +3057,7 @@ msgid "Enable digital quotes for your company. This will allow you to send digit
 msgstr "Abilita le quotazioni digitali per la tua azienda. Questo ti permetterà di inviare quotazioni digitali ai tuoi clienti e consentire loro di accettarle online."
 
 msgid "Enable full accrual accounting with journal entries, financial reports, and general ledger posting."
-msgstr "Abilita la contabilità per competenza completa con registrazioni contabili, report finanziari e registrazione della contabilità generale."
+msgstr ""
 
 msgid "Enable in Settings"
 msgstr "Abilita nelle Impostazioni"
@@ -3105,7 +3105,7 @@ msgid "End Time"
 msgstr "Ora di fine"
 
 msgid "Enforce per-item validation and guidelines across receipts, shipments, transfers, and adjustments."
-msgstr "Applica la convalida per articolo e le linee guida su ricevute, spedizioni, trasferimenti e rettifiche."
+msgstr ""
 
 msgid "Engineering Contact"
 msgstr "Contatto Tecnico"
@@ -3234,7 +3234,7 @@ msgid "Events"
 msgstr "Eventi"
 
 msgid "Every condition must match"
-msgstr "Ogni condizione deve corrispondere"
+msgstr ""
 
 msgid "Everything from Starter"
 msgstr "Tutto da Starter"
@@ -3246,7 +3246,7 @@ msgid "Exchange Rate"
 msgstr "Tasso di Cambio"
 
 msgid "Exchange Rates"
-msgstr "Tassi di Cambio"
+msgstr ""
 
 msgid "Expand"
 msgstr "Espandi"
@@ -3453,7 +3453,7 @@ msgstr "Impossibile creare il tipo di archiviazione: {0}"
 
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create supplier: {0}"
-msgstr "Impossibile creare il fornitore: {0}"
+msgstr ""
 
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create tool: {0}"
@@ -3669,7 +3669,7 @@ msgid "Fetch"
 msgstr "Recupera"
 
 msgid "Field"
-msgstr "Campo"
+msgstr ""
 
 msgid "Field info"
 msgstr ""
@@ -3740,7 +3740,7 @@ msgid "First Operation"
 msgstr "Prima Operazione"
 
 msgid "Fiscal Year"
-msgstr "Anno Fiscale"
+msgstr ""
 
 msgid "Fiscal Year Settings"
 msgstr "Impostazioni Anno Fiscale"
@@ -3755,7 +3755,7 @@ msgid "Fixed Asset"
 msgstr ""
 
 msgid "Fixed Assets"
-msgstr ""
+msgstr "Immobilizzazioni"
 
 msgid "Fixed Reorder"
 msgstr "Riordino Fisso"
@@ -3843,7 +3843,7 @@ msgid "Get Method"
 msgstr "Ottieni Metodo"
 
 msgid "GL Account"
-msgstr "Conto Contabile"
+msgstr ""
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -4008,7 +4008,7 @@ msgid "Includes tax and shipping costs"
 msgstr "Include tasse e costi di spedizione"
 
 msgid "Income Statement"
-msgstr "Conto Economico"
+msgstr "Rendiconto Finanziario"
 
 msgid "Income/Balance"
 msgstr "Reddito/Saldo"
@@ -4023,7 +4023,7 @@ msgid "Incoterm Location"
 msgstr "Luogo Incoterm"
 
 msgid "Indirect"
-msgstr "Indiretto"
+msgstr ""
 
 msgid "Infrastructure"
 msgstr "Infrastruttura"
@@ -4038,7 +4038,7 @@ msgid "Insert rows"
 msgstr "Inserisci righe"
 
 msgid "Insert token"
-msgstr "Inserisci token"
+msgstr ""
 
 msgid "Inspect"
 msgstr "Ispeziona"
@@ -4086,7 +4086,7 @@ msgid "Integrations"
 msgstr "Integrazioni"
 
 msgid "Intercompany"
-msgstr "Interaziendale"
+msgstr ""
 
 msgid "Internal"
 msgstr "Interno"
@@ -4309,7 +4309,7 @@ msgid "Join {0}"
 msgstr "Unisciti a {0}"
 
 msgid "Journal Entries"
-msgstr "Registrazioni Contabili"
+msgstr ""
 
 msgid "Kanban"
 msgstr "Kanban"
@@ -4339,14 +4339,14 @@ msgid "Label"
 msgstr "Etichetta"
 
 msgid "Label to complete the current operation for this kanban"
-msgstr "Etichetta per completare l'operazione corrente per questo kanban"
+msgstr ""
 
 #. placeholder {0}: row.original.replenishmentSystem === "Make" ? "Job" : "Order"
 msgid "Label to create a {0} for this kanban"
-msgstr "Etichetta per creare un {0} per questo kanban"
+msgstr ""
 
 msgid "Label to start the next operation for this kanban"
-msgstr "Etichetta per avviare l'operazione successiva per questo kanban"
+msgstr ""
 
 msgid "Labels"
 msgstr "Etichette"
@@ -4422,7 +4422,7 @@ msgid "Let's build something"
 msgstr "Costruiamo qualcosa"
 
 msgid "Let's set up your new company"
-msgstr "Configuriamo la tua nuova azienda"
+msgstr ""
 
 msgid "Let's setup your account"
 msgstr "Configuriamo il tuo account"
@@ -4676,22 +4676,22 @@ msgid "Mark to delete"
 msgstr "Segna per eliminare"
 
 msgid "Match"
-msgstr "Corrispondenza"
+msgstr ""
 
 msgid "Match all"
-msgstr "Corrisponde a tutti"
+msgstr ""
 
 msgid "Match all (AND)"
 msgstr ""
 
 msgid "Match any"
-msgstr "Corrisponde a uno qualsiasi"
+msgstr ""
 
 msgid "Match any (OR)"
 msgstr ""
 
 msgid "Match none"
-msgstr "Non corrispondere a nessuno"
+msgstr ""
 
 msgid "matches"
 msgstr "corrisponde"
@@ -4799,7 +4799,7 @@ msgid "MES"
 msgstr ""
 
 msgid "Message"
-msgstr "Messaggio"
+msgstr ""
 
 msgid "Method"
 msgstr "Metodo"
@@ -5134,7 +5134,7 @@ msgid "New RFQ"
 msgstr "Nuovo RFQ"
 
 msgid "New rule"
-msgstr "Nuova regola"
+msgstr ""
 
 msgid "New Rule"
 msgstr "Nuova Regola"
@@ -5173,10 +5173,13 @@ msgid "New Storage Unit"
 msgstr "Nuova Unità di Stoccaggio"
 
 msgid "New Supplier"
-msgstr "Nuovo Fornitore"
+msgstr ""
 
 msgid "New Supplier Part"
 msgstr "Nuovo Fornitore Parte"
+
+msgid "New Template"
+msgstr ""
 
 msgid "New Timecard"
 msgstr "Nuovo Foglio Presenze"
@@ -5200,7 +5203,7 @@ msgid "New Version"
 msgstr "Nuova Versione"
 
 msgid "New Warehouse Transfer"
-msgstr "Nuovo Trasferimento Magazzino"
+msgstr ""
 
 msgid "New Webhook"
 msgstr "Nuovo Webhook"
@@ -5289,7 +5292,7 @@ msgid "No completed jobs within range"
 msgstr "Nessun lavoro completato nell'intervallo"
 
 msgid "No condition may match"
-msgstr "Nessuna condizione può corrispondere"
+msgstr ""
 
 msgid "No conversion is required"
 msgstr "Nessuna conversione richiesta"
@@ -5322,7 +5325,7 @@ msgid "No employees found"
 msgstr "Nessun dipendente trovato"
 
 msgid "No fields found."
-msgstr "Nessun campo trovato."
+msgstr ""
 
 msgid "No files"
 msgstr "Nessun file"
@@ -5352,7 +5355,7 @@ msgid "No logo uploaded"
 msgstr "Nessun logo caricato"
 
 msgid "No matches"
-msgstr "Nessuna corrispondenza"
+msgstr "Nessuna partita"
 
 msgid "No matches for \"{query}\". Try a different search term."
 msgstr "Nessuna corrispondenza per \"{query}\". Prova un termine di ricerca diverso."
@@ -5367,7 +5370,7 @@ msgid "No operations require picking at this location"
 msgstr ""
 
 msgid "No operators."
-msgstr "Nessun operatore."
+msgstr ""
 
 msgid "No option found."
 msgstr "Nessuna opzione trovata."
@@ -5427,7 +5430,7 @@ msgid "No results found"
 msgstr "Nessun risultato trovato"
 
 msgid "No rules assigned"
-msgstr "Nessuna regola assegnata"
+msgstr ""
 
 msgid "No samples inspected yet."
 msgstr "Nessun campione ispezionato ancora."
@@ -5445,10 +5448,10 @@ msgid "No time entries for this week"
 msgstr "Nessuna registrazione oraria per questa settimana"
 
 msgid "No value needed"
-msgstr "Nessun valore necessario"
+msgstr ""
 
 msgid "No values available"
-msgstr "Nessun valore disponibile"
+msgstr ""
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr ""
@@ -5612,6 +5615,9 @@ msgstr "Programmato Aperto"
 msgid "Open task details"
 msgstr "Apri dettagli attività"
 
+msgid "Open Template"
+msgstr ""
+
 msgid "Operation"
 msgstr "Operazione"
 
@@ -5649,7 +5655,7 @@ msgid "Optional"
 msgstr "Facoltativo"
 
 msgid "Optional context for this rule"
-msgstr "Contesto facoltativo per questa regola"
+msgstr ""
 
 msgid "Options"
 msgstr "Opzioni"
@@ -5769,7 +5775,7 @@ msgid "Parent Department"
 msgstr "Dipartimento Principale"
 
 msgid "Parent Group"
-msgstr "Gruppo Padre"
+msgstr ""
 
 msgid "Parent Item"
 msgstr ""
@@ -5838,7 +5844,7 @@ msgid "PDF Preview"
 msgstr ""
 
 msgid "PDF Watermark"
-msgstr "Filigrana PDF"
+msgstr ""
 
 msgid "Pending"
 msgstr "In sospeso"
@@ -5886,7 +5892,7 @@ msgid "Pick a column to sort by"
 msgstr "Scegli una colonna per ordinare"
 
 msgid "Pick a customer or customer type to view their pricing."
-msgstr "Seleziona un cliente o un tipo di cliente per visualizzare i loro prezzi."
+msgstr "Scegli un cliente o un tipo di cliente per visualizzare i suoi prezzi."
 
 msgid "Pick a date or leave blank to clear it."
 msgstr "Scegli una data o lascia vuoto per cancellarla."
@@ -6281,14 +6287,14 @@ msgid "Purchasing Unit of Measure"
 msgstr "Unità di Misura di Acquisto"
 
 msgid "Push record changes to external systems the moment they happen."
-msgstr "Invia le modifiche dei record ai sistemi esterni nel momento in cui si verificano."
+msgstr ""
 
 #. placeholder {0}: row.original.replenishmentSystem === "Make" ? "Job" : "Order"
 msgid "QR Code to create a {0} for this kanban"
-msgstr "Codice QR per creare un {0} per questo kanban"
+msgstr ""
 
 msgid "QR Code to start the next operation for this kanban"
-msgstr "Codice QR per avviare l'operazione successiva per questo kanban"
+msgstr ""
 
 msgid "Qty"
 msgstr ""
@@ -6549,7 +6555,7 @@ msgid "Remove {0}"
 msgstr "Rimuovi {0}"
 
 msgid "Remove condition"
-msgstr "Rimuovi condizione"
+msgstr ""
 
 msgid "Remove feature"
 msgstr ""
@@ -6813,7 +6819,7 @@ msgid "rows"
 msgstr "righe"
 
 msgid "Rule"
-msgstr "Regola"
+msgstr ""
 
 msgid "Rule applies to every customer."
 msgstr "La regola si applica a ogni cliente."
@@ -6825,7 +6831,7 @@ msgid "Rule Type"
 msgstr "Tipo di Regola"
 
 msgid "Rules"
-msgstr "Regole"
+msgstr ""
 
 msgid "Run Test"
 msgstr "Esegui Test"
@@ -7015,7 +7021,7 @@ msgid "Search employees..."
 msgstr "Cerca dipendenti..."
 
 msgid "Search fields..."
-msgstr "Cerca campi..."
+msgstr ""
 
 msgid "Search for existing or create a new one"
 msgstr "Cerca uno esistente o creane uno nuovo"
@@ -7024,7 +7030,7 @@ msgid "Search Job"
 msgstr "Cerca Job"
 
 msgid "Search operators..."
-msgstr "Cerca operatori..."
+msgstr ""
 
 msgid "Search processes..."
 msgstr "Cerca processi..."
@@ -7121,7 +7127,7 @@ msgid "Select Employee Type"
 msgstr "Seleziona Tipo di Dipendente"
 
 msgid "Select field"
-msgstr "Seleziona campo"
+msgstr ""
 
 msgid "Select Gauge"
 msgstr "Seleziona Calibro"
@@ -7154,16 +7160,16 @@ msgid "Select Supplier Type"
 msgstr "Seleziona Tipo Fornitore"
 
 msgid "Select surfaces"
-msgstr "Seleziona superfici"
+msgstr ""
 
 msgid "Select the groups that should complete this training"
 msgstr "Seleziona i gruppi che devono completare questo training"
 
 msgid "Select value"
-msgstr "Seleziona valore"
+msgstr ""
 
 msgid "Select values"
-msgstr "Seleziona valori"
+msgstr ""
 
 msgid "Selected"
 msgstr "Selezionato"
@@ -7185,10 +7191,10 @@ msgid "Send"
 msgstr "Invia"
 
 msgid "Send Invite"
-msgstr "Invia Invito"
+msgstr ""
 
 msgid "Send Invites"
-msgstr "Invia inviti"
+msgstr ""
 
 msgid "Send RFQ to Suppliers"
 msgstr "Invia RFQ ai Fornitori"
@@ -7423,10 +7429,10 @@ msgid "Show sync options"
 msgstr "Mostra opzioni di sincronizzazione"
 
 msgid "Shown as a faint background behind every page of generated PDFs"
-msgstr "Mostrato come sfondo tenue dietro ogni pagina dei PDF generati"
+msgstr ""
 
 msgid "Shown to the user when this rule fails."
-msgstr "Mostrato all'utente quando questa regola non riesce."
+msgstr ""
 
 msgid "Sign in with Email"
 msgstr "Accedi con Email"
@@ -7769,7 +7775,7 @@ msgid "Supplier Order Number"
 msgstr "Numero Ordine Fornitore"
 
 msgid "Supplier Overview"
-msgstr "Panoramica Fornitore"
+msgstr ""
 
 msgid "Supplier Part ID"
 msgstr "ID Parte Fornitore"
@@ -7839,7 +7845,7 @@ msgid "Supports {0} files"
 msgstr "Supporta file {0}"
 
 msgid "Surfaces"
-msgstr "Superfici"
+msgstr ""
 
 msgid "Suspected Failure Mode"
 msgstr "Modalità di guasto sospetta"
@@ -7925,6 +7931,9 @@ msgstr "Imposta:"
 msgid "Temperature"
 msgstr "Temperatura"
 
+msgid "Template"
+msgstr ""
+
 msgid "Template ID"
 msgstr ""
 
@@ -7965,7 +7974,7 @@ msgid "The endpoint that receives a POST request with the updated data when the 
 msgstr "L'endpoint che riceve una richiesta POST con i dati aggiornati quando la tabella viene aggiornata"
 
 msgid "The following assemblies have no operations. Please assign an operation to each before releasing."
-msgstr "I seguenti assiemi non hanno operazioni. Assegnare un'operazione a ciascuno prima del rilascio."
+msgstr ""
 
 msgid "The following line items are missing prices or lead times:"
 msgstr "I seguenti articoli di riga non hanno prezzi o tempi di consegna:"
@@ -8316,7 +8325,7 @@ msgid "Trash"
 msgstr "Cestino"
 
 msgid "Trial Balance"
-msgstr "Bilancia di Verifica"
+msgstr ""
 
 msgid "Triggers"
 msgstr ""
@@ -8355,7 +8364,7 @@ msgid "Unapproved Supplier"
 msgstr "Fornitore non approvato"
 
 msgid "Unassign rule"
-msgstr "Annulla assegnazione regola"
+msgstr ""
 
 msgid "Unassigned"
 msgstr "Non assegnato"
@@ -8476,7 +8485,7 @@ msgid "Updated"
 msgstr "Aggiornato"
 
 msgid "Updated account"
-msgstr "Account aggiornato"
+msgstr ""
 
 msgid "Updated At"
 msgstr "Aggiornato il"
@@ -8488,7 +8497,7 @@ msgid "Updated successfully"
 msgstr "Aggiornato con successo"
 
 msgid "Upgrade"
-msgstr "Aggiorna"
+msgstr ""
 
 msgid "Upgrade to Business"
 msgstr "Passa a Business"
@@ -8791,7 +8800,7 @@ msgid "Warehouse Transfers"
 msgstr "Trasferimenti tra Magazzini"
 
 msgid "Warn"
-msgstr "Avviso"
+msgstr ""
 
 msgid "Warn but allow"
 msgstr "Avvisa ma consenti"
