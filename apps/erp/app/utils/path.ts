@@ -1286,6 +1286,58 @@ export const path = {
     suggestion: (id: string) =>
       generatePath(`${x}/resources/suggestions/${id}`),
     suggestions: `${x}/resources/suggestions`,
+    template: (id: string) => generatePath(`${x}/template/${id}`),
+    templateConfigurationParameter: (templateId: string) =>
+      generatePath(`${x}/template/${templateId}/parameter`),
+    templateConfigurationParameterGroup: (templateId: string) =>
+      generatePath(`${x}/template/${templateId}/parameter/group`),
+    templateConfigurationParameterGroupOrder: (templateId: string) =>
+      generatePath(`${x}/template/${templateId}/parameter/group/order`),
+    templateConfigurationParameterOrder: (templateId: string) =>
+      generatePath(`${x}/template/${templateId}/parameter/order`),
+    templateConfigurationRule: (templateId: string) =>
+      generatePath(`${x}/template/${templateId}/rule`),
+    templateDeleteConfigurationParameter: (templateId: string, id: string) =>
+      generatePath(`${x}/template/${templateId}/parameter/delete/${id}`),
+    templateDeleteConfigurationParameterGroup: (
+      templateId: string,
+      id: string
+    ) =>
+      generatePath(`${x}/template/${templateId}/parameter/group/delete/${id}`),
+    templateDeleteConfigurationRule: (templateId: string, field: string) =>
+      generatePath(`${x}/template/${templateId}/rule/delete/${field}`),
+    templateDetails: (id: string) =>
+      generatePath(`${x}/template/${id}/details`),
+    templateMethodMaterial: (id: string) =>
+      generatePath(`${x}/template/methods/material/${id}`),
+    templateMethodMaterialsOrder: `${x}/template/methods/material/order`,
+    templateMethodOperation: (id: string) =>
+      generatePath(`${x}/template/methods/operation/${id}`),
+    templateMethodOperationParameter: (id: string) =>
+      generatePath(`${x}/template/methods/operation/parameter/${id}`),
+    templateMethodOperationStep: (id: string) =>
+      generatePath(`${x}/template/methods/operation/step/${id}`),
+    templateMethodOperationStepOrder: (operationId: string) =>
+      generatePath(`${x}/template/methods/operation/${operationId}/step/order`),
+    templateMethodOperationTool: (id: string) =>
+      generatePath(`${x}/template/methods/operation/tool/${id}`),
+    templateMethodOperationsDelete: `${x}/template/methods/operation/delete`,
+    templateMethodOperationsOrder: `${x}/template/methods/operation/order`,
+    templateNew: `${x}/template/new`,
+    templateNewMethodMaterial: `${x}/template/methods/material/new`,
+    templateNewMethodOperation: `${x}/template/methods/operation/new`,
+    templateNewMethodOperationParameter: `${x}/template/methods/operation/parameter/new`,
+    templateNewMethodOperationStep: `${x}/template/methods/operation/step/new`,
+    templateNewMethodOperationTool: `${x}/template/methods/operation/tool/new`,
+    templateDeleteMethodMaterial: (id: string) =>
+      generatePath(`${x}/template/methods/material/delete/${id}`),
+    templateDeleteMethodOperationParameter: (id: string) =>
+      generatePath(`${x}/template/methods/operation/parameter/delete/${id}`),
+    templateDeleteMethodOperationStep: (id: string) =>
+      generatePath(`${x}/template/methods/operation/step/delete/${id}`),
+    templateDeleteMethodOperationTool: (id: string) =>
+      generatePath(`${x}/template/methods/operation/tool/delete/${id}`),
+    templates: `${x}/items/templates`,
     procedure: (id: string) => generatePath(`${x}/procedure/${id}`),
     procedureStep: (id: string, attributeId: string) =>
       generatePath(`${x}/procedure/${id}/steps/${attributeId}`),
