@@ -53,6 +53,10 @@ type BoMExplorerProps = {
   makeMethod: MakeMethod;
   methods: FlatTreeItem<Method>[];
   methodId?: string;
+  itemIdOverride?: string;
+  disableNavigation?: boolean;
+  disableOnshapeSync?: boolean;
+  hideRootPreview?: boolean;
   operations?: MethodOperation[];
   selectedId?: string;
   filterText?: string;
@@ -64,6 +68,10 @@ const BoMExplorer = ({
   makeMethod,
   methods,
   methodId: methodIdProp,
+  itemIdOverride,
+  disableNavigation = false,
+  disableOnshapeSync = false,
+  hideRootPreview = false,
   selectedId,
   filterText: filterTextProp,
   hideSearch
@@ -123,8 +131,8 @@ const BoMExplorer = ({
   const { t } = useLingui();
   const location = useOptimisticLocation();
 
-  const { itemId } = params;
-  if (!itemId) throw new Error("itemId not found");
+  const itemId = itemIdOverride ?? params.itemId;
+  if (!itemId && !disableNavigation) throw new Error("itemId not found");
   const methodId = methodIdProp ?? params.methodId;
   if (!methodId) throw new Error("methodId not found");
 
@@ -260,7 +268,7 @@ const BoMExplorer = ({
             </DropdownMenu>
           </HStack>
         )}
-        {integrations.has("onshape") && (
+        {integrations.has("onshape") && !disableOnshapeSync && itemId && (
           <div className="flex flex-shrink-0 w-full">
             <OnshapeSync
               makeMethodId={makeMethodId}
@@ -280,6 +288,7 @@ const BoMExplorer = ({
             getTreeProps={getTreeProps}
             parentClassName="h-full"
             renderNode={({ node, state }) => {
+              const shouldHidePreview = hideRootPreview && node.data.isRoot;
               return (
                 <HoverCard openDelay={500}>
                   <HoverCardTrigger asChild>
@@ -295,15 +304,29 @@ const BoMExplorer = ({
                       onClick={() => {
                         selectNode(node.id, false);
 
+                        if (disableNavigation) {
+                          setSearchParams((prev) => {
+                            prev.set("materialId", node.data.methodMaterialId);
+                            return prev;
+                          });
+                          return;
+                        }
+                        if (!itemId || !methodId) return;
+
+                        const targetMakeMethodId =
+                          node.data.replenishmentSystem !== "Buy"
+                            ? node.data.materialMakeMethodId
+                            : node.data.makeMethodId;
+
+                        if (!node.data.isRoot && !targetMakeMethodId) return;
+
                         const nodePath = node.data.isRoot
                           ? getRootLink(itemType, itemId, methodId)
                           : getMaterialLink(
                               itemType,
                               itemId,
                               methodId,
-                              node.data.replenishmentSystem !== "Buy"
-                                ? node.data.materialMakeMethodId
-                                : node.data.makeMethodId,
+                              targetMakeMethodId,
                               node
                             );
 
@@ -376,9 +399,11 @@ const BoMExplorer = ({
                       </div>
                     </div>
                   </HoverCardTrigger>
-                  <HoverCardContent side="right">
-                    <NodePreview node={node} />
-                  </HoverCardContent>
+                  {!shouldHidePreview && (
+                    <HoverCardContent side="right">
+                      <NodePreview node={node} />
+                    </HoverCardContent>
+                  )}
                 </HoverCard>
               );
             }}
