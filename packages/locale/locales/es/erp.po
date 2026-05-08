@@ -158,7 +158,7 @@ msgstr "Se creará una nueva revisión utilizando una copia de la revisión actu
 msgid "A new size will be created using a copy of the current size"
 msgstr "Se creará un nuevo tamaño utilizando una copia del tamaño actual"
 
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:230
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:231
 msgid "A part contains the information about a specific item that can be purchased or manufactured."
 msgstr "Una parte contiene la información sobre un artículo específico que puede ser comprado o fabricado."
 
@@ -1612,7 +1612,7 @@ msgstr "Información Básica"
 #: apps/erp/app/modules/items/ui/Materials/MaterialForm.tsx:131
 #: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:75
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:99
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:176
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:177
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:392
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:407
 #: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:103
@@ -1641,7 +1641,7 @@ msgid "Batch Properties"
 msgstr "Propiedades de Lote"
 
 #: apps/erp/app/modules/items/ui/Item/ItemManufacturingForm.tsx:57
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:331
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:335
 msgid "Batch Size"
 msgstr "Tamaño de Lote"
 
@@ -1758,7 +1758,7 @@ msgstr "Trabajos en Lote"
 
 #: apps/erp/app/modules/inventory/ui/Inventory/InventoryTable.tsx:90
 #: apps/erp/app/modules/items/ui/Item/ItemForm.tsx:91
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:200
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:201
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:343
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:356
 #: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:83
@@ -1771,7 +1771,7 @@ msgstr "Comprar"
 
 #: apps/erp/app/modules/inventory/ui/Inventory/InventoryTable.tsx:90
 #: apps/erp/app/modules/items/ui/Item/ItemForm.tsx:94
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:203
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:204
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:346
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:359
 #: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:83
@@ -1799,7 +1799,7 @@ msgstr "Al aceptar la invitación, aceptas los <0>Términos de Servicio</0> y la
 msgid "By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy Policy.</1>"
 msgstr "Al iniciar sesión, aceptas los <0>Términos de Servicio</0> y la <1>Política de Privacidad.</1>"
 
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:343
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:347
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:333
 #: apps/erp/app/routes/x+/part+/$itemId.details.tsx:346
 #: apps/erp/app/routes/x+/part+/$itemId.make.$makeMethodId.tsx:210
@@ -3279,7 +3279,7 @@ msgstr "Razón sin cotización creada"
 msgid "Created non conformance type"
 msgstr "Tipo de no conformidad creado"
 
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:159
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:160
 msgid "Created part"
 msgstr "Parte creada"
 
@@ -3804,7 +3804,7 @@ msgstr "Método Predeterminado"
 #: apps/erp/app/modules/items/ui/Materials/MaterialForm.tsx:296
 #: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:472
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:523
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:299
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:300
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:429
 #: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:451
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:292
@@ -5720,7 +5720,7 @@ msgid "Failed to create no quote reason: {0}"
 msgstr "Error al crear razón sin cotización: {0}"
 
 #. placeholder {0}: fetcher.data.error.message
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:161
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:162
 msgid "Failed to create part: {0}"
 msgstr "Error al crear la pieza: {0}"
 
@@ -6027,7 +6027,7 @@ msgstr "Error al cargar la imagen"
 msgid "Failed to upload logo: {errorMessage}"
 msgstr "Error al cargar el logo: {errorMessage}"
 
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:105
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:106
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:104
 msgid "Failed to upload model"
 msgstr "Error al cargar el modelo"
@@ -6114,15 +6114,15 @@ msgid "File size exceeds 10MB limit"
 msgstr "El tamaño del archivo excede el límite de 10MB"
 
 #. placeholder {0}: SIZE_LIMIT.format()
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:134
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:144
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:135
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:145
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:132
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:142
 msgid "File size too big (max. {0})"
 msgstr "El tamaño del archivo es demasiado grande (máx. {0})"
 
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:128
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:146
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:129
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:147
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:127
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:144
 msgid "File type not supported"
@@ -6841,7 +6841,7 @@ msgstr "Invitación Inválida"
 #: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:70
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:94
 #: apps/erp/app/modules/items/ui/Materials/useMaterialNavigation.tsx:62
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:171
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:172
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:387
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:402
 #: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:98
@@ -7153,7 +7153,7 @@ msgstr "El artículo {scannedItem} no es el mismo que el artículo {expectedItem
 #: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:416
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:265
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:500
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:315
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:316
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:315
 #: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:154
 #: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:402
@@ -7887,7 +7887,7 @@ msgstr "Tipo de Mantenimiento"
 
 #: apps/erp/app/modules/inventory/ui/Inventory/InventoryTable.tsx:90
 #: apps/erp/app/modules/items/ui/Item/ItemForm.tsx:93
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:202
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:203
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:345
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:358
 #: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:83
@@ -8828,7 +8828,7 @@ msgstr "Nuevo Tipo de No Conformidad"
 msgid "New Owner"
 msgstr "Nuevo Propietario"
 
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:225
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:226
 msgid "New Part"
 msgstr "Pieza Nueva"
 
@@ -9337,7 +9337,7 @@ msgstr "Tipo de No Conformidad"
 #: apps/erp/app/modules/items/ui/Materials/MaterialForm.tsx:128
 #: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:72
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:96
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:173
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:174
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:389
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:404
 #: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:100
@@ -9920,13 +9920,13 @@ msgstr "Pareto por Tipo"
 msgid "Part"
 msgstr "Parte"
 
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:223
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:224
 msgid "Part Details"
 msgstr "Detalles de la Pieza"
 
 #: apps/erp/app/modules/items/ui/Item/CustomerPartForm.tsx:66
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:255
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:259
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:256
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:260
 #: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:118
 #: apps/erp/app/modules/production/ui/Planning/ProductionPlanningTable.tsx:253
 #: apps/erp/app/modules/production/ui/Projection/DemandProjectionTable.tsx:97
@@ -9963,7 +9963,7 @@ msgstr "Socios"
 #: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:32
 #: apps/erp/app/routes/x+/items+/parts.tsx:17
 #: apps/erp/app/routes/x+/part+/$itemId.tsx:50
-#: apps/erp/app/routes/x+/part+/new.tsx:16
+#: apps/erp/app/routes/x+/part+/new.tsx:17
 msgid "Parts"
 msgstr "Piezas"
 
@@ -11299,7 +11299,7 @@ msgstr "Recuerda este PIN. Lo necesitarás para salir del modo consola en termin
 #: apps/erp/app/components/Selectors/UserSelect/components/SelectionList.tsx:115
 #: apps/erp/app/modules/account/ui/Profile/ProfilePhotoForm.tsx:150
 #: apps/erp/app/modules/account/ui/UserAttributes/UserAttributesForm.tsx:871
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:368
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:372
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:358
 #: apps/erp/app/modules/quality/ui/Calibrations/GaugeCalibrationRecordForm.tsx:357
 #: apps/erp/app/modules/settings/ui/Company/CompanyLogoForm.tsx:211
@@ -11452,7 +11452,7 @@ msgstr "Reabastecimiento"
 
 #: apps/erp/app/modules/inventory/ui/Kanbans/KanbanForm.tsx:223
 #: apps/erp/app/modules/items/ui/Item/ItemForm.tsx:158
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:281
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:282
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:274
 msgid "Replenishment System"
 msgstr "Sistema de Reabastecimiento"
@@ -11650,7 +11650,7 @@ msgid "Reverse the related journal entries"
 msgstr "Revertir los asientos de diario relacionados"
 
 #: apps/erp/app/modules/items/ui/Item/RevisionForm.tsx:107
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:273
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:274
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:266
 msgid "Revision"
 msgstr "Revisión"
@@ -12020,7 +12020,7 @@ msgstr "Sábado"
 #: apps/erp/app/modules/items/ui/MaterialTypes/MaterialTypeForm.tsx:114
 #: apps/erp/app/modules/items/ui/Parts/ConfigurationParameters.tsx:450
 #: apps/erp/app/modules/items/ui/Parts/ConfigurationParameters.tsx:968
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:391
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:395
 #: apps/erp/app/modules/items/ui/Templates/TemplateForm.tsx:66
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:381
 #: apps/erp/app/modules/items/ui/UnitOfMeasure/UnitOfMeasureForm.tsx:109
@@ -12604,7 +12604,7 @@ msgstr "Secuencias"
 #: apps/erp/app/modules/items/ui/Materials/MaterialForm.tsx:130
 #: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:74
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:98
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:175
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:176
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:391
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:406
 #: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:102
@@ -12962,7 +12962,7 @@ msgstr "Planta de Producción"
 #: apps/erp/app/modules/items/ui/Consumables/ConsumableForm.tsx:150
 #: apps/erp/app/modules/items/ui/Item/ItemForm.tsx:147
 #: apps/erp/app/modules/items/ui/Materials/MaterialForm.tsx:203
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:277
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:278
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:270
 #: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:296
 #: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteLineForm.tsx:324
@@ -13787,7 +13787,7 @@ msgid "Supply & Demand"
 msgstr "Oferta y Demanda"
 
 #. placeholder {0}: supportedModelTypes.join(", ")
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:375
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:379
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:365
 msgid "Supports {0} files"
 msgstr "Admite archivos {0}"
@@ -13962,6 +13962,8 @@ msgstr "Impuesto:"
 msgid "Temperature"
 msgstr "Temperatura"
 
+#: apps/erp/app/components/Form/Template.tsx:35
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:321
 #: apps/erp/app/modules/items/ui/Templates/TemplatesTable.tsx:98
 msgid "Template"
 msgstr ""
@@ -14488,7 +14490,7 @@ msgstr "Número de Seguimiento"
 #: apps/erp/app/modules/items/ui/Materials/MaterialForm.tsx:290
 #: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:438
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:543
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:294
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:295
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:381
 #: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:471
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:287
@@ -14688,7 +14690,7 @@ msgstr "Unidad"
 #: apps/erp/app/modules/items/ui/Item/ItemCostHistoryChart.tsx:69
 #: apps/erp/app/modules/items/ui/Item/ItemCostingForm.tsx:76
 #: apps/erp/app/modules/items/ui/Materials/MaterialForm.tsx:310
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:322
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:326
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:314
 #: apps/erp/app/modules/production/ui/Jobs/JobBillOfMaterial.tsx:882
 #: apps/erp/app/modules/production/ui/Jobs/JobBillOfProcess.tsx:2385
@@ -14713,7 +14715,7 @@ msgstr "Costo Unitario"
 #: apps/erp/app/modules/items/ui/Item/SupplierParts/SupplierParts.tsx:68
 #: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:633
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:311
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:310
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:311
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:481
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:302
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:448
@@ -14955,7 +14957,7 @@ msgstr "Carga completada pero no se devolvió la ruta del archivo"
 msgid "Upload CSV"
 msgstr "Cargar CSV"
 
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:109
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:110
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:108
 msgid "Uploaded model"
 msgstr "Modelo cargado"
@@ -15007,7 +15009,7 @@ msgstr "Utiliza ... para obtener el siguiente ID de consumible"
 msgid "Use ... to get the next material ID"
 msgstr "Utiliza ... para obtener el siguiente ID de material"
 
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:262
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:263
 msgid "Use ... to get the next part ID"
 msgstr "Usa ... para obtener el siguiente ID de parte"
 
