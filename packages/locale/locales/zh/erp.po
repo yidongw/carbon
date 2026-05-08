@@ -125,6 +125,7 @@ msgstr "将使用当前版本的副本创建新版本"
 msgid "A new size will be created using a copy of the current size"
 msgstr "将使用当前尺寸的副本创建新尺寸"
 
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:231
 msgid "A part contains the information about a specific item that can be purchased or manufactured."
 msgstr "零件包含可以购买或制造的特定物品的信息。"
 
@@ -1347,6 +1348,21 @@ msgstr "基础价格"
 msgid "Basic Information"
 msgstr "基本信息"
 
+#: apps/erp/app/modules/items/ui/Consumables/ConsumableForm.tsx:87
+#: apps/erp/app/modules/items/ui/Consumables/ConsumableProperties.tsx:55
+#: apps/erp/app/modules/items/ui/Consumables/ConsumablesTable.tsx:87
+#: apps/erp/app/modules/items/ui/Item/ItemForm.tsx:67
+#: apps/erp/app/modules/items/ui/Materials/MaterialForm.tsx:131
+#: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:75
+#: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:99
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:177
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:392
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:407
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:103
+#: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:174
+#: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:370
+#: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:385
+#: apps/erp/app/modules/items/ui/Tools/ToolsTable.tsx:103
 msgid "Batch"
 msgstr "批次"
 
@@ -1364,6 +1380,8 @@ msgstr "批号"
 msgid "Batch Properties"
 msgstr "批量属性"
 
+#: apps/erp/app/modules/items/ui/Item/ItemManufacturingForm.tsx:57
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:335
 msgid "Batch Size"
 msgstr "批量大小"
 
@@ -1473,7 +1491,7 @@ msgstr "批量作业"
 
 #: apps/erp/app/modules/inventory/ui/Inventory/InventoryTable.tsx:90
 #: apps/erp/app/modules/items/ui/Item/ItemForm.tsx:91
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:200
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:201
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:343
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:356
 #: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:83
@@ -1486,7 +1504,7 @@ msgstr "购买"
 
 #: apps/erp/app/modules/inventory/ui/Inventory/InventoryTable.tsx:90
 #: apps/erp/app/modules/items/ui/Item/ItemForm.tsx:94
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:203
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:204
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:346
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:359
 #: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:83
@@ -1510,7 +1528,7 @@ msgstr "通过接受邀请，您同意<0>服务条款</0>和<1>隐私政策</1>�
 msgid "By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy Policy.</1>"
 msgstr "通过登录，您同意<0>服务条款</0>和<1>隐私政策。</1>"
 
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:343
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:347
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:333
 #: apps/erp/app/routes/x+/part+/$itemId.details.tsx:346
 #: apps/erp/app/routes/x+/part+/$itemId.make.$makeMethodId.tsx:210
@@ -2747,6 +2765,7 @@ msgstr "已创建无报价原因"
 msgid "Created non conformance type"
 msgstr "已创建不符合项类型"
 
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:160
 msgid "Created part"
 msgstr "已创建零件"
 
@@ -3179,7 +3198,7 @@ msgstr "默认方法"
 #: apps/erp/app/modules/items/ui/Materials/MaterialForm.tsx:296
 #: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:472
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:523
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:299
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:300
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:429
 #: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:451
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:292
@@ -4758,6 +4777,7 @@ msgid "Failed to create no quote reason: {0}"
 msgstr "创建无报价原因失败：{0}"
 
 #. placeholder {0}: fetcher.data.error.message
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:162
 msgid "Failed to create part: {0}"
 msgstr "创建零件失败：{0}"
 
@@ -4995,6 +5015,8 @@ msgstr "上传图像失败"
 msgid "Failed to upload logo: {errorMessage}"
 msgstr "上传徽标失败：{errorMessage}"
 
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:106
+#: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:104
 msgid "Failed to upload model"
 msgstr "上传模型失败"
 
@@ -5062,9 +5084,17 @@ msgid "File size exceeds 10MB limit"
 msgstr "文件大小超过10MB限制"
 
 #. placeholder {0}: SIZE_LIMIT.format()
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:135
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:145
+#: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:132
+#: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:142
 msgid "File size too big (max. {0})"
 msgstr "文件大小过大（最大 {0}）"
 
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:129
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:147
+#: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:127
+#: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:144
 msgid "File type not supported"
 msgstr "不支持的文件类型"
 
@@ -5663,7 +5693,7 @@ msgstr "无效邀请"
 #: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:70
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:94
 #: apps/erp/app/modules/items/ui/Materials/useMaterialNavigation.tsx:62
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:171
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:172
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:387
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:402
 #: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:98
@@ -5918,7 +5948,7 @@ msgstr "物品 {scannedItem} 与物品 {expectedItem} 不相同"
 #: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:416
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:265
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:500
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:315
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:316
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:315
 #: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:154
 #: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:402
@@ -6569,7 +6599,7 @@ msgstr "维护类型"
 
 #: apps/erp/app/modules/inventory/ui/Inventory/InventoryTable.tsx:90
 #: apps/erp/app/modules/items/ui/Item/ItemForm.tsx:93
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:202
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:203
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:345
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:358
 #: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:83
@@ -7358,6 +7388,7 @@ msgstr "新的不符合项类型"
 msgid "New Owner"
 msgstr "新所有者"
 
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:226
 msgid "New Part"
 msgstr "新零件"
 
@@ -7771,6 +7802,21 @@ msgstr "名义成本"
 msgid "Non Conformance Type"
 msgstr "不符合项类型"
 
+#: apps/erp/app/modules/items/ui/Consumables/ConsumableForm.tsx:84
+#: apps/erp/app/modules/items/ui/Consumables/ConsumableProperties.tsx:52
+#: apps/erp/app/modules/items/ui/Consumables/ConsumablesTable.tsx:84
+#: apps/erp/app/modules/items/ui/Item/ItemForm.tsx:64
+#: apps/erp/app/modules/items/ui/Materials/MaterialForm.tsx:128
+#: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:72
+#: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:96
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:174
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:389
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:404
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:100
+#: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:171
+#: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:367
+#: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:382
+#: apps/erp/app/modules/items/ui/Tools/ToolsTable.tsx:100
 msgid "Non-Inventory"
 msgstr "非库存"
 
@@ -8263,9 +8309,16 @@ msgstr "按类型的帕累托"
 msgid "Part"
 msgstr "零件"
 
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:224
 msgid "Part Details"
 msgstr "零件详情"
 
+#: apps/erp/app/modules/items/ui/Item/CustomerPartForm.tsx:66
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:256
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:260
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:118
+#: apps/erp/app/modules/production/ui/Planning/ProductionPlanningTable.tsx:253
+#: apps/erp/app/modules/production/ui/Projection/DemandProjectionTable.tsx:97
 msgid "Part ID"
 msgstr "零件ID"
 
@@ -8294,7 +8347,7 @@ msgstr "合作伙伴"
 #: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:32
 #: apps/erp/app/routes/x+/items+/parts.tsx:17
 #: apps/erp/app/routes/x+/part+/$itemId.tsx:50
-#: apps/erp/app/routes/x+/part+/new.tsx:16
+#: apps/erp/app/routes/x+/part+/new.tsx:17
 msgid "Parts"
 msgstr "零件"
 
@@ -9446,6 +9499,16 @@ msgstr "分割后的剩余部分保留在原始行上。"
 msgid "Remember this PIN. You will need it to exit console mode on MES terminals."
 msgstr "记住此PIN。您需要它来退出MES终端上的控制台模式。"
 
+#: apps/erp/app/components/ItemThumnailUpload.tsx:179
+#: apps/erp/app/components/Selectors/UserSelect/components/SelectionList.tsx:115
+#: apps/erp/app/modules/account/ui/Profile/ProfilePhotoForm.tsx:150
+#: apps/erp/app/modules/account/ui/UserAttributes/UserAttributesForm.tsx:871
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:372
+#: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:358
+#: apps/erp/app/modules/quality/ui/Calibrations/GaugeCalibrationRecordForm.tsx:357
+#: apps/erp/app/modules/settings/ui/Company/CompanyLogoForm.tsx:211
+#: apps/erp/app/modules/settings/ui/Company/CompanyLogoForm.tsx:247
+#: apps/erp/app/routes/share+/quote.$id.tsx:928
 msgid "Remove"
 msgstr "移除"
 
@@ -9569,6 +9632,10 @@ msgstr "用源值替换现有定价"
 msgid "Replenishment"
 msgstr "补货"
 
+#: apps/erp/app/modules/inventory/ui/Kanbans/KanbanForm.tsx:223
+#: apps/erp/app/modules/items/ui/Item/ItemForm.tsx:158
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:282
+#: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:274
 msgid "Replenishment System"
 msgstr "补充系统"
 
@@ -9717,6 +9784,9 @@ msgstr "应付反向计税税额"
 msgid "Reverse the related journal entries"
 msgstr "反转相关日记账分录"
 
+#: apps/erp/app/modules/items/ui/Item/RevisionForm.tsx:107
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:274
+#: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:266
 msgid "Revision"
 msgstr "修订版"
 
@@ -10047,7 +10117,7 @@ msgstr "星期六"
 #: apps/erp/app/modules/items/ui/MaterialTypes/MaterialTypeForm.tsx:114
 #: apps/erp/app/modules/items/ui/Parts/ConfigurationParameters.tsx:450
 #: apps/erp/app/modules/items/ui/Parts/ConfigurationParameters.tsx:968
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:391
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:395
 #: apps/erp/app/modules/items/ui/Templates/TemplateForm.tsx:66
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:381
 #: apps/erp/app/modules/items/ui/UnitOfMeasure/UnitOfMeasureForm.tsx:109
@@ -10540,6 +10610,21 @@ msgstr "在文档激活前将其发送以供批准。"
 msgid "Sequences"
 msgstr "序列"
 
+#: apps/erp/app/modules/items/ui/Consumables/ConsumableForm.tsx:86
+#: apps/erp/app/modules/items/ui/Consumables/ConsumableProperties.tsx:54
+#: apps/erp/app/modules/items/ui/Consumables/ConsumablesTable.tsx:86
+#: apps/erp/app/modules/items/ui/Item/ItemForm.tsx:66
+#: apps/erp/app/modules/items/ui/Materials/MaterialForm.tsx:130
+#: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:74
+#: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:98
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:176
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:391
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:406
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:102
+#: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:173
+#: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:369
+#: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:384
+#: apps/erp/app/modules/items/ui/Tools/ToolsTable.tsx:102
 msgid "Serial"
 msgstr "序列号"
 
@@ -10851,7 +10936,7 @@ msgstr "车间"
 #: apps/erp/app/modules/items/ui/Consumables/ConsumableForm.tsx:150
 #: apps/erp/app/modules/items/ui/Item/ItemForm.tsx:147
 #: apps/erp/app/modules/items/ui/Materials/MaterialForm.tsx:203
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:277
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:278
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:270
 #: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:296
 #: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteLineForm.tsx:324
@@ -11536,6 +11621,8 @@ msgid "Supply & Demand"
 msgstr "供应与需求"
 
 #. placeholder {0}: supportedModelTypes.join(", ")
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:379
+#: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:365
 msgid "Supports {0} files"
 msgstr "支持 {0} 文件"
 
@@ -11686,6 +11773,8 @@ msgstr "税:"
 msgid "Temperature"
 msgstr "温度"
 
+#: apps/erp/app/components/Form/Template.tsx:35
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:321
 #: apps/erp/app/modules/items/ui/Templates/TemplatesTable.tsx:98
 msgid "Template"
 msgstr ""
@@ -12115,7 +12204,7 @@ msgstr "跟踪号码"
 #: apps/erp/app/modules/items/ui/Materials/MaterialForm.tsx:290
 #: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:438
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:543
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:294
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:295
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:381
 #: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:471
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:287
@@ -12299,7 +12388,7 @@ msgstr "单位"
 #: apps/erp/app/modules/items/ui/Item/ItemCostHistoryChart.tsx:69
 #: apps/erp/app/modules/items/ui/Item/ItemCostingForm.tsx:76
 #: apps/erp/app/modules/items/ui/Materials/MaterialForm.tsx:310
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:322
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:326
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:314
 #: apps/erp/app/modules/production/ui/Jobs/JobBillOfMaterial.tsx:882
 #: apps/erp/app/modules/production/ui/Jobs/JobBillOfProcess.tsx:2385
@@ -12324,7 +12413,7 @@ msgstr "单位成本"
 #: apps/erp/app/modules/items/ui/Item/SupplierParts/SupplierParts.tsx:68
 #: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:633
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:311
-#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:310
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:311
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:481
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:302
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:448
@@ -12538,6 +12627,8 @@ msgstr "上传完成但未返回文件路径"
 msgid "Upload CSV"
 msgstr "上传 CSV"
 
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:110
+#: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:108
 msgid "Uploaded model"
 msgstr "已上传模型"
 
@@ -12573,6 +12664,7 @@ msgstr "使用...获取下一个消耗品ID"
 msgid "Use ... to get the next material ID"
 msgstr "使用 ... 获取下一个物料 ID"
 
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:263
 msgid "Use ... to get the next part ID"
 msgstr "使用 ... 获取下一个零件 ID"
 
