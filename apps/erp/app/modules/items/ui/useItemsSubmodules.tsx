@@ -35,11 +35,6 @@ export default function useItemsSubmodules() {
           table: "part"
         },
         {
-          name: t`Templates`,
-          to: path.to.templates,
-          icon: <LuLayoutTemplate />
-        },
-        {
           name: t`Materials`,
           to: path.to.materials,
           icon: <LuAtom />,
@@ -103,6 +98,11 @@ export default function useItemsSubmodules() {
     {
       name: t`Configure`,
       routes: [
+        {
+          name: t`Templates`,
+          to: path.to.templates,
+          icon: <LuLayoutTemplate />
+        },
         {
           name: t`Item Groups`,
           to: path.to.itemPostingGroups,
