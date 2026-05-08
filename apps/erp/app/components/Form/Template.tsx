@@ -7,7 +7,9 @@ import { useFetcher } from "react-router";
 import type { getTemplatesList } from "~/modules/items/template.service";
 import { path } from "~/utils/path";
 
-type TemplateSelectProps = Omit<ComboboxProps, "options">;
+type TemplateSelectProps = Omit<ComboboxProps, "options" | "inline"> & {
+  inline?: boolean;
+};
 
 const Template = (props: TemplateSelectProps) => {
   const { t } = useLingui();
@@ -28,10 +30,15 @@ const Template = (props: TemplateSelectProps) => {
     [templateFetcher.data?.data]
   );
 
+  const inlinePreview: ComboboxProps["inline"] = props.inline
+    ? (value, opts) => opts.find((o) => o.value === value)?.label ?? value
+    : undefined;
+
   return (
     <Combobox
       options={options}
       {...props}
+      inline={inlinePreview}
       label={props?.label ?? t`Template`}
       isLoading={templateFetcher.state === "loading"}
       isOptional

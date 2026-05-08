@@ -779,29 +779,40 @@ export async function applyTemplateToItem(
 ) {
   const { templateId, itemId, companyId, userId } = args;
 
-  const [paramGroups, params, rules, templateMakeMethod] = await Promise.all([
-    client
-      .from("templateConfigurationParameterGroup")
-      .select("*")
-      .eq("templateId", templateId)
-      .eq("companyId", companyId),
-    client
-      .from("templateConfigurationParameter")
-      .select("*")
-      .eq("templateId", templateId)
-      .eq("companyId", companyId),
-    client
-      .from("templateConfigurationRule")
-      .select("*")
-      .eq("templateId", templateId)
-      .eq("companyId", companyId),
-    client
-      .from("templateMakeMethod")
-      .select("id")
-      .eq("templateId", templateId)
-      .eq("companyId", companyId)
-      .single()
-  ]);
+  const [paramGroups, params, rules, templateMakeMethod, itemRow] =
+    await Promise.all([
+      client
+        .from("templateConfigurationParameterGroup")
+        .select("*")
+        .eq("templateId", templateId)
+        .eq("companyId", companyId),
+      client
+        .from("templateConfigurationParameter")
+        .select("*")
+        .eq("templateId", templateId)
+        .eq("companyId", companyId),
+      client
+        .from("templateConfigurationRule")
+        .select("*")
+        .eq("templateId", templateId)
+        .eq("companyId", companyId),
+      client
+        .from("templateMakeMethod")
+        .select("id")
+        .eq("templateId", templateId)
+        .eq("companyId", companyId)
+        .single(),
+      client.from("item").select("readableId").eq("id", itemId).single()
+    ]);
+
+  // Store the templateId on the part record
+  if (itemRow.data?.readableId) {
+    await (client as unknown as { from: (t: string) => any })
+      .from("part")
+      .update({ templateId })
+      .eq("id", itemRow.data.readableId)
+      .eq("companyId", companyId);
+  }
 
   // Copy configuration parameter groups and build old-id → new-id map
   const groupIdMap: Record<string, string> = {};
@@ -843,6 +854,13 @@ export async function applyTemplateToItem(
         })
       )
     );
+
+    // Auto-enable "configured for manufacturing" when template has config params
+    await client
+      .from("itemReplenishment")
+      .update({ requiresConfiguration: true })
+      .eq("itemId", itemId)
+      .eq("companyId", companyId);
   }
 
   // Copy configuration rules
