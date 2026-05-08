@@ -1186,11 +1186,17 @@ msgstr ""
 msgid "BoM"
 msgstr "BoM"
 
+msgid "BOM"
+msgstr ""
+
 msgid "BoM + BoP"
 msgstr "BoM + BoP"
 
 msgid "BOM synced successfully"
 msgstr "BOMが正常に同期されました"
+
+msgid "BOP"
+msgstr ""
 
 msgid "Box"
 msgstr "ボックス"
@@ -1584,6 +1590,9 @@ msgid "Completion Time"
 msgstr "完了時間"
 
 msgid "Conditions"
+msgstr ""
+
+msgid "Config Params"
 msgstr ""
 
 msgid "Configuration Parameters"
@@ -3255,7 +3264,7 @@ msgid "Entity is {status}"
 msgstr "エンティティは {status} です"
 
 msgid "EORI"
-msgstr "EORI"
+msgstr ""
 
 msgid "Equipment Malfunction"
 msgstr "医療機器不具合"
@@ -3710,6 +3719,9 @@ msgstr "見積行の更新に失敗しました"
 msgid "Failed to update supplier quote line"
 msgstr "仕入先見積行の更新に失敗しました"
 
+msgid "Failed to update template"
+msgstr ""
+
 msgid "Failed to update thumbnail path"
 msgstr "サムネイルパスの更新に失敗しました"
 
@@ -3878,7 +3890,7 @@ msgid "Fixed Asset Acquisition Cost on Disposal"
 msgstr "廃棄時の固定資産取得原価"
 
 msgid "Fixed Assets"
-msgstr "固定資産"
+msgstr ""
 
 msgid "Fixed Reorder"
 msgstr "固定再注文"
@@ -5541,6 +5553,9 @@ msgid "No days off scheduled"
 msgstr "休暇の予定がありません"
 
 msgid "No default attachments yet."
+msgstr ""
+
+msgid "No description"
 msgstr ""
 
 msgid "No draft versions available"

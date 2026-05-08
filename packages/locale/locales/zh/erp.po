@@ -1186,11 +1186,17 @@ msgstr ""
 msgid "BoM"
 msgstr "物料清单"
 
+msgid "BOM"
+msgstr ""
+
 msgid "BoM + BoP"
 msgstr "BoM + BoP"
 
 msgid "BOM synced successfully"
 msgstr "物料清单同步成功"
+
+msgid "BOP"
+msgstr ""
 
 msgid "Box"
 msgstr "箱"
@@ -1584,6 +1590,9 @@ msgid "Completion Time"
 msgstr "完成时间"
 
 msgid "Conditions"
+msgstr ""
+
+msgid "Config Params"
 msgstr ""
 
 msgid "Configuration Parameters"
@@ -3255,7 +3264,7 @@ msgid "Entity is {status}"
 msgstr "实体为 {status}"
 
 msgid "EORI"
-msgstr "EORI"
+msgstr ""
 
 msgid "Equipment Malfunction"
 msgstr "设备故障"
@@ -3710,6 +3719,9 @@ msgstr "未能更新报价行"
 msgid "Failed to update supplier quote line"
 msgstr "未能更新供应商报价行"
 
+msgid "Failed to update template"
+msgstr ""
+
 msgid "Failed to update thumbnail path"
 msgstr "无法更新缩略图路径"
 
@@ -3878,7 +3890,7 @@ msgid "Fixed Asset Acquisition Cost on Disposal"
 msgstr "处置时固定资产取得成本"
 
 msgid "Fixed Assets"
-msgstr "固定资产"
+msgstr ""
 
 msgid "Fixed Reorder"
 msgstr "固定重新订购"
@@ -5541,6 +5553,9 @@ msgid "No days off scheduled"
 msgstr "未安排休息日"
 
 msgid "No default attachments yet."
+msgstr ""
+
+msgid "No description"
 msgstr ""
 
 msgid "No draft versions available"

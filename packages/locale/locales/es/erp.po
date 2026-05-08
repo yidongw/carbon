@@ -1186,11 +1186,17 @@ msgstr ""
 msgid "BoM"
 msgstr "BoM"
 
+msgid "BOM"
+msgstr ""
+
 msgid "BoM + BoP"
 msgstr "BoM + BoP"
 
 msgid "BOM synced successfully"
 msgstr "BOM sincronizado exitosamente"
+
+msgid "BOP"
+msgstr ""
 
 msgid "Box"
 msgstr "Caja"
@@ -1584,6 +1590,9 @@ msgid "Completion Time"
 msgstr "Tiempo de Finalización"
 
 msgid "Conditions"
+msgstr ""
+
+msgid "Config Params"
 msgstr ""
 
 msgid "Configuration Parameters"
@@ -3255,7 +3264,7 @@ msgid "Entity is {status}"
 msgstr "La entidad es {status}"
 
 msgid "EORI"
-msgstr "EORI"
+msgstr ""
 
 msgid "Equipment Malfunction"
 msgstr "Fallo de dispositivo NEOM"
@@ -3710,6 +3719,9 @@ msgstr "Error al actualizar la línea de cotización"
 msgid "Failed to update supplier quote line"
 msgstr "Error al actualizar la línea de cotización del proveedor"
 
+msgid "Failed to update template"
+msgstr ""
+
 msgid "Failed to update thumbnail path"
 msgstr "Error al actualizar la ruta de la miniatura"
 
@@ -3878,7 +3890,7 @@ msgid "Fixed Asset Acquisition Cost on Disposal"
 msgstr "Coste de adquisición de activos fijos en el momento de la enajenación"
 
 msgid "Fixed Assets"
-msgstr "Activo Fijo"
+msgstr ""
 
 msgid "Fixed Reorder"
 msgstr "Reorden Fijo"
@@ -5541,6 +5553,9 @@ msgid "No days off scheduled"
 msgstr "Sin días libres programados"
 
 msgid "No default attachments yet."
+msgstr ""
+
+msgid "No description"
 msgstr ""
 
 msgid "No draft versions available"
