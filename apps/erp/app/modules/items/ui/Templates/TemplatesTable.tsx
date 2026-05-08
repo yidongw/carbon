@@ -4,8 +4,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useMemo } from "react";
 import { LuPencil } from "react-icons/lu";
 import { useNavigate } from "react-router";
-import { New, Table } from "~/components";
-import { Enumerable } from "~/components/Enumerable";
+import { Hyperlink, New, Table } from "~/components";
 import { usePermissions, useUrlParams } from "~/hooks";
 import { path } from "~/utils/path";
 
@@ -13,6 +12,9 @@ type TemplateRow = {
   id: string;
   name: string;
   description: string | null;
+  configurationParameterCount?: number;
+  bomCount?: number;
+  bopCount?: number;
 };
 
 type TemplatesTableProps = {
@@ -34,16 +36,27 @@ const TemplatesTable = memo(({ data, count }: TemplatesTableProps) => {
         accessorKey: "name",
         header: t`Name`,
         cell: ({ row }) => (
-          <Enumerable
-            value={row.original.name}
-            onClick={() =>
-              navigate(
-                `${path.to.templateDetails(row.original.id)}?${params.toString()}`
-              )
-            }
-            className="cursor-pointer"
-          />
+          <Hyperlink
+            to={`${path.to.templateDetails(row.original.id)}?${params.toString()}`}
+          >
+            <span className="truncate">{row.original.name}</span>
+          </Hyperlink>
         )
+      },
+      {
+        accessorKey: "configurationParameterCount",
+        header: t`Config Params`,
+        cell: ({ row }) => row.original.configurationParameterCount ?? 0
+      },
+      {
+        accessorKey: "bomCount",
+        header: t`BOM`,
+        cell: ({ row }) => row.original.bomCount ?? 0
+      },
+      {
+        accessorKey: "bopCount",
+        header: t`BOP`,
+        cell: ({ row }) => row.original.bopCount ?? 0
       },
       {
         accessorKey: "description",
@@ -51,7 +64,7 @@ const TemplatesTable = memo(({ data, count }: TemplatesTableProps) => {
         cell: (item) => item.getValue()
       }
     ];
-  }, [navigate, params, t]);
+  }, [params, t]);
 
   const renderContextMenu = useCallback(
     (row: (typeof rows)[number]) => {

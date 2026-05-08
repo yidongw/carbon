@@ -1141,11 +1141,17 @@ msgstr ""
 msgid "BoM"
 msgstr "BoM"
 
+msgid "BOM"
+msgstr ""
+
 msgid "BoM + BoP"
 msgstr "BoM + BoP"
 
 msgid "BOM synced successfully"
 msgstr "BOM sincronizzato con successo"
+
+msgid "BOP"
+msgstr ""
 
 msgid "Breadcrumb"
 msgstr "Breadcrumb"
@@ -1524,6 +1530,9 @@ msgid "Completion Time"
 msgstr "Tempo di completamento"
 
 msgid "Conditions"
+msgstr ""
+
+msgid "Config Params"
 msgstr ""
 
 msgid "Configuration Parameters"
@@ -3138,7 +3147,7 @@ msgid "Entity is {status}"
 msgstr "L'entità è {status}"
 
 msgid "EORI"
-msgstr "EORI"
+msgstr ""
 
 msgid "ERP, MES, QMS"
 msgstr "ERP, MES, QMS"
@@ -3596,6 +3605,9 @@ msgstr "Impossibile aggiornare la riga di preventivo"
 msgid "Failed to update supplier quote line"
 msgstr "Impossibile aggiornare la riga del preventivo fornitore"
 
+msgid "Failed to update template"
+msgstr ""
+
 msgid "Failed to update thumbnail path"
 msgstr "Impossibile aggiornare il percorso della miniatura"
 
@@ -3755,7 +3767,7 @@ msgid "Fixed Asset"
 msgstr ""
 
 msgid "Fixed Assets"
-msgstr "Immobilizzazioni"
+msgstr ""
 
 msgid "Fixed Reorder"
 msgstr "Riordino Fisso"
@@ -5310,6 +5322,9 @@ msgid "No days off scheduled"
 msgstr "Nessun giorno libero programmato"
 
 msgid "No default attachments yet."
+msgstr ""
+
+msgid "No description"
 msgstr ""
 
 msgid "No draft versions available"

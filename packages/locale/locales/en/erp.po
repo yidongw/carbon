@@ -1141,11 +1141,17 @@ msgstr "Blocks save until resolved"
 msgid "BoM"
 msgstr "BoM"
 
+msgid "BOM"
+msgstr "BOM"
+
 msgid "BoM + BoP"
 msgstr "BoM + BoP"
 
 msgid "BOM synced successfully"
 msgstr "BOM synced successfully"
+
+msgid "BOP"
+msgstr "BOP"
 
 msgid "Breadcrumb"
 msgstr "Breadcrumb"
@@ -1525,6 +1531,9 @@ msgstr "Completion Time"
 
 msgid "Conditions"
 msgstr "Conditions"
+
+msgid "Config Params"
+msgstr "Config Params"
 
 msgid "Configuration Parameters"
 msgstr "Configuration Parameters"
@@ -3596,6 +3605,9 @@ msgstr "Failed to update quote line"
 msgid "Failed to update supplier quote line"
 msgstr "Failed to update supplier quote line"
 
+msgid "Failed to update template"
+msgstr "Failed to update template"
+
 msgid "Failed to update thumbnail path"
 msgstr "Failed to update thumbnail path"
 
@@ -5311,6 +5323,9 @@ msgstr "No days off scheduled"
 
 msgid "No default attachments yet."
 msgstr "No default attachments yet."
+
+msgid "No description"
+msgstr "No description"
 
 msgid "No draft versions available"
 msgstr "No draft versions available"

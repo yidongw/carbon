@@ -1141,11 +1141,17 @@ msgstr ""
 msgid "BoM"
 msgstr "BoM"
 
+msgid "BOM"
+msgstr ""
+
 msgid "BoM + BoP"
 msgstr "BoM + BoP"
 
 msgid "BOM synced successfully"
 msgstr "BOM सफलतापूर्वक सिंक हो गया"
+
+msgid "BOP"
+msgstr ""
 
 msgid "Breadcrumb"
 msgstr "ब्रेडक्रम्ब"
@@ -1524,6 +1530,9 @@ msgid "Completion Time"
 msgstr "पूर्ण होने का समय"
 
 msgid "Conditions"
+msgstr ""
+
+msgid "Config Params"
 msgstr ""
 
 msgid "Configuration Parameters"
@@ -3138,7 +3147,7 @@ msgid "Entity is {status}"
 msgstr "Entity {status} है"
 
 msgid "EORI"
-msgstr "EORI"
+msgstr ""
 
 msgid "ERP, MES, QMS"
 msgstr "ERP, MES, QMS"
@@ -3596,6 +3605,9 @@ msgstr "उद्धरण पंक्ति को अपडेट करन�
 msgid "Failed to update supplier quote line"
 msgstr "आपूर्तिकर्ता उद्धरण लाइन को अपडेट करने में विफल"
 
+msgid "Failed to update template"
+msgstr ""
+
 msgid "Failed to update thumbnail path"
 msgstr "थंबनेल पथ अपडेट करने में विफल"
 
@@ -3755,7 +3767,7 @@ msgid "Fixed Asset"
 msgstr ""
 
 msgid "Fixed Assets"
-msgstr "अचल सम्पत्ति"
+msgstr ""
 
 msgid "Fixed Reorder"
 msgstr "निश्चित पुनः ऑर्डर"
@@ -5310,6 +5322,9 @@ msgid "No days off scheduled"
 msgstr "कोई दिन बंद निर्धारित नहीं है"
 
 msgid "No default attachments yet."
+msgstr ""
+
+msgid "No description"
 msgstr ""
 
 msgid "No draft versions available"

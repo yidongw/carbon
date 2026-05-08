@@ -1141,11 +1141,17 @@ msgstr ""
 msgid "BoM"
 msgstr "BoM"
 
+msgid "BOM"
+msgstr ""
+
 msgid "BoM + BoP"
 msgstr "BoM + BoP"
 
 msgid "BOM synced successfully"
 msgstr "BOM успешно синхронизирован"
+
+msgid "BOP"
+msgstr ""
 
 msgid "Breadcrumb"
 msgstr "Навигационная цепочка"
@@ -1524,6 +1530,9 @@ msgid "Completion Time"
 msgstr "Время завершения"
 
 msgid "Conditions"
+msgstr ""
+
+msgid "Config Params"
 msgstr ""
 
 msgid "Configuration Parameters"
@@ -3138,7 +3147,7 @@ msgid "Entity is {status}"
 msgstr "Сущность имеет статус {status}"
 
 msgid "EORI"
-msgstr "EORI"
+msgstr ""
 
 msgid "ERP, MES, QMS"
 msgstr "ERP, MES, QMS"
@@ -3596,6 +3605,9 @@ msgstr "Не удалось обновить строку предложения
 msgid "Failed to update supplier quote line"
 msgstr "Не удалось обновить строку предложения поставщика"
 
+msgid "Failed to update template"
+msgstr ""
+
 msgid "Failed to update thumbnail path"
 msgstr "Не удалось обновить путь миниатюры"
 
@@ -3755,7 +3767,7 @@ msgid "Fixed Asset"
 msgstr ""
 
 msgid "Fixed Assets"
-msgstr "Основные средства"
+msgstr ""
 
 msgid "Fixed Reorder"
 msgstr "Фиксированный заказ"
@@ -5310,6 +5322,9 @@ msgid "No days off scheduled"
 msgstr "Нет запланированных выходных"
 
 msgid "No default attachments yet."
+msgstr ""
+
+msgid "No description"
 msgstr ""
 
 msgid "No draft versions available"
