@@ -28,6 +28,7 @@ import {
   Boolean,
   ItemPostingGroup,
   Tags,
+  Template,
   UnitOfMeasure
 } from "~/components/Form";
 import CustomFormInlineFields from "~/components/Form/CustomFormInlineFields";
@@ -119,6 +120,7 @@ const PartProperties = ({ data }: PartPropertiesProps) => {
         | "name"
         | "description"
         | "replenishmentSystem"
+        | "templateId"
         | "unitOfMeasureCode"
         | "requiresInspection",
       value: string | null
@@ -337,6 +339,26 @@ const PartProperties = ({ data }: PartPropertiesProps) => {
           isClearable
           onChange={(value) => {
             onUpdate("itemPostingGroupId", value?.value ?? null);
+          }}
+        />
+      </ValidatedForm>
+
+      <ValidatedForm
+        defaultValues={{
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          templateId: (routeData?.partSummary as any)?.templateId ?? undefined
+        }}
+        validator={z.object({
+          templateId: z.string().nullable().optional()
+        })}
+        className="w-full"
+      >
+        <Template
+          label={t`Template`}
+          name="templateId"
+          inline
+          onChange={(value) => {
+            onUpdate("templateId", value?.value ?? null);
           }}
         />
       </ValidatedForm>

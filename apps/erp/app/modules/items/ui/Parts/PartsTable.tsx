@@ -33,6 +33,7 @@ import {
   LuCheck,
   LuGitPullRequestArrow,
   LuGroup,
+  LuLayoutTemplate,
   LuLoaderCircle,
   LuPencil,
   LuTag,
@@ -138,6 +139,17 @@ const PartsTable = memo(({ data, tags, count }: PartsTableProps) => {
         }
       },
       {
+        accessorKey: "templateName",
+        header: t`Template`,
+        cell: (item) => {
+          const name = item.getValue<string | null>();
+          return name ? <Badge variant="secondary">{name}</Badge> : null;
+        },
+        meta: {
+          icon: <LuLayoutTemplate />
+        }
+      },
+      {
         accessorKey: "description",
         header: t`Description`,
         cell: (item) => (
@@ -149,29 +161,6 @@ const PartsTable = memo(({ data, tags, count }: PartsTableProps) => {
           icon: <LuAlignJustify />
         }
       },
-      {
-        accessorKey: "itemPostingGroupId",
-        header: t`Item Group`,
-        cell: (item) => {
-          const itemPostingGroupId = item.getValue<string>();
-          const itemPostingGroup = itemPostingGroups.find(
-            (group) => group.value === itemPostingGroupId
-          );
-          const label = itemPostingGroup?.label;
-          return label ? <Badge variant="secondary">{label}</Badge> : null;
-        },
-        meta: {
-          filter: {
-            type: "static",
-            options: itemPostingGroups.map((group) => ({
-              value: group.value,
-              label: <Badge variant="secondary">{group.label}</Badge>
-            }))
-          },
-          icon: <LuGroup />
-        }
-      },
-
       {
         accessorKey: "replenishmentSystem",
         header: t`Replenishment`,
@@ -251,6 +240,28 @@ const PartsTable = memo(({ data, tags, count }: PartsTableProps) => {
         }
       },
 
+      {
+        accessorKey: "itemPostingGroupId",
+        header: t`Item Group`,
+        cell: (item) => {
+          const itemPostingGroupId = item.getValue<string>();
+          const itemPostingGroup = itemPostingGroups.find(
+            (group) => group.value === itemPostingGroupId
+          );
+          const label = itemPostingGroup?.label;
+          return label ? <Badge variant="secondary">{label}</Badge> : null;
+        },
+        meta: {
+          filter: {
+            type: "static",
+            options: itemPostingGroups.map((group) => ({
+              value: group.value,
+              label: <Badge variant="secondary">{group.label}</Badge>
+            }))
+          },
+          icon: <LuGroup />
+        }
+      },
       {
         accessorKey: "tags",
         header: t`Tags`,
