@@ -87,7 +87,7 @@ msgstr "1% 10 Netto 30"
 msgid "2% 10 Net 30"
 msgstr "2% 10 Netto 30"
 
-#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:622
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:644
 msgid "3D Model"
 msgstr "Modello 3D"
 
@@ -330,9 +330,9 @@ msgstr "Attiva Centro di Lavoro"
 #: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:681
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:375
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:381
-#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:550
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:280
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:286
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:572
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:291
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:297
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:513
 #: apps/erp/app/modules/items/ui/Tools/ToolsTable.tsx:279
 #: apps/erp/app/modules/items/ui/Tools/ToolsTable.tsx:285
@@ -369,7 +369,7 @@ msgstr "Lavori Attivi"
 #: apps/erp/app/modules/inventory/ui/StorageUnits/StorageUnitsTable.tsx:297
 #: apps/erp/app/modules/items/ui/Consumables/ConsumablesTable.tsx:248
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:385
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:290
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:301
 #: apps/erp/app/modules/items/ui/Tools/ToolsTable.tsx:289
 #: apps/erp/app/modules/resources/ui/Processes/ProcessesTable.tsx:202
 #: apps/erp/app/modules/resources/ui/WorkCenters/WorkCentersTable.tsx:187
@@ -839,7 +839,7 @@ msgstr "Sei sicuro di voler eliminare {0}?"
 #: apps/erp/app/modules/items/ui/Materials/MaterialHeader.tsx:99
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:670
 #: apps/erp/app/modules/items/ui/Parts/PartHeader.tsx:93
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:599
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:610
 #: apps/erp/app/modules/items/ui/Tools/ToolHeader.tsx:91
 #: apps/erp/app/modules/items/ui/Tools/ToolsTable.tsx:587
 #: apps/erp/app/modules/production/ui/Procedures/ProcedureHeader.tsx:190
@@ -1356,9 +1356,9 @@ msgstr "Informazioni di base"
 #: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:75
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:99
 #: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:177
-#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:392
-#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:407
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:103
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:414
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:429
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:104
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:174
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:370
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:385
@@ -1492,9 +1492,9 @@ msgstr "Lavori in Blocco"
 #: apps/erp/app/modules/inventory/ui/Inventory/InventoryTable.tsx:90
 #: apps/erp/app/modules/items/ui/Item/ItemForm.tsx:91
 #: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:201
-#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:343
-#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:356
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:83
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:365
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:378
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:84
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:198
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:321
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:334
@@ -1505,9 +1505,9 @@ msgstr "Acquista"
 #: apps/erp/app/modules/inventory/ui/Inventory/InventoryTable.tsx:90
 #: apps/erp/app/modules/items/ui/Item/ItemForm.tsx:94
 #: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:204
-#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:346
-#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:359
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:83
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:368
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:381
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:84
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:201
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:324
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:337
@@ -2348,6 +2348,28 @@ msgstr "Collegamento copiato negli appunti"
 msgid "Copied!"
 msgstr "Copiato!"
 
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceProperties.tsx:160
+#: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoiceProperties.tsx:154
+#: apps/erp/app/modules/items/ui/Consumables/ConsumableProperties.tsx:196
+#: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:294
+#: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:314
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:202
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:220
+#: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:187
+#: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:207
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:204
+#: apps/erp/app/modules/production/ui/Procedures/ProcedureProperties.tsx:112
+#: apps/erp/app/modules/production/ui/Procedures/ProcedureProperties.tsx:132
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderProperties.tsx:173
+#: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQProperties.tsx:183
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteProperties.tsx:152
+#: apps/erp/app/modules/quality/ui/Documents/QualityDocumentProperties.tsx:141
+#: apps/erp/app/modules/quality/ui/Documents/QualityDocumentProperties.tsx:159
+#: apps/erp/app/modules/quality/ui/Issue/IssueProperties.tsx:191
+#: apps/erp/app/modules/quality/ui/Issue/IssueProperties.tsx:213
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteProperties.tsx:157
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderProperties.tsx:161
+#: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQProperties.tsx:137
 msgid "Copy"
 msgstr "Copia"
 
@@ -2405,6 +2427,7 @@ msgstr "Copia link al Job"
 msgid "Copy link to material"
 msgstr "Copia link al materiale"
 
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:194
 msgid "Copy link to part"
 msgstr "Copia il collegamento alla parte"
 
@@ -2426,9 +2449,11 @@ msgstr "Copia identificatore univoco del materiale"
 msgid "Copy MCP Command"
 msgstr "Copia comando MCP"
 
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:234
 msgid "Copy part number"
 msgstr "Copia numero parte"
 
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:212
 msgid "Copy part unique identifier"
 msgstr "Copia identificatore univoco della parte"
 
@@ -2645,7 +2670,7 @@ msgstr ""
 #: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoicesTable.tsx:233
 #: apps/erp/app/modules/items/ui/Consumables/ConsumablesTable.tsx:287
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:408
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:313
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:324
 #: apps/erp/app/modules/items/ui/Tools/ToolsTable.tsx:328
 #: apps/erp/app/modules/production/ui/Jobs/JobOperationStepRecordsTable.tsx:219
 #: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:548
@@ -2678,7 +2703,7 @@ msgstr "Creato il"
 #: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoicesTable.tsx:216
 #: apps/erp/app/modules/items/ui/Consumables/ConsumablesTable.tsx:270
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:391
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:296
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:307
 #: apps/erp/app/modules/items/ui/Tools/ToolsTable.tsx:311
 #: apps/erp/app/modules/production/ui/Jobs/JobOperationStepRecordsTable.tsx:206
 #: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:531
@@ -3188,7 +3213,7 @@ msgstr "Destinatari CC predefiniti"
 
 #: apps/erp/app/modules/items/ui/Consumables/ConsumablesTable.tsx:161
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:326
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:205
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:194
 #: apps/erp/app/modules/items/ui/Tools/ToolsTable.tsx:205
 msgid "Default Method"
 msgstr "Metodo Predefinito"
@@ -3201,8 +3226,8 @@ msgstr "Metodo Predefinito"
 #: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:472
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:523
 #: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:300
-#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:429
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:451
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:451
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:462
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:292
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:407
 #: apps/erp/app/modules/items/ui/Tools/ToolsTable.tsx:440
@@ -3413,7 +3438,7 @@ msgid "Delete Material Type"
 msgstr "Elimina Tipo di Materiale"
 
 #: apps/erp/app/modules/items/ui/Parts/PartHeader.tsx:79
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:545
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:556
 msgid "Delete Part"
 msgstr "Elimina Parte"
 
@@ -3635,7 +3660,7 @@ msgstr "Quota ammortamento"
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:146
 #: apps/erp/app/modules/items/ui/Methods/MethodMaterialsTable.tsx:64
 #: apps/erp/app/modules/items/ui/Methods/MethodOperationsTable.tsx:28
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:142
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:154
 #: apps/erp/app/modules/items/ui/Templates/TemplateForm.tsx:60
 #: apps/erp/app/modules/items/ui/Templates/TemplateProperties.tsx:131
 #: apps/erp/app/modules/items/ui/Templates/TemplatesTable.tsx:63
@@ -4103,7 +4128,7 @@ msgstr "Modifica Tipo di Materiale"
 msgid "Edit Non Conformance Type"
 msgstr "Modifica Tipo di Non Conformità"
 
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:515
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:526
 msgid "Edit Part"
 msgstr "Modifica Parte"
 
@@ -5103,6 +5128,19 @@ msgstr "Tipo di file non supportato"
 msgid "File type not supported. Please use JPG, PNG, WebP, or GIF."
 msgstr "Tipo di file non supportato. Utilizza JPG, PNG, WebP o GIF."
 
+#: apps/erp/app/components/Documents.tsx:256
+#: apps/erp/app/modules/items/ui/Consumables/ConsumableProperties.tsx:482
+#: apps/erp/app/modules/items/ui/Item/ItemDocuments.tsx:95
+#: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:745
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:633
+#: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:574
+#: apps/erp/app/modules/production/ui/Jobs/JobDocuments.tsx:385
+#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionDocuments.tsx:78
+#: apps/erp/app/modules/purchasing/ui/SupplierInteraction/SupplierInteractionLineDocuments.tsx:235
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:137
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:166
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityDocuments.tsx:100
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:442
 msgid "Files"
 msgstr "File"
 
@@ -5482,7 +5520,7 @@ msgstr "nel periodo selezionato"
 #: apps/erp/app/modules/items/ui/ItemRules/ItemRuleAssignments.tsx:200
 #: apps/erp/app/modules/items/ui/ItemRules/ItemRulesTable.tsx:86
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:382
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:287
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:298
 #: apps/erp/app/modules/items/ui/Tools/ToolsTable.tsx:286
 #: apps/erp/app/modules/people/ui/People/PeopleTable.tsx:168
 #: apps/erp/app/modules/sales/ui/Pricing/PricingRulesTable.tsx:337
@@ -5696,9 +5734,9 @@ msgstr "Invito Non Valido"
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:94
 #: apps/erp/app/modules/items/ui/Materials/useMaterialNavigation.tsx:62
 #: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:172
-#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:387
-#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:402
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:98
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:409
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:424
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:99
 #: apps/erp/app/modules/items/ui/Parts/usePartNavigation.tsx:67
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:169
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:365
@@ -5951,9 +5989,9 @@ msgstr "L'articolo {scannedItem} non è lo stesso dell'articolo {expectedItem}"
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:265
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:500
 #: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:316
-#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:315
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:154
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:402
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:317
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:245
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:413
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:307
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:293
 #: apps/erp/app/modules/items/ui/Tools/ToolsTable.tsx:154
@@ -5968,7 +6006,7 @@ msgstr "Gruppo Articoli"
 #: apps/erp/app/modules/items/ui/Consumables/ConsumablesTable.tsx:499
 #: apps/erp/app/modules/items/ui/ItemPostingGroups/ItemPostingGroupsTable.tsx:103
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:651
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:580
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:591
 #: apps/erp/app/modules/items/ui/Tools/ToolsTable.tsx:568
 #: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:107
 msgid "Item Groups"
@@ -6348,6 +6386,22 @@ msgstr "Le righe necessitano di numeri di parte interni"
 msgid "Lines need prices or lead times"
 msgstr "Le righe necessitano di prezzi o tempi di consegna"
 
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceProperties.tsx:139
+#: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoiceProperties.tsx:133
+#: apps/erp/app/modules/items/ui/Consumables/ConsumableProperties.tsx:173
+#: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:272
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:180
+#: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:165
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:182
+#: apps/erp/app/modules/production/ui/Procedures/ProcedureProperties.tsx:90
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderProperties.tsx:152
+#: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQProperties.tsx:162
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteProperties.tsx:132
+#: apps/erp/app/modules/quality/ui/Documents/QualityDocumentProperties.tsx:119
+#: apps/erp/app/modules/quality/ui/Issue/IssueProperties.tsx:171
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteProperties.tsx:137
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderProperties.tsx:140
+#: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQProperties.tsx:117
 msgid "Link"
 msgstr "Collegamento"
 
@@ -6602,9 +6656,9 @@ msgstr "Tipo di Manutenzione"
 #: apps/erp/app/modules/inventory/ui/Inventory/InventoryTable.tsx:90
 #: apps/erp/app/modules/items/ui/Item/ItemForm.tsx:93
 #: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:203
-#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:345
-#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:358
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:83
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:367
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:380
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:84
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:200
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:323
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:336
@@ -6645,9 +6699,9 @@ msgstr "Rendere la dimensione {0} predefinita?"
 #: apps/erp/app/modules/items/ui/Item/BillOfMaterial.tsx:1280
 #: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:67
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:88
-#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:438
-#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:458
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:92
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:460
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:480
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:93
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:416
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:436
 #: apps/erp/app/modules/items/ui/Tools/ToolsTable.tsx:92
@@ -6934,6 +6988,10 @@ msgstr "Operazioni Metodo"
 msgid "Method Type"
 msgstr "Tipo di Metodo"
 
+#: apps/erp/app/modules/items/ui/Consumables/ConsumableProperties.tsx:384
+#: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:645
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:515
+#: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:460
 msgid "Methods"
 msgstr "Metodi"
 
@@ -7812,9 +7870,9 @@ msgstr "Tipo di Non Conformità"
 #: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:72
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:96
 #: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:174
-#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:389
-#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:404
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:100
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:411
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:426
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:101
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:171
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:367
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:382
@@ -8300,7 +8358,7 @@ msgstr "Pareto per Tipo"
 #: apps/erp/app/components/Layout/Topbar/CreateMenu.tsx:38
 #: apps/erp/app/modules/items/ui/Item/BillOfMaterial.tsx:785
 #: apps/erp/app/modules/items/ui/Item/BillOfMaterial.tsx:1310
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:583
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:594
 #: apps/erp/app/modules/production/ui/Jobs/JobBillOfMaterial.tsx:217
 #: apps/erp/app/modules/production/ui/Projection/DemandProjectionTable.tsx:194
 #: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQLineForm.tsx:215
@@ -8318,7 +8376,7 @@ msgstr "Dettagli Parte"
 #: apps/erp/app/modules/items/ui/Item/CustomerPartForm.tsx:66
 #: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:256
 #: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:260
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:118
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:119
 #: apps/erp/app/modules/production/ui/Planning/ProductionPlanningTable.tsx:253
 #: apps/erp/app/modules/production/ui/Projection/DemandProjectionTable.tsx:97
 msgid "Part ID"
@@ -8344,8 +8402,8 @@ msgstr "Partner"
 msgid "Partners"
 msgstr "Partner"
 
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:572
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:589
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:583
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:600
 #: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:32
 #: apps/erp/app/routes/x+/items+/parts.tsx:17
 #: apps/erp/app/routes/x+/part+/$itemId.tsx:50
@@ -8865,7 +8923,7 @@ msgstr "Data Promessa"
 #: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoiceProperties.tsx:126
 #: apps/erp/app/modules/items/ui/Consumables/ConsumableProperties.tsx:166
 #: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:265
-#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:171
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:173
 #: apps/erp/app/modules/items/ui/Templates/TemplateProperties.tsx:86
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:158
 #: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:175
@@ -8913,9 +8971,9 @@ msgstr "Preleva da"
 #: apps/erp/app/modules/items/ui/Item/BillOfMaterial.tsx:1278
 #: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:66
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:87
-#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:437
-#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:457
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:91
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:459
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:479
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:92
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:415
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:435
 #: apps/erp/app/modules/items/ui/Tools/ToolsTable.tsx:91
@@ -9016,9 +9074,9 @@ msgstr "Imposta Acquisti Pagabile"
 #: apps/erp/app/modules/items/ui/Item/BillOfMaterial.tsx:1276
 #: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:64
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:85
-#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:435
-#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:455
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:89
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:457
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:477
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:90
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:413
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:433
 #: apps/erp/app/modules/items/ui/Tools/ToolsTable.tsx:89
@@ -9626,9 +9684,9 @@ msgstr "Sostituisci i prezzi esistenti con i valori di origine"
 
 #: apps/erp/app/modules/inventory/ui/Inventory/InventoryTable.tsx:202
 #: apps/erp/app/modules/inventory/ui/Kanbans/KanbansTable.tsx:396
-#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:337
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:177
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:425
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:359
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:166
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:436
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:315
 #: apps/erp/app/modules/items/ui/Tools/ToolsTable.tsx:177
 msgid "Replenishment"
@@ -9688,6 +9746,10 @@ msgstr "Richiede Azione"
 msgid "Requires Adjustment"
 msgstr "Richiede Regolazione"
 
+#: apps/erp/app/modules/items/ui/Consumables/ConsumableProperties.tsx:439
+#: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:702
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:593
+#: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:534
 msgid "Requires Inspection"
 msgstr "Richiede Ispezione"
 
@@ -9795,7 +9857,7 @@ msgstr "Revisione"
 
 #. placeholder {0}: revision.revision
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:601
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:530
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:541
 #: apps/erp/app/modules/items/ui/Tools/ToolsTable.tsx:518
 msgid "Revision {0}"
 msgstr "Revisione {0}"
@@ -10621,9 +10683,9 @@ msgstr "Sequenze"
 #: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:74
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:98
 #: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:176
-#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:391
-#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:406
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:102
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:413
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:428
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:103
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:173
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:369
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:384
@@ -11663,8 +11725,8 @@ msgstr "Azioni tabella"
 #: apps/erp/app/modules/items/ui/Consumables/ConsumablesTable.tsx:214
 #: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:721
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:351
-#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:591
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:256
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:613
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:267
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:553
 #: apps/erp/app/modules/items/ui/Tools/ToolsTable.tsx:255
 #: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:549
@@ -11776,8 +11838,10 @@ msgstr "Imposta:"
 msgid "Temperature"
 msgstr "Temperatura"
 
-#: apps/erp/app/components/Form/Template.tsx:35
+#: apps/erp/app/components/Form/Template.tsx:42
 #: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:321
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:338
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:143
 #: apps/erp/app/modules/items/ui/Templates/TemplatesTable.tsx:98
 msgid "Template"
 msgstr ""
@@ -12178,7 +12242,7 @@ msgstr "L'ID dell'entità tracciata è obbligatorio ma non è stato trovato"
 
 #: apps/erp/app/modules/items/ui/Consumables/ConsumablesTable.tsx:186
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:286
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:230
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:219
 #: apps/erp/app/modules/items/ui/Tools/ToolsTable.tsx:230
 #: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:229
 msgid "Tracking"
@@ -12208,8 +12272,8 @@ msgstr "Numero di tracciamento"
 #: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:438
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:543
 #: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:295
-#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:381
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:471
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:403
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:482
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:287
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:359
 #: apps/erp/app/modules/items/ui/Tools/ToolsTable.tsx:460
@@ -12417,7 +12481,7 @@ msgstr "Costo Unitario"
 #: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:633
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:311
 #: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:311
-#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:481
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:503
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:302
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:448
 #: apps/erp/app/modules/items/ui/UnitOfMeasure/UnitOfMeasureForm.tsx:93
@@ -12485,7 +12549,7 @@ msgstr "UdM"
 #: apps/erp/app/components/Table/components/TableHeader.tsx:212
 #: apps/erp/app/modules/items/ui/Consumables/ConsumablesTable.tsx:368
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:494
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:396
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:407
 #: apps/erp/app/modules/items/ui/Tools/ToolsTable.tsx:411
 #: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:613
 #: apps/erp/app/modules/production/ui/Planning/ProductionPlanningTable.tsx:429
@@ -12560,7 +12624,7 @@ msgstr ""
 #: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoicesTable.tsx:258
 #: apps/erp/app/modules/items/ui/Consumables/ConsumablesTable.tsx:312
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:433
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:338
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:349
 #: apps/erp/app/modules/items/ui/Tools/ToolsTable.tsx:353
 #: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:573
 #: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrdersTable.tsx:323
@@ -12587,7 +12651,7 @@ msgstr "Aggiornato il"
 #: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoicesTable.tsx:241
 #: apps/erp/app/modules/items/ui/Consumables/ConsumablesTable.tsx:295
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:416
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:321
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:332
 #: apps/erp/app/modules/items/ui/Tools/ToolsTable.tsx:336
 #: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:556
 #: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrdersTable.tsx:306
@@ -12769,7 +12833,7 @@ msgid "Version:"
 msgstr "Versione:"
 
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:592
-#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:521
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:532
 #: apps/erp/app/modules/items/ui/Tools/ToolsTable.tsx:509
 #: apps/erp/app/modules/production/ui/Procedures/ProcedureHeader.tsx:113
 #: apps/erp/app/modules/production/ui/Procedures/ProceduresTable.tsx:134
