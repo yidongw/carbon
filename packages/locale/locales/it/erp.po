@@ -2501,7 +2501,7 @@ msgstr "Configuratore"
 #: apps/erp/app/modules/inventory/ui/useInventorySubmodules.tsx:85
 #: apps/erp/app/modules/items/ui/Item/BillOfMaterial.tsx:524
 #: apps/erp/app/modules/items/ui/Item/BillOfProcess.tsx:850
-#: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:104
+#: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:99
 #: apps/erp/app/modules/people/ui/usePeopleSubmodules.tsx:38
 #: apps/erp/app/modules/production/ui/Jobs/JobMakeMethodTools.tsx:308
 #: apps/erp/app/modules/production/ui/useProductionSubmodules.tsx:61
@@ -2530,7 +2530,7 @@ msgstr "Configura come i dispatches di manutenzione preventiva vengono generati 
 msgid "Configure Item"
 msgstr "Configura Articolo"
 
-#: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:63
+#: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:58
 msgid "Configure Materials"
 msgstr "Configura Materiali"
 
@@ -2665,7 +2665,7 @@ msgstr "ID Consumabile"
 
 #: apps/erp/app/modules/items/ui/Consumables/ConsumablesTable.tsx:491
 #: apps/erp/app/modules/items/ui/Consumables/ConsumablesTable.tsx:508
-#: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:55
+#: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:50
 #: apps/erp/app/routes/x+/consumable+/$itemId.tsx:35
 #: apps/erp/app/routes/x+/consumable+/new.tsx:15
 #: apps/erp/app/routes/x+/items+/consumables.tsx:16
@@ -4397,7 +4397,7 @@ msgstr "Dimensione"
 #: apps/erp/app/modules/accounting/ui/useAccountingSubmodules.tsx:98
 #: apps/erp/app/modules/items/ui/Materials/MaterialForm.tsx:278
 #: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:566
-#: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:66
+#: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:61
 #: apps/erp/app/routes/x+/items+/dimensions.tsx:16
 msgid "Dimensions"
 msgstr "Dimensioni"
@@ -6187,7 +6187,7 @@ msgstr "Finisci a"
 msgid "Finished Goods"
 msgstr "Prodotti finiti"
 
-#: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:72
+#: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:67
 #: apps/erp/app/routes/x+/items+/finishes.tsx:15
 msgid "Finishes"
 msgstr "Finiture"
@@ -6420,7 +6420,7 @@ msgstr ""
 msgid "Grade"
 msgstr "Grado"
 
-#: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:78
+#: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:73
 #: apps/erp/app/routes/x+/items+/grades.tsx:15
 msgid "Grades"
 msgstr "Gradi"
@@ -8165,7 +8165,7 @@ msgstr ""
 
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:643
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:660
-#: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:43
+#: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:38
 #: apps/erp/app/modules/production/ui/Jobs/JobHeader.tsx:91
 #: apps/erp/app/modules/production/ui/Jobs/JobMaterialsTable.tsx:510
 #: apps/erp/app/routes/x+/items+/materials.tsx:16
@@ -12753,7 +12753,7 @@ msgstr "Gravità"
 msgid "Shape"
 msgstr "Forma"
 
-#: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:84
+#: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:79
 #: apps/erp/app/routes/x+/items+/forms.tsx:15
 msgid "Shapes"
 msgstr "Forme"
@@ -13521,7 +13521,7 @@ msgstr "Iscriviti alle modifiche"
 msgid "Substance"
 msgstr "Sostanza"
 
-#: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:90
+#: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:85
 #: apps/erp/app/routes/x+/items+/substances.tsx:15
 msgid "Substances"
 msgstr "Sostanze"
@@ -13971,7 +13971,7 @@ msgid "Template"
 msgstr ""
 
 #: apps/erp/app/modules/items/ui/Templates/TemplatesTable.tsx:104
-#: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:38
+#: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:102
 #: apps/erp/app/routes/x+/items+/templates.tsx:14
 #: apps/erp/app/routes/x+/template+/$templateId.tsx:49
 msgid "Templates"
@@ -14370,7 +14370,7 @@ msgstr "ID Strumento"
 #: apps/erp/app/modules/items/ui/Item/MakeMethodTools.tsx:658
 #: apps/erp/app/modules/items/ui/Tools/ToolsTable.tsx:560
 #: apps/erp/app/modules/items/ui/Tools/ToolsTable.tsx:577
-#: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:49
+#: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:44
 #: apps/erp/app/modules/production/ui/Jobs/JobBillOfProcess.tsx:869
 #: apps/erp/app/modules/production/ui/Jobs/JobMakeMethodTools.tsx:688
 #: apps/erp/app/modules/sales/ui/Quotes/QuoteBillOfProcess.tsx:738
@@ -14643,7 +14643,7 @@ msgstr "Digita per cercare nel tuo workspace"
 msgid "Type:"
 msgstr "Tipo:"
 
-#: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:96
+#: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:91
 #: apps/erp/app/modules/purchasing/ui/usePurchasingSubmodules.tsx:73
 #: apps/erp/app/modules/sales/ui/useSalesSubmodules.tsx:98
 #: apps/erp/app/routes/x+/items+/types.tsx:15
