@@ -238,6 +238,16 @@ export async function action({ request }: ActionFunctionArgs) {
       }
 
       return quantityUpdate;
+    case "configuration":
+      return await client
+        .from("job")
+        .update({
+          configuration: value ? JSON.parse(value) : null,
+          updatedBy: userId,
+          updatedAt: new Date().toISOString()
+        })
+        .in("id", ids as string[])
+        .eq("companyId", companyId);
     case "salesOrderId":
     case "salesOrderLineId":
       if (!value) {

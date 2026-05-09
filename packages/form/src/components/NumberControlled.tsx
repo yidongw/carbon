@@ -1,6 +1,7 @@
 import { useFormContext } from "@carbon/form";
 import type { NumberFieldProps } from "@carbon/react";
 import {
+  cn,
   FormControl,
   FormErrorMessage,
   FormHelperText,
@@ -38,6 +39,7 @@ type FormNumberProps = NumberFieldProps & {
   isConfigured?: boolean;
   onChange?: (newValue: number) => void;
   onConfigure?: () => void;
+  adornment?: ReactNode;
 };
 
 const Number = forwardRef<HTMLInputElement, FormNumberProps>(
@@ -55,6 +57,7 @@ const Number = forwardRef<HTMLInputElement, FormNumberProps>(
       value,
       onChange,
       onConfigure,
+      adornment,
       inline = false,
       onBlur,
       ...rest
@@ -77,6 +80,10 @@ const Number = forwardRef<HTMLInputElement, FormNumberProps>(
     useEffect(() => {
       setControlValue(value);
     }, [setControlValue, value]);
+
+    useEffect(() => {
+      setInlineMode(inline);
+    }, [inline]);
 
     useEffect(() => {
       if (inline && !inlineMode) {
@@ -160,17 +167,27 @@ const Number = forwardRef<HTMLInputElement, FormNumberProps>(
               isReadOnly={isReadOnly}
               isDisabled={isDisabled}
               size={size}
+              className={
+                adornment
+                  ? cn(
+                      "pr-10",
+                      isDisabled &&
+                        "text-foreground disabled:opacity-100 disabled:text-foreground"
+                    )
+                  : undefined
+              }
             />
-            {!isReadOnly && (
-              <NumberInputStepper>
-                <NumberIncrementStepper>
-                  <LuChevronUp size="1em" strokeWidth="3" />
-                </NumberIncrementStepper>
-                <NumberDecrementStepper>
-                  <LuChevronDown size="1em" strokeWidth="3" />
-                </NumberDecrementStepper>
-              </NumberInputStepper>
-            )}
+            {!isReadOnly &&
+              (adornment ?? (
+                <NumberInputStepper>
+                  <NumberIncrementStepper>
+                    <LuChevronUp size="1em" strokeWidth="3" />
+                  </NumberIncrementStepper>
+                  <NumberDecrementStepper>
+                    <LuChevronDown size="1em" strokeWidth="3" />
+                  </NumberDecrementStepper>
+                </NumberInputStepper>
+              ))}
           </NumberInputGroup>
         </NumberField>
         {helperText && <FormHelperText>{helperText}</FormHelperText>}
