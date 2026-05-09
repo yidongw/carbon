@@ -36092,7 +36092,7 @@ export type Database = {
           },
         ]
       }
-      searchIndex_9CZDcGFyZNHH9vEMuFVaDH: {
+      searchIndex_WBammHTt6NdE6hCgdhZbWC: {
         Row: {
           createdAt: string
           description: string | null

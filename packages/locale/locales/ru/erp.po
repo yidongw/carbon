@@ -181,12 +181,23 @@ msgstr "Параметры учетной записи"
 msgid "Account Type"
 msgstr "Тип счета"
 
+#: apps/erp/app/hooks/useModules.tsx:70
+#: apps/erp/app/modules/items/ui/Consumables/useConsumableNavigation.tsx:46
+#: apps/erp/app/modules/items/ui/Materials/useMaterialNavigation.tsx:46
+#: apps/erp/app/modules/items/ui/Parts/usePartNavigation.tsx:51
+#: apps/erp/app/modules/items/ui/Tools/useToolNavigation.tsx:50
+#: apps/erp/app/modules/settings/ui/useSettingsSubmodules.tsx:83
+#: apps/erp/app/routes/x+/accounting+/_layout.tsx:24
+#: apps/erp/app/routes/x+/settings+/accounting.tsx:33
+#: apps/erp/app/routes/x+/settings+/accounting.tsx:111
 msgid "Accounting"
 msgstr "Бухгалтерия"
 
+#: apps/erp/app/routes/x+/settings+/accounting.tsx:134
 msgid "Accounting is disabled"
 msgstr "Бухгалтерский учет отключен"
 
+#: apps/erp/app/routes/x+/settings+/accounting.tsx:132
 msgid "Accounting is enabled"
 msgstr "Бухгалтерский учет включен"
 
@@ -459,6 +470,7 @@ msgstr "Все рабочие центры"
 msgid "Allows acknowledge & continue"
 msgstr "Позволяет подтвердить и продолжить"
 
+#: apps/erp/app/routes/x+/settings+/accounting.tsx:138
 msgid "Alpha"
 msgstr "Альфа"
 
@@ -1019,6 +1031,8 @@ msgstr "Размер партии"
 msgid "Batch Tracking"
 msgstr "Отслеживание партий"
 
+#: apps/erp/app/routes/x+/settings+/people.tsx:191
+#: apps/erp/app/routes/x+/settings+/people.tsx:236
 msgid "Beta"
 msgstr "Бета"
 
@@ -1650,12 +1664,15 @@ msgstr "Подключено к"
 msgid "Console Mode"
 msgstr "Режим консоли"
 
+#: apps/erp/app/routes/x+/settings+/people.tsx:270
 msgid "Console mode has been enabled. Use this PIN to identify yourself at MES terminals."
 msgstr "Режим консоли включен. Используйте этот PIN для идентификации на терминалах MES."
 
+#: apps/erp/app/routes/x+/settings+/people.tsx:187
 msgid "Console mode is disabled"
 msgstr "Режим консоли отключен"
 
+#: apps/erp/app/routes/x+/settings+/people.tsx:185
 msgid "Console mode is enabled"
 msgstr "Режим консоли включен"
 
@@ -2128,7 +2145,7 @@ msgstr "Пользовательские поля"
 #: apps/erp/app/modules/items/ui/Item/CustomerParts/CustomerParts.tsx:41
 #: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:421
 #: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:271
-#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderDeliveryForm.tsx:160
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderDeliveryForm.tsx:163
 #: apps/erp/app/modules/quality/ui/Issue/IssueAssociations.tsx:356
 #: apps/erp/app/modules/sales/ui/Customer/CustomerForm.tsx:61
 #: apps/erp/app/modules/sales/ui/CustomerPortals/CustomerPortalForm.tsx:91
@@ -2140,7 +2157,7 @@ msgstr "Пользовательские поля"
 #: apps/erp/app/modules/sales/ui/Quotes/QuotesTable.tsx:97
 #: apps/erp/app/modules/sales/ui/Quotes/QuoteToOrderDrawer.tsx:939
 #: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderForm.tsx:171
-#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderShipmentForm.tsx:159
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderShipmentForm.tsx:162
 #: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrdersTable.tsx:141
 #: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQForm.tsx:156
 #: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQsTable.tsx:73
@@ -2727,6 +2744,7 @@ msgstr "Документы"
 msgid "Don't Cancel"
 msgstr "Не отменять"
 
+#: apps/erp/app/routes/x+/settings+/people.tsx:292
 msgid "Done"
 msgstr "Готово"
 
@@ -2745,6 +2763,10 @@ msgstr "Перетащите PDF-файл заказа на покупку сю�
 msgid "Drag handle"
 msgstr "Ручка перетаскивания"
 
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderDeliveryForm.tsx:154
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrdersTable.tsx:265
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderShipmentForm.tsx:153
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrdersTable.tsx:461
 msgid "Drop Shipment"
 msgstr "Прямая поставка"
 
@@ -3101,6 +3123,7 @@ msgstr "Включите аудит в настройках, чтобы нача
 msgid "Enable digital quotes for your company. This will allow you to send digital quotes to your customers, and allow them to accept them online."
 msgstr "Включите цифровые предложения для вашей компании. Это позволит вам отправлять цифровые предложения вашим клиентам и позволит им принимать их онлайн."
 
+#: apps/erp/app/routes/x+/settings+/accounting.tsx:120
 msgid "Enable full accrual accounting with journal entries, financial reports, and general ledger posting."
 msgstr "Включите полный учет по методу начисления с записями в журнале, финансовыми отчетами и проводками в главную книгу."
 
@@ -3116,12 +3139,15 @@ msgstr "Включите режим общей рабочей станции д�
 msgid "Enable this rule to automatically require approval for matching documents"
 msgstr "Включите это правило, чтобы автоматически требовать одобрение для соответствующих документов"
 
+#: apps/erp/app/routes/x+/settings+/people.tsx:221
 msgid "Enable timecard tracking for work shifts."
 msgstr "Включить отслеживание табелей учета рабочего времени для смен."
 
+#: apps/erp/app/routes/x+/settings+/people.tsx:202
 msgid "Enable to allow shared workstation mode."
 msgstr "Включите, чтобы разрешить режим общей рабочей станции."
 
+#: apps/erp/app/routes/x+/settings+/accounting.tsx:148
 msgid "Enable to automatically post transactions to the general ledger."
 msgstr "Включите, чтобы автоматически отправлять транзакции в главную книгу."
 
@@ -3140,6 +3166,7 @@ msgstr "Включите, чтобы показывать миниатюры д�
 msgid "Enable to start tracking changes to your data."
 msgstr "Включите, чтобы начать отслеживание изменений ваших данных."
 
+#: apps/erp/app/routes/x+/settings+/people.tsx:244
 msgid "Enable to start tracking work shifts."
 msgstr "Включите для начала отслеживания рабочих смен."
 
@@ -3828,6 +3855,7 @@ msgstr "Типы датчиков"
 msgid "Gauges"
 msgstr "Датчики"
 
+#: apps/erp/app/routes/x+/settings+/accounting.tsx:117
 msgid "General Ledger"
 msgstr "Главная книга"
 
@@ -4110,6 +4138,11 @@ msgstr "Пригласить"
 msgid "Invoice"
 msgstr "Счет"
 
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderPaymentForm.tsx:86
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierPaymentForm.tsx:65
+#: apps/erp/app/modules/sales/ui/Customer/CustomerPaymentForm.tsx:65
+#: apps/erp/app/modules/sales/ui/Quotes/QuotePaymentForm.tsx:79
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderPaymentForm.tsx:81
 msgid "Invoice Contact"
 msgstr "Контакт счета"
 
@@ -4125,12 +4158,22 @@ msgstr "Местоположение клиента счета"
 msgid "Invoice ID"
 msgstr "ID счета"
 
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderPaymentForm.tsx:81
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierPaymentForm.tsx:60
+#: apps/erp/app/modules/sales/ui/Customer/CustomerPaymentForm.tsx:60
+#: apps/erp/app/modules/sales/ui/Quotes/QuotePaymentForm.tsx:74
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderPaymentForm.tsx:76
 msgid "Invoice Location"
 msgstr "Местоположение счета"
 
 msgid "Invoice Number"
 msgstr "Номер счета"
 
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceForm.tsx:211
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceProperties.tsx:242
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoicesTable.tsx:110
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderPaymentForm.tsx:76
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierPaymentForm.tsx:55
 msgid "Invoice Supplier"
 msgstr "Поставщик счета"
 
@@ -4282,6 +4325,20 @@ msgstr "Путевой лист работы"
 msgid "Job traveler PDFs include work instructions."
 msgstr "PDF-документы маршрутного листа включают рабочие инструкции."
 
+#: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:687
+#: apps/erp/app/modules/production/ui/Schedule/Kanban/ScheuleNavigation.tsx:113
+#: apps/erp/app/modules/production/ui/useProductionSubmodules.tsx:24
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderLineJobs.tsx:122
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrdersTable.tsx:203
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrdersTable.tsx:293
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderSummary.tsx:489
+#: apps/erp/app/routes/x+/job+/$jobId.complete.tsx:13
+#: apps/erp/app/routes/x+/job+/$jobId.tsx:36
+#: apps/erp/app/routes/x+/job+/new.tsx:28
+#: apps/erp/app/routes/x+/part+/$itemId.tsx:249
+#: apps/erp/app/routes/x+/production+/jobs.tsx:17
+#: apps/erp/app/routes/x+/sales-order+/$orderId.$lineId.details.tsx:220
+#: apps/erp/app/routes/x+/tool+/$itemId.tsx:245
 msgid "Jobs"
 msgstr "Работы"
 
@@ -4512,7 +4569,7 @@ msgstr "Загрузка..."
 #: apps/erp/app/modules/production/ui/Jobs/JobHeader.tsx:1094
 #: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:509
 #: apps/erp/app/modules/production/ui/Projection/DemandProjectionForm.tsx:116
-#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderDeliveryForm.tsx:165
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderDeliveryForm.tsx:168
 #: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQsTable.tsx:172
 #: apps/erp/app/modules/purchasing/ui/Supplier/SupplierContactForm.tsx:107
 #: apps/erp/app/modules/quality/ui/Gauge/GaugeForm.tsx:436
@@ -4532,7 +4589,7 @@ msgstr "Загрузка..."
 #: apps/erp/app/modules/sales/ui/Customer/CustomerLocationForm.tsx:81
 #: apps/erp/app/modules/sales/ui/Quotes/QuotesTable.tsx:209
 #: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderLineJobs.tsx:221
-#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderShipmentForm.tsx:164
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderShipmentForm.tsx:167
 #: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrdersTable.tsx:424
 #: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQsTable.tsx:168
 #: apps/erp/app/modules/users/ui/Employees/CreateEmployeeModal.tsx:83
@@ -5603,6 +5660,7 @@ msgstr "Оператор должен выбрать другую партию/�
 msgid "Operators"
 msgstr "Операторы"
 
+#: apps/erp/app/routes/x+/settings+/people.tsx:197
 msgid "Operators can use shared workstations with PIN authentication."
 msgstr "Операторы могут использовать общие рабочие станции с аутентификацией по PIN."
 
@@ -5765,15 +5823,37 @@ msgstr "Пройти"
 msgid "Path"
 msgstr "Путь"
 
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceHeader.tsx:351
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceHeader.tsx:364
+#: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoiceHeader.tsx:360
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderPaymentForm.tsx:68
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierSidebar/useSupplierSidebar.tsx:54
+#: apps/erp/app/modules/sales/ui/Customer/CustomerSidebar/useCustomerSidebar.tsx:55
+#: apps/erp/app/modules/sales/ui/Quotes/QuotePaymentForm.tsx:61
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderPaymentForm.tsx:63
+#: apps/erp/app/routes/x+/settings+/billing.tsx:38
 msgid "Payment"
 msgstr "Платеж"
 
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoicesTable.tsx:214
+#: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoicesTable.tsx:208
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrdersTable.tsx:250
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrdersTable.tsx:446
 msgid "Payment Method"
 msgstr "Способ оплаты"
 
 msgid "Payment Term"
 msgstr "Условие платежа"
 
+#: apps/erp/app/modules/accounting/ui/PaymentTerms/PaymentTermsTable.tsx:132
+#: apps/erp/app/modules/accounting/ui/useAccountingSubmodules.tsx:115
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceForm.tsx:250
+#: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoiceForm.tsx:246
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderPaymentForm.tsx:90
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierPaymentForm.tsx:47
+#: apps/erp/app/modules/sales/ui/Customer/CustomerPaymentForm.tsx:47
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteToOrderDrawer.tsx:874
+#: apps/erp/app/routes/x+/accounting+/payment-terms.tsx:13
 msgid "Payment Terms"
 msgstr "Условия платежа"
 
@@ -6489,6 +6569,7 @@ msgstr "Выпущено"
 msgid "Remaining after split stays on the original row."
 msgstr "Остаток после разделения остается в исходной строке."
 
+#: apps/erp/app/routes/x+/settings+/people.tsx:282
 msgid "Remember this PIN. You will need it to exit console mode on MES terminals."
 msgstr "Запомните этот PIN-код. Он потребуется вам для выхода из режима консоли на терминалах MES."
 
@@ -6914,10 +6995,10 @@ msgstr "Суббота"
 #: apps/erp/app/modules/production/ui/Procedures/ProcedureExplorer.tsx:878
 #: apps/erp/app/modules/production/ui/Procedures/ProcedureExplorer.tsx:947
 #: apps/erp/app/modules/production/ui/ScrapReasons/ScrapReasonForm.tsx:97
-#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderDeliveryForm.tsx:175
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderDeliveryForm.tsx:178
 #: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderForm.tsx:209
 #: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderLineForm.tsx:867
-#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderPaymentForm.tsx:99
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderPaymentForm.tsx:97
 #: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQForm.tsx:101
 #: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQLineForm.tsx:289
 #: apps/erp/app/modules/purchasing/ui/Supplier/SupplierContactForm.tsx:117
@@ -6972,7 +7053,7 @@ msgstr "Суббота"
 #: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderForm.tsx:284
 #: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderLineForm.tsx:687
 #: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderPaymentForm.tsx:91
-#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderShipmentForm.tsx:174
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderShipmentForm.tsx:177
 #: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQForm.tsx:202
 #: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQHeader.tsx:362
 #: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQLineForm.tsx:340
@@ -8198,12 +8279,20 @@ msgstr "Четверг"
 msgid "Timecard"
 msgstr "Табель учета рабочего времени"
 
+#: apps/erp/app/modules/people/ui/Person/PersonSidebar/usePersonSidebar.tsx:35
+#: apps/erp/app/modules/people/ui/Timecards/TimecardsTable.tsx:236
+#: apps/erp/app/modules/people/ui/usePeopleSubmodules.tsx:29
+#: apps/erp/app/routes/x+/people+/timecard.tsx:16
+#: apps/erp/app/routes/x+/person+/$personId.timecard.tsx:433
+#: apps/erp/app/routes/x+/settings+/people.tsx:218
 msgid "Timecards"
 msgstr "Табели учета рабочего времени"
 
+#: apps/erp/app/routes/x+/settings+/people.tsx:232
 msgid "Timecards are disabled"
 msgstr "Табели учета отключены"
 
+#: apps/erp/app/routes/x+/settings+/people.tsx:230
 msgid "Timecards are enabled"
 msgstr "Табели учета рабочего времени включены"
 
@@ -8367,6 +8456,7 @@ msgstr "Назначения обучения"
 msgid "Trainings"
 msgstr "Обучение"
 
+#: apps/erp/app/routes/x+/settings+/accounting.tsx:143
 msgid "Transactions will create journal entries and update the general ledger."
 msgstr "Транзакции создадут записи в журнале и обновят главную книгу."
 
@@ -9008,6 +9098,7 @@ msgstr "Рабочие инструкции не включены"
 msgid "Work Phone"
 msgstr "Рабочий телефон"
 
+#: apps/erp/app/routes/x+/settings+/people.tsx:242
 msgid "Work shift tracking is active."
 msgstr "Отслеживание рабочих смен активно."
 
@@ -9066,6 +9157,7 @@ msgstr "Вы получили эту партию"
 msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "Вы отметились на работу {hoursElapsed} часов назад. Вы забыли отметиться на выход?"
 
+#: apps/erp/app/routes/x+/settings+/people.tsx:264
 msgid "Your Console PIN"
 msgstr "Ваш PIN консоли"
 
