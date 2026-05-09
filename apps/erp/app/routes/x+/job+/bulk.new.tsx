@@ -4,11 +4,21 @@ import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
 import { validator } from "@carbon/form";
 import { batchTrigger } from "@carbon/jobs";
-import { parseDateTime, toCalendarDateTime } from "@internationalized/date";
+import {
+  parseDate,
+  parseDateTime,
+  toCalendarDateTime
+} from "@internationalized/date";
 import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
 import { getDefaultStorageUnitForJob } from "~/modules/inventory";
-import { bulkJobValidator, insertJob } from "~/modules/production";
+import { getItemReplenishment } from "~/modules/items";
+import {
+  bulkJobValidator,
+  upsertJob,
+  upsertJobMethod
+} from "~/modules/production";
+import { getNextSequence } from "~/modules/settings/settings.service";
 import { setCustomFields } from "~/utils/form";
 import { path } from "~/utils/path";
 
@@ -35,22 +45,43 @@ export async function action({ request }: ActionFunctionArgs) {
   const {
     dueDateOfFirstJob,
     dueDateOfLastJob,
-    totalQuantity,
+    scrapQuantityPerJob,
+    jobCount,
     quantityPerJob,
-    configuration: configStr,
     ...jobData
   } = validation.data;
 
-  let configuration: Record<string, unknown> | undefined;
-  if (configStr) {
+  let configuration = undefined;
+  if (jobData.configuration) {
     try {
-      configuration = JSON.parse(configStr);
-    } catch {
-      // invalid JSON — skip configuration
+      configuration = JSON.parse(jobData.configuration);
+    } catch (error) {
+      console.error(error);
     }
   }
-  const jobs = Math.ceil(totalQuantity / quantityPerJob);
-  const quantityOfLastJob = totalQuantity - (jobs - 1) * quantityPerJob;
+
+  const configTableRows = Array.isArray(configuration?.configTable)
+    ? configuration.configTable
+    : [];
+  const configTablePrimaryKeys = Array.isArray(
+    configuration?.configTablePrimaryKeys
+  )
+    ? configuration.configTablePrimaryKeys
+    : ["Quantities"];
+  const hasConfiguredJobs = configTableRows.length > 0;
+  const jobs = Math.max(1, Math.ceil(jobCount));
+
+  const getConfiguredJobQuantity = (row: Record<string, unknown>) =>
+    configTablePrimaryKeys.reduce(
+      (sum: number, key: string) => sum + (Number(row[key]) || 0),
+      0
+    );
+
+  const manufacturing = await getItemReplenishment(
+    serviceRole,
+    jobData.itemId,
+    companyId
+  );
 
   // Calculate due date distribution if both dates are provided
   let dueDateDistribution: string[] = [];
@@ -94,33 +125,81 @@ export async function action({ request }: ActionFunctionArgs) {
   );
 
   for await (const [i] of Array.from({ length: jobs }, (_, i) => [i])) {
+    const nextSequence = await getNextSequence(serviceRole, "job", companyId);
+    if (nextSequence.error) {
+      throw redirect(
+        path.to.newJob,
+        await flash(
+          request,
+          error(nextSequence.error, "Failed to get next sequence")
+        )
+      );
+    }
+    let jobId = nextSequence.data;
     const dueDate = (dueDateDistribution[i] || dueDateOfFirstJob)?.split(
       "T"
     )[0];
 
-    const createJob = await insertJob(
-      serviceRole,
-      {
-        ...jobData,
-        quantity: i === jobs - 1 ? quantityOfLastJob : quantityPerJob,
-        dueDate,
-        storageUnitId: storageUnitId ?? undefined,
-        configuration,
-        companyId,
-        createdBy: userId,
-        customFields: setCustomFields(formData)
-      },
-      { skipRecalculate: true }
-    );
+    const configTableRow = hasConfiguredJobs
+      ? configTableRows[i % configTableRows.length]
+      : undefined;
+    const configurationForJob = configTableRow
+      ? {
+          ...configuration,
+          configTable: [configTableRow]
+        }
+      : configuration;
+    const jobQuantity = configTableRow
+      ? getConfiguredJobQuantity(configTableRow)
+      : quantityPerJob;
+    const scrapRatio =
+      quantityPerJob > 0 ? scrapQuantityPerJob / quantityPerJob : 0;
 
-    if (createJob.error || !createJob.data) {
+    const createJob = await upsertJob(serviceRole, {
+      jobId,
+      ...jobData,
+      quantity: jobQuantity,
+      scrapQuantity: Math.ceil(jobQuantity * scrapRatio),
+      dueDate,
+      startDate: dueDate
+        ? parseDate(dueDate)
+            .subtract({ days: manufacturing.data?.leadTime ?? 7 })
+            .toString()
+        : undefined,
+      storageUnitId: storageUnitId ?? undefined,
+      configuration: configurationForJob,
+      companyId,
+      createdBy: userId,
+      customFields: setCustomFields(formData)
+    });
+
+    if (createJob.error) {
       throw redirect(
         path.to.newJob,
         await flash(request, error(createJob.error, "Failed to insert job"))
       );
     }
 
-    jobIds.push(createJob.data.id);
+    const id = createJob.data?.id!;
+    if (createJob.error || !jobId) {
+      throw redirect(
+        path.to.jobs,
+        await flash(request, error(createJob.error, "Failed to insert job"))
+      );
+    }
+
+    const upsertMethod = await upsertJobMethod(serviceRole, "itemToJob", {
+      sourceId: jobData.itemId,
+      targetId: id,
+      companyId,
+      userId,
+      configuration: configurationForJob
+    });
+
+    if (upsertMethod.error) {
+      console.error("Failed to upsert job method", upsertMethod.error);
+    }
+    jobIds.push(id);
   }
 
   await batchTrigger(
