@@ -98,6 +98,11 @@ msgstr "顧客とは、あなたの部品またはサービスを購入する企
 msgid "A issue record tracks quality issues and their resolution process."
 msgstr "問題レコードは品質問題とその解決プロセスを追跡します。"
 
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:300
+msgid "A job is a set of work to be done to fulfill an order or increase inventory"
+msgstr ""
+
+#: apps/erp/app/modules/items/ui/Materials/MaterialForm.tsx:163
 msgid "A material is a physical item used to make a part that can be used across multiple jobs"
 msgstr "材料は、複数のジョブで使用できるパーツを作成するために使用される物理的なアイテムです"
 
@@ -359,6 +364,11 @@ msgstr "要件を追加"
 msgid "Add Risk"
 msgstr "リスクを追加"
 
+#: apps/erp/app/modules/production/ui/Jobs/ConfigParamsTableModal.tsx:494
+msgid "Add Row"
+msgstr ""
+
+#: apps/erp/app/modules/items/ui/ItemRules/ItemRuleAssignments.tsx:180
 msgid "Add rule"
 msgstr "ルールを追加"
 
@@ -1064,6 +1074,7 @@ msgstr "バケット"
 msgid "Bulk Import"
 msgstr "一括インポート"
 
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:456
 msgid "Bulk Jobs"
 msgstr "一括ジョブ"
 
@@ -1118,6 +1129,154 @@ msgstr "キャリブレーション"
 msgid "Can't disable the only active break. Add another break or toggle the override's Active instead."
 msgstr "唯一のアクティブなブレークを無効にすることはできません。別のブレークを追加するか、オーバーライドのアクティブを切り替えてください。"
 
+#: apps/erp/app/components/Form/ConversionFactor.tsx:321
+#: apps/erp/app/components/Form/Item.tsx:370
+#: apps/erp/app/components/Form/Items.tsx:115
+#: apps/erp/app/components/ItemRuleViolationModal.tsx:96
+#: apps/erp/app/components/Layout/Topbar/Feedback.tsx:135
+#: apps/erp/app/components/Layout/Topbar/Suggestion.tsx:203
+#: apps/erp/app/components/Modals/ConfirmDelete/ConfirmDelete.tsx:62
+#: apps/erp/app/components/Table/components/TableHeader.tsx:209
+#: apps/erp/app/modules/account/ui/UserAttributes/UserAttributesForm.tsx:195
+#: apps/erp/app/modules/account/ui/UserAttributes/UserAttributesForm.tsx:827
+#: apps/erp/app/modules/accounting/ui/AccountDefaults/AccountDefaultsForm.tsx:480
+#: apps/erp/app/modules/accounting/ui/ChartOfAccounts/ChartOfAccountForm.tsx:168
+#: apps/erp/app/modules/accounting/ui/ChartOfAccounts/GroupAccountForm.tsx:211
+#: apps/erp/app/modules/accounting/ui/FiscalYear/FiscalYearSettingsForm.tsx:75
+#: apps/erp/app/modules/documents/ui/Documents/DocumentForm.tsx:82
+#: apps/erp/app/modules/inventory/ui/Batches/BatchPropertiesConfig.tsx:395
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:427
+#: apps/erp/app/modules/inventory/ui/Kanbans/KanbanForm.tsx:332
+#: apps/erp/app/modules/inventory/ui/Receipts/ReceiptPostModal.tsx:198
+#: apps/erp/app/modules/inventory/ui/Receipts/ReceiptVoidModal.tsx:85
+#: apps/erp/app/modules/inventory/ui/Shipments/ShipmentPostModal.tsx:327
+#: apps/erp/app/modules/inventory/ui/Shipments/ShipmentVoidModal.tsx:85
+#: apps/erp/app/modules/inventory/ui/StockTransfers/StockTransferCompleteModal.tsx:165
+#: apps/erp/app/modules/inventory/ui/StorageTypes/StorageTypeForm.tsx:104
+#: apps/erp/app/modules/inventory/ui/StorageUnits/StorageUnitForm.tsx:116
+#: apps/erp/app/modules/inventory/ui/Traceability/EditExpiryModal.tsx:89
+#: apps/erp/app/modules/inventory/ui/WarehouseTransfers/WarehouseTransferForm.tsx:217
+#: apps/erp/app/modules/inventory/ui/WarehouseTransfers/WarehouseTransferLineForm.tsx:184
+#: apps/erp/app/modules/inventory/ui/WarehouseTransfers/WarehouseTransferLines.tsx:283
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoicePostModal.tsx:154
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceVoidModal.tsx:87
+#: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoicePostModal.tsx:180
+#: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoiceVoidModal.tsx:78
+#: apps/erp/app/modules/items/ui/ItemRules/ItemRuleForm.tsx:148
+#: apps/erp/app/modules/items/ui/MaterialDimensions/MaterialDimensionForm.tsx:105
+#: apps/erp/app/modules/items/ui/MaterialFinishes/MaterialFinishForm.tsx:105
+#: apps/erp/app/modules/items/ui/MaterialGrades/MaterialGradeForm.tsx:105
+#: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:841
+#: apps/erp/app/modules/items/ui/MaterialShapes/MaterialShapeForm.tsx:120
+#: apps/erp/app/modules/items/ui/MaterialSubstances/MaterialSubstanceForm.tsx:120
+#: apps/erp/app/modules/items/ui/MaterialTypes/MaterialTypeForm.tsx:117
+#: apps/erp/app/modules/items/ui/Parts/ConfigurationParameters.tsx:431
+#: apps/erp/app/modules/items/ui/Parts/ConfigurationParameters.tsx:946
+#: apps/erp/app/modules/people/ui/Attributes/AttributeCategoryForm.tsx:85
+#: apps/erp/app/modules/people/ui/Attributes/AttributeForm.tsx:133
+#: apps/erp/app/modules/people/ui/Departments/DepartmentForm.tsx:114
+#: apps/erp/app/modules/people/ui/Holidays/HolidayForm.tsx:82
+#: apps/erp/app/modules/people/ui/Shifts/ShiftForm.tsx:99
+#: apps/erp/app/modules/people/ui/Timecards/TimecardForm.tsx:117
+#: apps/erp/app/modules/production/ui/Jobs/ConfigParamsTableModal.tsx:504
+#: apps/erp/app/modules/production/ui/Jobs/JobHeader.tsx:835
+#: apps/erp/app/modules/production/ui/Jobs/JobHeader.tsx:894
+#: apps/erp/app/modules/production/ui/Jobs/JobHeader.tsx:1252
+#: apps/erp/app/modules/production/ui/Jobs/JobMakeMethodTools.tsx:442
+#: apps/erp/app/modules/production/ui/Jobs/JobMakeMethodTools.tsx:563
+#: apps/erp/app/modules/production/ui/Jobs/JobMakeMethodTools.tsx:619
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderApprovalModal.tsx:129
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderFinalizeModal.tsx:116
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderHeader.tsx:553
+#: apps/erp/app/modules/purchasing/ui/PurchasingRfq/FinalizeRFQModal.tsx:153
+#: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQHeader.tsx:284
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierApprovalModal.tsx:79
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierContactForm.tsx:120
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierHeader.tsx:388
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierLocationForm.tsx:105
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierProcessForm.tsx:142
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteCompareDrawer.tsx:288
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteFinalizeModal.tsx:102
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteHeader.tsx:328
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteHeader.tsx:485
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteSendModal.tsx:183
+#: apps/erp/app/modules/purchasing/ui/SupplierTypes/SupplierTypeForm.tsx:100
+#: apps/erp/app/modules/quality/ui/Calibrations/GaugeCalibrationRecordForm.tsx:393
+#: apps/erp/app/modules/quality/ui/Calibrations/GaugeCalibrationRecordForm.tsx:448
+#: apps/erp/app/modules/quality/ui/Documents/QualityDocumentApprovalModal.tsx:84
+#: apps/erp/app/modules/quality/ui/Documents/QualityDocumentExplorer.tsx:652
+#: apps/erp/app/modules/quality/ui/Gauge/GaugeForm.tsx:320
+#: apps/erp/app/modules/quality/ui/GaugeTypes/GaugeTypeForm.tsx:100
+#: apps/erp/app/modules/quality/ui/InboundInspections/InboundInspectionForm.tsx:145
+#: apps/erp/app/modules/quality/ui/InboundInspections/InboundInspectionLotView.tsx:480
+#: apps/erp/app/modules/quality/ui/Issue/ActionTasksList.tsx:247
+#: apps/erp/app/modules/quality/ui/Issue/AssociatedItemsList.tsx:650
+#: apps/erp/app/modules/quality/ui/Issue/AssociatedItemsList.tsx:778
+#: apps/erp/app/modules/quality/ui/Issue/IssueAssociations.tsx:1030
+#: apps/erp/app/modules/quality/ui/Issue/Jira/CreateIssue.tsx:118
+#: apps/erp/app/modules/quality/ui/Issue/Jira/LinkIssue.tsx:167
+#: apps/erp/app/modules/quality/ui/Issue/Linear/CreateIssue.tsx:97
+#: apps/erp/app/modules/quality/ui/Issue/Linear/LinkIssue.tsx:155
+#: apps/erp/app/modules/quality/ui/Issue/ReviewersList.tsx:107
+#: apps/erp/app/modules/quality/ui/Issue/ReviewersList.tsx:123
+#: apps/erp/app/modules/quality/ui/Issue/ReviewersList.tsx:223
+#: apps/erp/app/modules/quality/ui/IssueTypes/IssueTypeForm.tsx:102
+#: apps/erp/app/modules/quality/ui/IssueWorkflows/IssueWorkflowForm.tsx:311
+#: apps/erp/app/modules/quality/ui/RequiredActions/RequiredActionForm.tsx:111
+#: apps/erp/app/modules/quality/ui/RiskRegister/RiskRegisterForm.tsx:225
+#: apps/erp/app/modules/resources/ui/Contractors/ContractorForm.tsx:113
+#: apps/erp/app/modules/resources/ui/FailureModes/FailureModeForm.tsx:122
+#: apps/erp/app/modules/resources/ui/Locations/LocationForm.tsx:113
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceAddPartModal.tsx:672
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchExplorer.tsx:459
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchExplorer.tsx:530
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchProperties.tsx:657
+#: apps/erp/app/modules/resources/ui/MaintenanceSchedule/MaintenanceScheduleForm.tsx:206
+#: apps/erp/app/modules/resources/ui/Processes/ProcessForm.tsx:162
+#: apps/erp/app/modules/resources/ui/Training/TrainingAssignmentForm.tsx:430
+#: apps/erp/app/modules/resources/ui/Training/TrainingExplorer.tsx:691
+#: apps/erp/app/modules/resources/ui/WorkCenters/WorkCenterForm.tsx:161
+#: apps/erp/app/modules/resources/ui/WorkCenters/WorkCentersTable.tsx:470
+#: apps/erp/app/modules/sales/ui/Customer/CustomerContactForm.tsx:121
+#: apps/erp/app/modules/sales/ui/Customer/CustomerLocationForm.tsx:100
+#: apps/erp/app/modules/sales/ui/CustomerPortals/CustomerPortalForm.tsx:101
+#: apps/erp/app/modules/sales/ui/CustomerStatuses/CustomerStatusForm.tsx:101
+#: apps/erp/app/modules/sales/ui/CustomerTypes/CustomerTypeForm.tsx:101
+#: apps/erp/app/modules/sales/ui/NoQuoteReasons/NoQuoteReasonForm.tsx:101
+#: apps/erp/app/modules/sales/ui/Pricing/DuplicatePriceListModal.tsx:169
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteBillOfProcess.tsx:1388
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteFinalizeModal.tsx:222
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteHeader.tsx:325
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteHeader.tsx:461
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteHeader.tsx:473
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteLineForm.tsx:489
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteMakeMethodTools.tsx:420
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteMakeMethodTools.tsx:546
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteMakeMethodTools.tsx:598
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderHeader.tsx:165
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderHeader.tsx:431
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderLineJobs.tsx:265
+#: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQHeader.tsx:359
+#: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQHeader.tsx:502
+#: apps/erp/app/modules/settings/ui/ApiKeys/ApiKeysForm.tsx:139
+#: apps/erp/app/modules/settings/ui/Approvals/ApprovalRuleForm.tsx:153
+#: apps/erp/app/modules/settings/ui/CustomFields/CustomFieldForm.tsx:146
+#: apps/erp/app/modules/settings/ui/Sequences/SequenceForm.tsx:119
+#: apps/erp/app/modules/settings/ui/Webhooks/WebhookForm.tsx:139
+#: apps/erp/app/modules/users/ui/components/DeactivateUsersModal.tsx:62
+#: apps/erp/app/modules/users/ui/components/ResendInviteModal.tsx:67
+#: apps/erp/app/modules/users/ui/components/RevokeInviteModal.tsx:67
+#: apps/erp/app/modules/users/ui/Employees/BulkEditPermissionsForm.tsx:142
+#: apps/erp/app/modules/users/ui/Employees/EmployeePermissionsForm.tsx:139
+#: apps/erp/app/modules/users/ui/EmployeeTypes/EmployeeTypeForm.tsx:115
+#: apps/erp/app/modules/users/ui/Groups/GroupsForm.tsx:77
+#: apps/erp/app/routes/share+/quote.$id.tsx:1413
+#: apps/erp/app/routes/share+/quote.$id.tsx:1475
+#: apps/erp/app/routes/x+/inventory+/storage-types.delete.$id.tsx:227
+#: apps/erp/app/routes/x+/inventory+/storage-units.delete.$storageUnitId.tsx:220
+#: apps/erp/app/routes/x+/person+/$personId.timecard.tsx:618
+#: apps/erp/app/routes/x+/person+/$personId.timecard.tsx:700
+#: apps/erp/app/routes/x+/stock-transfer+/$id.scan.$lineId.tsx:368
 msgid "Cancel"
 msgstr "キャンセル"
 
@@ -1386,6 +1545,8 @@ msgstr "完了時間"
 msgid "Conditions"
 msgstr "条件"
 
+#: apps/erp/app/modules/items/ui/Parts/ConfigurationParameters.tsx:185
+#: apps/erp/app/modules/production/ui/Jobs/ConfigParamsTableModal.tsx:350
 msgid "Configuration Parameters"
 msgstr "設定パラメータ"
 
@@ -1422,6 +1583,12 @@ msgstr "保全ディスパッチが作業現場から作成されるときの通
 msgid "Configure notifications for when new suggestions are submitted."
 msgstr "新しい提案が送信されたときの通知を設定します。"
 
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:263
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:480
+msgid "Configure quantities"
+msgstr ""
+
+#: apps/erp/app/routes/x+/settings+/production.tsx:214
 msgid "Configure the content displayed on job traveler PDFs."
 msgstr "ジョブトラベラーPDFに表示されるコンテンツを設定します。"
 
@@ -1440,6 +1607,18 @@ msgstr "サプライヤーが見積もりを送信したときに通知を受け
 msgid "Configured"
 msgstr "設定済み"
 
+#: apps/erp/app/components/Form/ConversionFactor.tsx:324
+#: apps/erp/app/components/ItemRuleViolationModal.tsx:107
+#: apps/erp/app/modules/inventory/ui/WarehouseTransfers/WarehouseTransferForm.tsx:193
+#: apps/erp/app/modules/items/ui/Item/MakeMethodTools.tsx:535
+#: apps/erp/app/modules/production/ui/Jobs/ConfigParamsTableModal.tsx:507
+#: apps/erp/app/modules/production/ui/Jobs/JobMakeMethodTools.tsx:448
+#: apps/erp/app/modules/production/ui/Jobs/JobMakeMethodTools.tsx:573
+#: apps/erp/app/modules/quality/ui/Calibrations/GaugeCalibrationRecordForm.tsx:451
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteMakeMethodTools.tsx:426
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteMakeMethodTools.tsx:552
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderHeader.tsx:168
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderHeader.tsx:407
 msgid "Confirm"
 msgstr "確認"
 
@@ -1546,6 +1725,28 @@ msgstr "クリップボードにリンクをコピーしました"
 msgid "Copied!"
 msgstr "コピーしました!"
 
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceProperties.tsx:160
+#: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoiceProperties.tsx:154
+#: apps/erp/app/modules/items/ui/Consumables/ConsumableProperties.tsx:196
+#: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:294
+#: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:314
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:200
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:218
+#: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:187
+#: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:207
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:314
+#: apps/erp/app/modules/production/ui/Procedures/ProcedureProperties.tsx:112
+#: apps/erp/app/modules/production/ui/Procedures/ProcedureProperties.tsx:132
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderProperties.tsx:173
+#: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQProperties.tsx:183
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteProperties.tsx:152
+#: apps/erp/app/modules/quality/ui/Documents/QualityDocumentProperties.tsx:141
+#: apps/erp/app/modules/quality/ui/Documents/QualityDocumentProperties.tsx:159
+#: apps/erp/app/modules/quality/ui/Issue/IssueProperties.tsx:191
+#: apps/erp/app/modules/quality/ui/Issue/IssueProperties.tsx:213
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteProperties.tsx:157
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderProperties.tsx:161
+#: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQProperties.tsx:137
 msgid "Copy"
 msgstr "コピー"
 
@@ -1579,6 +1780,7 @@ msgstr "課題番号をコピー"
 msgid "Copy issue unique identifier"
 msgstr "問題の一意の識別子をコピー"
 
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:324
 msgid "Copy Job number"
 msgstr "ジョブ番号をコピー"
 
@@ -1597,6 +1799,7 @@ msgstr "ドキュメントへのリンクをコピー"
 msgid "Copy link to issue"
 msgstr "問題へのリンクをコピー"
 
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:306
 msgid "Copy link to Job"
 msgstr "ジョブへのリンクをコピー"
 
@@ -1916,6 +2119,39 @@ msgstr "カスタムフィールド"
 msgid "Custom Fields"
 msgstr "カスタムフィールド"
 
+#: apps/erp/app/components/Form/Customer.tsx:48
+#: apps/erp/app/components/Layout/Topbar/CreateMenu.tsx:86
+#: apps/erp/app/modules/inventory/ui/Shipments/ShipmentsTable.tsx:243
+#: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoiceForm.tsx:198
+#: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoicesTable.tsx:87
+#: apps/erp/app/modules/items/ui/Item/CustomerPartForm.tsx:67
+#: apps/erp/app/modules/items/ui/Item/CustomerParts/CustomerParts.tsx:41
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:421
+#: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:271
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderDeliveryForm.tsx:160
+#: apps/erp/app/modules/quality/ui/Issue/IssueAssociations.tsx:356
+#: apps/erp/app/modules/sales/ui/Customer/CustomerForm.tsx:61
+#: apps/erp/app/modules/sales/ui/CustomerPortals/CustomerPortalForm.tsx:91
+#: apps/erp/app/modules/sales/ui/CustomerPortals/CustomerPortalsTable.tsx:36
+#: apps/erp/app/modules/sales/ui/Customers/CustomersTable.tsx:327
+#: apps/erp/app/modules/sales/ui/Pricing/DuplicatePriceListModal.tsx:118
+#: apps/erp/app/modules/sales/ui/Pricing/PriceOverrideForm.tsx:174
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteForm.tsx:164
+#: apps/erp/app/modules/sales/ui/Quotes/QuotesTable.tsx:97
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteToOrderDrawer.tsx:939
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderForm.tsx:171
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderShipmentForm.tsx:159
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrdersTable.tsx:141
+#: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQForm.tsx:156
+#: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQsTable.tsx:73
+#: apps/erp/app/modules/users/ui/Customers/CreateCustomerModal.tsx:76
+#: apps/erp/app/modules/users/ui/Customers/CustomerAccountsTable.tsx:150
+#: apps/erp/app/modules/users/ui/Customers/CustomerAccountsTable.tsx:325
+#: apps/erp/app/routes/x+/issue+/$id.tsx:153
+#: apps/erp/app/routes/x+/sales+/_index.tsx:652
+#: apps/erp/app/routes/x+/sales+/_index.tsx:724
+#: apps/erp/app/routes/x+/schedule+/dates.tsx:843
+#: apps/erp/app/routes/x+/schedule+/operations.tsx:471
 msgid "Customer"
 msgstr "顧客"
 
@@ -2082,6 +2318,11 @@ msgstr "ユーザーを無効化"
 msgid "Deactivate Work Center"
 msgstr "ワークセンターを無効化"
 
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:406
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:557
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:590
+#: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:384
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderLineJobs.tsx:250
 msgid "Deadline Type"
 msgstr "期限タイプ"
 
@@ -2289,6 +2530,11 @@ msgstr "RFQを削除"
 msgid "Delete Risk"
 msgstr "リスクを削除"
 
+#: apps/erp/app/modules/production/ui/Jobs/ConfigParamsTableModal.tsx:472
+msgid "Delete row"
+msgstr ""
+
+#: apps/erp/app/modules/api/ui/TableDocs.tsx:289
 msgid "Delete rows"
 msgstr "行を削除"
 
@@ -2512,12 +2758,37 @@ msgstr "ファイルをここにドラッグするか、クリックして参照
 msgid "Due {0}"
 msgstr "期限 {0}"
 
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceForm.tsx:245
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoicesTable.tsx:190
+#: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoiceForm.tsx:241
+#: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoicesTable.tsx:184
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:401
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:568
+#: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:376
+#: apps/erp/app/modules/production/ui/Planning/ProductionPlanningOrderDrawer.tsx:390
+#: apps/erp/app/modules/purchasing/ui/Planning/PurchasingPlanningOrderDrawer.tsx:637
+#: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQForm.tsx:85
+#: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQsTable.tsx:130
+#: apps/erp/app/modules/quality/ui/Actions/ActionsTable.tsx:146
+#: apps/erp/app/modules/quality/ui/Actions/ActionsTable.tsx:195
+#: apps/erp/app/modules/quality/ui/Issue/IssueProperties.tsx:486
+#: apps/erp/app/modules/quality/ui/Issue/IssueTask.tsx:751
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteForm.tsx:201
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteProperties.tsx:327
+#: apps/erp/app/modules/sales/ui/Quotes/QuotesTable.tsx:193
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderLineJobs.tsx:247
+#: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQForm.tsx:184
+#: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQsTable.tsx:125
+#: apps/erp/app/routes/x+/schedule+/dates.tsx:844
+#: apps/erp/app/routes/x+/schedule+/operations.tsx:472
 msgid "Due Date"
 msgstr "支払期日"
 
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:544
 msgid "Due Date of First Job"
 msgstr "最初のジョブの期日"
 
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:550
 msgid "Due Date of Last Job"
 msgstr "最後のジョブの期限"
 
@@ -3001,6 +3272,8 @@ msgstr "推定期間"
 msgid "Estimated Duration (minutes)"
 msgstr "推定所要時間（分）"
 
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:384
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:526
 msgid "Estimated Scrap Quantity"
 msgstr "推定スクラップ数量"
 
@@ -3265,6 +3538,8 @@ msgstr "見積行の挿入に失敗しました"
 msgid "Failed to insert supplier quote line"
 msgstr "サプライヤー見積行の挿入に失敗しました"
 
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:236
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteLineForm.tsx:237
 msgid "Failed to load configuration parameters"
 msgstr "設定パラメータの読み込みに失敗しました"
 
@@ -3399,6 +3674,11 @@ msgstr "故障モード"
 msgid "Failure Modes"
 msgstr "障害モード"
 
+#: apps/erp/app/modules/production/ui/Jobs/ConfigParamsTableModal.tsx:444
+msgid "False"
+msgstr ""
+
+#: apps/erp/app/modules/documents/ui/Documents/DocumentsTable.tsx:424
 msgid "Favorite"
 msgstr "お気に入り"
 
@@ -3962,12 +4242,28 @@ msgstr "アイテム"
 msgid "Items inside this window get a yellow badge."
 msgstr "このウィンドウ内のアイテムは黄色いバッジが表示されます。"
 
+#: apps/erp/app/components/Gantt/Gantt.tsx:233
+#: apps/erp/app/components/Layout/Topbar/CreateMenu.tsx:54
+#: apps/erp/app/modules/people/ui/Person/PersonJob.tsx:36
+#: apps/erp/app/modules/people/ui/Person/PersonSidebar/usePersonSidebar.tsx:23
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:296
+#: apps/erp/app/modules/production/ui/Jobs/JobHeader.tsx:104
+#: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:682
+#: apps/erp/app/modules/production/ui/Planning/ProductionPlanningOrderDrawer.tsx:366
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderLineForm.tsx:932
+#: apps/erp/app/modules/quality/ui/Issue/IssueAssociations.tsx:424
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrdersTable.tsx:295
 msgid "Job"
 msgstr "ジョブ"
 
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:333
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:337
+#: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:185
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderLineJobs.tsx:218
 msgid "Job ID"
 msgstr "ジョブID"
 
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:659
 msgid "Job Location"
 msgstr "ジョブロケーション"
 
@@ -4145,6 +4441,22 @@ msgstr "ラインには内部部品番号が必要です"
 msgid "Lines need prices or lead times"
 msgstr "ラインには価格またはリードタイムが必要です"
 
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceProperties.tsx:139
+#: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoiceProperties.tsx:133
+#: apps/erp/app/modules/items/ui/Consumables/ConsumableProperties.tsx:173
+#: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:272
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:178
+#: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:165
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:292
+#: apps/erp/app/modules/production/ui/Procedures/ProcedureProperties.tsx:90
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderProperties.tsx:152
+#: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQProperties.tsx:162
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteProperties.tsx:132
+#: apps/erp/app/modules/quality/ui/Documents/QualityDocumentProperties.tsx:119
+#: apps/erp/app/modules/quality/ui/Issue/IssueProperties.tsx:171
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteProperties.tsx:137
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderProperties.tsx:140
+#: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQProperties.tsx:117
 msgid "Link"
 msgstr "リンク"
 
@@ -4180,6 +4492,53 @@ msgstr "アイテムの詳細を読み込み中..."
 msgid "Loading..."
 msgstr "読み込み中..."
 
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:352
+#: apps/erp/app/modules/inventory/ui/Kanbans/KanbanForm.tsx:277
+#: apps/erp/app/modules/inventory/ui/Receipts/ReceiptForm/ReceiptForm.tsx:258
+#: apps/erp/app/modules/inventory/ui/Shipments/ShipmentForm/ShipmentForm.tsx:287
+#: apps/erp/app/modules/inventory/ui/StockTransfers/StockTransfersTable.tsx:73
+#: apps/erp/app/modules/inventory/ui/StorageUnits/StorageUnitForm.tsx:93
+#: apps/erp/app/modules/inventory/ui/StorageUnits/StorageUnitsTable.tsx:243
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceProperties.tsx:369
+#: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoiceProperties.tsx:358
+#: apps/erp/app/modules/items/ui/Item/BillOfMaterial.tsx:1003
+#: apps/erp/app/modules/people/ui/Person/PersonJob.tsx:45
+#: apps/erp/app/modules/people/ui/Person/PersonPreview.tsx:63
+#: apps/erp/app/modules/people/ui/Shifts/ShiftForm.tsx:72
+#: apps/erp/app/modules/people/ui/Shifts/ShiftsTable.tsx:84
+#: apps/erp/app/modules/people/ui/Timecards/TimecardsTable.tsx:170
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:397
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:554
+#: apps/erp/app/modules/production/ui/Jobs/JobHeader.tsx:1094
+#: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:509
+#: apps/erp/app/modules/production/ui/Projection/DemandProjectionForm.tsx:116
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderDeliveryForm.tsx:165
+#: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQsTable.tsx:172
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierContactForm.tsx:107
+#: apps/erp/app/modules/quality/ui/Gauge/GaugeForm.tsx:436
+#: apps/erp/app/modules/quality/ui/Gauge/GaugesTable.tsx:226
+#: apps/erp/app/modules/quality/ui/Issue/IssueForm.tsx:243
+#: apps/erp/app/modules/quality/ui/Issue/IssuesTable.tsx:184
+#: apps/erp/app/modules/resources/ui/Locations/LocationsTable.tsx:46
+#: apps/erp/app/modules/resources/ui/Locations/LocationsTable.tsx:168
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchForm.tsx:188
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchProperties.tsx:233
+#: apps/erp/app/modules/resources/ui/MaintenanceSchedule/MaintenanceScheduleForm.tsx:168
+#: apps/erp/app/modules/resources/ui/MaintenanceSchedule/MaintenanceSchedulesTable.tsx:117
+#: apps/erp/app/modules/resources/ui/Partners/PartnersTable.tsx:58
+#: apps/erp/app/modules/resources/ui/WorkCenters/WorkCenterForm.tsx:115
+#: apps/erp/app/modules/resources/ui/WorkCenters/WorkCentersTable.tsx:162
+#: apps/erp/app/modules/sales/ui/Customer/CustomerContactForm.tsx:108
+#: apps/erp/app/modules/sales/ui/Customer/CustomerLocationForm.tsx:81
+#: apps/erp/app/modules/sales/ui/Quotes/QuotesTable.tsx:209
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderLineJobs.tsx:221
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderShipmentForm.tsx:164
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrdersTable.tsx:424
+#: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQsTable.tsx:168
+#: apps/erp/app/modules/users/ui/Employees/CreateEmployeeModal.tsx:83
+#: apps/erp/app/routes/x+/schedule+/dates.tsx:820
+#: apps/erp/app/routes/x+/schedule+/operations.tsx:451
+#: apps/erp/app/routes/x+/users+/operators.new.tsx:158
 msgid "Location"
 msgstr "ロケーション"
 
@@ -4324,6 +4683,11 @@ msgstr "製造業者"
 msgid "Manufacturing"
 msgstr "製造"
 
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:281
+msgid "Many Jobs"
+msgstr ""
+
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderHeader.tsx:277
 msgid "Mark as Planned"
 msgstr "計画済みとしてマーク"
 
@@ -4698,6 +5062,11 @@ msgstr "新しい請求書"
 msgid "New Item Group"
 msgstr "新しいアイテムグループ"
 
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:296
+msgid "New Job"
+msgstr ""
+
+#: apps/erp/app/modules/inventory/ui/Kanbans/KanbanForm.tsx:185
 msgid "New Kanban"
 msgstr "新しいカンバン"
 
@@ -5705,6 +6074,24 @@ msgstr "予測"
 msgid "Promised Date"
 msgstr "約束日"
 
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceProperties.tsx:132
+#: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoiceProperties.tsx:126
+#: apps/erp/app/modules/items/ui/Consumables/ConsumableProperties.tsx:166
+#: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:265
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:171
+#: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:158
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:285
+#: apps/erp/app/modules/production/ui/Procedures/ProcedureProperties.tsx:83
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderProperties.tsx:145
+#: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQProperties.tsx:155
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteProperties.tsx:125
+#: apps/erp/app/modules/quality/ui/Documents/QualityDocumentProperties.tsx:112
+#: apps/erp/app/modules/quality/ui/Issue/IssueProperties.tsx:164
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchProperties.tsx:129
+#: apps/erp/app/modules/resources/ui/Training/TrainingProperties.tsx:99
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteProperties.tsx:130
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderProperties.tsx:133
+#: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQProperties.tsx:110
 msgid "Properties"
 msgstr "プロパティ"
 
@@ -5832,9 +6219,72 @@ msgstr "品質文書"
 msgid "Quality Type"
 msgstr "品質タイプ"
 
+#: apps/erp/app/modules/inventory/ui/useInventorySubmodules.tsx:64
+#: apps/erp/app/modules/production/ui/Jobs/ConfigParamsTableModal.tsx:277
 msgid "Quantities"
 msgstr "数量"
 
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:516
+msgid "Quantities Per Job"
+msgstr ""
+
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:222
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:408
+#: apps/erp/app/modules/inventory/ui/Kanbans/KanbanForm.tsx:215
+#: apps/erp/app/modules/inventory/ui/Receipts/ReceiptLines.tsx:1156
+#: apps/erp/app/modules/inventory/ui/Shipments/ShipmentLines.tsx:1162
+#: apps/erp/app/modules/inventory/ui/StockTransfers/StockTransferLineForm.tsx:168
+#: apps/erp/app/modules/inventory/ui/StockTransfers/StockTransferWizard.tsx:685
+#: apps/erp/app/modules/inventory/ui/Traceability/TrackedEntitiesTable.tsx:111
+#: apps/erp/app/modules/inventory/ui/WarehouseTransfers/WarehouseTransferLineForm.tsx:154
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceLineForm.tsx:499
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceLineForm.tsx:691
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceSummary.tsx:226
+#: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoiceLineForm.tsx:423
+#: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoiceSummary.tsx:225
+#: apps/erp/app/modules/items/ui/Item/BillOfMaterial.tsx:792
+#: apps/erp/app/modules/items/ui/Item/BillOfMaterial.tsx:798
+#: apps/erp/app/modules/items/ui/Item/BillOfProcess.tsx:2805
+#: apps/erp/app/modules/items/ui/Item/BillOfProcess.tsx:2904
+#: apps/erp/app/modules/items/ui/Item/BoMExplorer.tsx:568
+#: apps/erp/app/modules/items/ui/Item/ItemCostHistoryChart.tsx:298
+#: apps/erp/app/modules/items/ui/Item/SupplierPartForm.tsx:385
+#: apps/erp/app/modules/production/ui/Jobs/JobBillOfMaterial.tsx:855
+#: apps/erp/app/modules/production/ui/Jobs/JobBillOfProcess.tsx:3048
+#: apps/erp/app/modules/production/ui/Jobs/JobBillOfProcess.tsx:3180
+#: apps/erp/app/modules/production/ui/Jobs/JobBoMExplorer.tsx:428
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:367
+#: apps/erp/app/modules/production/ui/Jobs/JobOperationsTable.tsx:155
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:473
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:503
+#: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:244
+#: apps/erp/app/modules/production/ui/Jobs/ProductionQuantitiesTable.tsx:119
+#: apps/erp/app/modules/production/ui/Jobs/ProductionQuantityForm.tsx:89
+#: apps/erp/app/modules/production/ui/Planning/ProductionPlanningOrderDrawer.tsx:382
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderLineForm.tsx:543
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderLineForm.tsx:770
+#: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQLineForm.tsx:272
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteCompareDrawer.tsx:775
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteLineForm.tsx:371
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteLineForm.tsx:425
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteToOrderDrawer.tsx:318
+#: apps/erp/app/modules/quality/ui/Issue/AssociatedItemsList.tsx:356
+#: apps/erp/app/modules/quality/ui/Issue/IssueAssociations.tsx:344
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceAddPartModal.tsx:358
+#: apps/erp/app/modules/sales/ui/Pricing/PriceOverrideForm.tsx:351
+#: apps/erp/app/modules/sales/ui/Pricing/PriceOverridesTable.tsx:371
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteBillOfMaterial.tsx:859
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteBillOfProcess.tsx:2561
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteBillOfProcess.tsx:2693
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteLineForm.tsx:478
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteSummary.tsx:421
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteToOrderDrawer.tsx:611
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderLineForm.tsx:485
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderLineJobs.tsx:224
+#: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQLineForm.tsx:324
+#: apps/erp/app/routes/share+/quote.$id.tsx:656
+#: apps/erp/app/routes/x+/schedule+/dates.tsx:847
+#: apps/erp/app/routes/x+/schedule+/operations.tsx:475
 msgid "Quantity"
 msgstr "数量"
 
@@ -5859,9 +6309,8 @@ msgstr "購買注文数量"
 msgid "Quantity on Sales Order"
 msgstr "販売注文の数量"
 
-msgid "Quantity Per Job"
-msgstr "ジョブあたりの数量"
-
+#: apps/erp/app/modules/production/ui/Jobs/JobMaterialForm.tsx:217
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteMaterialForm.tsx:253
 msgid "Quantity per Parent"
 msgstr "親あたりの数量"
 
@@ -6395,6 +6844,168 @@ msgstr "サンプリング標準"
 msgid "Saturday"
 msgstr "土曜日"
 
+#: apps/erp/app/components/Configurator/ConfiguratorForm/ConfiguratorForm.ee.tsx:437
+#: apps/erp/app/components/Layout/Topbar/Breadcrumbs.tsx:295
+#: apps/erp/app/components/OnshapeSync.tsx:407
+#: apps/erp/app/components/Table/components/TableHeader.tsx:212
+#: apps/erp/app/modules/account/ui/Personal/PersonalDataForm.tsx:24
+#: apps/erp/app/modules/account/ui/Profile/ProfileForm.tsx:72
+#: apps/erp/app/modules/account/ui/Profile/ProfileLanguageForm.tsx:53
+#: apps/erp/app/modules/account/ui/UserAttributes/UserAttributesForm.tsx:192
+#: apps/erp/app/modules/account/ui/UserAttributes/UserAttributesForm.tsx:824
+#: apps/erp/app/modules/accounting/ui/AccountDefaults/AccountDefaultsForm.tsx:477
+#: apps/erp/app/modules/accounting/ui/ChartOfAccounts/ChartOfAccountForm.tsx:165
+#: apps/erp/app/modules/accounting/ui/ChartOfAccounts/GroupAccountForm.tsx:208
+#: apps/erp/app/modules/accounting/ui/FiscalYear/FiscalYearSettingsForm.tsx:72
+#: apps/erp/app/modules/accounting/ui/PaymentTerms/PaymentTermForm.tsx:147
+#: apps/erp/app/modules/documents/ui/Documents/DocumentForm.tsx:79
+#: apps/erp/app/modules/inventory/ui/Batches/BatchPropertiesConfig.tsx:401
+#: apps/erp/app/modules/inventory/ui/Receipts/ReceiptForm/ReceiptForm.tsx:308
+#: apps/erp/app/modules/inventory/ui/Shipments/ShipmentForm/ShipmentForm.tsx:337
+#: apps/erp/app/modules/inventory/ui/ShippingMethods/ShippingMethodForm.tsx:126
+#: apps/erp/app/modules/inventory/ui/StockTransfers/StockTransferLineForm.tsx:190
+#: apps/erp/app/modules/inventory/ui/StorageTypes/StorageTypeForm.tsx:101
+#: apps/erp/app/modules/inventory/ui/StorageUnits/StorageUnitForm.tsx:113
+#: apps/erp/app/modules/inventory/ui/Traceability/EditExpiryModal.tsx:92
+#: apps/erp/app/modules/inventory/ui/WarehouseTransfers/WarehouseTransferForm.tsx:388
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceDeliveryForm.tsx:142
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceForm.tsx:287
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceLineForm.tsx:788
+#: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoiceForm.tsx:283
+#: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoiceLineForm.tsx:640
+#: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoiceShipmentForm.tsx:141
+#: apps/erp/app/modules/items/ui/Consumables/ConsumableForm.tsx:209
+#: apps/erp/app/modules/items/ui/Item/BillOfMaterial.tsx:1148
+#: apps/erp/app/modules/items/ui/Item/CustomerPartForm.tsx:78
+#: apps/erp/app/modules/items/ui/Item/ItemCostingForm.tsx:94
+#: apps/erp/app/modules/items/ui/Item/ItemForm.tsx:188
+#: apps/erp/app/modules/items/ui/Item/ItemPlanningForm.tsx:166
+#: apps/erp/app/modules/items/ui/Item/ItemPurchasingForm.tsx:102
+#: apps/erp/app/modules/items/ui/Item/ItemSalePriceForm.tsx:72
+#: apps/erp/app/modules/items/ui/Item/PickMethodForm.tsx:152
+#: apps/erp/app/modules/items/ui/Item/RevisionForm.tsx:122
+#: apps/erp/app/modules/items/ui/ItemPostingGroups/ItemPostingGroupForm.tsx:104
+#: apps/erp/app/modules/items/ui/ItemRules/ItemRuleForm.tsx:145
+#: apps/erp/app/modules/items/ui/MaterialDimensions/MaterialDimensionForm.tsx:102
+#: apps/erp/app/modules/items/ui/MaterialFinishes/MaterialFinishForm.tsx:102
+#: apps/erp/app/modules/items/ui/MaterialGrades/MaterialGradeForm.tsx:102
+#: apps/erp/app/modules/items/ui/Materials/MaterialForm.tsx:335
+#: apps/erp/app/modules/items/ui/MaterialShapes/MaterialShapeForm.tsx:117
+#: apps/erp/app/modules/items/ui/MaterialSubstances/MaterialSubstanceForm.tsx:117
+#: apps/erp/app/modules/items/ui/MaterialTypes/MaterialTypeForm.tsx:114
+#: apps/erp/app/modules/items/ui/Parts/ConfigurationParameters.tsx:445
+#: apps/erp/app/modules/items/ui/Parts/ConfigurationParameters.tsx:956
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:391
+#: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:381
+#: apps/erp/app/modules/items/ui/UnitOfMeasure/UnitOfMeasureForm.tsx:109
+#: apps/erp/app/modules/people/ui/Attributes/AttributeCategoryForm.tsx:82
+#: apps/erp/app/modules/people/ui/Attributes/AttributeForm.tsx:136
+#: apps/erp/app/modules/people/ui/Departments/DepartmentForm.tsx:111
+#: apps/erp/app/modules/people/ui/Holidays/HolidayForm.tsx:79
+#: apps/erp/app/modules/people/ui/Person/PersonJob.tsx:59
+#: apps/erp/app/modules/people/ui/Shifts/ShiftForm.tsx:96
+#: apps/erp/app/modules/people/ui/Timecards/TimecardForm.tsx:114
+#: apps/erp/app/modules/production/ui/Jobs/JobBillOfMaterial.tsx:1108
+#: apps/erp/app/modules/production/ui/Jobs/JobBillOfProcess.tsx:2861
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:439
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:580
+#: apps/erp/app/modules/production/ui/Jobs/ProductionEventForm.tsx:129
+#: apps/erp/app/modules/production/ui/Jobs/ProductionQuantityForm.tsx:111
+#: apps/erp/app/modules/production/ui/Procedures/ProcedureExplorer.tsx:878
+#: apps/erp/app/modules/production/ui/Procedures/ProcedureExplorer.tsx:947
+#: apps/erp/app/modules/production/ui/ScrapReasons/ScrapReasonForm.tsx:97
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderDeliveryForm.tsx:175
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderForm.tsx:209
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderLineForm.tsx:867
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderPaymentForm.tsx:99
+#: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQForm.tsx:101
+#: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQLineForm.tsx:289
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierContactForm.tsx:117
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierForm.tsx:155
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierLocationForm.tsx:102
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierPaymentForm.tsx:76
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierProcessForm.tsx:139
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierShippingForm.tsx:106
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteForm.tsx:245
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteLineForm.tsx:443
+#: apps/erp/app/modules/purchasing/ui/SupplierTypes/SupplierTypeForm.tsx:97
+#: apps/erp/app/modules/quality/ui/Calibrations/GaugeCalibrationRecordForm.tsx:397
+#: apps/erp/app/modules/quality/ui/Documents/QualityDocumentExplorer.tsx:655
+#: apps/erp/app/modules/quality/ui/Gauge/GaugeForm.tsx:316
+#: apps/erp/app/modules/quality/ui/GaugeTypes/GaugeTypeForm.tsx:97
+#: apps/erp/app/modules/quality/ui/Issue/Jira/LinkIssue.tsx:170
+#: apps/erp/app/modules/quality/ui/Issue/Linear/LinkIssue.tsx:158
+#: apps/erp/app/modules/quality/ui/IssueTypes/IssueTypeForm.tsx:99
+#: apps/erp/app/modules/quality/ui/IssueWorkflows/IssueWorkflowForm.tsx:314
+#: apps/erp/app/modules/quality/ui/RequiredActions/RequiredActionForm.tsx:108
+#: apps/erp/app/modules/quality/ui/RiskRegister/RiskRegisterForm.tsx:217
+#: apps/erp/app/modules/quality/ui/SamplingPlan/SamplingPlanForm.tsx:313
+#: apps/erp/app/modules/resources/ui/Contractors/ContractorForm.tsx:110
+#: apps/erp/app/modules/resources/ui/FailureModes/FailureModeForm.tsx:119
+#: apps/erp/app/modules/resources/ui/Locations/LocationForm.tsx:110
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchExplorer.tsx:533
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchForm.tsx:228
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchProperties.tsx:664
+#: apps/erp/app/modules/resources/ui/MaintenanceSchedule/MaintenanceScheduleForm.tsx:203
+#: apps/erp/app/modules/resources/ui/Processes/ProcessForm.tsx:159
+#: apps/erp/app/modules/resources/ui/Training/TrainingAssignmentForm.tsx:427
+#: apps/erp/app/modules/resources/ui/Training/TrainingExplorer.tsx:694
+#: apps/erp/app/modules/resources/ui/Training/TrainingForm.tsx:84
+#: apps/erp/app/modules/resources/ui/WorkCenters/WorkCenterForm.tsx:158
+#: apps/erp/app/modules/sales/ui/Customer/CustomerContactForm.tsx:118
+#: apps/erp/app/modules/sales/ui/Customer/CustomerForm.tsx:164
+#: apps/erp/app/modules/sales/ui/Customer/CustomerLocationForm.tsx:97
+#: apps/erp/app/modules/sales/ui/Customer/CustomerPaymentForm.tsx:76
+#: apps/erp/app/modules/sales/ui/Customer/CustomerShippingForm.tsx:106
+#: apps/erp/app/modules/sales/ui/CustomerPortals/CustomerPortalForm.tsx:98
+#: apps/erp/app/modules/sales/ui/CustomerStatuses/CustomerStatusForm.tsx:98
+#: apps/erp/app/modules/sales/ui/CustomerTypes/CustomerTypeForm.tsx:98
+#: apps/erp/app/modules/sales/ui/NoQuoteReasons/NoQuoteReasonForm.tsx:98
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteBillOfMaterial.tsx:1102
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteBillOfProcess.tsx:1394
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteBillOfProcess.tsx:2497
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteForm.tsx:263
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteLineForm.tsx:521
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteMaterialForm.tsx:280
+#: apps/erp/app/modules/sales/ui/Quotes/QuotePaymentForm.tsx:89
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteShipmentForm.tsx:138
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderForm.tsx:284
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderLineForm.tsx:687
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderPaymentForm.tsx:91
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderShipmentForm.tsx:174
+#: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQForm.tsx:202
+#: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQHeader.tsx:362
+#: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQLineForm.tsx:340
+#: apps/erp/app/modules/settings/ui/ApiKeys/ApiKeysForm.tsx:136
+#: apps/erp/app/modules/settings/ui/Company/CompanyForm.tsx:43
+#: apps/erp/app/modules/settings/ui/CustomFields/CustomFieldForm.tsx:143
+#: apps/erp/app/modules/settings/ui/Sequences/SequenceForm.tsx:116
+#: apps/erp/app/modules/settings/ui/Webhooks/WebhookForm.tsx:136
+#: apps/erp/app/modules/users/ui/Employees/BulkEditPermissionsForm.tsx:139
+#: apps/erp/app/modules/users/ui/Employees/EmployeePermissionsForm.tsx:136
+#: apps/erp/app/modules/users/ui/EmployeeTypes/EmployeeTypeForm.tsx:112
+#: apps/erp/app/modules/users/ui/Groups/GroupsForm.tsx:74
+#: apps/erp/app/routes/x+/person+/$personId.timecard.tsx:611
+#: apps/erp/app/routes/x+/person+/$personId.timecard.tsx:693
+#: apps/erp/app/routes/x+/settings+/inventory.tsx:202
+#: apps/erp/app/routes/x+/settings+/inventory.tsx:262
+#: apps/erp/app/routes/x+/settings+/labels.tsx:146
+#: apps/erp/app/routes/x+/settings+/production.tsx:202
+#: apps/erp/app/routes/x+/settings+/purchasing.tsx:526
+#: apps/erp/app/routes/x+/settings+/purchasing.tsx:581
+#: apps/erp/app/routes/x+/settings+/purchasing.tsx:656
+#: apps/erp/app/routes/x+/settings+/purchasing.tsx:698
+#: apps/erp/app/routes/x+/settings+/quality.tsx:250
+#: apps/erp/app/routes/x+/settings+/quality.tsx:295
+#: apps/erp/app/routes/x+/settings+/quality.tsx:368
+#: apps/erp/app/routes/x+/settings+/resources.tsx:279
+#: apps/erp/app/routes/x+/settings+/resources.tsx:339
+#: apps/erp/app/routes/x+/settings+/resources.tsx:388
+#: apps/erp/app/routes/x+/settings+/sales.tsx:465
+#: apps/erp/app/routes/x+/settings+/sales.tsx:534
+#: apps/erp/app/routes/x+/settings+/sales.tsx:582
+#: apps/erp/app/routes/x+/settings+/sales.tsx:624
+#: apps/erp/app/routes/x+/settings+/sales.tsx:812
 msgid "Save"
 msgstr "保存"
 
@@ -6461,6 +7072,7 @@ msgstr "スクラップ数量"
 msgid "Scrap Quantity"
 msgstr "スクラップ数量"
 
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:531
 msgid "Scrap Quantity Per Job"
 msgstr "ジョブあたりのスクラップ数量"
 
@@ -6858,6 +7470,15 @@ msgstr "配送:"
 msgid "Shop Floor"
 msgstr "ショップフロア"
 
+#: apps/erp/app/modules/items/ui/Consumables/ConsumableForm.tsx:150
+#: apps/erp/app/modules/items/ui/Item/ItemForm.tsx:147
+#: apps/erp/app/modules/items/ui/Materials/MaterialForm.tsx:203
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:277
+#: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:270
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:359
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteLineForm.tsx:324
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteLineForm.tsx:386
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderLineForm.tsx:447
 msgid "Short Description"
 msgstr "短い説明"
 
@@ -6900,6 +7521,19 @@ msgstr "サインアウト"
 msgid "Signed in as {name}"
 msgstr "{name}としてサインインしています"
 
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:277
+msgid "Single Job"
+msgstr ""
+
+#: apps/erp/app/components/Documents.tsx:282
+#: apps/erp/app/modules/documents/ui/Documents/DocumentsTable.tsx:294
+#: apps/erp/app/modules/items/ui/Item/ItemDocuments.tsx:110
+#: apps/erp/app/modules/items/ui/Item/RevisionForm.tsx:107
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceDispatchNotes.tsx:311
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityDocuments.tsx:121
+#: apps/erp/app/modules/sales/ui/Opportunity/OpportunityLineDocuments.tsx:464
+#: apps/erp/app/modules/settings/ui/Sequences/SequenceForm.tsx:88
+#: apps/erp/app/modules/settings/ui/Sequences/SequencesTable.tsx:61
 msgid "Size"
 msgstr "サイズ"
 
@@ -6921,6 +7555,11 @@ msgstr "会社の祝日に予定されたメンテナンスをスキップする
 msgid "Skipped"
 msgstr "スキップ"
 
+#: apps/erp/app/modules/production/ui/Jobs/ConfigParamsTableModal.tsx:330
+msgid "Some cells have invalid values. Fix the highlighted cells before saving."
+msgstr ""
+
+#: apps/erp/app/routes/_public+/callback.tsx:166
 msgid "Something went wrong. Please try again."
 msgstr "何か問題が発生しました。もう一度お試しください。"
 
@@ -7012,6 +7651,11 @@ msgstr "{0}日間の無料トライアルを開始"
 msgid "Start adding parts to your stock transfer"
 msgstr "在库存转移中开始添加零件"
 
+#: apps/erp/app/modules/accounting/ui/ChartOfAccounts/ChartOfAccountsTableFilters.tsx:67
+#: apps/erp/app/modules/people/ui/Person/PersonJob.tsx:42
+#: apps/erp/app/modules/people/ui/Person/PersonPreview.tsx:79
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:548
+#: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:368
 msgid "Start Date"
 msgstr "開始日"
 
@@ -7294,6 +7938,30 @@ msgstr "テーブル"
 msgid "Table actions"
 msgstr "テーブルアクション"
 
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryTable.tsx:448
+#: apps/erp/app/modules/items/ui/Consumables/ConsumableProperties.tsx:458
+#: apps/erp/app/modules/items/ui/Consumables/ConsumablesTable.tsx:214
+#: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:721
+#: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:351
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:591
+#: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:256
+#: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:553
+#: apps/erp/app/modules/items/ui/Tools/ToolsTable.tsx:255
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:682
+#: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:422
+#: apps/erp/app/modules/production/ui/Procedures/ProcedureProperties.tsx:223
+#: apps/erp/app/modules/production/ui/Procedures/ProceduresTable.tsx:110
+#: apps/erp/app/modules/purchasing/ui/Supplier/SupplierHeader.tsx:343
+#: apps/erp/app/modules/purchasing/ui/Supplier/SuppliersTable.tsx:138
+#: apps/erp/app/modules/quality/ui/Documents/QualityDocumentProperties.tsx:231
+#: apps/erp/app/modules/quality/ui/Documents/QualityDocumentsTable.tsx:104
+#: apps/erp/app/modules/quality/ui/Issue/IssueProperties.tsx:526
+#: apps/erp/app/modules/resources/ui/Suggestions/SuggestionDetails.tsx:187
+#: apps/erp/app/modules/resources/ui/Suggestions/SuggestionsTable.tsx:86
+#: apps/erp/app/modules/resources/ui/Training/TrainingProperties.tsx:302
+#: apps/erp/app/modules/resources/ui/Training/TrainingsTable.tsx:150
+#: apps/erp/app/modules/sales/ui/Customer/CustomerHeader.tsx:184
+#: apps/erp/app/modules/sales/ui/Customers/CustomersTable.tsx:144
 msgid "Tags"
 msgstr "タグ"
 
@@ -7303,6 +7971,7 @@ msgstr "このアイテムを製造するために消費される材料全体で
 msgid "Talk to Sales"
 msgstr "営業に相談"
 
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:388
 msgid "Target"
 msgstr "対象"
 
@@ -7378,6 +8047,12 @@ msgstr "購買注文およびその他の購買文書で使用される請求先
 msgid "The billing address used on quotes, sales orders, invoices, and other sales documents."
 msgstr "見積書、販売注文書、請求書、およびその他の販売文書で使用される請求先住所。"
 
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:459
+msgid "The bulk jobs form creates multiple jobs for the same item across multiple due dates."
+msgstr ""
+
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderForm.tsx:214
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderForm.tsx:221
 msgid "The date the customer expects to receive the goods"
 msgstr "顧客が商品を受け取ることを期待する日付"
 
@@ -7604,21 +8279,33 @@ msgstr "ツールID"
 msgid "Tools"
 msgstr "ツール"
 
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceSummary.tsx:327
+#: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoiceSummary.tsx:312
+#: apps/erp/app/modules/production/ui/Jobs/ConfigParamsTableModal.tsx:497
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteSummary.tsx:637
+#: apps/erp/app/routes/share+/quote.$id.tsx:884
+#: apps/erp/app/routes/share+/quote.$id.tsx:1287
+#: apps/erp/app/routes/x+/quality+/_index.tsx:644
 msgid "Total"
 msgstr "合計"
 
 msgid "Total Hours"
 msgstr "合計時間"
 
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:503
+msgid "Total Jobs"
+msgstr ""
+
+#: apps/erp/app/components/Form/StandardFactor.tsx:40
 msgid "Total Minutes"
 msgstr "合計分"
 
 msgid "Total Price"
 msgstr "合計価格"
 
-msgid "Total Quantity"
-msgstr "合計数量"
-
+#: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteCompareDrawer.tsx:475
+#: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderSummary.tsx:282
+#: apps/erp/app/routes/x+/person+/$personId.timecard.tsx:761
 msgid "Total:"
 msgstr "合計:"
 
@@ -7649,6 +8336,7 @@ msgstr "追跡対象エンティティ"
 msgid "Tracked entity already picked"
 msgstr "既に追跡対象が選択されています"
 
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:213
 msgid "Tracked entity ID is required but none was found"
 msgstr "追跡対象エンティティIDが必要ですが、見つかりませんでした"
 
@@ -7715,6 +8403,11 @@ msgstr "ゴミ箱"
 msgid "Trial Balance"
 msgstr "試算表"
 
+#: apps/erp/app/modules/production/ui/Jobs/ConfigParamsTableModal.tsx:443
+msgid "True"
+msgstr ""
+
+#: apps/erp/app/modules/people/ui/Shifts/ShiftForm.tsx:82
 msgid "Tuesday"
 msgstr "火曜日"
 
@@ -7760,6 +8453,34 @@ msgstr "単位"
 msgid "Unit Cost"
 msgstr "単価"
 
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:418
+#: apps/erp/app/modules/inventory/ui/Inventory/InventoryTable.tsx:294
+#: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceLineForm.tsx:519
+#: apps/erp/app/modules/items/ui/Consumables/ConsumableForm.tsx:171
+#: apps/erp/app/modules/items/ui/Consumables/ConsumableProperties.tsx:374
+#: apps/erp/app/modules/items/ui/Item/BillOfMaterial.tsx:822
+#: apps/erp/app/modules/items/ui/Item/BillOfProcess.tsx:1909
+#: apps/erp/app/modules/items/ui/Item/BillOfProcess.tsx:2193
+#: apps/erp/app/modules/items/ui/Item/ItemForm.tsx:180
+#: apps/erp/app/modules/items/ui/Item/SupplierPartForm.tsx:192
+#: apps/erp/app/modules/items/ui/Item/SupplierParts/SupplierParts.tsx:68
+#: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:633
+#: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:311
+#: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:310
+#: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:481
+#: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:302
+#: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:448
+#: apps/erp/app/modules/items/ui/UnitOfMeasure/UnitOfMeasureForm.tsx:93
+#: apps/erp/app/modules/items/ui/UnitOfMeasure/UnitOfMeasuresTable.tsx:90
+#: apps/erp/app/modules/production/ui/Jobs/JobBillOfProcess.tsx:1262
+#: apps/erp/app/modules/production/ui/Jobs/JobBillOfProcess.tsx:1543
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:641
+#: apps/erp/app/modules/production/ui/Procedures/ProcedureExplorer.tsx:829
+#: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderLineForm.tsx:571
+#: apps/erp/app/modules/quality/ui/Documents/QualityDocumentExplorer.tsx:606
+#: apps/erp/app/modules/resources/ui/Maintenance/MaintenanceAddPartModal.tsx:365
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteBillOfProcess.tsx:1075
+#: apps/erp/app/modules/sales/ui/Quotes/QuoteBillOfProcess.tsx:1342
 msgid "Unit of Measure"
 msgstr "測定単位"
 
