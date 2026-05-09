@@ -130,6 +130,10 @@ msgstr "顧客とは、あなたの部品またはサービスを購入する企
 msgid "A issue record tracks quality issues and their resolution process."
 msgstr "問題レコードは品質問題とその解決プロセスを追跡します。"
 
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:300
+msgid "A job is a set of work to be done to fulfill an order or increase inventory"
+msgstr ""
+
 #: apps/erp/app/modules/items/ui/Materials/MaterialForm.tsx:163
 msgid "A material is a physical item used to make a part that can be used across multiple jobs"
 msgstr "材料は、複数のジョブで使用できるパーツを作成するために使用される物理的なアイテムです"
@@ -595,6 +599,10 @@ msgstr "要件を追加"
 #: apps/erp/app/modules/quality/ui/RiskRegister/RiskRegisterCard.tsx:113
 msgid "Add Risk"
 msgstr "リスクを追加"
+
+#: apps/erp/app/modules/production/ui/Jobs/ConfigParamsTableModal.tsx:494
+msgid "Add Row"
+msgstr ""
 
 #: apps/erp/app/modules/items/ui/ItemRules/ItemRuleAssignments.tsx:180
 msgid "Add rule"
@@ -1676,7 +1684,7 @@ msgstr "バケット"
 msgid "Bulk Import"
 msgstr "一括インポート"
 
-#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:403
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:456
 msgid "Bulk Jobs"
 msgstr "一括ジョブ"
 
@@ -1829,6 +1837,7 @@ msgstr "唯一のアクティブなブレークを無効にすることはでき
 #: apps/erp/app/modules/people/ui/Holidays/HolidayForm.tsx:82
 #: apps/erp/app/modules/people/ui/Shifts/ShiftForm.tsx:99
 #: apps/erp/app/modules/people/ui/Timecards/TimecardForm.tsx:117
+#: apps/erp/app/modules/production/ui/Jobs/ConfigParamsTableModal.tsx:504
 #: apps/erp/app/modules/production/ui/Jobs/JobHeader.tsx:835
 #: apps/erp/app/modules/production/ui/Jobs/JobHeader.tsx:894
 #: apps/erp/app/modules/production/ui/Jobs/JobHeader.tsx:1252
@@ -2397,6 +2406,7 @@ msgid "Conditions"
 msgstr "条件"
 
 #: apps/erp/app/modules/items/ui/Parts/ConfigurationParameters.tsx:185
+#: apps/erp/app/modules/production/ui/Jobs/ConfigParamsTableModal.tsx:350
 msgid "Configuration Parameters"
 msgstr "設定パラメータ"
 
@@ -2457,6 +2467,11 @@ msgstr "保全ディスパッチが作業現場から作成されるときの通
 msgid "Configure notifications for when new suggestions are submitted."
 msgstr "新しい提案が送信されたときの通知を設定します。"
 
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:263
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:480
+msgid "Configure quantities"
+msgstr ""
+
 #: apps/erp/app/routes/x+/settings+/production.tsx:214
 msgid "Configure the content displayed on job traveler PDFs."
 msgstr "ジョブトラベラーPDFに表示されるコンテンツを設定します。"
@@ -2487,6 +2502,7 @@ msgstr "設定済み"
 #: apps/erp/app/components/ItemRuleViolationModal.tsx:107
 #: apps/erp/app/modules/inventory/ui/WarehouseTransfers/WarehouseTransferForm.tsx:193
 #: apps/erp/app/modules/items/ui/Item/MakeMethodTools.tsx:535
+#: apps/erp/app/modules/production/ui/Jobs/ConfigParamsTableModal.tsx:507
 #: apps/erp/app/modules/production/ui/Jobs/JobMakeMethodTools.tsx:448
 #: apps/erp/app/modules/production/ui/Jobs/JobMakeMethodTools.tsx:573
 #: apps/erp/app/modules/quality/ui/Calibrations/GaugeCalibrationRecordForm.tsx:451
@@ -2669,7 +2685,7 @@ msgstr "コピーしました!"
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:218
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:187
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:207
-#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:204
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:314
 #: apps/erp/app/modules/production/ui/Procedures/ProcedureProperties.tsx:112
 #: apps/erp/app/modules/production/ui/Procedures/ProcedureProperties.tsx:132
 #: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderProperties.tsx:173
@@ -2725,7 +2741,7 @@ msgstr "課題番号をコピー"
 msgid "Copy issue unique identifier"
 msgstr "問題の一意の識別子をコピー"
 
-#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:214
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:324
 msgid "Copy Job number"
 msgstr "ジョブ番号をコピー"
 
@@ -2749,7 +2765,7 @@ msgstr "ドキュメントへのリンクをコピー"
 msgid "Copy link to issue"
 msgstr "問題へのリンクをコピー"
 
-#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:196
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:306
 msgid "Copy link to Job"
 msgstr "ジョブへのリンクをコピー"
 
@@ -3299,7 +3315,7 @@ msgstr "カスタムフィールド"
 #: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoicesTable.tsx:87
 #: apps/erp/app/modules/items/ui/Item/CustomerPartForm.tsx:67
 #: apps/erp/app/modules/items/ui/Item/CustomerParts/CustomerParts.tsx:41
-#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:356
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:421
 #: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:271
 #: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderDeliveryForm.tsx:160
 #: apps/erp/app/modules/quality/ui/Issue/IssueAssociations.tsx:356
@@ -3631,9 +3647,9 @@ msgstr "ユーザーを無効化"
 msgid "Deactivate Work Center"
 msgstr "ワークセンターを無効化"
 
-#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:341
-#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:497
-#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:457
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:406
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:557
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:590
 #: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:384
 #: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderLineJobs.tsx:250
 msgid "Deadline Type"
@@ -3984,6 +4000,10 @@ msgstr "RFQを削除"
 #: apps/erp/app/modules/quality/ui/RiskRegister/RiskRegisterCard.tsx:191
 msgid "Delete Risk"
 msgstr "リスクを削除"
+
+#: apps/erp/app/modules/production/ui/Jobs/ConfigParamsTableModal.tsx:472
+msgid "Delete row"
+msgstr ""
 
 #: apps/erp/app/modules/api/ui/TableDocs.tsx:289
 msgid "Delete rows"
@@ -4411,8 +4431,8 @@ msgstr "期限 {0}"
 #: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoicesTable.tsx:190
 #: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoiceForm.tsx:241
 #: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoicesTable.tsx:184
-#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:336
-#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:435
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:401
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:568
 #: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:376
 #: apps/erp/app/modules/production/ui/Planning/ProductionPlanningOrderDrawer.tsx:390
 #: apps/erp/app/modules/purchasing/ui/Planning/PurchasingPlanningOrderDrawer.tsx:637
@@ -4433,11 +4453,11 @@ msgstr "期限 {0}"
 msgid "Due Date"
 msgstr "支払期日"
 
-#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:484
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:544
 msgid "Due Date of First Job"
 msgstr "最初のジョブの期日"
 
-#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:490
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:550
 msgid "Due Date of Last Job"
 msgstr "最後のジョブの期限"
 
@@ -5243,8 +5263,8 @@ msgstr "推定期間"
 msgid "Estimated Duration (minutes)"
 msgstr "推定所要時間（分）"
 
-#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:319
-#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:393
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:384
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:526
 msgid "Estimated Scrap Quantity"
 msgstr "推定スクラップ数量"
 
@@ -5631,7 +5651,7 @@ msgstr "見積行の挿入に失敗しました"
 msgid "Failed to insert supplier quote line"
 msgstr "サプライヤー見積行の挿入に失敗しました"
 
-#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:199
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:236
 #: apps/erp/app/modules/sales/ui/Quotes/QuoteLineForm.tsx:237
 msgid "Failed to load configuration parameters"
 msgstr "設定パラメータの読み込みに失敗しました"
@@ -5867,6 +5887,10 @@ msgstr "故障モード"
 #: apps/erp/app/routes/x+/resources+/failure-modes.tsx:13
 msgid "Failure Modes"
 msgstr "障害モード"
+
+#: apps/erp/app/modules/production/ui/Jobs/ConfigParamsTableModal.tsx:444
+msgid "False"
+msgstr ""
 
 #: apps/erp/app/modules/documents/ui/Documents/DocumentsTable.tsx:424
 msgid "Favorite"
@@ -6958,6 +6982,7 @@ msgstr "このウィンドウ内のアイテムは黄色いバッジが表示さ
 #: apps/erp/app/components/Layout/Topbar/CreateMenu.tsx:54
 #: apps/erp/app/modules/people/ui/Person/PersonJob.tsx:36
 #: apps/erp/app/modules/people/ui/Person/PersonSidebar/usePersonSidebar.tsx:23
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:296
 #: apps/erp/app/modules/production/ui/Jobs/JobHeader.tsx:104
 #: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:682
 #: apps/erp/app/modules/production/ui/Planning/ProductionPlanningOrderDrawer.tsx:366
@@ -6967,14 +6992,14 @@ msgstr "このウィンドウ内のアイテムは黄色いバッジが表示さ
 msgid "Job"
 msgstr "ジョブ"
 
-#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:270
-#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:274
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:333
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:337
 #: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:185
 #: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderLineJobs.tsx:218
 msgid "Job ID"
 msgstr "ジョブID"
 
-#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:526
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:659
 msgid "Job Location"
 msgstr "ジョブロケーション"
 
@@ -7300,7 +7325,7 @@ msgstr "ラインには価格またはリードタイムが必要です"
 #: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:272
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:178
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:165
-#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:182
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:292
 #: apps/erp/app/modules/production/ui/Procedures/ProcedureProperties.tsx:90
 #: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderProperties.tsx:152
 #: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQProperties.tsx:162
@@ -7388,8 +7413,8 @@ msgstr "読み込み中..."
 #: apps/erp/app/modules/people/ui/Shifts/ShiftForm.tsx:72
 #: apps/erp/app/modules/people/ui/Shifts/ShiftsTable.tsx:84
 #: apps/erp/app/modules/people/ui/Timecards/TimecardsTable.tsx:170
-#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:332
-#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:494
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:397
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:554
 #: apps/erp/app/modules/production/ui/Jobs/JobHeader.tsx:1094
 #: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:509
 #: apps/erp/app/modules/production/ui/Projection/DemandProjectionForm.tsx:116
@@ -7676,6 +7701,10 @@ msgstr "製造業者"
 #: apps/erp/app/routes/x+/tool+/$itemId.tsx:159
 msgid "Manufacturing"
 msgstr "製造"
+
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:281
+msgid "Many Jobs"
+msgstr ""
 
 #: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderHeader.tsx:277
 msgid "Mark as Planned"
@@ -8390,6 +8419,10 @@ msgstr "新しい請求書"
 #: apps/erp/app/modules/items/ui/ItemPostingGroups/ItemPostingGroupForm.tsx:89
 msgid "New Item Group"
 msgstr "新しいアイテムグループ"
+
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:296
+msgid "New Job"
+msgstr ""
 
 #: apps/erp/app/modules/inventory/ui/Kanbans/KanbanForm.tsx:185
 msgid "New Kanban"
@@ -10133,7 +10166,7 @@ msgstr "約束日"
 #: apps/erp/app/modules/items/ui/Materials/MaterialProperties.tsx:265
 #: apps/erp/app/modules/items/ui/Parts/PartProperties.tsx:171
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:158
-#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:175
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:285
 #: apps/erp/app/modules/production/ui/Procedures/ProcedureProperties.tsx:83
 #: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderProperties.tsx:145
 #: apps/erp/app/modules/purchasing/ui/PurchasingRfq/PurchasingRFQProperties.tsx:155
@@ -10406,8 +10439,13 @@ msgid "Quality Type"
 msgstr "品質タイプ"
 
 #: apps/erp/app/modules/inventory/ui/useInventorySubmodules.tsx:64
+#: apps/erp/app/modules/production/ui/Jobs/ConfigParamsTableModal.tsx:277
 msgid "Quantities"
 msgstr "数量"
+
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:516
+msgid "Quantities Per Job"
+msgstr ""
 
 #: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:222
 #: apps/erp/app/modules/inventory/ui/Inventory/InventoryStorageUnits.tsx:408
@@ -10434,9 +10472,10 @@ msgstr "数量"
 #: apps/erp/app/modules/production/ui/Jobs/JobBillOfProcess.tsx:3048
 #: apps/erp/app/modules/production/ui/Jobs/JobBillOfProcess.tsx:3180
 #: apps/erp/app/modules/production/ui/Jobs/JobBoMExplorer.tsx:428
-#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:304
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:367
 #: apps/erp/app/modules/production/ui/Jobs/JobOperationsTable.tsx:155
-#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:371
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:473
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:503
 #: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:244
 #: apps/erp/app/modules/production/ui/Jobs/ProductionQuantitiesTable.tsx:119
 #: apps/erp/app/modules/production/ui/Jobs/ProductionQuantityForm.tsx:89
@@ -10496,10 +10535,6 @@ msgstr "購買注文数量"
 #: apps/erp/app/modules/inventory/ui/Inventory/InventoryDetails.tsx:108
 msgid "Quantity on Sales Order"
 msgstr "販売注文の数量"
-
-#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:458
-msgid "Quantity Per Job"
-msgstr "ジョブあたりの数量"
 
 #: apps/erp/app/modules/production/ui/Jobs/JobMaterialForm.tsx:217
 #: apps/erp/app/modules/sales/ui/Quotes/QuoteMaterialForm.tsx:253
@@ -11502,6 +11537,8 @@ msgstr "土曜日"
 #: apps/erp/app/modules/people/ui/Timecards/TimecardForm.tsx:114
 #: apps/erp/app/modules/production/ui/Jobs/JobBillOfMaterial.tsx:1108
 #: apps/erp/app/modules/production/ui/Jobs/JobBillOfProcess.tsx:2861
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:439
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:580
 #: apps/erp/app/modules/production/ui/Jobs/ProductionEventForm.tsx:129
 #: apps/erp/app/modules/production/ui/Jobs/ProductionQuantityForm.tsx:111
 #: apps/erp/app/modules/production/ui/Procedures/ProcedureExplorer.tsx:878
@@ -11696,7 +11733,7 @@ msgstr "スクラップ数量"
 msgid "Scrap Quantity"
 msgstr "スクラップ数量"
 
-#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:471
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:531
 msgid "Scrap Quantity Per Job"
 msgstr "ジョブあたりのスクラップ数量"
 
@@ -12423,7 +12460,7 @@ msgstr "ショップフロア"
 #: apps/erp/app/modules/items/ui/Materials/MaterialForm.tsx:203
 #: apps/erp/app/modules/items/ui/Parts/PartForm.tsx:277
 #: apps/erp/app/modules/items/ui/Tools/ToolForm.tsx:270
-#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:296
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:359
 #: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteLineForm.tsx:324
 #: apps/erp/app/modules/sales/ui/Quotes/QuoteLineForm.tsx:386
 #: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderLineForm.tsx:447
@@ -12478,6 +12515,10 @@ msgstr "サインアウト"
 msgid "Signed in as {name}"
 msgstr "{name}としてサインインしています"
 
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:277
+msgid "Single Job"
+msgstr ""
+
 #: apps/erp/app/components/Documents.tsx:282
 #: apps/erp/app/modules/documents/ui/Documents/DocumentsTable.tsx:294
 #: apps/erp/app/modules/items/ui/Item/ItemDocuments.tsx:110
@@ -12513,6 +12554,10 @@ msgstr "会社の祝日に予定されたメンテナンスをスキップする
 #: apps/erp/app/modules/quality/ui/Actions/ActionsTable.tsx:280
 msgid "Skipped"
 msgstr "スキップ"
+
+#: apps/erp/app/modules/production/ui/Jobs/ConfigParamsTableModal.tsx:330
+msgid "Some cells have invalid values. Fix the highlighted cells before saving."
+msgstr ""
 
 #: apps/erp/app/routes/_public+/callback.tsx:166
 msgid "Something went wrong. Please try again."
@@ -12677,7 +12722,7 @@ msgstr "在库存转移中开始添加零件"
 #: apps/erp/app/modules/accounting/ui/ChartOfAccounts/ChartOfAccountsTableFilters.tsx:67
 #: apps/erp/app/modules/people/ui/Person/PersonJob.tsx:42
 #: apps/erp/app/modules/people/ui/Person/PersonPreview.tsx:79
-#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:415
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:548
 #: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:368
 msgid "Start Date"
 msgstr "開始日"
@@ -13273,7 +13318,7 @@ msgstr "テーブルアクション"
 #: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:256
 #: apps/erp/app/modules/items/ui/Tools/ToolProperties.tsx:553
 #: apps/erp/app/modules/items/ui/Tools/ToolsTable.tsx:255
-#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:549
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:682
 #: apps/erp/app/modules/production/ui/Jobs/JobsTable.tsx:422
 #: apps/erp/app/modules/production/ui/Procedures/ProcedureProperties.tsx:223
 #: apps/erp/app/modules/production/ui/Procedures/ProceduresTable.tsx:110
@@ -13299,7 +13344,7 @@ msgstr "このアイテムを製造するために消費される材料全体で
 msgid "Talk to Sales"
 msgstr "営業に相談"
 
-#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:278
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:388
 msgid "Target"
 msgstr "対象"
 
@@ -13422,6 +13467,10 @@ msgstr "購買注文およびその他の購買文書で使用される請求先
 #: apps/erp/app/routes/x+/settings+/sales.tsx:399
 msgid "The billing address used on quotes, sales orders, invoices, and other sales documents."
 msgstr "見積書、販売注文書、請求書、およびその他の販売文書で使用される請求先住所。"
+
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:459
+msgid "The bulk jobs form creates multiple jobs for the same item across multiple due dates."
+msgstr ""
 
 #: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderForm.tsx:214
 #: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderForm.tsx:221
@@ -13791,6 +13840,7 @@ msgstr "ツール"
 
 #: apps/erp/app/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceSummary.tsx:327
 #: apps/erp/app/modules/invoicing/ui/SalesInvoice/SalesInvoiceSummary.tsx:312
+#: apps/erp/app/modules/production/ui/Jobs/ConfigParamsTableModal.tsx:497
 #: apps/erp/app/modules/sales/ui/Quotes/QuoteSummary.tsx:637
 #: apps/erp/app/routes/share+/quote.$id.tsx:884
 #: apps/erp/app/routes/share+/quote.$id.tsx:1287
@@ -13802,6 +13852,10 @@ msgstr "合計"
 msgid "Total Hours"
 msgstr "合計時間"
 
+#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:503
+msgid "Total Jobs"
+msgstr ""
+
 #: apps/erp/app/components/Form/StandardFactor.tsx:40
 msgid "Total Minutes"
 msgstr "合計分"
@@ -13811,10 +13865,6 @@ msgstr "合計分"
 #: apps/erp/app/modules/sales/ui/Quotes/QuoteToOrderDrawer.tsx:624
 msgid "Total Price"
 msgstr "合計価格"
-
-#: apps/erp/app/modules/production/ui/Jobs/JobForm.tsx:445
-msgid "Total Quantity"
-msgstr "合計数量"
 
 #: apps/erp/app/modules/purchasing/ui/SupplierQuote/SupplierQuoteCompareDrawer.tsx:475
 #: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderSummary.tsx:282
@@ -13866,7 +13916,7 @@ msgstr "追跡対象エンティティ"
 msgid "Tracked entity already picked"
 msgstr "既に追跡対象が選択されています"
 
-#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:138
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:213
 msgid "Tracked entity ID is required but none was found"
 msgstr "追跡対象エンティティIDが必要ですが、見つかりませんでした"
 
@@ -13985,6 +14035,10 @@ msgstr "ゴミ箱"
 #: apps/erp/app/modules/accounting/ui/useAccountingSubmodules.tsx:50
 msgid "Trial Balance"
 msgstr "試算表"
+
+#: apps/erp/app/modules/production/ui/Jobs/ConfigParamsTableModal.tsx:443
+msgid "True"
+msgstr ""
 
 #: apps/erp/app/modules/people/ui/Shifts/ShiftForm.tsx:82
 msgid "Tuesday"
@@ -14129,7 +14183,7 @@ msgstr "単価"
 #: apps/erp/app/modules/items/ui/UnitOfMeasure/UnitOfMeasuresTable.tsx:90
 #: apps/erp/app/modules/production/ui/Jobs/JobBillOfProcess.tsx:1262
 #: apps/erp/app/modules/production/ui/Jobs/JobBillOfProcess.tsx:1543
-#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:508
+#: apps/erp/app/modules/production/ui/Jobs/JobProperties.tsx:641
 #: apps/erp/app/modules/production/ui/Procedures/ProcedureExplorer.tsx:829
 #: apps/erp/app/modules/purchasing/ui/PurchaseOrder/PurchaseOrderLineForm.tsx:571
 #: apps/erp/app/modules/quality/ui/Documents/QualityDocumentExplorer.tsx:606

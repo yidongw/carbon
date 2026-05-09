@@ -1,3 +1,4 @@
+import { useCarbon } from "@carbon/auth";
 import type { Json } from "@carbon/database";
 import {
   DatePicker,
@@ -9,17 +10,20 @@ import {
 import {
   Badge,
   Button,
+  cn,
   HStack,
+  IconButton,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
   toast,
+  useDisclosure,
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { PostgrestResponse } from "@supabase/supabase-js";
 import { Suspense, useCallback, useEffect, useState } from "react";
-import { LuCopy, LuLink, LuUnlink2 } from "react-icons/lu";
+import { LuCopy, LuLink, LuTable, LuUnlink2 } from "react-icons/lu";
 import { RiProgress8Line } from "react-icons/ri";
 import { Await, useFetcher, useParams } from "react-router";
 import { z } from "zod";
@@ -39,14 +43,19 @@ import {
   UnitOfMeasure
 } from "~/components/Form";
 import CustomFormInlineFields from "~/components/Form/CustomFormInlineFields";
-import { usePermissions, useRouteData } from "~/hooks";
+import { usePermissions, useRouteData, useUser } from "~/hooks";
 import type { TrackedEntity } from "~/modules/inventory/types";
+import type {
+  ConfigurationParameter,
+  ConfigurationParameterGroup
+} from "~/modules/items/types";
 import type { MethodItemType } from "~/modules/shared";
 import type { action } from "~/routes/x+/items+/update";
 import { path } from "~/utils/path";
 import { copyToClipboard } from "~/utils/string";
 import { deadlineTypes, isJobLocked } from "../../production.models";
 import type { Job } from "../../types";
+import { ConfigParamsTableModal } from "./ConfigParamsTableModal";
 import { getDeadlineIcon } from "./Deadline";
 
 const JobProperties = () => {
@@ -59,6 +68,72 @@ const JobProperties = () => {
     tags: { name: string }[];
     trackedEntities: Promise<PostgrestResponse<TrackedEntity>>;
   }>(path.to.job(jobId));
+
+  const { carbon } = useCarbon();
+  const { company } = useUser();
+
+  const configTableDisclosure = useDisclosure();
+  const [configurationParameters, setConfigurationParameters] = useState<{
+    parameters: ConfigurationParameter[];
+    groups: ConfigurationParameterGroup[];
+  } | null>(null);
+  const [configTableRows, setConfigTableRows] = useState<
+    Record<string, any>[] | null
+  >(null);
+  const [configTableTotal, setConfigTableTotal] = useState(0);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: suppressed due to migration
+  useEffect(() => {
+    const itemId = routeData?.job?.itemId;
+    if (!itemId || !carbon || !company?.id) return;
+    Promise.all([
+      carbon
+        .from("configurationParameter")
+        .select("*")
+        .eq("itemId", itemId)
+        .eq("companyId", company.id),
+      carbon
+        .from("configurationParameterGroup")
+        .select("*")
+        .eq("itemId", itemId)
+        .eq("companyId", company.id)
+    ]).then(([parameters, groups]) => {
+      const params = parameters.data ?? [];
+      if (params.length > 0) {
+        setConfigurationParameters({
+          parameters: params,
+          groups: groups.data ?? []
+        });
+        const existingConfig = routeData?.job?.configuration as Record<
+          string,
+          any
+        > | null;
+        if (existingConfig?.configTable) {
+          const rows = existingConfig.configTable;
+          setConfigTableRows(rows);
+          const primaryParam = params.find(
+            (p: ConfigurationParameter) => p.dataType === "list"
+          );
+          const primaryKeys =
+            existingConfig.configTablePrimaryKeys ??
+            (primaryParam?.listOptions?.length
+              ? primaryParam.listOptions
+              : ["Quantities"]);
+          const total = rows.reduce(
+            (sum: number, row: Record<string, any>) =>
+              sum +
+              primaryKeys.reduce(
+                (rowSum: number, key: string) =>
+                  rowSum + (Number(row[key]) || 0),
+                0
+              ),
+            0
+          );
+          setConfigTableTotal(total);
+        }
+      }
+    });
+  }, [routeData?.job?.itemId]);
 
   const fetcher = useFetcher<typeof action>();
   useEffect(() => {
@@ -163,6 +238,41 @@ const JobProperties = () => {
   const canUpdate = permissions.can("update", "production");
   const isLocked = isJobLocked(routeData?.job?.status);
   const isDisabled = !canUpdate || isLocked;
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: suppressed due to migration
+  const onUpdateConfiguration = useCallback(
+    (rows: Record<string, any>[], primaryKeys: string[]) => {
+      const formData = new FormData();
+      formData.append("ids", jobId);
+      formData.append("field", "configuration");
+      formData.append(
+        "value",
+        JSON.stringify({
+          configTable: rows,
+          configTablePrimaryKeys: primaryKeys
+        })
+      );
+      fetcher.submit(formData, {
+        method: "post",
+        action: path.to.bulkUpdateJob
+      });
+    },
+    [jobId]
+  );
+
+  const handleConfigTableSubmit = (
+    rows: Record<string, any>[],
+    total: number,
+    primaryKeys: string[]
+  ) => {
+    setConfigTableRows(rows);
+    setConfigTableTotal(total);
+    onUpdateConfiguration(rows, primaryKeys);
+    configTableDisclosure.onClose();
+  };
+
+  const configuredQuantity =
+    configTableTotal > 0 ? configTableTotal : (routeData?.job?.quantity ?? 0);
 
   return (
     <VStack
@@ -358,26 +468,49 @@ const JobProperties = () => {
           }}
         />
       </ValidatedForm>
-      <ValidatedForm
-        defaultValues={{ quantity: routeData?.job?.quantity ?? undefined }}
-        validator={z.object({
-          quantity: zfd.numeric(
-            z.number().min(0, { message: "Quantity is required" })
-          )
-        })}
-        className="w-full"
-      >
-        <NumberControlled
-          label={t`Quantity`}
-          name="quantity"
-          inline
-          isReadOnly={isDisabled}
-          value={routeData?.job?.quantity ?? 0}
-          onChange={(value) => {
-            onUpdate("quantity", value);
-          }}
-        />
-      </ValidatedForm>
+      {configurationParameters ? (
+        <VStack className="w-full">
+          <span className="text-xs text-muted-foreground">{t`Quantity`}</span>
+          <HStack spacing={0} className="w-full justify-between">
+            <span className="flex flex-grow line-clamp-1 items-center">
+              {configuredQuantity}
+            </span>
+            <IconButton
+              icon={<LuTable size="1em" strokeWidth="3" />}
+              aria-label={t`Configure quantities`}
+              size="sm"
+              variant="secondary"
+              className={cn(
+                configTableTotal > 0 &&
+                  "text-emerald-500 hover:text-emerald-500"
+              )}
+              isDisabled={isDisabled}
+              onClick={() => configTableDisclosure.onOpen()}
+            />
+          </HStack>
+        </VStack>
+      ) : (
+        <ValidatedForm
+          defaultValues={{ quantity: routeData?.job?.quantity ?? undefined }}
+          validator={z.object({
+            quantity: zfd.numeric(
+              z.number().min(0, { message: "Quantity is required" })
+            )
+          })}
+          className="w-full"
+        >
+          <NumberControlled
+            label={t`Quantity`}
+            name="quantity"
+            inline
+            isReadOnly={isDisabled}
+            value={routeData?.job?.quantity ?? 0}
+            onChange={(value) => {
+              onUpdate("quantity", value);
+            }}
+          />
+        </ValidatedForm>
+      )}
       <ValidatedForm
         defaultValues={{
           scrapQuantity: routeData?.job?.scrapQuantity ?? undefined
@@ -569,6 +702,16 @@ const JobProperties = () => {
         tags={routeData?.job.tags ?? []}
         onUpdate={onUpdateCustomFields}
       />
+
+      {configTableDisclosure.isOpen && configurationParameters && (
+        <ConfigParamsTableModal
+          open
+          parameters={configurationParameters.parameters}
+          onClose={configTableDisclosure.onClose}
+          onSubmit={handleConfigTableSubmit}
+          initialRows={configTableRows ?? undefined}
+        />
+      )}
     </VStack>
   );
 };
