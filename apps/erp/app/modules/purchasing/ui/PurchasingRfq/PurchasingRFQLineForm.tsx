@@ -2,7 +2,13 @@ import { useCarbon } from "@carbon/auth";
 import { ValidatedForm } from "@carbon/form";
 import {
   Badge,
+  Card,
   CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuIcon,
@@ -10,14 +16,6 @@ import {
   DropdownMenuTrigger,
   HStack,
   IconButton,
-  ModalCard,
-  ModalCardBody,
-  ModalCardContent,
-  ModalCardDescription,
-  ModalCardFooter,
-  ModalCardHeader,
-  ModalCardProvider,
-  ModalCardTitle,
   toast,
   useDisclosure,
   VStack
@@ -38,6 +36,7 @@ import {
   Submit,
   UnitOfMeasure
 } from "~/components/Form";
+import { CardFormModal } from "~/components/NewEntityModal";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
 import type { MethodItemType } from "~/modules/shared/types";
 import { path } from "~/utils/path";
@@ -52,14 +51,12 @@ type PurchasingRFQLineFormProps = {
   initialValues: z.infer<typeof purchasingRfqLineValidator> & {
     itemType: MethodItemType;
   };
-  type?: "card" | "modal";
-  onClose?: () => void;
+  onSubmitted?: () => void;
 };
 
 const PurchasingRFQLineForm = ({
   initialValues,
-  type,
-  onClose
+  onSubmitted
 }: PurchasingRFQLineFormProps) => {
   const { t } = useLingui();
   const permissions = usePermissions();
@@ -132,167 +129,155 @@ const PurchasingRFQLineForm = ({
 
   return (
     <>
-      <ModalCardProvider type={type}>
-        <ModalCard
-          onClose={onClose}
-          isCollapsible={isEditing}
-          defaultCollapsed={false}
+      <Card isCollapsible={isEditing} defaultCollapsed={false}>
+        <ValidatedForm
+          defaultValues={initialValues}
+          validator={purchasingRfqLineValidator}
+          method="post"
+          action={
+            isEditing
+              ? path.to.purchasingRfqLine(rfqId, initialValues.id!)
+              : path.to.newPurchasingRFQLine(rfqId)
+          }
+          className="w-full"
+          isDisabled={isEditing && isLocked}
+          onSubmit={onSubmitted}
         >
-          <ModalCardContent>
-            <ValidatedForm
-              defaultValues={initialValues}
-              validator={purchasingRfqLineValidator}
-              method="post"
-              action={
-                isEditing
-                  ? path.to.purchasingRfqLine(rfqId, initialValues.id!)
-                  : path.to.newPurchasingRFQLine(rfqId)
-              }
-              className="w-full"
-              isDisabled={isEditing && isLocked}
-              onSubmit={() => {
-                if (type === "modal") onClose?.();
-              }}
-            >
-              <HStack className="w-full justify-between items-start">
-                <ModalCardHeader>
-                  <ModalCardTitle>
-                    {isEditing
-                      ? itemData?.itemReadableId || "RFQ Line"
-                      : "New RFQ Line"}
-                  </ModalCardTitle>
-                  <ModalCardDescription>
-                    {isEditing ? (
-                      <div className="flex flex-col items-start gap-1">
-                        <span>{itemData?.description}</span>
-                        <div className="flex items-center gap-2">
-                          <Badge variant="outline">
-                            {initialValues?.quantity?.join(", ")}
-                          </Badge>
-                        </div>
-                      </div>
-                    ) : (
-                      "An RFQ line contains part and quantity information about the requested item"
-                    )}
-                  </ModalCardDescription>
-                </ModalCardHeader>
-                {isEditing &&
-                  !isLocked &&
-                  permissions.can("update", "purchasing") && (
-                    <CardAction className="pr-12">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <IconButton
-                            icon={<BsThreeDotsVertical />}
-                            aria-label={t`More`}
-                            variant="ghost"
-                          />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={deleteDisclosure.onOpen}>
-                            <DropdownMenuIcon icon={<LuTrash />} />
-                            <Trans>Delete Line</Trans>
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </CardAction>
-                  )}
-              </HStack>
-              <ModalCardBody>
-                <Hidden name="id" />
-                <Hidden name="purchasingRfqId" />
-                <Hidden name="order" />
-                <Hidden
-                  name="inventoryUnitOfMeasureCode"
-                  value={itemData?.inventoryUom}
-                />
-                <VStack>
-                  <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
-                    <div className="col-span-2 grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-2 auto-rows-min">
-                      <Item
-                        autoFocus
-                        name="itemId"
-                        label={t`Part`}
-                        type={itemType}
-                        value={itemData.itemId}
-                        includeInactive
-                        locationId={
-                          routeData?.rfqSummary?.locationId ?? undefined
-                        }
-                        onChange={(value) => {
-                          onItemChange(value?.value as string);
-                        }}
-                        onTypeChange={(type) => {
-                          setItemType(type as MethodItemType);
-                          setItemData({
-                            ...itemData,
-                            itemId: "",
-                            description: "",
-                            inventoryUom: "",
-                            purchaseUom: "",
-                            conversionFactor: 1
-                          });
-                        }}
-                      />
-                      <InputControlled
-                        name="description"
-                        label={t`Description`}
-                        value={itemData.description}
-                        isReadOnly={!!itemData.itemId}
-                      />
-                      <UnitOfMeasure
-                        name="purchaseUnitOfMeasureCode"
-                        label={t`Purchase Unit of Measure`}
-                        value={itemData.purchaseUom}
-                        onChange={(newValue) =>
-                          setItemData((d) => ({
-                            ...d,
-                            purchaseUom: newValue?.value ?? "EA"
-                          }))
-                        }
-                      />
-                      <ConversionFactor
-                        name="conversionFactor"
-                        purchasingCode={itemData.purchaseUom}
-                        inventoryCode={itemData.inventoryUom}
-                        value={itemData.conversionFactor}
-                        onChange={(value) => {
-                          setItemData((d) => ({
-                            ...d,
-                            conversionFactor: value
-                          }));
-                        }}
-                      />
-
-                      <CustomFormFields table="purchasingRfqLine" />
-                    </div>
-                    <div className="flex gap-y-4">
-                      <ArrayNumeric
-                        name="quantity"
-                        label={t`Quantity`}
-                        defaults={[1, 25, 50, 100]}
-                        isDisabled={isLocked}
-                      />
+          <HStack className="w-full justify-between items-start pr-16">
+            <CardHeader>
+              <CardTitle>
+                {isEditing
+                  ? itemData?.itemReadableId || "RFQ Line"
+                  : "New RFQ Line"}
+              </CardTitle>
+              <CardDescription>
+                {isEditing ? (
+                  <div className="flex flex-col items-start gap-1">
+                    <span>{itemData?.description}</span>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline">
+                        {initialValues?.quantity?.join(", ")}
+                      </Badge>
                     </div>
                   </div>
-                </VStack>
-              </ModalCardBody>
-              <ModalCardFooter>
-                <Submit
-                  isDisabled={
-                    isLocked ||
-                    (isEditing
-                      ? !permissions.can("update", "purchasing")
-                      : !permissions.can("create", "purchasing"))
-                  }
-                >
-                  <Trans>Save</Trans>
-                </Submit>
-              </ModalCardFooter>
-            </ValidatedForm>
-          </ModalCardContent>
-        </ModalCard>
-      </ModalCardProvider>
+                ) : (
+                  "An RFQ line contains part and quantity information about the requested item"
+                )}
+              </CardDescription>
+            </CardHeader>
+            {isEditing &&
+              !isLocked &&
+              permissions.can("update", "purchasing") && (
+                <CardAction className="pr-12">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <IconButton
+                        icon={<BsThreeDotsVertical />}
+                        aria-label={t`More`}
+                        variant="ghost"
+                      />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={deleteDisclosure.onOpen}>
+                        <DropdownMenuIcon icon={<LuTrash />} />
+                        <Trans>Delete Line</Trans>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </CardAction>
+              )}
+          </HStack>
+          <CardContent>
+            <Hidden name="id" />
+            <Hidden name="purchasingRfqId" />
+            <Hidden name="order" />
+            <Hidden
+              name="inventoryUnitOfMeasureCode"
+              value={itemData?.inventoryUom}
+            />
+            <VStack>
+              <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
+                <div className="col-span-2 grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-2 auto-rows-min">
+                  <Item
+                    autoFocus
+                    name="itemId"
+                    label={t`Part`}
+                    type={itemType}
+                    value={itemData.itemId}
+                    includeInactive
+                    locationId={routeData?.rfqSummary?.locationId ?? undefined}
+                    onChange={(value) => {
+                      onItemChange(value?.value as string);
+                    }}
+                    onTypeChange={(type) => {
+                      setItemType(type as MethodItemType);
+                      setItemData({
+                        ...itemData,
+                        itemId: "",
+                        description: "",
+                        inventoryUom: "",
+                        purchaseUom: "",
+                        conversionFactor: 1
+                      });
+                    }}
+                  />
+                  <InputControlled
+                    name="description"
+                    label={t`Description`}
+                    value={itemData.description}
+                    isReadOnly={!!itemData.itemId}
+                  />
+                  <UnitOfMeasure
+                    name="purchaseUnitOfMeasureCode"
+                    label={t`Purchase Unit of Measure`}
+                    value={itemData.purchaseUom}
+                    onChange={(newValue) =>
+                      setItemData((d) => ({
+                        ...d,
+                        purchaseUom: newValue?.value ?? "EA"
+                      }))
+                    }
+                  />
+                  <ConversionFactor
+                    name="conversionFactor"
+                    purchasingCode={itemData.purchaseUom}
+                    inventoryCode={itemData.inventoryUom}
+                    value={itemData.conversionFactor}
+                    onChange={(value) => {
+                      setItemData((d) => ({
+                        ...d,
+                        conversionFactor: value
+                      }));
+                    }}
+                  />
+
+                  <CustomFormFields table="purchasingRfqLine" />
+                </div>
+                <div className="flex gap-y-4">
+                  <ArrayNumeric
+                    name="quantity"
+                    label={t`Quantity`}
+                    defaults={[1, 25, 50, 100]}
+                    isDisabled={isLocked}
+                  />
+                </div>
+              </div>
+            </VStack>
+          </CardContent>
+          <CardFooter>
+            <Submit
+              isDisabled={
+                isLocked ||
+                (isEditing
+                  ? !permissions.can("update", "purchasing")
+                  : !permissions.can("create", "purchasing"))
+              }
+            >
+              <Trans>Save</Trans>
+            </Submit>
+          </CardFooter>
+        </ValidatedForm>
+      </Card>
       {isEditing && deleteDisclosure.isOpen && (
         <DeletePurchasingRFQLine
           line={initialValues as PurchasingRFQLine}
@@ -304,3 +289,22 @@ const PurchasingRFQLineForm = ({
 };
 
 export default PurchasingRFQLineForm;
+
+export function PurchasingRFQLineFormModal({
+  initialValues,
+  onClose
+}: {
+  initialValues: z.infer<typeof purchasingRfqLineValidator> & {
+    itemType: MethodItemType;
+  };
+  onClose: () => void;
+}) {
+  return (
+    <CardFormModal onClose={onClose} contentClassName="!max-w-6xl">
+      <PurchasingRFQLineForm
+        initialValues={initialValues}
+        onSubmitted={onClose}
+      />
+    </CardFormModal>
+  );
+}

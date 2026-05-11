@@ -3,7 +3,13 @@ import { TextArea, ValidatedForm } from "@carbon/form";
 import {
   Badge,
   Button,
+  Card,
   CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuIcon,
@@ -11,14 +17,6 @@ import {
   DropdownMenuTrigger,
   HStack,
   IconButton,
-  ModalCard,
-  ModalCardBody,
-  ModalCardContent,
-  ModalCardDescription,
-  ModalCardFooter,
-  ModalCardHeader,
-  ModalCardProvider,
-  ModalCardTitle,
   toast,
   useDisclosure,
   VStack
@@ -44,6 +42,7 @@ import {
   Submit
 } from "~/components/Form";
 import { QuoteLineStatusIcon } from "~/components/Icons";
+import { CardFormModal } from "~/components/NewEntityModal";
 import {
   usePercentFormatter,
   usePermissions,
@@ -69,14 +68,14 @@ import DeleteQuoteLine from "./DeleteQuoteLine";
 
 type QuoteLineFormProps = {
   initialValues: z.infer<typeof quoteLineValidator>;
-  type?: "card" | "modal";
   onClose?: () => void;
+  onSubmitted?: () => void;
 };
 
 const QuoteLineForm = ({
   initialValues,
-  type,
-  onClose
+  onClose,
+  onSubmitted
 }: QuoteLineFormProps) => {
   const { t } = useLingui();
   const fetcher = useFetcher<typeof action>();
@@ -252,279 +251,260 @@ const QuoteLineForm = ({
 
   return (
     <>
-      <ModalCardProvider type={type}>
-        <ModalCard
-          onClose={onClose}
-          defaultCollapsed={false}
-          isCollapsible={isEditing}
+      <Card defaultCollapsed={false} isCollapsible={isEditing}>
+        <ValidatedForm
+          fetcher={fetcher}
+          defaultValues={initialValues}
+          validator={quoteLineValidator}
+          method="post"
+          action={
+            isEditing
+              ? path.to.quoteLine(quoteId, initialValues.id!)
+              : path.to.newQuoteLine(quoteId)
+          }
+          className="w-full"
+          isDisabled={isEditing && isLocked}
+          onSubmit={onSubmitted}
         >
-          <ModalCardContent size="xxlarge">
-            <ValidatedForm
-              fetcher={fetcher}
-              defaultValues={initialValues}
-              validator={quoteLineValidator}
-              method="post"
-              action={
-                isEditing
-                  ? path.to.quoteLine(quoteId, initialValues.id!)
-                  : path.to.newQuoteLine(quoteId)
-              }
-              className="w-full"
-              isDisabled={isEditing && isLocked}
-              onSubmit={() => {
-                if (type === "modal") onClose?.();
-              }}
-            >
-              <HStack className="w-full justify-between items-start">
-                <ModalCardHeader>
-                  <ModalCardTitle>
-                    {isEditing ? (
-                      (getItemReadableId(items, itemData?.itemId) ?? (
-                        <Trans>Quote Line</Trans>
-                      ))
-                    ) : (
-                      <Trans>New Quote Line</Trans>
-                    )}
-                  </ModalCardTitle>
-                  <ModalCardDescription>
-                    {isEditing ? (
-                      <div className="flex flex-col items-start gap-1">
-                        <span>{itemData?.description}</span>
-                        <div className="flex items-center gap-2">
-                          <Badge
-                            variant="outline"
-                            className="flex items-center gap-2"
-                          >
-                            <MethodIcon type={itemData.methodType} />
-                            {initialValues?.quantity.join(", ")}
-                          </Badge>
-                          {initialValues?.taxPercent > 0 ? (
-                            <Badge variant="red">
-                              {percentFormatter.format(
-                                initialValues?.taxPercent
-                              )}{" "}
-                              <Trans>Tax</Trans>
-                            </Badge>
-                          ) : null}
-                        </div>
-                      </div>
-                    ) : (
-                      <Trans>
-                        A quote line contains pricing and lead times for a
-                        particular part
-                      </Trans>
-                    )}
-                  </ModalCardDescription>
-                </ModalCardHeader>
-                {isEditing && permissions.can("update", "sales") && (
-                  <CardAction className="pr-12">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <IconButton
-                          icon={<BsThreeDotsVertical />}
-                          aria-label={t`More`}
-                          variant="ghost"
-                        />
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        {!isLocked && (
-                          <DropdownMenuItem
-                            destructive
-                            onClick={deleteDisclosure.onOpen}
-                          >
-                            <DropdownMenuIcon icon={<LuTrash />} />
-                            <Trans>Delete Line</Trans>
-                          </DropdownMenuItem>
-                        )}
-                        <DropdownMenuItem asChild>
-                          <Link
-                            to={getLinkToItemDetails("Part", itemData.itemId!)}
-                          >
-                            <DropdownMenuIcon
-                              icon={<MethodItemTypeIcon type="Part" />}
-                            />
-                            <Trans>View Item Master</Trans>
-                          </Link>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </CardAction>
+          <HStack className="w-full justify-between items-start pr-16">
+            <CardHeader>
+              <CardTitle>
+                {isEditing ? (
+                  (getItemReadableId(items, itemData?.itemId) ?? (
+                    <Trans>Quote Line</Trans>
+                  ))
+                ) : (
+                  <Trans>New Quote Line</Trans>
                 )}
-              </HStack>
-              <ModalCardBody>
-                <Hidden name="id" />
-                <Hidden name="quoteId" />
-                <Hidden name="unitOfMeasureCode" value={itemData?.uom} />
-                <Hidden
-                  name="modelUploadId"
-                  value={itemData?.modelUploadId ?? undefined}
-                />
-                {!isEditing && requiresConfiguration && (
-                  <Hidden
-                    name="configuration"
-                    value={JSON.stringify(configurationValues)}
-                  />
-                )}
-                <VStack>
-                  <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
-                    <div className="col-span-2 grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-2 auto-rows-min">
-                      <Item
-                        autoFocus
-                        name="itemId"
-                        label={t`Part`}
-                        type="Part"
-                        value={itemData.itemId}
-                        includeInactive
-                        locationId={routeData?.quote?.locationId ?? undefined}
-                        onChange={(value) => {
-                          onItemChange(value?.value as string);
-                        }}
-                      />
-
-                      <InputControlled
-                        name="description"
-                        label={t`Short Description`}
-                        value={itemData.description}
-                      />
-
-                      <SelectControlled
-                        name="methodType"
-                        label={t`Method`}
-                        options={
-                          methodType.map((m) => ({
-                            label: (
-                              <span className="flex items-center gap-2">
-                                <MethodIcon type={m} />
-                                {m}
-                              </span>
-                            ),
-                            value: m
-                          })) ?? []
-                        }
-                        value={itemData.methodType}
-                        onChange={(newValue) => {
-                          if (newValue)
-                            setItemData((d) => ({
-                              ...d,
-                              methodType: newValue?.value
-                            }));
-                        }}
-                      />
-
-                      <Select
-                        name="status"
-                        label={t`Line Status`}
-                        options={quoteLineStatusType.map((s) => ({
-                          label: (
-                            <span className="flex items-center gap-2">
-                              <QuoteLineStatusIcon status={s} />
-                              {s}
-                            </span>
-                          ),
-                          value: s
-                        }))}
-                      />
-
-                      <InputControlled
-                        name="customerPartId"
-                        label={t`Customer Part Number`}
-                        value={itemData.customerPartId}
-                        onChange={(newValue) => {
-                          setItemData((d) => ({
-                            ...d,
-                            customerPartId: newValue
-                          }));
-                        }}
-                        onBlur={(e) => onCustomerPartChange(e.target.value)}
-                      />
-                      <InputControlled
-                        name="customerPartRevision"
-                        label={t`Customer Part Revision`}
-                        value={itemData.customerPartRevision}
-                        onChange={(newValue) => {
-                          setItemData((d) => ({
-                            ...d,
-                            customerPartRevision: newValue
-                          }));
-                        }}
-                        onBlur={(e) =>
-                          onCustomerPartRevisionChange(e.target.value)
-                        }
-                      />
-                      <Number
-                        name="taxPercent"
-                        label={t`Tax Percent`}
-                        minValue={0}
-                        maxValue={1}
-                        step={0.0001}
-                        formatOptions={{
-                          style: "percent",
-                          minimumFractionDigits: 0,
-                          maximumFractionDigits: 2
-                        }}
-                      />
-
-                      <CustomFormFields table="quoteLine" />
-                      {initialValues.status === "No Quote" && (
-                        <TextArea
-                          name="noQuoteReason"
-                          label={t`No Quote Reason`}
-                        />
-                      )}
-                    </div>
-                    <div className="flex gap-y-4">
-                      <ArrayNumeric
-                        name="quantity"
-                        label={t`Quantity`}
-                        defaults={[1, 25, 50, 100]}
-                        isDisabled={!isEditable}
-                      />
+              </CardTitle>
+              <CardDescription>
+                {isEditing ? (
+                  <div className="flex flex-col items-start gap-1">
+                    <span>{itemData?.description}</span>
+                    <div className="flex items-center gap-2">
+                      <Badge
+                        variant="outline"
+                        className="flex items-center gap-2"
+                      >
+                        <MethodIcon type={itemData.methodType} />
+                        {initialValues?.quantity.join(", ")}
+                      </Badge>
+                      {initialValues?.taxPercent > 0 ? (
+                        <Badge variant="red">
+                          {percentFormatter.format(initialValues?.taxPercent)}{" "}
+                          <Trans>Tax</Trans>
+                        </Badge>
+                      ) : null}
                     </div>
                   </div>
-                </VStack>
-              </ModalCardBody>
-              <ModalCardFooter>
-                {!isEditing && (
-                  <Button variant="secondary" onClick={onClose}>
-                    <Trans>Cancel</Trans>
-                  </Button>
+                ) : (
+                  <Trans>
+                    A quote line contains pricing and lead times for a
+                    particular part
+                  </Trans>
                 )}
-                {!isEditing && requiresConfiguration && (
-                  <Button
-                    variant={isConfigured ? "secondary" : "primary"}
-                    isLoading={fetcher.state !== "idle"}
-                    type="button"
-                    isDisabled={
-                      !isEditable ||
-                      (isEditing
-                        ? !permissions.can("update", "sales")
-                        : !permissions.can("create", "sales"))
-                    }
-                    onClick={() => {
-                      configurationDisclosure.onOpen();
+              </CardDescription>
+            </CardHeader>
+            {isEditing && permissions.can("update", "sales") && (
+              <CardAction className="pr-12">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <IconButton
+                      icon={<BsThreeDotsVertical />}
+                      aria-label={t`More`}
+                      variant="ghost"
+                    />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    {!isLocked && (
+                      <DropdownMenuItem
+                        destructive
+                        onClick={deleteDisclosure.onOpen}
+                      >
+                        <DropdownMenuIcon icon={<LuTrash />} />
+                        <Trans>Delete Line</Trans>
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuItem asChild>
+                      <Link to={getLinkToItemDetails("Part", itemData.itemId!)}>
+                        <DropdownMenuIcon
+                          icon={<MethodItemTypeIcon type="Part" />}
+                        />
+                        <Trans>View Item Master</Trans>
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </CardAction>
+            )}
+          </HStack>
+          <CardContent>
+            <Hidden name="id" />
+            <Hidden name="quoteId" />
+            <Hidden name="unitOfMeasureCode" value={itemData?.uom} />
+            <Hidden
+              name="modelUploadId"
+              value={itemData?.modelUploadId ?? undefined}
+            />
+            {!isEditing && requiresConfiguration && (
+              <Hidden
+                name="configuration"
+                value={JSON.stringify(configurationValues)}
+              />
+            )}
+            <VStack>
+              <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
+                <div className="col-span-2 grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-2 auto-rows-min">
+                  <Item
+                    autoFocus
+                    name="itemId"
+                    label={t`Part`}
+                    type="Part"
+                    value={itemData.itemId}
+                    includeInactive
+                    locationId={routeData?.quote?.locationId ?? undefined}
+                    onChange={(value) => {
+                      onItemChange(value?.value as string);
                     }}
-                  >
-                    <Trans>Configure</Trans>
-                  </Button>
-                )}
+                  />
 
-                <Submit
-                  isLoading={fetcher.state !== "idle"}
-                  isDisabled={
-                    (requiresConfiguration && !isConfigured) ||
-                    !isEditable ||
-                    (isEditing
-                      ? !permissions.can("update", "sales")
-                      : !permissions.can("create", "sales"))
-                  }
-                >
-                  <Trans>Save</Trans>
-                </Submit>
-              </ModalCardFooter>
-            </ValidatedForm>
-          </ModalCardContent>
-        </ModalCard>
-      </ModalCardProvider>
+                  <InputControlled
+                    name="description"
+                    label={t`Short Description`}
+                    value={itemData.description}
+                  />
+
+                  <SelectControlled
+                    name="methodType"
+                    label={t`Method`}
+                    options={
+                      methodType.map((m) => ({
+                        label: (
+                          <span className="flex items-center gap-2">
+                            <MethodIcon type={m} />
+                            {m}
+                          </span>
+                        ),
+                        value: m
+                      })) ?? []
+                    }
+                    value={itemData.methodType}
+                    onChange={(newValue) => {
+                      if (newValue)
+                        setItemData((d) => ({
+                          ...d,
+                          methodType: newValue?.value
+                        }));
+                    }}
+                  />
+
+                  <Select
+                    name="status"
+                    label={t`Line Status`}
+                    options={quoteLineStatusType.map((s) => ({
+                      label: (
+                        <span className="flex items-center gap-2">
+                          <QuoteLineStatusIcon status={s} />
+                          {s}
+                        </span>
+                      ),
+                      value: s
+                    }))}
+                  />
+
+                  <InputControlled
+                    name="customerPartId"
+                    label={t`Customer Part Number`}
+                    value={itemData.customerPartId}
+                    onChange={(newValue) => {
+                      setItemData((d) => ({
+                        ...d,
+                        customerPartId: newValue
+                      }));
+                    }}
+                    onBlur={(e) => onCustomerPartChange(e.target.value)}
+                  />
+                  <InputControlled
+                    name="customerPartRevision"
+                    label={t`Customer Part Revision`}
+                    value={itemData.customerPartRevision}
+                    onChange={(newValue) => {
+                      setItemData((d) => ({
+                        ...d,
+                        customerPartRevision: newValue
+                      }));
+                    }}
+                    onBlur={(e) => onCustomerPartRevisionChange(e.target.value)}
+                  />
+                  <Number
+                    name="taxPercent"
+                    label={t`Tax Percent`}
+                    minValue={0}
+                    maxValue={1}
+                    step={0.0001}
+                    formatOptions={{
+                      style: "percent",
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 2
+                    }}
+                  />
+
+                  <CustomFormFields table="quoteLine" />
+                  {initialValues.status === "No Quote" && (
+                    <TextArea name="noQuoteReason" label={t`No Quote Reason`} />
+                  )}
+                </div>
+                <div className="flex gap-y-4">
+                  <ArrayNumeric
+                    name="quantity"
+                    label={t`Quantity`}
+                    defaults={[1, 25, 50, 100]}
+                    isDisabled={!isEditable}
+                  />
+                </div>
+              </div>
+            </VStack>
+          </CardContent>
+          <CardFooter>
+            {!isEditing && (
+              <Button variant="secondary" onClick={onClose}>
+                <Trans>Cancel</Trans>
+              </Button>
+            )}
+            {!isEditing && requiresConfiguration && (
+              <Button
+                variant={isConfigured ? "secondary" : "primary"}
+                isLoading={fetcher.state !== "idle"}
+                type="button"
+                isDisabled={
+                  !isEditable ||
+                  (isEditing
+                    ? !permissions.can("update", "sales")
+                    : !permissions.can("create", "sales"))
+                }
+                onClick={() => {
+                  configurationDisclosure.onOpen();
+                }}
+              >
+                <Trans>Configure</Trans>
+              </Button>
+            )}
+
+            <Submit
+              isLoading={fetcher.state !== "idle"}
+              isDisabled={
+                (requiresConfiguration && !isConfigured) ||
+                !isEditable ||
+                (isEditing
+                  ? !permissions.can("update", "sales")
+                  : !permissions.can("create", "sales"))
+              }
+            >
+              <Trans>Save</Trans>
+            </Submit>
+          </CardFooter>
+        </ValidatedForm>
+      </Card>
       {isEditing && deleteDisclosure.isOpen && (
         <DeleteQuoteLine
           line={initialValues as QuotationLine}
@@ -552,3 +532,21 @@ const QuoteLineForm = ({
 };
 
 export default QuoteLineForm;
+
+export function QuoteLineFormModal({
+  initialValues,
+  onClose
+}: {
+  initialValues: z.infer<typeof quoteLineValidator>;
+  onClose: () => void;
+}) {
+  return (
+    <CardFormModal onClose={onClose} contentClassName="!max-w-6xl">
+      <QuoteLineForm
+        initialValues={initialValues}
+        onClose={onClose}
+        onSubmitted={onClose}
+      />
+    </CardFormModal>
+  );
+}

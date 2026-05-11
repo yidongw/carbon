@@ -4,9 +4,9 @@ import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs } from "react-router";
-import { data, redirect } from "react-router";
+import { data, useLocation, useNavigate } from "react-router";
+import { RegisteredEntityFormModal } from "~/components/NewEntityModal";
 import { materialValidator, upsertMaterial } from "~/modules/items";
-import { MaterialForm } from "~/modules/items/ui/Materials";
 import { setCustomFields } from "~/utils/form";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
@@ -24,8 +24,6 @@ export async function action({ request }: ActionFunctionArgs) {
   });
 
   const formData = await request.formData();
-  const modal = formData.get("type") === "modal";
-
   const validation = await validator(materialValidator).validate(formData);
 
   if (validation.error) {
@@ -39,50 +37,37 @@ export async function action({ request }: ActionFunctionArgs) {
     createdBy: userId
   });
   if (createMaterial.error) {
-    return modal
-      ? data(
-          createMaterial,
-          await flash(
-            request,
-            error(createMaterial.error, "Failed to insert material")
-          )
-        )
-      : redirect(
-          path.to.materials,
-          await flash(
-            request,
-            error(createMaterial.error, "Failed to insert material")
-          )
-        );
+    return data(
+      createMaterial,
+      await flash(
+        request,
+        error(createMaterial.error, "Failed to insert material")
+      )
+    );
   }
 
   const itemId = createMaterial.data?.id;
   if (!itemId) throw new Error("Material ID not found");
 
-  return modal
-    ? data(createMaterial, { status: 201 })
-    : redirect(path.to.material(itemId));
+  return data(createMaterial, { status: 201 });
 }
 
 export default function MaterialsNewRoute() {
-  const initialValues = {
-    id: "",
-    name: "",
-    description: "",
-    materialFormId: "",
-    materialSubstanceId: "",
-    replenishmentSystem: "Buy" as const,
-    defaultMethodType: "Pull from Inventory" as const,
-    itemTrackingType: "Inventory" as "Inventory",
-    unitOfMeasureCode: "EA",
-    unitCost: 0,
-    active: true,
-    shelfLifeCalculateFromBom: false
-  };
-
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = (location.state as { from?: string } | null)?.from;
+  const searchParams = new URLSearchParams(location.search);
   return (
-    <div className="max-w-4xl w-full p-2 sm:p-0 mx-auto mt-0 md:mt-8">
-      <MaterialForm initialValues={initialValues} />
-    </div>
+    <RegisteredEntityFormModal
+      to={path.to.newMaterial}
+      searchParams={searchParams}
+      onClose={() => {
+        if (from) {
+          navigate(from);
+        } else {
+          navigate(-1);
+        }
+      }}
+    />
   );
 }

@@ -2,9 +2,11 @@ import type { CreatableMultiSelectProps } from "@carbon/form";
 import { CreatableMultiSelect } from "@carbon/form";
 import { useDisclosure } from "@carbon/react";
 import { useMemo, useRef, useState } from "react";
+import { EntityFormModal } from "~/components/NewEntityModal";
 import { useUser } from "~/hooks";
-import CustomerForm from "~/modules/sales/ui/Customer/CustomerForm";
+import { CustomerForm } from "~/modules/sales/ui/Customer";
 import { useCustomers } from "~/stores";
+import { path } from "~/utils/path";
 
 type CustomerSelectProps = Omit<CreatableMultiSelectProps, "options">;
 
@@ -39,19 +41,24 @@ const Customers = (props: CustomerSelectProps) => {
         }}
       />
       {newCustomerModal.isOpen && (
-        <CustomerForm
-          type="modal"
+        <EntityFormModal
+          entity="customer"
+          getCreatedName={(created) => created?.name}
           onClose={() => {
             setCreated("");
             newCustomerModal.onClose();
             triggerRef.current?.click();
           }}
-          initialValues={{
-            name: created,
-            currencyCode: company.baseCurrencyCode,
-            taxPercent: 0
-          }}
-        />
+        >
+          <CustomerForm
+            action={`${path.to.newCustomer}`}
+            initialValues={{
+              name: created,
+              currencyCode: company.baseCurrencyCode,
+              taxPercent: 0
+            }}
+          />
+        </EntityFormModal>
       )}
     </>
   );

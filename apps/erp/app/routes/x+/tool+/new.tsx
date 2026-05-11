@@ -4,9 +4,9 @@ import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs } from "react-router";
-import { data, redirect } from "react-router";
+import { data, useLocation, useNavigate } from "react-router";
+import { RegisteredEntityFormModal } from "~/components/NewEntityModal";
 import { toolValidator, upsertTool } from "~/modules/items";
-import { ToolForm } from "~/modules/items/ui/Tools";
 import { setCustomFields } from "~/utils/form";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
@@ -24,8 +24,6 @@ export async function action({ request }: ActionFunctionArgs) {
   });
 
   const formData = await request.formData();
-  const modal = formData.get("type") === "modal";
-
   const validation = await validator(toolValidator).validate(formData);
 
   if (validation.error) {
@@ -39,44 +37,34 @@ export async function action({ request }: ActionFunctionArgs) {
     createdBy: userId
   });
   if (createTool.error) {
-    return modal
-      ? data(
-          createTool,
-          await flash(request, error(createTool.error, "Failed to insert tool"))
-        )
-      : redirect(
-          path.to.tools,
-          await flash(request, error(createTool.error, "Failed to insert tool"))
-        );
+    return data(
+      createTool,
+      await flash(request, error(createTool.error, "Failed to insert tool"))
+    );
   }
 
   const itemId = createTool.data?.id;
   if (!itemId) throw new Error("Tool ID not found");
 
-  return modal
-    ? data(createTool, { status: 201 })
-    : redirect(path.to.tool(itemId));
+  return data(createTool, { status: 201 });
 }
 
 export default function ToolsNewRoute() {
-  const initialValues = {
-    id: "",
-    revision: "0",
-    name: "",
-    description: "",
-    replenishmentSystem: "Buy" as const,
-    defaultMethodType: "Purchase to Order" as const,
-    itemTrackingType: "Inventory" as "Inventory",
-    unitOfMeasureCode: "EA",
-    unitCost: 0,
-    active: true,
-    shelfLifeCalculateFromBom: false,
-    tags: []
-  };
-
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = (location.state as { from?: string } | null)?.from;
+  const searchParams = new URLSearchParams(location.search);
   return (
-    <div className="max-w-4xl w-full p-2 sm:p-0 mx-auto mt-0 md:mt-8">
-      <ToolForm initialValues={initialValues} />
-    </div>
+    <RegisteredEntityFormModal
+      to={path.to.newTool}
+      searchParams={searchParams}
+      onClose={() => {
+        if (from) {
+          navigate(from);
+        } else {
+          navigate(-1);
+        }
+      }}
+    />
   );
 }

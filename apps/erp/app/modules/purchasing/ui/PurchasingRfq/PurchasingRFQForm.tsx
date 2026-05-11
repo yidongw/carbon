@@ -9,7 +9,9 @@ import {
   cn,
   VStack
 } from "@carbon/react";
+import { getLocalTimeZone, today } from "@internationalized/date";
 import { Trans, useLingui } from "@lingui/react/macro";
+import type { FetcherWithComponents } from "react-router";
 import { useParams } from "react-router";
 import type { z } from "zod";
 import {
@@ -22,7 +24,7 @@ import {
   Submit,
   Suppliers
 } from "~/components/Form";
-import { usePermissions, useRouteData } from "~/hooks";
+import { usePermissions, useRouteData, useUser } from "~/hooks";
 import { path } from "~/utils/path";
 import { isRfqLocked, purchasingRfqValidator } from "../../purchasing.models";
 import type { PurchasingRFQ } from "../../types";
@@ -30,12 +32,30 @@ import type { PurchasingRFQ } from "../../types";
 type PurchasingRFQFormValues = z.infer<typeof purchasingRfqValidator>;
 
 type PurchasingRFQFormProps = {
-  initialValues: PurchasingRFQFormValues;
+  initialValues?: Partial<PurchasingRFQFormValues>;
+  action?: string;
+  fetcher?: FetcherWithComponents<unknown>;
 };
 
-const PurchasingRFQForm = ({ initialValues }: PurchasingRFQFormProps) => {
+const PurchasingRFQForm = ({
+  initialValues: initialValuesProp,
+  action,
+  fetcher
+}: PurchasingRFQFormProps) => {
   const { t } = useLingui();
   const permissions = usePermissions();
+  const { id: userId, defaults } = useUser();
+  const initialValues = {
+    expirationDate: "",
+    id: undefined,
+    locationId: defaults?.locationId ?? "",
+    rfqDate: today(getLocalTimeZone()).toString(),
+    rfqId: undefined,
+    status: "Draft" as const,
+    employeeId: userId,
+    supplierIds: [],
+    ...initialValuesProp
+  };
   const { rfqId } = useParams();
   const routeData = useRouteData<{
     rfqSummary: PurchasingRFQ;
@@ -47,9 +67,11 @@ const PurchasingRFQForm = ({ initialValues }: PurchasingRFQFormProps) => {
     <Card>
       <ValidatedForm
         method="post"
+        action={action ?? (isEditing ? undefined : path.to.newPurchasingRFQ)}
         validator={purchasingRfqValidator}
         defaultValues={initialValues}
         isDisabled={isEditing && isLocked}
+        fetcher={fetcher}
       >
         <CardHeader>
           <CardTitle>

@@ -12,13 +12,15 @@ import {
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useMemo, useRef, useState } from "react";
-import ConsumableForm from "~/modules/items/ui/Consumables/ConsumableForm";
-import MaterialForm from "~/modules/items/ui/Materials/MaterialForm";
-import PartForm from "~/modules/items/ui/Parts/PartForm";
-import ToolForm from "~/modules/items/ui/Tools/ToolForm";
+import { EntityFormModal } from "~/components/NewEntityModal";
+import { ConsumableForm } from "~/modules/items/ui/Consumables";
+import { MaterialForm } from "~/modules/items/ui/Materials";
+import { PartForm } from "~/modules/items/ui/Parts";
+import { ToolForm } from "~/modules/items/ui/Tools";
 import type { MethodItemType } from "~/modules/shared";
 import { methodItemType } from "~/modules/shared";
 import { useItems } from "~/stores";
+import { path } from "~/utils/path";
 import { MethodItemTypeIcon } from "../Icons";
 
 type ItemsSelectProps = Omit<CreatableMultiSelectProps, "options">;
@@ -128,81 +130,85 @@ const Items = (props: ItemsSelectProps) => {
       )}
 
       {type === "Part" && newItemsModal.isOpen && (
-        <PartForm
-          type="modal"
-          onClose={handleCreateClose}
-          initialValues={{
-            id: "",
-            revision: "0",
-            name: created,
-            description: "",
-            itemTrackingType: "Inventory",
-            replenishmentSystem: "Make",
-            unitOfMeasureCode: "EA",
-            defaultMethodType: "Make to Order",
-            unitCost: 0,
-            lotSize: 0,
-            shelfLifeCalculateFromBom: false,
-            tags: []
-          }}
-        />
+        <EntityFormModal entity="part" onClose={handleCreateClose}>
+          <PartForm
+            action={`${path.to.newPart}`}
+            initialValues={{
+              id: "",
+              revision: "0",
+              name: created,
+              description: "",
+              itemTrackingType: "Inventory",
+              replenishmentSystem: "Make",
+              unitOfMeasureCode: "EA",
+              defaultMethodType: "Make to Order",
+              unitCost: 0,
+              lotSize: 0,
+              shelfLifeCalculateFromBom: false,
+              tags: []
+            }}
+          />
+        </EntityFormModal>
       )}
       {type === "Material" && newItemsModal.isOpen && (
-        <MaterialForm
-          type="modal"
-          onClose={handleCreateClose}
-          initialValues={{
-            id: "",
-            name: created,
-            description: "",
-            materialFormId: "",
-            materialSubstanceId: "",
-            itemTrackingType: "Inventory",
-            unitOfMeasureCode: "EA",
-            replenishmentSystem: "Buy",
-            defaultMethodType: "Pull from Inventory",
-            unitCost: 0,
-            shelfLifeCalculateFromBom: false,
-            tags: []
-          }}
-        />
+        <EntityFormModal entity="material" onClose={handleCreateClose}>
+          <MaterialForm
+            action={`${path.to.newMaterial}`}
+            initialValues={{
+              id: "",
+              name: created,
+              description: "",
+              materialFormId: "",
+              materialSubstanceId: "",
+              itemTrackingType: "Inventory",
+              unitOfMeasureCode: "EA",
+              replenishmentSystem: "Buy",
+              defaultMethodType: "Pull from Inventory",
+              unitCost: 0,
+              shelfLifeCalculateFromBom: false,
+              tags: []
+            }}
+          />
+        </EntityFormModal>
       )}
       {type === "Tool" && newItemsModal.isOpen && (
-        <ToolForm
-          type="modal"
-          onClose={handleCreateClose}
-          initialValues={{
-            id: "",
-            revision: "0",
-            name: created,
-            description: "",
-            itemTrackingType: "Inventory",
-            unitOfMeasureCode: "EA",
-            replenishmentSystem: "Buy",
-            defaultMethodType: "Pull from Inventory",
-            unitCost: 0,
-            shelfLifeCalculateFromBom: false,
-            tags: []
-          }}
-        />
+        <EntityFormModal entity="tool" onClose={handleCreateClose}>
+          <ToolForm
+            action={`${path.to.newTool}`}
+            initialValues={{
+              id: "",
+              revision: "0",
+              name: created,
+              description: "",
+              itemTrackingType: "Inventory",
+              unitOfMeasureCode: "EA",
+              replenishmentSystem: "Buy",
+              defaultMethodType: "Pull from Inventory",
+              unitCost: 0,
+              shelfLifeCalculateFromBom: false,
+              tags: []
+            }}
+          />
+        </EntityFormModal>
       )}
       {type === "Consumable" && newItemsModal.isOpen && (
-        <ConsumableForm
-          type="modal"
-          onClose={handleCreateClose}
-          initialValues={{
-            id: "",
-            name: created,
-            description: "",
-            itemTrackingType: "Non-Inventory",
-            unitOfMeasureCode: "EA",
-            replenishmentSystem: "Buy",
-            defaultMethodType: "Pull from Inventory",
-            unitCost: 0,
-            shelfLifeCalculateFromBom: false,
-            tags: []
-          }}
-        />
+        <EntityFormModal entity="consumable" onClose={handleCreateClose}>
+          <ConsumableForm
+            action={`${path.to.newConsumable}`}
+            initialValues={{
+              id: "",
+              name: created,
+              description: "",
+              itemTrackingType: "Non-Inventory",
+              unitOfMeasureCode: "EA",
+              replenishmentSystem: "Buy",
+              defaultMethodType: "Pull from Inventory",
+              unitCost: 0,
+              shelfLifeCalculateFromBom: false,
+              tags: []
+            }}
+          />
+        </EntityFormModal>
       )}
     </>
   );

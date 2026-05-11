@@ -1,20 +1,17 @@
 import { ValidatedForm } from "@carbon/form";
 import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
   cn,
-  HStack,
-  ModalCard,
-  ModalCardBody,
-  ModalCardContent,
-  ModalCardDescription,
-  ModalCardFooter,
-  ModalCardHeader,
-  ModalCardProvider,
-  ModalCardTitle,
-  toast
+  HStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { PostgrestResponse } from "@supabase/supabase-js";
-import { useEffect } from "react";
+import type { FetcherWithComponents } from "react-router";
 import { useFetcher } from "react-router";
 import type { z } from "zod";
 import {
@@ -29,41 +26,38 @@ import {
   Number,
   Submit
 } from "~/components/Form";
-import { usePermissions } from "~/hooks";
+import { usePermissions, useUser } from "~/hooks";
 import { path } from "~/utils/path";
 import { customerValidator } from "../../sales.models";
 import type { Customer } from "../../types";
 
+type CustomerFormValues = z.infer<typeof customerValidator>;
+
 type CustomerFormProps = {
-  initialValues: z.infer<typeof customerValidator>;
-  type?: "card" | "modal";
-  onClose?: () => void;
+  initialValues?: Partial<CustomerFormValues>;
+  action?: string;
+  fetcher?: FetcherWithComponents<PostgrestResponse<Customer>>;
 };
 
 const CustomerForm = ({
-  initialValues,
-  type = "card",
-  onClose
+  initialValues: initialValuesProp,
+  action,
+  fetcher
 }: CustomerFormProps) => {
   const { t } = useLingui();
   const permissions = usePermissions();
-  const fetcher = useFetcher<PostgrestResponse<Customer>>();
-
-  useEffect(() => {
-    if (type !== "modal") return;
-
-    if (fetcher.state === "loading" && fetcher.data?.data) {
-      onClose?.();
-      const createdCustomer = Array.isArray(fetcher.data.data)
-        ? fetcher.data.data[0]
-        : fetcher.data.data;
-      toast.success(
-        t`Created customer: ${createdCustomer?.name ?? t`Customer`}`
-      );
-    } else if (fetcher.state === "idle" && fetcher.data?.error) {
-      toast.error(t`Failed to create customer: ${fetcher.data.error.message}`);
-    }
-  }, [fetcher.data, fetcher.state, onClose, t, type]);
+  const { company } = useUser();
+  const internalFetcher = useFetcher<PostgrestResponse<Customer>>();
+  const submitFetcher = fetcher ?? internalFetcher;
+  const initialValues = {
+    name: "",
+    currencyCode: company?.baseCurrencyCode ?? undefined,
+    phone: "",
+    fax: "",
+    website: "",
+    taxPercent: 0,
+    ...initialValuesProp
+  };
 
   const isEditing = initialValues.id !== undefined;
   const isDisabled = isEditing
@@ -71,105 +65,91 @@ const CustomerForm = ({
     : !permissions.can("create", "sales");
 
   return (
-    <div>
-      <ModalCardProvider type={type}>
-        <ModalCard onClose={onClose}>
-          <ModalCardContent size="medium">
-            <ValidatedForm
-              method="post"
-              action={isEditing ? undefined : path.to.newCustomer}
-              validator={customerValidator}
-              defaultValues={initialValues}
-              fetcher={fetcher}
-            >
-              <ModalCardHeader>
-                <ModalCardTitle>
-                  {isEditing ? (
-                    <Trans>Customer Overview</Trans>
-                  ) : (
-                    <Trans>New Customer</Trans>
-                  )}
-                </ModalCardTitle>
-                {!isEditing && (
-                  <ModalCardDescription>
-                    <Trans>
-                      A customer is a business or person who buys your parts or
-                      services.
-                    </Trans>
-                  </ModalCardDescription>
-                )}
-              </ModalCardHeader>
-              <ModalCardBody>
-                <Hidden name="id" />
-                <Hidden name="type" value={type} />
-                <div
-                  className={cn(
-                    "grid w-full gap-x-8 gap-y-4",
-                    type === "modal"
-                      ? "grid-cols-1"
-                      : isEditing
-                        ? "grid-cols-1 lg:grid-cols-3"
-                        : "grid-cols-1 md:grid-cols-2"
-                  )}
-                >
-                  <Input name="name" label={t`Name`} autoFocus={!isEditing} />
+    <Card>
+      <ValidatedForm
+        method="post"
+        action={action ?? (isEditing ? undefined : path.to.newCustomer)}
+        validator={customerValidator}
+        defaultValues={initialValues}
+        fetcher={submitFetcher}
+      >
+        <CardHeader className="pr-14 sm:pr-16">
+          <CardTitle>
+            {isEditing ? (
+              <Trans>Customer Overview</Trans>
+            ) : (
+              <Trans>New Customer</Trans>
+            )}
+          </CardTitle>
+          {!isEditing && (
+            <CardDescription>
+              <Trans>
+                A customer is a business or person who buys your parts or
+                services.
+              </Trans>
+            </CardDescription>
+          )}
+        </CardHeader>
+        <CardContent>
+          <Hidden name="id" />
+          <div
+            className={cn(
+              "grid w-full gap-x-8 gap-y-4",
+              isEditing
+                ? "grid-cols-1 lg:grid-cols-3"
+                : "grid-cols-1 md:grid-cols-2"
+            )}
+          >
+            <Input name="name" label={t`Name`} autoFocus={!isEditing} />
 
-                  <CustomerStatus
-                    name="customerStatusId"
-                    label={t`Customer Status`}
-                    placeholder={t`Select Customer Status`}
-                  />
-                  <CustomerType
-                    name="customerTypeId"
-                    label={t`Customer Type`}
-                    placeholder={t`Select Customer Type`}
-                  />
-                  <Employee
-                    name="accountManagerId"
-                    label={t`Account Manager`}
-                  />
-                  {isEditing && (
-                    <>
-                      <CustomerContact
-                        customer={initialValues.id}
-                        name="salesContactId"
-                        label={t`Sales Contact`}
-                      />
-                    </>
-                  )}
-                  <Currency name="currencyCode" label={t`Currency`} />
+            <CustomerStatus
+              name="customerStatusId"
+              label={t`Customer Status`}
+              placeholder={t`Select Customer Status`}
+            />
+            <CustomerType
+              name="customerTypeId"
+              label={t`Customer Type`}
+              placeholder={t`Select Customer Type`}
+            />
+            <Employee name="accountManagerId" label={t`Account Manager`} />
+            {isEditing && (
+              <CustomerContact
+                customer={initialValues.id}
+                name="salesContactId"
+                label={t`Sales Contact`}
+              />
+            )}
+            <Currency name="currencyCode" label={t`Currency`} />
 
-                  <Number
-                    name="taxPercent"
-                    label={t`Tax Percent`}
-                    minValue={0}
-                    maxValue={1}
-                    step={0.0001}
-                    formatOptions={{
-                      style: "percent",
-                      minimumFractionDigits: 0,
-                      maximumFractionDigits: 2
-                    }}
-                  />
+            <Number
+              name="taxPercent"
+              label={t`Tax Percent`}
+              minValue={0}
+              maxValue={1}
+              step={0.0001}
+              formatOptions={{
+                style: "percent",
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2
+              }}
+            />
 
-                  <Input name="website" label={t`Website`} />
+            <Input name="website" label={t`Website`} />
 
-                  {/* <EmailRecipients name="defaultCc" label="Default CC" /> */}
-                  <CustomFormFields table="customer" />
-                </div>
-              </ModalCardBody>
-              <ModalCardFooter>
-                <HStack>
-                  <Submit isDisabled={isDisabled}>
-                    <Trans>Save</Trans>
-                  </Submit>
-                </HStack>
-              </ModalCardFooter>
-            </ValidatedForm>
-          </ModalCardContent>
-        </ModalCard>
-      </ModalCardProvider>
-    </div>
+            {/* <EmailRecipients name="defaultCc" label="Default CC" /> */}
+            <CustomFormFields table="customer" />
+          </div>
+        </CardContent>
+        <CardFooter>
+          <HStack>
+            <Submit isDisabled={isDisabled}>
+              <Trans>Save</Trans>
+            </Submit>
+          </HStack>
+        </CardFooter>
+      </ValidatedForm>
+    </Card>
   );
 };
 

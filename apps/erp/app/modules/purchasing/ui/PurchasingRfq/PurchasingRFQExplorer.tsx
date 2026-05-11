@@ -28,7 +28,7 @@ import { path } from "~/utils/path";
 import { isRfqLocked } from "../../purchasing.models";
 import type { PurchasingRFQ, PurchasingRFQLine } from "../../types";
 import DeletePurchasingRFQLine from "./DeletePurchasingRFQLine";
-import PurchasingRFQLineForm from "./PurchasingRFQLineForm";
+import { PurchasingRFQLineFormModal } from "./PurchasingRFQLineForm";
 
 export default function PurchasingRFQExplorer() {
   const prettifyShortcut = usePrettifyShortcut();
@@ -137,9 +137,8 @@ export default function PurchasingRFQExplorer() {
         </div>
       </VStack>
       {newPurchasingRFQLineDisclosure.isOpen && (
-        <PurchasingRFQLineForm
+        <PurchasingRFQLineFormModal
           initialValues={purchasingRfqLineInitialValues}
-          type="modal"
           onClose={newPurchasingRFQLineDisclosure.onClose}
         />
       )}

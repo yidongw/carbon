@@ -4,10 +4,9 @@ import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs } from "react-router";
-import { data, redirect } from "react-router";
-import { useSupplierApprovalRequired, useUser } from "~/hooks";
+import { data, useLocation, useNavigate } from "react-router";
+import { RegisteredEntityFormModal } from "~/components/NewEntityModal";
 import { supplierValidator, upsertSupplier } from "~/modules/purchasing";
-import SupplierForm from "~/modules/purchasing/ui/Supplier/SupplierForm";
 import { setCustomFields } from "~/utils/form";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
@@ -25,8 +24,6 @@ export async function action({ request }: ActionFunctionArgs) {
   });
 
   const formData = await request.formData();
-  const modal = formData.get("type") === "modal";
-
   const validation = await validator(supplierValidator).validate(formData);
 
   if (validation.error) {
@@ -43,45 +40,34 @@ export async function action({ request }: ActionFunctionArgs) {
     customFields: setCustomFields(formData)
   });
   if (createSupplier.error) {
-    return modal
-      ? data(
-          createSupplier,
-          await flash(
-            request,
-            error(createSupplier.error, createSupplier.error.message)
-          )
-        )
-      : redirect(
-          path.to.suppliers,
-          await flash(
-            request,
-            error(createSupplier.error, createSupplier.error.message)
-          )
-        );
+    return data(
+      createSupplier,
+      await flash(
+        request,
+        error(createSupplier.error, createSupplier.error.message)
+      )
+    );
   }
 
-  const supplierId = createSupplier.data?.id;
-
-  return modal ? createSupplier : redirect(path.to.supplier(supplierId));
+  return data(createSupplier, { status: 201 });
 }
 
 export default function SuppliersNewRoute() {
-  const { company } = useUser();
-  const supplierApprovalRequired = useSupplierApprovalRequired();
-
-  const initialValues = {
-    name: "",
-    supplierStatus: (supplierApprovalRequired ? "Pending" : undefined) as
-      | "Pending"
-      | undefined,
-    currencyCode: company?.baseCurrencyCode ?? undefined,
-    phone: "",
-    fax: "",
-    website: ""
-  };
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = (location.state as { from?: string } | null)?.from;
+  const searchParams = new URLSearchParams(location.search);
   return (
-    <div className="max-w-4xl w-full p-2 sm:p-0 mx-auto mt-0 md:mt-8">
-      <SupplierForm initialValues={initialValues} />
-    </div>
+    <RegisteredEntityFormModal
+      to={path.to.newSupplier}
+      searchParams={searchParams}
+      onClose={() => {
+        if (from) {
+          navigate(from);
+        } else {
+          navigate(-1);
+        }
+      }}
+    />
   );
 }

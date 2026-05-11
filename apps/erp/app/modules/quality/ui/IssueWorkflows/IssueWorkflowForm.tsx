@@ -18,6 +18,7 @@ import { Reorder, useDragControls } from "framer-motion";
 import { nanoid } from "nanoid";
 import { useEffect, useState } from "react";
 import { LuGripVertical, LuX } from "react-icons/lu";
+import type { FetcherWithComponents } from "react-router";
 import type { z } from "zod";
 import { Hidden, Input, Submit } from "~/components/Form";
 import { usePermissions, useUser } from "~/hooks";
@@ -32,9 +33,11 @@ import {
 import { getPriorityIcon } from "../Issue/IssueIcons";
 
 type IssueWorkflowFormProps = {
-  initialValues: z.infer<typeof issueWorkflowValidator>;
+  initialValues?: Partial<z.infer<typeof issueWorkflowValidator>>;
   requiredActions: ListItem[];
   onClose: () => void;
+  action?: string;
+  fetcher?: FetcherWithComponents<unknown>;
 };
 
 function ReorderableActionItem({
@@ -74,15 +77,26 @@ function ReorderableActionItem({
 }
 
 const IssueWorkflowForm = ({
-  initialValues,
+  initialValues: initialValuesProp,
   requiredActions,
-  onClose
+  onClose,
+  action,
+  fetcher
 }: IssueWorkflowFormProps) => {
   const { t } = useLingui();
   const permissions = usePermissions();
+  const initialValues = {
+    name: "",
+    content: "{}",
+    priority: "Medium" as const,
+    source: "Internal" as const,
+    requiredActionIds: [],
+    approvalRequirements: [],
+    ...initialValuesProp
+  };
 
   const [content, setContent] = useState<JSONContent>(
-    (JSON.parse(initialValues?.content ?? {}) as JSONContent) ?? {}
+    (JSON.parse(initialValues.content ?? "{}") as JSONContent) ?? {}
   );
 
   // State for managing selected required actions in order
@@ -154,10 +168,12 @@ const IssueWorkflowForm = ({
       defaultValues={initialValues}
       method="post"
       action={
-        isEditing
+        action ??
+        (isEditing
           ? path.to.issueWorkflow(initialValues.id!)
-          : path.to.newIssueWorkflow
+          : path.to.newIssueWorkflow)
       }
+      fetcher={fetcher}
     >
       <Hidden name="id" value={initialValues.id} />
       <Hidden name="content" value={JSON.stringify(content)} />

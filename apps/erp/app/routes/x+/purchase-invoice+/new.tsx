@@ -3,15 +3,14 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
-import { getLocalTimeZone, today } from "@internationalized/date";
 import { msg } from "@lingui/core/macro";
 import type { FunctionsResponse } from "@supabase/functions-js";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { redirect } from "react-router";
-import { useUrlParams, useUser } from "~/hooks";
+import { data, redirect, useLocation, useNavigate } from "react-router";
+import { RegisteredEntityFormModal } from "~/components/NewEntityModal";
+import { useUrlParams } from "~/hooks";
 import {
   createPurchaseInvoiceFromPurchaseOrder,
-  PurchaseInvoiceForm,
   purchaseInvoiceValidator,
   upsertPurchaseInvoice
 } from "~/modules/invoicing";
@@ -92,8 +91,12 @@ export async function action({ request }: ActionFunctionArgs) {
       companyId
     );
     if (nextSequence.error) {
-      throw redirect(
-        path.to.newPurchaseInvoice,
+      return data(
+        {
+          error: {
+            message: "Failed to get next sequence"
+          }
+        },
         await flash(
           request,
           error(nextSequence.error, "Failed to get next sequence")
@@ -114,8 +117,13 @@ export async function action({ request }: ActionFunctionArgs) {
   });
 
   if (createPurchaseInvoice.error || !createPurchaseInvoice.data?.[0]) {
-    throw redirect(
-      path.to.purchaseInvoices,
+    return data(
+      {
+        data: createPurchaseInvoice.data,
+        error: {
+          message: "Failed to insert purchase invoice"
+        }
+      },
       await flash(
         request,
         error(createPurchaseInvoice.error, "Failed to insert purchase invoice")
@@ -123,27 +131,26 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
-  const invoice = createPurchaseInvoice.data?.[0];
-
-  throw redirect(path.to.purchaseInvoice(invoice?.id!));
+  return data(createPurchaseInvoice, { status: 201 });
 }
 
 export default function PurchaseInvoiceNewRoute() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = (location.state as { from?: string } | null)?.from;
   const [params] = useUrlParams();
-  const supplierId = params.get("supplierId");
-  const { defaults } = useUser();
-
-  const initialValues = {
-    id: undefined,
-    invoiceId: undefined,
-    supplierId: supplierId ?? "",
-    locationId: defaults?.locationId ?? "",
-    dateIssued: today(getLocalTimeZone()).toString()
-  };
 
   return (
-    <div className="max-w-4xl w-full p-2 sm:p-0 mx-auto mt-0 md:mt-8">
-      <PurchaseInvoiceForm initialValues={initialValues} />
-    </div>
+    <RegisteredEntityFormModal
+      to={path.to.newPurchaseInvoice}
+      searchParams={params}
+      onClose={() => {
+        if (from) {
+          navigate(from);
+        } else {
+          navigate(-1);
+        }
+      }}
+    />
   );
 }

@@ -4,9 +4,9 @@ import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs } from "react-router";
-import { data, redirect } from "react-router";
+import { data, useLocation, useNavigate } from "react-router";
+import { RegisteredEntityFormModal } from "~/components/NewEntityModal";
 import { consumableValidator, upsertConsumable } from "~/modules/items";
-import { ConsumableForm } from "~/modules/items/ui/Consumables";
 import { setCustomFields } from "~/utils/form";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
@@ -24,8 +24,6 @@ export async function action({ request }: ActionFunctionArgs) {
   });
 
   const formData = await request.formData();
-  const modal = formData.get("type") === "modal";
-
   const validation = await validator(consumableValidator).validate(formData);
 
   if (validation.error) {
@@ -39,49 +37,37 @@ export async function action({ request }: ActionFunctionArgs) {
     createdBy: userId
   });
   if (createConsumable.error) {
-    return modal
-      ? data(
-          createConsumable,
-          await flash(
-            request,
-            error(createConsumable.error, "Failed to insert consumable")
-          )
-        )
-      : redirect(
-          path.to.consumables,
-          await flash(
-            request,
-            error(createConsumable.error, "Failed to insert consumable")
-          )
-        );
+    return data(
+      createConsumable,
+      await flash(
+        request,
+        error(createConsumable.error, "Failed to insert consumable")
+      )
+    );
   }
 
   const itemId = createConsumable.data?.id;
   if (!itemId) throw new Error("Consumable ID not found");
 
-  return modal
-    ? data(createConsumable, { status: 201 })
-    : redirect(path.to.consumable(itemId));
+  return data(createConsumable, { status: 201 });
 }
 
 export default function ConsumablesNewRoute() {
-  const initialValues = {
-    id: "",
-    name: "",
-    description: "",
-    itemTrackingType: "Non-Inventory" as "Non-Inventory",
-    replenishmentSystem: "Buy" as const,
-    defaultMethodType: "Purchase to Order" as const,
-    unitOfMeasureCode: "EA",
-    unitCost: 0,
-    active: true,
-    shelfLifeCalculateFromBom: false,
-    tags: []
-  };
-
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = (location.state as { from?: string } | null)?.from;
+  const searchParams = new URLSearchParams(location.search);
   return (
-    <div className="max-w-4xl w-full p-2 sm:p-0 mx-auto mt-0 md:mt-8">
-      <ConsumableForm initialValues={initialValues} />
-    </div>
+    <RegisteredEntityFormModal
+      to={path.to.newConsumable}
+      searchParams={searchParams}
+      onClose={() => {
+        if (from) {
+          navigate(from);
+        } else {
+          navigate(-1);
+        }
+      }}
+    />
   );
 }

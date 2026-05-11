@@ -193,19 +193,6 @@ import {
   ModalTrigger
 } from "./Modal";
 import {
-  ModalCard,
-  ModalCardBody,
-  ModalCardContent,
-  ModalCardDescription,
-  ModalCardFooter,
-  ModalCardHeader,
-  ModalCardProvider,
-  ModalCardTitle,
-  ModalCardTypeContext,
-  ModalCardTypeProvider,
-  useModalCardType
-} from "./ModalCard";
-import {
   ModalDrawer,
   ModalDrawerBody,
   ModalDrawerContent,
@@ -463,16 +450,6 @@ export {
   MenubarItem,
   Modal,
   ModalBody,
-  ModalCard,
-  ModalCardBody,
-  ModalCardContent,
-  ModalCardDescription,
-  ModalCardFooter,
-  ModalCardHeader,
-  ModalCardProvider,
-  ModalCardTitle,
-  ModalCardTypeContext,
-  ModalCardTypeProvider,
   ModalClose,
   ModalContent,
   ModalDescription,
@@ -592,7 +569,6 @@ export {
   reactNodeToString,
   shortcutKeyVariants,
   toast,
-  useModalCardType,
   useModalDrawerType,
   useOperatingSystem,
   useSidebar

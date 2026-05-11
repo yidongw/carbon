@@ -37,7 +37,7 @@ import { useItems } from "~/stores";
 import { path } from "~/utils/path";
 import type { PurchaseInvoice, PurchaseInvoiceLine } from "../../types";
 import DeletePurchaseInvoiceLine from "./DeletePurchaseInvoiceLine";
-import PurchaseInvoiceLineForm from "./PurchaseInvoiceLineForm";
+import { PurchaseInvoiceLineFormModal } from "./PurchaseInvoiceLineForm";
 
 export default function PurchaseInvoiceExplorer() {
   const prettifyShortcut = usePrettifyShortcut();
@@ -147,9 +147,8 @@ export default function PurchaseInvoiceExplorer() {
         </div>
       </VStack>
       {newPurchaseInvoiceLineDisclosure.isOpen && (
-        <PurchaseInvoiceLineForm
+        <PurchaseInvoiceLineFormModal
           initialValues={purchaseInvoiceLineInitialValues}
-          type="modal"
           onClose={newPurchaseInvoiceLineDisclosure.onClose}
         />
       )}

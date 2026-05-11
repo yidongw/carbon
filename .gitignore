@@ -16,6 +16,7 @@ public/dist
 vite.config.ts.timestamp*
 .mcp.json
 opencode.json
+.pnpm-store
 
 # Lingui compiled catalogs
 packages/locale/locales/**/*.mjs
@@ -53,3 +54,4 @@ packages/database/supabase/seed.sql
 **/build/
 !**/build/.gitkeep
 .orcka
+.worktrees

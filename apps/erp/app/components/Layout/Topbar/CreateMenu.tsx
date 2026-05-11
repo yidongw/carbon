@@ -22,7 +22,11 @@ import {
   RiProgress4Line,
   RiProgress8Line
 } from "react-icons/ri";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
+import {
+  isNewEntityModalRoute,
+  useNewEntityModal
+} from "~/components/NewEntityModal";
 import { usePermissions } from "~/hooks";
 import type { Route } from "~/types";
 import { path } from "~/utils/path";
@@ -120,6 +124,8 @@ function useCreate(): Route[] {
 
 const CreateMenu = ({ trigger }: { trigger: React.ReactNode }) => {
   const createLinks = useCreate();
+  const location = useLocation();
+  const { open } = useNewEntityModal();
 
   if (!createLinks.length) return null;
 
@@ -127,14 +133,24 @@ const CreateMenu = ({ trigger }: { trigger: React.ReactNode }) => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
       <DropdownMenuContent align="center" className="w-48">
-        {createLinks.map((link) => (
-          <DropdownMenuItem key={link.to} asChild>
-            <Link to={link.to}>
+        {createLinks.map((link) =>
+          isNewEntityModalRoute(link.to) ? (
+            <DropdownMenuItem key={link.to} onSelect={() => open(link.to)}>
               {link.icon && <DropdownMenuIcon icon={link.icon} />}
               {link.name}
-            </Link>
-          </DropdownMenuItem>
-        ))}
+            </DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem key={link.to} asChild>
+              <Link
+                to={link.to}
+                state={{ from: `${location.pathname}${location.search}` }}
+              >
+                {link.icon && <DropdownMenuIcon icon={link.icon} />}
+                {link.name}
+              </Link>
+            </DropdownMenuItem>
+          )
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

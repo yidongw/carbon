@@ -2,15 +2,14 @@ import { assertIsPost, error, success } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
-import { ScrollArea } from "@carbon/react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { data, redirect, useLoaderData, useNavigate } from "react-router";
+import { data, useLoaderData, useLocation, useNavigate } from "react-router";
+import { RegisteredEntityFormModal } from "~/components/NewEntityModal";
 import { issueWorkflowValidator } from "~/modules/quality/quality.models";
 import {
   getRequiredActionsList,
   upsertIssueWorkflow
 } from "~/modules/quality/quality.service";
-import IssueWorkflowForm from "~/modules/quality/ui/IssueWorkflows/IssueWorkflowForm";
 import { path } from "~/utils/path";
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -48,7 +47,12 @@ export async function action({ request }: ActionFunctionArgs) {
 
   if (insertIssueWorkflow.error || !insertIssueWorkflow.data?.id) {
     return data(
-      {},
+      {
+        data: insertIssueWorkflow.data,
+        error: {
+          message: "Failed to insert issue workflow"
+        }
+      },
       await flash(
         request,
         error(insertIssueWorkflow.error, "Failed to insert issue workflow")
@@ -56,31 +60,31 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
-  throw redirect(
-    path.to.issueWorkflow(insertIssueWorkflow.data.id),
+  return data(
+    {
+      data: insertIssueWorkflow.data
+    },
     await flash(request, success("Non-conformance workflow created"))
   );
 }
 
 export default function NewIssueWorkflowRoute() {
-  const { requiredActions } = useLoaderData<typeof loader>();
+  const loadedData = useLoaderData<typeof loader>();
   const navigate = useNavigate();
-  const initialValues = {
-    name: "",
-    content: "{}",
-    priority: "Medium" as const,
-    source: "Internal" as const,
-    requiredActionIds: [],
-    approvalRequirements: []
-  };
+  const location = useLocation();
+  const from = (location.state as { from?: string } | null)?.from;
 
   return (
-    <ScrollArea className="w-full h-[calc(100dvh-49px)] bg-card">
-      <IssueWorkflowForm
-        initialValues={initialValues}
-        requiredActions={requiredActions}
-        onClose={() => navigate(-1)}
-      />
-    </ScrollArea>
+    <RegisteredEntityFormModal
+      to={path.to.newIssueWorkflow}
+      loadedData={loadedData}
+      onClose={() => {
+        if (from) {
+          navigate(from);
+        } else {
+          navigate(-1);
+        }
+      }}
+    />
   );
 }

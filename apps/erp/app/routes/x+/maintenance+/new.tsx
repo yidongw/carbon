@@ -4,13 +4,13 @@ import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { redirect, useLoaderData } from "react-router";
+import { data, useLoaderData, useLocation, useNavigate } from "react-router";
+import { RegisteredEntityFormModal } from "~/components/NewEntityModal";
 import {
   getFailureModesList,
   maintenanceDispatchValidator,
   upsertMaintenanceDispatch
 } from "~/modules/resources";
-import MaintenanceDispatchForm from "~/modules/resources/ui/Maintenance/MaintenanceDispatchForm";
 import { getNextSequence } from "~/modules/settings";
 import { getUserDefaults } from "~/modules/users/users.server";
 import type { Handle } from "~/utils/handle";
@@ -59,8 +59,12 @@ export async function action({ request }: ActionFunctionArgs) {
     companyId
   );
   if (nextSequence.error) {
-    throw redirect(
-      path.to.maintenanceDispatches,
+    return data(
+      {
+        error: {
+          message: "Failed to get next sequence"
+        }
+      },
       await flash(
         request,
         error(nextSequence.error, "Failed to get next sequence")
@@ -91,8 +95,13 @@ export async function action({ request }: ActionFunctionArgs) {
   });
 
   if (insertDispatch.error) {
-    throw redirect(
-      path.to.maintenanceDispatches,
+    return data(
+      {
+        data: insertDispatch.data,
+        error: {
+          message: "Failed to create maintenance dispatch"
+        }
+      },
       await flash(
         request,
         error(insertDispatch.error, "Failed to create maintenance dispatch")
@@ -102,36 +111,41 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const newId = insertDispatch.data?.id;
   if (!newId) {
-    throw redirect(
-      path.to.maintenanceDispatches,
+    return data(
+      {
+        error: {
+          message: "Failed to get new dispatch ID"
+        }
+      },
       await flash(request, error(null, "Failed to get new dispatch ID"))
     );
   }
 
-  throw redirect(
-    path.to.maintenanceDispatch(newId),
+  return data(
+    {
+      data: insertDispatch.data
+    },
     await flash(request, success("Created maintenance dispatch"))
   );
 }
 
 export default function NewMaintenanceDispatchRoute() {
-  const { failureModes, defaultLocationId } = useLoaderData<typeof loader>();
-
-  const initialValues = {
-    status: "Open" as const,
-    priority: "Medium" as const,
-    source: "Reactive" as const,
-    severity: "Support Required" as const,
-    oeeImpact: "No Impact" as const,
-    locationId: defaultLocationId ?? ""
-  };
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = (location.state as { from?: string } | null)?.from;
+  const loadedData = useLoaderData<typeof loader>();
 
   return (
-    <div className="max-w-4xl w-full p-2 sm:p-0 mx-auto mt-0 md:mt-8">
-      <MaintenanceDispatchForm
-        initialValues={initialValues}
-        failureModes={failureModes}
-      />
-    </div>
+    <RegisteredEntityFormModal
+      to={path.to.newMaintenanceDispatch}
+      loadedData={loadedData}
+      onClose={() => {
+        if (from) {
+          navigate(from);
+        } else {
+          navigate(-1);
+        }
+      }}
+    />
   );
 }

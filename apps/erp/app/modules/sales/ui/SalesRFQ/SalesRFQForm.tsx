@@ -11,9 +11,11 @@ import {
   toast,
   VStack
 } from "@carbon/react";
+import { getLocalTimeZone, today } from "@internationalized/date";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import { flushSync } from "react-dom";
+import type { FetcherWithComponents } from "react-router";
 import type { z } from "zod";
 import {
   Customer,
@@ -28,7 +30,7 @@ import {
   SequenceOrCustomId,
   Submit
 } from "~/components/Form";
-import { usePermissions, useRouteData } from "~/hooks";
+import { usePermissions, useRouteData, useUser } from "~/hooks";
 import { path } from "~/utils/path";
 import { isSalesRfqLocked, salesRfqValidator } from "../../sales.models";
 import type { SalesRFQ } from "../../types";
@@ -36,13 +38,38 @@ import type { SalesRFQ } from "../../types";
 type SalesRFQFormValues = z.infer<typeof salesRfqValidator>;
 
 type SalesRFQFormProps = {
-  initialValues: SalesRFQFormValues;
+  initialValues?: Partial<SalesRFQFormValues>;
+  searchParams?: URLSearchParams;
+  action?: string;
+  fetcher?: FetcherWithComponents<unknown>;
 };
 
-const SalesRFQForm = ({ initialValues }: SalesRFQFormProps) => {
+const SalesRFQForm = ({
+  initialValues: initialValuesProp,
+  searchParams,
+  action,
+  fetcher
+}: SalesRFQFormProps) => {
   const { t } = useLingui();
   const permissions = usePermissions();
   const { carbon } = useCarbon();
+  const { id: userId, defaults } = useUser();
+  const initialValues = {
+    customerContactId: "",
+    customerId: "",
+    customerReference: "",
+    expirationDate: "",
+    id: undefined,
+    locationId: defaults?.locationId ?? "",
+    rfqDate: today(getLocalTimeZone()).toString(),
+    rfqId: undefined,
+    status: "Draft" as const,
+    salesPersonId: userId,
+    ...(searchParams?.get("customerId")
+      ? { customerId: searchParams.get("customerId")! }
+      : {}),
+    ...initialValuesProp
+  };
   const [customer, setCustomer] = useState<{
     id: string | undefined;
     customerContactId: string | undefined;
@@ -113,8 +140,10 @@ const SalesRFQForm = ({ initialValues }: SalesRFQFormProps) => {
     <Card>
       <ValidatedForm
         method="post"
+        action={action ?? (isEditing ? undefined : path.to.newSalesRFQ)}
         validator={salesRfqValidator}
         defaultValues={initialValues}
+        fetcher={fetcher}
         isDisabled={isEditing && isLocked}
       >
         <CardHeader>

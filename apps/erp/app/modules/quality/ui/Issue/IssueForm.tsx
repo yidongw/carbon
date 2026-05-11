@@ -16,9 +16,11 @@ import {
   CardTitle,
   VStack
 } from "@carbon/react";
+import { getLocalTimeZone, today } from "@internationalized/date";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useState } from "react";
-import { useNavigate } from "react-router";
+import type { FetcherWithComponents } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import type { z } from "zod";
 import {
   CustomFormFields,
@@ -27,7 +29,7 @@ import {
   Location,
   Submit
 } from "~/components/Form";
-import { usePermissions } from "~/hooks";
+import { usePermissions, useUser } from "~/hooks";
 import { useItems } from "~/stores/items";
 import type { ListItem } from "~/types";
 import { path } from "~/utils/path";
@@ -43,21 +45,101 @@ import { getPriorityIcon, getSourceIcon } from "./IssueIcons";
 type IssueFormValues = z.infer<typeof issueValidator>;
 
 type IssueFormProps = {
-  initialValues: IssueFormValues;
+  initialValues?: Partial<IssueFormValues>;
   nonConformanceWorkflows: IssueWorkflow[];
   nonConformanceTypes: ListItem[];
   requiredActions: ListItem[];
+  searchParams?: URLSearchParams;
+  action?: string;
+  fetcher?: FetcherWithComponents<unknown>;
 };
 
 const IssueForm = ({
-  initialValues,
+  initialValues: initialValuesProp,
   nonConformanceWorkflows,
   nonConformanceTypes,
-  requiredActions
+  requiredActions,
+  searchParams,
+  action,
+  fetcher
 }: IssueFormProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useLingui();
   const permissions = usePermissions();
+  const { defaults } = useUser();
+  const initialValues = {
+    id: undefined,
+    nonConformanceId: undefined,
+    approvalRequirements: [],
+    customerId: "",
+    items: [],
+    jobId: "",
+    jobOperationId: "",
+    itemId: "",
+    locationId: defaults?.locationId ?? "",
+    name: "",
+    nonConformanceTypeId: "",
+    nonConformanceWorkflowId: "",
+    openDate: today(getLocalTimeZone()).toString(),
+    priority: "Medium" as const,
+    purchaseOrderId: "",
+    purchaseOrderLineId: "",
+    quantity: 1,
+    requiredActionIds: [],
+    salesOrderId: "",
+    salesOrderLineId: "",
+    shipmentId: "",
+    shipmentLineId: "",
+    source: "Internal" as const,
+    supplierId: "",
+    trackedEntityId: "",
+    operationSupplierProcessId: "",
+    ...(searchParams?.get("customerId")
+      ? { customerId: searchParams.get("customerId")! }
+      : {}),
+    ...(searchParams?.get("itemId")
+      ? {
+          itemId: searchParams.get("itemId")!,
+          items: [searchParams.get("itemId")!]
+        }
+      : {}),
+    ...(searchParams?.get("jobId")
+      ? { jobId: searchParams.get("jobId")! }
+      : {}),
+    ...(searchParams?.get("jobOperationId")
+      ? { jobOperationId: searchParams.get("jobOperationId")! }
+      : {}),
+    ...(searchParams?.get("purchaseOrderId")
+      ? { purchaseOrderId: searchParams.get("purchaseOrderId")! }
+      : {}),
+    ...(searchParams?.get("purchaseOrderLineId")
+      ? { purchaseOrderLineId: searchParams.get("purchaseOrderLineId")! }
+      : {}),
+    ...(searchParams?.get("salesOrderId")
+      ? { salesOrderId: searchParams.get("salesOrderId")! }
+      : {}),
+    ...(searchParams?.get("salesOrderLineId")
+      ? { salesOrderLineId: searchParams.get("salesOrderLineId")! }
+      : {}),
+    ...(searchParams?.get("shipmentId")
+      ? { shipmentId: searchParams.get("shipmentId")! }
+      : {}),
+    ...(searchParams?.get("shipmentLineId")
+      ? { shipmentLineId: searchParams.get("shipmentLineId")! }
+      : {}),
+    ...(searchParams?.get("supplierId")
+      ? { supplierId: searchParams.get("supplierId")! }
+      : {}),
+    ...(searchParams?.get("operationSupplierProcessId")
+      ? {
+          operationSupplierProcessId: searchParams.get(
+            "operationSupplierProcessId"
+          )!
+        }
+      : {}),
+    ...initialValuesProp
+  };
   const isEditing = initialValues.id !== undefined;
 
   const [workflow, setWorkflow] = useState<{
@@ -95,9 +177,11 @@ const IssueForm = ({
     <Card>
       <ValidatedForm
         method="post"
+        action={action ?? (isEditing ? undefined : path.to.newIssue)}
         validator={issueValidator}
         defaultValues={initialValues}
         className="w-full"
+        fetcher={fetcher}
       >
         <CardHeader>
           <CardTitle>{isEditing ? "Issue" : "New Issue"}</CardTitle>
@@ -148,7 +232,9 @@ const IssueForm = ({
                 }))}
                 onChange={onWorkflowChange}
                 onCreateOption={() => {
-                  navigate(path.to.newIssueWorkflow);
+                  navigate(path.to.newIssueWorkflow, {
+                    state: { from: `${location.pathname}${location.search}` }
+                  });
                 }}
               />
 

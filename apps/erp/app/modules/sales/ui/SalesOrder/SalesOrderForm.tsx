@@ -14,6 +14,7 @@ import {
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import { flushSync } from "react-dom";
+import type { FetcherWithComponents } from "react-router";
 import { useFetcher } from "react-router";
 import type { z } from "zod";
 import {
@@ -38,18 +39,47 @@ import { isSalesOrderLocked, salesOrderValidator } from "../../sales.models";
 type SalesOrderFormValues = z.infer<typeof salesOrderValidator>;
 
 type SalesOrderFormProps = {
-  initialValues: SalesOrderFormValues & {
-    originatedFromQuote: boolean;
-    digitalQuoteAcceptedBy: string | undefined;
-    digitalQuoteAcceptedByEmail: string | undefined;
-  };
+  initialValues?: Partial<
+    SalesOrderFormValues & {
+      originatedFromQuote: boolean;
+      digitalQuoteAcceptedBy: string | undefined;
+      digitalQuoteAcceptedByEmail: string | undefined;
+    }
+  >;
+  searchParams?: URLSearchParams;
+  action?: string;
+  fetcher?: FetcherWithComponents<unknown>;
 };
 
-const SalesOrderForm = ({ initialValues }: SalesOrderFormProps) => {
+const SalesOrderForm = ({
+  initialValues: initialValuesProp,
+  searchParams,
+  action,
+  fetcher
+}: SalesOrderFormProps) => {
   const { t } = useLingui();
   const permissions = usePermissions();
   const { carbon } = useCarbon();
-  const { company } = useUser();
+  const { id: userId, company, defaults } = useUser();
+  const initialValues = {
+    id: undefined,
+    salesOrderId: undefined,
+    customerId: "",
+    orderDate: "",
+    status: "Draft" as const,
+    currencyCode: company?.baseCurrencyCode ?? "USD",
+    locationId: defaults?.locationId ?? "",
+    salesPersonId: userId,
+    exchangeRate: undefined,
+    exchangeRateUpdatedAt: "",
+    originatedFromQuote: false,
+    digitalQuoteAcceptedBy: undefined,
+    digitalQuoteAcceptedByEmail: undefined,
+    ...(searchParams?.get("customerId")
+      ? { customerId: searchParams.get("customerId")! }
+      : {}),
+    ...initialValuesProp
+  };
   const [customer, setCustomer] = useState<{
     id: string | undefined;
     currencyCode: string | undefined;
@@ -125,9 +155,11 @@ const SalesOrderForm = ({ initialValues }: SalesOrderFormProps) => {
     <Card>
       <ValidatedForm
         method="post"
+        action={action ?? (isEditing ? undefined : path.to.newSalesOrder)}
         validator={salesOrderValidator}
         defaultValues={initialValues}
         isDisabled={isEditing && isLocked}
+        fetcher={fetcher}
       >
         <CardHeader>
           <CardTitle>

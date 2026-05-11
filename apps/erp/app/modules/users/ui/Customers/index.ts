@@ -1,4 +1,4 @@
-import CreateCustomerModal from "./CreateCustomerModal";
+import CreateCustomerAccountForm from "./CreateCustomerAccountForm";
 import CustomerAccountsTable from "./CustomerAccountsTable";
 
-export { CreateCustomerModal, CustomerAccountsTable };
+export { CreateCustomerAccountForm, CustomerAccountsTable };

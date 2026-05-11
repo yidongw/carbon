@@ -23,6 +23,7 @@ import { zfd } from "zod-form-data";
 import { Assignee, useOptimisticAssignment } from "~/components";
 import { Employee, Location } from "~/components/Form";
 import CustomFormInlineFields from "~/components/Form/CustomFormInlineFields";
+import { EntityFormModal } from "~/components/NewEntityModal";
 import { usePermissions, useRouteData } from "~/hooks";
 import type { action } from "~/routes/x+/items+/update";
 import { useSuppliers } from "~/stores";
@@ -233,16 +234,21 @@ const PurchasingRFQProperties = () => {
           }}
         />
         {newSupplierModal.isOpen && (
-          <SupplierForm
-            type="modal"
+          <EntityFormModal
+            entity="supplier"
+            getCreatedName={(created) => created?.name}
             onClose={() => {
               setCreated("");
               newSupplierModal.onClose();
             }}
-            initialValues={{
-              name: created
-            }}
-          />
+          >
+            <SupplierForm
+              action={`${path.to.newSupplier}`}
+              initialValues={{
+                name: created
+              }}
+            />
+          </EntityFormModal>
         )}
       </ValidatedForm>
 

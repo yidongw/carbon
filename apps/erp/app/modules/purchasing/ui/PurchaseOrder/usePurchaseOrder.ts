@@ -1,7 +1,7 @@
 import { useCarbon } from "@carbon/auth";
 import { toast } from "@carbon/react";
 import { useCallback, useEffect, useState } from "react";
-import { useNavigate, useSubmit } from "react-router";
+import { useLocation, useNavigate, useSubmit } from "react-router";
 import type { Receipt, Shipment } from "~/modules/inventory";
 import type { PurchaseInvoice } from "~/modules/invoicing";
 import type { PurchaseOrder } from "~/modules/purchasing";
@@ -9,6 +9,7 @@ import { path } from "~/utils/path";
 
 export const usePurchaseOrder = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const submit = useSubmit();
 
   const edit = useCallback(
@@ -20,9 +21,10 @@ export const usePurchaseOrder = () => {
   const invoice = useCallback(
     (purchaseOrder: PurchaseOrder) =>
       navigate(
-        `${path.to.newPurchaseInvoice}?sourceDocument=Purchase Order&sourceDocumentId=${purchaseOrder.id}`
+        `${path.to.newPurchaseInvoice}?sourceDocument=Purchase Order&sourceDocumentId=${purchaseOrder.id}`,
+        { state: { from: `${location.pathname}${location.search}` } }
       ),
-    [navigate]
+    [location.pathname, location.search, navigate]
   );
 
   const receive = useCallback(

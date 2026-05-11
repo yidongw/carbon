@@ -17,6 +17,7 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { nanoid } from "nanoid";
 import { useState } from "react";
 import { BsExclamationSquareFill } from "react-icons/bs";
+import type { FetcherWithComponents } from "react-router";
 import type { z } from "zod";
 import { HighPriorityIcon } from "~/assets/icons/HighPriorityIcon";
 import { LowPriorityIcon } from "~/assets/icons/LowPriorityIcon";
@@ -53,13 +54,19 @@ function getPriorityIcon(
 }
 
 type MaintenanceDispatchFormProps = {
-  initialValues: z.infer<typeof maintenanceDispatchValidator>;
+  initialValues?: Partial<z.infer<typeof maintenanceDispatchValidator>>;
   failureModes?: { id: string; name: string }[];
+  defaultLocationId?: string;
+  action?: string;
+  fetcher?: FetcherWithComponents<unknown>;
 };
 
 const MaintenanceDispatchForm = ({
-  initialValues,
-  failureModes = []
+  initialValues: initialValuesProp,
+  failureModes = [],
+  defaultLocationId,
+  action,
+  fetcher
 }: MaintenanceDispatchFormProps) => {
   const { t } = useLingui();
   const permissions = usePermissions();
@@ -67,6 +74,15 @@ const MaintenanceDispatchForm = ({
     company: { id: companyId }
   } = useUser();
   const { carbon } = useCarbon();
+  const initialValues = {
+    status: "Open" as const,
+    priority: "Medium" as const,
+    source: "Reactive" as const,
+    severity: "Support Required" as const,
+    oeeImpact: "No Impact" as const,
+    locationId: defaultLocationId ?? "",
+    ...initialValuesProp
+  };
 
   const isEditing = initialValues.id !== undefined;
 
@@ -115,9 +131,10 @@ const MaintenanceDispatchForm = ({
       <ValidatedForm
         validator={maintenanceDispatchValidator}
         method="post"
-        action={path.to.newMaintenanceDispatch}
+        action={action ?? path.to.newMaintenanceDispatch}
         defaultValues={initialValues}
         isDisabled={isEditing && isLocked}
+        fetcher={fetcher}
       >
         <CardHeader>
           <CardTitle>

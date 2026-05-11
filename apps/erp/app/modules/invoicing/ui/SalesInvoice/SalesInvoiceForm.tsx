@@ -11,9 +11,11 @@ import {
   toast,
   VStack
 } from "@carbon/react";
+import { getLocalTimeZone, today } from "@internationalized/date";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import { flushSync } from "react-dom";
+import type { FetcherWithComponents } from "react-router";
 import type { z } from "zod";
 import {
   Currency,
@@ -29,7 +31,7 @@ import {
   Submit
 } from "~/components/Form";
 import PaymentTerm from "~/components/Form/PaymentTerm";
-import { usePermissions, useRouteData } from "~/hooks";
+import { usePermissions, useRouteData, useUser } from "~/hooks";
 import { salesInvoiceValidator } from "~/modules/invoicing";
 import { path } from "~/utils/path";
 import { isSalesInvoiceLocked } from "../../invoicing.models";
@@ -37,13 +39,33 @@ import { isSalesInvoiceLocked } from "../../invoicing.models";
 type SalesInvoiceFormValues = z.infer<typeof salesInvoiceValidator>;
 
 type SalesInvoiceFormProps = {
-  initialValues: SalesInvoiceFormValues;
+  initialValues?: Partial<SalesInvoiceFormValues>;
+  searchParams?: URLSearchParams;
+  action?: string;
+  fetcher?: FetcherWithComponents<unknown>;
 };
 
-const SalesInvoiceForm = ({ initialValues }: SalesInvoiceFormProps) => {
+const SalesInvoiceForm = ({
+  initialValues: initialValuesProp,
+  searchParams,
+  action,
+  fetcher
+}: SalesInvoiceFormProps) => {
   const { t } = useLingui();
   const permissions = usePermissions();
   const { carbon } = useCarbon();
+  const { defaults } = useUser();
+  const initialValues = {
+    id: undefined,
+    invoiceId: undefined,
+    customerId: "",
+    locationId: defaults?.locationId ?? "",
+    dateIssued: today(getLocalTimeZone()).toString(),
+    ...(searchParams?.get("customerId")
+      ? { customerId: searchParams.get("customerId")! }
+      : {}),
+    ...initialValuesProp
+  };
   const isEditing = initialValues.id !== undefined;
 
   const invoiceId = initialValues.id;
@@ -152,8 +174,10 @@ const SalesInvoiceForm = ({ initialValues }: SalesInvoiceFormProps) => {
   return (
     <ValidatedForm
       method="post"
+      action={action ?? (isEditing ? undefined : path.to.newSalesInvoice)}
       validator={salesInvoiceValidator}
       defaultValues={initialValues}
+      fetcher={fetcher}
       isDisabled={isEditing && isLocked}
     >
       <Card>

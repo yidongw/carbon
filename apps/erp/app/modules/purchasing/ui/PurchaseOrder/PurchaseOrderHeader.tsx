@@ -103,7 +103,7 @@ const PurchaseOrderHeader = () => {
     navigation.state !== "idle" && navigation.formAction === path.to.newReceipt;
   const isInvoicing =
     navigation.state !== "idle" &&
-    navigation.location?.pathname === path.to.newPurchaseInvoice;
+    navigation.location?.pathname?.startsWith(path.to.newPurchaseInvoice);
 
   const isNeedsApproval = routeData?.purchaseOrder?.status === "Needs Approval";
   const hasApprovalRequest = !!routeData?.approvalRequest;

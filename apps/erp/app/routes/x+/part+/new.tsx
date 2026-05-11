@@ -5,9 +5,9 @@ import { validationError, validator } from "@carbon/form";
 import { trigger } from "@carbon/jobs";
 import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs } from "react-router";
-import { data, redirect } from "react-router";
+import { data, useLocation, useNavigate } from "react-router";
+import { RegisteredEntityFormModal } from "~/components/NewEntityModal";
 import { partValidator, upsertPart } from "~/modules/items";
-import { PartForm } from "~/modules/items/ui/Parts";
 import { setCustomFields } from "~/utils/form";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
@@ -25,8 +25,6 @@ export async function action({ request }: ActionFunctionArgs) {
   });
 
   const formData = await request.formData();
-  const modal = formData.get("type") === "modal";
-
   const validation = await validator(partValidator).validate(formData);
 
   if (validation.error) {
@@ -40,15 +38,10 @@ export async function action({ request }: ActionFunctionArgs) {
     createdBy: userId
   });
   if (createPart.error) {
-    return modal
-      ? data(
-          createPart,
-          await flash(request, error(createPart.error, "Failed to insert part"))
-        )
-      : redirect(
-          path.to.parts,
-          await flash(request, error(createPart.error, "Failed to insert part"))
-        );
+    return data(
+      createPart,
+      await flash(request, error(createPart.error, "Failed to insert part"))
+    );
   }
 
   if (validation.data.modelUploadId) {
@@ -61,30 +54,25 @@ export async function action({ request }: ActionFunctionArgs) {
   const itemId = createPart.data?.id;
   if (!itemId) throw new Error("Part ID not found");
 
-  return modal
-    ? data(createPart, { status: 201 })
-    : redirect(path.to.part(itemId));
+  return data(createPart, { status: 201 });
 }
 
 export default function PartsNewRoute() {
-  const initialValues = {
-    id: "",
-    revision: "0",
-    name: "",
-    description: "",
-    itemTrackingType: "Inventory" as "Inventory",
-    replenishmentSystem: "Buy" as "Buy",
-    defaultMethodType: "Pull from Inventory" as "Pull from Inventory",
-    unitOfMeasureCode: "EA",
-    unitCost: 0,
-    lotSize: 0,
-    active: true,
-    shelfLifeCalculateFromBom: false
-  };
-
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = (location.state as { from?: string } | null)?.from;
+  const searchParams = new URLSearchParams(location.search);
   return (
-    <div className="max-w-4xl w-full p-2 sm:p-0 mx-auto mt-0 md:mt-8">
-      <PartForm initialValues={initialValues} />
-    </div>
+    <RegisteredEntityFormModal
+      to={path.to.newPart}
+      searchParams={searchParams}
+      onClose={() => {
+        if (from) {
+          navigate(from);
+        } else {
+          navigate(-1);
+        }
+      }}
+    />
   );
 }

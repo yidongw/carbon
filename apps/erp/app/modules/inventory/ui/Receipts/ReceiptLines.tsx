@@ -79,7 +79,7 @@ import { useItems } from "~/stores";
 import type { StorageItem } from "~/types";
 import { path } from "~/utils/path";
 import { stripSpecialCharacters } from "~/utils/string";
-import BatchPropertiesConfig from "../Batches/BatchPropertiesConfig";
+import { BatchPropertiesConfigModal } from "../Batches/BatchPropertiesConfig";
 import { BatchPropertiesFields } from "../Batches/BatchPropertiesFields";
 
 const ReceiptLines = () => {
@@ -848,10 +848,9 @@ function BatchForm({
           <Await resolve={batchProperties}>
             {(resolvedBatchProperties) => {
               return (
-                <BatchPropertiesConfig
+                <BatchPropertiesConfigModal
                   itemId={line.itemId!}
                   properties={resolvedBatchProperties?.data ?? []}
-                  type="modal"
                   onClose={propertiesDisclosure.onClose}
                 />
               );
@@ -1092,10 +1091,9 @@ function SerialForm({
             <Await resolve={batchProperties}>
               {(resolvedBatchProperties) => {
                 return (
-                  <BatchPropertiesConfig
+                  <BatchPropertiesConfigModal
                     itemId={line.itemId!}
                     properties={resolvedBatchProperties?.data ?? []}
-                    type="modal"
                     onClose={propertiesDisclosure.onClose}
                   />
                 );

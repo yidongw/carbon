@@ -2,8 +2,10 @@ import type { CreatableMultiSelectProps } from "@carbon/form";
 import { CreatableMultiSelect } from "@carbon/form";
 import { useDisclosure } from "@carbon/react";
 import { useMemo, useRef, useState } from "react";
+import { EntityFormModal } from "~/components/NewEntityModal";
 import { SupplierForm } from "~/modules/purchasing/ui/Supplier";
 import { useSuppliers } from "~/stores";
+import { path } from "~/utils/path";
 
 type SupplierSelectProps = Omit<CreatableMultiSelectProps, "options"> & {
   processId?: string;
@@ -38,17 +40,22 @@ const Suppliers = (props: SupplierSelectProps) => {
         }}
       />
       {newSupplierModal.isOpen && (
-        <SupplierForm
-          type="modal"
+        <EntityFormModal
+          entity="supplier"
+          getCreatedName={(created) => created?.name}
           onClose={() => {
             setCreated("");
             newSupplierModal.onClose();
             triggerRef.current?.click();
           }}
-          initialValues={{
-            name: created
-          }}
-        />
+        >
+          <SupplierForm
+            action={`${path.to.newSupplier}`}
+            initialValues={{
+              name: created
+            }}
+          />
+        </EntityFormModal>
       )}
     </>
   );

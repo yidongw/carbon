@@ -15,6 +15,7 @@ import { LuPencil, LuTrash } from "react-icons/lu";
 import { Outlet, useNavigate, useParams } from "react-router";
 import { Contact, New } from "~/components";
 import { ConfirmDelete } from "~/components/Modals";
+import { useNewEntityModal } from "~/components/NewEntityModal";
 import { usePermissions } from "~/hooks";
 import { path } from "~/utils/path";
 import type { CustomerContact } from "../../types";
@@ -25,6 +26,7 @@ type CustomerContactsProps = {
 
 const CustomerContacts = ({ contacts }: CustomerContactsProps) => {
   const navigate = useNavigate();
+  const { open: openNewEntityModal } = useNewEntityModal();
   const { customerId } = useParams();
   if (!customerId) throw new Error("customerId not found");
   const permissions = usePermissions();
@@ -69,7 +71,7 @@ const CustomerContacts = ({ contacts }: CustomerContactsProps) => {
           label: "Create Account",
           icon: <IoMdAdd />,
           onClick: () => {
-            navigate(
+            openNewEntityModal(
               `${path.to.newCustomerAccount}?id=${contact.id}&customer=${customerId}`
             );
           }
@@ -78,7 +80,7 @@ const CustomerContacts = ({ contacts }: CustomerContactsProps) => {
 
       return actions;
     },
-    [permissions, deleteContactModal, navigate, customerId]
+    [permissions, deleteContactModal, navigate, openNewEntityModal, customerId]
   );
 
   return (

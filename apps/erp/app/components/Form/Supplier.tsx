@@ -2,9 +2,11 @@ import type { CreatableComboboxProps } from "@carbon/form";
 import { CreatableCombobox } from "@carbon/form";
 import { useDisclosure } from "@carbon/react";
 import { useMemo, useRef, useState } from "react";
+import { EntityFormModal } from "~/components/NewEntityModal";
 import { useSupplierApprovalRequired, useUser } from "~/hooks";
 import { SupplierForm } from "~/modules/purchasing/ui/Supplier";
 import { useSuppliers } from "~/stores";
+import { path } from "~/utils/path";
 import SupplierAvatar from "../SupplierAvatar";
 
 type SupplierSelectProps = Omit<
@@ -62,19 +64,24 @@ const Supplier = ({
         }}
       />
       {newSuppliersModal.isOpen && (
-        <SupplierForm
-          type="modal"
+        <EntityFormModal
+          entity="supplier"
+          getCreatedName={(created) => created?.name}
           onClose={() => {
             setCreated("");
             newSuppliersModal.onClose();
             triggerRef.current?.click();
           }}
-          initialValues={{
-            name: created,
-            currencyCode: company.baseCurrencyCode,
-            supplierStatus: supplierApprovalRequired ? "Pending" : undefined
-          }}
-        />
+        >
+          <SupplierForm
+            action={`${path.to.newSupplier}`}
+            initialValues={{
+              name: created,
+              currencyCode: company.baseCurrencyCode,
+              supplierStatus: supplierApprovalRequired ? "Pending" : undefined
+            }}
+          />
+        </EntityFormModal>
       )}
     </>
   );

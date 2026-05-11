@@ -38,7 +38,7 @@ import { path } from "~/utils/path";
 import { isPurchaseOrderLocked } from "../../purchasing.models";
 import type { PurchaseOrder, PurchaseOrderLine, Supplier } from "../../types";
 import DeletePurchaseOrderLine from "./DeletePurchaseOrderLine";
-import PurchaseOrderLineForm from "./PurchaseOrderLineForm";
+import { PurchaseOrderLineFormModal } from "./PurchaseOrderLineForm";
 
 export default function PurchaseOrderExplorer() {
   const prettifyShortcut = usePrettifyShortcut();
@@ -153,9 +153,8 @@ export default function PurchaseOrderExplorer() {
         </div>
       </VStack>
       {newPurchaseOrderLineDisclosure.isOpen && (
-        <PurchaseOrderLineForm
+        <PurchaseOrderLineFormModal
           initialValues={purchaseOrderLineInitialValues}
-          type="modal"
           onClose={newPurchaseOrderLineDisclosure.onClose}
         />
       )}

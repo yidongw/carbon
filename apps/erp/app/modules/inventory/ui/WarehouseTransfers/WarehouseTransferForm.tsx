@@ -33,6 +33,7 @@ import {
   LuTrash,
   LuTruck
 } from "react-icons/lu";
+import type { FetcherWithComponents } from "react-router";
 import { Link, useSubmit } from "react-router";
 import type { z } from "zod";
 import { useAuditLog } from "~/components/AuditLog";
@@ -60,15 +61,31 @@ import { ShipmentStatus } from "../Shipments";
 import WarehouseTransferStatus from "./WarehouseTransferStatus";
 
 type WarehouseTransferFormProps = {
-  initialValues: z.infer<typeof warehouseTransferValidator>;
+  initialValues?: Partial<z.infer<typeof warehouseTransferValidator>>;
   warehouseTransfer?: WarehouseTransfer;
+  action?: string;
+  fetcher?: FetcherWithComponents<unknown>;
 };
 
 const WarehouseTransferForm = ({
-  initialValues,
-  warehouseTransfer
+  initialValues: initialValuesProp,
+  warehouseTransfer,
+  action,
+  fetcher
 }: WarehouseTransferFormProps) => {
-  const { company } = useUser();
+  const { company, defaults } = useUser();
+  const initialValues = {
+    id: undefined,
+    transferId: "",
+    fromLocationId: defaults?.locationId ?? "",
+    toLocationId: "",
+    status: "Draft" as const,
+    transferDate: "",
+    expectedReceiptDate: "",
+    notes: "",
+    reference: "",
+    ...initialValuesProp
+  };
   const permissions = usePermissions();
   // Item rules eval at every "go" status transition (Confirm/Ship/Receive/
   // Complete). Surface violations through the hook's modal rather than the
@@ -103,9 +120,13 @@ const WarehouseTransferForm = ({
       <ValidatedForm
         validator={warehouseTransferValidator}
         method="post"
+        action={
+          action ?? (isEditing ? undefined : path.to.newWarehouseTransfer)
+        }
         defaultValues={initialValues}
         className="w-full"
         isDisabled={isEditing && isLocked}
+        fetcher={fetcher}
       >
         <Card className="w-full">
           {isEditing && warehouseTransfer ? (

@@ -33,7 +33,7 @@ import { path } from "~/utils/path";
 import { isSupplierQuoteLocked } from "../../purchasing.models";
 import type { Supplier, SupplierQuote, SupplierQuoteLine } from "../../types";
 import DeleteSupplierQuoteLine from "./DeleteSupplierQuoteLine";
-import SupplierQuoteLineForm from "./SupplierQuoteLineForm";
+import { SupplierQuoteLineFormModal } from "./SupplierQuoteLineForm";
 
 export default function SupplierQuoteExplorer() {
   const prettifyShortcut = usePrettifyShortcut();
@@ -139,9 +139,8 @@ export default function SupplierQuoteExplorer() {
         </div>
       </VStack>
       {newSupplierQuoteLineDisclosure.isOpen && (
-        <SupplierQuoteLineForm
+        <SupplierQuoteLineFormModal
           initialValues={supplierQuoteLineInitialValues}
-          type="modal"
           onClose={newSupplierQuoteLineDisclosure.onClose}
         />
       )}

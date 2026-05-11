@@ -4,11 +4,11 @@ import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
 import { notifyIssueCreated } from "@carbon/ee/notifications";
 import { validationError, validator } from "@carbon/form";
-import { getLocalTimeZone, today } from "@internationalized/date";
 import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { redirect, useLoaderData } from "react-router";
-import { useUrlParams, useUser } from "~/hooks";
+import { data, useLoaderData, useLocation, useNavigate } from "react-router";
+import { RegisteredEntityFormModal } from "~/components/NewEntityModal";
+import { useUrlParams } from "~/hooks";
 import {
   deleteIssue,
   getIssueTypesList,
@@ -17,7 +17,6 @@ import {
   issueValidator,
   upsertIssue
 } from "~/modules/quality";
-import IssueForm from "~/modules/quality/ui/Issue/IssueForm";
 import { getNextSequence } from "~/modules/settings";
 import { getCompanyIntegrations } from "~/modules/settings/settings.server";
 import { setCustomFields } from "~/utils/form";
@@ -41,8 +40,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
   ]);
 
   return {
-    workflows: workflows.data ?? [],
-    types: types.data ?? [],
+    nonConformanceWorkflows: workflows.data ?? [],
+    nonConformanceTypes: types.data ?? [],
     requiredActions: requiredActions.data ?? []
   };
 }
@@ -68,8 +67,12 @@ export async function action({ request }: ActionFunctionArgs) {
     companyId
   );
   if (nextSequence.error) {
-    throw redirect(
-      path.to.newIssue,
+    return data(
+      {
+        error: {
+          message: "Failed to get next sequence"
+        }
+      },
       await flash(
         request,
         error(nextSequence.error, "Failed to get next sequence")
@@ -89,16 +92,25 @@ export async function action({ request }: ActionFunctionArgs) {
   });
 
   if (createIssue.error || !createIssue.data) {
-    throw redirect(
-      path.to.issues,
+    return data(
+      {
+        data: createIssue.data,
+        error: {
+          message: "Failed to insert issue"
+        }
+      },
       await flash(request, error(createIssue.error, "Failed to insert issue"))
     );
   }
 
   const ncrId = createIssue.data?.id;
   if (!ncrId) {
-    throw redirect(
-      path.to.issues,
+    return data(
+      {
+        error: {
+          message: "Failed to insert issue"
+        }
+      },
       await flash(request, error("Failed to insert issue"))
     );
   }
@@ -144,8 +156,13 @@ export async function action({ request }: ActionFunctionArgs) {
 
   if (tasks.error) {
     await deleteIssue(serviceRole, ncrId);
-    throw redirect(
-      path.to.issue(ncrId!),
+    return data(
+      {
+        data: createIssue.data,
+        error: {
+          message: "Failed to create tasks"
+        }
+      },
       await flash(request, error("Failed to create tasks"))
     );
   }
@@ -168,65 +185,30 @@ export async function action({ request }: ActionFunctionArgs) {
     console.error("Failed to send notifications:", error);
   }
 
-  throw redirect(path.to.issue(ncrId!));
+  return data({ data: createIssue.data }, { status: 201 });
 }
 
 export default function IssueNewRoute() {
-  const { workflows, types, requiredActions } = useLoaderData<typeof loader>();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = (location.state as { from?: string } | null)?.from;
+  const loadedData = useLoaderData<typeof loader>();
 
-  const { defaults } = useUser();
   const [params] = useUrlParams();
-  const supplierId = params.get("supplierId");
-  const customerId = params.get("customerId");
-  const jobId = params.get("jobId");
-  const jobOperationId = params.get("jobOperationId");
-  const itemId = params.get("itemId");
-  const salesOrderId = params.get("salesOrderId");
-  const shipmentId = params.get("shipmentId");
-  const purchaseOrderId = params.get("purchaseOrderId");
-  const purchaseOrderLineId = params.get("purchaseOrderLineId");
-  const salesOrderLineId = params.get("salesOrderLineId");
-  const shipmentLineId = params.get("shipmentLineId");
-  const operationSupplierProcessId = params.get("operationSupplierProcessId");
-
-  const initialValues = {
-    id: undefined,
-    nonConformanceId: undefined,
-    approvalRequirements: [],
-    customerId: customerId ?? "",
-    items: itemId ? [itemId] : [],
-    jobId: jobId ?? "",
-    jobOperationId: jobOperationId ?? "",
-    itemId: itemId ?? "",
-    locationId: defaults.locationId ?? "",
-    name: "",
-    nonConformanceTypeId: "",
-    nonConformanceWorkflowId: "",
-    openDate: today(getLocalTimeZone()).toString(),
-    priority: "Medium" as const,
-    purchaseOrderId: purchaseOrderId ?? "",
-    purchaseOrderLineId: purchaseOrderLineId ?? "",
-    quantity: 1,
-    requiredActionIds: [],
-    salesOrderId: salesOrderId ?? "",
-    salesOrderLineId: salesOrderLineId ?? "",
-    shipmentId: shipmentId ?? "",
-    shipmentLineId: shipmentLineId ?? "",
-    source: "Internal" as const,
-    supplierId: supplierId ?? "",
-    trackedEntityId: "",
-    operationSupplierProcessId: operationSupplierProcessId ?? ""
-  };
 
   return (
-    <div className="max-w-4xl w-full p-2 sm:p-0 mx-auto mt-0 md:mt-8">
-      <IssueForm
-        initialValues={initialValues}
-        nonConformanceWorkflows={workflows}
-        nonConformanceTypes={types}
-        requiredActions={requiredActions}
-      />
-    </div>
+    <RegisteredEntityFormModal
+      to={path.to.newIssue}
+      searchParams={params}
+      loadedData={loadedData}
+      onClose={() => {
+        if (from) {
+          navigate(from);
+        } else {
+          navigate(-1);
+        }
+      }}
+    />
   );
 }
 

@@ -37,6 +37,10 @@ import {
 } from "react-router";
 import { RealtimeDataProvider } from "~/components";
 import { PrimaryNavigation, Topbar } from "~/components/Layout";
+import {
+  NewEntityModalProvider,
+  NewEntityModalRoot
+} from "~/components/NewEntityModal";
 import { TimeCardWarning } from "~/components/TimeCardWarning";
 import TrainingPanel from "~/components/TrainingPanel";
 import { useTrainingPanel } from "~/hooks/useTrainingPanel";
@@ -217,38 +221,41 @@ export default function AuthenticatedRoute() {
         <CarbonProvider session={session}>
           <RealtimeDataProvider>
             <TooltipProvider>
-              <div className="flex flex-col h-screen">
-                <Topbar />
-                <div className="flex flex-1 h-[calc(100vh-49px)] relative">
-                  <PrimaryNavigation />
-                  <main className="flex-1 overflow-y-auto scrollbar-hide border-l border-t bg-muted sm:rounded-tl-2xl relative z-10">
-                    <Outlet />
-                  </main>
+              <NewEntityModalProvider>
+                <div className="flex flex-col h-screen">
+                  <Topbar />
+                  <div className="flex flex-1 h-[calc(100vh-49px)] relative">
+                    <PrimaryNavigation />
+                    <main className="flex-1 overflow-y-auto scrollbar-hide border-l border-t bg-muted sm:rounded-tl-2xl relative z-10">
+                      <Outlet />
+                    </main>
+                  </div>
                 </div>
-              </div>
-              <TrainingPanel
-                training={training}
-                isOpen={isOpen}
-                onDismiss={dismiss}
-              />
-              {companySettings?.timeCardEnabled && (
-                <Suspense fallback={null}>
-                  <Await resolve={openClockEntry}>
-                    {(resolved) => (
-                      <TimeCardWarning
-                        openClockEntry={
-                          resolved?.data
-                            ? {
-                                id: resolved.data.id,
-                                clockIn: resolved.data.clockIn
-                              }
-                            : null
-                        }
-                      />
-                    )}
-                  </Await>
-                </Suspense>
-              )}
+                <NewEntityModalRoot />
+                <TrainingPanel
+                  training={training}
+                  isOpen={isOpen}
+                  onDismiss={dismiss}
+                />
+                {companySettings?.timeCardEnabled && (
+                  <Suspense fallback={null}>
+                    <Await resolve={openClockEntry}>
+                      {(resolved) => (
+                        <TimeCardWarning
+                          openClockEntry={
+                            resolved?.data
+                              ? {
+                                  id: resolved.data.id,
+                                  clockIn: resolved.data.clockIn
+                                }
+                              : null
+                          }
+                        />
+                      )}
+                    </Await>
+                  </Suspense>
+                )}
+              </NewEntityModalProvider>
             </TooltipProvider>
           </RealtimeDataProvider>
         </CarbonProvider>

@@ -11,10 +11,12 @@ import {
   toast,
   VStack
 } from "@carbon/react";
+import { getLocalTimeZone, now, toCalendarDate } from "@internationalized/date";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { flushSync } from "react-dom";
+import type { FetcherWithComponents } from "react-router";
 import { useFetcher } from "react-router";
 import type { z } from "zod";
 import {
@@ -40,14 +42,42 @@ import type { Quotation } from "../../types";
 type QuoteFormValues = z.infer<typeof quoteValidator>;
 
 type QuoteFormProps = {
-  initialValues: QuoteFormValues;
+  initialValues?: Partial<QuoteFormValues>;
+  searchParams?: URLSearchParams;
+  action?: string;
+  fetcher?: FetcherWithComponents<unknown>;
 };
 
-const QuoteForm = ({ initialValues }: QuoteFormProps) => {
+const QuoteForm = ({
+  initialValues: initialValuesProp,
+  searchParams,
+  action,
+  fetcher
+}: QuoteFormProps) => {
   const { t } = useLingui();
   const permissions = usePermissions();
   const { carbon } = useCarbon();
-  const { company } = useUser();
+  const { company, id: userId, defaults } = useUser();
+  const initialValues = {
+    customerContactId: "",
+    customerId: "",
+    customerReference: "",
+    expirationDate: toCalendarDate(
+      now(getLocalTimeZone()).add({ days: 30 })
+    ).toString(),
+    dueDate: "",
+    locationId: defaults?.locationId ?? "",
+    quoteId: undefined,
+    status: "Draft" as const,
+    salesPersonId: userId,
+    currencyCode: undefined,
+    exchangeRate: undefined,
+    exchangeRateUpdatedAt: "",
+    ...(searchParams?.get("customerId")
+      ? { customerId: searchParams.get("customerId")! }
+      : {}),
+    ...initialValuesProp
+  };
   const [customer, setCustomer] = useState<{
     id: string | undefined;
     currencyCode: string | undefined;
@@ -124,8 +154,10 @@ const QuoteForm = ({ initialValues }: QuoteFormProps) => {
     <Card>
       <ValidatedForm
         method="post"
+        action={action ?? (isEditing ? undefined : path.to.newQuote)}
         validator={quoteValidator}
         defaultValues={initialValues}
+        fetcher={fetcher}
         isDisabled={isDisabled}
       >
         <CardHeader>
