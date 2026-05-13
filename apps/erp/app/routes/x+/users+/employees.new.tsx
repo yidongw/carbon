@@ -17,12 +17,9 @@ import type {
   ClientActionFunctionArgs,
   LoaderFunctionArgs
 } from "react-router";
-import { redirect, useLoaderData } from "react-router";
-import {
-  CreateEmployeeModal,
-  createEmployeeValidator,
-  getInvitable
-} from "~/modules/users";
+import { data, redirect, useNavigate } from "react-router";
+import { RegisteredEntityFormModal } from "~/components/NewEntityModal";
+import { createEmployeeValidator, getInvitable } from "~/modules/users";
 import { createEmployeeAccount } from "~/modules/users/users.server";
 import { path } from "~/utils/path";
 import { getCompanyId } from "~/utils/react-query";
@@ -77,8 +74,12 @@ export async function action({ request }: ActionFunctionArgs) {
 
   if (!result.success) {
     console.error(result);
-    throw redirect(
-      path.to.employeeAccounts,
+    return data(
+      {
+        error: {
+          message: result.message ?? "Failed to create employee account"
+        }
+      },
       await flash(
         request,
         error(result, result.message ?? "Failed to create employee account")
@@ -118,8 +119,13 @@ export async function action({ request }: ActionFunctionArgs) {
     )
   });
 
-  throw redirect(
-    path.to.personJob(result.userId),
+  return data(
+    {
+      data: {
+        email,
+        userId: result.userId
+      }
+    },
     await flash(request, success("Successfully invited employee"))
   );
 }
@@ -136,7 +142,11 @@ export async function clientAction({ serverAction }: ClientActionFunctionArgs) {
 }
 
 export default function () {
-  const { invitable } = useLoaderData<typeof loader>();
-
-  return <CreateEmployeeModal invitable={invitable} />;
+  const navigate = useNavigate();
+  return (
+    <RegisteredEntityFormModal
+      to={path.to.newEmployee}
+      onClose={() => navigate(-1)}
+    />
+  );
 }

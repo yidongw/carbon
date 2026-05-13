@@ -14,6 +14,7 @@ import {
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import { flushSync } from "react-dom";
+import type { FetcherWithComponents } from "react-router";
 import { useFetcher } from "react-router";
 import type { z } from "zod";
 import {
@@ -31,6 +32,7 @@ import {
   Submit
 } from "~/components/Form";
 import ExchangeRate from "~/components/Form/ExchangeRate";
+import { useNewEntityForm } from "~/components/NewEntityModal";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
 import { path } from "~/utils/path";
 import { isSalesOrderLocked, salesOrderValidator } from "../../sales.models";
@@ -38,18 +40,47 @@ import { isSalesOrderLocked, salesOrderValidator } from "../../sales.models";
 type SalesOrderFormValues = z.infer<typeof salesOrderValidator>;
 
 type SalesOrderFormProps = {
-  initialValues: SalesOrderFormValues & {
-    originatedFromQuote: boolean;
-    digitalQuoteAcceptedBy: string | undefined;
-    digitalQuoteAcceptedByEmail: string | undefined;
-  };
+  initialValues?: Partial<
+    SalesOrderFormValues & {
+      originatedFromQuote: boolean;
+      digitalQuoteAcceptedBy: string | undefined;
+      digitalQuoteAcceptedByEmail: string | undefined;
+    }
+  >;
+  searchParams?: URLSearchParams;
+  fetcher?: FetcherWithComponents<unknown>;
 };
 
-const SalesOrderForm = ({ initialValues }: SalesOrderFormProps) => {
+const SalesOrderForm = ({
+  initialValues: initialValuesProp,
+  searchParams,
+  fetcher
+}: SalesOrderFormProps) => {
   const { t } = useLingui();
+  const modalFetcher = useNewEntityForm(path.to.newSalesOrder);
+  const submitFetcher = fetcher ?? modalFetcher;
   const permissions = usePermissions();
   const { carbon } = useCarbon();
-  const { company } = useUser();
+  const { id: userId, company, defaults } = useUser();
+  const initialValues = {
+    id: undefined,
+    salesOrderId: undefined,
+    customerId: "",
+    orderDate: "",
+    status: "Draft" as const,
+    currencyCode: company?.baseCurrencyCode ?? "USD",
+    locationId: defaults?.locationId ?? "",
+    salesPersonId: userId,
+    exchangeRate: undefined,
+    exchangeRateUpdatedAt: "",
+    originatedFromQuote: false,
+    digitalQuoteAcceptedBy: undefined,
+    digitalQuoteAcceptedByEmail: undefined,
+    ...(searchParams?.get("customerId")
+      ? { customerId: searchParams.get("customerId")! }
+      : {}),
+    ...initialValuesProp
+  };
   const [customer, setCustomer] = useState<{
     id: string | undefined;
     currencyCode: string | undefined;
@@ -125,9 +156,11 @@ const SalesOrderForm = ({ initialValues }: SalesOrderFormProps) => {
     <Card>
       <ValidatedForm
         method="post"
+        action={isEditing ? undefined : path.to.newSalesOrder}
         validator={salesOrderValidator}
         defaultValues={initialValues}
         isDisabled={isEditing && isLocked}
+        fetcher={submitFetcher}
       >
         <CardHeader>
           <CardTitle>

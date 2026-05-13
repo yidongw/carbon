@@ -1,10 +1,11 @@
 import { useCallback } from "react";
-import { useNavigate, useSubmit } from "react-router";
+import { useLocation, useNavigate, useSubmit } from "react-router";
 import { path } from "~/utils/path";
 import type { SalesOrder } from "../../types";
 
 export const useSalesOrder = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const submit = useSubmit();
 
   const edit = useCallback(
@@ -15,9 +16,10 @@ export const useSalesOrder = () => {
   const invoice = useCallback(
     (salesOrder: SalesOrder) =>
       navigate(
-        `${path.to.newSalesInvoice}?sourceDocument=Sales Order&sourceDocumentId=${salesOrder.id}`
+        `${path.to.newSalesInvoice}?sourceDocument=Sales Order&sourceDocumentId=${salesOrder.id}`,
+        { state: { from: `${location.pathname}${location.search}` } }
       ),
-    [navigate]
+    [location.pathname, location.search, navigate]
   );
 
   const ship = useCallback(

@@ -2,8 +2,9 @@ import type { ComboboxProps } from "@carbon/form";
 import { CreatableCombobox } from "@carbon/form";
 import { useDisclosure } from "@carbon/react";
 import { useMemo, useRef, useState } from "react";
+import { EntityFormModal } from "~/components/NewEntityModal";
 import type { ItemReplenishmentSystem } from "~/modules/items";
-import PartForm from "~/modules/items/ui/Parts/PartForm";
+import { PartForm } from "~/modules/items/ui/Parts";
 import { useParts } from "~/stores";
 
 type PartSelectProps = Omit<ComboboxProps, "options"> & {
@@ -39,27 +40,29 @@ const Part = ({ itemReplenishmentSystem, ...props }: PartSelectProps) => {
         }}
       />
       {newPartsModal.isOpen && (
-        <PartForm
-          type="modal"
+        <EntityFormModal
           onClose={() => {
             setCreated("");
             newPartsModal.onClose();
             triggerRef.current?.click();
           }}
-          initialValues={{
-            id: "",
-            revision: "0",
-            name: created,
-            description: "",
-            itemTrackingType: "Inventory" as "Inventory",
-            replenishmentSystem: itemReplenishmentSystem ?? "Buy and Make",
-            defaultMethodType: "Pull from Inventory",
-            unitOfMeasureCode: "EA",
-            unitCost: 0,
-            lotSize: 0,
-            shelfLifeCalculateFromBom: false
-          }}
-        />
+        >
+          <PartForm
+            initialValues={{
+              id: "",
+              revision: "0",
+              name: created,
+              description: "",
+              itemTrackingType: "Inventory" as "Inventory",
+              replenishmentSystem: itemReplenishmentSystem ?? "Buy and Make",
+              defaultMethodType: "Pull from Inventory",
+              unitOfMeasureCode: "EA",
+              unitCost: 0,
+              lotSize: 0,
+              shelfLifeCalculateFromBom: false
+            }}
+          />
+        </EntityFormModal>
       )}
     </>
   );

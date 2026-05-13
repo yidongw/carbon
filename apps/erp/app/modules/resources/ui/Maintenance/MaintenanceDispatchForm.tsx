@@ -17,11 +17,13 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { nanoid } from "nanoid";
 import { useState } from "react";
 import { BsExclamationSquareFill } from "react-icons/bs";
+import type { FetcherWithComponents } from "react-router";
 import type { z } from "zod";
 import { HighPriorityIcon } from "~/assets/icons/HighPriorityIcon";
 import { LowPriorityIcon } from "~/assets/icons/LowPriorityIcon";
 import { MediumPriorityIcon } from "~/assets/icons/MediumPriorityIcon";
 import { Hidden, Location, Submit, WorkCenter } from "~/components/Form";
+import { useNewEntityForm } from "~/components/NewEntityModal";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
 import { getPrivateUrl, path } from "~/utils/path";
 import {
@@ -53,20 +55,35 @@ function getPriorityIcon(
 }
 
 type MaintenanceDispatchFormProps = {
-  initialValues: z.infer<typeof maintenanceDispatchValidator>;
+  initialValues?: Partial<z.infer<typeof maintenanceDispatchValidator>>;
   failureModes?: { id: string; name: string }[];
+  defaultLocationId?: string;
+  fetcher?: FetcherWithComponents<unknown>;
 };
 
 const MaintenanceDispatchForm = ({
-  initialValues,
-  failureModes = []
+  initialValues: initialValuesProp,
+  failureModes = [],
+  defaultLocationId,
+  fetcher
 }: MaintenanceDispatchFormProps) => {
   const { t } = useLingui();
+  const modalFetcher = useNewEntityForm(path.to.newMaintenanceDispatch);
+  const submitFetcher = fetcher ?? modalFetcher;
   const permissions = usePermissions();
   const {
     company: { id: companyId }
   } = useUser();
   const { carbon } = useCarbon();
+  const initialValues = {
+    status: "Open" as const,
+    priority: "Medium" as const,
+    source: "Reactive" as const,
+    severity: "Support Required" as const,
+    oeeImpact: "No Impact" as const,
+    locationId: defaultLocationId ?? "",
+    ...initialValuesProp
+  };
 
   const isEditing = initialValues.id !== undefined;
 
@@ -118,6 +135,7 @@ const MaintenanceDispatchForm = ({
         action={path.to.newMaintenanceDispatch}
         defaultValues={initialValues}
         isDisabled={isEditing && isLocked}
+        fetcher={submitFetcher}
       >
         <CardHeader>
           <CardTitle>

@@ -11,8 +11,8 @@ import {
   VStack
 } from "@carbon/react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import ToolForm from "~/modules/items/ui/Tools/ToolForm";
-
+import { EntityFormModal } from "~/components/NewEntityModal";
+import { ToolForm } from "~/modules/items/ui/Tools";
 import { useTools } from "~/stores";
 
 type ToolSelectProps = Omit<ComboboxProps, "options" | "type" | "inline"> & {
@@ -113,27 +113,29 @@ const Tool = ({ name, label, helperText, ...props }: ToolSelectProps) => {
         )}
       </FormControl>
       {newToolsModal.isOpen && (
-        <ToolForm
-          type="modal"
+        <EntityFormModal
           onClose={() => {
             setCreated("");
             newToolsModal.onClose();
             triggerRef.current?.click();
           }}
-          initialValues={{
-            id: "",
-            revision: "0",
-            name: created,
-            description: "",
-            itemTrackingType: "Inventory",
-            unitOfMeasureCode: "EA",
-            replenishmentSystem: "Buy",
-            defaultMethodType: "Pull from Inventory",
-            unitCost: 0,
-            shelfLifeCalculateFromBom: false,
-            tags: []
-          }}
-        />
+        >
+          <ToolForm
+            initialValues={{
+              id: "",
+              revision: "0",
+              name: created,
+              description: "",
+              itemTrackingType: "Inventory",
+              unitOfMeasureCode: "EA",
+              replenishmentSystem: "Buy",
+              defaultMethodType: "Pull from Inventory",
+              unitCost: 0,
+              shelfLifeCalculateFromBom: false,
+              tags: []
+            }}
+          />
+        </EntityFormModal>
       )}
     </>
   );

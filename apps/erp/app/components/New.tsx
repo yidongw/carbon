@@ -9,9 +9,13 @@ import {
   useKeyboardShortcuts
 } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
-import { useRef } from "react";
+import { useCallback, useRef } from "react";
 import { LuCirclePlus } from "react-icons/lu";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
+import {
+  isNewEntityModalRoute,
+  useNewEntityModal
+} from "~/components/NewEntityModal";
 
 type NewProps = {
   label?: string;
@@ -22,7 +26,17 @@ type NewProps = {
 const New = ({ label, to, variant = "primary" }: NewProps) => {
   const { i18n, t } = useLingui();
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const location = useLocation();
+  const { open } = useNewEntityModal();
   const translatedLabel = label ? i18n._(label) : undefined;
+  const display = translatedLabel ? `${t`Add`} ${translatedLabel}` : t`Add`;
+
+  const openAsModal = isNewEntityModalRoute(to);
+
+  const handleClick = useCallback(() => {
+    open(to);
+  }, [open, to]);
+
   useKeyboardShortcuts({
     n: (event: KeyboardEvent) => {
       event.stopPropagation();
@@ -33,16 +47,31 @@ const New = ({ label, to, variant = "primary" }: NewProps) => {
   return (
     <Tooltip>
       <TooltipTrigger>
-        <Button
-          asChild
-          leftIcon={<LuCirclePlus />}
-          variant={variant}
-          ref={buttonRef}
-        >
-          <Link to={to} prefetch="intent">
-            {translatedLabel ? `${t`Add`} ${translatedLabel}` : t`Add`}
-          </Link>
-        </Button>
+        {openAsModal ? (
+          <Button
+            leftIcon={<LuCirclePlus />}
+            variant={variant}
+            ref={buttonRef}
+            onClick={handleClick}
+          >
+            {display}
+          </Button>
+        ) : (
+          <Button
+            asChild
+            leftIcon={<LuCirclePlus />}
+            variant={variant}
+            ref={buttonRef}
+          >
+            <Link
+              to={to}
+              prefetch="intent"
+              state={{ from: `${location.pathname}${location.search}` }}
+            >
+              {display}
+            </Link>
+          </Button>
+        )}
       </TooltipTrigger>
       <TooltipContent>
         <HStack>

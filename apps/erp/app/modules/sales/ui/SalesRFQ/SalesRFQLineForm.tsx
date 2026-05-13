@@ -2,7 +2,13 @@ import { useCarbon } from "@carbon/auth";
 import { ValidatedForm } from "@carbon/form";
 import {
   Badge,
+  Card,
   CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuIcon,
@@ -10,14 +16,6 @@ import {
   DropdownMenuTrigger,
   HStack,
   IconButton,
-  ModalCard,
-  ModalCardBody,
-  ModalCardContent,
-  ModalCardDescription,
-  ModalCardFooter,
-  ModalCardHeader,
-  ModalCardProvider,
-  ModalCardTitle,
   toast,
   useDisclosure,
   VStack
@@ -37,6 +35,7 @@ import {
   Submit,
   UnitOfMeasure
 } from "~/components/Form";
+import { CardFormModal } from "~/components/NewEntityModal";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
 import { path } from "~/utils/path";
 import { isSalesRfqLocked, salesRfqLineValidator } from "../../sales.models";
@@ -45,14 +44,12 @@ import DeleteSalesRFQLine from "./DeleteSalesRFQLine";
 
 type SalesRFQLineFormProps = {
   initialValues: z.infer<typeof salesRfqLineValidator>;
-  type?: "card" | "modal";
-  onClose?: () => void;
+  onSubmitted?: () => void;
 };
 
 const SalesRFQLineForm = ({
   initialValues,
-  type,
-  onClose
+  onSubmitted
 }: SalesRFQLineFormProps) => {
   const { t } = useLingui();
   const permissions = usePermissions();
@@ -178,172 +175,156 @@ const SalesRFQLineForm = ({
 
   return (
     <>
-      <ModalCardProvider type={type}>
-        <ModalCard
-          onClose={onClose}
-          isCollapsible={isEditing}
-          defaultCollapsed={false}
+      <Card isCollapsible={isEditing} defaultCollapsed={false}>
+        <ValidatedForm
+          defaultValues={initialValues}
+          validator={salesRfqLineValidator}
+          method="post"
+          action={
+            isEditing
+              ? path.to.salesRfqLine(rfqId, initialValues.id!)
+              : path.to.newSalesRFQLine(rfqId)
+          }
+          className="w-full"
+          isDisabled={isEditing && isLocked}
+          onSubmit={onSubmitted}
         >
-          <ModalCardContent>
-            <ValidatedForm
-              defaultValues={initialValues}
-              validator={salesRfqLineValidator}
-              method="post"
-              action={
-                isEditing
-                  ? path.to.salesRfqLine(rfqId, initialValues.id!)
-                  : path.to.newSalesRFQLine(rfqId)
-              }
-              className="w-full"
-              isDisabled={isEditing && isLocked}
-              onSubmit={() => {
-                if (type === "modal") onClose?.();
-              }}
-            >
-              <HStack className="w-full justify-between items-start">
-                <ModalCardHeader>
-                  <ModalCardTitle>
-                    {isEditing
-                      ? `${itemData?.customerPartId}${
-                          itemData?.customerPartRevision
-                            ? `.${itemData?.customerPartRevision}`
-                            : ""
-                        }`
-                      : "New RFQ Line"}
-                  </ModalCardTitle>
-                  <ModalCardDescription>
-                    {isEditing ? (
-                      <div className="flex flex-col items-start gap-1">
-                        <span>{itemData?.description}</span>
-                        <div className="flex items-center gap-2">
-                          <Badge variant="outline">
-                            {initialValues?.quantity.join(", ")}
-                          </Badge>
-                        </div>
-                      </div>
-                    ) : (
-                      "An RFQ line contains part and quantity information about the requested item"
-                    )}
-                  </ModalCardDescription>
-                </ModalCardHeader>
-                {isEditing &&
-                  permissions.can("update", "sales") &&
-                  !isLocked && (
-                    <CardAction className="pr-12">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <IconButton
-                            icon={<BsThreeDotsVertical />}
-                            aria-label="More"
-                            variant="ghost"
-                          />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={deleteDisclosure.onOpen}>
-                            <DropdownMenuIcon icon={<LuTrash />} />
-                            Delete Line
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </CardAction>
-                  )}
-              </HStack>
-              <ModalCardBody>
-                <Hidden name="id" />
-                <Hidden name="salesRfqId" />
-                <Hidden name="order" />
-                <Hidden
-                  name="modelUploadId"
-                  value={itemData.modelUploadId ?? undefined}
-                />
-                <VStack>
-                  <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
-                    <div className="col-span-2 grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-2 auto-rows-min">
-                      <InputControlled
-                        name="customerPartId"
-                        label={t`Customer Part Number`}
-                        value={itemData.customerPartId}
-                        onChange={(newValue) => {
-                          setItemData((d) => ({
-                            ...d,
-                            customerPartId: newValue
-                          }));
-                        }}
-                        onBlur={(e) => onCustomerPartChange(e.target.value)}
-                        autoFocus
-                      />
-                      <InputControlled
-                        name="customerPartRevision"
-                        label={t`Customer Part Revision`}
-                        value={itemData.customerPartRevision}
-                        onChange={(newValue) => {
-                          setItemData((d) => ({
-                            ...d,
-                            customerPartRevision: newValue
-                          }));
-                        }}
-                        onBlur={(e) =>
-                          onCustomerPartRevisionChange(e.target.value)
-                        }
-                      />
-                      <Item
-                        name="itemId"
-                        label={t`Part`}
-                        type="Part"
-                        value={itemData.itemId}
-                        includeInactive
-                        locationId={
-                          routeData?.rfqSummary?.locationId ?? undefined
-                        }
-                        onChange={(value) => {
-                          onItemChange(value?.value as string);
-                        }}
-                      />
-                      <InputControlled
-                        name="description"
-                        label={t`Description`}
-                        value={itemData.description}
-                        isReadOnly={!!itemData.itemId}
-                      />
-                      <UnitOfMeasure
-                        name="unitOfMeasureCode"
-                        value={itemData.unitOfMeasureCode}
-                        onChange={(newValue) =>
-                          setItemData((d) => ({
-                            ...d,
-                            unitOfMeasureCode: newValue?.value ?? "EA"
-                          }))
-                        }
-                      />
-
-                      <CustomFormFields table="salesRfqLine" />
-                    </div>
-                    <div className="flex gap-y-4">
-                      <ArrayNumeric
-                        name="quantity"
-                        label={t`Quantity`}
-                        defaults={[1, 25, 50, 100]}
-                      />
+          <HStack className="w-full justify-between items-start pr-16">
+            <CardHeader>
+              <CardTitle>
+                {isEditing
+                  ? `${itemData?.customerPartId}${
+                      itemData?.customerPartRevision
+                        ? `.${itemData?.customerPartRevision}`
+                        : ""
+                    }`
+                  : "New RFQ Line"}
+              </CardTitle>
+              <CardDescription>
+                {isEditing ? (
+                  <div className="flex flex-col items-start gap-1">
+                    <span>{itemData?.description}</span>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline">
+                        {initialValues?.quantity.join(", ")}
+                      </Badge>
                     </div>
                   </div>
-                </VStack>
-              </ModalCardBody>
-              <ModalCardFooter>
-                <Submit
-                  isDisabled={
-                    isLocked ||
-                    (isEditing
-                      ? !permissions.can("update", "sales")
-                      : !permissions.can("create", "sales"))
-                  }
-                >
-                  <Trans>Save</Trans>
-                </Submit>
-              </ModalCardFooter>
-            </ValidatedForm>
-          </ModalCardContent>
-        </ModalCard>
-      </ModalCardProvider>
+                ) : (
+                  "An RFQ line contains part and quantity information about the requested item"
+                )}
+              </CardDescription>
+            </CardHeader>
+            {isEditing && permissions.can("update", "sales") && !isLocked && (
+              <CardAction className="pr-12">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <IconButton
+                      icon={<BsThreeDotsVertical />}
+                      aria-label="More"
+                      variant="ghost"
+                    />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={deleteDisclosure.onOpen}>
+                      <DropdownMenuIcon icon={<LuTrash />} />
+                      Delete Line
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </CardAction>
+            )}
+          </HStack>
+          <CardContent>
+            <Hidden name="id" />
+            <Hidden name="salesRfqId" />
+            <Hidden name="order" />
+            <Hidden
+              name="modelUploadId"
+              value={itemData.modelUploadId ?? undefined}
+            />
+            <VStack>
+              <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
+                <div className="col-span-2 grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-2 auto-rows-min">
+                  <InputControlled
+                    name="customerPartId"
+                    label={t`Customer Part Number`}
+                    value={itemData.customerPartId}
+                    onChange={(newValue) => {
+                      setItemData((d) => ({
+                        ...d,
+                        customerPartId: newValue
+                      }));
+                    }}
+                    onBlur={(e) => onCustomerPartChange(e.target.value)}
+                    autoFocus
+                  />
+                  <InputControlled
+                    name="customerPartRevision"
+                    label={t`Customer Part Revision`}
+                    value={itemData.customerPartRevision}
+                    onChange={(newValue) => {
+                      setItemData((d) => ({
+                        ...d,
+                        customerPartRevision: newValue
+                      }));
+                    }}
+                    onBlur={(e) => onCustomerPartRevisionChange(e.target.value)}
+                  />
+                  <Item
+                    name="itemId"
+                    label={t`Part`}
+                    type="Part"
+                    value={itemData.itemId}
+                    includeInactive
+                    locationId={routeData?.rfqSummary?.locationId ?? undefined}
+                    onChange={(value) => {
+                      onItemChange(value?.value as string);
+                    }}
+                  />
+                  <InputControlled
+                    name="description"
+                    label={t`Description`}
+                    value={itemData.description}
+                    isReadOnly={!!itemData.itemId}
+                  />
+                  <UnitOfMeasure
+                    name="unitOfMeasureCode"
+                    value={itemData.unitOfMeasureCode}
+                    onChange={(newValue) =>
+                      setItemData((d) => ({
+                        ...d,
+                        unitOfMeasureCode: newValue?.value ?? "EA"
+                      }))
+                    }
+                  />
+
+                  <CustomFormFields table="salesRfqLine" />
+                </div>
+                <div className="flex gap-y-4">
+                  <ArrayNumeric
+                    name="quantity"
+                    label={t`Quantity`}
+                    defaults={[1, 25, 50, 100]}
+                  />
+                </div>
+              </div>
+            </VStack>
+          </CardContent>
+          <CardFooter>
+            <Submit
+              isDisabled={
+                isLocked ||
+                (isEditing
+                  ? !permissions.can("update", "sales")
+                  : !permissions.can("create", "sales"))
+              }
+            >
+              <Trans>Save</Trans>
+            </Submit>
+          </CardFooter>
+        </ValidatedForm>
+      </Card>
       {isEditing && deleteDisclosure.isOpen && (
         <DeleteSalesRFQLine
           line={initialValues as SalesRFQLine}
@@ -355,3 +336,17 @@ const SalesRFQLineForm = ({
 };
 
 export default SalesRFQLineForm;
+
+export function SalesRFQLineFormModal({
+  initialValues,
+  onClose
+}: {
+  initialValues: z.infer<typeof salesRfqLineValidator>;
+  onClose: () => void;
+}) {
+  return (
+    <CardFormModal onClose={onClose} contentClassName="!max-w-6xl">
+      <SalesRFQLineForm initialValues={initialValues} onSubmitted={onClose} />
+    </CardFormModal>
+  );
+}

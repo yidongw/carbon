@@ -1,4 +1,4 @@
-import CreateSupplierModal from "./CreateSupplierModal";
+import CreateSupplierAccountForm from "./CreateSupplierAccountForm";
 import SupplierAccountsTable from "./SupplierAccountsTable";
 
-export { CreateSupplierModal, SupplierAccountsTable };
+export { CreateSupplierAccountForm, SupplierAccountsTable };

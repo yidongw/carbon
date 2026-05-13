@@ -2,16 +2,14 @@ import { useCarbon } from "@carbon/auth";
 import { ValidatedForm } from "@carbon/form";
 import {
   Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
   cn,
   Loading,
-  ModalCard,
-  ModalCardBody,
-  ModalCardContent,
-  ModalCardDescription,
-  ModalCardFooter,
-  ModalCardHeader,
-  ModalCardProvider,
-  ModalCardTitle,
   toast,
   VStack
 } from "@carbon/react";
@@ -23,10 +21,11 @@ import {
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { PostgrestResponse } from "@supabase/supabase-js";
 import { nanoid } from "nanoid";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { flushSync } from "react-dom";
 import { useDropzone } from "react-dropzone";
 import { LuCloudUpload } from "react-icons/lu";
+import type { FetcherWithComponents } from "react-router";
 import { useFetcher } from "react-router";
 import type { z } from "zod";
 import { TrackingTypeIcon } from "~/components";
@@ -43,6 +42,7 @@ import {
   UnitOfMeasure
 } from "~/components/Form";
 import { ReplenishmentSystemIcon } from "~/components/Icons";
+import { useNewEntityForm } from "~/components/NewEntityModal";
 import { useNextItemId, usePermissions, useUser } from "~/hooks";
 import { path } from "~/utils/path";
 import {
@@ -53,9 +53,8 @@ import {
 import ItemStorageFields from "../Item/ItemStorageFields";
 
 type PartFormProps = {
-  initialValues: z.infer<typeof partValidator> & { tags?: string[] };
-  type?: "card" | "modal";
-  onClose?: () => void;
+  initialValues?: Partial<z.infer<typeof partValidator> & { tags?: string[] }>;
+  fetcher?: FetcherWithComponents<PostgrestResponse<{ id: string }>>;
 };
 
 const SIZE_LIMIT = getFileSizeLimit("CAD_MODEL_UPLOAD");
@@ -64,12 +63,32 @@ function startsWithLetter(value: string) {
   return /^[A-Za-z]/.test(value);
 }
 
-const PartForm = ({ initialValues, type = "card", onClose }: PartFormProps) => {
+const PartForm = ({
+  initialValues: initialValuesProp,
+  fetcher
+}: PartFormProps) => {
   const { t } = useLingui();
   const { company } = useUser();
   const baseCurrency = company?.baseCurrencyCode ?? "USD";
+  const initialValues = {
+    id: "",
+    revision: "0",
+    name: "",
+    description: "",
+    itemTrackingType: "Inventory" as const,
+    replenishmentSystem: "Buy" as const,
+    defaultMethodType: "Pull from Inventory" as const,
+    unitOfMeasureCode: "EA",
+    unitCost: 0,
+    lotSize: 0,
+    shelfLifeCalculateFromBom: false,
+    tags: [],
+    ...initialValuesProp
+  };
 
-  const fetcher = useFetcher<PostgrestResponse<{ id: string }>>();
+  const modalFetcher = useNewEntityForm<{ id: string }>(path.to.newPart);
+  const internalFetcher = useFetcher<PostgrestResponse<{ id: string }>>();
+  const submitFetcher = fetcher ?? modalFetcher ?? internalFetcher;
 
   const [modelUploadId, setModelUploadId] = useState<string | null>(null);
   const [modelIsUploading, setModelIsUploading] = useState(false);
@@ -151,17 +170,6 @@ const PartForm = ({ initialValues, type = "card", onClose }: PartFormProps) => {
     }
   });
 
-  useEffect(() => {
-    if (type !== "modal") return;
-
-    if (fetcher.state === "loading" && fetcher.data?.data) {
-      onClose?.();
-      toast.success(t`Created part`);
-    } else if (fetcher.state === "idle" && fetcher.data?.error) {
-      toast.error(t`Failed to create part: ${fetcher.data.error.message}`);
-    }
-  }, [fetcher.data, fetcher.state, onClose, type, t]);
-
   const { id, onIdChange, loading } = useNextItemId("Part");
   const permissions = usePermissions();
   const isEditing = !!initialValues.id;
@@ -207,194 +215,177 @@ const PartForm = ({ initialValues, type = "card", onClose }: PartFormProps) => {
     })) ?? [];
 
   return (
-    <ModalCardProvider type={type}>
-      <ModalCard onClose={onClose}>
-        <ModalCardContent>
-          <ValidatedForm
-            action={isEditing ? undefined : path.to.newPart}
-            method="post"
-            validator={partValidator}
-            defaultValues={initialValues}
-            fetcher={fetcher}
+    <Card>
+      <ValidatedForm
+        action={isEditing ? undefined : path.to.newPart}
+        method="post"
+        validator={partValidator}
+        defaultValues={initialValues}
+        fetcher={submitFetcher}
+      >
+        <CardHeader className="pr-14 sm:pr-16">
+          <CardTitle>
+            {isEditing ? <Trans>Part Details</Trans> : <Trans>New Part</Trans>}
+          </CardTitle>
+          {!isEditing && (
+            <CardDescription>
+              <Trans>
+                A part contains the information about a specific item that can
+                be purchased or manufactured.
+              </Trans>
+            </CardDescription>
+          )}
+        </CardHeader>
+        <CardContent>
+          <Hidden name="modelUploadId" value={modelUploadId ?? ""} />
+          {!isEditing && replenishmentSystem === "Make" && (
+            <Hidden name="unitCost" value={initialValues.unitCost} />
+          )}
+          {!isEditing && replenishmentSystem === "Buy" && (
+            <Hidden name="lotSize" value={initialValues.lotSize} />
+          )}
+          <div
+            className={cn(
+              "grid w-full gap-x-8 gap-y-4",
+              isEditing
+                ? "grid-cols-1 md:grid-cols-3"
+                : "grid-cols-1 md:grid-cols-2"
+            )}
           >
-            <ModalCardHeader>
-              <ModalCardTitle>
-                {isEditing ? (
-                  <Trans>Part Details</Trans>
-                ) : (
-                  <Trans>New Part</Trans>
-                )}
-              </ModalCardTitle>
-              {!isEditing && (
-                <ModalCardDescription>
-                  <Trans>
-                    A part contains the information about a specific item that
-                    can be purchased or manufactured.
-                  </Trans>
-                </ModalCardDescription>
-              )}
-            </ModalCardHeader>
-            <ModalCardBody>
-              <Hidden name="type" value={type} />
-              <Hidden name="modelUploadId" value={modelUploadId ?? ""} />
-              {!isEditing && replenishmentSystem === "Make" && (
-                <Hidden name="unitCost" value={initialValues.unitCost} />
-              )}
-              {!isEditing && replenishmentSystem === "Buy" && (
-                <Hidden name="lotSize" value={initialValues.lotSize} />
-              )}
-              <div
-                className={cn(
-                  "grid w-full gap-x-8 gap-y-4",
-                  isEditing
-                    ? "grid-cols-1 md:grid-cols-3"
-                    : "grid-cols-1 md:grid-cols-2"
-                )}
-              >
-                {isEditing ? (
-                  <Input name="id" label={t`Part ID`} isReadOnly />
-                ) : (
-                  <InputControlled
-                    name="id"
-                    label={t`Part ID`}
-                    helperText={
-                      startsWithLetter(id)
-                        ? t`Use ... to get the next part ID`
-                        : undefined
-                    }
-                    value={id}
-                    onChange={onIdChange}
-                    isDisabled={loading}
-                    isUppercase
-                  />
-                )}
-                <Input
-                  name="revision"
-                  label={t`Revision`}
-                  isReadOnly={isEditing}
-                />
-
-                <Input name="name" label={t`Short Description`} />
-
-                <Select
-                  name="replenishmentSystem"
-                  label={t`Replenishment System`}
-                  options={itemReplenishmentSystemOptions}
-                  onChange={(newValue) => {
-                    setReplenishmentSystem(newValue?.value ?? "Buy");
-                    if (newValue?.value === "Buy") {
-                      setDefaultMethodType("Pull from Inventory");
-                    } else {
-                      setDefaultMethodType("Make to Order");
-                    }
-                  }}
-                />
-                <Select
-                  name="itemTrackingType"
-                  label={t`Tracking Type`}
-                  options={itemTrackingTypeOptions}
-                />
-                <DefaultMethodType
-                  name="defaultMethodType"
-                  label={t`Default Method Type`}
-                  replenishmentSystem={replenishmentSystem}
-                  value={defaultMethodType}
-                  onChange={(newValue) =>
-                    setDefaultMethodType(
-                      newValue?.value ?? "Pull from Inventory"
-                    )
-                  }
-                />
-                <UnitOfMeasure
-                  name="unitOfMeasureCode"
-                  label={t`Unit of Measure`}
-                />
-                {!isEditing && (
-                  <ItemPostingGroup
-                    name="postingGroupId"
-                    label={t`Item Group`}
-                    isClearable
-                  />
-                )}
-                {!isEditing && replenishmentSystem !== "Make" && (
-                  <Number
-                    name="unitCost"
-                    label={t`Unit Cost`}
-                    formatOptions={{
-                      style: "currency",
-                      currency: baseCurrency
-                    }}
-                    minValue={0}
-                  />
-                )}
-                {!isEditing && replenishmentSystem !== "Buy" && (
-                  <Number name="lotSize" label={t`Batch Size`} minValue={0} />
-                )}
-
-                <ItemStorageFields />
-
-                <CustomFormFields table="part" tags={initialValues.tags} />
-              </div>
-              <VStack spacing={2} className="mt-4 w-full">
-                <label
-                  htmlFor="model-upload"
-                  className="text-xs font-medium text-muted-foreground"
-                >
-                  <Trans>CAD Model</Trans>
-                </label>
-                <div
-                  {...getRootProps()}
-                  className={`w-full border-2 border-dashed rounded-md p-6 text-center hover:border-primary hover:bg-primary/10 cursor-pointer ${
-                    isDragActive
-                      ? "border-primary bg-primary/10"
-                      : "border-muted"
-                  }`}
-                >
-                  <input id="model-upload" {...getInputProps()} />
-                  {modelFile ? (
-                    <>
-                      <p className="text-sm font-semibold text-card-foreground">
-                        {modelFile.name}
-                      </p>
-                      <p className="text-xs text-muted-foreground group-hover:text-foreground">
-                        {convertKbToString(Math.ceil(modelFile.size / 1024))}
-                      </p>
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        className="mt-2"
-                        onClick={removeModel}
-                      >
-                        <Trans>Remove</Trans>
-                      </Button>
-                    </>
-                  ) : (
-                    <Loading isLoading={modelIsUploading}>
-                      <LuCloudUpload className="mx-auto h-12 w-12 text-muted-foreground group-hover:text-primary-foreground" />
-                      <p className="text-xs text-muted-foreground group-hover:text-foreground">
-                        {t`Supports ${supportedModelTypes.join(", ")} files`}
-                      </p>
-                    </Loading>
-                  )}
-                </div>
-              </VStack>
-            </ModalCardBody>
-            <ModalCardFooter>
-              <Submit
-                isLoading={fetcher.state !== "idle"}
-                isDisabled={
-                  isEditing
-                    ? !permissions.can("update", "parts")
-                    : !permissions.can("create", "parts")
+            {isEditing ? (
+              <Input name="id" label={t`Part ID`} isReadOnly />
+            ) : (
+              <InputControlled
+                name="id"
+                label={t`Part ID`}
+                helperText={
+                  startsWithLetter(id)
+                    ? t`Use ... to get the next part ID`
+                    : undefined
                 }
-              >
-                <Trans>Save</Trans>
-              </Submit>
-            </ModalCardFooter>
-          </ValidatedForm>
-        </ModalCardContent>
-      </ModalCard>
-    </ModalCardProvider>
+                value={id}
+                onChange={onIdChange}
+                isDisabled={loading}
+                isUppercase
+              />
+            )}
+            <Input name="revision" label={t`Revision`} isReadOnly={isEditing} />
+
+            <Input name="name" label={t`Short Description`} />
+
+            <Select
+              name="replenishmentSystem"
+              label={t`Replenishment System`}
+              options={itemReplenishmentSystemOptions}
+              onChange={(newValue) => {
+                setReplenishmentSystem(newValue?.value ?? "Buy");
+                if (newValue?.value === "Buy") {
+                  setDefaultMethodType("Pull from Inventory");
+                } else {
+                  setDefaultMethodType("Make to Order");
+                }
+              }}
+            />
+            <Select
+              name="itemTrackingType"
+              label={t`Tracking Type`}
+              options={itemTrackingTypeOptions}
+            />
+            <DefaultMethodType
+              name="defaultMethodType"
+              label={t`Default Method Type`}
+              replenishmentSystem={replenishmentSystem}
+              value={defaultMethodType}
+              onChange={(newValue) =>
+                setDefaultMethodType(newValue?.value ?? "Pull from Inventory")
+              }
+            />
+            <UnitOfMeasure
+              name="unitOfMeasureCode"
+              label={t`Unit of Measure`}
+            />
+            {!isEditing && (
+              <ItemPostingGroup
+                name="postingGroupId"
+                label={t`Item Group`}
+                isClearable
+              />
+            )}
+            {!isEditing && replenishmentSystem !== "Make" && (
+              <Number
+                name="unitCost"
+                label={t`Unit Cost`}
+                formatOptions={{
+                  style: "currency",
+                  currency: baseCurrency
+                }}
+                minValue={0}
+              />
+            )}
+            {!isEditing && replenishmentSystem !== "Buy" && (
+              <Number name="lotSize" label={t`Batch Size`} minValue={0} />
+            )}
+
+            <ItemStorageFields />
+
+            <CustomFormFields table="part" tags={initialValues.tags} />
+          </div>
+          <VStack spacing={2} className="mt-4 w-full">
+            <label
+              htmlFor="model-upload"
+              className="text-xs font-medium text-muted-foreground"
+            >
+              <Trans>CAD Model</Trans>
+            </label>
+            <div
+              {...getRootProps()}
+              className={`w-full border-2 border-dashed rounded-md p-6 text-center hover:border-primary hover:bg-primary/10 cursor-pointer ${
+                isDragActive ? "border-primary bg-primary/10" : "border-muted"
+              }`}
+            >
+              <input id="model-upload" {...getInputProps()} />
+              {modelFile ? (
+                <>
+                  <p className="text-sm font-semibold text-card-foreground">
+                    {modelFile.name}
+                  </p>
+                  <p className="text-xs text-muted-foreground group-hover:text-foreground">
+                    {convertKbToString(Math.ceil(modelFile.size / 1024))}
+                  </p>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    className="mt-2"
+                    onClick={removeModel}
+                  >
+                    <Trans>Remove</Trans>
+                  </Button>
+                </>
+              ) : (
+                <Loading isLoading={modelIsUploading}>
+                  <LuCloudUpload className="mx-auto h-12 w-12 text-muted-foreground group-hover:text-primary-foreground" />
+                  <p className="text-xs text-muted-foreground group-hover:text-foreground">
+                    {t`Supports ${supportedModelTypes.join(", ")} files`}
+                  </p>
+                </Loading>
+              )}
+            </div>
+          </VStack>
+        </CardContent>
+        <CardFooter>
+          <Submit
+            isLoading={submitFetcher.state !== "idle"}
+            isDisabled={
+              isEditing
+                ? !permissions.can("update", "parts")
+                : !permissions.can("create", "parts")
+            }
+          >
+            <Trans>Save</Trans>
+          </Submit>
+        </CardFooter>
+      </ValidatedForm>
+    </Card>
   );
 };
 

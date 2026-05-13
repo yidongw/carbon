@@ -3,8 +3,9 @@ import { CreatableCombobox } from "@carbon/form";
 import { useDisclosure } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import { useMemo, useRef, useState } from "react";
+import { EntityFormModal } from "~/components/NewEntityModal";
 import { useUser } from "~/hooks";
-import CustomerForm from "~/modules/sales/ui/Customer/CustomerForm";
+import { CustomerForm } from "~/modules/sales/ui/Customer";
 import { useCustomers } from "~/stores";
 import CustomerAvatar from "../CustomerAvatar";
 
@@ -54,19 +55,21 @@ const Customer = (props: CustomerSelectProps) => {
         }}
       />
       {newCustomersModal.isOpen && (
-        <CustomerForm
-          type="modal"
+        <EntityFormModal
           onClose={() => {
             setCreated("");
             newCustomersModal.onClose();
             triggerRef.current?.click();
           }}
-          initialValues={{
-            name: created,
-            currencyCode: company.baseCurrencyCode,
-            taxPercent: 0
-          }}
-        />
+        >
+          <CustomerForm
+            initialValues={{
+              name: created,
+              currencyCode: company.baseCurrencyCode,
+              taxPercent: 0
+            }}
+          />
+        </EntityFormModal>
       )}
     </>
   );

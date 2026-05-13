@@ -63,7 +63,7 @@ import type {
   SalesOrderRelatedItems
 } from "../../types";
 import DeleteSalesOrderLine from "./DeleteSalesOrderLine";
-import SalesOrderLineForm from "./SalesOrderLineForm";
+import { SalesOrderLineFormModal } from "./SalesOrderLineForm";
 
 // Define types for the related items
 type RelatedItem = {
@@ -233,9 +233,8 @@ export default function SalesOrderExplorer() {
         </div>
       </VStack>
       {newSalesOrderLineDisclosure.isOpen && (
-        <SalesOrderLineForm
+        <SalesOrderLineFormModal
           initialValues={salesOrderLineInitialValues}
-          type="modal"
           onClose={newSalesOrderLineDisclosure.onClose}
         />
       )}

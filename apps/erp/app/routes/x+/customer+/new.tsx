@@ -4,10 +4,9 @@ import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs } from "react-router";
-import { data, redirect } from "react-router";
-import { useUser } from "~/hooks";
+import { data, useLocation, useNavigate } from "react-router";
+import { RegisteredEntityFormModal } from "~/components/NewEntityModal";
 import { customerValidator, upsertCustomer } from "~/modules/sales";
-import { CustomerForm } from "~/modules/sales/ui/Customer";
 import { setCustomFields } from "~/utils/form";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
@@ -25,8 +24,6 @@ export async function action({ request }: ActionFunctionArgs) {
   });
 
   const formData = await request.formData();
-  const modal = formData.get("type") === "modal";
-
   const validation = await validator(customerValidator).validate(formData);
 
   if (validation.error) {
@@ -43,43 +40,35 @@ export async function action({ request }: ActionFunctionArgs) {
     createdBy: userId
   });
   if (createCustomer.error) {
-    return modal
-      ? data(
-          createCustomer,
-          await flash(
-            request,
-            error(createCustomer.error, "Failed to insert customer")
-          )
-        )
-      : redirect(
-          path.to.customers,
-          await flash(
-            request,
-            error(createCustomer.error, "Failed to insert customer")
-          )
-        );
+    return data(
+      createCustomer,
+      await flash(
+        request,
+        error(createCustomer.error, "Failed to insert customer")
+      )
+    );
   }
 
-  const customerId = createCustomer.data?.id;
-
-  return modal ? createCustomer : redirect(path.to.customer(customerId));
+  return data(createCustomer, { status: 201 });
 }
 
 export default function CustomersNewRoute() {
-  const { company } = useUser();
-
-  const initialValues = {
-    name: "",
-    currencyCode: company?.baseCurrencyCode ?? undefined,
-    phone: "",
-    fax: "",
-    website: "",
-    taxPercent: 0
-  };
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = (location.state as { from?: string } | null)?.from;
+  const searchParams = new URLSearchParams(location.search);
 
   return (
-    <div className="max-w-4xl w-full p-2 sm:p-0 mx-auto mt-0 md:mt-8">
-      <CustomerForm initialValues={initialValues} />
-    </div>
+    <RegisteredEntityFormModal
+      to={path.to.newCustomer}
+      searchParams={searchParams}
+      onClose={() => {
+        if (from) {
+          navigate(from);
+        } else {
+          navigate(-1);
+        }
+      }}
+    />
   );
 }

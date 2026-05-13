@@ -2,14 +2,12 @@ import { assertIsPost, error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
-import { getLocalTimeZone, today } from "@internationalized/date";
 import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs } from "react-router";
-import { redirect } from "react-router";
-import { useUrlParams, useUser } from "~/hooks";
-import type { SalesRFQStatusType } from "~/modules/sales";
+import { data, useLocation, useNavigate } from "react-router";
+import { RegisteredEntityFormModal } from "~/components/NewEntityModal";
+import { useUrlParams } from "~/hooks";
 import { salesRfqValidator, upsertSalesRFQ } from "~/modules/sales";
-import { SalesRFQForm } from "~/modules/sales/ui/SalesRFQ";
 import { getNextSequence } from "~/modules/settings";
 import { setCustomFields } from "~/utils/form";
 import type { Handle } from "~/utils/handle";
@@ -39,8 +37,12 @@ export async function action({ request }: ActionFunctionArgs) {
   if (useNextSequence) {
     const nextSequence = await getNextSequence(client, "salesRfq", companyId);
     if (nextSequence.error) {
-      throw redirect(
-        path.to.newSalesRFQ,
+      return data(
+        {
+          error: {
+            message: "Failed to get next sequence"
+          }
+        },
         await flash(
           request,
           error(nextSequence.error, "Failed to get next sequence")
@@ -61,37 +63,37 @@ export async function action({ request }: ActionFunctionArgs) {
   });
 
   if (createSalesRFQ.error || !createSalesRFQ.data?.[0]) {
-    throw redirect(
-      path.to.salesRfqs,
+    return data(
+      {
+        data: createSalesRFQ.data,
+        error: {
+          message: "Failed to insert RFQ"
+        }
+      },
       await flash(request, error(createSalesRFQ.error, "Failed to insert RFQ"))
     );
   }
 
-  const order = createSalesRFQ.data?.[0];
-
-  throw redirect(path.to.salesRfq(order.id!));
+  return data(createSalesRFQ, { status: 201 });
 }
 
 export default function SalesRFQNewRoute() {
-  const { id: userId, defaults } = useUser();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = (location.state as { from?: string } | null)?.from;
   const [params] = useUrlParams();
-  const customerId = params.get("customerId");
-  const initialValues = {
-    customerContactId: "",
-    customerId: customerId ?? "",
-    customerReference: "",
-    expirationDate: "",
-    id: undefined,
-    locationId: defaults?.locationId ?? "",
-    rfqDate: today(getLocalTimeZone()).toString(),
-    rfqId: undefined,
-    status: "Draft" as SalesRFQStatusType,
-    salesPersonId: userId
-  };
 
   return (
-    <div className="max-w-4xl w-full p-2 sm:p-0 mx-auto mt-0 md:mt-8">
-      <SalesRFQForm initialValues={initialValues} />
-    </div>
+    <RegisteredEntityFormModal
+      to={path.to.newSalesRFQ}
+      searchParams={params}
+      onClose={() => {
+        if (from) {
+          navigate(from);
+        } else {
+          navigate(-1);
+        }
+      }}
+    />
   );
 }

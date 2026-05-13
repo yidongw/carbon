@@ -11,9 +11,11 @@ import {
   toast,
   VStack
 } from "@carbon/react";
+import { getLocalTimeZone, today } from "@internationalized/date";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import { flushSync } from "react-dom";
+import type { FetcherWithComponents } from "react-router";
 import { useParams } from "react-router";
 import type { z } from "zod";
 import {
@@ -28,10 +30,12 @@ import {
   SupplierContact,
   SupplierLocation
 } from "~/components/Form";
+import { useNewEntityForm } from "~/components/NewEntityModal";
 import {
   usePermissions,
   useRouteData,
-  useSupplierApprovalRequired
+  useSupplierApprovalRequired,
+  useUser
 } from "~/hooks";
 import {
   purchaseOrderTypeType,
@@ -43,14 +47,36 @@ import { isPurchaseOrderLocked } from "../../purchasing.models";
 type PurchaseOrderFormValues = z.infer<typeof purchaseOrderValidator>;
 
 type PurchaseOrderFormProps = {
-  initialValues: PurchaseOrderFormValues;
+  initialValues?: Partial<PurchaseOrderFormValues>;
+  searchParams?: URLSearchParams;
+  fetcher?: FetcherWithComponents<unknown>;
 };
 
-const PurchaseOrderForm = ({ initialValues }: PurchaseOrderFormProps) => {
+const PurchaseOrderForm = ({
+  initialValues: initialValuesProp,
+  searchParams,
+  fetcher
+}: PurchaseOrderFormProps) => {
   const { t } = useLingui();
+  const modalFetcher = useNewEntityForm(path.to.newPurchaseOrder);
+  const submitFetcher = fetcher ?? modalFetcher;
   const permissions = usePermissions();
   const supplierApprovalRequired = useSupplierApprovalRequired();
+  const { defaults } = useUser();
   const { carbon } = useCarbon();
+  const initialValues = {
+    id: undefined,
+    purchaseOrderId: undefined,
+    supplierId: "",
+    locationId: defaults?.locationId ?? "",
+    orderDate: today(getLocalTimeZone()).toString(),
+    status: "Draft" as const,
+    purchaseOrderType: "Purchase" as const,
+    ...(searchParams?.get("supplierId")
+      ? { supplierId: searchParams.get("supplierId")! }
+      : {}),
+    ...initialValuesProp
+  };
   const [supplier, setSupplier] = useState<{
     id: string | undefined;
     currencyCode: string | undefined;
@@ -115,8 +141,10 @@ const PurchaseOrderForm = ({ initialValues }: PurchaseOrderFormProps) => {
     <Card>
       <ValidatedForm
         method="post"
+        action={isEditing ? undefined : path.to.newPurchaseOrder}
         validator={purchaseOrderValidator}
         defaultValues={initialValues}
+        fetcher={submitFetcher}
         className="w-full"
         isDisabled={isEditing && isLocked}
       >

@@ -2,18 +2,16 @@ import { assertIsPost, error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
-import { getLocalTimeZone, today } from "@internationalized/date";
 import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs } from "react-router";
-import { redirect } from "react-router";
+import { data, useLocation, useNavigate } from "react-router";
 import { z } from "zod";
-import { useUrlParams, useUser } from "~/hooks";
-import type { PurchaseOrderStatus } from "~/modules/purchasing";
+import { RegisteredEntityFormModal } from "~/components/NewEntityModal";
+import { useUrlParams } from "~/hooks";
 import {
   purchaseOrderValidator,
   upsertPurchaseOrder
 } from "~/modules/purchasing";
-import { PurchaseOrderForm } from "~/modules/purchasing/ui/PurchaseOrder";
 import { getNextSequence } from "~/modules/settings";
 import { setCustomFields } from "~/utils/form";
 import type { Handle } from "~/utils/handle";
@@ -54,8 +52,12 @@ export async function action({ request }: ActionFunctionArgs) {
       companyId
     );
     if (nextSequence.error) {
-      throw redirect(
-        path.to.newPurchaseOrder,
+      return data(
+        {
+          error: {
+            message: "Failed to get next sequence"
+          }
+        },
         await flash(
           request,
           error(nextSequence.error, "Failed to get next sequence")
@@ -76,8 +78,13 @@ export async function action({ request }: ActionFunctionArgs) {
   });
 
   if (createPurchaseOrder.error || !createPurchaseOrder.data?.[0]) {
-    throw redirect(
-      path.to.purchaseOrders,
+    return data(
+      {
+        data: createPurchaseOrder.data,
+        error: {
+          message: "Failed to insert purchase order"
+        }
+      },
       await flash(
         request,
         error(createPurchaseOrder.error, "Failed to insert purchase order")
@@ -85,28 +92,26 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
-  const order = createPurchaseOrder.data?.[0];
-
-  throw redirect(path.to.purchaseOrder(order.id!));
+  return data(createPurchaseOrder, { status: 201 });
 }
 
 export default function PurchaseOrderNewRoute() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = (location.state as { from?: string } | null)?.from;
   const [params] = useUrlParams();
-  const supplierId = params.get("supplierId");
-  const { defaults } = useUser();
-  const initialValues = {
-    id: undefined,
-    purchaseOrderId: undefined,
-    supplierId: supplierId ?? "",
-    locationId: defaults?.locationId ?? "",
-    orderDate: today(getLocalTimeZone()).toString(),
-    status: "Draft" as PurchaseOrderStatus,
-    purchaseOrderType: "Purchase" as const
-  };
 
   return (
-    <div className="max-w-4xl w-full p-2 sm:p-0 mx-auto mt-0 md:mt-8">
-      <PurchaseOrderForm initialValues={initialValues} />
-    </div>
+    <RegisteredEntityFormModal
+      to={path.to.newPurchaseOrder}
+      searchParams={params}
+      onClose={() => {
+        if (from) {
+          navigate(from);
+        } else {
+          navigate(-1);
+        }
+      }}
+    />
   );
 }

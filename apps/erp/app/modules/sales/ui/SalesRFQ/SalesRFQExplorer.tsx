@@ -31,7 +31,7 @@ import { path } from "~/utils/path";
 import { isSalesRfqLocked, salesRfqDragValidator } from "../../sales.models";
 import type { SalesRFQ, SalesRFQLine } from "../../types";
 import DeleteSalesRFQLine from "./DeleteSalesRFQLine";
-import SalesRFQLineForm from "./SalesRFQLineForm";
+import { SalesRFQLineFormModal } from "./SalesRFQLineForm";
 import { useOptimisticDocumentDrag } from "./useOptimiticDocumentDrag";
 
 export default function SalesRFQExplorer() {
@@ -177,9 +177,8 @@ export default function SalesRFQExplorer() {
         </div>
       </VStack>
       {newSalesRFQLineDisclosure.isOpen && (
-        <SalesRFQLineForm
+        <SalesRFQLineFormModal
           initialValues={salesRfqLineInitialValues}
-          type="modal"
           onClose={newSalesRFQLineDisclosure.onClose}
         />
       )}

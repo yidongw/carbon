@@ -2,7 +2,13 @@ import { useCarbon } from "@carbon/auth";
 import { DatePicker, ValidatedForm } from "@carbon/form";
 import {
   Badge,
+  Card,
   CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
   cn,
   DropdownMenu,
   DropdownMenuContent,
@@ -11,14 +17,6 @@ import {
   DropdownMenuTrigger,
   HStack,
   IconButton,
-  ModalCard,
-  ModalCardBody,
-  ModalCardContent,
-  ModalCardDescription,
-  ModalCardFooter,
-  ModalCardHeader,
-  ModalCardProvider,
-  ModalCardTitle,
   Tabs,
   TabsContent,
   TabsList,
@@ -45,6 +43,7 @@ import {
   Submit,
   UnitOfMeasure
 } from "~/components/Form";
+import { CardFormModal } from "~/components/NewEntityModal";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
 
 import type { MethodItemType } from "~/modules/shared/types";
@@ -60,14 +59,12 @@ type SupplierQuoteLineFormProps = {
   initialValues: z.infer<typeof supplierQuoteLineValidator> & {
     itemType: MethodItemType;
   };
-  type?: "card" | "modal";
-  onClose?: () => void;
+  onSubmitted?: () => void;
 };
 
 const SupplierQuoteLineForm = ({
   initialValues,
-  type,
-  onClose
+  onSubmitted
 }: SupplierQuoteLineFormProps) => {
   const { t } = useLingui();
   const permissions = usePermissions();
@@ -194,259 +191,244 @@ const SupplierQuoteLineForm = ({
         onValueChange={(v) => setActiveTab(v as "direct" | "indirect")}
         className="w-full"
       >
-        <ModalCardProvider type={type}>
-          <ModalCard
-            onClose={onClose}
-            defaultCollapsed={false}
-            isCollapsible={isEditing}
+        <Card defaultCollapsed={false} isCollapsible={isEditing}>
+          <ValidatedForm
+            defaultValues={initialValues}
+            validator={supplierQuoteLineValidator}
+            method="post"
+            action={
+              isEditing
+                ? path.to.supplierQuoteLine(id, initialValues.id!)
+                : path.to.newSupplierQuoteLine(id)
+            }
+            className="w-full"
+            isDisabled={isEditing && isLocked}
+            onSubmit={onSubmitted}
           >
-            <ModalCardContent size="xxlarge">
-              <ValidatedForm
-                defaultValues={initialValues}
-                validator={supplierQuoteLineValidator}
-                method="post"
-                action={
-                  isEditing
-                    ? path.to.supplierQuoteLine(id, initialValues.id!)
-                    : path.to.newSupplierQuoteLine(id)
-                }
-                className="w-full"
-                isDisabled={isEditing && isLocked}
-                onSubmit={() => {
-                  if (type === "modal") onClose?.();
-                }}
-              >
-                <HStack
-                  className={cn(
-                    "w-full justify-between items-start",
-                    type === "modal" && "pr-16"
+            <HStack className={cn("w-full justify-between items-start pr-16")}>
+              <CardHeader className="flex flex-1">
+                <CardTitle>
+                  {isEditing
+                    ? "Supplier Quote Line"
+                    : "New Supplier Quote Line"}
+                </CardTitle>
+                <CardDescription>
+                  {isEditing ? (
+                    <div className="flex flex-col items-start gap-1">
+                      <span>{itemData?.description}</span>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline">
+                          {initialValues?.quantity.join(", ")}
+                        </Badge>
+                      </div>
+                    </div>
+                  ) : (
+                    "A quote line contains pricing and lead times for a particular part"
                   )}
-                >
-                  <ModalCardHeader className="flex flex-1">
-                    <ModalCardTitle>
-                      {isEditing
-                        ? "Supplier Quote Line"
-                        : "New Supplier Quote Line"}
-                    </ModalCardTitle>
-                    <ModalCardDescription>
-                      {isEditing ? (
-                        <div className="flex flex-col items-start gap-1">
-                          <span>{itemData?.description}</span>
-                          <div className="flex items-center gap-2">
-                            <Badge variant="outline">
-                              {initialValues?.quantity.join(", ")}
-                            </Badge>
-                          </div>
-                        </div>
-                      ) : (
-                        "A quote line contains pricing and lead times for a particular part"
-                      )}
-                    </ModalCardDescription>
-                  </ModalCardHeader>
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    {!isEditing && (
-                      <TabsList>
-                        <TabsTrigger value="direct">
-                          <LuBox className="mr-1" />
-                          <Trans>Direct</Trans>
-                        </TabsTrigger>
-                        <TabsTrigger value="indirect">
-                          <LuReceipt className="mr-1" />
-                          <Trans>Indirect</Trans>
-                        </TabsTrigger>
-                      </TabsList>
-                    )}
-                    {isEditing &&
-                      !isLocked &&
-                      permissions.can("update", "purchasing") && (
-                        <CardAction>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <IconButton
-                                icon={<BsThreeDotsVertical />}
-                                aria-label={t`More`}
-                                variant="ghost"
-                              />
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem
-                                destructive
-                                onClick={deleteDisclosure.onOpen}
-                              >
-                                <DropdownMenuIcon icon={<LuTrash />} />
-                                <Trans>Delete Line</Trans>
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </CardAction>
-                      )}
+                </CardDescription>
+              </CardHeader>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                {!isEditing && (
+                  <TabsList>
+                    <TabsTrigger value="direct">
+                      <LuBox className="mr-1" />
+                      <Trans>Direct</Trans>
+                    </TabsTrigger>
+                    <TabsTrigger value="indirect">
+                      <LuReceipt className="mr-1" />
+                      <Trans>Indirect</Trans>
+                    </TabsTrigger>
+                  </TabsList>
+                )}
+                {isEditing &&
+                  !isLocked &&
+                  permissions.can("update", "purchasing") && (
+                    <CardAction>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <IconButton
+                            icon={<BsThreeDotsVertical />}
+                            aria-label={t`More`}
+                            variant="ghost"
+                          />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            destructive
+                            onClick={deleteDisclosure.onOpen}
+                          >
+                            <DropdownMenuIcon icon={<LuTrash />} />
+                            <Trans>Delete Line</Trans>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </CardAction>
+                  )}
+              </div>
+            </HStack>
+            <CardContent>
+              <Hidden name="id" />
+              <Hidden name="supplierQuoteId" />
+
+              <TabsContent value="direct">
+                <Hidden name="supplierQuoteLineType" value={itemType} />
+                <Hidden
+                  name="inventoryUnitOfMeasureCode"
+                  value={itemData?.inventoryUom}
+                />
+                <VStack>
+                  <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
+                    <div className="col-span-2 grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-2 auto-rows-min">
+                      <Item
+                        autoFocus
+                        name="itemId"
+                        label={t`Part`}
+                        type={itemType}
+                        value={itemData.itemId}
+                        includeInactive
+                        onChange={(value) => {
+                          onItemChange(value?.value as string);
+                        }}
+                        onTypeChange={(type) => {
+                          setItemType(type as MethodItemType);
+                          setItemData({
+                            ...itemData,
+                            itemId: "",
+                            description: "",
+                            inventoryUom: "",
+                            purchaseUom: "",
+                            conversionFactor: 1,
+                            supplierPartId: ""
+                          });
+                        }}
+                      />
+
+                      <InputControlled
+                        name="description"
+                        label={t`Short Description`}
+                        value={itemData.description}
+                      />
+
+                      <InputControlled
+                        name="supplierPartId"
+                        label={t`Supplier Part Number`}
+                        value={itemData.supplierPartId}
+                        onChange={(newValue) => {
+                          setItemData((d) => ({
+                            ...d,
+                            supplierPartId: newValue
+                          }));
+                        }}
+                        onBlur={(e) => onSupplierPartChange(e.target.value)}
+                      />
+                      <UnitOfMeasure
+                        name="purchaseUnitOfMeasureCode"
+                        label={t`Purchase Unit of Measure`}
+                        value={itemData.purchaseUom}
+                        onChange={(newValue) => {
+                          if (newValue) {
+                            setItemData((d) => ({
+                              ...d,
+                              purchaseUom: newValue?.value as string
+                            }));
+                          }
+                        }}
+                      />
+                      <ConversionFactor
+                        name="conversionFactor"
+                        purchasingCode={itemData.purchaseUom}
+                        inventoryCode={itemData.inventoryUom}
+                        value={itemData.conversionFactor}
+                        onChange={(value) => {
+                          setItemData((d) => ({
+                            ...d,
+                            conversionFactor: value
+                          }));
+                        }}
+                      />
+
+                      <CustomFormFields table="supplierQuoteLine" />
+                    </div>
+                    <div className="flex gap-y-4">
+                      <ArrayNumeric
+                        name="quantity"
+                        label={t`Quantity`}
+                        defaults={[1, 25, 50, 100]}
+                        isDisabled={isLocked}
+                      />
+                    </div>
                   </div>
-                </HStack>
-                <ModalCardBody>
-                  <Hidden name="id" />
-                  <Hidden name="supplierQuoteId" />
+                </VStack>
+              </TabsContent>
 
-                  <TabsContent value="direct">
-                    <Hidden name="supplierQuoteLineType" value={itemType} />
-                    <Hidden
-                      name="inventoryUnitOfMeasureCode"
-                      value={itemData?.inventoryUom}
-                    />
-                    <VStack>
-                      <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
-                        <div className="col-span-2 grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-2 auto-rows-min">
-                          <Item
-                            autoFocus
-                            name="itemId"
-                            label={t`Part`}
-                            type={itemType}
-                            value={itemData.itemId}
-                            includeInactive
-                            onChange={(value) => {
-                              onItemChange(value?.value as string);
-                            }}
-                            onTypeChange={(type) => {
-                              setItemType(type as MethodItemType);
-                              setItemData({
-                                ...itemData,
-                                itemId: "",
-                                description: "",
-                                inventoryUom: "",
-                                purchaseUom: "",
-                                conversionFactor: 1,
-                                supplierPartId: ""
-                              });
-                            }}
-                          />
+              <TabsContent value="indirect">
+                <Hidden name="supplierQuoteLineType" value="G/L Account" />
+                <VStack>
+                  <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
+                    <div className="col-span-2 grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-2 auto-rows-min">
+                      <Account
+                        name="accountId"
+                        label={t`GL Account`}
+                        classes={["Asset", "Expense"]}
+                        isOptional={false}
+                      />
 
-                          <InputControlled
-                            name="description"
-                            label={t`Short Description`}
-                            value={itemData.description}
-                          />
-
-                          <InputControlled
-                            name="supplierPartId"
-                            label={t`Supplier Part Number`}
-                            value={itemData.supplierPartId}
-                            onChange={(newValue) => {
-                              setItemData((d) => ({
-                                ...d,
-                                supplierPartId: newValue
-                              }));
-                            }}
-                            onBlur={(e) => onSupplierPartChange(e.target.value)}
-                          />
-                          <UnitOfMeasure
-                            name="purchaseUnitOfMeasureCode"
-                            label={t`Purchase Unit of Measure`}
-                            value={itemData.purchaseUom}
-                            onChange={(newValue) => {
-                              if (newValue) {
-                                setItemData((d) => ({
-                                  ...d,
-                                  purchaseUom: newValue?.value as string
-                                }));
-                              }
-                            }}
-                          />
-                          <ConversionFactor
-                            name="conversionFactor"
-                            purchasingCode={itemData.purchaseUom}
-                            inventoryCode={itemData.inventoryUom}
-                            value={itemData.conversionFactor}
-                            onChange={(value) => {
-                              setItemData((d) => ({
-                                ...d,
-                                conversionFactor: value
-                              }));
-                            }}
-                          />
-
-                          <CustomFormFields table="supplierQuoteLine" />
-                        </div>
-                        <div className="flex gap-y-4">
-                          <ArrayNumeric
-                            name="quantity"
-                            label={t`Quantity`}
-                            defaults={[1, 25, 50, 100]}
-                            isDisabled={isLocked}
-                          />
-                        </div>
-                      </div>
-                    </VStack>
-                  </TabsContent>
-
-                  <TabsContent value="indirect">
-                    <Hidden name="supplierQuoteLineType" value="G/L Account" />
-                    <VStack>
-                      <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
-                        <div className="col-span-2 grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-2 auto-rows-min">
-                          <Account
-                            name="accountId"
-                            label={t`GL Account`}
-                            classes={["Asset", "Expense"]}
-                            isOptional={false}
-                          />
-
-                          <InputControlled
-                            label={t`Description`}
-                            name="description"
-                            value={indirectData.description}
-                            isOptional={false}
-                            onChange={(newValue) =>
-                              setIndirectData((d) => ({
-                                ...d,
-                                description: newValue
-                              }))
-                            }
-                          />
-                          <CostCenter
-                            name="costCenterId"
-                            label={t`Cost Center`}
-                            isOptional
-                          />
-                          <DatePicker
-                            name="requiredDate"
-                            label={t`Required Date`}
-                            value={indirectData.requiredDate ?? undefined}
-                            onChange={(date) => {
-                              setIndirectData((d) => ({
-                                ...d,
-                                requiredDate: date
-                              }));
-                            }}
-                          />
-                          <CustomFormFields table="supplierQuoteLine" />
-                        </div>
-                        <div className="flex gap-y-4">
-                          <ArrayNumeric
-                            name="quantity"
-                            label={t`Quantity`}
-                            defaults={[1, 25, 50, 100]}
-                            isDisabled={isLocked}
-                          />
-                        </div>
-                      </div>
-                    </VStack>
-                  </TabsContent>
-                </ModalCardBody>
-                <ModalCardFooter>
-                  <Submit
-                    isDisabled={
-                      isLocked ||
-                      (isEditing
-                        ? !permissions.can("update", "purchasing")
-                        : !permissions.can("create", "purchasing"))
-                    }
-                  >
-                    <Trans>Save</Trans>
-                  </Submit>
-                </ModalCardFooter>
-              </ValidatedForm>
-            </ModalCardContent>
-          </ModalCard>
-        </ModalCardProvider>
+                      <InputControlled
+                        label={t`Description`}
+                        name="description"
+                        value={indirectData.description}
+                        isOptional={false}
+                        onChange={(newValue) =>
+                          setIndirectData((d) => ({
+                            ...d,
+                            description: newValue
+                          }))
+                        }
+                      />
+                      <CostCenter
+                        name="costCenterId"
+                        label={t`Cost Center`}
+                        isOptional
+                      />
+                      <DatePicker
+                        name="requiredDate"
+                        label={t`Required Date`}
+                        value={indirectData.requiredDate ?? undefined}
+                        onChange={(date) => {
+                          setIndirectData((d) => ({
+                            ...d,
+                            requiredDate: date
+                          }));
+                        }}
+                      />
+                      <CustomFormFields table="supplierQuoteLine" />
+                    </div>
+                    <div className="flex gap-y-4">
+                      <ArrayNumeric
+                        name="quantity"
+                        label={t`Quantity`}
+                        defaults={[1, 25, 50, 100]}
+                        isDisabled={isLocked}
+                      />
+                    </div>
+                  </div>
+                </VStack>
+              </TabsContent>
+            </CardContent>
+            <CardFooter>
+              <Submit
+                isDisabled={
+                  isLocked ||
+                  (isEditing
+                    ? !permissions.can("update", "purchasing")
+                    : !permissions.can("create", "purchasing"))
+                }
+              >
+                <Trans>Save</Trans>
+              </Submit>
+            </CardFooter>
+          </ValidatedForm>
+        </Card>
       </Tabs>
       {isEditing && deleteDisclosure.isOpen && initialValues.id && (
         <DeleteSupplierQuoteLine
@@ -462,3 +444,22 @@ const SupplierQuoteLineForm = ({
 };
 
 export default SupplierQuoteLineForm;
+
+export function SupplierQuoteLineFormModal({
+  initialValues,
+  onClose
+}: {
+  initialValues: z.infer<typeof supplierQuoteLineValidator> & {
+    itemType: MethodItemType;
+  };
+  onClose: () => void;
+}) {
+  return (
+    <CardFormModal onClose={onClose} contentClassName="!max-w-6xl">
+      <SupplierQuoteLineForm
+        initialValues={initialValues}
+        onSubmitted={onClose}
+      />
+    </CardFormModal>
+  );
+}

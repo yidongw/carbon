@@ -4,10 +4,10 @@ import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs } from "react-router";
-import { redirect } from "react-router";
-import { useUrlParams, useUser } from "~/hooks";
+import { data, useLocation, useNavigate } from "react-router";
+import { RegisteredEntityFormModal } from "~/components/NewEntityModal";
+import { useUrlParams } from "~/hooks";
 import { salesOrderValidator, upsertSalesOrder } from "~/modules/sales";
-import { SalesOrderForm } from "~/modules/sales/ui/SalesOrder";
 import { getNextSequence } from "~/modules/settings";
 import { setCustomFields } from "~/utils/form";
 import type { Handle } from "~/utils/handle";
@@ -40,8 +40,12 @@ export async function action({ request }: ActionFunctionArgs) {
   if (useNextSequence) {
     const nextSequence = await getNextSequence(client, "salesOrder", companyId);
     if (nextSequence.error) {
-      throw redirect(
-        path.to.newSalesOrder,
+      return data(
+        {
+          error: {
+            message: "Failed to get next sequence"
+          }
+        },
         await flash(
           request,
           error(nextSequence.error, "Failed to get next sequence")
@@ -62,8 +66,13 @@ export async function action({ request }: ActionFunctionArgs) {
   });
 
   if (createSalesOrder.error || !createSalesOrder.data?.[0]) {
-    throw redirect(
-      path.to.salesOrders,
+    return data(
+      {
+        data: createSalesOrder.data,
+        error: {
+          message: "Failed to insert sales order"
+        }
+      },
       await flash(
         request,
         error(createSalesOrder.error, "Failed to insert sales order")
@@ -71,35 +80,26 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
-  const order = createSalesOrder.data?.[0];
-
-  throw redirect(path.to.salesOrder(order.id!));
+  return data(createSalesOrder, { status: 201 });
 }
 
 export default function SalesOrderNewRoute() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = (location.state as { from?: string } | null)?.from;
   const [params] = useUrlParams();
-  const customerId = params.get("customerId");
-  const { id: userId, company, defaults } = useUser();
-
-  const initialValues = {
-    id: undefined,
-    salesOrderId: undefined,
-    customerId: customerId ?? "",
-    orderDate: "",
-    status: "Draft" as const,
-    currencyCode: company?.baseCurrencyCode ?? "USD",
-    locationId: defaults?.locationId ?? "",
-    salesPersonId: userId,
-    exchangeRate: undefined,
-    exchangeRateUpdatedAt: "",
-    originatedFromQuote: false,
-    digitalQuoteAcceptedBy: undefined,
-    digitalQuoteAcceptedByEmail: undefined
-  };
 
   return (
-    <div className="max-w-4xl w-full p-2 sm:p-0 mx-auto mt-0 md:mt-8">
-      <SalesOrderForm initialValues={initialValues} />
-    </div>
+    <RegisteredEntityFormModal
+      to={path.to.newSalesOrder}
+      searchParams={params}
+      onClose={() => {
+        if (from) {
+          navigate(from);
+        } else {
+          navigate(-1);
+        }
+      }}
+    />
   );
 }

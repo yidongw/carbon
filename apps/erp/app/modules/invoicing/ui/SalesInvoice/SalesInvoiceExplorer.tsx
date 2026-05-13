@@ -38,7 +38,7 @@ import { path } from "~/utils/path";
 import { isSalesInvoiceLocked } from "../../invoicing.models";
 import type { SalesInvoice, SalesInvoiceLine } from "../../types";
 import DeleteSalesInvoiceLine from "./DeleteSalesInvoiceLine";
-import SalesInvoiceLineForm from "./SalesInvoiceLineForm";
+import { SalesInvoiceLineFormModal } from "./SalesInvoiceLineForm";
 
 export default function SalesInvoiceExplorer() {
   const prettifyShortcut = usePrettifyShortcut();
@@ -151,10 +151,9 @@ export default function SalesInvoiceExplorer() {
         </div>
       </VStack>
       {newSalesInvoiceLineDisclosure.isOpen && (
-        <SalesInvoiceLineForm
+        <SalesInvoiceLineFormModal
           // @ts-ignore
           initialValues={salesInvoiceLineInitialValues}
-          type="modal"
           onClose={newSalesInvoiceLineDisclosure.onClose}
         />
       )}

@@ -61,7 +61,7 @@ import type {
 } from "../../types";
 import DeleteQuoteLine from "./DeleteQuoteLine";
 import QuoteBoMExplorer from "./QuoteBoMExplorer";
-import QuoteLineForm from "./QuoteLineForm";
+import { QuoteLineFormModal } from "./QuoteLineForm";
 
 type QuoteExplorerProps = {
   methods: Tree<QuoteMethod>[];
@@ -213,9 +213,8 @@ export default function QuoteExplorer({ methods }: QuoteExplorerProps) {
         </div>
       </VStack>
       {newQuoteLineDisclosure.isOpen && (
-        <QuoteLineForm
+        <QuoteLineFormModal
           initialValues={quoteLineInitialValues}
-          type="modal"
           onClose={newQuoteLineDisclosure.onClose}
         />
       )}

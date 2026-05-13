@@ -13,11 +13,9 @@ import { sendEmail } from "@carbon/lib/resend.server";
 import { render } from "@react-email/components";
 import { nanoid } from "nanoid";
 import type { ActionFunctionArgs } from "react-router";
-import { redirect } from "react-router";
-import {
-  CreateSupplierModal,
-  createSupplierAccountValidator
-} from "~/modules/users";
+import { data, useNavigate, useSearchParams } from "react-router";
+import { RegisteredEntityFormModal } from "~/components/NewEntityModal";
+import { createSupplierAccountValidator } from "~/modules/users";
 import { createSupplierAccount } from "~/modules/users/users.server";
 import { path } from "~/utils/path";
 
@@ -49,8 +47,12 @@ export async function action({ request }: ActionFunctionArgs) {
 
   if (!result.success) {
     console.error(result);
-    throw redirect(
-      path.to.supplierAccounts,
+    return data(
+      {
+        error: {
+          message: result.message ?? "Failed to create supplier account"
+        }
+      },
       await flash(
         request,
         error(result, result.message ?? "Failed to create supplier account")
@@ -91,19 +93,26 @@ export async function action({ request }: ActionFunctionArgs) {
     )
   });
 
-  if (supplierRedirect) {
-    throw redirect(
-      path.to.supplierContacts(supplierRedirect),
-      await flash(request, success("Supplier invited"))
-    );
-  }
-
-  throw redirect(
-    path.to.supplierAccounts,
+  return data(
+    {
+      data: {
+        email: result.email,
+        supplierId: supplierRedirect ?? supplier,
+        userId: result.userId
+      }
+    },
     await flash(request, success("Supplier invited"))
   );
 }
 
 export default function () {
-  return <CreateSupplierModal />;
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  return (
+    <RegisteredEntityFormModal
+      to={path.to.newSupplierAccount}
+      searchParams={searchParams}
+      onClose={() => navigate(path.to.supplierAccounts)}
+    />
+  );
 }

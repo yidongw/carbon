@@ -20,6 +20,7 @@ import {
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import { LuDiamond, LuLayers } from "react-icons/lu";
+import type { FetcherWithComponents } from "react-router";
 import type { z } from "zod";
 import { ConfiguratorModal } from "~/components/Configurator/ConfiguratorForm";
 import {
@@ -35,6 +36,7 @@ import {
   SequenceOrCustomId,
   Submit
 } from "~/components/Form";
+import { useNewEntityForm } from "~/components/NewEntityModal";
 import { usePermissions, useUser } from "~/hooks";
 import type {
   ConfigurationParameter,
@@ -58,14 +60,40 @@ type JobFormValues = z.infer<typeof jobValidator> & {
 };
 
 type JobFormProps = {
-  initialValues: JobFormValues;
+  initialValues?: Partial<JobFormValues>;
+  searchParams?: URLSearchParams;
+  fetcher?: FetcherWithComponents<unknown>;
 };
 
-const JobForm = ({ initialValues }: JobFormProps) => {
+const JobForm = ({
+  initialValues: initialValuesProp,
+  searchParams,
+  fetcher
+}: JobFormProps) => {
   const permissions = usePermissions();
   const { t } = useLingui();
-  const { company } = useUser();
+  const modalFetcher = useNewEntityForm(path.to.newJob);
+  const submitFetcher = fetcher ?? modalFetcher;
+  const { company, defaults } = useUser();
   const { carbon } = useCarbon();
+  const initialValues = {
+    customerId: "",
+    deadlineType: "No Deadline" as const,
+    description: "",
+    dueDate: "",
+    itemId: "",
+    itemType: "Item" as MethodItemType,
+    jobId: undefined,
+    locationId: defaults?.locationId ?? "",
+    quantity: 1,
+    scrapQuantity: 0,
+    status: "Draft" as const,
+    unitOfMeasureCode: "EA",
+    ...(searchParams?.get("customerId")
+      ? { customerId: searchParams.get("customerId")! }
+      : {}),
+    ...initialValuesProp
+  };
   const [type, setType] = useState<MethodItemType>(
     initialValues.itemType ?? "Item"
   );
@@ -231,9 +259,11 @@ const JobForm = ({ initialValues }: JobFormProps) => {
             <Card>
               <ValidatedForm
                 method="post"
+                action={isEditing ? undefined : path.to.newJob}
                 validator={jobValidator}
                 defaultValues={initialValues}
                 isDisabled={isEditing && isLocked}
+                fetcher={submitFetcher}
               >
                 <CardHeader>
                   <CardTitle>{isEditing ? "Job" : "New Job"}</CardTitle>
@@ -397,6 +427,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                   action={path.to.newBulkJob}
                   validator={bulkJobValidator}
                   defaultValues={bulkInitialValues}
+                  fetcher={submitFetcher}
                 >
                   <CardHeader>
                     <CardTitle>

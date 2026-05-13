@@ -4,6 +4,12 @@ import {
   Alert,
   AlertTitle,
   Badge,
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
   cn,
   FormControl,
   FormLabel,
@@ -11,14 +17,6 @@ import {
   IconButton,
   Input,
   Label,
-  ModalCard,
-  ModalCardBody,
-  ModalCardContent,
-  ModalCardDescription,
-  ModalCardFooter,
-  ModalCardHeader,
-  ModalCardProvider,
-  ModalCardTitle,
   toast,
   useDisclosure,
   VStack
@@ -41,6 +39,7 @@ import {
   StorageUnit,
   Submit
 } from "~/components/Form";
+import { CardFormModal } from "~/components/NewEntityModal";
 import {
   useCurrencyFormatter,
   usePercentFormatter,
@@ -61,15 +60,13 @@ type SalesInvoiceLineFormProps = {
     taxPercent?: number;
   };
   isSalesOrderLine?: boolean;
-  type?: "card" | "modal";
-  onClose?: () => void;
+  onSubmitted?: () => void;
 };
 
 const SalesInvoiceLineForm = ({
   initialValues,
-  type,
   isSalesOrderLine = false,
-  onClose
+  onSubmitted
 }: SalesInvoiceLineFormProps) => {
   const { t } = useLingui();
   const permissions = usePermissions();
@@ -269,382 +266,387 @@ const SalesInvoiceLineForm = ({
   const percentFormatter = usePercentFormatter();
 
   return (
-    <ModalCardProvider type={type}>
-      <ModalCard
-        onClose={onClose}
-        isCollapsible={isEditing}
-        defaultCollapsed={false}
+    <Card isCollapsible={isEditing} defaultCollapsed={false}>
+      <ValidatedForm
+        defaultValues={initialValues}
+        validator={salesInvoiceLineValidator}
+        method="post"
+        action={
+          isEditing
+            ? path.to.salesInvoiceLine(invoiceId, initialValues.id!)
+            : path.to.newSalesInvoiceLine(invoiceId)
+        }
+        className="w-full"
+        isDisabled={isEditing && isLocked}
+        onSubmit={onSubmitted}
       >
-        <ModalCardContent size="xxlarge">
-          <ValidatedForm
-            defaultValues={initialValues}
-            validator={salesInvoiceLineValidator}
-            method="post"
-            action={
-              isEditing
-                ? path.to.salesInvoiceLine(invoiceId, initialValues.id!)
-                : path.to.newSalesInvoiceLine(invoiceId)
-            }
-            className="w-full"
-            isDisabled={isEditing && isLocked}
-            onSubmit={() => {
-              if (type === "modal") onClose?.();
-            }}
+        <CardHeader className="pr-14 sm:pr-16">
+          <CardTitle
+            className={cn(
+              isEditing && !itemData?.itemId && "text-muted-foreground"
+            )}
           >
-            <ModalCardHeader>
-              <ModalCardTitle
-                className={cn(
-                  isEditing && !itemData?.itemId && "text-muted-foreground"
-                )}
-              >
-                {isEditing ? (
-                  (getItemReadableId(items, itemData?.itemId) ?? "...")
-                ) : (
-                  <Trans>New Sales Invoice Line</Trans>
-                )}
-              </ModalCardTitle>
-              <ModalCardDescription>
-                {isEditing ? (
-                  <div className="flex flex-col items-start gap-1">
-                    <span>{itemData?.description}</span>
-                    <div className="flex items-center gap-2">
-                      <Badge
-                        variant="outline"
-                        className="flex items-center gap-2"
-                      >
-                        {initialValues?.quantity}{" "}
-                        <MethodIcon type={itemData.methodType} />
-                      </Badge>
-                      <Badge variant="green">
-                        {currencyFormatter.format(
-                          initialValues?.unitPrice ?? 0
-                        )}{" "}
-                        {initialValues?.unitOfMeasureCode}
-                      </Badge>
-                      {initialValues?.taxPercent > 0 ? (
-                        <Badge variant="red">
-                          {percentFormatter.format(initialValues?.taxPercent)}{" "}
-                          {t`Tax`}
-                        </Badge>
-                      ) : null}
-                    </div>
-                  </div>
-                ) : (
-                  t`A sales invoice line contains invoice details for a particular item`
-                )}
-              </ModalCardDescription>
-            </ModalCardHeader>
-            <ModalCardBody>
-              <Hidden name="id" />
-              <Hidden name="invoiceId" />
-              <Hidden name="invoiceLineType" value={itemType} />
-              <Hidden name="description" value={itemData.description} />
-              <Hidden
-                name="exchangeRate"
-                value={routeData?.salesInvoice?.exchangeRate ?? 1}
-              />
-              <Hidden
-                name="unitOfMeasureCode"
-                value={itemData?.unitOfMeasureCode}
+            {isEditing ? (
+              (getItemReadableId(items, itemData?.itemId) ?? "...")
+            ) : (
+              <Trans>New Sales Invoice Line</Trans>
+            )}
+          </CardTitle>
+          <CardDescription>
+            {isEditing ? (
+              <div className="flex flex-col items-start gap-1">
+                <span>{itemData?.description}</span>
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className="flex items-center gap-2">
+                    {initialValues?.quantity}{" "}
+                    <MethodIcon type={itemData.methodType} />
+                  </Badge>
+                  <Badge variant="green">
+                    {currencyFormatter.format(initialValues?.unitPrice ?? 0)}{" "}
+                    {initialValues?.unitOfMeasureCode}
+                  </Badge>
+                  {initialValues?.taxPercent > 0 ? (
+                    <Badge variant="red">
+                      {percentFormatter.format(initialValues?.taxPercent)}{" "}
+                      {t`Tax`}
+                    </Badge>
+                  ) : null}
+                </div>
+              </div>
+            ) : (
+              t`A sales invoice line contains invoice details for a particular item`
+            )}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Hidden name="id" />
+          <Hidden name="invoiceId" />
+          <Hidden name="invoiceLineType" value={itemType} />
+          <Hidden name="description" value={itemData.description} />
+          <Hidden
+            name="exchangeRate"
+            value={routeData?.salesInvoice?.exchangeRate ?? 1}
+          />
+          <Hidden
+            name="unitOfMeasureCode"
+            value={itemData?.unitOfMeasureCode}
+          />
+
+          <VStack>
+            {hasInvalidMethodType && (
+              <Alert variant="destructive" className="mb-4">
+                <LuCircleAlert className="w-4 h-4" />
+                <AlertTitle>
+                  <Trans>
+                    Make items cannot be invoiced directly. Change method to
+                    Pick to continue.
+                  </Trans>
+                </AlertTitle>
+              </Alert>
+            )}
+            <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
+              <Item
+                name="itemId"
+                label={itemType}
+                // @ts-ignore
+                type={itemType}
+                locationId={locationId}
+                onChange={(value) => {
+                  onItemChange(value?.value as string);
+                }}
+                onTypeChange={onTypeChange}
               />
 
-              <VStack>
-                {hasInvalidMethodType && (
-                  <Alert variant="destructive" className="mb-4">
-                    <LuCircleAlert className="w-4 h-4" />
-                    <AlertTitle>
-                      <Trans>
-                        Make items cannot be invoiced directly. Change method to
-                        Pick to continue.
-                      </Trans>
-                    </AlertTitle>
-                  </Alert>
-                )}
-                <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
-                  <Item
-                    name="itemId"
-                    label={itemType}
-                    // @ts-ignore
-                    type={itemType}
-                    locationId={locationId}
+              <FormControl className="col-span-2">
+                <FormLabel isOptional>
+                  <Trans>Description</Trans>
+                </FormLabel>
+                <Input
+                  value={itemData.description}
+                  onChange={(e) =>
+                    setItemData((d) => ({
+                      ...d,
+                      description: e.target.value
+                    }))
+                  }
+                />
+              </FormControl>
+
+              {["Item", "Part", "Material", "Tool", "Consumable"].includes(
+                itemType
+              ) && (
+                <>
+                  <div className="space-y-2">
+                    <SelectControlled
+                      name="methodType"
+                      label={t`Method`}
+                      options={
+                        methodType.map((m) => ({
+                          label: (
+                            <span className="flex items-center gap-2">
+                              <MethodIcon type={m} />
+                              {m}
+                            </span>
+                          ),
+                          value: m
+                        })) ?? []
+                      }
+                      value={itemData.methodType}
+                      onChange={(newValue) => {
+                        if (newValue)
+                          setItemData((d) => ({
+                            ...d,
+                            methodType: newValue?.value
+                          }));
+                      }}
+                    />
+                  </div>
+
+                  <NumberControlled
+                    name="quantity"
+                    label={t`Quantity`}
+                    value={itemData.quantity}
                     onChange={(value) => {
-                      onItemChange(value?.value as string);
+                      setItemData((d) => ({
+                        ...d,
+                        quantity: value
+                      }));
                     }}
-                    onTypeChange={onTypeChange}
                   />
 
-                  <FormControl className="col-span-2">
-                    <FormLabel isOptional>
-                      <Trans>Description</Trans>
-                    </FormLabel>
-                    <Input
-                      value={itemData.description}
-                      onChange={(e) =>
+                  <NumberControlled
+                    name="unitPrice"
+                    label={t`Unit Price`}
+                    value={itemData.unitPrice}
+                    formatOptions={{
+                      style: "currency",
+                      currency:
+                        routeData?.salesInvoice?.currencyCode ??
+                        company.baseCurrencyCode
+                    }}
+                    onChange={(value) =>
+                      setItemData((d) => ({
+                        ...d,
+                        unitPrice: value
+                      }))
+                    }
+                  />
+                  <Location
+                    name="locationId"
+                    label={t`Shipping Location`}
+                    value={locationId}
+                    onChange={onLocationChange}
+                  />
+                  <StorageUnit
+                    name="storageUnitId"
+                    label={t`Storage Unit`}
+                    locationId={locationId}
+                    value={itemData.storageUnitId ?? undefined}
+                    onChange={(newValue) => {
+                      if (newValue) {
                         setItemData((d) => ({
                           ...d,
-                          description: e.target.value
+                          storageUnitId: newValue?.id
+                        }));
+                      }
+                    }}
+                  />
+                </>
+              )}
+              <CustomFormFields table="salesInvoiceLine" />
+            </div>
+
+            {["Item", "Part", "Material", "Tool", "Consumable"].includes(
+              itemType
+            ) && (
+              <div className="w-full">
+                <div className="w-full border border-border rounded-md shadow-sm p-4 flex flex-col gap-4 mt-4">
+                  <HStack
+                    className="w-full justify-between cursor-pointer"
+                    onClick={costsDisclosure.onToggle}
+                  >
+                    <Label>
+                      <Trans>Tax & Additional Costs</Trans>
+                    </Label>
+                    <HStack>
+                      {(itemData.taxPercent ?? 0) > 0 && (
+                        <Badge variant="red">
+                          {percentFormatter.format(itemData.taxPercent ?? 0)}{" "}
+                          <Trans>Tax</Trans>
+                        </Badge>
+                      )}
+                      {(itemData.shippingCost ?? 0) > 0 && (
+                        <Badge
+                          variant="secondary"
+                          className="flex items-center gap-1"
+                        >
+                          <LuTruck />
+                          <span>
+                            {currencyFormatter.format(
+                              itemData.shippingCost ?? 0
+                            )}
+                          </span>
+                        </Badge>
+                      )}
+                      {(initialValues?.addOnCost ?? 0) > 0 ||
+                        ((initialValues?.nonTaxableAddOnCost ?? 0) > 0 && (
+                          <Badge
+                            variant="secondary"
+                            className="flex items-center gap-1"
+                          >
+                            <LuPlus />
+                            <span>
+                              {currencyFormatter.format(
+                                (initialValues?.addOnCost ?? 0) +
+                                  (initialValues?.nonTaxableAddOnCost ?? 0)
+                              )}{" "}
+                              <Trans>Add-On</Trans>
+                            </span>
+                          </Badge>
+                        ))}
+
+                      <IconButton
+                        icon={<LuChevronRight />}
+                        aria-label={
+                          costsDisclosure.isOpen
+                            ? t`Collapse Costs`
+                            : t`Expand Costs`
+                        }
+                        variant="ghost"
+                        size="md"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          costsDisclosure.onToggle();
+                        }}
+                        className={`transition-transform ${
+                          costsDisclosure.isOpen ? "rotate-90" : ""
+                        }`}
+                      />
+                    </HStack>
+                  </HStack>
+                  <div
+                    className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
+                      costsDisclosure.isOpen ? "" : "hidden"
+                    }`}
+                  >
+                    <NumberControlled
+                      name="taxPercent"
+                      label={t`Tax Percent`}
+                      value={itemData.taxPercent}
+                      minValue={0}
+                      maxValue={1}
+                      step={0.0001}
+                      formatOptions={{
+                        style: "percent",
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 2
+                      }}
+                      onChange={(value) => {
+                        const subtotal =
+                          itemData.unitPrice * itemData.quantity +
+                          itemData.shippingCost;
+                        setItemData((d) => ({
+                          ...d,
+                          taxPercent: value,
+                          taxAmount: subtotal * value
+                        }));
+                      }}
+                    />
+                    <NumberControlled
+                      name="taxAmount"
+                      label={t`Tax Amount`}
+                      value={itemData.taxAmount}
+                      formatOptions={{
+                        style: "currency",
+                        currency:
+                          routeData?.salesInvoice?.currencyCode ??
+                          company.baseCurrencyCode
+                      }}
+                      onChange={(value) => {
+                        const subtotal =
+                          itemData.unitPrice * itemData.quantity +
+                          itemData.shippingCost;
+                        setItemData((d) => ({
+                          ...d,
+                          taxAmount: value,
+                          taxPercent: subtotal > 0 ? value / subtotal : 0
+                        }));
+                      }}
+                    />
+                    <NumberControlled
+                      name="shippingCost"
+                      label={t`Shipping Cost`}
+                      value={itemData.shippingCost}
+                      minValue={0}
+                      formatOptions={{
+                        style: "currency",
+                        currency:
+                          routeData?.salesInvoice?.currencyCode ??
+                          company.baseCurrencyCode
+                      }}
+                      onChange={(value) =>
+                        setItemData((d) => ({
+                          ...d,
+                          shippingCost: value
                         }))
                       }
                     />
-                  </FormControl>
-
-                  {["Item", "Part", "Material", "Tool", "Consumable"].includes(
-                    itemType
-                  ) && (
-                    <>
-                      <div className="space-y-2">
-                        <SelectControlled
-                          name="methodType"
-                          label={t`Method`}
-                          options={
-                            methodType.map((m) => ({
-                              label: (
-                                <span className="flex items-center gap-2">
-                                  <MethodIcon type={m} />
-                                  {m}
-                                </span>
-                              ),
-                              value: m
-                            })) ?? []
-                          }
-                          value={itemData.methodType}
-                          onChange={(newValue) => {
-                            if (newValue)
-                              setItemData((d) => ({
-                                ...d,
-                                methodType: newValue?.value
-                              }));
-                          }}
-                        />
-                      </div>
-
-                      <NumberControlled
-                        name="quantity"
-                        label={t`Quantity`}
-                        value={itemData.quantity}
-                        onChange={(value) => {
-                          setItemData((d) => ({
-                            ...d,
-                            quantity: value
-                          }));
-                        }}
-                      />
-
-                      <NumberControlled
-                        name="unitPrice"
-                        label={t`Unit Price`}
-                        value={itemData.unitPrice}
-                        formatOptions={{
-                          style: "currency",
-                          currency:
-                            routeData?.salesInvoice?.currencyCode ??
-                            company.baseCurrencyCode
-                        }}
-                        onChange={(value) =>
-                          setItemData((d) => ({
-                            ...d,
-                            unitPrice: value
-                          }))
-                        }
-                      />
-                      <Location
-                        name="locationId"
-                        label={t`Shipping Location`}
-                        value={locationId}
-                        onChange={onLocationChange}
-                      />
-                      <StorageUnit
-                        name="storageUnitId"
-                        label={t`Storage Unit`}
-                        locationId={locationId}
-                        value={itemData.storageUnitId ?? undefined}
-                        onChange={(newValue) => {
-                          if (newValue) {
-                            setItemData((d) => ({
-                              ...d,
-                              storageUnitId: newValue?.id
-                            }));
-                          }
-                        }}
-                      />
-                    </>
-                  )}
-                  <CustomFormFields table="salesInvoiceLine" />
-                </div>
-
-                {["Item", "Part", "Material", "Tool", "Consumable"].includes(
-                  itemType
-                ) && (
-                  <div className="w-full">
-                    <div className="w-full border border-border rounded-md shadow-sm p-4 flex flex-col gap-4 mt-4">
-                      <HStack
-                        className="w-full justify-between cursor-pointer"
-                        onClick={costsDisclosure.onToggle}
-                      >
-                        <Label>
-                          <Trans>Tax & Additional Costs</Trans>
-                        </Label>
-                        <HStack>
-                          {(itemData.taxPercent ?? 0) > 0 && (
-                            <Badge variant="red">
-                              {percentFormatter.format(
-                                itemData.taxPercent ?? 0
-                              )}{" "}
-                              <Trans>Tax</Trans>
-                            </Badge>
-                          )}
-                          {(itemData.shippingCost ?? 0) > 0 && (
-                            <Badge
-                              variant="secondary"
-                              className="flex items-center gap-1"
-                            >
-                              <LuTruck />
-                              <span>
-                                {currencyFormatter.format(
-                                  itemData.shippingCost ?? 0
-                                )}
-                              </span>
-                            </Badge>
-                          )}
-                          {(initialValues?.addOnCost ?? 0) > 0 ||
-                            ((initialValues?.nonTaxableAddOnCost ?? 0) > 0 && (
-                              <Badge
-                                variant="secondary"
-                                className="flex items-center gap-1"
-                              >
-                                <LuPlus />
-                                <span>
-                                  {currencyFormatter.format(
-                                    (initialValues?.addOnCost ?? 0) +
-                                      (initialValues?.nonTaxableAddOnCost ?? 0)
-                                  )}{" "}
-                                  <Trans>Add-On</Trans>
-                                </span>
-                              </Badge>
-                            ))}
-
-                          <IconButton
-                            icon={<LuChevronRight />}
-                            aria-label={
-                              costsDisclosure.isOpen
-                                ? t`Collapse Costs`
-                                : t`Expand Costs`
-                            }
-                            variant="ghost"
-                            size="md"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              costsDisclosure.onToggle();
-                            }}
-                            className={`transition-transform ${
-                              costsDisclosure.isOpen ? "rotate-90" : ""
-                            }`}
-                          />
-                        </HStack>
-                      </HStack>
-                      <div
-                        className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
-                          costsDisclosure.isOpen ? "" : "hidden"
-                        }`}
-                      >
-                        <NumberControlled
-                          name="taxPercent"
-                          label={t`Tax Percent`}
-                          value={itemData.taxPercent}
-                          minValue={0}
-                          maxValue={1}
-                          step={0.0001}
-                          formatOptions={{
-                            style: "percent",
-                            minimumFractionDigits: 0,
-                            maximumFractionDigits: 2
-                          }}
-                          onChange={(value) => {
-                            const subtotal =
-                              itemData.unitPrice * itemData.quantity +
-                              itemData.shippingCost;
-                            setItemData((d) => ({
-                              ...d,
-                              taxPercent: value,
-                              taxAmount: subtotal * value
-                            }));
-                          }}
-                        />
-                        <NumberControlled
-                          name="taxAmount"
-                          label={t`Tax Amount`}
-                          value={itemData.taxAmount}
-                          formatOptions={{
-                            style: "currency",
-                            currency:
-                              routeData?.salesInvoice?.currencyCode ??
-                              company.baseCurrencyCode
-                          }}
-                          onChange={(value) => {
-                            const subtotal =
-                              itemData.unitPrice * itemData.quantity +
-                              itemData.shippingCost;
-                            setItemData((d) => ({
-                              ...d,
-                              taxAmount: value,
-                              taxPercent: subtotal > 0 ? value / subtotal : 0
-                            }));
-                          }}
-                        />
-                        <NumberControlled
-                          name="shippingCost"
-                          label={t`Shipping Cost`}
-                          value={itemData.shippingCost}
-                          minValue={0}
-                          formatOptions={{
-                            style: "currency",
-                            currency:
-                              routeData?.salesInvoice?.currencyCode ??
-                              company.baseCurrencyCode
-                          }}
-                          onChange={(value) =>
-                            setItemData((d) => ({
-                              ...d,
-                              shippingCost: value
-                            }))
-                          }
-                        />
-                        <Number
-                          name="addOnCost"
-                          label={t`Add-On Cost`}
-                          formatOptions={{
-                            style: "currency",
-                            currency:
-                              routeData?.salesInvoice?.currencyCode ??
-                              company.baseCurrencyCode
-                          }}
-                        />
-                        <Number
-                          name="nonTaxableAddOnCost"
-                          label={t`Non-Taxable Add-On Cost`}
-                          formatOptions={{
-                            style: "currency",
-                            currency:
-                              routeData?.salesInvoice?.currencyCode ??
-                              company.baseCurrencyCode
-                          }}
-                        />
-                      </div>
-                    </div>
+                    <Number
+                      name="addOnCost"
+                      label={t`Add-On Cost`}
+                      formatOptions={{
+                        style: "currency",
+                        currency:
+                          routeData?.salesInvoice?.currencyCode ??
+                          company.baseCurrencyCode
+                      }}
+                    />
+                    <Number
+                      name="nonTaxableAddOnCost"
+                      label={t`Non-Taxable Add-On Cost`}
+                      formatOptions={{
+                        style: "currency",
+                        currency:
+                          routeData?.salesInvoice?.currencyCode ??
+                          company.baseCurrencyCode
+                      }}
+                    />
                   </div>
-                )}
-              </VStack>
-            </ModalCardBody>
-            <ModalCardFooter>
-              <Submit isDisabled={isDisabled} withBlocker={false}>
-                <Trans>Save</Trans>
-              </Submit>
-            </ModalCardFooter>
-          </ValidatedForm>
-        </ModalCardContent>
-      </ModalCard>
-    </ModalCardProvider>
+                </div>
+              </div>
+            )}
+          </VStack>
+        </CardContent>
+        <CardFooter>
+          <Submit isDisabled={isDisabled} withBlocker={false}>
+            <Trans>Save</Trans>
+          </Submit>
+        </CardFooter>
+      </ValidatedForm>
+    </Card>
   );
 };
 
 export default SalesInvoiceLineForm;
+
+export function SalesInvoiceLineFormModal({
+  initialValues,
+  isSalesOrderLine,
+  onClose
+}: {
+  initialValues: z.infer<typeof salesInvoiceLineValidator> & {
+    taxPercent?: number;
+  };
+  isSalesOrderLine?: boolean;
+  onClose: () => void;
+}) {
+  return (
+    <CardFormModal onClose={onClose} contentClassName="!max-w-6xl">
+      <SalesInvoiceLineForm
+        initialValues={initialValues}
+        isSalesOrderLine={isSalesOrderLine}
+        onSubmitted={onClose}
+      />
+    </CardFormModal>
+  );
+}

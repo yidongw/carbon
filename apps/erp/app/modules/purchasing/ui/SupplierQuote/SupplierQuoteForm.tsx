@@ -16,6 +16,7 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { flushSync } from "react-dom";
+import type { FetcherWithComponents } from "react-router";
 import { useFetcher, useParams } from "react-router";
 import type { z } from "zod";
 import {
@@ -31,6 +32,7 @@ import {
   SupplierLocation
 } from "~/components/Form";
 import ExchangeRate from "~/components/Form/ExchangeRate";
+import { useNewEntityForm } from "~/components/NewEntityModal";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
 import { path } from "~/utils/path";
 import {
@@ -43,14 +45,39 @@ import type { SupplierQuote } from "../../types";
 type SupplierQuoteFormValues = z.infer<typeof supplierQuoteValidator>;
 
 type SupplierQuoteFormProps = {
-  initialValues: SupplierQuoteFormValues;
+  initialValues?: Partial<SupplierQuoteFormValues>;
+  searchParams?: URLSearchParams;
+  fetcher?: FetcherWithComponents<unknown>;
 };
 
-const SupplierQuoteForm = ({ initialValues }: SupplierQuoteFormProps) => {
+const SupplierQuoteForm = ({
+  initialValues: initialValuesProp,
+  searchParams,
+  fetcher
+}: SupplierQuoteFormProps) => {
   const { t } = useLingui();
+  const modalFetcher = useNewEntityForm(path.to.newSupplierQuote);
+  const submitFetcher = fetcher ?? modalFetcher;
   const permissions = usePermissions();
   const { carbon } = useCarbon();
   const { company } = useUser();
+  const initialValues = {
+    supplierContactId: "",
+    supplierId: "",
+    supplierReference: "",
+    expirationDate: "",
+    quotedDate: today(getLocalTimeZone()).toString(),
+    supplierQuoteId: undefined,
+    status: "Draft" as const,
+    currencyCode: company.baseCurrencyCode,
+    exchangeRate: undefined,
+    exchangeRateUpdatedAt: "",
+    supplierQuoteType: "Purchase" as const,
+    ...(searchParams?.get("supplierId")
+      ? { supplierId: searchParams.get("supplierId")! }
+      : {}),
+    ...initialValuesProp
+  };
   const [supplier, setSupplier] = useState<{
     id: string | undefined;
     currencyCode: string | undefined;
@@ -118,8 +145,10 @@ const SupplierQuoteForm = ({ initialValues }: SupplierQuoteFormProps) => {
     <Card>
       <ValidatedForm
         method="post"
+        action={isEditing ? undefined : path.to.newSupplierQuote}
         validator={supplierQuoteValidator}
         defaultValues={initialValues}
+        fetcher={submitFetcher}
         isDisabled={isEditing && isLocked}
       >
         <CardHeader>

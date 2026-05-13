@@ -7,8 +7,9 @@ import { trigger } from "@carbon/jobs";
 import { parseDate } from "@internationalized/date";
 import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs } from "react-router";
-import { redirect } from "react-router";
-import { useUrlParams, useUser } from "~/hooks";
+import { data, useLocation, useNavigate } from "react-router";
+import { RegisteredEntityFormModal } from "~/components/NewEntityModal";
+import { useUrlParams } from "~/hooks";
 import { getDefaultStorageUnitForJob } from "~/modules/inventory";
 import { getItemReplenishment } from "~/modules/items";
 import {
@@ -17,9 +18,7 @@ import {
   upsertJob,
   upsertJobMethod
 } from "~/modules/production";
-import { JobForm } from "~/modules/production/ui/Jobs";
 import { getNextSequence } from "~/modules/settings";
-import type { MethodItemType } from "~/modules/shared";
 import { setCustomFields } from "~/utils/form";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
@@ -57,8 +56,12 @@ export async function action({ request }: ActionFunctionArgs) {
 
   if (useNextSequence) {
     if (nextSequenceResult.error) {
-      throw redirect(
-        path.to.newJob,
+      return data(
+        {
+          error: {
+            message: "Failed to get next sequence"
+          }
+        },
         await flash(
           request,
           error(nextSequenceResult.error, "Failed to get next sequence")
@@ -128,8 +131,13 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const id = createJob.data?.id!;
   if (createJob.error || !jobId) {
-    throw redirect(
-      path.to.jobs,
+    return data(
+      {
+        data: createJob.data,
+        error: {
+          message: "Failed to insert job"
+        }
+      },
       await flash(request, error(createJob.error, "Failed to insert job"))
     );
   }
@@ -147,8 +155,13 @@ export async function action({ request }: ActionFunctionArgs) {
   );
 
   if (upsertMethod.error) {
-    throw redirect(
-      path.to.job(id),
+    return data(
+      {
+        data: createJob.data,
+        error: {
+          message: "Failed to create job method."
+        }
+      },
       await flash(
         request,
         error(upsertMethod.error, "Failed to create job method.")
@@ -163,32 +176,26 @@ export async function action({ request }: ActionFunctionArgs) {
     userId
   });
 
-  throw redirect(path.to.job(id));
+  return data({ data: createJob.data }, { status: 201 });
 }
 
 export default function JobNewRoute() {
-  const { defaults } = useUser();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = (location.state as { from?: string } | null)?.from;
   const [params] = useUrlParams();
-  const customerId = params.get("customerId");
-
-  const initialValues = {
-    customerId: customerId ?? "",
-    deadlineType: "No Deadline" as const,
-    description: "",
-    dueDate: "",
-    itemId: "",
-    itemType: "Item" as MethodItemType,
-    jobId: undefined,
-    locationId: defaults?.locationId ?? "",
-    quantity: 1,
-    scrapQuantity: 0,
-    status: "Draft" as const,
-    unitOfMeasureCode: "EA"
-  };
 
   return (
-    <div className="max-w-4xl w-full p-2 sm:p-0 mx-auto mt-0 md:mt-8">
-      <JobForm initialValues={initialValues} />
-    </div>
+    <RegisteredEntityFormModal
+      to={path.to.newJob}
+      searchParams={params}
+      onClose={() => {
+        if (from) {
+          navigate(from);
+        } else {
+          navigate(-1);
+        }
+      }}
+    />
   );
 }

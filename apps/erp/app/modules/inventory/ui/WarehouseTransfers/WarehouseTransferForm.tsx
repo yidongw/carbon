@@ -33,6 +33,7 @@ import {
   LuTrash,
   LuTruck
 } from "react-icons/lu";
+import type { FetcherWithComponents } from "react-router";
 import { Link, useSubmit } from "react-router";
 import type { z } from "zod";
 import { useAuditLog } from "~/components/AuditLog";
@@ -46,6 +47,7 @@ import {
   TextArea
 } from "~/components/Form";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
+import { useNewEntityForm } from "~/components/NewEntityModal";
 import { usePermissions, useUser } from "~/hooks";
 import { useItemRuleViolations } from "~/hooks/useItemRuleViolations";
 import type { action as statusAction } from "~/routes/x+/warehouse-transfer+/$transferId.status";
@@ -60,15 +62,31 @@ import { ShipmentStatus } from "../Shipments";
 import WarehouseTransferStatus from "./WarehouseTransferStatus";
 
 type WarehouseTransferFormProps = {
-  initialValues: z.infer<typeof warehouseTransferValidator>;
+  initialValues?: Partial<z.infer<typeof warehouseTransferValidator>>;
   warehouseTransfer?: WarehouseTransfer;
+  fetcher?: FetcherWithComponents<unknown>;
 };
 
 const WarehouseTransferForm = ({
-  initialValues,
-  warehouseTransfer
+  initialValues: initialValuesProp,
+  warehouseTransfer,
+  fetcher
 }: WarehouseTransferFormProps) => {
-  const { company } = useUser();
+  const { company, defaults } = useUser();
+  const modalFetcher = useNewEntityForm(path.to.newWarehouseTransfer);
+  const submitFetcher = fetcher ?? modalFetcher;
+  const initialValues = {
+    id: undefined,
+    transferId: "",
+    fromLocationId: defaults?.locationId ?? "",
+    toLocationId: "",
+    status: "Draft" as const,
+    transferDate: "",
+    expectedReceiptDate: "",
+    notes: "",
+    reference: "",
+    ...initialValuesProp
+  };
   const permissions = usePermissions();
   // Item rules eval at every "go" status transition (Confirm/Ship/Receive/
   // Complete). Surface violations through the hook's modal rather than the
@@ -103,9 +121,11 @@ const WarehouseTransferForm = ({
       <ValidatedForm
         validator={warehouseTransferValidator}
         method="post"
+        action={isEditing ? undefined : path.to.newWarehouseTransfer}
         defaultValues={initialValues}
         className="w-full"
         isDisabled={isEditing && isLocked}
+        fetcher={submitFetcher}
       >
         <Card className="w-full">
           {isEditing && warehouseTransfer ? (

@@ -2,6 +2,7 @@ import type { CreatableComboboxProps } from "@carbon/form";
 import { CreatableCombobox } from "@carbon/form";
 import { useDisclosure } from "@carbon/react";
 import { useMemo, useRef, useState } from "react";
+import { EntityFormModal } from "~/components/NewEntityModal";
 import { useSupplierApprovalRequired, useUser } from "~/hooks";
 import { SupplierForm } from "~/modules/purchasing/ui/Supplier";
 import { useSuppliers } from "~/stores";
@@ -62,19 +63,21 @@ const Supplier = ({
         }}
       />
       {newSuppliersModal.isOpen && (
-        <SupplierForm
-          type="modal"
+        <EntityFormModal
           onClose={() => {
             setCreated("");
             newSuppliersModal.onClose();
             triggerRef.current?.click();
           }}
-          initialValues={{
-            name: created,
-            currencyCode: company.baseCurrencyCode,
-            supplierStatus: supplierApprovalRequired ? "Pending" : undefined
-          }}
-        />
+        >
+          <SupplierForm
+            initialValues={{
+              name: created,
+              currencyCode: company.baseCurrencyCode,
+              supplierStatus: supplierApprovalRequired ? "Pending" : undefined
+            }}
+          />
+        </EntityFormModal>
       )}
     </>
   );

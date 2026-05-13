@@ -14,6 +14,7 @@ import { LuPencil, LuTrash } from "react-icons/lu";
 import { Outlet, useNavigate, useParams } from "react-router";
 import { Contact, New } from "~/components";
 import { ConfirmDelete } from "~/components/Modals";
+import { useNewEntityModal } from "~/components/NewEntityModal";
 import { usePermissions } from "~/hooks";
 import type { SupplierContact } from "~/modules/purchasing/types";
 import { path } from "~/utils/path";
@@ -25,6 +26,7 @@ type SupplierContactsProps = {
 const SupplierContacts = ({ contacts }: SupplierContactsProps) => {
   const { t } = useLingui();
   const navigate = useNavigate();
+  const { open: openNewEntityModal } = useNewEntityModal();
   const { supplierId } = useParams();
   if (!supplierId) throw new Error("supplierId not found");
   const permissions = usePermissions();
@@ -68,7 +70,7 @@ const SupplierContacts = ({ contacts }: SupplierContactsProps) => {
           label: t`Create Account`,
           icon: <IoMdAdd />,
           onClick: () => {
-            navigate(
+            openNewEntityModal(
               `${path.to.newSupplierAccount}?id=${contact.id}&supplier=${supplierId}`
             );
           }
@@ -89,7 +91,14 @@ const SupplierContacts = ({ contacts }: SupplierContactsProps) => {
 
       return actions;
     },
-    [permissions, deleteContactModal, navigate, supplierId, t]
+    [
+      permissions,
+      deleteContactModal,
+      navigate,
+      openNewEntityModal,
+      supplierId,
+      t
+    ]
   );
 
   return (

@@ -11,9 +11,11 @@ import {
   toast,
   VStack
 } from "@carbon/react";
+import { getLocalTimeZone, today } from "@internationalized/date";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import { flushSync } from "react-dom";
+import type { FetcherWithComponents } from "react-router";
 import { useParams } from "react-router";
 import type { z } from "zod";
 import {
@@ -30,10 +32,12 @@ import {
   SupplierLocation
 } from "~/components/Form";
 import PaymentTerm from "~/components/Form/PaymentTerm";
+import { useNewEntityForm } from "~/components/NewEntityModal";
 import {
   usePermissions,
   useRouteData,
-  useSupplierApprovalRequired
+  useSupplierApprovalRequired,
+  useUser
 } from "~/hooks";
 import { purchaseInvoiceValidator } from "~/modules/invoicing";
 import { path } from "~/utils/path";
@@ -42,14 +46,34 @@ import { isPurchaseInvoiceLocked } from "../../invoicing.models";
 type PurchaseInvoiceFormValues = z.infer<typeof purchaseInvoiceValidator>;
 
 type PurchaseInvoiceFormProps = {
-  initialValues: PurchaseInvoiceFormValues;
+  initialValues?: Partial<PurchaseInvoiceFormValues>;
+  searchParams?: URLSearchParams;
+  fetcher?: FetcherWithComponents<unknown>;
 };
 
-const PurchaseInvoiceForm = ({ initialValues }: PurchaseInvoiceFormProps) => {
+const PurchaseInvoiceForm = ({
+  initialValues: initialValuesProp,
+  searchParams,
+  fetcher
+}: PurchaseInvoiceFormProps) => {
   const { t } = useLingui();
+  const modalFetcher = useNewEntityForm(path.to.newPurchaseInvoice);
+  const submitFetcher = fetcher ?? modalFetcher;
   const permissions = usePermissions();
   const supplierApprovalRequired = useSupplierApprovalRequired();
+  const { defaults } = useUser();
   const { carbon } = useCarbon();
+  const initialValues = {
+    id: undefined,
+    invoiceId: undefined,
+    supplierId: "",
+    locationId: defaults?.locationId ?? "",
+    dateIssued: today(getLocalTimeZone()).toString(),
+    ...(searchParams?.get("supplierId")
+      ? { supplierId: searchParams.get("supplierId")! }
+      : {}),
+    ...initialValuesProp
+  };
   const isEditing = initialValues.id !== undefined;
 
   const { invoiceId } = useParams();
@@ -158,8 +182,10 @@ const PurchaseInvoiceForm = ({ initialValues }: PurchaseInvoiceFormProps) => {
   return (
     <ValidatedForm
       method="post"
+      action={isEditing ? undefined : path.to.newPurchaseInvoice}
       validator={purchaseInvoiceValidator}
       defaultValues={initialValues}
+      fetcher={submitFetcher}
       isDisabled={isEditing && isLocked}
     >
       <Card>
