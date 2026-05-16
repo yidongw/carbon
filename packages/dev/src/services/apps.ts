@@ -61,17 +61,28 @@ export function spawnApps(opts: {
     // (`<app>.<prefix>.dev`) without portless auto-prefix mangling.
     const portKey = APP_PORT_KEYS[id];
     const port = portKey ? ports[portKey] : undefined;
-    const child = execa("pnpm", ["run", "dev:app"], {
-      cwd: join(root, "apps", id),
-      env: {
-        ...spawnAppEnv(root, id),
-        HOST: "127.0.0.1",
-        ...(port !== undefined ? { PORT: String(port) } : {})
-      },
-      reject: false,
-      stdin: "ignore",
-      detached: true
-    });
+    const child = execa(
+      "pnpm",
+      [
+        "exec",
+        "react-router",
+        "dev",
+        ...(port !== undefined ? ["--port", String(port)] : []),
+        "--host",
+        "127.0.0.1"
+      ],
+      {
+        cwd: join(root, "apps", id),
+        env: {
+          ...spawnAppEnv(root, id),
+          HOST: "127.0.0.1",
+          ...(port !== undefined ? { PORT: String(port) } : {})
+        },
+        reject: false,
+        stdin: "ignore",
+        detached: true
+      }
+    );
 
     const prefix = color(pc.bold(`${id.padEnd(3)} | `));
     const pipe = (
