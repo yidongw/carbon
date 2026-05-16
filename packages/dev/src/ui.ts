@@ -1,6 +1,6 @@
 import Table from "cli-table3";
 import pc from "picocolors";
-import type { AppId } from "./constants.js";
+import { type AppId, TLD } from "./constants.js";
 import type { Container } from "./services/compose.js";
 import { PORT_NAMES, type PortMap, SHARED_REDIS_PORT } from "./worktree.js";
 
@@ -129,7 +129,7 @@ export function summaryLines(
   branchPrefix?: string
 ): string[] {
   const url = branchPrefix
-    ? (sub: string) => `https://${sub}.${branchPrefix}.${TLD}`;
+    ? (sub: string, _port?: number) => `https://${sub}.${branchPrefix}.${TLD}`
     : (sub: string, port: number) => `http://localhost:${port}`;
   const dbUrl = `postgresql://postgres:postgres@localhost:${ports.PORT_DB}/postgres`;
   const lines: string[] = [];
