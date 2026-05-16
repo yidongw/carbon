@@ -370,30 +370,27 @@ print_help() {
 crbn — Carbon dev CLI
 
   Worktrees:
-    crbn checkout <branch>          Switch into worktree for <branch>.
-                                    Creates one if missing (auto-fetches
-                                    from origin if not local).
-    crbn checkout -b <branch>       Create new branch + worktree from
-                                    --base (default HEAD).
-    crbn checkout <pr-number>       Fetch the PR head from GitHub into a
-                                    new `pr-<num>` branch + worktree.
-    crbn new                        Interactive: pick branch + base ref,
-                                    create worktree, sync env from main.
+    crbn checkout <branch>          Switch into worktree (creates if missing).
+    crbn checkout -b <branch>       New branch + worktree (--base REF).
+    crbn checkout <pr-number>       Fetch PR head into pr-<num> worktree.
+    crbn new [branch]               Interactive worktree creation.
     crbn list                       Show all worktrees with stack status.
-    crbn remove                     Pick a worktree to delete (with stack
-                                    teardown).
-    crbn copy <file...>             Copy file(s) from main checkout into
-                                    current worktree.
-    crbn env sync                   Sync files listed in package.json#crbn.copy
-                                    from main checkout into cwd.
+    crbn remove [--prune]           Multi-select worktrees to delete.
+                                    --prune also deletes the git branch.
 
   Stack:
     crbn up                         Boot compose stack + apps.
+    crbn up --no-portless           Localhost mode (API:54321 ERP:3000 MES:3001).
+    crbn up --borrow                Reuse another worktree's containers.
+    crbn up --no-apps               Services only, no dev servers.
     crbn down                       Stop stack (volumes preserved).
-    crbn reset                      Wipe volumes + redis, then `up`.
+    crbn reset                      Wipe volumes + redis, then up.
     crbn status                     Port assignment + container health.
-    crbn migrate                    Apply DB migrations against the running
-                                    worktree stack (loads .env.local).
+    crbn migrate                    Apply DB migrations (loads .env.local).
+
+  Files:
+    crbn copy <file...>             Copy file(s) from main checkout.
+    crbn env sync                   Sync package.json#crbn.copy from main.
 
 USAGE
 }
