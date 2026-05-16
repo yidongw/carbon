@@ -2502,6 +2502,9 @@ msgstr "Arraste e solte um PDF de Ordem de Compra aqui, ou clique para seleciona
 msgid "Drag handle"
 msgstr "Puxador de arrasto"
 
+msgid "Drag to reorder"
+msgstr "Arrastar para reordenar"
+
 msgid "Drop Shipment"
 msgstr "Envio Direto"
 
@@ -6418,6 +6421,9 @@ msgstr "Salvar MÃƒÆ’Ã‚Â©todo"
 
 msgid "Save View"
 msgstr "Guardar VisualizaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o"
+
+msgid "Saving..."
+msgstr ""
 
 msgid "Scan"
 msgstr "Digitalizar"

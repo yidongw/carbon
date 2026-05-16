@@ -2502,6 +2502,9 @@ msgstr "Trascina e rilascia un PDF di ordine di acquisto qui, oppure fai clic pe
 msgid "Drag handle"
 msgstr "Maniglia di trascinamento"
 
+msgid "Drag to reorder"
+msgstr "Trascina per riordinare"
+
 msgid "Drop Shipment"
 msgstr "Spedizione Diretta"
 
@@ -6418,6 +6421,9 @@ msgstr "Salva Metodo"
 
 msgid "Save View"
 msgstr "Salva Vista"
+
+msgid "Saving..."
+msgstr ""
 
 msgid "Scan"
 msgstr "Scansiona"

@@ -2502,6 +2502,9 @@ msgstr "Ziehen Sie eine Bestellungs-PDF hierher, oder klicken Sie, um eine Datei
 msgid "Drag handle"
 msgstr "Ziehgriff"
 
+msgid "Drag to reorder"
+msgstr "Zum Neuordnen ziehen"
+
 msgid "Drop Shipment"
 msgstr "Direktversand"
 
@@ -6418,6 +6421,9 @@ msgstr "Methode speichern"
 
 msgid "Save View"
 msgstr "Ansicht speichern"
+
+msgid "Saving..."
+msgstr ""
 
 msgid "Scan"
 msgstr "Scannen"

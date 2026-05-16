@@ -2502,6 +2502,9 @@ msgstr "PrzeciÃƒâ€žÃ¢â‚¬Â¦gnij i upuÃƒâ€¦Ã¢â‚¬ÂºÃƒ
 msgid "Drag handle"
 msgstr "Uchwyt do przeciÃƒâ€žÃ¢â‚¬Â¦gania"
 
+msgid "Drag to reorder"
+msgstr "Przeciągnij, aby zmienić kolejność"
+
 msgid "Drop Shipment"
 msgstr "WysyÃƒâ€¦Ã¢â‚¬Å¡ka bezpoÃƒâ€¦Ã¢â‚¬Âºrednia"
 
@@ -6418,6 +6421,9 @@ msgstr "Zapisz metodÃƒâ€žÃ¢â€žÂ¢"
 
 msgid "Save View"
 msgstr "Zapisz Widok"
+
+msgid "Saving..."
+msgstr ""
 
 msgid "Scan"
 msgstr "Skanuj"

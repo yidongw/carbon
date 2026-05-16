@@ -2502,6 +2502,9 @@ msgstr "Glissez-dÃƒÆ’Ã‚Â©posez un PDF de bon de commande ici, ou cliqu
 msgid "Drag handle"
 msgstr "PoignÃƒÆ’Ã‚Â©e de dÃƒÆ’Ã‚Â©placement"
 
+msgid "Drag to reorder"
+msgstr "Glisser pour réorganiser"
+
 msgid "Drop Shipment"
 msgstr "ExpÃƒÆ’Ã‚Â©dition directe"
 
@@ -6418,6 +6421,9 @@ msgstr "Enregistrer la mÃƒÆ’Ã‚Â©thode"
 
 msgid "Save View"
 msgstr "Enregistrer la vue"
+
+msgid "Saving..."
+msgstr ""
 
 msgid "Scan"
 msgstr "NumÃƒÆ’Ã‚Â©riser"

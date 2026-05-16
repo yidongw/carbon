@@ -2502,6 +2502,9 @@ msgstr "Drag and drop a Purchase Order PDF here, or click to select a file"
 msgid "Drag handle"
 msgstr "Drag handle"
 
+msgid "Drag to reorder"
+msgstr "Drag to reorder"
+
 msgid "Drop Shipment"
 msgstr "Drop Shipment"
 
@@ -6418,6 +6421,9 @@ msgstr "Save Method"
 
 msgid "Save View"
 msgstr "Save View"
+
+msgid "Saving..."
+msgstr "Saving..."
 
 msgid "Scan"
 msgstr "Scan"
