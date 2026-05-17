@@ -1,7 +1,14 @@
 import { error, useCarbon } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
-import { Input, Select, Submit, ValidatedForm, validator } from "@carbon/form";
+import {
+  Input,
+  PhoneInput,
+  Select,
+  Submit,
+  ValidatedForm,
+  validator
+} from "@carbon/form";
 import type { JSONContent } from "@carbon/react";
 import {
   Badge,
@@ -503,8 +510,8 @@ export default function PurchasingSettingsRoute() {
                   <Input name="state" label={t`State / Province`} />
                   <Input name="postalCode" label={t`Postal Code`} />
                   <Country name="countryCode" />
-                  <Input name="phone" label={t`Phone`} />
-                  <Input name="fax" label={t`Fax`} />
+                  <PhoneInput name="phone" label={t`Phone`} />
+                  <PhoneInput name="fax" label={t`Fax`} />
                 </div>
               </CardContent>
               <CardFooter>
@@ -704,7 +711,7 @@ export default function PurchasingSettingsRoute() {
           </CardHeader>
           <CardContent>
             <HStack className="justify-between items-center">
-              <VStack className="items-start gap-1">
+              <VStack className="items-start" spacing={1}>
                 <span className="font-medium">
                   {companySettings.includeThumbnailsOnPurchasingPdfs ? (
                     <Trans>Thumbnails are included</Trans>

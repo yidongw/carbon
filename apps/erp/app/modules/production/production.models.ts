@@ -41,12 +41,17 @@ export const jobStatus = [
   "In Progress",
   "Paused",
   "Completed",
+  "Closed",
   "Cancelled",
   "Overdue", // deprecated
   "Due Today" // deprecated
 ] as const;
 
-export const JOB_LOCKED_STATUSES = ["Completed", "Cancelled"] as const;
+export const JOB_LOCKED_STATUSES = [
+  "Completed",
+  "Closed",
+  "Cancelled"
+] as const;
 
 export function isJobLocked(status: string | null | undefined): boolean {
   return JOB_LOCKED_STATUSES.includes(
@@ -127,7 +132,7 @@ const baseJobValidator = z.object({
 export const bulkJobValidator = z
   .object({
     itemId: z.string().min(1, { message: "Item is required" }),
-    totalQuantity: zfd.numeric(z.number().min(0)),
+    jobCount: zfd.numeric(z.number().min(1)),
     quantityPerJob: zfd.numeric(z.number().min(0)),
     scrapQuantityPerJob: zfd.numeric(z.number().min(0)),
     unitOfMeasureCode: z
