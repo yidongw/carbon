@@ -1981,6 +1981,9 @@ msgstr "カンバンを作成"
 msgid "Create new rule"
 msgstr ""
 
+msgid "Create Production Quantity"
+msgstr ""
+
 msgid "Create Quote Revision"
 msgstr "見積書リビジョンを作成"
 
@@ -2132,6 +2135,9 @@ msgstr ""
 
 msgid "Current Password"
 msgstr "現在のパスワード"
+
+msgid "Current process"
+msgstr ""
 
 msgid "Current quantity"
 msgstr "現在の数量"
@@ -3037,6 +3043,9 @@ msgstr "価格設定ルールを編集"
 
 msgid "Edit Process"
 msgstr "プロセスを編集"
+
+msgid "Edit Production Quantity"
+msgstr ""
 
 msgid "Edit purchase order line type"
 msgstr "購買注文行タイプを編集"
@@ -6412,6 +6421,9 @@ msgstr "プロセスタイプ"
 msgid "Processes"
 msgstr "プロセス"
 
+msgid "Processes ({completedOps}/{totalOps}): operations marked Done."
+msgstr ""
+
 msgid "Production"
 msgstr "生産"
 
@@ -6599,6 +6611,9 @@ msgstr ""
 msgid "Quantity"
 msgstr "数量"
 
+msgid "Quantity ({qtyThrough}/{qtyTotal}): completed quantity across all operations."
+msgstr ""
+
 msgid "Quantity Completed"
 msgstr "完了数量"
 
@@ -6766,6 +6781,9 @@ msgstr "記録"
 msgid "Record deleted"
 msgstr "レコード削除済み"
 
+msgid "Record production quantity"
+msgstr ""
+
 msgid "Records"
 msgstr "記録"
 
@@ -6919,6 +6937,9 @@ msgstr "補充システム"
 
 msgid "Report"
 msgstr "レポート"
+
+msgid "reported"
+msgstr ""
 
 msgid "Reports"
 msgstr "レポート"
@@ -8745,6 +8766,9 @@ msgstr "サポートされていないソースドキュメントタイプ: {sou
 msgid "Untitled Diagram"
 msgstr ""
 
+msgid "Untitled operation"
+msgstr ""
+
 msgid "UoM"
 msgstr "UoM"
 
@@ -8978,6 +9002,9 @@ msgstr "添付ファイルを表示"
 
 msgid "View Attributes"
 msgstr "属性を表示"
+
+msgid "View bill of process"
+msgstr ""
 
 msgid "View Contact"
 msgstr "連絡先を表示"

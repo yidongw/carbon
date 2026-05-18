@@ -73,6 +73,8 @@ interface BarProgressProps {
   invertGradient?: boolean;
   /** Multi-segment progress (renders segments in order, ignores progress/gradient/activeClassName) */
   segments?: Segment[];
+  /** Height of each bar segment in pixels (default: 14) */
+  barHeight?: number;
   /** Additional class names for the outer wrapper */
   className?: string;
   /** Class name for the active (filled) bars (ignored when gradient is true) */
@@ -89,9 +91,10 @@ export function BarProgress({
   gradient = false,
   invertGradient = false,
   segments,
+  barHeight = BAR_HEIGHT,
   className,
   activeClassName = "bg-emerald-500",
-  inactiveClassName = "bg-muted"
+  inactiveClassName = "bg-foreground/15"
 }: BarProgressProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [barCount, setBarCount] = useState(0);
@@ -187,7 +190,7 @@ export function BarProgress({
               )}
               style={{
                 width: BAR_WIDTH,
-                height: BAR_HEIGHT,
+                height: barHeight,
                 ...getBarStyle(i)
               }}
             />

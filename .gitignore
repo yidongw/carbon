@@ -69,3 +69,4 @@ docs/e2e
 llm/tasks
 apps/*/portless.json
 packages/database/supabase/snippets/**.superpowers/
+.worktrees

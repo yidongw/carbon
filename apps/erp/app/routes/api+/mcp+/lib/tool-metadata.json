@@ -1,6 +1,6 @@
 {
-  "generated": "2026-06-16T15:00:47.727Z",
-  "totalTools": 1188,
+  "generated": "2026-06-16T18:18:28.567Z",
+  "totalTools": 1189,
   "modules": 15,
   "tools": [
     {
@@ -14938,6 +14938,35 @@
         "required": [
           "jobOperationId",
           "sortDescending",
+          "page"
+        ]
+      }
+    },
+    {
+      "name": "production_getProductionQuantitiesPage",
+      "module": "production",
+      "classification": "READ",
+      "description": "get production quantities page",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "jobOperationId",
+        "companyId",
+        "page"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobOperationId": {
+            "type": "string"
+          },
+          "page": {}
+        },
+        "required": [
+          "jobOperationId",
           "page"
         ]
       }

@@ -6,7 +6,7 @@ import { LayoutGroup, motion, Reorder, useDragControls } from "framer-motion";
 import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
-import { LuTrash } from "react-icons/lu";
+import { LuPlus, LuTrash } from "react-icons/lu";
 import Empty from "./Empty";
 
 export interface Item {
@@ -17,6 +17,12 @@ export interface Item {
   isTemporary?: boolean;
   order?: "With Previous" | "After Previous";
   title: ReactNode;
+  /** Filled strip between the main block and footer (e.g. operation quantity progress). */
+  quantityProgress?: {
+    complete: number;
+    target: number;
+    onAddQuantity?: () => void;
+  } | null;
 }
 
 interface SortableItem<T> extends Item {
@@ -103,17 +109,22 @@ function SortableListItem<T>({
                   marginTop: 10,
                   marginBottom: 10,
                   position: "relative",
-                  overflow: "hidden"
+                  overflow: item.quantityProgress != null ? "visible" : "hidden"
                 }
               : {
                   position: "relative",
-                  overflow: "hidden"
+                  overflow: item.quantityProgress != null ? "visible" : "hidden"
                 }
           }
           whileDrag={{ zIndex: 9999 }}
         >
-          <div className={cn(isExpanded ? "w-full" : "", "z-20 ")}>
-            <motion.div className="w-full py-3 px-3" layout="position">
+          <div
+            className={cn(
+              isExpanded ? "w-full" : "",
+              "relative z-20 flex w-full min-w-0 flex-col"
+            )}
+          >
+            <motion.div className="w-full px-3 pt-3" layout="position">
               <div
                 className={cn(
                   "items-center justify-between w-full gap-2",
@@ -188,10 +199,29 @@ function SortableListItem<T>({
 
                 {/* List Item Children */}
               </div>
-              {renderExtra && renderExtra(item)}
             </motion.div>
+            {item.quantityProgress != null && (
+              <QuantityProgressStrip progress={item.quantityProgress} t={t} />
+            )}
+            {renderExtra && (
+              <motion.div
+                className={cn(
+                  "w-full px-3",
+                  item.quantityProgress == null && !item.footer && "pb-3"
+                )}
+                layout="position"
+              >
+                {renderExtra(item)}
+              </motion.div>
+            )}
             {item.footer && (
-              <div className="flex w-full items-center border-t border-border px-3 py-2">
+              <div
+                className={cn(
+                  "flex w-full items-center px-3 py-2",
+                  (isExpanded || item.quantityProgress == null) &&
+                    "border-t border-border"
+                )}
+              >
                 {item.footer}
               </div>
             )}
@@ -279,6 +309,83 @@ function SortableList<T extends Item>({
 SortableList.displayName = "SortableList";
 
 export { SortableList, SortableListItem };
+
+function formatQuantityValue(value: number) {
+  return Number.isInteger(value)
+    ? value
+    : value.toLocaleString(undefined, { maximumFractionDigits: 4 });
+}
+
+function getQuantityProgressPercent(complete: number, target: number) {
+  if (target > 0) return Math.min(100, (complete / target) * 100);
+  return complete > 0 ? 100 : 0;
+}
+
+function QuantityProgressStrip({
+  progress,
+  t
+}: {
+  progress: NonNullable<Item["quantityProgress"]>;
+  t: ReturnType<typeof useLingui>["t"];
+}) {
+  const { complete, target, onAddQuantity } = progress;
+  const percent = getQuantityProgressPercent(complete, target);
+  const isOverTarget = target > 0 && complete > target;
+
+  const indicator = (
+    <div className="flex items-center gap-1 whitespace-nowrap rounded-full border border-border/70 bg-background px-1.5 py-0.5 shadow-sm">
+      {onAddQuantity ? (
+        <button
+          type="button"
+          className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-foreground/80 transition-[transform,background-color] duration-150 hover:bg-muted hover:text-foreground active:scale-95 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          aria-label={t`Add production quantity`}
+          onClick={(event) => {
+            event.stopPropagation();
+            onAddQuantity();
+          }}
+        >
+          <LuPlus className="h-3.5 w-3.5" strokeWidth={2.5} />
+        </button>
+      ) : null}
+      <span className="pr-0.5 text-sm font-medium tabular-nums leading-none tracking-tight text-foreground">
+        {formatQuantityValue(complete)}
+        <span className="text-muted-foreground">
+          {" / "}
+          {formatQuantityValue(target)}
+        </span>
+      </span>
+    </div>
+  );
+
+  const progressLine = (
+    <div className="relative h-0.5 w-full overflow-hidden bg-muted-foreground/35">
+      <div
+        className={cn(
+          "absolute inset-y-0 left-0 transition-[width] duration-300 ease-out",
+          isOverTarget ? "bg-amber-500/90" : "bg-emerald-500"
+        )}
+        style={{ width: `${percent}%` }}
+      />
+    </div>
+  );
+
+  return (
+    <div
+      className="w-full min-w-0 shrink-0"
+      role="img"
+      aria-label={t`Finished ${complete} of ${target} units`}
+    >
+      <div className="relative h-7 w-full">
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2">
+          {progressLine}
+        </div>
+        <div className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2">
+          {indicator}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function getParallelizedOrder(index: number, item: Item, items: Item[]) {
   if (item?.order !== "With Previous") return index + 1;

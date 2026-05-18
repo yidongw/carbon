@@ -1981,6 +1981,9 @@ msgstr "Create Kanban"
 msgid "Create new rule"
 msgstr "Create new rule"
 
+msgid "Create Production Quantity"
+msgstr "Create Production Quantity"
+
 msgid "Create Quote Revision"
 msgstr "Create Quote Revision"
 
@@ -2132,6 +2135,9 @@ msgstr "Current Liabilities"
 
 msgid "Current Password"
 msgstr "Current Password"
+
+msgid "Current process"
+msgstr "Current process"
 
 msgid "Current quantity"
 msgstr "Current quantity"
@@ -3037,6 +3043,9 @@ msgstr "Edit Pricing Rule"
 
 msgid "Edit Process"
 msgstr "Edit Process"
+
+msgid "Edit Production Quantity"
+msgstr "Edit Production Quantity"
 
 msgid "Edit purchase order line type"
 msgstr "Edit purchase order line type"
@@ -6412,6 +6421,9 @@ msgstr "Process Type"
 msgid "Processes"
 msgstr "Processes"
 
+msgid "Processes ({completedOps}/{totalOps}): operations marked Done."
+msgstr "Processes ({completedOps}/{totalOps}): operations marked Done."
+
 msgid "Production"
 msgstr "Production"
 
@@ -6599,6 +6611,9 @@ msgstr "Quantities Per Job"
 msgid "Quantity"
 msgstr "Quantity"
 
+msgid "Quantity ({qtyThrough}/{qtyTotal}): completed quantity across all operations."
+msgstr "Quantity ({qtyThrough}/{qtyTotal}): completed quantity across all operations."
+
 msgid "Quantity Completed"
 msgstr "Quantity Completed"
 
@@ -6766,6 +6781,9 @@ msgstr "Record"
 msgid "Record deleted"
 msgstr "Record deleted"
 
+msgid "Record production quantity"
+msgstr "Record production quantity"
+
 msgid "Records"
 msgstr "Records"
 
@@ -6919,6 +6937,9 @@ msgstr "Replenishment System"
 
 msgid "Report"
 msgstr "Report"
+
+msgid "reported"
+msgstr "reported"
 
 msgid "Reports"
 msgstr "Reports"
@@ -8745,6 +8766,9 @@ msgstr "Unsupported source document type: {sourceDocument}"
 msgid "Untitled Diagram"
 msgstr "Untitled Diagram"
 
+msgid "Untitled operation"
+msgstr "Untitled operation"
+
 msgid "UoM"
 msgstr "UoM"
 
@@ -8978,6 +9002,9 @@ msgstr "View Attachment"
 
 msgid "View Attributes"
 msgstr "View Attributes"
+
+msgid "View bill of process"
+msgstr "View bill of process"
 
 msgid "View Contact"
 msgstr "View Contact"
