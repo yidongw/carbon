@@ -50,7 +50,8 @@ export const notificationDigestFunction = inngest.createFunction(
         { data: candidateRows, error: candidateErr },
         { data: digestRows, error: digestErr }
       ] = await Promise.all([
-        (client.from as any)("notification")
+        client
+          .from("notification")
           .select("id, userId, companyId, topic, createdAt")
           .is("readAt", null)
           .is("digestedInto", null)
@@ -58,7 +59,8 @@ export const notificationDigestFunction = inngest.createFunction(
           .lt("createdAt", cutoff)
           .order("createdAt", { ascending: true })
           .limit(DIGEST_MAX_CANDIDATES),
-        (client.from as any)("notification")
+        client
+          .from("notification")
           .select("id, userId, companyId, topic, createdAt")
           .is("readAt", null)
           .is("digestedInto", null)
@@ -133,9 +135,8 @@ export const notificationDigestFunction = inngest.createFunction(
             newChildren.length
           );
 
-          const { data: createdRow, error: insertError } = await (
-            client.from as any
-          )("notification")
+          const { data: createdRow, error: insertError } = await client
+            .from("notification")
             .insert({
               companyId: head.companyId,
               event: NotificationEvent.Digest,
@@ -157,9 +158,8 @@ export const notificationDigestFunction = inngest.createFunction(
             continue;
           }
 
-          const { error: updateError } = await (client.from as any)(
-            "notification"
-          )
+          const { error: updateError } = await client
+            .from("notification")
             .update({ digestedInto: createdRow.id })
             .in(
               "id",
@@ -183,9 +183,8 @@ export const notificationDigestFunction = inngest.createFunction(
         const others = existingDigests.slice(1);
 
         if (others.length > 0) {
-          const { error: repointErr } = await (client.from as any)(
-            "notification"
-          )
+          const { error: repointErr } = await client
+            .from("notification")
             .update({ digestedInto: keeper.id })
             .in(
               "digestedInto",
@@ -199,9 +198,8 @@ export const notificationDigestFunction = inngest.createFunction(
             continue;
           }
 
-          const { error: deleteErr } = await (client.from as any)(
-            "notification"
-          )
+          const { error: deleteErr } = await client
+            .from("notification")
             .delete()
             .in(
               "id",
@@ -215,9 +213,8 @@ export const notificationDigestFunction = inngest.createFunction(
         }
 
         if (newChildren.length > 0) {
-          const { error: absorbErr } = await (client.from as any)(
-            "notification"
-          )
+          const { error: absorbErr } = await client
+            .from("notification")
             .update({ digestedInto: keeper.id })
             .in(
               "id",
@@ -231,9 +228,8 @@ export const notificationDigestFunction = inngest.createFunction(
         }
 
         // Refresh title/count from the authoritative child count.
-        const { count: childCount, error: countErr } = await (
-          client.from as any
-        )("notification")
+        const { count: childCount, error: countErr } = await client
+          .from("notification")
           .select("id", { count: "exact", head: true })
           .eq("digestedInto", keeper.id);
 
@@ -244,7 +240,8 @@ export const notificationDigestFunction = inngest.createFunction(
 
         const total = childCount ?? 0;
         const description = getNotificationTopicPhrase(keeper.topic, total);
-        const { error: titleErr } = await (client.from as any)("notification")
+        const { error: titleErr } = await client
+          .from("notification")
           .update({
             payload: {
               count: total,

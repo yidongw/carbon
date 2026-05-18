@@ -130,6 +130,14 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
+  const contentType = request.headers.get("content-type") ?? "";
+  if (
+    !contentType.includes("multipart/form-data") &&
+    !contentType.includes("application/x-www-form-urlencoded")
+  ) {
+    return data({ error: "Invalid content type" }, { status: 400 });
+  }
+
   const validation = await validator(modeValidator).validate(
     await request.formData()
   );

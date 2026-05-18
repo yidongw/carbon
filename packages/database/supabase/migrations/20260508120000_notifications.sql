@@ -1,6 +1,13 @@
 -- In-app notification store. Replaces Novu cloud storage so we own the data
 -- and can stream changes to clients via Supabase Realtime instead of Novu's
 -- WebSocket service.
+--
+-- Grouping model: notifications can be flat or grouped under a "digest" row.
+-- A digest is itself a notification row (event = "digest"); its children point
+-- to it via "digestedInto". The user-facing list renders only top-level rows
+-- (digestedInto IS NULL) — digests render as expandable groups, everything
+-- else renders as a single leaf. See the partial index below, which mirrors
+-- this filter so unread/digest queries stay cheap.
 
 CREATE TABLE "notification" (
   "id" TEXT NOT NULL PRIMARY KEY DEFAULT xid(),
