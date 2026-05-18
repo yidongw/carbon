@@ -117,6 +117,7 @@ import UnitOfMeasure, {
 import { ProcedureStepTypeIcon } from "~/components/Icons";
 import InfiniteScroll from "~/components/InfiniteScroll";
 import { ConfirmDelete } from "~/components/Modals";
+import { overlay, useOverlay } from "~/components/Overlay";
 import type { Item, SortableItemRenderProps } from "~/components/SortableList";
 import { SortableList, SortableListItem } from "~/components/SortableList";
 import {
@@ -159,9 +160,11 @@ import { OperationDueDatePicker } from "./OperationDueDatePicker";
 export type Operation = z.infer<typeof jobOperationValidator> & {
   assignee: string | null;
   dueDate?: string | null;
+  jobId?: string;
   status: JobOperation["status"];
   tags: string[] | null;
   workInstruction: JSONContent | null;
+  quantityComplete?: number | null;
 };
 
 type ItemWithData = Item & {
@@ -191,6 +194,9 @@ type JobBillOfProcessProps = {
   itemId: string;
   salesOrderLineId: string;
   customerId: string;
+  /** When rendered outside `/x/job/:jobId` (e.g. jobs table preview modal). */
+  routeJobId?: string;
+  routeJob?: Job;
 };
 
 function makeItems(
@@ -198,10 +204,22 @@ function makeItems(
   tags: { name: string }[],
   temporaryItems: TemporaryItems,
   urlParams: { [key: string]: string },
-  t: ReturnType<typeof useLingui>["t"]
+  t: ReturnType<typeof useLingui>["t"],
+  jobId: string,
+  job?: Job,
+  onAddProductionQuantity?: (operationId: string) => void
 ): ItemWithData[] {
   return operations.map((operation) =>
-    makeItem(operation, tags, temporaryItems, urlParams, t)
+    makeItem(
+      operation,
+      tags,
+      temporaryItems,
+      urlParams,
+      t,
+      jobId,
+      job,
+      onAddProductionQuantity
+    )
   );
 }
 
@@ -210,7 +228,10 @@ function makeItem(
   tags: { name: string }[],
   temporaryItems: TemporaryItems,
   urlParams: { [key: string]: string },
-  t: ReturnType<typeof useLingui>["t"]
+  t: ReturnType<typeof useLingui>["t"],
+  jobId: string,
+  job?: Job,
+  onAddProductionQuantity?: (operationId: string) => void
 ): ItemWithData {
   return {
     id: operation.id!,
@@ -258,10 +279,23 @@ function makeItem(
         )}
       </HStack>
     ),
+    quantityProgress: temporaryItems[operation.id!]
+      ? null
+      : {
+          complete: operation.quantityComplete ?? 0,
+          target: job?.quantity ?? 0,
+          onAddQuantity: onAddProductionQuantity
+            ? () => onAddProductionQuantity(operation.id!)
+            : undefined
+        },
     footer: temporaryItems[operation.id!] ? null : (
       <HStack className="w-full justify-between">
         <HStack>
-          <JobOperationStatus operation={operation} />
+          <JobOperationStatus
+            operation={operation}
+            jobId={jobId}
+            job={job}
+          />
           <Assignee
             table="jobOperation"
             id={operation.id!}
@@ -350,12 +384,10 @@ type TemporaryItems = {
   [key: string]: Operation;
 };
 
-const usePendingOperations = () => {
+const usePendingOperations = (jobId: string) => {
   type PendingItem = ReturnType<typeof useFetchers>[number] & {
     formData: FormData;
   };
-  const { jobId } = useParams();
-  if (!jobId) throw new Error("jobId not found");
 
   return useFetchers()
     .filter((fetcher): fetcher is PendingItem => {
@@ -386,7 +418,9 @@ const JobBillOfProcess = ({
   tags,
   itemId,
   salesOrderLineId,
-  customerId
+  customerId,
+  routeJobId,
+  routeJob
 }: JobBillOfProcessProps) => {
   const { t } = useLingui();
   // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
@@ -394,6 +428,7 @@ const JobBillOfProcess = ({
   const sortOrderFetcher = useFetcher<{}>();
   const deleteOperationFetcher = useFetcher<{ success: boolean }>();
   const permissions = usePermissions();
+  const { openOverlay } = useOverlay();
   const {
     id: userId,
     company: { id: companyId }
@@ -405,9 +440,11 @@ const JobBillOfProcess = ({
     selected ? selected : null
   );
 
-  const { jobId } = useParams();
+  const paramsJobId = useParams().jobId;
+  const jobId = routeJobId ?? paramsJobId;
   if (!jobId) throw new Error("jobId not found");
-  const jobData = useRouteData<{ job: Job }>(path.to.job(jobId));
+  const routeJobData = useRouteData<{ job: Job }>(path.to.job(jobId));
+  const jobData = routeJob ? { job: routeJob } : routeJobData;
   const [temporaryItems, setTemporaryItems] = useState<TemporaryItems>({});
   const [workInstructions, setWorkInstructions] =
     useState<PendingWorkInstructions>(() => {
@@ -438,13 +475,14 @@ const JobBillOfProcess = ({
     operationsById.set(operation.id, operation);
   });
 
-  const pendingOperations = usePendingOperations();
+  const pendingOperations = usePendingOperations(jobId);
 
   // Replace existing operations with pending ones
   pendingOperations.forEach((pendingOperation) => {
     if (!pendingOperation.id) {
       operationsById.set("temporary", {
         ...pendingOperation,
+        jobId,
         assignee: null,
         status: "Todo",
         workInstruction: {},
@@ -454,7 +492,8 @@ const JobBillOfProcess = ({
     } else {
       operationsById.set(pendingOperation.id, {
         ...operationsById.get(pendingOperation.id)!,
-        ...pendingOperation
+        ...pendingOperation,
+        jobId
       });
     }
   });
@@ -463,6 +502,7 @@ const JobBillOfProcess = ({
   Object.entries(temporaryItems).forEach(([id, operation]) => {
     operationsById.set(id, {
       ...operation,
+      jobId,
       jobOperationTool: []
     });
   });
@@ -470,6 +510,21 @@ const JobBillOfProcess = ({
   const operations = Array.from(operationsById.values()).sort(
     (a, b) => (orderState[a.id!] ?? a.order) - (orderState[b.id!] ?? b.order)
   );
+
+  const isDisabled = ["Completed", "Cancelled"].includes(
+    jobData?.job?.status ?? ""
+  );
+
+  const onAddProductionQuantity =
+    !isDisabled && permissions.can("create", "production")
+      ? (operationId: string) => {
+          openOverlay(
+            overlay.to.newJobProductionQuantity(jobId, {
+              jobOperationId: operationId
+            })
+          );
+        }
+      : undefined;
 
   const items = makeItems(
     operations,
@@ -480,15 +535,14 @@ const JobBillOfProcess = ({
       salesOrderLineId,
       customerId
     },
-    t
+    t,
+    jobId,
+    jobData?.job,
+    onAddProductionQuantity
   ).map((item) => ({
     ...item,
     checked: checkedState[item.id] ?? false
   }));
-
-  const isDisabled = ["Completed", "Cancelled"].includes(
-    jobData?.job?.status ?? ""
-  );
 
   const onToggleItem = (id: string) => {
     if (!permissions.can("update", "parts")) return;
@@ -510,7 +564,8 @@ const JobBillOfProcess = ({
       ...initialOperation,
       id: operationId,
       order: newOrder,
-      jobMakeMethodId
+      jobMakeMethodId,
+      jobId
     };
 
     setTemporaryItems((prev) => ({
@@ -700,18 +755,20 @@ const JobBillOfProcess = ({
 
   const [tabChangeRerender, setTabChangeRerender] = useState<number>(1);
 
+  const initialWorkInstructions = useMemo(
+    () =>
+      initialOperations.reduce((acc, operation) => {
+        if (operation.workInstruction && operation.id) {
+          acc[operation.id] = operation.workInstruction;
+        }
+        return acc;
+      }, {} as PendingWorkInstructions),
+    [initialOperations]
+  );
+
   useEffect(() => {
-    if (initialOperations) {
-      setWorkInstructions(
-        initialOperations.reduce((acc, operation) => {
-          if (operation.workInstruction && operation.id) {
-            acc[operation.id] = operation.workInstruction;
-          }
-          return acc;
-        }, {} as PendingWorkInstructions)
-      );
-    }
-  }, [initialOperations]);
+    setWorkInstructions(initialWorkInstructions);
+  }, [initialWorkInstructions]);
 
   const renderListItem = ({
     item,
@@ -745,6 +802,7 @@ const JobBillOfProcess = ({
         >
           <OperationForm
             item={item}
+            jobId={jobId}
             isDisabled={isDisabled}
             job={jobData?.job}
             locationId={locationId}
@@ -1021,6 +1079,41 @@ const JobBillOfProcess = ({
     );
   };
 
+  const list = (
+    <SortableList
+      items={items}
+      onReorder={onReorder}
+      onToggleItem={onToggleItem}
+      onRemoveItem={onRemoveItem}
+      renderItem={renderListItem}
+    />
+  );
+
+  if (routeJob) {
+    return (
+      <div className="flex min-h-full flex-col">
+        <HStack className="shrink-0 items-center justify-between border-b border-border px-4 py-3 pr-12">
+          <h3 className="text-base font-medium font-headline tracking-tight text-foreground">
+            <Trans>Bill of Process</Trans>
+          </h3>
+          <Button
+            ref={addOperationButtonRef}
+            variant="secondary"
+            isDisabled={
+              !permissions.can("update", "production") ||
+              selectedItemId !== null ||
+              isDisabled
+            }
+            onClick={onAddItem}
+          >
+            <Trans>Add Operation</Trans>
+          </Button>
+        </HStack>
+        <div className="flex-1 px-3 py-3">{list}</div>
+      </div>
+    );
+  }
+
   return (
     <Card>
       <HStack className="justify-between">
@@ -1045,15 +1138,7 @@ const JobBillOfProcess = ({
           </Button>
         </CardAction>
       </HStack>
-      <CardContent>
-        <SortableList
-          items={items}
-          onReorder={onReorder}
-          onToggleItem={onToggleItem}
-          onRemoveItem={onRemoveItem}
-          renderItem={renderListItem}
-        />
-      </CardContent>
+      <CardContent>{list}</CardContent>
     </Card>
   );
 };
@@ -2224,6 +2309,7 @@ function OperationDetailTabs({
 
 function OperationForm({
   item,
+  jobId,
   isDisabled,
   job,
   locationId,
@@ -2235,6 +2321,7 @@ function OperationForm({
   onSubmit
 }: {
   item: ItemWithData;
+  jobId: string;
   isDisabled: boolean;
   job?: Job;
   locationId: string;
@@ -2245,10 +2332,8 @@ function OperationForm({
   onSubmit: () => void;
   temporaryItems: TemporaryItems;
 }) {
-  const { jobId } = useParams();
   const { t } = useLingui();
   const { company } = useUser();
-  if (!jobId) throw new Error("jobId not found");
 
   const fetcher = useFetcher<{
     id: string;

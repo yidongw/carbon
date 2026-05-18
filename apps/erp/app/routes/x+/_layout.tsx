@@ -38,6 +38,7 @@ import {
 import { RealtimeDataProvider } from "~/components";
 import { PrimaryNavigation, Topbar } from "~/components/Layout";
 import { TimeCardWarning } from "~/components/TimeCardWarning";
+import { OverlayHost, OverlayProvider } from "~/components/Overlay";
 import TrainingPanel from "~/components/TrainingPanel";
 import { useTrainingPanel } from "~/hooks/useTrainingPanel";
 import { getOpenClockEntry } from "~/modules/people";
@@ -216,6 +217,7 @@ export default function AuthenticatedRoute() {
       ) : (
         <CarbonProvider session={session}>
           <RealtimeDataProvider>
+            <OverlayProvider>
             <TooltipProvider>
               <div className="flex flex-col h-screen">
                 <Topbar />
@@ -249,7 +251,9 @@ export default function AuthenticatedRoute() {
                   </Await>
                 </Suspense>
               )}
+              <OverlayHost />
             </TooltipProvider>
+            </OverlayProvider>
           </RealtimeDataProvider>
         </CarbonProvider>
       )}

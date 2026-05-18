@@ -11,7 +11,7 @@ import {
   productionQuantityValidator,
   upsertProductionQuantity
 } from "~/modules/production";
-import { ProductionQuantityForm } from "~/modules/production/ui/Jobs";
+import ProductionQuantityForm from "~/modules/production/ui/Jobs/ProductionQuantityForm";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { getParams, path } from "~/utils/path";
 
@@ -23,15 +23,21 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { jobId } = params;
   if (!jobId) throw notFound("jobId not found");
 
-  const jobOperations = await getJobOperations(client, jobId);
+  const jobOperationId =
+    new URL(request.url).searchParams.get("jobOperationId") ?? "";
 
+  if (jobOperationId) {
+    return { jobOperationId, operationOptions: [] as const };
+  }
+
+  const jobOperations = await getJobOperations(client, jobId);
   const operationOptions =
     jobOperations.data?.map((operation) => ({
       label: operation.description ?? "",
-      value: operation.id
+      value: operation.id!
     })) ?? [];
 
-  return { operationOptions };
+  return { jobOperationId: "", operationOptions };
 }
 
 export async function action({ request, params }: ActionFunctionArgs) {
@@ -56,8 +62,9 @@ export async function action({ request, params }: ActionFunctionArgs) {
     message: "Cannot modify a locked job. Reopen it first."
   });
 
+  const isOverlay =
+    new URL(request.url).searchParams.get("overlay") === "true";
   const formData = await request.formData();
-  const modal = formData.get("type") === "modal";
 
   const validation = await validator(productionQuantityValidator).validate(
     formData
@@ -70,7 +77,6 @@ export async function action({ request, params }: ActionFunctionArgs) {
   // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
   const { id, ...d } = validation.data;
 
-  // If the type is not Scrap, clear the scrapReasonId
   if (d.type !== "Scrap") {
     d.scrapReasonId = undefined;
   }
@@ -89,19 +95,25 @@ export async function action({ request, params }: ActionFunctionArgs) {
     );
   }
 
-  return modal
-    ? data(insert, { status: 201 })
-    : redirect(
-        `${path.to.jobProductionQuantities(jobId)}?${getParams(request)}`,
-        await flash(request, success("Production quantity created"))
-      );
+  if (isOverlay) {
+    return data(
+      { ok: true as const, jobId },
+      await flash(request, success("Production quantity created"))
+    );
+  }
+
+  return redirect(
+    `${path.to.jobProductionQuantities(jobId)}?${getParams(request)}`,
+    await flash(request, success("Production quantity created"))
+  );
 }
 
 export default function NewProductionQuantityRoute() {
-  const { operationOptions } = useLoaderData<typeof loader>();
+  const { jobOperationId, operationOptions } =
+    useLoaderData<typeof loader>();
   const initialValues = {
     type: "Production" as const,
-    jobOperationId: "",
+    jobOperationId,
     quantity: 0,
     scrapReasonId: "",
     notes: "",
@@ -111,7 +123,7 @@ export default function NewProductionQuantityRoute() {
   return (
     <ProductionQuantityForm
       initialValues={initialValues}
-      operationOptions={operationOptions ?? []}
+      operationOptions={[...(operationOptions ?? [])]}
     />
   );
 }
