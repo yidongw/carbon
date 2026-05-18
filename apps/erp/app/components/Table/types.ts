@@ -18,6 +18,10 @@ declare module "@tanstack/react-table" {
         | "-Infinity"
         | "+Infinity"
     ) => string;
+    /** When true, the mobile card row hides this column's pill. */
+    isEmpty?: (row: TData) => boolean;
+    /** Extra classes applied to the table cell (`Td`). */
+    cellClassName?: string;
   }
 }
 
