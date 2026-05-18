@@ -53,6 +53,7 @@ import type { MethodItemType } from "~/modules/shared";
 import type { action } from "~/routes/x+/items+/update";
 import { path } from "~/utils/path";
 import { copyToClipboard } from "~/utils/string";
+import { computeJobConfigTableTotal } from "../../jobConfiguration";
 import { deadlineTypes, isJobLocked } from "../../production.models";
 import type { Job } from "../../types";
 import { ConfigParamsTableModal } from "./ConfigParamsTableModal";
@@ -119,16 +120,10 @@ const JobProperties = () => {
             (primaryParam?.listOptions?.length
               ? primaryParam.listOptions
               : ["Quantities"]);
-          const total = rows.reduce(
-            (sum: number, row: Record<string, any>) =>
-              sum +
-              primaryKeys.reduce(
-                (rowSum: number, key: string) =>
-                  rowSum + (Number(row[key]) || 0),
-                0
-              ),
-            0
-          );
+          const total = computeJobConfigTableTotal({
+            configTable: rows,
+            configTablePrimaryKeys: primaryKeys
+          });
           setConfigTableTotal(total);
         }
       }
