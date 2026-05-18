@@ -1,4 +1,4 @@
-import { Button, cn } from "@carbon/react";
+import { cn } from "@carbon/react";
 import type { ComponentProps, PropsWithChildren } from "react";
 import { LuPanelRight } from "react-icons/lu";
 import type { LinkProps } from "react-router";
@@ -15,21 +15,14 @@ const Hyperlink = ({
     <Link
       prefetch="intent"
       className={cn(
-        "group/hyperlink text-foreground font-medium cursor-pointer flex flex-row items-center justify-start gap-3",
+        "group/hyperlink inline-flex items-center gap-1 text-foreground font-medium cursor-pointer",
         className
       )}
       {...props}
     >
-      <span className="flex flex-row items-center gap-1">{children}</span>
+      {children}
       {props.to && props.to !== "#" && (
-        <Button
-          rightIcon={<LuPanelRight />}
-          variant="secondary"
-          className="flex-shrink-0 opacity-0 transition-opacity duration-200 group-hover/hyperlink:opacity-100 no-underline"
-          size="sm"
-        >
-          Open
-        </Button>
+        <LuPanelRight className="hidden md:block h-3.5 w-3.5 flex-shrink-0 text-muted-foreground/50 transition-colors duration-150 group-hover/hyperlink:text-foreground" />
       )}
     </Link>
   ) : (
