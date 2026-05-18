@@ -1996,6 +1996,9 @@ msgstr "Создать Kanban"
 msgid "Create new rule"
 msgstr ""
 
+msgid "Create Production Quantity"
+msgstr ""
+
 msgid "Create Quote Revision"
 msgstr "Создать редакцию предложения"
 
@@ -2150,6 +2153,9 @@ msgstr ""
 
 msgid "Current Password"
 msgstr "Текущий пароль"
+
+msgid "Current process"
+msgstr ""
 
 msgid "Current quantity"
 msgstr "Текущее количество"
@@ -3067,6 +3073,9 @@ msgstr "Редактировать правило цены"
 
 msgid "Edit Process"
 msgstr "Редактировать процесс"
+
+msgid "Edit Production Quantity"
+msgstr ""
 
 msgid "Edit purchase order line type"
 msgstr "Редактировать тип строки заказа покупателя"
@@ -6514,6 +6523,9 @@ msgstr "Тип процесса"
 msgid "Processes"
 msgstr "Процессы"
 
+msgid "Processes ({completedOps}/{totalOps}): operations marked Done."
+msgstr ""
+
 msgid "Production"
 msgstr "Производство"
 
@@ -6701,6 +6713,9 @@ msgstr ""
 msgid "Quantity"
 msgstr "Количество"
 
+msgid "Quantity ({qtyThrough}/{qtyTotal}): completed quantity across all operations."
+msgstr ""
+
 msgid "Quantity Completed"
 msgstr "Завершено количество"
 
@@ -6868,6 +6883,9 @@ msgstr "Записать"
 msgid "Record deleted"
 msgstr "Запись удалена"
 
+msgid "Record production quantity"
+msgstr ""
+
 msgid "Record the inspection result for this sample."
 msgstr ""
 
@@ -7024,6 +7042,9 @@ msgstr "Система пополнения"
 
 msgid "Report"
 msgstr "Отчет"
+
+msgid "reported"
+msgstr ""
 
 msgid "Reports"
 msgstr "Отчеты"
@@ -8889,6 +8910,9 @@ msgstr "Неподдерживаемый тип исходного докуме�
 msgid "Untitled Diagram"
 msgstr ""
 
+msgid "Untitled operation"
+msgstr ""
+
 msgid "UoM"
 msgstr "УИ"
 
@@ -9122,6 +9146,9 @@ msgstr "Просмотреть вложение"
 
 msgid "View Attributes"
 msgstr "Просмотр атрибутов"
+
+msgid "View bill of process"
+msgstr ""
 
 msgid "View Contact"
 msgstr "Просмотр контакта"

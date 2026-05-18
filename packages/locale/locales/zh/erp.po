@@ -1996,6 +1996,9 @@ msgstr "创建看板"
 msgid "Create new rule"
 msgstr ""
 
+msgid "Create Production Quantity"
+msgstr ""
+
 msgid "Create Quote Revision"
 msgstr "创建报价修订"
 
@@ -2150,6 +2153,9 @@ msgstr ""
 
 msgid "Current Password"
 msgstr "当前密码"
+
+msgid "Current process"
+msgstr ""
 
 msgid "Current quantity"
 msgstr "当前数量"
@@ -3067,6 +3073,9 @@ msgstr "编辑定价规则"
 
 msgid "Edit Process"
 msgstr "编辑流程"
+
+msgid "Edit Production Quantity"
+msgstr ""
 
 msgid "Edit purchase order line type"
 msgstr "编辑采购订单行类型"
@@ -6514,6 +6523,9 @@ msgstr "流程类型"
 msgid "Processes"
 msgstr "流程"
 
+msgid "Processes ({completedOps}/{totalOps}): operations marked Done."
+msgstr ""
+
 msgid "Production"
 msgstr "生产"
 
@@ -6701,6 +6713,9 @@ msgstr ""
 msgid "Quantity"
 msgstr "数量"
 
+msgid "Quantity ({qtyThrough}/{qtyTotal}): completed quantity across all operations."
+msgstr ""
+
 msgid "Quantity Completed"
 msgstr "完成数量"
 
@@ -6868,6 +6883,9 @@ msgstr "录音"
 msgid "Record deleted"
 msgstr "记录已删除"
 
+msgid "Record production quantity"
+msgstr ""
+
 msgid "Record the inspection result for this sample."
 msgstr ""
 
@@ -7024,6 +7042,9 @@ msgstr "补充系统"
 
 msgid "Report"
 msgstr "报告"
+
+msgid "reported"
+msgstr ""
 
 msgid "Reports"
 msgstr "报告"
@@ -8889,6 +8910,9 @@ msgstr "不支持的源文档类型：{sourceDocument}"
 msgid "Untitled Diagram"
 msgstr ""
 
+msgid "Untitled operation"
+msgstr ""
+
 msgid "UoM"
 msgstr "计量单位"
 
@@ -9122,6 +9146,9 @@ msgstr "查看附件"
 
 msgid "View Attributes"
 msgstr "查看属性"
+
+msgid "View bill of process"
+msgstr ""
 
 msgid "View Contact"
 msgstr "查看联系人"

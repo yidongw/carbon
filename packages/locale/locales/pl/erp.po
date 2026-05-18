@@ -1996,6 +1996,9 @@ msgstr "Utwórz Kanban"
 msgid "Create new rule"
 msgstr ""
 
+msgid "Create Production Quantity"
+msgstr ""
+
 msgid "Create Quote Revision"
 msgstr "Utwórz wersję oferty"
 
@@ -2150,6 +2153,9 @@ msgstr ""
 
 msgid "Current Password"
 msgstr "Bieżące hasło"
+
+msgid "Current process"
+msgstr ""
 
 msgid "Current quantity"
 msgstr "Bieżąca ilość"
@@ -3067,6 +3073,9 @@ msgstr "Edytuj regułę cenową"
 
 msgid "Edit Process"
 msgstr "Edytuj proces"
+
+msgid "Edit Production Quantity"
+msgstr ""
 
 msgid "Edit purchase order line type"
 msgstr "Edytuj typ linii zamówienia zakupu"
@@ -6514,6 +6523,9 @@ msgstr "Typ procesu"
 msgid "Processes"
 msgstr "Procesy"
 
+msgid "Processes ({completedOps}/{totalOps}): operations marked Done."
+msgstr ""
+
 msgid "Production"
 msgstr "Produkcja"
 
@@ -6701,6 +6713,9 @@ msgstr ""
 msgid "Quantity"
 msgstr "Ilość"
 
+msgid "Quantity ({qtyThrough}/{qtyTotal}): completed quantity across all operations."
+msgstr ""
+
 msgid "Quantity Completed"
 msgstr "Ilość ukończona"
 
@@ -6868,6 +6883,9 @@ msgstr "Nagrywaj"
 msgid "Record deleted"
 msgstr "Rekord usunięty"
 
+msgid "Record production quantity"
+msgstr ""
+
 msgid "Record the inspection result for this sample."
 msgstr ""
 
@@ -7024,6 +7042,9 @@ msgstr "System uzupełniania zapasów"
 
 msgid "Report"
 msgstr "Raport"
+
+msgid "reported"
+msgstr ""
 
 msgid "Reports"
 msgstr "Raporty"
@@ -8889,6 +8910,9 @@ msgstr "Nieobsługiwany typ dokumentu źródłowego: {sourceDocument}"
 msgid "Untitled Diagram"
 msgstr ""
 
+msgid "Untitled operation"
+msgstr ""
+
 msgid "UoM"
 msgstr "UoM"
 
@@ -9122,6 +9146,9 @@ msgstr "Wyświetl załącznik"
 
 msgid "View Attributes"
 msgstr "Wyświetl atrybuty"
+
+msgid "View bill of process"
+msgstr ""
 
 msgid "View Contact"
 msgstr "Wyświetl Kontakt"

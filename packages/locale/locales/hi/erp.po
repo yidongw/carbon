@@ -1996,6 +1996,9 @@ msgstr "कनबन बनाएं"
 msgid "Create new rule"
 msgstr ""
 
+msgid "Create Production Quantity"
+msgstr ""
+
 msgid "Create Quote Revision"
 msgstr "उद्धरण संशोधन बनाएं"
 
@@ -2150,6 +2153,9 @@ msgstr ""
 
 msgid "Current Password"
 msgstr "वर्तमान पासवर्ड"
+
+msgid "Current process"
+msgstr ""
 
 msgid "Current quantity"
 msgstr "वर्तमान मात्रा"
@@ -3067,6 +3073,9 @@ msgstr "मूल्य निर्धारण नियम संपादि
 
 msgid "Edit Process"
 msgstr "प्रक्रिया संपादित करें"
+
+msgid "Edit Production Quantity"
+msgstr ""
 
 msgid "Edit purchase order line type"
 msgstr "क्रय आदेश लाइन प्रकार संपादित करें"
@@ -6514,6 +6523,9 @@ msgstr "प्रक्रिया प्रकार"
 msgid "Processes"
 msgstr "प्रक्रियाएं"
 
+msgid "Processes ({completedOps}/{totalOps}): operations marked Done."
+msgstr ""
+
 msgid "Production"
 msgstr "उत्पादन"
 
@@ -6701,6 +6713,9 @@ msgstr ""
 msgid "Quantity"
 msgstr "मात्रा"
 
+msgid "Quantity ({qtyThrough}/{qtyTotal}): completed quantity across all operations."
+msgstr ""
+
 msgid "Quantity Completed"
 msgstr "पूर्ण मात्रा"
 
@@ -6868,6 +6883,9 @@ msgstr "रिकॉर्ड करें"
 msgid "Record deleted"
 msgstr "रिकॉर्ड हटाया गया"
 
+msgid "Record production quantity"
+msgstr ""
+
 msgid "Record the inspection result for this sample."
 msgstr ""
 
@@ -7024,6 +7042,9 @@ msgstr "पुनःपूर्ति प्रणाली"
 
 msgid "Report"
 msgstr "रिपोर्ट"
+
+msgid "reported"
+msgstr ""
 
 msgid "Reports"
 msgstr "रिपोर्ट"
@@ -8889,6 +8910,9 @@ msgstr "असमर्थित स्रोत दस्तावेज़ प
 msgid "Untitled Diagram"
 msgstr ""
 
+msgid "Untitled operation"
+msgstr ""
+
 msgid "UoM"
 msgstr "UoM"
 
@@ -9122,6 +9146,9 @@ msgstr "संलग्नक देखें"
 
 msgid "View Attributes"
 msgstr "विशेषताएं देखें"
+
+msgid "View bill of process"
+msgstr ""
 
 msgid "View Contact"
 msgstr "संपर्क देखें"
