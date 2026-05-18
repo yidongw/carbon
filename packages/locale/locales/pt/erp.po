@@ -6164,6 +6164,9 @@ msgstr "Peças/Hora"
 msgid "Pieces/Minute"
 msgstr "Peças/Minuto"
 
+msgid "Pin column"
+msgstr ""
+
 msgid "Pinned"
 msgstr "Fixado"
 
@@ -6829,6 +6832,9 @@ msgstr "Remover filtro"
 
 msgid "Remove Filters"
 msgstr "Remover Filtros"
+
+msgid "Remove from card right"
+msgstr ""
 
 msgid "Remove from Price List"
 msgstr "Remover da Lista de Preços"
@@ -7715,6 +7721,9 @@ msgstr ""
 msgid "Show Durations"
 msgstr "Mostrar Durações"
 
+msgid "Show on card right"
+msgstr ""
+
 msgid "Show parent items"
 msgstr "Mostrar itens pai"
 
@@ -8469,9 +8478,6 @@ msgstr "Alternar Responsável"
 msgid "Toggle break active"
 msgstr "Alternar quebra ativa"
 
-msgid "Toggle column"
-msgstr "Alternar coluna"
-
 msgid "Toggle dark/light mode"
 msgstr "Alternar modo escuro/claro"
 
@@ -8489,6 +8495,9 @@ msgstr "Alternar Propriedades"
 
 msgid "Toggle views"
 msgstr "Alternar visualizações"
+
+msgid "Toggle visibility"
+msgstr ""
 
 msgid "Tol-"
 msgstr ""
@@ -8722,6 +8731,9 @@ msgid "Unlink"
 msgstr "Desvinculação"
 
 msgid "Unlink job from sales order?"
+msgstr ""
+
+msgid "Unpin column"
 msgstr ""
 
 msgid "Unsaved changes"

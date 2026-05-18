@@ -72,6 +72,7 @@ import {
   IndeterminateCheckbox,
   Pagination,
   Row,
+  TableCardRow,
   TableHeader,
   usePagination,
   useSort
@@ -86,6 +87,7 @@ interface TableProps<T extends object> {
   count?: number;
   compact?: boolean;
   data: T[];
+  defaultFeaturedColumns?: string[];
   defaultColumnOrder?: string[];
   defaultColumnPinning?: ColumnPinningState;
   defaultColumnVisibility?: Record<string, boolean>;
@@ -110,6 +112,7 @@ interface TableProps<T extends object> {
   renderActions?: (selectedRows: T[]) => ReactNode;
   renderContextMenu?: (row: T) => JSX.Element | null;
   renderExpandedRow?: (row: T) => ReactNode;
+  getRowHref?: (row: T) => string | undefined;
 }
 
 type AggregateFunction = "sum" | "average" | "min" | "max" | "median" | "count";
@@ -227,6 +230,7 @@ const Table = <T extends object>({
   columns,
   compact = false,
   count = 0,
+  defaultFeaturedColumns,
   defaultColumnOrder,
   defaultColumnPinning,
   defaultColumnVisibility,
@@ -247,7 +251,8 @@ const Table = <T extends object>({
   onSelectedRowsChange,
   renderActions,
   renderContextMenu,
-  renderExpandedRow
+  renderExpandedRow,
+  getRowHref
 }: TableProps<T>) => {
   const { i18n } = useLingui();
   const tableContainerRef = useRef<HTMLDivElement>(null);
@@ -387,6 +392,25 @@ const Table = <T extends object>({
       });
     }
   }, [view]);
+
+  /* Featured Columns (card right) */
+  const [featuredColumns, setFeaturedColumns] = useState<Set<string>>(
+    () => new Set(defaultFeaturedColumns ?? [])
+  );
+
+  // Tracks the in-flight columnPinning.left so that multiple onReorder calls
+  // within the same JS tick (framer-motion fires once per crossed boundary)
+  // each build on the previous call's result rather than a stale closure.
+  const pinnedLeftRef = useRef<string[]>(columnPinning.left ?? []);
+  pinnedLeftRef.current = columnPinning.left ?? [];
+
+  const handlePinnedReorder = useCallback((newUserLeft: string[]) => {
+    const userSet = new Set(newUserLeft);
+    const systemPinned = pinnedLeftRef.current.filter((id) => !userSet.has(id));
+    const fullLeft = [...systemPinned, ...newUserLeft];
+    pinnedLeftRef.current = fullLeft;
+    setColumnPinning((prev) => ({ ...prev, left: fullLeft }));
+  }, []);
 
   /* Sorting */
   const { isSorted, toggleSortByAscending, toggleSortByDescending } = useSort();
@@ -753,7 +777,9 @@ const Table = <T extends object>({
   useEffect(() => {
     const calculateColumnWidths = () => {
       const tableWrapperEl = getTableWrapperEl();
-      if (!tableWrapperEl) return;
+      // Skip if container has no width — DOM is not ready or table is hidden.
+      // Writing all-zero widths would collapse every sticky column to left:0.
+      if (!tableWrapperEl || tableWrapperEl.clientWidth === 0) return;
 
       const columnWidths: ColumnSizeMap = new Map();
       let leftPinnedWidth = 0;
@@ -833,19 +859,27 @@ const Table = <T extends object>({
     const isPinned = column.getIsPinned();
     if (!isPinned) return {};
 
-    const pinnedPosition = columnSizeMap.get(column.id);
-    const startX = pinnedPosition?.startX ?? 0;
+    // Right-pinned user columns are card-only — no sticky on the desktop table.
+    // Only system columns (Actions) remain sticky on the right.
+    if (isPinned === "right" && column.id !== "Actions") return {};
+
+    let startX = 0;
+    if (isPinned === "left") {
+      // Derive left offset by summing widths of preceding pinned columns.
+      // Computed directly from columnPinning.left so it's always in sync —
+      // no separate startX state to keep up to date.
+      for (const id of columnPinning.left ?? []) {
+        if (id === column.id) break;
+        startX += columnSizeMap.get(id)?.width ?? 0;
+      }
+    }
 
     return {
       position: "sticky",
       left: isPinned === "left" ? startX : undefined,
       right: isPinned === "right" ? 0 : undefined,
       zIndex: 2,
-      maxWidth:
-        isPinned === "right" &&
-        column.columnDef.header?.toString() === "Actions"
-          ? 60
-          : undefined
+      maxWidth: isPinned === "right" ? 60 : undefined
     };
   };
 
@@ -865,6 +899,7 @@ const Table = <T extends object>({
       )}
     >
       <TableHeader
+        featuredColumns={featuredColumns}
         columnAccessors={columnAccessors}
         columnOrder={columnOrder}
         columnPinning={columnPinning}
@@ -879,6 +914,8 @@ const Table = <T extends object>({
         primaryAction={primaryAction}
         renderActions={renderActions}
         selectedRows={selectedRows}
+        setFeaturedColumns={setFeaturedColumns}
+        onPinnedReorder={handlePinnedReorder}
         setColumnOrder={setColumnOrder}
         setEditMode={setEditMode}
         table={tableName}
@@ -890,10 +927,50 @@ const Table = <T extends object>({
         withSelectableRows={withSelectableRows}
       />
 
+      {/* Mobile card view */}
+      <div className="md:hidden w-full flex-1 min-h-0 overflow-y-auto">
+        {rows.length === 0 ? (
+          <div className="flex flex-col w-full h-full items-center justify-center gap-4 py-16">
+            <div className="flex justify-center items-center h-12 w-12 rounded-full bg-foreground text-background">
+              <LuTriangleAlert className="h-6 w-6 flex-shrink-0" />
+            </div>
+            <span className="text-xs font-mono font-light text-foreground uppercase">
+              {hasFilters ? (
+                <Trans>No results found</Trans>
+              ) : (
+                <Trans>No data exists</Trans>
+              )}
+            </span>
+            {hasFilters ? (
+              <Button variant="secondary" onClick={clearFilters}>
+                <Trans>Remove Filters</Trans>
+              </Button>
+            ) : (
+              primaryAction
+            )}
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3 px-3 py-2">
+            {rows.map((row) => (
+              <TableCardRow
+                key={row.id}
+                row={row}
+                pinnedColumns={table.getLeftVisibleLeafColumns()}
+                centerColumns={table.getCenterVisibleLeafColumns()}
+                featuredColumns={featuredColumns}
+                getRowHref={getRowHref}
+                renderContextMenu={renderContextMenu}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Desktop table view */}
       <div
         id="table-container"
         className={cn(
-          "w-full h-full overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent"
+          "hidden md:block w-full h-full overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent"
         )}
         style={{ contain: "strict" }}
         ref={tableContainerRef}

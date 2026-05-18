@@ -6164,6 +6164,9 @@ msgstr "Штук/час"
 msgid "Pieces/Minute"
 msgstr "Деталей/Минуту"
 
+msgid "Pin column"
+msgstr ""
+
 msgid "Pinned"
 msgstr "Закреплено"
 
@@ -6829,6 +6832,9 @@ msgstr "Удалить фильтр"
 
 msgid "Remove Filters"
 msgstr "Удалить фильтры"
+
+msgid "Remove from card right"
+msgstr ""
 
 msgid "Remove from Price List"
 msgstr "Удалить из прайс-листа"
@@ -7715,6 +7721,9 @@ msgstr ""
 msgid "Show Durations"
 msgstr "Показать длительность"
 
+msgid "Show on card right"
+msgstr ""
+
 msgid "Show parent items"
 msgstr "Показать родительские элементы"
 
@@ -8469,9 +8478,6 @@ msgstr "Переключить назначенного"
 msgid "Toggle break active"
 msgstr "Переключить активность разбиения"
 
-msgid "Toggle column"
-msgstr "Переключить столбец"
-
 msgid "Toggle dark/light mode"
 msgstr "Переключить тёмный/светлый режим"
 
@@ -8489,6 +8495,9 @@ msgstr "Переключить свойства"
 
 msgid "Toggle views"
 msgstr "Переключить представления"
+
+msgid "Toggle visibility"
+msgstr ""
 
 msgid "Tol-"
 msgstr ""
@@ -8722,6 +8731,9 @@ msgid "Unlink"
 msgstr "Отменить связь"
 
 msgid "Unlink job from sales order?"
+msgstr ""
+
+msgid "Unpin column"
 msgstr ""
 
 msgid "Unsaved changes"

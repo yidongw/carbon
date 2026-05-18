@@ -6164,6 +6164,9 @@ msgstr "Pieces/Hour"
 msgid "Pieces/Minute"
 msgstr "Pieces/Minute"
 
+msgid "Pin column"
+msgstr ""
+
 msgid "Pinned"
 msgstr "पिन किया गया"
 
@@ -6829,6 +6832,9 @@ msgstr "फ़िल्टर हटाएं"
 
 msgid "Remove Filters"
 msgstr "फ़िल्टर हटाएं"
+
+msgid "Remove from card right"
+msgstr ""
 
 msgid "Remove from Price List"
 msgstr "मूल्य सूची से हटाएं"
@@ -7715,6 +7721,9 @@ msgstr ""
 msgid "Show Durations"
 msgstr "अवधि दिखाएं"
 
+msgid "Show on card right"
+msgstr ""
+
 msgid "Show parent items"
 msgstr "माता-पिता की वस्तुओं को दिखाएं"
 
@@ -8469,9 +8478,6 @@ msgstr "असाइनी को टॉगल करें"
 msgid "Toggle break active"
 msgstr "ब्रेक सक्रिय करें/निष्क्रिय करें"
 
-msgid "Toggle column"
-msgstr "कॉलम टॉगल करें"
-
 msgid "Toggle dark/light mode"
 msgstr "डार्क/लाइट मोड टॉगल करें"
 
@@ -8489,6 +8495,9 @@ msgstr "गुण टॉगल करें"
 
 msgid "Toggle views"
 msgstr "दृश्य टॉगल करें"
+
+msgid "Toggle visibility"
+msgstr ""
 
 msgid "Tol-"
 msgstr ""
@@ -8722,6 +8731,9 @@ msgid "Unlink"
 msgstr "अनलिंक करें"
 
 msgid "Unlink job from sales order?"
+msgstr ""
+
+msgid "Unpin column"
 msgstr ""
 
 msgid "Unsaved changes"
