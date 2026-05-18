@@ -6266,6 +6266,9 @@ msgstr "個/時間"
 msgid "Pieces/Minute"
 msgstr "個/分"
 
+msgid "Pin column"
+msgstr ""
+
 msgid "Pinned"
 msgstr "ピン留め"
 
@@ -6934,6 +6937,9 @@ msgstr "フィルターを削除"
 
 msgid "Remove Filters"
 msgstr "フィルターを削除"
+
+msgid "Remove from card right"
+msgstr ""
 
 msgid "Remove from Price List"
 msgstr "価格リストから削除"
@@ -7836,6 +7842,9 @@ msgstr ""
 msgid "Show Durations"
 msgstr "期間を表示"
 
+msgid "Show on card right"
+msgstr ""
+
 msgid "Show parent items"
 msgstr "親アイテムを表示"
 
@@ -8606,9 +8615,6 @@ msgstr "割り当て先を切り替え"
 msgid "Toggle break active"
 msgstr "ブレークアクティブを切り替える"
 
-msgid "Toggle column"
-msgstr "列を切り替える"
-
 msgid "Toggle dark/light mode"
 msgstr "ダーク/ライトモードを切り替え"
 
@@ -8626,6 +8632,9 @@ msgstr "プロパティを切り替え"
 
 msgid "Toggle views"
 msgstr "ビューを切り替える"
+
+msgid "Toggle visibility"
+msgstr ""
 
 msgid "Tol-"
 msgstr ""
@@ -8866,6 +8875,9 @@ msgstr ""
 
 #. placeholder {0}: pickedLots[0].trackedEntity.readableId
 msgid "Unpick {0}"
+msgstr ""
+
+msgid "Unpin column"
 msgstr ""
 
 msgid "Unsaved changes"

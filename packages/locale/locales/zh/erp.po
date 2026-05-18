@@ -6266,6 +6266,9 @@ msgstr "件/小时"
 msgid "Pieces/Minute"
 msgstr "件/分钟"
 
+msgid "Pin column"
+msgstr ""
+
 msgid "Pinned"
 msgstr "已固定"
 
@@ -6934,6 +6937,9 @@ msgstr "移除筛选"
 
 msgid "Remove Filters"
 msgstr "移除筛选"
+
+msgid "Remove from card right"
+msgstr ""
 
 msgid "Remove from Price List"
 msgstr "从价格列表中移除"
@@ -7836,6 +7842,9 @@ msgstr ""
 msgid "Show Durations"
 msgstr "显示时长"
 
+msgid "Show on card right"
+msgstr ""
+
 msgid "Show parent items"
 msgstr "显示父项"
 
@@ -8606,9 +8615,6 @@ msgstr "切换受理人"
 msgid "Toggle break active"
 msgstr "切换中断活动"
 
-msgid "Toggle column"
-msgstr "切换列"
-
 msgid "Toggle dark/light mode"
 msgstr "切换深色/浅色模式"
 
@@ -8626,6 +8632,9 @@ msgstr "切换属性"
 
 msgid "Toggle views"
 msgstr "切换视图"
+
+msgid "Toggle visibility"
+msgstr ""
 
 msgid "Tol-"
 msgstr ""
@@ -8866,6 +8875,9 @@ msgstr ""
 
 #. placeholder {0}: pickedLots[0].trackedEntity.readableId
 msgid "Unpick {0}"
+msgstr ""
+
+msgid "Unpin column"
 msgstr ""
 
 msgid "Unsaved changes"

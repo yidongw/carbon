@@ -53,12 +53,19 @@ const Cell = <T extends object>({
     : null;
 
   const isPinned = cell.column.getIsPinned();
+  const cellClassName =
+    typeof cell.column.columnDef.meta === "object" &&
+    cell.column.columnDef.meta !== null &&
+    "cellClassName" in cell.column.columnDef.meta
+      ? (cell.column.columnDef.meta.cellClassName as string | undefined)
+      : undefined;
 
   return (
     <Td
       className={cn(
         "relative py-2 whitespace-nowrap text-sm outline-none max-w-[30dvw] truncate",
         cell.column.id === "Select" ? "px-2" : "px-4",
+        cellClassName,
         wasEdited && "bg-yellow-100 dark:bg-yellow-900",
         isEditMode && !hasEditableTableCellComponent && "bg-muted/50",
         isEditMode && "border-border border-r",

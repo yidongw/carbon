@@ -6266,6 +6266,9 @@ msgstr "Stück/Stunde"
 msgid "Pieces/Minute"
 msgstr "Stück/Minute"
 
+msgid "Pin column"
+msgstr ""
+
 msgid "Pinned"
 msgstr "Angeheftet"
 
@@ -6934,6 +6937,9 @@ msgstr "Filter entfernen"
 
 msgid "Remove Filters"
 msgstr "Filter entfernen"
+
+msgid "Remove from card right"
+msgstr ""
 
 msgid "Remove from Price List"
 msgstr "Aus Preisliste entfernen"
@@ -7836,6 +7842,9 @@ msgstr ""
 msgid "Show Durations"
 msgstr "Dauern anzeigen"
 
+msgid "Show on card right"
+msgstr ""
+
 msgid "Show parent items"
 msgstr "Übergeordnete Elemente anzeigen"
 
@@ -8606,9 +8615,6 @@ msgstr "Zuweiser umschalten"
 msgid "Toggle break active"
 msgstr "Pause umschalten"
 
-msgid "Toggle column"
-msgstr "Spalte umschalten"
-
 msgid "Toggle dark/light mode"
 msgstr "Dunklen/hellen Modus umschalten"
 
@@ -8626,6 +8632,9 @@ msgstr "Eigenschaften umschalten"
 
 msgid "Toggle views"
 msgstr "Ansichten umschalten"
+
+msgid "Toggle visibility"
+msgstr ""
 
 msgid "Tol-"
 msgstr ""
@@ -8866,6 +8875,9 @@ msgstr ""
 
 #. placeholder {0}: pickedLots[0].trackedEntity.readableId
 msgid "Unpick {0}"
+msgstr ""
+
+msgid "Unpin column"
 msgstr ""
 
 msgid "Unsaved changes"
