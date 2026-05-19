@@ -462,6 +462,9 @@ msgstr "Advertising & Marketing"
 msgid "After"
 msgstr "After"
 
+msgid "After Previous"
+msgstr "After Previous"
+
 msgid "AI Tokens"
 msgstr "AI Tokens"
 
@@ -9384,6 +9387,9 @@ msgstr "Why is this included?"
 
 msgid "WIP"
 msgstr "WIP"
+
+msgid "With Previous"
+msgstr "With Previous"
 
 msgid "Won"
 msgstr "Won"

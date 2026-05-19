@@ -462,6 +462,9 @@ msgstr ""
 msgid "After"
 msgstr "Dopo"
 
+msgid "After Previous"
+msgstr ""
+
 msgid "AI Tokens"
 msgstr "Token AI"
 
@@ -9384,6 +9387,9 @@ msgstr ""
 
 msgid "WIP"
 msgstr "WIP"
+
+msgid "With Previous"
+msgstr ""
 
 msgid "Won"
 msgstr "Vinto"

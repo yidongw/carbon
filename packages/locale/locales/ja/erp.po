@@ -462,6 +462,9 @@ msgstr ""
 msgid "After"
 msgstr "後"
 
+msgid "After Previous"
+msgstr ""
+
 msgid "AI Tokens"
 msgstr "AIトークン"
 
@@ -9384,6 +9387,9 @@ msgstr ""
 
 msgid "WIP"
 msgstr "仕掛品"
+
+msgid "With Previous"
+msgstr ""
 
 msgid "Won"
 msgstr "獲得"

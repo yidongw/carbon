@@ -462,6 +462,9 @@ msgstr ""
 msgid "After"
 msgstr "Après"
 
+msgid "After Previous"
+msgstr ""
+
 msgid "AI Tokens"
 msgstr "Jetons IA"
 
@@ -9384,6 +9387,9 @@ msgstr ""
 
 msgid "WIP"
 msgstr "TEC"
+
+msgid "With Previous"
+msgstr ""
 
 msgid "Won"
 msgstr "Remporté"

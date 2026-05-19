@@ -462,6 +462,9 @@ msgstr ""
 msgid "After"
 msgstr "के बाद"
 
+msgid "After Previous"
+msgstr ""
+
 msgid "AI Tokens"
 msgstr "एआई टोकन"
 
@@ -9384,6 +9387,9 @@ msgstr ""
 
 msgid "WIP"
 msgstr "WIP"
+
+msgid "With Previous"
+msgstr ""
 
 msgid "Won"
 msgstr "जीता"
