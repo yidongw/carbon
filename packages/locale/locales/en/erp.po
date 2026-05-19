@@ -25,6 +25,11 @@ msgstr "\"{storageUnitName}\" has {childCount} direct nested storage units. Dele
 msgid "\"{storageUnitName}\" has 1 direct nested storage unit. Deleting it will also delete that unit and anything underneath it. This cannot be undone."
 msgstr "\"{storageUnitName}\" has 1 direct nested storage unit. Deleting it will also delete that unit and anything underneath it. This cannot be undone."
 
+#. placeholder {0}: selectedEvent.jobOperation?.description ?? t`Operation`
+#. placeholder {1}: people.find((p) => p.id === selectedEvent.createdBy)?.name ?? t`Unknown Employee`
+msgid "{0} by {1}"
+msgstr "{0} by {1}"
+
 #. placeholder {0}: rule.escalationDays
 msgid "{0} days"
 msgstr "{0} days"
@@ -886,6 +891,9 @@ msgstr "Are you sure you want to delete this kanban card? This cannot be undone.
 msgid "Are you sure you want to delete this maintenance dispatch? This cannot be undone."
 msgstr "Are you sure you want to delete this maintenance dispatch? This cannot be undone."
 
+msgid "Are you sure you want to delete this production quantity? This action cannot be undone."
+msgstr "Are you sure you want to delete this production quantity? This action cannot be undone."
+
 msgid "Are you sure you want to delete this quality document?"
 msgstr "Are you sure you want to delete this quality document?"
 
@@ -1203,6 +1211,9 @@ msgstr "BoM + BoP"
 
 msgid "BOM synced successfully"
 msgstr "BOM synced successfully"
+
+msgid "Boolean"
+msgstr "Boolean"
 
 msgid "BOP"
 msgstr "BOP"
@@ -2020,6 +2031,13 @@ msgstr "Create Work Center"
 msgid "Created"
 msgstr "Created"
 
+#. placeholder {0}: formatRelativeTime(record.createdAt ?? "")
+msgid "Created {0}"
+msgstr "Created {0}"
+
+msgid "Created {relativeTime}"
+msgstr "Created {relativeTime}"
+
 msgid "Created account"
 msgstr "Created account"
 
@@ -2557,6 +2575,9 @@ msgstr "Delete Purchase Order"
 msgid "Delete Purchase Orders"
 msgstr "Delete Purchase Orders"
 
+msgid "Delete Quantity"
+msgstr "Delete Quantity"
+
 msgid "Delete Question"
 msgstr "Delete Question"
 
@@ -2724,6 +2745,18 @@ msgstr "Details"
 
 msgid "Diagram saved"
 msgstr "Diagram saved"
+
+#. placeholder {0}: formatDurationMilliseconds(item.duration * 1000)
+msgid "did {0} of labor"
+msgstr "did {0} of labor"
+
+#. placeholder {0}: formatDurationMilliseconds(item.duration * 1000)
+msgid "did {0} of machine"
+msgstr "did {0} of machine"
+
+#. placeholder {0}: formatDurationMilliseconds(item.duration * 1000)
+msgid "did {0} of setup"
+msgstr "did {0} of setup"
 
 msgid "Digital Quote"
 msgstr "Digital Quote"
@@ -3079,6 +3112,9 @@ msgstr "Edit Production Quantity"
 
 msgid "Edit purchase order line type"
 msgstr "Edit purchase order line type"
+
+msgid "Edit Quantity"
+msgstr "Edit Quantity"
 
 msgid "Edit Question"
 msgstr "Edit Question"
@@ -4079,6 +4115,9 @@ msgstr "Group Members"
 msgid "Group Name"
 msgstr "Group Name"
 
+msgid "Group: {groupDisplayName}"
+msgstr "Group: {groupDisplayName}"
+
 msgid "Groups"
 msgstr "Groups"
 
@@ -4258,6 +4297,9 @@ msgstr "Insert rows"
 
 msgid "Insert token"
 msgstr "Insert token"
+
+msgid "Inside"
+msgstr "Inside"
 
 msgid "Inspect"
 msgstr "Inspect"
@@ -4593,6 +4635,9 @@ msgstr "Kit"
 msgid "Label"
 msgstr "Label"
 
+msgid "Label is required"
+msgstr "Label is required"
+
 msgid "Label to complete the current operation for this kanban"
 msgstr "Label to complete the current operation for this kanban"
 
@@ -4738,8 +4783,14 @@ msgstr "Linked entity quantity ({0}) does not match row quantity ({1})."
 msgid "Linked PO"
 msgstr "Linked PO"
 
+msgid "List"
+msgstr "List"
+
 msgid "List Options"
 msgstr "List Options"
+
+msgid "List options are required"
+msgstr "List options are required"
 
 msgid "List Parameters"
 msgstr "List Parameters"
@@ -5397,6 +5448,9 @@ msgstr "New Material Type"
 msgid "New Non Conformance Type"
 msgstr "New Non Conformance Type"
 
+msgid "New Option"
+msgstr "New Option"
+
 msgid "New Owner"
 msgstr "New Owner"
 
@@ -5840,6 +5894,9 @@ msgstr "Number"
 msgid "Number of inventory units per purchase unit"
 msgstr "Number of inventory units per purchase unit"
 
+msgid "Numeric"
+msgstr "Numeric"
+
 msgid "OEE Impact"
 msgstr "OEE Impact"
 
@@ -6040,6 +6097,9 @@ msgstr "Output"
 
 msgid "Output never outlasts its raw materials. Falls back to the fixed duration when no input has an expiry date."
 msgstr "Output never outlasts its raw materials. Falls back to the fixed duration when no input has an expiry date."
+
+msgid "Outside"
+msgstr "Outside"
 
 msgid "Overdue"
 msgstr "Overdue"
@@ -6880,14 +6940,36 @@ msgstr "Recently Created"
 msgid "Record"
 msgstr "Record"
 
+#. placeholder {0}: index + 1
+msgid "Record {0}"
+msgstr "Record {0}"
+
 msgid "Record deleted"
 msgstr "Record deleted"
 
 msgid "Record production quantity"
 msgstr "Record production quantity"
 
+msgid "Record quantity"
+msgstr "Record quantity"
+
 msgid "Record the inspection result for this sample."
 msgstr "Record the inspection result for this sample."
+
+msgid "recorded {qty} units"
+msgstr "recorded {qty} units"
+
+msgid "recorded {qty} units of production"
+msgstr "recorded {qty} units of production"
+
+msgid "recorded {qty} units of rework"
+msgstr "recorded {qty} units of rework"
+
+msgid "recorded {qty} units of scrap"
+msgstr "recorded {qty} units of scrap"
+
+msgid "recorded {qty} units of scrap ({reason})"
+msgstr "recorded {qty} units of scrap ({reason})"
 
 msgid "Records"
 msgstr "Records"
@@ -7181,6 +7263,9 @@ msgstr "Revoke Invite"
 msgid "Revoke Invites"
 msgstr "Revoke Invites"
 
+msgid "Rework"
+msgstr "Rework"
+
 msgid "RFQ"
 msgstr "RFQ"
 
@@ -7362,6 +7447,12 @@ msgstr "Save and Overwrite"
 msgid "Save Method"
 msgstr "Save Method"
 
+msgid "Save Step"
+msgstr "Save Step"
+
+msgid "Save Tool"
+msgstr "Save Tool"
+
 msgid "Save View"
 msgstr "Save View"
 
@@ -7412,6 +7503,9 @@ msgstr "Scope"
 
 msgid "Scopes"
 msgstr "Scopes"
+
+msgid "Scrap"
+msgstr "Scrap"
 
 msgid "Scrap Percent"
 msgstr "Scrap Percent"
@@ -8050,6 +8144,15 @@ msgstr "Start Time"
 msgid "Started"
 msgstr "Started"
 
+msgid "started labor"
+msgstr "started labor"
+
+msgid "started machine"
+msgstr "started machine"
+
+msgid "started setup"
+msgstr "started setup"
+
 msgid "State / Province"
 msgstr "State / Province"
 
@@ -8315,6 +8418,12 @@ msgstr "Switch"
 msgid "Sync"
 msgstr "Sync"
 
+msgid "Sync Procedure"
+msgstr "Sync Procedure"
+
+msgid "Syncing the procedure will update the operation with the new work instructions, steps, and parameters. Any steps that are not part of the procedure will be removed."
+msgstr "Syncing the procedure will update the operation with the new work instructions, steps, and parameters. Any steps that are not part of the procedure will be removed."
+
 msgid "System"
 msgstr "System"
 
@@ -8417,6 +8526,9 @@ msgstr "Test Value"
 msgid "Testing Failure"
 msgstr "Testing Failure"
 
+msgid "Text"
+msgstr "Text"
+
 msgid "Text size"
 msgstr "Text size"
 
@@ -8464,6 +8576,9 @@ msgstr "The number of hours per week the contractor is available to work."
 
 msgid "The percentage of the cash discount. Use 0 for no discount."
 msgstr "The percentage of the cash discount. Use 0 for no discount."
+
+msgid "The procedure was changed, but not synced to the operation."
+msgstr "The procedure was changed, but not synced to the operation."
 
 msgid "The quantity of the item to be reordered on scan-based replenishment."
 msgstr "The quantity of the item to be reordered on scan-based replenishment."
@@ -8846,6 +8961,9 @@ msgstr "Unassigned"
 msgid "Unballoon"
 msgstr "Unballoon"
 
+msgid "Ungrouped"
+msgstr "Ungrouped"
+
 msgid "Uninstall"
 msgstr "Uninstall"
 
@@ -8878,6 +8996,9 @@ msgstr "Units"
 
 msgid "Unknown"
 msgstr "Unknown"
+
+msgid "Unknown Employee"
+msgstr "Unknown Employee"
 
 msgid "unknown location"
 msgstr "unknown location"
@@ -8963,6 +9084,9 @@ msgstr "Update the purchase order quantities"
 
 msgid "Updated"
 msgstr "Updated"
+
+msgid "Updated {relativeTime}"
+msgstr "Updated {relativeTime}"
 
 msgid "Updated account"
 msgstr "Updated account"

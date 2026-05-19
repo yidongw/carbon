@@ -25,6 +25,11 @@ msgstr "« ${storageUnitName} » possède ${childCount} unités de stockage imbr
 msgid "\"{storageUnitName}\" has 1 direct nested storage unit. Deleting it will also delete that unit and anything underneath it. This cannot be undone."
 msgstr "« ${storageUnitName} » possède 1 unité de stockage imbriquée directe. La supprimer supprimera également cette unité et tout ce qui se trouve en dessous. Cette action ne peut pas être annulée."
 
+#. placeholder {0}: selectedEvent.jobOperation?.description ?? t`Operation`
+#. placeholder {1}: people.find((p) => p.id === selectedEvent.createdBy)?.name ?? t`Unknown Employee`
+msgid "{0} by {1}"
+msgstr ""
+
 #. placeholder {0}: rule.escalationDays
 msgid "{0} days"
 msgstr "{0} jours"
@@ -886,6 +891,9 @@ msgstr "Êtes-vous sûr de vouloir supprimer cette carte kanban ? Cette action n
 msgid "Are you sure you want to delete this maintenance dispatch? This cannot be undone."
 msgstr "Êtes-vous sûr de vouloir supprimer cette demande de maintenance ? Cette action ne peut pas être annulée."
 
+msgid "Are you sure you want to delete this production quantity? This action cannot be undone."
+msgstr ""
+
 msgid "Are you sure you want to delete this quality document?"
 msgstr "Êtes-vous sûr de vouloir supprimer ce document de qualité ?"
 
@@ -1203,6 +1211,9 @@ msgstr "BoM + BoP"
 
 msgid "BOM synced successfully"
 msgstr "BOM synchronisé avec succès"
+
+msgid "Boolean"
+msgstr ""
 
 msgid "BOP"
 msgstr ""
@@ -2020,6 +2031,13 @@ msgstr "Créer un centre de travail"
 msgid "Created"
 msgstr "Créé"
 
+#. placeholder {0}: formatRelativeTime(record.createdAt ?? "")
+msgid "Created {0}"
+msgstr ""
+
+msgid "Created {relativeTime}"
+msgstr ""
+
 msgid "Created account"
 msgstr ""
 
@@ -2557,6 +2575,9 @@ msgstr "Supprimer la commande d'achat"
 msgid "Delete Purchase Orders"
 msgstr "Supprimer les commandes d'achat"
 
+msgid "Delete Quantity"
+msgstr ""
+
 msgid "Delete Question"
 msgstr "Supprimer la question"
 
@@ -2723,6 +2744,18 @@ msgid "Details"
 msgstr "Détails"
 
 msgid "Diagram saved"
+msgstr ""
+
+#. placeholder {0}: formatDurationMilliseconds(item.duration * 1000)
+msgid "did {0} of labor"
+msgstr ""
+
+#. placeholder {0}: formatDurationMilliseconds(item.duration * 1000)
+msgid "did {0} of machine"
+msgstr ""
+
+#. placeholder {0}: formatDurationMilliseconds(item.duration * 1000)
+msgid "did {0} of setup"
 msgstr ""
 
 msgid "Digital Quote"
@@ -3079,6 +3112,9 @@ msgstr ""
 
 msgid "Edit purchase order line type"
 msgstr "Modifier le type de ligne de commande d'achat"
+
+msgid "Edit Quantity"
+msgstr ""
 
 msgid "Edit Question"
 msgstr "Modifier la question"
@@ -4079,6 +4115,9 @@ msgstr "Membres du groupe"
 msgid "Group Name"
 msgstr "Nom du groupe"
 
+msgid "Group: {groupDisplayName}"
+msgstr ""
+
 msgid "Groups"
 msgstr "Groupes"
 
@@ -4257,6 +4296,9 @@ msgid "Insert rows"
 msgstr "Insérer des lignes"
 
 msgid "Insert token"
+msgstr ""
+
+msgid "Inside"
 msgstr ""
 
 msgid "Inspect"
@@ -4593,6 +4635,9 @@ msgstr "Kit"
 msgid "Label"
 msgstr "Étiquette"
 
+msgid "Label is required"
+msgstr ""
+
 msgid "Label to complete the current operation for this kanban"
 msgstr ""
 
@@ -4738,8 +4783,14 @@ msgstr "La quantité d'entité liée ({0}) ne correspond pas à la quantité de 
 msgid "Linked PO"
 msgstr ""
 
+msgid "List"
+msgstr ""
+
 msgid "List Options"
 msgstr "Options de liste"
+
+msgid "List options are required"
+msgstr ""
 
 msgid "List Parameters"
 msgstr "Paramètres de liste"
@@ -5397,6 +5448,9 @@ msgstr "Nouveau Type de Matériau"
 msgid "New Non Conformance Type"
 msgstr "Nouveau type de non-conformité"
 
+msgid "New Option"
+msgstr ""
+
 msgid "New Owner"
 msgstr "Nouveau propriétaire"
 
@@ -5840,6 +5894,9 @@ msgstr "Numéro"
 msgid "Number of inventory units per purchase unit"
 msgstr "Nombre d'unités d'inventaire par unité d'achat"
 
+msgid "Numeric"
+msgstr ""
+
 msgid "OEE Impact"
 msgstr "Impact OEE"
 
@@ -6040,6 +6097,9 @@ msgstr "Sortie"
 
 msgid "Output never outlasts its raw materials. Falls back to the fixed duration when no input has an expiry date."
 msgstr "La production ne dépasse jamais la durée de vie de ses matières premières. Revient à la durée fixe lorsqu'aucune entrée n'a de date d'expiration."
+
+msgid "Outside"
+msgstr ""
 
 msgid "Overdue"
 msgstr "En retard"
@@ -6880,13 +6940,35 @@ msgstr "Récemment créé"
 msgid "Record"
 msgstr "Enregistrer"
 
+#. placeholder {0}: index + 1
+msgid "Record {0}"
+msgstr ""
+
 msgid "Record deleted"
 msgstr "Enregistrement supprimé"
 
 msgid "Record production quantity"
 msgstr ""
 
+msgid "Record quantity"
+msgstr ""
+
 msgid "Record the inspection result for this sample."
+msgstr ""
+
+msgid "recorded {qty} units"
+msgstr ""
+
+msgid "recorded {qty} units of production"
+msgstr ""
+
+msgid "recorded {qty} units of rework"
+msgstr ""
+
+msgid "recorded {qty} units of scrap"
+msgstr ""
+
+msgid "recorded {qty} units of scrap ({reason})"
 msgstr ""
 
 msgid "Records"
@@ -7181,6 +7263,9 @@ msgstr "Révoquer l'invitation"
 msgid "Revoke Invites"
 msgstr "Révoquer les invitations"
 
+msgid "Rework"
+msgstr ""
+
 msgid "RFQ"
 msgstr "RFQ"
 
@@ -7362,6 +7447,12 @@ msgstr "Enregistrer et remplacer"
 msgid "Save Method"
 msgstr "Enregistrer la méthode"
 
+msgid "Save Step"
+msgstr ""
+
+msgid "Save Tool"
+msgstr ""
+
 msgid "Save View"
 msgstr "Enregistrer la vue"
 
@@ -7412,6 +7503,9 @@ msgstr "Portée"
 
 msgid "Scopes"
 msgstr "Portées"
+
+msgid "Scrap"
+msgstr ""
 
 msgid "Scrap Percent"
 msgstr "Pourcentage de rebut"
@@ -8050,6 +8144,15 @@ msgstr "Heure de début"
 msgid "Started"
 msgstr "Commencé"
 
+msgid "started labor"
+msgstr ""
+
+msgid "started machine"
+msgstr ""
+
+msgid "started setup"
+msgstr ""
+
 msgid "State / Province"
 msgstr "État / Province"
 
@@ -8315,6 +8418,12 @@ msgstr "Basculer"
 msgid "Sync"
 msgstr "Synchroniser"
 
+msgid "Sync Procedure"
+msgstr ""
+
+msgid "Syncing the procedure will update the operation with the new work instructions, steps, and parameters. Any steps that are not part of the procedure will be removed."
+msgstr ""
+
 msgid "System"
 msgstr "Système"
 
@@ -8417,6 +8526,9 @@ msgstr "Valeur de test"
 msgid "Testing Failure"
 msgstr ""
 
+msgid "Text"
+msgstr ""
+
 msgid "Text size"
 msgstr ""
 
@@ -8464,6 +8576,9 @@ msgstr "Le nombre d'heures par semaine que l'entrepreneur est disponible pour tr
 
 msgid "The percentage of the cash discount. Use 0 for no discount."
 msgstr "Le pourcentage de la remise en espèces. Utilisez 0 pour aucune remise."
+
+msgid "The procedure was changed, but not synced to the operation."
+msgstr ""
 
 msgid "The quantity of the item to be reordered on scan-based replenishment."
 msgstr "La quantité de l'article à réapprovisionner lors du réapprovisionnement basé sur la numérisation."
@@ -8846,6 +8961,9 @@ msgstr "Non assigné"
 msgid "Unballoon"
 msgstr ""
 
+msgid "Ungrouped"
+msgstr ""
+
 msgid "Uninstall"
 msgstr "Désinstaller"
 
@@ -8878,6 +8996,9 @@ msgstr "Unités"
 
 msgid "Unknown"
 msgstr "Inconnu"
+
+msgid "Unknown Employee"
+msgstr ""
 
 msgid "unknown location"
 msgstr "localisation inconnue"
@@ -8963,6 +9084,9 @@ msgstr "Mettre à jour les quantités de la commande d'achat"
 
 msgid "Updated"
 msgstr "Mis à jour"
+
+msgid "Updated {relativeTime}"
+msgstr ""
 
 msgid "Updated account"
 msgstr ""

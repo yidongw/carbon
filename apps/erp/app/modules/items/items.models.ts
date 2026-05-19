@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { zfd } from "zod-form-data";
+import { optionalRequiredStringArray } from "~/utils/zodFields";
 import {
   methodItemType,
   methodOperationOrders,
@@ -259,7 +260,7 @@ export const templateConfigurationParameterValidator = z
     key: zfd.text(z.string().optional()),
     label: z.string().min(1, { message: "Label is required" }),
     dataType: z.enum([...configurationParameterDataTypes, "date"]),
-    listOptions: z.string().min(1).array().optional(),
+    listOptions: optionalRequiredStringArray,
     configurationParameterGroupId: z.string().optional(),
     materialFormFilterId: zfd.text(z.string().optional())
   })
@@ -289,7 +290,7 @@ export const configurationParameterValidator = z
     key: zfd.text(z.string().optional()),
     label: z.string().min(1, { message: "Label is required" }),
     dataType: z.enum([...configurationParameterDataTypes, "date"]),
-    listOptions: z.string().min(1).array().optional(),
+    listOptions: optionalRequiredStringArray,
     configurationParameterGroupId: z.string().optional(),
     materialFormFilterId: zfd.text(z.string().optional())
   })
