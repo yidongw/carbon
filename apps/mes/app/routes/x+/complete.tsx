@@ -162,7 +162,8 @@ export async function action({ request }: ActionFunctionArgs) {
     const insertProduction = await insertProductionQuantity(client, {
       ...d,
       companyId,
-      createdBy: userId
+      createdBy: userId,
+      employeeId: userId
     });
 
     if (insertProduction.error) {

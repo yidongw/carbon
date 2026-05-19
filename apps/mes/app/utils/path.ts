@@ -110,6 +110,8 @@ export const path = {
     inventoryAdjustment: `${x}/adjustment`,
     issue: `${x}/issue`,
     issueTrackedEntity: `${x}/issue-tracked-entity`,
+    operationPickupNew: `${x}/operation-pickup/new`,
+    operationPickupDelete: (id: string) => generatePath(`${x}/operation-pickup/${id}/delete`),
     location: `${x}/location`,
     login: "/login",
     logout: "/logout",

@@ -891,9 +891,18 @@ export const productionQuantityValidator = z.object({
   }),
   scrapReasonId: zfd.text(z.string().optional()),
   notes: zfd.text(z.string().optional()),
-  createdBy: zfd.text(z.string().optional()),
+  employeeId: zfd.text(z.string().optional()),
   quantity: zfd.numeric(z.number().min(0)),
   configuration: z.any().optional()
+});
+
+export const jobOperationPickupValidator = z.object({
+  id: zfd.text(z.string().optional()),
+  jobOperationId: z.string().min(1, { message: "Operation is required" }),
+  employeeId: z.string().min(1, { message: "Employee is required" }),
+  quantity: zfd.numeric(z.number().min(0)),
+  configuration: z.any().optional(),
+  notes: zfd.text(z.string().optional()),
 });
 
 export const scheduleOperationUpdateValidator = z.object({

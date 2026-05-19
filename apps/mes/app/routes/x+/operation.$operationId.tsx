@@ -13,6 +13,7 @@ import {
   getJobMaterialsByOperationId,
   getJobMethodBomIdMap,
   getJobOperationById,
+  getJobOperationPickups,
   getJobOperationProcedure,
   getKanbanByJobId,
   getNonConformanceActions,
@@ -40,12 +41,13 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const serviceRole = await getCarbonServiceRole();
 
-  const [events, quantities, job, operation] = await Promise.all([
+  const [events, quantities, pickups, job, operation] = await Promise.all([
     getProductionEventsForJobOperation(serviceRole, {
       operationId,
       userId
     }),
     getProductionQuantitiesForJobOperation(serviceRole, operationId),
+    getJobOperationPickups(serviceRole, operationId),
     getJobByOperationId(serviceRole, operationId),
     getJobOperationById(serviceRole, operationId)
   ]);
@@ -114,9 +116,23 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     throw redirect(redirectUrl.toString());
   }
 
+  const allPickups = pickups.data ?? [];
+  const myPickups = allPickups.filter((p) => p.employeeId === userId);
+  const myQuantities = (quantities.data ?? []).filter(
+    (q) => q.employeeId === userId && q.type === "Production"
+  );
+
+  const myPickupTotal = myPickups.reduce((sum, p) => sum + Number(p.quantity), 0);
+  const myReportedTotal = myQuantities.reduce((sum, q) => sum + Number(q.quantity), 0);
+  const suggestedQuantity = Math.max(0, myPickupTotal - myReportedTotal);
+  const pickupConfiguration = myPickups[0]?.configuration ?? null;
+
   return {
     bomIdMap: Object.fromEntries(bomIdMap),
     events: events.data ?? [],
+    pickups: allPickups,
+    suggestedQuantity,
+    pickupConfiguration,
     quantities: (quantities.data ?? []).reduce(
       (acc, curr) => {
         if (curr.type === "Scrap") {
@@ -178,6 +194,9 @@ export default function OperationRoute() {
     kanban,
     materials,
     operation,
+    pickups,
+    suggestedQuantity,
+    pickupConfiguration,
     procedure,
     thumbnailPath,
     trackedEntities,
@@ -194,6 +213,9 @@ export default function OperationRoute() {
       kanban={kanban}
       materials={materials}
       method={jobMakeMethod}
+      pickups={pickups}
+      suggestedQuantity={suggestedQuantity}
+      pickupConfiguration={pickupConfiguration}
       trackedEntities={trackedEntities}
       nonConformanceActions={nonConformanceActions}
       operation={operation}

@@ -23,7 +23,8 @@ export async function action({ request }: ActionFunctionArgs) {
   const insertRework = await insertReworkQuantity(client, {
     ...validation.data,
     companyId,
-    createdBy: userId
+    createdBy: userId,
+    employeeId: userId
   });
 
   if (insertRework.error) {

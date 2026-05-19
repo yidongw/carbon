@@ -15,8 +15,10 @@ import JobProperties from "./JobProperties";
 import JobRiskRegister from "./JobRiskRegister";
 import JobStatus from "./JobStatus";
 import JobsTable from "./JobsTable";
+import PickupForm from "./PickupForm";
 import ProductionEventForm from "./ProductionEventForm";
 import ProductionEventsTable from "./ProductionEventsTable";
+import ProductionPickupsTable from "./ProductionPickupsTable";
 import ProductionQuantitiesTable from "./ProductionQuantitiesTable";
 import ProductionQuantityForm from "./ProductionQuantityForm";
 
@@ -38,8 +40,10 @@ export {
   JobRiskRegister,
   JobsTable,
   JobStatus,
+  PickupForm,
   ProductionEventForm,
   ProductionEventsTable,
+  ProductionPickupsTable,
   ProductionQuantitiesTable,
   ProductionQuantityForm
 };

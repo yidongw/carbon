@@ -52,6 +52,7 @@ import {
   LuList,
   LuLoaderCircle,
   LuPackage,
+  LuPackageOpen,
   LuPanelLeft,
   LuPanelRight,
   LuQrCode,
@@ -100,6 +101,8 @@ const JobHeader = () => {
         return t`Production Events`;
       case "quantities":
         return t`Production Quantities`;
+      case "pickups":
+        return t`Pickups`;
       default:
         return t`Job`;
     }
@@ -138,6 +141,8 @@ const JobHeader = () => {
       return "events";
     if (location.pathname.includes(path.to.jobProductionQuantities(jobId)))
       return "quantities";
+    if (location.pathname.includes(path.to.jobPickups(jobId)))
+      return "pickups";
     return "details";
   };
 
@@ -290,7 +295,7 @@ const JobHeader = () => {
                   </DropdownMenuRadioItem>
                 ))}
                 <DropdownMenuSeparator />
-                {["events", "quantities", "step-records"].map((i) => (
+                {["events", "quantities", "pickups", "step-records"].map((i) => (
                   <DropdownMenuRadioItem value={i} key={i}>
                     <DropdownMenuIcon icon={getExplorerMenuIcon(i)} />
                     {getExplorerLabel(i)}
@@ -465,6 +470,8 @@ function getExplorerMenuIcon(type: string) {
       return <LuClock />;
     case "quantities":
       return <LuSquareSigma />;
+    case "pickups":
+      return <LuPackageOpen />;
     default:
       return <LuCirclePlay />;
   }
@@ -482,6 +489,8 @@ const getExplorePath = (jobId: string, type: string) => {
       return path.to.jobProductionEvents(jobId);
     case "quantities":
       return path.to.jobProductionQuantities(jobId);
+    case "pickups":
+      return path.to.jobPickups(jobId);
     default:
       return path.to.jobDetails(jobId);
   }
