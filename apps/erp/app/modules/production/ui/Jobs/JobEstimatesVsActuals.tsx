@@ -38,7 +38,7 @@ import {
   toZoned
 } from "@internationalized/date";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { LuCircleChevronRight, LuNotebook } from "react-icons/lu";
 import { Link, useParams } from "react-router";
 import type { z } from "zod";
@@ -298,8 +298,8 @@ const JobEstimatesVsActuals = ({
                   if (isOutside) return null;
 
                   return (
-                    <>
-                      <Tr key={operation.id} className="border-b border-border">
+                    <Fragment key={operation.id}>
+                      <Tr className="border-b border-border">
                         <Td className="border-r border-border px-2">
                           <HStack className="w-full justify-between ">
                             <HStack spacing={2}>
@@ -509,7 +509,7 @@ const JobEstimatesVsActuals = ({
                           </Tr>
                         );
                       })}
-                    </>
+                    </Fragment>
                   );
                 })}
               </Tbody>

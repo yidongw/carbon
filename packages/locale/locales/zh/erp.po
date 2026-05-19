@@ -97,10 +97,10 @@ msgid "1 day"
 msgstr "1 天"
 
 msgid "1% 10 Net 30"
-msgstr ""
+msgstr "1% 10净额30"
 
 msgid "2% 10 Net 30"
-msgstr ""
+msgstr "2% 10净额30"
 
 msgid "3D Model"
 msgstr "3D 模型"
@@ -232,7 +232,7 @@ msgid "Accumulated Amortization"
 msgstr ""
 
 msgid "Accumulated Depreciation"
-msgstr ""
+msgstr "累计折旧"
 
 msgid "Accumulated Depreciation on Disposal"
 msgstr ""
@@ -465,6 +465,9 @@ msgstr ""
 msgid "After"
 msgstr "之后"
 
+msgid "After Previous"
+msgstr "继上道工序之后"
+
 msgid "AI Tokens"
 msgstr "AI 代币"
 
@@ -484,7 +487,7 @@ msgid "All Documents"
 msgstr "所有文档"
 
 msgid "All Employees"
-msgstr ""
+msgstr "所有雇员"
 
 msgid "All Items"
 msgstr "所有物品"
@@ -1116,7 +1119,7 @@ msgid "Bad Debts Expense"
 msgstr ""
 
 msgid "Bag"
-msgstr ""
+msgstr "包"
 
 msgid "Balance Sheet"
 msgstr "资产负债表"
@@ -1125,13 +1128,13 @@ msgid "Balloon"
 msgstr ""
 
 msgid "Bank - Cash"
-msgstr ""
+msgstr "银行和现金"
 
 msgid "Bank - Foreign Currency"
-msgstr ""
+msgstr "外币"
 
 msgid "Bank - Local Currency"
-msgstr ""
+msgstr "本地货币"
 
 msgid "Bank Charges & Fees"
 msgstr ""
@@ -1219,7 +1222,7 @@ msgid "BOP"
 msgstr ""
 
 msgid "Box"
-msgstr ""
+msgstr "箱"
 
 msgid "Breadcrumb"
 msgstr "面包屑"
@@ -1381,7 +1384,7 @@ msgid "Carrier Account"
 msgstr "承运人账户"
 
 msgid "Case"
-msgstr ""
+msgstr "案件"
 
 msgid "Cash & Bank"
 msgstr ""
@@ -1502,7 +1505,7 @@ msgid "Cloud-Hosted"
 msgstr "云托管"
 
 msgid "COD"
-msgstr ""
+msgstr "货到付款"
 
 msgid "Code"
 msgstr "代码"
@@ -1746,7 +1749,7 @@ msgid "Containment"
 msgstr "遏制"
 
 msgid "Containment Action"
-msgstr ""
+msgstr "遏制措施"
 
 msgid "Contractor"
 msgstr "承包商"
@@ -1914,7 +1917,7 @@ msgid "Correct Answers"
 msgstr "正确答案"
 
 msgid "Corrective Action"
-msgstr ""
+msgstr "纠正措施"
 
 msgid "Cost Center"
 msgstr ""
@@ -1926,7 +1929,7 @@ msgid "Cost History"
 msgstr "成本历史"
 
 msgid "Cost of Goods Sold"
-msgstr ""
+msgstr "销货成本"
 
 msgid "Cost of Goods Sold - Direct"
 msgstr ""
@@ -2200,10 +2203,10 @@ msgid "Customer Accounts"
 msgstr "客户账户"
 
 msgid "Customer Communication"
-msgstr ""
+msgstr "客户交流"
 
 msgid "Customer Complaint"
-msgstr ""
+msgstr "客户投诉"
 
 msgid "Customer Contact"
 msgstr "客户联系人"
@@ -2242,7 +2245,7 @@ msgid "Customer Parts"
 msgstr "客户零件"
 
 msgid "Customer Payment Discounts"
-msgstr ""
+msgstr "客户付款折扣"
 
 msgid "Customer PO"
 msgstr "客户采购订单"
@@ -2257,7 +2260,7 @@ msgid "Customer Portals"
 msgstr "客户门户"
 
 msgid "Customer Prepayments"
-msgstr ""
+msgstr "客户预付款"
 
 msgid "Customer Revision"
 msgstr "客户版本"
@@ -2720,7 +2723,7 @@ msgid "Depreciation & Amortization"
 msgstr ""
 
 msgid "Depreciation Expense"
-msgstr ""
+msgstr "折旧"
 
 msgid "Depreciation Run"
 msgstr ""
@@ -2735,7 +2738,7 @@ msgid "Description of Issue"
 msgstr "问题描述"
 
 msgid "Design Error"
-msgstr ""
+msgstr "设计错误"
 
 msgid "Detail"
 msgstr "详情"
@@ -2831,10 +2834,10 @@ msgid "Document:"
 msgstr "文档："
 
 msgid "Documentation"
-msgstr ""
+msgstr "文档"
 
 msgid "Documentation Error"
-msgstr ""
+msgstr "文档错误"
 
 msgid "Documents"
 msgstr "文档"
@@ -2900,7 +2903,7 @@ msgid "Drop your file here, or click to browse."
 msgstr "将文件拖放到此处，或点击浏览。"
 
 msgid "Drum"
-msgstr ""
+msgstr "桶"
 
 msgid "Due"
 msgstr ""
@@ -2949,7 +2952,7 @@ msgid "e.g. Zebra 2x1"
 msgstr ""
 
 msgid "Each"
-msgstr ""
+msgstr "个"
 
 msgid "Edit"
 msgstr "编辑"
@@ -3342,10 +3345,10 @@ msgid "EORI"
 msgstr ""
 
 msgid "Equipment Malfunction"
-msgstr ""
+msgstr "设备故障"
 
 msgid "Equity"
-msgstr ""
+msgstr "权益"
 
 msgid "ERP, MES, QMS"
 msgstr "ERP, MES, QMS"
@@ -3941,7 +3944,7 @@ msgid "Finish To"
 msgstr "完成至"
 
 msgid "Finished Goods"
-msgstr ""
+msgstr "产成品"
 
 msgid "Finishes"
 msgstr "表面处理"
@@ -3968,10 +3971,10 @@ msgid "Fixed Asset"
 msgstr ""
 
 msgid "Fixed Asset Acquisition Cost"
-msgstr ""
+msgstr "固定资产取得成本"
 
 msgid "Fixed Asset Acquisition Cost on Disposal"
-msgstr ""
+msgstr "处置时固定资产取得成本"
 
 msgid "Fixed Assets"
 msgstr ""
@@ -3983,7 +3986,7 @@ msgid "Fixed Shelf Life"
 msgstr "固定保质期"
 
 msgid "Foot"
-msgstr ""
+msgstr "英尺"
 
 msgid "For growing businesses that need support"
 msgstr "适合需要支持的成长型企业"
@@ -4029,10 +4032,10 @@ msgid "Fully trained for"
 msgstr "完全培训"
 
 msgid "Gains and Losses on Disposal"
-msgstr ""
+msgstr "处置损益"
 
 msgid "Gallon"
-msgstr ""
+msgstr "加仑"
 
 msgid "Gauge"
 msgstr "量规"
@@ -4122,7 +4125,7 @@ msgid "Groups"
 msgstr "组"
 
 msgid "Headquarters"
-msgstr ""
+msgstr "总部"
 
 msgid "Help"
 msgstr "帮助"
@@ -4245,7 +4248,7 @@ msgid "Inbox"
 msgstr "收件箱"
 
 msgid "Inch"
-msgstr ""
+msgstr "英尺"
 
 msgid "Include extra parts in shipment"
 msgstr "在发货中包含额外零件"
@@ -4269,7 +4272,7 @@ msgid "Incoming"
 msgstr "传入"
 
 msgid "Incoming Materials"
-msgstr ""
+msgstr "来料"
 
 msgid "Incoterm"
 msgstr "贸易术语"
@@ -4299,7 +4302,7 @@ msgid "Insert token"
 msgstr ""
 
 msgid "Inside"
-msgstr ""
+msgstr "厂内"
 
 msgid "Inspect"
 msgstr "检查"
@@ -4404,7 +4407,7 @@ msgid "Inventory Reserves / Allowances"
 msgstr ""
 
 msgid "Inventory Shipped Not Invoiced"
-msgstr ""
+msgstr "已发货未开票存货"
 
 msgid "Inventory Tracking"
 msgstr "库存追踪"
@@ -4737,7 +4740,7 @@ msgid "Letter"
 msgstr "字母"
 
 msgid "Liabilities"
-msgstr ""
+msgstr "负债"
 
 msgid "Light"
 msgstr "浅色"
@@ -4796,7 +4799,7 @@ msgid "List Parameters"
 msgstr "列表参数"
 
 msgid "Liter"
-msgstr ""
+msgstr "升"
 
 msgid "Live reloading"
 msgstr "实时重新加载"
@@ -4899,7 +4902,7 @@ msgid "Maintenance"
 msgstr "维护"
 
 msgid "Maintenance Dispatch"
-msgstr ""
+msgstr "维护派工"
 
 msgid "Maintenance Dispatch Notifications"
 msgstr "维护调度通知"
@@ -4908,7 +4911,7 @@ msgid "Maintenance Dispatches"
 msgstr "维护派遣"
 
 msgid "Maintenance Expense"
-msgstr ""
+msgstr "维护费用"
 
 msgid "Maintenance Scheduling"
 msgstr "维护计划"
@@ -4982,7 +4985,7 @@ msgid "Manufacturing"
 msgstr "制造"
 
 msgid "Manufacturing Defect"
-msgstr ""
+msgstr "制造缺陷"
 
 msgid "Manufacturing Services Revenue"
 msgstr ""
@@ -5075,7 +5078,7 @@ msgid "Material IDs"
 msgstr "物料ID"
 
 msgid "Material Issue"
-msgstr ""
+msgstr "物料问题"
 
 msgid "Material Properties"
 msgstr ""
@@ -5150,7 +5153,7 @@ msgid "Message"
 msgstr ""
 
 msgid "Meter"
-msgstr ""
+msgstr "米"
 
 msgid "Method"
 msgstr "方法"
@@ -5320,16 +5323,16 @@ msgid "Negative Adjustment"
 msgstr "负调整"
 
 msgid "Net 15"
-msgstr ""
+msgstr "15天账期"
 
 msgid "Net 30"
-msgstr ""
+msgstr "30天账期"
 
 msgid "Net 60"
-msgstr ""
+msgstr "60天账期"
 
 msgid "Net EOM 10th"
-msgstr ""
+msgstr "月末后第10天账期"
 
 msgid "Never"
 msgstr "永不"
@@ -6087,7 +6090,7 @@ msgid "Other Type"
 msgstr "其他类型"
 
 msgid "Ounce"
-msgstr ""
+msgstr "盎司"
 
 msgid "Outgoing"
 msgstr "出库"
@@ -6099,7 +6102,7 @@ msgid "Output never outlasts its raw materials. Falls back to the fixed duration
 msgstr "输出永远不会超过其原材料的保质期。当没有输入具有过期日期时，回退到固定期限。"
 
 msgid "Outside"
-msgstr ""
+msgstr "外协"
 
 msgid "Overdue"
 msgstr "逾期"
@@ -6144,7 +6147,7 @@ msgid "Overwrite the target manufacturing method with the quote method"
 msgstr "用报价方法覆盖目标制造方法"
 
 msgid "Pack"
-msgstr ""
+msgstr "包"
 
 msgid "Packing Slip"
 msgstr "装箱单"
@@ -6159,7 +6162,7 @@ msgid "Paid Date"
 msgstr "支付日期"
 
 msgid "Pallet"
-msgstr ""
+msgstr "托盘"
 
 msgid "Parameters"
 msgstr "参数"
@@ -6216,7 +6219,7 @@ msgid "Path"
 msgstr "路径"
 
 msgid "Payables"
-msgstr ""
+msgstr "应付账款"
 
 msgid "Payment"
 msgstr "付款"
@@ -6453,7 +6456,7 @@ msgid "Potential Data Loss"
 msgstr "潜在数据丢失"
 
 msgid "Pound"
-msgstr ""
+msgstr "磅"
 
 msgid "Pre-filled for a new item when expiry is Fixed Duration."
 msgstr "当过期时间设置为固定期限时，为新物品预填充。"
@@ -6465,13 +6468,13 @@ msgid "Prefix"
 msgstr "前缀"
 
 msgid "Prepaid/ Pro forma"
-msgstr ""
+msgstr "预付/形式发票"
 
 msgid "Prev"
 msgstr "上一页"
 
 msgid "Preventive Action"
-msgstr ""
+msgstr "预防措施"
 
 msgid "Preview"
 msgstr "预览"
@@ -6572,7 +6575,7 @@ msgid "Process"
 msgstr "工艺"
 
 msgid "Process Deviation"
-msgstr ""
+msgstr "过程偏差"
 
 msgid "Process Name"
 msgstr "流程名称"
@@ -6698,7 +6701,7 @@ msgid "Purchase Qty"
 msgstr "采购数量"
 
 msgid "Purchase Tax Payable"
-msgstr ""
+msgstr "采购税应付"
 
 msgid "Purchase to Order"
 msgstr "按订单采购"
@@ -6719,7 +6722,7 @@ msgid "Purchasing Contact"
 msgstr "采购联系人"
 
 msgid "Purchasing RFQ"
-msgstr ""
+msgstr "采购询价单"
 
 msgid "Purchasing Unit of Measure"
 msgstr "采购计量单位"
@@ -6907,7 +6910,7 @@ msgid "Receipts"
 msgstr "收据"
 
 msgid "Receivables"
-msgstr ""
+msgstr "应收账款"
 
 msgid "Receive"
 msgstr "接收"
@@ -7218,7 +7221,7 @@ msgid "Results per page"
 msgstr "每页结果数"
 
 msgid "Retained Earnings"
-msgstr ""
+msgstr "留存收益"
 
 msgid "Retry"
 msgstr "重试"
@@ -7230,7 +7233,7 @@ msgid "Rev {revision}"
 msgstr "Rev {revision}"
 
 msgid "Revenue"
-msgstr ""
+msgstr "收入"
 
 msgid "Reverse all inventory adjustments"
 msgstr "反转所有库存调整"
@@ -7242,7 +7245,7 @@ msgid "Reverse any item ledger entries from this invoice"
 msgstr "反转此发票中的任何物品分类账条目"
 
 msgid "Reverse Charge Tax Payable"
-msgstr ""
+msgstr "应付反向计税税额"
 
 msgid "Reverse the related journal entries"
 msgstr "反转相关日记账分录"
@@ -7270,7 +7273,7 @@ msgid "RFQ"
 msgstr "询价单"
 
 msgid "RFQ (Sales)"
-msgstr ""
+msgstr "销售询价单"
 
 msgid "RFQ Date"
 msgstr "询价单日期"
@@ -7309,13 +7312,13 @@ msgid "Role:"
 msgstr "角色："
 
 msgid "Roll"
-msgstr ""
+msgstr "卷"
 
 msgid "Root Cause Analysis"
-msgstr ""
+msgstr "根本原因分析"
 
 msgid "Rounding Account"
-msgstr ""
+msgstr "舍入科目"
 
 msgid "Route all AP invoices to one address (e.g. corporate headquarters) instead of individual purchasers."
 msgstr ""
@@ -7372,7 +7375,7 @@ msgid "Sales Contact"
 msgstr "销售联系人"
 
 msgid "Sales Discounts"
-msgstr ""
+msgstr "销售折扣"
 
 msgid "Sales Funnel"
 msgstr "销售漏斗"
@@ -7414,7 +7417,7 @@ msgid "Sales Revenue"
 msgstr "销售收入"
 
 msgid "Sales Tax Payable"
-msgstr ""
+msgstr "销售税应付"
 
 msgid "Sample"
 msgstr "样本"
@@ -7768,7 +7771,7 @@ msgid "Serial/Batch #"
 msgstr "序列号/批次 #"
 
 msgid "Service Charge Account"
-msgstr ""
+msgstr "服务费科目"
 
 msgid "Set Clock Out"
 msgstr "设置打卡下班时间"
@@ -8187,7 +8190,7 @@ msgid "Steps"
 msgstr "步骤"
 
 msgid "Stock Transfer"
-msgstr ""
+msgstr "库存调拨"
 
 msgid "Stock Transfer ID"
 msgstr "库存转移ID"
@@ -8325,7 +8328,7 @@ msgid "Supplier Invoice Number"
 msgstr "供应商发票号"
 
 msgid "Supplier Issue"
-msgstr ""
+msgstr "供应商问题"
 
 msgid "Supplier Location"
 msgstr "供应商位置"
@@ -8346,7 +8349,7 @@ msgid "Supplier Parts"
 msgstr "供应商零件"
 
 msgid "Supplier Payment Discounts"
-msgstr ""
+msgstr "供应商付款折扣"
 
 msgid "Supplier Processes"
 msgstr "供应商流程"
@@ -8524,7 +8527,7 @@ msgid "Test Value"
 msgstr "测试值"
 
 msgid "Testing Failure"
-msgstr ""
+msgstr "测试失败"
 
 msgid "Text"
 msgstr ""
@@ -8782,7 +8785,7 @@ msgid "Tolerance (+/-)"
 msgstr "容差 (+/-)"
 
 msgid "Ton"
-msgstr ""
+msgstr "吨"
 
 msgid "Tool"
 msgstr "工具"
@@ -8872,7 +8875,7 @@ msgid "Training Assignments"
 msgstr "培训分配"
 
 msgid "Training Issue"
-msgstr ""
+msgstr "培训问题"
 
 msgid "Trainings"
 msgstr "培训"
@@ -9230,7 +9233,7 @@ msgid "Vehicles"
 msgstr ""
 
 msgid "Verification"
-msgstr ""
+msgstr "验证"
 
 msgid "Verification Error"
 msgstr "验证错误"
@@ -9535,6 +9538,9 @@ msgstr ""
 msgid "WIP"
 msgstr "在制品"
 
+msgid "With Previous"
+msgstr "与上道工序并行"
+
 msgid "Won"
 msgstr "赢得"
 
@@ -9554,7 +9560,7 @@ msgid "Work Centers"
 msgstr "工作中心"
 
 msgid "Work In Progress (WIP)"
-msgstr ""
+msgstr "在制品（WIP）"
 
 msgid "Work Instructions"
 msgstr "工作说明"
@@ -9572,7 +9578,7 @@ msgid "Worst Performing Machines"
 msgstr "性能最差的机器"
 
 msgid "Yard"
-msgstr ""
+msgstr "码"
 
 msgid "Year"
 msgstr "年份"

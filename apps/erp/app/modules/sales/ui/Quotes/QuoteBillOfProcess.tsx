@@ -106,11 +106,9 @@ import type {
   OperationTool
 } from "~/modules/shared";
 import {
-  methodOperationOrders,
   operationParameterValidator,
   operationStepValidator,
   operationToolValidator,
-  operationTypes,
   procedureStepType
 } from "~/modules/shared";
 import type { action as editQuoteOperationParameterAction } from "~/routes/x+/quote+/methods+/operation.parameter.$id";
@@ -1767,6 +1765,20 @@ function OperationForm({
   onSubmit: () => void;
 }) {
   const { t } = useLingui();
+  const operationOrderOptions = useMemo(
+    () => [
+      { value: "After Previous", label: <Trans>After Previous</Trans> },
+      { value: "With Previous", label: <Trans>With Previous</Trans> }
+    ],
+    []
+  );
+  const operationTypeOptions = useMemo(
+    () => [
+      { value: "Inside", label: <Trans>Inside</Trans> },
+      { value: "Outside", label: <Trans>Outside</Trans> }
+    ],
+    []
+  );
   const { quoteId, lineId } = useParams();
   const { company } = useUser();
   if (!quoteId) throw new Error("quoteId not found");
@@ -1984,19 +1996,13 @@ function OperationForm({
           name="operationOrder"
           label={t`Operation Order`}
           placeholder={t`Operation Order`}
-          options={methodOperationOrders.map((o) => ({
-            value: o,
-            label: o
-          }))}
+          options={operationOrderOptions}
         />
         <SelectControlled
           name="operationType"
           label={t`Operation Type`}
           placeholder={t`Operation Type`}
-          options={operationTypes.map((o) => ({
-            value: o,
-            label: o
-          }))}
+          options={operationTypeOptions}
           value={processData.operationType}
           onChange={(value) => {
             setProcessData((d) => ({
