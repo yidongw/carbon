@@ -17,6 +17,7 @@ import {
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
+import type { ComponentProps } from "react";
 import { useState } from "react";
 import { LuDiamond, LuLayers, LuTable } from "react-icons/lu";
 import type { z } from "zod";
@@ -49,6 +50,43 @@ import {
 } from "../../production.models";
 import { ConfigParamsTableModal } from "./ConfigParamsTableModal";
 import { getDeadlineIcon } from "./Deadline";
+
+type QuantityFieldProps = ComponentProps<typeof NumberControlled> & {
+  configTableMode: "single" | "bulk";
+  hasConfigurationParameters: boolean;
+  onOpenConfigTable: (mode: "single" | "bulk") => void;
+};
+
+function QuantityWithConfigTable({
+  configTableMode,
+  hasConfigurationParameters,
+  onOpenConfigTable,
+  ...props
+}: QuantityFieldProps) {
+  const { t } = useLingui();
+
+  if (!hasConfigurationParameters) {
+    return <NumberControlled {...props} />;
+  }
+
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      aria-label={t`Configure quantities`}
+      className="cursor-pointer [&_input]:pointer-events-none [&_input]:cursor-pointer"
+      onClick={() => onOpenConfigTable(configTableMode)}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          onOpenConfigTable(configTableMode);
+        }
+      }}
+    >
+      <NumberControlled {...props} />
+    </div>
+  );
+}
 
 type JobFormValues = z.infer<typeof jobValidator> & {
   description: string;
@@ -246,21 +284,21 @@ const JobForm = ({ initialValues }: JobFormProps) => {
     }
   };
 
-  const getQuantityAdornment = (mode: "single" | "bulk") =>
+  const openConfigTable = (mode: "single" | "bulk") => {
+    setConfigTableMode(mode);
+    configTableDisclosure.onOpen();
+  };
+
+  const getQuantityAdornment = () =>
     configurationParameters ? (
       <div
-        role="button"
-        onClick={() => {
-          setConfigTableMode(mode);
-          configTableDisclosure.onOpen();
-        }}
         className={cn(
-          "absolute right-0 top-0 z-10 m-px flex h-[calc(100%-2px)] w-10 items-center justify-center border-l border-border rounded-r-md cursor-pointer transition-colors",
+          "absolute right-0 top-0 z-10 m-px flex h-[calc(100%-2px)] w-10 items-center justify-center border-l border-border rounded-r-md pointer-events-none transition-colors",
           configTableTotal > 0
-            ? "text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20"
-            : "text-muted-foreground hover:bg-accent"
+            ? "text-emerald-500"
+            : "text-muted-foreground"
         )}
-        aria-label={t`Configure quantities`}
+        aria-hidden
       >
         <LuTable size="1em" strokeWidth="3" />
       </div>
@@ -362,7 +400,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                         />
                       )}
 
-                      <NumberControlled
+                      <QuantityWithConfigTable
                         name="quantity"
                         label={t`Quantity`}
                         value={itemData.quantity}
@@ -376,8 +414,11 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                             )
                           }))
                         }
-                        adornment={getQuantityAdornment("single")}
+                        adornment={getQuantityAdornment()}
                         minValue={0}
+                        configTableMode="single"
+                        hasConfigurationParameters={!!configurationParameters}
+                        onOpenConfigTable={openConfigTable}
                       />
                       <NumberControlled
                         name="scrapQuantity"
@@ -511,7 +552,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                           minValue={0}
                         />
 
-                        <NumberControlled
+                        <QuantityWithConfigTable
                           name="quantityPerJob"
                           label={t`Quantities Per Job`}
                           value={itemData.quantityPerJob}
@@ -522,8 +563,11 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                             }))
                           }
                           isDisabled={configTableTotal > 0}
-                          adornment={getQuantityAdornment("bulk")}
+                          adornment={getQuantityAdornment()}
                           minValue={0}
+                          configTableMode="bulk"
+                          hasConfigurationParameters={!!configurationParameters}
+                          onOpenConfigTable={openConfigTable}
                         />
 
                         <NumberControlled

@@ -7,7 +7,6 @@ import type {
 import { integrations as availableIntegrations } from "@carbon/ee";
 import {
   ChoiceCardGroup,
-  Array as FormArray,
   Input,
   Number as NumberInput,
   Password,
@@ -16,6 +15,7 @@ import {
   useControlField,
   ValidatedForm
 } from "@carbon/form";
+import { Array as FormArray } from "~/components/Form";
 import {
   Badge,
   Button,

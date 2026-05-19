@@ -1,6 +1,7 @@
 "use client";
 import { useCarbon } from "@carbon/auth";
-import { Array as ArrayInput, Input, ValidatedForm } from "@carbon/form";
+import { Input, ValidatedForm } from "@carbon/form";
+import { Array as ArrayInput } from "~/components/Form";
 import type { JSONContent } from "@carbon/react";
 import {
   Alert,

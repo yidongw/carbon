@@ -1,11 +1,4 @@
-import {
-  Array as ArrayInput,
-  Hidden,
-  Input,
-  Select,
-  Submit,
-  ValidatedForm
-} from "@carbon/form";
+import { Hidden, Select, Submit, ValidatedForm } from "@carbon/form";
 import {
   Button,
   ClientOnly,
@@ -49,12 +42,13 @@ import {
 import { useFetcher, useFetchers, useSubmit } from "react-router";
 import { EmployeeAvatar } from "~/components";
 import { ConfiguratorDataTypeIcon } from "~/components/Configurator/Icons";
+import { Array as ArrayInput, Input } from "~/components/Form";
 import { ConfirmDelete } from "~/components/Modals";
 import { useDateFormatter } from "~/hooks";
 import { batchPropertyDataTypes } from "~/modules/items/items.models";
 import type { action as batchPropertyAction } from "~/routes/x+/inventory+/batch-property+/$itemId.property";
+import { useConfiguratorDataTypeLabel } from "~/utils/configuratorDataTypeLabels";
 import { path } from "~/utils/path";
-import { capitalize } from "~/utils/string";
 import { batchPropertyValidator } from "../../inventory.models";
 import type { BatchProperty } from "../../types";
 
@@ -73,6 +67,7 @@ export default function BatchPropertiesConfig({
 }) {
   const { isList, onChangeCheckForListType, setIsList } = useBatchProperties();
   const { t } = useLingui();
+  const dataTypeLabel = useConfiguratorDataTypeLabel();
 
   const submit = useSubmit();
   const fetcher = useFetcher<typeof batchPropertyAction>();
@@ -166,7 +161,7 @@ export default function BatchPropertiesConfig({
                                 type={type}
                                 className="mr-2"
                               />
-                              {capitalize(type)}
+                              {dataTypeLabel(type)}
                             </HStack>
                           ),
                           value: type
@@ -300,6 +295,7 @@ function BatchPropertyComponent({
   isOverlay?: boolean;
 }) {
   const { t } = useLingui();
+  const dataTypeLabel = useConfiguratorDataTypeLabel();
   const { formatRelativeTime } = useDateFormatter();
   const { isList, onChangeCheckForListType } = useBatchProperties(property);
 
@@ -379,7 +375,7 @@ function BatchPropertyComponent({
                   label: (
                     <HStack className="w-full">
                       <ConfiguratorDataTypeIcon type={type} className="mr-2" />
-                      {capitalize(type)}
+                      {dataTypeLabel(type)}
                     </HStack>
                   ),
                   value: type

@@ -2,6 +2,7 @@ import { labelSizes } from "@carbon/utils";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { DataType } from "~/modules/shared";
+import { optionalRequiredStringArray } from "~/utils/zodFields";
 
 export const modulesType = [
   "Accounting",
@@ -89,7 +90,7 @@ export const customFieldValidator = z
     dataTypeId: zfd.numeric(
       z.number().min(1, { message: "Data type is required" })
     ),
-    listOptions: z.string().min(1).array().optional(),
+    listOptions: optionalRequiredStringArray,
     tags: z.array(z.string()).optional(),
     required: zfd.checkbox()
   })

@@ -1,7 +1,7 @@
 "use client";
 import { useCarbon } from "@carbon/auth";
 import type { Database } from "@carbon/database";
-import { Array as ArrayInput, Input, ValidatedForm } from "@carbon/form";
+import { Input, ValidatedForm } from "@carbon/form";
 import type { JSONContent } from "@carbon/react";
 import {
   Alert,
@@ -48,7 +48,6 @@ import {
   VStack
 } from "@carbon/react";
 import { Editor } from "@carbon/react/Editor";
-import { formatDurationMilliseconds } from "@carbon/utils";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useLocale, useNumberFormatter } from "@react-aria/i18n";
@@ -94,6 +93,7 @@ import {
 } from "~/components";
 import Activity from "~/components/Activity";
 import {
+  Array as ArrayInput,
   Hidden,
   InputControlled,
   Number,
@@ -159,6 +159,13 @@ import {
 import type { Job, JobOperation } from "../../types";
 import { JobOperationStatus, JobOperationTags } from "./JobOperationStatus";
 import { OperationDueDatePicker } from "./OperationDueDatePicker";
+import {
+  useOperationTypeLabel,
+  useProductionEventActivityMessage,
+  useProductionQuantityActivityMessage,
+  useProductionQuantityTypeLabel,
+  useRelativeCreatedUpdatedText
+} from "./productionQuantityLabels";
 
 export type Operation = z.infer<typeof jobOperationValidator> & {
   assignee: string | null;
@@ -256,7 +263,7 @@ function makeItem(
     details: (
       <HStack spacing={1}>
         {operation.operationType === "Outside" ? (
-          <Badge>Outside</Badge>
+          <Badge>{t`Outside`}</Badge>
         ) : (
           <>
             {(operation?.setupTime ?? 0) > 0 && (
@@ -1461,7 +1468,7 @@ function StepsForm({
           <Trans>Cannot add steps to unsaved operation</Trans>
         </AlertTitle>
         <AlertDescription>
-          Please save the operation before adding steps.
+          <Trans>Please save the operation before adding steps.</Trans>
         </AlertDescription>
       </Alert>
     );
@@ -1588,7 +1595,7 @@ function StepsForm({
                 isDisabled={isDisabled || fetcher.state !== "idle"}
                 isLoading={fetcher.state !== "idle"}
               >
-                Save Step
+                <Trans>Save Step</Trans>
               </Submit>
             </VStack>
           </ValidatedForm>
@@ -1596,7 +1603,7 @@ function StepsForm({
       ) : (
         <div className="flex justify-end mb-4">
           <Button onClick={disclosure.onOpen} leftIcon={<LuCirclePlus />}>
-            Add Step
+            <Trans>Add Step</Trans>
           </Button>
         </div>
       )}
@@ -1694,6 +1701,7 @@ function StepsListItem({
   } = attribute;
 
   const { formatRelativeTime } = useDateFormatter();
+  const createdUpdatedText = useRelativeCreatedUpdatedText();
   const disclosure = useDisclosure();
   const deleteModalDisclosure = useDisclosure();
   const submitted = useRef(false);
@@ -1865,13 +1873,13 @@ function StepsListItem({
             )}
             <HStack className="w-full justify-end" spacing={2}>
               <Button variant="secondary" onClick={disclosure.onClose}>
-                Cancel
+                <Trans>Cancel</Trans>
               </Button>
               <Submit
                 isDisabled={fetcher.state !== "idle"}
                 isLoading={fetcher.state !== "idle"}
               >
-                Save
+                <Trans>Save</Trans>
               </Submit>
             </HStack>
           </VStack>
@@ -1949,7 +1957,7 @@ function StepsListItem({
             <div className="flex items-center justify-end gap-2">
               <HStack spacing={2}>
                 <span className="text-xs text-muted-foreground">
-                  {isUpdated ? "Updated" : "Created"} {formatRelativeTime(date)}
+                  {createdUpdatedText(isUpdated, formatRelativeTime(date))}
                 </span>
                 <EmployeeAvatar employeeId={person} withName={false} />
               </HStack>
@@ -1963,13 +1971,13 @@ function StepsListItem({
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem onClick={disclosure.onOpen}>
-                    Edit
+                    <Trans>Edit</Trans>
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     destructive
                     onClick={deleteModalDisclosure.onOpen}
                   >
-                    Delete
+                    <Trans>Delete</Trans>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -1985,7 +1993,7 @@ function StepsListItem({
           action={path.to.deleteJobOperationStep(id)}
           isOpen={deleteModalDisclosure.isOpen}
           name={name}
-          text={`Are you sure you want to delete the ${name} attribute from this operation? This cannot be undone.`}
+          text={t`Are you sure you want to delete the ${name} attribute from this operation? This cannot be undone.`}
           onCancel={() => {
             deleteModalDisclosure.onClose();
           }}
@@ -1999,6 +2007,7 @@ function StepsListItem({
 }
 
 function PreviewStepRecords({ attribute }: { attribute: JobOperationStep }) {
+  const { t } = useLingui();
   const { formatRelativeTime } = useDateFormatter();
   if (
     !attribute.jobOperationStepRecord ||
@@ -2022,7 +2031,7 @@ function PreviewStepRecords({ attribute }: { attribute: JobOperationStep }) {
           >
             <div className="flex w-1/2 items-center justify-between gap-2">
               <span className="text-xs text-muted-foreground font-medium">
-                Record {index + 1}
+                {t`Record ${index + 1}`}
               </span>
               <div className="text-right font-medium">
                 <PreviewStepRecord attribute={attribute} record={record} />
@@ -2032,7 +2041,7 @@ function PreviewStepRecords({ attribute }: { attribute: JobOperationStep }) {
             <div className="flex items-center justify-end gap-2 w-1/2">
               <HStack spacing={2}>
                 <span className="text-xs text-muted-foreground">
-                  Created {formatRelativeTime(record.createdAt ?? "")}
+                  {t`Created ${formatRelativeTime(record.createdAt ?? "")}`}
                 </span>
                 <EmployeeAvatar
                   employeeId={record.createdBy}
@@ -2156,7 +2165,7 @@ function ParametersForm({
           <Trans>Cannot add parameters to unsaved operation</Trans>
         </AlertTitle>
         <AlertDescription>
-          Please save the operation before adding parameters.
+          <Trans>Please save the operation before adding parameters.</Trans>
         </AlertDescription>
       </Alert>
     );
@@ -2194,7 +2203,7 @@ function ParametersForm({
               isDisabled={isDisabled || fetcher.state !== "idle"}
               isLoading={fetcher.state !== "idle"}
             >
-              Add Parameter
+              <Trans>Add Parameter</Trans>
             </Submit>
           </VStack>
         </ValidatedForm>
@@ -2230,6 +2239,7 @@ function ParametersListItem({
   className?: string;
 }) {
   const { formatRelativeTime } = useDateFormatter();
+  const createdUpdatedText = useRelativeCreatedUpdatedText();
   const disclosure = useDisclosure();
   const deleteModalDisclosure = useDisclosure();
   const submitted = useRef(false);
@@ -2278,13 +2288,13 @@ function ParametersListItem({
             </div>
             <HStack className="w-full justify-end" spacing={2}>
               <Button variant="secondary" onClick={disclosure.onClose}>
-                Cancel
+                <Trans>Cancel</Trans>
               </Button>
               <Submit
                 isDisabled={fetcher.state !== "idle"}
                 isLoading={fetcher.state !== "idle"}
               >
-                Save
+                <Trans>Save</Trans>
               </Submit>
             </HStack>
           </VStack>
@@ -2305,7 +2315,7 @@ function ParametersListItem({
           <div className="flex items-center justify-end gap-2">
             <HStack spacing={2}>
               <span className="text-xs text-muted-foreground">
-                {isUpdated ? "Updated" : "Created"} {formatRelativeTime(date)}
+                {createdUpdatedText(isUpdated, formatRelativeTime(date))}
               </span>
               <EmployeeAvatar employeeId={person} withName={false} />
             </HStack>
@@ -2319,13 +2329,13 @@ function ParametersListItem({
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={disclosure.onOpen}>
-                  Edit
+                  <Trans>Edit</Trans>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   destructive
                   onClick={deleteModalDisclosure.onOpen}
                 >
-                  Delete
+                  <Trans>Delete</Trans>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -2337,7 +2347,7 @@ function ParametersListItem({
           action={path.to.deleteJobOperationParameter(id)}
           isOpen={deleteModalDisclosure.isOpen}
           name={key}
-          text={`Are you sure you want to delete the ${key} parameter from this operation? This cannot be undone.`}
+          text={t`Are you sure you want to delete the ${key} parameter from this operation? This cannot be undone.`}
           onCancel={() => {
             deleteModalDisclosure.onClose();
           }}
@@ -2523,6 +2533,7 @@ function OperationForm({
   temporaryItems: TemporaryItems;
 }) {
   const { t } = useLingui();
+  const operationTypeLabel = useOperationTypeLabel();
   const { company } = useUser();
 
   const fetcher = useFetcher<{
@@ -2764,7 +2775,7 @@ function OperationForm({
           placeholder={t`Operation Type`}
           options={operationTypes.map((o) => ({
             value: o,
-            label: o
+            label: operationTypeLabel(o)
           }))}
           value={processData.operationType}
           onChange={(value) => {
@@ -3127,8 +3138,10 @@ function OperationForm({
                     <div className="flex flex-col gap-2 w-auto">
                       {procedureWasChanged && (
                         <span className="text-sm text-muted-foreground">
-                          The procedure was changed, but not synced to the
-                          operation.
+                          <Trans>
+                            The procedure was changed, but not synced to the
+                            operation.
+                          </Trans>
                         </span>
                       )}
                       <div>
@@ -3137,7 +3150,7 @@ function OperationForm({
                           rightIcon={<LuRefreshCcw />}
                           onClick={procedureSyncDisclosure.onOpen}
                         >
-                          Sync Procedure
+                          <Trans>Sync Procedure</Trans>
                         </Button>
                         {procedureSyncDisclosure.isOpen && (
                           <ProcedureSyncModal
@@ -3225,21 +3238,23 @@ function ProcedureSyncModal({
                 <Trans>Potential Data Loss</Trans>
               </AlertTitle>
               <AlertDescription>
-                Syncing the procedure will update the operation with the new
-                work instructions, steps, and parameters. Any steps that are not
-                part of the procedure will be removed.
+                <Trans>
+                  Syncing the procedure will update the operation with the new
+                  work instructions, steps, and parameters. Any steps that are
+                  not part of the procedure will be removed.
+                </Trans>
               </AlertDescription>
             </Alert>
           </ModalBody>
           <ModalFooter>
             <Button variant="secondary" onClick={onClose}>
-              Cancel
+              <Trans>Cancel</Trans>
             </Button>
             <Submit
               isLoading={fetcher.state !== "idle"}
               isDisabled={fetcher.state !== "idle"}
             >
-              Sync
+              <Trans>Sync</Trans>
             </Submit>
           </ModalFooter>
         </ValidatedForm>
@@ -3251,26 +3266,6 @@ function ProcedureSyncModal({
 type ProductionQuantityActivityProps = {
   item: OperationProductionQuantity;
 };
-
-function getProductionQuantityActivityMessage(
-  item: OperationProductionQuantity
-) {
-  const qty = item.quantity;
-  switch (item.type) {
-    case "Production":
-      return `recorded ${qty} units of production`;
-    case "Rework":
-      return `recorded ${qty} units of rework`;
-    case "Scrap": {
-      const reason = item.scrapReason?.name;
-      return reason
-        ? `recorded ${qty} units of scrap (${reason})`
-        : `recorded ${qty} units of scrap`;
-    }
-    default:
-      return `recorded ${qty} units`;
-  }
-}
 
 function getProductionQuantityBadgeVariant(
   type: OperationProductionQuantity["type"]
@@ -3289,6 +3284,8 @@ const ProductionQuantityActivity = ({
   item
 }: ProductionQuantityActivityProps) => {
   const { formatDateTime } = useDateFormatter();
+  const typeLabel = useProductionQuantityTypeLabel();
+  const getActivityMessage = useProductionQuantityActivityMessage();
 
   const comment = [
     item.notes,
@@ -3300,12 +3297,12 @@ const ProductionQuantityActivity = ({
   return (
     <Activity
       employeeId={item.createdBy}
-      activityMessage={getProductionQuantityActivityMessage(item)}
+      activityMessage={getActivityMessage(item)}
       activityTime={item.createdAt}
       comment={comment || undefined}
       activityIcon={
         <Badge variant={getProductionQuantityBadgeVariant(item.type)}>
-          {item.type}
+          {typeLabel(item.type)}
         </Badge>
       }
     />
@@ -3316,33 +3313,13 @@ type ProductionEventActivityProps = {
   item: Database["public"]["Tables"]["productionEvent"]["Row"];
 };
 
-const getActivityText = (
-  item: Database["public"]["Tables"]["productionEvent"]["Row"]
-) => {
-  switch (item.type) {
-    case "Setup":
-      return item.duration
-        ? `did ${formatDurationMilliseconds(item.duration * 1000)} of setup`
-        : `started setup`;
-    case "Labor":
-      return item.duration
-        ? `did ${formatDurationMilliseconds(item.duration * 1000)} of labor`
-        : `started labor`;
-    case "Machine":
-      return item.duration
-        ? `did ${formatDurationMilliseconds(item.duration * 1000)} of machine`
-        : `started machine`;
-    default:
-      return "";
-  }
-};
-
 const ProductionEventActivity = ({ item }: ProductionEventActivityProps) => {
   const { formatDateTime } = useDateFormatter();
+  const getActivityMessage = useProductionEventActivityMessage();
   return (
     <Activity
       employeeId={item.employeeId ?? item.createdBy}
-      activityMessage={getActivityText(item)}
+      activityMessage={getActivityMessage(item)}
       activityTime={formatDateTime(item.startTime)}
       activityIcon={
         item.type ? (
@@ -3372,6 +3349,7 @@ function ToolsListItem({
   className?: string;
 }) {
   const { formatRelativeTime } = useDateFormatter();
+  const createdUpdatedText = useRelativeCreatedUpdatedText();
   const disclosure = useDisclosure();
   const deleteModalDisclosure = useDisclosure();
   const submitted = useRef(false);
@@ -3422,13 +3400,13 @@ function ToolsListItem({
             </div>
             <HStack className="w-full justify-end" spacing={2}>
               <Button variant="secondary" onClick={disclosure.onClose}>
-                Cancel
+                <Trans>Cancel</Trans>
               </Button>
               <Submit
                 isDisabled={fetcher.state !== "idle"}
                 isLoading={fetcher.state !== "idle"}
               >
-                Save
+                <Trans>Save</Trans>
               </Submit>
             </HStack>
           </VStack>
@@ -3456,7 +3434,7 @@ function ToolsListItem({
           <div className="flex items-center justify-end gap-2">
             <HStack spacing={2}>
               <span className="text-xs text-muted-foreground">
-                {isUpdated ? "Updated" : "Created"} {formatRelativeTime(date)}
+                {createdUpdatedText(isUpdated, formatRelativeTime(date))}
               </span>
               <EmployeeAvatar employeeId={person} withName={false} />
             </HStack>
@@ -3470,13 +3448,13 @@ function ToolsListItem({
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={disclosure.onOpen}>
-                  Edit
+                  <Trans>Edit</Trans>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   destructive
                   onClick={deleteModalDisclosure.onOpen}
                 >
-                  Delete
+                  <Trans>Delete</Trans>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -3488,7 +3466,7 @@ function ToolsListItem({
           action={path.to.deleteJobOperationTool(id)}
           isOpen={deleteModalDisclosure.isOpen}
           name={tool.readableIdWithRevision}
-          text={`Are you sure you want to delete ${tool.readableIdWithRevision} from this operation? This cannot be undone.`}
+          text={t`Are you sure you want to delete ${tool.readableIdWithRevision} from this operation? This cannot be undone.`}
           onCancel={() => {
             deleteModalDisclosure.onClose();
           }}
@@ -3523,7 +3501,7 @@ function ToolsForm({
           <Trans>Cannot add tools to unsaved operation</Trans>
         </AlertTitle>
         <AlertDescription>
-          Please save the operation before adding tools.
+          <Trans>Please save the operation before adding tools.</Trans>
         </AlertDescription>
       </Alert>
     );
@@ -3558,7 +3536,7 @@ function ToolsForm({
               isDisabled={isDisabled || fetcher.state !== "idle"}
               isLoading={fetcher.state !== "idle"}
             >
-              Save Tool
+              <Trans>Save Tool</Trans>
             </Submit>
           </VStack>
         </ValidatedForm>

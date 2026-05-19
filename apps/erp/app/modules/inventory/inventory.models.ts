@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { batchPropertyDataTypes } from "../items/items.models";
+import { optionalRequiredStringArray } from "~/utils/zodFields";
 
 export const demandPeriodTypes = ["Week", "Day", "Month"] as const;
 export const demandSourceTypes = ["Sales Order", "Job Material"] as const;
@@ -85,7 +86,7 @@ export const batchPropertyValidator = z
     itemId: z.string().min(1, { message: "Item ID is required" }),
     label: z.string().min(1, { message: "Label is required" }),
     dataType: z.enum(batchPropertyDataTypes),
-    listOptions: z.string().min(1).array().optional(),
+    listOptions: optionalRequiredStringArray,
     configurationParameterGroupId: z.string().optional()
   })
   .refine(
