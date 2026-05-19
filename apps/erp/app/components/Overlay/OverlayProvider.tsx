@@ -46,7 +46,8 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
         id: createInstanceId(),
         overlayId: target.id,
         url: target.url,
-        onCreated: options?.onCreated
+        onCreated: options?.onCreated,
+        onSuccess: options?.onSuccess
       };
 
       setInstances((prev) => {

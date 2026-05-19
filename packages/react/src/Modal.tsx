@@ -76,15 +76,18 @@ const ModalContent = forwardRef<
   ComponentPropsWithoutRef<typeof DialogPrimitive.Content> &
     VariantProps<typeof ModalContentVariants> & {
       withCloseButton?: boolean;
+      /** Raises overlay + content above other stacked dialogs (e.g. nested overlays). */
+      stackZIndex?: number;
     }
->(({ className, children, size, withCloseButton = true, ...props }, ref) => (
+>(({ className, children, size, withCloseButton = true, stackZIndex, ...props }, ref) => (
   <ClientOnly fallback={null}>
     {() => (
       <ModalPortal>
-        <ModalOverlay>
+        <ModalOverlay style={stackZIndex !== undefined ? { zIndex: stackZIndex } : undefined}>
           <DialogPrimitive.Content
             ref={ref}
             className={cn(ModalContentVariants({ size }), className)}
+            style={stackZIndex !== undefined ? { zIndex: stackZIndex } : undefined}
             {...props}
           >
             {children}

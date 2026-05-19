@@ -1,5 +1,7 @@
 import { Status } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import type { jobStatus } from "../../production.models";
+import { useJobStatusLabel } from "./jobLabels";
 
 type JobStatusProps = {
   status?: (typeof jobStatus)[number] | null;
@@ -23,13 +25,16 @@ const STATUS_COLOR_MAP: Record<
 } as const;
 
 function JobStatus({ status, className }: JobStatusProps) {
+  const { t } = useLingui();
+  const getJobStatusLabel = useJobStatusLabel();
+
   if (!status) return null;
 
   const color = STATUS_COLOR_MAP[status];
   if (!color) return null;
 
-  const displayText = status === "Ready" ? "Released" : status;
-  const tooltip = status === "Ready" ? status : undefined;
+  const displayText = status === "Ready" ? t`Released` : getJobStatusLabel(status);
+  const tooltip = status === "Ready" ? getJobStatusLabel("Ready") : undefined;
 
   return (
     <Status color={color} className={className} tooltip={tooltip}>

@@ -16,6 +16,7 @@ import {
   useMount,
   VStack
 } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import { Suspense } from "react";
 import { LuShoppingCart } from "react-icons/lu";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
@@ -203,6 +204,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 }
 
 export default function JobDetailsRoute() {
+  const { t } = useLingui();
   const {
     notes,
     purchaseOrderLines,
@@ -324,7 +326,7 @@ export default function JobDetailsRoute() {
             itemId: jobData?.job?.itemId ?? undefined
           }}
           modelPath={jobData?.job?.modelPath ?? null}
-          title="CAD Model"
+          title={t`CAD Model`}
           uploadClassName="aspect-square min-h-[420px] max-h-[70vh]"
           viewerClassName="aspect-square min-h-[420px] max-h-[70vh]"
         />

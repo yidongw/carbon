@@ -6,7 +6,7 @@ import { LayoutGroup, motion, Reorder, useDragControls } from "framer-motion";
 import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
-import { LuPlus, LuTrash } from "react-icons/lu";
+import { LuPlus, LuTable, LuTrash } from "react-icons/lu";
 import Empty from "./Empty";
 
 export interface Item {
@@ -22,6 +22,7 @@ export interface Item {
     complete: number;
     target: number;
     onAddQuantity?: () => void;
+    onOpenConfigTable?: () => void;
   } | null;
 }
 
@@ -328,7 +329,7 @@ function QuantityProgressStrip({
   progress: NonNullable<Item["quantityProgress"]>;
   t: ReturnType<typeof useLingui>["t"];
 }) {
-  const { complete, target, onAddQuantity } = progress;
+  const { complete, target, onAddQuantity, onOpenConfigTable } = progress;
   const percent = getQuantityProgressPercent(complete, target);
   const isOverTarget = target > 0 && complete > target;
 
@@ -347,13 +348,26 @@ function QuantityProgressStrip({
           <LuPlus className="h-3.5 w-3.5" strokeWidth={2.5} />
         </button>
       ) : null}
-      <span className="pr-0.5 text-sm font-medium tabular-nums leading-none tracking-tight text-foreground">
+      <span className="text-sm font-medium tabular-nums leading-none tracking-tight text-foreground">
         {formatQuantityValue(complete)}
         <span className="text-muted-foreground">
           {" / "}
           {formatQuantityValue(target)}
         </span>
       </span>
+      {onOpenConfigTable ? (
+        <button
+          type="button"
+          className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-foreground/80 transition-[transform,background-color] duration-150 hover:bg-muted hover:text-foreground active:scale-95 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          aria-label={t`View configuration quantities`}
+          onClick={(event) => {
+            event.stopPropagation();
+            onOpenConfigTable();
+          }}
+        >
+          <LuTable className="h-3 w-3" strokeWidth={2.5} />
+        </button>
+      ) : null}
     </div>
   );
 
@@ -375,7 +389,9 @@ function QuantityProgressStrip({
       role="img"
       aria-label={t`Finished ${complete} of ${target} units`}
     >
-      <div className="relative h-7 w-full">
+      <div
+        className="relative h-7 w-full"
+      >
         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2">
           {progressLine}
         </div>

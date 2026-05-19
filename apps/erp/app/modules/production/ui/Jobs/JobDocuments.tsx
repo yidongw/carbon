@@ -395,10 +395,18 @@ const JobDocuments = ({
           <Table>
             <Thead>
               <Tr>
-                <Th>Name</Th>
-                <Th>Size</Th>
-                <Th>Bucket</Th>
-                <Th>Created</Th>
+                <Th>
+                  <Trans>Name</Trans>
+                </Th>
+                <Th>
+                  <Trans>Size</Trans>
+                </Th>
+                <Th>
+                  <Trans>Bucket</Trans>
+                </Th>
+                <Th>
+                  <Trans>Created</Trans>
+                </Th>
                 <Th />
               </Tr>
             </Thead>
@@ -594,7 +602,7 @@ const JobDocuments = ({
                     colSpan={5}
                     className="py-8 text-muted-foreground text-center"
                   >
-                    No files
+                    <Trans>No files</Trans>
                   </Td>
                 </Tr>
               )}
@@ -636,7 +644,7 @@ const JobDocumentForm = ({
       onChange={(e) => uploadFiles(e)}
       multiple
     >
-      New
+      <Trans>New</Trans>
     </File>
   );
 };

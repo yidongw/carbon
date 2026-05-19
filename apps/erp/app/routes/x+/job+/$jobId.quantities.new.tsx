@@ -4,6 +4,7 @@ import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data, redirect, useLoaderData } from "react-router";
+import { getConfigurationParameters } from "~/modules/items";
 import {
   getJob,
   getJobOperations,
@@ -16,7 +17,7 @@ import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { getParams, path } from "~/utils/path";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
-  const { client } = await requirePermissions(request, {
+  const { client, companyId } = await requirePermissions(request, {
     create: "production"
   });
 
@@ -26,18 +27,41 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const jobOperationId =
     new URL(request.url).searchParams.get("jobOperationId") ?? "";
 
+  const [job, jobOperations] = await Promise.all([
+    getJob(client, jobId),
+    jobOperationId ? null : getJobOperations(client, jobId)
+  ]);
+
+  const configurationParameters = job.data?.itemId
+    ? (await getConfigurationParameters(client, job.data.itemId, companyId))
+        .parameters
+    : [];
+
+  const itemId = job.data?.itemId ?? null;
+
   if (jobOperationId) {
-    return { jobOperationId, operationOptions: [] as const };
+    return {
+      jobOperationId,
+      operationOptions: [] as const,
+      configurationParameters:
+        configurationParameters.length > 0 ? configurationParameters : null,
+      itemId
+    };
   }
 
-  const jobOperations = await getJobOperations(client, jobId);
   const operationOptions =
-    jobOperations.data?.map((operation) => ({
+    jobOperations?.data?.map((operation) => ({
       label: operation.description ?? "",
       value: operation.id!
     })) ?? [];
 
-  return { jobOperationId: "", operationOptions };
+  return {
+    jobOperationId: "",
+    operationOptions,
+    configurationParameters:
+      configurationParameters.length > 0 ? configurationParameters : null,
+    itemId
+  };
 }
 
 export async function action({ request, params }: ActionFunctionArgs) {
@@ -75,14 +99,27 @@ export async function action({ request, params }: ActionFunctionArgs) {
   }
 
   // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
-  const { id, ...d } = validation.data;
+  const { id, configuration: rawConfiguration, ...rest } = validation.data;
 
-  if (d.type !== "Scrap") {
-    d.scrapReasonId = undefined;
+  if (rest.type !== "Scrap") {
+    rest.scrapReasonId = undefined;
+  }
+
+  let configuration: unknown;
+  if (rawConfiguration) {
+    try {
+      configuration =
+        typeof rawConfiguration === "string"
+          ? JSON.parse(rawConfiguration)
+          : rawConfiguration;
+    } catch (parseError) {
+      console.error(parseError);
+    }
   }
 
   const insert = await upsertProductionQuantity(client, {
-    ...d,
+    ...rest,
+    configuration,
     companyId
   });
   if (insert.error) {
@@ -109,7 +146,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 }
 
 export default function NewProductionQuantityRoute() {
-  const { jobOperationId, operationOptions } =
+  const { jobOperationId, operationOptions, configurationParameters, itemId } =
     useLoaderData<typeof loader>();
   const initialValues = {
     type: "Production" as const,
@@ -124,6 +161,8 @@ export default function NewProductionQuantityRoute() {
     <ProductionQuantityForm
       initialValues={initialValues}
       operationOptions={[...(operationOptions ?? [])]}
+      configurationParameters={configurationParameters}
+      itemId={itemId}
     />
   );
 }

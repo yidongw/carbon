@@ -7,6 +7,8 @@ type ActivityProps = {
   employeeId: string;
   activityMessage: ReactNode;
   activityTime: string;
+  /** Formatted absolute time shown above the relative time. */
+  activityTimeDetail?: string;
   activityIcon?: ReactNode;
   comment?: ReactNode;
 };
@@ -15,6 +17,7 @@ const Activity = ({
   employeeId,
   activityMessage,
   activityTime,
+  activityTimeDetail,
   activityIcon,
   comment
 }: ActivityProps) => {
@@ -32,22 +35,36 @@ const Activity = ({
           name={person?.name ?? ""}
         />
       </div>
-      <div className="flex items-center space-x-2">
-        <div className="flex-grow">
-          <p>
-            <span className="font-semibold mr-1">
+      <div
+        className={
+          activityIcon != null ? "flex items-start gap-2" : "flex flex-col"
+        }
+      >
+        <div className="min-w-0 flex-1">
+          <p className="flex flex-wrap items-center gap-x-1 gap-y-1">
+            <span className="font-semibold">
               {person?.name ?? "Carbon Admin"}
             </span>
-            <span className="text-gray-400">{activityMessage}</span>
+            <span className="text-muted-foreground">{activityMessage}</span>
           </p>
-          {comment ? (
-            <div className="mt-1 text-sm text-muted-foreground">{comment}</div>
-          ) : null}
-          <div className="text-sm text-gray-400 mt-1">
-            {formatTimeAgo(activityTime)}
+          {comment ? <div className="mt-2 text-sm">{comment}</div> : null}
+          <div className="mt-1.5 space-y-0.5">
+            {activityTimeDetail ? (
+              <time
+                dateTime={activityTime}
+                className="block text-sm tabular-nums text-muted-foreground"
+              >
+                {activityTimeDetail}
+              </time>
+            ) : null}
+            <div className="text-sm text-muted-foreground">
+              {formatTimeAgo(activityTime)}
+            </div>
           </div>
         </div>
-        <div className="flex-shrink-0">{activityIcon}</div>
+        {activityIcon != null ? (
+          <div className="shrink-0">{activityIcon}</div>
+        ) : null}
       </div>
     </li>
   );

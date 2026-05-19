@@ -14,6 +14,7 @@ import {
   getFileSizeLimit,
   supportedModelTypes
 } from "@carbon/utils";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { nanoid } from "nanoid";
 import { useState } from "react";
 import { useDropzone } from "react-dropzone";
@@ -159,6 +160,7 @@ const CadModelUpload = ({
   className,
   onFileChange
 }: CadModelUploadProps) => {
+  const { t } = useLingui();
   const hasFile = !!file;
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -237,10 +239,10 @@ const CadModelUpload = ({
                 <LuCloudUpload className="mx-auto h-12 w-12 text-muted-foreground group-hover:text-primary-foreground" />
               </div>
               <p className="text-base text-muted-foreground group-hover:text-foreground mt-8">
-                Choose file to upload or drag and drop
+                <Trans>Choose file to upload or drag and drop</Trans>
               </p>
               <p className="text-xs text-muted-foreground group-hover:text-foreground">
-                Supports {supportedModelTypes.join(", ")} files
+                {t`Supports ${supportedModelTypes.join(", ")} files`}
               </p>
             </>
           )}

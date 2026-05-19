@@ -6,12 +6,19 @@ import {
   Suspense
 } from "react";
 import type { FetcherWithComponents } from "react-router";
-import type { OverlayContentProps, OverlayRenderer } from "./types";
+import type {
+  OverlayConfirmMode,
+  OverlayContentProps,
+  OverlayRenderer
+} from "./types";
 
 export type OverlayFormInjectedProps = {
   onDismiss: () => void;
-  action: string;
   fetcher: FetcherWithComponents<unknown>;
+  confirmMode: OverlayConfirmMode;
+  onConfirmSuccess: (data: unknown) => void;
+  /** POST target when `confirmMode` is `"server"`. */
+  action?: string;
 };
 
 function overlayFormInjectedProps(
@@ -19,8 +26,10 @@ function overlayFormInjectedProps(
 ): OverlayFormInjectedProps {
   return {
     onDismiss: ctx.close,
-    action: ctx.url,
-    fetcher: ctx.submitFetcher
+    fetcher: ctx.submitFetcher,
+    confirmMode: ctx.confirmMode,
+    onConfirmSuccess: ctx.onConfirmSuccess,
+    action: ctx.confirmMode === "server" ? ctx.url : undefined
   };
 }
 

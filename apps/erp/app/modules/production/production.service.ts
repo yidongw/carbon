@@ -1348,6 +1348,19 @@ export async function getProductionEventsPage(
   };
 }
 
+export async function getProductionQuantitiesByOperation(
+  client: SupabaseClient<Database>,
+  jobOperationId: string,
+  companyId: string
+) {
+  return client
+    .from("productionQuantity")
+    .select("id, configuration, type, quantity")
+    .eq("jobOperationId", jobOperationId)
+    .eq("companyId", companyId)
+    .order("createdAt", { ascending: false });
+}
+
 export async function getProductionQuantitiesPage(
   client: SupabaseClient<Database>,
   jobOperationId: string,
@@ -1798,6 +1811,114 @@ export async function getTrackedEntityByJobId(
     data: result.data?.[0] ?? null,
     error: result.error
   };
+}
+
+export type JobCurrentProcessInfo = {
+  operationId: string;
+  description: string | null;
+  reportedTotal: number;
+};
+
+export async function getTrackedEntitiesByJobMakeMethodIds(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  jobMakeMethodIds: string[]
+): Promise<Record<string, string>> {
+  if (jobMakeMethodIds.length === 0) return {};
+
+  const { data } = await client
+    .from("trackedEntity")
+    .select("readableId, attributes")
+    .in("attributes->>Job Make Method", jobMakeMethodIds)
+    .eq("companyId", companyId);
+
+  if (!data) return {};
+
+  return data.reduce<Record<string, string>>((acc, curr) => {
+    if (
+      curr.attributes !== null &&
+      typeof curr.attributes === "object" &&
+      "Job Make Method" in curr.attributes &&
+      curr.readableId
+    ) {
+      acc[curr.attributes["Job Make Method"] as string] = curr.readableId;
+    }
+    return acc;
+  }, {});
+}
+
+export async function getItemIdsWithConfigurationParameters(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  itemIds: string[]
+): Promise<string[]> {
+  if (itemIds.length === 0) return [];
+
+  const { data } = await client
+    .from("configurationParameter")
+    .select("itemId")
+    .in("itemId", itemIds)
+    .eq("companyId", companyId);
+
+  if (!data) return [];
+  return [...new Set(data.map((row) => row.itemId))];
+}
+
+/** Root routing only: first operation by `order` where status is not Done/Canceled. */
+export async function getCurrentProcessByJobIds(
+  client: SupabaseClient<Database>,
+  jobs: Pick<Job, "id" | "jobMakeMethodId">[]
+): Promise<Record<string, JobCurrentProcessInfo | null>> {
+  const jobsForQuery = jobs.filter(
+    (job): job is Pick<Job, "id" | "jobMakeMethodId"> & { id: string } =>
+      Boolean(job.id)
+  );
+  if (jobsForQuery.length === 0) return {};
+
+  const jobIds = jobsForQuery.map((job) => job.id);
+  const { data: ops } = await client
+    .from("jobOperation")
+    .select(
+      "id, jobId, description, order, status, quantityComplete, quantityScrapped, quantityReworked, jobMakeMethodId"
+    )
+    .in("jobId", jobIds);
+
+  const metaByJobId = new Map(
+    jobsForQuery.map((job) => [job.id, job.jobMakeMethodId ?? null])
+  );
+
+  const opsByJob = new Map<string, NonNullable<typeof ops>>();
+  for (const op of ops ?? []) {
+    const list = opsByJob.get(op.jobId) ?? [];
+    list.push(op);
+    opsByJob.set(op.jobId, list);
+  }
+
+  const result: Record<string, JobCurrentProcessInfo | null> = {};
+  for (const job of jobsForQuery) {
+    const rootMakeMethodId = metaByJobId.get(job.id);
+    let list = opsByJob.get(job.id) ?? [];
+    if (rootMakeMethodId) {
+      list = list.filter((op) => op.jobMakeMethodId === rootMakeMethodId);
+    }
+    list.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    const current = list.find(
+      (op) => op.status !== "Done" && op.status !== "Canceled"
+    );
+    if (!current) {
+      result[job.id] = null;
+      continue;
+    }
+    result[job.id] = {
+      operationId: current.id,
+      description: current.description,
+      reportedTotal:
+        (current.quantityComplete ?? 0) +
+        (current.quantityScrapped ?? 0) +
+        (current.quantityReworked ?? 0)
+    };
+  }
+  return result;
 }
 
 export async function getTrackedEntitiesByJobId(
