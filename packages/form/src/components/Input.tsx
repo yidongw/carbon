@@ -27,6 +27,7 @@ type FormInputProps = InputProps & {
   suffix?: string;
   validationBehavior?: ValidationBehaviorOptions;
   onConfigure?: () => void;
+  formatError?: (error: string) => ReactNode;
 };
 
 const Input = forwardRef<HTMLInputElement, FormInputProps>(
@@ -43,6 +44,7 @@ const Input = forwardRef<HTMLInputElement, FormInputProps>(
       suffix,
       onConfigure,
       maxLength,
+      formatError = (error) => error,
       isDisabled: isDisabledProp,
       isReadOnly: isReadOnlyProp,
       ...rest
@@ -124,7 +126,7 @@ const Input = forwardRef<HTMLInputElement, FormInputProps>(
           </FormHelperText>
         )}
         {helperText && <FormHelperText>{helperText}</FormHelperText>}
-        {error && <FormErrorMessage>{error}</FormErrorMessage>}
+        {error && <FormErrorMessage>{formatError(error)}</FormErrorMessage>}
       </FormControl>
     );
   }

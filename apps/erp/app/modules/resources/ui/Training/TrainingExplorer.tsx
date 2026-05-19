@@ -1,5 +1,4 @@
 import {
-  Array as ArrayInput,
   Hidden,
   Input,
   MultiSelect,
@@ -59,6 +58,7 @@ import {
 import { useFetcher, useParams } from "react-router";
 import type { z } from "zod";
 import { Empty } from "~/components";
+import { Array as ArrayInput } from "~/components/Form";
 import { ConfirmDelete } from "~/components/Modals";
 import { usePermissions, useRouteData } from "~/hooks";
 import type { Training, TrainingQuestion } from "~/modules/resources";

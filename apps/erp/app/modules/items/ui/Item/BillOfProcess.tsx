@@ -1,6 +1,6 @@
 "use client";
 import { useCarbon } from "@carbon/auth";
-import { Array as ArrayInput, Input, ValidatedForm } from "@carbon/form";
+import { Input, ValidatedForm } from "@carbon/form";
 import type { JSONContent } from "@carbon/react";
 import {
   Alert,
@@ -79,6 +79,7 @@ import {
 import { ConfigurationEditor } from "~/components/Configurator/ConfigurationEditor";
 import type { Configuration } from "~/components/Configurator/types";
 import {
+  Array as ArrayInput,
   Hidden,
   InputControlled,
   Number,

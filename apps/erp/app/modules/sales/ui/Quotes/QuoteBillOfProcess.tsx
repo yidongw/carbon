@@ -1,6 +1,6 @@
 "use client";
 import { useCarbon } from "@carbon/auth";
-import { Array as ArrayInput, Input, ValidatedForm } from "@carbon/form";
+import { Input, ValidatedForm } from "@carbon/form";
 import type { JSONContent } from "@carbon/react";
 import {
   Alert,
@@ -69,6 +69,7 @@ import { useFetcher, useFetchers, useParams } from "react-router";
 import type { z } from "zod";
 import { DirectionAwareTabs, EmployeeAvatar, TimeTypeIcon } from "~/components";
 import {
+  Array as ArrayInput,
   Hidden,
   InputControlled,
   Number,
