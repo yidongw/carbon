@@ -1427,7 +1427,7 @@ const JobBillOfProcess = ({
   if (routeJob) {
     return (
       <>
-      <div className="flex min-h-full flex-col">
+      <div className="flex w-max max-w-[min(42rem,calc(100vw-1.5rem))] flex-col">
         <HStack className="shrink-0 items-center justify-between border-b border-border px-4 py-3 pr-12">
           <h3 className="text-base font-medium font-headline tracking-tight text-foreground">
             <Trans>Bill of Process</Trans>
@@ -1445,7 +1445,9 @@ const JobBillOfProcess = ({
             <Trans>Add Operation</Trans>
           </Button>
         </HStack>
-        <div className="flex-1 px-3 py-3">{list}</div>
+        <div className="min-h-0 max-h-[min(72vh,48rem)] overflow-y-auto px-3 py-3">
+          {list}
+        </div>
       </div>
       {configSummaryModalElement}
       </>

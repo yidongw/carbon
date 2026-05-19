@@ -512,7 +512,7 @@ function ConfigParamsTableModal({
   );
 
   return (
-      <div className="flex min-h-full flex-col">
+      <div className="flex w-max min-w-full max-w-full flex-col">
         <div className="shrink-0 border-b border-border px-6 py-4 pr-12">
           <h3 className="text-base font-medium font-headline tracking-tight text-foreground">
             <Trans>Configuration Parameters</Trans>
@@ -521,7 +521,9 @@ function ConfigParamsTableModal({
             <p className="mt-1 text-sm text-muted-foreground">{jobDisplayId}</p>
           ) : null}
         </div>
-        <div className="flex-1 overflow-hidden px-6 py-4">{tableSection}</div>
+        <div className="min-w-0 flex-1 overflow-x-auto overflow-y-auto px-6 py-4">
+          {tableSection}
+        </div>
         <div className="shrink-0 border-t border-border px-6 py-4">
           {footer}
         </div>
