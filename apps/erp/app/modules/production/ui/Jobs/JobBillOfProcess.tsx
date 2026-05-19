@@ -133,11 +133,9 @@ import type {
   OperationTool
 } from "~/modules/shared";
 import {
-  methodOperationOrders,
   operationParameterValidator,
   operationStepValidator,
   operationToolValidator,
-  operationTypes,
   procedureStepType
 } from "~/modules/shared";
 import type { action as editJobOperationParameterAction } from "~/routes/x+/job+/methods+/operation.parameter.$id";
@@ -160,7 +158,6 @@ import type { Job, JobOperation } from "../../types";
 import { JobOperationStatus, JobOperationTags } from "./JobOperationStatus";
 import { OperationDueDatePicker } from "./OperationDueDatePicker";
 import {
-  useOperationTypeLabel,
   useProductionEventActivityMessage,
   useProductionQuantityActivityMessage,
   useProductionQuantityTypeLabel,
@@ -2533,7 +2530,20 @@ function OperationForm({
   temporaryItems: TemporaryItems;
 }) {
   const { t } = useLingui();
-  const operationTypeLabel = useOperationTypeLabel();
+  const operationOrderOptions = useMemo(
+    () => [
+      { value: "After Previous", label: <Trans>After Previous</Trans> },
+      { value: "With Previous", label: <Trans>With Previous</Trans> }
+    ],
+    []
+  );
+  const operationTypeOptions = useMemo(
+    () => [
+      { value: "Inside", label: <Trans>Inside</Trans> },
+      { value: "Outside", label: <Trans>Outside</Trans> }
+    ],
+    []
+  );
   const { company } = useUser();
 
   const fetcher = useFetcher<{
@@ -2764,19 +2774,13 @@ function OperationForm({
           name="operationOrder"
           label={t`Operation Order`}
           placeholder={t`Operation Order`}
-          options={methodOperationOrders.map((o) => ({
-            value: o,
-            label: o
-          }))}
+          options={operationOrderOptions}
         />
         <SelectControlled
           name="operationType"
           label={t`Operation Type`}
           placeholder={t`Operation Type`}
-          options={operationTypes.map((o) => ({
-            value: o,
-            label: operationTypeLabel(o)
-          }))}
+          options={operationTypeOptions}
           value={processData.operationType}
           onChange={(value) => {
             setProcessData((d) => ({

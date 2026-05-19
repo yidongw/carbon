@@ -449,6 +449,9 @@ msgstr ""
 msgid "After"
 msgstr "之后"
 
+msgid "After Previous"
+msgstr "继上道工序之后"
+
 msgid "AI Tokens"
 msgstr "AI 代币"
 
@@ -1080,9 +1083,6 @@ msgstr "物料清单"
 
 msgid "Bill of Materials"
 msgstr "物料清单"
-
-msgid "Bill of process"
-msgstr ""
 
 msgid "Bill of Process"
 msgstr "工艺流程"
@@ -3985,6 +3985,9 @@ msgstr "插入行"
 msgid "Insert token"
 msgstr ""
 
+msgid "Inside"
+msgstr "厂内"
+
 msgid "Inspect"
 msgstr "检查"
 
@@ -5649,6 +5652,9 @@ msgstr "输出"
 
 msgid "Output never outlasts its raw materials. Falls back to the fixed duration when no input has an expiry date."
 msgstr "输出永远不会超过其原材料的保质期。当没有输入具有过期日期时，回退到固定期限。"
+
+msgid "Outside"
+msgstr "外协"
 
 msgid "Overdue"
 msgstr "逾期"
@@ -8798,6 +8804,9 @@ msgstr "为什么要更改过期日期？"
 
 msgid "WIP"
 msgstr "在制品"
+
+msgid "With Previous"
+msgstr "与上道工序并行"
 
 msgid "Won"
 msgstr "赢得"
