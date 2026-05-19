@@ -1,10 +1,16 @@
-import { Drawer, DrawerContent, Modal, ModalContent } from "@carbon/react";
+import { cn, Drawer, DrawerContent, Modal, ModalContent } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import { useCallback, useEffect, useRef } from "react";
 import { useFetcher } from "react-router";
 import { completeOverlayConfirm } from "./completeOverlayConfirm";
 import { getOverlayRegistryEntry } from "./overlay.registry";
 import type { OverlayConfirmMode, OverlayInstance } from "./types";
+
+const overlayModalContentClassName = cn(
+  "flex max-h-[92vh] w-fit min-w-[20rem] max-w-[calc(100vw-1.5rem)] flex-col gap-0 overflow-hidden p-0 pt-0",
+  "md:w-fit sm:w-fit sm:max-w-[calc(100vw-1.5rem)]",
+  "[&>button]:z-20"
+);
 
 type RegisteredOverlayProps = {
   instance: OverlayInstance;
@@ -91,9 +97,9 @@ export function RegisteredOverlay({
       >
         <ModalContent
           stackZIndex={zIndex}
-          className="flex h-[92vh] max-h-[92vh] w-[calc(100vw-1.5rem)] max-w-5xl flex-col gap-0 overflow-hidden p-0 pt-0 [&>button]:z-20"
+          className={overlayModalContentClassName}
         >
-          <div className="min-h-0 flex-1 overflow-y-auto">
+          <div className="min-h-0 flex-1 overflow-auto">
             <Content {...contentProps} />
           </div>
         </ModalContent>
