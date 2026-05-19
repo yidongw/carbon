@@ -1079,6 +1079,16 @@ export async function getJobOperations(
   return query;
 }
 
+export async function getJobOperationDependencies(
+  client: SupabaseClient<Database>,
+  jobId: string
+) {
+  return client
+    .from("jobOperationDependency")
+    .select("operationId, dependsOnId")
+    .eq("jobId", jobId);
+}
+
 export async function getJobOperationsAssignedToEmployee(
   client: SupabaseClient<Database>,
   employeeId: string,
@@ -1168,7 +1178,7 @@ export async function getJobOperationStepRecords(
   }
 
   query = setGenericQueryFilters(query, args, [
-    { column: "type", ascending: true }
+    { column: "createdAt", ascending: false }
   ]);
 
   return query;
@@ -1759,6 +1769,7 @@ export async function getTrackedEntityByJobId(
     .select("*")
     .eq("attributes ->> Job Make Method", jobMakeMethod.data.id)
     .eq("companyId", jobMakeMethod.data.companyId)
+    .is("attributes ->> Split Entity ID", null)
     .limit(1);
 
   return {
@@ -1788,7 +1799,8 @@ export async function getTrackedEntitiesByJobId(
     .from("trackedEntity")
     .select("*")
     .eq("attributes ->> Job Make Method", jobMakeMethod.data.id)
-    .eq("companyId", jobMakeMethod.data.companyId);
+    .eq("companyId", jobMakeMethod.data.companyId)
+    .is("attributes ->> Split Entity ID", null);
 }
 
 /**
@@ -1870,7 +1882,7 @@ export async function runMRP(
 export async function updateJobBatchNumber(
   client: SupabaseClient<Database>,
   trackedEntityId: string,
-  value: string
+  value: string | null
 ) {
   return client
     .from("trackedEntity")

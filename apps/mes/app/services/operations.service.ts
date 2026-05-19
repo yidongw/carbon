@@ -6,6 +6,7 @@ import {
   generateBomIds,
   type TrackedActivityAttributes
 } from "@carbon/utils";
+import { getLocalTimeZone, today } from "@internationalized/date";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { nanoid } from "nanoid";
 import type { z } from "zod";
@@ -18,6 +19,68 @@ import type {
   stepRecordValidator
 } from "./models";
 import type { BaseOperationWithDetails, Job, StorageItem } from "./types";
+
+export async function getOpenJobs(
+  client: SupabaseClient<Database>,
+  args: { companyId: string; locationId: string }
+) {
+  return client
+    .from("jobs")
+    .select(
+      "id, jobId, status, itemReadableIdWithRevision, name, quantity, quantityComplete, dueDate, deadlineType, assignee, jobMakeMethodId"
+    )
+    .eq("companyId", args.companyId)
+    .eq("locationId", args.locationId)
+    .in("status", ["Ready", "In Progress", "Paused"])
+    .order("jobId", { ascending: true });
+}
+
+export async function getTrackedEntitiesByJobMakeMethodIds(
+  client: SupabaseClient<Database>,
+  jobMakeMethodIds: string[],
+  companyId: string
+) {
+  if (jobMakeMethodIds.length === 0) return {};
+  const result = await client
+    .from("trackedEntity")
+    .select("readableId, attributes")
+    .in("attributes->>Job Make Method", jobMakeMethodIds)
+    .eq("companyId", companyId);
+
+  if (!result.data) return {};
+
+  return result.data.reduce<Record<string, string>>((acc, curr) => {
+    if (
+      curr.attributes !== null &&
+      typeof curr.attributes === "object" &&
+      "Job Make Method" in curr.attributes &&
+      curr.readableId
+    ) {
+      acc[curr.attributes["Job Make Method"] as string] = curr.readableId;
+    }
+    return acc;
+  }, {});
+}
+
+export async function getJobOperations(
+  client: SupabaseClient<Database>,
+  jobId: string
+) {
+  return client
+    .from("jobOperation")
+    .select("*, jobMakeMethod(parentMaterialId, item(readableIdWithRevision))")
+    .eq("jobId", jobId);
+}
+
+export async function getJobOperationDependencies(
+  client: SupabaseClient<Database>,
+  jobId: string
+) {
+  return client
+    .from("jobOperationDependency")
+    .select("operationId, dependsOnId")
+    .eq("jobId", jobId);
+}
 
 export async function deleteAttributeRecord(
   client: SupabaseClient<Database>,
@@ -36,15 +99,42 @@ export async function finishJobOperation(
   args: {
     jobOperationId: string;
     userId: string;
+    companyId: string;
   }
 ) {
-  return client
+  const result = await client
     .from("jobOperation")
     .update({
       status: "Done",
       updatedBy: args.userId
     })
     .eq("id", args.jobOperationId);
+
+  if (!result.error) {
+    client
+      .from("productionEvent")
+      .select("id")
+      .eq("jobOperationId", args.jobOperationId)
+      .not("endTime", "is", null)
+      .eq("postedToGL", false)
+      .then((unpostedEvents) => {
+        if (unpostedEvents.data?.length) {
+          Promise.all(
+            unpostedEvents.data.map((event) =>
+              client.functions.invoke("post-production-event", {
+                body: {
+                  productionEventId: event.id,
+                  userId: args.userId,
+                  companyId: args.companyId
+                }
+              })
+            )
+          );
+        }
+      });
+  }
+
+  return result;
 }
 
 export async function getActiveJobOperationsByEmployee(
@@ -318,15 +408,46 @@ export async function getJobMaterialsByOperationId(
     materials.data = [...(materials.data ?? []), ...processedKittedMaterials];
   }
 
+  // The descendant rpc doesn't return expirationDate, so look it up from
+  // trackedEntity for the consumed inputs in one batched call. This lets
+  // us flag materials whose CONSUMED stock is now past expiry — useful
+  // when the user manually overrides a batch's expirationDate after
+  // consumption (food-safety scenario: rice flour shouldn't outlive its
+  // already-stale rice).
+  const consumedEntityIds = Array.from(
+    new Set((trackedInputs.data ?? []).map((i) => i.id).filter(Boolean))
+  );
+  const todayStr = today(getLocalTimeZone()).toString();
+  const expiredConsumed =
+    consumedEntityIds.length > 0
+      ? await client
+          .from("trackedEntity")
+          .select("id")
+          .in("id", consumedEntityIds)
+          .not("expirationDate", "is", null)
+          .lt("expirationDate", todayStr)
+      : { data: [] as { id: string }[] };
+  const expiredConsumedIds = new Set(
+    (expiredConsumed.data ?? []).map((r) => r.id)
+  );
+  const consumedExpiredFor = (materialId: string | null) =>
+    (trackedInputs.data ?? []).some(
+      (input) =>
+        (input.activityAttributes as TrackedActivityAttributes)?.[
+          "Job Material"
+        ] === materialId && expiredConsumedIds.has(input.id)
+    );
+
   if (requiresSerialTracking) {
     return {
       materials:
         materials.data?.map((material) => {
+          const hasExpiredConsumed = consumedExpiredFor(material.id);
           if (
             !material.requiresSerialTracking &&
             !material.requiresBatchTracking
           )
-            return material;
+            return { ...material, hasExpiredConsumed };
           const issuedForTrackedParent =
             trackedInputs.data
               ?.filter(
@@ -341,14 +462,18 @@ export async function getJobMaterialsByOperationId(
 
           return {
             ...material,
-            quantityIssued: issuedForTrackedParent
+            quantityIssued: issuedForTrackedParent,
+            hasExpiredConsumed
           };
         }) ?? [],
       trackedInputs: trackedInputs.data ?? []
     };
   } else {
     return {
-      materials: materials.data ?? [],
+      materials: (materials.data ?? []).map((material) => ({
+        ...material,
+        hasExpiredConsumed: consumedExpiredFor(material.id)
+      })),
       trackedInputs: trackedInputs.data ?? []
     };
   }

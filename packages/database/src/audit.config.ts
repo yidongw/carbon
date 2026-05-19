@@ -113,6 +113,7 @@ export const auditConfig = {
         customer: { role: "root" },
         customerPayment: { role: "extension" }, // PK = customerId
         customerShipping: { role: "extension" }, // PK = customerId
+        customerTax: { role: "extension" }, // PK = customerId
         contact: {
           resolve: {
             junction: "customerContact",
@@ -136,6 +137,7 @@ export const auditConfig = {
         supplier: { role: "root" },
         supplierPayment: { role: "extension" }, // PK = supplierId
         supplierShipping: { role: "extension" }, // PK = supplierId
+        supplierTax: { role: "extension" }, // PK = supplierId
         contact: {
           resolve: {
             junction: "supplierContact",
@@ -157,12 +159,29 @@ export const auditConfig = {
       label: "Item",
       tables: {
         item: { role: "root" },
+        itemShelfLife: { role: "root" },
         itemCost: { role: "extension" }, // PK = itemId
         itemPlanning: { role: "extension" }, // PK = itemId
         itemReplenishment: { role: "extension" }, // PK = itemId
         itemUnitSalePrice: { role: "extension" }, // PK = itemId
         supplierPart: { entityIdColumn: "itemId" },
         customerPartToItem: { entityIdColumn: "itemId" }
+      }
+    },
+
+    itemShelfLife: {
+      label: "Item Shelf Life",
+      tables: {
+        itemShelfLife: {
+          role: "root",
+          createFields: [
+            "mode",
+            "days",
+            "triggerProcessId",
+            "triggerTiming",
+            "calculateFromBom"
+          ]
+        }
       }
     },
 
@@ -353,13 +372,16 @@ export const auditConfig = {
     customer: "Customer",
     customerPayment: "Payment",
     customerShipping: "Shipping",
+    customerTax: "Tax",
     contact: "Contact",
     address: "Address",
     supplier: "Supplier",
     supplierPayment: "Payment",
     supplierShipping: "Shipping",
+    supplierTax: "Tax",
     supplierPart: "Supplier Part",
     item: "Item",
+    itemShelfLife: "Shelf Life",
     itemCost: "Cost",
     itemPlanning: "Planning",
     itemReplenishment: "Replenishment",

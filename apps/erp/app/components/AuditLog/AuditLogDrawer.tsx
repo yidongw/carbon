@@ -13,7 +13,6 @@ import {
   Skeleton,
   VStack
 } from "@carbon/react";
-import { formatDateTime } from "@carbon/utils";
 import { Trans } from "@lingui/react/macro";
 import { memo, useEffect, useRef } from "react";
 import {
@@ -25,7 +24,16 @@ import {
 } from "react-icons/lu";
 import { Link, useFetcher } from "react-router";
 import { EmployeeAvatar, Empty } from "~/components";
-import { usePermissions, useRouteData } from "~/hooks";
+import {
+  UpgradeOverlayActions,
+  UpgradeOverlayContent,
+  UpgradeOverlayDescription,
+  UpgradeOverlayIcon,
+  UpgradeOverlayInline,
+  UpgradeOverlayTitle,
+  UpgradeOverlayUpgradeButton
+} from "~/components/UpgradeOverlay";
+import { useDateFormatter, usePermissions, useRouteData } from "~/hooks";
 import { path } from "~/utils/path";
 
 type AuditLogDrawerProps = {
@@ -34,6 +42,7 @@ type AuditLogDrawerProps = {
   entityType: string;
   entityId: string;
   companyId: string;
+  title?: React.ReactNode;
   /**
    * Optional: scope the view to a single raw row rather than the full entity.
    * When set, the drawer filters audit entries to `recordId = recordId`.
@@ -75,6 +84,7 @@ const AuditLogDrawer = memo(
     entityType,
     entityId,
     companyId,
+    title,
     recordId,
     planRestricted = false
   }: AuditLogDrawerProps) => {
@@ -132,26 +142,24 @@ const AuditLogDrawer = memo(
     const isLoading = fetcher.state === "loading";
 
     const drawerBody = planRestricted ? (
-      <div className="flex flex-col items-center justify-start flex-1 w-full pt-[15dvh] text-center gap-4 px-4 h-full">
-        <div className="rounded-full bg-muted p-3">
+      <UpgradeOverlayInline>
+        <UpgradeOverlayIcon>
           <LuHistory className="size-6 text-muted-foreground" />
-        </div>
-        <div className="space-y-2">
-          <h3 className="text-lg font-semibold">
+        </UpgradeOverlayIcon>
+        <UpgradeOverlayContent>
+          <UpgradeOverlayTitle>
             <Trans>Upgrade to unlock audit history</Trans>
-          </h3>
-          <p className="text-sm text-muted-foreground text-balance">
+          </UpgradeOverlayTitle>
+          <UpgradeOverlayDescription>
             <Trans>
               Track every change to your orders, invoices, customers, and more.
             </Trans>
-          </p>
-        </div>
-        <Button asChild>
-          <Link to={path.to.billing}>
-            <Trans>Upgrade to Business</Trans>
-          </Link>
-        </Button>
-      </div>
+          </UpgradeOverlayDescription>
+        </UpgradeOverlayContent>
+        <UpgradeOverlayActions>
+          <UpgradeOverlayUpgradeButton />
+        </UpgradeOverlayActions>
+      </UpgradeOverlayInline>
     ) : !auditLogEnabled ? (
       <div className="flex flex-col items-center justify-start flex-1 w-full pt-[15dvh] text-center gap-4 px-4 h-full">
         <div className="rounded-full bg-muted p-3">
@@ -208,7 +216,7 @@ const AuditLogDrawer = memo(
           <DrawerHeader>
             <DrawerTitle className="flex items-center gap-2">
               <LuHistory className="size-5" />
-              <Trans>History</Trans>
+              {title ?? <Trans>History</Trans>}
             </DrawerTitle>
           </DrawerHeader>
           <DrawerBody>{drawerBody}</DrawerBody>
@@ -226,6 +234,7 @@ type AuditLogEntryCardProps = {
 };
 
 const AuditLogEntryCard = memo(({ entry }: AuditLogEntryCardProps) => {
+  const { formatDateTime } = useDateFormatter();
   const opInfo = operationLabels[entry.operation] ?? {
     label: entry.operation,
     variant: "secondary" as const,

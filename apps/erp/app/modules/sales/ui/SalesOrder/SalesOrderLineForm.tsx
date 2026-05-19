@@ -44,8 +44,7 @@ import {
   NumberControlled,
   SelectControlled,
   StorageUnit,
-  Submit,
-  UnitOfMeasure
+  Submit
 } from "~/components/Form";
 import {
   useCurrencyFormatter,
@@ -104,6 +103,7 @@ const SalesOrderLineForm = ({
   const [saleQuantity, setSaleQuantity] = useState(
     initialValues.saleQuantity ?? 1
   );
+  const [isPriceResolving, setIsPriceResolving] = useState(false);
   const [itemData, setItemData] = useState<{
     itemId: string;
     methodType: string;
@@ -199,7 +199,10 @@ const SalesOrderLineForm = ({
   );
 
   const debouncedQuantityResolve = useDebounce(async (qty: number) => {
-    if (!itemData.itemId) return;
+    if (!itemData.itemId) {
+      setIsPriceResolving(false);
+      return;
+    }
     const result = await resolvePrice(itemData.itemId, qty);
     if (result) {
       setItemData((d) => ({
@@ -210,16 +213,19 @@ const SalesOrderLineForm = ({
         priceTrace: result.trace
       }));
     }
+    setIsPriceResolving(false);
   }, 400);
 
   const onQuantityChange = (qty: number) => {
     setSaleQuantity(qty);
+    setIsPriceResolving(true);
     debouncedQuantityResolve(qty);
   };
 
   const onChange = async (itemId: string) => {
     if (!itemId) return;
     if (!carbon || !company.id) return;
+    setIsPriceResolving(true);
     const [item, price] = await Promise.all([
       carbon
         .from("item")
@@ -268,6 +274,7 @@ const SalesOrderLineForm = ({
       priceListName: result?.priceListName ?? null,
       priceTrace: result?.trace ?? null
     });
+    setIsPriceResolving(false);
   };
 
   const onLocationChange = async (newLocation: { value: string } | null) => {
@@ -418,6 +425,7 @@ const SalesOrderLineForm = ({
                       : undefined
                   }
                 />
+                <Hidden name="unitOfMeasureCode" value={itemData.uom} />
                 <VStack>
                   <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
                     <Item
@@ -478,11 +486,6 @@ const SalesOrderLineForm = ({
                           value={saleQuantity}
                           onChange={onQuantityChange}
                         />
-                        <UnitOfMeasure
-                          name="unitOfMeasureCode"
-                          label={t`Unit of Measure`}
-                          value={itemData.uom}
-                        />
                         <div className="flex flex-col gap-y-2 w-full">
                           <div className="flex items-center justify-between min-h-[16px]">
                             <span className="text-xs font-medium text-muted-foreground">
@@ -521,7 +524,7 @@ const SalesOrderLineForm = ({
                         ].includes(lineType) && (
                           <Location
                             name="locationId"
-                            label={t`Location`}
+                            label={t`Shipping Location`}
                             onChange={onLocationChange}
                           />
                         )}
@@ -674,6 +677,7 @@ const SalesOrderLineForm = ({
               <ModalCardFooter>
                 <Submit
                   isDisabled={
+                    isPriceResolving ||
                     !isEditable ||
                     (isEditing
                       ? !permissions.can("update", "sales")

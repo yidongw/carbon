@@ -1,7 +1,7 @@
 import type { Database, Json } from "@carbon/database";
 import { fetchAllFromTable } from "@carbon/database";
-import { getLocalTimeZone, today } from "@internationalized/date";
-import type { SupabaseClient } from "@supabase/supabase-js";
+import { getLocalTimeZone, now, today } from "@internationalized/date";
+import type { PostgrestError, SupabaseClient } from "@supabase/supabase-js";
 import { nanoid } from "nanoid";
 import type { z } from "zod";
 import type { StorageItem } from "~/types";
@@ -569,6 +569,32 @@ export async function getStorageUnitsListForLocation(
   );
 }
 
+// Tree shape from storageUnits_recursive view: each row has its 1-based depth
+// and the full ancestorPath (root → node ids). Sort by ancestorPath so the
+// caller can render a flat list that visually nests by depth.
+export async function getStorageUnitsTreeForLocation(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  locationId: string
+) {
+  return fetchAllFromTable<{
+    id: string;
+    name: string;
+    parentId: string | null;
+    depth: number;
+    ancestorPath: string[];
+  }>(
+    client,
+    "storageUnits_recursive",
+    "id, name, parentId, depth, ancestorPath",
+    (query) =>
+      query
+        .eq("active", true)
+        .eq("companyId", companyId)
+        .eq("locationId", locationId)
+  );
+}
+
 export async function getStorageUnits(
   client: SupabaseClient<Database>,
   locationId: string,
@@ -607,6 +633,122 @@ export async function getStorageUnit(
     .select("*")
     .eq("id", storageUnitId)
     .single();
+}
+
+// Roots only (depth = 1). Honors search/filter/pagination so the table can
+// paginate top-level storage units while children load lazily on demand.
+export async function getStorageUnitRoots(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  locationId: string,
+  args: GenericQueryFilters & { search: string | null }
+) {
+  let query = client
+    .from("storageUnits_recursive")
+    .select("*", { count: "exact" })
+    .eq("companyId", companyId)
+    .eq("locationId", locationId)
+    .eq("depth", 1);
+
+  if (args?.search) {
+    query = query.ilike("name", `%${args.search}%`);
+  }
+
+  query = setGenericQueryFilters(query, args, [
+    { column: "name", ascending: true }
+  ]);
+
+  return query;
+}
+
+// Immediate children of a single parent (one level deep). Used by the lazy
+// expand handler in the StorageUnits table.
+export async function getStorageUnitChildren(
+  client: SupabaseClient<Database>,
+  parentId: string
+) {
+  return client
+    .from("storageUnits_recursive")
+    .select("*")
+    .eq("parentId", parentId)
+    .order("name");
+}
+
+// Set of storageUnit ids that have at least one child in the given location.
+// Drives whether the table renders an expand chevron on a row.
+export async function getStorageUnitParentIdsWithChildren(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  locationId: string
+) {
+  const { data, error } = await client
+    .from("storageUnit")
+    .select("parentId")
+    .eq("companyId", companyId)
+    .eq("locationId", locationId)
+    .not("parentId", "is", null);
+
+  if (error) return { data: [] as string[], error };
+
+  const ids = new Set<string>();
+  for (const row of data ?? []) {
+    if (row.parentId) ids.add(row.parentId);
+  }
+  return { data: Array.from(ids), error: null };
+}
+
+// Search-mode payload: every storage unit whose name matches `search` PLUS
+// every ancestor of each match, so the tree path renders intact. Returns the
+// flat ordered row set + the parentIds that should be pre-expanded so that
+// matches are visible to the user.
+export async function searchStorageUnitsWithAncestors(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  locationId: string,
+  search: string
+) {
+  const matches = await client
+    .from("storageUnits_recursive")
+    .select("id, parentId, ancestorPath")
+    .eq("companyId", companyId)
+    .eq("locationId", locationId)
+    .ilike("name", `%${search}%`);
+
+  if (matches.error)
+    return { rows: [], expandedParentIds: [], error: matches.error };
+
+  const idsToFetch = new Set<string>();
+  const expanded = new Set<string>();
+  for (const row of matches.data ?? []) {
+    for (const ancestorId of row.ancestorPath ?? []) {
+      idsToFetch.add(ancestorId);
+    }
+    // Pre-expand every node on the chain except the match itself, so the
+    // match becomes visible. ancestorPath includes the node itself at the end.
+    for (const ancestorId of (row.ancestorPath ?? []).slice(0, -1)) {
+      expanded.add(ancestorId);
+    }
+  }
+
+  if (idsToFetch.size === 0) {
+    return { rows: [], expandedParentIds: [], error: null };
+  }
+
+  const rows = await client
+    .from("storageUnits_recursive")
+    .select("*")
+    .eq("companyId", companyId)
+    .eq("locationId", locationId)
+    .in("id", Array.from(idsToFetch))
+    .order("ancestorPath");
+
+  if (rows.error) return { rows: [], expandedParentIds: [], error: rows.error };
+
+  return {
+    rows: rows.data ?? [],
+    expandedParentIds: Array.from(expanded),
+    error: null
+  };
 }
 
 export async function getShipments(
@@ -858,6 +1000,79 @@ export async function getTrackedEntity(
     .single();
 }
 
+/**
+ * Manual override of a tracked entity's expirationDate. Records the prior
+ * value, the new value, and a reason on the entity's `attributes` JSONB
+ * under the "expiryOverrides" array so the trace popover can show the
+ * provenance later.
+ *
+ *   attributes.expiryOverrides = [
+ *     {
+ *       previous: "2026-04-25" | null,
+ *       next:     "2026-05-10",
+ *       reason:   "Re-tested and re-certified by QC",
+ *       userId,
+ *       at:       "2026-04-26T10:11:12Z"
+ *     },
+ *     ...
+ *   ]
+ */
+export async function updateTrackedEntityExpiry(
+  client: SupabaseClient<Database>,
+  args: {
+    trackedEntityId: string;
+    expirationDate: string | null;
+    reason: string;
+    userId: string;
+    source?: string;
+  }
+) {
+  const existing = await client
+    .from("trackedEntity")
+    .select("expirationDate, attributes, status")
+    .eq("id", args.trackedEntityId)
+    .single();
+  if (existing.error) return existing;
+
+  if (existing.data?.status === "Consumed") {
+    return {
+      data: null,
+      error: {
+        message: "Cannot edit expiry of a consumed tracked entity"
+      } as unknown as PostgrestError
+    };
+  }
+
+  const prevAttrs =
+    (existing.data?.attributes as Record<string, unknown> | null) ?? {};
+  const prevHistory = Array.isArray(prevAttrs.expiryOverrides)
+    ? (prevAttrs.expiryOverrides as Record<string, unknown>[])
+    : [];
+
+  const nextAttrs = {
+    ...prevAttrs,
+    expiryOverrides: [
+      ...prevHistory,
+      {
+        previous: existing.data?.expirationDate ?? null,
+        next: args.expirationDate,
+        reason: args.reason,
+        source: args.source ?? null,
+        userId: args.userId,
+        at: now(getLocalTimeZone()).toAbsoluteString()
+      }
+    ]
+  };
+
+  return client
+    .from("trackedEntity")
+    .update({
+      expirationDate: args.expirationDate,
+      attributes: nextAttrs as unknown as Json
+    })
+    .eq("id", args.trackedEntityId);
+}
+
 export async function getTrackedEntitiesByOperationId(
   client: SupabaseClient<Database>,
   operationId: string
@@ -961,6 +1176,7 @@ export async function insertManualInventoryAdjustment(
     readableId,
     originalStorageUnitId,
     comment,
+    expirationDate: providedExpirationDate,
     ...rest
   } = inventoryAdjustment;
   const data = {
@@ -968,6 +1184,53 @@ export async function insertManualInventoryAdjustment(
     entryType:
       adjustmentType === "Set Quantity" ? "Positive Adjmt." : adjustmentType, // This will be overwritten below
     comment: comment || null
+  };
+
+  // For new tracked entities created here, fall back to the item's Fixed
+  // Duration shelf-life policy when the user did not type an expiry. Other
+  // modes (Calculated, Set on Receipt) intentionally stay NULL — they get
+  // resolved at production / receipt time, not on a manual adjustment.
+  const resolveExpirationForNewEntity = async (): Promise<string | null> => {
+    if (providedExpirationDate) return providedExpirationDate;
+    const shelfLife = await client
+      .from("itemShelfLife")
+      .select("mode, days")
+      .eq("itemId", inventoryAdjustment.itemId)
+      .maybeSingle();
+    if (
+      !shelfLife.error &&
+      shelfLife.data?.mode === "Fixed Duration" &&
+      shelfLife.data.days
+    ) {
+      return today(getLocalTimeZone())
+        .add({ days: Number(shelfLife.data.days) })
+        .toString();
+    }
+    return null;
+  };
+
+  // For existing tracked entities, only write when the user supplied a value
+  // and it differs from the current row. Routes through updateTrackedEntityExpiry
+  // so the override is captured in attributes.expiryOverrides for traceability.
+  const applyExpirationOverride = async (trackedEntityId: string) => {
+    if (!providedExpirationDate) return null;
+    const current = await client
+      .from("trackedEntity")
+      .select("expirationDate")
+      .eq("id", trackedEntityId)
+      .single();
+    if (
+      !current.error &&
+      current.data?.expirationDate === providedExpirationDate
+    )
+      return null;
+    return updateTrackedEntityExpiry(client, {
+      trackedEntityId,
+      expirationDate: providedExpirationDate,
+      reason: comment?.trim() || "Updated via inventory adjustment",
+      source: "Inventory Adjustment",
+      userId: data.createdBy
+    });
   };
 
   const storageUnitQuantities = await client.rpc(
@@ -1010,6 +1273,13 @@ export async function insertManualInventoryAdjustment(
       if (trackedEntityUpdate.error) {
         return trackedEntityUpdate;
       }
+    }
+
+    if (inventoryAdjustment.trackedEntityId) {
+      const expiryOverride = await applyExpirationOverride(
+        inventoryAdjustment.trackedEntityId
+      );
+      if (expiryOverride?.error) return expiryOverride;
     }
 
     // Create negative adjustment at original storage unit
@@ -1064,12 +1334,19 @@ export async function insertManualInventoryAdjustment(
       data.entryType = "Negative Adjmt.";
       data.quantity = -Math.abs(quantityDifference);
     } else {
-      // No change in quantity, but readableId might have changed
+      // No change in quantity, but readableId / expirationDate might have changed
       if (inventoryAdjustment.trackedEntityId && readableId !== undefined) {
-        return client
+        const trackedEntityUpdate = await client
           .from("trackedEntity")
           .update({ readableId })
           .eq("id", inventoryAdjustment.trackedEntityId);
+        if (trackedEntityUpdate.error) return trackedEntityUpdate;
+      }
+      if (inventoryAdjustment.trackedEntityId) {
+        const expiryOverride = await applyExpirationOverride(
+          inventoryAdjustment.trackedEntityId
+        );
+        if (expiryOverride?.error) return expiryOverride;
       }
       return { data: null };
     }
@@ -1099,12 +1376,43 @@ export async function insertManualInventoryAdjustment(
       if (trackedEntityUpdate.error) {
         return trackedEntityUpdate;
       }
+
+      const expiryOverride = await applyExpirationOverride(
+        inventoryAdjustment.trackedEntityId
+      );
+      if (expiryOverride?.error) return expiryOverride;
     } else {
-      const item = await client
-        .from("item")
-        .select("*")
-        .eq("id", data.itemId)
-        .single();
+      const [item, expirationDate] = await Promise.all([
+        client.from("item").select("*").eq("id", data.itemId).single(),
+        resolveExpirationForNewEntity()
+      ]);
+
+      // Stamp the trace blob so the popover Source / Override steps can show
+      // the entity originated from a manual inventory adjustment, by whom,
+      // and when. Mirrors the receipt/job markers consumed by
+      // ExpiryTracePopover (attrs.Receipt, attrs.Job).
+      const adjustmentStamp = {
+        userId: data.createdBy,
+        at: now(getLocalTimeZone()).toAbsoluteString(),
+        reason: comment?.trim() || "Created via inventory adjustment"
+      };
+      const attributes: Record<string, unknown> = {
+        "Inventory Adjustment": adjustmentStamp,
+        ...(expirationDate
+          ? {
+              expiryOverrides: [
+                {
+                  previous: null,
+                  next: expirationDate,
+                  reason: adjustmentStamp.reason,
+                  source: "Inventory Adjustment",
+                  userId: adjustmentStamp.userId,
+                  at: adjustmentStamp.at
+                }
+              ]
+            }
+          : {})
+      };
 
       // Create a new tracked entity
       const trackedEntityInsert = await client
@@ -1118,6 +1426,8 @@ export async function insertManualInventoryAdjustment(
             readableId: readableId,
             quantity: data.quantity,
             status: "Available",
+            expirationDate,
+            attributes: attributes as unknown as Json,
             companyId: data.companyId,
             createdBy: data.createdBy
           }
@@ -1589,14 +1899,61 @@ export async function getStorageUnitDescendants(
     .contains("ancestorPath", [storageUnitId]);
 }
 
+export async function expandStorageUnitIdsWithDescendants(
+  client: SupabaseClient<Database>,
+  storageUnitIds: string[]
+): Promise<string[]> {
+  if (storageUnitIds.length === 0) return [];
+  const { data } = await client
+    .from("storageUnits_recursive")
+    .select("id")
+    .overlaps("ancestorPath", storageUnitIds);
+  const expanded = new Set<string>(storageUnitIds);
+  (data ?? []).forEach((row) => {
+    if (row.id) expanded.add(row.id);
+  });
+  return Array.from(expanded);
+}
+
 // ----------------------------------------------------------------------------
 // storageType CRUD (mirrors materialType in items.service.ts)
 // ----------------------------------------------------------------------------
 
-export async function deleteStorageType(
+export async function getStorageTypeUsage(
   client: SupabaseClient<Database>,
-  id: string
+  id: string,
+  companyId: string
 ) {
+  return client
+    .from("storageUnit")
+    .select("id, name", { count: "exact" })
+    .eq("companyId", companyId)
+    .contains("storageTypeIds", [id])
+    .limit(5);
+}
+
+export async function deleteStorageTypeWithCascade(
+  client: SupabaseClient<Database>,
+  id: string,
+  companyId: string
+) {
+  const { data: units, error: fetchError } = await client
+    .from("storageUnit")
+    .select("id, storageTypeIds")
+    .eq("companyId", companyId)
+    .contains("storageTypeIds", [id]);
+
+  if (fetchError) return { error: fetchError };
+
+  for (const unit of units ?? []) {
+    const next = (unit.storageTypeIds ?? []).filter((x) => x !== id);
+    const { error: updateError } = await client
+      .from("storageUnit")
+      .update({ storageTypeIds: next })
+      .eq("id", unit.id);
+    if (updateError) return { error: updateError };
+  }
+
   return client.from("storageType").delete().eq("id", id);
 }
 
@@ -1669,4 +2026,38 @@ export async function upsertStorageType(
     .eq("id", storageType.id)
     .select("id")
     .single();
+}
+
+export async function getShelfLifeForItems(
+  client: SupabaseClient<Database>,
+  itemIds: string[]
+) {
+  if (itemIds.length === 0) return { data: [], error: null };
+  return client
+    .from("itemShelfLife")
+    .select("itemId, mode, days")
+    .in("itemId", itemIds);
+}
+
+/**
+ * Map of trackedEntityId → expirationDate (or null) for a set of ids.
+ * Used by the inventory adjustment modal to prefill the date picker when
+ * editing an existing batch / serial.
+ */
+export async function getTrackedEntityExpirations(
+  client: SupabaseClient<Database>,
+  trackedEntityIds: string[]
+): Promise<Record<string, string | null>> {
+  if (trackedEntityIds.length === 0) return {};
+  const result = await client
+    .from("trackedEntity")
+    .select("id, expirationDate")
+    .in("id", trackedEntityIds);
+  return (result.data ?? []).reduce<Record<string, string | null>>(
+    (acc, row) => {
+      acc[row.id] = row.expirationDate ?? null;
+      return acc;
+    },
+    {}
+  );
 }

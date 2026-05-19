@@ -2,10 +2,15 @@ import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { ResizablePanel, ResizablePanelGroup, VStack } from "@carbon/react";
+import { pluckUnique } from "@carbon/utils";
 import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useLoaderData } from "react-router";
 import type { InventoryItem } from "~/modules/inventory";
-import { getInventoryItems } from "~/modules/inventory";
+import {
+  expandStorageUnitIdsWithDescendants,
+  getInventoryItems,
+  getStorageTypesList
+} from "~/modules/inventory";
 import InventoryTable from "~/modules/inventory/ui/Inventory/InventoryTable";
 import {
   getMaterialFormsList,
@@ -29,6 +34,15 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   const { limit, offset, sorts, filters } =
     getGenericQueryFilters(searchParams);
+
+  const storageUnitFilter = filters?.find(
+    (f) => f.column === "storageUnitIds" && f.value
+  );
+  if (storageUnitFilter?.value) {
+    const ids = storageUnitFilter.value.split(",");
+    const expanded = await expandStorageUnitIdsWithDescendants(client, ids);
+    storageUnitFilter.value = expanded.join(",");
+  }
 
   let locationId = searchParams.get("location");
 
@@ -61,18 +75,20 @@ export async function loader({ request }: LoaderFunctionArgs) {
     locationId = locations.data?.[0].id as string;
   }
 
-  const [inventoryItems, forms, substances, tags] = await Promise.all([
-    getInventoryItems(client, locationId, companyId, {
-      search,
-      limit,
-      offset,
-      sorts,
-      filters
-    }),
-    getMaterialFormsList(client, companyId),
-    getMaterialSubstancesList(client, companyId),
-    getTagsList(client, companyId)
-  ]);
+  const [inventoryItems, forms, substances, tags, storageTypes] =
+    await Promise.all([
+      getInventoryItems(client, locationId, companyId, {
+        search,
+        limit,
+        offset,
+        sorts,
+        filters
+      }),
+      getMaterialFormsList(client, companyId),
+      getMaterialSubstancesList(client, companyId),
+      getTagsList(client, companyId),
+      getStorageTypesList(client, companyId)
+    ]);
 
   if (inventoryItems.error) {
     redirect(
@@ -84,8 +100,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     );
   }
 
-  // Deduplicate tag names using Set
-  const uniqueTags = [...new Set((tags.data ?? []).map((t) => t.name))];
+  const uniqueTags = pluckUnique(tags.data, (t) => t.name);
 
   return {
     count: inventoryItems.count ?? 0,
@@ -93,13 +108,21 @@ export async function loader({ request }: LoaderFunctionArgs) {
     locationId,
     forms: forms.data ?? [],
     substances: substances.data ?? [],
-    tags: uniqueTags
+    tags: uniqueTags,
+    storageTypes: storageTypes.data ?? []
   };
 }
 
 export default function QuantitiesRoute() {
-  const { count, inventoryItems, locationId, forms, substances, tags } =
-    useLoaderData<typeof loader>();
+  const {
+    count,
+    inventoryItems,
+    locationId,
+    forms,
+    substances,
+    tags,
+    storageTypes
+  } = useLoaderData<typeof loader>();
 
   return (
     <VStack spacing={0} className="h-full ">
@@ -117,6 +140,7 @@ export default function QuantitiesRoute() {
             forms={forms}
             substances={substances}
             tags={tags}
+            storageTypes={storageTypes}
           />
         </ResizablePanel>
         <Outlet />

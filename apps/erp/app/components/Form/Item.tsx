@@ -41,6 +41,7 @@ import { path } from "~/utils/path";
 import { MethodItemTypeIcon } from "../Icons";
 
 type ItemSelectProps = Omit<ComboboxProps, "options" | "type" | "inline"> & {
+  isReadOnly?: boolean;
   blacklist?: string[];
   includeInactive?: boolean;
   inline?: boolean;
@@ -95,13 +96,13 @@ const Item = ({
   validItemTypes,
   onConfigure,
   onTypeChange,
+  isReadOnly = false,
   ...props
 }: ItemSelectProps) => {
   const { t } = useLingui();
   const translateItemType = useTranslatedItemType();
   const [items] = useItems();
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: suppressed due to migration
   const options = useMemo(() => {
     let results = items
       .filter((item) => {
@@ -158,7 +159,8 @@ const Item = ({
     props.locationId,
     props.replenishmentSystem,
     props.whitelist,
-    type
+    type,
+    validItemTypes
   ]);
 
   const selectTypeModal = useDisclosure();
@@ -261,7 +263,6 @@ const Item = ({
                       className={cn(
                         "absolute right-0 top-0 bg-card dark:bg-card flex-shrink-0 h-10 w-10 px-3 rounded-l-none before:rounded-l-none border -ml-px shadow-none hover:shadow-button-base"
                       )}
-                      disabled={props.isReadOnly}
                       variant="secondary"
                       size={props.inline ? "sm" : "md"}
                       icon={
@@ -404,6 +405,7 @@ const Item = ({
                 : "Make to Order",
             unitCost: 0,
             lotSize: 0,
+            shelfLifeCalculateFromBom: false,
             tags: []
           }}
         />
@@ -425,6 +427,7 @@ const Item = ({
             replenishmentSystem: "Buy",
             defaultMethodType: "Pull from Inventory",
             unitCost: 0,
+            shelfLifeCalculateFromBom: false,
             tags: []
           }}
         />
@@ -448,6 +451,7 @@ const Item = ({
             replenishmentSystem: "Buy",
             defaultMethodType: "Pull from Inventory",
             unitCost: 0,
+            shelfLifeCalculateFromBom: false,
             tags: []
           }}
         />
@@ -474,6 +478,7 @@ const Item = ({
                 ? "Pull from Inventory"
                 : "Make to Order",
             unitCost: 0,
+            shelfLifeCalculateFromBom: false,
             tags: []
           }}
         />

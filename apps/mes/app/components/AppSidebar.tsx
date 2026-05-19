@@ -18,6 +18,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
   HStack,
+  ItarDisclosure,
   Sidebar,
   SidebarContent,
   SidebarFooter,
@@ -30,9 +31,10 @@ import {
   SidebarRail,
   Switch,
   useDisclosure,
+  useMode,
+  useRouteData,
   useSidebar
 } from "@carbon/react";
-import { ItarDisclosure, useMode, useRouteData } from "@carbon/remix";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ComponentProps } from "react";
 import { Suspense, useRef } from "react";
@@ -42,6 +44,7 @@ import {
   LuBuilding,
   LuCalendarDays,
   LuChevronDown,
+  LuCirclePlay,
   LuClipboardList,
   LuHistory,
   LuLogOut,
@@ -205,6 +208,11 @@ export function OperationsNav({
       title: t`Recent`,
       icon: LuHistory,
       to: path.to.recent
+    },
+    {
+      title: t`Jobs`,
+      icon: LuCirclePlay,
+      to: path.to.jobs
     },
     {
       title: t`Maintenance`,
@@ -374,7 +382,7 @@ export function UserNav({
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+            className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-56 rounded-lg"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}

@@ -27,9 +27,7 @@ import {
   toast,
   VStack
 } from "@carbon/react";
-import { getPreferenceHeaders } from "@carbon/remix";
 import { msg } from "@lingui/core/macro";
-import { Trans } from "@lingui/react/macro";
 import { startRegistration } from "@simplewebauthn/browser";
 import { useState } from "react";
 import { LuFingerprint, LuTrash2 } from "react-icons/lu";
@@ -42,18 +40,12 @@ import {
   useRevalidator
 } from "react-router";
 import {
-  accountLanguageValidator,
   accountProfileValidator,
   getAccount,
   updateAvatar,
   updatePublicAccount
 } from "~/modules/account";
-import {
-  ProfileForm,
-  ProfileLanguageForm,
-  ProfilePhotoForm
-} from "~/modules/account/ui/Profile";
-import { setLocale } from "~/services/locale.server";
+import { ProfileForm } from "~/modules/account/ui/Profile";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 
@@ -91,8 +83,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   return {
     user: user.data,
-    passkeys: (passkeysResult.data ?? []) as Passkey[],
-    locale: getPreferenceHeaders(request).locale
+    passkeys: (passkeysResult.data ?? []) as Passkey[]
   };
 }
 
@@ -110,13 +101,14 @@ export async function action({ request }: ActionFunctionArgs) {
       return validationError(validation.error);
     }
 
-    const { firstName, lastName, about } = validation.data;
+    const { firstName, lastName, about, phone } = validation.data;
 
     const updateAccount = await updatePublicAccount(client, {
       id: userId,
       firstName,
       lastName,
-      about
+      about,
+      phone
     });
     if (updateAccount.error)
       return data(
@@ -128,29 +120,6 @@ export async function action({ request }: ActionFunctionArgs) {
       );
 
     return data({}, await flash(request, success("Updated profile")));
-  }
-
-  if (formData.get("intent") === "locale") {
-    const validation = await validator(accountLanguageValidator).validate(
-      formData
-    );
-
-    if (validation.error) {
-      return validationError(validation.error);
-    }
-
-    const localeCookie = setLocale(validation.data.locale);
-    const flashHeaders = await flash(request, success("Updated language"));
-
-    return data(
-      {},
-      {
-        headers: [
-          ["Set-Cookie", localeCookie],
-          ["Set-Cookie", flashHeaders.headers["Set-Cookie"]]
-        ]
-      }
-    );
   }
 
   if (formData.get("intent") === "photo") {
@@ -238,7 +207,7 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function AccountProfile() {
-  const { user, passkeys, locale } = useLoaderData<typeof loader>();
+  const { user, passkeys } = useLoaderData<typeof loader>();
   const deleteFetcher = useFetcher();
   const renameFetcher = useFetcher();
   const { revalidate } = useRevalidator();
@@ -258,7 +227,6 @@ export default function AccountProfile() {
       const optRes = await fetch("/api/passkey/register/options", {
         method: "POST"
       });
-      console.log(optRes, "--optRes--");
 
       if (!optRes.ok) throw new Error("Failed to get options");
       const options = await optRes.json();
@@ -322,29 +290,8 @@ export default function AccountProfile() {
   };
 
   return (
-    <VStack spacing={4} className="py-8">
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            <Trans>Profile</Trans>
-          </CardTitle>
-          <CardDescription>
-            <Trans>
-              This information will be visible to all users, so be careful what
-              you share.
-            </Trans>
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 w-full mb-8">
-            {/* @ts-expect-error TS2322 */}
-            <ProfileForm user={user} />
-            <ProfilePhotoForm user={user} />
-          </div>
-
-          <ProfileLanguageForm locale={locale} />
-        </CardContent>
-      </Card>
+    <VStack spacing={4}>
+      <ProfileForm user={user} />
 
       {passkeysEnabled && (
         <Card>
@@ -355,23 +302,18 @@ export default function AccountProfile() {
                 <CardDescription>
                   Sign in with biometrics instead of a magic link. Passkeys are
                   secured by Face ID, Touch ID, or your device PIN.
-                  {!passkeysEnabled && (
-                    <span> Passkeys are currently disabled.</span>
-                  )}
                 </CardDescription>
               </div>
-              {passkeysEnabled && (
-                <Button
-                  type="button"
-                  variant="secondary"
-                  onClick={onAddPasskey}
-                  isDisabled={registering}
-                  isLoading={registering}
-                  leftIcon={<LuFingerprint className="size-4" />}
-                >
-                  Add Passkey
-                </Button>
-              )}
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={onAddPasskey}
+                isDisabled={registering}
+                isLoading={registering}
+                leftIcon={<LuFingerprint className="size-4" />}
+              >
+                Add Passkey
+              </Button>
             </HStack>
           </CardHeader>
           <CardContent>
@@ -440,7 +382,6 @@ export default function AccountProfile() {
         </Card>
       )}
 
-      {/* Edit passkey modal */}
       <Modal
         open={!!selectedPasskey}
         onOpenChange={(open) => {
@@ -508,7 +449,6 @@ export default function AccountProfile() {
         </ModalContent>
       </Modal>
 
-      {/* Delete confirmation modal */}
       <Modal
         open={!!confirmDeleteId}
         onOpenChange={(open) => {

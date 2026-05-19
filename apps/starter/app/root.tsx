@@ -6,8 +6,7 @@ import {
   flashResultContext
 } from "@carbon/auth/middleware/flash.server";
 import { validator } from "@carbon/form";
-import { Button, Heading, Toaster } from "@carbon/react";
-import { useMode } from "@carbon/remix";
+import { Button, Heading, Toaster, useMode } from "@carbon/react";
 import type { Theme } from "@carbon/utils";
 import { modeValidator, themes } from "@carbon/utils";
 import { Analytics } from "@vercel/analytics/react";
@@ -31,18 +30,17 @@ import { getMode, setMode } from "~/services/mode.server";
 import Background from "~/styles/background.css?url";
 import NProgress from "~/styles/nprogress.css?url";
 import Tailwind from "~/styles/tailwind.css?url";
+import type { Route } from "./+types/root";
 import { getTheme } from "./services/theme.server";
 
 export const middleware = [flashMiddleware];
 export const clientMiddleware = [flashClientMiddleware];
 
-export function links() {
-  return [
-    { rel: "stylesheet", href: Tailwind },
-    { rel: "stylesheet", href: Background },
-    { rel: "stylesheet", href: NProgress }
-  ];
-}
+export const links: Route.LinksFunction = () => [
+  { rel: "stylesheet", href: Tailwind },
+  { rel: "stylesheet", href: Background },
+  { rel: "stylesheet", href: NProgress }
+];
 
 export const meta: MetaFunction = () => {
   return [
@@ -81,6 +79,14 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
+  const contentType = request.headers.get("content-type") ?? "";
+  if (
+    !contentType.includes("multipart/form-data") &&
+    !contentType.includes("application/x-www-form-urlencoded")
+  ) {
+    return data({ error: "Invalid content type" }, { status: 400 });
+  }
+
   const validation = await validator(modeValidator).validate(
     await request.formData()
   );

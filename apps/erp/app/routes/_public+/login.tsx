@@ -1,4 +1,5 @@
 import {
+  AUTH_PROVIDERS,
   assertIsPost,
   CarbonEdition,
   CLOUDFLARE_TURNSTILE_SECRET_KEY,
@@ -10,8 +11,17 @@ import {
   magicLinkValidator,
   RATE_LIMIT
 } from "@carbon/auth";
-import { sendMagicLink, verifyAuthSession } from "@carbon/auth/auth.server";
-import { flash, getAuthSession } from "@carbon/auth/session.server";
+import {
+  sendMagicLink,
+  signInWithBypassEmail,
+  verifyAuthSession
+} from "@carbon/auth/auth.server";
+import {
+  clearAuthCookies,
+  flash,
+  getAuthSession,
+  setAuthSession
+} from "@carbon/auth/session.server";
 import { getUserByEmail } from "@carbon/auth/users.server";
 import { sendVerificationCode } from "@carbon/auth/verification.server";
 import { Hidden, Input, Submit, ValidatedForm, validator } from "@carbon/form";
@@ -22,12 +32,13 @@ import {
   AlertTitle,
   Button,
   Heading,
+  ItarLoginDisclaimer,
   Separator,
   toast,
+  useMode,
   useMount,
   VStack
 } from "@carbon/react";
-import { ItarLoginDisclaimer, useMode } from "@carbon/remix";
 import { Edition } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { Turnstile } from "@marsidev/react-turnstile";
@@ -58,8 +69,15 @@ export const meta: MetaFunction = () => {
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const authSession = await getAuthSession(request);
-  if (authSession && (await verifyAuthSession(authSession))) {
-    throw redirect(path.to.authenticatedRoot);
+  if (authSession) {
+    if (await verifyAuthSession(authSession)) {
+      throw redirect(path.to.authenticatedRoot);
+    }
+    const cookieHeaders = await clearAuthCookies(request);
+    return data(
+      { providers: AUTH_PROVIDERS.split(",") },
+      { headers: cookieHeaders }
+    );
   }
 
   const hasOutlookAuth = isAuthProviderEnabled("azure");
@@ -73,15 +91,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
   };
 }
 
-const ratelimit = new Ratelimit({
-  redis,
-  limiter: Ratelimit.slidingWindow(RATE_LIMIT, "1 h"),
-  analytics: true
-});
-
 export async function action({ request }: ActionFunctionArgs) {
   assertIsPost(request);
   const ip = request.headers.get("x-forwarded-for") ?? "127.0.0.1";
+  const ratelimit = new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(RATE_LIMIT, "1 h"),
+    analytics: true
+  });
   const { success } = await ratelimit.limit(ip);
 
   if (!success) {
@@ -133,6 +150,21 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   const user = await getUserByEmail(email);
+
+  const devBypassEmail = process.env.DEV_BYPASS_EMAIL;
+  if (
+    devBypassEmail &&
+    email.toLowerCase() === devBypassEmail.toLowerCase() &&
+    user.data?.active
+  ) {
+    const authSession = await signInWithBypassEmail(email);
+    if (authSession) {
+      const sessionCookie = await setAuthSession(request, { authSession });
+      return redirect(path.to.authenticatedRoot, {
+        headers: [["Set-Cookie", sessionCookie]]
+      });
+    }
+  }
 
   if (user.data && user.data.active) {
     const magicLink = await sendMagicLink(email);

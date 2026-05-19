@@ -9,11 +9,13 @@ import { validator } from "@carbon/form";
 import { LocaleProvider, resolveLanguage } from "@carbon/locale";
 import {
   Button,
+  getPreferenceHeaders,
   Heading,
   OperatingSystemContextProvider,
-  Toaster
+  Toaster,
+  TooltipProvider,
+  useMode
 } from "@carbon/react";
-import { getPreferenceHeaders, useMode } from "@carbon/remix";
 import type { Theme } from "@carbon/utils";
 import { modeValidator, themes } from "@carbon/utils";
 import { I18nProvider } from "@react-aria/i18n";
@@ -45,13 +47,11 @@ import { getTheme } from "./services/theme.server";
 export const middleware = [flashMiddleware];
 export const clientMiddleware = [flashClientMiddleware];
 
-export function links() {
-  return [
-    { rel: "stylesheet", href: Tailwind },
-    { rel: "stylesheet", href: Background },
-    { rel: "stylesheet", href: NProgress }
-  ];
-}
+export const links: Route.LinksFunction = () => [
+  { rel: "stylesheet", href: Tailwind },
+  { rel: "stylesheet", href: Background },
+  { rel: "stylesheet", href: NProgress }
+];
 
 export const meta: MetaFunction = () => {
   return [
@@ -69,6 +69,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     CONTROLLED_ENVIRONMENT,
     ERP_URL,
     MES_URL,
+    NODE_ENV,
     POSTHOG_API_HOST,
     POSTHOG_PROJECT_PUBLIC_KEY,
     SUPABASE_URL,
@@ -90,6 +91,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
         CONTROLLED_ENVIRONMENT,
         ERP_URL,
         MES_URL,
+        NODE_ENV,
         POSTHOG_API_HOST,
         POSTHOG_PROJECT_PUBLIC_KEY,
         SUPABASE_URL,
@@ -110,6 +112,14 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
+  const contentType = request.headers.get("content-type") ?? "";
+  if (
+    !contentType.includes("multipart/form-data") &&
+    !contentType.includes("application/x-www-form-urlencoded")
+  ) {
+    return data({ error: "Invalid content type" }, { status: 400 });
+  }
+
   const validation = await validator(modeValidator).validate(
     await request.formData()
   );
@@ -212,14 +222,16 @@ export default function App() {
     <OperatingSystemContextProvider platform={prefs.platform}>
       <LocaleProvider locale={appLanguage} catalog={linguiCatalog}>
         <I18nProvider locale={prefs.locale}>
-          <Document mode={mode} theme={theme} lang={appLanguage}>
-            <Outlet />
-            <script
-              dangerouslySetInnerHTML={{
-                __html: `window.env = ${JSON.stringify(env)};`
-              }}
-            />
-          </Document>
+          <TooltipProvider delayDuration={200}>
+            <Document mode={mode} theme={theme} lang={appLanguage}>
+              <Outlet />
+              <script
+                dangerouslySetInnerHTML={{
+                  __html: `window.env = ${JSON.stringify(env)};`
+                }}
+              />
+            </Document>
+          </TooltipProvider>
         </I18nProvider>
       </LocaleProvider>
     </OperatingSystemContextProvider>

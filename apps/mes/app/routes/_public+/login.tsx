@@ -9,7 +9,11 @@ import {
   RATE_LIMIT
 } from "@carbon/auth";
 import { sendMagicLink, verifyAuthSession } from "@carbon/auth/auth.server";
-import { flash, getAuthSession } from "@carbon/auth/session.server";
+import {
+  clearAuthCookies,
+  flash,
+  getAuthSession
+} from "@carbon/auth/session.server";
 import { getUserByEmail } from "@carbon/auth/users.server";
 import { Hidden, Input, Submit, ValidatedForm, validator } from "@carbon/form";
 import { Ratelimit, redis } from "@carbon/kv";
@@ -19,12 +23,12 @@ import {
   AlertTitle,
   Button,
   Heading,
+  ItarLoginDisclaimer,
   Separator,
   toast,
   useMount,
   VStack
 } from "@carbon/react";
-import { ItarLoginDisclaimer } from "@carbon/remix";
 import { Edition } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import {
@@ -53,31 +57,33 @@ export const meta: MetaFunction = () => {
 };
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const authSession = await getAuthSession(request);
-  if (authSession && (await verifyAuthSession(authSession))) {
-    throw redirect(path.to.authenticatedRoot);
-  }
-
   const hasOutlookAuth = isAuthProviderEnabled("azure");
   const hasGoogleAuth = isAuthProviderEnabled("google");
   const hasPasskeyAuth = isAuthProviderEnabled("passkey");
 
-  return {
-    hasOutlookAuth,
-    hasGoogleAuth,
-    hasPasskeyAuth
-  };
-}
+  const authSession = await getAuthSession(request);
+  if (authSession) {
+    if (await verifyAuthSession(authSession)) {
+      throw redirect(path.to.authenticatedRoot);
+    }
+    const cookieHeaders = await clearAuthCookies(request);
+    return data(
+      { hasOutlookAuth, hasGoogleAuth, hasPasskeyAuth },
+      { headers: cookieHeaders }
+    );
+  }
 
-const ratelimit = new Ratelimit({
-  redis,
-  limiter: Ratelimit.slidingWindow(RATE_LIMIT, "1 h"),
-  analytics: true
-});
+  return { hasOutlookAuth, hasGoogleAuth, hasPasskeyAuth };
+}
 
 export async function action({ request }: ActionFunctionArgs) {
   assertIsPost(request);
   const ip = request.headers.get("x-forwarded-for") ?? "127.0.0.1";
+  const ratelimit = new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(RATE_LIMIT, "1 h"),
+    analytics: true
+  });
   const { success } = await ratelimit.limit(ip);
 
   if (!success) {
