@@ -1,4 +1,6 @@
+import type { ItemConfigTableOverlayLoaderData } from "~/routes/api+/items.$itemId.config-table";
 import type { JobBillOfProcessOverlayLoaderData } from "~/routes/api+/production.jobs.$jobId.bill-of-process";
+import type { JobConfigTableOverlayLoaderData } from "~/routes/api+/production.jobs.$jobId.config-table";
 import { renderLazyOverlay } from "./renderLazyOverlay";
 import type { OverlayRegistryEntry } from "./types";
 
@@ -11,6 +13,15 @@ export const overlayRegistry = {
           | {
               jobOperationId: string;
               operationOptions: { label: string; value: string }[];
+              configurationParameters?:
+                | {
+                    key: string;
+                    label: string;
+                    dataType: string;
+                    listOptions?: string[] | null;
+                  }[]
+                | null;
+              itemId?: string | null;
             }
           | undefined;
         if (!data) return null;
@@ -24,10 +35,13 @@ export const overlayRegistry = {
             notes: "",
             createdBy: ""
           },
-          operationOptions: data.operationOptions ?? []
+          operationOptions: data.operationOptions ?? [],
+          configurationParameters: data.configurationParameters ?? null,
+          itemId: data.itemId ?? null
         };
       },
-      () => import("~/modules/production/ui/Jobs/ProductionQuantityForm")
+      () =>
+        import("~/modules/production/ui/Jobs/ProductionQuantityForm") as never
     )
   },
   editJobProductionQuantity: {
@@ -44,8 +58,18 @@ export const overlayRegistry = {
                 scrapReasonId: string | null;
                 notes: string | null;
                 createdBy: string | null;
+                configuration?: unknown;
               } | null;
               operationOptions: { label: string; value: string }[];
+              configurationParameters?:
+                | {
+                    key: string;
+                    label: string;
+                    dataType: string;
+                    listOptions?: string[] | null;
+                  }[]
+                | null;
+              itemId?: string | null;
             }
           | undefined;
         const productionQuantity = data?.productionQuantity;
@@ -59,12 +83,16 @@ export const overlayRegistry = {
             quantity: productionQuantity.quantity ?? 0,
             scrapReasonId: productionQuantity.scrapReasonId ?? "",
             notes: productionQuantity.notes ?? "",
-            createdBy: productionQuantity.createdBy ?? ""
+            createdBy: productionQuantity.createdBy ?? "",
+            configuration: productionQuantity.configuration ?? undefined
           },
-          operationOptions: data.operationOptions ?? []
+          operationOptions: data.operationOptions ?? [],
+          configurationParameters: data.configurationParameters ?? null,
+          itemId: data.itemId ?? null
         };
       },
-      () => import("~/modules/production/ui/Jobs/ProductionQuantityForm")
+      () =>
+        import("~/modules/production/ui/Jobs/ProductionQuantityForm") as never
     )
   },
   jobBillOfProcessPreview: {
@@ -74,6 +102,44 @@ export const overlayRegistry = {
         (ctx.loaderData as JobBillOfProcessOverlayLoaderData | undefined)
           ?.billOfProcess ?? null,
       () => import("~/modules/production/ui/Jobs/JobBillOfProcess")
+    )
+  },
+  jobConfigTable: {
+    type: "modal",
+    confirmMode: "server",
+    render: renderLazyOverlay(
+      (ctx) => {
+        const data = ctx.loaderData as
+          | JobConfigTableOverlayLoaderData
+          | null
+          | undefined;
+        if (!data?.parameters?.length) return null;
+        return {
+          parameters: data.parameters,
+          initialRows: data.initialRows,
+          jobDisplayId: data.jobDisplayId
+        };
+      },
+      () => import("~/modules/production/ui/Jobs/ConfigParamsTableModal")
+    )
+  },
+  itemConfigTable: {
+    type: "modal",
+    confirmMode: "client",
+    render: renderLazyOverlay(
+      (ctx) => {
+        const data = ctx.loaderData as
+          | ItemConfigTableOverlayLoaderData
+          | null
+          | undefined;
+        if (!data?.parameters?.length) return null;
+        return {
+          parameters: data.parameters,
+          initialRows: data.initialRows,
+          jobDisplayId: data.itemReadableId
+        };
+      },
+      () => import("~/modules/production/ui/Jobs/ConfigParamsTableModal")
     )
   }
 } as const satisfies Record<string, OverlayRegistryEntry>;

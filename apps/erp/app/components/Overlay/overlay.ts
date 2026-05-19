@@ -35,6 +35,30 @@ export const overlay = {
         id: "jobBillOfProcessPreview",
         url: path.to.api.jobBillOfProcessPreview(jobId)
       };
+    },
+
+    jobConfigTable(jobId: string): OverlayTarget {
+      return {
+        id: "jobConfigTable",
+        url: path.to.api.jobConfigTable(jobId)
+      };
+    },
+
+    itemConfigTable(
+      itemId: string,
+      opts?: { configuration?: unknown }
+    ): OverlayTarget {
+      const base = path.to.api.itemConfigTable(itemId);
+      if (opts?.configuration === undefined) {
+        return { id: "itemConfigTable", url: base };
+      }
+      const params = new URLSearchParams({
+        configuration: JSON.stringify(opts.configuration)
+      });
+      return {
+        id: "itemConfigTable",
+        url: `${base}?${params.toString()}`
+      };
     }
   }
 };

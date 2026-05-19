@@ -1,6 +1,6 @@
 {
-  "generated": "2026-06-16T18:18:28.567Z",
-  "totalTools": 1189,
+  "generated": "2026-06-17T04:22:45.661Z",
+  "totalTools": 1193,
   "modules": 15,
   "tools": [
     {
@@ -14943,6 +14943,32 @@
       }
     },
     {
+      "name": "production_getProductionQuantitiesByOperation",
+      "module": "production",
+      "classification": "READ",
+      "description": "get production quantities by operation",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "jobOperationId",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobOperationId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "jobOperationId"
+        ]
+      }
+    },
+    {
       "name": "production_getProductionQuantitiesPage",
       "module": "production",
       "classification": "READ",
@@ -15657,6 +15683,90 @@
         },
         "required": [
           "jobId"
+        ]
+      }
+    },
+    {
+      "name": "production_getTrackedEntitiesByJobMakeMethodIds",
+      "module": "production",
+      "classification": "READ",
+      "description": "get tracked entities by job make method ids",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "jobMakeMethodIds"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobMakeMethodIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "jobMakeMethodIds"
+        ]
+      }
+    },
+    {
+      "name": "production_getItemIdsWithConfigurationParameters",
+      "module": "production",
+      "classification": "READ",
+      "description": "get item ids with configuration parameters",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "itemIds"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "itemIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "itemIds"
+        ]
+      }
+    },
+    {
+      "name": "production_getCurrentProcessByJobIds",
+      "module": "production",
+      "classification": "READ",
+      "description": "get current process by job ids",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "jobs"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobs": {
+            "type": "array",
+            "items": {}
+          }
+        },
+        "required": [
+          "jobs"
         ]
       }
     },
