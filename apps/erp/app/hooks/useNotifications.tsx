@@ -1,22 +1,6 @@
 import { useCarbon, useRealtimeChannel } from "@carbon/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-
-// Topbar shape — matches the surface the old Novu IMessage exposed so
-// consumers don't change. `payload` mirrors what notify.ts writes into the
-// notification row's payload jsonb column.
-export type Notification = {
-  _id: string;
-  read: boolean;
-  seen: boolean;
-  createdAt: string;
-  payload: {
-    recordId?: string;
-    description?: string;
-    event?: string;
-    from?: string;
-    documentType?: string;
-  };
-};
+import type { Notification } from "~/types";
 
 type NotificationRow = {
   id: string;

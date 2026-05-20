@@ -45,9 +45,9 @@ import {
 } from "react-icons/ri";
 import { Link, useFetcher } from "react-router";
 import { useDateFormatter, useNotifications, useUser } from "~/hooks";
-import type { Notification as NotificationRecord } from "~/hooks/useNotifications";
 import type { ApprovalDocumentType } from "~/modules/shared";
 import { usePeople } from "~/stores";
+import type { Notification as NotificationRecord } from "~/types";
 import { path } from "~/utils/path";
 
 type OutstandingTraining = {
@@ -570,7 +570,7 @@ const Notifications = () => {
           value={activeTab}
           onValueChange={setActiveTab}
         >
-          <TabsList className="w-full border-b-[1px] py-6 rounded-none bg-muted/[0.5]">
+          <TabsList className="w-full border-b py-6 rounded-none bg-muted/50">
             <TabsTrigger value="inbox" className="font-normal">
               <Trans>Inbox</Trans>
             </TabsTrigger>
@@ -649,7 +649,7 @@ const Notifications = () => {
             )}
 
             {unreadNotifications.length > 0 && (
-              <div className="h-12 w-full absolute bottom-0 flex items-center justify-center border-t-[1px]">
+              <div className="h-12 w-full absolute bottom-0 flex items-center justify-center border-t">
                 <Button
                   variant="secondary"
                   className="bg-transparent"
