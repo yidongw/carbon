@@ -4468,6 +4468,9 @@ msgstr "मापन मानक"
 msgid "Members"
 msgstr "सदस्य"
 
+msgid "MES"
+msgstr ""
+
 msgid "Message"
 msgstr "संदेश"
 
@@ -5194,6 +5197,9 @@ msgstr "खुली तारीख"
 
 msgid "Open Dispatches"
 msgstr "खुली डिस्पैच"
+
+msgid "Open in MES"
+msgstr ""
 
 msgid "Open Issues"
 msgstr "खुले मुद्दे"

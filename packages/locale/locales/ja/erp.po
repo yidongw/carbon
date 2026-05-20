@@ -4468,6 +4468,9 @@ msgstr "測定標準"
 msgid "Members"
 msgstr "メンバー"
 
+msgid "MES"
+msgstr ""
+
 msgid "Message"
 msgstr "メッセージ"
 
@@ -5194,6 +5197,9 @@ msgstr "開始日"
 
 msgid "Open Dispatches"
 msgstr "オープンディスパッチ"
+
+msgid "Open in MES"
+msgstr ""
 
 msgid "Open Issues"
 msgstr "未解決の問題"

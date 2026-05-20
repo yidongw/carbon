@@ -4468,6 +4468,9 @@ msgstr "Norme de Mesure"
 msgid "Members"
 msgstr "Membres"
 
+msgid "MES"
+msgstr ""
+
 msgid "Message"
 msgstr "Message"
 
@@ -5194,6 +5197,9 @@ msgstr "Date d'ouverture"
 
 msgid "Open Dispatches"
 msgstr "Dépannages Ouverts"
+
+msgid "Open in MES"
+msgstr ""
 
 msgid "Open Issues"
 msgstr "Problèmes ouverts"

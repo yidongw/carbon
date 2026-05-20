@@ -4468,6 +4468,9 @@ msgstr "Стандарт измерения"
 msgid "Members"
 msgstr "Участники"
 
+msgid "MES"
+msgstr ""
+
 msgid "Message"
 msgstr "Сообщение"
 
@@ -5194,6 +5197,9 @@ msgstr "Дата открытия"
 
 msgid "Open Dispatches"
 msgstr "Открытые наряды"
+
+msgid "Open in MES"
+msgstr ""
 
 msgid "Open Issues"
 msgstr "Открытые проблемы"

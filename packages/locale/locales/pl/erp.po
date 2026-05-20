@@ -4468,6 +4468,9 @@ msgstr "Standard Pomiaru"
 msgid "Members"
 msgstr "Członkowie"
 
+msgid "MES"
+msgstr ""
+
 msgid "Message"
 msgstr "Wiadomość"
 
@@ -5194,6 +5197,9 @@ msgstr "Data otwarcia"
 
 msgid "Open Dispatches"
 msgstr "Otwarte Dyspozycje"
+
+msgid "Open in MES"
+msgstr ""
 
 msgid "Open Issues"
 msgstr "Otwarte problemy"
