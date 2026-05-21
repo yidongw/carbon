@@ -4236,6 +4236,9 @@ msgstr "Laisser les reçus connexes intacts"
 msgid "Leave empty for exact match"
 msgstr "Laisser vide pour une correspondance exacte"
 
+msgid "Leave empty for no upper limit"
+msgstr ""
+
 msgid "Left item"
 msgstr "Élément de gauche"
 
@@ -4573,6 +4576,9 @@ msgstr "Quantité Max"
 
 msgid "Maximum"
 msgstr "Maximum"
+
+msgid "Maximum Amount"
+msgstr ""
 
 msgid "Maximum Inventory Quantity"
 msgstr "Quantité d'inventaire maximale"

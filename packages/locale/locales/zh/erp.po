@@ -4236,6 +4236,9 @@ msgstr "保留任何相关收据不变"
 msgid "Leave empty for exact match"
 msgstr "留空以精确匹配"
 
+msgid "Leave empty for no upper limit"
+msgstr ""
+
 msgid "Left item"
 msgstr "左项"
 
@@ -4573,6 +4576,9 @@ msgstr "最大数量"
 
 msgid "Maximum"
 msgstr "最大值"
+
+msgid "Maximum Amount"
+msgstr ""
 
 msgid "Maximum Inventory Quantity"
 msgstr "最大库存数量"

@@ -4236,6 +4236,9 @@ msgstr "किसी भी संबंधित रसीदों को अ�
 msgid "Leave empty for exact match"
 msgstr "सटीक मिलान के लिए खाली छोड़ें"
 
+msgid "Leave empty for no upper limit"
+msgstr ""
+
 msgid "Left item"
 msgstr "बाईं ओर की वस्तु"
 
@@ -4573,6 +4576,9 @@ msgstr "अधिकतम मात्रा"
 
 msgid "Maximum"
 msgstr "अधिकतम"
+
+msgid "Maximum Amount"
+msgstr ""
 
 msgid "Maximum Inventory Quantity"
 msgstr "अधिकतम इन्वेंटरी मात्रा"

@@ -423,7 +423,9 @@ export async function getApprovalRuleByAmount(
     .eq("enabled", true);
 
   if (amount !== undefined && amount !== null) {
-    query = query.lte("lowerBoundAmount", amount);
+    query = query
+      .lte("lowerBoundAmount", amount)
+      .or(`upperBoundAmount.is.null,upperBoundAmount.gt.${amount}`);
   } else {
     query = query.eq("lowerBoundAmount", 0);
   }

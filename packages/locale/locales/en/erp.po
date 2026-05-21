@@ -4236,6 +4236,9 @@ msgstr "Leave any related receipts untouched"
 msgid "Leave empty for exact match"
 msgstr "Leave empty for exact match"
 
+msgid "Leave empty for no upper limit"
+msgstr "Leave empty for no upper limit"
+
 msgid "Left item"
 msgstr "Left item"
 
@@ -4573,6 +4576,9 @@ msgstr "Max Quantity"
 
 msgid "Maximum"
 msgstr "Maximum"
+
+msgid "Maximum Amount"
+msgstr "Maximum Amount"
 
 msgid "Maximum Inventory Quantity"
 msgstr "Maximum Inventory Quantity"

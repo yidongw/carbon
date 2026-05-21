@@ -4236,6 +4236,9 @@ msgstr "関連するすべての領収書はそのままにしておく"
 msgid "Leave empty for exact match"
 msgstr "正確な一致のために空のままにしてください"
 
+msgid "Leave empty for no upper limit"
+msgstr ""
+
 msgid "Left item"
 msgstr "左側の項目"
 
@@ -4573,6 +4576,9 @@ msgstr "最大数量"
 
 msgid "Maximum"
 msgstr "最大"
+
+msgid "Maximum Amount"
+msgstr ""
 
 msgid "Maximum Inventory Quantity"
 msgstr "最大在庫数量"

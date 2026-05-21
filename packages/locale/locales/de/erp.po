@@ -4236,6 +4236,9 @@ msgstr "Alle zugehörigen Belege unverändert lassen"
 msgid "Leave empty for exact match"
 msgstr "Leer lassen für exakte Übereinstimmung"
 
+msgid "Leave empty for no upper limit"
+msgstr ""
+
 msgid "Left item"
 msgstr "Linkes Element"
 
@@ -4573,6 +4576,9 @@ msgstr "Max. Menge"
 
 msgid "Maximum"
 msgstr "Maximum"
+
+msgid "Maximum Amount"
+msgstr ""
 
 msgid "Maximum Inventory Quantity"
 msgstr "Maximale Bestandsmenge"
