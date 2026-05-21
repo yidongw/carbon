@@ -276,6 +276,10 @@ msgstr "有効"
 msgid "Active Jobs"
 msgstr "アクティブなジョブ"
 
+#. placeholder {0}: report.originalQuantity
+msgid "Active line total ({lineTotal}) differs from originally reported ({0}). Saving anyway."
+msgstr ""
+
 msgid "Active Statuses"
 msgstr "アクティブなステータス"
 
@@ -353,6 +357,9 @@ msgstr "グループを追加"
 
 msgid "Add Item"
 msgstr "アイテムを追加"
+
+msgid "Add line"
+msgstr ""
 
 msgid "Add Line"
 msgstr "行を追加"
@@ -2987,6 +2994,10 @@ msgstr ""
 msgid "Each"
 msgstr ""
 
+#. placeholder {0}: zeroQuantityLine.type
+msgid "Each line must have a quantity greater than zero ({0})"
+msgstr ""
+
 msgid "Edit"
 msgstr "編集"
 
@@ -3013,6 +3024,9 @@ msgstr "カテゴリを編集"
 
 msgid "Edit column visibility"
 msgstr "列の表示/非表示を編集"
+
+msgid "Edit configuration"
+msgstr ""
 
 msgid "Edit Contact"
 msgstr "連絡先を編集"
@@ -3364,6 +3378,13 @@ msgstr "PO番号を入力"
 
 msgid "Entered At Receipt"
 msgstr "受領時に入力"
+
+#. placeholder {0}: enteredBy?.name
+msgid "Entered by {0}"
+msgstr ""
+
+msgid "Entered by System"
+msgstr ""
 
 msgid "Entities"
 msgstr "エンティティ"
@@ -3965,6 +3986,9 @@ msgid "Files attached here ride along on every purchase order email by default. 
 msgstr ""
 
 msgid "Files attached here ride along on every purchase order email sent to this supplier (in addition to company-wide defaults)."
+msgstr ""
+
+msgid "Fill cell"
 msgstr ""
 
 msgid "Filter"
@@ -5819,6 +5843,9 @@ msgstr "まだパーツが追加されていません"
 msgid "No planning data"
 msgstr "計画データなし"
 
+msgid "No previous versions"
+msgstr ""
+
 msgid "No pricing for selected quantity"
 msgstr "選択した数量の価格設定がありません"
 
@@ -6123,6 +6150,10 @@ msgid "Orders submitted"
 msgstr "注文が送信されました"
 
 msgid "Origin"
+msgstr ""
+
+#. placeholder {0}: report.originalQuantity
+msgid "Originally reported {0} units"
 msgstr ""
 
 msgid "Other Assets"
@@ -6871,6 +6902,9 @@ msgstr "販売注文の数量"
 msgid "Quantity per Parent"
 msgstr "親あたりの数量"
 
+msgid "Quantity report updated"
+msgstr ""
+
 msgid "Quantity Type"
 msgstr "数量タイプ"
 
@@ -7124,6 +7158,9 @@ msgstr "価格リストから削除"
 msgid "Remove item"
 msgstr "アイテムを削除"
 
+msgid "Remove line"
+msgstr ""
+
 msgid "Remove order"
 msgstr "注文を削除"
 
@@ -7202,7 +7239,17 @@ msgstr "補充システム"
 msgid "Report"
 msgstr "レポート"
 
+msgid "Report history"
+msgstr ""
+
 msgid "reported"
+msgstr ""
+
+#. placeholder {0}: report.originalQuantity
+msgid "Reported {0} units"
+msgstr ""
+
+msgid "Reported {totalQuantity} units"
 msgstr ""
 
 msgid "Reports"
@@ -7596,6 +7643,9 @@ msgstr "スクラップ数量"
 msgid "Scrap Quantity Per Job"
 msgstr "ジョブあたりのスクラップ数量"
 
+msgid "Scrap reason"
+msgstr ""
+
 msgid "Scrap Reason"
 msgstr "スクラップ理由"
 
@@ -7761,6 +7811,9 @@ msgstr "行を選択"
 
 msgid "Select scope"
 msgstr "スコープを選択"
+
+msgid "Select scrap reason"
+msgstr ""
 
 msgid "Select Supplier Status"
 msgstr "仕入先ステータスを選択"

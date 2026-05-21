@@ -6,7 +6,8 @@ function formatQuantityValue(value: number) {
     : value.toLocaleString(undefined, { maximumFractionDigits: 4 });
 }
 
-function ConfigQuantityValue({ value }: { value: number }) {
+/** Same pill style as breakdown rows — use for standalone totals so styling matches. */
+export function ConfigQuantityValue({ value }: { value: number }) {
   return (
     <span className="inline-flex min-w-[1.35rem] items-center justify-center rounded-md border border-border bg-background px-1.5 py-0.5 text-xs font-bold tabular-nums text-foreground shadow-sm">
       {formatQuantityValue(value)}

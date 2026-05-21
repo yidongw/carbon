@@ -4,14 +4,16 @@ import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data, redirect, useLoaderData } from "react-router";
+import { z } from "zod";
 import { getConfigurationParameters } from "~/modules/items";
 import {
+  createProductionQuantityReport,
   getJob,
   getJobOperations,
   isJobLocked,
-  productionQuantityValidator,
-  upsertProductionQuantity
+  productionQuantityCreateFormValidator
 } from "~/modules/production";
+import { productionQuantityLineJsonValidator } from "~/modules/production/productionQuantityReport.models";
 import ProductionQuantityForm from "~/modules/production/ui/Jobs/ProductionQuantityForm";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { getParams, path } from "~/utils/path";
@@ -89,51 +91,50 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const isOverlay = new URL(request.url).searchParams.get("overlay") === "true";
   const formData = await request.formData();
 
-  const validation = await validator(productionQuantityValidator).validate(
-    formData
-  );
+  const validation = await validator(
+    productionQuantityCreateFormValidator
+  ).validate(formData);
 
   if (validation.error) {
     return validationError(validation.error);
   }
 
-  const {
-    // biome-ignore lint/correctness/noUnusedVariables: id is omitted from the insert payload
-    id,
-    configuration: rawConfiguration,
-    employeeId,
-    ...rest
-  } = validation.data;
+  const { employeeId, notes, lines: linesJson } = validation.data;
 
-  if (rest.type !== "Scrap") {
-    rest.scrapReasonId = undefined;
+  let lines: z.infer<typeof productionQuantityLineJsonValidator>[];
+  try {
+    lines = z
+      .array(productionQuantityLineJsonValidator)
+      .parse(JSON.parse(linesJson));
+  } catch (parseError) {
+    console.error(parseError);
+    return validationError(
+      {
+        fieldErrors: { lines: "Invalid quantity lines" },
+        formId: validation.formId
+      },
+      validation.submittedData
+    );
   }
 
-  let configuration: unknown;
-  if (rawConfiguration) {
-    try {
-      configuration =
-        typeof rawConfiguration === "string"
-          ? JSON.parse(rawConfiguration)
-          : rawConfiguration;
-    } catch (parseError) {
-      console.error(parseError);
-    }
-  }
-
-  const insert = await upsertProductionQuantity(client, {
-    ...rest,
-    configuration,
+  const reportResult = await createProductionQuantityReport(client, {
     companyId,
-    createdBy: userId,
-    employeeId: employeeId ?? userId
+    jobId,
+    jobOperationId: validation.data.jobOperationId,
+    userId,
+    employeeId: employeeId?.trim() ? employeeId : userId,
+    notes: notes?.trim() ? notes : null,
+    lines: lines.map((line) => ({
+      ...line,
+      scrapReasonId: line.type === "Scrap" ? line.scrapReasonId : undefined
+    }))
   });
-  if (insert.error) {
+  if (reportResult.error) {
     return data(
       {},
       await flash(
         request,
-        error(insert.error, "Failed to insert production quantity")
+        error(reportResult.error, "Failed to insert production quantity")
       )
     );
   }
@@ -155,12 +156,10 @@ export default function NewProductionQuantityRoute() {
   const { jobOperationId, operationOptions, configurationParameters, itemId } =
     useLoaderData<typeof loader>();
   const initialValues = {
-    type: "Production" as const,
     jobOperationId,
-    quantity: 0,
-    scrapReasonId: "",
     notes: "",
-    employeeId: ""
+    employeeId: "",
+    lines: [{ type: "Production" as const, quantity: 0 }]
   };
 
   return (

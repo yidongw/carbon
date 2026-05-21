@@ -276,6 +276,10 @@ msgstr "活跃"
 msgid "Active Jobs"
 msgstr "活跃工作"
 
+#. placeholder {0}: report.originalQuantity
+msgid "Active line total ({lineTotal}) differs from originally reported ({0}). Saving anyway."
+msgstr ""
+
 msgid "Active Statuses"
 msgstr "活跃状态"
 
@@ -353,6 +357,9 @@ msgstr "添加组"
 
 msgid "Add Item"
 msgstr "添加物品"
+
+msgid "Add line"
+msgstr ""
 
 msgid "Add Line"
 msgstr "添加行"
@@ -2987,6 +2994,10 @@ msgstr ""
 msgid "Each"
 msgstr "个"
 
+#. placeholder {0}: zeroQuantityLine.type
+msgid "Each line must have a quantity greater than zero ({0})"
+msgstr ""
+
 msgid "Edit"
 msgstr "编辑"
 
@@ -3013,6 +3024,9 @@ msgstr "编辑分类"
 
 msgid "Edit column visibility"
 msgstr "编辑列可见性"
+
+msgid "Edit configuration"
+msgstr ""
 
 msgid "Edit Contact"
 msgstr "编辑联系人"
@@ -3364,6 +3378,13 @@ msgstr "输入采购订单号"
 
 msgid "Entered At Receipt"
 msgstr "在收货时输入"
+
+#. placeholder {0}: enteredBy?.name
+msgid "Entered by {0}"
+msgstr ""
+
+msgid "Entered by System"
+msgstr ""
 
 msgid "Entities"
 msgstr "实体"
@@ -3965,6 +3986,9 @@ msgid "Files attached here ride along on every purchase order email by default. 
 msgstr ""
 
 msgid "Files attached here ride along on every purchase order email sent to this supplier (in addition to company-wide defaults)."
+msgstr ""
+
+msgid "Fill cell"
 msgstr ""
 
 msgid "Filter"
@@ -5819,6 +5843,9 @@ msgstr "还未添加零件"
 msgid "No planning data"
 msgstr "没有规划数据"
 
+msgid "No previous versions"
+msgstr ""
+
 msgid "No pricing for selected quantity"
 msgstr "所选数量无定价"
 
@@ -6123,6 +6150,10 @@ msgid "Orders submitted"
 msgstr "订单已提交"
 
 msgid "Origin"
+msgstr ""
+
+#. placeholder {0}: report.originalQuantity
+msgid "Originally reported {0} units"
 msgstr ""
 
 msgid "Other Assets"
@@ -6871,6 +6902,9 @@ msgstr "销售订单数量"
 msgid "Quantity per Parent"
 msgstr "每个父项的数量"
 
+msgid "Quantity report updated"
+msgstr ""
+
 msgid "Quantity Type"
 msgstr "数量类型"
 
@@ -7124,6 +7158,9 @@ msgstr "从价格列表中移除"
 msgid "Remove item"
 msgstr "删除物品"
 
+msgid "Remove line"
+msgstr ""
+
 msgid "Remove order"
 msgstr "删除订单"
 
@@ -7202,7 +7239,17 @@ msgstr "补充系统"
 msgid "Report"
 msgstr "报告"
 
+msgid "Report history"
+msgstr ""
+
 msgid "reported"
+msgstr ""
+
+#. placeholder {0}: report.originalQuantity
+msgid "Reported {0} units"
+msgstr ""
+
+msgid "Reported {totalQuantity} units"
 msgstr ""
 
 msgid "Reports"
@@ -7596,6 +7643,9 @@ msgstr "废料数量"
 msgid "Scrap Quantity Per Job"
 msgstr "每个工作的报废数量"
 
+msgid "Scrap reason"
+msgstr ""
+
 msgid "Scrap Reason"
 msgstr "报废原因"
 
@@ -7761,6 +7811,9 @@ msgstr "选择行"
 
 msgid "Select scope"
 msgstr "选择范围"
+
+msgid "Select scrap reason"
+msgstr ""
 
 msgid "Select Supplier Status"
 msgstr "选择供应商状态"

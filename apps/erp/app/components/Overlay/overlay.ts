@@ -1,3 +1,4 @@
+import type { ConfigTableReferenceContext } from "~/modules/production/configParamsTableColumns";
 import { path } from "~/utils/path";
 import type { OverlayId } from "./overlay.registry";
 
@@ -58,15 +59,25 @@ export const overlay = {
 
     itemConfigTable(
       itemId: string,
-      opts?: { configuration?: unknown }
+      opts?: {
+        configuration?: unknown;
+        referenceContext?: ConfigTableReferenceContext;
+      }
     ): OverlayTarget {
       const base = path.to.api.itemConfigTable(itemId);
-      if (opts?.configuration === undefined) {
+      if (
+        opts?.configuration === undefined &&
+        opts?.referenceContext === undefined
+      ) {
         return { id: "itemConfigTable", url: base };
       }
-      const params = new URLSearchParams({
-        configuration: JSON.stringify(opts.configuration)
-      });
+      const params = new URLSearchParams();
+      if (opts?.configuration !== undefined) {
+        params.set("configuration", JSON.stringify(opts.configuration));
+      }
+      if (opts?.referenceContext !== undefined) {
+        params.set("referenceContext", JSON.stringify(opts.referenceContext));
+      }
       return {
         id: "itemConfigTable",
         url: `${base}?${params.toString()}`
