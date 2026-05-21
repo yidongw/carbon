@@ -18,6 +18,7 @@ import { Enumerable } from "~/components/Enumerable";
 import { useShape } from "~/components/Form/Shape";
 import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
 import type { ConfigurationParameter } from "~/modules/items/types";
+import { fillValueFromReference } from "~/modules/production/configParamsTableColumns";
 import { buildConfigTableActionResponse } from "~/modules/production/configTableOverlay";
 
 type Row = Record<string, string | number | boolean>;
@@ -40,6 +41,7 @@ type Column = {
 export type ConfigParamsTableModalProps = {
   parameters: ConfigurationParameter[];
   initialRows?: Row[];
+  referenceByRowIndex?: Array<Record<string, number>>;
   jobDisplayId?: string | null;
 } & OverlayFormInjectedProps;
 
@@ -206,10 +208,12 @@ function mergeRows(rows: Row[], columns: Column[]): Row[] {
   return Array.from(rowsByKey.values());
 }
 
-function getColumnWidthClass(column: Column): string {
+function getColumnWidthClass(column: Column, hasReferences: boolean): string {
   switch (column.type) {
     case "quantity":
-      return "w-[7rem] min-w-[7rem] max-w-[7rem]";
+      return hasReferences
+        ? "w-[10rem] min-w-[10rem] max-w-[10rem]"
+        : "w-[7rem] min-w-[7rem] max-w-[7rem]";
     case "numeric":
     case "boolean":
       return "w-[8rem] min-w-[8rem] max-w-[8rem]";
@@ -253,9 +257,25 @@ function validateCell(
   }
 }
 
+function formatReferenceValue(value: number) {
+  return Number.isInteger(value)
+    ? String(value)
+    : value.toLocaleString(undefined, { maximumFractionDigits: 4 });
+}
+
+function quantityCellMatchesReference(
+  cellValue: string | number | boolean | undefined,
+  referenceValue: number | undefined
+) {
+  if (referenceValue === undefined) return true;
+  const input = Number(cellValue) || 0;
+  return Math.abs(input - referenceValue) <= 0.0001;
+}
+
 function ConfigParamsTableModal({
   parameters,
   initialRows,
+  referenceByRowIndex,
   jobDisplayId,
   onDismiss,
   action: formAction,
@@ -283,6 +303,7 @@ function ConfigParamsTableModal({
   const [invalidCells, setInvalidCells] = useState<Set<string>>(new Set());
   const [validationError, setValidationError] = useState("");
 
+  const hasReferences = (referenceByRowIndex?.length ?? 0) > 0;
   const total = computeTotal(rows, primaryKeys);
 
   const addRow = () => setRows((prev) => [...prev, makeDefaultRow(columns)]);
@@ -362,7 +383,7 @@ function ConfigParamsTableModal({
                   key={col.key}
                   className={cn(
                     "px-3 text-xs whitespace-nowrap",
-                    getColumnWidthClass(col)
+                    getColumnWidthClass(col, hasReferences)
                   )}
                 >
                   {col.label}
@@ -376,13 +397,26 @@ function ConfigParamsTableModal({
               <Tr key={rowIndex}>
                 {columns.map((col) => {
                   const cellValue = row[col.key];
+                  const referenceValue =
+                    col.type === "quantity"
+                      ? referenceByRowIndex?.[rowIndex]?.[col.key]
+                      : undefined;
                   const isInvalid = invalidCells.has(
                     getCellKey(rowIndex, col.key)
                   );
+                  const referenceMismatch =
+                    referenceValue !== undefined &&
+                    !quantityCellMatchesReference(cellValue, referenceValue);
                   const inputClassName = cn(
                     "w-full rounded border border-border bg-background px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-ring",
                     col.type === "quantity" &&
-                      "border-sky-300 bg-sky-50/30 dark:border-sky-700 dark:bg-sky-950/20",
+                      "border-sky-300 dark:border-sky-700",
+                    col.type === "quantity" &&
+                      !referenceMismatch &&
+                      "bg-sky-50/30 dark:bg-sky-950/20",
+                    col.type === "quantity" &&
+                      referenceMismatch &&
+                      "bg-yellow-100 dark:bg-yellow-950/40",
                     isInvalid &&
                       "border-destructive focus:ring-destructive dark:border-destructive"
                   );
@@ -390,9 +424,58 @@ function ConfigParamsTableModal({
                   return (
                     <Td
                       key={col.key}
-                      className={cn("px-3 py-1.5", getColumnWidthClass(col))}
+                      className={cn(
+                        "px-3 py-1.5",
+                        getColumnWidthClass(col, hasReferences)
+                      )}
                     >
                       {["quantity", "numeric"].includes(col.type) ? (
+                        col.type === "quantity" && referenceValue !== undefined ? (
+                          <div className="flex min-w-0 items-center gap-1">
+                            <input
+                              type="number"
+                              min={0}
+                              value={
+                                typeof cellValue === "boolean"
+                                  ? ""
+                                  : (cellValue ?? "")
+                              }
+                              onFocus={(e) => e.currentTarget.select()}
+                              onChange={(e) =>
+                                updateCell(
+                                  rowIndex,
+                                  col.key,
+                                  normalizeNumberInputValue(e.target.value)
+                                )
+                              }
+                              onBlur={(e) => {
+                                if (e.currentTarget.value === "") {
+                                  updateCell(rowIndex, col.key, 0);
+                                }
+                              }}
+                              className={cn(inputClassName, "min-w-0 flex-1")}
+                            />
+                            <button
+                              type="button"
+                              className={cn(
+                                "shrink-0 rounded px-1 py-0.5 text-xs tabular-nums transition-colors hover:bg-muted",
+                                referenceValue < 0
+                                  ? "text-destructive"
+                                  : "text-muted-foreground hover:text-foreground"
+                              )}
+                              title={t`Fill cell`}
+                              onClick={() =>
+                                updateCell(
+                                  rowIndex,
+                                  col.key,
+                                  fillValueFromReference(referenceValue)
+                                )
+                              }
+                            >
+                              {formatReferenceValue(referenceValue)}
+                            </button>
+                          </div>
+                        ) : (
                         <input
                           type="number"
                           min={col.type === "quantity" ? 0 : undefined}
@@ -416,6 +499,7 @@ function ConfigParamsTableModal({
                           }}
                           className={cn(inputClassName, "min-w-[64px]")}
                         />
+                        )
                       ) : col.type === "list" ? (
                         <select
                           value={String(cellValue ?? "")}

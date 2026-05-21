@@ -1,7 +1,6 @@
 import { ValidatedForm } from "@carbon/form";
 import {
   Button,
-  cn,
   Drawer,
   DrawerBody,
   DrawerContent,
@@ -13,7 +12,6 @@ import {
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useState } from "react";
-import { LuTable } from "react-icons/lu";
 import { useNavigate, useParams } from "react-router";
 import type { z } from "zod";
 import {
@@ -163,19 +161,6 @@ const PickupForm = ({
     );
   };
 
-  const getQuantityAdornment = () =>
-    hasConfigurationParameters ? (
-      <div
-        className={cn(
-          "absolute right-0 top-0 z-10 m-px flex h-[calc(100%-2px)] w-10 items-center justify-center border-l border-border rounded-r-md pointer-events-none transition-colors",
-          configTableTotal > 0 ? "text-emerald-500" : "text-muted-foreground"
-        )}
-        aria-hidden
-      >
-        <LuTable size="1em" strokeWidth="3" />
-      </div>
-    ) : undefined;
-
   const form = (
     <ValidatedForm
       validator={jobOperationPickupValidator}
@@ -223,7 +208,7 @@ const PickupForm = ({
               value={quantity}
               minValue={0}
               isDisabled={isDisabled || configTableTotal > 0}
-              adornment={getQuantityAdornment()}
+              configTableTotal={configTableTotal}
               hasConfigurationParameters
               onOpenConfigTable={openConfigTable}
               onChange={setQuantity}

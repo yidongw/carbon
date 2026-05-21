@@ -39,6 +39,7 @@ export async function action({ request }: ActionFunctionArgs) {
       .select("*")
       .eq("type", "Production")
       .eq("jobOperationId", validation.data.jobOperationId)
+      .is("invalidatedAt", null)
   ]);
 
   if (jobOperation.error || !jobOperation.data) {

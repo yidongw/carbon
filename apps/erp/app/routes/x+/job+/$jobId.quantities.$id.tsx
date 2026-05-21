@@ -9,9 +9,11 @@ import {
   getJob,
   getJobOperations,
   getProductionQuantity,
+  isJobLocked,
   productionQuantityValidator,
-  upsertProductionQuantity
+  replaceProductionQuantityReportLines
 } from "~/modules/production";
+import { requireUnlocked } from "~/utils/lockedGuard.server";
 import ProductionQuantityForm from "~/modules/production/ui/Jobs/ProductionQuantityForm";
 import { getParams, path } from "~/utils/path";
 
@@ -53,11 +55,23 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 export async function action({ request, params }: ActionFunctionArgs) {
   assertIsPost(request);
   const { client, companyId, userId } = await requirePermissions(request, {
-    update: "accounting"
+    update: "production"
   });
 
-  const { jobId } = params;
-  if (!jobId) throw notFound("jobId or id not found");
+  const { jobId, id: quantityId } = params;
+  if (!jobId) throw notFound("jobId not found");
+  if (!quantityId) throw notFound("id not found");
+
+  const { client: viewClient } = await requirePermissions(request, {
+    view: "production"
+  });
+  const job = await getJob(viewClient, jobId);
+  await requireUnlocked({
+    request,
+    isLocked: isJobLocked(job.data?.status),
+    redirectTo: path.to.job(jobId),
+    message: "Cannot modify a locked job. Reopen it first."
+  });
 
   const isOverlay =
     new URL(request.url).searchParams.get("overlay") === "true";
@@ -90,13 +104,52 @@ export async function action({ request, params }: ActionFunctionArgs) {
     }
   }
 
-  const update = await upsertProductionQuantity(client, {
-    id,
-    ...rest,
-    configuration,
+  const existing = await getProductionQuantity(client, id);
+  if (!existing.data?.reportId) {
+    return data(
+      {},
+      await flash(request, error("Quantity report not found"))
+    );
+  }
+
+  const { data: activeLines, error: linesError } = await client
+    .from("productionQuantity")
+    .select("id, type, quantity, configuration, scrapReasonId, notes")
+    .eq("reportId", existing.data.reportId)
+    .eq("companyId", companyId)
+    .is("invalidatedAt", null);
+
+  if (linesError) {
+    return data(
+      {},
+      await flash(request, error(linesError, "Failed to load report lines"))
+    );
+  }
+
+  const lines = (activeLines ?? []).map((line) =>
+    line.id === id
+      ? {
+          type: rest.type,
+          quantity: rest.quantity,
+          configuration,
+          scrapReasonId: rest.scrapReasonId,
+          notes: rest.notes
+        }
+      : {
+          type: line.type,
+          quantity: line.quantity,
+          configuration: line.configuration ?? undefined,
+          scrapReasonId: line.scrapReasonId ?? undefined,
+          notes: line.notes ?? undefined
+        }
+  );
+
+  const update = await replaceProductionQuantityReportLines(client, {
+    reportId: existing.data.reportId,
     companyId,
-    updatedBy: userId,
-    employeeId: employeeId ?? userId
+    userId,
+    employeeId: employeeId ?? userId,
+    lines
   });
 
   if (update.error) {

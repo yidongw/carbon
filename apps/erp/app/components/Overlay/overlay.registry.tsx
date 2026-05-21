@@ -63,12 +63,10 @@ export const overlayRegistry = {
 
         return {
           initialValues: {
-            type: "Production" as const,
             jobOperationId: data.jobOperationId,
-            quantity: 0,
-            scrapReasonId: "",
             notes: "",
-            employeeId: ""
+            employeeId: "",
+            lines: [{ type: "Production" as const, quantity: 0 }]
           },
           operationOptions: data.operationOptions ?? [],
           configurationParameters: data.configurationParameters ?? null,
@@ -169,6 +167,7 @@ export const overlayRegistry = {
         return {
           parameters: data.parameters,
           initialRows: data.initialRows,
+          referenceByRowIndex: data.referenceByRowIndex,
           jobDisplayId: data.itemReadableId
         };
       },
