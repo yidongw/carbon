@@ -49,6 +49,9 @@ msgstr "{0} uploaded successfully"
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB limit"
 
+msgid "{name} deleted"
+msgstr "{name} deleted"
+
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} permissions"
 
@@ -1162,6 +1165,9 @@ msgstr "Cannot post — shipment contains expired tracked entities."
 
 msgid "Cannot send RFQ"
 msgstr "Cannot send RFQ"
+
+msgid "Cannot upload — supplier interaction not yet created"
+msgstr "Cannot upload — supplier interaction not yet created"
 
 msgid "Cannot upload to parts bucket without item ID"
 msgstr "Cannot upload to parts bucket without item ID"
@@ -2983,6 +2989,9 @@ msgstr "Error loading make method"
 msgid "Error moving file"
 msgstr "Error moving file"
 
+msgid "Error removing file"
+msgstr "Error removing file"
+
 msgid "Error removing model from {sourceDocument}"
 msgstr "Error removing model from {sourceDocument}"
 
@@ -3840,9 +3849,6 @@ msgstr "Internal"
 msgid "Internal Notes"
 msgstr "Internal Notes"
 
-msgid "Internal only"
-msgstr "Internal only"
-
 msgid "Invalid Invite"
 msgstr "Invalid Invite"
 
@@ -4234,9 +4240,6 @@ msgstr "Locations"
 
 msgid "Lock"
 msgstr "Lock"
-
-msgid "Locked"
-msgstr "Locked"
 
 msgid "Log In"
 msgstr "Log In"
@@ -4953,8 +4956,8 @@ msgstr "No addresses found"
 msgid "No archived logs yet. Logs older than {0} days will be automatically archived and available for download here."
 msgstr "No archived logs yet. Logs older than {0} days will be automatically archived and available for download here."
 
-msgid "No attachments yet."
-msgstr "No attachments yet."
+msgid "No attachments."
+msgstr "No attachments."
 
 msgid "No available filters"
 msgstr "No available filters"
@@ -7862,9 +7865,6 @@ msgstr "Unlimited Functional Support"
 
 msgid "Unlink"
 msgstr "Unlink"
-
-msgid "Unlock"
-msgstr "Unlock"
 
 msgid "Unsupported source document type: {sourceDocument}"
 msgstr "Unsupported source document type: {sourceDocument}"

@@ -119,7 +119,9 @@ const PurchaseOrderFinalizeModal = ({
                     helperText={t`Type an email and press Enter to add an external recipient`}
                   />
                   <AttachmentsList
-                    purchaseOrderId={orderId}
+                    supplierInteractionId={
+                      purchaseOrder?.supplierInteractionId ?? null
+                    }
                     attachments={resolvedAttachments}
                   />
                 </>

@@ -273,12 +273,7 @@ export async function action(args: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
-  const {
-    notification,
-    supplierContact,
-    cc: ccSelections,
-    attachmentDocumentIds
-  } = validation.data;
+  const { notification, supplierContact, cc: ccSelections } = validation.data;
 
   const logPrefix = `[finalize PO ${orderId}]`;
 
@@ -286,8 +281,7 @@ export async function action(args: ActionFunctionArgs) {
     case "Email":
       console.log(`${logPrefix} email branch entered`, {
         supplierContact,
-        ccCount: ccSelections?.length ?? 0,
-        attachmentDocumentIdsCount: attachmentDocumentIds?.length ?? 0
+        ccCount: ccSelections?.length ?? 0
       });
       try {
         if (!supplierContact) throw new Error("Supplier contact is required");
@@ -371,11 +365,20 @@ export async function action(args: ActionFunctionArgs) {
           const signedUrlData = signedMainPdf.data;
 
           // Resolve cascaded attachments (Company + Supplier + Item + PO ad-hoc).
+          const itemIds = Array.from(
+            new Set(
+              (purchaseOrderLines.data ?? [])
+                .map((l) => l.itemId)
+                .filter((id): id is string => !!id)
+            )
+          );
           const resolved = await getResolvedPoAttachments(serviceRole, {
-            purchaseOrderId: orderId,
-            supplierId: purchaseOrder.data.supplierId ?? null,
             companyId,
-            shareOnSendOnly: true
+            supplierId: purchaseOrder.data.supplierId ?? null,
+            supplierInteractionId:
+              purchaseOrder.data.supplierInteractionId ?? null,
+            itemIds,
+            excludePoPdfFileName: fileName
           });
           console.log(`${logPrefix} resolved cascaded attachments`, {
             total: resolved.length,
@@ -385,20 +388,9 @@ export async function action(args: ActionFunctionArgs) {
             }, {})
           });
 
-          const selectedSet = attachmentDocumentIds?.length
-            ? new Set(attachmentDocumentIds)
-            : null;
-          const filtered = selectedSet
-            ? resolved.filter((r) => selectedSet.has(r.documentId))
-            : resolved;
-          console.log(`${logPrefix} after user selection filter`, {
-            kept: filtered.length,
-            dropped: resolved.length - filtered.length
-          });
-
-          // Enforce 25 MB total cap (PO PDF + cascaded attachments + optional T&C PDF).
+          // Enforce 25 MB total cap (PO PDF + cascaded attachments).
           const poPdfSizeKb = Math.round(file.byteLength / 1024);
-          const cascadedSizeKb = filtered.reduce(
+          const cascadedSizeKb = resolved.reduce(
             (sum, r) => sum + (r.size ?? 0),
             0
           );
@@ -417,7 +409,7 @@ export async function action(args: ActionFunctionArgs) {
           // Sign every cascaded attachment for the email job.
           const cascadedAttachments = (
             await Promise.all(
-              filtered.map(async (r) => {
+              resolved.map(async (r) => {
                 const { data, error: signErr } = await serviceRole.storage
                   .from("private")
                   .createSignedUrl(r.path, 3600);
@@ -425,7 +417,6 @@ export async function action(args: ActionFunctionArgs) {
                   console.error(
                     `${logPrefix} failed to sign cascaded attachment`,
                     {
-                      documentId: r.documentId,
                       source: r.source,
                       name: r.name,
                       path: r.path,
@@ -439,7 +430,7 @@ export async function action(args: ActionFunctionArgs) {
             )
           ).filter((a): a is { path: string; filename: string } => a !== null);
           console.log(`${logPrefix} signed cascaded attachments`, {
-            requested: filtered.length,
+            requested: resolved.length,
             successful: cascadedAttachments.length
           });
 

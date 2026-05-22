@@ -1,22 +1,17 @@
 import { Trans } from "@lingui/react/macro";
-import { path } from "~/utils/path";
 import DefaultAttachmentsPanel, {
-  type DefaultAttachment
+  type StorageFile
 } from "./DefaultAttachmentsPanel";
 
 type Props = {
-  attachments: DefaultAttachment[];
+  files: StorageFile[];
 };
 
-export default function CompanyDefaultAttachmentsCard({ attachments }: Props) {
+export default function CompanyDefaultAttachmentsCard({ files }: Props) {
   return (
     <DefaultAttachmentsPanel
-      attachments={attachments}
+      files={files}
       storagePathPrefix="default-attachments/company"
-      uploadAction={path.to.companyDefaultAttachments}
-      deleteAction={path.to.companyDefaultAttachmentDelete}
-      lockAction={path.to.companyDefaultAttachmentLock}
-      fetcherKeyPrefix="company-default"
       title={<Trans>Default Attachments</Trans>}
       description={
         <Trans>

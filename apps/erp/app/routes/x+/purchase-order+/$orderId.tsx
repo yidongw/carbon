@@ -427,10 +427,16 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     canDelete = isRequester;
   }
 
+  const itemIds = Array.from(
+    new Set(
+      (lines.data ?? []).map((l) => l.itemId).filter((id): id is string => !!id)
+    )
+  );
   const resolvedAttachments = await getResolvedPoAttachments(serviceRole, {
-    purchaseOrderId: orderId,
+    companyId,
     supplierId: purchaseOrder.data?.supplierId ?? null,
-    companyId
+    supplierInteractionId: purchaseOrder.data?.supplierInteractionId ?? null,
+    itemIds
   });
 
   return {

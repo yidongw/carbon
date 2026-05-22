@@ -49,6 +49,9 @@ msgstr "{0} 上传成功"
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB 限制"
 
+msgid "{name} deleted"
+msgstr ""
+
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} 个权限"
 
@@ -1180,6 +1183,9 @@ msgstr "无法发布 — 货运单包含已过期的追踪实体。"
 
 msgid "Cannot send RFQ"
 msgstr "无法发送询价单"
+
+msgid "Cannot upload — supplier interaction not yet created"
+msgstr ""
 
 msgid "Cannot upload to parts bucket without item ID"
 msgstr "无法在没有项目ID的情况下上传到零件存储桶"
@@ -3010,6 +3016,9 @@ msgstr "加载制造方法出错"
 msgid "Error moving file"
 msgstr "移动文件出错"
 
+msgid "Error removing file"
+msgstr ""
+
 msgid "Error removing model from {sourceDocument}"
 msgstr "从{sourceDocument}中删除模型时出错"
 
@@ -3876,9 +3885,6 @@ msgstr "内部"
 msgid "Internal Notes"
 msgstr "内部备注"
 
-msgid "Internal only"
-msgstr ""
-
 msgid "Invalid Invite"
 msgstr "无效邀请"
 
@@ -4270,9 +4276,6 @@ msgstr "位置"
 
 msgid "Lock"
 msgstr "锁定"
-
-msgid "Locked"
-msgstr ""
 
 msgid "Log In"
 msgstr "登录"
@@ -4995,7 +4998,7 @@ msgstr "未找到地址"
 msgid "No archived logs yet. Logs older than {0} days will be automatically archived and available for download here."
 msgstr "还没有存档日志。超过 {0} 天的日志将自动存档，并可在此处下载。"
 
-msgid "No attachments yet."
+msgid "No attachments."
 msgstr ""
 
 msgid "No available filters"
@@ -7933,9 +7936,6 @@ msgstr "取消链接"
 
 msgid "Unlink job from sales order?"
 msgstr "从销售订单取消关联工作？"
-
-msgid "Unlock"
-msgstr ""
 
 msgid "Unsupported source document type: {sourceDocument}"
 msgstr "不支持的源文档类型：{sourceDocument}"

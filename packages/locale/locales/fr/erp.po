@@ -49,6 +49,9 @@ msgstr "{0} tÃƒÆ’Ã‚Â©lÃƒÆ’Ã‚Â©chargÃƒÆ’Ã‚Â© avec s
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB limite"
 
+msgid "{name} deleted"
+msgstr ""
+
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} permissions"
 
@@ -1162,6 +1165,9 @@ msgstr "Impossible de publier — l'expédition contient des entités suivies ex
 
 msgid "Cannot send RFQ"
 msgstr "Impossible d'envoyer la demande de devis"
+
+msgid "Cannot upload — supplier interaction not yet created"
+msgstr ""
 
 msgid "Cannot upload to parts bucket without item ID"
 msgstr "Impossible de tÃƒÆ’Ã‚Â©lÃƒÆ’Ã‚Â©charger vers le compartiment des piÃƒÆ’Ã‚Â¨ces sans ID d'article"
@@ -2983,6 +2989,9 @@ msgstr "Erreur lors du chargement de la mÃƒÆ’Ã‚Â©thode de fabrication"
 msgid "Error moving file"
 msgstr "Erreur lors du dÃƒÆ’Ã‚Â©placement du fichier"
 
+msgid "Error removing file"
+msgstr ""
+
 msgid "Error removing model from {sourceDocument}"
 msgstr "Erreur lors de la suppression du modÃƒÆ’Ã‚Â¨le de {sourceDocument}"
 
@@ -3840,9 +3849,6 @@ msgstr "Interne"
 msgid "Internal Notes"
 msgstr "Notes internes"
 
-msgid "Internal only"
-msgstr ""
-
 msgid "Invalid Invite"
 msgstr "Invitation invalide"
 
@@ -4234,9 +4240,6 @@ msgstr "Emplacements"
 
 msgid "Lock"
 msgstr "Verrouiller"
-
-msgid "Locked"
-msgstr ""
 
 msgid "Log In"
 msgstr "Se connecter"
@@ -4953,7 +4956,7 @@ msgstr "Aucune adresse trouvÃƒÆ’Ã‚Â©e"
 msgid "No archived logs yet. Logs older than {0} days will be automatically archived and available for download here."
 msgstr "Aucun journal archivÃƒÆ’Ã‚Â© pour le moment. Les journaux antÃƒÆ’Ã‚Â©rieurs ÃƒÆ’Ã‚Â  {0} jours seront automatiquement archivÃƒÆ’Ã‚Â©s et disponibles au tÃƒÆ’Ã‚Â©lÃƒÆ’Ã‚Â©chargement ici."
 
-msgid "No attachments yet."
+msgid "No attachments."
 msgstr ""
 
 msgid "No available filters"
@@ -7862,9 +7865,6 @@ msgstr "Support fonctionnel illimitÃƒÆ’Ã‚Â©"
 
 msgid "Unlink"
 msgstr "Dissocier"
-
-msgid "Unlock"
-msgstr ""
 
 msgid "Unsupported source document type: {sourceDocument}"
 msgstr "Type de document source non pris en charge : {sourceDocument}"

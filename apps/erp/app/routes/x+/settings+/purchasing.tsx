@@ -41,7 +41,6 @@ import CompanyDefaultAttachmentsCard from "~/components/CompanyDefaultAttachment
 import { EmailRecipients, Users } from "~/components/Form";
 import Country from "~/components/Form/Country";
 import { usePermissions, useUser } from "~/hooks";
-import { getCompanyDefaultAttachments } from "~/modules/purchasing";
 import {
   accountsPayableBillingAddressValidator,
   defaultSupplierCcValidator,
@@ -72,12 +71,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
     view: "settings"
   });
 
-  const [companySettings, terms, apBillingAddress, defaultAttachments] =
+  const [companySettings, terms, apBillingAddress, defaultAttachmentsResult] =
     await Promise.all([
       getCompanySettings(client, companyId),
       getTerms(client, companyId),
       getAccountsPayableBillingAddress(client, companyId),
-      getCompanyDefaultAttachments(client, companyId)
+      client.storage
+        .from("private")
+        .list(`${companyId}/default-attachments/company`)
     ]);
 
   if (companySettings.error) {
@@ -101,7 +102,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     companySettings: companySettings.data,
     terms: terms.data,
     apBillingAddress: apBillingAddress.data,
-    defaultAttachments: defaultAttachments.data ?? []
+    defaultAttachments: defaultAttachmentsResult.data ?? []
   };
 }
 
@@ -455,7 +456,7 @@ export default function PurchasingSettingsRoute() {
           </CardContent>
         </Card>
         <CompanyDefaultAttachmentsCard
-          attachments={(defaultAttachments ?? []) as any}
+          files={(defaultAttachments ?? []) as any}
         />
         <Card>
           <CardHeader>

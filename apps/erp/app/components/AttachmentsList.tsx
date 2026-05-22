@@ -1,7 +1,6 @@
 import { useCarbon } from "@carbon/auth";
 import {
   Badge,
-  Checkbox,
   HStack,
   IconButton,
   Spinner,
@@ -12,41 +11,37 @@ import { convertKbToString } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useCallback, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { LuCloudUpload, LuFileText, LuLock, LuX } from "react-icons/lu";
-import { useFetcher, useRevalidator, useSubmit } from "react-router";
+import { LuCloudUpload, LuFileText, LuX } from "react-icons/lu";
+import { useRevalidator } from "react-router";
 import { useUser } from "~/hooks";
-import { path } from "~/utils/path";
 import { stripSpecialCharacters } from "~/utils/string";
 
 export type ResolvedAttachmentItem = {
-  documentId: string;
-  /** When source === "po", the id of the purchaseOrderAttachment row (for delete). */
-  attachmentRowId: string | null;
   source: "po" | "company" | "supplier" | "item";
   sourceLabel: string;
-  shareOnSend: boolean;
-  isLocked: boolean;
   name: string;
   size: number | null;
+  /** Full storage path under the `private` bucket. Used as a stable key. */
+  path: string;
 };
 
 type AttachmentsListProps = {
-  purchaseOrderId: string;
-  /** Pinned, non-removable. Always sent regardless of selection state. */
+  /**
+   * Supplier interaction id — used as the upload destination for ad-hoc files
+   * dropped at finalize time. Files go to
+   * `{companyId}/supplier-interaction/{supplierInteractionId}/` and are
+   * auto-attached by the existing supplier-quote/RFQ flow conventions.
+   */
+  supplierInteractionId: string | null;
+  /** Pinned, non-removable. Always sent. Used for the PO PDF preview row. */
   pinned?: Array<{ name: string; sizeKb?: number; label?: string }>;
-  /** Resolved attachments (Company + Supplier + Item + PO ad-hoc, deduped). */
+  /** Resolved attachments (Company + Supplier + Item + PO ad-hoc). */
   attachments: ResolvedAttachmentItem[];
-  /** Form field name for the hidden inputs carrying included documentIds. */
-  fieldName?: string;
 };
 
 const WARN_KB = 20 * 1024;
 const LIMIT_KB = 25 * 1024;
 
-// Map of attachment source → Carbon Badge variant. Uses built-in semantic
-// color variants from packages/react/src/Badge.tsx so dark mode + the
-// rest of the design system stays consistent. Do not introduce custom
-// `bg-*`/`text-*` Tailwind classes for status colors here.
 const sourceBadgeVariant: Record<
   ResolvedAttachmentItem["source"],
   "blue" | "green" | "orange" | "purple"
@@ -57,53 +52,30 @@ const sourceBadgeVariant: Record<
   company: "purple"
 };
 
+/**
+ * Read-only preview of every file that's about to ride along on a PO send,
+ * plus a drag-drop zone for ad-hoc uploads. No selection UI — everything in
+ * the four scope folders auto-attaches, matching the supplier-quote/RFQ flows.
+ */
 export default function AttachmentsList({
-  purchaseOrderId,
+  supplierInteractionId,
   pinned = [],
-  attachments,
-  fieldName = "attachmentDocumentIds"
+  attachments
 }: AttachmentsListProps) {
   const { t } = useLingui();
   const { carbon } = useCarbon();
   const { company } = useUser();
   const revalidator = useRevalidator();
-  const submit = useSubmit();
   const [uploading, setUploading] = useState(false);
-
-  // Track which document IDs the user has explicitly excluded for THIS send.
-  // Default: all shareOnSend=true items are included; shareOnSend=false items
-  // are visible-but-greyed-out and never selectable for this send.
-  const [excluded, setExcluded] = useState<Set<string>>(new Set());
-
-  // Locked attachments cannot be excluded — they're always included if shareOnSend=true.
-  const isIncluded = (a: ResolvedAttachmentItem) =>
-    a.shareOnSend && (a.isLocked || !excluded.has(a.documentId));
-
-  const includedIds = useMemo(() => {
-    return attachments.filter(isIncluded).map((a) => a.documentId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [attachments, excluded]);
 
   const totalKb = useMemo(() => {
     const pinnedKb = pinned.reduce((sum, p) => sum + (p.sizeKb ?? 0), 0);
-    const attKb = attachments
-      .filter(isIncluded)
-      .reduce((sum, a) => sum + (a.size ?? 0), 0);
+    const attKb = attachments.reduce((sum, a) => sum + (a.size ?? 0), 0);
     return pinnedKb + attKb;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [attachments, excluded, pinned]);
+  }, [attachments, pinned]);
 
   const overLimit = totalKb > LIMIT_KB;
   const warning = totalKb > WARN_KB && !overLimit;
-
-  const toggle = (docId: string, checked: boolean) => {
-    setExcluded((prev) => {
-      const next = new Set(prev);
-      if (checked) next.delete(docId);
-      else next.add(docId);
-      return next;
-    });
-  };
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
@@ -111,49 +83,50 @@ export default function AttachmentsList({
         toast.error(t`Storage client not available`);
         return;
       }
+      if (!supplierInteractionId) {
+        toast.error(t`Cannot upload — supplier interaction not yet created`);
+        return;
+      }
       setUploading(true);
       try {
         for (const file of acceptedFiles) {
           const safeName = stripSpecialCharacters(file.name);
-          const storagePath = `${company.id}/purchase-order/${purchaseOrderId}/${safeName}`;
-
+          const storagePath = `${company.id}/supplier-interaction/${supplierInteractionId}/${safeName}`;
           const upload = await carbon.storage
             .from("private")
             .upload(storagePath, file, {
               cacheControl: `${12 * 60 * 60}`,
               upsert: true
             });
-
           if (upload.error) {
             toast.error(t`Failed to upload ${file.name}`);
-            continue;
           }
-
-          const fd = new FormData();
-          fd.append("path", storagePath);
-          fd.append("name", file.name);
-          fd.append("size", Math.round(file.size / 1024).toString());
-
-          submit(fd, {
-            method: "post",
-            action: path.to.purchaseOrderAttachments(purchaseOrderId),
-            navigate: false,
-            fetcherKey: `po-att:${purchaseOrderId}:${safeName}`
-          });
         }
-        // Revalidate to pick up new server-side rows
-        setTimeout(() => revalidator.revalidate(), 250);
+        revalidator.revalidate();
       } finally {
         setUploading(false);
       }
     },
-    [carbon, company.id, purchaseOrderId, revalidator, submit, t]
+    [carbon, company.id, supplierInteractionId, revalidator, t]
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     multiple: true
   });
+
+  const onRemovePoFile = useCallback(
+    async (a: ResolvedAttachmentItem) => {
+      if (!carbon) return;
+      const result = await carbon.storage.from("private").remove([a.path]);
+      if (result.error) {
+        toast.error(result.error.message || t`Error removing file`);
+      } else {
+        revalidator.revalidate();
+      }
+    },
+    [carbon, revalidator, t]
+  );
 
   return (
     <VStack spacing={2} className="w-full">
@@ -162,111 +135,67 @@ export default function AttachmentsList({
       </div>
 
       <VStack spacing={1} className="w-full">
-        {/* Pinned items: always sent */}
         {pinned.map((p) => (
           <HStack
             key={`pinned-${p.name}`}
             className="w-full justify-between border rounded-md px-3 py-2 bg-muted/30"
           >
-            <HStack className="gap-2">
-              <Checkbox checked disabled />
-              <LuFileText className="text-muted-foreground" />
-              <span className="text-sm font-medium truncate max-w-[260px]">
+            <HStack className="gap-2 min-w-0 flex-1">
+              <LuFileText className="flex-shrink-0 text-muted-foreground" />
+              <span className="text-sm font-medium truncate min-w-0 flex-1">
                 {p.name}
               </span>
-              <Badge variant="gray">{p.label ?? t`PO PDF`}</Badge>
+              <Badge variant="gray" className="flex-shrink-0">
+                {p.label ?? t`PO PDF`}
+              </Badge>
             </HStack>
-            <span className="text-xs font-mono text-muted-foreground whitespace-nowrap">
+            <span className="text-xs font-mono text-muted-foreground flex-shrink-0 ml-2 whitespace-nowrap">
               {p.sizeKb ? convertKbToString(p.sizeKb) : "--"}
             </span>
           </HStack>
         ))}
 
-        {/* Cascaded + ad-hoc attachments */}
         {attachments.length === 0 && pinned.length === 0 && (
           <div className="text-sm text-muted-foreground italic px-3 py-2">
-            <Trans>No attachments yet.</Trans>
+            <Trans>No attachments.</Trans>
           </div>
         )}
-        {[...attachments]
-          .sort((a, b) => {
-            // Sort priority:
-            //   1. Locked first (mandatory attachments float to top)
-            //   2. Source: Company → Supplier → Item → PO (broadest-scope first,
-            //      most-specific last). Within each, alphabetical by name.
-            if (a.isLocked !== b.isLocked) return a.isLocked ? -1 : 1;
-            const sourceRank: Record<ResolvedAttachmentItem["source"], number> =
-              {
-                company: 0,
-                supplier: 1,
-                item: 2,
-                po: 3
-              };
-            if (a.source !== b.source)
-              return sourceRank[a.source] - sourceRank[b.source];
-            return a.name.localeCompare(b.name);
-          })
-          .map((a) => {
-            const included = isIncluded(a);
-            return (
-              <HStack
-                key={a.documentId}
-                className={`w-full justify-between border rounded-md px-3 py-2 ${
-                  a.shareOnSend ? "" : "opacity-50"
-                }`}
-              >
-                <HStack className="gap-2">
-                  <Checkbox
-                    checked={included}
-                    disabled={!a.shareOnSend || a.isLocked}
-                    onCheckedChange={(c) => toggle(a.documentId, c === true)}
-                  />
-                  <LuFileText className="text-muted-foreground" />
-                  <span className="text-sm truncate max-w-[200px]">
-                    {a.name}
-                  </span>
-                  <Badge variant={sourceBadgeVariant[a.source]}>
-                    {a.sourceLabel}
-                  </Badge>
-                  {a.isLocked && (
-                    <LuLock
-                      className="w-3 h-3 text-amber-600"
-                      aria-label={t`Locked`}
-                    />
-                  )}
-                  {!a.shareOnSend && (
-                    <Badge variant="secondary">
-                      <Trans>Internal only</Trans>
-                    </Badge>
-                  )}
-                </HStack>
-                <HStack className="gap-2">
-                  <span className="text-xs font-mono text-muted-foreground whitespace-nowrap">
-                    {a.size ? convertKbToString(a.size) : "--"}
-                  </span>
-                  {a.source === "po" && a.attachmentRowId && !a.isLocked && (
-                    <DeletePoAttachmentButton
-                      purchaseOrderId={purchaseOrderId}
-                      attachmentRowId={a.attachmentRowId}
-                    />
-                  )}
-                </HStack>
-              </HStack>
-            );
-          })}
 
-        {/* Hidden inputs carrying the included document IDs to the form action */}
-        {includedIds.map((id, i) => (
-          <input
-            key={id}
-            type="hidden"
-            name={`${fieldName}[${i}]`}
-            value={id}
-          />
+        {attachments.map((a) => (
+          <HStack
+            key={a.path}
+            className="w-full justify-between border rounded-md px-3 py-2"
+          >
+            <HStack className="gap-2 min-w-0 flex-1">
+              <LuFileText className="flex-shrink-0 text-muted-foreground" />
+              <span className="text-sm truncate min-w-0 flex-1">{a.name}</span>
+              <Badge
+                variant={sourceBadgeVariant[a.source]}
+                className="flex-shrink-0"
+              >
+                {a.sourceLabel}
+              </Badge>
+            </HStack>
+            <HStack className="gap-2 flex-shrink-0 ml-2">
+              <span className="text-xs font-mono text-muted-foreground whitespace-nowrap">
+                {a.size != null ? convertKbToString(a.size) : "--"}
+              </span>
+              {a.source === "po" && (
+                <IconButton
+                  aria-label={t`Remove`}
+                  icon={<LuX />}
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => onRemovePoFile(a)}
+                />
+              )}
+            </HStack>
+          </HStack>
         ))}
       </VStack>
 
-      {/* Drag-and-drop */}
+      {/* Drag-and-drop — uploads to the supplier-interaction folder, which the
+          send action automatically picks up. */}
       <div
         {...getRootProps()}
         className={`mt-2 w-full border-2 border-dashed rounded-md p-4 text-center cursor-pointer transition-colors ${
@@ -288,7 +217,6 @@ export default function AttachmentsList({
         )}
       </div>
 
-      {/* Size meter */}
       <div
         className={`w-full text-xs font-mono ${
           overLimit
@@ -313,38 +241,5 @@ export default function AttachmentsList({
         )}
       </div>
     </VStack>
-  );
-}
-
-function DeletePoAttachmentButton({
-  purchaseOrderId,
-  attachmentRowId
-}: {
-  purchaseOrderId: string;
-  attachmentRowId: string;
-}) {
-  const fetcher = useFetcher<{ success: boolean }>();
-  const { t } = useLingui();
-
-  return (
-    <IconButton
-      aria-label={t`Remove`}
-      icon={<LuX />}
-      size="sm"
-      variant="ghost"
-      isDisabled={fetcher.state !== "idle"}
-      onClick={() =>
-        fetcher.submit(
-          {},
-          {
-            method: "post",
-            action: path.to.purchaseOrderAttachmentDelete(
-              purchaseOrderId,
-              attachmentRowId
-            )
-          }
-        )
-      }
-    />
   );
 }

@@ -49,6 +49,9 @@ msgstr "{0} caricato con successo"
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB limite"
 
+msgid "{name} deleted"
+msgstr ""
+
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} autorizzazioni"
 
@@ -1162,6 +1165,9 @@ msgstr "Impossibile pubblicare — la spedizione contiene entità tracciate scad
 
 msgid "Cannot send RFQ"
 msgstr "Impossibile inviare RFQ"
+
+msgid "Cannot upload — supplier interaction not yet created"
+msgstr ""
 
 msgid "Cannot upload to parts bucket without item ID"
 msgstr "Impossibile caricare nel bucket delle parti senza ID elemento"
@@ -2983,6 +2989,9 @@ msgstr "Errore nel caricamento del metodo di produzione"
 msgid "Error moving file"
 msgstr "Errore durante lo spostamento del file"
 
+msgid "Error removing file"
+msgstr ""
+
 msgid "Error removing model from {sourceDocument}"
 msgstr "Errore nella rimozione del modello da {sourceDocument}"
 
@@ -3840,9 +3849,6 @@ msgstr "Interno"
 msgid "Internal Notes"
 msgstr "Note Interne"
 
-msgid "Internal only"
-msgstr ""
-
 msgid "Invalid Invite"
 msgstr "Invito Non Valido"
 
@@ -4234,9 +4240,6 @@ msgstr "Posizioni"
 
 msgid "Lock"
 msgstr "Blocca"
-
-msgid "Locked"
-msgstr ""
 
 msgid "Log In"
 msgstr "Accedi"
@@ -4953,7 +4956,7 @@ msgstr "Nessun indirizzo trovato"
 msgid "No archived logs yet. Logs older than {0} days will be automatically archived and available for download here."
 msgstr "Nessun log archiviato ancora. I log piÃƒÆ’Ã‚Â¹ vecchi di {0} giorni verranno archiviati automaticamente e disponibili per il download qui."
 
-msgid "No attachments yet."
+msgid "No attachments."
 msgstr ""
 
 msgid "No available filters"
@@ -7862,9 +7865,6 @@ msgstr "Supporto Funzionale Illimitato"
 
 msgid "Unlink"
 msgstr "Scollega"
-
-msgid "Unlock"
-msgstr ""
 
 msgid "Unsupported source document type: {sourceDocument}"
 msgstr "Tipo di documento di origine non supportato: {sourceDocument}"

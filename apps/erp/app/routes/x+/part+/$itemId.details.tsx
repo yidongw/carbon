@@ -15,7 +15,7 @@ import type {
 import { Await, redirect, useLoaderData, useParams } from "react-router";
 import { CadModel, DeferredFiles } from "~/components";
 import DefaultAttachmentsPanel, {
-  type DefaultAttachment
+  type StorageFile
 } from "~/components/DefaultAttachmentsPanel";
 import { usePermissions, useRouteData } from "~/hooks";
 import type { ItemFile, MakeMethod, PartSummary } from "~/modules/items";
@@ -42,7 +42,6 @@ import {
 } from "~/modules/items/ui/Item";
 import ItemManufacturingForm from "~/modules/items/ui/Item/ItemManufacturingForm";
 import { ConfigurationParametersForm } from "~/modules/items/ui/Parts";
-import { getItemDefaultAttachments } from "~/modules/purchasing/purchasing.service";
 import type { MethodItemType, MethodType } from "~/modules/shared";
 import { getTagsList } from "~/modules/shared";
 import { getCustomFields, setCustomFields } from "~/utils/form";
@@ -69,8 +68,13 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     : (makeMethods.data?.find((m) => m.status === "Active") ??
       makeMethods.data?.[0]);
 
+  const listDefaultAttachments = () =>
+    client.storage
+      .from("private")
+      .list(`${companyId}/default-attachments/item/${itemId}`);
+
   if (!makeMethod) {
-    const fallback = await getItemDefaultAttachments(client, itemId);
+    const fallback = await listDefaultAttachments();
     return {
       methodData: null,
       tags: [],
@@ -80,7 +84,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const fullMethod = await getMakeMethodById(client, makeMethod.id, companyId);
   if (fullMethod.error || !fullMethod.data) {
-    const fallback = await getItemDefaultAttachments(client, itemId);
+    const fallback = await listDefaultAttachments();
     return {
       methodData: null,
       tags: [],
@@ -93,13 +97,13 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     methodOperations,
     tags,
     partManufacturing,
-    defaultAttachments
+    defaultAttachmentsResult
   ] = await Promise.all([
     getMethodMaterialsByMakeMethod(client, fullMethod.data.id),
     getMethodOperationsByMakeMethodId(client, fullMethod.data.id),
     getTagsList(client, companyId, "operation"),
     getItemManufacturing(client, itemId, companyId),
-    getItemDefaultAttachments(client, itemId)
+    listDefaultAttachments()
   ]);
 
   const configData = partManufacturing.data?.requiresConfiguration
@@ -142,7 +146,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       ...configData
     },
     tags: tags.data ?? [],
-    defaultAttachments: defaultAttachments.data ?? []
+    defaultAttachments: defaultAttachmentsResult.data ?? []
   };
 }
 
@@ -350,16 +354,8 @@ export default function PartDetailsRoute() {
           </DeferredFiles>
 
           <DefaultAttachmentsPanel
-            attachments={(defaultAttachments ?? []) as DefaultAttachment[]}
+            files={(defaultAttachments ?? []) as StorageFile[]}
             storagePathPrefix={`default-attachments/item/${itemId}`}
-            uploadAction={path.to.itemDefaultAttachments(itemId)}
-            deleteAction={(attachmentId) =>
-              path.to.itemDefaultAttachmentDelete(itemId, attachmentId)
-            }
-            lockAction={(attachmentId) =>
-              path.to.itemDefaultAttachmentLock(itemId, attachmentId)
-            }
-            fetcherKeyPrefix={`item-default:${itemId}`}
             title={t`Default Attachments on Purchase Orders`}
             description={t`Files attached here ride along whenever this item appears on a purchase order email.`}
           />
