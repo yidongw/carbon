@@ -18,14 +18,13 @@ import {
   useParams
 } from "react-router";
 import type { z } from "zod";
+import { Hidden, Number, Select, Submit, TextArea } from "~/components/Form";
 import {
-  Employee,
-  Hidden,
-  Number,
-  Select,
-  Submit,
-  TextArea
-} from "~/components/Form";
+  ProductionActorFields,
+  selectionFromInitialValues
+} from "./ProductionActorFields";
+import { SupplierSubcontractPricingFields } from "./SupplierSubcontractPricingFields";
+import type { productionActorKinds } from "../../production.models";
 import ScrapReason from "~/components/Form/ScrapReason";
 import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions } from "~/hooks";
@@ -84,7 +83,11 @@ type ConfigurationParameter = {
 
 export type ProductionQuantityCreateInitialValues = {
   jobOperationId: string;
+  actorKind?: "employee" | "supplier";
   employeeId?: string;
+  supplierProcessId?: string;
+  /** Display-only: resolves supplier Name label before process options load. */
+  supplierId?: string;
   notes?: string;
   lines: ProductionQuantityLineInput[];
 };
@@ -100,6 +103,10 @@ export type ProductionQuantityFormProps = {
   }[];
   configurationParameters?: ConfigurationParameter[] | null;
   itemId?: string | null;
+  processId?: string | null;
+  operationType?: string | null;
+  defaultActorKind?: "employee" | "supplier";
+  lockActorSelection?: boolean;
   onDismiss?: () => void;
   action?: string;
   fetcher?: FetcherWithComponents<unknown>;
@@ -129,6 +136,10 @@ const ProductionQuantityForm = ({
   operationOptions,
   configurationParameters,
   itemId,
+  processId,
+  operationType,
+  defaultActorKind,
+  lockActorSelection: lockActorSelectionProp,
   onDismiss: onDismissProp,
   action: formAction,
   fetcher
@@ -287,7 +298,6 @@ const ProductionQuantityForm = ({
     const init = initialValues as ProductionQuantityCreateInitialValues;
     return {
       jobOperationId: init.jobOperationId,
-      employeeId: init.employeeId ?? "",
       notes: init.notes ?? "",
       lines: JSON.stringify(
         normalizeUniqueLineTypes(toEditableLines(init.lines)).map(
@@ -299,8 +309,78 @@ const ProductionQuantityForm = ({
 
   const editDefaultValues = useMemo(() => {
     if (isCreateMultiLine) return undefined;
-    return initialValues as z.infer<typeof productionQuantityValidator>;
+    const values = initialValues as z.infer<typeof productionQuantityValidator> & {
+      actorKind?: "employee" | "supplier";
+      supplierProcessId?: string;
+      supplierId?: string;
+    };
+    const {
+      actorKind: _ak,
+      employeeId: _eid,
+      supplierProcessId: _spid,
+      supplierId: _sid,
+      ...rest
+    } = values;
+    return {
+      ...rest,
+      productionActorSelection: selectionFromInitialValues({
+        employeeId: values.employeeId,
+        supplierProcessId: values.supplierProcessId
+      })
+    };
   }, [isCreateMultiLine, initialValues]);
+
+  const actorFieldValues = useMemo(() => {
+    if (isCreateMultiLine) {
+      const init = initialValues as ProductionQuantityCreateInitialValues;
+      return {
+        employeeId: init.employeeId,
+        supplierProcessId: init.supplierProcessId,
+        actorKind: init.actorKind ?? defaultActorKind
+      };
+    }
+    const values = initialValues as z.infer<typeof productionQuantityValidator> & {
+      actorKind?: "employee" | "supplier";
+      supplierProcessId?: string;
+      supplierId?: string;
+    };
+    return {
+      employeeId: values.employeeId,
+      supplierProcessId: values.supplierProcessId,
+      supplierId: values.supplierId,
+      actorKind: values.actorKind ?? defaultActorKind
+    };
+  }, [isCreateMultiLine, initialValues, defaultActorKind]);
+
+  const [actorKind, setActorKind] = useState<
+    (typeof productionActorKinds)[number]
+  >(
+    () =>
+      (actorFieldValues.actorKind ??
+        defaultActorKind ??
+        "employee") as (typeof productionActorKinds)[number]
+  );
+  const [supplierProcessId, setSupplierProcessId] = useState(
+    () => actorFieldValues.supplierProcessId ?? ""
+  );
+  const [jobOperationIdState, setJobOperationIdState] = useState(() => {
+    if (isCreateMultiLineInitial(initialValues)) {
+      return (initialValues as ProductionQuantityCreateInitialValues)
+        .jobOperationId;
+    }
+    return (
+      (initialValues as z.infer<typeof productionQuantityValidator>)
+        .jobOperationId ?? ""
+    );
+  });
+
+  const lockActorSelection =
+    lockActorSelectionProp ??
+    (isEditing ||
+      Boolean(
+        (actorFieldValues.employeeId ?? "").trim() ||
+          (actorFieldValues.supplierProcessId ?? "").trim()
+      ));
 
   const form = (
     <ValidatedForm
@@ -334,9 +414,33 @@ const ProductionQuantityForm = ({
               name="jobOperationId"
               label={t`Operation`}
               options={operationOptions ?? []}
+              onChange={(value) => {
+                setJobOperationIdState(value?.value ?? "");
+              }}
             />
           )}
-          <Employee name="employeeId" label={t`Employee`} />
+          <ProductionActorFields
+            processId={processId}
+            operationType={operationType}
+            defaultActorKind={defaultActorKind}
+            lockActorSelection={lockActorSelection}
+            employeeIdValue={actorFieldValues.employeeId}
+            supplierProcessIdValue={actorFieldValues.supplierProcessId}
+            supplierIdValue={actorFieldValues.supplierId}
+            onActorKindChange={setActorKind}
+            onSupplierProcessChange={setSupplierProcessId}
+          />
+
+          {isCreateMultiLine &&
+          actorKind === "supplier" &&
+          jobOperationIdState &&
+          supplierProcessId ? (
+            <SupplierSubcontractPricingFields
+              jobOperationId={jobOperationIdState}
+              supplierProcessId={supplierProcessId}
+              isDisabled={isDisabled}
+            />
+          ) : null}
 
           {isCreateMultiLine ? (
             <>
@@ -398,10 +502,18 @@ const ProductionQuantityForm = ({
       </DrawerBody>
       <DrawerFooter>
         <HStack>
-          <Submit isDisabled={isDisabled || hasZeroQuantityLine}>
+          <Submit
+            isDisabled={isDisabled || hasZeroQuantityLine}
+            className="transition-transform active:scale-[0.96]"
+          >
             <Trans>Save</Trans>
           </Submit>
-          <Button variant="solid" type="button" onClick={onDismiss}>
+          <Button
+            variant="solid"
+            type="button"
+            onClick={onDismiss}
+            className="transition-transform active:scale-[0.96]"
+          >
             <Trans>Cancel</Trans>
           </Button>
         </HStack>

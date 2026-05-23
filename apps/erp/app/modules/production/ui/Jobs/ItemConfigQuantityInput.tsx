@@ -110,6 +110,7 @@ export function ItemConfigQuantityInput({
           isDisabled={isDisabled}
           size={size}
           className={cn(
+            "tabular-nums",
             showAdornment &&
               cn(
                 "pr-10",

@@ -22,19 +22,38 @@ export const overlayRegistry = {
                   }[]
                 | null;
               itemId?: string | null;
+              processId?: string | null;
+              operationType?: string | null;
+              defaultActorKind?: "employee" | "supplier";
+              seededActor?: {
+                actorKind: "employee" | "supplier";
+                employeeId: string;
+                supplierProcessId: string;
+                supplierId: string;
+                lockActorSelection: boolean;
+              };
             }
           | undefined;
         if (!data) return null;
+        const seeded = data.seededActor;
         return {
           initialValues: {
             jobOperationId: data.jobOperationId,
             quantity: 0,
             notes: "",
-            employeeId: ""
+            employeeId: seeded?.employeeId ?? "",
+            actorKind: seeded?.actorKind ?? data.defaultActorKind ?? "employee",
+            supplierProcessId: seeded?.supplierProcessId ?? ""
           },
           operationOptions: data.operationOptions ?? [],
           configurationParameters: data.configurationParameters ?? null,
-          itemId: data.itemId ?? null
+          itemId: data.itemId ?? null,
+          processId: data.processId ?? null,
+          operationType: data.operationType ?? null,
+          defaultActorKind:
+            seeded?.actorKind ?? data.defaultActorKind ?? "employee",
+          lockActorSelection: seeded?.lockActorSelection ?? false,
+          supplierId: seeded?.supplierId ?? ""
         };
       },
       () => import("~/modules/production/ui/Jobs/PickupForm")
@@ -57,20 +76,39 @@ export const overlayRegistry = {
                   }[]
                 | null;
               itemId?: string | null;
+              processId?: string | null;
+              operationType?: string | null;
+              defaultActorKind?: "employee" | "supplier";
+              seededActor?: {
+                actorKind: "employee" | "supplier";
+                employeeId: string;
+                supplierProcessId: string;
+                supplierId: string;
+                lockActorSelection: boolean;
+              };
             }
           | undefined;
         if (!data) return null;
 
+        const seeded = data.seededActor;
         return {
           initialValues: {
             jobOperationId: data.jobOperationId,
             notes: "",
-            employeeId: "",
+            employeeId: seeded?.employeeId ?? "",
+            actorKind: seeded?.actorKind ?? data.defaultActorKind ?? "employee",
+            supplierProcessId: seeded?.supplierProcessId ?? "",
+            supplierId: seeded?.supplierId ?? "",
             lines: [{ type: "Production" as const, quantity: 0 }]
           },
           operationOptions: data.operationOptions ?? [],
           configurationParameters: data.configurationParameters ?? null,
-          itemId: data.itemId ?? null
+          itemId: data.itemId ?? null,
+          processId: data.processId ?? null,
+          operationType: data.operationType ?? null,
+          defaultActorKind:
+            seeded?.actorKind ?? data.defaultActorKind ?? "employee",
+          lockActorSelection: seeded?.lockActorSelection ?? false
         };
       },
       () => import("~/modules/production/ui/Jobs/ProductionQuantityForm")
@@ -82,6 +120,38 @@ export const overlayRegistry = {
       (ctx) => {
         const data = ctx.loaderData as
           | {
+              mode:
+                | "supplier-report"
+                | "employee-report"
+                | "supplier-line"
+                | "employee-line";
+              supplierReport?: {
+                id: string;
+                jobOperationId: string;
+                supplierProcessId: string;
+                supplierProcess?: { id: string; supplierId: string } | null;
+                notes: string | null;
+                activeLines: {
+                  type: "Production" | "Scrap" | "Rework";
+                  quantity: number;
+                  scrapReasonId: string | null;
+                  notes: string | null;
+                  configuration?: unknown;
+                }[];
+              };
+              employeeReport?: {
+                id: string;
+                jobOperationId: string;
+                employeeId: string;
+                notes: string | null;
+                activeLines: {
+                  type: "Production" | "Scrap" | "Rework";
+                  quantity: number;
+                  scrapReasonId: string | null;
+                  notes: string | null;
+                  configuration?: unknown;
+                }[];
+              };
               productionQuantity: {
                 id: string;
                 type: "Production" | "Scrap" | "Rework";
@@ -89,7 +159,9 @@ export const overlayRegistry = {
                 quantity: number | null;
                 scrapReasonId: string | null;
                 notes: string | null;
-                createdBy: string | null;
+                employeeId?: string | null;
+                supplierProcessId?: string | null;
+                supplierProcess?: { id: string; supplierId: string } | null;
                 configuration?: unknown;
               } | null;
               operationOptions: { label: string; value: string }[];
@@ -102,25 +174,99 @@ export const overlayRegistry = {
                   }[]
                 | null;
               itemId?: string | null;
+              processId?: string | null;
+              operationType?: string | null;
             }
           | undefined;
-        const productionQuantity = data?.productionQuantity;
-        if (!productionQuantity) return null;
+        if (!data) return null;
 
-        return {
-          initialValues: {
-            id: productionQuantity.id,
-            type: productionQuantity.type ?? "Scrap",
-            jobOperationId: productionQuantity.jobOperationId ?? "",
-            quantity: productionQuantity.quantity ?? 0,
-            scrapReasonId: productionQuantity.scrapReasonId ?? "",
-            notes: productionQuantity.notes ?? "",
-            createdBy: productionQuantity.createdBy ?? "",
-            configuration: productionQuantity.configuration ?? undefined
-          },
+        const shared = {
           operationOptions: data.operationOptions ?? [],
           configurationParameters: data.configurationParameters ?? null,
-          itemId: data.itemId ?? null
+          itemId: data.itemId ?? null,
+          processId: data.processId ?? null,
+          operationType: data.operationType ?? null
+        };
+
+        if (data.mode === "supplier-report" && data.supplierReport) {
+          const report = data.supplierReport;
+          return {
+            ...shared,
+            initialValues: {
+              jobOperationId: report.jobOperationId,
+              actorKind: "supplier" as const,
+              supplierProcessId: report.supplierProcessId,
+              supplierId: report.supplierProcess?.supplierId ?? "",
+              notes: report.notes ?? "",
+              lines: report.activeLines.map((line) => ({
+                type: line.type,
+                quantity: line.quantity,
+                scrapReasonId: line.scrapReasonId ?? undefined,
+                notes: line.notes ?? undefined,
+                configuration: line.configuration ?? undefined
+              }))
+            },
+            defaultActorKind: "supplier" as const
+          };
+        }
+
+        if (data.mode === "employee-report" && data.employeeReport) {
+          const report = data.employeeReport;
+          return {
+            ...shared,
+            initialValues: {
+              jobOperationId: report.jobOperationId,
+              actorKind: "employee" as const,
+              employeeId: report.employeeId,
+              notes: report.notes ?? "",
+              lines: report.activeLines.map((line) => ({
+                type: line.type,
+                quantity: line.quantity,
+                scrapReasonId: line.scrapReasonId ?? undefined,
+                notes: line.notes ?? undefined,
+                configuration: line.configuration ?? undefined
+              }))
+            },
+            defaultActorKind: "employee" as const
+          };
+        }
+
+        const pq = data.productionQuantity;
+        if (!pq) return null;
+
+        const isSupplierLine = data.mode === "supplier-line";
+        const supplierProcess =
+          isSupplierLine && pq.supplierProcess
+            ? Array.isArray(pq.supplierProcess)
+              ? pq.supplierProcess[0]
+              : pq.supplierProcess
+            : undefined;
+
+        return {
+          ...shared,
+          initialValues: {
+            id: pq.id,
+            type: pq.type ?? "Scrap",
+            jobOperationId: pq.jobOperationId ?? "",
+            quantity: pq.quantity ?? 0,
+            scrapReasonId: pq.scrapReasonId ?? "",
+            notes: pq.notes ?? "",
+            employeeId:
+              isSupplierLine || !pq.employeeId ? "" : (pq.employeeId ?? ""),
+            actorKind: isSupplierLine
+              ? ("supplier" as const)
+              : ("employee" as const),
+            supplierProcessId: isSupplierLine
+              ? (pq.supplierProcessId ?? "")
+              : "",
+            supplierId: isSupplierLine
+              ? (supplierProcess?.supplierId ?? "")
+              : "",
+            configuration: pq.configuration ?? undefined
+          },
+          defaultActorKind: (isSupplierLine ? "supplier" : "employee") as
+            | "employee"
+            | "supplier"
         };
       },
       () => import("~/modules/production/ui/Jobs/ProductionQuantityForm")

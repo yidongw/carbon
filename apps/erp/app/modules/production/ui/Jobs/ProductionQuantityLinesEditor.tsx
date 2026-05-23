@@ -251,6 +251,7 @@ export function ProductionQuantityLinesEditor({
                 icon={<LuTrash2 />}
                 isDisabled={isDisabled || lines.length <= 1}
                 onClick={() => removeLine(line.key)}
+                className="transition-transform active:scale-[0.96]"
               />
             </HStack>
             <ItemConfigQuantityInput
@@ -307,6 +308,7 @@ export function ProductionQuantityLinesEditor({
           size="sm"
           isDisabled={isDisabled}
           onClick={addLine}
+          className="transition-transform active:scale-[0.96]"
         >
           <LuPlus className="mr-1.5 h-4 w-4" />
           <Trans>Add line</Trans>

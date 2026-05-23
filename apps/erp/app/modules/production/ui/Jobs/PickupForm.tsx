@@ -14,14 +14,8 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import type { z } from "zod";
-import {
-  Employee,
-  Hidden,
-  Number,
-  Select,
-  Submit,
-  TextArea
-} from "~/components/Form";
+import { Hidden, Number, Select, Submit, TextArea } from "~/components/Form";
+import { ProductionActorFields } from "./ProductionActorFields";
 import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions } from "~/hooks";
 import { isConfigTableOverlaySuccess } from "../../configTableOverlay";
@@ -75,6 +69,11 @@ export type PickupFormProps = {
   operationOptions?: { label: string; value: string }[];
   configurationParameters?: ConfigurationParameter[] | null;
   itemId?: string | null;
+  processId?: string | null;
+  operationType?: string | null;
+  defaultActorKind?: "employee" | "supplier";
+  lockActorSelection?: boolean;
+  supplierId?: string;
   onDismiss?: () => void;
   action?: string;
   fetcher?: import("react-router").FetcherWithComponents<unknown>;
@@ -85,6 +84,11 @@ const PickupForm = ({
   operationOptions,
   configurationParameters,
   itemId,
+  processId,
+  operationType,
+  defaultActorKind,
+  lockActorSelection: lockActorSelectionProp,
+  supplierId,
   onDismiss: onDismissProp,
   action: formAction,
   fetcher
@@ -161,6 +165,8 @@ const PickupForm = ({
     );
   };
 
+  const lockActorSelection = isEditing || Boolean(lockActorSelectionProp);
+
   const form = (
     <ValidatedForm
       validator={jobOperationPickupValidator}
@@ -191,7 +197,15 @@ const PickupForm = ({
               options={operationOptions ?? []}
             />
           )}
-          <Employee name="employeeId" label={t`Employee`} />
+          <ProductionActorFields
+            processId={processId}
+            operationType={operationType}
+            defaultActorKind={defaultActorKind}
+            lockActorSelection={lockActorSelection}
+            employeeIdValue={initialValues.employeeId}
+            supplierProcessIdValue={initialValues.supplierProcessId}
+            supplierIdValue={supplierId}
+          />
           {configTableRows && (
             <Hidden
               name="configuration"
@@ -221,10 +235,18 @@ const PickupForm = ({
       </DrawerBody>
       <DrawerFooter>
         <HStack>
-          <Submit isDisabled={isDisabled}>
+          <Submit
+            isDisabled={isDisabled}
+            className="transition-transform active:scale-[0.96]"
+          >
             <Trans>Save</Trans>
           </Submit>
-          <Button variant="solid" type="button" onClick={onDismiss}>
+          <Button
+            variant="solid"
+            type="button"
+            onClick={onDismiss}
+            className="transition-transform active:scale-[0.96]"
+          >
             <Trans>Cancel</Trans>
           </Button>
         </HStack>

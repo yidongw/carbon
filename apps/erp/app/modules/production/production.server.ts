@@ -32,3 +32,22 @@ export async function triggerJobReschedule(
 ) {
   return triggerJobSchedule(jobId, companyId, userId, "reschedule", "backward");
 }
+
+/**
+ * Runs recalculate → MRP → initial schedule in the background after release.
+ */
+export async function triggerJobRelease(
+  jobId: string,
+  companyId: string,
+  userId: string,
+  direction: "backward" | "forward" = "backward"
+) {
+  await trigger("release-job", {
+    jobId,
+    companyId,
+    userId,
+    direction
+  });
+
+  return { success: true };
+}

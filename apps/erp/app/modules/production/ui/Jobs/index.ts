@@ -12,6 +12,10 @@ import JobNotes from "./JobNotes";
 import JobOperationStepRecordsTable from "./JobOperationStepRecordsTable";
 import JobOperationsTable from "./JobOperationsTable";
 import JobProperties from "./JobProperties";
+import {
+  groupJobPurchaseOrderLines,
+  JobPurchaseOrderPriceBreakdown
+} from "./JobPurchaseOrderPriceBreakdown";
 import JobRiskRegister from "./JobRiskRegister";
 import JobStatus from "./JobStatus";
 import JobsTable from "./JobsTable";
@@ -34,6 +38,8 @@ export {
   JobMaterialForm,
   JobMaterialsTable,
   JobNotes,
+  groupJobPurchaseOrderLines,
+  JobPurchaseOrderPriceBreakdown,
   JobOperationsTable,
   JobOperationStepRecordsTable,
   JobProperties,

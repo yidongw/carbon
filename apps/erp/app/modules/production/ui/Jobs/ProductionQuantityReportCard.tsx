@@ -31,6 +31,7 @@ export function ProductionQuantityReportCard({
           size="sm"
           aria-label="View history"
           onClick={onHistory}
+          className="transition-transform active:scale-[0.96]"
         >
           <LuHistory className="h-4 w-4" />
         </Button>
@@ -42,6 +43,7 @@ export function ProductionQuantityReportCard({
           size="sm"
           aria-label="Edit report"
           onClick={onEdit}
+          className="transition-transform active:scale-[0.96]"
         >
           <LuPencil className="h-4 w-4" />
         </Button>
@@ -50,9 +52,15 @@ export function ProductionQuantityReportCard({
   );
 
   const quantitySummary = report.hasHistory ? (
-    <Trans>Originally reported {report.originalQuantity} units</Trans>
+    <Trans>
+      Originally reported{" "}
+      <span className="tabular-nums">{report.originalQuantity}</span> units
+    </Trans>
   ) : (
-    <Trans>Reported {report.originalQuantity} units</Trans>
+    <Trans>
+      Reported <span className="tabular-nums">{report.originalQuantity}</span>{" "}
+      units
+    </Trans>
   );
 
   return (

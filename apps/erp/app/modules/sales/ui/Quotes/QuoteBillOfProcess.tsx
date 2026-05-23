@@ -1,7 +1,6 @@
 "use client";
 import { useCarbon } from "@carbon/auth";
 import { Input, ValidatedForm } from "@carbon/form";
-import { Array as ArrayInput } from "~/components/Form";
 import type { JSONContent } from "@carbon/react";
 import {
   Alert,
@@ -51,9 +50,7 @@ import type { Dispatch, ReactNode, SetStateAction } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   LuActivity,
-  LuChevronRight,
   LuCirclePlus,
-  LuDollarSign,
   LuEllipsisVertical,
   LuGripVertical,
   LuHammer,
@@ -70,6 +67,7 @@ import { useFetcher, useFetchers, useParams } from "react-router";
 import type { z } from "zod";
 import { DirectionAwareTabs, EmployeeAvatar, TimeTypeIcon } from "~/components";
 import {
+  Array as ArrayInput,
   Hidden,
   InputControlled,
   Number,
@@ -77,14 +75,11 @@ import {
   Process,
   Select,
   SelectControlled,
-  StandardFactor,
   Submit,
   SupplierProcess,
   Tool,
-  UnitHint,
   WorkCenter
 } from "~/components/Form";
-import Procedure from "~/components/Form/Procedure";
 import { SupplierProcessPreview } from "~/components/Form/SupplierProcess";
 import { getUnitHint } from "~/components/Form/UnitHint";
 import UnitOfMeasure, {
@@ -100,6 +95,18 @@ import {
   useRouteData,
   useUser
 } from "~/hooks";
+import {
+  defaultOperationTypeFromProcess,
+  disablesOutsideBopDetailTabs,
+  isInsideOperationType,
+  isOutsideOperationType,
+  showsSupplierRoutingFields
+} from "~/modules/production/operationType";
+import { OutsideOperationBadge } from "~/modules/production/ui/OutsideOperationBadge";
+import {
+  MethodOperationInsideDetailTabs,
+  useOperationTypeSelectOptions
+} from "~/modules/production/ui/operationBop";
 import type {
   OperationParameter,
   OperationStep,
@@ -179,37 +186,37 @@ function makeItem(
         <h3 className="font-semibold truncate cursor-pointer">
           {operation.description}
         </h3>
-        {operation.operationType === "Outside" && (
+        {isOutsideOperationType(operation.operationType) ? (
           <SupplierProcessPreview
             processId={operation.processId}
             supplierProcessId={operation.operationSupplierProcessId}
           />
-        )}
+        ) : null}
       </VStack>
     ),
     checked: false,
     order: operation.operationOrder,
     details: (
       <HStack spacing={1}>
-        {operation.operationType === "Outside" ? (
-          <Badge>Outside</Badge>
+        {isOutsideOperationType(operation.operationType) ? (
+          <OutsideOperationBadge />
         ) : (
           <>
             {(operation?.setupTime ?? 0) > 0 && (
-              <Badge variant="secondary">
+              <Badge variant="secondary" className="tabular-nums">
                 <TimeTypeIcon type="Setup" className="h-3 w-3 mr-1" />
                 {operation.setupTime} {operation.setupUnit}
               </Badge>
             )}
             {(operation?.laborTime ?? 0) > 0 && (
-              <Badge variant="secondary">
+              <Badge variant="secondary" className="tabular-nums">
                 <TimeTypeIcon type="Labor" className="h-3 w-3 mr-1" />
                 {operation.laborTime} {operation.laborUnit}
               </Badge>
             )}
 
             {(operation?.machineTime ?? 0) > 0 && (
-              <Badge variant="secondary">
+              <Badge variant="secondary" className="tabular-nums">
                 <TimeTypeIcon type="Machine" className="h-3 w-3 mr-1" />
                 {operation.machineTime} {operation.machineUnit}
               </Badge>
@@ -581,7 +588,7 @@ const QuoteBillOfProcess = ({
         disabled:
           item.id in temporaryItems ||
           hasProcedure ||
-          item.data.operationType === "Outside",
+          disablesOutsideBopDetailTabs(item.data.operationType),
         label: (
           <span className="flex items-center gap-2">
             <span>
@@ -645,7 +652,7 @@ const QuoteBillOfProcess = ({
         disabled:
           item.id in temporaryItems ||
           hasProcedure ||
-          item.data.operationType === "Outside",
+          disablesOutsideBopDetailTabs(item.data.operationType),
         label: (
           <span className="flex items-center gap-2">
             <span>
@@ -688,7 +695,7 @@ const QuoteBillOfProcess = ({
         disabled:
           item.id in temporaryItems ||
           hasProcedure ||
-          item.data.operationType === "Outside",
+          disablesOutsideBopDetailTabs(item.data.operationType),
         label: (
           <span className="flex items-center gap-2">
             <span>
@@ -730,7 +737,8 @@ const QuoteBillOfProcess = ({
       {
         id: 4,
         disabled:
-          item.id in temporaryItems || item.data.operationType === "Outside",
+          item.id in temporaryItems ||
+          disablesOutsideBopDetailTabs(item.data.operationType),
         label: (
           <span className="flex items-center gap-2">
             <span>
@@ -870,6 +878,7 @@ const QuoteBillOfProcess = ({
               isDisabled
             }
             onClick={onAddItem}
+            className="transition-transform active:scale-[0.96]"
           >
             <Trans>Add Operation</Trans>
           </Button>
@@ -1120,6 +1129,7 @@ function AttributesForm({
               leftIcon={<LuCirclePlus />}
               isDisabled={isDisabled || fetcher.state !== "idle"}
               isLoading={fetcher.state !== "idle"}
+              className="transition-transform active:scale-[0.96]"
             >
               Save Step
             </Submit>
@@ -1586,6 +1596,7 @@ function ParametersForm({
               leftIcon={<LuCirclePlus />}
               isDisabled={isDisabled || fetcher.state !== "idle"}
               isLoading={fetcher.state !== "idle"}
+              className="transition-transform active:scale-[0.96]"
             >
               Add Parameter
             </Submit>
@@ -1772,13 +1783,7 @@ function OperationForm({
     ],
     []
   );
-  const operationTypeOptions = useMemo(
-    () => [
-      { value: "Inside", label: <Trans>Inside</Trans> },
-      { value: "Outside", label: <Trans>Outside</Trans> }
-    ],
-    []
-  );
+  const operationTypeOptions = useOperationTypeSelectOptions();
   const { quoteId, lineId } = useParams();
   const { company } = useUser();
   if (!quoteId) throw new Error("quoteId not found");
@@ -1807,12 +1812,6 @@ function OperationForm({
       onSubmit();
     }
   }, [item.id, fetcher.data, setTemporaryItems, onSubmit]);
-
-  const machineDisclosure = useDisclosure();
-  const laborDisclosure = useDisclosure();
-  const setupDisclosure = useDisclosure();
-  const costingDisclosure = useDisclosure();
-  const procedureDisclosure = useDisclosure();
 
   const [processData, setProcessData] = useState<{
     description: string;
@@ -1873,6 +1872,11 @@ function OperationForm({
 
     if (process.error) throw new Error(process.error.message);
 
+    const operationType = defaultOperationTypeFromProcess(
+      process.data?.processType
+    );
+    const useSupplierRouting = showsSupplierRoutingFields(operationType);
+
     setProcessData((p) => ({
       ...p,
       processId,
@@ -1880,43 +1884,48 @@ function OperationForm({
       description: process.data?.name ?? "",
       laborUnit: process.data?.defaultStandardFactor ?? "Hours/Piece",
       laborUnitHint: getUnitHint(process.data?.defaultStandardFactor),
-      laborRate:
-        // get the average labor rate from the work centers
-        activeWorkCenters.length
-          ? activeWorkCenters.reduce((acc, workCenter) => {
-              return (acc += workCenter.workCenter?.laborRate ?? 0);
-            }, 0) / activeWorkCenters.length
-          : p.laborRate,
+      laborRate: activeWorkCenters.length
+        ? activeWorkCenters.reduce((acc, workCenter) => {
+            return (acc += workCenter.workCenter?.laborRate ?? 0);
+          }, 0) / activeWorkCenters.length
+        : p.laborRate,
       machineUnit: process.data?.defaultStandardFactor ?? "Hours/Piece",
       machineUnitHint: getUnitHint(process.data?.defaultStandardFactor),
-      machineRate:
-        // get the average labor rate from the work centers
-        activeWorkCenters.length
-          ? activeWorkCenters.reduce((acc, workCenter) => {
-              return (acc += workCenter.workCenter?.machineRate ?? 0);
-            }, 0) / activeWorkCenters.length
-          : p.machineRate,
-      // get the average quoting rate from the work centers
+      machineRate: activeWorkCenters.length
+        ? activeWorkCenters.reduce((acc, workCenter) => {
+            return (acc += workCenter.workCenter?.machineRate ?? 0);
+          }, 0) / activeWorkCenters.length
+        : p.machineRate,
       overheadRate: activeWorkCenters.length
         ? activeWorkCenters?.reduce((acc, workCenter) => {
             return (acc += workCenter.workCenter?.overheadRate ?? 0);
           }, 0) / activeWorkCenters.length
         : p.overheadRate,
       operationMinimumCost:
-        supplierProcesses.data && supplierProcesses.data.length > 0
+        useSupplierRouting &&
+        supplierProcesses.data &&
+        supplierProcesses.data.length > 0
           ? supplierProcesses.data.reduce((acc, sp) => {
               return (acc += sp.minimumCost ?? 0);
             }, 0) / supplierProcesses.data.length
           : p.operationMinimumCost,
-      operationUnitCost: item.data.operationUnitCost ?? 0,
+      operationUnitCost:
+        useSupplierRouting &&
+        supplierProcesses.data &&
+        supplierProcesses.data.length > 0
+          ? supplierProcesses.data.reduce((acc, sp) => {
+              return (acc += sp.unitCost ?? 0);
+            }, 0) / supplierProcesses.data.length
+          : p.operationUnitCost,
       operationLeadTime:
-        supplierProcesses.data && supplierProcesses.data.length > 0
+        useSupplierRouting &&
+        supplierProcesses.data &&
+        supplierProcesses.data.length > 0
           ? supplierProcesses.data.reduce((acc, sp) => {
               return (acc += sp.leadTime ?? 0);
             }, 0) / supplierProcesses.data.length
           : p.operationLeadTime,
-      operationType:
-        process.data?.processType === "Outside" ? "Outside" : "Inside"
+      operationType
     }));
   };
 
@@ -1961,7 +1970,7 @@ function OperationForm({
     setProcessData((d) => ({
       ...d,
       operationMinimumCost: data?.minimumCost ?? 0,
-      operationUnitCost: 0, // TODO: get the unit cost from the purchase order history
+      operationUnitCost: data?.unitCost ?? 0,
       operationLeadTime: data?.leadTime ?? 0
     }));
   };
@@ -2005,12 +2014,22 @@ function OperationForm({
           options={operationTypeOptions}
           value={processData.operationType}
           onChange={(value) => {
+            const operationType = value?.value as string;
+            const useSupplierRouting =
+              showsSupplierRoutingFields(operationType);
             setProcessData((d) => ({
               ...d,
               setupUnit: "Total Minutes",
               laborUnit: "Minutes/Piece",
               machineUnit: "Minutes/Piece",
-              operationType: value?.value as string
+              operationType,
+              ...(useSupplierRouting
+                ? {}
+                : {
+                    operationMinimumCost: 0,
+                    operationUnitCost: 0,
+                    operationLeadTime: 0
+                  })
             }));
           }}
         />
@@ -2025,13 +2044,74 @@ function OperationForm({
           className="col-span-2"
         />
 
-        {processData.operationType === "Outside" ? (
+        {isInsideOperationType(processData.operationType) ? (
+          <>
+            <WorkCenter
+              name="workCenterId"
+              label={t`Work Center`}
+              isOptional
+              processId={processData.processId}
+              onChange={(value) => {
+                onWorkCenterChange((value?.value as string) ?? null);
+              }}
+            />
+            <NumberControlled
+              name="laborRate"
+              label={t`Labor Rate`}
+              minValue={0}
+              value={processData.laborRate}
+              formatOptions={{
+                style: "currency",
+                currency: baseCurrency
+              }}
+              onChange={(newValue) =>
+                setProcessData((d) => ({
+                  ...d,
+                  laborRate: newValue
+                }))
+              }
+            />
+            <NumberControlled
+              name="machineRate"
+              label={t`Machine Rate`}
+              minValue={0}
+              value={processData.machineRate}
+              formatOptions={{
+                style: "currency",
+                currency: baseCurrency
+              }}
+              onChange={(newValue) =>
+                setProcessData((d) => ({
+                  ...d,
+                  machineRate: newValue
+                }))
+              }
+            />
+            <NumberControlled
+              name="overheadRate"
+              label={t`Overhead Rate`}
+              minValue={0}
+              value={processData.overheadRate}
+              formatOptions={{
+                style: "currency",
+                currency: baseCurrency
+              }}
+              onChange={(newValue) =>
+                setProcessData((d) => ({
+                  ...d,
+                  overheadRate: newValue
+                }))
+              }
+            />
+          </>
+        ) : null}
+        {showsSupplierRoutingFields(processData.operationType) ? (
           <>
             <SupplierProcess
               name="operationSupplierProcessId"
               label={t`Supplier`}
               processId={processData.processId}
-              isOptional
+              isOptional={false}
               onChange={(value) => {
                 if (value) {
                   onSupplierProcessChange(value?.value as string);
@@ -2041,6 +2121,7 @@ function OperationForm({
             <NumberControlled
               name="operationMinimumCost"
               label={t`Minimum Cost`}
+              isOptional={false}
               minValue={0}
               value={processData.operationMinimumCost}
               formatOptions={{
@@ -2057,6 +2138,7 @@ function OperationForm({
             <NumberControlled
               name="operationUnitCost"
               label={t`Unit Cost`}
+              isOptional={false}
               minValue={0}
               value={processData.operationUnitCost}
               formatOptions={{
@@ -2073,6 +2155,7 @@ function OperationForm({
             <NumberControlled
               name="operationLeadTime"
               label={t`Lead Time`}
+              isOptional={false}
               minValue={0}
               value={processData.operationLeadTime}
               onChange={(newValue) =>
@@ -2084,408 +2167,23 @@ function OperationForm({
             />
           </>
         ) : (
-          <WorkCenter
-            name="workCenterId"
-            label={t`Work Center`}
-            isOptional
-            processId={processData.processId}
-            onChange={(value) => {
-              if (value) {
-                onWorkCenterChange(value?.value as string);
-              }
-            }}
-          />
+          <>
+            <Hidden name="operationSupplierProcessId" value="" />
+            <Hidden name="operationMinimumCost" value={0} />
+            <Hidden name="operationUnitCost" value={0} />
+            <Hidden name="operationLeadTime" value={0} />
+          </>
         )}
       </div>
 
-      {processData.operationType === "Inside" && (
-        <>
-          <div className="border border-border rounded-md shadow-sm p-4 flex flex-col gap-4">
-            <HStack
-              className="w-full justify-between cursor-pointer"
-              onClick={setupDisclosure.onToggle}
-            >
-              <HStack>
-                <TimeTypeIcon type="Setup" />
-                <Label>
-                  <Trans>Setup</Trans>
-                </Label>
-              </HStack>
-              <HStack>
-                {(processData.setupTime ?? 0) > 0 && (
-                  <Badge variant="secondary">
-                    <TimeTypeIcon type="Setup" className="h-3 w-3 mr-1" />
-                    {processData.setupTime} {processData.setupUnit}
-                  </Badge>
-                )}
-                <IconButton
-                  icon={<LuChevronRight />}
-                  aria-label={
-                    setupDisclosure.isOpen ? t`Collapse Setup` : t`Expand Setup`
-                  }
-                  variant="ghost"
-                  size="md"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setupDisclosure.onToggle();
-                  }}
-                  className={`transition-transform ${
-                    setupDisclosure.isOpen ? "rotate-90" : ""
-                  }`}
-                />
-              </HStack>
-            </HStack>
-            <div
-              className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
-                setupDisclosure.isOpen ? "" : "hidden"
-              }`}
-            >
-              <UnitHint
-                name="setupHint"
-                label={t`Setup`}
-                value={processData.setupUnitHint}
-                onChange={(hint) => {
-                  setProcessData((d) => ({
-                    ...d,
-                    setupUnitHint: hint,
-                    setupUnit:
-                      hint === "Fixed" ? "Total Minutes" : "Minutes/Piece"
-                  }));
-                }}
-              />
-              <NumberControlled
-                name="setupTime"
-                label={t`Setup Time`}
-                isOptional={false}
-                minValue={0}
-                value={processData.setupTime}
-                onChange={(newValue) =>
-                  setProcessData((d) => ({
-                    ...d,
-                    setupTime: newValue
-                  }))
-                }
-              />
-              <StandardFactor
-                name="setupUnit"
-                label={t`Setup Unit`}
-                isOptional={false}
-                hint={processData.setupUnitHint}
-                value={processData.setupUnit}
-                onChange={(newValue) => {
-                  setProcessData((d) => ({
-                    ...d,
-                    setupUnit: newValue?.value ?? "Total Minutes"
-                  }));
-                }}
-              />
-            </div>
-          </div>
-          <div className="border border-border rounded-md shadow-sm p-4 flex flex-col gap-4">
-            <HStack
-              className="w-full justify-between cursor-pointer"
-              onClick={laborDisclosure.onToggle}
-            >
-              <HStack>
-                <TimeTypeIcon type="Labor" />
-                <Label>
-                  <Trans>Labor</Trans>
-                </Label>
-              </HStack>
-              <HStack>
-                {(processData.laborTime ?? 0) > 0 && (
-                  <Badge variant="secondary">
-                    <TimeTypeIcon type="Labor" className="h-3 w-3 mr-1" />
-                    {processData.laborTime} {processData.laborUnit}
-                  </Badge>
-                )}
-                <IconButton
-                  icon={<LuChevronRight />}
-                  aria-label={
-                    laborDisclosure.isOpen ? t`Collapse Labor` : t`Expand Labor`
-                  }
-                  variant="ghost"
-                  size="md"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    laborDisclosure.onToggle();
-                  }}
-                  className={`transition-transform ${
-                    laborDisclosure.isOpen ? "rotate-90" : ""
-                  }`}
-                />
-              </HStack>
-            </HStack>
-            <div
-              className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
-                laborDisclosure.isOpen ? "" : "hidden"
-              }`}
-            >
-              <UnitHint
-                name="laborHint"
-                label={t`Labor`}
-                value={processData.laborUnitHint}
-                onChange={(hint) => {
-                  setProcessData((d) => ({
-                    ...d,
-                    laborUnitHint: hint,
-                    laborUnit:
-                      hint === "Fixed" ? "Total Minutes" : "Minutes/Piece"
-                  }));
-                }}
-              />
-              <NumberControlled
-                name="laborTime"
-                label={t`Labor Time`}
-                isOptional={false}
-                minValue={0}
-                value={processData.laborTime}
-                onChange={(newValue) =>
-                  setProcessData((d) => ({
-                    ...d,
-                    laborTime: newValue
-                  }))
-                }
-              />
-              <StandardFactor
-                name="laborUnit"
-                label={t`Labor Unit`}
-                isOptional={false}
-                hint={processData.laborUnitHint}
-                value={processData.laborUnit}
-                onChange={(newValue) => {
-                  setProcessData((d) => ({
-                    ...d,
-                    laborUnit: newValue?.value ?? "Total Minutes"
-                  }));
-                }}
-              />
-            </div>
-          </div>
-
-          <div className="border border-border rounded-md shadow-sm p-4 flex flex-col gap-4">
-            <HStack
-              className="w-full justify-between cursor-pointer"
-              onClick={machineDisclosure.onToggle}
-            >
-              <HStack>
-                <TimeTypeIcon type="Machine" />
-                <Label>
-                  <Trans>Machine</Trans>
-                </Label>
-              </HStack>
-              <HStack>
-                {(processData.machineTime ?? 0) > 0 && (
-                  <Badge variant="secondary">
-                    <TimeTypeIcon type="Machine" className="h-3 w-3 mr-1" />
-                    {processData.machineTime} {processData.machineUnit}
-                  </Badge>
-                )}
-                <IconButton
-                  icon={<LuChevronRight />}
-                  aria-label={
-                    machineDisclosure.isOpen
-                      ? t`Collapse Machine`
-                      : t`Expand Machine`
-                  }
-                  variant="ghost"
-                  size="md"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    machineDisclosure.onToggle();
-                  }}
-                  className={`transition-transform ${
-                    machineDisclosure.isOpen ? "rotate-90" : ""
-                  }`}
-                />
-              </HStack>
-            </HStack>
-            <div
-              className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
-                machineDisclosure.isOpen ? "" : "hidden"
-              }`}
-            >
-              <UnitHint
-                name="machineHint"
-                label={t`Machine`}
-                value={processData.machineUnitHint}
-                onChange={(hint) => {
-                  setProcessData((d) => ({
-                    ...d,
-                    machineUnitHint: hint,
-                    machineUnit:
-                      hint === "Fixed" ? "Total Minutes" : "Minutes/Piece"
-                  }));
-                }}
-              />
-              <NumberControlled
-                name="machineTime"
-                label={t`Machine Time`}
-                isOptional={false}
-                minValue={0}
-                value={processData.machineTime}
-                onChange={(newValue) =>
-                  setProcessData((d) => ({
-                    ...d,
-                    machineTime: newValue
-                  }))
-                }
-              />
-              <StandardFactor
-                name="machineUnit"
-                label={t`Machine Unit`}
-                isOptional={false}
-                hint={processData.machineUnitHint}
-                value={processData.machineUnit}
-                onChange={(newValue) => {
-                  setProcessData((d) => ({
-                    ...d,
-                    machineUnit: newValue?.value ?? "Total Minutes"
-                  }));
-                }}
-              />
-            </div>
-          </div>
-
-          <div className="border border-border rounded-md shadow-sm p-4 flex flex-col gap-4">
-            <HStack
-              className="w-full justify-between cursor-pointer"
-              onClick={costingDisclosure.onToggle}
-            >
-              <HStack>
-                <LuDollarSign />
-                <Label>Costing</Label>
-              </HStack>
-              <IconButton
-                icon={<LuChevronRight />}
-                aria-label={
-                  costingDisclosure.isOpen
-                    ? "Collapse Costing"
-                    : "Expand Costing"
-                }
-                variant="ghost"
-                size="md"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  costingDisclosure.onToggle();
-                }}
-                className={`transition-transform ${
-                  costingDisclosure.isOpen ? "rotate-90" : ""
-                }`}
-              />
-            </HStack>
-            <div
-              className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
-                costingDisclosure.isOpen ? "" : "hidden"
-              }`}
-            >
-              <NumberControlled
-                name="laborRate"
-                label={t`Labor Rate`}
-                minValue={0}
-                value={processData.laborRate}
-                formatOptions={{
-                  style: "currency",
-                  currency: baseCurrency
-                }}
-                onChange={(newValue) =>
-                  setProcessData((d) => ({
-                    ...d,
-                    laborRate: newValue
-                  }))
-                }
-              />
-              <NumberControlled
-                name="machineRate"
-                label={t`Machine Rate`}
-                minValue={0}
-                value={processData.machineRate}
-                formatOptions={{
-                  style: "currency",
-                  currency: baseCurrency
-                }}
-                onChange={(newValue) =>
-                  setProcessData((d) => ({
-                    ...d,
-                    machineRate: newValue
-                  }))
-                }
-              />
-              <NumberControlled
-                name="overheadRate"
-                label={t`Overhead Rate`}
-                minValue={0}
-                value={processData.overheadRate}
-                formatOptions={{
-                  style: "currency",
-                  currency: baseCurrency
-                }}
-                onChange={(newValue) =>
-                  setProcessData((d) => ({
-                    ...d,
-                    overheadRate: newValue
-                  }))
-                }
-              />
-            </div>
-          </div>
-
-          <div className="border border-border rounded-md shadow-sm p-4 flex flex-col gap-4">
-            <HStack
-              className="w-full justify-between cursor-pointer"
-              onClick={procedureDisclosure.onToggle}
-            >
-              <HStack>
-                <LuListChecks />
-                <Label>Procedure</Label>
-              </HStack>
-              <HStack>
-                {processData.procedureId && (
-                  <Badge variant="secondary">
-                    <LuListChecks className="h-3 w-3 mr-1" />
-                    Procedure
-                  </Badge>
-                )}
-                <IconButton
-                  icon={<LuChevronRight />}
-                  aria-label={
-                    procedureDisclosure.isOpen
-                      ? "Collapse Procedure"
-                      : "Expand Procedure"
-                  }
-                  variant="ghost"
-                  size="md"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    procedureDisclosure.onToggle();
-                  }}
-                  className={`transition-transform ${
-                    procedureDisclosure.isOpen ? "rotate-90" : ""
-                  }`}
-                />
-              </HStack>
-            </HStack>
-            <div
-              className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-1 pb-4 ${
-                procedureDisclosure.isOpen ? "" : "hidden"
-              }`}
-            >
-              <Procedure
-                name="procedureId"
-                label={t`Procedure`}
-                processId={processData.processId}
-                value={processData.procedureId}
-                onChange={(value) => {
-                  setProcessData((d) => ({
-                    ...d,
-                    procedureId: value?.value as string
-                  }));
-                }}
-              />
-            </div>
-          </div>
-        </>
-      )}
+      {isInsideOperationType(processData.operationType) ? (
+        <MethodOperationInsideDetailTabs
+          processData={processData}
+          setProcessData={setProcessData}
+          fieldKey={() => ""}
+          rulesByField={new Map()}
+        />
+      ) : null}
       <motion.div
         className="flex w-full items-center justify-end p-2"
         initial={{ opacity: 0, filter: "blur(4px)" }}

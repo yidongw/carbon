@@ -1,8 +1,8 @@
+import type { Json } from "@carbon/database";
 import { Badge, HStack } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ConfigurationParameter } from "~/modules/items/types";
 import { getConfigRowDisplayParts } from "~/modules/production/configParamsTableColumns";
-import type { ProductionQuantityReportLine } from "~/modules/production/productionQuantityReport.service";
 import { ConfigQuantityBreakdown } from "./ConfigQuantityBreakdown";
 
 function getProductionQuantityBadgeVariant(type: string) {
@@ -20,7 +20,12 @@ export function ProductionQuantityLineBreakdown({
   line,
   configurationParameters
 }: {
-  line: ProductionQuantityReportLine;
+  line: {
+    type: string;
+    quantity: number;
+    configuration: Json | null;
+    scrapReason?: { name: string | null } | null;
+  };
   configurationParameters?: ConfigurationParameter[] | null;
 }) {
   const { t } = useLingui();
@@ -46,7 +51,7 @@ export function ProductionQuantityLineBreakdown({
           <span className="font-medium text-muted-foreground">
             <Trans>Total</Trans>
           </span>
-          <span className="font-semibold text-foreground">
+          <span className="font-semibold text-foreground tabular-nums">
             {Number.isInteger(line.quantity)
               ? String(line.quantity)
               : line.quantity.toLocaleString(undefined, {

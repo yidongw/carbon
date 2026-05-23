@@ -250,6 +250,7 @@ function SupplierProcesses({ processId }: { processId?: string }) {
             processId: processId,
             supplierId: "",
             minimumCost: 0,
+            unitCost: 0,
             leadTime: 0
           }}
         />

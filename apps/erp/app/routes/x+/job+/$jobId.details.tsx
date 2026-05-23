@@ -28,7 +28,7 @@ import {
   SupplierAvatar
 } from "~/components";
 import { usePanels } from "~/components/Layout";
-import { usePermissions, useRealtime, useRouteData } from "~/hooks";
+import { usePermissions, useRealtime, useRouteData, useCurrencyFormatter } from "~/hooks";
 import type { Job, JobPurchaseOrderLine } from "~/modules/production";
 import {
   getJob,
@@ -50,6 +50,8 @@ import {
   JobDocuments,
   JobEstimatesVsActuals,
   JobNotes,
+  JobPurchaseOrderPriceBreakdown,
+  groupJobPurchaseOrderLines,
   JobRiskRegister
 } from "~/modules/production/ui/Jobs";
 import JobMakeMethodTools from "~/modules/production/ui/Jobs/JobMakeMethodTools";
@@ -341,7 +343,9 @@ function JobPurchaseOrderLines({
 }: {
   purchaseOrderLines: JobPurchaseOrderLine[];
 }) {
-  if (purchaseOrderLines.length === 0) {
+  const purchaseOrders = groupJobPurchaseOrderLines(purchaseOrderLines);
+
+  if (purchaseOrders.length === 0) {
     return null;
   }
 
@@ -352,15 +356,15 @@ function JobPurchaseOrderLines({
       </CardHeader>
       <CardContent>
         <div className="border rounded-lg">
-          {purchaseOrderLines.map((line, index) => (
+          {purchaseOrders.map((order, index) => (
             <div
-              key={line.id}
+              key={order.purchaseOrder.id}
               className={cn(
                 "border-b p-6",
-                index === purchaseOrderLines.length - 1 && "border-b-0"
+                index === purchaseOrders.length - 1 && "border-b-0"
               )}
             >
-              <JobPurchaseOrderLineItem line={line} />
+              <JobPurchaseOrderGroupItem order={order} />
             </div>
           ))}
         </div>
@@ -369,16 +373,31 @@ function JobPurchaseOrderLines({
   );
 }
 
-function JobPurchaseOrderLineItem({ line }: { line: JobPurchaseOrderLine }) {
+function JobPurchaseOrderGroupItem({
+  order
+}: {
+  order: ReturnType<typeof groupJobPurchaseOrderLines>[number];
+}) {
   const [items] = useItems();
-  const item = items.find((i) => i.id === line.itemId);
+  const primaryLine =
+    order.lines.find((line) => line.jobOperation) ?? order.lines[0];
+  const item = items.find((i) => i.id === primaryLine?.itemId);
+  const currencyCode = order.purchaseOrder.currencyCode ?? "USD";
+  const formatter = useCurrencyFormatter({ currency: currencyCode });
 
-  const isPartiallyShipped = (line.quantityShipped ?? 0) > 0;
-  const isShipped = (line.quantityShipped ?? 0) >= (line.purchaseQuantity ?? 0);
+  const isPartiallyShipped = order.lines.some(
+    (line) => (line.quantityShipped ?? 0) > 0
+  );
+  const isShipped = order.lines.every(
+    (line) => (line.quantityShipped ?? 0) >= (line.purchaseQuantity ?? 0)
+  );
 
-  const isPartiallyReceived = (line.quantityReceived ?? 0) > 0;
-  const isReceived =
-    (line.quantityReceived ?? 0) >= (line.purchaseQuantity ?? 0);
+  const isPartiallyReceived = order.lines.some(
+    (line) => (line.quantityReceived ?? 0) > 0
+  );
+  const isReceived = order.lines.every(
+    (line) => (line.quantityReceived ?? 0) >= (line.purchaseQuantity ?? 0)
+  );
 
   const status = isReceived
     ? "Received"
@@ -401,37 +420,52 @@ function JobPurchaseOrderLineItem({ line }: { line: JobPurchaseOrderLine }) {
           : "gray";
 
   return (
-    <div className="flex flex-1 justify-between items-center w-full">
-      <HStack spacing={4} className="w-2/3">
-        <HStack spacing={4} className="flex-1">
-          <div className="bg-muted border rounded-full flex items-center justify-center p-2">
-            <LuShoppingCart className="size-4" />
-          </div>
-          <VStack spacing={0}>
-            <Hyperlink
-              className="text-sm font-medium"
-              to={path.to.purchaseOrder(line.purchaseOrder.id)}
-            >
-              {line.purchaseOrder.purchaseOrderId}
-            </Hyperlink>
-            <PurchasingStatus status={line.purchaseOrder.status} />
-          </VStack>
-          <VStack className="items-center" spacing={0}>
-            <span className="text-sm font-medium text-center">
-              {item?.readableIdWithRevision}
-            </span>
-            <span className="text-xs text-muted-foreground text-center">
-              {item?.name}
-            </span>
-          </VStack>
-        </HStack>
+    <div className="flex w-full items-center justify-between gap-8">
+      <HStack spacing={4} className="w-fit shrink-0">
+        <div className="bg-muted border rounded-full flex shrink-0 items-center justify-center p-2">
+          <LuShoppingCart className="size-4" />
+        </div>
+        <VStack spacing={0}>
+          <Hyperlink
+            className="text-sm font-medium whitespace-nowrap"
+            to={path.to.purchaseOrder(order.purchaseOrder.id)}
+          >
+            {order.purchaseOrder.purchaseOrderId}
+          </Hyperlink>
+          <PurchasingStatus status={order.purchaseOrder.status} />
+        </VStack>
       </HStack>
-      <div className="flex flex-col items-end justify-center gap-1">
+
+      <VStack spacing={0} className="w-fit shrink-0 items-center text-center">
+        <span className="text-sm font-medium whitespace-nowrap">
+          {item?.readableIdWithRevision}
+        </span>
+        <span className="text-xs text-muted-foreground whitespace-nowrap">
+          {primaryLine?.jobOperation?.description ?? item?.name}
+        </span>
+      </VStack>
+
+      <VStack spacing={1} className="w-fit shrink-0 items-end">
         <SupplierAvatar
           className="text-sm"
-          supplierId={line.purchaseOrder.supplierId}
+          supplierId={order.purchaseOrder.supplierId}
         />
         <Badge variant={statusColor}>{status}</Badge>
+      </VStack>
+
+      <div className="w-fit shrink-0">
+        <JobPurchaseOrderPriceBreakdown
+          currencyCode={currencyCode}
+          lines={order.lines}
+          total={order.total}
+        >
+          <button
+            type="button"
+            className="text-sm font-semibold tabular-nums underline-offset-4 hover:underline whitespace-nowrap"
+          >
+            {formatter.format(order.total)}
+          </button>
+        </JobPurchaseOrderPriceBreakdown>
       </div>
     </div>
   );

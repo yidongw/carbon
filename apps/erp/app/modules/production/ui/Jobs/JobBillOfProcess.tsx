@@ -65,7 +65,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import {
   LuActivity,
-  LuChevronRight,
   LuCirclePlus,
   LuEllipsisVertical,
   LuGripVertical,
@@ -89,6 +88,7 @@ import {
   DirectionAwareTabs,
   EmployeeAvatar,
   Empty,
+  SupplierAvatar,
   TimeTypeIcon
 } from "~/components";
 import Activity from "~/components/Activity";
@@ -127,6 +127,8 @@ import {
   useUrlParams,
   useUser
 } from "~/hooks";
+import { getConfigurationParameters } from "~/modules/items";
+import type { ConfigurationParameter } from "~/modules/items/types";
 import type {
   OperationParameter,
   OperationStep,
@@ -146,12 +148,30 @@ import type { action as newJobOperationToolAction } from "~/routes/x+/job+/metho
 import { useItems, usePeople, useTools } from "~/stores";
 import { getPrivateUrl, path } from "~/utils/path";
 import {
+  buildReportedTargetRows,
+  getConfigRowDisplayParts,
+  type ReportedTargetRow
+} from "../../configParamsTableColumns";
+import {
+  type JobOperationSupplierQuantityReportWithLines,
+  listJobOperationSupplierQuantityReportsForOperation
+} from "../../jobOperationSupplierQuantityReport.service";
+import {
+  defaultOperationTypeFromProcess,
+  disablesOutsideBopDetailTabs,
+  isInsideOperationType,
+  isOutsideOperationType,
+  type OperationType,
+  showsSupplierRoutingFields
+} from "../../operationType";
+import {
   jobOperationValidator,
   jobOperationValidatorForReleasedJob,
   procedureSyncValidator
 } from "../../production.models";
 import {
   getJobPickupsPage,
+  getJobSupplierPickupsPage,
   getProductionEventsPage
 } from "../../production.service";
 import {
@@ -160,26 +180,33 @@ import {
   type OperationQuantitySummary as OperationQuantitySummaryData,
   type ProductionQuantityReportWithLines
 } from "../../productionQuantityReport.service";
+import type { Job, JobOperation } from "../../types";
+import { OutsideOperationBadge } from "../OutsideOperationBadge";
+import {
+  formatOperationTabSummary,
+  OperationDetailTabs,
+  useOperationTypeSelectOptions
+} from "../operationBop";
+import { ConfigParamsReportedTargetTable } from "./ConfigParamsReportedTargetTable";
+import { ConfigQuantityBreakdown } from "./ConfigQuantityBreakdown";
+import { JobOperationStatus, JobOperationTags } from "./JobOperationStatus";
+import { OperationDueDatePicker } from "./OperationDueDatePicker";
 import { OperationQuantitySummaryView } from "./OperationQuantitySummary";
 import { ProductionQuantityDispositionDrawer } from "./ProductionQuantityDispositionDrawer";
 import { ProductionQuantityReportCard } from "./ProductionQuantityReportCard";
 import { ProductionQuantityReportHistoryDrawer } from "./ProductionQuantityReportHistoryDrawer";
-import type { ConfigurationParameter } from "~/modules/items/types";
-import { getConfigurationParameters } from "~/modules/items";
-import {
-  buildReportedTargetRows,
-  getConfigRowDisplayParts,
-  type ReportedTargetRow
-} from "../../configParamsTableColumns";
-import { ConfigQuantityBreakdown } from "./ConfigQuantityBreakdown";
-import type { Job, JobOperation } from "../../types";
-import { ConfigParamsReportedTargetTable } from "./ConfigParamsReportedTargetTable";
-import { JobOperationStatus, JobOperationTags } from "./JobOperationStatus";
-import { OperationDueDatePicker } from "./OperationDueDatePicker";
 import {
   useProductionEventActivityMessage,
   useRelativeCreatedUpdatedText
 } from "./productionQuantityLabels";
+import { SupplierQuantityDispositionDrawer } from "./SupplierQuantityDispositionDrawer";
+import { SupplierQuantityReportCard } from "./SupplierQuantityReportCard";
+import {
+  mergePickups,
+  mergeQuantityReports,
+  type UnifiedPickupItem,
+  type UnifiedQuantityReportItem
+} from "./unifiedQuantityFeeds";
 
 export type Operation = z.infer<typeof jobOperationValidator> & {
   assignee: string | null;
@@ -272,46 +299,42 @@ function makeItem(
   return {
     id: operation.id!,
     title: (
-      <VStack spacing={0}>
+      <VStack spacing={0} className="min-w-0">
         <h3 className="font-semibold truncate cursor-pointer">
           {operation.description}
         </h3>
-        {operation.operationType === "Outside" && (
+        {isOutsideOperationType(operation.operationType) ? (
           <SupplierProcessPreview
             processId={operation.processId}
             supplierProcessId={operation.operationSupplierProcessId}
           />
-        )}
+        ) : null}
       </VStack>
     ),
     checked: false,
     order: operation.operationOrder,
-    details: (
+    details: isOutsideOperationType(operation.operationType) ? (
+      <OutsideOperationBadge />
+    ) : (
       <HStack spacing={1}>
-        {operation.operationType === "Outside" ? (
-          <Badge>{t`Outside`}</Badge>
-        ) : (
-          <>
-            {(operation?.setupTime ?? 0) > 0 && (
-              <Badge variant="secondary">
-                <TimeTypeIcon type="Setup" className="h-3 w-3 mr-1" />
-                {operation.setupTime} {operation.setupUnit}
-              </Badge>
-            )}
-            {(operation?.laborTime ?? 0) > 0 && (
-              <Badge variant="secondary">
-                <TimeTypeIcon type="Labor" className="h-3 w-3 mr-1" />
-                {operation.laborTime} {operation.laborUnit}
-              </Badge>
-            )}
+        {(operation?.setupTime ?? 0) > 0 && (
+          <Badge variant="secondary">
+            <TimeTypeIcon type="Setup" className="h-3 w-3 mr-1" />
+            {operation.setupTime} {operation.setupUnit}
+          </Badge>
+        )}
+        {(operation?.laborTime ?? 0) > 0 && (
+          <Badge variant="secondary">
+            <TimeTypeIcon type="Labor" className="h-3 w-3 mr-1" />
+            {operation.laborTime} {operation.laborUnit}
+          </Badge>
+        )}
 
-            {(operation?.machineTime ?? 0) > 0 && (
-              <Badge variant="secondary">
-                <TimeTypeIcon type="Machine" className="h-3 w-3 mr-1" />
-                {operation.machineTime} {operation.machineUnit}
-              </Badge>
-            )}
-          </>
+        {(operation?.machineTime ?? 0) > 0 && (
+          <Badge variant="secondary">
+            <TimeTypeIcon type="Machine" className="h-3 w-3 mr-1" />
+            {operation.machineTime} {operation.machineUnit}
+          </Badge>
         )}
       </HStack>
     ),
@@ -365,6 +388,7 @@ function makeItem(
                   variant="secondary"
                   aria-label={t`Create Issue`}
                   size="sm"
+                  className="transition-transform active:scale-[0.96]"
                 ></IconButton>
               </Link>
             </TooltipTrigger>
@@ -450,14 +474,15 @@ const usePendingOperations = (jobId: string) => {
     }, []);
 };
 
-type OperationPickup = Database["public"]["Tables"]["jobOperationPickup"]["Row"] & {
-  employee?: {
-    id: string;
-    firstName: string | null;
-    lastName: string | null;
-    avatarUrl: string | null;
-  } | null;
-};
+type OperationPickup =
+  Database["public"]["Tables"]["jobOperationPickup"]["Row"] & {
+    employee?: {
+      id: string;
+      firstName: string | null;
+      lastName: string | null;
+      avatarUrl: string | null;
+    } | null;
+  };
 
 const JobBillOfProcess = ({
   jobMakeMethodId,
@@ -612,22 +637,35 @@ const JobBillOfProcess = ({
   useEffect(() => {
     if (!carbon || initialOperations.length === 0) return;
 
-    const operationIds = initialOperations.map((o) => o.id).filter(Boolean) as string[];
+    const operationIds = initialOperations
+      .map((o) => o.id)
+      .filter(Boolean) as string[];
     if (operationIds.length === 0) return;
 
     let cancelled = false;
 
     const load = async () => {
-      const { data } = await carbon
-        .from("jobOperationPickup")
-        .select("jobOperationId, quantity")
-        .in("jobOperationId", operationIds)
-        .eq("companyId", companyId);
+      const [{ data: employeePickups }, { data: supplierPickups }] =
+        await Promise.all([
+          carbon
+            .from("jobOperationPickup")
+            .select("jobOperationId, quantity")
+            .in("jobOperationId", operationIds)
+            .eq("companyId", companyId),
+          carbon
+            .from("jobOperationSupplierPickup")
+            .select("jobOperationId, quantity")
+            .in("jobOperationId", operationIds)
+            .eq("companyId", companyId)
+        ]);
 
-      if (cancelled || !data) return;
+      if (cancelled) return;
 
       const totals = new Map<string, number>();
-      for (const row of data) {
+      for (const row of [
+        ...(employeePickups ?? []),
+        ...(supplierPickups ?? [])
+      ]) {
         totals.set(
           row.jobOperationId,
           (totals.get(row.jobOperationId) ?? 0) + (row.quantity as number)
@@ -637,7 +675,9 @@ const JobBillOfProcess = ({
     };
 
     void load();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [carbon, companyId, initialOperations]);
 
   const onToggleItem = (id: string) => {
@@ -777,28 +817,37 @@ const JobBillOfProcess = ({
     Database["public"]["Tables"]["productionEvent"]["Row"][]
   >([]);
   const [quantityReports, setQuantityReports] = useState<
-    ProductionQuantityReportWithLines[]
+    UnifiedQuantityReportItem[]
   >([]);
   const [operationQuantitySummary, setOperationQuantitySummary] =
     useState<OperationQuantitySummaryData | null>(null);
   const [quantityReportCount, setQuantityReportCount] = useState<number>(0);
   const [dispositionReport, setDispositionReport] =
     useState<ProductionQuantityReportWithLines | null>(null);
+  const [supplierDispositionReport, setSupplierDispositionReport] =
+    useState<JobOperationSupplierQuantityReportWithLines | null>(null);
   const [historyReport, setHistoryReport] =
     useState<ProductionQuantityReportWithLines | null>(null);
+  const [supplierHistoryReport, setSupplierHistoryReport] =
+    useState<JobOperationSupplierQuantityReportWithLines | null>(null);
+  const [creatingPoReportId, setCreatingPoReportId] = useState<string | null>(
+    null
+  );
   const [page, setPage] = useState(0);
   const [quantityPage, setQuantityPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [quantityIsLoading, setQuantityIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [quantityHasMore, setQuantityHasMore] = useState(true);
-  const [pickups, setPickups] = useState<OperationPickup[]>([]);
+  const [pickups, setPickups] = useState<UnifiedPickupItem[]>([]);
   const [pickupCount, setPickupCount] = useState<number>(0);
   const [pickupPage, setPickupPage] = useState(0);
   const [pickupIsLoading, setPickupIsLoading] = useState(false);
   const [pickupHasMore, setPickupHasMore] = useState(true);
   const [pickupScrollKey, setPickupScrollKey] = useState(0);
-  const [pickupTotals, setPickupTotals] = useState<Map<string, number>>(new Map());
+  const [pickupTotals, setPickupTotals] = useState<Map<string, number>>(
+    new Map()
+  );
   const addOperationButtonRef = useRef<HTMLButtonElement>(null);
   const refreshQuantityDataRef = useRef<() => Promise<void>>(() =>
     Promise.resolve()
@@ -815,17 +864,14 @@ const JobBillOfProcess = ({
   >([]);
   const [configSummaryLoading, setConfigSummaryLoading] = useState(false);
 
-  const hasConfigurationParameters =
-    (configurationParameters?.length ?? 0) > 0;
+  const hasConfigurationParameters = (configurationParameters?.length ?? 0) > 0;
 
   useEffect(() => {
     if (!itemId || !carbon) return;
 
     void getConfigurationParameters(carbon, itemId, companyId).then(
       ({ parameters }) => {
-        setConfigurationParameters(
-          parameters.length > 0 ? parameters : null
-        );
+        setConfigurationParameters(parameters.length > 0 ? parameters : null);
       }
     );
   }, [carbon, companyId, itemId]);
@@ -862,11 +908,15 @@ const JobBillOfProcess = ({
 
       const reportedConfigurations = (quantityResult.data ?? [])
         .map((row) => row.configuration)
-        .filter((config): config is NonNullable<typeof config> => config != null);
+        .filter(
+          (config): config is NonNullable<typeof config> => config != null
+        );
 
       const pickupConfigurations = (pickupResult.data ?? [])
         .map((row) => row.configuration)
-        .filter((config): config is NonNullable<typeof config> => config != null);
+        .filter(
+          (config): config is NonNullable<typeof config> => config != null
+        );
 
       setConfigSummaryRows(
         buildReportedTargetRows({
@@ -932,14 +982,23 @@ const JobBillOfProcess = ({
     let cancelled = false;
 
     const loadQuantityCount = async () => {
-      const { count } = await carbon
-        .from("productionQuantityReport")
-        .select("id", { count: "exact", head: true })
-        .eq("jobOperationId", selectedItemId)
-        .eq("companyId", companyId);
+      const [employeeCount, supplierCount] = await Promise.all([
+        carbon
+          .from("productionQuantityReport")
+          .select("id", { count: "exact", head: true })
+          .eq("jobOperationId", selectedItemId)
+          .eq("companyId", companyId),
+        carbon
+          .from("jobOperationSupplierQuantityReport")
+          .select("id", { count: "exact", head: true })
+          .eq("jobOperationId", selectedItemId)
+          .eq("companyId", companyId)
+      ]);
 
       if (!cancelled) {
-        setQuantityReportCount(count ?? 0);
+        setQuantityReportCount(
+          (employeeCount.count ?? 0) + (supplierCount.count ?? 0)
+        );
       }
     };
 
@@ -956,14 +1015,21 @@ const JobBillOfProcess = ({
     let cancelled = false;
 
     const loadPickupCount = async () => {
-      const { count } = await carbon
-        .from("jobOperationPickup")
-        .select("id", { count: "exact", head: true })
-        .eq("jobOperationId", selectedItemId)
-        .eq("companyId", companyId);
+      const [employeeCount, supplierCount] = await Promise.all([
+        carbon
+          .from("jobOperationPickup")
+          .select("id", { count: "exact", head: true })
+          .eq("jobOperationId", selectedItemId)
+          .eq("companyId", companyId),
+        carbon
+          .from("jobOperationSupplierPickup")
+          .select("id", { count: "exact", head: true })
+          .eq("jobOperationId", selectedItemId)
+          .eq("companyId", companyId)
+      ]);
 
       if (!cancelled) {
-        setPickupCount(count ?? 0);
+        setPickupCount((employeeCount.count ?? 0) + (supplierCount.count ?? 0));
       }
     };
 
@@ -978,72 +1044,122 @@ const JobBillOfProcess = ({
     topic: `pickup-counts:${selectedItemId}`,
     enabled: !!selectedItemId && !temporaryItems[selectedItemId ?? ""],
     setup(channel) {
-      return channel.on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "jobOperationPickup",
-          filter: `jobOperationId=eq.${selectedItemId}`
-        },
-        (payload) => {
-          switch (payload.eventType) {
-            case "INSERT": {
-              const inserted = payload.new as OperationPickup;
-              setPickups((prev) => {
-                if (prev.some((p) => p.id === inserted.id)) return prev;
-                return [inserted, ...prev];
-              });
-              setPickupCount((count) => count + 1);
-              setPickupTotals((prev) => {
-                const next = new Map(prev);
-                next.set(
-                  inserted.jobOperationId,
-                  (next.get(inserted.jobOperationId) ?? 0) + (inserted.quantity as number)
-                );
-                return next;
-              });
-              break;
-            }
-            case "UPDATE": {
-              const updated = payload.new as OperationPickup;
-              const previous = payload.old as { id: string; quantity?: number; jobOperationId?: string };
-              setPickups((prev) =>
-                prev.map((p) => (p.id === updated.id ? updated : p))
-              );
-              if (previous.jobOperationId && previous.quantity !== undefined) {
-                setPickupTotals((prev) => {
-                  const next = new Map(prev);
-                  const opId = updated.jobOperationId;
-                  const oldQty = previous.quantity as number;
-                  const newQty = updated.quantity as number;
-                  next.set(opId, Math.max(0, (next.get(opId) ?? 0) - oldQty + newQty));
-                  return next;
+      return channel
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "jobOperationPickup",
+            filter: `jobOperationId=eq.${selectedItemId}`
+          },
+          (payload) => {
+            switch (payload.eventType) {
+              case "INSERT": {
+                const inserted = payload.new as OperationPickup;
+                const item: UnifiedPickupItem = {
+                  kind: "employee",
+                  id: inserted.id,
+                  createdAt: inserted.createdAt,
+                  pickup: inserted
+                };
+                setPickups((prev) => {
+                  if (prev.some((p) => p.id === inserted.id)) return prev;
+                  return [item, ...prev];
                 });
-              }
-              break;
-            }
-            case "DELETE": {
-              const deleted = payload.old as { id: string; jobOperationId?: string; quantity?: number };
-              setPickups((prev) => prev.filter((p) => p.id !== deleted.id));
-              setPickupCount((count) => Math.max(0, count - 1));
-              if (deleted.jobOperationId && deleted.quantity !== undefined) {
+                setPickupCount((count) => count + 1);
                 setPickupTotals((prev) => {
                   const next = new Map(prev);
                   next.set(
-                    deleted.jobOperationId!,
-                    Math.max(0, (next.get(deleted.jobOperationId!) ?? 0) - (deleted.quantity as number))
+                    inserted.jobOperationId,
+                    (next.get(inserted.jobOperationId) ?? 0) +
+                      (inserted.quantity as number)
                   );
                   return next;
                 });
+                break;
               }
-              break;
+              case "UPDATE": {
+                const updated = payload.new as OperationPickup;
+                const previous = payload.old as {
+                  id: string;
+                  quantity?: number;
+                  jobOperationId?: string;
+                };
+                setPickups((prev) =>
+                  prev.map((p) =>
+                    p.id === updated.id && p.kind === "employee"
+                      ? {
+                          kind: "employee",
+                          id: updated.id,
+                          createdAt: updated.createdAt,
+                          pickup: updated
+                        }
+                      : p
+                  )
+                );
+                if (
+                  previous.jobOperationId &&
+                  previous.quantity !== undefined
+                ) {
+                  setPickupTotals((prev) => {
+                    const next = new Map(prev);
+                    const opId = updated.jobOperationId;
+                    const oldQty = previous.quantity as number;
+                    const newQty = updated.quantity as number;
+                    next.set(
+                      opId,
+                      Math.max(0, (next.get(opId) ?? 0) - oldQty + newQty)
+                    );
+                    return next;
+                  });
+                }
+                break;
+              }
+              case "DELETE": {
+                const deleted = payload.old as {
+                  id: string;
+                  jobOperationId?: string;
+                  quantity?: number;
+                };
+                setPickups((prev) => prev.filter((p) => p.id !== deleted.id));
+                setPickupCount((count) => Math.max(0, count - 1));
+                if (deleted.jobOperationId && deleted.quantity !== undefined) {
+                  setPickupTotals((prev) => {
+                    const next = new Map(prev);
+                    next.set(
+                      deleted.jobOperationId!,
+                      Math.max(
+                        0,
+                        (next.get(deleted.jobOperationId!) ?? 0) -
+                          (deleted.quantity as number)
+                      )
+                    );
+                    return next;
+                  });
+                }
+                break;
+              }
+              default:
+                break;
             }
-            default:
-              break;
           }
-        }
-      );
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "jobOperationSupplierPickup",
+            filter: `jobOperationId=eq.${selectedItemId}`
+          },
+          () => {
+            setPickups([]);
+            setPickupPage(0);
+            setPickupHasMore(true);
+            setPickupScrollKey((k) => k + 1);
+          }
+        );
     }
   });
 
@@ -1118,24 +1234,35 @@ const JobBillOfProcess = ({
   const refreshQuantityData = useCallback(async () => {
     if (!carbon || !selectedItemId || temporaryItems[selectedItemId]) return;
 
-    const [summaryResult, reportsResult] = await Promise.all([
-      getOperationQuantitySummary(carbon, selectedItemId, companyId),
-      listProductionQuantityReportsForOperation(carbon, {
-        jobOperationId: selectedItemId,
-        companyId,
-        page: 1
-      })
-    ]);
+    const [summaryResult, employeeReports, supplierReports] = await Promise.all(
+      [
+        getOperationQuantitySummary(carbon, selectedItemId, companyId),
+        listProductionQuantityReportsForOperation(carbon, {
+          jobOperationId: selectedItemId,
+          companyId,
+          page: 1
+        }),
+        listJobOperationSupplierQuantityReportsForOperation(carbon, {
+          jobOperationId: selectedItemId,
+          companyId,
+          page: 1
+        })
+      ]
+    );
 
     if (summaryResult.data) {
       setOperationQuantitySummary(summaryResult.data);
     }
-    if (reportsResult.data) {
-      setQuantityReports(reportsResult.data);
-      setQuantityReportCount(reportsResult.count);
-      setQuantityPage(1);
-      setQuantityHasMore(reportsResult.hasMore);
-    }
+    const employee = employeeReports.data ?? [];
+    const supplier = supplierReports.data ?? [];
+    setQuantityReports(mergeQuantityReports(employee, supplier));
+    setQuantityReportCount(
+      (employeeReports.count ?? 0) + (supplierReports.count ?? 0)
+    );
+    setQuantityPage(1);
+    setQuantityHasMore(
+      Boolean(employeeReports.hasMore || supplierReports.hasMore)
+    );
   }, [carbon, companyId, selectedItemId, temporaryItems]);
 
   refreshQuantityDataRef.current = refreshQuantityData;
@@ -1171,6 +1298,26 @@ const JobBillOfProcess = ({
             filter: `jobOperationId=eq.${selectedItemId}`
           },
           onQuantityChange
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "jobOperationSupplierQuantity",
+            filter: `jobOperationId=eq.${selectedItemId}`
+          },
+          onQuantityChange
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "jobOperationSupplierQuantityReport",
+            filter: `jobOperationId=eq.${selectedItemId}`
+          },
+          onQuantityChange
         );
     }
   });
@@ -1182,19 +1329,32 @@ const JobBillOfProcess = ({
 
     setQuantityIsLoading(true);
 
-    const result = await listProductionQuantityReportsForOperation(carbon, {
-      jobOperationId: selectedItemId,
-      companyId,
-      page: quantityPage + 1
-    });
+    const page = quantityPage + 1;
+    const [employeeResult, supplierResult] = await Promise.all([
+      listProductionQuantityReportsForOperation(carbon, {
+        jobOperationId: selectedItemId,
+        companyId,
+        page
+      }),
+      listJobOperationSupplierQuantityReportsForOperation(carbon, {
+        jobOperationId: selectedItemId,
+        companyId,
+        page
+      })
+    ]);
 
-    if (result.data && result.data.length > 0) {
-      setQuantityReports((prev) => [...prev, ...result.data!]);
+    const merged = mergeQuantityReports(
+      employeeResult.data ?? [],
+      supplierResult.data ?? []
+    );
+
+    if (merged.length > 0) {
+      setQuantityReports((prev) => [...prev, ...merged]);
       setQuantityPage((prevPage) => prevPage + 1);
-      if (result.count != null) {
-        setQuantityReportCount(result.count);
-      }
-      if (result.hasMore === false) {
+      setQuantityReportCount(
+        (employeeResult.count ?? 0) + (supplierResult.count ?? 0)
+      );
+      if (!employeeResult.hasMore && !supplierResult.hasMore) {
         setQuantityHasMore(false);
       }
     } else {
@@ -1214,7 +1374,25 @@ const JobBillOfProcess = ({
   const handleQuantityReportSaved = useCallback(
     (updated: ProductionQuantityReportWithLines) => {
       setQuantityReports((prev) =>
-        prev.map((r) => (r.id === updated.id ? updated : r))
+        prev.map((item) =>
+          item.actorKind === "employee" && item.id === updated.id
+            ? { ...item, report: updated }
+            : item
+        )
+      );
+      void refreshQuantityData();
+    },
+    [refreshQuantityData]
+  );
+
+  const handleSupplierQuantityReportSaved = useCallback(
+    (updated: JobOperationSupplierQuantityReportWithLines) => {
+      setQuantityReports((prev) =>
+        prev.map((item) =>
+          item.actorKind === "supplier" && item.id === updated.id
+            ? { ...item, report: updated }
+            : item
+        )
       );
       void refreshQuantityData();
     },
@@ -1226,20 +1404,25 @@ const JobBillOfProcess = ({
 
     setPickupIsLoading(true);
 
-    const result = await getJobPickupsPage(
-      carbon!,
-      selectedItemId,
-      companyId,
-      pickupPage + 1
+    const page = pickupPage + 1;
+    const [employeeResult, supplierResult] = await Promise.all([
+      getJobPickupsPage(carbon!, selectedItemId, companyId, page),
+      getJobSupplierPickupsPage(carbon!, selectedItemId, companyId, page)
+    ]);
+
+    const merged = mergePickups(
+      (employeeResult.data ?? []) as OperationPickup[],
+      (supplierResult.data ?? []) as Extract<
+        UnifiedPickupItem,
+        { kind: "supplier" }
+      >["pickup"][]
     );
 
-    if (result.data && result.data.length > 0) {
-      setPickups((prev) => [...prev, ...(result.data as OperationPickup[])]);
+    if (merged.length > 0) {
+      setPickups((prev) => [...prev, ...merged]);
       setPickupPage((prevPage) => prevPage + 1);
-      if (result.count != null) {
-        setPickupCount(result.count);
-      }
-      if (result.hasMore === false) {
+      setPickupCount((employeeResult.count ?? 0) + (supplierResult.count ?? 0));
+      if (!employeeResult.hasMore && !supplierResult.hasMore) {
         setPickupHasMore(false);
       }
     } else {
@@ -1247,7 +1430,14 @@ const JobBillOfProcess = ({
     }
 
     setPickupIsLoading(false);
-  }, [pickupIsLoading, pickupHasMore, carbon, selectedItemId, companyId, pickupPage]);
+  }, [
+    pickupIsLoading,
+    pickupHasMore,
+    carbon,
+    selectedItemId,
+    companyId,
+    pickupPage
+  ]);
 
   const [tabChangeRerender, setTabChangeRerender] = useState<number>(1);
 
@@ -1280,8 +1470,7 @@ const JobBillOfProcess = ({
     const tools = operationDetails?.jobOperationTool ?? [];
     const parameters = operationDetails?.jobOperationParameter ?? [];
     const steps = operationDetails?.jobOperationStep ?? [];
-    const quantityCount =
-      item.id === selectedItemId ? quantityReportCount : 0;
+    const quantityCount = item.id === selectedItemId ? quantityReportCount : 0;
     const canEditQuantityReport =
       !isDisabled && permissions.can("update", "production");
     const currentPickupCount = item.id === selectedItemId ? pickupCount : 0;
@@ -1329,21 +1518,49 @@ const JobBillOfProcess = ({
     const QuantityReportRow = ({
       item: reportItem
     }: {
-      item: ProductionQuantityReportWithLines;
-    }) => (
-      <ProductionQuantityReportCard
-        report={reportItem}
-        configurationParameters={configurationParameters}
-        canEdit={canEditQuantityReport}
-        onEdit={() => setDispositionReport(reportItem)}
-        onHistory={() => setHistoryReport(reportItem)}
-      />
-    );
+      item: UnifiedQuantityReportItem;
+    }) =>
+      reportItem.actorKind === "employee" ? (
+        <ProductionQuantityReportCard
+          report={reportItem.report}
+          configurationParameters={configurationParameters}
+          canEdit={canEditQuantityReport}
+          onEdit={() => setDispositionReport(reportItem.report)}
+          onHistory={() => setHistoryReport(reportItem.report)}
+        />
+      ) : (
+        <SupplierQuantityReportCard
+          report={reportItem.report}
+          configurationParameters={configurationParameters}
+          canEdit={canEditQuantityReport}
+          onEdit={() => setSupplierDispositionReport(reportItem.report)}
+          onHistory={() => setSupplierHistoryReport(reportItem.report)}
+          isCreatingPo={creatingPoReportId === reportItem.id}
+          onCreatePo={async () => {
+            setCreatingPoReportId(reportItem.id);
+            try {
+              const res = await fetch(
+                path.to.api.supplierQuantityReportCreatePo(reportItem.id),
+                { method: "POST", credentials: "include" }
+              );
+              const body = await res.json();
+              if (!res.ok) {
+                toast.error(body.error ?? "Failed to create PO");
+                return;
+              }
+              toast.success("Purchase order line created");
+              void refreshQuantityData();
+            } finally {
+              setCreatingPoReportId(null);
+            }
+          }}
+        />
+      );
 
     const PickupActivityRowWrapper = ({
       item: pickupItem
     }: {
-      item: OperationPickup;
+      item: UnifiedPickupItem;
     }) => (
       <PickupActivityRow
         item={pickupItem}
@@ -1360,7 +1577,7 @@ const JobBillOfProcess = ({
       {
         id: 1,
         label: t`Instructions`,
-        disabled: item.data.operationType === "Outside",
+        disabled: disablesOutsideBopDetailTabs(item.data.operationType),
         content: (
           <div className="flex flex-col">
             <div>
@@ -1396,7 +1613,7 @@ const JobBillOfProcess = ({
       },
       {
         id: 2,
-        disabled: item.data.operationType === "Outside",
+        disabled: disablesOutsideBopDetailTabs(item.data.operationType),
         label: (
           <span className="flex items-center gap-2">
             <span>
@@ -1420,7 +1637,7 @@ const JobBillOfProcess = ({
       },
       {
         id: 3,
-        disabled: item.data.operationType === "Outside",
+        disabled: disablesOutsideBopDetailTabs(item.data.operationType),
         label: (
           <span className="flex items-center gap-2">
             <span>
@@ -1445,7 +1662,7 @@ const JobBillOfProcess = ({
       },
       {
         id: 4,
-        disabled: item.data.operationType === "Outside",
+        disabled: disablesOutsideBopDetailTabs(item.data.operationType),
         label: (
           <span className="flex items-center gap-2">
             <span>
@@ -1469,7 +1686,7 @@ const JobBillOfProcess = ({
       },
       {
         id: 5,
-        disabled: item.data.operationType === "Outside",
+        disabled: false,
         label: (
           <span className="flex items-center gap-2">
             <span>
@@ -1496,6 +1713,7 @@ const JobBillOfProcess = ({
                   variant="secondary"
                   size="sm"
                   onClick={() => onAddPickup(item.id)}
+                  className="transition-transform active:scale-[0.96]"
                 >
                   <LuCirclePlus className="mr-1.5 h-4 w-4" />
                   <Trans>Record pickup</Trans>
@@ -1514,7 +1732,7 @@ const JobBillOfProcess = ({
       },
       {
         id: 6,
-        disabled: item.data.operationType === "Outside",
+        disabled: false,
         label: (
           <span className="flex items-center gap-2">
             <span>
@@ -1550,7 +1768,7 @@ const JobBillOfProcess = ({
                   <Button
                     variant="secondary"
                     size="sm"
-                    className="shrink-0"
+                    className="shrink-0 transition-transform active:scale-[0.96]"
                     onClick={() => onAddProductionQuantity(item.id)}
                   >
                     <LuCirclePlus className="mr-1.5 h-4 w-4" />
@@ -1571,7 +1789,7 @@ const JobBillOfProcess = ({
       },
       {
         id: 7,
-        disabled: item.data.operationType === "Outside",
+        disabled: disablesOutsideBopDetailTabs(item.data.operationType),
         label: t`Events`,
         content: (
           <motion.div
@@ -1596,7 +1814,7 @@ const JobBillOfProcess = ({
       },
       {
         id: 8,
-        disabled: item.data.operationType === "Outside",
+        disabled: disablesOutsideBopDetailTabs(item.data.operationType),
         label: t`Chat`,
         content: <OperationChat jobOperationId={item.id} />
       }
@@ -1780,69 +1998,95 @@ const JobBillOfProcess = ({
           onClose={() => setHistoryReport(null)}
         />
       ) : null}
+      {supplierDispositionReport ? (
+        <SupplierQuantityDispositionDrawer
+          report={supplierDispositionReport}
+          configurationParameters={configurationParameters}
+          itemId={itemId}
+          open
+          onClose={() => setSupplierDispositionReport(null)}
+          onSaved={handleSupplierQuantityReportSaved}
+        />
+      ) : null}
+      {supplierHistoryReport ? (
+        <ProductionQuantityReportHistoryDrawer
+          reportId={supplierHistoryReport.id}
+          linesApiPath={path.to.api.supplierQuantityReportLines(
+            supplierHistoryReport.id,
+            true
+          )}
+          supplierId={supplierHistoryReport.supplierProcess?.supplierId}
+          reportCreatedBy={supplierHistoryReport.createdBy}
+          configurationParameters={configurationParameters}
+          open
+          onClose={() => setSupplierHistoryReport(null)}
+        />
+      ) : null}
     </>
   );
 
   if (routeJob) {
     return (
       <>
-      <div className="flex w-max max-w-[min(42rem,calc(100vw-1.5rem))] flex-col">
-        <HStack className="shrink-0 items-center justify-between border-b border-border px-4 py-3 pr-12">
-          <h3 className="text-base font-medium font-headline tracking-tight text-foreground">
-            <Trans>Bill of Process</Trans>
-          </h3>
-          <Button
-            ref={addOperationButtonRef}
-            variant="secondary"
-            isDisabled={
-              !permissions.can("update", "production") ||
-              selectedItemId !== null ||
-              isDisabled
-            }
-            onClick={onAddItem}
-          >
-            <Trans>Add Operation</Trans>
-          </Button>
-        </HStack>
-        <div className="min-h-0 max-h-[min(72vh,48rem)] overflow-y-auto px-3 py-3">
-          {list}
+        <div className="flex w-max max-w-[min(42rem,calc(100vw-1.5rem))] flex-col">
+          <HStack className="shrink-0 items-center justify-between border-b border-border px-4 py-3 pr-12">
+            <h3 className="text-base font-medium font-headline tracking-tight text-foreground">
+              <Trans>Bill of Process</Trans>
+            </h3>
+            <Button
+              ref={addOperationButtonRef}
+              variant="secondary"
+              isDisabled={
+                !permissions.can("update", "production") ||
+                selectedItemId !== null ||
+                isDisabled
+              }
+              onClick={onAddItem}
+              className="transition-transform active:scale-[0.96]"
+            >
+              <Trans>Add Operation</Trans>
+            </Button>
+          </HStack>
+          <div className="min-h-0 max-h-[min(72vh,48rem)] overflow-y-auto px-3 py-3">
+            {list}
+          </div>
         </div>
-      </div>
-      {configSummaryModalElement}
-      {quantityDrawerElements}
+        {configSummaryModalElement}
+        {quantityDrawerElements}
       </>
     );
   }
 
   return (
     <>
-    <Card>
-      <HStack className="justify-between">
-        <CardHeader>
-          <CardTitle>
-            <Trans>Bill of Process</Trans>
-          </CardTitle>
-        </CardHeader>
+      <Card>
+        <HStack className="justify-between">
+          <CardHeader>
+            <CardTitle>
+              <Trans>Bill of Process</Trans>
+            </CardTitle>
+          </CardHeader>
 
-        <CardAction>
-          <Button
-            ref={addOperationButtonRef}
-            variant="secondary"
-            isDisabled={
-              !permissions.can("update", "production") ||
-              selectedItemId !== null ||
-              isDisabled
-            }
-            onClick={onAddItem}
-          >
-            <Trans>Add Operation</Trans>
-          </Button>
-        </CardAction>
-      </HStack>
-      <CardContent>{list}</CardContent>
-    </Card>
-    {configSummaryModalElement}
-    {quantityDrawerElements}
+          <CardAction>
+            <Button
+              ref={addOperationButtonRef}
+              variant="secondary"
+              isDisabled={
+                !permissions.can("update", "production") ||
+                selectedItemId !== null ||
+                isDisabled
+              }
+              onClick={onAddItem}
+              className="transition-transform active:scale-[0.96]"
+            >
+              <Trans>Add Operation</Trans>
+            </Button>
+          </CardAction>
+        </HStack>
+        <CardContent>{list}</CardContent>
+      </Card>
+      {configSummaryModalElement}
+      {quantityDrawerElements}
     </>
   );
 };
@@ -2867,153 +3111,6 @@ function ParametersListItem({
   );
 }
 
-function abbreviateOperationUnit(unit: string | null | undefined) {
-  switch (unit) {
-    case "Minutes/Piece":
-      return "min/pc";
-    case "Hours/Piece":
-      return "hr/pc";
-    case "Seconds/Piece":
-      return "sec/pc";
-    case "Total Minutes":
-      return "min";
-    case "Total Hours":
-      return "hr";
-    case "Total Seconds":
-      return "sec";
-    default:
-      return (unit ?? "")
-        .replace("Minutes", "min")
-        .replace("Minute", "min")
-        .replace("Hours", "hr")
-        .replace("Hour", "hr")
-        .replace("Seconds", "sec")
-        .replace("Second", "sec")
-        .replace("Piece", "pc")
-        .replace("Total ", "");
-  }
-}
-
-function formatOperationTabSummary(time: number, unit: string) {
-  return `${time} ${abbreviateOperationUnit(unit)}`;
-}
-
-type OperationDetailSection = {
-  id: string;
-  label: ReactNode;
-  icon: ReactNode;
-  accessibilityLabel: string;
-  summary?: string;
-  summaryTitle?: string;
-  content: ReactNode;
-  contentClassName?: string;
-};
-
-function OperationDetailTabs({
-  sections
-}: {
-  sections: OperationDetailSection[];
-}) {
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-  const expandedSection = sections.find((section) => section.id === expandedId);
-
-  return (
-    <div className="flex w-full flex-col overflow-hidden rounded-b-lg border border-border bg-card shadow-sm">
-      <div
-        className={cn(
-          "flex w-full flex-row bg-muted/40",
-          expandedSection && "border-b border-border"
-        )}
-      >
-        {sections.map((section, index) => {
-          const isExpanded = expandedId === section.id;
-          return (
-            <button
-              key={section.id}
-              type="button"
-              title={
-                section.summary && !isExpanded
-                  ? section.summaryTitle
-                  : undefined
-              }
-              aria-label={
-                section.summary && !isExpanded && section.summaryTitle
-                  ? `${section.accessibilityLabel}, ${section.summaryTitle}`
-                  : section.accessibilityLabel
-              }
-              className={cn(
-                "group relative flex flex-1 min-w-0 items-center gap-2 border-b-2 px-3 py-2.5 text-left transition-[color,background-color,border-color] duration-200",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
-                index > 0 && "border-l border-border",
-                isExpanded
-                  ? "z-10 -mb-px border-b-primary bg-background text-foreground"
-                  : "z-0 border-b-transparent text-muted-foreground hover:bg-muted hover:text-foreground"
-              )}
-              onClick={() => setExpandedId(isExpanded ? null : section.id)}
-            >
-              <motion.span
-                animate={{ rotate: isExpanded ? 90 : 0 }}
-                transition={{ type: "spring", bounce: 0, duration: 0.25 }}
-                className={cn(
-                  "flex shrink-0 transition-colors duration-200",
-                  isExpanded
-                    ? "text-foreground"
-                    : "text-muted-foreground group-hover:text-foreground"
-                )}
-              >
-                <LuChevronRight className="h-4 w-4" />
-              </motion.span>
-              <span
-                className={cn(
-                  "shrink-0 transition-colors duration-200",
-                  isExpanded
-                    ? "text-foreground"
-                    : "text-muted-foreground group-hover:text-foreground"
-                )}
-              >
-                {section.icon}
-              </span>
-              <span
-                className={cn(
-                  "min-w-0 flex-1 truncate text-sm font-medium tabular-nums transition-colors duration-200",
-                  isExpanded
-                    ? "text-foreground"
-                    : "text-muted-foreground group-hover:text-foreground",
-                  section.summary && !isExpanded && "text-foreground/90"
-                )}
-              >
-                {section.summary && !isExpanded
-                  ? section.summary
-                  : section.label}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-      <div className="relative overflow-hidden rounded-b-lg border-t border-border bg-background">
-        {sections.map((section) => {
-          const isVisible = expandedId === section.id;
-          return (
-            <div
-              key={section.id}
-              className={cn(
-                section.contentClassName ??
-                  "grid w-full grid-cols-1 gap-x-8 gap-y-4 px-4 pb-4 pt-4 lg:grid-cols-3",
-                "transition-opacity duration-200",
-                isVisible
-                  ? "relative opacity-100"
-                  : "pointer-events-none absolute inset-x-0 top-0 h-0 overflow-hidden opacity-0"
-              )}
-            >
-              {section.content}
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
 function OperationForm({
   item,
   jobId,
@@ -3047,13 +3144,7 @@ function OperationForm({
     ],
     []
   );
-  const operationTypeOptions = useMemo(
-    () => [
-      { value: "Inside", label: <Trans>Inside</Trans> },
-      { value: "Outside", label: <Trans>Outside</Trans> }
-    ],
-    []
-  );
+  const operationTypeOptions = useOperationTypeSelectOptions();
   const { company } = useUser();
 
   const fetcher = useFetcher<{
@@ -3093,7 +3184,8 @@ function OperationForm({
     machineUnitHint: string;
     operationMinimumCost: number;
     operationLeadTime: number;
-    operationType: string;
+    operationSupplierProcessId: string;
+    operationType: OperationType;
     operationUnitCost: number;
     overheadRate: number;
     processId: string;
@@ -3113,7 +3205,8 @@ function OperationForm({
     machineUnitHint: getUnitHint(item.data.machineUnit),
     operationMinimumCost: item.data.operationMinimumCost ?? 0,
     operationLeadTime: item.data.operationLeadTime ?? 0,
-    operationType: item.data.operationType ?? "Inside",
+    operationSupplierProcessId: item.data.operationSupplierProcessId ?? "",
+    operationType: (item.data.operationType ?? "Inside") as OperationType,
     operationUnitCost: item.data.operationUnitCost ?? 0,
     overheadRate: item.data.overheadRate ?? 0,
     processId: item.data.processId ?? "",
@@ -3122,6 +3215,33 @@ function OperationForm({
     setupUnit: item.data.setupUnit ?? "Total Minutes",
     setupUnitHint: getUnitHint(item.data.setupUnit)
   });
+
+  useEffect(() => {
+    setTemporaryItems((prev) => {
+      const current = prev[item.id];
+      if (!current) return prev;
+
+      return {
+        ...prev,
+        [item.id]: {
+          ...current,
+          description: processData.description,
+          operationType: processData.operationType,
+          processId: processData.processId,
+          operationSupplierProcessId: processData.operationSupplierProcessId,
+          operationMinimumCost: processData.operationMinimumCost,
+          operationUnitCost: processData.operationUnitCost,
+          operationLeadTime: processData.operationLeadTime,
+          laborRate: processData.laborRate,
+          machineRate: processData.machineRate,
+          overheadRate: processData.overheadRate,
+          setupTime: processData.setupTime,
+          laborTime: processData.laborTime,
+          machineTime: processData.machineTime
+        }
+      };
+    });
+  }, [processData, item.id, setTemporaryItems]);
 
   const { procedures } = useProcedures({ processId: processData.processId });
 
@@ -3157,6 +3277,11 @@ function OperationForm({
 
     if (process.error) throw new Error(process.error.message);
 
+    const operationType = defaultOperationTypeFromProcess(
+      process.data?.processType
+    );
+    const useSupplierRouting = showsSupplierRoutingFields(operationType);
+
     setProcessData((p) => ({
       ...p,
       processId,
@@ -3187,20 +3312,36 @@ function OperationForm({
           }, 0) / activeWorkCenters.length
         : p.overheadRate,
       operationMinimumCost:
-        supplierProcesses.data && supplierProcesses.data.length > 0
+        useSupplierRouting &&
+        supplierProcesses.data &&
+        supplierProcesses.data.length > 0
           ? supplierProcesses.data.reduce((acc, sp) => {
               return (acc += sp.minimumCost ?? 0);
             }, 0) / supplierProcesses.data.length
-          : p.operationMinimumCost,
-      operationUnitCost: item.data.operationUnitCost ?? 0,
+          : useSupplierRouting
+            ? p.operationMinimumCost
+            : 0,
+      operationUnitCost:
+        useSupplierRouting &&
+        supplierProcesses.data &&
+        supplierProcesses.data.length > 0
+          ? supplierProcesses.data.reduce((acc, sp) => {
+              return (acc += sp.unitCost ?? 0);
+            }, 0) / supplierProcesses.data.length
+          : useSupplierRouting
+            ? p.operationUnitCost
+            : 0,
       operationLeadTime:
-        supplierProcesses.data && supplierProcesses.data.length > 0
+        useSupplierRouting &&
+        supplierProcesses.data &&
+        supplierProcesses.data.length > 0
           ? supplierProcesses.data.reduce((acc, sp) => {
               return (acc += sp.leadTime ?? 0);
             }, 0) / supplierProcesses.data.length
-          : p.operationLeadTime,
-      operationType:
-        process.data?.processType === "Outside" ? "Outside" : "Inside"
+          : useSupplierRouting
+            ? p.operationLeadTime
+            : 0,
+      operationType
     }));
   };
 
@@ -3245,8 +3386,9 @@ function OperationForm({
     setProcessData((d) => ({
       ...d,
       operationMinimumCost: data?.minimumCost ?? 0,
-      operationUnitCost: 0, // TODO: get the unit cost from the purchase order history
-      operationLeadTime: data?.leadTime ?? 0
+      operationUnitCost: data?.unitCost ?? 0,
+      operationLeadTime: data?.leadTime ?? 0,
+      operationSupplierProcessId: supplierProcessId
     }));
   };
 
@@ -3293,13 +3435,24 @@ function OperationForm({
           options={operationTypeOptions}
           value={processData.operationType}
           onChange={(value) => {
+            const operationType = value?.value as OperationType;
+            const useSupplierRouting =
+              showsSupplierRoutingFields(operationType);
+
             setProcessData((d) => ({
               ...d,
-
               setupUnit: "Total Minutes",
               laborUnit: "Minutes/Piece",
               machineUnit: "Minutes/Piece",
-              operationType: value?.value as string
+              operationType,
+              ...(useSupplierRouting
+                ? {}
+                : {
+                    operationSupplierProcessId: "",
+                    operationMinimumCost: 0,
+                    operationUnitCost: 0,
+                    operationLeadTime: 0
+                  })
             }));
           }}
         />
@@ -3314,65 +3467,7 @@ function OperationForm({
           className="col-span-2"
         />
 
-        {processData.operationType === "Outside" ? (
-          <>
-            <SupplierProcess
-              name="operationSupplierProcessId"
-              label={t`Supplier`}
-              processId={processData.processId}
-              isOptional
-              onChange={(value) => {
-                if (value) {
-                  onSupplierProcessChange(value?.value as string);
-                }
-              }}
-            />
-            <NumberControlled
-              name="operationMinimumCost"
-              label={t`Minimum Cost`}
-              minValue={0}
-              value={processData.operationMinimumCost}
-              formatOptions={{
-                style: "currency",
-                currency: baseCurrency
-              }}
-              onChange={(newValue) =>
-                setProcessData((d) => ({
-                  ...d,
-                  operationMinimumCost: newValue
-                }))
-              }
-            />
-            <NumberControlled
-              name="operationUnitCost"
-              label={t`Unit Cost`}
-              minValue={0}
-              value={processData.operationUnitCost}
-              formatOptions={{
-                style: "currency",
-                currency: baseCurrency
-              }}
-              onChange={(newValue) =>
-                setProcessData((d) => ({
-                  ...d,
-                  operationUnitCost: newValue
-                }))
-              }
-            />
-            <NumberControlled
-              name="operationLeadTime"
-              label={t`Lead Time`}
-              minValue={0}
-              value={processData.operationLeadTime}
-              onChange={(newValue) =>
-                setProcessData((d) => ({
-                  ...d,
-                  operationLeadTime: newValue
-                }))
-              }
-            />
-          </>
-        ) : (
+        {isInsideOperationType(processData.operationType) ? (
           <>
             <WorkCenter
               name="workCenterId"
@@ -3436,10 +3531,84 @@ function OperationForm({
               }
             />
           </>
+        ) : null}
+        {showsSupplierRoutingFields(processData.operationType) ? (
+          <>
+            <SupplierProcess
+              name="operationSupplierProcessId"
+              label={t`Supplier`}
+              processId={processData.processId}
+              isOptional={false}
+              onChange={(value) => {
+                if (value) {
+                  onSupplierProcessChange(value?.value as string);
+                } else {
+                  setProcessData((d) => ({
+                    ...d,
+                    operationSupplierProcessId: ""
+                  }));
+                }
+              }}
+            />
+            <NumberControlled
+              name="operationMinimumCost"
+              label={t`Minimum Cost`}
+              isOptional={false}
+              minValue={0}
+              value={processData.operationMinimumCost}
+              formatOptions={{
+                style: "currency",
+                currency: baseCurrency
+              }}
+              onChange={(newValue) =>
+                setProcessData((d) => ({
+                  ...d,
+                  operationMinimumCost: newValue
+                }))
+              }
+            />
+            <NumberControlled
+              name="operationUnitCost"
+              label={t`Unit Cost`}
+              isOptional={false}
+              minValue={0}
+              value={processData.operationUnitCost}
+              formatOptions={{
+                style: "currency",
+                currency: baseCurrency
+              }}
+              onChange={(newValue) =>
+                setProcessData((d) => ({
+                  ...d,
+                  operationUnitCost: newValue
+                }))
+              }
+            />
+            <NumberControlled
+              name="operationLeadTime"
+              label={t`Lead Time`}
+              isOptional={false}
+              minValue={0}
+              value={processData.operationLeadTime}
+              onChange={(newValue) =>
+                setProcessData((d) => ({
+                  ...d,
+                  operationLeadTime: newValue
+                }))
+              }
+            />
+          </>
+        ) : (
+          <>
+            <Hidden name="operationSupplierProcessId" value="" />
+            <Hidden name="operationMinimumCost" value={0} />
+            <Hidden name="operationUnitCost" value={0} />
+            <Hidden name="operationLeadTime" value={0} />
+          </>
         )}
       </div>
 
-      {processData.operationType === "Inside" && (
+      {isInsideOperationType(processData.operationType) && (
         <OperationDetailTabs
           sections={[
             {
@@ -3777,20 +3946,23 @@ function ProcedureSyncModal({
   );
 }
 
-
 type PickupActivityRowProps = {
-  item: OperationPickup;
+  item: UnifiedPickupItem;
   configurationParameters?: ConfigurationParameter[] | null;
 };
 
-const PickupActivityRow = ({ item, configurationParameters }: PickupActivityRowProps) => {
+const PickupActivityRow = ({
+  item,
+  configurationParameters
+}: PickupActivityRowProps) => {
   const { formatDateTime } = useDateFormatter();
   const { t } = useLingui();
 
+  const pickup = item.pickup;
   const configParts =
-    configurationParameters?.length && item.configuration
+    configurationParameters?.length && pickup.configuration
       ? getConfigRowDisplayParts(
-          item.configuration,
+          pickup.configuration,
           configurationParameters,
           t`Quantities`
         )
@@ -3804,25 +3976,56 @@ const PickupActivityRow = ({ item, configurationParameters }: PickupActivityRowP
       </div>
     );
   }
-  if (item.notes) {
+  if (pickup.notes) {
     commentParts.push(
       <p key="notes" className="text-sm text-muted-foreground">
-        {item.notes}
+        {pickup.notes}
       </p>
     );
   }
 
+  if (item.kind === "supplier") {
+    const supplierId = item.pickup.supplierProcess?.supplierId;
+    return (
+      <div className="flex flex-col gap-1 rounded-lg border border-border/60 bg-background px-3 py-2">
+        <div className="flex items-center gap-2 text-sm">
+          {supplierId ? (
+            <SupplierAvatar
+              supplierId={supplierId}
+              size="xs"
+              className="font-medium"
+            />
+          ) : (
+            <span className="font-medium">{t`Supplier`}</span>
+          )}
+          <span className="text-muted-foreground">
+            {t`picked up ${pickup.quantity} units`}
+          </span>
+          {pickup.createdAt ? (
+            <span className="text-xs tabular-nums text-muted-foreground">
+              {formatDateTime(pickup.createdAt)}
+            </span>
+          ) : null}
+        </div>
+        {commentParts.length > 0 ? (
+          <div className="flex flex-col gap-1.5">{commentParts}</div>
+        ) : null}
+      </div>
+    );
+  }
+
+  const employeePickup = item.pickup;
   return (
     <Activity
-      employeeId={item.employeeId}
+      employeeId={employeePickup.employeeId}
       activityMessage={
         <span className="inline-flex flex-wrap items-center gap-2">
-          {t`picked up ${item.quantity} units`}
+          {t`picked up ${pickup.quantity} units`}
         </span>
       }
-      activityTime={item.createdAt}
+      activityTime={pickup.createdAt}
       activityTimeDetail={
-        item.createdAt ? formatDateTime(item.createdAt) : undefined
+        pickup.createdAt ? formatDateTime(pickup.createdAt) : undefined
       }
       comment={
         commentParts.length > 0 ? (

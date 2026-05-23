@@ -99,6 +99,16 @@ export type Events = {
     };
   };
 
+  // Job release (recalculate → MRP → initial schedule)
+  "carbon/release-job": {
+    data: {
+      jobId: string;
+      companyId: string;
+      userId: string;
+      direction?: "backward" | "forward";
+    };
+  };
+
   // Post transaction (accounting)
   "carbon/post-transaction": {
     data: {

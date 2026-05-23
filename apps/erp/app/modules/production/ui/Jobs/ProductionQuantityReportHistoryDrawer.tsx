@@ -15,6 +15,7 @@ import type { ProductionQuantityReportLine } from "~/modules/production/producti
 import { path } from "~/utils/path";
 import { ProductionQuantityLineBreakdown } from "./ProductionQuantityLineBreakdown";
 import { ProductionQuantityReportCardHeader } from "./ProductionQuantityReportCardHeader";
+import { SupplierQuantityReportCardHeader } from "./SupplierQuantityReportCardHeader";
 
 type HistoryBatch = {
   invalidatedAt: string;
@@ -73,11 +74,17 @@ function groupInvalidatedLines(
 export function ProductionQuantityReportHistoryDrawer({
   reportId,
   configurationParameters,
+  linesApiPath,
+  supplierId,
+  reportCreatedBy,
   open,
   onClose
 }: {
   reportId: string;
   configurationParameters?: ConfigurationParameter[] | null;
+  linesApiPath?: string;
+  supplierId?: string | null;
+  reportCreatedBy?: string | null;
   open: boolean;
   onClose: () => void;
 }) {
@@ -93,7 +100,7 @@ export function ProductionQuantityReportHistoryDrawer({
     setLoading(true);
     setError(null);
 
-    void fetch(path.to.api.quantityReportLines(reportId, true))
+    void fetch(linesApiPath ?? path.to.api.quantityReportLines(reportId, true))
       .then(async (res) => {
         if (!res.ok) {
           const body = (await res.json()) as { error?: string };
@@ -120,7 +127,7 @@ export function ProductionQuantityReportHistoryDrawer({
     return () => {
       cancelled = true;
     };
-  }, [open, reportId]);
+  }, [open, reportId, linesApiPath]);
 
   const batches = useMemo(() => groupInvalidatedLines(lines), [lines]);
 
@@ -146,7 +153,7 @@ export function ProductionQuantityReportHistoryDrawer({
                 {batches.map((batch) => {
                   const totalQuantity = batchTotalQuantity(batch.lines);
                   const employeeId = batchEmployeeId(batch.lines);
-                  const createdBy = batchCreatedBy(batch.lines);
+                  const createdBy = batchCreatedBy(batch.lines) ?? reportCreatedBy;
                   const createdAt = batchCreatedAt(batch.lines);
 
                   return (
@@ -154,7 +161,18 @@ export function ProductionQuantityReportHistoryDrawer({
                       key={`${batch.invalidatedAt}-${batch.invalidatedBy}`}
                       className="flex w-full flex-col gap-3 rounded-xl border border-border/70 bg-muted/30 p-3 dark:bg-muted/20"
                     >
-                      {employeeId ? (
+                      {supplierId ? (
+                        <SupplierQuantityReportCardHeader
+                          supplierId={supplierId}
+                          createdBy={createdBy}
+                          summary={
+                            <Trans>Reported {totalQuantity} units</Trans>
+                          }
+                          timestamp={
+                            createdAt ? formatDateTime(createdAt) : ""
+                          }
+                        />
+                      ) : employeeId ? (
                         <ProductionQuantityReportCardHeader
                           employeeId={employeeId}
                           createdBy={createdBy}
@@ -168,7 +186,13 @@ export function ProductionQuantityReportHistoryDrawer({
                       ) : (
                         <div>
                           <p className="text-sm font-medium leading-5 text-foreground">
-                            <Trans>Reported {totalQuantity} units</Trans>
+                            <Trans>
+                              Reported{" "}
+                              <span className="tabular-nums">
+                                {totalQuantity}
+                              </span>{" "}
+                              units
+                            </Trans>
                           </p>
                           {createdAt ? (
                             <p className="text-xs tabular-nums leading-5 text-muted-foreground">
