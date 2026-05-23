@@ -145,6 +145,12 @@ import {
   FormHelperText,
   FormLabel
 } from "./Form";
+import type {
+  GroupedCreatableComboboxGroup,
+  GroupedCreatableComboboxOption,
+  GroupedCreatableComboboxProps
+} from "./GroupedCreatableCombobox";
+import { GroupedCreatableCombobox } from "./GroupedCreatableCombobox";
 import { Heading } from "./Heading";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "./HoverCard";
 import { HStack } from "./HStack";
@@ -423,6 +429,7 @@ export {
   Count,
   CreatableCombobox,
   CreatableMultiSelect,
+  GroupedCreatableCombobox,
   DatePicker,
   DateRangePicker,
   DateTimePicker,
@@ -638,6 +645,9 @@ export type {
   ComboboxProps,
   CreatableComboboxProps,
   CreatableMultiSelectProps,
+  GroupedCreatableComboboxGroup,
+  GroupedCreatableComboboxOption,
+  GroupedCreatableComboboxProps,
   InputProps,
   JSONContent,
   Modifier,

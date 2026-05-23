@@ -16,6 +16,7 @@ const taskToEvent = {
   "print-job-deliver": "carbon/print-job-deliver",
   "print-job": "carbon/print-job",
   recalculate: "carbon/recalculate",
+  "release-job": "carbon/release-job",
   "schedule-job": "carbon/reschedule-job",
   "send-email": "carbon/send-email",
   "send-slack": "carbon/send-slack",

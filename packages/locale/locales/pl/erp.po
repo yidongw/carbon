@@ -26,7 +26,11 @@ msgid "\"{storageUnitName}\" has 1 direct nested storage unit. Deleting it will 
 msgstr "„${storageUnitName}\" ma 1 bezpośrednią zagnieżdżoną jednostkę magazynową. Usunięcie jej spowoduje również usunięcie tej jednostki i wszystkiego pod nią. Tej operacji nie można cofnąć."
 
 #. placeholder {0}: selectedEvent.jobOperation?.description ?? t`Operation`
-#. placeholder {1}: people.find((p) => p.id === selectedEvent.createdBy)?.name ?? t`Unknown Employee`
+msgid "{0} (supplier)"
+msgstr ""
+
+#. placeholder {0}: selectedEvent.jobOperation?.description ?? t`Operation`
+#. placeholder {1}: people.find((p) => p.id === selectedEvent.createdBy) ?.name ?? t`Unknown Employee`
 msgid "{0} by {1}"
 msgstr ""
 
@@ -327,6 +331,9 @@ msgstr "Dodaj dowolne notatki dotyczące Twojej decyzji..."
 
 msgid "Add Approval Requirement"
 msgstr "Dodaj wymóg zatwierdzenia"
+
+msgid "Add at least one line with quantity greater than zero"
+msgstr ""
 
 msgid "Add Calibration Record"
 msgstr "Dodaj Rekord Kalibracji"
@@ -1538,15 +1545,6 @@ msgstr "Zwiń koszty"
 msgid "Collapse features table"
 msgstr ""
 
-msgid "Collapse Labor"
-msgstr "Zwiń Pracę"
-
-msgid "Collapse Machine"
-msgstr "Zwiń maszynę"
-
-msgid "Collapse Setup"
-msgstr "Zwiń Setup"
-
 msgid "Collapse subtree"
 msgstr "Zwiń poddrzewo"
 
@@ -1987,6 +1985,7 @@ msgstr "Kraj"
 msgid "Create"
 msgstr "Utwórz"
 
+#. placeholder {0}: group.heading
 #. placeholder {0}: search.trim() === "" ? (createLabel ?? label) : search
 #. placeholder {0}: search.trim() === "" ? label : search
 msgid "Create {0}"
@@ -2017,6 +2016,9 @@ msgstr "Utwórz konto"
 msgid "Create audit trail entries"
 msgstr "Utwórz wpisy dziennika audytu"
 
+msgid "Create employee"
+msgstr ""
+
 msgid "Create Issue"
 msgstr "Utwórz problem"
 
@@ -2032,6 +2034,9 @@ msgstr "Utwórz Kanban"
 msgid "Create new rule"
 msgstr ""
 
+msgid "Create PO"
+msgstr ""
+
 msgid "Create Production Quantity"
 msgstr ""
 
@@ -2043,6 +2048,9 @@ msgstr "Utwórz wersję"
 
 msgid "Create Rule"
 msgstr "Utwórz Regułę"
+
+msgid "Create supplier"
+msgstr ""
 
 msgid "Create User"
 msgstr "Utwórz użytkownika"
@@ -2156,6 +2164,9 @@ msgstr "Utworzono linię transferu zapasów"
 
 msgid "Created storage type"
 msgstr "Utworzony typ magazynu"
+
+msgid "Created supplier process"
+msgstr ""
 
 #. placeholder {0}: fetcher.data.data.name
 msgid "Created supplier: {0}"
@@ -3238,6 +3249,9 @@ msgstr "Edytuj część dostawcy"
 msgid "Edit supplier process"
 msgstr "Edytuj proces dostawcy"
 
+msgid "Edit supplier quantity report"
+msgstr ""
+
 msgid "Edit Supplier Type"
 msgstr "Edytuj typ dostawcy"
 
@@ -3534,15 +3548,6 @@ msgstr "Rozwiń koszty"
 msgid "Expand features table"
 msgstr ""
 
-msgid "Expand Labor"
-msgstr "Rozwiń Pracę"
-
-msgid "Expand Machine"
-msgstr "Rozwiń Maszynę"
-
-msgid "Expand Setup"
-msgstr "Rozwiń Setup"
-
 msgid "Expand subtree"
 msgstr "Rozwiń poddrzewo"
 
@@ -3720,6 +3725,9 @@ msgstr "Nie udało się utworzyć linii transferu zapasów: {0}"
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create storage type: {0}"
 msgstr "Nie udało się utworzyć typu magazynu: {0}"
+
+msgid "Failed to create supplier process"
+msgstr ""
 
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create supplier: {0}"
@@ -4370,6 +4378,9 @@ msgstr ""
 msgid "Inside"
 msgstr ""
 
+msgid "Inside and Outside"
+msgstr ""
+
 msgid "Inspect"
 msgstr "Sprawdź"
 
@@ -4817,6 +4828,9 @@ msgstr "Tryb jasny"
 msgid "Likelihood"
 msgstr "Prawdopodobieństwo"
 
+msgid "Line"
+msgstr ""
+
 msgid "Line Item Comparison"
 msgstr "Porównanie pozycji"
 
@@ -4878,6 +4892,9 @@ msgstr ""
 
 msgid "Loading item details..."
 msgstr "Ładowanie szczegółów przedmiotu..."
+
+msgid "Loading subcontract pricing…"
+msgstr ""
 
 msgid "Loading..."
 msgstr "Ładowanie..."
@@ -5876,6 +5893,9 @@ msgstr "Brak wyników"
 msgid "No results found"
 msgstr "Nie znaleziono wyników"
 
+msgid "No results found."
+msgstr ""
+
 msgid "No rules assigned"
 msgstr ""
 
@@ -6153,7 +6173,7 @@ msgid "Origin"
 msgstr ""
 
 #. placeholder {0}: report.originalQuantity
-msgid "Originally reported {0} units"
+msgid "Originally reported <0>{0}</0> units"
 msgstr ""
 
 msgid "Other Assets"
@@ -6399,7 +6419,7 @@ msgstr ""
 msgid "Picked quantity"
 msgstr ""
 
-#. placeholder {0}: item.quantity
+#. placeholder {0}: pickup.quantity
 msgid "picked up {0} units"
 msgstr ""
 
@@ -6506,6 +6526,9 @@ msgstr "Numer PZ"
 msgid "PO PDF"
 msgstr ""
 
+msgid "PO pricing: min <0>{minCost}</0>, unit <1>{unitPrice}</1> (snapshotted)"
+msgstr ""
+
 msgid "Policy"
 msgstr ""
 
@@ -6599,6 +6622,9 @@ msgstr "Akcje podziału ceny"
 msgid "Price Break History"
 msgstr "Historia podziału ceny"
 
+msgid "Price breakdown"
+msgstr ""
+
 msgid "Price Breaks"
 msgstr "Progi cenowe"
 
@@ -6613,6 +6639,9 @@ msgstr "Ceny"
 
 msgid "Pricing"
 msgstr "Wycena"
+
+msgid "Pricing from the supplier process (first quantity on this job)."
+msgstr ""
 
 msgid "Pricing Rule"
 msgstr "Reguła cenowa"
@@ -7245,11 +7274,14 @@ msgstr ""
 msgid "reported"
 msgstr ""
 
-#. placeholder {0}: report.originalQuantity
-msgid "Reported {0} units"
+msgid "Reported {totalQuantity} units"
 msgstr ""
 
-msgid "Reported {totalQuantity} units"
+#. placeholder {0}: report.originalQuantity
+msgid "Reported <0>{0}</0> units"
+msgstr ""
+
+msgid "Reported <0>{totalQuantity}</0> units"
 msgstr ""
 
 msgid "Reports"
@@ -7799,6 +7831,9 @@ msgstr "Wybierz typ elementu"
 
 msgid "Select items"
 msgstr "Wybierz artykuły"
+
+msgid "Select name"
+msgstr ""
 
 msgid "Select Printer"
 msgstr ""
@@ -9136,6 +9171,9 @@ msgstr ""
 msgid "unknown location"
 msgstr "nieznana lokalizacja"
 
+msgid "Unknown Supplier"
+msgstr ""
+
 msgid "Unlimited Functional Support"
 msgstr "Nieograniczone wsparcie funkcjonalne"
 
@@ -9334,6 +9372,9 @@ msgstr "Użytkownicy mogą aktualizować tę wartość dla siebie"
 
 msgid "Users to Update"
 msgstr "Użytkownicy do aktualizacji"
+
+msgid "Using saved subcontract pricing for this supplier on this job."
+msgstr ""
 
 msgid "Valid From"
 msgstr "Ważne od"

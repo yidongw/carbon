@@ -209,6 +209,10 @@ msgstr "Konsolenmodus"
 msgid "Consumed expired"
 msgstr "Verbrauchte abgelaufen"
 
+msgid "Create"
+msgstr ""
+
+#. placeholder {0}: group.heading
 #. placeholder {0}: search.trim() === "" ? (createLabel ?? label) : search
 #. placeholder {0}: search.trim() === "" ? label : search
 msgid "Create {0}"
@@ -648,6 +652,9 @@ msgstr "Keine Ergebnisse vorhanden"
 
 msgid "No results found"
 msgstr "Keine Ergebnisse gefunden"
+
+msgid "No results found."
+msgstr ""
 
 msgid "No scheduled time"
 msgstr "Keine geplante Zeit"

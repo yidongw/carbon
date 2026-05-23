@@ -209,6 +209,10 @@ msgstr "控制台模式"
 msgid "Consumed expired"
 msgstr "已消耗过期"
 
+msgid "Create"
+msgstr ""
+
+#. placeholder {0}: group.heading
 #. placeholder {0}: search.trim() === "" ? (createLabel ?? label) : search
 #. placeholder {0}: search.trim() === "" ? label : search
 msgid "Create {0}"
@@ -648,6 +652,9 @@ msgstr "无结果"
 
 msgid "No results found"
 msgstr "未找到结果"
+
+msgid "No results found."
+msgstr ""
 
 msgid "No scheduled time"
 msgstr "无排定时间"

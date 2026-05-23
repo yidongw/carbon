@@ -26,7 +26,11 @@ msgid "\"{storageUnitName}\" has 1 direct nested storage unit. Deleting it will 
 msgstr "\"{storageUnitName}\" has 1 direct nested storage unit. Deleting it will also delete that unit and anything underneath it. This cannot be undone."
 
 #. placeholder {0}: selectedEvent.jobOperation?.description ?? t`Operation`
-#. placeholder {1}: people.find((p) => p.id === selectedEvent.createdBy)?.name ?? t`Unknown Employee`
+msgid "{0} (supplier)"
+msgstr "{0} (supplier)"
+
+#. placeholder {0}: selectedEvent.jobOperation?.description ?? t`Operation`
+#. placeholder {1}: people.find((p) => p.id === selectedEvent.createdBy) ?.name ?? t`Unknown Employee`
 msgid "{0} by {1}"
 msgstr "{0} by {1}"
 
@@ -327,6 +331,9 @@ msgstr "Add any notes about your decision..."
 
 msgid "Add Approval Requirement"
 msgstr "Add Approval Requirement"
+
+msgid "Add at least one line with quantity greater than zero"
+msgstr "Add at least one line with quantity greater than zero"
 
 msgid "Add Calibration Record"
 msgstr "Add Calibration Record"
@@ -1538,15 +1545,6 @@ msgstr "Collapse Costs"
 msgid "Collapse features table"
 msgstr "Collapse features table"
 
-msgid "Collapse Labor"
-msgstr "Collapse Labor"
-
-msgid "Collapse Machine"
-msgstr "Collapse Machine"
-
-msgid "Collapse Setup"
-msgstr "Collapse Setup"
-
 msgid "Collapse subtree"
 msgstr "Collapse subtree"
 
@@ -1987,6 +1985,7 @@ msgstr "Country"
 msgid "Create"
 msgstr "Create"
 
+#. placeholder {0}: group.heading
 #. placeholder {0}: search.trim() === "" ? (createLabel ?? label) : search
 #. placeholder {0}: search.trim() === "" ? label : search
 msgid "Create {0}"
@@ -2017,6 +2016,9 @@ msgstr "Create an account"
 msgid "Create audit trail entries"
 msgstr "Create audit trail entries"
 
+msgid "Create employee"
+msgstr "Create employee"
+
 msgid "Create Issue"
 msgstr "Create Issue"
 
@@ -2032,6 +2034,9 @@ msgstr "Create Kanban"
 msgid "Create new rule"
 msgstr "Create new rule"
 
+msgid "Create PO"
+msgstr "Create PO"
+
 msgid "Create Production Quantity"
 msgstr "Create Production Quantity"
 
@@ -2043,6 +2048,9 @@ msgstr "Create Revision"
 
 msgid "Create Rule"
 msgstr "Create Rule"
+
+msgid "Create supplier"
+msgstr "Create supplier"
 
 msgid "Create User"
 msgstr "Create User"
@@ -2156,6 +2164,9 @@ msgstr "Created stock transfer line"
 
 msgid "Created storage type"
 msgstr "Created storage type"
+
+msgid "Created supplier process"
+msgstr "Created supplier process"
 
 #. placeholder {0}: fetcher.data.data.name
 msgid "Created supplier: {0}"
@@ -3238,6 +3249,9 @@ msgstr "Edit Supplier Part"
 msgid "Edit supplier process"
 msgstr "Edit supplier process"
 
+msgid "Edit supplier quantity report"
+msgstr "Edit supplier quantity report"
+
 msgid "Edit Supplier Type"
 msgstr "Edit Supplier Type"
 
@@ -3534,15 +3548,6 @@ msgstr "Expand Costs"
 msgid "Expand features table"
 msgstr "Expand features table"
 
-msgid "Expand Labor"
-msgstr "Expand Labor"
-
-msgid "Expand Machine"
-msgstr "Expand Machine"
-
-msgid "Expand Setup"
-msgstr "Expand Setup"
-
 msgid "Expand subtree"
 msgstr "Expand subtree"
 
@@ -3720,6 +3725,9 @@ msgstr "Failed to create stock transfer line: {0}"
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create storage type: {0}"
 msgstr "Failed to create storage type: {0}"
+
+msgid "Failed to create supplier process"
+msgstr "Failed to create supplier process"
 
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create supplier: {0}"
@@ -4370,6 +4378,9 @@ msgstr "Insert token"
 msgid "Inside"
 msgstr "Inside"
 
+msgid "Inside and Outside"
+msgstr "Inside and Outside"
+
 msgid "Inspect"
 msgstr "Inspect"
 
@@ -4817,6 +4828,9 @@ msgstr "Light Mode"
 msgid "Likelihood"
 msgstr "Likelihood"
 
+msgid "Line"
+msgstr "Line"
+
 msgid "Line Item Comparison"
 msgstr "Line Item Comparison"
 
@@ -4878,6 +4892,9 @@ msgstr "Loading associated jobs..."
 
 msgid "Loading item details..."
 msgstr "Loading item details..."
+
+msgid "Loading subcontract pricing…"
+msgstr "Loading subcontract pricing…"
 
 msgid "Loading..."
 msgstr "Loading..."
@@ -5876,6 +5893,9 @@ msgstr "No results"
 msgid "No results found"
 msgstr "No results found"
 
+msgid "No results found."
+msgstr "No results found."
+
 msgid "No rules assigned"
 msgstr "No rules assigned"
 
@@ -6153,8 +6173,8 @@ msgid "Origin"
 msgstr "Origin"
 
 #. placeholder {0}: report.originalQuantity
-msgid "Originally reported {0} units"
-msgstr "Originally reported {0} units"
+msgid "Originally reported <0>{0}</0> units"
+msgstr "Originally reported <0>{0}</0> units"
 
 msgid "Other Assets"
 msgstr "Other Assets"
@@ -6399,7 +6419,7 @@ msgstr "Pick tracked item"
 msgid "Picked quantity"
 msgstr "Picked quantity"
 
-#. placeholder {0}: item.quantity
+#. placeholder {0}: pickup.quantity
 msgid "picked up {0} units"
 msgstr "picked up {0} units"
 
@@ -6506,6 +6526,9 @@ msgstr "PO Number"
 msgid "PO PDF"
 msgstr "PO PDF"
 
+msgid "PO pricing: min <0>{minCost}</0>, unit <1>{unitPrice}</1> (snapshotted)"
+msgstr "PO pricing: min <0>{minCost}</0>, unit <1>{unitPrice}</1> (snapshotted)"
+
 msgid "Policy"
 msgstr "Policy"
 
@@ -6599,6 +6622,9 @@ msgstr "Price break actions"
 msgid "Price Break History"
 msgstr "Price Break History"
 
+msgid "Price breakdown"
+msgstr "Price breakdown"
+
 msgid "Price Breaks"
 msgstr "Price Breaks"
 
@@ -6613,6 +6639,9 @@ msgstr "Prices"
 
 msgid "Pricing"
 msgstr "Pricing"
+
+msgid "Pricing from the supplier process (first quantity on this job)."
+msgstr "Pricing from the supplier process (first quantity on this job)."
 
 msgid "Pricing Rule"
 msgstr "Pricing Rule"
@@ -7245,12 +7274,15 @@ msgstr "Report history"
 msgid "reported"
 msgstr "reported"
 
-#. placeholder {0}: report.originalQuantity
-msgid "Reported {0} units"
-msgstr "Reported {0} units"
-
 msgid "Reported {totalQuantity} units"
 msgstr "Reported {totalQuantity} units"
+
+#. placeholder {0}: report.originalQuantity
+msgid "Reported <0>{0}</0> units"
+msgstr "Reported <0>{0}</0> units"
+
+msgid "Reported <0>{totalQuantity}</0> units"
+msgstr "Reported <0>{totalQuantity}</0> units"
 
 msgid "Reports"
 msgstr "Reports"
@@ -7799,6 +7831,9 @@ msgstr "Select Item Type"
 
 msgid "Select items"
 msgstr "Select items"
+
+msgid "Select name"
+msgstr "Select name"
 
 msgid "Select Printer"
 msgstr "Select Printer"
@@ -9136,6 +9171,9 @@ msgstr "Unknown Employee"
 msgid "unknown location"
 msgstr "unknown location"
 
+msgid "Unknown Supplier"
+msgstr "Unknown Supplier"
+
 msgid "Unlimited Functional Support"
 msgstr "Unlimited Functional Support"
 
@@ -9334,6 +9372,9 @@ msgstr "Users can update this value for themselves"
 
 msgid "Users to Update"
 msgstr "Users to Update"
+
+msgid "Using saved subcontract pricing for this supplier on this job."
+msgstr "Using saved subcontract pricing for this supplier on this job."
 
 msgid "Valid From"
 msgstr "Valid From"

@@ -209,6 +209,10 @@ msgstr "Modalità Console"
 msgid "Consumed expired"
 msgstr "Consumato scaduto"
 
+msgid "Create"
+msgstr ""
+
+#. placeholder {0}: group.heading
 #. placeholder {0}: search.trim() === "" ? (createLabel ?? label) : search
 #. placeholder {0}: search.trim() === "" ? label : search
 msgid "Create {0}"
@@ -648,6 +652,9 @@ msgstr "Nessun risultato esistente"
 
 msgid "No results found"
 msgstr "Nessun risultato trovato"
+
+msgid "No results found."
+msgstr ""
 
 msgid "No scheduled time"
 msgstr "Nessun orario programmato"

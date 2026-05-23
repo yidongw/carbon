@@ -209,6 +209,10 @@ msgstr "कंसोल मोड"
 msgid "Consumed expired"
 msgstr "खपत की गई समाप्त"
 
+msgid "Create"
+msgstr ""
+
+#. placeholder {0}: group.heading
 #. placeholder {0}: search.trim() === "" ? (createLabel ?? label) : search
 #. placeholder {0}: search.trim() === "" ? label : search
 msgid "Create {0}"
@@ -648,6 +652,9 @@ msgstr "कोई परिणाम मौजूद नहीं है"
 
 msgid "No results found"
 msgstr "कोई परिणाम नहीं मिला"
+
+msgid "No results found."
+msgstr ""
 
 msgid "No scheduled time"
 msgstr "कोई निर्धारित समय नहीं"

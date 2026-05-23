@@ -26,7 +26,11 @@ msgid "\"{storageUnitName}\" has 1 direct nested storage unit. Deleting it will 
 msgstr "\"${storageUnitName}\"有1个直接嵌套的存储单元。删除它也会删除该单元及其下的所有内容。此操作无法撤销。"
 
 #. placeholder {0}: selectedEvent.jobOperation?.description ?? t`Operation`
-#. placeholder {1}: people.find((p) => p.id === selectedEvent.createdBy)?.name ?? t`Unknown Employee`
+msgid "{0} (supplier)"
+msgstr ""
+
+#. placeholder {0}: selectedEvent.jobOperation?.description ?? t`Operation`
+#. placeholder {1}: people.find((p) => p.id === selectedEvent.createdBy) ?.name ?? t`Unknown Employee`
 msgid "{0} by {1}"
 msgstr ""
 
@@ -327,6 +331,9 @@ msgstr "添加关于您的决定的任何备注..."
 
 msgid "Add Approval Requirement"
 msgstr "添加批准要求"
+
+msgid "Add at least one line with quantity greater than zero"
+msgstr ""
 
 msgid "Add Calibration Record"
 msgstr "添加校准记录"
@@ -1538,15 +1545,6 @@ msgstr "折叠成本"
 msgid "Collapse features table"
 msgstr ""
 
-msgid "Collapse Labor"
-msgstr "折叠人工"
-
-msgid "Collapse Machine"
-msgstr "折叠机器"
-
-msgid "Collapse Setup"
-msgstr "折叠设置"
-
 msgid "Collapse subtree"
 msgstr "折叠子树"
 
@@ -1987,6 +1985,7 @@ msgstr "国家"
 msgid "Create"
 msgstr "创建"
 
+#. placeholder {0}: group.heading
 #. placeholder {0}: search.trim() === "" ? (createLabel ?? label) : search
 #. placeholder {0}: search.trim() === "" ? label : search
 msgid "Create {0}"
@@ -2017,6 +2016,9 @@ msgstr "创建账户"
 msgid "Create audit trail entries"
 msgstr "创建审计跟踪条目"
 
+msgid "Create employee"
+msgstr ""
+
 msgid "Create Issue"
 msgstr "创建问题"
 
@@ -2032,6 +2034,9 @@ msgstr "创建看板"
 msgid "Create new rule"
 msgstr ""
 
+msgid "Create PO"
+msgstr ""
+
 msgid "Create Production Quantity"
 msgstr ""
 
@@ -2043,6 +2048,9 @@ msgstr "创建修订版"
 
 msgid "Create Rule"
 msgstr "创建规则"
+
+msgid "Create supplier"
+msgstr ""
 
 msgid "Create User"
 msgstr "创建用户"
@@ -2156,6 +2164,9 @@ msgstr "已创建库存转移行"
 
 msgid "Created storage type"
 msgstr "已创建存储类型"
+
+msgid "Created supplier process"
+msgstr ""
 
 #. placeholder {0}: fetcher.data.data.name
 msgid "Created supplier: {0}"
@@ -3238,6 +3249,9 @@ msgstr "编辑供应商零件"
 msgid "Edit supplier process"
 msgstr "编辑供应商流程"
 
+msgid "Edit supplier quantity report"
+msgstr ""
+
 msgid "Edit Supplier Type"
 msgstr "编辑供应商类型"
 
@@ -3534,15 +3548,6 @@ msgstr "展开成本"
 msgid "Expand features table"
 msgstr ""
 
-msgid "Expand Labor"
-msgstr "展开人工"
-
-msgid "Expand Machine"
-msgstr "展开机器"
-
-msgid "Expand Setup"
-msgstr "展开设置"
-
 msgid "Expand subtree"
 msgstr "展开子树"
 
@@ -3720,6 +3725,9 @@ msgstr "创建库存转移行失败：{0}"
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create storage type: {0}"
 msgstr "创建存储类型失败：{0}"
+
+msgid "Failed to create supplier process"
+msgstr ""
 
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create supplier: {0}"
@@ -4370,6 +4378,9 @@ msgstr ""
 msgid "Inside"
 msgstr "厂内"
 
+msgid "Inside and Outside"
+msgstr ""
+
 msgid "Inspect"
 msgstr "检查"
 
@@ -4817,6 +4828,9 @@ msgstr "浅色模式"
 msgid "Likelihood"
 msgstr "可能性"
 
+msgid "Line"
+msgstr ""
+
 msgid "Line Item Comparison"
 msgstr "行物品比较"
 
@@ -4878,6 +4892,9 @@ msgstr ""
 
 msgid "Loading item details..."
 msgstr "正在加载物品详情..."
+
+msgid "Loading subcontract pricing…"
+msgstr ""
 
 msgid "Loading..."
 msgstr "加载中..."
@@ -5876,6 +5893,9 @@ msgstr "无结果"
 msgid "No results found"
 msgstr "未找到结果"
 
+msgid "No results found."
+msgstr ""
+
 msgid "No rules assigned"
 msgstr ""
 
@@ -6153,7 +6173,7 @@ msgid "Origin"
 msgstr ""
 
 #. placeholder {0}: report.originalQuantity
-msgid "Originally reported {0} units"
+msgid "Originally reported <0>{0}</0> units"
 msgstr ""
 
 msgid "Other Assets"
@@ -6399,7 +6419,7 @@ msgstr ""
 msgid "Picked quantity"
 msgstr ""
 
-#. placeholder {0}: item.quantity
+#. placeholder {0}: pickup.quantity
 msgid "picked up {0} units"
 msgstr ""
 
@@ -6506,6 +6526,9 @@ msgstr "采购订单号"
 msgid "PO PDF"
 msgstr ""
 
+msgid "PO pricing: min <0>{minCost}</0>, unit <1>{unitPrice}</1> (snapshotted)"
+msgstr ""
+
 msgid "Policy"
 msgstr ""
 
@@ -6599,6 +6622,9 @@ msgstr "价格阶梯操作"
 msgid "Price Break History"
 msgstr "价格阶梯历史"
 
+msgid "Price breakdown"
+msgstr ""
+
 msgid "Price Breaks"
 msgstr "价格阶梯"
 
@@ -6613,6 +6639,9 @@ msgstr "价格"
 
 msgid "Pricing"
 msgstr "定价"
+
+msgid "Pricing from the supplier process (first quantity on this job)."
+msgstr ""
 
 msgid "Pricing Rule"
 msgstr "定价规则"
@@ -7245,11 +7274,14 @@ msgstr ""
 msgid "reported"
 msgstr ""
 
-#. placeholder {0}: report.originalQuantity
-msgid "Reported {0} units"
+msgid "Reported {totalQuantity} units"
 msgstr ""
 
-msgid "Reported {totalQuantity} units"
+#. placeholder {0}: report.originalQuantity
+msgid "Reported <0>{0}</0> units"
+msgstr ""
+
+msgid "Reported <0>{totalQuantity}</0> units"
 msgstr ""
 
 msgid "Reports"
@@ -7799,6 +7831,9 @@ msgstr "选择物品类型"
 
 msgid "Select items"
 msgstr "选择物品"
+
+msgid "Select name"
+msgstr ""
 
 msgid "Select Printer"
 msgstr ""
@@ -9136,6 +9171,9 @@ msgstr ""
 msgid "unknown location"
 msgstr "未知位置"
 
+msgid "Unknown Supplier"
+msgstr ""
+
 msgid "Unlimited Functional Support"
 msgstr "无限功能支持"
 
@@ -9334,6 +9372,9 @@ msgstr "用户可以自行更新此值"
 
 msgid "Users to Update"
 msgstr "要更新的用户"
+
+msgid "Using saved subcontract pricing for this supplier on this job."
+msgstr ""
 
 msgid "Valid From"
 msgstr "有效期开始"
