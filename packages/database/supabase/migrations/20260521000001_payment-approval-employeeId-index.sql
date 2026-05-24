@@ -1,0 +1,24 @@
+-- Add index on productionQuantity(employeeId, companyId) for salary queries.
+-- Runs after 20260519130000 which adds the employeeId column.
+
+CREATE INDEX IF NOT EXISTS "idx_productionQuantity_employeeId"
+  ON "productionQuantity" ("employeeId", "companyId");
+
+-- Allow HR/finance (people_update) to approve completions by setting paymentYear/paymentMonth.
+-- The existing UPDATE policy only covers production_update; salary managers need this too.
+CREATE POLICY "Users with people_update can approve production quantities for salary"
+ON "productionQuantity"
+FOR UPDATE USING (
+  has_role('employee', "companyId") AND
+  has_company_permission('people_update', "companyId")
+);
+
+-- Recreate the salary sync trigger to include "invalidatedAt", which was added by
+-- 20260520120000. The initial trigger in 20260518000003 omitted it to avoid a
+-- "column does not exist" error at migration time.
+DROP TRIGGER IF EXISTS trg_sync_salary_on_production_quantity ON "productionQuantity";
+CREATE TRIGGER trg_sync_salary_on_production_quantity
+AFTER INSERT OR UPDATE OF "paymentYear", "paymentMonth", "quantity", "invalidatedAt"
+ON "productionQuantity"
+FOR EACH ROW
+EXECUTE FUNCTION trigger_sync_salary_on_production_quantity();

@@ -1,5 +1,6 @@
 import { assertIsPost, error, notFound, success } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
+import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
@@ -16,6 +17,7 @@ import {
   getJobOperations,
   isJobLocked,
   productionQuantityCreateFormValidator,
+  resolveProductionQuantityCanAutoApprove,
   seededActorFromOperationContext,
   validateActorMatchesOperationSupplierRouting
 } from "~/modules/production";
@@ -42,7 +44,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   ]);
   const actorContext = {
     ...opContext,
-    defaultActorKind: defaultActorKindFromOperationType(opContext.operationType),
+    defaultActorKind: defaultActorKindFromOperationType(
+      opContext.operationType
+    ),
     seededActor: seededActorFromOperationContext(opContext)
   };
 
@@ -86,6 +90,18 @@ export async function action({ request, params }: ActionFunctionArgs) {
     create: "production"
   });
 
+  const serviceRole = getCarbonServiceRole();
+  const canAutoApprove = await resolveProductionQuantityCanAutoApprove(
+    serviceRole,
+    companyId,
+    userId,
+    0
+  );
+
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth() + 1;
+
   const { jobId } = params;
   if (!jobId) {
     throw notFound("jobId not found");
@@ -102,8 +118,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     message: "Cannot modify a locked job. Reopen it first."
   });
 
-  const isOverlay =
-    new URL(request.url).searchParams.get("overlay") === "true";
+  const isOverlay = new URL(request.url).searchParams.get("overlay") === "true";
   const formData = await request.formData();
 
   const validation = await validator(
@@ -212,7 +227,9 @@ export async function action({ request, params }: ActionFunctionArgs) {
           userId,
           employeeId: employeeId?.trim() ? employeeId : userId,
           notes: notes?.trim() ? notes : null,
-          lines: mappedLines
+          lines: mappedLines,
+          paymentYear: canAutoApprove ? currentYear : null,
+          paymentMonth: canAutoApprove ? currentMonth : null
         });
 
   if (reportResult.error) {

@@ -16,16 +16,24 @@ type ActionMenuProps = PropsWithChildren<{
 const ActionMenu = ({ children, ...props }: ActionMenuProps) => {
   return (
     <Menu type="dropdown">
-      <DropdownMenu>
+      <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <IconButton
             aria-label="Action Menu"
             variant="secondary"
             icon={<BsThreeDotsVertical />}
+            // Stop at pointerdown for parents that activate on pointer events
+            // (drag handlers, row navigation) and at click as a fallback.
+            onPointerDown={(event) => event.stopPropagation()}
+            onClick={(event) => event.stopPropagation()}
             {...props}
           />
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuContent
+          align="end"
+          className="w-56"
+          onCloseAutoFocus={(event) => event.preventDefault()}
+        >
           {children}
         </DropdownMenuContent>
       </DropdownMenu>

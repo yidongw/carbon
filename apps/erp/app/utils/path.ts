@@ -813,6 +813,8 @@ export const path = {
       generatePath(`${x}/shared/views/delete/${id}`),
     deleteScrapReason: (id: string) =>
       generatePath(`${x}/production/scrap-reasons/delete/${id}`),
+    deleteJobRule: (id: string) =>
+      generatePath(`${x}/production/job-rules/delete/${id}`),
     deleteShift: (id: string) =>
       generatePath(`${x}/people/shifts/delete/${id}`),
     deleteShipment: (id: string) => generatePath(`${x}/shipment/${id}/delete`),
@@ -1255,6 +1257,7 @@ export const path = {
     newStorageType: `${x}/inventory/storage-types/new`,
     newShipment: `${x}/shipment/new`,
     newShift: `${x}/people/shifts/new`,
+    newJobRule: `${x}/production/job-rules/new`,
     newShippingMethod: `${x}/inventory/shipping-methods/new`,
     newService: `${x}/service/new`,
     newServiceSupplier: (id: string) =>
@@ -1329,6 +1332,29 @@ export const path = {
     peopleTimecard: `${x}/people/timecard`,
     timecard: (id: string) => generatePath(`${x}/people/timecard/${id}`),
     contact: `${x}/people/contact`,
+    accountingSalary: `${x}/accounting/salary`,
+    accountingPayments: `${x}/accounting/payments`,
+    quantityReview: `${x}/production/quantity-review`,
+    quantityReviewReport: (reportId: string) =>
+      generatePath(`${x}/production/quantity-review/report/${reportId}`),
+    quantityReviewForEmployee: (employeeId: string) =>
+      `${x}/production/quantity-review?filter=approvalStatus:eq:Pending&filter=employeeId:eq:${employeeId}`,
+    employeeSalary: (id: string) => generatePath(`${x}/accounting/salary/${id}`),
+    employeeSalaryMonth: (id: string, year: number, month: number) =>
+      generatePath(`${x}/accounting/salary/${id}/${year}/${month}`),
+    newSalaryPayment: (id: string, year: number, month: number) =>
+      generatePath(`${x}/accounting/salary/${id}/${year}/${month}/pay`),
+    recordSalaryPayment: (year: number, month: number, returnTo?: string) => {
+      const params = new URLSearchParams({
+        year: String(year),
+        month: String(month),
+        recordPayment: "1"
+      });
+      if (returnTo) {
+        params.set("returnTo", returnTo);
+      }
+      return `${x}/accounting/salary?${params.toString()}`;
+    },
     person: (id: string) => generatePath(`${x}/person/${id}`),
     personDetails: (id: string) => generatePath(`${x}/person/${id}/details`),
     personJob: (id: string) => generatePath(`${x}/person/${id}/job`),
@@ -1418,6 +1444,9 @@ export const path = {
       generatePath(`${x}/resources/processes/deactivate/${id}`),
     productionDashboard: `${x}/production/dashboard`,
     productionPlanning: `${x}/production/planning`,
+    jobRules: `${x}/production/job-rules`,
+    jobRule: (id: string) => generatePath(`${x}/production/job-rules/${id}`),
+    jobRulesSimulate: `${x}/production/job-rules/simulate`,
     productionPlanningItem: (itemId: string) =>
       generatePath(`${x}/production/planning/${itemId}`),
     peopleSettings: `${x}/settings/people`,

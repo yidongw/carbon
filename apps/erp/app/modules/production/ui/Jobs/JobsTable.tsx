@@ -57,7 +57,7 @@ import {
   LuUsers,
   LuWorkflow
 } from "react-icons/lu";
-import { useFetcher, useNavigate } from "react-router";
+import { useFetcher, useNavigate, useRevalidator } from "react-router";
 import {
   CustomerAvatar,
   EmployeeAvatar,
@@ -75,7 +75,6 @@ import { useCustomColumns } from "~/hooks/useCustomColumns";
 import type { action } from "~/routes/x+/job+/update";
 import { useCustomers, useParts, usePeople, useTools } from "~/stores";
 import { path } from "~/utils/path";
-import { computeJobConfigTableTotal } from "../../jobConfiguration";
 import { deadlineTypes, isJobLocked, jobStatus } from "../../production.models";
 import type { JobCurrentProcessInfo } from "../../production.service";
 import type { Job } from "../../types";
@@ -272,11 +271,8 @@ const JobQuantityCell = memo(function JobQuantityCell({
 }) {
   const { itemIdsWithConfigurationParameters } = useJobsTableSupplemental();
   const permissions = usePermissions();
-  const quantity = job.quantity;
+  const quantity = job.quantity ?? 0;
   const quantityComplete = job.quantityComplete ?? 0;
-  const configTableTotal = computeJobConfigTableTotal(job.configuration);
-  const configuredQuantity =
-    configTableTotal > 0 ? configTableTotal : (quantity ?? 0);
   const showConfiguredQuantityUi =
     !!job.itemId && itemIdsWithConfigurationParameters.has(job.itemId);
 
@@ -285,7 +281,7 @@ const JobQuantityCell = memo(function JobQuantityCell({
       permissions.can("update", "production") && !isJobLocked(job.status);
     return (
       <HStack spacing={1} className="ml-auto justify-end">
-        <span className="line-clamp-1 tabular-nums">{configuredQuantity}</span>
+        <span className="line-clamp-1 tabular-nums">{quantity}</span>
         <IconButton
           type="button"
           icon={<LuTable size="1em" strokeWidth={3} />}
@@ -293,7 +289,7 @@ const JobQuantityCell = memo(function JobQuantityCell({
           size="sm"
           variant="secondary"
           className={cn(
-            configTableTotal > 0 && "text-emerald-500 hover:text-emerald-500"
+            quantity > 0 && "text-emerald-500 hover:text-emerald-500"
           )}
           isDisabled={!canConfigure}
           onClick={(e) => onOpenConfigTable(e, job)}
@@ -305,7 +301,7 @@ const JobQuantityCell = memo(function JobQuantityCell({
   if (["In Progress", "Released", "Paused"].includes(job.status ?? "")) {
     return (
       <BarProgress
-        progress={(quantityComplete / (quantity ?? 0)) * 100}
+        progress={(quantityComplete / quantity) * 100}
         value={`${quantityComplete}/${quantity}`}
       />
     );
@@ -340,6 +336,7 @@ const JobsTable = memo(
     const deleteModal = useDisclosure();
     const [selectedJob, setSelectedJob] = useState<Job | null>(null);
     const { openOverlay } = useOverlay();
+    const { revalidate } = useRevalidator();
 
     const supplementalData = useMemo<JobsTableSupplementalData>(
       () => ({
@@ -370,9 +367,11 @@ const JobsTable = memo(
       (e: MouseEvent, job: Job) => {
         e.stopPropagation();
         if (!job.id) return;
-        openOverlay(overlay.to.jobConfigTable(job.id));
+        openOverlay(overlay.to.jobConfigTable(job.id), {
+          onCreated: revalidate
+        });
       },
-      [openOverlay]
+      [openOverlay, revalidate]
     );
 
     const fetcher = useFetcher<typeof action>();

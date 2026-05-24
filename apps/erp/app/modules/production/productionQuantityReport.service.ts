@@ -1,5 +1,11 @@
 import type { Database, Json } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { computeProductionQuantityReportEarnedAmount } from "~/modules/people/people.service";
+import {
+  cancelApprovalRequestsForDocument,
+  canApproveRequest,
+  requestProductionPayApproval
+} from "~/modules/shared";
 import { computeJobConfigTableTotal } from "./jobConfiguration";
 import type { ProductionQuantityLineInput } from "./productionQuantityReport.models";
 
@@ -74,6 +80,8 @@ export async function createProductionQuantityReport(
     employeeId: string;
     notes?: string | null;
     lines: ProductionQuantityLineInput[];
+    paymentYear?: number | null;
+    paymentMonth?: number | null;
   }
 ) {
   const lineValidation = validateProductionQuantityLines(args.lines);
@@ -114,7 +122,9 @@ export async function createProductionQuantityReport(
     scrapReasonId: line.type === "Scrap" ? line.scrapReasonId ?? null : null,
     notes: line.notes ?? null,
     createdBy: args.userId,
-    employeeId: args.employeeId
+    employeeId: args.employeeId,
+    paymentYear: args.paymentYear ?? null,
+    paymentMonth: args.paymentMonth ?? null
   }));
 
   const { data: lines, error: linesError } = await client
@@ -145,6 +155,8 @@ export async function replaceProductionQuantityReportLines(
     employeeId: string;
     notes?: string | null;
     lines: ProductionQuantityLineInput[];
+    paymentYear?: number | null;
+    paymentMonth?: number | null;
   }
 ) {
   const lineValidation = validateProductionQuantityLines(args.lines);
@@ -215,7 +227,9 @@ export async function replaceProductionQuantityReportLines(
     scrapReasonId: line.type === "Scrap" ? line.scrapReasonId ?? null : null,
     notes: line.notes ?? null,
     createdBy: args.userId,
-    employeeId: args.employeeId
+    employeeId: args.employeeId,
+    paymentYear: args.paymentYear ?? null,
+    paymentMonth: args.paymentMonth ?? null
   }));
 
   const { data: newLines, error: insertError } = await client
@@ -340,6 +354,66 @@ export async function listProductionQuantityReportLines(
   return query;
 }
 
+export async function getProductionQuantityReportWithLines(
+  client: SupabaseClient<Database>,
+  args: { reportId: string; companyId: string }
+) {
+  const { data: report, error: reportError } = await client
+    .from("productionQuantityReport")
+    .select("*")
+    .eq("id", args.reportId)
+    .eq("companyId", args.companyId)
+    .single();
+
+  if (reportError || !report) {
+    return { data: null, error: reportError };
+  }
+
+  const { data: activeLines, error: linesError } =
+    await listProductionQuantityReportLines(client, {
+      reportId: args.reportId,
+      companyId: args.companyId
+    });
+
+  if (linesError) {
+    return { data: null, error: linesError };
+  }
+
+  const { count: historyCount } = await client
+    .from("productionQuantity")
+    .select("id", { count: "exact", head: true })
+    .eq("reportId", args.reportId)
+    .eq("companyId", args.companyId)
+    .not("invalidatedAt", "is", null);
+
+  return {
+    data: {
+      ...report,
+      activeLines: (activeLines ?? []) as ProductionQuantityReportLine[],
+      hasHistory: (historyCount ?? 0) > 0
+    } satisfies ProductionQuantityReportWithLines,
+    error: null
+  };
+}
+
+/** True when user is in an approver group (e.g. Admin or Quantity Review) for production pay. */
+export async function resolveProductionQuantityCanAutoApprove(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  userId: string,
+  amount?: number | null
+) {
+  return canApproveRequest(
+    client,
+    {
+      amount: amount ?? 0,
+      documentType: "productionQuantityReport",
+      companyId
+    },
+    userId
+  );
+}
+
 function accumulateConfigBreakdown(
   lines: { type: string; configuration: Json | null }[] | null,
   totals: {
@@ -443,4 +517,44 @@ export async function invalidateProductionQuantity(
     .eq("id", args.productionQuantityId)
     .eq("companyId", args.companyId)
     .is("invalidatedAt", null);
+}
+
+/** After create or revise: auto-approve clears requests; otherwise supersede + request when rules require. */
+export async function syncProductionQuantityReportApproval(
+  client: SupabaseClient<Database>,
+  args: {
+    reportId: string;
+    companyId: string;
+    userId: string;
+    canAutoApprove: boolean;
+    paymentYear: number | null;
+    paymentMonth: number | null;
+  }
+) {
+  const { reportId, companyId, userId, canAutoApprove, paymentYear, paymentMonth } =
+    args;
+
+  if (canAutoApprove && paymentYear != null && paymentMonth != null) {
+    await cancelApprovalRequestsForDocument(
+      client,
+      "productionQuantityReport",
+      reportId,
+      userId,
+      "Auto-approved"
+    );
+    return;
+  }
+
+  const amount = await computeProductionQuantityReportEarnedAmount(
+    client,
+    reportId,
+    companyId
+  );
+
+  await requestProductionPayApproval(client, {
+    reportId,
+    companyId,
+    requestedBy: userId,
+    amount
+  });
 }

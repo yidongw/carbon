@@ -41,6 +41,7 @@ import { Suspense, useRef } from "react";
 import { BsFillHexagonFill } from "react-icons/bs";
 import {
   LuActivity,
+  LuBanknote,
   LuBuilding,
   LuCalendarDays,
   LuChevronDown,
@@ -207,6 +208,11 @@ export function OperationsNav({
       title: t`Recent`,
       icon: LuHistory,
       to: path.to.recent
+    },
+    {
+      title: t`My Salary`,
+      icon: LuBanknote,
+      to: path.to.salary
     },
     {
       title: t`Maintenance`,

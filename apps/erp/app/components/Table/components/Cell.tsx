@@ -71,8 +71,7 @@ const Cell = <T extends object>({
         hasError && "ring-inset ring-2 ring-red-500",
         isSelected && "!ring-inset !ring-2 !ring-ring",
         isSelected && hasEditableTableCellComponent && "!bg-background",
-        "transition-[left,right,box-shadow] duration-200",
-        isPinned && "bg-card"
+        isPinned && "bg-card transition-[left] duration-200"
       )}
       ref={ref}
       style={{
@@ -112,15 +111,18 @@ const Cell = <T extends object>({
   );
 };
 
+// Cells re-render based on their own value, not row identity. Multi-field
+// cells should subscribe to all fields they read (e.g. via the column
+// accessor's `id` returning a derived value).
 const MemoizedCell = memo(
   Cell,
   (prev, next) =>
+    prev.cell.id === next.cell.id &&
     next.isRowSelected === prev.isRowSelected &&
     next.isSelected === prev.isSelected &&
     next.isEditing === prev.isEditing &&
     next.isEditMode === prev.isEditMode &&
     next.cell.getValue() === prev.cell.getValue() &&
-    next.cell.getContext() === prev.cell.getContext() &&
     next.pinnedColumns === prev.pinnedColumns &&
     next.columnIndex === prev.columnIndex
 ) as typeof Cell;

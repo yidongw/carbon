@@ -289,7 +289,8 @@ export const baseJobOperationValidator = z.object({
   operationSupplierProcessId: zfd.text(z.string().optional()),
   operationMinimumCost: zfd.numeric(z.number().min(0).optional()),
   operationUnitCost: zfd.numeric(z.number().min(0).optional()),
-  operationLeadTime: zfd.numeric(z.number().min(0).optional())
+  operationLeadTime: zfd.numeric(z.number().min(0).optional()),
+  insideUnitCost: zfd.numeric(z.number().min(0).optional())
 });
 
 export const jobOperationValidator = baseJobOperationValidator

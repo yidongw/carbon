@@ -1,12 +1,16 @@
 import { assertIsPost, notFound } from "@carbon/auth";
+import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data } from "react-router";
+import { computeProductionQuantityReportEarnedAmount } from "~/modules/people";
 import {
   isJobLocked,
   listProductionQuantityReportLines,
   replaceProductionQuantityReportLines,
-  replaceProductionQuantityReportLinesValidator
+  replaceProductionQuantityReportLinesValidator,
+  resolveProductionQuantityCanAutoApprove,
+  syncProductionQuantityReportApproval
 } from "~/modules/production";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 
@@ -53,6 +57,12 @@ export async function action({ request, params }: ActionFunctionArgs) {
     update: "production"
   });
 
+  const serviceRole = getCarbonServiceRole();
+
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth() + 1;
+
   const { reportId } = params;
   if (!reportId) throw notFound("reportId not found");
 
@@ -89,13 +99,27 @@ export async function action({ request, params }: ActionFunctionArgs) {
     return data({ error: parsed.error.flatten() }, { status: 400 });
   }
 
+  const amount = await computeProductionQuantityReportEarnedAmount(
+    serviceRole,
+    reportId,
+    companyId
+  );
+  const canAutoApprove = await resolveProductionQuantityCanAutoApprove(
+    serviceRole,
+    companyId,
+    userId,
+    amount
+  );
+
   const result = await replaceProductionQuantityReportLines(client, {
     reportId,
     companyId,
     userId,
     employeeId: userId,
     notes: parsed.data.notes ?? null,
-    lines: parsed.data.lines
+    lines: parsed.data.lines,
+    paymentYear: canAutoApprove ? currentYear : null,
+    paymentMonth: canAutoApprove ? currentMonth : null
   });
 
   if (result.error) {
@@ -104,6 +128,15 @@ export async function action({ request, params }: ActionFunctionArgs) {
       { status: 500 }
     );
   }
+
+  await syncProductionQuantityReportApproval(serviceRole, {
+    reportId,
+    companyId,
+    userId,
+    canAutoApprove,
+    paymentYear: canAutoApprove ? currentYear : null,
+    paymentMonth: canAutoApprove ? currentMonth : null
+  });
 
   return { report: result.data };
 }

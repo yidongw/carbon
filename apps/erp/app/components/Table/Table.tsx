@@ -1,9 +1,5 @@
 import {
-  ActionMenu,
   Button,
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuTrigger,
   cn,
   DropdownMenu,
   DropdownMenuContent,
@@ -11,7 +7,6 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-  Menu,
   Table as TableBase,
   Tbody,
   Td,
@@ -59,7 +54,7 @@ import {
   LuTrendingUpDown,
   LuTriangleAlert
 } from "react-icons/lu";
-import { useNavigation } from "react-router";
+import { useLocation, useNavigation } from "react-router";
 import { useSpinDelay } from "spin-delay";
 import type {
   EditableTableCellComponent,
@@ -71,6 +66,7 @@ import {
   IndeterminateCheckbox,
   Pagination,
   Row,
+  RowActionMenu,
   TableCardRow,
   TableHeader,
   usePagination,
@@ -806,20 +802,40 @@ const Table = <T extends object>({
         });
       });
 
-      setColumnSizeMap(columnWidths);
+      setColumnSizeMap((previous) => {
+        if (previous.size !== columnWidths.size) return columnWidths;
+        for (const [id, size] of columnWidths) {
+          const prev = previous.get(id);
+          if (
+            !prev ||
+            Math.abs(prev.width - size.width) > 1 ||
+            Math.abs(prev.startX - size.startX) > 1
+          ) {
+            return columnWidths;
+          }
+        }
+        return previous;
+      });
     };
 
     // Initial calculation
     calculateColumnWidths();
 
-    // Add resize observer to handle window/table size changes
+    // Debounce resize — immediate updates remount row menus (e.g. ActionMenu).
+    let resizeTimer: ReturnType<typeof setTimeout> | undefined;
+    const scheduleCalculate = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(calculateColumnWidths, 100);
+    };
+
     const tableWrapper = getTableWrapperEl();
     if (tableWrapper) {
-      const resizeObserver = new ResizeObserver(() => {
-        calculateColumnWidths();
-      });
+      const resizeObserver = new ResizeObserver(scheduleCalculate);
       resizeObserver.observe(tableWrapper);
-      return () => resizeObserver.disconnect();
+      return () => {
+        clearTimeout(resizeTimer);
+        resizeObserver.disconnect();
+      };
     }
   }, [
     getTableWrapperEl,
@@ -833,39 +849,42 @@ const Table = <T extends object>({
   //   .getLeftVisibleLeafColumns()
   //   .findLast((c) => c.getIsPinned() === "left");
 
-  const getPinnedStyles = (column: Column<T>): CSSProperties => {
-    const isPinned = column.getIsPinned();
-    if (!isPinned) return {};
+  const getPinnedStyles = useCallback(
+    (column: Column<T>): CSSProperties => {
+      const isPinned = column.getIsPinned();
+      if (!isPinned) return {};
 
-    // Right-pinned user columns are card-only — no sticky on the desktop table.
-    // Only system columns (Actions) remain sticky on the right.
-    if (isPinned === "right" && column.id !== "Actions") return {};
+      // Right-pinned user columns are card-only — no sticky on the desktop table.
+      // Only system columns (Actions) remain sticky on the right.
+      if (isPinned === "right" && column.id !== "Actions") return {};
 
-    let startX = 0;
-    if (isPinned === "left") {
-      // Derive left offset by summing widths of preceding pinned columns.
-      // Computed directly from columnPinning.left so it's always in sync —
-      // no separate startX state to keep up to date.
-      for (const id of columnPinning.left ?? []) {
-        if (id === column.id) break;
-        startX += columnSizeMap.get(id)?.width ?? 0;
+      let startX = 0;
+      if (isPinned === "left") {
+        for (const id of columnPinning.left ?? []) {
+          if (id === column.id) break;
+          startX += columnSizeMap.get(id)?.width ?? 0;
+        }
       }
-    }
 
-    return {
-      position: "sticky",
-      left: isPinned === "left" ? startX : undefined,
-      right: isPinned === "right" ? 0 : undefined,
-      zIndex: 2,
-      maxWidth: isPinned === "right" ? 60 : undefined
-    };
-  };
+      return {
+        position: "sticky",
+        left: isPinned === "left" ? startX : undefined,
+        right: isPinned === "right" ? 0 : undefined,
+        zIndex: 2,
+        maxWidth: isPinned === "right" ? 60 : undefined
+      };
+    },
+    [columnPinning.left, columnSizeMap]
+  );
 
+  const location = useLocation();
   const navigation = useNavigation();
   const { hasFilters, clearFilters } = useFilters();
-  const isLoading = useSpinDelay(navigation.state === "loading", {
-    delay: 300
-  });
+  const isRevalidatingCurrentRoute = useSpinDelay(
+    navigation.state === "loading" &&
+      navigation.location?.pathname === location.pathname,
+    { delay: 300 }
+  );
 
   return (
     <VStack
@@ -948,15 +967,14 @@ const Table = <T extends object>({
       <div
         id="table-container"
         className={cn(
-          "hidden md:block w-full h-full overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent"
+          "hidden md:block w-full h-full overflow-x-auto [scrollbar-gutter:stable] scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent"
         )}
-        style={{ contain: "strict" }}
         ref={tableContainerRef}
         onKeyDown={editMode ? onKeyDown : undefined}
       >
         <div className="flex max-w-full h-full">
           {rows.length === 0 ? (
-            isLoading ? (
+            isRevalidatingCurrentRoute ? (
               <div className="flex h-full w-full items-start justify-center">
                 <TableBase full className="w-full">
                   <Thead>
@@ -1138,37 +1156,10 @@ const Table = <T extends object>({
                   const handleRowClick = renderExpandedRow
                     ? () => toggleRowExpanded(row.index)
                     : undefined;
-                  const rowContent = renderContextMenu ? (
-                    <Menu type="context" key={row.index}>
-                      <ContextMenu>
-                        <ContextMenuTrigger asChild>
-                          <Row
-                            editableComponents={editableComponents}
-                            isEditing={isEditing}
-                            isEditMode={editMode}
-                            isRowSelected={
-                              row.index in rowSelection &&
-                              !!rowSelection[row.index]
-                            }
-                            pinnedColumns={pinnedColumnsKey}
-                            selectedCell={selectedCell}
-                            row={row}
-                            rowIsSelected={selectedCell?.row === row.index}
-                            getPinnedStyles={getPinnedStyles}
-                            onCellClick={onCellClick}
-                            onCellUpdate={onCellUpdate}
-                            onClick={handleRowClick}
-                            className={
-                              renderExpandedRow ? "cursor-pointer" : undefined
-                            }
-                          />
-                        </ContextMenuTrigger>
-                        <ContextMenuContent className="w-128">
-                          {renderContextMenu(row.original)}
-                        </ContextMenuContent>
-                      </ContextMenu>
-                    </Menu>
-                  ) : (
+                  // Desktop rows use the Actions column ActionMenu (dropdown) only.
+                  // Do not wrap the row in ContextMenu — nesting dropdown inside
+                  // ContextMenuTrigger causes the menu to flash closed on open.
+                  const rowContent = (
                     <Row
                       key={row.id}
                       editableComponents={editableComponents}
@@ -1300,12 +1291,17 @@ function getActionColumn<T>(
       header: () => (
         <span className="sr-only">{translateLabel("Actions")}</span>
       ),
-      cell: (item) => (
-        <div className="flex justify-end">
-          <ActionMenu>{renderContextMenu(item.row.original)}</ActionMenu>
-        </div>
+      cell: ({ row }) => (
+        <RowActionMenu
+          rowKey={row.id}
+          row={row.original}
+          renderContextMenu={renderContextMenu}
+        />
       ),
-      size: 60
+      size: 60,
+      meta: {
+        cellClassName: "transition-none"
+      }
     }
   ];
 }

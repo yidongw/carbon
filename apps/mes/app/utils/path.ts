@@ -91,6 +91,9 @@ export const path = {
     acknowledge: `${x}/acknowledge`,
     active: `${x}/active`,
     assigned: `${x}/assigned`,
+    salary: `${x}/salary`,
+    salaryMonth: (year: number, month: number) =>
+      generatePath(`${x}/salary/${year}/${month}`),
     authenticatedRoot: x,
     callback: "/callback",
     companySwitch: (companyId: string) =>

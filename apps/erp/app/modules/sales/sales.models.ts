@@ -489,7 +489,8 @@ export const quoteOperationValidator = z
     operationSupplierProcessId: zfd.text(z.string().optional()),
     operationMinimumCost: zfd.numeric(z.number().min(0).optional()),
     operationUnitCost: zfd.numeric(z.number().min(0).optional()),
-    operationLeadTime: zfd.numeric(z.number().min(0).optional())
+    operationLeadTime: zfd.numeric(z.number().min(0).optional()),
+    insideUnitCost: zfd.numeric(z.number().min(0).optional())
   })
   .refine(
     (data) => {

@@ -9065,3 +9065,69 @@ msgstr "你的名字"
 
 msgid "yourself"
 msgstr "你自己"
+
+msgid "Approve Record"
+msgstr "批准记录"
+
+msgid "Approved"
+msgstr "已批准"
+
+msgid "Approved Completions"
+msgstr "已批准的完工记录"
+
+msgid "approved"
+msgstr "已批准"
+
+msgid "Earned"
+msgstr "已获得"
+
+msgid "Fully paid"
+msgstr "已全额付款"
+
+msgid "No approved completions this period"
+msgstr "本期无已批准的完工记录"
+
+msgid "Outstanding"
+msgstr "未付金额"
+
+msgid "Paid"
+msgstr "已支付"
+
+msgid "Paid At"
+msgstr "付款时间"
+
+msgid "Paid By"
+msgstr "付款人"
+
+msgid "Payment History"
+msgstr "付款历史"
+
+msgid "payment(s)"
+msgstr "笔付款"
+
+msgid "Pending Approval"
+msgstr "待批准"
+
+msgid "Pending payment"
+msgstr "待付款"
+
+msgid "Qty"
+msgstr "数量"
+
+msgid "Record Payment"
+msgstr "记录付款"
+
+msgid "Salary Detail"
+msgstr "工资明细"
+
+msgid "Submitted"
+msgstr "提交时间"
+
+msgid "Total Earned"
+msgstr "总收入"
+
+msgid "Total Paid"
+msgstr "已付总额"
+
+msgid "unit"
+msgstr "单位"

@@ -11,8 +11,11 @@ import {
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
+import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
+import type { FetcherWithComponents } from "react-router";
 import { useFetcher } from "react-router";
+import { useOverlay } from "~/components/Overlay";
 import type { ProductionQuantityReportWithLines } from "~/modules/production/productionQuantityReport.service";
 import { path } from "~/utils/path";
 import {
@@ -47,7 +50,12 @@ export function ProductionQuantityDispositionDrawer({
   itemId,
   open,
   onClose,
-  onSaved
+  onSaved,
+  saveAction,
+  title,
+  saveMethod = "PATCH",
+  getSaveBody,
+  fetcher: externalFetcher
 }: {
   report: ProductionQuantityReportWithLines;
   configurationParameters?: ConfigurationParameter[] | null;
@@ -55,12 +63,36 @@ export function ProductionQuantityDispositionDrawer({
   open: boolean;
   onClose: () => void;
   onSaved: (report: ProductionQuantityReportWithLines) => void;
-}) {
-  const { t } = useLingui();
-  const fetcher = useFetcher<{
+  /** Defaults to the production quantity report lines API. */
+  saveAction?: string;
+  title?: ReactNode;
+  saveMethod?: "PATCH" | "POST";
+  /** When set, builds the request body (e.g. quantity-review reject-with-correction). */
+  getSaveBody?: (payload: {
+    notes: string | undefined;
+    lines: Array<{
+      type: string;
+      quantity: number;
+      scrapReasonId?: string;
+      notes?: string;
+      configuration?: unknown;
+    }>;
+  }) => BodyInit;
+  /** When provided, submits through this fetcher (e.g. quantity-review table actions). */
+  fetcher?: FetcherWithComponents<{
     report?: ProductionQuantityReportWithLines;
     error?: string;
+    ok?: boolean;
+  }>;
+}) {
+  const { t } = useLingui();
+  const internalFetcher = useFetcher<{
+    report?: ProductionQuantityReportWithLines;
+    error?: string;
+    ok?: boolean;
   }>();
+  const fetcher = externalFetcher ?? internalFetcher;
+  const { instances: overlayInstances } = useOverlay();
   const [lines, setLines] = useState<EditableProductionQuantityLine[]>([]);
   const [notes, setNotes] = useState(report.notes ?? "");
 
@@ -74,16 +106,24 @@ export function ProductionQuantityDispositionDrawer({
 
   useEffect(() => {
     if (fetcher.state !== "idle" || !fetcher.data) return;
+    // Ignore stale fetcher results from unrelated actions (e.g. approve on the same fetcher).
+    if (externalFetcher && fetcher.formData == null) return;
     if (fetcher.data.error) {
       toast.error(fetcher.data.error);
       return;
     }
-    if (fetcher.data.report) {
-      toast.success(t`Quantity report updated`);
-      onSaved(fetcher.data.report);
+    if (fetcher.data.report || fetcher.data.ok) {
+      if (!externalFetcher) {
+        toast.success(t`Quantity report updated`);
+      }
+      if (fetcher.data.report) {
+        onSaved(fetcher.data.report);
+      } else {
+        onSaved(report);
+      }
       onClose();
     }
-  }, [fetcher.state, fetcher.data, onClose, onSaved, t]);
+  }, [externalFetcher, fetcher.state, fetcher.data, fetcher.formData, onClose, onSaved, report, t]);
 
   const save = () => {
     const zeroQuantityLine = lines.find((line) => line.quantity <= 0);
@@ -109,23 +149,42 @@ export function ProductionQuantityDispositionDrawer({
       }))
     };
 
-    void fetcher.submit(JSON.stringify(payload), {
-      method: "PATCH",
-      action: path.to.api.quantityReportLines(report.id),
-      encType: "application/json"
+    const body = getSaveBody?.(payload) ?? JSON.stringify(payload);
+    const encType =
+      body instanceof FormData ? undefined : ("application/json" as const);
+
+    void fetcher.submit(body, {
+      method: saveMethod,
+      action: saveAction ?? path.to.api.quantityReportLines(report.id),
+      ...(encType ? { encType } : {})
     });
   };
 
   const isSaving = fetcher.state !== "idle";
   const canSave = lines.length > 0 && lines.every((line) => line.quantity > 0);
 
+  const preventDismissWhileOverlayOpen = (event: Event) => {
+    if (overlayInstances.length > 0) {
+      event.preventDefault();
+    }
+  };
+
   return (
-    <Drawer open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DrawerContent className="flex w-full max-w-lg flex-col sm:max-w-lg">
+    <Drawer
+      open={open}
+      onOpenChange={(isOpen) => {
+        if (!isOpen && overlayInstances.length === 0) {
+          onClose();
+        }
+      }}
+    >
+      <DrawerContent
+        className="flex w-full max-w-lg flex-col sm:max-w-lg"
+        onPointerDownOutside={preventDismissWhileOverlayOpen}
+        onInteractOutside={preventDismissWhileOverlayOpen}
+      >
         <DrawerHeader>
-          <DrawerTitle>
-            <Trans>Disposition</Trans>
-          </DrawerTitle>
+          <DrawerTitle>{title ?? <Trans>Disposition</Trans>}</DrawerTitle>
         </DrawerHeader>
         <DrawerBody className="flex w-full min-w-0 flex-col items-stretch gap-4">
           <VStack className="w-full gap-1">

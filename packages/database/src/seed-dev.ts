@@ -17,6 +17,7 @@ import {
   accounts,
   currencies,
   customerStatuses,
+  defaultApprovalRules,
   defaultLocation,
   dimensions,
   failureModes,
@@ -265,6 +266,21 @@ async function seedDev() {
         `INSERT INTO employee (id, "employeeTypeId", "companyId", active) VALUES ($1, $2, $3, true)`,
         [userId, employeeTypeId, companyId]
       );
+
+      for (const rule of defaultApprovalRules(companyId, employeeTypeId, userId)) {
+        await client.query(
+          `INSERT INTO "approvalRule" ("documentType", enabled, "approverGroupIds", "lowerBoundAmount", "companyId", "createdBy")
+           VALUES ($1, $2, $3, $4, $5, $6)`,
+          [
+            rule.documentType,
+            rule.enabled,
+            rule.approverGroupIds,
+            rule.lowerBoundAmount,
+            rule.companyId,
+            rule.createdBy
+          ]
+        );
+      }
 
       // Seed customer statuses
       for (const name of customerStatuses) {

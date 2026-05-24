@@ -1827,6 +1827,7 @@ function OperationForm({
     operationLeadTime: number;
     operationType: string;
     operationUnitCost: number;
+    insideUnitCost: number;
     overheadRate: number;
     processId: string;
     procedureId: string;
@@ -1847,6 +1848,7 @@ function OperationForm({
     operationLeadTime: item.data.operationLeadTime ?? 0,
     operationType: item.data.operationType ?? "Inside",
     operationUnitCost: item.data.operationUnitCost ?? 0,
+    insideUnitCost: (item.data as any).insideUnitCost ?? 0,
     overheadRate: item.data.overheadRate ?? 0,
     processId: item.data.processId ?? "",
     procedureId: item.data.procedureId ?? "",
@@ -2100,6 +2102,22 @@ function OperationForm({
                 setProcessData((d) => ({
                   ...d,
                   overheadRate: newValue
+                }))
+              }
+            />
+            <NumberControlled
+              name="insideUnitCost"
+              label={t`Unit rate`}
+              minValue={0}
+              value={processData.insideUnitCost}
+              formatOptions={{
+                style: "currency",
+                currency: baseCurrency
+              }}
+              onChange={(newValue) =>
+                setProcessData((d) => ({
+                  ...d,
+                  insideUnitCost: newValue ?? 0
                 }))
               }
             />

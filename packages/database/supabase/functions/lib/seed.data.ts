@@ -720,3 +720,43 @@ export function getGroupId(idPrefix: string, companyId: string): string {
   )}-${companyId.substring(8, 20)}`;
   return `${idPrefix}-${companyIdPart}`;
 }
+
+export type DefaultApprovalRuleSeed = {
+  documentType:
+    | "purchaseOrder"
+    | "qualityDocument"
+    | "supplier"
+    | "productionQuantityReport";
+  enabled: boolean;
+  approverGroupIds: string[];
+  lowerBoundAmount: number;
+};
+
+/** Default approval rules for new companies — Admin employee-type group can approve all types. */
+export function defaultApprovalRules(
+  companyId: string,
+  adminEmployeeTypeId: string,
+  createdBy: string
+): Array<{
+  documentType: DefaultApprovalRuleSeed["documentType"];
+  enabled: boolean;
+  approverGroupIds: string[];
+  lowerBoundAmount: number;
+  companyId: string;
+  createdBy: string;
+}> {
+  const types: DefaultApprovalRuleSeed["documentType"][] = [
+    "purchaseOrder",
+    "qualityDocument",
+    "supplier",
+    "productionQuantityReport"
+  ];
+  return types.map((documentType) => ({
+    documentType,
+    enabled: true,
+    approverGroupIds: [adminEmployeeTypeId],
+    lowerBoundAmount: 0,
+    companyId,
+    createdBy
+  }));
+}
