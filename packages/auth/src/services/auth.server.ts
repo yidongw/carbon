@@ -510,5 +510,15 @@ export async function signInWithPasskey(
   if (sessionError || !sessionData.session) return null;
 
   const companies = await getCompaniesForUser(serviceRole, userId);
-  return makeAuthSession(sessionData.session, companies[0] ?? "");
+  const { data: companyRecord } = await serviceRole
+    .from("company")
+    .select("companyGroupId")
+    .eq("id", companies?.[0] ?? "")
+    .single();
+
+  return makeAuthSession(
+    sessionData.session,
+    companies?.[0] ?? "",
+    companyRecord?.companyGroupId ?? ""
+  );
 }
