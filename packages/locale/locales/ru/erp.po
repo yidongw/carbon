@@ -23,7 +23,7 @@ msgstr ""
 
 #. placeholder {0}: rule.escalationDays
 msgid "{0} days"
-msgstr ""
+msgstr ">>>>>>> main"
 
 #. placeholder {0}: attachment.name
 #. placeholder {0}: file.name
@@ -297,7 +297,7 @@ msgid "Add Contractor"
 msgstr ""
 
 msgid "Add Entry"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "Add from library…"
 msgstr ""
@@ -477,7 +477,7 @@ msgid "API Key"
 msgstr ""
 
 msgid "API Keys"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "API keys for programmatic access to your Carbon data."
 msgstr ""
@@ -531,7 +531,7 @@ msgid "Archived"
 msgstr ""
 
 msgid "Archived Logs"
-msgstr ""
+msgstr ">>>>>>> main"
 
 #. placeholder {0}: quote.quoteId
 #. placeholder {1}: formatter.format(total)
@@ -599,7 +599,7 @@ msgstr ""
 
 #. placeholder {0}: selectedGroup.name
 msgid "Are you sure you want to delete {0}?"
-msgstr ""
+msgstr ">>>>>>> main"
 
 #. placeholder {0}: routeData?.consumableSummary?.readableIdWithRevision
 #. placeholder {0}: routeData?.customer?.name!
@@ -619,7 +619,7 @@ msgid "Are you sure you want to delete the {key} parameter from this operation? 
 msgstr ""
 
 msgid "Are you sure you want to delete the {name} attribute from this operation? This cannot be undone."
-msgstr ""
+msgstr ">>>>>>> main"
 
 #. placeholder {0}: account.name
 #. placeholder {1}: account.number ? ` (${account.number})` : ""
@@ -675,7 +675,7 @@ msgstr ""
 
 #. placeholder {0}: itemPostingGroup.name
 msgid "Are you sure you want to delete the item group: {0}? This cannot be undone."
-msgstr ""
+msgstr ">>>>>>> main"
 
 #. placeholder {0}: line.customerPartId
 #. placeholder {0}: line.description
@@ -729,7 +729,7 @@ msgstr ""
 
 #. placeholder {0}: pricingRule.name
 msgid "Are you sure you want to delete the pricing rule: {0}? This cannot be undone."
-msgstr ""
+msgstr ">>>>>>> main"
 
 #. placeholder {0}: purchaseInvoiceLine.quantity ?? 0
 #. placeholder {1}: purchaseInvoiceLine.description ?? ""
@@ -824,7 +824,7 @@ msgid "Are you sure you want to finalize the quote?"
 msgstr ""
 
 msgid "Are you sure you want to finalize the supplier quote?"
-msgstr ""
+msgstr ">>>>>>> main"
 
 #. placeholder {0}: selectedPurchaseInvoice.invoiceId!
 #. placeholder {0}: selectedSalesInvoice.invoiceId!
@@ -1062,7 +1062,7 @@ msgid "Blocked by {0}"
 msgstr ""
 
 msgid "Blocks save until resolved"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "BoM"
 msgstr ""
@@ -1167,7 +1167,7 @@ msgid "Cannot move to parts bucket without item ID"
 msgstr ""
 
 msgid "Cannot place order - no supplier associated with this item"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "Cannot post — shipment contains expired tracked entities."
 msgstr ""
@@ -1194,7 +1194,7 @@ msgid "Carbon Logo"
 msgstr ""
 
 msgid "Carbon Value"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "Cards"
 msgstr ""
@@ -1209,7 +1209,7 @@ msgid "Category"
 msgstr ""
 
 msgid "Category Name"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "CC"
 msgstr ""
@@ -1475,7 +1475,7 @@ msgid "Confirm Import"
 msgstr ""
 
 msgid "Confirm Password"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "Connect Carbon to your accounting, project management, and CAD tools and much more."
 msgstr ""
@@ -1727,7 +1727,7 @@ msgid "Country"
 msgstr ""
 
 msgid "Create"
-msgstr ""
+msgstr ">>>>>>> main"
 
 #. placeholder {0}: search.trim() === "" ? (createLabel ?? label) : search
 #. placeholder {0}: search.trim() === "" ? label : search
@@ -1935,7 +1935,7 @@ msgid "Custom Field"
 msgstr ""
 
 msgid "Custom Fields"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "Custom Rules"
 msgstr ""
@@ -2479,7 +2479,7 @@ msgid "Dispatch ID"
 msgstr ""
 
 msgid "Dispatches"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "Display Settings"
 msgstr ""
@@ -2524,7 +2524,7 @@ msgid "Drag and drop a Purchase Order PDF here, or click to select a file"
 msgstr ""
 
 msgid "Drag handle"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "Drag to reorder"
 msgstr ""
@@ -2795,7 +2795,7 @@ msgid "Edit supplier process"
 msgstr ""
 
 msgid "Edit Supplier Type"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "Edit the rule to remove the \"Applies to all\" flag"
 msgstr ""
@@ -2855,7 +2855,7 @@ msgid "Employee Types"
 msgstr ""
 
 msgid "Employees"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "Empty work centers"
 msgstr ""
@@ -2954,7 +2954,7 @@ msgid "Entity"
 msgstr ""
 
 msgid "Entity is {status}"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "EORI"
 msgstr ""
@@ -3404,7 +3404,7 @@ msgid "Failed to upload file"
 msgstr ""
 
 msgid "Failed to upload file to new location"
-msgstr ""
+msgstr ">>>>>>> main"
 
 #. placeholder {0}: file.name
 #. placeholder {0}: fileUpload.name
@@ -3448,7 +3448,7 @@ msgid "Fetch"
 msgstr ""
 
 msgid "Field"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "Field info"
 msgstr ""
@@ -3687,7 +3687,7 @@ msgid "Humidity"
 msgstr ""
 
 msgid "I'm Still Working"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "ID"
 msgstr ""
@@ -3783,7 +3783,7 @@ msgid "Infrastructure"
 msgstr ""
 
 msgid "Inherit From Materials"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "Inherited from"
 msgstr ""
@@ -3849,7 +3849,7 @@ msgid "Invalid Invite"
 msgstr ""
 
 msgid "Inventory"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "Inventory actions"
 msgstr ""
@@ -4194,7 +4194,7 @@ msgid "Link Jira Issue"
 msgstr ""
 
 msgid "Link Linear Issue"
-msgstr ""
+msgstr ">>>>>>> main"
 
 #. placeholder {0}: r.linkedSum
 #. placeholder {1}: r.quantity
@@ -4220,6 +4220,9 @@ msgid "Loading item details..."
 msgstr ""
 
 msgid "Loading..."
+msgstr ""
+
+msgid "Loading…"
 msgstr ""
 
 msgid "Location"
@@ -4346,7 +4349,7 @@ msgid "Manage how shelf life is tracked, computed, and enforced across inventory
 msgstr ""
 
 msgid "Manage Ownership"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "Manage rules"
 msgstr ""
@@ -4502,7 +4505,7 @@ msgid "Measurement Standard"
 msgstr ""
 
 msgid "Members"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "MES"
 msgstr ""
@@ -4625,7 +4628,7 @@ msgid "Move"
 msgstr ""
 
 msgid "Move entities"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "Move entities…"
 msgstr ""
@@ -4640,7 +4643,7 @@ msgid "Move to"
 msgstr ""
 
 msgid "Move to Trash"
-msgstr ""
+msgstr ">>>>>>> main"
 
 #. placeholder {0}: file.name
 #. placeholder {1}: targetBucket === "parts" ? "Parts" : "Opportunity"
@@ -5021,6 +5024,9 @@ msgstr ""
 msgid "No Gauge Selected"
 msgstr ""
 
+msgid "No grouped notifications"
+msgstr ""
+
 msgid "No groups assigned"
 msgstr ""
 
@@ -5217,7 +5223,7 @@ msgid "Open"
 msgstr ""
 
 msgid "Open Actions"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "Open Audit Log"
 msgstr ""
@@ -5229,7 +5235,7 @@ msgid "Open Date"
 msgstr ""
 
 msgid "Open Dispatches"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "Open in MES"
 msgstr ""
@@ -5463,7 +5469,7 @@ msgid "Payment Term"
 msgstr ""
 
 msgid "Payment Terms"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "PDF"
 msgstr ""
@@ -6240,7 +6246,7 @@ msgid "Reset"
 msgstr ""
 
 msgid "Reset PIN"
-msgstr ""
+msgstr ">>>>>>> main"
 
 #. placeholder {0}: operator.firstName
 #. placeholder {1}: operator.lastName
@@ -6459,7 +6465,7 @@ msgid "Save Method"
 msgstr ""
 
 msgid "Save View"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "Saving..."
 msgstr ""
@@ -6480,7 +6486,7 @@ msgid "Scan or select a tracked entity from this lot and record the inspection r
 msgstr ""
 
 msgid "Scan the tracking ID for this line"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "SCAR"
 msgstr ""
@@ -6838,7 +6844,7 @@ msgid "Shelf Life Start Process"
 msgstr ""
 
 msgid "Shelf-Life"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "Shelf-Life History"
 msgstr ""
@@ -7106,7 +7112,7 @@ msgid "Started"
 msgstr ""
 
 msgid "State / Province"
-msgstr ""
+msgstr ">>>>>>> main"
 
 #. placeholder {0}: lotEntities.length
 #. placeholder {1}: Math.max(0, lotEntities.length - inspected)
@@ -7153,7 +7159,7 @@ msgid "Storage Types"
 msgstr ""
 
 msgid "Storage Unit"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "Storage unit rules"
 msgstr ""
@@ -7563,7 +7569,7 @@ msgid "This will overwrite the existing quote method"
 msgstr ""
 
 msgid "This will recalculate the unit cost from the active make method's bill of materials and processes using the batch size. The current cost will be overwritten. Do you want to continue?"
-msgstr ""
+msgstr ">>>>>>> main"
 
 #. placeholder {0}: routeData?.job?.jobId
 #. placeholder {1}: routeData?.job?.salesOrderReadableId
@@ -7793,7 +7799,7 @@ msgid "Trash"
 msgstr ""
 
 msgid "Trial Balance"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "Triggers"
 msgstr ""
@@ -7823,7 +7829,7 @@ msgid "Un-sampled entities will remain On Hold so you can keep inspecting and di
 msgstr ""
 
 msgid "Unapproved Supplier"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "Unassign from parent unit to remove"
 msgstr ""
@@ -7871,7 +7877,7 @@ msgid "Unlimited Functional Support"
 msgstr ""
 
 msgid "Unlink"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "Unlink job from sales order?"
 msgstr ""
@@ -7946,14 +7952,14 @@ msgid "Upgrade"
 msgstr ""
 
 msgid "Upgrade to Business"
-msgstr ""
+msgstr ">>>>>>> main"
 
 #. placeholder {0}: targetCopy.noun
 msgid "Upgrade to unlock {0} rules"
 msgstr ""
 
 msgid "Upgrade to unlock audit history"
-msgstr "<<<<<<< HEAD"
+msgstr ""
 
 msgid "Upload"
 msgstr ""
@@ -7965,7 +7971,7 @@ msgid "Upload CSV"
 msgstr ""
 
 msgid "Uploaded model"
-msgstr ""
+msgstr ">>>>>>> main"
 
 #. placeholder {0}: file.name
 #. placeholder {0}: fileUpload.name
@@ -8051,7 +8057,7 @@ msgid "Validating job..."
 msgstr ""
 
 msgid "Value"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "Value source by surface"
 msgstr ""
@@ -8303,7 +8309,7 @@ msgid "When a finished product's shelf life is set to Calculated, pick which con
 msgstr ""
 
 msgid "When expired stock is used"
-msgstr ""
+msgstr ">>>>>>> main"
 
 msgid "When on, this rule fires for every target of its type. Assignment rows are ignored but preserved."
 msgstr ""
@@ -8415,7 +8421,7 @@ msgstr ""
 
 #. placeholder {0}: new Date(openClockEntry.clockIn).toLocaleString(locale)
 msgid "You clocked in at {0}. You can edit your clock-out time below or acknowledge that you're still working."
-msgstr ""
+msgstr ">>>>>>> main"
 
 #. placeholder {0}: leftoverQuantity === 1 ? "part" : "parts"
 #. placeholder {1}: job.quantity
@@ -8451,4 +8457,4 @@ msgid "Your Name"
 msgstr ""
 
 msgid "yourself"
-msgstr ""
+msgstr ">>>>>>> main"
