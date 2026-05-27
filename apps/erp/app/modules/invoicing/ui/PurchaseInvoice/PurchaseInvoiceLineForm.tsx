@@ -408,7 +408,7 @@ const PurchaseInvoiceLineForm = ({
   };
 
   const onItemChange = async (itemId: string) => {
-    if (!carbon) throw new Error("Carbon client not found");
+    if (!carbon) throw new Error("Jilio client not found");
     clearConfig();
     switch (itemType) {
       // @ts-expect-error

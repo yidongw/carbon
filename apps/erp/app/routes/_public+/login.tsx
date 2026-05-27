@@ -77,7 +77,7 @@ import { useFormatValidationError } from "~/utils/formatValidationError";
 import { path } from "~/utils/path";
 
 export const meta: MetaFunction = () => {
-  return [{ title: "Carbon | Login" }];
+  return [{ title: "Jilio | Login" }];
 };
 
 // Shared sizing for the WeChat-QR area across its loading/ready/error states.
@@ -541,14 +541,9 @@ export default function LoginRoute() {
     <>
       <div className="flex justify-center mb-8">
         <img
-          src={CONTROLLED_ENVIRONMENT ? "/flag.png" : "/carbon-mark-light.svg"}
-          alt="Carbon Logo"
-          className="w-24 dark:hidden"
-        />
-        <img
-          src={CONTROLLED_ENVIRONMENT ? "/flag.png" : "/carbon-mark-dark.svg"}
-          alt="Carbon Logo"
-          className="w-24 hidden dark:block"
+          src={CONTROLLED_ENVIRONMENT ? "/flag.png" : "/carbon-logo-mark.svg"}
+          alt={t`Jilio Logo`}
+          className="w-36"
         />
       </div>
       <div className="rounded-lg md:bg-card md:border md:border-border md:shadow-lg p-8 w-[380px]">
