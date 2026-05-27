@@ -214,7 +214,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
           t={t}
           fontFamily={pdfFontFamily}
           meta={{
-            author: "Carbon",
+            author: "Jilio",
             keywords: "packing slip",
             subject: "Packing Slip"
           }}
@@ -342,7 +342,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
           t={t}
           fontFamily={pdfFontFamily}
           meta={{
-            author: "Carbon",
+            author: "Jilio",
             keywords: "packing slip",
             subject: "Packing Slip"
           }}
@@ -465,7 +465,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
           t={t}
           fontFamily={pdfFontFamily}
           meta={{
-            author: "Carbon",
+            author: "Jilio",
             keywords: "packing slip",
             subject: "Packing Slip"
           }}

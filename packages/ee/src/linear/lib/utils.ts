@@ -44,6 +44,6 @@ export const mapCarbonStatusToLinearStatus = (
     case "Skipped":
       return LinearWorkStateType.Canceled;
     default:
-      throw new Error(`Unknown Carbon task status: ${status}`);
+      throw new Error(`Unknown Jilio task status: ${status}`);
   }
 };

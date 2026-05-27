@@ -27,7 +27,7 @@ import { acceptInvite } from "~/modules/users/users.server";
 import { path } from "~/utils/path";
 
 export const meta: MetaFunction = () => {
-  return [{ title: "Accept Invite | Carbon" }];
+  return [{ title: "Accept Invite | Jilio" }];
 };
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
@@ -128,14 +128,9 @@ export default function Invite() {
       <VStack spacing={4} className="max-w-lg items-center text-center">
         <div className="flex justify-center mb-8">
           <img
-            src="/carbon-mark-light.svg"
-            alt={t`Carbon Logo`}
-            className="w-24 dark:hidden"
-          />
-          <img
-            src="/carbon-mark-dark.svg"
-            alt={t`Carbon Logo`}
-            className="w-24 hidden dark:block"
+            src="/carbon-logo-mark.svg"
+            alt={t`Jilio Logo`}
+            className="w-36"
           />
         </div>
         <VStack spacing={2} className="text-center w-full">
@@ -165,14 +160,9 @@ export default function Invite() {
           initial={{ opacity: 0, scale: 0.4 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 2, ease: "easeInOut" }}
-          src="/carbon-mark-light.svg"
-          alt="Carbon Logo"
-          className="w-24 dark:hidden"
-        />
-        <img
-          src="/carbon-mark-dark.svg"
-          alt="Carbon Logo"
-          className="w-24 hidden dark:block"
+          src="/carbon-logo-mark.svg"
+          alt={t`Jilio Logo`}
+          className="w-24 mb-3"
         />
 
         <Heading

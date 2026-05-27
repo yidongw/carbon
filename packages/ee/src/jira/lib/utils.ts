@@ -4,7 +4,7 @@ import type { JiraStatusCategory } from "./types";
 type CarbonTaskStatus = Database["public"]["Enums"]["nonConformanceTaskStatus"];
 
 /**
- * Maps Jira status category to Carbon task status.
+ * Maps Jira status category to Jilio task status.
  *
  * Jira organizes all statuses into three categories:
  * - "new" (To Do, Backlog, Open, etc.) → Pending
@@ -27,7 +27,7 @@ export const mapJiraStatusToCarbonStatus = (
 };
 
 /**
- * Maps Carbon task status to target Jira status category.
+ * Maps Jilio task status to target Jira status category.
  *
  * Note: Jira uses transitions to change status, not direct status updates.
  * The caller must find an available transition that leads to a status
@@ -45,6 +45,6 @@ export const mapCarbonStatusToJiraCategory = (
     case "Skipped":
       return "done";
     default:
-      throw new Error(`Unknown Carbon task status: ${status}`);
+      throw new Error(`Unknown Jilio task status: ${status}`);
   }
 };
