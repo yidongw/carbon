@@ -50,11 +50,11 @@ export const jiraSyncFunction = inngest.createFunction(
     ]);
 
     if (company.error || !company.data) {
-      throw new Error("Failed to fetch company from Carbon");
+      throw new Error("Failed to fetch company from Jilio");
     }
 
     if (integration.error || !integration.data) {
-      throw new Error("Failed to fetch integration from Carbon");
+      throw new Error("Failed to fetch integration from Jilio");
     }
 
     const issueId = payload.event.issue.id;

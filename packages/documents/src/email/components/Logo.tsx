@@ -7,16 +7,8 @@ export function Logo() {
         src="https://app.carbon.ms/carbon-word-light.png"
         width="auto"
         height="45"
-        alt="Carbon"
-        className="mb-4 mx-auto block dark-mode-hide"
-      />
-      <Img
-        src="https://app.carbon.ms/carbon-word-dark.png"
-        width="auto"
-        height="45"
-        alt="Carbon"
-        className="mb-4 mx-auto block dark-mode-show"
-        style={{ display: "none" }}
+        alt="Jilio"
+        className="mb-4 mx-auto block"
       />
     </Section>
   );

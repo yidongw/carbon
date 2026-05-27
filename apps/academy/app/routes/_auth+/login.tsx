@@ -43,7 +43,7 @@ import {
 import { path } from "~/utils/path";
 
 export const meta: MetaFunction = () => {
-  return [{ title: "Carbon | Login" }];
+  return [{ title: "Jilio | Login" }];
 };
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -148,17 +148,8 @@ export default function LoginRoute() {
 
   return (
     <>
-      <div className="flex justify-center mb-8">
-        <img
-          src="/carbon-mark-light.svg"
-          alt="Carbon Logo"
-          className="w-24 dark:hidden"
-        />
-        <img
-          src="/carbon-mark-dark.svg"
-          alt="Carbon Logo"
-          className="w-24 hidden dark:block"
-        />
+      <div className="flex justify-center mb-4">
+        <img src="/carbon-logo-mark.svg" alt="Jilio Logo" className="w-36" />
       </div>
       <div className="rounded-lg md:bg-card md:border md:border-border md:shadow-lg p-8 w-[380px]">
         {fetcher.data?.success === true ? (

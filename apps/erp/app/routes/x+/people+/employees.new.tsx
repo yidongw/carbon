@@ -158,7 +158,28 @@ export async function action({ request }: ActionFunctionArgs) {
     });
   }
 
-  if (isOverlay) {
+  await sendEmail({
+    from: `Jilio <no-reply@${RESEND_DOMAIN}>`,
+    to: email,
+    subject: `You have been invited to join ${company.data?.name} on Jilio`,
+    headers: {
+      "X-Entity-Ref-ID": nanoid()
+    },
+    html: await render(
+      InviteEmail({
+        invitedByEmail: user.data.email ?? "",
+        invitedByName: user.data.fullName ?? "",
+        email,
+        name: `${firstName} ${lastName}`.trim(),
+        companyName: company.data.name,
+        inviteLink: `${getAppUrl()}/invite/${result.code}`,
+        ip,
+        location
+      })
+    )
+  });
+
+  if (modal) {
     return data(
       {
         ok: true as const,

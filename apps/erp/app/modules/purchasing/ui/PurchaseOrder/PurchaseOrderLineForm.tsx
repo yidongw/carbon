@@ -451,7 +451,7 @@ const PurchaseOrderLineForm = ({
   };
 
   const onItemChange = async (itemId: string) => {
-    if (!carbon) throw new Error("Carbon client not found");
+    if (!carbon) throw new Error("Jilio client not found");
     clearConfig();
     setItemData((d) => ({
       ...d,
