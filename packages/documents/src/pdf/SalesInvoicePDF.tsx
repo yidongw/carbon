@@ -132,7 +132,7 @@ const SalesInvoicePDF = ({
       theme={theme}
       title={title}
       meta={{
-        author: meta?.author ?? "Carbon",
+        author: meta?.author ?? "Jilio",
         keywords: meta?.keywords ?? "sales invoice",
         subject: meta?.subject ?? "Invoice"
       }}

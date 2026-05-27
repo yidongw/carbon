@@ -11,6 +11,50 @@ import { PlanSelector } from "~/components/PlanSelector";
 import { getCompany, getPlans } from "~/modules/settings";
 import { path } from "~/utils/path";
 
+function usePlans() {
+  const { t } = useLingui();
+  return {
+    STARTER: {
+      price: 40,
+      userMinimum: 0,
+      talkToSales: false,
+      description: t`Perfect for low-cost evaluation`,
+      features: [
+        t`ERP, MES, QMS`,
+        t`Cloud-Hosted`,
+        t`Self-Onboarding with Jilio Academy`
+      ]
+    },
+    BUSINESS: {
+      price: 100,
+      userMinimum: 5,
+      talkToSales: true,
+      description: t`For growing businesses that need support`,
+      features: [
+        t`5 User Minimum`,
+        t`Everything from Starter`,
+        t`API and Webhooks`,
+        t`Implementation Support`,
+        t`Unlimited Functional Support`
+      ]
+    },
+    GOVCLOUD: {
+      price: 100,
+      userMinimum: 5,
+      talkToSales: true,
+      description: t`For US companies handling ITAR data`,
+      features: [
+        t`5 User Minimum`,
+        t`ERP, MES, QMS`,
+        t`Cloud-Hosted`,
+        t`API and Webhooks`,
+        t`Implementation Support`,
+        t`Unlimited Functional Support`
+      ]
+    }
+  };
+}
+
 export async function loader({ request }: ActionFunctionArgs) {
   const { client, companyId } = await requirePermissions(request, {});
   if (CarbonEdition !== Edition.Cloud) {

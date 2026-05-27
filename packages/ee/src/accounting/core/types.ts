@@ -88,8 +88,8 @@ export type SyncDirection = z.infer<typeof SyncDirectionSchema>;
 
 /**
  * Defines which system owns the data integrity.
- * - 'carbon': Carbon data overwrites Accounting data.
- * - 'accounting': Accounting data overwrites Carbon data.
+ * - 'carbon': Jilio data overwrites Accounting data.
+ * - 'accounting': Accounting data overwrites Jilio data.
  */
 export type SystemOfRecord = "carbon" | "accounting";
 
@@ -215,7 +215,7 @@ export interface IEntitySyncer {
 }
 
 export abstract class BaseEntitySyncer<
-  TLocal, // Carbon DB Entity Type (e.g. Invoice)
+  TLocal, // Jilio DB Entity Type (e.g. Invoice)
   TRemote, // Accounting API Entity Type (e.g. Xero.Invoice)
   TOmit extends string | symbol | number // Fields to omit from mapping
 > implements IEntitySyncer
@@ -245,7 +245,7 @@ export abstract class BaseEntitySyncer<
   // =================================================================
 
   /**
-   * Look up the Remote ID (e.g. Xero ID) for a given Local ID (Carbon ID).
+   * Look up the Remote ID (e.g. Xero ID) for a given Local ID (Jilio ID).
    * Default implementation uses the external integration mapping table.
    * Can be overridden by subclasses for custom behavior.
    */
@@ -258,7 +258,7 @@ export abstract class BaseEntitySyncer<
   }
 
   /**
-   * Look up the Local ID (Carbon ID) for a given Remote ID (e.g. Xero ID).
+   * Look up the Local ID (Jilio ID) for a given Remote ID (e.g. Xero ID).
    * Default implementation uses the external integration mapping table.
    * Can be overridden by subclasses for custom behavior.
    */
@@ -271,7 +271,7 @@ export abstract class BaseEntitySyncer<
   }
 
   /**
-   * Save the link between a Carbon ID and a Remote ID.
+   * Save the link between a Jilio ID and a Remote ID.
    * Default implementation uses the external integration mapping table.
    * Can be overridden by subclasses for custom behavior.
    */
@@ -390,7 +390,7 @@ export abstract class BaseEntitySyncer<
   ): boolean | string | Promise<boolean | string>;
 
   // =================================================================
-  // 3. PUSH WORKFLOW (Carbon -> Accounting)
+  // 3. PUSH WORKFLOW (Jilio -> Accounting)
   // =================================================================
 
   async pushToAccounting(entityId: string): Promise<SyncResult> {
@@ -416,7 +416,7 @@ export abstract class BaseEntitySyncer<
         return {
           status: "error",
           action: "none",
-          error: `Entity ${entityId} not found in Carbon`
+          error: `Entity ${entityId} not found in Jilio`
         };
       }
 
@@ -487,7 +487,7 @@ export abstract class BaseEntitySyncer<
   }
 
   // =================================================================
-  // 4. PULL WORKFLOW (Accounting -> Carbon)
+  // 4. PULL WORKFLOW (Accounting -> Jilio)
   // =================================================================
 
   async pullFromAccounting(remoteId: string): Promise<SyncResult> {
@@ -594,7 +594,7 @@ export abstract class BaseEntitySyncer<
   }
 
   // =================================================================
-  // 5. BATCH PUSH WORKFLOW (Carbon -> Accounting)
+  // 5. BATCH PUSH WORKFLOW (Jilio -> Accounting)
   // =================================================================
 
   async pushBatchToAccounting(entityIds: string[]): Promise<BatchSyncResult> {
@@ -623,7 +623,7 @@ export abstract class BaseEntitySyncer<
           status: "error",
           action: "none",
           localId: id,
-          error: `Entity ${id} not found in Carbon`
+          error: `Entity ${id} not found in Jilio`
         });
       }
 
@@ -734,7 +734,7 @@ export abstract class BaseEntitySyncer<
   }
 
   // =================================================================
-  // 6. BATCH PULL WORKFLOW (Accounting -> Carbon)
+  // 6. BATCH PULL WORKFLOW (Accounting -> Jilio)
   // =================================================================
 
   async pullBatchFromAccounting(remoteIds: string[]): Promise<BatchSyncResult> {
@@ -778,7 +778,7 @@ export abstract class BaseEntitySyncer<
               action: "none",
               remoteId,
               localId: existingLocalId,
-              error: "Carbon is System of Record"
+              error: "Jilio is System of Record"
             });
             continue;
           }

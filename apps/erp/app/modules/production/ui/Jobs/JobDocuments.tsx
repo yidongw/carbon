@@ -208,7 +208,7 @@ const useJobDocuments = ({
   const upload = useCallback(
     async (files: File[], bucket: "job" | "parts" = "job") => {
       if (!carbon) {
-        toast.error(t`Carbon client not available`);
+        toast.error(t`Jilio client not available`);
         return;
       }
 
@@ -256,7 +256,7 @@ const useJobDocuments = ({
       targetBucket: "job" | "parts"
     ) => {
       if (!carbon) {
-        toast.error(t`Carbon client not available`);
+        toast.error(t`Jilio client not available`);
         return;
       }
 
