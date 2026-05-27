@@ -107,7 +107,7 @@ export const action: ActionFunction = async ({ request }) => {
       companyId,
       issue.id,
       url,
-      `Linked Carbon Issue: ${carbonIssue.data?.nonConformance?.nonConformanceId ?? ""}`
+      `Linked Jilio Issue: ${carbonIssue.data?.nonConformance?.nonConformanceId ?? ""}`
     );
 
     return { success: true, message: "Jira issue created" };

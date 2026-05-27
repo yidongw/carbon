@@ -90,7 +90,7 @@ export const action: ActionFunction = async ({ request }) => {
           companyId,
           issue.id,
           url,
-          `Linked Carbon Issue: ${
+          `Linked Jilio Issue: ${
             carbonIssue.data?.nonConformance?.nonConformanceId ?? ""
           }`
         );
@@ -123,7 +123,7 @@ export const action: ActionFunction = async ({ request }) => {
             );
             const carbonLink = remoteLinks.find(
               (link) =>
-                link.application?.name === "Carbon" ||
+                link.application?.name === "Jilio" ||
                 link.globalId.startsWith("carbon-")
             );
             if (carbonLink) {

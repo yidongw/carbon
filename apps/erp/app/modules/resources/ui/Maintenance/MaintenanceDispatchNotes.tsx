@@ -217,7 +217,7 @@ function MaintenanceFilesContent({
   const upload = useCallback(
     async (filesToUpload: File[]) => {
       if (!carbon) {
-        toast.error(t`Carbon client not available`);
+        toast.error(t`Jilio client not available`);
         return;
       }
 
@@ -274,7 +274,7 @@ function MaintenanceFilesContent({
   const deleteFile = useCallback(
     async (file: FileObject) => {
       if (!carbon) {
-        toast.error(t`Carbon client not available`);
+        toast.error(t`Jilio client not available`);
         return;
       }
 
