@@ -561,7 +561,7 @@ const JobTravelerPDF = ({
     <Template
       title={title}
       meta={{
-        author: meta?.author ?? "Carbon",
+        author: meta?.author ?? "Jilio",
         keywords: meta?.keywords ?? "job traveler, manufacturing",
         subject: meta?.subject ?? "Job Traveler"
       }}

@@ -250,7 +250,7 @@ const useOpportunityLineDocuments = ({
       bucket: "opportunity-line" | "parts" = "opportunity-line"
     ) => {
       if (!carbon) {
-        toast.error(t`Carbon client not available`);
+        toast.error(t`Jilio client not available`);
         return;
       }
 
@@ -291,7 +291,7 @@ const useOpportunityLineDocuments = ({
       targetBucket: "opportunity-line" | "parts"
     ) => {
       if (!carbon) {
-        toast.error(t`Carbon client not available`);
+        toast.error(t`Jilio client not available`);
         return;
       }
 

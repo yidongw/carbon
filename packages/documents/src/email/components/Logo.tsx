@@ -7,7 +7,7 @@ export function Logo() {
         src="https://app.carbon.ms/carbon-word-light.png"
         width="auto"
         height="45"
-        alt="Carbon"
+        alt="Jilio"
         className="mb-4 mx-auto block"
       />
     </Section>

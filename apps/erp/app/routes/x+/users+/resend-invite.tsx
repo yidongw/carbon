@@ -85,9 +85,9 @@ export async function action({ request }: ActionFunctionArgs) {
       .single();
 
     await sendEmail({
-      from: `Carbon <no-reply@${RESEND_DOMAIN}>`,
+      from: `Jilio <no-reply@${RESEND_DOMAIN}>`,
       to: user.data.email,
-      subject: `You have been invited to join ${company.data?.name} on Carbon`,
+      subject: `You have been invited to join ${company.data?.name} on Jilio`,
       headers: {
         "X-Entity-Ref-ID": nanoid()
       },

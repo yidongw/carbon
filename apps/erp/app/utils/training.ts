@@ -14,24 +14,24 @@ export type TrainingVideo = {
  */
 export const trainingConfig: Record<string, TrainingVideo> = {
   quotes: {
-    title: "Quotes in Carbon",
+    title: "Quotes in Jilio",
     description:
-      "Learn how to record and manage quotes from customers in Carbon.",
+      "Learn how to record and manage quotes from customers in Jilio.",
     videoUrl:
       "https://www.loom.com/share/881c83e9df8044db848aee8c2ea782bd?sid=f4ca14ef-bc59-4a8f-94a6-d6e120ee3bb3",
     videoType: "loom",
     academyUrl: "https://learn.carbon.ms/course/selling/quoting-estimating"
   },
   salesOrders: {
-    title: "Sales Orders in Carbon",
-    description: "Learn how to create and manage sales orders in Carbon.",
+    title: "Sales Orders in Jilio",
+    description: "Learn how to create and manage sales orders in Jilio.",
     videoUrl:
       "https://www.loom.com/share/c5fa13046aaa445a99c43c24434ff2b0?sid=21e5dcc9-cc76-4098-b97e-069212095616",
     videoType: "loom",
     academyUrl: "https://learn.carbon.ms/course/selling/sales-shipment"
   },
   salesInvoices: {
-    title: "Sales Invoices in Carbon",
+    title: "Sales Invoices in Jilio",
     description: "Master the creation and management of sales invoices.",
     videoUrl:
       "https://www.loom.com/share/45713271bd444f939dcde717ca720faa?sid=9c45d855-b6fe-4b27-99f9-c019dc28d386",
@@ -39,9 +39,9 @@ export const trainingConfig: Record<string, TrainingVideo> = {
     academyUrl: "https://learn.carbon.ms/course/selling/sales-shipment"
   },
   jobs: {
-    title: "Production Jobs in Carbon",
+    title: "Production Jobs in Jilio",
     description:
-      "Learn the fundamentals of job management and how jobs drive production in Carbon.",
+      "Learn the fundamentals of job management and how jobs drive production in Jilio.",
     videoUrl:
       "https://www.loom.com/share/ad79b6a529fb43ff864f4908eeaf1511?sid=2a041ddf-50be-4e13-9885-694c253af623",
     videoType: "loom",
@@ -49,7 +49,7 @@ export const trainingConfig: Record<string, TrainingVideo> = {
       "https://learn.carbon.ms/course/manufacturing/managing-production"
   },
   suppliers: {
-    title: "Purchasing in Carbon",
+    title: "Purchasing in Jilio",
     description:
       "Learn about the complete purchasing process from supplier selection to payment.",
     videoUrl:
@@ -58,7 +58,7 @@ export const trainingConfig: Record<string, TrainingVideo> = {
     academyUrl: "https://learn.carbon.ms/course/buying/purchasing-basics"
   },
   purchaseOrders: {
-    title: "Purchase Orders in Carbon",
+    title: "Purchase Orders in Jilio",
     description: "Learn how to create and manage purchase orders effectively.",
     videoUrl:
       "https://www.loom.com/share/51e0c6dd053b4a3e904fc795d4fc298f?sid=0bb2081d-6bc4-4efb-8361-d2717dda9781",
@@ -66,7 +66,7 @@ export const trainingConfig: Record<string, TrainingVideo> = {
     academyUrl: "https://learn.carbon.ms/course/buying/purchasing-basics"
   },
   parts: {
-    title: "Parts & Materials in Carbon",
+    title: "Parts & Materials in Jilio",
     description:
       "Learn the differences between item types and when to use each one in your business processes.",
     videoUrl:
@@ -75,7 +75,7 @@ export const trainingConfig: Record<string, TrainingVideo> = {
     academyUrl: "https://learn.carbon.ms/course/parts-materials/defining-item"
   },
   inventory: {
-    title: "Inventory in Carbon",
+    title: "Inventory in Jilio",
     description:
       "Learn how to monitor and manage inventory levels, set reorder points, and handle stock movements.",
     videoUrl:
@@ -85,7 +85,7 @@ export const trainingConfig: Record<string, TrainingVideo> = {
       "https://learn.carbon.ms/course/parts-materials/replenishing-item"
   },
   quality: {
-    title: "Quality in Carbon",
+    title: "Quality in Jilio",
     description:
       "Learn how to track and manage non-conforming materials and quality issues.",
     videoUrl:

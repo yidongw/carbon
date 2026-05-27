@@ -37,7 +37,7 @@ export function AcademyBanner({
     className="hover:bg-transparent text-white hover:text-white"
     rightIcon={<LuArrowUpRight />}
     >
-    <span>Introducing Carbon Academy</span>
+    <span>Introducing Jilio Academy</span>
     </Button>
     </fetcher.Form>
     <fetcher.Form method="post" action={acknowledgeAction}>

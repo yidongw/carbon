@@ -75,7 +75,7 @@ export default function OnboardingUser() {
   if (
     user?.firstName &&
     user?.lastName &&
-    user?.firstName !== "Carbon" &&
+    user?.firstName !== "Jilio" &&
     user?.lastName !== "Admin"
   ) {
     initialValues.firstName = user?.firstName!;

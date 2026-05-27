@@ -32,7 +32,7 @@ export function ItemThumbnailUpload({
 
   const onFileRemove = useCallback(async () => {
     if (!carbon) {
-      toast.error(t`Carbon client not found`);
+      toast.error(t`Jilio client not found`);
       return;
     }
 
@@ -70,7 +70,7 @@ export function ItemThumbnailUpload({
   const onFileChange = useCallback(
     async (e: ChangeEvent<HTMLInputElement>) => {
       if (!carbon) {
-        toast.error(t`Carbon client not found`);
+        toast.error(t`Jilio client not found`);
         return;
       }
       const file = e.target.files?.[0];

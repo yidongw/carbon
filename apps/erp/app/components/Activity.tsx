@@ -43,7 +43,7 @@ const Activity = ({
         <div className="min-w-0 flex-1">
           <p className="flex flex-wrap items-center gap-x-1 gap-y-1">
             <span className="font-semibold">
-              {person?.name ?? "Carbon Admin"}
+              {person?.name ?? "Jilio Admin"}
             </span>
             <span className="text-muted-foreground">{activityMessage}</span>
           </p>

@@ -15,7 +15,7 @@ export default function AboutRoute() {
           size="display"
           className="font-display text-[#212578] dark:text-white max-w-2xl"
         >
-          Carbon Academy
+          Jilio Academy
         </Heading>
         <p className="text-muted-foreground text-balance text-left font-medium tracking-tighter text-lg max-w-2xl">
           Want to take command of your business? Need a quick answer to a
@@ -65,7 +65,7 @@ export default function AboutRoute() {
             <p className="text-muted-foreground text-balance text-left font-medium tracking-tighter text-lg">
               Sign up to track your progress. Then join a course! All courses
               are free, and you can earn your credential(s) for free too.
-              Courses in Carbon Academy are designed to build off of each other
+              Courses in Jilio Academy are designed to build off of each other
               as you follow the recommended path. You can also jump around if
               you'd like to skip ahead on anything.
             </p>
@@ -85,7 +85,7 @@ export default function AboutRoute() {
               Take Challenges
             </Heading>
             <p className="text-muted-foreground text-balance text-left font-medium tracking-tighter text-lg">
-              Put your new Carbon knowledge to the test by taking challenges.
+              Put your new Jilio knowledge to the test by taking challenges.
               You'll need to score 100% to pass a challenge, but there is no
               limit on the number of attempts.
             </p>

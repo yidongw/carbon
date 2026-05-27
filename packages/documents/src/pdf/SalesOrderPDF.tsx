@@ -113,7 +113,7 @@ const SalesOrderPDF = ({
     <Template
       title={title}
       meta={{
-        author: meta?.author ?? "Carbon",
+        author: meta?.author ?? "Jilio",
         keywords: meta?.keywords ?? "sales order",
         subject: meta?.subject ?? "Sales Order"
       }}

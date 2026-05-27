@@ -67,7 +67,7 @@ export const action: ActionFunction = async ({ request }) => {
         await linear.createAttachmentLink(companyId, {
           issueId: issue.id as string,
           url,
-          title: `Linked Carbon Issue: ${
+          title: `Linked Jilio Issue: ${
             carbonIssue.data?.nonConformance?.nonConformanceId ?? ""
           }`
         });

@@ -78,7 +78,7 @@ const SalesOrderForm = ({ initialValues }: SalesOrderFormProps) => {
     } | null
   ) => {
     if (!carbon) {
-      toast.error(t`Carbon client not found`);
+      toast.error(t`Jilio client not found`);
       return;
     }
 

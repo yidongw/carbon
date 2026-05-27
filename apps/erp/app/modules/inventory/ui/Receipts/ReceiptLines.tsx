@@ -1216,7 +1216,7 @@ function useReceiptFiles(receiptId: string) {
   const upload = useCallback(
     async (files: File[], lineId: string) => {
       if (!carbon) {
-        toast.error(t`Carbon client not available`);
+        toast.error(t`Jilio client not available`);
         return;
       }
 

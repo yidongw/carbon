@@ -131,7 +131,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       bomId={bomId}
       locale={locale}
       meta={{
-        author: "Carbon",
+        author: "Jilio",
         keywords: "job traveler, manufacturing",
         subject: "Job Traveler"
       }}

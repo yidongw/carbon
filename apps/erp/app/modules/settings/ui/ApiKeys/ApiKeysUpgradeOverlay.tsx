@@ -102,7 +102,7 @@ export default function ApiKeysUpgradeOverlay() {
           </UpgradeOverlayTitle>
           <UpgradeOverlayDescription>
             <Trans>
-              Issue scoped API keys for programmatic access to your Carbon data.
+              Issue scoped API keys for programmatic access to your Jilio data.
             </Trans>
           </UpgradeOverlayDescription>
         </UpgradeOverlayContent>

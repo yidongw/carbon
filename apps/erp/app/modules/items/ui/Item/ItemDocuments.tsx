@@ -409,7 +409,7 @@ export const useItemDocuments = ({ itemId, type }: Props) => {
   const upload = useCallback(
     async (files: File[]) => {
       if (!carbon) {
-        toast.error(t`Carbon client not available`);
+        toast.error(t`Jilio client not available`);
         return;
       }
 

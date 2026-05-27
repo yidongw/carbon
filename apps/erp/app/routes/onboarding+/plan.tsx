@@ -34,7 +34,7 @@ function usePlans() {
       features: [
         t`ERP, MES, QMS`,
         t`Cloud-Hosted`,
-        t`Self-Onboarding with Carbon Academy`
+        t`Self-Onboarding with Jilio Academy`
       ]
     },
     BUSINESS: {

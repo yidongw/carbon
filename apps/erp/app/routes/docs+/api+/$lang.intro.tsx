@@ -24,7 +24,7 @@ export default function Route() {
       <h2 className="doc-heading">Authentication</h2>
       <div className="doc-section">
         <article className="code-column text-foreground">
-          <p>Carbon uses API token authentication for the public API.</p>
+          <p>Jilio uses API token authentication for the public API.</p>
           <p>
             First you'll need an <Link to={path.to.apiKeys}>API Key</Link>.
           </p>
@@ -44,7 +44,7 @@ export default function Route() {
       <div className="doc-section">
         <article className="code-column text-foreground">
           <p>
-            Carbon provides an MCP server that you can connect to from any MCP
+            Jilio provides an MCP server that you can connect to from any MCP
             client, such as Claude Code or Claude Desktop.
           </p>
           <p>To connect, run the following command with your API token:</p>

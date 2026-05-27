@@ -543,7 +543,7 @@ export class BillSyncer extends BaseEntitySyncer<
 
     if (!supplierId) {
       throw new Error(
-        `Cannot create purchase invoice from Xero: Supplier with Xero ContactID ${data.supplierExternalId} not found in Carbon. Sync the vendor first.`
+        `Cannot create purchase invoice from Xero: Supplier with Xero ContactID ${data.supplierExternalId} not found in Jilio. Sync the vendor first.`
       );
     }
 

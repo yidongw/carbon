@@ -4,6 +4,7 @@ import {
   createEmailAuthAccount,
   signInWithEmail
 } from "@carbon/auth/auth.server";
+import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import {
   flash,
   getAuthSession,
@@ -40,7 +41,7 @@ import type { Result } from "~/types";
 import { path } from "~/utils/path";
 
 export const meta: MetaFunction = () => {
-  return [{ title: "Carbon | Verify Email" }];
+  return [{ title: "Jilio | Verify Email" }];
 };
 
 const verifyValidator = z.object({
@@ -109,6 +110,18 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
+  // GoTrue admin.createUser does not fire the on_auth_user_created trigger,
+  // so we must create the public.user and userPermission rows manually.
+  const serviceRole = getCarbonServiceRole();
+  await serviceRole.from("user").upsert(
+    { id: user.id, email: email.toLowerCase(), active: true, firstName: "", lastName: "", about: "" },
+    { onConflict: "id" }
+  );
+  await serviceRole.from("userPermission").upsert(
+    { id: user.id },
+    { onConflict: "id" }
+  );
+
   // Sign in the user to create an authentication session
   const authSession = await signInWithEmail(email, temporaryPassword);
 
@@ -144,7 +157,7 @@ export default function VerifyRoute() {
       <div className="flex justify-center mb-4">
         <img
           src="/carbon-logo-mark.svg"
-          alt={t`Carbon Logo`}
+          alt={t`Jilio Logo`}
           className="w-36"
         />
       </div>

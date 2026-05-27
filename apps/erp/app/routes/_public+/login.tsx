@@ -58,7 +58,7 @@ import type { Result } from "~/types";
 import { path } from "~/utils/path";
 
 export const meta: MetaFunction = () => {
-  return [{ title: "Carbon | Login" }];
+  return [{ title: "Jilio | Login" }];
 };
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -251,7 +251,7 @@ export default function LoginRoute() {
       <div className="flex justify-center mb-4">
         <img
           src={CONTROLLED_ENVIRONMENT ? "/flag.png" : "/carbon-logo-mark.svg"}
-          alt={t`Carbon Logo`}
+          alt={t`Jilio Logo`}
           className="w-36"
         />
       </div>

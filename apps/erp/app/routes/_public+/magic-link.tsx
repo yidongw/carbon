@@ -23,7 +23,7 @@ export default function ConfirmMagicLink() {
       <div className="flex justify-center mb-4">
         <img
           src={CONTROLLED_ENVIRONMENT ? "/flag.png" : "/carbon-logo-mark.svg"}
-          alt={t`Carbon Logo`}
+          alt={t`Jilio Logo`}
           className="w-36"
         />
       </div>

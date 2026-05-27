@@ -89,7 +89,7 @@ const ShipmentPostModal = ({ onClose }: { onClose: () => void }) => {
     }[] = [];
 
     if (!carbon) {
-      toast.error(t`Carbon client is not available`);
+      toast.error(t`Jilio client is not available`);
       return;
     }
 

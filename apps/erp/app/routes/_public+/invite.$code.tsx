@@ -27,7 +27,7 @@ import { acceptInvite } from "~/modules/users/users.server";
 import { path } from "~/utils/path";
 
 export const meta: MetaFunction = () => {
-  return [{ title: "Accept Invite | Carbon" }];
+  return [{ title: "Accept Invite | Jilio" }];
 };
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
@@ -121,7 +121,7 @@ export default function Invite() {
         <div className="flex justify-center mb-4">
           <img
             src="/carbon-logo-mark.svg"
-            alt={t`Carbon Logo`}
+            alt={t`Jilio Logo`}
             className="w-36"
           />
         </div>
@@ -153,7 +153,7 @@ export default function Invite() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 2, ease: "easeInOut" }}
           src="/carbon-logo-mark.svg"
-          alt={t`Carbon Logo`}
+          alt={t`Jilio Logo`}
           className="w-24 mb-3"
         />
 
@@ -163,7 +163,7 @@ export default function Invite() {
           size="h1"
           className="m-0"
         >
-          <Trans>Welcome to Carbon</Trans>
+          <Trans>Welcome to Jilio</Trans>
         </Heading>
 
         <Form method="post">
