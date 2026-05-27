@@ -165,7 +165,7 @@ const Feedback = () => {
               <Trans>
                 Have a technical issue? Contact{" "}
                 <a className="text-primary" href={`mailto:${SUPPORT_EMAIL}`}>
-                  Carbon Support.
+                  Jilio Support.
                 </a>
               </Trans>
             </p>

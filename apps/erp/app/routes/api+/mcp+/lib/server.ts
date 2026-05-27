@@ -10,7 +10,7 @@ import { executeFunction } from "./direct-executor";
 function getServerInstructions(): string {
   const today = new Date().toISOString().split("T")[0];
   
-  return `Carbon ERP Manufacturing System
+  return `Jilio ERP Manufacturing System
 ==========================================
 Date: ${today}
 

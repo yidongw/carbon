@@ -1114,10 +1114,10 @@ export async function getCustomerIdAndContactId(
 
         if (newCustomer.error || !newCustomer.data) {
           console.error(
-            "Failed to create customer in Carbon",
+            "Failed to create customer in Jilio",
             newCustomer.error
           );
-          throw new Error("Failed to create customer in Carbon");
+          throw new Error("Failed to create customer in Jilio");
         }
 
         customerId = newCustomer.data.id;
@@ -1323,10 +1323,10 @@ export async function getCustomerIdAndContactId(
 
         if (newCustomer.error || !newCustomer.data) {
           console.error(
-            "Failed to create customer in Carbon",
+            "Failed to create customer in Jilio",
             newCustomer.error
           );
-          throw new Error("Failed to create customer in Carbon");
+          throw new Error("Failed to create customer in Jilio");
         }
 
         customerId = newCustomer.data.id;
@@ -1372,7 +1372,7 @@ export async function getCustomerIdAndContactId(
   }
 
   if (!customerContactId) {
-    // If there is no matching contact in Carbon, check if contact exists by email first
+    // If there is no matching contact in Jilio, check if contact exists by email first
     const existingContactByEmail = await carbon
       .from("contact")
       .select("id")
@@ -1396,7 +1396,7 @@ export async function getCustomerIdAndContactId(
         .single();
 
       if (updatedContact.error || !updatedContact.data) {
-        console.error("Failed to update contact in Carbon", updatedContact);
+        console.error("Failed to update contact in Jilio", updatedContact);
         return {
           customerContactId: null,
           customerId
@@ -1429,7 +1429,7 @@ export async function getCustomerIdAndContactId(
         .single();
 
       if (newContact.error || !newContact.data) {
-        console.error("Failed to create contact in Carbon", newContact);
+        console.error("Failed to create contact in Jilio", newContact);
         return {
           customerContactId: null,
           customerId
@@ -1580,10 +1580,10 @@ export async function getCustomerLocationIds(
 
           if (newAddress.error || !newAddress.data) {
             console.error(
-              "Failed to create billing address in Carbon",
+              "Failed to create billing address in Jilio",
               newAddress.error
             );
-            throw new Error("Failed to create billing address in Carbon");
+            throw new Error("Failed to create billing address in Jilio");
           }
 
           addressId = newAddress.data.id;
@@ -1605,7 +1605,7 @@ export async function getCustomerLocationIds(
 
         if (newCustomerLocation.error || !newCustomerLocation.data) {
           throw new Error(
-            "Failed to create customer billing location in Carbon"
+            "Failed to create customer billing location in Jilio"
           );
         }
 
@@ -1702,10 +1702,10 @@ export async function getCustomerLocationIds(
 
           if (newAddress.error || !newAddress.data) {
             console.error(
-              "Failed to create shipping address in Carbon",
+              "Failed to create shipping address in Jilio",
               newAddress.error
             );
-            throw new Error("Failed to create shipping address in Carbon");
+            throw new Error("Failed to create shipping address in Jilio");
           }
 
           addressId = newAddress.data.id;
@@ -1728,7 +1728,7 @@ export async function getCustomerLocationIds(
 
         if (newCustomerLocation.error || !newCustomerLocation.data) {
           throw new Error(
-            "Failed to create customer shipping location in Carbon"
+            "Failed to create customer shipping location in Jilio"
           );
         }
 
