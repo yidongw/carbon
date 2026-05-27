@@ -3,6 +3,7 @@
   "peerDependencies": {
     "@carbon/react": "workspace:*",
     "@carbon/utils": "workspace:*",
+    "@lingui/react": "catalog:",
     "@remix-run/server-runtime": ">= 1.16.1 <3.0.0",
     "react": "catalog:",
     "react-dom": "catalog:",
