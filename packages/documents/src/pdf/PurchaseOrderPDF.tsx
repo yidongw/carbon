@@ -382,8 +382,9 @@ const PurchaseOrderPDF = ({
             (line.purchaseQuantity ?? 0) * (line.supplierUnitPrice ?? 0);
 
           return (
-            <View key={line.id} wrap={false}>
+            <View key={line.id}>
               <View
+                wrap={false}
                 style={[
                   tw(
                     "flex flex-col py-2 px-3 border-b border-gray-200 text-[9px]"

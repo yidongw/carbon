@@ -393,194 +393,203 @@ const QuotePDF = ({
           const additionalCharges = line.additionalCharges ?? {};
 
           return (
-            <View key={line.id} wrap={false}>
+            <View key={line.id}>
               {line.status !== "No Quote" ? (
-                (line.quantity ?? []).map((quantity, index) => {
-                  const prices =
-                    line.id != null ? (pricesByLine[line.id] ?? []) : [];
-                  const price = prices.find(
-                    (
-                      p: Database["public"]["Tables"]["quoteLinePrice"]["Row"]
-                    ) => p.quantity === quantity
-                  );
-                  const unitPrice = price?.convertedUnitPrice ?? 0;
-                  const netExtendedPrice =
-                    price?.convertedNetExtendedPrice ?? 0;
-                  const isEven = rowIndex % 2 === 0;
-                  rowIndex++;
+                <>
+                  {(line.quantity ?? []).map((quantity, index) => {
+                    const prices =
+                      line.id != null ? (pricesByLine[line.id] ?? []) : [];
+                    const price = prices.find(
+                      (
+                        p: Database["public"]["Tables"]["quoteLinePrice"]["Row"]
+                      ) => p.quantity === quantity
+                    );
+                    const unitPrice = price?.convertedUnitPrice ?? 0;
+                    const netExtendedPrice =
+                      price?.convertedNetExtendedPrice ?? 0;
+                    const isEven = rowIndex % 2 === 0;
+                    rowIndex++;
 
-                  const leadTime = price?.leadTime ?? 0;
+                    const leadTime = price?.leadTime ?? 0;
 
-                  // Calculate tax & fees for this quantity
-                  const additionalCharge = Object.values(
-                    additionalCharges
-                  ).reduce((acc, charge) => {
-                    let amount = charge.amounts?.[quantity] ?? 0;
-                    if (shouldConvertCurrency) {
-                      amount *= exchangeRate;
-                    }
-                    return acc + amount;
-                  }, 0);
-                  const taxableAdditionalCharge = Object.values(
-                    additionalCharges
-                  ).reduce((acc, charge) => {
-                    if (charge.taxable === false) return acc;
-                    let amount = charge.amounts?.[quantity] ?? 0;
-                    if (shouldConvertCurrency) {
-                      amount *= exchangeRate;
-                    }
-                    return acc + amount;
-                  }, 0);
-                  const shippingCost = price?.convertedShippingCost ?? 0;
-                  const taxPercent = line.taxPercent ?? 0;
-                  const taxableBeforeTax =
-                    netExtendedPrice + taxableAdditionalCharge + shippingCost;
-                  const taxAmount = taxableBeforeTax * taxPercent;
-                  const totalTaxAndFees =
-                    additionalCharge + shippingCost + taxAmount;
-                  const totalPrice = netExtendedPrice + totalTaxAndFees;
+                    // Calculate tax & fees for this quantity
+                    const additionalCharge = Object.values(
+                      additionalCharges
+                    ).reduce((acc, charge) => {
+                      let amount = charge.amounts?.[quantity] ?? 0;
+                      if (shouldConvertCurrency) {
+                        amount *= exchangeRate;
+                      }
+                      return acc + amount;
+                    }, 0);
+                    const taxableAdditionalCharge = Object.values(
+                      additionalCharges
+                    ).reduce((acc, charge) => {
+                      if (charge.taxable === false) return acc;
+                      let amount = charge.amounts?.[quantity] ?? 0;
+                      if (shouldConvertCurrency) {
+                        amount *= exchangeRate;
+                      }
+                      return acc + amount;
+                    }, 0);
+                    const shippingCost = price?.convertedShippingCost ?? 0;
+                    const taxPercent = line.taxPercent ?? 0;
+                    const taxableBeforeTax =
+                      netExtendedPrice + taxableAdditionalCharge + shippingCost;
+                    const taxAmount = taxableBeforeTax * taxPercent;
+                    const totalTaxAndFees =
+                      additionalCharge + shippingCost + taxAmount;
+                    const totalPrice = netExtendedPrice + totalTaxAndFees;
 
-                  return (
-                    <View
-                      key={`${line.id}-${quantity}`}
-                      style={[
-                        tw(
-                          "flex flex-row py-2 px-3 border-b border-gray-200 text-[10px]"
-                        ),
-                        {
-                          backgroundColor: isEven
-                            ? "transparent"
-                            : "rgba(249, 250, 251, 0.6)"
-                        }
-                      ]}
-                    >
-                      <View style={tw("w-1/3 pr-2")}>
-                        {index === 0 && (
-                          <>
-                            <Text style={tw("text-gray-800")}>
-                              {getLineDescription(line)}
-                            </Text>
-                            <Text style={tw("text-[8px] text-gray-400 mt-0.5")}>
-                              {getLineDescriptionDetails(line)}
-                            </Text>
-                            {thumbnails &&
-                              line.id != null &&
-                              line.id in thumbnails && (
-                                <View style={tw("mt-2")}>
-                                  <Image
-                                    src={thumbnails[line.id]!}
-                                    style={{ width: 60, height: 60 }}
-                                  />
-                                </View>
-                              )}
-                            {Object.keys(line.externalNotes ?? {}).length >
-                              0 && (
-                              <View style={tw("mt-1")}>
-                                <Note
-                                  key={`${line.id}-notes`}
-                                  content={line.externalNotes as JSONContent}
-                                />
-                              </View>
-                            )}
-                            {totalTaxAndFees > 0 && (
-                              <View style={tw("mt-1")}>
-                                <Text
-                                  style={tw(
-                                    "text-[8px] text-gray-400 font-bold"
-                                  )}
-                                >
-                                  Tax & Fees
-                                </Text>
-                                {(price?.convertedShippingCost ?? 0) > 0 && (
-                                  <Text style={tw("text-[8px] text-gray-400")}>
-                                    - Shipping
-                                  </Text>
+                    return (
+                      <View
+                        key={`${line.id}-${quantity}`}
+                        wrap={false}
+                        style={[
+                          tw(
+                            "flex flex-row py-2 px-3 border-b border-gray-200 text-[10px]"
+                          ),
+                          {
+                            backgroundColor: isEven
+                              ? "transparent"
+                              : "rgba(249, 250, 251, 0.6)"
+                          }
+                        ]}
+                      >
+                        <View style={tw("w-1/3 pr-2")}>
+                          {index === 0 && (
+                            <>
+                              <Text style={tw("text-gray-800")}>
+                                {getLineDescription(line)}
+                              </Text>
+                              <Text
+                                style={tw("text-[8px] text-gray-400 mt-0.5")}
+                              >
+                                {getLineDescriptionDetails(line)}
+                              </Text>
+                              {thumbnails &&
+                                line.id != null &&
+                                line.id in thumbnails && (
+                                  <View style={tw("mt-2")}>
+                                    <Image
+                                      src={thumbnails[line.id]!}
+                                      style={{ width: 60, height: 60 }}
+                                    />
+                                  </View>
                                 )}
-                                {Object.values(additionalCharges)
-                                  .filter(
-                                    (charge) =>
-                                      charge.description &&
-                                      (charge.amounts?.[quantity] ?? 0) > 0
-                                  )
-                                  .sort((a, b) =>
-                                    a.description.localeCompare(b.description)
-                                  )
-                                  .map((charge) => (
+                              {totalTaxAndFees > 0 && (
+                                <View style={tw("mt-1")}>
+                                  <Text
+                                    style={tw(
+                                      "text-[8px] text-gray-400 font-bold"
+                                    )}
+                                  >
+                                    Tax & Fees
+                                  </Text>
+                                  {(price?.convertedShippingCost ?? 0) > 0 && (
                                     <Text
-                                      key={charge.description}
                                       style={tw("text-[8px] text-gray-400")}
                                     >
-                                      - {charge.description}
+                                      - Shipping
                                     </Text>
-                                  ))}
-                                {taxPercent > 0 && (
-                                  <Text style={tw("text-[8px] text-gray-400")}>
-                                    - Tax ({(taxPercent * 100).toFixed(0)}%)
-                                  </Text>
-                                )}
-                              </View>
-                            )}
-                          </>
-                        )}
-                      </View>
-                      <View style={tw("w-2/3 flex flex-row")}>
-                        <Text
-                          style={tw(
-                            `${colWidth} text-center text-gray-600 pr-3`
+                                  )}
+                                  {Object.values(additionalCharges)
+                                    .filter(
+                                      (charge) =>
+                                        charge.description &&
+                                        (charge.amounts?.[quantity] ?? 0) > 0
+                                    )
+                                    .sort((a, b) =>
+                                      a.description.localeCompare(b.description)
+                                    )
+                                    .map((charge) => (
+                                      <Text
+                                        key={charge.description}
+                                        style={tw("text-[8px] text-gray-400")}
+                                      >
+                                        - {charge.description}
+                                      </Text>
+                                    ))}
+                                  {taxPercent > 0 && (
+                                    <Text
+                                      style={tw("text-[8px] text-gray-400")}
+                                    >
+                                      - Tax ({(taxPercent * 100).toFixed(0)}%)
+                                    </Text>
+                                  )}
+                                </View>
+                              )}
+                            </>
                           )}
-                        >
-                          {quantity} EA
-                        </Text>
-                        <Text
-                          style={tw(
-                            `${colWidth} text-center text-gray-600 pr-3`
-                          )}
-                        >
-                          {unitPrice
-                            ? unitPriceNumberFormatter.format(unitPrice)
-                            : "-"}
-                        </Text>
-                        {!hasSinglePricePerLine && (
+                        </View>
+                        <View style={tw("w-2/3 flex flex-row")}>
                           <Text
                             style={tw(
                               `${colWidth} text-center text-gray-600 pr-3`
                             )}
                           >
-                            {totalTaxAndFees > 0
-                              ? numberFormatter.format(totalTaxAndFees)
-                              : "-"}
+                            {quantity} EA
                           </Text>
-                        )}
-                        {hasAnyLeadTime && (
                           <Text
                             style={tw(
                               `${colWidth} text-center text-gray-600 pr-3`
                             )}
                           >
-                            {leadTime > 0
-                              ? `${leadTime} ${pluralize(leadTime, "day")}`
+                            {unitPrice
+                              ? unitPriceNumberFormatter.format(unitPrice)
                               : "-"}
                           </Text>
-                        )}
-                        <Text
-                          style={tw(
-                            `${colWidth} text-center text-gray-800 font-medium`
+                          {!hasSinglePricePerLine && (
+                            <Text
+                              style={tw(
+                                `${colWidth} text-center text-gray-600 pr-3`
+                              )}
+                            >
+                              {totalTaxAndFees > 0
+                                ? numberFormatter.format(totalTaxAndFees)
+                                : "-"}
+                            </Text>
                           )}
-                        >
-                          {hasSinglePricePerLine
-                            ? netExtendedPrice > 0
-                              ? numberFormatter.format(netExtendedPrice)
-                              : "-"
-                            : totalPrice > 0
-                              ? numberFormatter.format(totalPrice)
-                              : "-"}
-                        </Text>
+                          {hasAnyLeadTime && (
+                            <Text
+                              style={tw(
+                                `${colWidth} text-center text-gray-600 pr-3`
+                              )}
+                            >
+                              {leadTime > 0
+                                ? `${leadTime} ${pluralize(leadTime, "day")}`
+                                : "-"}
+                            </Text>
+                          )}
+                          <Text
+                            style={tw(
+                              `${colWidth} text-center text-gray-800 font-medium`
+                            )}
+                          >
+                            {hasSinglePricePerLine
+                              ? netExtendedPrice > 0
+                                ? numberFormatter.format(netExtendedPrice)
+                                : "-"
+                              : totalPrice > 0
+                                ? numberFormatter.format(totalPrice)
+                                : "-"}
+                          </Text>
+                        </View>
                       </View>
+                    );
+                  })}
+                  {Object.keys(line.externalNotes ?? {}).length > 0 && (
+                    <View style={tw("px-3 py-2 border-b border-gray-200")}>
+                      <Note
+                        key={`${line.id}-notes`}
+                        content={line.externalNotes as JSONContent}
+                      />
                     </View>
-                  );
-                })
+                  )}
+                </>
               ) : (
                 <View
+                  wrap={false}
                   style={[
                     tw(
                       "flex flex-row py-2 px-3 border-b border-gray-200 text-[10px]"
