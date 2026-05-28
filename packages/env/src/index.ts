@@ -79,6 +79,11 @@ declare global {
       VERCEL_ENV: string;
       INNGEST_SIGNING_KEY: string;
       INNGEST_EVENT_KEY: string;
+      WECHAT_MP_APP_ID: string;
+      WECHAT_MP_APP_SECRET: string;
+      WECHAT_OPEN_APP_ID: string;
+      WECHAT_OPEN_APP_SECRET: string;
+      WECHAT_REDIRECT_URL: string;
       XERO_CLIENT_SECRET: string;
       XERO_WEBHOOK_SECRET: string;
       DEFAULT_LANGUAGE: string;
@@ -316,6 +321,27 @@ export const XERO_CLIENT_SECRET = getEnv("XERO_CLIENT_SECRET", {
 export const XERO_WEBHOOK_SECRET = getEnv("XERO_WEBHOOK_SECRET", {
   isRequired: false,
   isSecret: true
+});
+
+export const WECHAT_MP_APP_ID = getEnv("WECHAT_MP_APP_ID", {
+  isRequired: false,
+  isSecret: false
+});
+export const WECHAT_MP_APP_SECRET = getEnv("WECHAT_MP_APP_SECRET", {
+  isRequired: false,
+  isSecret: true
+});
+export const WECHAT_OPEN_APP_ID = getEnv("WECHAT_OPEN_APP_ID", {
+  isRequired: false,
+  isSecret: false
+});
+export const WECHAT_OPEN_APP_SECRET = getEnv("WECHAT_OPEN_APP_SECRET", {
+  isRequired: false,
+  isSecret: true
+});
+export const WECHAT_REDIRECT_URL = getEnv("WECHAT_REDIRECT_URL", {
+  isRequired: false,
+  isSecret: false
 });
 
 export const JIRA_CLIENT_ID = getEnv("JIRA_CLIENT_ID", {

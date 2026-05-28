@@ -18,6 +18,18 @@ export async function getUserByEmail(email: string) {
     .single();
 }
 
+export async function getUserById(id: string) {
+  return getCarbonServiceRole().from("user").select("*").eq("id", id).single();
+}
+
+export async function getUserByPhone(phone: string) {
+  return getCarbonServiceRole()
+    .from("user")
+    .select("*")
+    .eq("phone", phone)
+    .maybeSingle();
+}
+
 export async function getUserClaims(userId: string, companyId: string) {
   let claims: {
     permissions: Record<string, Permission>;
@@ -244,10 +256,14 @@ export async function deactivateUser(
       return error(user.error, "Failed to get user");
     }
 
+    const userEmail = user.data?.email;
+    if (!userEmail) {
+      return success("User already deactivated");
+    }
     const invite = await serviceRole
       .from("invite")
       .select("*")
-      .eq("email", user.data?.email)
+      .eq("email", userEmail)
       .eq("companyId", companyId)
       .maybeSingle();
 

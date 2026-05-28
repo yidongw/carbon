@@ -44586,7 +44586,7 @@ export type Database = {
           avatarUrl: string | null
           createdAt: string
           developer: boolean | null
-          email: string
+          email: string | null
           firstName: string
           flags: Json
           fullName: string | null
@@ -44595,6 +44595,7 @@ export type Database = {
           lastName: string
           phone: string | null
           updatedAt: string | null
+          wechat_unionid: string | null
         }
         Insert: {
           about?: string
@@ -44604,7 +44605,7 @@ export type Database = {
           avatarUrl?: string | null
           createdAt?: string
           developer?: boolean | null
-          email: string
+          email?: string | null
           firstName?: string
           flags?: Json
           fullName?: string | null
@@ -44613,6 +44614,7 @@ export type Database = {
           lastName?: string
           phone?: string | null
           updatedAt?: string | null
+          wechat_unionid?: string | null
         }
         Update: {
           about?: string
@@ -44622,7 +44624,7 @@ export type Database = {
           avatarUrl?: string | null
           createdAt?: string
           developer?: boolean | null
-          email?: string
+          email?: string | null
           firstName?: string
           flags?: Json
           fullName?: string | null
@@ -44631,6 +44633,7 @@ export type Database = {
           lastName?: string
           phone?: string | null
           updatedAt?: string | null
+          wechat_unionid?: string | null
         }
         Relationships: []
       }

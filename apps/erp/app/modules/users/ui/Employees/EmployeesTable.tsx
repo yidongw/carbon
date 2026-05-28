@@ -16,6 +16,7 @@ import {
   LuMail,
   LuMailCheck,
   LuPencil,
+  LuPhone,
   LuShield,
   LuToggleRight,
   LuUser,
@@ -292,6 +293,18 @@ const EmployeesTable = memo(
                   <MenuIcon icon={<LuPencil />} />
                   <Trans>Edit Permissions</Trans>
                 </MenuItem>
+                {canEdit && (
+                  <MenuItem
+                    onClick={() =>
+                      navigate(
+                        `${path.to.employeePhone(row.id!)}?${params.toString()}`
+                      )
+                    }
+                  >
+                    <MenuIcon icon={<LuPhone />} />
+                    <Trans>Set Phone</Trans>
+                  </MenuItem>
+                )}
                 {settings.consoleEnabled && (
                   <MenuItem
                     onClick={() =>

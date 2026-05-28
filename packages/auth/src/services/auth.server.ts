@@ -107,16 +107,13 @@ function makeAuthSession(
   if (!supabaseSession.refresh_token)
     throw new Error("User should have a refresh token");
 
-  if (!supabaseSession.user?.email)
-    throw new Error("User should have an email");
-
   return {
     accessToken: supabaseSession.access_token,
     companyId,
     companyGroupId,
     refreshToken: supabaseSession.refresh_token,
     userId: supabaseSession.user.id,
-    email: supabaseSession.user.email,
+    email: supabaseSession.user.email ?? null,
     expiresIn:
       (supabaseSession.expires_in ?? 3000) - REFRESH_ACCESS_TOKEN_THRESHOLD,
     expiresAt: supabaseSession.expires_at ?? -1
@@ -292,9 +289,10 @@ export async function requirePermissions(
     }
   }
 
-  const { accessToken, companyId, companyGroupId, email, userId } =
+  const { accessToken, companyId, companyGroupId, userId } =
     await requireAuthSession(request);
   const authSession = await requireAuthSession(request);
+  const email = authSession.email ?? "";
   const consoleMode = authSession.console === companyId;
 
   const myClaims = await getUserClaims(userId, companyId);
@@ -391,6 +389,49 @@ export async function sendInviteByEmail(
     redirectTo: `${VERCEL_URL}/callback`,
     data
   });
+}
+
+export async function sendPhoneOtp(phone: string) {
+  return getCarbonServiceRole().auth.signInWithOtp({ phone });
+}
+
+export async function verifyPhoneOtp(
+  phone: string,
+  token: string
+): Promise<AuthSession | null> {
+  const client = getCarbonServiceRole();
+  const { data, error } = await client.auth.verifyOtp({
+    phone,
+    token,
+    type: "sms"
+  });
+
+  if (error || !data.session) return null;
+
+  const companies = await getCompaniesForUser(client, data.session.user.id);
+  const { data: companyRecord } = await client
+    .from("company")
+    .select("companyGroupId")
+    .eq("id", companies?.[0] ?? "")
+    .single();
+
+  return makeAuthSession(
+    data.session,
+    companies?.[0] ?? "",
+    companyRecord?.companyGroupId ?? ""
+  );
+}
+
+export async function updateUserPhone(
+  userId: string,
+  phone: string | null
+): Promise<boolean> {
+  const serviceRole = getCarbonServiceRole();
+  const [dbUpdate, authUpdate] = await Promise.all([
+    serviceRole.from("user").update({ phone }).eq("id", userId),
+    serviceRole.auth.admin.updateUserById(userId, { phone: phone ?? undefined })
+  ]);
+  return !dbUpdate.error && !authUpdate.error;
 }
 
 export async function sendMagicLink(email: string) {

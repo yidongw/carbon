@@ -9,7 +9,7 @@ Carbon uses a robust authentication system built on top of Supabase Auth with cu
 Located at `/packages/auth/`, the auth package provides:
 
 - **Client Configuration**: Supabase client setup with service role and anonymous access
-- **Authentication Services**: Login, logout, magic links, OAuth (Google), and password reset
+- **Authentication Services**: Login, logout, magic links, phone OTP, OAuth (Google, Azure), WeChat (MP + Open Platform QR), and password reset
 - **Session Management**: Cookie-based sessions with automatic token refresh
 - **Permission System**: Role-based access control with company-specific permissions
 - **User Management**: User creation, invitation flows, and account management
@@ -25,11 +25,12 @@ Located at `/packages/auth/`, the auth package provides:
 ### Exports (package.json):
 
 - `.` - Client-safe types and utilities
-- `./auth.server` - Server-side auth logic (hashApiKey, requirePermissions, etc.)
+- `./auth.server` - Server-side auth logic (hashApiKey, requirePermissions, sendPhoneOtp, verifyPhoneOtp, updateUserPhone, etc.)
 - `./company.server` - Company management
 - `./session.server` - Session management
-- `./users.server` - User management
+- `./users.server` - User management (getUserById, getUserByPhone, getUserByEmail, etc.)
 - `./verification.server` - Email verification
+- `./wechat.server` - WeChat auth (buildWeChatMpAuthUrl, buildWeChatOpenAuthUrl, exchangeWeChatCode, getWeChatUserInfo, findOrCreateWeChatUser)
 
 ## Authentication Flow
 
@@ -42,10 +43,30 @@ Located at `/packages/auth/`, the auth package provides:
    - User clicks link, redirected to `/callback`
    - Callback exchanges tokens and creates session
 
-2. **OAuth Flow** (Google):
-   - User clicks "Continue with Google"
-   - Redirected to Google OAuth
+2. **OAuth Flow** (Google / Azure):
+   - User clicks "Continue with Google/Outlook"
+   - Redirected to OAuth provider
    - Returns to `/callback` for token exchange
+
+3. **Phone OTP Flow** (when `phone` in `AUTH_PROVIDERS`):
+   - User enters E.164 phone number on `/login` (Phone tab)
+   - Action calls `sendPhoneOtp(phone)` via Supabase SMS
+   - Redirects to `/phone-verify?phone=...`
+   - User enters 6-digit code; `InputOTP` auto-submits
+   - Action calls `verifyPhoneOtp(phone, code)` → sets auth session
+
+4. **WeChat MP Flow** (in-WeChat-browser, when `wechat` in `AUTH_PROVIDERS`):
+   - Login page shows "Continue with WeChat" button in WeChat browser
+   - Redirects to `/auth/wechat` → builds `snsapi_userinfo` MP OAuth URL
+   - WeChat redirects to `/auth/wechat/callback` with `code`
+   - Callback exchanges code, fetches user info, finds/creates user, generates magic-link session
+
+5. **WeChat QR Flow** (desktop, when `wechat` in `AUTH_PROVIDERS`):
+   - Login page shows "WeChat QR" tab (desktop non-WeChat browser)
+   - Selecting the tab fetches `/api/wechat-qr-url` → generates state cookie, returns Open Platform URL
+   - Renders `<QRCodeSVG>` inline; user scans with WeChat on mobile
+   - WeChat redirects the **desktop browser** to `/auth/wechat/callback`
+   - Same callback as MP flow handles session creation
 
 ### Session Management
 
@@ -69,7 +90,9 @@ Located at `/packages/auth/`, the auth package provides:
 ```typescript
 {
   id: string (UUID, matches Supabase auth.users.id)
-  email: string
+  email: string | null        // nullable — phone-only and WeChat users have no email
+  phone: string | null        // E.164 format; set by admin for phone OTP login
+  wechat_unionid: string | null  // stable WeChat identity across MP + Open Platform
   firstName: string
   lastName: string
   fullName: string | null
@@ -82,6 +105,8 @@ Located at `/packages/auth/`, the auth package provides:
   updatedAt: string | null
 }
 ```
+
+**Key constraint**: `email` and `wechat_unionid` both have partial unique indexes (`WHERE column IS NOT NULL`) so NULLs are allowed for multiple users while non-null values remain unique.
 
 **company** table:
 
@@ -315,10 +340,17 @@ Users can belong to multiple companies with different roles:
 
 ### Public Routes
 
-- `/_public+/login` - Login page with magic link and OAuth
-- `/_public+/callback` - OAuth callback and token exchange
+- `/_public+/login` - Login page (magic link, OAuth, phone OTP, WeChat)
+- `/_public+/callback` - OAuth / magic-link callback and token exchange
+- `/_public+/phone-verify` - Phone OTP 6-digit code entry (auto-submits via InputOTP)
+- `/_public+/auth.wechat` - Initiates WeChat OAuth (MP or Open Platform based on UA)
+- `/_public+/auth.wechat.callback` - WeChat OAuth callback; creates session
 - `/_public+/logout` - Session destruction
 - `/_public+/invite/:code` - Invitation acceptance
+
+### API Routes (ERP only)
+
+- `/api/wechat-qr-url` - Generates WeChat Open Platform QR state + URL (used for inline QR rendering)
 
 ### Protected Routes
 

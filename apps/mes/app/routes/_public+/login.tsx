@@ -6,15 +6,20 @@ import {
   carbonClient,
   error,
   magicLinkValidator,
+  phoneLoginValidator,
   RATE_LIMIT
 } from "@carbon/auth";
-import { sendMagicLink, verifyAuthSession } from "@carbon/auth/auth.server";
+import {
+  sendMagicLink,
+  sendPhoneOtp,
+  verifyAuthSession
+} from "@carbon/auth/auth.server";
 import {
   clearAuthCookies,
   flash,
   getAuthSession
 } from "@carbon/auth/session.server";
-import { getUserByEmail } from "@carbon/auth/users.server";
+import { getUserByEmail, getUserByPhone } from "@carbon/auth/users.server";
 import { Hidden, Input, Submit, ValidatedForm, validator } from "@carbon/form";
 import { Ratelimit, redis } from "@carbon/kv";
 import {
@@ -30,6 +35,7 @@ import {
 } from "@carbon/react";
 import { Edition } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
+import { useState } from "react";
 import { LuCircleAlert } from "react-icons/lu";
 import type {
   ActionFunctionArgs,
@@ -83,10 +89,50 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
-  const validation = await validator(magicLinkValidator).validate(
-    await request.formData()
-  );
+  const formData = await request.formData();
+  const intent = formData.get("intent") as string | null;
 
+  if (intent === "phone") {
+    if (!AUTH_PROVIDERS.split(",").includes("phone")) {
+      return data(
+        error(null, "Phone login is not enabled"),
+        await flash(request, error(null, "Phone login is not enabled"))
+      );
+    }
+
+    const validation = await validator(phoneLoginValidator).validate(formData);
+    if (validation.error) {
+      return error(validation.error, "Invalid phone number");
+    }
+
+    const { phone, redirectTo } = validation.data;
+    const user = await getUserByPhone(phone);
+
+    if (!user.data || !user.data.active) {
+      return data(
+        { success: false, message: "Phone number not registered" },
+        await flash(request, error(null, "Phone number not registered"))
+      );
+    }
+
+    const otpResult = await sendPhoneOtp(phone);
+    if (otpResult.error) {
+      return data(
+        error(otpResult.error, "Failed to send verification code"),
+        await flash(
+          request,
+          error(otpResult.error, "Failed to send verification code")
+        )
+      );
+    }
+
+    const verifyUrl = `/phone-verify?phone=${encodeURIComponent(phone)}${
+      redirectTo ? `&redirectTo=${encodeURIComponent(redirectTo)}` : ""
+    }`;
+    return redirect(verifyUrl);
+  }
+
+  const validation = await validator(magicLinkValidator).validate(formData);
   if (validation.error) {
     return error(validation.error, "Invalid email address");
   }
@@ -118,9 +164,17 @@ export default function LoginRoute() {
   const { providers } = useLoaderData<typeof loader>();
   const hasOutlookAuth = providers.includes("azure");
   const hasGoogleAuth = providers.includes("google");
+  const hasPhoneAuth = providers.includes("phone");
+
+  const isWeChatBrowser =
+    typeof navigator !== "undefined" &&
+    /MicroMessenger/i.test(navigator.userAgent);
+  const hasWeChatAuth = providers.includes("wechat");
+  const showWeChatButton = isWeChatBrowser && hasWeChatAuth;
 
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
+  const [loginMethod, setLoginMethod] = useState<"email" | "phone">("email");
 
   const fetcher = useFetcher<
     { success: true } | { success: false; message: string }
@@ -157,6 +211,12 @@ export default function LoginRoute() {
     }
   };
 
+  const onSignInWithWeChat = () => {
+    window.location.href = `/auth/wechat${
+      redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ""
+    }`;
+  };
+
   return (
     <>
       <div className="flex justify-center mb-4">
@@ -181,71 +241,154 @@ export default function LoginRoute() {
             </VStack>
           </>
         ) : (
-          <ValidatedForm
-            fetcher={fetcher}
-            validator={magicLinkValidator}
-            defaultValues={{ redirectTo }}
-            method="post"
-          >
-            <Hidden name="redirectTo" value={redirectTo} type="hidden" />
-            <VStack spacing={2}>
-              {fetcher.data?.success === false && fetcher.data?.message && (
-                <Alert variant="destructive">
-                  <LuCircleAlert className="w-4 h-4" />
-                  <AlertTitle>
-                    <Trans>Authentication Error</Trans>
-                  </AlertTitle>
-                  <AlertDescription>{fetcher.data?.message}</AlertDescription>
-                </Alert>
-              )}
-
-              {hasGoogleAuth && (
-                <Button
-                  type="button"
-                  size="lg"
-                  className="w-full"
-                  onClick={onSignInWithGoogle}
-                  isDisabled={fetcher.state !== "idle"}
-                  variant="secondary"
-                  leftIcon={<GoogleIcon />}
-                >
-                  <Trans>Sign in with Google</Trans>
-                </Button>
-              )}
-              {hasOutlookAuth && (
-                <Button
-                  type="button"
-                  size="lg"
-                  className="w-full"
-                  onClick={onSignInWithAzure}
-                  isDisabled={fetcher.state !== "idle"}
-                  variant="secondary"
-                  leftIcon={<OutlookIcon className="size-6" />}
-                >
-                  <Trans>Sign in with Outlook</Trans>
-                </Button>
-              )}
-
-              {(hasGoogleAuth || hasOutlookAuth) && (
-                <div className="py-3 w-full">
-                  <Separator />
-                </div>
-              )}
-
-              <Input name="email" label="" placeholder={t`Email Address`} />
-
-              <Submit
-                isDisabled={fetcher.state !== "idle"}
-                isLoading={fetcher.state === "submitting"}
+          <VStack spacing={2}>
+            {showWeChatButton && (
+              <Button
+                type="button"
                 size="lg"
                 className="w-full"
-                withBlocker={false}
+                onClick={onSignInWithWeChat}
                 variant="secondary"
+                leftIcon={<WeChatIcon />}
               >
-                <Trans>Sign in with Email</Trans>
-              </Submit>
-            </VStack>
-          </ValidatedForm>
+                <Trans>Continue with WeChat</Trans>
+              </Button>
+            )}
+            {hasGoogleAuth && (
+              <Button
+                type="button"
+                size="lg"
+                className="w-full"
+                onClick={onSignInWithGoogle}
+                isDisabled={fetcher.state !== "idle"}
+                variant="secondary"
+                leftIcon={<GoogleIcon />}
+              >
+                <Trans>Sign in with Google</Trans>
+              </Button>
+            )}
+            {hasOutlookAuth && (
+              <Button
+                type="button"
+                size="lg"
+                className="w-full"
+                onClick={onSignInWithAzure}
+                isDisabled={fetcher.state !== "idle"}
+                variant="secondary"
+                leftIcon={<OutlookIcon className="size-6" />}
+              >
+                <Trans>Sign in with Outlook</Trans>
+              </Button>
+            )}
+
+            {(hasGoogleAuth || hasOutlookAuth || showWeChatButton) && (
+              <div className="py-3 w-full">
+                <Separator />
+              </div>
+            )}
+
+            {hasPhoneAuth && (
+              <div className="flex rounded-md border border-border overflow-hidden mb-2">
+                <button
+                  type="button"
+                  className={`flex-1 py-1.5 text-sm font-medium transition-colors ${
+                    loginMethod === "email"
+                      ? "bg-secondary text-secondary-foreground"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                  onClick={() => setLoginMethod("email")}
+                >
+                  <Trans>Email</Trans>
+                </button>
+                <button
+                  type="button"
+                  className={`flex-1 py-1.5 text-sm font-medium transition-colors ${
+                    loginMethod === "phone"
+                      ? "bg-secondary text-secondary-foreground"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                  onClick={() => setLoginMethod("phone")}
+                >
+                  <Trans>Phone</Trans>
+                </button>
+              </div>
+            )}
+
+            {loginMethod === "phone" && hasPhoneAuth ? (
+              <ValidatedForm
+                fetcher={fetcher}
+                validator={phoneLoginValidator}
+                defaultValues={{ redirectTo }}
+                method="post"
+              >
+                <Hidden name="intent" value="phone" />
+                <Hidden name="redirectTo" value={redirectTo} type="hidden" />
+                <VStack spacing={2}>
+                  {fetcher.data?.success === false && fetcher.data?.message && (
+                    <Alert variant="destructive">
+                      <LuCircleAlert className="w-4 h-4" />
+                      <AlertTitle>
+                        <Trans>Authentication Error</Trans>
+                      </AlertTitle>
+                      <AlertDescription>
+                        {fetcher.data?.message}
+                      </AlertDescription>
+                    </Alert>
+                  )}
+                  <Input
+                    name="phone"
+                    label=""
+                    placeholder={t`Phone Number (e.g. +12125551234)`}
+                  />
+                  <Submit
+                    isDisabled={fetcher.state !== "idle"}
+                    isLoading={fetcher.state === "submitting"}
+                    size="lg"
+                    className="w-full"
+                    withBlocker={false}
+                    variant="secondary"
+                  >
+                    <Trans>Send Code</Trans>
+                  </Submit>
+                </VStack>
+              </ValidatedForm>
+            ) : (
+              <ValidatedForm
+                fetcher={fetcher}
+                validator={magicLinkValidator}
+                defaultValues={{ redirectTo }}
+                method="post"
+              >
+                <Hidden name="redirectTo" value={redirectTo} type="hidden" />
+                <VStack spacing={2}>
+                  {fetcher.data?.success === false && fetcher.data?.message && (
+                    <Alert variant="destructive">
+                      <LuCircleAlert className="w-4 h-4" />
+                      <AlertTitle>
+                        <Trans>Authentication Error</Trans>
+                      </AlertTitle>
+                      <AlertDescription>
+                        {fetcher.data?.message}
+                      </AlertDescription>
+                    </Alert>
+                  )}
+
+                  <Input name="email" label="" placeholder={t`Email Address`} />
+
+                  <Submit
+                    isDisabled={fetcher.state !== "idle"}
+                    isLoading={fetcher.state === "submitting"}
+                    size="lg"
+                    className="w-full"
+                    withBlocker={false}
+                    variant="secondary"
+                  >
+                    <Trans>Sign in with Email</Trans>
+                  </Submit>
+                </VStack>
+              </ValidatedForm>
+            )}
+          </VStack>
         )}
       </div>
       <div className="flex flex-col gap-4 text-sm text-center text-balance text-muted-foreground w-[380px]">
@@ -276,6 +419,20 @@ export default function LoginRoute() {
         )}
       </div>
     </>
+  );
+}
+
+function WeChatIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      height="18"
+      width="18"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      {...props}
+    >
+      <path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 0 0 .167-.054l1.903-1.114a.864.864 0 0 1 .717-.098 10.16 10.16 0 0 0 2.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-5.972 2.932-7.862 1.128-.754 2.445-1.163 3.808-1.172-.07-.894-.322-1.763-.762-2.556C13.86 3.35 11.44 2.188 8.69 2.188zM5.847 7.315a.875.875 0 1 1 0 1.75.875.875 0 0 1 0-1.75zm5.688 0a.875.875 0 1 1 0 1.75.875.875 0 0 1 0-1.75zm4.5.25c-2.946 0-5.344 2.007-5.344 4.48 0 2.473 2.398 4.479 5.344 4.479a6.42 6.42 0 0 0 1.885-.282.59.59 0 0 1 .493.068l1.387.812a.233.233 0 0 0 .12.038.212.212 0 0 0 .207-.214.34.34 0 0 0-.033-.15l-.277-1.054a.425.425 0 0 1 .154-.48C20.847 14.072 22 12.465 22 10.694c0-1.77-1.153-3.378-2.929-4.465-.714-.428-1.522-.664-2.343-.664zm-2.012 2.25a.625.625 0 1 1 0 1.25.625.625 0 0 1 0-1.25zm4.022 0a.625.625 0 1 1 0 1.25.625.625 0 0 1 0-1.25z" />
+    </svg>
   );
 }
 

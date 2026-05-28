@@ -836,6 +836,8 @@ export const path = {
       generatePath(`${x}/resources/ability/${abilityId}/employee/${id}`),
     employeeAccount: (id: string) => generatePath(`${x}/users/employees/${id}`),
     employeeAccounts: `${x}/users/employees`,
+    employeePhone: (id: string) =>
+      generatePath(`${x}/users/employees/phone/${id}`),
     employeeType: (id: string) =>
       generatePath(`${x}/users/employee-types/${id}`),
     employeeTypes: `${x}/users/employee-types`,

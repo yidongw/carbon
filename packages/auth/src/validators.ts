@@ -62,6 +62,22 @@ export const selfSignupValidator = z.object({
   lastName: z.string().min(1, { message: "Last name is required" })
 });
 
+export const phoneLoginValidator = z.object({
+  phone: z
+    .string()
+    .min(1, { message: "Phone number is required" })
+    .regex(/^\+[1-9]\d{7,14}$/, { message: "Must be a valid E.164 phone number (e.g. +12125551234)" }),
+  redirectTo: zfd.text(z.string().optional())
+});
+
+export const phoneVerifyValidator = z.object({
+  phone: z
+    .string()
+    .regex(/^\+[1-9]\d{7,14}$/, { message: "Must be a valid E.164 phone number (e.g. +12125551234)" }),
+  code: z.string().length(6, { message: "Code must be 6 digits" }),
+  redirectTo: zfd.text(z.string().optional())
+});
+
 export const verifySignupValidator = z.object({
   email: z
     .string()

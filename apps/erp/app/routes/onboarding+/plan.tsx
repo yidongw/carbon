@@ -118,7 +118,7 @@ export async function action({ request }: ActionFunctionArgs) {
     userId,
     companyId,
     name: company.data?.name,
-    email: user.data?.email
+    email: user.data?.email ?? ""
   });
 
   throw redirect(url);
