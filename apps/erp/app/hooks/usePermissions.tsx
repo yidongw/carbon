@@ -19,7 +19,7 @@ export function usePermissions() {
   if (!isPermissions(data?.permissions) || !isRole(data?.role)) {
     // TODO: force logout -- the likely cause is development changes
     throw new Error(
-      "usePermissions must be used within an authenticated route. If you are seeing this error, you are likely in development and have changed the session variables. Try deleting the cookies."
+      "usePermissions must be used within an authenticated route. If you are seeing this after seeding or changing companies, clear the permissions Redis cache and sign in again (or delete cookies and hard-refresh)."
     );
   }
 
@@ -65,7 +65,11 @@ function isPermissions(value: unknown): value is Record<string, Permission> {
     Array.isArray(value) === false &&
     value !== null
   ) {
-    return Object.values(value as object).every(
+    const entries = Object.values(value as object);
+    if (entries.length === 0) {
+      return false;
+    }
+    return entries.every(
       (permission) =>
         "view" in permission &&
         "create" in permission &&

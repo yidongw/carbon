@@ -7,6 +7,7 @@ import { error, success } from "../utils/result";
 import {
   getClaims,
   getPermissionCacheKey,
+  isValidCachedClaims,
   makePermissionsFromClaims
 } from "./users";
 
@@ -27,10 +28,13 @@ export async function getUserClaims(userId: string, companyId: string) {
   try {
     const cachedClaims = await redis.get(getPermissionCacheKey(userId));
     if (cachedClaims) {
-      claims = JSON.parse(cachedClaims) as {
+      const parsed = JSON.parse(cachedClaims) as {
         permissions: Record<string, Permission>;
         role: string | null;
       };
+      if (isValidCachedClaims(parsed)) {
+        claims = parsed;
+      }
     }
   } catch (e) {
     console.error("Failed to get claims from redis", e);
