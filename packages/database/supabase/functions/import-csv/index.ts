@@ -590,6 +590,11 @@ type ItemPurchasingLeadTime = {
   leadTime: string;
 };
 
+type ItemPlanningOrderMultiple = {
+  itemId: string;
+  orderMultiple: string;
+};
+
 async function writeSupplierPartLinks(
   trx: typeof db,
   links: SupplierPartImportLink[],
@@ -664,9 +669,10 @@ async function writeSupplierPartLinks(
 
 // Set the item-level purchasing lead time (the "Purchasing" tab field).
 // The itemReplenishment row is created by the create_item_related_records
-// AFTER INSERT trigger on item (default purchasingLeadTime 0), so within this
-// transaction the row already exists for every item we just upserted — we only
-// need to UPDATE it.
+// AFTER INSERT trigger on item (default leadTime 7, per migration
+// 20250610000433_demand-planning.sql which renamed purchasingLeadTime →
+// leadTime), so within this transaction the row already exists for every
+// item we just upserted — we only need to UPDATE it.
 async function writeItemPurchasingLeadTimes(
   trx: typeof db,
   entries: ItemPurchasingLeadTime[],
@@ -681,7 +687,40 @@ async function writeItemPurchasingLeadTimes(
     await trx
       .updateTable("itemReplenishment")
       .set({
-        purchasingLeadTime: numericLeadTime,
+        leadTime: numericLeadTime,
+        updatedAt: now,
+        updatedBy: userId,
+      })
+      .where("itemId", "=", entry.itemId)
+      .where("companyId", "=", companyId)
+      .execute();
+  }
+}
+
+// Set the item-level planning order multiple. itemPlanning has one row per
+// (item, location) pair, all created by create_item_related_records at item
+// insert time (SELECT FROM location WHERE companyId = ...). A single UPDATE
+// scoped by itemId + companyId therefore covers every location row for that
+// item — matching the "order multiple is unique across every location"
+// expectation. Mirrors the same CSV value already written to
+// supplierPart.orderMultiple in writeSupplierPartLinks; both are intentionally
+// kept in sync at import time even though they're structurally distinct
+// fields (supplier case-pack vs MRP preferred multiple).
+async function writeItemPlanningOrderMultiples(
+  trx: typeof db,
+  entries: ItemPlanningOrderMultiple[],
+  companyId: string,
+  userId: string
+): Promise<void> {
+  if (entries.length === 0) return;
+  const now = new Date().toISOString();
+  for (const entry of entries) {
+    const numericOrderMultiple = Number.parseInt(entry.orderMultiple, 10);
+    if (Number.isNaN(numericOrderMultiple) || numericOrderMultiple < 1) continue;
+    await trx
+      .updateTable("itemPlanning")
+      .set({
+        orderMultiple: numericOrderMultiple,
         updatedAt: now,
         updatedBy: userId,
       })
@@ -1284,6 +1323,12 @@ serve(async (req: Request) => {
           // known (immediately for updates, post-insert for new items).
           const leadTimeForInserts: Array<string | undefined> = [];
           const purchasingLeadTimes: ItemPurchasingLeadTime[] = [];
+          // Same shape for the item-level planning order multiple. CSV's
+          // "Order Multiple" column populates both supplierPart.orderMultiple
+          // (per-supplier case-pack) and itemPlanning.orderMultiple
+          // (per-(item, location) MRP setting) at import time.
+          const orderMultipleForInserts: Array<string | undefined> = [];
+          const itemPlanningOrderMultiples: ItemPlanningOrderMultiple[] = [];
 
           const itemValidator = z.object({
             id: z.string(),
@@ -1371,6 +1416,13 @@ serve(async (req: Request) => {
                 });
               }
 
+              if (record.orderMultiple) {
+                itemPlanningOrderMultiples.push({
+                  itemId: existingEntityId,
+                  orderMultiple: record.orderMultiple,
+                });
+              }
+
               if (table === "material") {
                 const material = materialValidator.safeParse(record);
                 if (material.success) {
@@ -1426,6 +1478,7 @@ serve(async (req: Request) => {
                 unitPrice: record.unitPrice,
               });
               leadTimeForInserts.push(record.leadTime);
+              orderMultipleForInserts.push(record.orderMultiple);
 
               if (table === "material") {
                 const material = materialValidator.safeParse(record);
@@ -1549,6 +1602,13 @@ serve(async (req: Request) => {
                   leadTime,
                 });
               }
+              const orderMultiple = orderMultipleForInserts[i];
+              if (orderMultiple && insertedItems[i].id) {
+                itemPlanningOrderMultiples.push({
+                  itemId: insertedItems[i].id!,
+                  orderMultiple,
+                });
+              }
             }
           }
 
@@ -1622,6 +1682,13 @@ serve(async (req: Request) => {
           await writeItemPurchasingLeadTimes(
             trx,
             purchasingLeadTimes,
+            companyId,
+            userId
+          );
+
+          await writeItemPlanningOrderMultiples(
+            trx,
+            itemPlanningOrderMultiples,
             companyId,
             userId
           );
