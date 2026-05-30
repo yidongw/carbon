@@ -46,13 +46,13 @@ jobs:
       - name: Notify success
         if: success()
         run: |
-          curl -sS -X POST https://discord-notifier.vercel.app/api/migrations \
+          curl -sS -X POST https://discord-notifier-alan.vercel.app/api/migrations \
             -H "Content-Type: application/json" \
             -d "{\"env\":\"${{ github.ref_name }}\",\"status\":\"success\",\"branch\":\"${{ github.ref_name }}\",\"repo\":\"${{ github.repository }}\",\"run_url\":\"${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"
 
       - name: Notify failure
         if: failure()
         run: |
-          curl -sS -X POST https://discord-notifier.vercel.app/api/migrations \
+          curl -sS -X POST https://discord-notifier-alan.vercel.app/api/migrations \
             -H "Content-Type: application/json" \
             -d "{\"env\":\"${{ github.ref_name }}\",\"status\":\"failure\",\"branch\":\"${{ github.ref_name }}\",\"repo\":\"${{ github.repository }}\",\"run_url\":\"${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"
