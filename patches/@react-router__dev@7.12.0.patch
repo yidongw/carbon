@@ -1,26 +1,5 @@
-diff --git a/dist/vite.js b/dist/vite.js
---- a/dist/vite.js
-+++ b/dist/vite.js
-@@ -1281,10 +1281,12 @@
- async function write(...files) {
--  return Promise.all(
--    files.map(async ({ filename: filename2, content }) => {
--      await import_promises.default.mkdir(Path4.dirname(filename2), { recursive: true });
--      await import_promises.default.writeFile(filename2, content);
--    })
--  );
-+  const dirs = [...new Set(files.map(({ filename: filename2 }) => Path4.dirname(filename2)))];
-+  for (const dir of dirs) {
-+    await import_promises.default.mkdir(dir, { recursive: true });
-+  }
-+  return Promise.all(
-+    files.map(({ filename: filename2, content }) =>
-+      import_promises.default.writeFile(filename2, content)
-+    )
-+  );
- }
 diff --git a/dist/cli/index.js b/dist/cli/index.js
-index da54c0d..e51d41f 100644
+index da54c0d2b5270a1a72d30336228c1de74ad70689..e51d41fdaa35fd6b2c93858fb327089dbdf384e1 100644
 --- a/dist/cli/index.js
 +++ b/dist/cli/index.js
 @@ -1616,16 +1616,19 @@ async function cleanViteManifests(environmentsOptions, ctx) {
@@ -53,3 +32,26 @@ index da54c0d..e51d41f 100644
      })
    );
  }
+diff --git a/dist/vite.js b/dist/vite.js
+index b5bf311f7f7965fa2a88d32d218f03eb6025dc00..fa662d1f8c71788941b5d5880309008c02f26e03 100644
+--- a/dist/vite.js
++++ b/dist/vite.js
+@@ -1279,11 +1279,14 @@ async function clearRouteModuleAnnotations(ctx) {
+   );
+ }
+ async function write(...files) {
++  const dirs = [...new Set(files.map(({ filename: filename2 }) => Path4.dirname(filename2)))];
++  for (const dir of dirs) {
++    await import_promises.default.mkdir(dir, { recursive: true });
++  }
+   return Promise.all(
+-    files.map(async ({ filename: filename2, content }) => {
+-      await import_promises.default.mkdir(Path4.dirname(filename2), { recursive: true });
+-      await import_promises.default.writeFile(filename2, content);
+-    })
++    files.map(({ filename: filename2, content }) =>
++      import_promises.default.writeFile(filename2, content)
++    )
+   );
+ }
+ async function watch(rootDirectory, { mode, logger, rsc }) {
