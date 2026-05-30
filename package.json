@@ -44,6 +44,7 @@
     "db:types": "tsx scripts/generate-db-types.ts",
     "deploy": "turbo run deploy",
     "dev": "crbn up --no-portless",
+    "tunnel": "bash tunnel.sh",
     "dev:academy": "turbo run dev --filter=./apps/academy --filter=./packages/",
     "dev:packages": "turbo run dev --filter=./packages/*",
     "dev:starter": "turbo run dev --filter=./apps/starter --filter=./packages/",

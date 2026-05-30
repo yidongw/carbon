@@ -479,6 +479,9 @@ msgstr "Registrar Concluído"
 msgid "Log completed for {0}"
 msgstr "Registrar concluído para {0}"
 
+msgid "Log In"
+msgstr ""
+
 msgid "Log Pickup"
 msgstr ""
 
