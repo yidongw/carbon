@@ -1,0 +1,44 @@
+name: Deploy Migrations & Functions
+
+on:
+  push:
+    branches: [dev, staging, prod]
+    paths:
+      - "packages/database/supabase/migrations/**"
+      - "packages/database/supabase/functions/**"
+
+jobs:
+  migrate:
+    name: Migrate ${{ github.ref_name }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Set project config
+        run: |
+          case "${{ github.ref_name }}" in
+            dev)     REF=otlrpaixphrtlwqhvdpl; PASS="${{ secrets.SUPABASE_DB_PASSWORD_DEV }}" ;;
+            staging) REF=vsfkrbofqvssvmdwpfwr;  PASS="${{ secrets.SUPABASE_DB_PASSWORD_STAGING }}" ;;
+            prod)    REF=cfhsxrmpzwzvjzwcimod;  PASS="${{ secrets.SUPABASE_DB_PASSWORD_PROD }}" ;;
+          esac
+          echo "PROJECT_REF=$REF" >> $GITHUB_ENV
+          echo "DB_PASS=$PASS" >> $GITHUB_ENV
+
+      - name: Push migrations
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        working-directory: packages/database
+        run: |
+          supabase link --project-ref "$PROJECT_REF" --password "$DB_PASS"
+          echo y | supabase db push --linked --include-all
+
+      - name: Deploy edge functions
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        working-directory: packages/database
+        run: supabase functions deploy --project-ref "$PROJECT_REF"
