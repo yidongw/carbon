@@ -31,6 +31,7 @@ scripts/test-get-stripe-customer.ts
 .env.dev
 .env.development.local
 .env.test.local
+.env.staging
 .env.prod
 .env.production
 .env.production.local
@@ -60,3 +61,6 @@ llm/tasks
 apps/*/portless.json
 
 .worktrees
+
+# Local git hooks (install via .hooks/install.sh)
+.hooks/

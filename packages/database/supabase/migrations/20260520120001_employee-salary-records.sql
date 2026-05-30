@@ -3,13 +3,12 @@
 -- has its paymentYear/paymentMonth set (approved) or cleared (revoked).
 -- Finance can pay in full or partial installments via employeeSalaryPayment.
 
-CREATE TYPE "salaryRecordStatus" AS ENUM (
-  'Unpaid',
-  'Partially Paid',
-  'Paid'
-);
+DO $$ BEGIN
+  CREATE TYPE "salaryRecordStatus" AS ENUM ('Unpaid', 'Partially Paid', 'Paid');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
-CREATE TABLE "employeeSalaryRecord" (
+CREATE TABLE IF NOT EXISTS "employeeSalaryRecord" (
   "id" TEXT NOT NULL DEFAULT xid(),
   "employeeId" TEXT NOT NULL,
   "companyId" TEXT NOT NULL,
@@ -33,36 +32,46 @@ CREATE TABLE "employeeSalaryRecord" (
   CONSTRAINT "employeeSalaryRecord_updatedBy_fkey" FOREIGN KEY ("updatedBy") REFERENCES "user"("id") ON DELETE SET NULL
 );
 
-CREATE INDEX "idx_salaryRecord_companyId" ON "employeeSalaryRecord" ("companyId", "year", "month");
-CREATE INDEX "idx_salaryRecord_employeeId" ON "employeeSalaryRecord" ("employeeId", "companyId");
+CREATE INDEX IF NOT EXISTS "idx_salaryRecord_companyId" ON "employeeSalaryRecord" ("companyId", "year", "month");
+CREATE INDEX IF NOT EXISTS "idx_salaryRecord_employeeId" ON "employeeSalaryRecord" ("employeeId", "companyId");
 
 ALTER TABLE "employeeSalaryRecord" ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Employees can view their own salary records" ON "employeeSalaryRecord"
-FOR SELECT USING (
-  auth.uid()::text = "employeeId"
-);
+DO $$ BEGIN
+  CREATE POLICY "Employees can view their own salary records" ON "employeeSalaryRecord"
+  FOR SELECT USING (auth.uid()::text = "employeeId");
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
-CREATE POLICY "Users with people_view can see all salary records" ON "employeeSalaryRecord"
-FOR SELECT USING (
-  has_role('employee', "companyId") AND
-  has_company_permission('people_view', "companyId")
-);
+DO $$ BEGIN
+  CREATE POLICY "Users with people_view can see all salary records" ON "employeeSalaryRecord"
+  FOR SELECT USING (
+    has_role('employee', "companyId") AND
+    has_company_permission('people_view', "companyId")
+  );
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
-CREATE POLICY "Users with people_create can insert salary records" ON "employeeSalaryRecord"
-FOR INSERT WITH CHECK (
-  has_role('employee', "companyId") AND
-  has_company_permission('people_create', "companyId")
-);
+DO $$ BEGIN
+  CREATE POLICY "Users with people_create can insert salary records" ON "employeeSalaryRecord"
+  FOR INSERT WITH CHECK (
+    has_role('employee', "companyId") AND
+    has_company_permission('people_create', "companyId")
+  );
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
-CREATE POLICY "Users with people_update can update salary records" ON "employeeSalaryRecord"
-FOR UPDATE USING (
-  has_role('employee', "companyId") AND
-  has_company_permission('people_update', "companyId")
-);
+DO $$ BEGIN
+  CREATE POLICY "Users with people_update can update salary records" ON "employeeSalaryRecord"
+  FOR UPDATE USING (
+    has_role('employee', "companyId") AND
+    has_company_permission('people_update', "companyId")
+  );
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 -- Individual payment installments against a salary record
-CREATE TABLE "employeeSalaryPayment" (
+CREATE TABLE IF NOT EXISTS "employeeSalaryPayment" (
   "id" TEXT NOT NULL DEFAULT xid(),
   "salaryRecordId" TEXT NOT NULL,
   "companyId" TEXT NOT NULL,
@@ -78,31 +87,40 @@ CREATE TABLE "employeeSalaryPayment" (
   CONSTRAINT "employeeSalaryPayment_paidBy_fkey" FOREIGN KEY ("paidBy") REFERENCES "user"("id") ON DELETE RESTRICT
 );
 
-CREATE INDEX "idx_salaryPayment_salaryRecordId" ON "employeeSalaryPayment" ("salaryRecordId");
-CREATE INDEX "idx_salaryPayment_companyId" ON "employeeSalaryPayment" ("companyId");
+CREATE INDEX IF NOT EXISTS "idx_salaryPayment_salaryRecordId" ON "employeeSalaryPayment" ("salaryRecordId");
+CREATE INDEX IF NOT EXISTS "idx_salaryPayment_companyId" ON "employeeSalaryPayment" ("companyId");
 
 ALTER TABLE "employeeSalaryPayment" ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Employees can view their own salary payments" ON "employeeSalaryPayment"
-FOR SELECT USING (
-  EXISTS (
-    SELECT 1 FROM "employeeSalaryRecord" r
-    WHERE r.id = "salaryRecordId"
-    AND r."employeeId" = auth.uid()::text
-  )
-);
+DO $$ BEGIN
+  CREATE POLICY "Employees can view their own salary payments" ON "employeeSalaryPayment"
+  FOR SELECT USING (
+    EXISTS (
+      SELECT 1 FROM "employeeSalaryRecord" r
+      WHERE r.id = "salaryRecordId"
+      AND r."employeeId" = auth.uid()::text
+    )
+  );
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
-CREATE POLICY "Users with people_view can see all salary payments" ON "employeeSalaryPayment"
-FOR SELECT USING (
-  has_role('employee', "companyId") AND
-  has_company_permission('people_view', "companyId")
-);
+DO $$ BEGIN
+  CREATE POLICY "Users with people_view can see all salary payments" ON "employeeSalaryPayment"
+  FOR SELECT USING (
+    has_role('employee', "companyId") AND
+    has_company_permission('people_view', "companyId")
+  );
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
-CREATE POLICY "Users with people_create can record payments" ON "employeeSalaryPayment"
-FOR INSERT WITH CHECK (
-  has_role('employee', "companyId") AND
-  has_company_permission('people_create', "companyId")
-);
+DO $$ BEGIN
+  CREATE POLICY "Users with people_create can record payments" ON "employeeSalaryPayment"
+  FOR INSERT WITH CHECK (
+    has_role('employee', "companyId") AND
+    has_company_permission('people_create', "companyId")
+  );
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 -- Recomputes totalEarned + totalPaid for one employee/period and upserts the record.
 -- Source of truth for earnings: productionQuantity rows where paymentYear/Month are set.
@@ -171,10 +189,9 @@ BEGIN
 END;
 $$;
 
--- Trigger: sync salary record when a productionQuantity row's payment period or
--- invalidation status changes.
--- Fires on INSERT (if already approved) and UPDATE of paymentYear/paymentMonth/
--- quantity/invalidatedAt.
+-- Trigger: sync salary record when a productionQuantity row's payment period,
+-- quantity, or invalidation status changes.
+-- Fires on INSERT (if already approved) and UPDATE of relevant columns.
 CREATE OR REPLACE FUNCTION trigger_sync_salary_on_production_quantity()
 RETURNS TRIGGER
 LANGUAGE plpgsql
@@ -214,10 +231,9 @@ BEGIN
 END;
 $$;
 
--- Note: "invalidatedAt" is excluded here because it is added by 20260520120000.
--- The trigger is recreated in 20260521000001 to include it once the column exists.
+DROP TRIGGER IF EXISTS trg_sync_salary_on_production_quantity ON "productionQuantity";
 CREATE TRIGGER trg_sync_salary_on_production_quantity
-AFTER INSERT OR UPDATE OF "paymentYear", "paymentMonth", "quantity"
+AFTER INSERT OR UPDATE OF "paymentYear", "paymentMonth", "quantity", "invalidatedAt"
 ON "productionQuantity"
 FOR EACH ROW
 EXECUTE FUNCTION trigger_sync_salary_on_production_quantity();
@@ -245,6 +261,7 @@ BEGIN
 END;
 $$;
 
+DROP TRIGGER IF EXISTS trg_sync_salary_on_payment ON "employeeSalaryPayment";
 CREATE TRIGGER trg_sync_salary_on_payment
 AFTER INSERT OR DELETE
 ON "employeeSalaryPayment"

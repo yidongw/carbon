@@ -1,0 +1,127 @@
+#!/usr/bin/env bash
+# tunnel.sh — Start Cloudflare Quick Tunnels for all crbn up services.
+#
+# Usage:  ./tunnel.sh   (or: pnpm tunnel)
+#
+# Tunnels every service port found in .env.local, updates GTM_URL so
+# GoTrue allows the ERP tunnel as an auth redirect, then restarts GoTrue.
+
+set -euo pipefail
+
+REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ENV_LOCAL="$REPO/.env.local"
+DOCKER="${DOCKER:-docker}"
+
+die()  { echo "❌  $*" >&2; exit 1; }
+
+require() {
+  command -v "$1" &>/dev/null || die "'$1' not found. Install it first."
+}
+
+env_get() {
+  grep -E "^${1}=" "$ENV_LOCAL" 2>/dev/null | tail -1 | cut -d= -f2- | tr -d '"'
+}
+
+env_set() {
+  local key=$1 val=$2
+  if grep -q "^${key}=" "$ENV_LOCAL" 2>/dev/null; then
+    sed -i '' "s|^${key}=.*|${key}=${val}|" "$ENV_LOCAL"
+  else
+    echo "${key}=${val}" >> "$ENV_LOCAL"
+  fi
+}
+
+# Start a cloudflared quick tunnel for a local port.
+# Echoes the trycloudflare.com URL once it's ready.
+start_tunnel() {
+  local port=$1
+  local logfile
+  logfile=$(mktemp /tmp/cf-tunnel-XXXXXX)
+
+  cloudflared tunnel --url "http://127.0.0.1:${port}" --no-autoupdate \
+    >"$logfile" 2>&1 &
+
+  local url="" elapsed=0
+  while [ -z "$url" ]; do
+    sleep 1
+    elapsed=$((elapsed + 1))
+    url=$(grep -oE 'https://[a-z0-9-]+\.trycloudflare\.com' "$logfile" | head -1)
+    if [ $elapsed -ge 30 ]; then
+      echo "--- cloudflared output (port $port) ---" >&2
+      cat "$logfile" >&2
+      die "Timed out waiting for tunnel on port $port"
+    fi
+  done
+
+  echo "$url"
+}
+
+# ── main ───────────────────────────────────────────────────────────────────
+
+require cloudflared
+[ -f "$ENV_LOCAL" ] || die ".env.local not found — run 'crbn up' first."
+
+# Services to tunnel: label, PORT_* key, skip if port is absent
+declare -a SERVICES=(
+  "ERP        PORT_ERP"
+  "MES        PORT_MES"
+  "Studio     PORT_STUDIO"
+  "Inbucket   PORT_INBUCKET"
+  "Inngest    PORT_INNGEST"
+)
+
+echo "Stopping existing cloudflared tunnels…"
+pkill -f "cloudflared tunnel" 2>/dev/null && sleep 1 || true
+echo ""
+
+for entry in "${SERVICES[@]}"; do
+  label=$(echo "$entry" | awk '{print $1}')
+  key=$(echo "$entry"   | awk '{print $2}')
+  port=$(env_get "$key")
+
+  if [ -z "$port" ]; then
+    echo "  $label  — skipped ($key not set)"
+    continue
+  fi
+
+  printf "  %-10s port %-5s  →  starting…" "$label" "$port"
+  url=$(start_tunnel "$port")
+  printf -v "URL_${label}" '%s' "$url"
+  printf "\r  %-10s port %-5s  →  %s\n" "$label" "$port" "$url"
+done
+
+echo ""
+
+# Update GTM_URL so GoTrue allows the ERP tunnel as an auth redirect
+ERP_URL="${URL_ERP:-}"
+if [ -n "$ERP_URL" ]; then
+  env_set "GTM_URL" "$ERP_URL"
+  echo "Updated .env.local → GTM_URL=$ERP_URL"
+  echo ""
+
+  if command -v "$DOCKER" &>/dev/null; then
+    echo "Restarting GoTrue to apply new allow list…"
+    "$DOCKER" compose \
+      -f "$REPO/docker-compose.dev.yml" \
+      -p "carbon-carbon" \
+      up -d --no-deps gotrue 2>/dev/null
+    echo "GoTrue restarted."
+    echo ""
+  fi
+fi
+
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+for label in ERP MES Studio Inbucket Inngest; do
+  varname="URL_${label}"
+  url="${!varname:-}"
+  [ -n "$url" ] && printf "  %-10s  %s\n" "$label" "$url"
+done
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+trap 'echo ""; echo "Tunnels still running. Re-run to restart with new URLs."; exit 0' INT TERM
+
+echo "Press Ctrl+C to stop all tunnels."
+
+while pgrep -f "cloudflared tunnel" > /dev/null; do
+  sleep 2
+done
