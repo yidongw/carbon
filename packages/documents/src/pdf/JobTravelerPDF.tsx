@@ -267,7 +267,11 @@ export const JobTravelerPageContent = ({
           company={company}
           title="Job Traveler"
           documentId={job.jobId}
-          documentSubId={job.salesOrderReadableId ?? undefined}
+          documentSubId={
+            job.salesOrderReadableId
+              ? `SO# ${job.salesOrderReadableId}`
+              : undefined
+          }
           date={job.startDate}
           locale={locale}
         />
