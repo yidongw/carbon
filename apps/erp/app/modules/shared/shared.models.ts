@@ -226,7 +226,9 @@ export const operationStepValidator = z
     description: z
       .string()
       .min(1, { message: "Description is required" })
-      .transform((val) => {
+      // Returns `any`: the tiptap doc is consumed both as a DB Json value and as
+      // editor JSONContent, and a narrower type breaks one of the two call sites.
+      .transform((val): any => {
         let parsed: unknown;
         try {
           parsed = JSON.parse(val);
