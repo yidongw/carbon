@@ -35,7 +35,7 @@ import type {
   PickMethod,
   SupplierPart
 } from "../../types";
-import { FileBadge } from "../Item";
+import { FileBadge, ItemDescription } from "../Item";
 
 type ConsumablePropertiesProps = {
   data?: {
@@ -107,6 +107,7 @@ const ConsumableProperties = ({ data }: ConsumablePropertiesProps) => {
     (
       field:
         | "name"
+        | "description"
         | "replenishmentSystem"
         | "defaultMethodType"
         | "itemTrackingType"
@@ -270,6 +271,7 @@ const ConsumableProperties = ({ data }: ConsumablePropertiesProps) => {
                 name="name"
                 inline
                 size="sm"
+                characterLimit={40}
                 value={routeData?.consumableSummary?.name ?? ""}
                 onBlur={(e) => {
                   onUpdate("name", e.target.value ?? null);
@@ -393,6 +395,11 @@ const ConsumableProperties = ({ data }: ConsumablePropertiesProps) => {
           value={routeData?.consumableSummary?.unitOfMeasure ?? null}
         />
       </VStack>
+
+      <ItemDescription
+        value={routeData?.consumableSummary?.description ?? ""}
+        onChange={(value) => onUpdate("description", value)}
+      />
 
       <VStack spacing={2}>
         <HStack className="w-full justify-between">

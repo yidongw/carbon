@@ -51,7 +51,7 @@ import type {
   PickMethod,
   SupplierPart
 } from "../../types";
-import { FileBadge } from "../Item";
+import { FileBadge, ItemDescription } from "../Item";
 
 type PartPropertiesProps = {
   data?: {
@@ -117,6 +117,7 @@ const PartProperties = ({ data }: PartPropertiesProps) => {
         | "itemPostingGroupId"
         | "partId"
         | "name"
+        | "description"
         | "replenishmentSystem"
         | "unitOfMeasureCode"
         | "requiresInspection",
@@ -292,6 +293,7 @@ const PartProperties = ({ data }: PartPropertiesProps) => {
                 name="name"
                 inline
                 size="sm"
+                characterLimit={40}
                 value={routeData?.partSummary?.name ?? ""}
                 onBlur={(e) => {
                   onUpdate("name", e.target.value ?? null);
@@ -503,6 +505,11 @@ const PartProperties = ({ data }: PartPropertiesProps) => {
           }}
         />
       </ValidatedForm>
+
+      <ItemDescription
+        value={routeData?.partSummary?.description ?? ""}
+        onChange={(value) => onUpdate("description", value)}
+      />
 
       <VStack spacing={2}>
         <HStack className="w-full justify-between">

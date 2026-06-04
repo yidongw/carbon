@@ -55,7 +55,7 @@ import type {
   PickMethod,
   SupplierPart
 } from "../../types";
-import { FileBadge } from "../Item";
+import { FileBadge, ItemDescription } from "../Item";
 
 type MaterialPropertiesProps = {
   data?: {
@@ -145,6 +145,7 @@ const MaterialProperties = ({ data }: MaterialPropertiesProps) => {
     (
       field:
         | "name"
+        | "description"
         | "replenishmentSystem"
         | "defaultMethodType"
         | "itemTrackingType"
@@ -654,6 +655,11 @@ const MaterialProperties = ({ data }: MaterialPropertiesProps) => {
             }}
           />
         </ValidatedForm>
+
+        <ItemDescription
+          value={routeData?.materialSummary?.description ?? ""}
+          onChange={(value) => onUpdate("description", value)}
+        />
 
         <VStack spacing={2}>
           <HStack className="w-full justify-between">
