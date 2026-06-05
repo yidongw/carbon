@@ -73,6 +73,12 @@ msgstr "Add Spare Part"
 msgid "All"
 msgstr "All"
 
+msgid "approved"
+msgstr "approved"
+
+msgid "Approved"
+msgstr "Approved"
+
 msgid "Are you sure you want to close out this operation? This will end all active production events for this operation."
 msgstr "Are you sure you want to close out this operation? This will end all active production events for this operation."
 
@@ -213,6 +219,10 @@ msgstr "Console Mode"
 msgid "Consumed expired"
 msgstr "Consumed expired"
 
+msgid "Create"
+msgstr "Create"
+
+#. placeholder {0}: group.heading
 #. placeholder {0}: search.trim() === "" ? (createLabel ?? label) : search
 #. placeholder {0}: search.trim() === "" ? label : search
 msgid "Create {0}"
@@ -286,11 +296,17 @@ msgstr "Duplicate serial number"
 msgid "Duration"
 msgstr "Duration"
 
+msgid "Earned"
+msgstr "Earned"
+
 msgid "Edit"
 msgstr "Edit"
 
 msgid "Email Address"
 msgstr "Email Address"
+
+msgid "Employee"
+msgstr "Employee"
 
 msgid "Empty work centers"
 msgstr "Empty work centers"
@@ -347,6 +363,9 @@ msgstr "Forgot to Clock Out?"
 
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "Have a technical issue? Contact <0>Carbon Support.</0>"
+
+msgid "History"
+msgstr "History"
 
 msgid "I understand and want to complete without issuing"
 msgstr "I understand and want to complete without issuing"
@@ -427,6 +446,12 @@ msgstr "Log Completed"
 msgid "Log completed for {0}"
 msgstr "Log completed for {0}"
 
+msgid "Log In"
+msgstr "Log In"
+
+msgid "Log Pickup"
+msgstr "Log Pickup"
+
 msgid "Log Rework"
 msgstr "Log Rework"
 
@@ -490,6 +515,9 @@ msgstr "Must be between {minValue} and {maxValue} {unitOfMeasureCode}"
 msgid "My Hours"
 msgstr "My Hours"
 
+msgid "My Salary"
+msgstr "My Salary"
+
 msgid "Name"
 msgstr "Name"
 
@@ -507,6 +535,9 @@ msgstr "No active maintenance dispatches"
 
 msgid "No active operations"
 msgstr "No active operations"
+
+msgid "No approved completions this period"
+msgstr "No approved completions this period"
 
 msgid "No assigned operations"
 msgstr "No assigned operations"
@@ -541,6 +572,9 @@ msgstr "No option found."
 msgid "No options found."
 msgstr "No options found."
 
+msgid "No pickups logged"
+msgstr "No pickups logged"
+
 msgid "No recent operations"
 msgstr "No recent operations"
 
@@ -552,6 +586,9 @@ msgstr "No results exist"
 
 msgid "No results found"
 msgstr "No results found"
+
+msgid "No results found."
+msgstr "No results found."
 
 msgid "No scheduled time"
 msgstr "No scheduled time"
@@ -602,6 +639,12 @@ msgstr "Operator Performed"
 msgid "Optional"
 msgstr "Optional"
 
+msgid "Owed"
+msgstr "Owed"
+
+msgid "Paid"
+msgstr "Paid"
+
 msgid "Parameters"
 msgstr "Parameters"
 
@@ -614,11 +657,23 @@ msgstr "Passed Inspection"
 msgid "Pause"
 msgstr "Pause"
 
+msgid "Pending"
+msgstr "Pending"
+
+msgid "Pending Approval"
+msgstr "Pending Approval"
+
+msgid "Period"
+msgstr "Period"
+
 #. placeholder {0}: startColumn?.title
 #. placeholder {1}: startIndex + 1
 #. placeholder {2}: columnOrder.length
 msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "Picked up Column {0} at position: {1} of {2}"
+
+msgid "Pickups"
+msgstr "Pickups"
 
 msgid "Pin Out"
 msgstr "Pin Out"
@@ -655,6 +710,9 @@ msgstr "Processes"
 
 msgid "Progress"
 msgstr "Progress"
+
+msgid "Qty"
+msgstr "Qty"
 
 msgid "Quantity"
 msgstr "Quantity"
@@ -851,6 +909,9 @@ msgstr "The completed quantity for this operation is less than the required quan
 msgid "There are serial or batch tracked materials on the bill of material that have not been fully issued. Completing without issuing may result in incorrect traceability records."
 msgstr "There are serial or batch tracked materials on the bill of material that have not been fully issued. Completing without issuing may result in incorrect traceability records."
 
+msgid "This Period"
+msgstr "This Period"
+
 msgid "Thumbnail"
 msgstr "Thumbnail"
 
@@ -886,6 +947,9 @@ msgstr "Type a message..."
 
 msgid "Unissued serial/batch materials"
 msgstr "Unissued serial/batch materials"
+
+msgid "unit"
+msgstr "unit"
 
 msgid "Unknown"
 msgstr "Unknown"

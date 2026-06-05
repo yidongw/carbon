@@ -1,5 +1,4 @@
 import { defineConfig } from "@lingui/cli";
-import { formatter } from "@lingui/format-po";
 
 export default defineConfig({
   sourceLocale: "en",
@@ -7,10 +6,12 @@ export default defineConfig({
   fallbackLocales: {
     default: "en"
   },
-  // Drop `#: path:lineno` origins — they churn on every PR as soon as any
-  // upstream code shifts and account for ~half the diff in our .po files.
-  // POT-Creation-Date is stripped post-extract (see scripts/strip-po-headers.mjs).
-  format: formatter({ origins: false, lineNumbers: false }),
+  // Use the plain "po" string format (not the formatter object) so external
+  // tooling that reads the lingui config recognizes it — linguito asserts
+  // `config.format === "po"` and uses it to build the .po file paths.
+  // The churny bits the formatter used to drop — `#: path:lineno` origins and
+  // POT-Creation-Date — are stripped post-extract in scripts/strip-po-headers.mjs.
+  format: "po",
   catalogs: [
     {
       path: "packages/locale/locales/{locale}/erp",

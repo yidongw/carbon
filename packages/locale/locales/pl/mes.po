@@ -73,6 +73,12 @@ msgstr "Dodaj część zamienną"
 msgid "All"
 msgstr "Wszystkie"
 
+msgid "approved"
+msgstr "zgodny"
+
+msgid "Approved"
+msgstr "Zatwierdzone"
+
 msgid "Are you sure you want to close out this operation? This will end all active production events for this operation."
 msgstr "Czy na pewno chcesz zamknąć tę operację? Spowoduje to zakończenie wszystkich aktywnych zdarzeń produkcyjnych dla tej operacji."
 
@@ -213,6 +219,10 @@ msgstr "Tryb konsoli"
 msgid "Consumed expired"
 msgstr "Zużyte wygasłe"
 
+msgid "Create"
+msgstr "Twórz"
+
+#. placeholder {0}: group.heading
 #. placeholder {0}: search.trim() === "" ? (createLabel ?? label) : search
 #. placeholder {0}: search.trim() === "" ? label : search
 msgid "Create {0}"
@@ -286,11 +296,17 @@ msgstr "Zduplikowany numer seryjny"
 msgid "Duration"
 msgstr "Czas trwania"
 
+msgid "Earned"
+msgstr "Otrzymane"
+
 msgid "Edit"
 msgstr "Edytuj"
 
 msgid "Email Address"
 msgstr "Adres e-mail"
+
+msgid "Employee"
+msgstr "Pracownik"
 
 msgid "Empty work centers"
 msgstr "Puste centra pracy"
@@ -347,6 +363,9 @@ msgstr "Zapomniałeś zakończyć zmianę?"
 
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "Masz problem techniczny? Skontaktuj się z <0>Wsparciem Carbon.</0>"
+
+msgid "History"
+msgstr "Historia"
 
 msgid "I understand and want to complete without issuing"
 msgstr "Rozumiem i chcę ukończyć bez wydania"
@@ -427,6 +446,12 @@ msgstr "Rejestruj ukończone"
 msgid "Log completed for {0}"
 msgstr "Rejestruj ukończone dla {0}"
 
+msgid "Log In"
+msgstr "Zaloguj się"
+
+msgid "Log Pickup"
+msgstr "Odbiór paczki"
+
 msgid "Log Rework"
 msgstr "Rejestruj poprawki"
 
@@ -490,6 +515,9 @@ msgstr "Musi być pomiędzy {minValue} a {maxValue} {unitOfMeasureCode}"
 msgid "My Hours"
 msgstr "Moje godziny"
 
+msgid "My Salary"
+msgstr "Moja pensja"
+
 msgid "Name"
 msgstr "Nazwa"
 
@@ -507,6 +535,9 @@ msgstr "Brak aktywnych zleceń utrzymania ruchu"
 
 msgid "No active operations"
 msgstr "Brak aktywnych operacji"
+
+msgid "No approved completions this period"
+msgstr "Nie ma zarejestrowanych ukończonych zleceń w tym okresie"
 
 msgid "No assigned operations"
 msgstr "Brak przypisanych operacji"
@@ -541,6 +572,9 @@ msgstr "Nie znaleziono opcji."
 msgid "No options found."
 msgstr "Nie znaleziono opcji."
 
+msgid "No pickups logged"
+msgstr "Nie zarejestrowano żadnych wyładowień."
+
 msgid "No recent operations"
 msgstr "Brak ostatnich operacji"
 
@@ -552,6 +586,9 @@ msgstr "Brak wyników"
 
 msgid "No results found"
 msgstr "Nie znaleziono wyników"
+
+msgid "No results found."
+msgstr "Nie znaleziono wyników."
 
 msgid "No scheduled time"
 msgstr "Brak zaplanowanego czasu"
@@ -602,6 +639,12 @@ msgstr "Wykonane przez operatora"
 msgid "Optional"
 msgstr "Opcjonalnie"
 
+msgid "Owed"
+msgstr "Zwyczajowo"
+
+msgid "Paid"
+msgstr "Opłacone"
+
 msgid "Parameters"
 msgstr "Parametry"
 
@@ -614,11 +657,23 @@ msgstr "Inspekcja zaliczona"
 msgid "Pause"
 msgstr "Pauza"
 
+msgid "Pending"
+msgstr "Oczekiwane"
+
+msgid "Pending Approval"
+msgstr "Oczekiwana weryfikacja"
+
+msgid "Period"
+msgstr "Okres"
+
 #. placeholder {0}: startColumn?.title
 #. placeholder {1}: startIndex + 1
 #. placeholder {2}: columnOrder.length
 msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "Podniesiono kolumnę {0} na pozycji: {1} z {2}"
+
+msgid "Pickups"
+msgstr "Pikupki"
 
 msgid "Pin Out"
 msgstr "Wyloguj PIN"
@@ -655,6 +710,9 @@ msgstr "Procesy"
 
 msgid "Progress"
 msgstr "Postęp"
+
+msgid "Qty"
+msgstr "Ilość"
 
 msgid "Quantity"
 msgstr "Ilość"
@@ -851,6 +909,9 @@ msgstr "Ukończona ilość dla tej operacji jest mniejsza niż wymagana ilość 
 msgid "There are serial or batch tracked materials on the bill of material that have not been fully issued. Completing without issuing may result in incorrect traceability records."
 msgstr "Na liście materiałowej znajdują się materiały śledzone seryjnie lub partiami, które nie zostały w pełni wydane. Ukończenie bez wydania może skutkować nieprawidłowymi rekordami śledzenia."
 
+msgid "This Period"
+msgstr "Ten okres"
+
 msgid "Thumbnail"
 msgstr "Miniatura"
 
@@ -886,6 +947,9 @@ msgstr "Wpisz wiadomość..."
 
 msgid "Unissued serial/batch materials"
 msgstr "Niewydane materiały seryjne/partyjne"
+
+msgid "unit"
+msgstr "jednostka"
 
 msgid "Unknown"
 msgstr "Nieznane"
