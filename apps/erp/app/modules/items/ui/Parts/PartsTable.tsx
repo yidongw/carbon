@@ -118,15 +118,20 @@ const PartsTable = memo(({ data, tags, count }: PartsTableProps) => {
         accessorKey: "id",
         header: t`Part ID`,
         cell: ({ row }) => (
-          <HStack className="py-1 min-w-[200px] truncate" spacing={2}>
+          <HStack className="py-1 w-full min-w-0 max-w-[200px]" spacing={2}>
             <ItemThumbnail
               size="md"
               thumbnailPath={row.original.thumbnailPath}
               type="Part"
             />
-            <Hyperlink to={path.to.partDetails(row.original.id!)}>
-              <VStack spacing={0}>
-                {row.original.readableIdWithRevision}
+            <Hyperlink
+              to={path.to.partDetails(row.original.id!)}
+              className="min-w-0"
+            >
+              <VStack spacing={0} className="min-w-0">
+                <span className="w-full truncate">
+                  {row.original.readableIdWithRevision}
+                </span>
                 <div className="w-full truncate text-muted-foreground text-xs">
                   {row.original.name}
                 </div>

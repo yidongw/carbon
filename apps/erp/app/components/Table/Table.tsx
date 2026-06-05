@@ -967,7 +967,10 @@ const Table = <T extends object>({
       <div
         id="table-container"
         className={cn(
-          "hidden md:block w-full h-full overflow-x-auto [scrollbar-gutter:stable] scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent"
+          // contain:inline-size caps this scroll container's width to the grid
+          // track instead of letting the wide table expand the min-width:auto
+          // flex/grid ancestor chain (which kills horizontal scrolling).
+          "hidden md:block w-full h-full overflow-x-auto [contain:inline-size] [scrollbar-gutter:stable] scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent"
         )}
         ref={tableContainerRef}
         onKeyDown={editMode ? onKeyDown : undefined}
