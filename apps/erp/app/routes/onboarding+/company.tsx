@@ -20,13 +20,7 @@ import { getLocalTimeZone } from "@internationalized/date";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ActionFunctionArgs } from "react-router";
 import { Link, redirect, useLoaderData } from "react-router";
-import {
-  AddressAutocomplete,
-  Currency,
-  Hidden,
-  Input,
-  Submit
-} from "~/components/Form";
+import { Hidden, Input, Submit } from "~/components/Form";
 import { useOnboarding } from "~/hooks";
 import { insertEmployeeJob } from "~/modules/people";
 import { getLocationsList, upsertLocation } from "~/modules/resources";
@@ -198,12 +192,7 @@ export default function OnboardingCompany() {
 
   const initialValues = {
     name: company?.name ?? "",
-    addressLine1: company?.addressLine1 ?? "",
-    city: company?.city ?? "",
-    stateProvince: company?.stateProvince ?? "",
-    postalCode: company?.postalCode ?? "",
-    countryCode: company?.countryCode ?? "US",
-    baseCurrencyCode: company?.baseCurrencyCode ?? "USD"
+    baseCurrencyCode: company?.baseCurrencyCode ?? "CNY"
   };
 
   return (
@@ -220,11 +209,9 @@ export default function OnboardingCompany() {
         </CardHeader>
         <CardContent>
           <Hidden name="next" value={next} />
+          <Hidden name="baseCurrencyCode" value="CNY" />
           <VStack spacing={4}>
             <Input autoFocus name="name" label={t`Company Name`} />
-            <AddressAutocomplete />
-            <Input name="website" label={t`Website`} />
-            <Currency name="baseCurrencyCode" label={t`Base Currency`} />
           </VStack>
         </CardContent>
 
