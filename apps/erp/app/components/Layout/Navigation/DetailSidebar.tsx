@@ -55,7 +55,7 @@ const DetailSidebar = ({ links }: DetailSidebarProps) => {
               >
                 <Link
                   to={route.to}
-                  prefetch="intent"
+                  prefetch="viewport"
                   className="flex items-center justify-start gap-2"
                 >
                   {route.icon}

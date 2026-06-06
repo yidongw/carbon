@@ -1,9 +1,10 @@
-import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
-import { flash } from "@carbon/auth/session.server";
 import { ResizablePanel, ResizablePanelGroup, VStack } from "@carbon/react";
+import { Trans } from "@lingui/react/macro";
+import { Suspense } from "react";
 import type { LoaderFunctionArgs } from "react-router";
-import { Outlet, redirect, useLoaderData } from "react-router";
+import { Await, Outlet, useLoaderData } from "react-router";
+import { TableSkeleton } from "~/components/Skeletons";
 import type { Document } from "~/modules/documents";
 import {
   DocumentsTable,
@@ -11,7 +12,6 @@ import {
   getDocumentLabels,
   getDocuments
 } from "~/modules/documents";
-import { path } from "~/utils/path";
 import { getGenericQueryFilters } from "~/utils/query";
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -32,51 +32,56 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const { limit, offset, sorts, filters } =
     getGenericQueryFilters(searchParams);
 
-  const [documents, labels, extensions] = await Promise.all([
-    getDocuments(client, companyId, {
-      search,
-      favorite,
-      recent,
-      createdBy,
-      active,
-      limit,
-      offset,
-      sorts,
-      filters
-    }),
+  const [labels, extensions] = await Promise.all([
     getDocumentLabels(client, userId),
     getDocumentExtensions(client)
   ]);
 
-  if (documents.error) {
-    redirect(
-      path.to.authenticatedRoot,
-      await flash(request, error(documents.error, "Failed to fetch documents"))
-    );
-  }
+  const documents = getDocuments(client, companyId, {
+    search,
+    favorite,
+    recent,
+    createdBy,
+    active,
+    limit,
+    offset,
+    sorts,
+    filters
+  });
 
   return {
-    count: documents.count ?? 0,
-    documents: (documents.data ?? []) as Document[],
+    documents,
     labels: labels.data ?? [],
     extensions: extensions.data?.map(({ extension }) => extension) ?? []
   };
 }
 
 export default function DocumentsAllRoute() {
-  const { count, documents, labels, extensions } =
-    useLoaderData<typeof loader>();
+  const { documents, labels, extensions } = useLoaderData<typeof loader>();
 
   return (
     <VStack spacing={0} className="h-full ">
       <ResizablePanelGroup direction="horizontal">
         <ResizablePanel>
-          <DocumentsTable
-            data={documents}
-            count={count}
-            labels={labels}
-            extensions={extensions}
-          />
+          <Suspense fallback={<TableSkeleton />}>
+            <Await
+              resolve={documents}
+              errorElement={
+                <div className="p-4 text-sm text-red-500">
+                  <Trans>Failed to load documents.</Trans>
+                </div>
+              }
+            >
+              {(documents) => (
+                <DocumentsTable
+                  data={(documents.data ?? []) as Document[]}
+                  count={documents.count ?? 0}
+                  labels={labels}
+                  extensions={extensions}
+                />
+              )}
+            </Await>
+          </Suspense>
         </ResizablePanel>
         <Outlet />
       </ResizablePanelGroup>

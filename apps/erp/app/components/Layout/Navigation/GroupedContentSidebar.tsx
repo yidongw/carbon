@@ -113,7 +113,7 @@ const GroupedContentSidebar = ({
                       >
                         <Link
                           to={route.to + (route.q ? `?q=${route.q}` : "")}
-                          prefetch="intent"
+                          prefetch="viewport"
                         >
                           {route.name}
                         </Link>
@@ -241,7 +241,7 @@ const ViewsReorderGroup = ({
                     : "hover:bg-active hover:text-active-foreground"
                 )}
               >
-                <Link to={view.to} prefetch="intent">
+                <Link to={view.to} prefetch="viewport">
                   {view.name}
                 </Link>
               </Button>

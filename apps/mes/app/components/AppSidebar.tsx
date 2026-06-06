@@ -251,6 +251,7 @@ export function OperationsNav({
               >
                 <Link
                   to={item.to}
+                  prefetch="render"
                   onClick={() => isMobile && setOpenMobile(false)}
                 >
                   {item.icon && <item.icon />}
