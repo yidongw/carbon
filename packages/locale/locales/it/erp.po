@@ -4645,6 +4645,9 @@ msgstr "Caricamento prezzi di sottoprestazione…"
 msgid "Loading..."
 msgstr "Caricamento..."
 
+msgid "Loading…"
+msgstr "Caricando…"
+
 msgid "Location"
 msgstr "Ubicazione"
 
@@ -6785,6 +6788,9 @@ msgstr "Aggiorna"
 msgid "Refresh exchange rate"
 msgstr "Aggiorna tasso di cambio"
 
+msgid "Refresh QR code"
+msgstr "Rif Fresh QR"
+
 msgid "Reject"
 msgstr "Rifiuta"
 
@@ -7294,6 +7300,9 @@ msgstr "Scansiona o seleziona un'entità tracciata da questo lotto e registra il
 msgid "Scan the tracking ID for this line"
 msgstr "Scansiona l'ID di tracciamento per questa riga"
 
+msgid "Scan with WeChat to sign in"
+msgstr "Scansare con WeChat per accedere"
+
 msgid "SCAR"
 msgstr "SCAR"
 
@@ -7786,6 +7795,9 @@ msgstr "Accedi con Google"
 
 msgid "Sign in with Outlook"
 msgstr "Accedi con Outlook"
+
+msgid "Sign in with WeChat"
+msgstr "Accedi con WeChat"
 
 msgid "Sign Out"
 msgstr "Esci"
@@ -9203,6 +9215,9 @@ msgstr "Documentazione Webhook"
 
 msgid "Website"
 msgstr "Sito web"
+
+msgid "WeChat QR"
+msgstr "QR Code di WeChat"
 
 msgid "Wednesday"
 msgstr "Mercoledì"

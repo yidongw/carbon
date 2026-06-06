@@ -4645,6 +4645,9 @@ msgstr "Loading subcontract pricing…"
 msgid "Loading..."
 msgstr "Loading..."
 
+msgid "Loading…"
+msgstr "Loading…"
+
 msgid "Location"
 msgstr "Location"
 
@@ -6785,6 +6788,9 @@ msgstr "Refresh"
 msgid "Refresh exchange rate"
 msgstr "Refresh exchange rate"
 
+msgid "Refresh QR code"
+msgstr "Refresh QR code"
+
 msgid "Reject"
 msgstr "Reject"
 
@@ -7294,6 +7300,9 @@ msgstr "Scan or select a tracked entity from this lot and record the inspection 
 msgid "Scan the tracking ID for this line"
 msgstr "Scan the tracking ID for this line"
 
+msgid "Scan with WeChat to sign in"
+msgstr "Scan with WeChat to sign in"
+
 msgid "SCAR"
 msgstr "SCAR"
 
@@ -7786,6 +7795,9 @@ msgstr "Sign in with Google"
 
 msgid "Sign in with Outlook"
 msgstr "Sign in with Outlook"
+
+msgid "Sign in with WeChat"
+msgstr "Sign in with WeChat"
 
 msgid "Sign Out"
 msgstr "Sign Out"
@@ -9203,6 +9215,9 @@ msgstr "Webhooks Docs"
 
 msgid "Website"
 msgstr "Website"
+
+msgid "WeChat QR"
+msgstr "WeChat QR"
 
 msgid "Wednesday"
 msgstr "Wednesday"

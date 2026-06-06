@@ -4645,6 +4645,9 @@ msgstr "正在加载子加工定价…"
 msgid "Loading..."
 msgstr "加载中..."
 
+msgid "Loading…"
+msgstr "加载中"
+
 msgid "Location"
 msgstr "位置"
 
@@ -6785,6 +6788,9 @@ msgstr "刷新"
 msgid "Refresh exchange rate"
 msgstr "刷新汇率"
 
+msgid "Refresh QR code"
+msgstr "刷新二维码"
+
 msgid "Reject"
 msgstr "拒绝"
 
@@ -7294,6 +7300,9 @@ msgstr "扫描或从这批物料中选择一个追踪实体并记录检验结果
 msgid "Scan the tracking ID for this line"
 msgstr "扫描此行的追踪ID"
 
+msgid "Scan with WeChat to sign in"
+msgstr "扫描微信进行签名"
+
 msgid "SCAR"
 msgstr "SCAR"
 
@@ -7786,6 +7795,9 @@ msgstr "使用Google登录"
 
 msgid "Sign in with Outlook"
 msgstr "使用Outlook登录"
+
+msgid "Sign in with WeChat"
+msgstr "扫描二维码或导入QR code"
 
 msgid "Sign Out"
 msgstr "退出登录"
@@ -9203,6 +9215,9 @@ msgstr "Webhooks 文档"
 
 msgid "Website"
 msgstr "网站"
+
+msgid "WeChat QR"
+msgstr "微信二维码"
 
 msgid "Wednesday"
 msgstr "星期三"

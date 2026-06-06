@@ -219,6 +219,9 @@ msgstr "コンソールモード"
 msgid "Consumed expired"
 msgstr "消費期限切れ"
 
+msgid "Continue with WeChat"
+msgstr "WeChatを続ける"
+
 msgid "Create"
 msgstr "創成"
 
