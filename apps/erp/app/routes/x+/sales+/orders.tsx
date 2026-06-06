@@ -1,10 +1,11 @@
-import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
-import { flash } from "@carbon/auth/session.server";
 import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
+import { Suspense } from "react";
 import type { LoaderFunctionArgs } from "react-router";
-import { Outlet, redirect, useLoaderData } from "react-router";
+import { Await, Outlet, useLoaderData } from "react-router";
+import { TableSkeleton } from "~/components/Skeletons";
 import { getSalesOrders } from "~/modules/sales";
 import { SalesOrdersTable } from "~/modules/sales/ui/SalesOrder";
 import type { Handle } from "~/utils/handle";
@@ -31,7 +32,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const { limit, offset, sorts, filters } =
     getGenericQueryFilters(searchParams);
 
-  const salesOrders = await getSalesOrders(client, companyId, {
+  const salesOrders = getSalesOrders(client, companyId, {
     search,
     status,
     customerId,
@@ -41,28 +42,33 @@ export async function loader({ request }: LoaderFunctionArgs) {
     filters
   });
 
-  if (salesOrders.error) {
-    redirect(
-      path.to.authenticatedRoot,
-      await flash(
-        request,
-        error(salesOrders.error, "Failed to fetch sales orders")
-      )
-    );
-  }
-
   return {
-    count: salesOrders.count ?? 0,
-    salesOrders: salesOrders.data ?? []
+    salesOrders
   };
 }
 
 export default function SalesOrdersSearchRoute() {
-  const { count, salesOrders } = useLoaderData<typeof loader>();
+  const { salesOrders } = useLoaderData<typeof loader>();
 
   return (
     <VStack spacing={0} className="h-full">
-      <SalesOrdersTable data={salesOrders} count={count} />
+      <Suspense fallback={<TableSkeleton />}>
+        <Await
+          resolve={salesOrders}
+          errorElement={
+            <div className="p-4 text-sm text-red-500">
+              <Trans>Failed to load sales orders.</Trans>
+            </div>
+          }
+        >
+          {(salesOrders) => (
+            <SalesOrdersTable
+              data={salesOrders.data ?? []}
+              count={salesOrders.count ?? 0}
+            />
+          )}
+        </Await>
+      </Suspense>
       <Outlet />
     </VStack>
   );

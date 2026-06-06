@@ -1,10 +1,11 @@
-import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
-import { flash } from "@carbon/auth/session.server";
 import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
+import { Suspense } from "react";
 import type { LoaderFunctionArgs } from "react-router";
-import { Outlet, redirect, useLoaderData } from "react-router";
+import { Await, Outlet, useLoaderData } from "react-router";
+import { TableSkeleton } from "~/components/Skeletons";
 import {
   getCurrentProcessByJobIds,
   getItemIdsWithConfigurationParameters,
@@ -36,80 +37,96 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const { limit, offset, sorts, filters } =
     getGenericQueryFilters(searchParams);
 
-  const [jobs, locations, tags] = await Promise.all([
-    getJobs(client, companyId, {
+  // Cheap lookups that feed the toolbar/filters — keep them blocking so the
+  // toolbar is interactive immediately.
+  const [locations, tags] = await Promise.all([
+    getLocationsList(client, companyId),
+    getTagsList(client, companyId, "job")
+  ]);
+
+  // Defer the jobs query AND its row-derived enrichment queries as a single
+  // bundle: the page navigates instantly and the whole table streams in once
+  // ready. (The enrichment queries depend on the job rows, so they can't run
+  // until jobs resolves — bundling keeps them off the critical path together.)
+  const jobs = (async () => {
+    const jobs = await getJobs(client, companyId, {
       search,
       limit,
       offset,
       sorts,
       filters
-    }),
-    getLocationsList(client, companyId),
-    getTagsList(client, companyId, "job")
-  ]);
+    });
+    const jobRows = jobs.data ?? [];
 
-  if (jobs.error) {
-    redirect(
-      path.to.productionDashboard,
-      await flash(request, error(jobs.error, "Failed to fetch jobs"))
-    );
-  }
+    const jobMakeMethodIds = [
+      ...new Set(
+        jobRows
+          .map((job) => job.jobMakeMethodId)
+          .filter((id): id is string => Boolean(id))
+      )
+    ];
+    const itemIds = [
+      ...new Set(
+        jobRows
+          .map((job) => job.itemId)
+          .filter((id): id is string => Boolean(id))
+      )
+    ];
 
-  const jobRows = jobs.data ?? [];
-  const jobMakeMethodIds = [
-    ...new Set(
-      jobRows
-        .map((job) => job.jobMakeMethodId)
-        .filter((id): id is string => Boolean(id))
-    )
-  ];
-  const itemIds = [
-    ...new Set(
-      jobRows.map((job) => job.itemId).filter((id): id is string => Boolean(id))
-    )
-  ];
+    const [
+      trackedEntities,
+      itemIdsWithConfigurationParameters,
+      currentProcessByJobId
+    ] = await Promise.all([
+      getTrackedEntitiesByJobMakeMethodIds(client, companyId, jobMakeMethodIds),
+      getItemIdsWithConfigurationParameters(client, companyId, itemIds),
+      getCurrentProcessByJobIds(client, jobRows)
+    ]);
 
-  const [
-    trackedEntities,
-    itemIdsWithConfigurationParameters,
-    currentProcessByJobId
-  ] = await Promise.all([
-    getTrackedEntitiesByJobMakeMethodIds(client, companyId, jobMakeMethodIds),
-    getItemIdsWithConfigurationParameters(client, companyId, itemIds),
-    getCurrentProcessByJobIds(client, jobRows)
-  ]);
+    return {
+      count: jobs.count ?? 0,
+      jobs: jobRows,
+      trackedEntities,
+      itemIdsWithConfigurationParameters,
+      currentProcessByJobId
+    };
+  })();
 
   return {
-    count: jobs.count ?? 0,
-    jobs: jobRows,
+    jobs,
     locations: locations.data ?? [],
-    tags: tags.data ?? [],
-    trackedEntities,
-    itemIdsWithConfigurationParameters,
-    currentProcessByJobId
+    tags: tags.data ?? []
   };
 }
 
 export default function JobsRoute() {
-  const {
-    count,
-    tags,
-    jobs,
-    trackedEntities,
-    itemIdsWithConfigurationParameters,
-    currentProcessByJobId
-  } = useLoaderData<typeof loader>();
+  const { jobs, tags } = useLoaderData<typeof loader>();
 
   return (
     <VStack spacing={0} className="h-full">
-      <JobsTable
-        data={jobs}
-        count={count}
-        tags={tags}
-        trackedEntities={trackedEntities}
-        itemIdsWithConfigurationParameters={itemIdsWithConfigurationParameters}
-        currentProcessByJobId={currentProcessByJobId}
-      />
+      <Suspense fallback={<TableSkeleton />}>
+        <Await
+          resolve={jobs}
+          errorElement={
+            <div className="p-4 text-sm text-red-500">
+              <Trans>Failed to load jobs.</Trans>
+            </div>
+          }
+        >
+          {(jobs) => (
+            <JobsTable
+              data={jobs.jobs}
+              count={jobs.count}
+              tags={tags}
+              trackedEntities={jobs.trackedEntities}
+              itemIdsWithConfigurationParameters={
+                jobs.itemIdsWithConfigurationParameters
+              }
+              currentProcessByJobId={jobs.currentProcessByJobId}
+            />
+          )}
+        </Await>
+      </Suspense>
       <Outlet />
     </VStack>
   );

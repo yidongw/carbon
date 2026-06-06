@@ -1,10 +1,11 @@
-import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
-import { flash } from "@carbon/auth/session.server";
 import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
+import { Suspense } from "react";
 import type { LoaderFunctionArgs } from "react-router";
-import { Outlet, redirect, useLoaderData } from "react-router";
+import { Await, Outlet, useLoaderData } from "react-router";
+import { TableSkeleton } from "~/components/Skeletons";
 import { getPurchasingRFQs } from "~/modules/purchasing";
 import { PurchasingRFQsTable } from "~/modules/purchasing/ui/PurchasingRfq";
 import type { Handle } from "~/utils/handle";
@@ -29,7 +30,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const { limit, offset, sorts, filters } =
     getGenericQueryFilters(searchParams);
 
-  const rfqs = await getPurchasingRFQs(client, companyId, {
+  const rfqs = getPurchasingRFQs(client, companyId, {
     search,
     limit,
     offset,
@@ -37,25 +38,33 @@ export async function loader({ request }: LoaderFunctionArgs) {
     filters
   });
 
-  if (rfqs.error) {
-    redirect(
-      path.to.authenticatedRoot,
-      await flash(request, error(rfqs.error, "Failed to fetch RFQs"))
-    );
-  }
-
   return {
-    count: rfqs.count ?? 0,
-    rfqs: rfqs.data ?? []
+    rfqs
   };
 }
 
 export default function PurchasingRFQsRoute() {
-  const { count, rfqs } = useLoaderData<typeof loader>();
+  const { rfqs } = useLoaderData<typeof loader>();
 
   return (
     <VStack spacing={0} className="h-full">
-      <PurchasingRFQsTable data={rfqs} count={count} />
+      <Suspense fallback={<TableSkeleton />}>
+        <Await
+          resolve={rfqs}
+          errorElement={
+            <div className="p-4 text-sm text-red-500">
+              <Trans>Failed to load RFQs.</Trans>
+            </div>
+          }
+        >
+          {(rfqs) => (
+            <PurchasingRFQsTable
+              data={rfqs.data ?? []}
+              count={rfqs.count ?? 0}
+            />
+          )}
+        </Await>
+      </Suspense>
       <Outlet />
     </VStack>
   );

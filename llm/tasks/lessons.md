@@ -30,6 +30,13 @@ Patterns learned from corrections. Review at the start of each session.
 - When a feature is opt-in per item (or per company, per whatever), don't encode the opt-in state as a `mode = 'NotManaged'` value on the parent table. Use a side table keyed by the parent's id; absence of a row = not enabled. Cleaner queries (no `WHERE mode <> 'NotManaged'` plumbing), narrower parent table, CHECKs on the side table can be tighter (no need to permit NULL fields for the "not enabled" case).
 - Applied to `itemShelfLife` — started on `item` with a 3-value enum and two conditional fields; refactored to a side table with a 2-value enum where absence means the third case.
 
+## Navigation feel: prefetch vs. defer (React Router v7)
+
+- "Make navigation instant" splits in two: preload the page's **code+data before the click** (prefetch) vs. **navigate now, stream data after** (defer with `<Await>`/`<Suspense>`). They compose; pick per case.
+- Nav links default to `prefetch="intent"` (hover only) — clicking faster than the hover = wait. For the **bounded** nav chrome (PrimaryNavigation, Content/Detail/GroupedContentSidebar) switch to `prefetch="viewport"`. Do NOT do this for **unbounded** inline links (table-row `Hyperlink`s) — it fires one loader/DB query per visible link.
+- You CANNOT naively defer a detail page's **primary** record: loaders like `job+/$jobId.tsx` do a manual company-ownership check (`companyId !== row.companyId → redirect`, under `bypassRls: true`) and derive secondary queries from it (`job.data.itemId`). Deferring would render a shell before the auth check and create a query waterfall. Defer **list/table** rows instead — those have list-level perms only, no per-row auth.
+- Returned Supabase query builders are thenables; returning one un-awaited from a loader is the deferred-value idiom already used across the codebase (`getJobMethodTree`, `getItemFiles`). Resolve `.data`/`.count` inside `<Await>`.
+
 ## Upsert helpers must not clobber on partial submits
 
 - A single server action can receive form data from multiple different forms (different UIs posting to the same `$id.details.tsx`). If the upsert helper treats `undefined` as "clear the row", any form that doesn't include the field silently deletes data. Rule:
