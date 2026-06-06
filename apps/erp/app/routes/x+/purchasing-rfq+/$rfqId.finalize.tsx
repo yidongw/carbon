@@ -296,8 +296,8 @@ export async function action({ request, params }: ActionFunctionArgs) {
         htmlParts.push(`<br><br>${emailSignature.replace(/\n/g, "<br>")}`);
 
         await trigger("send-email", {
-          to: [user.data.email, email.contactEmail],
-          from: user.data.email,
+          to: [user.data.email ?? "", email.contactEmail],
+          from: user.data.email ?? "",
           subject: emailSubject,
           html: htmlParts.join(""),
           text: `${emailBody}\n\n${externalQuoteUrl}\n\n${emailSignature}`,

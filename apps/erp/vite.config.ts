@@ -68,7 +68,9 @@ export default defineConfig(({ isSsrBuild, mode }) => {
     },
     server: {
       port: 3000,
-      allowedHosts: [".ngrok-free.app", ".ngrok-free.dev", ".trycloudflare.com", ".dev", ".localhost"],
+      host: "0.0.0.0",
+      allowedHosts: [".ngrok-free.app", ".ngrok-free.dev", ".trycloudflare.com", ".foxhole.bot", ".dev", ".localhost"],
+      hmr: process.env.TUNNEL_HMR !== "1" ? { clientPort: 3000, host: "localhost" } : true,
       watch: {
         awaitWriteFinish: { stabilityThreshold: 250 },
       },

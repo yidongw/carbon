@@ -74,7 +74,7 @@ export class LinearNotificationService implements NotificationService {
         if (!user) return; // No assignee user
 
         const [linearUser] = await linear.getUsers(event.companyId, {
-          email: user.email
+          email: user.email ?? undefined
         });
 
         if (!linearUser) return;

@@ -8,7 +8,10 @@ import {
   magicLinkValidator,
   RATE_LIMIT
 } from "@carbon/auth";
-import { sendMagicLink, verifyAuthSession } from "@carbon/auth/auth.server";
+import {
+  sendMagicLink,
+  verifyAuthSession
+} from "@carbon/auth/auth.server";
 import {
   clearAuthCookies,
   flash,
@@ -31,6 +34,7 @@ import {
 import { Edition } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { LuCircleAlert } from "react-icons/lu";
+import { SiWechat } from "react-icons/si";
 import type {
   ActionFunctionArgs,
   LoaderFunctionArgs,
@@ -58,12 +62,16 @@ export async function loader({ request }: LoaderFunctionArgs) {
     }
     const cookieHeaders = await clearAuthCookies(request);
     return data(
-      { providers: AUTH_PROVIDERS.split(",") },
+      { providers: AUTH_PROVIDERS.split(","), isWeChatBrowser: isWeChatUA(request) },
       { headers: cookieHeaders }
     );
   }
 
-  return { providers: AUTH_PROVIDERS.split(",") };
+  return { providers: AUTH_PROVIDERS.split(","), isWeChatBrowser: isWeChatUA(request) };
+}
+
+function isWeChatUA(request: Request) {
+  return /MicroMessenger/i.test(request.headers.get("user-agent") ?? "");
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -83,10 +91,9 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
-  const validation = await validator(magicLinkValidator).validate(
-    await request.formData()
-  );
+  const formData = await request.formData();
 
+  const validation = await validator(magicLinkValidator).validate(formData);
   if (validation.error) {
     return error(validation.error, "Invalid email address");
   }
@@ -115,9 +122,12 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function LoginRoute() {
   const { t } = useLingui();
-  const { providers } = useLoaderData<typeof loader>();
+  const { providers, isWeChatBrowser } = useLoaderData<typeof loader>();
   const hasOutlookAuth = providers.includes("azure");
   const hasGoogleAuth = providers.includes("google");
+
+  const hasWeChatAuth = providers.includes("wechat");
+  const showWeChatButton = isWeChatBrowser && hasWeChatAuth;
 
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
@@ -157,6 +167,12 @@ export default function LoginRoute() {
     }
   };
 
+  const onSignInWithWeChat = () => {
+    window.location.href = `/auth/wechat${
+      redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ""
+    }`;
+  };
+
   return (
     <>
       <div className="flex justify-center mb-4">
@@ -181,71 +197,87 @@ export default function LoginRoute() {
             </VStack>
           </>
         ) : (
-          <ValidatedForm
-            fetcher={fetcher}
-            validator={magicLinkValidator}
-            defaultValues={{ redirectTo }}
-            method="post"
-          >
-            <Hidden name="redirectTo" value={redirectTo} type="hidden" />
-            <VStack spacing={2}>
-              {fetcher.data?.success === false && fetcher.data?.message && (
-                <Alert variant="destructive">
-                  <LuCircleAlert className="w-4 h-4" />
-                  <AlertTitle>
-                    <Trans>Authentication Error</Trans>
-                  </AlertTitle>
-                  <AlertDescription>{fetcher.data?.message}</AlertDescription>
-                </Alert>
-              )}
-
-              {hasGoogleAuth && (
-                <Button
-                  type="button"
-                  size="lg"
-                  className="w-full"
-                  onClick={onSignInWithGoogle}
-                  isDisabled={fetcher.state !== "idle"}
-                  variant="secondary"
-                  leftIcon={<GoogleIcon />}
-                >
-                  <Trans>Sign in with Google</Trans>
-                </Button>
-              )}
-              {hasOutlookAuth && (
-                <Button
-                  type="button"
-                  size="lg"
-                  className="w-full"
-                  onClick={onSignInWithAzure}
-                  isDisabled={fetcher.state !== "idle"}
-                  variant="secondary"
-                  leftIcon={<OutlookIcon className="size-6" />}
-                >
-                  <Trans>Sign in with Outlook</Trans>
-                </Button>
-              )}
-
-              {(hasGoogleAuth || hasOutlookAuth) && (
-                <div className="py-3 w-full">
-                  <Separator />
-                </div>
-              )}
-
-              <Input name="email" label="" placeholder={t`Email Address`} />
-
-              <Submit
-                isDisabled={fetcher.state !== "idle"}
-                isLoading={fetcher.state === "submitting"}
+          <VStack spacing={2}>
+            {showWeChatButton && (
+              <Button
+                type="button"
                 size="lg"
                 className="w-full"
-                withBlocker={false}
+                onClick={onSignInWithWeChat}
                 variant="secondary"
+                leftIcon={<SiWechat className="w-4 h-4" style={{ color: "#07C160" }} />}
               >
-                <Trans>Sign in with Email</Trans>
-              </Submit>
-            </VStack>
-          </ValidatedForm>
+                <Trans>Continue with WeChat</Trans>
+              </Button>
+            )}
+            {hasGoogleAuth && (
+              <Button
+                type="button"
+                size="lg"
+                className="w-full"
+                onClick={onSignInWithGoogle}
+                isDisabled={fetcher.state !== "idle"}
+                variant="secondary"
+                leftIcon={<GoogleIcon />}
+              >
+                <Trans>Sign in with Google</Trans>
+              </Button>
+            )}
+            {hasOutlookAuth && (
+              <Button
+                type="button"
+                size="lg"
+                className="w-full"
+                onClick={onSignInWithAzure}
+                isDisabled={fetcher.state !== "idle"}
+                variant="secondary"
+                leftIcon={<OutlookIcon className="size-6" />}
+              >
+                <Trans>Sign in with Outlook</Trans>
+              </Button>
+            )}
+
+            {(hasGoogleAuth || hasOutlookAuth || showWeChatButton) && (
+              <div className="py-3 w-full">
+                <Separator />
+              </div>
+            )}
+
+            <ValidatedForm
+                fetcher={fetcher}
+                validator={magicLinkValidator}
+                defaultValues={{ redirectTo }}
+                method="post"
+              >
+                <Hidden name="redirectTo" value={redirectTo} type="hidden" />
+                <VStack spacing={2}>
+                  {fetcher.data?.success === false && fetcher.data?.message && (
+                    <Alert variant="destructive">
+                      <LuCircleAlert className="w-4 h-4" />
+                      <AlertTitle>
+                        <Trans>Authentication Error</Trans>
+                      </AlertTitle>
+                      <AlertDescription>
+                        {fetcher.data?.message}
+                      </AlertDescription>
+                    </Alert>
+                  )}
+
+                  <Input name="email" label="" placeholder={t`Email Address`} />
+
+                  <Submit
+                    isDisabled={fetcher.state !== "idle"}
+                    isLoading={fetcher.state === "submitting"}
+                    size="lg"
+                    className="w-full"
+                    withBlocker={false}
+                    variant="secondary"
+                  >
+                    <Trans>Sign in with Email</Trans>
+                  </Submit>
+                </VStack>
+              </ValidatedForm>
+          </VStack>
         )}
       </div>
       <div className="flex flex-col gap-4 text-sm text-center text-balance text-muted-foreground w-[380px]">

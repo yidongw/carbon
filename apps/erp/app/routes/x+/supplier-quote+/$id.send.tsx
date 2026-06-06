@@ -176,11 +176,11 @@ export async function action(args: ActionFunctionArgs) {
         const emailSignature = `Thanks,\n${user.data.firstName} ${user.data.lastName}\n${company.data.name}`;
 
         await trigger("send-email", {
-          to: [user.data.email, supplierContact.data.contact?.email].filter(
+          to: [user.data.email ?? "", supplierContact.data.contact?.email].filter(
             Boolean
           ) as string[],
           cc: ccSelections?.length ? ccSelections : undefined,
-          from: user.data.email,
+          from: user.data.email ?? "",
           subject: emailSubject,
           html: `${emailBody.replace(
             /\n/g,
