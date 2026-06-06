@@ -3,8 +3,9 @@
 #
 # Usage:  ./tunnel.sh   (or: pnpm tunnel)
 #
-# Tunnels every service port found in .env.local, updates GTM_URL so
-# GoTrue allows the ERP tunnel as an auth redirect, then restarts GoTrue.
+# Tunnels every service port found in .env.local, points the browser-facing
+# Supabase URL at the API tunnel (so realtime works remotely), updates GTM_URL
+# so GoTrue allows the ERP tunnel as an auth redirect, then restarts GoTrue.
 
 set -euo pipefail
 
@@ -61,10 +62,14 @@ start_tunnel() {
 require cloudflared
 [ -f "$ENV_LOCAL" ] || die ".env.local not found — run 'crbn up' first."
 
-# Services to tunnel: label, PORT_* key, skip if port is absent
+# Services to tunnel: label, PORT_* key, skip if port is absent.
+# Supabase (Kong on PORT_API) must be tunnelled too: the browser builds its
+# Supabase client — including the realtime websocket — from a public URL, and
+# can't reach localhost through the tunnel.
 declare -a SERVICES=(
   "ERP        PORT_ERP"
   "MES        PORT_MES"
+  "Supabase   PORT_API"
   "Studio     PORT_STUDIO"
   "Inbucket   PORT_INBUCKET"
   "Inngest    PORT_INNGEST"
@@ -92,6 +97,16 @@ done
 
 echo ""
 
+# Point the browser-facing Supabase URL at the API tunnel so the client (and
+# its realtime websocket) connects to a reachable origin. Server-side code keeps
+# using SUPABASE_URL=localhost, so only the browser is routed through the tunnel.
+API_URL="${URL_Supabase:-}"
+if [ -n "$API_URL" ]; then
+  env_set "SUPABASE_URL_PUBLIC" "$API_URL"
+  echo "Updated .env.local → SUPABASE_URL_PUBLIC=$API_URL"
+  echo ""
+fi
+
 # Update GTM_URL so GoTrue allows the ERP tunnel as an auth redirect
 ERP_URL="${URL_ERP:-}"
 if [ -n "$ERP_URL" ]; then
@@ -110,8 +125,21 @@ if [ -n "$ERP_URL" ]; then
   fi
 fi
 
+# The ERP/MES dev servers snapshot env at startup, so a server already running
+# from `crbn up` won't see the SUPABASE_URL_PUBLIC we just wrote. Touch each vite
+# config to trigger a Vite restart — on restart the config re-reads .env.local
+# (apps/*/vite.config.ts: applyDotenvToProcessEnv) and the browser-side Supabase
+# client picks up the tunnel URL. Harmless if no dev server is running.
+if [ -n "$API_URL" ]; then
+  echo "Restarting app dev servers to apply tunnel env…"
+  for cfg in "$REPO/apps/erp/vite.config.ts" "$REPO/apps/mes/vite.config.ts"; do
+    [ -f "$cfg" ] && touch "$cfg"
+  done
+  echo ""
+fi
+
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-for label in ERP MES Studio Inbucket Inngest; do
+for label in ERP MES Supabase Studio Inbucket Inngest; do
   varname="URL_${label}"
   url="${!varname:-}"
   [ -n "$url" ] && printf "  %-10s  %s\n" "$label" "$url"
