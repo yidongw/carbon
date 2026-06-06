@@ -14,14 +14,14 @@
 //   node scripts/translate-po.mjs                 # all locales
 //   node scripts/translate-po.mjs path/to/x.po    # only the given catalog(s)
 // Env:
-//   OLLAMA_URL (default http://127.0.0.1:11434), OLLAMA_MODEL (default llama3.2:latest),
+//   OLLAMA_URL (default http://127.0.0.1:11434), OLLAMA_MODEL (default qwen2.5:7b),
 //   TRANSLATE_CONCURRENCY (default 6)
 import { readFileSync, writeFileSync } from "node:fs";
 import { glob } from "node:fs/promises";
 import PO from "pofile";
 
 const OLLAMA_URL = process.env.OLLAMA_URL ?? "http://127.0.0.1:11434";
-const MODEL = process.env.OLLAMA_MODEL ?? "llama3.2:latest";
+const MODEL = process.env.OLLAMA_MODEL ?? "qwen2.5:7b";
 const CONCURRENCY = Number(process.env.TRANSLATE_CONCURRENCY ?? 6);
 // Temperatures tried per string, in order. Escalating gives the model varied
 // chances to produce a placeholder-valid output instead of repeating the same
