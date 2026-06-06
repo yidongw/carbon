@@ -63,7 +63,6 @@ export default defineConfig(({ mode, isSsrBuild }) => {
     },
     server: {
       port: 3001,
-      strictPort: true,
       allowedHosts: [
         ".ngrok-free.app",
         ".trycloudflare.com",
