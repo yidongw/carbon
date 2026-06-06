@@ -219,6 +219,9 @@ msgstr "控制台模式"
 msgid "Consumed expired"
 msgstr "已消耗过期"
 
+msgid "Continue with WeChat"
+msgstr "继续使用微信"
+
 msgid "Create"
 msgstr "创建"
 

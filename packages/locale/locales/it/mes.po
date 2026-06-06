@@ -219,6 +219,9 @@ msgstr "Modalità Console"
 msgid "Consumed expired"
 msgstr "Consumato scaduto"
 
+msgid "Continue with WeChat"
+msgstr "Continua con WeChat"
+
 msgid "Create"
 msgstr "Crea"
 

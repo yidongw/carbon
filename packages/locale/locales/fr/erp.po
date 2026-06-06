@@ -4645,6 +4645,9 @@ msgstr "Chargement des tarifs de sous-traitance…"
 msgid "Loading..."
 msgstr "Chargement..."
 
+msgid "Loading…"
+msgstr "Chargement…"
+
 msgid "Location"
 msgstr "Emplacement"
 
@@ -6785,6 +6788,9 @@ msgstr "Actualiser"
 msgid "Refresh exchange rate"
 msgstr "Actualiser le taux de change"
 
+msgid "Refresh QR code"
+msgstr "Rafraîchir le code QR"
+
 msgid "Reject"
 msgstr "Rejeter"
 
@@ -7294,6 +7300,9 @@ msgstr "Scannez ou sélectionnez une entité suivie de ce lot et enregistrez le 
 msgid "Scan the tracking ID for this line"
 msgstr "Scannez l'ID de suivi pour cette ligne"
 
+msgid "Scan with WeChat to sign in"
+msgstr "Scanner avec WeChat pour se connecter"
+
 msgid "SCAR"
 msgstr "SCAR"
 
@@ -7786,6 +7795,9 @@ msgstr "Se connecter avec Google"
 
 msgid "Sign in with Outlook"
 msgstr "Se connecter avec Outlook"
+
+msgid "Sign in with WeChat"
+msgstr "Se connecter avec WeChat"
 
 msgid "Sign Out"
 msgstr "Se déconnecter"
@@ -9203,6 +9215,9 @@ msgstr "Documentation des Webhooks"
 
 msgid "Website"
 msgstr "Site web"
+
+msgid "WeChat QR"
+msgstr "Code QR WeChat"
 
 msgid "Wednesday"
 msgstr "Mercredi"

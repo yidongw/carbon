@@ -219,6 +219,9 @@ msgstr "Konsolenmodus"
 msgid "Consumed expired"
 msgstr "Verbrauchte abgelaufen"
 
+msgid "Continue with WeChat"
+msgstr "Fortfahren mit WeChat"
+
 msgid "Create"
 msgstr "Erstellen"
 

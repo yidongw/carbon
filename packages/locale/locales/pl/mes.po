@@ -219,6 +219,9 @@ msgstr "Tryb konsoli"
 msgid "Consumed expired"
 msgstr "Zużyte wygasłe"
 
+msgid "Continue with WeChat"
+msgstr "Następnie z WeChat"
+
 msgid "Create"
 msgstr "Twórz"
 

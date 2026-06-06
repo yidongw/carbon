@@ -219,6 +219,9 @@ msgstr "कंसोल मोड"
 msgid "Consumed expired"
 msgstr "खपत की गई समाप्त"
 
+msgid "Continue with WeChat"
+msgstr "जारी रखें व्हाट्सएप"
+
 msgid "Create"
 msgstr "बनाएं"
 

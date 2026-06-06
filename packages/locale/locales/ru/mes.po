@@ -219,6 +219,9 @@ msgstr "Режим консоли"
 msgid "Consumed expired"
 msgstr "Потреблено истекшее"
 
+msgid "Continue with WeChat"
+msgstr "Продолжить с ВКонтакте"
+
 msgid "Create"
 msgstr "Создать"
 
