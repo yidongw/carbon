@@ -66,6 +66,23 @@ Quality from the 3B model is decent for common UI strings but weak on niche term
 (e.g. accounting/Japanese); use a stronger `OLLAMA_MODEL` or API model for higher
 quality.
 
+## Runtime loading + dev compilation (the compiled `.mjs` must exist)
+
+At runtime the apps import compiled catalogs, NOT the `.po`:
+`apps/{erp,mes}/app/services/lingui.server.ts` does
+`import.meta.glob("…/packages/locale/locales/*/{erp,mes}.mjs", { import: "messages" })`
+and `LocaleProvider` (`packages/locale/src/i18n.tsx`) `load()`s + `activate()`s them
+reactively. If a locale's `.mjs` is missing the loader returns `{}` → text silently
+falls back to English (switching looks like a no-op).
+
+The `.mjs` are **gitignored** (`packages/locale/locales/**/*.mjs`) and produced by the
+`//#lingui:compile` turbo task — which only **`build`** depends on. `crbn up` spawns
+`react-router dev` directly (bypassing turbo), so dev had no `.mjs`. Fixed: `crbn up`
+(`packages/dev/src/commands/up.ts` → `compileLocaleCatalogs`) runs `pnpm lingui:compile`
+before spawning apps when apps are selected. NOTE: `crbn` runs `packages/dev` from the
+**main checkout** (bin `repo_root()` = git-common-dir parent), so this step only takes
+effect once the change is on `main`.
+
 ## pre-push hook (`.git/hooks/pre-push`, not tracked)
 
 - origin (carbon): blocks `staging`/`prod`. On **dev** push, runs the full
