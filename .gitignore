@@ -61,6 +61,3 @@ llm/tasks
 apps/*/portless.json
 
 .worktrees
-
-# Local git hooks (install via .hooks/install.sh)
-.hooks/
