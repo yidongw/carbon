@@ -7697,7 +7697,7 @@ msgid "Scan the tracking ID for this line"
 msgstr "扫描此行的追踪ID"
 
 msgid "Scan with WeChat to sign in"
-msgstr "扫描微信进行签名"
+msgstr "使用微信扫码登录"
 
 msgid "SCAR"
 msgstr "SCAR"
@@ -8210,7 +8210,7 @@ msgid "Sign in with Passkey"
 msgstr ""
 
 msgid "Sign in with WeChat"
-msgstr "扫描二维码或导入QR code"
+msgstr "使用微信登录"
 
 msgid "Sign Out"
 msgstr "退出登录"
