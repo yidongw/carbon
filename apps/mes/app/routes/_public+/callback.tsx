@@ -14,7 +14,7 @@ import {
   getAuthSession,
   setAuthSession
 } from "@carbon/auth/session.server";
-import { getUserByEmail } from "@carbon/auth/users.server";
+import { getUserById } from "@carbon/auth/users.server";
 import { validator } from "@carbon/form";
 import {
   Alert,
@@ -78,7 +78,7 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
-  const user = await getUserByEmail(authSession.email);
+  const user = await getUserById(authSession.userId);
 
   if (user?.data) {
     const sessionCookie = await setAuthSession(request, {

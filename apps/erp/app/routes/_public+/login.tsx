@@ -2,14 +2,15 @@ import {
   AUTH_PROVIDERS,
   assertIsPost,
   CarbonEdition,
-  CLOUDFLARE_TURNSTILE_SECRET_KEY,
   CLOUDFLARE_TURNSTILE_SITE_KEY,
+  CLOUDFLARE_TURNSTILE_SECRET_KEY,
   CONTROLLED_ENVIRONMENT,
   carbonClient,
   error,
   magicLinkValidator,
   RATE_LIMIT
 } from "@carbon/auth";
+import { QRCodeSVG } from "qrcode.react";
 import {
   sendMagicLink,
   signInWithBypassEmail,
@@ -42,6 +43,7 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { useEffect, useState } from "react";
 import { LuCircleAlert } from "react-icons/lu";
+import { SiWechat } from "react-icons/si";
 import type {
   ActionFunctionArgs,
   LoaderFunctionArgs,
@@ -69,12 +71,16 @@ export async function loader({ request }: LoaderFunctionArgs) {
     }
     const cookieHeaders = await clearAuthCookies(request);
     return data(
-      { providers: AUTH_PROVIDERS.split(",") },
+      { providers: AUTH_PROVIDERS.split(","), isWeChatBrowser: isWeChatUA(request) },
       { headers: cookieHeaders }
     );
   }
 
-  return { providers: AUTH_PROVIDERS.split(",") };
+  return { providers: AUTH_PROVIDERS.split(","), isWeChatBrowser: isWeChatUA(request) };
+}
+
+function isWeChatUA(request: Request) {
+  return /MicroMessenger/i.test(request.headers.get("user-agent") ?? "");
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -94,20 +100,14 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
-  const validation = await validator(magicLinkValidator).validate(
-    await request.formData()
-  );
+  const formData = await request.formData();
 
-  if (validation.error) {
-    return error(validation.error, "Invalid email address");
-  }
-
-  const { email, turnstileToken } = validation.data;
-
+  // Default: email/magic link flow
   if (
     CarbonEdition === Edition.Cloud &&
     CLOUDFLARE_TURNSTILE_SITE_KEY !== "1x00000000000000000000AA"
   ) {
+    const turnstileToken = formData.get("turnstileToken") as string | null;
     const verifyResponse = await fetch(
       "https://challenges.cloudflare.com/turnstile/v0/siteverify",
       {
@@ -134,6 +134,13 @@ export async function action({ request }: ActionFunctionArgs) {
       );
     }
   }
+
+  const validation = await validator(magicLinkValidator).validate(formData);
+  if (validation.error) {
+    return error(validation.error, "Invalid email address");
+  }
+
+  const { email, redirectTo } = validation.data;
 
   const user = await getUserByEmail(email);
 
@@ -168,7 +175,6 @@ export async function action({ request }: ActionFunctionArgs) {
       await flash(request, error(null, "Failed to sign in"))
     );
   } else {
-    // User doesn't exist, send verification code for signup
     const verificationSent = await sendVerificationCode(email);
 
     if (!verificationSent) {
@@ -184,18 +190,34 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function LoginRoute() {
   const { t } = useLingui();
-  const { providers } = useLoaderData<typeof loader>();
+  const { providers, isWeChatBrowser } = useLoaderData<typeof loader>();
   const hasOutlookAuth = providers.includes("azure");
   const hasGoogleAuth = providers.includes("google");
+  const hasWeChatAuth = providers.includes("wechat");
+
+  const showWeChatButton = isWeChatBrowser && hasWeChatAuth;
+  const showWeChatQrTab = !isWeChatBrowser && hasWeChatAuth;
 
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
+  const [loginMethod, setLoginMethod] = useState<"email" | "wechat-qr">(
+    showWeChatQrTab ? "wechat-qr" : "email"
+  );
   const [mode, setMode] = useState<"login" | "signup" | "verify">("login");
   const [signupEmail, setSignupEmail] = useState<string>("");
   const [turnstileToken, setTurnstileToken] = useState<string>("");
 
   const fetcher = useFetcher<Result & { mode?: string; email?: string }>();
+  const wechatQrFetcher = useFetcher<{
+    url: string | null;
+    scene?: string | null;
+  }>();
   const theme = useMode();
+
+  // Hide the WeChat-QR option entirely if the QR can't be minted (mint returned
+  // no URL) rather than showing an "unavailable" message; fall back to email.
+  const wechatQrUnavailable = !!wechatQrFetcher.data && !wechatQrFetcher.data.url;
+  const showWeChatQr = showWeChatQrTab && !wechatQrUnavailable;
 
   useEffect(() => {
     if (fetcher.data?.success && fetcher.data.mode) {
@@ -203,7 +225,6 @@ export default function LoginRoute() {
         setMode("verify");
         if (fetcher.data.email) {
           setSignupEmail(fetcher.data.email);
-          // Redirect to verify route with email parameter
           const verifyUrl = `/verify?email=${encodeURIComponent(
             fetcher.data.email
           )}${
@@ -214,6 +235,62 @@ export default function LoginRoute() {
       }
     }
   }, [fetcher.data, mode, redirectTo]);
+
+  // Poll the QR scene while the WeChat QR tab is open; when the user has scanned
+  // and the webhook has resolved them, the status response sets the session
+  // cookie and we navigate to the authenticated app.
+  const wechatScene = wechatQrFetcher.data?.scene ?? null;
+  useEffect(() => {
+    if (loginMethod !== "wechat-qr" || !wechatScene) return;
+    let active = true;
+    const poll = async () => {
+      try {
+        const res = await fetch(
+          `/api/wechat-qr-status?scene=${encodeURIComponent(wechatScene)}${
+            redirectTo ? `&redirectTo=${encodeURIComponent(redirectTo)}` : ""
+          }`
+        );
+        if (!res.ok) return;
+        const json = (await res.json()) as {
+          status: string;
+          redirectTo?: string;
+        };
+        if (active && json.status === "authed") {
+          window.location.href = json.redirectTo ?? "/";
+        }
+      } catch {
+        // transient network error — keep polling
+      }
+    };
+    const id = setInterval(poll, 2000);
+    poll();
+    return () => {
+      active = false;
+      clearInterval(id);
+    };
+  }, [loginMethod, wechatScene, redirectTo]);
+
+  // Auto-load the QR as soon as the WeChat-QR method is active (including as the
+  // default tab) so the code + polling start without needing a tab click.
+  useEffect(() => {
+    if (
+      loginMethod === "wechat-qr" &&
+      showWeChatQrTab &&
+      wechatQrFetcher.state === "idle" &&
+      !wechatQrFetcher.data
+    ) {
+      wechatQrFetcher.load(
+        `/api/wechat-qr-url${redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ""}`
+      );
+    }
+  }, [loginMethod, showWeChatQrTab, wechatQrFetcher.state, wechatQrFetcher.data]);
+
+  // If the QR turned out unavailable, fall back to the email tab.
+  useEffect(() => {
+    if (wechatQrUnavailable && loginMethod === "wechat-qr") {
+      setLoginMethod("email");
+    }
+  }, [wechatQrUnavailable, loginMethod]);
 
   const onSignInWithGoogle = async () => {
     const { error } = await carbonClient.auth.signInWithOAuth({
@@ -244,6 +321,19 @@ export default function LoginRoute() {
     if (error) {
       toast.error(error.message);
     }
+  };
+
+  const onSignInWithWeChat = () => {
+    window.location.href = `/auth/wechat${
+      redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ""
+    }`;
+  };
+
+  const onSelectWeChatQrTab = () => {
+    setLoginMethod("wechat-qr");
+    wechatQrFetcher.load(
+      `/api/wechat-qr-url${redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ""}`
+    );
   };
 
   return (
@@ -287,7 +377,6 @@ export default function LoginRoute() {
               onClick={() => {
                 setMode("login");
                 setSignupEmail("");
-                // Reset fetcher data
                 window.location.reload();
               }}
             >
@@ -295,89 +384,170 @@ export default function LoginRoute() {
             </Button>
           </VStack>
         ) : (
-          <ValidatedForm
-            fetcher={fetcher}
-            validator={magicLinkValidator}
-            defaultValues={{ redirectTo }}
-            method="post"
-            action="/login"
-          >
-            <Hidden name="redirectTo" value={redirectTo} type="hidden" />
-            <Hidden name="turnstileToken" value={turnstileToken} />
-            <VStack spacing={2}>
-              {fetcher.data?.success === false && fetcher.data?.message && (
-                <Alert variant="destructive">
-                  <LuCircleAlert className="w-4 h-4" />
-                  <AlertTitle>
-                    <Trans>Authentication Error</Trans>
-                  </AlertTitle>
-                  <AlertDescription>{fetcher.data?.message}</AlertDescription>
-                </Alert>
-              )}
-
-              {hasGoogleAuth && (
-                <Button
-                  type="button"
-                  size="lg"
-                  className="w-full"
-                  onClick={onSignInWithGoogle}
-                  isDisabled={fetcher.state !== "idle"}
-                  variant="secondary"
-                  leftIcon={<GoogleIcon />}
-                >
-                  <Trans>Sign in with Google</Trans>
-                </Button>
-              )}
-              {hasOutlookAuth && (
-                <Button
-                  type="button"
-                  size="lg"
-                  className="w-full"
-                  onClick={onSignInWithAzure}
-                  isDisabled={fetcher.state !== "idle"}
-                  variant="secondary"
-                  leftIcon={<OutlookIcon className="size-6" />}
-                >
-                  <Trans>Sign in with Outlook</Trans>
-                </Button>
-              )}
-
-              {(hasGoogleAuth || hasOutlookAuth) && (
-                <div className="py-3 w-full">
-                  <Separator />
-                </div>
-              )}
-
-              <Input name="email" label="" placeholder={t`Email Address`} />
-
-              <Submit
-                isDisabled={
-                  fetcher.state !== "idle" ||
-                  (!!CLOUDFLARE_TURNSTILE_SITE_KEY && !turnstileToken)
-                }
-                isLoading={fetcher.state === "submitting"}
+          <VStack spacing={2}>
+            {showWeChatButton && (
+              <Button
+                type="button"
                 size="lg"
                 className="w-full"
-                withBlocker={false}
+                onClick={onSignInWithWeChat}
                 variant="secondary"
+                leftIcon={<SiWechat className="w-4 h-4" style={{ color: "#07C160" }} />}
               >
-                <Trans>Sign in with Email</Trans>
-              </Submit>
-              {!!CLOUDFLARE_TURNSTILE_SITE_KEY && (
-                <div className="w-full flex justify-center">
-                  <Turnstile
-                    siteKey={CLOUDFLARE_TURNSTILE_SITE_KEY}
-                    onSuccess={(token) => setTurnstileToken(token)}
-                    onError={() => setTurnstileToken("")}
-                    onExpire={() => setTurnstileToken("")}
-                    options={{
-                      theme: theme === "dark" ? "dark" : "light"
-                    }}
-                  />
-                </div>
-              )}
-            </VStack>
-          </ValidatedForm>
+                <Trans>Sign in with WeChat</Trans>
+              </Button>
+            )}
+            {hasGoogleAuth && (
+              <Button
+                type="button"
+                size="lg"
+                className="w-full"
+                onClick={onSignInWithGoogle}
+                isDisabled={fetcher.state !== "idle"}
+                variant="secondary"
+                leftIcon={<GoogleIcon />}
+              >
+                <Trans>Sign in with Google</Trans>
+              </Button>
+            )}
+            {hasOutlookAuth && (
+              <Button
+                type="button"
+                size="lg"
+                className="w-full"
+                onClick={onSignInWithAzure}
+                isDisabled={fetcher.state !== "idle"}
+                variant="secondary"
+                leftIcon={<OutlookIcon className="size-6" />}
+              >
+                <Trans>Sign in with Outlook</Trans>
+              </Button>
+            )}
+
+            {(hasGoogleAuth || hasOutlookAuth || showWeChatButton) && (
+              <div className="py-3 w-full">
+                <Separator />
+              </div>
+            )}
+
+            {showWeChatQr && (
+              <div className="flex w-full items-center gap-1 rounded-xl bg-muted p-1">
+                <button
+                  type="button"
+                  className={`flex-1 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                    loginMethod === "wechat-qr"
+                      ? "bg-background text-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                  onClick={onSelectWeChatQrTab}
+                >
+                  <Trans>WeChat QR</Trans>
+                </button>
+                <button
+                  type="button"
+                  className={`flex-1 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                    loginMethod === "email"
+                      ? "bg-background text-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                  onClick={() => setLoginMethod("email")}
+                >
+                  <Trans>Email</Trans>
+                </button>
+              </div>
+            )}
+
+            {loginMethod === "wechat-qr" && showWeChatQr ? (
+              <VStack spacing={4} className="items-center py-2">
+                {wechatQrFetcher.state === "loading" || !wechatQrFetcher.data ? (
+                  <div className="flex h-[204px] w-[204px] items-center justify-center rounded-xl bg-muted">
+                    <p className="text-sm text-muted-foreground">
+                      <Trans>Loading…</Trans>
+                    </p>
+                  </div>
+                ) : wechatQrFetcher.data?.url ? (
+                  <>
+                    <div className="rounded-xl bg-white p-3 shadow-sm outline outline-1 -outline-offset-1 outline-black/10">
+                      <QRCodeSVG
+                        value={wechatQrFetcher.data.url}
+                        size={180}
+                        className="block"
+                      />
+                    </div>
+                    <p className="text-center text-xs text-muted-foreground text-balance">
+                      <Trans>Scan with WeChat to sign in</Trans>
+                    </p>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() =>
+                        wechatQrFetcher.load(
+                          `/api/wechat-qr-url${redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ""}`
+                        )
+                      }
+                    >
+                      <Trans>Refresh QR code</Trans>
+                    </Button>
+                  </>
+                ) : null}
+              </VStack>
+            ) : (
+              <ValidatedForm
+                fetcher={fetcher}
+                validator={magicLinkValidator}
+                defaultValues={{ redirectTo }}
+                method="post"
+                action="/login"
+                className="w-full"
+              >
+                <Hidden name="redirectTo" value={redirectTo} type="hidden" />
+                <Hidden name="turnstileToken" value={turnstileToken} />
+                <VStack spacing={2}>
+                  {fetcher.data?.success === false && fetcher.data?.message && (
+                    <Alert variant="destructive">
+                      <LuCircleAlert className="w-4 h-4" />
+                      <AlertTitle>
+                        <Trans>Authentication Error</Trans>
+                      </AlertTitle>
+                      <AlertDescription>
+                        {fetcher.data?.message}
+                      </AlertDescription>
+                    </Alert>
+                  )}
+
+                  <Input name="email" label="" placeholder={t`Email Address`} />
+
+                  <Submit
+                    isDisabled={
+                      fetcher.state !== "idle" ||
+                      (!!CLOUDFLARE_TURNSTILE_SITE_KEY && !turnstileToken)
+                    }
+                    isLoading={fetcher.state === "submitting"}
+                    size="lg"
+                    className="w-full"
+                    withBlocker={false}
+                    variant="secondary"
+                  >
+                    <Trans>Sign in with Email</Trans>
+                  </Submit>
+                  {!!CLOUDFLARE_TURNSTILE_SITE_KEY && (
+                    <div className="w-full flex justify-center">
+                      <Turnstile
+                        siteKey={CLOUDFLARE_TURNSTILE_SITE_KEY}
+                        onSuccess={(token) => setTurnstileToken(token)}
+                        onError={() => setTurnstileToken("")}
+                        onExpire={() => setTurnstileToken("")}
+                        options={{
+                          theme: theme === "dark" ? "dark" : "light"
+                        }}
+                      />
+                    </div>
+                  )}
+                </VStack>
+              </ValidatedForm>
+            )}
+          </VStack>
         )}
       </div>
 
@@ -447,6 +617,7 @@ function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
 
 function OutlookIcon(props: React.SVGProps<SVGSVGElement>) {
   return (

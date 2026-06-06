@@ -56,7 +56,7 @@ export const onboardFunction = inngest.createFunction(
 
           try {
             await resend.contacts.create({
-              email: user.email,
+              email: user.email ?? "",
               firstName: user.firstName,
               lastName: user.lastName,
               unsubscribed: false,
@@ -139,7 +139,7 @@ export const onboardFunction = inngest.createFunction(
                   lastName: user.lastName
                 },
                 emails: {
-                  primaryEmail: user.email
+                  primaryEmail: user.email ?? ""
                 },
                 customerStatus: ["PROSPECTIVE_CUSTOMER"],
                 location: `${company.city}, ${company.stateProvince}`
@@ -274,7 +274,7 @@ export const onboardFunction = inngest.createFunction(
           await step.run("send-welcome-email", async () => {
             await sendEmail({
               from,
-              to: user.email,
+              to: user.email ?? "",
               subject: `Carbon`,
               html: await render(WelcomeEmail())
             });
@@ -292,7 +292,7 @@ export const onboardFunction = inngest.createFunction(
           await step.run("send-get-started-email", async () => {
             await sendEmail({
               from,
-              to: user.email,
+              to: user.email ?? "",
               subject: `Get the most out of Carbon`,
               html: await render(
                 GetStartedEmail({

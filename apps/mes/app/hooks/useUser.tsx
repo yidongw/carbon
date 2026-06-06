@@ -37,6 +37,7 @@ export function useUser(): User {
   ) {
     return {
       ...data.user,
+      email: data.user.email ?? "",
       id: data.effectiveUserId ?? data.user.id,
       company: data.company
     };
@@ -62,7 +63,7 @@ function isCompany(value: any): value is Company {
 function isUser(value: any): value is User {
   return (
     typeof value.id === "string" &&
-    typeof value.email === "string" &&
+    (typeof value.email === "string" || value.email === null) &&
     typeof value.firstName === "string" &&
     typeof value.lastName === "string" &&
     "avatarUrl" in value
