@@ -359,6 +359,16 @@ export const SUPABASE_ANON_KEY = getEnv("SUPABASE_ANON_KEY", {
   isSecret: false
 });
 
+// Browser-facing Supabase URL. The server talks to Supabase on localhost, but a
+// browser reaching the app through a tunnel (see tunnel.sh) cannot — set
+// SUPABASE_URL_PUBLIC to the API's public tunnel URL so the client, including
+// the realtime websocket, connects to a reachable origin. Falls back to
+// SUPABASE_URL when unset, so normal local dev is unaffected.
+export const SUPABASE_URL_PUBLIC = getEnv("SUPABASE_URL_PUBLIC", {
+  isSecret: false,
+  isRequired: false
+});
+
 export const DEFAULT_LANGUAGE =
   getEnv("DEFAULT_LANGUAGE", {
     isSecret: false,
@@ -426,7 +436,7 @@ export function getBrowserEnv() {
     POSTHOG_PROJECT_PUBLIC_KEY,
     QUICKBOOKS_CLIENT_ID,
     SUPABASE_ANON_KEY,
-    SUPABASE_URL,
+    SUPABASE_URL: SUPABASE_URL_PUBLIC || SUPABASE_URL,
     VERCEL_ENV,
     VERCEL_URL,
     XERO_CLIENT_ID,
