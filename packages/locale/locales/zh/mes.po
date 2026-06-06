@@ -368,7 +368,7 @@ msgid "History"
 msgstr "历史"
 
 msgid "I understand and want to complete without issuing"
-msgstr "我理解并希望在不发放物料的情况下完成"
+msgstr "我理解并希望在不发放材料的情况下完成"
 
 msgid "I'm Still Working"
 msgstr "我还在工作"
@@ -404,13 +404,13 @@ msgid "Issue"
 msgstr "发放"
 
 msgid "Issue Material"
-msgstr "发放物料"
+msgstr "发放材料"
 
 msgid "Item"
-msgstr "物料"
+msgstr "物品"
 
 msgid "Item Master"
-msgstr "物料主数据"
+msgstr "物品主数据"
 
 msgid "Job"
 msgstr "工单"
@@ -431,7 +431,7 @@ msgid "Let's build something"
 msgstr "让我们开始构建"
 
 msgid "Loading item details..."
-msgstr "正在加载物料详情..."
+msgstr "正在加载物品详情..."
 
 msgid "Loading..."
 msgstr "加载中..."
@@ -479,16 +479,16 @@ msgid "Maintenance Completed"
 msgstr "维护已完成"
 
 msgid "Manually add items to inventory"
-msgstr "手动添加物料到库存"
+msgstr "手动添加物品到库存"
 
 msgid "Manually remove items from inventory"
-msgstr "手动从库存中移除物料"
+msgstr "手动从库存中移除物品"
 
 msgid "matches"
 msgstr "匹配"
 
 msgid "Materials"
-msgstr "物料"
+msgstr "材料"
 
 msgid "Maximum number of records reached"
 msgstr "已达到最大记录数"
@@ -561,7 +561,7 @@ msgid "No maintenance scheduled for today"
 msgstr "今天没有计划的维护"
 
 msgid "No materials"
-msgstr "无物料"
+msgstr "无材料"
 
 msgid "No operators"
 msgstr "无操作员"
@@ -649,7 +649,7 @@ msgid "Parameters"
 msgstr "参数"
 
 msgid "Part"
-msgstr "零件"
+msgstr "产品"
 
 msgid "Passed Inspection"
 msgstr "检验通过"
@@ -685,7 +685,7 @@ msgid "Please record all steps for this operation before closing."
 msgstr "请在关闭前记录此工序的所有步骤。"
 
 msgid "Please select an item"
-msgstr "请选择一个物料"
+msgstr "请选择一个物品"
 
 msgid "Prev"
 msgstr "上一个"
@@ -697,16 +697,16 @@ msgid "Priority"
 msgstr "优先级"
 
 msgid "Procedure"
-msgstr "程序"
+msgstr "规程"
 
 msgid "Process"
-msgstr "工艺"
+msgstr "工序"
 
 msgid "Process Parameters"
-msgstr "工艺参数"
+msgstr "工序参数"
 
 msgid "Processes"
-msgstr "工艺"
+msgstr "工序"
 
 msgid "Progress"
 msgstr "进度"
@@ -740,7 +740,7 @@ msgid "Remove Inventory"
 msgstr "移除库存"
 
 msgid "Remove part"
-msgstr "移除零件"
+msgstr "移除产品"
 
 msgid "Sales Order"
 msgstr "销售订单"
@@ -788,10 +788,10 @@ msgid "Select a serial number to continue with this operation"
 msgstr "选择一个序列号以继续此工序"
 
 msgid "Select an item and specify the quantity to issue"
-msgstr "选择物料并指定发放数量"
+msgstr "选择物品并指定要发放的数量"
 
 msgid "Select an item..."
-msgstr "选择物料..."
+msgstr "选择物品..."
 
 #. placeholder {0}: index + 1
 msgid "Select Batch {0}"
@@ -907,7 +907,7 @@ msgid "The completed quantity for this operation is less than the required quant
 msgstr "此工序的完成数量小于所需数量 {0}。"
 
 msgid "There are serial or batch tracked materials on the bill of material that have not been fully issued. Completing without issuing may result in incorrect traceability records."
-msgstr "物料清单中有序列号或批次追踪的物料尚未完全发放。不发放即完成可能导致追溯记录不正确。"
+msgstr "物料清单中有序列号或批次追踪的材料尚未完全发放。不发放即完成可能导致追溯记录不正确。"
 
 msgid "This Period"
 msgstr "本期"
@@ -946,7 +946,7 @@ msgid "Type a message..."
 msgstr "输入消息..."
 
 msgid "Unissued serial/batch materials"
-msgstr "未发放的序列号/批次物料"
+msgstr "未发放的序列号/批次材料"
 
 msgid "unit"
 msgstr "单位"
