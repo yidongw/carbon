@@ -7788,7 +7788,7 @@ msgid "Sign in with Outlook"
 msgstr "使用Outlook登录"
 
 msgid "Sign Out"
-msgstr "注销"
+msgstr "退出登录"
 
 msgid "Signed in as {name}"
 msgstr "已登录为 {name}"
