@@ -210,7 +210,7 @@ msgid "Consumed expired"
 msgstr "Verbrauchte abgelaufen"
 
 msgid "Continue with WeChat"
-msgstr ""
+msgstr "Fortfahren mit WeChat"
 
 msgid "Create"
 msgstr "Erstellen"

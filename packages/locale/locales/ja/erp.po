@@ -4913,7 +4913,7 @@ msgid "Loading..."
 msgstr "読み込み中..."
 
 msgid "Loading…"
-msgstr ""
+msgstr "ロード中…"
 
 msgid "Location"
 msgstr "ロケーション"
@@ -7170,7 +7170,7 @@ msgid "Refresh exchange rate"
 msgstr "為替レートを更新"
 
 msgid "Refresh QR code"
-msgstr ""
+msgstr "再読み込みQRコード"
 
 msgid "Reject"
 msgstr "却下"
@@ -7697,7 +7697,7 @@ msgid "Scan the tracking ID for this line"
 msgstr "このラインのトラッキングIDをスキャンしてください"
 
 msgid "Scan with WeChat to sign in"
-msgstr ""
+msgstr "スキャンすることでWeChatを使用してログイン"
 
 msgid "SCAR"
 msgstr "SCAR"
@@ -8210,7 +8210,7 @@ msgid "Sign in with Passkey"
 msgstr ""
 
 msgid "Sign in with WeChat"
-msgstr ""
+msgstr "WeChatを使用してサインイン"
 
 msgid "Sign Out"
 msgstr "サインアウト"
@@ -9690,7 +9690,7 @@ msgid "Website"
 msgstr "ウェブサイト"
 
 msgid "WeChat QR"
-msgstr ""
+msgstr "WeChat QRコード"
 
 msgid "Wednesday"
 msgstr "水曜日"

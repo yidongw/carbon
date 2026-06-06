@@ -4916,7 +4916,7 @@ msgid "Loading..."
 msgstr "लोड हो रहा है..."
 
 msgid "Loading…"
-msgstr ""
+msgstr "लोडिंग…"
 
 msgid "Location"
 msgstr "स्थान"
@@ -7173,7 +7173,7 @@ msgid "Refresh exchange rate"
 msgstr "विनिमय दर को ताज़ा करें"
 
 msgid "Refresh QR code"
-msgstr ""
+msgstr "नया क्वार्ड स्कैन करें"
 
 msgid "Reject"
 msgstr "अस्वीकार करें"
@@ -7700,7 +7700,7 @@ msgid "Scan the tracking ID for this line"
 msgstr "इस लाइन के लिए ट्रैकिंग आईडी स्कैन करें"
 
 msgid "Scan with WeChat to sign in"
-msgstr ""
+msgstr "स्कैन करें व्हाट्सएप से लॉग इन"
 
 msgid "SCAR"
 msgstr "SCAR"
@@ -8213,7 +8213,7 @@ msgid "Sign in with Passkey"
 msgstr ""
 
 msgid "Sign in with WeChat"
-msgstr ""
+msgstr "लॉग इन व्हाट्सएप से"
 
 msgid "Sign Out"
 msgstr "साइन आउट"
@@ -9693,7 +9693,7 @@ msgid "Website"
 msgstr "वेबसाइट"
 
 msgid "WeChat QR"
-msgstr ""
+msgstr "व्हाट्सएप क्यूआरसी"
 
 msgid "Wednesday"
 msgstr "बुधवार"

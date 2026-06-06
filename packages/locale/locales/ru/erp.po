@@ -4913,7 +4913,7 @@ msgid "Loading..."
 msgstr "Загрузка..."
 
 msgid "Loading…"
-msgstr ""
+msgstr "Загрузка…"
 
 msgid "Location"
 msgstr "Местоположение"
@@ -7170,7 +7170,7 @@ msgid "Refresh exchange rate"
 msgstr "Обновить курс обмена"
 
 msgid "Refresh QR code"
-msgstr ""
+msgstr "Обновить QR код"
 
 msgid "Reject"
 msgstr "Отклонить"
@@ -7697,7 +7697,7 @@ msgid "Scan the tracking ID for this line"
 msgstr "Отсканируйте идентификатор отслеживания для этой строки"
 
 msgid "Scan with WeChat to sign in"
-msgstr ""
+msgstr "Скан с ВКонтакте для регистрации"
 
 msgid "SCAR"
 msgstr "SCAR"
@@ -8210,7 +8210,7 @@ msgid "Sign in with Passkey"
 msgstr ""
 
 msgid "Sign in with WeChat"
-msgstr ""
+msgstr "Войти с ВКонтакте"
 
 msgid "Sign Out"
 msgstr "Выход"
@@ -9690,7 +9690,7 @@ msgid "Website"
 msgstr "Веб-сайт"
 
 msgid "WeChat QR"
-msgstr ""
+msgstr "Вконтакт"
 
 msgid "Wednesday"
 msgstr "Среда"

@@ -210,7 +210,7 @@ msgid "Consumed expired"
 msgstr "Потреблено истекшее"
 
 msgid "Continue with WeChat"
-msgstr ""
+msgstr "Продолжить с ВКонтакте"
 
 msgid "Create"
 msgstr "Создать"
