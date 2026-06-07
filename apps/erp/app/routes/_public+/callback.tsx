@@ -6,7 +6,7 @@ import {
   error,
   safeRedirect
 } from "@carbon/auth";
-import { refreshAccessToken } from "@carbon/auth/auth.server";
+import { makeAuthSession } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { getCompanyId, setCompanyId } from "@carbon/auth/company.server";
 import {
@@ -15,7 +15,6 @@ import {
   getAuthSession,
   setAuthSession
 } from "@carbon/auth/session.server";
-import { getUserById } from "@carbon/auth/users.server";
 import { validator } from "@carbon/form";
 import { Alert, AlertDescription, AlertTitle, cn, VStack } from "@carbon/react";
 import { Trans } from "@lingui/react/macro";
@@ -55,51 +54,66 @@ export async function action({ request }: ActionFunctionArgs) {
   const { refreshToken, userId, redirectTo } = validation.data;
   const serviceRole = getCarbonServiceRole();
 
-  const companies = await serviceRole
-    .from("userToCompany")
-    .select("companyId, ...company(companyGroupId)")
-    .eq("userId", userId);
+  const [companies, { data: sessionData, error: sessionError }] =
+    await Promise.all([
+      serviceRole
+        .from("userToCompany")
+        .select("companyId, ...company(companyGroupId)")
+        .eq("userId", userId)
+        .limit(50),
+      serviceRole.auth.refreshSession({ refresh_token: refreshToken })
+    ]);
+
+  if (!sessionData?.session || sessionError) {
+    return redirect(
+      path.to.root,
+      await flash(request, error(sessionError, "Invalid refresh token"))
+    );
+  }
+
+  if (sessionData.session.user.id !== userId) {
+    return redirect(
+      path.to.root,
+      await flash(request, error(null, "Session mismatch"))
+    );
+  }
+
+  if (companies.error) {
+    return redirect(
+      path.to.root,
+      await flash(request, error(companies.error, "Failed to load company"))
+    );
+  }
 
   const cookieCompanyId = getCompanyId(request);
   const match = (companies.data?.find((c) => c.companyId === cookieCompanyId) ??
     companies.data?.[0]) as
     | { companyId: string; companyGroupId: string | null }
     | undefined;
-  const companyId = match?.companyId;
-  const companyGroupId = match?.companyGroupId ?? "";
 
-  const authSession = await refreshAccessToken(
-    refreshToken,
-    companyId,
-    companyGroupId
+  const authSession = makeAuthSession(
+    sessionData.session,
+    match?.companyId ?? "",
+    match?.companyGroupId ?? ""
   );
 
   if (!authSession) {
     return redirect(
       path.to.root,
-      await flash(request, error(authSession, "Invalid refresh token"))
+      await flash(request, error(null, "Invalid session"))
     );
   }
 
-  const user = await getUserById(authSession.userId);
-
-  if (user?.data) {
-    const sessionCookie = await setAuthSession(request, {
-      authSession
-    });
-    const companyIdCookie = setCompanyId(authSession.companyId);
-    return redirect(safeRedirect(redirectTo, path.to.authenticatedRoot), {
-      headers: [
-        ["Set-Cookie", sessionCookie],
-        ["Set-Cookie", companyIdCookie]
-      ]
-    });
-  } else {
-    return redirect(
-      path.to.root,
-      await flash(request, error(user.error, "User not found"))
-    );
-  }
+  const sessionCookie = await setAuthSession(request, {
+    authSession
+  });
+  const companyIdCookie = setCompanyId(authSession.companyId);
+  return redirect(safeRedirect(redirectTo, path.to.authenticatedRoot), {
+    headers: [
+      ["Set-Cookie", sessionCookie],
+      ["Set-Cookie", companyIdCookie]
+    ]
+  });
 }
 
 export default function AuthCallback() {

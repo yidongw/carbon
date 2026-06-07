@@ -24,7 +24,6 @@ import {
   flash,
   requireAuthSession
 } from "./session.server";
-import { getCompaniesForUser } from "./users";
 import { getUserClaims } from "./users.server";
 
 export async function createEmailAuthAccount(
@@ -97,7 +96,7 @@ function getCompanyIdFromAPIKey(apiKey: string) {
     .single();
 }
 
-function makeAuthSession(
+export function makeAuthSession(
   supabaseSession: SupabaseAuthSession | null,
   companyId: string,
   companyGroupId: string
@@ -289,21 +288,15 @@ export async function requirePermissions(
     }
   }
 
-  const { accessToken, companyId, companyGroupId, userId } =
-    await requireAuthSession(request);
   const authSession = await requireAuthSession(request);
+  const { accessToken, companyId, companyGroupId, userId } = authSession;
   const email = authSession.email ?? "";
   const consoleMode = authSession.console === companyId;
-
-  const myClaims = await getUserClaims(userId, companyId);
 
   // early exit if no requiredPermissions are required
   if (Object.keys(requiredPermissions).length === 0) {
     return {
-      client:
-        requiredPermissions.bypassRls && myClaims.role === "employee"
-          ? getCarbonServiceRole()
-          : getCarbon(accessToken),
+      client: getCarbon(accessToken),
       companyId,
       companyGroupId,
       email,
@@ -312,6 +305,8 @@ export async function requirePermissions(
       consoleMode
     };
   }
+
+  const myClaims = await getUserClaims(userId, companyId);
 
   const hasRequiredPermissions = Object.entries(requiredPermissions).every(
     ([action, permission]) => {
@@ -416,20 +411,19 @@ export async function signInWithBypassEmail(
 
   if (verifyError || !sessionData?.session) return null;
 
-  const companies = await getCompaniesForUser(
-    client,
-    sessionData.session.user.id
-  );
-  const { data: companyRecord } = await client
-    .from("company")
-    .select("companyGroupId")
-    .eq("id", companies?.[0] ?? "")
-    .single();
+  const { data: utc } = await client
+    .from("userToCompany")
+    .select("companyId, ...company(companyGroupId)")
+    .eq("userId", sessionData.session.user.id)
+    .limit(1)
+    .maybeSingle();
+
+  const match = utc as { companyId: string; companyGroupId: string | null } | null;
 
   return makeAuthSession(
     sessionData.session,
-    companies?.[0] ?? "",
-    companyRecord?.companyGroupId ?? ""
+    match?.companyId ?? "",
+    match?.companyGroupId ?? ""
   );
 }
 
@@ -441,18 +435,20 @@ export async function signInWithEmail(email: string, password: string) {
   });
 
   if (!data.session || error) return null;
-  const companies = await getCompaniesForUser(client, data.user.id);
 
-  const { data: companyRecord } = await client
-    .from("company")
-    .select("companyGroupId")
-    .eq("id", companies?.[0] ?? "")
-    .single();
+  const { data: utc } = await client
+    .from("userToCompany")
+    .select("companyId, ...company(companyGroupId)")
+    .eq("userId", data.user.id)
+    .limit(1)
+    .maybeSingle();
+
+  const match = utc as { companyId: string; companyGroupId: string | null } | null;
 
   return makeAuthSession(
     data.session,
-    companies?.[0] ?? "",
-    companyRecord?.companyGroupId ?? ""
+    match?.companyId ?? "",
+    match?.companyGroupId ?? ""
   );
 }
 
