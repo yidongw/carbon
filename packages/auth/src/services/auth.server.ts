@@ -439,20 +439,24 @@ export async function signInWithBypassEmail(
   const { data: linkData, error: linkError } =
     await client.auth.admin.generateLink({ type: "magiclink", email });
 
-  if (linkError || !linkData?.properties?.hashed_token) return null;
+  if (linkError || !linkData?.properties?.hashed_token || !linkData.user) return null;
 
-  const { data: sessionData, error: verifyError } = await client.auth.verifyOtp(
-    { token_hash: linkData.properties.hashed_token, type: "magiclink" }
-  );
+  // verifyOtp and the DB lookup are independent — run them in parallel
+  const [{ data: sessionData, error: verifyError }, { data: utc }] =
+    await Promise.all([
+      client.auth.verifyOtp({
+        token_hash: linkData.properties.hashed_token,
+        type: "magiclink"
+      }),
+      client
+        .from("userToCompany")
+        .select("companyId, ...company(companyGroupId)")
+        .eq("userId", linkData.user.id)
+        .limit(1)
+        .maybeSingle()
+    ]);
 
   if (verifyError || !sessionData?.session) return null;
-
-  const { data: utc } = await client
-    .from("userToCompany")
-    .select("companyId, ...company(companyGroupId)")
-    .eq("userId", sessionData.session.user.id)
-    .limit(1)
-    .maybeSingle();
 
   const match = utc as { companyId: string; companyGroupId: string | null } | null;
 
