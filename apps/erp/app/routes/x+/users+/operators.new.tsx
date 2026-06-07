@@ -17,7 +17,7 @@ import {
   VStack
 } from "@carbon/react";
 import { updateSubscriptionQuantityForCompany } from "@carbon/stripe/stripe.server";
-import { useLingui } from "@lingui/react/macro";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import { LuCheck, LuCopy, LuRefreshCw } from "react-icons/lu";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
@@ -146,7 +146,7 @@ export default function NewOperatorRoute() {
           className="flex flex-col h-full"
         >
           <ModalHeader>
-            <ModalTitle>Add Console Operator</ModalTitle>
+            <ModalTitle><Trans>Add Console Operator</Trans></ModalTitle>
           </ModalHeader>
 
           <ModalBody>
@@ -157,7 +157,7 @@ export default function NewOperatorRoute() {
               </div>
               <Location name="locationId" label={t`Location`} />
               <div className="space-y-2 w-full">
-                <Label htmlFor="pin">PIN</Label>
+                <Label htmlFor="pin"><Trans>PIN</Trans></Label>
                 <HStack>
                   <Input
                     name="pin"
@@ -202,8 +202,7 @@ export default function NewOperatorRoute() {
                   />
                 </HStack>
                 <p className="text-xs text-muted-foreground">
-                  Share this PIN with the operator so they can pin in at MES
-                  terminals.
+                  <Trans>Share this PIN with the operator so they can pin in at MES terminals.</Trans>
                 </p>
               </div>
             </VStack>
@@ -211,7 +210,7 @@ export default function NewOperatorRoute() {
           <ModalFooter>
             <HStack>
               <Submit isLoading={formFetcher.state !== "idle"}>
-                Create Operator
+                <Trans>Create Operator</Trans>
               </Submit>
             </HStack>
           </ModalFooter>

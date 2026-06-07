@@ -5,6 +5,7 @@ import {
   useInterval,
   useRealtimeChannel
 } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import type { TrackedEntityAttributes } from "@carbon/utils";
 import {
   getLocalTimeZone,
@@ -42,6 +43,7 @@ export function useOperation({
     parameters: JobOperationParameter[];
   }>;
 }) {
+  const { t } = useLingui();
   const [params] = useUrlParams();
   const trackedEntityParam = params.get("trackedEntityId");
   // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
@@ -176,7 +178,7 @@ export function useOperation({
                 operationStatus: updated.status ?? prev.operationStatus
               }));
             } else if (payload.eventType === "DELETE") {
-              toast.error("This operation has been deleted");
+              toast.error(t`This operation has been deleted`);
               window.location.href = path.to.operations;
             }
           }

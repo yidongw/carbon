@@ -1,3 +1,4 @@
+import { useLingui } from "@lingui/react/macro";
 import * as OV from "online-3d-viewer";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocale } from "react-aria-components";
@@ -33,10 +34,10 @@ export function ModelViewer({
   resetZoomButton?: boolean;
   className?: string;
 }) {
+  const { t } = useLingui();
   const parentDiv = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<OV.EmbeddedViewer | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isActive, setIsActive] = useState(false);
   const [unitSystem, setUnitSystem] = useState<UnitSystem>("metric");
   const [modelInfo, setModelInfo] = useState<{
     surfaceArea: number;
@@ -325,8 +326,7 @@ export function ModelViewer({
       <div
         ref={parentDiv}
         role={"img"}
-        aria-label="Canvas showing the model in the 3D Viewer"
-        onMouseLeave={() => setIsActive(false)}
+        aria-label={t`Canvas showing the model in the 3D Viewer`}
         className={cn(
           "h-full w-full items-center justify-center rounded-lg border border-border bg-gradient-to-bl from-card from-50% via-card to-background min-h-[400px] shadow-md dark:border-none dark:shadow-[inset_0_0.5px_0_rgb(255_255_255_/_0.08),_inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)] relative",
 
@@ -339,22 +339,10 @@ export function ModelViewer({
           </div>
         ) : (
           <>
-            {!isActive && (
-              <button
-                type="button"
-                onClick={() => setIsActive(true)}
-                aria-label="Click to interact with 3D model"
-                className="absolute inset-0 flex items-end justify-center pb-4 cursor-pointer focus:outline-none group"
-              >
-                <span className="text-xs text-muted-foreground bg-background/80 backdrop-blur-sm px-3 py-1 rounded-full border border-border shadow-sm transition-opacity opacity-70 group-hover:opacity-100">
-                  Click to interact
-                </span>
-              </button>
-            )}
             <pre id="model-viewer-canvas" aria-hidden className="sr-only" />
             {resetZoomButton && (
               <IconButton
-                aria-label="Reset zoom"
+                aria-label={t`Reset zoom`}
                 className="absolute top-2 right-2"
                 icon={
                   <svg

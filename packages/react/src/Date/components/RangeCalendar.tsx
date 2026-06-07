@@ -1,3 +1,4 @@
+import { useLingui } from "@lingui/react/macro";
 import type { CalendarDate, DateValue } from "@internationalized/date";
 import { createCalendar } from "@internationalized/date";
 import type { RangeCalendarProps } from "@react-aria/calendar";
@@ -23,6 +24,7 @@ export function RangeCalendar({
   bordered?: boolean;
   className?: string;
 }) {
+  const { t } = useLingui();
   const { locale } = useLocale();
   const state = useRangeCalendarState({
     ...props,
@@ -81,7 +83,7 @@ export function RangeCalendar({
         <div className="flex items-center pb-4">
           <CalendarButton
             onClick={handlePrevYear}
-            aria-label="Previous Year"
+            aria-label={t`Previous Year`}
             className="rounded-full"
             icon={<LuChevronsLeft />}
             size="sm"
@@ -89,7 +91,7 @@ export function RangeCalendar({
           />
           <CalendarButton
             {...prevButtonProps}
-            aria-label="Previous Month"
+            aria-label={t`Previous Month`}
             className="rounded-full"
             icon={<LuChevronLeft />}
             size="sm"
@@ -114,7 +116,7 @@ export function RangeCalendar({
           </div>
           <CalendarButton
             {...nextButtonProps}
-            aria-label="Next Month"
+            aria-label={t`Next Month`}
             className="rounded-full"
             icon={<LuChevronRight />}
             size="sm"
@@ -122,7 +124,7 @@ export function RangeCalendar({
           />
           <CalendarButton
             onClick={handleNextYear}
-            aria-label="Next Year"
+            aria-label={t`Next Year`}
             className="rounded-full"
             icon={<LuChevronsRight />}
             size="sm"

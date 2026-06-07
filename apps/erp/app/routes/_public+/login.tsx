@@ -61,6 +61,7 @@ import {
 } from "react-router";
 import type { Result } from "~/types";
 import { path } from "~/utils/path";
+import { useFormatValidationError } from "~/utils/formatValidationError";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Carbon | Login" }];
@@ -197,6 +198,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function LoginRoute() {
   const { t } = useLingui();
+  const formatError = useFormatValidationError();
   const { hasOutlookAuth, hasGoogleAuth, hasPasskeyAuth } =
     useLoaderData<typeof loader>();
 
@@ -340,7 +342,7 @@ export default function LoginRoute() {
     });
 
     if (error) {
-      toast.error(error.message);
+      toast.error(formatError(error.message));
     }
   };
 
@@ -356,7 +358,7 @@ export default function LoginRoute() {
     });
 
     if (error) {
-      toast.error(error.message);
+      toast.error(formatError(error.message));
     }
   };
 
