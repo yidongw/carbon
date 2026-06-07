@@ -1,6 +1,7 @@
 /**
- * Shared seed data for company initialization
- * Used by both seed-dev.ts (Node.js) and seed-company edge function (Deno)
+ * Shared seed data for company initialization.
+ * Used by seed-dev.ts (Node.js) and the seed_company() Postgres RPC, which the ERP
+ * app reaches via the @carbon/database/seed export (companySeedData below).
  *
  * This is the single source of truth for all seed data.
  */
@@ -760,3 +761,27 @@ export function defaultApprovalRules(
     createdBy
   }));
 }
+
+/**
+ * The payload handed to the `seed_company(...)` Postgres RPC. The RPC is
+ * data-agnostic — it inserts whatever this object contains — so this is the one
+ * place that lists which seed arrays a company gets. Consumed by the ERP app
+ * (settings.service `seedCompany`) and the dev seed script.
+ */
+export const companySeedData = {
+  dimensions,
+  customerStatuses,
+  scrapReasons,
+  paymentTerms,
+  unitOfMeasures,
+  gaugeTypes,
+  failureModes,
+  nonConformanceTypes,
+  nonConformanceRequiredActions,
+  sequences,
+  currencies,
+  accounts,
+  accountDefaults,
+  fiscalYearSettings,
+  groups
+} as const;

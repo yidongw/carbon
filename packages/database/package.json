@@ -17,6 +17,7 @@
   },
   "exports": {
     ".": "./src/index.ts",
+    "./seed": "./supabase/functions/lib/seed.data.ts",
     "./client": "./src/client.ts",
     "./event": "./src/event.ts",
     "./ratelimit": "./src/ratelimit.ts",
