@@ -6,12 +6,13 @@ import {
   error,
   safeRedirect
 } from "@carbon/auth";
-import { makeAuthSessionFromTokens } from "@carbon/auth/auth.server";
+import { exchangePkceCode, makeAuthSessionFromTokens } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { getCompanyId, setCompanyId } from "@carbon/auth/company.server";
 import {
   destroyAuthSession,
   flash,
+  getPkceCookie,
   getAuthSession,
   setAuthSession
 } from "@carbon/auth/session.server";
@@ -25,17 +26,56 @@ import {
   data,
   redirect,
   useFetcher,
+  useLoaderData,
   useLocation,
   useSearchParams
 } from "react-router";
 import { path } from "~/utils/path";
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const authSession = await getAuthSession(request);
+  const url = new URL(request.url);
+  const code = url.searchParams.get("code");
 
+  // PKCE magic-link flow: Supabase delivers a ?code= query param instead of
+  // hash tokens. Exchange it entirely server-side with the code verifier that
+  // was stored in the short-lived cookie during the /login action.
+  if (code) {
+    const pkceEntry = await getPkceCookie(request);
+
+    if (!pkceEntry) {
+      return data({
+        error:
+          "Please open this link in the same browser where you requested sign-in."
+      });
+    }
+
+    const cookieCompanyId = getCompanyId(request);
+    const authSession = await exchangePkceCode(code, pkceEntry, cookieCompanyId);
+
+    if (!authSession) {
+      return data({
+        error: "Magic link expired or already used. Please request a new one."
+      });
+    }
+
+    const redirectTo = url.searchParams.get("redirectTo") ?? undefined;
+    const sessionCookie = await setAuthSession(request, { authSession });
+    const companyIdCookie = setCompanyId(authSession.companyId);
+
+    return redirect(safeRedirect(redirectTo, path.to.authenticatedRoot), {
+      headers: [
+        ["Set-Cookie", sessionCookie],
+        ["Set-Cookie", companyIdCookie]
+      ]
+    });
+  }
+
+  // OAuth (Google/Azure) implicit flow — tokens arrive in the URL hash, which
+  // the server never sees. The client component handles those below.
+  const authSession = await getAuthSession(request);
   if (authSession) await destroyAuthSession(request);
 
-  return {};
+  return data({ error: null });
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -112,9 +152,10 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function AuthCallback() {
+  const { error: loaderError } = useLoaderData<typeof loader>();
   const fetcher = useFetcher<{}>();
   const isAuthenticating = useRef(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(loaderError ?? null);
 
   const { hash } = useLocation();
   const [searchParams] = useSearchParams();
@@ -128,6 +169,7 @@ export default function AuthCallback() {
     }
   }, [hash]);
 
+  // Handle OAuth (Google/Azure) tokens delivered in the hash via implicit flow.
   useEffect(() => {
     const {
       data: { subscription }

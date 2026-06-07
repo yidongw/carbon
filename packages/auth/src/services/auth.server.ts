@@ -5,12 +5,15 @@ import type {
   AuthSession as SupabaseAuthSession,
   SupabaseClient
 } from "@supabase/supabase-js";
+import { createClient } from "@supabase/supabase-js";
 import { createHash } from "crypto";
 import { redirect } from "react-router";
 import {
   CarbonEdition,
   REFRESH_ACCESS_TOKEN_THRESHOLD,
   STRIPE_BYPASS_COMPANY_IDS,
+  SUPABASE_ANON_KEY,
+  SUPABASE_URL,
   VERCEL_URL
 } from "../config/env";
 import { getCarbon } from "../lib/supabase";
@@ -422,13 +425,96 @@ export async function sendInviteByEmail(
   });
 }
 
-export async function sendMagicLink(email: string) {
-  return getCarbonServiceRole().auth.signInWithOtp({
-    email,
-    options: {
-      emailRedirectTo: `${VERCEL_URL}/callback`
+export async function sendMagicLink(
+  email: string,
+  redirectTo?: string
+): Promise<
+  | { error: null; pkceEntry: { k: string; v: string } }
+  | { error: Error; pkceEntry: null }
+> {
+  // Use an in-memory storage so the Supabase PKCE client stores the code
+  // verifier somewhere we can read after the call.
+  const storage = new Map<string, string>();
+  const client = createClient<Database, "public">(SUPABASE_URL!, SUPABASE_ANON_KEY!, {
+    auth: {
+      flowType: "pkce",
+      autoRefreshToken: false,
+      persistSession: false,
+      storage: {
+        getItem: (key) => storage.get(key) ?? null,
+        setItem: (key, value) => { storage.set(key, value); },
+        removeItem: (key) => { storage.delete(key); }
+      }
     }
   });
+
+  const callbackUrl = redirectTo
+    ? `${VERCEL_URL}/callback?redirectTo=${encodeURIComponent(redirectTo)}`
+    : `${VERCEL_URL}/callback`;
+
+  const { error: otpError } = await client.auth.signInWithOtp({
+    email,
+    options: { emailRedirectTo: callbackUrl }
+  });
+
+  if (otpError) return { error: otpError, pkceEntry: null };
+
+  // The Supabase client stored the code verifier in our Map under a key
+  // ending with "-code-verifier".
+  const entry = [...storage.entries()].find(([k]) => k.endsWith("-code-verifier"));
+  if (!entry) {
+    return { error: new Error("PKCE code verifier was not generated"), pkceEntry: null };
+  }
+
+  return { error: null, pkceEntry: { k: entry[0], v: entry[1] } };
+}
+
+// Exchange a PKCE auth code for a session entirely server-side.
+// Pre-seeds the in-memory storage with the code verifier captured during
+// sendMagicLink so the Supabase client can complete the PKCE handshake.
+export async function exchangePkceCode(
+  code: string,
+  pkceEntry: { k: string; v: string },
+  cookieCompanyId: string | null
+): Promise<AuthSession | null> {
+  const storage = new Map([[pkceEntry.k, pkceEntry.v]]);
+  const client = createClient<Database, "public">(SUPABASE_URL!, SUPABASE_ANON_KEY!, {
+    auth: {
+      flowType: "pkce",
+      autoRefreshToken: false,
+      persistSession: false,
+      storage: {
+        getItem: (key) => storage.get(key) ?? null,
+        setItem: (key, value) => { storage.set(key, value); },
+        removeItem: (key) => { storage.delete(key); }
+      }
+    }
+  });
+
+  const { data: { session }, error: exchangeError } =
+    await client.auth.exchangeCodeForSession(code);
+
+  if (!session || exchangeError) return null;
+
+  const { data: companies } = await getCarbonServiceRole()
+    .from("userToCompany")
+    .select("companyId, ...company(companyGroupId)")
+    .eq("userId", session.user.id)
+    .limit(50);
+
+  const rows = companies as Array<{
+    companyId: string;
+    companyGroupId: string | null;
+  }> | null;
+
+  const match =
+    rows?.find((c) => c.companyId === cookieCompanyId) ?? rows?.[0];
+
+  return makeAuthSession(
+    session,
+    match?.companyId ?? "",
+    match?.companyGroupId ?? ""
+  );
 }
 
 export async function signInWithBypassEmail(
