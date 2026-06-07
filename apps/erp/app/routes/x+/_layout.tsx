@@ -89,7 +89,7 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
 };
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const authSession = await requireAuthSession(request, { verify: true });
+  const authSession = await requireAuthSession(request);
   const { accessToken, companyId, expiresAt, expiresIn, userId } = authSession;
 
   // Block ERP access when console mode is active on this terminal.
@@ -124,7 +124,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
     defaults,
     auditLogEnabled,
     modulePreferences,
-    printerRoutes
+    printerRoutes,
+    supplierApprovalRequired
   ] = await Promise.all([
     getCompanies(client, userId),
     getEmployeeCompanies(client, userId),
@@ -139,7 +140,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
     getUserDefaults(client, userId, companyId),
     isAuditLogEnabled(client, companyId),
     getModulePreferences(client, userId, companyId),
-    getPrinterRoutes(client, companyId)
+    getPrinterRoutes(client, companyId),
+    isApprovalRequired(client, "supplier", companyId)
   ]);
 
   if (!claims || user.error || !user.data || !groups.data) {
@@ -216,7 +218,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     modulePreferences: modulePreferences.data ?? [],
     savedViews: savedViews.data ?? [],
     printerRoutes: printerRoutes.data ?? [],
-    supplierApprovalRequired: isApprovalRequired(client, "supplier", companyId),
+    supplierApprovalRequired,
     openClockEntry: companySettings.data?.timeCardEnabled
       ? getOpenClockEntry(client, userId, companyId)
       : null
