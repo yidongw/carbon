@@ -36,10 +36,10 @@ import {
 } from "react-router";
 import { RealtimeDataProvider } from "~/components";
 import { PrimaryNavigation, Topbar } from "~/components/Layout";
-import { TimeCardWarning } from "~/components/TimeCardWarning";
-import { OverlayHost, OverlayProvider } from "~/components/Overlay";
 import TrainingPanel from "~/components/TrainingPanel";
 import { useTrainingPanel } from "~/hooks/useTrainingPanel";
+import { TimeCardWarning } from "~/components/TimeCardWarning";
+import { OverlayHost, OverlayProvider } from "~/components/Overlay";
 import { getOpenClockEntry } from "~/modules/people";
 import {
   getCompanies,
@@ -236,11 +236,11 @@ export default function AuthenticatedRoute() {
                   </main>
                 </div>
               </div>
-              <TrainingPanel
+              {/* <TrainingPanel
                 training={training}
                 isOpen={false}
                 onDismiss={dismiss}
-              />
+              /> */}
               {companySettings?.timeCardEnabled && (
                 <Suspense fallback={null}>
                   <Await resolve={openClockEntry}>
