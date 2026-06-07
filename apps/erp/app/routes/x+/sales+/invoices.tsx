@@ -1,10 +1,11 @@
-import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
-import { flash } from "@carbon/auth/session.server";
 import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
+import { Suspense } from "react";
 import type { LoaderFunctionArgs } from "react-router";
-import { Outlet, redirect, useLoaderData } from "react-router";
+import { Await, Outlet, useLoaderData } from "react-router";
+import { TableSkeleton } from "~/components/Skeletons";
 import { getSalesInvoices } from "~/modules/invoicing";
 import SalesInvoicesTable from "~/modules/invoicing/ui/SalesInvoice/SalesInvoicesTable";
 import type { Handle } from "~/utils/handle";
@@ -29,7 +30,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const { limit, offset, sorts, filters } =
     getGenericQueryFilters(searchParams);
 
-  const salesInvoices = await getSalesInvoices(client, companyId, {
+  const salesInvoices = getSalesInvoices(client, companyId, {
     search,
     customerId,
     limit,
@@ -38,28 +39,33 @@ export async function loader({ request }: LoaderFunctionArgs) {
     filters
   });
 
-  if (salesInvoices.error) {
-    redirect(
-      path.to.invoicing,
-      await flash(
-        request,
-        error(salesInvoices.error, "Failed to fetch sales invoices")
-      )
-    );
-  }
-
   return {
-    count: salesInvoices.count ?? 0,
-    salesInvoices: salesInvoices.data ?? []
+    salesInvoices
   };
 }
 
 export default function SalesInvoicesSearchRoute() {
-  const { count, salesInvoices } = useLoaderData<typeof loader>();
+  const { salesInvoices } = useLoaderData<typeof loader>();
 
   return (
     <VStack spacing={0} className="h-full">
-      <SalesInvoicesTable data={salesInvoices} count={count} />
+      <Suspense fallback={<TableSkeleton />}>
+        <Await
+          resolve={salesInvoices}
+          errorElement={
+            <div className="p-4 text-sm text-red-500">
+              <Trans>Failed to load sales invoices.</Trans>
+            </div>
+          }
+        >
+          {(salesInvoices) => (
+            <SalesInvoicesTable
+              data={salesInvoices.data ?? []}
+              count={salesInvoices.count ?? 0}
+            />
+          )}
+        </Await>
+      </Suspense>
       <Outlet />
     </VStack>
   );

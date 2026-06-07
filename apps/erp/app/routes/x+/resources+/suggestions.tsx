@@ -1,10 +1,11 @@
-import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
-import { flash } from "@carbon/auth/session.server";
 import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
+import { Suspense } from "react";
 import type { LoaderFunctionArgs } from "react-router";
-import { Outlet, redirect, useLoaderData } from "react-router";
+import { Await, Outlet, useLoaderData } from "react-router";
+import { TableSkeleton } from "~/components/Skeletons";
 import { getSuggestions, SuggestionsTable } from "~/modules/resources";
 import { getTagsList } from "~/modules/shared";
 import type { Handle } from "~/utils/handle";
@@ -29,40 +30,45 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const { limit, offset, sorts, filters } =
     getGenericQueryFilters(searchParams);
 
-  const [suggestions, tags] = await Promise.all([
-    getSuggestions(client, companyId, {
-      search,
-      limit,
-      offset,
-      sorts,
-      filters
-    }),
-    getTagsList(client, companyId, "suggestion")
-  ]);
+  const tags = await getTagsList(client, companyId, "suggestion");
 
-  if (suggestions.error) {
-    throw redirect(
-      path.to.resourcesDashboard,
-      await flash(
-        request,
-        error(suggestions.error, "Failed to load suggestions")
-      )
-    );
-  }
+  const suggestions = getSuggestions(client, companyId, {
+    search,
+    limit,
+    offset,
+    sorts,
+    filters
+  });
 
   return {
-    suggestions: suggestions.data ?? [],
-    tags: tags.data ?? [],
-    count: suggestions.count ?? 0
+    suggestions,
+    tags: tags.data ?? []
   };
 }
 
 export default function SuggestionsRoute() {
-  const { suggestions, tags, count } = useLoaderData<typeof loader>();
+  const { suggestions, tags } = useLoaderData<typeof loader>();
 
   return (
     <VStack spacing={0} className="h-full">
-      <SuggestionsTable data={suggestions} tags={tags} count={count} />
+      <Suspense fallback={<TableSkeleton />}>
+        <Await
+          resolve={suggestions}
+          errorElement={
+            <div className="p-4 text-sm text-red-500">
+              <Trans>Failed to load suggestions.</Trans>
+            </div>
+          }
+        >
+          {(suggestions) => (
+            <SuggestionsTable
+              data={suggestions.data ?? []}
+              tags={tags}
+              count={suggestions.count ?? 0}
+            />
+          )}
+        </Await>
+      </Suspense>
       <Outlet />
     </VStack>
   );

@@ -1,10 +1,11 @@
-import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
-import { flash } from "@carbon/auth/session.server";
 import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
+import { Suspense } from "react";
 import type { LoaderFunctionArgs } from "react-router";
-import { Outlet, redirect, useLoaderData } from "react-router";
+import { Await, Outlet, useLoaderData } from "react-router";
+import { TableSkeleton } from "~/components/Skeletons";
 import { getIssues, getIssueTypesList } from "~/modules/quality";
 import IssuesTable from "~/modules/quality/ui/Issue/IssuesTable";
 import type { Handle } from "~/utils/handle";
@@ -28,38 +29,45 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const { limit, offset, sorts, filters } =
     getGenericQueryFilters(searchParams);
 
-  const [issues, nonConformanceTypes] = await Promise.all([
-    getIssues(client, companyId, {
-      search,
-      limit,
-      offset,
-      sorts,
-      filters
-    }),
-    getIssueTypesList(client, companyId)
-  ]);
+  const nonConformanceTypes = await getIssueTypesList(client, companyId);
 
-  if (issues.error) {
-    console.error(issues.error);
-    throw redirect(
-      path.to.authenticatedRoot,
-      await flash(request, error(issues.error, "Error loading issues"))
-    );
-  }
+  const issues = getIssues(client, companyId, {
+    search,
+    limit,
+    offset,
+    sorts,
+    filters
+  });
 
   return {
-    issues: issues.data ?? [],
-    count: issues.count ?? 0,
+    issues,
     types: nonConformanceTypes.data ?? []
   };
 }
 
 export default function IssuesRoute() {
-  const { issues, count, types } = useLoaderData<typeof loader>();
+  const { issues, types } = useLoaderData<typeof loader>();
 
   return (
     <VStack spacing={0} className="h-full">
-      <IssuesTable data={issues} count={count} types={types} />
+      <Suspense fallback={<TableSkeleton />}>
+        <Await
+          resolve={issues}
+          errorElement={
+            <div className="p-4 text-sm text-red-500">
+              <Trans>Failed to load issues.</Trans>
+            </div>
+          }
+        >
+          {(issues) => (
+            <IssuesTable
+              data={issues.data ?? []}
+              count={issues.count ?? 0}
+              types={types}
+            />
+          )}
+        </Await>
+      </Suspense>
       <Outlet />
     </VStack>
   );
