@@ -229,7 +229,7 @@ export default function AuthenticatedRoute() {
   const { session, user, companySettings, openClockEntry, printerRoutes } =
     useLoaderData<typeof loader>();
   const navigate = useNavigate();
-  const { isOpen, training, dismiss } = useTrainingPanel();
+  const { training, dismiss } = useTrainingPanel();
 
   useKeyboardWedge({
     test: (input) => input.startsWith(MES_URL) || input.startsWith(ERP_URL),
@@ -284,7 +284,7 @@ export default function AuthenticatedRoute() {
                 </div>
                 <TrainingPanel
                   training={training}
-                  isOpen={isOpen}
+                  isOpen={false}
                   onDismiss={dismiss}
                 />
                 {companySettings?.timeCardEnabled && (
