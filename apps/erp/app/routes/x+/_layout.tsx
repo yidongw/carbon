@@ -62,8 +62,16 @@ import { ERP_URL, MES_URL, path } from "~/utils/path";
 
 export const shouldRevalidate: ShouldRevalidateFunction = ({
   currentUrl,
+  formAction,
   defaultShouldRevalidate
 }) => {
+  // After a magic-link login the callback action redirects here via useFetcher.
+  // React Router would otherwise revalidate all loaders a second time even though
+  // the session was just established — skip it.
+  if (formAction?.startsWith("/callback")) {
+    return false;
+  }
+
   if (
     currentUrl.pathname.startsWith("/x/settings") ||
     currentUrl.pathname.startsWith("/x/users") ||
