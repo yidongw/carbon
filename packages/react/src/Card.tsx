@@ -1,3 +1,4 @@
+import { useLingui } from "@lingui/react/macro";
 import type { HTMLAttributes } from "react";
 import { createContext, forwardRef, useContext, useState } from "react";
 import { LuChevronDown, LuChevronUp } from "react-icons/lu";
@@ -28,6 +29,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
     },
     ref
   ) => {
+    const { t } = useLingui();
     const [uncontrolledIsCollapsed, setUncontrolledIsCollapsed] =
       useState(defaultCollapsed);
 
@@ -53,7 +55,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
         >
           {isCollapsible && (
             <IconButton
-              aria-label={isCollapsed ? "Expand" : "Collapse"}
+              aria-label={isCollapsed ? t`Expand` : t`Collapse`}
               variant="ghost"
               onClick={toggle}
               className="absolute right-2 top-2"

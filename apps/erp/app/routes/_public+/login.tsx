@@ -59,6 +59,7 @@ import {
 } from "react-router";
 import type { Result } from "~/types";
 import { path } from "~/utils/path";
+import { useFormatValidationError } from "~/utils/formatValidationError";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Carbon | Login" }];
@@ -196,6 +197,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function LoginRoute() {
   const { t } = useLingui();
+  const formatError = useFormatValidationError();
   const { providers, isWeChatBrowser } = useLoaderData<typeof loader>();
   const hasOutlookAuth = providers.includes("azure");
   const hasGoogleAuth = providers.includes("google");
@@ -309,7 +311,7 @@ export default function LoginRoute() {
     });
 
     if (error) {
-      toast.error(error.message);
+      toast.error(formatError(error.message));
     }
   };
 
@@ -325,7 +327,7 @@ export default function LoginRoute() {
     });
 
     if (error) {
-      toast.error(error.message);
+      toast.error(formatError(error.message));
     }
   };
 
@@ -517,7 +519,7 @@ export default function LoginRoute() {
                         <Trans>Authentication Error</Trans>
                       </AlertTitle>
                       <AlertDescription>
-                        {fetcher.data?.message}
+                        {fetcher.data?.message && formatError(fetcher.data.message)}
                       </AlertDescription>
                     </Alert>
                   )}

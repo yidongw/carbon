@@ -1,4 +1,5 @@
 import { useCarbon } from "@carbon/auth";
+import { Trans, useLingui } from "@lingui/react/macro";
 import {
   Input as FormInput,
   Number as FormNumberInput,
@@ -103,6 +104,7 @@ export function IssueMaterialModal({
 }) {
   const { carbon } = useCarbon();
   const [items] = useItems();
+  const { t } = useLingui();
   const numberFormatter = useNumberFormatter({ maximumFractionDigits: 4 });
 
   // Item selection state
@@ -188,15 +190,15 @@ export function IssueMaterialModal({
           const label = expired ? (
             <span key={sn.id} className="flex items-center gap-2">
               <span className="truncate">{labelText}</span>
-              <Badge variant="red">Expired</Badge>
+              <Badge variant="red"><Trans>Expired</Trans></Badge>
             </span>
           ) : (
             labelText
           );
           const helperParts = [
-            sn.readableId ? `Serial ${sn.readableId}` : null,
+            sn.readableId ? t`Serial ${sn.readableId}` : null,
             sn.expirationDate
-              ? `${expired ? "Expired" : "Expires"} ${formatExpiry(sn.expirationDate)}`
+              ? `${expired ? t`Expired` : t`Expires`} ${formatExpiry(sn.expirationDate)}`
               : null
           ].filter(Boolean) as string[];
           return {
@@ -228,12 +230,12 @@ export function IssueMaterialModal({
           const expired = isExpiryPast(bn.expirationDate);
           const expiryNote = bn.expirationDate
             ? expired
-              ? `EXPIRED ${formatExpiry(bn.expirationDate)}`
-              : `Expires ${formatExpiry(bn.expirationDate)}`
+              ? t`EXPIRED ${formatExpiry(bn.expirationDate)}`
+              : t`Expires ${formatExpiry(bn.expirationDate)}`
             : null;
           const stockHelper = bn.readableId
-            ? `${bn.id.slice(0, 10)} - ${bn.quantity} Available of Batch ${bn.readableId}`
-            : `${bn.id.slice(0, 10)} - ${bn.quantity} Available`;
+            ? t`${bn.id.slice(0, 10)} - ${bn.quantity} Available of Batch ${bn.readableId}`
+            : t`${bn.id.slice(0, 10)} - ${bn.quantity} Available`;
           return {
             label: bn.sourceDocumentReadableId ?? "",
             value: bn.id,
@@ -251,7 +253,7 @@ export function IssueMaterialModal({
     return trackedInputs.map((input) => ({
       label: input.id,
       value: input.id,
-      helper: `${input.quantity} ${input.readableId ? `of Batch ${input.readableId}` : ""}`
+      helper: input.readableId ? t`${input.quantity} of Batch ${input.readableId}` : `${input.quantity}`
     }));
   }, [trackedInputs]);
 
@@ -371,41 +373,41 @@ export function IssueMaterialModal({
   // Validation functions
   const validateSerialNumber = useCallback(
     (value: string, index: number) => {
-      if (!value) return "Serial number is required";
+      if (!value) return t`Serial number is required`;
       const isDuplicate = selectedSerialNumbers.some(
         (sn, i) => sn.id === value && i !== index
       );
-      if (isDuplicate) return "Duplicate serial number";
+      if (isDuplicate) return t`Duplicate serial number`;
       const isValid = serialOptions.some((opt) => opt.value === value);
       if (!isValid) {
         const sn = serialNumbers?.data?.find((s) => s.id === value);
-        if (sn) return `Serial number is ${sn.status}`;
-        return "Serial number is not available";
+        if (sn) return t`Serial number is ${sn.status}`;
+        return t`Serial number is not available`;
       }
       return null;
     },
-    [selectedSerialNumbers, serialOptions, serialNumbers?.data]
+    [selectedSerialNumbers, serialOptions, serialNumbers?.data, t]
   );
 
   const validateBatchNumber = useCallback(
     (value: string, qty: number, index: number) => {
-      if (!value) return "Batch number is required";
+      if (!value) return t`Batch number is required`;
       const isDuplicate = selectedBatchNumbers.some(
         (bn, i) => bn.id === value && i !== index
       );
-      if (isDuplicate) return "Duplicate batch number";
+      if (isDuplicate) return t`Duplicate batch number`;
       const batchOption = batchOptions.find((opt) => opt.value === value);
       if (!batchOption) {
         const bn = batchNumbers?.data?.find((b) => b.id === value);
-        if (bn) return `Batch number is ${bn.status}`;
-        return "Batch number is not available";
+        if (bn) return t`Batch number is ${bn.status}`;
+        return t`Batch number is not available`;
       }
-      if (qty <= 0) return "Quantity must be greater than 0";
+      if (qty <= 0) return t`Quantity must be greater than 0`;
       if (qty > batchOption.availableQuantity)
-        return `Quantity cannot exceed available quantity (${batchOption.availableQuantity})`;
+        return t`Quantity cannot exceed available quantity (${batchOption.availableQuantity})`;
       return null;
     },
-    [selectedBatchNumbers, batchOptions, batchNumbers?.data]
+    [selectedBatchNumbers, batchOptions, batchNumbers?.data, t]
   );
 
   // Update functions for serial numbers
@@ -493,7 +495,7 @@ export function IssueMaterialModal({
       if (!value) {
         setBatchErrors((prev) => ({
           ...prev,
-          [index]: "Batch number is required"
+          [index]: t`Batch number is required`
         }));
         return false;
       }
@@ -505,7 +507,7 @@ export function IssueMaterialModal({
       if (duplicateIndices.length > 0) {
         setBatchErrors((prev) => ({
           ...prev,
-          [index]: "Duplicate batch number"
+          [index]: t`Duplicate batch number`
         }));
         return false;
       }
@@ -514,7 +516,7 @@ export function IssueMaterialModal({
       if (!batchOption) {
         setBatchErrors((prev) => ({
           ...prev,
-          [index]: "Batch number is not available"
+          [index]: t`Batch number is not available`
         }));
         return false;
       }
@@ -546,7 +548,7 @@ export function IssueMaterialModal({
       });
       return true;
     },
-    [selectedBatchNumbers, batchOptions, updateBatchNumber]
+    [selectedBatchNumbers, batchOptions, updateBatchNumber, t]
   );
 
   const toggleTrackedInput = useCallback((id: string) => {
@@ -561,13 +563,13 @@ export function IssueMaterialModal({
   // Submit handlers
   const handleSubmitSerial = useCallback(() => {
     if (!parentId) {
-      toast.error("Parent tracking ID is required for serial tracked items.");
+      toast.error(t`Parent tracking ID is required for serial tracked items.`);
       return;
     }
 
     // Either material.id or (operationId + selectedItemId) must be provided
     if (!material?.id && !selectedItemId) {
-      toast.error("Please select an item to issue.");
+      toast.error(t`Please select an item to issue.`);
       return;
     }
 
@@ -633,13 +635,13 @@ export function IssueMaterialModal({
 
   const handleSubmitBatch = useCallback(() => {
     if (!parentId) {
-      toast.error("Parent tracking ID is required for batch tracked items.");
+      toast.error(t`Parent tracking ID is required for batch tracked items.`);
       return;
     }
 
     // Either material.id or (operationId + selectedItemId) must be provided
     if (!material?.id && !selectedItemId) {
-      toast.error("Please select an item to issue.");
+      toast.error(t`Please select an item to issue.`);
       return;
     }
 
@@ -705,12 +707,12 @@ export function IssueMaterialModal({
 
   const handleUnconsumeSerial = useCallback(() => {
     if (selectedTrackedInputs.length === 0) {
-      toast.error("Please select at least one item to unconsume");
+      toast.error(t`Please select at least one item to unconsume`);
       return;
     }
 
     if (!material?.id || !parentId) {
-      toast.error("Material and parent ID are required to unconsume");
+      toast.error(t`Material and parent ID are required to unconsume`);
       return;
     }
 
@@ -732,12 +734,12 @@ export function IssueMaterialModal({
 
   const handleUnconsumeBatch = useCallback(() => {
     if (!unconsumedBatch) {
-      toast.error("Please select a batch to unconsume");
+      toast.error(t`Please select a batch to unconsume`);
       return;
     }
 
     if (!material?.id || !parentId) {
-      toast.error("Material and parent ID are required to unconsume");
+      toast.error(t`Material and parent ID are required to unconsume`);
       return;
     }
 
@@ -837,11 +839,11 @@ export function IssueMaterialModal({
             <ModalTitle>
               {material?.description ??
                 getItemReadableId(items, selectedItemId) ??
-                "Issue Material"}
+                t`Issue Material`}
             </ModalTitle>
             {!material && (
               <ModalDescription>
-                Select an item and specify the quantity to issue
+                <Trans>Select an item and specify the quantity to issue</Trans>
               </ModalDescription>
             )}
           </ModalHeader>
@@ -851,17 +853,17 @@ export function IssueMaterialModal({
             <ModalBody>
               <Alert variant="default" className="mb-4">
                 <LuGitBranch className="mr-2" />
-                <AlertTitle>Batch Split Occurred</AlertTitle>
+                <AlertTitle><Trans>Batch Split Occurred</Trans></AlertTitle>
                 <AlertDescription>
                   <div className="flex flex-col gap-2">
-                    <p>A new batch entity was created from a split:</p>
+                    <p><Trans>A new batch entity was created from a split:</Trans></p>
                     <ul className="list-disc list-inside space-y-1">
                       {splitEntitiesResult.map((split) => (
                         <li key={split.newId} className="flex flex-col text-sm">
                           <span className="text-md font-semibold">
                             {split.readableId ??
                               getItemReadableId(items, material?.itemId) ??
-                              "Material"}
+                              t`Material`}
                           </span>
                           <div className="flex gap-2 items-center">
                             <span className="font-mono flex gap-1 items-center">
@@ -887,7 +889,7 @@ export function IssueMaterialModal({
                                 );
                               }}
                             >
-                              Print Label
+                              <Trans>Print Label</Trans>
                             </Button>
                             <Button
                               variant="secondary"
@@ -897,7 +899,7 @@ export function IssueMaterialModal({
                                 convertDisclosure.onOpen();
                               }}
                             >
-                              Convert
+                              <Trans>Convert</Trans>
                             </Button>
                             <Button
                               variant="secondary"
@@ -907,7 +909,7 @@ export function IssueMaterialModal({
                                 scrapDisclosure.onOpen();
                               }}
                             >
-                              Scrap
+                              <Trans>Scrap</Trans>
                             </Button>
                           </div>
                         </li>
@@ -951,10 +953,10 @@ export function IssueMaterialModal({
                   {showItemSelector && (
                     <div>
                       <label className="block text-sm font-medium mb-1">
-                        Item
+                        <Trans>Item</Trans>
                       </label>
                       <ComboboxBase
-                        placeholder="Select an item..."
+                        placeholder={t`Select an item...`}
                         value={selectedItemId}
                         onChange={(value) => {
                           handleItemChange(value);
@@ -974,7 +976,7 @@ export function IssueMaterialModal({
 
                   {isLoadingItem && (
                     <div className="text-sm text-muted-foreground">
-                      Loading item details...
+                      <Trans>Loading item details...</Trans>
                     </div>
                   )}
 
@@ -983,7 +985,7 @@ export function IssueMaterialModal({
                       {!material?.id && (
                         <div>
                           <label className="block text-sm font-medium mb-1">
-                            Adjustment Type
+                            <Trans>Adjustment Type</Trans>
                           </label>
                           <Select
                             name="adjustmentType"
@@ -994,10 +996,10 @@ export function IssueMaterialModal({
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="Positive Adjmt.">
-                                Add to Inventory
+                                <Trans>Add to Inventory</Trans>
                               </SelectItem>
                               <SelectItem value="Negative Adjmt.">
-                                Pull from Inventory
+                                <Trans>Pull from Inventory</Trans>
                               </SelectItem>
                             </SelectContent>
                           </Select>
@@ -1015,7 +1017,7 @@ export function IssueMaterialModal({
                       */}
                       <FormNumberInput
                         name="quantity"
-                        label="Quantity"
+                        label={t`Quantity`}
                         minValue={0.01}
                       />
                     </>
@@ -1024,7 +1026,7 @@ export function IssueMaterialModal({
               </ModalBody>
               <ModalFooter>
                 <Button variant="secondary" onClick={onClose}>
-                  Cancel
+                  <Trans>Cancel</Trans>
                 </Button>
                 <Button
                   type="submit"
@@ -1036,7 +1038,7 @@ export function IssueMaterialModal({
                     isLoadingItem
                   }
                 >
-                  Issue
+                  <Trans>Issue</Trans>
                 </Button>
               </ModalFooter>
             </ValidatedForm>
@@ -1048,10 +1050,10 @@ export function IssueMaterialModal({
                   {showItemSelector && (
                     <div>
                       <label className="block text-sm font-medium mb-1">
-                        Item
+                        <Trans>Item</Trans>
                       </label>
                       <ComboboxBase
-                        placeholder="Select an item..."
+                        placeholder={t`Select an item...`}
                         value={selectedItemId}
                         onChange={handleItemChange}
                         options={itemOptions}
@@ -1061,7 +1063,7 @@ export function IssueMaterialModal({
 
                   {isLoadingItem && (
                     <div className="text-sm text-muted-foreground">
-                      Loading item details...
+                      <Trans>Loading item details...</Trans>
                     </div>
                   )}
 
@@ -1075,16 +1077,16 @@ export function IssueMaterialModal({
                       >
                         <TabsTrigger value="scan">
                           <LuQrCode className="mr-2" />
-                          Scan
+                          <Trans>Scan</Trans>
                         </TabsTrigger>
                         <TabsTrigger value="select">
                           <LuList className="mr-2" />
-                          Select
+                          <Trans>Select</Trans>
                         </TabsTrigger>
                         {hasTrackedInputs && (
                           <TabsTrigger value="unconsume">
                             <LuUndo2 className="mr-2" />
-                            Unconsume
+                            <Trans>Unconsume</Trans>
                           </TabsTrigger>
                         )}
                       </TabsList>
@@ -1100,7 +1102,7 @@ export function IssueMaterialModal({
                                 <div className="flex-1">
                                   <InputGroup>
                                     <Input
-                                      placeholder={`Serial Number ${index + 1}`}
+                                      placeholder={t`Serial Number ${index + 1}`}
                                       value={sn.id}
                                       onChange={(e) => {
                                         const newValue = e.target.value;
@@ -1164,7 +1166,7 @@ export function IssueMaterialModal({
                                 </div>
                                 {index > 0 && (
                                   <IconButton
-                                    aria-label="Remove Serial Number"
+                                    aria-label={t`Remove Serial Number`}
                                     icon={<LuX />}
                                     variant="ghost"
                                     onClick={() => removeSerialNumber(index)}
@@ -1186,7 +1188,7 @@ export function IssueMaterialModal({
                               leftIcon={<LuCirclePlus />}
                               onClick={addSerialNumber}
                             >
-                              Add
+                              <Trans>Add</Trans>
                             </Button>
                           </div>
                         </div>
@@ -1202,7 +1204,7 @@ export function IssueMaterialModal({
                               <div className="flex items-center gap-2">
                                 <div className="flex-1">
                                   <ComboboxBase
-                                    placeholder={`Select Serial Number ${index + 1}`}
+                                    placeholder={t`Select Serial Number ${index + 1}`}
                                     value={sn.id}
                                     onChange={(value) => {
                                       const newSerialNumbers = [
@@ -1234,7 +1236,7 @@ export function IssueMaterialModal({
                                 </div>
                                 {index > 0 && (
                                   <IconButton
-                                    aria-label="Remove Serial Number"
+                                    aria-label={t`Remove Serial Number`}
                                     icon={<LuX />}
                                     variant="ghost"
                                     onClick={() => removeSerialNumber(index)}
@@ -1256,7 +1258,7 @@ export function IssueMaterialModal({
                               leftIcon={<LuCirclePlus />}
                               onClick={addSerialNumber}
                             >
-                              Add
+                              <Trans>Add</Trans>
                             </Button>
                           </div>
                         </div>
@@ -1288,7 +1290,7 @@ export function IssueMaterialModal({
                                   </div>
                                   {input.readableId && (
                                     <div className="text-xs text-muted-foreground">
-                                      Serial: {input.readableId}
+                                      <Trans>Serial: {input.readableId}</Trans>
                                     </div>
                                   )}
                                 </label>
@@ -1296,9 +1298,9 @@ export function IssueMaterialModal({
                             ))}
                             {trackedInputs.length === 0 && (
                               <Alert variant="warning">
-                                <AlertTitle>No consumed materials</AlertTitle>
+                                <AlertTitle><Trans>No consumed materials</Trans></AlertTitle>
                                 <AlertDescription>
-                                  There are no consumed materials to unconsume.
+                                  <Trans>There are no consumed materials to unconsume.</Trans>
                                 </AlertDescription>
                               </Alert>
                             )}
@@ -1318,16 +1320,16 @@ export function IssueMaterialModal({
                       >
                         <TabsTrigger value="scan">
                           <LuQrCode className="mr-2" />
-                          Scan
+                          <Trans>Scan</Trans>
                         </TabsTrigger>
                         <TabsTrigger value="select">
                           <LuList className="mr-2" />
-                          Select
+                          <Trans>Select</Trans>
                         </TabsTrigger>
                         {hasTrackedInputs && (
                           <TabsTrigger value="unconsume">
                             <LuUndo2 className="mr-2" />
-                            Unconsume
+                            <Trans>Unconsume</Trans>
                           </TabsTrigger>
                         )}
                       </TabsList>
@@ -1354,7 +1356,7 @@ export function IssueMaterialModal({
                                           index
                                         );
                                       }}
-                                      placeholder="Scan batch number"
+                                      placeholder={t`Scan batch number`}
                                     />
                                     <InputRightElement className="pl-2">
                                       {!batchErrors[index] && batch.id ? (
@@ -1403,7 +1405,7 @@ export function IssueMaterialModal({
                                 </div>
                                 {index > 0 && (
                                   <IconButton
-                                    aria-label="Remove Batch Number"
+                                    aria-label={t`Remove Batch Number`}
                                     icon={<LuX />}
                                     variant="ghost"
                                     onClick={() => removeBatchNumber(index)}
@@ -1424,7 +1426,7 @@ export function IssueMaterialModal({
                               leftIcon={<LuCirclePlus />}
                               onClick={addBatchNumber}
                             >
-                              Add
+                              <Trans>Add</Trans>
                             </Button>
                           </div>
                         </div>
@@ -1446,7 +1448,7 @@ export function IssueMaterialModal({
                                       validateBatchInput(value, index);
                                     }}
                                     options={batchOptions}
-                                    placeholder="Select batch number"
+                                    placeholder={t`Select batch number`}
                                   />
                                 </div>
                                 <div className="w-24">
@@ -1486,7 +1488,7 @@ export function IssueMaterialModal({
                                 </div>
                                 {index > 0 && (
                                   <IconButton
-                                    aria-label="Remove Batch Number"
+                                    aria-label={t`Remove Batch Number`}
                                     icon={<LuX />}
                                     variant="ghost"
                                     onClick={() => removeBatchNumber(index)}
@@ -1507,7 +1509,7 @@ export function IssueMaterialModal({
                               leftIcon={<LuCirclePlus />}
                               onClick={addBatchNumber}
                             >
-                              Add Batch
+                              <Trans>Add Batch</Trans>
                             </Button>
                           </div>
                         </div>
@@ -1522,7 +1524,7 @@ export function IssueMaterialModal({
                                   value={unconsumedBatch}
                                   onChange={setUnconsumedBatch}
                                   options={unconsumeOptions}
-                                  placeholder="Select batch to unconsume"
+                                  placeholder={t`Select batch to unconsume`}
                                 />
                               </div>
                               {unconsumedBatch && (
@@ -1557,24 +1559,24 @@ export function IssueMaterialModal({
                     >
                       <AlertTitle>
                         {expiredEntityPolicy === "Warn"
-                          ? "Expired stock selected"
-                          : "Override required"}
+                          ? <Trans>Expired stock selected</Trans>
+                          : <Trans>Override required</Trans>}
                       </AlertTitle>
                       <AlertDescription>
                         <div className="flex flex-col gap-2">
                           <p>
                             {expiredSerialIds.length + expiredBatchIds.length}{" "}
-                            of the selected{" "}
-                            {trackingType === "Serial" ? "serials" : "batches"}{" "}
-                            are past their expiration date.
+                            <Trans>of the selected</Trans>{" "}
+                            {trackingType === "Serial" ? t`serials` : t`batches`}{" "}
+                            <Trans>are past their expiration date.</Trans>
                             {expiredEntityPolicy === "Warn"
-                              ? " The issue will go through with a warning."
-                              : " Enter a reason below to record the override."}
+                              ? <Trans> The issue will go through with a warning.</Trans>
+                              : <Trans> Enter a reason below to record the override.</Trans>}
                           </p>
                           {expiredEntityPolicy === "BlockWithOverride" && (
                             <textarea
                               className="border rounded-md p-2 text-sm bg-background"
-                              placeholder="Reason for issuing expired stock"
+                              placeholder={t`Reason for issuing expired stock`}
                               value={expiryOverrideReason}
                               onChange={(e) =>
                                 setExpiryOverrideReason(e.target.value)
@@ -1591,12 +1593,12 @@ export function IssueMaterialModal({
               <ModalFooter>
                 {splitEntitiesResult.length > 0 ? (
                   <Button variant="primary" onClick={onClose}>
-                    Close
+                    <Trans>Close</Trans>
                   </Button>
                 ) : (
                   <>
                     <Button variant="secondary" onClick={onClose}>
-                      Cancel
+                      <Trans>Cancel</Trans>
                     </Button>
                     {activeTab === "unconsume" ? (
                       <Button
@@ -1614,7 +1616,7 @@ export function IssueMaterialModal({
                             : !unconsumedBatch)
                         }
                       >
-                        Unconsume
+                        <Trans>Unconsume</Trans>
                       </Button>
                     ) : (
                       <Button
@@ -1631,7 +1633,7 @@ export function IssueMaterialModal({
                           isLoadingItem
                         }
                       >
-                        Issue
+                        <Trans>Issue</Trans>
                       </Button>
                     )}
                   </>
@@ -1644,7 +1646,7 @@ export function IssueMaterialModal({
           {splitEntitiesResult.length > 0 && (
             <ModalFooter>
               <Button variant="primary" onClick={onClose}>
-                Close
+                <Trans>Close</Trans>
               </Button>
             </ModalFooter>
           )}
@@ -1713,6 +1715,7 @@ function ConvertSplitModal({
     quantity: number;
   }) => void;
 }) {
+  const { t } = useLingui();
   const fetcher = useFetcher<{
     success: boolean;
     message: string;
@@ -1725,12 +1728,12 @@ function ConvertSplitModal({
 
   useEffect(() => {
     if (fetcher.data?.success && fetcher.data.convertedEntity) {
-      toast.success("Entity converted successfully");
+      toast.success(t`Entity converted successfully`);
       onSuccess(fetcher.data.convertedEntity);
     } else if (fetcher.data?.success === false) {
-      toast.error(fetcher.data.message || "Failed to convert entity");
+      toast.error(fetcher.data.message || t`Failed to convert entity`);
     }
-  }, [fetcher.data, onSuccess]);
+  }, [fetcher.data, onSuccess, t]);
 
   if (!trackedEntity) return null;
 
@@ -1739,10 +1742,10 @@ function ConvertSplitModal({
       <ModalContent>
         <ModalHeader>
           <ModalTitle>
-            Convert to New {itemType === "Material" ? "Size" : "Revision"}
+            <Trans>Convert to New {itemType === "Material" ? "Size" : "Revision"}</Trans>
           </ModalTitle>
           <ModalDescription>
-            Convert this tracked entity into a quantity of 1 of a new size.
+            <Trans>Convert this tracked entity into a quantity of 1 of a new size.</Trans>
           </ModalDescription>
         </ModalHeader>
         <ValidatedForm
@@ -1761,19 +1764,19 @@ function ConvertSplitModal({
             <div className="flex flex-col gap-4">
               <FormInput
                 name="newRevision"
-                label={`New ${itemType === "Material" ? "Size" : "Revision"}`}
+                label={t`New ${itemType === "Material" ? "Size" : "Revision"}`}
                 autoFocus
               />
               <FormNumberInput
                 name="quantity"
-                label="Quantity"
+                label={t`Quantity`}
                 minValue={0.001}
               />
             </div>
           </ModalBody>
           <ModalFooter>
             <Button variant="secondary" onClick={onCancel}>
-              Cancel
+              <Trans>Cancel</Trans>
             </Button>
             <Button
               isLoading={fetcher.state !== "idle"}
@@ -1781,7 +1784,7 @@ function ConvertSplitModal({
               type="submit"
               variant="primary"
             >
-              Convert
+              <Trans>Convert</Trans>
             </Button>
           </ModalFooter>
         </ValidatedForm>
@@ -1804,6 +1807,7 @@ function ScrapSplitModal({
   onCancel: () => void;
   onSuccess: () => void;
 }) {
+  const { t } = useLingui();
   const fetcher = useFetcher<{ success: boolean; message: string }>();
 
   useEffect(() => {
@@ -1818,15 +1822,15 @@ function ScrapSplitModal({
     <Modal open onOpenChange={onCancel}>
       <ModalContent>
         <ModalHeader>
-          <ModalTitle>Are you sure you want to scrap this batch?</ModalTitle>
+          <ModalTitle><Trans>Are you sure you want to scrap this batch?</Trans></ModalTitle>
           <ModalDescription>
-            The remaining quantity will be removed from inventory and issued to
-            the job
+            <Trans>The remaining quantity will be removed from inventory and issued to
+            the job</Trans>
           </ModalDescription>
         </ModalHeader>
         <ModalFooter>
           <Button variant="secondary" onClick={onCancel}>
-            Cancel
+            <Trans>Cancel</Trans>
           </Button>
           <fetcher.Form
             method="post"
@@ -1842,7 +1846,7 @@ function ScrapSplitModal({
               type="submit"
               variant="destructive"
             >
-              Scrap
+              <Trans>Scrap</Trans>
             </Button>
           </fetcher.Form>
         </ModalFooter>
