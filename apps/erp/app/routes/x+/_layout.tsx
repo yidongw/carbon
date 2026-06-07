@@ -19,8 +19,7 @@ import {
   ItarPopup,
   TooltipProvider,
   useKeyboardWedge,
-  useMount,
-  useNProgress
+  useMount
 } from "@carbon/react";
 import { getStripeCustomerByCompanyId } from "@carbon/stripe/stripe.server";
 import { Edition } from "@carbon/utils";
@@ -222,7 +221,6 @@ export default function AuthenticatedRoute() {
   const navigate = useNavigate();
   const { isOpen, training, dismiss } = useTrainingPanel();
 
-  useNProgress();
   useKeyboardWedge({
     test: (input) => input.startsWith(MES_URL) || input.startsWith(ERP_URL),
     callback: (input) => {
