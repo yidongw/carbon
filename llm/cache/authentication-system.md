@@ -394,7 +394,16 @@ Environment variables in `packages/auth/src/config/env.ts`:
 1. **New Company Creation** (`/onboarding/company`):
 
    - Creates new company with provided details
-   - Seeds company with default data via `seedCompany()`
+   - Seeds company with default data via `seedCompany()`, which calls the
+     `seed_company(company_id, user_id, parent_company_id, seed jsonb)` Postgres
+     RPC (a SECURITY DEFINER plpgsql function in migration
+     `20260607000000_seed-company-function.sql`). This replaced the old
+     `seed-company` edge function (removed) to avoid its ~5s cold start and 95
+     sequential account inserts; the whole seed now runs server-side in one
+     transaction/round trip. The seed *data* lives in
+     `packages/database/supabase/functions/lib/seed.data.ts` (exported as
+     `companySeedData` via `@carbon/database/seed`) and is passed in as the
+     `seed` jsonb arg — the RPC is data-agnostic. `seed-dev.ts` calls the same RPC.
    - Creates headquarters location
    - Creates employee job record for the user
    - Updates session with new company ID
