@@ -105,7 +105,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     dueDate: validation.data.dueDate || null,
     closeDate: validation.data.closeDate || null,
     description: validation.data.description || null,
-    quantity: validation.data.quantity ?? null,
+    quantity: validation.data.quantity ?? undefined,
     requiredActionIds: validation.data.requiredActionIds,
     approvalRequirements: validation.data.approvalRequirements,
     customFields: setCustomFields(formData),

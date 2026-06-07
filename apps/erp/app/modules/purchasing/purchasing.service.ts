@@ -24,6 +24,7 @@ import type {
   purchaseOrderLineValidator,
   purchaseOrderPaymentValidator,
   purchaseOrderStatusType,
+  purchaseOrderTypeType,
   purchaseOrderValidator,
   purchasingRfqStatusType,
   selectedLinesValidator,
@@ -1439,7 +1440,7 @@ export async function updatePurchaseOrder(
     supplierContactId?: string | null;
     supplierLocationId?: string | null;
     supplierReference?: string;
-    purchaseOrderType?: string;
+    purchaseOrderType?: (typeof purchaseOrderTypeType)[number];
     notes?: string | null;
     customFields?: Json;
   },
@@ -1807,7 +1808,7 @@ export async function insertSupplierQuote(
     customFields?: Json;
     quotedDate?: string;
     supplierReference?: string;
-    supplierQuoteType?: string;
+    supplierQuoteType?: (typeof purchaseOrderTypeType)[number];
   }
 ): Promise<{
   data: { id: string; supplierQuoteId: string } | null;

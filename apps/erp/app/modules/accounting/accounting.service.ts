@@ -12,12 +12,16 @@ import type {
   currencyValidator,
   defaultBalanceSheetAccountValidator,
   defaultIncomeAcountValidator,
+  depreciationMethods,
   dimensionValidator,
   fiscalYearSettingsValidator,
   intercompanyTransactionValidator,
   journalEntryLineValidator,
   journalEntryValidator,
-  paymentTermValidator
+  macrsConventions,
+  macrsPropertyClasses,
+  paymentTermValidator,
+  taxDepreciationMethods
 } from "./accounting.models";
 import type { Transaction, TranslatedBalance } from "./types";
 
@@ -2184,16 +2188,16 @@ export async function updateFixedAsset(
     name?: string;
     description?: string | null;
     serialNumber?: string | null;
-    depreciationMethod?: string;
+    depreciationMethod?: (typeof depreciationMethods)[number];
     usefulLifeMonths?: number;
     residualValuePercent?: number;
     assetLifetimeUsage?: number | null;
     locationId?: string | null;
-    taxDepreciationMethod?: string | null;
+    taxDepreciationMethod?: (typeof taxDepreciationMethods)[number] | null;
     taxUsefulLifeMonths?: number | null;
     taxResidualValuePercent?: number | null;
-    macrsPropertyClass?: string | null;
-    macrsConvention?: string | null;
+    macrsPropertyClass?: (typeof macrsPropertyClasses)[number] | null;
+    macrsConvention?: (typeof macrsConventions)[number] | null;
     bonusDepreciationPercent?: number | null;
   }
 ): Promise<{
@@ -2256,7 +2260,7 @@ export async function insertDepreciationRun(
     lines: Array<{
       fixedAssetId: string;
       amount: number;
-      taxAmount?: number;
+      taxAmount?: number | null;
     }>;
   }
 ): Promise<{

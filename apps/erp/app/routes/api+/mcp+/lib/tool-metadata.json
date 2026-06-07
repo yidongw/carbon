@@ -1,5 +1,5 @@
 {
-  "generated": "2026-06-07T14:53:04.230Z",
+  "generated": "2026-06-07T18:36:42.934Z",
   "totalTools": 1179,
   "modules": 15,
   "tools": [
@@ -22759,10 +22759,7 @@
             ]
           },
           "quantity": {
-            "type": [
-              "number",
-              "null"
-            ]
+            "type": "number"
           },
           "requiredActionIds": {
             "type": "array",
@@ -25863,11 +25860,14 @@
           "priority": {
             "type": "string"
           },
-          "severity": {
-            "type": "string"
-          },
+          "severity": {},
           "source": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "Scheduled",
+              "Reactive",
+              "Non-Conformance"
+            ]
           },
           "oeeImpact": {
             "type": "string"

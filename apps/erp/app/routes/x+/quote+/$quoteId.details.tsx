@@ -90,7 +90,6 @@ export async function action({ request, params }: ActionFunctionArgs) {
     client,
     {
       id,
-      name: validation.data.name || null,
       status: validation.data.status,
       currencyCode: validation.data.currencyCode,
       expirationDate: validation.data.expirationDate || null,

@@ -28,6 +28,7 @@ import type {
   issueValidator,
   issueWorkflowValidator,
   itemSamplingPlanValidator,
+  nonConformanceApprovalRequirement,
   nonConformanceReviewerValidator,
   nonConformanceStatus,
   qualityDocumentStepValidator,
@@ -1387,7 +1388,7 @@ export async function insertGauge(
   if (gauge.error) return { data: null, error: gauge.error };
 
   return {
-    data: { id: gauge.data.id, gaugeId: gauge.data.gaugeId },
+    data: { id: gauge.data.id!, gaugeId: gauge.data.gaugeId! },
     error: null
   };
 }
@@ -1426,7 +1427,7 @@ export async function updateGauge(
     .single();
 
   if (result.error) return { data: null, error: result.error };
-  return { data: { id: result.data.id }, error: null };
+  return { data: { id: result.data.id! }, error: null };
 }
 
 /** @deprecated Use insertGauge for new gauges, updateGauge for existing gauges */
@@ -1581,7 +1582,7 @@ export async function insertIssue(
     closeDate?: string;
     quantity?: number;
     requiredActionIds?: string[];
-    approvalRequirements?: string[];
+    approvalRequirements?: (typeof nonConformanceApprovalRequirement)[number][];
     items?: string[];
     jobOperationId?: string;
     customerId?: string;
@@ -1784,9 +1785,9 @@ export async function updateIssue(
     dueDate?: string | null;
     closeDate?: string | null;
     description?: string | null;
-    quantity?: number | null;
+    quantity?: number;
     requiredActionIds?: string[];
-    approvalRequirements?: string[];
+    approvalRequirements?: (typeof nonConformanceApprovalRequirement)[number][];
     customFields?: Json;
   }
 ): Promise<{

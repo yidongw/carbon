@@ -16,6 +16,7 @@ import type {
   maintenanceDispatchWorkCenterValidator,
   maintenanceScheduleItemValidator,
   maintenanceScheduleValidator,
+  oeeImpact,
   partnerValidator,
   processValidator,
   trainingQuestionValidator,
@@ -1376,11 +1377,15 @@ export async function updateMaintenanceDispatch(
   input: {
     id: string;
     updatedBy: string;
-    status?: string;
-    priority?: string;
-    severity?: string;
-    source?: string;
-    oeeImpact?: string;
+    status?: (typeof maintenanceDispatchStatus)[number];
+    priority?: (typeof maintenanceDispatchPriority)[number];
+    severity?:
+      | "Preventive"
+      | "Operator Performed"
+      | "Support Required"
+      | "OEM Required";
+    source?: "Scheduled" | "Reactive" | "Non-Conformance";
+    oeeImpact?: (typeof oeeImpact)[number];
     workCenterId?: string | null;
     locationId?: string;
     assignee?: string | null;
