@@ -6,7 +6,7 @@ import {
   error,
   safeRedirect
 } from "@carbon/auth";
-import { makeAuthSession } from "@carbon/auth/auth.server";
+import { makeAuthSessionFromTokens } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { getCompanyId, setCompanyId } from "@carbon/auth/company.server";
 import {
@@ -51,27 +51,27 @@ export async function action({ request }: ActionFunctionArgs) {
     });
   }
 
-  const { refreshToken, userId, redirectTo } = validation.data;
+  const { accessToken, refreshToken, userId, redirectTo } = validation.data;
   const serviceRole = getCarbonServiceRole();
 
-  const [companies, { data: sessionData, error: sessionError }] =
+  const [companies, { data: userData, error: userError }] =
     await Promise.all([
       serviceRole
         .from("userToCompany")
         .select("companyId, ...company(companyGroupId)")
         .eq("userId", userId)
         .limit(50),
-      serviceRole.auth.refreshSession({ refresh_token: refreshToken })
+      serviceRole.auth.getUser(accessToken)
     ]);
 
-  if (!sessionData?.session || sessionError) {
+  if (!userData?.user || userError) {
     return redirect(
       path.to.root,
-      await flash(request, error(sessionError, "Invalid refresh token"))
+      await flash(request, error(userError, "Invalid access token"))
     );
   }
 
-  if (sessionData.session.user.id !== userId) {
+  if (userData.user.id !== userId) {
     return redirect(
       path.to.root,
       await flash(request, error(null, "Session mismatch"))
@@ -91,18 +91,13 @@ export async function action({ request }: ActionFunctionArgs) {
     | { companyId: string; companyGroupId: string | null }
     | undefined;
 
-  const authSession = makeAuthSession(
-    sessionData.session,
+  const authSession = makeAuthSessionFromTokens(
+    accessToken,
+    refreshToken,
+    userData.user,
     match?.companyId ?? "",
     match?.companyGroupId ?? ""
   );
-
-  if (!authSession) {
-    return redirect(
-      path.to.root,
-      await flash(request, error(null, "Invalid session"))
-    );
-  }
 
   const sessionCookie = await setAuthSession(request, {
     authSession
@@ -143,12 +138,14 @@ export default function AuthCallback() {
       ) {
         isAuthenticating.current = true;
 
+        const accessToken = session?.access_token;
         const refreshToken = session?.refresh_token;
         const userId = session?.user.id;
 
-        if (!refreshToken || !userId) return;
+        if (!accessToken || !refreshToken || !userId) return;
 
         const formData = new FormData();
+        formData.append("accessToken", accessToken);
         formData.append("refreshToken", refreshToken);
         formData.append("userId", userId);
         if (redirectTo) formData.append("redirectTo", redirectTo);

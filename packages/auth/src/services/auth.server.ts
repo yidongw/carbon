@@ -119,6 +119,42 @@ export function makeAuthSession(
   };
 }
 
+/** Build an AuthSession directly from raw tokens without a Supabase round-trip.
+ *  The caller must have already verified the accessToken (e.g. via getUser). */
+export function makeAuthSessionFromTokens(
+  accessToken: string,
+  refreshToken: string,
+  user: { id: string; email?: string | null },
+  companyId: string,
+  companyGroupId: string
+): AuthSession {
+  let expiresAt = -1;
+  try {
+    const payload = JSON.parse(
+      Buffer.from(accessToken.split(".")[1], "base64url").toString()
+    );
+    expiresAt = payload.exp ?? -1;
+  } catch {}
+  return {
+    accessToken,
+    refreshToken,
+    userId: user.id,
+    email: user.email ?? null,
+    companyId,
+    companyGroupId,
+    expiresIn:
+      expiresAt > 0
+        ? Math.max(
+            0,
+            expiresAt -
+              Math.floor(Date.now() / 1000) -
+              REFRESH_ACCESS_TOKEN_THRESHOLD
+          )
+        : 3000 - REFRESH_ACCESS_TOKEN_THRESHOLD,
+    expiresAt
+  };
+}
+
 /**
  * Determines the effective user based on console mode and pin-in state.
  * If console mode is on and an operator is pinned in, returns
