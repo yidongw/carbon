@@ -5,7 +5,7 @@ import {
   error,
   safeRedirect
 } from "@carbon/auth";
-import { refreshAccessToken } from "@carbon/auth/auth.server";
+import { makeAuthSession } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { getCompanyId, setCompanyId } from "@carbon/auth/company.server";
 import {
@@ -14,7 +14,6 @@ import {
   getAuthSession,
   setAuthSession
 } from "@carbon/auth/session.server";
-import { getUserById } from "@carbon/auth/users.server";
 import { validator } from "@carbon/form";
 import {
   Alert,
@@ -62,59 +61,72 @@ export async function action({ request }: ActionFunctionArgs) {
   const serviceRole = getCarbonServiceRole();
 
   // Pre-session: no user-authed client yet, so query memberships with the
-  // service role. Prefer an employee company as the active one; fall back to
-  // any membership so auth/RLS can deny a pure portal user later.
-  const employeeCompanies =
-    (await getEmployeeCompanies(serviceRole, userId)).data ?? [];
+  // service role in parallel with the token refresh. Prefer an employee
+  // company as the active one; fall back to any membership so auth/RLS can
+  // deny a pure portal user later.
+  const [
+    employeeCompaniesResult,
+    allCompaniesResult,
+    { data: sessionData, error: sessionError }
+  ] = await Promise.all([
+    getEmployeeCompanies(serviceRole, userId),
+    getCompanies(serviceRole, userId),
+    serviceRole.auth.refreshSession({ refresh_token: refreshToken })
+  ]);
+
+  if (!sessionData?.session || sessionError) {
+    return redirect(
+      path.to.root,
+      await flash(request, error(sessionError, "Invalid refresh token"))
+    );
+  }
+
+  if (sessionData.session.user.id !== userId) {
+    return redirect(
+      path.to.root,
+      await flash(request, error(null, "Session mismatch"))
+    );
+  }
+
+  const employeeCompanies = employeeCompaniesResult.data ?? [];
   const pickable = employeeCompanies.length
     ? employeeCompanies
-    : ((await getCompanies(serviceRole, userId)).data ?? []);
+    : (allCompaniesResult.data ?? []);
 
   const cookieCompanyId = getCompanyId(request);
   const match =
     pickable.find((c) => c.companyId === cookieCompanyId) ?? pickable[0];
-  const companyId = match?.companyId ?? undefined;
-  const companyGroupId = match?.companyGroupId ?? "";
 
-  const authSession = await refreshAccessToken(
-    refreshToken,
-    companyId,
-    companyGroupId
+  const authSession = makeAuthSession(
+    sessionData.session,
+    match?.companyId ?? "",
+    match?.companyGroupId ?? ""
   );
 
   if (!authSession) {
     return redirect(
       path.to.root,
-      await flash(request, error(authSession, "Invalid refresh token"))
+      await flash(request, error(null, "Invalid session"))
     );
   }
 
-  const user = await getUserById(authSession.userId);
+  const sessionCookie = await setAuthSession(request, {
+    authSession
+  });
+  const headers: [string, string][] = [["Set-Cookie", sessionCookie]];
 
-  if (user?.data) {
-    const sessionCookie = await setAuthSession(request, {
-      authSession
-    });
-    const headers: [string, string][] = [["Set-Cookie", sessionCookie]];
-
-    // Only finalize the active company for single-company (and portal-only)
-    // users. Multi-company users must actively choose: we leave the companyId
-    // cookie unset and let x+/_layout bounce them to the picker — its presence
-    // is the "has chosen this session" marker. This keeps all picker/enforcement
-    // logic in one place instead of duplicating the redirect here.
-    if (employeeCompanies.length <= 1) {
-      headers.push(["Set-Cookie", setCompanyId(authSession.companyId)]);
-    }
-
-    return redirect(safeRedirect(redirectTo, path.to.authenticatedRoot), {
-      headers
-    });
-  } else {
-    return redirect(
-      path.to.root,
-      await flash(request, error(user.error, "User not found"))
-    );
+  // Only finalize the active company for single-company (and portal-only)
+  // users. Multi-company users must actively choose: we leave the companyId
+  // cookie unset and let x+/_layout bounce them to the picker — its presence
+  // is the "has chosen this session" marker. This keeps all picker/enforcement
+  // logic in one place instead of duplicating the redirect here.
+  if (employeeCompanies.length <= 1) {
+    headers.push(["Set-Cookie", setCompanyId(authSession.companyId)]);
   }
+
+  return redirect(safeRedirect(redirectTo, path.to.authenticatedRoot), {
+    headers
+  });
 }
 
 export default function AuthCallback() {
