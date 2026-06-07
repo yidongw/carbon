@@ -5,7 +5,7 @@ import {
   error,
   safeRedirect
 } from "@carbon/auth";
-import { makeAuthSession } from "@carbon/auth/auth.server";
+import { makeAuthSessionFromTokens } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { getCompanyId, setCompanyId } from "@carbon/auth/company.server";
 import {
@@ -57,31 +57,32 @@ export async function action({ request }: ActionFunctionArgs) {
     });
   }
 
-  const { refreshToken, userId, redirectTo } = validation.data;
+  const { accessToken, refreshToken, userId, redirectTo } = validation.data;
   const serviceRole = getCarbonServiceRole();
 
   // Pre-session: no user-authed client yet, so query memberships with the
-  // service role in parallel with the token refresh. Prefer an employee
+  // service role in parallel with token verification. Prefer an employee
   // company as the active one; fall back to any membership so auth/RLS can
-  // deny a pure portal user later.
+  // deny a pure portal user later. We call getUser (not refreshSession) to
+  // verify the accessToken without rotating tokens.
   const [
     employeeCompaniesResult,
     allCompaniesResult,
-    { data: sessionData, error: sessionError }
+    { data: userData, error: userError }
   ] = await Promise.all([
     getEmployeeCompanies(serviceRole, userId),
     getCompanies(serviceRole, userId),
-    serviceRole.auth.refreshSession({ refresh_token: refreshToken })
+    serviceRole.auth.getUser(accessToken)
   ]);
 
-  if (!sessionData?.session || sessionError) {
+  if (!userData?.user || userError) {
     return redirect(
       path.to.root,
-      await flash(request, error(sessionError, "Invalid refresh token"))
+      await flash(request, error(userError, "Invalid access token"))
     );
   }
 
-  if (sessionData.session.user.id !== userId) {
+  if (userData.user.id !== userId) {
     return redirect(
       path.to.root,
       await flash(request, error(null, "Session mismatch"))
@@ -97,18 +98,13 @@ export async function action({ request }: ActionFunctionArgs) {
   const match =
     pickable.find((c) => c.companyId === cookieCompanyId) ?? pickable[0];
 
-  const authSession = makeAuthSession(
-    sessionData.session,
+  const authSession = makeAuthSessionFromTokens(
+    accessToken,
+    refreshToken,
+    userData.user,
     match?.companyId ?? "",
     match?.companyGroupId ?? ""
   );
-
-  if (!authSession) {
-    return redirect(
-      path.to.root,
-      await flash(request, error(null, "Invalid session"))
-    );
-  }
 
   const sessionCookie = await setAuthSession(request, {
     authSession
@@ -156,12 +152,14 @@ export default function AuthCallback() {
       ) {
         isAuthenticating.current = true;
 
+        const accessToken = session?.access_token;
         const refreshToken = session?.refresh_token;
         const userId = session?.user.id;
 
-        if (!refreshToken || !userId) return;
+        if (!accessToken || !refreshToken || !userId) return;
 
         const formData = new FormData();
+        formData.append("accessToken", accessToken);
         formData.append("refreshToken", refreshToken);
         formData.append("userId", userId);
         if (redirectTo) formData.append("redirectTo", redirectTo);
