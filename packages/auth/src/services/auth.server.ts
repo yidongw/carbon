@@ -13,6 +13,7 @@ import {
   REFRESH_ACCESS_TOKEN_THRESHOLD,
   STRIPE_BYPASS_COMPANY_IDS,
   SUPABASE_ANON_KEY,
+  SUPABASE_SERVICE_ROLE_KEY,
   SUPABASE_URL,
   VERCEL_URL
 } from "../config/env";
@@ -435,7 +436,9 @@ export async function sendMagicLink(
   // Use an in-memory storage so the Supabase PKCE client stores the code
   // verifier somewhere we can read after the call.
   const storage = new Map<string, string>();
-  const client = createClient<Database, "public">(SUPABASE_URL!, SUPABASE_ANON_KEY!, {
+  // Use the service role key (same as the original sendMagicLink) so that the
+  // OTP call bypasses rate limits and auth policies.
+  const client = createClient<Database, "public">(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!, {
     auth: {
       flowType: "pkce",
       autoRefreshToken: false,
