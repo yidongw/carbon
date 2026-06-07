@@ -1,0 +1,49 @@
+name: Preview Deployment
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches: [dev, main]
+
+jobs:
+  preview:
+    runs-on: [self-hosted, macOS, preview]
+    if: github.event.pull_request.head.repo.full_name == 'yidongw/carbon'
+    steps:
+      - name: Start preview
+        if: github.event.action != 'closed'
+        run: |
+          /Users/xinjuan/preview/manage-preview.sh start \
+            "${{ github.event.pull_request.number }}" \
+            "${{ github.event.pull_request.head.ref }}" \
+            "${{ github.event.pull_request.head.sha }}"
+
+      - name: Stop preview
+        if: github.event.action == 'closed'
+        run: |
+          /Users/xinjuan/preview/manage-preview.sh stop \
+            "${{ github.event.pull_request.number }}"
+
+      - name: Post preview URL
+        if: github.event.action != 'closed'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_URL="https://erp-pr-${{ github.event.pull_request.number }}.preview.foxhole.bot"
+          gh pr comment "${{ github.event.pull_request.number }}" \
+            --repo yidongw/carbon \
+            --body "### Preview Deployment
+
+          **ERP:** $PR_URL
+
+          Built from \`${{ github.event.pull_request.head.ref }}\` @ \`${{ github.event.pull_request.head.sha }}\`
+          Running in dev mode — stack traces enabled." \
+            --edit-last || \
+          gh pr comment "${{ github.event.pull_request.number }}" \
+            --repo yidongw/carbon \
+            --body "### Preview Deployment
+
+          **ERP:** $PR_URL
+
+          Built from \`${{ github.event.pull_request.head.ref }}\` @ \`${{ github.event.pull_request.head.sha }}\`
+          Running in dev mode — stack traces enabled."
