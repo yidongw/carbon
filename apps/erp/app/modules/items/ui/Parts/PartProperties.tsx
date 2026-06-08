@@ -59,21 +59,27 @@ const PartProperties = () => {
   const { itemId } = useParams();
   if (!itemId) throw new Error("itemId not found");
 
-  const sharedPartsData = useRouteData<{ locations: ListItem[] }>(
-    path.to.partRoot
-  );
+  const sharedPartsData = useRouteData<{
+    locations: ListItem[] | Promise<unknown>;
+  }>(path.to.partRoot);
   const routeData = useRouteData<{
     partSummary: PartSummary;
     files: Promise<ItemFile[]>;
-    supplierParts: SupplierPart[];
-    pickMethods: PickMethod[];
+    supplierParts: SupplierPart[] | Promise<unknown>;
+    pickMethods: PickMethod[] | Promise<unknown>;
     makeMethods: Promise<PostgrestResponse<MakeMethod>>;
-    tags: { name: string }[];
+    tags: { name: string }[] | Promise<unknown>;
   }>(path.to.part(itemId));
 
-  const locations = sharedPartsData?.locations ?? [];
-  const supplierParts = routeData?.supplierParts ?? [];
-  const pickMethods = routeData?.pickMethods ?? [];
+  const locations = Array.isArray(sharedPartsData?.locations)
+    ? (sharedPartsData.locations as ListItem[])
+    : [];
+  const supplierParts = Array.isArray(routeData?.supplierParts)
+    ? (routeData.supplierParts as SupplierPart[])
+    : [];
+  const pickMethods = Array.isArray(routeData?.pickMethods)
+    ? (routeData.pickMethods as PickMethod[])
+    : [];
 
   // const optimisticAssignment = useOptimisticAssignment({
   //   id: itemId,
@@ -609,7 +615,11 @@ const PartProperties = () => {
         className="w-full"
       >
         <Tags
-          availableTags={routeData?.tags ?? []}
+          availableTags={
+            Array.isArray(routeData?.tags)
+              ? (routeData.tags as { name: string }[])
+              : []
+          }
           label={t`Tags`}
           name="tags"
           table="part"

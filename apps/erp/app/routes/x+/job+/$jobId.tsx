@@ -47,10 +47,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { jobId } = params;
   if (!jobId) throw new Error("Could not find jobId");
 
-  const [job, tags] = await Promise.all([
-    getJob(client, jobId),
-    getTagsList(client, companyId, "job")
-  ]);
+  const tagsPromise = getTagsList(client, companyId, "job");
+  const job = await getJob(client, jobId);
 
   if (companyId !== job.data?.companyId) {
     throw redirect(path.to.jobs);
@@ -65,7 +63,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   return {
     job: job.data,
-    tags: tags.data ?? [],
+    tags: tagsPromise.then((r) => r.data ?? []),
     files: getJobDocuments(client, companyId, job.data),
     trackedEntities: getTrackedEntitiesByJobId(client, jobId),
     method: getJobMethodTree(client, jobId), // returns a promise

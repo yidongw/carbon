@@ -66,9 +66,13 @@ const JobProperties = () => {
 
   const routeData = useRouteData<{
     job: Job;
-    tags: { name: string }[];
+    tags: { name: string }[] | Promise<unknown>;
     trackedEntities: Promise<PostgrestResponse<TrackedEntity>>;
   }>(path.to.job(jobId));
+
+  const tags = Array.isArray(routeData?.tags)
+    ? (routeData.tags as { name: string }[])
+    : [];
 
   const { carbon } = useCarbon();
   const { company } = useUser();
@@ -629,7 +633,7 @@ const JobProperties = () => {
         className="w-full"
       >
         <Tags
-          availableTags={routeData?.tags ?? []}
+          availableTags={tags}
           label={t`Tags`}
           name="tags"
           table="job"
