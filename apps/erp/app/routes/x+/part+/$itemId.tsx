@@ -30,7 +30,6 @@ import { flattenTree } from "~/components/TreeView";
 import type { ItemFile, PartSummary } from "~/modules/items";
 import {
   getItemFiles,
-  getMakeMethodById,
   getMakeMethods,
   getMethodTree,
   getPart,
@@ -85,41 +84,36 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const requestedMethodId = url.searchParams.get("methodId");
 
-  const methodTree = getMakeMethods(client, itemId, companyId).then(
-    async (makeMethods) => {
-      const makeMethod = requestedMethodId
-        ? (makeMethods.data?.find((m) => m.id === requestedMethodId) ??
-          makeMethods.data?.find((m) => m.status === "Active") ??
-          makeMethods.data?.[0])
-        : (makeMethods.data?.find((m) => m.status === "Active") ??
-          makeMethods.data?.[0]);
-      if (!makeMethod) return null;
+  // Single shared promise — used by both methodTree and the return value
+  const makeMethodsPromise = getMakeMethods(client, itemId, companyId);
 
-      const fullMethod = await getMakeMethodById(
-        client,
-        makeMethod.id,
-        companyId
-      );
-      if (fullMethod.error || !fullMethod.data) return null;
+  const methodTree = makeMethodsPromise.then(async (makeMethods) => {
+    const makeMethod = requestedMethodId
+      ? (makeMethods.data?.find((m) => m.id === requestedMethodId) ??
+        makeMethods.data?.find((m) => m.status === "Active") ??
+        makeMethods.data?.[0])
+      : (makeMethods.data?.find((m) => m.status === "Active") ??
+        makeMethods.data?.[0]);
+    if (!makeMethod) return null;
 
-      const tree = await getMethodTree(client, fullMethod.data.id);
-      if (tree.error) return null;
+    // getMakeMethodById was redundant — getMakeMethods already returns SELECT * for the same record
+    const tree = await getMethodTree(client, makeMethod.id);
+    if (tree.error) return null;
 
-      const methods = tree.data.length > 0 ? flattenTree(tree.data[0]) : [];
+    const methods = tree.data.length > 0 ? flattenTree(tree.data[0]) : [];
 
-      return {
-        makeMethod: fullMethod.data,
-        methods
-      };
-    }
-  );
+    return {
+      makeMethod,
+      methods
+    };
+  });
 
   return {
     partSummary: partSummary.data,
     files: getItemFiles(client, itemId, companyId),
     supplierParts: supplierPartsPromise.then((r) => r.data ?? []),
     pickMethods: pickMethodsPromise.then((r) => r.data ?? []),
-    makeMethods: getMakeMethods(client, itemId, companyId),
+    makeMethods: makeMethodsPromise,
     tags: tagsPromise.then((r) => r.data ?? []),
     usedIn: getPartUsedIn(client, itemId, companyId),
     methodTree

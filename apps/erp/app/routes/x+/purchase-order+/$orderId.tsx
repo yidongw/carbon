@@ -340,10 +340,10 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { orderId } = params;
   if (!orderId) throw new Error("Could not find orderId");
 
-  const [purchaseOrder, purchaseOrderDelivery] = await Promise.all([
-    getPurchaseOrder(client, orderId),
-    getPurchaseOrderDelivery(client, orderId)
-  ]);
+  // Start delivery in parallel — doesn't require security checks to begin
+  const purchaseOrderDeliveryPromise = getPurchaseOrderDelivery(client, orderId);
+
+  const purchaseOrder = await getPurchaseOrder(client, orderId);
 
   if (purchaseOrder.data?.companyId !== companyId) {
     throw redirect(
@@ -365,16 +365,13 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     );
   }
 
-  if (companyId !== purchaseOrder.data?.companyId) {
-    throw redirect(path.to.purchaseOrders);
-  }
-
   // Start lines query now (after security check), runs in parallel with secondary queries
   const linesPromise = getPurchaseOrderLines(client, orderId);
 
   const serviceRole = getCarbonServiceRole();
-  const [supplier, interaction, approvalRequest, companySettings] =
+  const [purchaseOrderDelivery, supplier, interaction, approvalRequest, companySettings] =
     await Promise.all([
+      purchaseOrderDeliveryPromise,
       purchaseOrder.data?.supplierId
         ? getSupplier(client, purchaseOrder.data.supplierId)
         : null,
