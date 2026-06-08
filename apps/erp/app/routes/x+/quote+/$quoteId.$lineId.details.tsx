@@ -448,7 +448,7 @@ export default function QuoteLine() {
             itemId: line.itemId ?? undefined
           }}
           modelPath={line?.modelPath ?? null}
-          title="CAD Model"
+          title={t`CAD Model`}
           uploadClassName="aspect-square min-h-[420px] max-h-[70vh]"
           viewerClassName="aspect-square min-h-[420px] max-h-[70vh]"
         />

@@ -15,7 +15,7 @@ import {
   VStack
 } from "@carbon/react";
 import { getItemReadableId } from "@carbon/utils";
-import { Trans } from "@lingui/react/macro";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { useLocale } from "@react-aria/i18n";
 import { motion } from "framer-motion";
 import { useState } from "react";
@@ -61,6 +61,7 @@ const LineItems = ({
   const { orderId } = useParams();
   if (!orderId) throw new Error("Could not find orderId");
 
+  const { t } = useLingui();
   const percentFormatter = usePercentFormatter();
   const [openItems, setOpenItems] = useState<string[]>([]);
   const unitOfMeasures = useUnitOfMeasure();
@@ -78,7 +79,7 @@ const LineItems = ({
 
         const isGlAccount = line.purchaseOrderLineType === "G/L Account";
         const itemReadableId = isGlAccount
-          ? line.description || "Indirect Expense"
+          ? line.description || t`Indirect Expense`
           : getItemReadableId(items, line.itemId);
         const lineTotal = (line.unitPrice ?? 0) * (line.purchaseQuantity ?? 0);
         const supplierLineTotal =
@@ -142,7 +143,7 @@ const LineItems = ({
                       <span className="text-muted-foreground text-base truncate">
                         {isGlAccount
                           ? (accounts.find((a) => a.id === line.accountId)
-                              ?.name ?? "Indirect Expense")
+                              ?.name ?? t`Indirect Expense`)
                           : line.description}
                       </span>
                     </VStack>
@@ -220,7 +221,7 @@ const LineItems = ({
                 <Table>
                   <Tbody>
                     <Tr>
-                      <Td>Quantity</Td>
+                      <Td><Trans>Quantity</Trans></Td>
                       <Td className="text-right">
                         <VStack spacing={0}>
                           <span>
@@ -249,7 +250,7 @@ const LineItems = ({
                       </Td>
                     </Tr>
                     <Tr>
-                      <Td>Unit Price</Td>
+                      <Td><Trans>Unit Price</Trans></Td>
                       <Td className="text-right">
                         <VStack spacing={0}>
                           <span>{formatter.format(line.unitPrice ?? 0)}</span>
@@ -264,7 +265,7 @@ const LineItems = ({
                       </Td>
                     </Tr>
                     <Tr className="border-b border-border">
-                      <Td>Extended Price</Td>
+                      <Td><Trans>Extended Price</Trans></Td>
                       <Td className="text-right">
                         <VStack spacing={0}>
                           <span>{formatter.format(lineTotal)}</span>
@@ -281,7 +282,7 @@ const LineItems = ({
 
                     <Tr key="tax">
                       <Td>
-                        Tax ({percentFormatter.format(line.taxPercent ?? 0)})
+                        <Trans>Tax ({percentFormatter.format(line.taxPercent ?? 0)})</Trans>
                       </Td>
                       <Td className="text-right">
                         <VStack spacing={0}>
@@ -298,7 +299,7 @@ const LineItems = ({
                     </Tr>
 
                     <Tr key="shipping" className="border-b border-border">
-                      <Td>Shipping</Td>
+                      <Td><Trans>Shipping</Trans></Td>
                       <Td className="text-right">
                         <VStack spacing={0}>
                           <span>
@@ -316,7 +317,7 @@ const LineItems = ({
                     </Tr>
 
                     <Tr key="total" className="font-bold">
-                      <Td>Total</Td>
+                      <Td><Trans>Total</Trans></Td>
                       <Td className="text-right">
                         <VStack spacing={0}>
                           <span>{formatter.format(total)}</span>
@@ -429,7 +430,7 @@ const PurchaseOrderSummary = ({
             />
             {routeData?.purchaseOrder?.orderDate && (
               <span className="text-muted-foreground text-sm">
-                Ordered {formatDate(routeData?.purchaseOrder.orderDate)}
+                <Trans>Ordered {formatDate(routeData?.purchaseOrder.orderDate)}</Trans>
               </span>
             )}
           </div>
@@ -447,7 +448,7 @@ const PurchaseOrderSummary = ({
 
         <VStack spacing={2} className="mt-8">
           <HStack className="justify-between text-base text-muted-foreground w-full">
-            <span>Subtotal:</span>
+            <span><Trans>Subtotal:</Trans></span>
             <VStack spacing={0} className="items-end">
               <span>{formatter.format(subtotal)}</span>
               {shouldConvertCurrency && (
@@ -458,7 +459,7 @@ const PurchaseOrderSummary = ({
             </VStack>
           </HStack>
           <HStack className="justify-between text-base text-muted-foreground w-full">
-            <span>Tax:</span>
+            <span><Trans>Tax:</Trans></span>
             <VStack spacing={0} className="items-end">
               <span>{formatter.format(tax)}</span>
               {shouldConvertCurrency && (
@@ -473,7 +474,7 @@ const PurchaseOrderSummary = ({
             {shippingCost > 0 ? (
               <>
                 <VStack spacing={0}>
-                  <span>Shipping:</span>
+                  <span><Trans>Shipping:</Trans></span>
                   {isEditable && (
                     <Button
                       variant="link"
@@ -509,7 +510,7 @@ const PurchaseOrderSummary = ({
           </HStack>
 
           <HStack className="justify-between text-xl font-bold w-full">
-            <span>Total:</span>
+            <span><Trans>Total:</Trans></span>
             <VStack spacing={0} className="items-end">
               <span>{formatter.format(total)}</span>
               {shouldConvertCurrency && (

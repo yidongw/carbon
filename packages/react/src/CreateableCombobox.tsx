@@ -117,7 +117,7 @@ const CreatableCombobox = forwardRef<HTMLButtonElement, CreatableComboboxProps>(
                 <IconButton
                   size={size ?? "sm"}
                   variant="secondary"
-                  aria-label={value ? "Edit" : "Add"}
+                  aria-label={value ? t`Edit` : t`Add`}
                   icon={value ? <LuSettings2 /> : <LuPlus />}
                   ref={ref}
                   isDisabled={isReadOnly}
@@ -186,7 +186,7 @@ const CreatableCombobox = forwardRef<HTMLButtonElement, CreatableComboboxProps>(
         {isClearable && !isReadOnly && value && (
           <IconButton
             variant={isInlinePreview ? "secondary" : "ghost"}
-            aria-label="Clear"
+            aria-label={t`Clear`}
             icon={<LuX />}
             onClick={() => onChange?.("")}
             size={isInlinePreview ? "sm" : size}

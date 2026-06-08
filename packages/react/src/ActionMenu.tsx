@@ -1,3 +1,4 @@
+import { useLingui } from "@lingui/react/macro";
 import type { PropsWithChildren } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import {
@@ -14,12 +15,13 @@ type ActionMenuProps = PropsWithChildren<{
 }>;
 
 const ActionMenu = ({ children, ...props }: ActionMenuProps) => {
+  const { t } = useLingui();
   return (
     <Menu type="dropdown">
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <IconButton
-            aria-label="Action Menu"
+            aria-label={t`Action Menu`}
             variant="secondary"
             icon={<BsThreeDotsVertical />}
             // Stop at pointerdown for parents that activate on pointer events

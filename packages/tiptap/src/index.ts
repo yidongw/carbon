@@ -40,6 +40,7 @@ export {
   MarkdownExtension,
   Mention,
   type MentionSuggestion,
+  createPlaceholder,
   Placeholder,
   removeAIHighlight,
   renderItems,

@@ -4,6 +4,7 @@ import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import type { JSONContent } from "@carbon/react";
 import type { FileObject } from "@supabase/storage-js";
+import { useLingui } from "@lingui/react/macro";
 import { useRef } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { redirect, useLoaderData, useParams } from "react-router";
@@ -143,6 +144,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 }
 
 export default function PurchaseOrderBasicRoute() {
+  const { t } = useLingui();
   const { purchaseOrderPayment, internalNotes, externalNotes } =
     useLoaderData<typeof loader>();
 
@@ -224,7 +226,7 @@ export default function PurchaseOrderBasicRoute() {
       <SupplierInteractionNotes
         key={`notes-${initialValues.id}`}
         id={orderData.purchaseOrder.id}
-        title="Notes"
+        title={t`Notes`}
         table="purchaseOrder"
         internalNotes={internalNotes}
         externalNotes={externalNotes}

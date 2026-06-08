@@ -24,6 +24,10 @@ msgstr "\"{storageUnitName}\" has 1 direct nested storage unit. Deleting it will
 msgid "(all must match)"
 msgstr "(all must match)"
 
+#. placeholder {0}: Math.round(PASSING_THRESHOLD * 100)
+msgid "(Passing score: {0}%)"
+msgstr "(Passing score: {0}%)"
+
 #. placeholder {0}: selectedEvent.jobOperation?.description ?? t`Operation`
 msgid "{0} (supplier)"
 msgstr "{0} (supplier)"
@@ -42,6 +46,11 @@ msgstr "{0} days"
 msgid "{0} deleted successfully"
 msgstr "{0} deleted successfully"
 
+#. placeholder {0}: actionData.correctAnswers
+#. placeholder {1}: actionData.totalQuestions
+msgid "{0} of {1} correct"
+msgstr "{0} of {1} correct"
+
 #. placeholder {0}: history.length
 msgid "{0} orders"
 msgstr "{0} orders"
@@ -49,6 +58,10 @@ msgstr "{0} orders"
 #. placeholder {0}: selectedProcesses.length
 msgid "{0} Processes"
 msgstr "{0} Processes"
+
+#. placeholder {0}: percentFormatter.format(line.taxPercent ?? 0)
+msgid "{0} Tax"
+msgstr "{0} Tax"
 
 #. placeholder {0}: lotEntities.length - inspected
 msgid "{0} un-sampled entities will be released to Available. Sampled passes stay Available and sampled failures stay Rejected."
@@ -248,6 +261,9 @@ msgstr "Acknowledge & continue"
 msgid "Action Items"
 msgstr "Action Items"
 
+msgid "Action Menu"
+msgstr "Action Menu"
+
 msgid "Action Status"
 msgstr "Action Status"
 
@@ -351,6 +367,9 @@ msgstr "Add Company"
 msgid "Add condition"
 msgstr "Add condition"
 
+msgid "Add Console Operator"
+msgstr "Add Console Operator"
+
 msgid "Add Contractor"
 msgstr "Add Contractor"
 
@@ -378,6 +397,9 @@ msgstr "Add Line Item"
 msgid "Add Note"
 msgstr "Add Note"
 
+msgid "Add Notes"
+msgstr "Add Notes"
+
 msgid "Add notes and documentation for this maintenance dispatch"
 msgstr "Add notes and documentation for this maintenance dispatch"
 
@@ -386,6 +408,9 @@ msgstr "Add Operation"
 
 msgid "Add options above first"
 msgstr "Add options above first"
+
+msgid "Add or edit notes for this line item"
+msgstr "Add or edit notes for this line item"
 
 msgid "Add Pair"
 msgstr "Add Pair"
@@ -452,6 +477,9 @@ msgstr "Add-On Cost"
 
 msgid "Adding..."
 msgstr "Adding..."
+
+msgid "Additional Charges"
+msgstr "Additional Charges"
 
 msgid "Address"
 msgstr "Address"
@@ -659,6 +687,9 @@ msgstr "Are you sure you want to deactivate this gauge?."
 
 msgid "Are you sure you want to deactivate this user?"
 msgstr "Are you sure you want to deactivate this user?"
+
+msgid "Are you sure you want to decline this quote?"
+msgstr "Are you sure you want to decline this quote?"
 
 #. placeholder {0}: tool.readableIdWithRevision
 msgid "Are you sure you want to delete {0} from this operation? This cannot be undone."
@@ -938,6 +969,9 @@ msgstr "Are you sure you want to send an invite to these users?"
 msgid "Are you sure you want to send an invite to this user?"
 msgstr "Are you sure you want to send an invite to this user?"
 
+msgid "Are you sure you want to submit the updated pricing?"
+msgstr "Are you sure you want to submit the updated pricing?"
+
 msgid "Are you sure you want to void this purchase invoice? This action will reverse all financial transactions and cannot be undone."
 msgstr "Are you sure you want to void this purchase invoice? This action will reverse all financial transactions and cannot be undone."
 
@@ -1047,6 +1081,12 @@ msgstr "Audit Logs"
 msgid "Authentication Error"
 msgstr "Authentication Error"
 
+msgid "Authorize"
+msgstr "Authorize"
+
+msgid "Authorize Application"
+msgstr "Authorize Application"
+
 msgid "Auto Release"
 msgstr "Auto Release"
 
@@ -1137,6 +1177,9 @@ msgstr "Batch Tracking"
 msgid "Beta"
 msgstr "Beta"
 
+msgid "Big section heading."
+msgstr "Big section heading."
+
 msgid "Bill of Material"
 msgstr "Bill of Material"
 
@@ -1186,6 +1229,9 @@ msgstr "Boolean"
 msgid "BOP"
 msgstr "BOP"
 
+msgid "Bot verification failed. Please try again."
+msgstr "Bot verification failed. Please try again."
+
 msgid "Box"
 msgstr "Box"
 
@@ -1206,6 +1252,9 @@ msgstr "Bulk Import"
 
 msgid "Bulk Jobs"
 msgstr "Bulk Jobs"
+
+msgid "Bullet List"
+msgstr "Bullet List"
 
 msgid "Buy"
 msgstr "Buy"
@@ -1296,6 +1345,9 @@ msgstr "Cannot send RFQ"
 
 msgid "Cannot upload to parts bucket without item ID"
 msgstr "Cannot upload to parts bucket without item ID"
+
+msgid "Canvas showing the model in the 3D Viewer"
+msgstr "Canvas showing the model in the 3D Viewer"
 
 msgid "Carbon client is not available"
 msgstr "Carbon client is not available"
@@ -1439,6 +1491,9 @@ msgstr "COD"
 msgid "Code"
 msgstr "Code"
 
+msgid "Collapse"
+msgstr "Collapse"
+
 msgid "Collapse all"
 msgstr "Collapse all"
 
@@ -1513,6 +1568,9 @@ msgstr "Complete Job"
 
 msgid "Complete Stock Transfer"
 msgstr "Complete Stock Transfer"
+
+msgid "Complete Training"
+msgstr "Complete Training"
 
 msgid "Completed"
 msgstr "Completed"
@@ -1623,6 +1681,9 @@ msgstr "Confirm Import"
 msgid "Confirm Password"
 msgstr "Confirm Password"
 
+msgid "Congratulations! You have successfully completed this training. Your completion has been recorded."
+msgstr "Congratulations! You have successfully completed this training. Your completion has been recorded."
+
 msgid "Connect Carbon to your accounting, project, and CAD tools and much more."
 msgstr "Connect Carbon to your accounting, project, and CAD tools and much more."
 
@@ -1701,11 +1762,22 @@ msgstr "Conversion:"
 msgid "Convert"
 msgstr "Convert"
 
+msgid "Convert & Send Invite"
+msgstr "Convert & Send Invite"
+
+#. placeholder {0}: operator.firstName
+#. placeholder {1}: operator.lastName
+msgid "Convert <0>{0} {1}</0> from a console operator to a full user. They will receive an email invitation and be able to log in independently."
+msgstr "Convert <0>{0} {1}</0> from a console operator to a full user. They will receive an email invitation and be able to log in independently."
+
 msgid "Convert Line to Job"
 msgstr "Convert Line to Job"
 
 msgid "Convert Lines to Jobs"
 msgstr "Convert Lines to Jobs"
+
+msgid "Convert to Full User"
+msgstr "Convert to Full User"
 
 msgid "Convert to Quote"
 msgstr "Convert to Quote"
@@ -1833,6 +1905,9 @@ msgstr "Copy this link to share the quote with a customer"
 msgid "Copy this link to share the quote with a supplier"
 msgstr "Copy this link to share the quote with a supplier"
 
+msgid "Copy to clipboard"
+msgstr "Copy to clipboard"
+
 msgid "Copy tool number"
 msgstr "Copy tool number"
 
@@ -1847,6 +1922,9 @@ msgstr "Copy training unique identifier"
 
 msgid "Correct Answer"
 msgstr "Correct Answer"
+
+msgid "Correct answer:"
+msgstr "Correct answer:"
 
 msgid "Correct Answers"
 msgstr "Correct Answers"
@@ -1896,6 +1974,9 @@ msgstr "Create"
 msgid "Create {0}"
 msgstr "Create {0}"
 
+msgid "Create a list with numbering."
+msgstr "Create a list with numbering."
+
 msgid "Create a new kanban card for scan-based replenishment."
 msgstr "Create a new kanban card for scan-based replenishment."
 
@@ -1907,6 +1988,9 @@ msgstr "Create a new production job to fulfill the sales order"
 
 msgid "Create a quote with a new quote ID"
 msgstr "Create a quote with a new quote ID"
+
+msgid "Create a simple bullet list."
+msgstr "Create a simple bullet list."
 
 msgid "Create Account"
 msgstr "Create Account"
@@ -1934,6 +2018,9 @@ msgstr "Create Kanban"
 
 msgid "Create new rule"
 msgstr "Create new rule"
+
+msgid "Create Operator"
+msgstr "Create Operator"
 
 msgid "Create PO"
 msgstr "Create PO"
@@ -2310,6 +2397,9 @@ msgstr "Deadline Type"
 
 msgid "Decide what an operator sees if they try to issue a batch or serial that's already expired."
 msgstr "Decide what an operator sees if they try to issue a batch or serial that's already expired."
+
+msgid "Decline Quote"
+msgstr "Decline Quote"
 
 msgid "Default Accounts"
 msgstr "Default Accounts"
@@ -2704,6 +2794,10 @@ msgstr "Discard"
 msgid "Discount"
 msgstr "Discount"
 
+#. placeholder {0}: percentFormatter.format(selectedLine.discountPercent)
+msgid "Discount ({0})"
+msgstr "Discount ({0})"
+
 msgid "Discount Days after {selectedCalculationMethod}"
 msgstr "Discount Days after {selectedCalculationMethod}"
 
@@ -2712,6 +2806,9 @@ msgstr "Discount Percent"
 
 msgid "Discount Percentage"
 msgstr "Discount Percentage"
+
+msgid "Discount:"
+msgstr "Discount:"
 
 msgid "Dismiss"
 msgstr "Dismiss"
@@ -2736,6 +2833,9 @@ msgstr "Dispositions"
 
 msgid "Dividends Payable"
 msgstr "Dividends Payable"
+
+msgid "Do you want to authorize this application?"
+msgstr "Do you want to authorize this application?"
 
 msgid "Do you want to overwrite the user's current permissions with the default permissions for this employee type?"
 msgstr "Do you want to overwrite the user's current permissions with the default permissions for this employee type?"
@@ -2797,6 +2897,8 @@ msgstr "Drop your file here, or click to browse."
 msgid "Drum"
 msgstr "Drum"
 
+#. placeholder {0}: formatDate(routeData?.purchaseInvoice.dateDue)
+#. placeholder {0}: formatDate(routeData?.salesInvoice.dateDue)
 #. placeholder {0}: formatRelativeTime( convertDateStringToIsoString(dueDate) )
 msgid "Due {0}"
 msgstr "Due {0}"
@@ -2976,6 +3078,9 @@ msgstr "Edit Material Type"
 msgid "Edit Non Conformance Type"
 msgstr "Edit Non Conformance Type"
 
+msgid "Edit Notes"
+msgstr "Edit Notes"
+
 msgid "Edit Part"
 msgstr "Edit Part"
 
@@ -3120,6 +3225,12 @@ msgstr "Email"
 msgid "Email Address"
 msgstr "Email Address"
 
+msgid "Email is required"
+msgstr "Email is required"
+
+msgid "Email link is invalid or has expired"
+msgstr "Email link is invalid or has expired"
+
 msgid "Email notifications not configured"
 msgstr "Email notifications not configured"
 
@@ -3224,6 +3335,15 @@ msgstr "Enter or scan serial number"
 
 msgid "Enter PO number"
 msgstr "Enter PO number"
+
+msgid "Enter your answer..."
+msgstr "Enter your answer..."
+
+msgid "Enter your email"
+msgstr "Enter your email"
+
+msgid "Enter your name"
+msgstr "Enter your name"
 
 msgid "Entered At Receipt"
 msgstr "Entered At Receipt"
@@ -3334,6 +3454,10 @@ msgstr "Estimated Duration"
 msgid "Estimated Duration (minutes)"
 msgstr "Estimated Duration (minutes)"
 
+#. placeholder {0}: training.estimatedDuration
+msgid "Estimated duration: {0}"
+msgstr "Estimated duration: {0}"
+
 msgid "Estimated Scrap Quantity"
 msgstr "Estimated Scrap Quantity"
 
@@ -3363,6 +3487,11 @@ msgstr "Exchange Rate"
 
 msgid "Exchange Rates"
 msgstr "Exchange Rates"
+
+#. placeholder {0}: routeData?.invoiceSummary?.currencyMismatchCount
+#. placeholder {1}: (routeData?.invoiceSummary?.currencyMismatchCount ?? 0) > 1 ? "s" : ""
+msgid "Excludes {0} invoice{1} in a different currency."
+msgstr "Excludes {0} invoice{1} in a different currency."
 
 msgid "Expand"
 msgstr "Expand"
@@ -3403,6 +3532,11 @@ msgstr "Expired Batches"
 
 msgid "Expires"
 msgstr "Expires"
+
+#. placeholder {0}: formatDate(quote.expirationDate, undefined, locale)
+#. placeholder {0}: formatDate(routeData?.quote.expirationDate)
+msgid "Expires {0}"
+msgstr "Expires {0}"
 
 msgid "Expires At (optional)"
 msgstr "Expires At (optional)"
@@ -3445,6 +3579,9 @@ msgstr "External Reference"
 
 msgid "Fail"
 msgstr "Fail"
+
+msgid "Failed"
+msgstr "Failed"
 
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create consumable: {0}"
@@ -3556,6 +3693,9 @@ msgstr "Failed to create supplier: {0}"
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create tool: {0}"
 msgstr "Failed to create tool: {0}"
+
+msgid "Failed to create user account"
+msgstr "Failed to create user account"
 
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create webhook: {0}"
@@ -3670,6 +3810,18 @@ msgstr "Failed to retrieve CSV column data."
 msgid "Failed to save configuration rule"
 msgstr "Failed to save configuration rule"
 
+msgid "Failed to send magic link"
+msgstr "Failed to send magic link"
+
+msgid "Failed to send verification code"
+msgstr "Failed to send verification code"
+
+msgid "Failed to sign in"
+msgstr "Failed to sign in"
+
+msgid "Failed to sign in user"
+msgstr "Failed to sign in user"
+
 msgid "Failed to update batch property"
 msgstr "Failed to update batch property"
 
@@ -3775,15 +3927,25 @@ msgstr "File size exceeds {maxSizeMB}MB limit. Current size: {0}MB"
 msgid "File size exceeds 10MB limit"
 msgstr "File size exceeds 10MB limit"
 
+msgid "File size too big (max 20MB)."
+msgstr "File size too big (max 20MB)."
+
 #. placeholder {0}: SIZE_LIMIT.format()
 msgid "File size too big (max. {0})"
 msgstr "File size too big (max. {0})"
+
+#. placeholder {0}: file.type
+msgid "File type {0} not supported."
+msgstr "File type {0} not supported."
 
 msgid "File type not supported"
 msgstr "File type not supported"
 
 msgid "File type not supported. Please use JPG, PNG, WebP, or GIF."
 msgstr "File type not supported. Please use JPG, PNG, WebP, or GIF."
+
+msgid "File upload is not supported for external scars"
+msgstr "File upload is not supported for external scars"
 
 msgid "Files"
 msgstr "Files"
@@ -3814,6 +3976,9 @@ msgstr "Finishes"
 
 msgid "First Name"
 msgstr "First Name"
+
+msgid "First name is required"
+msgstr "First name is required"
 
 msgid "First Operation"
 msgstr "First Operation"
@@ -3920,6 +4085,9 @@ msgstr "General Ledger"
 msgid "Generate a new 4-digit PIN. Share it with the operator so they can pin in at MES terminals."
 msgstr "Generate a new 4-digit PIN. Share it with the operator so they can pin in at MES terminals."
 
+msgid "Generate Eliminations"
+msgstr "Generate Eliminations"
+
 msgid "Generate material IDs and descriptions based on the properties of the material."
 msgstr "Generate material IDs and descriptions based on the properties of the material."
 
@@ -3980,11 +4148,23 @@ msgstr "Groups"
 msgid "Hard Deadline"
 msgstr "Hard Deadline"
 
+msgid "Heading 1"
+msgstr "Heading 1"
+
+msgid "Heading 2"
+msgstr "Heading 2"
+
+msgid "Heading 3"
+msgstr "Heading 3"
+
 msgid "Headquarters"
 msgstr "Headquarters"
 
 msgid "Help"
 msgstr "Help"
+
+msgid "Helper information"
+msgstr "Helper information"
 
 msgid "Hide, pin and reorder columns"
 msgstr "Hide, pin and reorder columns"
@@ -4028,6 +4208,9 @@ msgstr "Humidity"
 msgid "I'm Still Working"
 msgstr "I'm Still Working"
 
+msgid "IC Transaction"
+msgstr "IC Transaction"
+
 msgid "ID"
 msgstr "ID"
 
@@ -4045,6 +4228,9 @@ msgstr "If items already exist"
 
 msgid "If you wish to change the part numbers, please click Cancel and manually assign the parts for each line item before converting."
 msgstr "If you wish to change the part numbers, please click Cancel and manually assign the parts for each line item before converting."
+
+msgid "Image"
+msgstr "Image"
 
 msgid "Implementation Support"
 msgstr "Implementation Support"
@@ -4126,6 +4312,9 @@ msgstr "Incoterm Location"
 
 msgid "Indirect"
 msgstr "Indirect"
+
+msgid "Indirect Expense"
+msgstr "Indirect Expense"
 
 msgid "Indirect Materials & Services"
 msgstr "Indirect Materials & Services"
@@ -4214,8 +4403,17 @@ msgstr "Internal"
 msgid "Internal Notes"
 msgstr "Internal Notes"
 
+msgid "Invalid email address"
+msgstr "Invalid email address"
+
 msgid "Invalid Invite"
 msgstr "Invalid Invite"
+
+msgid "Invalid or expired verification code"
+msgstr "Invalid or expired verification code"
+
+msgid "Invalid verification code"
+msgstr "Invalid verification code"
 
 msgid "Inventory"
 msgstr "Inventory"
@@ -4443,6 +4641,9 @@ msgstr "Journal Entries"
 msgid "Journal Entry"
 msgstr "Journal Entry"
 
+msgid "Just start typing with plain text."
+msgstr "Just start typing with plain text."
+
 msgid "Kanban"
 msgstr "Kanban"
 
@@ -4518,6 +4719,9 @@ msgstr "Last Calibration Date"
 
 msgid "Last Name"
 msgstr "Last Name"
+
+msgid "Last name is required"
+msgstr "Last name is required"
 
 #. placeholder {0}: formatDateTime(lastSyncedAt)
 msgid "Last synced: {0}"
@@ -4623,6 +4827,9 @@ msgstr "List options are required"
 
 msgid "List Parameters"
 msgstr "List Parameters"
+
+msgid "List View"
+msgstr "List View"
 
 msgid "Liter"
 msgstr "Liter"
@@ -4963,6 +5170,9 @@ msgstr "Mean Time To Repair"
 msgid "Measurement Standard"
 msgstr "Measurement Standard"
 
+msgid "Medium section heading."
+msgstr "Medium section heading."
+
 msgid "Members"
 msgstr "Members"
 
@@ -5111,6 +5321,9 @@ msgstr "Moved {0} to {1} bucket"
 
 msgid "MRP runs automatically every 3 hours, but you can run it manually here."
 msgstr "MRP runs automatically every 3 hours, but you can run it manually here."
+
+msgid "Must be a valid email"
+msgstr "Must be a valid email"
 
 msgid "Must be in the same location"
 msgstr "Must be in the same location"
@@ -5409,8 +5622,17 @@ msgstr "Next Date"
 msgid "Next Due"
 msgstr "Next Due"
 
+msgid "Next Month"
+msgstr "Next Month"
+
+msgid "Next Question"
+msgstr "Next Question"
+
 msgid "Next Sequence"
 msgstr "Next Sequence"
+
+msgid "Next Year"
+msgstr "Next Year"
 
 msgid "No"
 msgstr "No"
@@ -5630,6 +5852,9 @@ msgstr "No sorts applied to this view"
 msgid "No time entries for this week"
 msgstr "No time entries for this week"
 
+msgid "No training content available. Please proceed to the questions."
+msgstr "No training content available. Please proceed to the questions."
+
 msgid "No value needed"
 msgstr "No value needed"
 
@@ -5656,6 +5881,9 @@ msgstr "Non-Inventory Tracking"
 
 msgid "Non-Taxable Add-On Cost"
 msgstr "Non-Taxable Add-On Cost"
+
+msgid "Non-Taxable Charges"
+msgstr "Non-Taxable Charges"
 
 msgid "None"
 msgstr "None"
@@ -5699,6 +5927,9 @@ msgstr "Number"
 msgid "Number of inventory units per purchase unit"
 msgstr "Number of inventory units per purchase unit"
 
+msgid "Numbered List"
+msgstr "Numbered List"
+
 msgid "Numeric"
 msgstr "Numeric"
 
@@ -5738,6 +5969,9 @@ msgstr "Oops! The link you're trying to access has expired or is no longer valid
 msgid "Oops! The link you're trying to access is not valid."
 msgstr "Oops! The link you're trying to access is not valid."
 
+msgid "Oops. You shouldn't see this page. Eventually it will be a landing page."
+msgstr "Oops. You shouldn't see this page. Eventually it will be a landing page."
+
 msgid "Open"
 msgstr "Open"
 
@@ -5749,6 +5983,12 @@ msgstr "Open chat history"
 
 msgid "Open Date"
 msgstr "Open Date"
+
+msgid "Open date picker"
+msgstr "Open date picker"
+
+msgid "Open date time picker"
+msgstr "Open date time picker"
 
 msgid "Open Dispatches"
 msgstr "Open Dispatches"
@@ -5813,6 +6053,9 @@ msgstr "Operator gets a warning. Stock still goes through."
 msgid "Operator must pick a different batch/serial."
 msgstr "Operator must pick a different batch/serial."
 
+msgid "operator@company.com"
+msgstr "operator@company.com"
+
 msgid "Operators"
 msgstr "Operators"
 
@@ -5854,6 +6097,10 @@ msgstr "Order Total"
 
 msgid "Ordered"
 msgstr "Ordered"
+
+#. placeholder {0}: formatDate(routeData?.purchaseOrder.orderDate)
+msgid "Ordered {0}"
+msgstr "Ordered {0}"
 
 msgid "Ordering"
 msgstr "Ordering"
@@ -6021,6 +6268,12 @@ msgstr "Parts"
 msgid "Pass"
 msgstr "Pass"
 
+msgid "Passed"
+msgstr "Passed"
+
+msgid "Password is too short"
+msgstr "Password is too short"
+
 msgid "Path"
 msgstr "Path"
 
@@ -6152,6 +6405,9 @@ msgstr "Pieces/Hour"
 msgid "Pieces/Minute"
 msgstr "Pieces/Minute"
 
+msgid "PIN"
+msgstr "PIN"
+
 msgid "Pin column"
 msgstr "Pin column"
 
@@ -6193,6 +6449,9 @@ msgstr "Please enter your name"
 
 msgid "Please fill out all required fields"
 msgstr "Please fill out all required fields"
+
+msgid "Please fill the columns marked with the <0/> icon to provide pricing"
+msgstr "Please fill the columns marked with the <0/> icon to provide pricing"
 
 msgid "Please save the operation before adding parameters."
 msgstr "Please save the operation before adding parameters."
@@ -6281,6 +6540,9 @@ msgstr "Prefix"
 msgid "Prepaid/ Pro forma"
 msgstr "Prepaid/ Pro forma"
 
+msgid "Press '/' for commands"
+msgstr "Press '/' for commands"
+
 msgid "Prev"
 msgstr "Prev"
 
@@ -6298,6 +6560,12 @@ msgstr "Previous"
 
 msgid "Previous Date"
 msgstr "Previous Date"
+
+msgid "Previous Month"
+msgstr "Previous Month"
+
+msgid "Previous Year"
+msgstr "Previous Year"
 
 msgid "Price break actions"
 msgstr "Price break actions"
@@ -6612,6 +6880,18 @@ msgstr "Quantity updated"
 msgid "Question"
 msgstr "Question"
 
+#. placeholder {0}: currentQuestionIndex + 1
+#. placeholder {1}: questions.length
+msgid "Question {0} of {1}"
+msgstr "Question {0} of {1}"
+
+#. placeholder {0}: questionIndex + 1
+msgid "Question {0} of {totalQuestions}"
+msgstr "Question {0} of {totalQuestions}"
+
+msgid "Question Review"
+msgstr "Question Review"
+
 msgid "Quote"
 msgstr "Quote"
 
@@ -6656,6 +6936,9 @@ msgstr "R&D Expenses"
 
 msgid "Rate Limit"
 msgstr "Rate Limit"
+
+msgid "Rate limit exceeded"
+msgstr "Rate limit exceeded"
 
 msgid "Reactivate"
 msgstr "Reactivate"
@@ -7005,6 +7288,9 @@ msgstr "Reset PIN"
 msgid "Reset PIN for {0} {1}"
 msgstr "Reset PIN for {0} {1}"
 
+msgid "Reset zoom"
+msgstr "Reset zoom"
+
 msgid "Resolve these before completing the NCR: every row must have a non-Pending disposition, and its linked entity quantities must match the row quantity."
 msgstr "Resolve these before completing the NCR: every row must have a non-Pending disposition, and its linked entity quantities must match the row quantity."
 
@@ -7037,6 +7323,9 @@ msgstr "Retry"
 
 msgid "Retry response"
 msgstr "Retry response"
+
+msgid "Retry Training"
+msgstr "Retry Training"
 
 msgid "Return Home"
 msgstr "Return Home"
@@ -7159,6 +7448,9 @@ msgstr "Rule Violation"
 msgid "Rules"
 msgstr "Rules"
 
+msgid "Run Matching"
+msgstr "Run Matching"
+
 msgid "Run Test"
 msgstr "Run Test"
 
@@ -7269,6 +7561,9 @@ msgstr "Save and Overwrite"
 
 msgid "Save Method"
 msgstr "Save Method"
+
+msgid "Save Notes"
+msgstr "Save Notes"
 
 msgid "Save Step"
 msgstr "Save Step"
@@ -7418,6 +7713,9 @@ msgstr "Select a assignee"
 msgid "Select a default approver"
 msgstr "Select a default approver"
 
+msgid "Select a match..."
+msgstr "Select a match..."
+
 msgid "Select a new owner"
 msgstr "Select a new owner"
 
@@ -7529,6 +7827,9 @@ msgstr "Select surfaces"
 
 msgid "Select the groups that should complete this training"
 msgstr "Select the groups that should complete this training"
+
+msgid "Select to provide pricing"
+msgstr "Select to provide pricing"
 
 msgid "Select value"
 msgstr "Select value"
@@ -7666,6 +7967,9 @@ msgstr "Share Link"
 
 msgid "Share Quote"
 msgstr "Share Quote"
+
+msgid "Share this PIN with the operator so they can pin in at MES terminals."
+msgstr "Share this PIN with the operator so they can pin in at MES terminals."
 
 msgid "Shelf life"
 msgstr "Shelf life"
@@ -7832,6 +8136,9 @@ msgstr "Skip scheduled maintenance on company holidays"
 msgid "Skipped"
 msgstr "Skipped"
 
+msgid "Small section heading."
+msgstr "Small section heading."
+
 msgid "Soft Deadline"
 msgstr "Soft Deadline"
 
@@ -7953,6 +8260,9 @@ msgstr "Start of Fiscal Year"
 msgid "Start of Tax Year"
 msgstr "Start of Tax Year"
 
+msgid "Start Questions"
+msgstr "Start Questions"
+
 msgid "Start Time"
 msgstr "Start Time"
 
@@ -8059,6 +8369,12 @@ msgstr "Submit for approval"
 
 msgid "Submit Inspection"
 msgstr "Submit Inspection"
+
+msgid "Submit Quote"
+msgstr "Submit Quote"
+
+msgid "Submit Training"
+msgstr "Submit Training"
 
 msgid "Submitted"
 msgstr "Submitted"
@@ -8286,6 +8602,11 @@ msgstr "Tasks"
 msgid "Tax"
 msgstr "Tax"
 
+#. placeholder {0}: percentFormatter.format(line.taxPercent ?? 0)
+#. placeholder {0}: percentFormatter.format(selectedLine.taxPercent)
+msgid "Tax ({0})"
+msgstr "Tax ({0})"
+
 msgid "Tax & Additional Costs"
 msgstr "Tax & Additional Costs"
 
@@ -8446,6 +8767,9 @@ msgstr "This sales order has lines that require jobs to be created"
 msgid "This storage type is currently used by {usageCount} storage unit{0}."
 msgstr "This storage type is currently used by {usageCount} storage unit{0}."
 
+msgid "This training has been marked as completed for your records."
+msgstr "This training has been marked as completed for your records."
+
 msgid "This updates the theme for all users of the application"
 msgstr "This updates the theme for all users of the application"
 
@@ -8524,6 +8848,9 @@ msgstr "To Ship and Receive"
 msgid "To Storage Unit"
 msgstr "To Storage Unit"
 
+msgid "To-do List"
+msgstr "To-do List"
+
 msgid "Today"
 msgstr "Today"
 
@@ -8551,6 +8878,9 @@ msgstr "Toggle level"
 msgid "Toggle Properties"
 msgstr "Toggle Properties"
 
+msgid "Toggle Sidebar"
+msgstr "Toggle Sidebar"
+
 msgid "Toggle views"
 msgstr "Toggle views"
 
@@ -8559,6 +8889,10 @@ msgstr "Toggle visibility"
 
 msgid "Tolerance (+/-)"
 msgstr "Tolerance (+/-)"
+
+#. placeholder {0}: question.tolerance
+msgid "Tolerance: +/- {0}"
+msgstr "Tolerance: +/- {0}"
 
 msgid "Ton"
 msgstr "Ton"
@@ -8614,6 +8948,9 @@ msgstr "Track every change to your orders, invoices, customers, and more."
 msgid "Track every change to your orders, invoices, customers, suppliers, and more."
 msgstr "Track every change to your orders, invoices, customers, suppliers, and more."
 
+msgid "Track tasks with a to-do list."
+msgstr "Track tasks with a to-do list."
+
 msgid "Track when batches or serials of this item expire."
 msgstr "Track when batches or serials of this item expire."
 
@@ -8652,6 +8989,9 @@ msgstr "Training"
 
 msgid "Training Assignments"
 msgstr "Training Assignments"
+
+msgid "Training Complete"
+msgstr "Training Complete"
 
 msgid "Training Issue"
 msgstr "Training Issue"
@@ -8695,6 +9035,9 @@ msgstr "Trash"
 msgid "Travel & Entertainment"
 msgstr "Travel & Entertainment"
 
+msgid "Tree View"
+msgstr "Tree View"
+
 msgid "Trial Balance"
 msgstr "Trial Balance"
 
@@ -8733,6 +9076,10 @@ msgstr "Unassign rule"
 
 msgid "Unassigned"
 msgstr "Unassigned"
+
+#. placeholder {0}: Math.round(PASSING_THRESHOLD * 100)
+msgid "Unfortunately, you did not pass this training. You need at least {0}% to pass. Please review the material and try again."
+msgstr "Unfortunately, you did not pass this training. You need at least {0}% to pass. Please review the material and try again."
 
 msgid "Ungrouped"
 msgstr "Ungrouped"
@@ -8775,6 +9122,9 @@ msgstr "Unknown Employee"
 
 msgid "unknown location"
 msgstr "unknown location"
+
+msgid "Unknown question type"
+msgstr "Unknown question type"
 
 msgid "Unknown Supplier"
 msgstr "Unknown Supplier"
@@ -8878,6 +9228,9 @@ msgstr "Upgrade to unlock item rules"
 msgid "Upload"
 msgstr "Upload"
 
+msgid "Upload an image from your computer."
+msgstr "Upload an image from your computer."
+
 msgid "Upload completed but no file path returned"
 msgstr "Upload completed but no file path returned"
 
@@ -8949,6 +9302,9 @@ msgstr "Used to categorize items for reporting and analysis"
 msgid "User"
 msgstr "User"
 
+msgid "User record not found"
+msgstr "User record not found"
+
 msgid "Users"
 msgstr "Users"
 
@@ -8987,6 +9343,12 @@ msgstr "VAT Number"
 
 msgid "Verification"
 msgstr "Verification"
+
+msgid "Verification code is required"
+msgstr "Verification code is required"
+
+msgid "Verification code must be 6 characters"
+msgstr "Verification code must be 6 characters"
 
 msgid "Verification Error"
 msgstr "Verification Error"
@@ -9391,6 +9753,9 @@ msgstr "You received this lot"
 
 msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
+
+msgid "Your answer:"
+msgstr "Your answer:"
 
 msgid "Your Console PIN"
 msgstr "Your Console PIN"

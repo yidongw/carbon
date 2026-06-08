@@ -12,6 +12,23 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+msgid " Enter a reason below to record the override."
+msgstr " 输入 Override 的原因。"
+
+msgid " The issue will go through with a warning."
+msgstr " 该问题将带有警告处理。"
+
+#. placeholder {0}: bn.id.slice(0, 10)
+#. placeholder {1}: bn.quantity
+msgid "{0} - {1} Available"
+msgstr "{0} - {1} 可用"
+
+#. placeholder {0}: bn.id.slice(0, 10)
+#. placeholder {1}: bn.quantity
+#. placeholder {2}: bn.readableId
+msgid "{0} - {1} Available of Batch {2}"
+msgstr "{0} - {1} 批次 {2} 可用"
+
 #. placeholder {0}: attribute.name
 #. placeholder {1}: activeStep + 1
 msgid "{0} - Set {1}"
@@ -42,9 +59,17 @@ msgstr "{0} / {1} 已完成"
 msgid "{0} of {1} completed"
 msgstr "{0} / {1} 已完成"
 
+#. placeholder {0}: input.quantity
+#. placeholder {1}: input.readableId
+msgid "{0} of Batch {1}"
+msgstr "批次{1}中的{0}"
+
 #. placeholder {0}: item.quantityScrapped
 msgid "{0} Scrapped"
 msgstr "{0} 已报废"
+
+msgid "A new batch entity was created from a split:"
+msgstr "从拆分生成了一个新的批次实体："
 
 msgid "About"
 msgstr "关于"
@@ -52,11 +77,17 @@ msgstr "关于"
 msgid "Account Settings"
 msgstr "账户设置"
 
+msgid "Action Menu"
+msgstr "操作菜单"
+
 msgid "Active"
 msgstr "活跃"
 
 msgid "Actual"
 msgstr "实际"
+
+msgid "Actual Failure Mode"
+msgstr "实际失效模式"
 
 msgid "Add"
 msgstr "添加"
@@ -64,11 +95,20 @@ msgstr "添加"
 msgid "Add & Issue"
 msgstr "添加并发放"
 
+msgid "Add Batch"
+msgstr "添加批次"
+
 msgid "Add Inventory"
 msgstr "添加库存"
 
 msgid "Add Spare Part"
 msgstr "添加备件"
+
+msgid "Add to Inventory"
+msgstr "添加到库存"
+
+msgid "Adjustment Type"
+msgstr "调整类型"
 
 msgid "All"
 msgstr "全部"
@@ -78,6 +118,9 @@ msgstr "已批准"
 
 msgid "Approved"
 msgstr "已批准"
+
+msgid "are past their expiration date."
+msgstr "超过有效期。"
 
 msgid "Are you sure you want to close out this operation? This will end all active production events for this operation."
 msgstr "确定要结束此工序吗？这将终止此工序的所有活跃生产事件。"
@@ -90,6 +133,9 @@ msgstr "确定要删除此考勤记录吗？此操作无法撤销。"
 
 msgid "Are you sure you want to end all production events? This will end all active operations without completing or finishing them."
 msgstr "确定要结束所有生产事件吗？这将终止所有活跃工序，而不会完成它们。"
+
+msgid "Are you sure you want to scrap this batch?"
+msgstr "您确定要报废此批次吗？"
 
 msgid "Assigned"
 msgstr "已分配"
@@ -118,8 +164,24 @@ msgstr "批次不可用"
 msgid "Batch Number {0}"
 msgstr "批次号 {0}"
 
+#. placeholder {0}: bn.status
+msgid "Batch number is {0}"
+msgstr "批号是{0}"
+
+msgid "Batch number is not available"
+msgstr "批号不可用"
+
 msgid "Batch number is required"
 msgstr "批次号为必填项"
+
+msgid "Batch Split Occurred"
+msgstr "批次拆分发生"
+
+msgid "batches"
+msgstr "批次"
+
+msgid "Big section heading."
+msgstr "大标题"
 
 #. placeholder {0}: column.blockingDispatchReadableId
 msgid "Blocked by {0}"
@@ -127,6 +189,9 @@ msgstr "被 {0} 阻塞"
 
 msgid "Blocking"
 msgstr "阻塞中"
+
+msgid "Bullet List"
+msgstr "项目列表"
 
 msgid "But don't worry. You can use the forgot password flow to request a new magic link."
 msgstr "但别担心。您可以使用忘记密码流程来请求新的魔法链接。"
@@ -136,6 +201,9 @@ msgstr "登录即表示您同意<0>服务条款</0>和<1>隐私政策。</1>"
 
 msgid "Cancel"
 msgstr "取消"
+
+msgid "Canvas showing the model in the 3D Viewer"
+msgstr "在3D查看器中显示的模型画布"
 
 msgid "Carbon Logo"
 msgstr "Carbon 标志"
@@ -181,6 +249,9 @@ msgstr "结束"
 msgid "Close out {0}"
 msgstr "结束 {0}"
 
+msgid "Collapse"
+msgstr "折叠"
+
 #. placeholder {0}: active.data.current.column.title
 #. placeholder {1}: overColumnPosition + 1
 #. placeholder {2}: columnOrder.length
@@ -222,6 +293,25 @@ msgstr "已消耗过期"
 msgid "Continue with WeChat"
 msgstr "使用微信继续"
 
+msgid "Convert"
+msgstr "转换"
+
+msgid "Convert this tracked entity into a quantity of 1 of a new size."
+msgstr "将此跟踪实体转换为新尺寸的1个数量。"
+
+#. placeholder {0}: itemType === "Material" ? "Size" : "Revision"
+msgid "Convert to New {0}"
+msgstr "转换为新{0}"
+
+msgid "Copied!"
+msgstr "已复制！"
+
+msgid "Copy"
+msgstr "复制"
+
+msgid "Copy to clipboard"
+msgstr "复制到剪贴板"
+
 msgid "Create"
 msgstr "创建"
 
@@ -230,6 +320,15 @@ msgstr "创建"
 #. placeholder {0}: search.trim() === "" ? label : search
 msgid "Create {0}"
 msgstr "创建 {0}"
+
+msgid "Create a list with numbering."
+msgstr "创建带编号的列表。"
+
+msgid "Create a simple bullet list."
+msgstr "创建简单项目符号列表。"
+
+msgid "Create Dispatch"
+msgstr "创建发货"
 
 msgid "Customer"
 msgstr "客户"
@@ -317,18 +416,50 @@ msgstr "空的工作中心"
 msgid "End Operations"
 msgstr "结束工序"
 
+msgid "End Time"
+msgstr "结束时间"
+
 #. placeholder {0}: selectedPerson.name
 msgid "Enter PIN for {0}"
 msgstr "输入 {0} 的 PIN 码"
 
+msgid "Entity converted successfully"
+msgstr "实体转换成功"
+
 msgid "Error"
 msgstr "错误"
+
+msgid "Error downloading file"
+msgstr "文件下载错误"
 
 msgid "Estimated"
 msgstr "估计"
 
+msgid "Expand"
+msgstr "展开"
+
+msgid "Expired"
+msgstr "过期"
+
+#. placeholder {0}: formatExpiry(bn.expirationDate)
+msgid "EXPIRED {0}"
+msgstr "过期 {0}"
+
+msgid "Expired stock selected"
+msgstr "过期库存已选"
+
+msgid "Expires"
+msgstr "过期"
+
+#. placeholder {0}: formatExpiry(bn.expirationDate)
+msgid "Expires {0}"
+msgstr "过期于 {0}"
+
 msgid "Failed to complete inventory adjustment"
 msgstr "库存调整失败"
+
+msgid "Failed to convert entity"
+msgstr "转换实体失败"
 
 msgid "Failed to end operations"
 msgstr "结束工序失败"
@@ -352,6 +483,16 @@ msgstr "反馈"
 msgid "File size exceeds 10MB limit"
 msgstr "文件大小超过 10MB 限制"
 
+msgid "File size too big (max 20MB)."
+msgstr "文件大小超出限制（最大20MB）。"
+
+#. placeholder {0}: file.type
+msgid "File type {0} not supported."
+msgstr "文件类型{0}不支持。"
+
+msgid "File upload is not supported for external scars"
+msgstr "外部划伤不支持文件上传"
+
 msgid "Files"
 msgstr "文件"
 
@@ -367,6 +508,18 @@ msgstr "忘记打卡下班了？"
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "遇到技术问题？联系<0>Carbon 支持。</0>"
 
+msgid "Heading 1"
+msgstr "一级标题"
+
+msgid "Heading 2"
+msgstr "二级标题"
+
+msgid "Heading 3"
+msgstr "标题3"
+
+msgid "Helper information"
+msgstr "帮助信息"
+
 msgid "History"
 msgstr "历史"
 
@@ -381,6 +534,9 @@ msgstr "对此页面有想法、建议或问题？"
 
 msgid "Ideas, suggestions or problems?"
 msgstr "有想法、建议或问题？"
+
+msgid "Image"
+msgstr "图片"
 
 msgid "Impact"
 msgstr "影响"
@@ -423,6 +579,9 @@ msgstr "工单详情"
 
 msgid "Job Traveler"
 msgstr "工单流转卡"
+
+msgid "Just start typing with plain text."
+msgstr "直接输入纯文本。"
 
 msgid "Kit"
 msgstr "套件"
@@ -481,6 +640,16 @@ msgstr "维护"
 msgid "Maintenance Completed"
 msgstr "维护已完成"
 
+msgid "Maintenance Dispatch"
+msgstr "维护调度"
+
+msgid "Maintenance dispatch created"
+msgstr "维护调度创建"
+
+#. placeholder {0}: workCenter.name
+msgid "Maintenance for {0}"
+msgstr "维护{0}"
+
 msgid "Manually add items to inventory"
 msgstr "手动添加物品到库存"
 
@@ -490,14 +659,26 @@ msgstr "手动从库存中移除物品"
 msgid "matches"
 msgstr "匹配"
 
+msgid "Material"
+msgstr "材料"
+
+msgid "Material and parent ID are required to unconsume"
+msgstr "物料和父项ID必填才能反消费"
+
 msgid "Materials"
 msgstr "材料"
 
 msgid "Maximum number of records reached"
 msgstr "已达到最大记录数"
 
+msgid "Medium section heading."
+msgstr "中级标题。"
+
 msgid "Model"
 msgstr "模型"
+
+msgid "Model data is missing"
+msgstr "模型数据缺失"
 
 msgid "More options"
 msgstr "更多选项"
@@ -527,11 +708,21 @@ msgstr "名称"
 msgid "New"
 msgstr "新建"
 
+#. placeholder {0}: itemType === "Material" ? "Size" : "Revision"
+msgid "New {0}"
+msgstr "新{0}"
+
 msgid "New Record"
 msgstr "新记录"
 
 msgid "Next"
 msgstr "下一个"
+
+msgid "Next Month"
+msgstr "下个月"
+
+msgid "Next Year"
+msgstr "明年"
 
 msgid "No active maintenance dispatches"
 msgstr "无活跃的维护工单"
@@ -550,6 +741,9 @@ msgstr "无可用筛选条件"
 
 msgid "No available serial numbers found"
 msgstr "未找到可用的序列号"
+
+msgid "No consumed materials"
+msgstr "未消耗材料"
 
 msgid "No dispatches assigned to you"
 msgstr "没有分配给您的工单"
@@ -614,11 +808,17 @@ msgstr "无工作中心"
 msgid "Notes"
 msgstr "备注"
 
+msgid "Numbered List"
+msgstr "编号列表"
+
 msgid "OEE Impact"
 msgstr "OEE 影响"
 
 msgid "OEM Required"
 msgstr "需要 OEM"
+
+msgid "of the selected"
+msgstr "所选的"
 
 #. placeholder {0}: batch.quantity
 msgid "Only {0} available"
@@ -629,6 +829,12 @@ msgstr "抱歉，您不应该看到此页面。此页面最终将成为首页。
 
 msgid "Open"
 msgstr "打开"
+
+msgid "Open date picker"
+msgstr "打开日期选择器"
+
+msgid "Open date time picker"
+msgstr "打开日期时间选择器"
 
 msgid "Operations"
 msgstr "工序"
@@ -642,6 +848,9 @@ msgstr "操作员执行"
 msgid "Optional"
 msgstr "可选"
 
+msgid "Override required"
+msgstr "强制覆盖"
+
 msgid "Owed"
 msgstr "欠款"
 
@@ -650,6 +859,12 @@ msgstr "已支付"
 
 msgid "Parameters"
 msgstr "参数"
+
+msgid "Parent tracking ID is required for batch tracked items."
+msgstr "批跟踪ID对于批次跟踪项是必需的。"
+
+msgid "Parent tracking ID is required for serial tracked items."
+msgstr "父级跟踪ID对于序列追踪项是必需的。"
 
 msgid "Part"
 msgstr "产品"
@@ -687,14 +902,38 @@ msgstr "已计划"
 msgid "Please record all steps for this operation before closing."
 msgstr "请在关闭前记录此工序的所有步骤。"
 
+msgid "Please select a batch to unconsume"
+msgstr "请选择一个批次进行反消费"
+
 msgid "Please select an item"
 msgstr "请选择一个物品"
+
+msgid "Please select an item to issue."
+msgstr "请选择要发放的物品。"
+
+msgid "Please select at least one item to unconsume"
+msgstr "请选择至少一个项目进行反消费"
+
+msgid "Press '/' for commands"
+msgstr "按 '/' 查看命令"
 
 msgid "Prev"
 msgstr "上一个"
 
 msgid "Preventive"
 msgstr "预防性"
+
+msgid "Previous"
+msgstr "上一页"
+
+msgid "Previous Month"
+msgstr "上个月"
+
+msgid "Previous Year"
+msgstr "上一年度"
+
+msgid "Print Label"
+msgstr "打印标签"
 
 msgid "Priority"
 msgstr "优先级"
@@ -714,14 +953,24 @@ msgstr "工序"
 msgid "Progress"
 msgstr "进度"
 
+msgid "Pull from Inventory"
+msgstr "从库存中拉取"
+
 msgid "Qty"
 msgstr "数量"
 
 msgid "Quantity"
 msgstr "数量"
 
+#. placeholder {0}: batchOption.availableQuantity
+msgid "Quantity cannot exceed available quantity ({0})"
+msgstr "数量不得超过可用数量({0})"
+
 msgid "Quantity must be greater than 0"
 msgstr "数量必须大于 0"
+
+msgid "Reason for issuing expired stock"
+msgstr "发出过期库存的原因"
 
 msgid "Recent"
 msgstr "最近"
@@ -736,6 +985,9 @@ msgstr "记录 {0}"
 msgid "Remove"
 msgstr "移除"
 
+msgid "Remove Batch Number"
+msgstr "删除批次号"
+
 msgid "Remove filter"
 msgstr "移除筛选"
 
@@ -744,6 +996,12 @@ msgstr "移除库存"
 
 msgid "Remove part"
 msgstr "移除产品"
+
+msgid "Remove Serial Number"
+msgstr "移除序列号"
+
+msgid "Reset zoom"
+msgstr "重置缩放"
 
 msgid "Sales Order"
 msgstr "销售订单"
@@ -754,11 +1012,17 @@ msgstr "保存"
 msgid "Scan"
 msgstr "扫描"
 
+msgid "Scan batch number"
+msgstr "扫描批次号"
+
 msgid "Scan or enter serial number"
 msgstr "扫描或输入序列号"
 
 msgid "Schedule"
 msgstr "排程"
+
+msgid "Scrap"
+msgstr "废料"
 
 msgid "Scrap Reason"
 msgstr "报废原因"
@@ -800,12 +1064,22 @@ msgstr "选择物品..."
 msgid "Select Batch {0}"
 msgstr "选择批次 {0}"
 
+msgid "Select batch number"
+msgstr "选择批号"
+
+msgid "Select batch to unconsume"
+msgstr "选择批次进行反消费"
+
 #. placeholder {0}: index + 1
 msgid "Select Serial {0}"
 msgstr "选择序列号 {0}"
 
 msgid "Select Serial Number"
 msgstr "选择序列号"
+
+#. placeholder {0}: index + 1
+msgid "Select Serial Number {0}"
+msgstr "选择序列号 {0}"
 
 msgid "Send"
 msgstr "发送"
@@ -821,6 +1095,10 @@ msgstr "序列号 {0}"
 msgid "Serial Number {0}"
 msgstr "序列号 {0}"
 
+#. placeholder {0}: sn.status
+msgid "Serial number is {0}"
+msgstr "序列号是{0}"
+
 msgid "Serial number is not available"
 msgstr "序列号不可用"
 
@@ -828,6 +1106,13 @@ msgid "Serial number is required"
 msgstr "序列号为必填项"
 
 msgid "Serial Numbers"
+msgstr "序列号"
+
+#. placeholder {0}: input.readableId
+msgid "Serial: {0}"
+msgstr "序号: {0}"
+
+msgid "serials"
 msgstr "序列号"
 
 msgid "Set Clock Out"
@@ -838,6 +1123,9 @@ msgstr "设置下班打卡时间"
 
 msgid "Setup"
 msgstr "设置"
+
+msgid "Severity"
+msgstr "严重程度"
 
 msgid "Sign in with Email"
 msgstr "使用邮箱登录"
@@ -857,6 +1145,9 @@ msgstr "已登录为 {stationName}"
 msgid "Size"
 msgstr "大小"
 
+msgid "Small section heading."
+msgstr "小标题"
+
 msgid "Source"
 msgstr "来源"
 
@@ -868,6 +1159,9 @@ msgstr "已使用备件"
 
 msgid "Start"
 msgstr "开始"
+
+msgid "Start Time"
+msgstr "开始时间"
 
 msgid "Station User"
 msgstr "工位用户"
@@ -899,18 +1193,33 @@ msgstr "建议"
 msgid "Support Required"
 msgstr "需要支持"
 
+msgid "Suspected Failure Mode"
+msgstr "疑似故障模式"
+
 msgid "Switch Operator"
 msgstr "切换操作员"
 
 msgid "Tag"
 msgstr "标签"
 
+msgid "Text"
+msgstr "文本"
+
 #. placeholder {0}: operation.operationQuantity
 msgid "The completed quantity for this operation is less than the required quantity of {0}."
 msgstr "此工序的完成数量小于所需数量 {0}。"
 
+msgid "The remaining quantity will be removed from inventory and issued to the job"
+msgstr "剩余数量将从库存中移除并下发到工序"
+
+msgid "There are no consumed materials to unconsume."
+msgstr "没有可恢复的原材料。"
+
 msgid "There are serial or batch tracked materials on the bill of material that have not been fully issued. Completing without issuing may result in incorrect traceability records."
 msgstr "物料清单中有序列号或批次追踪的材料尚未完全发放。不发放即完成可能导致追溯记录不正确。"
+
+msgid "This operation has been deleted"
+msgstr "此操作已被删除"
 
 msgid "This Period"
 msgstr "本期"
@@ -925,8 +1234,17 @@ msgstr "工时记录"
 msgid "Time Worked: {0}"
 msgstr "工作时间：{0}"
 
+msgid "To-do List"
+msgstr "待办事项列表"
+
 msgid "Today"
 msgstr "今天"
+
+msgid "Toggle"
+msgstr "切换"
+
+msgid "Toggle Sidebar"
+msgstr "切换侧边栏"
 
 msgid "Tools"
 msgstr "工具"
@@ -942,11 +1260,17 @@ msgstr "总时间：{0}"
 msgid "Total: {0}"
 msgstr "合计：{0}"
 
+msgid "Track tasks with a to-do list."
+msgstr "使用待办事项列表跟踪任务。"
+
 msgid "Tracking Labels"
 msgstr "追踪标签"
 
 msgid "Type a message..."
 msgstr "输入消息..."
+
+msgid "Unconsume"
+msgstr "未消耗"
 
 msgid "Unissued serial/batch materials"
 msgstr "未发放的序列号/批次材料"
@@ -963,6 +1287,9 @@ msgstr "更新"
 msgid "Updated successfully"
 msgstr "更新成功"
 
+msgid "Upload an image from your computer."
+msgstr "从计算机上传一张图片。"
+
 #. placeholder {0}: fileUpload.name
 msgid "Uploaded: {0}"
 msgstr "已上传：{0}"
@@ -970,6 +1297,9 @@ msgstr "已上传：{0}"
 #. placeholder {0}: fileUpload.name
 msgid "Uploading {0}"
 msgstr "正在上传 {0}"
+
+msgid "View Active Maintenance"
+msgstr "查看活跃维护"
 
 msgid "View maintenance dispatch"
 msgstr "查看维护工单"

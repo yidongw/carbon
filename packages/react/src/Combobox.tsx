@@ -112,7 +112,7 @@ const Combobox = forwardRef<HTMLButtonElement, ComboboxProps>(
               <IconButton
                 size={size ?? "sm"}
                 variant="secondary"
-                aria-label={value ? "Edit" : "Add"}
+                aria-label={value ? t`Edit` : t`Add`}
                 icon={value ? <LuSettings2 /> : <LuPlus />}
                 isDisabled={isReadOnly}
                 disabled={isReadOnly}
@@ -172,7 +172,7 @@ const Combobox = forwardRef<HTMLButtonElement, ComboboxProps>(
         {isClearable && !isReadOnly && value && (
           <IconButton
             variant={isInlinePreview ? "secondary" : "ghost"}
-            aria-label="Clear"
+            aria-label={t`Clear`}
             icon={<LuX />}
             onClick={() => onChange?.("")}
             size={isInlinePreview ? "sm" : size === "sm" ? "md" : size}

@@ -79,14 +79,14 @@ const useSupplierInteractionLineDocuments = ({
         .remove([getPath(file)]);
 
       if (!fileDelete || fileDelete.error) {
-        toast.error(fileDelete?.error?.message || "Error deleting file");
+        toast.error(fileDelete?.error?.message || t`Error deleting file`);
         return;
       }
 
-      toast.success(`${file.name} deleted successfully`);
+      toast.success(t`${file.name} deleted successfully`);
       revalidator.revalidate();
     },
-    [getPath, carbon?.storage, revalidator]
+    [getPath, carbon?.storage, revalidator, t]
   );
 
   const download = useCallback(
@@ -156,7 +156,7 @@ const useSupplierInteractionLineDocuments = ({
           });
 
         if (fileUpload.error) {
-          toast.error(`Failed to upload file: ${file.name}`);
+          toast.error(t`Failed to upload file: ${file.name}`);
         } else if (fileUpload.data?.path) {
           createDocumentRecord({
             path: fileUpload.data.path,
@@ -249,9 +249,9 @@ const SupplierInteractionLineDocuments = ({
           <Table>
             <Thead>
               <Tr>
-                <Th>Name</Th>
-                <Th>Size</Th>
-                <Th>Created</Th>
+                <Th><Trans>Name</Trans></Th>
+                <Th><Trans>Size</Trans></Th>
+                <Th><Trans>Created</Trans></Th>
                 <Th />
               </Tr>
             </Thead>
