@@ -11,6 +11,7 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
+"POT-Creation-Date: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " 供应商是向您出售产品或服务的商家或个人。"
@@ -79,6 +80,9 @@ msgstr "{scopeCount} 个权限"
 
 msgid "/month/user"
 msgstr "/月/用户"
+
+msgid "%"
+msgstr "%"
 
 #. placeholder {0}: allItems.length - 3
 msgid "+{0} more"
@@ -3448,6 +3452,9 @@ msgstr "升级"
 msgid "Est. Duration"
 msgstr "预估时长"
 
+msgid "Estimated"
+msgstr "估算"
+
 msgid "Estimated Duration"
 msgstr "预计时长"
 
@@ -3735,14 +3742,32 @@ msgstr "插入供应商报价行失败"
 msgid "Failed to load configuration parameters"
 msgstr "加载配置参数失败"
 
+msgid "Failed to load consumables."
+msgstr "加载耗材失败。"
+
 msgid "Failed to load customer part details"
 msgstr "加载客户产品详情失败"
+
+msgid "Failed to load customers."
+msgstr "加载客户失败。"
 
 msgid "Failed to load data"
 msgstr "加载数据失败"
 
+msgid "Failed to load documents."
+msgstr "加载文档失败。"
+
 msgid "Failed to load inbound inspections"
 msgstr "加载入站检验失败"
+
+msgid "Failed to load inspections."
+msgstr "加载检查失败。"
+
+msgid "Failed to load inventory."
+msgstr "加载库存失败。"
+
+msgid "Failed to load issues."
+msgstr "加载问题失败。"
 
 msgid "Failed to load item data"
 msgstr "加载物品数据失败"
@@ -3756,11 +3781,32 @@ msgstr "加载工作操作失败"
 msgid "Failed to load jobs"
 msgstr "加载工作失败"
 
+msgid "Failed to load jobs."
+msgstr "加载任务失败。"
+
+msgid "Failed to load materials."
+msgstr "加载材料失败。"
+
+msgid "Failed to load parts."
+msgstr "加载零件失败。"
+
+msgid "Failed to load people."
+msgstr "加载人员失败。"
+
+msgid "Failed to load purchase invoices."
+msgstr "加载采购发票失败。"
+
 msgid "Failed to load purchase order lines"
 msgstr "加载采购订单行失败"
 
 msgid "Failed to load purchase orders"
 msgstr "加载采购订单失败"
+
+msgid "Failed to load purchase orders."
+msgstr "加载采购订单失败。"
+
+msgid "Failed to load quotes."
+msgstr "加载报价失败。"
 
 msgid "Failed to load receipt lines"
 msgstr "加载收货行项目失败"
@@ -3768,11 +3814,23 @@ msgstr "加载收货行项目失败"
 msgid "Failed to load receipts"
 msgstr "加载收据失败"
 
+msgid "Failed to load receipts."
+msgstr "加载收据失败。"
+
+msgid "Failed to load RFQs."
+msgstr "未能加载询价单。"
+
+msgid "Failed to load sales invoices."
+msgstr "加载销售发票失败。"
+
 msgid "Failed to load sales order lines"
 msgstr "加载销售订单行失败"
 
 msgid "Failed to load sales orders"
 msgstr "加载销售订单失败"
+
+msgid "Failed to load sales orders."
+msgstr "加载销售订单失败。"
 
 msgid "Failed to load shipment lines"
 msgstr "加载运单行失败"
@@ -3780,11 +3838,26 @@ msgstr "加载运单行失败"
 msgid "Failed to load shipments"
 msgstr "加载运单失败"
 
+msgid "Failed to load shipments."
+msgstr "加载运单失败。"
+
+msgid "Failed to load suggestions."
+msgstr "加载建议失败。"
+
 msgid "Failed to load supplier part details"
 msgstr "加载供应商产品详情失败"
 
+msgid "Failed to load suppliers."
+msgstr "加载供应商失败。"
+
+msgid "Failed to load tools."
+msgstr "加载工具失败。"
+
 msgid "Failed to load tracked entities"
 msgstr "加载追踪实体失败"
+
+msgid "Failed to load warehouse transfers."
+msgstr "未能加载仓库转移"
 
 msgid "Failed to remove image: {errorMessage}"
 msgstr "删除图片失败：{errorMessage}"
@@ -4933,6 +5006,9 @@ msgstr "机器单元"
 
 msgid "Machinery & Equipment"
 msgstr "机械设备"
+
+msgid "Magic link expired or already used. Please request a new one."
+msgstr "魔力链接已过期或已被使用，请重新请求一个。"
 
 msgid "Maintenance"
 msgstr "维护"
@@ -6277,6 +6353,9 @@ msgstr "密码太短"
 msgid "Path"
 msgstr "路径"
 
+msgid "Pause"
+msgstr "暂停"
+
 msgid "Paused"
 msgstr "暂停"
 
@@ -6452,6 +6531,9 @@ msgstr "请填写所有必填项"
 
 msgid "Please fill the columns marked with the <0/> icon to provide pricing"
 msgstr "请填写带有<0/>图标标记的列以提供报价"
+
+msgid "Please open this link in the same browser where you requested sign-in."
+msgstr "请在您请求登录的同一浏览器中打开此链接。"
 
 msgid "Please save the operation before adding parameters."
 msgstr "请保存操作再添加参数。"
@@ -7315,6 +7397,9 @@ msgstr "结果"
 msgid "Results per page"
 msgstr "每页结果数"
 
+msgid "Resume"
+msgstr "继续"
+
 msgid "Retained Earnings"
 msgstr "留存收益"
 
@@ -7360,6 +7445,9 @@ msgstr "修订版本"
 #. placeholder {0}: revision.revision
 msgid "Revision {0}"
 msgstr "修订 {0}"
+
+msgid "Revisions"
+msgstr "修订"
 
 msgid "Revoke"
 msgstr "撤销"

@@ -11,6 +11,7 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
+"POT-Creation-Date: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " Поставщик - это бизнес или лицо, которое продает вам части или услуги."
@@ -79,6 +80,9 @@ msgstr "{scopeCount} разрешений"
 
 msgid "/month/user"
 msgstr "/месяц/пользователь"
+
+msgid "%"
+msgstr "%"
 
 #. placeholder {0}: allItems.length - 3
 msgid "+{0} more"
@@ -3448,6 +3452,9 @@ msgstr "Эскалация"
 msgid "Est. Duration"
 msgstr "Прибл. Длительность"
 
+msgid "Estimated"
+msgstr "Оценочное"
+
 msgid "Estimated Duration"
 msgstr "Предполагаемая продолжительность"
 
@@ -3735,14 +3742,32 @@ msgstr "Ошибка при добавлении строки предложен
 msgid "Failed to load configuration parameters"
 msgstr "Не удалось загрузить параметры конфигурации"
 
+msgid "Failed to load consumables."
+msgstr "Не удалось загрузить расходные материалы."
+
 msgid "Failed to load customer part details"
 msgstr "Не удалось загрузить детали детали клиента"
+
+msgid "Failed to load customers."
+msgstr "Не удалось загрузить клиентов."
 
 msgid "Failed to load data"
 msgstr "Не удалось загрузить данные"
 
+msgid "Failed to load documents."
+msgstr "Не удалось загрузить документы."
+
 msgid "Failed to load inbound inspections"
 msgstr "Не удалось загрузить входящие проверки"
+
+msgid "Failed to load inspections."
+msgstr "Не удалось загрузить проверки."
+
+msgid "Failed to load inventory."
+msgstr "Не удалось загрузить складские запасы."
+
+msgid "Failed to load issues."
+msgstr "Не удалось загрузить проблемы."
 
 msgid "Failed to load item data"
 msgstr "Не удалось загрузить данные элемента"
@@ -3756,11 +3781,32 @@ msgstr "Не удалось загрузить операции задания"
 msgid "Failed to load jobs"
 msgstr "Не удалось загрузить задания"
 
+msgid "Failed to load jobs."
+msgstr "Не удалось загрузить задачи."
+
+msgid "Failed to load materials."
+msgstr "Не удалось загрузить материалы."
+
+msgid "Failed to load parts."
+msgstr "Не удалось загрузить детали."
+
+msgid "Failed to load people."
+msgstr "Не удалось загрузить людей."
+
+msgid "Failed to load purchase invoices."
+msgstr "Не удалось загрузить покупочные накладные."
+
 msgid "Failed to load purchase order lines"
 msgstr "Не удалось загрузить строки заказа на покупку"
 
 msgid "Failed to load purchase orders"
 msgstr "Не удалось загрузить заказы на покупку"
+
+msgid "Failed to load purchase orders."
+msgstr "Не удалось загрузить заказы на покупку."
+
+msgid "Failed to load quotes."
+msgstr "Не удалось загрузить заявки."
 
 msgid "Failed to load receipt lines"
 msgstr "Не удалось загрузить строки квитанции"
@@ -3768,11 +3814,23 @@ msgstr "Не удалось загрузить строки квитанции"
 msgid "Failed to load receipts"
 msgstr "Не удалось загрузить квитанции"
 
+msgid "Failed to load receipts."
+msgstr "Не удалось загрузить чеки."
+
+msgid "Failed to load RFQs."
+msgstr "Не удалось загрузить заявки на цену."
+
+msgid "Failed to load sales invoices."
+msgstr "Не удалось загрузить продажные накладные."
+
 msgid "Failed to load sales order lines"
 msgstr "Не удалось загрузить строки заказа продажи"
 
 msgid "Failed to load sales orders"
 msgstr "Не удалось загрузить заказы на продажу"
+
+msgid "Failed to load sales orders."
+msgstr "Не удалось загрузить заказы на продажу."
 
 msgid "Failed to load shipment lines"
 msgstr "Не удалось загрузить строки отправки"
@@ -3780,11 +3838,26 @@ msgstr "Не удалось загрузить строки отправки"
 msgid "Failed to load shipments"
 msgstr "Не удалось загрузить отправки"
 
+msgid "Failed to load shipments."
+msgstr "Не удалось загрузить отгрузки."
+
+msgid "Failed to load suggestions."
+msgstr "Не удалось загрузить рекомендации."
+
 msgid "Failed to load supplier part details"
 msgstr "Не удалось загрузить детали поставщика"
 
+msgid "Failed to load suppliers."
+msgstr "Не удалось загрузить поставщиков."
+
+msgid "Failed to load tools."
+msgstr "Не удалось загрузить инструменты."
+
 msgid "Failed to load tracked entities"
 msgstr "Не удалось загрузить отслеживаемые сущности"
+
+msgid "Failed to load warehouse transfers."
+msgstr "Не удалось загрузить перемещения склада."
 
 msgid "Failed to remove image: {errorMessage}"
 msgstr "Не удалось удалить изображение: {errorMessage}"
@@ -4933,6 +5006,9 @@ msgstr "Единица машины"
 
 msgid "Machinery & Equipment"
 msgstr "Техника и оборудование"
+
+msgid "Magic link expired or already used. Please request a new one."
+msgstr "Ссылка на магию истекла или уже использовалась. Пожалуйста, запросите новую."
 
 msgid "Maintenance"
 msgstr "Техническое обслуживание"
@@ -6277,6 +6353,9 @@ msgstr "Пароль слишком короткий"
 msgid "Path"
 msgstr "Путь"
 
+msgid "Pause"
+msgstr "Приостановить"
+
 msgid "Paused"
 msgstr "Остановлен"
 
@@ -6452,6 +6531,9 @@ msgstr "Пожалуйста, заполните все обязательные
 
 msgid "Please fill the columns marked with the <0/> icon to provide pricing"
 msgstr "Пожалуйста, заполните столбцы, отмеченные значком <0/>, для указания цен"
+
+msgid "Please open this link in the same browser where you requested sign-in."
+msgstr "Пожалуйста, откройте этот ссылку в том же браузере, где вы запрашивали вход."
 
 msgid "Please save the operation before adding parameters."
 msgstr "Пожалуйста, сохраните операцию перед добавлением параметров."
@@ -7315,6 +7397,9 @@ msgstr "Результаты"
 msgid "Results per page"
 msgstr "Результатов на странице"
 
+msgid "Resume"
+msgstr "Продолжить"
+
 msgid "Retained Earnings"
 msgstr "Нераспределенная прибыль"
 
@@ -7360,6 +7445,9 @@ msgstr "Редакция"
 #. placeholder {0}: revision.revision
 msgid "Revision {0}"
 msgstr "Версия {0}"
+
+msgid "Revisions"
+msgstr "Редакции"
 
 msgid "Revoke"
 msgstr "Отозвать"

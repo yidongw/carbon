@@ -278,11 +278,11 @@ const JobEstimatesVsActuals = ({
               <Thead>
                 <Tr>
                   <Th className="px-2" />
-                  <Th className="px-2">Estimated</Th>
-                  <Th className="px-2">Actual</Th>
-                  <Th className="px-2">%</Th>
-                  <Th className="px-2">Complete</Th>
-                  <Th className="px-2">Scrap</Th>
+                  <Th className="px-2"><Trans>Estimated</Trans></Th>
+                  <Th className="px-2"><Trans>Actual</Trans></Th>
+                  <Th className="px-2"><Trans>%</Trans></Th>
+                  <Th className="px-2"><Trans>Complete</Trans></Th>
+                  <Th className="px-2"><Trans>Scrap</Trans></Th>
                   <Th className="px-2" />
                 </Tr>
               </Thead>
@@ -522,13 +522,13 @@ const JobEstimatesVsActuals = ({
             <Table>
               <Thead>
                 <Tr>
-                  <Th>Material</Th>
-                  <Th>Estimated</Th>
-                  <Th>Actual</Th>
-                  <Th>%</Th>
+                  <Th><Trans>Material</Trans></Th>
+                  <Th><Trans>Estimated</Trans></Th>
+                  <Th><Trans>Actual</Trans></Th>
+                  <Th><Trans>%</Trans></Th>
 
-                  <Th>Estimated</Th>
-                  <Th>Actual</Th>
+                  <Th><Trans>Estimated</Trans></Th>
+                  <Th><Trans>Actual</Trans></Th>
                 </Tr>
               </Thead>
               <Tbody>

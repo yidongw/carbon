@@ -322,7 +322,7 @@ const JobHeader = () => {
                 type="submit"
                 variant="secondary"
               >
-                Pause
+                <Trans>Pause</Trans>
               </Button>
             </statusFetcher.Form>
           ) : (
@@ -340,7 +340,7 @@ const JobHeader = () => {
                 leftIcon={<LuCirclePlay />}
                 type="submit"
               >
-                Resume
+                <Trans>Resume</Trans>
               </Button>
             </statusFetcher.Form>
           )}
@@ -372,7 +372,7 @@ const JobHeader = () => {
               }
             ]}
           >
-            Release
+            <Trans>Release</Trans>
           </SplitButton>
 
           <Button
@@ -389,7 +389,7 @@ const JobHeader = () => {
             leftIcon={<LuCircleCheck />}
             variant={status === "Completed" ? "primary" : "secondary"}
           >
-            Complete
+            <Trans>Complete</Trans>
           </Button>
           <Button
             onClick={cancelModal.onOpen}

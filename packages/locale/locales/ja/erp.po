@@ -11,6 +11,7 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
+"POT-Creation-Date: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " A supplier is a business or person who sells you parts or services."
@@ -79,6 +80,9 @@ msgstr "{scopeCount} 個の権限"
 
 msgid "/month/user"
 msgstr "/月/ユーザー"
+
+msgid "%"
+msgstr "％"
 
 #. placeholder {0}: allItems.length - 3
 msgid "+{0} more"
@@ -3448,6 +3452,9 @@ msgstr "エスカレーション"
 msgid "Est. Duration"
 msgstr "推定期間"
 
+msgid "Estimated"
+msgstr "推定"
+
 msgid "Estimated Duration"
 msgstr "推定期間"
 
@@ -3735,14 +3742,32 @@ msgstr "サプライヤー見積行の挿入に失敗しました"
 msgid "Failed to load configuration parameters"
 msgstr "設定パラメータの読み込みに失敗しました"
 
+msgid "Failed to load consumables."
+msgstr "消費材の読み込みに失敗しました。"
+
 msgid "Failed to load customer part details"
 msgstr "顧客部品の詳細の読み込みに失敗しました"
+
+msgid "Failed to load customers."
+msgstr "顧客情報の読み込みに失敗しました。"
 
 msgid "Failed to load data"
 msgstr "データの読み込みに失敗しました"
 
+msgid "Failed to load documents."
+msgstr "ドキュメントの読み込みに失敗しました。"
+
 msgid "Failed to load inbound inspections"
 msgstr "受信検査の読み込みに失敗しました"
+
+msgid "Failed to load inspections."
+msgstr "検査の読み込みに失敗しました。"
+
+msgid "Failed to load inventory."
+msgstr "在庫の読み込みに失敗しました。"
+
+msgid "Failed to load issues."
+msgstr "問題の読み込みに失敗しました。"
 
 msgid "Failed to load item data"
 msgstr "アイテムデータの読み込みに失敗しました"
@@ -3756,11 +3781,32 @@ msgstr "ジョブ操作の読み込みに失敗しました"
 msgid "Failed to load jobs"
 msgstr "ジョブの読み込みに失敗しました"
 
+msgid "Failed to load jobs."
+msgstr "ジョブの読み込みに失敗しました。"
+
+msgid "Failed to load materials."
+msgstr "材料の読み込みに失敗しました。"
+
+msgid "Failed to load parts."
+msgstr "部品の読み込みに失敗しました。"
+
+msgid "Failed to load people."
+msgstr "PEOPLE の読み込みに失敗しました。"
+
+msgid "Failed to load purchase invoices."
+msgstr "購入発行票の読み込みに失敗しました。"
+
 msgid "Failed to load purchase order lines"
 msgstr "購買注文行の読み込みに失敗しました"
 
 msgid "Failed to load purchase orders"
 msgstr "購買注文の読み込みに失敗しました"
+
+msgid "Failed to load purchase orders."
+msgstr "購入注文の読み込みに失敗しました。"
+
+msgid "Failed to load quotes."
+msgstr "注文情報の読み込みに失敗しました。"
 
 msgid "Failed to load receipt lines"
 msgstr "領収書行の読み込みに失敗しました"
@@ -3768,11 +3814,23 @@ msgstr "領収書行の読み込みに失敗しました"
 msgid "Failed to load receipts"
 msgstr "領収書の読み込みに失敗しました"
 
+msgid "Failed to load receipts."
+msgstr "受領情報の読み込みに失敗しました。"
+
+msgid "Failed to load RFQs."
+msgstr "RFQの読み込みに失敗しました。"
+
+msgid "Failed to load sales invoices."
+msgstr "売上発行が読み込めませんでした。"
+
 msgid "Failed to load sales order lines"
 msgstr "販売注文行の読み込みに失敗しました"
 
 msgid "Failed to load sales orders"
 msgstr "販売注文の読み込みに失敗しました"
+
+msgid "Failed to load sales orders."
+msgstr "売上注文の読み込みに失敗しました。"
 
 msgid "Failed to load shipment lines"
 msgstr "配送ラインの読み込みに失敗しました"
@@ -3780,11 +3838,26 @@ msgstr "配送ラインの読み込みに失敗しました"
 msgid "Failed to load shipments"
 msgstr "出荷の読み込みに失敗しました"
 
+msgid "Failed to load shipments."
+msgstr "荷物の読み込みに失敗しました。"
+
+msgid "Failed to load suggestions."
+msgstr "提案が読み込めませんでした。"
+
 msgid "Failed to load supplier part details"
 msgstr "サプライヤー部品の詳細の読み込みに失敗しました"
 
+msgid "Failed to load suppliers."
+msgstr "サプライヤーの読み込みに失敗しました。"
+
+msgid "Failed to load tools."
+msgstr "ツールの読み込みに失敗しました。"
+
 msgid "Failed to load tracked entities"
 msgstr "追跡対象エンティティの読み込みに失敗しました"
+
+msgid "Failed to load warehouse transfers."
+msgstr "倉庫移動の読み込みに失敗しました。"
 
 msgid "Failed to remove image: {errorMessage}"
 msgstr "画像の削除に失敗しました: {errorMessage}"
@@ -4933,6 +5006,9 @@ msgstr "機械ユニット"
 
 msgid "Machinery & Equipment"
 msgstr "機械・設備"
+
+msgid "Magic link expired or already used. Please request a new one."
+msgstr "_magicリンクが有効期限切れまたは既に使用されています。新しいものをお願いします._"
 
 msgid "Maintenance"
 msgstr "メンテナンス"
@@ -6277,6 +6353,9 @@ msgstr "パスワードは短すぎます"
 msgid "Path"
 msgstr "パス"
 
+msgid "Pause"
+msgstr "一時停止"
+
 msgid "Paused"
 msgstr "（一時停止）"
 
@@ -6452,6 +6531,9 @@ msgstr "すべての必須フィールドに入力してください"
 
 msgid "Please fill the columns marked with the <0/> icon to provide pricing"
 msgstr "<0/>アイコンでマークされた列に価格を入力してください"
+
+msgid "Please open this link in the same browser where you requested sign-in."
+msgstr "同じブラウザでサインインの要求をしたところにこのリンクを開いてください。"
 
 msgid "Please save the operation before adding parameters."
 msgstr "操作を保存してからパラメータを追加してください。"
@@ -7315,6 +7397,9 @@ msgstr "結果"
 msgid "Results per page"
 msgstr "ページあたりの結果数"
 
+msgid "Resume"
+msgstr "再開"
+
 msgid "Retained Earnings"
 msgstr "利益剰余金"
 
@@ -7360,6 +7445,9 @@ msgstr "リビジョン"
 #. placeholder {0}: revision.revision
 msgid "Revision {0}"
 msgstr "リビジョン {0}"
+
+msgid "Revisions"
+msgstr "修正版"
 
 msgid "Revoke"
 msgstr "取り消す"
