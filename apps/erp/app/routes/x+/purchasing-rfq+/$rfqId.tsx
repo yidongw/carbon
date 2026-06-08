@@ -6,7 +6,7 @@ import { type JSONContent, VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
 import { Suspense } from "react";
-import type { LoaderFunctionArgs } from "react-router";
+import type { ClientLoaderFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Await, Outlet, redirect, useLoaderData, useParams } from "react-router";
 import { ExplorerSkeleton } from "~/components/Skeletons";
 import { PanelProvider, ResizablePanels } from "~/components/Layout/Panels";
@@ -91,6 +91,26 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     files: getSupplierInteractionDocuments(serviceRole, companyId, rfqId)
   };
 }
+
+const rfqCache = new Map<string, { data: Awaited<ReturnType<typeof loader>>; ts: number }>();
+
+export async function clientLoader({
+  serverLoader,
+  params
+}: ClientLoaderFunctionArgs) {
+  const key = params.rfqId!;
+  const hit = rfqCache.get(key);
+  if (hit && Date.now() - hit.ts < 5 * 60_000) {
+    serverLoader<typeof loader>().then((d) =>
+      rfqCache.set(key, { data: d, ts: Date.now() })
+    );
+    return hit.data;
+  }
+  const data = await serverLoader<typeof loader>();
+  rfqCache.set(key, { data, ts: Date.now() });
+  return data;
+}
+clientLoader.hydrate = true;
 
 export default function PurchasingRFQRoute() {
   const { rfqId } = useParams();

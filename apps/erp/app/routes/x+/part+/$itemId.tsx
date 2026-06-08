@@ -17,7 +17,7 @@ import { msg } from "@lingui/core/macro";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { Suspense, useState } from "react";
 import { LuSearch } from "react-icons/lu";
-import type { LoaderFunctionArgs } from "react-router";
+import type { ClientLoaderFunctionArgs, LoaderFunctionArgs } from "react-router";
 import {
   Await,
   Outlet,
@@ -125,6 +125,26 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     methodTree
   };
 }
+
+const partCache = new Map<string, { data: Awaited<ReturnType<typeof loader>>; ts: number }>();
+
+export async function clientLoader({
+  serverLoader,
+  params
+}: ClientLoaderFunctionArgs) {
+  const key = params.itemId!;
+  const hit = partCache.get(key);
+  if (hit && Date.now() - hit.ts < 5 * 60_000) {
+    serverLoader<typeof loader>().then((d) =>
+      partCache.set(key, { data: d, ts: Date.now() })
+    );
+    return hit.data;
+  }
+  const data = await serverLoader<typeof loader>();
+  partCache.set(key, { data, ts: Date.now() });
+  return data;
+}
+clientLoader.hydrate = true;
 
 export default function PartRoute() {
   const { t } = useLingui();
