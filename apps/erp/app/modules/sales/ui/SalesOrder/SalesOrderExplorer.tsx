@@ -116,14 +116,17 @@ function getRelatedItems(
   ];
 }
 
-export default function SalesOrderExplorer() {
+export default function SalesOrderExplorer({
+  lines
+}: {
+  lines: SalesOrderLine[];
+}) {
   const prettifyShortcut = usePrettifyShortcut();
   const { defaults } = useUser();
   const { orderId } = useParams();
   if (!orderId) throw new Error("Could not find orderId");
   const salesOrderData = useRouteData<{
     salesOrder: SalesOrder;
-    lines: SalesOrderLine[];
     customer: Customer;
   }>(path.to.salesOrder(orderId));
   const permissions = usePermissions();
@@ -155,7 +158,7 @@ export default function SalesOrderExplorer() {
 
   useRealtime(
     "modelUpload",
-    `modelPath=in.(${salesOrderData?.lines.map((d) => d.modelPath).join(",")})`
+    `modelPath=in.(${lines.map((d) => d.modelPath).join(",")})`
   );
 
   const onDeleteLine = (line: SalesOrderLine) => {
@@ -183,8 +186,8 @@ export default function SalesOrderExplorer() {
           className="flex-1 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent"
           spacing={0}
         >
-          {salesOrderData?.lines && salesOrderData?.lines?.length > 0 ? (
-            salesOrderData?.lines.map((line) => (
+          {lines.length > 0 ? (
+            lines.map((line) => (
               <SalesOrderLineItem
                 key={line.id}
                 isDisabled={isDisabled}

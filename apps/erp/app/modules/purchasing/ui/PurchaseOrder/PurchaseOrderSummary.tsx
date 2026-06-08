@@ -442,7 +442,7 @@ const PurchaseOrderSummary = ({
           presentationCurrencyFormatter={presentationCurrencyFormatter}
           formatter={formatter}
           locale={locale}
-          lines={routeData?.lines ?? []}
+          lines={Array.isArray(routeData?.lines) ? routeData.lines : []}
           shouldConvertCurrency={shouldConvertCurrency}
         />
 

@@ -30,13 +30,16 @@ import type { PurchasingRFQ, PurchasingRFQLine } from "../../types";
 import DeletePurchasingRFQLine from "./DeletePurchasingRFQLine";
 import PurchasingRFQLineForm from "./PurchasingRFQLineForm";
 
-export default function PurchasingRFQExplorer() {
+export default function PurchasingRFQExplorer({
+  lines
+}: {
+  lines: PurchasingRFQLine[];
+}) {
   const prettifyShortcut = usePrettifyShortcut();
   const { rfqId } = useParams();
   if (!rfqId) throw new Error("Could not find rfqId");
   const purchasingRfqData = useRouteData<{
     rfqSummary: PurchasingRFQ;
-    lines: PurchasingRFQLine[];
   }>(path.to.purchasingRfq(rfqId));
   const permissions = usePermissions();
 
@@ -75,8 +78,6 @@ export default function PurchasingRFQExplorer() {
   };
 
   const isDisabled = isRfqLocked(purchasingRfqData?.rfqSummary.status);
-
-  const lines = purchasingRfqData?.lines ?? [];
 
   return (
     <div data-purchasing-rfq-explorer>
