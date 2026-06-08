@@ -73,7 +73,7 @@ file_size_limit = "50MiB"
 enabled = true
 # The base URL of your website. Used as an allow-list for redirects and for constructing URLs used
 # in emails.
-site_url = "http://localhost:3000"
+site_url = "https://carbon-erp.vercel.app"
 # A list of *exact* URLs that auth providers are permitted to redirect to post authentication.
 additional_redirect_urls = ["https://localhost:3000", "https://*.trycloudflare.com", "https://*.trycloudflare.com/*", "https://*.vercel.app", "https://*.vercel.app/*", "https://*.foxhole.bot", "https://*.foxhole.bot/*"]
 # How long tokens are valid for, in seconds. Defaults to 3000 (1 hour), maximum 604,800 (1 week).

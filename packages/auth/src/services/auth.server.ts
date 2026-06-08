@@ -428,8 +428,7 @@ export async function sendInviteByEmail(
 
 export async function sendMagicLink(
   email: string,
-  redirectTo?: string,
-  appUrl?: string
+  redirectTo?: string
 ): Promise<
   | { error: null; pkceEntry: { k: string; v: string } }
   | { error: Error; pkceEntry: null }
@@ -455,10 +454,10 @@ export async function sendMagicLink(
     }
   });
 
-  const effectiveAppUrl = appUrl ?? getAppUrl();
+  const appUrl = getAppUrl();
   const callbackUrl = redirectTo
-    ? `${effectiveAppUrl}/callback?redirectTo=${encodeURIComponent(redirectTo)}`
-    : `${effectiveAppUrl}/callback`;
+    ? `${appUrl}/callback?redirectTo=${encodeURIComponent(redirectTo)}`
+    : `${appUrl}/callback`;
 
   const { error: otpError } = await client.auth.signInWithOtp({
     email,

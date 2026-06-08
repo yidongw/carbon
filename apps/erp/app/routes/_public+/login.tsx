@@ -153,7 +153,7 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   if (user.data && user.data.active) {
-    const magicLink = await sendMagicLink(email, redirectTo, new URL(request.url).origin);
+    const magicLink = await sendMagicLink(email, redirectTo);
 
     if (magicLink.error) {
       return error(null, "Failed to send magic link");
