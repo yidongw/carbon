@@ -13,6 +13,7 @@ export function NavigationProgress() {
   const [progress, setProgress] = useState(0); // 0..100
   const trickle = useRef<ReturnType<typeof setInterval> | null>(null);
   const hide = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const show = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const clearTrickle = () => {
@@ -22,14 +23,21 @@ export function NavigationProgress() {
 
     if (active) {
       if (hide.current) clearTimeout(hide.current);
-      setVisible(true);
-      // Jump in immediately, then trickle toward (but never reaching) 90%.
-      setProgress((p) => (p < 12 ? 12 : p));
-      clearTrickle();
-      trickle.current = setInterval(() => {
-        setProgress((p) => (p >= 90 ? p : p + (90 - p) * 0.12));
-      }, 180);
+      // Only show the bar after 300ms — fast navigations (cache hits, prefetched
+      // links) complete before this fires and the bar never appears at all.
+      show.current = setTimeout(() => {
+        setVisible(true);
+        setProgress((p) => (p < 12 ? 12 : p));
+        clearTrickle();
+        trickle.current = setInterval(() => {
+          setProgress((p) => (p >= 90 ? p : p + (90 - p) * 0.12));
+        }, 180);
+      }, 300);
     } else {
+      if (show.current) {
+        clearTimeout(show.current);
+        show.current = null;
+      }
       clearTrickle();
       // Only "complete" if we actually started a bar.
       setVisible((wasVisible) => {
