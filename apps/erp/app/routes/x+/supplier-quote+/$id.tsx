@@ -5,7 +5,7 @@ import { flash } from "@carbon/auth/session.server";
 import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
 import { Suspense } from "react";
-import type { LoaderFunctionArgs } from "react-router";
+import type { ClientLoaderFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Await, Outlet, redirect, useLoaderData, useParams } from "react-router";
 import { ExplorerSkeleton } from "~/components/Skeletons";
 import { PanelProvider, ResizablePanels } from "~/components/Layout/Panels";
@@ -120,6 +120,26 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     supplier: supplier?.data ?? null
   };
 }
+
+const supplierQuoteCache = new Map<string, { data: Awaited<ReturnType<typeof loader>>; ts: number }>();
+
+export async function clientLoader({
+  serverLoader,
+  params
+}: ClientLoaderFunctionArgs) {
+  const key = params.id!;
+  const hit = supplierQuoteCache.get(key);
+  if (hit && Date.now() - hit.ts < 5 * 60_000) {
+    serverLoader<typeof loader>().then((d) =>
+      supplierQuoteCache.set(key, { data: d, ts: Date.now() })
+    );
+    return hit.data;
+  }
+  const data = await serverLoader<typeof loader>();
+  supplierQuoteCache.set(key, { data, ts: Date.now() });
+  return data;
+}
+clientLoader.hydrate = true;
 
 export default function SupplierQuoteRoute() {
   const params = useParams();

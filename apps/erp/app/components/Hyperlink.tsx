@@ -13,7 +13,7 @@ const Hyperlink = ({
   | PropsWithChildren<ComponentProps<"span">>) => {
   return "to" in props && props.to ? (
     <Link
-      prefetch="intent"
+      prefetch="viewport"
       className={cn(
         "group/hyperlink inline-flex items-center gap-1 text-foreground font-medium cursor-pointer",
         className
