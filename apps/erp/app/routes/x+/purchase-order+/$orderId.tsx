@@ -11,7 +11,11 @@ import { msg } from "@lingui/core/macro";
 import { renderAsync } from "@react-email/components";
 import { parseAcceptLanguage } from "intl-parse-accept-language";
 import { Suspense } from "react";
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
+import type {
+  ActionFunctionArgs,
+  ClientLoaderFunctionArgs,
+  LoaderFunctionArgs
+} from "react-router";
 import { Await, Outlet, redirect, useLoaderData, useParams } from "react-router";
 import { ExplorerSkeleton } from "~/components/Skeletons";
 import { PanelProvider, ResizablePanels } from "~/components/Layout/Panels";
@@ -448,6 +452,26 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     defaultCc
   };
 }
+
+const poCache = new Map<string, { data: Awaited<ReturnType<typeof loader>>; ts: number }>();
+
+export async function clientLoader({
+  serverLoader,
+  params
+}: ClientLoaderFunctionArgs) {
+  const key = params.orderId!;
+  const hit = poCache.get(key);
+  if (hit && Date.now() - hit.ts < 5 * 60_000) {
+    serverLoader<typeof loader>().then((d) =>
+      poCache.set(key, { data: d, ts: Date.now() })
+    );
+    return hit.data;
+  }
+  const data = await serverLoader<typeof loader>();
+  poCache.set(key, { data, ts: Date.now() });
+  return data;
+}
+clientLoader.hydrate = true;
 
 export default function PurchaseOrderRoute() {
   const params = useParams();
