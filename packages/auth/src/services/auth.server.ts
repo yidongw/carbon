@@ -438,11 +438,14 @@ export async function sendMagicLink(
   const storage = new Map<string, string>();
   // Use the service role key (same as the original sendMagicLink) so that the
   // OTP call bypasses rate limits and auth policies.
+  // persistSession must be true (the default) so Supabase uses the custom
+  // storage adapter above. When persistSession=false Supabase ignores the
+  // provided storage and falls back to its own internal memoryStorage, so the
+  // PKCE code verifier is never written to our Map.
   const client = createClient<Database, "public">(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!, {
     auth: {
       flowType: "pkce",
       autoRefreshToken: false,
-      persistSession: false,
       storage: {
         getItem: (key) => storage.get(key) ?? null,
         setItem: (key, value) => { storage.set(key, value); },
@@ -461,7 +464,9 @@ export async function sendMagicLink(
     options: { emailRedirectTo: callbackUrl }
   });
 
-  if (otpError) return { error: otpError, pkceEntry: null };
+  if (otpError) {
+    return { error: otpError, pkceEntry: null };
+  }
 
   // The Supabase client stored the code verifier in our Map under a key
   // ending with "-code-verifier".
