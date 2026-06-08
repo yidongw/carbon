@@ -429,10 +429,14 @@ const PurchaseOrderSummary = ({
   const permissions = usePermissions();
   const routeData = useRouteData<{
     purchaseOrder: PurchaseOrder;
-    lines: PurchaseOrderLine[];
+    lines: PurchaseOrderLine[] | Promise<unknown>;
     purchaseOrderDelivery: PurchaseOrderDelivery;
     supplier: Supplier;
   }>(path.to.purchaseOrder(orderId));
+
+  const lines = Array.isArray(routeData?.lines)
+    ? (routeData.lines as PurchaseOrderLine[])
+    : [];
 
   const newPurchaseOrderLineDisclosure = useDisclosure();
   const deleteLineDisclosure = useDisclosure();
@@ -491,7 +495,7 @@ const PurchaseOrderSummary = ({
     routeData?.purchaseOrder?.currencyCode !== company?.baseCurrencyCode;
 
   const subtotal =
-    routeData?.lines?.reduce((acc, line) => {
+    lines.reduce((acc, line) => {
       const lineTotal =
         (line.unitPrice ?? 0) * (line.purchaseQuantity ?? 0) +
         (line.shippingCost ?? 0);
@@ -500,7 +504,7 @@ const PurchaseOrderSummary = ({
     }, 0) ?? 0;
 
   const supplierSubtotal =
-    routeData?.lines?.reduce((acc, line) => {
+    lines.reduce((acc, line) => {
       const lineTotal =
         (line.supplierUnitPrice ?? 0) * (line.purchaseQuantity ?? 0) +
         (line.supplierShippingCost ?? 0);
@@ -509,12 +513,12 @@ const PurchaseOrderSummary = ({
     }, 0) ?? 0;
 
   const tax =
-    routeData?.lines?.reduce((acc, line) => {
+    lines.reduce((acc, line) => {
       return acc + (line.taxAmount ?? 0);
     }, 0) ?? 0;
 
   const supplierTax =
-    routeData?.lines?.reduce((acc, line) => {
+    lines.reduce((acc, line) => {
       return acc + (line.supplierTaxAmount ?? 0);
     }, 0) ?? 0;
 
@@ -557,7 +561,7 @@ const PurchaseOrderSummary = ({
             presentationCurrencyFormatter={presentationCurrencyFormatter}
             formatter={formatter}
             locale={locale}
-            lines={Array.isArray(routeData?.lines) ? routeData.lines : []}
+            lines={lines}
             shouldConvertCurrency={shouldConvertCurrency}
             isDisabled={isDisabled}
             onDelete={onDeleteLine}
