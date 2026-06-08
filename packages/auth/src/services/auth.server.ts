@@ -15,7 +15,7 @@ import {
   SUPABASE_ANON_KEY,
   SUPABASE_SERVICE_ROLE_KEY,
   SUPABASE_URL,
-  VERCEL_URL
+  getAppUrl
 } from "../config/env";
 import { getCarbon } from "../lib/supabase";
 import { getCarbonAPIKeyClient } from "../lib/supabase/client";
@@ -451,9 +451,10 @@ export async function sendMagicLink(
     }
   });
 
+  const appUrl = getAppUrl();
   const callbackUrl = redirectTo
-    ? `${VERCEL_URL}/callback?redirectTo=${encodeURIComponent(redirectTo)}`
-    : `${VERCEL_URL}/callback`;
+    ? `${appUrl}/callback?redirectTo=${encodeURIComponent(redirectTo)}`
+    : `${appUrl}/callback`;
 
   const { error: otpError } = await client.auth.signInWithOtp({
     email,
