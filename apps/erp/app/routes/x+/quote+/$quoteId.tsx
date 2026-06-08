@@ -7,7 +7,7 @@ import { DndContext } from "@dnd-kit/core";
 import { msg } from "@lingui/core/macro";
 import type { FileObject } from "@supabase/storage-js";
 import type { PostgrestResponse } from "@supabase/supabase-js";
-import type { LoaderFunctionArgs } from "react-router";
+import type { ClientLoaderFunctionArgs, LoaderFunctionArgs } from "react-router";
 import {
   Outlet,
   redirect,
@@ -181,6 +181,26 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     supplierPriceMap: supplierPriceMapPromise
   };
 }
+
+const quoteCache = new Map<string, { data: Awaited<ReturnType<typeof loader>>; ts: number }>();
+
+export async function clientLoader({
+  serverLoader,
+  params
+}: ClientLoaderFunctionArgs) {
+  const key = params.quoteId!;
+  const hit = quoteCache.get(key);
+  if (hit && Date.now() - hit.ts < 5 * 60_000) {
+    serverLoader<typeof loader>().then((d) =>
+      quoteCache.set(key, { data: d, ts: Date.now() })
+    );
+    return hit.data;
+  }
+  const data = await serverLoader<typeof loader>();
+  quoteCache.set(key, { data, ts: Date.now() });
+  return data;
+}
+clientLoader.hydrate = true;
 
 export default function QuoteRoute() {
   const params = useParams();
