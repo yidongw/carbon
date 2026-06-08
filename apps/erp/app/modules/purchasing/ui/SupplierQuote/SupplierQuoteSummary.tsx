@@ -58,17 +58,21 @@ const LineItems = ({
   const [items] = useItems();
   const routeData = useRouteData<{
     quote: SupplierQuote;
-    lines: SupplierQuoteLine[];
+    lines: SupplierQuoteLine[] | Promise<unknown>;
     prices: SupplierQuoteLinePrice[];
   }>(path.to.supplierQuote(id));
 
+  const lines = Array.isArray(routeData?.lines)
+    ? (routeData.lines as SupplierQuoteLine[])
+    : [];
+
   const [openItems, setOpenItems] = useState<string[]>(
-    routeData?.lines.map((line) => line.id!) ?? []
+    lines.map((line) => line.id!)
   );
 
   const pricingByLine = useMemo(
     () =>
-      routeData?.lines?.reduce<Record<string, SupplierQuoteLinePrice[]>>(
+      lines.reduce<Record<string, SupplierQuoteLinePrice[]>>(
         (acc, line) => {
           if (!line.id) {
             return acc;
@@ -80,8 +84,8 @@ const LineItems = ({
           return acc;
         },
         {}
-      ) ?? {},
-    [routeData?.lines, routeData?.prices]
+      ),
+    [lines, routeData?.prices]
   );
 
   const toggleOpen = (id: string) => {
@@ -95,7 +99,7 @@ const LineItems = ({
 
   return (
     <VStack spacing={8} className="w-full overflow-hidden">
-      {routeData?.lines?.map((line) => {
+      {lines.map((line) => {
         const prices = pricingByLine[line.id!];
 
         const isGlAccount = line.supplierQuoteLineType === "G/L Account";

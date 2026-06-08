@@ -72,7 +72,7 @@ const SalesOrderSummary = ({
 
   const routeData = useRouteData<{
     salesOrder: SalesOrder;
-    lines: SalesOrderLine[];
+    lines: SalesOrderLine[] | Promise<unknown>;
     customer: Customer;
     quote: Quotation;
     invoiceSummary: {
@@ -81,6 +81,10 @@ const SalesOrderSummary = ({
       currencyMismatchCount: number;
     };
   }>(path.to.salesOrder(orderId));
+
+  const lines = Array.isArray(routeData?.lines)
+    ? (routeData.lines as SalesOrderLine[])
+    : [];
 
   const salesOrderToJobsModal = useDisclosure();
 
@@ -98,7 +102,7 @@ const SalesOrderSummary = ({
 
   // Calculate totals
   const subtotal =
-    routeData?.lines?.reduce((acc, line) => {
+    lines.reduce((acc, line) => {
       const lineTotal =
         (line.convertedUnitPrice ?? 0) * (line.saleQuantity ?? 0);
       const addOns =
@@ -109,7 +113,7 @@ const SalesOrderSummary = ({
     }, 0) ?? 0;
 
   const tax =
-    routeData?.lines?.reduce((acc, line) => {
+    lines.reduce((acc, line) => {
       const lineTotal =
         (line.convertedUnitPrice ?? 0) * (line.saleQuantity ?? 0);
       const taxableAddOns =
@@ -125,8 +129,7 @@ const SalesOrderSummary = ({
 
   // Check if there are any lines with "Make" method type that would require jobs
   const hasMakeItems =
-    routeData?.lines?.some((line) => line.methodType === "Make to Order") ??
-    false;
+    lines.some((line) => line.methodType === "Make to Order") ?? false;
 
   return (
     <>
@@ -211,7 +214,7 @@ const SalesOrderSummary = ({
             currencyCode={routeData?.salesOrder?.currencyCode ?? "USD"}
             locale={locale}
             formatter={formatter}
-            lines={routeData?.lines ?? []}
+            lines={lines}
           />
 
           <VStack spacing={2} className="mt-8">
