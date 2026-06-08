@@ -44,11 +44,13 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   if (!id) throw new Error("Could not find id");
   const serviceRole = await getCarbonServiceRole();
 
-  const [quote, prices, siblingQuotes] = await Promise.all([
-    getSupplierQuote(serviceRole, id),
-    getSupplierQuoteLinePricesByQuoteId(serviceRole, id),
-    getSiblingQuotesForQuote(serviceRole, id)
-  ]);
+  // Start queries that only need the id param immediately
+  const pricesPromise = getSupplierQuoteLinePricesByQuoteId(serviceRole, id);
+  const siblingQuotesPromise = getSiblingQuotesForQuote(serviceRole, id);
+  const linesPromise = getSupplierQuoteLines(serviceRole, id);
+  const companySettingsPromise = getCompanySettings(serviceRole, companyId);
+
+  const quote = await getSupplierQuote(serviceRole, id);
 
   if (quote.error) {
     throw redirect(
@@ -57,15 +59,15 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     );
   }
 
-  // Start lines in parallel with secondary queries
-  const linesPromise = getSupplierQuoteLines(serviceRole, id);
-
-  const [supplierInteraction, presentationCurrency, supplier, companySettings] =
+  // Now start quote-dependent queries alongside awaiting their results
+  const [supplierInteraction, presentationCurrency, supplier, prices, siblingQuotes, companySettings] =
     await Promise.all([
       getSupplierInteraction(serviceRole, quote.data.supplierInteractionId!),
       getCurrencyByCode(serviceRole, companyGroupId, quote.data.currencyCode!),
       getSupplier(serviceRole, quote.data.supplierId!),
-      getCompanySettings(serviceRole, companyId)
+      pricesPromise,
+      siblingQuotesPromise,
+      companySettingsPromise
     ]);
 
   if (supplierInteraction.error) {
