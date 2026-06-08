@@ -35,13 +35,16 @@ import type { Supplier, SupplierQuote, SupplierQuoteLine } from "../../types";
 import DeleteSupplierQuoteLine from "./DeleteSupplierQuoteLine";
 import SupplierQuoteLineForm from "./SupplierQuoteLineForm";
 
-export default function SupplierQuoteExplorer() {
+export default function SupplierQuoteExplorer({
+  lines
+}: {
+  lines: SupplierQuoteLine[];
+}) {
   const prettifyShortcut = usePrettifyShortcut();
   const { id } = useParams();
   if (!id) throw new Error("Could not find id");
   const routeData = useRouteData<{
     quote: SupplierQuote;
-    lines: SupplierQuoteLine[];
     supplier: Supplier;
   }>(path.to.supplierQuote(id));
   const permissions = usePermissions();
@@ -89,8 +92,8 @@ export default function SupplierQuoteExplorer() {
           className="flex-1 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent"
           spacing={0}
         >
-          {routeData?.lines && routeData?.lines?.length > 0 ? (
-            routeData?.lines.map((line) => (
+          {lines.length > 0 ? (
+            lines.map((line) => (
               <SupplierQuoteLineItem
                 key={line.id}
                 isDisabled={isDisabled}

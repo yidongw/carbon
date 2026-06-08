@@ -4,8 +4,10 @@ import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
 import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
+import { Suspense } from "react";
 import type { LoaderFunctionArgs } from "react-router";
-import { Outlet, redirect, useParams } from "react-router";
+import { Await, Outlet, redirect, useLoaderData, useParams } from "react-router";
+import { ExplorerSkeleton } from "~/components/Skeletons";
 import { PanelProvider, ResizablePanels } from "~/components/Layout/Panels";
 import { getCurrencyByCode } from "~/modules/accounting";
 import {
@@ -23,6 +25,7 @@ import {
 } from "~/modules/purchasing/ui/SupplierQuote";
 import SupplierQuoteExplorer from "~/modules/purchasing/ui/SupplierQuote/SupplierQuoteExplorer";
 import { getCompanySettings } from "~/modules/settings";
+import type { SupplierQuoteLine } from "~/modules/purchasing";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 
@@ -41,9 +44,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   if (!id) throw new Error("Could not find id");
   const serviceRole = await getCarbonServiceRole();
 
-  const [quote, lines, prices, siblingQuotes] = await Promise.all([
+  const [quote, prices, siblingQuotes] = await Promise.all([
     getSupplierQuote(serviceRole, id),
-    getSupplierQuoteLines(serviceRole, id),
     getSupplierQuoteLinePricesByQuoteId(serviceRole, id),
     getSiblingQuotesForQuote(serviceRole, id)
   ]);
@@ -54,6 +56,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       await flash(request, error(quote.error, "Failed to load quote"))
     );
   }
+
+  // Start lines in parallel with secondary queries
+  const linesPromise = getSupplierQuoteLines(serviceRole, id);
 
   const [supplierInteraction, presentationCurrency, supplier, companySettings] =
     await Promise.all([
@@ -101,7 +106,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   return {
     quote: quote.data,
-    lines: lines.data ?? [],
+    lines: linesPromise,
     prices: prices.data ?? [],
     files: getSupplierInteractionDocuments(
       serviceRole,
@@ -120,6 +125,7 @@ export default function SupplierQuoteRoute() {
   const params = useParams();
   const { id } = params;
   if (!id) throw new Error("Could not find id");
+  const { lines } = useLoaderData<typeof loader>();
 
   return (
     <PanelProvider>
@@ -128,7 +134,17 @@ export default function SupplierQuoteRoute() {
         <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
           <div className="flex flex-grow overflow-hidden">
             <ResizablePanels
-              explorer={<SupplierQuoteExplorer />}
+              explorer={
+                <Suspense fallback={<ExplorerSkeleton />}>
+                  <Await resolve={lines}>
+                    {(resolvedLines) => (
+                      <SupplierQuoteExplorer
+                        lines={(resolvedLines.data ?? []) as SupplierQuoteLine[]}
+                      />
+                    )}
+                  </Await>
+                </Suspense>
+              }
               content={
                 <div className="h-[calc(100dvh-99px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
                   <VStack spacing={2} className="p-2">

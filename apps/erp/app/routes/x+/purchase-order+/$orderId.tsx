@@ -11,7 +11,8 @@ import { msg } from "@lingui/core/macro";
 import { renderAsync } from "@react-email/components";
 import { parseAcceptLanguage } from "intl-parse-accept-language";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { Outlet, redirect, useParams } from "react-router";
+import { Await, Outlet, redirect, Suspense, useLoaderData, useParams } from "react-router";
+import { ExplorerSkeleton } from "~/components/Skeletons";
 import { PanelProvider, ResizablePanels } from "~/components/Layout/Panels";
 import { getPaymentTermsList } from "~/modules/accounting";
 import { upsertDocument } from "~/modules/documents";
@@ -334,9 +335,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { orderId } = params;
   if (!orderId) throw new Error("Could not find orderId");
 
-  const [purchaseOrder, lines, purchaseOrderDelivery] = await Promise.all([
+  const [purchaseOrder, purchaseOrderDelivery] = await Promise.all([
     getPurchaseOrder(client, orderId),
-    getPurchaseOrderLines(client, orderId),
     getPurchaseOrderDelivery(client, orderId)
   ]);
 
@@ -363,6 +363,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   if (companyId !== purchaseOrder.data?.companyId) {
     throw redirect(path.to.purchaseOrders);
   }
+
+  // Start lines query now (after security check), runs in parallel with secondary queries
+  const linesPromise = getPurchaseOrderLines(client, orderId);
 
   const serviceRole = getCarbonServiceRole();
   const [supplier, interaction, approvalRequest, companySettings] =
@@ -429,7 +432,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   return {
     purchaseOrder: purchaseOrder.data,
     purchaseOrderDelivery: purchaseOrderDelivery.data,
-    lines: lines.data ?? [],
+    lines: linesPromise,
     files: getSupplierInteractionDocuments(
       client,
       companyId,
@@ -449,6 +452,7 @@ export default function PurchaseOrderRoute() {
   const params = useParams();
   const { orderId } = params;
   if (!orderId) throw new Error("Could not find orderId");
+  const { lines } = useLoaderData<typeof loader>();
 
   return (
     <PanelProvider>
