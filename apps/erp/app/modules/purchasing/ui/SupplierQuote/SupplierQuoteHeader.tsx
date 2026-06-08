@@ -81,13 +81,17 @@ const SupplierQuoteHeader = () => {
   const supplierApprovalRequired = useSupplierApprovalRequired();
   const routeData = useRouteData<{
     quote: SupplierQuote;
-    lines: SupplierQuoteLine[];
+    lines: SupplierQuoteLine[] | Promise<unknown>;
     interaction: SupplierInteraction;
     prices: SupplierQuoteLinePrice[];
     siblingQuotes: (SupplierQuote & {
       supplier: { id: string; name: string };
     })[];
   }>(path.to.supplierQuote(id));
+
+  const lines = Array.isArray(routeData?.lines)
+    ? (routeData.lines as SupplierQuoteLine[])
+    : [];
 
   const [suppliers] = useSuppliers();
   const isSupplierApproved = useMemo(
@@ -112,7 +116,7 @@ const SupplierQuoteHeader = () => {
   const sendFetcher = useFetcher<{}>();
   const statusFetcher = useFetcher<{}>();
 
-  const hasLines = routeData?.lines && routeData.lines.length > 0;
+  const hasLines = lines.length > 0;
   const isLocked = isSupplierQuoteLocked(routeData?.quote?.status);
   const quoteStatus: string = routeData?.quote?.status ?? "";
   const editableStatuses = ["Draft", "Declined"];
@@ -344,7 +348,7 @@ const SupplierQuoteHeader = () => {
         isOpen={convertToOrderModal.isOpen}
         onClose={convertToOrderModal.onClose}
         quote={routeData?.quote!}
-        lines={routeData?.lines ?? []}
+        lines={lines}
         pricing={routeData?.prices ?? []}
       />
       {deleteModal.isOpen && (
@@ -364,7 +368,7 @@ const SupplierQuoteHeader = () => {
       {finalizeModal.isOpen && (
         <SupplierQuoteFinalizeModal
           quote={routeData?.quote}
-          lines={routeData?.lines ?? []}
+          lines={lines}
           prices={routeData?.prices ?? []}
           onClose={finalizeModal.onClose}
           fetcher={finalizeFetcher}

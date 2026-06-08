@@ -71,7 +71,7 @@ const PurchaseOrderHeader = () => {
   const supplierApprovalRequired = useSupplierApprovalRequired();
   const routeData = useRouteData<{
     purchaseOrder: PurchaseOrder;
-    lines: PurchaseOrderLine[];
+    lines: PurchaseOrderLine[] | Promise<unknown>;
     approvalRequest: { id: string } | null;
     canApprove: boolean;
     canReopen: boolean;
@@ -79,6 +79,10 @@ const PurchaseOrderHeader = () => {
     defaultCc: string[];
     supplier: { status: string | null } | null;
   }>(path.to.purchaseOrder(orderId));
+  // lines is deferred — treat as empty until resolved to avoid crashing
+  const lines = Array.isArray(routeData?.lines)
+    ? (routeData.lines as PurchaseOrderLine[])
+    : [];
 
   const [suppliers] = useSuppliers();
   const isSupplierApproved = useMemo(
@@ -132,12 +136,12 @@ const PurchaseOrderHeader = () => {
   const requiresShipment = isOutsideProcessing && !hasShipments;
   const hasReceivableLines = useMemo(
     () =>
-      routeData?.lines?.some(
+      lines.some(
         (line) =>
           line.purchaseOrderLineType !== "Comment" &&
           line.purchaseOrderLineType !== "G/L Account"
-      ) ?? false,
-    [routeData?.lines]
+      ),
+    [lines]
   );
 
   const markAsPlanned = () => {
@@ -269,7 +273,7 @@ const PurchaseOrderHeader = () => {
                 !["Draft", "Planned"].includes(
                   routeData?.purchaseOrder?.status ?? ""
                 ) ||
-                routeData?.lines.length === 0 ||
+                lines.length === 0 ||
                 !isSupplierApproved
               }
               dropdownItems={[
@@ -281,7 +285,7 @@ const PurchaseOrderHeader = () => {
                     !["Draft"].includes(
                       routeData?.purchaseOrder?.status ?? ""
                     ) ||
-                    routeData?.lines.length === 0 ||
+                    lines.length === 0 ||
                     !isSupplierApproved
                 }
               ]}

@@ -66,7 +66,7 @@ const PurchasingRFQHeader = () => {
 
   const routeData = useRouteData<{
     rfqSummary: PurchasingRFQ;
-    lines: PurchasingRFQLine[];
+    lines: PurchasingRFQLine[] | Promise<unknown>;
     suppliers: {
       id: string;
       supplierId: string;
@@ -75,6 +75,10 @@ const PurchasingRFQHeader = () => {
     }[];
     linkedQuotes: unknown[];
   }>(path.to.purchasingRfq(rfqId));
+
+  const lines = Array.isArray(routeData?.lines)
+    ? (routeData.lines as PurchasingRFQLine[])
+    : [];
 
   const status = routeData?.rfqSummary?.status ?? "Draft";
   const isLocked = isRfqLocked(status);
@@ -211,7 +215,7 @@ const PurchasingRFQHeader = () => {
               <Button
                 isDisabled={
                   status !== "Draft" ||
-                  routeData?.lines?.length === 0 ||
+                  lines.length === 0 ||
                   !permissions.can("create", "purchasing")
                 }
                 leftIcon={<LuSend />}
@@ -244,7 +248,7 @@ const PurchasingRFQHeader = () => {
                   type="submit"
                   isDisabled={
                     status !== "Draft" ||
-                    routeData?.lines?.length === 0 ||
+                    lines.length === 0 ||
                     !permissions.can("create", "purchasing") ||
                     finalizeFetcher.state !== "idle"
                   }
@@ -260,7 +264,7 @@ const PurchasingRFQHeader = () => {
             <Button
               isDisabled={
                 status !== "Draft" ||
-                routeData?.lines?.length === 0 ||
+                lines.length === 0 ||
                 !permissions.can("create", "purchasing")
               }
               leftIcon={<LuSend />}
@@ -304,7 +308,7 @@ const PurchasingRFQHeader = () => {
       </HStack>
       {finalizeModal.isOpen && (
         <FinalizeRFQModal
-          lines={routeData?.lines ?? []}
+          lines={lines}
           suppliers={routeData?.suppliers ?? []}
           rfqId={rfqId}
           onClose={finalizeModal.onClose}
