@@ -11,6 +11,7 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
+"POT-Creation-Date: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " Un fornitore è una società o persona che vi vende parti o servizi."
@@ -79,6 +80,9 @@ msgstr "{scopeCount} autorizzazioni"
 
 msgid "/month/user"
 msgstr "/mese/utente"
+
+msgid "%"
+msgstr "%"
 
 #. placeholder {0}: allItems.length - 3
 msgid "+{0} more"
@@ -3448,6 +3452,9 @@ msgstr "Escalation"
 msgid "Est. Duration"
 msgstr "Durata stimata"
 
+msgid "Estimated"
+msgstr "Stimato"
+
 msgid "Estimated Duration"
 msgstr "Durata Stimata"
 
@@ -3735,14 +3742,32 @@ msgstr "Impossibile inserire la riga di preventivo fornitore"
 msgid "Failed to load configuration parameters"
 msgstr "Impossibile caricare i parametri di configurazione"
 
+msgid "Failed to load consumables."
+msgstr "Impossibile caricare i consumabili."
+
 msgid "Failed to load customer part details"
 msgstr "Impossibile caricare i dettagli della parte cliente"
+
+msgid "Failed to load customers."
+msgstr "Caricamento clienti fallito."
 
 msgid "Failed to load data"
 msgstr "Impossibile caricare i dati"
 
+msgid "Failed to load documents."
+msgstr "Fallito caricamento documenti."
+
 msgid "Failed to load inbound inspections"
 msgstr "Impossibile caricare le ispezioni in entrata"
+
+msgid "Failed to load inspections."
+msgstr "Caricamento delle ispezioni fallito."
+
+msgid "Failed to load inventory."
+msgstr "Fallito caricamento inventario."
+
+msgid "Failed to load issues."
+msgstr "Caricamento degli errori fallito."
 
 msgid "Failed to load item data"
 msgstr "Impossibile caricare i dati dell'elemento"
@@ -3756,11 +3781,32 @@ msgstr "Impossibile caricare le operazioni di lavoro"
 msgid "Failed to load jobs"
 msgstr "Impossibile caricare i lavori"
 
+msgid "Failed to load jobs."
+msgstr "Caricamento dei lavori fallito."
+
+msgid "Failed to load materials."
+msgstr "Caricamento materiali fallito."
+
+msgid "Failed to load parts."
+msgstr "Caricamento dei pezzi fallito."
+
+msgid "Failed to load people."
+msgstr "Caricamento persone fallito."
+
+msgid "Failed to load purchase invoices."
+msgstr "Caricamento delle fatture di acquisto fallito."
+
 msgid "Failed to load purchase order lines"
 msgstr "Impossibile caricare le righe dell'ordine di acquisto"
 
 msgid "Failed to load purchase orders"
 msgstr "Impossibile caricare gli ordini di acquisto"
+
+msgid "Failed to load purchase orders."
+msgstr "Caricamento delle richieste d'acquisto fallito."
+
+msgid "Failed to load quotes."
+msgstr "Caricamento delle offerte fallito."
 
 msgid "Failed to load receipt lines"
 msgstr "Impossibile caricare le righe di ricezione"
@@ -3768,11 +3814,23 @@ msgstr "Impossibile caricare le righe di ricezione"
 msgid "Failed to load receipts"
 msgstr "Impossibile caricare le ricevute"
 
+msgid "Failed to load receipts."
+msgstr "Caricamento delle ricevute fallito."
+
+msgid "Failed to load RFQs."
+msgstr "Fallito caricamento RFQs."
+
+msgid "Failed to load sales invoices."
+msgstr "Caricamento delle fatture di vendita fallito."
+
 msgid "Failed to load sales order lines"
 msgstr "Impossibile caricare le righe dell'ordine di vendita"
 
 msgid "Failed to load sales orders"
 msgstr "Impossibile caricare gli ordini di vendita"
+
+msgid "Failed to load sales orders."
+msgstr "Caricamento degli ordini di vendita fallito."
 
 msgid "Failed to load shipment lines"
 msgstr "Impossibile caricare le righe di spedizione"
@@ -3780,11 +3838,26 @@ msgstr "Impossibile caricare le righe di spedizione"
 msgid "Failed to load shipments"
 msgstr "Impossibile caricare le spedizioni"
 
+msgid "Failed to load shipments."
+msgstr "Fallito caricamento spedizioni."
+
+msgid "Failed to load suggestions."
+msgstr "Caricamento suggerimenti fallito."
+
 msgid "Failed to load supplier part details"
 msgstr "Impossibile caricare i dettagli della parte fornitore"
 
+msgid "Failed to load suppliers."
+msgstr "Caricamento fornitori fallito."
+
+msgid "Failed to load tools."
+msgstr "Fallito caricamento strumenti."
+
 msgid "Failed to load tracked entities"
 msgstr "Impossibile caricare le entità tracciate"
+
+msgid "Failed to load warehouse transfers."
+msgstr "Fallito caricamento trasferimenti magazzino."
 
 msgid "Failed to remove image: {errorMessage}"
 msgstr "Impossibile rimuovere l'immagine: {errorMessage}"
@@ -4933,6 +5006,9 @@ msgstr "Unità Macchina"
 
 msgid "Machinery & Equipment"
 msgstr "Eserciziatura e Strumenti"
+
+msgid "Magic link expired or already used. Please request a new one."
+msgstr "Collegamento magico scaduto o già utilizzato. Per favore richiedene uno nuovo."
 
 msgid "Maintenance"
 msgstr "Manutenzione"
@@ -6277,6 +6353,9 @@ msgstr "La password è troppo corta"
 msgid "Path"
 msgstr "Percorso"
 
+msgid "Pause"
+msgstr "Pausa"
+
 msgid "Paused"
 msgstr "Sospeso"
 
@@ -6452,6 +6531,9 @@ msgstr "Compila tutti i campi obbligatori"
 
 msgid "Please fill the columns marked with the <0/> icon to provide pricing"
 msgstr "Compilare i campi contrassegnati con l'icona <0/> per fornire i prezzi"
+
+msgid "Please open this link in the same browser where you requested sign-in."
+msgstr "Si prega di aprire questo collegamento nello stesso browser in cui hai richiesto il login."
 
 msgid "Please save the operation before adding parameters."
 msgstr "Si prega di salvare l'operazione prima di aggiungere parametri."
@@ -7315,6 +7397,9 @@ msgstr "Risultati"
 msgid "Results per page"
 msgstr "Risultati per pagina"
 
+msgid "Resume"
+msgstr "Riprendi"
+
 msgid "Retained Earnings"
 msgstr "Utili non distribuiti"
 
@@ -7360,6 +7445,9 @@ msgstr "Revisione"
 #. placeholder {0}: revision.revision
 msgid "Revision {0}"
 msgstr "Revisione {0}"
+
+msgid "Revisions"
+msgstr "Righe di revisione"
 
 msgid "Revoke"
 msgstr "Revoca"

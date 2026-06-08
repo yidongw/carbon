@@ -3,6 +3,7 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { useRouteData } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
+import { useLingui } from "@lingui/react/macro";
 import { Suspense } from "react";
 import type { LoaderFunctionArgs } from "react-router";
 import {
@@ -75,6 +76,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 }
 
 export default function ConsumableRoute() {
+  const { t } = useLingui();
   const { itemId } = useParams();
   if (!itemId) throw new Error("Could not find itemId");
 
@@ -113,32 +115,32 @@ export default function ConsumableRoute() {
                     const tree: UsedInNode[] = [
                       {
                         key: "issues",
-                        name: "Issues",
+                        name: t`Issues`,
                         module: "quality",
                         children: issues
                       },
                       {
                         key: "jobMaterials",
-                        name: "Job Materials",
+                        name: t`Job Materials`,
                         module: "production",
                         children: jobMaterials
                       },
                       {
                         key: "maintenanceDispatchItems",
-                        name: "Maintenance",
+                        name: t`Maintenance`,
                         module: "resources",
                         children: maintenanceDispatchItems
                       },
                       {
                         key: "methodMaterials",
-                        name: "Method Materials",
+                        name: t`Method Materials`,
                         module: "parts",
                         // @ts-expect-error
                         children: methodMaterials
                       },
                       {
                         key: "purchaseOrderLines",
-                        name: "Purchase Orders",
+                        name: t`Purchase Orders`,
                         module: "purchasing",
                         children: purchaseOrderLines.map((po) => ({
                           ...po,
@@ -147,7 +149,7 @@ export default function ConsumableRoute() {
                       },
                       {
                         key: "receiptLines",
-                        name: "Receipts",
+                        name: t`Receipts`,
                         module: "inventory",
                         children: receiptLines.map((receipt) => ({
                           ...receipt,
@@ -157,7 +159,7 @@ export default function ConsumableRoute() {
 
                       {
                         key: "quoteMaterials",
-                        name: "Quote Materials",
+                        name: t`Quote Materials`,
                         module: "sales",
                         children: quoteMaterials?.map((qm) => ({
                           ...qm,
@@ -166,13 +168,13 @@ export default function ConsumableRoute() {
                       },
                       {
                         key: "salesOrderLines",
-                        name: "Sales Orders",
+                        name: t`Sales Orders`,
                         module: "sales",
                         children: salesOrderLines
                       },
                       {
                         key: "shipmentLines",
-                        name: "Shipments",
+                        name: t`Shipments`,
                         module: "inventory",
                         children: shipmentLines.map((shipment) => ({
                           ...shipment,
@@ -181,7 +183,7 @@ export default function ConsumableRoute() {
                       },
                       {
                         key: "supplierQuotes",
-                        name: "Supplier Quotes",
+                        name: t`Supplier Quotes`,
                         module: "purchasing",
                         children: supplierQuotes
                       }

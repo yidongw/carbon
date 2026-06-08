@@ -80,6 +80,9 @@ msgstr "{scopeCount} permissions"
 msgid "/month/user"
 msgstr "/month/user"
 
+msgid "%"
+msgstr "%"
+
 #. placeholder {0}: allItems.length - 3
 msgid "+{0} more"
 msgstr "+{0} more"
@@ -3448,6 +3451,9 @@ msgstr "Escalation"
 msgid "Est. Duration"
 msgstr "Est. Duration"
 
+msgid "Estimated"
+msgstr "Estimated"
+
 msgid "Estimated Duration"
 msgstr "Estimated Duration"
 
@@ -3735,14 +3741,32 @@ msgstr "Failed to insert supplier quote line"
 msgid "Failed to load configuration parameters"
 msgstr "Failed to load configuration parameters"
 
+msgid "Failed to load consumables."
+msgstr "Failed to load consumables."
+
 msgid "Failed to load customer part details"
 msgstr "Failed to load customer part details"
+
+msgid "Failed to load customers."
+msgstr "Failed to load customers."
 
 msgid "Failed to load data"
 msgstr "Failed to load data"
 
+msgid "Failed to load documents."
+msgstr "Failed to load documents."
+
 msgid "Failed to load inbound inspections"
 msgstr "Failed to load inbound inspections"
+
+msgid "Failed to load inspections."
+msgstr "Failed to load inspections."
+
+msgid "Failed to load inventory."
+msgstr "Failed to load inventory."
+
+msgid "Failed to load issues."
+msgstr "Failed to load issues."
 
 msgid "Failed to load item data"
 msgstr "Failed to load item data"
@@ -3756,11 +3780,32 @@ msgstr "Failed to load job operations"
 msgid "Failed to load jobs"
 msgstr "Failed to load jobs"
 
+msgid "Failed to load jobs."
+msgstr "Failed to load jobs."
+
+msgid "Failed to load materials."
+msgstr "Failed to load materials."
+
+msgid "Failed to load parts."
+msgstr "Failed to load parts."
+
+msgid "Failed to load people."
+msgstr "Failed to load people."
+
+msgid "Failed to load purchase invoices."
+msgstr "Failed to load purchase invoices."
+
 msgid "Failed to load purchase order lines"
 msgstr "Failed to load purchase order lines"
 
 msgid "Failed to load purchase orders"
 msgstr "Failed to load purchase orders"
+
+msgid "Failed to load purchase orders."
+msgstr "Failed to load purchase orders."
+
+msgid "Failed to load quotes."
+msgstr "Failed to load quotes."
 
 msgid "Failed to load receipt lines"
 msgstr "Failed to load receipt lines"
@@ -3768,11 +3813,23 @@ msgstr "Failed to load receipt lines"
 msgid "Failed to load receipts"
 msgstr "Failed to load receipts"
 
+msgid "Failed to load receipts."
+msgstr "Failed to load receipts."
+
+msgid "Failed to load RFQs."
+msgstr "Failed to load RFQs."
+
+msgid "Failed to load sales invoices."
+msgstr "Failed to load sales invoices."
+
 msgid "Failed to load sales order lines"
 msgstr "Failed to load sales order lines"
 
 msgid "Failed to load sales orders"
 msgstr "Failed to load sales orders"
+
+msgid "Failed to load sales orders."
+msgstr "Failed to load sales orders."
 
 msgid "Failed to load shipment lines"
 msgstr "Failed to load shipment lines"
@@ -3780,11 +3837,26 @@ msgstr "Failed to load shipment lines"
 msgid "Failed to load shipments"
 msgstr "Failed to load shipments"
 
+msgid "Failed to load shipments."
+msgstr "Failed to load shipments."
+
+msgid "Failed to load suggestions."
+msgstr "Failed to load suggestions."
+
 msgid "Failed to load supplier part details"
 msgstr "Failed to load supplier part details"
 
+msgid "Failed to load suppliers."
+msgstr "Failed to load suppliers."
+
+msgid "Failed to load tools."
+msgstr "Failed to load tools."
+
 msgid "Failed to load tracked entities"
 msgstr "Failed to load tracked entities"
+
+msgid "Failed to load warehouse transfers."
+msgstr "Failed to load warehouse transfers."
 
 msgid "Failed to remove image: {errorMessage}"
 msgstr "Failed to remove image: {errorMessage}"
@@ -4933,6 +5005,9 @@ msgstr "Machine Unit"
 
 msgid "Machinery & Equipment"
 msgstr "Machinery & Equipment"
+
+msgid "Magic link expired or already used. Please request a new one."
+msgstr "Magic link expired or already used. Please request a new one."
 
 msgid "Maintenance"
 msgstr "Maintenance"
@@ -6277,6 +6352,9 @@ msgstr "Password is too short"
 msgid "Path"
 msgstr "Path"
 
+msgid "Pause"
+msgstr "Pause"
+
 msgid "Paused"
 msgstr "Paused"
 
@@ -6452,6 +6530,9 @@ msgstr "Please fill out all required fields"
 
 msgid "Please fill the columns marked with the <0/> icon to provide pricing"
 msgstr "Please fill the columns marked with the <0/> icon to provide pricing"
+
+msgid "Please open this link in the same browser where you requested sign-in."
+msgstr "Please open this link in the same browser where you requested sign-in."
 
 msgid "Please save the operation before adding parameters."
 msgstr "Please save the operation before adding parameters."
@@ -7315,6 +7396,9 @@ msgstr "Results"
 msgid "Results per page"
 msgstr "Results per page"
 
+msgid "Resume"
+msgstr "Resume"
+
 msgid "Retained Earnings"
 msgstr "Retained Earnings"
 
@@ -7360,6 +7444,9 @@ msgstr "Revision"
 #. placeholder {0}: revision.revision
 msgid "Revision {0}"
 msgstr "Revision {0}"
+
+msgid "Revisions"
+msgstr "Revisions"
 
 msgid "Revoke"
 msgstr "Revoke"
