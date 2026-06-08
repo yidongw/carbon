@@ -4,8 +4,11 @@ import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
 import { type JSONContent, VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
+import { Suspense } from "react";
 import type { LoaderFunctionArgs } from "react-router";
-import { Outlet, redirect, useParams } from "react-router";
+import { Await, Outlet, redirect, useLoaderData, useParams } from "react-router";
+import { ExplorerSkeleton } from "~/components/Skeletons";
 import { PanelProvider, ResizablePanels } from "~/components/Layout/Panels";
 import type { PurchasingRFQLine } from "~/modules/purchasing";
 import {
@@ -38,9 +41,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const serviceRole = await getCarbonServiceRole();
 
-  const [rfqSummary, lines, suppliers, linkedQuotes] = await Promise.all([
+  const [rfqSummary, suppliers, linkedQuotes] = await Promise.all([
     getPurchasingRFQ(serviceRole, rfqId),
-    getPurchasingRFQLines(serviceRole, rfqId),
     getPurchasingRFQSuppliersWithLinks(serviceRole, rfqId),
     getLinkedSupplierQuotes(serviceRole, rfqId)
   ]);
@@ -55,12 +57,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     );
   }
 
-  if (lines.error) {
-    throw redirect(
-      path.to.purchasingRfqs,
-      await flash(request, error(lines.error, "Failed to load RFQ lines"))
-    );
-  }
+  // Start lines after primary record check; runs while quote links are processed
+  const linesPromise = getPurchasingRFQLines(serviceRole, rfqId);
 
   // Extract supplier quotes from the linked data
   const supplierQuotes =
@@ -79,20 +77,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   return {
     rfqSummary: rfqSummary.data,
-    lines:
-      lines.data.map((line: PurchasingRFQLine) => ({
-        ...line,
-        id: line.id ?? "",
-        order: line.order ?? 0,
-        purchaseUnitOfMeasureCode: line.purchaseUnitOfMeasureCode ?? "",
-        inventoryUnitOfMeasureCode: line.inventoryUnitOfMeasureCode ?? "",
-        conversionFactor: line.conversionFactor ?? 1,
-        description: line.description ?? "",
-        externalNotes: (line.externalNotes ?? {}) as JSONContent,
-        internalNotes: (line.internalNotes ?? {}) as JSONContent,
-        itemId: line.itemId ?? "",
-        quantity: line.quantity ?? [1]
-      })) ?? [],
+    lines: linesPromise,
     suppliers:
       suppliers.data?.map((s) => ({
         id: s.id,
@@ -110,6 +95,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 export default function PurchasingRFQRoute() {
   const { rfqId } = useParams();
   if (!rfqId) throw new Error("Could not find rfqId");
+  const { lines } = useLoaderData<typeof loader>();
 
   return (
     <PanelProvider>
@@ -118,7 +104,41 @@ export default function PurchasingRFQRoute() {
         <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
           <div className="flex flex-grow overflow-hidden">
             <ResizablePanels
-              explorer={<PurchasingRFQExplorer />}
+              explorer={
+                <Suspense fallback={<ExplorerSkeleton />}>
+                  <Await
+                    resolve={lines}
+                    errorElement={
+                      <div className="p-4 text-sm text-red-500">
+                        <Trans>Failed to load RFQ lines.</Trans>
+                      </div>
+                    }
+                  >
+                    {(resolvedLines) => {
+                      const normalizedLines = (resolvedLines.data ?? []).map(
+                        (line: PurchasingRFQLine) => ({
+                          ...line,
+                          id: line.id ?? "",
+                          order: line.order ?? 0,
+                          purchaseUnitOfMeasureCode:
+                            line.purchaseUnitOfMeasureCode ?? "",
+                          inventoryUnitOfMeasureCode:
+                            line.inventoryUnitOfMeasureCode ?? "",
+                          conversionFactor: line.conversionFactor ?? 1,
+                          description: line.description ?? "",
+                          externalNotes: (line.externalNotes ??
+                            {}) as JSONContent,
+                          internalNotes: (line.internalNotes ??
+                            {}) as JSONContent,
+                          itemId: line.itemId ?? "",
+                          quantity: line.quantity ?? [1]
+                        })
+                      );
+                      return <PurchasingRFQExplorer lines={normalizedLines} />;
+                    }}
+                  </Await>
+                </Suspense>
+              }
               content={
                 <div className="h-[calc(100dvh-99px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
                   <VStack spacing={2} className="p-2">

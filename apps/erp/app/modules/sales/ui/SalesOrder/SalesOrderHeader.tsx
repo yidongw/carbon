@@ -184,7 +184,7 @@ const SalesOrderHeader = () => {
 
   const routeData = useRouteData<{
     salesOrder: SalesOrder;
-    lines: SalesOrderLine[];
+    lines: SalesOrderLine[] | Promise<unknown>;
     opportunity: Opportunity;
     relatedItems: Promise<{
       jobs: Job[];
@@ -196,6 +196,10 @@ const SalesOrderHeader = () => {
 
   if (!routeData?.salesOrder) throw new Error("Failed to load sales order");
 
+  const lines = Array.isArray(routeData?.lines)
+    ? (routeData.lines as SalesOrderLine[])
+    : [];
+
   const permissions = usePermissions();
   const isLocked = isSalesOrderLocked(routeData?.salesOrder?.status);
 
@@ -205,8 +209,7 @@ const SalesOrderHeader = () => {
 
   // Check if there are any lines with "Make" method type that would require jobs
   const hasMakeItems =
-    routeData?.lines?.some((line) => line.methodType === "Make to Order") ??
-    false;
+    lines.some((line) => line.methodType === "Make to Order") ?? false;
 
   const salesOrderToJobsModal = useDisclosure();
   const confirmDisclosure = useDisclosure();
@@ -230,10 +233,10 @@ const SalesOrderHeader = () => {
       "Order Date",
       "Promised Date"
     ];
-    if (!routeData?.lines) return [headers];
+    if (lines.length === 0) return [headers];
     return [
       headers,
-      ...routeData?.lines.map((item) => [
+      ...lines.map((item) => [
         item.itemReadableId,
         item.saleQuantity,
         customers.find((c) => c.id === routeData?.salesOrder?.customerId)?.name,
@@ -245,7 +248,7 @@ const SalesOrderHeader = () => {
     ];
   }, [
     customers,
-    routeData?.lines,
+    lines,
     routeData?.salesOrder?.customerId,
     routeData?.salesOrder?.customerReference,
     routeData?.salesOrder?.orderDate,
@@ -400,7 +403,7 @@ const SalesOrderHeader = () => {
                 !["Draft", "Needs Approval"].includes(
                   routeData?.salesOrder?.status ?? ""
                 ) ||
-                routeData?.lines.length === 0 ||
+                lines.length === 0 ||
                 !permissions.can("update", "sales")
               }
             >

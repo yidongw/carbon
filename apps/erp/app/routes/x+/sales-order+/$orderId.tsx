@@ -4,8 +4,10 @@ import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
 import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
+import { Suspense } from "react";
 import type { LoaderFunctionArgs } from "react-router";
-import { Outlet, redirect, useParams } from "react-router";
+import { Await, Outlet, redirect, useLoaderData, useParams } from "react-router";
+import { ExplorerSkeleton } from "~/components/Skeletons";
 import { PanelProvider, ResizablePanels } from "~/components/Layout/Panels";
 import {
   getCustomer,
@@ -18,6 +20,7 @@ import {
   getSalesOrderLines,
   getSalesOrderRelatedItems
 } from "~/modules/sales";
+import type { SalesOrderLine } from "~/modules/sales";
 import {
   // SalesOrderExplorer,
   SalesOrderHeader,
@@ -42,10 +45,10 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { orderId } = params;
   if (!orderId) throw new Error("Could not find orderId");
 
-  const [salesOrder, lines] = await Promise.all([
-    getSalesOrder(client, orderId),
-    getSalesOrderLines(client, orderId)
-  ]);
+  // Start both in parallel; only salesOrder is needed for ownership/redirect checks
+  const salesOrderPromise = getSalesOrder(client, orderId);
+  const linesPromise = getSalesOrderLines(client, orderId);
+  const salesOrder = await salesOrderPromise;
 
   if (salesOrder.error) {
     throw redirect(
@@ -139,7 +142,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   return {
     salesOrder: salesOrder.data,
-    lines: lines.data ?? [],
+    lines: linesPromise,
     files: getOpportunityDocuments(client, companyId, opportunity.data.id),
     relatedItems: getSalesOrderRelatedItems(
       client,
@@ -163,6 +166,7 @@ export default function SalesOrderRoute() {
   const params = useParams();
   const { orderId } = params;
   if (!orderId) throw new Error("Could not find orderId");
+  const { lines } = useLoaderData<typeof loader>();
 
   return (
     <PanelProvider>

@@ -40,14 +40,17 @@ import type { PurchaseOrder, PurchaseOrderLine, Supplier } from "../../types";
 import DeletePurchaseOrderLine from "./DeletePurchaseOrderLine";
 import PurchaseOrderLineForm from "./PurchaseOrderLineForm";
 
-export default function PurchaseOrderExplorer() {
+export default function PurchaseOrderExplorer({
+  lines
+}: {
+  lines: PurchaseOrderLine[];
+}) {
   const prettifyShortcut = usePrettifyShortcut();
   const { defaults } = useUser();
   const { orderId } = useParams();
   if (!orderId) throw new Error("Could not find orderId");
   const purchaseOrderData = useRouteData<{
     purchaseOrder: PurchaseOrder;
-    lines: PurchaseOrderLine[];
     supplier: Supplier;
   }>(path.to.purchaseOrder(orderId));
   const permissions = usePermissions();
@@ -103,8 +106,8 @@ export default function PurchaseOrderExplorer() {
           className="flex-1 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent"
           spacing={0}
         >
-          {purchaseOrderData?.lines && purchaseOrderData?.lines?.length > 0 ? (
-            purchaseOrderData?.lines.map((line) => (
+          {lines.length > 0 ? (
+            lines.map((line) => (
               <PurchaseOrderLineItem
                 key={line.id}
                 isDisabled={isDisabled}
