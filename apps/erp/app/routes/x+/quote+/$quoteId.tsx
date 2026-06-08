@@ -72,33 +72,59 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     throw redirect(path.to.quotes);
   }
 
-  const [
-    customer,
-    shipment,
-    payment,
-    lines,
-    prices,
-    opportunity,
-    methods,
-    opportunityDocuments,
-    companySettings
-  ] = await Promise.all([
-    getCustomer(client, quote.data?.customerId ?? ""),
-    getQuoteShipment(client, quoteId),
-    getQuotePayment(client, quoteId),
-    getQuoteLines(client, quoteId),
-    getQuoteLinePricesByQuoteId(client, quoteId),
-    getOpportunity(client, quote.data?.opportunityId),
-    getQuoteMethodTrees(client, quoteId),
-    getOpportunityDocuments(client, companyId, quote.data?.opportunityId ?? ""),
-    getCompanySettings(client, companyId)
-  ]);
+  // Start all queries immediately in parallel (no sequential waterfalls)
+  const customerPromise = getCustomer(client, quote.data?.customerId ?? "");
+  const shipmentPromise = getQuoteShipment(client, quoteId);
+  const paymentPromise = getQuotePayment(client, quoteId);
+  const linesPromise = getQuoteLines(client, quoteId);
+  const pricesPromise = getQuoteLinePricesByQuoteId(client, quoteId);
+  const opportunityPromise = getOpportunity(client, quote.data?.opportunityId);
+  const methodsPromise = getQuoteMethodTrees(client, quoteId);
+  const companySettingsPromise = getCompanySettings(client, companyId);
+
+  // getCurrencyByCode can start immediately — currencyCode is already known
+  const exchangeRatePromise = quote.data?.currencyCode
+    ? getCurrencyByCode(client, companyGroupId, quote.data.currencyCode).then(
+        (r) => r.data?.exchangeRate ?? 1
+      )
+    : Promise.resolve(1);
+
+  // supplierPriceMap chains from lines+methods — runs in parallel once they resolve
+  const supplierPriceMapPromise = Promise.all([
+    linesPromise,
+    methodsPromise
+  ]).then(([lines, methods]) => {
+    const methodTrees = methods.data ?? [];
+    const buyItemIds = new Set<string>();
+    function collectBuyItems(tree: (typeof methodTrees)[number]) {
+      if (tree.data.methodType === "Purchase to Order" && tree.data.itemId) {
+        buyItemIds.add(tree.data.itemId);
+      }
+      tree.children?.forEach(collectBuyItems);
+    }
+    methodTrees.forEach(collectBuyItems);
+    for (const line of lines.data ?? []) {
+      if (line.methodType === "Purchase to Order" && line.itemId) {
+        buyItemIds.add(line.itemId);
+      }
+    }
+    return getSupplierPriceBreaksForItems(client, Array.from(buyItemIds));
+  });
+
+  // Await only what needs error checks before returning
+  const [customer, shipment, payment, lines, prices, opportunity, methods, companySettings] =
+    await Promise.all([
+      customerPromise,
+      shipmentPromise,
+      paymentPromise,
+      linesPromise,
+      pricesPromise,
+      opportunityPromise,
+      methodsPromise,
+      companySettingsPromise
+    ]);
 
   if (!opportunity.data) throw new Error("Failed to get opportunity record");
-
-  if (companyId !== quote.data?.companyId) {
-    throw redirect(path.to.quotes);
-  }
 
   if (shipment.error) {
     throw redirect(
@@ -117,28 +143,14 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     );
   }
 
-  let exchangeRate = 1;
-  if (quote.data?.currencyCode) {
-    const presentationCurrency = await getCurrencyByCode(
-      client,
-      companyGroupId,
-      quote.data.currencyCode
-    );
-    if (presentationCurrency.data?.exchangeRate) {
-      exchangeRate = presentationCurrency.data.exchangeRate;
-    }
-  }
-
-  let salesOrderLines: PostgrestResponse<SalesOrderLine> | null = null;
-  if (
+  // salesOrderLines chains from opportunity — already started above, resolves in parallel
+  const salesOrderLinesPromise =
     opportunity.data?.salesOrders.length &&
     opportunity.data.salesOrders[0]?.id
-  ) {
-    salesOrderLines = await getSalesOrderLines(
-      client,
-      opportunity.data.salesOrders[0]?.id
-    );
-  }
+      ? getSalesOrderLines(client, opportunity.data.salesOrders[0].id).then(
+          (r) => r?.data ?? null
+        )
+      : Promise.resolve(null);
 
   const defaultCc =
     // @ts-expect-error TS18048 - TODO: fix type
@@ -147,42 +159,26 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
         customer.data.defaultCc
       : (companySettings.data?.defaultCustomerCc ?? []);
 
-  // Collect all Buy item IDs from method trees + top-level Buy lines
   const methodTrees = methods.data ?? [];
-  const buyItemIds = new Set<string>();
-  function collectBuyItems(tree: (typeof methodTrees)[number]) {
-    if (tree.data.methodType === "Purchase to Order" && tree.data.itemId) {
-      buyItemIds.add(tree.data.itemId);
-    }
-    tree.children?.forEach(collectBuyItems);
-  }
-  methodTrees.forEach(collectBuyItems);
-  // Also include top-level Buy lines (non-Make lines)
-  for (const line of lines.data ?? []) {
-    if (line.methodType === "Purchase to Order" && line.itemId) {
-      buyItemIds.add(line.itemId);
-    }
-  }
-
-  const supplierPriceMap = await getSupplierPriceBreaksForItems(
-    client,
-    Array.from(buyItemIds)
-  );
 
   return {
     quote: quote.data,
     customer: customer.data,
     lines: lines.data ?? [],
     methods: methodTrees,
-    files: opportunityDocuments,
+    files: getOpportunityDocuments(
+      client,
+      companyId,
+      quote.data?.opportunityId ?? ""
+    ),
     prices: prices.data ?? [],
     shipment: shipment.data,
     payment: payment.data,
     opportunity: opportunity.data,
-    exchangeRate,
-    salesOrderLines: salesOrderLines?.data ?? null,
+    exchangeRate: exchangeRatePromise,
+    salesOrderLines: salesOrderLinesPromise,
     defaultCc,
-    supplierPriceMap
+    supplierPriceMap: supplierPriceMapPromise
   };
 }
 

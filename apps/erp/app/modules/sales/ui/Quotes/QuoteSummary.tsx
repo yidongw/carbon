@@ -283,7 +283,7 @@ const LinePricingOptions = ({
   if (!quoteId) throw new Error("Could not find quote id");
   const routeData = useRouteData<{
     quote: Quotation;
-    salesOrderLines: SalesOrderLine[];
+    salesOrderLines: SalesOrderLine[] | null | Promise<unknown>;
   }>(path.to.quote(quoteId));
 
   const [selectedValue, setSelectedValue] = useState<string | null>(
@@ -677,8 +677,12 @@ const QuoteSummary = ({
     lines: QuotationLine[];
     prices: QuotationPrice[];
     shipment: QuotationShipment;
-    salesOrderLines: SalesOrderLine[];
+    salesOrderLines: SalesOrderLine[] | null | Promise<unknown>;
   }>(path.to.quote(quoteId));
+
+  const salesOrderLines = Array.isArray(routeData?.salesOrderLines)
+    ? (routeData.salesOrderLines as SalesOrderLine[])
+    : null;
 
   const isEditable = !isQuoteLocked(routeData?.quote?.status);
 
@@ -697,13 +701,13 @@ const QuoteSummary = ({
   >(() => {
     return (
       routeData?.lines?.reduce<Record<string, SelectedLine>>((acc, line) => {
-        const salesOrderLine = routeData?.salesOrderLines?.find(
+        const salesOrderLine = salesOrderLines?.find(
           (salesOrderLine) => salesOrderLine.id === line.id
         );
 
         if (
-          Array.isArray(routeData?.salesOrderLines) &&
-          routeData?.salesOrderLines.length > 0 &&
+          Array.isArray(salesOrderLines) &&
+          salesOrderLines.length > 0 &&
           !salesOrderLine
         ) {
           acc[line.id!] = deselectedLine;

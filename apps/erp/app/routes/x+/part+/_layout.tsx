@@ -22,14 +22,11 @@ export async function loader({ request }: LoaderFunctionArgs) {
     view: "parts"
   });
 
-  const [unitOfMeasures, locations] = await Promise.all([
-    getUnitOfMeasuresList(client, companyId),
-    getLocationsList(client, companyId)
-  ]);
-
   return {
-    locations: locations?.data ?? [],
-    unitOfMeasures: unitOfMeasures?.data ?? []
+    locations: getLocationsList(client, companyId).then((r) => r?.data ?? []),
+    unitOfMeasures: getUnitOfMeasuresList(client, companyId).then(
+      (r) => r?.data ?? []
+    )
   };
 }
 

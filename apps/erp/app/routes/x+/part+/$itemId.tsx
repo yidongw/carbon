@@ -61,12 +61,12 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { itemId } = params;
   if (!itemId) throw new Error("Could not find itemId");
 
-  const [partSummary, supplierParts, pickMethods, tags] = await Promise.all([
-    getPart(client, itemId, companyId),
-    getSupplierParts(client, itemId, companyId),
-    getPickMethods(client, itemId, companyId),
-    getTagsList(client, companyId, "part")
-  ]);
+  // Start secondary queries immediately before awaiting only the primary record
+  const supplierPartsPromise = getSupplierParts(client, itemId, companyId);
+  const pickMethodsPromise = getPickMethods(client, itemId, companyId);
+  const tagsPromise = getTagsList(client, companyId, "part");
+
+  const partSummary = await getPart(client, itemId, companyId);
 
   if (partSummary.data?.companyId !== companyId) {
     throw redirect(path.to.items);
@@ -117,10 +117,10 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   return {
     partSummary: partSummary.data,
     files: getItemFiles(client, itemId, companyId),
-    supplierParts: supplierParts.data ?? [],
-    pickMethods: pickMethods.data ?? [],
+    supplierParts: supplierPartsPromise.then((r) => r.data ?? []),
+    pickMethods: pickMethodsPromise.then((r) => r.data ?? []),
     makeMethods: getMakeMethods(client, itemId, companyId),
-    tags: tags.data ?? [],
+    tags: tagsPromise.then((r) => r.data ?? []),
     usedIn: getPartUsedIn(client, itemId, companyId),
     methodTree
   };

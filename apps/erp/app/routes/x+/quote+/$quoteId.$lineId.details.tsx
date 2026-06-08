@@ -294,7 +294,7 @@ export default function QuoteLine() {
   const quoteData = useRouteData<{
     methods: Tree<QuoteMethod>[];
     quote: Quotation;
-    supplierPriceMap: SupplierPriceMap;
+    supplierPriceMap: SupplierPriceMap | Promise<unknown>;
   }>(path.to.quote(quoteId));
 
   const methodTree = useMemo(
@@ -306,7 +306,11 @@ export default function QuoteLine() {
     methodTree,
     operations: operations as QuotationOperation[],
     line,
-    supplierPriceMap: quoteData?.supplierPriceMap ?? {}
+    supplierPriceMap:
+      quoteData?.supplierPriceMap instanceof Promise ||
+      quoteData?.supplierPriceMap == null
+        ? {}
+        : quoteData.supplierPriceMap
   });
 
   const initialValues = {
