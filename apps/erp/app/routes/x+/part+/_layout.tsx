@@ -22,12 +22,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
     view: "parts"
   });
 
-  return {
-    locations: getLocationsList(client, companyId).then((r) => r?.data ?? []),
-    unitOfMeasures: getUnitOfMeasuresList(client, companyId).then(
-      (r) => r?.data ?? []
-    )
-  };
+  const [locations, unitOfMeasures] = await Promise.all([
+    getLocationsList(client, companyId).then((r) => r?.data ?? []),
+    getUnitOfMeasuresList(client, companyId).then((r) => r?.data ?? [])
+  ]);
+
+  return { locations, unitOfMeasures };
 }
 
 export default function PartRoute() {
