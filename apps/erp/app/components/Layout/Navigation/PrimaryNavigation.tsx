@@ -107,7 +107,7 @@ const NavigationIconLink = forwardRef<
       {...props}
       onClick={onClick}
       className={cn(classes, props.className)}
-      prefetch="render"
+      prefetch="intent"
     >
       <link.icon className={cn(...iconClasses)} />
 

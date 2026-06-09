@@ -1,11 +1,10 @@
+import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
+import { flash } from "@carbon/auth/session.server";
 import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
-import { Trans } from "@lingui/react/macro";
-import { Suspense } from "react";
 import type { LoaderFunctionArgs } from "react-router";
-import { Await, Outlet, useLoaderData } from "react-router";
-import { TableSkeleton } from "~/components/Skeletons";
+import { Outlet, redirect, useLoaderData } from "react-router";
 import { getMaterials } from "~/modules/items";
 import { MaterialsTable } from "~/modules/items/ui/Materials";
 import { getTagsList } from "~/modules/shared";
@@ -32,49 +31,38 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const { limit, offset, sorts, filters } =
     getGenericQueryFilters(searchParams);
 
-  // Tags are small/cheap — keep them blocking so filters render immediately.
-  const tags = await getTagsList(client, companyId, "material");
+  const [materials, tags] = await Promise.all([
+    getMaterials(client, companyId, {
+      search,
+      supplierId,
+      limit,
+      offset,
+      sorts,
+      filters
+    }),
+    getTagsList(client, companyId, "material")
+  ]);
 
-  // Defer the heavy materials query: the page navigates instantly and renders
-  // a table skeleton while the rows stream in.
-  const materials = getMaterials(client, companyId, {
-    search,
-    supplierId,
-    limit,
-    offset,
-    sorts,
-    filters
-  });
+  if (materials.error) {
+    redirect(
+      path.to.authenticatedRoot,
+      await flash(request, error(materials.error, "Failed to fetch materials"))
+    );
+  }
 
   return {
-    materials,
+    count: materials.count ?? 0,
+    materials: materials.data ?? [],
     tags: tags.data ?? []
   };
 }
 
 export default function MaterialsSearchRoute() {
-  const { materials, tags } = useLoaderData<typeof loader>();
+  const { count, materials, tags } = useLoaderData<typeof loader>();
 
   return (
     <VStack spacing={0} className="h-full">
-      <Suspense fallback={<TableSkeleton />}>
-        <Await
-          resolve={materials}
-          errorElement={
-            <div className="p-4 text-sm text-red-500">
-              <Trans>Failed to load materials.</Trans>
-            </div>
-          }
-        >
-          {(materials) => (
-            <MaterialsTable
-              data={materials.data ?? []}
-              count={materials.count ?? 0}
-              tags={tags}
-            />
-          )}
-        </Await>
-      </Suspense>
+      <MaterialsTable data={materials} count={count} tags={tags} />
       <Outlet />
     </VStack>
   );

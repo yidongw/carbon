@@ -40,7 +40,6 @@ import {
   useLoaderData
 } from "react-router";
 import SonnerStyle from "sonner/dist/styles.css?url";
-import { NavigationProgress } from "~/components/NavigationProgress";
 import { loadLinguiCatalogForRequest } from "~/services/lingui.server";
 import { getMode, setMode } from "~/services/mode.server";
 import Background from "~/styles/background.css?url";
@@ -251,7 +250,6 @@ export default function App() {
         <I18nProvider locale={prefs.locale}>
           <TooltipProvider delayDuration={200}>
             <Document mode={mode} theme={theme} lang={appLanguage}>
-              <NavigationProgress />
               <Outlet />
               <script
                 dangerouslySetInnerHTML={{

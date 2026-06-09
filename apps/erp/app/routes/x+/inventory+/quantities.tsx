@@ -3,11 +3,8 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { ResizablePanel, ResizablePanelGroup, VStack } from "@carbon/react";
 import { pluckUnique } from "@carbon/utils";
-import { Trans } from "@lingui/react/macro";
-import { Suspense } from "react";
 import type { LoaderFunctionArgs } from "react-router";
-import { Await, Outlet, redirect, useLoaderData } from "react-router";
-import { TableSkeleton } from "~/components/Skeletons";
+import { Outlet, redirect, useLoaderData } from "react-router";
 import type { InventoryItem } from "~/modules/inventory";
 import { getInventoryItems, getStorageTypesList } from "~/modules/inventory";
 import InventoryTable from "~/modules/inventory/ui/Inventory/InventoryTable";
@@ -65,28 +62,36 @@ export async function loader({ request }: LoaderFunctionArgs) {
     locationId = locations.data?.[0].id as string;
   }
 
-  // Cheap filter lookups feed the toolbar — keep them blocking.
-  const [forms, substances, tags, storageTypes] = await Promise.all([
-    getMaterialFormsList(client, companyId),
-    getMaterialSubstancesList(client, companyId),
-    getTagsList(client, companyId),
-    getStorageTypesList(client, companyId)
-  ]);
+  const [inventoryItems, forms, substances, tags, storageTypes] =
+    await Promise.all([
+      getInventoryItems(client, locationId, companyId, {
+        search,
+        limit,
+        offset,
+        sorts,
+        filters
+      }),
+      getMaterialFormsList(client, companyId),
+      getMaterialSubstancesList(client, companyId),
+      getTagsList(client, companyId),
+      getStorageTypesList(client, companyId)
+    ]);
+
+  if (inventoryItems.error) {
+    redirect(
+      path.to.authenticatedRoot,
+      await flash(
+        request,
+        error(inventoryItems.error, "Failed to fetch inventory items")
+      )
+    );
+  }
 
   const uniqueTags = pluckUnique(tags.data, (t) => t.name);
 
-  // Defer the heavy inventory query: the page renders instantly and rows stream
-  // into the skeleton. (The location is resolved above, so the query is scoped.)
-  const inventoryItems = getInventoryItems(client, locationId, companyId, {
-    search,
-    limit,
-    offset,
-    sorts,
-    filters
-  });
-
   return {
-    inventoryItems,
+    count: inventoryItems.count ?? 0,
+    inventoryItems: (inventoryItems.data ?? []) as InventoryItem[],
     locationId,
     forms: forms.data ?? [],
     substances: substances.data ?? [],
@@ -96,8 +101,15 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export default function QuantitiesRoute() {
-  const { inventoryItems, locationId, forms, substances, tags, storageTypes } =
-    useLoaderData<typeof loader>();
+  const {
+    count,
+    inventoryItems,
+    locationId,
+    forms,
+    substances,
+    tags,
+    storageTypes
+  } = useLoaderData<typeof loader>();
 
   return (
     <VStack spacing={0} className="h-full ">
@@ -108,28 +120,15 @@ export default function QuantitiesRoute() {
           minSize={25}
           className="bg-background"
         >
-          <Suspense fallback={<TableSkeleton />}>
-            <Await
-              resolve={inventoryItems}
-              errorElement={
-                <div className="p-4 text-sm text-red-500">
-                  <Trans>Failed to load inventory.</Trans>
-                </div>
-              }
-            >
-              {(inventoryItems) => (
-                <InventoryTable
-                  data={(inventoryItems.data ?? []) as InventoryItem[]}
-                  count={inventoryItems.count ?? 0}
-                  locationId={locationId}
-                  forms={forms}
-                  substances={substances}
-                  tags={tags}
-                  storageTypes={storageTypes}
-                />
-              )}
-            </Await>
-          </Suspense>
+          <InventoryTable
+            data={inventoryItems}
+            count={count}
+            locationId={locationId}
+            forms={forms}
+            substances={substances}
+            tags={tags}
+            storageTypes={storageTypes}
+          />
         </ResizablePanel>
         <Outlet />
       </ResizablePanelGroup>

@@ -1,11 +1,10 @@
+import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
+import { flash } from "@carbon/auth/session.server";
 import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
-import { Trans } from "@lingui/react/macro";
-import { Suspense } from "react";
 import type { LoaderFunctionArgs } from "react-router";
-import { Await, Outlet, useLoaderData } from "react-router";
-import { TableSkeleton } from "~/components/Skeletons";
+import { Outlet, redirect, useLoaderData } from "react-router";
 import { getSuppliers } from "~/modules/purchasing";
 import { SuppliersTable } from "~/modules/purchasing/ui/Supplier";
 import { getTagsList } from "~/modules/shared";
@@ -33,50 +32,39 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const { limit, offset, sorts, filters } =
     getGenericQueryFilters(searchParams);
 
-  // Tags are small/cheap — keep them blocking so filters render immediately.
-  const tags = await getTagsList(client, companyId, "supplier");
+  const [suppliers, tags] = await Promise.all([
+    getSuppliers(client, companyId, {
+      search,
+      type,
+      status,
+      limit,
+      offset,
+      sorts,
+      filters
+    }),
+    getTagsList(client, companyId, "supplier")
+  ]);
 
-  // Defer the heavy suppliers query: the page navigates instantly and renders
-  // a table skeleton while the rows stream in.
-  const suppliers = getSuppliers(client, companyId, {
-    search,
-    type,
-    status,
-    limit,
-    offset,
-    sorts,
-    filters
-  });
+  if (suppliers.error) {
+    redirect(
+      path.to.purchasingDashboard,
+      await flash(request, error(suppliers.error, "Failed to fetch suppliers"))
+    );
+  }
 
   return {
-    suppliers,
+    count: suppliers.count ?? 0,
+    suppliers: suppliers.data ?? [],
     tags: tags.data ?? []
   };
 }
 
 export default function PurchasingSuppliersRoute() {
-  const { suppliers, tags } = useLoaderData<typeof loader>();
+  const { count, suppliers, tags } = useLoaderData<typeof loader>();
 
   return (
     <VStack spacing={0} className="h-full">
-      <Suspense fallback={<TableSkeleton />}>
-        <Await
-          resolve={suppliers}
-          errorElement={
-            <div className="p-4 text-sm text-red-500">
-              <Trans>Failed to load suppliers.</Trans>
-            </div>
-          }
-        >
-          {(suppliers) => (
-            <SuppliersTable
-              data={suppliers.data ?? []}
-              count={suppliers.count ?? 0}
-              tags={tags}
-            />
-          )}
-        </Await>
-      </Suspense>
+      <SuppliersTable data={suppliers} count={count} tags={tags} />
       <Outlet />
     </VStack>
   );
