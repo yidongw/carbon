@@ -529,27 +529,15 @@ const PurchaseOrderSummary = ({
                 <Trans>Purchase Order</Trans>
               </CardDescription>
             </div>
-            <div className="flex items-center gap-3">
-              {!isDisabled && permissions.can("update", "purchasing") && (
-                <Button
-                  leftIcon={<LuCirclePlus />}
-                  variant="secondary"
-                  size="sm"
-                  onClick={newPurchaseOrderLineDisclosure.onOpen}
-                >
-                  <Trans>Add Line Item</Trans>
-                </Button>
+            <div className="flex flex-col gap-1 items-end">
+              <SupplierAvatar
+                supplierId={routeData?.purchaseOrder.supplierId ?? null}
+              />
+              {routeData?.purchaseOrder?.orderDate && (
+                <span className="text-muted-foreground text-sm">
+                  <Trans>Ordered {formatDate(routeData?.purchaseOrder.orderDate)}</Trans>
+                </span>
               )}
-              <div className="flex flex-col gap-1 items-end">
-                <SupplierAvatar
-                  supplierId={routeData?.purchaseOrder.supplierId ?? null}
-                />
-                {routeData?.purchaseOrder?.orderDate && (
-                  <span className="text-muted-foreground text-sm">
-                    <Trans>Ordered {formatDate(routeData?.purchaseOrder.orderDate)}</Trans>
-                  </span>
-                )}
-              </div>
             </div>
           </HStack>
         </CardHeader>
@@ -564,6 +552,17 @@ const PurchaseOrderSummary = ({
             isDisabled={isDisabled}
             onDelete={onDeleteLine}
           />
+
+          {!isDisabled && permissions.can("update", "purchasing") && (
+            <button
+              type="button"
+              onClick={newPurchaseOrderLineDisclosure.onOpen}
+              className="mt-2 w-full rounded-lg border-2 border-dashed border-input py-3 text-sm text-muted-foreground transition-colors hover:border-primary hover:text-primary flex items-center justify-center gap-2"
+            >
+              <LuCirclePlus className="h-4 w-4" />
+              <Trans>Add Line Item</Trans>
+            </button>
+          )}
 
           <VStack spacing={2} className="mt-8">
             <HStack className="justify-between text-base text-muted-foreground w-full">
