@@ -41,59 +41,64 @@ export function usePrefetchCache(cache: PrefetchCache) {
 }
 
 const MAX_CONCURRENT_PREFETCHES = 3;
-const prefetchQueue: string[] = [];
-const prefetchInFlight = new Set<string>();
-const prefetchCompleted = new Set<string>();
-let activePrefetches = 0;
 
-function drainPrefetchQueue(load: (href: string) => void) {
-  while (activePrefetches < MAX_CONCURRENT_PREFETCHES && prefetchQueue.length > 0) {
-    const itemId = prefetchQueue.shift()!;
-    if (prefetchCompleted.has(itemId) || partPrefetchCache.has(itemId)) continue;
-    activePrefetches++;
-    prefetchInFlight.add(itemId);
-    load(path.to.partDetails(itemId));
+function createPrefetchQueue(cache: PrefetchCache, toHref: (id: string) => string) {
+  const queue: string[] = [];
+  const inFlight = new Set<string>();
+  const completed = new Set<string>();
+  let active = 0;
+
+  function drain(load: (href: string) => void) {
+    while (active < MAX_CONCURRENT_PREFETCHES && queue.length > 0) {
+      const id = queue.shift()!;
+      if (completed.has(id) || cache.has(id)) continue;
+      active++;
+      inFlight.add(id);
+      load(toHref(id));
+    }
   }
+
+  return {
+    queue(id: string, load: (href: string) => void) {
+      if (
+        completed.has(id) ||
+        cache.has(id) ||
+        inFlight.has(id) ||
+        queue.includes(id)
+      ) {
+        return;
+      }
+      queue.push(id);
+      drain(load);
+    },
+    prioritize(id: string, load: (href: string) => void) {
+      if (completed.has(id) || cache.has(id)) return;
+      const idx = queue.indexOf(id);
+      if (idx > 0) {
+        queue.splice(idx, 1);
+        queue.unshift(id);
+      } else if (idx === -1 && !inFlight.has(id)) {
+        queue.unshift(id);
+      }
+      drain(load);
+    },
+    complete(id: string, load: (href: string) => void) {
+      inFlight.delete(id);
+      completed.add(id);
+      cache.add(id);
+      active = Math.max(0, active - 1);
+      drain(load);
+    }
+  };
 }
 
-/** Queue a part detail route for active loader prefetch (throttled). */
-export function queuePartPrefetch(
-  itemId: string,
-  load: (href: string) => void
-) {
-  if (
-    prefetchCompleted.has(itemId) ||
-    partPrefetchCache.has(itemId) ||
-    prefetchInFlight.has(itemId) ||
-    prefetchQueue.includes(itemId)
-  ) {
-    return;
-  }
-  prefetchQueue.push(itemId);
-  drainPrefetchQueue(load);
-}
+const partQueue = createPrefetchQueue(partPrefetchCache, path.to.partDetails);
+const jobQueue = createPrefetchQueue(jobPrefetchCache, path.to.job);
 
-/** Bump a part to the front of the prefetch queue (e.g. on hover). */
-export function prioritizePartPrefetch(
-  itemId: string,
-  load: (href: string) => void
-) {
-  if (prefetchCompleted.has(itemId) || partPrefetchCache.has(itemId)) return;
-  const idx = prefetchQueue.indexOf(itemId);
-  if (idx > 0) {
-    prefetchQueue.splice(idx, 1);
-    prefetchQueue.unshift(itemId);
-  } else if (idx === -1 && !prefetchInFlight.has(itemId)) {
-    prefetchQueue.unshift(itemId);
-  }
-  drainPrefetchQueue(load);
-}
+export const queuePartPrefetch = partQueue.queue;
+export const prioritizePartPrefetch = partQueue.prioritize;
+export const completePartPrefetch = partQueue.complete;
 
-/** Call when a prefetch fetcher returns to idle. */
-export function completePartPrefetch(itemId: string, load: (href: string) => void) {
-  prefetchInFlight.delete(itemId);
-  prefetchCompleted.add(itemId);
-  partPrefetchCache.add(itemId);
-  activePrefetches = Math.max(0, activePrefetches - 1);
-  drainPrefetchQueue(load);
-}
+export const queueJobPrefetch = jobQueue.queue;
+export const prioritizeJobPrefetch = jobQueue.prioritize;
+export const completeJobPrefetch = jobQueue.complete;
