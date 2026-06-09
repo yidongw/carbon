@@ -7,7 +7,11 @@ import { DndContext } from "@dnd-kit/core";
 import { msg } from "@lingui/core/macro";
 import type { FileObject } from "@supabase/storage-js";
 import type { PostgrestResponse } from "@supabase/supabase-js";
-import type { ClientLoaderFunctionArgs, LoaderFunctionArgs } from "react-router";
+import type {
+  ClientLoaderFunctionArgs,
+  LoaderFunctionArgs,
+  ShouldRevalidateFunctionArgs
+} from "react-router";
 import {
   Outlet,
   redirect,
@@ -183,6 +187,17 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 }
 
 const quoteCache = new Map<string, { data: Awaited<ReturnType<typeof loader>>; ts: number }>();
+
+export function shouldRevalidate({
+  actionStatus,
+  currentParams,
+  defaultShouldRevalidate
+}: ShouldRevalidateFunctionArgs) {
+  if (actionStatus !== undefined) {
+    quoteCache.delete(currentParams.quoteId!);
+  }
+  return defaultShouldRevalidate;
+}
 
 export async function clientLoader({
   serverLoader,
