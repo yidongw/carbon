@@ -17,7 +17,11 @@ import { msg } from "@lingui/core/macro";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { Suspense, useState } from "react";
 import { LuSearch } from "react-icons/lu";
-import type { ClientLoaderFunctionArgs, LoaderFunctionArgs } from "react-router";
+import type {
+  ClientLoaderFunctionArgs,
+  LoaderFunctionArgs,
+  ShouldRevalidateFunctionArgs
+} from "react-router";
 import {
   Await,
   Outlet,
@@ -108,11 +112,18 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     };
   });
 
+  // Await the fields consumed synchronously by sub-routes via useRouteData.
+  // These started before getPart so they've been running concurrently.
+  const [supplierParts, pickMethods] = await Promise.all([
+    supplierPartsPromise.then((r) => r.data ?? []),
+    pickMethodsPromise.then((r) => r.data ?? [])
+  ]);
+
   return {
     partSummary: partSummary.data,
     files: getItemFiles(client, itemId, companyId),
-    supplierParts: supplierPartsPromise.then((r) => r.data ?? []),
-    pickMethods: pickMethodsPromise.then((r) => r.data ?? []),
+    supplierParts,
+    pickMethods,
     makeMethods: makeMethodsPromise,
     tags: tagsPromise.then((r) => r.data ?? []),
     usedIn: getPartUsedIn(client, itemId, companyId),
@@ -121,6 +132,18 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 }
 
 const partCache = new Map<string, { data: Awaited<ReturnType<typeof loader>>; ts: number }>();
+
+// Clear cache on action-triggered revalidations so uploads/mutations show fresh data.
+export function shouldRevalidate({
+  actionStatus,
+  currentParams,
+  defaultShouldRevalidate
+}: ShouldRevalidateFunctionArgs) {
+  if (actionStatus !== undefined) {
+    partCache.delete(currentParams.itemId!);
+  }
+  return defaultShouldRevalidate;
+}
 
 export async function clientLoader({
   serverLoader,

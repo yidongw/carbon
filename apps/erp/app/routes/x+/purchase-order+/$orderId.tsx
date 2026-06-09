@@ -14,7 +14,8 @@ import { Suspense } from "react";
 import type {
   ActionFunctionArgs,
   ClientLoaderFunctionArgs,
-  LoaderFunctionArgs
+  LoaderFunctionArgs,
+  ShouldRevalidateFunctionArgs
 } from "react-router";
 import { Await, Outlet, redirect, useLoaderData, useParams } from "react-router";
 import { ExplorerSkeleton } from "~/components/Skeletons";
@@ -451,6 +452,17 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 }
 
 const poCache = new Map<string, { data: Awaited<ReturnType<typeof loader>>; ts: number }>();
+
+export function shouldRevalidate({
+  actionStatus,
+  currentParams,
+  defaultShouldRevalidate
+}: ShouldRevalidateFunctionArgs) {
+  if (actionStatus !== undefined) {
+    poCache.delete(currentParams.orderId!);
+  }
+  return defaultShouldRevalidate;
+}
 
 export async function clientLoader({
   serverLoader,

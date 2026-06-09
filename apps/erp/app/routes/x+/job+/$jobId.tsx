@@ -4,7 +4,11 @@ import { flash } from "@carbon/auth/session.server";
 import { msg } from "@lingui/core/macro";
 import { Trans } from "@lingui/react/macro";
 import { Suspense, useMemo } from "react";
-import type { ClientLoaderFunctionArgs, LoaderFunctionArgs } from "react-router";
+import type {
+  ClientLoaderFunctionArgs,
+  LoaderFunctionArgs,
+  ShouldRevalidateFunctionArgs
+} from "react-router";
 import {
   Await,
   Outlet,
@@ -76,6 +80,17 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 }
 
 const jobCache = new Map<string, { data: Awaited<ReturnType<typeof loader>>; ts: number }>();
+
+export function shouldRevalidate({
+  actionStatus,
+  currentParams,
+  defaultShouldRevalidate
+}: ShouldRevalidateFunctionArgs) {
+  if (actionStatus !== undefined) {
+    jobCache.delete(currentParams.jobId!);
+  }
+  return defaultShouldRevalidate;
+}
 
 export async function clientLoader({
   serverLoader,
