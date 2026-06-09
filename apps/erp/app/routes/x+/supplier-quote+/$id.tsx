@@ -5,7 +5,11 @@ import { flash } from "@carbon/auth/session.server";
 import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
 import { Suspense } from "react";
-import type { ClientLoaderFunctionArgs, LoaderFunctionArgs } from "react-router";
+import type {
+  ClientLoaderFunctionArgs,
+  LoaderFunctionArgs,
+  ShouldRevalidateFunctionArgs
+} from "react-router";
 import { Await, Outlet, redirect, useLoaderData, useParams } from "react-router";
 import { ExplorerSkeleton } from "~/components/Skeletons";
 import { PanelProvider, ResizablePanels } from "~/components/Layout/Panels";
@@ -124,6 +128,17 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 }
 
 const supplierQuoteCache = new Map<string, { data: Awaited<ReturnType<typeof loader>>; ts: number }>();
+
+export function shouldRevalidate({
+  actionStatus,
+  currentParams,
+  defaultShouldRevalidate
+}: ShouldRevalidateFunctionArgs) {
+  if (actionStatus !== undefined) {
+    supplierQuoteCache.delete(currentParams.id!);
+  }
+  return defaultShouldRevalidate;
+}
 
 export async function clientLoader({
   serverLoader,
