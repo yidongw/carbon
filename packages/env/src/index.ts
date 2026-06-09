@@ -406,7 +406,11 @@ export function getAppUrl() {
   }
 
   if (VERCEL_ENV === "preview") {
-    return `https://${process.env.VERCEL_URL}`;
+    // VERCEL_BRANCH_URL is stable for a branch (doesn't change per deploy).
+    // VERCEL_URL is unique per deployment. Using the branch URL ensures the
+    // callback URL matches the host the user is actually browsing, so the
+    // sb-pkce-cv cookie is sent back on the /callback request.
+    return `https://${process.env.VERCEL_BRANCH_URL ?? process.env.VERCEL_URL}`;
   }
 
   // Dev: `crbn up` writes ERP_URL=https://<prefix>.erp.dev into .env.local.
@@ -425,7 +429,7 @@ export function getMESUrl() {
   }
 
   if (VERCEL_ENV === "preview") {
-    return `https://${process.env.VERCEL_URL}`;
+    return `https://${process.env.VERCEL_BRANCH_URL ?? process.env.VERCEL_URL}`;
   }
 
   // Dev: `crbn up` writes MES_URL=https://<prefix>.mes.dev into .env.local.
