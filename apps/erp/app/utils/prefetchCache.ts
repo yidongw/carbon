@@ -33,7 +33,8 @@ export const jobPrefetchCache = new PrefetchCache();
 export function usePrefetchCache(cache: PrefetchCache) {
   useSyncExternalStore(
     (fn) => cache.subscribe(fn),
-    () => cache.getVersion()
+    () => cache.getVersion(),
+    () => 0
   );
   return cache;
 }
