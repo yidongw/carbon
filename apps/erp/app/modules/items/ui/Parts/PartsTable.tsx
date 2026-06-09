@@ -62,7 +62,10 @@ import type { action } from "~/routes/x+/items+/update";
 import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
 import {
+  completePartPrefetch,
   partPrefetchCache,
+  prioritizePartPrefetch,
+  queuePartPrefetch,
   usePrefetchCache
 } from "~/utils/prefetchCache";
 import {
@@ -84,6 +87,26 @@ const PartsTable = memo(({ data, tags, count }: PartsTableProps) => {
   const { formatDate } = useDateFormatter();
   const prefetchCache = usePrefetchCache(partPrefetchCache);
   const tableRef = useRef<HTMLDivElement>(null);
+  const prefetchFetcher = useFetcher();
+  const pendingPrefetchId = useRef<string | null>(null);
+
+  const loadPart = useCallback(
+    (href: string) => {
+      const match = href.match(/\/x\/part\/([^/]+)/);
+      if (match?.[1]) {
+        pendingPrefetchId.current = match[1];
+        prefetchFetcher.load(href);
+      }
+    },
+    [prefetchFetcher]
+  );
+
+  useEffect(() => {
+    if (prefetchFetcher.state !== "idle" || !pendingPrefetchId.current) return;
+    const itemId = pendingPrefetchId.current;
+    pendingPrefetchId.current = null;
+    completePartPrefetch(itemId, loadPart);
+  }, [prefetchFetcher.state, loadPart]);
 
   useEffect(() => {
     const container = tableRef.current;
@@ -94,7 +117,7 @@ const PartsTable = memo(({ data, tags, count }: PartsTableProps) => {
           if (!entry.isIntersecting) return;
           const href = (entry.target as HTMLAnchorElement).getAttribute("href");
           const match = href?.match(/\/x\/part\/([^/]+)/);
-          if (match?.[1]) partPrefetchCache.add(match[1]);
+          if (match?.[1]) queuePartPrefetch(match[1], loadPart);
         });
       },
       { rootMargin: "200px" }
@@ -103,7 +126,7 @@ const PartsTable = memo(({ data, tags, count }: PartsTableProps) => {
       observer.observe(el);
     });
     return () => observer.disconnect();
-  }, [data]);
+  }, [data, loadPart]);
 
   const translateReplenishment = useCallback(
     (v: string) =>
@@ -152,7 +175,16 @@ const PartsTable = memo(({ data, tags, count }: PartsTableProps) => {
             />
             <Hyperlink
               to={path.to.partDetails(row.original.id!)}
+              prefetch="none"
               className="min-w-0"
+              onMouseEnter={() =>
+                row.original.id &&
+                prioritizePartPrefetch(row.original.id, loadPart)
+              }
+              onFocus={() =>
+                row.original.id &&
+                prioritizePartPrefetch(row.original.id, loadPart)
+              }
             >
               <VStack spacing={0} className="min-w-0">
                 <span className="w-full truncate">
@@ -394,7 +426,8 @@ const PartsTable = memo(({ data, tags, count }: PartsTableProps) => {
     translateMethodType,
     translateReplenishment,
     translateTrackingType,
-    formatDate
+    formatDate,
+    loadPart
   ]);
 
   const fetcher = useFetcher<typeof action>();

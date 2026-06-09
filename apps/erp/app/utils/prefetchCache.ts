@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from "react";
+import { path } from "~/utils/path";
 
 class PrefetchCache {
   private ids = new Set<string>();
@@ -37,4 +38,62 @@ export function usePrefetchCache(cache: PrefetchCache) {
     () => 0
   );
   return cache;
+}
+
+const MAX_CONCURRENT_PREFETCHES = 3;
+const prefetchQueue: string[] = [];
+const prefetchInFlight = new Set<string>();
+const prefetchCompleted = new Set<string>();
+let activePrefetches = 0;
+
+function drainPrefetchQueue(load: (href: string) => void) {
+  while (activePrefetches < MAX_CONCURRENT_PREFETCHES && prefetchQueue.length > 0) {
+    const itemId = prefetchQueue.shift()!;
+    if (prefetchCompleted.has(itemId) || partPrefetchCache.has(itemId)) continue;
+    activePrefetches++;
+    prefetchInFlight.add(itemId);
+    load(path.to.partDetails(itemId));
+  }
+}
+
+/** Queue a part detail route for active loader prefetch (throttled). */
+export function queuePartPrefetch(
+  itemId: string,
+  load: (href: string) => void
+) {
+  if (
+    prefetchCompleted.has(itemId) ||
+    partPrefetchCache.has(itemId) ||
+    prefetchInFlight.has(itemId) ||
+    prefetchQueue.includes(itemId)
+  ) {
+    return;
+  }
+  prefetchQueue.push(itemId);
+  drainPrefetchQueue(load);
+}
+
+/** Bump a part to the front of the prefetch queue (e.g. on hover). */
+export function prioritizePartPrefetch(
+  itemId: string,
+  load: (href: string) => void
+) {
+  if (prefetchCompleted.has(itemId) || partPrefetchCache.has(itemId)) return;
+  const idx = prefetchQueue.indexOf(itemId);
+  if (idx > 0) {
+    prefetchQueue.splice(idx, 1);
+    prefetchQueue.unshift(itemId);
+  } else if (idx === -1 && !prefetchInFlight.has(itemId)) {
+    prefetchQueue.unshift(itemId);
+  }
+  drainPrefetchQueue(load);
+}
+
+/** Call when a prefetch fetcher returns to idle. */
+export function completePartPrefetch(itemId: string, load: (href: string) => void) {
+  prefetchInFlight.delete(itemId);
+  prefetchCompleted.add(itemId);
+  partPrefetchCache.add(itemId);
+  activePrefetches = Math.max(0, activePrefetches - 1);
+  drainPrefetchQueue(load);
 }

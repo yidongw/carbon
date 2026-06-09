@@ -23,6 +23,7 @@ import { Edition } from "@carbon/utils";
 import posthog from "posthog-js";
 import { Suspense } from "react";
 import type {
+  ClientLoaderFunctionArgs,
   LoaderFunctionArgs,
   ShouldRevalidateFunction
 } from "react-router";
@@ -61,7 +62,9 @@ import { ERP_URL, MES_URL, path } from "~/utils/path";
 
 export const shouldRevalidate: ShouldRevalidateFunction = ({
   currentUrl,
+  nextUrl,
   formAction,
+  actionStatus,
   defaultShouldRevalidate
 }) => {
   // After a magic-link login the callback action redirects here via useFetcher.
@@ -69,6 +72,12 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
   // the session was just established — skip it.
   if (formAction?.startsWith("/callback")) {
     return false;
+  }
+
+  // Mutations must refresh session-scoped layout data.
+  if (actionStatus !== undefined) {
+    layoutCache = null;
+    return true;
   }
 
   if (
@@ -79,6 +88,14 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
     currentUrl.pathname.startsWith("/x/shared/views")
   ) {
     return true;
+  }
+
+  // Navigating within /x/* does not need to re-run the 12-query layout loader.
+  if (
+    currentUrl.pathname.startsWith("/x/") &&
+    nextUrl.pathname.startsWith("/x/")
+  ) {
+    return false;
   }
 
   return defaultShouldRevalidate;
@@ -187,6 +204,25 @@ export async function loader({ request }: LoaderFunctionArgs) {
       : null
   });
 }
+
+let layoutCache: {
+  data: Awaited<ReturnType<typeof loader>>;
+  ts: number;
+} | null = null;
+
+export async function clientLoader({ serverLoader }: ClientLoaderFunctionArgs) {
+  const hit = layoutCache;
+  if (hit && Date.now() - hit.ts < 5 * 60_000) {
+    serverLoader<typeof loader>().then((fresh) => {
+      layoutCache = { data: fresh, ts: Date.now() };
+    });
+    return hit.data;
+  }
+  const fresh = await serverLoader<typeof loader>();
+  layoutCache = { data: fresh, ts: Date.now() };
+  return fresh;
+}
+clientLoader.hydrate = true;
 
 export default function AuthenticatedRoute() {
   const { session, user, companySettings, openClockEntry } =

@@ -32,15 +32,22 @@ import {
 import { ResizablePanels } from "~/components/Layout";
 import { flattenTree } from "~/components/TreeView";
 import type { ItemFile, PartSummary } from "~/modules/items";
+import type { JSONContent } from "@carbon/react";
 import {
+  getConfigurationParameters,
+  getConfigurationRules,
   getItemFiles,
+  getItemManufacturing,
   getMakeMethods,
+  getMethodMaterialsByMakeMethod,
+  getMethodOperationsByMakeMethodId,
   getMethodTree,
   getPart,
   getPartUsedIn,
   getPickMethods,
   getSupplierParts
 } from "~/modules/items";
+import type { MethodItemType, MethodType } from "~/modules/shared";
 import { BoMActions, BoMExplorer } from "~/modules/items/ui/Item";
 import type { UsedInNode } from "~/modules/items/ui/Item/UsedIn";
 import { UsedInSkeleton, UsedInTree } from "~/modules/items/ui/Item/UsedIn";
@@ -92,13 +99,20 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   // Single shared promise — used by both methodTree and the return value
   const makeMethodsPromise = getMakeMethods(client, itemId, companyId);
 
+  const selectMakeMethod = (
+    makeMethods: Awaited<ReturnType<typeof getMakeMethods>>
+  ) => {
+    if (!makeMethods.data?.length) return null;
+    return requestedMethodId
+      ? (makeMethods.data.find((m) => m.id === requestedMethodId) ??
+          makeMethods.data.find((m) => m.status === "Active") ??
+          makeMethods.data[0])
+      : (makeMethods.data.find((m) => m.status === "Active") ??
+          makeMethods.data[0]);
+  };
+
   const methodTree = makeMethodsPromise.then(async (makeMethods) => {
-    const makeMethod = requestedMethodId
-      ? (makeMethods.data?.find((m) => m.id === requestedMethodId) ??
-        makeMethods.data?.find((m) => m.status === "Active") ??
-        makeMethods.data?.[0])
-      : (makeMethods.data?.find((m) => m.status === "Active") ??
-        makeMethods.data?.[0]);
+    const makeMethod = selectMakeMethod(makeMethods);
     if (!makeMethod) return null;
 
     // getMakeMethodById was redundant — getMakeMethods already returns SELECT * for the same record
@@ -110,6 +124,62 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     return {
       makeMethod,
       methods
+    };
+  });
+
+  // Deferred — consumed by the details tab via <Await>, not blocking navigation.
+  const detailsData = makeMethodsPromise.then(async (makeMethods) => {
+    const makeMethod = selectMakeMethod(makeMethods);
+    if (!makeMethod) return { methodData: null, tags: [] as { name: string }[] };
+
+    const [methodMaterials, methodOperations, tags, partManufacturing] =
+      await Promise.all([
+        getMethodMaterialsByMakeMethod(client, makeMethod.id),
+        getMethodOperationsByMakeMethodId(client, makeMethod.id),
+        getTagsList(client, companyId, "operation"),
+        getItemManufacturing(client, itemId, companyId)
+      ]);
+
+    const configData = partManufacturing.data?.requiresConfiguration
+      ? {
+          configurationParametersAndGroups: await getConfigurationParameters(
+            client,
+            itemId,
+            companyId
+          ),
+          configurationRules: await getConfigurationRules(
+            client,
+            itemId,
+            companyId
+          )
+        }
+      : {
+          configurationParametersAndGroups: { groups: [], parameters: [] },
+          configurationRules: []
+        };
+
+    return {
+      methodData: {
+        makeMethod,
+        methodMaterials:
+          methodMaterials.data?.map((m) => ({
+            ...m,
+            description: m.item?.name ?? "",
+            methodType: m.methodType as MethodType,
+            itemType: m.itemType as MethodItemType
+          })) ?? [],
+        methodOperations:
+          methodOperations.data?.map((operation) => ({
+            ...operation,
+            workCenterId: operation.workCenterId ?? undefined,
+            operationSupplierProcessId:
+              operation.operationSupplierProcessId ?? undefined,
+            workInstruction: operation.workInstruction as JSONContent | null
+          })) ?? [],
+        partManufacturing: partManufacturing.data,
+        ...configData
+      },
+      tags: tags.data ?? []
     };
   });
 
@@ -128,9 +198,14 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     makeMethods: makeMethodsPromise,
     tags: tagsPromise.then((r) => r.data ?? []),
     usedIn: getPartUsedIn(client, itemId, companyId),
-    methodTree
+    methodTree,
+    detailsData
   };
 }
+
+export type PartDetailsData = Awaited<
+  Awaited<ReturnType<typeof loader>>["detailsData"]
+>;
 
 const partCache = new Map<string, { data: Awaited<ReturnType<typeof loader>>; ts: number }>();
 
