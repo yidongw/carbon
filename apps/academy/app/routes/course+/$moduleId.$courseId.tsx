@@ -214,11 +214,9 @@ export default function CourseRoute() {
                         <Link to={path.to.challenge(topic.id)}>
                           {isChallengeAttempted ? (
                             <span>
-                              Retake Topic Challenge{" "}
-                              <span className="text-xs text-muted-foreground italic">
-                                {challengeAttempts} attempt
-                                {challengeAttempts === 1 ? "" : "s"} made
-                              </span>
+                              Retake Topic Challenge ({challengeAttempts}
+                              attempt
+                              {challengeAttempts === 1 ? "" : "s"})
                             </span>
                           ) : (
                             "Take Topic Challenge"
