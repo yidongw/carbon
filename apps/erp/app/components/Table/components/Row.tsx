@@ -101,7 +101,8 @@ const MemoizedRow = memo(
     // (it's a useCallback keyed on them). Without this, rows keep the styles
     // from the first render — when columnSizeMap was still empty — so pinned
     // body cells stick at left:0 and cover the checkbox column.
-    prev.getPinnedStyles === next.getPinnedStyles
+    prev.getPinnedStyles === next.getPinnedStyles &&
+    prev.className === next.className
 ) as typeof Row;
 
 export default MemoizedRow;
