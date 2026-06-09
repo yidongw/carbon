@@ -1,11 +1,10 @@
+import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
+import { flash } from "@carbon/auth/session.server";
 import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
-import { Trans } from "@lingui/react/macro";
-import { Suspense } from "react";
 import type { LoaderFunctionArgs } from "react-router";
-import { Await, Outlet, useLoaderData } from "react-router";
-import { TableSkeleton } from "~/components/Skeletons";
+import { Outlet, redirect, useLoaderData } from "react-router";
 import { getInboundInspections } from "~/modules/quality";
 import InboundInspectionsTable from "~/modules/quality/ui/InboundInspections/InboundInspectionsTable";
 import type { Handle } from "~/utils/handle";
@@ -30,7 +29,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const { limit, offset, sorts, filters } =
     getGenericQueryFilters(searchParams);
 
-  const inspections = getInboundInspections(client, companyId, {
+  const inspections = await getInboundInspections(client, companyId, {
     search,
     status,
     limit,
@@ -39,33 +38,28 @@ export async function loader({ request }: LoaderFunctionArgs) {
     filters
   });
 
+  if (inspections.error) {
+    throw redirect(
+      path.to.qualityDashboard,
+      await flash(
+        request,
+        error(inspections.error, "Failed to load inspections")
+      )
+    );
+  }
+
   return {
-    inspections
+    inspections: inspections.data ?? [],
+    count: inspections.count ?? 0
   };
 }
 
 export default function InboundInspectionsRoute() {
-  const { inspections } = useLoaderData<typeof loader>();
+  const { inspections, count } = useLoaderData<typeof loader>();
 
   return (
     <VStack spacing={0} className="h-full">
-      <Suspense fallback={<TableSkeleton />}>
-        <Await
-          resolve={inspections}
-          errorElement={
-            <div className="p-4 text-sm text-red-500">
-              <Trans>Failed to load inspections.</Trans>
-            </div>
-          }
-        >
-          {(inspections) => (
-            <InboundInspectionsTable
-              data={inspections.data ?? []}
-              count={inspections.count ?? 0}
-            />
-          )}
-        </Await>
-      </Suspense>
+      <InboundInspectionsTable data={inspections} count={count} />
       <Outlet />
     </VStack>
   );

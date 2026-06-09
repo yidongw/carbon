@@ -27,7 +27,7 @@ const ContentSidebar = ({ links }: { links: Route[] }) => {
                 >
                   <Link
                     to={route.to + (route.q ? `?q=${route.q}` : "")}
-                    prefetch="viewport"
+                    prefetch="intent"
                   >
                     {route.name}
                   </Link>
