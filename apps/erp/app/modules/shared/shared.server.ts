@@ -339,6 +339,10 @@ export async function getOrCreatePeriods(
     (r) => !existingStartDates.has(r.startDate)
   );
 
+  if (periodsToCreate.length === 0) {
+    return existingPeriods.map(toPlainPeriod);
+  }
+
   // Create missing periods in a transaction
   const created = await db.transaction().execute(async (trx) => {
     return await trx
