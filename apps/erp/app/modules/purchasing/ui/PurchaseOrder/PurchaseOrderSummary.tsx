@@ -68,7 +68,8 @@ const LineItems = ({
   lines,
   shouldConvertCurrency,
   isDisabled,
-  onDelete
+  onDelete,
+  onEdit
 }: {
   currencyCode: string;
   presentationCurrencyFormatter: Intl.NumberFormat;
@@ -78,6 +79,7 @@ const LineItems = ({
   shouldConvertCurrency: boolean;
   isDisabled: boolean;
   onDelete: (line: PurchaseOrderLine) => void;
+  onEdit: (line: PurchaseOrderLine) => void;
 }) => {
   const [items] = useItems();
   const accounts = useAccounts();
@@ -152,16 +154,12 @@ const LineItems = ({
                       >
                         <Heading className="truncate">{itemReadableId}</Heading>
                         <Button
-                          asChild
                           variant="link"
                           size="sm"
                           className="text-muted-foreground flex-shrink-0"
+                          onClick={() => onEdit(line)}
                         >
-                          <Link
-                            to={path.to.purchaseOrderLine(orderId, line.id!)}
-                          >
-                            <Trans>Edit</Trans>
-                          </Link>
+                          <Trans>Edit</Trans>
                         </Button>
                         {!isDisabled && (
                           <DropdownMenu>
@@ -438,7 +436,9 @@ const PurchaseOrderSummary = ({
 
   const newPurchaseOrderLineDisclosure = useDisclosure();
   const deleteLineDisclosure = useDisclosure();
+  const editLineDisclosure = useDisclosure();
   const [deleteLine, setDeleteLine] = useState<PurchaseOrderLine | null>(null);
+  const [editLine, setEditLine] = useState<PurchaseOrderLine | null>(null);
 
   const isLocked = isPurchaseOrderLocked(routeData?.purchaseOrder?.status);
   const isEditable = !isLocked;
@@ -466,6 +466,16 @@ const PurchaseOrderSummary = ({
   const onDeleteCancel = () => {
     setDeleteLine(null);
     deleteLineDisclosure.onClose();
+  };
+
+  const onEditLine = (line: PurchaseOrderLine) => {
+    setEditLine(line);
+    editLineDisclosure.onOpen();
+  };
+
+  const onEditClose = () => {
+    setEditLine(null);
+    editLineDisclosure.onClose();
   };
 
   const { locale } = useLocale();
@@ -551,6 +561,7 @@ const PurchaseOrderSummary = ({
             shouldConvertCurrency={shouldConvertCurrency}
             isDisabled={isDisabled}
             onDelete={onDeleteLine}
+            onEdit={onEditLine}
           />
 
           {!isDisabled && permissions.can("update", "purchasing") && (
@@ -650,6 +661,34 @@ const PurchaseOrderSummary = ({
       )}
       {deleteLineDisclosure.isOpen && (
         <DeletePurchaseOrderLine line={deleteLine!} onCancel={onDeleteCancel} />
+      )}
+      {editLineDisclosure.isOpen && editLine && (
+        <PurchaseOrderLineForm
+          initialValues={{
+            id: editLine.id!,
+            purchaseOrderId: editLine.purchaseOrderId!,
+            purchaseOrderLineType: editLine.purchaseOrderLineType!,
+            itemId: editLine.itemId ?? undefined,
+            accountId: editLine.accountId ?? undefined,
+            costCenterId: editLine.costCenterId ?? undefined,
+            conversionFactor: editLine.conversionFactor ?? undefined,
+            description: editLine.description ?? undefined,
+            exchangeRate: editLine.exchangeRate ?? undefined,
+            inventoryUnitOfMeasureCode:
+              editLine.inventoryUnitOfMeasureCode ?? undefined,
+            locationId: editLine.locationId ?? undefined,
+            purchaseQuantity: editLine.purchaseQuantity ?? undefined,
+            purchaseUnitOfMeasureCode:
+              editLine.purchaseUnitOfMeasureCode ?? undefined,
+            requiredDate: editLine.requiredDate ?? undefined,
+            storageUnitId: editLine.storageUnitId ?? undefined,
+            supplierShippingCost: editLine.supplierShippingCost ?? undefined,
+            supplierTaxAmount: editLine.supplierTaxAmount ?? undefined,
+            supplierUnitPrice: editLine.supplierUnitPrice ?? undefined
+          }}
+          type="modal"
+          onClose={onEditClose}
+        />
       )}
     </>
   );
