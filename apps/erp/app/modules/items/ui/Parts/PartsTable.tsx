@@ -62,6 +62,10 @@ import type { action } from "~/routes/x+/items+/update";
 import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
 import {
+  partPrefetchCache,
+  usePrefetchCache
+} from "~/utils/prefetchCache";
+import {
   itemReplenishmentSystems,
   itemTrackingTypes
 } from "../../items.models";
@@ -79,6 +83,7 @@ const PartsTable = memo(({ data, tags, count, itemPostingGroups: rawItemPostingG
   const navigate = useNavigate();
   const permissions = usePermissions();
   const { formatDate } = useDateFormatter();
+  const prefetchCache = usePrefetchCache(partPrefetchCache);
 
   const translateReplenishment = useCallback(
     (v: string) =>
@@ -607,6 +612,11 @@ const PartsTable = memo(({ data, tags, count, itemPostingGroups: rawItemPostingG
         }
         renderActions={renderActions}
         renderContextMenu={renderContextMenu}
+        rowClassName={(row) =>
+          prefetchCache.has(row.original.id!)
+            ? "bg-green-50 dark:bg-green-950/20"
+            : undefined
+        }
         title={t`Parts`}
         table="part"
         withSavedView

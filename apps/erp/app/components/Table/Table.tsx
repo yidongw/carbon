@@ -107,6 +107,7 @@ interface TableProps<T extends object> {
   renderContextMenu?: (row: T) => JSX.Element | null;
   renderExpandedRow?: (row: T) => ReactNode;
   getRowHref?: (row: T) => string | undefined;
+  rowClassName?: (row: Row<T>) => string | undefined;
 }
 
 type AggregateFunction = "sum" | "average" | "min" | "max" | "median" | "count";
@@ -243,7 +244,8 @@ const Table = <T extends object>({
   renderActions,
   renderContextMenu,
   renderExpandedRow,
-  getRowHref
+  getRowHref,
+  rowClassName
 }: TableProps<T>) => {
   const { _ } = useLingui();
   const tableContainerRef = useRef<HTMLDivElement>(null);
@@ -1175,9 +1177,10 @@ const Table = <T extends object>({
                       onCellClick={onCellClick}
                       onCellUpdate={onCellUpdate}
                       onClick={handleRowClick}
-                      className={
-                        renderExpandedRow ? "cursor-pointer" : undefined
-                      }
+                      className={cn(
+                        renderExpandedRow ? "cursor-pointer" : undefined,
+                        rowClassName?.(row)
+                      ) || undefined}
                     />
                   );
 
