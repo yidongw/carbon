@@ -48,6 +48,7 @@ import { PartHeader, PartProperties } from "~/modules/items/ui/Parts";
 import { getTagsList } from "~/modules/shared";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
+import { partPrefetchCache } from "~/utils/prefetchCache";
 
 export const handle: Handle = {
   breadcrumb: msg`Parts`,
@@ -152,13 +153,15 @@ export async function clientLoader({
   const key = params.itemId!;
   const hit = partCache.get(key);
   if (hit && Date.now() - hit.ts < 5 * 60_000) {
-    serverLoader<typeof loader>().then((d) =>
-      partCache.set(key, { data: d, ts: Date.now() })
-    );
+    serverLoader<typeof loader>().then((d) => {
+      partCache.set(key, { data: d, ts: Date.now() });
+      partPrefetchCache.add(key);
+    });
     return hit.data;
   }
   const data = await serverLoader<typeof loader>();
   partCache.set(key, { data, ts: Date.now() });
+  partPrefetchCache.add(key);
   return data;
 }
 clientLoader.hydrate = true;

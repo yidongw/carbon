@@ -35,6 +35,7 @@ import {
 import { getTagsList } from "~/modules/shared";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
+import { jobPrefetchCache } from "~/utils/prefetchCache";
 
 export const handle: Handle = {
   breadcrumb: msg`Jobs`,
@@ -99,13 +100,15 @@ export async function clientLoader({
   const key = params.jobId!;
   const hit = jobCache.get(key);
   if (hit && Date.now() - hit.ts < 5 * 60_000) {
-    serverLoader<typeof loader>().then((d) =>
-      jobCache.set(key, { data: d, ts: Date.now() })
-    );
+    serverLoader<typeof loader>().then((d) => {
+      jobCache.set(key, { data: d, ts: Date.now() });
+      jobPrefetchCache.add(key);
+    });
     return hit.data;
   }
   const data = await serverLoader<typeof loader>();
   jobCache.set(key, { data, ts: Date.now() });
+  jobPrefetchCache.add(key);
   return data;
 }
 clientLoader.hydrate = true;
