@@ -7,13 +7,14 @@ import { Link } from "react-router";
 const Hyperlink = ({
   children,
   className,
+  prefetch = "intent",
   ...props
 }:
   | PropsWithChildren<LinkProps>
   | PropsWithChildren<ComponentProps<"span">>) => {
   return "to" in props && props.to ? (
     <Link
-      prefetch="viewport"
+      prefetch={prefetch}
       className={cn(
         "group/hyperlink inline-flex items-center gap-1 text-foreground font-medium cursor-pointer",
         className
