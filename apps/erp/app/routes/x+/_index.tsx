@@ -1,37 +1,14 @@
-import { Provider as ChatProvider } from "@ai-sdk-tools/store";
 import { cn } from "@carbon/react";
 import { getLocalTimeZone } from "@internationalized/date";
 import { useLocale } from "@react-aria/i18n";
 import type { ComponentProps } from "react";
 import { useMemo } from "react";
 import { Link } from "react-router";
-import { ChatInterface } from "~/components/Chat";
-// import { DevTools } from "~/components/Chat/DevTools.client";
-import { useChatInterface } from "~/components/Chat/hooks/useChatInterface";
 import { Greeting } from "~/components/Greeting";
 import { useModules } from "~/hooks";
-import { useFlags } from "~/hooks/useFlags";
 import type { Authenticated, NavItem } from "~/types";
 
 export default function AppIndexRoute() {
-  const { isCommunity, isControlledEnvironment, isInternal } = useFlags();
-  const hasChatPrototype =
-    (isInternal && !isControlledEnvironment) || isCommunity;
-  return hasChatPrototype ? <ChatPage /> : <AppsPage />;
-}
-
-const ChatPage = () => {
-  const { chatId: currentChatId } = useChatInterface();
-
-  return (
-    <ChatProvider initialMessages={[]} key={currentChatId || "home"}>
-      <ChatInterface />
-      {/* {getAppUrl().includes("localhost") && <DevTools />} */}
-    </ChatProvider>
-  );
-};
-
-const AppsPage = () => {
   const modules = useModules();
   const { locale } = useLocale();
   const date = new Date();
@@ -58,7 +35,7 @@ const AppsPage = () => {
       </div>
     </div>
   );
-};
+}
 
 const Hr = () => (
   <hr className="h-px my-8 bg-black/10 border-0 dark:bg-white/10" />
