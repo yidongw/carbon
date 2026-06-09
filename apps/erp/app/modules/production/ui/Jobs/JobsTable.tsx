@@ -75,6 +75,10 @@ import { useCustomColumns } from "~/hooks/useCustomColumns";
 import type { action } from "~/routes/x+/job+/update";
 import { useCustomers, useParts, usePeople, useTools } from "~/stores";
 import { path } from "~/utils/path";
+import {
+  jobPrefetchCache,
+  usePrefetchCache
+} from "~/utils/prefetchCache";
 import { deadlineTypes, isJobLocked, jobStatus } from "../../production.models";
 import type { JobCurrentProcessInfo } from "../../production.service";
 import type { Job } from "../../types";
@@ -322,6 +326,7 @@ const JobsTable = memo(
     const { t } = useLingui();
     const getDeadlineTypeLabel = useDeadlineTypeLabel();
     const { formatDate } = useDateFormatter();
+    const prefetchCache = usePrefetchCache(jobPrefetchCache);
     const [params] = useUrlParams();
     const parts = useParts();
     const tools = useTools();
@@ -956,6 +961,11 @@ const JobsTable = memo(
             renderActions={renderActions}
             renderContextMenu={renderContextMenu}
             getRowHref={(row) => (row.id ? path.to.job(row.id) : undefined)}
+            rowClassName={(row) =>
+              prefetchCache.has(row.original.id!)
+                ? "bg-green-50 dark:bg-green-950/20"
+                : undefined
+            }
             title={t`Jobs`}
             table="job"
             withSavedView
