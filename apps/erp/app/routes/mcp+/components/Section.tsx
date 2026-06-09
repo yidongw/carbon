@@ -25,7 +25,7 @@ export function Section({
         <span className="text-[var(--acc)] font-medium">{fig}</span> · {label}
       </div>
       {title && (
-        <h2 className="font-semibold tracking-[-0.03em] text-[clamp(1.5rem,2.2vw,1.9rem)] leading-[1.12] mb-[9px] text-balance">
+        <h2 className="font-medium tracking-[-0.03em] text-[clamp(1.5rem,2.2vw,1.9rem)] leading-[1.12] mb-[9px] text-balance">
           {title}
         </h2>
       )}

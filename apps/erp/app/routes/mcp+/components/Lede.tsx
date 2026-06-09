@@ -6,14 +6,16 @@ import { goToQuickstart } from "./quickstart-nav";
 export function Lede({ total }: { total: number }) {
   return (
     <div className="pb-[10px] mb-12">
-      <h1 className="font-bold tracking-[-0.045em] text-[clamp(2.7rem,5.2vw,4.1rem)] leading-[0.98] m-0 mb-4 [text-wrap:balance]">
+      <h1 className="font-medium tracking-[-0.045em] text-[clamp(2.7rem,5.2vw,4.1rem)] leading-[0.98] m-0 mb-4 [text-wrap:balance]">
         Carbon MCP server
       </h1>
       <p className="text-muted-foreground max-w-[58ch] m-0 mb-[18px] text-[1.0625rem] [text-wrap:pretty]">
         Connect Claude, ChatGPT, Cursor, or any MCP client to Carbon. It gets{" "}
-        <b>{total.toLocaleString()} tools</b> across 15 modules — sales orders,
-        production jobs, inventory, purchasing, quality — and you drive them in
-        plain language.
+        <span className="font-medium text-foreground">
+          {total.toLocaleString()} tools
+        </span>{" "}
+        across 15 modules — sales orders, production jobs, inventory,
+        purchasing, quality — and you drive them in plain language.
       </p>
       <div className="inline-flex items-center gap-[11px] bg-card border border-border rounded-[11px] py-[7px] pr-[7px] pl-[13px] mb-4 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_6px_18px_-10px_rgba(0,0,0,0.12)]">
         <span className="font-[var(--mono)] text-[0.65rem] font-bold text-[var(--acc)] border border-[var(--acc)] py-[3px] px-[7px] rounded-[5px]">

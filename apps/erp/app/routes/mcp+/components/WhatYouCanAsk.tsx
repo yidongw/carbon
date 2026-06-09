@@ -18,7 +18,7 @@ export function WhatYouCanAsk() {
         </div>
         {/* Heading */}
         <h2
-          className="font-semibold tracking-[-0.03em] leading-[1.12] m-0 mb-[9px] text-white [text-wrap:balance]"
+          className="font-medium tracking-[-0.03em] leading-[1.12] m-0 mb-[9px] text-white [text-wrap:balance]"
           style={{ fontSize: "1.6rem" }}
         >
           What you can ask
