@@ -25,7 +25,7 @@ import {
 
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   LuAlignJustify,
   LuBookMarked,
@@ -84,6 +84,27 @@ const PartsTable = memo(({ data, tags, count, itemPostingGroups: rawItemPostingG
   const permissions = usePermissions();
   const { formatDate } = useDateFormatter();
   const prefetchCache = usePrefetchCache(partPrefetchCache);
+  const tableRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const container = tableRef.current;
+    if (!container) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const href = (entry.target as HTMLAnchorElement).getAttribute("href");
+          const match = href?.match(/\/x\/part\/([^/]+)/);
+          if (match?.[1]) partPrefetchCache.add(match[1]);
+        });
+      },
+      { rootMargin: "200px" }
+    );
+    container.querySelectorAll('a[href*="/x/part/"]').forEach((el) => {
+      observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, [data]);
 
   const translateReplenishment = useCallback(
     (v: string) =>
@@ -576,7 +597,7 @@ const PartsTable = memo(({ data, tags, count, itemPostingGroups: rawItemPostingG
   }, [deleteItemModal, navigate, permissions, t]);
 
   return (
-    <>
+    <div ref={tableRef} className="contents">
       <Table<Part>
         count={count}
         columns={columns}
@@ -638,7 +659,7 @@ const PartsTable = memo(({ data, tags, count, itemPostingGroups: rawItemPostingG
           }}
         />
       )}
-    </>
+    </div>
   );
 });
 
