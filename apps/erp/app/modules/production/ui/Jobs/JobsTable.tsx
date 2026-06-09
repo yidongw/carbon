@@ -76,7 +76,10 @@ import type { action } from "~/routes/x+/job+/update";
 import { useCustomers, useParts, usePeople, useTools } from "~/stores";
 import { path } from "~/utils/path";
 import {
+  completeJobPrefetch,
   jobPrefetchCache,
+  prioritizeJobPrefetch,
+  queueJobPrefetch,
   usePrefetchCache
 } from "~/utils/prefetchCache";
 import { deadlineTypes, isJobLocked, jobStatus } from "../../production.models";
@@ -327,6 +330,48 @@ const JobsTable = memo(
     const getDeadlineTypeLabel = useDeadlineTypeLabel();
     const { formatDate } = useDateFormatter();
     const prefetchCache = usePrefetchCache(jobPrefetchCache);
+    const tableRef = useRef<HTMLDivElement>(null);
+    const prefetchFetcher = useFetcher();
+    const pendingPrefetchId = useRef<string | null>(null);
+
+    const loadJob = useCallback(
+      (href: string) => {
+        const match = href.match(/\/x\/job\/([^/]+)/);
+        if (match?.[1]) {
+          pendingPrefetchId.current = match[1];
+          prefetchFetcher.load(href);
+        }
+      },
+      [prefetchFetcher]
+    );
+
+    useEffect(() => {
+      if (prefetchFetcher.state !== "idle" || !pendingPrefetchId.current) return;
+      const jobId = pendingPrefetchId.current;
+      pendingPrefetchId.current = null;
+      completeJobPrefetch(jobId, loadJob);
+    }, [prefetchFetcher.state, loadJob]);
+
+    useEffect(() => {
+      const container = tableRef.current;
+      if (!container) return;
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            const href = (entry.target as HTMLAnchorElement).getAttribute("href");
+            const match = href?.match(/\/x\/job\/([^/]+)/);
+            if (match?.[1]) queueJobPrefetch(match[1], loadJob);
+          });
+        },
+        { rootMargin: "200px" }
+      );
+      container.querySelectorAll('a[href*="/x/job/"]').forEach((el) => {
+        observer.observe(el);
+      });
+      return () => observer.disconnect();
+    }, [data, loadJob]);
+
     const [params] = useUrlParams();
     const parts = useParts();
     const tools = useTools();
@@ -412,7 +457,18 @@ const JobsTable = memo(
                 // @ts-ignore
                 type={row.original.itemType}
               />
-              <Hyperlink to={path.to.job(row.original.id!)}>
+              <Hyperlink
+                to={path.to.job(row.original.id!)}
+                prefetch="none"
+                onMouseEnter={() =>
+                  row.original.id &&
+                  prioritizeJobPrefetch(row.original.id, loadJob)
+                }
+                onFocus={() =>
+                  row.original.id &&
+                  prioritizeJobPrefetch(row.original.id, loadJob)
+                }
+              >
                 {row.original?.jobId}
               </Hyperlink>
             </HStack>
@@ -838,7 +894,8 @@ const JobsTable = memo(
       tags,
       getDeadlineTypeLabel,
       t,
-      todaysDate
+      todaysDate,
+      loadJob
     ]);
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: suppressed due to migration
@@ -942,7 +999,7 @@ const JobsTable = memo(
     );
 
     return (
-      <>
+      <div ref={tableRef} className="contents">
         <JobsTableSupplementalContext.Provider value={supplementalData}>
           <Table<Job>
             data={data}
@@ -983,7 +1040,7 @@ const JobsTable = memo(
             onSubmit={onDeleteCancel}
           />
         )}
-      </>
+      </div>
     );
   }
 );
