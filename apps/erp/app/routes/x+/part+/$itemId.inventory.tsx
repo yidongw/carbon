@@ -12,7 +12,7 @@ import {
   getTrackedEntityExpirations,
   InventoryDetails
 } from "~/modules/inventory";
-import type { PartSummary, UnitOfMeasureListItem } from "~/modules/items";
+import type { PartSummary } from "~/modules/items";
 import {
   getBomHasShelfLifeManagedInput,
   getItemQuantities,
@@ -47,9 +47,14 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const searchParams = new URLSearchParams(url.search);
   let locationId = searchParams.get("location");
 
+  // Always fetch locations (needed for the dropdown) + user defaults in parallel
+  const [userDefaults, locationsResult] = await Promise.all([
+    locationId ? Promise.resolve(null) : getUserDefaults(client, userId, companyId),
+    getLocationsList(client, companyId)
+  ]);
+
   if (!locationId) {
-    const userDefaults = await getUserDefaults(client, userId, companyId);
-    if (userDefaults.error) {
+    if (userDefaults?.error) {
       throw redirect(
         path.to.part(itemId),
         await flash(
@@ -58,22 +63,20 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
         )
       );
     }
-
-    locationId = userDefaults.data?.locationId ?? null;
+    locationId = userDefaults?.data?.locationId ?? null;
   }
 
   if (!locationId) {
-    const locations = await getLocationsList(client, companyId);
-    if (locations.error || !locations.data?.length) {
+    if (locationsResult.error || !locationsResult.data?.length) {
       throw redirect(
         path.to.part(itemId),
         await flash(
           request,
-          error(locations.error, "Failed to load any locations")
+          error(locationsResult.error, "Failed to load any locations")
         )
       );
     }
-    locationId = locations.data?.[0].id as string;
+    locationId = locationsResult.data[0].id as string;
   }
 
   let [partInventory] = await Promise.all([
@@ -159,6 +162,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     trackedEntityExpirations,
     itemId,
     locationId,
+    locations: locationsResult.data ?? [],
     ruleAssignments: rulesData.assignments,
     ruleLibrary: rulesData.library
   };
@@ -220,11 +224,6 @@ export async function action({ request, params }: ActionFunctionArgs) {
 }
 
 export default function PartInventoryRoute() {
-  const sharedPartsData = useRouteData<{
-    locations: ListItem[];
-    unitOfMeasures: UnitOfMeasureListItem[];
-  }>(path.to.partRoot);
-
   const {
     partInventory,
     itemStorageUnitQuantities,
@@ -233,6 +232,7 @@ export default function PartInventoryRoute() {
     bomHasShelfLifeManagedInput,
     trackedEntityExpirations,
     itemId,
+    locations,
     ruleAssignments,
     ruleLibrary
   } = useLoaderData<typeof loader>();
@@ -268,7 +268,7 @@ export default function PartInventoryRoute() {
       <PickMethodForm
         key={`${initialValues.itemId}-${itemTrackingType ?? "Inventory"}`}
         initialValues={initialValues}
-        locations={sharedPartsData?.locations ?? []}
+        locations={locations}
         storageUnits={storageUnits.options}
         type="Part"
         itemTrackingType={itemTrackingType ?? "Inventory"}
