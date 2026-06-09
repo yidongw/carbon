@@ -6,12 +6,19 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuIcon,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
   Heading,
   HStack,
+  IconButton,
   Table,
   Tbody,
   Td,
   Tr,
+  useDisclosure,
   VStack
 } from "@carbon/react";
 import { getItemReadableId } from "@carbon/utils";
@@ -19,18 +26,28 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { useLocale } from "@react-aria/i18n";
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { LuChevronRight, LuImage } from "react-icons/lu";
+import {
+  LuChevronRight,
+  LuCirclePlus,
+  LuEllipsisVertical,
+  LuImage,
+  LuTrash
+} from "react-icons/lu";
 import { Link, useParams } from "react-router";
-import { MethodIcon, SupplierAvatar } from "~/components";
+import { MethodIcon, MethodItemTypeIcon, SupplierAvatar } from "~/components";
 import { useAccounts } from "~/components/Form/Account";
 import { useUnitOfMeasure } from "~/components/Form/UnitOfMeasure";
 import {
   useCurrencyFormatter,
   useDateFormatter,
   usePercentFormatter,
+  usePermissions,
   useRouteData,
   useUser
 } from "~/hooks";
+import { getLinkToItemDetails } from "~/modules/items/ui/Item/ItemForm";
+import type { MethodItemType } from "~/modules/shared";
+import { methodItemType } from "~/modules/shared";
 import { useItems } from "~/stores";
 import { getPrivateUrl, path } from "~/utils/path";
 import { isPurchaseOrderLocked } from "../../purchasing.models";
@@ -40,6 +57,8 @@ import type {
   PurchaseOrderLine,
   Supplier
 } from "../../types";
+import DeletePurchaseOrderLine from "./DeletePurchaseOrderLine";
+import PurchaseOrderLineForm from "./PurchaseOrderLineForm";
 
 const LineItems = ({
   currencyCode,
@@ -47,7 +66,9 @@ const LineItems = ({
   formatter,
   locale,
   lines,
-  shouldConvertCurrency
+  shouldConvertCurrency,
+  isDisabled,
+  onDelete
 }: {
   currencyCode: string;
   presentationCurrencyFormatter: Intl.NumberFormat;
@@ -55,6 +76,8 @@ const LineItems = ({
   locale: string;
   lines: PurchaseOrderLine[];
   shouldConvertCurrency: boolean;
+  isDisabled: boolean;
+  onDelete: (line: PurchaseOrderLine) => void;
 }) => {
   const [items] = useItems();
   const accounts = useAccounts();
@@ -62,6 +85,7 @@ const LineItems = ({
   if (!orderId) throw new Error("Could not find orderId");
 
   const { t } = useLingui();
+  const permissions = usePermissions();
   const percentFormatter = usePercentFormatter();
   const [openItems, setOpenItems] = useState<string[]>([]);
   const unitOfMeasures = useUnitOfMeasure();
@@ -97,7 +121,7 @@ const LineItems = ({
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="border-b border-input py-6 w-full"
+            className="border-b border-input py-3 w-full"
           >
             <HStack spacing={4} className="items-start">
               {line.thumbnailPath ? (
@@ -139,6 +163,56 @@ const LineItems = ({
                             <Trans>Edit</Trans>
                           </Link>
                         </Button>
+                        {!isDisabled && (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <IconButton
+                                aria-label={t`More`}
+                                icon={<LuEllipsisVertical />}
+                                variant="ghost"
+                                size="sm"
+                                className="text-muted-foreground flex-shrink-0"
+                                onClick={(e) => e.stopPropagation()}
+                              />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                              <DropdownMenuItem
+                                destructive
+                                disabled={
+                                  !permissions.can("delete", "purchasing")
+                                }
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onDelete(line);
+                                }}
+                              >
+                                <DropdownMenuIcon icon={<LuTrash />} />
+                                <Trans>Delete Line</Trans>
+                              </DropdownMenuItem>
+                              {/* @ts-expect-error */}
+                              {methodItemType.includes(
+                                line?.purchaseOrderLineType ?? ""
+                              ) && (
+                                <DropdownMenuItem asChild>
+                                  <Link
+                                    to={getLinkToItemDetails(
+                                      line.purchaseOrderLineType as MethodItemType,
+                                      line.itemId!
+                                    )}
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    <DropdownMenuIcon
+                                      icon={
+                                        <MethodItemTypeIcon type={"Part"} />
+                                      }
+                                    />
+                                    <Trans>View Item Master</Trans>
+                                  </Link>
+                                </DropdownMenuItem>
+                              )}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        )}
                       </HStack>
                       <span className="text-muted-foreground text-base truncate">
                         {isGlAccount
@@ -353,7 +427,8 @@ const PurchaseOrderSummary = ({
   if (!orderId) throw new Error("Could not find orderId");
   const { formatDate } = useDateFormatter();
 
-  const { company } = useUser();
+  const { company, defaults } = useUser();
+  const permissions = usePermissions();
   const routeData = useRouteData<{
     purchaseOrder: PurchaseOrder;
     lines: PurchaseOrderLine[];
@@ -361,7 +436,37 @@ const PurchaseOrderSummary = ({
     supplier: Supplier;
   }>(path.to.purchaseOrder(orderId));
 
-  const isEditable = !isPurchaseOrderLocked(routeData?.purchaseOrder?.status);
+  const newPurchaseOrderLineDisclosure = useDisclosure();
+  const deleteLineDisclosure = useDisclosure();
+  const [deleteLine, setDeleteLine] = useState<PurchaseOrderLine | null>(null);
+
+  const isLocked = isPurchaseOrderLocked(routeData?.purchaseOrder?.status);
+  const isEditable = !isLocked;
+  const isDisabled = isLocked
+    ? true
+    : routeData?.purchaseOrder?.status !== "Draft";
+
+  const purchaseOrderLineInitialValues = {
+    purchaseOrderId: orderId,
+    purchaseOrderLineType: "Item" as MethodItemType,
+    purchaseQuantity: 1,
+    supplierUnitPrice: 0,
+    locationId:
+      routeData?.purchaseOrder?.locationId ?? defaults?.locationId ?? "",
+    supplierTaxAmount: 0,
+    supplierShippingCost: 0,
+    exchangeRate: routeData?.purchaseOrder?.exchangeRate ?? 1
+  };
+
+  const onDeleteLine = (line: PurchaseOrderLine) => {
+    setDeleteLine(line);
+    deleteLineDisclosure.onOpen();
+  };
+
+  const onDeleteCancel = () => {
+    setDeleteLine(null);
+    deleteLineDisclosure.onClose();
+  };
 
   const { locale } = useLocale();
   const formatter = useCurrencyFormatter();
@@ -375,7 +480,6 @@ const PurchaseOrderSummary = ({
   const shouldConvertCurrency =
     routeData?.purchaseOrder?.currencyCode !== company?.baseCurrencyCode;
 
-  // Calculate totals
   const subtotal =
     routeData?.lines?.reduce((acc, line) => {
       const lineTotal =
@@ -415,114 +519,140 @@ const PurchaseOrderSummary = ({
   const supplierTotal = supplierSubtotal + supplierTax + supplierShippingCost;
 
   return (
-    <Card>
-      <CardHeader>
-        <HStack className="justify-between items-center">
-          <div className="flex flex-col gap-1">
-            <CardTitle>{routeData?.purchaseOrder.purchaseOrderId}</CardTitle>
-            <CardDescription>
-              <Trans>Purchase Order</Trans>
-            </CardDescription>
-          </div>
-          <div className="flex flex-col gap-1 items-end">
-            <SupplierAvatar
-              supplierId={routeData?.purchaseOrder.supplierId ?? null}
-            />
-            {routeData?.purchaseOrder?.orderDate && (
-              <span className="text-muted-foreground text-sm">
-                <Trans>Ordered {formatDate(routeData?.purchaseOrder.orderDate)}</Trans>
-              </span>
-            )}
-          </div>
-        </HStack>
-      </CardHeader>
-      <CardContent>
-        <LineItems
-          currencyCode={company?.baseCurrencyCode ?? "USD"}
-          presentationCurrencyFormatter={presentationCurrencyFormatter}
-          formatter={formatter}
-          locale={locale}
-          lines={routeData?.lines ?? []}
-          shouldConvertCurrency={shouldConvertCurrency}
+    <>
+      <Card>
+        <CardHeader>
+          <HStack className="justify-between items-center">
+            <div className="flex flex-col gap-1">
+              <CardTitle>{routeData?.purchaseOrder.purchaseOrderId}</CardTitle>
+              <CardDescription>
+                <Trans>Purchase Order</Trans>
+              </CardDescription>
+            </div>
+            <div className="flex items-center gap-3">
+              {!isDisabled && permissions.can("update", "purchasing") && (
+                <Button
+                  leftIcon={<LuCirclePlus />}
+                  variant="secondary"
+                  size="sm"
+                  onClick={newPurchaseOrderLineDisclosure.onOpen}
+                >
+                  <Trans>Add Line Item</Trans>
+                </Button>
+              )}
+              <div className="flex flex-col gap-1 items-end">
+                <SupplierAvatar
+                  supplierId={routeData?.purchaseOrder.supplierId ?? null}
+                />
+                {routeData?.purchaseOrder?.orderDate && (
+                  <span className="text-muted-foreground text-sm">
+                    <Trans>Ordered {formatDate(routeData?.purchaseOrder.orderDate)}</Trans>
+                  </span>
+                )}
+              </div>
+            </div>
+          </HStack>
+        </CardHeader>
+        <CardContent>
+          <LineItems
+            currencyCode={company?.baseCurrencyCode ?? "USD"}
+            presentationCurrencyFormatter={presentationCurrencyFormatter}
+            formatter={formatter}
+            locale={locale}
+            lines={routeData?.lines ?? []}
+            shouldConvertCurrency={shouldConvertCurrency}
+            isDisabled={isDisabled}
+            onDelete={onDeleteLine}
+          />
+
+          <VStack spacing={2} className="mt-8">
+            <HStack className="justify-between text-base text-muted-foreground w-full">
+              <span className="whitespace-nowrap"><Trans>Subtotal:</Trans></span>
+              <VStack spacing={0} className="items-end">
+                <span>{formatter.format(subtotal)}</span>
+                {shouldConvertCurrency && (
+                  <span className="text-sm">
+                    {presentationCurrencyFormatter.format(supplierSubtotal)}
+                  </span>
+                )}
+              </VStack>
+            </HStack>
+            <HStack className="justify-between text-base text-muted-foreground w-full">
+              <span className="whitespace-nowrap"><Trans>Tax:</Trans></span>
+              <VStack spacing={0} className="items-end">
+                <span>{formatter.format(tax)}</span>
+                {shouldConvertCurrency && (
+                  <span className="text-sm">
+                    {presentationCurrencyFormatter.format(supplierTax)}
+                  </span>
+                )}
+              </VStack>
+            </HStack>
+
+            <HStack className="justify-between text-base text-muted-foreground w-full">
+              {shippingCost > 0 ? (
+                <>
+                  <VStack spacing={0}>
+                    <span className="whitespace-nowrap"><Trans>Shipping:</Trans></span>
+                    {isEditable && (
+                      <Button
+                        variant="link"
+                        size="sm"
+                        className="text-muted-foreground"
+                        onClick={onEditShippingCost}
+                      >
+                        <Trans>Edit Shipping</Trans>
+                      </Button>
+                    )}
+                  </VStack>
+                  <VStack spacing={0} className="items-end">
+                    <span>{formatter.format(shippingCost)}</span>
+                    {shouldConvertCurrency && (
+                      <span className="text-sm">
+                        {presentationCurrencyFormatter.format(
+                          supplierShippingCost
+                        )}
+                      </span>
+                    )}
+                  </VStack>
+                </>
+              ) : isEditable ? (
+                <Button
+                  variant="link"
+                  size="sm"
+                  className="text-muted-foreground"
+                  onClick={onEditShippingCost}
+                >
+                  <Trans>Add Shipping</Trans>
+                </Button>
+              ) : null}
+            </HStack>
+
+            <HStack className="justify-between text-xl font-bold w-full">
+              <span className="whitespace-nowrap"><Trans>Total:</Trans></span>
+              <VStack spacing={0} className="items-end">
+                <span>{formatter.format(total)}</span>
+                {shouldConvertCurrency && (
+                  <span className="text-sm">
+                    {presentationCurrencyFormatter.format(supplierTotal)}
+                  </span>
+                )}
+              </VStack>
+            </HStack>
+          </VStack>
+        </CardContent>
+      </Card>
+      {newPurchaseOrderLineDisclosure.isOpen && (
+        <PurchaseOrderLineForm
+          initialValues={purchaseOrderLineInitialValues}
+          type="modal"
+          onClose={newPurchaseOrderLineDisclosure.onClose}
         />
-
-        <VStack spacing={2} className="mt-8">
-          <HStack className="justify-between text-base text-muted-foreground w-full">
-            <span><Trans>Subtotal:</Trans></span>
-            <VStack spacing={0} className="items-end">
-              <span>{formatter.format(subtotal)}</span>
-              {shouldConvertCurrency && (
-                <span className="text-sm">
-                  {presentationCurrencyFormatter.format(supplierSubtotal)}
-                </span>
-              )}
-            </VStack>
-          </HStack>
-          <HStack className="justify-between text-base text-muted-foreground w-full">
-            <span><Trans>Tax:</Trans></span>
-            <VStack spacing={0} className="items-end">
-              <span>{formatter.format(tax)}</span>
-              {shouldConvertCurrency && (
-                <span className="text-sm">
-                  {presentationCurrencyFormatter.format(supplierTax)}
-                </span>
-              )}
-            </VStack>
-          </HStack>
-
-          <HStack className="justify-between text-base text-muted-foreground w-full">
-            {shippingCost > 0 ? (
-              <>
-                <VStack spacing={0}>
-                  <span><Trans>Shipping:</Trans></span>
-                  {isEditable && (
-                    <Button
-                      variant="link"
-                      size="sm"
-                      className="text-muted-foreground"
-                      onClick={onEditShippingCost}
-                    >
-                      <Trans>Edit Shipping</Trans>
-                    </Button>
-                  )}
-                </VStack>
-                <VStack spacing={0} className="items-end">
-                  <span>{formatter.format(shippingCost)}</span>
-                  {shouldConvertCurrency && (
-                    <span className="text-sm">
-                      {presentationCurrencyFormatter.format(
-                        supplierShippingCost
-                      )}
-                    </span>
-                  )}
-                </VStack>
-              </>
-            ) : isEditable ? (
-              <Button
-                variant="link"
-                size="sm"
-                className="text-muted-foreground"
-                onClick={onEditShippingCost}
-              >
-                <Trans>Add Shipping</Trans>
-              </Button>
-            ) : null}
-          </HStack>
-
-          <HStack className="justify-between text-xl font-bold w-full">
-            <span><Trans>Total:</Trans></span>
-            <VStack spacing={0} className="items-end">
-              <span>{formatter.format(total)}</span>
-              {shouldConvertCurrency && (
-                <span className="text-sm">
-                  {presentationCurrencyFormatter.format(supplierTotal)}
-                </span>
-              )}
-            </VStack>
-          </HStack>
-        </VStack>
-      </CardContent>
-    </Card>
+      )}
+      {deleteLineDisclosure.isOpen && (
+        <DeletePurchaseOrderLine line={deleteLine!} onCancel={onDeleteCancel} />
+      )}
+    </>
   );
 };
 

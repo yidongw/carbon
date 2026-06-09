@@ -90,29 +90,34 @@ export function ResizablePanels({
   const panelRef = useRef<ImperativePanelHandle>(null);
 
   useEffect(() => {
+    if (!explorer) return;
     if (isExplorerCollapsed) {
       panelRef.current?.collapse();
     } else {
       panelRef.current?.expand();
     }
-  }, [isExplorerCollapsed]);
+  }, [isExplorerCollapsed, explorer]);
 
   return (
     <ResizablePanelGroup direction="horizontal">
-      <ResizablePanel
-        ref={panelRef}
-        order={1}
-        minSize={10}
-        className="bg-card shadow-lg"
-        collapsible
-        defaultSize={isExplorerCollapsed ? 0 : 20}
-        collapsedSize={0}
-        onCollapse={() => setIsExplorerCollapsed(true)}
-        onExpand={() => setIsExplorerCollapsed(false)}
-      >
-        {!isExplorerCollapsed && explorer}
-      </ResizablePanel>
-      <ResizableHandle withHandle />
+      {explorer && (
+        <>
+          <ResizablePanel
+            ref={panelRef}
+            order={1}
+            minSize={10}
+            className="bg-card shadow-lg"
+            collapsible
+            defaultSize={isExplorerCollapsed ? 0 : 20}
+            collapsedSize={0}
+            onCollapse={() => setIsExplorerCollapsed(true)}
+            onExpand={() => setIsExplorerCollapsed(false)}
+          >
+            {!isExplorerCollapsed && explorer}
+          </ResizablePanel>
+          <ResizableHandle withHandle />
+        </>
+      )}
       <ResizablePanel order={2} className="z-1 relative">
         <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
           {content}
