@@ -5,7 +5,6 @@ import { validationError, validator } from "@carbon/form";
 import { VStack } from "@carbon/react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { redirect, useLoaderData } from "react-router";
-import { useRouteData } from "~/hooks";
 import {
   getItemPlanning,
   itemPlanningValidator,
@@ -15,7 +14,6 @@ import { ItemPlanningForm } from "~/modules/items/ui/Item";
 import { ItemPlanningChart } from "~/modules/items/ui/Item/ItemPlanningChart";
 import { getLocationsList } from "~/modules/resources";
 import { getUserDefaults } from "~/modules/users/users.server";
-import type { ListItem } from "~/types";
 import { getCustomFields, setCustomFields } from "~/utils/form";
 import { path } from "~/utils/path";
 
@@ -31,9 +29,13 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const searchParams = new URLSearchParams(url.search);
   let locationId = searchParams.get("location");
 
+  const [userDefaults, locationsResult] = await Promise.all([
+    locationId ? Promise.resolve(null) : getUserDefaults(client, userId, companyId),
+    getLocationsList(client, companyId)
+  ]);
+
   if (!locationId) {
-    const userDefaults = await getUserDefaults(client, userId, companyId);
-    if (userDefaults.error) {
+    if (userDefaults?.error) {
       throw redirect(
         path.to.part(itemId),
         await flash(
@@ -42,22 +44,20 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
         )
       );
     }
-
-    locationId = userDefaults.data?.locationId ?? null;
+    locationId = userDefaults?.data?.locationId ?? null;
   }
 
   if (!locationId) {
-    const locations = await getLocationsList(client, companyId);
-    if (locations.error || !locations.data?.length) {
+    if (locationsResult.error || !locationsResult.data?.length) {
       throw redirect(
         path.to.part(itemId),
         await flash(
           request,
-          error(locations.error, "Failed to load any locations")
+          error(locationsResult.error, "Failed to load any locations")
         )
       );
     }
-    locationId = locations.data?.[0].id as string;
+    locationId = locationsResult.data[0].id as string;
   }
 
   let partPlanning = await getItemPlanning(
@@ -79,7 +79,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   return {
     partPlanning: partPlanning.data,
-    locationId
+    locationId,
+    locations: locationsResult.data ?? []
   };
 }
 
@@ -122,13 +123,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 }
 
 export default function PartPlanningRoute() {
-  const sharedPartsData = useRouteData<{
-    locations: ListItem[];
-  }>(path.to.partRoot);
-
-  const { partPlanning, locationId } = useLoaderData<typeof loader>();
-
-  if (!sharedPartsData) throw new Error("Could not load shared parts data");
+  const { partPlanning, locationId, locations } = useLoaderData<typeof loader>();
 
   return (
     <VStack spacing={2} className="p-2">
@@ -138,7 +133,7 @@ export default function PartPlanningRoute() {
           ...partPlanning,
           ...getCustomFields(partPlanning.customFields)
         }}
-        locations={sharedPartsData.locations ?? []}
+        locations={locations}
         type="Part"
       />
       <ItemPlanningChart
