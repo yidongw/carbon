@@ -160,11 +160,11 @@ function PartPanelsLayout({
   properties: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-0 flex-1 overflow-hidden w-full">
+    <div className="flex h-full min-h-0 overflow-hidden w-full">
       <div className="flex w-72 flex-shrink-0 flex-col overflow-y-auto border-r bg-card shadow-lg">
         {explorer}
       </div>
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+      <div className="flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
         {content}
       </div>
       <div className="flex w-80 flex-shrink-0 flex-col overflow-y-auto border-l bg-card">
@@ -189,8 +189,9 @@ function PartHeaderSkeleton() {
 
 function PartPageSkeleton() {
   return (
-    <div className="flex h-[calc(100dvh-49px)] min-h-0 flex-col overflow-hidden w-full">
+    <div className="flex h-full min-h-0 flex-col overflow-hidden w-full">
       <PartHeaderSkeleton />
+      <div className="flex min-h-0 flex-1 overflow-hidden w-full">
       <PartPanelsLayout
         explorer={
           <div className="p-2">
@@ -198,13 +199,18 @@ function PartPageSkeleton() {
             <UsedInSkeleton />
           </div>
         }
-        content={<PartDetailsPageShell />}
+        content={
+          <div className="h-full min-h-0 overflow-y-auto w-full">
+            <PartDetailsPageShell />
+          </div>
+        }
         properties={
           <div className="p-4">
             <PartDetailsSectionsShell />
           </div>
         }
       />
+      </div>
     </div>
   );
 }
@@ -266,25 +272,27 @@ function PartRouteLoaded({
   return (
     <PartResolvedDataProvider value={resolved}>
       <PartShellRefresh itemId={itemId} isShell={isShell} />
-      <div className="flex h-[calc(100dvh-49px)] min-h-0 flex-col overflow-hidden w-full">
+      <div className="flex h-full min-h-0 flex-col overflow-hidden w-full">
         <PartHeader />
-        <PartPanelsLayout
-          explorer={
-            <PartExplorerPanel
-              usedInGroups={data.usedInGroups}
-              methodTree={data.methodTree}
-              partSummary={Promise.resolve(partSummary)}
-            />
-          }
-          content={
-            <div className="scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent min-h-0 flex-1 overflow-y-auto w-full">
-              <Suspense fallback={<PartDetailsPageShell />}>
-                <Outlet />
-              </Suspense>
-            </div>
-          }
-          properties={<PartProperties key={itemId} />}
-        />
+        <div className="flex min-h-0 flex-1 overflow-hidden w-full">
+          <PartPanelsLayout
+            explorer={
+              <PartExplorerPanel
+                usedInGroups={data.usedInGroups}
+                methodTree={data.methodTree}
+                partSummary={Promise.resolve(partSummary)}
+              />
+            }
+            content={
+              <div className="scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent h-full min-h-0 overflow-y-auto w-full">
+                <Suspense fallback={<PartDetailsPageShell />}>
+                  <Outlet />
+                </Suspense>
+              </div>
+            }
+            properties={<PartProperties key={itemId} />}
+          />
+        </div>
       </div>
     </PartResolvedDataProvider>
   );
