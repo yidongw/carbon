@@ -16,7 +16,7 @@ import {
   useRevalidator
 } from "react-router";
 import { PartContentSkeleton } from "~/components/Skeletons";
-import { ResizablePanels } from "~/components/Layout";
+import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import type { ItemFile, PartSummary } from "~/modules/items";
 import {
   getItemFiles,
@@ -130,6 +130,8 @@ export async function clientLoader({
   });
 }
 
+clientLoader.hydrate = true;
+
 export function HydrateFallback() {
   return <PartContentSkeleton />;
 }
@@ -175,6 +177,7 @@ export default function PartRoute() {
       <PartHeader />
       <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
         <div className="flex flex-grow overflow-hidden">
+          <PanelProvider>
           <ResizablePanels
             explorer={
               <PartExplorerPanel partSummary={partData.partSummary} />
@@ -188,6 +191,7 @@ export default function PartRoute() {
             }
             properties={<PartProperties key={itemId} />}
           />
+          </PanelProvider>
         </div>
       </div>
     </div>
