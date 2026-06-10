@@ -11,11 +11,12 @@ jobs:
     if: github.event.pull_request.head.repo.full_name == 'yidongw/carbon'
     permissions:
       pull-requests: write
+      issues: write
     steps:
       - name: Post deploying status
         if: github.event.action != 'closed'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.AGENT_PAT }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           BRANCH: ${{ github.event.pull_request.head.ref }}
           SHA: ${{ github.event.pull_request.head.sha }}
@@ -46,7 +47,7 @@ jobs:
       - name: Post preview URL
         if: github.event.action != 'closed'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.AGENT_PAT }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           BRANCH: ${{ github.event.pull_request.head.ref }}
           SHA: ${{ github.event.pull_request.head.sha }}
