@@ -1,4 +1,4 @@
-import type { Part, PartSummary } from "~/modules/items";
+import type { ItemFile, Part, PartSummary } from "~/modules/items";
 
 const key = (itemId: string) => `carbon:part-shell:${itemId}`;
 
@@ -46,11 +46,11 @@ export function createPlaceholderPartSummary(itemId: string): PartSummary {
 
 export function createPartShellLoaderData(
   partSummary: PartSummary,
-  flags: { shell?: true; placeholder?: true }
+  flags: { shell?: true }
 ) {
   return {
-    partSummary,
-    files: Promise.resolve([]),
+    partSummary: Promise.resolve(partSummary),
+    files: Promise.resolve([] as ItemFile[]),
     supplierParts: Promise.resolve([]),
     pickMethods: Promise.resolve([]),
     makeMethods: Promise.resolve({ data: [], error: null }),
