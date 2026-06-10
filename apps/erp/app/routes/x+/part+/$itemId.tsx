@@ -130,20 +130,40 @@ export async function clientLoader({
   return data;
 }
 
-function PartHeaderSkeleton() {
+function PartPageSkeleton() {
   return (
-    <div className="flex h-[50px] flex-shrink-0 items-center border-b bg-card px-4">
-      <Skeleton className="h-6 w-24" />
-      <div className="ml-auto flex gap-2">
-        <Skeleton className="h-8 w-16" />
-        <Skeleton className="h-8 w-16" />
-        <Skeleton className="h-8 w-16" />
+    <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
+      <div className="flex h-[50px] flex-shrink-0 items-center border-b bg-card px-4">
+        <Skeleton className="h-6 w-24" />
+        <div className="ml-auto flex gap-2">
+          <Skeleton className="h-8 w-16" />
+          <Skeleton className="h-8 w-16" />
+          <Skeleton className="h-8 w-16" />
+        </div>
+      </div>
+      <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
+        <PanelProvider>
+          <ResizablePanels
+            explorer={
+              <div className="p-2">
+                <Skeleton className="mb-2 h-8 w-full" />
+                <UsedInSkeleton />
+              </div>
+            }
+            content={<PartDetailsPageShell />}
+            properties={
+              <div className="w-80 border-l p-4">
+                <PartDetailsSectionsShell />
+              </div>
+            }
+          />
+        </PanelProvider>
       </div>
     </div>
   );
 }
 
-function PartPanels({
+function PartRouteLoaded({
   data,
   partSummary,
   itemId
@@ -178,20 +198,44 @@ function PartPanels({
 
   return (
     <PartResolvedDataProvider value={resolved}>
-      <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
-        <PanelProvider>
-          <ResizablePanels
-            explorer={<PartExplorerPanel partSummary={partSummary} />}
-            content={
-              <div className="h-[calc(100dvh-99px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
-                <Suspense fallback={<PartDetailsPageShell />}>
-                  <Outlet />
+      <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
+        <PartHeader />
+        <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
+          <PanelProvider>
+            <ResizablePanels
+              explorer={
+                <Suspense
+                  fallback={
+                    <div className="p-2">
+                      <Skeleton className="mb-2 h-8 w-full" />
+                      <UsedInSkeleton />
+                    </div>
+                  }
+                >
+                  <PartExplorerPanel partSummary={partSummary} />
                 </Suspense>
-              </div>
-            }
-            properties={<PartProperties key={itemId} />}
-          />
-        </PanelProvider>
+              }
+              content={
+                <div className="h-[calc(100dvh-99px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
+                  <Suspense fallback={<PartDetailsPageShell />}>
+                    <Outlet />
+                  </Suspense>
+                </div>
+              }
+              properties={
+                <Suspense
+                  fallback={
+                    <div className="w-80 border-l p-4">
+                      <PartDetailsSectionsShell />
+                    </div>
+                  }
+                >
+                  <PartProperties key={itemId} />
+                </Suspense>
+              }
+            />
+          </PanelProvider>
+        </div>
       </div>
     </PartResolvedDataProvider>
   );
@@ -203,54 +247,16 @@ export default function PartRoute() {
   if (!itemId) throw new Error("Could not find itemId");
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
-      <Suspense fallback={<PartHeaderSkeleton />}>
-        <Await resolve={data.partSummary}>
-          {(partSummary) => (
-            <PartResolvedDataProvider
-              value={{
-                partSummary,
-                files: data.files,
-                supplierParts: data.supplierParts,
-                pickMethods: data.pickMethods,
-                makeMethods: data.makeMethods,
-                tags: data.tags
-              }}
-            >
-              <PartHeader />
-            </PartResolvedDataProvider>
-          )}
-        </Await>
-      </Suspense>
-
-      <Suspense
-        fallback={
-          <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
-            <PanelProvider>
-              <ResizablePanels
-                explorer={
-                  <div className="p-2">
-                    <Skeleton className="mb-2 h-8 w-full" />
-                    <UsedInSkeleton />
-                  </div>
-                }
-                content={<PartDetailsPageShell />}
-                properties={
-                  <div className="w-80 border-l p-4">
-                    <PartDetailsSectionsShell />
-                  </div>
-                }
-              />
-            </PanelProvider>
-          </div>
-        }
-      >
-        <Await resolve={data.partSummary}>
-          {(partSummary) => (
-            <PartPanels data={data} partSummary={partSummary} itemId={itemId} />
-          )}
-        </Await>
-      </Suspense>
-    </div>
+    <Suspense fallback={<PartPageSkeleton />}>
+      <Await resolve={data.partSummary}>
+        {(partSummary) => (
+          <PartRouteLoaded
+            data={data}
+            partSummary={partSummary}
+            itemId={itemId}
+          />
+        )}
+      </Await>
+    </Suspense>
   );
 }
