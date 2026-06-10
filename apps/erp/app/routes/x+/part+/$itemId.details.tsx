@@ -14,8 +14,13 @@ import type {
 } from "react-router";
 import { Await, redirect, useLoaderData, useParams } from "react-router";
 import { DeferredFiles } from "~/components";
-import { ExplorerSkeleton, PartContentSkeleton } from "~/components/Skeletons";
+import { ExplorerSkeleton } from "~/components/Skeletons";
 import { usePermissions, useRouteData } from "~/hooks";
+import ItemNotes from "~/modules/items/ui/Item/ItemNotes";
+import {
+  PartDetailsPageShell,
+  PartDetailsSectionsShell
+} from "~/modules/items/ui/Parts/PartDetailsSectionsShell";
 import type { ItemFile, MakeMethod, PartSummary } from "~/modules/items";
 import {
   getConfigurationParameters,
@@ -59,7 +64,6 @@ const ItemDocuments = lazy(
 const ItemManufacturingForm = lazy(
   () => import("~/modules/items/ui/Item/ItemManufacturingForm")
 );
-const ItemNotes = lazy(() => import("~/modules/items/ui/Item/ItemNotes"));
 const ItemRiskRegister = lazy(
   () => import("~/modules/items/ui/Item/ItemRiskRegister")
 );
@@ -188,16 +192,17 @@ export async function clientLoader({
     });
     return hit;
   }
-  const data = await serverLoader<typeof loader>();
-  // Keep detailsBundle as a promise so navigation is not blocked on BOM/BOP queries.
-  data.detailsBundle.then((resolved) => {
+  const detailsBundle = serverLoader<typeof loader>().then(
+    (data) => data.detailsBundle
+  );
+  detailsBundle.then((resolved) => {
     setPartRouteCache(key, { detailsBundle: resolved });
   });
-  return data;
+  return { detailsBundle };
 }
 
 export function HydrateFallback() {
-  return <PartContentSkeleton />;
+  return <PartDetailsPageShell />;
 }
 
 function PartDetailsContent({
@@ -430,28 +435,27 @@ export default function PartDetailsRoute() {
     files: Promise<ItemFile[]>;
   }>(path.to.part(itemId));
 
-  if (!partData) {
-    return <PartContentSkeleton />;
-  }
+  const partSummary = partData?.partSummary;
 
   return (
     <VStack spacing={2} className="p-2">
       {permissions.is("employee") && (
-        <Suspense fallback={<ExplorerSkeleton />}>
-          <ItemNotes
-            id={partData.partSummary?.id ?? null}
-            title={partData.partSummary?.name ?? ""}
-            subTitle={partData.partSummary?.readableIdWithRevision ?? ""}
-            notes={partData.partSummary?.notes as JSONContent}
-          />
-        </Suspense>
+        <ItemNotes
+          id={partSummary?.id ?? itemId}
+          title={partSummary?.name ?? ""}
+          subTitle={partSummary?.readableIdWithRevision ?? ""}
+          notes={partSummary?.notes as JSONContent}
+        />
       )}
-      <Suspense fallback={<PartContentSkeleton />}>
+      <Suspense fallback={<PartDetailsSectionsShell />}>
         <Await resolve={detailsBundle}>
           {({ detailsData, makeMethods }) => (
             <PartDetailsContent
               detailsData={detailsData}
-              partData={partData}
+              partData={{
+                partSummary: partSummary ?? ({ id: itemId } as PartSummary),
+                files: partData?.files ?? Promise.resolve([])
+              }}
               makeMethods={makeMethods}
               itemId={itemId}
             />

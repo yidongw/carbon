@@ -162,14 +162,6 @@ export default function PartExplorerPanel({
     ];
   }, [usedIn, t]);
 
-  if (loading) {
-    return (
-      <div className="flex w-full items-center justify-center p-8">
-        <Spinner className="h-6 w-6" />
-      </div>
-    );
-  }
-
   return (
     <div className="flex flex-col h-full">
       {isManufactured ? (
@@ -223,6 +215,10 @@ export default function PartExplorerPanel({
                     />
                   </div>
                 </Suspense>
+              ) : loading ? (
+                <div className="flex w-full items-center justify-center p-4">
+                  <Spinner className="h-6 w-6" />
+                </div>
               ) : null}
             </TabsContent>
             <TabsContent value="used-in">

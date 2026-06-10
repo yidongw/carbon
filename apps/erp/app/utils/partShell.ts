@@ -30,3 +30,31 @@ export function consumePartShell(itemId: string): PartSummary | null {
   }
   return shell;
 }
+
+export function createPlaceholderPartSummary(itemId: string): PartSummary {
+  return {
+    id: itemId,
+    name: "",
+    readableId: "",
+    readableIdWithRevision: "",
+    replenishmentSystem: "Buy",
+    itemTrackingType: "Inventory",
+    requiresInspection: false,
+    active: true
+  } as PartSummary;
+}
+
+export function createPartShellLoaderData(
+  partSummary: PartSummary,
+  flags: { shell?: true; placeholder?: true }
+) {
+  return {
+    partSummary,
+    files: Promise.resolve([]),
+    supplierParts: Promise.resolve([]),
+    pickMethods: Promise.resolve([]),
+    makeMethods: Promise.resolve({ data: [], error: null }),
+    tags: Promise.resolve([]),
+    ...flags
+  };
+}

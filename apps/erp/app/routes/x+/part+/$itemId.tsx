@@ -2,7 +2,7 @@ import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { msg } from "@lingui/core/macro";
-import { lazy, Suspense, useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import type {
   ClientLoaderFunctionArgs,
   LoaderFunctionArgs,
@@ -25,23 +25,25 @@ import {
   getPickMethods,
   getSupplierParts
 } from "~/modules/items";
+import { PartDetailsPageShell } from "~/modules/items/ui/Parts/PartDetailsSectionsShell";
+import PartExplorerPanel from "~/modules/items/ui/Parts/PartExplorerPanel";
 import PartHeader from "~/modules/items/ui/Parts/PartHeader";
+import PartProperties from "~/modules/items/ui/Parts/PartProperties";
 import { getTagsList } from "~/modules/shared";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 import {
   clearPartRouteCache,
   getPartRouteCache,
+  onPartRouteCacheReady,
   setPartRouteCache
 } from "~/utils/partRouteCache";
-import { consumePartShell } from "~/utils/partShell";
-
-const PartExplorerPanel = lazy(
-  () => import("~/modules/items/ui/Parts/PartExplorerPanel")
-);
-const PartProperties = lazy(
-  () => import("~/modules/items/ui/Parts/PartProperties")
-);
+import { prefetchPartSiblingRoutes } from "~/utils/partSiblingPrefetch";
+import {
+  consumePartShell,
+  createPartShellLoaderData,
+  createPlaceholderPartSummary
+} from "~/utils/partShell";
 
 export const handle: Handle = {
   breadcrumb: msg`Parts`,
@@ -118,20 +120,14 @@ export async function clientLoader({
   const shell = consumePartShell(key);
   if (shell) {
     serverLoader<typeof loader>().then((fresh) => setPartRouteCache(key, fresh));
-    return {
-      partSummary: shell,
-      files: Promise.resolve([]),
-      supplierParts: Promise.resolve([]),
-      pickMethods: Promise.resolve([]),
-      makeMethods: Promise.resolve({ data: [], error: null }),
-      tags: Promise.resolve([]),
-      shell: true as const
-    };
+    return createPartShellLoaderData(shell, { shell: true });
   }
 
-  const data = await serverLoader<typeof loader>();
-  setPartRouteCache(key, data);
-  return data;
+  // Render the shell immediately; hydrate with server data when it arrives.
+  serverLoader<typeof loader>().then((fresh) => setPartRouteCache(key, fresh));
+  return createPartShellLoaderData(createPlaceholderPartSummary(key), {
+    placeholder: true
+  });
 }
 
 export function HydrateFallback() {
@@ -146,12 +142,33 @@ export default function PartRoute() {
   const revalidator = useRevalidator();
 
   useEffect(() => {
-    if ("shell" in partData && partData.shell) {
-      revalidator.revalidate();
-    }
-    // Revalidate once when navigating from a table-row shell prefetch.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [itemId]);
+    const needsFreshData =
+      ("shell" in partData && partData.shell) ||
+      ("placeholder" in partData && partData.placeholder);
+    if (!needsFreshData) return;
+
+    return onPartRouteCacheReady(itemId, () => revalidator.revalidate());
+  }, [itemId, partData, revalidator]);
+
+  useEffect(() => {
+    const needsFreshData =
+      ("shell" in partData && partData.shell) ||
+      ("placeholder" in partData && partData.placeholder);
+    if (needsFreshData) return;
+
+    const id =
+      window.requestIdleCallback?.(() => prefetchPartSiblingRoutes(itemId), {
+        timeout: 2000
+      }) ?? window.setTimeout(() => prefetchPartSiblingRoutes(itemId), 500);
+
+    return () => {
+      if (typeof id === "number") {
+        window.clearTimeout(id);
+      } else {
+        window.cancelIdleCallback?.(id);
+      }
+    };
+  }, [itemId, partData]);
 
   return (
     <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
@@ -160,28 +177,16 @@ export default function PartRoute() {
         <div className="flex flex-grow overflow-hidden">
           <ResizablePanels
             explorer={
-              <Suspense
-                fallback={
-                  <div className="flex w-full items-center justify-center p-8">
-                    <PartContentSkeleton />
-                  </div>
-                }
-              >
-                <PartExplorerPanel partSummary={partData.partSummary} />
-              </Suspense>
+              <PartExplorerPanel partSummary={partData.partSummary} />
             }
             content={
               <div className="h-[calc(100dvh-99px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
-                <Suspense fallback={<PartContentSkeleton />}>
+                <Suspense fallback={<PartDetailsPageShell />}>
                   <Outlet />
                 </Suspense>
               </div>
             }
-            properties={
-              <Suspense fallback={<PartContentSkeleton />}>
-                <PartProperties key={itemId} />
-              </Suspense>
-            }
+            properties={<PartProperties key={itemId} />}
           />
         </div>
       </div>
