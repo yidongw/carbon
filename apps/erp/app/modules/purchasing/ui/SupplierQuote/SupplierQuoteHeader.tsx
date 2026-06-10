@@ -26,10 +26,11 @@ import {
   ModalTitle,
   Status,
   useDisclosure,
+  useIsomorphicLayoutEffect,
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import {
   LuCheckCheck,
   LuChevronDown,
@@ -439,6 +440,14 @@ function SupplierQuoteFinalizeModal({
     .filter((id): id is string => id !== undefined);
 
   const hasErrors = warningLineReadableIds.length > 0;
+  const submitted = useRef(false);
+
+  useIsomorphicLayoutEffect(() => {
+    if (fetcher.state === "loading" && submitted.current) {
+      onClose();
+      submitted.current = false;
+    }
+  }, [fetcher.state, onClose]);
 
   return (
     <Modal
@@ -487,7 +496,7 @@ function SupplierQuoteFinalizeModal({
           <fetcher.Form
             method="post"
             action={path.to.supplierQuoteFinalize(id)}
-            onSubmit={onClose}
+            onSubmit={() => { submitted.current = true; }}
           >
             <Button
               type="submit"

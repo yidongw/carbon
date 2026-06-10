@@ -62,7 +62,7 @@ const PurchaseOrderFinalizeModal = ({
           method="post"
           validator={purchaseOrderFinalizeValidator}
           action={path.to.purchaseOrderFinalize(orderId)}
-          onSubmit={onClose}
+          onSuccess={onClose}
           defaultValues={{
             notification: notificationType as "Email" | "None",
             supplierContact: purchaseOrder?.supplierContactId ?? undefined,

@@ -27,6 +27,7 @@ import {
   Spinner,
   SplitButton,
   useDisclosure,
+  useIsomorphicLayoutEffect,
   useMount,
   VStack
 } from "@carbon/react";
@@ -37,7 +38,7 @@ import {
   today
 } from "@internationalized/date";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import {
   LuCheckCheck,
@@ -524,6 +525,14 @@ export function JobStartModal({
     setSelectedPurchaseOrdersBySupplierId
   ] = useState<Record<string, string>>({});
 
+  const startSubmitted = useRef(false);
+  useIsomorphicLayoutEffect(() => {
+    if (fetcher.state === "loading" && startSubmitted.current) {
+      onClose();
+      startSubmitted.current = false;
+    }
+  }, [fetcher.state, onClose]);
+
   const validate = async () => {
     if (!carbon || !job) return;
     const [makeMethod, materials, operations, methodTree] = await Promise.all([
@@ -844,7 +853,7 @@ export function JobStartModal({
                 <Trans>Cancel</Trans>
               </Button>
               <fetcher.Form
-                onSubmit={onClose}
+                onSubmit={() => { startSubmitted.current = true; }}
                 method="post"
                 action={`${path.to.jobStatus(job.id!)}?schedule=1`}
               >
@@ -886,6 +895,14 @@ function JobCancelModal({
   fetcher: FetcherWithComponents<{}>;
   onClose: () => void;
 }) {
+  const cancelSubmitted = useRef(false);
+  useIsomorphicLayoutEffect(() => {
+    if (fetcher.state === "loading" && cancelSubmitted.current) {
+      onClose();
+      cancelSubmitted.current = false;
+    }
+  }, [fetcher.state, onClose]);
+
   if (!job) return null;
 
   return (
@@ -914,7 +931,7 @@ function JobCancelModal({
             <Trans>Don't Cancel</Trans>
           </Button>
           <fetcher.Form
-            onSubmit={onClose}
+            onSubmit={() => { cancelSubmitted.current = true; }}
             method="post"
             action={path.to.jobStatus(job.id!)}
           >
@@ -1054,7 +1071,7 @@ function JobCompleteModal({
             method="post"
             action={path.to.jobComplete(job.id!)}
             validator={jobCompleteValidator}
-            onSubmit={onClose}
+            onSuccess={onClose}
             defaultValues={{
               quantityComplete: job.quantity ?? 0,
               salesOrderId: job.salesOrderId ?? undefined,

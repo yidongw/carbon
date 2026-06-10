@@ -109,7 +109,7 @@ const SalesOrderConfirmModal = ({
           method="post"
           action={path.to.salesOrderConfirm(orderId)}
           validator={salesConfirmValidator}
-          onSubmit={onClose}
+          onSuccess={onClose}
           defaultValues={{
             notification: notificationType,
             customerContact: salesOrder?.customerContactId ?? undefined,

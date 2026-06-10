@@ -191,7 +191,7 @@ export function SalesOrderLineJobs({
                 unitOfMeasureCode: line.unitOfMeasureCode ?? undefined
               }}
               className="flex flex-col h-full"
-              onSubmit={newJobDisclosure.onClose}
+              onSuccess={newJobDisclosure.onClose}
             >
               <ModalHeader>
                 <ModalTitle>
