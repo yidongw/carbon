@@ -1,6 +1,7 @@
 import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
+import { Skeleton } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
 import { Suspense, useEffect } from "react";
 import type {
@@ -24,9 +25,10 @@ import {
   getPickMethods,
   getSupplierParts
 } from "~/modules/items";
+import { UsedInSkeleton } from "~/modules/items/ui/Item/UsedIn";
 import {
   PartDetailsPageShell,
-  PartPageHydrateFallback
+  PartDetailsSectionsShell
 } from "~/modules/items/ui/Parts/PartDetailsSectionsShell";
 import PartExplorerPanel from "~/modules/items/ui/Parts/PartExplorerPanel";
 import PartHeader from "~/modules/items/ui/Parts/PartHeader";
@@ -65,7 +67,6 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const pickMethodsPromise = getPickMethods(client, itemId, companyId);
   const tagsPromise = getTagsList(client, companyId, "part");
 
-  // Defer getPart so the route shell can render while summary data streams in.
   const partSummary = getPart(client, itemId, companyId).then(
     async (result) => {
       if (result.data?.companyId !== companyId) {
@@ -93,10 +94,6 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     tags: tagsPromise.then((r) => r.data ?? [])
   };
 }
-
-export type PartLoaderData = ReturnType<typeof loader> extends Promise<infer T>
-  ? T
-  : never;
 
 export function shouldRevalidate({
   actionStatus,
@@ -133,20 +130,28 @@ export async function clientLoader({
   return data;
 }
 
-export function HydrateFallback() {
-  return <PartPageHydrateFallback />;
+function PartHeaderSkeleton() {
+  return (
+    <div className="flex h-[50px] flex-shrink-0 items-center border-b bg-card px-4">
+      <Skeleton className="h-6 w-24" />
+      <div className="ml-auto flex gap-2">
+        <Skeleton className="h-8 w-16" />
+        <Skeleton className="h-8 w-16" />
+        <Skeleton className="h-8 w-16" />
+      </div>
+    </div>
+  );
 }
 
-function PartRouteLayout({
+function PartPanels({
   data,
-  partSummary
+  partSummary,
+  itemId
 }: {
   data: Awaited<ReturnType<typeof loader>>;
   partSummary: PartSummary;
+  itemId: string;
 }) {
-  const { itemId } = useParams();
-  if (!itemId) throw new Error("Could not find itemId");
-
   const resolved: ResolvedPartRouteData = {
     partSummary,
     files: data.files,
@@ -173,27 +178,20 @@ function PartRouteLayout({
 
   return (
     <PartResolvedDataProvider value={resolved}>
-      <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
-        <PartHeader />
-        <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
-          <div className="flex flex-grow overflow-hidden">
-            <PanelProvider>
-              <ResizablePanels
-                explorer={
-                  <PartExplorerPanel partSummary={partSummary} />
-                }
-                content={
-                  <div className="h-[calc(100dvh-99px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
-                    <Suspense fallback={<PartDetailsPageShell />}>
-                      <Outlet />
-                    </Suspense>
-                  </div>
-                }
-                properties={<PartProperties key={itemId} />}
-              />
-            </PanelProvider>
-          </div>
-        </div>
+      <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
+        <PanelProvider>
+          <ResizablePanels
+            explorer={<PartExplorerPanel partSummary={partSummary} />}
+            content={
+              <div className="h-[calc(100dvh-99px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
+                <Suspense fallback={<PartDetailsPageShell />}>
+                  <Outlet />
+                </Suspense>
+              </div>
+            }
+            properties={<PartProperties key={itemId} />}
+          />
+        </PanelProvider>
       </div>
     </PartResolvedDataProvider>
   );
@@ -201,14 +199,58 @@ function PartRouteLayout({
 
 export default function PartRoute() {
   const data = useLoaderData<typeof loader>();
+  const { itemId } = useParams();
+  if (!itemId) throw new Error("Could not find itemId");
 
   return (
-    <Suspense fallback={<PartPageHydrateFallback />}>
-      <Await resolve={data.partSummary}>
-        {(partSummary) => (
-          <PartRouteLayout data={data} partSummary={partSummary} />
-        )}
-      </Await>
-    </Suspense>
+    <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
+      <Suspense fallback={<PartHeaderSkeleton />}>
+        <Await resolve={data.partSummary}>
+          {(partSummary) => (
+            <PartResolvedDataProvider
+              value={{
+                partSummary,
+                files: data.files,
+                supplierParts: data.supplierParts,
+                pickMethods: data.pickMethods,
+                makeMethods: data.makeMethods,
+                tags: data.tags
+              }}
+            >
+              <PartHeader />
+            </PartResolvedDataProvider>
+          )}
+        </Await>
+      </Suspense>
+
+      <Suspense
+        fallback={
+          <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
+            <PanelProvider>
+              <ResizablePanels
+                explorer={
+                  <div className="p-2">
+                    <Skeleton className="mb-2 h-8 w-full" />
+                    <UsedInSkeleton />
+                  </div>
+                }
+                content={<PartDetailsPageShell />}
+                properties={
+                  <div className="w-80 border-l p-4">
+                    <PartDetailsSectionsShell />
+                  </div>
+                }
+              />
+            </PanelProvider>
+          </div>
+        }
+      >
+        <Await resolve={data.partSummary}>
+          {(partSummary) => (
+            <PartPanels data={data} partSummary={partSummary} itemId={itemId} />
+          )}
+        </Await>
+      </Suspense>
+    </div>
   );
 }
