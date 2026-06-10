@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigation } from "react-router";
+import { useFetchers, useNavigation } from "react-router";
 
 /**
  * Top-of-page progress bar driven by React Router's `useNavigation()`.
@@ -7,7 +7,10 @@ import { useNavigation } from "react-router";
  */
 export function NavigationProgress() {
   const navigation = useNavigation();
-  const active = navigation.state !== "idle";
+  const fetchers = useFetchers();
+  const active =
+    navigation.state !== "idle" ||
+    fetchers.some((fetcher) => fetcher.state !== "idle");
 
   const [visible, setVisible] = useState(false);
   const [progress, setProgress] = useState(0);
