@@ -28,7 +28,7 @@ import {
   purchaseOrderApprovalValidator
 } from "~/modules/purchasing";
 import {
-  PurchaseOrderExplorer,
+  // PurchaseOrderExplorer,
   PurchaseOrderHeader,
   PurchaseOrderProperties
 } from "~/modules/purchasing/ui/PurchaseOrder";
@@ -527,7 +527,7 @@ export default function PurchaseOrderRoute() {
         <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
           <div className="flex flex-grow overflow-hidden">
             <ResizablePanels
-              explorer={<PurchaseOrderExplorer />}
+              // explorer={<PurchaseOrderExplorer />}
               content={
                 <div className="h-[calc(100dvh-99px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
                   <VStack spacing={2} className="p-2">

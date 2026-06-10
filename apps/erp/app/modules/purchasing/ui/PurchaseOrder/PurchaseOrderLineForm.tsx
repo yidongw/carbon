@@ -497,7 +497,7 @@ const PurchaseOrderLineForm = ({
                             ? indirectData.description || "G/L Account"
                             : getItemReadableId(items, itemData?.itemId) ||
                               "..."
-                        : "New Purchase Order Line"}
+                        : t`New Purchase Order Line`}
                     </ModalCardTitle>
                     <ModalCardDescription>
                       {isOutsideProcessing ? (
@@ -536,7 +536,10 @@ const PurchaseOrderLineForm = ({
                           </div>
                         </div>
                       ) : (
-                        "A purchase order line contains order details for a particular item"
+                        <Trans>
+                          A purchase order line contains order details for a
+                          particular item
+                        </Trans>
                       )}
                     </ModalCardDescription>
                   </ModalCardHeader>

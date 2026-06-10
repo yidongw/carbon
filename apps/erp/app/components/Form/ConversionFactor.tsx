@@ -56,7 +56,7 @@ const ConversionFactor = forwardRef<
   (
     {
       name,
-      label = "Conversion Factor",
+      label,
       isRequired,
       isReadOnly,
       helperText,
@@ -68,6 +68,7 @@ const ConversionFactor = forwardRef<
     ref
   ) => {
     const { t } = useLingui();
+    const resolvedLabel = label ?? t`Conversion Factor`;
     const {
       getInputProps,
       error,
@@ -190,9 +191,9 @@ const ConversionFactor = forwardRef<
 
     return (
       <FormControl isInvalid={!!error} isRequired={isRequired}>
-        {label && (
+        {resolvedLabel && (
           <FormLabel htmlFor={name} isOptional={resolvedIsOptional}>
-            {label}
+            {resolvedLabel}
           </FormLabel>
         )}
         <input
