@@ -103,6 +103,14 @@ export async function action({ request, params }: ActionFunctionArgs) {
   );
 }
 
+export function ErrorBoundary() {
+  return (
+    <div className="p-4 text-sm text-muted-foreground">
+      Failed to load planning data.
+    </div>
+  );
+}
+
 export default function PartPlanningRoute() {
   const sharedPartsData = useRouteData<{
     locations: ListItem[];

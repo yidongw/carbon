@@ -138,11 +138,11 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   return {
     partSummary: partSummary.data,
-    files: getItemFiles(client, itemId, companyId),
-    supplierParts: getSupplierParts(client, itemId, companyId),
-    pickMethods: getPickMethods(client, itemId, companyId),
-    makeMethods: getMakeMethods(client, itemId, companyId),
-    tags: getTagsList(client, companyId, "part"),
+    files: getItemFiles(client, itemId, companyId).catch(() => []),
+    supplierParts: getSupplierParts(client, itemId, companyId).catch(() => ({ data: null, error: null, count: null, status: 200, statusText: "OK" })),
+    pickMethods: getPickMethods(client, itemId, companyId).catch(() => ({ data: null, error: null, count: null, status: 200, statusText: "OK" })),
+    makeMethods: getMakeMethods(client, itemId, companyId).catch(() => ({ data: null, error: null, count: null, status: 200, statusText: "OK" })),
+    tags: getTagsList(client, companyId, "part").catch(() => ({ data: null, error: null, count: null, status: 200, statusText: "OK" })),
     usedIn: getPartUsedIn(client, itemId, companyId).catch(() => emptyUsedIn),
     methodTree
   };
@@ -178,6 +178,14 @@ export async function clientLoader({
 
 export function HydrateFallback() {
   return <PartPageHydrateFallback />;
+}
+
+export function ErrorBoundary() {
+  return (
+    <div className="flex h-[calc(100dvh-49px)] items-center justify-center p-8 text-sm text-muted-foreground">
+      Failed to load part data.
+    </div>
+  );
 }
 
 export default function PartRoute() {

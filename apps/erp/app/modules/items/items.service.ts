@@ -757,7 +757,7 @@ export async function getMaterialUsedIn(
     client
       .from("methodMaterial")
       .select(
-        "id, methodType, ...makeMethod!makeMethodId(documentId:id, version, ...item(documentReadableId:readableIdWithRevision, documentParentId:id, itemType:type))"
+        "id, methodType, ...makeMethod!makeMethodId(documentId:id, version)"
       )
       .eq("itemId", itemId)
       .eq("companyId", companyId)
@@ -780,7 +780,7 @@ export async function getMaterialUsedIn(
     client
       .from("quoteMaterial")
       .select(
-        "id, methodType, documentParentId:quoteId, documentId:quoteLineId, ...quoteLine(...item(documentReadableId:readableIdWithRevision))"
+        "id, methodType, documentParentId:quoteId, documentId:quoteLineId"
       )
       .eq("itemId", itemId)
       .eq("companyId", companyId)
@@ -1484,7 +1484,7 @@ export async function getPartUsedIn(
     client
       .from("methodMaterial")
       .select(
-        "id, methodType, ...makeMethod!makeMethodId(documentId:id, version, ...item(documentReadableId:readableIdWithRevision, documentParentId:id, itemType:type))"
+        "id, methodType, ...makeMethod!makeMethodId(documentId:id, version)"
       )
       .eq("itemId", itemId)
       .eq("companyId", companyId)
@@ -1518,7 +1518,7 @@ export async function getPartUsedIn(
     client
       .from("quoteMaterial")
       .select(
-        "id, methodType, documentParentId:quoteId, documentId:quoteLineId, ...quoteLine(...item(documentReadableId:readableIdWithRevision))"
+        "id, methodType, documentParentId:quoteId, documentId:quoteLineId"
       )
       .eq("itemId", itemId)
       .eq("companyId", companyId)
