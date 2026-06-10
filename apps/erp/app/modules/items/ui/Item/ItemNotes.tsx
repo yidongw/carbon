@@ -19,6 +19,10 @@ import { useEffect, useState } from "react";
 import { usePermissions, useUser } from "~/hooks";
 import { getPrivateUrl } from "~/utils/path";
 
+// Module-level flag: once true after first client hydration, all subsequent
+// mounts render the editor immediately without waiting for an effect tick.
+let _editorHydrated = false;
+
 const ItemNotes = ({
   id,
   title,
@@ -73,11 +77,11 @@ const ItemNotes = ({
     true
   );
 
-  const [editorReady, setEditorReady] = useState(false);
+  const [editorReady, setEditorReady] = useState(_editorHydrated);
 
   useEffect(() => {
-    const id = window.requestAnimationFrame(() => setEditorReady(true));
-    return () => window.cancelAnimationFrame(id);
+    _editorHydrated = true;
+    setEditorReady(true);
   }, []);
 
   if (!id) return null;
