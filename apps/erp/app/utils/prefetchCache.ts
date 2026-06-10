@@ -92,8 +92,8 @@ function createPrefetchQueue(cache: PrefetchCache, toHref: (id: string) => strin
   };
 }
 
-// Prefetch the parent part route so clientLoader populates partRouteCache.
-const partQueue = createPrefetchQueue(partPrefetchCache, path.to.part);
+// Prefetch the details route so parent + child clientLoaders populate caches.
+const partQueue = createPrefetchQueue(partPrefetchCache, path.to.partDetails);
 const jobQueue = createPrefetchQueue(jobPrefetchCache, path.to.job);
 
 export const queuePartPrefetch = partQueue.queue;

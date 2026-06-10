@@ -61,6 +61,8 @@ export const path = {
       itemForecast: (itemId: string, locationId: string) =>
         generatePath(`${api}/items/${itemId}/${locationId}/forecast`),
       itemPostingGroups: `${api}/items/groups`,
+      partExplorer: (itemId: string) =>
+        generatePath(`${api}/items/part-explorer/${itemId}`),
       jobBillOfMaterials: (id: string, withOperations: boolean = false) =>
         generatePath(
           `${api}/production/methods/${id}/bom?withOperations=${withOperations}`
