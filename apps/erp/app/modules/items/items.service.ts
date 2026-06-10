@@ -61,6 +61,8 @@ import {
   type unitOfMeasureValidator
 } from "./items.models";
 import type { InventoryItemType } from "./types";
+import type { PartUsedInGroupKey } from "./partUsedInGroups";
+import { PART_USED_IN_GROUP_DEFINITIONS } from "./partUsedInGroups";
 
 export async function activateMethodVersion(
   client: SupabaseClient<Database>,
@@ -1430,140 +1432,168 @@ export async function getPartsList(
   );
 }
 
+export async function getPartUsedInGroup(
+  client: SupabaseClient<Database>,
+  itemId: string,
+  companyId: string,
+  group: PartUsedInGroupKey
+) {
+  switch (group) {
+    case "issues":
+      return (
+        await client
+          .from("nonConformanceItem")
+          .select(
+            "id, ...nonConformance(documentReadableId:nonConformanceId, documentId:id)"
+          )
+          .eq("itemId", itemId)
+          .eq("companyId", companyId)
+          .limit(100)
+          .order("createdAt", { ascending: false })
+      ).data ?? [];
+    case "jobMaterials":
+      return (
+        await client
+          .from("jobMaterial")
+          .select(
+            "id, methodType, ...job(documentReadableId:jobId, documentId:id)"
+          )
+          .eq("itemId", itemId)
+          .eq("companyId", companyId)
+          .limit(100)
+          .order("createdAt", { ascending: false })
+      ).data ?? [];
+    case "jobs":
+      return (
+        await client
+          .from("job")
+          .select("id, documentReadableId:jobId")
+          .eq("itemId", itemId)
+          .eq("companyId", companyId)
+          .limit(100)
+          .order("createdAt", { ascending: false })
+      ).data ?? [];
+    case "maintenanceDispatchItems":
+      return (
+        await client
+          .from("maintenanceDispatchItem")
+          .select(
+            "id, ...maintenanceDispatch!maintenanceDispatchId(documentReadableId:maintenanceDispatchId, documentId:id)"
+          )
+          .eq("itemId", itemId)
+          .eq("companyId", companyId)
+          .limit(100)
+          .order("createdAt", { ascending: false })
+      ).data ?? [];
+    case "methodMaterials":
+      return (
+        await client
+          .from("methodMaterial")
+          .select(
+            "id, methodType, ...makeMethod!makeMethodId(documentId:id, version, ...item(documentReadableId:readableIdWithRevision, documentParentId:id, itemType:type))"
+          )
+          .eq("itemId", itemId)
+          .eq("companyId", companyId)
+          .limit(100)
+          .order("createdAt", { ascending: false })
+      ).data ?? [];
+    case "purchaseOrderLines":
+      return (
+        await client
+          .from("purchaseOrderLine")
+          .select(
+            "id, ...purchaseOrder(documentReadableId:purchaseOrderId, documentId:id)"
+          )
+          .eq("itemId", itemId)
+          .eq("companyId", companyId)
+          .limit(100)
+          .order("createdAt", { ascending: false })
+      ).data ?? [];
+    case "receiptLines":
+      return (
+        await client
+          .from("receiptLine")
+          .select("id, ...receipt(documentReadableId:receiptId, documentId:id)")
+          .eq("itemId", itemId)
+          .eq("companyId", companyId)
+          .limit(100)
+          .order("createdAt", { ascending: false })
+      ).data ?? [];
+    case "quoteLines":
+      return (
+        await client
+          .from("quoteLine")
+          .select(
+            "id, methodType, ...quote(documentReadableId:quoteId, documentId:id)"
+          )
+          .eq("itemId", itemId)
+          .eq("companyId", companyId)
+          .limit(100)
+      ).data ?? [];
+    case "quoteMaterials":
+      return (
+        await client
+          .from("quoteMaterial")
+          .select(
+            "id, methodType, documentParentId:quoteId, documentId:quoteLineId, ...quoteLine(...item(documentReadableId:readableIdWithRevision))"
+          )
+          .eq("itemId", itemId)
+          .eq("companyId", companyId)
+          .limit(100)
+          .order("createdAt", { ascending: false })
+      ).data ?? [];
+    case "salesOrderLines":
+      return (
+        await client
+          .from("salesOrderLine")
+          .select(
+            "id, methodType, ...salesOrder(documentReadableId:salesOrderId, documentId:id)"
+          )
+          .eq("itemId", itemId)
+          .eq("companyId", companyId)
+          .limit(100)
+          .order("createdAt", { ascending: false })
+      ).data ?? [];
+    case "shipmentLines":
+      return (
+        await client
+          .from("shipmentLine")
+          .select("id, ...shipment(documentReadableId:shipmentId, documentId:id)")
+          .eq("itemId", itemId)
+          .eq("companyId", companyId)
+          .limit(100)
+          .order("createdAt", { ascending: false })
+      ).data ?? [];
+    case "supplierQuotes":
+      return (
+        await client
+          .from("supplierQuoteLine")
+          .select(
+            "id, ...supplierQuote(documentReadableId:supplierQuoteId, documentId:id)"
+          )
+          .eq("itemId", itemId)
+          .eq("companyId", companyId)
+          .limit(100)
+      ).data ?? [];
+  }
+}
+
 export async function getPartUsedIn(
   client: SupabaseClient<Database>,
   itemId: string,
   companyId: string
 ) {
-  const [
-    issues,
-    jobMaterials,
-    jobs,
-    maintenanceDispatchItems,
-    methodMaterials,
-    purchaseOrderLines,
-    receiptLines,
-    quoteLines,
-    quoteMaterials,
-    salesOrderLines,
-    shipmentLines,
-    supplierQuotes
-  ] = await Promise.all([
-    client
-      .from("nonConformanceItem")
-      .select(
-        "id, ...nonConformance(documentReadableId:nonConformanceId, documentId:id)"
-      )
-      .eq("itemId", itemId)
-      .eq("companyId", companyId)
-      .limit(100)
-      .order("createdAt", { ascending: false }),
-    client
-      .from("jobMaterial")
-      .select("id, methodType, ...job(documentReadableId:jobId, documentId:id)")
-      .eq("itemId", itemId)
-      .eq("companyId", companyId)
-      .limit(100)
-      .order("createdAt", { ascending: false }),
-    client
-      .from("job")
-      .select("id, documentReadableId:jobId")
-      .eq("itemId", itemId)
-      .eq("companyId", companyId)
-      .limit(100)
-      .order("createdAt", { ascending: false }),
-    client
-      .from("maintenanceDispatchItem")
-      .select(
-        "id, ...maintenanceDispatch!maintenanceDispatchId(documentReadableId:maintenanceDispatchId, documentId:id)"
-      )
-      .eq("itemId", itemId)
-      .eq("companyId", companyId)
-      .limit(100)
-      .order("createdAt", { ascending: false }),
-    client
-      .from("methodMaterial")
-      .select(
-        "id, methodType, ...makeMethod!makeMethodId(documentId:id, version, ...item(documentReadableId:readableIdWithRevision, documentParentId:id, itemType:type))"
-      )
-      .eq("itemId", itemId)
-      .eq("companyId", companyId)
-      .limit(100)
-      .order("createdAt", { ascending: false }),
-    client
-      .from("purchaseOrderLine")
-      .select(
-        "id, ...purchaseOrder(documentReadableId:purchaseOrderId, documentId:id)"
-      )
-      .eq("itemId", itemId)
-      .eq("companyId", companyId)
-      .limit(100)
-      .order("createdAt", { ascending: false }),
-    client
-      .from("receiptLine")
-      .select("id, ...receipt(documentReadableId:receiptId, documentId:id)")
-      .eq("itemId", itemId)
-      .eq("companyId", companyId)
-      .limit(100)
-      .order("createdAt", { ascending: false }),
-    client
-      .from("quoteLine")
-      .select(
-        "id, methodType, ...quote(documentReadableId:quoteId, documentId:id)"
-      )
-      .eq("itemId", itemId)
-      .eq("companyId", companyId)
-      .limit(100),
+  const entries = await Promise.all(
+    PART_USED_IN_GROUP_DEFINITIONS.map(async (group) => [
+      group.key,
+      await getPartUsedInGroup(client, itemId, companyId, group.key)
+    ] as const)
+  );
 
-    client
-      .from("quoteMaterial")
-      .select(
-        "id, methodType, documentParentId:quoteId, documentId:quoteLineId, ...quoteLine(...item(documentReadableId:readableIdWithRevision))"
-      )
-      .eq("itemId", itemId)
-      .eq("companyId", companyId)
-      .limit(100)
-      .order("createdAt", { ascending: false }),
-    client
-      .from("salesOrderLine")
-      .select(
-        "id, methodType, ...salesOrder(documentReadableId:salesOrderId, documentId:id)"
-      )
-      .eq("itemId", itemId)
-      .eq("companyId", companyId)
-      .limit(100)
-      .order("createdAt", { ascending: false }),
-    client
-      .from("shipmentLine")
-      .select("id, ...shipment(documentReadableId:shipmentId, documentId:id)")
-      .eq("itemId", itemId)
-      .eq("companyId", companyId)
-      .limit(100)
-      .order("createdAt", { ascending: false }),
-    client
-      .from("supplierQuoteLine")
-      .select(
-        "id, ...supplierQuote(documentReadableId:supplierQuoteId, documentId:id)"
-      )
-      .eq("itemId", itemId)
-      .eq("companyId", companyId)
-      .limit(100)
-  ]);
-
-  return {
-    issues: issues.data ?? [],
-    jobMaterials: jobMaterials.data ?? [],
-    jobs: jobs.data ?? [],
-    maintenanceDispatchItems: maintenanceDispatchItems.data ?? [],
-    methodMaterials: methodMaterials.data ?? [],
-    purchaseOrderLines: purchaseOrderLines.data ?? [],
-    receiptLines: receiptLines.data ?? [],
-    quoteLines: quoteLines.data ?? [],
-    quoteMaterials: quoteMaterials.data ?? [],
-    salesOrderLines: salesOrderLines.data ?? [],
-    shipmentLines: shipmentLines.data ?? [],
-    supplierQuotes: supplierQuotes.data ?? []
-  };
+  return Object.fromEntries(entries) as Record<
+    PartUsedInGroupKey,
+    Awaited<ReturnType<typeof getPartUsedInGroup>>
+  >;
 }
 
 export async function getPickMethod(

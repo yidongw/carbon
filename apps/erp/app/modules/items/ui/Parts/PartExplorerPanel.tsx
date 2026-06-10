@@ -10,15 +10,36 @@ import {
   TabsTrigger
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { LuSearch } from "react-icons/lu";
 import { useFetcher, useSearchParams } from "react-router";
 import type { PartSummary } from "~/modules/items";
 import BoMExplorer, { BoMActions } from "~/modules/items/ui/Item/BoMExplorer";
-import type { UsedInNode } from "~/modules/items/ui/Item/UsedIn";
-import { UsedInSkeleton, UsedInTree } from "~/modules/items/ui/Item/UsedIn";
+import { UsedInTree } from "~/modules/items/ui/Item/UsedIn";
 import type { loader as explorerLoader } from "~/routes/api+/items.part-explorer.$itemId";
 import { path } from "~/utils/path";
+import { usePartUsedInGroups } from "./usePartUsedInGroups";
+
+function PartUsedInExplorer({
+  partSummary,
+  filterText
+}: {
+  partSummary: PartSummary;
+  filterText: string;
+}) {
+  const usedInTree = usePartUsedInGroups(partSummary.id!);
+
+  return (
+    <UsedInTree
+      tree={usedInTree}
+      revisions={partSummary.revisions}
+      itemReadableId={partSummary.readableId ?? ""}
+      itemReadableIdWithRevision={partSummary.readableIdWithRevision ?? ""}
+      filterText={filterText}
+      hideSearch
+    />
+  );
+}
 
 export default function PartExplorerPanel({
   partSummary
@@ -36,118 +57,17 @@ export default function PartExplorerPanel({
     path.to.api.partExplorer(itemId) +
     (methodId ? `?methodId=${encodeURIComponent(methodId)}` : "");
 
+  const isManufactured = partSummary.replenishmentSystem !== "Buy";
+
   useEffect(() => {
+    if (!isManufactured) return;
     if (fetcher.state === "idle" && !fetcher.data) {
       fetcher.load(explorerUrl);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [explorerUrl]);
-
-  const isManufactured = partSummary.replenishmentSystem !== "Buy";
-  const loading = fetcher.state !== "idle" && !fetcher.data;
-  const { usedIn, methodTree } = fetcher.data ?? {};
-
-  const usedInTree = useMemo((): UsedInNode[] | null => {
-    if (!usedIn) return null;
-
-    const {
-      issues,
-      jobMaterials,
-      jobs,
-      maintenanceDispatchItems,
-      methodMaterials,
-      purchaseOrderLines,
-      receiptLines,
-      quoteLines,
-      quoteMaterials,
-      salesOrderLines,
-      shipmentLines,
-      supplierQuotes
-    } = usedIn;
-
-    return [
-      { key: "issues", name: t`Issues`, module: "quality", children: issues },
-      {
-        key: "jobs",
-        name: t`Jobs`,
-        module: "production",
-        children: jobs.map((job) => ({ ...job, methodType: "Make to Order" }))
-      },
-      {
-        key: "jobMaterials",
-        name: t`Job Materials`,
-        module: "production",
-        children: jobMaterials
-      },
-      {
-        key: "maintenanceDispatchItems",
-        name: t`Maintenance`,
-        module: "resources",
-        children: maintenanceDispatchItems
-      },
-      {
-        key: "methodMaterials",
-        name: t`Method Materials`,
-        module: "parts",
-        // @ts-expect-error
-        children: methodMaterials
-      },
-      {
-        key: "purchaseOrderLines",
-        name: t`Purchase Orders`,
-        module: "purchasing",
-        children: purchaseOrderLines.map((po) => ({
-          ...po,
-          methodType: "Purchase to Order"
-        }))
-      },
-      {
-        key: "receiptLines",
-        name: t`Receipts`,
-        module: "inventory",
-        children: receiptLines.map((receipt) => ({
-          ...receipt,
-          methodType: "Pull from Inventory"
-        }))
-      },
-      {
-        key: "quoteLines",
-        name: t`Quotes`,
-        module: "sales",
-        children: quoteLines
-      },
-      {
-        key: "quoteMaterials",
-        name: t`Quote Materials`,
-        module: "sales",
-        children: quoteMaterials?.map((qm) => ({
-          ...qm,
-          documentReadableId: qm.documentReadableId ?? ""
-        }))
-      },
-      {
-        key: "salesOrderLines",
-        name: t`Sales Orders`,
-        module: "sales",
-        children: salesOrderLines
-      },
-      {
-        key: "shipmentLines",
-        name: t`Shipments`,
-        module: "inventory",
-        children: shipmentLines.map((shipment) => ({
-          ...shipment,
-          methodType: "Shipment"
-        }))
-      },
-      {
-        key: "supplierQuotes",
-        name: t`Supplier Quotes`,
-        module: "purchasing",
-        children: supplierQuotes
-      }
-    ];
-  }, [usedIn, t]);
+  }, [explorerUrl, isManufactured]);
+  const methodTreeLoading = fetcher.state !== "idle" && !fetcher.data;
+  const { methodTree } = fetcher.data ?? {};
 
   return (
     <div className="flex flex-col h-full">
@@ -202,29 +122,17 @@ export default function PartExplorerPanel({
                     />
                   </div>
                 </Suspense>
-              ) : loading ? (
+              ) : methodTreeLoading ? (
                 <div className="flex w-full items-center justify-center p-4">
                   <Spinner className="h-6 w-6" />
                 </div>
               ) : null}
             </TabsContent>
             <TabsContent value="used-in">
-              {usedInTree ? (
-                <Suspense fallback={<UsedInSkeleton />}>
-                  <UsedInTree
-                    tree={usedInTree}
-                    revisions={partSummary.revisions}
-                    itemReadableId={partSummary.readableId ?? ""}
-                    itemReadableIdWithRevision={
-                      partSummary.readableIdWithRevision ?? ""
-                    }
-                    filterText={filterText}
-                    hideSearch
-                  />
-                </Suspense>
-              ) : (
-                <UsedInSkeleton />
-              )}
+              <PartUsedInExplorer
+                partSummary={partSummary}
+                filterText={filterText}
+              />
             </TabsContent>
           </div>
         </Tabs>
@@ -243,22 +151,10 @@ export default function PartExplorerPanel({
             </InputGroup>
           </HStack>
           <div className="flex-1 overflow-y-auto">
-            {usedInTree ? (
-              <Suspense fallback={<UsedInSkeleton />}>
-                <UsedInTree
-                  tree={usedInTree}
-                  revisions={partSummary.revisions}
-                  itemReadableId={partSummary.readableId ?? ""}
-                  itemReadableIdWithRevision={
-                    partSummary.readableIdWithRevision ?? ""
-                  }
-                  filterText={filterText}
-                  hideSearch
-                />
-              </Suspense>
-            ) : (
-              <UsedInSkeleton />
-            )}
+            <PartUsedInExplorer
+              partSummary={partSummary}
+              filterText={filterText}
+            />
           </div>
         </>
       )}
