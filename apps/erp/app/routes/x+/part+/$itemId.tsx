@@ -15,7 +15,6 @@ import {
   useParams,
   useRevalidator
 } from "react-router";
-import { PartContentSkeleton } from "~/components/Skeletons";
 import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import type { ItemFile, PartSummary } from "~/modules/items";
 import {
@@ -25,7 +24,10 @@ import {
   getPickMethods,
   getSupplierParts
 } from "~/modules/items";
-import { PartDetailsPageShell } from "~/modules/items/ui/Parts/PartDetailsSectionsShell";
+import {
+  PartDetailsPageShell,
+  PartPageHydrateFallback
+} from "~/modules/items/ui/Parts/PartDetailsSectionsShell";
 import PartExplorerPanel from "~/modules/items/ui/Parts/PartExplorerPanel";
 import PartHeader from "~/modules/items/ui/Parts/PartHeader";
 import PartProperties from "~/modules/items/ui/Parts/PartProperties";
@@ -130,10 +132,8 @@ export async function clientLoader({
   });
 }
 
-clientLoader.hydrate = true;
-
 export function HydrateFallback() {
-  return <PartContentSkeleton />;
+  return <PartPageHydrateFallback />;
 }
 
 export default function PartRoute() {
