@@ -154,6 +154,9 @@ msgstr "Eine neue Größe wird erstellt, indem eine Kopie der aktuellen Größe 
 msgid "A part contains the information about a specific item that can be purchased or manufactured."
 msgstr "Ein Teil enthält die Informationen über einen bestimmten Artikel, der gekauft oder hergestellt werden kann."
 
+msgid "A purchase order line contains order details for a particular item"
+msgstr "Eine Bestellposition enthält Bestelldetails für einen bestimmten Artikel"
+
 msgid "A purchase invoice is a document that specifies the products or services purchased by a customer and the corresponding cost."
 msgstr "Eine Kaufrechnung ist ein Dokument, das die von einem Kunden gekauften Produkte oder Dienstleistungen und die entsprechenden Kosten angibt."
 
@@ -5586,6 +5589,9 @@ msgstr "Neue Preisregel"
 
 msgid "New Process"
 msgstr "Neuer Prozess"
+
+msgid "New Purchase Order Line"
+msgstr "Neue Bestellposition"
 
 msgid "New Quote"
 msgstr "Neues Angebot"

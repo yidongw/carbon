@@ -8,8 +8,14 @@ import {
   CardHeader,
   CardTitle,
   cn,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuIcon,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
   Heading,
   HStack,
+  IconButton,
   Table,
   Tbody,
   Td,
@@ -34,13 +40,15 @@ import MotionNumber from "motion-number";
 import { useMemo, useState } from "react";
 import {
   LuChevronRight,
+  LuCirclePlus,
   LuEllipsisVertical,
   LuImage,
   LuInfo,
+  LuTrash,
   LuTriangleAlert
 } from "react-icons/lu";
 import { Link, useParams } from "react-router";
-import { CustomerAvatar, Hyperlink, MethodIcon } from "~/components";
+import { CustomerAvatar, Hyperlink, MethodIcon, MethodItemTypeIcon } from "~/components";
 import { Confirm } from "~/components/Modals";
 import {
   useDateFormatter,
@@ -49,6 +57,9 @@ import {
   useRouteData
 } from "~/hooks";
 import JobStatus from "~/modules/production/ui/Jobs/JobStatus";
+import { getLinkToItemDetails } from "~/modules/items/ui/Item/ItemForm";
+import type { MethodItemType } from "~/modules/shared";
+import { methodItemType } from "~/modules/shared";
 import { getPrivateUrl, path } from "~/utils/path";
 import { isSalesOrderLocked } from "../../sales.models";
 import type {
@@ -58,7 +69,9 @@ import type {
   SalesOrderJob,
   SalesOrderLine
 } from "../../types";
+import DeleteSalesOrderLine from "./DeleteSalesOrderLine";
 import { SalesOrderJobItem } from "./SalesOrderLineJobs";
+import SalesOrderLineForm from "./SalesOrderLineForm";
 
 const SalesOrderSummary = ({
   onEditShippingCost
@@ -83,6 +96,27 @@ const SalesOrderSummary = ({
   }>(path.to.salesOrder(orderId));
 
   const salesOrderToJobsModal = useDisclosure();
+  const newSalesOrderLineDisclosure = useDisclosure();
+  const editLineDisclosure = useDisclosure();
+  const deleteLineDisclosure = useDisclosure();
+  const [editLine, setEditLine] = useState<SalesOrderLine | null>(null);
+  const [deleteLine, setDeleteLine] = useState<SalesOrderLine | null>(null);
+  const onEditLine = (line: SalesOrderLine) => {
+    setEditLine(line);
+    editLineDisclosure.onOpen();
+  };
+  const onEditClose = () => {
+    setEditLine(null);
+    editLineDisclosure.onClose();
+  };
+  const onDeleteLine = (line: SalesOrderLine) => {
+    setDeleteLine(line);
+    deleteLineDisclosure.onOpen();
+  };
+  const onDeleteCancel = () => {
+    setDeleteLine(null);
+    deleteLineDisclosure.onClose();
+  };
 
   const { locale } = useLocale();
   const formatter = useMemo(
@@ -212,11 +246,25 @@ const SalesOrderSummary = ({
             locale={locale}
             formatter={formatter}
             lines={routeData?.lines ?? []}
+            isDisabled={!isEditable}
+            onDelete={onDeleteLine}
+            onEdit={onEditLine}
           />
+
+          {isEditable && permissions.can("update", "sales") && (
+            <button
+              type="button"
+              onClick={newSalesOrderLineDisclosure.onOpen}
+              className="mt-2 w-full rounded-lg border-2 border-dashed border-input py-3 text-sm text-muted-foreground transition-colors hover:border-primary hover:text-primary flex items-center justify-center gap-2"
+            >
+              <LuCirclePlus className="h-4 w-4" />
+              <Trans>Add Line Item</Trans>
+            </button>
+          )}
 
           <VStack spacing={2} className="mt-8">
             <HStack className="justify-between text-base text-muted-foreground w-full">
-              <span>
+              <span className="whitespace-nowrap">
                 <Trans>Subtotal:</Trans>
               </span>
               <MotionNumber
@@ -229,7 +277,7 @@ const SalesOrderSummary = ({
               />
             </HStack>
             <HStack className="justify-between text-base text-muted-foreground w-full">
-              <span>
+              <span className="whitespace-nowrap">
                 <Trans>Tax:</Trans>
               </span>
               <MotionNumber
@@ -245,7 +293,7 @@ const SalesOrderSummary = ({
               {convertedShippingCost > 0 ? (
                 <>
                   <VStack spacing={0}>
-                    <span>
+                    <span className="whitespace-nowrap">
                       <Trans>Shipping:</Trans>
                     </span>
                     <Button
@@ -278,7 +326,7 @@ const SalesOrderSummary = ({
               ) : null}
             </HStack>
             <HStack className="justify-between text-xl font-bold w-full">
-              <span>
+              <span className="whitespace-nowrap">
                 <Trans>Total:</Trans>
               </span>
               <MotionNumber
@@ -332,6 +380,46 @@ const SalesOrderSummary = ({
           </VStack>
         </CardContent>
       </Card>
+      {newSalesOrderLineDisclosure.isOpen && (
+        <SalesOrderLineForm
+          initialValues={{
+            salesOrderId: orderId,
+            salesOrderLineType: "Part" as const,
+            saleQuantity: 1,
+            unitPrice: 0,
+            addOnCost: 0,
+            nonTaxableAddOnCost: 0,
+            locationId: routeData?.salesOrder?.locationId ?? "",
+            taxPercent: routeData?.customer?.taxPercent ?? 0,
+            shippingCost: 0
+          }}
+          type="modal"
+          onClose={newSalesOrderLineDisclosure.onClose}
+        />
+      )}
+      {editLineDisclosure.isOpen && editLine && (
+        <SalesOrderLineForm
+          initialValues={{
+            id: editLine.id!,
+            salesOrderId: editLine.salesOrderId!,
+            salesOrderLineType: editLine.salesOrderLineType!,
+            itemId: editLine.itemId ?? undefined,
+            saleQuantity: editLine.saleQuantity ?? undefined,
+            unitPrice: editLine.unitPrice ?? undefined,
+            addOnCost: editLine.addOnCost ?? undefined,
+            nonTaxableAddOnCost: editLine.nonTaxableAddOnCost ?? undefined,
+            locationId: editLine.locationId ?? undefined,
+            taxPercent: editLine.taxPercent ?? undefined,
+            promisedDate: editLine.promisedDate ?? undefined,
+            shippingCost: editLine.shippingCost ?? undefined
+          }}
+          type="modal"
+          onClose={onEditClose}
+        />
+      )}
+      {deleteLineDisclosure.isOpen && deleteLine && (
+        <DeleteSalesOrderLine line={deleteLine} onCancel={onDeleteCancel} />
+      )}
     </>
   );
 };
@@ -341,14 +429,22 @@ function LineItems({
   locale,
   formatter,
   lines,
-  salesOrder
+  salesOrder,
+  isDisabled,
+  onDelete,
+  onEdit
 }: {
   currencyCode: string;
   formatter: Intl.NumberFormat;
   locale: string;
   lines: SalesOrderLine[];
   salesOrder?: SalesOrder;
+  isDisabled: boolean;
+  onDelete: (line: SalesOrderLine) => void;
+  onEdit: (line: SalesOrderLine) => void;
 }) {
+  const { t } = useLingui();
+  const permissions = usePermissions();
   const { orderId } = useParams();
   if (!orderId) throw new Error("Could not find orderId");
 
@@ -381,7 +477,7 @@ function LineItems({
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="border-b border-input py-6 w-full"
+            className="border-b border-input py-3 w-full"
           >
             <HStack spacing={4} className="items-start">
               {line.thumbnailPath ? (
@@ -414,15 +510,55 @@ function LineItems({
                           {line.itemReadableId}
                         </Heading>
                         <Button
-                          asChild
                           variant="link"
                           size="sm"
                           className="text-muted-foreground flex-shrink-0"
+                          onClick={(e) => { e.stopPropagation(); onEdit(line); }}
                         >
-                          <Link to={path.to.salesOrderLine(orderId, line.id!)}>
-                            <Trans>Edit</Trans>
-                          </Link>
+                          <Trans>Edit</Trans>
                         </Button>
+                        {!isDisabled && (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <IconButton
+                                aria-label={t`More`}
+                                icon={<LuEllipsisVertical />}
+                                variant="ghost"
+                                size="sm"
+                                className="text-muted-foreground flex-shrink-0"
+                                onClick={(e) => e.stopPropagation()}
+                              />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                              <DropdownMenuItem
+                                destructive
+                                disabled={!permissions.can("delete", "sales")}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onDelete(line);
+                                }}
+                              >
+                                <DropdownMenuIcon icon={<LuTrash />} />
+                                <Trans>Delete Line</Trans>
+                              </DropdownMenuItem>
+                              {/* @ts-expect-error */}
+                              {methodItemType.includes(line?.salesOrderLineType ?? "") && (
+                                <DropdownMenuItem asChild>
+                                  <Link
+                                    to={getLinkToItemDetails(
+                                      line.salesOrderLineType as MethodItemType,
+                                      line.itemId!
+                                    )}
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    <DropdownMenuIcon icon={<MethodItemTypeIcon type={"Part"} />} />
+                                    <Trans>View Item Master</Trans>
+                                  </Link>
+                                </DropdownMenuItem>
+                              )}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        )}
                       </HStack>
                       <span className="text-muted-foreground text-base truncate">
                         {line.description}

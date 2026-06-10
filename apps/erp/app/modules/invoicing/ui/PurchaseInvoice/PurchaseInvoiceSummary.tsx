@@ -6,12 +6,19 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuIcon,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
   Heading,
   HStack,
+  IconButton,
   Table,
   Tbody,
   Td,
   Tr,
+  useDisclosure,
   VStack
 } from "@carbon/react";
 import { getItemReadableId } from "@carbon/utils";
@@ -19,15 +26,19 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { useLocale } from "@react-aria/i18n";
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { LuChevronRight, LuImage } from "react-icons/lu";
+import { LuChevronRight, LuCirclePlus, LuEllipsisVertical, LuImage, LuTrash } from "react-icons/lu";
 import { Link, useParams } from "react-router";
-import { MethodIcon, SupplierAvatar } from "~/components";
+import { MethodIcon, MethodItemTypeIcon, SupplierAvatar } from "~/components";
+import { getLinkToItemDetails } from "~/modules/items/ui/Item/ItemForm";
+import type { MethodItemType } from "~/modules/shared";
+import { methodItemType } from "~/modules/shared";
 import { useAccounts } from "~/components/Form/Account";
 import { useUnitOfMeasure } from "~/components/Form/UnitOfMeasure";
 import {
   useCurrencyFormatter,
   useDateFormatter,
   usePercentFormatter,
+  usePermissions,
   useRouteData,
   useUser
 } from "~/hooks";
@@ -39,6 +50,8 @@ import type {
   PurchaseInvoiceDelivery,
   PurchaseInvoiceLine
 } from "../../types";
+import DeletePurchaseInvoiceLine from "./DeletePurchaseInvoiceLine";
+import PurchaseInvoiceLineForm from "./PurchaseInvoiceLineForm";
 
 const LineItems = ({
   currencyCode,
@@ -46,7 +59,10 @@ const LineItems = ({
   formatter,
   locale,
   purchaseInvoiceLines,
-  shouldConvertCurrency
+  shouldConvertCurrency,
+  isDisabled,
+  onDelete,
+  onEdit
 }: {
   currencyCode: string;
   presentationCurrencyFormatter: Intl.NumberFormat;
@@ -54,8 +70,12 @@ const LineItems = ({
   locale: string;
   purchaseInvoiceLines: PurchaseInvoiceLine[];
   shouldConvertCurrency: boolean;
+  isDisabled: boolean;
+  onDelete: (line: PurchaseInvoiceLine) => void;
+  onEdit: (line: PurchaseInvoiceLine) => void;
 }) => {
   const { t } = useLingui();
+  const permissions = usePermissions();
   const [items] = useItems();
   const accounts = useAccounts();
   const { invoiceId } = useParams();
@@ -96,7 +116,7 @@ const LineItems = ({
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="border-b border-input py-6 w-full"
+            className="border-b border-input py-3 w-full"
           >
             <HStack spacing={4} className="items-start">
               {line.thumbnailPath ? (
@@ -127,20 +147,55 @@ const LineItems = ({
                       >
                         <Heading className="truncate">{itemReadableId}</Heading>
                         <Button
-                          asChild
                           variant="link"
                           size="sm"
                           className="text-muted-foreground flex-shrink-0"
+                          onClick={(e) => { e.stopPropagation(); onEdit(line); }}
                         >
-                          <Link
-                            to={path.to.purchaseInvoiceLine(
-                              invoiceId,
-                              line.id!
-                            )}
-                          >
-                            <Trans>Edit</Trans>
-                          </Link>
+                          <Trans>Edit</Trans>
                         </Button>
+                        {!isDisabled && (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <IconButton
+                                aria-label={t`More`}
+                                icon={<LuEllipsisVertical />}
+                                variant="ghost"
+                                size="sm"
+                                className="text-muted-foreground flex-shrink-0"
+                                onClick={(e) => e.stopPropagation()}
+                              />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                              <DropdownMenuItem
+                                destructive
+                                disabled={!permissions.can("delete", "purchasing")}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onDelete(line);
+                                }}
+                              >
+                                <DropdownMenuIcon icon={<LuTrash />} />
+                                <Trans>Delete Line</Trans>
+                              </DropdownMenuItem>
+                              {/* @ts-expect-error */}
+                              {methodItemType.includes(line.invoiceLineType ?? "") && (
+                                <DropdownMenuItem asChild>
+                                  <Link
+                                    to={getLinkToItemDetails(
+                                      line.invoiceLineType as MethodItemType,
+                                      line.itemId!
+                                    )}
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    <DropdownMenuIcon icon={<MethodItemTypeIcon type={"Part"} />} />
+                                    <Trans>View Item Master</Trans>
+                                  </Link>
+                                </DropdownMenuItem>
+                              )}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        )}
                       </HStack>
                       <span className="text-muted-foreground text-base truncate">
                         {isGlAccount
@@ -384,6 +439,30 @@ const PurchaseInvoiceSummary = ({
     routeData?.purchaseInvoice?.status
   );
 
+  const newPurchaseInvoiceLineDisclosure = useDisclosure();
+  const editLineDisclosure = useDisclosure();
+  const deleteLineDisclosure = useDisclosure();
+  const [deleteLine, setDeleteLine] = useState<PurchaseInvoiceLine | null>(null);
+  const [editLine, setEditLine] = useState<PurchaseInvoiceLine | null>(null);
+  const permissions = usePermissions();
+
+  const onDeleteLine = (line: PurchaseInvoiceLine) => {
+    setDeleteLine(line);
+    deleteLineDisclosure.onOpen();
+  };
+  const onDeleteCancel = () => {
+    setDeleteLine(null);
+    deleteLineDisclosure.onClose();
+  };
+  const onEditLine = (line: PurchaseInvoiceLine) => {
+    setEditLine(line);
+    editLineDisclosure.onOpen();
+  };
+  const onEditClose = () => {
+    setEditLine(null);
+    editLineDisclosure.onClose();
+  };
+
   // Calculate totals
   const subtotal =
     routeData?.purchaseInvoiceLines?.reduce((acc, line) => {
@@ -421,6 +500,7 @@ const PurchaseInvoiceSummary = ({
   const supplierTotal = supplierSubtotal + supplierTax + supplierShippingCost;
 
   return (
+    <>
     <Card>
       <CardHeader>
         <HStack className="justify-between items-center">
@@ -450,11 +530,25 @@ const PurchaseInvoiceSummary = ({
           locale={locale}
           purchaseInvoiceLines={routeData?.purchaseInvoiceLines ?? []}
           shouldConvertCurrency={shouldConvertCurrency}
+          isDisabled={!isEditable}
+          onDelete={onDeleteLine}
+          onEdit={onEditLine}
         />
+
+        {isEditable && permissions.can("update", "purchasing") && (
+          <button
+            type="button"
+            onClick={newPurchaseInvoiceLineDisclosure.onOpen}
+            className="mt-2 w-full rounded-lg border-2 border-dashed border-input py-3 text-sm text-muted-foreground transition-colors hover:border-primary hover:text-primary flex items-center justify-center gap-2"
+          >
+            <LuCirclePlus className="h-4 w-4" />
+            <Trans>Add Line Item</Trans>
+          </button>
+        )}
 
         <VStack spacing={2} className="mt-8">
           <HStack className="justify-between text-base text-muted-foreground w-full">
-            <span><Trans>Subtotal:</Trans></span>
+            <span className="whitespace-nowrap"><Trans>Subtotal:</Trans></span>
             <VStack spacing={0} className="items-end">
               <span>{formatter.format(subtotal)}</span>
               {shouldConvertCurrency && (
@@ -466,7 +560,7 @@ const PurchaseInvoiceSummary = ({
           </HStack>
 
           <HStack className="justify-between text-base text-muted-foreground w-full">
-            <span><Trans>Tax:</Trans></span>
+            <span className="whitespace-nowrap"><Trans>Tax:</Trans></span>
             <VStack spacing={0} className="items-end">
               <span>{formatter.format(tax)}</span>
               {shouldConvertCurrency && (
@@ -481,7 +575,7 @@ const PurchaseInvoiceSummary = ({
             {shippingCost > 0 ? (
               <>
                 <VStack spacing={0}>
-                  <span><Trans>Shipping:</Trans></span>
+                  <span className="whitespace-nowrap"><Trans>Shipping:</Trans></span>
                   {isEditable && (
                     <Button
                       variant="link"
@@ -517,7 +611,7 @@ const PurchaseInvoiceSummary = ({
           </HStack>
 
           <HStack className="justify-between text-xl font-bold w-full">
-            <span><Trans>Total:</Trans></span>
+            <span className="whitespace-nowrap"><Trans>Total:</Trans></span>
             <VStack spacing={0} className="items-end">
               <span>{formatter.format(total)}</span>
               {shouldConvertCurrency && (
@@ -530,6 +624,52 @@ const PurchaseInvoiceSummary = ({
         </VStack>
       </CardContent>
     </Card>
+      {newPurchaseInvoiceLineDisclosure.isOpen && (
+        <PurchaseInvoiceLineForm
+          initialValues={{
+            invoiceId: invoiceId,
+            invoiceLineType: "Item" as MethodItemType,
+            purchaseQuantity: 1,
+            locationId: routeData?.purchaseInvoice?.locationId ?? "",
+            supplierUnitPrice: 0,
+            supplierShippingCost: 0,
+            supplierTaxAmount: 0,
+            exchangeRate: routeData?.purchaseInvoice?.exchangeRate ?? 1
+          }}
+          type="modal"
+          onClose={newPurchaseInvoiceLineDisclosure.onClose}
+        />
+      )}
+      {editLineDisclosure.isOpen && editLine && (
+        <PurchaseInvoiceLineForm
+          initialValues={{
+            id: editLine.id!,
+            invoiceId: editLine.invoiceId!,
+            invoiceLineType: editLine.invoiceLineType!,
+            itemId: editLine.itemId ?? undefined,
+            accountId: editLine.accountId ?? undefined,
+            costCenterId: editLine.costCenterId ?? undefined,
+            description: editLine.description ?? undefined,
+            quantity: editLine.quantity ?? undefined,
+            purchaseUnitOfMeasureCode: editLine.purchaseUnitOfMeasureCode ?? undefined,
+            inventoryUnitOfMeasureCode: editLine.inventoryUnitOfMeasureCode ?? undefined,
+            conversionFactor: editLine.conversionFactor ?? undefined,
+            supplierUnitPrice: editLine.supplierUnitPrice ?? undefined,
+            supplierShippingCost: editLine.supplierShippingCost ?? undefined,
+            supplierTaxAmount: editLine.supplierTaxAmount ?? undefined,
+            requiredDate: editLine.requiredDate ?? undefined,
+            locationId: editLine.locationId ?? undefined,
+            storageUnitId: editLine.storageUnitId ?? undefined,
+            exchangeRate: editLine.exchangeRate ?? undefined
+          }}
+          type="modal"
+          onClose={onEditClose}
+        />
+      )}
+      {deleteLineDisclosure.isOpen && deleteLine && (
+        <DeletePurchaseInvoiceLine line={deleteLine} onCancel={onDeleteCancel} />
+      )}
+    </>
   );
 };
 
