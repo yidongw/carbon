@@ -46,7 +46,7 @@ export default function PartExplorerPanel({
   const itemId = partSummary.id!;
   const methodId = searchParams.get("methodId");
   const explorerUrl =
-    path.api.partExplorer(itemId) +
+    path.to.api.partExplorer(itemId) +
     (methodId ? `?methodId=${encodeURIComponent(methodId)}` : "");
 
   useEffect(() => {
