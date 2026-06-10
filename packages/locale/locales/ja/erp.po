@@ -154,6 +154,9 @@ msgstr "新しいサイズが現在のサイズのコピーを使用して作成
 msgid "A part contains the information about a specific item that can be purchased or manufactured."
 msgstr "パーツには、購入または製造できる特定の品目に関する情報が含まれています。"
 
+msgid "A purchase order line contains order details for a particular item"
+msgstr "購買注文行には、特定の品目の注文詳細が含まれています"
+
 msgid "A purchase invoice is a document that specifies the products or services purchased by a customer and the corresponding cost."
 msgstr "購入請求書は、顧客が購入した製品またはサービスと対応するコストを指定するドキュメントです。"
 
@@ -5586,6 +5589,9 @@ msgstr "新しい価格設定ルール"
 
 msgid "New Process"
 msgstr "新しいプロセス"
+
+msgid "New Purchase Order Line"
+msgstr "新しい購買注文行"
 
 msgid "New Quote"
 msgstr "新規見積"

@@ -154,6 +154,9 @@ msgstr "एक नया आकार वर्तमान आकार की 
 msgid "A part contains the information about a specific item that can be purchased or manufactured."
 msgstr "एक पार्ट में एक विशिष्ट आइटम की जानकारी होती है जिसे खरीदा या निर्मित किया जा सकता है।"
 
+msgid "A purchase order line contains order details for a particular item"
+msgstr "एक क्रय आदेश पंक्ति किसी विशेष आइटम के लिए आदेश विवरण रखती है"
+
 msgid "A purchase invoice is a document that specifies the products or services purchased by a customer and the corresponding cost."
 msgstr "एक क्रय चालान एक दस्तावेज है जो किसी ग्राहक द्वारा खरीदे गए उत्पादों या सेवाओं और संबंधित लागत को निर्दिष्ट करता है।"
 
@@ -5586,6 +5589,9 @@ msgstr "नया मूल्य निर्धारण नियम"
 
 msgid "New Process"
 msgstr "नई प्रक्रिया"
+
+msgid "New Purchase Order Line"
+msgstr "नई क्रय आदेश पंक्ति"
 
 msgid "New Quote"
 msgstr "नया उद्धरण"
