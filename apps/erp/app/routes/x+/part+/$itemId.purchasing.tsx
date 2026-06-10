@@ -95,10 +95,12 @@ export default function PartPurchasingRoute() {
 
   const { itemId } = useParams();
   if (!itemId) throw new Error("Could not find itemId");
-  const routeData = useRouteData<{ supplierParts: SupplierPart[] }>(
-    path.to.part(itemId)
-  );
-  const supplierParts = routeData?.supplierParts ?? [];
+  const routeData = useRouteData<{
+    supplierParts: SupplierPart[] | Promise<unknown>;
+  }>(path.to.part(itemId));
+  const supplierParts = Array.isArray(routeData?.supplierParts)
+    ? routeData.supplierParts
+    : [];
 
   const partData = useRouteData<{
     partSummary: { itemTrackingType?: string; readableIdWithRevision?: string };

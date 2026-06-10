@@ -61,6 +61,7 @@ import { methodType } from "~/modules/shared";
 import type { action } from "~/routes/x+/items+/update";
 import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
+import { hasPartRouteCache } from "~/utils/partRouteCache";
 import {
   completePartPrefetch,
   partPrefetchCache,
@@ -180,7 +181,7 @@ const PartsTable = memo(({ data, tags, count, itemPostingGroups: rawItemPostingG
             />
             <Hyperlink
               to={path.to.partDetails(row.original.id!)}
-              prefetch="none"
+              prefetch="intent"
               className="min-w-0"
               onMouseEnter={() =>
                 row.original.id &&
@@ -667,7 +668,9 @@ const PartsTable = memo(({ data, tags, count, itemPostingGroups: rawItemPostingG
         renderActions={renderActions}
         renderContextMenu={renderContextMenu}
         rowClassName={(row) =>
-          prefetchCache.has(row.original.id!)
+          row.original.id &&
+          (hasPartRouteCache(row.original.id) ||
+            prefetchCache.has(row.original.id))
             ? "bg-green-50 dark:bg-green-950/20"
             : undefined
         }
