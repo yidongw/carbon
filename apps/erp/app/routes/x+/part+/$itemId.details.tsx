@@ -13,10 +13,10 @@ import type {
   LoaderFunctionArgs
 } from "react-router";
 import { Await, redirect, useLoaderData, useParams } from "react-router";
-import { DeferredFiles } from "~/components";
+import { CadModel, DeferredFiles } from "~/components";
 import { ExplorerSkeleton } from "~/components/Skeletons";
-import { usePermissions } from "~/hooks";
-import { usePartRouteData } from "~/modules/items/ui/Parts/PartResolvedDataContext";
+import { usePermissions, useRouteData } from "~/hooks";
+import ItemDocuments from "~/modules/items/ui/Item/ItemDocuments";
 import ItemNotes from "~/modules/items/ui/Item/ItemNotes";
 import {
   PartDetailsPageShell,
@@ -55,12 +55,8 @@ const BillOfMaterial = lazy(
 const BillOfProcess = lazy(
   () => import("~/modules/items/ui/Item/BillOfProcess")
 );
-const CadModel = lazy(() => import("~/components/CadModel"));
 const ConfigurationParametersForm = lazy(
   () => import("~/modules/items/ui/Parts/ConfigurationParameters")
-);
-const ItemDocuments = lazy(
-  () => import("~/modules/items/ui/Item/ItemDocuments")
 );
 const ItemManufacturingForm = lazy(
   () => import("~/modules/items/ui/Item/ItemManufacturingForm")
@@ -233,35 +229,25 @@ function PartDetailsEagerSections({
       />
       <DeferredFiles resolve={partData.files}>
         {(resolvedFiles) => (
-          <Suspense fallback={<ExplorerSkeleton />}>
-            <ItemDocuments
-              files={resolvedFiles}
-              itemId={itemId}
-              modelUpload={partData.partSummary}
-              type="Part"
-            />
-          </Suspense>
+          <ItemDocuments
+            files={resolvedFiles}
+            itemId={itemId}
+            modelUpload={partData.partSummary}
+            type="Part"
+          />
         )}
       </DeferredFiles>
-      <Suspense
-        fallback={
-          <div className="p-4">
-            <Skeleton className="h-[400px] w-full" />
-          </div>
-        }
-      >
-        <div className="h-[400px]">
-          <CadModel
-            key={partData.partSummary.id ?? itemId}
-            isReadOnly={!permissions.can("update", "parts")}
-            metadata={{ itemId }}
-            modelPath={partData.partSummary.modelPath ?? null}
-            title={t`CAD Model`}
-            uploadClassName="h-full max-h-full"
-            viewerClassName="h-full"
-          />
-        </div>
-      </Suspense>
+      <div className="h-[400px]">
+        <CadModel
+          key={partData.partSummary.id ?? itemId}
+          isReadOnly={!permissions.can("update", "parts")}
+          metadata={{ itemId }}
+          modelPath={partData.partSummary.modelPath ?? null}
+          title={t`CAD Model`}
+          uploadClassName="h-full max-h-full"
+          viewerClassName="h-full"
+        />
+      </div>
       <Suspense fallback={<ExplorerSkeleton />}>
         <ItemRiskRegister itemId={itemId} />
       </Suspense>
@@ -451,34 +437,52 @@ export async function clientAction({ serverAction }: ClientActionFunctionArgs) {
   return await serverAction();
 }
 
+type ParentPartRouteData = {
+  partSummary: Promise<PartSummary>;
+  files: Promise<ItemFile[]>;
+};
+
 export default function PartDetailsRoute() {
   const { itemId } = useParams();
   if (!itemId) throw new Error("Could not find itemId");
 
   const { detailsBundle } = useLoaderData<typeof loader>();
-  const partData = usePartRouteData();
+  const parentData = useRouteData<ParentPartRouteData>(path.to.part(itemId));
 
-  if (!partData) {
+  if (!parentData) {
     return <PartDetailsPageShell />;
   }
 
-  const resolvedPartData = {
-    partSummary: partData.partSummary,
-    files: partData.files
-  };
-
   return (
     <VStack spacing={2} className="min-h-0 p-2">
-      <PartDetailsEagerSections partData={resolvedPartData} itemId={itemId} />
-      <Suspense fallback={<PartDetailsSectionsShell />}>
-        <Await resolve={detailsBundle}>
-          {({ detailsData, makeMethods }) => (
-            <PartDetailsManufacturingSections
-              detailsData={detailsData}
-              partData={resolvedPartData}
-              makeMethods={makeMethods}
-              itemId={itemId}
-            />
+      <Suspense
+        fallback={
+          <div className="p-4">
+            <Skeleton className="mb-2 h-6 w-1/3" />
+            <Skeleton className="h-24 w-full" />
+          </div>
+        }
+      >
+        <Await resolve={parentData.partSummary}>
+          {(partSummary) => (
+            <>
+              <PartDetailsEagerSections
+                partData={{ partSummary, files: parentData.files }}
+                itemId={itemId}
+              />
+              <Suspense fallback={<PartDetailsSectionsShell />}>
+                <Await resolve={detailsBundle}>
+                  {({ detailsData, makeMethods }) => (
+                    <PartDetailsManufacturingSections
+                      detailsData={detailsData}
+                      partData={{ partSummary }}
+                      makeMethods={makeMethods}
+                      itemId={itemId}
+                    />
+                  )}
+                </Await>
+              </Suspense>
+            </>
           )}
         </Await>
       </Suspense>
