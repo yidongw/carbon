@@ -132,7 +132,11 @@ export default function PartExplorerPanel({
                                 hideSearch
                               />
                             </div>
-                          ) : null
+                          ) : (
+                            <div className="p-4 text-center text-sm text-muted-foreground">
+                              <Trans>No make method found for this part.</Trans>
+                            </div>
+                          )
                         }
                       </Await>
                     </Suspense>
