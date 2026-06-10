@@ -216,8 +216,12 @@ export function RevisionsItem({
           <div className="flex flex-grow items-center justify-between gap-2 pr-6">
             <span>{node.name}</span>
 
-            {filteredChildren.length > 0 && (
-              <Count count={filteredChildren.length} />
+            {node.isLoading ? (
+              <Spinner className="h-3.5 w-3.5 text-muted-foreground" />
+            ) : (
+              filteredChildren.length > 0 && (
+                <Count count={filteredChildren.length} />
+              )
             )}
           </div>
         </button>
@@ -245,7 +249,12 @@ export function RevisionsItem({
       </div>
       {isExpanded && (
         <div className="flex flex-col w-full relative ">
-          {node.children.length === 0 ? (
+          {node.isLoading ? (
+            <div className="flex h-8 items-center overflow-hidden rounded-sm px-2 gap-4">
+              <LevelLine isSelected={false} />
+              <Spinner className="h-3.5 w-3.5 text-muted-foreground" />
+            </div>
+          ) : node.children.length === 0 ? (
             <div className="flex h-8 items-center overflow-hidden rounded-sm px-2 gap-4">
               <LevelLine isSelected={false} />
               <div className="text-xs text-muted-foreground">

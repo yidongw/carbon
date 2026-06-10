@@ -7,7 +7,7 @@ import { pluckUnique } from "@carbon/utils";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { redirect, useLoaderData } from "react-router";
 import { useStorageUnits } from "~/components/Form/StorageUnit";
-import { useRouteData } from "~/hooks";
+import { usePartRouteData } from "~/modules/items/ui/Parts/PartResolvedDataContext";
 import {
   getTrackedEntityExpirations,
   InventoryDetails
@@ -237,9 +237,7 @@ export default function PartInventoryRoute() {
     ruleLibrary
   } = useLoaderData<typeof loader>();
 
-  const partData = useRouteData<{
-    partSummary: PartSummary;
-  }>(path.to.part(itemId));
+  const partData = usePartRouteData();
   if (!partData) throw new Error("Could not find part data");
   const itemUnitOfMeasureCode = partData?.partSummary?.unitOfMeasureCode;
 
