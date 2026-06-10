@@ -5,18 +5,25 @@ import { validationError, validator } from "@carbon/form";
 import type { JSONContent } from "@carbon/react";
 import { Menubar, Skeleton, VStack } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
-import type { PostgrestResponse } from "@supabase/supabase-js";
 import { lazy, Suspense } from "react";
 import type {
   ActionFunctionArgs,
-  ClientActionFunctionArgs
+  ClientActionFunctionArgs,
+  ClientLoaderFunctionArgs,
+  LoaderFunctionArgs
 } from "react-router";
-import { Await, redirect, useParams } from "react-router";
+import { redirect, useLoaderData, useParams } from "react-router";
 import { DeferredFiles } from "~/components";
 import { ExplorerSkeleton, PartContentSkeleton } from "~/components/Skeletons";
 import { usePermissions, useRouteData } from "~/hooks";
 import type { ItemFile, MakeMethod, PartSummary } from "~/modules/items";
 import {
+  getConfigurationParameters,
+  getConfigurationRules,
+  getItemManufacturing,
+  getMakeMethods,
+  getMethodMaterialsByMakeMethod,
+  getMethodOperationsByMakeMethodId,
   itemManufacturingValidator,
   methodBindings,
   partConfigurationParametersBindings,
@@ -25,9 +32,15 @@ import {
   upsertItemManufacturing,
   upsertPart
 } from "~/modules/items";
-import type { PartDetailsData } from "./$itemId";
+import type { PartDetailsData } from "~/modules/items/ui/Parts/partDetails.types";
+import type { MethodItemType, MethodType } from "~/modules/shared";
+import { getTagsList } from "~/modules/shared";
 import { getCustomFields, setCustomFields } from "~/utils/form";
 import { path } from "~/utils/path";
+import {
+  getPartRouteCache,
+  setPartRouteCache
+} from "~/utils/partRouteCache";
 import { configurableItemsQuery, getCompanyId } from "~/utils/react-query";
 
 const BillOfMaterial = lazy(
@@ -54,6 +67,121 @@ const MakeMethodTools = lazy(
   () => import("~/modules/items/ui/Item/MakeMethodTools")
 );
 
+function detailsCacheKey(itemId: string) {
+  return `details:${itemId}`;
+}
+
+async function loadPartDetailsData(
+  client: Parameters<typeof getMakeMethods>[0],
+  itemId: string,
+  companyId: string,
+  requestedMethodId: string | null,
+  makeMethodsData: Awaited<ReturnType<typeof getMakeMethods>>["data"]
+): Promise<PartDetailsData> {
+  const makeMethod = !makeMethodsData?.length
+    ? null
+    : requestedMethodId
+      ? (makeMethodsData.find((m) => m.id === requestedMethodId) ??
+        makeMethodsData.find((m) => m.status === "Active") ??
+        makeMethodsData[0])
+      : (makeMethodsData.find((m) => m.status === "Active") ??
+        makeMethodsData[0]);
+
+  if (!makeMethod) return { methodData: null, tags: [] };
+
+  const [methodMaterials, methodOperations, tags, partManufacturing] =
+    await Promise.all([
+      getMethodMaterialsByMakeMethod(client, makeMethod.id),
+      getMethodOperationsByMakeMethodId(client, makeMethod.id),
+      getTagsList(client, companyId, "operation"),
+      getItemManufacturing(client, itemId, companyId)
+    ]);
+
+  const configData = partManufacturing.data?.requiresConfiguration
+    ? {
+        configurationParametersAndGroups: await getConfigurationParameters(
+          client,
+          itemId,
+          companyId
+        ),
+        configurationRules: await getConfigurationRules(
+          client,
+          itemId,
+          companyId
+        )
+      }
+    : {
+        configurationParametersAndGroups: { groups: [], parameters: [] },
+        configurationRules: []
+      };
+
+  return {
+    methodData: {
+      makeMethod,
+      methodMaterials:
+        methodMaterials.data?.map((m) => ({
+          ...m,
+          description: m.item?.name ?? "",
+          methodType: m.methodType as MethodType,
+          itemType: m.itemType as MethodItemType
+        })) ?? [],
+      methodOperations:
+        methodOperations.data?.map((operation) => ({
+          ...operation,
+          workCenterId: operation.workCenterId ?? undefined,
+          operationSupplierProcessId:
+            operation.operationSupplierProcessId ?? undefined,
+          workInstruction: operation.workInstruction as JSONContent | null
+        })) ?? [],
+      partManufacturing: partManufacturing.data,
+      ...configData
+    },
+    tags: tags.data ?? []
+  };
+}
+
+export async function loader({ request, params }: LoaderFunctionArgs) {
+  const { client, companyId } = await requirePermissions(request, {
+    view: "parts"
+  });
+
+  const { itemId } = params;
+  if (!itemId) throw new Error("Could not find itemId");
+
+  const url = new URL(request.url);
+  const requestedMethodId = url.searchParams.get("methodId");
+
+  const makeMethods = await getMakeMethods(client, itemId, companyId);
+  const detailsData = await loadPartDetailsData(
+    client,
+    itemId,
+    companyId,
+    requestedMethodId,
+    makeMethods.data
+  );
+
+  return {
+    detailsData,
+    makeMethods: makeMethods.data ?? []
+  };
+}
+
+export async function clientLoader({
+  serverLoader,
+  params
+}: ClientLoaderFunctionArgs) {
+  const key = detailsCacheKey(params.itemId!);
+  const hit = getPartRouteCache<Awaited<ReturnType<typeof loader>>>(key);
+  if (hit) {
+    serverLoader<typeof loader>().then((fresh) => setPartRouteCache(key, fresh));
+    return hit;
+  }
+  const data = await serverLoader<typeof loader>();
+  setPartRouteCache(key, data);
+  return data;
+}
+clientLoader.hydrate = true;
+
 export function HydrateFallback() {
   return <PartContentSkeleton />;
 }
@@ -61,14 +189,15 @@ export function HydrateFallback() {
 function PartDetailsContent({
   detailsData,
   partData,
+  makeMethods,
   itemId
 }: {
   detailsData: PartDetailsData;
   partData: {
     partSummary: PartSummary;
     files: Promise<ItemFile[]>;
-    makeMethods: Promise<PostgrestResponse<MakeMethod>>;
   };
+  makeMethods: MakeMethod[];
   itemId: string;
 }) {
   const { t } = useLingui();
@@ -92,16 +221,12 @@ function PartDetailsContent({
       {permissions.is("employee") && methodData && isManufactured && (
         <>
           <Suspense fallback={<Menubar />}>
-            <Await resolve={partData.makeMethods}>
-              {(makeMethods) => (
-                <MakeMethodTools
-                  itemId={methodData.makeMethod.itemId}
-                  makeMethods={makeMethods?.data ?? []}
-                  type="Part"
-                  currentMethodId={methodData.makeMethod.id}
-                />
-              )}
-            </Await>
+            <MakeMethodTools
+              itemId={methodData.makeMethod.itemId}
+              makeMethods={makeMethods}
+              type="Part"
+              currentMethodId={methodData.makeMethod.id}
+            />
           </Suspense>
           {manufacturingInitialValues && (
             <ItemManufacturingForm
@@ -284,12 +409,11 @@ export default function PartDetailsRoute() {
   if (!itemId) throw new Error("Could not find itemId");
 
   const permissions = usePermissions();
+  const { detailsData, makeMethods } = useLoaderData<typeof loader>();
 
   const partData = useRouteData<{
     partSummary: PartSummary;
     files: Promise<ItemFile[]>;
-    makeMethods: Promise<PostgrestResponse<MakeMethod>>;
-    detailsData: Promise<PartDetailsData>;
   }>(path.to.part(itemId));
 
   if (!partData) throw new Error("Could not find part data");
@@ -306,17 +430,12 @@ export default function PartDetailsRoute() {
           />
         </Suspense>
       )}
-      <Suspense fallback={<ExplorerSkeleton />}>
-        <Await resolve={partData.detailsData}>
-          {(detailsData) => (
-            <PartDetailsContent
-              detailsData={detailsData}
-              partData={partData}
-              itemId={itemId}
-            />
-          )}
-        </Await>
-      </Suspense>
+      <PartDetailsContent
+        detailsData={detailsData}
+        partData={partData}
+        makeMethods={makeMethods}
+        itemId={itemId}
+      />
     </VStack>
   );
 }
