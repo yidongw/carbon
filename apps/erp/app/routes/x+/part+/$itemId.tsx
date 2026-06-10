@@ -3,7 +3,7 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { Skeleton } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
-import { Suspense, useEffect, type ReactNode } from "react";
+import { Suspense, useEffect } from "react";
 import type {
   ClientLoaderFunctionArgs,
   LoaderFunctionArgs,
@@ -15,7 +15,8 @@ import {
   redirect,
   useLoaderData,
   useNavigation,
-  useParams
+  useParams,
+  useRevalidator
 } from "react-router";
 import type { PartSummary } from "~/modules/items";
 import {
@@ -47,6 +48,7 @@ import { path } from "~/utils/path";
 import {
   clearPartRouteCache,
   getPartRouteCache,
+  onPartRouteCacheReady,
   setPartRouteCache
 } from "~/utils/partRouteCache";
 import { prefetchPartSiblingRoutes } from "~/utils/partSiblingPrefetch";
@@ -146,53 +148,23 @@ export async function clientLoader({
   return data;
 }
 
-function buildResolvedPartRouteData(
-  data: Awaited<ReturnType<typeof loader>>,
-  partSummary: PartSummary
-): ResolvedPartRouteData {
-  return {
-    partSummary,
-    files: data.files,
-    supplierParts: data.supplierParts,
-    pickMethods: data.pickMethods,
-    makeMethods: data.makeMethods,
-    tags: data.tags
-  };
-}
-
-function PartRouteWithProvider({
-  data,
-  partSummary,
-  children
-}: {
-  data: Awaited<ReturnType<typeof loader>>;
-  partSummary: PartSummary;
-  children: ReactNode;
-}) {
-  return (
-    <PartResolvedDataProvider
-      value={buildResolvedPartRouteData(data, partSummary)}
-    >
-      {children}
-    </PartResolvedDataProvider>
-  );
-}
-
 function PartPanelsLayout({
   explorer,
   content,
   properties
 }: {
-  explorer: ReactNode;
-  content: ReactNode;
-  properties: ReactNode;
+  explorer: React.ReactNode;
+  content: React.ReactNode;
+  properties: React.ReactNode;
 }) {
   return (
-    <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
+    <div className="flex min-h-0 flex-1 overflow-hidden w-full">
       <div className="flex w-72 flex-shrink-0 flex-col overflow-y-auto border-r bg-card shadow-lg">
         {explorer}
       </div>
-      <div className="flex min-w-0 flex-1 overflow-y-auto">{content}</div>
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+        {content}
+      </div>
       <div className="flex w-80 flex-shrink-0 flex-col overflow-y-auto border-l bg-card">
         {properties}
       </div>
@@ -215,7 +187,7 @@ function PartHeaderSkeleton() {
 
 function PartPageSkeleton() {
   return (
-    <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
+    <div className="flex h-[calc(100dvh-49px)] min-h-0 flex-col overflow-hidden w-full">
       <PartHeaderSkeleton />
       <PartPanelsLayout
         explorer={
@@ -235,7 +207,45 @@ function PartPageSkeleton() {
   );
 }
 
-function PartRoutePrefetch({ itemId }: { itemId: string }) {
+function PartShellRefresh({
+  itemId,
+  isShell
+}: {
+  itemId: string;
+  isShell: boolean;
+}) {
+  const revalidator = useRevalidator();
+
+  useEffect(() => {
+    if (!isShell) return;
+    return onPartRouteCacheReady(itemId, () => {
+      revalidator.revalidate();
+    });
+  }, [isShell, itemId, revalidator]);
+
+  return null;
+}
+
+function PartRouteLoaded({
+  data,
+  partSummary,
+  itemId,
+  isShell = false
+}: {
+  data: Awaited<ReturnType<typeof loader>>;
+  partSummary: PartSummary;
+  itemId: string;
+  isShell?: boolean;
+}) {
+  const resolved: ResolvedPartRouteData = {
+    partSummary,
+    files: data.files,
+    supplierParts: data.supplierParts,
+    pickMethods: data.pickMethods,
+    makeMethods: data.makeMethods,
+    tags: data.tags
+  };
+
   useEffect(() => {
     const id =
       window.requestIdleCallback?.(() => prefetchPartSiblingRoutes(itemId), {
@@ -251,11 +261,37 @@ function PartRoutePrefetch({ itemId }: { itemId: string }) {
     };
   }, [itemId]);
 
-  return null;
+  return (
+    <PartResolvedDataProvider value={resolved}>
+      <PartShellRefresh itemId={itemId} isShell={isShell} />
+      <div className="flex h-[calc(100dvh-49px)] min-h-0 flex-col overflow-hidden w-full">
+        <PartHeader />
+        <PartPanelsLayout
+          explorer={
+            <PartExplorerPanel
+              usedInGroups={data.usedInGroups}
+              methodTree={data.methodTree}
+              partSummary={data.partSummary}
+            />
+          }
+          content={
+            <div className="scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent min-h-0 flex-1 overflow-y-auto w-full">
+              <Suspense fallback={<PartDetailsPageShell />}>
+                <Outlet />
+              </Suspense>
+            </div>
+          }
+          properties={<PartProperties key={itemId} />}
+        />
+      </div>
+    </PartResolvedDataProvider>
+  );
 }
 
 export default function PartRoute() {
-  const data = useLoaderData<typeof loader>();
+  const data = useLoaderData<typeof loader>() as Awaited<
+    ReturnType<typeof loader>
+  > & { shell?: true };
   const navigation = useNavigation();
   const { itemId } = useParams();
   if (!itemId) throw new Error("Could not find itemId");
@@ -265,56 +301,17 @@ export default function PartRoute() {
   }
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
-      <PartRoutePrefetch itemId={itemId} />
-      <Suspense fallback={<PartHeaderSkeleton />}>
-        <Await resolve={data.partSummary}>
-          {(partSummary) => (
-            <PartRouteWithProvider data={data} partSummary={partSummary}>
-              <PartHeader />
-            </PartRouteWithProvider>
-          )}
-        </Await>
-      </Suspense>
-      <PartPanelsLayout
-        explorer={
-          <PartExplorerPanel
-            usedInGroups={data.usedInGroups}
-            methodTree={data.methodTree}
-            partSummary={data.partSummary}
+    <Suspense fallback={<PartPageSkeleton />}>
+      <Await resolve={data.partSummary}>
+        {(partSummary) => (
+          <PartRouteLoaded
+            data={data}
+            partSummary={partSummary}
+            itemId={itemId}
+            isShell={data.shell === true}
           />
-        }
-        content={
-          <div className="scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
-            <Suspense fallback={<PartDetailsPageShell />}>
-              <Await resolve={data.partSummary}>
-                {(partSummary) => (
-                  <PartRouteWithProvider data={data} partSummary={partSummary}>
-                    <Outlet />
-                  </PartRouteWithProvider>
-                )}
-              </Await>
-            </Suspense>
-          </div>
-        }
-        properties={
-          <Suspense
-            fallback={
-              <div className="p-4">
-                <PartDetailsSectionsShell />
-              </div>
-            }
-          >
-            <Await resolve={data.partSummary}>
-              {(partSummary) => (
-                <PartRouteWithProvider data={data} partSummary={partSummary}>
-                  <PartProperties key={itemId} />
-                </PartRouteWithProvider>
-              )}
-            </Await>
-          </Suspense>
-        }
-      />
-    </div>
+        )}
+      </Await>
+    </Suspense>
   );
 }
