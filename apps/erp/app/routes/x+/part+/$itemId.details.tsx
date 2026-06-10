@@ -60,51 +60,47 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const requestedMethodId = url.searchParams.get("methodId");
 
-  const makeMethods = await getMakeMethods(client, itemId, companyId);
-  const makeMethod = requestedMethodId
-    ? (makeMethods.data?.find((m) => m.id === requestedMethodId) ??
-      makeMethods.data?.find((m) => m.status === "Active") ??
-      makeMethods.data?.[0])
-    : (makeMethods.data?.find((m) => m.status === "Active") ??
-      makeMethods.data?.[0]);
+  const methodData = (async () => {
+    const makeMethods = await getMakeMethods(client, itemId, companyId);
+    const makeMethod = requestedMethodId
+      ? (makeMethods.data?.find((m) => m.id === requestedMethodId) ??
+        makeMethods.data?.find((m) => m.status === "Active") ??
+        makeMethods.data?.[0])
+      : (makeMethods.data?.find((m) => m.status === "Active") ??
+        makeMethods.data?.[0]);
 
-  if (!makeMethod) {
-    return { methodData: null, tags: [] };
-  }
+    if (!makeMethod) return null;
 
-  const fullMethod = await getMakeMethodById(client, makeMethod.id, companyId);
-  if (fullMethod.error || !fullMethod.data) {
-    return { methodData: null, tags: [] };
-  }
+    const fullMethod = await getMakeMethodById(client, makeMethod.id, companyId);
+    if (fullMethod.error || !fullMethod.data) return null;
 
-  const [methodMaterials, methodOperations, tags, partManufacturing] =
-    await Promise.all([
-      getMethodMaterialsByMakeMethod(client, fullMethod.data.id),
-      getMethodOperationsByMakeMethodId(client, fullMethod.data.id),
-      getTagsList(client, companyId, "operation"),
-      getItemManufacturing(client, itemId, companyId)
-    ]);
+    const [methodMaterials, methodOperations, tags, partManufacturing] =
+      await Promise.all([
+        getMethodMaterialsByMakeMethod(client, fullMethod.data.id),
+        getMethodOperationsByMakeMethodId(client, fullMethod.data.id),
+        getTagsList(client, companyId, "operation"),
+        getItemManufacturing(client, itemId, companyId)
+      ]);
 
-  const configData = partManufacturing.data?.requiresConfiguration
-    ? {
-        configurationParametersAndGroups: await getConfigurationParameters(
-          client,
-          itemId,
-          companyId
-        ),
-        configurationRules: await getConfigurationRules(
-          client,
-          itemId,
-          companyId
-        )
-      }
-    : {
-        configurationParametersAndGroups: { groups: [], parameters: [] },
-        configurationRules: []
-      };
+    const configData = partManufacturing.data?.requiresConfiguration
+      ? {
+          configurationParametersAndGroups: await getConfigurationParameters(
+            client,
+            itemId,
+            companyId
+          ),
+          configurationRules: await getConfigurationRules(
+            client,
+            itemId,
+            companyId
+          )
+        }
+      : {
+          configurationParametersAndGroups: { groups: [], parameters: [] },
+          configurationRules: []
+        };
 
-  return {
-    methodData: {
+    return {
       makeMethod: fullMethod.data,
       methodMaterials:
         methodMaterials.data?.map((m) => ({
@@ -122,10 +118,12 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
           workInstruction: operation.workInstruction as JSONContent | null
         })) ?? [],
       partManufacturing: partManufacturing.data,
+      tags: tags.data ?? [],
       ...configData
-    },
-    tags: tags.data ?? []
-  };
+    };
+  })();
+
+  return { methodData };
 }
 
 export async function action({ request, params }: ActionFunctionArgs) {
@@ -215,7 +213,7 @@ export default function PartDetailsRoute() {
   if (!itemId) throw new Error("Could not find itemId");
 
   const permissions = usePermissions();
-  const { methodData, tags } = useLoaderData<typeof loader>();
+  const { methodData } = useLoaderData<typeof loader>();
 
   const partData = useRouteData<{
     partSummary: PartSummary;
@@ -225,106 +223,120 @@ export default function PartDetailsRoute() {
 
   if (!partData) throw new Error("Could not find part data");
 
-  const manufacturingInitialValues = methodData?.partManufacturing
-    ? {
-        ...methodData.partManufacturing,
-        lotSize: methodData.partManufacturing.lotSize ?? 0,
-        ...getCustomFields(methodData.partManufacturing.customFields)
-      }
-    : null;
-
   return (
     <VStack spacing={2} className="p-2">
-      {permissions.is("employee") && methodData && (
-        <>
-          {["Make", "Buy and Make"].includes(
-            partData.partSummary?.replenishmentSystem ?? ""
-          ) && (
-            <>
-              <Suspense fallback={<Menubar />}>
-                <Await resolve={partData?.makeMethods}>
-                  {(makeMethods) => (
-                    <MakeMethodTools
-                      itemId={methodData.makeMethod.itemId}
-                      makeMethods={makeMethods?.data ?? []}
-                      type="Part"
-                      currentMethodId={methodData.makeMethod.id}
-                    />
-                  )}
-                </Await>
-              </Suspense>
-              {manufacturingInitialValues && (
-                <ItemManufacturingForm
-                  key={itemId}
-                  // @ts-ignore
-                  initialValues={manufacturingInitialValues}
-                />
-              )}
-              {methodData.partManufacturing?.requiresConfiguration && (
-                <ConfigurationParametersForm
-                  key={`options:${itemId}`}
-                  bindings={partConfigurationParametersBindings(itemId)}
-                  parameters={
-                    methodData.configurationParametersAndGroups.parameters
+      {permissions.is("employee") && (
+        <Suspense fallback={null}>
+          <Await resolve={methodData}>
+            {(resolved) => {
+              if (!resolved) return null;
+
+              const manufacturingInitialValues = resolved.partManufacturing
+                ? {
+                    ...resolved.partManufacturing,
+                    lotSize: resolved.partManufacturing.lotSize ?? 0,
+                    ...getCustomFields(resolved.partManufacturing.customFields)
                   }
-                  groups={methodData.configurationParametersAndGroups.groups}
-                />
-              )}
-            </>
-          )}
-          <ItemNotes
-            id={partData.partSummary?.id ?? null}
-            title={partData.partSummary?.name ?? ""}
-            subTitle={partData.partSummary?.readableIdWithRevision ?? ""}
-            notes={partData.partSummary?.notes as JSONContent}
-          />
-          {["Make", "Buy and Make"].includes(
-            partData.partSummary?.replenishmentSystem ?? ""
-          ) && (
-            <>
-              <BillOfMaterial
-                key={`bom:${itemId}`}
-                methodBindings={methodBindings(itemId)}
-                configurationRuleBindings={partConfigurationRuleBindings(
-                  itemId
-                )}
-                makeMethod={methodData.makeMethod}
-                // @ts-ignore
-                materials={methodData.methodMaterials ?? []}
-                // @ts-ignore
-                operations={methodData.methodOperations}
-                configurable={
-                  methodData.partManufacturing?.requiresConfiguration
-                }
-                configurationRules={methodData.configurationRules}
-                parameters={
-                  methodData.configurationParametersAndGroups.parameters
-                }
-                replenishmentSystem={partData.partSummary?.replenishmentSystem}
-              />
-              <BillOfProcess
-                key={`bop:${itemId}`}
-                methodBindings={methodBindings(itemId)}
-                configurationRuleBindings={partConfigurationRuleBindings(
-                  itemId
-                )}
-                makeMethod={methodData.makeMethod}
-                // @ts-ignore
-                operations={methodData.methodOperations ?? []}
-                configurable={
-                  methodData.partManufacturing?.requiresConfiguration
-                }
-                // @ts-ignore
-                materials={methodData.methodMaterials ?? []}
-                configurationRules={methodData.configurationRules}
-                parameters={
-                  methodData.configurationParametersAndGroups.parameters
-                }
-                tags={tags}
-              />
-            </>
-          )}
-        </>
+                : null;
+
+              const isMakeOrBoth = ["Make", "Buy and Make"].includes(
+                partData.partSummary?.replenishmentSystem ?? ""
+              );
+
+              return (
+                <>
+                  {isMakeOrBoth && (
+                    <>
+                      <Suspense fallback={<Menubar />}>
+                        <Await resolve={partData?.makeMethods}>
+                          {(makeMethods) => (
+                            <MakeMethodTools
+                              itemId={resolved.makeMethod.itemId}
+                              makeMethods={makeMethods?.data ?? []}
+                              type="Part"
+                              currentMethodId={resolved.makeMethod.id}
+                            />
+                          )}
+                        </Await>
+                      </Suspense>
+                      {manufacturingInitialValues && (
+                        <ItemManufacturingForm
+                          key={itemId}
+                          // @ts-ignore
+                          initialValues={manufacturingInitialValues}
+                        />
+                      )}
+                      {resolved.partManufacturing?.requiresConfiguration && (
+                        <ConfigurationParametersForm
+                          key={`options:${itemId}`}
+                          bindings={partConfigurationParametersBindings(itemId)}
+                          parameters={
+                            resolved.configurationParametersAndGroups.parameters
+                          }
+                          groups={
+                            resolved.configurationParametersAndGroups.groups
+                          }
+                        />
+                      )}
+                    </>
+                  )}
+                  <ItemNotes
+                    id={partData.partSummary?.id ?? null}
+                    title={partData.partSummary?.name ?? ""}
+                    subTitle={partData.partSummary?.readableIdWithRevision ?? ""}
+                    notes={partData.partSummary?.notes as JSONContent}
+                  />
+                  {isMakeOrBoth && (
+                    <>
+                      <BillOfMaterial
+                        key={`bom:${itemId}`}
+                        methodBindings={methodBindings(itemId)}
+                        configurationRuleBindings={partConfigurationRuleBindings(
+                          itemId
+                        )}
+                        makeMethod={resolved.makeMethod}
+                        // @ts-ignore
+                        materials={resolved.methodMaterials ?? []}
+                        // @ts-ignore
+                        operations={resolved.methodOperations}
+                        configurable={
+                          resolved.partManufacturing?.requiresConfiguration
+                        }
+                        configurationRules={resolved.configurationRules}
+                        parameters={
+                          resolved.configurationParametersAndGroups.parameters
+                        }
+                        replenishmentSystem={
+                          partData.partSummary?.replenishmentSystem
+                        }
+                      />
+                      <BillOfProcess
+                        key={`bop:${itemId}`}
+                        methodBindings={methodBindings(itemId)}
+                        configurationRuleBindings={partConfigurationRuleBindings(
+                          itemId
+                        )}
+                        makeMethod={resolved.makeMethod}
+                        // @ts-ignore
+                        operations={resolved.methodOperations ?? []}
+                        configurable={
+                          resolved.partManufacturing?.requiresConfiguration
+                        }
+                        // @ts-ignore
+                        materials={resolved.methodMaterials ?? []}
+                        configurationRules={resolved.configurationRules}
+                        parameters={
+                          resolved.configurationParametersAndGroups.parameters
+                        }
+                        tags={resolved.tags}
+                      />
+                    </>
+                  )}
+                </>
+              );
+            }}
+          </Await>
+        </Suspense>
       )}
       {permissions.is("employee") && (
         <>
