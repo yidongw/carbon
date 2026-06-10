@@ -1,15 +1,20 @@
 import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
-import { useRouteData } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import type {
   ClientLoaderFunctionArgs,
   LoaderFunctionArgs,
   ShouldRevalidateFunctionArgs
 } from "react-router";
-import { Outlet, redirect, useParams } from "react-router";
+import {
+  Outlet,
+  redirect,
+  useLoaderData,
+  useParams,
+  useRevalidator
+} from "react-router";
 import { PartContentSkeleton } from "~/components/Skeletons";
 import { ResizablePanels } from "~/components/Layout";
 import type { ItemFile, PartSummary } from "~/modules/items";
@@ -28,6 +33,8 @@ import {
   getPartRouteCache,
   setPartRouteCache
 } from "~/utils/partRouteCache";
+import { readPartShell } from "~/utils/partShell";
+
 const PartExplorerPanel = lazy(
   () => import("~/modules/items/ui/Parts/PartExplorerPanel")
 );
@@ -106,6 +113,19 @@ export async function clientLoader({
     return hit;
   }
 
+  const shell = readPartShell(key);
+  if (shell) {
+    serverLoader<typeof loader>().then((fresh) => setPartRouteCache(key, fresh));
+    return {
+      partSummary: shell,
+      files: Promise.resolve([]),
+      supplierParts: Promise.resolve([]),
+      pickMethods: Promise.resolve([]),
+      tags: Promise.resolve([]),
+      shell: true as const
+    };
+  }
+
   const data = await serverLoader<typeof loader>();
   setPartRouteCache(key, data);
   return data;
@@ -120,12 +140,14 @@ export default function PartRoute() {
   const { itemId } = useParams();
   if (!itemId) throw new Error("Could not find itemId");
 
-  const partData = useRouteData<{
-    partSummary: PartSummary;
-    files: Promise<ItemFile[]>;
-  }>(path.to.part(itemId));
+  const partData = useLoaderData<typeof loader>();
+  const revalidator = useRevalidator();
 
-  if (!partData) throw new Error("Could not find part data");
+  useEffect(() => {
+    if ("shell" in partData && partData.shell) {
+      revalidator.revalidate();
+    }
+  }, [itemId, partData, revalidator]);
 
   return (
     <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">

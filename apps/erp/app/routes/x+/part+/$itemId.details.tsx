@@ -12,7 +12,7 @@ import type {
   ClientLoaderFunctionArgs,
   LoaderFunctionArgs
 } from "react-router";
-import { redirect, useLoaderData, useParams } from "react-router";
+import { Await, redirect, useLoaderData, useParams } from "react-router";
 import { DeferredFiles } from "~/components";
 import { ExplorerSkeleton, PartContentSkeleton } from "~/components/Skeletons";
 import { usePermissions, useRouteData } from "~/hooks";
@@ -151,19 +151,23 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const requestedMethodId = url.searchParams.get("methodId");
 
-  const makeMethods = await getMakeMethods(client, itemId, companyId);
-  const detailsData = await loadPartDetailsData(
-    client,
-    itemId,
-    companyId,
-    requestedMethodId,
-    makeMethods.data
-  );
+  // Defer heavy BOM/BOP queries so the parent shell can render immediately.
+  const detailsBundle = (async () => {
+    const makeMethods = await getMakeMethods(client, itemId, companyId);
+    const detailsData = await loadPartDetailsData(
+      client,
+      itemId,
+      companyId,
+      requestedMethodId,
+      makeMethods.data
+    );
+    return {
+      detailsData,
+      makeMethods: makeMethods.data ?? []
+    };
+  })();
 
-  return {
-    detailsData,
-    makeMethods: makeMethods.data ?? []
-  };
+  return { detailsBundle };
 }
 
 export async function clientLoader({
@@ -171,16 +175,26 @@ export async function clientLoader({
   params
 }: ClientLoaderFunctionArgs) {
   const key = detailsCacheKey(params.itemId!);
-  const hit = getPartRouteCache<Awaited<ReturnType<typeof loader>>>(key);
+  type CachedDetails = {
+    detailsBundle: Awaited<
+      Awaited<ReturnType<typeof loader>>["detailsBundle"]
+    >;
+  };
+  const hit = getPartRouteCache<CachedDetails>(key);
   if (hit) {
-    serverLoader<typeof loader>().then((fresh) => setPartRouteCache(key, fresh));
+    serverLoader<typeof loader>().then(async (fresh) => {
+      const resolved = { detailsBundle: await fresh.detailsBundle };
+      setPartRouteCache(key, resolved);
+    });
     return hit;
   }
   const data = await serverLoader<typeof loader>();
-  setPartRouteCache(key, data);
-  return data;
+  const resolved = {
+    detailsBundle: await data.detailsBundle
+  };
+  setPartRouteCache(key, resolved);
+  return resolved;
 }
-clientLoader.hydrate = true;
 
 export function HydrateFallback() {
   return <PartContentSkeleton />;
@@ -409,14 +423,16 @@ export default function PartDetailsRoute() {
   if (!itemId) throw new Error("Could not find itemId");
 
   const permissions = usePermissions();
-  const { detailsData, makeMethods } = useLoaderData<typeof loader>();
+  const { detailsBundle } = useLoaderData<typeof loader>();
 
   const partData = useRouteData<{
     partSummary: PartSummary;
     files: Promise<ItemFile[]>;
   }>(path.to.part(itemId));
 
-  if (!partData) throw new Error("Could not find part data");
+  if (!partData) {
+    return <PartContentSkeleton />;
+  }
 
   return (
     <VStack spacing={2} className="p-2">
@@ -430,12 +446,18 @@ export default function PartDetailsRoute() {
           />
         </Suspense>
       )}
-      <PartDetailsContent
-        detailsData={detailsData}
-        partData={partData}
-        makeMethods={makeMethods}
-        itemId={itemId}
-      />
+      <Suspense fallback={<PartContentSkeleton />}>
+        <Await resolve={detailsBundle}>
+          {({ detailsData, makeMethods }) => (
+            <PartDetailsContent
+              detailsData={detailsData}
+              partData={partData}
+              makeMethods={makeMethods}
+              itemId={itemId}
+            />
+          )}
+        </Await>
+      </Suspense>
     </VStack>
   );
 }
