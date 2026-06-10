@@ -189,11 +189,11 @@ export async function clientLoader({
     return hit;
   }
   const data = await serverLoader<typeof loader>();
-  const resolved = {
-    detailsBundle: await data.detailsBundle
-  };
-  setPartRouteCache(key, resolved);
-  return resolved;
+  // Keep detailsBundle as a promise so navigation is not blocked on BOM/BOP queries.
+  data.detailsBundle.then((resolved) => {
+    setPartRouteCache(key, { detailsBundle: resolved });
+  });
+  return data;
 }
 
 export function HydrateFallback() {

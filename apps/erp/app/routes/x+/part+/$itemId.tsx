@@ -33,7 +33,7 @@ import {
   getPartRouteCache,
   setPartRouteCache
 } from "~/utils/partRouteCache";
-import { readPartShell } from "~/utils/partShell";
+import { consumePartShell } from "~/utils/partShell";
 
 const PartExplorerPanel = lazy(
   () => import("~/modules/items/ui/Parts/PartExplorerPanel")
@@ -113,7 +113,7 @@ export async function clientLoader({
     return hit;
   }
 
-  const shell = readPartShell(key);
+  const shell = consumePartShell(key);
   if (shell) {
     serverLoader<typeof loader>().then((fresh) => setPartRouteCache(key, fresh));
     return {
@@ -130,7 +130,6 @@ export async function clientLoader({
   setPartRouteCache(key, data);
   return data;
 }
-clientLoader.hydrate = true;
 
 export function HydrateFallback() {
   return <PartContentSkeleton />;
@@ -147,7 +146,9 @@ export default function PartRoute() {
     if ("shell" in partData && partData.shell) {
       revalidator.revalidate();
     }
-  }, [itemId, partData, revalidator]);
+    // Revalidate once when navigating from a table-row shell prefetch.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [itemId]);
 
   return (
     <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
