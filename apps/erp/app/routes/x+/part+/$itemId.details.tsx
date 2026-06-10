@@ -3,7 +3,7 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import type { JSONContent } from "@carbon/react";
-import { Menubar, Skeleton, VStack } from "@carbon/react";
+import { Menubar, Skeleton, Spinner, VStack } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import { lazy, Suspense } from "react";
 import type {
@@ -19,10 +19,7 @@ import { usePermissions } from "~/hooks";
 import { usePartRouteData } from "~/modules/items/ui/Parts/PartResolvedDataContext";
 import ItemDocuments from "~/modules/items/ui/Item/ItemDocuments";
 import ItemNotes from "~/modules/items/ui/Item/ItemNotes";
-import {
-  PartDetailsPageShell,
-  PartDetailsSectionsShell
-} from "~/modules/items/ui/Parts/PartDetailsSectionsShell";
+import { PartDetailsPageShell } from "~/modules/items/ui/Parts/PartDetailsSectionsShell";
 import type { ItemFile, MakeMethod, PartSummary } from "~/modules/items";
 import {
   getConfigurationParameters,
@@ -457,7 +454,7 @@ export default function PartDetailsRoute() {
   return (
     <VStack spacing={2} className="min-h-0 p-2">
       <PartDetailsEagerSections partData={resolvedPartData} itemId={itemId} />
-      <Suspense fallback={<PartDetailsSectionsShell />}>
+      <Suspense fallback={<div className="flex justify-center py-4"><Spinner /></div>}>
         <Await resolve={detailsBundle}>
           {({ detailsData, makeMethods }) => (
             <PartDetailsManufacturingSections

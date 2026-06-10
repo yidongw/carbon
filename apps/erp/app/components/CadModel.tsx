@@ -22,6 +22,10 @@ import { useFetcher } from "react-router";
 import { useUser } from "~/hooks";
 import { getPrivateUrl, path } from "~/utils/path";
 
+// Module-level flag: after first client hydration all subsequent mounts render
+// the viewer immediately without a one-frame spinner delay.
+let _viewerHydrated = false;
+
 const SIZE_LIMIT = getFileSizeLimit("CAD_MODEL_UPLOAD");
 
 type CadModelProps = {
@@ -56,11 +60,11 @@ const CadModel = ({
 
   const fetcher = useFetcher<{}>();
   const [file, setFile] = useState<File | null>(null);
-  const [viewerReady, setViewerReady] = useState(false);
+  const [viewerReady, setViewerReady] = useState(_viewerHydrated);
 
   useEffect(() => {
-    const id = window.requestAnimationFrame(() => setViewerReady(true));
-    return () => window.cancelAnimationFrame(id);
+    _viewerHydrated = true;
+    setViewerReady(true);
   }, []);
 
   const onFileChange = async (file: File | null) => {
