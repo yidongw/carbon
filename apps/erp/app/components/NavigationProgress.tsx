@@ -2,25 +2,18 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigation } from "react-router";
 
 /**
- * A thin top-of-page progress bar that gives instant feedback the moment a
- * navigation (or form submission) starts, and completes when it settles.
- *
- * Driven entirely by React Router's `useNavigation()` — no external dependency.
- * Renders the `#nprogress .bar` markup so it reuses the existing
- * `styles/nprogress.css` (previously imported but never wired up).
- *
- * Note: `useNavigation()` only reflects the primary navigation, not background
- * `useFetcher` loads, so silent autosaves/optimistic fetchers don't flash it.
+ * Top-of-page progress bar driven by React Router's `useNavigation()`.
+ * Shows immediately when a navigation starts; hides quickly when it settles.
  */
 export function NavigationProgress() {
   const navigation = useNavigation();
   const active = navigation.state !== "idle";
 
   const [visible, setVisible] = useState(false);
-  const [progress, setProgress] = useState(0); // 0..100
+  const [progress, setProgress] = useState(0);
   const trickle = useRef<ReturnType<typeof setInterval> | null>(null);
   const hide = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const show = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const startedAt = useRef<number | null>(null);
 
   useEffect(() => {
     const clearTrickle = () => {
@@ -30,30 +23,28 @@ export function NavigationProgress() {
 
     if (active) {
       if (hide.current) clearTimeout(hide.current);
-      // Only show the bar after 300ms — fast navigations (cache hits, prefetched
-      // links) complete before this fires and the bar never appears at all.
-      show.current = setTimeout(() => {
-        setVisible(true);
-        setProgress((p) => (p < 12 ? 12 : p));
-        clearTrickle();
-        trickle.current = setInterval(() => {
-          setProgress((p) => (p >= 90 ? p : p + (90 - p) * 0.12));
-        }, 180);
-      }, 300);
-    } else {
-      if (show.current) {
-        clearTimeout(show.current);
-        show.current = null;
-      }
+      if (!startedAt.current) startedAt.current = Date.now();
+
+      setVisible(true);
+      setProgress((p) => (p < 12 ? 12 : p));
       clearTrickle();
-      // Only "complete" if we actually started a bar.
+      trickle.current = setInterval(() => {
+        setProgress((p) => (p >= 90 ? p : p + (90 - p) * 0.12));
+      }, 180);
+    } else {
+      clearTrickle();
+      const elapsed = startedAt.current ? Date.now() - startedAt.current : 0;
+      startedAt.current = null;
+
       setVisible((wasVisible) => {
         if (!wasVisible) return false;
         setProgress(100);
+        // Fast navigations (cache hits) hide without flashing; slow loads still showed the bar.
+        const hideDelay = elapsed < 300 ? 0 : 240;
         hide.current = setTimeout(() => {
           setVisible(false);
           setProgress(0);
-        }, 240);
+        }, hideDelay);
         return true;
       });
     }

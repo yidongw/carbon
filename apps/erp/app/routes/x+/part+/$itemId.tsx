@@ -17,6 +17,7 @@ import { msg } from "@lingui/core/macro";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { Suspense, useState } from "react";
 import { LuSearch } from "react-icons/lu";
+import { PartContentSkeleton } from "~/components/Skeletons";
 import type {
   ClientLoaderFunctionArgs,
   LoaderFunctionArgs,
@@ -27,6 +28,7 @@ import {
   Outlet,
   redirect,
   useLoaderData,
+  useNavigation,
   useParams
 } from "react-router";
 import { ResizablePanels } from "~/components/Layout";
@@ -55,7 +57,11 @@ import { PartHeader, PartProperties } from "~/modules/items/ui/Parts";
 import { getTagsList } from "~/modules/shared";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
-import { partPrefetchCache } from "~/utils/prefetchCache";
+import {
+  clearPartRouteCache,
+  getPartRouteCache,
+  setPartRouteCache
+} from "~/utils/partRouteCache";
 
 export const handle: Handle = {
   breadcrumb: msg`Parts`,
@@ -183,18 +189,11 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     };
   });
 
-  // Await the fields consumed synchronously by sub-routes via useRouteData.
-  // These started before getPart so they've been running concurrently.
-  const [supplierParts, pickMethods] = await Promise.all([
-    supplierPartsPromise.then((r) => r.data ?? []),
-    pickMethodsPromise.then((r) => r.data ?? [])
-  ]);
-
   return {
     partSummary: partSummary.data,
     files: getItemFiles(client, itemId, companyId),
-    supplierParts,
-    pickMethods,
+    supplierParts: supplierPartsPromise.then((r) => r.data ?? []),
+    pickMethods: pickMethodsPromise.then((r) => r.data ?? []),
     makeMethods: makeMethodsPromise,
     tags: tagsPromise.then((r) => r.data ?? []),
     usedIn: getPartUsedIn(client, itemId, companyId),
@@ -207,8 +206,6 @@ export type PartDetailsData = Awaited<
   Awaited<ReturnType<typeof loader>>["detailsData"]
 >;
 
-const partCache = new Map<string, { data: Awaited<ReturnType<typeof loader>>; ts: number }>();
-
 // Clear cache on action-triggered revalidations so uploads/mutations show fresh data.
 export function shouldRevalidate({
   actionStatus,
@@ -216,7 +213,7 @@ export function shouldRevalidate({
   defaultShouldRevalidate
 }: ShouldRevalidateFunctionArgs) {
   if (actionStatus !== undefined) {
-    partCache.delete(currentParams.itemId!);
+    clearPartRouteCache(currentParams.itemId!);
   }
   return defaultShouldRevalidate;
 }
@@ -226,20 +223,34 @@ export async function clientLoader({
   params
 }: ClientLoaderFunctionArgs) {
   const key = params.itemId!;
-  const hit = partCache.get(key);
-  if (hit && Date.now() - hit.ts < 5 * 60_000) {
-    serverLoader<typeof loader>().then((d) => {
-      partCache.set(key, { data: d, ts: Date.now() });
-      partPrefetchCache.add(key);
-    });
-    return hit.data;
+  const hit = getPartRouteCache<Awaited<ReturnType<typeof loader>>>(key);
+  if (hit) {
+    serverLoader<typeof loader>().then((fresh) => setPartRouteCache(key, fresh));
+    return hit;
   }
   const data = await serverLoader<typeof loader>();
-  partCache.set(key, { data, ts: Date.now() });
-  partPrefetchCache.add(key);
+  setPartRouteCache(key, data);
   return data;
 }
 clientLoader.hydrate = true;
+
+export function HydrateFallback() {
+  return <PartContentSkeleton />;
+}
+
+function PartOutlet() {
+  const navigation = useNavigation();
+
+  if (navigation.state === "loading") {
+    return <PartContentSkeleton />;
+  }
+
+  return (
+    <Suspense fallback={<PartContentSkeleton />}>
+      <Outlet />
+    </Suspense>
+  );
+}
 
 export default function PartRoute() {
   const { t } = useLingui();
@@ -615,7 +626,7 @@ export default function PartRoute() {
             }
             content={
               <div className="h-[calc(100dvh-99px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
-                <Outlet />
+                <PartOutlet />
               </div>
             }
             properties={<PartProperties key={itemId} />}
