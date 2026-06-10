@@ -18,10 +18,10 @@ import { Link, useParams } from "react-router";
 import { useAuditLog } from "~/components/AuditLog";
 import { DetailsTopbar } from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
-import { usePermissions, useRouteData, useUser } from "~/hooks";
+import { usePermissions, useUser } from "~/hooks";
 import { path } from "~/utils/path";
-import type { PartSummary } from "../../types";
 import { usePartNavigation } from "./usePartNavigation";
+import { usePartRouteData } from "./PartResolvedDataContext";
 
 const PartHeader = () => {
   const { t } = useLingui();
@@ -39,9 +39,8 @@ const PartHeader = () => {
     variant: "dropdown"
   });
 
-  const routeData = useRouteData<{ partSummary: PartSummary }>(
-    path.to.part(itemId)
-  );
+  const routeData = usePartRouteData();
+  const partSummary = routeData?.partSummary;
 
   return (
     <>
@@ -51,10 +50,10 @@ const PartHeader = () => {
             <Link to={path.to.partDetails(itemId)}>
               <Heading size="h4" className="flex items-center gap-2">
                 {/* <ModuleIcon icon={<MethodItemTypeIcon type="Part" />} /> */}
-                <span>{routeData?.partSummary?.readableIdWithRevision}</span>
+                <span>{partSummary?.readableIdWithRevision}</span>
               </Heading>
             </Link>
-            <Copy text={routeData?.partSummary?.readableIdWithRevision ?? ""} />
+            <Copy text={partSummary?.readableIdWithRevision ?? ""} />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <IconButton
@@ -89,8 +88,8 @@ const PartHeader = () => {
           <ConfirmDelete
             action={path.to.deleteItem(itemId)}
             isOpen={deleteModal.isOpen}
-            name={routeData?.partSummary?.readableIdWithRevision ?? "part"}
-            text={t`Are you sure you want to delete ${routeData?.partSummary?.readableIdWithRevision}? This cannot be undone.`}
+            name={partSummary?.readableIdWithRevision ?? "part"}
+            text={t`Are you sure you want to delete ${partSummary?.readableIdWithRevision}? This cannot be undone.`}
             onCancel={() => {
               deleteModal.onClose();
             }}

@@ -35,6 +35,7 @@ import CustomFormInlineFields from "~/components/Form/CustomFormInlineFields";
 import { ReplenishmentSystemIcon } from "~/components/Icons";
 import { ItemThumbnailUpload } from "~/components/ItemThumnailUpload";
 import { useRouteData } from "~/hooks";
+import { usePartRouteData } from "./PartResolvedDataContext";
 import { methodType } from "~/modules/shared";
 import type { action } from "~/routes/x+/items+/update";
 import { useSuppliers } from "~/stores";
@@ -62,14 +63,7 @@ const PartProperties = () => {
   const sharedPartsData = useRouteData<{
     locations: ListItem[] | Promise<unknown>;
   }>(path.to.partRoot);
-  const routeData = useRouteData<{
-    partSummary: PartSummary;
-    files: Promise<ItemFile[]>;
-    supplierParts: SupplierPart[] | Promise<unknown>;
-    pickMethods: PickMethod[] | Promise<unknown>;
-    makeMethods: Promise<PostgrestResponse<MakeMethod>>;
-    tags: { name: string }[] | Promise<unknown>;
-  }>(path.to.part(itemId));
+  const routeData = usePartRouteData();
 
   const locations = Array.isArray(sharedPartsData?.locations)
     ? (sharedPartsData.locations as ListItem[])

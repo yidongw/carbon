@@ -15,7 +15,8 @@ import type {
 import { Await, redirect, useLoaderData, useParams } from "react-router";
 import { DeferredFiles } from "~/components";
 import { ExplorerSkeleton } from "~/components/Skeletons";
-import { usePermissions, useRouteData } from "~/hooks";
+import { usePermissions } from "~/hooks";
+import { usePartRouteData } from "~/modules/items/ui/Parts/PartResolvedDataContext";
 import ItemNotes from "~/modules/items/ui/Item/ItemNotes";
 import {
   PartDetailsPageShell,
@@ -430,11 +431,7 @@ export default function PartDetailsRoute() {
   const permissions = usePermissions();
   const { detailsBundle } = useLoaderData<typeof loader>();
 
-  const partData = useRouteData<{
-    partSummary: PartSummary;
-    files: Promise<ItemFile[]>;
-  }>(path.to.part(itemId));
-
+  const partData = usePartRouteData();
   const partSummary = partData?.partSummary;
 
   return (
