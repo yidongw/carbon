@@ -9,6 +9,7 @@ import {
   Spinner,
   Tabs,
   TabsContent,
+  Skeleton,
   TabsList,
   TabsTrigger
 } from "@carbon/react";
@@ -29,8 +30,11 @@ import {
   useRevalidator
 } from "react-router";
 import { PartContentSkeleton } from "~/components/Skeletons";
-import { ResizablePanels } from "~/components/Layout";
-import { PartDetailsPageShell } from "~/modules/items/ui/Parts/PartDetailsSectionsShell";
+import { PanelProvider, ResizablePanels } from "~/components/Layout";
+import {
+  PartDetailsPageShell,
+  PartPageHydrateFallback
+} from "~/modules/items/ui/Parts/PartDetailsSectionsShell";
 import { flattenTree } from "~/components/TreeView";
 import type { PartSummary } from "~/modules/items";
 import {
@@ -160,8 +164,17 @@ export async function clientLoader({
   });
 }
 
+clientLoader.hydrate = true;
+
 export function HydrateFallback() {
-  return <PartContentSkeleton />;
+  return (
+    <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
+      <div className="flex h-[50px] flex-shrink-0 items-center border-b px-4">
+        <Skeleton className="h-6 w-24" />
+      </div>
+      <PartPageHydrateFallback />
+    </div>
+  );
 }
 
 export default function PartRoute() {
@@ -211,6 +224,7 @@ export default function PartRoute() {
       <PartHeader />
       <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
         <div className="flex flex-grow overflow-hidden">
+          <PanelProvider>
           <ResizablePanels
             explorer={
               <div className="flex flex-col h-full">
@@ -563,6 +577,7 @@ export default function PartRoute() {
             }
             properties={<PartProperties key={itemId} />}
           />
+          </PanelProvider>
         </div>
       </div>
     </div>
