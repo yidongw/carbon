@@ -316,7 +316,7 @@ const JobMakeMethodTools = ({ makeMethod }: { makeMethod?: JobMakeMethod }) => {
               fetcher={fetcher}
               action={path.to.jobMethodGet}
               validator={getJobMethodValidator}
-              onSubmit={getMethodModal.onClose}
+              onSuccess={getMethodModal.onClose}
             >
               <ModalHeader>
                 <ModalTitle>
@@ -435,7 +435,7 @@ const JobMakeMethodTools = ({ makeMethod }: { makeMethod?: JobMakeMethod }) => {
                   ? (routeData?.job?.itemId ?? undefined)
                   : undefined
               }}
-              onSubmit={saveMethodModal.onClose}
+              onSuccess={saveMethodModal.onClose}
             >
               <ModalHeader>
                 <ModalTitle>

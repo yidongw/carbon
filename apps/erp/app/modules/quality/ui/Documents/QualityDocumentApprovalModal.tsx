@@ -52,7 +52,7 @@ const QualityDocumentApprovalModal = ({
           method="post"
           validator={qualityDocumentApprovalValidator}
           action={path.to.qualityDocument(id)}
-          onSubmit={onClose}
+          onSuccess={onClose}
           defaultValues={{
             approvalRequestId,
             decision,

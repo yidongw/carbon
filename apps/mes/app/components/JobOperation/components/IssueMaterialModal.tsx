@@ -936,7 +936,7 @@ export function IssueMaterialModal({
             <ValidatedForm
               method="post"
               action={path.to.issue}
-              onSubmit={onClose}
+              onSuccess={onClose}
               validator={issueValidator}
               defaultValues={{
                 materialId: material?.id ?? "",

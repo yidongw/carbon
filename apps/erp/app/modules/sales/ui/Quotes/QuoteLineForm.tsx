@@ -271,9 +271,7 @@ const QuoteLineForm = ({
               }
               className="w-full"
               isDisabled={isEditing && isLocked}
-              onSubmit={() => {
-                if (type === "modal") onClose?.();
-              }}
+              onSuccess={type === "modal" ? onClose : undefined}
             >
               <HStack className="w-full justify-between items-start">
                 <ModalCardHeader>

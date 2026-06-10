@@ -26,7 +26,7 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { LuTrash } from "react-icons/lu";
-import { useParams } from "react-router";
+import { useFetcher, useParams } from "react-router";
 import type { z } from "zod";
 import {
   ArrayNumeric,
@@ -38,6 +38,7 @@ import {
   UnitOfMeasure
 } from "~/components/Form";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
+import type { action } from "~/routes/x+/sales-rfq+/$rfqId.$lineId.details";
 import { path } from "~/utils/path";
 import { isSalesRfqLocked, salesRfqLineValidator } from "../../sales.models";
 import type { SalesRFQ, SalesRFQLine } from "../../types";
@@ -60,6 +61,7 @@ const SalesRFQLineForm = ({
   const { carbon } = useCarbon();
 
   const { rfqId } = useParams();
+  const fetcher = useFetcher<typeof action>();
 
   if (!rfqId) throw new Error("rfqId not found");
 
@@ -195,10 +197,9 @@ const SalesRFQLineForm = ({
                   : path.to.newSalesRFQLine(rfqId)
               }
               className="w-full"
+              fetcher={fetcher}
               isDisabled={isEditing && isLocked}
-              onSubmit={() => {
-                if (type === "modal") onClose?.();
-              }}
+              onSuccess={type === "modal" ? onClose : undefined}
             >
               <HStack className="w-full justify-between items-start">
                 <ModalCardHeader>

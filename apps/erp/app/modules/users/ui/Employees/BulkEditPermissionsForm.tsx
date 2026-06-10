@@ -95,7 +95,7 @@ const BulkEditPermissions = ({
           validator={bulkPermissionsValidator}
           method="post"
           action={path.to.bulkEditPermissions}
-          onSubmit={onClose}
+          onSuccess={onClose}
           defaultValues={{ userIds }}
           className="flex flex-col h-full"
         >
