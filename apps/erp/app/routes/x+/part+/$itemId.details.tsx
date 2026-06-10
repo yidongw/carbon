@@ -15,7 +15,8 @@ import type {
 import { Await, redirect, useLoaderData, useParams } from "react-router";
 import { CadModel, DeferredFiles } from "~/components";
 import { ExplorerSkeleton } from "~/components/Skeletons";
-import { usePermissions, useRouteData } from "~/hooks";
+import { usePermissions } from "~/hooks";
+import { usePartRouteData } from "~/modules/items/ui/Parts/PartResolvedDataContext";
 import ItemDocuments from "~/modules/items/ui/Item/ItemDocuments";
 import ItemNotes from "~/modules/items/ui/Item/ItemNotes";
 import {
@@ -437,52 +438,34 @@ export async function clientAction({ serverAction }: ClientActionFunctionArgs) {
   return await serverAction();
 }
 
-type ParentPartRouteData = {
-  partSummary: Promise<PartSummary>;
-  files: Promise<ItemFile[]>;
-};
-
 export default function PartDetailsRoute() {
   const { itemId } = useParams();
   if (!itemId) throw new Error("Could not find itemId");
 
   const { detailsBundle } = useLoaderData<typeof loader>();
-  const parentData = useRouteData<ParentPartRouteData>(path.to.part(itemId));
+  const partData = usePartRouteData();
 
-  if (!parentData) {
+  if (!partData) {
     return <PartDetailsPageShell />;
   }
 
+  const resolvedPartData = {
+    partSummary: partData.partSummary,
+    files: partData.files
+  };
+
   return (
     <VStack spacing={2} className="min-h-0 p-2">
-      <Suspense
-        fallback={
-          <div className="p-4">
-            <Skeleton className="mb-2 h-6 w-1/3" />
-            <Skeleton className="h-24 w-full" />
-          </div>
-        }
-      >
-        <Await resolve={parentData.partSummary}>
-          {(partSummary) => (
-            <>
-              <PartDetailsEagerSections
-                partData={{ partSummary, files: parentData.files }}
-                itemId={itemId}
-              />
-              <Suspense fallback={<PartDetailsSectionsShell />}>
-                <Await resolve={detailsBundle}>
-                  {({ detailsData, makeMethods }) => (
-                    <PartDetailsManufacturingSections
-                      detailsData={detailsData}
-                      partData={{ partSummary }}
-                      makeMethods={makeMethods}
-                      itemId={itemId}
-                    />
-                  )}
-                </Await>
-              </Suspense>
-            </>
+      <PartDetailsEagerSections partData={resolvedPartData} itemId={itemId} />
+      <Suspense fallback={<PartDetailsSectionsShell />}>
+        <Await resolve={detailsBundle}>
+          {({ detailsData, makeMethods }) => (
+            <PartDetailsManufacturingSections
+              detailsData={detailsData}
+              partData={resolvedPartData}
+              makeMethods={makeMethods}
+              itemId={itemId}
+            />
           )}
         </Await>
       </Suspense>

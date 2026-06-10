@@ -6,7 +6,9 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  ClientOnly,
   generateHTML,
+  Skeleton,
   toast,
   useDebounce
 } from "@carbon/react";
@@ -85,23 +87,28 @@ const ItemNotes = ({
         </CardHeader>
 
         <CardContent>
-          {permissions.can("update", "parts") ? (
-            <Editor
-              initialValue={(notes ?? {}) as JSONContent}
-              onUpload={onUploadImage}
-              onChange={(value) => {
-                setInternalNotes(value);
-                onUpdateInternalNotes(value);
-              }}
-            />
-          ) : (
-            <div
-              className="prose dark:prose-invert"
-              dangerouslySetInnerHTML={{
-                __html: generateHTML(notes as JSONContent)
-              }}
-            />
-          )}
+          <ClientOnly fallback={<Skeleton className="min-h-[120px] w-full" />}>
+            {() =>
+              permissions.can("update", "parts") ? (
+                <Editor
+                  key={id}
+                  initialValue={(notes ?? {}) as JSONContent}
+                  onUpload={onUploadImage}
+                  onChange={(value) => {
+                    setInternalNotes(value);
+                    onUpdateInternalNotes(value);
+                  }}
+                />
+              ) : (
+                <div
+                  className="prose dark:prose-invert"
+                  dangerouslySetInnerHTML={{
+                    __html: generateHTML(notes as JSONContent)
+                  }}
+                />
+              )
+            }
+          </ClientOnly>
         </CardContent>
       </Card>
     </>
