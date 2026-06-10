@@ -14,11 +14,12 @@ import {
   InputGroup,
   InputLeftElement,
   Skeleton,
+  Spinner,
   useDisclosure,
   VStack
 } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { flushSync } from "react-dom";
 import {
   LuChevronRight,
@@ -72,6 +73,7 @@ export type UsedInNode = {
   key: UsedInKey;
   name: string;
   module: string;
+  isLoading?: boolean;
   children: {
     id: string;
     documentReadableId: string;
@@ -391,6 +393,12 @@ export function UsedInItem({
   );
   const permissions = usePermissions();
 
+  useEffect(() => {
+    if (!node.isLoading && node.children.length > 0 && node.children.length < 10) {
+      setIsExpanded(true);
+    }
+  }, [node.isLoading, node.children.length]);
+
   if (!permissions.can("view", node.module)) {
     return null;
   }
@@ -413,14 +421,23 @@ export function UsedInItem({
         </div>
         <div className="flex flex-grow items-center justify-between gap-2">
           <span>{node.name}</span>
-          {filteredChildren.length > 0 && (
-            <Count count={filteredChildren.length} />
+          {node.isLoading ? (
+            <Spinner className="h-3.5 w-3.5 text-muted-foreground" />
+          ) : (
+            filteredChildren.length > 0 && (
+              <Count count={filteredChildren.length} />
+            )
           )}
         </div>
       </button>
       {isExpanded && (
         <div className="flex flex-col w-full">
-          {node.children.length === 0 ? (
+          {node.isLoading ? (
+            <div className="flex h-8 items-center overflow-hidden rounded-sm px-2 gap-4">
+              <LevelLine isSelected={false} />
+              <Spinner className="h-3.5 w-3.5 text-muted-foreground" />
+            </div>
+          ) : node.children.length === 0 ? (
             <div className="flex h-8 items-center overflow-hidden rounded-sm px-2 gap-4">
               <LevelLine isSelected={false} />
               <div className="text-xs text-muted-foreground">
