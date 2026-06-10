@@ -15,6 +15,10 @@ import type {
 import { Await, redirect, useLoaderData, useParams } from "react-router";
 import { CadModel, DeferredFiles } from "~/components";
 import { usePermissions, useRouteData } from "~/hooks";
+import {
+  PartDetailsPageShell,
+  PartDetailsSectionsShell
+} from "~/modules/items/ui/Parts/PartDetailsSectionsShell";
 import type { ItemFile, MakeMethod, PartSummary } from "~/modules/items";
 import {
   getConfigurationParameters,
@@ -130,6 +134,10 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   return { methodData };
 }
 
+export function HydrateFallback() {
+  return <PartDetailsPageShell />;
+}
+
 export async function action({ request, params }: ActionFunctionArgs) {
   assertIsPost(request);
   const { client, userId } = await requirePermissions(request, {
@@ -225,10 +233,9 @@ export default function PartDetailsRoute() {
     makeMethods: Promise<PostgrestResponse<MakeMethod>>;
   }>(path.to.part(itemId));
 
-  if (!partData) throw new Error("Could not find part data");
-
+  const partSummary = partData?.partSummary;
   const isMakeOrBoth = ["Make", "Buy and Make"].includes(
-    partData.partSummary?.replenishmentSystem ?? ""
+    partSummary?.replenishmentSystem ?? ""
   );
 
   return (
@@ -236,23 +243,12 @@ export default function PartDetailsRoute() {
       {permissions.is("employee") && (
         <>
           <ItemNotes
-            id={partData.partSummary?.id ?? null}
-            title={partData.partSummary?.name ?? ""}
-            subTitle={partData.partSummary?.readableIdWithRevision ?? ""}
-            notes={partData.partSummary?.notes as JSONContent}
+            id={partSummary?.id ?? itemId}
+            title={partSummary?.name ?? ""}
+            subTitle={partSummary?.readableIdWithRevision ?? ""}
+            notes={partSummary?.notes as JSONContent}
           />
-          <Suspense
-            fallback={
-              isMakeOrBoth ? (
-                <div className="space-y-3 animate-pulse">
-                  <div className="h-9 bg-muted rounded-md w-2/3" />
-                  <div className="h-32 bg-muted rounded-md" />
-                  <div className="h-48 bg-muted rounded-md" />
-                  <div className="h-48 bg-muted rounded-md" />
-                </div>
-              ) : null
-            }
-          >
+          <Suspense fallback={<PartDetailsSectionsShell />}>
             <Await resolve={methodData}>
               {(resolved) => {
                 if (!resolved) return null;
@@ -270,7 +266,7 @@ export default function PartDetailsRoute() {
                     {isMakeOrBoth && (
                     <>
                       <Suspense fallback={<Menubar />}>
-                        <Await resolve={partData?.makeMethods}>
+                        <Await resolve={partData?.makeMethods ?? Promise.resolve({ data: [], error: null })}>
                           {(makeMethods) => (
                             <MakeMethodTools
                               itemId={resolved.makeMethod.itemId}
@@ -322,9 +318,7 @@ export default function PartDetailsRoute() {
                         parameters={
                           resolved.configurationParametersAndGroups.parameters
                         }
-                        replenishmentSystem={
-                          partData.partSummary?.replenishmentSystem
-                        }
+                        replenishmentSystem={partSummary?.replenishmentSystem}
                       />
                       <BillOfProcess
                         key={`bop:${itemId}`}
@@ -357,12 +351,12 @@ export default function PartDetailsRoute() {
       )}
       {permissions.is("employee") && (
         <>
-          <DeferredFiles resolve={partData?.files}>
+          <DeferredFiles resolve={partData?.files ?? Promise.resolve([])}>
             {(resolvedFiles) => (
               <ItemDocuments
                 files={resolvedFiles}
                 itemId={itemId}
-                modelUpload={partData.partSummary ?? undefined}
+                modelUpload={partSummary ?? undefined}
                 type="Part"
               />
             )}
@@ -371,7 +365,7 @@ export default function PartDetailsRoute() {
           <CadModel
             isReadOnly={!permissions.can("update", "parts")}
             metadata={{ itemId }}
-            modelPath={partData?.partSummary?.modelPath ?? null}
+            modelPath={partSummary?.modelPath ?? null}
             title={t`CAD Model`}
           />
           <ItemRiskRegister itemId={itemId} />

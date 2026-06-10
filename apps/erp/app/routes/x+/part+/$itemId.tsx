@@ -10,24 +10,29 @@ import {
   Tabs,
   TabsContent,
   TabsList,
-  TabsTrigger,
-  useRouteData
+  TabsTrigger
 } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { LuSearch } from "react-icons/lu";
-import type { LoaderFunctionArgs } from "react-router";
+import type {
+  ClientLoaderFunctionArgs,
+  LoaderFunctionArgs
+} from "react-router";
 import {
   Await,
   Outlet,
   redirect,
   useLoaderData,
-  useParams
+  useParams,
+  useRevalidator
 } from "react-router";
+import { PartContentSkeleton } from "~/components/Skeletons";
 import { ResizablePanels } from "~/components/Layout";
+import { PartDetailsPageShell } from "~/modules/items/ui/Parts/PartDetailsSectionsShell";
 import { flattenTree } from "~/components/TreeView";
-import type { ItemFile, PartSummary } from "~/modules/items";
+import type { PartSummary } from "~/modules/items";
 import {
   getItemFiles,
   getMakeMethodById,
@@ -45,6 +50,17 @@ import { PartHeader, PartProperties } from "~/modules/items/ui/Parts";
 import { getTagsList } from "~/modules/shared";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
+import {
+  getPartRouteCache,
+  onPartRouteCacheReady,
+  setPartRouteCache
+} from "~/utils/partRouteCache";
+import { prefetchPartSiblingRoutes } from "~/utils/partSiblingPrefetch";
+import {
+  consumePartShell,
+  createPartShellLoaderData,
+  createPlaceholderPartSummary
+} from "~/utils/partShell";
 
 export const handle: Handle = {
   breadcrumb: msg`Parts`,
@@ -121,21 +137,72 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   };
 }
 
+export async function clientLoader({
+  serverLoader,
+  params
+}: ClientLoaderFunctionArgs) {
+  const key = params.itemId!;
+  const hit = getPartRouteCache<Awaited<ReturnType<typeof loader>>>(key);
+  if (hit) {
+    serverLoader<typeof loader>().then((fresh) => setPartRouteCache(key, fresh));
+    return hit;
+  }
+
+  const shell = consumePartShell(key);
+  if (shell) {
+    serverLoader<typeof loader>().then((fresh) => setPartRouteCache(key, fresh));
+    return createPartShellLoaderData(shell, { shell: true });
+  }
+
+  serverLoader<typeof loader>().then((fresh) => setPartRouteCache(key, fresh));
+  return createPartShellLoaderData(createPlaceholderPartSummary(key), {
+    placeholder: true
+  });
+}
+
+export function HydrateFallback() {
+  return <PartContentSkeleton />;
+}
+
 export default function PartRoute() {
   const { t } = useLingui();
   const { itemId } = useParams();
   if (!itemId) throw new Error("Could not find itemId");
 
-  const partData = useRouteData<{
-    partSummary: PartSummary;
-    files: Promise<ItemFile[]>;
-  }>(path.to.part(itemId));
+  const loaderData = useLoaderData<
+    Awaited<ReturnType<typeof loader>> & {
+      shell?: true;
+      placeholder?: true;
+    }
+  >();
+  const { partSummary, usedIn, methodTree } = loaderData;
+  const revalidator = useRevalidator();
+  const isShell = loaderData.shell === true;
+  const isPlaceholder = loaderData.placeholder === true;
 
-  if (!partData) throw new Error("Could not find part data");
+  useEffect(() => {
+    if (!isShell && !isPlaceholder) return;
+    return onPartRouteCacheReady(itemId, () => revalidator.revalidate());
+  }, [itemId, isShell, isPlaceholder, revalidator]);
 
-  const { usedIn, methodTree } = useLoaderData<typeof loader>();
+  useEffect(() => {
+    if (isShell || isPlaceholder) return;
 
-  const isManufactured = partData.partSummary?.replenishmentSystem !== "Buy";
+    const id =
+      window.requestIdleCallback?.(() => prefetchPartSiblingRoutes(itemId), {
+        timeout: 2000
+      }) ?? window.setTimeout(() => prefetchPartSiblingRoutes(itemId), 500);
+
+    return () => {
+      if (typeof id === "number") {
+        window.clearTimeout(id);
+      } else {
+        window.cancelIdleCallback?.(id);
+      }
+    };
+  }, [itemId, isShell, isPlaceholder]);
+
+  const isManufactured = partSummary?.replenishmentSystem !== "Buy";
 
   const [filterText, setFilterText] = useState("");
 
@@ -327,13 +394,10 @@ export default function PartRoute() {
                               return (
                                 <UsedInTree
                                   tree={tree}
-                                  revisions={partData.partSummary?.revisions}
-                                  itemReadableId={
-                                    partData.partSummary?.readableId ?? ""
-                                  }
+                                  revisions={partSummary?.revisions}
+                                  itemReadableId={partSummary?.readableId ?? ""}
                                   itemReadableIdWithRevision={
-                                    partData.partSummary
-                                      ?.readableIdWithRevision ?? ""
+                                    partSummary?.readableIdWithRevision ?? ""
                                   }
                                   filterText={filterText}
                                   hideSearch
@@ -473,13 +537,10 @@ export default function PartRoute() {
                             return (
                               <UsedInTree
                                 tree={tree}
-                                revisions={partData.partSummary?.revisions}
-                                itemReadableId={
-                                  partData.partSummary?.readableId ?? ""
-                                }
+                                revisions={partSummary?.revisions}
+                                itemReadableId={partSummary?.readableId ?? ""}
                                 itemReadableIdWithRevision={
-                                  partData.partSummary
-                                    ?.readableIdWithRevision ?? ""
+                                  partSummary?.readableIdWithRevision ?? ""
                                 }
                                 filterText={filterText}
                                 hideSearch
@@ -495,7 +556,9 @@ export default function PartRoute() {
             }
             content={
               <div className="h-[calc(100dvh-99px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
-                <Outlet />
+                <Suspense fallback={<PartDetailsPageShell />}>
+                  <Outlet />
+                </Suspense>
               </div>
             }
             properties={<PartProperties key={itemId} />}
