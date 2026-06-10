@@ -61,6 +61,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const requestedMethodId = url.searchParams.get("methodId");
 
   const methodData = (async () => {
+    try {
     const makeMethods = await getMakeMethods(client, itemId, companyId);
     const makeMethod = requestedMethodId
       ? (makeMethods.data?.find((m) => m.id === requestedMethodId) ??
@@ -121,6 +122,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       tags: tags.data ?? [],
       ...configData
     };
+    } catch {
+      return null;
+    }
   })();
 
   return { methodData };

@@ -3,8 +3,9 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import { VStack } from "@carbon/react";
+import { Suspense } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { redirect, useLoaderData } from "react-router";
+import { Await, redirect, useLoaderData } from "react-router";
 import {
   getItemCustomerParts,
   getItemUnitSalePrice,
@@ -25,26 +26,26 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { itemId } = params;
   if (!itemId) throw new Error("Could not find itemId");
 
-  const [partUnitSalePrice, customerParts] = await Promise.all([
-    getItemUnitSalePrice(client, itemId, companyId),
-    getItemCustomerParts(client, itemId, companyId)
-  ]);
+  const salesData = (async () => {
+    try {
+      const [partUnitSalePrice, customerParts] = await Promise.all([
+        getItemUnitSalePrice(client, itemId, companyId),
+        getItemCustomerParts(client, itemId, companyId)
+      ]);
 
-  if (partUnitSalePrice.error) {
-    throw redirect(
-      path.to.items,
-      await flash(
-        request,
-        error(partUnitSalePrice.error, "Failed to load part unit sale price")
-      )
-    );
-  }
+      if (partUnitSalePrice.error) return null;
 
-  return {
-    partUnitSalePrice: partUnitSalePrice.data,
-    customerParts: customerParts.data,
-    itemId
-  };
+      return {
+        partUnitSalePrice: partUnitSalePrice.data,
+        customerParts: customerParts.data,
+        itemId
+      };
+    } catch {
+      return null;
+    }
+  })();
+
+  return { salesData };
 }
 
 export async function action({ request, params }: ActionFunctionArgs) {
@@ -88,25 +89,42 @@ export async function action({ request, params }: ActionFunctionArgs) {
 }
 
 export default function PartSalesRoute() {
-  const { customerParts, partUnitSalePrice, itemId } =
-    useLoaderData<typeof loader>();
-
-  const initialValues = {
-    ...partUnitSalePrice,
-    salesUnitOfMeasureCode: partUnitSalePrice?.salesUnitOfMeasureCode ?? "",
-    ...getCustomFields(partUnitSalePrice.customFields),
-    itemId: itemId
-  };
+  const { salesData } = useLoaderData<typeof loader>();
 
   return (
     <VStack spacing={2} className="p-2">
-      <ItemSalePriceForm
-        key={initialValues.itemId}
-        initialValues={initialValues}
-      />
-      {customerParts ? (
-        <CustomerParts customerParts={customerParts} itemId={itemId} />
-      ) : null}
+      <Suspense
+        fallback={
+          <div className="space-y-3 animate-pulse">
+            <div className="h-48 bg-muted rounded-md" />
+            <div className="h-32 bg-muted rounded-md" />
+          </div>
+        }
+      >
+        <Await resolve={salesData}>
+          {(resolved) => {
+            if (!resolved) return null;
+            const { partUnitSalePrice, customerParts, itemId } = resolved;
+            const initialValues = {
+              ...partUnitSalePrice,
+              salesUnitOfMeasureCode: partUnitSalePrice?.salesUnitOfMeasureCode ?? "",
+              ...getCustomFields(partUnitSalePrice.customFields),
+              itemId
+            };
+            return (
+              <>
+                <ItemSalePriceForm
+                  key={initialValues.itemId}
+                  initialValues={initialValues}
+                />
+                {customerParts ? (
+                  <CustomerParts customerParts={customerParts} itemId={itemId} />
+                ) : null}
+              </>
+            );
+          }}
+        </Await>
+      </Suspense>
     </VStack>
   );
 }

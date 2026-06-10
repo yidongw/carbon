@@ -48,6 +48,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const searchParams = new URLSearchParams(url.search);
 
   const inventoryData = (async () => {
+    try {
     let locationId = searchParams.get("location");
 
     if (!locationId) {
@@ -120,6 +121,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       ruleAssignments: rulesData.assignments,
       ruleLibrary: rulesData.library
     };
+    } catch {
+      return null;
+    }
   })();
 
   return { inventoryData };

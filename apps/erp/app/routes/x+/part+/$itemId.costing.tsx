@@ -3,8 +3,9 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import { VStack } from "@carbon/react";
+import { Suspense } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { redirect, useLoaderData } from "react-router";
+import { Await, redirect, useLoaderData } from "react-router";
 import {
   getItemCost,
   getItemCostHistory,
@@ -24,22 +25,25 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { itemId } = params;
   if (!itemId) throw new Error("Could not find itemId");
 
-  const [itemCost, itemCostHistory] = await Promise.all([
-    getItemCost(client, itemId, companyId),
-    getItemCostHistory(client, itemId, companyId)
-  ]);
+  const costingData = (async () => {
+    try {
+      const [itemCost, itemCostHistory] = await Promise.all([
+        getItemCost(client, itemId, companyId),
+        getItemCostHistory(client, itemId, companyId)
+      ]);
 
-  if (itemCost.error) {
-    throw redirect(
-      path.to.items,
-      await flash(request, error(itemCost.error, "Failed to load part costing"))
-    );
-  }
+      if (itemCost.error) return null;
 
-  return {
-    itemCost: itemCost.data,
-    itemCostHistory: itemCostHistory.data ?? []
-  };
+      return {
+        itemCost: itemCost.data,
+        itemCostHistory: itemCostHistory.data ?? []
+      };
+    } catch {
+      return null;
+    }
+  })();
+
+  return { costingData };
 }
 
 export async function action({ request, params }: ActionFunctionArgs) {
@@ -81,23 +85,41 @@ export async function action({ request, params }: ActionFunctionArgs) {
 }
 
 export default function PartCostingRoute() {
-  const { itemCost, itemCostHistory } = useLoaderData<typeof loader>();
+  const { costingData } = useLoaderData<typeof loader>();
 
   return (
     <VStack spacing={2} className="p-2">
-      <ItemCostingForm
-        key={itemCost.itemId}
-        // @ts-expect-error TS2322 - TODO: fix type
-        initialValues={{
-          ...itemCost,
-          itemPostingGroupId: itemCost.itemPostingGroupId ?? undefined,
-          ...getCustomFields(itemCost.customFields)
-        }}
-      />
-      <ItemCostHistoryChart
-        readableId={itemCost.readableIdWithRevision ?? ""}
-        itemCostHistory={itemCostHistory}
-      />
+      <Suspense
+        fallback={
+          <div className="space-y-3 animate-pulse">
+            <div className="h-48 bg-muted rounded-md" />
+            <div className="h-32 bg-muted rounded-md" />
+          </div>
+        }
+      >
+        <Await resolve={costingData}>
+          {(resolved) => {
+            if (!resolved) return null;
+            return (
+              <>
+                <ItemCostingForm
+                  key={resolved.itemCost.itemId}
+                  // @ts-expect-error TS2322 - TODO: fix type
+                  initialValues={{
+                    ...resolved.itemCost,
+                    itemPostingGroupId: resolved.itemCost.itemPostingGroupId ?? undefined,
+                    ...getCustomFields(resolved.itemCost.customFields)
+                  }}
+                />
+                <ItemCostHistoryChart
+                  readableId={resolved.itemCost.readableIdWithRevision ?? ""}
+                  itemCostHistory={resolved.itemCostHistory}
+                />
+              </>
+            );
+          }}
+        </Await>
+      </Suspense>
     </VStack>
   );
 }

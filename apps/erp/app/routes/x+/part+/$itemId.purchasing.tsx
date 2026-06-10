@@ -29,25 +29,27 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { itemId } = params;
   if (!itemId) throw new Error("Could not find itemId");
 
-  const [partPurchasingResult, itemCostHistory] = await Promise.all([
-    getItemReplenishment(client, itemId, companyId),
-    getItemCostHistory(client, itemId, companyId)
-  ]);
+  const purchasingData = (async () => {
+    try {
+      const [partPurchasingResult, itemCostHistory] = await Promise.all([
+        getItemReplenishment(client, itemId, companyId),
+        getItemCostHistory(client, itemId, companyId)
+      ]);
 
-  if (partPurchasingResult.error) {
-    throw redirect(
-      path.to.items,
-      await flash(
-        request,
-        error(partPurchasingResult.error, "Failed to load part purchasing")
-      )
-    );
-  }
+      if (partPurchasingResult.error) return null;
+
+      return {
+        partPurchasing: partPurchasingResult.data,
+        itemCostHistory: itemCostHistory.data ?? []
+      };
+    } catch {
+      return null;
+    }
+  })();
 
   return {
-    partPurchasing: partPurchasingResult.data,
-    batchProperties: getBatchProperties(client, [itemId], companyId),
-    itemCostHistory: itemCostHistory.data ?? []
+    purchasingData,
+    batchProperties: getBatchProperties(client, [itemId], companyId)
   };
 }
 
@@ -91,8 +93,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 }
 
 export default function PartPurchasingRoute() {
-  const { partPurchasing, batchProperties, itemCostHistory } =
-    useLoaderData<typeof loader>();
+  const { purchasingData, batchProperties } = useLoaderData<typeof loader>();
 
   const { itemId } = useParams();
   if (!itemId) throw new Error("Could not find itemId");
@@ -104,58 +105,78 @@ export default function PartPurchasingRoute() {
     partSummary: { itemTrackingType?: string; readableIdWithRevision?: string };
   }>(path.to.part(itemId));
 
-  const initialValues = {
-    ...partPurchasing,
-    preferredSupplierId: partPurchasing?.preferredSupplierId ?? undefined,
-    leadTime: partPurchasing?.leadTime ?? "",
-    purchasingBlocked: partPurchasing?.purchasingBlocked ?? false,
-    purchasingUnitOfMeasureCode:
-      partPurchasing?.purchasingUnitOfMeasureCode ?? "",
-    conversionFactor: partPurchasing?.conversionFactor ?? 1
-  };
+  const isBatchOrSerial = ["Batch", "Serial"].includes(
+    partData?.partSummary?.itemTrackingType ?? ""
+  );
 
   return (
     <VStack spacing={2} className="p-2">
-      <Suspense fallback={null}>
-        <Await resolve={routeData?.supplierParts}>
-          {(supplierPartsResult) => {
-            const supplierParts = supplierPartsResult?.data ?? [];
+      <Suspense
+        fallback={
+          <div className="space-y-3 animate-pulse">
+            <div className="h-48 bg-muted rounded-md" />
+            <div className="h-32 bg-muted rounded-md" />
+          </div>
+        }
+      >
+        <Await resolve={purchasingData}>
+          {(resolved) => {
+            if (!resolved) return null;
+            const { partPurchasing, itemCostHistory } = resolved;
+            const initialValues = {
+              ...partPurchasing,
+              preferredSupplierId: partPurchasing?.preferredSupplierId ?? undefined,
+              leadTime: partPurchasing?.leadTime ?? "",
+              purchasingBlocked: partPurchasing?.purchasingBlocked ?? false,
+              purchasingUnitOfMeasureCode:
+                partPurchasing?.purchasingUnitOfMeasureCode ?? "",
+              conversionFactor: partPurchasing?.conversionFactor ?? 1
+            };
             return (
               <>
-                <ItemPurchasingForm
-                  key={initialValues.itemId}
-                  initialValues={initialValues}
-                  allowedSuppliers={
-                    supplierParts
-                      .map((s) => s.supplierId)
-                      .filter(Boolean) as string[]
-                  }
+                <Suspense fallback={null}>
+                  <Await resolve={routeData?.supplierParts}>
+                    {(supplierPartsResult) => {
+                      const supplierParts = supplierPartsResult?.data ?? [];
+                      return (
+                        <>
+                          <ItemPurchasingForm
+                            key={initialValues.itemId}
+                            initialValues={initialValues}
+                            allowedSuppliers={
+                              supplierParts
+                                .map((s) => s.supplierId)
+                                .filter(Boolean) as string[]
+                            }
+                          />
+                          <SupplierParts supplierParts={supplierParts} />
+                        </>
+                      );
+                    }}
+                  </Await>
+                </Suspense>
+                {isBatchOrSerial && (
+                  <Suspense fallback={null}>
+                    <Await resolve={batchProperties}>
+                      {(resolvedProperties) => (
+                        <BatchPropertiesConfig
+                          itemId={itemId}
+                          key={`batch-properties:${itemId}`}
+                          properties={resolvedProperties.data ?? []}
+                        />
+                      )}
+                    </Await>
+                  </Suspense>
+                )}
+                <ItemCostHistoryChart
+                  readableId={partData?.partSummary?.readableIdWithRevision ?? ""}
+                  itemCostHistory={itemCostHistory}
                 />
-                <SupplierParts supplierParts={supplierParts} />
               </>
             );
           }}
         </Await>
       </Suspense>
-      {["Batch", "Serial"].includes(
-        partData?.partSummary?.itemTrackingType ?? ""
-      ) && (
-        <Suspense fallback={null}>
-          <Await resolve={batchProperties}>
-            {(resolvedProperties) => (
-              <BatchPropertiesConfig
-                itemId={itemId}
-                key={`batch-properties:${itemId}`}
-                properties={resolvedProperties.data ?? []}
-              />
-            )}
-          </Await>
-        </Suspense>
-      )}
-      <ItemCostHistoryChart
-        readableId={partData?.partSummary?.readableIdWithRevision ?? ""}
-        itemCostHistory={itemCostHistory}
-      />
     </VStack>
   );
 }

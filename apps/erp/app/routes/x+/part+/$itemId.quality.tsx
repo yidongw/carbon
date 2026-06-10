@@ -2,8 +2,9 @@ import { assertIsPost, error, success } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
+import { Suspense } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { data, redirect, useLoaderData, useParams } from "react-router";
+import { Await, redirect, useLoaderData, useParams } from "react-router";
 import invariant from "tiny-invariant";
 import {
   getItemSamplingPlan,
@@ -21,18 +22,26 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { itemId } = params;
   invariant(itemId, "itemId is required");
 
-  const [plan, settings] = await Promise.all([
-    getItemSamplingPlan(client, itemId, companyId),
-    getCompanySettings(client, companyId)
-  ]);
+  const qualityData = (async () => {
+    try {
+      const [plan, settings] = await Promise.all([
+        getItemSamplingPlan(client, itemId, companyId),
+        getCompanySettings(client, companyId)
+      ]);
 
-  return data({
-    plan: plan.data,
-    samplingStandard:
-      ((settings.data as any)?.samplingStandard as
-        | "ANSI_Z1_4"
-        | "ISO_2859_1") ?? "ANSI_Z1_4"
-  });
+      return {
+        plan: plan.data,
+        samplingStandard:
+          ((settings.data as any)?.samplingStandard as
+            | "ANSI_Z1_4"
+            | "ISO_2859_1") ?? "ANSI_Z1_4"
+      };
+    } catch {
+      return null;
+    }
+  })();
+
+  return { qualityData };
 }
 
 export async function action({ request, params }: ActionFunctionArgs) {
@@ -68,17 +77,33 @@ export async function action({ request, params }: ActionFunctionArgs) {
 }
 
 export default function PartQualityRoute() {
-  const { plan, samplingStandard } = useLoaderData<typeof loader>();
+  const { qualityData } = useLoaderData<typeof loader>();
   const { itemId } = useParams();
   if (!itemId) throw new Error("itemId is required");
+
   return (
     <div className="p-4">
-      <SamplingPlanForm
-        action={path.to.partQuality(itemId)}
-        itemId={itemId}
-        standard={samplingStandard}
-        initial={plan ?? undefined}
-      />
+      <Suspense
+        fallback={
+          <div className="space-y-3 animate-pulse">
+            <div className="h-48 bg-muted rounded-md" />
+          </div>
+        }
+      >
+        <Await resolve={qualityData}>
+          {(resolved) => {
+            if (!resolved) return null;
+            return (
+              <SamplingPlanForm
+                action={path.to.partQuality(itemId)}
+                itemId={itemId}
+                standard={resolved.samplingStandard}
+                initial={resolved.plan ?? undefined}
+              />
+            );
+          }}
+        </Await>
+      </Suspense>
     </div>
   );
 }

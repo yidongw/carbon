@@ -32,30 +32,34 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const searchParams = new URLSearchParams(url.search);
 
   const planningData = (async () => {
-    let locationId = searchParams.get("location");
+    try {
+      let locationId = searchParams.get("location");
 
-    if (!locationId) {
-      const userDefaults = await getUserDefaults(client, userId, companyId);
-      if (userDefaults.error) return null;
-      locationId = userDefaults.data?.locationId ?? null;
+      if (!locationId) {
+        const userDefaults = await getUserDefaults(client, userId, companyId);
+        if (userDefaults.error) return null;
+        locationId = userDefaults.data?.locationId ?? null;
+      }
+
+      if (!locationId) {
+        const locations = await getLocationsList(client, companyId);
+        if (locations.error || !locations.data?.length) return null;
+        locationId = locations.data[0].id as string;
+      }
+
+      const partPlanning = await getItemPlanning(
+        client,
+        itemId,
+        companyId,
+        locationId
+      );
+
+      if (partPlanning.error || !partPlanning.data) return null;
+
+      return { partPlanning: partPlanning.data, locationId };
+    } catch {
+      return null;
     }
-
-    if (!locationId) {
-      const locations = await getLocationsList(client, companyId);
-      if (locations.error || !locations.data?.length) return null;
-      locationId = locations.data[0].id as string;
-    }
-
-    const partPlanning = await getItemPlanning(
-      client,
-      itemId,
-      companyId,
-      locationId
-    );
-
-    if (partPlanning.error || !partPlanning.data) return null;
-
-    return { partPlanning: partPlanning.data, locationId };
   })();
 
   return { planningData };
