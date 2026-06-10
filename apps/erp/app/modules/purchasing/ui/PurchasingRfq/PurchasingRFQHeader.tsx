@@ -57,7 +57,7 @@ const PurchasingRFQHeader = () => {
   const cancelReasonModal = useDisclosure();
   const deleteRFQModal = useDisclosure();
   const compareQuotesModal = useDisclosure();
-  const { toggleExplorer, toggleProperties } = usePanels();
+  const { hasExplorer, toggleExplorer, toggleProperties } = usePanels();
 
   const permissions = usePermissions();
   const integrations = useIntegrations();
@@ -91,12 +91,12 @@ const PurchasingRFQHeader = () => {
     <div className="flex flex-shrink-0 items-center justify-between p-2 bg-background border-b h-[50px] overflow-x-auto scrollbar-hide ">
       <HStack className="w-full justify-between">
         <HStack>
-          <IconButton
+          {hasExplorer && <IconButton
             aria-label={t`Toggle Explorer`}
             icon={<LuPanelLeft />}
-            onClick={toggleExplorer}
-            variant="ghost"
-          />
+              onClick={toggleExplorer}
+              variant="ghost"
+            />}
           <Link to={path.to.purchasingRfqDetails(rfqId)}>
             <Heading size="h4" className="flex items-center gap-2">
               <span>{routeData?.rfqSummary?.rfqId}</span>

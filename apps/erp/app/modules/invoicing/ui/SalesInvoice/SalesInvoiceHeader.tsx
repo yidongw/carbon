@@ -89,7 +89,7 @@ const SalesInvoiceHeader = () => {
 
   if (!routeData?.salesInvoice) throw new Error("salesInvoice not found");
   const { salesInvoice } = routeData;
-  const { toggleExplorer, toggleProperties } = usePanels();
+  const { hasExplorer, toggleExplorer, toggleProperties } = usePanels();
   const isPosted = salesInvoice.postingDate !== null;
   const isVoided = salesInvoice.status === "Voided";
 
@@ -180,12 +180,12 @@ const SalesInvoiceHeader = () => {
       <div className="flex flex-shrink-0 items-center justify-between p-2 bg-background border-b h-[50px] overflow-x-auto scrollbar-hide">
         <HStack className="w-full justify-between">
           <HStack>
-            <IconButton
+            {hasExplorer && <IconButton
               aria-label={t`Toggle Explorer`}
               icon={<LuPanelLeft />}
               onClick={toggleExplorer}
               variant="ghost"
-            />
+            />}
             <Link to={path.to.salesInvoiceDetails(invoiceId)}>
               <Heading size="h4" className="flex items-center gap-2">
                 <span>{routeData?.salesInvoice?.invoiceId}</span>
