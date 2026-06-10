@@ -465,7 +465,7 @@ const PurchaseOrderLineForm = ({
                           </div>
                         </div>
                       ) : (
-                        "A purchase order line contains order details for a particular item"
+                        <Trans>A purchase order line contains order details for a particular item</Trans>
                       )}
                     </ModalCardDescription>
                   </ModalCardHeader>
