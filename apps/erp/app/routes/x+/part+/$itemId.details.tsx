@@ -13,7 +13,7 @@ import type {
 } from "react-router";
 import { Await, redirect, useParams } from "react-router";
 import { DeferredFiles } from "~/components";
-import { ExplorerSkeleton } from "~/components/Skeletons";
+import { ExplorerSkeleton, PartContentSkeleton } from "~/components/Skeletons";
 import { usePermissions, useRouteData } from "~/hooks";
 import type { ItemFile, MakeMethod, PartSummary } from "~/modules/items";
 import {
@@ -25,9 +25,6 @@ import {
   upsertItemManufacturing,
   upsertPart
 } from "~/modules/items";
-import { ItemDocuments, ItemNotes } from "~/modules/items/ui/Item";
-import ItemManufacturingForm from "~/modules/items/ui/Item/ItemManufacturingForm";
-import MakeMethodTools from "~/modules/items/ui/Item/MakeMethodTools";
 import type { PartDetailsData } from "./$itemId";
 import { getCustomFields, setCustomFields } from "~/utils/form";
 import { path } from "~/utils/path";
@@ -43,9 +40,23 @@ const CadModel = lazy(() => import("~/components/CadModel"));
 const ConfigurationParametersForm = lazy(
   () => import("~/modules/items/ui/Parts/ConfigurationParameters")
 );
+const ItemDocuments = lazy(
+  () => import("~/modules/items/ui/Item/ItemDocuments")
+);
+const ItemManufacturingForm = lazy(
+  () => import("~/modules/items/ui/Item/ItemManufacturingForm")
+);
+const ItemNotes = lazy(() => import("~/modules/items/ui/Item/ItemNotes"));
 const ItemRiskRegister = lazy(
   () => import("~/modules/items/ui/Item/ItemRiskRegister")
 );
+const MakeMethodTools = lazy(
+  () => import("~/modules/items/ui/Item/MakeMethodTools")
+);
+
+export function HydrateFallback() {
+  return <PartContentSkeleton />;
+}
 
 function PartDetailsContent({
   detailsData,
@@ -153,12 +164,14 @@ function PartDetailsContent({
         <>
           <DeferredFiles resolve={partData.files}>
             {(resolvedFiles) => (
-              <ItemDocuments
-                files={resolvedFiles}
-                itemId={itemId}
-                modelUpload={partData.partSummary ?? undefined}
-                type="Part"
-              />
+              <Suspense fallback={<ExplorerSkeleton />}>
+                <ItemDocuments
+                  files={resolvedFiles}
+                  itemId={itemId}
+                  modelUpload={partData.partSummary ?? undefined}
+                  type="Part"
+                />
+              </Suspense>
             )}
           </DeferredFiles>
 
@@ -284,12 +297,14 @@ export default function PartDetailsRoute() {
   return (
     <VStack spacing={2} className="p-2">
       {permissions.is("employee") && (
-        <ItemNotes
-          id={partData.partSummary?.id ?? null}
-          title={partData.partSummary?.name ?? ""}
-          subTitle={partData.partSummary?.readableIdWithRevision ?? ""}
-          notes={partData.partSummary?.notes as JSONContent}
-        />
+        <Suspense fallback={<ExplorerSkeleton />}>
+          <ItemNotes
+            id={partData.partSummary?.id ?? null}
+            title={partData.partSummary?.name ?? ""}
+            subTitle={partData.partSummary?.readableIdWithRevision ?? ""}
+            notes={partData.partSummary?.notes as JSONContent}
+          />
+        </Suspense>
       )}
       <Suspense fallback={<ExplorerSkeleton />}>
         <Await resolve={partData.detailsData}>

@@ -17,6 +17,18 @@ export function ExplorerSkeleton() {
  * Mirrors the shared `Table` layout (toolbar + header + rows) so swapping
  * in the real table causes no layout shift.
  */
+/** Visible placeholder for the part detail content panel while a child route loads. */
+export function PartContentSkeleton() {
+  return (
+    <div className="flex flex-col gap-3 p-4" role="status" aria-busy="true">
+      <Skeleton className="h-8 w-2/3" />
+      <Skeleton className="h-24 w-full" />
+      <Skeleton className="h-40 w-full" />
+      <Skeleton className="h-32 w-full" />
+    </div>
+  );
+}
+
 export function TableSkeleton({ rows = 12 }: { rows?: number }) {
   return (
     <div
