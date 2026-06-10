@@ -20,6 +20,7 @@ import { ResizablePanels } from "~/components/Layout";
 import type { ItemFile, PartSummary } from "~/modules/items";
 import {
   getItemFiles,
+  getMakeMethods,
   getPart,
   getPickMethods,
   getSupplierParts
@@ -82,6 +83,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     files: getItemFiles(client, itemId, companyId),
     supplierParts: supplierPartsPromise.then((r) => r.data ?? []),
     pickMethods: pickMethodsPromise.then((r) => r.data ?? []),
+    makeMethods: getMakeMethods(client, itemId, companyId),
     tags: tagsPromise.then((r) => r.data ?? [])
   };
 }
@@ -121,6 +123,7 @@ export async function clientLoader({
       files: Promise.resolve([]),
       supplierParts: Promise.resolve([]),
       pickMethods: Promise.resolve([]),
+      makeMethods: Promise.resolve({ data: [], error: null }),
       tags: Promise.resolve([]),
       shell: true as const
     };
