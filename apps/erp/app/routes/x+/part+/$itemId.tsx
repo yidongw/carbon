@@ -14,6 +14,7 @@ import {
   Outlet,
   redirect,
   useLoaderData,
+  useNavigation,
   useParams
 } from "react-router";
 import { PanelProvider, ResizablePanels } from "~/components/Layout";
@@ -243,8 +244,13 @@ function PartRouteLoaded({
 
 export default function PartRoute() {
   const data = useLoaderData<typeof loader>();
+  const navigation = useNavigation();
   const { itemId } = useParams();
   if (!itemId) throw new Error("Could not find itemId");
+
+  if (navigation.state === "loading") {
+    return <PartPageSkeleton />;
+  }
 
   return (
     <Suspense fallback={<PartPageSkeleton />}>
