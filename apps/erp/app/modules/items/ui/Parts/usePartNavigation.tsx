@@ -9,10 +9,10 @@ import {
   LuTags
 } from "react-icons/lu";
 import { useParams } from "react-router";
-import { usePermissions, useRouteData } from "~/hooks";
+import { usePermissions } from "~/hooks";
 import type { Role } from "~/types";
 import { path } from "~/utils/path";
-import type { PartSummary } from "../../types";
+import { usePartRouteData } from "./PartResolvedDataContext";
 
 export function usePartNavigation() {
   const { t } = useLingui();
@@ -20,13 +20,9 @@ export function usePartNavigation() {
   const { itemId } = useParams();
   if (!itemId) throw new Error("itemId not found");
 
-  const routeData = useRouteData<{ partSummary: PartSummary }>(
-    path.to.part(itemId)
-  );
-  const replenishment =
-    routeData?.partSummary?.replenishmentSystem ?? "Buy";
-  const itemTrackingType =
-    routeData?.partSummary?.itemTrackingType ?? "Inventory";
+  const routeData = usePartRouteData();
+  const replenishment = routeData?.partSummary?.replenishmentSystem ?? "Buy";
+  const itemTrackingType = routeData?.partSummary?.itemTrackingType ?? "Inventory";
 
   return [
     {
