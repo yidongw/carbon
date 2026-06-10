@@ -9,6 +9,7 @@ import { Await, redirect, useLoaderData, useParams } from "react-router";
 import { useRouteData } from "~/hooks";
 import { getBatchProperties } from "~/modules/inventory";
 import BatchPropertiesConfig from "~/modules/inventory/ui/Batches/BatchPropertiesConfig";
+import type { PostgrestResponse } from "@supabase/supabase-js";
 import type { SupplierPart } from "~/modules/items";
 import {
   getItemCostHistory,
@@ -95,10 +96,9 @@ export default function PartPurchasingRoute() {
 
   const { itemId } = useParams();
   if (!itemId) throw new Error("Could not find itemId");
-  const routeData = useRouteData<{ supplierParts: SupplierPart[] }>(
-    path.to.part(itemId)
-  );
-  const supplierParts = routeData?.supplierParts ?? [];
+  const routeData = useRouteData<{
+    supplierParts: Promise<PostgrestResponse<SupplierPart>>;
+  }>(path.to.part(itemId));
 
   const partData = useRouteData<{
     partSummary: { itemTrackingType?: string; readableIdWithRevision?: string };
@@ -116,14 +116,27 @@ export default function PartPurchasingRoute() {
 
   return (
     <VStack spacing={2} className="p-2">
-      <ItemPurchasingForm
-        key={initialValues.itemId}
-        initialValues={initialValues}
-        allowedSuppliers={
-          supplierParts.map((s) => s.supplierId).filter(Boolean) as string[]
-        }
-      />
-      <SupplierParts supplierParts={supplierParts} />
+      <Suspense fallback={null}>
+        <Await resolve={routeData?.supplierParts}>
+          {(supplierPartsResult) => {
+            const supplierParts = supplierPartsResult?.data ?? [];
+            return (
+              <>
+                <ItemPurchasingForm
+                  key={initialValues.itemId}
+                  initialValues={initialValues}
+                  allowedSuppliers={
+                    supplierParts
+                      .map((s) => s.supplierId)
+                      .filter(Boolean) as string[]
+                  }
+                />
+                <SupplierParts supplierParts={supplierParts} />
+              </>
+            );
+          }}
+        </Await>
+      </Suspense>
       {["Batch", "Serial"].includes(
         partData?.partSummary?.itemTrackingType ?? ""
       ) && (

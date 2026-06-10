@@ -61,12 +61,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { itemId } = params;
   if (!itemId) throw new Error("Could not find itemId");
 
-  const [partSummary, supplierParts, pickMethods, tags] = await Promise.all([
-    getPart(client, itemId, companyId),
-    getSupplierParts(client, itemId, companyId),
-    getPickMethods(client, itemId, companyId),
-    getTagsList(client, companyId, "part")
-  ]);
+  const partSummary = await getPart(client, itemId, companyId);
 
   if (partSummary.data?.companyId !== companyId) {
     throw redirect(path.to.items);
@@ -117,10 +112,10 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   return {
     partSummary: partSummary.data,
     files: getItemFiles(client, itemId, companyId),
-    supplierParts: supplierParts.data ?? [],
-    pickMethods: pickMethods.data ?? [],
+    supplierParts: getSupplierParts(client, itemId, companyId),
+    pickMethods: getPickMethods(client, itemId, companyId),
     makeMethods: getMakeMethods(client, itemId, companyId),
-    tags: tags.data ?? [],
+    tags: getTagsList(client, companyId, "part"),
     usedIn: getPartUsedIn(client, itemId, companyId),
     methodTree
   };

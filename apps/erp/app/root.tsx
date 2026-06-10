@@ -22,7 +22,9 @@ import { modeValidator, themes } from "@carbon/utils";
 import { I18nProvider } from "@react-aria/i18n";
 import { QueryClient } from "@tanstack/react-query";
 import { Analytics } from "@vercel/analytics/react";
+import NProgress from "nprogress";
 import type React from "react";
+import { useEffect } from "react";
 import type {
   ActionFunctionArgs,
   LinksFunction,
@@ -37,13 +39,14 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLoaderData
+  useLoaderData,
+  useNavigation
 } from "react-router";
 import SonnerStyle from "sonner/dist/styles.css?url";
 import { loadLinguiCatalogForRequest } from "~/services/lingui.server";
 import { getMode, setMode } from "~/services/mode.server";
 import Background from "~/styles/background.css?url";
-import NProgress from "~/styles/nprogress.css?url";
+import NProgressStyle from "~/styles/nprogress.css?url";
 import Tailwind from "~/styles/tailwind.css?url";
 import type { Route } from "./+types/root";
 import "./polyfill";
@@ -56,7 +59,7 @@ export const links: LinksFunction = () => {
   return [
     { rel: "stylesheet", href: Tailwind },
     { rel: "stylesheet", href: Background },
-    { rel: "stylesheet", href: NProgress },
+    { rel: "stylesheet", href: NProgressStyle },
     { rel: "stylesheet", href: SonnerStyle }
   ];
 };
@@ -221,6 +224,18 @@ export function Document({
   );
 }
 
+function NavigationProgress() {
+  const navigation = useNavigation();
+  useEffect(() => {
+    if (navigation.state !== "idle") {
+      NProgress.start();
+    } else {
+      NProgress.done();
+    }
+  }, [navigation.state]);
+  return null;
+}
+
 export default function App() {
   const loaderData = useLoaderData<typeof loader>();
   const env = loaderData?.env ?? {};
@@ -250,6 +265,7 @@ export default function App() {
         <I18nProvider locale={prefs.locale}>
           <TooltipProvider delayDuration={200}>
             <Document mode={mode} theme={theme} lang={appLanguage}>
+              <NavigationProgress />
               <Outlet />
               <script
                 dangerouslySetInnerHTML={{

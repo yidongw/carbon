@@ -65,15 +65,13 @@ const PartProperties = () => {
   const routeData = useRouteData<{
     partSummary: PartSummary;
     files: Promise<ItemFile[]>;
-    supplierParts: SupplierPart[];
-    pickMethods: PickMethod[];
+    supplierParts: Promise<PostgrestResponse<SupplierPart>>;
+    pickMethods: Promise<PostgrestResponse<PickMethod>>;
     makeMethods: Promise<PostgrestResponse<MakeMethod>>;
-    tags: { name: string }[];
+    tags: Promise<PostgrestResponse<{ name: string }>>;
   }>(path.to.part(itemId));
 
   const locations = sharedPartsData?.locations ?? [];
-  const supplierParts = routeData?.supplierParts ?? [];
-  const pickMethods = routeData?.pickMethods ?? [];
 
   // const optimisticAssignment = useOptimisticAssignment({
   //   id: itemId,
@@ -539,25 +537,42 @@ const PartProperties = () => {
             </Await>
           </Suspense>
         )}
-        {routeData?.partSummary?.replenishmentSystem?.includes("Buy") &&
-          supplierParts.map((method) => (
-            <MethodBadge
-              key={method.id}
-              type="Purchase to Order"
-              text={
-                suppliers.find((s) => s.id === method.supplierId)?.name ?? ""
+        {routeData?.partSummary?.replenishmentSystem?.includes("Buy") && (
+          <Suspense fallback={null}>
+            <Await resolve={routeData?.supplierParts}>
+              {(supplierPartsResult) =>
+                supplierPartsResult.data?.map((method) => (
+                  <MethodBadge
+                    key={method.id}
+                    type="Purchase to Order"
+                    text={
+                      suppliers.find((s) => s.id === method.supplierId)?.name ??
+                      ""
+                    }
+                    to={path.to.partPurchasing(itemId)}
+                  />
+                ))
               }
-              to={path.to.partPurchasing(itemId)}
-            />
-          ))}
-        {pickMethods.map((method) => (
-          <MethodBadge
-            key={method.locationId}
-            type="Pull from Inventory"
-            text={locations.find((l) => l.id === method.locationId)?.name ?? ""}
-            to={path.to.partInventoryLocation(itemId, method.locationId)}
-          />
-        ))}
+            </Await>
+          </Suspense>
+        )}
+        <Suspense fallback={null}>
+          <Await resolve={routeData?.pickMethods}>
+            {(pickMethodsResult) =>
+              pickMethodsResult?.data?.map((method) => (
+                <MethodBadge
+                  key={method.locationId}
+                  type="Pull from Inventory"
+                  text={
+                    locations.find((l) => l.id === method.locationId)?.name ??
+                    ""
+                  }
+                  to={path.to.partInventoryLocation(itemId, method.locationId)}
+                />
+              ))
+            }
+          </Await>
+        </Suspense>
       </VStack>
       <ValidatedForm
         defaultValues={{
@@ -599,24 +614,30 @@ const PartProperties = () => {
           />
         </ValidatedForm>
       )}
-      <ValidatedForm
-        defaultValues={{
-          tags: routeData?.partSummary?.tags ?? []
-        }}
-        validator={z.object({
-          tags: z.array(z.string()).optional()
-        })}
-        className="w-full"
-      >
-        <Tags
-          availableTags={routeData?.tags ?? []}
-          label={t`Tags`}
-          name="tags"
-          table="part"
-          inline
-          onChange={onUpdateTags}
-        />
-      </ValidatedForm>
+      <Suspense fallback={null}>
+        <Await resolve={routeData?.tags}>
+          {(tagsResult) => (
+            <ValidatedForm
+              defaultValues={{
+                tags: routeData?.partSummary?.tags ?? []
+              }}
+              validator={z.object({
+                tags: z.array(z.string()).optional()
+              })}
+              className="w-full"
+            >
+              <Tags
+                availableTags={tagsResult?.data ?? []}
+                label={t`Tags`}
+                name="tags"
+                table="part"
+                inline
+                onChange={onUpdateTags}
+              />
+            </ValidatedForm>
+          )}
+        </Await>
+      </Suspense>
 
       <CustomFormInlineFields
         customFields={
