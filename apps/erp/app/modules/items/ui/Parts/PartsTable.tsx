@@ -183,7 +183,7 @@ const PartsTable = memo(({ data, tags, count, itemPostingGroups: rawItemPostingG
             />
             <Hyperlink
               to={path.to.partDetails(row.original.id!)}
-              prefetch="intent"
+              prefetch="none"
               className="min-w-0"
               onMouseEnter={() => {
                 if (!row.original.id) return;

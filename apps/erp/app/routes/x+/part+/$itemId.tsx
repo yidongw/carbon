@@ -139,7 +139,9 @@ export async function clientLoader({
 
   const shell = consumePartShell(key);
   if (shell) {
-    serverLoader<typeof loader>().then((fresh) => setPartRouteCache(key, fresh));
+    serverLoader<typeof loader>()
+      .then((fresh) => setPartRouteCache(key, fresh))
+      .catch(() => clearPartRouteCache(key));
     return createPartShellLoaderData(shell, { shell: true });
   }
 
@@ -271,7 +273,7 @@ function PartRouteLoaded({
             <PartExplorerPanel
               usedInGroups={data.usedInGroups}
               methodTree={data.methodTree}
-              partSummary={data.partSummary}
+              partSummary={Promise.resolve(partSummary)}
             />
           }
           content={
