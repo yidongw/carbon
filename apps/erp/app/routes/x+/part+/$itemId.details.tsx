@@ -206,7 +206,66 @@ export function HydrateFallback() {
   return <PartDetailsPageShell />;
 }
 
-function PartDetailsContent({
+function PartDetailsEagerSections({
+  partData,
+  itemId
+}: {
+  partData: {
+    partSummary: PartSummary;
+    files: Promise<ItemFile[]>;
+  };
+  itemId: string;
+}) {
+  const { t } = useLingui();
+  const permissions = usePermissions();
+
+  if (!permissions.is("employee")) {
+    return null;
+  }
+
+  return (
+    <>
+      <ItemNotes
+        id={partData.partSummary.id ?? itemId}
+        title={partData.partSummary.name ?? ""}
+        subTitle={partData.partSummary.readableIdWithRevision ?? ""}
+        notes={partData.partSummary.notes as JSONContent}
+      />
+      <DeferredFiles resolve={partData.files}>
+        {(resolvedFiles) => (
+          <Suspense fallback={<ExplorerSkeleton />}>
+            <ItemDocuments
+              files={resolvedFiles}
+              itemId={itemId}
+              modelUpload={partData.partSummary}
+              type="Part"
+            />
+          </Suspense>
+        )}
+      </DeferredFiles>
+      <Suspense
+        fallback={
+          <div className="p-4">
+            <Skeleton className="h-48 w-full" />
+          </div>
+        }
+      >
+        <CadModel
+          key={partData.partSummary.id ?? itemId}
+          isReadOnly={!permissions.can("update", "parts")}
+          metadata={{ itemId }}
+          modelPath={partData.partSummary.modelPath ?? null}
+          title={t`CAD Model`}
+        />
+      </Suspense>
+      <Suspense fallback={<ExplorerSkeleton />}>
+        <ItemRiskRegister itemId={itemId} />
+      </Suspense>
+    </>
+  );
+}
+
+function PartDetailsManufacturingSections({
   detailsData,
   partData,
   makeMethods,
@@ -215,12 +274,10 @@ function PartDetailsContent({
   detailsData: PartDetailsData;
   partData: {
     partSummary: PartSummary;
-    files: Promise<ItemFile[]>;
   };
   makeMethods: MakeMethod[];
   itemId: string;
 }) {
-  const { t } = useLingui();
   const permissions = usePermissions();
   const { methodData, tags } = detailsData;
 
@@ -236,10 +293,12 @@ function PartDetailsContent({
     partData.partSummary?.replenishmentSystem ?? ""
   );
 
+  if (!permissions.is("employee") || !methodData || !isManufactured) {
+    return null;
+  }
+
   return (
     <>
-      {permissions.is("employee") && methodData && isManufactured && (
-        <>
           <Suspense fallback={<Menubar />}>
             <MakeMethodTools
               itemId={methodData.makeMethod.itemId}
@@ -303,42 +362,6 @@ function PartDetailsContent({
               tags={tags}
             />
           </Suspense>
-        </>
-      )}
-      {permissions.is("employee") && (
-        <>
-          <DeferredFiles resolve={partData.files}>
-            {(resolvedFiles) => (
-              <Suspense fallback={<ExplorerSkeleton />}>
-                <ItemDocuments
-                  files={resolvedFiles}
-                  itemId={itemId}
-                  modelUpload={partData.partSummary ?? undefined}
-                  type="Part"
-                />
-              </Suspense>
-            )}
-          </DeferredFiles>
-
-          <Suspense
-            fallback={
-              <div className="p-4">
-                <Skeleton className="h-48 w-full" />
-              </div>
-            }
-          >
-            <CadModel
-              isReadOnly={!permissions.can("update", "parts")}
-              metadata={{ itemId }}
-              modelPath={partData.partSummary?.modelPath ?? null}
-              title={t`CAD Model`}
-            />
-          </Suspense>
-          <Suspense fallback={<ExplorerSkeleton />}>
-            <ItemRiskRegister itemId={itemId} />
-          </Suspense>
-        </>
-      )}
     </>
   );
 }
@@ -428,31 +451,27 @@ export default function PartDetailsRoute() {
   const { itemId } = useParams();
   if (!itemId) throw new Error("Could not find itemId");
 
-  const permissions = usePermissions();
   const { detailsBundle } = useLoaderData<typeof loader>();
-
   const partData = usePartRouteData();
-  const partSummary = partData?.partSummary;
+
+  if (!partData) {
+    return <PartDetailsPageShell />;
+  }
+
+  const resolvedPartData = {
+    partSummary: partData.partSummary,
+    files: partData.files
+  };
 
   return (
-    <VStack spacing={2} className="p-2">
-      {permissions.is("employee") && (
-        <ItemNotes
-          id={partSummary?.id ?? itemId}
-          title={partSummary?.name ?? ""}
-          subTitle={partSummary?.readableIdWithRevision ?? ""}
-          notes={partSummary?.notes as JSONContent}
-        />
-      )}
+    <VStack spacing={2} className="min-h-0 p-2">
+      <PartDetailsEagerSections partData={resolvedPartData} itemId={itemId} />
       <Suspense fallback={<PartDetailsSectionsShell />}>
         <Await resolve={detailsBundle}>
           {({ detailsData, makeMethods }) => (
-            <PartDetailsContent
+            <PartDetailsManufacturingSections
               detailsData={detailsData}
-              partData={{
-                partSummary: partSummary ?? ({ id: itemId } as PartSummary),
-                files: partData?.files ?? Promise.resolve([])
-              }}
+              partData={resolvedPartData}
               makeMethods={makeMethods}
               itemId={itemId}
             />

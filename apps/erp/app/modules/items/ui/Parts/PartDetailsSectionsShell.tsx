@@ -40,11 +40,13 @@ function PartPanelsLayoutShell({
   properties: ReactNode;
 }) {
   return (
-    <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
+    <div className="flex min-h-0 flex-1 overflow-hidden w-full">
       <div className="flex w-72 flex-shrink-0 flex-col overflow-y-auto border-r bg-card shadow-lg">
         {explorer}
       </div>
-      <div className="flex min-w-0 flex-1 overflow-y-auto">{content}</div>
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+        {content}
+      </div>
       <div className="flex w-80 flex-shrink-0 flex-col overflow-y-auto border-l bg-card">
         {properties}
       </div>
@@ -54,7 +56,7 @@ function PartPanelsLayoutShell({
 
 export function PartPageHydrateFallback() {
   return (
-    <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
+    <div className="flex h-[calc(100dvh-49px)] min-h-0 flex-col overflow-hidden w-full">
       <div className="flex h-[50px] flex-shrink-0 items-center border-b bg-card px-4">
         <Skeleton className="h-6 w-24" />
         <div className="ml-auto flex gap-2">
