@@ -223,29 +223,47 @@ export default function PartDetailsRoute() {
 
   if (!partData) throw new Error("Could not find part data");
 
+  const isMakeOrBoth = ["Make", "Buy and Make"].includes(
+    partData.partSummary?.replenishmentSystem ?? ""
+  );
+
   return (
     <VStack spacing={2} className="p-2">
       {permissions.is("employee") && (
-        <Suspense fallback={null}>
-          <Await resolve={methodData}>
-            {(resolved) => {
-              if (!resolved) return null;
+        <>
+          <ItemNotes
+            id={partData.partSummary?.id ?? null}
+            title={partData.partSummary?.name ?? ""}
+            subTitle={partData.partSummary?.readableIdWithRevision ?? ""}
+            notes={partData.partSummary?.notes as JSONContent}
+          />
+          <Suspense
+            fallback={
+              isMakeOrBoth ? (
+                <div className="space-y-3 animate-pulse">
+                  <div className="h-9 bg-muted rounded-md w-2/3" />
+                  <div className="h-32 bg-muted rounded-md" />
+                  <div className="h-48 bg-muted rounded-md" />
+                  <div className="h-48 bg-muted rounded-md" />
+                </div>
+              ) : null
+            }
+          >
+            <Await resolve={methodData}>
+              {(resolved) => {
+                if (!resolved) return null;
 
-              const manufacturingInitialValues = resolved.partManufacturing
-                ? {
-                    ...resolved.partManufacturing,
-                    lotSize: resolved.partManufacturing.lotSize ?? 0,
-                    ...getCustomFields(resolved.partManufacturing.customFields)
-                  }
-                : null;
+                const manufacturingInitialValues = resolved.partManufacturing
+                  ? {
+                      ...resolved.partManufacturing,
+                      lotSize: resolved.partManufacturing.lotSize ?? 0,
+                      ...getCustomFields(resolved.partManufacturing.customFields)
+                    }
+                  : null;
 
-              const isMakeOrBoth = ["Make", "Buy and Make"].includes(
-                partData.partSummary?.replenishmentSystem ?? ""
-              );
-
-              return (
-                <>
-                  {isMakeOrBoth && (
+                return (
+                  <>
+                    {isMakeOrBoth && (
                     <>
                       <Suspense fallback={<Menubar />}>
                         <Await resolve={partData?.makeMethods}>
@@ -280,12 +298,6 @@ export default function PartDetailsRoute() {
                       )}
                     </>
                   )}
-                  <ItemNotes
-                    id={partData.partSummary?.id ?? null}
-                    title={partData.partSummary?.name ?? ""}
-                    subTitle={partData.partSummary?.readableIdWithRevision ?? ""}
-                    notes={partData.partSummary?.notes as JSONContent}
-                  />
                   {isMakeOrBoth && (
                     <>
                       <BillOfMaterial
@@ -337,6 +349,7 @@ export default function PartDetailsRoute() {
             }}
           </Await>
         </Suspense>
+        </>
       )}
       {permissions.is("employee") && (
         <>

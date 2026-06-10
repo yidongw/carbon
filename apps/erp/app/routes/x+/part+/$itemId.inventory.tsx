@@ -4,8 +4,9 @@ import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import { VStack } from "@carbon/react";
 import { pluckUnique } from "@carbon/utils";
+import { Suspense } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { redirect, useLoaderData } from "react-router";
+import { Await, redirect, useLoaderData } from "react-router";
 import { useStorageUnits } from "~/components/Form/StorageUnit";
 import { useRouteData } from "~/hooks";
 import {
@@ -45,123 +46,83 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.search);
-  let locationId = searchParams.get("location");
 
-  if (!locationId) {
-    const userDefaults = await getUserDefaults(client, userId, companyId);
-    if (userDefaults.error) {
-      throw redirect(
-        path.to.part(itemId),
-        await flash(
-          request,
-          error(userDefaults.error, "Failed to load default location")
-        )
-      );
+  const inventoryData = (async () => {
+    let locationId = searchParams.get("location");
+
+    if (!locationId) {
+      const userDefaults = await getUserDefaults(client, userId, companyId);
+      if (userDefaults.error) return null;
+      locationId = userDefaults.data?.locationId ?? null;
     }
 
-    locationId = userDefaults.data?.locationId ?? null;
-  }
-
-  if (!locationId) {
-    const locations = await getLocationsList(client, companyId);
-    if (locations.error || !locations.data?.length) {
-      throw redirect(
-        path.to.part(itemId),
-        await flash(
-          request,
-          error(locations.error, "Failed to load any locations")
-        )
-      );
+    if (!locationId) {
+      const locations = await getLocationsList(client, companyId);
+      if (locations.error || !locations.data?.length) return null;
+      locationId = locations.data[0].id as string;
     }
-    locationId = locations.data?.[0].id as string;
-  }
 
-  let [partInventory] = await Promise.all([
-    getPickMethod(client, itemId, companyId, locationId)
-  ]);
-
-  if (partInventory.error || !partInventory.data) {
-    const insertPickMethod = await upsertPickMethod(client, {
+    let partInventory = await getPickMethod(
+      client,
       itemId,
       companyId,
-      locationId,
-      customFields: {},
-      createdBy: userId
-    });
+      locationId
+    );
 
-    if (insertPickMethod.error) {
-      throw redirect(
-        path.to.part(itemId),
-        await flash(
-          request,
-          error(insertPickMethod.error, "Failed to insert part inventory")
-        )
-      );
-    }
-
-    partInventory = await getPickMethod(client, itemId, companyId, locationId);
     if (partInventory.error || !partInventory.data) {
-      throw redirect(
-        path.to.part(itemId),
-        await flash(
-          request,
-          error(partInventory.error, "Failed to load part inventory")
-        )
-      );
+      const insertPickMethod = await upsertPickMethod(client, {
+        itemId,
+        companyId,
+        locationId,
+        customFields: {},
+        createdBy: userId
+      });
+      if (insertPickMethod.error) return null;
+
+      partInventory = await getPickMethod(client, itemId, companyId, locationId);
+      if (partInventory.error || !partInventory.data) return null;
     }
-  }
 
-  const [
-    quantities,
-    itemStorageUnitQuantities,
-    shelfLife,
-    bomHasShelfLifeManagedInput,
-    rulesData
-  ] = await Promise.all([
-    getItemQuantities(client, itemId, companyId, locationId),
-    getItemStorageUnitQuantities(client, itemId, companyId, locationId),
-    getItemShelfLife(client, itemId),
-    getBomHasShelfLifeManagedInput(client, itemId, companyId),
-    getItemRulesDataForItem(client, itemId, companyId)
-  ]);
-  if (quantities.error) {
-    throw redirect(
-      path.to.items,
-      await flash(request, error(quantities, "Failed to load part quantities"))
+    const [
+      quantities,
+      itemStorageUnitQuantities,
+      shelfLife,
+      bomHasShelfLifeManagedInput,
+      rulesData
+    ] = await Promise.all([
+      getItemQuantities(client, itemId, companyId, locationId),
+      getItemStorageUnitQuantities(client, itemId, companyId, locationId),
+      getItemShelfLife(client, itemId),
+      getBomHasShelfLifeManagedInput(client, itemId, companyId),
+      getItemRulesDataForItem(client, itemId, companyId)
+    ]);
+
+    if (quantities.error || !itemStorageUnitQuantities.data) return null;
+
+    const trackedEntityIds = pluckUnique(
+      itemStorageUnitQuantities.data,
+      (row) => row.trackedEntityId
     );
-  }
-
-  if (itemStorageUnitQuantities.error || !itemStorageUnitQuantities.data) {
-    throw redirect(
-      path.to.items,
-      await flash(
-        request,
-        error(itemStorageUnitQuantities, "Failed to load part quantities")
-      )
+    const trackedEntityExpirations = await getTrackedEntityExpirations(
+      client,
+      trackedEntityIds
     );
-  }
 
-  const trackedEntityIds = pluckUnique(
-    itemStorageUnitQuantities.data,
-    (row) => row.trackedEntityId
-  );
-  const trackedEntityExpirations = await getTrackedEntityExpirations(
-    client,
-    trackedEntityIds
-  );
+    return {
+      partInventory: partInventory.data,
+      itemStorageUnitQuantities: itemStorageUnitQuantities.data,
+      quantities: quantities.data,
+      shelfLife: shelfLife.data,
+      bomHasShelfLifeManagedInput,
+      trackedEntityExpirations,
+      itemId,
+      locationId,
+      ruleAssignments: rulesData.assignments,
+      ruleLibrary: rulesData.library
+    };
+  })();
 
-  return {
-    partInventory: partInventory.data,
-    itemStorageUnitQuantities: itemStorageUnitQuantities.data,
-    quantities: quantities.data,
-    shelfLife: shelfLife.data,
-    bomHasShelfLifeManagedInput,
-    trackedEntityExpirations,
-    itemId,
-    locationId,
-    ruleAssignments: rulesData.assignments,
-    ruleLibrary: rulesData.library
-  };
+  return { inventoryData };
 }
 
 export async function action({ request, params }: ActionFunctionArgs) {
@@ -219,12 +180,17 @@ export async function action({ request, params }: ActionFunctionArgs) {
   );
 }
 
-export default function PartInventoryRoute() {
-  const sharedPartsData = useRouteData<{
-    locations: ListItem[];
-    unitOfMeasures: UnitOfMeasureListItem[];
-  }>(path.to.partRoot);
+type InventoryResolved = NonNullable<
+  Awaited<ReturnType<typeof loader>>["inventoryData"]
+>;
 
+function InventoryContent({
+  resolved,
+  locations
+}: {
+  resolved: InventoryResolved;
+  locations: ListItem[];
+}) {
   const {
     partInventory,
     itemStorageUnitQuantities,
@@ -235,13 +201,19 @@ export default function PartInventoryRoute() {
     itemId,
     ruleAssignments,
     ruleLibrary
-  } = useLoaderData<typeof loader>();
+  } = resolved;
 
-  const partData = useRouteData<{
-    partSummary: PartSummary;
-  }>(path.to.part(itemId));
-  if (!partData) throw new Error("Could not find part data");
+  const partData = useRouteData<{ partSummary: PartSummary }>(
+    path.to.part(itemId)
+  );
   const itemUnitOfMeasureCode = partData?.partSummary?.unitOfMeasureCode;
+
+  const [items] = useItems();
+  const item = items.find((i) => i.id === itemId);
+  const itemTrackingType = item?.itemTrackingType;
+  const replenishmentSystem = item?.replenishmentSystem ?? null;
+
+  const storageUnits = useStorageUnits(partInventory?.locationId);
 
   const initialValues = {
     ...partInventory,
@@ -256,19 +228,12 @@ export default function PartInventoryRoute() {
     ...getCustomFields(partInventory.customFields ?? {})
   };
 
-  const [items] = useItems();
-  const item = items.find((i) => i.id === itemId);
-  const itemTrackingType = item?.itemTrackingType;
-  const replenishmentSystem = item?.replenishmentSystem ?? null;
-
-  const storageUnits = useStorageUnits(partInventory?.locationId);
-
   return (
-    <VStack spacing={2} className="p-2">
+    <>
       <PickMethodForm
         key={`${initialValues.itemId}-${itemTrackingType ?? "Inventory"}`}
         initialValues={initialValues}
-        locations={sharedPartsData?.locations ?? []}
+        locations={locations}
         storageUnits={storageUnits.options}
         type="Part"
         itemTrackingType={itemTrackingType ?? "Inventory"}
@@ -290,6 +255,39 @@ export default function PartInventoryRoute() {
         assignments={ruleAssignments as never}
         library={ruleLibrary as never}
       />
+    </>
+  );
+}
+
+export default function PartInventoryRoute() {
+  const sharedPartsData = useRouteData<{
+    locations: ListItem[];
+    unitOfMeasures: UnitOfMeasureListItem[];
+  }>(path.to.partRoot);
+
+  const { inventoryData } = useLoaderData<typeof loader>();
+
+  return (
+    <VStack spacing={2} className="p-2">
+      <Suspense
+        fallback={
+          <div className="space-y-3 animate-pulse">
+            <div className="h-64 bg-muted rounded-md" />
+            <div className="h-48 bg-muted rounded-md" />
+          </div>
+        }
+      >
+        <Await resolve={inventoryData}>
+          {(resolved) =>
+            resolved ? (
+              <InventoryContent
+                resolved={resolved}
+                locations={sharedPartsData?.locations ?? []}
+              />
+            ) : null
+          }
+        </Await>
+      </Suspense>
     </VStack>
   );
 }
