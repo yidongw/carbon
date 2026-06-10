@@ -6,7 +6,6 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  ClientOnly,
   generateHTML,
   Skeleton,
   toast,
@@ -16,7 +15,7 @@ import { Editor } from "@carbon/react/Editor";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { nanoid } from "nanoid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePermissions, useUser } from "~/hooks";
 import { getPrivateUrl } from "~/utils/path";
 
@@ -74,7 +73,36 @@ const ItemNotes = ({
     true
   );
 
+  const [editorReady, setEditorReady] = useState(false);
+
+  useEffect(() => {
+    const id = window.requestAnimationFrame(() => setEditorReady(true));
+    return () => window.cancelAnimationFrame(id);
+  }, []);
+
   if (!id) return null;
+
+  const notesEditor =
+    !editorReady ? (
+      <Skeleton className="min-h-[120px] w-full" />
+    ) : permissions.can("update", "parts") ? (
+      <Editor
+        key={id}
+        initialValue={(notes ?? {}) as JSONContent}
+        onUpload={onUploadImage}
+        onChange={(value) => {
+          setInternalNotes(value);
+          onUpdateInternalNotes(value);
+        }}
+      />
+    ) : (
+      <div
+        className="prose dark:prose-invert"
+        dangerouslySetInnerHTML={{
+          __html: generateHTML(notes as JSONContent)
+        }}
+      />
+    );
 
   return (
     <>
@@ -86,30 +114,7 @@ const ItemNotes = ({
           <CardDescription>{subTitle}</CardDescription>
         </CardHeader>
 
-        <CardContent>
-          <ClientOnly fallback={<Skeleton className="min-h-[120px] w-full" />}>
-            {() =>
-              permissions.can("update", "parts") ? (
-                <Editor
-                  key={id}
-                  initialValue={(notes ?? {}) as JSONContent}
-                  onUpload={onUploadImage}
-                  onChange={(value) => {
-                    setInternalNotes(value);
-                    onUpdateInternalNotes(value);
-                  }}
-                />
-              ) : (
-                <div
-                  className="prose dark:prose-invert"
-                  dangerouslySetInnerHTML={{
-                    __html: generateHTML(notes as JSONContent)
-                  }}
-                />
-              )
-            }
-          </ClientOnly>
-        </CardContent>
+        <CardContent>{notesEditor}</CardContent>
       </Card>
     </>
   );

@@ -2,7 +2,6 @@ import { useCarbon } from "@carbon/auth";
 import {
   CardHeader,
   CardTitle,
-  ClientOnly,
   cn,
   ModelViewer,
   Spinner,
@@ -16,7 +15,7 @@ import {
 } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { nanoid } from "nanoid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { LuCloudUpload } from "react-icons/lu";
 import { useFetcher } from "react-router";
@@ -57,6 +56,12 @@ const CadModel = ({
 
   const fetcher = useFetcher<{}>();
   const [file, setFile] = useState<File | null>(null);
+  const [viewerReady, setViewerReady] = useState(false);
+
+  useEffect(() => {
+    const id = window.requestAnimationFrame(() => setViewerReady(true));
+    return () => window.cancelAnimationFrame(id);
+  }, []);
 
   const onFileChange = async (file: File | null) => {
     const modelId = nanoid();
@@ -113,33 +118,29 @@ const CadModel = ({
     }
   };
 
-  return (
-    <ClientOnly
-      fallback={
-        <div className="flex w-full h-full rounded bg-gradient-to-bl from-card from-50% via-card to-background dark:border-none dark:shadow-[inset_0_0.5px_0_rgb(255_255_255_/_0.08),_inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)] items-center justify-center">
-          <Spinner className="h-10 w-10" />
-        </div>
-      }
-    >
-      {() => {
-        return file || modelPath ? (
-          <ModelViewer
-            key={modelPath}
-            file={file}
-            url={modelPath ? getPrivateUrl(modelPath) : null}
-            mode={mode}
-            className={viewerClassName}
-          />
-        ) : (
-          <CadModelUpload
-            className={uploadClassName}
-            file={file}
-            title={title}
-            onFileChange={onFileChange}
-          />
-        );
-      }}
-    </ClientOnly>
+  if (!viewerReady) {
+    return (
+      <div className="flex w-full h-full rounded bg-gradient-to-bl from-card from-50% via-card to-background dark:border-none dark:shadow-[inset_0_0.5px_0_rgb(255_255_255_/_0.08),_inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)] items-center justify-center">
+        <Spinner className="h-10 w-10" />
+      </div>
+    );
+  }
+
+  return file || modelPath ? (
+    <ModelViewer
+      key={modelPath}
+      file={file}
+      url={modelPath ? getPrivateUrl(modelPath) : null}
+      mode={mode}
+      className={viewerClassName}
+    />
+  ) : (
+    <CadModelUpload
+      className={uploadClassName}
+      file={file}
+      title={title}
+      onFileChange={onFileChange}
+    />
   );
 };
 
