@@ -2,7 +2,7 @@ import { assertIsPost, success } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { validator } from "@carbon/form";
-import { useRouteData } from "@carbon/react";
+import { usePartRouteData } from "~/modules/items/ui/Parts/PartResolvedDataContext";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { redirect, useLoaderData, useNavigate, useParams } from "react-router";
 import type { PartSummary } from "~/modules/items";
@@ -134,9 +134,7 @@ export default function EditPartSupplierRoute() {
 
   if (!itemId) throw new Error("itemId not found");
 
-  const routeData = useRouteData<{ partSummary: PartSummary }>(
-    path.to.part(itemId)
-  );
+  const routeData = usePartRouteData();
 
   const navigate = useNavigate();
   const onClose = () => navigate(path.to.partPurchasing(itemId));

@@ -98,6 +98,7 @@ const PartsTable = memo(({ data, tags, count, itemPostingGroups: rawItemPostingG
       const match = href.match(/\/x\/part\/([^/]+)/);
       if (match?.[1]) {
         pendingPrefetchId.current = match[1];
+        // Parent $itemId loader (used-in groups, method tree, summary) runs for this URL.
         prefetchFetcher.load(href);
       }
     },

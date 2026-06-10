@@ -92,7 +92,8 @@ function createPrefetchQueue(cache: PrefetchCache, toHref: (id: string) => strin
   };
 }
 
-// Prefetch the details route so parent + child clientLoaders populate caches.
+// Prefetch the details route so the parent loader (including used-in groups)
+// and child clientLoaders populate caches before navigation.
 const partQueue = createPrefetchQueue(partPrefetchCache, path.to.partDetails);
 const jobQueue = createPrefetchQueue(jobPrefetchCache, path.to.job);
 

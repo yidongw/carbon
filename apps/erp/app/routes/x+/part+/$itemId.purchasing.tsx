@@ -6,7 +6,7 @@ import { VStack } from "@carbon/react";
 import { Suspense } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Await, redirect, useLoaderData, useParams } from "react-router";
-import { useRouteData } from "~/hooks";
+import { usePartRouteData } from "~/modules/items/ui/Parts/PartResolvedDataContext";
 import { getBatchProperties } from "~/modules/inventory";
 import BatchPropertiesConfig from "~/modules/inventory/ui/Batches/BatchPropertiesConfig";
 import type { SupplierPart } from "~/modules/items";
@@ -95,16 +95,14 @@ export default function PartPurchasingRoute() {
 
   const { itemId } = useParams();
   if (!itemId) throw new Error("Could not find itemId");
-  const routeData = useRouteData<{
-    supplierParts: SupplierPart[] | Promise<unknown>;
-  }>(path.to.part(itemId));
-  const supplierParts = Array.isArray(routeData?.supplierParts)
-    ? routeData.supplierParts
+  const routeData = usePartRouteData();
+  if (!routeData) throw new Error("Could not find part data");
+
+  const supplierParts = Array.isArray(routeData.supplierParts)
+    ? (routeData.supplierParts as SupplierPart[])
     : [];
 
-  const partData = useRouteData<{
-    partSummary: { itemTrackingType?: string; readableIdWithRevision?: string };
-  }>(path.to.part(itemId));
+  const partData = routeData;
 
   const initialValues = {
     ...partPurchasing,

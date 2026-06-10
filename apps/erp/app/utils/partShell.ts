@@ -1,4 +1,5 @@
 import type { ItemFile, Part, PartSummary } from "~/modules/items";
+import { createEmptyPartUsedInGroupPromises } from "~/modules/items/partUsedIn.server";
 
 const key = (itemId: string) => `carbon:part-shell:${itemId}`;
 
@@ -55,6 +56,8 @@ export function createPartShellLoaderData(
     pickMethods: Promise.resolve([]),
     makeMethods: Promise.resolve({ data: [], error: null }),
     tags: Promise.resolve([]),
+    usedInGroups: createEmptyPartUsedInGroupPromises(),
+    methodTree: Promise.resolve(null),
     ...flags
   };
 }

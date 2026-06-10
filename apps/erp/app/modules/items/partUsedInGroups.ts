@@ -56,18 +56,6 @@ export type PartUsedInData = Record<
   UsedInNode["children"]
 >;
 
-type TranslateFn = (descriptor: MessageDescriptor) => string;
-
-export function createLoadingUsedInNodes(t: TranslateFn): UsedInNode[] {
-  return PART_USED_IN_GROUP_DEFINITIONS.map((group) => ({
-    key: group.key,
-    name: t(group.name),
-    module: group.module,
-    children: [],
-    isLoading: true
-  }));
-}
-
 export function transformPartUsedInGroupChildren(
   key: PartUsedInGroupKey,
   children: UsedInNode["children"]
