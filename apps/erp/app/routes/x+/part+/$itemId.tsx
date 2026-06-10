@@ -88,7 +88,9 @@ export function shouldRevalidate({
   defaultShouldRevalidate
 }: ShouldRevalidateFunctionArgs) {
   if (actionStatus !== undefined) {
-    clearPartRouteCache(currentParams.itemId!);
+    const itemId = currentParams.itemId!;
+    clearPartRouteCache(itemId);
+    clearPartRouteCache(`details:${itemId}`);
   }
   return defaultShouldRevalidate;
 }
