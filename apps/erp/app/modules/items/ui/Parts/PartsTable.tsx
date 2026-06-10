@@ -62,6 +62,7 @@ import type { action } from "~/routes/x+/items+/update";
 import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
 import { hasPartRouteCache } from "~/utils/partRouteCache";
+import { storePartShell } from "~/utils/partShell";
 import {
   completePartPrefetch,
   partPrefetchCache,
@@ -183,10 +184,11 @@ const PartsTable = memo(({ data, tags, count, itemPostingGroups: rawItemPostingG
               to={path.to.partDetails(row.original.id!)}
               prefetch="intent"
               className="min-w-0"
-              onMouseEnter={() =>
-                row.original.id &&
-                prioritizePartPrefetch(row.original.id, loadPart)
-              }
+              onMouseEnter={() => {
+                if (!row.original.id) return;
+                storePartShell(row.original);
+                prioritizePartPrefetch(row.original.id, loadPart);
+              }}
               onFocus={() =>
                 row.original.id &&
                 prioritizePartPrefetch(row.original.id, loadPart)
