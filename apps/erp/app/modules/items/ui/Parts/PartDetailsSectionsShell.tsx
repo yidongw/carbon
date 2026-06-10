@@ -40,11 +40,11 @@ function PartPanelsLayoutShell({
   properties: ReactNode;
 }) {
   return (
-    <div className="flex min-h-0 flex-1 overflow-hidden w-full">
+    <div className="flex h-full min-h-0 overflow-hidden w-full">
       <div className="flex w-72 flex-shrink-0 flex-col overflow-y-auto border-r bg-card shadow-lg">
         {explorer}
       </div>
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+      <div className="flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
         {content}
       </div>
       <div className="flex w-80 flex-shrink-0 flex-col overflow-y-auto border-l bg-card">
@@ -56,7 +56,7 @@ function PartPanelsLayoutShell({
 
 export function PartPageHydrateFallback() {
   return (
-    <div className="flex h-[calc(100dvh-49px)] min-h-0 flex-col overflow-hidden w-full">
+    <div className="flex h-full min-h-0 flex-col overflow-hidden w-full">
       <div className="flex h-[50px] flex-shrink-0 items-center border-b bg-card px-4">
         <Skeleton className="h-6 w-24" />
         <div className="ml-auto flex gap-2">
@@ -65,20 +65,26 @@ export function PartPageHydrateFallback() {
           <Skeleton className="h-8 w-16" />
         </div>
       </div>
-      <PartPanelsLayoutShell
-        explorer={
-          <div className="p-2">
-            <Skeleton className="mb-2 h-8 w-full" />
-            <UsedInSkeleton />
-          </div>
-        }
-        content={<PartDetailsPageShell />}
-        properties={
-          <div className="w-full p-4">
-            <PartContentSkeleton />
-          </div>
-        }
-      />
+      <div className="flex min-h-0 flex-1 overflow-hidden w-full">
+        <PartPanelsLayoutShell
+          explorer={
+            <div className="p-2">
+              <Skeleton className="mb-2 h-8 w-full" />
+              <UsedInSkeleton />
+            </div>
+          }
+          content={
+            <div className="h-full min-h-0 overflow-y-auto w-full">
+              <PartDetailsPageShell />
+            </div>
+          }
+          properties={
+            <div className="w-full p-4">
+              <PartContentSkeleton />
+            </div>
+          }
+        />
+      </div>
     </div>
   );
 }
