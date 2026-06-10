@@ -48,6 +48,7 @@ import { path } from "~/utils/path";
 import {
   clearPartRouteCache,
   getPartRouteCache,
+  hasPartRouteCache,
   onPartRouteCacheReady,
   setPartRouteCache
 } from "~/utils/partRouteCache";
@@ -215,21 +216,15 @@ function PartPageSkeleton() {
   );
 }
 
-function PartShellRefresh({
-  itemId,
-  isShell
-}: {
-  itemId: string;
-  isShell: boolean;
-}) {
+function PartRouteCacheRefresh({ itemId }: { itemId: string }) {
   const revalidator = useRevalidator();
 
   useEffect(() => {
-    if (!isShell) return;
+    if (hasPartRouteCache(itemId)) return;
     return onPartRouteCacheReady(itemId, () => {
       revalidator.revalidate();
     });
-  }, [isShell, itemId, revalidator]);
+  }, [itemId, revalidator]);
 
   return null;
 }
@@ -237,13 +232,11 @@ function PartShellRefresh({
 function PartRouteLoaded({
   data,
   partSummary,
-  itemId,
-  isShell = false
+  itemId
 }: {
   data: Awaited<ReturnType<typeof loader>>;
   partSummary: PartSummary;
   itemId: string;
-  isShell?: boolean;
 }) {
   const resolved: ResolvedPartRouteData = {
     partSummary,
@@ -271,7 +264,7 @@ function PartRouteLoaded({
 
   return (
     <PartResolvedDataProvider value={resolved}>
-      <PartShellRefresh itemId={itemId} isShell={isShell} />
+      <PartRouteCacheRefresh itemId={itemId} />
       <div className="flex h-full min-h-0 flex-col overflow-hidden w-full">
         <PartHeader />
         <div className="flex min-h-0 flex-1 overflow-hidden w-full">
@@ -285,9 +278,7 @@ function PartRouteLoaded({
             }
             content={
               <div className="scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent h-full min-h-0 overflow-y-auto w-full">
-                <Suspense fallback={<PartDetailsPageShell />}>
-                  <Outlet />
-                </Suspense>
+                <Outlet />
               </div>
             }
             properties={<PartProperties key={itemId} />}
@@ -299,9 +290,7 @@ function PartRouteLoaded({
 }
 
 export default function PartRoute() {
-  const data = useLoaderData<typeof loader>() as Awaited<
-    ReturnType<typeof loader>
-  > & { shell?: true };
+  const data = useLoaderData<typeof loader>();
   const navigation = useNavigation();
   const { itemId } = useParams();
   if (!itemId) throw new Error("Could not find itemId");
@@ -318,7 +307,6 @@ export default function PartRoute() {
             data={data}
             partSummary={partSummary}
             itemId={itemId}
-            isShell={data.shell === true}
           />
         )}
       </Await>
