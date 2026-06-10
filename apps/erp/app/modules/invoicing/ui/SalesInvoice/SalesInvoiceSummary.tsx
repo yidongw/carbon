@@ -111,7 +111,7 @@ const LineItems = ({
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="border-b border-input py-6 w-full"
+            className="border-b border-input py-3 w-full"
           >
             <HStack spacing={4} className="items-start">
               {line.thumbnailPath ? (
@@ -145,7 +145,7 @@ const LineItems = ({
                           variant="link"
                           size="sm"
                           className="text-muted-foreground flex-shrink-0"
-                          onClick={() => onEdit(line)}
+                          onClick={(e) => { e.stopPropagation(); onEdit(line); }}
                         >
                           <Trans>Edit</Trans>
                         </Button>
@@ -511,7 +511,7 @@ const SalesInvoiceSummary = ({
 
         <VStack spacing={2} className="mt-8">
           <HStack className="justify-between text-base text-muted-foreground w-full">
-            <span><Trans>Subtotal:</Trans></span>
+            <span className="whitespace-nowrap"><Trans>Subtotal:</Trans></span>
             <VStack spacing={0} className="items-end">
               <span>{formatter.format(subtotal)}</span>
               {shouldConvertCurrency && (
@@ -523,7 +523,7 @@ const SalesInvoiceSummary = ({
           </HStack>
 
           <HStack className="justify-between text-base text-muted-foreground w-full">
-            <span><Trans>Tax:</Trans></span>
+            <span className="whitespace-nowrap"><Trans>Tax:</Trans></span>
             <VStack spacing={0} className="items-end">
               <span>{formatter.format(tax)}</span>
               {shouldConvertCurrency && (
@@ -538,7 +538,7 @@ const SalesInvoiceSummary = ({
             {shippingCost > 0 ? (
               <>
                 <VStack spacing={0}>
-                  <span><Trans>Shipping:</Trans></span>
+                  <span className="whitespace-nowrap"><Trans>Shipping:</Trans></span>
                   {isEditable && (
                     <Button
                       variant="link"
@@ -574,7 +574,7 @@ const SalesInvoiceSummary = ({
           </HStack>
 
           <HStack className="justify-between text-xl font-bold w-full">
-            <span><Trans>Total:</Trans></span>
+            <span className="whitespace-nowrap"><Trans>Total:</Trans></span>
             <VStack spacing={0} className="items-end">
               <span>{formatter.format(total)}</span>
               {shouldConvertCurrency && (

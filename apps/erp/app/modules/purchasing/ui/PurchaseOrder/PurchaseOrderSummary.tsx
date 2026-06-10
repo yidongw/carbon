@@ -157,7 +157,7 @@ const LineItems = ({
                           variant="link"
                           size="sm"
                           className="text-muted-foreground flex-shrink-0"
-                          onClick={() => onEdit(line)}
+                          onClick={(e) => { e.stopPropagation(); onEdit(line); }}
                         >
                           <Trans>Edit</Trans>
                         </Button>

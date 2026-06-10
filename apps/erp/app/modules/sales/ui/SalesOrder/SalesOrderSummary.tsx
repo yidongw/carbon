@@ -241,7 +241,7 @@ const SalesOrderSummary = ({
 
           <VStack spacing={2} className="mt-8">
             <HStack className="justify-between text-base text-muted-foreground w-full">
-              <span>
+              <span className="whitespace-nowrap">
                 <Trans>Subtotal:</Trans>
               </span>
               <MotionNumber
@@ -254,7 +254,7 @@ const SalesOrderSummary = ({
               />
             </HStack>
             <HStack className="justify-between text-base text-muted-foreground w-full">
-              <span>
+              <span className="whitespace-nowrap">
                 <Trans>Tax:</Trans>
               </span>
               <MotionNumber
@@ -270,7 +270,7 @@ const SalesOrderSummary = ({
               {convertedShippingCost > 0 ? (
                 <>
                   <VStack spacing={0}>
-                    <span>
+                    <span className="whitespace-nowrap">
                       <Trans>Shipping:</Trans>
                     </span>
                     <Button
@@ -303,7 +303,7 @@ const SalesOrderSummary = ({
               ) : null}
             </HStack>
             <HStack className="justify-between text-xl font-bold w-full">
-              <span>
+              <span className="whitespace-nowrap">
                 <Trans>Total:</Trans>
               </span>
               <MotionNumber
@@ -445,7 +445,7 @@ function LineItems({
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="border-b border-input py-6 w-full"
+            className="border-b border-input py-3 w-full"
           >
             <HStack spacing={4} className="items-start">
               {line.thumbnailPath ? (

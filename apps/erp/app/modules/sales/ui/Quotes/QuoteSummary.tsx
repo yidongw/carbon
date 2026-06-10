@@ -15,7 +15,6 @@ import {
   Th,
   Thead,
   Tr,
-  useDisclosure,
   VStack
 } from "@carbon/react";
 import { Trans } from "@lingui/react/macro";
@@ -24,17 +23,15 @@ import { motion } from "framer-motion";
 import MotionNumber from "motion-number";
 import type { Dispatch, SetStateAction } from "react";
 import { useEffect, useMemo, useState } from "react";
-import { LuChevronRight, LuCirclePlus, LuImage } from "react-icons/lu";
+import { LuChevronRight, LuImage } from "react-icons/lu";
 import { Link, useParams } from "react-router";
 import { CustomerAvatar } from "~/components";
 import {
   useDateFormatter,
   usePercentFormatter,
-  usePermissions,
   useRouteData,
   useUser
 } from "~/hooks";
-import QuoteLineForm from "./QuoteLineForm";
 import { getPrivateUrl, path } from "~/utils/path";
 import { isQuoteLocked } from "../../sales.models";
 import type {
@@ -84,15 +81,13 @@ const LineItems = ({
   formatter,
   locale,
   selectedLines,
-  setSelectedLines,
-  onEdit
+  setSelectedLines
 }: {
   currencyCode: string;
   formatter: Intl.NumberFormat;
   locale: string;
   selectedLines: Record<string, SelectedLine>;
   setSelectedLines: Dispatch<SetStateAction<Record<string, SelectedLine>>>;
-  onEdit: (line: QuotationLine) => void;
 }) => {
   const { company } = useUser();
   const { quoteId } = useParams();
@@ -184,12 +179,14 @@ const LineItems = ({
                         {line.itemReadableId}
                       </Heading>
                       <Button
+                        asChild
                         variant="link"
                         size="sm"
                         className="text-muted-foreground flex-shrink-0"
-                        onClick={(e) => { e.stopPropagation(); onEdit(line); }}
                       >
-                        <Trans>Edit</Trans>
+                        <Link to={path.to.quoteLine(quoteId, line.id!)}>
+                          <Trans>Edit</Trans>
+                        </Link>
                       </Button>
                     </HStack>
                     <HStack spacing={4}>
@@ -684,22 +681,6 @@ const QuoteSummary = ({
   }>(path.to.quote(quoteId));
 
   const isEditable = !isQuoteLocked(routeData?.quote?.status);
-  const permissions = usePermissions();
-  const { user, defaults } = useUser();
-  const userId = user?.id ?? "";
-
-  const newQuoteLineDisclosure = useDisclosure();
-  const editLineDisclosure = useDisclosure();
-  const [editLine, setEditLine] = useState<QuotationLine | null>(null);
-
-  const onEditLine = (line: QuotationLine) => {
-    setEditLine(line);
-    editLineDisclosure.onOpen();
-  };
-  const onEditClose = () => {
-    setEditLine(null);
-    editLineDisclosure.onClose();
-  };
 
   const { locale } = useLocale();
   const formatter = useMemo(
@@ -892,19 +873,7 @@ const QuoteSummary = ({
           formatter={formatter}
           selectedLines={selectedLines}
           setSelectedLines={setSelectedLines}
-          onEdit={onEditLine}
         />
-
-        {isEditable && permissions.can("update", "sales") && (
-          <button
-            type="button"
-            onClick={newQuoteLineDisclosure.onOpen}
-            className="mt-2 w-full rounded-lg border-2 border-dashed border-input py-3 text-sm text-muted-foreground transition-colors hover:border-primary hover:text-primary flex items-center justify-center gap-2"
-          >
-            <LuCirclePlus className="h-4 w-4" />
-            <Trans>Add Line Item</Trans>
-          </button>
-        )}
 
         <VStack spacing={2} className="mt-8">
           <HStack className="justify-between text-base text-muted-foreground w-full">
@@ -992,43 +961,6 @@ const QuoteSummary = ({
           </HStack>
         </VStack>
       </CardContent>
-      {newQuoteLineDisclosure.isOpen && (
-        <QuoteLineForm
-          initialValues={{
-            quoteId,
-            description: "",
-            estimatorId: userId,
-            itemId: "",
-            locationId: routeData?.quote?.locationId ?? defaults.locationId ?? "",
-            methodType: "Make to Order" as const,
-            status: "Not Started" as const,
-            quantity: [1],
-            unitOfMeasureCode: "",
-            taxPercent: 0
-          }}
-          type="modal"
-          onClose={newQuoteLineDisclosure.onClose}
-        />
-      )}
-      {editLineDisclosure.isOpen && editLine && (
-        <QuoteLineForm
-          initialValues={{
-            id: editLine.id!,
-            quoteId,
-            description: editLine.description ?? "",
-            estimatorId: editLine.estimatorId ?? userId,
-            itemId: editLine.itemId ?? "",
-            locationId: editLine.locationId ?? defaults.locationId ?? "",
-            methodType: (editLine.methodType ?? "Make to Order") as "Make to Order" | "Make to Stock" | "Buy",
-            status: (editLine.status ?? "Not Started") as "Not Started" | "In Progress" | "Complete",
-            quantity: editLine.quantity ?? [1],
-            unitOfMeasureCode: editLine.unitOfMeasureCode ?? "",
-            taxPercent: editLine.taxPercent ?? 0
-          }}
-          type="modal"
-          onClose={onEditClose}
-        />
-      )}
     </Card>
   );
 };

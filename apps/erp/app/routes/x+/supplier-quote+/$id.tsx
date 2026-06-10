@@ -128,7 +128,7 @@ export default function SupplierQuoteRoute() {
         <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
           <div className="flex flex-grow overflow-hidden">
             <ResizablePanels
-              // explorer={<SupplierQuoteExplorer />}
+              explorer={<SupplierQuoteExplorer />}
               content={
                 <div className="h-[calc(100dvh-99px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
                   <VStack spacing={2} className="p-2">

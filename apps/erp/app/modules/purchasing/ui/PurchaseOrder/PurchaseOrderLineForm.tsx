@@ -433,7 +433,7 @@ const PurchaseOrderLineForm = ({
                         ? isGLAccount
                           ? indirectData.description || "G/L Account"
                           : getItemReadableId(items, itemData?.itemId) || "..."
-                        : "New Purchase Order Line"}
+                        : t`New Purchase Order Line`}
                     </ModalCardTitle>
                     <ModalCardDescription>
                       {isOutsideProcessing ? (
