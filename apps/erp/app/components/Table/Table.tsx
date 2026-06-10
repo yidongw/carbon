@@ -18,6 +18,8 @@ import {
   VStack
 } from "@carbon/react";
 import { clamp } from "@carbon/utils";
+import { msg } from "@lingui/core/macro";
+import type { MessageDescriptor } from "@lingui/core";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useNumberFormatter } from "@react-aria/i18n";
 import type {
@@ -243,10 +245,8 @@ const Table = <T extends object>({
   renderExpandedRow,
   getRowHref
 }: TableProps<T>) => {
-  const { i18n } = useLingui();
+  const { _ } = useLingui();
   const tableContainerRef = useRef<HTMLDivElement>(null);
-
-  const translateLabel = useCallback((value: string) => i18n._(value), [i18n]);
 
   const { currentView, view } = useSavedViews();
 
@@ -407,19 +407,19 @@ const Table = <T extends object>({
         if (accessorKey && column.header && typeof column.header === "string") {
           return {
             ...acc,
-            [accessorKey]: translateLabel(column.header)
+            [accessorKey]: column.header
           };
         }
         return acc;
       }, {}),
-    [columns, translateLabel]
+    [columns]
   );
 
   const internalColumns = useMemo(() => {
     let result: ColumnDef<T>[] = [];
     if (renderExpandedRow) {
       result.push(
-        ...getExpandColumn<T>(expandedRows, toggleRowExpanded, translateLabel)
+        ...getExpandColumn<T>(expandedRows, toggleRowExpanded, _)
       );
     }
     if (withSelectableRows) {
@@ -427,7 +427,7 @@ const Table = <T extends object>({
     }
     result.push(...columns);
     if (renderContextMenu) {
-      result.push(...getActionColumn<T>(renderContextMenu, translateLabel));
+      result.push(...getActionColumn<T>(renderContextMenu, _));
     }
     return result;
   }, [
@@ -437,7 +437,7 @@ const Table = <T extends object>({
     renderExpandedRow,
     expandedRows,
     toggleRowExpanded,
-    translateLabel
+    _
   ]);
 
   const table = useReactTable({
@@ -1081,9 +1081,7 @@ const Table = <T extends object>({
                                     {header.column.columnDef.meta?.icon}
                                     {typeof header.column.columnDef.header ===
                                     "string"
-                                      ? translateLabel(
-                                          header.column.columnDef.header
-                                        )
+                                      ? header.column.columnDef.header
                                       : flexRender(
                                           header.column.columnDef.header,
                                           header.getContext()
@@ -1137,9 +1135,7 @@ const Table = <T extends object>({
                                 {header.column.columnDef.meta?.icon}
                                 {typeof header.column.columnDef.header ===
                                 "string"
-                                  ? translateLabel(
-                                      header.column.columnDef.header
-                                    )
+                                  ? header.column.columnDef.header
                                   : flexRender(
                                       header.column.columnDef.header,
                                       header.getContext()
@@ -1284,15 +1280,20 @@ function getRowSelectionColumn<T>(): ColumnDef<T>[] {
   ];
 }
 
+const actionsMsg = msg`Actions`;
+const expandMsg = msg`Expand`;
+const collapseRowMsg = msg`Collapse row`;
+const expandRowMsg = msg`Expand row`;
+
 function getActionColumn<T>(
   renderContextMenu: (item: T) => JSX.Element | null,
-  translateLabel: (value: string) => string
+  _: (d: MessageDescriptor) => string
 ): ColumnDef<T>[] {
   return [
     {
       id: "Actions",
       header: () => (
-        <span className="sr-only">{translateLabel("Actions")}</span>
+        <span className="sr-only">{_(actionsMsg)}</span>
       ),
       cell: ({ row }) => (
         <RowActionMenu
@@ -1312,14 +1313,14 @@ function getActionColumn<T>(
 function getExpandColumn<T>(
   expandedRows: Record<number, boolean>,
   toggleRowExpanded: (rowIndex: number) => void,
-  translateLabel: (value: string) => string
+  _: (d: MessageDescriptor) => string
 ): ColumnDef<T>[] {
   return [
     {
       id: "Expand",
       size: 40,
       enablePinning: true,
-      header: () => <span className="sr-only">{translateLabel("Expand")}</span>,
+      header: () => <span className="sr-only">{_(expandMsg)}</span>,
       cell: ({ row }) => {
         const isExpanded = expandedRows[row.index] ?? false;
         return (
@@ -1332,8 +1333,8 @@ function getExpandColumn<T>(
             className="p-1 hover:bg-muted rounded transition-colors text-muted-foreground hover:text-foreground"
             aria-label={
               isExpanded
-                ? translateLabel("Collapse row")
-                : translateLabel("Expand row")
+                ? _(collapseRowMsg)
+                : _(expandRowMsg)
             }
           >
             {isExpanded ? (
