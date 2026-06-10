@@ -127,7 +127,14 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
         methods
       };
     }
-  );
+  ).catch(() => null);
+
+  const emptyUsedIn = {
+    issues: [], jobMaterials: [], jobs: [], maintenanceDispatchItems: [],
+    methodMaterials: [], purchaseOrderLines: [], receiptLines: [],
+    quoteLines: [], quoteMaterials: [], salesOrderLines: [],
+    shipmentLines: [], supplierQuotes: []
+  };
 
   return {
     partSummary: partSummary.data,
@@ -136,7 +143,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     pickMethods: getPickMethods(client, itemId, companyId),
     makeMethods: getMakeMethods(client, itemId, companyId),
     tags: getTagsList(client, companyId, "part"),
-    usedIn: getPartUsedIn(client, itemId, companyId),
+    usedIn: getPartUsedIn(client, itemId, companyId).catch(() => emptyUsedIn),
     methodTree
   };
 }
@@ -146,19 +153,24 @@ export async function clientLoader({
   params
 }: ClientLoaderFunctionArgs) {
   const key = params.itemId!;
+  const refreshCache = () =>
+    serverLoader<typeof loader>()
+      .then((fresh) => setPartRouteCache(key, fresh))
+      .catch(() => {});
+
   const hit = getPartRouteCache<Awaited<ReturnType<typeof loader>>>(key);
   if (hit) {
-    serverLoader<typeof loader>().then((fresh) => setPartRouteCache(key, fresh));
+    refreshCache();
     return hit;
   }
 
   const shell = consumePartShell(key);
   if (shell) {
-    serverLoader<typeof loader>().then((fresh) => setPartRouteCache(key, fresh));
+    refreshCache();
     return createPartShellLoaderData(shell, { shell: true });
   }
 
-  serverLoader<typeof loader>().then((fresh) => setPartRouteCache(key, fresh));
+  refreshCache();
   return createPartShellLoaderData(createPlaceholderPartSummary(key), {
     placeholder: true
   });
