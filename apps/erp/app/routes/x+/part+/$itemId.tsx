@@ -24,7 +24,7 @@ import {
   getPickMethods,
   getSupplierParts
 } from "~/modules/items";
-import { PartHeader } from "~/modules/items/ui/Parts/PartHeader";
+import PartHeader from "~/modules/items/ui/Parts/PartHeader";
 import { getTagsList } from "~/modules/shared";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
