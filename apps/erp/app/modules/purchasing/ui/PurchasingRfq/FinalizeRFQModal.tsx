@@ -77,7 +77,7 @@ const FinalizeRFQModal = ({
           method="post"
           validator={purchasingRfqFinalizeValidator}
           action={path.to.purchasingRfqFinalize(rfqId)}
-          onSubmit={onClose}
+          onSuccess={onClose}
           defaultValues={defaultValues}
           fetcher={fetcher}
         >

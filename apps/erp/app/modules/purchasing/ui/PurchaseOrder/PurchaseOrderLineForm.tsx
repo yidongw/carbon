@@ -410,9 +410,7 @@ const PurchaseOrderLineForm = ({
                 className="w-full"
                 fetcher={fetcher}
                 isDisabled={isLocked}
-                onSubmit={() => {
-                  if (type === "modal") onClose?.();
-                }}
+                onSuccess={type === "modal" ? onClose : undefined}
               >
                 <HStack
                   className={cn(

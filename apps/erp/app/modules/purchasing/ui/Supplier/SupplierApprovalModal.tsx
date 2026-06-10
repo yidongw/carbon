@@ -48,7 +48,7 @@ const SupplierApprovalModal = ({
           method="post"
           validator={supplierApprovalDecisionValidator}
           action={path.to.supplierApproval(supplierId)}
-          onSubmit={onClose}
+          onSuccess={onClose}
           defaultValues={{
             approvalRequestId,
             decision,

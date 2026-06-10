@@ -419,7 +419,7 @@ export function RecordModal({
           method="post"
           validator={stepRecordValidator}
           action={path.to.record}
-          onSubmit={onClose}
+          onSuccess={onClose}
           defaultValues={{
             index: activeStep,
             jobOperationStepId: attribute.id,
