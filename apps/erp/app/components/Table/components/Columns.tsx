@@ -87,8 +87,7 @@ const Columns = <T extends object>({
     if (newLeft.length > 0) onPinnedReorder(newLeft);
   };
 
-  const { t, i18n } = useLingui();
-  const translate = (value: string) => i18n._(value);
+  const { t } = useLingui();
 
   return (
     <Drawer>
@@ -208,7 +207,6 @@ const Columns = <T extends object>({
                   column={column}
                   isPinned={isPinned}
                   isFeatured={isFeatured}
-                  translate={translate}
                   onTogglePin={togglePin}
                   onToggleFeatured={toggleFeatured}
                   onToggleVisibility={() => column.toggleVisibility()}
@@ -226,7 +224,6 @@ interface ColumnRowProps<T> {
   column: Column<T, unknown>;
   isPinned: boolean;
   isFeatured: boolean;
-  translate: (v: string) => string;
   onTogglePin: () => void;
   onToggleFeatured: () => void;
   onToggleVisibility: () => void;
@@ -236,7 +233,6 @@ function ColumnRow<T extends object>({
   column,
   isPinned,
   isFeatured,
-  translate,
   onTogglePin,
   onToggleFeatured,
   onToggleVisibility
@@ -262,7 +258,7 @@ function ColumnRow<T extends object>({
         />
         <span className="text-sm flex-grow flex items-center gap-2">
           {column.columnDef.meta?.icon}
-          <>{translate(column.columnDef.header as string)}</>
+          <>{column.columnDef.header as string}</>
         </span>
 
         <IconButton
