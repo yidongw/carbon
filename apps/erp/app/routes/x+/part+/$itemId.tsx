@@ -164,17 +164,8 @@ export async function clientLoader({
   });
 }
 
-clientLoader.hydrate = true;
-
 export function HydrateFallback() {
-  return (
-    <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
-      <div className="flex h-[50px] flex-shrink-0 items-center border-b px-4">
-        <Skeleton className="h-6 w-24" />
-      </div>
-      <PartPageHydrateFallback />
-    </div>
-  );
+  return <PartPageHydrateFallback />;
 }
 
 export default function PartRoute() {

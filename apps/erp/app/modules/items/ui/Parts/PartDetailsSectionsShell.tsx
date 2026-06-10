@@ -2,29 +2,18 @@ import { Menubar, Skeleton, VStack } from "@carbon/react";
 import { ExplorerSkeleton, PartContentSkeleton } from "~/components/Skeletons";
 import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import { UsedInSkeleton } from "~/modules/items/ui/Item/UsedIn";
-import { usePermissions } from "~/hooks";
 
 export function PartDetailsSectionsShell() {
-  const permissions = usePermissions();
-
   return (
     <>
-      {permissions.is("employee") && (
-        <>
-          <Menubar />
-          <ExplorerSkeleton />
-          <ExplorerSkeleton />
-        </>
-      )}
-      {permissions.is("employee") && (
-        <>
-          <ExplorerSkeleton />
-          <div className="p-4">
-            <Skeleton className="h-48 w-full" />
-          </div>
-          <ExplorerSkeleton />
-        </>
-      )}
+      <Menubar />
+      <ExplorerSkeleton />
+      <ExplorerSkeleton />
+      <ExplorerSkeleton />
+      <div className="p-4">
+        <Skeleton className="h-48 w-full" />
+      </div>
+      <ExplorerSkeleton />
     </>
   );
 }
@@ -43,23 +32,33 @@ export function PartDetailsPageShell() {
 
 export function PartPageHydrateFallback() {
   return (
-    <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
-      <PanelProvider>
-        <ResizablePanels
-          explorer={
-            <div className="p-2">
-              <Skeleton className="mb-2 h-8 w-full" />
-              <UsedInSkeleton />
-            </div>
-          }
-          content={<PartDetailsPageShell />}
-          properties={
-            <div className="w-80 border-l p-4">
-              <PartContentSkeleton />
-            </div>
-          }
-        />
-      </PanelProvider>
+    <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
+      <div className="flex h-[50px] flex-shrink-0 items-center border-b bg-card px-4">
+        <Skeleton className="h-6 w-24" />
+        <div className="ml-auto flex gap-2">
+          <Skeleton className="h-8 w-16" />
+          <Skeleton className="h-8 w-16" />
+          <Skeleton className="h-8 w-16" />
+        </div>
+      </div>
+      <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
+        <PanelProvider>
+          <ResizablePanels
+            explorer={
+              <div className="p-2">
+                <Skeleton className="mb-2 h-8 w-full" />
+                <UsedInSkeleton />
+              </div>
+            }
+            content={<PartDetailsPageShell />}
+            properties={
+              <div className="w-80 border-l p-4">
+                <PartContentSkeleton />
+              </div>
+            }
+          />
+        </PanelProvider>
+      </div>
     </div>
   );
 }
