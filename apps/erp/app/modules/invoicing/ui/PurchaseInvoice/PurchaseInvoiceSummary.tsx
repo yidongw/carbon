@@ -6,8 +6,14 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuIcon,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
   Heading,
   HStack,
+  IconButton,
   Table,
   Tbody,
   Td,
@@ -20,10 +26,12 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { useLocale } from "@react-aria/i18n";
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { LuChevronRight, LuCirclePlus, LuImage } from "react-icons/lu";
-import { useParams } from "react-router";
-import { MethodIcon, SupplierAvatar } from "~/components";
+import { LuChevronRight, LuCirclePlus, LuEllipsisVertical, LuImage, LuTrash } from "react-icons/lu";
+import { Link, useParams } from "react-router";
+import { MethodIcon, MethodItemTypeIcon, SupplierAvatar } from "~/components";
+import { getLinkToItemDetails } from "~/modules/items/ui/Item/ItemForm";
 import type { MethodItemType } from "~/modules/shared";
+import { methodItemType } from "~/modules/shared";
 import { useAccounts } from "~/components/Form/Account";
 import { useUnitOfMeasure } from "~/components/Form/UnitOfMeasure";
 import {
@@ -52,6 +60,8 @@ const LineItems = ({
   locale,
   purchaseInvoiceLines,
   shouldConvertCurrency,
+  isDisabled,
+  onDelete,
   onEdit
 }: {
   currencyCode: string;
@@ -60,9 +70,12 @@ const LineItems = ({
   locale: string;
   purchaseInvoiceLines: PurchaseInvoiceLine[];
   shouldConvertCurrency: boolean;
+  isDisabled: boolean;
+  onDelete: (line: PurchaseInvoiceLine) => void;
   onEdit: (line: PurchaseInvoiceLine) => void;
 }) => {
   const { t } = useLingui();
+  const permissions = usePermissions();
   const [items] = useItems();
   const accounts = useAccounts();
   const { invoiceId } = useParams();
@@ -141,6 +154,48 @@ const LineItems = ({
                         >
                           <Trans>Edit</Trans>
                         </Button>
+                        {!isDisabled && (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <IconButton
+                                aria-label={t`More`}
+                                icon={<LuEllipsisVertical />}
+                                variant="ghost"
+                                size="sm"
+                                className="text-muted-foreground flex-shrink-0"
+                                onClick={(e) => e.stopPropagation()}
+                              />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                              <DropdownMenuItem
+                                destructive
+                                disabled={!permissions.can("delete", "purchasing")}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onDelete(line);
+                                }}
+                              >
+                                <DropdownMenuIcon icon={<LuTrash />} />
+                                <Trans>Delete Line</Trans>
+                              </DropdownMenuItem>
+                              {/* @ts-expect-error */}
+                              {methodItemType.includes(line.invoiceLineType ?? "") && (
+                                <DropdownMenuItem asChild>
+                                  <Link
+                                    to={getLinkToItemDetails(
+                                      line.invoiceLineType as MethodItemType,
+                                      line.itemId!
+                                    )}
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    <DropdownMenuIcon icon={<MethodItemTypeIcon type={"Part"} />} />
+                                    <Trans>View Item Master</Trans>
+                                  </Link>
+                                </DropdownMenuItem>
+                              )}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        )}
                       </HStack>
                       <span className="text-muted-foreground text-base truncate">
                         {isGlAccount
@@ -475,6 +530,8 @@ const PurchaseInvoiceSummary = ({
           locale={locale}
           purchaseInvoiceLines={routeData?.purchaseInvoiceLines ?? []}
           shouldConvertCurrency={shouldConvertCurrency}
+          isDisabled={!isEditable}
+          onDelete={onDeleteLine}
           onEdit={onEditLine}
         />
 

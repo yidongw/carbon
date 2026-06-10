@@ -6,8 +6,14 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuIcon,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
   Heading,
   HStack,
+  IconButton,
   Table,
   Tbody,
   Td,
@@ -16,13 +22,13 @@ import {
   VStack
 } from "@carbon/react";
 import { getItemReadableId } from "@carbon/utils";
-import { Trans } from "@lingui/react/macro";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { useLocale } from "@react-aria/i18n";
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { LuChevronRight, LuCirclePlus, LuImage } from "react-icons/lu";
-import { useParams } from "react-router";
-import { CustomerAvatar, MethodIcon } from "~/components";
+import { LuChevronRight, LuCirclePlus, LuEllipsisVertical, LuImage, LuTrash } from "react-icons/lu";
+import { Link, useParams } from "react-router";
+import { CustomerAvatar, MethodIcon, MethodItemTypeIcon } from "~/components";
 import { useUnitOfMeasure } from "~/components/Form/UnitOfMeasure";
 import {
   useCurrencyFormatter,
@@ -32,7 +38,9 @@ import {
   useRouteData,
   useUser
 } from "~/hooks";
+import { getLinkToItemDetails } from "~/modules/items/ui/Item/ItemForm";
 import type { MethodItemType } from "~/modules/shared";
+import { methodItemType } from "~/modules/shared";
 import { useItems } from "~/stores";
 import { getPrivateUrl, path } from "~/utils/path";
 import { isSalesInvoiceLocked } from "../../invoicing.models";
@@ -51,6 +59,8 @@ const LineItems = ({
   locale,
   salesInvoiceLines,
   shouldConvertCurrency,
+  isDisabled,
+  onDelete,
   onEdit
 }: {
   currencyCode: string;
@@ -59,8 +69,12 @@ const LineItems = ({
   locale: string;
   salesInvoiceLines: SalesInvoiceLine[];
   shouldConvertCurrency: boolean;
+  isDisabled: boolean;
+  onDelete: (line: SalesInvoiceLine) => void;
   onEdit: (line: SalesInvoiceLine) => void;
 }) => {
+  const { t } = useLingui();
+  const permissions = usePermissions();
   const { invoiceId } = useParams();
   if (!invoiceId) throw new Error("Could not find invoiceId");
 
@@ -149,6 +163,48 @@ const LineItems = ({
                         >
                           <Trans>Edit</Trans>
                         </Button>
+                        {!isDisabled && (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <IconButton
+                                aria-label={t`More`}
+                                icon={<LuEllipsisVertical />}
+                                variant="ghost"
+                                size="sm"
+                                className="text-muted-foreground flex-shrink-0"
+                                onClick={(e) => e.stopPropagation()}
+                              />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                              <DropdownMenuItem
+                                destructive
+                                disabled={!permissions.can("delete", "sales")}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onDelete(line);
+                                }}
+                              >
+                                <DropdownMenuIcon icon={<LuTrash />} />
+                                <Trans>Delete Line</Trans>
+                              </DropdownMenuItem>
+                              {/* @ts-expect-error */}
+                              {methodItemType.includes(line.invoiceLineType ?? "") && (
+                                <DropdownMenuItem asChild>
+                                  <Link
+                                    to={getLinkToItemDetails(
+                                      line.invoiceLineType as MethodItemType,
+                                      line.itemId!
+                                    )}
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    <DropdownMenuIcon icon={<MethodItemTypeIcon type={"Part"} />} />
+                                    <Trans>View Item Master</Trans>
+                                  </Link>
+                                </DropdownMenuItem>
+                              )}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        )}
                       </HStack>
                       <span className="text-muted-foreground text-base truncate">
                         {line.description}
@@ -495,6 +551,8 @@ const SalesInvoiceSummary = ({
           locale={locale}
           salesInvoiceLines={routeData?.salesInvoiceLines ?? []}
           shouldConvertCurrency={shouldConvertCurrency}
+          isDisabled={!isEditable}
+          onDelete={onDeleteLine}
           onEdit={onEditLine}
         />
 
