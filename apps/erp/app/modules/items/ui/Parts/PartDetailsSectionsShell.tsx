@@ -1,6 +1,6 @@
 import { Menubar, Skeleton, VStack } from "@carbon/react";
+import type { ReactNode } from "react";
 import { ExplorerSkeleton, PartContentSkeleton } from "~/components/Skeletons";
-import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import { UsedInSkeleton } from "~/modules/items/ui/Item/UsedIn";
 
 export function PartDetailsSectionsShell() {
@@ -30,6 +30,28 @@ export function PartDetailsPageShell() {
   );
 }
 
+function PartPanelsLayoutShell({
+  explorer,
+  content,
+  properties
+}: {
+  explorer: ReactNode;
+  content: ReactNode;
+  properties: ReactNode;
+}) {
+  return (
+    <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
+      <div className="flex w-72 flex-shrink-0 flex-col overflow-y-auto border-r bg-card shadow-lg">
+        {explorer}
+      </div>
+      <div className="flex min-w-0 flex-1 overflow-y-auto">{content}</div>
+      <div className="flex w-80 flex-shrink-0 flex-col overflow-y-auto border-l bg-card">
+        {properties}
+      </div>
+    </div>
+  );
+}
+
 export function PartPageHydrateFallback() {
   return (
     <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
@@ -41,24 +63,20 @@ export function PartPageHydrateFallback() {
           <Skeleton className="h-8 w-16" />
         </div>
       </div>
-      <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
-        <PanelProvider>
-          <ResizablePanels
-            explorer={
-              <div className="p-2">
-                <Skeleton className="mb-2 h-8 w-full" />
-                <UsedInSkeleton />
-              </div>
-            }
-            content={<PartDetailsPageShell />}
-            properties={
-              <div className="w-80 border-l p-4">
-                <PartContentSkeleton />
-              </div>
-            }
-          />
-        </PanelProvider>
-      </div>
+      <PartPanelsLayoutShell
+        explorer={
+          <div className="p-2">
+            <Skeleton className="mb-2 h-8 w-full" />
+            <UsedInSkeleton />
+          </div>
+        }
+        content={<PartDetailsPageShell />}
+        properties={
+          <div className="w-full p-4">
+            <PartContentSkeleton />
+          </div>
+        }
+      />
     </div>
   );
 }

@@ -8,7 +8,7 @@ import { Suspense } from "react";
 import type { LoaderFunctionArgs } from "react-router";
 import { Await, redirect, useLoaderData, useParams } from "react-router";
 import { CadModel } from "~/components";
-import { useRouteData } from "~/hooks";
+import { usePartRouteData } from "~/modules/items/ui/Parts/PartResolvedDataContext";
 import { usePermissions } from "~/hooks/usePermissions";
 import type { PartSummary } from "~/modules/items";
 import {
@@ -152,9 +152,8 @@ export default function PartMakeMethodPage() {
   if (!itemId) throw new Error("Could not find itemId");
   if (!makeMethodId) throw new Error("Could not find makeMethodId");
 
-  const partData = useRouteData<{
-    partSummary: PartSummary;
-  }>(path.to.part(itemId));
+  const partData = usePartRouteData();
+  if (!partData) throw new Error("Could not find part data");
 
   return (
     <VStack spacing={2} className="p-2">

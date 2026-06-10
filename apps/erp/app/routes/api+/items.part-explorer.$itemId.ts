@@ -1,11 +1,10 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
 import type { LoaderFunctionArgs } from "react-router";
-import { flattenTree } from "~/components/TreeView";
+import { getPartUsedInGroup } from "~/modules/items";
 import {
-  getMakeMethods,
-  getMethodTree,
-  getPartUsedInGroup
-} from "~/modules/items";
+  getPartMethodTree,
+  type PartMethodTree
+} from "~/modules/items/partUsedIn.server";
 import type { PartUsedInGroupKey } from "~/modules/items/partUsedInGroups";
 import { PART_USED_IN_GROUP_DEFINITIONS } from "~/modules/items/partUsedInGroups";
 
@@ -16,7 +15,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const { itemId } = params;
   if (!itemId) {
-    return { methodTree: null };
+    return { methodTree: null as PartMethodTree | null };
   }
 
   const url = new URL(request.url);
@@ -38,23 +37,12 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     };
   }
 
-  const makeMethods = await getMakeMethods(client, itemId, companyId);
-  const makeMethod = !makeMethods.data?.length
-    ? null
-    : requestedMethodId
-      ? (makeMethods.data.find((m) => m.id === requestedMethodId) ??
-        makeMethods.data.find((m) => m.status === "Active") ??
-        makeMethods.data[0])
-      : (makeMethods.data.find((m) => m.status === "Active") ??
-        makeMethods.data[0]);
-
-  const methodTree = makeMethod
-    ? await getMethodTree(client, makeMethod.id).then((tree) => {
-        if (tree.error) return null;
-        const methods = tree.data.length > 0 ? flattenTree(tree.data[0]) : [];
-        return { makeMethod, methods };
-      })
-    : null;
+  const methodTree = await getPartMethodTree(
+    client,
+    itemId,
+    companyId,
+    requestedMethodId
+  );
 
   return { methodTree };
 }
