@@ -13,6 +13,7 @@ import {
   Th,
   Thead,
   Tr,
+  useDisclosure,
   VStack
 } from "@carbon/react";
 import { getItemReadableId } from "@carbon/utils";
@@ -20,34 +21,40 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { useLocale } from "@react-aria/i18n";
 import { motion } from "framer-motion";
 import { useMemo, useState } from "react";
-import { LuChevronRight, LuImage } from "react-icons/lu";
-import { Link, useParams } from "react-router";
+import { LuChevronRight, LuCirclePlus, LuImage } from "react-icons/lu";
+import { useParams } from "react-router";
 import { SupplierAvatar } from "~/components";
 import { useAccounts } from "~/components/Form/Account";
 import { useUnitOfMeasure } from "~/components/Form/UnitOfMeasure";
 import {
   useCurrencyFormatter,
   useDateFormatter,
+  usePermissions,
   useRouteData,
   useUser
 } from "~/hooks";
 import { useItems } from "~/stores";
 import { getPrivateUrl, path } from "~/utils/path";
+import { isSupplierQuoteLocked } from "../../purchasing.models";
 import type {
   PurchaseOrderLine,
   SupplierQuote,
   SupplierQuoteLine,
   SupplierQuoteLinePrice
 } from "../../types";
+import DeleteSupplierQuoteLine from "./DeleteSupplierQuoteLine";
+import SupplierQuoteLineForm from "./SupplierQuoteLineForm";
 
 const LineItems = ({
   currencyCode,
   formatter,
-  locale
+  locale,
+  onEdit
 }: {
   currencyCode: string;
   formatter: Intl.NumberFormat;
   locale: string;
+  onEdit: (line: SupplierQuoteLine) => void;
 }) => {
   const { t } = useLingui();
   const { company } = useUser();
@@ -136,14 +143,12 @@ const LineItems = ({
                     <HStack spacing={2} className="min-w-0 flex-shrink">
                       <Heading className="truncate">{itemReadableId}</Heading>
                       <Button
-                        asChild
                         variant="link"
                         size="sm"
                         className="text-muted-foreground flex-shrink-0"
+                        onClick={() => onEdit(line)}
                       >
-                        <Link to={path.to.supplierQuoteLine(id, line.id!)}>
-                          <Trans>Edit</Trans>
-                        </Link>
+                        <Trans>Edit</Trans>
                       </Button>
                     </HStack>
                     <HStack spacing={4}>
@@ -322,8 +327,50 @@ const SupplierQuoteSummary = () => {
 
   const { locale } = useLocale();
   const formatter = useCurrencyFormatter();
+  const permissions = usePermissions();
+
+  const newSupplierQuoteLineDisclosure = useDisclosure();
+  const deleteLineDisclosure = useDisclosure();
+  const editLineDisclosure = useDisclosure();
+  const [deleteLine, setDeleteLine] = useState<SupplierQuoteLine | null>(null);
+  const [editLine, setEditLine] = useState<SupplierQuoteLine | null>(null);
+
+  const isLocked = isSupplierQuoteLocked(routeData?.quote?.status);
+
+  const onEditLine = (line: SupplierQuoteLine) => {
+    setEditLine(line);
+    editLineDisclosure.onOpen();
+  };
+
+  const onEditClose = () => {
+    setEditLine(null);
+    editLineDisclosure.onClose();
+  };
+
+  const onDeleteLine = (line: SupplierQuoteLine) => {
+    setDeleteLine(line);
+    deleteLineDisclosure.onOpen();
+  };
+
+  const onDeleteCancel = () => {
+    setDeleteLine(null);
+    deleteLineDisclosure.onClose();
+  };
+
+  const supplierQuoteLineInitialValues = {
+    supplierQuoteId: id,
+    supplierQuoteLineType: "Part" as const,
+    status: "Draft" as const,
+    itemType: "Part" as const,
+    description: "",
+    itemId: "",
+    quantity: [1],
+    inventoryUnitOfMeasureCode: "",
+    purchaseUnitOfMeasureCode: ""
+  };
 
   return (
+    <>
     <Card>
       <CardHeader>
         <HStack className="justify-between items-center">
@@ -348,9 +395,53 @@ const SupplierQuoteSummary = () => {
           currencyCode={routeData?.quote.currencyCode ?? "USD"}
           locale={locale}
           formatter={formatter}
+          onEdit={onEditLine}
         />
+
+        {!isLocked && permissions.can("update", "purchasing") && (
+          <button
+            type="button"
+            onClick={newSupplierQuoteLineDisclosure.onOpen}
+            className="mt-2 w-full rounded-lg border-2 border-dashed border-input py-3 text-sm text-muted-foreground transition-colors hover:border-primary hover:text-primary flex items-center justify-center gap-2"
+          >
+            <LuCirclePlus className="h-4 w-4" />
+            <Trans>Add Line Item</Trans>
+          </button>
+        )}
       </CardContent>
     </Card>
+    {newSupplierQuoteLineDisclosure.isOpen && (
+      <SupplierQuoteLineForm
+        initialValues={supplierQuoteLineInitialValues}
+        type="modal"
+        onClose={newSupplierQuoteLineDisclosure.onClose}
+      />
+    )}
+    {deleteLineDisclosure.isOpen && deleteLine && (
+      <DeleteSupplierQuoteLine line={deleteLine} onCancel={onDeleteCancel} />
+    )}
+    {editLineDisclosure.isOpen && editLine && (
+      <SupplierQuoteLineForm
+        initialValues={{
+          id: editLine.id!,
+          supplierQuoteId: editLine.supplierQuoteId!,
+          supplierQuoteLineType: editLine.supplierQuoteLineType! as "Part" | "Material" | "Tool" | "Consumable" | "G/L Account",
+          itemId: editLine.itemId ?? undefined,
+          accountId: editLine.accountId ?? undefined,
+          costCenterId: editLine.costCenterId ?? undefined,
+          description: editLine.description ?? undefined,
+          supplierPartId: editLine.supplierPartId ?? undefined,
+          inventoryUnitOfMeasureCode: editLine.inventoryUnitOfMeasureCode ?? undefined,
+          purchaseUnitOfMeasureCode: editLine.purchaseUnitOfMeasureCode ?? undefined,
+          conversionFactor: editLine.conversionFactor ?? undefined,
+          quantity: editLine.quantity ?? [1],
+          itemType: (editLine.supplierQuoteLineType ?? "Part") as "Part" | "Material" | "Tool" | "Consumable"
+        }}
+        type="modal"
+        onClose={onEditClose}
+      />
+    )}
+    </>
   );
 };
 

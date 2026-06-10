@@ -19,7 +19,7 @@ import {
   getSalesOrderRelatedItems
 } from "~/modules/sales";
 import {
-  SalesOrderExplorer,
+  // SalesOrderExplorer,
   SalesOrderHeader,
   SalesOrderProperties
 } from "~/modules/sales/ui/SalesOrder";
@@ -171,7 +171,7 @@ export default function SalesOrderRoute() {
         <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
           <div className="flex flex-grow overflow-hidden">
             <ResizablePanels
-              explorer={<SalesOrderExplorer />}
+              // explorer={<SalesOrderExplorer />}
               content={
                 <div className="h-[calc(100dvh-99px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
                   <VStack spacing={2} className="p-2">

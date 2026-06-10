@@ -34,12 +34,13 @@ import MotionNumber from "motion-number";
 import { useMemo, useState } from "react";
 import {
   LuChevronRight,
+  LuCirclePlus,
   LuEllipsisVertical,
   LuImage,
   LuInfo,
   LuTriangleAlert
 } from "react-icons/lu";
-import { Link, useParams } from "react-router";
+import { useParams } from "react-router";
 import { CustomerAvatar, Hyperlink, MethodIcon } from "~/components";
 import { Confirm } from "~/components/Modals";
 import {
@@ -59,6 +60,7 @@ import type {
   SalesOrderLine
 } from "../../types";
 import { SalesOrderJobItem } from "./SalesOrderLineJobs";
+import SalesOrderLineForm from "./SalesOrderLineForm";
 
 const SalesOrderSummary = ({
   onEditShippingCost
@@ -83,6 +85,17 @@ const SalesOrderSummary = ({
   }>(path.to.salesOrder(orderId));
 
   const salesOrderToJobsModal = useDisclosure();
+  const newSalesOrderLineDisclosure = useDisclosure();
+  const editLineDisclosure = useDisclosure();
+  const [editLine, setEditLine] = useState<SalesOrderLine | null>(null);
+  const onEditLine = (line: SalesOrderLine) => {
+    setEditLine(line);
+    editLineDisclosure.onOpen();
+  };
+  const onEditClose = () => {
+    setEditLine(null);
+    editLineDisclosure.onClose();
+  };
 
   const { locale } = useLocale();
   const formatter = useMemo(
@@ -212,7 +225,19 @@ const SalesOrderSummary = ({
             locale={locale}
             formatter={formatter}
             lines={routeData?.lines ?? []}
+            onEdit={onEditLine}
           />
+
+          {isEditable && permissions.can("update", "sales") && (
+            <button
+              type="button"
+              onClick={newSalesOrderLineDisclosure.onOpen}
+              className="mt-2 w-full rounded-lg border-2 border-dashed border-input py-3 text-sm text-muted-foreground transition-colors hover:border-primary hover:text-primary flex items-center justify-center gap-2"
+            >
+              <LuCirclePlus className="h-4 w-4" />
+              <Trans>Add Line Item</Trans>
+            </button>
+          )}
 
           <VStack spacing={2} className="mt-8">
             <HStack className="justify-between text-base text-muted-foreground w-full">
@@ -332,6 +357,43 @@ const SalesOrderSummary = ({
           </VStack>
         </CardContent>
       </Card>
+      {newSalesOrderLineDisclosure.isOpen && (
+        <SalesOrderLineForm
+          initialValues={{
+            salesOrderId: orderId,
+            salesOrderLineType: "Part" as const,
+            saleQuantity: 1,
+            unitPrice: 0,
+            addOnCost: 0,
+            nonTaxableAddOnCost: 0,
+            locationId: routeData?.salesOrder?.locationId ?? "",
+            taxPercent: routeData?.customer?.taxPercent ?? 0,
+            shippingCost: 0
+          }}
+          type="modal"
+          onClose={newSalesOrderLineDisclosure.onClose}
+        />
+      )}
+      {editLineDisclosure.isOpen && editLine && (
+        <SalesOrderLineForm
+          initialValues={{
+            id: editLine.id!,
+            salesOrderId: editLine.salesOrderId!,
+            salesOrderLineType: editLine.salesOrderLineType!,
+            itemId: editLine.itemId ?? undefined,
+            saleQuantity: editLine.saleQuantity ?? undefined,
+            unitPrice: editLine.unitPrice ?? undefined,
+            addOnCost: editLine.addOnCost ?? undefined,
+            nonTaxableAddOnCost: editLine.nonTaxableAddOnCost ?? undefined,
+            locationId: editLine.locationId ?? undefined,
+            taxPercent: editLine.taxPercent ?? undefined,
+            promisedDate: editLine.promisedDate ?? undefined,
+            shippingCost: editLine.shippingCost ?? undefined
+          }}
+          type="modal"
+          onClose={onEditClose}
+        />
+      )}
     </>
   );
 };
@@ -341,13 +403,15 @@ function LineItems({
   locale,
   formatter,
   lines,
-  salesOrder
+  salesOrder,
+  onEdit
 }: {
   currencyCode: string;
   formatter: Intl.NumberFormat;
   locale: string;
   lines: SalesOrderLine[];
   salesOrder?: SalesOrder;
+  onEdit: (line: SalesOrderLine) => void;
 }) {
   const { orderId } = useParams();
   if (!orderId) throw new Error("Could not find orderId");
@@ -414,14 +478,12 @@ function LineItems({
                           {line.itemReadableId}
                         </Heading>
                         <Button
-                          asChild
                           variant="link"
                           size="sm"
                           className="text-muted-foreground flex-shrink-0"
+                          onClick={(e) => { e.stopPropagation(); onEdit(line); }}
                         >
-                          <Link to={path.to.salesOrderLine(orderId, line.id!)}>
-                            <Trans>Edit</Trans>
-                          </Link>
+                          <Trans>Edit</Trans>
                         </Button>
                       </HStack>
                       <span className="text-muted-foreground text-base truncate">

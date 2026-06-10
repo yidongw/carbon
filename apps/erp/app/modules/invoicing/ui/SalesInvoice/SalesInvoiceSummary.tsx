@@ -12,6 +12,7 @@ import {
   Tbody,
   Td,
   Tr,
+  useDisclosure,
   VStack
 } from "@carbon/react";
 import { getItemReadableId } from "@carbon/utils";
@@ -19,17 +20,19 @@ import { Trans } from "@lingui/react/macro";
 import { useLocale } from "@react-aria/i18n";
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { LuChevronRight, LuImage } from "react-icons/lu";
-import { Link, useParams } from "react-router";
+import { LuChevronRight, LuCirclePlus, LuImage } from "react-icons/lu";
+import { useParams } from "react-router";
 import { CustomerAvatar, MethodIcon } from "~/components";
 import { useUnitOfMeasure } from "~/components/Form/UnitOfMeasure";
 import {
   useCurrencyFormatter,
   useDateFormatter,
   usePercentFormatter,
+  usePermissions,
   useRouteData,
   useUser
 } from "~/hooks";
+import type { MethodItemType } from "~/modules/shared";
 import { useItems } from "~/stores";
 import { getPrivateUrl, path } from "~/utils/path";
 import { isSalesInvoiceLocked } from "../../invoicing.models";
@@ -38,6 +41,8 @@ import type {
   SalesInvoiceLine,
   SalesInvoiceShipment
 } from "../../types";
+import DeleteSalesInvoiceLine from "./DeleteSalesInvoiceLine";
+import SalesInvoiceLineForm from "./SalesInvoiceLineForm";
 
 const LineItems = ({
   currencyCode,
@@ -45,7 +50,8 @@ const LineItems = ({
   formatter,
   locale,
   salesInvoiceLines,
-  shouldConvertCurrency
+  shouldConvertCurrency,
+  onEdit
 }: {
   currencyCode: string;
   presentationCurrencyFormatter: Intl.NumberFormat;
@@ -53,6 +59,7 @@ const LineItems = ({
   locale: string;
   salesInvoiceLines: SalesInvoiceLine[];
   shouldConvertCurrency: boolean;
+  onEdit: (line: SalesInvoiceLine) => void;
 }) => {
   const { invoiceId } = useParams();
   if (!invoiceId) throw new Error("Could not find invoiceId");
@@ -135,16 +142,12 @@ const LineItems = ({
                       >
                         <Heading className="truncate">{itemReadableId}</Heading>
                         <Button
-                          asChild
                           variant="link"
                           size="sm"
                           className="text-muted-foreground flex-shrink-0"
+                          onClick={() => onEdit(line)}
                         >
-                          <Link
-                            to={path.to.salesInvoiceLine(invoiceId, line.id!)}
-                          >
-                            <Trans>Edit</Trans>
-                          </Link>
+                          <Trans>Edit</Trans>
                         </Button>
                       </HStack>
                       <span className="text-muted-foreground text-base truncate">
@@ -353,6 +356,33 @@ const SalesInvoiceSummary = ({
 
   const { locale } = useLocale();
   const { company } = useUser();
+  const permissions = usePermissions();
+
+  const newSalesInvoiceLineDisclosure = useDisclosure();
+  const deleteLineDisclosure = useDisclosure();
+  const editLineDisclosure = useDisclosure();
+  const [deleteLine, setDeleteLine] = useState<SalesInvoiceLine | null>(null);
+  const [editLine, setEditLine] = useState<SalesInvoiceLine | null>(null);
+
+  const onEditLine = (line: SalesInvoiceLine) => {
+    setEditLine(line);
+    editLineDisclosure.onOpen();
+  };
+
+  const onEditClose = () => {
+    setEditLine(null);
+    editLineDisclosure.onClose();
+  };
+
+  const onDeleteLine = (line: SalesInvoiceLine) => {
+    setDeleteLine(line);
+    deleteLineDisclosure.onOpen();
+  };
+
+  const onDeleteCancel = () => {
+    setDeleteLine(null);
+    deleteLineDisclosure.onClose();
+  };
 
   const shouldConvertCurrency =
     routeData?.salesInvoice?.currencyCode !== company?.baseCurrencyCode;
@@ -419,7 +449,23 @@ const SalesInvoiceSummary = ({
   const total = subtotal + tax + shippingCost;
   const customerTotal = customerSubtotal + customerTax + customerShippingCost;
 
+  const salesInvoiceLineInitialValues = {
+    invoiceId: invoiceId,
+    invoiceLineType: "Item" as MethodItemType,
+    methodType: "Pull from Inventory" as const,
+    quantity: 1,
+    locationId: routeData?.salesInvoice?.locationId ?? "",
+    unitOfMeasureCode: "",
+    taxPercent: 0,
+    unitPrice: 0,
+    shippingCost: 0,
+    addOnCost: 0,
+    nonTaxableAddOnCost: 0,
+    exchangeRate: routeData?.salesInvoice?.exchangeRate ?? 1
+  };
+
   return (
+    <>
     <Card>
       <CardHeader>
         <HStack className="justify-between items-center">
@@ -449,7 +495,19 @@ const SalesInvoiceSummary = ({
           locale={locale}
           salesInvoiceLines={routeData?.salesInvoiceLines ?? []}
           shouldConvertCurrency={shouldConvertCurrency}
+          onEdit={onEditLine}
         />
+
+        {isEditable && permissions.can("update", "sales") && (
+          <button
+            type="button"
+            onClick={newSalesInvoiceLineDisclosure.onOpen}
+            className="mt-2 w-full rounded-lg border-2 border-dashed border-input py-3 text-sm text-muted-foreground transition-colors hover:border-primary hover:text-primary flex items-center justify-center gap-2"
+          >
+            <LuCirclePlus className="h-4 w-4" />
+            <Trans>Add Line Item</Trans>
+          </button>
+        )}
 
         <VStack spacing={2} className="mt-8">
           <HStack className="justify-between text-base text-muted-foreground w-full">
@@ -529,6 +587,41 @@ const SalesInvoiceSummary = ({
         </VStack>
       </CardContent>
     </Card>
+    {newSalesInvoiceLineDisclosure.isOpen && (
+      <SalesInvoiceLineForm
+        initialValues={salesInvoiceLineInitialValues}
+        type="modal"
+        onClose={newSalesInvoiceLineDisclosure.onClose}
+      />
+    )}
+    {deleteLineDisclosure.isOpen && deleteLine && (
+      <DeleteSalesInvoiceLine line={deleteLine} onCancel={onDeleteCancel} />
+    )}
+    {editLineDisclosure.isOpen && editLine && (
+      <SalesInvoiceLineForm
+        initialValues={{
+          id: editLine.id!,
+          invoiceId: editLine.invoiceId!,
+          invoiceLineType: editLine.invoiceLineType! as MethodItemType,
+          methodType: (editLine.methodType ?? "Pull from Inventory") as "Pull from Inventory" | "Make to Order" | "Purchase to Order",
+          itemId: editLine.itemId ?? undefined,
+          accountId: editLine.accountId ?? undefined,
+          description: editLine.description ?? undefined,
+          quantity: editLine.quantity ?? undefined,
+          unitOfMeasureCode: editLine.unitOfMeasureCode ?? "",
+          unitPrice: editLine.unitPrice ?? undefined,
+          shippingCost: editLine.shippingCost ?? 0,
+          addOnCost: editLine.addOnCost ?? 0,
+          nonTaxableAddOnCost: editLine.nonTaxableAddOnCost ?? 0,
+          taxPercent: editLine.taxPercent ?? 0,
+          locationId: editLine.locationId ?? undefined,
+          exchangeRate: editLine.exchangeRate ?? undefined
+        }}
+        type="modal"
+        onClose={onEditClose}
+      />
+    )}
+    </>
   );
 };
 
