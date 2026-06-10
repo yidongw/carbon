@@ -19,3 +19,14 @@ export function readPartShell(itemId: string): PartSummary | null {
     return null;
   }
 }
+
+export function consumePartShell(itemId: string): PartSummary | null {
+  const shell = readPartShell(itemId);
+  if (!shell) return null;
+  try {
+    sessionStorage.removeItem(key(itemId));
+  } catch {
+    // sessionStorage may be unavailable
+  }
+  return shell;
+}
