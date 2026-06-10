@@ -10,28 +10,15 @@ import {
   TabsTrigger
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { lazy, Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { LuSearch } from "react-icons/lu";
 import { useFetcher, useSearchParams } from "react-router";
 import type { PartSummary } from "~/modules/items";
+import BoMExplorer, { BoMActions } from "~/modules/items/ui/Item/BoMExplorer";
 import type { UsedInNode } from "~/modules/items/ui/Item/UsedIn";
-import { UsedInSkeleton } from "~/modules/items/ui/Item/UsedIn";
+import { UsedInSkeleton, UsedInTree } from "~/modules/items/ui/Item/UsedIn";
 import type { loader as explorerLoader } from "~/routes/api+/items.part-explorer.$itemId";
 import { path } from "~/utils/path";
-
-const BoMExplorer = lazy(
-  () => import("~/modules/items/ui/Item/BoMExplorer")
-);
-const BoMActions = lazy(() =>
-  import("~/modules/items/ui/Item/BoMExplorer").then((m) => ({
-    default: m.BoMActions
-  }))
-);
-const UsedInTree = lazy(() =>
-  import("~/modules/items/ui/Item/UsedIn").then((m) => ({
-    default: m.UsedInTree
-  }))
-);
 
 export default function PartExplorerPanel({
   partSummary
