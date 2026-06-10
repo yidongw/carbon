@@ -1,14 +1,10 @@
-import { useState } from "react";
-import useMount from "./useMount";
-
-let hydrating = true;
+import { useEffect, useState } from "react";
 
 /**
  * Return a boolean indicating if the JS has been hydrated already.
  * When doing Server-Side Rendering, the result will always be false.
  * When doing Client-Side Rendering, the result will always be false on the
- * first render and true from then on. Even if a new component renders it will
- * always start with true.
+ * first render and true from then on.
  *
  * Example: Disable a button that needs JS to work.
  * ```tsx
@@ -21,12 +17,11 @@ let hydrating = true;
  * ```
  */
 export default function useHydrated() {
-  let [hydrated, setHydrated] = useState(() => !hydrating);
+  const [hydrated, setHydrated] = useState(false);
 
-  useMount(() => {
-    hydrating = false;
+  useEffect(() => {
     setHydrated(true);
-  });
+  }, []);
 
   return hydrated;
 }
