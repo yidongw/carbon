@@ -6,7 +6,6 @@ import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
 import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useLoaderData, useParams } from "react-router";
-import { PanelProvider } from "~/components/Layout";
 import { getStockTransfer, getStockTransferLines } from "~/modules/inventory";
 import StockTransferHeader from "~/modules/inventory/ui/StockTransfers/StockTransferHeader";
 import StockTransferLines from "~/modules/inventory/ui/StockTransfers/StockTransferLines";
@@ -60,7 +59,6 @@ export default function StockTransferRoute() {
   const { stockTransfer } = useLoaderData<typeof loader>();
 
   return (
-    <PanelProvider>
       <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
         <StockTransferHeader />
         <div className="flex flex-1 min-h-0 overflow-y-auto overscroll-contain scrollbar-hide w-full">
@@ -74,6 +72,5 @@ export default function StockTransferRoute() {
         </div>
       </div>
       <Outlet />
-    </PanelProvider>
   );
 }

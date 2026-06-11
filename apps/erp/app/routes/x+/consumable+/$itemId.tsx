@@ -13,7 +13,7 @@ import {
   useLoaderData,
   useParams
 } from "react-router";
-import { PanelProvider, ResizablePanels } from "~/components/Layout";
+import { ResizablePanels } from "~/components/Layout";
 import type { ConsumableSummary, ItemFile } from "~/modules/items";
 import {
   getConsumable,
@@ -90,7 +90,6 @@ export default function ConsumableRoute() {
   const { usedIn } = useLoaderData<typeof loader>();
 
   return (
-    <PanelProvider>
     <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
       <ConsumableHeader />
       <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
@@ -217,6 +216,5 @@ export default function ConsumableRoute() {
         </div>
       </div>
     </div>
-    </PanelProvider>
   );
 }

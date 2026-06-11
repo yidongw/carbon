@@ -6,7 +6,7 @@ import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
 import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useParams } from "react-router";
-import { PanelProvider, ResizablePanels } from "~/components/Layout/Panels";
+import { ResizablePanels } from "~/components/Layout";
 import { getCurrencyByCode } from "~/modules/accounting";
 import {
   getSiblingQuotesForQuote,
@@ -122,7 +122,6 @@ export default function SupplierQuoteRoute() {
   if (!id) throw new Error("Could not find id");
 
   return (
-    <PanelProvider>
       <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
         <SupplierQuoteHeader />
         <div className="flex flex-1 min-h-0 overflow-hidden w-full">
@@ -141,6 +140,5 @@ export default function SupplierQuoteRoute() {
           </div>
         </div>
       </div>
-    </PanelProvider>
   );
 }

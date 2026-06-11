@@ -25,7 +25,7 @@ import {
   useLoaderData,
   useParams
 } from "react-router";
-import { PanelProvider, ResizablePanels } from "~/components/Layout";
+import { ResizablePanels } from "~/components/Layout";
 import { flattenTree } from "~/components/TreeView";
 import type { ItemFile, PartSummary } from "~/modules/items";
 import {
@@ -145,7 +145,6 @@ export default function PartRoute() {
   const [filterText, setFilterText] = useState("");
 
   return (
-    <PanelProvider key={itemId}>
       <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
         <PartHeader />
         <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
@@ -509,6 +508,5 @@ export default function PartRoute() {
           </div>
         </div>
       </div>
-    </PanelProvider>
   );
 }
