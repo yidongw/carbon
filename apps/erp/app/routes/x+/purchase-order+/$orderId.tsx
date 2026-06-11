@@ -12,7 +12,7 @@ import { renderAsync } from "@react-email/components";
 import { parseAcceptLanguage } from "intl-parse-accept-language";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useParams } from "react-router";
-import { ResizablePanels } from "~/components/Layout";
+import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import { getPaymentTermsList } from "~/modules/accounting";
 import { upsertDocument } from "~/modules/documents";
 import {
@@ -451,6 +451,7 @@ export default function PurchaseOrderRoute() {
   if (!orderId) throw new Error("Could not find orderId");
 
   return (
+    <PanelProvider>
       <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
         <PurchaseOrderHeader />
         <div className="flex flex-1 min-h-0 overflow-hidden w-full">
@@ -469,5 +470,6 @@ export default function PurchaseOrderRoute() {
           </div>
         </div>
       </div>
+    </PanelProvider>
   );
 }

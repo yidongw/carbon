@@ -16,7 +16,7 @@ import {
   useLoaderData,
   useParams
 } from "react-router";
-import { ResizablePanels } from "~/components/Layout";
+import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import { usePermissions, useUser } from "~/hooks";
 import { getProcedure, getProcedureVersions } from "~/modules/production";
 import ProcedureExplorer from "~/modules/production/ui/Procedures/ProcedureExplorer";
@@ -69,10 +69,8 @@ export default function ProcedureRoute() {
   const { procedure } = useLoaderData<typeof loader>();
 
   return (
-    <div
-      key={`${id}-${procedure.version}`}
-      className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full"
-    >
+    <PanelProvider key={`${id}-${procedure.version}`}>
+      <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
         <ProcedureHeader />
         <div className="flex flex-1 min-h-0 overflow-hidden w-full">
           <div className="flex flex-1 min-h-0 h-full overflow-hidden">
@@ -97,6 +95,7 @@ export default function ProcedureRoute() {
           </div>
         </div>
       </div>
+    </PanelProvider>
   );
 }
 

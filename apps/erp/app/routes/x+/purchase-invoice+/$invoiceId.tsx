@@ -5,7 +5,7 @@ import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useParams } from "react-router";
-import { ResizablePanels } from "~/components/Layout";
+import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import {
   getPurchaseInvoice,
   getPurchaseInvoiceDelivery,
@@ -84,6 +84,7 @@ export default function PurchaseInvoiceRoute() {
   if (!invoiceId) throw new Error("Could not find invoiceId");
 
   return (
+    <PanelProvider>
       <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
         <PurchaseInvoiceHeader />
         <div className="flex flex-1 min-h-0 overflow-hidden w-full">
@@ -102,5 +103,6 @@ export default function PurchaseInvoiceRoute() {
           </div>
         </div>
       </div>
+    </PanelProvider>
   );
 }

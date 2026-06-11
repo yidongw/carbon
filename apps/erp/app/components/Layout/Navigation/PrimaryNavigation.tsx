@@ -2,12 +2,10 @@ import { cn, useDisclosure, VStack } from "@carbon/react";
 import type { AnchorHTMLAttributes } from "react";
 import { forwardRef, memo } from "react";
 import { Link, useMatches } from "react-router";
-import { usePanels } from "~/components/Layout";
 import { useModules, useOptimisticLocation } from "~/hooks";
 import type { Authenticated, NavItem } from "~/types";
 
 const PrimaryNavigation = () => {
-  const { isMobileOverlayOpen } = usePanels();
   const navigationPanel = useDisclosure();
   const location = useOptimisticLocation();
   const currentModule = getModule(location.pathname);
@@ -23,12 +21,7 @@ const PrimaryNavigation = () => {
   }, new Set<string>());
 
   return (
-    <div
-      className={cn(
-        "w-14 h-full flex-col z-50",
-        isMobileOverlayOpen ? "hidden" : "hidden sm:flex"
-      )}
-    >
+    <div className="w-14 h-full flex-col z-50 hidden md:flex">
       <nav
         data-state={navigationPanel.isOpen ? "expanded" : "collapsed"}
         className={cn(

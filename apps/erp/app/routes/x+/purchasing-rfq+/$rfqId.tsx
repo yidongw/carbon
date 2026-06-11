@@ -6,7 +6,7 @@ import { type JSONContent, VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
 import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useParams } from "react-router";
-import { ResizablePanels } from "~/components/Layout";
+import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import type { PurchasingRFQLine } from "~/modules/purchasing";
 import {
   getLinkedSupplierQuotes,
@@ -112,6 +112,7 @@ export default function PurchasingRFQRoute() {
   if (!rfqId) throw new Error("Could not find rfqId");
 
   return (
+    <PanelProvider>
       <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
         <PurchasingRFQHeader />
         <div className="flex flex-1 min-h-0 overflow-hidden w-full">
@@ -130,5 +131,6 @@ export default function PurchasingRFQRoute() {
           </div>
         </div>
       </div>
+    </PanelProvider>
   );
 }
