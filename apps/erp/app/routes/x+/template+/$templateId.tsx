@@ -1,25 +1,11 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
-import {
-  Copy,
-  HStack,
-  IconButton,
-  Input,
-  InputGroup,
-  InputLeftElement,
-} from "@carbon/react";
+import { HStack, Input, InputGroup, InputLeftElement } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
 import { useLingui } from "@lingui/react/macro";
 import { useState } from "react";
-import { createPortal } from "react-dom";
-import { LuPanelLeft, LuPanelRight, LuSearch } from "react-icons/lu";
+import { LuSearch } from "react-icons/lu";
 import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, useLoaderData } from "react-router";
-import {
-  DetailTopbarContent,
-  DetailTopbarPlainId,
-  usePanels,
-  useTopbarLeft
-} from "~/components/Layout";
 import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import type { FlatTreeItem } from "~/components/TreeView";
 import type { MakeMethod, Method } from "~/modules/items";
@@ -29,6 +15,7 @@ import {
   getTemplateMethodMaterialsByMakeMethod
 } from "~/modules/items/template.service";
 import { BoMExplorer } from "~/modules/items/ui/Item";
+import { TemplateHeader } from "~/modules/items/ui/Templates";
 import TemplateProperties from "~/modules/items/ui/Templates/TemplateProperties";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
@@ -208,44 +195,6 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   };
 }
 
-function TemplateTopbarLeft({ template }: { template: TemplateRow }) {
-  const { t } = useLingui();
-  const { hasExplorer, toggleExplorer, toggleProperties } = usePanels();
-
-  return (
-    <HStack className="items-center w-full justify-between" spacing={1}>
-      <DetailTopbarContent>
-        {hasExplorer && (
-          <IconButton
-            aria-label={t`Toggle Explorer`}
-            icon={<LuPanelLeft />}
-            onClick={toggleExplorer}
-            variant="ghost"
-          />
-        )}
-        <DetailTopbarPlainId>{template.name}</DetailTopbarPlainId>
-        <Copy text={template.name ?? ""} />
-      </DetailTopbarContent>
-      <IconButton
-        aria-label={t`Toggle Properties`}
-        icon={<LuPanelRight />}
-        onClick={toggleProperties}
-        variant="ghost"
-      />
-    </HStack>
-  );
-}
-
-function TemplateHeader({ template }: { template: TemplateRow }) {
-  const { leftSlotEl } = useTopbarLeft();
-
-  return (
-    <>
-      {leftSlotEl && createPortal(<TemplateTopbarLeft template={template} />, leftSlotEl)}
-    </>
-  );
-}
-
 export default function TemplateLayoutRoute() {
   const { t } = useLingui();
   const { template, selectedMakeMethodId, selectedMakeMethod, explorerNodes } =
@@ -263,7 +212,7 @@ export default function TemplateLayoutRoute() {
     <PanelProvider key={template.id}>
       <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
         <TemplateHeader template={template as TemplateRow} />
-        <div className="flex flex-1 min-h-0 h-full overflow-hidden w-full">
+        <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
           <ResizablePanels
             explorer={
               <div className="flex flex-col h-full">
