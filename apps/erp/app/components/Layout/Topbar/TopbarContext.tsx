@@ -12,7 +12,14 @@ const TopbarContext = createContext<TopbarContextValue>({
 });
 
 export function TopbarProvider({ children }: { children: ReactNode }) {
-  const [leftSlotEl, setLeftSlotEl] = useState<HTMLDivElement | null>(null);
+  const [leftSlotEl, setLeftSlotEl] = useState<HTMLDivElement | null>(() => {
+    // On client, the [data-slot] div is already in the SSR'd HTML, so query it
+    // immediately so portals render on the first client paint (no breadcrumb flash).
+    if (typeof document !== "undefined") {
+      return document.querySelector<HTMLDivElement>("[data-slot]");
+    }
+    return null;
+  });
 
   return (
     <TopbarContext.Provider value={{ leftSlotEl, setLeftSlotEl }}>
