@@ -6,9 +6,6 @@ import { useSyncExternalStore } from "react";
  * When doing Client-Side Rendering, the result will always be false on the
  * first render and true from then on.
  *
- * Uses useSyncExternalStore for correct SSR behavior without relying on
- * useEffect, which may not fire in all React Router v7 rendering scenarios.
- *
  * Example: Disable a button that needs JS to work.
  * ```tsx
  * const hydrated = useHydrated();
@@ -21,7 +18,11 @@ import { useSyncExternalStore } from "react";
  */
 export default function useHydrated() {
   return useSyncExternalStore(
-    () => () => {},
+    // Notify React after mount so it re-reads getSnapshot() → true
+    (onStoreChange) => {
+      const id = setTimeout(onStoreChange, 0);
+      return () => clearTimeout(id);
+    },
     () => true,
     () => false
   );
