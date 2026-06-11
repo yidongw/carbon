@@ -18,8 +18,7 @@ import {
   Th,
   Thead,
   Tr,
-  toast,
-  useLocalStorage
+  toast
 } from "@carbon/react";
 import { convertKbToString } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
@@ -30,15 +29,12 @@ import { Link, useFetchers, useRevalidator, useSubmit } from "react-router";
 import {
   DocumentPreview,
   FileDropzone,
-  FilesGalleryView,
+  FilesIconView,
   FilesViewModeToggle,
   Hyperlink
 } from "~/components";
-import type { FilesGalleryItem } from "~/components/FilesGalleryView";
-import {
-  FILES_VIEW_MODE_KEY,
-  type FilesViewMode
-} from "~/components/FilesViewModeToggle";
+import type { FilesIconItem } from "~/components/FilesIconView";
+import { useFilesViewMode } from "~/components/FilesViewModeToggle";
 import DocumentIcon from "~/components/DocumentIcon";
 import { useDateFormatter, usePermissions, useUser } from "~/hooks";
 import type { OptimisticFileObject } from "~/modules/shared";
@@ -260,13 +256,10 @@ const Documents = ({
     [upload]
   );
 
-  const [viewMode, setViewMode] = useLocalStorage<FilesViewMode>(
-    FILES_VIEW_MODE_KEY,
-    "list"
-  );
+  const [viewMode, setViewMode] = useFilesViewMode();
 
-  const galleryItems = useMemo<FilesGalleryItem<StorageItem>[]>(() => {
-    const items: FilesGalleryItem<StorageItem>[] = [];
+  const iconItems = useMemo<FilesIconItem<StorageItem>[]>(() => {
+    const items: FilesIconItem<StorageItem>[] = [];
 
     if (modelUpload?.modelName) {
       items.push({
@@ -327,10 +320,9 @@ const Documents = ({
         </CardAction>
       </HStack>
       <CardContent>
-        {viewMode === "gallery" ? (
-          <FilesGalleryView
-            items={galleryItems}
-            formatDate={formatDate}
+        {viewMode === "icons" ? (
+          <FilesIconView
+            items={iconItems}
             canDelete={canDelete}
             onDownload={(item) => {
               if (item.isModel && modelUpload) {

@@ -14,7 +14,7 @@ import EmployeeAvatar from "./EmployeeAvatar";
 import EmployeeAvatarGroup from "./EmployeeAvatarGroup";
 import Empty from "./Empty";
 import FileDropzone from "./FileDropzone";
-import FilesGalleryView from "./FilesGalleryView";
+import FilesIconView from "./FilesIconView";
 import FilesViewModeToggle from "./FilesViewModeToggle";
 import Hyperlink from "./Hyperlink";
 import {
@@ -56,7 +56,7 @@ export {
   EmployeeAvatarGroup,
   Empty,
   FileDropzone,
-  FilesGalleryView,
+  FilesIconView,
   FilesViewModeToggle,
   Hyperlink,
   ItemThumbnail,

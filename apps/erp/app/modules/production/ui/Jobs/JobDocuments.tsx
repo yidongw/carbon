@@ -24,7 +24,6 @@ import {
   Thead,
   Tr,
   toast,
-  useLocalStorage,
   VStack
 } from "@carbon/react";
 import { convertKbToString } from "@carbon/utils";
@@ -37,15 +36,12 @@ import { Link, useFetchers, useRevalidator, useSubmit } from "react-router";
 import {
   DocumentPreview,
   FileDropzone,
-  FilesGalleryView,
+  FilesIconView,
   FilesViewModeToggle,
   Hyperlink
 } from "~/components";
-import type { FilesGalleryItem } from "~/components/FilesGalleryView";
-import {
-  FILES_VIEW_MODE_KEY,
-  type FilesViewMode
-} from "~/components/FilesViewModeToggle";
+import type { FilesIconItem } from "~/components/FilesIconView";
+import { useFilesViewMode } from "~/components/FilesViewModeToggle";
 import DocumentIcon from "~/components/DocumentIcon";
 import { Enumerable } from "~/components/Enumerable";
 import { useDateFormatter, usePermissions, useUser } from "~/hooks";
@@ -388,10 +384,7 @@ const JobDocuments = ({
     a.name.localeCompare(b.name)
   ) as FileObject[];
 
-  const [viewMode, setViewMode] = useLocalStorage<FilesViewMode>(
-    FILES_VIEW_MODE_KEY,
-    "list"
-  );
+  const [viewMode, setViewMode] = useFilesViewMode();
 
   const getFileBucket = useCallback((file: FileObject) => {
     return (file as FileObject & { bucket?: string }).bucket === "parts"
@@ -399,8 +392,8 @@ const JobDocuments = ({
       : "job";
   }, []);
 
-  const galleryItems = useMemo<FilesGalleryItem<FileObject>[]>(() => {
-    const items: FilesGalleryItem<FileObject>[] = [];
+  const iconItems = useMemo<FilesIconItem<FileObject>[]>(() => {
+    const items: FilesIconItem<FileObject>[] = [];
 
     if (modelUpload?.modelName) {
       items.push({
@@ -455,10 +448,9 @@ const JobDocuments = ({
           </CardAction>
         </HStack>
         <CardContent>
-          {viewMode === "gallery" ? (
-            <FilesGalleryView
-              items={galleryItems}
-              formatDate={formatDate}
+          {viewMode === "icons" ? (
+            <FilesIconView
+              items={iconItems}
               canDelete={canDelete && !isReadOnly}
               onDownload={(item) => {
                 if (item.isModel && modelUpload) {

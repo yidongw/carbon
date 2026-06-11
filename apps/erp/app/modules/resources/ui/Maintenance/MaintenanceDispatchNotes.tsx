@@ -22,8 +22,7 @@ import {
   Thead,
   Tr,
   toast,
-  useDebounce,
-  useLocalStorage
+  useDebounce
 } from "@carbon/react";
 import { Editor } from "@carbon/react/Editor";
 import { convertKbToString } from "@carbon/utils";
@@ -37,16 +36,13 @@ import { Await, useRevalidator } from "react-router";
 import {
   DocumentPreview,
   FileDropzone,
-  FilesGalleryView,
+  FilesIconView,
   FilesViewModeToggle
 } from "~/components";
-import type { FilesGalleryItem } from "~/components/FilesGalleryView";
-import {
-  FILES_VIEW_MODE_KEY,
-  type FilesViewMode
-} from "~/components/FilesViewModeToggle";
+import type { FilesIconItem } from "~/components/FilesIconView";
+import { useFilesViewMode } from "~/components/FilesViewModeToggle";
 import DocumentIcon from "~/components/DocumentIcon";
-import { useDateFormatter, usePermissions, useUser } from "~/hooks";
+import { usePermissions, useUser } from "~/hooks";
 import { getDocumentType } from "~/modules/shared";
 import type { StorageItem } from "~/types";
 import { getPrivateUrl, path } from "~/utils/path";
@@ -206,7 +202,6 @@ function MaintenanceFilesContent({
   isReadOnly: boolean;
 }) {
   const { t } = useLingui();
-  const { formatDate } = useDateFormatter();
   const { carbon } = useCarbon();
   const { company } = useUser();
   const revalidator = useRevalidator();
@@ -303,12 +298,9 @@ function MaintenanceFilesContent({
     }
   };
 
-  const [viewMode, setViewMode] = useLocalStorage<FilesViewMode>(
-    FILES_VIEW_MODE_KEY,
-    "list"
-  );
+  const [viewMode, setViewMode] = useFilesViewMode();
 
-  const galleryItems = useMemo<FilesGalleryItem<StorageItem>[]>(() => {
+  const iconItems = useMemo<FilesIconItem<StorageItem>[]>(() => {
     return files.map((file) => {
       const type = getDocumentType(file.name);
       return {
@@ -338,10 +330,9 @@ function MaintenanceFilesContent({
           </>
         )}
       </div>
-      {viewMode === "gallery" ? (
-        <FilesGalleryView
-          items={galleryItems}
-          formatDate={(date) => formatDate(date)}
+      {viewMode === "icons" ? (
+        <FilesIconView
+          items={iconItems}
           canDelete={!isReadOnly}
           emptyMessage={<Trans>No files uploaded</Trans>}
           onDownload={(item) => item.raw && download(item.raw)}

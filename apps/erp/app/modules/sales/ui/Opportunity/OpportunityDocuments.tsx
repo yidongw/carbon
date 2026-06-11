@@ -19,8 +19,7 @@ import {
   Th,
   Thead,
   Tr,
-  toast,
-  useLocalStorage
+  toast
 } from "@carbon/react";
 import { convertKbToString } from "@carbon/utils";
 import { useDndContext, useDraggable } from "@dnd-kit/core";
@@ -39,14 +38,11 @@ import { Outlet, useFetchers, useRevalidator, useSubmit } from "react-router";
 import {
   DocumentPreview,
   FileDropzone,
-  FilesGalleryView,
+  FilesIconView,
   FilesViewModeToggle
 } from "~/components";
-import type { FilesGalleryItem } from "~/components/FilesGalleryView";
-import {
-  FILES_VIEW_MODE_KEY,
-  type FilesViewMode
-} from "~/components/FilesViewModeToggle";
+import type { FilesIconItem } from "~/components/FilesIconView";
+import { useFilesViewMode } from "~/components/FilesViewModeToggle";
 import DocumentIcon from "~/components/DocumentIcon";
 import { useDateFormatter, usePermissions, useUser } from "~/hooks";
 import { getDocumentType } from "~/modules/shared";
@@ -102,12 +98,9 @@ const OpportunityDocuments = ({
     .filter((d) => !optimisticDrags?.find((o) => o.id === d.id))
     .sort((a, b) => a.name.localeCompare(b.name)) as FileObject[];
 
-  const [viewMode, setViewMode] = useLocalStorage<FilesViewMode>(
-    FILES_VIEW_MODE_KEY,
-    "list"
-  );
+  const [viewMode, setViewMode] = useFilesViewMode();
 
-  const galleryItems = useMemo<FilesGalleryItem<FileObject>[]>(() => {
+  const iconItems = useMemo<FilesIconItem<FileObject>[]>(() => {
     return attachmentsToRender.map((attachment) => {
       const type = getDocumentType(attachment.name);
       return {
@@ -148,10 +141,9 @@ const OpportunityDocuments = ({
           </CardAction>
         </HStack>
         <CardContent>
-          {viewMode === "gallery" ? (
-            <FilesGalleryView
-              items={galleryItems}
-              formatDate={formatDate}
+          {viewMode === "icons" ? (
+            <FilesIconView
+              items={iconItems}
               canDelete={effectiveCanDelete}
               emptyMessage={<Trans>No files uploaded</Trans>}
               onDownload={(item) => item.raw && download(item.raw)}
