@@ -27,7 +27,7 @@ export function DetailTopbarContent({ children }: DetailTopbarContentProps) {
 
   return (
     <HStack
-      className="items-center min-w-0 flex-shrink overflow-hidden"
+      className="items-center min-w-0 flex-1 overflow-hidden [&>*:first-child]:min-w-0 [&>*:first-child]:flex-1 [&>*:not(:first-child)]:shrink-0"
       spacing={1}
     >
       {children}
@@ -43,10 +43,14 @@ type DetailTopbarIdProps = {
 /** Detail ID styled as a breadcrumb continuation on desktop. */
 export function DetailTopbarId({ to, children }: DetailTopbarIdProps) {
   return (
-    <div className="inline-flex items-center min-w-0">
-      <span className="text-muted-foreground hidden md:inline">/</span>
-      <BreadcrumbLink to={to} isCurrentPage className="max-w-[8rem] sm:max-w-xs">
-        <span className="truncate font-medium">{children}</span>
+    <div className="flex min-w-0 flex-1 items-center overflow-hidden">
+      <span className="text-muted-foreground hidden md:inline shrink-0">/</span>
+      <BreadcrumbLink
+        to={to}
+        isCurrentPage
+        className="min-w-0 max-w-full flex-1 overflow-hidden"
+      >
+        <span className="block truncate font-medium">{children}</span>
       </BreadcrumbLink>
     </div>
   );
@@ -59,10 +63,14 @@ type DetailTopbarPlainIdProps = {
 /** Detail ID without a link (e.g. stock transfers). */
 export function DetailTopbarPlainId({ children }: DetailTopbarPlainIdProps) {
   return (
-    <div className="inline-flex items-center min-w-0">
-      <span className="text-muted-foreground hidden md:inline">/</span>
-      <BreadcrumbLink to="" isCurrentPage className="max-w-[8rem] sm:max-w-xs">
-        <span className="truncate font-medium">{children}</span>
+    <div className="flex min-w-0 flex-1 items-center overflow-hidden">
+      <span className="text-muted-foreground hidden md:inline shrink-0">/</span>
+      <BreadcrumbLink
+        to=""
+        isCurrentPage
+        className="min-w-0 max-w-full flex-1 overflow-hidden"
+      >
+        <span className="block truncate font-medium">{children}</span>
       </BreadcrumbLink>
     </div>
   );
@@ -83,7 +91,7 @@ export function DetailTopbarBadge({
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Badge className={cnIconBadge(className)} {...props}>
+        <Badge className={cnIconBadge(className, "shrink-0")} {...props}>
           {icon ?? <LuTag className="size-3.5" />}
         </Badge>
       </TooltipTrigger>
@@ -94,8 +102,8 @@ export function DetailTopbarBadge({
   );
 }
 
-function cnIconBadge(className?: string) {
-  return ["px-1.5 min-w-0", className].filter(Boolean).join(" ");
+function cnIconBadge(...classes: (string | undefined)[]) {
+  return ["px-1.5 min-w-0", ...classes].filter(Boolean).join(" ");
 }
 
 /** Shared class for properties panel roots — prevents horizontal scroll. */
