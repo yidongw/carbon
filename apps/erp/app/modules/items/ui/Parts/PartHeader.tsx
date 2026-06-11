@@ -6,31 +6,27 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  Heading,
   HStack,
   IconButton,
-  useDisclosure,
-  VStack
+  useDisclosure
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { LuEllipsisVertical, LuTrash } from "react-icons/lu";
-import { Link, useParams } from "react-router";
+import { useEffect } from "react";
+import { LuArrowLeft, LuEllipsisVertical, LuTrash } from "react-icons/lu";
+import { Link, useNavigate, useParams } from "react-router";
 import { useAuditLog } from "~/components/AuditLog";
-import { DetailsTopbar } from "~/components/Layout";
+import { DetailsTopbar, useTopbarLeft } from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
 import { path } from "~/utils/path";
 import type { PartSummary } from "../../types";
 import { usePartNavigation } from "./usePartNavigation";
 
-const PartHeader = () => {
+function PartTopbarLeft({ itemId }: { itemId: string }) {
   const { t } = useLingui();
-  const links = usePartNavigation();
-  const { itemId } = useParams();
-  if (!itemId) throw new Error("itemId not found");
-
-  const { company } = useUser();
+  const navigate = useNavigate();
   const permissions = usePermissions();
+  const { company } = useUser();
   const deleteModal = useDisclosure();
   const { trigger: auditLogTrigger, drawer: auditLogDrawer } = useAuditLog({
     entityType: "item",
@@ -38,70 +34,81 @@ const PartHeader = () => {
     companyId: company.id,
     variant: "dropdown"
   });
-
   const routeData = useRouteData<{ partSummary: PartSummary }>(
     path.to.part(itemId)
   );
+  const readableId = routeData?.partSummary?.readableIdWithRevision ?? "";
 
   return (
     <>
-      <div className="flex flex-shrink-0 items-center justify-between px-4 py-2 bg-card border-b border-border h-[50px] overflow-x-auto scrollbar-hide dark:border-none dark:shadow-[inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)]">
-        <VStack spacing={0} className="flex-grow">
-          <HStack>
-            <Link to={path.to.partDetails(itemId)}>
-              <Heading size="h4" className="flex items-center gap-2">
-                {/* <ModuleIcon icon={<MethodItemTypeIcon type="Part" />} /> */}
-                <span>{routeData?.partSummary?.readableIdWithRevision}</span>
-              </Heading>
-            </Link>
-            <Copy text={routeData?.partSummary?.readableIdWithRevision ?? ""} />
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <IconButton
-                  aria-label={t`More options`}
-                  icon={<LuEllipsisVertical />}
-                  size="sm"
-                  variant="secondary"
-                />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                {auditLogTrigger}
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  disabled={
-                    !permissions.can("delete", "parts") ||
-                    !permissions.is("employee")
-                  }
-                  destructive
-                  onClick={deleteModal.onOpen}
-                >
-                  <DropdownMenuIcon icon={<LuTrash />} />
-                  <Trans>Delete Part</Trans>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </HStack>
-        </VStack>
-        <VStack spacing={0} className="flex-shrink justify-center items-end">
-          <DetailsTopbar links={links} />
-        </VStack>
-        {deleteModal.isOpen && (
-          <ConfirmDelete
-            action={path.to.deleteItem(itemId)}
-            isOpen={deleteModal.isOpen}
-            name={routeData?.partSummary?.readableIdWithRevision ?? "part"}
-            text={t`Are you sure you want to delete ${routeData?.partSummary?.readableIdWithRevision}? This cannot be undone.`}
-            onCancel={() => {
-              deleteModal.onClose();
-            }}
-            onSubmit={() => {
-              deleteModal.onClose();
-            }}
-          />
-        )}
-      </div>
+      <HStack className="items-center -ml-2" spacing={1}>
+        <IconButton
+          aria-label={t`Back`}
+          icon={<LuArrowLeft />}
+          variant="ghost"
+          onClick={() => navigate(path.to.parts)}
+        />
+        <Link to={path.to.partDetails(itemId)}>
+          <span className="font-semibold text-sm">{readableId}</span>
+        </Link>
+        <Copy text={readableId} />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <IconButton
+              aria-label={t`More options`}
+              icon={<LuEllipsisVertical />}
+              size="sm"
+              variant="secondary"
+            />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            {auditLogTrigger}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              disabled={
+                !permissions.can("delete", "parts") ||
+                !permissions.is("employee")
+              }
+              destructive
+              onClick={deleteModal.onOpen}
+            >
+              <DropdownMenuIcon icon={<LuTrash />} />
+              <Trans>Delete Part</Trans>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </HStack>
       {auditLogDrawer}
+      {deleteModal.isOpen && (
+        <ConfirmDelete
+          action={path.to.deleteItem(itemId)}
+          isOpen={deleteModal.isOpen}
+          name={readableId}
+          text={t`Are you sure you want to delete ${readableId}? This cannot be undone.`}
+          onCancel={deleteModal.onClose}
+          onSubmit={deleteModal.onClose}
+        />
+      )}
     </>
+  );
+}
+
+const PartHeader = () => {
+  const links = usePartNavigation();
+  const { itemId } = useParams();
+  if (!itemId) throw new Error("itemId not found");
+
+  const { setLeftContent, clearLeftContent } = useTopbarLeft();
+
+  useEffect(() => {
+    setLeftContent(<PartTopbarLeft itemId={itemId} />);
+    return clearLeftContent;
+  }, [itemId, setLeftContent, clearLeftContent]);
+
+  return (
+    <div className="flex-shrink-0 h-[50px] px-4 py-2 bg-card border-b border-border overflow-x-auto scrollbar-hide flex items-center dark:border-none dark:shadow-[inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)]">
+      <DetailsTopbar links={links} />
+    </div>
   );
 };
 
