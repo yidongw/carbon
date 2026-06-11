@@ -324,18 +324,27 @@ export async function getOrCreatePeriods(
       ranges.map((r) => r.startDate)
     )
     .where("periodType", "=", "Week")
+    .orderBy("createdAt", "asc")
     .execute();
 
-  const existingStartDates = new Set(
-    existingPeriods.map((p) => dateToString(p.startDate))
-  );
+  // Keep one period per start date (duplicates can exist in legacy data)
+  const periodByStartDate = new Map<
+    string,
+    (typeof existingPeriods)[number]
+  >();
+  for (const period of existingPeriods) {
+    const startDate = dateToString(period.startDate);
+    if (!periodByStartDate.has(startDate)) {
+      periodByStartDate.set(startDate, period);
+    }
+  }
 
   const periodsToCreate = ranges.filter(
-    (r) => !existingStartDates.has(r.startDate)
+    (r) => !periodByStartDate.has(r.startDate)
   );
 
   if (periodsToCreate.length === 0) {
-    return existingPeriods.map(toPlainPeriod);
+    return ranges.map((r) => toPlainPeriod(periodByStartDate.get(r.startDate)!));
   }
 
   // Create missing periods in a transaction
@@ -354,7 +363,14 @@ export async function getOrCreatePeriods(
       .execute();
   });
 
-  return [...existingPeriods, ...created].map(toPlainPeriod);
+  for (const period of created) {
+    const startDate = dateToString(period.startDate);
+    if (!periodByStartDate.has(startDate)) {
+      periodByStartDate.set(startDate, period);
+    }
+  }
+
+  return ranges.map((r) => toPlainPeriod(periodByStartDate.get(r.startDate)!));
 }
 
 /** Convert a pg DATE value (Date object or string) to an ISO date string. */
