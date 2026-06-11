@@ -1144,6 +1144,7 @@ msgstr "{0}を削除してもよろしいですか？"
 #: apps/erp/app/modules/items/ui/Consumables/ConsumablesTable.tsx:518
 #: apps/erp/app/modules/items/ui/Materials/MaterialsTable.tsx:670
 #: apps/erp/app/modules/items/ui/Parts/PartsTable.tsx:620
+#: apps/erp/app/modules/items/ui/Templates/TemplateHeader.tsx:68
 #: apps/erp/app/modules/items/ui/Tools/ToolsTable.tsx:587
 #: apps/erp/app/modules/production/ui/Jobs/JobHeader.tsx:314
 #: apps/erp/app/modules/production/ui/Procedures/ProcedureHeader.tsx:180
@@ -4638,6 +4639,10 @@ msgstr "サプライヤー見積を削除"
 #: apps/erp/app/modules/purchasing/ui/SupplierTypes/SupplierTypesTable.tsx:78
 msgid "Delete Supplier Type"
 msgstr "サプライヤータイプを削除"
+
+#: apps/erp/app/modules/items/ui/Templates/TemplateHeader.tsx:58
+msgid "Delete Template"
+msgstr "テンプレートを削除"
 
 #: apps/erp/app/modules/people/ui/Timecards/TimecardsTable.tsx:214
 msgid "Delete Timecard"
@@ -8823,7 +8828,7 @@ msgstr "製造業者"
 
 #: apps/erp/app/modules/items/ui/Item/ItemManufacturingForm.tsx:50
 #: apps/erp/app/routes/x+/part+/$itemId.tsx:164
-#: apps/erp/app/routes/x+/template+/$templateId.tsx:272
+#: apps/erp/app/routes/x+/template+/$templateId.tsx:221
 #: apps/erp/app/routes/x+/tool+/$itemId.tsx:160
 msgid "Manufacturing"
 msgstr "製造"
@@ -9308,6 +9313,7 @@ msgstr "その他のアクション"
 #: apps/erp/app/modules/items/ui/Consumables/ConsumableHeader.tsx:56
 #: apps/erp/app/modules/items/ui/Materials/MaterialHeader.tsx:56
 #: apps/erp/app/modules/items/ui/Parts/PartHeader.tsx:54
+#: apps/erp/app/modules/items/ui/Templates/TemplateHeader.tsx:42
 #: apps/erp/app/modules/items/ui/Tools/ToolHeader.tsx:52
 #: apps/erp/app/modules/production/ui/Jobs/JobHeader.tsx:133
 #: apps/erp/app/modules/production/ui/Procedures/ProcedureHeader.tsx:78
@@ -13778,7 +13784,7 @@ msgstr "ウェブを検索"
 #: apps/erp/app/modules/sales/ui/Quotes/QuoteBoMExplorer.tsx:170
 #: apps/erp/app/routes/x+/part+/$itemId.tsx:177
 #: apps/erp/app/routes/x+/part+/$itemId.tsx:362
-#: apps/erp/app/routes/x+/template+/$templateId.tsx:281
+#: apps/erp/app/routes/x+/template+/$templateId.tsx:230
 #: apps/erp/app/routes/x+/tool+/$itemId.tsx:173
 #: apps/erp/app/routes/x+/tool+/$itemId.tsx:358
 #: packages/react/src/Combobox.tsx:235
@@ -15559,7 +15565,7 @@ msgstr "テンプレート"
 #: apps/erp/app/modules/items/ui/Templates/TemplatesTable.tsx:104
 #: apps/erp/app/modules/items/ui/useItemsSubmodules.tsx:102
 #: apps/erp/app/routes/x+/items+/templates.tsx:14
-#: apps/erp/app/routes/x+/template+/$templateId.tsx:53
+#: apps/erp/app/routes/x+/template+/$templateId.tsx:40
 msgid "Templates"
 msgstr "テンプレート"
 
@@ -15906,6 +15912,7 @@ msgstr "期間を切り替え"
 #: apps/erp/app/modules/items/ui/Consumables/ConsumableHeader.tsx:109
 #: apps/erp/app/modules/items/ui/Materials/MaterialHeader.tsx:109
 #: apps/erp/app/modules/items/ui/Parts/PartHeader.tsx:107
+#: apps/erp/app/modules/items/ui/Templates/TemplateHeader.tsx:89
 #: apps/erp/app/modules/items/ui/Tools/ToolHeader.tsx:105
 #: apps/erp/app/modules/production/ui/Jobs/JobHeader.tsx:347
 #: apps/erp/app/modules/production/ui/Procedures/ProcedureHeader.tsx:207
@@ -15919,7 +15926,6 @@ msgstr "期間を切り替え"
 #: apps/erp/app/modules/sales/ui/Quotes/QuoteHeader.tsx:368
 #: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderHeader.tsx:521
 #: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQHeader.tsx:248
-#: apps/erp/app/routes/x+/template+/$templateId.tsx:220
 msgid "Toggle Explorer"
 msgstr "エクスプローラーを切り替え"
 
@@ -15933,6 +15939,7 @@ msgstr "レベルを切り替え"
 #: apps/erp/app/modules/items/ui/Consumables/ConsumableHeader.tsx:119
 #: apps/erp/app/modules/items/ui/Materials/MaterialHeader.tsx:119
 #: apps/erp/app/modules/items/ui/Parts/PartHeader.tsx:117
+#: apps/erp/app/modules/items/ui/Templates/TemplateHeader.tsx:97
 #: apps/erp/app/modules/items/ui/Tools/ToolHeader.tsx:115
 #: apps/erp/app/modules/production/ui/Jobs/JobHeader.tsx:357
 #: apps/erp/app/modules/production/ui/Procedures/ProcedureHeader.tsx:215
@@ -15946,7 +15953,6 @@ msgstr "レベルを切り替え"
 #: apps/erp/app/modules/sales/ui/Quotes/QuoteHeader.tsx:376
 #: apps/erp/app/modules/sales/ui/SalesOrder/SalesOrderHeader.tsx:529
 #: apps/erp/app/modules/sales/ui/SalesRFQ/SalesRFQHeader.tsx:256
-#: apps/erp/app/routes/x+/template+/$templateId.tsx:230
 msgid "Toggle Properties"
 msgstr "プロパティを切り替え"
 
