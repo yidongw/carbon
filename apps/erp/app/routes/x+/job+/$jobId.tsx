@@ -12,7 +12,7 @@ import {
   useLoaderData,
   useParams
 } from "react-router";
-import { PanelProvider, ResizablePanels } from "~/components/Layout/Panels";
+import { ResizablePanels } from "~/components/Layout";
 import { ExplorerSkeleton } from "~/components/Skeletons";
 import { flattenTree } from "~/components/TreeView";
 import { getConfigurationParameters } from "~/modules/items";
@@ -85,7 +85,6 @@ export default function JobRoute() {
   const { method } = useLoaderData<typeof loader>();
 
   return (
-    <PanelProvider>
       <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
         <JobHeader />
         <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
@@ -121,7 +120,6 @@ export default function JobRoute() {
           </div>
         </div>
       </div>
-    </PanelProvider>
   );
 }
 

@@ -20,7 +20,7 @@ import {
   usePanels,
   useTopbarLeft
 } from "~/components/Layout";
-import { PanelProvider, ResizablePanels } from "~/components/Layout/Panels";
+import { ResizablePanels } from "~/components/Layout";
 import type { FlatTreeItem } from "~/components/TreeView";
 import type { MakeMethod, Method } from "~/modules/items";
 import { getTemplate } from "~/modules/items";
@@ -260,7 +260,6 @@ export default function TemplateLayoutRoute() {
   } as MakeMethod;
 
   return (
-    <PanelProvider key={template.id}>
       <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
         <TemplateHeader template={template as TemplateRow} />
         <div className="flex h-[calc(100dvh-49px)] overflow-hidden w-full">
@@ -311,6 +310,5 @@ export default function TemplateLayoutRoute() {
           />
         </div>
       </div>
-    </PanelProvider>
   );
 }
