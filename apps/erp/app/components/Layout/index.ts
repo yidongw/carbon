@@ -10,7 +10,7 @@ import {
 } from "./Navigation";
 import { PanelProvider, ResizablePanels, usePanels } from "./Panels";
 
-import Topbar from "./Topbar";
+import Topbar, { TopbarProvider, useTopbarLeft } from "./Topbar";
 
 export {
   Background,
@@ -23,5 +23,7 @@ export {
   PrimaryNavigation,
   ResizablePanels,
   Topbar,
+  TopbarProvider,
+  useTopbarLeft,
   usePanels
 };
