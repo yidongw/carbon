@@ -256,8 +256,10 @@ export default function QualityDocumentRoute() {
   const { document } = useLoaderData<typeof loader>();
 
   return (
-    <key={`${id}-${document.version}`}>
-      <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
+    <div
+      key={`${id}-${document.version}`}
+      className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full"
+    >
         <QualityDocumentHeader />
         <div className="flex flex-1 min-h-0 overflow-hidden w-full">
           <div className="flex flex-1 min-h-0 h-full overflow-hidden">

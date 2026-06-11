@@ -69,8 +69,10 @@ export default function ProcedureRoute() {
   const { procedure } = useLoaderData<typeof loader>();
 
   return (
-    <key={`${id}-${procedure.version}`}>
-      <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
+    <div
+      key={`${id}-${procedure.version}`}
+      className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full"
+    >
         <ProcedureHeader />
         <div className="flex flex-1 min-h-0 overflow-hidden w-full">
           <div className="flex flex-1 min-h-0 h-full overflow-hidden">
