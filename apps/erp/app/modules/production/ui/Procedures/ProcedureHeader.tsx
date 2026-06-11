@@ -1,6 +1,5 @@
 import {
   Badge,
-  Button,
   Copy,
   DropdownMenu,
   DropdownMenuContent,
@@ -10,7 +9,6 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  HStack,
   IconButton,
   useDisclosure,
 } from "@carbon/react";
@@ -18,10 +16,8 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import type { PostgrestResponse } from "@supabase/supabase-js";
 import { Suspense, useEffect } from "react";
 import {
-  LuChevronDown,
   LuCirclePlus,
   LuEllipsisVertical,
-  LuGitPullRequestArrow,
   LuPanelLeft,
   LuPanelRight,
   LuTrash
@@ -82,42 +78,18 @@ function ProcedureTopbarLeft({ id }: { id: string }) {
               />
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem
-                disabled={
-                  !permissions.can("delete", "production") ||
-                  !permissions.is("employee")
-                }
-                destructive
-                onClick={deleteDisclosure.onOpen}
-              >
-                <DropdownMenuIcon icon={<LuTrash />} />
-                <Trans>Delete Procedure</Trans>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <Suspense fallback={null}>
-            <Await resolve={routeData?.versions}>
-              {(versions) => (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="secondary"
-                      leftIcon={<LuGitPullRequestArrow />}
-                      rightIcon={<LuChevronDown />}
-                    >
-                      <Trans>Versions</Trans>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    {permissions.can("create", "production") && (
-                      <>
-                        <DropdownMenuItem onClick={newVersionDisclosure.onOpen}>
-                          <DropdownMenuIcon icon={<LuCirclePlus />} />
-                          <Trans>New Version</Trans>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                      </>
-                    )}
+              {permissions.can("create", "production") && (
+                <>
+                  <DropdownMenuItem onClick={newVersionDisclosure.onOpen}>
+                    <DropdownMenuIcon icon={<LuCirclePlus />} />
+                    <Trans>New Version</Trans>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                </>
+              )}
+              <Suspense fallback={null}>
+                <Await resolve={routeData?.versions}>
+                  {(versions) => (
                     <DropdownMenuRadioGroup
                       value={id}
                       onValueChange={(value) =>
@@ -151,11 +123,23 @@ function ProcedureTopbarLeft({ id }: { id: string }) {
                           </DropdownMenuRadioItem>
                         ))}
                     </DropdownMenuRadioGroup>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )}
-            </Await>
-          </Suspense>
+                  )}
+                </Await>
+              </Suspense>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                disabled={
+                  !permissions.can("delete", "production") ||
+                  !permissions.is("employee")
+                }
+                destructive
+                onClick={deleteDisclosure.onOpen}
+              >
+                <DropdownMenuIcon icon={<LuTrash />} />
+                <Trans>Delete Procedure</Trans>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
       </DetailTopbarContent>
 
       {newVersionDisclosure.isOpen && (

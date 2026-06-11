@@ -1,6 +1,5 @@
 import {
   Badge,
-  Button,
   Copy,
   DropdownMenu,
   DropdownMenuContent,
@@ -10,11 +9,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  HStack,
   IconButton,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
   useDisclosure,
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
@@ -23,17 +18,15 @@ import { Suspense, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   LuCheckCheck,
-  LuChevronDown,
   LuCirclePlus,
   LuClipboardCheck,
   LuEllipsisVertical,
-  LuGitPullRequestArrow,
   LuPanelLeft,
   LuPanelRight,
   LuTrash,
   LuX
 } from "react-icons/lu";
-import { Await, useFetcher, useParams } from "react-router";
+import { Await, useFetcher, useNavigate, useParams } from "react-router";
 import {
   DetailTopbarBadge,
   DetailTopbarContent,
@@ -52,6 +45,7 @@ import QualityDocumentStatus from "./QualityDocumentStatus";
 
 function QualityDocumentTopbarLeft({ id }: { id: string }) {
   const { t } = useLingui();
+  const navigate = useNavigate();
   const permissions = usePermissions();
   const newVersionDisclosure = useDisclosure();
   const deleteDisclosure = useDisclosure();
@@ -90,16 +84,12 @@ function QualityDocumentTopbarLeft({ id }: { id: string }) {
     statusFetcher.formData?.get("value") === "Active";
 
   let submitButtonLabel: string;
-  let submitButtonTooltip: string;
   if (isApprovalRequired) {
     submitButtonLabel = t`Submit for approval`;
-    submitButtonTooltip = t`Sends this document for approval before it can go active.`;
   } else if (isArchived) {
     submitButtonLabel = t`Reactivate`;
-    submitButtonTooltip = t`Makes this document active again.`;
   } else {
     submitButtonLabel = t`Publish`;
-    submitButtonTooltip = t`Makes this document active and visible.`;
   }
 
   const submitForActivation = () => {
@@ -138,87 +128,55 @@ function QualityDocumentTopbarLeft({ id }: { id: string }) {
             />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem
-              disabled={
-                !permissions.can("delete", "quality") ||
-                !permissions.is("employee") ||
-                (canActivate && hasApprovalRequest && !canDelete)
-              }
-              destructive
-              onClick={deleteDisclosure.onOpen}
-            >
-              <DropdownMenuIcon icon={<LuTrash />} />
-              <Trans>Delete Document</Trans>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        {canActivate && !hasApprovalRequest && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <span className="inline-flex">
-                <Button
-                  leftIcon={
+            {canActivate && !hasApprovalRequest && (
+              <DropdownMenuItem
+                disabled={
+                  !permissions.can("update", "quality") ||
+                  !permissions.is("employee") ||
+                  !statusIdle ||
+                  submitLoading
+                }
+                onClick={submitForActivation}
+              >
+                <DropdownMenuIcon
+                  icon={
                     isApprovalRequired ? <LuClipboardCheck /> : <LuCheckCheck />
                   }
-                  variant="primary"
-                  isLoading={submitLoading}
-                  isDisabled={
-                    !permissions.can("update", "quality") ||
-                    !permissions.is("employee") ||
-                    !statusIdle
-                  }
-                  onClick={submitForActivation}
+                />
+                {submitButtonLabel}
+              </DropdownMenuItem>
+            )}
+            {canActivate && hasApprovalRequest && (
+              <>
+                <DropdownMenuItem
+                  disabled={!canApprove}
+                  onClick={() => setApprovalDecision("Approved")}
                 >
-                  {submitButtonLabel}
-                </Button>
-              </span>
-            </TooltipTrigger>
-            <TooltipContent>{submitButtonTooltip}</TooltipContent>
-          </Tooltip>
-        )}
-        {canActivate && hasApprovalRequest && (
-          <>
-            <Button
-              leftIcon={<LuCheckCheck />}
-              variant="primary"
-              isDisabled={!canApprove}
-              onClick={() => setApprovalDecision("Approved")}
-            >
-              <Trans>Approve</Trans>
-            </Button>
-            <Button
-              leftIcon={<LuX />}
-              variant="destructive"
-              isDisabled={!canApprove}
-              onClick={() => setApprovalDecision("Rejected")}
-            >
-              <Trans>Reject</Trans>
-            </Button>
-          </>
-        )}
-        <Suspense fallback={null}>
-          <Await resolve={routeData?.versions}>
-            {(versions) => (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="secondary"
-                    leftIcon={<LuGitPullRequestArrow />}
-                    rightIcon={<LuChevronDown />}
-                  >
-                    <Trans>Versions</Trans>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  {permissions.can("create", "quality") && (
-                    <>
-                      <DropdownMenuItem onClick={newVersionDisclosure.onOpen}>
-                        <DropdownMenuIcon icon={<LuCirclePlus />} />
-                        <Trans>New Version</Trans>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                    </>
-                  )}
+                  <DropdownMenuIcon icon={<LuCheckCheck />} />
+                  <Trans>Approve</Trans>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  destructive
+                  disabled={!canApprove}
+                  onClick={() => setApprovalDecision("Rejected")}
+                >
+                  <DropdownMenuIcon icon={<LuX />} />
+                  <Trans>Reject</Trans>
+                </DropdownMenuItem>
+              </>
+            )}
+            {(canActivate || permissions.can("create", "quality")) && (
+              <DropdownMenuSeparator />
+            )}
+            {permissions.can("create", "quality") && (
+              <DropdownMenuItem onClick={newVersionDisclosure.onOpen}>
+                <DropdownMenuIcon icon={<LuCirclePlus />} />
+                <Trans>New Version</Trans>
+              </DropdownMenuItem>
+            )}
+            <Suspense fallback={null}>
+              <Await resolve={routeData?.versions}>
+                {(versions) => (
                   <DropdownMenuRadioGroup
                     value={id}
                     onValueChange={(value) =>
@@ -254,11 +212,24 @@ function QualityDocumentTopbarLeft({ id }: { id: string }) {
                         </DropdownMenuRadioItem>
                       ))}
                   </DropdownMenuRadioGroup>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
-          </Await>
-        </Suspense>
+                )}
+              </Await>
+            </Suspense>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              disabled={
+                !permissions.can("delete", "quality") ||
+                !permissions.is("employee") ||
+                (canActivate && hasApprovalRequest && !canDelete)
+              }
+              destructive
+              onClick={deleteDisclosure.onOpen}
+            >
+              <DropdownMenuIcon icon={<LuTrash />} />
+              <Trans>Delete Document</Trans>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </DetailTopbarContent>
       {newVersionDisclosure.isOpen && (
         <QualityDocumentForm
