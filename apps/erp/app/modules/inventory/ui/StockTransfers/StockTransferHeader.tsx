@@ -8,7 +8,6 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  HStack,
   IconButton,
   useDisclosure,
 } from "@carbon/react";
@@ -27,7 +26,12 @@ import { createPortal } from "react-dom";
 import { useFetcher, useParams } from "react-router";
 import Assignee, { useOptimisticAssignment } from "~/components/Assignee";
 import { useAuditLog } from "~/components/AuditLog";
-import { usePanels, useTopbarLeft } from "~/components/Layout";
+import {
+  DetailTopbarContent,
+  DetailTopbarPlainId,
+  usePanels,
+  useTopbarLeft
+} from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
 import { useItemRuleViolations } from "~/hooks/useItemRuleViolations";
@@ -99,10 +103,10 @@ function StockTransferTopbarLeft({ id }: { id: string }) {
 
   return (
     <>
-      <HStack className="items-center -ml-2" spacing={1}>
-        <span className="font-semibold text-sm">
+      <DetailTopbarContent>
+        <DetailTopbarPlainId>
           {routeData?.stockTransfer?.stockTransferId}
-        </span>
+        </DetailTopbarPlainId>
         <Copy text={routeData?.stockTransfer?.stockTransferId ?? ""} />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -154,7 +158,7 @@ function StockTransferTopbarLeft({ id }: { id: string }) {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <StockTransferStatus status={routeData?.stockTransfer?.status} />
+        <StockTransferStatus iconOnly status={routeData?.stockTransfer?.status} />
         <Assignee
           size="md"
           id={id}
@@ -215,7 +219,7 @@ function StockTransferTopbarLeft({ id }: { id: string }) {
           </Button>
         </form>
         <completeRules.ViolationModal />
-      </HStack>
+      </DetailTopbarContent>
 
       {postModal.isOpen && (
         <StockTransferCompleteModal onClose={postModal.onClose} />

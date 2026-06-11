@@ -166,7 +166,7 @@ export default function JobRulesSimulateRoute() {
         </HStack>
       </div>
 
-      <div className="flex flex-col gap-4 w-full p-4 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-rounded-full scrollbar-thumb-muted-foreground">
+      <div className="flex flex-col gap-4 w-full p-4 flex-1 overflow-y-auto overscroll-contain scrollbar-thin scrollbar-thumb-rounded-full scrollbar-thumb-muted-foreground">
         <div className="grid w-full gap-4 grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="flex-row gap-2">

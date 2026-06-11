@@ -212,7 +212,7 @@ export default function MaterialRoute() {
               </Suspense>
             }
             content={
-              <div className="h-[calc(100dvh-99px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
+              <div className="h-[calc(100dvh-99px)] overflow-y-auto overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
                 <Outlet />
               </div>
             }

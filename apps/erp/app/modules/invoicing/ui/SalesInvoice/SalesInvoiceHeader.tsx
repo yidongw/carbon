@@ -30,7 +30,12 @@ import {
 import { RiProgress8Line } from "react-icons/ri";
 import { Link, useFetcher, useParams } from "react-router";
 import { useAuditLog } from "~/components/AuditLog";
-import { usePanels, useTopbarLeft } from "~/components/Layout";
+import {
+  DetailTopbarContent,
+  DetailTopbarId,
+  usePanels,
+  useTopbarLeft
+} from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
 import { ShipmentStatus } from "~/modules/inventory/ui/Shipments";
@@ -168,14 +173,12 @@ function SalesInvoiceTopbarLeft({ invoiceId }: { invoiceId: string }) {
 
   return (
     <>
-      <HStack className="items-center -ml-2" spacing={1}>
-          <Link to={path.to.salesInvoiceDetails(invoiceId)}>
-            <span className="font-semibold text-sm">
-              {routeData?.salesInvoice?.invoiceId}
-            </span>
-          </Link>
+      <DetailTopbarContent>
+          <DetailTopbarId to={path.to.salesInvoiceDetails(invoiceId)}>
+            {routeData?.salesInvoice?.invoiceId}
+          </DetailTopbarId>
           <Copy text={routeData?.salesInvoice?.invoiceId ?? ""} />
-          <SalesInvoiceStatus status={salesInvoice.status} />
+          <SalesInvoiceStatus iconOnly status={salesInvoice.status} />
           <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <IconButton
@@ -300,7 +303,7 @@ function SalesInvoiceTopbarLeft({ invoiceId }: { invoiceId: string }) {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </HStack>
+      </DetailTopbarContent>
 
       {postingModal.isOpen && (
         <SalesInvoicePostModal

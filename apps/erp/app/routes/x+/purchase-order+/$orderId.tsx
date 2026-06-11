@@ -459,7 +459,7 @@ export default function PurchaseOrderRoute() {
             <ResizablePanels
               // explorer={<PurchaseOrderExplorer />}
               content={
-                <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
+                <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
                   <VStack spacing={2} className="p-2">
                     <Outlet />
                   </VStack>

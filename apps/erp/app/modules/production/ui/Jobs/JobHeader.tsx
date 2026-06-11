@@ -37,7 +37,6 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { useMemo, useRef, useState } from "react";
 import { createPortal, flushSync } from "react-dom";
 import {
-  LuArrowLeft,
   LuCheckCheck,
   LuCircleCheck,
   LuCirclePause,
@@ -54,10 +53,16 @@ import {
 } from "react-icons/lu";
 import { RiProgress8Line } from "react-icons/ri";
 import type { FetcherWithComponents } from "react-router";
-import { Link, useFetcher, useNavigate, useParams } from "react-router";
+import { Link, useFetcher, useParams } from "react-router";
 import { useAuditLog } from "~/components/AuditLog";
 import { Location, StorageUnit } from "~/components/Form";
-import { DetailsTopbar, usePanels, useTopbarLeft } from "~/components/Layout";
+import {
+  DetailTopbarContent,
+  DetailTopbarId,
+  DetailsTopbar,
+  usePanels,
+  useTopbarLeft
+} from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import Select from "~/components/Select";
 import SupplierAvatar from "~/components/SupplierAvatar";
@@ -76,7 +81,6 @@ import JobStatus from "./JobStatus";
 
 function JobTopbarLeft({ jobId }: { jobId: string }) {
   const { t } = useLingui();
-  const navigate = useNavigate();
   const permissions = usePermissions();
   const { company } = useUser();
 
@@ -105,29 +109,21 @@ function JobTopbarLeft({ jobId }: { jobId: string }) {
 
   return (
     <>
-      <HStack className="items-center -ml-2" spacing={1}>
-        <IconButton
-          aria-label={t`Back`}
-          icon={<LuArrowLeft />}
-          variant="ghost"
-          onClick={() => navigate(path.to.jobs)}
-        />
-        <Link to={path.to.jobDetails(jobId)}>
-          <span className="font-semibold text-sm">
-            {routeData?.job?.jobId ?? jobId}
-          </span>
-        </Link>
+      <DetailTopbarContent>
+        <DetailTopbarId to={path.to.jobDetails(jobId)}>
+          {routeData?.job?.jobId ?? jobId}
+        </DetailTopbarId>
         <Copy text={routeData?.job?.jobId ?? ""} />
-        <JobStatus status={status} />
+        <JobStatus iconOnly status={status} />
         {["Draft", "Planned", "In Progress", "Ready", "Paused"].includes(
           status ?? ""
         ) && routeData?.job?.dueDate && (
           <>
             {isSameDay(parseDate(routeData.job.dueDate), todaysDate) && (
-              <JobStatus status="Due Today" />
+              <JobStatus iconOnly status="Due Today" />
             )}
             {parseDate(routeData.job.dueDate) < todaysDate && (
-              <JobStatus status="Overdue" />
+              <JobStatus iconOnly status="Overdue" />
             )}
           </>
         )}
@@ -287,7 +283,7 @@ function JobTopbarLeft({ jobId }: { jobId: string }) {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </HStack>
+      </DetailTopbarContent>
       {auditLogDrawer}
       {releaseModal.isOpen && (
         <JobStartModal

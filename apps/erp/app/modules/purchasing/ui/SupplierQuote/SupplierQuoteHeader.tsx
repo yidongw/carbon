@@ -2,7 +2,6 @@ import {
   Alert,
   AlertDescription,
   AlertTitle,
-  Badge,
   Button,
   Copy,
   DropdownMenu,
@@ -11,7 +10,6 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  HStack,
   IconButton,
   Input,
   InputGroup,
@@ -47,7 +45,13 @@ import {
 } from "react-icons/lu";
 import type { FetcherWithComponents } from "react-router";
 import { Link, useFetcher, useParams, useRevalidator } from "react-router";
-import { usePanels, useTopbarLeft } from "~/components/Layout";
+import {
+  DetailTopbarBadge,
+  DetailTopbarContent,
+  DetailTopbarId,
+  usePanels,
+  useTopbarLeft
+} from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import {
   usePermissions,
@@ -126,21 +130,20 @@ function SupplierQuoteTopbarLeft({ id }: { id: string }) {
 
   return (
     <>
-      <HStack className="items-center -ml-2" spacing={1}>
-          <Link to={path.to.supplierQuoteDetails(id)}>
-            <span className="font-semibold text-sm">
-              {routeData?.quote?.supplierQuoteId}
-            </span>
-          </Link>
+      <DetailTopbarContent>
+          <DetailTopbarId to={path.to.supplierQuoteDetails(id)}>
+            {routeData?.quote?.supplierQuoteId}
+          </DetailTopbarId>
           <Copy text={routeData?.quote?.supplierQuoteId ?? ""} />
-          <SupplierQuoteStatus status={routeData?.quote?.status} />
+          <SupplierQuoteStatus iconOnly status={routeData?.quote?.status} />
           {isOutsideProcessing && (
-          <Badge variant="default">
-            {routeData?.quote?.supplierQuoteType}
-          </Badge>
+          <DetailTopbarBadge
+            variant="default"
+            label={routeData?.quote?.supplierQuoteType}
+          />
         )}
         {supplierApprovalRequired && !isSupplierApproved && (
-          <Status color="red">
+          <Status iconOnly color="red">
             <Trans>Unapproved Supplier</Trans>
           </Status>
         )}
@@ -292,7 +295,7 @@ function SupplierQuoteTopbarLeft({ id }: { id: string }) {
             </DropdownMenuItem>
           </DropdownMenuContent>
           </DropdownMenu>
-      </HStack>
+      </DetailTopbarContent>
 
       <SupplierQuoteToOrderDrawer
         isOpen={convertToOrderModal.isOpen}

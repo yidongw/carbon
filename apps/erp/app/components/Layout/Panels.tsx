@@ -138,7 +138,7 @@ export function ResizablePanels({
               onClick={() => setIsExplorerCollapsed(true)}
             />
             <div className="fixed top-[49px] bottom-0 left-0 w-4/5 max-w-sm bg-card z-50 overflow-hidden shadow-xl flex flex-col">
-              <div className="h-full overflow-y-auto overscroll-contain w-full">
+              <div className="h-full overflow-y-auto overflow-x-hidden overscroll-contain w-full min-w-0">
                 {explorer}
               </div>
             </div>
@@ -156,7 +156,7 @@ export function ResizablePanels({
                 panels (e.g. w-96). Inner wrapper provides the h-full scroll
                 context that properties components rely on. */}
             <div className="fixed top-[49px] bottom-0 right-0 w-4/5 max-w-sm z-50 shadow-xl overflow-hidden">
-              <div className="h-full overflow-y-auto overscroll-contain w-full">
+              <div className="h-full overflow-y-auto overflow-x-hidden overscroll-contain w-full min-w-0">
                 {properties}
               </div>
             </div>
@@ -174,22 +174,30 @@ export function ResizablePanels({
             ref={panelRef}
             order={1}
             minSize={10}
-            className="bg-card shadow-lg"
+            className="bg-card shadow-lg overflow-hidden"
             collapsible
             defaultSize={isExplorerCollapsed ? 0 : 20}
             collapsedSize={0}
             onCollapse={() => setIsExplorerCollapsed(true)}
             onExpand={() => setIsExplorerCollapsed(false)}
           >
-            {!isExplorerCollapsed && explorer}
+            {!isExplorerCollapsed && (
+              <div className="h-full overflow-y-auto overflow-x-hidden overscroll-contain">
+                {explorer}
+              </div>
+            )}
           </ResizablePanel>
           <ResizableHandle withHandle />
         </>
       )}
-      <ResizablePanel order={2} className="z-1 relative">
-        <div className="flex h-full overflow-hidden w-full">
-          {content}
-          {!isPropertiesCollapsed && properties}
+      <ResizablePanel order={2} className="z-1 relative min-w-0">
+        <div className="flex h-full min-w-0 overflow-hidden w-full">
+          <div className="flex-1 min-w-0 overflow-hidden">{content}</div>
+          {!isPropertiesCollapsed && properties && (
+            <div className="w-96 max-w-[min(24rem,40%)] min-w-[280px] shrink-0 h-full overflow-hidden border-l border-border">
+              {properties}
+            </div>
+          )}
         </div>
       </ResizablePanel>
     </ResizablePanelGroup>

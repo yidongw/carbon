@@ -30,24 +30,26 @@ const Topbar = () => {
 
   return (
     <div className="h-[49px] flex items-center bg-background text-foreground px-4 top-0 sticky z-10 gap-2">
-      {/* When the portal slot [data-slot] has content, CSS hides [data-breadcrumbs]
-          atomically in the same paint — no JS state, no flash. */}
-      <div className="flex items-center flex-1 min-w-0 [&:has([data-slot]:not(:empty))_[data-breadcrumbs]]:hidden">
-        {/* Portal target — item detail headers render their content here */}
-        <div data-slot ref={slotRef} />
-        <div data-breadcrumbs className="flex items-center">
-          <div className="md:hidden flex-shrink-0">
-            {!onDashboard ? (
-              <IconButton
-                aria-label={t`Back`}
-                icon={<LuArrowLeft />}
-                variant="ghost"
-                onClick={() => navigate(-1)}
-              />
-            ) : null}
-          </div>
+      <div className="flex items-center flex-1 min-w-0 gap-1">
+        <div className="md:hidden flex-shrink-0">
+          {!onDashboard ? (
+            <IconButton
+              aria-label={t`Back`}
+              icon={<LuArrowLeft />}
+              variant="ghost"
+              onClick={() => navigate(-1)}
+            />
+          ) : null}
+        </div>
+        <div data-breadcrumbs className="flex items-center min-w-0 flex-shrink">
           <Breadcrumbs />
         </div>
+        {/* Portal target — detail identity renders after breadcrumbs */}
+        <div
+          data-slot
+          ref={slotRef}
+          className="flex items-center min-w-0 overflow-hidden"
+        />
       </div>
       <HStack spacing={1} className="flex-shrink-0 py-2">
         {permissions.is("employee") ? <Search /> : null}

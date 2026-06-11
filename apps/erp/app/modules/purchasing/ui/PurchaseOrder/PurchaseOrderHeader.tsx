@@ -1,5 +1,4 @@
 import {
-  Badge,
   Copy,
   DropdownMenu,
   DropdownMenuContent,
@@ -32,7 +31,13 @@ import {
 } from "react-icons/lu";
 import { Link, useFetcher, useNavigation, useParams } from "react-router";
 import { useAuditLog } from "~/components/AuditLog";
-import { usePanels, useTopbarLeft } from "~/components/Layout";
+import {
+  DetailTopbarBadge,
+  DetailTopbarContent,
+  DetailTopbarId,
+  usePanels,
+  useTopbarLeft
+} from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import {
   usePermissions,
@@ -140,21 +145,20 @@ function PurchaseOrderTopbarLeft({ orderId }: { orderId: string }) {
 
   return (
     <>
-      <HStack className="items-center -ml-2" spacing={1}>
-          <Link to={path.to.purchaseOrderDetails(orderId)}>
-            <span className="font-semibold text-sm">
-              {routeData?.purchaseOrder?.purchaseOrderId}
-            </span>
-          </Link>
+      <DetailTopbarContent>
+          <DetailTopbarId to={path.to.purchaseOrderDetails(orderId)}>
+            {routeData?.purchaseOrder?.purchaseOrderId}
+          </DetailTopbarId>
           <Copy text={routeData?.purchaseOrder?.purchaseOrderId ?? ""} />
-          <PurchasingStatus status={routeData?.purchaseOrder?.status} />
+          <PurchasingStatus iconOnly status={routeData?.purchaseOrder?.status} />
           {isOutsideProcessing && (
-          <Badge variant="default">
-            {routeData?.purchaseOrder?.purchaseOrderType}
-          </Badge>
+          <DetailTopbarBadge
+            variant="default"
+            label={routeData?.purchaseOrder?.purchaseOrderType}
+          />
         )}
         {supplierApprovalRequired && !isSupplierApproved && (
-          <Status color="red">
+          <Status iconOnly color="red">
             <Trans>Unapproved Supplier</Trans>
           </Status>
         )}
@@ -383,7 +387,7 @@ function PurchaseOrderTopbarLeft({ orderId }: { orderId: string }) {
             </DropdownMenuItem>
           </DropdownMenuContent>
           </DropdownMenu>
-      </HStack>
+      </DetailTopbarContent>
 
       {finalizeDisclosure.isOpen && (
         <PurchaseOrderFinalizeModal

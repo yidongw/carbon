@@ -12,7 +12,6 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  HStack,
   IconButton,
   Modal,
   ModalBody,
@@ -43,7 +42,12 @@ import type { FetcherWithComponents } from "react-router";
 import { Link, useFetcher, useParams } from "react-router";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
-import { usePanels, useTopbarLeft } from "~/components/Layout";
+import {
+  DetailTopbarContent,
+  DetailTopbarId,
+  usePanels,
+  useTopbarLeft
+} from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
 import { path } from "~/utils/path";
@@ -73,14 +77,12 @@ function SalesRFQTopbarLeft({ rfqId }: { rfqId: string }) {
 
   return (
     <>
-      <HStack className="items-center -ml-2" spacing={1}>
-          <Link to={path.to.salesRfqDetails(rfqId)}>
-            <span className="font-semibold text-sm flex items-center gap-2">
-              {routeData?.rfqSummary?.rfqId}
-            </span>
-          </Link>
+      <DetailTopbarContent>
+          <DetailTopbarId to={path.to.salesRfqDetails(rfqId)}>
+            {routeData?.rfqSummary?.rfqId}
+          </DetailTopbarId>
           <Copy text={routeData?.rfqSummary?.rfqId ?? ""} />
-          <SalesRFQStatus status={routeData?.rfqSummary?.status} />
+          <SalesRFQStatus iconOnly status={routeData?.rfqSummary?.status} />
           <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <IconButton
@@ -191,7 +193,7 @@ function SalesRFQTopbarLeft({ rfqId }: { rfqId: string }) {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </HStack>
+      </DetailTopbarContent>
 
       {convertToQuoteModal.isOpen && (
         <ConvertToQuoteModal
