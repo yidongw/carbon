@@ -28,7 +28,13 @@ import {
 } from "react-icons/lu";
 import { createPortal } from "react-dom";
 import { Await, useNavigate, useParams } from "react-router";
-import { usePanels, useTopbarLeft } from "~/components/Layout";
+import {
+  DetailTopbarBadge,
+  DetailTopbarContent,
+  DetailTopbarPlainId,
+  usePanels,
+  useTopbarLeft
+} from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData } from "~/hooks";
 import { path } from "~/utils/path";
@@ -56,12 +62,15 @@ function ProcedureTopbarLeft({ id }: { id: string }) {
 
   return (
     <>
-      <HStack className="items-center -ml-2" spacing={1}>
-          <span className="font-semibold text-sm">
+      <DetailTopbarContent>
+          <DetailTopbarPlainId>
             {routeData?.procedure?.name}
-          </span>
-          <Badge variant="outline">V{routeData?.procedure?.version}</Badge>
-          <ProcedureStatus status={routeData?.procedure?.status} />
+          </DetailTopbarPlainId>
+          <DetailTopbarBadge
+            variant="outline"
+            label={`V${routeData?.procedure?.version}`}
+          />
+          <ProcedureStatus iconOnly status={routeData?.procedure?.status} />
           <Copy text={routeData?.procedure?.name ?? ""} />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -147,7 +156,7 @@ function ProcedureTopbarLeft({ id }: { id: string }) {
               )}
             </Await>
           </Suspense>
-      </HStack>
+      </DetailTopbarContent>
 
       {newVersionDisclosure.isOpen && (
         <ProcedureForm

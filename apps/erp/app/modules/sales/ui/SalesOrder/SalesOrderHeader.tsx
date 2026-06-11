@@ -44,7 +44,12 @@ import type { FetcherWithComponents } from "react-router";
 import { Await, Link, useFetcher, useParams } from "react-router";
 import { useAuditLog } from "~/components/AuditLog";
 import { CustomerContact, EmailRecipients } from "~/components/Form";
-import { usePanels, useTopbarLeft } from "~/components/Layout";
+import {
+  DetailTopbarContent,
+  DetailTopbarId,
+  usePanels,
+  useTopbarLeft
+} from "~/components/Layout";
 import Confirm from "~/components/Modals/Confirm/Confirm";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
@@ -249,14 +254,13 @@ function SalesOrderTopbarLeft({ orderId }: { orderId: string }) {
 
   return (
     <>
-      <HStack className="items-center -ml-2" spacing={1}>
-          <Link to={path.to.salesOrderDetails(orderId)}>
-            <span className="font-semibold text-sm">
-              {routeData?.salesOrder?.salesOrderId}
-            </span>
-          </Link>
+      <DetailTopbarContent>
+          <DetailTopbarId to={path.to.salesOrderDetails(orderId)}>
+            {routeData?.salesOrder?.salesOrderId}
+          </DetailTopbarId>
           <Copy text={routeData?.salesOrder?.salesOrderId ?? ""} />
           <SalesStatus
+            iconOnly
             status={routeData?.salesOrder?.status}
             jobs={
               routeData?.salesOrder?.jobs as Array<{
@@ -460,7 +464,7 @@ function SalesOrderTopbarLeft({ orderId }: { orderId: string }) {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </HStack>
+      </DetailTopbarContent>
 
       {salesOrderToJobsModal.isOpen && (
         <Confirm

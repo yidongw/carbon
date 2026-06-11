@@ -22,7 +22,6 @@ import type { PostgrestResponse } from "@supabase/supabase-js";
 import { Suspense, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import {
-  LuArrowLeft,
   LuCheckCheck,
   LuChevronDown,
   LuCirclePlus,
@@ -34,8 +33,14 @@ import {
   LuTrash,
   LuX
 } from "react-icons/lu";
-import { Await, useFetcher, useNavigate, useParams } from "react-router";
-import { usePanels, useTopbarLeft } from "~/components/Layout";
+import { Await, useFetcher, useParams } from "react-router";
+import {
+  DetailTopbarBadge,
+  DetailTopbarContent,
+  DetailTopbarPlainId,
+  usePanels,
+  useTopbarLeft
+} from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData } from "~/hooks";
 import type { ApprovalDecision } from "~/modules/shared/types";
@@ -46,7 +51,6 @@ import QualityDocumentForm from "./QualityDocumentForm";
 import QualityDocumentStatus from "./QualityDocumentStatus";
 
 function QualityDocumentTopbarLeft({ id }: { id: string }) {
-  const navigate = useNavigate();
   const { t } = useLingui();
   const permissions = usePermissions();
   const newVersionDisclosure = useDisclosure();
@@ -116,16 +120,13 @@ function QualityDocumentTopbarLeft({ id }: { id: string }) {
 
   return (
     <>
-      <HStack className="items-center -ml-2" spacing={1}>
-        <IconButton
-          aria-label={t`Back`}
-          icon={<LuArrowLeft />}
-          variant="ghost"
-          onClick={() => navigate(path.to.qualityDocuments)}
+      <DetailTopbarContent>
+        <DetailTopbarPlainId>{routeData?.document?.name}</DetailTopbarPlainId>
+        <DetailTopbarBadge
+          variant="outline"
+          label={`V${routeData?.document?.version}`}
         />
-        <span className="font-semibold text-sm">{routeData?.document?.name}</span>
-        <Badge variant="outline">V{routeData?.document?.version}</Badge>
-        <QualityDocumentStatus status={routeData?.document?.status} />
+        <QualityDocumentStatus iconOnly status={routeData?.document?.status} />
         <Copy text={routeData?.document?.name ?? ""} />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -258,7 +259,7 @@ function QualityDocumentTopbarLeft({ id }: { id: string }) {
             )}
           </Await>
         </Suspense>
-      </HStack>
+      </DetailTopbarContent>
       {newVersionDisclosure.isOpen && (
         <QualityDocumentForm
           type="copy"

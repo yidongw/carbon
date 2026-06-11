@@ -6,13 +6,11 @@ import {
   DropdownMenuIcon,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  HStack,
   IconButton,
   useDisclosure,
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import {
-  LuArrowLeft,
   LuChevronDown,
   LuCircleCheck,
   LuCirclePlay,
@@ -25,8 +23,13 @@ import {
   LuTrash
 } from "react-icons/lu";
 import { createPortal } from "react-dom";
-import { Link, useFetcher, useNavigate, useParams } from "react-router";
-import { usePanels, useTopbarLeft } from "~/components/Layout";
+import { Link, useFetcher, useParams } from "react-router";
+import {
+  DetailTopbarContent,
+  DetailTopbarId,
+  usePanels,
+  useTopbarLeft
+} from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData } from "~/hooks";
 import { useSuppliers } from "~/stores/suppliers";
@@ -37,7 +40,6 @@ import IssueStatus from "./IssueStatus";
 
 function IssueTopbarLeft({ id }: { id: string }) {
   const { t } = useLingui();
-  const navigate = useNavigate();
   const permissions = usePermissions();
   const statusFetcher = useFetcher<{}>();
   const [suppliers] = useSuppliers();
@@ -52,17 +54,11 @@ function IssueTopbarLeft({ id }: { id: string }) {
 
   return (
     <>
-      <HStack className="items-center -ml-2" spacing={1}>
-        <IconButton
-          aria-label={t`Back`}
-          icon={<LuArrowLeft />}
-          variant="ghost"
-          onClick={() => navigate(path.to.issues)}
-        />
-        <Link to={path.to.issueDetails(id)}>
-          <span className="font-semibold text-sm">{routeData?.nonConformance?.nonConformanceId}</span>
-        </Link>
-        <IssueStatus status={status} />
+      <DetailTopbarContent>
+        <DetailTopbarId to={path.to.issueDetails(id)}>
+          {routeData?.nonConformance?.nonConformanceId}
+        </DetailTopbarId>
+        <IssueStatus iconOnly status={status} />
         <Copy text={routeData?.nonConformance?.nonConformanceId ?? ""} />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -179,7 +175,7 @@ function IssueTopbarLeft({ id }: { id: string }) {
             <Trans>Complete</Trans>
           </Button>
         </statusFetcher.Form>
-      </HStack>
+      </DetailTopbarContent>
       {deleteIssueModal.isOpen && (
         <ConfirmDelete
           action={path.to.deleteIssue(id)}

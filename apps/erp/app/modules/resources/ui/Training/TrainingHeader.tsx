@@ -5,21 +5,24 @@ import {
   DropdownMenuIcon,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  HStack,
   IconButton,
   useDisclosure,
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import {
-  LuArrowLeft,
   LuEllipsisVertical,
   LuPanelLeft,
   LuPanelRight,
   LuTrash
 } from "react-icons/lu";
 import { createPortal } from "react-dom";
-import { Link, useNavigate, useParams } from "react-router";
-import { usePanels, useTopbarLeft } from "~/components/Layout";
+import { useParams } from "react-router";
+import {
+  DetailTopbarContent,
+  DetailTopbarId,
+  usePanels,
+  useTopbarLeft
+} from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData } from "~/hooks";
 import type { Training } from "~/modules/resources";
@@ -28,7 +31,6 @@ import TrainingStatus from "./TrainingStatus";
 
 function TrainingTopbarLeft({ id }: { id: string }) {
   const { t } = useLingui();
-  const navigate = useNavigate();
   const permissions = usePermissions();
   const deleteDisclosure = useDisclosure();
 
@@ -38,18 +40,12 @@ function TrainingTopbarLeft({ id }: { id: string }) {
 
   return (
     <>
-      <HStack className="items-center -ml-2" spacing={1}>
-        <IconButton
-          aria-label={t`Back`}
-          icon={<LuArrowLeft />}
-          variant="ghost"
-          onClick={() => navigate(path.to.trainings)}
-        />
-        <Link to={path.to.training(id)}>
-          <span className="font-semibold text-sm">{routeData?.training?.name}</span>
-        </Link>
+      <DetailTopbarContent>
+        <DetailTopbarId to={path.to.training(id)}>
+          {routeData?.training?.name}
+        </DetailTopbarId>
         {/* @ts-expect-error TS2322 */}
-        <TrainingStatus status={routeData?.training?.status} />
+        <TrainingStatus iconOnly status={routeData?.training?.status} />
         <Copy text={routeData?.training?.name ?? ""} />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -74,7 +70,7 @@ function TrainingTopbarLeft({ id }: { id: string }) {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </HStack>
+      </DetailTopbarContent>
       {deleteDisclosure.isOpen && (
         <ConfirmDelete
           action={path.to.deleteTraining(id)}

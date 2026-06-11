@@ -6,16 +6,21 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  HStack,
   IconButton,
   useDisclosure
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { LuArrowLeft, LuEllipsisVertical, LuPanelLeft, LuPanelRight, LuTrash } from "react-icons/lu";
+import { LuEllipsisVertical, LuPanelLeft, LuPanelRight, LuTrash } from "react-icons/lu";
 import { createPortal } from "react-dom";
-import { Link, useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import { useAuditLog } from "~/components/AuditLog";
-import { DetailsTopbar, usePanels, useTopbarLeft } from "~/components/Layout";
+import {
+  DetailTopbarContent,
+  DetailTopbarId,
+  DetailsTopbar,
+  usePanels,
+  useTopbarLeft
+} from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
 import { path } from "~/utils/path";
@@ -24,7 +29,6 @@ import { useMaterialNavigation } from "./useMaterialNavigation";
 
 function MaterialTopbarLeft({ itemId }: { itemId: string }) {
   const { t } = useLingui();
-  const navigate = useNavigate();
   const permissions = usePermissions();
   const { company } = useUser();
   const deleteModal = useDisclosure();
@@ -41,16 +45,10 @@ function MaterialTopbarLeft({ itemId }: { itemId: string }) {
 
   return (
     <>
-      <HStack className="items-center -ml-2" spacing={1}>
-        <IconButton
-          aria-label={t`Back`}
-          icon={<LuArrowLeft />}
-          variant="ghost"
-          onClick={() => navigate(path.to.materials)}
-        />
-        <Link to={path.to.materialDetails(itemId)}>
-          <span className="font-semibold text-sm">{readableId}</span>
-        </Link>
+      <DetailTopbarContent>
+        <DetailTopbarId to={path.to.materialDetails(itemId)}>
+          {readableId}
+        </DetailTopbarId>
         <Copy text={readableId} />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -77,7 +75,7 @@ function MaterialTopbarLeft({ itemId }: { itemId: string }) {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </HStack>
+      </DetailTopbarContent>
       {auditLogDrawer}
       {deleteModal.isOpen && (
         <ConfirmDelete

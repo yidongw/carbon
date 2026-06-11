@@ -268,7 +268,7 @@ export default function QualityDocumentRoute() {
                 />
               }
               content={
-                <div className="bg-background flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
+                <div className="bg-background flex-1 min-h-0 overflow-y-auto overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
                   <QualityDocumentEditor />
                   <Outlet />
                 </div>

@@ -7,7 +7,6 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  HStack,
   IconButton,
   Input,
   InputGroup,
@@ -45,7 +44,12 @@ import {
 } from "react-icons/lu";
 import { Link, useFetcher, useParams } from "react-router";
 import { useAuditLog } from "~/components/AuditLog";
-import { usePanels, useTopbarLeft } from "~/components/Layout";
+import {
+  DetailTopbarContent,
+  DetailTopbarId,
+  usePanels,
+  useTopbarLeft
+} from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
 import { path } from "~/utils/path";
@@ -97,9 +101,9 @@ function QuoteTopbarLeft({ quoteId }: { quoteId: string }) {
 
   return (
     <>
-      <HStack className="items-center -ml-2" spacing={1}>
-          <Link to={path.to.quoteDetails(quoteId)}>
-            <span className="font-semibold text-sm flex items-center gap-0">
+      <DetailTopbarContent>
+          <DetailTopbarId to={path.to.quoteDetails(quoteId)}>
+            <span className="flex items-center gap-0">
               <span>{routeData?.quote?.quoteId}</span>
               {(routeData?.quote?.revisionId ?? 0) > 0 && (
                 <span className="text-muted-foreground">
@@ -107,9 +111,9 @@ function QuoteTopbarLeft({ quoteId }: { quoteId: string }) {
                 </span>
               )}
             </span>
-          </Link>
+          </DetailTopbarId>
           <Copy text={routeData?.quote?.quoteId ?? ""} />
-          <QuoteStatus status={routeData?.quote?.status} />
+          <QuoteStatus iconOnly status={routeData?.quote?.status} />
           <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <IconButton
@@ -291,7 +295,7 @@ function QuoteTopbarLeft({ quoteId }: { quoteId: string }) {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </HStack>
+      </DetailTopbarContent>
 
       {finalizeModal.isOpen && (
         <QuoteFinalizeModal

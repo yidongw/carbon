@@ -14,7 +14,12 @@ import { createPortal } from "react-dom";
 import { LuPanelLeft, LuPanelRight, LuSearch } from "react-icons/lu";
 import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, useLoaderData } from "react-router";
-import { usePanels, useTopbarLeft } from "~/components/Layout";
+import {
+  DetailTopbarContent,
+  DetailTopbarPlainId,
+  usePanels,
+  useTopbarLeft
+} from "~/components/Layout";
 import { PanelProvider, ResizablePanels } from "~/components/Layout/Panels";
 import type { FlatTreeItem } from "~/components/TreeView";
 import type { MakeMethod, Method } from "~/modules/items";
@@ -208,8 +213,8 @@ function TemplateTopbarLeft({ template }: { template: TemplateRow }) {
   const { hasExplorer, toggleExplorer, toggleProperties } = usePanels();
 
   return (
-    <HStack className="items-center -ml-2 w-full justify-between" spacing={1}>
-      <HStack spacing={1}>
+    <HStack className="items-center w-full justify-between" spacing={1}>
+      <DetailTopbarContent>
         {hasExplorer && (
           <IconButton
             aria-label={t`Toggle Explorer`}
@@ -218,9 +223,9 @@ function TemplateTopbarLeft({ template }: { template: TemplateRow }) {
             variant="ghost"
           />
         )}
-        <span className="font-semibold text-sm">{template.name}</span>
+        <DetailTopbarPlainId>{template.name}</DetailTopbarPlainId>
         <Copy text={template.name ?? ""} />
-      </HStack>
+      </DetailTopbarContent>
       <IconButton
         aria-label={t`Toggle Properties`}
         icon={<LuPanelRight />}
@@ -296,7 +301,7 @@ export default function TemplateLayoutRoute() {
               </div>
             }
             content={
-              <div className="h-[calc(100dvh-49px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
+              <div className="h-[calc(100dvh-49px)] overflow-y-auto overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
                 <div className="p-2">
                   <TemplateProperties template={template as TemplateRow} />
                 </div>

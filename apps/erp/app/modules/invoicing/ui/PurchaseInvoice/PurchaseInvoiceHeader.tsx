@@ -9,7 +9,6 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  HStack,
   IconButton,
   Status,
   useDisclosure,
@@ -30,7 +29,12 @@ import {
 } from "react-icons/lu";
 import { Link, useFetcher, useParams } from "react-router";
 import { useAuditLog } from "~/components/AuditLog";
-import { usePanels, useTopbarLeft } from "~/components/Layout";
+import {
+  DetailTopbarContent,
+  DetailTopbarId,
+  usePanels,
+  useTopbarLeft
+} from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import {
   usePermissions,
@@ -188,19 +192,18 @@ function PurchaseInvoiceTopbarLeft({ invoiceId }: { invoiceId: string }) {
 
   return (
     <>
-      <HStack className="items-center -ml-2" spacing={1}>
-          <Link to={path.to.purchaseInvoiceDetails(invoiceId)}>
-            <span className="font-semibold text-sm">
-              {routeData?.purchaseInvoice?.invoiceId}
-            </span>
-          </Link>
+      <DetailTopbarContent>
+          <DetailTopbarId to={path.to.purchaseInvoiceDetails(invoiceId)}>
+            {routeData?.purchaseInvoice?.invoiceId}
+          </DetailTopbarId>
           <Copy text={routeData?.purchaseInvoice?.invoiceId ?? ""} />
           <PurchaseInvoicingStatus
+            iconOnly
             // @ts-expect-error TS2322 - TODO: fix type
             status={routeData?.purchaseInvoice?.status}
           />
           {supplierApprovalRequired && !isSupplierApproved && (
-          <Status color="red">
+          <Status iconOnly color="red">
             <Trans>Unapproved Supplier</Trans>
           </Status>
         )}
@@ -317,7 +320,7 @@ function PurchaseInvoiceTopbarLeft({ invoiceId }: { invoiceId: string }) {
             </DropdownMenuItem>
           </DropdownMenuContent>
           </DropdownMenu>
-      </HStack>
+      </DetailTopbarContent>
 
       {postingModal.isOpen && (
         <PurchaseInvoicePostModal

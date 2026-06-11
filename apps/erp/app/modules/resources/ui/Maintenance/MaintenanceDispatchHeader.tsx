@@ -6,13 +6,11 @@ import {
   DropdownMenuIcon,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  HStack,
   IconButton,
   useDisclosure,
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import {
-  LuArrowLeft,
   LuCircleCheck,
   LuCirclePlay,
   LuEllipsisVertical,
@@ -22,8 +20,13 @@ import {
   LuTrash
 } from "react-icons/lu";
 import { createPortal } from "react-dom";
-import { Link, useFetcher, useNavigate, useParams } from "react-router";
-import { usePanels, useTopbarLeft } from "~/components/Layout";
+import { useFetcher, useParams } from "react-router";
+import {
+  DetailTopbarContent,
+  DetailTopbarId,
+  usePanels,
+  useTopbarLeft
+} from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData } from "~/hooks";
 import { path } from "~/utils/path";
@@ -33,7 +36,6 @@ import MaintenanceStatus from "./MaintenanceStatus";
 
 function MaintenanceDispatchTopbarLeft({ dispatchId }: { dispatchId: string }) {
   const { t } = useLingui();
-  const navigate = useNavigate();
   const permissions = usePermissions();
   const statusFetcher = useFetcher<{}>();
   const deleteModal = useDisclosure();
@@ -47,17 +49,11 @@ function MaintenanceDispatchTopbarLeft({ dispatchId }: { dispatchId: string }) {
 
   return (
     <>
-      <HStack className="items-center -ml-2" spacing={1}>
-        <IconButton
-          aria-label={t`Back`}
-          icon={<LuArrowLeft />}
-          variant="ghost"
-          onClick={() => navigate(path.to.maintenanceDispatches)}
-        />
-        <Link to={path.to.maintenanceDispatch(dispatchId)}>
-          <span className="font-semibold text-sm">{routeData?.dispatch?.maintenanceDispatchId}</span>
-        </Link>
-        <MaintenanceStatus status={status} />
+      <DetailTopbarContent>
+        <DetailTopbarId to={path.to.maintenanceDispatch(dispatchId)}>
+          {routeData?.dispatch?.maintenanceDispatchId}
+        </DetailTopbarId>
+        <MaintenanceStatus iconOnly status={status} />
         <Copy text={routeData?.dispatch?.maintenanceDispatchId ?? ""} />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -151,7 +147,7 @@ function MaintenanceDispatchTopbarLeft({ dispatchId }: { dispatchId: string }) {
             <Trans>Complete</Trans>
           </Button>
         </statusFetcher.Form>
-      </HStack>
+      </DetailTopbarContent>
       {deleteModal.isOpen && (
         <ConfirmDelete
           action={path.to.deleteMaintenanceDispatch(dispatchId)}

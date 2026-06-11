@@ -10,7 +10,6 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  HStack,
   IconButton,
   Modal,
   ModalBody,
@@ -36,7 +35,12 @@ import {
   LuTriangleAlert
 } from "react-icons/lu";
 import { Link, useFetcher, useParams } from "react-router";
-import { usePanels, useTopbarLeft } from "~/components/Layout";
+import {
+  DetailTopbarContent,
+  DetailTopbarId,
+  usePanels,
+  useTopbarLeft
+} from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData } from "~/hooks";
 import { useIntegrations } from "~/hooks/useIntegrations";
@@ -85,14 +89,12 @@ function PurchasingRFQTopbarLeft({ rfqId }: { rfqId: string }) {
 
   return (
     <>
-      <HStack className="items-center -ml-2" spacing={1}>
-          <Link to={path.to.purchasingRfqDetails(rfqId)}>
-            <span className="font-semibold text-sm">
-              {routeData?.rfqSummary?.rfqId}
-            </span>
-          </Link>
+      <DetailTopbarContent>
+          <DetailTopbarId to={path.to.purchasingRfqDetails(rfqId)}>
+            {routeData?.rfqSummary?.rfqId}
+          </DetailTopbarId>
           <Copy text={routeData?.rfqSummary?.rfqId ?? ""} />
-          <PurchasingRFQStatus status={routeData?.rfqSummary?.status} />
+          <PurchasingRFQStatus iconOnly status={routeData?.rfqSummary?.status} />
           <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <IconButton
@@ -266,7 +268,7 @@ function PurchasingRFQTopbarLeft({ rfqId }: { rfqId: string }) {
             </DropdownMenuItem>
           </DropdownMenuContent>
           </DropdownMenu>
-      </HStack>
+      </DetailTopbarContent>
 
       {finalizeModal.isOpen && (
         <FinalizeRFQModal
