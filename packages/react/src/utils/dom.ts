@@ -11,6 +11,24 @@ export const ariaAttr = (condition: boolean | undefined) =>
  * Safari doesn't support write text into clipboard async, so if you need to load
  * text content async before coping, please use Promise<string> for the 1st arg.
  */
+/** Prevent Radix overlays from refocusing their trigger after pointer dismiss. */
+export function preventOverlayCloseAutoFocus(
+  onCloseAutoFocus?: (event: Event) => void
+) {
+  return (event: Event) => {
+    onCloseAutoFocus?.(event);
+    if (!event.defaultPrevented) {
+      event.preventDefault();
+    }
+    queueMicrotask(() => {
+      const active = document.activeElement;
+      if (active instanceof HTMLElement) {
+        active.blur();
+      }
+    });
+  };
+}
+
 export const copyToClipboard = async (
   str: string | Promise<string>,
   // biome-ignore lint/suspicious/noEmptyBlockStatements: suppressed due to migration
