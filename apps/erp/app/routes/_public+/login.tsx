@@ -8,7 +8,8 @@ import {
   carbonClient,
   error,
   magicLinkValidator,
-  RATE_LIMIT
+  RATE_LIMIT,
+  safeRedirect
 } from "@carbon/auth";
 import { QRCodeSVG } from "qrcode.react";
 import {
@@ -146,7 +147,7 @@ export async function action({ request }: ActionFunctionArgs) {
     const authSession = await signInWithBypassEmail(email);
     if (authSession) {
       const sessionCookie = await setAuthSession(request, { authSession });
-      return redirect(path.to.authenticatedRoot, {
+      return redirect(safeRedirect(redirectTo, path.to.authenticatedRoot), {
         headers: [["Set-Cookie", sessionCookie]]
       });
     }
