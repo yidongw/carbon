@@ -80,7 +80,7 @@ const ToolHeader = () => {
             </DropdownMenu>
           </HStack>
         </VStack>
-        <VStack spacing={0} className="flex-shrink justify-center items-end">
+        <VStack spacing={0} className="flex-shrink justify-center items-start">
           <DetailsTopbar links={links} />
         </VStack>
         {deleteModal.isOpen && (
