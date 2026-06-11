@@ -116,7 +116,7 @@ export function ResizablePanels({
     setHasExplorer(!!explorer);
   }, [explorer, setHasExplorer]);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (isMobile || !explorer) return;
     if (isExplorerCollapsed) {
       panelRef.current?.collapse();
