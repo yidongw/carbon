@@ -6,7 +6,6 @@ import {
   ModelViewer,
   Spinner,
   toast,
-  useHydrated,
   useMode
 } from "@carbon/react";
 import {
@@ -57,7 +56,6 @@ const CadModel = ({
 
   const fetcher = useFetcher<{}>();
   const [file, setFile] = useState<File | null>(null);
-  const hydrated = useHydrated();
 
   const onFileChange = async (file: File | null) => {
     const modelId = nanoid();
@@ -113,14 +111,6 @@ const CadModel = ({
       });
     }
   };
-
-  if (!hydrated) {
-    return (
-      <div className="flex w-full items-center justify-center py-6">
-        <Spinner className="h-8 w-8" />
-      </div>
-    );
-  }
 
   return file || modelPath ? (
     <ModelViewer
