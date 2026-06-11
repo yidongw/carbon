@@ -329,13 +329,8 @@ const JobHeader = () => {
   const { jobId } = useParams();
   if (!jobId) throw new Error("jobId not found");
 
-  const { leftSlotEl, setHasLeftContent } = useTopbarLeft();
+  const { leftSlotEl } = useTopbarLeft();
   const { hasExplorer, toggleExplorer, toggleProperties } = usePanels();
-
-  useIsomorphicLayoutEffect(() => {
-    setHasLeftContent(true);
-    return () => setHasLeftContent(false);
-  }, [setHasLeftContent]);
 
   const links = [
     { name: t`Details`, to: path.to.jobDetails(jobId) },

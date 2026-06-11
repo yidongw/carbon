@@ -9,7 +9,6 @@ import {
   HStack,
   IconButton,
   useDisclosure,
-  useIsomorphicLayoutEffect
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import {
@@ -173,12 +172,7 @@ const MaintenanceDispatchHeader = () => {
   const { dispatchId } = useParams();
   if (!dispatchId) throw new Error("dispatchId not found");
 
-  const { leftSlotEl, setHasLeftContent } = useTopbarLeft();
-
-  useIsomorphicLayoutEffect(() => {
-    setHasLeftContent(true);
-    return () => setHasLeftContent(false);
-  }, [setHasLeftContent]);
+  const { leftSlotEl } = useTopbarLeft();
 
   return (
     <>
