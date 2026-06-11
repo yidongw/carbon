@@ -126,7 +126,9 @@ export function ResizablePanels({
             onExpand={() => setIsExplorerCollapsed(false)}
           >
             {!isExplorerCollapsed && (
-              <div className="h-full min-h-0 min-w-0 overflow-hidden">{explorer}</div>
+              <div className="h-full min-h-0 min-w-0 overflow-hidden [&>*]:h-full [&>*]:min-h-0">
+                {explorer}
+              </div>
             )}
           </ResizablePanel>
           <ResizableHandle withHandle />
@@ -136,7 +138,7 @@ export function ResizablePanels({
         <div className="flex h-[calc(100dvh-99px)] w-full min-w-0 overflow-hidden">
           <div className="min-h-0 min-w-0 flex-1 overflow-hidden">{content}</div>
           {!isPropertiesCollapsed && properties ? (
-            <div className="h-full w-[min(100%,24rem)] max-w-[28rem] shrink-0 overflow-hidden border-l border-border [&>*]:!h-full [&>*]:!max-w-full [&>*]:!min-w-0 [&>*]:!overflow-x-hidden [&>*]:overscroll-y-contain">
+            <div className="h-full w-[min(100%,24rem)] max-w-[28rem] shrink-0 overflow-hidden border-l border-border [&>*]:!h-full [&>*]:!w-full [&>*]:!max-w-full [&>*]:!min-w-0 [&>*]:!overflow-x-hidden [&>*]:overscroll-y-contain">
               {properties}
             </div>
           ) : null}

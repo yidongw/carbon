@@ -1,17 +1,16 @@
 import {
-  Copy,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuIcon,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  Heading,
   HStack,
   IconButton,
   useDisclosure,
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
+import { useMemo } from "react";
 import {
   LuEllipsisVertical,
   LuPanelLeft,
@@ -19,13 +18,12 @@ import {
   LuTrash
 } from "react-icons/lu";
 import { useParams } from "react-router";
-import { usePanels } from "~/components/Layout";
+import { usePanels, useSetDetailNav } from "~/components/Layout";
+import { trainingStatusBadge } from "~/components/Layout/detailNavBadges";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData } from "~/hooks";
 import type { Training } from "~/modules/resources";
 import { path } from "~/utils/path";
-import TrainingStatus from "./TrainingStatus";
-
 const TrainingHeader = () => {
   const { id } = useParams();
   if (!id) throw new Error("id not found");
@@ -39,6 +37,19 @@ const TrainingHeader = () => {
   const { hasExplorer, toggleExplorer, toggleProperties } = usePanels();
   const deleteDisclosure = useDisclosure();
 
+  const detailNav = useMemo(() => {
+    const name = routeData?.training?.name ?? "";
+    const statusBadge = trainingStatusBadge(routeData?.training?.status ?? "");
+    return {
+      id: name,
+      idTo: path.to.training(id),
+      copyText: name,
+      badges: statusBadge ? [statusBadge] : undefined
+    };
+  }, [id, routeData?.training?.name, routeData?.training?.status]);
+
+  useSetDetailNav(detailNav);
+
   return (
     <div className="flex flex-shrink-0 items-center justify-between px-4 py-2 bg-card border-b border-border h-[50px] overflow-x-auto scrollbar-hide dark:border-none dark:shadow-[inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)]">
       <VStack spacing={0} className="flex-grow">
@@ -49,12 +60,6 @@ const TrainingHeader = () => {
               onClick={toggleExplorer}
               variant="ghost"
             />}
-          <Heading size="h4" className="flex items-center gap-2">
-            <span>{routeData?.training?.name}</span>
-            {/* @ts-expect-error TS2322 */}
-            <TrainingStatus status={routeData?.training?.status} />
-          </Heading>
-          <Copy text={routeData?.training?.name ?? ""} />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <IconButton

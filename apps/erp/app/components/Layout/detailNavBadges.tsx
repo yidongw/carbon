@@ -1,4 +1,4 @@
-import { LuCircleAlert, LuTruck } from "react-icons/lu";
+import { LuCircleAlert, LuGitBranch, LuLock, LuTruck } from "react-icons/lu";
 import type { DetailNavBadge } from "./DetailNav";
 
 type StatusColor = "gray" | "yellow" | "blue" | "orange" | "green" | "red";
@@ -243,6 +243,56 @@ export function maintenanceStatusBadge(status: string): DetailNavBadge | null {
       return statusBadge("status", status, "green");
     case "Cancelled":
       return statusBadge("status", status, "red");
+    default:
+      return null;
+  }
+}
+
+export function versionBadge(version: number): DetailNavBadge {
+  return {
+    key: "version",
+    label: `Version ${version}`,
+    icon: <LuGitBranch className="size-3.5" />
+  };
+}
+
+export function lockedStatusBadge(
+  status: "Active" | "Archived"
+): DetailNavBadge {
+  return {
+    key: "status",
+    label: status,
+    icon: (
+      <LuLock
+        className={`size-3.5 ${status === "Active" ? "text-green-500" : "text-red-500"}`}
+      />
+    )
+  };
+}
+
+export function trainingStatusBadge(status: string): DetailNavBadge | null {
+  switch (status) {
+    case "Draft":
+      return statusBadge("status", status, "gray");
+    case "Active":
+      return statusBadge("status", status, "green");
+    case "Archived":
+      return statusBadge("status", status, "red");
+    default:
+      return null;
+  }
+}
+
+export function procedureOrDocumentStatusBadge(
+  status: string
+): DetailNavBadge | null {
+  switch (status) {
+    case "Draft":
+      return statusBadge("status", status, "gray");
+    case "Active":
+      return lockedStatusBadge("Active");
+    case "Archived":
+      return lockedStatusBadge("Archived");
     default:
       return null;
   }

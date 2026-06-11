@@ -1,7 +1,6 @@
 import {
   Badge,
   Button,
-  Copy,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuIcon,
@@ -10,7 +9,6 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  Heading,
   HStack,
   IconButton,
   Tooltip,
@@ -21,7 +19,7 @@ import {
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { PostgrestResponse } from "@supabase/supabase-js";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import {
   LuCheckCheck,
   LuChevronDown,
@@ -35,7 +33,11 @@ import {
   LuX
 } from "react-icons/lu";
 import { Await, useFetcher, useNavigate, useParams } from "react-router";
-import { usePanels } from "~/components/Layout";
+import { usePanels, useSetDetailNav } from "~/components/Layout";
+import {
+  procedureOrDocumentStatusBadge,
+  versionBadge
+} from "~/components/Layout/detailNavBadges";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData } from "~/hooks";
 import type { ApprovalDecision } from "~/modules/shared/types";
@@ -43,8 +45,6 @@ import { path } from "~/utils/path";
 import type { QualityDocument } from "../../types";
 import QualityDocumentApprovalModal from "./QualityDocumentApprovalModal";
 import QualityDocumentForm from "./QualityDocumentForm";
-import QualityDocumentStatus from "./QualityDocumentStatus";
-
 const QualityDocumentHeader = () => {
   const { id } = useParams();
   if (!id) throw new Error("id not found");
@@ -118,6 +118,32 @@ const QualityDocumentHeader = () => {
     newVersionDisclosure.onClose();
   }, [id]);
 
+  const detailNav = useMemo(() => {
+    const name = routeData?.document?.name ?? "";
+    const badges = [];
+    if (routeData?.document?.version) {
+      badges.push(versionBadge(routeData.document.version));
+    }
+    const statusBadge = procedureOrDocumentStatusBadge(
+      routeData?.document?.status ?? ""
+    );
+    if (statusBadge) badges.push(statusBadge);
+
+    return {
+      id: name,
+      idTo: path.to.qualityDocument(id),
+      copyText: name,
+      badges: badges.length > 0 ? badges : undefined
+    };
+  }, [
+    id,
+    routeData?.document?.name,
+    routeData?.document?.status,
+    routeData?.document?.version
+  ]);
+
+  useSetDetailNav(detailNav);
+
   return (
     <div className="flex flex-shrink-0 items-center justify-between px-4 py-2 bg-card border-b border-border h-[50px] overflow-x-auto scrollbar-hide dark:border-none dark:shadow-[inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)]">
       <VStack spacing={0} className="flex-grow">
@@ -128,12 +154,6 @@ const QualityDocumentHeader = () => {
               onClick={toggleExplorer}
               variant="ghost"
             />}
-          <Heading size="h4" className="flex items-center gap-2">
-            <span>{routeData?.document?.name}</span>
-            <Badge variant="outline">V{routeData?.document?.version}</Badge>
-            <QualityDocumentStatus status={routeData?.document?.status} />
-          </Heading>
-          <Copy text={routeData?.document?.name ?? ""} />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <IconButton

@@ -3,7 +3,6 @@ import {
   Avatar,
   Badge,
   Button,
-  Copy,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
@@ -33,7 +32,7 @@ import { BsFillHexagonFill } from "react-icons/bs";
 import { IoMdAdd } from "react-icons/io";
 import { LuChevronsUpDown } from "react-icons/lu";
 import { Form, useMatches } from "react-router";
-import { DetailNavIconBadge, DetailNavTrail, useDetailNav } from "../DetailNav";
+import { DetailBreadcrumbSegment, useDetailNav } from "../DetailNav";
 import { z } from "zod";
 import {
   BreadcrumbItem,
@@ -123,34 +122,15 @@ const Breadcrumbs = () => {
             </BreadcrumbLink>
           </BreadcrumbItem>
         ))}
-        {detailNav && !isMobile ? (
+        {detailNav ? (
           <BreadcrumbItem>
-            {detailNav.idTo ? (
-              <BreadcrumbLink to={detailNav.idTo}>
-                <HStack spacing={1} className="min-w-0 items-center">
-                  <span className="truncate">
-                    {detailNav.id}
-                    {detailNav.suffix}
-                  </span>
-                  {detailNav.copyText ? <Copy text={detailNav.copyText} /> : null}
-                  {detailNav.badges?.map((badge) => (
-                    <DetailNavIconBadge
-                      key={badge.key}
-                      icon={badge.icon}
-                      label={badge.label}
-                    />
-                  ))}
-                </HStack>
-              </BreadcrumbLink>
-            ) : (
-              <BreadcrumbLink isCurrentPage>
-                <DetailNavTrail detailNav={detailNav} />
-              </BreadcrumbLink>
-            )}
+            <DetailBreadcrumbSegment
+              detailNav={detailNav}
+              isCurrentPage={isMobile || !detailNav.idTo}
+            />
           </BreadcrumbItem>
         ) : null}
       </BreadcrumbsBase>
-      {detailNav && isMobile ? <DetailNavTrail detailNav={detailNav} isMobile /> : null}
     </HStack>
   );
 };

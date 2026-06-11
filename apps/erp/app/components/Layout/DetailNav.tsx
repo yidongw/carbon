@@ -1,6 +1,7 @@
 import { Copy, HStack, Tooltip, TooltipContent, TooltipTrigger } from "@carbon/react";
 import type { ReactNode } from "react";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { BreadcrumbLink } from "~/components";
 
 export type DetailNavBadge = {
   key: string;
@@ -48,11 +49,45 @@ export function useDetailNav() {
 
 export function useSetDetailNav(detailNav: DetailNavState | null) {
   const { setDetailNav } = useDetailNav();
+  const resolved = detailNav?.id ? detailNav : null;
 
   useEffect(() => {
-    setDetailNav(detailNav);
+    setDetailNav(resolved);
     return () => setDetailNav(null);
-  }, [detailNav, setDetailNav]);
+  }, [resolved, setDetailNav]);
+}
+
+export function DetailBreadcrumbSegment({
+  detailNav,
+  isCurrentPage = false
+}: {
+  detailNav: DetailNavState;
+  isCurrentPage?: boolean;
+}) {
+  return (
+    <HStack spacing={1} className="min-w-0 items-center">
+      {detailNav.idTo && !isCurrentPage ? (
+        <BreadcrumbLink to={detailNav.idTo}>
+          <span className="truncate font-medium">
+            {detailNav.id}
+            {detailNav.suffix}
+          </span>
+        </BreadcrumbLink>
+      ) : (
+        <span
+          className="truncate px-2 text-sm font-medium text-foreground"
+          aria-current={isCurrentPage ? "page" : undefined}
+        >
+          {detailNav.id}
+          {detailNav.suffix}
+        </span>
+      )}
+      {detailNav.copyText ? <Copy text={detailNav.copyText} /> : null}
+      {detailNav.badges?.map((badge) => (
+        <DetailNavIconBadge key={badge.key} icon={badge.icon} label={badge.label} />
+      ))}
+    </HStack>
+  );
 }
 
 export function DetailNavIconBadge({ icon, label }: { icon: ReactNode; label: string }) {
@@ -89,29 +124,5 @@ export function DetailNavStatusDot({
       icon={<span className={`size-2 rounded-full ${dotColor}`} />}
       label={label}
     />
-  );
-}
-
-export function DetailNavTrail({
-  detailNav,
-  isMobile
-}: {
-  detailNav: DetailNavState;
-  isMobile?: boolean;
-}) {
-  return (
-    <HStack spacing={1} className="min-w-0 items-center">
-      <span
-        className="truncate px-2 text-sm font-medium text-foreground"
-        aria-current={isMobile ? "page" : undefined}
-      >
-        {detailNav.id}
-        {detailNav.suffix}
-      </span>
-      {detailNav.copyText ? <Copy text={detailNav.copyText} /> : null}
-      {detailNav.badges?.map((badge) => (
-        <DetailNavIconBadge key={badge.key} icon={badge.icon} label={badge.label} />
-      ))}
-    </HStack>
   );
 }

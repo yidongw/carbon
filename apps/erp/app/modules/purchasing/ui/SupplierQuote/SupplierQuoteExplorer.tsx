@@ -84,7 +84,7 @@ export default function SupplierQuoteExplorer() {
 
   return (
     <>
-      <VStack className="w-full h-[calc(100dvh-99px)] justify-between">
+      <VStack className="w-full h-full justify-between">
         <VStack
           className="flex-1 overflow-y-auto overflow-x-hidden overscroll-y-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent"
           spacing={0}

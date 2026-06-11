@@ -102,10 +102,11 @@ const StockTransferHeader = () => {
     const statusBadge = stockTransferStatusBadge(status);
     return {
       id: stockTransferReadableId,
+      idTo: path.to.stockTransfer(id),
       copyText: stockTransferReadableId,
       badges: statusBadge ? [statusBadge] : undefined
     };
-  }, [routeData?.stockTransfer?.stockTransferId, status]);
+  }, [id, routeData?.stockTransfer?.stockTransferId, status]);
 
   useSetDetailNav(detailNav);
 

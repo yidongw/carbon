@@ -102,7 +102,7 @@ const SalesRFQProperties = () => {
   return (
     <VStack
       spacing={4}
-      className="w-96 bg-card h-full overflow-y-auto overflow-x-hidden overscroll-y-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent border-l border-border px-4 py-2 text-sm"
+      className="w-full bg-card h-full overflow-y-auto overflow-x-hidden overscroll-y-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent px-4 py-2 text-sm"
     >
       <VStack spacing={4}>
         <HStack className="w-full justify-between">

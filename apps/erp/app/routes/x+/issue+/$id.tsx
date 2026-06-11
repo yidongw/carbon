@@ -188,7 +188,7 @@ export default function IssueRoute() {
                 </Suspense>
               }
               content={
-                <div className="h-[calc(100dvh-99px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
+                <div className="h-full min-h-0 overflow-y-auto overflow-x-hidden overscroll-y-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full min-w-0">
                   <VStack spacing={2} className="p-2">
                     <Outlet />
                   </VStack>

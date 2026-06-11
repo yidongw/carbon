@@ -1,7 +1,6 @@
 import {
   Badge,
   Button,
-  Copy,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuIcon,
@@ -10,7 +9,6 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  Heading,
   HStack,
   IconButton,
   useDisclosure,
@@ -18,7 +16,7 @@ import {
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { PostgrestResponse } from "@supabase/supabase-js";
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useMemo } from "react";
 import {
   LuChevronDown,
   LuCirclePlus,
@@ -29,14 +27,16 @@ import {
   LuTrash
 } from "react-icons/lu";
 import { Await, useNavigate, useParams } from "react-router";
-import { usePanels } from "~/components/Layout";
+import { usePanels, useSetDetailNav } from "~/components/Layout";
+import {
+  procedureOrDocumentStatusBadge,
+  versionBadge
+} from "~/components/Layout/detailNavBadges";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData } from "~/hooks";
 import { path } from "~/utils/path";
 import type { Procedure } from "../../types";
 import ProcedureForm from "./ProcedureForm";
-import ProcedureStatus from "./ProcedureStatus";
-
 const ProcedureHeader = () => {
   const { id } = useParams();
   const { t } = useLingui();
@@ -58,6 +58,32 @@ const ProcedureHeader = () => {
     newVersionDisclosure.onClose();
   }, [id]);
 
+  const detailNav = useMemo(() => {
+    const name = routeData?.procedure?.name ?? "";
+    const badges = [];
+    if (routeData?.procedure?.version) {
+      badges.push(versionBadge(routeData.procedure.version));
+    }
+    const statusBadge = procedureOrDocumentStatusBadge(
+      routeData?.procedure?.status ?? ""
+    );
+    if (statusBadge) badges.push(statusBadge);
+
+    return {
+      id: name,
+      idTo: path.to.procedure(id),
+      copyText: name,
+      badges: badges.length > 0 ? badges : undefined
+    };
+  }, [
+    id,
+    routeData?.procedure?.name,
+    routeData?.procedure?.status,
+    routeData?.procedure?.version
+  ]);
+
+  useSetDetailNav(detailNav);
+
   return (
     <div className="flex flex-shrink-0 items-center justify-between px-4 py-2 bg-card border-b border-border h-[50px] overflow-x-auto scrollbar-hide dark:border-none dark:shadow-[inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)]">
       <VStack spacing={0} className="flex-grow">
@@ -68,12 +94,6 @@ const ProcedureHeader = () => {
               onClick={toggleExplorer}
               variant="ghost"
             />}
-          <Heading size="h4" className="flex items-center gap-2">
-            <span>{routeData?.procedure?.name}</span>
-            <Badge variant="outline">V{routeData?.procedure?.version}</Badge>
-            <ProcedureStatus status={routeData?.procedure?.status} />
-          </Heading>
-          <Copy text={routeData?.procedure?.name ?? ""} />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <IconButton
