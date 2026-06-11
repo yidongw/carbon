@@ -30,9 +30,10 @@ type Props = {
     city?: string;
     country?: string;
   };
+  containerClassName?: string;
 };
 
-export function ChatInterface({ geo }: Props) {
+export function ChatInterface({ geo, containerClassName }: Props) {
   const { chatId: routeChatId } = useChatInterface();
   const recordButtonRef = useRef<RecordButtonRef>(null);
 
@@ -134,7 +135,7 @@ export function ChatInterface({ geo }: Props) {
   const hasSuggestions = suggestions?.prompts && suggestions.prompts.length > 0;
 
   return (
-    <div className="relative flex size-full overflow-hidden bg-background h-[calc(100dvh-49px)]">
+    <div className={cn("relative flex size-full overflow-hidden bg-background", containerClassName ?? "h-[calc(100dvh-49px)]")}>
       {/* Canvas slides in from right when artifacts are present */}
       <div
         className={cn(
