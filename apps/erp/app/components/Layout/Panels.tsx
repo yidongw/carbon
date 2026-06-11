@@ -2,6 +2,7 @@ import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
+  useIsomorphicLayoutEffect,
   useIsMobile
 } from "@carbon/react";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
@@ -50,13 +51,23 @@ export function PanelProvider({ children }: PanelProviderProps) {
   const isMobile = useIsMobile();
 
   const [hasExplorer, setHasExplorer] = useState(false);
-  const [isExplorerCollapsed, setIsExplorerCollapsed] = useState(() =>
-    typeof window !== "undefined" ? window.innerWidth < 768 : false
-  );
-  const [isPropertiesCollapsed, setIsPropertiesCollapsed] = useState(() =>
-    typeof window !== "undefined" ? window.innerWidth < 1024 : false
-  );
+  const [isExplorerCollapsed, setIsExplorerCollapsed] = useState(false);
+  const [isPropertiesCollapsed, setIsPropertiesCollapsed] = useState(false);
 
+  // Collapse panels synchronously before first paint based on viewport width.
+  // useIsomorphicLayoutEffect (useLayoutEffect on client) fires before the browser
+  // paints, so the user never sees the uncollapsed flash from SSR's false defaults.
+  useIsomorphicLayoutEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.innerWidth < 768) {
+      setIsExplorerCollapsed(true);
+      setIsPropertiesCollapsed(true);
+    } else if (window.innerWidth < 1024) {
+      setIsPropertiesCollapsed(true);
+    }
+  }, []);
+
+  // Keep panels collapsed when resizing down to mobile
   useEffect(() => {
     if (isMobile) {
       setIsExplorerCollapsed(true);
@@ -118,6 +129,8 @@ export function ResizablePanels({
     return (
       <div className="relative h-full w-full overflow-hidden">
         {content}
+
+        {/* Explorer drawer — slides in from the left */}
         {explorer && !isExplorerCollapsed && (
           <>
             <div
@@ -129,14 +142,21 @@ export function ResizablePanels({
             </div>
           </>
         )}
+
+        {/* Properties drawer — slides in from the right */}
         {properties && !isPropertiesCollapsed && (
           <>
             <div
               className="fixed inset-0 top-[49px] bg-black/50 z-40"
               onClick={() => setIsPropertiesCollapsed(true)}
             />
-            <div className="fixed top-[49px] bottom-0 right-0 w-4/5 max-w-sm bg-card z-50 overflow-y-auto shadow-xl">
-              {properties}
+            {/* Outer wrapper clips horizontal overflow from fixed-width property
+                panels (e.g. w-96). Inner wrapper provides the h-full scroll
+                context that properties components rely on. */}
+            <div className="fixed top-[49px] bottom-0 right-0 w-4/5 max-w-sm z-50 shadow-xl overflow-hidden">
+              <div className="h-full overflow-y-auto overscroll-contain w-full">
+                {properties}
+              </div>
             </div>
           </>
         )}
