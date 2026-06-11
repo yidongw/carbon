@@ -35,7 +35,7 @@ import {
   useNavigate
 } from "react-router";
 import { RealtimeDataProvider } from "~/components";
-import { PrimaryNavigation, Topbar } from "~/components/Layout";
+import { PrimaryNavigation, Topbar, TopbarProvider } from "~/components/Layout";
 import { TimeCardWarning } from "~/components/TimeCardWarning";
 import { OverlayHost, OverlayProvider } from "~/components/Overlay";
 import TrainingPanel from "~/components/TrainingPanel";
@@ -225,6 +225,7 @@ export default function AuthenticatedRoute() {
       ) : (
         <CarbonProvider session={session}>
           <RealtimeDataProvider>
+            <TopbarProvider>
             <OverlayProvider>
             <TooltipProvider>
               <div className="flex flex-col h-screen">
@@ -262,6 +263,7 @@ export default function AuthenticatedRoute() {
               <OverlayHost />
             </TooltipProvider>
             </OverlayProvider>
+            </TopbarProvider>
           </RealtimeDataProvider>
         </CarbonProvider>
       )}
