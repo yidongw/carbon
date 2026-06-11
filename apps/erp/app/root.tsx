@@ -70,6 +70,13 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+// Prevent stale-asset 404s after a Vercel redeploy by never caching the HTML document.
+export const headers: Route.HeadersFunction = ({ loaderHeaders }) => {
+  const merged = new Headers(loaderHeaders);
+  merged.set("Cache-Control", "no-store");
+  return merged;
+};
+
 export async function loader({ request, context }: LoaderFunctionArgs) {
   const {
     CARBON_EDITION,
