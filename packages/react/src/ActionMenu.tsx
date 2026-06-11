@@ -31,11 +31,7 @@ const ActionMenu = ({ children, ...props }: ActionMenuProps) => {
             {...props}
           />
         </DropdownMenuTrigger>
-        <DropdownMenuContent
-          align="end"
-          className="w-56"
-          onCloseAutoFocus={(event) => event.preventDefault()}
-        >
+        <DropdownMenuContent align="end" className="w-56">
           {children}
         </DropdownMenuContent>
       </DropdownMenu>
