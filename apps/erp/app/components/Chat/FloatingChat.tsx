@@ -179,9 +179,10 @@ interface PositionMenuProps {
   current: ChatPosition;
   onSelect: (p: ChatPosition) => void;
   onClose: () => void;
+  isMobile?: boolean;
 }
 
-function PositionMenu({ current, onSelect, onClose }: PositionMenuProps) {
+function PositionMenu({ current, onSelect, onClose, isMobile }: PositionMenuProps) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -193,6 +194,11 @@ function PositionMenu({ current, onSelect, onClose }: PositionMenuProps) {
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, [onClose]);
+
+  const gridPositions = POSITIONS.filter((p) =>
+    p.id !== "fullscreen" &&
+    (!isMobile || (p.id !== "left-outside" && p.id !== "right-outside"))
+  );
 
   return (
     <motion.div
@@ -210,8 +216,8 @@ function PositionMenu({ current, onSelect, onClose }: PositionMenuProps) {
       <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-2.5 px-0.5">
         Panel position
       </p>
-      <div className="grid grid-cols-3 gap-2">
-        {POSITIONS.filter((p) => p.id !== "fullscreen").map((pos) => (
+      <div className={cn("gap-2", isMobile ? "grid grid-cols-2" : "grid grid-cols-3")}>
+        {gridPositions.map((pos) => (
           <button
             key={pos.id}
             type="button"
@@ -236,7 +242,8 @@ function PositionMenu({ current, onSelect, onClose }: PositionMenuProps) {
           type="button"
           onClick={() => onSelect("fullscreen")}
           className={cn(
-            "col-span-3 flex flex-row gap-3 items-center rounded-lg px-3 py-2",
+            "flex flex-row gap-3 items-center rounded-lg px-3 py-2",
+            isMobile ? "col-span-2" : "col-span-3",
             "transition-colors duration-100",
             current === "fullscreen"
               ? "bg-primary/10 text-primary ring-1 ring-primary/30"
@@ -314,6 +321,7 @@ interface PanelHeaderProps {
   onTogglePositionMenu: () => void;
   onPositionSelect: (p: ChatPosition) => void;
   onClose: () => void;
+  isMobile?: boolean;
 }
 
 function PanelHeader({
@@ -321,7 +329,8 @@ function PanelHeader({
   isPositionMenuOpen,
   onTogglePositionMenu,
   onPositionSelect,
-  onClose
+  onClose,
+  isMobile
 }: PanelHeaderProps) {
   const PositionIcon = {
     "left-outside": LuPanelLeft,
@@ -389,6 +398,7 @@ function PanelHeader({
             current={position}
             onSelect={onPositionSelect}
             onClose={onTogglePositionMenu}
+            isMobile={isMobile}
           />
         )}
       </AnimatePresence>
@@ -426,6 +436,14 @@ export function FloatingChat() {
   const motionY = useMotionValue(btnPos.y);
   const initialBtnPosRef = useRef(btnPos);
 
+  // Mobile detection (< 768px)
+  const [isMobile, setIsMobile] = useState(
+    () => typeof window !== "undefined" && window.innerWidth < 768
+  );
+
+  // Ref for native touch event attachment on the floating button
+  const btnRef = useRef<HTMLButtonElement | null>(null);
+
   const dragRef = useRef<{
     active: boolean;
     startMX: number;
@@ -461,18 +479,26 @@ export function FloatingChat() {
     setBtnPos(snap);
   }, [motionX, motionY, setBtnPos]);
 
-  // Re-snap to nearest position on window resize
+  // Re-snap to nearest position on window resize + update isMobile
   useEffect(() => {
-    const resnap = () => {
+    const onResize = () => {
+      setIsMobile(window.innerWidth < 768);
       if (dragRef.current?.active) return;
       const snap = nearestSnap(motionX.get(), motionY.get());
       setBtnPos(snap);
       fmAnimate(motionX, snap.x, { type: "spring", duration: 0.4, bounce: 0.15 });
       fmAnimate(motionY, snap.y, { type: "spring", duration: 0.4, bounce: 0.15 });
     };
-    window.addEventListener("resize", resnap);
-    return () => window.removeEventListener("resize", resnap);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
   }, [motionX, motionY, setBtnPos]);
+
+  // On mobile, left-outside/right-outside don't make sense — switch to bottom
+  useEffect(() => {
+    if (isMobile && (position === "left-outside" || position === "right-outside")) {
+      setPosition("bottom");
+    }
+  }, [isMobile, position, setPosition]);
 
   // Button drag + click handlers
   const onBtnMouseDown = useCallback(
@@ -492,27 +518,25 @@ export function FloatingChat() {
   );
 
   useEffect(() => {
-    const onMove = (e: MouseEvent) => {
+    const applyMove = (clientX: number, clientY: number) => {
       const d = dragRef.current;
       if (!d?.active) return;
-      const dx = e.clientX - d.startMX;
-      const dy = e.clientY - d.startMY;
+      const dx = clientX - d.startMX;
+      const dy = clientY - d.startMY;
       if (!d.moved && Math.abs(dx) < 4 && Math.abs(dy) < 4) return;
       d.moved = true;
-      // Free movement during drag — clamped to viewport
       const rawX = Math.max(0, Math.min(d.startBX + dx, window.innerWidth - BUTTON_SIZE));
       const rawY = Math.max(TOPBAR_HEIGHT, Math.min(d.startBY + dy, window.innerHeight - BUTTON_SIZE));
       motionX.set(rawX);
       motionY.set(rawY);
     };
 
-    const onUp = () => {
+    const applyUp = () => {
       const d = dragRef.current;
       if (!d) return;
       if (!d.moved) {
         setIsOpen((prev) => !prev);
       } else {
-        // Snap to nearest of 8 positions with spring animation
         const snap = nearestSnap(motionX.get(), motionY.get());
         setBtnPos(snap);
         fmAnimate(motionX, snap.x, { type: "spring", duration: 0.4, bounce: 0.15 });
@@ -521,13 +545,46 @@ export function FloatingChat() {
       dragRef.current = null;
     };
 
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
+    const onMouseMove = (e: MouseEvent) => applyMove(e.clientX, e.clientY);
+    const onTouchMove = (e: TouchEvent) => {
+      if (e.touches.length !== 1) return;
+      e.preventDefault(); // prevent page scroll during drag
+      applyMove(e.touches[0].clientX, e.touches[0].clientY);
+    };
+
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", applyUp);
+    window.addEventListener("touchmove", onTouchMove, { passive: false });
+    window.addEventListener("touchend", applyUp);
     return () => {
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseup", onUp);
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", applyUp);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("touchend", applyUp);
     };
   }, [motionX, motionY, setBtnPos, setIsOpen]);
+
+  // Attach native touchstart (non-passive) to the button so touch-drag works on mobile
+  useEffect(() => {
+    const btn = btnRef.current;
+    if (!btn) return;
+    const onTouchStart = (e: TouchEvent) => {
+      if (e.touches.length !== 1) return;
+      e.preventDefault();
+      const t = e.touches[0];
+      dragRef.current = {
+        active: true,
+        startMX: t.clientX,
+        startMY: t.clientY,
+        startBX: motionX.get(),
+        startBY: motionY.get(),
+        moved: false
+      };
+    };
+    btn.addEventListener("touchstart", onTouchStart, { passive: false });
+    return () => btn.removeEventListener("touchstart", onTouchStart);
+  // Re-attaches when button mounts (isOpen → false) or motion values change
+  }, [isOpen, motionX, motionY]);
 
   // Panel resize handlers
   const onResizeStart = useCallback(
@@ -639,6 +696,7 @@ export function FloatingChat() {
         {!isOpen && (
           <motion.button
             key="floating-btn"
+            ref={btnRef}
             type="button"
             initial={{ scale: 0.5, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -659,7 +717,7 @@ export function FloatingChat() {
               "shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_2px_4px_rgba(0,0,0,0.12),0_8px_24px_rgba(0,0,0,0.15)]",
               "hover:shadow-[0_0_0_1px_rgba(0,0,0,0.10),0_4px_8px_rgba(0,0,0,0.15),0_12px_32px_rgba(0,0,0,0.20)]",
               "cursor-grab active:cursor-grabbing",
-              "select-none outline-none",
+              "select-none outline-none touch-none",
               "active:scale-[0.96]",
               "transition-[box-shadow] duration-200"
             )}
@@ -707,6 +765,7 @@ export function FloatingChat() {
                 setIsPositionMenuOpen(false);
               }}
               onClose={() => setIsOpen(false)}
+              isMobile={isMobile}
             />
 
             {/* Chat interface */}
