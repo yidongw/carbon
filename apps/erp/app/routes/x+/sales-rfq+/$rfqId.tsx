@@ -11,7 +11,7 @@ import { msg } from "@lingui/core/macro";
 import type { FileObject } from "@supabase/storage-js";
 import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useParams, useSubmit } from "react-router";
-import { ResizablePanels } from "~/components/Layout";
+import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import type { SalesRFQLine } from "~/modules/sales";
 import {
   getOpportunity,
@@ -147,7 +147,8 @@ export default function SalesRFQRoute() {
   };
 
   return (
-    <DndContext onDragEnd={handleDragEnd}>
+    <PanelProvider>
+      <DndContext onDragEnd={handleDragEnd}>
         <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
           <SalesRFQHeader />
           <div className="flex flex-1 min-h-0 overflow-hidden w-full">
@@ -166,6 +167,7 @@ export default function SalesRFQRoute() {
             </div>
           </div>
         </div>
-    </DndContext>
+      </DndContext>
+    </PanelProvider>
   );
 }

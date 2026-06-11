@@ -10,7 +10,7 @@ import { msg } from "@lingui/core/macro";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useLoaderData, useParams } from "react-router";
-import { ResizablePanels } from "~/components/Layout";
+import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import {
   getQualityDocument,
   getQualityDocumentVersions,
@@ -256,10 +256,8 @@ export default function QualityDocumentRoute() {
   const { document } = useLoaderData<typeof loader>();
 
   return (
-    <div
-      key={`${id}-${document.version}`}
-      className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full"
-    >
+    <PanelProvider key={`${id}-${document.version}`}>
+      <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
         <QualityDocumentHeader />
         <div className="flex flex-1 min-h-0 overflow-hidden w-full">
           <div className="flex flex-1 min-h-0 h-full overflow-hidden">
@@ -284,5 +282,6 @@ export default function QualityDocumentRoute() {
           </div>
         </div>
       </div>
+    </PanelProvider>
   );
 }

@@ -7,16 +7,12 @@ import {
 } from "@carbon/react";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import type { ImperativePanelHandle } from "react-resizable-panels";
-import { useLocation } from "react-router";
 
 interface PanelContextType {
   hasExplorer: boolean;
   setHasExplorer: (v: boolean) => void;
-  hasProperties: boolean;
-  setHasProperties: (v: boolean) => void;
   isExplorerCollapsed: boolean;
   isPropertiesCollapsed: boolean;
-  isMobileOverlayOpen: boolean;
   toggleExplorer: () => void;
   toggleProperties: () => void;
   setIsExplorerCollapsed: (collapsed: boolean) => void;
@@ -27,12 +23,8 @@ const PanelContext = createContext<PanelContextType>({
   hasExplorer: false,
   // biome-ignore lint/suspicious/noEmptyBlockStatements: suppressed due to migration
   setHasExplorer: () => {},
-  hasProperties: false,
-  // biome-ignore lint/suspicious/noEmptyBlockStatements: suppressed due to migration
-  setHasProperties: () => {},
   isExplorerCollapsed: false,
   isPropertiesCollapsed: false,
-  isMobileOverlayOpen: false,
   // biome-ignore lint/suspicious/noEmptyBlockStatements: suppressed due to migration
   toggleExplorer: () => {},
   // biome-ignore lint/suspicious/noEmptyBlockStatements: suppressed due to migration
@@ -57,17 +49,10 @@ interface PanelProviderProps {
 
 export function PanelProvider({ children }: PanelProviderProps) {
   const isMobile = useIsMobile();
-  const location = useLocation();
 
   const [hasExplorer, setHasExplorer] = useState(false);
-  const [hasProperties, setHasProperties] = useState(false);
   const [isExplorerCollapsed, setIsExplorerCollapsed] = useState(false);
   const [isPropertiesCollapsed, setIsPropertiesCollapsed] = useState(false);
-
-  const isMobileOverlayOpen =
-    isMobile &&
-    ((hasExplorer && !isExplorerCollapsed) ||
-      (hasProperties && !isPropertiesCollapsed));
 
   // Collapse panels synchronously before first paint based on viewport width.
   // useIsomorphicLayoutEffect (useLayoutEffect on client) fires before the browser
@@ -90,31 +75,11 @@ export function PanelProvider({ children }: PanelProviderProps) {
     }
   }, [isMobile]);
 
-  // Reset panel state when navigating between detail pages
-  useEffect(() => {
-    setHasExplorer(false);
-    setHasProperties(false);
-    if (typeof window === "undefined") return;
-    if (window.innerWidth < 768) {
-      setIsExplorerCollapsed(true);
-      setIsPropertiesCollapsed(true);
-    } else if (window.innerWidth < 1024) {
-      setIsExplorerCollapsed(false);
-      setIsPropertiesCollapsed(true);
-    } else {
-      setIsExplorerCollapsed(false);
-      setIsPropertiesCollapsed(false);
-    }
-  }, [location.pathname]);
-
   const value = {
     hasExplorer,
     setHasExplorer,
-    hasProperties,
-    setHasProperties,
     isExplorerCollapsed,
     isPropertiesCollapsed,
-    isMobileOverlayOpen,
     toggleExplorer: () => setIsExplorerCollapsed((prev) => !prev),
     toggleProperties: () => setIsPropertiesCollapsed((prev) => !prev),
     setIsExplorerCollapsed,
@@ -143,18 +108,13 @@ export function ResizablePanels({
     isPropertiesCollapsed,
     setIsExplorerCollapsed,
     setIsPropertiesCollapsed,
-    setHasExplorer,
-    setHasProperties
+    setHasExplorer
   } = usePanels();
   const panelRef = useRef<ImperativePanelHandle>(null);
 
   useEffect(() => {
     setHasExplorer(!!explorer);
   }, [explorer, setHasExplorer]);
-
-  useEffect(() => {
-    setHasProperties(!!properties);
-  }, [properties, setHasProperties]);
 
   useIsomorphicLayoutEffect(() => {
     if (isMobile || !explorer) return;

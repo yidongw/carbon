@@ -25,7 +25,7 @@ import {
   useLoaderData,
   useParams
 } from "react-router";
-import { ResizablePanels } from "~/components/Layout";
+import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import { flattenTree } from "~/components/TreeView";
 import type { ItemFile, ToolSummary } from "~/modules/items";
 import {
@@ -141,7 +141,8 @@ export default function ToolRoute() {
   const [filterText, setFilterText] = useState("");
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
+    <PanelProvider>
+      <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
       <ToolHeader />
       <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
         <div className="flex flex-1 min-h-0 h-full overflow-hidden">
@@ -504,5 +505,6 @@ export default function ToolRoute() {
         </div>
       </div>
     </div>
+    </PanelProvider>
   );
 }

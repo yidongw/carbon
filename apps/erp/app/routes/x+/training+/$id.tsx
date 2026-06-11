@@ -16,7 +16,7 @@ import {
   useLoaderData,
   useParams
 } from "react-router";
-import { ResizablePanels } from "~/components/Layout";
+import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import { usePermissions, useUser } from "~/hooks";
 import {
   getTraining,
@@ -67,6 +67,7 @@ export default function TrainingRoute() {
   if (!id) throw new Error("Could not find id");
 
   return (
+    <PanelProvider key={id}>
       <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
         <TrainingHeader />
         <div className="flex flex-1 min-h-0 overflow-hidden w-full">
@@ -84,6 +85,7 @@ export default function TrainingRoute() {
           </div>
         </div>
       </div>
+    </PanelProvider>
   );
 }
 

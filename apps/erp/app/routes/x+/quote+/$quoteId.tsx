@@ -15,7 +15,7 @@ import {
   useParams,
   useSubmit
 } from "react-router";
-import { ResizablePanels } from "~/components/Layout";
+import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import { getCurrencyByCode } from "~/modules/accounting";
 import { getSupplierPriceBreaksForItems } from "~/modules/items";
 import type { SalesOrderLine } from "~/modules/sales";
@@ -235,7 +235,8 @@ export default function QuoteRoute() {
   };
 
   return (
-    <DndContext onDragEnd={handleDragEnd}>
+    <PanelProvider key={quoteId}>
+      <DndContext onDragEnd={handleDragEnd}>
         <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full ">
           <QuoteHeader />
           <div className="flex flex-1 min-h-0 overflow-hidden w-full">
@@ -254,6 +255,7 @@ export default function QuoteRoute() {
             </div>
           </div>
         </div>
-    </DndContext>
+      </DndContext>
+    </PanelProvider>
   );
 }

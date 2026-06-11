@@ -6,7 +6,7 @@ import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
 import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useLoaderData, useParams } from "react-router";
-import { ResizablePanels } from "~/components/Layout";
+import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import RiskRegisterCard from "~/modules/quality/ui/RiskRegister/RiskRegisterCard";
 import {
   getFailureModesList,
@@ -87,6 +87,7 @@ export default function MaintenanceDispatchRoute() {
   const isCompleted = dispatch?.status === "Completed";
 
   return (
+    <PanelProvider>
       <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
         <MaintenanceDispatchHeader />
         <div className="flex flex-1 min-h-0 overflow-hidden w-full">
@@ -123,5 +124,6 @@ export default function MaintenanceDispatchRoute() {
           </div>
         </div>
       </div>
+    </PanelProvider>
   );
 }
