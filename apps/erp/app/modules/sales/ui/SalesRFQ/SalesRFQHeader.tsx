@@ -22,7 +22,6 @@ import {
   ModalHeader,
   ModalTitle,
   useDisclosure,
-  useIsomorphicLayoutEffect,
   useMount,
   VStack
 } from "@carbon/react";
@@ -251,12 +250,7 @@ const SalesRFQHeader = () => {
   const { rfqId } = useParams();
   if (!rfqId) throw new Error("rfqId not found");
 
-  const { leftSlotEl, setHasLeftContent } = useTopbarLeft();
-
-  useIsomorphicLayoutEffect(() => {
-    setHasLeftContent(true);
-    return () => setHasLeftContent(false);
-  }, [setHasLeftContent]);
+  const { leftSlotEl } = useTopbarLeft();
 
   return (
     <>

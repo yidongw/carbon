@@ -12,7 +12,6 @@ import {
   HStack,
   IconButton,
   useDisclosure,
-  useIsomorphicLayoutEffect
 } from "@carbon/react";
 import { getItemReadableId } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
@@ -358,12 +357,7 @@ const SalesInvoiceHeader = () => {
   const { invoiceId } = useParams();
   if (!invoiceId) throw new Error("invoiceId not found");
 
-  const { leftSlotEl, setHasLeftContent } = useTopbarLeft();
-
-  useIsomorphicLayoutEffect(() => {
-    setHasLeftContent(true);
-    return () => setHasLeftContent(false);
-  }, [setHasLeftContent]);
+  const { leftSlotEl } = useTopbarLeft();
 
   return (
     <>

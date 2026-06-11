@@ -21,7 +21,6 @@ import {
   ModalTitle,
   toast,
   useDisclosure,
-  useIsomorphicLayoutEffect
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { createPortal } from "react-dom";
@@ -369,12 +368,7 @@ const QuoteHeader = () => {
   const { quoteId } = useParams();
   if (!quoteId) throw new Error("quoteId not found");
 
-  const { leftSlotEl, setHasLeftContent } = useTopbarLeft();
-
-  useIsomorphicLayoutEffect(() => {
-    setHasLeftContent(true);
-    return () => setHasLeftContent(false);
-  }, [setHasLeftContent]);
+  const { leftSlotEl } = useTopbarLeft();
 
   return (
     <>
