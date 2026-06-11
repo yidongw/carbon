@@ -326,11 +326,6 @@ export async function getOrCreatePeriods(
     .where("periodType", "=", "Week")
     .execute();
 
-  if (existingPeriods.length === ranges.length) {
-    return existingPeriods.map(toPlainPeriod);
-  }
-
-  // Find missing periods
   const existingStartDates = new Set(
     existingPeriods.map((p) => dateToString(p.startDate))
   );
@@ -338,6 +333,10 @@ export async function getOrCreatePeriods(
   const periodsToCreate = ranges.filter(
     (r) => !existingStartDates.has(r.startDate)
   );
+
+  if (periodsToCreate.length === 0) {
+    return existingPeriods.map(toPlainPeriod);
+  }
 
   // Create missing periods in a transaction
   const created = await db.transaction().execute(async (trx) => {
