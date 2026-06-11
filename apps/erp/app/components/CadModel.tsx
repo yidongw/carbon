@@ -124,7 +124,7 @@ const CadModel = ({
 
   if (!viewerReady) {
     return (
-      <div className="flex items-center justify-center py-6">
+      <div className="flex w-full items-center justify-center py-6">
         <Spinner className="h-8 w-8" />
       </div>
     );
