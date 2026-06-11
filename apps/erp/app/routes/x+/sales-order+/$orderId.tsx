@@ -168,11 +168,11 @@ export default function SalesOrderRoute() {
       <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
         <SalesOrderHeader />
         <div className="flex flex-1 min-h-0 overflow-hidden w-full">
-          <div className="flex flex-grow overflow-hidden">
+          <div className="flex flex-1 min-h-0 h-full overflow-hidden">
             <ResizablePanels
               // explorer={<SalesOrderExplorer />}
               content={
-                <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
+                <div className="h-full min-h-0 overflow-y-auto overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
                   <VStack spacing={2} className="p-2">
                     <Outlet />
                   </VStack>

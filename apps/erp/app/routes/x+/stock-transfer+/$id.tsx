@@ -61,7 +61,7 @@ export default function StockTransferRoute() {
   return (
       <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
         <StockTransferHeader />
-        <div className="flex flex-1 min-h-0 overflow-y-auto overscroll-contain scrollbar-hide w-full">
+        <div className="flex h-full min-h-0 overflow-y-auto overscroll-contain scrollbar-hide w-full">
           <VStack spacing={4} className="h-full p-4 w-full max-w-5xl mx-auto">
             <StockTransferLines />
             <StockTransferNotes

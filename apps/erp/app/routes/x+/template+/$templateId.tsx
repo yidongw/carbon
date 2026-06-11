@@ -262,7 +262,7 @@ export default function TemplateLayoutRoute() {
   return (
       <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
         <TemplateHeader template={template as TemplateRow} />
-        <div className="flex h-[calc(100dvh-49px)] overflow-hidden w-full">
+        <div className="flex flex-1 min-h-0 h-full overflow-hidden w-full">
           <ResizablePanels
             explorer={
               <div className="flex flex-col h-full">
@@ -300,7 +300,7 @@ export default function TemplateLayoutRoute() {
               </div>
             }
             content={
-              <div className="h-[calc(100dvh-49px)] overflow-y-auto overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
+              <div className="h-full min-h-0 overflow-y-auto overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
                 <div className="p-2">
                   <TemplateProperties template={template as TemplateRow} />
                 </div>
