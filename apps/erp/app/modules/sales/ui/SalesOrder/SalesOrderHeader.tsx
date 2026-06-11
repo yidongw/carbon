@@ -19,7 +19,6 @@ import {
   ModalTitle,
   toast,
   useDisclosure,
-  useIsomorphicLayoutEffect,
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
@@ -522,12 +521,7 @@ const SalesOrderHeader = () => {
   const { orderId } = useParams();
   if (!orderId) throw new Error("orderId not found");
 
-  const { leftSlotEl, setHasLeftContent } = useTopbarLeft();
-
-  useIsomorphicLayoutEffect(() => {
-    setHasLeftContent(true);
-    return () => setHasLeftContent(false);
-  }, [setHasLeftContent]);
+  const { leftSlotEl } = useTopbarLeft();
 
   return (
     <>

@@ -6,7 +6,6 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
-  useIsomorphicLayoutEffect
 } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
 import { useLingui } from "@lingui/react/macro";
@@ -233,12 +232,7 @@ function TemplateTopbarLeft({ template }: { template: TemplateRow }) {
 }
 
 function TemplateHeader({ template }: { template: TemplateRow }) {
-  const { leftSlotEl, setHasLeftContent } = useTopbarLeft();
-
-  useIsomorphicLayoutEffect(() => {
-    setHasLeftContent(true);
-    return () => setHasLeftContent(false);
-  }, [setHasLeftContent]);
+  const { leftSlotEl } = useTopbarLeft();
 
   return (
     <>
