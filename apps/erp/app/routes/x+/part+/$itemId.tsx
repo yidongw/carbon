@@ -134,14 +134,20 @@ export async function clientLoader({
   const key = params.itemId!;
   const hit = getPartRouteCache<Awaited<ReturnType<typeof loader>>>(key);
   if (hit) {
-    serverLoader<typeof loader>().then((fresh) => setPartRouteCache(key, fresh));
+    serverLoader<typeof loader>().then(async (fresh) => {
+      const partSummary = await fresh.partSummary;
+      setPartRouteCache(key, { ...fresh, partSummary: Promise.resolve(partSummary) });
+    });
     return hit;
   }
 
   const shell = consumePartShell(key);
   if (shell) {
     serverLoader<typeof loader>()
-      .then((fresh) => setPartRouteCache(key, fresh))
+      .then(async (fresh) => {
+        const partSummary = await fresh.partSummary;
+        setPartRouteCache(key, { ...fresh, partSummary: Promise.resolve(partSummary) });
+      })
       .catch(() => clearPartRouteCache(key));
     return createPartShellLoaderData(shell, { shell: true });
   }
