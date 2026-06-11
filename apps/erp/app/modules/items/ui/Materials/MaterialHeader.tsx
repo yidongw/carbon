@@ -106,7 +106,7 @@ const MaterialHeader = () => {
   }, [itemId, setLeftContent, clearLeftContent]);
 
   return (
-    <div className="flex-shrink-0 h-[50px] px-4 py-2 bg-card border-b border-border overflow-x-auto scrollbar-hide flex items-center dark:border-none dark:shadow-[inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)]">
+    <div className="flex-shrink-0 h-[50px] px-4 py-2 bg-card border-b border-border overflow-x-auto overflow-y-hidden scrollbar-hide flex items-center dark:border-none dark:shadow-[inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)]">
       <DetailsTopbar links={links} />
     </div>
   );
