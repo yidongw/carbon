@@ -2,8 +2,13 @@ import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
   useIsMobile
 } from "@carbon/react";
+import { Trans } from "@lingui/react/macro";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import type { ImperativePanelHandle } from "react-resizable-panels";
 
@@ -22,8 +27,8 @@ const PanelContext = createContext<PanelContextType>({
   hasExplorer: false,
   // biome-ignore lint/suspicious/noEmptyBlockStatements: suppressed due to migration
   setHasExplorer: () => {},
-  isExplorerCollapsed: false,
-  isPropertiesCollapsed: false,
+  isExplorerCollapsed: true,
+  isPropertiesCollapsed: true,
   // biome-ignore lint/suspicious/noEmptyBlockStatements: suppressed due to migration
   toggleExplorer: () => {},
   // biome-ignore lint/suspicious/noEmptyBlockStatements: suppressed due to migration
@@ -95,6 +100,7 @@ export function ResizablePanels({
 }: ResizablePanelsProps) {
   const { isExplorerCollapsed, isPropertiesCollapsed, setIsExplorerCollapsed, setHasExplorer } =
     usePanels();
+  const isMobile = useIsMobile();
   const panelRef = useRef<ImperativePanelHandle>(null);
 
   useEffect(() => {
@@ -102,13 +108,55 @@ export function ResizablePanels({
   }, [explorer, setHasExplorer]);
 
   useEffect(() => {
-    if (!explorer) return;
+    if (!explorer || isMobile) return;
     if (isExplorerCollapsed) {
       panelRef.current?.collapse();
     } else {
       panelRef.current?.expand();
     }
-  }, [isExplorerCollapsed, explorer]);
+  }, [isExplorerCollapsed, explorer, isMobile]);
+
+  if (isMobile) {
+    const mainContent = properties ? (
+      <Tabs defaultValue="details" className="flex h-full w-full flex-col">
+        <div className="flex-shrink-0 border-b border-border px-2 pt-2">
+          <TabsList className="w-full">
+            <TabsTrigger value="properties" className="flex-1">
+              <Trans>Properties</Trans>
+            </TabsTrigger>
+            <TabsTrigger value="details" className="flex-1">
+              <Trans>Details</Trans>
+            </TabsTrigger>
+          </TabsList>
+        </div>
+        <TabsContent
+          value="properties"
+          className="m-0 flex-1 min-h-0 overflow-y-auto [&>*]:!w-full [&>*]:!border-l-0"
+        >
+          {properties}
+        </TabsContent>
+        <TabsContent
+          value="details"
+          className="m-0 flex-1 min-h-0 overflow-hidden [&>*]:!h-full"
+        >
+          {content}
+        </TabsContent>
+      </Tabs>
+    ) : (
+      content
+    );
+
+    return (
+      <div className="relative h-full w-full overflow-hidden">
+        {explorer && !isExplorerCollapsed && (
+          <div className="absolute inset-0 z-50 overflow-y-auto bg-card shadow-lg">
+            {explorer}
+          </div>
+        )}
+        {mainContent}
+      </div>
+    );
+  }
 
   return (
     <ResizablePanelGroup direction="horizontal">
