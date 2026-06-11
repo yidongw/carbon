@@ -8,8 +8,8 @@ import {
 } from "@carbon/react";
 import type { ReactNode } from "react";
 import { useEffect } from "react";
+import { Link } from "react-router";
 import { LuTag } from "react-icons/lu";
-import { BreadcrumbLink } from "~/components";
 import { useTopbarLeft } from "./TopbarContext";
 
 type DetailTopbarContentProps = {
@@ -27,7 +27,7 @@ export function DetailTopbarContent({ children }: DetailTopbarContentProps) {
 
   return (
     <HStack
-      className="items-center min-w-0 flex-1 overflow-hidden [&>*:first-child]:min-w-0 [&>*:first-child]:flex-1 [&>*:not(:first-child)]:shrink-0"
+      className="items-center min-w-0 flex-1 overflow-hidden [&>*:not(:first-child)]:shrink-0"
       spacing={1}
     >
       {children}
@@ -40,18 +40,19 @@ type DetailTopbarIdProps = {
   children: ReactNode;
 };
 
+/** Max width leaves room for status badges, copy, and overflow menu. */
+const DETAIL_ID_MAX_WIDTH = "max-w-[calc(100%-7rem)]";
+
 /** Detail ID styled as a breadcrumb continuation on desktop. */
 export function DetailTopbarId({ to, children }: DetailTopbarIdProps) {
   return (
-    <div className="flex min-w-0 flex-1 items-center overflow-hidden">
+    <div
+      className={`flex min-w-0 shrink items-center overflow-hidden ${DETAIL_ID_MAX_WIDTH}`}
+    >
       <span className="text-muted-foreground hidden md:inline shrink-0">/</span>
-      <BreadcrumbLink
-        to={to}
-        isCurrentPage
-        className="min-w-0 max-w-full flex-1 overflow-hidden"
-      >
-        <span className="block truncate font-medium">{children}</span>
-      </BreadcrumbLink>
+      <Link to={to} className="min-w-0 truncate font-medium hover:underline">
+        {children}
+      </Link>
     </div>
   );
 }
@@ -63,15 +64,11 @@ type DetailTopbarPlainIdProps = {
 /** Detail ID without a link (e.g. stock transfers). */
 export function DetailTopbarPlainId({ children }: DetailTopbarPlainIdProps) {
   return (
-    <div className="flex min-w-0 flex-1 items-center overflow-hidden">
+    <div
+      className={`flex min-w-0 shrink items-center overflow-hidden ${DETAIL_ID_MAX_WIDTH}`}
+    >
       <span className="text-muted-foreground hidden md:inline shrink-0">/</span>
-      <BreadcrumbLink
-        to=""
-        isCurrentPage
-        className="min-w-0 max-w-full flex-1 overflow-hidden"
-      >
-        <span className="block truncate font-medium">{children}</span>
-      </BreadcrumbLink>
+      <span className="truncate font-medium">{children}</span>
     </div>
   );
 }
