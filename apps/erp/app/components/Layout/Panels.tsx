@@ -47,16 +47,22 @@ interface PanelProviderProps {
 }
 
 export function PanelProvider({ children }: PanelProviderProps) {
-  const isBrowser = typeof window !== "undefined";
   const isMobile = useIsMobile();
 
   const [hasExplorer, setHasExplorer] = useState(false);
-  const [isExplorerCollapsed, setIsExplorerCollapsed] = useState(
-    isBrowser ? isMobile : false
+  const [isExplorerCollapsed, setIsExplorerCollapsed] = useState(() =>
+    typeof window !== "undefined" ? window.innerWidth < 768 : false
   );
-  const [isPropertiesCollapsed, setIsPropertiesCollapsed] = useState(
-    isBrowser ? window.innerWidth < 1024 : false
+  const [isPropertiesCollapsed, setIsPropertiesCollapsed] = useState(() =>
+    typeof window !== "undefined" ? window.innerWidth < 1024 : false
   );
+
+  useEffect(() => {
+    if (isMobile) {
+      setIsExplorerCollapsed(true);
+      setIsPropertiesCollapsed(true);
+    }
+  }, [isMobile]);
 
   const value = {
     hasExplorer,
@@ -68,14 +74,6 @@ export function PanelProvider({ children }: PanelProviderProps) {
     setIsExplorerCollapsed,
     setIsPropertiesCollapsed
   };
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: suppressed due to migration
-  useEffect(() => {
-    if (isMobile) {
-      setIsExplorerCollapsed(true);
-      setIsPropertiesCollapsed(true);
-    }
-  }, [isBrowser, isMobile]);
 
   return (
     <PanelContext.Provider value={value}>{children}</PanelContext.Provider>
@@ -93,8 +91,14 @@ export function ResizablePanels({
   content,
   properties
 }: ResizablePanelsProps) {
-  const { isExplorerCollapsed, isPropertiesCollapsed, setIsExplorerCollapsed, setHasExplorer } =
-    usePanels();
+  const isMobile = useIsMobile();
+  const {
+    isExplorerCollapsed,
+    isPropertiesCollapsed,
+    setIsExplorerCollapsed,
+    setIsPropertiesCollapsed,
+    setHasExplorer
+  } = usePanels();
   const panelRef = useRef<ImperativePanelHandle>(null);
 
   useEffect(() => {
@@ -102,13 +106,43 @@ export function ResizablePanels({
   }, [explorer, setHasExplorer]);
 
   useEffect(() => {
-    if (!explorer) return;
+    if (isMobile || !explorer) return;
     if (isExplorerCollapsed) {
       panelRef.current?.collapse();
     } else {
       panelRef.current?.expand();
     }
-  }, [isExplorerCollapsed, explorer]);
+  }, [isExplorerCollapsed, explorer, isMobile]);
+
+  if (isMobile) {
+    return (
+      <div className="relative h-full w-full overflow-hidden">
+        {content}
+        {explorer && !isExplorerCollapsed && (
+          <>
+            <div
+              className="fixed inset-0 top-[49px] bg-black/50 z-40"
+              onClick={() => setIsExplorerCollapsed(true)}
+            />
+            <div className="fixed top-[49px] bottom-0 left-0 w-4/5 max-w-sm bg-card z-50 overflow-hidden shadow-xl flex flex-col">
+              {explorer}
+            </div>
+          </>
+        )}
+        {properties && !isPropertiesCollapsed && (
+          <>
+            <div
+              className="fixed inset-0 top-[49px] bg-black/50 z-40"
+              onClick={() => setIsPropertiesCollapsed(true)}
+            />
+            <div className="fixed top-[49px] bottom-0 right-0 w-4/5 max-w-sm bg-card z-50 overflow-y-auto shadow-xl">
+              {properties}
+            </div>
+          </>
+        )}
+      </div>
+    );
+  }
 
   return (
     <ResizablePanelGroup direction="horizontal">
