@@ -53,6 +53,13 @@ import { getTheme } from "./services/theme.server";
 export const middleware = [flashMiddleware];
 export const clientMiddleware = [flashClientMiddleware];
 
+// Prevent stale-asset 404s after a redeploy by never caching the HTML document.
+export const headers: Route.HeadersFunction = ({ loaderHeaders }) => {
+  const merged = new Headers(loaderHeaders);
+  merged.set("Cache-Control", "no-store");
+  return merged;
+};
+
 export const links: LinksFunction = () => {
   return [
     { rel: "stylesheet", href: Tailwind },
@@ -212,6 +219,17 @@ export function Document({
         <Links />
       </head>
       <body className="h-full overflow-hidden bg-background antialiased selection:bg-primary/10 selection:text-primary">
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              const body = document.body;
+              if (!body) return;
+              while (body.firstChild && body.firstChild.tagName !== 'DIV') {
+                body.removeChild(body.firstChild);
+              }
+            `
+          }}
+        />
         {children}
         <Toaster position="bottom-right" visibleToasts={5} />
         <ScrollRestoration />
