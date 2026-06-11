@@ -1,6 +1,6 @@
-import { Button, cn, getValidChildren } from "@carbon/react";
+import { cn, getValidChildren } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
-import type { ComponentProps } from "react";
+import type { ComponentProps, Ref } from "react";
 import { cloneElement, forwardRef } from "react";
 import type { LinkProps } from "react-router";
 import { Link } from "react-router";
@@ -51,31 +51,44 @@ const BreadcrumbItem = forwardRef<
 ));
 BreadcrumbItem.displayName = "BreadcrumbItem";
 
+const breadcrumbLinkClassName = (isCurrentPage?: boolean, className?: string) =>
+  cn(
+    "inline-flex min-w-0 max-w-full truncate rounded-sm outline-none",
+    "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+    isCurrentPage
+      ? "font-medium"
+      : "text-muted-foreground hover:text-foreground hover:underline",
+    className
+  );
+
 const BreadcrumbLink = forwardRef<
-  HTMLAnchorElement,
+  HTMLElement,
   LinkProps & {
     isCurrentPage?: boolean;
   }
->(({ className, children, isCurrentPage, ...props }, ref) => {
+>(({ className, children, isCurrentPage, to, ...props }, ref) => {
+  if (isCurrentPage) {
+    return (
+      <span
+        aria-current="page"
+        ref={ref}
+        className={breadcrumbLinkClassName(true, className)}
+      >
+        {children}
+      </span>
+    );
+  }
+
   return (
-    <Button
-      variant="ghost"
-      className={cn(
-        "px-2 outline-none focus-visible:ring-transparent",
-        className
-      )}
-      asChild
+    <Link
+      ref={ref as Ref<HTMLAnchorElement>}
+      to={to}
+      prefetch="intent"
+      className={breadcrumbLinkClassName(false, className)}
+      {...props}
     >
-      {isCurrentPage ? (
-        <span aria-current="page" ref={ref} {...props}>
-          {children}
-        </span>
-      ) : (
-        <Link ref={ref} {...props} prefetch="intent">
-          {children}
-        </Link>
-      )}
-    </Button>
+      {children}
+    </Link>
   );
 });
 BreadcrumbLink.displayName = "BreadcrumbLink";
