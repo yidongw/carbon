@@ -59,6 +59,7 @@ export default function StockTransferRoute() {
   const { stockTransfer } = useLoaderData<typeof loader>();
 
   return (
+    <>
       <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
         <StockTransferHeader />
         <div className="flex h-full min-h-0 overflow-y-auto overscroll-contain scrollbar-hide w-full">
@@ -72,5 +73,6 @@ export default function StockTransferRoute() {
         </div>
       </div>
       <Outlet />
+    </>
   );
 }
