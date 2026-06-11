@@ -8,11 +8,12 @@ import {
   DropdownMenuTrigger,
   HStack,
   IconButton,
-  useDisclosure
+  useDisclosure,
+  useIsomorphicLayoutEffect
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useEffect } from "react";
 import { LuArrowLeft, LuEllipsisVertical, LuTrash } from "react-icons/lu";
+import { createPortal } from "react-dom";
 import { Link, useNavigate, useParams } from "react-router";
 import { useAuditLog } from "~/components/AuditLog";
 import { DetailsTopbar, useTopbarLeft } from "~/components/Layout";
@@ -98,17 +99,20 @@ const PartHeader = () => {
   const { itemId } = useParams();
   if (!itemId) throw new Error("itemId not found");
 
-  const { setLeftContent, clearLeftContent } = useTopbarLeft();
+  const { leftSlotEl, setHasLeftContent } = useTopbarLeft();
 
-  useEffect(() => {
-    setLeftContent(<PartTopbarLeft itemId={itemId} />);
-    return clearLeftContent;
-  }, [itemId, setLeftContent, clearLeftContent]);
+  useIsomorphicLayoutEffect(() => {
+    setHasLeftContent(true);
+    return () => setHasLeftContent(false);
+  }, [setHasLeftContent]);
 
   return (
-    <div className="flex-shrink-0 h-[50px] px-4 py-2 bg-card border-b border-border overflow-x-auto overflow-y-hidden scrollbar-hide flex items-center dark:border-none dark:shadow-[inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)]">
-      <DetailsTopbar links={links} />
-    </div>
+    <>
+      {leftSlotEl && createPortal(<PartTopbarLeft itemId={itemId} />, leftSlotEl)}
+      <div className="flex-shrink-0 h-[50px] px-4 py-2 bg-card border-b border-border overflow-x-auto overflow-y-hidden scrollbar-hide flex items-center dark:border-none dark:shadow-[inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)]">
+        <DetailsTopbar links={links} />
+      </div>
+    </>
   );
 };
 

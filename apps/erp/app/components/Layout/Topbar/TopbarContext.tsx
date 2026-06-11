@@ -1,36 +1,27 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useState,
-  type ReactNode
-} from "react";
+import { createContext, useContext, useState, type ReactNode } from "react";
 
 type TopbarContextValue = {
-  leftContent: ReactNode;
-  setLeftContent: (content: ReactNode) => void;
-  clearLeftContent: () => void;
+  leftSlotEl: HTMLDivElement | null;
+  setLeftSlotEl: (el: HTMLDivElement | null) => void;
+  hasLeftContent: boolean;
+  setHasLeftContent: (has: boolean) => void;
 };
 
 const TopbarContext = createContext<TopbarContextValue>({
-  leftContent: null,
-  setLeftContent: () => {},
-  clearLeftContent: () => {}
+  leftSlotEl: null,
+  setLeftSlotEl: () => {},
+  hasLeftContent: false,
+  setHasLeftContent: () => {},
 });
 
 export function TopbarProvider({ children }: { children: ReactNode }) {
-  const [leftContent, setLeftContentState] = useState<ReactNode>(null);
-
-  const setLeftContent = useCallback((content: ReactNode) => {
-    setLeftContentState(content);
-  }, []);
-
-  const clearLeftContent = useCallback(() => {
-    setLeftContentState(null);
-  }, []);
+  const [leftSlotEl, setLeftSlotEl] = useState<HTMLDivElement | null>(null);
+  const [hasLeftContent, setHasLeftContent] = useState(false);
 
   return (
-    <TopbarContext.Provider value={{ leftContent, setLeftContent, clearLeftContent }}>
+    <TopbarContext.Provider
+      value={{ leftSlotEl, setLeftSlotEl, hasLeftContent, setHasLeftContent }}
+    >
       {children}
     </TopbarContext.Provider>
   );
