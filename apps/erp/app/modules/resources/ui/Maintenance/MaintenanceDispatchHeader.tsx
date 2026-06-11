@@ -1,10 +1,10 @@
 import {
-  Button,
   Copy,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuIcon,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
   IconButton,
   useDisclosure,
@@ -67,6 +67,45 @@ function MaintenanceDispatchTopbarLeft({ dispatchId }: { dispatchId: string }) {
           <DropdownMenuContent>
             <DropdownMenuItem
               disabled={
+                !["Open", "Assigned"].includes(status ?? "") ||
+                statusFetcher.state !== "idle" ||
+                !permissions.can("update", "resources")
+              }
+              onClick={() => {
+                statusFetcher.submit(
+                  { status: "In Progress" },
+                  {
+                    method: "post",
+                    action: path.to.maintenanceDispatchStatus(dispatchId)
+                  }
+                );
+              }}
+            >
+              <DropdownMenuIcon icon={<LuCirclePlay />} />
+              <Trans>Start</Trans>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              disabled={
+                status !== "In Progress" ||
+                statusFetcher.state !== "idle" ||
+                !permissions.can("update", "resources")
+              }
+              onClick={() => {
+                statusFetcher.submit(
+                  { status: "Completed" },
+                  {
+                    method: "post",
+                    action: path.to.maintenanceDispatchStatus(dispatchId)
+                  }
+                );
+              }}
+            >
+              <DropdownMenuIcon icon={<LuCircleCheck />} />
+              <Trans>Complete</Trans>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              disabled={
                 !["In Progress", "Completed"].includes(status ?? "") ||
                 statusFetcher.state !== "idle" ||
                 !permissions.can("update", "resources")
@@ -98,55 +137,6 @@ function MaintenanceDispatchTopbarLeft({ dispatchId }: { dispatchId: string }) {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <statusFetcher.Form
-          method="post"
-          action={path.to.maintenanceDispatchStatus(dispatchId)}
-        >
-          <input type="hidden" name="status" value="In Progress" />
-          <Button
-            type="submit"
-            leftIcon={<LuCirclePlay />}
-            variant={
-              status === "Open" || status === "Assigned"
-                ? "primary"
-                : "secondary"
-            }
-            isDisabled={
-              !["Open", "Assigned"].includes(status ?? "") ||
-              statusFetcher.state !== "idle" ||
-              !permissions.can("update", "resources")
-            }
-            isLoading={
-              statusFetcher.state !== "idle" &&
-              statusFetcher.formData?.get("status") === "In Progress"
-            }
-          >
-            <Trans>Start</Trans>
-          </Button>
-        </statusFetcher.Form>
-
-        <statusFetcher.Form
-          method="post"
-          action={path.to.maintenanceDispatchStatus(dispatchId)}
-        >
-          <input type="hidden" name="status" value="Completed" />
-          <Button
-            type="submit"
-            leftIcon={<LuCircleCheck />}
-            variant={status === "In Progress" ? "primary" : "secondary"}
-            isDisabled={
-              status !== "In Progress" ||
-              statusFetcher.state !== "idle" ||
-              !permissions.can("update", "resources")
-            }
-            isLoading={
-              statusFetcher.state !== "idle" &&
-              statusFetcher.formData?.get("status") === "Completed"
-            }
-          >
-            <Trans>Complete</Trans>
-          </Button>
-        </statusFetcher.Form>
       </DetailTopbarContent>
       {deleteModal.isOpen && (
         <ConfirmDelete

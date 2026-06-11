@@ -1,17 +1,16 @@
 import {
-  Button,
   Copy,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuIcon,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
   IconButton,
   useDisclosure,
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import {
-  LuChevronDown,
   LuCircleCheck,
   LuCirclePlay,
   LuEllipsisVertical,
@@ -70,6 +69,64 @@ function IssueTopbarLeft({ id }: { id: string }) {
             />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
+            {routeData?.suppliers?.map((s) => {
+              if (!s.externalLinkId) return null;
+              const supplier = suppliers.find(
+                (sup) => sup.id === s.supplierId
+              );
+              return (
+                <DropdownMenuItem key={s.supplierId} asChild>
+                  <Link to={path.to.externalScar(s.externalLinkId)}>
+                    <DropdownMenuIcon icon={<LuExternalLink />} />
+                    {supplier?.name} <Trans>SCAR</Trans>
+                  </Link>
+                </DropdownMenuItem>
+              );
+            })}
+            <DropdownMenuItem asChild>
+              <a
+                target="_blank"
+                href={path.to.file.nonConformance(id)}
+                rel="noreferrer"
+              >
+                <DropdownMenuIcon icon={<LuFile />} />
+                <Trans>Report</Trans>
+              </a>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              disabled={
+                status !== "Registered" ||
+                statusFetcher.state !== "idle" ||
+                !permissions.can("update", "quality")
+              }
+              onClick={() => {
+                statusFetcher.submit(
+                  { status: "In Progress" },
+                  { method: "post", action: path.to.issueStatus(id) }
+                );
+              }}
+            >
+              <DropdownMenuIcon icon={<LuCirclePlay />} />
+              <Trans>Start</Trans>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              disabled={
+                status !== "In Progress" ||
+                statusFetcher.state !== "idle" ||
+                !permissions.can("update", "quality")
+              }
+              onClick={() => {
+                statusFetcher.submit(
+                  {},
+                  { method: "post", action: path.to.closeIssue(id) }
+                );
+              }}
+            >
+              <DropdownMenuIcon icon={<LuCircleCheck />} />
+              <Trans>Complete</Trans>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
             <DropdownMenuItem
               disabled={
                 !["In Progress", "Closed"].includes(status ?? "") ||
@@ -100,81 +157,6 @@ function IssueTopbarLeft({ id }: { id: string }) {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              leftIcon={<LuFile />}
-              variant="secondary"
-              rightIcon={<LuChevronDown />}
-            >
-              <Trans>Reports</Trans>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            {routeData?.suppliers?.map((s) => {
-              if (!s.externalLinkId) return null;
-              const supplier = suppliers.find(
-                (sup) => sup.id === s.supplierId
-              );
-              return (
-                <DropdownMenuItem key={s.supplierId} asChild>
-                  <Link to={path.to.externalScar(s.externalLinkId)}>
-                    <DropdownMenuIcon icon={<LuExternalLink />} />
-                    {supplier?.name} <Trans>SCAR</Trans>
-                  </Link>
-                </DropdownMenuItem>
-              );
-            })}
-            <DropdownMenuItem asChild>
-              <a
-                target="_blank"
-                href={path.to.file.nonConformance(id)}
-                rel="noreferrer"
-              >
-                <DropdownMenuIcon icon={<LuFile />} />
-                <Trans>Report</Trans>
-              </a>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <statusFetcher.Form method="post" action={path.to.issueStatus(id)}>
-          <input type="hidden" name="status" value="In Progress" />
-          <Button
-            type="submit"
-            leftIcon={<LuCirclePlay />}
-            variant={status === "Registered" ? "primary" : "secondary"}
-            isDisabled={
-              status !== "Registered" ||
-              statusFetcher.state !== "idle" ||
-              !permissions.can("update", "quality")
-            }
-            isLoading={
-              statusFetcher.state !== "idle" &&
-              statusFetcher.formData?.get("status") === "In Progress"
-            }
-          >
-            <Trans>Start</Trans>
-          </Button>
-        </statusFetcher.Form>
-
-        <statusFetcher.Form method="post" action={path.to.closeIssue(id)}>
-          <Button
-            type="submit"
-            leftIcon={<LuCircleCheck />}
-            variant={status === "In Progress" ? "primary" : "secondary"}
-            isDisabled={
-              status !== "In Progress" ||
-              statusFetcher.state !== "idle" ||
-              !permissions.can("update", "quality")
-            }
-            isLoading={
-              statusFetcher.state !== "idle" &&
-              statusFetcher.formAction === path.to.closeIssue(id)
-            }
-          >
-            <Trans>Complete</Trans>
-          </Button>
-        </statusFetcher.Form>
       </DetailTopbarContent>
       {deleteIssueModal.isOpen && (
         <ConfirmDelete

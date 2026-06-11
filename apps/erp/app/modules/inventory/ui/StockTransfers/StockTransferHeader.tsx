@@ -1,6 +1,5 @@
 import type { Result } from "@carbon/auth";
 import {
-  Button,
   Copy,
   DropdownMenu,
   DropdownMenuContent,
@@ -120,6 +119,48 @@ function StockTransferTopbarLeft({ id }: { id: string }) {
           <DropdownMenuContent>
             {auditLogTrigger}
             <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <a
+                target="_blank"
+                href={path.to.file.stockTransfer(id)}
+                rel="noreferrer"
+              >
+                <DropdownMenuIcon icon={<LuBarcode />} />
+                <Trans>Pick List</Trans>
+              </a>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              disabled={
+                status !== "Draft" ||
+                releaseFetcher.state !== "idle" ||
+                !permissions.can("update", "inventory")
+              }
+              onClick={() => {
+                const fd = new FormData();
+                fd.set("status", "Released");
+                releaseRules.submit(fd);
+              }}
+            >
+              <DropdownMenuIcon icon={<LuCirclePlay />} />
+              <Trans>Release</Trans>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              disabled={
+                !canComplete ||
+                isCompleted ||
+                !permissions.is("employee") ||
+                completeFetcher.state !== "idle"
+              }
+              onClick={() => {
+                const fd = new FormData();
+                fd.set("status", "Completed");
+                completeRules.submit(fd);
+              }}
+            >
+              <DropdownMenuIcon icon={<LuCircleCheck />} />
+              <Trans>Complete</Trans>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
             <DropdownMenuItem
               disabled={
                 ["Draft"].includes(
@@ -166,58 +207,7 @@ function StockTransferTopbarLeft({ id }: { id: string }) {
           table="stockTransfer"
           isReadOnly={!permissions.can("update", "inventory")}
         />
-        <Button variant="secondary" leftIcon={<LuBarcode />} asChild>
-          <a
-            target="_blank"
-            href={path.to.file.stockTransfer(id)}
-            rel="noreferrer"
-          >
-            <Trans>Pick List</Trans>
-          </a>
-        </Button>
-        <Button
-          type="button"
-          leftIcon={<LuCirclePlay />}
-          variant={status === "Draft" ? "primary" : "secondary"}
-          isDisabled={
-            status !== "Draft" ||
-            releaseFetcher.state !== "idle" ||
-            !permissions.can("update", "inventory")
-          }
-          isLoading={releaseFetcher.state !== "idle"}
-          onClick={() => {
-            const fd = new FormData();
-            fd.set("status", "Released");
-            releaseRules.submit(fd);
-          }}
-        >
-          <Trans>Release</Trans>
-        </Button>
         <releaseRules.ViolationModal />
-
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            const fd = new FormData();
-            fd.set("status", "Completed");
-            completeRules.submit(fd);
-          }}
-        >
-          <Button
-            type="submit"
-            variant={canComplete && !isCompleted ? "primary" : "secondary"}
-            isDisabled={
-              !canComplete ||
-              isCompleted ||
-              !permissions.is("employee") ||
-              completeFetcher.state !== "idle"
-            }
-            leftIcon={<LuCircleCheck />}
-            isLoading={completeFetcher.state !== "idle"}
-          >
-            <Trans>Complete</Trans>
-          </Button>
-        </form>
         <completeRules.ViolationModal />
       </DetailTopbarContent>
 
