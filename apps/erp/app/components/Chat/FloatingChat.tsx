@@ -1,5 +1,5 @@
 import { cn } from "@carbon/react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, animate as fmAnimate, motion, useMotionValue } from "framer-motion";
 import { Provider as ChatStoreProvider } from "@ai-sdk-tools/store";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -30,7 +30,33 @@ const NAV_WIDTH = 56;
 const DEFAULT_PANEL_WIDTH = 440;
 const DEFAULT_PANEL_HEIGHT = 460;
 const MIN_PANEL_SIZE = 280;
-const SNAP_THRESHOLD = 32;
+const EDGE_MARGIN = 12;
+
+function getSnapPositions() {
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  const xL = EDGE_MARGIN;
+  const xR = w - BUTTON_SIZE - EDGE_MARGIN;
+  const xM = Math.round((xL + xR) / 2);
+  const yT = TOPBAR_HEIGHT + EDGE_MARGIN;
+  const yB = h - BUTTON_SIZE - EDGE_MARGIN;
+  const yM = Math.round((yT + yB) / 2);
+  return [
+    { x: xL, y: yT }, { x: xM, y: yT }, { x: xR, y: yT },
+    { x: xL, y: yM },                    { x: xR, y: yM },
+    { x: xL, y: yB }, { x: xM, y: yB }, { x: xR, y: yB },
+  ];
+}
+
+function nearestSnap(x: number, y: number) {
+  const cx = x + BUTTON_SIZE / 2;
+  const cy = y + BUTTON_SIZE / 2;
+  return getSnapPositions().reduce((best, pos) => {
+    const d = Math.hypot(pos.x + BUTTON_SIZE / 2 - cx, pos.y + BUTTON_SIZE / 2 - cy);
+    const bd = Math.hypot(best.x + BUTTON_SIZE / 2 - cx, best.y + BUTTON_SIZE / 2 - cy);
+    return d < bd ? pos : best;
+  });
+}
 
 function readStorage<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;
@@ -395,6 +421,11 @@ export function FloatingChat() {
     y: -1
   });
 
+  // Motion values for instant drag tracking + animated snap on release
+  const motionX = useMotionValue(btnPos.x);
+  const motionY = useMotionValue(btnPos.y);
+  const initialBtnPosRef = useRef(btnPos);
+
   const dragRef = useRef<{
     active: boolean;
     startMX: number;
@@ -418,28 +449,30 @@ export function FloatingChat() {
     setMounted(true);
   }, []);
 
-  // Initialise button position once the window is available
+  // Snap to nearest of 8 positions on mount (migrates any free-floating stored pos)
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (btnPos.x < 0 || btnPos.y < 0) {
-      setBtnPos({
-        x: window.innerWidth - BUTTON_SIZE - 24,
-        y: window.innerHeight - BUTTON_SIZE - 24
-      });
-    }
-  }, [btnPos.x, btnPos.y, setBtnPos]);
+    const init = initialBtnPosRef.current;
+    const rawX = init.x >= 0 ? init.x : window.innerWidth - BUTTON_SIZE - 24;
+    const rawY = init.y >= 0 ? init.y : window.innerHeight - BUTTON_SIZE - 24;
+    const snap = nearestSnap(rawX, rawY);
+    motionX.set(snap.x);
+    motionY.set(snap.y);
+    setBtnPos(snap);
+  }, [motionX, motionY, setBtnPos]);
 
-  // Keep button inside viewport on window resize
+  // Re-snap to nearest position on window resize
   useEffect(() => {
-    const clamp = () => {
-      setBtnPos((prev) => ({
-        x: Math.min(prev.x, window.innerWidth - BUTTON_SIZE - 8),
-        y: Math.min(prev.y, window.innerHeight - BUTTON_SIZE - 8)
-      }));
+    const resnap = () => {
+      if (dragRef.current?.active) return;
+      const snap = nearestSnap(motionX.get(), motionY.get());
+      setBtnPos(snap);
+      fmAnimate(motionX, snap.x, { type: "spring", duration: 0.4, bounce: 0.15 });
+      fmAnimate(motionY, snap.y, { type: "spring", duration: 0.4, bounce: 0.15 });
     };
-    window.addEventListener("resize", clamp);
-    return () => window.removeEventListener("resize", clamp);
-  }, [setBtnPos]);
+    window.addEventListener("resize", resnap);
+    return () => window.removeEventListener("resize", resnap);
+  }, [motionX, motionY, setBtnPos]);
 
   // Button drag + click handlers
   const onBtnMouseDown = useCallback(
@@ -450,12 +483,12 @@ export function FloatingChat() {
         active: true,
         startMX: e.clientX,
         startMY: e.clientY,
-        startBX: btnPos.x,
-        startBY: btnPos.y,
+        startBX: motionX.get(),
+        startBY: motionY.get(),
         moved: false
       };
     },
-    [btnPos]
+    [motionX, motionY]
   );
 
   useEffect(() => {
@@ -466,24 +499,11 @@ export function FloatingChat() {
       const dy = e.clientY - d.startMY;
       if (!d.moved && Math.abs(dx) < 4 && Math.abs(dy) < 4) return;
       d.moved = true;
-      const rawX = d.startBX + dx;
-      const rawY = d.startBY + dy;
-
-      // Snap to corners/edges
-      const snapX =
-        rawX < SNAP_THRESHOLD
-          ? 12
-          : rawX > window.innerWidth - BUTTON_SIZE - SNAP_THRESHOLD
-            ? window.innerWidth - BUTTON_SIZE - 12
-            : rawX;
-      const snapY =
-        rawY < SNAP_THRESHOLD + TOPBAR_HEIGHT
-          ? TOPBAR_HEIGHT + 12
-          : rawY > window.innerHeight - BUTTON_SIZE - SNAP_THRESHOLD
-            ? window.innerHeight - BUTTON_SIZE - 12
-            : rawY;
-
-      setBtnPos({ x: snapX, y: snapY });
+      // Free movement during drag — clamped to viewport
+      const rawX = Math.max(0, Math.min(d.startBX + dx, window.innerWidth - BUTTON_SIZE));
+      const rawY = Math.max(TOPBAR_HEIGHT, Math.min(d.startBY + dy, window.innerHeight - BUTTON_SIZE));
+      motionX.set(rawX);
+      motionY.set(rawY);
     };
 
     const onUp = () => {
@@ -491,6 +511,12 @@ export function FloatingChat() {
       if (!d) return;
       if (!d.moved) {
         setIsOpen((prev) => !prev);
+      } else {
+        // Snap to nearest of 8 positions with spring animation
+        const snap = nearestSnap(motionX.get(), motionY.get());
+        setBtnPos(snap);
+        fmAnimate(motionX, snap.x, { type: "spring", duration: 0.4, bounce: 0.15 });
+        fmAnimate(motionY, snap.y, { type: "spring", duration: 0.4, bounce: 0.15 });
       }
       dragRef.current = null;
     };
@@ -501,7 +527,7 @@ export function FloatingChat() {
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseup", onUp);
     };
-  }, [setBtnPos, setIsOpen]);
+  }, [motionX, motionY, setBtnPos, setIsOpen]);
 
   // Panel resize handlers
   const onResizeStart = useCallback(
@@ -620,8 +646,8 @@ export function FloatingChat() {
             transition={{ type: "spring", duration: 0.35, bounce: 0 }}
             style={{
               position: "fixed",
-              left: btnPos.x,
-              top: btnPos.y,
+              left: motionX,
+              top: motionY,
               width: BUTTON_SIZE,
               height: BUTTON_SIZE,
               zIndex: 50
