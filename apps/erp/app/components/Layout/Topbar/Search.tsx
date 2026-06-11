@@ -453,14 +453,14 @@ const SearchButton = () => {
         aria-label="Search"
         icon={<LuSearch />}
         variant="ghost"
-        className="md:hidden"
+        className="xl:hidden"
         onClick={openSearchModal}
       />
 
       <Button
         leftIcon={<LuSearch />}
         variant="secondary"
-        className="hidden w-[200px] px-2 hover:scale-100 md:inline-flex lg:hidden"
+        className="hidden w-[200px] px-2 hover:scale-100 xl:inline-flex"
         onClick={openSearchModal}
       >
         <HStack className="w-full">
