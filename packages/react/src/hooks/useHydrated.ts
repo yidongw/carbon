@@ -1,29 +1,29 @@
 import { useSyncExternalStore } from "react";
 
-/**
- * Return a boolean indicating if the JS has been hydrated already.
- * When doing Server-Side Rendering, the result will always be false.
- * When doing Client-Side Rendering, the result will always be false on the
- * first render and true from then on.
- *
- * Example: Disable a button that needs JS to work.
- * ```tsx
- * const hydrated = useHydrated();
- * return (
- *   <button type="button" isDisabled={!hydrated} onClick={doSomethingCustom}>
- *     Click me
- *   </button>
- * );
- * ```
- */
+const listeners = new Set<() => void>();
+let hydrated = false;
+
+function setHydrated() {
+  if (!hydrated) {
+    hydrated = true;
+    listeners.forEach((fn) => fn());
+  }
+}
+
+// Fire once when the module loads on the client — module-level so it survives
+// component mount/unmount cycles (React Router HydrateFallback transitions
+// would cancel per-component timeouts via subscribe cleanup).
+if (typeof window !== "undefined") {
+  setTimeout(setHydrated, 0);
+}
+
 export default function useHydrated() {
   return useSyncExternalStore(
-    // Notify React after mount so it re-reads getSnapshot() → true
-    (onStoreChange) => {
-      const id = setTimeout(onStoreChange, 0);
-      return () => clearTimeout(id);
+    (onChange) => {
+      listeners.add(onChange);
+      return () => listeners.delete(onChange);
     },
-    () => true,
+    () => hydrated,
     () => false
   );
 }
