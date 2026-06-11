@@ -2435,10 +2435,14 @@ async function seed() {
     let receiptId: string | null = null;
     if ((existingReceipt.rowCount ?? 0) === 0 && acmeSupplierId) {
       const recReadableId = await nextSeq("receipt");
+      // Link to first PO so it appears on the Receipts page (which filters neq sourceDocumentId='')
+      const firstPO = await client.query<{id: string; purchaseOrderId: string}>(
+        `SELECT id, "purchaseOrderId" FROM "purchaseOrder" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
       const recRow = await client.query<{id: string}>(
-        `INSERT INTO receipt ("receiptId", "supplierId", status, "locationId", "companyId", "createdBy")
-         VALUES ($1, $2, 'Draft'::"receiptStatus", $3, $4, $5) RETURNING id`,
-        [recReadableId, acmeSupplierId, locationId, companyId, userId]
+        `INSERT INTO receipt ("receiptId", "supplierId", status, "locationId", "sourceDocument", "sourceDocumentId", "sourceDocumentReadableId", "companyId", "createdBy")
+         VALUES ($1, $2, 'Draft'::"receiptStatus", $3, 'Purchase Order'::"receiptSourceDocument", $4, $5, $6, $7) RETURNING id`,
+        [recReadableId, acmeSupplierId, locationId, firstPO.rows[0]?.id ?? null, firstPO.rows[0]?.purchaseOrderId ?? null, companyId, userId]
       );
       receiptId = recRow.rows[0]!.id;
       console.log(`   Created receipt "${recReadableId}"`);
@@ -2462,10 +2466,14 @@ async function seed() {
     let shipmentId: string | null = null;
     if ((existingShipment.rowCount ?? 0) === 0 && precisionCustomerId) {
       const shipReadableId = await nextSeq("shipment");
+      // Link to first SO so it appears on the Shipments page (which filters neq sourceDocumentId='')
+      const firstSO = await client.query<{id: string; salesOrderId: string}>(
+        `SELECT id, "salesOrderId" FROM "salesOrder" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
       const shipRow = await client.query<{id: string}>(
-        `INSERT INTO shipment ("shipmentId", "customerId", status, "locationId", "companyId", "createdBy")
-         VALUES ($1, $2, 'Draft'::"shipmentStatus", $3, $4, $5) RETURNING id`,
-        [shipReadableId, precisionCustomerId, locationId, companyId, userId]
+        `INSERT INTO shipment ("shipmentId", "customerId", status, "locationId", "sourceDocument", "sourceDocumentId", "sourceDocumentReadableId", "companyId", "createdBy")
+         VALUES ($1, $2, 'Draft'::"shipmentStatus", $3, 'Sales Order'::"shipmentSourceDocument", $4, $5, $6, $7) RETURNING id`,
+        [shipReadableId, precisionCustomerId, locationId, firstSO.rows[0]?.id ?? null, firstSO.rows[0]?.salesOrderId ?? null, companyId, userId]
       );
       shipmentId = shipRow.rows[0]!.id;
       console.log(`   Created shipment "${shipReadableId}"`);
