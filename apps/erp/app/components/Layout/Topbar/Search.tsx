@@ -460,7 +460,7 @@ const SearchButton = () => {
       <Button
         leftIcon={<LuSearch />}
         variant="secondary"
-        className="hidden w-[200px] px-2 hover:scale-100 md:inline-flex"
+        className="hidden w-[200px] px-2 hover:scale-100 md:inline-flex lg:hidden"
         onClick={openSearchModal}
       >
         <HStack className="w-full">
