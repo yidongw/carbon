@@ -13,7 +13,7 @@ import {
   useLoaderData,
   useParams
 } from "react-router";
-import { ResizablePanels } from "~/components/Layout";
+import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import type { ItemFile, MaterialSummary } from "~/modules/items";
 import {
   getItemFiles,
@@ -93,6 +93,7 @@ export default function MaterialRoute() {
   const { usedIn } = useLoaderData<typeof loader>();
 
   return (
+    <PanelProvider>
     <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
       <MaterialHeader />
       <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
@@ -220,5 +221,6 @@ export default function MaterialRoute() {
         </div>
       </div>
     </div>
+    </PanelProvider>
   );
 }
