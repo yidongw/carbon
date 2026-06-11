@@ -87,15 +87,6 @@ function StockTransferTopbarLeft({ id }: { id: string }) {
   const isCompleted = status === "Completed";
   const isLocked = isStockTransferLocked(status);
 
-  const optimisticAssignment = useOptimisticAssignment({
-    id,
-    table: "stockTransfer"
-  });
-  const assignee =
-    optimisticAssignment !== undefined
-      ? optimisticAssignment
-      : routeData?.stockTransfer?.assignee;
-
   const hasPickedItems = routeData?.stockTransferLines.some(
     (line) => line.pickedQuantity && line.pickedQuantity > 0
   );
@@ -106,6 +97,7 @@ function StockTransferTopbarLeft({ id }: { id: string }) {
         <DetailTopbarPlainId>
           {routeData?.stockTransfer?.stockTransferId}
         </DetailTopbarPlainId>
+        <StockTransferStatus iconOnly status={routeData?.stockTransfer?.status} />
         <Copy text={routeData?.stockTransfer?.stockTransferId ?? ""} />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -199,14 +191,6 @@ function StockTransferTopbarLeft({ id }: { id: string }) {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <StockTransferStatus iconOnly status={routeData?.stockTransfer?.status} />
-        <Assignee
-          size="md"
-          id={id}
-          value={assignee ?? ""}
-          table="stockTransfer"
-          isReadOnly={!permissions.can("update", "inventory")}
-        />
         <releaseRules.ViolationModal />
         <completeRules.ViolationModal />
       </DetailTopbarContent>
@@ -239,7 +223,19 @@ const StockTransferHeader = () => {
 
   const { leftSlotEl } = useTopbarLeft();
   const { t } = useLingui();
+  const permissions = usePermissions();
   const { hasExplorer, toggleExplorer, toggleProperties } = usePanels();
+  const routeData = useRouteData<{
+    stockTransfer: StockTransfer;
+  }>(path.to.stockTransfer(id));
+  const optimisticAssignment = useOptimisticAssignment({
+    id,
+    table: "stockTransfer"
+  });
+  const assignee =
+    optimisticAssignment !== undefined
+      ? optimisticAssignment
+      : routeData?.stockTransfer?.assignee;
 
   return (
     <>
@@ -253,6 +249,13 @@ const StockTransferHeader = () => {
             variant="ghost"
           />
         )}
+        <Assignee
+          size="sm"
+          id={id}
+          value={assignee ?? ""}
+          table="stockTransfer"
+          isReadOnly={!permissions.can("update", "inventory")}
+        />
         <div className="flex-1" />
         <IconButton
           aria-label={t`Toggle Properties`}
