@@ -2728,6 +2728,1487 @@ async function seed() {
     }
     console.log(`   Created PO/SO payment and shipment settings`);
 
+    // ─── Step 61: material reference tables ───────────────────────────────────
+    console.log("61. Seeding material reference tables...");
+    {
+      // materialSubstance (nullable companyId)
+      const msubExists = await client.query(
+        `SELECT id FROM "materialSubstance" WHERE name='Steel (Dev)' AND "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      let msubId: string;
+      if ((msubExists.rowCount ?? 0) === 0) {
+        const r = await client.query<{id:string}>(
+          `INSERT INTO "materialSubstance" (name, code, "companyId", "createdBy") VALUES ($1, $2, $3, $4) RETURNING id`,
+          ['Steel (Dev)', 'STEEL-DEV', companyId, userId]
+        );
+        msubId = r.rows[0].id;
+      } else {
+        msubId = msubExists.rows[0].id;
+      }
+
+      // materialForm (nullable companyId)
+      const mformExists = await client.query(
+        `SELECT id FROM "materialForm" WHERE name='Sheet (Dev)' AND "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      let mformId: string;
+      if ((mformExists.rowCount ?? 0) === 0) {
+        const r = await client.query<{id:string}>(
+          `INSERT INTO "materialForm" (name, code, "companyId", "createdBy") VALUES ($1, $2, $3, $4) RETURNING id`,
+          ['Sheet (Dev)', 'SHEET-DEV', companyId, userId]
+        );
+        mformId = r.rows[0].id;
+      } else {
+        mformId = mformExists.rows[0].id;
+      }
+
+      // materialGrade (depends on materialSubstance)
+      await client.query(
+        `INSERT INTO "materialGrade" (name, "materialSubstanceId", "companyId") VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`,
+        ['A36', msubId, companyId]
+      );
+
+      // materialFinish
+      await client.query(
+        `INSERT INTO "materialFinish" (name, "materialSubstanceId", "companyId") VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`,
+        ['Hot Rolled', msubId, companyId]
+      );
+
+      // materialType
+      await client.query(
+        `INSERT INTO "materialType" (name, code, "materialSubstanceId", "materialFormId", "companyId") VALUES ($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING`,
+        ['Steel Sheet', 'STL-SHT', msubId, mformId, companyId]
+      );
+
+      // materialDimension
+      await client.query(
+        `INSERT INTO "materialDimension" (name, "materialFormId", "isMetric", "companyId") VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING`,
+        ['Thickness', mformId, true, companyId]
+      );
+
+      console.log(`   Created material reference data`);
+    }
+
+    // ─── Step 62: dimensionValue ───────────────────────────────────────────────
+    console.log("62. Seeding dimension values...");
+    {
+      const companyGroupId = 'cg_5Cg8dbXfjYm2Rshat5W22m';
+      const dims = await client.query<{id:string, name:string}>(
+        `SELECT id, name FROM dimension WHERE "companyGroupId"=$1`, [companyGroupId]
+      );
+      let firstDimId: string | undefined;
+      let firstDimValueId: string | undefined;
+      for (const dim of dims.rows) {
+        if (!firstDimId) firstDimId = dim.id;
+        const existsDv = await client.query(
+          `SELECT id FROM "dimensionValue" WHERE "dimensionId"=$1 AND name=$2 AND "companyGroupId"=$3 LIMIT 1`,
+          [dim.id, `${dim.name} - Dev`, companyGroupId]
+        );
+        if ((existsDv.rowCount ?? 0) === 0) {
+          const r = await client.query<{id:string}>(
+            `INSERT INTO "dimensionValue" ("dimensionId", name, "companyGroupId", "createdBy") VALUES ($1, $2, $3, $4) RETURNING id`,
+            [dim.id, `${dim.name} - Dev`, companyGroupId, userId]
+          );
+          if (!firstDimValueId) firstDimValueId = r.rows[0].id;
+        } else {
+          if (!firstDimValueId) firstDimValueId = existsDv.rows[0].id;
+        }
+      }
+      console.log(`   Created dimension values`);
+
+      // ─── Step 63: journalLineDimension ──────────────────────────────────────
+      console.log("63. Seeding journal line dimensions...");
+      if (firstDimId && firstDimValueId) {
+        const jlRow = await client.query<{id:string}>(
+          `SELECT id FROM "journalLine" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+        );
+        if (jlRow.rows[0]) {
+          await client.query(
+            `INSERT INTO "journalLineDimension" ("journalLineId", "dimensionId", "valueId", "companyId") VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING`,
+            [jlRow.rows[0].id, firstDimId, firstDimValueId, companyId]
+          );
+          console.log(`   Created journal line dimension`);
+        }
+      }
+    }
+
+    // ─── Step 64: customerContact, customerLocation ────────────────────────────
+    console.log("64. Seeding customer contact and location...");
+    {
+      const custRow = await client.query<{id:string}>(
+        `SELECT id FROM customer WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const contactRow = await client.query<{id:string}>(
+        `SELECT id FROM contact WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const custId = custRow.rows[0]?.id;
+      const contactId = contactRow.rows[0]?.id;
+
+      if (custId && contactId) {
+        // customerContact
+        const existsCC = await client.query(
+          `SELECT id FROM "customerContact" WHERE "customerId"=$1 AND "contactId"=$2 LIMIT 1`,
+          [custId, contactId]
+        );
+        if ((existsCC.rowCount ?? 0) === 0) {
+          await client.query(
+            `INSERT INTO "customerContact" ("customerId", "contactId") VALUES ($1, $2) ON CONFLICT DO NOTHING`,
+            [custId, contactId]
+          );
+        }
+      }
+
+      // customerLocation (check if exists first)
+      if (custId) {
+        const addrRow = await client.query<{id:string}>(`SELECT id FROM address LIMIT 1`);
+        const addrId = addrRow.rows[0]?.id;
+        if (addrId) {
+          const existsCL = await client.query(
+            `SELECT id FROM "customerLocation" WHERE "customerId"=$1 LIMIT 1`, [custId]
+          );
+          if ((existsCL.rowCount ?? 0) === 0) {
+            await client.query(
+              `INSERT INTO "customerLocation" ("customerId", "addressId", name) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`,
+              [custId, addrId, 'Main Location']
+            );
+          }
+        }
+      }
+      console.log(`   Created customer contact and location`);
+    }
+
+    // ─── Step 65: customerItemPriceOverride + Break ────────────────────────────
+    console.log("65. Seeding customer item price overrides...");
+    {
+      const custRow = await client.query<{id:string}>(
+        `SELECT id FROM customer WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const itemRow = await client.query<{id:string}>(
+        `SELECT id FROM item WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const custId = custRow.rows[0]?.id;
+      const itemId = itemRow.rows[0]?.id;
+
+      if (custId && itemId) {
+        const existsOvr = await client.query(
+          `SELECT id FROM "customerItemPriceOverride" WHERE "customerId"=$1 AND "itemId"=$2 AND "companyId"=$3 LIMIT 1`,
+          [custId, itemId, companyId]
+        );
+        let ovrId: string;
+        if ((existsOvr.rowCount ?? 0) === 0) {
+          const r = await client.query<{id:string}>(
+            `INSERT INTO "customerItemPriceOverride" ("customerId", "itemId", "companyId", "createdBy") VALUES ($1, $2, $3, $4) RETURNING id`,
+            [custId, itemId, companyId, userId]
+          );
+          ovrId = r.rows[0].id;
+        } else {
+          ovrId = existsOvr.rows[0].id;
+        }
+
+        const existsBreak = await client.query(
+          `SELECT id FROM "customerItemPriceOverrideBreak" WHERE "customerItemPriceOverrideId"=$1 AND "companyId"=$2 LIMIT 1`,
+          [ovrId, companyId]
+        );
+        if ((existsBreak.rowCount ?? 0) === 0) {
+          await client.query(
+            `INSERT INTO "customerItemPriceOverrideBreak" ("customerItemPriceOverrideId", quantity, "overridePrice", "companyId", "createdBy") VALUES ($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING`,
+            [ovrId, 10, 9.99, companyId, userId]
+          );
+        }
+      }
+      console.log(`   Created customer item price overrides`);
+    }
+
+    // ─── Step 66: customerPartToItem ──────────────────────────────────────────
+    console.log("66. Seeding customer part to item...");
+    {
+      const custRow = await client.query<{id:string}>(
+        `SELECT id FROM customer WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const itemRow = await client.query<{id:string}>(
+        `SELECT id FROM item WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const custId = custRow.rows[0]?.id;
+      const itemId = itemRow.rows[0]?.id;
+      if (custId && itemId) {
+        await client.query(
+          `INSERT INTO "customerPartToItem" ("customerId", "customerPartId", "customerPartRevision", "itemId", "companyId") VALUES ($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING`,
+          [custId, 'CUST-PART-001', 'A', itemId, companyId]
+        );
+      }
+      console.log(`   Created customer part to item`);
+    }
+
+    // ─── Step 67: document favorites, labels, transactions ────────────────────
+    console.log("67. Seeding document favorites, labels, transactions...");
+    {
+      const docRow = await client.query<{id:string}>(
+        `SELECT id FROM document WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const docId = docRow.rows[0]?.id;
+      if (docId) {
+        await client.query(
+          `INSERT INTO "documentFavorite" ("documentId", "userId") VALUES ($1, $2) ON CONFLICT DO NOTHING`,
+          [docId, userId]
+        );
+        await client.query(
+          `INSERT INTO "documentLabel" ("documentId", "userId", label) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`,
+          [docId, userId, 'Important']
+        );
+        await client.query(
+          `INSERT INTO "documentTransaction" ("documentId", type, "userId") VALUES ($1, $2::\"documentTransactionType\", $3) ON CONFLICT DO NOTHING`,
+          [docId, 'Download', userId]
+        );
+      }
+      console.log(`   Created document favorites, labels, transactions`);
+    }
+
+    // ─── Step 68: employeeShift, employeeTypePermission ───────────────────────
+    console.log("68. Seeding employee shift and type permissions...");
+    {
+      const empRow = await client.query<{id:string}>(
+        `SELECT id FROM employee WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const shiftRow = await client.query<{id:string}>(
+        `SELECT id FROM shift WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const etRow = await client.query<{id:string}>(
+        `SELECT id FROM "employeeType" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+
+      if (empRow.rows[0] && shiftRow.rows[0]) {
+        await client.query(
+          `INSERT INTO "employeeShift" ("employeeId", "shiftId") VALUES ($1, $2) ON CONFLICT DO NOTHING`,
+          [empRow.rows[0].id, shiftRow.rows[0].id]
+        );
+      }
+      if (etRow.rows[0]) {
+        await client.query(
+          `INSERT INTO "employeeTypePermission" ("employeeTypeId", module) VALUES ($1, $2::module) ON CONFLICT DO NOTHING`,
+          [etRow.rows[0].id, 'Accounting']
+        );
+      }
+      console.log(`   Created employee shift and type permissions`);
+    }
+
+    // ─── Step 69: exchangeRateHistory ─────────────────────────────────────────
+    console.log("69. Seeding exchange rate history...");
+    {
+      const companyGroupId = 'cg_5Cg8dbXfjYm2Rshat5W22m';
+      await client.query(
+        `INSERT INTO "exchangeRateHistory" ("currencyCode", rate, "effectiveDate", "companyGroupId", "createdBy") VALUES ($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING`,
+        ['USD', 1.0, '2024-01-01', companyGroupId, userId]
+      );
+      console.log(`   Created exchange rate history`);
+    }
+
+    // ─── Step 70: period ──────────────────────────────────────────────────────
+    console.log("70. Seeding period...");
+    {
+      await client.query(
+        `INSERT INTO period ("startDate", "endDate", "periodType") VALUES ($1, $2, $3::\"periodType\") ON CONFLICT DO NOTHING`,
+        ['2024-01-01', '2024-01-07', 'Week']
+      );
+      console.log(`   Created period`);
+    }
+
+    // ─── Step 71: plan ────────────────────────────────────────────────────────
+    console.log("71. Seeding plan...");
+    {
+      const existsPlan = await client.query(`SELECT id FROM plan WHERE name='Development' LIMIT 1`);
+      if ((existsPlan.rowCount ?? 0) === 0) {
+        await client.query(
+          `INSERT INTO plan (name, "stripePriceId", "tasksLimit", "aiTokensLimit", "stripeTrialPeriodDays", public) VALUES ($1, $2, $3, $4, $5, $6) ON CONFLICT DO NOTHING`,
+          ['Development', 'price_dev', 999999, 999999, 30, true]
+        );
+      }
+      console.log(`   Created plan`);
+    }
+
+    // ─── Step 72: userAttribute, userAttributeValue ───────────────────────────
+    console.log("72. Seeding user attributes and values...");
+    {
+      const uacRow = await client.query<{id:string}>(`SELECT id FROM "userAttributeCategory" LIMIT 1`);
+      const adtRow = await client.query<{id:number}>(`SELECT id FROM "attributeDataType" WHERE "isText"=true LIMIT 1`);
+      const uacId = uacRow.rows[0]?.id;
+      const adtId = adtRow.rows[0]?.id;
+      if (uacId && adtId) {
+        const existsUA = await client.query(
+          `SELECT id FROM "userAttribute" WHERE name='Department' AND "userAttributeCategoryId"=$1 LIMIT 1`, [uacId]
+        );
+        let uaId: string;
+        if ((existsUA.rowCount ?? 0) === 0) {
+          const r = await client.query<{id:string}>(
+            `INSERT INTO "userAttribute" (name, "sortOrder", "userAttributeCategoryId", "attributeDataTypeId", "createdBy") VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+            ['Department', 1, uacId, adtId, userId]
+          );
+          uaId = r.rows[0].id;
+        } else {
+          uaId = existsUA.rows[0].id;
+        }
+        const existsUAV = await client.query(
+          `SELECT id FROM "userAttributeValue" WHERE "userAttributeId"=$1 AND "userId"=$2 LIMIT 1`,
+          [uaId, userId]
+        );
+        if ((existsUAV.rowCount ?? 0) === 0) {
+          await client.query(
+            `INSERT INTO "userAttributeValue" ("userAttributeId", "userId", "valueText", "createdBy") VALUES ($1, $2, $3, $4)`,
+            [uaId, userId, 'Engineering', userId]
+          );
+        }
+      }
+      console.log(`   Created user attribute and value`);
+    }
+
+    // ─── Step 73: integration ─────────────────────────────────────────────────
+    console.log("73. Seeding integration...");
+    {
+      await client.query(
+        `INSERT INTO integration (id, jsonschema) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
+        ['dev-integration', JSON.stringify({type:'object',properties:{apiKey:{type:'string'}}})]
+      );
+      console.log(`   Created integration`);
+    }
+
+    // ─── Step 74: webhookTable + webhook, customFieldTable + customField ───────
+    console.log("74. Seeding webhook/custom field tables and entries...");
+    {
+      // Seed reference tables first
+      await client.query(
+        `INSERT INTO "webhookTable" ("table", module, name) VALUES ($1, $2::module, $3) ON CONFLICT DO NOTHING`,
+        ['item', 'Parts', 'Item']
+      );
+      await client.query(
+        `INSERT INTO "customFieldTable" ("table", module, name) VALUES ($1, $2::module, $3) ON CONFLICT DO NOTHING`,
+        ['item', 'Parts', 'Item']
+      );
+
+      // attributeDataType for customField
+      const adtRow = await client.query<{id:number}>(`SELECT id FROM "attributeDataType" WHERE "isText"=true LIMIT 1`);
+      if (adtRow.rows[0]) {
+        await client.query(
+          `INSERT INTO "customField" (name, "sortOrder", "table", "dataTypeId", "companyId", "createdBy") VALUES ($1, $2, $3, $4, $5, $6) ON CONFLICT DO NOTHING`,
+          ['Custom Field 1', 1, 'item', adtRow.rows[0].id, companyId, userId]
+        );
+      }
+
+      await client.query(
+        `INSERT INTO webhook (name, "table", url, "onInsert", "companyId", "createdBy") VALUES ($1, $2, $3, $4, $5, $6) ON CONFLICT DO NOTHING`,
+        ['Item Webhook', 'item', 'https://example.com/webhook', true, companyId, userId]
+      );
+      console.log(`   Created webhook and custom field tables/entries`);
+    }
+
+    // ─── Step 75: contractor, contractorAbility ───────────────────────────────
+    console.log("75. Seeding contractor and contractor ability...");
+    {
+      const scRow = await client.query<{id:string}>(
+        `SELECT sc.id FROM "supplierContact" sc JOIN supplier s ON sc."supplierId"=s.id WHERE s."companyId"=$1 LIMIT 1`,
+        [companyId]
+      );
+      const scId = scRow.rows[0]?.id;
+      const abilRow = await client.query<{id:string}>(
+        `SELECT id FROM ability WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const abilId = abilRow.rows[0]?.id;
+
+      if (scId) {
+        await client.query(
+          `INSERT INTO contractor (id, "hoursPerWeek", active, "companyId", "createdBy") VALUES ($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING`,
+          [scId, 40, true, companyId, userId]
+        );
+        if (abilId) {
+          await client.query(
+            `INSERT INTO "contractorAbility" ("contractorId", "abilityId", "createdBy") VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`,
+            [scId, abilId, userId]
+          );
+        }
+      }
+      console.log(`   Created contractor and ability`);
+    }
+
+    // ─── Step 76: partner ─────────────────────────────────────────────────────
+    console.log("76. Seeding partner...");
+    {
+      const slRow = await client.query<{id:string}>(
+        `SELECT sl.id FROM "supplierLocation" sl JOIN supplier s ON sl."supplierId"=s.id WHERE s."companyId"=$1 LIMIT 1`,
+        [companyId]
+      );
+      const slId = slRow.rows[0]?.id;
+      const abilRow = await client.query<{id:string}>(
+        `SELECT id FROM ability WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const abilId = abilRow.rows[0]?.id;
+
+      if (slId && abilId) {
+        await client.query(
+          `INSERT INTO partner (id, "hoursPerWeek", "abilityId", active, "companyId", "createdBy") VALUES ($1, $2, $3, $4, $5, $6) ON CONFLICT DO NOTHING`,
+          [slId, 40, abilId, true, companyId, userId]
+        );
+      }
+      console.log(`   Created partner`);
+    }
+
+    // ─── Step 77: purchaseOrder sub-records ───────────────────────────────────
+    console.log("77. Seeding purchase order sub-records...");
+    {
+      const poRow = await client.query<{id:string}>(
+        `SELECT id FROM "purchaseOrder" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const poId = poRow.rows[0]?.id;
+      const locRow = await client.query<{id:string}>(
+        `SELECT id FROM location WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const smRow = await client.query<{id:string}>(
+        `SELECT id FROM "shippingMethod" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const stRow = await client.query<{id:string}>(
+        `SELECT id FROM "shippingTerm" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+
+      if (poId) {
+        // purchaseOrderFavorite
+        await client.query(
+          `INSERT INTO "purchaseOrderFavorite" ("purchaseOrderId", "userId") VALUES ($1, $2) ON CONFLICT DO NOTHING`,
+          [poId, userId]
+        );
+        // purchaseOrderDelivery (id = purchaseOrderId)
+        const existsPOD = await client.query(
+          `SELECT 1 FROM "purchaseOrderDelivery" WHERE id=$1 LIMIT 1`, [poId]
+        );
+        if ((existsPOD.rowCount ?? 0) === 0) {
+          await client.query(
+            `INSERT INTO "purchaseOrderDelivery" (id, "locationId", "shippingMethodId", "shippingTermId", "companyId") VALUES ($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING`,
+            [poId, locRow.rows[0]?.id, smRow.rows[0]?.id, stRow.rows[0]?.id, companyId]
+          );
+        }
+        // purchaseOrderStatusHistory
+        await client.query(
+          `INSERT INTO "purchaseOrderStatusHistory" ("purchaseOrderId", status, "createdBy") VALUES ($1, $2::\"purchaseOrderStatus\", $3) ON CONFLICT DO NOTHING`,
+          [poId, 'Draft', userId]
+        );
+        // purchaseOrderTransaction
+        await client.query(
+          `INSERT INTO "purchaseOrderTransaction" ("purchaseOrderId", type, "userId") VALUES ($1, $2::\"purchaseOrderTransactionType\", $3) ON CONFLICT DO NOTHING`,
+          [poId, 'Edit', userId]
+        );
+      }
+      console.log(`   Created purchase order sub-records`);
+    }
+
+    // ─── Step 78: purchaseInvoice sub-records ─────────────────────────────────
+    console.log("78. Seeding purchase invoice sub-records...");
+    {
+      const piRow = await client.query<{id:string}>(
+        `SELECT id FROM "purchaseInvoice" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const piId = piRow.rows[0]?.id;
+      const poRow = await client.query<{id:string}>(
+        `SELECT id FROM "purchaseOrder" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const polRow = await client.query<{id:string, purchaseOrderId:string}>(
+        `SELECT id, "purchaseOrderId" FROM "purchaseOrderLine" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const itemRow = await client.query<{id:string}>(
+        `SELECT id FROM item WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const locRow = await client.query<{id:string}>(
+        `SELECT id FROM location WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const smRow = await client.query<{id:string}>(
+        `SELECT id FROM "shippingMethod" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const stRow = await client.query<{id:string}>(
+        `SELECT id FROM "shippingTerm" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+
+      if (piId) {
+        // purchaseInvoiceLine
+        const existsPIL = await client.query(
+          `SELECT id FROM "purchaseInvoiceLine" WHERE "invoiceId"=$1 AND "companyId"=$2 LIMIT 1`,
+          [piId, companyId]
+        );
+        let pilId: string | undefined;
+        if ((existsPIL.rowCount ?? 0) === 0) {
+          const r = await client.query<{id:string}>(
+            `INSERT INTO "purchaseInvoiceLine" ("invoiceId", "invoiceLineType", "purchaseOrderId", "purchaseOrderLineId", "itemId", quantity, "supplierUnitPrice", "companyId", "createdBy") VALUES ($1, $2::\"payableLineType\", $3, $4, $5, $6, $7, $8, $9) RETURNING id`,
+            [piId, 'Part', poRow.rows[0]?.id, polRow.rows[0]?.id, itemRow.rows[0]?.id, 1, 10.00, companyId, userId]
+          );
+          pilId = r.rows[0].id;
+        } else {
+          pilId = existsPIL.rows[0].id;
+        }
+
+        // purchaseInvoiceDelivery (id = purchaseInvoiceId)
+        const existsPID = await client.query(
+          `SELECT 1 FROM "purchaseInvoiceDelivery" WHERE id=$1 LIMIT 1`, [piId]
+        );
+        if ((existsPID.rowCount ?? 0) === 0) {
+          await client.query(
+            `INSERT INTO "purchaseInvoiceDelivery" (id, "locationId", "shippingMethodId", "shippingTermId", "companyId") VALUES ($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING`,
+            [piId, locRow.rows[0]?.id, smRow.rows[0]?.id, stRow.rows[0]?.id, companyId]
+          );
+        }
+
+        // purchaseInvoiceStatusHistory
+        await client.query(
+          `INSERT INTO "purchaseInvoiceStatusHistory" ("invoiceId", status) VALUES ($1, $2::\"purchaseInvoiceStatus\") ON CONFLICT DO NOTHING`,
+          [piId, 'Draft']
+        );
+
+        // purchaseInvoicePriceChange
+        if (pilId) {
+          await client.query(
+            `INSERT INTO "purchaseInvoicePriceChange" ("invoiceId", "invoiceLineId", "previousPrice", "newPrice", "previousQuantity", "newQuantity", "updatedBy") VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT DO NOTHING`,
+            [piId, pilId, 9.00, 10.00, 1, 1, userId]
+          );
+        }
+      }
+      console.log(`   Created purchase invoice sub-records`);
+    }
+
+    // ─── Step 79: purchasePayment + purchaseInvoicePaymentRelation ────────────
+    console.log("79. Seeding purchase payment...");
+    {
+      const supRow = await client.query<{id:string}>(
+        `SELECT id FROM supplier WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const piRow = await client.query<{id:string}>(
+        `SELECT id FROM "purchaseInvoice" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const supId = supRow.rows[0]?.id;
+      const piId = piRow.rows[0]?.id;
+      if (supId) {
+        const existsPP = await client.query(
+          `SELECT id FROM "purchasePayment" WHERE "supplierId"=$1 AND "companyId"=$2 LIMIT 1`,
+          [supId, companyId]
+        );
+        let ppId: string;
+        if ((existsPP.rowCount ?? 0) === 0) {
+          const r = await client.query<{id:string}>(
+            `INSERT INTO "purchasePayment" ("paymentId", "supplierId", "paymentDate", "currencyCode", "exchangeRate", "totalAmount", "companyId", "createdBy") VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,
+            ['PAY-DEV-001', supId, '2024-01-15', 'USD', 1.0, 500.00, companyId, userId]
+          );
+          ppId = r.rows[0].id;
+        } else {
+          ppId = existsPP.rows[0].id;
+        }
+        // purchaseInvoicePaymentRelation
+        if (piId) {
+          await client.query(
+            `INSERT INTO "purchaseInvoicePaymentRelation" ("invoiceId", "paymentId") VALUES ($1, $2) ON CONFLICT DO NOTHING`,
+            [piId, ppId]
+          );
+        }
+      }
+      console.log(`   Created purchase payment`);
+    }
+
+    // ─── Step 80: purchasingRfq link records ──────────────────────────────────
+    console.log("80. Seeding purchasingRfq link records...");
+    {
+      const rfqRow = await client.query<{id:string}>(
+        `SELECT id FROM "purchasingRfq" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const poRow = await client.query<{id:string}>(
+        `SELECT id FROM "purchaseOrder" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const sqRow = await client.query<{id:string}>(
+        `SELECT id FROM "supplierQuote" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const rfqId = rfqRow.rows[0]?.id;
+      if (rfqId && poRow.rows[0]) {
+        await client.query(
+          `INSERT INTO "purchasingRfqToPurchaseOrder" ("purchasingRfqId", "purchaseOrderId", "companyId") VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`,
+          [rfqId, poRow.rows[0].id, companyId]
+        );
+      }
+      if (rfqId && sqRow.rows[0]) {
+        await client.query(
+          `INSERT INTO "purchasingRfqToSupplierQuote" ("purchasingRfqId", "supplierQuoteId", "companyId") VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`,
+          [rfqId, sqRow.rows[0].id, companyId]
+        );
+      }
+      console.log(`   Created purchasingRfq link records`);
+    }
+
+    // ─── Step 81: quote sub-records ───────────────────────────────────────────
+    console.log("81. Seeding quote sub-records...");
+    {
+      const quoteRow = await client.query<{id:string}>(
+        `SELECT id FROM quote WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const qlRow = await client.query<{id:string, quoteId:string}>(
+        `SELECT id, "quoteId" FROM "quoteLine" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const qmmRow = await client.query<{id:string}>(
+        `SELECT id FROM "quoteMakeMethod" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const qopRow = await client.query<{id:string}>(
+        `SELECT id FROM "quoteOperation" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const itemRow = await client.query<{id:string}>(
+        `SELECT id FROM item WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const toolRow = await client.query<{id:string}>(
+        `SELECT id FROM item WHERE "companyId"=$1 AND type='Tool' LIMIT 1`, [companyId]
+      );
+      const quoteId = quoteRow.rows[0]?.id;
+      const qlId = qlRow.rows[0]?.id;
+      const qmmId = qmmRow.rows[0]?.id;
+      const qopId = qopRow.rows[0]?.id;
+      const itemId = itemRow.rows[0]?.id;
+      const toolId = toolRow.rows[0]?.id;
+
+      // quoteMaterial (use methodType='Buy' to avoid trigger)
+      if (quoteId && qlId && qmmId && itemId) {
+        const existsQM = await client.query(
+          `SELECT id FROM "quoteMaterial" WHERE "quoteId"=$1 AND "itemId"=$2 AND "companyId"=$3 LIMIT 1`,
+          [quoteId, itemId, companyId]
+        );
+        if ((existsQM.rowCount ?? 0) === 0) {
+          await client.query(
+            `INSERT INTO "quoteMaterial" ("quoteId", "quoteLineId", "itemId", "itemType", "methodType", "order", description, quantity, "unitCost", "companyId", "createdBy", "quoteMakeMethodId") VALUES ($1, $2, $3, $4, $5::\"methodType\", $6, $7, $8, $9, $10, $11, $12) ON CONFLICT DO NOTHING`,
+            [quoteId, qlId, itemId, 'Part', 'Pull from Inventory', 1, 'Dev Material', 1, 5.00, companyId, userId, qmmId]
+          );
+        }
+      }
+
+      // quoteOperationParameter
+      if (qopId) {
+        await client.query(
+          `INSERT INTO "quoteOperationParameter" (key, value, "operationId", "companyId", "createdBy") VALUES ($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING`,
+          ['speed', '100rpm', qopId, companyId, userId]
+        );
+        // quoteOperationStep
+        await client.query(
+          `INSERT INTO "quoteOperationStep" (name, type, "sortOrder", "operationId", "companyId", "createdBy") VALUES ($1, $2::\"procedureStepType\", $3, $4, $5, $6) ON CONFLICT DO NOTHING`,
+          ['Inspect', 'Checkbox', 1, qopId, companyId, userId]
+        );
+        // quoteOperationTool
+        if (toolId) {
+          await client.query(
+            `INSERT INTO "quoteOperationTool" ("operationId", "toolId", quantity, "companyId", "createdBy") VALUES ($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING`,
+            [qopId, toolId, 1, companyId, userId]
+          );
+        }
+      }
+
+      // quoteLinePrice
+      if (quoteId && qlId) {
+        await client.query(
+          `INSERT INTO "quoteLinePrice" ("quoteId", "quoteLineId", quantity, "unitPrice", "createdBy") VALUES ($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING`,
+          [quoteId, qlId, 1, 99.99, userId]
+        );
+      }
+      console.log(`   Created quote sub-records`);
+    }
+
+    // ─── Step 82: quotePayment, quoteShipment ─────────────────────────────────
+    console.log("82. Seeding quote payment and shipment...");
+    {
+      const quoteRow = await client.query<{id:string}>(
+        `SELECT id FROM quote WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const quoteId = quoteRow.rows[0]?.id;
+      const custRow = await client.query<{id:string}>(
+        `SELECT id FROM customer WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const custLocRow = await client.query<{id:string, customerId:string}>(
+        `SELECT cl.id, cl."customerId" FROM "customerLocation" cl JOIN customer c ON cl."customerId"=c.id WHERE c."companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const custContactRow = await client.query<{id:string}>(
+        `SELECT cc.id FROM "customerContact" cc JOIN customer c ON cc."customerId"=c.id WHERE c."companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const ptRow = await client.query<{id:string}>(
+        `SELECT id FROM "paymentTerm" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const locRow = await client.query<{id:string}>(
+        `SELECT id FROM location WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const smRow = await client.query<{id:string}>(
+        `SELECT id FROM "shippingMethod" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const stRow = await client.query<{id:string}>(
+        `SELECT id FROM "shippingTerm" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+
+      if (quoteId) {
+        const existsQP = await client.query(`SELECT 1 FROM "quotePayment" WHERE id=$1 LIMIT 1`, [quoteId]);
+        if ((existsQP.rowCount ?? 0) === 0) {
+          await client.query(
+            `INSERT INTO "quotePayment" (id, "invoiceCustomerId", "invoiceCustomerLocationId", "invoiceCustomerContactId", "paymentTermId", "companyId") VALUES ($1, $2, $3, $4, $5, $6) ON CONFLICT DO NOTHING`,
+            [quoteId, custRow.rows[0]?.id, custLocRow.rows[0]?.id, custContactRow.rows[0]?.id, ptRow.rows[0]?.id, companyId]
+          );
+        }
+        const existsQS = await client.query(`SELECT 1 FROM "quoteShipment" WHERE id=$1 LIMIT 1`, [quoteId]);
+        if ((existsQS.rowCount ?? 0) === 0) {
+          await client.query(
+            `INSERT INTO "quoteShipment" (id, "locationId", "shippingMethodId", "shippingTermId", "companyId") VALUES ($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING`,
+            [quoteId, locRow.rows[0]?.id, smRow.rows[0]?.id, stRow.rows[0]?.id, companyId]
+          );
+        }
+      }
+      console.log(`   Created quote payment and shipment`);
+    }
+
+    // ─── Step 83: salesOrder sub-records ──────────────────────────────────────
+    console.log("83. Seeding sales order sub-records...");
+    {
+      const soRow = await client.query<{id:string}>(
+        `SELECT id FROM "salesOrder" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const soId = soRow.rows[0]?.id;
+      if (soId) {
+        await client.query(
+          `INSERT INTO "salesOrderStatusHistory" ("salesOrderId", status, "createdBy") VALUES ($1, $2::\"salesOrderStatus\", $3) ON CONFLICT DO NOTHING`,
+          [soId, 'Draft', userId]
+        );
+        await client.query(
+          `INSERT INTO "salesOrderTransaction" ("salesOrderId", type, "userId") VALUES ($1, $2::\"salesOrderTransactionType\", $3) ON CONFLICT DO NOTHING`,
+          [soId, 'Edit', userId]
+        );
+      }
+      console.log(`   Created sales order sub-records`);
+    }
+
+    // ─── Step 84: supplierQuoteLinePrice ──────────────────────────────────────
+    console.log("84. Seeding supplier quote line price...");
+    {
+      const sqRow = await client.query<{id:string}>(
+        `SELECT id FROM "supplierQuote" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const sqlRow = await client.query<{id:string, supplierQuoteId:string}>(
+        `SELECT id, "supplierQuoteId" FROM "supplierQuoteLine" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const sqId = sqRow.rows[0]?.id;
+      const sqlId = sqlRow.rows[0]?.id;
+      if (sqId && sqlId) {
+        await client.query(
+          `INSERT INTO "supplierQuoteLinePrice" ("supplierQuoteId", "supplierQuoteLineId", quantity, "supplierUnitPrice", "createdBy") VALUES ($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING`,
+          [sqId, sqlId, 1, 50.00, userId]
+        );
+      }
+      console.log(`   Created supplier quote line price`);
+    }
+
+    // ─── Step 85: methodOperation sub-records ─────────────────────────────────
+    console.log("85. Seeding method operation sub-records...");
+    {
+      const mopRow = await client.query<{id:string}>(
+        `SELECT id FROM "methodOperation" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const mopId = mopRow.rows[0]?.id;
+      const toolRow = await client.query<{id:string}>(
+        `SELECT id FROM item WHERE "companyId"=$1 AND type='Tool' LIMIT 1`, [companyId]
+      );
+      if (mopId) {
+        await client.query(
+          `INSERT INTO "methodOperationParameter" (key, value, "operationId", "companyId", "createdBy") VALUES ($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING`,
+          ['feedRate', '200mm/min', mopId, companyId, userId]
+        );
+        if (toolRow.rows[0]) {
+          await client.query(
+            `INSERT INTO "methodOperationTool" ("operationId", "toolId", quantity, "companyId", "createdBy") VALUES ($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING`,
+            [mopId, toolRow.rows[0].id, 1, companyId, userId]
+          );
+        }
+      }
+      console.log(`   Created method operation sub-records`);
+    }
+
+    // ─── Step 86: procedureParameter ─────────────────────────────────────────
+    console.log("86. Seeding procedure parameter...");
+    {
+      const procRow = await client.query<{id:string}>(
+        `SELECT id FROM procedure WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      if (procRow.rows[0]) {
+        await client.query(
+          `INSERT INTO "procedureParameter" ("procedureId", key, value, "createdBy") VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING`,
+          [procRow.rows[0].id, 'temperature', '25°C', userId]
+        );
+      }
+      console.log(`   Created procedure parameter`);
+    }
+
+    // ─── Step 87: configurationParameterGroup, configurationParameter, configurationRule ─
+    console.log("87. Seeding configuration parameters...");
+    {
+      const itemRow = await client.query<{id:string}>(
+        `SELECT id FROM item WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const itemId = itemRow.rows[0]?.id;
+      if (itemId) {
+        // configurationParameterGroup
+        const existsCPG = await client.query(
+          `SELECT id FROM "configurationParameterGroup" WHERE "itemId"=$1 AND "companyId"=$2 LIMIT 1`,
+          [itemId, companyId]
+        );
+        let cpgId: string;
+        if ((existsCPG.rowCount ?? 0) === 0) {
+          const r = await client.query<{id:string}>(
+            `INSERT INTO "configurationParameterGroup" ("itemId", name, "sortOrder", "companyId") VALUES ($1, $2, $3, $4) RETURNING id`,
+            [itemId, 'Dimensions', 1, companyId]
+          );
+          cpgId = r.rows[0].id;
+        } else {
+          cpgId = existsCPG.rows[0].id;
+        }
+
+        // configurationParameter
+        const existsCP = await client.query(
+          `SELECT id FROM "configurationParameter" WHERE "itemId"=$1 AND key=$2 AND "companyId"=$3 LIMIT 1`,
+          [itemId, 'width', companyId]
+        );
+        if ((existsCP.rowCount ?? 0) === 0) {
+          await client.query(
+            `INSERT INTO "configurationParameter" ("itemId", label, key, "dataType", "configurationParameterGroupId", "sortOrder", "companyId", "createdBy") VALUES ($1, $2, $3, $4::\"configurationParameterDataType\", $5, $6, $7, $8) ON CONFLICT DO NOTHING`,
+            [itemId, 'Width', 'width', 'text', cpgId, 1, companyId, userId]
+          );
+        }
+
+        // configurationRule
+        const existsCR = await client.query(
+          `SELECT 1 FROM "configurationRule" WHERE "itemId"=$1 AND field=$2 AND "companyId"=$3 LIMIT 1`,
+          [itemId, 'width', companyId]
+        );
+        if ((existsCR.rowCount ?? 0) === 0) {
+          await client.query(
+            `INSERT INTO "configurationRule" ("itemId", field, code, "companyId") VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING`,
+            [itemId, 'width', 'width > 0', companyId]
+          );
+        }
+      }
+      console.log(`   Created configuration parameters and rules`);
+    }
+
+    // ─── Step 88: qualityDocumentStep ─────────────────────────────────────────
+    console.log("88. Seeding quality document step...");
+    {
+      const qdRow = await client.query<{id:string}>(
+        `SELECT id FROM "qualityDocument" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      if (qdRow.rows[0]) {
+        await client.query(
+          `INSERT INTO "qualityDocumentStep" ("qualityDocumentId", name, required, "sortOrder", type, "companyId", "createdBy") VALUES ($1, $2, $3, $4, $5::\"procedureStepType\", $6, $7) ON CONFLICT DO NOTHING`,
+          [qdRow.rows[0].id, 'Visual Inspection', true, 1, 'Checkbox', companyId, userId]
+        );
+      }
+      console.log(`   Created quality document step`);
+    }
+
+    // ─── Step 89: inboundInspection + history + sample ────────────────────────
+    console.log("89. Seeding inbound inspection...");
+    {
+      const rlRow = await client.query<{id:string, receiptId:string, itemId:string}>(
+        `SELECT id, "receiptId", "itemId" FROM "receiptLine" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const supRow = await client.query<{id:string}>(
+        `SELECT id FROM supplier WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const teRow = await client.query<{id:string}>(
+        `SELECT id FROM "trackedEntity" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const rl = rlRow.rows[0];
+      if (rl) {
+        const inboundSeq = await client.query<{id:string}>(
+          `SELECT get_next_sequence($1, $2) AS id`, ['inboundInspection', companyId]
+        );
+        const iiSeqId = inboundSeq.rows[0].id;
+
+        const existsII = await client.query(
+          `SELECT id FROM "inboundInspection" WHERE "receiptLineId"=$1 AND "companyId"=$2 LIMIT 1`,
+          [rl.id, companyId]
+        );
+        let iiId: string;
+        if ((existsII.rowCount ?? 0) === 0) {
+          const r = await client.query<{id:string}>(
+            `INSERT INTO "inboundInspection" ("inboundInspectionId", "receiptLineId", "receiptId", "itemId", "supplierId", "lotSize", "samplingStandard", "samplingPlanType", "sampleSize", "acceptanceNumber", "rejectionNumber", "aql", "inspectionLevel", severity, status, "companyId", "createdBy") VALUES ($1, $2, $3, $4, $5, $6, $7::\"samplingStandard\", $8::\"samplingPlanType\", $9, $10, $11, $12, $13::\"inspectionLevel\", $14::\"inspectionSeverity\", $15::\"inboundInspectionStatus\", $16, $17) RETURNING id`,
+            [iiSeqId, rl.id, rl.receiptId, rl.itemId, supRow.rows[0]?.id, 100, 'ANSI_Z1_4', 'AQL', 13, 1, 2, 1.0, 'II', 'Normal', 'Pending', companyId, userId]
+          );
+          iiId = r.rows[0].id;
+        } else {
+          iiId = existsII.rows[0].id;
+        }
+
+        // inboundInspectionHistory
+        const existsIIH = await client.query(
+          `SELECT id FROM "inboundInspectionHistory" WHERE "inboundInspectionId"=$1 AND "companyId"=$2 LIMIT 1`,
+          [iiId, companyId]
+        );
+        if ((existsIIH.rowCount ?? 0) === 0) {
+          await client.query(
+            `INSERT INTO "inboundInspectionHistory" ("inboundInspectionId", "itemId", "supplierId", "samplingStandard", severity, "inspectionLevel", "aql", "lotSize", "sampleSize", "defectsFound", outcome, "companyId", "createdBy") VALUES ($1, $2, $3, $4::\"samplingStandard\", $5::\"inspectionSeverity\", $6::\"inspectionLevel\", $7, $8, $9, $10, $11, $12, $13)`,
+            [iiId, rl.itemId, supRow.rows[0]?.id, 'ANSI_Z1_4', 'Normal', 'II', 1.0, 100, 13, 0, 'Passed', companyId, userId]
+          );
+        }
+
+        // inboundInspectionSample
+        if (teRow.rows[0]) {
+          const existsIIS = await client.query(
+            `SELECT id FROM "inboundInspectionSample" WHERE "inboundInspectionId"=$1 AND "companyId"=$2 LIMIT 1`,
+            [iiId, companyId]
+          );
+          if ((existsIIS.rowCount ?? 0) === 0) {
+            await client.query(
+              `INSERT INTO "inboundInspectionSample" ("inboundInspectionId", "trackedEntityId", status, "companyId", "createdBy") VALUES ($1, $2, $3::\"inboundInspectionSampleStatus\", $4, $5)`,
+              [iiId, teRow.rows[0].id, 'Passed', companyId, userId]
+            );
+          }
+        }
+        console.log(`   Created inbound inspection records`);
+      }
+    }
+
+    // ─── Step 90: nonConformance sub-records ──────────────────────────────────
+    console.log("90. Seeding non-conformance sub-records...");
+    {
+      const ncRow = await client.query<{id:string}>(
+        `SELECT id FROM "nonConformance" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const ncId = ncRow.rows[0]?.id;
+      const procRow = await client.query<{id:string}>(
+        `SELECT id FROM process WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const custRow = await client.query<{id:string}>(
+        `SELECT id FROM customer WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const supRow = await client.query<{id:string}>(
+        `SELECT id FROM supplier WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const itemRow = await client.query<{id:string}>(
+        `SELECT id FROM item WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const teRow = await client.query<{id:string}>(
+        `SELECT id FROM "trackedEntity" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const jopRow = await client.query<{id:string, jobId:string}>(
+        `SELECT id, "jobId" FROM "jobOperation" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const polRow = await client.query<{id:string, purchaseOrderId:string}>(
+        `SELECT id, "purchaseOrderId" FROM "purchaseOrderLine" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const rlRow = await client.query<{id:string, receiptId:string}>(
+        `SELECT id, "receiptId" FROM "receiptLine" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const solRow = await client.query<{id:string, salesOrderId:string}>(
+        `SELECT id, "salesOrderId" FROM "salesOrderLine" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const shlRow = await client.query<{id:string, shipmentId:string}>(
+        `SELECT id, "shipmentId" FROM "shipmentLine" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+
+      if (ncId) {
+        // nonConformanceApprovalTask
+        const existsNCAT = await client.query(
+          `SELECT id FROM "nonConformanceApprovalTask" WHERE "nonConformanceId"=$1 AND "companyId"=$2 LIMIT 1`,
+          [ncId, companyId]
+        );
+        let ncatId: string | undefined;
+        if ((existsNCAT.rowCount ?? 0) === 0) {
+          const r = await client.query<{id:string}>(
+            `INSERT INTO "nonConformanceApprovalTask" ("nonConformanceId", "approvalType", status, notes, "companyId", "createdBy") VALUES ($1, $2::\"nonConformanceApproval\", $3::\"nonConformanceTaskStatus\", $4, $5, $6) RETURNING id`,
+            [ncId, 'MRB', 'Pending', '{}', companyId, userId]
+          );
+          ncatId = r.rows[0].id;
+        } else {
+          ncatId = existsNCAT.rows[0].id;
+        }
+
+        // nonConformanceActionTask
+        const existsNCActT = await client.query(
+          `SELECT id FROM "nonConformanceActionTask" WHERE "nonConformanceId"=$1 AND "companyId"=$2 LIMIT 1`,
+          [ncId, companyId]
+        );
+        let ncActTId: string | undefined;
+        if ((existsNCActT.rowCount ?? 0) === 0) {
+          const r = await client.query<{id:string}>(
+            `INSERT INTO "nonConformanceActionTask" ("nonConformanceId", status, notes, "companyId", "createdBy") VALUES ($1, $2::\"nonConformanceTaskStatus\", $3, $4, $5) RETURNING id`,
+            [ncId, 'Pending', '{}', companyId, userId]
+          );
+          ncActTId = r.rows[0].id;
+        } else {
+          ncActTId = existsNCActT.rows[0].id;
+        }
+
+        // nonConformanceActionProcess
+        if (ncActTId && procRow.rows[0]) {
+          await client.query(
+            `INSERT INTO "nonConformanceActionProcess" ("actionTaskId", "processId", "companyId", "createdBy") VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING`,
+            [ncActTId, procRow.rows[0].id, companyId, userId]
+          );
+        }
+
+        // nonConformanceReviewer
+        const existsNCR = await client.query(
+          `SELECT id FROM "nonConformanceReviewer" WHERE "nonConformanceId"=$1 AND "companyId"=$2 LIMIT 1`,
+          [ncId, companyId]
+        );
+        if ((existsNCR.rowCount ?? 0) === 0) {
+          await client.query(
+            `INSERT INTO "nonConformanceReviewer" (title, status, "nonConformanceId", notes, assignee, "companyId", "createdBy") VALUES ($1, $2::\"nonConformanceTaskStatus\", $3, $4, $5, $6, $7)`,
+            ['Quality Review', 'Pending', ncId, '{}', userId, companyId, userId]
+          );
+        }
+
+        // nonConformanceCustomer
+        if (custRow.rows[0]) {
+          await client.query(
+            `INSERT INTO "nonConformanceCustomer" ("nonConformanceId", "customerId", "companyId", "createdBy") VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING`,
+            [ncId, custRow.rows[0].id, companyId, userId]
+          );
+        }
+
+        // nonConformanceSupplier
+        if (supRow.rows[0]) {
+          await client.query(
+            `INSERT INTO "nonConformanceSupplier" ("nonConformanceId", "supplierId", "companyId", "createdBy") VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING`,
+            [ncId, supRow.rows[0].id, companyId, userId]
+          );
+        }
+
+        // nonConformanceItem
+        let nciId: string | undefined;
+        if (itemRow.rows[0]) {
+          const existsNCI = await client.query(
+            `SELECT id FROM "nonConformanceItem" WHERE "nonConformanceId"=$1 AND "itemId"=$2 AND "companyId"=$3 LIMIT 1`,
+            [ncId, itemRow.rows[0].id, companyId]
+          );
+          if ((existsNCI.rowCount ?? 0) === 0) {
+            const r = await client.query<{id:string}>(
+              `INSERT INTO "nonConformanceItem" ("nonConformanceId", "itemId", quantity, "companyId", "createdBy") VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+              [ncId, itemRow.rows[0].id, 1, companyId, userId]
+            );
+            nciId = r.rows[0].id;
+          } else {
+            nciId = existsNCI.rows[0].id;
+          }
+        }
+
+        // nonConformanceItemTrackedEntity
+        if (nciId && teRow.rows[0]) {
+          await client.query(
+            `INSERT INTO "nonConformanceItemTrackedEntity" ("nonConformanceItemId", "nonConformanceId", "trackedEntityId", quantity, "companyId", "createdBy") VALUES ($1, $2, $3, $4, $5, $6) ON CONFLICT DO NOTHING`,
+            [nciId, ncId, teRow.rows[0].id, 1, companyId, userId]
+          );
+        }
+
+        // nonConformanceTrackedEntity
+        if (teRow.rows[0]) {
+          await client.query(
+            `INSERT INTO "nonConformanceTrackedEntity" ("nonConformanceId", "trackedEntityId", "companyId", "createdBy") VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING`,
+            [ncId, teRow.rows[0].id, companyId, userId]
+          );
+        }
+
+        // nonConformanceJobOperation
+        if (jopRow.rows[0]) {
+          await client.query(
+            `INSERT INTO "nonConformanceJobOperation" ("nonConformanceId", "jobOperationId", "jobId", "companyId", "createdBy") VALUES ($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING`,
+            [ncId, jopRow.rows[0].id, jopRow.rows[0].jobId, companyId, userId]
+          );
+        }
+
+        // nonConformancePurchaseOrderLine
+        if (polRow.rows[0]) {
+          await client.query(
+            `INSERT INTO "nonConformancePurchaseOrderLine" ("nonConformanceId", "purchaseOrderLineId", "purchaseOrderId", "companyId", "createdBy") VALUES ($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING`,
+            [ncId, polRow.rows[0].id, polRow.rows[0].purchaseOrderId, companyId, userId]
+          );
+        }
+
+        // nonConformanceReceiptLine
+        if (rlRow.rows[0]) {
+          await client.query(
+            `INSERT INTO "nonConformanceReceiptLine" ("nonConformanceId", "receiptLineId", "receiptId", "companyId", "createdBy") VALUES ($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING`,
+            [ncId, rlRow.rows[0].id, rlRow.rows[0].receiptId, companyId, userId]
+          );
+        }
+
+        // nonConformanceSalesOrderLine
+        if (solRow.rows[0]) {
+          await client.query(
+            `INSERT INTO "nonConformanceSalesOrderLine" ("nonConformanceId", "salesOrderLineId", "salesOrderId", "companyId", "createdBy") VALUES ($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING`,
+            [ncId, solRow.rows[0].id, solRow.rows[0].salesOrderId, companyId, userId]
+          );
+        }
+
+        // nonConformanceShipmentLine
+        if (shlRow.rows[0]) {
+          await client.query(
+            `INSERT INTO "nonConformanceShipmentLine" ("nonConformanceId", "shipmentLineId", "shipmentId", "companyId", "createdBy") VALUES ($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING`,
+            [ncId, shlRow.rows[0].id, shlRow.rows[0].shipmentId, companyId, userId]
+          );
+        }
+
+        // nonConformanceInboundInspection (depends on inboundInspection created in step 89)
+        const iiRow = await client.query<{id:string}>(
+          `SELECT id FROM "inboundInspection" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+        );
+        if (iiRow.rows[0]) {
+          await client.query(
+            `INSERT INTO "nonConformanceInboundInspection" ("nonConformanceId", "inboundInspectionId", "companyId", "createdBy") VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING`,
+            [ncId, iiRow.rows[0].id, companyId, userId]
+          );
+        }
+      }
+      console.log(`   Created non-conformance sub-records`);
+    }
+
+    // ─── Step 91: maintenance sub-records ─────────────────────────────────────
+    console.log("91. Seeding maintenance sub-records...");
+    {
+      const mdRow = await client.query<{id:string}>(
+        `SELECT id FROM "maintenanceDispatch" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const msRow = await client.query<{id:string}>(
+        `SELECT id FROM "maintenanceSchedule" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const empRow = await client.query<{id:string}>(
+        `SELECT id FROM employee WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const wcRow = await client.query<{id:string}>(
+        `SELECT id FROM "workCenter" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const itemRow = await client.query<{id:string}>(
+        `SELECT id FROM item WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const uomRow = await client.query<{code:string}>(
+        `SELECT code FROM "unitOfMeasure" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const teRow = await client.query<{id:string}>(
+        `SELECT id FROM "trackedEntity" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const mdId = mdRow.rows[0]?.id;
+      const msId = msRow.rows[0]?.id;
+      const empId = empRow.rows[0]?.id;
+      const wcId = wcRow.rows[0]?.id;
+      const itemId = itemRow.rows[0]?.id;
+      const uomCode = uomRow.rows[0]?.code ?? 'EA';
+
+      if (mdId) {
+        // maintenanceDispatchComment
+        await client.query(
+          `INSERT INTO "maintenanceDispatchComment" ("maintenanceDispatchId", comment, "companyId", "createdBy") VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING`,
+          [mdId, 'Dispatch comment for dev', companyId, userId]
+        );
+        // maintenanceDispatchEvent
+        if (empId && wcId) {
+          await client.query(
+            `INSERT INTO "maintenanceDispatchEvent" ("maintenanceDispatchId", "employeeId", "workCenterId", "startTime", "companyId", "createdBy") VALUES ($1, $2, $3, $4, $5, $6) ON CONFLICT DO NOTHING`,
+            [mdId, empId, wcId, '2024-01-15T09:00:00Z', companyId, userId]
+          );
+        }
+        // maintenanceDispatchItem
+        let mdiId: string | undefined;
+        if (itemId) {
+          const existsMDI = await client.query(
+            `SELECT id FROM "maintenanceDispatchItem" WHERE "maintenanceDispatchId"=$1 AND "itemId"=$2 AND "companyId"=$3 LIMIT 1`,
+            [mdId, itemId, companyId]
+          );
+          if ((existsMDI.rowCount ?? 0) === 0) {
+            const r = await client.query<{id:string}>(
+              `INSERT INTO "maintenanceDispatchItem" ("maintenanceDispatchId", "itemId", quantity, "unitOfMeasureCode", "companyId", "createdBy") VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
+              [mdId, itemId, 1, uomCode, companyId, userId]
+            );
+            mdiId = r.rows[0].id;
+          } else {
+            mdiId = existsMDI.rows[0].id;
+          }
+        }
+        // maintenanceDispatchItemTrackedEntity
+        if (mdiId && teRow.rows[0]) {
+          await client.query(
+            `INSERT INTO "maintenanceDispatchItemTrackedEntity" ("maintenanceDispatchItemId", "trackedEntityId", quantity, "companyId", "createdBy") VALUES ($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING`,
+            [mdiId, teRow.rows[0].id, 1, companyId, userId]
+          );
+        }
+        // maintenanceDispatchWorkCenter
+        if (wcId) {
+          await client.query(
+            `INSERT INTO "maintenanceDispatchWorkCenter" ("maintenanceDispatchId", "workCenterId", "companyId", "createdBy") VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING`,
+            [mdId, wcId, companyId, userId]
+          );
+        }
+      }
+
+      // maintenanceScheduleItem
+      if (msId && itemId) {
+        await client.query(
+          `INSERT INTO "maintenanceScheduleItem" ("maintenanceScheduleId", "itemId", quantity, "unitOfMeasureCode", "companyId", "createdBy") VALUES ($1, $2, $3, $4, $5, $6) ON CONFLICT DO NOTHING`,
+          [msId, itemId, 2, uomCode, companyId, userId]
+        );
+      }
+      console.log(`   Created maintenance sub-records`);
+    }
+
+    // ─── Step 92: itemLedger ──────────────────────────────────────────────────
+    console.log("92. Seeding item ledger...");
+    {
+      const itemRow = await client.query<{id:string}>(
+        `SELECT id FROM item WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const locRow = await client.query<{id:string}>(
+        `SELECT id FROM location WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const poRow = await client.query<{id:string}>(
+        `SELECT id FROM "purchaseOrder" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      if (itemRow.rows[0]) {
+        await client.query(
+          `INSERT INTO "itemLedger" ("entryType", "documentType", "documentId", "itemId", "locationId", quantity, "companyId", "createdBy") VALUES ($1::\"itemLedgerType\", $2::\"itemLedgerDocumentType\", $3, $4, $5, $6, $7, $8) ON CONFLICT DO NOTHING`,
+          ['Purchase', 'Purchase Receipt', poRow.rows[0]?.id, itemRow.rows[0].id, locRow.rows[0]?.id, 10, companyId, userId]
+        );
+      }
+      console.log(`   Created item ledger entry`);
+    }
+
+    // ─── Step 93: job sub-records ─────────────────────────────────────────────
+    console.log("93. Seeding job sub-records...");
+    {
+      const jopRows = await client.query<{id:string, jobId:string}>(
+        `SELECT id, "jobId" FROM "jobOperation" WHERE "companyId"=$1 LIMIT 2`, [companyId]
+      );
+      const jmmRow = await client.query<{id:string, jobId:string}>(
+        `SELECT id, "jobId" FROM "jobMakeMethod" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const itemRow = await client.query<{id:string}>(
+        `SELECT id FROM item WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const jopStepRow = await client.query<{id:string}>(
+        `SELECT id FROM "jobOperationStep" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const empRow = await client.query<{id:string}>(
+        `SELECT id FROM employee WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const uomRow = await client.query<{code:string}>(
+        `SELECT code FROM "unitOfMeasure" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const scRow = await client.query<{id:string}>(
+        `SELECT id FROM "scrapReason" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const polRow = await client.query<{id:string}>(
+        `SELECT id FROM "purchaseOrderLine" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const sproc = await client.query<{id:string}>(
+        `SELECT id FROM "supplierProcess" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+
+      const jop1 = jopRows.rows[0];
+      const jop2 = jopRows.rows[1];
+      const jmmId = jmmRow.rows[0]?.id;
+      const jmmJobId = jmmRow.rows[0]?.jobId;
+      const itemId = itemRow.rows[0]?.id;
+      const empId = empRow.rows[0]?.id;
+      const uomCode = uomRow.rows[0]?.code ?? 'EA';
+      const sprocId = sproc.rows[0]?.id;
+
+      // jobMaterial
+      if (jmmJobId && itemId && jmmId) {
+        const existsJM = await client.query(
+          `SELECT id FROM "jobMaterial" WHERE "jobId"=$1 AND "itemId"=$2 AND "companyId"=$3 LIMIT 1`,
+          [jmmJobId, itemId, companyId]
+        );
+        if ((existsJM.rowCount ?? 0) === 0) {
+          await client.query(
+            `INSERT INTO "jobMaterial" ("jobId", "itemId", "itemType", "methodType", "order", description, quantity, "unitOfMeasureCode", "unitCost", "companyId", "createdBy", "jobMakeMethodId") VALUES ($1, $2, $3, $4::\"methodType\", $5, $6, $7, $8, $9, $10, $11, $12) ON CONFLICT DO NOTHING`,
+            [jmmJobId, itemId, 'Part', 'Pull from Inventory', 1, 'Dev Material', 1, uomCode, 5.00, companyId, userId, jmmId]
+          );
+        }
+      }
+
+      // jobOperationDependency - need 2 ops from same job; create a second op if needed
+      if (jop1 && jop2 && jop1.jobId === jop2.jobId) {
+        await client.query(
+          `INSERT INTO "jobOperationDependency" ("operationId", "dependsOnId", "jobId", "companyId") VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING`,
+          [jop2.id, jop1.id, jop1.jobId, companyId]
+        );
+      } else if (jop1) {
+        // Create second operation in same job for dependency
+        const wcRow = await client.query<{id:string}>(
+          `SELECT id FROM "workCenter" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+        );
+        const existsOp2 = await client.query(
+          `SELECT id FROM "jobOperation" WHERE "jobId"=$1 AND "companyId"=$2 AND id != $3 LIMIT 1`,
+          [jop1.jobId, companyId, jop1.id]
+        );
+        let op2Id: string;
+        if ((existsOp2.rowCount ?? 0) === 0) {
+          const jopJmmRow = await client.query<{id:string}>(
+            `SELECT id FROM "jobMakeMethod" WHERE "jobId"=$1 AND "companyId"=$2 LIMIT 1`, [jop1.jobId, companyId]
+          );
+          const jopProcRow = await client.query<{id:string}>(
+            `SELECT id FROM process WHERE "companyId"=$1 LIMIT 1`, [companyId]
+          );
+          const r = await client.query<{id:string}>(
+            `INSERT INTO "jobOperation" ("jobId", "jobMakeMethodId", "processId", "workCenterId", "companyId", "createdBy") VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
+            [jop1.jobId, jopJmmRow.rows[0]?.id, jopProcRow.rows[0]?.id, wcRow.rows[0]?.id, companyId, userId]
+          );
+          op2Id = r.rows[0].id;
+        } else {
+          op2Id = existsOp2.rows[0].id;
+        }
+        await client.query(
+          `INSERT INTO "jobOperationDependency" ("operationId", "dependsOnId", "jobId", "companyId") VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING`,
+          [op2Id, jop1.id, jop1.jobId, companyId]
+        );
+      }
+
+      // jobOperationNote
+      if (jop1) {
+        await client.query(
+          `INSERT INTO "jobOperationNote" ("jobOperationId", note, "companyId", "createdBy") VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING`,
+          [jop1.id, 'Dev note for job operation', companyId, userId]
+        );
+        // jobOperationPickup
+        if (empId) {
+          await client.query(
+            `INSERT INTO "jobOperationPickup" ("jobOperationId", "employeeId", quantity, "companyId", "createdBy") VALUES ($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING`,
+            [jop1.id, empId, 1, companyId, userId]
+          );
+        }
+      }
+
+      // jobOperationStepRecord
+      if (jopStepRow.rows[0]) {
+        await client.query(
+          `INSERT INTO "jobOperationStepRecord" ("jobOperationStepId", value, "companyId", "createdBy") VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING`,
+          [jopStepRow.rows[0].id, 'Pass', companyId, userId]
+        );
+      }
+
+      // jobOperationSubcontractSnapshot
+      if (jop1 && sprocId) {
+        const existsJOSS = await client.query(
+          `SELECT id FROM "jobOperationSubcontractSnapshot" WHERE "jobOperationId"=$1 AND "companyId"=$2 LIMIT 1`,
+          [jop1.id, companyId]
+        );
+        let jossId: string | undefined;
+        if ((existsJOSS.rowCount ?? 0) === 0) {
+          const r = await client.query<{id:string}>(
+            `INSERT INTO "jobOperationSubcontractSnapshot" ("jobOperationId", "supplierProcessId", "operationMinimumCost", "operationUnitCost", "operationLeadTime", "companyId", "createdBy") VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
+            [jop1.id, sprocId, 50, 10, 5, companyId, userId]
+          );
+          jossId = r.rows[0].id;
+        } else {
+          jossId = existsJOSS.rows[0].id;
+        }
+
+        // jobOperationSupplierPickup
+        if (polRow.rows[0]) {
+          await client.query(
+            `INSERT INTO "jobOperationSupplierPickup" ("jobOperationId", "supplierProcessId", quantity, "purchaseOrderLineId", "companyId", "createdBy") VALUES ($1, $2, $3, $4, $5, $6) ON CONFLICT DO NOTHING`,
+            [jop1.id, sprocId, 1, polRow.rows[0].id, companyId, userId]
+          );
+        }
+
+        // jobOperationSupplierQuantityReport
+        let josqrId: string | undefined;
+        if (jossId && polRow.rows[0]) {
+          const existsJOSQR = await client.query(
+            `SELECT id FROM "jobOperationSupplierQuantityReport" WHERE "jobOperationId"=$1 AND "companyId"=$2 LIMIT 1`,
+            [jop1.id, companyId]
+          );
+          if ((existsJOSQR.rowCount ?? 0) === 0) {
+            const r = await client.query<{id:string}>(
+              `INSERT INTO "jobOperationSupplierQuantityReport" ("jobId", "jobOperationId", "supplierProcessId", "subcontractSnapshotId", "originalQuantity", "purchaseOrderLineId", "companyId", "createdBy") VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,
+              [jop1.jobId, jop1.id, sprocId, jossId, 10, polRow.rows[0].id, companyId, userId]
+            );
+            josqrId = r.rows[0].id;
+          } else {
+            josqrId = existsJOSQR.rows[0].id;
+          }
+        }
+
+        // jobOperationSupplierQuantity
+        if (josqrId) {
+          await client.query(
+            `INSERT INTO "jobOperationSupplierQuantity" ("jobOperationId", "reportId", "supplierProcessId", type, quantity, "scrapReasonId", "companyId", "createdBy") VALUES ($1, $2, $3, $4::\"productionQuantityType\", $5, $6, $7, $8) ON CONFLICT DO NOTHING`,
+            [jop1.id, josqrId, sprocId, 'Production', 10, scRow.rows[0]?.id, companyId, userId]
+          );
+        }
+      }
+
+      console.log(`   Created job sub-records`);
+    }
+
+    // ─── Step 94: jobFavorite ─────────────────────────────────────────────────
+    console.log("94. Seeding job favorite...");
+    {
+      const jobRow = await client.query<{id:string}>(
+        `SELECT id FROM job WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      if (jobRow.rows[0]) {
+        await client.query(
+          `INSERT INTO "jobFavorite" ("jobId", "userId") VALUES ($1, $2) ON CONFLICT DO NOTHING`,
+          [jobRow.rows[0].id, userId]
+        );
+      }
+      console.log(`   Created job favorite`);
+    }
+
+    // ─── Step 95: approvalRequest ─────────────────────────────────────────────
+    console.log("95. Seeding approval request...");
+    {
+      const arRow = await client.query<{id:string}>(
+        `SELECT id FROM "approvalRule" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const poRow = await client.query<{id:string}>(
+        `SELECT id FROM "purchaseOrder" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      if (poRow.rows[0]) {
+        const existsAR = await client.query(
+          `SELECT id FROM "approvalRequest" WHERE "documentId"=$1 AND "companyId"=$2 LIMIT 1`,
+          [poRow.rows[0].id, companyId]
+        );
+        if ((existsAR.rowCount ?? 0) === 0) {
+          await client.query(
+            `INSERT INTO "approvalRequest" ("documentType", "documentId", status, "requestedBy", "companyId", "createdBy") VALUES ($1::\"approvalDocumentType\", $2, $3::\"approvalStatus\", $4, $5, $6) ON CONFLICT DO NOTHING`,
+            ['purchaseOrder', poRow.rows[0].id, 'Pending', userId, companyId, userId]
+          );
+        }
+      }
+      console.log(`   Created approval request`);
+    }
+
+    // ─── Step 96: workCenterReplacementPart ───────────────────────────────────
+    console.log("96. Seeding work center replacement part...");
+    {
+      const wcRow = await client.query<{id:string}>(
+        `SELECT id FROM "workCenter" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const itemRow = await client.query<{id:string}>(
+        `SELECT id FROM item WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      const uomRow = await client.query<{code:string}>(
+        `SELECT code FROM "unitOfMeasure" WHERE "companyId"=$1 LIMIT 1`, [companyId]
+      );
+      if (wcRow.rows[0] && itemRow.rows[0]) {
+        await client.query(
+          `INSERT INTO "workCenterReplacementPart" ("workCenterId", "itemId", quantity, "unitOfMeasureCode", "companyId", "createdBy") VALUES ($1, $2, $3, $4, $5, $6) ON CONFLICT DO NOTHING`,
+          [wcRow.rows[0].id, itemRow.rows[0].id, 2, uomRow.rows[0]?.code ?? 'EA', companyId, userId]
+        );
+      }
+      console.log(`   Created work center replacement part`);
+    }
+
+    // ─── Step 97: feedback, config ────────────────────────────────────────────
+    console.log("97. Seeding feedback and config...");
+    {
+      await client.query(
+        `INSERT INTO feedback (location, "userId", feedback) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`,
+        ['/dashboard', userId, 'Great app!']
+      );
+      const existsConfig = await client.query(`SELECT id FROM config LIMIT 1`);
+      if ((existsConfig.rowCount ?? 0) === 0) {
+        await client.query(
+          `INSERT INTO config (id, "apiUrl", "anonKey") VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`,
+          [true, 'https://dev.example.com', 'dev-anon-key']
+        );
+      }
+      console.log(`   Created feedback and config`);
+    }
+
     // ─── Done ─────────────────────────────────────────────────────────────────
     console.log(`
 ========================================
