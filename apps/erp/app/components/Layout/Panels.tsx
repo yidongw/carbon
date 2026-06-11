@@ -134,11 +134,13 @@ export function ResizablePanels({
         {explorer && !isExplorerCollapsed && (
           <>
             <div
-              className="fixed inset-0 top-[49px] bg-black/50 z-40"
+              className="fixed inset-0 top-[49px] bg-black/50 z-40 touch-none"
               onClick={() => setIsExplorerCollapsed(true)}
             />
             <div className="fixed top-[49px] bottom-0 left-0 w-4/5 max-w-sm bg-card z-50 overflow-hidden shadow-xl flex flex-col">
-              {explorer}
+              <div className="h-full overflow-y-auto overscroll-contain w-full">
+                {explorer}
+              </div>
             </div>
           </>
         )}
@@ -147,7 +149,7 @@ export function ResizablePanels({
         {properties && !isPropertiesCollapsed && (
           <>
             <div
-              className="fixed inset-0 top-[49px] bg-black/50 z-40"
+              className="fixed inset-0 top-[49px] bg-black/50 z-40 touch-none"
               onClick={() => setIsPropertiesCollapsed(true)}
             />
             {/* Outer wrapper clips horizontal overflow from fixed-width property
