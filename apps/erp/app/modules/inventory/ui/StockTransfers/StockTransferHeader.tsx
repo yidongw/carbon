@@ -8,10 +8,10 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  Heading,
   HStack,
   IconButton,
-  useDisclosure
+  useDisclosure,
+  useIsomorphicLayoutEffect
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import {
@@ -22,9 +22,11 @@ import {
   LuLoaderCircle,
   LuTrash
 } from "react-icons/lu";
+import { createPortal } from "react-dom";
 import { useFetcher, useParams } from "react-router";
 import Assignee, { useOptimisticAssignment } from "~/components/Assignee";
 import { useAuditLog } from "~/components/AuditLog";
+import { useTopbarLeft } from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
 import { useItemRuleViolations } from "~/hooks/useItemRuleViolations";
@@ -37,10 +39,7 @@ import { path } from "~/utils/path";
 import StockTransferCompleteModal from "./StockTransferCompleteModal";
 import StockTransferStatus from "./StockTransferStatus";
 
-const StockTransferHeader = () => {
-  const { id } = useParams();
-  if (!id) throw new Error("id not found");
-
+function StockTransferTopbarLeft({ id }: { id: string }) {
   const routeData = useRouteData<{
     stockTransfer: StockTransfer;
     stockTransferLines: StockTransferLine[];
@@ -99,130 +98,123 @@ const StockTransferHeader = () => {
 
   return (
     <>
-      <div className="flex flex-shrink-0 items-center justify-between px-4 py-2 bg-card border-b border-border h-[50px] overflow-x-auto scrollbar-hide dark:border-none dark:shadow-[inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1)]">
-        <HStack className="w-full justify-between">
-          <HStack>
-            <Heading size="h4" className="flex items-center gap-2">
-              <span>{routeData?.stockTransfer?.stockTransferId}</span>
-            </Heading>
-
-            <Copy text={routeData?.stockTransfer?.stockTransferId ?? ""} />
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <IconButton
-                  aria-label={t`More options`}
-                  icon={<LuEllipsisVertical />}
-                  variant="secondary"
-                  size="sm"
-                />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                {auditLogTrigger}
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  disabled={
-                    ["Draft"].includes(
-                      routeData?.stockTransfer?.status ?? ""
-                    ) ||
-                    statusFetcher.state !== "idle" ||
-                    !permissions.can("update", "purchasing")
-                  }
-                  onClick={() => {
-                    statusFetcher.submit(
-                      { status: "Draft" },
-                      {
-                        method: "post",
-                        action: path.to.stockTransferStatus(id)
-                      }
-                    );
-                  }}
-                >
-                  <DropdownMenuIcon icon={<LuLoaderCircle />} />
-                  <Trans>Reopen</Trans>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  disabled={
-                    !permissions.can("delete", "inventory") ||
-                    !permissions.is("employee") ||
-                    !["Released", "Draft"].includes(status) ||
-                    hasPickedItems ||
-                    isLocked
-                  }
-                  destructive
-                  onClick={deleteModal.onOpen}
-                >
-                  <DropdownMenuIcon icon={<LuTrash />} />
-                  <Trans>Delete Stock Transfer</Trans>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <StockTransferStatus status={routeData?.stockTransfer?.status} />
-          </HStack>
-          <HStack>
-            <Assignee
-              size="md"
-              id={id}
-              value={assignee ?? ""}
-              table="stockTransfer"
-              isReadOnly={!permissions.can("update", "inventory")}
+      <HStack className="items-center -ml-2" spacing={1}>
+        <span className="font-semibold text-sm">
+          {routeData?.stockTransfer?.stockTransferId}
+        </span>
+        <Copy text={routeData?.stockTransfer?.stockTransferId ?? ""} />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <IconButton
+              aria-label={t`More options`}
+              icon={<LuEllipsisVertical />}
+              variant="secondary"
+              size="sm"
             />
-            <Button variant="secondary" leftIcon={<LuBarcode />} asChild>
-              <a
-                target="_blank"
-                href={path.to.file.stockTransfer(id)}
-                rel="noreferrer"
-              >
-                <Trans>Pick List</Trans>
-              </a>
-            </Button>
-            <Button
-              type="button"
-              leftIcon={<LuCirclePlay />}
-              variant={status === "Draft" ? "primary" : "secondary"}
-              isDisabled={
-                status !== "Draft" ||
-                releaseFetcher.state !== "idle" ||
-                !permissions.can("update", "inventory")
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            {auditLogTrigger}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              disabled={
+                ["Draft"].includes(
+                  routeData?.stockTransfer?.status ?? ""
+                ) ||
+                statusFetcher.state !== "idle" ||
+                !permissions.can("update", "purchasing")
               }
-              isLoading={releaseFetcher.state !== "idle"}
               onClick={() => {
-                const fd = new FormData();
-                fd.set("status", "Released");
-                releaseRules.submit(fd);
+                statusFetcher.submit(
+                  { status: "Draft" },
+                  {
+                    method: "post",
+                    action: path.to.stockTransferStatus(id)
+                  }
+                );
               }}
             >
-              <Trans>Release</Trans>
-            </Button>
-            <releaseRules.ViolationModal />
+              <DropdownMenuIcon icon={<LuLoaderCircle />} />
+              <Trans>Reopen</Trans>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              disabled={
+                !permissions.can("delete", "inventory") ||
+                !permissions.is("employee") ||
+                !["Released", "Draft"].includes(status) ||
+                hasPickedItems ||
+                isLocked
+              }
+              destructive
+              onClick={deleteModal.onOpen}
+            >
+              <DropdownMenuIcon icon={<LuTrash />} />
+              <Trans>Delete Stock Transfer</Trans>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <StockTransferStatus status={routeData?.stockTransfer?.status} />
+        <Assignee
+          size="md"
+          id={id}
+          value={assignee ?? ""}
+          table="stockTransfer"
+          isReadOnly={!permissions.can("update", "inventory")}
+        />
+        <Button variant="secondary" leftIcon={<LuBarcode />} asChild>
+          <a
+            target="_blank"
+            href={path.to.file.stockTransfer(id)}
+            rel="noreferrer"
+          >
+            <Trans>Pick List</Trans>
+          </a>
+        </Button>
+        <Button
+          type="button"
+          leftIcon={<LuCirclePlay />}
+          variant={status === "Draft" ? "primary" : "secondary"}
+          isDisabled={
+            status !== "Draft" ||
+            releaseFetcher.state !== "idle" ||
+            !permissions.can("update", "inventory")
+          }
+          isLoading={releaseFetcher.state !== "idle"}
+          onClick={() => {
+            const fd = new FormData();
+            fd.set("status", "Released");
+            releaseRules.submit(fd);
+          }}
+        >
+          <Trans>Release</Trans>
+        </Button>
+        <releaseRules.ViolationModal />
 
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                const fd = new FormData();
-                fd.set("status", "Completed");
-                completeRules.submit(fd);
-              }}
-            >
-              <Button
-                type="submit"
-                variant={canComplete && !isCompleted ? "primary" : "secondary"}
-                isDisabled={
-                  !canComplete ||
-                  isCompleted ||
-                  !permissions.is("employee") ||
-                  completeFetcher.state !== "idle"
-                }
-                leftIcon={<LuCircleCheck />}
-                isLoading={completeFetcher.state !== "idle"}
-              >
-                <Trans>Complete</Trans>
-              </Button>
-            </form>
-            <completeRules.ViolationModal />
-          </HStack>
-        </HStack>
-      </div>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            const fd = new FormData();
+            fd.set("status", "Completed");
+            completeRules.submit(fd);
+          }}
+        >
+          <Button
+            type="submit"
+            variant={canComplete && !isCompleted ? "primary" : "secondary"}
+            isDisabled={
+              !canComplete ||
+              isCompleted ||
+              !permissions.is("employee") ||
+              completeFetcher.state !== "idle"
+            }
+            leftIcon={<LuCircleCheck />}
+            isLoading={completeFetcher.state !== "idle"}
+          >
+            <Trans>Complete</Trans>
+          </Button>
+        </form>
+        <completeRules.ViolationModal />
+      </HStack>
 
       {postModal.isOpen && (
         <StockTransferCompleteModal onClose={postModal.onClose} />
@@ -242,6 +234,24 @@ const StockTransferHeader = () => {
         />
       )}
       {auditLogDrawer}
+    </>
+  );
+}
+
+const StockTransferHeader = () => {
+  const { id } = useParams();
+  if (!id) throw new Error("id not found");
+
+  const { leftSlotEl, setHasLeftContent } = useTopbarLeft();
+
+  useIsomorphicLayoutEffect(() => {
+    setHasLeftContent(true);
+    return () => setHasLeftContent(false);
+  }, [setHasLeftContent]);
+
+  return (
+    <>
+      {leftSlotEl && createPortal(<StockTransferTopbarLeft id={id} />, leftSlotEl)}
     </>
   );
 };
