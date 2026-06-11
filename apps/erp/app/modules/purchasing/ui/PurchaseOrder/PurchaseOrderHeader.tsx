@@ -1,18 +1,14 @@
 import {
-  Badge,
   Button,
-  Copy,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuIcon,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  Heading,
   HStack,
   IconButton,
   SplitButton,
-  Status,
   useDisclosure
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
@@ -36,7 +32,12 @@ import {
 } from "react-icons/lu";
 import { Link, useFetcher, useNavigation, useParams } from "react-router";
 import { useAuditLog } from "~/components/AuditLog";
-import { usePanels } from "~/components/Layout";
+import { usePanels, useSetDetailNav } from "~/components/Layout";
+import {
+  outsideProcessingBadge,
+  purchaseOrderStatusBadge,
+  unapprovedSupplierBadge
+} from "~/components/Layout/detailNavBadges";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import {
   usePermissions,
@@ -54,7 +55,6 @@ import { isPurchaseOrderLocked } from "../../purchasing.models";
 import type { PurchaseOrder, PurchaseOrderLine } from "../../types";
 import PurchaseOrderApprovalModal from "./PurchaseOrderApprovalModal";
 import PurchaseOrderFinalizeModal from "./PurchaseOrderFinalizeModal";
-import PurchasingStatus from "./PurchasingStatus";
 import {
   usePurchaseOrder,
   usePurchaseOrderRelatedDocuments
@@ -147,6 +147,41 @@ const PurchaseOrderHeader = () => {
     );
   };
 
+  const detailNav = useMemo(() => {
+    const purchaseOrderReadableId =
+      routeData?.purchaseOrder?.purchaseOrderId ?? "";
+    const orderStatus = routeData?.purchaseOrder?.status ?? "";
+    const badges = [];
+    const statusBadge = purchaseOrderStatusBadge(orderStatus);
+    if (statusBadge) badges.push(statusBadge);
+    if (isOutsideProcessing) {
+      badges.push(
+        outsideProcessingBadge(
+          routeData?.purchaseOrder?.purchaseOrderType ?? "Outside Processing"
+        )
+      );
+    }
+    if (supplierApprovalRequired && !isSupplierApproved) {
+      badges.push(unapprovedSupplierBadge("Unapproved Supplier"));
+    }
+    return {
+      id: purchaseOrderReadableId,
+      idTo: path.to.purchaseOrderDetails(orderId),
+      copyText: purchaseOrderReadableId,
+      badges: badges.length > 0 ? badges : undefined
+    };
+  }, [
+    isOutsideProcessing,
+    isSupplierApproved,
+    orderId,
+    routeData?.purchaseOrder?.purchaseOrderId,
+    routeData?.purchaseOrder?.purchaseOrderType,
+    routeData?.purchaseOrder?.status,
+    supplierApprovalRequired
+  ]);
+
+  useSetDetailNav(detailNav);
+
   return (
     <>
       <div className="flex flex-shrink-0 items-center justify-between p-2 bg-background border-b h-[50px] overflow-x-auto scrollbar-hide">
@@ -158,12 +193,6 @@ const PurchaseOrderHeader = () => {
               onClick={toggleExplorer}
               variant="ghost"
             />}
-            <Link to={path.to.purchaseOrderDetails(orderId)}>
-              <Heading size="h4" className="flex items-center gap-2">
-                {routeData?.purchaseOrder?.purchaseOrderId}
-              </Heading>
-            </Link>
-            <Copy text={routeData?.purchaseOrder?.purchaseOrderId ?? ""} />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <IconButton
@@ -214,17 +243,6 @@ const PurchaseOrderHeader = () => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <PurchasingStatus status={routeData?.purchaseOrder?.status} />
-            {isOutsideProcessing && (
-              <Badge variant="default">
-                {routeData?.purchaseOrder?.purchaseOrderType}
-              </Badge>
-            )}
-            {supplierApprovalRequired && !isSupplierApproved && (
-              <Status color="red">
-                <Trans>Unapproved Supplier</Trans>
-              </Status>
-            )}
           </HStack>
           <HStack>
             <DropdownMenu>

@@ -3,6 +3,7 @@ import {
   Avatar,
   Badge,
   Button,
+  Copy,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
@@ -24,13 +25,15 @@ import {
   useMode,
   VStack
 } from "@carbon/react";
+import { Link } from "react-router";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ReactNode } from "react";
 import { useMemo } from "react";
 import { BsFillHexagonFill } from "react-icons/bs";
 import { IoMdAdd } from "react-icons/io";
 import { LuChevronsUpDown } from "react-icons/lu";
-import { Form, Link, useMatches } from "react-router";
+import { Form, useMatches } from "react-router";
+import { DetailNavIconBadge, DetailNavTrail, useDetailNav } from "../DetailNav";
 import { z } from "zod";
 import {
   BreadcrumbItem,
@@ -61,6 +64,7 @@ const BreadcrumbHandleMatch = z.object({
 const Breadcrumbs = () => {
   const { i18n } = useLingui();
   const matches = useMatches();
+  const { detailNav } = useDetailNav();
 
   const translateBreadcrumb = (value: unknown): ReactNode => {
     if (typeof value === "object" && value !== null && "id" in value) {
@@ -92,14 +96,14 @@ const Breadcrumbs = () => {
   const logo = mode === "dark" ? company?.logoDarkIcon : company?.logoLightIcon;
 
   return (
-    <HStack className="items-center h-full flex -ml-2" spacing={0}>
+    <HStack className="flex h-full min-w-0 items-center -ml-2" spacing={0}>
       <Button isIcon asChild variant="ghost" size="lg">
         <Link to="/">
           {logo ? (
             <img
               src={logo}
               alt={`${company.name} logo`}
-              className="w-full h-auto rounded"
+              className="h-auto w-full rounded"
             />
           ) : (
             <BsFillHexagonFill />
@@ -107,7 +111,7 @@ const Breadcrumbs = () => {
         </Link>
       </Button>
 
-      <BreadcrumbsBase className="line-clamp-1">
+      <BreadcrumbsBase className="min-w-0 line-clamp-1">
         {!isMobile && <CompanyBreadcrumb />}
         {displayedBreadcrumbs.map((breadcrumb, i) => (
           <BreadcrumbItem key={i}>
@@ -119,7 +123,34 @@ const Breadcrumbs = () => {
             </BreadcrumbLink>
           </BreadcrumbItem>
         ))}
+        {detailNav && !isMobile ? (
+          <BreadcrumbItem>
+            {detailNav.idTo ? (
+              <BreadcrumbLink to={detailNav.idTo}>
+                <HStack spacing={1} className="min-w-0 items-center">
+                  <span className="truncate">
+                    {detailNav.id}
+                    {detailNav.suffix}
+                  </span>
+                  {detailNav.copyText ? <Copy text={detailNav.copyText} /> : null}
+                  {detailNav.badges?.map((badge) => (
+                    <DetailNavIconBadge
+                      key={badge.key}
+                      icon={badge.icon}
+                      label={badge.label}
+                    />
+                  ))}
+                </HStack>
+              </BreadcrumbLink>
+            ) : (
+              <BreadcrumbLink isCurrentPage>
+                <DetailNavTrail detailNav={detailNav} />
+              </BreadcrumbLink>
+            )}
+          </BreadcrumbItem>
+        ) : null}
       </BreadcrumbsBase>
+      {detailNav && isMobile ? <DetailNavTrail detailNav={detailNav} isMobile /> : null}
     </HStack>
   );
 };

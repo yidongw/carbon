@@ -1,14 +1,12 @@
 import { SelectControlled, ValidatedForm } from "@carbon/form";
 import {
   Button,
-  Copy,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuIcon,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  Heading,
   HStack,
   IconButton,
   Modal,
@@ -23,6 +21,7 @@ import {
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
+import { hasIncompleteJobs } from "@carbon/utils";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { CSVLink } from "react-csv";
 import {
@@ -45,7 +44,8 @@ import type { FetcherWithComponents } from "react-router";
 import { Await, Link, useFetcher, useParams } from "react-router";
 import { useAuditLog } from "~/components/AuditLog";
 import { CustomerContact, EmailRecipients } from "~/components/Form";
-import { usePanels } from "~/components/Layout";
+import { usePanels, useSetDetailNav } from "~/components/Layout";
+import { salesOrderStatusBadge } from "~/components/Layout/detailNavBadges";
 import Confirm from "~/components/Modals/Confirm/Confirm";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
@@ -61,7 +61,6 @@ import { useCustomers } from "~/stores/customers";
 import { path } from "~/utils/path";
 import { isSalesOrderLocked, salesConfirmValidator } from "../../sales.models";
 import type { Opportunity, SalesOrder, SalesOrderLine } from "../../types";
-import SalesStatus from "./SalesStatus";
 import { useSalesOrder } from "./useSalesOrder";
 
 const SalesOrderConfirmModal = ({
@@ -252,6 +251,48 @@ const SalesOrderHeader = () => {
     routeData?.salesOrder?.salesOrderId
   ]);
 
+  const detailNav = useMemo(() => {
+    const salesOrderId = routeData?.salesOrder?.salesOrderId ?? "";
+    const orderStatus = routeData?.salesOrder?.status ?? "";
+    const jobs = routeData?.salesOrder?.jobs as Array<{
+      salesOrderLineId: string;
+      productionQuantity: number;
+      quantityComplete: number;
+      status: string;
+    }>;
+    const lines = routeData?.salesOrder?.lines as Array<{
+      id: string;
+      methodType: "Purchase to Order" | "Make to Order" | "Pull from Inventory";
+      saleQuantity: number;
+    }>;
+
+    const isManufacturing =
+      jobs !== undefined &&
+      lines !== undefined &&
+      hasIncompleteJobs({ jobs, lines });
+
+    const statusBadge =
+      isManufacturing &&
+      !(orderStatus === "Closed" || orderStatus === "Cancelled")
+        ? salesOrderStatusBadge("In Progress", "In Progress")
+        : salesOrderStatusBadge(orderStatus);
+
+    return {
+      id: salesOrderId,
+      idTo: path.to.salesOrderDetails(orderId),
+      copyText: salesOrderId,
+      badges: statusBadge ? [statusBadge] : undefined
+    };
+  }, [
+    orderId,
+    routeData?.salesOrder?.jobs,
+    routeData?.salesOrder?.lines,
+    routeData?.salesOrder?.salesOrderId,
+    routeData?.salesOrder?.status
+  ]);
+
+  useSetDetailNav(detailNav);
+
   return (
     <>
       <div className="flex flex-shrink-0 items-center justify-between p-2 bg-background border-b h-[50px] overflow-x-auto scrollbar-hide">
@@ -263,12 +304,6 @@ const SalesOrderHeader = () => {
               onClick={toggleExplorer}
               variant="ghost"
             />}
-            <Link to={path.to.salesOrderDetails(orderId)}>
-              <Heading size="h4" className="flex items-center gap-2">
-                <span>{routeData?.salesOrder?.salesOrderId}</span>
-              </Heading>
-            </Link>
-            <Copy text={routeData?.salesOrder?.salesOrderId ?? ""} />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <IconButton
@@ -339,27 +374,6 @@ const SalesOrderHeader = () => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <SalesStatus
-              status={routeData?.salesOrder?.status}
-              jobs={
-                routeData?.salesOrder?.jobs as Array<{
-                  salesOrderLineId: string;
-                  productionQuantity: number;
-                  quantityComplete: number;
-                  status: string;
-                }>
-              }
-              lines={
-                routeData?.salesOrder?.lines as Array<{
-                  id: string;
-                  methodType:
-                    | "Purchase to Order"
-                    | "Make to Order"
-                    | "Pull from Inventory";
-                  saleQuantity: number;
-                }>
-              }
-            />
           </HStack>
           <HStack>
             <DropdownMenu>

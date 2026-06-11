@@ -1,7 +1,6 @@
 import { useCarbon } from "@carbon/auth";
 import {
   Button,
-  Copy,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuIcon,
@@ -10,10 +9,8 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  Heading,
   HStack,
   IconButton,
-  Status,
   useDisclosure
 } from "@carbon/react";
 import { getItemReadableId } from "@carbon/utils";
@@ -33,7 +30,11 @@ import {
 } from "react-icons/lu";
 import { Link, useFetcher, useParams } from "react-router";
 import { useAuditLog } from "~/components/AuditLog";
-import { usePanels } from "~/components/Layout/Panels";
+import { usePanels, useSetDetailNav } from "~/components/Layout";
+import {
+  purchaseInvoiceStatusBadge,
+  unapprovedSupplierBadge
+} from "~/components/Layout/detailNavBadges";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import {
   usePermissions,
@@ -187,6 +188,32 @@ const PurchaseInvoiceHeader = () => {
     );
   };
 
+  const detailNav = useMemo(() => {
+    const invoiceReadableId = routeData?.purchaseInvoice?.invoiceId ?? "";
+    const badges = [];
+    const statusBadge = purchaseInvoiceStatusBadge(
+      routeData?.purchaseInvoice?.status ?? ""
+    );
+    if (statusBadge) badges.push(statusBadge);
+    if (supplierApprovalRequired && !isSupplierApproved) {
+      badges.push(unapprovedSupplierBadge("Unapproved Supplier"));
+    }
+    return {
+      id: invoiceReadableId,
+      idTo: path.to.purchaseInvoiceDetails(invoiceId),
+      copyText: invoiceReadableId,
+      badges: badges.length > 0 ? badges : undefined
+    };
+  }, [
+    invoiceId,
+    isSupplierApproved,
+    routeData?.purchaseInvoice?.invoiceId,
+    routeData?.purchaseInvoice?.status,
+    supplierApprovalRequired
+  ]);
+
+  useSetDetailNav(detailNav);
+
   return (
     <>
       <div className="flex flex-shrink-0 items-center justify-between p-2 bg-background border-b h-[50px] overflow-x-auto scrollbar-hide">
@@ -198,12 +225,6 @@ const PurchaseInvoiceHeader = () => {
               onClick={toggleExplorer}
               variant="ghost"
             />}
-            <Link to={path.to.purchaseInvoiceDetails(invoiceId)}>
-              <Heading size="h4" className="flex items-center gap-2">
-                <span>{routeData?.purchaseInvoice?.invoiceId}</span>
-              </Heading>
-            </Link>
-            <Copy text={routeData?.purchaseInvoice?.invoiceId ?? ""} />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <IconButton
@@ -247,15 +268,6 @@ const PurchaseInvoiceHeader = () => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <PurchaseInvoicingStatus
-              // @ts-expect-error TS2322 - TODO: fix type
-              status={routeData?.purchaseInvoice?.status}
-            />
-            {supplierApprovalRequired && !isSupplierApproved && (
-              <Status color="red">
-                <Trans>Unapproved Supplier</Trans>
-              </Status>
-            )}
           </HStack>
           <HStack>
             {relatedDocs.purchaseOrders.length === 1 && (

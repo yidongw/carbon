@@ -35,7 +35,7 @@ import {
   useNavigate
 } from "react-router";
 import { RealtimeDataProvider } from "~/components";
-import { PrimaryNavigation, Topbar } from "~/components/Layout";
+import { DetailNavProvider, PrimaryNavigation, Topbar } from "~/components/Layout";
 import { TimeCardWarning } from "~/components/TimeCardWarning";
 import { OverlayHost, OverlayProvider } from "~/components/Overlay";
 import TrainingPanel from "~/components/TrainingPanel";
@@ -227,15 +227,17 @@ export default function AuthenticatedRoute() {
           <RealtimeDataProvider>
             <OverlayProvider>
             <TooltipProvider>
-              <div className="flex flex-col h-screen">
-                <Topbar />
-                <div className="flex flex-1 h-[calc(100vh-49px)] relative">
-                  <PrimaryNavigation />
-                  <main className="flex-1 overflow-y-auto scrollbar-hide border-l border-t bg-muted sm:rounded-tl-2xl relative z-10">
-                    <Outlet />
-                  </main>
+              <DetailNavProvider>
+                <div className="flex h-screen flex-col">
+                  <Topbar />
+                  <div className="relative flex h-[calc(100vh-49px)] flex-1">
+                    <PrimaryNavigation />
+                    <main className="relative z-10 flex-1 overflow-y-auto overscroll-y-contain scrollbar-hide border-l border-t bg-muted sm:rounded-tl-2xl">
+                      <Outlet />
+                    </main>
+                  </div>
                 </div>
-              </div>
+              </DetailNavProvider>
               <TrainingPanel
                 training={training}
                 isOpen={false}

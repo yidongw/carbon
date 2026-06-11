@@ -111,29 +111,35 @@ export function ResizablePanels({
   }, [isExplorerCollapsed, explorer]);
 
   return (
-    <ResizablePanelGroup direction="horizontal">
+    <ResizablePanelGroup direction="horizontal" className="min-h-0">
       {explorer && (
         <>
           <ResizablePanel
             ref={panelRef}
             order={1}
             minSize={10}
-            className="bg-card shadow-lg"
+            className="min-w-0 bg-card shadow-lg"
             collapsible
             defaultSize={isExplorerCollapsed ? 0 : 20}
             collapsedSize={0}
             onCollapse={() => setIsExplorerCollapsed(true)}
             onExpand={() => setIsExplorerCollapsed(false)}
           >
-            {!isExplorerCollapsed && explorer}
+            {!isExplorerCollapsed && (
+              <div className="h-full min-h-0 min-w-0 overflow-hidden">{explorer}</div>
+            )}
           </ResizablePanel>
           <ResizableHandle withHandle />
         </>
       )}
-      <ResizablePanel order={2} className="z-1 relative">
-        <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
-          {content}
-          {!isPropertiesCollapsed && properties}
+      <ResizablePanel order={2} className="relative z-1 min-w-0">
+        <div className="flex h-[calc(100dvh-99px)] w-full min-w-0 overflow-hidden">
+          <div className="min-h-0 min-w-0 flex-1 overflow-hidden">{content}</div>
+          {!isPropertiesCollapsed && properties ? (
+            <div className="h-full w-[min(100%,24rem)] max-w-[28rem] shrink-0 overflow-hidden border-l border-border [&>*]:!h-full [&>*]:!max-w-full [&>*]:!min-w-0 [&>*]:!overflow-x-hidden [&>*]:overscroll-y-contain">
+              {properties}
+            </div>
+          ) : null}
         </div>
       </ResizablePanel>
     </ResizablePanelGroup>

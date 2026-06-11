@@ -7,7 +7,6 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  Heading,
   HStack,
   IconButton,
   Input,
@@ -24,7 +23,7 @@ import {
   useDisclosure
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   LuCheck,
   LuCheckCheck,
@@ -46,7 +45,8 @@ import {
 } from "react-icons/lu";
 import { Link, useFetcher, useParams } from "react-router";
 import { useAuditLog } from "~/components/AuditLog";
-import { usePanels } from "~/components/Layout";
+import { usePanels, useSetDetailNav } from "~/components/Layout";
+import { quoteStatusBadge } from "~/components/Layout/detailNavBadges";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
 import { path } from "~/utils/path";
@@ -59,7 +59,6 @@ import type {
   QuotationShipment
 } from "../../types";
 import QuoteFinalizeModal from "./QuoteFinalizeModal";
-import QuoteStatus from "./QuoteStatus";
 import QuoteToOrderDrawer from "./QuoteToOrderDrawer";
 
 const QuoteHeader = () => {
@@ -100,6 +99,29 @@ const QuoteHeader = () => {
     variant: "dropdown"
   });
 
+  const detailNav = useMemo(() => {
+    const quoteReadableId = routeData?.quote?.quoteId ?? "";
+    const revisionId = routeData?.quote?.revisionId ?? 0;
+    const statusBadge = quoteStatusBadge(routeData?.quote?.status ?? "");
+    return {
+      id: quoteReadableId,
+      idTo: path.to.quoteDetails(quoteId),
+      copyText: quoteReadableId,
+      suffix:
+        revisionId > 0 ? (
+          <span className="text-muted-foreground">-{revisionId}</span>
+        ) : undefined,
+      badges: statusBadge ? [statusBadge] : undefined
+    };
+  }, [
+    quoteId,
+    routeData?.quote?.quoteId,
+    routeData?.quote?.revisionId,
+    routeData?.quote?.status
+  ]);
+
+  useSetDetailNav(detailNav);
+
   return (
     <>
       <div className="flex flex-shrink-0 items-center justify-between p-2 bg-background border-b h-[50px] overflow-x-auto scrollbar-hide">
@@ -111,20 +133,6 @@ const QuoteHeader = () => {
               onClick={toggleExplorer}
               variant="ghost"
             />}
-            <Link to={path.to.quoteDetails(quoteId)}>
-              <Heading
-                size="h4"
-                className="flex items-center justify-start gap-0"
-              >
-                <span>{routeData?.quote?.quoteId}</span>
-                {(routeData?.quote?.revisionId ?? 0) > 0 && (
-                  <span className="text-muted-foreground">
-                    -{routeData?.quote?.revisionId}
-                  </span>
-                )}
-              </Heading>
-            </Link>
-            <Copy text={routeData?.quote?.quoteId ?? ""} />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <IconButton
@@ -189,7 +197,6 @@ const QuoteHeader = () => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <QuoteStatus status={routeData?.quote?.status} />
           </HStack>
           <HStack>
             {routeData?.quote.externalLinkId &&

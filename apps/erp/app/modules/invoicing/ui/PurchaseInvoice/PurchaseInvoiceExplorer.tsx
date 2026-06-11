@@ -94,7 +94,7 @@ export default function PurchaseInvoiceExplorer() {
     <>
       <VStack className="w-full h-[calc(100dvh-99px)] justify-between">
         <VStack
-          className="flex-1 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent"
+          className="flex-1 overflow-y-auto overflow-x-hidden overscroll-y-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent"
           spacing={0}
         >
           {purchaseInvoiceData?.purchaseInvoiceLines?.length ? (

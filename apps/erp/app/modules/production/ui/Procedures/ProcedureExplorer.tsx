@@ -262,7 +262,7 @@ export default function ProcedureExplorer() {
             className="w-full flex-1 flex flex-col overflow-hidden data-[state=inactive]:hidden"
           >
             <VStack
-              className="w-full flex-1 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent"
+              className="w-full flex-1 overflow-y-auto overflow-x-hidden overscroll-y-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent"
               spacing={0}
             >
               {attributes && attributes.length > 0 ? (
@@ -348,7 +348,7 @@ export default function ProcedureExplorer() {
             className="w-full flex-1 flex flex-col overflow-hidden data-[state=inactive]:hidden"
           >
             <VStack
-              className="w-full flex-1 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent"
+              className="w-full flex-1 overflow-y-auto overflow-x-hidden overscroll-y-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent"
               spacing={0}
             >
               {parameters && parameters.length > 0 ? (

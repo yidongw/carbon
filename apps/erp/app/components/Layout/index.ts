@@ -1,6 +1,11 @@
 import Background from "./Background";
 
 import {
+  DetailNavProvider,
+  useDetailNav,
+  useSetDetailNav
+} from "./DetailNav";
+import {
   CollapsibleSidebar,
   ContentSidebar,
   DetailSidebar,
@@ -16,6 +21,7 @@ export {
   Background,
   CollapsibleSidebar,
   ContentSidebar,
+  DetailNavProvider,
   DetailSidebar,
   DetailsTopbar,
   GroupedContentSidebar,
@@ -23,5 +29,7 @@ export {
   PrimaryNavigation,
   ResizablePanels,
   Topbar,
-  usePanels
+  useDetailNav,
+  usePanels,
+  useSetDetailNav
 };

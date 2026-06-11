@@ -9,7 +9,6 @@ import {
   DropdownMenuIcon,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  Heading,
   HStack,
   IconButton,
   Modal,
@@ -21,6 +20,7 @@ import {
   useDisclosure
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
+import { useMemo } from "react";
 import {
   LuChevronDown,
   LuCircleX,
@@ -36,7 +36,8 @@ import {
   LuTriangleAlert
 } from "react-icons/lu";
 import { Link, useFetcher, useParams } from "react-router";
-import { usePanels } from "~/components/Layout";
+import { usePanels, useSetDetailNav } from "~/components/Layout";
+import { purchasingRfqStatusBadge } from "~/components/Layout/detailNavBadges";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData } from "~/hooks";
 import { useIntegrations } from "~/hooks/useIntegrations";
@@ -45,8 +46,6 @@ import { isRfqLocked } from "../../purchasing.models";
 import type { PurchasingRFQ, PurchasingRFQLine } from "../../types";
 import { SupplierQuoteCompareDrawer } from "../SupplierQuote";
 import FinalizeRFQModal from "./FinalizeRFQModal";
-import PurchasingRFQStatus from "./PurchasingRFQStatus";
-
 const PurchasingRFQHeader = () => {
   const { rfqId } = useParams();
   if (!rfqId) throw new Error("rfqId not found");
@@ -87,6 +86,19 @@ const PurchasingRFQHeader = () => {
   );
   const canCompareQuotes = activeLinkedQuotes.length > 1;
 
+  const detailNav = useMemo(() => {
+    const rfqReadableId = routeData?.rfqSummary?.rfqId ?? "";
+    const statusBadge = purchasingRfqStatusBadge(status);
+    return {
+      id: rfqReadableId,
+      idTo: path.to.purchasingRfqDetails(rfqId),
+      copyText: rfqReadableId,
+      badges: statusBadge ? [statusBadge] : undefined
+    };
+  }, [rfqId, routeData?.rfqSummary?.rfqId, status]);
+
+  useSetDetailNav(detailNav);
+
   return (
     <div className="flex flex-shrink-0 items-center justify-between p-2 bg-background border-b h-[50px] overflow-x-auto scrollbar-hide ">
       <HStack className="w-full justify-between">
@@ -97,12 +109,6 @@ const PurchasingRFQHeader = () => {
               onClick={toggleExplorer}
               variant="ghost"
             />}
-          <Link to={path.to.purchasingRfqDetails(rfqId)}>
-            <Heading size="h4" className="flex items-center gap-2">
-              <span>{routeData?.rfqSummary?.rfqId}</span>
-            </Heading>
-          </Link>
-          <Copy text={routeData?.rfqSummary?.rfqId ?? ""} />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <IconButton
@@ -146,7 +152,6 @@ const PurchasingRFQHeader = () => {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <PurchasingRFQStatus status={routeData?.rfqSummary?.status} />
         </HStack>
         <HStack>
           {/* Preview Button - for Draft status */}

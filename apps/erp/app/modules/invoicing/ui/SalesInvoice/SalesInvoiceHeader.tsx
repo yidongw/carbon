@@ -1,7 +1,6 @@
 import { useCarbon } from "@carbon/auth";
 import {
   Button,
-  Copy,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuIcon,
@@ -10,14 +9,13 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  Heading,
   HStack,
   IconButton,
   useDisclosure
 } from "@carbon/react";
 import { getItemReadableId } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { flushSync } from "react-dom";
 import {
   LuCheckCheck,
@@ -35,7 +33,8 @@ import {
 import { RiProgress8Line } from "react-icons/ri";
 import { Link, useFetcher, useParams } from "react-router";
 import { useAuditLog } from "~/components/AuditLog";
-import { usePanels } from "~/components/Layout/Panels";
+import { usePanels, useSetDetailNav } from "~/components/Layout";
+import { salesInvoiceStatusBadge } from "~/components/Layout/detailNavBadges";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
 import { ShipmentStatus } from "~/modules/inventory/ui/Shipments";
@@ -175,6 +174,19 @@ const SalesInvoiceHeader = () => {
     ["Voided", "Draft", "Pending"].includes(salesInvoice.status ?? "") ||
     !permissions.can("update", "invoicing");
 
+  const detailNav = useMemo(() => {
+    const invoiceReadableId = routeData?.salesInvoice?.invoiceId ?? "";
+    const statusBadge = salesInvoiceStatusBadge(salesInvoice.status ?? "");
+    return {
+      id: invoiceReadableId,
+      idTo: path.to.salesInvoiceDetails(invoiceId),
+      copyText: invoiceReadableId,
+      badges: statusBadge ? [statusBadge] : undefined
+    };
+  }, [invoiceId, routeData?.salesInvoice?.invoiceId, salesInvoice.status]);
+
+  useSetDetailNav(detailNav);
+
   return (
     <>
       <div className="flex flex-shrink-0 items-center justify-between p-2 bg-background border-b h-[50px] overflow-x-auto scrollbar-hide">
@@ -186,12 +198,6 @@ const SalesInvoiceHeader = () => {
               onClick={toggleExplorer}
               variant="ghost"
             />}
-            <Link to={path.to.salesInvoiceDetails(invoiceId)}>
-              <Heading size="h4" className="flex items-center gap-2">
-                <span>{routeData?.salesInvoice?.invoiceId}</span>
-              </Heading>
-            </Link>
-            <Copy text={routeData?.salesInvoice?.invoiceId ?? ""} />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <IconButton
@@ -233,7 +239,6 @@ const SalesInvoiceHeader = () => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <SalesInvoiceStatus status={salesInvoice.status} />
           </HStack>
           <HStack>
             {relatedDocs.salesOrders.length === 1 && (

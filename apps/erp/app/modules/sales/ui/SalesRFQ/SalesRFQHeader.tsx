@@ -5,13 +5,11 @@ import {
   AlertDescription,
   AlertTitle,
   Button,
-  Copy,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuIcon,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  Heading,
   HStack,
   IconButton,
   Modal,
@@ -26,7 +24,7 @@ import {
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   LuCircleCheck,
   LuCircleX,
@@ -39,17 +37,16 @@ import {
 } from "react-icons/lu";
 import { RiProgress4Line } from "react-icons/ri";
 import type { FetcherWithComponents } from "react-router";
-import { Link, useFetcher, useParams } from "react-router";
+import { useFetcher, useParams } from "react-router";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
-import { usePanels } from "~/components/Layout";
+import { usePanels, useSetDetailNav } from "~/components/Layout";
+import { salesRfqStatusBadge } from "~/components/Layout/detailNavBadges";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
 import { path } from "~/utils/path";
 import { isSalesRfqLocked } from "../../sales.models";
 import type { Opportunity, SalesRFQ, SalesRFQLine } from "../../types";
-import SalesRFQStatus from "./SalesRFQStatus";
-
 const SalesRFQHeader = () => {
   const { t } = useLingui();
   const { rfqId } = useParams();
@@ -74,6 +71,19 @@ const SalesRFQHeader = () => {
 
   const statusFetcher = useFetcher<{}>();
 
+  const detailNav = useMemo(() => {
+    const rfqReadableId = routeData?.rfqSummary?.rfqId ?? "";
+    const statusBadge = salesRfqStatusBadge(status);
+    return {
+      id: rfqReadableId,
+      idTo: path.to.salesRfqDetails(rfqId),
+      copyText: rfqReadableId,
+      badges: statusBadge ? [statusBadge] : undefined
+    };
+  }, [rfqId, routeData?.rfqSummary?.rfqId, status]);
+
+  useSetDetailNav(detailNav);
+
   return (
     <div className="flex flex-shrink-0 items-center justify-between p-2 bg-background border-b h-[50px] overflow-x-auto scrollbar-hide ">
       <HStack className="w-full justify-between">
@@ -84,12 +94,6 @@ const SalesRFQHeader = () => {
               onClick={toggleExplorer}
               variant="ghost"
             />}
-          <Link to={path.to.salesRfqDetails(rfqId)}>
-            <Heading size="h4" className="flex items-center gap-2">
-              <span>{routeData?.rfqSummary?.rfqId}</span>
-            </Heading>
-          </Link>
-          <Copy text={routeData?.rfqSummary?.rfqId ?? ""} />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <IconButton
@@ -134,7 +138,6 @@ const SalesRFQHeader = () => {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <SalesRFQStatus status={routeData?.rfqSummary?.status} />
         </HStack>
         <HStack>
           {routeData?.rfqSummary?.customerId ? (

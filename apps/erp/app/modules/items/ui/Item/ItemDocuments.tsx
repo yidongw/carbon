@@ -18,16 +18,28 @@ import {
   Th,
   Thead,
   Tr,
-  toast
+  toast,
+  useLocalStorage
 } from "@carbon/react";
 import { convertKbToString } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { FileObject } from "@supabase/storage-js";
 import type { ChangeEvent } from "react";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { LuAxis3D, LuEllipsisVertical, LuUpload } from "react-icons/lu";
 import { Link, useFetchers, useRevalidator, useSubmit } from "react-router";
-import { DocumentPreview, FileDropzone, Hyperlink } from "~/components";
+import {
+  DocumentPreview,
+  FileDropzone,
+  FilesGalleryView,
+  FilesViewModeToggle,
+  Hyperlink
+} from "~/components";
+import type { FilesGalleryItem } from "~/components/FilesGalleryView";
+import {
+  FILES_VIEW_MODE_KEY,
+  type FilesViewMode
+} from "~/components/FilesViewModeToggle";
 import DocumentIcon from "~/components/DocumentIcon";
 import { useDateFormatter, usePermissions, useUser } from "~/hooks";
 import type { MethodItemType, OptimisticFileObject } from "~/modules/shared";
@@ -87,6 +99,44 @@ const ItemDocuments = ({
     a.name.localeCompare(b.name)
   ) as FileObject[];
 
+  const [viewMode, setViewMode] = useLocalStorage<FilesViewMode>(
+    FILES_VIEW_MODE_KEY,
+    "list"
+  );
+
+  const galleryItems = useMemo<FilesGalleryItem<FileObject>[]>(() => {
+    const items: FilesGalleryItem<FileObject>[] = [];
+
+    if (modelUpload?.modelId) {
+      items.push({
+        id: modelUpload.modelId,
+        name: modelUpload.modelName ?? "Model",
+        documentType: "Model",
+        sizeBytes: modelUpload.modelSize,
+        isModel: true,
+        modelViewUrl: getModelPath(modelUpload)
+      });
+    }
+
+    for (const file of allFiles) {
+      const type = getDocumentType(file.name);
+      items.push({
+        id: file.id,
+        name: file.name,
+        documentType: type,
+        pathToFile: getPath(file),
+        createdAt: file.created_at,
+        sizeBytes: file.metadata?.size,
+        previewType: ["PDF", "Image"].includes(type)
+          ? (type as "PDF" | "Image")
+          : undefined,
+        raw: file
+      });
+    }
+
+    return items;
+  }, [allFiles, getModelPath, getPath, modelUpload]);
+
   return (
     <Card className="flex-grow">
       <HStack className="justify-between items-start">
@@ -96,10 +146,34 @@ const ItemDocuments = ({
           </CardTitle>
         </CardHeader>
         <CardAction>
-          <ItemDocumentForm type={type} itemId={itemId} />
+          <HStack>
+            <FilesViewModeToggle value={viewMode} onChange={setViewMode} />
+            <ItemDocumentForm type={type} itemId={itemId} />
+          </HStack>
         </CardAction>
       </HStack>
       <CardContent>
+        {viewMode === "gallery" ? (
+          <FilesGalleryView
+            items={galleryItems}
+            formatDate={formatDate}
+            canDelete={canDelete}
+            onDownload={(item) => {
+              if (item.isModel && modelUpload) {
+                downloadModel(modelUpload);
+              } else if (item.raw) {
+                download(item.raw);
+              }
+            }}
+            onDelete={(item) => {
+              if (item.isModel) {
+                deleteModel();
+              } else if (item.raw) {
+                deleteFile(item.raw);
+              }
+            }}
+          />
+        ) : (
         <Table>
           <Thead>
             <Tr>
@@ -253,6 +327,7 @@ const ItemDocuments = ({
             )}
           </Tbody>
         </Table>
+        )}
         <FileDropzone onDrop={onDrop} />
       </CardContent>
     </Card>

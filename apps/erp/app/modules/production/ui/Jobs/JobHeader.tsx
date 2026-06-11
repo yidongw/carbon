@@ -5,7 +5,6 @@ import {
   AlertDescription,
   AlertTitle,
   Button,
-  Copy,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuIcon,
@@ -14,7 +13,6 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  Heading,
   HStack,
   IconButton,
   Modal,
@@ -69,7 +67,8 @@ import type { FetcherWithComponents } from "react-router";
 import { Link, useFetcher, useNavigate, useParams } from "react-router";
 import { useAuditLog } from "~/components/AuditLog";
 import { Location, StorageUnit } from "~/components/Form";
-import { usePanels } from "~/components/Layout";
+import { usePanels, useSetDetailNav } from "~/components/Layout";
+import { jobStatusBadge } from "~/components/Layout/detailNavBadges";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import Select from "~/components/Select";
 import SupplierAvatar from "~/components/SupplierAvatar";
@@ -160,6 +159,44 @@ const JobHeader = () => {
 
   const todaysDate = useMemo(() => today(getLocalTimeZone()), []);
 
+  const detailNav = useMemo(() => {
+    const jobReadableId = routeData?.job?.jobId ?? "";
+    const jobStatus = routeData?.job?.status;
+    const badges = [];
+    const statusBadge = jobStatusBadge(jobStatus ?? "");
+    if (statusBadge) badges.push(statusBadge);
+
+    if (
+      ["Draft", "Planned", "In Progress", "Ready", "Paused"].includes(
+        jobStatus ?? ""
+      )
+    ) {
+      if (
+        routeData?.job?.dueDate &&
+        isSameDay(parseDate(routeData.job.dueDate), todaysDate)
+      ) {
+        const dueTodayBadge = jobStatusBadge("Due Today");
+        if (dueTodayBadge) badges.push(dueTodayBadge);
+      }
+      if (
+        routeData?.job?.dueDate &&
+        parseDate(routeData.job.dueDate) < todaysDate
+      ) {
+        const overdueBadge = jobStatusBadge("Overdue");
+        if (overdueBadge) badges.push(overdueBadge);
+      }
+    }
+
+    return {
+      id: jobReadableId,
+      idTo: path.to.jobDetails(jobId),
+      copyText: jobReadableId,
+      badges: badges.length > 0 ? badges : undefined
+    };
+  }, [jobId, routeData?.job?.dueDate, routeData?.job?.jobId, routeData?.job?.status, todaysDate]);
+
+  useSetDetailNav(detailNav);
+
   return (
     <>
       <div className="flex flex-shrink-0 items-center justify-between p-2 bg-background border-b h-[50px] overflow-x-auto scrollbar-hide ">
@@ -170,12 +207,6 @@ const JobHeader = () => {
               onClick={toggleExplorer}
               variant="ghost"
             />}
-          <Link to={path.to.jobDetails(jobId)}>
-            <Heading size="h4" className="flex items-center gap-2">
-              <span>{routeData?.job?.jobId}</span>
-            </Heading>
-          </Link>
-          <Copy text={routeData?.job?.jobId ?? ""} />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <IconButton
@@ -228,21 +259,6 @@ const JobHeader = () => {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <JobStatus status={routeData?.job?.status} />
-          {["Draft", "Planned", "In Progress", "Ready", "Paused"].includes(
-            routeData?.job?.status ?? ""
-          ) && (
-            <>
-              {routeData?.job?.dueDate &&
-                isSameDay(parseDate(routeData?.job?.dueDate), todaysDate) && (
-                  <JobStatus status="Due Today" />
-                )}
-              {routeData?.job?.dueDate &&
-                parseDate(routeData?.job?.dueDate) < todaysDate && (
-                  <JobStatus status="Overdue" />
-                )}
-            </>
-          )}
         </HStack>
         <HStack>
           {routeData?.job?.salesOrderId && routeData?.job.salesOrderLineId && (

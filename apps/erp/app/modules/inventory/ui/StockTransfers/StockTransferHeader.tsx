@@ -1,19 +1,18 @@
 import type { Result } from "@carbon/auth";
 import {
   Button,
-  Copy,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuIcon,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  Heading,
   HStack,
   IconButton,
   useDisclosure
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
+import { useMemo } from "react";
 import {
   LuBarcode,
   LuCircleCheck,
@@ -25,6 +24,8 @@ import {
 import { useFetcher, useParams } from "react-router";
 import Assignee, { useOptimisticAssignment } from "~/components/Assignee";
 import { useAuditLog } from "~/components/AuditLog";
+import { useSetDetailNav } from "~/components/Layout";
+import { stockTransferStatusBadge } from "~/components/Layout/detailNavBadges";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
 import { useItemRuleViolations } from "~/hooks/useItemRuleViolations";
@@ -35,8 +36,6 @@ import {
 } from "~/modules/inventory";
 import { path } from "~/utils/path";
 import StockTransferCompleteModal from "./StockTransferCompleteModal";
-import StockTransferStatus from "./StockTransferStatus";
-
 const StockTransferHeader = () => {
   const { id } = useParams();
   if (!id) throw new Error("id not found");
@@ -97,16 +96,24 @@ const StockTransferHeader = () => {
     (line) => line.pickedQuantity && line.pickedQuantity > 0
   );
 
+  const detailNav = useMemo(() => {
+    const stockTransferReadableId =
+      routeData?.stockTransfer?.stockTransferId ?? "";
+    const statusBadge = stockTransferStatusBadge(status);
+    return {
+      id: stockTransferReadableId,
+      copyText: stockTransferReadableId,
+      badges: statusBadge ? [statusBadge] : undefined
+    };
+  }, [routeData?.stockTransfer?.stockTransferId, status]);
+
+  useSetDetailNav(detailNav);
+
   return (
     <>
       <div className="flex flex-shrink-0 items-center justify-between px-4 py-2 bg-card border-b border-border h-[50px] overflow-x-auto scrollbar-hide dark:border-none dark:shadow-[inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1)]">
         <HStack className="w-full justify-between">
           <HStack>
-            <Heading size="h4" className="flex items-center gap-2">
-              <span>{routeData?.stockTransfer?.stockTransferId}</span>
-            </Heading>
-
-            <Copy text={routeData?.stockTransfer?.stockTransferId ?? ""} />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <IconButton
@@ -157,7 +164,6 @@ const StockTransferHeader = () => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <StockTransferStatus status={routeData?.stockTransfer?.status} />
           </HStack>
           <HStack>
             <Assignee

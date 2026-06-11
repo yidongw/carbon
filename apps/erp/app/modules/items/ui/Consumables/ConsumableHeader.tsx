@@ -1,22 +1,21 @@
 import {
-  Copy,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuIcon,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  Heading,
   HStack,
   IconButton,
   useDisclosure,
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
+import { useMemo } from "react";
 import { LuEllipsisVertical, LuTrash } from "react-icons/lu";
-import { Link, useParams } from "react-router";
+import { useParams } from "react-router";
 import { useAuditLog } from "~/components/AuditLog";
-import { DetailsTopbar } from "~/components/Layout";
+import { DetailsTopbar, useSetDetailNav } from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
 import { path } from "~/utils/path";
@@ -43,19 +42,22 @@ const ConsumableHeader = () => {
     path.to.consumable(itemId)
   );
 
+  const detailNav = useMemo(() => {
+    const readableId = routeData?.consumableSummary?.readableIdWithRevision ?? "";
+    return {
+      id: readableId,
+      idTo: path.to.consumableDetails(itemId),
+      copyText: readableId
+    };
+  }, [itemId, routeData?.consumableSummary?.readableIdWithRevision]);
+
+  useSetDetailNav(detailNav);
+
   return (
     <>
       <div className="flex flex-shrink-0 items-center justify-between px-4 py-2 bg-card border-b border-border h-[50px] overflow-x-auto scrollbar-hide dark:border-none dark:shadow-[inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)]">
         <VStack spacing={0} className="flex-grow">
           <HStack>
-            <Link to={path.to.consumableDetails(itemId)}>
-              <Heading size="h4" className="flex items-center gap-2">
-                {routeData?.consumableSummary?.readableIdWithRevision}
-              </Heading>
-            </Link>
-            <Copy
-              text={routeData?.consumableSummary?.readableIdWithRevision ?? ""}
-            />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <IconButton

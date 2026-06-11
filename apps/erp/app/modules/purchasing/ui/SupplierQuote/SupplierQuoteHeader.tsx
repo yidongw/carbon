@@ -2,7 +2,6 @@ import {
   Alert,
   AlertDescription,
   AlertTitle,
-  Badge,
   Button,
   Copy,
   DropdownMenu,
@@ -11,7 +10,6 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  Heading,
   HStack,
   IconButton,
   Input,
@@ -24,7 +22,6 @@ import {
   ModalFooter,
   ModalHeader,
   ModalTitle,
-  Status,
   useDisclosure,
   useIsomorphicLayoutEffect,
   VStack
@@ -48,8 +45,13 @@ import {
   LuTriangleAlert
 } from "react-icons/lu";
 import type { FetcherWithComponents } from "react-router";
-import { Link, useFetcher, useParams, useRevalidator } from "react-router";
-import { usePanels } from "~/components/Layout";
+import { useFetcher, useParams, useRevalidator } from "react-router";
+import { usePanels, useSetDetailNav } from "~/components/Layout";
+import {
+  outsideProcessingBadge,
+  supplierQuoteStatusBadge,
+  unapprovedSupplierBadge
+} from "~/components/Layout/detailNavBadges";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import {
   usePermissions,
@@ -67,7 +69,6 @@ import type {
 } from "../../types";
 import SupplierQuoteCompareDrawer from "./SupplierQuoteCompareDrawer";
 import SupplierQuoteSendModal from "./SupplierQuoteSendModal";
-import SupplierQuoteStatus from "./SupplierQuoteStatus";
 import SupplierQuoteToOrderDrawer from "./SupplierQuoteToOrderDrawer";
 
 const SupplierQuoteHeader = () => {
@@ -130,6 +131,39 @@ const SupplierQuoteHeader = () => {
 
   const canFinalize = ["Draft", "Declined"].includes(quoteStatus);
 
+  const detailNav = useMemo(() => {
+    const supplierQuoteReadableId = routeData?.quote?.supplierQuoteId ?? "";
+    const badges = [];
+    const statusBadge = supplierQuoteStatusBadge(quoteStatus);
+    if (statusBadge) badges.push(statusBadge);
+    if (isOutsideProcessing) {
+      badges.push(
+        outsideProcessingBadge(
+          routeData?.quote?.supplierQuoteType ?? "Outside Processing"
+        )
+      );
+    }
+    if (supplierApprovalRequired && !isSupplierApproved) {
+      badges.push(unapprovedSupplierBadge("Unapproved Supplier"));
+    }
+    return {
+      id: supplierQuoteReadableId,
+      idTo: path.to.supplierQuoteDetails(id),
+      copyText: supplierQuoteReadableId,
+      badges: badges.length > 0 ? badges : undefined
+    };
+  }, [
+    id,
+    isOutsideProcessing,
+    isSupplierApproved,
+    quoteStatus,
+    routeData?.quote?.supplierQuoteId,
+    routeData?.quote?.supplierQuoteType,
+    supplierApprovalRequired
+  ]);
+
+  useSetDetailNav(detailNav);
+
   return (
     <>
       <div className="flex flex-shrink-0 items-center justify-between p-2 bg-background border-b h-[50px] overflow-x-auto scrollbar-hide">
@@ -141,12 +175,6 @@ const SupplierQuoteHeader = () => {
               onClick={toggleExplorer}
               variant="ghost"
             />}
-            <Link to={path.to.supplierQuoteDetails(id)}>
-              <Heading size="h4">
-                <span>{routeData?.quote?.supplierQuoteId}</span>
-              </Heading>
-            </Link>
-            <Copy text={routeData?.quote?.supplierQuoteId ?? ""} />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <IconButton
@@ -191,17 +219,6 @@ const SupplierQuoteHeader = () => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <SupplierQuoteStatus status={routeData?.quote?.status} />
-            {isOutsideProcessing && (
-              <Badge variant="default">
-                {routeData?.quote?.supplierQuoteType}
-              </Badge>
-            )}
-            {supplierApprovalRequired && !isSupplierApproved && (
-              <Status color="red">
-                <Trans>Unapproved Supplier</Trans>
-              </Status>
-            )}
           </HStack>
           <HStack>
             <DropdownMenu>

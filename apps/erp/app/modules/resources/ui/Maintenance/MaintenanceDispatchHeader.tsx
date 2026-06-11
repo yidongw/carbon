@@ -1,18 +1,17 @@
 import {
   Button,
-  Copy,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuIcon,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  Heading,
   HStack,
   IconButton,
   useDisclosure,
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
+import { useMemo } from "react";
 import {
   LuCircleCheck,
   LuCirclePlay,
@@ -20,14 +19,14 @@ import {
   LuLoaderCircle,
   LuTrash
 } from "react-icons/lu";
-import { Link, useFetcher, useParams } from "react-router";
+import { useFetcher, useParams } from "react-router";
+import { useSetDetailNav } from "~/components/Layout";
+import { maintenanceStatusBadge } from "~/components/Layout/detailNavBadges";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData } from "~/hooks";
 import { path } from "~/utils/path";
 import { isMaintenanceDispatchLocked } from "../../resources.models";
 import type { MaintenanceDispatchDetail } from "../../types";
-import MaintenanceStatus from "./MaintenanceStatus";
-
 const MaintenanceDispatchHeader = () => {
   const { t } = useLingui();
   const { dispatchId } = useParams();
@@ -43,18 +42,28 @@ const MaintenanceDispatchHeader = () => {
   const statusFetcher = useFetcher<{}>();
   const deleteModal = useDisclosure();
 
+  const detailNav = useMemo(() => {
+    const dispatchReadableId = routeData?.dispatch?.maintenanceDispatchId ?? "";
+    const statusBadge = maintenanceStatusBadge(status ?? "");
+    return {
+      id: dispatchReadableId,
+      idTo: path.to.maintenanceDispatch(dispatchId),
+      copyText: dispatchReadableId,
+      badges: statusBadge ? [statusBadge] : undefined
+    };
+  }, [
+    dispatchId,
+    routeData?.dispatch?.maintenanceDispatchId,
+    status
+  ]);
+
+  useSetDetailNav(detailNav);
+
   return (
     <>
       <div className="flex flex-shrink-0 items-center justify-between px-4 py-2 bg-card border-b border-border h-[50px] overflow-x-auto scrollbar-hide dark:border-none dark:shadow-[inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)]">
         <VStack spacing={0}>
           <HStack>
-            <Link to={path.to.maintenanceDispatch(dispatchId)}>
-              <Heading size="h4" className="flex items-center gap-2">
-                <span>{routeData?.dispatch?.maintenanceDispatchId}</span>
-              </Heading>
-            </Link>
-            <MaintenanceStatus status={status} />
-            <Copy text={routeData?.dispatch?.maintenanceDispatchId ?? ""} />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <IconButton
