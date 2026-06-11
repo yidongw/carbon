@@ -124,8 +124,8 @@ const CadModel = ({
 
   if (!viewerReady) {
     return (
-      <div className="flex w-full h-full rounded bg-gradient-to-bl from-card from-50% via-card to-background dark:border-none dark:shadow-[inset_0_0.5px_0_rgb(255_255_255_/_0.08),_inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)] items-center justify-center">
-        <Spinner className="h-10 w-10" />
+      <div className="flex items-center justify-center py-6">
+        <Spinner className="h-8 w-8" />
       </div>
     );
   }
