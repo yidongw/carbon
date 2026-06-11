@@ -43,6 +43,9 @@ export default defineConfig(({ isSsrBuild, mode }) => {
   return {
     build: {
       minify: true,
+      // Enable sourcemaps for preview builds so stack traces point to real source
+      // lines. Kept off for Vercel production (PREVIEW_BUILD is not set there).
+      sourcemap: process.env.PREVIEW_BUILD === "1",
       rollupOptions: {
         onwarn(warning, defaultHandler) {
           if (warning.code === "SOURCEMAP_ERROR") {
