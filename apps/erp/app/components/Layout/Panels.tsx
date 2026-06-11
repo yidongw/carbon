@@ -5,7 +5,7 @@ import {
   useIsMobile
 } from "@carbon/react";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { LuPanelLeft, LuX } from "react-icons/lu";
+import { LuPanelLeft, LuPanelRight, LuX } from "react-icons/lu";
 import type { ImperativePanelHandle } from "react-resizable-panels";
 
 interface PanelContextType {
@@ -15,8 +15,6 @@ interface PanelContextType {
   setHasProperties: (v: boolean) => void;
   isExplorerCollapsed: boolean;
   isPropertiesCollapsed: boolean;
-  isPropertiesTabActive: boolean;
-  setIsPropertiesTabActive: (v: boolean) => void;
   toggleExplorer: () => void;
   toggleProperties: () => void;
   setIsExplorerCollapsed: (collapsed: boolean) => void;
@@ -32,9 +30,6 @@ const PanelContext = createContext<PanelContextType>({
   setHasProperties: () => {},
   isExplorerCollapsed: true,
   isPropertiesCollapsed: true,
-  isPropertiesTabActive: false,
-  // biome-ignore lint/suspicious/noEmptyBlockStatements: suppressed due to migration
-  setIsPropertiesTabActive: () => {},
   // biome-ignore lint/suspicious/noEmptyBlockStatements: suppressed due to migration
   toggleExplorer: () => {},
   // biome-ignore lint/suspicious/noEmptyBlockStatements: suppressed due to migration
@@ -69,7 +64,6 @@ export function PanelProvider({ children }: PanelProviderProps) {
   const [isPropertiesCollapsed, setIsPropertiesCollapsed] = useState(
     isBrowser ? window.innerWidth < 1024 : false
   );
-  const [isPropertiesTabActive, setIsPropertiesTabActive] = useState(false);
 
   const value = {
     hasExplorer,
@@ -78,8 +72,6 @@ export function PanelProvider({ children }: PanelProviderProps) {
     setHasProperties,
     isExplorerCollapsed,
     isPropertiesCollapsed,
-    isPropertiesTabActive,
-    setIsPropertiesTabActive,
     toggleExplorer: () => setIsExplorerCollapsed((prev) => !prev),
     toggleProperties: () => setIsPropertiesCollapsed((prev) => !prev),
     setIsExplorerCollapsed,
@@ -113,8 +105,8 @@ export function ResizablePanels({
   const {
     isExplorerCollapsed,
     isPropertiesCollapsed,
-    isPropertiesTabActive,
     setIsExplorerCollapsed,
+    setIsPropertiesCollapsed,
     setHasExplorer,
     setHasProperties
   } = usePanels();
@@ -153,12 +145,10 @@ export function ResizablePanels({
                 <LuX className="h-4 w-4" />
               </button>
             </div>
-            <div className="flex-1 overflow-y-auto">
-              {explorer}
-            </div>
+            <div className="flex-1 overflow-y-auto">{explorer}</div>
           </div>
         )}
-        {/* Explorer toggle button on left edge when closed */}
+        {/* Explorer toggle button on left edge */}
         {explorer && isExplorerCollapsed && (
           <button
             type="button"
@@ -168,14 +158,35 @@ export function ResizablePanels({
             <LuPanelLeft className="h-4 w-4" />
           </button>
         )}
-        {/* Properties view or regular content */}
-        {isPropertiesTabActive && properties ? (
-          <div className="h-full w-full overflow-y-auto [&>*]:!w-full [&>*]:!border-l-0">
-            {properties}
+        {/* Properties overlay when open */}
+        {properties && !isPropertiesCollapsed && (
+          <div className="absolute inset-0 z-50 flex flex-col bg-card shadow-lg">
+            <div className="flex flex-shrink-0 items-center justify-start border-b border-border p-1">
+              <button
+                type="button"
+                className="rounded-md p-1.5 hover:bg-muted"
+                onClick={() => setIsPropertiesCollapsed(true)}
+              >
+                <LuX className="h-4 w-4" />
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto [&>*]:!w-full [&>*]:!border-l-0">
+              {properties}
+            </div>
           </div>
-        ) : (
-          content
         )}
+        {/* Properties toggle button on right edge */}
+        {properties && isPropertiesCollapsed && (
+          <button
+            type="button"
+            className="absolute right-0 top-1/2 z-40 -translate-y-1/2 rounded-l-md border border-r-0 border-border bg-card px-1 py-3 shadow-md hover:bg-muted"
+            onClick={() => setIsPropertiesCollapsed(false)}
+          >
+            <LuPanelRight className="h-4 w-4" />
+          </button>
+        )}
+        {/* Main content */}
+        {content}
       </div>
     );
   }
