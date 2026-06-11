@@ -1,21 +1,21 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
 import {
   Copy,
-  Heading,
   HStack,
   IconButton,
   Input,
   InputGroup,
   InputLeftElement,
-  VStack
+  useIsomorphicLayoutEffect
 } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
 import { useLingui } from "@lingui/react/macro";
 import { useState } from "react";
-import { LuPanelLeft, LuSearch } from "react-icons/lu";
+import { createPortal } from "react-dom";
+import { LuPanelLeft, LuPanelRight, LuSearch } from "react-icons/lu";
 import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, useLoaderData } from "react-router";
-import { usePanels } from "~/components/Layout";
+import { usePanels, useTopbarLeft } from "~/components/Layout";
 import { PanelProvider, ResizablePanels } from "~/components/Layout/Panels";
 import type { FlatTreeItem } from "~/components/TreeView";
 import type { MakeMethod, Method } from "~/modules/items";
@@ -204,27 +204,46 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   };
 }
 
-function TemplateHeader({ template }: { template: TemplateRow }) {
-  const { toggleExplorer } = usePanels();
+function TemplateTopbarLeft({ template }: { template: TemplateRow }) {
   const { t } = useLingui();
+  const { hasExplorer, toggleExplorer, toggleProperties } = usePanels();
 
   return (
-    <div className="flex flex-shrink-0 items-center justify-between px-4 py-2 bg-card border-b border-border h-[50px] overflow-x-auto scrollbar-hide dark:border-none dark:shadow-[inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)]">
-      <VStack spacing={0} className="flex-grow">
-        <HStack>
+    <HStack className="items-center -ml-2 w-full justify-between" spacing={1}>
+      <HStack spacing={1}>
+        {hasExplorer && (
           <IconButton
             aria-label={t`Toggle Explorer`}
             icon={<LuPanelLeft />}
             onClick={toggleExplorer}
             variant="ghost"
           />
-          <Heading size="h4" className="flex items-center gap-2">
-            <span>{template.name}</span>
-          </Heading>
-          <Copy text={template.name ?? ""} />
-        </HStack>
-      </VStack>
-    </div>
+        )}
+        <span className="font-semibold text-sm">{template.name}</span>
+        <Copy text={template.name ?? ""} />
+      </HStack>
+      <IconButton
+        aria-label={t`Toggle Properties`}
+        icon={<LuPanelRight />}
+        onClick={toggleProperties}
+        variant="ghost"
+      />
+    </HStack>
+  );
+}
+
+function TemplateHeader({ template }: { template: TemplateRow }) {
+  const { leftSlotEl, setHasLeftContent } = useTopbarLeft();
+
+  useIsomorphicLayoutEffect(() => {
+    setHasLeftContent(true);
+    return () => setHasLeftContent(false);
+  }, [setHasLeftContent]);
+
+  return (
+    <>
+      {leftSlotEl && createPortal(<TemplateTopbarLeft template={template} />, leftSlotEl)}
+    </>
   );
 }
 
@@ -245,7 +264,7 @@ export default function TemplateLayoutRoute() {
     <PanelProvider key={template.id}>
       <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
         <TemplateHeader template={template as TemplateRow} />
-        <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
+        <div className="flex h-[calc(100dvh-49px)] overflow-hidden w-full">
           <ResizablePanels
             explorer={
               <div className="flex flex-col h-full">
@@ -283,7 +302,7 @@ export default function TemplateLayoutRoute() {
               </div>
             }
             content={
-              <div className="h-[calc(100dvh-99px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
+              <div className="h-[calc(100dvh-49px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
                 <div className="p-2">
                   <TemplateProperties template={template as TemplateRow} />
                 </div>

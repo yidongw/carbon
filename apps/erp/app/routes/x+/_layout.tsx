@@ -216,7 +216,7 @@ export default function AuthenticatedRoute() {
   });
 
   return (
-    <div className="h-[100dvh] flex flex-col">
+    <div className="h-[100dvh] flex flex-col overflow-hidden">
       {user?.acknowledgedITAR === false && CONTROLLED_ENVIRONMENT ? (
         <ItarPopup
           acknowledgeAction={path.to.acknowledge}

@@ -10,8 +10,8 @@ import {
   DropdownMenuContent,
   DropdownMenuIcon,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
-  Heading,
   HStack,
   IconButton,
   Modal,
@@ -22,10 +22,12 @@ import {
   ModalHeader,
   ModalTitle,
   useDisclosure,
+  useIsomorphicLayoutEffect,
   useMount,
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
+import { createPortal } from "react-dom";
 import { useEffect, useState } from "react";
 import {
   LuCircleCheck,
@@ -42,7 +44,7 @@ import type { FetcherWithComponents } from "react-router";
 import { Link, useFetcher, useParams } from "react-router";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
-import { usePanels } from "~/components/Layout";
+import { usePanels, useTopbarLeft } from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
 import { path } from "~/utils/path";
@@ -50,18 +52,15 @@ import { isSalesRfqLocked } from "../../sales.models";
 import type { Opportunity, SalesRFQ, SalesRFQLine } from "../../types";
 import SalesRFQStatus from "./SalesRFQStatus";
 
-const SalesRFQHeader = () => {
+function SalesRFQTopbarLeft({ rfqId }: { rfqId: string }) {
   const { t } = useLingui();
-  const { rfqId } = useParams();
-  if (!rfqId) throw new Error("rfqId not found");
-
   const convertToQuoteModal = useDisclosure();
   const requiresCustomerAlert = useDisclosure();
   const noQuoteReasonModal = useDisclosure();
   const deleteRFQModal = useDisclosure();
-  const { hasExplorer, toggleExplorer, toggleProperties } = usePanels();
 
   const permissions = usePermissions();
+  const { hasExplorer, toggleExplorer, toggleProperties } = usePanels();
 
   const routeData = useRouteData<{
     rfqSummary: SalesRFQ;
@@ -75,41 +74,45 @@ const SalesRFQHeader = () => {
   const statusFetcher = useFetcher<{}>();
 
   return (
-    <div className="flex flex-shrink-0 items-center justify-between p-2 bg-background border-b h-[50px] overflow-x-auto scrollbar-hide ">
-      <HStack className="w-full justify-between">
-        <HStack>
-          {hasExplorer && <IconButton
-            aria-label={t`Toggle Explorer`}
-            icon={<LuPanelLeft />}
+    <>
+      <HStack className="items-center -ml-2 w-full justify-between" spacing={1}>
+        <HStack spacing={1}>
+          {hasExplorer && (
+            <IconButton
+              aria-label={t`Toggle Explorer`}
+              icon={<LuPanelLeft />}
               onClick={toggleExplorer}
               variant="ghost"
-            />}
+            />
+          )}
           <Link to={path.to.salesRfqDetails(rfqId)}>
-            <Heading size="h4" className="flex items-center gap-2">
-              <span>{routeData?.rfqSummary?.rfqId}</span>
-            </Heading>
+            <span className="font-semibold text-sm flex items-center gap-2">
+              {routeData?.rfqSummary?.rfqId}
+            </span>
           </Link>
           <Copy text={routeData?.rfqSummary?.rfqId ?? ""} />
+          <SalesRFQStatus status={routeData?.rfqSummary?.status} />
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <IconButton
-                aria-label={t`More options`}
-                icon={<LuEllipsisVertical />}
-                variant="secondary"
-                size="sm"
-              />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
+          <DropdownMenuTrigger asChild>
+            <IconButton
+              aria-label={t`More options`}
+              icon={<LuEllipsisVertical />}
+              size="sm"
+              variant="secondary"
+            />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            {/* Ready for Quote */}
+            {routeData?.rfqSummary?.customerId ? (
               <DropdownMenuItem
                 disabled={
-                  routeData?.rfqSummary?.status === "Draft" ||
-                  (routeData?.opportunity?.quotes.length ?? 0) > 0 ||
-                  statusFetcher.state !== "idle" ||
+                  status !== "Draft" ||
+                  routeData?.lines?.length === 0 ||
                   !permissions.can("update", "sales")
                 }
                 onClick={() => {
                   statusFetcher.submit(
-                    { status: "Draft" },
+                    { status: "Ready for Quote" },
                     {
                       method: "post",
                       action: path.to.salesRfqStatus(rfqId)
@@ -117,136 +120,97 @@ const SalesRFQHeader = () => {
                   );
                 }}
               >
-                <DropdownMenuIcon icon={<LuLoaderCircle />} />
-                <Trans>Reopen</Trans>
+                <DropdownMenuIcon icon={<LuCircleCheck />} />
+                <Trans>Ready for Quote</Trans>
               </DropdownMenuItem>
+            ) : (
               <DropdownMenuItem
                 disabled={
-                  isLocked ||
-                  !permissions.can("delete", "sales") ||
-                  !permissions.is("employee")
-                }
-                destructive
-                onClick={deleteRFQModal.onOpen}
-              >
-                <DropdownMenuIcon icon={<LuTrash />} />
-                <Trans>Delete RFQ</Trans>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <SalesRFQStatus status={routeData?.rfqSummary?.status} />
-        </HStack>
-        <HStack>
-          {routeData?.rfqSummary?.customerId ? (
-            <statusFetcher.Form
-              method="post"
-              action={path.to.salesRfqStatus(rfqId)}
-            >
-              <input type="hidden" name="status" value="Ready for Quote" />
-              <Button
-                isDisabled={
-                  status !== "Draft" ||
+                  status !== "Ready for Quote" ||
                   routeData?.lines?.length === 0 ||
                   !permissions.can("update", "sales")
                 }
-                isLoading={
-                  statusFetcher.state !== "idle" &&
-                  statusFetcher.formData?.get("status") === "Ready for Quote"
-                }
-                leftIcon={<LuCircleCheck />}
-                variant={status === "Draft" ? "primary" : "secondary"}
-                type="submit"
+                onClick={requiresCustomerAlert.onOpen}
               >
+                <DropdownMenuIcon icon={<LuCircleCheck />} />
                 <Trans>Ready for Quote</Trans>
-              </Button>
-            </statusFetcher.Form>
-          ) : (
-            <Button
-              isDisabled={
+              </DropdownMenuItem>
+            )}
+
+            {/* Quote */}
+            <DropdownMenuItem
+              disabled={
                 status !== "Ready for Quote" ||
                 routeData?.lines?.length === 0 ||
-                !permissions.can("update", "sales")
+                !permissions.can("create", "sales")
               }
-              leftIcon={<LuCircleCheck />}
-              variant={status === "Draft" ? "primary" : "secondary"}
-              onClick={requiresCustomerAlert.onOpen}
+              onClick={convertToQuoteModal.onOpen}
             >
-              <Trans>Ready for Quote</Trans>
-            </Button>
-          )}
+              <DropdownMenuIcon icon={<RiProgress4Line />} />
+              <Trans>Quote</Trans>
+            </DropdownMenuItem>
 
-          <Button
-            isDisabled={
-              status !== "Ready for Quote" ||
-              routeData?.lines?.length === 0 ||
-              !permissions.can("create", "sales")
-            }
-            leftIcon={<RiProgress4Line />}
-            type="submit"
-            variant={
-              ["Ready for Quote", "Quoted"].includes(status)
-                ? "primary"
-                : "secondary"
-            }
-            onClick={convertToQuoteModal.onOpen}
-          >
-            <Trans>Quote</Trans>
-          </Button>
-          {/* <statusFetcher.Form
-            method="post"
-            action={path.to.salesRfqStatus(rfqId)}
-          >
-            <input type="hidden" name="status" value="Closed" />
-            <Button
-              isDisabled={
+            {/* No Quote */}
+            <DropdownMenuItem
+              disabled={
                 status !== "Ready for Quote" ||
                 statusFetcher.state !== "idle" ||
                 !permissions.can("update", "sales")
               }
-              isLoading={
-                statusFetcher.state !== "idle" &&
-                statusFetcher.formData?.get("status") === "Closed"
-              }
-              leftIcon={<LuCircleX />}
-              type="submit"
-              variant={
-                ["Ready for Quote", "Closed"].includes(status)
-                  ? "destructive"
-                  : "secondary"
-              }
+              onClick={noQuoteReasonModal.onOpen}
             >
-              No Quote
-            </Button>
-          </statusFetcher.Form> */}
-          <Button
-            onClick={noQuoteReasonModal.onOpen}
-            isDisabled={
-              status !== "Ready for Quote" ||
-              statusFetcher.state !== "idle" ||
-              !permissions.can("update", "sales")
-            }
-            isLoading={
-              statusFetcher.state !== "idle" &&
-              statusFetcher.formData?.get("status") === "Closed"
-            }
-            leftIcon={<LuCircleX />}
-            variant={
-              ["Ready for Quote", "Closed"].includes(status)
-                ? "destructive"
-                : "secondary"
-            }
-          >
-            <Trans>No Quote</Trans>
-          </Button>
+              <DropdownMenuIcon icon={<LuCircleX />} />
+              <Trans>No Quote</Trans>
+            </DropdownMenuItem>
 
-          <IconButton
-            aria-label={t`Toggle Properties`}
-            icon={<LuPanelRight />}
-            onClick={toggleProperties}
-            variant="ghost"
-          />
+            <DropdownMenuSeparator />
+
+            {/* Reopen */}
+            <DropdownMenuItem
+              disabled={
+                routeData?.rfqSummary?.status === "Draft" ||
+                (routeData?.opportunity?.quotes.length ?? 0) > 0 ||
+                statusFetcher.state !== "idle" ||
+                !permissions.can("update", "sales")
+              }
+              onClick={() => {
+                statusFetcher.submit(
+                  { status: "Draft" },
+                  {
+                    method: "post",
+                    action: path.to.salesRfqStatus(rfqId)
+                  }
+                );
+              }}
+            >
+              <DropdownMenuIcon icon={<LuLoaderCircle />} />
+              <Trans>Reopen</Trans>
+            </DropdownMenuItem>
+
+            {/* Delete */}
+            <DropdownMenuItem
+              disabled={
+                isLocked ||
+                !permissions.can("delete", "sales") ||
+                !permissions.is("employee")
+              }
+              destructive
+              onClick={deleteRFQModal.onOpen}
+            >
+              <DropdownMenuIcon icon={<LuTrash />} />
+              <Trans>Delete RFQ</Trans>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
         </HStack>
+        <IconButton
+          aria-label={t`Toggle Properties`}
+          icon={<LuPanelRight />}
+          onClick={toggleProperties}
+          variant="ghost"
+        />
       </HStack>
+
       {convertToQuoteModal.isOpen && (
         <ConvertToQuoteModal
           lines={routeData?.lines ?? []}
@@ -279,7 +243,25 @@ const SalesRFQHeader = () => {
           }}
         />
       )}
-    </div>
+    </>
+  );
+}
+
+const SalesRFQHeader = () => {
+  const { rfqId } = useParams();
+  if (!rfqId) throw new Error("rfqId not found");
+
+  const { leftSlotEl, setHasLeftContent } = useTopbarLeft();
+
+  useIsomorphicLayoutEffect(() => {
+    setHasLeftContent(true);
+    return () => setHasLeftContent(false);
+  }, [setHasLeftContent]);
+
+  return (
+    <>
+      {leftSlotEl && createPortal(<SalesRFQTopbarLeft rfqId={rfqId} />, leftSlotEl)}
+    </>
   );
 };
 
