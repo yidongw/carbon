@@ -8,8 +8,8 @@ import {
   DropdownMenuContent,
   DropdownMenuIcon,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
-  Heading,
   HStack,
   IconButton,
   Modal,
@@ -18,11 +18,12 @@ import {
   ModalFooter,
   ModalHeader,
   ModalTitle,
-  useDisclosure
+  useDisclosure,
+  useIsomorphicLayoutEffect
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
+import { createPortal } from "react-dom";
 import {
-  LuChevronDown,
   LuCircleX,
   LuEllipsisVertical,
   LuEye,
@@ -36,7 +37,7 @@ import {
   LuTriangleAlert
 } from "react-icons/lu";
 import { Link, useFetcher, useParams } from "react-router";
-import { usePanels } from "~/components/Layout";
+import { usePanels, useTopbarLeft } from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData } from "~/hooks";
 import { useIntegrations } from "~/hooks/useIntegrations";
@@ -47,22 +48,19 @@ import { SupplierQuoteCompareDrawer } from "../SupplierQuote";
 import FinalizeRFQModal from "./FinalizeRFQModal";
 import PurchasingRFQStatus from "./PurchasingRFQStatus";
 
-const PurchasingRFQHeader = () => {
-  const { rfqId } = useParams();
-  if (!rfqId) throw new Error("rfqId not found");
-
+function PurchasingRFQTopbarLeft({ rfqId }: { rfqId: string }) {
   const { t } = useLingui();
   const finalizeModal = useDisclosure();
   const requiresSuppliersAlert = useDisclosure();
   const cancelReasonModal = useDisclosure();
   const deleteRFQModal = useDisclosure();
   const compareQuotesModal = useDisclosure();
-  const { hasExplorer, toggleExplorer, toggleProperties } = usePanels();
 
   const permissions = usePermissions();
   const integrations = useIntegrations();
   const canEmail = integrations.has("email");
   const finalizeFetcher = useFetcher<{ error: string | null }>();
+  const { hasExplorer, toggleExplorer, toggleProperties } = usePanels();
 
   const routeData = useRouteData<{
     rfqSummary: PurchasingRFQ;
@@ -88,89 +86,47 @@ const PurchasingRFQHeader = () => {
   const canCompareQuotes = activeLinkedQuotes.length > 1;
 
   return (
-    <div className="flex flex-shrink-0 items-center justify-between p-2 bg-background border-b h-[50px] overflow-x-auto scrollbar-hide ">
-      <HStack className="w-full justify-between">
-        <HStack>
-          {hasExplorer && <IconButton
-            aria-label={t`Toggle Explorer`}
-            icon={<LuPanelLeft />}
+    <>
+      <HStack className="items-center -ml-2 w-full justify-between" spacing={1}>
+        <HStack spacing={1}>
+          {hasExplorer && (
+            <IconButton
+              aria-label={t`Toggle Explorer`}
+              icon={<LuPanelLeft />}
               onClick={toggleExplorer}
               variant="ghost"
-            />}
+            />
+          )}
           <Link to={path.to.purchasingRfqDetails(rfqId)}>
-            <Heading size="h4" className="flex items-center gap-2">
-              <span>{routeData?.rfqSummary?.rfqId}</span>
-            </Heading>
+            <span className="font-semibold text-sm">
+              {routeData?.rfqSummary?.rfqId}
+            </span>
           </Link>
           <Copy text={routeData?.rfqSummary?.rfqId ?? ""} />
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <IconButton
-                aria-label={t`More options`}
-                icon={<LuEllipsisVertical />}
-                variant="secondary"
-                size="sm"
-              />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem
-                disabled={
-                  status !== "Closed" ||
-                  statusFetcher.state !== "idle" ||
-                  !permissions.can("update", "purchasing")
-                }
-                onClick={() => {
-                  statusFetcher.submit(
-                    { status: "Draft" },
-                    {
-                      method: "post",
-                      action: path.to.purchasingRfqStatus(rfqId)
-                    }
-                  );
-                }}
-              >
-                <DropdownMenuIcon icon={<LuLoaderCircle />} />
-                <Trans>Reopen</Trans>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                disabled={
-                  isLocked ||
-                  !permissions.can("delete", "purchasing") ||
-                  !permissions.is("employee")
-                }
-                destructive
-                onClick={deleteRFQModal.onOpen}
-              >
-                <DropdownMenuIcon icon={<LuTrash />} />
-                <Trans>Delete RFQ</Trans>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
           <PurchasingRFQStatus status={routeData?.rfqSummary?.status} />
-        </HStack>
-        <HStack>
-          {/* Preview Button - for Draft status */}
-          {status === "Draft" && (
-            <Button variant="secondary" leftIcon={<LuEye />} asChild>
-              <Link to={path.to.purchasingRfqPreview(rfqId)} target="_blank">
-                <Trans>Preview</Trans>
-              </Link>
-            </Button>
-          )}
+          <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <IconButton
+              aria-label={t`More options`}
+              icon={<LuEllipsisVertical />}
+              size="sm"
+              variant="secondary"
+            />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            {/* Preview */}
+            {status === "Draft" && (
+              <DropdownMenuItem asChild>
+                <Link to={path.to.purchasingRfqPreview(rfqId)} target="_blank">
+                  <DropdownMenuIcon icon={<LuEye />} />
+                  <Trans>Preview</Trans>
+                </Link>
+              </DropdownMenuItem>
+            )}
 
-          {/* Share Dropdown - for Requested status with external links */}
-          {status === "Requested" && hasSuppliers && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="secondary"
-                  leftIcon={<LuShare2 />}
-                  rightIcon={<LuChevronDown />}
-                >
-                  <Trans>Share</Trans>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
+            {/* Share links for Requested status */}
+            {status === "Requested" && hasSuppliers && (
+              <>
                 {routeData?.suppliers?.map((supplier) => (
                   <DropdownMenuItem
                     key={supplier.id}
@@ -201,107 +157,135 @@ const PurchasingRFQHeader = () => {
                       )}
                   </DropdownMenuItem>
                 ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
+                <DropdownMenuSeparator />
+              </>
+            )}
 
-          {hasSuppliers ? (
-            canEmail ? (
-              // With Resend: Open modal for contact selection
-              <Button
-                isDisabled={
-                  status !== "Draft" ||
-                  routeData?.lines?.length === 0 ||
-                  !permissions.can("create", "purchasing")
-                }
-                leftIcon={<LuSend />}
-                variant={status === "Draft" ? "primary" : "secondary"}
-                onClick={finalizeModal.onOpen}
-              >
-                <Trans>Finalize</Trans>
-              </Button>
-            ) : (
-              // Without Resend: Submit directly
-              <finalizeFetcher.Form
-                method="post"
-                action={path.to.purchasingRfqFinalize(rfqId)}
-              >
-                {routeData?.suppliers?.map((supplier, index) => (
-                  <span key={supplier.id}>
-                    <input
-                      type="hidden"
-                      name={`suppliers[${index}].supplierId`}
-                      value={supplier.supplierId}
-                    />
-                    <input
-                      type="hidden"
-                      name={`suppliers[${index}].rfqSupplierId`}
-                      value={supplier.id}
-                    />
-                  </span>
-                ))}
-                <Button
-                  type="submit"
-                  isDisabled={
+            {/* Finalize */}
+            {hasSuppliers ? (
+              canEmail ? (
+                <DropdownMenuItem
+                  disabled={
+                    status !== "Draft" ||
+                    routeData?.lines?.length === 0 ||
+                    !permissions.can("create", "purchasing")
+                  }
+                  onClick={finalizeModal.onOpen}
+                >
+                  <DropdownMenuIcon icon={<LuSend />} />
+                  <Trans>Finalize</Trans>
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem
+                  disabled={
                     status !== "Draft" ||
                     routeData?.lines?.length === 0 ||
                     !permissions.can("create", "purchasing") ||
                     finalizeFetcher.state !== "idle"
                   }
-                  isLoading={finalizeFetcher.state !== "idle"}
-                  leftIcon={<LuSend />}
-                  variant={status === "Draft" ? "primary" : "secondary"}
+                  onClick={() => {
+                    const formData = new FormData();
+                    routeData?.suppliers?.forEach((supplier, index) => {
+                      formData.append(
+                        `suppliers[${index}].supplierId`,
+                        supplier.supplierId
+                      );
+                      formData.append(
+                        `suppliers[${index}].rfqSupplierId`,
+                        supplier.id
+                      );
+                    });
+                    finalizeFetcher.submit(formData, {
+                      method: "post",
+                      action: path.to.purchasingRfqFinalize(rfqId)
+                    });
+                  }}
                 >
+                  <DropdownMenuIcon icon={<LuSend />} />
                   <Trans>Finalize</Trans>
-                </Button>
-              </finalizeFetcher.Form>
-            )
-          ) : (
-            <Button
-              isDisabled={
-                status !== "Draft" ||
-                routeData?.lines?.length === 0 ||
-                !permissions.can("create", "purchasing")
+                </DropdownMenuItem>
+              )
+            ) : (
+              <DropdownMenuItem
+                disabled={
+                  status !== "Draft" ||
+                  routeData?.lines?.length === 0 ||
+                  !permissions.can("create", "purchasing")
+                }
+                onClick={requiresSuppliersAlert.onOpen}
+              >
+                <DropdownMenuIcon icon={<LuSend />} />
+                <Trans>Finalize</Trans>
+              </DropdownMenuItem>
+            )}
+
+            {/* Cancel */}
+            <DropdownMenuItem
+              disabled={
+                (status !== "Draft" && status !== "Requested") ||
+                !permissions.can("update", "purchasing")
               }
-              leftIcon={<LuSend />}
-              variant={status === "Draft" ? "primary" : "secondary"}
-              onClick={requiresSuppliersAlert.onOpen}
+              onClick={cancelReasonModal.onOpen}
             >
-              <Trans>Finalize</Trans>
-            </Button>
-          )}
+              <DropdownMenuIcon icon={<LuCircleX />} />
+              <Trans>Cancel</Trans>
+            </DropdownMenuItem>
 
-          {/* Cancel Button - sets status to Closed */}
-          <Button
-            onClick={cancelReasonModal.onOpen}
-            isDisabled={
-              (status !== "Draft" && status !== "Requested") ||
-              !permissions.can("update", "purchasing")
-            }
-            leftIcon={<LuCircleX />}
-            variant="secondary"
-          >
-            <Trans>Cancel</Trans>
-          </Button>
+            {/* Compare Quotes */}
+            {canCompareQuotes && (
+              <DropdownMenuItem onClick={compareQuotesModal.onOpen}>
+                <DropdownMenuIcon icon={<LuGitCompare />} />
+                <Trans>Compare Quotes</Trans>
+              </DropdownMenuItem>
+            )}
 
-          {canCompareQuotes && (
-            <Button
-              onClick={compareQuotesModal.onOpen}
-              leftIcon={<LuGitCompare />}
-              variant="secondary"
+            <DropdownMenuSeparator />
+
+            {/* Reopen */}
+            <DropdownMenuItem
+              disabled={
+                status !== "Closed" ||
+                statusFetcher.state !== "idle" ||
+                !permissions.can("update", "purchasing")
+              }
+              onClick={() => {
+                statusFetcher.submit(
+                  { status: "Draft" },
+                  {
+                    method: "post",
+                    action: path.to.purchasingRfqStatus(rfqId)
+                  }
+                );
+              }}
             >
-              <Trans>Compare Quotes</Trans>
-            </Button>
-          )}
+              <DropdownMenuIcon icon={<LuLoaderCircle />} />
+              <Trans>Reopen</Trans>
+            </DropdownMenuItem>
 
-          <IconButton
-            aria-label={t`Toggle Properties`}
-            icon={<LuPanelRight />}
-            onClick={toggleProperties}
-            variant="ghost"
-          />
+            {/* Delete */}
+            <DropdownMenuItem
+              disabled={
+                isLocked ||
+                !permissions.can("delete", "purchasing") ||
+                !permissions.is("employee")
+              }
+              destructive
+              onClick={deleteRFQModal.onOpen}
+            >
+              <DropdownMenuIcon icon={<LuTrash />} />
+              <Trans>Delete RFQ</Trans>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+          </DropdownMenu>
         </HStack>
+        <IconButton
+          aria-label={t`Toggle Properties`}
+          icon={<LuPanelRight />}
+          onClick={toggleProperties}
+          variant="ghost"
+        />
       </HStack>
+
       {finalizeModal.isOpen && (
         <FinalizeRFQModal
           lines={routeData?.lines ?? []}
@@ -351,7 +335,25 @@ const PurchasingRFQHeader = () => {
           purchasingRfqId={rfqId}
         />
       )}
-    </div>
+    </>
+  );
+}
+
+const PurchasingRFQHeader = () => {
+  const { rfqId } = useParams();
+  if (!rfqId) throw new Error("rfqId not found");
+
+  const { leftSlotEl, setHasLeftContent } = useTopbarLeft();
+
+  useIsomorphicLayoutEffect(() => {
+    setHasLeftContent(true);
+    return () => setHasLeftContent(false);
+  }, [setHasLeftContent]);
+
+  return (
+    <>
+      {leftSlotEl && createPortal(<PurchasingRFQTopbarLeft rfqId={rfqId} />, leftSlotEl)}
+    </>
   );
 };
 
