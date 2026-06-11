@@ -20,11 +20,13 @@ import {
   LuExternalLink,
   LuFile,
   LuLoaderCircle,
+  LuPanelLeft,
+  LuPanelRight,
   LuTrash
 } from "react-icons/lu";
 import { createPortal } from "react-dom";
 import { Link, useFetcher, useNavigate, useParams } from "react-router";
-import { useTopbarLeft } from "~/components/Layout";
+import { usePanels, useTopbarLeft } from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData } from "~/hooks";
 import { useSuppliers } from "~/stores/suppliers";
@@ -202,10 +204,29 @@ const IssueHeader = () => {
   if (!id) throw new Error("id not found");
 
   const { leftSlotEl } = useTopbarLeft();
+  const { t } = useLingui();
+  const { hasExplorer, toggleExplorer, toggleProperties } = usePanels();
 
   return (
     <>
       {leftSlotEl && createPortal(<IssueTopbarLeft id={id} />, leftSlotEl)}
+      <div className="flex-shrink-0 h-[50px] flex items-center gap-1 px-2 bg-card border-b border-border dark:border-none dark:shadow-[inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)]">
+        {hasExplorer && (
+          <IconButton
+            aria-label={t`Toggle Explorer`}
+            icon={<LuPanelLeft />}
+            onClick={toggleExplorer}
+            variant="ghost"
+          />
+        )}
+        <div className="flex-1" />
+        <IconButton
+          aria-label={t`Toggle Properties`}
+          icon={<LuPanelRight />}
+          onClick={toggleProperties}
+          variant="ghost"
+        />
+      </div>
     </>
   );
 };
