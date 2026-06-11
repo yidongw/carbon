@@ -235,7 +235,7 @@ function PartDetailsEagerSections({
           />
         )}
       </DeferredFiles>
-      <div className="h-[400px]">
+      <div className="h-[400px] w-full">
         <CadModel
           key={partData.partSummary.id ?? itemId}
           isReadOnly={!permissions.can("update", "parts")}
