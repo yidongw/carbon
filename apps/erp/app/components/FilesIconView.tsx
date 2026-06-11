@@ -6,6 +6,7 @@ import {
   IconButton
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
+import { useState } from "react";
 import { LuEllipsisVertical } from "react-icons/lu";
 import { Link } from "react-router";
 import DocumentIcon from "~/components/DocumentIcon";
@@ -153,12 +154,15 @@ const IconTile = ({
 };
 
 const IconThumbnail = ({ item }: { item: FilesIconItem }) => {
-  if (item.previewType === "Image" && item.pathToFile) {
+  const [failed, setFailed] = useState(false);
+
+  if (item.previewType === "Image" && item.pathToFile && !failed) {
     return (
-      <iframe
-        className="pointer-events-none h-full w-full border-0"
-        title={item.name}
-        src={path.to.file.previewImage("private", item.pathToFile)}
+      <img
+        alt=""
+        className="h-full w-full object-cover"
+        src={path.to.file.previewFile(`private/${item.pathToFile}`)}
+        onError={() => setFailed(true)}
       />
     );
   }
