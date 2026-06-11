@@ -1,7 +1,4 @@
-import { useState } from "react";
-import useMount from "./useMount";
-
-let hydrating = true;
+import { useSyncExternalStore } from "react";
 
 /**
  * Return a boolean indicating if the JS has been hydrated already.
@@ -9,6 +6,9 @@ let hydrating = true;
  * When doing Client-Side Rendering, the result will always be false on the
  * first render and true from then on. Even if a new component renders it will
  * always start with true.
+ *
+ * Uses useSyncExternalStore for correct SSR behavior without relying on
+ * useEffect, which may not fire in all React Router v7 rendering scenarios.
  *
  * Example: Disable a button that needs JS to work.
  * ```tsx
@@ -21,12 +21,9 @@ let hydrating = true;
  * ```
  */
 export default function useHydrated() {
-  let [hydrated, setHydrated] = useState(() => !hydrating);
-
-  useMount(() => {
-    hydrating = false;
-    setHydrated(true);
-  });
-
-  return hydrated;
+  return useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 }
