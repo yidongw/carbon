@@ -235,17 +235,14 @@ function PartDetailsEagerSections({
           />
         )}
       </DeferredFiles>
-      <div className="h-[400px] w-full">
-        <CadModel
-          key={partData.partSummary.id ?? itemId}
-          isReadOnly={!permissions.can("update", "parts")}
-          metadata={{ itemId }}
-          modelPath={partData.partSummary.modelPath ?? null}
-          title={t`CAD Model`}
-          uploadClassName="h-full max-h-full"
-          viewerClassName="h-full"
-        />
-      </div>
+      <CadModel
+        key={partData.partSummary.id ?? itemId}
+        isReadOnly={!permissions.can("update", "parts")}
+        metadata={{ itemId }}
+        modelPath={partData.partSummary.modelPath ?? null}
+        title={t`CAD Model`}
+        viewerClassName="h-[400px]"
+      />
       <Suspense fallback={<ExplorerSkeleton />}>
         <ItemRiskRegister itemId={itemId} />
       </Suspense>
