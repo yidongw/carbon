@@ -1435,6 +1435,16 @@ async function seed() {
       console.log(`   Created quality document`);
     }
 
+    // Fetch All Employees group for RLS-aware inserts (readGroups, groupIds, etc.)
+    const allEmployeesGroupRow2 = await client.query<{ id: string }>(
+      `SELECT id FROM "group" WHERE name = 'All Employees' AND "companyId" = $1 LIMIT 1`, [companyId]
+    );
+    const allEmployeesId = allEmployeesGroupRow2.rows[0]?.id ?? null;
+    const adminGroupRow = await client.query<{ id: string }>(
+      `SELECT id FROM "group" WHERE name = 'Admin' AND "companyId" = $1 LIMIT 1`, [companyId]
+    );
+    const adminGroupId2 = adminGroupRow.rows[0]?.id ?? null;
+
     // ─── Step 30: training + trainingQuestion + trainingAssignment ─────────────
     console.log("30. Seeding training...");
     let trainingId: string | null = null;
@@ -1481,8 +1491,8 @@ async function seed() {
         trainingAssignmentId = existingTA.rows[0]!.id;
       } else {
         const r = await client.query<{ id: string }>(
-          `INSERT INTO "trainingAssignment" ("trainingId", "companyId", "createdBy") VALUES ($1, $2, $3) RETURNING id`,
-          [trainingId, companyId, userId]
+          `INSERT INTO "trainingAssignment" ("trainingId", "groupIds", "companyId", "createdBy") VALUES ($1, $2, $3, $4) RETURNING id`,
+          [trainingId, allEmployeesId ? [allEmployeesId] : null, companyId, userId]
         );
         trainingAssignmentId = r.rows[0]!.id;
         console.log(`   Created training assignment`);
@@ -1694,9 +1704,10 @@ async function seed() {
       documentId = existingDoc.rows[0]!.id;
     } else {
       const r = await client.query<{ id: string }>(
-        `INSERT INTO document (path, name, description, size, type, "companyId", "createdBy")
-         VALUES ($1, $2, $3, $4, 'PDF'::"documentType", $5, $6) RETURNING id`,
-        ["/documents/bracket-drawing-rev2.pdf", "Bracket Drawing Rev2", "Engineering drawing for Mounting Bracket A", 245000, companyId, userId]
+        `INSERT INTO document (path, name, description, size, type, "readGroups", "writeGroups", "companyId", "createdBy")
+         VALUES ($1, $2, $3, $4, 'PDF'::"documentType", $5, $6, $7, $8) RETURNING id`,
+        ["/documents/bracket-drawing-rev2.pdf", "Bracket Drawing Rev2", "Engineering drawing for Mounting Bracket A", 245000,
+         allEmployeesId ? [allEmployeesId] : null, adminGroupId2 ? [adminGroupId2] : null, companyId, userId]
       );
       documentId = r.rows[0]!.id;
       console.log(`   Created document`);
