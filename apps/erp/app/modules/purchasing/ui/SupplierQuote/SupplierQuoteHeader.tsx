@@ -72,7 +72,6 @@ function SupplierQuoteTopbarLeft({ id }: { id: string }) {
   const { t } = useLingui();
   const permissions = usePermissions();
   const revalidator = useRevalidator();
-  const { hasExplorer, toggleExplorer, toggleProperties } = usePanels();
 
   const supplierApprovalRequired = useSupplierApprovalRequired();
   const routeData = useRouteData<{
@@ -127,16 +126,7 @@ function SupplierQuoteTopbarLeft({ id }: { id: string }) {
 
   return (
     <>
-      <HStack className="items-center -ml-2 w-full justify-between" spacing={1}>
-        <HStack spacing={1}>
-          {hasExplorer && (
-            <IconButton
-              aria-label={t`Toggle Explorer`}
-              icon={<LuPanelLeft />}
-              onClick={toggleExplorer}
-              variant="ghost"
-            />
-          )}
+      <HStack className="items-center -ml-2" spacing={1}>
           <Link to={path.to.supplierQuoteDetails(id)}>
             <span className="font-semibold text-sm">
               {routeData?.quote?.supplierQuoteId}
@@ -302,13 +292,6 @@ function SupplierQuoteTopbarLeft({ id }: { id: string }) {
             </DropdownMenuItem>
           </DropdownMenuContent>
           </DropdownMenu>
-        </HStack>
-        <IconButton
-          aria-label={t`Toggle Properties`}
-          icon={<LuPanelRight />}
-          onClick={toggleProperties}
-          variant="ghost"
-        />
       </HStack>
 
       <SupplierQuoteToOrderDrawer
@@ -373,10 +356,29 @@ const SupplierQuoteHeader = () => {
   if (!id) throw new Error("id not found");
 
   const { leftSlotEl } = useTopbarLeft();
+  const { t } = useLingui();
+  const { hasExplorer, toggleExplorer, toggleProperties } = usePanels();
 
   return (
     <>
       {leftSlotEl && createPortal(<SupplierQuoteTopbarLeft id={id} />, leftSlotEl)}
+      <div className="flex-shrink-0 h-[50px] flex items-center gap-1 px-2 bg-card border-b border-border dark:border-none dark:shadow-[inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)]">
+        {hasExplorer && (
+          <IconButton
+            aria-label={t`Toggle Explorer`}
+            icon={<LuPanelLeft />}
+            onClick={toggleExplorer}
+            variant="ghost"
+          />
+        )}
+        <div className="flex-1" />
+        <IconButton
+          aria-label={t`Toggle Properties`}
+          icon={<LuPanelRight />}
+          onClick={toggleProperties}
+          variant="ghost"
+        />
+      </div>
     </>
   );
 };

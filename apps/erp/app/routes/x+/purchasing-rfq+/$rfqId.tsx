@@ -115,12 +115,12 @@ export default function PurchasingRFQRoute() {
     <PanelProvider>
       <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
         <PurchasingRFQHeader />
-        <div className="flex h-[calc(100dvh-49px)] overflow-hidden w-full">
+        <div className="flex flex-1 min-h-0 overflow-hidden w-full">
           <div className="flex flex-grow overflow-hidden">
             <ResizablePanels
               explorer={<PurchasingRFQExplorer />}
               content={
-                <div className="h-[calc(100dvh-49px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
+                <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
                   <VStack spacing={2} className="p-2">
                     <Outlet />
                   </VStack>

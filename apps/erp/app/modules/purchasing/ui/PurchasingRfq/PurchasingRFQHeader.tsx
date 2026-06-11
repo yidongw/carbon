@@ -59,7 +59,6 @@ function PurchasingRFQTopbarLeft({ rfqId }: { rfqId: string }) {
   const integrations = useIntegrations();
   const canEmail = integrations.has("email");
   const finalizeFetcher = useFetcher<{ error: string | null }>();
-  const { hasExplorer, toggleExplorer, toggleProperties } = usePanels();
 
   const routeData = useRouteData<{
     rfqSummary: PurchasingRFQ;
@@ -86,16 +85,7 @@ function PurchasingRFQTopbarLeft({ rfqId }: { rfqId: string }) {
 
   return (
     <>
-      <HStack className="items-center -ml-2 w-full justify-between" spacing={1}>
-        <HStack spacing={1}>
-          {hasExplorer && (
-            <IconButton
-              aria-label={t`Toggle Explorer`}
-              icon={<LuPanelLeft />}
-              onClick={toggleExplorer}
-              variant="ghost"
-            />
-          )}
+      <HStack className="items-center -ml-2" spacing={1}>
           <Link to={path.to.purchasingRfqDetails(rfqId)}>
             <span className="font-semibold text-sm">
               {routeData?.rfqSummary?.rfqId}
@@ -276,13 +266,6 @@ function PurchasingRFQTopbarLeft({ rfqId }: { rfqId: string }) {
             </DropdownMenuItem>
           </DropdownMenuContent>
           </DropdownMenu>
-        </HStack>
-        <IconButton
-          aria-label={t`Toggle Properties`}
-          icon={<LuPanelRight />}
-          onClick={toggleProperties}
-          variant="ghost"
-        />
       </HStack>
 
       {finalizeModal.isOpen && (
@@ -343,10 +326,29 @@ const PurchasingRFQHeader = () => {
   if (!rfqId) throw new Error("rfqId not found");
 
   const { leftSlotEl } = useTopbarLeft();
+  const { t } = useLingui();
+  const { hasExplorer, toggleExplorer, toggleProperties } = usePanels();
 
   return (
     <>
       {leftSlotEl && createPortal(<PurchasingRFQTopbarLeft rfqId={rfqId} />, leftSlotEl)}
+      <div className="flex-shrink-0 h-[50px] flex items-center gap-1 px-2 bg-card border-b border-border dark:border-none dark:shadow-[inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)]">
+        {hasExplorer && (
+          <IconButton
+            aria-label={t`Toggle Explorer`}
+            icon={<LuPanelLeft />}
+            onClick={toggleExplorer}
+            variant="ghost"
+          />
+        )}
+        <div className="flex-1" />
+        <IconButton
+          aria-label={t`Toggle Properties`}
+          icon={<LuPanelRight />}
+          onClick={toggleProperties}
+          variant="ghost"
+        />
+      </div>
     </>
   );
 };
