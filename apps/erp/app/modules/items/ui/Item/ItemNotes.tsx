@@ -7,7 +7,6 @@ import {
   CardHeader,
   CardTitle,
   generateHTML,
-  Skeleton,
   toast,
   useDebounce
 } from "@carbon/react";
@@ -15,13 +14,9 @@ import { Editor } from "@carbon/react/Editor";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { nanoid } from "nanoid";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { usePermissions, useUser } from "~/hooks";
 import { getPrivateUrl } from "~/utils/path";
-
-// Module-level flag: once true after first client hydration, all subsequent
-// mounts render the editor immediately without waiting for an effect tick.
-let _editorHydrated = false;
 
 const ItemNotes = ({
   id,
@@ -77,19 +72,10 @@ const ItemNotes = ({
     true
   );
 
-  const [editorReady, setEditorReady] = useState(_editorHydrated);
-
-  useEffect(() => {
-    _editorHydrated = true;
-    setEditorReady(true);
-  }, []);
-
   if (!id) return null;
 
   const notesEditor =
-    !editorReady ? (
-      <Skeleton className="min-h-[120px] w-full" />
-    ) : permissions.can("update", "parts") ? (
+    permissions.can("update", "parts") ? (
       <Editor
         key={id}
         initialValue={(notes ?? {}) as JSONContent}
