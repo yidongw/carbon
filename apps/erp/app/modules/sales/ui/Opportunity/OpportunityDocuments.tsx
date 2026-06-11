@@ -19,14 +19,15 @@ import {
   Th,
   Thead,
   Tr,
-  toast
+  toast,
+  useLocalStorage
 } from "@carbon/react";
 import { convertKbToString } from "@carbon/utils";
 import { useDndContext, useDraggable } from "@dnd-kit/core";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { FileObject } from "@supabase/storage-js";
 import type { ChangeEvent } from "react";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import {
   LuEllipsisVertical,
   LuGripVertical,
@@ -35,7 +36,17 @@ import {
   LuUpload
 } from "react-icons/lu";
 import { Outlet, useFetchers, useRevalidator, useSubmit } from "react-router";
-import { DocumentPreview, FileDropzone } from "~/components";
+import {
+  DocumentPreview,
+  FileDropzone,
+  FilesGalleryView,
+  FilesViewModeToggle
+} from "~/components";
+import type { FilesGalleryItem } from "~/components/FilesGalleryView";
+import {
+  FILES_VIEW_MODE_KEY,
+  type FilesViewMode
+} from "~/components/FilesViewModeToggle";
 import DocumentIcon from "~/components/DocumentIcon";
 import { useDateFormatter, usePermissions, useUser } from "~/hooks";
 import { getDocumentType } from "~/modules/shared";
@@ -91,6 +102,29 @@ const OpportunityDocuments = ({
     .filter((d) => !optimisticDrags?.find((o) => o.id === d.id))
     .sort((a, b) => a.name.localeCompare(b.name)) as FileObject[];
 
+  const [viewMode, setViewMode] = useLocalStorage<FilesViewMode>(
+    FILES_VIEW_MODE_KEY,
+    "list"
+  );
+
+  const galleryItems = useMemo<FilesGalleryItem<FileObject>[]>(() => {
+    return attachmentsToRender.map((attachment) => {
+      const type = getDocumentType(attachment.name);
+      return {
+        id: attachment.id,
+        name: attachment.name,
+        documentType: type,
+        pathToFile: getPath(attachment),
+        createdAt: attachment.created_at,
+        sizeBytes: attachment.metadata?.size,
+        previewType: ["PDF", "Image"].includes(type)
+          ? (type as "PDF" | "Image")
+          : undefined,
+        raw: attachment
+      };
+    });
+  }, [attachmentsToRender, getPath]);
+
   return (
     <>
       <Card>
@@ -101,16 +135,29 @@ const OpportunityDocuments = ({
             </CardTitle>
           </CardHeader>
           <CardAction>
-            {!isReadOnlyProp && (
-              <OpportunityDocumentForm
-                opportunityId={opportunity.id}
-                id={id}
-                type={type}
-              />
-            )}
+            <HStack>
+              <FilesViewModeToggle value={viewMode} onChange={setViewMode} />
+              {!isReadOnlyProp && (
+                <OpportunityDocumentForm
+                  opportunityId={opportunity.id}
+                  id={id}
+                  type={type}
+                />
+              )}
+            </HStack>
           </CardAction>
         </HStack>
         <CardContent>
+          {viewMode === "gallery" ? (
+            <FilesGalleryView
+              items={galleryItems}
+              formatDate={formatDate}
+              canDelete={effectiveCanDelete}
+              emptyMessage={<Trans>No files uploaded</Trans>}
+              onDownload={(item) => item.raw && download(item.raw)}
+              onDelete={(item) => item.raw && deleteAttachment(item.raw)}
+            />
+          ) : (
           <Table>
             <Thead>
               <Tr>
@@ -187,6 +234,7 @@ const OpportunityDocuments = ({
               )}
             </Tbody>
           </Table>
+          )}
           {!isReadOnlyProp && <FileDropzone onDrop={onDrop} />}
         </CardContent>
       </Card>

@@ -24,16 +24,28 @@ import {
   Thead,
   Tr,
   toast,
+  useLocalStorage,
   VStack
 } from "@carbon/react";
 import { convertKbToString } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { FileObject } from "@supabase/storage-js";
 import type { ChangeEvent } from "react";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { LuEllipsisVertical, LuUpload } from "react-icons/lu";
 import { Link, useFetchers, useRevalidator, useSubmit } from "react-router";
-import { DocumentPreview, FileDropzone, Hyperlink } from "~/components";
+import {
+  DocumentPreview,
+  FileDropzone,
+  FilesGalleryView,
+  FilesViewModeToggle,
+  Hyperlink
+} from "~/components";
+import type { FilesGalleryItem } from "~/components/FilesGalleryView";
+import {
+  FILES_VIEW_MODE_KEY,
+  type FilesViewMode
+} from "~/components/FilesViewModeToggle";
 import DocumentIcon from "~/components/DocumentIcon";
 import { Enumerable } from "~/components/Enumerable";
 import { useDateFormatter, usePermissions, useUser } from "~/hooks";
@@ -433,6 +445,50 @@ const OpportunityLineDocuments = ({
     a.name.localeCompare(b.name)
   ) as FileObject[];
 
+  const [viewMode, setViewMode] = useLocalStorage<FilesViewMode>(
+    FILES_VIEW_MODE_KEY,
+    "list"
+  );
+
+  const getFileBucket = useCallback((file: FileObject) => {
+    return (file as FileObject & { bucket?: string }).bucket === "parts"
+      ? "parts"
+      : "opportunity-line";
+  }, []);
+
+  const galleryItems = useMemo<FilesGalleryItem<FileObject>[]>(() => {
+    const items: FilesGalleryItem<FileObject>[] = [];
+
+    if (modelUpload?.modelName) {
+      items.push({
+        id: modelUpload.modelId ?? "model",
+        name: modelUpload.modelName,
+        documentType: "Model",
+        sizeBytes: modelUpload.modelSize,
+        isModel: true,
+        modelViewUrl: getModelPath(modelUpload)
+      });
+    }
+
+    for (const file of allFiles) {
+      const documentType = getDocumentType(file.name);
+      items.push({
+        id: file.id,
+        name: file.name,
+        documentType,
+        pathToFile: getPath(file, getFileBucket(file)),
+        createdAt: file.created_at,
+        sizeBytes: file.metadata?.size,
+        previewType: ["PDF", "Image"].includes(documentType)
+          ? (documentType as "PDF" | "Image")
+          : undefined,
+        raw: file
+      });
+    }
+
+    return items;
+  }, [allFiles, getFileBucket, getModelPath, getPath, modelUpload]);
+
   return (
     <>
       <Card className="flex-grow">
@@ -443,17 +499,41 @@ const OpportunityLineDocuments = ({
             </CardTitle>
           </CardHeader>
           <CardAction>
-            {!isReadOnlyProp && (
-              <OpportunityLineDocumentForm
-                id={id}
-                type={type}
-                lineId={lineId}
-                itemId={itemId}
-              />
-            )}
+            <HStack>
+              <FilesViewModeToggle value={viewMode} onChange={setViewMode} />
+              {!isReadOnlyProp && (
+                <OpportunityLineDocumentForm
+                  id={id}
+                  type={type}
+                  lineId={lineId}
+                  itemId={itemId}
+                />
+              )}
+            </HStack>
           </CardAction>
         </HStack>
         <CardContent>
+          {viewMode === "gallery" ? (
+            <FilesGalleryView
+              items={galleryItems}
+              formatDate={formatDate}
+              canDelete={canDelete}
+              onDownload={(item) => {
+                if (item.isModel && modelUpload) {
+                  downloadModel(modelUpload);
+                } else if (item.raw) {
+                  download(item.raw);
+                }
+              }}
+              onDelete={(item) => {
+                if (item.isModel) {
+                  deleteModel(lineId);
+                } else if (item.raw) {
+                  deleteFile(item.raw);
+                }
+              }}
+            />
+          ) : (
           <Table>
             <Thead>
               <Tr>
@@ -668,6 +748,7 @@ const OpportunityLineDocuments = ({
               )}
             </Tbody>
           </Table>
+          )}
           {!isReadOnlyProp && <FileDropzone onDrop={onDrop} />}
         </CardContent>
       </Card>
