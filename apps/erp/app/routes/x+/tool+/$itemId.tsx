@@ -144,7 +144,7 @@ export default function ToolRoute() {
     <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
       <ToolHeader />
       <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
-        <div className="flex flex-grow overflow-hidden">
+        <div className="flex flex-1 min-h-0 h-full overflow-hidden">
           <ResizablePanels
             explorer={
               <div className="flex flex-col h-full">
@@ -495,7 +495,7 @@ export default function ToolRoute() {
               </div>
             }
             content={
-              <div className="h-[calc(100dvh-99px)] overflow-y-auto overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
+              <div className="h-full min-h-0 overflow-y-auto overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
                 <Outlet />
               </div>
             }

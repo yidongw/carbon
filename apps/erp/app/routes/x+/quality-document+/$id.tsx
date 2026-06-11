@@ -260,7 +260,7 @@ export default function QualityDocumentRoute() {
       <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
         <QualityDocumentHeader />
         <div className="flex flex-1 min-h-0 overflow-hidden w-full">
-          <div className="flex flex-grow overflow-hidden">
+          <div className="flex flex-1 min-h-0 h-full overflow-hidden">
             <ResizablePanels
               explorer={
                 <QualityDocumentExplorer
@@ -268,7 +268,7 @@ export default function QualityDocumentRoute() {
                 />
               }
               content={
-                <div className="bg-background flex-1 min-h-0 overflow-y-auto overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
+                <div className="bg-background h-full min-h-0 overflow-y-auto overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
                   <QualityDocumentEditor />
                   <Outlet />
                 </div>

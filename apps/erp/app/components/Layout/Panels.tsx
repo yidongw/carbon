@@ -167,8 +167,8 @@ export function ResizablePanels({
 
   if (isMobile) {
     return (
-      <div className="relative h-full w-full overflow-hidden">
-        {content}
+      <div className="relative flex h-full min-h-0 w-full flex-col overflow-hidden">
+        <div className="flex-1 min-h-0 overflow-hidden">{content}</div>
 
         {/* Explorer drawer — slides in from the left */}
         {explorer && !isExplorerCollapsed && (
@@ -230,9 +230,11 @@ export function ResizablePanels({
           <ResizableHandle withHandle />
         </>
       )}
-      <ResizablePanel order={2} className="z-1 relative min-w-0">
-        <div className="flex h-full min-w-0 overflow-hidden w-full">
-          <div className="flex-1 min-w-0 overflow-hidden">{content}</div>
+      <ResizablePanel order={2} className="z-1 relative min-h-0 min-w-0 h-full">
+        <div className="flex h-full min-h-0 min-w-0 overflow-hidden w-full">
+          <div className="flex min-h-0 min-w-0 h-full flex-1 flex-col overflow-hidden">
+            {content}
+          </div>
           {!isPropertiesCollapsed && properties && (
             <div className="w-96 max-w-[min(24rem,40%)] min-w-[280px] shrink-0 h-full overflow-hidden border-l border-border">
               {properties}
