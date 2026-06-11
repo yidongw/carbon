@@ -167,7 +167,7 @@ function PartPanelsLayout({
   properties: React.ReactNode;
 }) {
   return (
-    <div className="flex h-full min-h-0 overflow-hidden w-full">
+    <div className="relative flex h-full min-h-0 overflow-hidden w-full">
       <div className="flex w-72 flex-shrink-0 flex-col overflow-y-auto border-r bg-card shadow-lg">
         {explorer}
       </div>
