@@ -1,4 +1,4 @@
-import { HStack, IconButton } from "@carbon/react";
+import { cn, HStack, IconButton, useIsMobile } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import { useCallback } from "react";
 import { LuArrowLeft, LuSquarePen } from "react-icons/lu";
@@ -21,7 +21,9 @@ const Topbar = () => {
   const user = useUser();
   const notificationsKey = `${user.id}:${user.company.id}`;
   const onDashboard = location.pathname === path.to.authenticatedRoot;
-  const { setLeftSlotEl } = useTopbarLeft();
+  const isMobile = useIsMobile();
+  const { setLeftSlotEl, hasDetailTopbar } = useTopbarLeft();
+  const hideBreadcrumbsOnMobile = isMobile && hasDetailTopbar;
 
   const slotRef = useCallback(
     (el: HTMLDivElement | null) => setLeftSlotEl(el),
@@ -30,7 +32,7 @@ const Topbar = () => {
 
   return (
     <div className="h-[49px] flex items-center bg-background text-foreground px-4 top-0 sticky z-10 gap-2">
-      <div className="flex items-center flex-1 min-w-0 gap-1 [&:has([data-slot]:not(:empty))_[data-breadcrumbs]]:max-md:hidden">
+      <div className="flex items-center flex-1 min-w-0 gap-1">
         <div className="md:hidden flex-shrink-0">
           {!onDashboard ? (
             <IconButton
@@ -41,7 +43,13 @@ const Topbar = () => {
             />
           ) : null}
         </div>
-        <div data-breadcrumbs className="flex items-center min-w-0 flex-shrink">
+        <div
+          data-breadcrumbs
+          className={cn(
+            "flex items-center min-w-0 flex-shrink",
+            hideBreadcrumbsOnMobile && "hidden"
+          )}
+        >
           <Breadcrumbs />
         </div>
         {/* Portal target — detail identity renders after breadcrumbs */}
