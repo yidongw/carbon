@@ -6,6 +6,7 @@ import {
   ModelViewer,
   Spinner,
   toast,
+  useHydrated,
   useMode
 } from "@carbon/react";
 import {
@@ -15,16 +16,12 @@ import {
 } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { nanoid } from "nanoid";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { LuCloudUpload } from "react-icons/lu";
 import { useFetcher } from "react-router";
 import { useUser } from "~/hooks";
 import { getPrivateUrl, path } from "~/utils/path";
-
-// Module-level flag: after first client hydration all subsequent mounts render
-// the viewer immediately without a one-frame spinner delay.
-let _viewerHydrated = false;
 
 const SIZE_LIMIT = getFileSizeLimit("CAD_MODEL_UPLOAD");
 
@@ -60,12 +57,7 @@ const CadModel = ({
 
   const fetcher = useFetcher<{}>();
   const [file, setFile] = useState<File | null>(null);
-  const [viewerReady, setViewerReady] = useState(_viewerHydrated);
-
-  useEffect(() => {
-    _viewerHydrated = true;
-    setViewerReady(true);
-  }, []);
+  const hydrated = useHydrated();
 
   const onFileChange = async (file: File | null) => {
     const modelId = nanoid();
@@ -122,7 +114,7 @@ const CadModel = ({
     }
   };
 
-  if (!viewerReady) {
+  if (!hydrated) {
     return (
       <div className="flex w-full items-center justify-center py-6">
         <Spinner className="h-8 w-8" />
