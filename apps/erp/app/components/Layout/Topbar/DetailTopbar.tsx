@@ -7,8 +7,10 @@ import {
   type BadgeProps
 } from "@carbon/react";
 import type { ReactNode } from "react";
+import { useEffect } from "react";
 import { LuTag } from "react-icons/lu";
 import { BreadcrumbLink } from "~/components";
+import { useTopbarLeft } from "./TopbarContext";
 
 type DetailTopbarContentProps = {
   children: ReactNode;
@@ -16,6 +18,13 @@ type DetailTopbarContentProps = {
 
 /** Consistent layout for detail identity rendered in the topbar portal slot. */
 export function DetailTopbarContent({ children }: DetailTopbarContentProps) {
+  const { setHasDetailTopbar } = useTopbarLeft();
+
+  useEffect(() => {
+    setHasDetailTopbar(true);
+    return () => setHasDetailTopbar(false);
+  }, [setHasDetailTopbar]);
+
   return (
     <HStack
       className="items-center min-w-0 flex-shrink overflow-hidden"
