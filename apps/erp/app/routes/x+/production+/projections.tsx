@@ -66,10 +66,21 @@ export async function loader({ request }: LoaderFunctionArgs) {
     locationId = locations.data?.[0].id as string;
   }
 
-  const periods = await getOrCreatePeriods(
-    today(getLocalTimeZone()),
-    WEEKS_TO_PROJECT
-  );
+  let periods;
+  try {
+    periods = await getOrCreatePeriods(
+      today(getLocalTimeZone()),
+      WEEKS_TO_PROJECT
+    );
+  } catch (periodsError) {
+    throw redirect(
+      path.to.productionDashboard,
+      await flash(
+        request,
+        error(periodsError, "Failed to load projection periods")
+      )
+    );
+  }
 
   const projections = await getProductionProjections(
     client,
