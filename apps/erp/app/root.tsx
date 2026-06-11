@@ -219,17 +219,6 @@ export function Document({
         <Links />
       </head>
       <body className="h-full overflow-hidden bg-background antialiased selection:bg-primary/10 selection:text-primary">
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              const body = document.body;
-              if (!body) return;
-              while (body.firstChild && body.firstChild.tagName !== 'DIV') {
-                body.removeChild(body.firstChild);
-              }
-            `
-          }}
-        />
         {children}
         <Toaster position="bottom-right" visibleToasts={5} />
         <ScrollRestoration />
