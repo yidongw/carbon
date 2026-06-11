@@ -30,7 +30,7 @@ const Topbar = () => {
 
   return (
     <div className="h-[49px] flex items-center bg-background text-foreground px-4 top-0 sticky z-10 gap-2">
-      <div className="flex items-center flex-1 min-w-0 gap-1">
+      <div className="flex items-center flex-1 min-w-0 gap-1 [&:has([data-slot]:not(:empty))_[data-breadcrumbs]]:max-md:hidden">
         <div className="md:hidden flex-shrink-0">
           {!onDashboard ? (
             <IconButton
