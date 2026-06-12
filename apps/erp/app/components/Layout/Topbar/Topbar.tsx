@@ -1,6 +1,5 @@
 import { cn, HStack, IconButton, useIsMobile } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
-import { useCallback } from "react";
 import { LuArrowLeft, LuSquarePen } from "react-icons/lu";
 import { useLocation, useNavigate } from "react-router";
 import { usePermissions, useUser } from "~/hooks";
@@ -24,11 +23,6 @@ const Topbar = () => {
   const isMobile = useIsMobile();
   const { setLeftSlotEl, hasDetailTopbar } = useTopbarLeft();
   const hideBreadcrumbsOnMobile = isMobile && hasDetailTopbar;
-
-  const slotRef = useCallback(
-    (el: HTMLDivElement | null) => setLeftSlotEl(el),
-    [setLeftSlotEl]
-  );
 
   return (
     <div className="h-[49px] flex items-center bg-background text-foreground px-4 top-0 sticky z-10 gap-2">
@@ -54,8 +48,8 @@ const Topbar = () => {
         </div>
         {/* Portal target — detail identity renders after breadcrumbs */}
         <div
-          data-slot
-          ref={slotRef}
+          data-topbar-slot
+          ref={setLeftSlotEl}
           className="flex flex-1 items-center min-w-0 overflow-visible"
         />
       </div>

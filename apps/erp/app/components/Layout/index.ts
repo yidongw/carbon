@@ -15,8 +15,7 @@ import {
   DetailTopbarBadge,
   DetailTopbarContent,
   DetailTopbarId,
-  DetailTopbarPlainId,
-  PROPERTIES_PANEL_CLASS
+  DetailTopbarPlainId
 } from "./Topbar/DetailTopbar";
 
 export {
@@ -24,7 +23,6 @@ export {
   DetailTopbarContent,
   DetailTopbarId,
   DetailTopbarPlainId,
-  PROPERTIES_PANEL_CLASS,
   Background,
   CollapsibleSidebar,
   ContentSidebar,

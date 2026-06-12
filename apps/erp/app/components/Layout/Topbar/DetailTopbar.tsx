@@ -1,5 +1,6 @@
 import {
   Badge,
+  cn,
   HStack,
   Tooltip,
   TooltipContent,
@@ -36,48 +37,42 @@ export function DetailTopbarContent({ children }: DetailTopbarContentProps) {
 }
 
 type DetailTopbarIdProps = {
-  to: string;
+  to?: string;
   children: ReactNode;
 };
 
 /** Max width leaves room for status badges, copy, and overflow menu. */
 const DETAIL_ID_MAX_WIDTH = "max-w-[calc(100%-7rem)]";
 
-/** Detail ID styled as a breadcrumb continuation on desktop. */
+/** Detail ID styled as a breadcrumb continuation on desktop. Pass `to` for a link, omit for plain text. */
 export function DetailTopbarId({ to, children }: DetailTopbarIdProps) {
   return (
     <div
-      className={`flex min-w-0 shrink items-center overflow-hidden ${DETAIL_ID_MAX_WIDTH}`}
+      className={cn(
+        "flex min-w-0 shrink items-center overflow-hidden",
+        DETAIL_ID_MAX_WIDTH
+      )}
     >
       <span aria-hidden className="hidden md:inline shrink-0 px-1.5 text-accent-foreground">
         /
       </span>
-      <Link
-        to={to}
-        className="min-w-0 truncate font-semibold text-foreground hover:underline"
-      >
-        {children}
-      </Link>
+      {to ? (
+        <Link
+          to={to}
+          className="min-w-0 truncate font-semibold text-foreground hover:underline"
+        >
+          {children}
+        </Link>
+      ) : (
+        <span className="truncate font-semibold text-foreground">{children}</span>
+      )}
     </div>
   );
 }
 
-type DetailTopbarPlainIdProps = {
-  children: ReactNode;
-};
-
-/** Detail ID without a link (e.g. stock transfers). */
-export function DetailTopbarPlainId({ children }: DetailTopbarPlainIdProps) {
-  return (
-    <div
-      className={`flex min-w-0 shrink items-center overflow-hidden ${DETAIL_ID_MAX_WIDTH}`}
-    >
-      <span aria-hidden className="hidden md:inline shrink-0 px-1.5 text-accent-foreground">
-        /
-      </span>
-      <span className="truncate font-semibold text-foreground">{children}</span>
-    </div>
-  );
+/** @deprecated Use `<DetailTopbarId>` without `to` instead. */
+export function DetailTopbarPlainId({ children }: { children: ReactNode }) {
+  return <DetailTopbarId>{children}</DetailTopbarId>;
 }
 
 type DetailTopbarBadgeProps = BadgeProps & {
@@ -95,7 +90,7 @@ export function DetailTopbarBadge({
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Badge className={cnIconBadge(className, "shrink-0")} {...props}>
+        <Badge className={cn("px-1.5 min-w-0 shrink-0", className)} {...props}>
           {icon ?? <LuTag className="size-3.5" />}
         </Badge>
       </TooltipTrigger>
@@ -105,11 +100,3 @@ export function DetailTopbarBadge({
     </Tooltip>
   );
 }
-
-function cnIconBadge(...classes: (string | undefined)[]) {
-  return ["px-1.5 min-w-0", ...classes].filter(Boolean).join(" ");
-}
-
-/** Shared class for properties panel roots — prevents horizontal scroll. */
-export const PROPERTIES_PANEL_CLASS =
-  "w-full min-w-0 max-w-sm shrink-0 bg-card h-full overflow-y-auto overflow-x-hidden overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent border-l border-border px-4 py-2 text-sm";

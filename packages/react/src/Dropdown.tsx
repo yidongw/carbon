@@ -13,25 +13,7 @@ import { LuCheck, LuChevronRight } from "react-icons/lu";
 import { cn } from "./utils/cn";
 import { preventOverlayCloseAutoFocus } from "./utils/dom";
 
-const DropdownMenu = ({
-  onOpenChange,
-  ...props
-}: ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Root>) => (
-  <DropdownMenuPrimitive.Root
-    onOpenChange={(open) => {
-      onOpenChange?.(open);
-      if (!open) {
-        queueMicrotask(() => {
-          const active = document.activeElement;
-          if (active instanceof HTMLElement) {
-            active.blur();
-          }
-        });
-      }
-    }}
-    {...props}
-  />
-);
+const DropdownMenu = DropdownMenuPrimitive.Root;
 
 const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
 

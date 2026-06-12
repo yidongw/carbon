@@ -19,13 +19,13 @@ export function preventOverlayCloseAutoFocus(
     onCloseAutoFocus?.(event);
     if (!event.defaultPrevented) {
       event.preventDefault();
+      queueMicrotask(() => {
+        const active = document.activeElement;
+        if (active instanceof HTMLElement) {
+          active.blur();
+        }
+      });
     }
-    queueMicrotask(() => {
-      const active = document.activeElement;
-      if (active instanceof HTMLElement) {
-        active.blur();
-      }
-    });
   };
 }
 
