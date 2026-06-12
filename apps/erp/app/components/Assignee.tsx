@@ -137,6 +137,7 @@ const Assign = forwardRef<HTMLButtonElement, AssigneeProps>(
                             <EmployeeAvatar
                               size={size === "sm" ? "xxs" : "xs"}
                               employeeId={value ?? null}
+                              withName={false}
                             />
                           ) : (
                             <LuUser />
