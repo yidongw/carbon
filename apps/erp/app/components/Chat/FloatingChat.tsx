@@ -97,9 +97,10 @@ function useStored<T>(key: string, fallback: T) {
 interface LayoutDiagramProps {
   position: ChatPosition;
   active?: boolean;
+  isXs?: boolean;
 }
 
-function LayoutDiagram({ position, active }: LayoutDiagramProps) {
+function LayoutDiagram({ position, active, isXs }: LayoutDiagramProps) {
   const base = "rounded-[2px]";
   const nav = cn(base, "bg-current opacity-30", "w-[6px]");
   const page = cn(base, "bg-current opacity-10 flex-1");
@@ -139,7 +140,7 @@ function LayoutDiagram({ position, active }: LayoutDiagramProps) {
     ),
     top: (
       <div className="flex gap-[2px] w-full h-full">
-        <div className={cn(nav)} />
+        {!isXs && <div className={cn(nav)} />}
         <div className="flex flex-col gap-[2px] flex-1">
           <div className={cn(panel, "h-[10px]")} />
           <div className={cn(page)} />
@@ -148,7 +149,7 @@ function LayoutDiagram({ position, active }: LayoutDiagramProps) {
     ),
     bottom: (
       <div className="flex gap-[2px] w-full h-full">
-        <div className={cn(nav)} />
+        {!isXs && <div className={cn(nav)} />}
         <div className="flex flex-col gap-[2px] flex-1">
           <div className={cn(page)} />
           <div className={cn(panel, "h-[10px]")} />
@@ -179,11 +180,14 @@ interface PositionMenuProps {
   current: ChatPosition;
   onSelect: (p: ChatPosition) => void;
   onClose: () => void;
-  isMobile?: boolean;
+  viewportW: number;
 }
 
-function PositionMenu({ current, onSelect, onClose, isMobile }: PositionMenuProps) {
+function PositionMenu({ current, onSelect, onClose, viewportW }: PositionMenuProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const isXs = viewportW < 640;
+  const isMd = viewportW >= 768;
+  const isLg = viewportW >= 1024;
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
@@ -195,10 +199,16 @@ function PositionMenu({ current, onSelect, onClose, isMobile }: PositionMenuProp
     return () => document.removeEventListener("mousedown", handleClick);
   }, [onClose]);
 
-  const gridPositions = POSITIONS.filter((p) =>
-    p.id !== "fullscreen" &&
-    (!isMobile || (p.id !== "left-outside" && p.id !== "right-outside"))
-  );
+  // Filter positions based on viewport width
+  const gridPositions = POSITIONS.filter((p) => {
+    if (p.id === "fullscreen") return false;
+    if ((p.id === "left-outside" || p.id === "right-outside") && !isLg) return false;
+    if ((p.id === "left-inside" || p.id === "right-inside") && !isMd) return false;
+    return true;
+  });
+
+  const gridCols = isLg ? "grid-cols-3" : "grid-cols-2";
+  const fullscreenSpan = isLg ? "col-span-3" : "col-span-2";
 
   return (
     <motion.div
@@ -216,7 +226,7 @@ function PositionMenu({ current, onSelect, onClose, isMobile }: PositionMenuProp
       <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-2.5 px-0.5">
         Panel position
       </p>
-      <div className={cn("gap-2", isMobile ? "grid grid-cols-2" : "grid grid-cols-3")}>
+      <div className={cn("grid gap-2", gridCols)}>
         {gridPositions.map((pos) => (
           <button
             key={pos.id}
@@ -231,7 +241,7 @@ function PositionMenu({ current, onSelect, onClose, isMobile }: PositionMenuProp
             )}
           >
             <div className="w-[44px] h-[32px]">
-              <LayoutDiagram position={pos.id} active={current === pos.id} />
+              <LayoutDiagram position={pos.id} active={current === pos.id} isXs={isXs} />
             </div>
             <span className="text-[10px] font-medium leading-none text-center whitespace-nowrap">
               {pos.label}
@@ -243,7 +253,7 @@ function PositionMenu({ current, onSelect, onClose, isMobile }: PositionMenuProp
           onClick={() => onSelect("fullscreen")}
           className={cn(
             "flex flex-row gap-3 items-center rounded-lg px-3 py-2",
-            isMobile ? "col-span-2" : "col-span-3",
+            fullscreenSpan,
             "transition-colors duration-100",
             current === "fullscreen"
               ? "bg-primary/10 text-primary ring-1 ring-primary/30"
@@ -321,7 +331,7 @@ interface PanelHeaderProps {
   onTogglePositionMenu: () => void;
   onPositionSelect: (p: ChatPosition) => void;
   onClose: () => void;
-  isMobile?: boolean;
+  viewportW: number;
 }
 
 function PanelHeader({
@@ -330,7 +340,7 @@ function PanelHeader({
   onTogglePositionMenu,
   onPositionSelect,
   onClose,
-  isMobile
+  viewportW
 }: PanelHeaderProps) {
   const PositionIcon = {
     "left-outside": LuPanelLeft,
@@ -398,7 +408,7 @@ function PanelHeader({
             current={position}
             onSelect={onPositionSelect}
             onClose={onTogglePositionMenu}
-            isMobile={isMobile}
+            viewportW={viewportW}
           />
         )}
       </AnimatePresence>
@@ -436,9 +446,9 @@ export function FloatingChat() {
   const motionY = useMotionValue(btnPos.y);
   const initialBtnPosRef = useRef(btnPos);
 
-  // Mobile detection (< 768px)
-  const [isMobile, setIsMobile] = useState(
-    () => typeof window !== "undefined" && window.innerWidth < 768
+  // Track viewport width for responsive position filtering
+  const [viewportW, setViewportW] = useState(
+    () => typeof window !== "undefined" ? window.innerWidth : 1280
   );
 
   // Ref for native touch event attachment on the floating button
@@ -479,10 +489,10 @@ export function FloatingChat() {
     setBtnPos(snap);
   }, [motionX, motionY, setBtnPos]);
 
-  // Re-snap to nearest position on window resize + update isMobile
+  // Re-snap to nearest position on window resize + track viewportW
   useEffect(() => {
     const onResize = () => {
-      setIsMobile(window.innerWidth < 768);
+      setViewportW(window.innerWidth);
       if (dragRef.current?.active) return;
       const snap = nearestSnap(motionX.get(), motionY.get());
       setBtnPos(snap);
@@ -493,12 +503,16 @@ export function FloatingChat() {
     return () => window.removeEventListener("resize", onResize);
   }, [motionX, motionY, setBtnPos]);
 
-  // On mobile, left-outside/right-outside don't make sense — switch to bottom
+  // Auto-correct position when viewport shrinks below the threshold that supports it
   useEffect(() => {
-    if (isMobile && (position === "left-outside" || position === "right-outside")) {
+    const isMd = viewportW >= 768;
+    const isLg = viewportW >= 1024;
+    if (!isLg && (position === "left-outside" || position === "right-outside")) {
+      setPosition("bottom");
+    } else if (!isMd && (position === "left-inside" || position === "right-inside")) {
       setPosition("bottom");
     }
-  }, [isMobile, position, setPosition]);
+  }, [viewportW, position, setPosition]);
 
   // Button drag + click handlers
   const onBtnMouseDown = useCallback(
@@ -648,6 +662,12 @@ export function FloatingChat() {
       position: "fixed",
       zIndex: position === "fullscreen" ? 50 : 40
     };
+    // On xs (<640px) top/bottom panels go full-width (no nav offset) and height is capped
+    const isXs = viewportW < 640;
+    const hOffset = isXs ? 0 : NAV_WIDTH;
+    const safeH = isXs
+      ? Math.min(panelHeight, Math.round(window.innerHeight * 0.6))
+      : panelHeight;
     switch (position) {
       case "left-outside":
         return { ...base, left: 0, top: TOPBAR_HEIGHT, bottom: 0, width: panelWidth };
@@ -658,9 +678,9 @@ export function FloatingChat() {
       case "right-inside":
         return { ...base, right: 0, top: TOPBAR_HEIGHT, bottom: 0, width: panelWidth };
       case "top":
-        return { ...base, left: NAV_WIDTH, right: 0, top: TOPBAR_HEIGHT, height: panelHeight };
+        return { ...base, left: hOffset, right: 0, top: TOPBAR_HEIGHT, height: safeH };
       case "bottom":
-        return { ...base, left: NAV_WIDTH, right: 0, bottom: 0, height: panelHeight };
+        return { ...base, left: hOffset, right: 0, bottom: 0, height: safeH };
       case "fullscreen":
         return { ...base, inset: 0 };
     }
@@ -765,7 +785,7 @@ export function FloatingChat() {
                 setIsPositionMenuOpen(false);
               }}
               onClose={() => setIsOpen(false)}
-              isMobile={isMobile}
+              viewportW={viewportW}
             />
 
             {/* Chat interface */}
