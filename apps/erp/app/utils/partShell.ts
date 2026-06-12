@@ -1,8 +1,4 @@
-import type { ItemFile, Part, PartSummary } from "~/modules/items";
-import {
-  createPendingPartUsedInGroupPromises,
-  type PartMethodTree
-} from "~/modules/items/partUsedIn.server";
+import type { Part, PartSummary } from "~/modules/items";
 
 const key = (itemId: string) => `carbon:part-shell:${itemId}`;
 
@@ -48,19 +44,3 @@ export function createPlaceholderPartSummary(itemId: string): PartSummary {
   } as PartSummary;
 }
 
-export function createPartShellLoaderData(
-  partSummary: PartSummary,
-  flags: { shell?: true }
-) {
-  return {
-    partSummary: Promise.resolve(partSummary),
-    files: Promise.resolve([] as ItemFile[]),
-    supplierParts: Promise.resolve([]),
-    pickMethods: Promise.resolve([]),
-    makeMethods: Promise.resolve({ data: [], error: null }),
-    tags: Promise.resolve([]),
-    usedInGroups: createPendingPartUsedInGroupPromises(),
-    methodTree: new Promise<PartMethodTree | null>(() => {}),
-    ...flags
-  };
-}
