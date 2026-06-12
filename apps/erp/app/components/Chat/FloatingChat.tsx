@@ -332,6 +332,7 @@ interface PanelHeaderProps {
   onPositionSelect: (p: ChatPosition) => void;
   onClose: () => void;
   viewportW: number;
+  isShort?: boolean;
 }
 
 function PanelHeader({
@@ -340,7 +341,8 @@ function PanelHeader({
   onTogglePositionMenu,
   onPositionSelect,
   onClose,
-  viewportW
+  viewportW,
+  isShort
 }: PanelHeaderProps) {
   const PositionIcon = {
     "left-outside": LuPanelLeft,
@@ -363,7 +365,7 @@ function PanelHeader({
         </div>
 
         <div className="flex items-center gap-0.5">
-          <button
+          {!isShort && <button
             type="button"
             onClick={onTogglePositionMenu}
             title="Change panel position"
@@ -389,7 +391,7 @@ function PanelHeader({
                 }[position]
               }
             </span>
-          </button>
+          </button>}
 
           <button
             type="button"
@@ -445,9 +447,12 @@ export function FloatingChat() {
   const motionX = useMotionValue(btnPos.x);
   const motionY = useMotionValue(btnPos.y);
 
-  // Track viewport width for responsive position filtering
+  // Track viewport dimensions for responsive layout
   const [viewportW, setViewportW] = useState(
     () => typeof window !== "undefined" ? window.innerWidth : 1280
+  );
+  const [viewportH, setViewportH] = useState(
+    () => typeof window !== "undefined" ? window.innerHeight : 900
   );
 
   // Ref for native touch event attachment on the floating button
@@ -476,9 +481,12 @@ export function FloatingChat() {
     setMounted(true);
   }, []);
 
-  // Track viewport width on resize
+  // Track viewport dimensions on resize
   useEffect(() => {
-    const onResize = () => setViewportW(window.innerWidth);
+    const onResize = () => {
+      setViewportW(window.innerWidth);
+      setViewportH(window.innerHeight);
+    };
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);
@@ -498,9 +506,10 @@ export function FloatingChat() {
       fmAnimate(motionY, snap.y, { type: "spring", duration: 0.4, bounce: 0.15 });
       setBtnPos(snap);
     }
-  }, [viewportW, motionX, motionY, setBtnPos]);
+  }, [viewportW, viewportH, motionX, motionY, setBtnPos]);
 
-  // Auto-correct position when viewport shrinks below the threshold that supports it
+  // Auto-correct stored position when viewport shrinks below the breakpoint that supports it.
+  // Short-screen (landscape phone) forces fullscreen via effectivePosition — no stored change needed.
   useEffect(() => {
     const isMd = viewportW >= 768;
     const isLg = viewportW >= 1024;
@@ -653,11 +662,15 @@ export function FloatingChat() {
     [position, panelWidth, panelHeight, setPanelWidth, setPanelHeight]
   );
 
+  // Short screen (landscape phone, h < 500px): force fullscreen without mutating stored position
+  const isShort = viewportH < 500;
+  const effectivePosition: ChatPosition = isShort ? "fullscreen" : position;
+
   // Compute panel CSS
   const panelStyle = (): React.CSSProperties => {
     const base: React.CSSProperties = {
       position: "fixed",
-      zIndex: position === "fullscreen" ? 50 : 40
+      zIndex: effectivePosition === "fullscreen" ? 50 : 40
     };
     // On xs (<640px) top/bottom panels go full-width (no nav offset) and height is capped
     const isXs = viewportW < 640;
@@ -665,7 +678,7 @@ export function FloatingChat() {
     const safeH = isXs
       ? Math.min(panelHeight, Math.round(window.innerHeight * 0.6))
       : panelHeight;
-    switch (position) {
+    switch (effectivePosition) {
       case "left-outside":
         return { ...base, left: 0, top: TOPBAR_HEIGHT, bottom: 0, width: panelWidth };
       case "right-outside":
@@ -693,16 +706,16 @@ export function FloatingChat() {
     fullscreen: { opacity: 0, scale: 0.97 }
   };
 
-  const isResizable = [
+  const isResizable = !isShort && [
     "left-outside",
     "right-outside",
     "left-inside",
     "right-inside",
     "top",
     "bottom"
-  ].includes(position);
+  ].includes(effectivePosition);
   const resizeDimension =
-    position === "top" || position === "bottom" ? "height" : "width";
+    effectivePosition === "top" || effectivePosition === "bottom" ? "height" : "width";
 
   if (!mounted) return null;
 
@@ -750,11 +763,11 @@ export function FloatingChat() {
       <AnimatePresence initial={false}>
         {isOpen && (
           <motion.div
-            key={`panel-${position}`}
+            key={`panel-${effectivePosition}`}
             style={panelStyle()}
-            initial={panelEnterVariants[position]}
+            initial={panelEnterVariants[effectivePosition]}
             animate={{ x: 0, y: 0, opacity: 1, scale: 1 }}
-            exit={panelEnterVariants[position]}
+            exit={panelEnterVariants[effectivePosition]}
             transition={{ type: "spring", duration: 0.35, bounce: 0 }}
             className={cn(
               "flex flex-col overflow-hidden",
@@ -765,14 +778,14 @@ export function FloatingChat() {
             {/* Resize handle (rendered before header so it's on the edge) */}
             {isResizable && (
               <ResizeHandle
-                position={position}
+                position={effectivePosition}
                 onResizeStart={(e) => onResizeStart(e, resizeDimension)}
               />
             )}
 
             {/* Header */}
             <PanelHeader
-              position={position}
+              position={effectivePosition}
               isPositionMenuOpen={isPositionMenuOpen}
               onTogglePositionMenu={() =>
                 setIsPositionMenuOpen((prev) => !prev)
@@ -783,6 +796,7 @@ export function FloatingChat() {
               }}
               onClose={() => setIsOpen(false)}
               viewportW={viewportW}
+              isShort={isShort}
             />
 
             {/* Chat interface */}
