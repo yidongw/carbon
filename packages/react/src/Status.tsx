@@ -55,7 +55,7 @@ const Status = ({
           variant={color}
           className={cn(
             "inline-flex items-center gap-1",
-            iconOnly && "px-1.5",
+            iconOnly && "px-1.5 shrink-0",
             className
           )}
           {...props}
