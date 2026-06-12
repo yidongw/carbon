@@ -17,7 +17,7 @@ msgstr "供应商是向您销售零件或服务的企业或个人。"
 
 #. placeholder {0}: fieldDef?.label ?? condition.field
 msgid "\"{0}\" isn't available on the selected surface(s). Pick another field."
-msgstr ""
+msgstr "\"{0}\"在选定的表面上不可用。请选择另一个字段。"
 
 msgid "\"{storageUnitName}\" has {childCount} direct nested storage units. Deleting it will also delete them and anything underneath them. This cannot be undone."
 msgstr "\"{storageUnitName}\"有{childCount}个直接嵌套的存储单元。删除它也会删除它们及其下面的所有内容。此操作无法撤销。"
@@ -466,7 +466,7 @@ msgid "An item cannot be added to itself."
 msgstr "一个项目不能添加到自身。"
 
 msgid "AND"
-msgstr ""
+msgstr "且"
 
 msgid "and {remaining} more"
 msgstr "和 {remaining} 个更多"
@@ -487,10 +487,10 @@ msgid "Annotation updated"
 msgstr "注释已更新"
 
 msgid "Any item group"
-msgstr ""
+msgstr "任何项目组"
 
 msgid "Any item type"
-msgstr ""
+msgstr "任何物品类型"
 
 msgid "API and Webhooks"
 msgstr "API 和 Webhooks"
@@ -1188,22 +1188,22 @@ msgid "Cancel Job"
 msgstr "取消工作"
 
 msgid "Cancel Sales Order"
-msgstr ""
+msgstr "取消销售订单"
 
 msgid "Cancel SO"
-msgstr ""
+msgstr "取消销售订单"
 
 #. placeholder {0}: selectedIds.length
 #. placeholder {1}: selectedIds.length === 1 ? "" : "s"
 msgid "Cancel SO + {0} job{1}"
-msgstr ""
+msgstr "取消 SO + {0} 个工作{1}"
 
 #. placeholder {0}: selectedIds.length
 msgid "Cancel SO + {0} selected"
-msgstr ""
+msgstr "取消 SO + {0} 已选择"
 
 msgid "Cancel SO only"
-msgstr ""
+msgstr "仅取消销售订单"
 
 msgid "Canceled"
 msgstr "已取消"
@@ -1314,7 +1314,7 @@ msgid "Check your email"
 msgstr "检查您的电子邮件"
 
 msgid "Choose a company"
-msgstr ""
+msgstr "选择公司"
 
 msgid "Choose another file"
 msgstr "选择另一个文件"
@@ -1411,7 +1411,7 @@ msgid "Columns"
 msgstr "列"
 
 msgid "Combine filters"
-msgstr ""
+msgstr "合并筛选"
 
 msgid "Coming soon"
 msgstr "即将推出"
@@ -1650,6 +1650,9 @@ msgstr "将所有项目和定价复制到另一个客户或类型。"
 
 msgid "Copy API Key"
 msgstr "复制 API 密钥"
+
+msgid "Copy company unique identifier"
+msgstr "复制公司唯一标识符"
 
 msgid "Copy consumable number"
 msgstr "复制消耗品编号"
@@ -2985,7 +2988,7 @@ msgid "Employees"
 msgstr "员工"
 
 msgid "Empty = match every item"
-msgstr ""
+msgstr "空 = 匹配每个项目"
 
 msgid "Empty work centers"
 msgstr "空的工作中心"
@@ -4053,7 +4056,7 @@ msgid "Invite"
 msgstr "邀请"
 
 msgid "Invited"
-msgstr ""
+msgstr "已邀请"
 
 msgid "Invoice"
 msgstr "发票"
@@ -4158,13 +4161,13 @@ msgid "Item {scannedItem} is not the same as the item {expectedItem}"
 msgstr "项目 {scannedItem} 与项目 {expectedItem} 不相同"
 
 msgid "Item filters"
-msgstr ""
+msgstr "项目筛选器"
 
 msgid "Item Group"
 msgstr "物品组"
 
 msgid "Item groups"
-msgstr ""
+msgstr "物品组"
 
 msgid "Item Groups"
 msgstr "物品组"
@@ -4176,10 +4179,10 @@ msgid "Item Master"
 msgstr "物料主数据"
 
 msgid "Item must match a selected type AND a selected group"
-msgstr ""
+msgstr "项目必须匹配选定的类型和选定的组"
 
 msgid "Item must match a selected type OR a selected group"
-msgstr ""
+msgstr "项目必须匹配选定的类型或选定的组"
 
 msgid "Item Scope"
 msgstr "物品范围"
@@ -4188,7 +4191,7 @@ msgid "Item Type"
 msgstr "物品类型"
 
 msgid "Item types"
-msgstr ""
+msgstr "物品类型"
 
 msgid "items"
 msgstr "项目"
@@ -4415,7 +4418,7 @@ msgid "Load Templates"
 msgstr "加载模板"
 
 msgid "Loading associated jobs..."
-msgstr ""
+msgstr "正在加载关联的工作..."
 
 msgid "Loading item details..."
 msgstr "正在加载项目详情..."
@@ -4604,13 +4607,13 @@ msgid "Match all"
 msgstr "全部匹配"
 
 msgid "Match all (AND)"
-msgstr ""
+msgstr "全部匹配 (AND)"
 
 msgid "Match any"
 msgstr "匹配任意"
 
 msgid "Match any (OR)"
-msgstr ""
+msgstr "匹配任意项 (OR)"
 
 msgid "Match none"
 msgstr "不匹配任何条件"
@@ -5159,7 +5162,7 @@ msgid "No action needed"
 msgstr "无需操作"
 
 msgid "No active jobs found for this sales order. The order will be cancelled directly."
-msgstr ""
+msgstr "未找到此销售订单的活跃工作。订单将直接取消。"
 
 msgid "No active plan"
 msgstr "没有活跃的计划"
@@ -5379,7 +5382,7 @@ msgid "Not started training for"
 msgstr "未开始培训"
 
 msgid "Not you?"
-msgstr ""
+msgstr "不是你？"
 
 msgid "Note"
 msgstr "备注"
@@ -5535,7 +5538,7 @@ msgid "Options"
 msgstr "选项"
 
 msgid "OR"
-msgstr ""
+msgstr "或"
 
 msgid "Order"
 msgstr "订单"
@@ -6884,7 +6887,7 @@ msgid "Select a team"
 msgstr "选择一个团队"
 
 msgid "Select all"
-msgstr ""
+msgstr "全选"
 
 msgid "Select an assignee"
 msgstr "选择受理人"
@@ -7432,7 +7435,7 @@ msgid "Storage client not available"
 msgstr "存储客户端不可用"
 
 msgid "Storage Rules"
-msgstr ""
+msgstr "存储规则"
 
 msgid "Storage Type"
 msgstr "存储类型"
@@ -7826,7 +7829,7 @@ msgid "This job will no longer be available on the shop floor."
 msgstr "此工作将不再在车间可用。"
 
 msgid "This sales order has associated jobs. Choose what to do with them."
-msgstr ""
+msgstr "此销售订单有关联的工作。选择如何处理它们。"
 
 msgid "This sales order has lines that require jobs to be created"
 msgstr "此销售订单有需要创建工作的行项目"
@@ -8711,7 +8714,7 @@ msgid "Yes, Update IDs"
 msgstr "是的，更新 ID"
 
 msgid "You belong to more than one company. Pick where to work."
-msgstr ""
+msgstr "你属于多个公司。选择你要工作的地方。"
 
 msgid "You can change the UI style any time through the theme setting"
 msgstr "您可以随时通过主题设置更改UI样式"

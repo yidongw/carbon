@@ -17,7 +17,7 @@ msgstr "Поставщик — это компания или лицо, кото
 
 #. placeholder {0}: fieldDef?.label ?? condition.field
 msgid "\"{0}\" isn't available on the selected surface(s). Pick another field."
-msgstr ""
+msgstr "\"{0}\" недоступно на выбранной поверхности (поверхностях). Выберите другое поле."
 
 msgid "\"{storageUnitName}\" has {childCount} direct nested storage units. Deleting it will also delete them and anything underneath them. This cannot be undone."
 msgstr "«{storageUnitName}» содержит {childCount} прямых вложенных единиц хранения. Удаление приведет к удалению этих единиц и всего, что находится под ними. Это действие невозможно отменить."
@@ -466,7 +466,7 @@ msgid "An item cannot be added to itself."
 msgstr "Элемент не может быть добавлен к самому себе."
 
 msgid "AND"
-msgstr ""
+msgstr "И"
 
 msgid "and {remaining} more"
 msgstr "и ещё {remaining}"
@@ -487,10 +487,10 @@ msgid "Annotation updated"
 msgstr "Аннотация обновлена"
 
 msgid "Any item group"
-msgstr ""
+msgstr "Любая группа товаров"
 
 msgid "Any item type"
-msgstr ""
+msgstr "Любой тип товара"
 
 msgid "API and Webhooks"
 msgstr "API и Webhooks"
@@ -1188,22 +1188,22 @@ msgid "Cancel Job"
 msgstr "Отменить задание"
 
 msgid "Cancel Sales Order"
-msgstr ""
+msgstr "Отмена заказа на продажу"
 
 msgid "Cancel SO"
-msgstr ""
+msgstr "Отменить ПП"
 
 #. placeholder {0}: selectedIds.length
 #. placeholder {1}: selectedIds.length === 1 ? "" : "s"
 msgid "Cancel SO + {0} job{1}"
-msgstr ""
+msgstr "Отменить ПЗ + {0} заказ{1}"
 
 #. placeholder {0}: selectedIds.length
 msgid "Cancel SO + {0} selected"
-msgstr ""
+msgstr "Отменить ПЗ + {0} выбрано"
 
 msgid "Cancel SO only"
-msgstr ""
+msgstr "Отменить только ПЗ"
 
 msgid "Canceled"
 msgstr "Отменено"
@@ -1314,7 +1314,7 @@ msgid "Check your email"
 msgstr "Проверьте вашу почту"
 
 msgid "Choose a company"
-msgstr ""
+msgstr "Выберите компанию"
 
 msgid "Choose another file"
 msgstr "Выбрать другой файл"
@@ -1411,7 +1411,7 @@ msgid "Columns"
 msgstr "Столбцы"
 
 msgid "Combine filters"
-msgstr ""
+msgstr "Объединить фильтры"
 
 msgid "Coming soon"
 msgstr "Скоро"
@@ -1650,6 +1650,9 @@ msgstr "Скопируйте все товары и цены другому кл
 
 msgid "Copy API Key"
 msgstr "Копировать API ключ"
+
+msgid "Copy company unique identifier"
+msgstr "Скопировать уникальный идентификатор компании"
 
 msgid "Copy consumable number"
 msgstr "Скопировать номер расходного материала"
@@ -2985,7 +2988,7 @@ msgid "Employees"
 msgstr "Сотрудники"
 
 msgid "Empty = match every item"
-msgstr ""
+msgstr "Пусто = соответствует каждому товару"
 
 msgid "Empty work centers"
 msgstr "Пустые рабочие центры"
@@ -4053,7 +4056,7 @@ msgid "Invite"
 msgstr "Пригласить"
 
 msgid "Invited"
-msgstr ""
+msgstr "Приглашено"
 
 msgid "Invoice"
 msgstr "Счет"
@@ -4158,13 +4161,13 @@ msgid "Item {scannedItem} is not the same as the item {expectedItem}"
 msgstr "Товар {scannedItem} не совпадает с товаром {expectedItem}"
 
 msgid "Item filters"
-msgstr ""
+msgstr "Фильтры товаров"
 
 msgid "Item Group"
 msgstr "Группа товаров"
 
 msgid "Item groups"
-msgstr ""
+msgstr "Группы товаров"
 
 msgid "Item Groups"
 msgstr "Группы товаров"
@@ -4176,10 +4179,10 @@ msgid "Item Master"
 msgstr "Мастер элемента"
 
 msgid "Item must match a selected type AND a selected group"
-msgstr ""
+msgstr "Товар должен соответствовать выбранному типу И выбранной группе"
 
 msgid "Item must match a selected type OR a selected group"
-msgstr ""
+msgstr "Товар должен соответствовать выбранному типу ИЛИ выбранной группе"
 
 msgid "Item Scope"
 msgstr "Область применения товара"
@@ -4188,7 +4191,7 @@ msgid "Item Type"
 msgstr "Тип товара"
 
 msgid "Item types"
-msgstr ""
+msgstr "Типы товаров"
 
 msgid "items"
 msgstr "элементы"
@@ -4415,7 +4418,7 @@ msgid "Load Templates"
 msgstr "Загрузить шаблоны"
 
 msgid "Loading associated jobs..."
-msgstr ""
+msgstr "Загрузка связанных заданий..."
 
 msgid "Loading item details..."
 msgstr "Загрузка деталей товара..."
@@ -4604,13 +4607,13 @@ msgid "Match all"
 msgstr "Совпадают все"
 
 msgid "Match all (AND)"
-msgstr ""
+msgstr "Совпадать со всеми (И)"
 
 msgid "Match any"
 msgstr "Совпадает с любым"
 
 msgid "Match any (OR)"
-msgstr ""
+msgstr "Совпадать с любым (ИЛИ)"
 
 msgid "Match none"
 msgstr "Не совпадает ни одно"
@@ -5159,7 +5162,7 @@ msgid "No action needed"
 msgstr "Никаких действий не требуется"
 
 msgid "No active jobs found for this sales order. The order will be cancelled directly."
-msgstr ""
+msgstr "Для этого заказа не найдено активных работ. Заказ будет отменен напрямую."
 
 msgid "No active plan"
 msgstr "Нет активного плана"
@@ -5379,7 +5382,7 @@ msgid "Not started training for"
 msgstr "Обучение не начато для"
 
 msgid "Not you?"
-msgstr ""
+msgstr "Это не вы?"
 
 msgid "Note"
 msgstr "Примечание"
@@ -5535,7 +5538,7 @@ msgid "Options"
 msgstr "Параметры"
 
 msgid "OR"
-msgstr ""
+msgstr "ИЛИ"
 
 msgid "Order"
 msgstr "Заказ"
@@ -6884,7 +6887,7 @@ msgid "Select a team"
 msgstr "Выберите команду"
 
 msgid "Select all"
-msgstr ""
+msgstr "Выбрать все"
 
 msgid "Select an assignee"
 msgstr "Выберите исполнителя"
@@ -7432,7 +7435,7 @@ msgid "Storage client not available"
 msgstr "Клиент хранилища недоступен"
 
 msgid "Storage Rules"
-msgstr ""
+msgstr "Правила хранения"
 
 msgid "Storage Type"
 msgstr "Тип хранилища"
@@ -7826,7 +7829,7 @@ msgid "This job will no longer be available on the shop floor."
 msgstr "Эта работа больше не будет доступна на производственном участке."
 
 msgid "This sales order has associated jobs. Choose what to do with them."
-msgstr ""
+msgstr "Этот заказ на продажу имеет связанные работы. Выберите, что с ними делать."
 
 msgid "This sales order has lines that require jobs to be created"
 msgstr "Этот заказ на продажу содержит строки, для которых необходимо создать задания"
@@ -8711,7 +8714,7 @@ msgid "Yes, Update IDs"
 msgstr "Да, обновить ID"
 
 msgid "You belong to more than one company. Pick where to work."
-msgstr ""
+msgstr "Вы принадлежите более чем одной компании. Выберите, где работать."
 
 msgid "You can change the UI style any time through the theme setting"
 msgstr "Вы можете изменить стиль интерфейса в любое время через настройку темы"
