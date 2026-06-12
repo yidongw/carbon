@@ -11,6 +11,7 @@ import {
   themeSchema
 } from "@carbon/documents/template";
 import { getPreferenceHeaders } from "@carbon/react";
+import { labelSizes } from "@carbon/utils";
 import { renderToStream } from "@react-pdf/renderer";
 import type { ActionFunctionArgs } from "react-router";
 import { z } from "zod";
@@ -102,6 +103,15 @@ export async function action({ request, params }: ActionFunctionArgs) {
     // everything else (line items, totals) stays sample data.
     const company = await getCompany(client, companyId);
     baseProps = { ...sample, company: company.data ?? sample.company, locale };
+  }
+
+  // Tracking-label preview: render against the picked stock (the layout scales
+  // to any size). Overrides the sample's fixed size.
+  if (documentType === "trackingLabel") {
+    const size = labelSizes.find(
+      (s) => s.id === String(formData.get("labelSizeId") ?? "")
+    );
+    if (size) baseProps.labelSize = size;
   }
 
   const stream = await renderToStream(

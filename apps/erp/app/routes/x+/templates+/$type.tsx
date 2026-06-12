@@ -21,6 +21,7 @@ import { usePermissions } from "~/hooks";
 import {
   documentTemplateValidator,
   getCompany,
+  getCompanySettings,
   getDocumentSections,
   getDocumentTemplate,
   getTerms,
@@ -51,7 +52,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     customFieldSchemas,
     previewEntities,
     terms,
-    company
+    company,
+    companySettings
   ] = await Promise.all([
     getDocumentTemplate(client, companyId, documentType),
     getDocumentSections(client, companyId),
@@ -62,7 +64,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     listPreviewEntities(client, companyId, documentType),
     // Company terms setting — seeds the Terms block when it has no content.
     getTerms(client, companyId),
-    getCompany(client, companyId)
+    getCompany(client, companyId),
+    // Company's configured label stock — seeds the label-size preview picker.
+    getCompanySettings(client, companyId)
   ]);
 
   // Map the document type to the relevant company terms setting (the Terms
@@ -120,7 +124,12 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     termsSeed,
     hasWatermark: Boolean(
       (company.data as { logoWatermark?: string | null } | null)?.logoWatermark
-    )
+    ),
+    initialLabelSizeId:
+      documentType === "trackingLabel"
+        ? ((companySettings.data as { productLabelSize?: string } | null)
+            ?.productLabelSize ?? undefined)
+        : undefined
   };
 }
 
@@ -216,7 +225,8 @@ export default function DocumentTemplateRoute() {
     customFields,
     previewEntities,
     termsSeed,
-    hasWatermark
+    hasWatermark,
+    initialLabelSizeId
   } = useLoaderData<typeof loader>();
   const permissions = usePermissions();
 
@@ -235,6 +245,7 @@ export default function DocumentTemplateRoute() {
       previewEntities={previewEntities}
       termsSeed={termsSeed as JSONContent | undefined}
       hasWatermark={hasWatermark}
+      initialLabelSizeId={initialLabelSizeId}
       canEdit={permissions.can("update", "settings")}
     />
   );

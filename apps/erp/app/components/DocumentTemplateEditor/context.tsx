@@ -92,6 +92,12 @@ interface EditorState extends EditorSnapshot {
   previewId: string | null;
   /** Bumped to force the preview to re-render on demand (manual refresh). */
   previewNonce: number;
+  /**
+   * Label stock to preview against (tracking-label only). Preview-only — the
+   * layout is size-agnostic and scaled by the renderer, so this isn't persisted
+   * with the template.
+   */
+  labelSizeId: string;
   /** Snapshot of the last-saved state; drives `isDirty` and `reset`. */
   baseline: EditorSnapshot;
   // actions
@@ -99,6 +105,7 @@ interface EditorState extends EditorSnapshot {
   setPreviewId: (id: string | null) => void;
   /** Force a fresh preview render without changing any template state. */
   refreshPreview: () => void;
+  setLabelSizeId: (id: string) => void;
   addBlock: (type: AddableBlockType) => void;
   addSharedBlock: (sectionId: string) => void;
   addCustomFieldBlock: (fieldId: string, label: string) => void;
@@ -134,6 +141,8 @@ export interface DocumentTemplateProps {
   previewEntities: PreviewEntity[];
   termsSeed?: JSONContent;
   hasWatermark: boolean;
+  /** Company's configured label stock (tracking-label only); seeds the picker. */
+  initialLabelSizeId?: string;
 }
 
 function snapshot(s: EditorSnapshot): EditorSnapshot {
@@ -191,10 +200,12 @@ function createEditorStore(props: DocumentTemplateProps) {
     selectedId: null,
     previewId: null,
     previewNonce: 0,
+    labelSizeId: props.initialLabelSizeId ?? "label4x2",
 
     select: (id) => set({ selectedId: id }),
     setPreviewId: (id) => set({ previewId: id }),
     refreshPreview: () => set((s) => ({ previewNonce: s.previewNonce + 1 })),
+    setLabelSizeId: (id) => set({ labelSizeId: id }),
 
     addBlock: (type) => {
       const block = createBlock(type);

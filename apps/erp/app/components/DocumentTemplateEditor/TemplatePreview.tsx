@@ -21,6 +21,7 @@ export function TemplatePreview({ previewPath }: { previewPath: string }) {
     previewId
   } = useDocumentTemplate();
   const previewNonce = useEditorStore((s) => s.previewNonce);
+  const labelSizeId = useEditorStore((s) => s.labelSizeId);
   const [url, setUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const urlRef = useRef<string | null>(null);
@@ -38,6 +39,7 @@ export function TemplatePreview({ previewPath }: { previewPath: string }) {
         formData.append("headerSectionId", headerSectionId ?? "");
         formData.append("footerSectionId", footerSectionId ?? "");
         formData.append("headerConfig", JSON.stringify(headerConfig));
+        formData.append("labelSizeId", labelSizeId);
         if (previewId) formData.append("previewId", previewId);
         const response = await fetch(previewPath, {
           method: "post",
@@ -72,7 +74,8 @@ export function TemplatePreview({ previewPath }: { previewPath: string }) {
     headerConfig,
     previewId,
     previewPath,
-    previewNonce
+    previewNonce,
+    labelSizeId
   ]);
 
   // Revoke the last object URL on unmount.

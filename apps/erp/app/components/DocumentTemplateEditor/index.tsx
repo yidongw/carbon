@@ -8,18 +8,23 @@ import { getDocumentLabel } from "@carbon/documents/template";
 import type { JSONContent } from "@carbon/react";
 import {
   Button,
-  Combobox,
   Heading,
   IconButton,
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
   ScrollArea,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger
 } from "@carbon/react";
+import { labelSizes } from "@carbon/utils";
 import { type ReactNode, useState } from "react";
 import { LuArrowLeft, LuPalette, LuRefreshCw } from "react-icons/lu";
 import { Link } from "react-router";
@@ -50,6 +55,7 @@ export function DocumentTemplateEditor({
   previewEntities,
   termsSeed,
   hasWatermark,
+  initialLabelSizeId,
   canEdit
 }: {
   documentType: DocumentTemplateType;
@@ -64,6 +70,7 @@ export function DocumentTemplateEditor({
   previewEntities: PreviewEntity[];
   termsSeed?: JSONContent;
   hasWatermark: boolean;
+  initialLabelSizeId?: string;
   canEdit: boolean;
 }) {
   return (
@@ -80,6 +87,7 @@ export function DocumentTemplateEditor({
       previewEntities={previewEntities}
       termsSeed={termsSeed}
       hasWatermark={hasWatermark}
+      initialLabelSizeId={initialLabelSizeId}
     >
       <div className="flex h-full w-full min-w-0 flex-col bg-background">
         <EditorToolbar
@@ -137,6 +145,13 @@ export function DocumentTemplateEditor({
 
 const RAIL_HEADING =
   "text-[11px] font-semibold uppercase tracking-wide text-muted-foreground";
+
+/** Sentinel option for the preview picker — falls back to sample data. */
+const SAMPLE_DATA_VALUE = "__sample__";
+
+/** Tiny caption above a toolbar picker. */
+const PICKER_LABEL =
+  "text-[10px] font-medium uppercase tracking-wide text-muted-foreground";
 
 /**
  * Left rail: block layers (incl. the Header block + Footer row) and a Page /
@@ -270,40 +285,81 @@ function EditorToolbar({
         </div>
       </div>
       {previewEntities.length > 0 && (
-        <div className="flex min-w-0 max-w-[280px] flex-1 justify-center">
-          <Combobox
-            size="sm"
-            className="w-full"
-            value={previewId ?? ""}
-            options={previewEntities.map((e) => ({
-              label: e.label,
-              value: e.id
-            }))}
-            onChange={(value) => setPreviewId(value || null)}
-            placeholder="Sample data"
-          />
-        </div>
-      )}
-      {canEdit && (
-        <div className="flex items-center gap-2">
-          <IconButton
-            aria-label="Refresh preview"
-            variant="secondary"
-            icon={<LuRefreshCw />}
-            onClick={refreshPreview}
-          />
-          <Button
-            variant="secondary"
-            onClick={reset}
-            isDisabled={!isDirty || isSaving}
+        <div className="flex min-w-0 max-w-[280px] flex-1 flex-col items-center gap-0.5">
+          <span className={PICKER_LABEL}>Preview data</span>
+          <Select
+            value={previewId ?? SAMPLE_DATA_VALUE}
+            onValueChange={(value) =>
+              setPreviewId(value === SAMPLE_DATA_VALUE ? null : value)
+            }
           >
-            Discard
-          </Button>
-          <Button onClick={save} isLoading={isSaving} isDisabled={!isDirty}>
-            Save layout
-          </Button>
+            <SelectTrigger size="sm" className="w-full">
+              <SelectValue placeholder="Sample data" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={SAMPLE_DATA_VALUE}>Sample data</SelectItem>
+              {previewEntities.map((e) => (
+                <SelectItem key={e.id} value={e.id}>
+                  {e.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       )}
+      <div className="flex items-center gap-2">
+        <LabelSizePicker />
+        {canEdit && (
+          <>
+            <IconButton
+              aria-label="Refresh preview"
+              variant="secondary"
+              icon={<LuRefreshCw />}
+              onClick={refreshPreview}
+            />
+            <Button
+              variant="secondary"
+              onClick={reset}
+              isDisabled={!isDirty || isSaving}
+            >
+              Discard
+            </Button>
+            <Button onClick={save} isLoading={isSaving} isDisabled={!isDirty}>
+              Save layout
+            </Button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Label stock picker (tracking-label only). Preview-only — the layout scales to
+ * any size, so this just drives which stock the preview renders against;
+ * seeded from the company's configured label size.
+ */
+function LabelSizePicker() {
+  const documentType = useEditorStore((s) => s.documentType);
+  const labelSizeId = useEditorStore((s) => s.labelSizeId);
+  const setLabelSizeId = useEditorStore((s) => s.setLabelSizeId);
+  if (documentType !== "trackingLabel") return null;
+
+  return (
+    <div className="flex flex-col items-start gap-0.5">
+      <span className={PICKER_LABEL}>Label stock</span>
+      <Select value={labelSizeId} onValueChange={setLabelSizeId}>
+        <SelectTrigger size="sm" className="w-[160px]">
+          <SelectValue placeholder="Label size" />
+        </SelectTrigger>
+        <SelectContent>
+          {labelSizes.map((s) => (
+            <SelectItem key={s.id} value={s.id}>
+              {s.name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   );
 }
