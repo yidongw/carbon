@@ -444,7 +444,6 @@ export function FloatingChat() {
   // Motion values for instant drag tracking + animated snap on release
   const motionX = useMotionValue(btnPos.x);
   const motionY = useMotionValue(btnPos.y);
-  const initialBtnPosRef = useRef(btnPos);
 
   // Track viewport width for responsive position filtering
   const [viewportW, setViewportW] = useState(
@@ -477,31 +476,29 @@ export function FloatingChat() {
     setMounted(true);
   }, []);
 
-  // Snap to nearest of 8 positions on mount (migrates any free-floating stored pos)
+  // Track viewport width on resize
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const init = initialBtnPosRef.current;
-    const rawX = init.x >= 0 ? init.x : window.innerWidth - BUTTON_SIZE - 24;
-    const rawY = init.y >= 0 ? init.y : window.innerHeight - BUTTON_SIZE - 24;
-    const snap = nearestSnap(rawX, rawY);
-    motionX.set(snap.x);
-    motionY.set(snap.y);
-    setBtnPos(snap);
-  }, [motionX, motionY, setBtnPos]);
-
-  // Re-snap to nearest position on window resize + track viewportW
-  useEffect(() => {
-    const onResize = () => {
-      setViewportW(window.innerWidth);
-      if (dragRef.current?.active) return;
-      const snap = nearestSnap(motionX.get(), motionY.get());
-      setBtnPos(snap);
-      fmAnimate(motionX, snap.x, { type: "spring", duration: 0.4, bounce: 0.15 });
-      fmAnimate(motionY, snap.y, { type: "spring", duration: 0.4, bounce: 0.15 });
-    };
+    const onResize = () => setViewportW(window.innerWidth);
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
-  }, [motionX, motionY, setBtnPos]);
+  }, []);
+
+  // Snap button to nearest valid position on mount and whenever viewport width changes.
+  // Runs on mount (catches stale stored positions from a different screen size) and on
+  // every resize so the button never drifts off-screen.
+  useEffect(() => {
+    if (dragRef.current?.active) return;
+    const x = motionX.get();
+    const y = motionY.get();
+    const rawX = x >= 0 ? x : window.innerWidth - BUTTON_SIZE - 24;
+    const rawY = y >= 0 ? y : window.innerHeight - BUTTON_SIZE - 24;
+    const snap = nearestSnap(rawX, rawY);
+    if (snap.x !== x || snap.y !== y) {
+      fmAnimate(motionX, snap.x, { type: "spring", duration: 0.4, bounce: 0.15 });
+      fmAnimate(motionY, snap.y, { type: "spring", duration: 0.4, bounce: 0.15 });
+      setBtnPos(snap);
+    }
+  }, [viewportW, motionX, motionY, setBtnPos]);
 
   // Auto-correct position when viewport shrinks below the threshold that supports it
   useEffect(() => {
