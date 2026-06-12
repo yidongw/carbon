@@ -183,38 +183,35 @@ export default function PurchaseOrderBasicRoute() {
     ...getCustomFields(orderData?.purchaseOrder?.customFields)
   };
 
+  const delivery = orderData?.purchaseOrderDelivery;
   const deliveryInitialValues = {
-    id: orderData?.purchaseOrderDelivery.id,
-    locationId: orderData?.purchaseOrderDelivery.locationId ?? "",
-    supplierShippingCost:
-      orderData?.purchaseOrderDelivery.supplierShippingCost ?? 0,
-    shippingMethodId: orderData?.purchaseOrderDelivery.shippingMethodId ?? "",
-    shippingTermId: orderData?.purchaseOrderDelivery.shippingTermId ?? "",
-    trackingNumber: orderData?.purchaseOrderDelivery.trackingNumber ?? "",
-    receiptRequestedDate:
-      orderData?.purchaseOrderDelivery.receiptRequestedDate ?? "",
-    receiptPromisedDate:
-      orderData?.purchaseOrderDelivery.receiptPromisedDate ?? "",
-    deliveryDate: orderData?.purchaseOrderDelivery.deliveryDate ?? "",
-    notes: orderData?.purchaseOrderDelivery.notes ?? "",
-    dropShipment: orderData?.purchaseOrderDelivery.dropShipment ?? false,
-    customerId: orderData?.purchaseOrderDelivery.customerId ?? "",
-    customerLocationId:
-      orderData?.purchaseOrderDelivery.customerLocationId ?? "",
-    incoterm: orderData?.purchaseOrderDelivery.incoterm ?? undefined,
-    incotermLocation: orderData?.purchaseOrderDelivery.incotermLocation ?? "",
-    ...getCustomFields(orderData?.purchaseOrderDelivery.customFields)
+    id: delivery?.id ?? orderId,
+    locationId: delivery?.locationId ?? "",
+    supplierShippingCost: delivery?.supplierShippingCost ?? 0,
+    shippingMethodId: delivery?.shippingMethodId ?? "",
+    shippingTermId: delivery?.shippingTermId ?? "",
+    trackingNumber: delivery?.trackingNumber ?? "",
+    receiptRequestedDate: delivery?.receiptRequestedDate ?? "",
+    receiptPromisedDate: delivery?.receiptPromisedDate ?? "",
+    deliveryDate: delivery?.deliveryDate ?? "",
+    notes: delivery?.notes ?? "",
+    dropShipment: delivery?.dropShipment ?? false,
+    customerId: delivery?.customerId ?? "",
+    customerLocationId: delivery?.customerLocationId ?? "",
+    incoterm: delivery?.incoterm ?? undefined,
+    incotermLocation: delivery?.incotermLocation ?? "",
+    ...getCustomFields(delivery?.customFields)
   };
   const paymentInitialValues = {
-    id: purchaseOrderPayment.id,
-    invoiceSupplierId: purchaseOrderPayment.invoiceSupplierId ?? "",
+    id: purchaseOrderPayment?.id ?? orderId,
+    invoiceSupplierId: purchaseOrderPayment?.invoiceSupplierId ?? "",
     invoiceSupplierLocationId:
-      purchaseOrderPayment.invoiceSupplierLocationId ?? undefined,
+      purchaseOrderPayment?.invoiceSupplierLocationId ?? undefined,
     invoiceSupplierContactId:
-      purchaseOrderPayment.invoiceSupplierContactId ?? undefined,
-    paymentTermId: purchaseOrderPayment.paymentTermId ?? undefined,
-    paymentComplete: purchaseOrderPayment.paymentComplete ?? undefined,
-    ...getCustomFields(purchaseOrderPayment.customFields)
+      purchaseOrderPayment?.invoiceSupplierContactId ?? undefined,
+    paymentTermId: purchaseOrderPayment?.paymentTermId ?? undefined,
+    paymentComplete: purchaseOrderPayment?.paymentComplete ?? undefined,
+    ...getCustomFields(purchaseOrderPayment?.customFields)
   };
 
   const { company } = useUser();

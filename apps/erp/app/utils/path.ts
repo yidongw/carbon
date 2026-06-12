@@ -1396,6 +1396,8 @@ export const path = {
       generatePath(`${x}/template/${templateId}/parameter/group/delete/${id}`),
     templateDeleteConfigurationRule: (templateId: string, field: string) =>
       generatePath(`${x}/template/${templateId}/rule/delete/${field}`),
+    deleteTemplate: (id: string) =>
+      generatePath(`${x}/template/${id}/delete`),
     templateDetails: (id: string) =>
       generatePath(`${x}/template/${id}/details`),
     templateMethodMaterial: (id: string) =>

@@ -5,7 +5,7 @@ import { validationError, validator } from "@carbon/form";
 import { useRouteData } from "@carbon/react";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { data, redirect, useNavigate } from "react-router";
+import { data, redirect, useLoaderData, useNavigate } from "react-router";
 import { demandProjectionValidator } from "~/modules/production/production.models";
 import { upsertDemandProjections } from "~/modules/production/production.service";
 import DemandProjectionForm from "~/modules/production/ui/Projection/DemandProjectionForm";
@@ -19,12 +19,26 @@ export async function loader({ request }: LoaderFunctionArgs) {
     create: "production"
   });
 
-  const periods = await getOrCreatePeriods(
-    today(getLocalTimeZone()),
-    WEEKS_TO_PROJECT
-  );
+  const url = new URL(request.url);
+  const locationId = url.searchParams.get("location") ?? "";
 
-  return { periods };
+  let periods;
+  try {
+    periods = await getOrCreatePeriods(
+      today(getLocalTimeZone()),
+      WEEKS_TO_PROJECT
+    );
+  } catch (periodsError) {
+    throw redirect(
+      path.to.demandProjections,
+      await flash(
+        request,
+        error(periodsError, "Failed to load projection periods")
+      )
+    );
+  }
+
+  return { periods, locationId };
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -95,13 +109,14 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function NewProjectionRoute() {
   const navigate = useNavigate();
+  const { locationId: loaderLocationId } = useLoaderData<typeof loader>();
   const routeData = useRouteData<{
     locationId: string;
   }>(path.to.demandProjections);
 
   const initialValues = {
     itemId: "",
-    locationId: routeData?.locationId ?? "",
+    locationId: loaderLocationId || routeData?.locationId || "",
     ...Object.fromEntries(Array.from({ length: 52 }, (_, i) => [`week${i}`, 0]))
   };
 

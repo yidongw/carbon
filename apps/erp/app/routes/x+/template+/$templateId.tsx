@@ -1,22 +1,12 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
-import {
-  Copy,
-  Heading,
-  HStack,
-  IconButton,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  VStack
-} from "@carbon/react";
+import { HStack, Input, InputGroup, InputLeftElement } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
 import { useLingui } from "@lingui/react/macro";
 import { useState } from "react";
-import { LuPanelLeft, LuSearch } from "react-icons/lu";
+import { LuSearch } from "react-icons/lu";
 import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, useLoaderData } from "react-router";
-import { usePanels } from "~/components/Layout";
-import { PanelProvider, ResizablePanels } from "~/components/Layout/Panels";
+import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import type { FlatTreeItem } from "~/components/TreeView";
 import type { MakeMethod, Method } from "~/modules/items";
 import { getTemplate } from "~/modules/items";
@@ -25,6 +15,7 @@ import {
   getTemplateMethodMaterialsByMakeMethod
 } from "~/modules/items/template.service";
 import { BoMExplorer } from "~/modules/items/ui/Item";
+import { TemplateHeader } from "~/modules/items/ui/Templates";
 import TemplateProperties from "~/modules/items/ui/Templates/TemplateProperties";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
@@ -204,30 +195,6 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   };
 }
 
-function TemplateHeader({ template }: { template: TemplateRow }) {
-  const { toggleExplorer } = usePanels();
-  const { t } = useLingui();
-
-  return (
-    <div className="flex flex-shrink-0 items-center justify-between px-4 py-2 bg-card border-b border-border h-[50px] overflow-x-auto scrollbar-hide dark:border-none dark:shadow-[inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)]">
-      <VStack spacing={0} className="flex-grow">
-        <HStack>
-          <IconButton
-            aria-label={t`Toggle Explorer`}
-            icon={<LuPanelLeft />}
-            onClick={toggleExplorer}
-            variant="ghost"
-          />
-          <Heading size="h4" className="flex items-center gap-2">
-            <span>{template.name}</span>
-          </Heading>
-          <Copy text={template.name ?? ""} />
-        </HStack>
-      </VStack>
-    </div>
-  );
-}
-
 export default function TemplateLayoutRoute() {
   const { t } = useLingui();
   const { template, selectedMakeMethodId, selectedMakeMethod, explorerNodes } =
@@ -283,7 +250,7 @@ export default function TemplateLayoutRoute() {
               </div>
             }
             content={
-              <div className="h-[calc(100dvh-99px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
+              <div className="h-full min-h-0 overflow-y-auto overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
                 <div className="p-2">
                   <TemplateProperties template={template as TemplateRow} />
                 </div>

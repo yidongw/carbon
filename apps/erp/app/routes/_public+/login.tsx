@@ -74,12 +74,18 @@ export async function loader({ request }: LoaderFunctionArgs) {
     }
     const cookieHeaders = await clearAuthCookies(request);
     return data(
-      { providers: AUTH_PROVIDERS.split(","), isWeChatBrowser: isWeChatUA(request) },
+      {
+        providers: AUTH_PROVIDERS.split(","),
+        isWeChatBrowser: isWeChatUA(request)
+      },
       { headers: cookieHeaders }
     );
   }
 
-  return { providers: AUTH_PROVIDERS.split(","), isWeChatBrowser: isWeChatUA(request) };
+  return {
+    providers: AUTH_PROVIDERS.split(","),
+    isWeChatBrowser: isWeChatUA(request)
+  };
 }
 
 function isWeChatUA(request: Request) {
@@ -207,7 +213,8 @@ export default function LoginRoute() {
 
   // Hide the WeChat-QR option entirely if the QR can't be minted (mint returned
   // no URL) rather than showing an "unavailable" message; fall back to email.
-  const wechatQrUnavailable = !!wechatQrFetcher.data && !wechatQrFetcher.data.url;
+  const wechatQrUnavailable =
+    !!wechatQrFetcher.data && !wechatQrFetcher.data.url;
   const showWeChatQr = showWeChatQrTab && !wechatQrUnavailable;
 
   useEffect(() => {
@@ -274,7 +281,12 @@ export default function LoginRoute() {
         `/api/wechat-qr-url${redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ""}`
       );
     }
-  }, [loginMethod, showWeChatQrTab, wechatQrFetcher.state, wechatQrFetcher.data]);
+  }, [
+    loginMethod,
+    showWeChatQrTab,
+    wechatQrFetcher.state,
+    wechatQrFetcher.data
+  ]);
 
   // If the QR turned out unavailable, fall back to the email tab.
   useEffect(() => {
@@ -383,7 +395,9 @@ export default function LoginRoute() {
                 className="w-full"
                 onClick={onSignInWithWeChat}
                 variant="secondary"
-                leftIcon={<SiWechat className="w-4 h-4" style={{ color: "#07C160" }} />}
+                leftIcon={
+                  <SiWechat className="w-4 h-4" style={{ color: "#07C160" }} />
+                }
               >
                 <Trans>Sign in with WeChat</Trans>
               </Button>
@@ -450,7 +464,8 @@ export default function LoginRoute() {
 
             {loginMethod === "wechat-qr" && showWeChatQr ? (
               <VStack spacing={4} className="items-center py-2">
-                {wechatQrFetcher.state === "loading" || !wechatQrFetcher.data ? (
+                {wechatQrFetcher.state === "loading" ||
+                !wechatQrFetcher.data ? (
                   <div className="flex h-[204px] w-[204px] items-center justify-center rounded-xl bg-muted">
                     <p className="text-sm text-muted-foreground">
                       <Trans>Loading…</Trans>
@@ -502,7 +517,8 @@ export default function LoginRoute() {
                         <Trans>Authentication Error</Trans>
                       </AlertTitle>
                       <AlertDescription>
-                        {fetcher.data?.message && formatError(fetcher.data.message)}
+                        {fetcher.data?.message &&
+                          formatError(fetcher.data.message)}
                       </AlertDescription>
                     </Alert>
                   )}
@@ -608,7 +624,6 @@ function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
-
 
 function OutlookIcon(props: React.SVGProps<SVGSVGElement>) {
   return (

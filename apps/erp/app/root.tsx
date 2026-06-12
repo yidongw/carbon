@@ -53,6 +53,13 @@ import { getTheme } from "./services/theme.server";
 export const middleware = [flashMiddleware];
 export const clientMiddleware = [flashClientMiddleware];
 
+// Prevent stale-asset 404s after a redeploy by never caching the HTML document.
+export const headers: Route.HeadersFunction = ({ loaderHeaders }) => {
+  const merged = new Headers(loaderHeaders);
+  merged.set("Cache-Control", "no-store");
+  return merged;
+};
+
 export const links: LinksFunction = () => {
   return [
     { rel: "stylesheet", href: Tailwind },
@@ -68,13 +75,6 @@ export const meta: MetaFunction = () => {
       title: "Carbon"
     }
   ];
-};
-
-// Prevent stale-asset 404s after a Vercel redeploy by never caching the HTML document.
-export const headers: Route.HeadersFunction = ({ loaderHeaders }) => {
-  const merged = new Headers(loaderHeaders);
-  merged.set("Cache-Control", "no-store");
-  return merged;
 };
 
 export async function loader({ request, context }: LoaderFunctionArgs) {

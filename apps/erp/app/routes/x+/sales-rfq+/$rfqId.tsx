@@ -11,11 +11,11 @@ import { msg } from "@lingui/core/macro";
 import type { FileObject } from "@supabase/storage-js";
 import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useParams, useSubmit } from "react-router";
-import { PanelProvider, ResizablePanels } from "~/components/Layout/Panels";
+import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import type { SalesRFQLine } from "~/modules/sales";
 import {
-  getOpportunity,
   getOpportunityDocuments,
+  getOrCreateOpportunityForRecord,
   getSalesRFQ,
   getSalesRFQLines
 } from "~/modules/sales";
@@ -48,13 +48,6 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     getSalesRFQLines(serviceRole, rfqId)
   ]);
 
-  const opportunity = await getOpportunity(
-    serviceRole,
-    rfqSummary.data?.opportunityId ?? null
-  );
-
-  if (!opportunity.data) throw new Error("Failed to get opportunity record");
-
   if (rfqSummary.error) {
     throw redirect(
       path.to.salesRfqs,
@@ -71,6 +64,26 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       await flash(request, error(lines.error, "Failed to load RFQ lines"))
     );
   }
+
+  const opportunity = await getOrCreateOpportunityForRecord(serviceRole, {
+    id: rfqSummary.data.id,
+    companyId: rfqSummary.data.companyId,
+    customerId: rfqSummary.data.customerId,
+    opportunityId: rfqSummary.data.opportunityId ?? null,
+    table: "salesRfq"
+  });
+
+  if (opportunity.error) {
+    throw redirect(
+      path.to.salesRfqs,
+      await flash(
+        request,
+        error(opportunity.error, "Failed to load sales RFQ opportunity")
+      )
+    );
+  }
+
+  if (!opportunity.data) throw new Error("Failed to get opportunity record");
 
   return {
     rfqSummary: rfqSummary.data,
@@ -147,16 +160,16 @@ export default function SalesRFQRoute() {
   };
 
   return (
-    <DndContext onDragEnd={handleDragEnd}>
-      <PanelProvider>
+    <PanelProvider>
+      <DndContext onDragEnd={handleDragEnd}>
         <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
           <SalesRFQHeader />
-          <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
-            <div className="flex flex-grow overflow-hidden">
+          <div className="flex flex-1 min-h-0 overflow-hidden w-full">
+            <div className="flex flex-1 min-h-0 h-full overflow-hidden">
               <ResizablePanels
                 explorer={<SalesRFQExplorer />}
                 content={
-                  <div className="h-[calc(100dvh-99px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
+                  <div className="h-full min-h-0 overflow-y-auto overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
                     <VStack spacing={2} className="p-2">
                       <Outlet />
                     </VStack>
@@ -167,7 +180,7 @@ export default function SalesRFQRoute() {
             </div>
           </div>
         </div>
-      </PanelProvider>
-    </DndContext>
+      </DndContext>
+    </PanelProvider>
   );
 }

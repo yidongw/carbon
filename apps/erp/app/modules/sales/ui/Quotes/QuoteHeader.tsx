@@ -7,8 +7,6 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  Heading,
-  HStack,
   IconButton,
   Input,
   InputGroup,
@@ -21,14 +19,14 @@ import {
   ModalHeader,
   ModalTitle,
   toast,
-  useDisclosure
+  useDisclosure,
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
+import { createPortal } from "react-dom";
 import { useEffect, useState } from "react";
 import {
   LuCheck,
   LuCheckCheck,
-  LuChevronDown,
   LuCircleStop,
   LuCircleX,
   LuCopy,
@@ -46,7 +44,12 @@ import {
 } from "react-icons/lu";
 import { Link, useFetcher, useParams } from "react-router";
 import { useAuditLog } from "~/components/AuditLog";
-import { usePanels } from "~/components/Layout";
+import {
+  DetailTopbarContent,
+  DetailTopbarId,
+  usePanels,
+  useTopbarLeft
+} from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
 import { path } from "~/utils/path";
@@ -62,14 +65,10 @@ import QuoteFinalizeModal from "./QuoteFinalizeModal";
 import QuoteStatus from "./QuoteStatus";
 import QuoteToOrderDrawer from "./QuoteToOrderDrawer";
 
-const QuoteHeader = () => {
+function QuoteTopbarLeft({ quoteId }: { quoteId: string }) {
   const { t } = useLingui();
   const permissions = usePermissions();
-  const { quoteId } = useParams();
-  if (!quoteId) throw new Error("quoteId not found");
-
   const { company } = useUser();
-  const { hasExplorer, toggleExplorer, toggleProperties } = usePanels();
 
   const routeData = useRouteData<{
     quote: Quotation;
@@ -102,240 +101,202 @@ const QuoteHeader = () => {
 
   return (
     <>
-      <div className="flex flex-shrink-0 items-center justify-between p-2 bg-background border-b h-[50px] overflow-x-auto scrollbar-hide">
-        <HStack className="w-full justify-between">
-          <HStack>
-            {hasExplorer && <IconButton
-              aria-label={t`Toggle Explorer`}
-              icon={<LuPanelLeft />}
-              onClick={toggleExplorer}
-              variant="ghost"
-            />}
-            <Link to={path.to.quoteDetails(quoteId)}>
-              <Heading
-                size="h4"
-                className="flex items-center justify-start gap-0"
-              >
-                <span>{routeData?.quote?.quoteId}</span>
-                {(routeData?.quote?.revisionId ?? 0) > 0 && (
-                  <span className="text-muted-foreground">
-                    -{routeData?.quote?.revisionId}
-                  </span>
-                )}
-              </Heading>
-            </Link>
-            <Copy text={routeData?.quote?.quoteId ?? ""} />
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <IconButton
-                  aria-label={t`More options`}
-                  icon={<LuEllipsisVertical />}
-                  variant="secondary"
-                  size="sm"
-                />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                {auditLogTrigger}
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={() => {
-                    setAsRevision(false);
-                    createRevisionModal.onOpen();
-                  }}
-                >
-                  <DropdownMenuIcon icon={<LuCopy />} />
-                  <Trans>Copy Quote</Trans>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    setAsRevision(true);
-                    createRevisionModal.onOpen();
-                  }}
-                >
-                  <DropdownMenuIcon icon={<LuGitBranchPlus />} />
-                  <Trans>Create Quote Revision</Trans>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  disabled={
-                    routeData?.quote?.status === "Draft" ||
-                    (routeData?.opportunity?.salesOrders.length ?? 0) > 0 ||
-                    statusFetcher.state !== "idle" ||
-                    !permissions.can("update", "sales")
-                  }
-                  onClick={() => {
-                    statusFetcher.submit(
-                      { status: "Draft" },
-                      {
-                        method: "post",
-                        action: path.to.quoteStatus(quoteId)
-                      }
-                    );
-                  }}
-                >
-                  <DropdownMenuIcon icon={<LuLoaderCircle />} />
-                  <Trans>Reopen</Trans>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  disabled={
-                    !permissions.can("delete", "sales") ||
-                    !permissions.is("employee") ||
-                    isQuoteLocked(routeData?.quote?.status)
-                  }
-                  destructive
-                  onClick={deleteQuoteModal.onOpen}
-                >
-                  <DropdownMenuIcon icon={<LuTrash />} />
-                  <Trans>Delete Quote</Trans>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <QuoteStatus status={routeData?.quote?.status} />
-          </HStack>
-          <HStack>
+      <DetailTopbarContent>
+          <DetailTopbarId to={path.to.quoteDetails(quoteId)}>
+            <span className="flex items-center gap-0">
+              <span>{routeData?.quote?.quoteId}</span>
+              {(routeData?.quote?.revisionId ?? 0) > 0 && (
+                <span className="text-muted-foreground">
+                  -{routeData?.quote?.revisionId}
+                </span>
+              )}
+            </span>
+          </DetailTopbarId>
+          <Copy text={routeData?.quote?.quoteId ?? ""} />
+          <QuoteStatus iconOnly status={routeData?.quote?.status} />
+          <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <IconButton
+              aria-label={t`More options`}
+              icon={<LuEllipsisVertical />}
+              size="sm"
+              variant="secondary"
+            />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            {auditLogTrigger}
+            <DropdownMenuSeparator />
+
+            {/* Copy / Revision */}
+            <DropdownMenuItem
+              onClick={() => {
+                setAsRevision(false);
+                createRevisionModal.onOpen();
+              }}
+            >
+              <DropdownMenuIcon icon={<LuCopy />} />
+              <Trans>Copy Quote</Trans>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                setAsRevision(true);
+                createRevisionModal.onOpen();
+              }}
+            >
+              <DropdownMenuIcon icon={<LuGitBranchPlus />} />
+              <Trans>Create Quote Revision</Trans>
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
+            {/* Preview / Share */}
             {routeData?.quote.externalLinkId &&
             routeData?.quote.status === "Sent" ? (
-              <Button
-                onClick={shareModal.onOpen}
-                leftIcon={<LuShare2 />}
-                variant="secondary"
-              >
+              <DropdownMenuItem onClick={shareModal.onOpen}>
+                <DropdownMenuIcon icon={<LuShare2 />} />
                 <Trans>Share</Trans>
-              </Button>
+              </DropdownMenuItem>
             ) : (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    leftIcon={<LuEye />}
-                    variant="secondary"
-                    rightIcon={<LuChevronDown />}
-                  >
-                    <Trans>Preview</Trans>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  {routeData?.quote.externalLinkId && (
-                    <DropdownMenuItem asChild>
-                      <a
-                        target="_blank"
-                        href={path.to.externalQuote(
-                          routeData.quote.externalLinkId
-                        )}
-                        rel="noreferrer"
-                      >
-                        <DropdownMenuIcon icon={<LuExternalLink />} />
-                        <Trans>Digital Quote</Trans>
-                      </a>
-                    </DropdownMenuItem>
-                  )}
+              <>
+                {routeData?.quote.externalLinkId && (
                   <DropdownMenuItem asChild>
                     <a
                       target="_blank"
-                      href={path.to.file.quote(quoteId)}
+                      href={path.to.externalQuote(
+                        routeData.quote.externalLinkId
+                      )}
                       rel="noreferrer"
                     >
-                      <DropdownMenuIcon icon={<LuFile />} />
-                      <Trans>PDF</Trans>
+                      <DropdownMenuIcon icon={<LuExternalLink />} />
+                      <Trans>Digital Quote</Trans>
                     </a>
                   </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                )}
+                <DropdownMenuItem asChild>
+                  <a
+                    target="_blank"
+                    href={path.to.file.quote(quoteId)}
+                    rel="noreferrer"
+                  >
+                    <DropdownMenuIcon icon={<LuFile />} />
+                    <Trans>PDF</Trans>
+                  </a>
+                </DropdownMenuItem>
+              </>
             )}
 
-            <Button
-              onClick={finalizeModal.onOpen}
-              isLoading={finalizeFetcher.state !== "idle"}
-              isDisabled={
+            <DropdownMenuSeparator />
+
+            {/* Finalize */}
+            <DropdownMenuItem
+              disabled={
                 routeData?.quote?.status !== "Draft" ||
                 finalizeFetcher.state !== "idle" ||
                 !permissions.can("update", "sales") ||
                 !eligibleLines?.length
               }
-              variant={
-                routeData?.quote?.status === "Draft" ? "primary" : "secondary"
-              }
-              leftIcon={<LuCheckCheck />}
+              onClick={finalizeModal.onOpen}
             >
+              <DropdownMenuIcon icon={<LuCheckCheck />} />
               <Trans>Finalize</Trans>
-            </Button>
+            </DropdownMenuItem>
 
-            <Button
-              isDisabled={
+            {/* Won */}
+            <DropdownMenuItem
+              disabled={
                 routeData?.quote?.status !== "Sent" ||
                 !permissions.can("update", "sales")
               }
-              leftIcon={<LuTrophy />}
-              variant={
-                ["Sent", "Ordered", "Partial"].includes(
-                  routeData?.quote?.status ?? ""
-                )
-                  ? "primary"
-                  : "secondary"
-              }
               onClick={convertToOrderModal.onOpen}
             >
+              <DropdownMenuIcon icon={<LuTrophy />} />
               <Trans>Won</Trans>
-            </Button>
+            </DropdownMenuItem>
 
-            <statusFetcher.Form
-              method="post"
-              action={path.to.quoteStatus(quoteId)}
+            {/* Lost */}
+            <DropdownMenuItem
+              disabled={
+                routeData?.quote?.status !== "Sent" ||
+                statusFetcher.state !== "idle" ||
+                !permissions.can("update", "sales")
+              }
+              onClick={() => {
+                statusFetcher.submit(
+                  { status: "Lost" },
+                  {
+                    method: "post",
+                    action: path.to.quoteStatus(quoteId)
+                  }
+                );
+              }}
             >
-              <input type="hidden" name="status" value="Lost" />
-              <Button
-                isDisabled={
-                  routeData?.quote?.status !== "Sent" ||
+              <DropdownMenuIcon icon={<LuCircleX />} />
+              <Trans>Lost</Trans>
+            </DropdownMenuItem>
+
+            {/* Cancel */}
+            {routeData?.quote?.status === "Draft" && (
+              <DropdownMenuItem
+                disabled={
                   statusFetcher.state !== "idle" ||
                   !permissions.can("update", "sales")
                 }
-                isLoading={
-                  statusFetcher.state !== "idle" &&
-                  statusFetcher.formData?.get("status") === "Lost"
-                }
-                leftIcon={<LuCircleX />}
-                type="submit"
-                variant={
-                  ["Sent", "Lost"].includes(routeData?.quote?.status ?? "")
-                    ? "destructive"
-                    : "secondary"
-                }
+                onClick={() => {
+                  statusFetcher.submit(
+                    { status: "Cancelled" },
+                    {
+                      method: "post",
+                      action: path.to.quoteStatus(quoteId)
+                    }
+                  );
+                }}
               >
-                <Trans>Lost</Trans>
-              </Button>
-            </statusFetcher.Form>
-
-            {routeData?.quote?.status === "Draft" && (
-              <statusFetcher.Form
-                method="post"
-                action={path.to.quoteStatus(quoteId)}
-              >
-                <input type="hidden" name="status" value="Cancelled" />
-                <Button
-                  isDisabled={
-                    statusFetcher.state !== "idle" ||
-                    !permissions.can("update", "sales")
-                  }
-                  isLoading={
-                    statusFetcher.state !== "idle" &&
-                    statusFetcher.formData?.get("status") === "Cancelled"
-                  }
-                  leftIcon={<LuCircleStop />}
-                  type="submit"
-                  variant="secondary"
-                >
-                  <Trans>Cancel</Trans>
-                </Button>
-              </statusFetcher.Form>
+                <DropdownMenuIcon icon={<LuCircleStop />} />
+                <Trans>Cancel</Trans>
+              </DropdownMenuItem>
             )}
 
-            <IconButton
-              aria-label={t`Toggle Properties`}
-              icon={<LuPanelRight />}
-              onClick={toggleProperties}
-              variant="ghost"
-            />
-          </HStack>
-        </HStack>
-      </div>
+            <DropdownMenuSeparator />
+
+            {/* Reopen */}
+            <DropdownMenuItem
+              disabled={
+                routeData?.quote?.status === "Draft" ||
+                (routeData?.opportunity?.salesOrders.length ?? 0) > 0 ||
+                statusFetcher.state !== "idle" ||
+                !permissions.can("update", "sales")
+              }
+              onClick={() => {
+                statusFetcher.submit(
+                  { status: "Draft" },
+                  {
+                    method: "post",
+                    action: path.to.quoteStatus(quoteId)
+                  }
+                );
+              }}
+            >
+              <DropdownMenuIcon icon={<LuLoaderCircle />} />
+              <Trans>Reopen</Trans>
+            </DropdownMenuItem>
+
+            {/* Delete */}
+            <DropdownMenuItem
+              disabled={
+                !permissions.can("delete", "sales") ||
+                !permissions.is("employee") ||
+                isQuoteLocked(routeData?.quote?.status)
+              }
+              destructive
+              onClick={deleteQuoteModal.onOpen}
+            >
+              <DropdownMenuIcon icon={<LuTrash />} />
+              <Trans>Delete Quote</Trans>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </DetailTopbarContent>
+
       {finalizeModal.isOpen && (
         <QuoteFinalizeModal
           quote={routeData?.quote}
@@ -386,6 +347,38 @@ const QuoteHeader = () => {
         />
       )}
       {auditLogDrawer}
+    </>
+  );
+}
+
+const QuoteHeader = () => {
+  const { quoteId } = useParams();
+  if (!quoteId) throw new Error("quoteId not found");
+
+  const { leftSlotEl } = useTopbarLeft();
+  const { t } = useLingui();
+  const { hasExplorer, toggleExplorer, toggleProperties } = usePanels();
+
+  return (
+    <>
+      {leftSlotEl && createPortal(<QuoteTopbarLeft quoteId={quoteId} />, leftSlotEl)}
+      <div className="flex-shrink-0 h-[50px] flex items-center gap-1 px-2 bg-card border-b border-border dark:border-none dark:shadow-[inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)]">
+        {hasExplorer && (
+          <IconButton
+            aria-label={t`Toggle Explorer`}
+            icon={<LuPanelLeft />}
+            onClick={toggleExplorer}
+            variant="ghost"
+          />
+        )}
+        <div className="flex-1" />
+        <IconButton
+          aria-label={t`Toggle Properties`}
+          icon={<LuPanelRight />}
+          onClick={toggleProperties}
+          variant="ghost"
+        />
+      </div>
     </>
   );
 };
