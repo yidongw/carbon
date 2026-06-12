@@ -49,10 +49,13 @@ export function DetailTopbarId({ to, children }: DetailTopbarIdProps) {
     <div
       className={`flex min-w-0 shrink items-center overflow-hidden ${DETAIL_ID_MAX_WIDTH}`}
     >
-      <span aria-hidden className="hidden md:inline shrink-0 px-1.5 text-foreground">
+      <span aria-hidden className="hidden md:inline shrink-0 px-1.5 text-accent-foreground">
         /
       </span>
-      <Link to={to} className="min-w-0 truncate font-medium hover:underline">
+      <Link
+        to={to}
+        className="min-w-0 truncate font-semibold text-foreground hover:underline"
+      >
         {children}
       </Link>
     </div>
@@ -69,10 +72,10 @@ export function DetailTopbarPlainId({ children }: DetailTopbarPlainIdProps) {
     <div
       className={`flex min-w-0 shrink items-center overflow-hidden ${DETAIL_ID_MAX_WIDTH}`}
     >
-      <span aria-hidden className="hidden md:inline shrink-0 px-1.5 text-foreground">
+      <span aria-hidden className="hidden md:inline shrink-0 px-1.5 text-accent-foreground">
         /
       </span>
-      <span className="truncate font-medium">{children}</span>
+      <span className="truncate font-semibold text-foreground">{children}</span>
     </div>
   );
 }
