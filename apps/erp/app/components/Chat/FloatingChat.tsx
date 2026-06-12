@@ -773,7 +773,8 @@ export function FloatingChat() {
             className={cn(
               "flex flex-col overflow-hidden",
               "bg-background",
-              "shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_8px_32px_rgba(0,0,0,0.18),0_32px_64px_rgba(0,0,0,0.12)]"
+              "shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_8px_32px_rgba(0,0,0,0.18),0_32px_64px_rgba(0,0,0,0.12)]",
+              effectivePosition === "left-outside" && "rounded-tr-2xl border-r border-border"
             )}
           >
             {/* Resize handle (rendered before header so it's on the edge) */}
