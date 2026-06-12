@@ -18,10 +18,12 @@ import {
   useParams,
   useRevalidator
 } from "react-router";
-import type { PartSummary } from "~/modules/items";
+import type { ItemFile, PartSummary } from "~/modules/items";
 import {
   createPartUsedInGroupPromises,
-  getPartMethodTree
+  createPendingPartUsedInGroupPromises,
+  getPartMethodTree,
+  type PartMethodTree
 } from "~/modules/items/partUsedIn.server";
 import {
   getItemFiles,
@@ -53,7 +55,7 @@ import {
   setPartRouteCache
 } from "~/utils/partRouteCache";
 import { prefetchPartSiblingRoutes } from "~/utils/partSiblingPrefetch";
-import { consumePartShell, createPartShellLoaderData } from "~/utils/partShell";
+import { consumePartShell } from "~/utils/partShell";
 
 export const handle: Handle = {
   breadcrumb: msg`Parts`,
@@ -125,6 +127,23 @@ export function shouldRevalidate({
     clearPartRouteCache(`details:${itemId}`);
   }
   return defaultShouldRevalidate;
+}
+
+function createPartShellLoaderData(
+  partSummary: PartSummary,
+  flags: { shell?: true }
+) {
+  return {
+    partSummary: Promise.resolve(partSummary),
+    files: Promise.resolve([] as ItemFile[]),
+    supplierParts: Promise.resolve([]),
+    pickMethods: Promise.resolve([]),
+    makeMethods: Promise.resolve({ data: [], error: null }),
+    tags: Promise.resolve([]),
+    usedInGroups: createPendingPartUsedInGroupPromises(),
+    methodTree: new Promise<PartMethodTree | null>(() => {}),
+    ...flags
+  };
 }
 
 export async function clientLoader({
