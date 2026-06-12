@@ -42,14 +42,6 @@ export function createEmptyPartUsedInGroupPromises(): PartUsedInGroupPromises {
   ) as PartUsedInGroupPromises;
 }
 
-export function createPendingPartUsedInGroupPromises(): PartUsedInGroupPromises {
-  return Object.fromEntries(
-    PART_USED_IN_GROUP_DEFINITIONS.map((group) => [
-      group.key,
-      new Promise<UsedInNode["children"]>(() => {})
-    ])
-  ) as PartUsedInGroupPromises;
-}
 
 export async function getPartMethodTree(
   client: SupabaseClient<Database>,
