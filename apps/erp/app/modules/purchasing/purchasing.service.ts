@@ -271,7 +271,7 @@ export async function getPurchaseOrderPayment(
     .from("purchaseOrderPayment")
     .select("*")
     .eq("id", purchaseOrderId)
-    .single();
+    .maybeSingle();
 }
 
 export async function getPurchaseOrderLines(

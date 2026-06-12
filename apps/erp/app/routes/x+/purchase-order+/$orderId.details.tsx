@@ -206,15 +206,15 @@ export default function PurchaseOrderBasicRoute() {
     ...getCustomFields(orderData?.purchaseOrderDelivery.customFields)
   };
   const paymentInitialValues = {
-    id: purchaseOrderPayment.id,
-    invoiceSupplierId: purchaseOrderPayment.invoiceSupplierId ?? "",
+    id: purchaseOrderPayment?.id ?? orderId,
+    invoiceSupplierId: purchaseOrderPayment?.invoiceSupplierId ?? "",
     invoiceSupplierLocationId:
-      purchaseOrderPayment.invoiceSupplierLocationId ?? undefined,
+      purchaseOrderPayment?.invoiceSupplierLocationId ?? undefined,
     invoiceSupplierContactId:
-      purchaseOrderPayment.invoiceSupplierContactId ?? undefined,
-    paymentTermId: purchaseOrderPayment.paymentTermId ?? undefined,
-    paymentComplete: purchaseOrderPayment.paymentComplete ?? undefined,
-    ...getCustomFields(purchaseOrderPayment.customFields)
+      purchaseOrderPayment?.invoiceSupplierContactId ?? undefined,
+    paymentTermId: purchaseOrderPayment?.paymentTermId ?? undefined,
+    paymentComplete: purchaseOrderPayment?.paymentComplete ?? undefined,
+    ...getCustomFields(purchaseOrderPayment?.customFields)
   };
 
   const { company } = useUser();
