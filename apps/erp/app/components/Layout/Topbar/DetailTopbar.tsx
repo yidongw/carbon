@@ -27,7 +27,7 @@ export function DetailTopbarContent({ children }: DetailTopbarContentProps) {
 
   return (
     <HStack
-      className="items-center min-w-0 flex-1 overflow-hidden [&>*:not(:first-child)]:shrink-0"
+      className="items-center min-w-0 flex-1 overflow-visible [&>*:not(:first-child)]:shrink-0"
       spacing={1}
     >
       {children}
