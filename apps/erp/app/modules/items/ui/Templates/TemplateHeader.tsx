@@ -9,7 +9,7 @@ import {
   useDisclosure
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { LuEllipsisVertical, LuPanelLeft, LuPanelRight, LuTrash } from "react-icons/lu";
+import { LuEllipsisVertical, LuPanelLeft, LuTrash } from "react-icons/lu";
 import { createPortal } from "react-dom";
 import {
   DetailTopbarContent,
@@ -77,7 +77,7 @@ function TemplateTopbarLeft({ template }: { template: TemplateRow }) {
 const TemplateHeader = ({ template }: { template: TemplateRow }) => {
   const { t } = useLingui();
   const { leftSlotEl } = useTopbarLeft();
-  const { hasExplorer, toggleExplorer, toggleProperties } = usePanels();
+  const { hasExplorer, toggleExplorer } = usePanels();
 
   return (
     <>
@@ -93,12 +93,6 @@ const TemplateHeader = ({ template }: { template: TemplateRow }) => {
           />
         )}
         <div className="flex-1" />
-        <IconButton
-          aria-label={t`Toggle Properties`}
-          icon={<LuPanelRight />}
-          onClick={toggleProperties}
-          variant="ghost"
-        />
       </div>
     </>
   );
