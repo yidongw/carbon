@@ -1064,68 +1064,57 @@ async function seed() {
     console.log("24. Seeding item subtype records...");
 
     // Material: id must equal item.readableId ("STEEL-ROD-01")
-    const steelItemId = itemIds["STEEL-ROD-01"];
-    if (steelItemId && steelSubstanceId && barFormId) {
+    // Note: itemId was dropped from material in the revisions migration
+    if (steelSubstanceId && barFormId) {
       await client.query(
-        `INSERT INTO material (id, "itemId", "materialSubstanceId", "materialFormId", "gradeId", "companyId", "createdBy")
-         VALUES ($1, $2, $3, $4, $5, $6, $7)
+        `INSERT INTO material (id, "materialSubstanceId", "materialFormId", "gradeId", "companyId", "createdBy")
+         VALUES ($1, $2, $3, $4, $5, $6)
          ON CONFLICT (id, "companyId") DO NOTHING`,
-        ["STEEL-ROD-01", steelItemId, steelSubstanceId, barFormId, gradeId1020, companyId, userId]
+        ["STEEL-ROD-01", steelSubstanceId, barFormId, gradeId1020, companyId, userId]
       );
       console.log(`   Upserted material record for STEEL-ROD-01`);
     }
 
     // Parts: id must equal item.readableId for each part
+    // Note: itemId was dropped from part in the revisions migration
     for (const readableId of ["BEARING-6205", "BRACKET-001", "SHAFT-ASM-001", "CTRL-PCB-001"]) {
-      const itemUuid = itemIds[readableId];
-      if (!itemUuid) continue;
       await client.query(
-        `INSERT INTO part (id, "itemId", "companyId", "createdBy")
-         VALUES ($1, $2, $3, $4)
+        `INSERT INTO part (id, "companyId", "createdBy")
+         VALUES ($1, $2, $3)
          ON CONFLICT (id, "companyId") DO NOTHING`,
-        [readableId, itemUuid, companyId, userId]
+        [readableId, companyId, userId]
       );
     }
     console.log(`   Upserted 4 part records`);
 
     // Consumable: id must equal item.readableId ("FASTENER-KIT-01")
-    const consItemId = itemIds["FASTENER-KIT-01"];
-    if (consItemId) {
-      await client.query(
-        `INSERT INTO consumable (id, "itemId", "companyId", "createdBy")
-         VALUES ($1, $2, $3, $4)
-         ON CONFLICT (id, "companyId") DO NOTHING`,
-        ["FASTENER-KIT-01", consItemId, companyId, userId]
-      );
-      console.log(`   Upserted consumable record for FASTENER-KIT-01`);
-    }
+    // Note: itemId was dropped from consumable in the revisions migration
+    await client.query(
+      `INSERT INTO consumable (id, "companyId", "createdBy")
+       VALUES ($1, $2, $3)
+       ON CONFLICT (id, "companyId") DO NOTHING`,
+      ["FASTENER-KIT-01", companyId, userId]
+    );
+    console.log(`   Upserted consumable record for FASTENER-KIT-01`);
 
     // Tool: create item first, then tool record with id=readableId
-    let toolItemId: string | null = null;
-    const toolItemInsert = await client.query<{ id: string }>(
+    // Note: itemId was dropped from tool in the revisions migration
+    await client.query(
       `INSERT INTO item ("readableId", name, description, type, "replenishmentSystem", "itemTrackingType", "unitOfMeasureCode", active, "companyId", "createdBy")
        VALUES ('DRILL-JIG-01', 'Drill Jig Fixture', 'Custom drill jig for bracket machining', 'Tool'::"itemType", 'Buy'::"itemReplenishmentSystem", 'Inventory'::"itemTrackingType", 'EA', true, $1, $2)
-       ON CONFLICT DO NOTHING RETURNING id`,
+       ON CONFLICT DO NOTHING`,
       [companyId, userId]
     );
-    toolItemId = toolItemInsert.rows[0]?.id ?? null;
-    if (!toolItemId) {
-      const r = await client.query<{id: string}>(
-        `SELECT id FROM item WHERE "readableId" = 'DRILL-JIG-01' AND "companyId" = $1 LIMIT 1`, [companyId]
-      );
-      toolItemId = r.rows[0]?.id ?? null;
-    }
-    if (toolItemId) {
-      await client.query(
-        `INSERT INTO tool (id, "itemId", "companyId", "createdBy")
-         VALUES ($1, $2, $3, $4)
-         ON CONFLICT (id, "companyId") DO NOTHING`,
-        ["DRILL-JIG-01", toolItemId, companyId, userId]
-      );
-      console.log(`   Upserted tool record for DRILL-JIG-01`);
-    }
+    await client.query(
+      `INSERT INTO tool (id, "companyId", "createdBy")
+       VALUES ($1, $2, $3)
+       ON CONFLICT (id, "companyId") DO NOTHING`,
+      ["DRILL-JIG-01", companyId, userId]
+    );
+    console.log(`   Upserted tool record for DRILL-JIG-01`);
 
     // Fixture: create item first, then fixture record with id=readableId
+    // Note: fixture still has itemId column
     const fixtureItemInsert = await client.query<{ id: string }>(
       `INSERT INTO item ("readableId", name, description, type, "replenishmentSystem", "itemTrackingType", "unitOfMeasureCode", active, "companyId", "createdBy")
        VALUES ('CLAMP-FIXTURE-01', 'Workholding Clamp Fixture', 'CNC workholding clamp fixture for machining operations', 'Fixture'::"itemType", 'Buy'::"itemReplenishmentSystem", 'Inventory'::"itemTrackingType", 'EA', true, $1, $2)
@@ -1139,17 +1128,16 @@ async function seed() {
       );
       fixtureItemId = r.rows[0]?.id ?? null;
     }
-    if (fixtureItemId) {
-      await client.query(
-        `INSERT INTO fixture (id, "itemId", "companyId", "createdBy")
-         VALUES ($1, $2, $3, $4)
-         ON CONFLICT (id, "companyId") DO NOTHING`,
-        ["CLAMP-FIXTURE-01", fixtureItemId, companyId, userId]
-      );
-      console.log(`   Upserted fixture record for CLAMP-FIXTURE-01`);
-    }
+    await client.query(
+      `INSERT INTO fixture (id, "itemId", "companyId", "createdBy")
+       VALUES ($1, $2, $3, $4)
+       ON CONFLICT (id, "companyId") DO NOTHING`,
+      ["CLAMP-FIXTURE-01", fixtureItemId, companyId, userId]
+    );
+    console.log(`   Upserted fixture record for CLAMP-FIXTURE-01`);
 
     // Service: create item first, then service record with id=readableId
+    // Note: service still has itemId column
     const serviceItemInsert = await client.query<{ id: string }>(
       `INSERT INTO item ("readableId", name, description, type, "replenishmentSystem", "itemTrackingType", "unitOfMeasureCode", active, "companyId", "createdBy")
        VALUES ('MAINT-SVC-01', 'Preventive Maintenance Service', 'Annual preventive maintenance and calibration service', 'Service'::"itemType", 'Buy'::"itemReplenishmentSystem", 'Non-Inventory'::"itemTrackingType", 'EA', true, $1, $2)
@@ -1163,15 +1151,13 @@ async function seed() {
       );
       serviceItemId = r.rows[0]?.id ?? null;
     }
-    if (serviceItemId) {
-      await client.query(
-        `INSERT INTO service (id, "itemId", "serviceType", "companyId", "createdBy")
-         VALUES ($1, $2, 'External'::"serviceType", $3, $4)
-         ON CONFLICT (id, "companyId") DO NOTHING`,
-        ["MAINT-SVC-01", serviceItemId, companyId, userId]
-      );
-      console.log(`   Upserted service record for MAINT-SVC-01`);
-    }
+    await client.query(
+      `INSERT INTO service (id, "itemId", "serviceType", "companyId", "createdBy")
+       VALUES ($1, $2, 'External'::"serviceType", $3, $4)
+       ON CONFLICT (id, "companyId") DO NOTHING`,
+      ["MAINT-SVC-01", serviceItemId, companyId, userId]
+    );
+    console.log(`   Upserted service record for MAINT-SVC-01`);
 
     // ─── Step 25: supplier extensions ────────────────────────────────────────
     console.log("25. Seeding supplier extensions...");
