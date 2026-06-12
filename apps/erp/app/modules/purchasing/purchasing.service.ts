@@ -249,7 +249,7 @@ export async function getPurchaseOrderDelivery(
     .from("purchaseOrderDelivery")
     .select("*")
     .eq("id", purchaseOrderId)
-    .single();
+    .maybeSingle();
 }
 
 export async function getPurchaseOrderLocations(
