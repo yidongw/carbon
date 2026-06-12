@@ -11,42 +11,34 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
-"POT-Creation-Date: \n"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1574
 msgid " Enter a reason below to record the override."
 msgstr " 输入 Override 的原因。"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1573
 msgid " The issue will go through with a warning."
 msgstr " 该问题将带有警告处理。"
 
 #. placeholder {0}: bn.id.slice(0, 10)
 #. placeholder {1}: bn.quantity
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:238
 msgid "{0} - {1} Available"
 msgstr "{0} - {1} 可用"
 
 #. placeholder {0}: bn.id.slice(0, 10)
 #. placeholder {1}: bn.quantity
 #. placeholder {2}: bn.readableId
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:237
 msgid "{0} - {1} Available of Batch {2}"
 msgstr "{0} - {1} 批次 {2} 可用"
 
 #. placeholder {0}: attribute.name
 #. placeholder {1}: activeStep + 1
-#: apps/mes/app/components/JobOperation/components/Step.tsx:436
 msgid "{0} - Set {1}"
 msgstr "{0} - 组 {1}"
 
 #. placeholder {0}: employeeIds.length
-#: apps/mes/app/components/Kanban/components/ItemCard.tsx:262
 msgid "{0} Active"
 msgstr "{0} 个活跃"
 
 #. placeholder {0}: batch.quantity
-#: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:147
 msgid "{0} available"
 msgstr "{0} 可用"
 
@@ -54,333 +46,215 @@ msgstr "{0} 可用"
 #. placeholder {0}: serialIndex + 1
 #. placeholder {1}: operation.operationQuantity
 #. placeholder {1}: operation.targetQuantity
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:648
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:862
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1879
 msgid "{0} of {1}"
 msgstr "{0} / {1}"
 
 #. placeholder {0}: attributes.filter((a) => a.jobOperationStepRecord.some( (r) => r.index === activeStep ) ).length
 #. placeholder {1}: attributes.length
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:885
 msgid "{0} of {1} complete"
 msgstr "{0} / {1} 已完成"
 
 #. placeholder {0}: attributes.filter((a) => a.jobOperationStepRecord.some( (r) => r.index === activeStep ) ).length
 #. placeholder {1}: attributes.length
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1903
 msgid "{0} of {1} completed"
 msgstr "{0} / {1} 已完成"
 
 #. placeholder {0}: input.quantity
 #. placeholder {1}: input.readableId
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:256
 msgid "{0} of Batch {1}"
 msgstr "批次{1}中的{0}"
 
 #. placeholder {0}: item.quantityScrapped
-#: apps/mes/app/components/Kanban/components/ItemCard.tsx:281
 msgid "{0} Scrapped"
 msgstr "{0} 已报废"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:859
 msgid "A new batch entity was created from a split:"
 msgstr "从拆分生成了一个新的批次实体："
 
-#: apps/mes/app/components/AppSidebar.tsx:566
 msgid "About"
 msgstr "关于"
 
-#: apps/mes/app/components/AppSidebar.tsx:420
 msgid "Account Settings"
 msgstr "账户设置"
 
-#: packages/react/src/ActionMenu.tsx:24
 msgid "Action Menu"
 msgstr "操作菜单"
 
-#: apps/mes/app/components/AppSidebar.tsx:202
-#: apps/mes/app/routes/x+/active.tsx:69
-#: apps/mes/app/routes/x+/dispatch.$dispatchId.tsx:411
-#: apps/mes/app/routes/x+/timecard.tsx:429
 msgid "Active"
 msgstr "活跃"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1028
 msgid "Actual"
 msgstr "实际"
 
-#: apps/mes/app/components/JobOperation/components/MaintenanceDispatch.tsx:301
 msgid "Actual Failure Mode"
 msgstr "实际失效模式"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1191
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1261
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1429
-#: apps/mes/app/routes/x+/dispatch.$dispatchId.tsx:433
-#: packages/react/src/Combobox.tsx:115
-#: packages/react/src/CreateableCombobox.tsx:120
-#: packages/react/src/MultiSelect.tsx:104
 msgid "Add"
 msgstr "添加"
 
-#: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:668
 msgid "Add & Issue"
 msgstr "添加并发放"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1512
 msgid "Add Batch"
 msgstr "添加批次"
 
-#: apps/mes/app/components/AdjustInventory.tsx:114
-#: apps/mes/app/components/AdjustInventory.tsx:119
-#: apps/mes/app/components/AdjustInventory.tsx:142
-#: apps/mes/app/components/AdjustInventory.tsx:195
 msgid "Add Inventory"
 msgstr "添加库存"
 
-#: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:303
 msgid "Add Spare Part"
 msgstr "添加备件"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:999
 msgid "Add to Inventory"
 msgstr "添加到库存"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:988
 msgid "Adjustment Type"
 msgstr "调整类型"
 
-#: apps/mes/app/routes/x+/maintenance.tsx:417
 msgid "All"
 msgstr "全部"
 
-#: apps/mes/app/routes/x+/salary.tsx:221
 msgid "approved"
 msgstr "已批准"
 
-#: apps/mes/app/routes/x+/salary.tsx:321
 msgid "Approved"
 msgstr "已批准"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1571
 msgid "are past their expiration date."
 msgstr "超过有效期。"
 
-#: apps/mes/app/components/JobOperation/components/QuantityModal.tsx:88
 msgid "Are you sure you want to close out this operation? This will end all active production events for this operation."
 msgstr "确定要结束此工序吗？这将终止此工序的所有活跃生产事件。"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:2449
 msgid "Are you sure you want to delete this step?"
 msgstr "确定要删除此步骤吗？"
 
-#: apps/mes/app/routes/x+/timecard.tsx:500
 msgid "Are you sure you want to delete this timecard? This cannot be undone."
 msgstr "确定要删除此考勤记录吗？此操作无法撤销。"
 
-#: apps/mes/app/components/EndShift.tsx:89
 msgid "Are you sure you want to end all production events? This will end all active operations without completing or finishing them."
 msgstr "确定要结束所有生产事件吗？这将终止所有活跃工序，而不会完成它们。"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1825
 msgid "Are you sure you want to scrap this batch?"
 msgstr "您确定要报废此批次吗？"
 
-#: apps/mes/app/components/AppSidebar.tsx:197
-#: apps/mes/app/routes/x+/maintenance.tsx:362
 msgid "Assigned"
 msgstr "已分配"
 
-#: apps/mes/app/routes/x+/assigned.tsx:89
-#: apps/mes/app/routes/x+/maintenance.tsx:433
 msgid "Assigned to Me"
 msgstr "分配给我"
 
-#: apps/mes/app/routes/x+/operations.tsx:405
 msgid "Assignee"
 msgstr "负责人"
 
-#: apps/mes/app/components/Feedback.tsx:151
 msgid "Attach File"
 msgstr "附加文件"
 
-#: apps/mes/app/routes/_public+/login.tsx:260
 msgid "Authentication Error"
 msgstr "认证错误"
 
 #. placeholder {0}: batch.readableId
 #. placeholder {1}: batch.quantity
-#: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:146
 msgid "Batch {0} ({1} available)"
 msgstr "批次 {0}（{1} 可用）"
 
-#: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:182
 msgid "Batch is not available"
 msgstr "批次不可用"
 
 #. placeholder {0}: index + 1
-#: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:502
 msgid "Batch Number {0}"
 msgstr "批次号 {0}"
 
 #. placeholder {0}: bn.status
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:402
 msgid "Batch number is {0}"
 msgstr "批号是{0}"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:403
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:519
 msgid "Batch number is not available"
 msgstr "批号不可用"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:394
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:498
-#: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:175
 msgid "Batch number is required"
 msgstr "批次号为必填项"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:856
 msgid "Batch Split Occurred"
 msgstr "批次拆分发生"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1570
 msgid "batches"
 msgstr "批次"
 
-#: packages/react/src/Editor/slash.tsx:48
 msgid "Big section heading."
 msgstr "大标题"
 
 #. placeholder {0}: column.blockingDispatchReadableId
-#: apps/mes/app/components/Kanban/components/ColumnCard.tsx:129
 msgid "Blocked by {0}"
 msgstr "被 {0} 阻塞"
 
-#: apps/mes/app/routes/x+/maintenance.tsx:441
 msgid "Blocking"
 msgstr "阻塞中"
 
-#: packages/react/src/Editor/slash.tsx:89
 msgid "Bullet List"
 msgstr "项目列表"
 
-#: apps/mes/app/routes/_public+/callback.tsx:214
 msgid "But don't worry. You can use the forgot password flow to request a new magic link."
 msgstr "但别担心。您可以使用忘记密码流程来请求新的魔法链接。"
 
-#: apps/mes/app/routes/_public+/login.tsx:289
 msgid "By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy Policy.</1>"
 msgstr "登录即表示您同意<0>服务条款</0>和<1>隐私政策。</1>"
 
-#: apps/mes/app/components/AdjustInventory.tsx:190
-#: apps/mes/app/components/EndShift.tsx:141
-#: apps/mes/app/components/Feedback.tsx:139
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1029
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1601
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1779
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1833
-#: apps/mes/app/components/JobOperation/components/MaintenanceDispatch.tsx:325
-#: apps/mes/app/components/JobOperation/components/PickupModal.tsx:91
-#: apps/mes/app/components/JobOperation/components/QuantityModal.tsx:272
-#: apps/mes/app/components/JobOperation/components/SerialSelectorModal.tsx:139
-#: apps/mes/app/components/JobOperation/components/Step.tsx:558
-#: apps/mes/app/components/JobOperation/components/Step.tsx:606
-#: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:658
-#: apps/mes/app/components/Suggestion.tsx:202
-#: apps/mes/app/routes/x+/timecard.tsx:413
-#: apps/mes/app/routes/x+/timecard.tsx:510
 msgid "Cancel"
 msgstr "取消"
 
-#: packages/react/src/ModelViewer.tsx:329
 msgid "Canvas showing the model in the 3D Viewer"
 msgstr "在3D查看器中显示的模型画布"
 
-#: apps/mes/app/routes/_public+/login.tsx:183
-#: apps/mes/app/routes/_public+/magic-link.tsx:26
 msgid "Carbon Logo"
 msgstr "Carbon 标志"
 
-#: apps/mes/app/routes/x+/operations.tsx:470
 msgid "Cards"
 msgstr "卡片"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:484
 msgid "Chat"
 msgstr "聊天"
 
-#: apps/mes/app/routes/_public+/login.tsx:192
 msgid "Check your email"
 msgstr "请查收邮件"
 
-#: apps/mes/app/components/Feedback.tsx:147
-#: apps/mes/app/components/Suggestion.tsx:210
-#: packages/react/src/Combobox.tsx:175
-#: packages/react/src/CreateableCombobox.tsx:189
-#: packages/react/src/GroupedCreatableCombobox.tsx:347
-#: packages/react/src/MultiSelect.tsx:205
 msgid "Clear"
 msgstr "清除"
 
-#: apps/mes/app/components/Filter/Filter.tsx:121
-#: apps/mes/app/routes/x+/operations.tsx:528
 msgid "Clear Filters"
 msgstr "清除筛选"
 
-#: apps/mes/app/routes/x+/active.tsx:103
-#: apps/mes/app/routes/x+/assigned.tsx:137
-#: apps/mes/app/routes/x+/maintenance.tsx:287
-#: apps/mes/app/routes/x+/recent.tsx:103
 msgid "Clear Search"
 msgstr "清除搜索"
 
-#: apps/mes/app/components/TimeCardButton.tsx:90
-#: apps/mes/app/components/TimeCardButton.tsx:97
-#: apps/mes/app/routes/x+/timecard.tsx:267
-#: apps/mes/app/routes/x+/timecard.tsx:324
 msgid "Clock In"
 msgstr "上班打卡"
 
-#: apps/mes/app/components/TimeCardButton.tsx:71
-#: apps/mes/app/components/TimeCardButton.tsx:78
-#: apps/mes/app/routes/x+/timecard.tsx:256
-#: apps/mes/app/routes/x+/timecard.tsx:327
 msgid "Clock Out"
 msgstr "下班打卡"
 
 #. placeholder {0}: formatTime(openEntry.clockIn, locale)
-#: apps/mes/app/routes/x+/timecard.tsx:275
 msgid "Clocked in since {0}"
 msgstr "自 {0} 起已打卡上班"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1596
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1649
-#: apps/mes/app/components/JobOperation/components/QuantityModal.tsx:102
 msgid "Close"
 msgstr "关闭"
 
-#: apps/mes/app/components/JobOperation/components/QuantityModal.tsx:102
 msgid "Close Anyways"
 msgstr "仍然关闭"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:2196
 msgid "Close Out"
 msgstr "结束"
 
 #. placeholder {0}: operation.itemReadableId
-#: apps/mes/app/components/JobOperation/components/QuantityModal.tsx:78
 msgid "Close out {0}"
 msgstr "结束 {0}"
 
-#: packages/react/src/Card.tsx:58
 msgid "Collapse"
 msgstr "折叠"
 
 #. placeholder {0}: active.data.current.column.title
 #. placeholder {1}: overColumnPosition + 1
 #. placeholder {2}: columnOrder.length
-#: apps/mes/app/components/Kanban/Kanban.tsx:113
 msgid "Column {0} was dropped into position {1} of {2}"
 msgstr "列 {0} 已放置到第 {1} 个位置（共 {2} 个）"
 
@@ -388,1555 +262,1060 @@ msgstr "列 {0} 已放置到第 {1} 个位置（共 {2} 个）"
 #. placeholder {1}: over.data.current.column.title
 #. placeholder {2}: overIndex + 1
 #. placeholder {3}: columnOrder.length
-#: apps/mes/app/components/Kanban/Kanban.tsx:97
 msgid "Column {0} was moved over {1} at position {2} of {3}"
 msgstr "列 {0} 已移动到 {1} 上方，位于第 {2} 个位置（共 {3} 个）"
 
 #. placeholder {0}: column.title
-#: apps/mes/app/components/Kanban/components/ColumnCard.tsx:71
 msgid "Column: {0}"
 msgstr "列：{0}"
 
-#: apps/mes/app/routes/x+/operations.tsx:447
 msgid "Columns"
 msgstr "列"
 
-#: apps/mes/app/components/AppSidebar.tsx:428
 msgid "Company"
 msgstr "公司"
 
-#: apps/mes/app/components/JobOperation/components/Step.tsx:189
 msgid "Complete"
 msgstr "完成"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:641
 msgid "Completed"
 msgstr "已完成"
 
-#: apps/mes/app/components/AppSidebar.tsx:361
 msgid "Console"
 msgstr "控制台"
 
-#: apps/mes/app/components/AppSidebar.tsx:533
 msgid "Console Mode"
 msgstr "控制台模式"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1112
 msgid "Consumed expired"
 msgstr "已消耗过期"
 
-#: apps/mes/app/routes/_public+/login.tsx:212
 msgid "Continue with WeChat"
 msgstr "使用微信继续"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:902
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1787
 msgid "Convert"
 msgstr "转换"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1748
 msgid "Convert this tracked entity into a quantity of 1 of a new size."
 msgstr "将此跟踪实体转换为新尺寸的1个数量。"
 
 #. placeholder {0}: itemType === "Material" ? "Size" : "Revision"
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1745
 msgid "Convert to New {0}"
 msgstr "转换为新{0}"
 
-#: packages/react/src/Copy.tsx:50
 msgid "Copied!"
 msgstr "已复制！"
 
-#: packages/react/src/Copy.tsx:37
 msgid "Copy"
 msgstr "复制"
 
-#: packages/react/src/Copy.tsx:53
 msgid "Copy to clipboard"
 msgstr "复制到剪贴板"
 
-#: packages/react/src/GroupedCreatableCombobox.tsx:250
 msgid "Create"
 msgstr "创建"
 
 #. placeholder {0}: group.heading
 #. placeholder {0}: search.trim() === "" ? (createLabel ?? label) : search
 #. placeholder {0}: search.trim() === "" ? label : search
-#: packages/react/src/CreateableCombobox.tsx:338
-#: packages/react/src/CreateableMultiSelect.tsx:355
-#: packages/react/src/GroupedCreatableCombobox.tsx:249
 msgid "Create {0}"
 msgstr "创建 {0}"
 
-#: packages/react/src/Editor/slash.tsx:99
 msgid "Create a list with numbering."
 msgstr "创建带编号的列表。"
 
-#: packages/react/src/Editor/slash.tsx:90
 msgid "Create a simple bullet list."
 msgstr "创建简单项目符号列表。"
 
-#: apps/mes/app/components/JobOperation/components/MaintenanceDispatch.tsx:327
 msgid "Create Dispatch"
 msgstr "创建发货"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:2069
-#: apps/mes/app/routes/x+/operations.tsx:473
 msgid "Customer"
 msgstr "客户"
 
-#: apps/mes/app/components/AppSidebar.tsx:497
 msgid "Dark Mode"
 msgstr "深色模式"
 
-#: apps/mes/app/routes/x+/timecard.tsx:321
 msgid "Date"
 msgstr "日期"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:2096
 msgid "Deadline"
 msgstr "截止日期"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1144
 msgid "Default Storage Unit"
 msgstr "默认存储单位"
 
-#: apps/mes/app/components/JobOperation/components/Step.tsx:615
-#: apps/mes/app/routes/x+/timecard.tsx:462
-#: apps/mes/app/routes/x+/timecard.tsx:522
 msgid "Delete"
 msgstr "删除"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:2448
 msgid "Delete Step"
 msgstr "删除步骤"
 
 #. placeholder {0}: new Date(deletingEntry.clockIn).toLocaleString(locale)
-#: apps/mes/app/routes/x+/timecard.tsx:493
 msgid "Delete Timecard ({0})"
 msgstr "删除考勤记录 ({0})"
 
-#: apps/mes/app/components/JobOperation/components/MaintenanceDispatch.tsx:232
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:2083
-#: apps/mes/app/routes/x+/dispatch.$dispatchId.tsx:286
-#: apps/mes/app/routes/x+/operations.tsx:474
 msgid "Description"
 msgstr "描述"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:466
 msgid "Details"
 msgstr "详情"
 
-#: apps/mes/app/routes/x+/dispatch.$dispatchId.tsx:226
 msgid "Dispatch not found"
 msgstr "未找到工单"
 
-#: apps/mes/app/routes/x+/operations.tsx:441
 msgid "Display"
 msgstr "显示"
 
-#: apps/mes/app/components/MaintenanceOeeImpact.tsx:28
-#: apps/mes/app/routes/x+/maintenance.tsx:373
 msgid "Down"
 msgstr "停机"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1550
 msgid "Download"
 msgstr "下载"
 
-#: apps/mes/app/components/FileDropzone.tsx:29
 msgid "Drag and drop a file here, or click to select a file"
 msgstr "拖放文件到此处，或点击选择文件"
 
 #. placeholder {0}: active.data.current?.type
-#: apps/mes/app/components/Kanban/Kanban.tsx:122
 msgid "Dragging {0} cancelled."
 msgstr "拖拽 {0} 已取消。"
 
 #. placeholder {0}: formatRelativeTime( convertDateStringToIsoString( operation.operationDueDate ) )
 #. placeholder {0}: formatRelativeTime( convertDateStringToIsoString(operation.jobDueDate) )
 #. placeholder {0}: formatRelativeTime( convertDateStringToIsoString(item.dueDate) )
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:589
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:690
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:2115
-#: apps/mes/app/components/Kanban/components/ItemCard.tsx:229
-#: apps/mes/app/components/OperationsList.tsx:187
 msgid "Due {0}"
 msgstr "截止 {0}"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:669
-#: apps/mes/app/routes/x+/operations.tsx:475
 msgid "Due Date"
 msgstr "截止日期"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:398
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:510
-#: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:180
 msgid "Duplicate batch number"
 msgstr "重复的批次号"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:380
-#: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:165
 msgid "Duplicate serial number"
 msgstr "重复的序列号"
 
-#: apps/mes/app/routes/x+/operations.tsx:476
-#: apps/mes/app/routes/x+/timecard.tsx:330
 msgid "Duration"
 msgstr "时长"
 
-#: apps/mes/app/routes/x+/salary.tsx:213
-#: apps/mes/app/routes/x+/salary.tsx:358
 msgid "Earned"
 msgstr "已获得"
 
-#: apps/mes/app/routes/x+/timecard.tsx:450
-#: packages/react/src/Combobox.tsx:115
-#: packages/react/src/CreateableCombobox.tsx:120
-#: packages/react/src/MultiSelect.tsx:104
 msgid "Edit"
 msgstr "编辑"
 
-#: apps/mes/app/routes/_public+/login.tsx:268
 msgid "Email Address"
 msgstr "电子邮箱"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1434
 msgid "Employee"
 msgstr "员工"
 
-#: apps/mes/app/routes/x+/operations.tsx:450
 msgid "Empty work centers"
 msgstr "空的工作中心"
 
-#: apps/mes/app/components/EndShift.tsx:72
-#: apps/mes/app/components/EndShift.tsx:75
-#: apps/mes/app/components/EndShift.tsx:86
-#: apps/mes/app/components/EndShift.tsx:154
 msgid "End Operations"
 msgstr "结束工序"
 
-#: apps/mes/app/components/JobOperation/components/MaintenanceDispatch.tsx:277
 msgid "End Time"
 msgstr "结束时间"
 
 #. placeholder {0}: selectedPerson.name
-#: apps/mes/app/components/PinInOverlay.tsx:290
 msgid "Enter PIN for {0}"
 msgstr "输入 {0} 的 PIN 码"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1731
 msgid "Entity converted successfully"
 msgstr "实体转换成功"
 
-#: apps/mes/app/routes/_public+/callback.tsx:207
 msgid "Error"
 msgstr "错误"
 
-#: apps/mes/app/components/JobOperation/hooks/useFiles.tsx:50
-#: apps/mes/app/components/JobOperation/hooks/useFiles.tsx:77
 msgid "Error downloading file"
 msgstr "文件下载错误"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1025
 msgid "Estimated"
 msgstr "估计"
 
-#: packages/react/src/Card.tsx:58
 msgid "Expand"
 msgstr "展开"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:193
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:201
 msgid "Expired"
 msgstr "过期"
 
 #. placeholder {0}: formatExpiry(bn.expirationDate)
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:233
 msgid "EXPIRED {0}"
 msgstr "过期 {0}"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1562
 msgid "Expired stock selected"
 msgstr "过期库存已选"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:201
 msgid "Expires"
 msgstr "过期"
 
 #. placeholder {0}: formatExpiry(bn.expirationDate)
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:234
 msgid "Expires {0}"
 msgstr "过期于 {0}"
 
-#: apps/mes/app/components/AdjustInventory.tsx:96
 msgid "Failed to complete inventory adjustment"
 msgstr "库存调整失败"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1734
 msgid "Failed to convert entity"
 msgstr "转换实体失败"
 
-#: apps/mes/app/components/EndShift.tsx:48
 msgid "Failed to end operations"
 msgstr "结束工序失败"
 
-#: apps/mes/app/components/EndShift.tsx:64
 msgid "Failed to fetch active operations"
 msgstr "获取活跃工序失败"
 
-#: apps/mes/app/components/AdjustInventory.tsx:65
 msgid "Failed to fetch storageUnits"
 msgstr "获取存储单位失败"
 
 #. placeholder {0}: fileUpload.name
-#: apps/mes/app/components/JobOperation/components/Step.tsx:387
 msgid "Failed to upload file: {0}"
 msgstr "文件上传失败：{0}"
 
-#: apps/mes/app/components/Feedback.tsx:74
-#: apps/mes/app/components/JobOperation/components/MaintenanceDispatch.tsx:157
-#: apps/mes/app/components/Suggestion.tsx:97
 msgid "Failed to upload image"
 msgstr "图片上传失败"
 
-#: apps/mes/app/components/Feedback.tsx:92
 msgid "Feedback"
 msgstr "反馈"
 
-#: apps/mes/app/components/Feedback.tsx:61
-#: apps/mes/app/components/Suggestion.tsx:83
 msgid "File size exceeds 10MB limit"
 msgstr "文件大小超过 10MB 限制"
 
-#: packages/react/src/Editor/Editor.tsx:103
 msgid "File size too big (max 20MB)."
 msgstr "文件大小超出限制（最大20MB）。"
 
 #. placeholder {0}: file.type
-#: packages/react/src/Editor/Editor.tsx:100
 msgid "File type {0} not supported."
 msgstr "文件类型{0}不支持。"
 
-#: packages/react/src/Editor/Editor.tsx:96
 msgid "File upload is not supported for external scars"
 msgstr "外部划伤不支持文件上传"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1477
 msgid "Files"
 msgstr "文件"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1480
 msgid "Files related to the job and the opportunity line."
 msgstr "与工单和商机行相关的文件。"
 
-#: apps/mes/app/components/Filter/Filter.tsx:151
 msgid "Filter"
 msgstr "筛选"
 
-#: apps/mes/app/components/TimeCardWarning.tsx:109
 msgid "Forgot to Clock Out?"
 msgstr "忘记打卡下班了？"
 
-#: apps/mes/app/components/Feedback.tsx:165
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "遇到技术问题？联系<0>Carbon 支持。</0>"
 
-#: packages/react/src/Editor/slash.tsx:47
 msgid "Heading 1"
 msgstr "一级标题"
 
-#: packages/react/src/Editor/slash.tsx:61
 msgid "Heading 2"
 msgstr "二级标题"
 
-#: packages/react/src/Editor/slash.tsx:75
 msgid "Heading 3"
 msgstr "标题3"
 
-#: packages/react/src/Date/DatePicker.tsx:73
-#: packages/react/src/Date/DateTimePicker.tsx:58
 msgid "Helper information"
 msgstr "帮助信息"
 
-#: apps/mes/app/routes/x+/salary.tsx:350
 msgid "History"
 msgstr "历史"
 
-#: apps/mes/app/components/JobOperation/components/QuantityModal.tsx:201
 msgid "I understand and want to complete without issuing"
 msgstr "我理解并希望在不发放材料的情况下完成"
 
-#: apps/mes/app/components/TimeCardWarning.tsx:142
 msgid "I'm Still Working"
 msgstr "我还在工作"
 
-#: apps/mes/app/components/Feedback.tsx:116
 msgid "Ideas, suggestions or problems with this page?"
 msgstr "对此页面有想法、建议或问题？"
 
-#: apps/mes/app/components/Suggestion.tsx:142
 msgid "Ideas, suggestions or problems?"
 msgstr "有想法、建议或问题？"
 
-#: packages/react/src/Editor/slash.tsx:107
 msgid "Image"
 msgstr "图片"
 
-#: apps/mes/app/components/MaintenanceOeeImpact.tsx:48
-#: apps/mes/app/routes/x+/maintenance.tsx:375
 msgid "Impact"
 msgstr "影响"
 
-#: apps/mes/app/routes/x+/maintenance.tsx:363
 msgid "In Progress"
 msgstr "进行中"
 
-#: apps/mes/app/components/JobOperation/components/QuantityModal.tsx:213
 msgid "Insufficient quantity"
 msgstr "数量不足"
 
-#: apps/mes/app/components/AdjustInventory.tsx:91
 msgid "Inventory adjustment completed"
 msgstr "库存调整已完成"
 
-#: apps/mes/app/components/AppSidebar.tsx:277
 msgid "Inventory Adjustments"
 msgstr "库存调整"
 
-#: apps/mes/app/components/Filter/ActiveFilters.tsx:139
 msgid "is"
 msgstr "是"
 
-#: apps/mes/app/components/Filter/ActiveFilters.tsx:141
 msgid "is any of"
 msgstr "是以下任一"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1041
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1636
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1225
 msgid "Issue"
 msgstr "发放"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:842
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:984
 msgid "Issue Material"
 msgstr "发放材料"
 
-#: apps/mes/app/components/AdjustInventory.tsx:164
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:956
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1053
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:2046
-#: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:314
 msgid "Item"
 msgstr "物品"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:526
 msgid "Item Master"
 msgstr "物品主数据"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:2057
 msgid "Job"
 msgstr "工单"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:517
 msgid "Job Details"
 msgstr "工单详情"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:511
 msgid "Job Traveler"
 msgstr "工单流转卡"
 
-#: packages/react/src/Editor/slash.tsx:25
 msgid "Just start typing with plain text."
 msgstr "直接输入纯文本。"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1127
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1295
 msgid "Kit"
 msgstr "套件"
 
-#: apps/mes/app/components/JobOperation/components/Controls.tsx:182
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:2247
 msgid "Labor"
 msgstr "人工"
 
-#: apps/mes/app/routes/_public+/_layout.tsx:31
-#: apps/mes/app/routes/_public+/magic-link.tsx:33
 msgid "Let's build something"
 msgstr "让我们开始构建"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:979
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1066
-#: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:326
 msgid "Loading item details..."
 msgstr "正在加载物品详情..."
 
-#: apps/mes/app/components/Filter/ActiveFilters.tsx:170
-#: apps/mes/app/components/Filter/Filter.tsx:167
 msgid "Loading..."
 msgstr "加载中..."
 
-#: apps/mes/app/components/AppSidebar.tsx:468
 msgid "Location"
 msgstr "位置"
 
-#: apps/mes/app/components/JobOperation/components/QuantityModal.tsx:101
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:2186
 msgid "Log Completed"
 msgstr "记录完成数量"
 
 #. placeholder {0}: operation.itemReadableId
-#: apps/mes/app/components/JobOperation/components/QuantityModal.tsx:77
 msgid "Log completed for {0}"
 msgstr "记录 {0} 的完成数量"
 
-#: apps/mes/app/routes/_public+/magic-link.tsx:41
 msgid "Log In"
 msgstr "登录"
 
-#: apps/mes/app/components/JobOperation/components/PickupModal.tsx:62
-#: apps/mes/app/components/JobOperation/components/PickupModal.tsx:99
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1428
 msgid "Log Pickup"
 msgstr "收货登记"
 
-#: apps/mes/app/components/JobOperation/components/QuantityModal.tsx:100
 msgid "Log Rework"
 msgstr "记录返工"
 
 #. placeholder {0}: operation.itemReadableId
-#: apps/mes/app/components/JobOperation/components/QuantityModal.tsx:76
 msgid "Log rework for {0}"
 msgstr "记录 {0} 的返工"
 
-#: apps/mes/app/components/JobOperation/components/QuantityModal.tsx:99
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:2169
 msgid "Log Scrap"
 msgstr "记录报废"
 
 #. placeholder {0}: operation.itemReadableId
-#: apps/mes/app/components/JobOperation/components/QuantityModal.tsx:75
 msgid "Log scrap for {0}"
 msgstr "记录 {0} 的报废"
 
-#: apps/mes/app/routes/_public+/callback.tsx:221
 msgid "Login"
 msgstr "登录"
 
-#: apps/mes/app/components/JobOperation/components/Controls.tsx:198
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:2280
 msgid "Machine"
 msgstr "机器"
 
-#: apps/mes/app/components/AppSidebar.tsx:218
-#: apps/mes/app/components/JobOperation/components/MaintenanceDispatch.tsx:184
-#: apps/mes/app/routes/x+/maintenance.tsx:404
 msgid "Maintenance"
 msgstr "维护"
 
-#: apps/mes/app/routes/x+/dispatch.$dispatchId.tsx:545
 msgid "Maintenance Completed"
 msgstr "维护已完成"
 
-#: apps/mes/app/components/JobOperation/components/MaintenanceDispatch.tsx:195
 msgid "Maintenance Dispatch"
 msgstr "维护调度"
 
-#: apps/mes/app/components/JobOperation/components/MaintenanceDispatch.tsx:144
 msgid "Maintenance dispatch created"
 msgstr "维护调度创建"
 
 #. placeholder {0}: workCenter.name
-#: apps/mes/app/components/JobOperation/components/MaintenanceDispatch.tsx:225
 msgid "Maintenance for {0}"
 msgstr "维护{0}"
 
-#: apps/mes/app/components/AdjustInventory.tsx:149
 msgid "Manually add items to inventory"
 msgstr "手动添加物品到库存"
 
-#: apps/mes/app/components/AdjustInventory.tsx:151
 msgid "Manually remove items from inventory"
 msgstr "手动从库存中移除物品"
 
-#: apps/mes/app/components/Filter/ActiveFilters.tsx:142
 msgid "matches"
 msgstr "匹配"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:866
 msgid "Material"
 msgstr "材料"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:715
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:742
 msgid "Material and parent ID are required to unconsume"
 msgstr "物料和父项ID必填才能反消费"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:971
 msgid "Materials"
 msgstr "材料"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:846
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1863
 msgid "Maximum number of records reached"
 msgstr "已达到最大记录数"
 
-#: packages/react/src/Editor/slash.tsx:62
 msgid "Medium section heading."
 msgstr "中级标题。"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:472
 msgid "Model"
 msgstr "模型"
 
-#: apps/mes/app/components/JobOperation/hooks/useFiles.tsx:60
 msgid "Model data is missing"
 msgstr "模型数据缺失"
 
-#: apps/mes/app/routes/x+/timecard.tsx:440
 msgid "More options"
 msgstr "更多选项"
 
 #. placeholder {0}: column.title
-#: apps/mes/app/components/Kanban/components/ColumnCard.tsx:153
 msgid "Move column: {0}"
 msgstr "移动列：{0}"
 
-#: apps/mes/app/components/JobOperation/components/Step.tsx:116
 msgid "Must be < {maxValue} {unitOfMeasureCode}"
 msgstr "必须小于 {maxValue} {unitOfMeasureCode}"
 
-#: apps/mes/app/components/JobOperation/components/Step.tsx:114
 msgid "Must be > {minValue} {unitOfMeasureCode}"
 msgstr "必须大于 {minValue} {unitOfMeasureCode}"
 
-#: apps/mes/app/components/JobOperation/components/Step.tsx:112
 msgid "Must be between {minValue} and {maxValue} {unitOfMeasureCode}"
 msgstr "必须在 {minValue} 到 {maxValue} {unitOfMeasureCode} 之间"
 
-#: apps/mes/app/components/TimeCardButton.tsx:105
-#: apps/mes/app/components/TimeCardButton.tsx:115
-#: apps/mes/app/routes/x+/timecard.tsx:245
 msgid "My Hours"
 msgstr "我的工时"
 
-#: apps/mes/app/components/AppSidebar.tsx:213
-#: apps/mes/app/routes/x+/salary.tsx:184
 msgid "My Salary"
 msgstr "我的薪水"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1494
 msgid "Name"
 msgstr "名称"
 
-#: packages/react/src/CreateableCombobox.tsx:258
-#: packages/react/src/CreateableMultiSelect.tsx:274
 msgid "New"
 msgstr "新建"
 
 #. placeholder {0}: itemType === "Material" ? "Size" : "Revision"
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1767
 msgid "New {0}"
 msgstr "新{0}"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:857
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1874
 msgid "New Record"
 msgstr "新记录"
 
-#: apps/mes/app/routes/x+/timecard.tsx:300
-#: apps/mes/app/routes/x+/timecard.tsx:304
-#: packages/react/src/Date/components/Calendar.tsx:51
 msgid "Next"
 msgstr "下一个"
 
-#: packages/react/src/Date/components/RangeCalendar.tsx:119
 msgid "Next Month"
 msgstr "下个月"
 
-#: packages/react/src/Date/components/RangeCalendar.tsx:127
 msgid "Next Year"
 msgstr "明年"
 
-#: apps/mes/app/routes/x+/maintenance.tsx:479
 msgid "No active maintenance dispatches"
 msgstr "无活跃的维护工单"
 
-#: apps/mes/app/components/EndShift.tsx:103
-#: apps/mes/app/routes/x+/active.tsx:112
 msgid "No active operations"
 msgstr "无活跃工序"
 
-#: apps/mes/app/routes/x+/salary.tsx:307
 msgid "No approved completions this period"
 msgstr "本期无已批准的完工记录"
 
-#: apps/mes/app/routes/x+/assigned.tsx:146
 msgid "No assigned operations"
 msgstr "无已分配工序"
 
-#: apps/mes/app/components/Filter/Filter.tsx:167
 msgid "No available filters"
 msgstr "无可用筛选条件"
 
-#: apps/mes/app/components/JobOperation/components/SerialSelectorModal.tsx:77
 msgid "No available serial numbers found"
 msgstr "未找到可用的序列号"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1301
 msgid "No consumed materials"
 msgstr "未消耗材料"
 
-#: apps/mes/app/routes/x+/maintenance.tsx:519
 msgid "No dispatches assigned to you"
 msgstr "没有分配给您的工单"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1509
 msgid "No files"
 msgstr "无文件"
 
-#: apps/mes/app/components/MaintenanceOeeImpact.tsx:58
-#: apps/mes/app/routes/x+/maintenance.tsx:258
-#: apps/mes/app/routes/x+/maintenance.tsx:376
 msgid "No Impact"
 msgstr "无影响"
 
-#: apps/mes/app/routes/x+/maintenance.tsx:499
 msgid "No maintenance scheduled for today"
 msgstr "今天没有计划的维护"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1040
 msgid "No materials"
 msgstr "无材料"
 
-#: apps/mes/app/components/PinInOverlay.tsx:223
 msgid "No operators"
 msgstr "无操作员"
 
-#: packages/react/src/CreateableMultiSelect.tsx:304
-#: packages/react/src/MultiSelect.tsx:271
 msgid "No option found."
 msgstr "未找到选项。"
 
-#: apps/mes/app/components/Filter/ActiveFilters.tsx:170
 msgid "No options found."
 msgstr "未找到选项。"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1443
 msgid "No pickups logged"
 msgstr "无拣货记录"
 
-#: apps/mes/app/routes/x+/recent.tsx:112
 msgid "No recent operations"
 msgstr "无近期工序"
 
-#: apps/mes/app/components/PinInOverlay.tsx:223
-#: apps/mes/app/routes/x+/operations.tsx:525
-#: packages/react/src/Editor/Editor.tsx:168
 msgid "No results"
 msgstr "无结果"
 
-#: apps/mes/app/routes/x+/active.tsx:100
-#: apps/mes/app/routes/x+/assigned.tsx:134
-#: apps/mes/app/routes/x+/recent.tsx:100
 msgid "No results exist"
 msgstr "无结果"
 
-#: apps/mes/app/routes/x+/maintenance.tsx:475
-#: apps/mes/app/routes/x+/maintenance.tsx:494
-#: apps/mes/app/routes/x+/maintenance.tsx:515
-#: apps/mes/app/routes/x+/maintenance.tsx:534
 msgid "No results found"
 msgstr "未找到结果"
 
-#: packages/react/src/GroupedCreatableCombobox.tsx:242
 msgid "No results found."
 msgstr "没有找到结果。"
 
-#: apps/mes/app/components/Kanban/components/ColumnCard.tsx:147
 msgid "No scheduled time"
 msgstr "无排定时间"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1689
 msgid "No serial numbers"
 msgstr "无序列号"
 
-#: apps/mes/app/routes/x+/dispatch.$dispatchId.tsx:477
 msgid "No spare parts added yet"
 msgstr "尚未添加备件"
 
-#: apps/mes/app/routes/x+/timecard.tsx:342
 msgid "No time entries for this week"
 msgstr "本周无考勤记录"
 
-#: apps/mes/app/routes/x+/maintenance.tsx:538
 msgid "No work centers are blocked"
 msgstr "无工作中心被阻塞"
 
-#: apps/mes/app/routes/x+/operations.tsx:537
 msgid "No work centers exist"
 msgstr "无工作中心"
 
-#: apps/mes/app/components/JobOperation/components/PickupModal.tsx:86
-#: apps/mes/app/components/JobOperation/components/QuantityModal.tsx:251
 msgid "Notes"
 msgstr "备注"
 
-#: packages/react/src/Editor/slash.tsx:98
 msgid "Numbered List"
 msgstr "编号列表"
 
-#: apps/mes/app/components/JobOperation/components/MaintenanceDispatch.tsx:282
-#: apps/mes/app/routes/x+/maintenance.tsx:369
 msgid "OEE Impact"
 msgstr "OEE 影响"
 
-#: apps/mes/app/components/MaintenanceSeverity.tsx:58
 msgid "OEM Required"
 msgstr "需要 OEM"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1569
 msgid "of the selected"
 msgstr "所选的"
 
 #. placeholder {0}: batch.quantity
-#: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:183
 msgid "Only {0} available"
 msgstr "仅 {0} 可用"
 
-#: apps/mes/app/routes/_index.tsx:16
 msgid "Oops. You shouldn't see this page. Eventually it will be a landing page."
 msgstr "抱歉，您不应该看到此页面。此页面最终将成为首页。"
 
-#: apps/mes/app/routes/x+/maintenance.tsx:361
 msgid "Open"
 msgstr "打开"
 
-#: packages/react/src/Date/DatePicker.tsx:54
-#: packages/react/src/Date/DatePicker.tsx:84
 msgid "Open date picker"
 msgstr "打开日期选择器"
 
-#: packages/react/src/Date/DateTimePicker.tsx:69
 msgid "Open date time picker"
 msgstr "打开日期时间选择器"
 
-#: apps/mes/app/components/AppSidebar.tsx:231
 msgid "Operations"
 msgstr "工序"
 
-#: apps/mes/app/components/EndShift.tsx:44
 msgid "Operations ended"
 msgstr "工序已结束"
 
-#: apps/mes/app/components/MaintenanceSeverity.tsx:38
 msgid "Operator Performed"
 msgstr "操作员执行"
 
-#: packages/react/src/Form/FormLabel.tsx:44
 msgid "Optional"
 msgstr "可选"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1563
 msgid "Override required"
 msgstr "强制覆盖"
 
-#: apps/mes/app/routes/x+/salary.tsx:242
 msgid "Owed"
 msgstr "欠款"
 
-#: apps/mes/app/routes/x+/salary.tsx:229
-#: apps/mes/app/routes/x+/salary.tsx:359
 msgid "Paid"
 msgstr "已支付"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1782
 msgid "Parameters"
 msgstr "参数"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:638
 msgid "Parent tracking ID is required for batch tracked items."
 msgstr "批跟踪ID对于批次跟踪项是必需的。"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:566
 msgid "Parent tracking ID is required for serial tracked items."
 msgstr "父级跟踪ID对于序列追踪项是必需的。"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1019
 msgid "Part"
 msgstr "产品"
 
-#: apps/mes/app/components/JobOperation/components/Step.tsx:543
 msgid "Passed Inspection"
 msgstr "检验通过"
 
-#: apps/mes/app/components/JobOperation/components/Controls.tsx:319
 msgid "Pause"
 msgstr "暂停"
 
-#: apps/mes/app/routes/x+/salary.tsx:273
 msgid "Pending"
 msgstr "待审批"
 
-#: apps/mes/app/routes/x+/salary.tsx:257
 msgid "Pending Approval"
 msgstr "待批准"
 
-#: apps/mes/app/routes/x+/salary.tsx:357
 msgid "Period"
 msgstr "期间"
 
 #. placeholder {0}: startColumn?.title
 #. placeholder {1}: startIndex + 1
 #. placeholder {2}: columnOrder.length
-#: apps/mes/app/components/Kanban/Kanban.tsx:84
 msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "已拾取列 {0}，位于第 {1} 个位置（共 {2} 个）"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1420
 msgid "Pickups"
 msgstr "拾取"
 
-#: apps/mes/app/components/PinInOverlay.tsx:357
 msgid "Pin Out"
 msgstr "退出登录"
 
-#: apps/mes/app/components/MaintenanceOeeImpact.tsx:38
-#: apps/mes/app/routes/x+/maintenance.tsx:374
 msgid "Planned"
 msgstr "已计划"
 
-#: apps/mes/app/components/JobOperation/components/QuantityModal.tsx:230
 msgid "Please record all steps for this operation before closing."
 msgstr "请在关闭前记录此工序的所有步骤。"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:737
 msgid "Please select a batch to unconsume"
 msgstr "请选择一个批次进行反消费"
 
-#: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:191
 msgid "Please select an item"
 msgstr "请选择一个物品"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:572
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:644
 msgid "Please select an item to issue."
 msgstr "请选择要发放的物品。"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:710
 msgid "Please select at least one item to unconsume"
 msgstr "请选择至少一个项目进行反消费"
 
-#: packages/react/src/Editor/Editor.tsx:131
 msgid "Press '/' for commands"
 msgstr "按 '/' 查看命令"
 
-#: apps/mes/app/routes/x+/timecard.tsx:285
 msgid "Prev"
 msgstr "上一个"
 
-#: apps/mes/app/components/MaintenanceSeverity.tsx:28
 msgid "Preventive"
 msgstr "预防性"
 
-#: packages/react/src/Date/components/Calendar.tsx:42
 msgid "Previous"
 msgstr "上一页"
 
-#: packages/react/src/Date/components/RangeCalendar.tsx:94
 msgid "Previous Month"
 msgstr "上个月"
 
-#: packages/react/src/Date/components/RangeCalendar.tsx:86
 msgid "Previous Year"
 msgstr "上一年度"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:892
 msgid "Print Label"
 msgstr "打印标签"
 
-#: apps/mes/app/components/JobOperation/components/MaintenanceDispatch.tsx:245
-#: apps/mes/app/routes/x+/maintenance.tsx:345
 msgid "Priority"
 msgstr "优先级"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:481
-#: apps/mes/app/routes/x+/dispatch.$dispatchId.tsx:518
 msgid "Procedure"
 msgstr "规程"
 
-#: apps/mes/app/routes/x+/operations.tsx:377
 msgid "Process"
 msgstr "工序"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:935
 msgid "Process Parameters"
 msgstr "工序参数"
 
-#: apps/mes/app/routes/x+/operations.tsx:378
 msgid "Processes"
 msgstr "工序"
 
-#: apps/mes/app/routes/x+/operations.tsx:477
 msgid "Progress"
 msgstr "进度"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1002
 msgid "Pull from Inventory"
 msgstr "从库存中拉取"
 
-#: apps/mes/app/routes/x+/salary.tsx:284
-#: apps/mes/app/routes/x+/salary.tsx:332
 msgid "Qty"
 msgstr "数量"
 
-#: apps/mes/app/components/AdjustInventory.tsx:170
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1020
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1772
-#: apps/mes/app/components/JobOperation/components/PickupModal.tsx:81
-#: apps/mes/app/components/JobOperation/components/QuantityModal.tsx:240
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1435
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:2312
-#: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:336
 msgid "Quantity"
 msgstr "数量"
 
 #. placeholder {0}: batchOption.availableQuantity
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:407
 msgid "Quantity cannot exceed available quantity ({0})"
 msgstr "数量不得超过可用数量({0})"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:405
-#: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:176
-#: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:258
 msgid "Quantity must be greater than 0"
 msgstr "数量必须大于 0"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1579
 msgid "Reason for issuing expired stock"
 msgstr "发出过期库存的原因"
 
-#: apps/mes/app/components/AppSidebar.tsx:208
-#: apps/mes/app/components/PinInOverlay.tsx:230
-#: apps/mes/app/routes/x+/recent.tsx:69
 msgid "Recent"
 msgstr "最近"
 
-#: apps/mes/app/components/JobOperation/components/Step.tsx:206
-#: apps/mes/app/components/JobOperation/components/Step.tsx:569
 msgid "Record"
 msgstr "记录"
 
 #. placeholder {0}: activeStep + 1
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:814
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1838
 msgid "Record {0}"
 msgstr "记录 {0}"
 
-#: apps/mes/app/components/JobOperation/components/Step.tsx:513
 msgid "Remove"
 msgstr "移除"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1408
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1491
 msgid "Remove Batch Number"
 msgstr "删除批次号"
 
-#: apps/mes/app/components/Filter/ActiveFilters.tsx:200
-#: apps/mes/app/components/Filter/Filter.tsx:129
 msgid "Remove filter"
 msgstr "移除筛选"
 
-#: apps/mes/app/components/AdjustInventory.tsx:114
-#: apps/mes/app/components/AdjustInventory.tsx:119
-#: apps/mes/app/components/AdjustInventory.tsx:144
-#: apps/mes/app/components/AdjustInventory.tsx:197
 msgid "Remove Inventory"
 msgstr "移除库存"
 
-#: apps/mes/app/routes/x+/dispatch.$dispatchId.tsx:462
 msgid "Remove part"
 msgstr "移除产品"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1169
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1239
 msgid "Remove Serial Number"
 msgstr "移除序列号"
 
-#: packages/react/src/ModelViewer.tsx:345
 msgid "Reset zoom"
 msgstr "重置缩放"
 
-#: apps/mes/app/routes/x+/operations.tsx:479
 msgid "Sales Order"
 msgstr "销售订单"
 
-#: apps/mes/app/routes/x+/timecard.tsx:406
 msgid "Save"
 msgstr "保存"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1080
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1323
-#: apps/mes/app/components/JobOperation/components/SerialSelectorModal.tsx:65
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1666
-#: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:364
-#: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:484
 msgid "Scan"
 msgstr "扫描"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1359
 msgid "Scan batch number"
 msgstr "扫描批次号"
 
-#: apps/mes/app/components/JobOperation/components/SerialSelectorModal.tsx:108
 msgid "Scan or enter serial number"
 msgstr "扫描或输入序列号"
 
-#: apps/mes/app/components/AppSidebar.tsx:192
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:460
-#: apps/mes/app/routes/x+/operations.tsx:423
 msgid "Schedule"
 msgstr "排程"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:912
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1849
 msgid "Scrap"
 msgstr "废料"
 
-#: apps/mes/app/components/JobOperation/components/QuantityModal.tsx:250
-#: apps/mes/app/components/JobOperation/components/ScrapReason.tsx:20
 msgid "Scrap Reason"
 msgstr "报废原因"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:658
 msgid "Scrapped"
 msgstr "已报废"
 
-#: apps/mes/app/routes/x+/active.tsx:83
-#: apps/mes/app/routes/x+/assigned.tsx:103
-#: apps/mes/app/routes/x+/maintenance.tsx:453
-#: apps/mes/app/routes/x+/operations.tsx:430
-#: apps/mes/app/routes/x+/recent.tsx:83
 msgid "Search"
 msgstr "搜索"
 
-#: apps/mes/app/components/PinInOverlay.tsx:207
 msgid "Search operators..."
 msgstr "搜索操作员..."
 
-#: apps/mes/app/components/Filter/ActiveFilters.tsx:166
-#: apps/mes/app/components/Filter/Filter.tsx:163
-#: packages/react/src/Combobox.tsx:235
-#: packages/react/src/CreateableCombobox.tsx:278
-#: packages/react/src/CreateableMultiSelect.tsx:177
-#: packages/react/src/CreateableMultiSelect.tsx:294
-#: packages/react/src/GroupedCreatableCombobox.tsx:234
-#: packages/react/src/MultiSelect.tsx:268
 msgid "Search..."
 msgstr "搜索..."
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1084
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1327
-#: apps/mes/app/components/JobOperation/components/SerialSelectorModal.tsx:69
-#: apps/mes/app/components/JobOperation/components/SerialSelectorModal.tsx:94
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1733
-#: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:368
-#: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:488
-#: packages/react/src/Combobox.tsx:148
-#: packages/react/src/CreateableCombobox.tsx:157
-#: packages/react/src/GroupedCreatableCombobox.tsx:213
-#: packages/react/src/MultiSelect.tsx:178
 msgid "Select"
 msgstr "选择"
 
-#: apps/mes/app/components/JobOperation/components/QuantityModal.tsx:87
 msgid "Select a completion quantity"
 msgstr "选择完成数量"
 
-#: apps/mes/app/components/JobOperation/components/QuantityModal.tsx:86
 msgid "Select a rework quantity"
 msgstr "选择返工数量"
 
-#: apps/mes/app/components/JobOperation/components/QuantityModal.tsx:85
 msgid "Select a scrap quantity and reason"
 msgstr "选择报废数量和原因"
 
-#: apps/mes/app/components/JobOperation/components/SerialSelectorModal.tsx:55
 msgid "Select a serial number to continue with this operation"
 msgstr "选择一个序列号以继续此工序"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:846
-#: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:306
 msgid "Select an item and specify the quantity to issue"
 msgstr "选择物品并指定要发放的数量"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:959
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1056
-#: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:317
 msgid "Select an item..."
 msgstr "选择物品..."
 
 #. placeholder {0}: index + 1
-#: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:592
 msgid "Select Batch {0}"
 msgstr "选择批次 {0}"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1451
 msgid "Select batch number"
 msgstr "选择批号"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1527
 msgid "Select batch to unconsume"
 msgstr "选择批次进行反消费"
 
 #. placeholder {0}: index + 1
-#: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:440
 msgid "Select Serial {0}"
 msgstr "选择序列号 {0}"
 
-#: apps/mes/app/components/JobOperation/components/SerialSelectorModal.tsx:52
 msgid "Select Serial Number"
 msgstr "选择序列号"
 
 #. placeholder {0}: index + 1
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1207
 msgid "Select Serial Number {0}"
 msgstr "选择序列号 {0}"
 
-#: apps/mes/app/components/Feedback.tsx:160
-#: apps/mes/app/components/JobOperation/components/Chat.tsx:224
-#: apps/mes/app/components/Suggestion.tsx:223
 msgid "Send"
 msgstr "发送"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1676
 msgid "Serial"
 msgstr "序列号"
 
 #. placeholder {0}: sn.readableId
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:199
-#: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:128
 msgid "Serial {0}"
 msgstr "序列号 {0}"
 
 #. placeholder {0}: index + 1
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1105
-#: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:382
 msgid "Serial Number {0}"
 msgstr "序列号 {0}"
 
 #. placeholder {0}: sn.status
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:384
 msgid "Serial number is {0}"
 msgstr "序列号是{0}"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:385
-#: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:167
 msgid "Serial number is not available"
 msgstr "序列号不可用"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:376
-#: apps/mes/app/components/MaintenanceDispatch/MaintenanceAddPartModal.tsx:161
 msgid "Serial number is required"
 msgstr "序列号为必填项"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1647
 msgid "Serial Numbers"
 msgstr "序列号"
 
 #. placeholder {0}: input.readableId
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1293
 msgid "Serial: {0}"
 msgstr "序号: {0}"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1570
 msgid "serials"
 msgstr "序列号"
 
-#: apps/mes/app/components/TimeCardWarning.tsx:149
 msgid "Set Clock Out"
 msgstr "设置下班时间"
 
-#: apps/mes/app/components/TimeCardWarning.tsx:130
 msgid "Set clock-out time"
 msgstr "设置下班打卡时间"
 
-#: apps/mes/app/components/JobOperation/components/Controls.tsx:166
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:2214
 msgid "Setup"
 msgstr "设置"
 
-#: apps/mes/app/components/JobOperation/components/MaintenanceDispatch.tsx:258
 msgid "Severity"
 msgstr "严重程度"
 
-#: apps/mes/app/routes/_public+/login.tsx:278
 msgid "Sign in with Email"
 msgstr "使用邮箱登录"
 
-#: apps/mes/app/routes/_public+/login.tsx:225
 msgid "Sign in with Google"
 msgstr "使用 Google 登录"
 
-#: apps/mes/app/routes/_public+/login.tsx:238
 msgid "Sign in with Outlook"
 msgstr "使用 Outlook 登录"
 
-#: apps/mes/app/components/AppSidebar.tsx:574
 msgid "Sign Out"
 msgstr "退出登录"
 
-#: apps/mes/app/components/AppSidebar.tsx:414
 msgid "Signed in as {stationName}"
 msgstr "已登录为 {stationName}"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1497
 msgid "Size"
 msgstr "大小"
 
-#: packages/react/src/Editor/slash.tsx:76
 msgid "Small section heading."
 msgstr "小标题"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1022
 msgid "Source"
 msgstr "来源"
 
-#: apps/mes/app/routes/x+/dispatch.$dispatchId.tsx:426
 msgid "Spare Parts"
 msgstr "备件"
 
-#: apps/mes/app/routes/x+/dispatch.$dispatchId.tsx:489
 msgid "Spare Parts Used"
 msgstr "已使用备件"
 
-#: apps/mes/app/components/JobOperation/components/Controls.tsx:332
 msgid "Start"
 msgstr "开始"
 
-#: apps/mes/app/components/JobOperation/components/MaintenanceDispatch.tsx:275
 msgid "Start Time"
 msgstr "开始时间"
 
-#: apps/mes/app/components/PinInOverlay.tsx:271
 msgid "Station User"
 msgstr "工位用户"
 
-#: apps/mes/app/components/AppSidebar.tsx:408
 msgid "Station: {stationName}"
 msgstr "工位：{stationName}"
 
-#: apps/mes/app/routes/x+/maintenance.tsx:356
-#: apps/mes/app/routes/x+/operations.tsx:478
-#: apps/mes/app/routes/x+/salary.tsx:360
 msgid "Status"
 msgstr "状态"
 
-#: apps/mes/app/routes/x+/maintenance.tsx:357
 msgid "Statuses"
 msgstr "状态"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:760
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:871
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1779
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1889
 msgid "Steps"
 msgstr "步骤"
 
-#: apps/mes/app/components/JobOperation/components/QuantityModal.tsx:227
 msgid "Steps are missing"
 msgstr "缺少步骤"
 
-#: apps/mes/app/components/AdjustInventory.tsx:172
 msgid "Storage Unit"
 msgstr "存储单位"
 
-#: apps/mes/app/components/Suggestion.tsx:163
 msgid "Submit anonymously"
 msgstr "匿名提交"
 
-#: apps/mes/app/components/Suggestion.tsx:117
-#: apps/mes/app/components/Suggestion.tsx:120
 msgid "Suggestion"
 msgstr "建议"
 
-#: apps/mes/app/components/MaintenanceSeverity.tsx:48
 msgid "Support Required"
 msgstr "需要支持"
 
-#: apps/mes/app/components/JobOperation/components/MaintenanceDispatch.tsx:311
 msgid "Suspected Failure Mode"
 msgstr "疑似故障模式"
 
-#: apps/mes/app/components/AppSidebar.tsx:404
 msgid "Switch Operator"
 msgstr "切换操作员"
 
-#: apps/mes/app/routes/x+/operations.tsx:394
 msgid "Tag"
 msgstr "标签"
 
-#: packages/react/src/Editor/slash.tsx:24
 msgid "Text"
 msgstr "文本"
 
 #. placeholder {0}: operation.operationQuantity
-#: apps/mes/app/components/JobOperation/components/QuantityModal.tsx:216
 msgid "The completed quantity for this operation is less than the required quantity of {0}."
 msgstr "此工序的完成数量小于所需数量 {0}。"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1827
 msgid "The remaining quantity will be removed from inventory and issued to the job"
 msgstr "剩余数量将从库存中移除并下发到工序"
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1303
 msgid "There are no consumed materials to unconsume."
 msgstr "没有可恢复的原材料。"
 
-#: apps/mes/app/components/JobOperation/components/QuantityModal.tsx:186
 msgid "There are serial or batch tracked materials on the bill of material that have not been fully issued. Completing without issuing may result in incorrect traceability records."
 msgstr "物料清单中有序列号或批次追踪的材料尚未完全发放。不发放即完成可能导致追溯记录不正确。"
 
-#: apps/mes/app/components/JobOperation/hooks/useOperation.tsx:181
 msgid "This operation has been deleted"
 msgstr "此操作已被删除"
 
-#: apps/mes/app/routes/x+/salary.tsx:301
 msgid "This Period"
 msgstr "本期"
 
-#: apps/mes/app/routes/x+/operations.tsx:480
 msgid "Thumbnail"
 msgstr "缩略图"
 
-#: apps/mes/app/routes/x+/dispatch.$dispatchId.tsx:387
 msgid "Time Entries"
 msgstr "工时记录"
 
 #. placeholder {0}: formatDuration(totalDuration)
-#: apps/mes/app/routes/x+/dispatch.$dispatchId.tsx:308
 msgid "Time Worked: {0}"
 msgstr "工作时间：{0}"
 
-#: packages/react/src/Editor/slash.tsx:38
 msgid "To-do List"
 msgstr "待办事项列表"
 
-#: apps/mes/app/routes/x+/maintenance.tsx:425
 msgid "Today"
 msgstr "今天"
 
-#: packages/react/src/Date/components/Button.tsx:44
 msgid "Toggle"
 msgstr "切换"
 
-#: packages/react/src/Sidebar.tsx:278
-#: packages/react/src/Sidebar.tsx:303
-#: packages/react/src/Sidebar.tsx:306
 msgid "Toggle Sidebar"
 msgstr "切换侧边栏"
 
-#: apps/mes/app/components/AppSidebar.tsx:290
 msgid "Tools"
 msgstr "工具"
 
-#: apps/mes/app/components/JobOperation/components/QuantityModal.tsx:257
 msgid "Total Quantity"
 msgstr "总数量"
 
 #. placeholder {0}: formatDuration(totalDuration)
-#: apps/mes/app/routes/x+/dispatch.$dispatchId.tsx:548
 msgid "Total time: {0}"
 msgstr "总时间：{0}"
 
 #. placeholder {0}: formatTotalHours(entries)
-#: apps/mes/app/routes/x+/timecard.tsx:476
 msgid "Total: {0}"
 msgstr "合计：{0}"
 
-#: packages/react/src/Editor/slash.tsx:39
 msgid "Track tasks with a to-do list."
 msgstr "使用待办事项列表跟踪任务。"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1663
 msgid "Tracking Labels"
 msgstr "追踪标签"
 
-#: apps/mes/app/components/JobOperation/components/Chat.tsx:213
 msgid "Type a message..."
 msgstr "输入消息..."
 
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1089
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1332
-#: apps/mes/app/components/JobOperation/components/IssueMaterialModal.tsx:1619
 msgid "Unconsume"
 msgstr "未消耗"
 
-#: apps/mes/app/components/JobOperation/components/QuantityModal.tsx:183
 msgid "Unissued serial/batch materials"
 msgstr "未发放的序列号/批次材料"
 
-#: apps/mes/app/routes/x+/salary.tsx:286
-#: apps/mes/app/routes/x+/salary.tsx:334
 msgid "unit"
 msgstr "单位"
 
-#: apps/mes/app/routes/x+/dispatch.$dispatchId.tsx:266
 msgid "Unknown"
 msgstr "未知"
 
-#: apps/mes/app/components/JobOperation/components/Step.tsx:155
 msgid "Update"
 msgstr "更新"
 
-#: apps/mes/app/components/TimeCardWarning.tsx:70
 msgid "Updated successfully"
 msgstr "更新成功"
 
-#: packages/react/src/Editor/slash.tsx:108
 msgid "Upload an image from your computer."
 msgstr "从计算机上传一张图片。"
 
 #. placeholder {0}: fileUpload.name
-#: apps/mes/app/components/JobOperation/components/Step.tsx:389
 msgid "Uploaded: {0}"
 msgstr "已上传：{0}"
 
 #. placeholder {0}: fileUpload.name
-#: apps/mes/app/components/JobOperation/components/Step.tsx:375
 msgid "Uploading {0}"
 msgstr "正在上传 {0}"
 
-#: apps/mes/app/components/JobOperation/components/MaintenanceDispatch.tsx:177
-#: apps/mes/app/components/JobOperation/components/MaintenanceDispatch.tsx:194
 msgid "View Active Maintenance"
 msgstr "查看活跃维护"
 
-#: apps/mes/app/components/Kanban/components/ColumnCard.tsx:137
 msgid "View maintenance dispatch"
 msgstr "查看维护工单"
 
-#: apps/mes/app/routes/_public+/login.tsx:195
 msgid "We've sent you a magic link to sign in to your account."
 msgstr "我们已向您发送了登录链接，请查收。"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:1143
 msgid "WIP"
 msgstr "在制品"
 
-#: apps/mes/app/components/JobOperation/JobOperation.tsx:2019
-#: apps/mes/app/routes/x+/dispatch.$dispatchId.tsx:260
-#: apps/mes/app/routes/x+/maintenance.tsx:332
-#: apps/mes/app/routes/x+/operations.tsx:366
 msgid "Work Center"
 msgstr "工作中心"
 
 #. placeholder {0}: new Date(openClockEntry.clockIn).toLocaleString(locale)
-#: apps/mes/app/components/TimeCardWarning.tsx:121
 msgid "You clocked in at {0}. You can edit your clock-out time below or acknowledge that you're still working."
 msgstr "您于 {0} 打卡上班。您可以在下方编辑下班时间，或确认您仍在工作。"
 
-#: apps/mes/app/components/TimeCardWarning.tsx:112
 msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "您已打卡上班 {hoursElapsed} 小时。您是否忘记打卡下班了？"
