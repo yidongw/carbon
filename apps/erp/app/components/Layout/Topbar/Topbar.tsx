@@ -56,7 +56,7 @@ const Topbar = () => {
         <div
           data-slot
           ref={slotRef}
-          className="flex flex-1 items-center min-w-0 overflow-hidden"
+          className="flex flex-1 items-center min-w-0 overflow-visible"
         />
       </div>
       <HStack spacing={1} className="flex-shrink-0 py-2">
