@@ -11,6 +11,9 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
@@ -93,6 +96,14 @@ const Assign = forwardRef<HTMLButtonElement, AssigneeProps>(
       ];
     }, [people, user, t]);
 
+    const assigneeLabel = useMemo(() => {
+      if (!value) return t`Unassigned`;
+      return (
+        options.find((option) => option.value === value)?.label ??
+        t`Unassigned`
+      );
+    }, [options, t, value]);
+
     return (
       <VStack spacing={2}>
         {variant === "inline" && (
@@ -117,23 +128,30 @@ const Assign = forwardRef<HTMLButtonElement, AssigneeProps>(
             <PopoverTrigger asChild>
               {variant === "button" ? (
                 iconOnly ? (
-                  <IconButton
-                    aria-label={t`Toggle Assignee`}
-                    icon={
-                      value ? (
-                        <EmployeeAvatar
-                          size={size === "sm" ? "xxs" : "xs"}
-                          employeeId={value ?? null}
-                        />
-                      ) : (
-                        <LuUser />
-                      )
-                    }
-                    size={size}
-                    variant="secondary"
-                    isDisabled={isReadOnly || !permissions.is("employee")}
-                    isLoading={fetcher.state !== "idle"}
-                  />
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <IconButton
+                        aria-label={`${t`Toggle Assignee`}: ${assigneeLabel}`}
+                        icon={
+                          value ? (
+                            <EmployeeAvatar
+                              size={size === "sm" ? "xxs" : "xs"}
+                              employeeId={value ?? null}
+                            />
+                          ) : (
+                            <LuUser />
+                          )
+                        }
+                        size={size}
+                        variant="secondary"
+                        isDisabled={isReadOnly || !permissions.is("employee")}
+                        isLoading={fetcher.state !== "idle"}
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <span>{assigneeLabel}</span>
+                    </TooltipContent>
+                  </Tooltip>
                 ) : (
                   <button
                     className={cn(
