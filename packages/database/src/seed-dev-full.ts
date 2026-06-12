@@ -1059,116 +1059,118 @@ async function seed() {
     }
 
     // ─── Step 24: material + part + consumable + fixture + tool + service ──────
+    // Each type-specific table (part, material, tool, consumable, fixture, service)
+    // is INNER JOINed to item.readableId in its view, so id must equal readableId.
     console.log("24. Seeding item subtype records...");
-    // Material record (standalone, not linked to item by FK)
-    const existingMat = await client.query(
-      `SELECT 1 FROM material WHERE "companyId" = $1 LIMIT 1`, [companyId]
-    );
-    let materialId: string | null = null;
-    if ((existingMat.rowCount ?? 0) === 0) {
-      const r = await client.query<{ id: string }>(
-        `INSERT INTO material ("materialSubstanceId", "materialFormId", "gradeId", "companyId", "createdBy")
-         VALUES ($1, $2, $3, $4, $5) RETURNING id`,
-        [steelSubstanceId, barFormId, gradeId1020, companyId, userId]
+
+    // Material: id must equal item.readableId ("STEEL-ROD-01")
+    const steelItemId = itemIds["STEEL-ROD-01"];
+    if (steelItemId && steelSubstanceId && barFormId) {
+      await client.query(
+        `INSERT INTO material (id, "itemId", "materialSubstanceId", "materialFormId", "gradeId", "companyId", "createdBy")
+         VALUES ($1, $2, $3, $4, $5, $6, $7)
+         ON CONFLICT (id, "companyId") DO NOTHING`,
+        ["STEEL-ROD-01", steelItemId, steelSubstanceId, barFormId, gradeId1020, companyId, userId]
       );
-      materialId = r.rows[0]!.id;
-      console.log(`   Created material record: ${materialId}`);
-    } else {
-      materialId = (await client.query<{id: string}>(`SELECT id FROM material WHERE "companyId" = $1 LIMIT 1`, [companyId])).rows[0]!.id;
+      console.log(`   Upserted material record for STEEL-ROD-01`);
     }
 
-    // Part records
+    // Parts: id must equal item.readableId for each part
     for (const readableId of ["BEARING-6205", "BRACKET-001", "SHAFT-ASM-001", "CTRL-PCB-001"]) {
-      const itemIdForPart = itemIds[readableId];
-      if (!itemIdForPart) continue;
-      const existing = await client.query(
-        `SELECT 1 FROM part WHERE "companyId" = $1 LIMIT 1`, [companyId]
-      );
-      // Create one part record per item type
-      const existingPart = await client.query(
-        `SELECT 1 FROM part WHERE id = (SELECT id FROM part WHERE "companyId" = $1 ORDER BY "createdAt" LIMIT 1) LIMIT 1`,
-        [companyId]
-      );
-      break; // Just check if any part exists
-    }
-    const existingPartCount = await client.query<{count: string}>(
-      `SELECT COUNT(*) AS count FROM part WHERE "companyId" = $1`, [companyId]
-    );
-    if (parseInt(existingPartCount.rows[0]!.count) === 0) {
-      for (const readableId of ["BEARING-6205", "BRACKET-001", "SHAFT-ASM-001", "CTRL-PCB-001"]) {
-        await client.query(
-          `INSERT INTO part ("companyId", "createdBy") VALUES ($1, $2)`,
-          [companyId, userId]
-        );
-      }
-      console.log(`   Created 4 part records`);
-    }
-
-    // Consumable record
-    const existingCons = await client.query(
-      `SELECT 1 FROM consumable WHERE "companyId" = $1 LIMIT 1`, [companyId]
-    );
-    if ((existingCons.rowCount ?? 0) === 0) {
-      const consIdResult = await client.query<{ id: string }>(
-        `SELECT id('cons'::text) AS id`
-      );
+      const itemUuid = itemIds[readableId];
+      if (!itemUuid) continue;
       await client.query(
-        `INSERT INTO consumable (id, "companyId", "createdBy") VALUES ($1, $2, $3)`,
-        [consIdResult.rows[0]!.id, companyId, userId]
+        `INSERT INTO part (id, "itemId", "companyId", "createdBy")
+         VALUES ($1, $2, $3, $4)
+         ON CONFLICT (id, "companyId") DO NOTHING`,
+        [readableId, itemUuid, companyId, userId]
       );
-      console.log(`   Created consumable record`);
+    }
+    console.log(`   Upserted 4 part records`);
+
+    // Consumable: id must equal item.readableId ("FASTENER-KIT-01")
+    const consItemId = itemIds["FASTENER-KIT-01"];
+    if (consItemId) {
+      await client.query(
+        `INSERT INTO consumable (id, "itemId", "companyId", "createdBy")
+         VALUES ($1, $2, $3, $4)
+         ON CONFLICT (id, "companyId") DO NOTHING`,
+        ["FASTENER-KIT-01", consItemId, companyId, userId]
+      );
+      console.log(`   Upserted consumable record for FASTENER-KIT-01`);
     }
 
-    // Tool record + new tool item
-    const existingTool = await client.query(
-      `SELECT 1 FROM tool WHERE "companyId" = $1 LIMIT 1`, [companyId]
-    );
+    // Tool: create item first, then tool record with id=readableId
     let toolItemId: string | null = null;
-    if ((existingTool.rowCount ?? 0) === 0) {
-      const toolItem = await client.query<{ id: string }>(
-        `INSERT INTO item ("readableId", name, description, type, "replenishmentSystem", "itemTrackingType", "unitOfMeasureCode", active, "companyId", "createdBy")
-         VALUES ('DRILL-JIG-01', 'Drill Jig Fixture', 'Custom drill jig for bracket machining', 'Tool'::"itemType", 'Buy'::"itemReplenishmentSystem", 'Inventory'::"itemTrackingType", 'EA', true, $1, $2)
-         ON CONFLICT DO NOTHING RETURNING id`,
-        [companyId, userId]
+    const toolItemInsert = await client.query<{ id: string }>(
+      `INSERT INTO item ("readableId", name, description, type, "replenishmentSystem", "itemTrackingType", "unitOfMeasureCode", active, "companyId", "createdBy")
+       VALUES ('DRILL-JIG-01', 'Drill Jig Fixture', 'Custom drill jig for bracket machining', 'Tool'::"itemType", 'Buy'::"itemReplenishmentSystem", 'Inventory'::"itemTrackingType", 'EA', true, $1, $2)
+       ON CONFLICT DO NOTHING RETURNING id`,
+      [companyId, userId]
+    );
+    toolItemId = toolItemInsert.rows[0]?.id ?? null;
+    if (!toolItemId) {
+      const r = await client.query<{id: string}>(
+        `SELECT id FROM item WHERE "readableId" = 'DRILL-JIG-01' AND "companyId" = $1 LIMIT 1`, [companyId]
       );
-      if (toolItem.rows.length > 0) toolItemId = toolItem.rows[0]!.id;
-      const toolIdResult = await client.query<{ id: string }>(`SELECT id('tool'::text) AS id`);
+      toolItemId = r.rows[0]?.id ?? null;
+    }
+    if (toolItemId) {
       await client.query(
-        `INSERT INTO tool (id, "companyId", "createdBy") VALUES ($1, $2, $3)`,
-        [toolIdResult.rows[0]!.id, companyId, userId]
+        `INSERT INTO tool (id, "itemId", "companyId", "createdBy")
+         VALUES ($1, $2, $3, $4)
+         ON CONFLICT (id, "companyId") DO NOTHING`,
+        ["DRILL-JIG-01", toolItemId, companyId, userId]
       );
-      console.log(`   Created tool record`);
+      console.log(`   Upserted tool record for DRILL-JIG-01`);
     }
 
-    // Fixture record
-    const existingFix = await client.query(
-      `SELECT 1 FROM fixture WHERE "companyId" = $1 LIMIT 1`, [companyId]
+    // Fixture: create item first, then fixture record with id=readableId
+    const fixtureItemInsert = await client.query<{ id: string }>(
+      `INSERT INTO item ("readableId", name, description, type, "replenishmentSystem", "itemTrackingType", "unitOfMeasureCode", active, "companyId", "createdBy")
+       VALUES ('CLAMP-FIXTURE-01', 'Workholding Clamp Fixture', 'CNC workholding clamp fixture for machining operations', 'Fixture'::"itemType", 'Buy'::"itemReplenishmentSystem", 'Inventory'::"itemTrackingType", 'EA', true, $1, $2)
+       ON CONFLICT DO NOTHING RETURNING id`,
+      [companyId, userId]
     );
-    let toolRecordId: string | null = null;
-    const toolRow = await client.query<{id: string}>(
-      `SELECT id FROM tool WHERE "companyId" = $1 LIMIT 1`, [companyId]
-    );
-    toolRecordId = toolRow.rows[0]?.id ?? null;
-
-    if ((existingFix.rowCount ?? 0) === 0) {
-      const fixIdResult = await client.query<{ id: string }>(`SELECT id('fix'::text) AS id`);
-      await client.query(
-        `INSERT INTO fixture (id, "companyId", "createdBy") VALUES ($1, $2, $3)`,
-        [fixIdResult.rows[0]!.id, companyId, userId]
+    let fixtureItemId: string | null = fixtureItemInsert.rows[0]?.id ?? null;
+    if (!fixtureItemId) {
+      const r = await client.query<{id: string}>(
+        `SELECT id FROM item WHERE "readableId" = 'CLAMP-FIXTURE-01' AND "companyId" = $1 LIMIT 1`, [companyId]
       );
-      console.log(`   Created fixture record`);
+      fixtureItemId = r.rows[0]?.id ?? null;
+    }
+    if (fixtureItemId) {
+      await client.query(
+        `INSERT INTO fixture (id, "itemId", "companyId", "createdBy")
+         VALUES ($1, $2, $3, $4)
+         ON CONFLICT (id, "companyId") DO NOTHING`,
+        ["CLAMP-FIXTURE-01", fixtureItemId, companyId, userId]
+      );
+      console.log(`   Upserted fixture record for CLAMP-FIXTURE-01`);
     }
 
-    // Service record
-    const existingSvc = await client.query(
-      `SELECT 1 FROM service WHERE "companyId" = $1 LIMIT 1`, [companyId]
+    // Service: create item first, then service record with id=readableId
+    const serviceItemInsert = await client.query<{ id: string }>(
+      `INSERT INTO item ("readableId", name, description, type, "replenishmentSystem", "itemTrackingType", "unitOfMeasureCode", active, "companyId", "createdBy")
+       VALUES ('MAINT-SVC-01', 'Preventive Maintenance Service', 'Annual preventive maintenance and calibration service', 'Service'::"itemType", 'Buy'::"itemReplenishmentSystem", 'Non-Inventory'::"itemTrackingType", 'EA', true, $1, $2)
+       ON CONFLICT DO NOTHING RETURNING id`,
+      [companyId, userId]
     );
-    if ((existingSvc.rowCount ?? 0) === 0) {
-      await client.query(
-        `INSERT INTO service ("serviceType", "companyId", "createdBy") VALUES ('External'::"serviceType", $1, $2)`,
-        [companyId, userId]
+    let serviceItemId: string | null = serviceItemInsert.rows[0]?.id ?? null;
+    if (!serviceItemId) {
+      const r = await client.query<{id: string}>(
+        `SELECT id FROM item WHERE "readableId" = 'MAINT-SVC-01' AND "companyId" = $1 LIMIT 1`, [companyId]
       );
-      console.log(`   Created service record`);
+      serviceItemId = r.rows[0]?.id ?? null;
+    }
+    if (serviceItemId) {
+      await client.query(
+        `INSERT INTO service (id, "itemId", "serviceType", "companyId", "createdBy")
+         VALUES ($1, $2, 'External'::"serviceType", $3, $4)
+         ON CONFLICT (id, "companyId") DO NOTHING`,
+        ["MAINT-SVC-01", serviceItemId, companyId, userId]
+      );
+      console.log(`   Upserted service record for MAINT-SVC-01`);
     }
 
     // ─── Step 25: supplier extensions ────────────────────────────────────────
