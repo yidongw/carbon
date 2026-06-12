@@ -49,7 +49,9 @@ export function DetailTopbarId({ to, children }: DetailTopbarIdProps) {
     <div
       className={`flex min-w-0 shrink items-center overflow-hidden ${DETAIL_ID_MAX_WIDTH}`}
     >
-      <span className="text-muted-foreground hidden md:inline shrink-0">/</span>
+      <span aria-hidden className="hidden md:inline shrink-0 px-1.5 text-foreground">
+        /
+      </span>
       <Link to={to} className="min-w-0 truncate font-medium hover:underline">
         {children}
       </Link>
@@ -67,7 +69,9 @@ export function DetailTopbarPlainId({ children }: DetailTopbarPlainIdProps) {
     <div
       className={`flex min-w-0 shrink items-center overflow-hidden ${DETAIL_ID_MAX_WIDTH}`}
     >
-      <span className="text-muted-foreground hidden md:inline shrink-0">/</span>
+      <span aria-hidden className="hidden md:inline shrink-0 px-1.5 text-foreground">
+        /
+      </span>
       <span className="truncate font-medium">{children}</span>
     </div>
   );

@@ -1021,6 +1021,73 @@ export async function getOpportunity(
   }>;
 }
 
+export async function getOrCreateOpportunityForRecord(
+  client: SupabaseClient<Database>,
+  record: {
+    id: string;
+    companyId: string;
+    customerId: string;
+    opportunityId: string | null;
+    table: "salesOrder" | "salesRfq" | "quote";
+  }
+): ReturnType<typeof getOpportunity> {
+  const opportunity = await getOpportunity(
+    client,
+    record.opportunityId ?? null
+  );
+
+  if (opportunity.data) {
+    return opportunity;
+  }
+
+  const created = await client
+    .from("opportunity")
+    .insert([
+      {
+        companyId: record.companyId,
+        customerId: record.customerId
+      }
+    ])
+    .select("id")
+    .single();
+
+  if (created.error || !created.data) {
+    return {
+      data: null,
+      error: created.error
+    } as ReturnType<typeof getOpportunity>;
+  }
+
+  const updated = await client
+    .from(record.table)
+    .update({ opportunityId: created.data.id })
+    .eq("id", record.id);
+
+  if (updated.error) {
+    return {
+      data: null,
+      error: updated.error
+    } as ReturnType<typeof getOpportunity>;
+  }
+
+  return getOpportunity(client, created.data.id);
+}
+
+export async function getOrCreateOpportunityForSalesOrder(
+  client: SupabaseClient<Database>,
+  salesOrder: {
+    id: string;
+    companyId: string;
+    customerId: string;
+    opportunityId: string | null;
+  }
+): ReturnType<typeof getOpportunity> {
+  return getOrCreateOpportunityForRecord(client, {
+    ...salesOrder,
+    table: "salesOrder"
+  });
+}
+
 export async function getOpportunityDocuments(
   client: SupabaseClient<Database>,
   companyId: string,

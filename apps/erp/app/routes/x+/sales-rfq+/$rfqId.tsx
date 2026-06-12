@@ -14,8 +14,8 @@ import { Outlet, redirect, useParams, useSubmit } from "react-router";
 import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import type { SalesRFQLine } from "~/modules/sales";
 import {
-  getOpportunity,
   getOpportunityDocuments,
+  getOrCreateOpportunityForRecord,
   getSalesRFQ,
   getSalesRFQLines
 } from "~/modules/sales";
@@ -48,13 +48,6 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     getSalesRFQLines(serviceRole, rfqId)
   ]);
 
-  const opportunity = await getOpportunity(
-    serviceRole,
-    rfqSummary.data?.opportunityId ?? null
-  );
-
-  if (!opportunity.data) throw new Error("Failed to get opportunity record");
-
   if (rfqSummary.error) {
     throw redirect(
       path.to.salesRfqs,
@@ -71,6 +64,26 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       await flash(request, error(lines.error, "Failed to load RFQ lines"))
     );
   }
+
+  const opportunity = await getOrCreateOpportunityForRecord(serviceRole, {
+    id: rfqSummary.data.id,
+    companyId: rfqSummary.data.companyId,
+    customerId: rfqSummary.data.customerId,
+    opportunityId: rfqSummary.data.opportunityId ?? null,
+    table: "salesRfq"
+  });
+
+  if (opportunity.error) {
+    throw redirect(
+      path.to.salesRfqs,
+      await flash(
+        request,
+        error(opportunity.error, "Failed to load sales RFQ opportunity")
+      )
+    );
+  }
+
+  if (!opportunity.data) throw new Error("Failed to get opportunity record");
 
   return {
     rfqSummary: rfqSummary.data,

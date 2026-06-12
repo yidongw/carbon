@@ -21,8 +21,8 @@ import { getSupplierPriceBreaksForItems } from "~/modules/items";
 import type { SalesOrderLine } from "~/modules/sales";
 import {
   getCustomer,
-  getOpportunity,
   getOpportunityDocuments,
+  getOrCreateOpportunityForRecord,
   getQuote,
   getQuoteLinePricesByQuoteId,
   getQuoteLines,
@@ -72,13 +72,32 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     throw redirect(path.to.quotes);
   }
 
+  const opportunity = await getOrCreateOpportunityForRecord(client, {
+    id: quote.data.id,
+    companyId: quote.data.companyId,
+    customerId: quote.data.customerId,
+    opportunityId: quote.data.opportunityId ?? null,
+    table: "quote"
+  });
+
+  if (opportunity.error) {
+    throw redirect(
+      path.to.quotes,
+      await flash(
+        request,
+        error(opportunity.error, "Failed to load quote opportunity")
+      )
+    );
+  }
+
+  if (!opportunity.data) throw new Error("Failed to get opportunity record");
+
   const [
     customer,
     shipment,
     payment,
     lines,
     prices,
-    opportunity,
     methods,
     opportunityDocuments,
     companySettings
@@ -88,17 +107,10 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     getQuotePayment(client, quoteId),
     getQuoteLines(client, quoteId),
     getQuoteLinePricesByQuoteId(client, quoteId),
-    getOpportunity(client, quote.data?.opportunityId),
     getQuoteMethodTrees(client, quoteId),
-    getOpportunityDocuments(client, companyId, quote.data?.opportunityId ?? ""),
+    getOpportunityDocuments(client, companyId, opportunity.data.id),
     getCompanySettings(client, companyId)
   ]);
-
-  if (!opportunity.data) throw new Error("Failed to get opportunity record");
-
-  if (companyId !== quote.data?.companyId) {
-    throw redirect(path.to.quotes);
-  }
 
   if (shipment.error) {
     throw redirect(
