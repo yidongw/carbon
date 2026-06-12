@@ -126,6 +126,8 @@ export function BlockList() {
   // renders as one ZPL `^FD` line — no rich text, key-value lists, spacers, or
   // shared sections.
   const isTextOnly = extensionSupport(documentType) === "text";
+  // Labels have no page chrome — no footer row.
+  const isLabel = documentType === "trackingLabel";
   const bodySections = sections.filter((s) => s.placement === "body");
   // Header & footer are page chrome — pinned (not reorderable). Only the body
   // blocks between them are sortable.
@@ -177,7 +179,7 @@ export function BlockList() {
                 )}
               </Fragment>
             ))}
-            <FooterRow />
+            {!isLabel && <FooterRow />}
           </div>
         </SortableContext>
       </DndContext>

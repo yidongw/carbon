@@ -487,10 +487,11 @@ export const DEFAULT_TEMPLATES: Record<DocumentTemplateType, DocumentTemplate> =
       blocks: labelBlocks(),
       theme: { ...DEFAULT_THEME },
       settings: { ...DEFAULT_DOCUMENT_SETTINGS },
-      // Labels print on a full letter sheet: no page header, but the footer
-      // (page numbers) is on by default. Both are toggleable in the editor.
+      // Labels have no page chrome: the page is the label itself, so there is
+      // no header or footer (the renderer ignores them and the editor hides
+      // the rows).
       headerSectionId: null,
-      footerSectionId: BUILT_IN_SECTION_IDS.footer
+      footerSectionId: null
     }
   };
 
