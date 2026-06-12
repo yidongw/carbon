@@ -537,6 +537,7 @@ export function FloatingChat() {
     [motionX, motionY]
   );
 
+  // Mouse drag (window-level, always) + touch drag (window listeners added dynamically on button touchstart)
   useEffect(() => {
     const applyMove = (clientX: number, clientY: number) => {
       const d = dragRef.current;
@@ -566,29 +567,23 @@ export function FloatingChat() {
     };
 
     const onMouseMove = (e: MouseEvent) => applyMove(e.clientX, e.clientY);
-    const onTouchMove = (e: TouchEvent) => {
-      if (e.touches.length !== 1) return;
-      if (!dragRef.current?.active) return;
-      e.preventDefault(); // prevent page scroll only while dragging the button
-      applyMove(e.touches[0].clientX, e.touches[0].clientY);
-    };
-
     window.addEventListener("mousemove", onMouseMove);
     window.addEventListener("mouseup", applyUp);
-    window.addEventListener("touchmove", onTouchMove, { passive: false });
-    window.addEventListener("touchend", applyUp);
-    return () => {
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseup", applyUp);
-      window.removeEventListener("touchmove", onTouchMove);
-      window.removeEventListener("touchend", applyUp);
-    };
-  }, [motionX, motionY, setBtnPos, setIsOpen]);
 
-  // Attach native touchstart (non-passive) to the button so touch-drag works on mobile
-  useEffect(() => {
+    // Touch drag: attach touchmove/touchend to window only for the duration of a button drag,
+    // so the page can scroll freely when the button isn't being dragged.
+    const onTouchMove = (e: TouchEvent) => {
+      if (e.touches.length !== 1) return;
+      e.preventDefault();
+      applyMove(e.touches[0].clientX, e.touches[0].clientY);
+    };
+    const onTouchEnd = () => {
+      applyUp();
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("touchend", onTouchEnd);
+    };
+
     const btn = btnRef.current;
-    if (!btn) return;
     const onTouchStart = (e: TouchEvent) => {
       if (e.touches.length !== 1) return;
       e.preventDefault();
@@ -601,11 +596,19 @@ export function FloatingChat() {
         startBY: motionY.get(),
         moved: false
       };
+      window.addEventListener("touchmove", onTouchMove, { passive: false });
+      window.addEventListener("touchend", onTouchEnd);
     };
-    btn.addEventListener("touchstart", onTouchStart, { passive: false });
-    return () => btn.removeEventListener("touchstart", onTouchStart);
-  // Re-attaches when button mounts (isOpen → false) or motion values change
-  }, [isOpen, motionX, motionY]);
+    btn?.addEventListener("touchstart", onTouchStart, { passive: false });
+
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", applyUp);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("touchend", onTouchEnd);
+      btn?.removeEventListener("touchstart", onTouchStart);
+    };
+  }, [isOpen, motionX, motionY, setBtnPos, setIsOpen]);
 
   // Panel resize handlers
   const onResizeStart = useCallback(
