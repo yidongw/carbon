@@ -143,9 +143,16 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const Comp = asChild ? Slot : "button";
+    const { onPointerUp, ...rest } = props;
     return (
       <Comp
-        {...props}
+        {...rest}
+        onPointerUp={(event) => {
+          onPointerUp?.(event);
+          if (!asChild && event.pointerType === "mouse") {
+            event.currentTarget.blur();
+          }
+        }}
         className={cn(
           buttonVariants({
             variant,

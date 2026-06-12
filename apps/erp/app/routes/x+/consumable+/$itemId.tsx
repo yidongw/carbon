@@ -13,7 +13,7 @@ import {
   useLoaderData,
   useParams
 } from "react-router";
-import { ResizablePanels } from "~/components/Layout";
+import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import type { ConsumableSummary, ItemFile } from "~/modules/items";
 import {
   getConsumable,
@@ -90,139 +90,142 @@ export default function ConsumableRoute() {
   const { usedIn } = useLoaderData<typeof loader>();
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
-      <ConsumableHeader />
-      <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
-        <div className="flex flex-grow overflow-hidden">
-          <ResizablePanels
-            explorer={
-              <div className="flex flex-col h-full">
-                <div className="flex-1 overflow-y-auto">
-                  <Suspense fallback={<UsedInSkeleton />}>
-                    <Await resolve={usedIn}>
-                      {(resolvedUsedIn) => {
-                        const {
-                          issues,
-                          jobMaterials,
-                          maintenanceDispatchItems,
-                          methodMaterials,
-                          purchaseOrderLines,
-                          receiptLines,
-                          quoteMaterials,
-                          salesOrderLines,
-                          shipmentLines,
-                          supplierQuotes,
-                          jobMaterialUsage
-                        } = resolvedUsedIn;
+    <PanelProvider>
+      <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
+        <ConsumableHeader />
+        <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
+          <div className="flex flex-1 min-h-0 h-full overflow-hidden">
+            <ResizablePanels
+              explorer={
+                <div className="flex flex-col h-full">
+                  <div className="flex-1 overflow-y-auto">
+                    <Suspense fallback={<UsedInSkeleton />}>
+                      <Await resolve={usedIn}>
+                        {(resolvedUsedIn) => {
+                          const {
+                            issues,
+                            jobMaterials,
+                            maintenanceDispatchItems,
+                            methodMaterials,
+                            purchaseOrderLines,
+                            receiptLines,
+                            quoteMaterials,
+                            salesOrderLines,
+                            shipmentLines,
+                            supplierQuotes,
+                            jobMaterialUsage
+                          } = resolvedUsedIn;
 
-                        const tree: UsedInNode[] = [
-                          {
-                            key: "issues",
-                            name: t`Issues`,
-                            module: "quality",
-                            children: issues
-                          },
-                          {
-                            key: "jobMaterials",
-                            name: t`Job Materials`,
-                            module: "production",
-                            children: jobMaterials
-                          },
-                          {
-                            key: "maintenanceDispatchItems",
-                            name: t`Maintenance`,
-                            module: "resources",
-                            children: maintenanceDispatchItems
-                          },
-                          {
-                            key: "methodMaterials",
-                            name: t`Method Materials`,
-                            module: "parts",
-                            // @ts-expect-error
-                            children: methodMaterials
-                          },
-                          {
-                            key: "purchaseOrderLines",
-                            name: t`Purchase Orders`,
-                            module: "purchasing",
-                            children: purchaseOrderLines.map((po) => ({
-                              ...po,
-                              methodType: "Purchase to Order"
-                            }))
-                          },
-                          {
-                            key: "receiptLines",
-                            name: t`Receipts`,
-                            module: "inventory",
-                            children: receiptLines.map((receipt) => ({
-                              ...receipt,
-                              methodType: "Pull from Inventory"
-                            }))
-                          },
+                          const tree: UsedInNode[] = [
+                            {
+                              key: "issues",
+                              name: t`Issues`,
+                              module: "quality",
+                              children: issues
+                            },
+                            {
+                              key: "jobMaterials",
+                              name: t`Job Materials`,
+                              module: "production",
+                              children: jobMaterials
+                            },
+                            {
+                              key: "maintenanceDispatchItems",
+                              name: t`Maintenance`,
+                              module: "resources",
+                              children: maintenanceDispatchItems
+                            },
+                            {
+                              key: "methodMaterials",
+                              name: t`Method Materials`,
+                              module: "parts",
+                              // @ts-expect-error
+                              children: methodMaterials
+                            },
+                            {
+                              key: "purchaseOrderLines",
+                              name: t`Purchase Orders`,
+                              module: "purchasing",
+                              children: purchaseOrderLines.map((po) => ({
+                                ...po,
+                                methodType: "Purchase to Order"
+                              }))
+                            },
+                            {
+                              key: "receiptLines",
+                              name: t`Receipts`,
+                              module: "inventory",
+                              children: receiptLines.map((receipt) => ({
+                                ...receipt,
+                                methodType: "Pull from Inventory"
+                              }))
+                            },
 
-                          {
-                            key: "quoteMaterials",
-                            name: t`Quote Materials`,
-                            module: "sales",
-                            children: quoteMaterials?.map((qm) => ({
-                              ...qm,
-                              documentReadableId: qm.documentReadableId ?? ""
-                            }))
-                          },
-                          {
-                            key: "salesOrderLines",
-                            name: t`Sales Orders`,
-                            module: "sales",
-                            children: salesOrderLines
-                          },
-                          {
-                            key: "shipmentLines",
-                            name: t`Shipments`,
-                            module: "inventory",
-                            children: shipmentLines.map((shipment) => ({
-                              ...shipment,
-                              methodType: "Shipment"
-                            }))
-                          },
-                          {
-                            key: "supplierQuotes",
-                            name: t`Supplier Quotes`,
-                            module: "purchasing",
-                            children: supplierQuotes
-                          }
-                        ];
+                            {
+                              key: "quoteMaterials",
+                              name: t`Quote Materials`,
+                              module: "sales",
+                              children: quoteMaterials?.map((qm) => ({
+                                ...qm,
+                                documentReadableId: qm.documentReadableId ?? ""
+                              }))
+                            },
+                            {
+                              key: "salesOrderLines",
+                              name: t`Sales Orders`,
+                              module: "sales",
+                              children: salesOrderLines
+                            },
+                            {
+                              key: "shipmentLines",
+                              name: t`Shipments`,
+                              module: "inventory",
+                              children: shipmentLines.map((shipment) => ({
+                                ...shipment,
+                                methodType: "Shipment"
+                              }))
+                            },
+                            {
+                              key: "supplierQuotes",
+                              name: t`Supplier Quotes`,
+                              module: "purchasing",
+                              children: supplierQuotes
+                            }
+                          ];
 
-                        return (
-                          <UsedInTree
-                            tree={tree}
-                            revisions={
-                              consumableData.consumableSummary?.revisions
-                            }
-                            itemReadableId={
-                              consumableData.consumableSummary?.readableId ?? ""
-                            }
-                            itemReadableIdWithRevision={
-                              consumableData.consumableSummary
-                                ?.readableIdWithRevision ?? ""
-                            }
-                            jobMaterialUsage={jobMaterialUsage}
-                          />
-                        );
-                      }}
-                    </Await>
-                  </Suspense>
+                          return (
+                            <UsedInTree
+                              tree={tree}
+                              revisions={
+                                consumableData.consumableSummary?.revisions
+                              }
+                              itemReadableId={
+                                consumableData.consumableSummary?.readableId ??
+                                ""
+                              }
+                              itemReadableIdWithRevision={
+                                consumableData.consumableSummary
+                                  ?.readableIdWithRevision ?? ""
+                              }
+                              jobMaterialUsage={jobMaterialUsage}
+                            />
+                          );
+                        }}
+                      </Await>
+                    </Suspense>
+                  </div>
                 </div>
-              </div>
-            }
-            content={
-              <div className="h-[calc(100dvh-99px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
-                <Outlet />
-              </div>
-            }
-            properties={<ConsumableProperties key={itemId} />}
-          />
+              }
+              content={
+                <div className="h-full min-h-0 overflow-y-auto overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
+                  <Outlet />
+                </div>
+              }
+              properties={<ConsumableProperties key={itemId} />}
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </PanelProvider>
   );
 }

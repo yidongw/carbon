@@ -355,7 +355,9 @@ export default function CustomerPortal() {
       <div className="flex justify-between items-center py-3 px-4 bg-background border-b w-full">
         <Breadcrumbs>
           <BreadcrumbItem>
-            <BreadcrumbLink to="#">{company?.name}</BreadcrumbLink>
+            <BreadcrumbLink isCurrentPage to="#">
+              {company?.name}
+            </BreadcrumbLink>
           </BreadcrumbItem>
           {customer?.customerId && (
             <BreadcrumbItem>

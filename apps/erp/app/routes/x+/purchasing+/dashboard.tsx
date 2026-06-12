@@ -391,7 +391,7 @@ export default function PurchaseDashboard() {
   }, [dateRange, kpiLabels, selectedKpiData.key]);
 
   return (
-    <div className="flex flex-col gap-4 w-full p-4 h-[calc(100dvh-var(--header-height))] overflow-y-auto scrollbar-thin scrollbar-thumb-rounded-full scrollbar-thumb-muted-foreground">
+    <div className="flex flex-col gap-4 w-full p-4 h-[calc(100dvh-var(--header-height))] overflow-y-auto overscroll-contain scrollbar-thin scrollbar-thumb-rounded-full scrollbar-thumb-muted-foreground">
       <HStack spacing={1}>
         <CollapsibleSidebarTrigger />
         <Heading size="h2">

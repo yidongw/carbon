@@ -16,6 +16,7 @@ type StatusProps = ComponentProps<"div"> & {
   color?: "green" | "orange" | "red" | "yellow" | "blue" | "gray" | "purple";
   tooltip?: ReactNode;
   disableTooltip?: boolean;
+  iconOnly?: boolean;
 };
 
 const getStatusIcon = (color: string) => {
@@ -43,17 +44,22 @@ const Status = ({
   children,
   tooltip,
   disableTooltip,
+  iconOnly = false,
   className,
   ...props
 }: StatusProps) => {
   const badge = (
     <Badge
       variant={color}
-      className={cn("inline-flex items-center gap-1", className)}
+      className={cn(
+        "inline-flex items-center gap-1",
+        iconOnly && "px-1.5 shrink-0",
+        className
+      )}
       {...props}
     >
       {getStatusIcon(color)}
-      {children}
+      {!iconOnly && children}
     </Badge>
   );
 

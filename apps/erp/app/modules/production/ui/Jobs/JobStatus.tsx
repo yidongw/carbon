@@ -6,6 +6,7 @@ import { useJobStatusLabel } from "./jobLabels";
 type JobStatusProps = {
   status?: (typeof jobStatus)[number] | null;
   className?: string;
+  iconOnly?: boolean;
 };
 
 export const JOB_STATUS_COLOR_MAP: Record<
@@ -24,7 +25,7 @@ export const JOB_STATUS_COLOR_MAP: Record<
   Cancelled: "red"
 } as const;
 
-function JobStatus({ status, className }: JobStatusProps) {
+function JobStatus({ status, className, iconOnly }: JobStatusProps) {
   const { t } = useLingui();
   const getJobStatusLabel = useJobStatusLabel();
 
@@ -38,7 +39,12 @@ function JobStatus({ status, className }: JobStatusProps) {
   const tooltip = status === "Ready" ? getJobStatusLabel("Ready") : undefined;
 
   return (
-    <Status color={color} className={className} tooltip={tooltip}>
+    <Status
+      color={color}
+      className={className}
+      tooltip={tooltip}
+      iconOnly={iconOnly}
+    >
       {displayText}
     </Status>
   );

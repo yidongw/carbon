@@ -67,10 +67,21 @@ export async function loader({ request }: LoaderFunctionArgs) {
     locationId = locations.data?.[0].id as string;
   }
 
-  const periods = await getOrCreatePeriods(
-    today(getLocalTimeZone()),
-    WEEKS_TO_PLAN
-  );
+  let periods;
+  try {
+    periods = await getOrCreatePeriods(
+      today(getLocalTimeZone()),
+      WEEKS_TO_PLAN
+    );
+  } catch (periodsError) {
+    throw redirect(
+      path.to.productionDashboard,
+      await flash(
+        request,
+        error(periodsError, "Failed to load planning periods")
+      )
+    );
+  }
 
   const items = await getProductionPlanning(
     client,
@@ -87,7 +98,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   );
 
   if (items.error) {
-    redirect(
+    throw redirect(
       path.to.productionDashboard,
       await flash(request, error(items.error, "Failed to fetch planning items"))
     );

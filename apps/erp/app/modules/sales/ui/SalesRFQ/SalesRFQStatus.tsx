@@ -3,18 +3,35 @@ import type { salesRFQStatusType } from "../../sales.models";
 
 type SalesRFQStatusProps = {
   status?: (typeof salesRFQStatusType)[number] | null;
+  iconOnly?: boolean;
 };
 
-const SalesRFQStatus = ({ status }: SalesRFQStatusProps) => {
+const SalesRFQStatus = ({ status, iconOnly }: SalesRFQStatusProps) => {
   switch (status) {
     case "Draft":
-      return <Status color="gray">{status}</Status>;
+      return (
+        <Status color="gray" iconOnly={iconOnly}>
+          {status}
+        </Status>
+      );
     case "Ready for Quote":
-      return <Status color="green">{status}</Status>;
+      return (
+        <Status color="green" iconOnly={iconOnly}>
+          {status}
+        </Status>
+      );
     case "Quoted":
-      return <Status color="blue">{status}</Status>;
+      return (
+        <Status color="blue" iconOnly={iconOnly}>
+          {status}
+        </Status>
+      );
     case "Closed":
-      return <Status color="red">{status}</Status>;
+      return (
+        <Status color="red" iconOnly={iconOnly}>
+          {status}
+        </Status>
+      );
     default:
       return null;
   }
