@@ -252,7 +252,7 @@ function PositionMenu({ current, onSelect, onClose, viewportW }: PositionMenuPro
           type="button"
           onClick={() => onSelect("fullscreen")}
           className={cn(
-            "flex flex-row gap-3 items-center rounded-lg px-3 py-2",
+            "flex flex-col gap-1.5 items-center rounded-lg p-2",
             fullscreenSpan,
             "transition-colors duration-100",
             current === "fullscreen"
@@ -260,10 +260,10 @@ function PositionMenu({ current, onSelect, onClose, viewportW }: PositionMenuPro
               : "hover:bg-accent text-foreground"
           )}
         >
-          <div className="w-[44px] h-[28px] shrink-0">
+          <div className="w-full h-[32px]">
             <LayoutDiagram position="fullscreen" active={current === "fullscreen"} />
           </div>
-          <span className="text-[10px] font-medium leading-none">
+          <span className="text-[10px] font-medium leading-none text-center whitespace-nowrap">
             Full screen
           </span>
         </button>
