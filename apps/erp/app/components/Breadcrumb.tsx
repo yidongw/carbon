@@ -46,7 +46,7 @@ const BreadcrumbItem = forwardRef<
     {...props}
   >
     {!isFirstChild && (
-      <span aria-hidden className="shrink-0 px-1.5 text-foreground">
+      <span aria-hidden className="shrink-0 px-1.5 text-accent-foreground">
         /
       </span>
     )}
@@ -57,9 +57,11 @@ BreadcrumbItem.displayName = "BreadcrumbItem";
 
 const breadcrumbLinkClassName = (isCurrentPage?: boolean, className?: string) =>
   cn(
-    "inline-flex min-w-0 max-w-full truncate rounded-sm font-medium text-foreground outline-none",
+    "inline-flex min-w-0 max-w-full truncate rounded-sm outline-none",
     "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-    !isCurrentPage && "hover:underline",
+    isCurrentPage
+      ? "font-semibold text-foreground"
+      : "font-medium text-accent-foreground hover:underline",
     className
   );
 
