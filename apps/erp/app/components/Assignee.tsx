@@ -119,7 +119,16 @@ const Assign = forwardRef<HTMLButtonElement, AssigneeProps>(
                 iconOnly ? (
                   <IconButton
                     aria-label={t`Toggle Assignee`}
-                    icon={<LuUser />}
+                    icon={
+                      value ? (
+                        <EmployeeAvatar
+                          size={size === "sm" ? "xxs" : "xs"}
+                          employeeId={value ?? null}
+                        />
+                      ) : (
+                        <LuUser />
+                      )
+                    }
                     size={size}
                     variant="secondary"
                     isDisabled={isReadOnly || !permissions.is("employee")}
