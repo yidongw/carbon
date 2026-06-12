@@ -4228,6 +4228,81 @@ async function seed() {
       console.log(`   Created feedback and config`);
     }
 
+    // ─── Step 98: demandForecast + demandProjection (Planning / Projections pages)
+    console.log("98. Seeding demand forecast and projections...");
+    {
+      // get_production_planning and get_production_projections both require rows in
+      // demandForecast/demandProjection for 'Make' items with current period IDs.
+      const makeItemRows = await client.query<{id: string}>(
+        `SELECT id FROM item WHERE "companyId"=$1 AND "replenishmentSystem"='Make' AND active=true`, [companyId]
+      );
+      const makeItemIdsSeed = makeItemRows.rows.map(r => r.id);
+
+      // Get 12 upcoming week periods (distinct by start date)
+      const periodRows2 = await client.query<{id: string}>(
+        `SELECT DISTINCT ON ("startDate"::date) id FROM period
+         WHERE "periodType"='Week' AND "startDate" >= NOW() - interval '1 week'
+         ORDER BY "startDate"::date, id LIMIT 12`
+      );
+      const periodIdsSeed = periodRows2.rows.map(r => r.id);
+
+      let dfInserted = 0;
+      let dpInserted = 0;
+      for (const itemId of makeItemIdsSeed) {
+        for (const periodId of periodIdsSeed) {
+          const qty = Math.floor(Math.random() * 20) + 5;
+          const dfCheck = await client.query(
+            `SELECT 1 FROM "demandForecast" WHERE "itemId"=$1 AND "locationId"=$2 AND "periodId"=$3 LIMIT 1`,
+            [itemId, locationId, periodId]
+          );
+          if ((dfCheck.rowCount ?? 0) === 0) {
+            await client.query(
+              `INSERT INTO "demandForecast" ("itemId","locationId","periodId","forecastQuantity","forecastMethod","companyId","createdBy","updatedBy")
+               VALUES ($1,$2,$3,$4,'Manual',$5,$6,$6)`,
+              [itemId, locationId, periodId, qty, companyId, userId]
+            );
+            dfInserted++;
+          }
+          const dpCheck = await client.query(
+            `SELECT 1 FROM "demandProjection" WHERE "itemId"=$1 AND "locationId"=$2 AND "periodId"=$3 LIMIT 1`,
+            [itemId, locationId, periodId]
+          );
+          if ((dpCheck.rowCount ?? 0) === 0) {
+            await client.query(
+              `INSERT INTO "demandProjection" ("itemId","locationId","periodId","forecastQuantity","forecastMethod","companyId","createdBy","updatedBy")
+               VALUES ($1,$2,$3,$4,'Manual',$5,$6,$6)`,
+              [itemId, locationId, periodId, qty, companyId, userId]
+            );
+            dpInserted++;
+          }
+        }
+      }
+      if (dfInserted > 0) console.log(`   Created ${dfInserted} demandForecast rows`);
+      if (dpInserted > 0) console.log(`   Created ${dpInserted} demandProjection rows`);
+    }
+
+    // ─── Step 99: approvalRequest for productionQuantityReport (Quantity Review page)
+    console.log("99. Seeding production quantity report approval requests...");
+    {
+      const pqrRows = await client.query<{id: string}>(
+        `SELECT id FROM "productionQuantityReport" WHERE "companyId"=$1`, [companyId]
+      );
+      for (const pqr of pqrRows.rows) {
+        const existing = await client.query(
+          `SELECT 1 FROM "approvalRequest" WHERE "documentId"=$1 AND "documentType"='productionQuantityReport' LIMIT 1`,
+          [pqr.id]
+        );
+        if ((existing.rowCount ?? 0) === 0) {
+          await client.query(
+            `INSERT INTO "approvalRequest" ("documentType","documentId",status,"requestedBy","requestedAt","companyId","createdBy")
+             VALUES ('productionQuantityReport',$1,'Pending',$2,NOW(),$3,$2)`,
+            [pqr.id, userId, companyId]
+          );
+          console.log(`   Created approvalRequest for productionQuantityReport`);
+        }
+      }
+    }
+
     // ─── Done ─────────────────────────────────────────────────────────────────
     console.log(`
 ========================================
