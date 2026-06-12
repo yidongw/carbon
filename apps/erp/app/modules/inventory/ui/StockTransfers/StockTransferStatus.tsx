@@ -11,11 +11,7 @@ const StockTransferStatus = ({ status, iconOnly }: StockTransferStatusProps) => 
   switch (status) {
     case "Draft":
       return (
-        <Status
-          color="gray"
-          iconOnly={iconOnly}
-          className={iconOnly ? "text-sm" : undefined}
-        >
+        <Status color="gray" iconOnly={iconOnly}>
           <Trans>Draft</Trans>
         </Status>
       );
