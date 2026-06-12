@@ -27,7 +27,7 @@ const Breadcrumbs = forwardRef<
       className={cn("reset flex", className)}
       {...props}
     >
-      <ol className="inline-flex items-center space-x-1">{clones}</ol>
+      <ol className="inline-flex items-center">{clones}</ol>
     </nav>
   );
 });
@@ -45,7 +45,11 @@ const BreadcrumbItem = forwardRef<
     className={cn("inline-flex items-center", className)}
     {...props}
   >
-    {!isFirstChild && <span className="text-muted-foreground">/</span>}
+    {!isFirstChild && (
+      <span aria-hidden className="shrink-0 px-1.5 text-foreground">
+        /
+      </span>
+    )}
     {children}
   </li>
 ));
@@ -53,11 +57,9 @@ BreadcrumbItem.displayName = "BreadcrumbItem";
 
 const breadcrumbLinkClassName = (isCurrentPage?: boolean, className?: string) =>
   cn(
-    "inline-flex min-w-0 max-w-full truncate rounded-sm outline-none",
+    "inline-flex min-w-0 max-w-full truncate rounded-sm font-medium text-foreground outline-none",
     "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-    isCurrentPage
-      ? "font-medium"
-      : "text-muted-foreground hover:text-foreground hover:underline",
+    !isCurrentPage && "hover:underline",
     className
   );
 
