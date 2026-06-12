@@ -125,11 +125,11 @@ const Assign = forwardRef<HTMLButtonElement, AssigneeProps>(
             ))}
 
           <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-              {variant === "button" ? (
-                iconOnly ? (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
+            {variant === "button" ? (
+              iconOnly ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <PopoverTrigger asChild>
                       <IconButton
                         aria-label={`${t`Toggle Assignee`}: ${assigneeLabel}`}
                         icon={
@@ -148,12 +148,14 @@ const Assign = forwardRef<HTMLButtonElement, AssigneeProps>(
                         isDisabled={isReadOnly || !permissions.is("employee")}
                         isLoading={fetcher.state !== "idle"}
                       />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <span>{assigneeLabel}</span>
-                    </TooltipContent>
-                  </Tooltip>
-                ) : (
+                    </PopoverTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <span>{assigneeLabel}</span>
+                  </TooltipContent>
+                </Tooltip>
+              ) : (
+                <PopoverTrigger asChild>
                   <button
                     className={cn(
                       buttonVariants({
@@ -189,8 +191,10 @@ const Assign = forwardRef<HTMLButtonElement, AssigneeProps>(
                       </div>
                     )}
                   </button>
-                )
-              ) : (
+                </PopoverTrigger>
+              )
+            ) : (
+              <PopoverTrigger asChild>
                 <IconButton
                   aria-label={t`Toggle Assignee`}
                   icon={<LuSettings2 />}
@@ -198,8 +202,8 @@ const Assign = forwardRef<HTMLButtonElement, AssigneeProps>(
                   variant="secondary"
                   isDisabled={isReadOnly || !permissions.is("employee")}
                 />
-              )}
-            </PopoverTrigger>
+              </PopoverTrigger>
+            )}
             <PopoverContent
               align="start"
               className="min-w-[--radix-popover-trigger-width] p-0"
