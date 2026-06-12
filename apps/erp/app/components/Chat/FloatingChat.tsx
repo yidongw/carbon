@@ -455,9 +455,6 @@ export function FloatingChat() {
     () => typeof window !== "undefined" ? window.innerHeight : 900
   );
 
-  // Ref for native touch event attachment on the floating button
-  const btnRef = useRef<HTMLButtonElement | null>(null);
-
   const dragRef = useRef<{
     active: boolean;
     startMX: number;
@@ -520,11 +517,13 @@ export function FloatingChat() {
     }
   }, [viewportW, position, setPosition]);
 
-  // Button drag + click handlers
-  const onBtnMouseDown = useCallback(
-    (e: React.MouseEvent) => {
-      if (e.button !== 0) return;
-      e.preventDefault();
+  // Pointer-based drag handlers (covers mouse + touch via setPointerCapture).
+  // setPointerCapture routes all pointer events to the button for the drag duration,
+  // which also suppresses browser scroll (respecting the button's touch-action:none).
+  const onBtnPointerDown = useCallback(
+    (e: React.PointerEvent<HTMLButtonElement>) => {
+      if (e.pointerType === "mouse" && e.button !== 0) return;
+      e.currentTarget.setPointerCapture(e.pointerId);
       dragRef.current = {
         active: true,
         startMX: e.clientX,
@@ -537,24 +536,27 @@ export function FloatingChat() {
     [motionX, motionY]
   );
 
-  // Mouse drag (window-level, always) + touch drag (window listeners added dynamically on button touchstart)
-  useEffect(() => {
-    const applyMove = (clientX: number, clientY: number) => {
+  const onBtnPointerMove = useCallback(
+    (e: React.PointerEvent<HTMLButtonElement>) => {
       const d = dragRef.current;
       if (!d?.active) return;
-      const dx = clientX - d.startMX;
-      const dy = clientY - d.startMY;
+      const dx = e.clientX - d.startMX;
+      const dy = e.clientY - d.startMY;
       if (!d.moved && Math.abs(dx) < 4 && Math.abs(dy) < 4) return;
       d.moved = true;
       const rawX = Math.max(0, Math.min(d.startBX + dx, window.innerWidth - BUTTON_SIZE));
       const rawY = Math.max(TOPBAR_HEIGHT, Math.min(d.startBY + dy, window.innerHeight - BUTTON_SIZE));
       motionX.set(rawX);
       motionY.set(rawY);
-    };
+    },
+    [motionX, motionY]
+  );
 
-    const applyUp = () => {
+  const onBtnPointerUp = useCallback(
+    (_e: React.PointerEvent<HTMLButtonElement>) => {
       const d = dragRef.current;
       if (!d) return;
+      dragRef.current = null;
       if (!d.moved) {
         setIsOpen((prev) => !prev);
       } else {
@@ -563,52 +565,24 @@ export function FloatingChat() {
         fmAnimate(motionX, snap.x, { type: "spring", duration: 0.4, bounce: 0.15 });
         fmAnimate(motionY, snap.y, { type: "spring", duration: 0.4, bounce: 0.15 });
       }
+    },
+    [motionX, motionY, setBtnPos, setIsOpen]
+  );
+
+  const onBtnPointerCancel = useCallback(
+    (_e: React.PointerEvent<HTMLButtonElement>) => {
+      const d = dragRef.current;
+      if (!d) return;
       dragRef.current = null;
-    };
-
-    const onMouseMove = (e: MouseEvent) => applyMove(e.clientX, e.clientY);
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("mouseup", applyUp);
-
-    // Touch drag: attach touchmove/touchend to window only for the duration of a button drag,
-    // so the page can scroll freely when the button isn't being dragged.
-    const onTouchMove = (e: TouchEvent) => {
-      if (e.touches.length !== 1) return;
-      e.preventDefault();
-      applyMove(e.touches[0].clientX, e.touches[0].clientY);
-    };
-    const onTouchEnd = () => {
-      applyUp();
-      window.removeEventListener("touchmove", onTouchMove);
-      window.removeEventListener("touchend", onTouchEnd);
-    };
-
-    const btn = btnRef.current;
-    const onTouchStart = (e: TouchEvent) => {
-      if (e.touches.length !== 1) return;
-      e.preventDefault();
-      const t = e.touches[0];
-      dragRef.current = {
-        active: true,
-        startMX: t.clientX,
-        startMY: t.clientY,
-        startBX: motionX.get(),
-        startBY: motionY.get(),
-        moved: false
-      };
-      window.addEventListener("touchmove", onTouchMove, { passive: false });
-      window.addEventListener("touchend", onTouchEnd);
-    };
-    btn?.addEventListener("touchstart", onTouchStart, { passive: false });
-
-    return () => {
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseup", applyUp);
-      window.removeEventListener("touchmove", onTouchMove);
-      window.removeEventListener("touchend", onTouchEnd);
-      btn?.removeEventListener("touchstart", onTouchStart);
-    };
-  }, [isOpen, motionX, motionY, setBtnPos, setIsOpen]);
+      if (d.moved) {
+        const snap = nearestSnap(motionX.get(), motionY.get());
+        setBtnPos(snap);
+        fmAnimate(motionX, snap.x, { type: "spring", duration: 0.4, bounce: 0.15 });
+        fmAnimate(motionY, snap.y, { type: "spring", duration: 0.4, bounce: 0.15 });
+      }
+    },
+    [motionX, motionY, setBtnPos]
+  );
 
   // Panel resize handlers
   const onResizeStart = useCallback(
@@ -730,7 +704,6 @@ export function FloatingChat() {
         {!isOpen && (
           <motion.button
             key="floating-btn"
-            ref={btnRef}
             type="button"
             initial={{ scale: 0.5, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -755,7 +728,10 @@ export function FloatingChat() {
               "active:scale-[0.96]",
               "transition-[box-shadow] duration-200"
             )}
-            onMouseDown={onBtnMouseDown}
+            onPointerDown={onBtnPointerDown}
+            onPointerMove={onBtnPointerMove}
+            onPointerUp={onBtnPointerUp}
+            onPointerCancel={onBtnPointerCancel}
             title="Open AI Assistant (drag to reposition)"
           >
             <LuBotMessageSquare className="size-[22px]" />
