@@ -21,6 +21,7 @@ vite.config.ts.timestamp*
 .mcp.json
 opencode.json
 .windsurf
+llm/tasks/todo.md
 
 # Lingui compiled catalogs
 packages/locale/locales/**/*.mjs

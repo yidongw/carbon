@@ -5,7 +5,8 @@ import { labelSizes } from "@carbon/utils";
 import { renderToStream } from "@react-pdf/renderer";
 import type { LoaderFunctionArgs } from "react-router";
 import { getShipmentTracking } from "~/modules/inventory";
-import { getCompany } from "~/modules/settings";
+import { getCompany, getDocumentTemplateConfig } from "~/modules/settings";
+import { resolveLabelLogo } from "~/modules/settings/labelLogo.server";
 import { getCompanySettings } from "~/modules/settings/settings.service";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
@@ -116,8 +117,22 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     );
   }
 
+  const template = await getDocumentTemplateConfig(
+    client,
+    companyId,
+    "trackingLabel"
+  );
+
+  const logo = await resolveLabelLogo(company.data, template, labelSize);
+
   const stream = await renderToStream(
-    <ProductLabelPDF items={items ?? []} labelSize={labelSize} />
+    <ProductLabelPDF
+      items={items ?? []}
+      labelSize={labelSize}
+      template={template}
+      company={company.data as any}
+      logo={logo}
+    />
   );
 
   const body: Buffer = await new Promise((resolve, reject) => {

@@ -1534,9 +1534,6 @@ msgstr "保全ディスパッチが作業現場から作成されるときの通
 msgid "Configure notifications for when new suggestions are submitted."
 msgstr "新しい提案が送信されたときの通知を設定します。"
 
-msgid "Configure the content displayed on job traveler PDFs."
-msgstr "ジョブトラベラーPDFに表示されるコンテンツを設定します。"
-
 msgid "Configure the default accounts used for various transaction types across your system"
 msgstr "様々なトランザクションタイプに使用されるデフォルトアカウントをシステム全体で設定します"
 
@@ -2116,6 +2113,9 @@ msgstr "顧客タイプ"
 msgid "Customers"
 msgstr "顧客"
 
+msgid "Customize the layout of your PDF documents — reorder sections, hide what you don't need, and add your own blocks."
+msgstr ""
+
 msgid "Daily Usage"
 msgstr "日次使用量"
 
@@ -2251,12 +2251,6 @@ msgstr "デフォルト単位"
 
 msgid "Defaults"
 msgstr "デフォルト"
-
-msgid "Define the terms and conditions for purchase orders"
-msgstr "購買注文の利用規約と条件を定義します"
-
-msgid "Define the terms and conditions for quotes and sales orders"
-msgstr "見積書と販売注文の利用規約と条件を定義します"
 
 msgid "Defines how many tracked entities are inspected per lot, and how many failures are tolerated before the lot is rejected."
 msgstr "ロットごとに検査される追跡対象エンティティの数と、ロットが却下される前に許容される失敗の数を定義します。"
@@ -2605,6 +2599,9 @@ msgstr "ドキュメント"
 
 msgid "Document Control"
 msgstr "ドキュメント管理"
+
+msgid "Document Templates"
+msgstr ""
 
 msgid "Document:"
 msgstr "ドキュメント:"
@@ -3044,9 +3041,6 @@ msgstr "税固有の減価償却方法を資産クラスで設定するために
 
 msgid "Enable to generate IDs and descriptions for raw materials."
 msgstr "有効にして、原材料のIDと説明を生成します。"
-
-msgid "Enable to include work instructions on job traveler PDFs."
-msgstr "ジョブトラベラーPDFに作業指示を含めるには有効にしてください。"
 
 msgid "Enable to start tracking changes to your data."
 msgstr "データへの変更の追跡を開始するには有効にしてください。"
@@ -3948,12 +3942,6 @@ msgstr "出荷に追加部品を含める"
 msgid "Include Inactive"
 msgstr "非アクティブを含める"
 
-msgid "Include Thumbnails on Purchasing Documents"
-msgstr "購買ドキュメントにサムネイルを含める"
-
-msgid "Include Thumbnails on Sales Documents"
-msgstr "販売ドキュメントにサムネイルを含める"
-
 msgid "Includes tax and shipping costs"
 msgstr "税金と送料を含みます"
 
@@ -4238,12 +4226,6 @@ msgstr "作業操作"
 
 msgid "Job Operations"
 msgstr "ジョブ操作"
-
-msgid "Job Traveler"
-msgstr "ジョブトラベラー"
-
-msgid "Job traveler PDFs include work instructions."
-msgstr "ジョブトラベラーPDFに作業指示が含まれています。"
 
 msgid "Jobs"
 msgstr "ジョブ"
@@ -6170,9 +6152,6 @@ msgstr "購買"
 msgid "Purchasing Contact"
 msgstr "購買担当者"
 
-msgid "Purchasing Terms & Conditions"
-msgstr "購買条件"
-
 msgid "Purchasing Unit of Measure"
 msgstr "購買単位"
 
@@ -6783,9 +6762,6 @@ msgstr "営業担当者"
 msgid "Sales Revenue"
 msgstr "売上収益"
 
-msgid "Sales Terms & Conditions"
-msgstr "営業条件"
-
 msgid "Sample"
 msgstr "サンプル"
 
@@ -7182,6 +7158,9 @@ msgstr "リンクを共有"
 msgid "Share Quote"
 msgstr "見積もりを共有"
 
+msgid "Shared Sections"
+msgstr ""
+
 msgid "Shelf life"
 msgstr "棚卸し期間"
 
@@ -7293,12 +7272,6 @@ msgstr "期間を表示"
 msgid "Show parent items"
 msgstr "親アイテムを表示"
 
-msgid "Show part thumbnails on purchase order PDFs."
-msgstr "購買注文PDFに部品のサムネイルを表示します。"
-
-msgid "Show part thumbnails on quotes, sales orders, invoices, and shipments."
-msgstr "見積書、販売注文書、請求書、および出荷書にパーツサムネイルを表示します。"
-
 msgid "Show Supplier IDs"
 msgstr "仕入先IDを表示"
 
@@ -7352,6 +7325,9 @@ msgstr "スキップ"
 
 msgid "Something went wrong. Please try again."
 msgstr "何か問題が発生しました。もう一度お試しください。"
+
+msgid "Soon"
+msgstr ""
 
 msgid "Soonest expiry across every material sets the finished good."
 msgstr "最も早い有効期限が完成品を決定します。"
@@ -7794,6 +7770,9 @@ msgstr "温度"
 
 msgid "Template ID"
 msgstr "テンプレートID"
+
+msgid "Templates"
+msgstr ""
 
 msgid "Terms and Privacy"
 msgstr "利用規約とプライバシー"
@@ -8763,12 +8742,6 @@ msgstr "作業センター"
 
 msgid "Work Instructions"
 msgstr "作業指示"
-
-msgid "Work instructions are included"
-msgstr "作業指示が含まれています"
-
-msgid "Work instructions are not included"
-msgstr "作業指示は含まれていません"
 
 msgid "Work Phone"
 msgstr "仕事用電話"

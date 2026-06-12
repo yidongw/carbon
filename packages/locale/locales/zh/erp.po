@@ -1534,9 +1534,6 @@ msgstr "配置当从车间创建维护派遣时的通知。通知根据故障模
 msgid "Configure notifications for when new suggestions are submitted."
 msgstr "配置在提交新建议时的通知。"
 
-msgid "Configure the content displayed on job traveler PDFs."
-msgstr "配置在工作单据PDF上显示的内容。"
-
 msgid "Configure the default accounts used for various transaction types across your system"
 msgstr "配置用于系统中各种交易类型的默认账户"
 
@@ -2116,6 +2113,9 @@ msgstr "客户类型"
 msgid "Customers"
 msgstr "客户"
 
+msgid "Customize the layout of your PDF documents — reorder sections, hide what you don't need, and add your own blocks."
+msgstr ""
+
 msgid "Daily Usage"
 msgstr "日常使用"
 
@@ -2251,12 +2251,6 @@ msgstr "默认单位"
 
 msgid "Defaults"
 msgstr "默认值"
-
-msgid "Define the terms and conditions for purchase orders"
-msgstr "定义采购订单的条款和条件"
-
-msgid "Define the terms and conditions for quotes and sales orders"
-msgstr "定义报价单和销售订单的条款和条件"
 
 msgid "Defines how many tracked entities are inspected per lot, and how many failures are tolerated before the lot is rejected."
 msgstr "定义每批检查多少个跟踪实体，以及在批次被拒绝前允许多少个失败。"
@@ -2605,6 +2599,9 @@ msgstr "文档"
 
 msgid "Document Control"
 msgstr "文件控制"
+
+msgid "Document Templates"
+msgstr ""
 
 msgid "Document:"
 msgstr "文档："
@@ -3044,9 +3041,6 @@ msgstr "启用以在资产类别上配置特定于税收的折旧方法（例如
 
 msgid "Enable to generate IDs and descriptions for raw materials."
 msgstr "启用以为原材料生成ID和描述。"
-
-msgid "Enable to include work instructions on job traveler PDFs."
-msgstr "启用以在工作单据 PDF 上包含工作说明。"
 
 msgid "Enable to start tracking changes to your data."
 msgstr "启用以开始跟踪您的数据变化。"
@@ -3948,12 +3942,6 @@ msgstr "在发货中包含额外零件"
 msgid "Include Inactive"
 msgstr "包括不活跃"
 
-msgid "Include Thumbnails on Purchasing Documents"
-msgstr "在采购文件上包含缩略图"
-
-msgid "Include Thumbnails on Sales Documents"
-msgstr "在销售文件上包含缩略图"
-
 msgid "Includes tax and shipping costs"
 msgstr "包括税费和运费"
 
@@ -4238,12 +4226,6 @@ msgstr "工作操作"
 
 msgid "Job Operations"
 msgstr "工作操作"
-
-msgid "Job Traveler"
-msgstr "工作单据"
-
-msgid "Job traveler PDFs include work instructions."
-msgstr "工作单据PDF包含工作说明。"
 
 msgid "Jobs"
 msgstr "工作"
@@ -6170,9 +6152,6 @@ msgstr "采购"
 msgid "Purchasing Contact"
 msgstr "采购联系人"
 
-msgid "Purchasing Terms & Conditions"
-msgstr "采购条款和条件"
-
 msgid "Purchasing Unit of Measure"
 msgstr "采购计量单位"
 
@@ -6783,9 +6762,6 @@ msgstr "销售人员"
 msgid "Sales Revenue"
 msgstr "销售收入"
 
-msgid "Sales Terms & Conditions"
-msgstr "销售条款和条件"
-
 msgid "Sample"
 msgstr "样本"
 
@@ -7182,6 +7158,9 @@ msgstr "分享链接"
 msgid "Share Quote"
 msgstr "分享报价"
 
+msgid "Shared Sections"
+msgstr ""
+
 msgid "Shelf life"
 msgstr "保质期"
 
@@ -7293,12 +7272,6 @@ msgstr "显示时长"
 msgid "Show parent items"
 msgstr "显示父项"
 
-msgid "Show part thumbnails on purchase order PDFs."
-msgstr "在采购订单 PDF 上显示零件缩略图。"
-
-msgid "Show part thumbnails on quotes, sales orders, invoices, and shipments."
-msgstr "在报价单、销售订单、发票和发货单上显示零件缩略图。"
-
 msgid "Show Supplier IDs"
 msgstr "显示供应商ID"
 
@@ -7352,6 +7325,9 @@ msgstr "已跳过"
 
 msgid "Something went wrong. Please try again."
 msgstr "出现问题。请重试。"
+
+msgid "Soon"
+msgstr ""
 
 msgid "Soonest expiry across every material sets the finished good."
 msgstr "最早的过期日期决定了成品的保质期。"
@@ -7794,6 +7770,9 @@ msgstr "温度"
 
 msgid "Template ID"
 msgstr "模板 ID"
+
+msgid "Templates"
+msgstr ""
 
 msgid "Terms and Privacy"
 msgstr "条款和隐私"
@@ -8763,12 +8742,6 @@ msgstr "工作中心"
 
 msgid "Work Instructions"
 msgstr "工作说明"
-
-msgid "Work instructions are included"
-msgstr "工作说明已包含"
-
-msgid "Work instructions are not included"
-msgstr "工作说明未包含"
 
 msgid "Work Phone"
 msgstr "工作电话"

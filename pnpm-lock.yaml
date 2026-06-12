@@ -1904,6 +1904,9 @@ importers:
       sst:
         specifier: 'catalog:'
         version: 4.6.9
+      zod:
+        specifier: 'catalog:'
+        version: 3.25.76
     devDependencies:
       '@carbon/config':
         specifier: workspace:*

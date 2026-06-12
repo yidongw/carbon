@@ -1,99 +1,235 @@
 import type { LabelSize, ProductLabelItem } from "@carbon/utils";
-import { Document, Image, Page, Text, View } from "@react-pdf/renderer";
-import { generateQRCode } from "../qr/qr-code";
-import { getLabelPdfGeometry } from "./components/labelGeometry";
+import { Document, Page, View } from "@react-pdf/renderer";
+import { Fragment } from "react";
+import { createTw } from "react-pdf-tailwind";
+import type { DocumentTemplate, ResolvedSection } from "../template";
+import { resolveTemplate } from "../template";
+import type { Company } from "../types";
+import type { LabelData, LabelLogo } from "./blocks/trackingLabel";
+import {
+  buildLabelVars,
+  trackingLabelBlockRegistry
+} from "./blocks/trackingLabel";
+import Footer from "./components/Footer";
 
 interface ProductLabelProps {
   items: ProductLabelItem[];
   labelSize: LabelSize;
+  template?: DocumentTemplate | null;
+  sections?: Record<string, ResolvedSection>;
+  company?: Company | null;
+  logo?: LabelLogo | null;
 }
 
-/**
- * Renders one page per label, each page exactly the label size, with the
- * same layout as the ZPL generator: item id top-left, detail lines below,
- * QR code top-right, tracked entity id bottom-left.
- */
-const ProductLabelPDF = ({ items, labelSize }: ProductLabelProps) => {
-  const g = getLabelPdfGeometry(labelSize);
-  const qrX = g.pageWidth - g.qrSize - g.margin;
+// Initialize tailwind-styled-components
+const tw = createTw({
+  theme: {
+    fontFamily: {
+      sans: ["Helvetica", "Arial", "sans-serif"]
+    },
+    extend: {
+      colors: {
+        gray: {
+          500: "#7d7d7d"
+        }
+      }
+    }
+  }
+});
+
+const ProductLabelPDF = ({
+  items,
+  labelSize,
+  template,
+  sections = {},
+  company,
+  logo
+}: ProductLabelProps) => {
+  // Default to 1 row and 1 column if not specified
+  const rows = labelSize.rows || 1;
+  const columns = labelSize.columns || 1;
+  const rotated = labelSize.rotated || false;
+
+  const resolved = resolveTemplate("trackingLabel", template ?? null);
+  const visibleBlocks = resolved.blocks.filter((block) => block.visible);
+
+  // Standard letter size paper (8.5 x 11 inches in points)
+  const LETTER_WIDTH = 8.5 * 72;
+  const LETTER_HEIGHT = 11 * 72;
+
+  // Calculate dimensions in points (72 points per inch)
+  const labelWidthPt = labelSize.width * 72;
+  const labelHeightPt = labelSize.height * 72;
+
+  // Account for rotation when calculating effective dimensions
+  const effectiveLabelWidthPt = rotated ? labelHeightPt : labelWidthPt;
+  const effectiveLabelHeightPt = rotated ? labelWidthPt : labelHeightPt;
+
+  // Always print on a standard letter sheet, so a single label looks the same
+  // as a multi-up sheet (top-left on a full page) rather than a tiny
+  // label-sized page.
+  const pageWidth = LETTER_WIDTH;
+  const pageHeight = LETTER_HEIGHT;
+
+  // Calculate font sizes based on label height
+  // Base sizes are optimized for labelSize.height = 1
+  // Scale up proportionally as height increases, with a cap at height = 4
+  const scaleFactor = Math.min(labelSize.height, 4);
+  const titleFontSize = 10 * Math.sqrt(scaleFactor);
+  const descriptionFontSize = 7 * Math.sqrt(scaleFactor);
+
+  // QR code size based on effective label dimensions accounting for rotation
+  const qrCodeSize = Math.min(
+    effectiveLabelHeightPt * 0.7,
+    effectiveLabelWidthPt * 0.33
+  );
+
+  // Calculate how many pages we need
+  const labelsPerPage = rows * columns;
+  const pageCount = Math.ceil(items.length / labelsPerPage);
+
+  // Reserve space for the footer (page number) at the bottom
+  const footerHeight = 35;
+
+  // Multi-up sheets center their grid; a single label sits at the top-left.
+  const isMultiUp = rows > 1 || columns > 1;
+  const singleLabelMargin = 24;
+  const availableHeight = pageHeight - footerHeight;
+  const horizontalMargin = isMultiUp
+    ? (pageWidth - columns * effectiveLabelWidthPt) / 2
+    : singleLabelMargin;
+  const verticalMargin = isMultiUp
+    ? (availableHeight - rows * effectiveLabelHeightPt) / 2
+    : singleLabelMargin;
+
+  const showFooter = resolved.footerSectionId !== null;
 
   return (
     <Document>
-      {items.map((item, index) => (
-        <Page
-          key={item.trackedEntityId || index}
-          size={[g.pageWidth, g.pageHeight]}
-        >
-          <View
-            style={{
-              position: "absolute",
-              left: g.margin,
-              top: g.contentTop,
-              maxWidth: qrX - g.margin - 4,
-              flexDirection: "column"
-            }}
-          >
-            <Text
+      {Array.from({ length: pageCount }).map((_, pageIndex) => (
+        <Page key={pageIndex} size={[pageWidth, pageHeight]} style={tw("p-0")}>
+          {Array.from({ length: rows }).map((_, rowIndex) => (
+            <View
+              key={`row-${rowIndex}`}
               style={{
-                fontSize: g.titleFontSize,
-                fontFamily: "Helvetica-Bold",
-                marginBottom: g.lineGap
+                flexDirection: "row",
+                marginLeft: horizontalMargin,
+                marginTop: rowIndex === 0 ? verticalMargin : 0
               }}
             >
-              {item.itemId}
-            </Text>
+              {Array.from({ length: columns }).map((_, colIndex) => {
+                const itemIndex =
+                  pageIndex * labelsPerPage + rowIndex * columns + colIndex;
+                const item = items[itemIndex];
 
-            {item.revision && (
-              <Text
-                style={{ fontSize: g.descFontSize, marginBottom: g.lineGap }}
-              >
-                Rev: {item.revision}
-              </Text>
-            )}
+                if (!item)
+                  return (
+                    <View
+                      key={`empty-${colIndex}`}
+                      style={{ width: labelWidthPt, height: labelHeightPt }}
+                    />
+                  );
 
-            {["Serial", "Batch"].includes(item.trackingType) && (
-              <Text
-                style={{ fontSize: g.descFontSize, marginBottom: g.lineGap }}
-              >
-                Qty: {item.quantity}
-              </Text>
-            )}
+                const data: LabelData = {
+                  item,
+                  company,
+                  logo,
+                  theme: resolved.theme,
+                  vars: buildLabelVars(item, company),
+                  titleFontSize,
+                  descriptionFontSize,
+                  qrCodeSize,
+                  labelColWidth: labelWidthPt * 0.26,
+                  labelHeightPt: effectiveLabelHeightPt,
+                  sections
+                };
 
-            {item.trackingType === "Serial" && item.number && (
-              <Text style={{ fontSize: g.descFontSize }}>
-                S/N: {item.number}
-              </Text>
-            )}
-            {item.trackingType === "Batch" && item.number && (
-              <Text style={{ fontSize: g.descFontSize }}>
-                Batch: {item.number}
-              </Text>
-            )}
-          </View>
+                const renderBlock = (block: (typeof visibleBlocks)[number]) => {
+                  const render = trackingLabelBlockRegistry[block.type];
+                  if (!render) return null;
+                  return (
+                    <Fragment key={block.id}>
+                      {render({ block, data })}
+                    </Fragment>
+                  );
+                };
 
-          <Image
-            src={generateQRCode(item.trackedEntityId, g.qrSize / 72)}
-            style={{
-              position: "absolute",
-              left: qrX,
-              top: g.contentTop,
-              width: g.qrSize,
-              height: g.qrSize,
-              objectFit: "contain"
-            }}
-          />
+                // Slots: fields stack top-left; logo + "right" codes top-right;
+                // "full" codes span full width near the bottom; entity id at the
+                // very bottom.
+                const rightBlocks = visibleBlocks.filter(
+                  (b) =>
+                    b.type === "labelLogo" ||
+                    (b.type === "labelBarcode" && b.placement === "right")
+                );
+                const barcodeBlocks = visibleBlocks.filter(
+                  (b) =>
+                    b.type === "labelBarcode" &&
+                    (b.placement === "full" || b.placement === "center")
+                );
+                const entityBlocks = visibleBlocks.filter(
+                  (b) => b.type === "labelEntityId"
+                );
+                const textBlocks = visibleBlocks.filter(
+                  (b) =>
+                    b.type !== "labelLogo" &&
+                    b.type !== "labelBarcode" &&
+                    b.type !== "labelEntityId"
+                );
 
-          {item.trackedEntityId && (
-            <Text
-              style={{
-                position: "absolute",
-                left: g.margin,
-                bottom: g.bottomOffset,
-                fontSize: g.smallFontSize
-              }}
-            >
-              {item.trackedEntityId}
-            </Text>
+                return (
+                  <View
+                    key={`label-${itemIndex}`}
+                    style={{
+                      ...tw("relative p-2 flex flex-col pl-[10pt]"),
+                      width: labelWidthPt,
+                      height: labelHeightPt,
+                      // Clip so a dense label's content can't bleed into the
+                      // neighbouring cell (which clipped the next heading).
+                      overflow: "hidden",
+                      transform: rotated ? "rotate(90deg)" : undefined
+                    }}
+                    wrap={false}
+                  >
+                    <View
+                      style={{
+                        ...tw("flex flex-row justify-between"),
+                        flexShrink: 0
+                      }}
+                    >
+                      <View
+                        style={{
+                          ...tw("flex flex-col justify-start pr-2"),
+                          flex: 1,
+                          minWidth: 0
+                        }}
+                      >
+                        {textBlocks.map(renderBlock)}
+                      </View>
+                      {rightBlocks.length > 0 && (
+                        <View
+                          style={{
+                            ...tw("flex flex-col items-end justify-start"),
+                            flexShrink: 0
+                          }}
+                        >
+                          {rightBlocks.map(renderBlock)}
+                        </View>
+                      )}
+                    </View>
+                    {barcodeBlocks.map(renderBlock)}
+                    {entityBlocks.map(renderBlock)}
+                  </View>
+                );
+              })}
+            </View>
+          ))}
+          {showFooter && (
+            <Footer
+              showPageNumbers={resolved.settings.showPageNumbers}
+              pageNumberFormat={resolved.settings.pageNumberFormat}
+              showRegistrationLine={resolved.settings.showRegistrationLine}
+            />
           )}
         </Page>
       ))}

@@ -3,8 +3,15 @@ import { ProductLabelPDF } from "@carbon/documents/pdf";
 import { labelSizes } from "@carbon/utils";
 import { renderToStream } from "@react-pdf/renderer";
 import type { LoaderFunctionArgs } from "react-router";
-import { getCompanySettings } from "~/services/inventory.service";
+import { redirect } from "react-router";
+import {
+  getCompany,
+  getCompanySettings,
+  getDocumentTemplateConfig
+} from "~/services/inventory.service";
+import { resolveLabelLogo } from "~/services/labelLogo.server";
 import { getTrackedEntity } from "~/services/operations.service";
+import { path } from "~/utils/path";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
   const { client, companyId } = await requirePermissions(request, {});
@@ -17,18 +24,26 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     getTrackedEntity(client, id)
   ]);
 
-  // Get the label size from query params or default to avery5163
+  // Get the label size from query params or default to avery5160
   const url = new URL(request.url);
   const labelParam = url.searchParams.get("labelSize");
 
   const labelSizeId =
-    labelParam || companySettings.data?.productLabelSize || "avery5163";
+    labelParam || companySettings.data?.productLabelSize || "avery5160";
 
   // Find the label size configuration
   let labelSize = labelSizes.find((size) => size.id === labelSizeId);
 
   if (!labelSize) {
     throw new Error("Invalid label size");
+  }
+
+  if (labelSize.zpl) {
+    throw redirect(
+      path.to.file.trackedEntityLabelZpl(id, {
+        labelSize: labelSize.id
+      })
+    );
   }
 
   const item = await client
@@ -51,8 +66,23 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     }
   ];
 
+  const template = await getDocumentTemplateConfig(
+    client,
+    companyId,
+    "trackingLabel"
+  );
+
+  const company = await getCompany(client, companyId);
+  const logo = await resolveLabelLogo(company.data, template, labelSize);
+
   const stream = await renderToStream(
-    <ProductLabelPDF items={items ?? []} labelSize={labelSize} />
+    <ProductLabelPDF
+      items={items ?? []}
+      labelSize={labelSize}
+      template={template}
+      company={company.data as any}
+      logo={logo}
+    />
   );
 
   const body: Buffer = await new Promise((resolve, reject) => {

@@ -7,6 +7,7 @@ import {
   LuCreditCard,
   LuCrown,
   LuFactory,
+  LuFileText,
   LuHistory,
   LuImage,
   LuKey,
@@ -61,6 +62,12 @@ export default function useSettingsSubmodules() {
             to: path.to.companies,
             role: "employee",
             icon: <LuNetwork />
+          },
+          {
+            name: t`Document Templates`,
+            to: path.to.documentTemplates,
+            role: "employee",
+            icon: <LuFileText />
           },
           {
             name: t`Logos`,

@@ -1534,9 +1534,6 @@ msgstr "Skonfiguruj powiadomienia dla dyspozycji konserwacyjnych tworzonych z ha
 msgid "Configure notifications for when new suggestions are submitted."
 msgstr "Skonfiguruj powiadomienia dla nowych przesłanych sugestii."
 
-msgid "Configure the content displayed on job traveler PDFs."
-msgstr "Skonfiguruj zawartość wyświetlaną w plikach PDF podróżnika zadania."
-
 msgid "Configure the default accounts used for various transaction types across your system"
 msgstr "Skonfiguruj domyślne konta używane dla różnych typów transakcji w całym systemie"
 
@@ -2116,6 +2113,9 @@ msgstr "Typy klientów"
 msgid "Customers"
 msgstr "Klienci"
 
+msgid "Customize the layout of your PDF documents — reorder sections, hide what you don't need, and add your own blocks."
+msgstr ""
+
 msgid "Daily Usage"
 msgstr "Dzienne użycie"
 
@@ -2251,12 +2251,6 @@ msgstr "Jednostka domyślna"
 
 msgid "Defaults"
 msgstr "Ustawienia domyślne"
-
-msgid "Define the terms and conditions for purchase orders"
-msgstr "Zdefiniuj warunki i zasady dla zamówień zakupu"
-
-msgid "Define the terms and conditions for quotes and sales orders"
-msgstr "Zdefiniuj warunki i zasady dla ofert i zamówień sprzedaży"
 
 msgid "Defines how many tracked entities are inspected per lot, and how many failures are tolerated before the lot is rejected."
 msgstr "Określa, ile śledzonych jednostek jest sprawdzanych na partię i ile błędów jest tolerowanych przed odrzuceniem partii."
@@ -2605,6 +2599,9 @@ msgstr "Dokument"
 
 msgid "Document Control"
 msgstr "Kontrola dokumentów"
+
+msgid "Document Templates"
+msgstr ""
 
 msgid "Document:"
 msgstr "Dokument:"
@@ -3044,9 +3041,6 @@ msgstr "Włącz, aby skonfigurować metody amortyzacji specyficzne dla podatku n
 
 msgid "Enable to generate IDs and descriptions for raw materials."
 msgstr "Włącz, aby generować identyfikatory i opisy dla surowców."
-
-msgid "Enable to include work instructions on job traveler PDFs."
-msgstr "Włącz, aby dołączyć instrukcje pracy do plików PDF podróżnika zadania."
 
 msgid "Enable to start tracking changes to your data."
 msgstr "Włącz, aby rozpocząć śledzenie zmian w Twoich danych."
@@ -3948,12 +3942,6 @@ msgstr "Dołącz dodatkowe części do wysyłki"
 msgid "Include Inactive"
 msgstr "Uwzględnij nieaktywne"
 
-msgid "Include Thumbnails on Purchasing Documents"
-msgstr "Dołącz miniatury w dokumentach zakupowych"
-
-msgid "Include Thumbnails on Sales Documents"
-msgstr "Dołącz miniatury do dokumentów sprzedaży"
-
 msgid "Includes tax and shipping costs"
 msgstr "Obejmuje podatki i koszty wysyłki"
 
@@ -4238,12 +4226,6 @@ msgstr "Operacja zadania"
 
 msgid "Job Operations"
 msgstr "Operacje Zadań"
-
-msgid "Job Traveler"
-msgstr "Dokument Podróży Pracy"
-
-msgid "Job traveler PDFs include work instructions."
-msgstr "Pliki PDF podróżnika zadania zawierają instrukcje pracy."
 
 msgid "Jobs"
 msgstr "Zadania"
@@ -6170,9 +6152,6 @@ msgstr "Zakupy"
 msgid "Purchasing Contact"
 msgstr "Kontakt ds. Zakupów"
 
-msgid "Purchasing Terms & Conditions"
-msgstr "Warunki zakupu i dostawy"
-
 msgid "Purchasing Unit of Measure"
 msgstr "Jednostka miary zakupu"
 
@@ -6783,9 +6762,6 @@ msgstr "Pracownik sprzedaży"
 msgid "Sales Revenue"
 msgstr "Przychód ze sprzedaży"
 
-msgid "Sales Terms & Conditions"
-msgstr "Warunki sprzedaży"
-
 msgid "Sample"
 msgstr "Próbka"
 
@@ -7182,6 +7158,9 @@ msgstr "Udostępnij Link"
 msgid "Share Quote"
 msgstr "Udostępnij Ofertę"
 
+msgid "Shared Sections"
+msgstr ""
+
 msgid "Shelf life"
 msgstr "Okres przydatności"
 
@@ -7293,12 +7272,6 @@ msgstr "Pokaż czasy trwania"
 msgid "Show parent items"
 msgstr "Pokaż elementy nadrzędne"
 
-msgid "Show part thumbnails on purchase order PDFs."
-msgstr "Pokaż miniatury części na plikach PDF zamówień zakupu."
-
-msgid "Show part thumbnails on quotes, sales orders, invoices, and shipments."
-msgstr "Pokaż miniatury części na ofertach, zamówieniach sprzedaży, fakturach i wysyłkach."
-
 msgid "Show Supplier IDs"
 msgstr "Pokaż identyfikatory dostawców"
 
@@ -7352,6 +7325,9 @@ msgstr "Pominięte"
 
 msgid "Something went wrong. Please try again."
 msgstr "Coś poszło nie tak. Spróbuj ponownie."
+
+msgid "Soon"
+msgstr ""
 
 msgid "Soonest expiry across every material sets the finished good."
 msgstr "Najwcześniejsza data wygaśnięcia spośród wszystkich materiałów określa produkt gotowy."
@@ -7794,6 +7770,9 @@ msgstr "Temperatura"
 
 msgid "Template ID"
 msgstr "Identyfikator szablonu"
+
+msgid "Templates"
+msgstr ""
 
 msgid "Terms and Privacy"
 msgstr "Regulamin i prywatnosc"
@@ -8763,12 +8742,6 @@ msgstr "Centra pracy"
 
 msgid "Work Instructions"
 msgstr "Instrukcje pracy"
-
-msgid "Work instructions are included"
-msgstr "Instrukcje pracy są dołączone"
-
-msgid "Work instructions are not included"
-msgstr "Instrukcje pracy nie są uwzględnione"
 
 msgid "Work Phone"
 msgstr "Telefon służbowy"

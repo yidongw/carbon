@@ -5,6 +5,8 @@ export type ProductLabelItem = {
   number: string;
   trackedEntityId: string;
   trackingType: string;
+  /** Custom-field values for the tracked entity, keyed by field id. */
+  customFields?: Record<string, unknown>;
 };
 
 export type LabelSize = {
@@ -13,6 +15,10 @@ export type LabelSize = {
   width: number;
   height: number;
   metric?: boolean;
+  /** Multi-up sheet layout (e.g. Avery). Omitted = a single label per page. */
+  rows?: number;
+  columns?: number;
+  rotated?: boolean;
   zpl?: {
     dpi: number;
     width: number;
