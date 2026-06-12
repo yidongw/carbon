@@ -112,7 +112,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   return {
     quote: quote.data,
-    lines: linesPromise,
+    lines: (await linesPromise).data ?? [],
     prices: prices.data ?? [],
     files: getSupplierInteractionDocuments(
       serviceRole,

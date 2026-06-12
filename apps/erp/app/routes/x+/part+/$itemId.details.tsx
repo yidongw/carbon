@@ -141,7 +141,8 @@ async function loadPartDetailsData(
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
   const { client, companyId } = await requirePermissions(request, {
-    view: "parts"
+    view: "parts",
+    bypassRls: true
   });
 
   const { itemId } = params;

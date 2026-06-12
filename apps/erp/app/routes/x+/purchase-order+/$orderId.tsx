@@ -435,7 +435,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   return {
     purchaseOrder: purchaseOrder.data,
     purchaseOrderDelivery: purchaseOrderDelivery.data,
-    lines: linesPromise,
+    lines: (await linesPromise).data ?? [],
     files: getSupplierInteractionDocuments(
       client,
       companyId,

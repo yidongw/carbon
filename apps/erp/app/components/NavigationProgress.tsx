@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useFetchers, useNavigation } from "react-router";
+import { useNavigation } from "react-router";
 
 // Driven by React Router's useNavigation() — no external dependency.
 // Renders the #nprogress .bar markup reusing styles/nprogress.css.
@@ -7,10 +7,7 @@ import { useFetchers, useNavigation } from "react-router";
 // useFetcher loads, so silent autosaves/optimistic fetchers don't flash it.
 export function NavigationProgress() {
   const navigation = useNavigation();
-  const fetchers = useFetchers();
-  const active =
-    navigation.state !== "idle" ||
-    fetchers.some((fetcher) => fetcher.state !== "idle");
+  const active = navigation.state !== "idle";
 
   const [visible, setVisible] = useState(false);
   const [progress, setProgress] = useState(0);

@@ -1018,11 +1018,6 @@ const JobsTable = memo(
             renderActions={renderActions}
             renderContextMenu={renderContextMenu}
             getRowHref={(row) => (row.id ? path.to.job(row.id) : undefined)}
-            rowClassName={(row) =>
-              prefetchCache.has(row.original.id!)
-                ? "bg-green-50 dark:bg-green-950/20"
-                : undefined
-            }
             title={t`Jobs`}
             table="job"
             withSavedView

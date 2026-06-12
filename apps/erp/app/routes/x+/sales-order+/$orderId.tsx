@@ -142,7 +142,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   return {
     salesOrder: salesOrder.data,
-    lines: linesPromise,
+    lines: (await linesPromise).data ?? [],
     files: getOpportunityDocuments(client, companyId, opportunity.data.id),
     relatedItems: getSalesOrderRelatedItems(
       client,

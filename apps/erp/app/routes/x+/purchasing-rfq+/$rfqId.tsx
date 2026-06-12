@@ -81,7 +81,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   return {
     rfqSummary: rfqSummary.data,
-    lines: linesPromise,
+    lines: (await linesPromise).data ?? [],
     suppliers:
       suppliers.data?.map((s) => ({
         id: s.id,

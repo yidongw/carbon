@@ -670,13 +670,6 @@ const PartsTable = memo(({ data, tags, count, itemPostingGroups: rawItemPostingG
         }
         renderActions={renderActions}
         renderContextMenu={renderContextMenu}
-        rowClassName={(row) =>
-          row.original.id &&
-          (hasPartRouteCache(row.original.id) ||
-            prefetchCache.has(row.original.id))
-            ? "bg-green-50 dark:bg-green-950/20"
-            : undefined
-        }
         title={t`Parts`}
         table="part"
         withSavedView

@@ -40,7 +40,8 @@ export function usePrefetchCache(cache: PrefetchCache) {
   return cache;
 }
 
-const MAX_CONCURRENT_PREFETCHES = 3;
+// Each table uses a single useFetcher, so only one request can be in-flight at a time.
+const MAX_CONCURRENT_PREFETCHES = 1;
 
 function createPrefetchQueue(cache: PrefetchCache, toHref: (id: string) => string) {
   const queue: string[] = [];
