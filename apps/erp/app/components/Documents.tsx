@@ -23,10 +23,18 @@ import {
 import { convertKbToString } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ChangeEvent } from "react";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { LuAxis3D, LuEllipsisVertical, LuUpload } from "react-icons/lu";
 import { Link, useFetchers, useRevalidator, useSubmit } from "react-router";
-import { DocumentPreview, FileDropzone, Hyperlink } from "~/components";
+import {
+  DocumentPreview,
+  FileDropzone,
+  FilesIconView,
+  FilesViewModeToggle,
+  Hyperlink
+} from "~/components";
+import type { FilesIconItem } from "~/components/FilesIconView";
+import { useFilesViewMode } from "~/components/FilesViewModeToggle";
 import DocumentIcon from "~/components/DocumentIcon";
 import { useDateFormatter, usePermissions, useUser } from "~/hooks";
 import type { OptimisticFileObject } from "~/modules/shared";
@@ -248,6 +256,43 @@ const Documents = ({
     [upload]
   );
 
+  const [viewMode, setViewMode] = useFilesViewMode();
+
+  const iconItems = useMemo<FilesIconItem<StorageItem>[]>(() => {
+    const items: FilesIconItem<StorageItem>[] = [];
+
+    if (modelUpload?.modelName) {
+      items.push({
+        id: modelUpload.modelId ?? "model",
+        name: modelUpload.modelName,
+        documentType: "Model",
+        sizeBytes: modelUpload.modelSize,
+        isModel: true,
+        modelViewUrl: modelUpload.modelId
+          ? path.to.file.cadModel(modelUpload.modelId)
+          : undefined
+      });
+    }
+
+    for (const file of allFiles) {
+      const type = getDocumentType(file.name);
+      items.push({
+        id: file.id,
+        name: file.name,
+        documentType: type,
+        pathToFile: getReadPath(file),
+        createdAt: file.created_at,
+        sizeBytes: file.metadata?.size,
+        previewType: ["PDF", "Image"].includes(type)
+          ? (type as "PDF" | "Image")
+          : undefined,
+        raw: file
+      });
+    }
+
+    return items;
+  }, [allFiles, getReadPath, modelUpload]);
+
   return (
     <Card className="flex-grow">
       <HStack className="justify-between items-start">
@@ -257,21 +302,44 @@ const Documents = ({
           </CardTitle>
         </CardHeader>
         <CardAction>
-          <File
-            isDisabled={!canUpdate}
-            leftIcon={<LuUpload />}
-            onChange={async (e: ChangeEvent<HTMLInputElement>) => {
-              if (e.target.files && carbon && company) {
-                upload(Array.from(e.target.files));
-              }
-            }}
-            multiple
-          >
-            <Trans>New</Trans>
-          </File>
+          <HStack>
+            <FilesViewModeToggle value={viewMode} onChange={setViewMode} />
+            <File
+              isDisabled={!canUpdate}
+              leftIcon={<LuUpload />}
+              onChange={async (e: ChangeEvent<HTMLInputElement>) => {
+                if (e.target.files && carbon && company) {
+                  upload(Array.from(e.target.files));
+                }
+              }}
+              multiple
+            >
+              <Trans>New</Trans>
+            </File>
+          </HStack>
         </CardAction>
       </HStack>
       <CardContent>
+        {viewMode === "icons" ? (
+          <FilesIconView
+            items={iconItems}
+            canDelete={canDelete}
+            onDownload={(item) => {
+              if (item.isModel && modelUpload) {
+                downloadModel(modelUpload);
+              } else if (item.raw) {
+                download(item.raw);
+              }
+            }}
+            onDelete={(item) => {
+              if (item.isModel) {
+                deleteModel();
+              } else if (item.raw) {
+                deleteFile(item.raw);
+              }
+            }}
+          />
+        ) : (
         <Table>
           <Thead>
             <Tr>
@@ -439,6 +507,7 @@ const Documents = ({
             )}
           </Tbody>
         </Table>
+        )}
         <FileDropzone onDrop={onDrop} />
       </CardContent>
     </Card>
