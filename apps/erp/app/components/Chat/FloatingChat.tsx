@@ -568,7 +568,8 @@ export function FloatingChat() {
     const onMouseMove = (e: MouseEvent) => applyMove(e.clientX, e.clientY);
     const onTouchMove = (e: TouchEvent) => {
       if (e.touches.length !== 1) return;
-      e.preventDefault(); // prevent page scroll during drag
+      if (!dragRef.current?.active) return;
+      e.preventDefault(); // prevent page scroll only while dragging the button
       applyMove(e.touches[0].clientX, e.touches[0].clientY);
     };
 
