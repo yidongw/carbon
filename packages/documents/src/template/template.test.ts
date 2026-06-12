@@ -33,9 +33,12 @@ describe("resolveTemplate", () => {
       "header",
       "parties",
       "notes",
-      "terms"
+      "terms",
+      // watermark is a built-in not in the stored set, appended hidden
+      "watermark"
     ]);
     expect(blocks.find((b) => b.type === "header")?.visible).toBe(false);
+    expect(blocks.find((b) => b.type === "watermark")?.visible).toBe(false);
   });
 
   it("appends missing built-in blocks as hidden", () => {
@@ -133,6 +136,6 @@ describe("schema validation", () => {
 
   it("validates a full template document", () => {
     const parsed = documentTemplateSchema.parse(DEFAULT_SALES_INVOICE_TEMPLATE);
-    expect(parsed.blocks).toHaveLength(6);
+    expect(parsed.blocks).toHaveLength(7);
   });
 });
