@@ -24,11 +24,18 @@ import { convertKbToString } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { FileObject } from "@supabase/storage-js";
 import type { ChangeEvent } from "react";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { LuEllipsisVertical, LuUpload } from "react-icons/lu";
 import { Outlet, useFetchers, useRevalidator, useSubmit } from "react-router";
-import { DocumentPreview, FileDropzone } from "~/components";
+import {
+  DocumentPreview,
+  FileDropzone,
+  FilesIconView,
+  FilesViewModeToggle
+} from "~/components";
 import DocumentIcon from "~/components/DocumentIcon";
+import type { FilesIconItem } from "~/components/FilesIconView";
+import { useFilesViewMode } from "~/components/FilesViewModeToggle";
 import { useDateFormatter, usePermissions, useUser } from "~/hooks";
 import { getDocumentType } from "~/modules/shared";
 import { path } from "~/utils/path";
@@ -69,6 +76,26 @@ const SupplierInteractionDocuments = ({
     [upload]
   );
 
+  const [viewMode, setViewMode] = useFilesViewMode();
+
+  const iconItems = useMemo<FilesIconItem<FileObject>[]>(() => {
+    return attachments.map((attachment) => {
+      const type = getDocumentType(attachment.name);
+      return {
+        id: attachment.id,
+        name: attachment.name,
+        documentType: type,
+        pathToFile: getPath(attachment),
+        createdAt: attachment.created_at,
+        sizeBytes: attachment.metadata?.size,
+        previewType: ["PDF", "Image"].includes(type)
+          ? (type as "PDF" | "Image")
+          : undefined,
+        raw: attachment
+      };
+    });
+  }, [attachments, getPath]);
+
   return (
     <>
       <Card>
@@ -79,104 +106,118 @@ const SupplierInteractionDocuments = ({
             </CardTitle>
           </CardHeader>
           <CardAction>
-            {!isReadOnly && (
-              <SupplierInteractionDocumentForm
-                interactionId={interactionId}
-                id={id}
-                type={type}
-              />
-            )}
+            <HStack>
+              <FilesViewModeToggle value={viewMode} onChange={setViewMode} />
+              {!isReadOnly && (
+                <SupplierInteractionDocumentForm
+                  interactionId={interactionId}
+                  id={id}
+                  type={type}
+                />
+              )}
+            </HStack>
           </CardAction>
         </HStack>
         <CardContent>
-          <Table>
-            <Thead>
-              <Tr>
-                <Th>Name</Th>
-                <Th>Size</Th>
-                <Th>Created</Th>
-                <Th></Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {attachments.length ? (
-                attachments.map((attachment) => (
-                  <Tr key={attachment.id}>
-                    <Td>
-                      <HStack>
-                        <DocumentIcon type={getDocumentType(attachment.name)} />
-                        <span
-                          className="font-medium"
-                          onClick={() => download(attachment)}
-                        >
-                          {["PDF", "Image"].includes(
-                            getDocumentType(attachment.name)
-                          ) ? (
-                            <DocumentPreview
-                              bucket="private"
-                              pathToFile={getPath(attachment)}
-                              // @ts-ignore
-                              type={getDocumentType(attachment.name)}
-                            >
-                              {attachment.name}
-                            </DocumentPreview>
-                          ) : (
-                            attachment.name
-                          )}
-                        </span>
-                      </HStack>
-                    </Td>
-                    <Td className="text-xs font-mono">
-                      {convertKbToString(
-                        Math.floor((attachment.metadata?.size ?? 0) / 1024)
-                      )}
-                    </Td>
-                    <Td className="text-xs font-mono">
-                      {attachment.created_at
-                        ? formatDate(attachment.created_at)
-                        : "--"}
-                    </Td>
-                    <Td>
-                      <div className="flex justify-end gap-2">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <IconButton
-                              aria-label={t`More`}
-                              icon={<LuEllipsisVertical />}
-                              variant="secondary"
-                            />
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent>
-                            <DropdownMenuItem
-                              onClick={() => download(attachment)}
-                            >
-                              <Trans>Download</Trans>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              destructive
-                              disabled={!canDelete || isReadOnly}
-                              onClick={() => deleteAttachment(attachment)}
-                            >
-                              <Trans>Delete</Trans>
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
+          {viewMode === "icons" ? (
+            <FilesIconView
+              items={iconItems}
+              canDelete={canDelete && !isReadOnly}
+              onDownload={(item) => item.raw && download(item.raw)}
+              onDelete={(item) => item.raw && deleteAttachment(item.raw)}
+            />
+          ) : (
+            <Table>
+              <Thead>
+                <Tr>
+                  <Th>Name</Th>
+                  <Th>Size</Th>
+                  <Th>Created</Th>
+                  <Th></Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {attachments.length ? (
+                  attachments.map((attachment) => (
+                    <Tr key={attachment.id}>
+                      <Td>
+                        <HStack>
+                          <DocumentIcon
+                            type={getDocumentType(attachment.name)}
+                          />
+                          <span
+                            className="font-medium"
+                            onClick={() => download(attachment)}
+                          >
+                            {["PDF", "Image"].includes(
+                              getDocumentType(attachment.name)
+                            ) ? (
+                              <DocumentPreview
+                                bucket="private"
+                                pathToFile={getPath(attachment)}
+                                // @ts-ignore
+                                type={getDocumentType(attachment.name)}
+                              >
+                                {attachment.name}
+                              </DocumentPreview>
+                            ) : (
+                              attachment.name
+                            )}
+                          </span>
+                        </HStack>
+                      </Td>
+                      <Td className="text-xs font-mono">
+                        {convertKbToString(
+                          Math.floor((attachment.metadata?.size ?? 0) / 1024)
+                        )}
+                      </Td>
+                      <Td className="text-xs font-mono">
+                        {attachment.created_at
+                          ? formatDate(attachment.created_at)
+                          : "--"}
+                      </Td>
+                      <Td>
+                        <div className="flex justify-end gap-2">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <IconButton
+                                aria-label={t`More`}
+                                icon={<LuEllipsisVertical />}
+                                variant="secondary"
+                              />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                              <DropdownMenuItem
+                                onClick={() => download(attachment)}
+                              >
+                                <Trans>Download</Trans>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                destructive
+                                disabled={!canDelete || isReadOnly}
+                                onClick={() => deleteAttachment(attachment)}
+                              >
+                                <Trans>Delete</Trans>
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+                      </Td>
+                    </Tr>
+                  ))
+                ) : (
+                  <Tr>
+                    <Td
+                      colSpan={24}
+                      className="py-8 text-muted-foreground text-center"
+                    >
+                      <Trans>No files uploaded</Trans>
                     </Td>
                   </Tr>
-                ))
-              ) : (
-                <Tr>
-                  <Td
-                    colSpan={24}
-                    className="py-8 text-muted-foreground text-center"
-                  >
-                    <Trans>No files uploaded</Trans>
-                  </Td>
-                </Tr>
-              )}
-            </Tbody>
-          </Table>
+                )}
+              </Tbody>
+            </Table>
+          )}
           {!isReadOnly && <FileDropzone onDrop={onDrop} />}
         </CardContent>
       </Card>

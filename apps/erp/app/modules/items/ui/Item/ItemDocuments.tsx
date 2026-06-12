@@ -24,11 +24,19 @@ import { convertKbToString } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { FileObject } from "@supabase/storage-js";
 import type { ChangeEvent } from "react";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { LuAxis3D, LuEllipsisVertical, LuUpload } from "react-icons/lu";
 import { Link, useFetchers, useRevalidator, useSubmit } from "react-router";
-import { DocumentPreview, FileDropzone, Hyperlink } from "~/components";
+import {
+  DocumentPreview,
+  FileDropzone,
+  FilesIconView,
+  FilesViewModeToggle,
+  Hyperlink
+} from "~/components";
 import DocumentIcon from "~/components/DocumentIcon";
+import type { FilesIconItem } from "~/components/FilesIconView";
+import { useFilesViewMode } from "~/components/FilesViewModeToggle";
 import { useDateFormatter, usePermissions, useUser } from "~/hooks";
 import type { MethodItemType, OptimisticFileObject } from "~/modules/shared";
 import { getDocumentType } from "~/modules/shared";
@@ -87,6 +95,41 @@ const ItemDocuments = ({
     a.name.localeCompare(b.name)
   ) as FileObject[];
 
+  const [viewMode, setViewMode] = useFilesViewMode();
+
+  const iconItems = useMemo<FilesIconItem<FileObject>[]>(() => {
+    const items: FilesIconItem<FileObject>[] = [];
+
+    if (modelUpload?.modelId) {
+      items.push({
+        id: modelUpload.modelId,
+        name: modelUpload.modelName ?? "Model",
+        documentType: "Model",
+        sizeBytes: modelUpload.modelSize,
+        isModel: true,
+        modelViewUrl: getModelPath(modelUpload)
+      });
+    }
+
+    for (const file of allFiles) {
+      const type = getDocumentType(file.name);
+      items.push({
+        id: file.id,
+        name: file.name,
+        documentType: type,
+        pathToFile: getPath(file),
+        createdAt: file.created_at,
+        sizeBytes: file.metadata?.size,
+        previewType: ["PDF", "Image"].includes(type)
+          ? (type as "PDF" | "Image")
+          : undefined,
+        raw: file
+      });
+    }
+
+    return items;
+  }, [allFiles, getModelPath, getPath, modelUpload]);
+
   return (
     <Card className="flex-grow">
       <HStack className="justify-between items-start">
@@ -96,123 +139,67 @@ const ItemDocuments = ({
           </CardTitle>
         </CardHeader>
         <CardAction>
-          <ItemDocumentForm type={type} itemId={itemId} />
+          <HStack>
+            <FilesViewModeToggle value={viewMode} onChange={setViewMode} />
+            <ItemDocumentForm type={type} itemId={itemId} />
+          </HStack>
         </CardAction>
       </HStack>
       <CardContent>
-        <Table>
-          <Thead>
-            <Tr>
-              <Th>
-                <Trans>Name</Trans>
-              </Th>
-              <Th>
-                <Trans>Size</Trans>
-              </Th>
-              <Th>
-                <Trans>Created</Trans>
-              </Th>
-              <Th></Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {modelUpload?.modelId && (
+        {viewMode === "icons" ? (
+          <FilesIconView
+            items={iconItems}
+            canDelete={canDelete}
+            onDownload={(item) => {
+              if (item.isModel && modelUpload) {
+                downloadModel(modelUpload);
+              } else if (item.raw) {
+                download(item.raw);
+              }
+            }}
+            onDelete={(item) => {
+              if (item.isModel) {
+                deleteModel();
+              } else if (item.raw) {
+                deleteFile(item.raw);
+              }
+            }}
+          />
+        ) : (
+          <Table>
+            <Thead>
               <Tr>
-                <Td>
-                  <HStack>
-                    <LuAxis3D className="text-emerald-500 w-6 h-6" />
-                    <Hyperlink target="_blank" to={getModelPath(modelUpload)}>
-                      {modelUpload.modelName}
-                    </Hyperlink>
-                  </HStack>
-                </Td>
-                <Td className="text-xs font-mono">
-                  {modelUpload.modelSize
-                    ? convertKbToString(
-                        Math.floor((modelUpload.modelSize ?? 0) / 1024)
-                      )
-                    : "--"}
-                </Td>
-                <Td className="text-xs font-mono">--</Td>
-                <Td>
-                  <div className="flex justify-end w-full">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <IconButton
-                          aria-label={t`More`}
-                          icon={<LuEllipsisVertical />}
-                          variant="secondary"
-                        />
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuItem asChild>
-                          <Link to={getModelPath(modelUpload)}>
-                            <Trans>View</Trans>
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => downloadModel(modelUpload)}
-                        >
-                          Download
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          destructive
-                          disabled={!canDelete}
-                          onClick={() => deleteModel()}
-                        >
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                </Td>
+                <Th>
+                  <Trans>Name</Trans>
+                </Th>
+                <Th>
+                  <Trans>Size</Trans>
+                </Th>
+                <Th>
+                  <Trans>Created</Trans>
+                </Th>
+                <Th></Th>
               </Tr>
-            )}
-            {allFiles.map((file) => {
-              const type = getDocumentType(file.name);
-              return (
-                <Tr key={file.id}>
+            </Thead>
+            <Tbody>
+              {modelUpload?.modelId && (
+                <Tr>
                   <Td>
                     <HStack>
-                      <DocumentIcon type={type} />
-                      <span
-                        className="font-medium"
-                        onClick={() => {
-                          if (["PDF", "Image"].includes(type)) {
-                            window.open(
-                              path.to.file.previewFile(
-                                `${"private"}/${getPath(file)}`
-                              ),
-                              "_blank"
-                            );
-                          } else {
-                            download(file);
-                          }
-                        }}
-                      >
-                        {["PDF", "Image"].includes(type) ? (
-                          <DocumentPreview
-                            bucket="private"
-                            pathToFile={getPath(file)}
-                            // @ts-ignore
-                            type={type}
-                          >
-                            {file.name}
-                          </DocumentPreview>
-                        ) : (
-                          file.name
-                        )}
-                      </span>
+                      <LuAxis3D className="text-emerald-500 w-6 h-6" />
+                      <Hyperlink target="_blank" to={getModelPath(modelUpload)}>
+                        {modelUpload.modelName}
+                      </Hyperlink>
                     </HStack>
                   </Td>
                   <Td className="text-xs font-mono">
-                    {convertKbToString(
-                      Math.floor((file.metadata?.size ?? 0) / 1024)
-                    )}
+                    {modelUpload.modelSize
+                      ? convertKbToString(
+                          Math.floor((modelUpload.modelSize ?? 0) / 1024)
+                        )
+                      : "--"}
                   </Td>
-                  <Td className="text-xs font-mono">
-                    {file.created_at ? formatDate(file.created_at) : "--"}
-                  </Td>
+                  <Td className="text-xs font-mono">--</Td>
                   <Td>
                     <div className="flex justify-end w-full">
                       <DropdownMenu>
@@ -224,13 +211,20 @@ const ItemDocuments = ({
                           />
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
-                          <DropdownMenuItem onClick={() => download(file)}>
+                          <DropdownMenuItem asChild>
+                            <Link to={getModelPath(modelUpload)}>
+                              <Trans>View</Trans>
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => downloadModel(modelUpload)}
+                          >
                             Download
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             destructive
                             disabled={!canDelete}
-                            onClick={() => deleteFile(file)}
+                            onClick={() => deleteModel()}
                           >
                             Delete
                           </DropdownMenuItem>
@@ -239,20 +233,93 @@ const ItemDocuments = ({
                     </div>
                   </Td>
                 </Tr>
-              );
-            })}
-            {allFiles.length === 0 && !modelUpload && (
-              <Tr>
-                <Td
-                  colSpan={24}
-                  className="py-8 text-muted-foreground text-center"
-                >
-                  <Trans>No files</Trans>
-                </Td>
-              </Tr>
-            )}
-          </Tbody>
-        </Table>
+              )}
+              {allFiles.map((file) => {
+                const type = getDocumentType(file.name);
+                return (
+                  <Tr key={file.id}>
+                    <Td>
+                      <HStack>
+                        <DocumentIcon type={type} />
+                        <span
+                          className="font-medium"
+                          onClick={() => {
+                            if (["PDF", "Image"].includes(type)) {
+                              window.open(
+                                path.to.file.previewFile(
+                                  `${"private"}/${getPath(file)}`
+                                ),
+                                "_blank"
+                              );
+                            } else {
+                              download(file);
+                            }
+                          }}
+                        >
+                          {["PDF", "Image"].includes(type) ? (
+                            <DocumentPreview
+                              bucket="private"
+                              pathToFile={getPath(file)}
+                              // @ts-ignore
+                              type={type}
+                            >
+                              {file.name}
+                            </DocumentPreview>
+                          ) : (
+                            file.name
+                          )}
+                        </span>
+                      </HStack>
+                    </Td>
+                    <Td className="text-xs font-mono">
+                      {convertKbToString(
+                        Math.floor((file.metadata?.size ?? 0) / 1024)
+                      )}
+                    </Td>
+                    <Td className="text-xs font-mono">
+                      {file.created_at ? formatDate(file.created_at) : "--"}
+                    </Td>
+                    <Td>
+                      <div className="flex justify-end w-full">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <IconButton
+                              aria-label={t`More`}
+                              icon={<LuEllipsisVertical />}
+                              variant="secondary"
+                            />
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent>
+                            <DropdownMenuItem onClick={() => download(file)}>
+                              Download
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              destructive
+                              disabled={!canDelete}
+                              onClick={() => deleteFile(file)}
+                            >
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                    </Td>
+                  </Tr>
+                );
+              })}
+              {allFiles.length === 0 && !modelUpload && (
+                <Tr>
+                  <Td
+                    colSpan={24}
+                    className="py-8 text-muted-foreground text-center"
+                  >
+                    <Trans>No files</Trans>
+                  </Td>
+                </Tr>
+              )}
+            </Tbody>
+          </Table>
+        )}
         <FileDropzone onDrop={onDrop} />
       </CardContent>
     </Card>

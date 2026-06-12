@@ -16,6 +16,8 @@ import EmployeeAvatar from "./EmployeeAvatar";
 import EmployeeAvatarGroup from "./EmployeeAvatarGroup";
 import Empty from "./Empty";
 import FileDropzone from "./FileDropzone";
+import FilesIconView from "./FilesIconView";
+import FilesViewModeToggle from "./FilesViewModeToggle";
 import Hyperlink from "./Hyperlink";
 import {
   MethodBadge,
@@ -57,6 +59,8 @@ export {
   EmployeeAvatarGroup,
   Empty,
   FileDropzone,
+  FilesIconView,
+  FilesViewModeToggle,
   Hyperlink,
   ItemThumbnail,
   Location,

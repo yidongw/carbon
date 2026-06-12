@@ -30,11 +30,18 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import type { FileObject } from "@supabase/storage-js";
 import { nanoid } from "nanoid";
 import type { ChangeEvent } from "react";
-import { Suspense, useCallback, useState } from "react";
+import { Suspense, useCallback, useMemo, useState } from "react";
 import { LuEllipsisVertical, LuUpload } from "react-icons/lu";
 import { Await, useRevalidator } from "react-router";
-import { DocumentPreview, FileDropzone } from "~/components";
+import {
+  DocumentPreview,
+  FileDropzone,
+  FilesIconView,
+  FilesViewModeToggle
+} from "~/components";
 import DocumentIcon from "~/components/DocumentIcon";
+import type { FilesIconItem } from "~/components/FilesIconView";
+import { useFilesViewMode } from "~/components/FilesViewModeToggle";
 import { usePermissions, useUser } from "~/hooks";
 import { getDocumentType } from "~/modules/shared";
 import type { StorageItem } from "~/types";
@@ -291,112 +298,144 @@ function MaintenanceFilesContent({
     }
   };
 
+  const [viewMode, setViewMode] = useFilesViewMode();
+
+  const iconItems = useMemo<FilesIconItem<StorageItem>[]>(() => {
+    return files.map((file) => {
+      const type = getDocumentType(file.name);
+      return {
+        id: file.id,
+        name: file.name,
+        documentType: type,
+        pathToFile: getFilePath(file.name),
+        sizeBytes: file.metadata?.size,
+        previewType: ["PDF", "Image"].includes(type)
+          ? (type as "PDF" | "Image")
+          : undefined,
+        raw: file
+      };
+    });
+  }, [files, getFilePath]);
+
   return (
     <>
-      {!isReadOnly && (
-        <div className="flex justify-end mb-4">
-          {/* @ts-expect-error TS2322 */}
-          <File leftIcon={<LuUpload />} onChange={uploadFiles} multiple>
-            <Trans>Upload</Trans>
-          </File>
-        </div>
-      )}
-      <Table>
-        <Thead>
-          <Tr>
-            <Th>
-              <Trans>Name</Trans>
-            </Th>
-            <Th>
-              <Trans>Size</Trans>
-            </Th>
-            <Th />
-          </Tr>
-        </Thead>
-        <Tbody>
-          {files.map((file) => {
-            const type = getDocumentType(file.name);
-            return (
-              <Tr key={file.id}>
-                <Td>
-                  <HStack>
-                    <DocumentIcon type={type} />
-                    <span
-                      className="font-medium cursor-pointer"
-                      onClick={() => {
-                        if (["PDF", "Image"].includes(type)) {
-                          window.open(
-                            path.to.file.previewFile(
-                              `private/${getFilePath(file.name)}`
-                            ),
-                            "_blank"
-                          );
-                        } else {
-                          download(file);
-                        }
-                      }}
-                    >
-                      {["PDF", "Image"].includes(type) ? (
-                        <DocumentPreview
-                          bucket="private"
-                          pathToFile={getFilePath(file.name)}
-                          // @ts-expect-error
-                          type={type}
-                        >
-                          {file.name}
-                        </DocumentPreview>
-                      ) : (
-                        file.name
-                      )}
-                    </span>
-                  </HStack>
-                </Td>
-                <Td>
-                  {convertKbToString(
-                    Math.floor((file.metadata?.size ?? 0) / 1024)
-                  )}
-                </Td>
-                <Td>
-                  <div className="flex justify-end w-full">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <IconButton
-                          aria-label={t`More`}
-                          icon={<LuEllipsisVertical />}
-                          variant="secondary"
-                        />
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuItem onClick={() => download(file)}>
-                          <Trans>Download</Trans>
-                        </DropdownMenuItem>
-                        {!isReadOnly && (
-                          <DropdownMenuItem
-                            destructive
-                            onClick={() => deleteFile(file)}
+      <div className="mb-4 flex justify-end gap-2">
+        <FilesViewModeToggle value={viewMode} onChange={setViewMode} />
+        {!isReadOnly && (
+          <>
+            {/* @ts-expect-error TS2322 */}
+            <File leftIcon={<LuUpload />} onChange={uploadFiles} multiple>
+              <Trans>Upload</Trans>
+            </File>
+          </>
+        )}
+      </div>
+      {viewMode === "icons" ? (
+        <FilesIconView
+          items={iconItems}
+          canDelete={!isReadOnly}
+          emptyMessage={<Trans>No files uploaded</Trans>}
+          onDownload={(item) => item.raw && download(item.raw)}
+          onDelete={(item) => item.raw && deleteFile(item.raw)}
+        />
+      ) : (
+        <Table>
+          <Thead>
+            <Tr>
+              <Th>
+                <Trans>Name</Trans>
+              </Th>
+              <Th>
+                <Trans>Size</Trans>
+              </Th>
+              <Th />
+            </Tr>
+          </Thead>
+          <Tbody>
+            {files.map((file) => {
+              const type = getDocumentType(file.name);
+              return (
+                <Tr key={file.id}>
+                  <Td>
+                    <HStack>
+                      <DocumentIcon type={type} />
+                      <span
+                        className="font-medium cursor-pointer"
+                        onClick={() => {
+                          if (["PDF", "Image"].includes(type)) {
+                            window.open(
+                              path.to.file.previewFile(
+                                `private/${getFilePath(file.name)}`
+                              ),
+                              "_blank"
+                            );
+                          } else {
+                            download(file);
+                          }
+                        }}
+                      >
+                        {["PDF", "Image"].includes(type) ? (
+                          <DocumentPreview
+                            bucket="private"
+                            pathToFile={getFilePath(file.name)}
+                            // @ts-expect-error
+                            type={type}
                           >
-                            <Trans>Delete</Trans>
-                          </DropdownMenuItem>
+                            {file.name}
+                          </DocumentPreview>
+                        ) : (
+                          file.name
                         )}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
+                      </span>
+                    </HStack>
+                  </Td>
+                  <Td>
+                    {convertKbToString(
+                      Math.floor((file.metadata?.size ?? 0) / 1024)
+                    )}
+                  </Td>
+                  <Td>
+                    <div className="flex justify-end w-full">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <IconButton
+                            aria-label={t`More`}
+                            icon={<LuEllipsisVertical />}
+                            variant="secondary"
+                          />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuItem onClick={() => download(file)}>
+                            <Trans>Download</Trans>
+                          </DropdownMenuItem>
+                          {!isReadOnly && (
+                            <DropdownMenuItem
+                              destructive
+                              onClick={() => deleteFile(file)}
+                            >
+                              <Trans>Delete</Trans>
+                            </DropdownMenuItem>
+                          )}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </Td>
+                </Tr>
+              );
+            })}
+            {files.length === 0 && (
+              <Tr>
+                <Td
+                  colSpan={3}
+                  className="py-8 text-muted-foreground text-center"
+                >
+                  <Trans>No files uploaded</Trans>
                 </Td>
               </Tr>
-            );
-          })}
-          {files.length === 0 && (
-            <Tr>
-              <Td
-                colSpan={3}
-                className="py-8 text-muted-foreground text-center"
-              >
-                <Trans>No files uploaded</Trans>
-              </Td>
-            </Tr>
-          )}
-        </Tbody>
-      </Table>
+            )}
+          </Tbody>
+        </Table>
+      )}
       {!isReadOnly && <FileDropzone onDrop={onDrop} />}
     </>
   );
