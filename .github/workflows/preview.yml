@@ -33,14 +33,14 @@ jobs:
       - name: Start preview
         if: github.event.action != 'closed'
         run: |
-          /Users/xinjuan/preview/manage-preview.sh start \
+          /Users/xinjuan/git/preview-server/manage-preview.sh start \
             "${{ github.event.pull_request.number }}" \
             "${{ github.event.pull_request.head.ref }}"
 
       - name: Stop preview
         if: github.event.action == 'closed'
         run: |
-          /Users/xinjuan/preview/manage-preview.sh stop \
+          /Users/xinjuan/git/preview-server/manage-preview.sh stop \
             "${{ github.event.pull_request.number }}"
 
       - name: Post preview URL
