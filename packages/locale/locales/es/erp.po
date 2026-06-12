@@ -270,6 +270,9 @@ msgstr "Añade una columna a continuación para ordenar la vista"
 msgid "Add a comment..."
 msgstr "Añade un comentario..."
 
+msgid "Add a printer in the printing settings to print labels directly."
+msgstr "Añade una impresora en la configuración de impresión para imprimir etiquetas directamente."
+
 msgid "Add Actions"
 msgstr "Agregar Acciones"
 
@@ -338,6 +341,9 @@ msgstr "Agregar Socio"
 
 msgid "Add Permissions"
 msgstr "Agregar Permisos"
+
+msgid "Add Printer"
+msgstr "Agregar impresora"
 
 msgid "Add Property"
 msgstr "Agregar propiedad"
@@ -759,6 +765,10 @@ msgstr "¿Estás seguro de que deseas eliminar el término de pago: {0}? Esto no
 msgid "Are you sure you want to delete the pricing rule: {0}? This cannot be undone."
 msgstr "¿Estás seguro de que deseas eliminar la regla de precios: {0}? Esto no se puede deshacer."
 
+#. placeholder {0}: printerToDelete.name
+msgid "Are you sure you want to delete the printer \"{0}\"? Any assignments referencing this printer will be cleared. This cannot be undone."
+msgstr "¿Estás seguro de que deseas eliminar la impresora \"{0}\"? Se borrarán todas las asignaciones que hagan referencia a esta impresora. Esta acción no se puede deshacer."
+
 #. placeholder {0}: purchaseInvoiceLine.quantity ?? 0
 #. placeholder {1}: purchaseInvoiceLine.description ?? ""
 msgid "Are you sure you want to delete the purchase invoice line for {0} {1}? This cannot be undone."
@@ -927,6 +937,9 @@ msgstr "Clases de Activos"
 
 msgid "Assets"
 msgstr "Activos"
+
+msgid "Assign printers to locations. Shipping, receiving, and work centers inherit the location default unless overridden."
+msgstr "Asigna impresoras a ubicaciones. Envíos, recepciones y centros de trabajo heredan la ubicación predeterminada a menos que se anulen."
 
 msgid "Assign To"
 msgstr "Asignar a"
@@ -2239,9 +2252,6 @@ msgstr "Unidad Predeterminada"
 msgid "Defaults"
 msgstr "Valores predeterminados"
 
-msgid "Define the default size of the product label. Used for tracking items in inventory."
-msgstr "Define el tamaño predeterminado de la etiqueta del producto. Se utiliza para rastrear artículos en el inventario."
-
 msgid "Define the terms and conditions for purchase orders"
 msgstr "Define los términos y condiciones para órdenes de compra"
 
@@ -2614,6 +2624,9 @@ msgstr "Descargar"
 msgid "Download CSV"
 msgstr "Descargar CSV"
 
+msgid "Download Labels"
+msgstr "Descargar Etiquetas"
+
 msgid "Download PDF"
 msgstr "Descargar PDF"
 
@@ -2701,6 +2714,9 @@ msgstr "Duración"
 
 msgid "e.g. DWG-1234"
 msgstr "p. ej. DWG-1234"
+
+msgid "e.g. Zebra 2x1"
+msgstr "p. ej. Zebra 2x1"
 
 msgid "Edit"
 msgstr "Editar"
@@ -3878,6 +3894,9 @@ msgstr "Si los artículos ya existen"
 msgid "If you wish to change the part numbers, please click Cancel and manually assign the parts for each line item before converting."
 msgstr "Si deseas cambiar los números de parte, haz clic en Cancelar y asigna manualmente las partes para cada elemento de línea antes de convertir."
 
+msgid "Imperial"
+msgstr "Imperial"
+
 msgid "Implementation Support"
 msgstr "Soporte de Implementación"
 
@@ -4337,6 +4356,9 @@ msgstr "Más información"
 msgid "Leave any related receipts untouched"
 msgstr "Dejar los recibos relacionados sin tocar"
 
+msgid "Leave blank for built-in"
+msgstr "Dejar en blanco para usar el integrado"
+
 msgid "Leave empty for exact match"
 msgstr "Dejar vacío para coincidencia exacta"
 
@@ -4713,6 +4735,9 @@ msgstr "Tiempo Medio de Reparación"
 
 msgid "Measurement Standard"
 msgstr "Estándar de Medición"
+
+msgid "Media Size"
+msgstr "Tamaño de Medio"
 
 msgid "Members"
 msgstr "Miembros"
@@ -5255,6 +5280,9 @@ msgstr "Sin imagen"
 msgid "No issue types configured"
 msgstr "No hay tipos de problemas configurados"
 
+msgid "No locations found."
+msgstr "No se encontraron ubicaciones."
+
 msgid "No logo uploaded"
 msgstr "Sin logo cargado"
 
@@ -5305,6 +5333,12 @@ msgstr "Sin precios para la cantidad seleccionada"
 
 msgid "No pricing options found"
 msgstr "No se encontraron opciones de precios"
+
+msgid "No printer configured"
+msgstr "Sin impresora configurada"
+
+msgid "No printers configured. Click \"Add Printer\" to create one."
+msgstr "No hay impresoras configuradas. Haz clic en \"Agregar impresora\" para crear una."
 
 msgid "No Quote"
 msgstr "Sin Cotización"
@@ -5573,6 +5607,9 @@ msgstr "Pedidos"
 msgid "Orders submitted"
 msgstr "Pedidos enviados"
 
+msgid "Origin"
+msgstr "Origen"
+
 msgid "Other Type"
 msgstr "Otro Tipo"
 
@@ -5705,11 +5742,17 @@ msgstr "Términos de Pago"
 msgid "PDF"
 msgstr "PDF"
 
+msgid "PDF (Document)"
+msgstr "PDF (Documento)"
+
 msgid "PDF downloaded"
 msgstr "PDF descargado"
 
 msgid "PDF pages"
 msgstr "Páginas PDF"
+
+msgid "PDF Preview"
+msgstr "Vista previa de PDF"
 
 msgid "PDF Watermark"
 msgstr "Marca de agua PDF"
@@ -5749,6 +5792,9 @@ msgstr "Foto eliminada correctamente"
 
 msgid "Photo uploaded successfully"
 msgstr "Foto cargada exitosamente"
+
+msgid "Physical printers available for assignment."
+msgstr "Impresoras físicas disponibles para asignación."
 
 msgid "Pick"
 msgstr "Seleccionar"
@@ -5900,6 +5946,9 @@ msgstr "Anterior"
 msgid "Preview"
 msgstr "Vista previa"
 
+msgid "Preview failed: {error}"
+msgstr "Vista previa fallida: {error}"
+
 msgid "Preview Quantity"
 msgstr "Cantidad de vista previa"
 
@@ -5942,8 +5991,34 @@ msgstr "Reglas de Precios"
 msgid "Pricing Trace"
 msgstr "Seguimiento de Precios"
 
+msgid "Print"
+msgstr "Imprimir"
+
+#. placeholder {0}: selectedIds.size
+msgid "Print {0} Labels"
+msgstr "Imprimir {0} etiquetas"
+
+msgid "Print Jobs"
+msgstr "Trabajos de Impresión"
+
 msgid "Print Label"
 msgstr "Imprimir Etiqueta"
+
+#. placeholder {0}: viewContent.contentType?.toUpperCase()
+msgid "Print Output ({0})"
+msgstr "Salida de impresión ({0})"
+
+msgid "Printer Settings"
+msgstr "Configuración de impresora"
+
+msgid "Printer URL"
+msgstr "URL de la impresora"
+
+msgid "Printers"
+msgstr "Impresoras"
+
+msgid "Printing"
+msgstr "Impresión"
 
 msgid "Priorities"
 msgstr "Prioridades"
@@ -5974,9 +6049,6 @@ msgstr "Tipo de Proceso"
 
 msgid "Processes"
 msgstr "Procesos"
-
-msgid "Product Label Size"
-msgstr "Tamaño de Etiqueta de Producto"
 
 msgid "Production"
 msgstr "Producción"
@@ -6405,6 +6477,9 @@ msgstr "Elimina este tipo de almacenamiento de todas las unidades de almacenamie
 msgid "Remove Transfer"
 msgstr "Eliminar transferencia"
 
+msgid "Rendering label preview..."
+msgstr "Renderizando vista previa de etiqueta..."
+
 msgid "Reopen"
 msgstr "Reabrir"
 
@@ -6461,6 +6536,9 @@ msgstr "Informe"
 
 msgid "Reports"
 msgstr "Informes"
+
+msgid "Reprint"
+msgstr "Reimprimir"
 
 msgid "Request Approval"
 msgstr "Solicitar Aprobación"
@@ -6945,6 +7023,9 @@ msgstr "Seleccionar Tipo de Artículo"
 
 msgid "Select items"
 msgstr "Seleccionar artículos"
+
+msgid "Select Printer"
+msgstr "Seleccionar Impresora"
 
 msgid "Select Quantities"
 msgstr "Seleccionar Cantidades"
@@ -7711,11 +7792,17 @@ msgstr "Impuesto:"
 msgid "Temperature"
 msgstr "Temperatura"
 
+msgid "Template ID"
+msgstr "ID de plantilla"
+
 msgid "Terms and Privacy"
 msgstr "Términos y Privacidad"
 
 msgid "Terms of Service"
 msgstr "Términos de Servicio"
+
+msgid "Test"
+msgstr "Prueba"
 
 msgid "Test Value"
 msgstr "Valor de Prueba"
@@ -8028,9 +8115,6 @@ msgstr "Seguimiento"
 
 msgid "Tracking ID"
 msgstr "ID de Seguimiento"
-
-msgid "Tracking Labels"
-msgstr "Etiquetas de Seguimiento"
 
 msgid "Tracking Number"
 msgstr "Número de Seguimiento"
@@ -8455,6 +8539,9 @@ msgstr "Ver RFQs Abiertos"
 msgid "View Permissions"
 msgstr "Permisos de visualización"
 
+msgid "View Prints"
+msgstr "Ver impresiones"
+
 msgid "View Production Events"
 msgstr "Ver Eventos de Producción"
 
@@ -8770,3 +8857,9 @@ msgstr "Aumentar zoom"
 
 msgid "Zoom out"
 msgstr "Alejar"
+
+msgid "ZPL (Thermal Label)"
+msgstr "ZPL (Etiqueta térmica)"
+
+msgid "ZPL Label Preview"
+msgstr "Vista previa de etiqueta ZPL"

@@ -3,10 +3,8 @@ import { ProductLabelPDF } from "@carbon/documents/pdf";
 import { labelSizes } from "@carbon/utils";
 import { renderToStream } from "@react-pdf/renderer";
 import type { LoaderFunctionArgs } from "react-router";
-import { redirect } from "react-router";
 import { getCompanySettings } from "~/services/inventory.service";
 import { getTrackedEntitiesByOperationId } from "~/services/operations.service";
-import { path } from "~/utils/path";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
   const { client, companyId } = await requirePermissions(request, {});
@@ -19,27 +17,18 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     getTrackedEntitiesByOperationId(client, id)
   ]);
 
-  // Get the label size from query params or default to avery5160
+  // Get the label size from query params or default to avery5163
   const url = new URL(request.url);
   const labelParam = url.searchParams.get("labelSize");
   const trackedEntityIdParam = url.searchParams.get("trackedEntityId");
   const labelSizeId =
-    labelParam || companySettings.data?.productLabelSize || "avery5160";
+    labelParam || companySettings.data?.productLabelSize || "avery5163";
 
   // Find the label size configuration
   let labelSize = labelSizes.find((size) => size.id === labelSizeId);
 
   if (!labelSize) {
     throw new Error("Invalid label size");
-  }
-
-  if (labelSize.zpl) {
-    throw redirect(
-      path.to.file.operationLabelsZpl(id, {
-        labelSize: labelSize.id,
-        trackedEntityId: trackedEntityIdParam ?? undefined
-      })
-    );
   }
 
   let filteredTracking = trackedEntities.data;
