@@ -517,26 +517,6 @@ export function FloatingChat() {
     }
   }, [viewportW, position, setPosition]);
 
-  // Push the page layout sideways when an outside panel is open by setting CSS vars on <html>.
-  // The layout shell reads --chat-panel-left / --chat-panel-right and applies them as padding.
-  useEffect(() => {
-    const root = document.documentElement;
-    if (isOpen && effectivePosition === "left-outside") {
-      root.style.setProperty("--chat-panel-left", `${panelWidth}px`);
-      root.style.setProperty("--chat-panel-right", "0px");
-    } else if (isOpen && effectivePosition === "right-outside") {
-      root.style.setProperty("--chat-panel-left", "0px");
-      root.style.setProperty("--chat-panel-right", `${panelWidth}px`);
-    } else {
-      root.style.setProperty("--chat-panel-left", "0px");
-      root.style.setProperty("--chat-panel-right", "0px");
-    }
-    return () => {
-      root.style.setProperty("--chat-panel-left", "0px");
-      root.style.setProperty("--chat-panel-right", "0px");
-    };
-  }, [isOpen, effectivePosition, panelWidth]);
-
   // Pointer-based drag handlers (covers mouse + touch via setPointerCapture).
   // setPointerCapture routes all pointer events to the button for the drag duration,
   // which also suppresses browser scroll (respecting the button's touch-action:none).
@@ -663,6 +643,27 @@ export function FloatingChat() {
   // Short screen (landscape phone, h < 500px): force fullscreen without mutating stored position
   const isShort = viewportH < 500;
   const effectivePosition: ChatPosition = isShort ? "fullscreen" : position;
+
+  // Push the page layout sideways when an outside panel is open by setting CSS vars on <html>.
+  // The layout shell reads --chat-panel-left / --chat-panel-right and applies them as padding.
+  // Must be placed after effectivePosition is declared to avoid temporal dead zone.
+  useEffect(() => {
+    const root = document.documentElement;
+    if (isOpen && effectivePosition === "left-outside") {
+      root.style.setProperty("--chat-panel-left", `${panelWidth}px`);
+      root.style.setProperty("--chat-panel-right", "0px");
+    } else if (isOpen && effectivePosition === "right-outside") {
+      root.style.setProperty("--chat-panel-left", "0px");
+      root.style.setProperty("--chat-panel-right", `${panelWidth}px`);
+    } else {
+      root.style.setProperty("--chat-panel-left", "0px");
+      root.style.setProperty("--chat-panel-right", "0px");
+    }
+    return () => {
+      root.style.setProperty("--chat-panel-left", "0px");
+      root.style.setProperty("--chat-panel-right", "0px");
+    };
+  }, [isOpen, effectivePosition, panelWidth]);
 
   // Compute panel CSS
   const panelStyle = (): React.CSSProperties => {
