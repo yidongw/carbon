@@ -56,6 +56,20 @@ export type PartUsedInData = Record<
   UsedInNode["children"]
 >;
 
+export type PartUsedInGroupPromises = Record<
+  PartUsedInGroupKey,
+  Promise<UsedInNode["children"]>
+>;
+
+export function createPendingPartUsedInGroupPromises(): PartUsedInGroupPromises {
+  return Object.fromEntries(
+    PART_USED_IN_GROUP_DEFINITIONS.map((group) => [
+      group.key,
+      new Promise<UsedInNode["children"]>(() => {})
+    ])
+  ) as PartUsedInGroupPromises;
+}
+
 export function transformPartUsedInGroupChildren(
   key: PartUsedInGroupKey,
   children: UsedInNode["children"]

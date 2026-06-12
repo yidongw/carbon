@@ -21,10 +21,10 @@ import {
 import type { ItemFile, PartSummary } from "~/modules/items";
 import {
   createPartUsedInGroupPromises,
-  createPendingPartUsedInGroupPromises,
   getPartMethodTree,
   type PartMethodTree
 } from "~/modules/items/partUsedIn.server";
+import { createPendingPartUsedInGroupPromises } from "~/modules/items/partUsedInGroups";
 import {
   getItemFiles,
   getMakeMethods,
