@@ -113,6 +113,7 @@ function StockTransferTopbarLeft({ id }: { id: string }) {
             id={id}
             value={assignee ?? ""}
             table="stockTransfer"
+            iconOnly
             isReadOnly={!permissions.can("update", "inventory")}
           />
           <Copy text={routeData?.stockTransfer?.stockTransferId ?? ""} />

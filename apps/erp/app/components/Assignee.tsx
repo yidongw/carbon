@@ -37,6 +37,7 @@ export type AssigneeProps = Omit<
   isReadOnly?: boolean;
   placeholder?: string;
   variant?: AssigneeVariants;
+  iconOnly?: boolean;
   onChange?: (selected: string) => void;
 };
 
@@ -50,6 +51,7 @@ const Assign = forwardRef<HTMLButtonElement, AssigneeProps>(
       isReadOnly,
       placeholder,
       variant = "button",
+      iconOnly = false,
       onChange,
       className,
       ...props
@@ -114,41 +116,52 @@ const Assign = forwardRef<HTMLButtonElement, AssigneeProps>(
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               {variant === "button" ? (
-                <button
-                  className={cn(
-                    buttonVariants({
-                      variant: "secondary",
-                      size: size,
-                      isDisabled: isReadOnly || !permissions.is("employee"),
-                      isLoading: fetcher.state !== "idle",
-                      isIcon: false,
-                      className
-                    })
-                  )}
-                  role="combobox"
-                  aria-expanded={open}
-                  aria-controls="assignee-options"
-                  ref={ref}
-                  onClick={() => setOpen(true)}
-                  disabled={isReadOnly}
-                  {...props}
-                >
-                  {value ? (
-                    <EmployeeAvatar
-                      size={size === "sm" ? "xxs" : "xs"}
-                      employeeId={value ?? null}
-                    />
-                  ) : (
-                    <div className="flex items-center justify-start gap-2">
-                      <LuUser
-                        className={size === "sm" ? "w-3 h-3" : "w-4 h-4"}
+                iconOnly ? (
+                  <IconButton
+                    aria-label={t`Toggle Assignee`}
+                    icon={<LuUser />}
+                    size={size}
+                    variant="secondary"
+                    isDisabled={isReadOnly || !permissions.is("employee")}
+                    isLoading={fetcher.state !== "idle"}
+                  />
+                ) : (
+                  <button
+                    className={cn(
+                      buttonVariants({
+                        variant: "secondary",
+                        size: size,
+                        isDisabled: isReadOnly || !permissions.is("employee"),
+                        isLoading: fetcher.state !== "idle",
+                        isIcon: false,
+                        className
+                      })
+                    )}
+                    role="combobox"
+                    aria-expanded={open}
+                    aria-controls="assignee-options"
+                    ref={ref}
+                    onClick={() => setOpen(true)}
+                    disabled={isReadOnly}
+                    {...props}
+                  >
+                    {value ? (
+                      <EmployeeAvatar
+                        size={size === "sm" ? "xxs" : "xs"}
+                        employeeId={value ?? null}
                       />
-                      <span>
-                        <Trans>Unassigned</Trans>
-                      </span>
-                    </div>
-                  )}
-                </button>
+                    ) : (
+                      <div className="flex items-center justify-start gap-2">
+                        <LuUser
+                          className={size === "sm" ? "w-3 h-3" : "w-4 h-4"}
+                        />
+                        <span>
+                          <Trans>Unassigned</Trans>
+                        </span>
+                      </div>
+                    )}
+                  </button>
+                )
               ) : (
                 <IconButton
                   aria-label={t`Toggle Assignee`}
