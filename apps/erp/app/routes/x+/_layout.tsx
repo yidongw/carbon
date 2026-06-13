@@ -74,7 +74,6 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
 
   if (
     currentUrl.pathname.startsWith("/x/settings") ||
-    currentUrl.pathname.startsWith("/x/users") ||
     currentUrl.pathname.startsWith("/refresh-session") ||
     currentUrl.pathname.startsWith("/x/acknowledge") ||
     currentUrl.pathname.startsWith("/x/shared/views")
