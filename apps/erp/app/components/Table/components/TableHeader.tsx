@@ -164,7 +164,7 @@ const TableHeader = <T extends object>({
   const hideTitleBar = !viewTitle && !primaryAction && !canSaveView;
 
   return (
-    <div className={cn("w-full flex flex-col", !compact && "mb-8")}>
+    <div className={cn("w-full flex flex-col", !compact && "mb-2 md:mb-8")}>
       {canSaveView && savedViewDisclosure.isOpen ? (
         <ValidatedForm
           method="post"
@@ -221,18 +221,19 @@ const TableHeader = <T extends object>({
           <HStack
             className={cn(
               compact
-                ? "px-4 py-2 justify-between bg-card border-b  w-full"
-                : "px-4 md:px-0 py-6 justify-between bg-card w-full relative"
+                ? "px-4 py-2 bg-card border-b w-full"
+                : "px-4 md:px-0 py-2 md:py-6 bg-card w-full relative",
+              "flex-nowrap overflow-x-auto justify-end md:justify-between [&::-webkit-scrollbar]:hidden [scrollbar-width:none]"
             )}
           >
-            <HStack spacing={1}>
+            <HStack spacing={1} className="hidden md:flex shrink-0">
               <CollapsibleSidebarTrigger />
               {viewTitle && (
                 <Heading size={compact ? "h3" : "h2"}>{viewTitle}</Heading>
               )}
             </HStack>
 
-            <HStack>
+            <HStack className="shrink-0">
               {/* <Button variant="secondary" leftIcon={<LuDownload />}>
             Export
             </Button> */}
@@ -272,11 +273,12 @@ const TableHeader = <T extends object>({
       <HStack
         className={cn(
           compact
-            ? "px-4 py-2 justify-between bg-card border-b border-border w-full"
-            : "px-4 md:px-0 justify-between bg-card w-full"
+            ? "px-4 py-2 bg-card border-b border-border w-full"
+            : "px-4 md:px-0 py-1 bg-card w-full",
+          "flex-nowrap overflow-x-auto md:justify-between [&::-webkit-scrollbar]:hidden [scrollbar-width:none]"
         )}
       >
-        <HStack>
+        <HStack className="shrink-0">
           {withSelectableRows &&
             selectedRows.length > 0 &&
             typeof renderActions === "function" && (
@@ -300,7 +302,7 @@ const TableHeader = <T extends object>({
           )}
           {!!filters?.length && <Filter filters={filters} />}
         </HStack>
-        <HStack>
+        <HStack className="shrink-0">
           <Sort columnAccessors={columnAccessors} />
 
           <Columns
