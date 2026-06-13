@@ -322,8 +322,8 @@ function ResizeHandle({ position, onResizeStart }: ResizeHandleProps) {
           "transition-[opacity,background-color] duration-150",
           "group-hover:opacity-100",
           isHorizontal
-            ? "w-16 h-[3px] rounded-full bg-border/50 group-hover:bg-border"
-            : "h-16 w-[3px] rounded-full bg-border/50 group-hover:bg-border"
+            ? "w-24 h-1 rounded-full bg-border/50 group-hover:bg-border"
+            : "h-24 w-1 rounded-full bg-border/50 group-hover:bg-border"
         )}
       />
     </div>
