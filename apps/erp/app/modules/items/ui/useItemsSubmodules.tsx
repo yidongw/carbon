@@ -50,6 +50,11 @@ export default function useItemsSubmodules() {
           to: path.to.consumables,
           icon: <LuPizza />,
           table: "consumable"
+        },
+        {
+          name: t`Templates`,
+          to: path.to.templates,
+          icon: <LuLayoutTemplate />
         }
       ]
     },
@@ -97,11 +102,6 @@ export default function useItemsSubmodules() {
     {
       name: t`Configure`,
       routes: [
-        {
-          name: t`Templates`,
-          to: path.to.templates,
-          icon: <LuLayoutTemplate />
-        },
         {
           name: t`Item Groups`,
           to: path.to.itemPostingGroups,
