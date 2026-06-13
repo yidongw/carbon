@@ -14,7 +14,6 @@ import type { ChatInputMessage } from "./ChatInput";
 import { ChatInput } from "./ChatInput";
 import { ChatMessages } from "./ChatMessages";
 import { ChatStatusIndicators } from "./ChatStatusIndicators";
-import { ChatWidgets } from "./ChatWidgets";
 import {
   Conversation,
   ConversationContent,
@@ -152,8 +151,7 @@ export function ChatInterface({ geo, containerClassName }: Props) {
         className={cn(
           "relative flex-1",
           hasMessages && "transition-all duration-300 ease-in-out",
-          hasArtifacts && "mr-[600px]",
-          !hasMessages && "flex items-center justify-center"
+          hasArtifacts && "mr-[600px]"
         )}
       >
         {hasMessages && (
@@ -195,22 +193,22 @@ export function ChatInterface({ geo, containerClassName }: Props) {
           </>
         )}
 
-        {/* Fixed input at bottom - respects parent container boundaries */}
+        {!hasMessages && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none pb-24">
+            <Greeting size="h1" className="font-medium" />
+          </div>
+        )}
+
+        {/* Input pinned to bottom */}
         <div
           className={cn(
-            "transition-all duration-300 ease-in-out max-w-2xl mx-auto px-6",
-            hasMessages
-              ? "absolute bottom-0 left-0"
-              : "w-full -mt-[20dvh] flex flex-col gap-8 items-center justify-center",
+            "absolute bottom-0 left-0 transition-all duration-300 ease-in-out max-w-2xl mx-auto px-6",
             hasArtifacts ? "right-[600px]" : "right-0"
           )}
         >
-          {!hasMessages && <Greeting size="h1" className="font-medium" />}
           <div className="w-full pb-2">
             <ChatInput ref={recordButtonRef} hasMessages={hasMessages} />
           </div>
-
-          {!hasMessages && <ChatWidgets recordButtonRef={recordButtonRef} />}
         </div>
       </div>
     </div>
