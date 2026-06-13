@@ -318,7 +318,7 @@ export default function ProductionDashboard() {
         </Heading>
       </HStack>
       <div className="grid w-full gap-y-4 lg:gap-x-4 grid-cols-1 lg:grid-cols-6">
-        <Card className="col-span-3">
+        <Card className="col-span-full lg:col-span-3">
           <CardHeader className="flex-row gap-2">
             <LuCirclePlay className="text-muted-foreground" />
             <CardTitle>
@@ -347,7 +347,7 @@ export default function ProductionDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="col-span-3">
+        <Card className="col-span-full lg:col-span-3">
           <CardHeader className="flex-row gap-2">
             <LuInbox className="text-muted-foreground" />
             <CardTitle>
@@ -373,8 +373,8 @@ export default function ProductionDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="col-span-6">
-          <HStack className="justify-between items-center">
+        <Card className="col-span-full">
+          <HStack className="justify-between items-center flex-wrap gap-2">
             <CardHeader>
               <div className="flex w-full justify-start items-center gap-2">
                 <DropdownMenu>
@@ -816,7 +816,7 @@ function WorkCenterCards({
   });
 
   return (
-    <div className="w-full grid grid-cols-6 gap-4">
+    <div className="w-full grid grid-cols-1 lg:grid-cols-6 gap-4">
       {workCenters.map((workCenter) => {
         const {
           hasEvents,
@@ -844,7 +844,7 @@ function WorkCenterCards({
         return (
           <Card
             key={workCenter.id}
-            className="p-0 h-[300px] col-span-6 lg:col-span-3 xl:col-span-2"
+            className="p-0 h-[300px] lg:col-span-3 xl:col-span-2"
           >
             <HStack
               className={cn(
