@@ -281,7 +281,9 @@ interface ResizeHandleProps {
 
 function ResizeHandle({ position, onResizeStart }: ResizeHandleProps) {
   const isHorizontal = position === "top" || position === "bottom";
-  const isInverted = position === "right-inside" || position === "bottom";
+  // "inverted" means the resizable edge is at the start of the handle div
+  // (left for right-side panels, top for bottom panel)
+  const isInverted = position === "right-inside" || position === "right-outside" || position === "bottom";
 
   const style: React.CSSProperties = isHorizontal
     ? {
@@ -301,10 +303,19 @@ function ResizeHandle({ position, onResizeStart }: ResizeHandleProps) {
         ...(isInverted ? { left: 0 } : { right: 0 })
       };
 
+  // Pin the pill to the panel border (outer edge of the handle area)
+  const pillAlign = isHorizontal
+    ? isInverted ? "items-start" : "items-end"
+    : isInverted ? "justify-start" : "justify-end";
+
   return (
     <div
       style={style}
-      className="group z-10 flex items-center justify-center touch-none"
+      className={cn(
+        "group z-10 flex touch-none",
+        pillAlign,
+        isHorizontal ? "justify-center" : "items-center"
+      )}
       onMouseDown={(e) => {
         e.preventDefault();
         onResizeStart(e.clientX, e.clientY);
