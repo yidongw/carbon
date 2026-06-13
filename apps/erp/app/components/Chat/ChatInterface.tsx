@@ -206,7 +206,7 @@ export function ChatInterface({ geo, containerClassName }: Props) {
             hasArtifacts ? "right-[600px]" : "right-0"
           )}
         >
-          <div className="w-full pb-2">
+          <div className="w-full pb-5">
             <ChatInput ref={recordButtonRef} hasMessages={hasMessages} />
           </div>
         </div>

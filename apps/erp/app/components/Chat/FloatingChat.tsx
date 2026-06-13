@@ -303,19 +303,10 @@ function ResizeHandle({ position, onResizeStart }: ResizeHandleProps) {
         ...(isInverted ? { left: 0 } : { right: 0 })
       };
 
-  // Pin the pill to the panel border (outer edge of the handle area)
-  const pillAlign = isHorizontal
-    ? isInverted ? "items-start" : "items-end"
-    : isInverted ? "justify-start" : "justify-end";
-
   return (
     <div
       style={style}
-      className={cn(
-        "group z-10 flex touch-none",
-        pillAlign,
-        isHorizontal ? "justify-center" : "items-center"
-      )}
+      className="group z-10 flex items-center justify-center touch-none"
       onMouseDown={(e) => {
         e.preventDefault();
         onResizeStart(e.clientX, e.clientY);
@@ -331,8 +322,8 @@ function ResizeHandle({ position, onResizeStart }: ResizeHandleProps) {
           "transition-[opacity,background-color] duration-150",
           "group-hover:opacity-100",
           isHorizontal
-            ? "w-10 h-[3px] rounded-full bg-border/50 group-hover:bg-border"
-            : "h-10 w-[3px] rounded-full bg-border/50 group-hover:bg-border"
+            ? "w-16 h-[3px] rounded-full bg-border/50 group-hover:bg-border"
+            : "h-16 w-[3px] rounded-full bg-border/50 group-hover:bg-border"
         )}
       />
     </div>
