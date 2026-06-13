@@ -1401,8 +1401,8 @@ async function seed() {
           [procedureId, companyId, userId]
         );
         await client.query(
-          `INSERT INTO "procedureStep" ("procedureId", name, required, "sortOrder", type, "minValue", "maxValue", "companyId", "createdBy")
-           VALUES ($1, 'Measure part thickness', true, 2, 'Measurement'::"procedureStepType", 9.8, 10.2, $2, $3)`,
+          `INSERT INTO "procedureStep" ("procedureId", name, required, "sortOrder", type, "unitOfMeasureCode", "minValue", "maxValue", "companyId", "createdBy")
+           VALUES ($1, 'Measure part thickness', true, 2, 'Measurement'::"procedureStepType", 'INCH', 9.8, 10.2, $2, $3)`,
           [procedureId, companyId, userId]
         );
         console.log(`   Created 2 procedure steps`);
@@ -1607,11 +1607,18 @@ async function seed() {
             `SELECT 1 FROM "maintenanceScheduleItem" WHERE "maintenanceScheduleId" = $1 LIMIT 1`, [maintenanceScheduleId]
           );
           if ((existingMSI.rowCount ?? 0) === 0) {
-            await client.query(
-              `INSERT INTO "maintenanceScheduleItem" ("maintenanceScheduleId", name, "sortOrder", "companyId", "createdBy")
-               VALUES ($1, 'Check spindle oil level', 1, $2, $3)`,
-              [maintenanceScheduleId, companyId, userId]
+            const fastenerItemRow = await client.query<{ id: string }>(
+              `SELECT id FROM item WHERE "readableId" = 'FASTENER-KIT-01' AND "companyId" = $1 LIMIT 1`,
+              [companyId]
             );
+            const fastenerItemId = fastenerItemRow.rows[0]?.id;
+            if (fastenerItemId) {
+              await client.query(
+                `INSERT INTO "maintenanceScheduleItem" ("maintenanceScheduleId", "itemId", quantity, "unitOfMeasureCode", "companyId", "createdBy")
+                 VALUES ($1, $2, 1, 'EA', $3, $4)`,
+                [maintenanceScheduleId, fastenerItemId, companyId, userId]
+              );
+            }
           }
         }
 
@@ -2393,8 +2400,8 @@ async function seed() {
           const steelItemId5 = itemIds["STEEL-ROD-01"];
           if (steelItemId5) {
             await client.query(
-              `INSERT INTO "quoteMaterial" ("quoteId", "quoteLineId", "quoteMakeMethodId", "itemId", "itemReadableId", "methodType", description, quantity, "unitOfMeasureCode", "companyId", "createdBy")
-               VALUES ($1, $2, $3, $4, 'STEEL-ROD-01', 'Buy'::"methodType", '1020 Steel Rod', 1.2, 'EA', $5, $6)`,
+              `INSERT INTO "quoteMaterial" ("quoteId", "quoteLineId", "quoteMakeMethodId", "itemId", "itemType", "methodType", "order", description, quantity, "unitOfMeasureCode", "unitCost", "companyId", "createdBy")
+               VALUES ($1, $2, $3, $4, 'Part', 'Buy'::"methodType", 1, '1020 Steel Rod', 1.2, 'EA', 5.50, $5, $6)`,
               [quoteId, quoteLineId, quoteMakeMethodId, steelItemId5, companyId, userId]
             );
             console.log(`   Created quote material`);
@@ -3000,7 +3007,20 @@ async function seed() {
     // ─── Step 69: exchangeRateHistory ─────────────────────────────────────────
     console.log("69. Seeding exchange rate history...");
     {
-      const companyGroupId = 'cg_5Cg8dbXfjYm2Rshat5W22m';
+      let companyGroupId: string;
+      const existingCG = await client.query<{ id: string }>(
+        `SELECT id FROM "companyGroup" WHERE name = 'Default Group' LIMIT 1`
+      );
+      if (existingCG.rows.length > 0) {
+        companyGroupId = existingCG.rows[0]!.id;
+      } else {
+        const cgRow = await client.query<{ id: string }>(
+          `INSERT INTO "companyGroup" (name, "createdBy") VALUES ('Default Group', $1) RETURNING id`,
+          [userId]
+        );
+        companyGroupId = cgRow.rows[0]!.id;
+        console.log(`   Created company group: ${companyGroupId}`);
+      }
       await client.query(
         `INSERT INTO "exchangeRateHistory" ("currencyCode", rate, "effectiveDate", "companyGroupId", "createdBy") VALUES ($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING`,
         ['USD', 1.0, '2024-01-01', companyGroupId, userId]
