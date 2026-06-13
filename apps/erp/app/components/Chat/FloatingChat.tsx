@@ -624,8 +624,12 @@ export function FloatingChat() {
         }
         if (r.dimension === "width") {
           const dx = r.inverted ? r.startMX - cx : cx - r.startMX;
+          const isOutside = position === "left-outside" || position === "right-outside";
+          const maxWidth = isOutside
+            ? Math.max(MIN_PANEL_SIZE, window.innerWidth - 640)
+            : window.innerWidth * 0.85;
           setPanelWidth(
-            Math.max(MIN_PANEL_SIZE, Math.min(r.startSize + dx, window.innerWidth * 0.85))
+            Math.max(MIN_PANEL_SIZE, Math.min(r.startSize + dx, maxWidth))
           );
         } else {
           const dy = r.inverted ? r.startMY - cy : cy - r.startMY;
