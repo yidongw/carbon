@@ -3,7 +3,7 @@ import { reactRouter } from "@react-router/dev/vite";
 import { lingui } from "@lingui/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
 import path from "node:path";
-import { defineConfig, PluginOption } from "vite";
+import { defineConfig, loadEnv, PluginOption } from "vite";
 import babelMacros from "vite-plugin-babel-macros";
 
 export default defineConfig(({ mode, isSsrBuild }) => {
@@ -37,7 +37,7 @@ export default defineConfig(({ mode, isSsrBuild }) => {
     server: {
       port: 3001,
       strictPort: true,
-      allowedHosts: [".ngrok-free.app", ".w.modal.host", ".w.modal.dev", ".dev", ".localhost"],
+      allowedHosts: [".ngrok-free.app", ".trycloudflare.com", ".w.modal.host", ".w.modal.dev", ".dev", ".localhost"],
     },
     plugins: [
       tailwindcss(),

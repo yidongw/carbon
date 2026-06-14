@@ -142,6 +142,7 @@ export async function up(opts: UpOpts = {}) {
 
   await refreshStaleCopyFiles(root);
   await ensureDepsInstalled(root);
+  if (selectedApps.length > 0) await compileLocaleCatalogs(root);
 
   const ctx = await provisionSlot(root, slug, portless, borrowedEntry);
   if (borrowedEntry) {
@@ -203,6 +204,17 @@ async function ensureDepsInstalled(root: string) {
   const ran = await installDeps(root);
   if (ran) log.step("pnpm install");
   else log.info("pnpm install skipped (lockfile in sync)");
+}
+
+// Compile lingui .po catalogs → the .mjs files the app loaders import at runtime
+// (apps/*/app/services/lingui.server.ts globs `locales/*/erp.mjs`). `turbo run
+// build` produces these via the //#lingui:compile task, but `crbn up` spawns
+// `react-router dev` directly and never runs that task — so without this the
+// compiled catalogs don't exist in dev and switching the UI language silently
+// loads an empty catalog (a no-op). Mirrors the build step.
+async function compileLocaleCatalogs(root: string) {
+  await execa("pnpm", ["lingui:compile"], { cwd: root });
+  log.step("compiled locale catalogs");
 }
 
 async function provisionSlot(
