@@ -59,3 +59,12 @@ jobs:
             --repo yidongw/carbon \
             --body "$BODY" \
             --edit-last
+
+      - name: Trigger test agent
+        if: github.event.action != 'closed'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          TEST_AGENT: ${{ vars.TEST_AGENT || '/cc' }}
+        run: |
+          gh pr comment "$PR_NUMBER" --repo yidongw/carbon --body "$TEST_AGENT"
