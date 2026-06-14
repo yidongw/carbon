@@ -72,6 +72,3 @@ apps/*/portless.json
 packages/database/supabase/snippets/**.superpowers/
 
 .worktrees
-
-# Local git hooks (install via .hooks/install.sh)
-.hooks/
