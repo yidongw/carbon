@@ -79,11 +79,6 @@ export type FormProps<DataType, Subaction extends string | undefined> = {
    */
   onAfterSubmit?: () => void | Promise<void>;
   /**
-   * A callback that fires after the fetcher returns to idle with no error data,
-   * indicating the server action succeeded. Use this to close modals after submission.
-   */
-  onSuccess?: () => void;
-  /**
    * Allows you to provide a `fetcher` from React Router's `useFetcher` hook.
    * The form will use the fetcher for loading states, action data, etc
    * instead of the default form action.
@@ -275,7 +270,6 @@ export function ValidatedForm<
   validator,
   onSubmit,
   onAfterSubmit,
-  onSuccess,
   children,
   fetcher,
   action,
@@ -410,14 +404,6 @@ export function ValidatedForm<
     endSubmit();
   });
 
-  const successSubmittedRef = useRef(false);
-  useIsomorphicLayoutEffect(() => {
-    if (fetcher && fetcher.state === "loading" && successSubmittedRef.current) {
-      onSuccess?.();
-      successSubmittedRef.current = false;
-    }
-  }, [fetcher, fetcher?.state, onSuccess]);
-
   const handleSubmit = async (
     e: FormEvent<HTMLFormElement>,
     target: typeof e.currentTarget,
@@ -486,7 +472,6 @@ export function ValidatedForm<
       // but we already have the form in `formRef.current` so we can just use that.
       // If we use `event.currentTarget` here, it will break because `currentTarget`
       // will have changed since the start of the submission.
-      if (fetcher) successSubmittedRef.current = true;
       let value: any = fetcher
         ? fetcher.submit(formData, opts)
         : submit(formData, opts);

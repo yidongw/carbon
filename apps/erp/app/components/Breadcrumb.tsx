@@ -1,6 +1,6 @@
-import { cn, getValidChildren } from "@carbon/react";
+import { Button, cn, getValidChildren } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
-import type { ComponentProps, Ref } from "react";
+import type { ComponentProps } from "react";
 import { cloneElement, forwardRef } from "react";
 import type { LinkProps } from "react-router";
 import { Link } from "react-router";
@@ -27,7 +27,7 @@ const Breadcrumbs = forwardRef<
       className={cn("reset flex", className)}
       {...props}
     >
-      <ol className="inline-flex items-center">{clones}</ol>
+      <ol className="inline-flex items-center space-x-1">{clones}</ol>
     </nav>
   );
 });
@@ -45,54 +45,37 @@ const BreadcrumbItem = forwardRef<
     className={cn("inline-flex items-center", className)}
     {...props}
   >
-    {!isFirstChild && (
-      <span aria-hidden className="shrink-0 px-1.5 text-accent-foreground">
-        /
-      </span>
-    )}
+    {!isFirstChild && <span className="text-muted-foreground">/</span>}
     {children}
   </li>
 ));
 BreadcrumbItem.displayName = "BreadcrumbItem";
 
-const breadcrumbLinkClassName = (isCurrentPage?: boolean, className?: string) =>
-  cn(
-    "inline-flex min-w-0 max-w-full truncate rounded-sm outline-none",
-    "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-    isCurrentPage
-      ? "font-semibold text-foreground"
-      : "font-medium text-accent-foreground hover:underline",
-    className
-  );
-
 const BreadcrumbLink = forwardRef<
-  HTMLElement,
+  HTMLAnchorElement,
   LinkProps & {
     isCurrentPage?: boolean;
   }
->(({ className, children, isCurrentPage, to, ...props }, ref) => {
-  if (isCurrentPage) {
-    return (
-      <span
-        aria-current="page"
-        ref={ref}
-        className={breadcrumbLinkClassName(true, className)}
-      >
-        {children}
-      </span>
-    );
-  }
-
+>(({ className, children, isCurrentPage, ...props }, ref) => {
   return (
-    <Link
-      ref={ref as Ref<HTMLAnchorElement>}
-      to={to}
-      prefetch="intent"
-      className={breadcrumbLinkClassName(false, className)}
-      {...props}
+    <Button
+      variant="ghost"
+      className={cn(
+        "px-2 outline-none focus-visible:ring-transparent",
+        className
+      )}
+      asChild
     >
-      {children}
-    </Link>
+      {isCurrentPage ? (
+        <span aria-current="page" ref={ref} {...props}>
+          {children}
+        </span>
+      ) : (
+        <Link ref={ref} {...props} prefetch="intent">
+          {children}
+        </Link>
+      )}
+    </Button>
   );
 });
 BreadcrumbLink.displayName = "BreadcrumbLink";

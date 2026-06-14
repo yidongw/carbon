@@ -33,14 +33,14 @@ jobs:
       - name: Start preview
         if: github.event.action != 'closed'
         run: |
-          /Users/xinjuan/git/preview-server/manage-preview.sh start \
+          /Users/xinjuan/preview/manage-preview.sh start \
             "${{ github.event.pull_request.number }}" \
             "${{ github.event.pull_request.head.ref }}"
 
       - name: Stop preview
         if: github.event.action == 'closed'
         run: |
-          /Users/xinjuan/git/preview-server/manage-preview.sh stop \
+          /Users/xinjuan/preview/manage-preview.sh stop \
             "${{ github.event.pull_request.number }}"
 
       - name: Post preview URL
@@ -50,7 +50,6 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           BRANCH: ${{ github.event.pull_request.head.ref }}
           SHA: ${{ github.event.pull_request.head.sha }}
-          PREVIEW_READY_SECRET: ${{ secrets.PREVIEW_READY_SECRET }}
         run: |
           PR_URL="https://erp-pr-${PR_NUMBER}.foxhole.bot"
           BODY=$(printf '### Preview Deployment\n\n**ERP:** %s\n\nBuilt from `%s` @ `%s`\nRunning in dev mode — stack traces enabled.' \
@@ -60,9 +59,15 @@ jobs:
             --repo yidongw/carbon \
             --body "$BODY" \
             --edit-last
-          # Notify Discord directly without waiting for the GitHub webhook roundtrip
-          curl -sf -X POST "http://localhost:3002/preview-ready" \
-            -H "Authorization: Bearer ${PREVIEW_READY_SECRET}" \
-            -H "Content-Type: application/json" \
-            -d "{\"repo\":\"yidongw/carbon\",\"prNumber\":${PR_NUMBER},\"previewUrl\":\"${PR_URL}\"}" \
-            || true
+
+      - name: Trigger test agent
+        if: github.event.action != 'closed'
+        env:
+          # Must be a user PAT, NOT the default GITHUB_TOKEN: comments created
+          # by GITHUB_TOKEN do not trigger workflow runs, so agent-trigger.yml
+          # (issue_comment) would never fire and the bot would never be called.
+          GH_TOKEN: ${{ secrets.AGENT_PAT }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          TEST_AGENT: ${{ vars.TEST_AGENT || '/cc' }}
+        run: |
+          gh pr comment "$PR_NUMBER" --repo yidongw/carbon --body "$TEST_AGENT"

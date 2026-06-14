@@ -12,23 +12,6 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-msgid " Enter a reason below to record the override."
-msgstr " Enter a reason below to record the override."
-
-msgid " The issue will go through with a warning."
-msgstr " The issue will go through with a warning."
-
-#. placeholder {0}: bn.id.slice(0, 10)
-#. placeholder {1}: bn.quantity
-msgid "{0} - {1} Available"
-msgstr "{0} - {1} Available"
-
-#. placeholder {0}: bn.id.slice(0, 10)
-#. placeholder {1}: bn.quantity
-#. placeholder {2}: bn.readableId
-msgid "{0} - {1} Available of Batch {2}"
-msgstr "{0} - {1} Available of Batch {2}"
-
 #. placeholder {0}: attribute.name
 #. placeholder {1}: activeStep + 1
 msgid "{0} - Set {1}"
@@ -59,17 +42,9 @@ msgstr "{0} of {1} complete"
 msgid "{0} of {1} completed"
 msgstr "{0} of {1} completed"
 
-#. placeholder {0}: input.quantity
-#. placeholder {1}: input.readableId
-msgid "{0} of Batch {1}"
-msgstr "{0} of Batch {1}"
-
 #. placeholder {0}: item.quantityScrapped
 msgid "{0} Scrapped"
 msgstr "{0} Scrapped"
-
-msgid "A new batch entity was created from a split:"
-msgstr "A new batch entity was created from a split:"
 
 msgid "About"
 msgstr "About"
@@ -77,17 +52,11 @@ msgstr "About"
 msgid "Account Settings"
 msgstr "Account Settings"
 
-msgid "Action Menu"
-msgstr "Action Menu"
-
 msgid "Active"
 msgstr "Active"
 
 msgid "Actual"
 msgstr "Actual"
-
-msgid "Actual Failure Mode"
-msgstr "Actual Failure Mode"
 
 msgid "Add"
 msgstr "Add"
@@ -95,32 +64,14 @@ msgstr "Add"
 msgid "Add & Issue"
 msgstr "Add & Issue"
 
-msgid "Add Batch"
-msgstr "Add Batch"
-
 msgid "Add Inventory"
 msgstr "Add Inventory"
 
 msgid "Add Spare Part"
 msgstr "Add Spare Part"
 
-msgid "Add to Inventory"
-msgstr "Add to Inventory"
-
-msgid "Adjustment Type"
-msgstr "Adjustment Type"
-
 msgid "All"
 msgstr "All"
-
-msgid "approved"
-msgstr "approved"
-
-msgid "Approved"
-msgstr "Approved"
-
-msgid "are past their expiration date."
-msgstr "are past their expiration date."
 
 msgid "Are you sure you want to close out this operation? This will end all active production events for this operation."
 msgstr "Are you sure you want to close out this operation? This will end all active production events for this operation."
@@ -133,9 +84,6 @@ msgstr "Are you sure you want to delete this timecard? This cannot be undone."
 
 msgid "Are you sure you want to end all production events? This will end all active operations without completing or finishing them."
 msgstr "Are you sure you want to end all production events? This will end all active operations without completing or finishing them."
-
-msgid "Are you sure you want to scrap this batch?"
-msgstr "Are you sure you want to scrap this batch?"
 
 msgid "Assigned"
 msgstr "Assigned"
@@ -164,24 +112,8 @@ msgstr "Batch is not available"
 msgid "Batch Number {0}"
 msgstr "Batch Number {0}"
 
-#. placeholder {0}: bn.status
-msgid "Batch number is {0}"
-msgstr "Batch number is {0}"
-
-msgid "Batch number is not available"
-msgstr "Batch number is not available"
-
 msgid "Batch number is required"
 msgstr "Batch number is required"
-
-msgid "Batch Split Occurred"
-msgstr "Batch Split Occurred"
-
-msgid "batches"
-msgstr "batches"
-
-msgid "Big section heading."
-msgstr "Big section heading."
 
 #. placeholder {0}: column.blockingDispatchReadableId
 msgid "Blocked by {0}"
@@ -189,9 +121,6 @@ msgstr "Blocked by {0}"
 
 msgid "Blocking"
 msgstr "Blocking"
-
-msgid "Bullet List"
-msgstr "Bullet List"
 
 msgid "But don't worry. You can use the forgot password flow to request a new magic link."
 msgstr "But don't worry. You can use the forgot password flow to request a new magic link."
@@ -201,9 +130,6 @@ msgstr "By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy P
 
 msgid "Cancel"
 msgstr "Cancel"
-
-msgid "Canvas showing the model in the 3D Viewer"
-msgstr "Canvas showing the model in the 3D Viewer"
 
 msgid "Carbon Logo"
 msgstr "Carbon Logo"
@@ -249,9 +175,6 @@ msgstr "Close Out"
 msgid "Close out {0}"
 msgstr "Close out {0}"
 
-msgid "Collapse"
-msgstr "Collapse"
-
 #. placeholder {0}: active.data.current.column.title
 #. placeholder {1}: overColumnPosition + 1
 #. placeholder {2}: columnOrder.length
@@ -290,45 +213,10 @@ msgstr "Console Mode"
 msgid "Consumed expired"
 msgstr "Consumed expired"
 
-msgid "Continue with WeChat"
-msgstr "Continue with WeChat"
-
-msgid "Convert"
-msgstr "Convert"
-
-msgid "Convert this tracked entity into a quantity of 1 of a new size."
-msgstr "Convert this tracked entity into a quantity of 1 of a new size."
-
-#. placeholder {0}: itemType === "Material" ? "Size" : "Revision"
-msgid "Convert to New {0}"
-msgstr "Convert to New {0}"
-
-msgid "Copied!"
-msgstr "Copied!"
-
-msgid "Copy"
-msgstr "Copy"
-
-msgid "Copy to clipboard"
-msgstr "Copy to clipboard"
-
-msgid "Create"
-msgstr "Create"
-
-#. placeholder {0}: group.heading
 #. placeholder {0}: search.trim() === "" ? (createLabel ?? label) : search
 #. placeholder {0}: search.trim() === "" ? label : search
 msgid "Create {0}"
 msgstr "Create {0}"
-
-msgid "Create a list with numbering."
-msgstr "Create a list with numbering."
-
-msgid "Create a simple bullet list."
-msgstr "Create a simple bullet list."
-
-msgid "Create Dispatch"
-msgstr "Create Dispatch"
 
 msgid "Customer"
 msgstr "Customer"
@@ -398,17 +286,11 @@ msgstr "Duplicate serial number"
 msgid "Duration"
 msgstr "Duration"
 
-msgid "Earned"
-msgstr "Earned"
-
 msgid "Edit"
 msgstr "Edit"
 
 msgid "Email Address"
 msgstr "Email Address"
-
-msgid "Employee"
-msgstr "Employee"
 
 msgid "Empty work centers"
 msgstr "Empty work centers"
@@ -416,50 +298,18 @@ msgstr "Empty work centers"
 msgid "End Operations"
 msgstr "End Operations"
 
-msgid "End Time"
-msgstr "End Time"
-
 #. placeholder {0}: selectedPerson.name
 msgid "Enter PIN for {0}"
 msgstr "Enter PIN for {0}"
 
-msgid "Entity converted successfully"
-msgstr "Entity converted successfully"
-
 msgid "Error"
 msgstr "Error"
-
-msgid "Error downloading file"
-msgstr "Error downloading file"
 
 msgid "Estimated"
 msgstr "Estimated"
 
-msgid "Expand"
-msgstr "Expand"
-
-msgid "Expired"
-msgstr "Expired"
-
-#. placeholder {0}: formatExpiry(bn.expirationDate)
-msgid "EXPIRED {0}"
-msgstr "EXPIRED {0}"
-
-msgid "Expired stock selected"
-msgstr "Expired stock selected"
-
-msgid "Expires"
-msgstr "Expires"
-
-#. placeholder {0}: formatExpiry(bn.expirationDate)
-msgid "Expires {0}"
-msgstr "Expires {0}"
-
 msgid "Failed to complete inventory adjustment"
 msgstr "Failed to complete inventory adjustment"
-
-msgid "Failed to convert entity"
-msgstr "Failed to convert entity"
 
 msgid "Failed to end operations"
 msgstr "Failed to end operations"
@@ -483,16 +333,6 @@ msgstr "Feedback"
 msgid "File size exceeds 10MB limit"
 msgstr "File size exceeds 10MB limit"
 
-msgid "File size too big (max 20MB)."
-msgstr "File size too big (max 20MB)."
-
-#. placeholder {0}: file.type
-msgid "File type {0} not supported."
-msgstr "File type {0} not supported."
-
-msgid "File upload is not supported for external scars"
-msgstr "File upload is not supported for external scars"
-
 msgid "Files"
 msgstr "Files"
 
@@ -508,21 +348,6 @@ msgstr "Forgot to Clock Out?"
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "Have a technical issue? Contact <0>Carbon Support.</0>"
 
-msgid "Heading 1"
-msgstr "Heading 1"
-
-msgid "Heading 2"
-msgstr "Heading 2"
-
-msgid "Heading 3"
-msgstr "Heading 3"
-
-msgid "Helper information"
-msgstr "Helper information"
-
-msgid "History"
-msgstr "History"
-
 msgid "I understand and want to complete without issuing"
 msgstr "I understand and want to complete without issuing"
 
@@ -534,9 +359,6 @@ msgstr "Ideas, suggestions or problems with this page?"
 
 msgid "Ideas, suggestions or problems?"
 msgstr "Ideas, suggestions or problems?"
-
-msgid "Image"
-msgstr "Image"
 
 msgid "Impact"
 msgstr "Impact"
@@ -580,9 +402,6 @@ msgstr "Job Details"
 msgid "Job Traveler"
 msgstr "Job Traveler"
 
-msgid "Just start typing with plain text."
-msgstr "Just start typing with plain text."
-
 msgid "Kit"
 msgstr "Kit"
 
@@ -607,12 +426,6 @@ msgstr "Log Completed"
 #. placeholder {0}: operation.itemReadableId
 msgid "Log completed for {0}"
 msgstr "Log completed for {0}"
-
-msgid "Log In"
-msgstr "Log In"
-
-msgid "Log Pickup"
-msgstr "Log Pickup"
 
 msgid "Log Rework"
 msgstr "Log Rework"
@@ -640,16 +453,6 @@ msgstr "Maintenance"
 msgid "Maintenance Completed"
 msgstr "Maintenance Completed"
 
-msgid "Maintenance Dispatch"
-msgstr "Maintenance Dispatch"
-
-msgid "Maintenance dispatch created"
-msgstr "Maintenance dispatch created"
-
-#. placeholder {0}: workCenter.name
-msgid "Maintenance for {0}"
-msgstr "Maintenance for {0}"
-
 msgid "Manually add items to inventory"
 msgstr "Manually add items to inventory"
 
@@ -659,26 +462,14 @@ msgstr "Manually remove items from inventory"
 msgid "matches"
 msgstr "matches"
 
-msgid "Material"
-msgstr "Material"
-
-msgid "Material and parent ID are required to unconsume"
-msgstr "Material and parent ID are required to unconsume"
-
 msgid "Materials"
 msgstr "Materials"
 
 msgid "Maximum number of records reached"
 msgstr "Maximum number of records reached"
 
-msgid "Medium section heading."
-msgstr "Medium section heading."
-
 msgid "Model"
 msgstr "Model"
-
-msgid "Model data is missing"
-msgstr "Model data is missing"
 
 msgid "More options"
 msgstr "More options"
@@ -699,18 +490,11 @@ msgstr "Must be between {minValue} and {maxValue} {unitOfMeasureCode}"
 msgid "My Hours"
 msgstr "My Hours"
 
-msgid "My Salary"
-msgstr "My Salary"
-
 msgid "Name"
 msgstr "Name"
 
 msgid "New"
 msgstr "New"
-
-#. placeholder {0}: itemType === "Material" ? "Size" : "Revision"
-msgid "New {0}"
-msgstr "New {0}"
 
 msgid "New Record"
 msgstr "New Record"
@@ -718,20 +502,11 @@ msgstr "New Record"
 msgid "Next"
 msgstr "Next"
 
-msgid "Next Month"
-msgstr "Next Month"
-
-msgid "Next Year"
-msgstr "Next Year"
-
 msgid "No active maintenance dispatches"
 msgstr "No active maintenance dispatches"
 
 msgid "No active operations"
 msgstr "No active operations"
-
-msgid "No approved completions this period"
-msgstr "No approved completions this period"
 
 msgid "No assigned operations"
 msgstr "No assigned operations"
@@ -741,9 +516,6 @@ msgstr "No available filters"
 
 msgid "No available serial numbers found"
 msgstr "No available serial numbers found"
-
-msgid "No consumed materials"
-msgstr "No consumed materials"
 
 msgid "No dispatches assigned to you"
 msgstr "No dispatches assigned to you"
@@ -769,9 +541,6 @@ msgstr "No option found."
 msgid "No options found."
 msgstr "No options found."
 
-msgid "No pickups logged"
-msgstr "No pickups logged"
-
 msgid "No recent operations"
 msgstr "No recent operations"
 
@@ -783,9 +552,6 @@ msgstr "No results exist"
 
 msgid "No results found"
 msgstr "No results found"
-
-msgid "No results found."
-msgstr "No results found."
 
 msgid "No scheduled time"
 msgstr "No scheduled time"
@@ -808,17 +574,11 @@ msgstr "No work centers exist"
 msgid "Notes"
 msgstr "Notes"
 
-msgid "Numbered List"
-msgstr "Numbered List"
-
 msgid "OEE Impact"
 msgstr "OEE Impact"
 
 msgid "OEM Required"
 msgstr "OEM Required"
-
-msgid "of the selected"
-msgstr "of the selected"
 
 #. placeholder {0}: batch.quantity
 msgid "Only {0} available"
@@ -829,12 +589,6 @@ msgstr "Oops. You shouldn't see this page. Eventually it will be a landing page.
 
 msgid "Open"
 msgstr "Open"
-
-msgid "Open date picker"
-msgstr "Open date picker"
-
-msgid "Open date time picker"
-msgstr "Open date time picker"
 
 msgid "Operations"
 msgstr "Operations"
@@ -848,23 +602,8 @@ msgstr "Operator Performed"
 msgid "Optional"
 msgstr "Optional"
 
-msgid "Override required"
-msgstr "Override required"
-
-msgid "Owed"
-msgstr "Owed"
-
-msgid "Paid"
-msgstr "Paid"
-
 msgid "Parameters"
 msgstr "Parameters"
-
-msgid "Parent tracking ID is required for batch tracked items."
-msgstr "Parent tracking ID is required for batch tracked items."
-
-msgid "Parent tracking ID is required for serial tracked items."
-msgstr "Parent tracking ID is required for serial tracked items."
 
 msgid "Part"
 msgstr "Part"
@@ -875,23 +614,11 @@ msgstr "Passed Inspection"
 msgid "Pause"
 msgstr "Pause"
 
-msgid "Pending"
-msgstr "Pending"
-
-msgid "Pending Approval"
-msgstr "Pending Approval"
-
-msgid "Period"
-msgstr "Period"
-
 #. placeholder {0}: startColumn?.title
 #. placeholder {1}: startIndex + 1
 #. placeholder {2}: columnOrder.length
 msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "Picked up Column {0} at position: {1} of {2}"
-
-msgid "Pickups"
-msgstr "Pickups"
 
 msgid "Pin Out"
 msgstr "Pin Out"
@@ -902,38 +629,14 @@ msgstr "Planned"
 msgid "Please record all steps for this operation before closing."
 msgstr "Please record all steps for this operation before closing."
 
-msgid "Please select a batch to unconsume"
-msgstr "Please select a batch to unconsume"
-
 msgid "Please select an item"
 msgstr "Please select an item"
-
-msgid "Please select an item to issue."
-msgstr "Please select an item to issue."
-
-msgid "Please select at least one item to unconsume"
-msgstr "Please select at least one item to unconsume"
-
-msgid "Press '/' for commands"
-msgstr "Press '/' for commands"
 
 msgid "Prev"
 msgstr "Prev"
 
 msgid "Preventive"
 msgstr "Preventive"
-
-msgid "Previous"
-msgstr "Previous"
-
-msgid "Previous Month"
-msgstr "Previous Month"
-
-msgid "Previous Year"
-msgstr "Previous Year"
-
-msgid "Print Label"
-msgstr "Print Label"
 
 msgid "Priority"
 msgstr "Priority"
@@ -953,24 +656,11 @@ msgstr "Processes"
 msgid "Progress"
 msgstr "Progress"
 
-msgid "Pull from Inventory"
-msgstr "Pull from Inventory"
-
-msgid "Qty"
-msgstr "Qty"
-
 msgid "Quantity"
 msgstr "Quantity"
 
-#. placeholder {0}: batchOption.availableQuantity
-msgid "Quantity cannot exceed available quantity ({0})"
-msgstr "Quantity cannot exceed available quantity ({0})"
-
 msgid "Quantity must be greater than 0"
 msgstr "Quantity must be greater than 0"
-
-msgid "Reason for issuing expired stock"
-msgstr "Reason for issuing expired stock"
 
 msgid "Recent"
 msgstr "Recent"
@@ -985,9 +675,6 @@ msgstr "Record {0}"
 msgid "Remove"
 msgstr "Remove"
 
-msgid "Remove Batch Number"
-msgstr "Remove Batch Number"
-
 msgid "Remove filter"
 msgstr "Remove filter"
 
@@ -996,12 +683,6 @@ msgstr "Remove Inventory"
 
 msgid "Remove part"
 msgstr "Remove part"
-
-msgid "Remove Serial Number"
-msgstr "Remove Serial Number"
-
-msgid "Reset zoom"
-msgstr "Reset zoom"
 
 msgid "Sales Order"
 msgstr "Sales Order"
@@ -1012,17 +693,11 @@ msgstr "Save"
 msgid "Scan"
 msgstr "Scan"
 
-msgid "Scan batch number"
-msgstr "Scan batch number"
-
 msgid "Scan or enter serial number"
 msgstr "Scan or enter serial number"
 
 msgid "Schedule"
 msgstr "Schedule"
-
-msgid "Scrap"
-msgstr "Scrap"
 
 msgid "Scrap Reason"
 msgstr "Scrap Reason"
@@ -1064,22 +739,12 @@ msgstr "Select an item..."
 msgid "Select Batch {0}"
 msgstr "Select Batch {0}"
 
-msgid "Select batch number"
-msgstr "Select batch number"
-
-msgid "Select batch to unconsume"
-msgstr "Select batch to unconsume"
-
 #. placeholder {0}: index + 1
 msgid "Select Serial {0}"
 msgstr "Select Serial {0}"
 
 msgid "Select Serial Number"
 msgstr "Select Serial Number"
-
-#. placeholder {0}: index + 1
-msgid "Select Serial Number {0}"
-msgstr "Select Serial Number {0}"
 
 msgid "Send"
 msgstr "Send"
@@ -1095,10 +760,6 @@ msgstr "Serial {0}"
 msgid "Serial Number {0}"
 msgstr "Serial Number {0}"
 
-#. placeholder {0}: sn.status
-msgid "Serial number is {0}"
-msgstr "Serial number is {0}"
-
 msgid "Serial number is not available"
 msgstr "Serial number is not available"
 
@@ -1108,13 +769,6 @@ msgstr "Serial number is required"
 msgid "Serial Numbers"
 msgstr "Serial Numbers"
 
-#. placeholder {0}: input.readableId
-msgid "Serial: {0}"
-msgstr "Serial: {0}"
-
-msgid "serials"
-msgstr "serials"
-
 msgid "Set Clock Out"
 msgstr "Set Clock Out"
 
@@ -1123,9 +777,6 @@ msgstr "Set clock-out time"
 
 msgid "Setup"
 msgstr "Setup"
-
-msgid "Severity"
-msgstr "Severity"
 
 msgid "Sign in with Email"
 msgstr "Sign in with Email"
@@ -1145,9 +796,6 @@ msgstr "Signed in as {stationName}"
 msgid "Size"
 msgstr "Size"
 
-msgid "Small section heading."
-msgstr "Small section heading."
-
 msgid "Source"
 msgstr "Source"
 
@@ -1159,9 +807,6 @@ msgstr "Spare Parts Used"
 
 msgid "Start"
 msgstr "Start"
-
-msgid "Start Time"
-msgstr "Start Time"
 
 msgid "Station User"
 msgstr "Station User"
@@ -1193,36 +838,18 @@ msgstr "Suggestion"
 msgid "Support Required"
 msgstr "Support Required"
 
-msgid "Suspected Failure Mode"
-msgstr "Suspected Failure Mode"
-
 msgid "Switch Operator"
 msgstr "Switch Operator"
 
 msgid "Tag"
 msgstr "Tag"
 
-msgid "Text"
-msgstr "Text"
-
 #. placeholder {0}: operation.operationQuantity
 msgid "The completed quantity for this operation is less than the required quantity of {0}."
 msgstr "The completed quantity for this operation is less than the required quantity of {0}."
 
-msgid "The remaining quantity will be removed from inventory and issued to the job"
-msgstr "The remaining quantity will be removed from inventory and issued to the job"
-
-msgid "There are no consumed materials to unconsume."
-msgstr "There are no consumed materials to unconsume."
-
 msgid "There are serial or batch tracked materials on the bill of material that have not been fully issued. Completing without issuing may result in incorrect traceability records."
 msgstr "There are serial or batch tracked materials on the bill of material that have not been fully issued. Completing without issuing may result in incorrect traceability records."
-
-msgid "This operation has been deleted"
-msgstr "This operation has been deleted"
-
-msgid "This Period"
-msgstr "This Period"
 
 msgid "Thumbnail"
 msgstr "Thumbnail"
@@ -1234,17 +861,8 @@ msgstr "Time Entries"
 msgid "Time Worked: {0}"
 msgstr "Time Worked: {0}"
 
-msgid "To-do List"
-msgstr "To-do List"
-
 msgid "Today"
 msgstr "Today"
-
-msgid "Toggle"
-msgstr "Toggle"
-
-msgid "Toggle Sidebar"
-msgstr "Toggle Sidebar"
 
 msgid "Tools"
 msgstr "Tools"
@@ -1260,23 +878,14 @@ msgstr "Total time: {0}"
 msgid "Total: {0}"
 msgstr "Total: {0}"
 
-msgid "Track tasks with a to-do list."
-msgstr "Track tasks with a to-do list."
-
 msgid "Tracking Labels"
 msgstr "Tracking Labels"
 
 msgid "Type a message..."
 msgstr "Type a message..."
 
-msgid "Unconsume"
-msgstr "Unconsume"
-
 msgid "Unissued serial/batch materials"
 msgstr "Unissued serial/batch materials"
-
-msgid "unit"
-msgstr "unit"
 
 msgid "Unknown"
 msgstr "Unknown"
@@ -1287,9 +896,6 @@ msgstr "Update"
 msgid "Updated successfully"
 msgstr "Updated successfully"
 
-msgid "Upload an image from your computer."
-msgstr "Upload an image from your computer."
-
 #. placeholder {0}: fileUpload.name
 msgid "Uploaded: {0}"
 msgstr "Uploaded: {0}"
@@ -1297,9 +903,6 @@ msgstr "Uploaded: {0}"
 #. placeholder {0}: fileUpload.name
 msgid "Uploading {0}"
 msgstr "Uploading {0}"
-
-msgid "View Active Maintenance"
-msgstr "View Active Maintenance"
 
 msgid "View maintenance dispatch"
 msgstr "View maintenance dispatch"

@@ -145,7 +145,7 @@ export function UsedInTree({
           filterText={filterText}
           node={{
             key: (revisions?.[0]?.type as UsedInKey) ?? "Part",
-            name: hasSizesInsteadOfRevisions ? t`Sizes` : t`Revisions`,
+            name: hasSizesInsteadOfRevisions ? "Sizes" : "Revisions",
             module: "parts",
             children: revisions
           }}

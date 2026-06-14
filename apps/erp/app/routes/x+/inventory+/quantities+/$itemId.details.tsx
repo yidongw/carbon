@@ -46,7 +46,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     const userDefaults = await getUserDefaults(client, userId, companyId);
     if (userDefaults.error) {
       throw redirect(
-        path.to.inventoryQuantities,
+        path.to.inventory,
         await flash(
           request,
           error(userDefaults.error, "Failed to load default location")
@@ -61,7 +61,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     const locations = await getLocationsList(client, companyId);
     if (locations.error || !locations.data?.length) {
       throw redirect(
-        path.to.inventoryQuantities,
+        path.to.inventory,
         await flash(
           request,
           error(locations.error, "Failed to load any locations")
@@ -89,7 +89,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       !insertPickMethod.error.message.includes("duplicate key value")
     ) {
       throw redirect(
-        path.to.inventoryQuantities,
+        path.to.inventory,
         await flash(
           request,
           error(insertPickMethod.error, "Failed to insert part inventory")
@@ -100,7 +100,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     pickMethod = await getPickMethod(client, itemId, companyId, locationId);
     if (pickMethod.error || !pickMethod.data) {
       throw redirect(
-        path.to.inventoryQuantities,
+        path.to.inventory,
         await flash(
           request,
           error(pickMethod.error, "Failed to load part inventory")
@@ -115,14 +115,14 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   ]);
   if (quantities.error) {
     throw redirect(
-      path.to.inventoryQuantities,
+      path.to.inventory,
       await flash(request, error(quantities, "Failed to load part quantities"))
     );
   }
 
   if (item.error || !item.data) {
     throw redirect(
-      path.to.inventoryQuantities,
+      path.to.inventory,
       await flash(request, error(item.error, "Failed to load item"))
     );
   }
@@ -135,7 +135,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   );
   if (itemStorageUnitQuantities.error || !itemStorageUnitQuantities.data) {
     throw redirect(
-      path.to.inventoryQuantities,
+      path.to.inventory,
       await flash(
         request,
         error(

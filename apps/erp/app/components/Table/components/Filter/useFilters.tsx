@@ -1,25 +1,24 @@
 import { useUrlParams } from "~/hooks";
-import { parseFilterParam } from "~/utils/query";
 
 export function useFilters() {
   const [params, setParams] = useUrlParams();
   const urlFiltersParams = params.getAll("filter");
   const hasFilter = (searchKey: string, searchValue: string) => {
     return urlFiltersParams.some((filter) => {
-      const parsed = parseFilterParam(filter);
-      if (!parsed) return false;
-      const { column: key, operator, value } = parsed;
-      switch (operator) {
-        case "eq":
-          return key === searchKey && value === searchValue;
-        case "in":
-        case "contains": {
-          const values = value.split(",");
-          return key === searchKey && values.some((v) => v === searchValue);
+      const [key, operator, value] = filter.split(":");
+      if (key && operator && value) {
+        switch (operator) {
+          case "eq":
+            return key === searchKey && value === searchValue;
+          case "in":
+          case "contains":
+            const values = value.split(",");
+            return key === searchKey && values.some((v) => v === searchValue);
+          default:
+            return false;
         }
-        default:
-          return false;
       }
+      return false;
     });
   };
 
@@ -38,38 +37,36 @@ export function useFilters() {
   };
 
   const getFilter = (searchKey: string): string[] => {
-    const filter = urlFiltersParams.find((param) => {
-      const parsed = parseFilterParam(param);
-      return parsed?.column === searchKey;
+    const filter = urlFiltersParams.find((filter) => {
+      const [key] = filter.split(":");
+      return key === searchKey;
     });
 
     if (!filter) {
       return [];
     }
 
-    const parsed = parseFilterParam(filter);
-    if (!parsed?.value) {
+    const [, operator, value] = filter.split(":");
+    if (!value) {
       return [];
     }
 
-    if (["in", "contains"].includes(parsed.operator)) {
-      return parsed.value.split(",");
+    if (["in", "contains"].includes(operator)) {
+      return value.split(",");
+    } else {
+      return [value];
     }
-
-    return [parsed.value];
   };
 
   const addFilter = (newKey: string, newValue: string, isArray = false) => {
     if (hasFilterKey(newKey)) {
       const filterIndex = getFilterKeyIndex(newKey);
       const filter = urlFiltersParams[filterIndex];
-      const parsed = parseFilterParam(filter);
-      if (!parsed) return;
-      const { column: key, operator, value } = parsed;
+      const [key, operator, value] = filter.split(":");
 
       let newFilter = "";
       if (["in", "contains"].includes(operator)) {
-        newFilter = `${key}:${operator}:${value},${newValue}`;
+        newFilter = `${filter},${newValue}`;
       } else {
         newFilter = `${key}:in:${value},${newValue}`;
       }
@@ -95,9 +92,7 @@ export function useFilters() {
   const removeFilter = (oldKey: string, oldValue: string, isArray = false) => {
     const filterIndex = getFilterKeyIndex(oldKey);
     const filter = urlFiltersParams[filterIndex];
-    const parsed = parseFilterParam(filter);
-    if (!parsed) return;
-    const { column: key, operator, value } = parsed;
+    const [key, operator, value] = filter.split(":");
     if (["in", "contains"].includes(operator)) {
       const values = value.split(",").filter((v) => v !== oldValue);
       if (operator === "in" && values.length === 1) {
@@ -142,9 +137,7 @@ export function useFilters() {
   };
 
   const clearFilters = () => {
-    setParams({
-      filter: undefined
-    });
+    setParams({ filter: undefined });
   };
 
   const hasFilters = urlFiltersParams.filter(Boolean).length > 0;

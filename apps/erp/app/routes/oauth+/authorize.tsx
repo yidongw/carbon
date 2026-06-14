@@ -1,7 +1,6 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { validator } from "@carbon/form";
 import { Button } from "@carbon/react";
-import { Trans } from "@lingui/react/macro";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data, Form, redirect, useLoaderData } from "react-router";
 import { z } from "zod";
@@ -101,14 +100,14 @@ export default function AuthorizeRoute() {
 
   return (
     <div className="max-w-md mx-auto mt-8">
-      <h2 className="text-2xl font-bold mb-4"><Trans>Authorize Application</Trans></h2>
-      <p className="mb-4"><Trans>Do you want to authorize this application?</Trans></p>
+      <h2 className="text-2xl font-bold mb-4">Authorize Application</h2>
+      <p className="mb-4">Do you want to authorize this application?</p>
       <Form method="post">
         <input type="hidden" name="client_id" value={clientId || ""} />
         <input type="hidden" name="redirect_uri" value={redirectUri || ""} />
         <input type="hidden" name="response_type" value={responseType || ""} />
         {state && <input type="hidden" name="state" value={state} />}
-        <Button><Trans>Authorize</Trans></Button>
+        <Button>Authorize</Button>
       </Form>
     </div>
   );

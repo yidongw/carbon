@@ -1,6 +1,7 @@
 import {
   AIHighlight,
   HorizontalRule,
+  Placeholder,
   StarterKit,
   TaskItem,
   TaskList,
@@ -128,6 +129,7 @@ const VideoEmbed = Extension.create({
 });
 
 const aiHighlight = AIHighlight;
+const placeholder = Placeholder;
 const tiptapLink = TiptapLink.configure({
   HTMLAttributes: {
     class: cx(
@@ -219,6 +221,7 @@ const starterKit = StarterKit.configure({
 
 export const defaultExtensions = [
   starterKit,
+  placeholder,
   tiptapLink,
   tiptapImage,
   updatedImage,

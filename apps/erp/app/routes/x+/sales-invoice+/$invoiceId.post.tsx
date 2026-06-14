@@ -282,7 +282,7 @@ export async function action(args: ActionFunctionArgs) {
             lastName: customer.data.contact.lastName ?? undefined
           },
           sender: {
-            email: seller.data.email ?? "",
+            email: seller.data.email,
             firstName: seller.data.firstName,
             lastName: seller.data.lastName
           },
@@ -296,9 +296,9 @@ export async function action(args: ActionFunctionArgs) {
           .createSignedUrl(documentFilePath, 3600);
 
         await trigger("send-email", {
-          to: [seller.data.email ?? "", customer.data.contact.email!],
+          to: [seller.data.email, customer.data.contact.email!],
           cc: ccSelections?.length ? ccSelections : undefined,
-          from: seller.data.email ?? "",
+          from: seller.data.email,
           subject: `Invoice ${salesInvoice.data.invoiceId} from ${company.data.name}`,
           html,
           text,

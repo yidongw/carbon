@@ -3,43 +3,22 @@ import type { quoteStatusType } from "../../sales.models";
 
 type QuoteStatusProps = {
   status?: (typeof quoteStatusType)[number] | null;
-  iconOnly?: boolean;
 };
 
-const QuoteStatus = ({ status, iconOnly }: QuoteStatusProps) => {
+const QuoteStatus = ({ status }: QuoteStatusProps) => {
   switch (status) {
     case "Draft":
-      return (
-        <Status color="gray" iconOnly={iconOnly}>
-          {status}
-        </Status>
-      );
+      return <Status color="gray">{status}</Status>;
     case "Sent":
-      return (
-        <Status color="blue" iconOnly={iconOnly}>
-          {status}
-        </Status>
-      );
+      return <Status color="blue">{status}</Status>;
     case "Ordered":
     case "Partial":
-      return (
-        <Status color="green" iconOnly={iconOnly}>
-          {status}
-        </Status>
-      );
+      return <Status color="green">{status}</Status>;
     case "Cancelled":
     case "Expired":
-      return (
-        <Status color="red" iconOnly={iconOnly}>
-          {status}
-        </Status>
-      );
+      return <Status color="red">{status}</Status>;
     case "Lost":
-      return (
-        <Status color="orange" iconOnly={iconOnly}>
-          {status}
-        </Status>
-      );
+      return <Status color="orange">{status}</Status>;
     default:
       return null;
   }

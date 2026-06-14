@@ -1,7 +1,7 @@
 "use client";
 import { useCarbon } from "@carbon/auth";
 import type { Database } from "@carbon/database";
-import { Input, ValidatedForm } from "@carbon/form";
+import { Array as ArrayInput, Input, ValidatedForm } from "@carbon/form";
 import type { JSONContent } from "@carbon/react";
 import {
   Alert,
@@ -48,6 +48,7 @@ import {
   VStack
 } from "@carbon/react";
 import { Editor } from "@carbon/react/Editor";
+import { formatDurationMilliseconds } from "@carbon/utils";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useLocale, useNumberFormatter } from "@react-aria/i18n";
@@ -65,7 +66,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import {
   LuActivity,
+  LuChevronRight,
   LuCirclePlus,
+  LuDollarSign,
   LuEllipsisVertical,
   LuGripVertical,
   LuHammer,
@@ -88,12 +91,10 @@ import {
   DirectionAwareTabs,
   EmployeeAvatar,
   Empty,
-  SupplierAvatar,
   TimeTypeIcon
 } from "~/components";
 import Activity from "~/components/Activity";
 import {
-  Array as ArrayInput,
   Hidden,
   InputControlled,
   Number,
@@ -108,7 +109,7 @@ import {
   UnitHint,
   WorkCenter
 } from "~/components/Form";
-import Procedure, { useProcedures } from "~/components/Form/Procedure";
+import Procedure from "~/components/Form/Procedure";
 import { SupplierProcessPreview } from "~/components/Form/SupplierProcess";
 import { getUnitHint } from "~/components/Form/UnitHint";
 import UnitOfMeasure, {
@@ -117,7 +118,6 @@ import UnitOfMeasure, {
 import { ProcedureStepTypeIcon } from "~/components/Icons";
 import InfiniteScroll from "~/components/InfiniteScroll";
 import { ConfirmDelete } from "~/components/Modals";
-import { overlay, useOverlay } from "~/components/Overlay";
 import type { Item, SortableItemRenderProps } from "~/components/SortableList";
 import { SortableList, SortableListItem } from "~/components/SortableList";
 import {
@@ -127,17 +127,17 @@ import {
   useUrlParams,
   useUser
 } from "~/hooks";
-import { getConfigurationParameters } from "~/modules/items";
-import type { ConfigurationParameter } from "~/modules/items/types";
 import type {
   OperationParameter,
   OperationStep,
   OperationTool
 } from "~/modules/shared";
 import {
+  methodOperationOrders,
   operationParameterValidator,
   operationStepValidator,
   operationToolValidator,
+  operationTypes,
   procedureStepType
 } from "~/modules/shared";
 import type { action as editJobOperationParameterAction } from "~/routes/x+/job+/methods+/operation.parameter.$id";
@@ -148,74 +148,21 @@ import type { action as newJobOperationToolAction } from "~/routes/x+/job+/metho
 import { useItems, usePeople, useTools } from "~/stores";
 import { getPrivateUrl, path } from "~/utils/path";
 import {
-  buildReportedTargetRows,
-  getConfigRowDisplayParts,
-  type ReportedTargetRow
-} from "../../configParamsTableColumns";
-import {
-  type JobOperationSupplierQuantityReportWithLines,
-  listJobOperationSupplierQuantityReportsForOperation
-} from "../../jobOperationSupplierQuantityReport.service";
-import {
-  defaultOperationTypeFromProcess,
-  disablesOutsideBopDetailTabs,
-  isInsideOperationType,
-  isOutsideOperationType,
-  type OperationType,
-  showsSupplierRoutingFields
-} from "../../operationType";
-import {
   jobOperationValidator,
   jobOperationValidatorForReleasedJob,
   procedureSyncValidator
 } from "../../production.models";
-import {
-  getJobPickupsPage,
-  getJobSupplierPickupsPage,
-  getProductionEventsPage
-} from "../../production.service";
-import {
-  getOperationQuantitySummary,
-  listProductionQuantityReportsForOperation,
-  type OperationQuantitySummary as OperationQuantitySummaryData,
-  type ProductionQuantityReportWithLines
-} from "../../productionQuantityReport.service";
+import { getProductionEventsPage } from "../../production.service";
 import type { Job, JobOperation } from "../../types";
-import { OutsideOperationBadge } from "../OutsideOperationBadge";
-import {
-  formatOperationTabSummary,
-  OperationDetailTabs,
-  useOperationTypeSelectOptions
-} from "../operationBop";
-import { ConfigParamsReportedTargetTable } from "./ConfigParamsReportedTargetTable";
-import { ConfigQuantityBreakdown } from "./ConfigQuantityBreakdown";
 import { JobOperationStatus, JobOperationTags } from "./JobOperationStatus";
 import { OperationDueDatePicker } from "./OperationDueDatePicker";
-import { OperationQuantitySummaryView } from "./OperationQuantitySummary";
-import { ProductionQuantityDispositionDrawer } from "./ProductionQuantityDispositionDrawer";
-import { ProductionQuantityReportCard } from "./ProductionQuantityReportCard";
-import { ProductionQuantityReportHistoryDrawer } from "./ProductionQuantityReportHistoryDrawer";
-import {
-  useProductionEventActivityMessage,
-  useRelativeCreatedUpdatedText
-} from "./productionQuantityLabels";
-import { SupplierQuantityDispositionDrawer } from "./SupplierQuantityDispositionDrawer";
-import { SupplierQuantityReportCard } from "./SupplierQuantityReportCard";
-import {
-  mergePickups,
-  mergeQuantityReports,
-  type UnifiedPickupItem,
-  type UnifiedQuantityReportItem
-} from "./unifiedQuantityFeeds";
 
 export type Operation = z.infer<typeof jobOperationValidator> & {
   assignee: string | null;
   dueDate?: string | null;
-  jobId?: string;
   status: JobOperation["status"];
   tags: string[] | null;
   workInstruction: JSONContent | null;
-  quantityComplete?: number | null;
 };
 
 type ItemWithData = Item & {
@@ -245,9 +192,6 @@ type JobBillOfProcessProps = {
   itemId: string;
   salesOrderLineId: string;
   customerId: string;
-  /** When rendered outside `/x/job/:jobId` (e.g. jobs table preview modal). */
-  routeJobId?: string;
-  routeJob?: Job;
 };
 
 function makeItems(
@@ -255,32 +199,10 @@ function makeItems(
   tags: { name: string }[],
   temporaryItems: TemporaryItems,
   urlParams: { [key: string]: string },
-  t: ReturnType<typeof useLingui>["t"],
-  jobId: string,
-  jobQuantityTarget: number,
-  job?: Job,
-  onAddProductionQuantity?: (operationId: string) => void,
-  onOpenConfigSummary?: (operationId: string) => void,
-  hasConfigurationParameters?: boolean,
-  pickupTotals?: Map<string, number>,
-  onAddPickup?: (operationId: string) => void
+  t: ReturnType<typeof useLingui>["t"]
 ): ItemWithData[] {
   return operations.map((operation) =>
-    makeItem(
-      operation,
-      tags,
-      temporaryItems,
-      urlParams,
-      t,
-      jobId,
-      jobQuantityTarget,
-      job,
-      onAddProductionQuantity,
-      onOpenConfigSummary,
-      hasConfigurationParameters,
-      pickupTotals,
-      onAddPickup
-    )
+    makeItem(operation, tags, temporaryItems, urlParams, t)
   );
 }
 
@@ -289,79 +211,58 @@ function makeItem(
   tags: { name: string }[],
   temporaryItems: TemporaryItems,
   urlParams: { [key: string]: string },
-  t: ReturnType<typeof useLingui>["t"],
-  jobId: string,
-  jobQuantityTarget: number,
-  job?: Job,
-  onAddProductionQuantity?: (operationId: string) => void,
-  onOpenConfigSummary?: (operationId: string) => void,
-  hasConfigurationParameters?: boolean,
-  pickupTotals?: Map<string, number>,
-  onAddPickup?: (operationId: string) => void
+  t: ReturnType<typeof useLingui>["t"]
 ): ItemWithData {
   return {
     id: operation.id!,
     title: (
-      <VStack spacing={0} className="min-w-0">
+      <VStack spacing={0}>
         <h3 className="font-semibold truncate cursor-pointer">
           {operation.description}
         </h3>
-        {isOutsideOperationType(operation.operationType) ? (
+        {operation.operationType === "Outside" && (
           <SupplierProcessPreview
             processId={operation.processId}
             supplierProcessId={operation.operationSupplierProcessId}
           />
-        ) : null}
+        )}
       </VStack>
     ),
     checked: false,
     order: operation.operationOrder,
-    details: isOutsideOperationType(operation.operationType) ? (
-      <OutsideOperationBadge />
-    ) : (
+    details: (
       <HStack spacing={1}>
-        {(operation?.setupTime ?? 0) > 0 && (
-          <Badge variant="secondary">
-            <TimeTypeIcon type="Setup" className="h-3 w-3 mr-1" />
-            {operation.setupTime} {operation.setupUnit}
-          </Badge>
-        )}
-        {(operation?.laborTime ?? 0) > 0 && (
-          <Badge variant="secondary">
-            <TimeTypeIcon type="Labor" className="h-3 w-3 mr-1" />
-            {operation.laborTime} {operation.laborUnit}
-          </Badge>
-        )}
+        {operation.operationType === "Outside" ? (
+          <Badge>Outside</Badge>
+        ) : (
+          <>
+            {(operation?.setupTime ?? 0) > 0 && (
+              <Badge variant="secondary">
+                <TimeTypeIcon type="Setup" className="h-3 w-3 mr-1" />
+                {operation.setupTime} {operation.setupUnit}
+              </Badge>
+            )}
+            {(operation?.laborTime ?? 0) > 0 && (
+              <Badge variant="secondary">
+                <TimeTypeIcon type="Labor" className="h-3 w-3 mr-1" />
+                {operation.laborTime} {operation.laborUnit}
+              </Badge>
+            )}
 
-        {(operation?.machineTime ?? 0) > 0 && (
-          <Badge variant="secondary">
-            <TimeTypeIcon type="Machine" className="h-3 w-3 mr-1" />
-            {operation.machineTime} {operation.machineUnit}
-          </Badge>
+            {(operation?.machineTime ?? 0) > 0 && (
+              <Badge variant="secondary">
+                <TimeTypeIcon type="Machine" className="h-3 w-3 mr-1" />
+                {operation.machineTime} {operation.machineUnit}
+              </Badge>
+            )}
+          </>
         )}
       </HStack>
     ),
-    quantityProgress: temporaryItems[operation.id!]
-      ? null
-      : {
-          complete: operation.quantityComplete ?? 0,
-          pickup: pickupTotals?.get(operation.id!) ?? 0,
-          target: jobQuantityTarget,
-          onAddQuantity: onAddProductionQuantity
-            ? () => onAddProductionQuantity(operation.id!)
-            : undefined,
-          onAddPickup: onAddPickup
-            ? () => onAddPickup(operation.id!)
-            : undefined,
-          onOpenConfigTable:
-            hasConfigurationParameters && onOpenConfigSummary
-              ? () => onOpenConfigSummary(operation.id!)
-              : undefined
-        },
     footer: temporaryItems[operation.id!] ? null : (
       <HStack className="w-full justify-between">
         <HStack>
-          <JobOperationStatus operation={operation} jobId={jobId} job={job} />
+          <JobOperationStatus operation={operation} />
           <Assignee
             table="jobOperation"
             id={operation.id!}
@@ -391,7 +292,6 @@ function makeItem(
                   variant="secondary"
                   aria-label={t`Create Issue`}
                   size="sm"
-                  className="transition-transform active:scale-[0.96]"
                 ></IconButton>
               </Link>
             </TooltipTrigger>
@@ -451,10 +351,12 @@ type TemporaryItems = {
   [key: string]: Operation;
 };
 
-const usePendingOperations = (jobId: string) => {
+const usePendingOperations = () => {
   type PendingItem = ReturnType<typeof useFetchers>[number] & {
     formData: FormData;
   };
+  const { jobId } = useParams();
+  if (!jobId) throw new Error("jobId not found");
 
   return useFetchers()
     .filter((fetcher): fetcher is PendingItem => {
@@ -477,16 +379,6 @@ const usePendingOperations = (jobId: string) => {
     }, []);
 };
 
-type OperationPickup =
-  Database["public"]["Tables"]["jobOperationPickup"]["Row"] & {
-    employee?: {
-      id: string;
-      firstName: string | null;
-      lastName: string | null;
-      avatarUrl: string | null;
-    } | null;
-  };
-
 const JobBillOfProcess = ({
   jobMakeMethodId,
   locationId,
@@ -495,9 +387,7 @@ const JobBillOfProcess = ({
   tags,
   itemId,
   salesOrderLineId,
-  customerId,
-  routeJobId,
-  routeJob
+  customerId
 }: JobBillOfProcessProps) => {
   const { t } = useLingui();
   // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
@@ -505,7 +395,6 @@ const JobBillOfProcess = ({
   const sortOrderFetcher = useFetcher<{}>();
   const deleteOperationFetcher = useFetcher<{ success: boolean }>();
   const permissions = usePermissions();
-  const { openOverlay } = useOverlay();
   const {
     id: userId,
     company: { id: companyId }
@@ -517,11 +406,9 @@ const JobBillOfProcess = ({
     selected ? selected : null
   );
 
-  const paramsJobId = useParams().jobId;
-  const jobId = routeJobId ?? paramsJobId;
+  const { jobId } = useParams();
   if (!jobId) throw new Error("jobId not found");
-  const routeJobData = useRouteData<{ job: Job }>(path.to.job(jobId));
-  const jobData = routeJob ? { job: routeJob } : routeJobData;
+  const jobData = useRouteData<{ job: Job }>(path.to.job(jobId));
   const [temporaryItems, setTemporaryItems] = useState<TemporaryItems>({});
   const [workInstructions, setWorkInstructions] =
     useState<PendingWorkInstructions>(() => {
@@ -543,11 +430,7 @@ const JobBillOfProcess = ({
 
   const operationsById = new Map<
     string,
-    Operation & {
-      jobOperationTool: OperationTool[];
-      jobOperationParameter: OperationParameter[];
-      jobOperationStep: JobOperationStep[];
-    }
+    Operation & { jobOperationTool: OperationTool[] }
   >();
 
   // Add initial operations to map
@@ -556,27 +439,23 @@ const JobBillOfProcess = ({
     operationsById.set(operation.id, operation);
   });
 
-  const pendingOperations = usePendingOperations(jobId);
+  const pendingOperations = usePendingOperations();
 
   // Replace existing operations with pending ones
   pendingOperations.forEach((pendingOperation) => {
     if (!pendingOperation.id) {
       operationsById.set("temporary", {
         ...pendingOperation,
-        jobId,
         assignee: null,
         status: "Todo",
         workInstruction: {},
         jobOperationTool: [],
-        jobOperationParameter: [],
-        jobOperationStep: [],
         tags: []
       });
     } else {
       operationsById.set(pendingOperation.id, {
         ...operationsById.get(pendingOperation.id)!,
-        ...pendingOperation,
-        jobId
+        ...pendingOperation
       });
     }
   });
@@ -585,10 +464,7 @@ const JobBillOfProcess = ({
   Object.entries(temporaryItems).forEach(([id, operation]) => {
     operationsById.set(id, {
       ...operation,
-      jobId,
-      jobOperationTool: [],
-      jobOperationParameter: [],
-      jobOperationStep: []
+      jobOperationTool: []
     });
   });
 
@@ -596,92 +472,24 @@ const JobBillOfProcess = ({
     (a, b) => (orderState[a.id!] ?? a.order) - (orderState[b.id!] ?? b.order)
   );
 
+  const items = makeItems(
+    operations,
+    tags,
+    temporaryItems,
+    {
+      itemId,
+      salesOrderLineId,
+      customerId
+    },
+    t
+  ).map((item) => ({
+    ...item,
+    checked: checkedState[item.id] ?? false
+  }));
+
   const isDisabled = ["Completed", "Cancelled"].includes(
     jobData?.job?.status ?? ""
   );
-
-  const onAddProductionQuantity =
-    !isDisabled && permissions.can("create", "production")
-      ? (operationId: string) => {
-          openOverlay(
-            overlay.to.newJobProductionQuantity(jobId, {
-              jobOperationId: operationId
-            }),
-            {
-              onSuccess: () => {
-                void refreshQuantityDataRef.current();
-              }
-            }
-          );
-        }
-      : undefined;
-
-  const onAddPickup =
-    !isDisabled && permissions.can("create", "production")
-      ? (operationId: string) => {
-          openOverlay(
-            overlay.to.newJobPickup(jobId, {
-              jobOperationId: operationId
-            }),
-            {
-              onSuccess: () => {
-                setPickups([]);
-                setPickupPage(0);
-                setPickupHasMore(true);
-                setPickupCount(0);
-                setPickupScrollKey((k) => k + 1);
-              }
-            }
-          );
-        }
-      : undefined;
-
-  // Load pickup totals for all operations so the progress strip can display them
-  useEffect(() => {
-    if (!carbon || initialOperations.length === 0) return;
-
-    const operationIds = initialOperations
-      .map((o) => o.id)
-      .filter(Boolean) as string[];
-    if (operationIds.length === 0) return;
-
-    let cancelled = false;
-
-    const load = async () => {
-      const [{ data: employeePickups }, { data: supplierPickups }] =
-        await Promise.all([
-          carbon
-            .from("jobOperationPickup")
-            .select("jobOperationId, quantity")
-            .in("jobOperationId", operationIds)
-            .eq("companyId", companyId),
-          carbon
-            .from("jobOperationSupplierPickup")
-            .select("jobOperationId, quantity")
-            .in("jobOperationId", operationIds)
-            .eq("companyId", companyId)
-        ]);
-
-      if (cancelled) return;
-
-      const totals = new Map<string, number>();
-      for (const row of [
-        ...(employeePickups ?? []),
-        ...(supplierPickups ?? [])
-      ]) {
-        totals.set(
-          row.jobOperationId,
-          (totals.get(row.jobOperationId) ?? 0) + (row.quantity as number)
-        );
-      }
-      setPickupTotals(totals);
-    };
-
-    void load();
-    return () => {
-      cancelled = true;
-    };
-  }, [carbon, companyId, initialOperations]);
 
   const onToggleItem = (id: string) => {
     if (!permissions.can("update", "parts")) return;
@@ -703,8 +511,7 @@ const JobBillOfProcess = ({
       ...initialOperation,
       id: operationId,
       order: newOrder,
-      jobMakeMethodId,
-      jobId
+      jobMakeMethodId
     };
 
     setTemporaryItems((prev) => ({
@@ -819,355 +626,10 @@ const JobBillOfProcess = ({
   const [productionEvents, setProductionEvents] = useState<
     Database["public"]["Tables"]["productionEvent"]["Row"][]
   >([]);
-  const [quantityReports, setQuantityReports] = useState<
-    UnifiedQuantityReportItem[]
-  >([]);
-  const [operationQuantitySummary, setOperationQuantitySummary] =
-    useState<OperationQuantitySummaryData | null>(null);
-  const [quantityReportCount, setQuantityReportCount] = useState<number>(0);
-  const [dispositionReport, setDispositionReport] =
-    useState<ProductionQuantityReportWithLines | null>(null);
-  const [supplierDispositionReport, setSupplierDispositionReport] =
-    useState<JobOperationSupplierQuantityReportWithLines | null>(null);
-  const [historyReport, setHistoryReport] =
-    useState<ProductionQuantityReportWithLines | null>(null);
-  const [supplierHistoryReport, setSupplierHistoryReport] =
-    useState<JobOperationSupplierQuantityReportWithLines | null>(null);
-  const [creatingPoReportId, setCreatingPoReportId] = useState<string | null>(
-    null
-  );
   const [page, setPage] = useState(0);
-  const [quantityPage, setQuantityPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const [quantityIsLoading, setQuantityIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [quantityHasMore, setQuantityHasMore] = useState(true);
-  const [pickups, setPickups] = useState<UnifiedPickupItem[]>([]);
-  const [pickupCount, setPickupCount] = useState<number>(0);
-  const [pickupPage, setPickupPage] = useState(0);
-  const [pickupIsLoading, setPickupIsLoading] = useState(false);
-  const [pickupHasMore, setPickupHasMore] = useState(true);
-  const [pickupScrollKey, setPickupScrollKey] = useState(0);
-  const [pickupTotals, setPickupTotals] = useState<Map<string, number>>(
-    new Map()
-  );
   const addOperationButtonRef = useRef<HTMLButtonElement>(null);
-  const refreshQuantityDataRef = useRef<() => Promise<void>>(() =>
-    Promise.resolve()
-  );
-  const [configurationParameters, setConfigurationParameters] = useState<
-    ConfigurationParameter[] | null
-  >(null);
-  const configSummaryModal = useDisclosure();
-  const [configSummaryOperationId, setConfigSummaryOperationId] = useState<
-    string | null
-  >(null);
-  const [configSummaryRows, setConfigSummaryRows] = useState<
-    ReportedTargetRow[]
-  >([]);
-  const [configSummaryLoading, setConfigSummaryLoading] = useState(false);
-
-  const hasConfigurationParameters = (configurationParameters?.length ?? 0) > 0;
-
-  useEffect(() => {
-    if (!itemId || !carbon) return;
-
-    void getConfigurationParameters(carbon, itemId, companyId).then(
-      ({ parameters }) => {
-        setConfigurationParameters(parameters.length > 0 ? parameters : null);
-      }
-    );
-  }, [carbon, companyId, itemId]);
-
-  const openConfigSummary = useCallback(
-    async (operationId: string) => {
-      if (!carbon || !configurationParameters?.length) return;
-
-      setConfigSummaryOperationId(operationId);
-      setConfigSummaryRows([]);
-      setConfigSummaryLoading(true);
-      configSummaryModal.onOpen();
-
-      const [quantityResult, pickupResult] = await Promise.all([
-        carbon
-          .from("productionQuantity")
-          .select("configuration")
-          .eq("jobOperationId", operationId)
-          .eq("companyId", companyId)
-          .eq("type", "Production")
-          .is("invalidatedAt", null),
-        carbon
-          .from("jobOperationPickup")
-          .select("configuration")
-          .eq("jobOperationId", operationId)
-          .eq("companyId", companyId)
-      ]);
-
-      if (quantityResult.error) {
-        toast.error(quantityResult.error.message);
-        setConfigSummaryLoading(false);
-        return;
-      }
-
-      const reportedConfigurations = (quantityResult.data ?? [])
-        .map((row) => row.configuration)
-        .filter(
-          (config): config is NonNullable<typeof config> => config != null
-        );
-
-      const pickupConfigurations = (pickupResult.data ?? [])
-        .map((row) => row.configuration)
-        .filter(
-          (config): config is NonNullable<typeof config> => config != null
-        );
-
-      setConfigSummaryRows(
-        buildReportedTargetRows({
-          targetConfiguration: jobData?.job?.configuration,
-          reportedConfigurations,
-          pickupConfigurations,
-          parameters: configurationParameters,
-          defaultQuantityLabel: t`Quantities`
-        })
-      );
-      setConfigSummaryLoading(false);
-    },
-    [
-      carbon,
-      companyId,
-      configSummaryModal,
-      configurationParameters,
-      jobData?.job?.configuration,
-      t
-    ]
-  );
-
-  const jobQuantityTarget = jobData?.job?.quantity ?? 0;
-
-  const items = makeItems(
-    operations,
-    tags,
-    temporaryItems,
-    {
-      itemId,
-      salesOrderLineId,
-      customerId
-    },
-    t,
-    jobId,
-    jobQuantityTarget,
-    jobData?.job,
-    onAddProductionQuantity,
-    hasConfigurationParameters ? openConfigSummary : undefined,
-    hasConfigurationParameters,
-    pickupTotals,
-    onAddPickup
-  ).map((item) => ({
-    ...item,
-    checked: checkedState[item.id] ?? false
-  }));
-
-  useEffect(() => {
-    setProductionEvents([]);
-    setQuantityReports([]);
-    setOperationQuantitySummary(null);
-    setQuantityReportCount(0);
-    setPage(0);
-    setQuantityPage(0);
-    setHasMore(true);
-    setQuantityHasMore(true);
-    setPickups([]);
-    setPickupCount(0);
-    setPickupPage(0);
-    setPickupHasMore(true);
-  }, []);
-
-  useEffect(() => {
-    if (!selectedItemId || temporaryItems[selectedItemId] || !carbon) return;
-
-    let cancelled = false;
-
-    const loadQuantityCount = async () => {
-      const [employeeCount, supplierCount] = await Promise.all([
-        carbon
-          .from("productionQuantityReport")
-          .select("id", { count: "exact", head: true })
-          .eq("jobOperationId", selectedItemId)
-          .eq("companyId", companyId),
-        carbon
-          .from("jobOperationSupplierQuantityReport")
-          .select("id", { count: "exact", head: true })
-          .eq("jobOperationId", selectedItemId)
-          .eq("companyId", companyId)
-      ]);
-
-      if (!cancelled) {
-        setQuantityReportCount(
-          (employeeCount.count ?? 0) + (supplierCount.count ?? 0)
-        );
-      }
-    };
-
-    void loadQuantityCount();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [carbon, companyId, selectedItemId, temporaryItems]);
-
-  useEffect(() => {
-    if (!selectedItemId || temporaryItems[selectedItemId] || !carbon) return;
-
-    let cancelled = false;
-
-    const loadPickupCount = async () => {
-      const [employeeCount, supplierCount] = await Promise.all([
-        carbon
-          .from("jobOperationPickup")
-          .select("id", { count: "exact", head: true })
-          .eq("jobOperationId", selectedItemId)
-          .eq("companyId", companyId),
-        carbon
-          .from("jobOperationSupplierPickup")
-          .select("id", { count: "exact", head: true })
-          .eq("jobOperationId", selectedItemId)
-          .eq("companyId", companyId)
-      ]);
-
-      if (!cancelled) {
-        setPickupCount((employeeCount.count ?? 0) + (supplierCount.count ?? 0));
-      }
-    };
-
-    void loadPickupCount();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [carbon, companyId, selectedItemId, temporaryItems]);
-
-  useRealtimeChannel({
-    topic: `pickup-counts:${selectedItemId}`,
-    enabled: !!selectedItemId && !temporaryItems[selectedItemId ?? ""],
-    setup(channel) {
-      return channel
-        .on(
-          "postgres_changes",
-          {
-            event: "*",
-            schema: "public",
-            table: "jobOperationPickup",
-            filter: `jobOperationId=eq.${selectedItemId}`
-          },
-          (payload) => {
-            switch (payload.eventType) {
-              case "INSERT": {
-                const inserted = payload.new as OperationPickup;
-                const item: UnifiedPickupItem = {
-                  kind: "employee",
-                  id: inserted.id,
-                  createdAt: inserted.createdAt,
-                  pickup: inserted
-                };
-                setPickups((prev) => {
-                  if (prev.some((p) => p.id === inserted.id)) return prev;
-                  return [item, ...prev];
-                });
-                setPickupCount((count) => count + 1);
-                setPickupTotals((prev) => {
-                  const next = new Map(prev);
-                  next.set(
-                    inserted.jobOperationId,
-                    (next.get(inserted.jobOperationId) ?? 0) +
-                      (inserted.quantity as number)
-                  );
-                  return next;
-                });
-                break;
-              }
-              case "UPDATE": {
-                const updated = payload.new as OperationPickup;
-                const previous = payload.old as {
-                  id: string;
-                  quantity?: number;
-                  jobOperationId?: string;
-                };
-                setPickups((prev) =>
-                  prev.map((p) =>
-                    p.id === updated.id && p.kind === "employee"
-                      ? {
-                          kind: "employee",
-                          id: updated.id,
-                          createdAt: updated.createdAt,
-                          pickup: updated
-                        }
-                      : p
-                  )
-                );
-                if (
-                  previous.jobOperationId &&
-                  previous.quantity !== undefined
-                ) {
-                  setPickupTotals((prev) => {
-                    const next = new Map(prev);
-                    const opId = updated.jobOperationId;
-                    const oldQty = previous.quantity as number;
-                    const newQty = updated.quantity as number;
-                    next.set(
-                      opId,
-                      Math.max(0, (next.get(opId) ?? 0) - oldQty + newQty)
-                    );
-                    return next;
-                  });
-                }
-                break;
-              }
-              case "DELETE": {
-                const deleted = payload.old as {
-                  id: string;
-                  jobOperationId?: string;
-                  quantity?: number;
-                };
-                setPickups((prev) => prev.filter((p) => p.id !== deleted.id));
-                setPickupCount((count) => Math.max(0, count - 1));
-                if (deleted.jobOperationId && deleted.quantity !== undefined) {
-                  setPickupTotals((prev) => {
-                    const next = new Map(prev);
-                    next.set(
-                      deleted.jobOperationId!,
-                      Math.max(
-                        0,
-                        (next.get(deleted.jobOperationId!) ?? 0) -
-                          (deleted.quantity as number)
-                      )
-                    );
-                    return next;
-                  });
-                }
-                break;
-              }
-              default:
-                break;
-            }
-          }
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "*",
-            schema: "public",
-            table: "jobOperationSupplierPickup",
-            filter: `jobOperationId=eq.${selectedItemId}`
-          },
-          () => {
-            setPickups([]);
-            setPickupPage(0);
-            setPickupHasMore(true);
-            setPickupScrollKey((k) => k + 1);
-          }
-        );
-    }
-  });
 
   useRealtimeChannel({
     topic: `production-events:${selectedItemId}`,
@@ -1237,230 +699,20 @@ const JobBillOfProcess = ({
     setIsLoading(false);
   }, [isLoading, hasMore, carbon, selectedItemId, companyId, page]);
 
-  const refreshQuantityData = useCallback(async () => {
-    if (!carbon || !selectedItemId || temporaryItems[selectedItemId]) return;
-
-    const [summaryResult, employeeReports, supplierReports] = await Promise.all(
-      [
-        getOperationQuantitySummary(carbon, selectedItemId, companyId),
-        listProductionQuantityReportsForOperation(carbon, {
-          jobOperationId: selectedItemId,
-          companyId,
-          page: 1
-        }),
-        listJobOperationSupplierQuantityReportsForOperation(carbon, {
-          jobOperationId: selectedItemId,
-          companyId,
-          page: 1
-        })
-      ]
-    );
-
-    if (summaryResult.data) {
-      setOperationQuantitySummary(summaryResult.data);
-    }
-    const employee = employeeReports.data ?? [];
-    const supplier = supplierReports.data ?? [];
-    setQuantityReports(mergeQuantityReports(employee, supplier));
-    setQuantityReportCount(
-      (employeeReports.count ?? 0) + (supplierReports.count ?? 0)
-    );
-    setQuantityPage(1);
-    setQuantityHasMore(
-      Boolean(employeeReports.hasMore || supplierReports.hasMore)
-    );
-  }, [carbon, companyId, selectedItemId, temporaryItems]);
-
-  refreshQuantityDataRef.current = refreshQuantityData;
-
-  useEffect(() => {
-    void refreshQuantityData();
-  }, [refreshQuantityData]);
-
-  useRealtimeChannel({
-    topic: `production-quantities:${selectedItemId}`,
-    enabled: !!selectedItemId && !temporaryItems[selectedItemId ?? ""],
-    setup(channel) {
-      const onQuantityChange = () => {
-        void refreshQuantityData();
-      };
-      return channel
-        .on(
-          "postgres_changes",
-          {
-            event: "*",
-            schema: "public",
-            table: "productionQuantity",
-            filter: `jobOperationId=eq.${selectedItemId}`
-          },
-          onQuantityChange
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "*",
-            schema: "public",
-            table: "productionQuantityReport",
-            filter: `jobOperationId=eq.${selectedItemId}`
-          },
-          onQuantityChange
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "*",
-            schema: "public",
-            table: "jobOperationSupplierQuantity",
-            filter: `jobOperationId=eq.${selectedItemId}`
-          },
-          onQuantityChange
-        )
-        .on(
-          "postgres_changes",
-          {
-            event: "*",
-            schema: "public",
-            table: "jobOperationSupplierQuantityReport",
-            filter: `jobOperationId=eq.${selectedItemId}`
-          },
-          onQuantityChange
-        );
-    }
-  });
-
-  const loadMoreQuantityReports = useCallback(async () => {
-    if (quantityIsLoading || !quantityHasMore || !selectedItemId || !carbon) {
-      return;
-    }
-
-    setQuantityIsLoading(true);
-
-    const page = quantityPage + 1;
-    const [employeeResult, supplierResult] = await Promise.all([
-      listProductionQuantityReportsForOperation(carbon, {
-        jobOperationId: selectedItemId,
-        companyId,
-        page
-      }),
-      listJobOperationSupplierQuantityReportsForOperation(carbon, {
-        jobOperationId: selectedItemId,
-        companyId,
-        page
-      })
-    ]);
-
-    const merged = mergeQuantityReports(
-      employeeResult.data ?? [],
-      supplierResult.data ?? []
-    );
-
-    if (merged.length > 0) {
-      setQuantityReports((prev) => [...prev, ...merged]);
-      setQuantityPage((prevPage) => prevPage + 1);
-      setQuantityReportCount(
-        (employeeResult.count ?? 0) + (supplierResult.count ?? 0)
-      );
-      if (!employeeResult.hasMore && !supplierResult.hasMore) {
-        setQuantityHasMore(false);
-      }
-    } else {
-      setQuantityHasMore(false);
-    }
-
-    setQuantityIsLoading(false);
-  }, [
-    quantityIsLoading,
-    quantityHasMore,
-    carbon,
-    selectedItemId,
-    companyId,
-    quantityPage
-  ]);
-
-  const handleQuantityReportSaved = useCallback(
-    (updated: ProductionQuantityReportWithLines) => {
-      setQuantityReports((prev) =>
-        prev.map((item) =>
-          item.actorKind === "employee" && item.id === updated.id
-            ? { ...item, report: updated }
-            : item
-        )
-      );
-      void refreshQuantityData();
-    },
-    [refreshQuantityData]
-  );
-
-  const handleSupplierQuantityReportSaved = useCallback(
-    (updated: JobOperationSupplierQuantityReportWithLines) => {
-      setQuantityReports((prev) =>
-        prev.map((item) =>
-          item.actorKind === "supplier" && item.id === updated.id
-            ? { ...item, report: updated }
-            : item
-        )
-      );
-      void refreshQuantityData();
-    },
-    [refreshQuantityData]
-  );
-
-  const loadMorePickups = useCallback(async () => {
-    if (pickupIsLoading || !pickupHasMore || !selectedItemId) return;
-
-    setPickupIsLoading(true);
-
-    const page = pickupPage + 1;
-    const [employeeResult, supplierResult] = await Promise.all([
-      getJobPickupsPage(carbon!, selectedItemId, companyId, page),
-      getJobSupplierPickupsPage(carbon!, selectedItemId, companyId, page)
-    ]);
-
-    const merged = mergePickups(
-      (employeeResult.data ?? []) as OperationPickup[],
-      (supplierResult.data ?? []) as Extract<
-        UnifiedPickupItem,
-        { kind: "supplier" }
-      >["pickup"][]
-    );
-
-    if (merged.length > 0) {
-      setPickups((prev) => [...prev, ...merged]);
-      setPickupPage((prevPage) => prevPage + 1);
-      setPickupCount((employeeResult.count ?? 0) + (supplierResult.count ?? 0));
-      if (!employeeResult.hasMore && !supplierResult.hasMore) {
-        setPickupHasMore(false);
-      }
-    } else {
-      setPickupHasMore(false);
-    }
-
-    setPickupIsLoading(false);
-  }, [
-    pickupIsLoading,
-    pickupHasMore,
-    carbon,
-    selectedItemId,
-    companyId,
-    pickupPage
-  ]);
-
   const [tabChangeRerender, setTabChangeRerender] = useState<number>(1);
 
-  const initialWorkInstructions = useMemo(
-    () =>
-      initialOperations.reduce((acc, operation) => {
-        if (operation.workInstruction && operation.id) {
-          acc[operation.id] = operation.workInstruction;
-        }
-        return acc;
-      }, {} as PendingWorkInstructions),
-    [initialOperations]
-  );
-
   useEffect(() => {
-    setWorkInstructions(initialWorkInstructions);
-  }, [initialWorkInstructions]);
+    if (initialOperations) {
+      setWorkInstructions(
+        initialOperations.reduce((acc, operation) => {
+          if (operation.workInstruction && operation.id) {
+            acc[operation.id] = operation.workInstruction;
+          }
+          return acc;
+        }, {} as PendingWorkInstructions)
+      );
+    }
+  }, [initialOperations]);
 
   const renderListItem = ({
     item,
@@ -1470,120 +722,59 @@ const JobBillOfProcess = ({
     onRemoveItem
   }: SortableItemRenderProps<ItemWithData>) => {
     const isOpen = item.id === selectedItemId;
-    const isNewOperation = item.id in temporaryItems;
 
-    const operationDetails = operationsById.get(item.id);
-    const tools = operationDetails?.jobOperationTool ?? [];
-    const parameters = operationDetails?.jobOperationParameter ?? [];
-    const steps = operationDetails?.jobOperationStep ?? [];
-    const quantityCount = item.id === selectedItemId ? quantityReportCount : 0;
-    const canEditQuantityReport =
-      !isDisabled && permissions.can("update", "production");
-    const currentPickupCount = item.id === selectedItemId ? pickupCount : 0;
-    const canRecordQuantity =
-      !isDisabled &&
-      permissions.can("create", "production") &&
-      !temporaryItems[item.id];
-
-    const operationFormContent = (
-      <div className="flex w-full flex-col pr-2 py-2">
-        <motion.div
-          initial={{ opacity: 0, filter: "blur(4px)" }}
-          animate={{ opacity: 1, filter: "blur(0px)" }}
-          transition={{
-            type: "spring",
-            bounce: 0.2,
-            duration: 0.75,
-            delay: 0.15
-          }}
-        >
-          <OperationForm
-            item={item}
-            jobId={jobId}
-            isDisabled={isDisabled}
-            job={jobData?.job}
-            locationId={locationId}
-            workInstruction={workInstructions[item.id] ?? {}}
-            setWorkInstructions={setWorkInstructions}
-            setTemporaryItems={setTemporaryItems}
-            setSelectedItemId={setSelectedItemId}
-            temporaryItems={temporaryItems}
-            onSubmit={() => {
-              setSelectedItemId(null);
-              addOperationButtonRef.current?.scrollIntoView({
-                behavior: "smooth",
-                block: "nearest",
-                inline: "center"
-              });
-            }}
-          />
-        </motion.div>
-      </div>
-    );
-
-    const QuantityReportRow = ({
-      item: reportItem
-    }: {
-      item: UnifiedQuantityReportItem;
-    }) =>
-      reportItem.actorKind === "employee" ? (
-        <ProductionQuantityReportCard
-          report={reportItem.report}
-          configurationParameters={configurationParameters}
-          canEdit={canEditQuantityReport}
-          onEdit={() => setDispositionReport(reportItem.report)}
-          onHistory={() => setHistoryReport(reportItem.report)}
-        />
-      ) : (
-        <SupplierQuantityReportCard
-          report={reportItem.report}
-          configurationParameters={configurationParameters}
-          canEdit={canEditQuantityReport}
-          onEdit={() => setSupplierDispositionReport(reportItem.report)}
-          onHistory={() => setSupplierHistoryReport(reportItem.report)}
-          isCreatingPo={creatingPoReportId === reportItem.id}
-          onCreatePo={async () => {
-            setCreatingPoReportId(reportItem.id);
-            try {
-              const res = await fetch(
-                path.to.api.supplierQuantityReportCreatePo(reportItem.id),
-                { method: "POST", credentials: "include" }
-              );
-              const body = await res.json();
-              if (!res.ok) {
-                toast.error(body.error ?? "Failed to create PO");
-                return;
-              }
-              toast.success("Purchase order line created");
-              void refreshQuantityData();
-            } finally {
-              setCreatingPoReportId(null);
-            }
-          }}
-        />
-      );
-
-    const PickupActivityRowWrapper = ({
-      item: pickupItem
-    }: {
-      item: UnifiedPickupItem;
-    }) => (
-      <PickupActivityRow
-        item={pickupItem}
-        configurationParameters={configurationParameters}
-      />
-    );
+    const tools =
+      initialOperations.find((o) => o.id === item.id)?.jobOperationTool ?? [];
+    const parameters =
+      initialOperations.find((o) => o.id === item.id)?.jobOperationParameter ??
+      [];
+    const steps =
+      initialOperations.find((o) => o.id === item.id)?.jobOperationStep ?? [];
 
     const tabs = [
       {
         id: 0,
         label: t`Details`,
-        content: operationFormContent
+        content: (
+          <div className="flex w-full flex-col pr-2 py-2">
+            <motion.div
+              initial={{ opacity: 0, filter: "blur(4px)" }}
+              animate={{ opacity: 1, filter: "blur(0px)" }}
+              transition={{
+                type: "spring",
+                bounce: 0.2,
+                duration: 0.75,
+                delay: 0.15
+              }}
+            >
+              <OperationForm
+                item={item}
+                isDisabled={isDisabled}
+                job={jobData?.job}
+                locationId={locationId}
+                workInstruction={workInstructions[item.id] ?? {}}
+                setWorkInstructions={setWorkInstructions}
+                setTemporaryItems={setTemporaryItems}
+                setSelectedItemId={setSelectedItemId}
+                temporaryItems={temporaryItems}
+                onSubmit={() => {
+                  setSelectedItemId(null);
+                  addOperationButtonRef.current?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "nearest",
+                    inline: "center"
+                  });
+                }}
+              />
+            </motion.div>
+          </div>
+        )
       },
       {
         id: 1,
         label: t`Instructions`,
-        disabled: disablesOutsideBopDetailTabs(item.data.operationType),
+        disabled:
+          item.id in temporaryItems || item.data.operationType === "Outside",
         content: (
           <div className="flex flex-col">
             <div>
@@ -1619,7 +810,8 @@ const JobBillOfProcess = ({
       },
       {
         id: 2,
-        disabled: disablesOutsideBopDetailTabs(item.data.operationType),
+        disabled:
+          item.id in temporaryItems || item.data.operationType === "Outside",
         label: (
           <span className="flex items-center gap-2">
             <span>
@@ -1643,7 +835,8 @@ const JobBillOfProcess = ({
       },
       {
         id: 3,
-        disabled: disablesOutsideBopDetailTabs(item.data.operationType),
+        disabled:
+          item.id in temporaryItems || item.data.operationType === "Outside",
         label: (
           <span className="flex items-center gap-2">
             <span>
@@ -1668,7 +861,8 @@ const JobBillOfProcess = ({
       },
       {
         id: 4,
-        disabled: disablesOutsideBopDetailTabs(item.data.operationType),
+        disabled:
+          item.id in temporaryItems || item.data.operationType === "Outside",
         label: (
           <span className="flex items-center gap-2">
             <span>
@@ -1692,135 +886,35 @@ const JobBillOfProcess = ({
       },
       {
         id: 5,
-        disabled: false,
-        label: (
-          <span className="flex items-center gap-2">
-            <span>
-              <Trans>Pickups</Trans>
-            </span>
-            {currentPickupCount > 0 && <Count count={currentPickupCount} />}
-          </span>
-        ),
+        disabled:
+          item.id in temporaryItems || item.data.operationType === "Outside",
+        label: t`Events`,
         content: (
-          <motion.div
-            className="flex w-full flex-col gap-4 py-6 pr-2 min-h-[300px]"
-            initial={{ opacity: 0, filter: "blur(4px)" }}
-            animate={{ opacity: 1, filter: "blur(0px)" }}
-            transition={{
-              type: "spring",
-              bounce: 0.2,
-              duration: 0.75,
-              delay: 0.15
-            }}
-          >
-            {canRecordQuantity && onAddPickup && (
-              <HStack className="justify-end">
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => onAddPickup(item.id)}
-                  className="transition-transform active:scale-[0.96]"
-                >
-                  <LuCirclePlus className="mr-1.5 h-4 w-4" />
-                  <Trans>Record pickup</Trans>
-                </Button>
-              </HStack>
-            )}
-            <InfiniteScroll
-              key={pickupScrollKey}
-              component={PickupActivityRowWrapper}
-              items={pickups}
-              loadMore={loadMorePickups}
-              hasMore={pickupHasMore}
-            />
-          </motion.div>
+          <div className="flex w-full flex-col pr-2 py-6 min-h-[300px]">
+            <motion.div
+              initial={{ opacity: 0, filter: "blur(4px)" }}
+              animate={{ opacity: 1, filter: "blur(0px)" }}
+              transition={{
+                type: "spring",
+                bounce: 0.2,
+                duration: 0.75,
+                delay: 0.15
+              }}
+            >
+              <InfiniteScroll
+                component={ProductionEventActivity}
+                items={productionEvents}
+                loadMore={loadMoreProductionEvents}
+                hasMore={hasMore}
+              />
+            </motion.div>
+          </div>
         )
       },
       {
         id: 6,
-        disabled: false,
-        label: (
-          <span className="flex items-center gap-2">
-            <span>
-              <Trans>Quantities</Trans>
-            </span>
-            {quantityCount > 0 && <Count count={quantityCount} />}
-          </span>
-        ),
-        content: (
-          <motion.div
-            className="flex w-full flex-col gap-4 py-6 pr-2 min-h-[300px]"
-            initial={{ opacity: 0, filter: "blur(4px)" }}
-            animate={{ opacity: 1, filter: "blur(0px)" }}
-            transition={{
-              type: "spring",
-              bounce: 0.2,
-              duration: 0.75,
-              delay: 0.15
-            }}
-          >
-            {(item.id === selectedItemId ||
-              (canRecordQuantity && onAddProductionQuantity)) && (
-              <HStack className="w-full flex-wrap items-center justify-between gap-2">
-                <HStack className="min-w-0 flex-wrap items-center gap-2">
-                  {item.id === selectedItemId ? (
-                    <OperationQuantitySummaryView
-                      summary={operationQuantitySummary}
-                      configurationParameters={configurationParameters}
-                    />
-                  ) : null}
-                </HStack>
-                {canRecordQuantity && onAddProductionQuantity ? (
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    className="shrink-0 transition-transform active:scale-[0.96]"
-                    onClick={() => onAddProductionQuantity(item.id)}
-                  >
-                    <LuCirclePlus className="mr-1.5 h-4 w-4" />
-                    <Trans>Record quantity</Trans>
-                  </Button>
-                ) : null}
-              </HStack>
-            )}
-            <InfiniteScroll
-              component={QuantityReportRow}
-              items={item.id === selectedItemId ? quantityReports : []}
-              loadMore={loadMoreQuantityReports}
-              hasMore={quantityHasMore}
-              listClassName="gap-5 pt-2"
-            />
-          </motion.div>
-        )
-      },
-      {
-        id: 7,
-        disabled: disablesOutsideBopDetailTabs(item.data.operationType),
-        label: t`Events`,
-        content: (
-          <motion.div
-            className="flex w-full flex-col pr-2 py-6 min-h-[300px]"
-            initial={{ opacity: 0, filter: "blur(4px)" }}
-            animate={{ opacity: 1, filter: "blur(0px)" }}
-            transition={{
-              type: "spring",
-              bounce: 0.2,
-              duration: 0.75,
-              delay: 0.15
-            }}
-          >
-            <InfiniteScroll
-              component={ProductionEventActivity}
-              items={productionEvents}
-              loadMore={loadMoreProductionEvents}
-              hasMore={hasMore}
-            />
-          </motion.div>
-        )
-      },
-      {
-        id: 8,
-        disabled: disablesOutsideBopDetailTabs(item.data.operationType),
+        disabled:
+          item.id in temporaryItems || item.data.operationType === "Outside",
         label: t`Chat`,
         content: <OperationChat jobOperationId={item.id} />
       }
@@ -1845,11 +939,7 @@ const JobBillOfProcess = ({
               onClick={
                 isOpen
                   ? () => {
-                      if (isNewOperation) {
-                        onRemoveItem(item.id);
-                      } else {
-                        setSelectedItemId(null);
-                      }
+                      setSelectedItemId(null);
                     }
                   : () => {
                       setSelectedItemId(item.id);
@@ -1908,17 +998,13 @@ const JobBillOfProcess = ({
                         layout
                         className="w-full "
                       >
-                        {isNewOperation ? (
-                          operationFormContent
-                        ) : (
-                          <DirectionAwareTabs
-                            className="mr-auto"
-                            tabs={tabs}
-                            onChange={() =>
-                              setTabChangeRerender(tabChangeRerender + 1)
-                            }
-                          />
-                        )}
+                        <DirectionAwareTabs
+                          className="mr-auto"
+                          tabs={tabs}
+                          onChange={() =>
+                            setTabChangeRerender(tabChangeRerender + 1)
+                          }
+                        />
                       </motion.div>
                     </div>
                   </motion.div>
@@ -1931,169 +1017,40 @@ const JobBillOfProcess = ({
     );
   };
 
-  const list = (
-    <SortableList
-      items={items}
-      onReorder={onReorder}
-      onToggleItem={onToggleItem}
-      onRemoveItem={onRemoveItem}
-      renderItem={renderListItem}
-    />
-  );
-
-  const configSummaryOperation = configSummaryOperationId
-    ? operationsById.get(configSummaryOperationId)
-    : undefined;
-
-  const configSummaryModalElement = hasConfigurationParameters ? (
-    <Modal
-      open={configSummaryModal.isOpen}
-      onOpenChange={(open) => {
-        if (!open) configSummaryModal.onClose();
-      }}
-    >
-      <ModalContent
-        className={cn(
-          "flex w-fit min-w-[20rem] max-w-[min(90vw,56rem)] max-h-[85dvh] flex-col overflow-hidden",
-          "md:w-fit sm:w-fit sm:max-w-[min(90vw,56rem)]"
-        )}
-      >
-        <ModalHeader className="mb-4 shrink-0">
-          <ModalTitle>
-            {configSummaryOperation?.description ?? (
-              <Trans>Configuration quantities</Trans>
-            )}
-          </ModalTitle>
-        </ModalHeader>
-        <ModalBody className="mb-0 min-h-0 flex-1 overflow-y-auto overflow-x-auto pb-6">
-          {configSummaryLoading ? (
-            <Loading isLoading />
-          ) : (
-            <ConfigParamsReportedTargetTable
-              rows={configSummaryRows}
-              parameters={configurationParameters ?? []}
-            />
-          )}
-        </ModalBody>
-        <ModalFooter className="shrink-0">
-          <Button variant="secondary" onClick={configSummaryModal.onClose}>
-            <Trans>Close</Trans>
-          </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
-  ) : null;
-
-  const quantityDrawerElements = (
-    <>
-      {dispositionReport ? (
-        <ProductionQuantityDispositionDrawer
-          report={dispositionReport}
-          configurationParameters={configurationParameters}
-          itemId={itemId}
-          open
-          onClose={() => setDispositionReport(null)}
-          onSaved={handleQuantityReportSaved}
-        />
-      ) : null}
-      {historyReport ? (
-        <ProductionQuantityReportHistoryDrawer
-          reportId={historyReport.id}
-          configurationParameters={configurationParameters}
-          open
-          onClose={() => setHistoryReport(null)}
-        />
-      ) : null}
-      {supplierDispositionReport ? (
-        <SupplierQuantityDispositionDrawer
-          report={supplierDispositionReport}
-          configurationParameters={configurationParameters}
-          itemId={itemId}
-          open
-          onClose={() => setSupplierDispositionReport(null)}
-          onSaved={handleSupplierQuantityReportSaved}
-        />
-      ) : null}
-      {supplierHistoryReport ? (
-        <ProductionQuantityReportHistoryDrawer
-          reportId={supplierHistoryReport.id}
-          linesApiPath={path.to.api.supplierQuantityReportLines(
-            supplierHistoryReport.id,
-            true
-          )}
-          supplierId={supplierHistoryReport.supplierProcess?.supplierId}
-          reportCreatedBy={supplierHistoryReport.createdBy}
-          configurationParameters={configurationParameters}
-          open
-          onClose={() => setSupplierHistoryReport(null)}
-        />
-      ) : null}
-    </>
-  );
-
-  if (routeJob) {
-    return (
-      <>
-        <div className="flex w-max max-w-[min(42rem,calc(100vw-1.5rem))] flex-col">
-          <HStack className="shrink-0 items-center justify-between border-b border-border px-4 py-3 pr-12">
-            <h3 className="text-base font-medium font-headline tracking-tight text-foreground">
-              <Trans>Bill of Process</Trans>
-            </h3>
-            <Button
-              ref={addOperationButtonRef}
-              variant="secondary"
-              isDisabled={
-                !permissions.can("update", "production") ||
-                selectedItemId !== null ||
-                isDisabled
-              }
-              onClick={onAddItem}
-              className="transition-transform active:scale-[0.96]"
-            >
-              <Trans>Add Operation</Trans>
-            </Button>
-          </HStack>
-          <div className="min-h-0 max-h-[min(72vh,48rem)] overflow-y-auto px-3 py-3">
-            {list}
-          </div>
-        </div>
-        {configSummaryModalElement}
-        {quantityDrawerElements}
-      </>
-    );
-  }
-
   return (
-    <>
-      <Card>
-        <HStack className="justify-between">
-          <CardHeader>
-            <CardTitle>
-              <Trans>Bill of Process</Trans>
-            </CardTitle>
-          </CardHeader>
+    <Card>
+      <HStack className="justify-between">
+        <CardHeader>
+          <CardTitle>
+            <Trans>Bill of Process</Trans>
+          </CardTitle>
+        </CardHeader>
 
-          <CardAction>
-            <Button
-              ref={addOperationButtonRef}
-              variant="secondary"
-              isDisabled={
-                !permissions.can("update", "production") ||
-                selectedItemId !== null ||
-                isDisabled
-              }
-              onClick={onAddItem}
-              className="transition-transform active:scale-[0.96]"
-            >
-              <Trans>Add Operation</Trans>
-            </Button>
-          </CardAction>
-        </HStack>
-        <CardContent>{list}</CardContent>
-      </Card>
-      {configSummaryModalElement}
-      {quantityDrawerElements}
-    </>
+        <CardAction>
+          <Button
+            ref={addOperationButtonRef}
+            variant="secondary"
+            isDisabled={
+              !permissions.can("update", "production") ||
+              selectedItemId !== null ||
+              isDisabled
+            }
+            onClick={onAddItem}
+          >
+            <Trans>Add Operation</Trans>
+          </Button>
+        </CardAction>
+      </HStack>
+      <CardContent>
+        <SortableList
+          items={items}
+          onReorder={onReorder}
+          onToggleItem={onToggleItem}
+          onRemoveItem={onRemoveItem}
+          renderItem={renderListItem}
+        />
+      </CardContent>
+    </Card>
   );
 };
 
@@ -2225,7 +1182,7 @@ function StepsForm({
           <Trans>Cannot add steps to unsaved operation</Trans>
         </AlertTitle>
         <AlertDescription>
-          <Trans>Please save the operation before adding steps.</Trans>
+          Please save the operation before adding steps.
         </AlertDescription>
       </Alert>
     );
@@ -2352,7 +1309,7 @@ function StepsForm({
                 isDisabled={isDisabled || fetcher.state !== "idle"}
                 isLoading={fetcher.state !== "idle"}
               >
-                <Trans>Save Step</Trans>
+                Save Step
               </Submit>
             </VStack>
           </ValidatedForm>
@@ -2360,7 +1317,7 @@ function StepsForm({
       ) : (
         <div className="flex justify-end mb-4">
           <Button onClick={disclosure.onOpen} leftIcon={<LuCirclePlus />}>
-            <Trans>Add Step</Trans>
+            Add Step
           </Button>
         </div>
       )}
@@ -2458,7 +1415,6 @@ function StepsListItem({
   } = attribute;
 
   const { formatRelativeTime } = useDateFormatter();
-  const createdUpdatedText = useRelativeCreatedUpdatedText();
   const disclosure = useDisclosure();
   const deleteModalDisclosure = useDisclosure();
   const submitted = useRef(false);
@@ -2630,13 +1586,13 @@ function StepsListItem({
             )}
             <HStack className="w-full justify-end" spacing={2}>
               <Button variant="secondary" onClick={disclosure.onClose}>
-                <Trans>Cancel</Trans>
+                Cancel
               </Button>
               <Submit
                 isDisabled={fetcher.state !== "idle"}
                 isLoading={fetcher.state !== "idle"}
               >
-                <Trans>Save</Trans>
+                Save
               </Submit>
             </HStack>
           </VStack>
@@ -2714,7 +1670,7 @@ function StepsListItem({
             <div className="flex items-center justify-end gap-2">
               <HStack spacing={2}>
                 <span className="text-xs text-muted-foreground">
-                  {createdUpdatedText(isUpdated, formatRelativeTime(date))}
+                  {isUpdated ? "Updated" : "Created"} {formatRelativeTime(date)}
                 </span>
                 <EmployeeAvatar employeeId={person} withName={false} />
               </HStack>
@@ -2728,13 +1684,13 @@ function StepsListItem({
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem onClick={disclosure.onOpen}>
-                    <Trans>Edit</Trans>
+                    Edit
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     destructive
                     onClick={deleteModalDisclosure.onOpen}
                   >
-                    <Trans>Delete</Trans>
+                    Delete
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -2750,7 +1706,7 @@ function StepsListItem({
           action={path.to.deleteJobOperationStep(id)}
           isOpen={deleteModalDisclosure.isOpen}
           name={name}
-          text={t`Are you sure you want to delete the ${name} attribute from this operation? This cannot be undone.`}
+          text={`Are you sure you want to delete the ${name} attribute from this operation? This cannot be undone.`}
           onCancel={() => {
             deleteModalDisclosure.onClose();
           }}
@@ -2764,7 +1720,6 @@ function StepsListItem({
 }
 
 function PreviewStepRecords({ attribute }: { attribute: JobOperationStep }) {
-  const { t } = useLingui();
   const { formatRelativeTime } = useDateFormatter();
   if (
     !attribute.jobOperationStepRecord ||
@@ -2788,7 +1743,7 @@ function PreviewStepRecords({ attribute }: { attribute: JobOperationStep }) {
           >
             <div className="flex w-1/2 items-center justify-between gap-2">
               <span className="text-xs text-muted-foreground font-medium">
-                {t`Record ${index + 1}`}
+                Record {index + 1}
               </span>
               <div className="text-right font-medium">
                 <PreviewStepRecord attribute={attribute} record={record} />
@@ -2798,7 +1753,7 @@ function PreviewStepRecords({ attribute }: { attribute: JobOperationStep }) {
             <div className="flex items-center justify-end gap-2 w-1/2">
               <HStack spacing={2}>
                 <span className="text-xs text-muted-foreground">
-                  {t`Created ${formatRelativeTime(record.createdAt ?? "")}`}
+                  Created {formatRelativeTime(record.createdAt ?? "")}
                 </span>
                 <EmployeeAvatar
                   employeeId={record.createdBy}
@@ -2922,7 +1877,7 @@ function ParametersForm({
           <Trans>Cannot add parameters to unsaved operation</Trans>
         </AlertTitle>
         <AlertDescription>
-          <Trans>Please save the operation before adding parameters.</Trans>
+          Please save the operation before adding parameters.
         </AlertDescription>
       </Alert>
     );
@@ -2960,7 +1915,7 @@ function ParametersForm({
               isDisabled={isDisabled || fetcher.state !== "idle"}
               isLoading={fetcher.state !== "idle"}
             >
-              <Trans>Add Parameter</Trans>
+              Add Parameter
             </Submit>
           </VStack>
         </ValidatedForm>
@@ -2996,7 +1951,6 @@ function ParametersListItem({
   className?: string;
 }) {
   const { formatRelativeTime } = useDateFormatter();
-  const createdUpdatedText = useRelativeCreatedUpdatedText();
   const disclosure = useDisclosure();
   const deleteModalDisclosure = useDisclosure();
   const submitted = useRef(false);
@@ -3045,13 +1999,13 @@ function ParametersListItem({
             </div>
             <HStack className="w-full justify-end" spacing={2}>
               <Button variant="secondary" onClick={disclosure.onClose}>
-                <Trans>Cancel</Trans>
+                Cancel
               </Button>
               <Submit
                 isDisabled={fetcher.state !== "idle"}
                 isLoading={fetcher.state !== "idle"}
               >
-                <Trans>Save</Trans>
+                Save
               </Submit>
             </HStack>
           </VStack>
@@ -3072,7 +2026,7 @@ function ParametersListItem({
           <div className="flex items-center justify-end gap-2">
             <HStack spacing={2}>
               <span className="text-xs text-muted-foreground">
-                {createdUpdatedText(isUpdated, formatRelativeTime(date))}
+                {isUpdated ? "Updated" : "Created"} {formatRelativeTime(date)}
               </span>
               <EmployeeAvatar employeeId={person} withName={false} />
             </HStack>
@@ -3086,13 +2040,13 @@ function ParametersListItem({
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={disclosure.onOpen}>
-                  <Trans>Edit</Trans>
+                  Edit
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   destructive
                   onClick={deleteModalDisclosure.onOpen}
                 >
-                  <Trans>Delete</Trans>
+                  Delete
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -3104,7 +2058,7 @@ function ParametersListItem({
           action={path.to.deleteJobOperationParameter(id)}
           isOpen={deleteModalDisclosure.isOpen}
           name={key}
-          text={t`Are you sure you want to delete the ${key} parameter from this operation? This cannot be undone.`}
+          text={`Are you sure you want to delete the ${key} parameter from this operation? This cannot be undone.`}
           onCancel={() => {
             deleteModalDisclosure.onClose();
           }}
@@ -3119,7 +2073,6 @@ function ParametersListItem({
 
 function OperationForm({
   item,
-  jobId,
   isDisabled,
   job,
   locationId,
@@ -3131,7 +2084,6 @@ function OperationForm({
   onSubmit
 }: {
   item: ItemWithData;
-  jobId: string;
   isDisabled: boolean;
   job?: Job;
   locationId: string;
@@ -3142,16 +2094,10 @@ function OperationForm({
   onSubmit: () => void;
   temporaryItems: TemporaryItems;
 }) {
+  const { jobId } = useParams();
   const { t } = useLingui();
-  const operationOrderOptions = useMemo(
-    () => [
-      { value: "After Previous", label: <Trans>After Previous</Trans> },
-      { value: "With Previous", label: <Trans>With Previous</Trans> }
-    ],
-    []
-  );
-  const operationTypeOptions = useOperationTypeSelectOptions();
   const { company } = useUser();
+  if (!jobId) throw new Error("jobId not found");
 
   const fetcher = useFetcher<{
     id: string;
@@ -3175,12 +2121,16 @@ function OperationForm({
     }
   }, [item.id, fetcher.data, onSubmit, setTemporaryItems]);
 
+  const machineDisclosure = useDisclosure();
+  const laborDisclosure = useDisclosure();
+  const setupDisclosure = useDisclosure();
+  const costingDisclosure = useDisclosure();
+  const procedureDisclosure = useDisclosure();
   const [procedureWasChanged, setProcedureWasChanged] = useState(false);
   const procedureSyncDisclosure = useDisclosure();
 
   const [processData, setProcessData] = useState<{
     description: string;
-    insideUnitCost: number;
     laborRate: number;
     laborTime: number;
     laborUnit: string;
@@ -3191,8 +2141,7 @@ function OperationForm({
     machineUnitHint: string;
     operationMinimumCost: number;
     operationLeadTime: number;
-    operationSupplierProcessId: string;
-    operationType: OperationType;
+    operationType: string;
     operationUnitCost: number;
     overheadRate: number;
     processId: string;
@@ -3202,7 +2151,6 @@ function OperationForm({
     setupUnitHint: string;
   }>({
     description: item.data.description ?? "",
-    insideUnitCost: (item.data as any).insideUnitCost ?? 0,
     laborRate: item.data.laborRate ?? 0,
     laborTime: item.data.laborTime ?? 0,
     laborUnit: item.data.laborUnit ?? "Hours/Piece",
@@ -3213,8 +2161,7 @@ function OperationForm({
     machineUnitHint: getUnitHint(item.data.machineUnit),
     operationMinimumCost: item.data.operationMinimumCost ?? 0,
     operationLeadTime: item.data.operationLeadTime ?? 0,
-    operationSupplierProcessId: item.data.operationSupplierProcessId ?? "",
-    operationType: (item.data.operationType ?? "Inside") as OperationType,
+    operationType: item.data.operationType ?? "Inside",
     operationUnitCost: item.data.operationUnitCost ?? 0,
     overheadRate: item.data.overheadRate ?? 0,
     processId: item.data.processId ?? "",
@@ -3223,50 +2170,6 @@ function OperationForm({
     setupUnit: item.data.setupUnit ?? "Total Minutes",
     setupUnitHint: getUnitHint(item.data.setupUnit)
   });
-
-  useEffect(() => {
-    setTemporaryItems((prev) => {
-      const current = prev[item.id];
-      if (!current) return prev;
-
-      return {
-        ...prev,
-        [item.id]: {
-          ...current,
-          description: processData.description,
-          operationType: processData.operationType,
-          processId: processData.processId,
-          operationSupplierProcessId: processData.operationSupplierProcessId,
-          operationMinimumCost: processData.operationMinimumCost,
-          operationUnitCost: processData.operationUnitCost,
-          operationLeadTime: processData.operationLeadTime,
-          laborRate: processData.laborRate,
-          machineRate: processData.machineRate,
-          overheadRate: processData.overheadRate,
-          setupTime: processData.setupTime,
-          laborTime: processData.laborTime,
-          machineTime: processData.machineTime
-        }
-      };
-    });
-  }, [processData, item.id, setTemporaryItems]);
-
-  const { procedures } = useProcedures({ processId: processData.processId });
-
-  const procedureTabSummary = useMemo(() => {
-    if (!processData.procedureId) return undefined;
-    const procedure = procedures.find((p) => p.id === processData.procedureId);
-    return procedure?.name ?? "…";
-  }, [processData.procedureId, procedures]);
-
-  const procedureTabSummaryTitle = useMemo(() => {
-    if (!processData.procedureId) return undefined;
-    const procedure = procedures.find((p) => p.id === processData.procedureId);
-    if (!procedure) return undefined;
-    return procedure.version
-      ? `${procedure.name} v${procedure.version}`
-      : procedure.name;
-  }, [processData.procedureId, procedures]);
 
   const onProcessChange = async (processId: string) => {
     if (!carbon || !processId) return;
@@ -3284,11 +2187,6 @@ function OperationForm({
       workCenters?.data?.filter((wc) => Boolean(wc.workCenter)) ?? [];
 
     if (process.error) throw new Error(process.error.message);
-
-    const operationType = defaultOperationTypeFromProcess(
-      process.data?.processType
-    );
-    const useSupplierRouting = showsSupplierRoutingFields(operationType);
 
     setProcessData((p) => ({
       ...p,
@@ -3320,36 +2218,20 @@ function OperationForm({
           }, 0) / activeWorkCenters.length
         : p.overheadRate,
       operationMinimumCost:
-        useSupplierRouting &&
-        supplierProcesses.data &&
-        supplierProcesses.data.length > 0
+        supplierProcesses.data && supplierProcesses.data.length > 0
           ? supplierProcesses.data.reduce((acc, sp) => {
               return (acc += sp.minimumCost ?? 0);
             }, 0) / supplierProcesses.data.length
-          : useSupplierRouting
-            ? p.operationMinimumCost
-            : 0,
-      operationUnitCost:
-        useSupplierRouting &&
-        supplierProcesses.data &&
-        supplierProcesses.data.length > 0
-          ? supplierProcesses.data.reduce((acc, sp) => {
-              return (acc += sp.unitCost ?? 0);
-            }, 0) / supplierProcesses.data.length
-          : useSupplierRouting
-            ? p.operationUnitCost
-            : 0,
+          : p.operationMinimumCost,
+      operationUnitCost: item.data.operationUnitCost ?? 0,
       operationLeadTime:
-        useSupplierRouting &&
-        supplierProcesses.data &&
-        supplierProcesses.data.length > 0
+        supplierProcesses.data && supplierProcesses.data.length > 0
           ? supplierProcesses.data.reduce((acc, sp) => {
               return (acc += sp.leadTime ?? 0);
             }, 0) / supplierProcesses.data.length
-          : useSupplierRouting
-            ? p.operationLeadTime
-            : 0,
-      operationType
+          : p.operationLeadTime,
+      operationType:
+        process.data?.processType === "Outside" ? "Outside" : "Inside"
     }));
   };
 
@@ -3394,9 +2276,8 @@ function OperationForm({
     setProcessData((d) => ({
       ...d,
       operationMinimumCost: data?.minimumCost ?? 0,
-      operationUnitCost: data?.unitCost ?? 0,
-      operationLeadTime: data?.leadTime ?? 0,
-      operationSupplierProcessId: supplierProcessId
+      operationUnitCost: 0, // TODO: get the unit cost from the purchase order history
+      operationLeadTime: data?.leadTime ?? 0
     }));
   };
 
@@ -3434,33 +2315,28 @@ function OperationForm({
           name="operationOrder"
           label={t`Operation Order`}
           placeholder={t`Operation Order`}
-          options={operationOrderOptions}
+          options={methodOperationOrders.map((o) => ({
+            value: o,
+            label: o
+          }))}
         />
         <SelectControlled
           name="operationType"
           label={t`Operation Type`}
           placeholder={t`Operation Type`}
-          options={operationTypeOptions}
+          options={operationTypes.map((o) => ({
+            value: o,
+            label: o
+          }))}
           value={processData.operationType}
           onChange={(value) => {
-            const operationType = value?.value as OperationType;
-            const useSupplierRouting =
-              showsSupplierRoutingFields(operationType);
-
             setProcessData((d) => ({
               ...d,
+
               setupUnit: "Total Minutes",
               laborUnit: "Minutes/Piece",
               machineUnit: "Minutes/Piece",
-              operationType,
-              ...(useSupplierRouting
-                ? {}
-                : {
-                    operationSupplierProcessId: "",
-                    operationMinimumCost: 0,
-                    operationUnitCost: 0,
-                    operationLeadTime: 0
-                  })
+              operationType: value?.value as string
             }));
           }}
         />
@@ -3475,109 +2351,22 @@ function OperationForm({
           className="col-span-2"
         />
 
-        {isInsideOperationType(processData.operationType) ? (
-          <>
-            <WorkCenter
-              name="workCenterId"
-              label={t`Work Center`}
-              autoSelectSingleOption={Boolean(processData.processId)}
-              locationId={locationId}
-              isOptional={["Draft", "Planned"].includes(job?.status ?? "")}
-              processId={processData.processId}
-              onChange={(value) => {
-                if (value) {
-                  onWorkCenterChange(value?.value as string);
-                }
-              }}
-            />
-            <NumberControlled
-              name="laborRate"
-              label={t`Labor Rate`}
-              minValue={0}
-              value={processData.laborRate}
-              formatOptions={{
-                style: "currency",
-                currency: baseCurrency
-              }}
-              onChange={(newValue) =>
-                setProcessData((d) => ({
-                  ...d,
-                  laborRate: newValue
-                }))
-              }
-            />
-            <NumberControlled
-              name="machineRate"
-              label={t`Machine Rate`}
-              minValue={0}
-              value={processData.machineRate}
-              formatOptions={{
-                style: "currency",
-                currency: baseCurrency
-              }}
-              onChange={(newValue) =>
-                setProcessData((d) => ({
-                  ...d,
-                  machineRate: newValue
-                }))
-              }
-            />
-            <NumberControlled
-              name="overheadRate"
-              label={t`Overhead Rate`}
-              minValue={0}
-              value={processData.overheadRate}
-              formatOptions={{
-                style: "currency",
-                currency: baseCurrency
-              }}
-              onChange={(newValue) =>
-                setProcessData((d) => ({
-                  ...d,
-                  overheadRate: newValue
-                }))
-              }
-            />
-            <NumberControlled
-              name="insideUnitCost"
-              label={t`Unit rate`}
-              minValue={0}
-              value={processData.insideUnitCost}
-              formatOptions={{
-                style: "currency",
-                currency: baseCurrency
-              }}
-              onChange={(newValue) =>
-                setProcessData((d) => ({
-                  ...d,
-                  insideUnitCost: newValue ?? 0
-                }))
-              }
-            />
-          </>
-        ) : null}
-        {showsSupplierRoutingFields(processData.operationType) ? (
+        {processData.operationType === "Outside" ? (
           <>
             <SupplierProcess
               name="operationSupplierProcessId"
               label={t`Supplier`}
               processId={processData.processId}
-              isOptional={false}
+              isOptional
               onChange={(value) => {
                 if (value) {
                   onSupplierProcessChange(value?.value as string);
-                } else {
-                  setProcessData((d) => ({
-                    ...d,
-                    operationSupplierProcessId: ""
-                  }));
                 }
               }}
             />
             <NumberControlled
               name="operationMinimumCost"
               label={t`Minimum Cost`}
-              isOptional={false}
               minValue={0}
               value={processData.operationMinimumCost}
               formatOptions={{
@@ -3594,7 +2383,6 @@ function OperationForm({
             <NumberControlled
               name="operationUnitCost"
               label={t`Unit Cost`}
-              isOptional={false}
               minValue={0}
               value={processData.operationUnitCost}
               formatOptions={{
@@ -3611,7 +2399,6 @@ function OperationForm({
             <NumberControlled
               name="operationLeadTime"
               label={t`Lead Time`}
-              isOptional={false}
               minValue={0}
               value={processData.operationLeadTime}
               onChange={(newValue) =>
@@ -3623,257 +2410,441 @@ function OperationForm({
             />
           </>
         ) : (
-          <>
-            <Hidden name="operationSupplierProcessId" value="" />
-            <Hidden name="operationMinimumCost" value={0} />
-            <Hidden name="operationUnitCost" value={0} />
-            <Hidden name="operationLeadTime" value={0} />
-          </>
+          <WorkCenter
+            name="workCenterId"
+            label={t`Work Center`}
+            autoSelectSingleOption={Boolean(processData.processId)}
+            locationId={locationId}
+            isOptional={["Draft", "Planned"].includes(job?.status ?? "")}
+            processId={processData.processId}
+            onChange={(value) => {
+              if (value) {
+                onWorkCenterChange(value?.value as string);
+              }
+            }}
+          />
         )}
       </div>
 
-      {isInsideOperationType(processData.operationType) && (
-        <OperationDetailTabs
-          sections={[
-            {
-              id: "setup",
-              label: <Trans>Setup</Trans>,
-              accessibilityLabel: t`Setup`,
-              icon: <TimeTypeIcon type="Setup" />,
-              summary:
-                (processData.setupTime ?? 0) > 0
-                  ? formatOperationTabSummary(
-                      processData.setupTime,
-                      processData.setupUnit
-                    )
-                  : undefined,
-              summaryTitle:
-                (processData.setupTime ?? 0) > 0
-                  ? `${processData.setupTime} ${processData.setupUnit}`
-                  : undefined,
-              content: (
-                <>
-                  <UnitHint
-                    name="setupHint"
-                    label={t`Setup`}
-                    value={processData.setupUnitHint}
-                    onChange={(hint) => {
-                      setProcessData((d) => ({
-                        ...d,
-                        setupUnitHint: hint,
-                        setupUnit:
-                          hint === "Fixed" ? "Total Minutes" : "Minutes/Piece"
-                      }));
-                    }}
-                  />
-                  <NumberControlled
-                    name="setupTime"
-                    label={t`Setup Time`}
-                    isOptional={false}
-                    minValue={0}
-                    value={processData.setupTime}
-                    onChange={(newValue) =>
-                      setProcessData((d) => ({
-                        ...d,
-                        setupTime: newValue
-                      }))
-                    }
-                  />
-                  <StandardFactor
-                    name="setupUnit"
-                    label={t`Setup Unit`}
-                    isOptional={false}
-                    hint={processData.setupUnitHint}
-                    value={processData.setupUnit}
-                    onChange={(newValue) => {
-                      setProcessData((d) => ({
-                        ...d,
-                        setupUnit: newValue?.value ?? "Total Minutes"
-                      }));
-                    }}
-                  />
-                </>
-              )
-            },
-            {
-              id: "labor",
-              label: <Trans>Labor</Trans>,
-              accessibilityLabel: t`Labor`,
-              icon: <TimeTypeIcon type="Labor" />,
-              summary:
-                (processData.laborTime ?? 0) > 0
-                  ? formatOperationTabSummary(
-                      processData.laborTime,
-                      processData.laborUnit
-                    )
-                  : undefined,
-              summaryTitle:
-                (processData.laborTime ?? 0) > 0
-                  ? `${processData.laborTime} ${processData.laborUnit}`
-                  : undefined,
-              content: (
-                <>
-                  <UnitHint
-                    name="laborHint"
-                    label={t`Labor`}
-                    value={processData.laborUnitHint}
-                    onChange={(hint) => {
-                      setProcessData((d) => ({
-                        ...d,
-                        laborUnitHint: hint,
-                        laborUnit:
-                          hint === "Fixed" ? "Total Minutes" : "Minutes/Piece"
-                      }));
-                    }}
-                  />
-                  <NumberControlled
-                    name="laborTime"
-                    label={t`Labor Time`}
-                    isOptional={false}
-                    minValue={0}
-                    value={processData.laborTime}
-                    onChange={(newValue) =>
-                      setProcessData((d) => ({
-                        ...d,
-                        laborTime: newValue
-                      }))
-                    }
-                  />
-                  <StandardFactor
-                    name="laborUnit"
-                    label={t`Labor Unit`}
-                    isOptional={false}
-                    hint={processData.laborUnitHint}
-                    value={processData.laborUnit}
-                    onChange={(newValue) => {
-                      setProcessData((d) => ({
-                        ...d,
-                        laborUnit: newValue?.value ?? "Total Minutes"
-                      }));
-                    }}
-                  />
-                </>
-              )
-            },
-            {
-              id: "machine",
-              label: <Trans>Machine</Trans>,
-              accessibilityLabel: t`Machine`,
-              icon: <TimeTypeIcon type="Machine" />,
-              summary:
-                (processData.machineTime ?? 0) > 0
-                  ? formatOperationTabSummary(
-                      processData.machineTime,
-                      processData.machineUnit
-                    )
-                  : undefined,
-              summaryTitle:
-                (processData.machineTime ?? 0) > 0
-                  ? `${processData.machineTime} ${processData.machineUnit}`
-                  : undefined,
-              content: (
-                <>
-                  <UnitHint
-                    name="machineHint"
-                    label={t`Machine`}
-                    value={processData.machineUnitHint}
-                    onChange={(hint) => {
-                      setProcessData((d) => ({
-                        ...d,
-                        machineUnitHint: hint,
-                        machineUnit:
-                          hint === "Fixed" ? "Total Minutes" : "Minutes/Piece"
-                      }));
-                    }}
-                  />
-                  <NumberControlled
-                    name="machineTime"
-                    label={t`Machine Time`}
-                    isOptional={false}
-                    minValue={0}
-                    value={processData.machineTime}
-                    onChange={(newValue) =>
-                      setProcessData((d) => ({
-                        ...d,
-                        machineTime: newValue
-                      }))
-                    }
-                  />
-                  <StandardFactor
-                    name="machineUnit"
-                    label={t`Machine Unit`}
-                    isOptional={false}
-                    hint={processData.machineUnitHint}
-                    value={processData.machineUnit}
-                    onChange={(newValue) => {
-                      setProcessData((d) => ({
-                        ...d,
-                        machineUnit: newValue?.value ?? "Total Minutes"
-                      }));
-                    }}
-                  />
-                </>
-              )
-            },
-            {
-              id: "procedure",
-              label: <Trans>Procedure</Trans>,
-              accessibilityLabel: t`Procedure`,
-              icon: <LuListChecks />,
-              summary: procedureTabSummary,
-              summaryTitle: procedureTabSummaryTitle,
-              contentClassName:
-                "grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-1 pb-4 px-4 pt-4",
-              content: (
-                <>
-                  <Procedure
-                    name="procedureId"
-                    label={t`Procedure`}
-                    processId={processData.processId}
-                    value={processData.procedureId}
-                    onChange={(value) => {
-                      if (value && value.value !== item.data.procedureId) {
-                        setProcedureWasChanged(true);
-                      }
-                      setProcessData((d) => ({
-                        ...d,
-                        procedureId: value?.value as string
-                      }));
-                    }}
-                  />
-                  {!temporaryItems[item.id] && processData.procedureId && (
-                    <div className="flex flex-col gap-2 w-auto">
-                      {procedureWasChanged && (
-                        <span className="text-sm text-muted-foreground">
-                          <Trans>
-                            The procedure was changed, but not synced to the
-                            operation.
-                          </Trans>
-                        </span>
-                      )}
-                      <div>
-                        <Button
-                          variant="secondary"
-                          rightIcon={<LuRefreshCcw />}
-                          onClick={procedureSyncDisclosure.onOpen}
-                        >
-                          <Trans>Sync Procedure</Trans>
-                        </Button>
-                        {procedureSyncDisclosure.isOpen && (
-                          <ProcedureSyncModal
-                            operationId={item.id}
-                            procedureId={processData.procedureId}
-                            onClose={procedureSyncDisclosure.onClose}
-                          />
-                        )}
-                      </div>
-                    </div>
+      {processData.operationType === "Inside" && (
+        <>
+          <div className="border border-border rounded-md shadow-sm p-4 flex flex-col gap-4">
+            <HStack
+              className="w-full justify-between cursor-pointer"
+              onClick={setupDisclosure.onToggle}
+            >
+              <HStack>
+                <TimeTypeIcon type="Setup" />
+                <Label>
+                  <Trans>Setup</Trans>
+                </Label>
+              </HStack>
+              <HStack>
+                {(processData.setupTime ?? 0) > 0 && (
+                  <Badge variant="secondary">
+                    <TimeTypeIcon type="Setup" className="h-3 w-3 mr-1" />
+                    {processData.setupTime} {processData.setupUnit}
+                  </Badge>
+                )}
+                <IconButton
+                  icon={<LuChevronRight />}
+                  aria-label={
+                    setupDisclosure.isOpen ? t`Collapse Setup` : t`Expand Setup`
+                  }
+                  variant="ghost"
+                  size="md"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setupDisclosure.onToggle();
+                  }}
+                  className={`transition-transform ${
+                    setupDisclosure.isOpen ? "rotate-90" : ""
+                  }`}
+                />
+              </HStack>
+            </HStack>
+            <div
+              className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
+                setupDisclosure.isOpen ? "" : "hidden"
+              }`}
+            >
+              <UnitHint
+                name="setupHint"
+                label={t`Setup`}
+                value={processData.setupUnitHint}
+                onChange={(hint) => {
+                  setProcessData((d) => ({
+                    ...d,
+                    setupUnitHint: hint,
+                    setupUnit:
+                      hint === "Fixed" ? "Total Minutes" : "Minutes/Piece"
+                  }));
+                }}
+              />
+              <NumberControlled
+                name="setupTime"
+                label={t`Setup Time`}
+                isOptional={false}
+                minValue={0}
+                value={processData.setupTime}
+                onChange={(newValue) =>
+                  setProcessData((d) => ({
+                    ...d,
+                    setupTime: newValue
+                  }))
+                }
+              />
+              <StandardFactor
+                name="setupUnit"
+                label={t`Setup Unit`}
+                isOptional={false}
+                hint={processData.setupUnitHint}
+                value={processData.setupUnit}
+                onChange={(newValue) => {
+                  setProcessData((d) => ({
+                    ...d,
+                    setupUnit: newValue?.value ?? "Total Minutes"
+                  }));
+                }}
+              />
+            </div>
+          </div>
+
+          <div className="border border-border rounded-md shadow-sm p-4 flex flex-col gap-4">
+            <HStack
+              className="w-full justify-between cursor-pointer"
+              onClick={laborDisclosure.onToggle}
+            >
+              <HStack>
+                <TimeTypeIcon type="Labor" />
+                <Label>
+                  <Trans>Labor</Trans>
+                </Label>
+              </HStack>
+              <HStack>
+                {(processData.laborTime ?? 0) > 0 && (
+                  <Badge variant="secondary">
+                    <TimeTypeIcon type="Labor" className="h-3 w-3 mr-1" />
+                    {processData.laborTime} {processData.laborUnit}
+                  </Badge>
+                )}
+                <IconButton
+                  icon={<LuChevronRight />}
+                  aria-label={
+                    laborDisclosure.isOpen ? t`Collapse Labor` : t`Expand Labor`
+                  }
+                  variant="ghost"
+                  size="md"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    laborDisclosure.onToggle();
+                  }}
+                  className={`transition-transform ${
+                    laborDisclosure.isOpen ? "rotate-90" : ""
+                  }`}
+                />
+              </HStack>
+            </HStack>
+            <div
+              className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
+                laborDisclosure.isOpen ? "" : "hidden"
+              }`}
+            >
+              <UnitHint
+                name="laborHint"
+                label={t`Labor`}
+                value={processData.laborUnitHint}
+                onChange={(hint) => {
+                  setProcessData((d) => ({
+                    ...d,
+                    laborUnitHint: hint,
+                    laborUnit:
+                      hint === "Fixed" ? "Total Minutes" : "Minutes/Piece"
+                  }));
+                }}
+              />
+              <NumberControlled
+                name="laborTime"
+                label={t`Labor Time`}
+                isOptional={false}
+                minValue={0}
+                value={processData.laborTime}
+                onChange={(newValue) =>
+                  setProcessData((d) => ({
+                    ...d,
+                    laborTime: newValue
+                  }))
+                }
+              />
+              <StandardFactor
+                name="laborUnit"
+                label={t`Labor Unit`}
+                isOptional={false}
+                hint={processData.laborUnitHint}
+                value={processData.laborUnit}
+                onChange={(newValue) => {
+                  setProcessData((d) => ({
+                    ...d,
+                    laborUnit: newValue?.value ?? "Total Minutes"
+                  }));
+                }}
+              />
+            </div>
+          </div>
+
+          <div className="border border-border rounded-md shadow-sm p-4 flex flex-col gap-4">
+            <HStack
+              className="w-full justify-between cursor-pointer"
+              onClick={machineDisclosure.onToggle}
+            >
+              <HStack>
+                <TimeTypeIcon type="Machine" />
+                <Label>
+                  <Trans>Machine</Trans>
+                </Label>
+              </HStack>
+              <HStack>
+                {(processData.machineTime ?? 0) > 0 && (
+                  <Badge variant="secondary">
+                    <TimeTypeIcon type="Machine" className="h-3 w-3 mr-1" />
+                    {processData.machineTime} {processData.machineUnit}
+                  </Badge>
+                )}
+                <IconButton
+                  icon={<LuChevronRight />}
+                  aria-label={
+                    machineDisclosure.isOpen
+                      ? t`Collapse Machine`
+                      : t`Expand Machine`
+                  }
+                  variant="ghost"
+                  size="md"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    machineDisclosure.onToggle();
+                  }}
+                  className={`transition-transform ${
+                    machineDisclosure.isOpen ? "rotate-90" : ""
+                  }`}
+                />
+              </HStack>
+            </HStack>
+            <div
+              className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
+                machineDisclosure.isOpen ? "" : "hidden"
+              }`}
+            >
+              <UnitHint
+                name="machineHint"
+                label={t`Machine`}
+                value={processData.machineUnitHint}
+                onChange={(hint) => {
+                  setProcessData((d) => ({
+                    ...d,
+                    machineUnitHint: hint,
+                    machineUnit:
+                      hint === "Fixed" ? "Total Minutes" : "Minutes/Piece"
+                  }));
+                }}
+              />
+              <NumberControlled
+                name="machineTime"
+                label={t`Machine Time`}
+                isOptional={false}
+                minValue={0}
+                value={processData.machineTime}
+                onChange={(newValue) =>
+                  setProcessData((d) => ({
+                    ...d,
+                    machineTime: newValue
+                  }))
+                }
+              />
+              <StandardFactor
+                name="machineUnit"
+                label={t`Machine Unit`}
+                isOptional={false}
+                hint={processData.machineUnitHint}
+                value={processData.machineUnit}
+                onChange={(newValue) => {
+                  setProcessData((d) => ({
+                    ...d,
+                    machineUnit: newValue?.value ?? "Total Minutes"
+                  }));
+                }}
+              />
+            </div>
+          </div>
+
+          <div className="border border-border rounded-md shadow-sm p-4 flex flex-col gap-4">
+            <HStack
+              className="w-full justify-between cursor-pointer"
+              onClick={costingDisclosure.onToggle}
+            >
+              <HStack>
+                <LuDollarSign />
+                <Label>Costing</Label>
+              </HStack>
+              <HStack>
+                <IconButton
+                  icon={<LuChevronRight />}
+                  aria-label={
+                    costingDisclosure.isOpen
+                      ? "Collapse Costing"
+                      : "Expand Costing"
+                  }
+                  variant="ghost"
+                  size="md"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    costingDisclosure.onToggle();
+                  }}
+                  className={`transition-transform ${
+                    costingDisclosure.isOpen ? "rotate-90" : ""
+                  }`}
+                />
+              </HStack>
+            </HStack>
+            <div
+              className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
+                costingDisclosure.isOpen ? "" : "hidden"
+              }`}
+            >
+              <NumberControlled
+                name="laborRate"
+                label={t`Labor Rate`}
+                minValue={0}
+                value={processData.laborRate}
+                formatOptions={{
+                  style: "currency",
+                  currency: baseCurrency
+                }}
+                onChange={(newValue) =>
+                  setProcessData((d) => ({
+                    ...d,
+                    laborRate: newValue
+                  }))
+                }
+              />
+              <NumberControlled
+                name="machineRate"
+                label={t`Machine Rate`}
+                minValue={0}
+                value={processData.machineRate}
+                formatOptions={{
+                  style: "currency",
+                  currency: baseCurrency
+                }}
+                onChange={(newValue) =>
+                  setProcessData((d) => ({
+                    ...d,
+                    machineRate: newValue
+                  }))
+                }
+              />
+              <NumberControlled
+                name="overheadRate"
+                label={t`Overhead Rate`}
+                minValue={0}
+                value={processData.overheadRate}
+                formatOptions={{
+                  style: "currency",
+                  currency: baseCurrency
+                }}
+                onChange={(newValue) =>
+                  setProcessData((d) => ({
+                    ...d,
+                    overheadRate: newValue
+                  }))
+                }
+              />
+            </div>
+          </div>
+
+          <div className="border border-border rounded-md shadow-sm p-4 flex flex-col gap-4">
+            <HStack
+              className="w-full justify-between cursor-pointer"
+              onClick={procedureDisclosure.onToggle}
+            >
+              <HStack>
+                <LuListChecks />
+                <Label>Procedure</Label>
+              </HStack>
+              <HStack>
+                {processData.procedureId && (
+                  <Badge variant="secondary">
+                    <LuListChecks className="h-3 w-3 mr-1" />
+                    Procedure
+                  </Badge>
+                )}
+                <IconButton
+                  icon={<LuChevronRight />}
+                  aria-label={
+                    procedureDisclosure.isOpen
+                      ? "Collapse Procedure"
+                      : "Expand Procedure"
+                  }
+                  variant="ghost"
+                  size="md"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    procedureDisclosure.onToggle();
+                  }}
+                  className={`transition-transform ${
+                    procedureDisclosure.isOpen ? "rotate-90" : ""
+                  }`}
+                />
+              </HStack>
+            </HStack>
+            <div
+              className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-1 pb-4 ${
+                procedureDisclosure.isOpen ? "" : "hidden"
+              }`}
+            >
+              <Procedure
+                name="procedureId"
+                label={t`Procedure`}
+                processId={processData.processId}
+                value={processData.procedureId}
+                onChange={(value) => {
+                  if (value && value.value !== item.data.procedureId) {
+                    setProcedureWasChanged(true);
+                  }
+                  setProcessData((d) => ({
+                    ...d,
+                    procedureId: value?.value as string
+                  }));
+                }}
+              />
+              {!temporaryItems[item.id] && processData.procedureId && (
+                <div className="flex flex-col gap-2 w-auto">
+                  {procedureWasChanged && (
+                    <span className="text-sm text-muted-foreground">
+                      The procedure was changed, but not synced to the
+                      operation.
+                    </span>
                   )}
-                </>
-              )
-            }
-          ]}
-        />
+                  <div>
+                    <Button
+                      variant="secondary"
+                      rightIcon={<LuRefreshCcw />}
+                      onClick={procedureSyncDisclosure.onOpen}
+                    >
+                      Sync Procedure
+                    </Button>
+                    {procedureSyncDisclosure.isOpen && (
+                      <ProcedureSyncModal
+                        operationId={item.id}
+                        procedureId={processData.procedureId}
+                        onClose={procedureSyncDisclosure.onClose}
+                      />
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </>
       )}
       <motion.div
         className="flex w-full items-center justify-end p-2"
@@ -3945,23 +2916,21 @@ function ProcedureSyncModal({
                 <Trans>Potential Data Loss</Trans>
               </AlertTitle>
               <AlertDescription>
-                <Trans>
-                  Syncing the procedure will update the operation with the new
-                  work instructions, steps, and parameters. Any steps that are
-                  not part of the procedure will be removed.
-                </Trans>
+                Syncing the procedure will update the operation with the new
+                work instructions, steps, and parameters. Any steps that are not
+                part of the procedure will be removed.
               </AlertDescription>
             </Alert>
           </ModalBody>
           <ModalFooter>
             <Button variant="secondary" onClick={onClose}>
-              <Trans>Cancel</Trans>
+              Cancel
             </Button>
             <Submit
               isLoading={fetcher.state !== "idle"}
               isDisabled={fetcher.state !== "idle"}
             >
-              <Trans>Sync</Trans>
+              Sync
             </Submit>
           </ModalFooter>
         </ValidatedForm>
@@ -3970,107 +2939,37 @@ function ProcedureSyncModal({
   );
 }
 
-type PickupActivityRowProps = {
-  item: UnifiedPickupItem;
-  configurationParameters?: ConfigurationParameter[] | null;
-};
-
-const PickupActivityRow = ({
-  item,
-  configurationParameters
-}: PickupActivityRowProps) => {
-  const { formatDateTime } = useDateFormatter();
-  const { t } = useLingui();
-
-  const pickup = item.pickup;
-  const configParts =
-    configurationParameters?.length && pickup.configuration
-      ? getConfigRowDisplayParts(
-          pickup.configuration,
-          configurationParameters,
-          t`Quantities`
-        )
-      : [];
-
-  const commentParts: ReactNode[] = [];
-  if (configParts.length > 0) {
-    commentParts.push(
-      <div key="config" className="mb-1">
-        <ConfigQuantityBreakdown parts={configParts} />
-      </div>
-    );
-  }
-  if (pickup.notes) {
-    commentParts.push(
-      <p key="notes" className="text-sm text-muted-foreground">
-        {pickup.notes}
-      </p>
-    );
-  }
-
-  if (item.kind === "supplier") {
-    const supplierId = item.pickup.supplierProcess?.supplierId;
-    return (
-      <div className="flex flex-col gap-1 rounded-lg border border-border/60 bg-background px-3 py-2">
-        <div className="flex items-center gap-2 text-sm">
-          {supplierId ? (
-            <SupplierAvatar
-              supplierId={supplierId}
-              size="xs"
-              className="font-medium"
-            />
-          ) : (
-            <span className="font-medium">{t`Supplier`}</span>
-          )}
-          <span className="text-muted-foreground">
-            {t`picked up ${pickup.quantity} units`}
-          </span>
-          {pickup.createdAt ? (
-            <span className="text-xs tabular-nums text-muted-foreground">
-              {formatDateTime(pickup.createdAt)}
-            </span>
-          ) : null}
-        </div>
-        {commentParts.length > 0 ? (
-          <div className="flex flex-col gap-1.5">{commentParts}</div>
-        ) : null}
-      </div>
-    );
-  }
-
-  const employeePickup = item.pickup;
-  return (
-    <Activity
-      employeeId={employeePickup.employeeId}
-      activityMessage={
-        <span className="inline-flex flex-wrap items-center gap-2">
-          {t`picked up ${pickup.quantity} units`}
-        </span>
-      }
-      activityTime={pickup.createdAt}
-      activityTimeDetail={
-        pickup.createdAt ? formatDateTime(pickup.createdAt) : undefined
-      }
-      comment={
-        commentParts.length > 0 ? (
-          <div className="flex flex-col gap-1.5">{commentParts}</div>
-        ) : undefined
-      }
-    />
-  );
-};
-
 type ProductionEventActivityProps = {
   item: Database["public"]["Tables"]["productionEvent"]["Row"];
 };
 
+const getActivityText = (
+  item: Database["public"]["Tables"]["productionEvent"]["Row"]
+) => {
+  switch (item.type) {
+    case "Setup":
+      return item.duration
+        ? `did ${formatDurationMilliseconds(item.duration * 1000)} of setup`
+        : `started setup`;
+    case "Labor":
+      return item.duration
+        ? `did ${formatDurationMilliseconds(item.duration * 1000)} of labor`
+        : `started labor`;
+    case "Machine":
+      return item.duration
+        ? `did ${formatDurationMilliseconds(item.duration * 1000)} of machine`
+        : `started machine`;
+    default:
+      return "";
+  }
+};
+
 const ProductionEventActivity = ({ item }: ProductionEventActivityProps) => {
   const { formatDateTime } = useDateFormatter();
-  const getActivityMessage = useProductionEventActivityMessage();
   return (
     <Activity
       employeeId={item.employeeId ?? item.createdBy}
-      activityMessage={getActivityMessage(item)}
+      activityMessage={getActivityText(item)}
       activityTime={formatDateTime(item.startTime)}
       activityIcon={
         item.type ? (
@@ -4100,7 +2999,6 @@ function ToolsListItem({
   className?: string;
 }) {
   const { formatRelativeTime } = useDateFormatter();
-  const createdUpdatedText = useRelativeCreatedUpdatedText();
   const disclosure = useDisclosure();
   const deleteModalDisclosure = useDisclosure();
   const submitted = useRef(false);
@@ -4151,13 +3049,13 @@ function ToolsListItem({
             </div>
             <HStack className="w-full justify-end" spacing={2}>
               <Button variant="secondary" onClick={disclosure.onClose}>
-                <Trans>Cancel</Trans>
+                Cancel
               </Button>
               <Submit
                 isDisabled={fetcher.state !== "idle"}
                 isLoading={fetcher.state !== "idle"}
               >
-                <Trans>Save</Trans>
+                Save
               </Submit>
             </HStack>
           </VStack>
@@ -4185,7 +3083,7 @@ function ToolsListItem({
           <div className="flex items-center justify-end gap-2">
             <HStack spacing={2}>
               <span className="text-xs text-muted-foreground">
-                {createdUpdatedText(isUpdated, formatRelativeTime(date))}
+                {isUpdated ? "Updated" : "Created"} {formatRelativeTime(date)}
               </span>
               <EmployeeAvatar employeeId={person} withName={false} />
             </HStack>
@@ -4199,13 +3097,13 @@ function ToolsListItem({
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={disclosure.onOpen}>
-                  <Trans>Edit</Trans>
+                  Edit
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   destructive
                   onClick={deleteModalDisclosure.onOpen}
                 >
-                  <Trans>Delete</Trans>
+                  Delete
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -4217,7 +3115,7 @@ function ToolsListItem({
           action={path.to.deleteJobOperationTool(id)}
           isOpen={deleteModalDisclosure.isOpen}
           name={tool.readableIdWithRevision}
-          text={t`Are you sure you want to delete ${tool.readableIdWithRevision} from this operation? This cannot be undone.`}
+          text={`Are you sure you want to delete ${tool.readableIdWithRevision} from this operation? This cannot be undone.`}
           onCancel={() => {
             deleteModalDisclosure.onClose();
           }}
@@ -4252,7 +3150,7 @@ function ToolsForm({
           <Trans>Cannot add tools to unsaved operation</Trans>
         </AlertTitle>
         <AlertDescription>
-          <Trans>Please save the operation before adding tools.</Trans>
+          Please save the operation before adding tools.
         </AlertDescription>
       </Alert>
     );
@@ -4287,7 +3185,7 @@ function ToolsForm({
               isDisabled={isDisabled || fetcher.state !== "idle"}
               isLoading={fetcher.state !== "idle"}
             >
-              <Trans>Save Tool</Trans>
+              Save Tool
             </Submit>
           </VStack>
         </ValidatedForm>

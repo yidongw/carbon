@@ -15,20 +15,6 @@ export function getPermissionCacheKey(userId: string) {
   return `permissions:${userId}`;
 }
 
-/** Reject stale Redis entries cached before the user had a company/role. */
-export function isValidCachedClaims(
-  claims: {
-    permissions: Record<string, Permission>;
-    role: string | null;
-  } | null
-): claims is { permissions: Record<string, Permission>; role: string } {
-  return (
-    !!claims &&
-    !!claims.role &&
-    Object.keys(claims.permissions).length > 0
-  );
-}
-
 export async function getCompanies(
   client: SupabaseClient<Database>,
   userId: string

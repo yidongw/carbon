@@ -46,10 +46,12 @@ export async function action({ request }: ActionFunctionArgs) {
     dueDateOfFirstJob,
     dueDateOfLastJob,
     scrapQuantityPerJob,
-    jobCount,
+    totalQuantity,
     quantityPerJob,
     ...jobData
   } = validation.data;
+  const jobs = Math.ceil(totalQuantity / quantityPerJob);
+  const quantityOfLastJob = totalQuantity - (jobs - 1) * quantityPerJob;
 
   let configuration = undefined;
   if (jobData.configuration) {
@@ -59,23 +61,6 @@ export async function action({ request }: ActionFunctionArgs) {
       console.error(error);
     }
   }
-
-  const configTableRows = Array.isArray(configuration?.configTable)
-    ? configuration.configTable
-    : [];
-  const configTablePrimaryKeys = Array.isArray(
-    configuration?.configTablePrimaryKeys
-  )
-    ? configuration.configTablePrimaryKeys
-    : ["Quantities"];
-  const hasConfiguredJobs = configTableRows.length > 0;
-  const jobs = Math.max(1, Math.ceil(jobCount));
-
-  const getConfiguredJobQuantity = (row: Record<string, unknown>) =>
-    configTablePrimaryKeys.reduce(
-      (sum: number, key: string) => sum + (Number(row[key]) || 0),
-      0
-    );
 
   const manufacturing = await getItemReplenishment(
     serviceRole,
@@ -140,26 +125,16 @@ export async function action({ request }: ActionFunctionArgs) {
       "T"
     )[0];
 
-    const configTableRow = hasConfiguredJobs
-      ? configTableRows[i % configTableRows.length]
-      : undefined;
-    const configurationForJob = configTableRow
-      ? {
-          ...configuration,
-          configTable: [configTableRow]
-        }
-      : configuration;
-    const jobQuantity = configTableRow
-      ? getConfiguredJobQuantity(configTableRow)
-      : quantityPerJob;
-    const scrapRatio =
-      quantityPerJob > 0 ? scrapQuantityPerJob / quantityPerJob : 0;
-
     const createJob = await upsertJob(serviceRole, {
       jobId,
       ...jobData,
-      quantity: jobQuantity,
-      scrapQuantity: Math.ceil(jobQuantity * scrapRatio),
+      quantity: i === jobs - 1 ? quantityOfLastJob : quantityPerJob,
+      scrapQuantity:
+        i === jobs - 1
+          ? Math.ceil(
+              quantityOfLastJob * (scrapQuantityPerJob / quantityPerJob)
+            )
+          : scrapQuantityPerJob,
       dueDate,
       startDate: dueDate
         ? parseDate(dueDate)
@@ -167,7 +142,7 @@ export async function action({ request }: ActionFunctionArgs) {
             .toString()
         : undefined,
       storageUnitId: storageUnitId ?? undefined,
-      configuration: configurationForJob,
+      configuration,
       companyId,
       createdBy: userId,
       customFields: setCustomFields(formData)
@@ -193,7 +168,7 @@ export async function action({ request }: ActionFunctionArgs) {
       targetId: id,
       companyId,
       userId,
-      configuration: configurationForJob
+      configuration
     });
 
     if (upsertMethod.error) {

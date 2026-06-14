@@ -1,9 +1,5 @@
-"use client";
-
 import { createSuggestionItems } from "@carbon/tiptap";
 import type { EditorView } from "@tiptap/pm/view";
-import { useLingui } from "@lingui/react/macro";
-import { useMemo } from "react";
 import {
   LuHeading1,
   LuHeading2,
@@ -15,14 +11,13 @@ import {
   LuText
 } from "react-icons/lu";
 
-export const useSuggestionItems = (
+export const getSuggestionItems = (
   uploadFn: (file: File, view: EditorView, pos: number) => void
 ) => {
-  const { t } = useLingui();
-  return useMemo(() => createSuggestionItems([
+  return createSuggestionItems([
     {
-      title: t`Text`,
-      description: t`Just start typing with plain text.`,
+      title: "Text",
+      description: "Just start typing with plain text.",
       searchTerms: ["p", "paragraph"],
       icon: <LuText size={18} />,
       command: ({ editor, range }) => {
@@ -35,8 +30,8 @@ export const useSuggestionItems = (
       }
     },
     {
-      title: t`To-do List`,
-      description: t`Track tasks with a to-do list.`,
+      title: "To-do List",
+      description: "Track tasks with a to-do list.",
       searchTerms: ["todo", "task", "list", "check", "checkbox"],
       icon: <LuSquareCheck size={18} />,
       command: ({ editor, range }) => {
@@ -44,8 +39,8 @@ export const useSuggestionItems = (
       }
     },
     {
-      title: t`Heading 1`,
-      description: t`Big section heading.`,
+      title: "Heading 1",
+      description: "Big section heading.",
       searchTerms: ["title", "big", "large"],
       icon: <LuHeading1 size={18} />,
       command: ({ editor, range }) => {
@@ -58,8 +53,8 @@ export const useSuggestionItems = (
       }
     },
     {
-      title: t`Heading 2`,
-      description: t`Medium section heading.`,
+      title: "Heading 2",
+      description: "Medium section heading.",
       searchTerms: ["subtitle", "medium"],
       icon: <LuHeading2 size={18} />,
       command: ({ editor, range }) => {
@@ -72,8 +67,8 @@ export const useSuggestionItems = (
       }
     },
     {
-      title: t`Heading 3`,
-      description: t`Small section heading.`,
+      title: "Heading 3",
+      description: "Small section heading.",
       searchTerms: ["subtitle", "small"],
       icon: <LuHeading3 size={18} />,
       command: ({ editor, range }) => {
@@ -86,8 +81,8 @@ export const useSuggestionItems = (
       }
     },
     {
-      title: t`Bullet List`,
-      description: t`Create a simple bullet list.`,
+      title: "Bullet List",
+      description: "Create a simple bullet list.",
       searchTerms: ["unordered", "point"],
       icon: <LuList size={18} />,
       command: ({ editor, range }) => {
@@ -95,21 +90,30 @@ export const useSuggestionItems = (
       }
     },
     {
-      title: t`Numbered List`,
-      description: t`Create a list with numbering.`,
+      title: "Numbered List",
+      description: "Create a list with numbering.",
       searchTerms: ["ordered"],
       icon: <LuListOrdered size={18} />,
       command: ({ editor, range }) => {
         editor.chain().focus().deleteRange(range).toggleOrderedList().run();
       }
     },
+    // {
+    //   title: "Code",
+    //   description: "Capture a code snippet.",
+    //   searchTerms: ["codeblock"],
+    //   icon: <LuCode size={18} />,
+    //   command: ({ editor, range }) =>
+    //     editor.chain().focus().deleteRange(range).toggleCodeBlock().run(),
+    // },
     {
-      title: t`Image`,
-      description: t`Upload an image from your computer.`,
+      title: "Image",
+      description: "Upload an image from your computer.",
       searchTerms: ["photo", "picture", "media"],
       icon: <LuImage size={18} />,
       command: ({ editor, range }) => {
         editor.chain().focus().deleteRange(range).run();
+        // upload image
         const input = document.createElement("input");
         input.type = "file";
         input.accept = "image/*";
@@ -123,5 +127,5 @@ export const useSuggestionItems = (
         input.click();
       }
     }
-  ]), [uploadFn, t]);
+  ]);
 };

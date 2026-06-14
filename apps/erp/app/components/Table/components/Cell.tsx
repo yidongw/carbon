@@ -53,25 +53,19 @@ const Cell = <T extends object>({
     : null;
 
   const isPinned = cell.column.getIsPinned();
-  const cellClassName =
-    typeof cell.column.columnDef.meta === "object" &&
-    cell.column.columnDef.meta !== null &&
-    "cellClassName" in cell.column.columnDef.meta
-      ? (cell.column.columnDef.meta.cellClassName as string | undefined)
-      : undefined;
 
   return (
     <Td
       className={cn(
         "relative px-4 py-2 whitespace-nowrap text-sm outline-none max-w-[30dvw] truncate",
-        cellClassName,
         wasEdited && "bg-yellow-100 dark:bg-yellow-900",
         isEditMode && !hasEditableTableCellComponent && "bg-muted/50",
         isEditMode && "border-border border-r",
         hasError && "ring-inset ring-2 ring-red-500",
         isSelected && "!ring-inset !ring-2 !ring-ring",
         isSelected && hasEditableTableCellComponent && "!bg-background",
-        isPinned && "bg-card transition-[left] duration-200"
+        "transition-[left,right,box-shadow] duration-200",
+        isPinned && "bg-card"
       )}
       ref={ref}
       style={{
@@ -111,26 +105,17 @@ const Cell = <T extends object>({
   );
 };
 
-// Cells re-render based on their own value, not row identity. Multi-field
-// cells should subscribe to all fields they read (e.g. via the column
-// accessor's `id` returning a derived value).
 const MemoizedCell = memo(
   Cell,
   (prev, next) =>
-    prev.cell.id === next.cell.id &&
     next.isRowSelected === prev.isRowSelected &&
     next.isSelected === prev.isSelected &&
     next.isEditing === prev.isEditing &&
     next.isEditMode === prev.isEditMode &&
     next.cell.getValue() === prev.cell.getValue() &&
+    next.cell.getContext() === prev.cell.getContext() &&
     next.pinnedColumns === prev.pinnedColumns &&
-    next.columnIndex === prev.columnIndex &&
-    // getPinnedStyles is applied to the Td below; its identity changes when
-    // columnPinning/columnSizeMap update (it's a useCallback keyed on them).
-    // Without this the cell keeps the styles from the first render — when
-    // columnSizeMap was still empty — so pinned cells stick at left:0 and
-    // cover the checkbox column once widths are measured.
-    prev.getPinnedStyles === next.getPinnedStyles
+    next.columnIndex === prev.columnIndex
 ) as typeof Cell;
 
 export default MemoizedCell;

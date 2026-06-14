@@ -1,6 +1,6 @@
 "use client";
 
-import { cn, Skeleton } from "@carbon/react";
+import { Skeleton } from "@carbon/react";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import Empty from "./Empty";
@@ -10,8 +10,6 @@ interface InfiniteScrollProps<T extends { id: string }> {
   items: T[];
   loadMore: () => Promise<void>;
   hasMore: boolean;
-  /** Extra classes on the scroll list (e.g. gap between cards). */
-  listClassName?: string;
 }
 
 export function LoadingSkeleton({
@@ -50,8 +48,7 @@ export default function InfiniteScroll<T extends { id: string }>({
   component: Component,
   items,
   loadMore,
-  hasMore,
-  listClassName
+  hasMore
 }: InfiniteScrollProps<T>) {
   const { ref, inView } = useInView({
     threshold: 0
@@ -65,12 +62,7 @@ export default function InfiniteScroll<T extends { id: string }>({
 
   return (
     <div className="w-full">
-      <ul
-        className={cn(
-          "relative flex h-full flex-col gap-2 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent",
-          listClassName
-        )}
-      >
+      <ul className="relative h-full overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent flex flex-col gap-2">
         {items.length === 0 ? (
           <div className="flex pt-16 justify-center">
             <Empty />

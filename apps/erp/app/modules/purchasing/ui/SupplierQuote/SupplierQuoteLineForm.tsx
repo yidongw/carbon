@@ -31,8 +31,7 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { LuBox, LuReceipt, LuTrash } from "react-icons/lu";
-import { useFetcher, useParams } from "react-router";
-import type { action } from "~/routes/x+/supplier-quote+/$id.$lineId.details";
+import { useParams } from "react-router";
 import type { z } from "zod";
 import {
   Account,
@@ -76,7 +75,6 @@ const SupplierQuoteLineForm = ({
   const { carbon } = useCarbon();
 
   const { id } = useParams();
-  const fetcher = useFetcher<typeof action>();
 
   if (!id) throw new Error("id not found");
 
@@ -213,9 +211,10 @@ const SupplierQuoteLineForm = ({
                     : path.to.newSupplierQuoteLine(id)
                 }
                 className="w-full"
-                fetcher={fetcher}
                 isDisabled={isEditing && isLocked}
-                onSuccess={type === "modal" ? onClose : undefined}
+                onSubmit={() => {
+                  if (type === "modal") onClose?.();
+                }}
               >
                 <HStack
                   className={cn(

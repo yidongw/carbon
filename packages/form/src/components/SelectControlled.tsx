@@ -50,11 +50,7 @@ const SelectControlled = ({
 
   const onChange = (value: string) => {
     if (value) {
-      // String() guards against options declared with non-string values
-      // (Radix always emits strings from the trigger).
-      props?.onChange?.(
-        options.find((o) => String(o.value) === value) ?? null
-      );
+      props?.onChange?.(options.find((o) => o.value === value) ?? null);
     } else {
       props?.onChange?.(null);
     }

@@ -2,7 +2,7 @@ import { useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useMemo } from "react";
 import { Hyperlink, Table } from "~/components";
-import { useOperationTypeLabel } from "~/modules/production/ui/Jobs/productionQuantityLabels";
+import { Enumerable } from "~/components/Enumerable";
 import { operationTypes } from "~/modules/shared";
 import { useParts, useTools } from "~/stores";
 import type { MethodOperation } from "../../types";
@@ -16,7 +16,6 @@ type MethodOperationsTableProps = {
 const MethodOperationsTable = memo(
   ({ data, count }: MethodOperationsTableProps) => {
     const { t } = useLingui();
-    const operationTypeLabel = useOperationTypeLabel();
     const parts = useParts();
     const tools = useTools();
 
@@ -63,14 +62,15 @@ const MethodOperationsTable = memo(
         {
           accessorKey: "operationType",
           header: t`Operation Type`,
-          cell: (item) =>
-            operationTypeLabel(item.getValue<string>() ?? ""),
+          cell: (item) => (
+            <Enumerable value={item.getValue<string>() ?? null} />
+          ),
           meta: {
             filter: {
               type: "static",
               options: operationTypes.map((value) => ({
                 value,
-                label: operationTypeLabel(value)
+                label: <Enumerable value={value ?? null} />
               }))
             }
           }
@@ -97,7 +97,7 @@ const MethodOperationsTable = memo(
           }
         }
       ];
-    }, [items, operationTypeLabel, t]);
+    }, [items, t]);
 
     return (
       <Table<MethodOperation>

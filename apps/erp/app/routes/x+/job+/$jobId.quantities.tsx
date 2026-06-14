@@ -6,16 +6,11 @@ import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useLoaderData } from "react-router";
 import { usePanels } from "~/components/Layout";
 import {
-  getJobOperationSupplierQuantities,
   getJobOperationsList,
   getProductionQuantities,
   getScrapReasons
 } from "~/modules/production";
 import { ProductionQuantitiesTable } from "~/modules/production/ui/Jobs";
-import {
-  mergeProductionQuantityListItems,
-  partitionQuantityListFilters
-} from "~/modules/production/ui/Jobs/unifiedQuantityFeeds";
 import { path, requestReferrer } from "~/utils/path";
 import { getGenericQueryFilters } from "~/utils/query";
 
@@ -35,7 +30,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const operations = await getJobOperationsList(client, jobId);
   if (operations.error) {
-    throw redirect(
+    redirect(
       requestReferrer(request) ?? path.to.job(jobId),
       await flash(
         request,
@@ -53,55 +48,27 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     };
   }
 
-  const operationIds = operations.data?.map((o) => o.id) ?? [];
-  const listQueryArgs = { search, sorts, filters };
+  const [events, scrapReasons] = await Promise.all([
+    getProductionQuantities(client, operations.data?.map((o) => o.id) ?? [], {
+      search,
+      limit,
+      offset,
+      sorts,
+      filters
+    }),
+    getScrapReasons(client, companyId)
+  ]);
 
-  const [employeeQuantities, supplierQuantities, scrapReasons] =
-    await Promise.all([
-      getProductionQuantities(client, operationIds, {
-        ...listQueryArgs,
-        filters: partitionQuantityListFilters(filters, "employee")
-      }),
-      getJobOperationSupplierQuantities(client, operationIds, companyId, {
-        ...listQueryArgs,
-        filters: partitionQuantityListFilters(filters, "supplier")
-      }),
-      getScrapReasons(client, companyId)
-    ]);
-
-  if (employeeQuantities.error) {
-    throw redirect(
-      path.to.productionDashboard,
-      await flash(
-        request,
-        error(employeeQuantities.error, "Failed to fetch job events")
-      )
+  if (events.error) {
+    redirect(
+      path.to.production,
+      await flash(request, error(events.error, "Failed to fetch job events"))
     );
   }
-
-  if (supplierQuantities.error) {
-    throw redirect(
-      path.to.productionDashboard,
-      await flash(
-        request,
-        error(supplierQuantities.error, "Failed to fetch supplier quantities")
-      )
-    );
-  }
-
-  // Pagination is applied client-side after merging both sources: each query
-  // returns all matching rows so the merged order is stable across pages.
-  // OK at typical job-sized event counts (low hundreds); revisit if jobs
-  // routinely exceed a few thousand quantity rows.
-  const merged = mergeProductionQuantityListItems(
-    employeeQuantities.data ?? [],
-    supplierQuantities.data ?? [],
-    sorts
-  );
 
   return {
-    count: (employeeQuantities.count ?? 0) + (supplierQuantities.count ?? 0),
-    events: merged.slice(offset, offset + limit),
+    count: events.count ?? 0,
+    events: events.data ?? [],
     operations: operations.data ?? [],
     scrapReasons: scrapReasons.data ?? []
   };

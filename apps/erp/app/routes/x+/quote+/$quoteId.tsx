@@ -15,14 +15,14 @@ import {
   useParams,
   useSubmit
 } from "react-router";
-import { PanelProvider, ResizablePanels } from "~/components/Layout";
+import { PanelProvider, ResizablePanels } from "~/components/Layout/Panels";
 import { getCurrencyByCode } from "~/modules/accounting";
 import { getSupplierPriceBreaksForItems } from "~/modules/items";
 import type { SalesOrderLine } from "~/modules/sales";
 import {
   getCustomer,
+  getOpportunity,
   getOpportunityDocuments,
-  getOrCreateOpportunityForRecord,
   getQuote,
   getQuoteLinePricesByQuoteId,
   getQuoteLines,
@@ -72,32 +72,13 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     throw redirect(path.to.quotes);
   }
 
-  const opportunity = await getOrCreateOpportunityForRecord(client, {
-    id: quote.data.id,
-    companyId: quote.data.companyId,
-    customerId: quote.data.customerId,
-    opportunityId: quote.data.opportunityId ?? null,
-    table: "quote"
-  });
-
-  if (opportunity.error) {
-    throw redirect(
-      path.to.quotes,
-      await flash(
-        request,
-        error(opportunity.error, "Failed to load quote opportunity")
-      )
-    );
-  }
-
-  if (!opportunity.data) throw new Error("Failed to get opportunity record");
-
   const [
     customer,
     shipment,
     payment,
     lines,
     prices,
+    opportunity,
     methods,
     opportunityDocuments,
     companySettings
@@ -107,10 +88,17 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     getQuotePayment(client, quoteId),
     getQuoteLines(client, quoteId),
     getQuoteLinePricesByQuoteId(client, quoteId),
+    getOpportunity(client, quote.data?.opportunityId),
     getQuoteMethodTrees(client, quoteId),
-    getOpportunityDocuments(client, companyId, opportunity.data.id),
+    getOpportunityDocuments(client, companyId, quote.data?.opportunityId ?? ""),
     getCompanySettings(client, companyId)
   ]);
+
+  if (!opportunity.data) throw new Error("Failed to get opportunity record");
+
+  if (companyId !== quote.data?.companyId) {
+    throw redirect(path.to.quotes);
+  }
 
   if (shipment.error) {
     throw redirect(
@@ -247,16 +235,16 @@ export default function QuoteRoute() {
   };
 
   return (
-    <PanelProvider key={quoteId}>
-      <DndContext onDragEnd={handleDragEnd}>
+    <DndContext onDragEnd={handleDragEnd}>
+      <PanelProvider key={quoteId}>
         <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full ">
           <QuoteHeader />
-          <div className="flex flex-1 min-h-0 overflow-hidden w-full">
-            <div className="flex flex-1 min-h-0 h-full overflow-hidden">
+          <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
+            <div className="flex flex-grow overflow-hidden">
               <ResizablePanels
                 explorer={<QuoteExplorer methods={methods} />}
                 content={
-                  <div className="h-full min-h-0 overflow-y-auto overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
+                  <div className="h-[calc(100dvh-99px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
                     <VStack spacing={2} className="p-2">
                       <Outlet />
                     </VStack>
@@ -267,7 +255,7 @@ export default function QuoteRoute() {
             </div>
           </div>
         </div>
-      </DndContext>
-    </PanelProvider>
+      </PanelProvider>
+    </DndContext>
   );
 }

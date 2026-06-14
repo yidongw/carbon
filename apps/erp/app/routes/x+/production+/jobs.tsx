@@ -5,12 +5,7 @@ import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
 import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useLoaderData } from "react-router";
-import {
-  getCurrentProcessByJobIds,
-  getItemIdsWithConfigurationParameters,
-  getJobs,
-  getTrackedEntitiesByJobMakeMethodIds
-} from "~/modules/production";
+import { getJobs } from "~/modules/production";
 import { JobsTable } from "~/modules/production/ui/Jobs";
 import { getLocationsList } from "~/modules/resources";
 import { getTagsList } from "~/modules/shared";
@@ -50,66 +45,25 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   if (jobs.error) {
     redirect(
-      path.to.productionDashboard,
+      path.to.production,
       await flash(request, error(jobs.error, "Failed to fetch jobs"))
     );
   }
 
-  const jobRows = jobs.data ?? [];
-  const jobMakeMethodIds = [
-    ...new Set(
-      jobRows
-        .map((job) => job.jobMakeMethodId)
-        .filter((id): id is string => Boolean(id))
-    )
-  ];
-  const itemIds = [
-    ...new Set(
-      jobRows.map((job) => job.itemId).filter((id): id is string => Boolean(id))
-    )
-  ];
-
-  const [
-    trackedEntities,
-    itemIdsWithConfigurationParameters,
-    currentProcessByJobId
-  ] = await Promise.all([
-    getTrackedEntitiesByJobMakeMethodIds(client, companyId, jobMakeMethodIds),
-    getItemIdsWithConfigurationParameters(client, companyId, itemIds),
-    getCurrentProcessByJobIds(client, jobRows)
-  ]);
-
   return {
     count: jobs.count ?? 0,
-    jobs: jobRows,
+    jobs: jobs.data ?? [],
     locations: locations.data ?? [],
-    tags: tags.data ?? [],
-    trackedEntities,
-    itemIdsWithConfigurationParameters,
-    currentProcessByJobId
+    tags: tags.data ?? []
   };
 }
 
 export default function JobsRoute() {
-  const {
-    count,
-    tags,
-    jobs,
-    trackedEntities,
-    itemIdsWithConfigurationParameters,
-    currentProcessByJobId
-  } = useLoaderData<typeof loader>();
+  const { count, tags, jobs } = useLoaderData<typeof loader>();
 
   return (
     <VStack spacing={0} className="h-full">
-      <JobsTable
-        data={jobs}
-        count={count}
-        tags={tags}
-        trackedEntities={trackedEntities}
-        itemIdsWithConfigurationParameters={itemIdsWithConfigurationParameters}
-        currentProcessByJobId={currentProcessByJobId}
-      />
+      <JobsTable data={jobs} count={count} tags={tags} />
       <Outlet />
     </VStack>
   );

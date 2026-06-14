@@ -85,14 +85,14 @@ const Breadcrumbs = () => {
       };
     })
     .filter(Boolean);
+
   const isMobile = useIsMobile();
-  const displayedBreadcrumbs = isMobile ? breadcrumbs.slice(0, 1) : breadcrumbs;
   const { company } = useUser();
   const mode = useMode();
   const logo = mode === "dark" ? company?.logoDarkIcon : company?.logoLightIcon;
 
   return (
-    <HStack className="items-center h-full flex -ml-2" spacing={0}>
+    <HStack className="items-center h-full hidden md:flex -ml-2" spacing={0}>
       <Button isIcon asChild variant="ghost" size="lg">
         <Link to="/">
           {logo ? (
@@ -108,11 +108,12 @@ const Breadcrumbs = () => {
       </Button>
 
       <BreadcrumbsBase className="line-clamp-1">
-        {displayedBreadcrumbs.map((breadcrumb, i) => (
+        {!isMobile && <CompanyBreadcrumb />}
+        {breadcrumbs.map((breadcrumb, i) => (
           <BreadcrumbItem key={i}>
             <BreadcrumbLink
-              isCurrentPage={isMobile || !breadcrumb?.to}
-              to={isMobile ? "" : (breadcrumb?.to ?? "")}
+              isCurrentPage={!breadcrumb?.to}
+              to={breadcrumb?.to ?? ""}
             >
               {breadcrumb?.breadcrumb}
             </BreadcrumbLink>
@@ -158,6 +159,7 @@ function CompanyBreadcrumb() {
       }
     }
 
+    // If a group has only one company, move it to "Companies"
     const result = new Map<
       string,
       { name: string; companies: typeof routeData.companies }
@@ -186,123 +188,122 @@ function CompanyBreadcrumb() {
     return Array.from(result.values());
   }, [routeData?.companies, t]);
 
-  return hasCompanyMenu ? (
-    <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            aria-current="page"
-            variant="ghost"
-            className="px-2 focus-visible:ring-transparent"
-            rightIcon={<LuChevronsUpDown />}
-          >
-            {routeData?.company.name}
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start" className="min-w-[240px]">
-          <ScrollArea className="max-h-[300px]">
-            {companyGroups.map((group, index) => (
-              <DropdownMenuGroup key={group.name}>
-                {index > 0 && <DropdownMenuSeparator />}
-                <DropdownMenuLabel>{group.name}</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {group.companies.map((c) => {
-                  const logo = mode === "dark" ? c.logoDarkIcon : c.logoLightIcon;
-                  return (
-                    <Form
-                      key={c.companyId}
-                      method="post"
-                      action={path.to.companySwitch(c.companyId!)}
-                    >
-                      <DropdownMenuItem
-                        className="flex items-center justify-between w-full"
-                        asChild
-                      >
-                        <button type="submit">
-                          <HStack>
-                            <Avatar
-                              size="xs"
-                              name={c.name ?? undefined}
-                              src={logo ?? undefined}
-                            />
-                            <span>{c.name}</span>
-                          </HStack>
-                          <Badge variant="secondary" className="ml-2">
-                            {c.employeeType}
-                          </Badge>
-                        </button>
-                      </DropdownMenuItem>
-                    </Form>
-                  );
-                })}
-              </DropdownMenuGroup>
-            ))}
-          </ScrollArea>
+  return (
+    <BreadcrumbItem isFirstChild>
+      {hasCompanyMenu ? (
+        <>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                aria-current="page"
+                variant="ghost"
+                className="px-2 focus-visible:ring-transparent"
+                rightIcon={<LuChevronsUpDown />}
+              >
+                {routeData?.company.name}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="min-w-[240px]">
+              <ScrollArea className="max-h-[300px]">
+                {companyGroups.map((group, index) => (
+                  <DropdownMenuGroup key={group.name}>
+                    {index > 0 && <DropdownMenuSeparator />}
+                    <DropdownMenuLabel>{group.name}</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {group.companies.map((c) => {
+                      const logo =
+                        mode === "dark" ? c.logoDarkIcon : c.logoLightIcon;
+                      return (
+                        <Form
+                          key={c.companyId}
+                          method="post"
+                          action={path.to.companySwitch(c.companyId!)}
+                        >
+                          <DropdownMenuItem
+                            className="flex items-center justify-between w-full"
+                            asChild
+                          >
+                            <button type="submit">
+                              <HStack>
+                                <Avatar
+                                  size="xs"
+                                  name={c.name ?? undefined}
+                                  src={logo ?? undefined}
+                                />
+                                <span>{c.name}</span>
+                              </HStack>
+                              <Badge variant="secondary" className="ml-2">
+                                {c.employeeType}
+                              </Badge>
+                            </button>
+                          </DropdownMenuItem>
+                        </Form>
+                      );
+                    })}
+                  </DropdownMenuGroup>
+                ))}
+              </ScrollArea>
 
-          {canCreateCompany && (
-            <>
-              <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-                <DropdownMenuItem onClick={companyForm.onOpen}>
-                  <DropdownMenuIcon icon={<IoMdAdd />} />
-                  {t`Add Company`}
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-            </>
-          )}
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <Modal
-        open={companyForm.isOpen}
-        onOpenChange={(open) => {
-          if (!open) companyForm.onClose();
-        }}
-      >
-        <ModalContent>
-          <ValidatedForm
-            action={path.to.newCompany}
-            validator={companyValidator}
-            method="post"
-            onSuccess={companyForm.onClose}
-            defaultValues={{
-              countryCode: "US",
-              baseCurrencyCode: "USD"
+              {canCreateCompany && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem onClick={companyForm.onOpen}>
+                      <DropdownMenuIcon icon={<IoMdAdd />} />
+                      {t`Add Company`}
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Modal
+            open={companyForm.isOpen}
+            onOpenChange={(open) => {
+              if (!open) companyForm.onClose();
             }}
           >
-            <ModalHeader>
-              <ModalTitle>
-                <Trans>Let's set up your new company</Trans>
-              </ModalTitle>
-            </ModalHeader>
-            <ModalBody>
-              <VStack spacing={4}>
-                <Input autoFocus name="name" label={t`Company Name`} />
-                <AddressAutocomplete variant="grid" />
-                <Currency
-                  name="baseCurrencyCode"
-                  label={t`Base Currency`}
-                />
-              </VStack>
-            </ModalBody>
-            <ModalFooter>
-              <HStack>
-                <Submit>
-                  <Trans>Save</Trans>
-                </Submit>
-              </HStack>
-            </ModalFooter>
-          </ValidatedForm>
-        </ModalContent>
-      </Modal>
-    </>
-  ) : (
-    <Button
-      className="pointer-events-none px-2"
-      variant="ghost"
-      aria-current="page"
-    >
-      {routeData?.company.name}
-    </Button>
+            <ModalContent>
+              <ValidatedForm
+                action={path.to.newCompany}
+                validator={companyValidator}
+                method="post"
+                onSubmit={companyForm.onClose}
+                defaultValues={{
+                  countryCode: "US",
+                  baseCurrencyCode: "USD"
+                }}
+              >
+                <ModalHeader>
+                  <ModalTitle>
+                    <Trans>Let's set up your new company</Trans>
+                  </ModalTitle>
+                </ModalHeader>
+                <ModalBody>
+                  <VStack spacing={4}>
+                    <Input autoFocus name="name" label={t`Company Name`} />
+                    <AddressAutocomplete variant="grid" />
+                    <Currency
+                      name="baseCurrencyCode"
+                      label={t`Base Currency`}
+                    />
+                  </VStack>
+                </ModalBody>
+                <ModalFooter>
+                  <HStack>
+                    <Submit>
+                      <Trans>Save</Trans>
+                    </Submit>
+                  </HStack>
+                </ModalFooter>
+              </ValidatedForm>
+            </ModalContent>
+          </Modal>
+        </>
+      ) : (
+        <BreadcrumbLink to="/">{routeData?.company.name}</BreadcrumbLink>
+      )}
+    </BreadcrumbItem>
   );
 }
 

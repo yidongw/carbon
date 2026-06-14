@@ -3,7 +3,6 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { useRouteData } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
-import { useLingui } from "@lingui/react/macro";
 import { Suspense } from "react";
 import type { LoaderFunctionArgs } from "react-router";
 import {
@@ -13,7 +12,7 @@ import {
   useLoaderData,
   useParams
 } from "react-router";
-import { PanelProvider, ResizablePanels } from "~/components/Layout";
+import { ResizablePanels } from "~/components/Layout";
 import type { ItemFile, MaterialSummary } from "~/modules/items";
 import {
   getItemFiles,
@@ -79,7 +78,6 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 }
 
 export default function MaterialRoute() {
-  const { t } = useLingui();
   const { itemId } = useParams();
   if (!itemId) throw new Error("Could not find itemId");
 
@@ -93,11 +91,10 @@ export default function MaterialRoute() {
   const { usedIn } = useLoaderData<typeof loader>();
 
   return (
-    <PanelProvider>
-      <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
+    <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
       <MaterialHeader />
       <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
-        <div className="flex flex-1 min-h-0 h-full overflow-hidden">
+        <div className="flex flex-grow overflow-hidden">
           <ResizablePanels
             explorer={
               <Suspense fallback={<UsedInSkeleton />}>
@@ -119,32 +116,32 @@ export default function MaterialRoute() {
                     const tree: UsedInNode[] = [
                       {
                         key: "issues",
-                        name: t`Issues`,
+                        name: "Issues",
                         module: "quality",
                         children: issues
                       },
                       {
                         key: "jobMaterials",
-                        name: t`Job Materials`,
+                        name: "Job Materials",
                         module: "production",
                         children: jobMaterials
                       },
                       {
                         key: "maintenanceDispatchItems",
-                        name: t`Maintenance`,
+                        name: "Maintenance",
                         module: "resources",
                         children: maintenanceDispatchItems
                       },
                       {
                         key: "methodMaterials",
-                        name: t`Method Materials`,
+                        name: "Method Materials",
                         module: "parts",
                         // @ts-expect-error
                         children: methodMaterials
                       },
                       {
                         key: "purchaseOrderLines",
-                        name: t`Purchase Orders`,
+                        name: "Purchase Orders",
                         module: "purchasing",
                         children: purchaseOrderLines.map((po) => ({
                           ...po,
@@ -153,7 +150,7 @@ export default function MaterialRoute() {
                       },
                       {
                         key: "receiptLines",
-                        name: t`Receipts`,
+                        name: "Receipts",
                         module: "inventory",
                         children: receiptLines.map((receipt) => ({
                           ...receipt,
@@ -163,7 +160,7 @@ export default function MaterialRoute() {
 
                       {
                         key: "quoteMaterials",
-                        name: t`Quote Materials`,
+                        name: "Quote Materials",
                         module: "sales",
                         children: quoteMaterials?.map((qm) => ({
                           ...qm,
@@ -172,13 +169,13 @@ export default function MaterialRoute() {
                       },
                       {
                         key: "salesOrderLines",
-                        name: t`Sales Orders`,
+                        name: "Sales Orders",
                         module: "sales",
                         children: salesOrderLines
                       },
                       {
                         key: "shipmentLines",
-                        name: t`Shipments`,
+                        name: "Shipments",
                         module: "inventory",
                         children: shipmentLines.map((shipment) => ({
                           ...shipment,
@@ -187,7 +184,7 @@ export default function MaterialRoute() {
                       },
                       {
                         key: "supplierQuotes",
-                        name: t`Supplier Quotes`,
+                        name: "Supplier Quotes",
                         module: "purchasing",
                         children: supplierQuotes
                       }
@@ -212,7 +209,7 @@ export default function MaterialRoute() {
               </Suspense>
             }
             content={
-              <div className="h-full min-h-0 overflow-y-auto overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
+              <div className="h-[calc(100dvh-99px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
                 <Outlet />
               </div>
             }
@@ -221,6 +218,5 @@ export default function MaterialRoute() {
         </div>
       </div>
     </div>
-    </PanelProvider>
   );
 }

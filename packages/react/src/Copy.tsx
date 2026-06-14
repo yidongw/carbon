@@ -1,4 +1,3 @@
-import { useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import { LuCheck, LuCopy } from "react-icons/lu";
 import { IconButton } from "./IconButton";
@@ -19,7 +18,6 @@ const Copy = ({
   withTextInTooltip?: boolean;
   size?: "sm" | "md" | "lg";
 }) => {
-  const { t } = useLingui();
   const [isCopied, setIsCopied] = useState(false);
 
   const handleCopy = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -34,7 +32,7 @@ const Copy = ({
       <TooltipTrigger asChild>
         <IconButton
           variant="secondary"
-          aria-label={t`Copy`}
+          aria-label="Copy"
           icon={isCopied ? <LuCheck /> : (icon ?? <LuCopy />)}
           size={size}
           className={cn(
@@ -47,10 +45,10 @@ const Copy = ({
       <TooltipContent>
         <span>
           {isCopied
-            ? t`Copied!`
+            ? "Copied!"
             : withTextInTooltip
               ? text
-              : t`Copy to clipboard`}
+              : "Copy to clipboard"}
         </span>
       </TooltipContent>
     </Tooltip>

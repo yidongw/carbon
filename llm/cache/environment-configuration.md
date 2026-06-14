@@ -101,29 +101,6 @@ Some services access `process.env` directly:
 3. **Type Safety**: TypeScript interfaces prevent typos and ensure all required vars are set
 4. **Validation**: `getEnv()` throws errors for missing required variables
 
-## Browser-facing Supabase URL behind a tunnel (`SUPABASE_URL_PUBLIC`)
-
-`getBrowserEnv()` (`packages/env/src/index.ts`) sends `SUPABASE_URL` to the browser
-via `window.env` (injected in each app's `root.tsx`). In local dev that's
-`http://localhost:PORT_API`, which a browser reaching the app through a tunnel
-cannot hit — so the realtime websocket fails ("Realtime disconnected (...)").
-
-Fix: optional `SUPABASE_URL_PUBLIC`. `getBrowserEnv()` returns
-`SUPABASE_URL: SUPABASE_URL_PUBLIC || SUPABASE_URL`, so only the **browser** is
-redirected; server code keeps using `SUPABASE_URL` (localhost) directly. Unset in
-normal dev → no change.
-
-`tunnel.sh` (repo root, Cloudflare quick tunnels): tunnels the apps **and** the
-Supabase API (`PORT_API`), writes `SUPABASE_URL_PUBLIC` (the API tunnel URL) into
-`.env.local`, and touches `apps/{erp,mes}/vite.config.ts` to restart the dev
-servers so they re-read it. The dev servers load `.env.local` into `process.env`
-at startup (ERP and MES `vite.config.ts` → `applyDotenvToProcessEnv`), and Vite
-also auto-restarts on `.env.local` change. MES `allowedHosts` must include
-`.trycloudflare.com` (ERP already did). Caveat: `crbn up`'s early `loadDotenv`
-captures any leftover `SUPABASE_URL_PUBLIC` into the env it passes to spawned
-apps, so re-running `tunnel.sh` across a `crbn up` can leave a stale value;
-clean-run order is `crbn up` (pristine `.env.local`) → `tunnel.sh` once.
-
 ## Development vs Production
 
 - Development: Uses `http://localhost:3000` and local Supabase instance

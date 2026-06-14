@@ -14,9 +14,7 @@ const Avatar = forwardRef<HTMLSpanElement, AvatarProps>(
     const imageUrl = props.imageUrl
       ? props.imageUrl
       : path
-        ? path.startsWith("http")
-          ? path
-          : getStoragePath(bucket, path)
+        ? getStoragePath(bucket, path)
         : undefined;
 
     return <AvatarBase src={imageUrl} name={name} ref={ref} {...props} />;

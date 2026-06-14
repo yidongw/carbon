@@ -9,18 +9,13 @@ export default function ConfirmMagicLink() {
   const navigate = useNavigate();
 
   const token = params.get("token");
-  // redirectTo is the full callback URL embedded by sendMagicLink via {{ .RedirectTo }}
-  // in the email template. It carries the correct origin (preview or production)
-  // so Supabase redirects back to wherever the user actually requested sign-in from.
-  const redirectTo = params.get("redirectTo");
   if (!token) {
     navigate("/");
     return null;
   }
 
   const getConfirmationURL = (token: string) => {
-    const callbackUrl = redirectTo ?? `${window?.location.origin}/callback`;
-    return `${SUPABASE_URL}/auth/v1/verify?token=${token}&type=magiclink&redirect_to=${callbackUrl}`;
+    return `${SUPABASE_URL}/auth/v1/verify?token=${token}&type=magiclink&redirect_to=${window?.location.origin}/callback`;
   };
 
   return (

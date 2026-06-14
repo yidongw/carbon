@@ -68,7 +68,7 @@ const PurchaseOrderApprovalModal = ({
           method="post"
           validator={purchaseOrderApprovalValidator}
           action={path.to.purchaseOrder(orderId)}
-          onSuccess={onClose}
+          onSubmit={onClose}
           defaultValues={{
             approvalRequestId,
             decision,

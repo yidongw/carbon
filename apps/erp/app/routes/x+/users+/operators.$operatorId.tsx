@@ -14,7 +14,7 @@ import {
   useMount,
   VStack
 } from "@carbon/react";
-import { Trans, useLingui } from "@lingui/react/macro";
+import { useLingui } from "@lingui/react/macro";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { redirect, useFetcher, useLoaderData, useNavigate } from "react-router";
 import { Input, Select, Submit } from "~/components/Form";
@@ -125,38 +125,36 @@ export default function ConvertOperatorRoute() {
           className="flex flex-col h-full"
         >
           <ModalHeader>
-            <ModalTitle><Trans>Convert to Full User</Trans></ModalTitle>
+            <ModalTitle>Convert to Full User</ModalTitle>
           </ModalHeader>
 
           <ModalBody>
             <VStack spacing={4}>
               <p className="text-sm text-muted-foreground">
-                <Trans>
-                  Convert{" "}
-                  <strong>
-                    {operator.firstName} {operator.lastName}
-                  </strong>{" "}
-                  from a console operator to a full user. They will receive an
-                  email invitation and be able to log in independently.
-                </Trans>
+                Convert{" "}
+                <strong>
+                  {operator.firstName} {operator.lastName}
+                </strong>{" "}
+                from a console operator to a full user. They will receive an
+                email invitation and be able to log in independently.
               </p>
               <Input
                 name="email"
                 label={t`Email Address`}
-                placeholder={t`operator@company.com`}
+                placeholder="operator@company.com"
               />
               <Select
                 name="employeeType"
                 label={t`Employee Type`}
                 options={employeeTypeOptions}
-                placeholder={t`Select Employee Type`}
+                placeholder="Select Employee Type"
               />
             </VStack>
           </ModalBody>
           <ModalFooter>
             <HStack>
               <Submit isLoading={formFetcher.state !== "idle"}>
-                <Trans>Convert & Send Invite</Trans>
+                Convert & Send Invite
               </Submit>
             </HStack>
           </ModalFooter>

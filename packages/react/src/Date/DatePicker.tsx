@@ -1,4 +1,3 @@
-import { useLingui } from "@lingui/react/macro";
 import type { CalendarDate } from "@internationalized/date";
 import { useDatePicker } from "@react-aria/datepicker";
 import { useDatePickerState } from "@react-stately/datepicker";
@@ -29,7 +28,6 @@ const DatePicker = (
     closeOnSelect?: boolean;
   }
 ) => {
-  const { t } = useLingui();
   const state = useDatePickerState({
     ...props,
     shouldCloseOnSelect: props.closeOnSelect ?? false
@@ -51,7 +49,7 @@ const DatePicker = (
                     variant="secondary"
                     size="sm"
                     className="gap-1.5"
-                    aria-label={t`Open date picker`}
+                    aria-label="Open date picker"
                     isDisabled={props.isDisabled}
                     {...buttonProps}
                   >
@@ -70,7 +68,7 @@ const DatePicker = (
                             icon={<LuInfo />}
                             variant="ghost"
                             size="sm"
-                            aria-label={t`Helper information`}
+                            aria-label="Helper information"
                           />
                         </TooltipTrigger>
                         <TooltipContent>{props.helperText}</TooltipContent>
@@ -81,7 +79,7 @@ const DatePicker = (
                         icon={<LuCalendarClock />}
                         variant="secondary"
                         size="sm"
-                        aria-label={t`Open date picker`}
+                        aria-label="Open date picker"
                         isDisabled={props.isDisabled}
                         {...buttonProps}
                       />

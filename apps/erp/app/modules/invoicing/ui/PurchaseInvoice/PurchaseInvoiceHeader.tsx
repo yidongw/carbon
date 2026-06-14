@@ -1,5 +1,6 @@
 import { useCarbon } from "@carbon/auth";
 import {
+  Button,
   Copy,
   DropdownMenu,
   DropdownMenuContent,
@@ -9,16 +10,19 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  Heading,
+  HStack,
   IconButton,
   Status,
-  useDisclosure,
+  useDisclosure
 } from "@carbon/react";
 import { getItemReadableId } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useEffect, useMemo, useState } from "react";
-import { createPortal, flushSync } from "react-dom";
+import { flushSync } from "react-dom";
 import {
   LuCheckCheck,
+  LuChevronDown,
   LuEllipsisVertical,
   LuHandCoins,
   LuPanelLeft,
@@ -29,12 +33,7 @@ import {
 } from "react-icons/lu";
 import { Link, useFetcher, useParams } from "react-router";
 import { useAuditLog } from "~/components/AuditLog";
-import {
-  DetailTopbarContent,
-  DetailTopbarId,
-  usePanels,
-  useTopbarLeft
-} from "~/components/Layout";
+import { usePanels } from "~/components/Layout/Panels";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import {
   usePermissions,
@@ -52,10 +51,11 @@ import { isPurchaseInvoiceLocked } from "../../invoicing.models";
 import PurchaseInvoicePostModal from "./PurchaseInvoicePostModal";
 import PurchaseInvoiceVoidModal from "./PurchaseInvoiceVoidModal";
 
-function PurchaseInvoiceTopbarLeft({ invoiceId }: { invoiceId: string }) {
+const PurchaseInvoiceHeader = () => {
   const { t } = useLingui();
   const permissions = usePermissions();
   const supplierApprovalRequired = useSupplierApprovalRequired();
+  const { invoiceId } = useParams();
   const { company } = useUser();
   const postingModal = useDisclosure();
   const voidModal = useDisclosure();
@@ -80,6 +80,8 @@ function PurchaseInvoiceTopbarLeft({ invoiceId }: { invoiceId: string }) {
     }[]
   >([]);
 
+  if (!invoiceId) throw new Error("invoiceId not found");
+
   const [items] = useItems();
   const [suppliers] = useSuppliers();
   const routeData = useRouteData<{
@@ -101,6 +103,7 @@ function PurchaseInvoiceTopbarLeft({ invoiceId }: { invoiceId: string }) {
 
   if (!routeData?.purchaseInvoice) throw new Error("purchaseInvoice not found");
   const { purchaseInvoice } = routeData;
+  const { toggleExplorer, toggleProperties } = usePanels();
   const isPosted = purchaseInvoice.postingDate !== null;
   const isVoided = purchaseInvoice.status === "Voided";
   const hasPayment =
@@ -184,143 +187,208 @@ function PurchaseInvoiceTopbarLeft({ invoiceId }: { invoiceId: string }) {
     );
   };
 
-  const isPaymentDisabled =
-    purchaseInvoice.status === "Draft" ||
-    purchaseInvoice.status === "Pending" ||
-    isVoided ||
-    !permissions.can("update", "invoicing");
-
   return (
     <>
-      <DetailTopbarContent>
-          <DetailTopbarId to={path.to.purchaseInvoiceDetails(invoiceId)}>
-            {routeData?.purchaseInvoice?.invoiceId}
-          </DetailTopbarId>
-          <Copy text={routeData?.purchaseInvoice?.invoiceId ?? ""} />
-          <PurchaseInvoicingStatus
-            iconOnly
-            // @ts-expect-error TS2322 - TODO: fix type
-            status={routeData?.purchaseInvoice?.status}
-          />
-          {supplierApprovalRequired && !isSupplierApproved && (
-          <Status iconOnly color="red">
-            <Trans>Unapproved Supplier</Trans>
-          </Status>
-        )}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+      <div className="flex flex-shrink-0 items-center justify-between p-2 bg-background border-b h-[50px] overflow-x-auto scrollbar-hide">
+        <HStack className="w-full justify-between">
+          <HStack>
             <IconButton
-              aria-label={t`More options`}
-              icon={<LuEllipsisVertical />}
-              size="sm"
-              variant="secondary"
+              aria-label={t`Toggle Explorer`}
+              icon={<LuPanelLeft />}
+              onClick={toggleExplorer}
+              variant="ghost"
             />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            {auditLogTrigger}
-            <DropdownMenuSeparator />
+            <Link to={path.to.purchaseInvoiceDetails(invoiceId)}>
+              <Heading size="h4" className="flex items-center gap-2">
+                <span>{routeData?.purchaseInvoice?.invoiceId}</span>
+              </Heading>
+            </Link>
+            <Copy text={routeData?.purchaseInvoice?.invoiceId ?? ""} />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <IconButton
+                  aria-label={t`More options`}
+                  icon={<LuEllipsisVertical />}
+                  variant="secondary"
+                  size="sm"
+                />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                {auditLogTrigger}
+                {isPosted && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      disabled={
+                        !canVoid || !permissions.can("update", "invoicing")
+                      }
+                      destructive
+                      onClick={voidModal.onOpen}
+                    >
+                      <DropdownMenuIcon icon={<LuTicketX />} />
+                      <Trans>Void</Trans>
+                    </DropdownMenuItem>
+                  </>
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  disabled={
+                    isPurchaseInvoiceLocked(
+                      routeData?.purchaseInvoice?.status
+                    ) ||
+                    !permissions.can("delete", "invoicing") ||
+                    !permissions.is("employee")
+                  }
+                  destructive
+                  onClick={deleteModal.onOpen}
+                >
+                  <DropdownMenuIcon icon={<LuTrash />} />
+                  <Trans>Delete Purchase Invoice</Trans>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <PurchaseInvoicingStatus
+              // @ts-expect-error TS2322 - TODO: fix type
+              status={routeData?.purchaseInvoice?.status}
+            />
+            {supplierApprovalRequired && !isSupplierApproved && (
+              <Status color="red">
+                <Trans>Unapproved Supplier</Trans>
+              </Status>
+            )}
+          </HStack>
+          <HStack>
             {relatedDocs.purchaseOrders.length === 1 && (
-              <DropdownMenuItem asChild>
+              <Button variant="secondary" leftIcon={<LuShoppingCart />} asChild>
                 <Link
                   to={path.to.purchaseOrderDetails(
                     relatedDocs.purchaseOrders[0].id
                   )}
                 >
-                  <DropdownMenuIcon icon={<LuShoppingCart />} />
                   <Trans>Purchase Order</Trans>
                 </Link>
-              </DropdownMenuItem>
+              </Button>
             )}
-            {relatedDocs.purchaseOrders.length > 1 &&
-              relatedDocs.purchaseOrders.map((po) => (
-                <DropdownMenuItem key={po.id} asChild>
-                  <Link to={path.to.purchaseOrderDetails(po.id)}>
-                    <DropdownMenuIcon icon={<LuShoppingCart />} />
-                    {po.readableId}
-                  </Link>
-                </DropdownMenuItem>
-              ))}
+
             {relatedDocs.receipts.length === 1 && (
-              <DropdownMenuItem asChild>
+              <Button variant="secondary" leftIcon={<LuHandCoins />} asChild>
                 <Link to={path.to.receipt(relatedDocs.receipts[0].id)}>
-                  <DropdownMenuIcon icon={<LuHandCoins />} />
                   <Trans>Receipt</Trans>
                 </Link>
-              </DropdownMenuItem>
+              </Button>
             )}
-            {relatedDocs.receipts.length > 1 &&
-              relatedDocs.receipts.map((receipt) => (
-                <DropdownMenuItem key={receipt.id} asChild>
-                  <Link to={path.to.receipt(receipt.id)}>
-                    <DropdownMenuIcon icon={<LuHandCoins />} />
-                    {receipt.readableId}
-                  </Link>
-                </DropdownMenuItem>
-              ))}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              disabled={
+
+            {relatedDocs.purchaseOrders.length > 1 && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="secondary" leftIcon={<LuShoppingCart />}>
+                    <Trans>Purchase Orders</Trans>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  {relatedDocs.purchaseOrders.map((po) => (
+                    <DropdownMenuItem key={po.id} asChild>
+                      <Link to={path.to.purchaseOrderDetails(po.id)}>
+                        {po.readableId}
+                      </Link>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+
+            {relatedDocs.receipts.length > 1 && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="secondary" leftIcon={<LuHandCoins />}>
+                    <Trans>Receipts</Trans>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  {relatedDocs.receipts.map((receipt) => (
+                    <DropdownMenuItem key={receipt.id} asChild>
+                      <Link to={path.to.receipt(receipt.id)}>
+                        {receipt.readableId}
+                      </Link>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+            <Button
+              leftIcon={<LuCheckCheck />}
+              variant={
+                routeData?.purchaseInvoice?.status === "Draft"
+                  ? "primary"
+                  : "secondary"
+              }
+              onClick={showPostModal}
+              isDisabled={
                 isPosted ||
                 routeData?.purchaseInvoiceLines?.length === 0 ||
                 !permissions.can("update", "invoicing") ||
                 !isSupplierApproved
               }
-              onClick={showPostModal}
             >
-              <DropdownMenuIcon icon={<LuCheckCheck />} />
               <Trans>Post</Trans>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            {isPaymentDisabled ? (
-              <DropdownMenuItem disabled>
-                <DropdownMenuIcon icon={<LuHandCoins />} />
-                <Trans>Payment</Trans>
-              </DropdownMenuItem>
-            ) : (
-              <DropdownMenuRadioGroup
-                value={purchaseInvoice.status ?? "Draft"}
-                onValueChange={handleStatusChange}
-              >
-                {(["Paid", "Partially Paid"] as const).map((status) => (
-                  <DropdownMenuRadioItem key={status} value={status}>
-                    <PurchaseInvoicingStatus status={status} />
-                  </DropdownMenuRadioItem>
-                ))}
-              </DropdownMenuRadioGroup>
-            )}
-            {isPosted && (
-              <>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  disabled={
-                    !canVoid || !permissions.can("update", "invoicing")
-                  }
-                  destructive
-                  onClick={voidModal.onOpen}
-                >
-                  <DropdownMenuIcon icon={<LuTicketX />} />
-                  <Trans>Void</Trans>
-                </DropdownMenuItem>
-              </>
-            )}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              disabled={
-                isPurchaseInvoiceLocked(
-                  routeData?.purchaseInvoice?.status
-                ) ||
-                !permissions.can("delete", "invoicing") ||
-                !permissions.is("employee")
+            </Button>
+
+            {(() => {
+              const isPaymentDisabled =
+                purchaseInvoice.status === "Draft" ||
+                purchaseInvoice.status === "Pending" ||
+                isVoided ||
+                !permissions.can("update", "invoicing");
+
+              if (isPaymentDisabled) {
+                return (
+                  <Button
+                    variant="secondary"
+                    isDisabled
+                    leftIcon={<LuHandCoins />}
+                    rightIcon={<LuChevronDown />}
+                  >
+                    <Trans>Payment</Trans>
+                  </Button>
+                );
               }
-              destructive
-              onClick={deleteModal.onOpen}
-            >
-              <DropdownMenuIcon icon={<LuTrash />} />
-              <Trans>Delete Purchase Invoice</Trans>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-          </DropdownMenu>
-      </DetailTopbarContent>
+
+              return (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="secondary"
+                      leftIcon={<LuHandCoins />}
+                      rightIcon={<LuChevronDown />}
+                    >
+                      <Trans>Payment</Trans>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuRadioGroup
+                      value={purchaseInvoice.status ?? "Draft"}
+                      onValueChange={handleStatusChange}
+                    >
+                      {(["Paid", "Partially Paid"] as const).map((status) => (
+                        <DropdownMenuRadioItem key={status} value={status}>
+                          <PurchaseInvoicingStatus status={status} />
+                        </DropdownMenuRadioItem>
+                      ))}
+                    </DropdownMenuRadioGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              );
+            })()}
+
+            <IconButton
+              aria-label={t`Toggle Properties`}
+              icon={<LuPanelRight />}
+              onClick={toggleProperties}
+              variant="ghost"
+            />
+          </HStack>
+        </HStack>
+      </div>
 
       {postingModal.isOpen && (
         <PurchaseInvoicePostModal
@@ -348,38 +416,6 @@ function PurchaseInvoiceTopbarLeft({ invoiceId }: { invoiceId: string }) {
         />
       )}
       {auditLogDrawer}
-    </>
-  );
-}
-
-const PurchaseInvoiceHeader = () => {
-  const { invoiceId } = useParams();
-  if (!invoiceId) throw new Error("invoiceId not found");
-
-  const { leftSlotEl } = useTopbarLeft();
-  const { t } = useLingui();
-  const { hasExplorer, toggleExplorer, toggleProperties } = usePanels();
-
-  return (
-    <>
-      {leftSlotEl && createPortal(<PurchaseInvoiceTopbarLeft invoiceId={invoiceId} />, leftSlotEl)}
-      <div className="flex-shrink-0 h-[50px] flex items-center gap-1 px-2 bg-card border-b border-border dark:border-none dark:shadow-[inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)]">
-        {hasExplorer && (
-          <IconButton
-            aria-label={t`Toggle Explorer`}
-            icon={<LuPanelLeft />}
-            onClick={toggleExplorer}
-            variant="ghost"
-          />
-        )}
-        <div className="flex-1" />
-        <IconButton
-          aria-label={t`Toggle Properties`}
-          icon={<LuPanelRight />}
-          onClick={toggleProperties}
-          variant="ghost"
-        />
-      </div>
     </>
   );
 };

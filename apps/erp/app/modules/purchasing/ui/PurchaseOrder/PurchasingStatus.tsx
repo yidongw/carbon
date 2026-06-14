@@ -3,51 +3,26 @@ import type { purchaseOrderStatusType } from "~/modules/purchasing";
 
 type PurchasingStatusProps = {
   status?: (typeof purchaseOrderStatusType)[number] | null;
-  iconOnly?: boolean;
 };
 
-const PurchasingStatus = ({ status, iconOnly }: PurchasingStatusProps) => {
+const PurchasingStatus = ({ status }: PurchasingStatusProps) => {
   switch (status) {
     case "Draft":
-      return (
-        <Status color="gray" iconOnly={iconOnly}>
-          {status}
-        </Status>
-      );
+      return <Status color="gray">{status}</Status>;
     case "Planned":
     case "To Review":
     case "Needs Approval":
-      return (
-        <Status color="yellow" iconOnly={iconOnly}>
-          {status}
-        </Status>
-      );
+      return <Status color="yellow">{status}</Status>;
     case "To Receive":
     case "To Receive and Invoice":
-      return (
-        <Status color="orange" iconOnly={iconOnly}>
-          {status}
-        </Status>
-      );
+      return <Status color="orange">{status}</Status>;
     case "To Invoice":
-      return (
-        <Status color="blue" iconOnly={iconOnly}>
-          {status}
-        </Status>
-      );
+      return <Status color="blue">{status}</Status>;
     case "Completed":
-      return (
-        <Status color="green" iconOnly={iconOnly}>
-          {status}
-        </Status>
-      );
+      return <Status color="green">{status}</Status>;
     case "Closed":
     case "Rejected":
-      return (
-        <Status color="red" iconOnly={iconOnly}>
-          {status}
-        </Status>
-      );
+      return <Status color="red">{status}</Status>;
     default:
       return null;
   }

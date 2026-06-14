@@ -61,7 +61,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   if (events.error) {
     redirect(
-      path.to.productionDashboard,
+      path.to.production,
       await flash(request, error(events.error, "Failed to fetch job events"))
     );
   }

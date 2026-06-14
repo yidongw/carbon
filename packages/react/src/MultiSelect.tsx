@@ -101,7 +101,7 @@ const MultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>(
               <IconButton
                 size={size ?? "sm"}
                 variant="secondary"
-                aria-label={hasSelections ? t`Edit` : t`Add`}
+                aria-label={hasSelections ? "Edit" : "Add"}
                 icon={
                   inlineIcon ? (
                     inlineIcon
@@ -202,7 +202,7 @@ const MultiSelect = forwardRef<HTMLButtonElement, MultiSelectProps>(
         {isClearable && !isReadOnly && value.length > 0 && (
           <IconButton
             variant={isInlinePreview ? "secondary" : "ghost"}
-            aria-label={t`Clear`}
+            aria-label="Clear"
             icon={<LuX />}
             onClick={() => onChange([])}
             size={isInlinePreview ? "sm" : size}

@@ -8,7 +8,7 @@ import {
   SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID
 } from "@carbon/auth";
 import { sendMagicLink, verifyAuthSession } from "@carbon/auth/auth.server";
-import { flash, getAuthSession, setPkceCookie } from "@carbon/auth/session.server";
+import { flash, getAuthSession } from "@carbon/auth/session.server";
 import { getUserByEmail } from "@carbon/auth/users.server";
 import { Hidden, Input, Submit, ValidatedForm, validator } from "@carbon/form";
 import { Ratelimit, redis } from "@carbon/kv";
@@ -54,14 +54,15 @@ export async function loader({ request }: LoaderFunctionArgs) {
   };
 }
 
+const ratelimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(RATE_LIMIT, "1 h"),
+  analytics: true
+});
+
 export async function action({ request }: ActionFunctionArgs) {
   assertIsPost(request);
   const ip = request.headers.get("x-forwarded-for") ?? "127.0.0.1";
-  const ratelimit = new Ratelimit({
-    redis,
-    limiter: Ratelimit.slidingWindow(RATE_LIMIT, "1 h"),
-    analytics: true
-  });
   const { success } = await ratelimit.limit(ip);
 
   if (!success) {
@@ -79,27 +80,26 @@ export async function action({ request }: ActionFunctionArgs) {
     return error(validation.error, "Invalid email address");
   }
 
-  const { email, redirectTo } = validation.data;
+  const { email } = validation.data;
   const user = await getUserByEmail(email);
 
   if (user.data && user.data.active) {
-    const magicLink = await sendMagicLink(email, redirectTo);
+    const magicLink = await sendMagicLink(email);
 
-    if (magicLink.error) {
+    if (!magicLink) {
       return data(
-        error(null, "Failed to send magic link"),
-        await flash(request, error(null, "Failed to send magic link"))
+        error(magicLink, "Failed to send magic link"),
+        await flash(request, error(magicLink, "Failed to send magic link"))
       );
     }
-
-    const pkceHeader = await setPkceCookie(magicLink.pkceEntry);
-    return data({ success: true }, { headers: [["Set-Cookie", pkceHeader]] });
   } else {
     return data(
       error(user, "User record not found"),
       await flash(request, error(user.error, "User record not found"))
     );
   }
+
+  return { success: true };
 }
 
 export default function LoginRoute() {

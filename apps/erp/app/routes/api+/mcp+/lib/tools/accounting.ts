@@ -1213,6 +1213,7 @@ export const registerAccountingTools: RegisterTools = (server, ctx) => {
     description: z.string().optional(),
     lines: z.any(),
     accountId: z.string(),
+    description: z.string().optional(),
     debit: z.number(),
     credit: z.number(),
     dimensions: z.any().optional(),

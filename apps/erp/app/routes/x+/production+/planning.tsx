@@ -42,7 +42,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     const userDefaults = await getUserDefaults(client, userId, companyId);
     if (userDefaults.error) {
       throw redirect(
-        path.to.productionDashboard,
+        path.to.production,
         await flash(
           request,
           error(userDefaults.error, "Failed to load default location")
@@ -57,7 +57,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     const locations = await getLocationsList(client, companyId);
     if (locations.error || !locations.data?.length) {
       throw redirect(
-        path.to.inventoryQuantities,
+        path.to.inventory,
         await flash(
           request,
           error(locations.error, "Failed to load any locations")
@@ -67,21 +67,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
     locationId = locations.data?.[0].id as string;
   }
 
-  let periods;
-  try {
-    periods = await getOrCreatePeriods(
-      today(getLocalTimeZone()),
-      WEEKS_TO_PLAN
-    );
-  } catch (periodsError) {
-    throw redirect(
-      path.to.productionDashboard,
-      await flash(
-        request,
-        error(periodsError, "Failed to load planning periods")
-      )
-    );
-  }
+  const periods = await getOrCreatePeriods(
+    today(getLocalTimeZone()),
+    WEEKS_TO_PLAN
+  );
 
   const items = await getProductionPlanning(
     client,
@@ -98,8 +87,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
   );
 
   if (items.error) {
-    throw redirect(
-      path.to.productionDashboard,
+    redirect(
+      path.to.production,
       await flash(request, error(items.error, "Failed to fetch planning items"))
     );
   }

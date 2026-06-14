@@ -44,7 +44,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   if (customers.error) {
     redirect(
-      path.to.salesDashboard,
+      path.to.sales,
       await flash(request, error(customers.error, "Failed to fetch customers"))
     );
   }

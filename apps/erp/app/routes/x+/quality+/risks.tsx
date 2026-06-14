@@ -39,7 +39,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   if (risks.error) {
     redirect(
-      path.to.qualityDashboard,
+      path.to.quality,
       await flash(request, error(risks.error, "Failed to fetch risks"))
     );
   }

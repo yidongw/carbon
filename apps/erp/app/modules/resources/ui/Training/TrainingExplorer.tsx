@@ -1,4 +1,5 @@
 import {
+  Array as ArrayInput,
   Hidden,
   Input,
   MultiSelect,
@@ -9,7 +10,6 @@ import {
   useFormContext,
   ValidatedForm
 } from "@carbon/form";
-import { Array as ArrayInput } from "~/components/Form";
 import {
   Button,
   cn,

@@ -106,7 +106,7 @@ const SupplierQuoteSendModal = ({
           method="post"
           validator={supplierQuoteFinalizeValidator}
           action={path.to.supplierQuoteSend(quote?.id || "")}
-          onSuccess={onClose}
+          onSubmit={onClose}
           defaultValues={{
             notification: notificationType as "Email" | "Share",
             supplierContact: quote?.supplierContactId ?? undefined,

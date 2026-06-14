@@ -1,6 +1,5 @@
 "use client";
 
-import { useLingui } from "@lingui/react/macro";
 import { Slot } from "@radix-ui/react-slot";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
@@ -228,7 +227,7 @@ const Sidebar = React.forwardRef<
         {/* ease-out-quint: fast start, smooth deceleration - feels snappy and responsive */}
         <div
           className={cn(
-            "relative h-svh w-[--sidebar-width] bg-transparent transition-[width] duration-150 ease-sidebar motion-reduce:transition-none",
+            "relative h-svh w-[--sidebar-width] bg-transparent transition-[width] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] motion-reduce:transition-none",
             "group-data-[collapsible=offcanvas]:w-0",
             "group-data-[side=right]:rotate-180",
             variant === "floating" || variant === "inset"
@@ -239,7 +238,7 @@ const Sidebar = React.forwardRef<
         <div
           className={cn(
             // ease-out-quint (0.23,1,0.32,1): strong deceleration curve for snappy, spring-like feel
-            "fixed inset-y-0 z-10 hidden h-svh w-[--sidebar-width] transition-[left,right,width] duration-150 ease-sidebar motion-reduce:transition-none md:flex",
+            "fixed inset-y-0 z-10 hidden h-svh w-[--sidebar-width] transition-[left,right,width] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] motion-reduce:transition-none md:flex",
             side === "left"
               ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
               : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
@@ -269,13 +268,12 @@ const SidebarTrigger = React.forwardRef<
   React.ComponentProps<typeof Button>
 >(({ className, onClick, ...props }, ref) => {
   const { toggleSidebar } = useSidebar();
-  const { t } = useLingui();
 
   return (
     <IconButton
       ref={ref}
       icon={<LuPanelLeft />}
-      aria-label={t`Toggle Sidebar`}
+      aria-label="Toggle Sidebar"
       data-sidebar="trigger"
       variant="ghost"
       className={cn("h-7 w-7", className)}
@@ -294,16 +292,15 @@ const SidebarRail = React.forwardRef<
   React.ComponentProps<"button">
 >(({ className, ...props }, ref) => {
   const { toggleSidebar } = useSidebar();
-  const { t } = useLingui();
 
   return (
     <button
       ref={ref}
       data-sidebar="rail"
-      aria-label={t`Toggle Sidebar`}
+      aria-label="Toggle Sidebar"
       tabIndex={-1}
       onClick={toggleSidebar}
-      title={t`Toggle Sidebar`}
+      title="Toggle Sidebar"
       className={cn(
         "absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-opacity duration-150 ease-out motion-reduce:transition-none after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] hover:after:bg-sidebar-border group-data-[side=left]:-right-4 group-data-[side=right]:left-0 sm:flex",
         "[[data-side=left]_&]:cursor-w-resize [[data-side=right]_&]:cursor-e-resize",
@@ -450,7 +447,7 @@ const SidebarGroupLabel = React.forwardRef<
       className={cn(
         // Vercel style: very muted, uppercase, smaller text
         // ease-out-quint for consistent spring-like feel with sidebar expansion
-        "flex h-7 shrink-0 items-center rounded-md px-2 text-[11px] font-medium uppercase tracking-wider text-sidebar-foreground/50 outline-none ring-sidebar-ring transition-[margin,opacity] duration-150 ease-sidebar motion-reduce:transition-none focus-visible:ring-2 [&>svg]:size-3.5 [&>svg]:shrink-0",
+        "flex h-7 shrink-0 items-center rounded-md px-2 text-[11px] font-medium uppercase tracking-wider text-sidebar-foreground/50 outline-none ring-sidebar-ring transition-[margin,opacity] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] motion-reduce:transition-none focus-visible:ring-2 [&>svg]:size-3.5 [&>svg]:shrink-0",
         "group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0",
         className
       )}

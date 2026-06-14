@@ -12,7 +12,7 @@ import { renderAsync } from "@react-email/components";
 import { parseAcceptLanguage } from "intl-parse-accept-language";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useParams } from "react-router";
-import { PanelProvider, ResizablePanels } from "~/components/Layout";
+import { PanelProvider, ResizablePanels } from "~/components/Layout/Panels";
 import { getPaymentTermsList } from "~/modules/accounting";
 import { upsertDocument } from "~/modules/documents";
 import {
@@ -27,7 +27,7 @@ import {
   purchaseOrderApprovalValidator
 } from "~/modules/purchasing";
 import {
-  // PurchaseOrderExplorer,
+  PurchaseOrderExplorer,
   PurchaseOrderHeader,
   PurchaseOrderProperties
 } from "~/modules/purchasing/ui/PurchaseOrder";
@@ -250,7 +250,7 @@ export async function action(args: ActionFunctionArgs) {
                 lastName: supplier.data?.contact?.lastName ?? undefined
               },
               sender: {
-                email: buyer.data.email ?? "",
+                email: buyer.data.email,
                 firstName: buyer.data.firstName,
                 lastName: buyer.data.lastName
               },
@@ -265,9 +265,9 @@ export async function action(args: ActionFunctionArgs) {
               .createSignedUrl(documentFilePath!, 3600);
 
             await trigger("send-email", {
-              to: [buyer.data.email ?? "", supplierEmail],
+              to: [buyer.data.email, supplierEmail],
               cc: ccSelections?.length ? ccSelections : undefined,
-              from: buyer.data.email ?? "",
+              from: buyer.data.email,
               subject: `Purchase Order ${purchaseOrder.data.purchaseOrderId} from ${company.data.name}`,
               html,
               text,
@@ -454,12 +454,12 @@ export default function PurchaseOrderRoute() {
     <PanelProvider>
       <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
         <PurchaseOrderHeader />
-        <div className="flex flex-1 min-h-0 overflow-hidden w-full">
-          <div className="flex flex-1 min-h-0 h-full overflow-hidden">
+        <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
+          <div className="flex flex-grow overflow-hidden">
             <ResizablePanels
-              // explorer={<PurchaseOrderExplorer />}
+              explorer={<PurchaseOrderExplorer />}
               content={
-                <div className="h-full min-h-0 overflow-y-auto overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
+                <div className="h-[calc(100dvh-99px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
                   <VStack spacing={2} className="p-2">
                     <Outlet />
                   </VStack>

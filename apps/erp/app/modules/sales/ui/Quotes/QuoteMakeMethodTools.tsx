@@ -279,7 +279,7 @@ const QuoteMakeMethodTools = () => {
                 {itemLink && (
                   <MenubarItem leftIcon={<LuGitFork />} asChild>
                     <Link prefetch="intent" to={itemLink}>
-                      <Trans>Item Master</Trans>
+                      Item Master
                     </Link>
                   </MenubarItem>
                 )}
@@ -302,7 +302,7 @@ const QuoteMakeMethodTools = () => {
               fetcher={fetcher}
               action={path.to.quoteMethodGet}
               validator={getMethodValidator}
-              onSuccess={getMethodModal.onClose}
+              onSubmit={getMethodModal.onClose}
             >
               <ModalHeader>
                 <ModalTitle>
@@ -454,7 +454,7 @@ const QuoteMakeMethodTools = () => {
                   ? (line?.itemId ?? undefined)
                   : undefined
               }}
-              onSuccess={saveMethodModal.onClose}
+              onSubmit={saveMethodModal.onClose}
             >
               <ModalHeader>
                 <ModalTitle>

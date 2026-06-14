@@ -2,7 +2,6 @@ import { labelSizes } from "@carbon/utils";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { DataType } from "~/modules/shared";
-import { optionalRequiredStringArray } from "~/utils/zodFields";
 
 export const modulesType = [
   "Accounting",
@@ -79,13 +78,6 @@ const company = {
 export const companyValidator = z.object(company);
 export const onboardingCompanyValidator = z.object({
   ...company,
-  // Address is not collected during onboarding; it can be filled in later.
-  // The location table requires these columns to be non-null, so default to "".
-  addressLine1: z.string().default(""),
-  city: z.string().default(""),
-  stateProvince: z.string().default(""),
-  postalCode: z.string().default(""),
-  countryCode: z.string().default(""),
   next: z.string().min(1, { message: "Next is required" })
 });
 
@@ -97,7 +89,7 @@ export const customFieldValidator = z
     dataTypeId: zfd.numeric(
       z.number().min(1, { message: "Data type is required" })
     ),
-    listOptions: optionalRequiredStringArray,
+    listOptions: z.string().min(1).array().optional(),
     tags: z.array(z.string()).optional(),
     required: zfd.checkbox()
   })

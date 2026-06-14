@@ -391,15 +391,15 @@ export default function PurchaseDashboard() {
   }, [dateRange, kpiLabels, selectedKpiData.key]);
 
   return (
-    <div className="@container flex flex-col gap-4 w-full p-4 h-[calc(100dvh-var(--header-height))] overflow-y-auto overscroll-contain scrollbar-thin scrollbar-thumb-rounded-full scrollbar-thumb-muted-foreground">
-      <HStack spacing={1} className="hidden md:flex">
+    <div className="flex flex-col gap-4 w-full p-4 h-[calc(100dvh-var(--header-height))] overflow-y-auto scrollbar-thin scrollbar-thumb-rounded-full scrollbar-thumb-muted-foreground">
+      <HStack spacing={1}>
         <CollapsibleSidebarTrigger />
         <Heading size="h2">
           <Trans>Dashboard</Trans>
         </Heading>
       </HStack>
 
-      <div className="grid w-full gap-4 grid-cols-1 @sm:grid-cols-2 @2xl:grid-cols-3">
+      <div className="grid w-full gap-4 grid-cols-1 lg:grid-cols-3">
         <Card>
           <CardHeader className="flex-row gap-2">
             <LuPackageSearch className="text-muted-foreground" />
@@ -408,7 +408,7 @@ export default function PurchaseDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-wrap items-center justify-between gap-2 w-full">
+            <HStack className="justify-between w-full items-center">
               <h3 className="text-5xl font-medium tracking-tighter">
                 {openSupplierQuotes.count ?? 0}
               </h3>
@@ -425,7 +425,7 @@ export default function PurchaseDashboard() {
                   <Trans>View Active Quotes</Trans>
                 </Link>
               </Button>
-            </div>
+            </HStack>
           </CardContent>
         </Card>
 
@@ -437,7 +437,7 @@ export default function PurchaseDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-wrap items-center justify-between gap-2 w-full">
+            <HStack className="justify-between w-full items-center">
               <h3 className="text-5xl font-medium tracking-tighter">
                 {openPurchaseOrders.count ?? 0}
               </h3>
@@ -454,7 +454,7 @@ export default function PurchaseDashboard() {
                   <Trans>View Open POs</Trans>
                 </Link>
               </Button>
-            </div>
+            </HStack>
           </CardContent>
         </Card>
 
@@ -466,7 +466,7 @@ export default function PurchaseDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-wrap items-center justify-between gap-2 w-full">
+            <HStack className="justify-between w-full items-center">
               <h3 className="text-5xl font-medium tracking-tighter">
                 {openPurchaseInvoices.count ?? 0}
               </h3>
@@ -483,15 +483,15 @@ export default function PurchaseDashboard() {
                   <Trans>View Open Invoices</Trans>
                 </Link>
               </Button>
-            </div>
+            </HStack>
           </CardContent>
         </Card>
       </div>
 
       <Card>
-        <div className="flex flex-wrap items-center justify-between">
+        <HStack className="justify-between items-center">
           <CardHeader>
-            <div className="flex flex-wrap justify-start items-center gap-2">
+            <div className="flex w-full justify-start items-center gap-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -526,7 +526,7 @@ export default function PurchaseDashboard() {
               />
             </div>
           </CardHeader>
-          <CardAction className="flex-row items-center gap-2 shrink-0">
+          <CardAction className="flex-row items-center gap-2">
             <DateSelect
               value={interval}
               onValueChange={onIntervalChange}
@@ -555,7 +555,7 @@ export default function PurchaseDashboard() {
               </DropdownMenuContent>
             </DropdownMenu>
           </CardAction>
-        </div>
+        </HStack>
         <CardContent className="flex-col gap-4">
           <VStack className="pl-[3px]" spacing={0}>
             {isFetching ? (

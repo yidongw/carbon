@@ -88,20 +88,15 @@ const Row = <T extends object>({
 const MemoizedRow = memo(
   Row,
   (prev, next) =>
-    prev.row.id === next.row.id &&
-    prev.row.original === next.row.original &&
-    prev.isRowSelected === next.isRowSelected &&
-    prev.rowIsSelected === next.rowIsSelected &&
-    prev.isEditing === next.isEditing &&
-    prev.isEditMode === next.isEditMode &&
-    prev.selectedCell?.row === next.selectedCell?.row &&
-    prev.selectedCell?.column === next.selectedCell?.column &&
-    prev.pinnedColumns === next.pinnedColumns &&
-    // getPinnedStyles identity changes when columnPinning/columnSizeMap update
-    // (it's a useCallback keyed on them). Without this, rows keep the styles
-    // from the first render — when columnSizeMap was still empty — so pinned
-    // body cells stick at left:0 and cover the checkbox column.
-    prev.getPinnedStyles === next.getPinnedStyles
+    next.rowIsSelected === false &&
+    prev.rowIsSelected === false &&
+    next.isRowSelected === prev.isRowSelected &&
+    next.selectedCell?.row === prev.row.index &&
+    next.row.index === prev.selectedCell?.row &&
+    next.selectedCell?.column === prev.selectedCell?.column &&
+    next.isEditing === prev.isEditing &&
+    next.isEditMode === prev.isEditMode &&
+    next.pinnedColumns === prev.pinnedColumns
 ) as typeof Row;
 
 export default MemoizedRow;

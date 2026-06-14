@@ -14,6 +14,7 @@ import type { ChatInputMessage } from "./ChatInput";
 import { ChatInput } from "./ChatInput";
 import { ChatMessages } from "./ChatMessages";
 import { ChatStatusIndicators } from "./ChatStatusIndicators";
+import { ChatWidgets } from "./ChatWidgets";
 import {
   Conversation,
   ConversationContent,
@@ -29,10 +30,9 @@ type Props = {
     city?: string;
     country?: string;
   };
-  containerClassName?: string;
 };
 
-export function ChatInterface({ geo, containerClassName }: Props) {
+export function ChatInterface({ geo }: Props) {
   const { chatId: routeChatId } = useChatInterface();
   const recordButtonRef = useRef<RecordButtonRef>(null);
 
@@ -134,7 +134,7 @@ export function ChatInterface({ geo, containerClassName }: Props) {
   const hasSuggestions = suggestions?.prompts && suggestions.prompts.length > 0;
 
   return (
-    <div className={cn("relative flex size-full overflow-hidden bg-background", containerClassName ?? "h-[calc(100dvh-49px)]")}>
+    <div className="relative flex size-full overflow-hidden bg-background h-[calc(100dvh-49px)]">
       {/* Canvas slides in from right when artifacts are present */}
       <div
         className={cn(
@@ -151,7 +151,8 @@ export function ChatInterface({ geo, containerClassName }: Props) {
         className={cn(
           "relative flex-1",
           hasMessages && "transition-all duration-300 ease-in-out",
-          hasArtifacts && "mr-[600px]"
+          hasArtifacts && "mr-[600px]",
+          !hasMessages && "flex items-center justify-center"
         )}
       >
         {hasMessages && (
@@ -193,22 +194,22 @@ export function ChatInterface({ geo, containerClassName }: Props) {
           </>
         )}
 
-        {!hasMessages && (
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none pb-24">
-            <Greeting size="h1" className="font-medium" />
-          </div>
-        )}
-
-        {/* Input pinned to bottom */}
+        {/* Fixed input at bottom - respects parent container boundaries */}
         <div
           className={cn(
-            "absolute bottom-0 left-0 transition-all duration-300 ease-in-out max-w-2xl mx-auto px-6",
+            "transition-all duration-300 ease-in-out max-w-2xl mx-auto px-6",
+            hasMessages
+              ? "absolute bottom-0 left-0"
+              : "w-full -mt-[20dvh] flex flex-col gap-8 items-center justify-center",
             hasArtifacts ? "right-[600px]" : "right-0"
           )}
         >
-          <div className="w-full pb-5">
+          {!hasMessages && <Greeting size="h1" className="font-medium" />}
+          <div className="w-full pb-2">
             <ChatInput ref={recordButtonRef} hasMessages={hasMessages} />
           </div>
+
+          {!hasMessages && <ChatWidgets recordButtonRef={recordButtonRef} />}
         </div>
       </div>
     </div>

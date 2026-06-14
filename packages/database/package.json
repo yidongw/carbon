@@ -17,7 +17,6 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./seed": "./supabase/functions/lib/seed.data.ts",
     "./client": "./src/client.ts",
     "./event": "./src/event.ts",
     "./ratelimit": "./src/ratelimit.ts",
@@ -34,7 +33,6 @@
     "db:migrate:new": "supabase migration new",
     "db:seed": "tsx src/seed.ts",
     "db:seed:dev": "tsx src/seed-dev.ts",
-    "db:seed:dev:full": "tsx src/seed-dev-full.ts",
     "deploy": "supabase link --project-ref $SUPABASE_PROJECT_ID && supabase db push",
     "lint": "biome lint --write ",
     "typecheck": "tsgo --noEmit"

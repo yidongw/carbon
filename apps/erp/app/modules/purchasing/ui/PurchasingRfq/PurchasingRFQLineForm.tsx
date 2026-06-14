@@ -26,8 +26,7 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { LuTrash } from "react-icons/lu";
-import { useFetcher, useParams } from "react-router";
-import type { action } from "~/routes/x+/purchasing-rfq+/$rfqId.$lineId.details";
+import { useParams } from "react-router";
 import type { z } from "zod";
 import {
   ArrayNumeric,
@@ -68,7 +67,6 @@ const PurchasingRFQLineForm = ({
   const { carbon } = useCarbon();
 
   const { rfqId } = useParams();
-  const fetcher = useFetcher<typeof action>();
 
   if (!rfqId) throw new Error("rfqId not found");
 
@@ -151,9 +149,10 @@ const PurchasingRFQLineForm = ({
                   : path.to.newPurchasingRFQLine(rfqId)
               }
               className="w-full"
-              fetcher={fetcher}
               isDisabled={isEditing && isLocked}
-              onSuccess={type === "modal" ? onClose : undefined}
+              onSubmit={() => {
+                if (type === "modal") onClose?.();
+              }}
             >
               <HStack className="w-full justify-between items-start">
                 <ModalCardHeader>

@@ -33,7 +33,7 @@ export type FilterProps = Omit<
 
 const Filter = forwardRef<HTMLButtonElement, FilterProps>(
   ({ filters, trigger = "button", ...props }, ref) => {
-    const { t } = useLingui();
+    const { t, i18n } = useLingui();
     const { clearFilters, hasFilter, hasFilters, hasFilterKey, toggleFilter } =
       useFilters();
 
@@ -75,14 +75,16 @@ const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       }
     }, [fetcher.data, activeFilter]);
 
+    const translate = useCallback((value: string) => i18n._(value), [i18n]);
+
     const columnFilters = useMemo(
       () =>
         filters.map((f) => ({
           value: f.accessorKey,
-          label: f.header,
+          label: translate(f.header),
           icon: f.icon
         })),
-      [filters]
+      [filters, translate]
     );
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: suppressed due to migration
@@ -223,7 +225,7 @@ const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                               <span>{option.label}</span>
                               {option.helperText && (
                                 <p className="text-xs text-muted-foreground truncate">
-                                  {option.helperText}
+                                  {translate(option.helperText)}
                                 </p>
                               )}
                             </VStack>

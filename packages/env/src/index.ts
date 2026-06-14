@@ -79,9 +79,6 @@ declare global {
       VERCEL_ENV: string;
       INNGEST_SIGNING_KEY: string;
       INNGEST_EVENT_KEY: string;
-      WECHAT_MP_APP_ID: string;
-      WECHAT_MP_APP_SECRET: string;
-      WECHAT_WEBHOOK_TOKEN: string;
       XERO_CLIENT_SECRET: string;
       XERO_WEBHOOK_SECRET: string;
       DEFAULT_LANGUAGE: string;
@@ -321,19 +318,6 @@ export const XERO_WEBHOOK_SECRET = getEnv("XERO_WEBHOOK_SECRET", {
   isSecret: true
 });
 
-export const WECHAT_MP_APP_ID = getEnv("WECHAT_MP_APP_ID", {
-  isRequired: false,
-  isSecret: false
-});
-export const WECHAT_MP_APP_SECRET = getEnv("WECHAT_MP_APP_SECRET", {
-  isRequired: false,
-  isSecret: true
-});
-export const WECHAT_WEBHOOK_TOKEN = getEnv("WECHAT_WEBHOOK_TOKEN", {
-  isRequired: false,
-  isSecret: true
-});
-
 export const JIRA_CLIENT_ID = getEnv("JIRA_CLIENT_ID", {
   isRequired: false
 });
@@ -375,16 +359,6 @@ export const SUPABASE_ANON_KEY = getEnv("SUPABASE_ANON_KEY", {
   isSecret: false
 });
 
-// Browser-facing Supabase URL. The server talks to Supabase on localhost, but a
-// browser reaching the app through a tunnel (see tunnel.sh) cannot — set
-// SUPABASE_URL_PUBLIC to the API's public tunnel URL so the client, including
-// the realtime websocket, connects to a reachable origin. Falls back to
-// SUPABASE_URL when unset, so normal local dev is unaffected.
-export const SUPABASE_URL_PUBLIC = getEnv("SUPABASE_URL_PUBLIC", {
-  isSecret: false,
-  isRequired: false
-});
-
 export const DEFAULT_LANGUAGE =
   getEnv("DEFAULT_LANGUAGE", {
     isSecret: false,
@@ -406,11 +380,7 @@ export function getAppUrl() {
   }
 
   if (VERCEL_ENV === "preview") {
-    // VERCEL_BRANCH_URL is stable for a branch (doesn't change per deploy).
-    // VERCEL_URL is unique per deployment. Using the branch URL ensures the
-    // callback URL matches the host the user is actually browsing, so the
-    // sb-pkce-cv cookie is sent back on the /callback request.
-    return `https://${process.env.VERCEL_BRANCH_URL ?? process.env.VERCEL_URL}`;
+    return `https://${process.env.VERCEL_URL}`;
   }
 
   // Dev: `crbn up` writes ERP_URL=https://<prefix>.erp.dev into .env.local.
@@ -429,7 +399,7 @@ export function getMESUrl() {
   }
 
   if (VERCEL_ENV === "preview") {
-    return `https://${process.env.VERCEL_BRANCH_URL ?? process.env.VERCEL_URL}`;
+    return `https://${process.env.VERCEL_URL}`;
   }
 
   // Dev: `crbn up` writes MES_URL=https://<prefix>.mes.dev into .env.local.
@@ -456,7 +426,7 @@ export function getBrowserEnv() {
     POSTHOG_PROJECT_PUBLIC_KEY,
     QUICKBOOKS_CLIENT_ID,
     SUPABASE_ANON_KEY,
-    SUPABASE_URL: SUPABASE_URL_PUBLIC || SUPABASE_URL,
+    SUPABASE_URL,
     VERCEL_ENV,
     VERCEL_URL,
     XERO_CLIENT_ID,

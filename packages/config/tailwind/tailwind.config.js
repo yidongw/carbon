@@ -111,9 +111,6 @@ export default {
       letterSpacing: {
         normal: "-0.02em",
       },
-      transitionTimingFunction: {
-        sidebar: "cubic-bezier(0.23,1,0.32,1)",
-      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },

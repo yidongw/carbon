@@ -18,8 +18,7 @@
     "./users.server": "./src/services/users.server.ts",
     "./verification.server": "./src/services/verification.server.ts",
     "./middleware/flash.server": "./src/middleware/flash.server.ts",
-    "./middleware/flash.client": "./src/middleware/flash.client.ts",
-    "./wechat.server": "./src/services/wechat.server.ts"
+    "./middleware/flash.client": "./src/middleware/flash.client.ts"
   },
   "main": "./src/index.ts",
   "types": "./src/index.ts",

@@ -1,4 +1,4 @@
-import { error, isValidCachedClaims, success } from "@carbon/auth";
+import { error, success } from "@carbon/auth";
 import { deleteAuthAccount } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash, requireAuthSession } from "@carbon/auth/session.server";
@@ -645,13 +645,10 @@ export async function getUserClaims(userId: string, companyId: string) {
   try {
     const cachedClaims = await redis.get(getPermissionCacheKey(userId));
     if (cachedClaims) {
-      const parsed = JSON.parse(cachedClaims) as {
+      claims = JSON.parse(cachedClaims) as {
         permissions: Record<string, Permission>;
         role: string | null;
       };
-      if (isValidCachedClaims(parsed)) {
-        claims = parsed;
-      }
     }
   } catch (e) {
     console.error("Failed to get claims from redis", e);
@@ -664,22 +661,20 @@ export async function getUserClaims(userId: string, companyId: string) {
         userId,
         companyId
       );
-      if (rawClaims.error) {
+      if (rawClaims.error || rawClaims.data === null) {
         console.error(rawClaims);
         throw new Error("Failed to get claims");
       }
 
       // convert rawClaims to permissions
-      claims = rawClaims.data === null
-        ? { permissions: {}, role: null }
-        : makePermissionsFromClaims(rawClaims.data as Json[]);
-
-      if (!claims) {
-        claims = { permissions: {}, role: null };
-      }
+      claims = makePermissionsFromClaims(rawClaims.data as Json[]);
 
       // store claims in redis
       await redis.set(getPermissionCacheKey(userId), JSON.stringify(claims));
+
+      if (!claims) {
+        throw new Error("Failed to get claims");
+      }
     }
 
     return claims;

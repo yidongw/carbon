@@ -28,7 +28,6 @@ import {
   Boolean,
   ItemPostingGroup,
   Tags,
-  Template,
   UnitOfMeasure
 } from "~/components/Form";
 import CustomFormInlineFields from "~/components/Form/CustomFormInlineFields";
@@ -102,7 +101,6 @@ const PartProperties = () => {
         | "partId"
         | "name"
         | "replenishmentSystem"
-        | "templateId"
         | "unitOfMeasureCode"
         | "requiresInspection",
       value: string | null
@@ -165,7 +163,7 @@ const PartProperties = () => {
   return (
     <VStack
       spacing={4}
-      className="w-full min-w-0 bg-card h-full overflow-y-auto overflow-x-hidden overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent px-4 py-2 text-sm"
+      className="w-96 bg-card h-full overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent border-l border-border px-4 py-2 text-sm"
     >
       <VStack spacing={2}>
         <HStack className="w-full justify-between">
@@ -320,26 +318,6 @@ const PartProperties = () => {
           isClearable
           onChange={(value) => {
             onUpdate("itemPostingGroupId", value?.value ?? null);
-          }}
-        />
-      </ValidatedForm>
-
-      <ValidatedForm
-        defaultValues={{
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          templateId: (routeData?.partSummary as any)?.templateId ?? undefined
-        }}
-        validator={z.object({
-          templateId: z.string().nullable().optional()
-        })}
-        className="w-full"
-      >
-        <Template
-          label={t`Template`}
-          name="templateId"
-          inline
-          onChange={(value) => {
-            onUpdate("templateId", value?.value ?? null);
           }}
         />
       </ValidatedForm>

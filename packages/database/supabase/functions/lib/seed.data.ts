@@ -1,7 +1,6 @@
 /**
- * Shared seed data for company initialization.
- * Used by seed-dev.ts (Node.js) and the seed_company() Postgres RPC, which the ERP
- * app reaches via the @carbon/database/seed export (companySeedData below).
+ * Shared seed data for company initialization
+ * Used by both seed-dev.ts (Node.js) and seed-company edge function (Deno)
  *
  * This is the single source of truth for all seed data.
  */
@@ -721,67 +720,3 @@ export function getGroupId(idPrefix: string, companyId: string): string {
   )}-${companyId.substring(8, 20)}`;
   return `${idPrefix}-${companyIdPart}`;
 }
-
-export type DefaultApprovalRuleSeed = {
-  documentType:
-    | "purchaseOrder"
-    | "qualityDocument"
-    | "supplier"
-    | "productionQuantityReport";
-  enabled: boolean;
-  approverGroupIds: string[];
-  lowerBoundAmount: number;
-};
-
-/** Default approval rules for new companies — Admin employee-type group can approve all types. */
-export function defaultApprovalRules(
-  companyId: string,
-  adminEmployeeTypeId: string,
-  createdBy: string
-): Array<{
-  documentType: DefaultApprovalRuleSeed["documentType"];
-  enabled: boolean;
-  approverGroupIds: string[];
-  lowerBoundAmount: number;
-  companyId: string;
-  createdBy: string;
-}> {
-  const types: DefaultApprovalRuleSeed["documentType"][] = [
-    "purchaseOrder",
-    "qualityDocument",
-    "supplier",
-    "productionQuantityReport"
-  ];
-  return types.map((documentType) => ({
-    documentType,
-    enabled: true,
-    approverGroupIds: [adminEmployeeTypeId],
-    lowerBoundAmount: 0,
-    companyId,
-    createdBy
-  }));
-}
-
-/**
- * The payload handed to the `seed_company(...)` Postgres RPC. The RPC is
- * data-agnostic — it inserts whatever this object contains — so this is the one
- * place that lists which seed arrays a company gets. Consumed by the ERP app
- * (settings.service `seedCompany`) and the dev seed script.
- */
-export const companySeedData = {
-  dimensions,
-  customerStatuses,
-  scrapReasons,
-  paymentTerms,
-  unitOfMeasures,
-  gaugeTypes,
-  failureModes,
-  nonConformanceTypes,
-  nonConformanceRequiredActions,
-  sequences,
-  currencies,
-  accounts,
-  accountDefaults,
-  fiscalYearSettings,
-  groups
-} as const;

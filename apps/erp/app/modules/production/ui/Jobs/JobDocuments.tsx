@@ -30,18 +30,10 @@ import { convertKbToString } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { FileObject } from "@supabase/storage-js";
 import type { ChangeEvent } from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { LuEllipsisVertical, LuUpload } from "react-icons/lu";
 import { Link, useFetchers, useRevalidator, useSubmit } from "react-router";
-import {
-  DocumentPreview,
-  FileDropzone,
-  FilesIconView,
-  FilesViewModeToggle,
-  Hyperlink
-} from "~/components";
-import type { FilesIconItem } from "~/components/FilesIconView";
-import { useFilesViewMode } from "~/components/FilesViewModeToggle";
+import { DocumentPreview, FileDropzone, Hyperlink } from "~/components";
 import DocumentIcon from "~/components/DocumentIcon";
 import { Enumerable } from "~/components/Enumerable";
 import { useDateFormatter, usePermissions, useUser } from "~/hooks";
@@ -384,47 +376,6 @@ const JobDocuments = ({
     a.name.localeCompare(b.name)
   ) as FileObject[];
 
-  const [viewMode, setViewMode] = useFilesViewMode();
-
-  const getFileBucket = useCallback((file: FileObject) => {
-    return (file as FileObject & { bucket?: string }).bucket === "parts"
-      ? "parts"
-      : "job";
-  }, []);
-
-  const iconItems = useMemo<FilesIconItem<FileObject>[]>(() => {
-    const items: FilesIconItem<FileObject>[] = [];
-
-    if (modelUpload?.modelName) {
-      items.push({
-        id: modelUpload.modelId ?? "model",
-        name: modelUpload.modelName,
-        documentType: "Model",
-        sizeBytes: modelUpload.modelSize,
-        isModel: true,
-        modelViewUrl: getModelPath(modelUpload)
-      });
-    }
-
-    for (const file of allFiles) {
-      const type = getDocumentType(file.name);
-      items.push({
-        id: file.id,
-        name: file.name,
-        documentType: type,
-        pathToFile: getPath(file, getFileBucket(file)),
-        createdAt: file.created_at,
-        sizeBytes: file.metadata?.size,
-        previewType: ["PDF", "Image"].includes(type)
-          ? (type as "PDF" | "Image")
-          : undefined,
-        raw: file
-      });
-    }
-
-    return items;
-  }, [allFiles, getFileBucket, getModelPath, getPath, modelUpload]);
-
   return (
     <>
       <Card className="flex-grow">
@@ -435,54 +386,19 @@ const JobDocuments = ({
             </CardTitle>
           </CardHeader>
           <CardAction>
-            <HStack>
-              <FilesViewModeToggle value={viewMode} onChange={setViewMode} />
-              {!isReadOnly && (
-                <JobDocumentForm
-                  jobId={jobId}
-                  itemId={itemId}
-                  bucket={bucket}
-                />
-              )}
-            </HStack>
+            {!isReadOnly && (
+              <JobDocumentForm jobId={jobId} itemId={itemId} bucket={bucket} />
+            )}
           </CardAction>
         </HStack>
         <CardContent>
-          {viewMode === "icons" ? (
-            <FilesIconView
-              items={iconItems}
-              canDelete={canDelete && !isReadOnly}
-              onDownload={(item) => {
-                if (item.isModel && modelUpload) {
-                  downloadModel(modelUpload);
-                } else if (item.raw) {
-                  download(item.raw);
-                }
-              }}
-              onDelete={(item) => {
-                if (item.isModel) {
-                  deleteModel();
-                } else if (item.raw) {
-                  deleteFile(item.raw);
-                }
-              }}
-            />
-          ) : (
           <Table>
             <Thead>
               <Tr>
-                <Th>
-                  <Trans>Name</Trans>
-                </Th>
-                <Th>
-                  <Trans>Size</Trans>
-                </Th>
-                <Th>
-                  <Trans>Bucket</Trans>
-                </Th>
-                <Th>
-                  <Trans>Created</Trans>
-                </Th>
+                <Th>Name</Th>
+                <Th>Size</Th>
+                <Th>Bucket</Th>
+                <Th>Created</Th>
                 <Th />
               </Tr>
             </Thead>
@@ -678,13 +594,12 @@ const JobDocuments = ({
                     colSpan={5}
                     className="py-8 text-muted-foreground text-center"
                   >
-                    <Trans>No files</Trans>
+                    No files
                   </Td>
                 </Tr>
               )}
             </Tbody>
           </Table>
-          )}
           {!isReadOnly && <FileDropzone onDrop={onDrop} />}
         </CardContent>
       </Card>
@@ -721,7 +636,7 @@ const JobDocumentForm = ({
       onChange={(e) => uploadFiles(e)}
       multiple
     >
-      <Trans>New</Trans>
+      New
     </File>
   );
 };

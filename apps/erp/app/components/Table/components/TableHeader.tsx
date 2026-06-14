@@ -59,8 +59,6 @@ import Sort from "./Sort";
 
 type HeaderProps<T> = {
   renderActions?: (selectedRows: T[]) => ReactNode;
-  featuredColumns: Set<string>;
-  onPinnedReorder: (newLeft: string[]) => void;
   columnAccessors: Record<string, string>;
   columnOrder: ColumnOrderState;
   columnPinning: ColumnPinningState;
@@ -77,7 +75,6 @@ type HeaderProps<T> = {
   primaryAction?: ReactNode;
   pagination: PaginationProps;
   selectedRows: T[];
-  setFeaturedColumns: (cols: Set<string>) => void;
   setColumnOrder: (newOrder: ColumnOrderState) => void;
   setEditMode: (editMode: boolean) => void;
   table?: string;
@@ -90,7 +87,6 @@ type HeaderProps<T> = {
 };
 
 const TableHeader = <T extends object>({
-  featuredColumns,
   compact,
   columnAccessors,
   columnOrder,
@@ -101,12 +97,10 @@ const TableHeader = <T extends object>({
   editMode,
   filters,
   importCSV,
-  onPinnedReorder,
   primaryAction,
   pagination,
   selectedRows,
   renderActions,
-  setFeaturedColumns,
   setColumnOrder,
   setEditMode,
   table,
@@ -117,7 +111,7 @@ const TableHeader = <T extends object>({
   withSearch,
   withSelectableRows
 }: HeaderProps<T>) => {
-  const { t } = useLingui();
+  const { t, i18n } = useLingui();
   const [params, setParams] = useUrlParams();
   const currentFilters = params.getAll("filter").filter(Boolean);
   const currentSorts = params.getAll("sort").filter(Boolean);
@@ -142,7 +136,11 @@ const TableHeader = <T extends object>({
   }, [fetcher.state, fetcher.data?.success]);
 
   const { currentView, hasView } = useSavedViews();
-  const viewTitle = currentView?.name ?? title;
+  const translateText = (value: string | undefined) => {
+    if (!value) return value;
+    return i18n._(value);
+  };
+  const viewTitle = translateText(currentView?.name ?? title);
   // const viewDescription = currentView?.description ?? "";
   const savedViewFormValidator = useMemo(
     () =>
@@ -164,7 +162,7 @@ const TableHeader = <T extends object>({
   const hideTitleBar = !viewTitle && !primaryAction && !canSaveView;
 
   return (
-    <div className={cn("w-full flex flex-col", !compact && "mb-2 md:mb-8")}>
+    <div className={cn("w-full flex flex-col", !compact && "mb-8")}>
       {canSaveView && savedViewDisclosure.isOpen ? (
         <ValidatedForm
           method="post"
@@ -221,19 +219,18 @@ const TableHeader = <T extends object>({
           <HStack
             className={cn(
               compact
-                ? "px-4 py-2 bg-card border-b w-full"
-                : "px-4 md:px-0 py-2 md:py-6 bg-card w-full relative",
-              "flex-nowrap overflow-x-auto justify-end md:justify-between [&::-webkit-scrollbar]:hidden [scrollbar-width:none]"
+                ? "px-4 py-2 justify-between bg-card border-b  w-full"
+                : "px-4 md:px-0 py-6 justify-between bg-card w-full relative"
             )}
           >
-            <HStack spacing={1} className="hidden md:flex shrink-0">
+            <HStack spacing={1}>
               <CollapsibleSidebarTrigger />
               {viewTitle && (
                 <Heading size={compact ? "h3" : "h2"}>{viewTitle}</Heading>
               )}
             </HStack>
 
-            <HStack className="shrink-0">
+            <HStack>
               {/* <Button variant="secondary" leftIcon={<LuDownload />}>
             Export
             </Button> */}
@@ -273,12 +270,11 @@ const TableHeader = <T extends object>({
       <HStack
         className={cn(
           compact
-            ? "px-4 py-2 bg-card border-b border-border w-full"
-            : "px-4 md:px-0 py-1 bg-card w-full",
-          "flex-nowrap overflow-x-auto md:justify-between [&::-webkit-scrollbar]:hidden [scrollbar-width:none]"
+            ? "px-4 py-2 justify-between bg-card border-b border-border w-full"
+            : "px-4 md:px-0 justify-between bg-card w-full"
         )}
       >
-        <HStack className="shrink-0">
+        <HStack>
           {withSelectableRows &&
             selectedRows.length > 0 &&
             typeof renderActions === "function" && (
@@ -302,15 +298,12 @@ const TableHeader = <T extends object>({
           )}
           {!!filters?.length && <Filter filters={filters} />}
         </HStack>
-        <HStack className="shrink-0">
+        <HStack>
           <Sort columnAccessors={columnAccessors} />
 
           <Columns
-            featuredColumns={featuredColumns}
             columnOrder={columnOrder}
             columns={columns}
-            onPinnedReorder={onPinnedReorder}
-            setFeaturedColumns={setFeaturedColumns}
             setColumnOrder={setColumnOrder}
             withSelectableRows={withSelectableRows}
           />

@@ -26,8 +26,7 @@ import { getItemReadableId } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useEffect, useState } from "react";
 import { LuBox, LuReceipt } from "react-icons/lu";
-import { useFetcher, useParams } from "react-router";
-import type { action } from "~/routes/x+/purchase-invoice+/$invoiceId.$lineId.details";
+import { useParams } from "react-router";
 import type { z } from "zod";
 import {
   Account,
@@ -76,7 +75,6 @@ const PurchaseInvoiceLineForm = ({
   const [items] = useItems();
   const { company, defaults } = useUser();
   const { invoiceId } = useParams();
-  const fetcher = useFetcher<typeof action>();
 
   if (!invoiceId) throw new Error("invoiceId not found");
 
@@ -371,9 +369,10 @@ const PurchaseInvoiceLineForm = ({
                   : path.to.newPurchaseInvoiceLine(invoiceId)
               }
               className="w-full"
-              fetcher={fetcher}
               isDisabled={!isEditable}
-              onSuccess={type === "modal" ? onClose : undefined}
+              onSubmit={() => {
+                if (type === "modal") onClose?.();
+              }}
             >
               <HStack
                 className={cn(

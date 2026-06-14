@@ -7,7 +7,6 @@ import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs } from "react-router";
 import { data, redirect } from "react-router";
 import { partValidator, upsertPart } from "~/modules/items";
-import { applyTemplateToItem } from "~/modules/items/template.service";
 import { PartForm } from "~/modules/items/ui/Parts";
 import { setCustomFields } from "~/utils/form";
 import type { Handle } from "~/utils/handle";
@@ -34,10 +33,8 @@ export async function action({ request }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
-  const { templateId, ...partData } = validation.data;
-
   const createPart = await upsertPart(client, {
-    ...partData,
+    ...validation.data,
     companyId,
     customFields: setCustomFields(formData),
     createdBy: userId
@@ -63,15 +60,6 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const itemId = createPart.data?.id;
   if (!itemId) throw new Error("Part ID not found");
-
-  if (templateId) {
-    await applyTemplateToItem(client, {
-      templateId,
-      itemId,
-      companyId,
-      userId
-    });
-  }
 
   return modal
     ? data(createPart, { status: 201 })

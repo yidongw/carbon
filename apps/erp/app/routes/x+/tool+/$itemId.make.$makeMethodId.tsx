@@ -15,9 +15,7 @@ import {
   getMakeMethodById,
   getMakeMethods,
   getMethodMaterialsByMakeMethod,
-  getMethodOperationsByMakeMethodId,
-  methodBindings,
-  partConfigurationRuleBindings
+  getMethodOperationsByMakeMethodId
 } from "~/modules/items";
 import {
   BillOfMaterial,
@@ -136,8 +134,6 @@ export default function ToolMakeMethodPage() {
 
       <BillOfMaterial
         key={`bom:${makeMethodId}`}
-        methodBindings={methodBindings(itemId)}
-        configurationRuleBindings={partConfigurationRuleBindings(itemId)}
         makeMethod={makeMethod}
         // @ts-expect-error TS2322 - TODO: fix type
         materials={methodMaterials}
@@ -146,8 +142,6 @@ export default function ToolMakeMethodPage() {
       />
       <BillOfProcess
         key={`bop:${makeMethodId}`}
-        methodBindings={methodBindings(itemId)}
-        configurationRuleBindings={partConfigurationRuleBindings(itemId)}
         makeMethod={makeMethod}
         materials={methodMaterials}
         // @ts-expect-error

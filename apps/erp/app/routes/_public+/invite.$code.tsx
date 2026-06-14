@@ -55,7 +55,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   const serviceRole = getCarbonServiceRole();
 
-  const accept = await acceptInvite(serviceRole, code, authSession?.email ?? undefined);
+  const accept = await acceptInvite(serviceRole, code, authSession?.email);
   if (accept.error) {
     throw redirect(
       path.to.root,

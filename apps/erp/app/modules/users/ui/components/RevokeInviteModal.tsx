@@ -70,7 +70,7 @@ const RevokeInviteModal = ({
               method="post"
               action={path.to.revokeInvite}
               validator={revokeInviteValidator}
-              onSuccess={onClose}
+              onSubmit={onClose}
               fetcher={fetcher}
             >
               {userIds.map((id, index) => (

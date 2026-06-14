@@ -1,5 +1,6 @@
 import {
   Badge,
+  Button,
   Copy,
   DropdownMenu,
   DropdownMenuContent,
@@ -9,28 +10,26 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  Heading,
+  HStack,
   IconButton,
   useDisclosure,
+  VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { PostgrestResponse } from "@supabase/supabase-js";
 import { Suspense, useEffect } from "react";
 import {
+  LuChevronDown,
   LuCirclePlus,
   LuEllipsisVertical,
+  LuGitPullRequestArrow,
   LuPanelLeft,
   LuPanelRight,
   LuTrash
 } from "react-icons/lu";
-import { createPortal } from "react-dom";
 import { Await, useNavigate, useParams } from "react-router";
-import {
-  DetailTopbarBadge,
-  DetailTopbarContent,
-  DetailTopbarPlainId,
-  usePanels,
-  useTopbarLeft
-} from "~/components/Layout";
+import { usePanels } from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData } from "~/hooks";
 import { path } from "~/utils/path";
@@ -38,16 +37,19 @@ import type { Procedure } from "../../types";
 import ProcedureForm from "./ProcedureForm";
 import ProcedureStatus from "./ProcedureStatus";
 
-function ProcedureTopbarLeft({ id }: { id: string }) {
+const ProcedureHeader = () => {
+  const { id } = useParams();
   const { t } = useLingui();
-  const navigate = useNavigate();
-  const permissions = usePermissions();
+  if (!id) throw new Error("id not found");
 
   const routeData = useRouteData<{
     procedure: Procedure;
     versions: PostgrestResponse<Procedure>;
   }>(path.to.procedure(id));
 
+  const navigate = useNavigate();
+  const permissions = usePermissions();
+  const { toggleExplorer, toggleProperties } = usePanels();
   const newVersionDisclosure = useDisclosure();
   const deleteDisclosure = useDisclosure();
 
@@ -57,16 +59,20 @@ function ProcedureTopbarLeft({ id }: { id: string }) {
   }, [id]);
 
   return (
-    <>
-      <DetailTopbarContent>
-          <DetailTopbarPlainId>
-            {routeData?.procedure?.name}
-          </DetailTopbarPlainId>
-          <DetailTopbarBadge
-            variant="outline"
-            label={`V${routeData?.procedure?.version}`}
+    <div className="flex flex-shrink-0 items-center justify-between px-4 py-2 bg-card border-b border-border h-[50px] overflow-x-auto scrollbar-hide dark:border-none dark:shadow-[inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)]">
+      <VStack spacing={0} className="flex-grow">
+        <HStack>
+          <IconButton
+            aria-label={t`Toggle Explorer`}
+            icon={<LuPanelLeft />}
+            onClick={toggleExplorer}
+            variant="ghost"
           />
-          <ProcedureStatus iconOnly status={routeData?.procedure?.status} />
+          <Heading size="h4" className="flex items-center gap-2">
+            <span>{routeData?.procedure?.name}</span>
+            <Badge variant="outline">V{routeData?.procedure?.version}</Badge>
+            <ProcedureStatus status={routeData?.procedure?.status} />
+          </Heading>
           <Copy text={routeData?.procedure?.name ?? ""} />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -78,55 +84,6 @@ function ProcedureTopbarLeft({ id }: { id: string }) {
               />
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              {permissions.can("create", "production") && (
-                <>
-                  <DropdownMenuItem onClick={newVersionDisclosure.onOpen}>
-                    <DropdownMenuIcon icon={<LuCirclePlus />} />
-                    <Trans>New Version</Trans>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                </>
-              )}
-              <Suspense fallback={null}>
-                <Await resolve={routeData?.versions}>
-                  {(versions) => (
-                    <DropdownMenuRadioGroup
-                      value={id}
-                      onValueChange={(value) =>
-                        navigate(path.to.procedure(value))
-                      }
-                    >
-                      {routeData?.procedure && (
-                        <DropdownMenuRadioItem
-                          key={routeData.procedure.id}
-                          value={routeData.procedure.id}
-                          className="flex items-center justify-between gap-2"
-                        >
-                          <Badge variant="outline">
-                            V{routeData.procedure.version}
-                          </Badge>
-                          <span>{routeData.procedure.name}</span>
-                          <ProcedureStatus status={routeData.procedure.status} />
-                        </DropdownMenuRadioItem>
-                      )}
-                      {versions?.data
-                        ?.filter((v) => v.id !== id)
-                        .map((version) => (
-                          <DropdownMenuRadioItem
-                            key={version.id}
-                            value={version.id}
-                            className="flex items-center justify-between gap-2"
-                          >
-                            <Badge variant="outline">V{version.version}</Badge>
-                            <span>{version.name}</span>
-                            <ProcedureStatus status={version.status} />
-                          </DropdownMenuRadioItem>
-                        ))}
-                    </DropdownMenuRadioGroup>
-                  )}
-                </Await>
-              </Suspense>
-              <DropdownMenuSeparator />
               <DropdownMenuItem
                 disabled={
                   !permissions.can("delete", "production") ||
@@ -140,8 +97,77 @@ function ProcedureTopbarLeft({ id }: { id: string }) {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-      </DetailTopbarContent>
-
+        </HStack>
+      </VStack>
+      <div className="flex flex-shrink-0 gap-1 items-center justify-end">
+        <Suspense fallback={null}>
+          <Await resolve={routeData?.versions}>
+            {(versions) => (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="secondary"
+                    leftIcon={<LuGitPullRequestArrow />}
+                    rightIcon={<LuChevronDown />}
+                  >
+                    <Trans>Versions</Trans>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {permissions.can("create", "production") && (
+                    <>
+                      <DropdownMenuItem onClick={newVersionDisclosure.onOpen}>
+                        <DropdownMenuIcon icon={<LuCirclePlus />} />
+                        <Trans>New Version</Trans>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                    </>
+                  )}
+                  <DropdownMenuRadioGroup
+                    value={id}
+                    onValueChange={(value) =>
+                      navigate(path.to.procedure(value))
+                    }
+                  >
+                    {routeData?.procedure && (
+                      <DropdownMenuRadioItem
+                        key={routeData.procedure.id}
+                        value={routeData.procedure.id}
+                        className="flex items-center justify-between gap-2"
+                      >
+                        <Badge variant="outline">
+                          V{routeData.procedure.version}
+                        </Badge>
+                        <span>{routeData.procedure.name}</span>
+                        <ProcedureStatus status={routeData.procedure.status} />
+                      </DropdownMenuRadioItem>
+                    )}
+                    {versions?.data
+                      ?.filter((v) => v.id !== id)
+                      .map((version) => (
+                        <DropdownMenuRadioItem
+                          key={version.id}
+                          value={version.id}
+                          className="flex items-center justify-between gap-2"
+                        >
+                          <Badge variant="outline">V{version.version}</Badge>
+                          <span>{version.name}</span>
+                          <ProcedureStatus status={version.status} />
+                        </DropdownMenuRadioItem>
+                      ))}
+                  </DropdownMenuRadioGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+          </Await>
+        </Suspense>
+        <IconButton
+          aria-label={t`Toggle Properties`}
+          icon={<LuPanelRight />}
+          onClick={toggleProperties}
+          variant="ghost"
+        />
+      </div>
       {newVersionDisclosure.isOpen && (
         <ProcedureForm
           type="copy"
@@ -170,39 +196,7 @@ function ProcedureTopbarLeft({ id }: { id: string }) {
           }}
         />
       )}
-    </>
-  );
-}
-
-const ProcedureHeader = () => {
-  const { id } = useParams();
-  if (!id) throw new Error("id not found");
-
-  const { leftSlotEl } = useTopbarLeft();
-  const { t } = useLingui();
-  const { hasExplorer, toggleExplorer, toggleProperties } = usePanels();
-
-  return (
-    <>
-      {leftSlotEl && createPortal(<ProcedureTopbarLeft id={id} />, leftSlotEl)}
-      <div className="flex-shrink-0 h-[50px] flex items-center gap-1 px-2 bg-card border-b border-border dark:border-none dark:shadow-[inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)]">
-        {hasExplorer && (
-          <IconButton
-            aria-label={t`Toggle Explorer`}
-            icon={<LuPanelLeft />}
-            onClick={toggleExplorer}
-            variant="ghost"
-          />
-        )}
-        <div className="flex-1" />
-        <IconButton
-          aria-label={t`Toggle Properties`}
-          icon={<LuPanelRight />}
-          onClick={toggleProperties}
-          variant="ghost"
-        />
-      </div>
-    </>
+    </div>
   );
 };
 

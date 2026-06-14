@@ -25,7 +25,7 @@ import {
   useLoaderData,
   useParams
 } from "react-router";
-import { PanelProvider, ResizablePanels } from "~/components/Layout";
+import { ResizablePanels } from "~/components/Layout";
 import { flattenTree } from "~/components/TreeView";
 import type { ItemFile, ToolSummary } from "~/modules/items";
 import {
@@ -141,11 +141,10 @@ export default function ToolRoute() {
   const [filterText, setFilterText] = useState("");
 
   return (
-    <PanelProvider>
-      <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
+    <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
       <ToolHeader />
       <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
-        <div className="flex flex-1 min-h-0 h-full overflow-hidden">
+        <div className="flex flex-grow overflow-hidden">
           <ResizablePanels
             explorer={
               <div className="flex flex-col h-full">
@@ -383,13 +382,13 @@ export default function ToolRoute() {
                             const tree: UsedInNode[] = [
                               {
                                 key: "issues",
-                                name: t`Issues`,
+                                name: "Issues",
                                 module: "quality",
                                 children: issues
                               },
                               {
                                 key: "jobs",
-                                name: t`Jobs`,
+                                name: "Jobs",
                                 module: "production",
                                 children: jobs.map((job) => ({
                                   ...job,
@@ -398,26 +397,26 @@ export default function ToolRoute() {
                               },
                               {
                                 key: "jobMaterials",
-                                name: t`Job Materials`,
+                                name: "Job Materials",
                                 module: "production",
                                 children: jobMaterials
                               },
                               {
                                 key: "maintenanceDispatchItems",
-                                name: t`Maintenance`,
+                                name: "Maintenance",
                                 module: "resources",
                                 children: maintenanceDispatchItems
                               },
                               {
                                 key: "methodMaterials",
-                                name: t`Method Materials`,
+                                name: "Method Materials",
                                 module: "parts",
                                 // @ts-expect-error
                                 children: methodMaterials
                               },
                               {
                                 key: "purchaseOrderLines",
-                                name: t`Purchase Orders`,
+                                name: "Purchase Orders",
                                 module: "purchasing",
                                 children: purchaseOrderLines.map((po) => ({
                                   ...po,
@@ -426,7 +425,7 @@ export default function ToolRoute() {
                               },
                               {
                                 key: "receiptLines",
-                                name: t`Receipts`,
+                                name: "Receipts",
                                 module: "inventory",
                                 children: receiptLines.map((receipt) => ({
                                   ...receipt,
@@ -435,13 +434,13 @@ export default function ToolRoute() {
                               },
                               {
                                 key: "quoteLines",
-                                name: t`Quotes`,
+                                name: "Quotes",
                                 module: "sales",
                                 children: quoteLines
                               },
                               {
                                 key: "quoteMaterials",
-                                name: t`Quote Materials`,
+                                name: "Quote Materials",
                                 module: "sales",
                                 children: quoteMaterials?.map((qm) => ({
                                   ...qm,
@@ -451,13 +450,13 @@ export default function ToolRoute() {
                               },
                               {
                                 key: "salesOrderLines",
-                                name: t`Sales Orders`,
+                                name: "Sales Orders",
                                 module: "sales",
                                 children: salesOrderLines
                               },
                               {
                                 key: "shipmentLines",
-                                name: t`Shipments`,
+                                name: "Shipments",
                                 module: "inventory",
                                 children: shipmentLines.map((shipment) => ({
                                   ...shipment,
@@ -466,7 +465,7 @@ export default function ToolRoute() {
                               },
                               {
                                 key: "supplierQuotes",
-                                name: t`Supplier Quotes`,
+                                name: "Supplier Quotes",
                                 module: "purchasing",
                                 children: supplierQuotes
                               }
@@ -496,7 +495,7 @@ export default function ToolRoute() {
               </div>
             }
             content={
-              <div className="h-full min-h-0 overflow-y-auto overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
+              <div className="h-[calc(100dvh-99px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
                 <Outlet />
               </div>
             }
@@ -505,6 +504,5 @@ export default function ToolRoute() {
         </div>
       </div>
     </div>
-    </PanelProvider>
   );
 }

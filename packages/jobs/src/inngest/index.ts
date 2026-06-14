@@ -37,7 +37,6 @@ import {
   onboardFunction,
   postTransactionFunction,
   recalculateFunction,
-  releaseJobFunction,
   rescheduleJobFunction,
   updatePermissionsFunction,
   userAdminFunction
@@ -60,7 +59,6 @@ export const functions = [
   modelThumbnailFunction,
   updatePermissionsFunction,
   recalculateFunction,
-  releaseJobFunction,
   userAdminFunction,
   postTransactionFunction,
   rescheduleJobFunction,

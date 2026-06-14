@@ -13,21 +13,6 @@ export type Filter = {
   value?: string;
 };
 
-/** Parses `column:operator:value` where value may contain `:`. */
-export function parseFilterParam(filter: string): Filter | undefined {
-  const firstColon = filter.indexOf(":");
-  if (firstColon === -1) return undefined;
-  const secondColon = filter.indexOf(":", firstColon + 1);
-  if (secondColon === -1) return undefined;
-
-  const column = filter.slice(0, firstColon);
-  const operator = filter.slice(firstColon + 1, secondColon);
-  const value = filter.slice(secondColon + 1);
-  if (!column || !operator || !value) return undefined;
-
-  return { column, operator, value };
-}
-
 export interface GenericQueryFilters {
   limit: number;
   offset: number;
@@ -62,7 +47,11 @@ export function getGenericQueryFilters(
   const filters: Filter[] =
     filterParams.length > 0
       ? (filterParams
-          .map((filter) => parseFilterParam(filter))
+          .map((filter) => {
+            const [column, operator, value] = filter.split(":");
+            if (!column || !operator || !value) return undefined;
+            return { column, operator, value };
+          })
           .filter((filter) => filter !== undefined) as Filter[])
       : [];
 

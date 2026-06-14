@@ -11,12 +11,11 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  ModalTitle,
-  useIsomorphicLayoutEffect
+  ModalTitle
 } from "@carbon/react";
 import { Trans } from "@lingui/react/macro";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { LuTriangleAlert } from "react-icons/lu";
 import { useFetcher, useNavigation, useParams } from "react-router";
 import { path } from "~/utils/path";
@@ -30,9 +29,8 @@ const SalesInvoiceVoidModal = ({ onClose }: { onClose: () => void }) => {
   const submitted = useRef(false);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: suppressed due to migration
-  useIsomorphicLayoutEffect(() => {
-    if (fetcher.state === "loading" && submitted.current) {
-      submitted.current = false;
+  useEffect(() => {
+    if (fetcher.state === "idle" && submitted.current) {
       onClose();
     }
   }, [fetcher.state]);

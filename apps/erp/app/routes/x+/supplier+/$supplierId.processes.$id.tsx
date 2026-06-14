@@ -16,7 +16,7 @@ import {
 import SupplierProcessForm from "~/modules/purchasing/ui/Supplier/SupplierProcessForm";
 import { setCustomFields } from "~/utils/form";
 import { path } from "~/utils/path";
-import { supplierProcessesBySupplierQuery, supplierProcessesQuery } from "~/utils/react-query";
+import { supplierProcessesQuery } from "~/utils/react-query";
 
 export async function action({ request, params }: ActionFunctionArgs) {
   assertIsPost(request);
@@ -80,12 +80,6 @@ export async function clientAction({
       null
     );
   }
-  if (params.supplierId) {
-    window.clientCache?.setQueryData(
-      supplierProcessesBySupplierQuery(params.supplierId).queryKey,
-      null
-    );
-  }
   return await serverAction();
 }
 
@@ -107,7 +101,6 @@ export default function SupplierProcessRoute() {
     supplierId: process.supplierId ?? "",
     processId: process.processId ?? "",
     minimumCost: process.minimumCost ?? 0,
-    unitCost: process.unitCost ?? 0,
     leadTime: process.leadTime ?? 0
   };
 

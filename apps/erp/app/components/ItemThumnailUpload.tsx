@@ -89,15 +89,6 @@ export function ItemThumbnailUpload({
             }
           );
 
-          if (!response.ok) {
-            const errorText = await response
-              .text()
-              .catch(() => response.statusText);
-            throw new Error(
-              `Image resize failed: ${response.status} ${errorText || "Unknown error"}`
-            );
-          }
-
           // Get content type from response to determine if it's JPG or PNG
           const contentType =
             response.headers.get("Content-Type") || "image/png";
@@ -133,7 +124,6 @@ export function ItemThumbnailUpload({
             );
 
           if (error) {
-            console.error("Failed to upload thumbnail to storage:", error);
             toast.error(t`Failed to upload thumbnail`);
             return;
           }
@@ -150,22 +140,6 @@ export function ItemThumbnailUpload({
             return;
           }
 
-          if (modelId) {
-            const modelResult = await carbon
-              .from("modelUpload")
-              .update({
-                thumbnailPath: data?.path
-              })
-              .eq("id", modelId);
-
-            if (modelResult.error) {
-              console.error(
-                "Failed to update model thumbnail path:",
-                modelResult.error
-              );
-            }
-          }
-
           if (data) {
             setThumbnailPath(getPrivateUrl(data.path));
             toast.success(t`Thumbnail uploaded`);
@@ -176,7 +150,7 @@ export function ItemThumbnailUpload({
         }
       }
     },
-    [carbon, company.id, itemId, modelId, t]
+    [carbon, company.id, itemId, t]
   );
 
   return (

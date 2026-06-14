@@ -10,7 +10,6 @@ import {
   TabsList,
   TabsTrigger
 } from "@carbon/react";
-import { Trans, useLingui } from "@lingui/react/macro";
 import { useCallback } from "react";
 import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useLoaderData, useNavigate } from "react-router";
@@ -51,7 +50,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export default function SubsidiariesRoute() {
-  const { t } = useLingui();
   const { companies } = useLoaderData<typeof loader>();
   const navigate = useNavigate();
 
@@ -72,14 +70,14 @@ export default function SubsidiariesRoute() {
   return (
     <Tabs defaultValue="tree" className="w-full">
       <div className="flex px-4 py-3 items-center space-x-4 justify-between bg-card border-b border-border w-full">
-        <Heading size="h3"><Trans>Companies</Trans></Heading>
+        <Heading size="h3">Companies</Heading>
         <HStack>
           <TabsList>
-            <TabsTrigger value="tree"><Trans>Tree View</Trans></TabsTrigger>
-            <TabsTrigger value="list"><Trans>List View</Trans></TabsTrigger>
+            <TabsTrigger value="tree">Tree View</TabsTrigger>
+            <TabsTrigger value="list">List View</TabsTrigger>
           </TabsList>
           <New
-            label={t`Company`}
+            label="Company"
             to={path.to.newCompanyInGroup}
             variant="primary"
           />

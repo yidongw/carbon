@@ -4,7 +4,6 @@ import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import type { JSONContent } from "@carbon/react";
 import type { FileObject } from "@supabase/storage-js";
-import { useLingui } from "@lingui/react/macro";
 import { useRef } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { redirect, useLoaderData, useParams } from "react-router";
@@ -144,7 +143,6 @@ export async function action({ request, params }: ActionFunctionArgs) {
 }
 
 export default function PurchaseOrderBasicRoute() {
-  const { t } = useLingui();
   const { purchaseOrderPayment, internalNotes, externalNotes } =
     useLoaderData<typeof loader>();
 
@@ -183,35 +181,38 @@ export default function PurchaseOrderBasicRoute() {
     ...getCustomFields(orderData?.purchaseOrder?.customFields)
   };
 
-  const delivery = orderData?.purchaseOrderDelivery;
   const deliveryInitialValues = {
-    id: delivery?.id ?? orderId,
-    locationId: delivery?.locationId ?? "",
-    supplierShippingCost: delivery?.supplierShippingCost ?? 0,
-    shippingMethodId: delivery?.shippingMethodId ?? "",
-    shippingTermId: delivery?.shippingTermId ?? "",
-    trackingNumber: delivery?.trackingNumber ?? "",
-    receiptRequestedDate: delivery?.receiptRequestedDate ?? "",
-    receiptPromisedDate: delivery?.receiptPromisedDate ?? "",
-    deliveryDate: delivery?.deliveryDate ?? "",
-    notes: delivery?.notes ?? "",
-    dropShipment: delivery?.dropShipment ?? false,
-    customerId: delivery?.customerId ?? "",
-    customerLocationId: delivery?.customerLocationId ?? "",
-    incoterm: delivery?.incoterm ?? undefined,
-    incotermLocation: delivery?.incotermLocation ?? "",
-    ...getCustomFields(delivery?.customFields)
+    id: orderData?.purchaseOrderDelivery.id,
+    locationId: orderData?.purchaseOrderDelivery.locationId ?? "",
+    supplierShippingCost:
+      orderData?.purchaseOrderDelivery.supplierShippingCost ?? 0,
+    shippingMethodId: orderData?.purchaseOrderDelivery.shippingMethodId ?? "",
+    shippingTermId: orderData?.purchaseOrderDelivery.shippingTermId ?? "",
+    trackingNumber: orderData?.purchaseOrderDelivery.trackingNumber ?? "",
+    receiptRequestedDate:
+      orderData?.purchaseOrderDelivery.receiptRequestedDate ?? "",
+    receiptPromisedDate:
+      orderData?.purchaseOrderDelivery.receiptPromisedDate ?? "",
+    deliveryDate: orderData?.purchaseOrderDelivery.deliveryDate ?? "",
+    notes: orderData?.purchaseOrderDelivery.notes ?? "",
+    dropShipment: orderData?.purchaseOrderDelivery.dropShipment ?? false,
+    customerId: orderData?.purchaseOrderDelivery.customerId ?? "",
+    customerLocationId:
+      orderData?.purchaseOrderDelivery.customerLocationId ?? "",
+    incoterm: orderData?.purchaseOrderDelivery.incoterm ?? undefined,
+    incotermLocation: orderData?.purchaseOrderDelivery.incotermLocation ?? "",
+    ...getCustomFields(orderData?.purchaseOrderDelivery.customFields)
   };
   const paymentInitialValues = {
-    id: purchaseOrderPayment?.id ?? orderId,
-    invoiceSupplierId: purchaseOrderPayment?.invoiceSupplierId ?? "",
+    id: purchaseOrderPayment.id,
+    invoiceSupplierId: purchaseOrderPayment.invoiceSupplierId ?? "",
     invoiceSupplierLocationId:
-      purchaseOrderPayment?.invoiceSupplierLocationId ?? undefined,
+      purchaseOrderPayment.invoiceSupplierLocationId ?? undefined,
     invoiceSupplierContactId:
-      purchaseOrderPayment?.invoiceSupplierContactId ?? undefined,
-    paymentTermId: purchaseOrderPayment?.paymentTermId ?? undefined,
-    paymentComplete: purchaseOrderPayment?.paymentComplete ?? undefined,
-    ...getCustomFields(purchaseOrderPayment?.customFields)
+      purchaseOrderPayment.invoiceSupplierContactId ?? undefined,
+    paymentTermId: purchaseOrderPayment.paymentTermId ?? undefined,
+    paymentComplete: purchaseOrderPayment.paymentComplete ?? undefined,
+    ...getCustomFields(purchaseOrderPayment.customFields)
   };
 
   const { company } = useUser();
@@ -223,7 +224,7 @@ export default function PurchaseOrderBasicRoute() {
       <SupplierInteractionNotes
         key={`notes-${initialValues.id}`}
         id={orderData.purchaseOrder.id}
-        title={t`Notes`}
+        title="Notes"
         table="purchaseOrder"
         internalNotes={internalNotes}
         externalNotes={externalNotes}

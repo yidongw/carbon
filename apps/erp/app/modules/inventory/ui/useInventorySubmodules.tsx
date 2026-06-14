@@ -62,7 +62,7 @@ export default function useInventorySubmodules() {
         },
         {
           name: t`Quantities`,
-          to: path.to.inventoryQuantities,
+          to: path.to.inventory,
           role: "employee",
           icon: <LuTally5 />,
           table: "inventory"

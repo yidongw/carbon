@@ -1021,73 +1021,6 @@ export async function getOpportunity(
   }>;
 }
 
-export async function getOrCreateOpportunityForRecord(
-  client: SupabaseClient<Database>,
-  record: {
-    id: string;
-    companyId: string;
-    customerId: string;
-    opportunityId: string | null;
-    table: "salesOrder" | "salesRfq" | "quote";
-  }
-): ReturnType<typeof getOpportunity> {
-  const opportunity = await getOpportunity(
-    client,
-    record.opportunityId ?? null
-  );
-
-  if (opportunity.data) {
-    return opportunity;
-  }
-
-  const created = await client
-    .from("opportunity")
-    .insert([
-      {
-        companyId: record.companyId,
-        customerId: record.customerId
-      }
-    ])
-    .select("id")
-    .single();
-
-  if (created.error || !created.data) {
-    return {
-      data: null,
-      error: created.error
-    } as ReturnType<typeof getOpportunity>;
-  }
-
-  const updated = await client
-    .from(record.table)
-    .update({ opportunityId: created.data.id })
-    .eq("id", record.id);
-
-  if (updated.error) {
-    return {
-      data: null,
-      error: updated.error
-    } as ReturnType<typeof getOpportunity>;
-  }
-
-  return getOpportunity(client, created.data.id);
-}
-
-export async function getOrCreateOpportunityForSalesOrder(
-  client: SupabaseClient<Database>,
-  salesOrder: {
-    id: string;
-    companyId: string;
-    customerId: string;
-    opportunityId: string | null;
-  }
-): ReturnType<typeof getOpportunity> {
-  return getOrCreateOpportunityForRecord(client, {
-    ...salesOrder,
-    table: "salesOrder"
-  });
-}
-
 export async function getOpportunityDocuments(
   client: SupabaseClient<Database>,
   companyId: string,
@@ -1718,7 +1651,7 @@ export async function getSalesOrderPayment(
     .from("salesOrderPayment")
     .select("*")
     .eq("id", salesOrderId)
-    .maybeSingle();
+    .single();
 }
 
 export async function getSalesTerms(
@@ -1736,7 +1669,7 @@ export async function getSalesOrderShipment(
     .from("salesOrderShipment")
     .select("*")
     .eq("id", salesOrderId)
-    .maybeSingle();
+    .single();
 }
 
 export async function getSalesOrderCustomers(client: SupabaseClient<Database>) {
@@ -4880,42 +4813,10 @@ export async function upsertSalesOrderShipment(
       })
 ) {
   if ("id" in salesOrderShipment) {
-    const { id, updatedBy, ...rest } = salesOrderShipment;
-    const existing = await client
-      .from("salesOrderShipment")
-      .select("id")
-      .eq("id", id)
-      .maybeSingle();
-
-    if (existing.data) {
-      return client
-        .from("salesOrderShipment")
-        .update(sanitize({ ...rest, updatedBy }))
-        .eq("id", id)
-        .select("id")
-        .single();
-    }
-
-    const order = await client
-      .from("salesOrder")
-      .select("companyId")
-      .eq("id", id)
-      .single();
-
-    if (order.error) {
-      return order;
-    }
-
     return client
       .from("salesOrderShipment")
-      .insert([
-        sanitize({
-          id,
-          ...rest,
-          companyId: order.data.companyId,
-          updatedBy
-        })
-      ])
+      .update(sanitize(salesOrderShipment))
+      .eq("id", salesOrderShipment.id)
       .select("id")
       .single();
   }
@@ -4975,42 +4876,10 @@ export async function upsertSalesOrderPayment(
       })
 ) {
   if ("id" in salesOrderPayment) {
-    const { id, updatedBy, ...rest } = salesOrderPayment;
-    const existing = await client
-      .from("salesOrderPayment")
-      .select("id")
-      .eq("id", id)
-      .maybeSingle();
-
-    if (existing.data) {
-      return client
-        .from("salesOrderPayment")
-        .update(sanitize({ ...rest, updatedBy }))
-        .eq("id", id)
-        .select("id")
-        .single();
-    }
-
-    const order = await client
-      .from("salesOrder")
-      .select("companyId")
-      .eq("id", id)
-      .single();
-
-    if (order.error) {
-      return order;
-    }
-
     return client
       .from("salesOrderPayment")
-      .insert([
-        sanitize({
-          id,
-          ...rest,
-          companyId: order.data.companyId,
-          updatedBy
-        })
-      ])
+      .update(sanitize(salesOrderPayment))
+      .eq("id", salesOrderPayment.id)
       .select("id")
       .single();
   }

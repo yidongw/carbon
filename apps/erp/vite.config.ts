@@ -12,26 +12,15 @@ const repoRoot = path.resolve(__dirname, "../..");
  * parent process. Vite normally exposes `.env` via `import.meta.env`, while
  * workspace packages (e.g. `@carbon/auth`) read `process.env` — merge file-based
  * env here so SSR and `getEnv()` match your repo-root and app-local `.env*`.
- *
- * Repo root is merged **after** `apps/erp` so `crbn up`–written root `.env.local`
- * (SUPABASE_URL, PORT_*, keys) overrides stale app-level copies (e.g. legacy
- * `http://127.0.0.1:54321` from `supabase start`).
- *
- * For any **non-production** Vite `mode`, merged file values overwrite existing
- * `process.env` keys. `react-router dev` can invoke config with modes other
- * than the string `development` during startup; that left stale shell
- * `SUPABASE_URL` (e.g. `127.0.0.1:54321`) in place. Production `vite build` uses
- * `mode === "production"` and keeps fill-only-undefined so CI can inject secrets.
+ * Shell-exported variables still win (we never overwrite existing keys).
  */
 function applyDotenvToProcessEnv(mode: string) {
   const fromFiles = {
-    ...loadEnv(mode, __dirname, ""),
     ...loadEnv(mode, repoRoot, ""),
+    ...loadEnv(mode, __dirname, ""),
   };
-  const devOverwrite = mode !== "production";
   for (const [key, value] of Object.entries(fromFiles)) {
-    if (value === undefined || value === "") continue;
-    if (devOverwrite || process.env[key] === undefined) {
+    if (process.env[key] === undefined) {
       process.env[key] = value;
     }
   }
@@ -68,9 +57,7 @@ export default defineConfig(({ isSsrBuild, mode }) => {
     },
     server: {
       port: 3000,
-      host: "0.0.0.0",
-      allowedHosts: [".ngrok-free.app", ".ngrok-free.dev", ".trycloudflare.com", ".foxhole.bot", ".dev", ".localhost"],
-      hmr: process.env.TUNNEL_HMR !== "1" ? { clientPort: 3000, host: "localhost" } : true,
+      allowedHosts: [".ngrok-free.app", ".ngrok-free.dev", ".dev", ".localhost"],
       watch: {
         awaitWriteFinish: { stabilityThreshold: 250 },
       },

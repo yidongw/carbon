@@ -14,7 +14,7 @@ export const meta: MetaFunction = () => {
 
 export const handle: Handle = {
   breadcrumb: msg`Quality`,
-  to: path.to.qualityDashboard,
+  to: path.to.quality,
   module: "quality"
 };
 
@@ -23,9 +23,9 @@ export default function QualityRoute() {
 
   return (
     <CollapsibleSidebarProvider>
-      <div className="flex flex-col md:grid md:grid-cols-[auto_1fr] w-full h-full">
+      <div className="grid grid-cols-[auto_1fr] w-full h-full">
         <GroupedContentSidebar groups={groups} />
-        <VStack spacing={0} className="h-full flex-1 min-h-0">
+        <VStack spacing={0} className="h-full">
           <Outlet />
         </VStack>
       </div>

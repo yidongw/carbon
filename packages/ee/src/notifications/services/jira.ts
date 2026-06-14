@@ -70,7 +70,7 @@ export class JiraNotificationService implements NotificationService {
         // Find the Jira user by email
         const jiraUser = await jira.findUserByEmail(
           event.companyId,
-          user.email ?? ""
+          user.email
         );
 
         if (!jiraUser) return;

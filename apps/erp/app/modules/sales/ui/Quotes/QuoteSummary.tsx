@@ -185,7 +185,7 @@ const LineItems = ({
                         className="text-muted-foreground flex-shrink-0"
                       >
                         <Link to={path.to.quoteLine(quoteId, line.id!)}>
-                          <Trans>Edit</Trans>
+                          Edit
                         </Link>
                       </Button>
                     </HStack>
@@ -451,7 +451,7 @@ const LinePricingOptions = ({
                   colSpan={5 + (hasAnyShipping ? 1 : 0) + (hasAnyFees ? 1 : 0)}
                   className="text-center py-8"
                 >
-                  <Trans>No pricing options found</Trans>
+                  No pricing options found
                 </Td>
               </Tr>
             ) : (
@@ -550,7 +550,8 @@ const LinePricingOptions = ({
               {selectedLine.discountPercent > 0 && (
                 <Tr key="discount" className="border-b border-border">
                   <Td>
-                    <Trans>Discount ({percentFormatter.format(selectedLine.discountPercent)})</Trans>
+                    Discount (
+                    {percentFormatter.format(selectedLine.discountPercent)})
                   </Td>
                   <Td className="text-right">
                     -
@@ -611,7 +612,7 @@ const LinePricingOptions = ({
 
               <Tr key="tax" className="border-b border-border">
                 <Td>
-                  <Trans>Tax ({percentFormatter.format(selectedLine.taxPercent)})</Trans>
+                  Tax ({percentFormatter.format(selectedLine.taxPercent)})
                 </Td>
                 <Td className="text-right">
                   <MotionNumber
@@ -860,7 +861,7 @@ const QuoteSummary = ({
             <CustomerAvatar customerId={routeData?.quote.customerId ?? null} />
             {routeData?.quote?.expirationDate && (
               <span className="text-muted-foreground text-sm">
-                <Trans>Expires {formatDate(routeData?.quote.expirationDate)}</Trans>
+                Expires {formatDate(routeData?.quote.expirationDate)}
               </span>
             )}
           </div>
@@ -877,7 +878,7 @@ const QuoteSummary = ({
 
         <VStack spacing={2} className="mt-8">
           <HStack className="justify-between text-base text-muted-foreground w-full">
-            <span><Trans>Subtotal:</Trans></span>
+            <span>Subtotal:</span>
             <MotionNumber
               value={subtotal + totalDiscount}
               format={{
@@ -889,7 +890,7 @@ const QuoteSummary = ({
           </HStack>
           {totalDiscount > 0 && (
             <HStack className="justify-between text-base text-muted-foreground w-full">
-              <span><Trans>Discount:</Trans></span>
+              <span>Discount:</span>
               <span className="text-muted-foreground">
                 -
                 <MotionNumber
@@ -904,7 +905,7 @@ const QuoteSummary = ({
             </HStack>
           )}
           <HStack className="justify-between text-base text-muted-foreground w-full">
-            <span><Trans>Tax:</Trans></span>
+            <span>Tax:</span>
             <MotionNumber
               value={tax}
               format={{
@@ -918,7 +919,7 @@ const QuoteSummary = ({
             {convertedShippingCost > 0 ? (
               <>
                 <VStack spacing={0}>
-                  <span><Trans>Shipping:</Trans></span>
+                  <span>Shipping:</span>
                   <Button
                     variant="link"
                     size="sm"
@@ -949,7 +950,7 @@ const QuoteSummary = ({
             ) : null}
           </HStack>
           <HStack className="justify-between text-xl font-bold w-full">
-            <span><Trans>Total:</Trans></span>
+            <span>Total:</span>
             <MotionNumber
               value={total}
               format={{

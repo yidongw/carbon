@@ -40,7 +40,6 @@ import {
   useLoaderData
 } from "react-router";
 import SonnerStyle from "sonner/dist/styles.css?url";
-import { NavigationProgress } from "~/components/NavigationProgress";
 import { loadLinguiCatalogForRequest } from "~/services/lingui.server";
 import { getMode, setMode } from "~/services/mode.server";
 import Background from "~/styles/background.css?url";
@@ -52,13 +51,6 @@ import { getTheme } from "./services/theme.server";
 
 export const middleware = [flashMiddleware];
 export const clientMiddleware = [flashClientMiddleware];
-
-// Prevent stale-asset 404s after a redeploy by never caching the HTML document.
-export const headers: Route.HeadersFunction = ({ loaderHeaders }) => {
-  const merged = new Headers(loaderHeaders);
-  merged.set("Cache-Control", "no-store");
-  return merged;
-};
 
 export const links: LinksFunction = () => {
   return [
@@ -218,7 +210,7 @@ export function Document({
         <link rel="manifest" href="/site.webmanifest" />
         <Links />
       </head>
-      <body className="h-full overflow-hidden bg-background antialiased selection:bg-primary/10 selection:text-primary">
+      <body className="h-full bg-background antialiased selection:bg-primary/10 selection:text-primary">
         {children}
         <Toaster position="bottom-right" visibleToasts={5} />
         <ScrollRestoration />
@@ -258,7 +250,6 @@ export default function App() {
         <I18nProvider locale={prefs.locale}>
           <TooltipProvider delayDuration={200}>
             <Document mode={mode} theme={theme} lang={appLanguage}>
-              <NavigationProgress />
               <Outlet />
               <script
                 dangerouslySetInnerHTML={{

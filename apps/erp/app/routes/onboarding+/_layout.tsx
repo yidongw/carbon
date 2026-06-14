@@ -153,10 +153,8 @@ export default function OnboardingLayout() {
             style={{ height: "100%", width: "100%" }}
           />
         </div>
-        <div className="relative z-10 h-full w-full overflow-y-auto">
-          <div className="flex min-h-full w-full items-center justify-center p-4">
-            <Outlet />
-          </div>
+        <div className="relative z-10 flex h-full w-full items-center justify-center p-4">
+          <Outlet />
         </div>
       </div>
     </TooltipProvider>

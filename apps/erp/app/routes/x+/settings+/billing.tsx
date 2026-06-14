@@ -312,7 +312,7 @@ export default function PaymentSettings() {
                               }
                             }}
                             options={employees.map((employee) => ({
-                              label: employee.fullName || employee.email || "",
+                              label: employee.fullName || employee.email,
                               value: employee.id
                             }))}
                           />

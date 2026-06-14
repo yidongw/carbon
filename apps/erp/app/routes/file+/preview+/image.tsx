@@ -4,7 +4,9 @@ import { path } from "~/utils/path";
 
 // this route exists so we can apply some styles to the preview iframe
 export let loader = async ({ request }: LoaderFunctionArgs) => {
-  await requirePermissions(request, {});
+  await requirePermissions(request, {
+    view: "documents"
+  });
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.search);
   const file = decodeURIComponent(searchParams.get("file") ?? "");

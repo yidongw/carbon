@@ -45,7 +45,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   if (workCenters.error) {
     redirect(
-      path.to.resourcesDashboard,
+      path.to.resources,
       await flash(
         request,
         error(workCenters.error, "Failed to fetch work centers")

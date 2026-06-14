@@ -3,50 +3,25 @@ import { Status } from "@carbon/react";
 
 type SalesInvoicingStatusProps = {
   status?: Database["public"]["Enums"]["salesInvoiceStatus"] | null;
-  iconOnly?: boolean;
 };
 
-const SalesInvoicingStatus = ({ status, iconOnly }: SalesInvoicingStatusProps) => {
+const SalesInvoicingStatus = ({ status }: SalesInvoicingStatusProps) => {
   switch (status) {
     case "Draft":
     case "Return":
-      return (
-        <Status color="gray" iconOnly={iconOnly}>
-          {status}
-        </Status>
-      );
+      return <Status color="gray">{status}</Status>;
     case "Submitted":
-      return (
-        <Status color="blue" iconOnly={iconOnly}>
-          {status}
-        </Status>
-      );
+      return <Status color="blue">{status}</Status>;
     case "Pending":
     case "Partially Paid":
-      return (
-        <Status color="yellow" iconOnly={iconOnly}>
-          {status}
-        </Status>
-      );
+      return <Status color="yellow">{status}</Status>;
     case "Voided":
-      return (
-        <Status color="red" iconOnly={iconOnly}>
-          {status}
-        </Status>
-      );
+      return <Status color="red">{status}</Status>;
     case "Overdue":
-      return (
-        <Status color="orange" iconOnly={iconOnly}>
-          {status}
-        </Status>
-      );
+      return <Status color="orange">{status}</Status>;
     case "Credit Note Issued":
     case "Paid":
-      return (
-        <Status color="green" iconOnly={iconOnly}>
-          {status}
-        </Status>
-      );
+      return <Status color="green">{status}</Status>;
     default:
       return null;
   }

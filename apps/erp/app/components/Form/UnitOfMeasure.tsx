@@ -1,7 +1,6 @@
 import type { ComboboxProps } from "@carbon/form";
 import { CreatableCombobox } from "@carbon/form";
 import { useDisclosure, useMount } from "@carbon/react";
-import { useLingui } from "@lingui/react/macro";
 import { useMemo, useRef, useState } from "react";
 import { useFetcher } from "react-router";
 import { useRouteData } from "~/hooks";
@@ -11,7 +10,6 @@ import type {
 } from "~/modules/items";
 import UnitOfMeasureForm from "~/modules/items/ui/UnitOfMeasure/UnitOfMeasureForm";
 import { path } from "~/utils/path";
-import { translateSeedDisplayName } from "~/utils/seedDataDisplayName";
 import { Enumerable } from "../Enumerable";
 
 type UnitOfMeasureSelectProps = Omit<ComboboxProps, "options" | "inline"> & {
@@ -30,7 +28,6 @@ const UnitOfMeasurePreview = (
 };
 
 const UnitOfMeasure = (props: UnitOfMeasureSelectProps) => {
-  const { t } = useLingui();
   const options = useUnitOfMeasure();
 
   const newUnitOfMeasureModal = useDisclosure();
@@ -44,7 +41,7 @@ const UnitOfMeasure = (props: UnitOfMeasureSelectProps) => {
         options={options}
         {...props}
         inline={props.inline ? UnitOfMeasurePreview : undefined}
-        label={props?.label ?? t`Unit of Measure`}
+        label={props?.label ?? "Unit of Measure"}
         onCreateOption={(option) => {
           newUnitOfMeasureModal.onOpen();
           setCreated(option);
@@ -73,7 +70,6 @@ UnitOfMeasure.displayName = "UnitOfMeasure";
 export default UnitOfMeasure;
 
 export const useUnitOfMeasure = () => {
-  const { i18n } = useLingui();
   const uomFetcher =
     useFetcher<Awaited<ReturnType<typeof getUnitOfMeasuresList>>>();
 
@@ -95,13 +91,12 @@ export const useUnitOfMeasure = () => {
 
     return dataSource.map((c) => ({
       value: c.code,
-      label: translateSeedDisplayName(c.name, i18n)
+      label: c.name
     }));
   }, [
     hasSharedPartData,
     sharedPartData?.unitOfMeasures,
-    uomFetcher.data?.data,
-    i18n
+    uomFetcher.data?.data
   ]);
 
   return options;

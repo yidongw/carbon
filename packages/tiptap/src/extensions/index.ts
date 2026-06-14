@@ -29,18 +29,6 @@ const PlaceholderExtension = Placeholder.configure({
   includeChildren: true
 });
 
-export function createPlaceholder(text: string) {
-  return Placeholder.configure({
-    placeholder: ({ node }) => {
-      if (node.type.name === "heading") {
-        return `Heading ${node.attrs.level}`;
-      }
-      return text;
-    },
-    includeChildren: true
-  });
-}
-
 const HighlightExtension = Highlight.configure({
   multicolor: true
 });

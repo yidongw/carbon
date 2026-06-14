@@ -1,5 +1,6 @@
 import { useCarbon } from "@carbon/auth";
 import {
+  Array as ArrayInput,
   Hidden,
   Input,
   Number,
@@ -58,7 +59,7 @@ import {
 import { useFetcher, useParams } from "react-router";
 import type { z } from "zod";
 import { Empty } from "~/components";
-import { Array as ArrayInput, UnitOfMeasure } from "~/components/Form";
+import { UnitOfMeasure } from "~/components/Form";
 import { ProcedureStepTypeIcon } from "~/components/Icons";
 import { ConfirmDelete } from "~/components/Modals";
 import { usePermissions, useRouteData, useUser } from "~/hooks";

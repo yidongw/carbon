@@ -40,7 +40,6 @@ import {
   Number,
   Select,
   Submit,
-  Template,
   UnitOfMeasure
 } from "~/components/Form";
 import { ReplenishmentSystemIcon } from "~/components/Icons";
@@ -316,9 +315,6 @@ const PartForm = ({ initialValues, type = "card", onClose }: PartFormProps) => {
                     label={t`Item Group`}
                     isClearable
                   />
-                )}
-                {!isEditing && (
-                  <Template name="templateId" label={t`Template`} />
                 )}
                 {!isEditing && replenishmentSystem !== "Make" && (
                   <Number

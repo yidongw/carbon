@@ -7,7 +7,7 @@ import type { FileObject } from "@supabase/storage-js";
 import type { JSONContent } from "@tiptap/react";
 import { useRef } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { redirect, useLoaderData } from "react-router";
+import { redirect, useLoaderData, useParams } from "react-router";
 import { DeferredFiles } from "~/components";
 import { useRouteData } from "~/hooks";
 import type { Opportunity, SalesOrder, SalesOrderLine } from "~/modules/sales";
@@ -48,7 +48,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     getSalesOrderShipment(client, orderId)
   ]);
 
-  if (order.error || !order.data) {
+  if (order.error) {
     throw redirect(
       path.to.salesOrders,
       await flash(request, error(order.error, "Failed to load order"))
@@ -73,12 +73,10 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   }
 
   return {
-    orderId,
     internalNotes: (order.data?.internalNotes ?? {}) as JSONContent,
     externalNotes: (order.data?.externalNotes ?? {}) as JSONContent,
-    payment: payment.data,
-    shipment: shipment.data,
-    salesOrder: order.data
+    payment: payment.data || null,
+    shipment: shipment.data || null
   };
 }
 
@@ -146,8 +144,9 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
 export default function SalesOrderDetailsRoute() {
   const { t } = useLingui();
-  const { internalNotes, externalNotes, payment, shipment, salesOrder, orderId } =
+  const { internalNotes, externalNotes, payment, shipment } =
     useLoaderData<typeof loader>();
+  const { orderId } = useParams();
   if (!orderId) throw new Error("Could not find orderId");
 
   const orderData = useRouteData<{
@@ -166,21 +165,18 @@ export default function SalesOrderDetailsRoute() {
   };
 
   const shipmentInitialValues = {
-    id: orderId,
-    locationId: shipment?.locationId ?? salesOrder.locationId ?? "",
+    id: shipment.id,
+    locationId: shipment?.locationId ?? "",
     shippingMethodId: shipment?.shippingMethodId ?? "",
     shippingTermId: shipment?.shippingTermId ?? "",
     trackingNumber: shipment?.trackingNumber ?? "",
-    receiptRequestedDate:
-      shipment?.receiptRequestedDate ?? salesOrder.requestedDate ?? "",
-    receiptPromisedDate:
-      shipment?.receiptPromisedDate ?? salesOrder.promisedDate ?? "",
+    receiptRequestedDate: shipment?.receiptRequestedDate ?? "",
+    receiptPromisedDate: shipment?.receiptPromisedDate ?? "",
     deliveryDate: shipment?.deliveryDate ?? "",
     notes: shipment?.notes ?? "",
     dropShipment: shipment?.dropShipment ?? false,
-    customerId: shipment?.customerId ?? salesOrder.customerId ?? "",
-    customerLocationId:
-      shipment?.customerLocationId ?? salesOrder.customerLocationId ?? "",
+    customerId: shipment?.customerId ?? "",
+    customerLocationId: shipment?.customerLocationId ?? "",
     shippingCost: shipment?.shippingCost ?? 0,
     incoterm: shipment?.incoterm ?? undefined,
     incotermLocation: shipment?.incotermLocation ?? "",
@@ -188,15 +184,12 @@ export default function SalesOrderDetailsRoute() {
   };
 
   const paymentInitialValues = {
-    id: orderId,
-    invoiceCustomerId:
-      payment?.invoiceCustomerId ?? salesOrder.customerId ?? "",
-    invoiceCustomerLocationId:
-      payment?.invoiceCustomerLocationId ?? salesOrder.customerLocationId ?? "",
-    invoiceCustomerContactId:
-      payment?.invoiceCustomerContactId ?? salesOrder.customerContactId ?? "",
+    id: payment.id,
+    invoiceCustomerId: payment?.invoiceCustomerId ?? "",
+    invoiceCustomerLocationId: payment?.invoiceCustomerLocationId ?? "",
+    invoiceCustomerContactId: payment?.invoiceCustomerContactId ?? "",
     paymentTermId: payment?.paymentTermId ?? "",
-    paymentComplete: payment?.paymentComplete ?? false,
+    paymentComplete: payment?.paymentComplete ?? undefined,
     ...getCustomFields(payment?.customFields)
   };
 

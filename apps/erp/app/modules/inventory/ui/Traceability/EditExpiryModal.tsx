@@ -57,7 +57,7 @@ export function EditExpiryModal({
             expirationDate: expirationDate ?? "",
             reason: ""
           }}
-          onSuccess={onClose}
+          onSubmit={onClose}
         >
           <ModalHeader>
             <ModalTitle>

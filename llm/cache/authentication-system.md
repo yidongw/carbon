@@ -9,7 +9,7 @@ Carbon uses a robust authentication system built on top of Supabase Auth with cu
 Located at `/packages/auth/`, the auth package provides:
 
 - **Client Configuration**: Supabase client setup with service role and anonymous access
-- **Authentication Services**: Login, logout, magic links, OAuth (Google, Azure), WeChat (MP — in-app button + desktop QR-scan), and password reset
+- **Authentication Services**: Login, logout, magic links, OAuth (Google), and password reset
 - **Session Management**: Cookie-based sessions with automatic token refresh
 - **Permission System**: Role-based access control with company-specific permissions
 - **User Management**: User creation, invitation flows, and account management
@@ -28,9 +28,8 @@ Located at `/packages/auth/`, the auth package provides:
 - `./auth.server` - Server-side auth logic (hashApiKey, requirePermissions, etc.)
 - `./company.server` - Company management
 - `./session.server` - Session management
-- `./users.server` - User management (getUserById, getUserByEmail, etc.)
+- `./users.server` - User management
 - `./verification.server` - Email verification
-- `./wechat.server` - WeChat auth (buildWeChatMpAuthUrl, buildWeChatOpenAuthUrl, exchangeWeChatCode, getWeChatUserInfo, findOrCreateWeChatUser)
 
 ## Authentication Flow
 
@@ -43,23 +42,10 @@ Located at `/packages/auth/`, the auth package provides:
    - User clicks link, redirected to `/callback`
    - Callback exchanges tokens and creates session
 
-2. **OAuth Flow** (Google / Azure):
-   - User clicks "Continue with Google/Outlook"
-   - Redirected to OAuth provider
+2. **OAuth Flow** (Google):
+   - User clicks "Continue with Google"
+   - Redirected to Google OAuth
    - Returns to `/callback` for token exchange
-
-3. **WeChat MP Flow** (in-WeChat-browser, when `wechat` in `AUTH_PROVIDERS`):
-   - Login page shows "Continue with WeChat" button in WeChat browser
-   - Redirects to `/auth/wechat` → builds `snsapi_userinfo` MP OAuth URL
-   - WeChat redirects to `/auth/wechat/callback` with `code`
-   - Callback exchanges code, fetches user info, finds/creates user, generates magic-link session
-
-5. **WeChat QR Flow** (desktop, when `wechat` in `AUTH_PROVIDERS`):
-   - Login page shows "WeChat QR" tab (desktop non-WeChat browser)
-   - Selecting the tab fetches `/api/wechat-qr-url` → mints a parametric MP QR + scene; the browser polls until the scan webhook signs the user in
-   - Renders `<QRCodeSVG>` inline; user scans with WeChat on mobile
-   - WeChat redirects the **desktop browser** to `/auth/wechat/callback`
-   - Same callback as MP flow handles session creation
 
 ### Session Management
 
@@ -83,9 +69,7 @@ Located at `/packages/auth/`, the auth package provides:
 ```typescript
 {
   id: string (UUID, matches Supabase auth.users.id)
-  email: string | null        // nullable — WeChat users have no email
-  phone: string | null        // E.164 contact phone (edited on the profile page; not used for login)
-  wechat_unionid: string | null  // stable WeChat identity (MP unionid, or openid for the QR-scan flow)
+  email: string
   firstName: string
   lastName: string
   fullName: string | null
@@ -98,8 +82,6 @@ Located at `/packages/auth/`, the auth package provides:
   updatedAt: string | null
 }
 ```
-
-**Key constraint**: `email` and `wechat_unionid` both have partial unique indexes (`WHERE column IS NOT NULL`) so NULLs are allowed for multiple users while non-null values remain unique.
 
 **company** table:
 
@@ -333,16 +315,10 @@ Users can belong to multiple companies with different roles:
 
 ### Public Routes
 
-- `/_public+/login` - Login page (magic link, OAuth, WeChat)
-- `/_public+/callback` - OAuth / magic-link callback and token exchange
-- `/_public+/auth.wechat` - Initiates the WeChat MP OAuth flow (in-app button)
-- `/_public+/auth.wechat.callback` - WeChat OAuth callback; creates session
+- `/_public+/login` - Login page with magic link and OAuth
+- `/_public+/callback` - OAuth callback and token exchange
 - `/_public+/logout` - Session destruction
 - `/_public+/invite/:code` - Invitation acceptance
-
-### API Routes (ERP only)
-
-- `/api/wechat-qr-url` - Mints a parametric MP QR (scene stored in Redis) for desktop scan-login
 
 ### Protected Routes
 
@@ -394,16 +370,7 @@ Environment variables in `packages/auth/src/config/env.ts`:
 1. **New Company Creation** (`/onboarding/company`):
 
    - Creates new company with provided details
-   - Seeds company with default data via `seedCompany()`, which calls the
-     `seed_company(company_id, user_id, parent_company_id, seed jsonb)` Postgres
-     RPC (a SECURITY DEFINER plpgsql function in migration
-     `20260607000000_seed-company-function.sql`). This replaced the old
-     `seed-company` edge function (removed) to avoid its ~5s cold start and 95
-     sequential account inserts; the whole seed now runs server-side in one
-     transaction/round trip. The seed *data* lives in
-     `packages/database/supabase/functions/lib/seed.data.ts` (exported as
-     `companySeedData` via `@carbon/database/seed`) and is passed in as the
-     `seed` jsonb arg — the RPC is data-agnostic. `seed-dev.ts` calls the same RPC.
+   - Seeds company with default data via `seedCompany()`
    - Creates headquarters location
    - Creates employee job record for the user
    - Updates session with new company ID

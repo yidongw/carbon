@@ -19,7 +19,6 @@ import type {
   deadlineTypes,
   failureModeValidator,
   jobMaterialValidator,
-  jobOperationPickupValidator,
   jobOperationStatus,
   jobOperationValidator,
   jobStatus,
@@ -38,7 +37,6 @@ import type {
   productionQuantityValidator,
   scrapReasonValidator
 } from "./production.models";
-import { allowsSupplierQuantityActor, locksActorToOperationSupplier } from "./operationType";
 import type { Job } from "./types";
 
 export async function convertSalesOrderLinesToJobs(
@@ -515,32 +513,12 @@ export async function deleteProductionEvent(
 
 export async function deleteProductionQuantity(
   client: SupabaseClient<Database>,
-  productionQuantityId: string,
-  args: { companyId: string; userId: string }
+  productionQuantityId: string
 ) {
-  const { invalidateProductionQuantity } = await import(
-    "./productionQuantityReport.service"
-  );
-  return invalidateProductionQuantity(client, {
-    productionQuantityId,
-    companyId: args.companyId,
-    userId: args.userId
-  });
-}
-
-export async function deleteJobOperationSupplierQuantity(
-  client: SupabaseClient<Database>,
-  supplierQuantityId: string,
-  args: { companyId: string; userId: string }
-) {
-  const { invalidateJobOperationSupplierQuantity } = await import(
-    "./jobOperationSupplierQuantityReport.service"
-  );
-  return invalidateJobOperationSupplierQuantity(client, {
-    supplierQuantityId,
-    companyId: args.companyId,
-    userId: args.userId
-  });
+  return client
+    .from("productionQuantity")
+    .delete()
+    .eq("id", productionQuantityId);
 }
 
 export async function getActiveJobOperationByJobId(
@@ -864,7 +842,7 @@ export async function getJobPurchaseOrderLines(
   return client
     .from("purchaseOrderLine")
     .select(
-      "id, itemId, description, purchaseQuantity, quantityReceived, quantityShipped, supplierUnitPrice, unitPrice, taxAmount, shippingCost, purchaseOrder(id, purchaseOrderId, status, supplierId, supplierInteractionId, currencyCode, exchangeRate), jobOperation(id, description, operationQuantity, operationMinimumCost, operationUnitCost)"
+      "id, itemId, purchaseQuantity, quantityReceived, quantityShipped, purchaseOrder(id, purchaseOrderId, status, supplierId, supplierInteractionId), jobOperation(id, description, operationQuantity)"
     )
     .eq("jobId", jobId);
 }
@@ -1069,119 +1047,6 @@ export async function getJobOperation(
     .select("*")
     .eq("id", jobOperationId)
     .single();
-}
-
-/**
- * Returns the routing context loaders need to seed the unified actor field:
- * the operation's `processId` (for SupplierProcess options) and `operationType`
- * (for actor defaulting). Returns nulls for unknown / empty operation ids.
- */
-export async function getJobOperationActorContext(
-  client: SupabaseClient<Database>,
-  jobOperationId: string,
-  companyId: string
-): Promise<{
-  processId: string | null;
-  operationType: string | null;
-  operationSupplierProcessId: string | null;
-  supplierId: string | null;
-}> {
-  if (!jobOperationId) {
-    return {
-      processId: null,
-      operationType: null,
-      operationSupplierProcessId: null,
-      supplierId: null
-    };
-  }
-
-  const { data: operation } = await client
-    .from("jobOperation")
-    .select("processId, operationType, operationSupplierProcessId")
-    .eq("id", jobOperationId)
-    .eq("companyId", companyId)
-    .single();
-
-  let supplierId: string | null = null;
-  if (operation?.operationSupplierProcessId) {
-    const { data: supplierProcess } = await client
-      .from("supplierProcess")
-      .select("supplierId")
-      .eq("id", operation.operationSupplierProcessId)
-      .maybeSingle();
-    supplierId = supplierProcess?.supplierId ?? null;
-  }
-
-  return {
-    processId: operation?.processId ?? null,
-    operationType: operation?.operationType ?? null,
-    operationSupplierProcessId: operation?.operationSupplierProcessId ?? null,
-    supplierId
-  };
-}
-
-export async function validateActorMatchesOperationSupplierRouting(
-  client: SupabaseClient<Database>,
-  jobOperationId: string,
-  companyId: string,
-  actor: {
-    actorKind: "employee" | "supplier";
-    employeeId?: string | null;
-    supplierProcessId?: string | null;
-  }
-): Promise<{ error: { message: string } | null }> {
-  const context = await getJobOperationActorContext(
-    client,
-    jobOperationId,
-    companyId
-  );
-
-  if (
-    !locksActorToOperationSupplier(
-      context.operationType,
-      context.operationSupplierProcessId
-    )
-  ) {
-    return { error: null };
-  }
-
-  if (
-    actor.actorKind !== "supplier" ||
-    actor.supplierProcessId?.trim() !==
-      context.operationSupplierProcessId?.trim()
-  ) {
-    return {
-      error: {
-        message:
-          "Supplier must match the supplier assigned on the operation details"
-      }
-    };
-  }
-
-  return { error: null };
-}
-
-export async function assertSupplierQuantityAllowedForOperation(
-  client: SupabaseClient<Database>,
-  jobOperationId: string,
-  companyId: string
-): Promise<{ error: { message: string } | null }> {
-  const { operationType } = await getJobOperationActorContext(
-    client,
-    jobOperationId,
-    companyId
-  );
-
-  if (!allowsSupplierQuantityActor(operationType)) {
-    return {
-      error: {
-        message:
-          "Supplier quantities cannot be recorded for Inside operations"
-      }
-    };
-  }
-
-  return { error: null };
 }
 
 export async function getJobOperations(
@@ -1483,53 +1348,6 @@ export async function getProductionEventsPage(
   };
 }
 
-export async function getProductionQuantitiesByOperation(
-  client: SupabaseClient<Database>,
-  jobOperationId: string,
-  companyId: string
-) {
-  return client
-    .from("productionQuantity")
-    .select("id, configuration, type, quantity")
-    .eq("jobOperationId", jobOperationId)
-    .eq("companyId", companyId)
-    .is("invalidatedAt", null)
-    .order("createdAt", { ascending: false });
-}
-
-export async function getProductionQuantitiesPage(
-  client: SupabaseClient<Database>,
-  jobOperationId: string,
-  companyId: string,
-  page: number = 1
-) {
-  const pageSize = 20;
-  const offset = (page - 1) * pageSize;
-
-  const query = client
-    .from("productionQuantity")
-    .select("*, scrapReason(name)", { count: "exact" })
-    .eq("jobOperationId", jobOperationId)
-    .eq("companyId", companyId)
-    .is("invalidatedAt", null)
-    .order("createdAt", { ascending: false })
-    .range(offset, offset + pageSize - 1);
-
-  const { data, error, count } = await query;
-
-  if (error) {
-    return { error };
-  }
-
-  return {
-    data,
-    count,
-    page,
-    pageSize,
-    hasMore: count !== null && offset + pageSize < count
-  };
-}
-
 export async function getProductionEventsByOperations(
   client: SupabaseClient<Database>,
   jobOperationIds: string[]
@@ -1625,12 +1443,8 @@ export async function getProductionQuantity(
 export async function getProductionQuantities(
   client: SupabaseClient<Database>,
   jobOperationIds: string[],
-  args?: { search: string | null } & Partial<GenericQueryFilters>
+  args?: { search: string | null } & GenericQueryFilters
 ) {
-  if (jobOperationIds.length === 0) {
-    return { data: [], count: 0, error: null };
-  }
-
   let query = client
     .from("productionQuantity")
     .select(
@@ -1639,8 +1453,7 @@ export async function getProductionQuantities(
         count: "exact"
       }
     )
-    .in("jobOperationId", jobOperationIds)
-    .is("invalidatedAt", null);
+    .in("jobOperationId", jobOperationIds);
 
   if (args?.search) {
     query = query.or(`jobOperation.description.ilike.%${args.search}%`);
@@ -1652,7 +1465,7 @@ export async function getProductionQuantities(
     ]);
   }
 
-  return await query;
+  return query;
 }
 
 export async function getProductionDataByOperations(
@@ -1665,8 +1478,7 @@ export async function getProductionDataByOperations(
       .select(
         "*, jobOperation(description, jobMakeMethod(parentMaterialId, item(readableIdWithRevision)))"
       )
-      .in("jobOperationId", jobOperationIds)
-      .is("invalidatedAt", null),
+      .in("jobOperationId", jobOperationIds),
     client
       .from("productionEvent")
       .select(
@@ -1954,114 +1766,6 @@ export async function getTrackedEntityByJobId(
     data: result.data?.[0] ?? null,
     error: result.error
   };
-}
-
-export type JobCurrentProcessInfo = {
-  operationId: string;
-  description: string | null;
-  reportedTotal: number;
-};
-
-export async function getTrackedEntitiesByJobMakeMethodIds(
-  client: SupabaseClient<Database>,
-  companyId: string,
-  jobMakeMethodIds: string[]
-): Promise<Record<string, string>> {
-  if (jobMakeMethodIds.length === 0) return {};
-
-  const { data } = await client
-    .from("trackedEntity")
-    .select("readableId, attributes")
-    .in("attributes->>Job Make Method", jobMakeMethodIds)
-    .eq("companyId", companyId);
-
-  if (!data) return {};
-
-  return data.reduce<Record<string, string>>((acc, curr) => {
-    if (
-      curr.attributes !== null &&
-      typeof curr.attributes === "object" &&
-      "Job Make Method" in curr.attributes &&
-      curr.readableId
-    ) {
-      acc[curr.attributes["Job Make Method"] as string] = curr.readableId;
-    }
-    return acc;
-  }, {});
-}
-
-export async function getItemIdsWithConfigurationParameters(
-  client: SupabaseClient<Database>,
-  companyId: string,
-  itemIds: string[]
-): Promise<string[]> {
-  if (itemIds.length === 0) return [];
-
-  const { data } = await client
-    .from("configurationParameter")
-    .select("itemId")
-    .in("itemId", itemIds)
-    .eq("companyId", companyId);
-
-  if (!data) return [];
-  return [...new Set(data.map((row) => row.itemId))];
-}
-
-/** Root routing only: first operation by `order` where status is not Done/Canceled. */
-export async function getCurrentProcessByJobIds(
-  client: SupabaseClient<Database>,
-  jobs: Pick<Job, "id" | "jobMakeMethodId">[]
-): Promise<Record<string, JobCurrentProcessInfo | null>> {
-  const jobsForQuery = jobs.filter(
-    (job): job is Pick<Job, "id" | "jobMakeMethodId"> & { id: string } =>
-      Boolean(job.id)
-  );
-  if (jobsForQuery.length === 0) return {};
-
-  const jobIds = jobsForQuery.map((job) => job.id);
-  const { data: ops } = await client
-    .from("jobOperation")
-    .select(
-      "id, jobId, description, order, status, quantityComplete, quantityScrapped, quantityReworked, jobMakeMethodId"
-    )
-    .in("jobId", jobIds);
-
-  const metaByJobId = new Map(
-    jobsForQuery.map((job) => [job.id, job.jobMakeMethodId ?? null])
-  );
-
-  const opsByJob = new Map<string, NonNullable<typeof ops>>();
-  for (const op of ops ?? []) {
-    const list = opsByJob.get(op.jobId) ?? [];
-    list.push(op);
-    opsByJob.set(op.jobId, list);
-  }
-
-  const result: Record<string, JobCurrentProcessInfo | null> = {};
-  for (const job of jobsForQuery) {
-    const rootMakeMethodId = metaByJobId.get(job.id);
-    let list = opsByJob.get(job.id) ?? [];
-    if (rootMakeMethodId) {
-      list = list.filter((op) => op.jobMakeMethodId === rootMakeMethodId);
-    }
-    list.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-    const current = list.find(
-      (op) => op.status !== "Done" && op.status !== "Canceled"
-    );
-    if (!current) {
-      result[job.id] = null;
-      continue;
-    }
-    result[job.id] = {
-      operationId: current.id,
-      description: current.description,
-      reportedTotal:
-        (current.quantityComplete ?? 0) +
-        (current.quantityScrapped ?? 0) +
-        (current.quantityReworked ?? 0)
-    };
-  }
-  return result;
 }
 
 export async function getTrackedEntitiesByJobId(
@@ -2389,270 +2093,40 @@ export async function updateProductionQuantity(
     id: string;
     updatedBy: string;
     companyId: string;
-    createdBy?: string;
-    employeeId: string;
   }
 ) {
-  return upsertProductionQuantity(client, productionQuantity);
-}
+  const { id, updatedBy, companyId, ...updateData } = productionQuantity;
 
-export type ProductionQuantityApprovalContext = {
-  userId: string;
-  canAutoApprove: boolean;
-  paymentYear: number | null;
-  paymentMonth: number | null;
-  serviceRole?: SupabaseClient<Database>;
-};
-
-// Dynamic import keeps production.service ↔ productionQuantityReport.service
-// edges acyclic.
-async function syncProductionPayApproval(
-  client: SupabaseClient<Database>,
-  reportId: string,
-  companyId: string,
-  approval: ProductionQuantityApprovalContext
-) {
-  const { syncProductionQuantityReportApproval } = await import(
-    "./productionQuantityReport.service"
-  );
-  await syncProductionQuantityReportApproval(approval.serviceRole ?? client, {
-    reportId,
-    companyId,
-    userId: approval.userId,
-    canAutoApprove: approval.canAutoApprove,
-    paymentYear: approval.paymentYear,
-    paymentMonth: approval.paymentMonth
-  });
-}
-
-type UpsertProductionQuantityInput =
-  | (Omit<z.infer<typeof productionQuantityValidator>, "id"> & {
-      companyId: string;
-      createdBy: string;
-      employeeId: string;
+  return client
+    .from("productionQuantity")
+    .update({
+      ...sanitize(updateData),
+      updatedBy,
+      updatedAt: new Date().toISOString()
     })
-  | (Omit<z.infer<typeof productionQuantityValidator>, "id"> & {
-      id: string;
-      updatedBy: string;
-      companyId: string;
-      createdBy?: string;
-      employeeId: string;
-    });
+    .eq("id", id)
+    .eq("companyId", companyId)
+    .select()
+    .single();
+}
 
 export async function upsertProductionQuantity(
   client: SupabaseClient<Database>,
-  productionQuantity: UpsertProductionQuantityInput & {
-    approval?: ProductionQuantityApprovalContext;
-  }
-) {
-  const {
-    createProductionQuantityReport,
-    replaceProductionQuantityReportLines
-  } = await import("./productionQuantityReport.service");
-
-  if ("updatedBy" in productionQuantity) {
-    const { id, updatedBy, companyId, employeeId, approval, ...updateData } =
-      productionQuantity;
-
-    const { data: existing, error: existingError } = await client
-      .from("productionQuantity")
-      .select(
-        "id, reportId, invalidatedAt, type, quantity, configuration, scrapReasonId, notes"
-      )
-      .eq("id", id)
-      .eq("companyId", companyId)
-      .single();
-
-    if (existingError || !existing) {
-      return {
-        data: null,
-        error: existingError ?? new Error("Production quantity not found")
-      };
-    }
-
-    if (existing.invalidatedAt) {
-      return {
-        data: null,
-        error: new Error("Cannot update invalidated production quantity")
-      };
-    }
-
-    const { data: activeLines, error: linesError } = await client
-      .from("productionQuantity")
-      .select("id, type, quantity, configuration, scrapReasonId, notes")
-      .eq("reportId", existing.reportId)
-      .eq("companyId", companyId)
-      .is("invalidatedAt", null);
-
-    if (linesError) {
-      return { data: null, error: linesError };
-    }
-
-    const lines = (activeLines ?? []).map((line) =>
-      line.id === id
-        ? {
-            type: updateData.type,
-            quantity: updateData.quantity,
-            configuration: updateData.configuration,
-            scrapReasonId: updateData.scrapReasonId,
-            notes: updateData.notes
-          }
-        : {
-            type: line.type,
-            quantity: line.quantity,
-            configuration: line.configuration ?? undefined,
-            scrapReasonId: line.scrapReasonId ?? undefined,
-            notes: line.notes ?? undefined
-          }
-    );
-
-    const result = await replaceProductionQuantityReportLines(client, {
-      reportId: existing.reportId,
-      companyId,
-      userId: updatedBy,
-      employeeId,
-      lines,
-      paymentYear: approval?.canAutoApprove ? approval.paymentYear : null,
-      paymentMonth: approval?.canAutoApprove ? approval.paymentMonth : null
-    });
-
-    if (result.error) {
-      return { data: null, error: result.error };
-    }
-
-    if (approval) {
-      await syncProductionPayApproval(
-        client,
-        existing.reportId,
-        companyId,
-        approval
-      );
-    }
-
-    const updatedLine =
-      result.data?.activeLines.find((line) => line.type === updateData.type) ??
-      result.data?.activeLines[0] ??
-      null;
-
-    return { data: updatedLine, error: null };
-  }
-
-  const { companyId, createdBy, employeeId, jobOperationId, approval, ...rest } =
-    productionQuantity;
-
-  const { data: operation, error: operationError } = await client
-    .from("jobOperation")
-    .select("jobId")
-    .eq("id", jobOperationId)
-    .eq("companyId", companyId)
-    .single();
-
-  if (operationError || !operation?.jobId) {
-    return {
-      data: null,
-      error: operationError ?? new Error("Job operation not found")
-    };
-  }
-
-  const result = await createProductionQuantityReport(client, {
-    companyId,
-    jobId: operation.jobId,
-    jobOperationId,
-    userId: createdBy,
-    employeeId,
-    notes: rest.notes ?? null,
-    lines: [
-      {
-        type: rest.type,
-        quantity: rest.quantity,
-        configuration: rest.configuration,
-        scrapReasonId: rest.scrapReasonId,
-        notes: rest.notes
-      }
-    ],
-    paymentYear: approval?.canAutoApprove ? approval.paymentYear : null,
-    paymentMonth: approval?.canAutoApprove ? approval.paymentMonth : null
-  });
-
-  if (result.error) {
-    return { data: null, error: result.error };
-  }
-
-  if (approval && result.data?.id) {
-    await syncProductionPayApproval(
-      client,
-      result.data.id,
-      companyId,
-      approval
-    );
-  }
-
-  return {
-    data: result.data?.activeLines[0] ?? null,
-    error: null
-  };
-}
-
-export async function getJobOperationPickups(
-  client: SupabaseClient<Database>,
-  jobOperationId: string
-) {
-  return client
-    .from("jobOperationPickup")
-    .select("*, employee:user!jobOperationPickup_employeeId_fkey(id, firstName, lastName, avatarUrl)")
-    .eq("jobOperationId", jobOperationId)
-    .order("createdAt", { ascending: false });
-}
-
-export async function getJobOperationPickup(
-  client: SupabaseClient<Database>,
-  id: string
-) {
-  return client
-    .from("jobOperationPickup")
-    .select("*")
-    .eq("id", id)
-    .single();
-}
-
-export async function upsertJobOperationPickup(
-  client: SupabaseClient<Database>,
-  pickup:
-    | (Omit<
-        z.infer<typeof jobOperationPickupValidator>,
-        "id" | "actorKind" | "supplierProcessId"
-      > & {
-        employeeId: string;
+  productionQuantity:
+    | (Omit<z.infer<typeof productionQuantityValidator>, "id"> & {
         companyId: string;
-        createdBy: string;
       })
-    | (Omit<
-        z.infer<typeof jobOperationPickupValidator>,
-        "id" | "actorKind" | "supplierProcessId"
-      > & {
+    | (Omit<z.infer<typeof productionQuantityValidator>, "id"> & {
         id: string;
-        employeeId: string;
         updatedBy: string;
         companyId: string;
       })
 ) {
-  const pickupRow = pickup as typeof pickup & {
-    actorKind?: string;
-    supplierProcessId?: string;
-    employeeId?: string;
-  };
+  if ("updatedBy" in productionQuantity) {
+    const { id, updatedBy, companyId, ...updateData } = productionQuantity;
 
-  if ("updatedBy" in pickupRow) {
-    const {
-      id,
-      updatedBy,
-      companyId,
-      actorKind: _actorKind,
-      supplierProcessId: _supplierProcessId,
-      ...updateData
-    } = pickupRow;
     return client
-      .from("jobOperationPickup")
+      .from("productionQuantity")
       .update({
         ...sanitize(updateData),
         updatedBy,
@@ -2663,179 +2137,15 @@ export async function upsertJobOperationPickup(
       .select()
       .single();
   } else {
-    const {
-      configuration: rawConfiguration,
-      actorKind: _actorKind,
-      supplierProcessId: _supplierProcessId,
-      ...rest
-    } = pickupRow;
-    let configuration: unknown;
-    if (rawConfiguration) {
-      try {
-        configuration =
-          typeof rawConfiguration === "string"
-            ? JSON.parse(rawConfiguration)
-            : rawConfiguration;
-      } catch {
-        configuration = undefined;
-      }
-    }
-    return client
-      .from("jobOperationPickup")
-      .insert([sanitize({ ...rest, configuration: configuration as Json | null })])
-      .select("id")
-      .single();
+    return (
+      client
+        .from("productionQuantity")
+        // @ts-expect-error TS2769 - TODO: fix type
+        .insert([productionQuantity])
+        .select("id")
+        .single()
+    );
   }
-}
-
-export async function deleteJobOperationPickup(
-  client: SupabaseClient<Database>,
-  id: string
-) {
-  return client.from("jobOperationPickup").delete().eq("id", id);
-}
-
-export async function getJobPickupsByOperations(
-  client: SupabaseClient<Database>,
-  jobOperationIds: string[],
-  args?: { search?: string | null } & GenericQueryFilters
-) {
-  if (jobOperationIds.length === 0) {
-    return { data: [], count: 0, error: null };
-  }
-
-  let query = client
-    .from("jobOperationPickup")
-    .select(
-      "*, employee:user!jobOperationPickup_employeeId_fkey(id, firstName, lastName, avatarUrl), jobOperation(description, jobMakeMethod(parentMaterialId, item(readableIdWithRevision)))",
-      { count: "exact" }
-    )
-    .in("jobOperationId", jobOperationIds);
-
-  if (args) {
-    query = setGenericQueryFilters(query, args, [
-      { column: "createdAt", ascending: false }
-    ]);
-  }
-
-  return query;
-}
-
-export async function getJobPickupsPage(
-  client: SupabaseClient<Database>,
-  jobOperationId: string,
-  companyId: string,
-  page = 1
-) {
-  const pageSize = 20;
-  const offset = (page - 1) * pageSize;
-
-  const { data, error, count } = await client
-    .from("jobOperationPickup")
-    .select("*, employee:user!jobOperationPickup_employeeId_fkey(id, firstName, lastName, avatarUrl)", {
-      count: "exact"
-    })
-    .eq("jobOperationId", jobOperationId)
-    .eq("companyId", companyId)
-    .order("createdAt", { ascending: false })
-    .range(offset, offset + pageSize - 1);
-
-  if (error) return { error };
-
-  return {
-    data,
-    count,
-    page,
-    pageSize,
-    hasMore: count !== null && offset + pageSize < count
-  };
-}
-
-export async function upsertJobOperationSupplierPickup(
-  client: SupabaseClient<Database>,
-  pickup: {
-    jobOperationId: string;
-    supplierProcessId: string;
-    quantity: number;
-    configuration?: unknown;
-    notes?: string | null;
-    companyId: string;
-    createdBy: string;
-    id?: string;
-    updatedBy?: string;
-  }
-) {
-  const operationValidation = await assertSupplierQuantityAllowedForOperation(
-    client,
-    pickup.jobOperationId,
-    pickup.companyId
-  );
-  if (operationValidation.error) {
-    return { data: null, error: operationValidation.error };
-  }
-
-  let configuration: Json | null = null;
-  if (pickup.configuration) {
-    try {
-      configuration =
-        typeof pickup.configuration === "string"
-          ? JSON.parse(pickup.configuration)
-          : (pickup.configuration as Json);
-    } catch {
-      configuration = null;
-    }
-  }
-
-  if (pickup.id && pickup.updatedBy) {
-    const { id, updatedBy, companyId, ...updateData } = pickup;
-    return client
-      .from("jobOperationSupplierPickup")
-      .update({
-        ...sanitize(updateData),
-        configuration,
-        updatedBy,
-        updatedAt: new Date().toISOString()
-      })
-      .eq("id", id)
-      .eq("companyId", companyId)
-      .select()
-      .single();
-  }
-
-  const { configuration: _c, id: _id, updatedBy: _u, ...rest } = pickup;
-  return client
-    .from("jobOperationSupplierPickup")
-    .insert([sanitize({ ...rest, configuration })])
-    .select("id")
-    .single();
-}
-
-export async function getJobSupplierPickupsPage(
-  client: SupabaseClient<Database>,
-  jobOperationId: string,
-  companyId: string,
-  page = 1
-) {
-  const pageSize = 20;
-  const offset = (page - 1) * pageSize;
-
-  const { data, error, count } = await client
-    .from("jobOperationSupplierPickup")
-    .select("*, supplierProcess(id, supplierId, processId)", { count: "exact" })
-    .eq("jobOperationId", jobOperationId)
-    .eq("companyId", companyId)
-    .order("createdAt", { ascending: false })
-    .range(offset, offset + pageSize - 1);
-
-  if (error) return { error };
-
-  return {
-    data,
-    count,
-    page,
-    pageSize,
-    hasMore: count !== null && offset + pageSize < count
-  };
 }
 
 export async function upsertJob(

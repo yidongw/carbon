@@ -1,5 +1,6 @@
 import {
   Badge,
+  Button,
   Copy,
   DropdownMenu,
   DropdownMenuContent,
@@ -9,31 +10,32 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  Heading,
+  HStack,
   IconButton,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
   useDisclosure,
+  VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { PostgrestResponse } from "@supabase/supabase-js";
 import { Suspense, useEffect, useState } from "react";
-import { createPortal } from "react-dom";
 import {
   LuCheckCheck,
+  LuChevronDown,
   LuCirclePlus,
   LuClipboardCheck,
   LuEllipsisVertical,
+  LuGitPullRequestArrow,
   LuPanelLeft,
   LuPanelRight,
   LuTrash,
   LuX
 } from "react-icons/lu";
 import { Await, useFetcher, useNavigate, useParams } from "react-router";
-import {
-  DetailTopbarBadge,
-  DetailTopbarContent,
-  DetailTopbarPlainId,
-  usePanels,
-  useTopbarLeft
-} from "~/components/Layout";
+import { usePanels } from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData } from "~/hooks";
 import type { ApprovalDecision } from "~/modules/shared/types";
@@ -43,19 +45,9 @@ import QualityDocumentApprovalModal from "./QualityDocumentApprovalModal";
 import QualityDocumentForm from "./QualityDocumentForm";
 import QualityDocumentStatus from "./QualityDocumentStatus";
 
-function QualityDocumentTopbarLeft({ id }: { id: string }) {
-  const { t } = useLingui();
-  const navigate = useNavigate();
-  const permissions = usePermissions();
-  const newVersionDisclosure = useDisclosure();
-  const deleteDisclosure = useDisclosure();
-  const statusFetcher = useFetcher<{ error?: { message: string } }>();
-  const approvalFetcher = useFetcher<{
-    error?: string;
-    success?: boolean;
-  }>();
-  const [approvalDecision, setApprovalDecision] =
-    useState<ApprovalDecision | null>(null);
+const QualityDocumentHeader = () => {
+  const { id } = useParams();
+  if (!id) throw new Error("id not found");
 
   const routeData = useRouteData<{
     document: QualityDocument;
@@ -66,6 +58,20 @@ function QualityDocumentTopbarLeft({ id }: { id: string }) {
     canDelete: boolean;
     isApprovalRequired: boolean;
   }>(path.to.qualityDocument(id));
+
+  const navigate = useNavigate();
+  const { t } = useLingui();
+  const permissions = usePermissions();
+  const { toggleExplorer, toggleProperties } = usePanels();
+  const newVersionDisclosure = useDisclosure();
+  const deleteDisclosure = useDisclosure();
+  const statusFetcher = useFetcher<{ error?: { message: string } }>();
+  const approvalFetcher = useFetcher<{
+    error?: string;
+    success?: boolean;
+  }>();
+  const [approvalDecision, setApprovalDecision] =
+    useState<ApprovalDecision | null>(null);
 
   const status = routeData?.document?.status ?? null;
   const isDraft = status === "Draft";
@@ -84,12 +90,16 @@ function QualityDocumentTopbarLeft({ id }: { id: string }) {
     statusFetcher.formData?.get("value") === "Active";
 
   let submitButtonLabel: string;
+  let submitButtonTooltip: string;
   if (isApprovalRequired) {
     submitButtonLabel = t`Submit for approval`;
+    submitButtonTooltip = t`Sends this document for approval before it can go active.`;
   } else if (isArchived) {
     submitButtonLabel = t`Reactivate`;
+    submitButtonTooltip = t`Makes this document active again.`;
   } else {
     submitButtonLabel = t`Publish`;
+    submitButtonTooltip = t`Makes this document active and visible.`;
   }
 
   const submitForActivation = () => {
@@ -109,74 +119,115 @@ function QualityDocumentTopbarLeft({ id }: { id: string }) {
   }, [id]);
 
   return (
-    <>
-      <DetailTopbarContent>
-        <DetailTopbarPlainId>{routeData?.document?.name}</DetailTopbarPlainId>
-        <DetailTopbarBadge
-          variant="outline"
-          label={`V${routeData?.document?.version}`}
-        />
-        <QualityDocumentStatus iconOnly status={routeData?.document?.status} />
-        <Copy text={routeData?.document?.name ?? ""} />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <IconButton
-              aria-label={t`More options`}
-              icon={<LuEllipsisVertical />}
-              size="sm"
-              variant="secondary"
-            />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            {canActivate && !hasApprovalRequest && (
+    <div className="flex flex-shrink-0 items-center justify-between px-4 py-2 bg-card border-b border-border h-[50px] overflow-x-auto scrollbar-hide dark:border-none dark:shadow-[inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)]">
+      <VStack spacing={0} className="flex-grow">
+        <HStack>
+          <IconButton
+            aria-label={t`Toggle Explorer`}
+            icon={<LuPanelLeft />}
+            onClick={toggleExplorer}
+            variant="ghost"
+          />
+          <Heading size="h4" className="flex items-center gap-2">
+            <span>{routeData?.document?.name}</span>
+            <Badge variant="outline">V{routeData?.document?.version}</Badge>
+            <QualityDocumentStatus status={routeData?.document?.status} />
+          </Heading>
+          <Copy text={routeData?.document?.name ?? ""} />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <IconButton
+                aria-label={t`More options`}
+                icon={<LuEllipsisVertical />}
+                variant="secondary"
+                size="sm"
+              />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
               <DropdownMenuItem
                 disabled={
-                  !permissions.can("update", "quality") ||
+                  !permissions.can("delete", "quality") ||
                   !permissions.is("employee") ||
-                  !statusIdle ||
-                  submitLoading
+                  (canActivate && hasApprovalRequest && !canDelete)
                 }
-                onClick={submitForActivation}
+                destructive
+                onClick={deleteDisclosure.onOpen}
               >
-                <DropdownMenuIcon
-                  icon={
+                <DropdownMenuIcon icon={<LuTrash />} />
+                <Trans>Delete Document</Trans>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </HStack>
+      </VStack>
+      <div className="flex flex-shrink-0 gap-1 items-center justify-end">
+        {canActivate && !hasApprovalRequest && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="inline-flex">
+                <Button
+                  leftIcon={
                     isApprovalRequired ? <LuClipboardCheck /> : <LuCheckCheck />
                   }
-                />
-                {submitButtonLabel}
-              </DropdownMenuItem>
-            )}
-            {canActivate && hasApprovalRequest && (
-              <>
-                <DropdownMenuItem
-                  disabled={!canApprove}
-                  onClick={() => setApprovalDecision("Approved")}
+                  variant="primary"
+                  isLoading={submitLoading}
+                  isDisabled={
+                    !permissions.can("update", "quality") ||
+                    !permissions.is("employee") ||
+                    !statusIdle
+                  }
+                  onClick={submitForActivation}
                 >
-                  <DropdownMenuIcon icon={<LuCheckCheck />} />
-                  <Trans>Approve</Trans>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  destructive
-                  disabled={!canApprove}
-                  onClick={() => setApprovalDecision("Rejected")}
-                >
-                  <DropdownMenuIcon icon={<LuX />} />
-                  <Trans>Reject</Trans>
-                </DropdownMenuItem>
-              </>
-            )}
-            {(canActivate || permissions.can("create", "quality")) && (
-              <DropdownMenuSeparator />
-            )}
-            {permissions.can("create", "quality") && (
-              <DropdownMenuItem onClick={newVersionDisclosure.onOpen}>
-                <DropdownMenuIcon icon={<LuCirclePlus />} />
-                <Trans>New Version</Trans>
-              </DropdownMenuItem>
-            )}
-            <Suspense fallback={null}>
-              <Await resolve={routeData?.versions}>
-                {(versions) => (
+                  {submitButtonLabel}
+                </Button>
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>{submitButtonTooltip}</TooltipContent>
+          </Tooltip>
+        )}
+        {canActivate && hasApprovalRequest && (
+          <>
+            <Button
+              leftIcon={<LuCheckCheck />}
+              variant="primary"
+              isDisabled={!canApprove}
+              onClick={() => setApprovalDecision("Approved")}
+            >
+              <Trans>Approve</Trans>
+            </Button>
+            <Button
+              leftIcon={<LuX />}
+              variant="destructive"
+              isDisabled={!canApprove}
+              onClick={() => setApprovalDecision("Rejected")}
+            >
+              <Trans>Reject</Trans>
+            </Button>
+          </>
+        )}
+        <Suspense fallback={null}>
+          <Await resolve={routeData?.versions}>
+            {(versions) => (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="secondary"
+                    leftIcon={<LuGitPullRequestArrow />}
+                    rightIcon={<LuChevronDown />}
+                  >
+                    <Trans>Versions</Trans>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {permissions.can("create", "quality") && (
+                    <>
+                      <DropdownMenuItem onClick={newVersionDisclosure.onOpen}>
+                        <DropdownMenuIcon icon={<LuCirclePlus />} />
+                        <Trans>New Version</Trans>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                    </>
+                  )}
                   <DropdownMenuRadioGroup
                     value={id}
                     onValueChange={(value) =>
@@ -212,25 +263,18 @@ function QualityDocumentTopbarLeft({ id }: { id: string }) {
                         </DropdownMenuRadioItem>
                       ))}
                   </DropdownMenuRadioGroup>
-                )}
-              </Await>
-            </Suspense>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              disabled={
-                !permissions.can("delete", "quality") ||
-                !permissions.is("employee") ||
-                (canActivate && hasApprovalRequest && !canDelete)
-              }
-              destructive
-              onClick={deleteDisclosure.onOpen}
-            >
-              <DropdownMenuIcon icon={<LuTrash />} />
-              <Trans>Delete Document</Trans>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </DetailTopbarContent>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+          </Await>
+        </Suspense>
+        <IconButton
+          aria-label={t`Toggle Properties`}
+          icon={<LuPanelRight />}
+          onClick={toggleProperties}
+          variant="ghost"
+        />
+      </div>
       {newVersionDisclosure.isOpen && (
         <QualityDocumentForm
           type="copy"
@@ -267,40 +311,7 @@ function QualityDocumentTopbarLeft({ id }: { id: string }) {
           onClose={() => setApprovalDecision(null)}
         />
       )}
-    </>
-  );
-}
-
-const QualityDocumentHeader = () => {
-  const { id } = useParams();
-  if (!id) throw new Error("id not found");
-
-  const { leftSlotEl } = useTopbarLeft();
-  const { t } = useLingui();
-  const { hasExplorer, toggleExplorer, toggleProperties } = usePanels();
-
-  return (
-    <>
-      {leftSlotEl &&
-        createPortal(<QualityDocumentTopbarLeft id={id} />, leftSlotEl)}
-      <div className="flex-shrink-0 h-[50px] flex items-center gap-1 px-2 bg-card border-b border-border dark:border-none dark:shadow-[inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)]">
-        {hasExplorer && (
-          <IconButton
-            aria-label={t`Toggle Explorer`}
-            icon={<LuPanelLeft />}
-            onClick={toggleExplorer}
-            variant="ghost"
-          />
-        )}
-        <div className="flex-1" />
-        <IconButton
-          aria-label={t`Toggle Properties`}
-          icon={<LuPanelRight />}
-          onClick={toggleProperties}
-          variant="ghost"
-        />
-      </div>
-    </>
+    </div>
   );
 };
 

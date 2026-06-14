@@ -23,11 +23,11 @@ export default function SettingsRoute() {
 
   return (
     <CollapsibleSidebarProvider>
-      <div className="flex flex-col md:grid md:grid-cols-[auto_1fr] w-full h-full bg-card">
+      <div className="grid grid-cols-[auto_1fr] w-full h-full bg-card">
         <GroupedContentSidebar groups={groups} />
         <VStack
           spacing={0}
-          className="overflow-y-auto overscroll-contain scrollbar-hide flex-1 min-h-0"
+          className="overflow-y-auto scrollbar-hide h-[calc(100dvh-49px)]"
         >
           <Outlet />
         </VStack>

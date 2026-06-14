@@ -53,7 +53,7 @@ const SupplierQuoteFinalizeModal = ({
           method="post"
           validator={supplierQuoteFinalizeValidator}
           action={action}
-          onSuccess={onClose}
+          onSubmit={onClose}
           defaultValues={{
             // @ts-expect-error TS2322 - TODO: fix type
             notification: notificationType as "Email" | "None",

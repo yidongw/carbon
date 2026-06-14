@@ -1,24 +1,19 @@
-import { Badge, HStack, MenuIcon, MenuItem, useDisclosure } from "@carbon/react";
-import { Trans, useLingui } from "@lingui/react/macro";
+import { Badge, MenuIcon, MenuItem, useDisclosure } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useMemo, useState } from "react";
 import { LuPencil, LuTrash } from "react-icons/lu";
 import { useNavigate, useParams } from "react-router";
-import { EmployeeAvatar, Hyperlink, New, SupplierAvatar, Table } from "~/components";
+import { EmployeeAvatar, Hyperlink, New, Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { ConfirmDelete } from "~/components/Modals";
 import { useDateFormatter, usePermissions, useUrlParams } from "~/hooks";
 import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
-import type { ScrapReason } from "../../types";
-import {
-  PRODUCTION_QUANTITY_TYPES,
-  useProductionQuantityTypeLabel
-} from "./productionQuantityLabels";
-import type { UnifiedProductionQuantityListItem } from "./unifiedQuantityFeeds";
+import type { ProductionQuantity, ScrapReason } from "../../types";
 
 type ProductionQuantitiesTableProps = {
-  data: UnifiedProductionQuantityListItem[];
+  data: ProductionQuantity[];
   count: number;
   operations: { id: string; description: string | null }[];
   scrapReasons: ScrapReason[];
@@ -33,13 +28,11 @@ const ProductionQuantitiesTable = memo(
   }: ProductionQuantitiesTableProps) => {
     const { jobId } = useParams();
     const { t } = useLingui();
-    const typeLabel = useProductionQuantityTypeLabel();
     if (!jobId) throw new Error("Job ID is required");
     const { formatDateTime } = useDateFormatter();
     const [people] = usePeople();
 
-    const columns = useMemo<ColumnDef<UnifiedProductionQuantityListItem>[]>(
-      () => {
+    const columns = useMemo<ColumnDef<ProductionQuantity>[]>(() => {
       return [
         {
           accessorKey: "jobOperationId",
@@ -69,34 +62,10 @@ const ProductionQuantitiesTable = memo(
         },
         {
           accessorKey: "createdBy",
-          header: t`Name`,
-          cell: ({ row }) => {
-            const isSupplier = row.original.actorKind === "supplier";
-            if (isSupplier) {
-              const supplierId =
-                row.original.actorKind === "supplier"
-                  ? row.original.supplierProcess?.supplierId
-                  : undefined;
-              return (
-                <HStack spacing={2} className="min-w-0 items-center">
-                  <Badge variant="outline" className="shrink-0 text-xs font-normal">
-                    <Trans>Supplier</Trans>
-                  </Badge>
-                  {supplierId ? (
-                    <SupplierAvatar supplierId={supplierId} />
-                  ) : null}
-                </HStack>
-              );
-            }
-            return (
-              <HStack spacing={2} className="min-w-0 items-center">
-                <Badge variant="outline" className="shrink-0 text-xs font-normal">
-                  <Trans>Employee</Trans>
-                </Badge>
-                <EmployeeAvatar employeeId={row.original.createdBy} />
-              </HStack>
-            );
-          },
+          header: t`Employee`,
+          cell: ({ row }) => (
+            <EmployeeAvatar employeeId={row.original.createdBy} />
+          ),
           meta: {
             filter: {
               type: "static",
@@ -120,13 +89,13 @@ const ProductionQuantitiesTable = memo(
                     : "red"
               }
             >
-              {typeLabel(row.original.type)}
+              {row.original.type}
             </Badge>
           ),
           meta: {
             filter: {
               type: "static",
-              options: PRODUCTION_QUANTITY_TYPES.map((type) => ({
+              options: ["Production", "Rework", "Scrap"].map((type) => ({
                 value: type,
                 label: (
                   <Badge
@@ -138,7 +107,7 @@ const ProductionQuantitiesTable = memo(
                           : "red"
                     }
                   >
-                    {typeLabel(type)}
+                    {type}
                   </Badge>
                 )
               }))
@@ -148,9 +117,7 @@ const ProductionQuantitiesTable = memo(
         {
           accessorKey: "quantity",
           header: t`Quantity`,
-          cell: ({ row }) => (
-            <span className="tabular-nums">{row.original.quantity}</span>
-          )
+          cell: ({ row }) => row.original.quantity
         },
         {
           accessorKey: "scrapReasonId",
@@ -183,24 +150,18 @@ const ProductionQuantitiesTable = memo(
         {
           accessorKey: "createdAt",
           header: t`Created At`,
-          cell: ({ row }) => (
-            <span className="tabular-nums">
-              {formatDateTime(row.original.createdAt)}
-            </span>
-          )
+          cell: ({ row }) => formatDateTime(row.original.createdAt)
         }
       ];
-      },
-      [operations, people, scrapReasons, t, typeLabel, formatDateTime]
-    );
+    }, [operations, people, scrapReasons, t, formatDateTime]);
 
     const permissions = usePermissions();
 
     const deleteModal = useDisclosure();
     const [selectedEvent, setSelectedEvent] =
-      useState<UnifiedProductionQuantityListItem | null>(null);
+      useState<ProductionQuantity | null>(null);
 
-    const onDelete = (data: UnifiedProductionQuantityListItem) => {
+    const onDelete = (data: ProductionQuantity) => {
       setSelectedEvent(data);
       deleteModal.onOpen();
     };
@@ -215,7 +176,7 @@ const ProductionQuantitiesTable = memo(
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: suppressed due to migration
     const renderContextMenu = useCallback<
-      (row: UnifiedProductionQuantityListItem) => JSX.Element
+      (row: ProductionQuantity) => JSX.Element
     >(
       (row) => (
         <>
@@ -224,7 +185,7 @@ const ProductionQuantitiesTable = memo(
             onClick={() => navigate(row.id)}
           >
             <MenuIcon icon={<LuPencil />} />
-            <Trans>Edit Quantity</Trans>
+            Edit Quantity
           </MenuItem>
           <MenuItem
             destructive
@@ -232,7 +193,7 @@ const ProductionQuantitiesTable = memo(
             onClick={() => onDelete(row)}
           >
             <MenuIcon icon={<LuTrash />} />
-            <Trans>Delete Quantity</Trans>
+            Delete Quantity
           </MenuItem>
         </>
       ),
@@ -242,7 +203,7 @@ const ProductionQuantitiesTable = memo(
 
     return (
       <>
-        <Table<UnifiedProductionQuantityListItem>
+        <Table<ProductionQuantity>
           compact
           count={count}
           columns={columns}
@@ -262,15 +223,13 @@ const ProductionQuantitiesTable = memo(
           <ConfirmDelete
             action={path.to.deleteProductionQuantity(selectedEvent.id)}
             isOpen
-            name={
-              selectedEvent.actorKind === "supplier"
-                ? t`${selectedEvent.jobOperation?.description ?? t`Operation`} (supplier)`
-                : t`${selectedEvent.jobOperation?.description ?? t`Operation`} by ${
-                    people.find((p) => p.id === selectedEvent.createdBy)?.name ??
-                    t`Unknown Employee`
-                  }`
-            }
-            text={t`Are you sure you want to delete this production quantity? This action cannot be undone.`}
+            name={`${
+              selectedEvent.jobOperation?.description ?? "Operation"
+            } by ${
+              people.find((p) => p.id === selectedEvent.createdBy)?.name ??
+              "Unknown Employee"
+            }`}
+            text="Are you sure you want to delete this production quantity? This action cannot be undone."
             onCancel={onDeleteCancel}
             onSubmit={onDeleteCancel}
           />

@@ -1,9 +1,20 @@
 import { useRouteData } from "@carbon/react";
+import { useEffect, useState } from "react";
 import { path } from "~/utils/path";
 
 export function useSupplierApprovalRequired(): boolean {
   const routeData = useRouteData<{
-    supplierApprovalRequired: boolean;
+    supplierApprovalRequired: Promise<boolean>;
   }>(path.to.authenticatedRoot);
-  return routeData?.supplierApprovalRequired ?? false;
+  const [value, setValue] = useState(false);
+
+  useEffect(() => {
+    routeData?.supplierApprovalRequired
+      ?.then((v) => setValue(!!v))
+      ?.catch(() => {
+        // swallow rejection — surfaces as default `false`
+      });
+  }, [routeData?.supplierApprovalRequired]);
+
+  return value;
 }

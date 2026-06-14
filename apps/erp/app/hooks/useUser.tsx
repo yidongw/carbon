@@ -56,9 +56,6 @@ export function useUser(): User {
   ) {
     return {
       ...data.user,
-      // WeChat users have no email (null in DB); expose "" so the many call sites
-      // that do user.email.toLowerCase()/etc. don't crash.
-      email: data.user.email ?? "",
       company: data.company,
       groups: data.groups,
       defaults: data.defaults ?? { locationId: null },
@@ -100,7 +97,7 @@ function isGroups(value: any): value is string[] {
 function isUser(value: any): value is User {
   return (
     typeof value.id === "string" &&
-    (typeof value.email === "string" || value.email === null) &&
+    typeof value.email === "string" &&
     typeof value.firstName === "string" &&
     typeof value.lastName === "string" &&
     "avatarUrl" in value

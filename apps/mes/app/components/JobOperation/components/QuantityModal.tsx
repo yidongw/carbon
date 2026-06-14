@@ -46,7 +46,6 @@ export function QuantityModal({
   parentIsSerial = false,
   parentIsBatch = false,
   setupProductionEvent,
-  suggestedQuantity,
   trackedEntityId,
   type,
   onClose
@@ -59,16 +58,13 @@ export function QuantityModal({
   parentIsSerial?: boolean;
   parentIsBatch?: boolean;
   setupProductionEvent: ProductionEvent | undefined;
-  suggestedQuantity?: number;
   trackedEntityId: string;
   type: "scrap" | "rework" | "complete" | "finish";
   onClose: () => void;
 }) {
   const { t } = useLingui();
   const fetcher = useFetcher<ProductionQuantity>();
-  const [quantity, setQuantity] = useState(
-    parentIsSerial ? 1 : (suggestedQuantity ?? 0)
-  );
+  const [quantity, setQuantity] = useState(parentIsSerial ? 1 : 0);
   const [confirmedUnissued, setConfirmedUnissued] = useState(false);
 
   const titleMap = {

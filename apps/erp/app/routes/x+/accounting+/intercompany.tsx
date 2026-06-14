@@ -1,6 +1,5 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { Button, VStack } from "@carbon/react";
-import { Trans, useLingui } from "@lingui/react/macro";
 import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, useFetcher, useLoaderData } from "react-router";
 import { New } from "~/components";
@@ -47,7 +46,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export default function IntercompanyRoute() {
-  const { t } = useLingui();
   const { data, count } = useLoaderData<typeof loader>();
   const [params] = useUrlParams();
   const permissions = usePermissions();
@@ -68,7 +66,7 @@ export default function IntercompanyRoute() {
                   type="submit"
                   isLoading={matchFetcher.state !== "idle"}
                 >
-                  <Trans>Run Matching</Trans>
+                  Run Matching
                 </Button>
               </matchFetcher.Form>
               <eliminateFetcher.Form method="post" action="eliminate">
@@ -77,10 +75,10 @@ export default function IntercompanyRoute() {
                   type="submit"
                   isLoading={eliminateFetcher.state !== "idle"}
                 >
-                  <Trans>Generate Eliminations</Trans>
+                  Generate Eliminations
                 </Button>
               </eliminateFetcher.Form>
-              <New label={t`IC Transaction`} to={`new?${params.toString()}`} />
+              <New label="IC Transaction" to={`new?${params.toString()}`} />
             </div>
           )
         }

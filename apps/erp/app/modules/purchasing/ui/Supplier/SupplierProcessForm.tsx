@@ -10,23 +10,21 @@ import {
   ModalDrawerProvider,
   ModalDrawerTitle,
   toast,
-  useRouteData,
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { PostgrestResponse } from "@supabase/supabase-js";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useFetcher, useNavigate, useParams } from "react-router";
 import type { z } from "zod";
 import {
   CustomFormFields,
   Hidden,
   Number,
+  Process,
   Submit,
   Supplier
 } from "~/components/Form";
-import Process, { useProcesses } from "~/components/Form/Process";
-import { useSupplierProcessesBySupplier } from "~/components/Form/SupplierProcess";
 import { usePermissions, useUser } from "~/hooks";
 import type { SupplierProcess } from "~/modules/purchasing";
 import { supplierProcessValidator } from "~/modules/purchasing";
@@ -48,12 +46,8 @@ const SupplierProcessForm = ({
   const { t } = useLingui();
   const permissions = usePermissions();
   const fetcher = useFetcher<PostgrestResponse<SupplierProcess>>();
-  const { supplierId: routeSupplierId } = useParams();
-  const [supplier, setSupplier] = useState<string | undefined>(
-    routeSupplierId || initialValues.supplierId || undefined
-  );
-  const resolvedSupplierId =
-    routeSupplierId || supplier || initialValues.supplierId;
+  const { supplierId } = useParams();
+  const [supplier, setSupplier] = useState<string | undefined>(supplierId);
   const navigate = useNavigate();
 
   const { company } = useUser();
@@ -62,50 +56,19 @@ const SupplierProcessForm = ({
   useEffect(() => {
     if (type !== "modal") return;
 
-    if (fetcher.state === "idle" && fetcher.data?.data) {
+    if (fetcher.state === "loading" && fetcher.data?.data) {
       onClose?.();
-      toast.success(t`Created supplier process`);
+      // @ts-ignore
+      toast.success(`Created supplier process`);
     } else if (fetcher.state === "idle" && fetcher.data?.error) {
-      toast.error(
-        fetcher.data.error.message ?? t`Failed to create supplier process`
-      );
+      toast.error(`Failed to create supplier process`);
     }
-  }, [fetcher.data, fetcher.state, onClose, type, t]);
+  }, [fetcher.data, fetcher.state, onClose, type]);
 
   const isEditing = initialValues.id !== undefined;
   const isDisabled = isEditing
     ? !permissions.can("update", "purchasing")
     : !permissions.can("create", "purchasing");
-
-  const processIdPreset = !isEditing && Boolean(initialValues.processId);
-  const allProcesses = useProcesses();
-  const routeProcesses = useRouteData<{ processes: SupplierProcess[] }>(
-    routeSupplierId ? path.to.supplierProcesses(routeSupplierId) : ""
-  );
-  const fetchedSupplierProcesses = useSupplierProcessesBySupplier({
-    supplierId: routeSupplierId ? undefined : resolvedSupplierId || undefined
-  });
-  const existingSupplierProcesses =
-    routeProcesses?.processes ?? fetchedSupplierProcesses;
-
-  const assignedProcessIds = useMemo(() => {
-    return new Set(
-      existingSupplierProcesses
-        .filter((supplierProcess) => supplierProcess.id !== initialValues.id)
-        .map((supplierProcess) => supplierProcess.processId)
-        .filter(Boolean)
-    );
-  }, [existingSupplierProcesses, initialValues.id]);
-
-  const processOptions = useMemo(() => {
-    if (!resolvedSupplierId) {
-      return allProcesses;
-    }
-
-    return allProcesses.filter(
-      (process) => !assignedProcessIds.has(process.value)
-    );
-  }, [allProcesses, assignedProcessIds, resolvedSupplierId]);
 
   return (
     <ModalDrawerProvider type={type}>
@@ -127,8 +90,8 @@ const SupplierProcessForm = ({
             method="post"
             action={
               isEditing
-                ? path.to.supplierProcess(resolvedSupplierId!, initialValues.id!)
-                : path.to.newSupplierProcess(resolvedSupplierId!)
+                ? path.to.supplierProcess(supplier!, initialValues.id!)
+                : path.to.newSupplierProcess(supplier!)
             }
             defaultValues={initialValues}
             fetcher={fetcher}
@@ -142,38 +105,19 @@ const SupplierProcessForm = ({
             <ModalDrawerBody>
               <Hidden name="id" />
               <Hidden name="type" value={type} />
-              {routeSupplierId && (
-                <Hidden name="supplierId" value={routeSupplierId} />
-              )}
+              {supplierId && <Hidden name="supplierId" value={supplierId} />}
               <VStack spacing={4}>
-                {!routeSupplierId && (
+                {supplierId === undefined && (
                   <Supplier
                     name="supplierId"
                     label={t`Supplier`}
                     onChange={(newValue) => setSupplier(newValue?.value)}
                   />
                 )}
-                {processIdPreset ? (
-                  <Hidden name="processId" value={initialValues.processId} />
-                ) : (
-                  <Process
-                    name="processId"
-                    label={t`Process`}
-                    options={processOptions}
-                  />
-                )}
+                <Process name="processId" label={t`Process`} />
                 <Number
                   name="minimumCost"
                   label={t`Minimum Cost`}
-                  formatOptions={{
-                    style: "currency",
-                    currency: baseCurrency
-                  }}
-                  minValue={0}
-                />
-                <Number
-                  name="unitCost"
-                  label={t`Unit Cost`}
                   formatOptions={{
                     style: "currency",
                     currency: baseCurrency

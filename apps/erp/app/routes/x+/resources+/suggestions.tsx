@@ -42,7 +42,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   if (suggestions.error) {
     throw redirect(
-      path.to.resourcesDashboard,
+      path.to.resources,
       await flash(
         request,
         error(suggestions.error, "Failed to load suggestions")

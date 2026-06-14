@@ -17,7 +17,7 @@ import {
   useIsMobile,
   useMode
 } from "@carbon/react";
-import type { ComponentProps, Ref } from "react";
+import type { ComponentProps } from "react";
 import { cloneElement, forwardRef, useMemo } from "react";
 import { LuChevronsUpDown } from "react-icons/lu";
 import type { LinkProps } from "react-router";
@@ -71,44 +71,31 @@ const BreadcrumbItem = forwardRef<
 ));
 BreadcrumbItem.displayName = "BreadcrumbItem";
 
-const breadcrumbLinkClassName = (isCurrentPage?: boolean, className?: string) =>
-  cn(
-    "inline-flex min-w-0 max-w-full truncate rounded-sm outline-none",
-    "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-    isCurrentPage
-      ? "font-medium"
-      : "text-muted-foreground hover:text-foreground hover:underline",
-    className
-  );
-
 const BreadcrumbLink = forwardRef<
-  HTMLElement,
+  HTMLAnchorElement,
   LinkProps & {
     isCurrentPage?: boolean;
   }
->(({ className, children, isCurrentPage, to, ...props }, ref) => {
-  if (isCurrentPage) {
-    return (
-      <span
-        aria-current="page"
-        ref={ref}
-        className={breadcrumbLinkClassName(true, className)}
-      >
-        {children}
-      </span>
-    );
-  }
-
+>(({ className, children, isCurrentPage, ...props }, ref) => {
   return (
-    <Link
-      ref={ref as Ref<HTMLAnchorElement>}
-      to={to}
-      prefetch="intent"
-      className={breadcrumbLinkClassName(false, className)}
-      {...props}
+    <Button
+      variant="ghost"
+      className={cn(
+        "px-2 outline-none focus-visible:ring-transparent",
+        className
+      )}
+      asChild
     >
-      {children}
-    </Link>
+      {isCurrentPage ? (
+        <span aria-current="page" ref={ref} {...props}>
+          {children}
+        </span>
+      ) : (
+        <Link ref={ref} {...props} prefetch="intent">
+          {children}
+        </Link>
+      )}
+    </Button>
   );
 });
 BreadcrumbLink.displayName = "BreadcrumbLink";

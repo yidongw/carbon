@@ -21,7 +21,6 @@ import {
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useFormatValidationError } from "~/utils/formatValidationError";
 import { LuCircleAlert } from "react-icons/lu";
 import type {
   ActionFunctionArgs,
@@ -59,15 +58,15 @@ export async function loader({ request }: LoaderFunctionArgs) {
   return null;
 }
 
+const ratelimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(RATE_LIMIT, "1 h"),
+  analytics: true
+});
+
 export async function action({ request }: ActionFunctionArgs) {
   assertIsPost(request);
   const ip = request.headers.get("x-forwarded-for") ?? "127.0.0.1";
-
-  const ratelimit = new Ratelimit({
-    redis,
-    limiter: Ratelimit.slidingWindow(RATE_LIMIT, "1 h"),
-    analytics: true
-  });
 
   const { success } = await ratelimit.limit(ip);
 
@@ -134,7 +133,6 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function VerifyRoute() {
   const { t } = useLingui();
-  const formatError = useFormatValidationError();
   const [searchParams] = useSearchParams();
   const email = searchParams.get("email") ?? "";
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
@@ -173,7 +171,7 @@ export default function VerifyRoute() {
                 <AlertTitle>
                   <Trans>Verification Error</Trans>
                 </AlertTitle>
-                <AlertDescription>{fetcher.data?.message && formatError(fetcher.data.message)}</AlertDescription>
+                <AlertDescription>{fetcher.data?.message}</AlertDescription>
               </Alert>
             )}
 

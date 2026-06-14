@@ -139,11 +139,6 @@ export const supplierProcessesQuery = (processId: string) => ({
   staleTime: RefreshRate.Low
 });
 
-export const supplierProcessesBySupplierQuery = (supplierId: string) => ({
-  queryKey: ["supplierProcessesBySupplier", supplierId],
-  staleTime: RefreshRate.Low
-});
-
 export const supplierTypesQuery = (companyId: string | null) => ({
   queryKey: ["supplierTypes", companyId ?? "null"],
   staleTime: RefreshRate.Low

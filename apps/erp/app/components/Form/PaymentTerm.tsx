@@ -1,14 +1,12 @@
 import type { ComboboxProps } from "@carbon/form";
 import { Combobox, CreatableCombobox } from "@carbon/form";
 import { useDisclosure, useMount } from "@carbon/react";
-import { useLingui } from "@lingui/react/macro";
 import { useMemo, useRef, useState } from "react";
 import { useFetcher } from "react-router";
 import { usePermissions } from "~/hooks";
 import type { getPaymentTermsList } from "~/modules/accounting";
 import PaymentTermForm from "~/modules/accounting/ui/PaymentTerms/PaymentTermForm";
 import { path } from "~/utils/path";
-import { translateSeedDisplayName } from "~/utils/seedDataDisplayName";
 
 type PaymentTermSelectProps = Omit<ComboboxProps, "options" | "inline"> & {
   inline?: boolean;
@@ -77,7 +75,6 @@ PaymentTerm.displayName = "PaymentTerm";
 export default PaymentTerm;
 
 export const usePaymentTerm = () => {
-  const { i18n } = useLingui();
   const paymentTermFetcher =
     useFetcher<Awaited<ReturnType<typeof getPaymentTermsList>>>();
 
@@ -88,9 +85,9 @@ export const usePaymentTerm = () => {
   const options = useMemo(() => {
     return (paymentTermFetcher.data?.data ?? []).map((c) => ({
       value: c.id,
-      label: translateSeedDisplayName(c.name, i18n)
+      label: c.name
     }));
-  }, [paymentTermFetcher.data?.data, i18n]);
+  }, [paymentTermFetcher.data?.data]);
 
   return options;
 };

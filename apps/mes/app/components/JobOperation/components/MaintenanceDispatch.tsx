@@ -27,7 +27,6 @@ import {
 } from "@carbon/react";
 import { Editor } from "@carbon/react/Editor";
 import type { PostgrestResponse } from "@supabase/supabase-js";
-import { Trans, useLingui } from "@lingui/react/macro";
 import { nanoid } from "nanoid";
 import { useEffect, useState } from "react";
 import { BsExclamationSquareFill } from "react-icons/bs";
@@ -60,35 +59,16 @@ function getPriorityIcon(
   }
 }
 
-function getPriorityLabel(
-  priority: (typeof maintenanceDispatchPriority)[number],
-  t: ReturnType<typeof useLingui>["t"]
-) {
-  switch (priority) {
-    case "Critical":
-      return t`Critical`;
-    case "High":
-      return t`High`;
-    case "Medium":
-      return t`Medium`;
-    case "Low":
-      return t`Low`;
-  }
-}
-
-function getSeverityLabel(
-  severity: (typeof maintenanceSeverity)[number],
-  t: ReturnType<typeof useLingui>["t"]
-) {
+function getSeverityLabel(severity: (typeof maintenanceSeverity)[number]) {
   switch (severity) {
     case "Preventive":
-      return t`Preventive`;
+      return "Preventive";
     case "Operator Performed":
-      return t`Operator Performed`;
+      return "Operator Performed";
     case "Support Required":
-      return t`Support Required`;
+      return "Support Required";
     case "OEM Required":
-      return t`OEM Required`;
+      return "OEM Required";
   }
 }
 
@@ -102,7 +82,6 @@ export function MaintenanceDispatch({
     blockingDispatchId: string | null;
   };
 }) {
-  const { t } = useLingui();
   const hasActiveDispatch =
     workCenter.isBlocked && workCenter.blockingDispatchId;
   const disclosure = useDisclosure();
@@ -141,7 +120,7 @@ export function MaintenanceDispatch({
 
   useEffect(() => {
     if (fetcher.state === "idle" && fetcher.data?.id) {
-      toast.success(t`Maintenance dispatch created`);
+      toast.success("Maintenance dispatch created");
       onClose();
     }
     // biome-ignore lint/correctness/useExhaustiveDependencies: ignore
@@ -154,7 +133,7 @@ export function MaintenanceDispatch({
     const result = await carbon?.storage.from("private").upload(fileName, file);
 
     if (result?.error) {
-      toast.error(t`Failed to upload image`);
+      toast.error("Failed to upload image");
       throw new Error(result.error.message);
     }
 
@@ -174,14 +153,14 @@ export function MaintenanceDispatch({
               to={path.to.maintenanceDetail(workCenter.blockingDispatchId!)}
             >
               <IconButton
-                aria-label={t`View Active Maintenance`}
+                aria-label="View Active Maintenance"
                 variant="destructive"
                 icon={<LuWrench />}
               />
             </Link>
           ) : (
             <IconButton
-              aria-label={t`Maintenance`}
+              aria-label="Maintenance"
               variant="secondary"
               icon={<LuWrench />}
               onClick={onOpen}
@@ -191,8 +170,8 @@ export function MaintenanceDispatch({
         <TooltipContent align="end">
           <span>
             {hasActiveDispatch
-              ? t`View Active Maintenance`
-              : t`Maintenance Dispatch`}
+              ? "View Active Maintenance"
+              : "Maintenance Dispatch"}
           </span>
         </TooltipContent>
       </Tooltip>
@@ -222,14 +201,14 @@ export function MaintenanceDispatch({
               fetcher={fetcher}
             >
               <ModalHeader>
-                <ModalTitle><Trans>Maintenance for {workCenter.name}</Trans></ModalTitle>
+                <ModalTitle>Maintenance for {workCenter.name}</ModalTitle>
               </ModalHeader>
               <ModalBody>
                 <Hidden name="workCenterId" value={workCenter.id} />
                 <Hidden name="content" value={JSON.stringify(content)} />
                 <VStack spacing={4}>
                   <div className="flex flex-col gap-2 w-full">
-                    <Label><Trans>Description</Trans></Label>
+                    <Label>Description</Label>
                     <Editor
                       initialValue={content}
                       onUpload={onUploadImage}
@@ -242,23 +221,23 @@ export function MaintenanceDispatch({
                   <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 md:grid-cols-2">
                     <Select
                       name="priority"
-                      label={t`Priority`}
+                      label="Priority"
                       options={maintenanceDispatchPriority.map((priority) => ({
                         value: priority,
                         label: (
                           <div className="flex gap-1 items-center">
                             {getPriorityIcon(priority)}
-                            <span>{getPriorityLabel(priority, t)}</span>
+                            <span>{priority}</span>
                           </div>
                         )
                       }))}
                     />
                     <Select
                       name="severity"
-                      label={t`Severity`}
+                      label="Severity"
                       options={maintenanceSeverity.map((s) => ({
                         value: s,
-                        label: getSeverityLabel(s, t)
+                        label: getSeverityLabel(s)
                       }))}
                       onChange={(option) => {
                         if (option?.value) {
@@ -272,14 +251,14 @@ export function MaintenanceDispatch({
                       <>
                         <DateTimePicker
                           name="actualStartTime"
-                          label={t`Start Time`}
+                          label="Start Time"
                         />
-                        <DateTimePicker name="actualEndTime" label={t`End Time`} />
+                        <DateTimePicker name="actualEndTime" label="End Time" />
                       </>
                     )}
                     <Select
                       name="oeeImpact"
-                      label={t`OEE Impact`}
+                      label="OEE Impact"
                       options={oeeImpact.map((impact) => ({
                         value: impact,
                         label: impact
@@ -298,7 +277,7 @@ export function MaintenanceDispatch({
                       (severity === "Operator Performed" ? (
                         <Select
                           name="actualFailureModeId"
-                          label={t`Actual Failure Mode`}
+                          label="Actual Failure Mode"
                           options={failureModes.map((mode) => ({
                             value: mode.id,
                             label: mode.name
@@ -308,7 +287,7 @@ export function MaintenanceDispatch({
                       ) : (
                         <Select
                           name="suspectedFailureModeId"
-                          label={t`Suspected Failure Mode`}
+                          label="Suspected Failure Mode"
                           options={failureModes.map((mode) => ({
                             value: mode.id,
                             label: mode.name
@@ -322,9 +301,9 @@ export function MaintenanceDispatch({
               <ModalFooter>
                 <HStack>
                   <Button variant="secondary" onClick={onClose}>
-                    <Trans>Cancel</Trans>
+                    Cancel
                   </Button>
-                  <Submit><Trans>Create Dispatch</Trans></Submit>
+                  <Submit>Create Dispatch</Submit>
                 </HStack>
               </ModalFooter>
             </ValidatedForm>

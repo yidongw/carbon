@@ -636,5 +636,5 @@ InventoryTable.displayName = "InventoryTable";
 export default InventoryTable;
 
 function getLocationPath(locationId: string) {
-  return `${path.to.inventoryQuantities}?location=${locationId}`;
+  return `${path.to.inventory}?location=${locationId}`;
 }

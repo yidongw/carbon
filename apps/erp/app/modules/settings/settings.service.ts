@@ -1,6 +1,5 @@
 import { SUPABASE_URL } from "@carbon/auth";
-import type { Database, Json } from "@carbon/database";
-import { companySeedData } from "@carbon/database/seed";
+import type { Database } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { z } from "zod";
 import type { GenericQueryFilters } from "~/utils/query";
@@ -488,25 +487,18 @@ export async function updateSubsidiary(
   return client.from("company").update(data).eq("id", id);
 }
 
-/**
- * Seeds a new company's default data via the seed_company() Postgres RPC.
- *
- * This replaced the seed-company edge function: a single round trip that runs all
- * inserts server-side in one transaction, avoiding the edge runtime's ~5s cold start
- * (it was invoked ~once per company, so nearly always cold) and the 95 sequential
- * round trips it took to insert the chart of accounts.
- */
 export async function seedCompany(
   client: SupabaseClient<Database>,
   companyId: string,
   userId: string,
   parentCompanyId?: string
 ) {
-  return client.rpc("seed_company", {
-    company_id: companyId,
-    user_id: userId,
-    parent_company_id: parentCompanyId,
-    seed: companySeedData as unknown as Json
+  return client.functions.invoke("seed-company", {
+    body: {
+      companyId,
+      userId,
+      parentCompanyId
+    }
   });
 }
 

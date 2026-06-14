@@ -44,7 +44,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   if (shippingMethods.error) {
     throw redirect(
-      path.to.inventoryQuantities,
+      path.to.inventory,
       await flash(request, error(null, "Error loading shipping methods"))
     );
   }

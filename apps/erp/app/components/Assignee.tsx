@@ -11,9 +11,6 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
@@ -40,7 +37,6 @@ export type AssigneeProps = Omit<
   isReadOnly?: boolean;
   placeholder?: string;
   variant?: AssigneeVariants;
-  iconOnly?: boolean;
   onChange?: (selected: string) => void;
 };
 
@@ -54,7 +50,6 @@ const Assign = forwardRef<HTMLButtonElement, AssigneeProps>(
       isReadOnly,
       placeholder,
       variant = "button",
-      iconOnly = false,
       onChange,
       className,
       ...props
@@ -96,14 +91,6 @@ const Assign = forwardRef<HTMLButtonElement, AssigneeProps>(
       ];
     }, [people, user, t]);
 
-    const assigneeLabel = useMemo(() => {
-      if (!value) return t`Unassigned`;
-      return (
-        options.find((option) => option.value === value)?.label ??
-        t`Unassigned`
-      );
-    }, [options, t, value]);
-
     return (
       <VStack spacing={2}>
         {variant === "inline" && (
@@ -125,76 +112,44 @@ const Assign = forwardRef<HTMLButtonElement, AssigneeProps>(
             ))}
 
           <Popover open={open} onOpenChange={setOpen}>
-            {variant === "button" ? (
-              iconOnly ? (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <PopoverTrigger asChild>
-                      <IconButton
-                        aria-label={`${t`Toggle Assignee`}: ${assigneeLabel}`}
-                        icon={
-                          value ? (
-                            <EmployeeAvatar
-                              size={size === "sm" ? "xxs" : "xs"}
-                              employeeId={value ?? null}
-                              withName={false}
-                            />
-                          ) : (
-                            <LuUser />
-                          )
-                        }
-                        size={size}
-                        variant="secondary"
-                        isDisabled={isReadOnly || !permissions.is("employee")}
-                        isLoading={fetcher.state !== "idle"}
+            <PopoverTrigger asChild>
+              {variant === "button" ? (
+                <button
+                  className={cn(
+                    buttonVariants({
+                      variant: "secondary",
+                      size: size,
+                      isDisabled: isReadOnly || !permissions.is("employee"),
+                      isLoading: fetcher.state !== "idle",
+                      isIcon: false,
+                      className
+                    })
+                  )}
+                  role="combobox"
+                  aria-expanded={open}
+                  aria-controls="assignee-options"
+                  ref={ref}
+                  onClick={() => setOpen(true)}
+                  disabled={isReadOnly}
+                  {...props}
+                >
+                  {value ? (
+                    <EmployeeAvatar
+                      size={size === "sm" ? "xxs" : "xs"}
+                      employeeId={value ?? null}
+                    />
+                  ) : (
+                    <div className="flex items-center justify-start gap-2">
+                      <LuUser
+                        className={size === "sm" ? "w-3 h-3" : "w-4 h-4"}
                       />
-                    </PopoverTrigger>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <span>{assigneeLabel}</span>
-                  </TooltipContent>
-                </Tooltip>
+                      <span>
+                        <Trans>Unassigned</Trans>
+                      </span>
+                    </div>
+                  )}
+                </button>
               ) : (
-                <PopoverTrigger asChild>
-                  <button
-                    className={cn(
-                      buttonVariants({
-                        variant: "secondary",
-                        size: size,
-                        isDisabled: isReadOnly || !permissions.is("employee"),
-                        isLoading: fetcher.state !== "idle",
-                        isIcon: false,
-                        className
-                      })
-                    )}
-                    role="combobox"
-                    aria-expanded={open}
-                    aria-controls="assignee-options"
-                    ref={ref}
-                    onClick={() => setOpen(true)}
-                    disabled={isReadOnly}
-                    {...props}
-                  >
-                    {value ? (
-                      <EmployeeAvatar
-                        size={size === "sm" ? "xxs" : "xs"}
-                        employeeId={value ?? null}
-                      />
-                    ) : (
-                      <div className="flex items-center justify-start gap-2">
-                        <LuUser
-                          className={size === "sm" ? "w-3 h-3" : "w-4 h-4"}
-                        />
-                        <span>
-                          <Trans>Unassigned</Trans>
-                        </span>
-                      </div>
-                    )}
-                  </button>
-                </PopoverTrigger>
-              )
-            ) : (
-              <PopoverTrigger asChild>
                 <IconButton
                   aria-label={t`Toggle Assignee`}
                   icon={<LuSettings2 />}
@@ -202,8 +157,8 @@ const Assign = forwardRef<HTMLButtonElement, AssigneeProps>(
                   variant="secondary"
                   isDisabled={isReadOnly || !permissions.is("employee")}
                 />
-              </PopoverTrigger>
-            )}
+              )}
+            </PopoverTrigger>
             <PopoverContent
               align="start"
               className="min-w-[--radix-popover-trigger-width] p-0"

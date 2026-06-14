@@ -6,16 +6,16 @@ import {
   error,
   safeRedirect
 } from "@carbon/auth";
-import { exchangePkceCode, makeAuthSessionFromTokens } from "@carbon/auth/auth.server";
+import { refreshAccessToken } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { getCompanyId, setCompanyId } from "@carbon/auth/company.server";
 import {
   destroyAuthSession,
   flash,
-  getPkceCookie,
   getAuthSession,
   setAuthSession
 } from "@carbon/auth/session.server";
+import { getUserByEmail } from "@carbon/auth/users.server";
 import { validator } from "@carbon/form";
 import { Alert, AlertDescription, AlertTitle, cn, VStack } from "@carbon/react";
 import { Trans } from "@lingui/react/macro";
@@ -26,57 +26,17 @@ import {
   data,
   redirect,
   useFetcher,
-  useLoaderData,
   useLocation,
   useSearchParams
 } from "react-router";
 import { path } from "~/utils/path";
-import { useFormatValidationError } from "~/utils/formatValidationError";
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const url = new URL(request.url);
-  const code = url.searchParams.get("code");
-
-  // PKCE magic-link flow: Supabase delivers a ?code= query param instead of
-  // hash tokens. Exchange it entirely server-side with the code verifier that
-  // was stored in the short-lived cookie during the /login action.
-  if (code) {
-    const pkceEntry = await getPkceCookie(request);
-
-    if (!pkceEntry) {
-      return data({
-        error:
-          "Please open this link in the same browser where you requested sign-in."
-      });
-    }
-
-    const cookieCompanyId = getCompanyId(request);
-    const authSession = await exchangePkceCode(code, pkceEntry, cookieCompanyId);
-
-    if (!authSession) {
-      return data({
-        error: "Magic link expired or already used. Please request a new one."
-      });
-    }
-
-    const redirectTo = url.searchParams.get("redirectTo") ?? undefined;
-    const sessionCookie = await setAuthSession(request, { authSession });
-    const companyIdCookie = setCompanyId(authSession.companyId);
-
-    return redirect(safeRedirect(redirectTo, path.to.authenticatedRoot), {
-      headers: [
-        ["Set-Cookie", sessionCookie],
-        ["Set-Cookie", companyIdCookie]
-      ]
-    });
-  }
-
-  // OAuth (Google/Azure) implicit flow — tokens arrive in the URL hash, which
-  // the server never sees. The client component handles those below.
   const authSession = await getAuthSession(request);
+
   if (authSession) await destroyAuthSession(request);
 
-  return data({ error: null });
+  return {};
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -92,72 +52,60 @@ export async function action({ request }: ActionFunctionArgs) {
     });
   }
 
-  const { accessToken, refreshToken, userId, redirectTo } = validation.data;
+  const { refreshToken, userId, redirectTo } = validation.data;
   const serviceRole = getCarbonServiceRole();
 
-  const [companies, { data: userData, error: userError }] =
-    await Promise.all([
-      serviceRole
-        .from("userToCompany")
-        .select("companyId, ...company(companyGroupId)")
-        .eq("userId", userId)
-        .limit(50),
-      serviceRole.auth.getUser(accessToken)
-    ]);
-
-  if (!userData?.user || userError) {
-    return redirect(
-      path.to.root,
-      await flash(request, error(userError, "Invalid access token"))
-    );
-  }
-
-  if (userData.user.id !== userId) {
-    return redirect(
-      path.to.root,
-      await flash(request, error(null, "Session mismatch"))
-    );
-  }
-
-  if (companies.error) {
-    return redirect(
-      path.to.root,
-      await flash(request, error(companies.error, "Failed to load company"))
-    );
-  }
+  const companies = await serviceRole
+    .from("userToCompany")
+    .select("companyId, ...company(companyGroupId)")
+    .eq("userId", userId);
 
   const cookieCompanyId = getCompanyId(request);
   const match = (companies.data?.find((c) => c.companyId === cookieCompanyId) ??
     companies.data?.[0]) as
     | { companyId: string; companyGroupId: string | null }
     | undefined;
+  const companyId = match?.companyId;
+  const companyGroupId = match?.companyGroupId ?? "";
 
-  const authSession = makeAuthSessionFromTokens(
-    accessToken,
+  const authSession = await refreshAccessToken(
     refreshToken,
-    userData.user,
-    match?.companyId ?? "",
-    match?.companyGroupId ?? ""
+    companyId,
+    companyGroupId
   );
 
-  const sessionCookie = await setAuthSession(request, {
-    authSession
-  });
-  const companyIdCookie = setCompanyId(authSession.companyId);
-  return redirect(safeRedirect(redirectTo, path.to.authenticatedRoot), {
-    headers: [
-      ["Set-Cookie", sessionCookie],
-      ["Set-Cookie", companyIdCookie]
-    ]
-  });
+  if (!authSession) {
+    return redirect(
+      path.to.root,
+      await flash(request, error(authSession, "Invalid refresh token"))
+    );
+  }
+
+  const user = await getUserByEmail(authSession.email);
+
+  if (user?.data) {
+    const sessionCookie = await setAuthSession(request, {
+      authSession
+    });
+    const companyIdCookie = setCompanyId(authSession.companyId);
+    return redirect(safeRedirect(redirectTo, path.to.authenticatedRoot), {
+      headers: [
+        ["Set-Cookie", sessionCookie],
+        ["Set-Cookie", companyIdCookie]
+      ]
+    });
+  } else {
+    return redirect(
+      path.to.root,
+      await flash(request, error(user.error, "User not found"))
+    );
+  }
 }
 
 export default function AuthCallback() {
-  const { error: loaderError } = useLoaderData<typeof loader>();
   const fetcher = useFetcher<{}>();
   const isAuthenticating = useRef(false);
-  const [error, setError] = useState<string | null>(loaderError ?? null);
-  const formatError = useFormatValidationError();
+  const [error, setError] = useState<string | null>(null);
 
   const { hash } = useLocation();
   const [searchParams] = useSearchParams();
@@ -171,7 +119,6 @@ export default function AuthCallback() {
     }
   }, [hash]);
 
-  // Handle OAuth (Google/Azure) tokens delivered in the hash via implicit flow.
   useEffect(() => {
     const {
       data: { subscription }
@@ -182,14 +129,12 @@ export default function AuthCallback() {
       ) {
         isAuthenticating.current = true;
 
-        const accessToken = session?.access_token;
         const refreshToken = session?.refresh_token;
         const userId = session?.user.id;
 
-        if (!accessToken || !refreshToken || !userId) return;
+        if (!refreshToken || !userId) return;
 
         const formData = new FormData();
-        formData.append("accessToken", accessToken);
         formData.append("refreshToken", refreshToken);
         formData.append("userId", userId);
         if (redirectTo) formData.append("redirectTo", redirectTo);
@@ -213,7 +158,7 @@ export default function AuthCallback() {
               <AlertTitle>
                 <Trans>Error</Trans>
               </AlertTitle>
-              <AlertDescription>{formatError(error)}</AlertDescription>
+              <AlertDescription>{error}</AlertDescription>
             </Alert>
             {error.includes("expired") && (
               <>

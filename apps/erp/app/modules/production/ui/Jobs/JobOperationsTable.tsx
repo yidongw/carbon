@@ -26,10 +26,10 @@ import {
 import { useFetcher, useFetchers, useParams, useSubmit } from "react-router";
 import { Hyperlink, Table } from "~/components";
 import { EditableNumber } from "~/components/Editable";
+import { Enumerable } from "~/components/Enumerable";
 import { OperationStatusIcon } from "~/components/Icons";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
 import { operationTypes } from "~/modules/shared";
-import { useOperationTypeLabel } from "~/modules/production/ui/Jobs/productionQuantityLabels";
 import { path } from "~/utils/path";
 import { jobOperationStatus } from "../../production.models";
 import type { Job, JobOperation } from "../../types";
@@ -42,7 +42,6 @@ type JobOperationsTableProps = {
 const JobOperationsTable = memo(({ data, count }: JobOperationsTableProps) => {
   const { jobId } = useParams();
   const { t } = useLingui();
-  const operationTypeLabel = useOperationTypeLabel();
   if (!jobId) throw new Error("Job ID is required");
 
   const routeData = useRouteData<{ job: Job }>(path.to.job(jobId));
@@ -138,14 +137,13 @@ const JobOperationsTable = memo(({ data, count }: JobOperationsTableProps) => {
       {
         accessorKey: "operationType",
         header: t`Operation Type`,
-        cell: (item) =>
-          operationTypeLabel(item.getValue<string>() ?? ""),
+        cell: (item) => <Enumerable value={item.getValue<string>() ?? null} />,
         meta: {
           filter: {
             type: "static",
             options: operationTypes.map((value) => ({
               value,
-              label: operationTypeLabel(value)
+              label: <Enumerable value={value ?? null} />
             }))
           },
           icon: <LuWrench />
@@ -186,7 +184,7 @@ const JobOperationsTable = memo(({ data, count }: JobOperationsTableProps) => {
         }
       }
     ];
-  }, [isPaused, jobId, onOperationStatusChange, operationTypeLabel, t]);
+  }, [isPaused, jobId, onOperationStatusChange, t]);
 
   const { carbon } = useCarbon();
   const { id: userId } = useUser();

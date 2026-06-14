@@ -1,10 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigation } from "react-router";
 
-// Driven by React Router's useNavigation() — no external dependency.
-// Renders the #nprogress .bar markup reusing styles/nprogress.css.
-// Note: useNavigation() only reflects primary navigation, not background
-// useFetcher loads, so silent autosaves/optimistic fetchers don't flash it.
+/**
+ * A thin top-of-page progress bar that gives instant feedback the moment a
+ * navigation (or form submission) starts, and completes when it settles.
+ *
+ * Driven entirely by React Router's `useNavigation()` — no external dependency.
+ * Renders the `#nprogress .bar` markup so it reuses the existing
+ * `styles/nprogress.css` (previously imported but never wired up).
+ *
+ * Note: `useNavigation()` only reflects the primary navigation, not background
+ * `useFetcher` loads, so silent autosaves/optimistic fetchers don't flash it.
+ */
 export function NavigationProgress() {
   const navigation = useNavigation();
   const active = navigation.state !== "idle";

@@ -1,6 +1,7 @@
 import { useCarbon } from "@carbon/auth";
 import { InputControlled, ValidatedForm } from "@carbon/form";
 import {
+  Button,
   Card,
   CardContent,
   CardDescription,
@@ -13,12 +14,14 @@ import {
   TabsList,
   TabsTrigger,
   toast,
+  useDisclosure,
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import { LuDiamond, LuLayers } from "react-icons/lu";
 import type { z } from "zod";
+import { ConfiguratorModal } from "~/components/Configurator/ConfiguratorForm";
 import {
   Customer,
   CustomFormFields,
@@ -32,9 +35,7 @@ import {
   SequenceOrCustomId,
   Submit
 } from "~/components/Form";
-import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions, useUser } from "~/hooks";
-import { isConfigTableOverlaySuccess } from "../../configTableOverlay";
 import type {
   ConfigurationParameter,
   ConfigurationParameterGroup
@@ -49,8 +50,6 @@ import {
   jobValidator
 } from "../../production.models";
 import { getDeadlineIcon } from "./Deadline";
-import { useDeadlineTypeLabel } from "./jobLabels";
-import { QuantityWithConfigTable } from "./QuantityWithConfigTable";
 
 type JobFormValues = z.infer<typeof jobValidator> & {
   description: string;
@@ -65,7 +64,6 @@ type JobFormProps = {
 const JobForm = ({ initialValues }: JobFormProps) => {
   const permissions = usePermissions();
   const { t } = useLingui();
-  const getDeadlineTypeLabel = useDeadlineTypeLabel();
   const { company } = useUser();
   const { carbon } = useCarbon();
   const [type, setType] = useState<MethodItemType>(
@@ -77,7 +75,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
 
   const bulkInitialValues = {
     ...initialValues,
-    jobCount: 1,
+    totalQuantity: initialValues.quantity ?? 0,
     quantityPerJob: initialValues.quantity ?? 1,
     scrapQuantityPerJob: initialValues.scrapQuantity ?? 0,
     dueDateOfFirstJob: initialValues.dueDate ?? "",
@@ -93,7 +91,6 @@ const JobForm = ({ initialValues }: JobFormProps) => {
     description: string;
     uom: string;
     quantity: number;
-    jobCount: number;
     quantityPerJob: number;
     scrapQuantity: number;
     scrapPercentage: number;
@@ -102,32 +99,26 @@ const JobForm = ({ initialValues }: JobFormProps) => {
     itemId: initialValues.itemId ?? "",
     description: initialValues.description ?? "",
     quantity: initialValues.quantity ?? 0,
-    jobCount: 1,
     quantityPerJob: initialValues.quantity ?? 1,
     scrapQuantity: initialValues.scrapQuantity ?? 0,
     scrapPercentage:
       (initialValues.quantity ?? 0) === 0
         ? 0
-        : (initialValues.scrapQuantity ?? 0) / (initialValues.quantity ?? 1),
+        : (initialValues.scrapQuantity ?? 0) / initialValues.scrapQuantity,
     uom: initialValues.unitOfMeasureCode ?? "",
     modelUploadId: initialValues.modelUploadId ?? null
   });
 
-  const { openOverlay } = useOverlay();
+  const configurationDisclosure = useDisclosure();
+  const [requiresConfiguration, setRequiresConfiguration] = useState(false);
+  const [isConfigured, setIsConfigured] = useState(false);
   const [configurationParameters, setConfigurationParameters] = useState<{
     parameters: ConfigurationParameter[];
     groups: ConfigurationParameterGroup[];
   } | null>(null);
-  const [configTableRows, setConfigTableRows] = useState<
-    Record<string, any>[] | null
-  >(null);
-  const [configTablePrimaryKeys, setConfigTablePrimaryKeys] = useState<
-    string[]
-  >([]);
-  const [configTableTotal, setConfigTableTotal] = useState(0);
-  const [configTableMode, setConfigTableMode] = useState<"single" | "bulk">(
-    "single"
-  );
+  const [configurationValues, setConfigurationValues] = useState<
+    Record<string, any> | ""
+  >("");
 
   const isCustomer = permissions.is("customer");
   const isEditing = initialValues.id !== undefined;
@@ -139,48 +130,16 @@ const JobForm = ({ initialValues }: JobFormProps) => {
       description: "",
       uom: "EA",
       quantity: 1,
-      jobCount: 1,
       quantityPerJob: 1,
       scrapPercentage: 0,
       scrapQuantity: 0,
       modelUploadId: null
     });
-    setConfigTableRows(null);
-    setConfigTablePrimaryKeys([]);
-    setConfigTableTotal(0);
-  };
-
-  const handleConfigTableSubmit = (
-    rows: Record<string, any>[],
-    total: number,
-    primaryKeys: string[]
-  ) => {
-    setConfigTableRows(rows);
-    setConfigTablePrimaryKeys(primaryKeys);
-    setConfigTableTotal(total);
-    if (configTableMode === "bulk") {
-      setItemData((prev) => ({
-        ...prev,
-        quantityPerJob: total,
-        scrapQuantity: Math.ceil(total * prev.scrapPercentage)
-      }));
-    } else if (total > 0) {
-      setItemData((prev) => ({
-        ...prev,
-        quantity: total,
-        quantityPerJob: total,
-        scrapQuantity: Math.ceil(total * prev.scrapPercentage)
-      }));
-    }
   };
 
   const onItemChange = async (itemId: string) => {
     if (!itemId) return;
     if (!carbon || !company.id) return;
-    setConfigTableRows(null);
-    setConfigTablePrimaryKeys([]);
-    setConfigTableTotal(0);
-    setItemData((prev) => ({ ...prev, jobCount: 1 }));
     const [item, manufacturing] = await Promise.all([
       carbon
         .from("item")
@@ -197,30 +156,32 @@ const JobForm = ({ initialValues }: JobFormProps) => {
         .single()
     ]);
 
-    setItemData((current) => {
-      const lotSize = manufacturing?.data?.lotSize ?? 0;
-      const scrapPercentage = manufacturing?.data?.scrapPercentage ?? 0;
-      const quantity = lotSize === 0 ? current.quantity : lotSize;
-      const quantityPerJob = lotSize === 0 ? current.quantityPerJob : lotSize;
-
-      return {
-        itemId,
-        description: item.data?.name ?? "",
-        uom: item.data?.unitOfMeasureCode ?? "EA",
-        quantity,
-        jobCount: current.jobCount,
-        quantityPerJob,
-        modelUploadId: item.data?.modelUploadId ?? null,
-        scrapPercentage,
-        scrapQuantity: Math.ceil(quantity * scrapPercentage)
-      };
-    });
+    setItemData((current) => ({
+      itemId,
+      description: item.data?.name ?? "",
+      uom: item.data?.unitOfMeasureCode ?? "EA",
+      quantity:
+        (manufacturing?.data?.lotSize ?? 0) === 0
+          ? current.quantity
+          : (manufacturing?.data?.lotSize ?? 0),
+      quantityPerJob:
+        (manufacturing?.data?.lotSize ?? 0) === 0
+          ? current.quantityPerJob
+          : (manufacturing?.data?.lotSize ?? 0),
+      modelUploadId: item.data?.modelUploadId ?? null,
+      scrapPercentage: manufacturing?.data?.scrapPercentage ?? 0,
+      scrapQuantity: Math.ceil(
+        (manufacturing?.data?.lotSize ?? 0) *
+          (manufacturing?.data?.scrapPercentage ?? 0)
+      )
+    }));
 
     if (item.data?.type) {
       setType(item.data.type as MethodItemType);
     }
 
     if (manufacturing.data?.requiresConfiguration) {
+      setRequiresConfiguration(true);
       const [parameters, groups] = await Promise.all([
         carbon
           .from("configurationParameter")
@@ -244,40 +205,9 @@ const JobForm = ({ initialValues }: JobFormProps) => {
         groups: groups.data ?? []
       });
     } else {
+      setRequiresConfiguration(false);
       setConfigurationParameters(null);
     }
-  };
-
-  const openConfigTable = (mode: "single" | "bulk") => {
-    if (!itemData.itemId) return;
-    setConfigTableMode(mode);
-
-    const onSuccess = (data: unknown) => {
-      if (!isConfigTableOverlaySuccess(data)) return;
-      handleConfigTableSubmit(
-        data.configuration.configTable,
-        data.total,
-        data.primaryKeys
-      );
-    };
-
-    if (isEditing && initialValues.id) {
-      openOverlay(overlay.to.jobConfigTable(initialValues.id), { onSuccess });
-      return;
-    }
-
-    openOverlay(
-      overlay.to.itemConfigTable(itemData.itemId, {
-        configuration:
-          configTableRows && configTablePrimaryKeys.length > 0
-            ? {
-                configTable: configTableRows,
-                configTablePrimaryKeys
-              }
-            : undefined
-      }),
-      { onSuccess }
-    );
   };
 
   return (
@@ -288,11 +218,11 @@ const JobForm = ({ initialValues }: JobFormProps) => {
             <TabsList className="absolute top-6 right-4 z-50">
               <TabsTrigger value="job">
                 <LuDiamond className="mr-1" />
-                <Trans>Single Job</Trans>
+                Single Job
               </TabsTrigger>
               <TabsTrigger value="bulk">
                 <LuLayers className="mr-1" />
-                <Trans>Many Jobs</Trans>
+                Many Jobs
               </TabsTrigger>
             </TabsList>
           )}
@@ -306,15 +236,11 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                 isDisabled={isEditing && isLocked}
               >
                 <CardHeader>
-                  <CardTitle>
-                    {isEditing ? <Trans>Job</Trans> : <Trans>New Job</Trans>}
-                  </CardTitle>
+                  <CardTitle>{isEditing ? "Job" : "New Job"}</CardTitle>
                   {!isEditing && (
                     <CardDescription>
-                      <Trans>
-                        A job is a set of work to be done to fulfill an order or
-                        increase inventory
-                      </Trans>
+                      A job is a set of work to be done to fulfill an order or
+                      increase inventory
                     </CardDescription>
                   )}
                 </CardHeader>
@@ -325,13 +251,10 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                     value={itemData.modelUploadId ?? undefined}
                   />
                   <Hidden name="unitOfMeasureCode" value={itemData.uom} />
-                  {!isEditing && configTableRows && (
+                  {!isEditing && requiresConfiguration && (
                     <Hidden
                       name="configuration"
-                      value={JSON.stringify({
-                        configTable: configTableRows,
-                        configTablePrimaryKeys
-                      })}
+                      value={JSON.stringify(configurationValues)}
                     />
                   )}
                   <VStack>
@@ -376,11 +299,10 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                         />
                       )}
 
-                      <QuantityWithConfigTable
+                      <NumberControlled
                         name="quantity"
                         label={t`Quantity`}
                         value={itemData.quantity}
-                        isDisabled={configTableTotal > 0}
                         onChange={(value) =>
                           setItemData((prev) => ({
                             ...prev,
@@ -390,10 +312,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                             )
                           }))
                         }
-                        configTableTotal={configTableTotal}
                         minValue={0}
-                        hasConfigurationParameters={!!configurationParameters}
-                        onOpenConfigTable={() => openConfigTable("single")}
                       />
                       <NumberControlled
                         name="scrapQuantity"
@@ -425,7 +344,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                           label: (
                             <div className="flex gap-1 items-center">
                               {getDeadlineIcon(d)}
-                              <span>{getDeadlineTypeLabel(d)}</span>
+                              <span>{d}</span>
                             </div>
                           )
                         }))}
@@ -444,15 +363,27 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                   </VStack>
                 </CardContent>
                 <CardFooter>
+                  {!isEditing && requiresConfiguration && (
+                    <Button
+                      type="button"
+                      variant={isConfigured ? "secondary" : "primary"}
+                      onClick={() => {
+                        configurationDisclosure.onOpen();
+                      }}
+                    >
+                      Configure
+                    </Button>
+                  )}
                   <Submit
                     isDisabled={
+                      (requiresConfiguration && !isConfigured) ||
                       isDisabled ||
                       (isEditing
                         ? !permissions.can("update", "production")
                         : !permissions.can("create", "production"))
                     }
                   >
-                    <Trans>Save</Trans>
+                    Save
                   </Submit>
                 </CardFooter>
               </ValidatedForm>
@@ -472,10 +403,8 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                       <Trans>Bulk Jobs</Trans>
                     </CardTitle>
                     <CardDescription>
-                      <Trans>
-                        The bulk jobs form creates multiple jobs for the same
-                        item across multiple due dates.
-                      </Trans>
+                      The bulk jobs form creates multiple jobs for the same item
+                      across multiple due dates.
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -485,13 +414,10 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                       value={itemData.modelUploadId ?? undefined}
                     />
                     <Hidden name="unitOfMeasureCode" value={itemData.uom} />
-                    {!isEditing && configTableRows && (
+                    {!isEditing && requiresConfiguration && (
                       <Hidden
                         name="configuration"
-                        value={JSON.stringify({
-                          configTable: configTableRows,
-                          configTablePrimaryKeys
-                        })}
+                        value={JSON.stringify(configurationValues)}
                       />
                     )}
                     <VStack>
@@ -515,21 +441,21 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                         />
 
                         <NumberControlled
-                          name="jobCount"
-                          label={t`Total Jobs`}
-                          value={itemData.jobCount}
+                          name="totalQuantity"
+                          label={t`Total Quantity`}
+                          value={itemData.quantity}
                           onChange={(value) =>
                             setItemData((prev) => ({
                               ...prev,
-                              jobCount: value
+                              quantity: value
                             }))
                           }
                           minValue={0}
                         />
 
-                        <QuantityWithConfigTable
+                        <NumberControlled
                           name="quantityPerJob"
-                          label={t`Quantities Per Job`}
+                          label={t`Quantity Per Job`}
                           value={itemData.quantityPerJob}
                           onChange={(value) =>
                             setItemData((prev) => ({
@@ -537,11 +463,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                               quantityPerJob: value
                             }))
                           }
-                          isDisabled={configTableTotal > 0}
-                          configTableTotal={configTableTotal}
                           minValue={0}
-                          hasConfigurationParameters={!!configurationParameters}
-                          onOpenConfigTable={() => openConfigTable("bulk")}
                         />
 
                         <NumberControlled
@@ -578,7 +500,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                             label: (
                               <div className="flex gap-1 items-center">
                                 {getDeadlineIcon(d)}
-                                <span>{getDeadlineTypeLabel(d)}</span>
+                                <span>{d}</span>
                               </div>
                             )
                           }))}
@@ -589,13 +511,26 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                     </VStack>
                   </CardContent>
                   <CardFooter>
+                    {!isEditing && requiresConfiguration && (
+                      <Button
+                        type="button"
+                        variant={isConfigured ? "secondary" : "primary"}
+                        onClick={() => {
+                          configurationDisclosure.onOpen();
+                        }}
+                      >
+                        Configure
+                      </Button>
+                    )}
                     <Submit
                       isDisabled={
-                        isDisabled || !permissions.can("create", "production")
+                        (requiresConfiguration && !isConfigured) ||
+                        isDisabled ||
+                        !permissions.can("create", "production")
                       }
                       withBlocker={false}
                     >
-                      <Trans>Save</Trans>
+                      Save
                     </Submit>
                   </CardFooter>
                 </ValidatedForm>
@@ -605,6 +540,22 @@ const JobForm = ({ initialValues }: JobFormProps) => {
         </VStack>
       </Tabs>
 
+      {requiresConfiguration &&
+        configurationDisclosure.isOpen &&
+        configurationParameters && (
+          <ConfiguratorModal
+            open
+            initialValues={configurationValues || {}}
+            groups={configurationParameters.groups ?? []}
+            parameters={configurationParameters.parameters ?? []}
+            onClose={configurationDisclosure.onClose}
+            onSubmit={(config: Record<string, any>) => {
+              setConfigurationValues(config);
+              setIsConfigured(true);
+              configurationDisclosure.onClose();
+            }}
+          />
+        )}
     </>
   );
 };

@@ -1,4 +1,3 @@
-import { useLingui } from "@lingui/react/macro";
 import * as OV from "online-3d-viewer";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocale } from "react-aria-components";
@@ -34,7 +33,6 @@ export function ModelViewer({
   resetZoomButton?: boolean;
   className?: string;
 }) {
-  const { t } = useLingui();
   const parentDiv = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<OV.EmbeddedViewer | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -326,7 +324,7 @@ export function ModelViewer({
       <div
         ref={parentDiv}
         role={"img"}
-        aria-label={t`Canvas showing the model in the 3D Viewer`}
+        aria-label="Canvas showing the model in the 3D Viewer"
         className={cn(
           "h-full w-full items-center justify-center rounded-lg border border-border bg-gradient-to-bl from-card from-50% via-card to-background min-h-[400px] shadow-md dark:border-none dark:shadow-[inset_0_0.5px_0_rgb(255_255_255_/_0.08),_inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)] relative",
 
@@ -342,7 +340,7 @@ export function ModelViewer({
             <pre id="model-viewer-canvas" aria-hidden className="sr-only" />
             {resetZoomButton && (
               <IconButton
-                aria-label={t`Reset zoom`}
+                aria-label="Reset zoom"
                 className="absolute top-2 right-2"
                 icon={
                   <svg

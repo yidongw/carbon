@@ -10,7 +10,7 @@ import { msg } from "@lingui/core/macro";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useLoaderData, useParams } from "react-router";
-import { PanelProvider, ResizablePanels } from "~/components/Layout";
+import { PanelProvider, ResizablePanels } from "~/components/Layout/Panels";
 import {
   getQualityDocument,
   getQualityDocumentVersions,
@@ -259,8 +259,8 @@ export default function QualityDocumentRoute() {
     <PanelProvider key={`${id}-${document.version}`}>
       <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
         <QualityDocumentHeader />
-        <div className="flex flex-1 min-h-0 overflow-hidden w-full">
-          <div className="flex flex-1 min-h-0 h-full overflow-hidden">
+        <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
+          <div className="flex flex-grow overflow-hidden">
             <ResizablePanels
               explorer={
                 <QualityDocumentExplorer
@@ -268,7 +268,7 @@ export default function QualityDocumentRoute() {
                 />
               }
               content={
-                <div className="bg-background h-full min-h-0 overflow-y-auto overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
+                <div className="bg-background h-[calc(100dvh-99px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
                   <QualityDocumentEditor />
                   <Outlet />
                 </div>

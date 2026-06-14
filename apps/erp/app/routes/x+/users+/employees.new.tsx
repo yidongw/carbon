@@ -106,7 +106,7 @@ export async function action({ request }: ActionFunctionArgs) {
     },
     html: await render(
       InviteEmail({
-        invitedByEmail: user.data.email ?? "",
+        invitedByEmail: user.data.email,
         invitedByName: user.data.fullName ?? "",
         email,
         name: `${firstName} ${lastName}`.trim(),

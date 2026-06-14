@@ -1,12 +1,10 @@
 import { toast } from "@carbon/react";
-import { useLingui } from "@lingui/react/macro";
 import { useCallback } from "react";
 import { useUser } from "~/hooks";
 import type { Job, StorageItem } from "~/services/types";
 import { path } from "~/utils/path";
 
 export function useFiles(job: Job) {
-  const { t } = useLingui();
   const user = useUser();
 
   const getFilePath = useCallback(
@@ -47,17 +45,17 @@ export function useFiles(job: Job) {
         window.URL.revokeObjectURL(blobUrl);
         document.body.removeChild(a);
       } catch (error) {
-        toast.error(t`Error downloading file`);
+        toast.error("Error downloading file");
         console.error(error);
       }
     },
-    [getFilePath, t]
+    [getFilePath]
   );
 
   const downloadModel = useCallback(
     async (model: { modelPath: string; modelName: string }) => {
       if (!model.modelPath || !model.modelName) {
-        toast.error(t`Model data is missing`);
+        toast.error("Model data is missing");
         return;
       }
 
@@ -74,11 +72,11 @@ export function useFiles(job: Job) {
         window.URL.revokeObjectURL(blobUrl);
         document.body.removeChild(a);
       } catch (error) {
-        toast.error(t`Error downloading file`);
+        toast.error("Error downloading file");
         console.error(error);
       }
     },
-    [t]
+    []
   );
 
   return {

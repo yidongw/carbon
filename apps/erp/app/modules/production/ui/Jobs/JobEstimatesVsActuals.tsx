@@ -37,7 +37,7 @@ import {
   toZoned
 } from "@internationalized/date";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { LuCircleChevronRight, LuNotebook } from "react-icons/lu";
 import { Link, useParams } from "react-router";
 import type { z } from "zod";
@@ -278,11 +278,11 @@ const JobEstimatesVsActuals = ({
               <Thead>
                 <Tr>
                   <Th className="px-2" />
-                  <Th className="px-2"><Trans>Estimated</Trans></Th>
-                  <Th className="px-2"><Trans>Actual</Trans></Th>
-                  <Th className="px-2"><Trans>%</Trans></Th>
-                  <Th className="px-2"><Trans>Complete</Trans></Th>
-                  <Th className="px-2"><Trans>Scrap</Trans></Th>
+                  <Th className="px-2">Estimated</Th>
+                  <Th className="px-2">Actual</Th>
+                  <Th className="px-2">%</Th>
+                  <Th className="px-2">Complete</Th>
+                  <Th className="px-2">Scrap</Th>
                   <Th className="px-2" />
                 </Tr>
               </Thead>
@@ -296,8 +296,8 @@ const JobEstimatesVsActuals = ({
                   if (isOutside) return null;
 
                   return (
-                    <Fragment key={operation.id}>
-                      <Tr className="border-b border-border">
+                    <>
+                      <Tr key={operation.id} className="border-b border-border">
                         <Td className="border-r border-border px-2">
                           <HStack className="w-full justify-between ">
                             <span>{operation.description}</span>
@@ -502,7 +502,7 @@ const JobEstimatesVsActuals = ({
                           </Tr>
                         );
                       })}
-                    </Fragment>
+                    </>
                   );
                 })}
               </Tbody>
@@ -522,13 +522,13 @@ const JobEstimatesVsActuals = ({
             <Table>
               <Thead>
                 <Tr>
-                  <Th><Trans>Material</Trans></Th>
-                  <Th><Trans>Estimated</Trans></Th>
-                  <Th><Trans>Actual</Trans></Th>
-                  <Th><Trans>%</Trans></Th>
+                  <Th>Material</Th>
+                  <Th>Estimated</Th>
+                  <Th>Actual</Th>
+                  <Th>%</Th>
 
-                  <Th><Trans>Estimated</Trans></Th>
-                  <Th><Trans>Actual</Trans></Th>
+                  <Th>Estimated</Th>
+                  <Th>Actual</Th>
                 </Tr>
               </Thead>
               <Tbody>

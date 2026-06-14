@@ -2,22 +2,18 @@ import {
   assertIsPost,
   callbackValidator,
   carbonClient,
-  error,
-  safeRedirect
+  error
 } from "@carbon/auth";
-import {
-  exchangePkceCode,
-  makeAuthSessionFromTokens
-} from "@carbon/auth/auth.server";
+import { refreshAccessToken } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
-import { getCompanyId, setCompanyId } from "@carbon/auth/company.server";
+import { setCompanyId } from "@carbon/auth/company.server";
 import {
   destroyAuthSession,
   flash,
   getAuthSession,
-  getPkceCookie,
   setAuthSession
 } from "@carbon/auth/session.server";
+import { getUserByEmail } from "@carbon/auth/users.server";
 import { validator } from "@carbon/form";
 import {
   Alert,
@@ -29,48 +25,15 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { LuTriangleAlert } from "react-icons/lu";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { data, Link, redirect, useFetcher, useLoaderData, useLocation, useSearchParams } from "react-router";
+import { data, Link, redirect, useFetcher, useLocation } from "react-router";
 import { path } from "~/utils/path";
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const url = new URL(request.url);
-  const code = url.searchParams.get("code");
-
-  if (code) {
-    const pkceEntry = await getPkceCookie(request);
-
-    if (!pkceEntry) {
-      return data({
-        error:
-          "Please open this link in the same browser where you requested sign-in."
-      });
-    }
-
-    const cookieCompanyId = getCompanyId(request);
-    const authSession = await exchangePkceCode(code, pkceEntry, cookieCompanyId);
-
-    if (!authSession) {
-      return data({
-        error: "Magic link expired or already used. Please request a new one."
-      });
-    }
-
-    const redirectTo = url.searchParams.get("redirectTo") ?? undefined;
-    const sessionCookie = await setAuthSession(request, { authSession });
-    const companyIdCookie = setCompanyId(authSession.companyId);
-
-    return redirect(safeRedirect(redirectTo, path.to.root), {
-      headers: [
-        ["Set-Cookie", sessionCookie],
-        ["Set-Cookie", companyIdCookie]
-      ]
-    });
-  }
-
   const authSession = await getAuthSession(request);
+
   if (authSession) await destroyAuthSession(request);
 
-  return data({ error: null });
+  return {};
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -86,73 +49,59 @@ export async function action({ request }: ActionFunctionArgs) {
     });
   }
 
-  const { accessToken, refreshToken, userId, redirectTo } = validation.data;
+  const { refreshToken, userId } = validation.data;
   const serviceRole = getCarbonServiceRole();
+  const companies = await serviceRole
+    .from("userToCompany")
+    .select("companyId, ...company(companyGroupId)")
+    .eq("userId", userId);
 
-  const [companies, { data: userData, error: userError }] =
-    await Promise.all([
-      serviceRole
-        .from("userToCompany")
-        .select("companyId, ...company(companyGroupId)")
-        .eq("userId", userId)
-        .limit(50),
-      serviceRole.auth.getUser(accessToken)
-    ]);
-
-  if (!userData?.user || userError) {
-    return redirect(
-      path.to.root,
-      await flash(request, error(userError, "Invalid access token"))
-    );
-  }
-
-  if (userData.user.id !== userId) {
-    return redirect(
-      path.to.root,
-      await flash(request, error(null, "Session mismatch"))
-    );
-  }
-
-  if (companies.error) {
-    return redirect(
-      path.to.root,
-      await flash(request, error(companies.error, "Failed to load company"))
-    );
-  }
-
-  const cookieCompanyId = getCompanyId(request);
-  const match = (companies.data?.find((c) => c.companyId === cookieCompanyId) ??
-    companies.data?.[0]) as
+  const firstCompany = companies.data?.[0] as
     | { companyId: string; companyGroupId: string | null }
     | undefined;
+  const companyId = firstCompany?.companyId;
+  const companyGroupId = firstCompany?.companyGroupId ?? "";
 
-  const authSession = makeAuthSessionFromTokens(
-    accessToken,
+  const authSession = await refreshAccessToken(
     refreshToken,
-    userData.user,
-    match?.companyId ?? "",
-    match?.companyGroupId ?? ""
+    companyId,
+    companyGroupId
   );
 
-  const sessionCookie = await setAuthSession(request, { authSession });
-  const companyIdCookie = setCompanyId(authSession.companyId);
-  return redirect(safeRedirect(redirectTo, path.to.root), {
-    headers: [
-      ["Set-Cookie", sessionCookie],
-      ["Set-Cookie", companyIdCookie]
-    ]
-  });
+  if (!authSession) {
+    return redirect(
+      path.to.root,
+      await flash(request, error(authSession, "Invalid refresh token"))
+    );
+  }
+
+  const user = await getUserByEmail(authSession.email);
+
+  if (user?.data) {
+    const sessionCookie = await setAuthSession(request, {
+      authSession
+    });
+    const companyIdCookie = setCompanyId(authSession.companyId);
+    return redirect(path.to.root, {
+      headers: [
+        ["Set-Cookie", sessionCookie],
+        ["Set-Cookie", companyIdCookie]
+      ]
+    });
+  } else {
+    return redirect(
+      path.to.root,
+      await flash(request, error(user.error, "User not found"))
+    );
+  }
 }
 
 export default function AuthCallback() {
-  const { error: loaderError } = useLoaderData<typeof loader>();
   const fetcher = useFetcher<{}>();
   const isAuthenticating = useRef(false);
-  const [error, setError] = useState<string | null>(loaderError ?? null);
+  const [error, setError] = useState<string | null>(null);
 
   const { hash } = useLocation();
-  const [searchParams] = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo") ?? undefined;
 
   useEffect(() => {
     const hashParams = new URLSearchParams(hash.slice(1));
@@ -172,17 +121,14 @@ export default function AuthCallback() {
       ) {
         isAuthenticating.current = true;
 
-        const accessToken = session?.access_token;
         const refreshToken = session?.refresh_token;
         const userId = session?.user.id;
 
-        if (!accessToken || !refreshToken || !userId) return;
+        if (!refreshToken || !userId) return;
 
         const formData = new FormData();
-        formData.append("accessToken", accessToken);
         formData.append("refreshToken", refreshToken);
         formData.append("userId", userId);
-        if (redirectTo) formData.append("redirectTo", redirectTo);
 
         fetcher.submit(formData, { method: "post" });
       }
@@ -191,7 +137,7 @@ export default function AuthCallback() {
     return () => {
       subscription.unsubscribe();
     };
-  }, [fetcher, redirectTo]);
+  }, [fetcher]);
 
   return (
     <div className="flex flex-col items-center justify-center">

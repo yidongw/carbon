@@ -44,7 +44,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   if (operations.error) {
     redirect(
-      path.to.productionDashboard,
+      path.to.production,
       await flash(
         request,
         error(operations.error, "Failed to fetch job operations")

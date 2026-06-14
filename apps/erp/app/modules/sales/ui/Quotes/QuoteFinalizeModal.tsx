@@ -141,7 +141,7 @@ const QuotationFinalizeModal = ({
           method="post"
           validator={quoteFinalizeValidator}
           action={path.to.quoteFinalize(quoteId)}
-          onSuccess={onClose}
+          onSubmit={onClose}
           defaultValues={{
             notification: notificationType as "Email" | "None",
             customerContact: quote?.customerContactId ?? undefined,

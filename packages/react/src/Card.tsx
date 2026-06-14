@@ -1,4 +1,3 @@
-import { useLingui } from "@lingui/react/macro";
 import type { HTMLAttributes } from "react";
 import { createContext, forwardRef, useContext, useState } from "react";
 import { LuChevronDown, LuChevronUp } from "react-icons/lu";
@@ -29,7 +28,6 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
     },
     ref
   ) => {
-    const { t } = useLingui();
     const [uncontrolledIsCollapsed, setUncontrolledIsCollapsed] =
       useState(defaultCollapsed);
 
@@ -48,14 +46,14 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
         <div
           ref={ref}
           className={cn(
-            "relative flex flex-col rounded-2xl overflow-hidden shadow-button-base dark:shadow-[inset_0_0.5px_0_rgb(255_255_255_/_0.08),_inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)]  bg-accent dark:bg-card text-card-foreground p-0 w-full",
+            "relative flex flex-col rounded-2xl shadow-button-base dark:shadow-[inset_0_0.5px_0_rgb(255_255_255_/_0.08),_inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)]  bg-accent dark:bg-card text-card-foreground p-0 w-full",
             className
           )}
           {...props}
         >
           {isCollapsible && (
             <IconButton
-              aria-label={isCollapsed ? t`Expand` : t`Collapse`}
+              aria-label={isCollapsed ? "Expand" : "Collapse"}
               variant="ghost"
               onClick={toggle}
               className="absolute right-2 top-2"

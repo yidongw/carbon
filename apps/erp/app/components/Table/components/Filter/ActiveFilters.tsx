@@ -20,7 +20,6 @@ import { LuX } from "react-icons/lu";
 import { useFetcher } from "react-router";
 import Filter from "./Filter";
 import type { ColumnFilter } from "./types";
-import { parseFilterParam } from "~/utils/query";
 import { useFilters } from "./useFilters";
 
 type ActiveFiltersProps = {
@@ -29,21 +28,19 @@ type ActiveFiltersProps = {
 
 const ActiveFilters = ({ filters }: ActiveFiltersProps) => {
   const { urlFiltersParams } = useFilters();
-
   return (
     <HStack spacing={2}>
-      {urlFiltersParams.map((param) => {
-        const parsed = parseFilterParam(param);
-        if (!parsed) return null;
-        const columnFilter = filters.find((f) => f.accessorKey === parsed.column);
+      {urlFiltersParams.map((f) => {
+        const [key, operator, value] = f.split(":");
+        const columnFilter = filters.find((f) => f.accessorKey === key);
         if (!columnFilter) return null;
 
         return (
           <ActiveFilter
-            key={`${parsed.column}:${param}`}
+            key={key}
             filter={columnFilter}
-            operator={parsed.operator}
-            value={parsed.value}
+            operator={operator}
+            value={value}
           />
         );
       })}
@@ -61,7 +58,7 @@ type ActiveFilterProps = {
 };
 
 const ActiveFilter = ({ filter, operator, value }: ActiveFilterProps) => {
-  const { t } = useLingui();
+  const { t, i18n } = useLingui();
   const { hasFilter, removeKey, toggleFilter } = useFilters();
 
   const [open, setOpen] = useState(false);
@@ -112,30 +109,22 @@ const ActiveFilter = ({ filter, operator, value }: ActiveFilterProps) => {
   }, [fetcher.data, filter.filter.type]);
 
   const makeLabel = (v: string) => {
-    const values = v.split(",");
-    if (values.length > 1) {
-      const labels = values.map((val) => {
-        const node = options.find((o) => o.value === val)?.label ?? "";
-        return typeof node === "string"
-          ? node
-          : reactNodeToString(node);
-      });
-      if (labels.every(Boolean)) {
-        return labels.join(", ");
-      }
-      return `${values.length} ${
+    const [, ...others] = v.split(",");
+    if (others && others.length > 0) {
+      return `${1 + others.length} ${
         filter.pluralHeader
-          ? filter.pluralHeader
-          : `${filter.header}s`
+          ? translate(filter.pluralHeader)
+          : `${translate(filter.header)}s`
       }`;
-    }
-    const node = options.find((o) => o.value === v)?.label ?? "";
-    const label =
-      typeof node === "string"
-        ? node
+    } else {
+      const node = options.find((o) => o.value === v)?.label ?? "";
+      return typeof node === "string"
+        ? translate(node)
         : reactNodeToString(node);
-    return label || v;
+    }
   };
+
+  const translate = (text: string) => i18n._(text);
 
   return (
     <HStack spacing={0}>
@@ -145,7 +134,7 @@ const ActiveFilter = ({ filter, operator, value }: ActiveFilterProps) => {
         size="sm"
         variant="secondary"
       >
-        {filter.header}
+        {translate(filter.header)}
       </Button>
       <Button className="rounded-none border-l-0" size="sm" variant="secondary">
         {operator === "eq" ? (
@@ -208,7 +197,9 @@ const ActiveFilter = ({ filter, operator, value }: ActiveFilterProps) => {
                     <HStack spacing={2}>
                       <Checkbox id={option.value} isChecked={isChecked} />
                       <label htmlFor={option.value}>
-                        {option.label}
+                        {typeof option.label === "string"
+                          ? translate(option.label)
+                          : option.label}
                       </label>
                     </HStack>
                   </CommandItem>
@@ -223,7 +214,9 @@ const ActiveFilter = ({ filter, operator, value }: ActiveFilterProps) => {
         className="rounded-l-none border-l-0 px-1 w-6"
         size="sm"
         variant="secondary"
-        onClick={() => removeKey(filter.accessorKey)}
+        onClick={() => {
+          removeKey(filter.accessorKey);
+        }}
       >
         <LuX />
       </Button>

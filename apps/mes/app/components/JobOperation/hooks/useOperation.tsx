@@ -5,7 +5,6 @@ import {
   useInterval,
   useRealtimeChannel
 } from "@carbon/react";
-import { useLingui } from "@lingui/react/macro";
 import type { TrackedEntityAttributes } from "@carbon/utils";
 import {
   getLocalTimeZone,
@@ -43,7 +42,6 @@ export function useOperation({
     parameters: JobOperationParameter[];
   }>;
 }) {
-  const { t } = useLingui();
   const [params] = useUrlParams();
   const trackedEntityParam = params.get("trackedEntityId");
   // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
@@ -59,7 +57,6 @@ export function useOperation({
   const completeModal = useDisclosure();
   const finishModal = useDisclosure();
   const issueModal = useDisclosure();
-  const pickupModal = useDisclosure();
   const serialModal = useDisclosure();
 
   // we do this to avoid re-rendering when the modal is open
@@ -70,7 +67,6 @@ export function useOperation({
     completeModal.isOpen ||
     finishModal.isOpen ||
     issueModal.isOpen ||
-    pickupModal.isOpen ||
     serialModal.isOpen;
 
   const [selectedMaterial, setSelectedMaterial] = useState<JobMaterial | null>(
@@ -178,7 +174,7 @@ export function useOperation({
                 operationStatus: updated.status ?? prev.operationStatus
               }));
             } else if (payload.eventType === "DELETE") {
-              toast.error(t`This operation has been deleted`);
+              toast.error("This operation has been deleted");
               window.location.href = path.to.operations;
             }
           }
@@ -290,7 +286,6 @@ export function useOperation({
     completeModal,
     finishModal,
     issueModal,
-    pickupModal,
     serialModal,
     isOverdue: operation.operationDueDate
       ? new Date(operation.operationDueDate) < new Date()

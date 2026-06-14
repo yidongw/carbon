@@ -45,7 +45,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   if (partners.error) {
     throw redirect(
-      path.to.resourcesDashboard,
+      path.to.resources,
       await flash(request, error(partners.error, "Failed to load partners"))
     );
   }

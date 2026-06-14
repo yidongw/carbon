@@ -77,9 +77,5 @@ export const useProcedures = (args: { processId?: string }) => {
     [procedureFetcher.data, processId]
   );
 
-  return {
-    options,
-    loading,
-    procedures: procedureFetcher.data?.data ?? []
-  };
+  return { options, loading };
 };

@@ -5,7 +5,6 @@ import {
   LuClipboardCheck,
   LuCog,
   LuGraduationCap,
-  LuLayoutDashboard,
   LuMailbox,
   LuMapPin,
   LuWrench
@@ -19,16 +18,6 @@ export default function useResourcesSubmodules() {
   const { addSavedViewsToRoutes } = useSavedViews();
 
   const translatedRoutes: RouteGroup[] = [
-    {
-      name: t`Dashboard`,
-      routes: [
-        {
-          name: t`Dashboard`,
-          to: path.to.resourcesDashboard,
-          icon: <LuLayoutDashboard />
-        }
-      ]
-    },
     {
       name: t`Maintenance`,
       routes: [

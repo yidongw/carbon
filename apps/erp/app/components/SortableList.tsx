@@ -6,7 +6,7 @@ import { LayoutGroup, motion, Reorder, useDragControls } from "framer-motion";
 import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
-import { LuPlus, LuTable, LuTrash } from "react-icons/lu";
+import { LuTrash } from "react-icons/lu";
 import Empty from "./Empty";
 
 export interface Item {
@@ -17,15 +17,6 @@ export interface Item {
   isTemporary?: boolean;
   order?: "With Previous" | "After Previous";
   title: ReactNode;
-  /** Filled strip between the main block and footer (e.g. operation quantity progress). */
-  quantityProgress?: {
-    complete: number;
-    pickup: number;
-    target: number;
-    onAddQuantity?: () => void;
-    onAddPickup?: () => void;
-    onOpenConfigTable?: () => void;
-  } | null;
 }
 
 interface SortableItem<T> extends Item {
@@ -112,22 +103,17 @@ function SortableListItem<T>({
                   marginTop: 10,
                   marginBottom: 10,
                   position: "relative",
-                  overflow: item.quantityProgress != null ? "visible" : "hidden"
+                  overflow: "hidden"
                 }
               : {
                   position: "relative",
-                  overflow: item.quantityProgress != null ? "visible" : "hidden"
+                  overflow: "hidden"
                 }
           }
           whileDrag={{ zIndex: 9999 }}
         >
-          <div
-            className={cn(
-              isExpanded ? "w-full" : "",
-              "relative z-20 flex w-full min-w-0 flex-col"
-            )}
-          >
-            <motion.div className="w-full px-3 pt-3" layout="position">
+          <div className={cn(isExpanded ? "w-full" : "", "z-20 ")}>
+            <motion.div className="w-full py-3 px-3" layout="position">
               <div
                 className={cn(
                   "items-center justify-between w-full gap-2",
@@ -135,7 +121,7 @@ function SortableListItem<T>({
                 )}
               >
                 <div className="flex flex-col w-full">
-                  <div className="flex w-full min-w-0 items-center gap-x-2 pl-3">
+                  <div className="flex w-full items-center gap-x-2 truncate pl-3">
                     {/* List Remove Actions */}
                     {!isReadOnly && (
                       <Checkbox
@@ -153,12 +139,12 @@ function SortableListItem<T>({
 
                     <div
                       key={`${item.checked}`}
-                      className="px-1 flex min-w-0 flex-grow"
+                      className="px-1 flex flex-grow truncate"
                       role="button"
                     >
                       <HStack
                         className={cn(
-                          "w-full min-w-0 justify-between pr-8",
+                          "w-full justify-between pr-8",
                           !isReadOnly && "cursor-grab"
                         )}
                       >
@@ -184,17 +170,14 @@ function SortableListItem<T>({
                                 onSelectItem(item.id);
                               }
                             }}
-                            className={cn(
-                              "min-w-0 flex-1",
-                              item.checked ? "text-red-400" : ""
-                            )}
+                            className={item.checked ? "text-red-400" : ""}
                           >
                             {item.title}
                           </div>
                         )}
 
                         {item.details && (
-                          <div className="ml-2 flex shrink-0 overflow-visible">
+                          <div className="flex flex-shrink-0">
                             {item.details}
                           </div>
                         )}
@@ -205,29 +188,10 @@ function SortableListItem<T>({
 
                 {/* List Item Children */}
               </div>
+              {renderExtra && renderExtra(item)}
             </motion.div>
-            {item.quantityProgress != null && (
-              <QuantityProgressStrip progress={item.quantityProgress} t={t} />
-            )}
-            {renderExtra && (
-              <motion.div
-                className={cn(
-                  "w-full px-3",
-                  item.quantityProgress == null && !item.footer && "pb-3"
-                )}
-                layout="position"
-              >
-                {renderExtra(item)}
-              </motion.div>
-            )}
             {item.footer && (
-              <div
-                className={cn(
-                  "flex w-full items-center px-3 py-2",
-                  (isExpanded || item.quantityProgress == null) &&
-                    "border-t border-border"
-                )}
-              >
+              <div className="flex w-full items-center border-t border-border px-3 py-2">
                 {item.footer}
               </div>
             )}
@@ -315,136 +279,6 @@ function SortableList<T extends Item>({
 SortableList.displayName = "SortableList";
 
 export { SortableList, SortableListItem };
-
-function formatQuantityValue(value: number) {
-  return Number.isInteger(value)
-    ? value
-    : value.toLocaleString(undefined, { maximumFractionDigits: 4 });
-}
-
-function getPercent(value: number, target: number) {
-  if (target > 0) return Math.min(100, (value / target) * 100);
-  return value > 0 ? 100 : 0;
-}
-
-function QuantityProgressStrip({
-  progress,
-  t
-}: {
-  progress: NonNullable<Item["quantityProgress"]>;
-  t: ReturnType<typeof useLingui>["t"];
-}) {
-  const { complete, pickup, target, onAddQuantity, onAddPickup, onOpenConfigTable } = progress;
-  const completePercent = getPercent(complete, target);
-  const pickupPercent = Math.min(
-    getPercent(pickup, target),
-    100 - completePercent
-  );
-  const isOverTarget = target > 0 && complete > target;
-
-  const iconButtonClass =
-    "flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-foreground/80 transition-[transform,background-color] duration-150 hover:bg-muted hover:text-foreground active:scale-95 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring";
-
-  const indicator = (
-    <div className="flex items-center gap-2 whitespace-nowrap rounded-full border border-border/70 bg-background px-2 py-0.5 shadow-sm">
-      {/* Finished group */}
-      {onAddQuantity ? (
-        <button
-          type="button"
-          className="flex items-center gap-0.5 rounded transition-opacity duration-150 hover:opacity-70 active:scale-95 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-          aria-label={t`Add production quantity`}
-          onClick={(event) => {
-            event.stopPropagation();
-            onAddQuantity();
-          }}
-        >
-          <LuPlus className={cn("h-3.5 w-3.5 shrink-0", isOverTarget ? "text-amber-500" : "text-foreground/80")} strokeWidth={2.5} />
-          <span className={cn("text-sm font-medium tabular-nums leading-none tracking-tight", isOverTarget ? "text-amber-500" : "text-foreground")}>
-            {formatQuantityValue(complete)}
-          </span>
-        </button>
-      ) : (
-        <span className={cn("text-sm font-medium tabular-nums leading-none tracking-tight", isOverTarget ? "text-amber-500" : "text-foreground")}>
-          {formatQuantityValue(complete)}
-        </span>
-      )}
-      {/* Pickup group */}
-      {onAddPickup ? (
-        <button
-          type="button"
-          className="flex items-center gap-0.5 rounded transition-opacity duration-150 hover:opacity-70 active:scale-95 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-          aria-label={t`Add pickup`}
-          onClick={(event) => {
-            event.stopPropagation();
-            onAddPickup();
-          }}
-        >
-          <LuPlus className={cn("h-3.5 w-3.5 shrink-0", pickup > 0 ? "text-blue-600" : "text-foreground/80")} strokeWidth={2.5} />
-          <span className={cn("text-sm font-medium tabular-nums leading-none tracking-tight", pickup > 0 ? "text-blue-600" : "text-muted-foreground")}>
-            {formatQuantityValue(pickup)}
-          </span>
-        </button>
-      ) : (
-        <span className={cn("text-sm font-medium tabular-nums leading-none tracking-tight", pickup > 0 ? "text-blue-600" : "text-muted-foreground")}>
-          {formatQuantityValue(pickup)}
-        </span>
-      )}
-      {/* Target */}
-      <span className="text-sm font-medium tabular-nums leading-none tracking-tight text-muted-foreground">
-        {formatQuantityValue(target)}
-      </span>
-      {/* Config summary */}
-      {onOpenConfigTable ? (
-        <button
-          type="button"
-          className={iconButtonClass}
-          aria-label={t`View configuration quantities`}
-          onClick={(event) => {
-            event.stopPropagation();
-            onOpenConfigTable();
-          }}
-        >
-          <LuTable className="h-3 w-3" strokeWidth={2.5} />
-        </button>
-      ) : null}
-    </div>
-  );
-
-  const progressLine = (
-    <div className="relative h-0.5 w-full overflow-hidden bg-muted-foreground/35">
-      <div
-        className={cn(
-          "absolute inset-y-0 left-0 transition-[width] duration-300 ease-out",
-          isOverTarget ? "bg-amber-500/90" : "bg-emerald-500"
-        )}
-        style={{ width: `${completePercent}%` }}
-      />
-      {pickupPercent > 0 && (
-        <div
-          className="absolute inset-y-0 bg-blue-600 transition-[width,left] duration-300 ease-out"
-          style={{ left: `${completePercent}%`, width: `${pickupPercent}%` }}
-        />
-      )}
-    </div>
-  );
-
-  return (
-    <div
-      className="w-full min-w-0 shrink-0"
-      role="img"
-      aria-label={t`Finished ${complete} of ${target} units, ${pickup} picked up`}
-    >
-      <div className="relative h-7 w-full">
-        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2">
-          {progressLine}
-        </div>
-        <div className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2">
-          {indicator}
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function getParallelizedOrder(index: number, item: Item, items: Item[]) {
   if (item?.order !== "With Previous") return index + 1;

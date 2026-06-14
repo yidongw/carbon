@@ -5,18 +5,14 @@ on:
     types: [created]
   pull_request:
     types: [opened, reopened]
-  workflow_run:
-    workflows: ["Preview Deployment"]
-    types: [completed]
 
 jobs:
   forward:
     runs-on: [self-hosted, macOS, preview]
-    # Only act on PR comments (not issue comments), PR open events, or failed workflow runs
+    # Only act on PR comments (not issue comments) or PR open events
     if: |
       (github.event_name == 'issue_comment' && github.event.issue.pull_request != null) ||
-      github.event_name == 'pull_request' ||
-      (github.event_name == 'workflow_run' && (github.event.workflow_run.conclusion == 'failure' || github.event.workflow_run.conclusion == 'timed_out'))
+      github.event_name == 'pull_request'
     permissions:
       pull-requests: write
     steps:

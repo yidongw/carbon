@@ -3,7 +3,6 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import type { JSONContent } from "@carbon/react";
-import { useLingui } from "@lingui/react/macro";
 import { Fragment } from "react/jsx-runtime";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useLoaderData, useParams } from "react-router";
@@ -136,7 +135,6 @@ export async function action({ request, params }: ActionFunctionArgs) {
 }
 
 export default function EditPurchaseOrderLineRoute() {
-  const { t } = useLingui();
   const { orderId, lineId } = useParams();
   if (!orderId) throw new Error("orderId not found");
   if (!lineId) throw new Error("lineId not found");
@@ -184,7 +182,7 @@ export default function EditPurchaseOrderLineRoute() {
       <SupplierInteractionLineNotes
         id={line?.id ?? ""}
         table="purchaseOrderLine"
-        title={t`Notes`}
+        title="Notes"
         subTitle={line.itemReadableId ?? ""}
         internalNotes={line.internalNotes as JSONContent}
         externalNotes={line.externalNotes as JSONContent}
@@ -206,7 +204,7 @@ export default function EditPurchaseOrderLineRoute() {
           itemId: line?.itemId ?? undefined
         }}
         modelPath={line?.modelPath ?? null}
-        title={t`CAD Model`}
+        title="CAD Model"
         uploadClassName="aspect-square min-h-[420px] max-h-[70vh]"
         viewerClassName="aspect-square min-h-[420px] max-h-[70vh]"
       />

@@ -26,7 +26,7 @@ import { useDndContext, useDraggable } from "@dnd-kit/core";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { FileObject } from "@supabase/storage-js";
 import type { ChangeEvent } from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import {
   LuEllipsisVertical,
   LuGripVertical,
@@ -35,14 +35,7 @@ import {
   LuUpload
 } from "react-icons/lu";
 import { Outlet, useFetchers, useRevalidator, useSubmit } from "react-router";
-import {
-  DocumentPreview,
-  FileDropzone,
-  FilesIconView,
-  FilesViewModeToggle
-} from "~/components";
-import type { FilesIconItem } from "~/components/FilesIconView";
-import { useFilesViewMode } from "~/components/FilesViewModeToggle";
+import { DocumentPreview, FileDropzone } from "~/components";
 import DocumentIcon from "~/components/DocumentIcon";
 import { useDateFormatter, usePermissions, useUser } from "~/hooks";
 import { getDocumentType } from "~/modules/shared";
@@ -98,26 +91,6 @@ const OpportunityDocuments = ({
     .filter((d) => !optimisticDrags?.find((o) => o.id === d.id))
     .sort((a, b) => a.name.localeCompare(b.name)) as FileObject[];
 
-  const [viewMode, setViewMode] = useFilesViewMode();
-
-  const iconItems = useMemo<FilesIconItem<FileObject>[]>(() => {
-    return attachmentsToRender.map((attachment) => {
-      const type = getDocumentType(attachment.name);
-      return {
-        id: attachment.id,
-        name: attachment.name,
-        documentType: type,
-        pathToFile: getPath(attachment),
-        createdAt: attachment.created_at,
-        sizeBytes: attachment.metadata?.size,
-        previewType: ["PDF", "Image"].includes(type)
-          ? (type as "PDF" | "Image")
-          : undefined,
-        raw: attachment
-      };
-    });
-  }, [attachmentsToRender, getPath]);
-
   return (
     <>
       <Card>
@@ -128,28 +101,16 @@ const OpportunityDocuments = ({
             </CardTitle>
           </CardHeader>
           <CardAction>
-            <HStack>
-              <FilesViewModeToggle value={viewMode} onChange={setViewMode} />
-              {!isReadOnlyProp && (
-                <OpportunityDocumentForm
-                  opportunityId={opportunity.id}
-                  id={id}
-                  type={type}
-                />
-              )}
-            </HStack>
+            {!isReadOnlyProp && (
+              <OpportunityDocumentForm
+                opportunityId={opportunity.id}
+                id={id}
+                type={type}
+              />
+            )}
           </CardAction>
         </HStack>
         <CardContent>
-          {viewMode === "icons" ? (
-            <FilesIconView
-              items={iconItems}
-              canDelete={effectiveCanDelete}
-              emptyMessage={<Trans>No files uploaded</Trans>}
-              onDownload={(item) => item.raw && download(item.raw)}
-              onDelete={(item) => item.raw && deleteAttachment(item.raw)}
-            />
-          ) : (
           <Table>
             <Thead>
               <Tr>
@@ -226,7 +187,6 @@ const OpportunityDocuments = ({
               )}
             </Tbody>
           </Table>
-          )}
           {!isReadOnlyProp && <FileDropzone onDrop={onDrop} />}
         </CardContent>
       </Card>

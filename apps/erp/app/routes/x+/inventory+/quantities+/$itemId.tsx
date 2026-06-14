@@ -31,7 +31,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     const userDefaults = await getUserDefaults(client, userId, companyId);
     if (userDefaults.error) {
       throw redirect(
-        path.to.inventoryQuantities,
+        path.to.inventory,
         await flash(
           request,
           error(userDefaults.error, "Failed to load default location")
@@ -46,7 +46,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     const locations = await getLocationsList(client, companyId);
     if (locations.error || !locations.data?.length) {
       throw redirect(
-        path.to.inventoryQuantities,
+        path.to.inventory,
         await flash(
           request,
           error(locations.error, "Failed to load any locations")
@@ -67,7 +67,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   if (ensurePickMethod.error) {
     throw redirect(
-      path.to.inventoryQuantities,
+      path.to.inventory,
       await flash(
         request,
         error(ensurePickMethod.error, "Failed to ensure pick method exists")
@@ -79,7 +79,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const pickMethod = await getPickMethod(client, itemId, companyId, locationId);
   if (pickMethod.error || !pickMethod.data) {
     throw redirect(
-      path.to.inventoryQuantities,
+      path.to.inventory,
       await flash(
         request,
         error(pickMethod.error, "Failed to load pick method")
@@ -90,7 +90,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const item = await getItem(client, itemId);
   if (item.error || !item.data) {
     throw redirect(
-      path.to.inventoryQuantities,
+      path.to.inventory,
       await flash(request, error(item.error, "Failed to load item"))
     );
   }

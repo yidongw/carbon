@@ -70,7 +70,7 @@ const ResendInviteModal = ({
               method="post"
               action={path.to.resendInvite}
               validator={resendInviteValidator}
-              onSuccess={onClose}
+              onSubmit={onClose}
               fetcher={fetcher}
             >
               {userIds.map((id, index) => (
