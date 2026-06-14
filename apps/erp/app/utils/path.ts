@@ -87,6 +87,16 @@ export const path = {
         generatePath(`${api}/production/jobs/${jobId}/bill-of-process`),
       jobConfigTable: (jobId: string) =>
         generatePath(`${api}/production/jobs/${jobId}/config-table`),
+      operationQuantityReports: (operationId: string) =>
+        generatePath(
+          `${api}/production/operations/${operationId}/quantity-reports`
+        ),
+      quantityReportLines: (reportId: string, includeInvalidated?: boolean) =>
+        generatePath(
+          `${api}/production/quantity-reports/${reportId}/lines${
+            includeInvalidated ? "?includeInvalidated=true" : ""
+          }`
+        ),
       itemConfigTable: (itemId: string) =>
         generatePath(`${api}/items/${itemId}/config-table`),
       jobs: `${api}/production/jobs`,

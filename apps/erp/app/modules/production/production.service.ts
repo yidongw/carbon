@@ -515,12 +515,17 @@ export async function deleteProductionEvent(
 
 export async function deleteProductionQuantity(
   client: SupabaseClient<Database>,
-  productionQuantityId: string
+  productionQuantityId: string,
+  args: { companyId: string; userId: string }
 ) {
-  return client
-    .from("productionQuantity")
-    .delete()
-    .eq("id", productionQuantityId);
+  const { invalidateProductionQuantity } = await import(
+    "./productionQuantityReport.service"
+  );
+  return invalidateProductionQuantity(client, {
+    productionQuantityId,
+    companyId: args.companyId,
+    userId: args.userId
+  });
 }
 
 export async function getActiveJobOperationByJobId(
@@ -1370,6 +1375,7 @@ export async function getProductionQuantitiesByOperation(
     .select("id, configuration, type, quantity")
     .eq("jobOperationId", jobOperationId)
     .eq("companyId", companyId)
+    .is("invalidatedAt", null)
     .order("createdAt", { ascending: false });
 }
 
@@ -1387,6 +1393,7 @@ export async function getProductionQuantitiesPage(
     .select("*, scrapReason(name)", { count: "exact" })
     .eq("jobOperationId", jobOperationId)
     .eq("companyId", companyId)
+    .is("invalidatedAt", null)
     .order("createdAt", { ascending: false })
     .range(offset, offset + pageSize - 1);
 
@@ -1510,7 +1517,8 @@ export async function getProductionQuantities(
         count: "exact"
       }
     )
-    .in("jobOperationId", jobOperationIds);
+    .in("jobOperationId", jobOperationIds)
+    .is("invalidatedAt", null);
 
   if (args?.search) {
     query = query.or(`jobOperation.description.ilike.%${args.search}%`);
@@ -1535,7 +1543,8 @@ export async function getProductionDataByOperations(
       .select(
         "*, jobOperation(description, jobMakeMethod(parentMaterialId, item(readableIdWithRevision)))"
       )
-      .in("jobOperationId", jobOperationIds),
+      .in("jobOperationId", jobOperationIds)
+      .is("invalidatedAt", null),
     client
       .from("productionEvent")
       .select(
@@ -2260,21 +2269,10 @@ export async function updateProductionQuantity(
     updatedBy: string;
     companyId: string;
     createdBy?: string;
+    employeeId: string;
   }
 ) {
-  const { id, updatedBy, companyId, createdBy, ...updateData } = productionQuantity;
-
-  return client
-    .from("productionQuantity")
-    .update({
-      ...sanitize(updateData),
-      updatedBy,
-      updatedAt: new Date().toISOString()
-    })
-    .eq("id", id)
-    .eq("companyId", companyId)
-    .select()
-    .single();
+  return upsertProductionQuantity(client, productionQuantity);
 }
 
 export async function upsertProductionQuantity(
@@ -2293,29 +2291,130 @@ export async function upsertProductionQuantity(
         employeeId: string;
       })
 ) {
-  if ("updatedBy" in productionQuantity) {
-    const { id, updatedBy, companyId, createdBy, ...updateData } = productionQuantity;
+  const {
+    createProductionQuantityReport,
+    replaceProductionQuantityReportLines
+  } = await import("./productionQuantityReport.service");
 
-    return client
+  if ("updatedBy" in productionQuantity) {
+    const { id, updatedBy, companyId, employeeId, ...updateData } =
+      productionQuantity;
+
+    const { data: existing, error: existingError } = await client
       .from("productionQuantity")
-      .update({
-        ...sanitize(updateData),
-        updatedBy,
-        updatedAt: new Date().toISOString()
-      })
+      .select(
+        "id, reportId, invalidatedAt, type, quantity, configuration, scrapReasonId, notes"
+      )
       .eq("id", id)
       .eq("companyId", companyId)
-      .select()
       .single();
-  } else {
-    return (
-      client
-        .from("productionQuantity")
-        .insert([productionQuantity])
-        .select("id")
-        .single()
+
+    if (existingError || !existing) {
+      return {
+        data: null,
+        error: existingError ?? new Error("Production quantity not found")
+      };
+    }
+
+    if (existing.invalidatedAt) {
+      return {
+        data: null,
+        error: new Error("Cannot update invalidated production quantity")
+      };
+    }
+
+    const { data: activeLines, error: linesError } = await client
+      .from("productionQuantity")
+      .select("id, type, quantity, configuration, scrapReasonId, notes")
+      .eq("reportId", existing.reportId)
+      .eq("companyId", companyId)
+      .is("invalidatedAt", null);
+
+    if (linesError) {
+      return { data: null, error: linesError };
+    }
+
+    const lines = (activeLines ?? []).map((line) =>
+      line.id === id
+        ? {
+            type: updateData.type,
+            quantity: updateData.quantity,
+            configuration: updateData.configuration,
+            scrapReasonId: updateData.scrapReasonId,
+            notes: updateData.notes
+          }
+        : {
+            type: line.type,
+            quantity: line.quantity,
+            configuration: line.configuration ?? undefined,
+            scrapReasonId: line.scrapReasonId ?? undefined,
+            notes: line.notes ?? undefined
+          }
     );
+
+    const result = await replaceProductionQuantityReportLines(client, {
+      reportId: existing.reportId,
+      companyId,
+      userId: updatedBy,
+      employeeId,
+      lines
+    });
+
+    if (result.error) {
+      return { data: null, error: result.error };
+    }
+
+    const updatedLine =
+      result.data?.activeLines.find((line) => line.type === updateData.type) ??
+      result.data?.activeLines[0] ??
+      null;
+
+    return { data: updatedLine, error: null };
   }
+
+  const { companyId, createdBy, employeeId, jobOperationId, ...rest } =
+    productionQuantity;
+
+  const { data: operation, error: operationError } = await client
+    .from("jobOperation")
+    .select("jobId")
+    .eq("id", jobOperationId)
+    .eq("companyId", companyId)
+    .single();
+
+  if (operationError || !operation?.jobId) {
+    return {
+      data: null,
+      error: operationError ?? new Error("Job operation not found")
+    };
+  }
+
+  const result = await createProductionQuantityReport(client, {
+    companyId,
+    jobId: operation.jobId,
+    jobOperationId,
+    userId: createdBy,
+    employeeId,
+    notes: rest.notes ?? null,
+    lines: [
+      {
+        type: rest.type,
+        quantity: rest.quantity,
+        configuration: rest.configuration,
+        scrapReasonId: rest.scrapReasonId,
+        notes: rest.notes
+      }
+    ]
+  });
+
+  if (result.error) {
+    return { data: null, error: result.error };
+  }
+
+  return {
+    data: result.data?.activeLines[0] ?? null,
+    error: null
+  };
 }
 
 export async function insertJob(

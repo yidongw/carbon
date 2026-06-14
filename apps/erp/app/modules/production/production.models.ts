@@ -8,6 +8,7 @@ import {
   procedureStepType,
   standardFactorType
 } from "../shared";
+import { productionQuantityLineJsonValidator } from "./productionQuantityReport.models";
 
 export const KPIs = [
   {
@@ -895,6 +896,40 @@ export const productionQuantityValidator = z.object({
   quantity: zfd.numeric(z.number().min(0)),
   configuration: z.any().optional()
 });
+
+/** Remix form for creating a quantity report with one or more typed lines (`lines` is JSON). */
+export const productionQuantityCreateFormValidator = z
+  .object({
+    jobOperationId: z.string().min(1, { message: "Operation is required" }),
+    employeeId: zfd.text(z.string().optional()),
+    notes: zfd.text(z.string().optional()),
+    lines: zfd.text(
+      z.string().min(1, { message: "Quantity lines are required" })
+    )
+  })
+  .superRefine((data, ctx) => {
+    try {
+      const parsed = JSON.parse(data.lines) as unknown;
+      const result = z
+        .array(productionQuantityLineJsonValidator)
+        .min(1)
+        .safeParse(parsed);
+      if (!result.success) {
+        result.error.issues.forEach((issue) => {
+          ctx.addIssue({
+            ...issue,
+            path: ["lines", ...issue.path]
+          });
+        });
+      }
+    } catch {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Invalid quantity lines",
+        path: ["lines"]
+      });
+    }
+  });
 
 export const jobOperationPickupValidator = z.object({
   id: zfd.text(z.string().optional()),

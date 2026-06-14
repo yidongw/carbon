@@ -653,7 +653,8 @@ export async function getProductionQuantitiesForJobOperation(
   return client
     .from("productionQuantity")
     .select("*")
-    .eq("jobOperationId", operationId);
+    .eq("jobOperationId", operationId)
+    .is("invalidatedAt", null);
 }
 
 export async function getRecentJobOperationsByEmployee(

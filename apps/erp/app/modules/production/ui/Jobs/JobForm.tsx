@@ -17,7 +17,7 @@ import {
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useState } from "react";
-import { LuDiamond, LuLayers, LuTable } from "react-icons/lu";
+import { LuDiamond, LuLayers } from "react-icons/lu";
 import type { z } from "zod";
 import {
   Customer,
@@ -280,21 +280,6 @@ const JobForm = ({ initialValues }: JobFormProps) => {
     );
   };
 
-  const getQuantityAdornment = () =>
-    configurationParameters ? (
-      <div
-        className={cn(
-          "absolute right-0 top-0 z-10 m-px flex h-[calc(100%-2px)] w-10 items-center justify-center border-l border-border rounded-r-md pointer-events-none transition-colors",
-          configTableTotal > 0
-            ? "text-emerald-500"
-            : "text-muted-foreground"
-        )}
-        aria-hidden
-      >
-        <LuTable size="1em" strokeWidth="3" />
-      </div>
-    ) : undefined;
-
   return (
     <>
       <Tabs defaultValue="job">
@@ -405,7 +390,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                             )
                           }))
                         }
-                        adornment={getQuantityAdornment()}
+                        configTableTotal={configTableTotal}
                         minValue={0}
                         hasConfigurationParameters={!!configurationParameters}
                         onOpenConfigTable={() => openConfigTable("single")}
@@ -553,7 +538,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                             }))
                           }
                           isDisabled={configTableTotal > 0}
-                          adornment={getQuantityAdornment()}
+                          configTableTotal={configTableTotal}
                           minValue={0}
                           hasConfigurationParameters={!!configurationParameters}
                           onOpenConfigTable={() => openConfigTable("bulk")}

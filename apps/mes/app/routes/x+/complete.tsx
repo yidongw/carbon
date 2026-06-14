@@ -92,11 +92,19 @@ export async function action({ request }: ActionFunctionArgs) {
   const serviceRole = await getCarbonServiceRole();
 
   // Get current job operation and production quantities to check if operation will be finished
-  const jobOperation = await serviceRole
-    .from("jobOperation")
-    .select("*")
-    .eq("id", validation.data.jobOperationId)
-    .maybeSingle();
+  const [jobOperation, productionQuantities] = await Promise.all([
+    serviceRole
+      .from("jobOperation")
+      .select("*")
+      .eq("id", validation.data.jobOperationId)
+      .maybeSingle(),
+    serviceRole
+      .from("productionQuantity")
+      .select("*")
+      .eq("type", "Production")
+      .eq("jobOperationId", validation.data.jobOperationId)
+      .is("invalidatedAt", null)
+  ]);
 
   if (jobOperation.error || !jobOperation.data) {
     return data(

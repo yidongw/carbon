@@ -17,11 +17,17 @@ export type ConfigColumn = {
   options?: string[];
 };
 
+/** Minimal parameter shape required to build config table columns. */
+export type ConfigurationParameterColumnsInput = Pick<
+  ConfigurationParameter,
+  "key" | "label" | "dataType" | "listOptions"
+>;
+
 export function buildConfigColumns(
-  parameters: ConfigurationParameter[],
+  parameters: ConfigurationParameterColumnsInput[],
   defaultQuantityLabel: string
 ): {
-  primaryParam: ConfigurationParameter | null;
+  primaryParam: ConfigurationParameterColumnsInput | null;
   primaryKeys: string[];
   columns: ConfigColumn[];
 } {
@@ -178,7 +184,7 @@ export function formatConfigRowLabel(
 
 export function formatConfigRowLabels(
   configuration: unknown,
-  parameters: ConfigurationParameter[],
+  parameters: ConfigurationParameterColumnsInput[],
   defaultQuantityLabel: string
 ): string[] {
   const { columns } = buildConfigColumns(parameters, defaultQuantityLabel);
@@ -223,7 +229,7 @@ export function getConfigRowDisplayPart(
 
 export function getConfigRowDisplayParts(
   configuration: unknown,
-  parameters: ConfigurationParameter[],
+  parameters: ConfigurationParameterColumnsInput[],
   defaultQuantityLabel: string
 ): ConfigRowDisplayPart[] {
   const { columns } = buildConfigColumns(parameters, defaultQuantityLabel);
@@ -255,7 +261,7 @@ export function buildReportedTargetRows({
   targetConfiguration: unknown;
   reportedConfigurations: unknown[];
   pickupConfigurations?: unknown[];
-  parameters: ConfigurationParameter[];
+  parameters: ConfigurationParameterColumnsInput[];
   defaultQuantityLabel: string;
 }): ReportedTargetRow[] {
   const { columns } = buildConfigColumns(parameters, defaultQuantityLabel);
@@ -303,4 +309,112 @@ export function buildReportedTargetRows({
 
     return { ...baseRow, cells };
   });
+}
+
+export type ConfigTableReferenceMode = "original" | "remaining";
+
+/** Context for disposition config-table editing with click-to-fill reference values. */
+export type ConfigTableReferenceContext = {
+  mode: ConfigTableReferenceMode;
+  originalConfiguration: unknown;
+  /** Active sibling line configurations (excluding the line being edited). */
+  otherLineConfigurations: unknown[];
+};
+
+export function buildConfigTableEditorState({
+  parameters,
+  defaultQuantityLabel,
+  currentConfiguration,
+  referenceContext
+}: {
+  parameters: ConfigurationParameterColumnsInput[];
+  defaultQuantityLabel: string;
+  currentConfiguration: unknown;
+  referenceContext?: ConfigTableReferenceContext | null;
+}): {
+  rows: ConfigTableRow[];
+  referenceByRowIndex: Array<Record<string, number>>;
+} {
+  const { columns } = buildConfigColumns(parameters, defaultQuantityLabel);
+
+  if (!referenceContext) {
+    const currentRows = mergeConfigTableRows(
+      getConfigTableRows(currentConfiguration),
+      columns
+    );
+    return {
+      rows: currentRows.length > 0 ? currentRows : [],
+      referenceByRowIndex: []
+    };
+  }
+
+  const originalRows = mergeConfigTableRows(
+    getConfigTableRows(referenceContext.originalConfiguration),
+    columns
+  );
+  const currentRows = mergeConfigTableRows(
+    getConfigTableRows(currentConfiguration),
+    columns
+  );
+  const otherRows = mergeConfigTableRows(
+    referenceContext.otherLineConfigurations.flatMap((config) =>
+      getConfigTableRows(config)
+    ),
+    columns
+  );
+
+  const originalByKey = new Map(
+    originalRows.map((row) => [getMergeKey(row, columns), row])
+  );
+  const currentByKey = new Map(
+    currentRows.map((row) => [getMergeKey(row, columns), row])
+  );
+  const otherByKey = new Map(
+    otherRows.map((row) => [getMergeKey(row, columns), row])
+  );
+
+  const orderedKeys = [
+    ...originalRows.map((row) => getMergeKey(row, columns)),
+    ...currentRows
+      .map((row) => getMergeKey(row, columns))
+      .filter((key) => !originalByKey.has(key))
+  ];
+
+  const rows: ConfigTableRow[] = [];
+  const referenceByRowIndex: Array<Record<string, number>> = [];
+
+  for (const key of orderedKeys) {
+    const template =
+      originalByKey.get(key) ?? currentByKey.get(key) ?? ({} as ConfigTableRow);
+    const current = currentByKey.get(key);
+    const row: ConfigTableRow = { ...template };
+
+    for (const col of columns) {
+      if (col.type === "quantity") {
+        row[col.key] = Number(current?.[col.key]) || 0;
+      } else if (current && current[col.key] !== undefined) {
+        row[col.key] = current[col.key] ?? row[col.key] ?? "";
+      }
+    }
+
+    const refs: Record<string, number> = {};
+    for (const col of columns) {
+      if (col.type !== "quantity") continue;
+      const originalQty = Number(originalByKey.get(key)?.[col.key]) || 0;
+      const otherQty = Number(otherByKey.get(key)?.[col.key]) || 0;
+      refs[col.key] =
+        referenceContext.mode === "original"
+          ? originalQty
+          : originalQty - otherQty;
+    }
+
+    rows.push(row);
+    referenceByRowIndex.push(refs);
+  }
+
+  return { rows, referenceByRowIndex };
+}
+
+export function fillValueFromReference(referenceValue: number) {
+  return Math.max(0, referenceValue);
 }
