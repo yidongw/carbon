@@ -17,14 +17,14 @@ import {
 } from "@carbon/auth/auth.server";
 import {
   clearAuthCookies,
-  flash,
   getAuthSession,
   setAuthSession,
   setPkceCookie
 } from "@carbon/auth/session.server";
 import { getUserByEmail } from "@carbon/auth/users.server";
 import { sendVerificationCode } from "@carbon/auth/verification.server";
-import { Hidden, Input, Submit, ValidatedForm, validator } from "@carbon/form";
+import { Hidden, Submit, ValidatedForm, validator } from "@carbon/form";
+import Input from "~/components/Form/Input";
 import { Ratelimit, redis } from "@carbon/kv";
 import {
   Alert,
@@ -116,10 +116,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const { success } = await ratelimit.limit(ip);
 
   if (!success) {
-    return data(
-      error(null, "Rate limit exceeded"),
-      await flash(request, error(null, "Rate limit exceeded"))
-    );
+    return error(null, "Rate limit exceeded");
   }
 
   const formData = await request.formData();
@@ -146,13 +143,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
     const verifyData = await verifyResponse.json();
     if (!verifyData.success) {
-      return data(
-        error(null, "Bot verification failed. Please try again."),
-        await flash(
-          request,
-          error(null, "Bot verification failed. Please try again.")
-        )
-      );
+      return error(null, "Bot verification failed. Please try again.");
     }
   }
 
@@ -185,10 +176,7 @@ export async function action({ request }: ActionFunctionArgs) {
     const magicLink = await sendMagicLink(email, redirectTo);
 
     if (magicLink.error) {
-      return data(
-        error(null, "Failed to send magic link"),
-        await flash(request, error(null, "Failed to send magic link"))
-      );
+      return error(null, "Failed to send magic link");
     }
 
     const pkceHeader = await setPkceCookie(magicLink.pkceEntry);
@@ -197,18 +185,12 @@ export async function action({ request }: ActionFunctionArgs) {
       { headers: [["Set-Cookie", pkceHeader]] }
     );
   } else if (CarbonEdition === Edition.Enterprise) {
-    return data(
-      { success: false, message: "User record not found" },
-      await flash(request, error(null, "Failed to sign in"))
-    );
+    return { success: false, message: "User record not found" };
   } else {
     const verificationSent = await sendVerificationCode(email);
 
     if (!verificationSent) {
-      return data(
-        error(null, "Failed to send verification code"),
-        await flash(request, error(null, "Failed to send verification code"))
-      );
+      return error(null, "Failed to send verification code");
     }
 
     return { success: true, mode: "signup", email };
