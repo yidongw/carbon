@@ -1,5 +1,6 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
 import type { JSONContent } from "@carbon/react";
+import { VStack } from "@carbon/react";
 import type { LoaderFunctionArgs } from "react-router";
 import { useLoaderData, useParams } from "react-router";
 import type { ConfigurationRule, MakeMethod } from "~/modules/items";
@@ -70,6 +71,33 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       getTemplateConfigurationRules(client, templateId, companyId)
     ]);
 
+  const materialItemIds = Array.from(
+    new Set((methodMaterials.data ?? []).map((m) => m.itemId).filter(Boolean))
+  );
+
+  const materialItems =
+    materialItemIds.length > 0
+      ? await client
+          .from("item")
+          .select("id, name, itemTrackingType, replenishmentSystem")
+          .in("id", materialItemIds)
+      : {
+          data: [] as {
+            id: string;
+            name: string;
+            itemTrackingType:
+              | "Inventory"
+              | "Non-Inventory"
+              | "Serial"
+              | "Batch";
+            replenishmentSystem: string | null;
+          }[]
+        };
+
+  const materialItemById = new Map(
+    (materialItems.data ?? []).map((item) => [item.id, item] as const)
+  );
+
   const configurationRulesForUi = configRules.map((r) => ({
     ...r,
     itemId: templateId
@@ -94,15 +122,17 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       methodMaterials: (methodMaterials.data?.map((m) => ({
         ...m,
         makeMethodId: m.templateMakeMethodId,
-        description: "",
+        description: materialItemById.get(m.itemId)?.name ?? "",
         methodType: m.methodType as MethodType,
         itemType: m.itemType as MethodItemType,
         storageUnitIds: (m.storageUnitIds ?? {}) as Record<string, string>,
         methodOperationId: m.methodOperationId ?? undefined,
         item: {
-          name: "",
-          itemTrackingType: "Inventory" as const,
-          replenishmentSystem: null
+          name: materialItemById.get(m.itemId)?.name ?? "",
+          itemTrackingType:
+            materialItemById.get(m.itemId)?.itemTrackingType ?? "Inventory",
+          replenishmentSystem:
+            materialItemById.get(m.itemId)?.replenishmentSystem ?? null
         }
       })) ?? []) as any,
       methodOperations: methodOperationsForUi as any,
@@ -134,7 +164,7 @@ export default function TemplateDetailsRoute() {
     templateConfigurationRuleBindings(templateId);
 
   return (
-    <>
+    <VStack spacing={2} className="p-2">
       <ConfigurationParametersForm
         key={`options:${templateId}`}
         bindings={bindings}
@@ -164,6 +194,6 @@ export default function TemplateDetailsRoute() {
         tags={tags}
         configurationRuleBindings={configurationRuleBindings}
       />
-    </>
+    </VStack>
   );
 }
