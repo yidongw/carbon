@@ -221,7 +221,7 @@ export default function AuthenticatedRoute() {
   const { session, user, companySettings, openClockEntry, printerRoutes } =
     useLoaderData<typeof loader>();
   const navigate = useNavigate();
-  const { isOpen, training, dismiss } = useTrainingPanel();
+  const { training, dismiss } = useTrainingPanel();
 
   useNProgress();
   useKeyboardWedge({
