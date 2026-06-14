@@ -50,6 +50,7 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           BRANCH: ${{ github.event.pull_request.head.ref }}
           SHA: ${{ github.event.pull_request.head.sha }}
+          PREVIEW_READY_SECRET: ${{ secrets.PREVIEW_READY_SECRET }}
         run: |
           PR_URL="https://erp-pr-${PR_NUMBER}.foxhole.bot"
           BODY=$(printf '### Preview Deployment\n\n**ERP:** %s\n\nBuilt from `%s` @ `%s`\nRunning in dev mode — stack traces enabled.' \
@@ -59,6 +60,12 @@ jobs:
             --repo yidongw/carbon \
             --body "$BODY" \
             --edit-last
+          # Notify Discord directly without waiting for the GitHub webhook roundtrip
+          curl -sf -X POST "http://localhost:3002/preview-ready" \
+            -H "Authorization: Bearer ${PREVIEW_READY_SECRET}" \
+            -H "Content-Type: application/json" \
+            -d "{\"repo\":\"yidongw/carbon\",\"prNumber\":${PR_NUMBER},\"previewUrl\":\"${PR_URL}\"}" \
+            || true
 
       - name: Trigger test agent
         if: github.event.action != 'closed'
