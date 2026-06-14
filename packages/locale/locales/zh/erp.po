@@ -9259,7 +9259,7 @@ msgid "Sign Out"
 msgstr "登出"
 
 msgid "Sign Out"
-msgstr "注销"
+msgstr "退出登录"
 
 msgid "Signed in as {name}"
 msgstr "已登录为 {name}"
