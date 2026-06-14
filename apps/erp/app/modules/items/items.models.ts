@@ -674,7 +674,8 @@ export const partValidator = applyStorageAndShelfLifeRefines(
       id: z.string().min(1, { message: "Part ID is required" }).max(255),
       revision: z.string().min(1, { message: "Revision is required" }),
       modelUploadId: zfd.text(z.string().optional()),
-      lotSize: zfd.numeric(z.number().min(0).optional())
+      lotSize: zfd.numeric(z.number().min(0).optional()),
+      templateId: zfd.text(z.string().optional())
     })
   )
 );

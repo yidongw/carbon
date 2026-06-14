@@ -1389,6 +1389,9 @@ msgstr "Массовые задания"
 msgid "Buy"
 msgstr "Покупка"
 
+msgid "Buy"
+msgstr "Покупка"
+
 msgid "Buy and Make"
 msgstr "Покупать и производить"
 
@@ -10005,6 +10008,9 @@ msgstr "Уникальный, прописные буквы, без пробел
 
 msgid "Unit"
 msgstr "Единица"
+
+msgid "Unit Cost"
+msgstr "Стоимость единицы"
 
 msgid "Unit Cost"
 msgstr "Стоимость единицы"

@@ -78,6 +78,7 @@ import SupplierStatus from "./SupplierStatus";
 import Suppliers from "./Suppliers";
 import SupplierType from "./SupplierType";
 import Tags from "./Tags";
+import Template from "./Template";
 import Tool from "./Tool";
 import UnitHint from "./UnitHint";
 import UnitOfMeasure from "./UnitOfMeasure";
@@ -162,6 +163,7 @@ export {
   SupplierStatus,
   SupplierType,
   Tags,
+  Template,
   TextArea,
   TimePicker,
   Timezone,

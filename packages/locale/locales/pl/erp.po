@@ -1392,6 +1392,9 @@ msgstr "Zadania zbiorcze"
 msgid "Buy"
 msgstr "Kup"
 
+msgid "Buy"
+msgstr "Kup"
+
 msgid "Buy and Make"
 msgstr "Kupuj i Wytwarzaj"
 
@@ -10002,6 +10005,9 @@ msgstr "Unikalne, wielkie litery, bez spacji"
 
 msgid "Unit"
 msgstr "Jednostka"
+
+msgid "Unit Cost"
+msgstr "Koszt jednostkowy"
 
 msgid "Unit Cost"
 msgstr "Koszt jednostkowy"

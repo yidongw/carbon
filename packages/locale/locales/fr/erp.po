@@ -1392,6 +1392,9 @@ msgstr "Travaux en masse"
 msgid "Buy"
 msgstr "Acheter"
 
+msgid "Buy"
+msgstr "Acheter"
+
 msgid "Buy and Make"
 msgstr "Acheter et Fabriquer"
 
@@ -10007,6 +10010,9 @@ msgstr "Unique, majuscules, sans espaces"
 
 msgid "Unit"
 msgstr "Unité"
+
+msgid "Unit Cost"
+msgstr "Coût unitaire"
 
 msgid "Unit Cost"
 msgstr "Coût unitaire"

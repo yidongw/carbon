@@ -768,6 +768,215 @@ export async function updateTemplateMethodOperationStepOrder(
   return Promise.all(updatePromises);
 }
 
+export async function applyTemplateToItem(
+  client: SupabaseClient<Database>,
+  args: {
+    templateId: string;
+    itemId: string;
+    companyId: string;
+    userId: string;
+  }
+) {
+  const { templateId, itemId, companyId, userId } = args;
+
+  const [paramGroups, params, rules, templateMakeMethod] = await Promise.all([
+    client
+      .from("templateConfigurationParameterGroup")
+      .select("*")
+      .eq("templateId", templateId)
+      .eq("companyId", companyId),
+    client
+      .from("templateConfigurationParameter")
+      .select("*")
+      .eq("templateId", templateId)
+      .eq("companyId", companyId),
+    client
+      .from("templateConfigurationRule")
+      .select("*")
+      .eq("templateId", templateId)
+      .eq("companyId", companyId),
+    client
+      .from("templateMakeMethod")
+      .select("id")
+      .eq("templateId", templateId)
+      .eq("companyId", companyId)
+      .single()
+  ]);
+
+  // Copy configuration parameter groups and build old-id → new-id map
+  const groupIdMap: Record<string, string> = {};
+  if (paramGroups.data && paramGroups.data.length > 0) {
+    const groupInsert = await client
+      .from("configurationParameterGroup")
+      .insert(
+        paramGroups.data.map(({ id: _id, templateId: _tid, ...group }) => ({
+          ...group,
+          itemId
+        }))
+      )
+      .select("id");
+
+    if (!groupInsert.error && groupInsert.data) {
+      paramGroups.data.forEach((oldGroup, i) => {
+        if (groupInsert.data[i]) {
+          groupIdMap[oldGroup.id] = groupInsert.data[i].id;
+        }
+      });
+    }
+  }
+
+  // Copy configuration parameters
+  if (params.data && params.data.length > 0) {
+    await client.from("configurationParameter").insert(
+      params.data.map(
+        ({
+          id: _id,
+          templateId: _tid,
+          templateConfigurationParameterGroupId,
+          ...param
+        }) => ({
+          ...param,
+          itemId,
+          configurationParameterGroupId: templateConfigurationParameterGroupId
+            ? (groupIdMap[templateConfigurationParameterGroupId] ?? null)
+            : null
+        })
+      )
+    );
+  }
+
+  // Copy configuration rules
+  if (rules.data && rules.data.length > 0) {
+    await client.from("configurationRule").insert(
+      rules.data.map(({ templateId: _tid, ...rule }) => ({
+        ...rule,
+        itemId
+      }))
+    );
+  }
+
+  // Copy make method operations and materials
+  if (!templateMakeMethod.data?.id) return;
+
+  const templateMakeMethodId = templateMakeMethod.data.id;
+
+  const [materials, operations, itemMakeMethod] = await Promise.all([
+    client
+      .from("templateMethodMaterial")
+      .select("*")
+      .eq("templateMakeMethodId", templateMakeMethodId)
+      .order("order", { ascending: true }),
+    (client as unknown as { from: (t: string) => any })
+      .from("templateMethodOperation")
+      .select(
+        "*, templateMethodOperationTool(*), templateMethodOperationParameter(*), templateMethodOperationStep(*)"
+      )
+      .eq("templateMakeMethodId", templateMakeMethodId)
+      .order("order", { ascending: true }),
+    client
+      .from("activeMakeMethods")
+      .select("id")
+      .eq("itemId", itemId)
+      .eq("companyId", companyId)
+      .single()
+  ]);
+
+  if (!itemMakeMethod.data?.id) return;
+  const targetMakeMethodId = itemMakeMethod.data.id;
+
+  if (materials.data && materials.data.length > 0) {
+    await client.from("methodMaterial").insert(
+      materials.data.map(
+        ({
+          id: _id,
+          templateMakeMethodId: _tmid,
+          productionQuantity: _pq,
+          ...material
+        }) => ({
+          ...material,
+          makeMethodId: targetMakeMethodId,
+          methodOperationId: null,
+          createdBy: userId
+        })
+      )
+    );
+  }
+
+  if (!operations.data || operations.data.length === 0) return;
+
+  for (const op of operations.data) {
+    const {
+      id: _id,
+      templateMakeMethodId: _tmid,
+      templateMethodOperationTool,
+      templateMethodOperationParameter,
+      templateMethodOperationStep,
+      ...operationFields
+    } = op;
+
+    const newOperation = await client
+      .from("methodOperation")
+      .insert({
+        ...operationFields,
+        makeMethodId: targetMakeMethodId,
+        createdBy: userId
+      })
+      .select("id")
+      .single();
+
+    if (newOperation.error || !newOperation.data?.id) continue;
+    const newOperationId = newOperation.data.id;
+
+    if (
+      Array.isArray(templateMethodOperationTool) &&
+      templateMethodOperationTool.length > 0
+    ) {
+      await client.from("methodOperationTool").insert(
+        templateMethodOperationTool.map(
+          ({ id: _id, operationId: _opId, updatedAt: _ua, ...tool }) => ({
+            ...tool,
+            operationId: newOperationId,
+            companyId,
+            createdBy: userId
+          })
+        )
+      );
+    }
+
+    if (
+      Array.isArray(templateMethodOperationParameter) &&
+      templateMethodOperationParameter.length > 0
+    ) {
+      await client.from("methodOperationParameter").insert(
+        templateMethodOperationParameter.map(
+          ({ id: _id, operationId: _opId, ...param }) => ({
+            ...param,
+            operationId: newOperationId,
+            companyId,
+            createdBy: userId
+          })
+        )
+      );
+    }
+
+    if (
+      Array.isArray(templateMethodOperationStep) &&
+      templateMethodOperationStep.length > 0
+    ) {
+      await client.from("methodOperationStep").insert(
+        templateMethodOperationStep.map(
+          ({ id: _id, operationId: _opId, ...step }) => ({
+            ...step,
+            operationId: newOperationId,
+            companyId,
+            createdBy: userId
+          })
+        )
+      );
+    }
+  }
+}
+
 export function mapTemplateMethodOperationForBillOfProcess<
   T extends Record<string, unknown>
 >(op: T) {

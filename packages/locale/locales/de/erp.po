@@ -1389,6 +1389,9 @@ msgstr "Massenaufträge"
 msgid "Buy"
 msgstr "Kaufen"
 
+msgid "Buy"
+msgstr "Kaufen"
+
 msgid "Buy and Make"
 msgstr "Kaufen und Herstellen"
 
@@ -10002,6 +10005,9 @@ msgstr "Eindeutig, Großbuchstaben, ohne Leerzeichen"
 
 msgid "Unit"
 msgstr "Einheit"
+
+msgid "Unit Cost"
+msgstr "Stückkosten"
 
 msgid "Unit Cost"
 msgstr "Stückkosten"

@@ -216,7 +216,8 @@ export const path = {
         generatePath(`${api}/resources/work-centers?location=${id}`),
       workCenters: `${api}/resources/work-centers`,
       paymentTerms: `${api}/accounting/payment-terms`,
-      shippingMethods: `${api}/inventory/shipping-methods`
+      shippingMethods: `${api}/inventory/shipping-methods`,
+      templates: `${api}/items/templates`
     },
     external: {
       mes: MES_URL,

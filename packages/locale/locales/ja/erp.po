@@ -1392,6 +1392,9 @@ msgstr "一括ジョブ"
 msgid "Buy"
 msgstr "購入"
 
+msgid "Buy"
+msgstr "購入"
+
 msgid "Buy and Make"
 msgstr "購入と製造"
 
@@ -10001,6 +10004,9 @@ msgstr "ユニーク、大文字、スペースなし"
 
 msgid "Unit"
 msgstr "単位"
+
+msgid "Unit Cost"
+msgstr "単価"
 
 msgid "Unit Cost"
 msgstr "単価"

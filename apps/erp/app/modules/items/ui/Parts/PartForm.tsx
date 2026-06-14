@@ -40,6 +40,7 @@ import {
   Number,
   Select,
   Submit,
+  Template,
   TextArea,
   UnitOfMeasure
 } from "~/components/Form";
@@ -320,6 +321,9 @@ const PartForm = ({ initialValues, type = "card", onClose }: PartFormProps) => {
                     label={t`Item Group`}
                     isClearable
                   />
+                )}
+                {!isEditing && (
+                  <Template name="templateId" label={t`Template`} />
                 )}
                 {!isEditing && replenishmentSystem !== "Make" && (
                   <Number

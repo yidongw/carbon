@@ -1389,6 +1389,9 @@ msgstr "Bulk Jobs"
 msgid "Buy"
 msgstr "Buy"
 
+msgid "Buy"
+msgstr "Buy"
+
 msgid "Buy and Make"
 msgstr "Buy and Make"
 
@@ -9997,6 +10000,9 @@ msgstr "Unique, uppercase, without spaces"
 
 msgid "Unit"
 msgstr "Unit"
+
+msgid "Unit Cost"
+msgstr "Unit Cost"
 
 msgid "Unit Cost"
 msgstr "Unit Cost"

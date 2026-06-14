@@ -1392,6 +1392,9 @@ msgstr "बल्क जॉब्स"
 msgid "Buy"
 msgstr "खरीदें"
 
+msgid "Buy"
+msgstr "खरीदें"
+
 msgid "Buy and Make"
 msgstr "खरीदें और बनाएं"
 
@@ -10002,6 +10005,9 @@ msgstr "अद्वितीय, बड़े अक्षर, बिना र
 
 msgid "Unit"
 msgstr "इकाई"
+
+msgid "Unit Cost"
+msgstr "इकाई लागत"
 
 msgid "Unit Cost"
 msgstr "इकाई लागत"

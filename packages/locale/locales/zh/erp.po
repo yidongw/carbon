@@ -1392,6 +1392,9 @@ msgstr "批量作业"
 msgid "Buy"
 msgstr "购买"
 
+msgid "Buy"
+msgstr "购买"
+
 msgid "Buy and Make"
 msgstr "购买和制造"
 
@@ -10002,6 +10005,9 @@ msgstr "唯一、大写、无空格"
 
 msgid "Unit"
 msgstr "单位"
+
+msgid "Unit Cost"
+msgstr "单位成本"
 
 msgid "Unit Cost"
 msgstr "单位成本"
