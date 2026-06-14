@@ -60,7 +60,7 @@
     "prepare": "pnpm exec husky install",
     "test": "turbo run test",
     "tool:new": "tsx scripts/create-tool.ts",
-    "translate": "pnpm run lingui:extract && pnpx linguito translate --llm && pnpm lingui:clean",
+    "translate": "pnpm run lingui:extract:raw && node scripts/translate-po.mjs && pnpm run lingui:clean",
     "agent:new": "tsx scripts/create-agent.ts",
     "typecheck": "turbo run typecheck --filter='*'",
     "typegen": "turbo run typegen"

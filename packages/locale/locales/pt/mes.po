@@ -203,6 +203,10 @@ msgstr "Modo Console"
 msgid "Consumed expired"
 msgstr "Consumido expirado"
 
+msgid "Create"
+msgstr "Criar"
+
+#. placeholder {0}: group.heading
 #. placeholder {0}: search.trim() === "" ? (createLabel ?? label) : search
 #. placeholder {0}: search.trim() === "" ? label : search
 msgid "Create {0}"
@@ -294,11 +298,17 @@ msgstr "Número de série duplicado"
 msgid "Duration"
 msgstr "Duração"
 
+msgid "Earned"
+msgstr "Ganhado"
+
 msgid "Edit"
 msgstr "Editar"
 
 msgid "Email Address"
 msgstr "Endereço de E-mail"
+
+msgid "Employee"
+msgstr "Funcionário"
 
 msgid "Empty work centers"
 msgstr "Centros de trabalho vazios"
@@ -368,6 +378,9 @@ msgstr "Voltar para operação"
 
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "Tem um problema técnico? Entre em contato com o <0>Suporte Carbon.</0>"
+
+msgid "History"
+msgstr "Histórico"
 
 msgid "I understand and want to complete without issuing"
 msgstr "Eu entendo e desejo concluir sem emitir"
@@ -460,6 +473,12 @@ msgstr "Registrar Concluído"
 msgid "Log completed for {0}"
 msgstr "Registrar concluído para {0}"
 
+msgid "Log In"
+msgstr "Acessar"
+
+msgid "Log Pickup"
+msgstr "Pegamento de Log"
+
 msgid "Log Rework"
 msgstr "Registrar Retrabalho"
 
@@ -529,6 +548,9 @@ msgstr "Deve estar entre {minValue} e {maxValue} {unitOfMeasureCode}"
 msgid "My Hours"
 msgstr "Minhas Horas"
 
+msgid "My Salary"
+msgstr "Salário Mínimo"
+
 msgid "Name"
 msgstr "Nome"
 
@@ -546,6 +568,9 @@ msgstr "Nenhum despacho de manutenção ativo"
 
 msgid "No active operations"
 msgstr "Nenhuma operação ativa"
+
+msgid "No approved completions this period"
+msgstr "Não há conclusões aprovadas neste período"
 
 msgid "No assigned operations"
 msgstr "Nenhuma operação atribuída"
@@ -583,8 +608,6 @@ msgstr "Nenhuma opção encontrada."
 msgid "No options found."
 msgstr "Nenhuma opção encontrada."
 
-msgid "No printer configured"
-msgstr "Nenhuma impressora configurada"
 
 msgid "No recent operations"
 msgstr "Nenhuma operação recente"
@@ -597,6 +620,9 @@ msgstr "Nenhum resultado encontrado"
 
 msgid "No results found"
 msgstr "Nenhum resultado encontrado"
+
+msgid "No results found."
+msgstr "Nenhum resultado encontrado."
 
 msgid "No scheduled time"
 msgstr "Nenhum horário programado"
@@ -653,6 +679,12 @@ msgstr "Realizado pelo Operador"
 msgid "Optional"
 msgstr "Opcional"
 
+msgid "Owed"
+msgstr "Devedor"
+
+msgid "Paid"
+msgstr "Pagamento"
+
 msgid "Parameters"
 msgstr "Parâmetros"
 
@@ -665,11 +697,23 @@ msgstr "Aprovado na Inspeção"
 msgid "Pause"
 msgstr "Pausar"
 
+msgid "Pending"
+msgstr "Aguardando"
+
+msgid "Pending Approval"
+msgstr "Aguardando Aprovação"
+
+msgid "Period"
+msgstr "Período"
+
 #. placeholder {0}: startColumn?.title
 #. placeholder {1}: startIndex + 1
 #. placeholder {2}: columnOrder.length
 msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "Coluna {0} selecionada na posição: {1} de {2}"
+
+msgid "Pickups"
+msgstr "Pegadas"
 
 msgid "Pin Out"
 msgstr "Desconectar"
@@ -713,11 +757,6 @@ msgstr "Processos"
 msgid "Progress"
 msgstr "Progresso"
 
-msgid "Quality Issue"
-msgstr "Problema de Qualidade"
-
-msgid "Quality issue created"
-msgstr "Problema de qualidade criado"
 
 msgid "Quantity"
 msgstr "Quantidade"
@@ -943,6 +982,9 @@ msgstr "A quantidade concluída para esta operação é menor que a quantidade r
 msgid "There are serial or batch tracked materials on the bill of material that have not been fully issued. Completing without issuing may result in incorrect traceability records."
 msgstr "Existem materiais rastreados por série ou lote na lista de materiais que não foram totalmente emitidos. Concluir sem emitir pode resultar em registros de rastreabilidade incorretos."
 
+msgid "This Period"
+msgstr "Pérdida Este Período"
+
 msgid "Thumbnail"
 msgstr "Miniatura"
 
@@ -978,6 +1020,9 @@ msgstr "Digite uma mensagem..."
 
 msgid "Unissued serial/batch materials"
 msgstr "Materiais de série/lote não emitidos"
+
+msgid "unit"
+msgstr "Unidade"
 
 msgid "Unknown"
 msgstr "Desconhecido"

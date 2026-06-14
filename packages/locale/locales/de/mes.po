@@ -203,6 +203,10 @@ msgstr "Konsolenmodus"
 msgid "Consumed expired"
 msgstr "Verbrauchte abgelaufen"
 
+msgid "Create"
+msgstr "Erstellen"
+
+#. placeholder {0}: group.heading
 #. placeholder {0}: search.trim() === "" ? (createLabel ?? label) : search
 #. placeholder {0}: search.trim() === "" ? label : search
 msgid "Create {0}"
@@ -294,11 +298,17 @@ msgstr "Doppelte Seriennummer"
 msgid "Duration"
 msgstr "Dauer"
 
+msgid "Earned"
+msgstr "Erfundenes"
+
 msgid "Edit"
 msgstr "Bearbeiten"
 
 msgid "Email Address"
 msgstr "E-Mail-Adresse"
+
+msgid "Employee"
+msgstr "Mitarbeiter"
 
 msgid "Empty work centers"
 msgstr "Leere Arbeitszentren"
@@ -368,6 +378,9 @@ msgstr "Zurück zur Operation"
 
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "Haben Sie ein technisches Problem? Kontaktieren Sie den <0>Carbon Support.</0>"
+
+msgid "History"
+msgstr "Geschichte"
 
 msgid "I understand and want to complete without issuing"
 msgstr "Ich verstehe und möchte ohne Ausgabe abschließen"
@@ -460,6 +473,12 @@ msgstr "Fertigmeldung"
 msgid "Log completed for {0}"
 msgstr "Fertigmeldung für {0}"
 
+msgid "Log In"
+msgstr "Anmelden"
+
+msgid "Log Pickup"
+msgstr "Log Abholung"
+
 msgid "Log Rework"
 msgstr "Nacharbeit erfassen"
 
@@ -529,6 +548,9 @@ msgstr "Muss zwischen {minValue} und {maxValue} {unitOfMeasureCode} liegen"
 msgid "My Hours"
 msgstr "Meine Stunden"
 
+msgid "My Salary"
+msgstr "Mein Gehalt"
+
 msgid "Name"
 msgstr "Name"
 
@@ -546,6 +568,9 @@ msgstr "Keine aktiven Instandhaltungseinsätze"
 
 msgid "No active operations"
 msgstr "Keine aktiven Arbeitsgänge"
+
+msgid "No approved completions this period"
+msgstr "Keine genehmten Abschlüsse für diese Periode"
 
 msgid "No assigned operations"
 msgstr "Keine zugewiesenen Arbeitsgänge"
@@ -583,8 +608,6 @@ msgstr "Keine Option gefunden."
 msgid "No options found."
 msgstr "Keine Optionen gefunden."
 
-msgid "No printer configured"
-msgstr "Kein Drucker konfiguriert"
 
 msgid "No recent operations"
 msgstr "Keine kürzlichen Arbeitsgänge"
@@ -597,6 +620,9 @@ msgstr "Keine Ergebnisse vorhanden"
 
 msgid "No results found"
 msgstr "Keine Ergebnisse gefunden"
+
+msgid "No results found."
+msgstr "Keine Ergebnisse gefunden."
 
 msgid "No scheduled time"
 msgstr "Keine geplante Zeit"
@@ -653,6 +679,12 @@ msgstr "Vom Bediener durchgeführt"
 msgid "Optional"
 msgstr "Optional"
 
+msgid "Owed"
+msgstr "Schulden"
+
+msgid "Paid"
+msgstr "Beglichen"
+
 msgid "Parameters"
 msgstr "Parameter"
 
@@ -665,11 +697,23 @@ msgstr "Prüfung bestanden"
 msgid "Pause"
 msgstr "Pause"
 
+msgid "Pending"
+msgstr "Verwendet"
+
+msgid "Pending Approval"
+msgstr "Warte auf Genehmigung"
+
+msgid "Period"
+msgstr "Periode"
+
 #. placeholder {0}: startColumn?.title
 #. placeholder {1}: startIndex + 1
 #. placeholder {2}: columnOrder.length
 msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "Spalte {0} aufgenommen an Position: {1} von {2}"
+
+msgid "Pickups"
+msgstr "Pausen"
 
 msgid "Pin Out"
 msgstr "Abmelden"
@@ -713,11 +757,6 @@ msgstr "Prozesse"
 msgid "Progress"
 msgstr "Fortschritt"
 
-msgid "Quality Issue"
-msgstr "Qualitätsproblem"
-
-msgid "Quality issue created"
-msgstr "Qualitätsproblem erstellt"
 
 msgid "Quantity"
 msgstr "Menge"
@@ -943,6 +982,9 @@ msgstr "Die abgeschlossene Menge für diesen Arbeitsgang ist geringer als die er
 msgid "There are serial or batch tracked materials on the bill of material that have not been fully issued. Completing without issuing may result in incorrect traceability records."
 msgstr "Es gibt serien- oder chargenverfolgte Materialien in der Stückliste, die noch nicht vollständig ausgegeben wurden. Ein Abschluss ohne Ausgabe kann zu fehlerhaften Rückverfolgbarkeitsdaten führen."
 
+msgid "This Period"
+msgstr "Dieser Zeitraum"
+
 msgid "Thumbnail"
 msgstr "Vorschaubild"
 
@@ -978,6 +1020,9 @@ msgstr "Nachricht eingeben..."
 
 msgid "Unissued serial/batch materials"
 msgstr "Nicht ausgegebene Serien-/Chargenmaterialien"
+
+msgid "unit"
+msgstr "Einheit"
 
 msgid "Unknown"
 msgstr "Unbekannt"
