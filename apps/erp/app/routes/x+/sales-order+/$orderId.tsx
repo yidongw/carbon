@@ -6,11 +6,11 @@ import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
 import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useParams } from "react-router";
-import { PanelProvider, ResizablePanels } from "~/components/Layout/Panels";
+import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import {
   getCustomer,
-  getOpportunity,
   getOpportunityDocuments,
+  getOrCreateOpportunityForSalesOrder,
   getQuote,
   getSalesOrder,
   getSalesOrderInvoiceLines,
@@ -54,13 +54,25 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     );
   }
 
-  const opportunity = await getOpportunity(
-    client,
-    salesOrder.data?.opportunityId ?? null
-  );
-
   if (companyId !== salesOrder.data?.companyId) {
     throw redirect(path.to.salesOrders);
+  }
+
+  const opportunity = await getOrCreateOpportunityForSalesOrder(client, {
+    id: salesOrder.data.id,
+    companyId: salesOrder.data.companyId,
+    customerId: salesOrder.data.customerId,
+    opportunityId: salesOrder.data.opportunityId ?? null
+  });
+
+  if (opportunity.error) {
+    throw redirect(
+      path.to.salesOrders,
+      await flash(
+        request,
+        error(opportunity.error, "Failed to load sales order opportunity")
+      )
+    );
   }
 
   if (!opportunity.data) throw new Error("Failed to get opportunity record");
@@ -168,12 +180,12 @@ export default function SalesOrderRoute() {
     <PanelProvider>
       <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
         <SalesOrderHeader />
-        <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
-          <div className="flex flex-grow overflow-hidden">
+        <div className="flex flex-1 min-h-0 overflow-hidden w-full">
+          <div className="flex flex-1 min-h-0 h-full overflow-hidden">
             <ResizablePanels
               // explorer={<SalesOrderExplorer />}
               content={
-                <div className="h-[calc(100dvh-99px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
+                <div className="h-full min-h-0 overflow-y-auto overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
                   <VStack spacing={2} className="p-2">
                     <Outlet />
                   </VStack>

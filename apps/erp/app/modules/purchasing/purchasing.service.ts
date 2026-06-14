@@ -343,7 +343,7 @@ export async function getPurchaseOrderDelivery(
     .from("purchaseOrderDelivery")
     .select("*")
     .eq("id", purchaseOrderId)
-    .single();
+    .maybeSingle();
 }
 
 export async function getPurchaseOrderLocations(
@@ -365,7 +365,7 @@ export async function getPurchaseOrderPayment(
     .from("purchaseOrderPayment")
     .select("*")
     .eq("id", purchaseOrderId)
-    .single();
+    .maybeSingle();
 }
 
 export async function getPurchaseOrderLines(

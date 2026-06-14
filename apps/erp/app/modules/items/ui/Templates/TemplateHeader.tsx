@@ -4,52 +4,38 @@ import {
   DropdownMenuContent,
   DropdownMenuIcon,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
   IconButton,
   useDisclosure
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { LuEllipsisVertical, LuPanelLeft, LuPanelRight, LuTrash } from "react-icons/lu";
+import { LuEllipsisVertical, LuPanelLeft, LuTrash } from "react-icons/lu";
 import { createPortal } from "react-dom";
-import { useParams } from "react-router";
-import { useAuditLog } from "~/components/AuditLog";
 import {
   DetailTopbarContent,
-  DetailTopbarId,
-  DetailsTopbar,
+  DetailTopbarPlainId,
   usePanels,
   useTopbarLeft
 } from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
-import { usePermissions, useRouteData, useUser } from "~/hooks";
+import { usePermissions } from "~/hooks";
 import { path } from "~/utils/path";
-import type { Consumable } from "../../types";
-import { useConsumableNavigation } from "./useConsumableNavigation";
 
-function ConsumableTopbarLeft({ itemId }: { itemId: string }) {
+type TemplateRow = {
+  id: string;
+  name: string;
+};
+
+function TemplateTopbarLeft({ template }: { template: TemplateRow }) {
   const { t } = useLingui();
   const permissions = usePermissions();
-  const { company } = useUser();
   const deleteModal = useDisclosure();
-  const { trigger: auditLogTrigger, drawer: auditLogDrawer } = useAuditLog({
-    entityType: "item",
-    entityId: itemId,
-    companyId: company.id,
-    variant: "dropdown"
-  });
-  const routeData = useRouteData<{ consumableSummary: Consumable }>(
-    path.to.consumable(itemId)
-  );
-  const readableId = routeData?.consumableSummary?.readableIdWithRevision ?? "";
 
   return (
     <>
       <DetailTopbarContent>
-        <DetailTopbarId to={path.to.consumableDetails(itemId)}>
-          {readableId}
-        </DetailTopbarId>
-        <Copy text={readableId} />
+        <DetailTopbarPlainId>{template.name}</DetailTopbarPlainId>
+        <Copy text={template.name ?? ""} />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <IconButton
@@ -60,8 +46,6 @@ function ConsumableTopbarLeft({ itemId }: { itemId: string }) {
             />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            {auditLogTrigger}
-            <DropdownMenuSeparator />
             <DropdownMenuItem
               disabled={
                 !permissions.can("delete", "parts") ||
@@ -71,18 +55,17 @@ function ConsumableTopbarLeft({ itemId }: { itemId: string }) {
               onClick={deleteModal.onOpen}
             >
               <DropdownMenuIcon icon={<LuTrash />} />
-              <Trans>Delete Consumable</Trans>
+              <Trans>Delete Template</Trans>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </DetailTopbarContent>
-      {auditLogDrawer}
       {deleteModal.isOpen && (
         <ConfirmDelete
-          action={path.to.deleteItem(itemId)}
+          action={path.to.deleteTemplate(template.id)}
           isOpen={deleteModal.isOpen}
-          name={readableId}
-          text={t`Are you sure you want to delete ${readableId}? This cannot be undone.`}
+          name={template.name}
+          text={t`Are you sure you want to delete ${template.name}? This cannot be undone.`}
           onCancel={deleteModal.onClose}
           onSubmit={deleteModal.onClose}
         />
@@ -91,18 +74,15 @@ function ConsumableTopbarLeft({ itemId }: { itemId: string }) {
   );
 }
 
-const ConsumableHeader = () => {
+const TemplateHeader = ({ template }: { template: TemplateRow }) => {
   const { t } = useLingui();
-  const links = useConsumableNavigation();
-  const { itemId } = useParams();
-  if (!itemId) throw new Error("itemId not found");
-
   const { leftSlotEl } = useTopbarLeft();
-  const { hasExplorer, toggleExplorer, toggleProperties } = usePanels();
+  const { hasExplorer, toggleExplorer } = usePanels();
 
   return (
     <>
-      {leftSlotEl && createPortal(<ConsumableTopbarLeft itemId={itemId} />, leftSlotEl)}
+      {leftSlotEl &&
+        createPortal(<TemplateTopbarLeft template={template} />, leftSlotEl)}
       <div className="flex-shrink-0 h-[50px] flex items-center gap-1 px-2 bg-card border-b border-border dark:border-none dark:shadow-[inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)]">
         {hasExplorer && (
           <IconButton
@@ -112,18 +92,10 @@ const ConsumableHeader = () => {
             variant="ghost"
           />
         )}
-        <div className="flex-1 overflow-x-auto overflow-y-hidden scrollbar-hide flex items-center">
-          <DetailsTopbar links={links} />
-        </div>
-        <IconButton
-          aria-label={t`Toggle Properties`}
-          icon={<LuPanelRight />}
-          onClick={toggleProperties}
-          variant="ghost"
-        />
+        <div className="flex-1" />
       </div>
     </>
   );
 };
 
-export default ConsumableHeader;
+export default TemplateHeader;

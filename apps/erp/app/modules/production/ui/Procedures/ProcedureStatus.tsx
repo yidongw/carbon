@@ -4,13 +4,25 @@ import type { procedureStatus } from "../../production.models";
 
 type ProcedureStatusProps = {
   status?: (typeof procedureStatus)[number] | null;
+  iconOnly?: boolean;
 };
 
-const ProcedureStatus = ({ status }: ProcedureStatusProps) => {
+const ProcedureStatus = ({ status, iconOnly }: ProcedureStatusProps) => {
   switch (status) {
     case "Draft":
-      return <Status color="gray">{status}</Status>;
+      return (
+        <Status color="gray" iconOnly={iconOnly}>
+          {status}
+        </Status>
+      );
     case "Active":
+      if (iconOnly) {
+        return (
+          <Status color="green" iconOnly>
+            {status}
+          </Status>
+        );
+      }
       return (
         <Badge variant="green">
           <LuLock className="size-3 mr-1" />
@@ -18,6 +30,13 @@ const ProcedureStatus = ({ status }: ProcedureStatusProps) => {
         </Badge>
       );
     case "Archived":
+      if (iconOnly) {
+        return (
+          <Status color="red" iconOnly>
+            {status}
+          </Status>
+        );
+      }
       return (
         <Badge variant="red">
           <LuLock className="size-3 mr-1" />

@@ -10,9 +10,19 @@ import {
 } from "./Navigation";
 import { PanelProvider, ResizablePanels, usePanels } from "./Panels";
 
-import Topbar from "./Topbar";
+import Topbar, { TopbarProvider, useTopbarLeft } from "./Topbar";
+import {
+  DetailTopbarBadge,
+  DetailTopbarContent,
+  DetailTopbarId,
+  DetailTopbarPlainId
+} from "./Topbar/DetailTopbar";
 
 export {
+  DetailTopbarBadge,
+  DetailTopbarContent,
+  DetailTopbarId,
+  DetailTopbarPlainId,
   Background,
   CollapsibleSidebar,
   ContentSidebar,
@@ -23,5 +33,7 @@ export {
   PrimaryNavigation,
   ResizablePanels,
   Topbar,
+  TopbarProvider,
+  useTopbarLeft,
   usePanels
 };

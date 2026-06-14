@@ -1,4 +1,4 @@
-import { HStack, IconButton } from "@carbon/react";
+import { cn, HStack, IconButton, useIsMobile } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import { LuArrowLeft, LuSquarePen } from "react-icons/lu";
 import { useLocation, useNavigate } from "react-router";
@@ -10,6 +10,7 @@ import CreateMenu from "./CreateMenu";
 import Notifications from "./Notifications";
 import Search from "./Search";
 import Suggestion from "./Suggestion";
+import { useTopbarLeft } from "./TopbarContext";
 
 const Topbar = () => {
   const { t } = useLingui();
@@ -19,33 +20,41 @@ const Topbar = () => {
   const user = useUser();
   const notificationsKey = `${user.id}:${user.company.id}`;
   const onDashboard = location.pathname === path.to.authenticatedRoot;
+  const isMobile = useIsMobile();
+  const { setLeftSlotEl, hasDetailTopbar } = useTopbarLeft();
+  const hideBreadcrumbsOnMobile = isMobile && hasDetailTopbar;
 
   return (
-    <div className="h-[49px] grid grid-cols-[1fr_200px_1fr] bg-background text-foreground px-4 top-0 sticky z-10 items-center">
-      <div className="flex-1 hidden md:block">
-        <Breadcrumbs />
-      </div>
-      <div className="flex-1 md:hidden">
-        {!onDashboard ? (
-          <IconButton
-            aria-label={t`Back`}
-            icon={<LuArrowLeft />}
-            variant="ghost"
-            onClick={() => navigate(-1)}
-          />
-        ) : null}
-      </div>
-      <div className="flex justify-center">
-        <div className="md:hidden">
+    <div className="h-[49px] flex items-center bg-background text-foreground px-4 top-0 sticky z-10 gap-2">
+      <div className="flex items-center flex-1 min-w-0 gap-1">
+        <div className="md:hidden flex-shrink-0">
+          {!onDashboard ? (
+            <IconButton
+              aria-label={t`Back`}
+              icon={<LuArrowLeft />}
+              variant="ghost"
+              onClick={() => navigate(-1)}
+            />
+          ) : null}
+        </div>
+        <div
+          data-breadcrumbs
+          className={cn(
+            "flex items-center min-w-0 flex-shrink",
+            hideBreadcrumbsOnMobile && "hidden"
+          )}
+        >
           <Breadcrumbs />
         </div>
+        {/* Portal target — detail identity renders after breadcrumbs */}
+        <div
+          data-topbar-slot
+          ref={setLeftSlotEl}
+          className="flex flex-1 items-center min-w-0 overflow-visible"
+        />
       </div>
-      <HStack spacing={1} className="flex-1 justify-end py-2">
-        {permissions.is("employee") ? (
-          <div className="md:absolute md:left-1/2 md:-translate-x-1/2">
-            <Search />
-          </div>
-        ) : null}
+      <HStack spacing={1} className="flex-shrink-0 py-2">
+        {permissions.is("employee") ? <Search /> : null}
         <div className="hidden md:block">
           <Suggestion />
         </div>
@@ -58,9 +67,7 @@ const Topbar = () => {
             />
           }
         />
-
         <Notifications key={notificationsKey} />
-
         <AvatarMenu />
       </HStack>
     </div>

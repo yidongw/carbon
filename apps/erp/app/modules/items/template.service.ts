@@ -109,6 +109,18 @@ export async function getTemplatesList(
     .order("name", { ascending: true });
 }
 
+export async function deleteTemplate(
+  client: SupabaseClient<Database>,
+  templateId: string,
+  companyId: string
+) {
+  return client
+    .from("template")
+    .delete()
+    .eq("id", templateId)
+    .eq("companyId", companyId);
+}
+
 export async function getTemplateConfigurationParameters(
   client: SupabaseClient<Database>,
   templateId: string,

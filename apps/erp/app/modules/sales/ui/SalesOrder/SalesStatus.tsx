@@ -15,6 +15,7 @@ type SalesOrderStatusProps = {
     methodType: "Purchase to Order" | "Make to Order" | "Pull from Inventory";
     saleQuantity: number;
   }>;
+  iconOnly?: boolean;
 };
 
 const STATUS_COLOR_MAP: Record<
@@ -34,10 +35,9 @@ const STATUS_COLOR_MAP: Record<
   Completed: "green"
 } as const;
 
-const SalesStatus = ({ status, jobs, lines }: SalesOrderStatusProps) => {
+const SalesStatus = ({ status, jobs, lines, iconOnly }: SalesOrderStatusProps) => {
   if (!status) return null;
 
-  // Check if the order has incomplete jobs
   const isManufacturing =
     jobs !== undefined &&
     lines !== undefined &&
@@ -45,7 +45,7 @@ const SalesStatus = ({ status, jobs, lines }: SalesOrderStatusProps) => {
 
   if (isManufacturing && !(status === "Closed" || status === "Cancelled")) {
     return (
-      <Status color="yellow" tooltip={status}>
+      <Status color="yellow" tooltip={status} iconOnly={iconOnly}>
         In Progress
       </Status>
     );
@@ -54,7 +54,11 @@ const SalesStatus = ({ status, jobs, lines }: SalesOrderStatusProps) => {
   const color = STATUS_COLOR_MAP[status];
   if (!color) return null;
 
-  return <Status color={color}>{status}</Status>;
+  return (
+    <Status color={color} iconOnly={iconOnly}>
+      {status}
+    </Status>
+  );
 };
 
 export default SalesStatus;
