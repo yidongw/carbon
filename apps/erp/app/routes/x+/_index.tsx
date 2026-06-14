@@ -27,11 +27,9 @@ export default function AppIndexRoute() {
       <Subheading>{formatter.format(date)}</Subheading>
       <Hr />
       <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,300px),1fr))] gap-6 mb-8">
-        {modules
-          .filter((mod) => mod.name !== "Settings")
-          .map((module) => (
-            <ModuleCard key={module.name} module={module} />
-          ))}
+        {modules.map((module) => (
+          <ModuleCard key={module.name} module={module} />
+        ))}
       </div>
     </div>
   );
