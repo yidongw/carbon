@@ -30,7 +30,7 @@ export default function usePeopleSubmodules() {
           table: "employee"
         },
         {
-          name: t`Accounts`,
+          name: t`Permissions`,
           to: path.to.employeeAccounts,
           icon: <LuShield />
         },
