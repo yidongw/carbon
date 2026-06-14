@@ -24,10 +24,17 @@ import { convertKbToString } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { FileObject } from "@supabase/storage-js";
 import type { ChangeEvent } from "react";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { LuEllipsisVertical, LuUpload } from "react-icons/lu";
 import { Outlet, useFetchers, useRevalidator, useSubmit } from "react-router";
-import { DocumentPreview, FileDropzone } from "~/components";
+import {
+  DocumentPreview,
+  FileDropzone,
+  FilesIconView,
+  FilesViewModeToggle
+} from "~/components";
+import type { FilesIconItem } from "~/components/FilesIconView";
+import { useFilesViewMode } from "~/components/FilesViewModeToggle";
 import DocumentIcon from "~/components/DocumentIcon";
 import { useDateFormatter, usePermissions, useUser } from "~/hooks";
 import { getDocumentType } from "~/modules/shared";
@@ -69,6 +76,26 @@ const SupplierInteractionDocuments = ({
     [upload]
   );
 
+  const [viewMode, setViewMode] = useFilesViewMode();
+
+  const iconItems = useMemo<FilesIconItem<FileObject>[]>(() => {
+    return attachments.map((attachment) => {
+      const type = getDocumentType(attachment.name);
+      return {
+        id: attachment.id,
+        name: attachment.name,
+        documentType: type,
+        pathToFile: getPath(attachment),
+        createdAt: attachment.created_at,
+        sizeBytes: attachment.metadata?.size,
+        previewType: ["PDF", "Image"].includes(type)
+          ? (type as "PDF" | "Image")
+          : undefined,
+        raw: attachment
+      };
+    });
+  }, [attachments, getPath]);
+
   return (
     <>
       <Card>
@@ -79,16 +106,27 @@ const SupplierInteractionDocuments = ({
             </CardTitle>
           </CardHeader>
           <CardAction>
-            {!isReadOnly && (
-              <SupplierInteractionDocumentForm
-                interactionId={interactionId}
-                id={id}
-                type={type}
-              />
-            )}
+            <HStack>
+              <FilesViewModeToggle value={viewMode} onChange={setViewMode} />
+              {!isReadOnly && (
+                <SupplierInteractionDocumentForm
+                  interactionId={interactionId}
+                  id={id}
+                  type={type}
+                />
+              )}
+            </HStack>
           </CardAction>
         </HStack>
         <CardContent>
+          {viewMode === "icons" ? (
+            <FilesIconView
+              items={iconItems}
+              canDelete={canDelete && !isReadOnly}
+              onDownload={(item) => item.raw && download(item.raw)}
+              onDelete={(item) => item.raw && deleteAttachment(item.raw)}
+            />
+          ) : (
           <Table>
             <Thead>
               <Tr>
@@ -177,6 +215,7 @@ const SupplierInteractionDocuments = ({
               )}
             </Tbody>
           </Table>
+          )}
           {!isReadOnly && <FileDropzone onDrop={onDrop} />}
         </CardContent>
       </Card>

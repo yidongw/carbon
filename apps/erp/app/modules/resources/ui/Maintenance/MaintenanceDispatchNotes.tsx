@@ -30,10 +30,17 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import type { FileObject } from "@supabase/storage-js";
 import { nanoid } from "nanoid";
 import type { ChangeEvent } from "react";
-import { Suspense, useCallback, useState } from "react";
+import { Suspense, useCallback, useMemo, useState } from "react";
 import { LuEllipsisVertical, LuUpload } from "react-icons/lu";
 import { Await, useRevalidator } from "react-router";
-import { DocumentPreview, FileDropzone } from "~/components";
+import {
+  DocumentPreview,
+  FileDropzone,
+  FilesIconView,
+  FilesViewModeToggle
+} from "~/components";
+import type { FilesIconItem } from "~/components/FilesIconView";
+import { useFilesViewMode } from "~/components/FilesViewModeToggle";
 import DocumentIcon from "~/components/DocumentIcon";
 import { usePermissions, useUser } from "~/hooks";
 import { getDocumentType } from "~/modules/shared";
@@ -291,16 +298,47 @@ function MaintenanceFilesContent({
     }
   };
 
+  const [viewMode, setViewMode] = useFilesViewMode();
+
+  const iconItems = useMemo<FilesIconItem<StorageItem>[]>(() => {
+    return files.map((file) => {
+      const type = getDocumentType(file.name);
+      return {
+        id: file.id,
+        name: file.name,
+        documentType: type,
+        pathToFile: getFilePath(file.name),
+        sizeBytes: file.metadata?.size,
+        previewType: ["PDF", "Image"].includes(type)
+          ? (type as "PDF" | "Image")
+          : undefined,
+        raw: file
+      };
+    });
+  }, [files, getFilePath]);
+
   return (
     <>
-      {!isReadOnly && (
-        <div className="flex justify-end mb-4">
-          {/* @ts-expect-error TS2322 */}
-          <File leftIcon={<LuUpload />} onChange={uploadFiles} multiple>
-            <Trans>Upload</Trans>
-          </File>
-        </div>
-      )}
+      <div className="mb-4 flex justify-end gap-2">
+        <FilesViewModeToggle value={viewMode} onChange={setViewMode} />
+        {!isReadOnly && (
+          <>
+            {/* @ts-expect-error TS2322 */}
+            <File leftIcon={<LuUpload />} onChange={uploadFiles} multiple>
+              <Trans>Upload</Trans>
+            </File>
+          </>
+        )}
+      </div>
+      {viewMode === "icons" ? (
+        <FilesIconView
+          items={iconItems}
+          canDelete={!isReadOnly}
+          emptyMessage={<Trans>No files uploaded</Trans>}
+          onDownload={(item) => item.raw && download(item.raw)}
+          onDelete={(item) => item.raw && deleteFile(item.raw)}
+        />
+      ) : (
       <Table>
         <Thead>
           <Tr>
@@ -397,6 +435,7 @@ function MaintenanceFilesContent({
           )}
         </Tbody>
       </Table>
+      )}
       {!isReadOnly && <FileDropzone onDrop={onDrop} />}
     </>
   );
