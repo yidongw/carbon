@@ -6,7 +6,7 @@ export interface AuthSession {
   userId: string;
   companyId: string;
   companyGroupId: string;
-  email: string;
+  email: string | null;
   expiresIn: number;
   expiresAt: number;
   console?: string;

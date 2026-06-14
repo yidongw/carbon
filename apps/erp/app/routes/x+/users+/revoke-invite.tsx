@@ -77,7 +77,7 @@ export async function action({ request }: ActionFunctionArgs) {
     .update({ revokedAt: new Date().toISOString() })
     .in(
       "email",
-      usersToRevoke.data.map((user) => user.email)
+      usersToRevoke.data.map((user) => user.email ?? "")
     )
     .eq("companyId", companyId)
     .is("revokedAt", null);
