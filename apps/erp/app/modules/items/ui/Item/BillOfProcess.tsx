@@ -112,11 +112,9 @@ import type {
   OperationTool
 } from "~/modules/shared";
 import {
-  methodOperationOrders,
   operationParameterValidator,
   operationStepValidator,
   operationToolValidator,
-  operationTypes,
   procedureStepType,
   standardFactorType
 } from "~/modules/shared";
@@ -929,6 +927,20 @@ function OperationForm({
   onSubmit
 }: OperationFormProps) {
   const { t } = useLingui();
+  const operationOrderOptions = useMemo(
+    () => [
+      { value: "After Previous", label: <Trans>After Previous</Trans> },
+      { value: "With Previous", label: <Trans>With Previous</Trans> }
+    ],
+    []
+  );
+  const operationTypeOptions = useMemo(
+    () => [
+      { value: "Inside", label: <Trans>Inside</Trans> },
+      { value: "Outside", label: <Trans>Outside</Trans> }
+    ],
+    []
+  );
   const methodOperationFetcher = useFetcher<{
     id: string;
     success: boolean;
@@ -1108,10 +1120,7 @@ function OperationForm({
           name="operationOrder"
           label={t`Operation Order`}
           placeholder={t`Operation Order`}
-          options={methodOperationOrders.map((o) => ({
-            value: o,
-            label: o
-          }))}
+          options={operationOrderOptions}
           onChange={(value) => {
             setProcessData((d) => ({
               ...d,
@@ -1141,10 +1150,7 @@ function OperationForm({
           name="operationType"
           label={t`Operation Type`}
           placeholder={t`Operation Type`}
-          options={operationTypes.map((o) => ({
-            value: o,
-            label: o
-          }))}
+          options={operationTypeOptions}
           value={processData.operationType}
           onChange={(value) => {
             setProcessData((d) => ({

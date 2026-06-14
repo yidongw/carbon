@@ -69,6 +69,21 @@ export function useOperationTypeLabel() {
   };
 }
 
+export function useOperationOrderLabel() {
+  const { t } = useLingui();
+
+  return (order: string) => {
+    switch (order) {
+      case "After Previous":
+        return t`After Previous`;
+      case "With Previous":
+        return t`With Previous`;
+      default:
+        return order;
+    }
+  };
+}
+
 export function useRelativeCreatedUpdatedText() {
   const { t } = useLingui();
 
