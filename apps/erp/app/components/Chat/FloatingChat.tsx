@@ -276,19 +276,21 @@ function PositionMenu({ current, onSelect, onClose, viewportW }: PositionMenuPro
 
 interface ResizeHandleProps {
   position: ChatPosition;
-  onResizeStart: (e: React.MouseEvent) => void;
+  onResizeStart: (clientX: number, clientY: number) => void;
 }
 
 function ResizeHandle({ position, onResizeStart }: ResizeHandleProps) {
   const isHorizontal = position === "top" || position === "bottom";
-  const isInverted = position === "right-inside" || position === "bottom";
+  // "inverted" means the resizable edge is at the start of the handle div
+  // (left for right-side panels, top for bottom panel)
+  const isInverted = position === "right-inside" || position === "right-outside" || position === "bottom";
 
   const style: React.CSSProperties = isHorizontal
     ? {
         position: "absolute",
         left: 0,
         right: 0,
-        height: 6,
+        height: 20,
         cursor: "ns-resize",
         ...(position === "bottom" ? { top: 0 } : { bottom: 0 })
       }
@@ -296,7 +298,7 @@ function ResizeHandle({ position, onResizeStart }: ResizeHandleProps) {
         position: "absolute",
         top: 0,
         bottom: 0,
-        width: 6,
+        width: 20,
         cursor: "ew-resize",
         ...(isInverted ? { left: 0 } : { right: 0 })
       };
@@ -304,21 +306,26 @@ function ResizeHandle({ position, onResizeStart }: ResizeHandleProps) {
   return (
     <div
       style={style}
-      className="group z-10"
-      onMouseDown={onResizeStart}
+      className="group z-10 flex items-center justify-center touch-none"
+      onMouseDown={(e) => {
+        e.preventDefault();
+        onResizeStart(e.clientX, e.clientY);
+      }}
+      onTouchStart={(e) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        if (touch) onResizeStart(touch.clientX, touch.clientY);
+      }}
     >
       <div
         className={cn(
-          "absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100",
-          "transition-opacity duration-150"
+          "transition-[opacity,background-color] duration-150",
+          "group-hover:opacity-100",
+          isHorizontal
+            ? "w-24 h-1 rounded-full bg-border/50 group-hover:bg-border"
+            : "h-24 w-1 rounded-full bg-border/50 group-hover:bg-border"
         )}
-      >
-        {isHorizontal ? (
-          <div className="w-10 h-[3px] rounded-full bg-border" />
-        ) : (
-          <div className="h-10 w-[3px] rounded-full bg-border" />
-        )}
-      </div>
+      />
     </div>
   );
 }
@@ -586,44 +593,48 @@ export function FloatingChat() {
 
   // Panel resize handlers
   const onResizeStart = useCallback(
-    (e: React.MouseEvent, dimension: "width" | "height") => {
-      e.preventDefault();
-      e.stopPropagation();
+    (startX: number, startY: number, dimension: "width" | "height") => {
       const inverted =
         dimension === "width"
           ? position === "right-inside" || position === "right-outside"
           : position === "bottom";
       resizeRef.current = {
         active: true,
-        startMX: e.clientX,
-        startMY: e.clientY,
+        startMX: startX,
+        startMY: startY,
         startSize: dimension === "width" ? panelWidth : panelHeight,
         dimension,
         inverted
       };
 
-      const onMove = (e: MouseEvent) => {
+      const onMove = (e: Event) => {
         const r = resizeRef.current;
         if (!r?.active) return;
+        let cx: number;
+        let cy: number;
+        if (typeof TouchEvent !== "undefined" && e instanceof TouchEvent) {
+          const t = e.touches[0];
+          if (!t) return;
+          cx = t.clientX;
+          cy = t.clientY;
+          e.preventDefault();
+        } else {
+          cx = (e as MouseEvent).clientX;
+          cy = (e as MouseEvent).clientY;
+        }
         if (r.dimension === "width") {
-          const dx = r.inverted
-            ? r.startMX - e.clientX
-            : e.clientX - r.startMX;
+          const dx = r.inverted ? r.startMX - cx : cx - r.startMX;
+          const isOutside = position === "left-outside" || position === "right-outside";
+          const maxWidth = isOutside
+            ? Math.max(MIN_PANEL_SIZE, window.innerWidth - 640)
+            : window.innerWidth * 0.85;
           setPanelWidth(
-            Math.max(
-              MIN_PANEL_SIZE,
-              Math.min(r.startSize + dx, window.innerWidth * 0.85)
-            )
+            Math.max(MIN_PANEL_SIZE, Math.min(r.startSize + dx, maxWidth))
           );
         } else {
-          const dy = r.inverted
-            ? r.startMY - e.clientY
-            : e.clientY - r.startMY;
+          const dy = r.inverted ? r.startMY - cy : cy - r.startMY;
           setPanelHeight(
-            Math.max(
-              MIN_PANEL_SIZE,
-              Math.min(r.startSize + dy, window.innerHeight * 0.9)
-            )
+            Math.max(MIN_PANEL_SIZE, Math.min(r.startSize + dy, window.innerHeight * 0.9))
           );
         }
       };
@@ -632,10 +643,14 @@ export function FloatingChat() {
         resizeRef.current = null;
         window.removeEventListener("mousemove", onMove);
         window.removeEventListener("mouseup", onUp);
+        window.removeEventListener("touchmove", onMove as EventListener);
+        window.removeEventListener("touchend", onUp);
       };
 
       window.addEventListener("mousemove", onMove);
       window.addEventListener("mouseup", onUp);
+      window.addEventListener("touchmove", onMove as EventListener, { passive: false });
+      window.addEventListener("touchend", onUp);
     },
     [position, panelWidth, panelHeight, setPanelWidth, setPanelHeight]
   );
@@ -781,7 +796,7 @@ export function FloatingChat() {
             {isResizable && (
               <ResizeHandle
                 position={effectivePosition}
-                onResizeStart={(e) => onResizeStart(e, resizeDimension)}
+                onResizeStart={(x, y) => onResizeStart(x, y, resizeDimension)}
               />
             )}
 
