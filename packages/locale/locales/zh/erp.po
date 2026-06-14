@@ -1395,6 +1395,9 @@ msgstr "购买"
 msgid "Buy"
 msgstr "购买"
 
+msgid "Buy"
+msgstr "购买"
+
 msgid "Buy and Make"
 msgstr "购买和制造"
 
@@ -2284,6 +2287,12 @@ msgstr ""
 msgid "Created At"
 msgstr "创建于"
 
+msgid "Created account"
+msgstr ""
+
+msgid "Created At"
+msgstr "创建于"
+
 msgid "Created By"
 msgstr "由...创建"
 
@@ -2675,6 +2684,9 @@ msgstr "默认方法"
 
 msgid "Default CC Recipients"
 msgstr "默认抄送收件人"
+
+msgid "Default Method"
+msgstr "默认方法"
 
 msgid "Default Method"
 msgstr "默认方法"
@@ -5081,6 +5093,9 @@ msgid "Item Group"
 msgstr "物品组"
 
 msgid "Item Groups"
+msgstr "物品组"
+
+msgid "Item Group"
 msgstr "物品组"
 
 msgid "Item Group"
@@ -10119,6 +10134,12 @@ msgstr "更新采购订单数量"
 
 msgid "Updated"
 msgstr "已更新"
+
+msgid "Updated At"
+msgstr "更新于"
+
+msgid "Updated account"
+msgstr ""
 
 msgid "Updated At"
 msgstr "更新于"

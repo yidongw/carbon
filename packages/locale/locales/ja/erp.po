@@ -1395,6 +1395,9 @@ msgstr "購入"
 msgid "Buy"
 msgstr "購入"
 
+msgid "Buy"
+msgstr "購入"
+
 msgid "Buy and Make"
 msgstr "購入と製造"
 
@@ -2284,6 +2287,12 @@ msgstr ""
 msgid "Created At"
 msgstr "作成日時"
 
+msgid "Created account"
+msgstr ""
+
+msgid "Created At"
+msgstr "作成日時"
+
 msgid "Created By"
 msgstr "作成者"
 
@@ -2675,6 +2684,9 @@ msgstr "デフォルト方法"
 
 msgid "Default CC Recipients"
 msgstr "デフォルトCC受信者"
+
+msgid "Default Method"
+msgstr "デフォルト方法"
 
 msgid "Default Method"
 msgstr "デフォルト方法"
@@ -5082,6 +5094,9 @@ msgstr "品目グループ"
 
 msgid "Item Groups"
 msgstr "アイテムグループ"
+
+msgid "Item Group"
+msgstr "品目グループ"
 
 msgid "Item Group"
 msgstr "品目グループ"
@@ -10118,6 +10133,12 @@ msgstr "購買注文数量を更新"
 
 msgid "Updated"
 msgstr "更新済み"
+
+msgid "Updated At"
+msgstr "更新日時"
+
+msgid "Updated account"
+msgstr ""
 
 msgid "Updated At"
 msgstr "更新日時"

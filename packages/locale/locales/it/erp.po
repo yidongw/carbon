@@ -1395,6 +1395,9 @@ msgstr "Acquista"
 msgid "Buy"
 msgstr "Acquista"
 
+msgid "Buy"
+msgstr "Acquista"
+
 msgid "Buy and Make"
 msgstr "Acquista e Produci"
 
@@ -2290,6 +2293,12 @@ msgstr ""
 msgid "Created At"
 msgstr "Creato il"
 
+msgid "Created account"
+msgstr ""
+
+msgid "Created At"
+msgstr "Creato il"
+
 msgid "Created By"
 msgstr "Creato da"
 
@@ -2681,6 +2690,9 @@ msgstr "Metodo Predefinito"
 
 msgid "Default CC Recipients"
 msgstr "Destinatari CC predefiniti"
+
+msgid "Default Method"
+msgstr "Metodo Predefinito"
 
 msgid "Default Method"
 msgstr "Metodo Predefinito"
@@ -5088,6 +5100,9 @@ msgstr "Gruppo Articoli"
 
 msgid "Item Groups"
 msgstr "Gruppi di articoli"
+
+msgid "Item Group"
+msgstr "Gruppo Articoli"
 
 msgid "Item Group"
 msgstr "Gruppo Articoli"
@@ -10123,6 +10138,12 @@ msgstr "Aggiorna le quantità dell'ordine di acquisto"
 
 msgid "Updated"
 msgstr "Aggiornato"
+
+msgid "Updated At"
+msgstr "Aggiornato il"
+
+msgid "Updated account"
+msgstr ""
 
 msgid "Updated At"
 msgstr "Aggiornato il"

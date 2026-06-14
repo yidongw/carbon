@@ -1395,6 +1395,9 @@ msgstr "खरीदें"
 msgid "Buy"
 msgstr "खरीदें"
 
+msgid "Buy"
+msgstr "खरीदें"
+
 msgid "Buy and Make"
 msgstr "खरीदें और बनाएं"
 
@@ -2284,6 +2287,12 @@ msgstr ""
 msgid "Created At"
 msgstr "बनाया गया"
 
+msgid "Created account"
+msgstr ""
+
+msgid "Created At"
+msgstr "बनाया गया"
+
 msgid "Created By"
 msgstr "द्वारा बनाया गया"
 
@@ -2675,6 +2684,9 @@ msgstr "डिफ़ॉल्ट विधि"
 
 msgid "Default CC Recipients"
 msgstr "डिफ़ॉल्ट CC प्राप्तकर्ता"
+
+msgid "Default Method"
+msgstr "डिफ़ॉल्ट विधि"
 
 msgid "Default Method"
 msgstr "डिफ़ॉल्ट विधि"
@@ -5081,6 +5093,9 @@ msgid "Item Group"
 msgstr "आइटम समूह"
 
 msgid "Item Groups"
+msgstr "आइटम समूह"
+
+msgid "Item Group"
 msgstr "आइटम समूह"
 
 msgid "Item Group"
@@ -10119,6 +10134,12 @@ msgstr "क्रय आदेश मात्रा अपडेट करे�
 
 msgid "Updated"
 msgstr "अपडेट किया गया"
+
+msgid "Updated At"
+msgstr "अपडेट किया गया"
+
+msgid "Updated account"
+msgstr ""
 
 msgid "Updated At"
 msgstr "अपडेट किया गया"

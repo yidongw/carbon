@@ -1395,6 +1395,9 @@ msgstr "Kup"
 msgid "Buy"
 msgstr "Kup"
 
+msgid "Buy"
+msgstr "Kup"
+
 msgid "Buy and Make"
 msgstr "Kupuj i Wytwarzaj"
 
@@ -2284,6 +2287,12 @@ msgstr ""
 msgid "Created At"
 msgstr "Utworzono"
 
+msgid "Created account"
+msgstr ""
+
+msgid "Created At"
+msgstr "Utworzono"
+
 msgid "Created By"
 msgstr "Utworzono przez"
 
@@ -2675,6 +2684,9 @@ msgstr "Metoda domyślna"
 
 msgid "Default CC Recipients"
 msgstr "Domyślni odbiorcy DW"
+
+msgid "Default Method"
+msgstr "Metoda domyślna"
 
 msgid "Default Method"
 msgstr "Metoda domyślna"
@@ -5082,6 +5094,9 @@ msgstr "Grupa Pozycji"
 
 msgid "Item Groups"
 msgstr "Grupy Pozycji"
+
+msgid "Item Group"
+msgstr "Grupa Pozycji"
 
 msgid "Item Group"
 msgstr "Grupa Pozycji"
@@ -10119,6 +10134,12 @@ msgstr "Zaktualizuj ilości zamówienia zakupu"
 
 msgid "Updated"
 msgstr "Zaktualizowano"
+
+msgid "Updated At"
+msgstr "Zaktualizowano"
+
+msgid "Updated account"
+msgstr ""
 
 msgid "Updated At"
 msgstr "Zaktualizowano"

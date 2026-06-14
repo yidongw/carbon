@@ -1392,6 +1392,9 @@ msgstr "Buy"
 msgid "Buy"
 msgstr "Buy"
 
+msgid "Buy"
+msgstr "Buy"
+
 msgid "Buy and Make"
 msgstr "Buy and Make"
 
@@ -2281,6 +2284,12 @@ msgstr "Created account"
 msgid "Created At"
 msgstr "Created At"
 
+msgid "Created account"
+msgstr "Created account"
+
+msgid "Created At"
+msgstr "Created At"
+
 msgid "Created By"
 msgstr "Created By"
 
@@ -2672,6 +2681,9 @@ msgstr "Default Method"
 
 msgid "Default CC Recipients"
 msgstr "Default CC Recipients"
+
+msgid "Default Method"
+msgstr "Default Method"
 
 msgid "Default Method"
 msgstr "Default Method"
@@ -5079,6 +5091,9 @@ msgstr "Item Group"
 
 msgid "Item Groups"
 msgstr "Item Groups"
+
+msgid "Item Group"
+msgstr "Item Group"
 
 msgid "Item Group"
 msgstr "Item Group"
@@ -10114,6 +10129,12 @@ msgstr "Update the purchase order quantities"
 
 msgid "Updated"
 msgstr "Updated"
+
+msgid "Updated At"
+msgstr "Updated At"
+
+msgid "Updated account"
+msgstr "Updated account"
 
 msgid "Updated At"
 msgstr "Updated At"
