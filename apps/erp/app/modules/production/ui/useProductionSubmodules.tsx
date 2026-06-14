@@ -31,7 +31,7 @@ export default function useProductionSubmodules() {
       ]
     },
     {
-      name: t`Production`,
+      name: t`Manage`,
       routes: [
         {
           name: t`Jobs`,
