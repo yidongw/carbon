@@ -32,7 +32,9 @@ export const validationErrorMessages: Record<string, MessageDescriptor> = {
   "Error deleting file": msg`Error deleting file`,
   "Failed to upload file": msg`Failed to upload file`,
   "File upload is not supported for external scars": msg`File upload is not supported for external scars`,
-  "File size too big (max 20MB).": msg`File size too big (max 20MB).`
+  "File size too big (max 20MB).": msg`File size too big (max 20MB).`,
+  "Please open this link in the same browser where you requested sign-in.": msg`Please open this link in the same browser where you requested sign-in.`,
+  "Magic link expired or already used. Please request a new one.": msg`Magic link expired or already used. Please request a new one.`
 };
 
 export function formatValidationError(error: string, i18n: I18n) {
