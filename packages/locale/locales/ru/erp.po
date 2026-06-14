@@ -3255,6 +3255,9 @@ msgstr "Письма"
 msgid "Emoji"
 msgstr "Эмодзи"
 
+msgid "Employed"
+msgstr "Работает"
+
 msgid "Employee"
 msgstr "Сотрудник"
 
@@ -4474,6 +4477,9 @@ msgstr "Investirovki в подотчетных компаниях"
 
 msgid "Invite"
 msgstr "Пригласить"
+
+msgid "Invited"
+msgstr "Приглашён"
 
 msgid "Invoice"
 msgstr "Счет"
@@ -5911,6 +5917,9 @@ msgstr "Налоговые сборы не облагаемые налогом"
 
 msgid "None"
 msgstr "Нет"
+
+msgid "Offboarded"
+msgstr "Уволен"
 
 msgid "Not enough jobs to cover quantity"
 msgstr "Недостаточно заданий для покрытия количества"

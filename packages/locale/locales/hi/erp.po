@@ -3255,6 +3255,9 @@ msgstr "ईमेल"
 msgid "Emoji"
 msgstr "इमोजी"
 
+msgid "Employed"
+msgstr "कार्यरत"
+
 msgid "Employee"
 msgstr "कर्मचारी"
 
@@ -4474,6 +4477,9 @@ msgstr "निवेश विस्तार"
 
 msgid "Invite"
 msgstr "आमंत्रित करें"
+
+msgid "Invited"
+msgstr "आमंत्रित"
 
 msgid "Invoice"
 msgstr "चालान"
@@ -5911,6 +5917,9 @@ msgstr "नontaxable चार्जें"
 
 msgid "None"
 msgstr "कोई नहीं"
+
+msgid "Offboarded"
+msgstr "ऑफबोर्डेड"
 
 msgid "Not enough jobs to cover quantity"
 msgstr "पर्याप्त नौकरियां नहीं हैं मात्रा को कवर करने के लिए"

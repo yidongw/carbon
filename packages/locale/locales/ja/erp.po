@@ -3255,6 +3255,9 @@ msgstr "メール"
 msgid "Emoji"
 msgstr "絵文字"
 
+msgid "Employed"
+msgstr "在職"
+
 msgid "Employee"
 msgstr "従業員"
 
@@ -4474,6 +4477,9 @@ msgstr "投資子会社への投資"
 
 msgid "Invite"
 msgstr "招待"
+
+msgid "Invited"
+msgstr "招待済み"
 
 msgid "Invoice"
 msgstr "請求書"
@@ -5911,6 +5917,9 @@ msgstr "非課税料金"
 
 msgid "None"
 msgstr "なし"
+
+msgid "Offboarded"
+msgstr "退職"
 
 msgid "Not enough jobs to cover quantity"
 msgstr "数量をカバーするのに十分なジョブがありません"

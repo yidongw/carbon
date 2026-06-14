@@ -295,7 +295,7 @@ msgid "Activate Work Center"
 msgstr "激活工作中心"
 
 msgid "Active"
-msgstr "激活"
+msgstr "活跃"
 
 msgid "Active Jobs"
 msgstr "活跃工作"
@@ -3255,6 +3255,9 @@ msgstr "电子邮件"
 msgid "Emoji"
 msgstr "表情符号"
 
+msgid "Employed"
+msgstr "在职"
+
 msgid "Employee"
 msgstr "员工"
 
@@ -4284,7 +4287,7 @@ msgid "in selected period"
 msgstr "在选定期间"
 
 msgid "Inactive"
-msgstr "无效"
+msgstr "停用"
 
 msgid "Inactive actions will not appear in selection lists"
 msgstr "不活动的动作不会出现在选择列表中"
@@ -4474,6 +4477,9 @@ msgstr "子公司投资"
 
 msgid "Invite"
 msgstr "邀请"
+
+msgid "Invited"
+msgstr "已邀请"
 
 msgid "Invoice"
 msgstr "发票"
@@ -5911,6 +5917,9 @@ msgstr "非税费用"
 
 msgid "None"
 msgstr "无"
+
+msgid "Offboarded"
+msgstr "已离职"
 
 msgid "Not enough jobs to cover quantity"
 msgstr "工作不足以覆盖数量"

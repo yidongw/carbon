@@ -3255,6 +3255,9 @@ msgstr "E-mails"
 msgid "Emoji"
 msgstr "Emoji"
 
+msgid "Employed"
+msgstr "Empregado"
+
 msgid "Employee"
 msgstr "Funcionário"
 
@@ -4474,6 +4477,9 @@ msgstr "Investimentos em Sociedades Filiais"
 
 msgid "Invite"
 msgstr "Convidar"
+
+msgid "Invited"
+msgstr "Convidado"
 
 msgid "Invoice"
 msgstr "Fatura"
@@ -5911,6 +5917,9 @@ msgstr "Custos Não Tributáveis"
 
 msgid "None"
 msgstr "Nenhum"
+
+msgid "Offboarded"
+msgstr "Desligado"
 
 msgid "Not enough jobs to cover quantity"
 msgstr "Não há trabalhos suficientes para cobrir a quantidade"

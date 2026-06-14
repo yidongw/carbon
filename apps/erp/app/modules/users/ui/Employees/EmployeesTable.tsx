@@ -1,6 +1,5 @@
 import {
   Badge,
-  Checkbox,
   DropdownMenuContent,
   DropdownMenuItem,
   MenuIcon,
@@ -13,13 +12,14 @@ import { memo, useCallback, useMemo, useState } from "react";
 import {
   LuBan,
   LuBriefcase,
+  LuCircleCheck,
+  LuCircleDashed,
+  LuCircleX,
   LuMail,
   LuMailCheck,
   LuPencil,
   LuShield,
-  LuToggleRight,
-  LuUser,
-  LuUserCheck
+  LuUser
 } from "react-icons/lu";
 import { useNavigate } from "react-router";
 import { EmployeeAvatar, Hyperlink, New, Table } from "~/components";
@@ -36,16 +36,16 @@ import {
 import type { ListItem } from "~/types";
 import { path } from "~/utils/path";
 
+type EmployeeWithFlags = Employee & {
+  admin: boolean;
+  developer: boolean;
+};
+
 type EmployeesTableProps = {
-  data: Employee[];
+  data: EmployeeWithFlags[];
   count: number;
   employeeTypes: ListItem[];
   unrevokedInviteEmails: string[];
-};
-
-const defaultColumnVisibility = {
-  user_firstName: false,
-  user_lastName: false
 };
 
 const EmployeesTable = memo(
@@ -89,7 +89,7 @@ const EmployeesTable = memo(
     const columns = useMemo<ColumnDef<(typeof data)[number]>[]>(() => {
       return [
         {
-          header: t`User`,
+          header: t`Account`,
           cell: ({ row }) => (
             <Hyperlink
               className={row.original.active === true ? "" : "opacity-70"}
@@ -100,26 +100,8 @@ const EmployeesTable = memo(
               <EmployeeAvatar size="sm" employeeId={row.original.id} />
             </Hyperlink>
           ),
-
           meta: {
             icon: <LuUser />
-          }
-        },
-
-        {
-          accessorKey: "firstName",
-          header: t`First Name`,
-          cell: (item) => item.getValue(),
-          meta: {
-            icon: <LuUserCheck />
-          }
-        },
-        {
-          accessorKey: "lastName",
-          header: t`Last Name`,
-          cell: (item) => item.getValue(),
-          meta: {
-            icon: <LuUserCheck />
           }
         },
         {
@@ -142,7 +124,7 @@ const EmployeesTable = memo(
         },
         {
           id: "employeeTypeId",
-          header: t`Employee Type`,
+          header: t`Role`,
           cell: ({ row }) => (
             <Enumerable
               value={
@@ -162,28 +144,46 @@ const EmployeesTable = memo(
           }
         },
         {
-          accessorKey: "active",
-          header: t`Active`,
-          cell: (item) => <Checkbox isChecked={item.getValue<boolean>()} />,
+          id: "status",
+          header: t`Status`,
+          cell: ({ row }) => {
+            const { active, email } = row.original;
+            if (active === true) {
+              return (
+                <Badge variant="secondary" className="gap-1">
+                  <LuCircleCheck className="h-3 w-3" />
+                  <Trans>Active</Trans>
+                </Badge>
+              );
+            }
+            if (email && unrevokedInviteSet.has(email)) {
+              return (
+                <Badge variant="outline" className="gap-1">
+                  <LuCircleDashed className="h-3 w-3" />
+                  <Trans>Invited</Trans>
+                </Badge>
+              );
+            }
+            return (
+              <Badge variant="destructive" className="gap-1">
+                <LuCircleX className="h-3 w-3" />
+                <Trans>Offboarded</Trans>
+              </Badge>
+            );
+          },
           meta: {
             filter: {
               type: "static",
               options: [
-                {
-                  value: "true",
-                  label: t`Active`
-                },
-                {
-                  value: "false",
-                  label: t`Inactive`
-                }
+                { value: "true", label: t`Active` },
+                { value: "false", label: t`Offboarded` }
               ]
             },
-            icon: <LuToggleRight />
+            icon: <LuCircleCheck />
           }
         }
       ];
-    }, [params]);
+    }, [employeeTypes, employeeTypesById, params, unrevokedInviteSet]);
 
     const renderActions = useCallback(
       (selectedRows: typeof data) => {
@@ -363,7 +363,6 @@ const EmployeesTable = memo(
           count={count}
           columns={columns}
           data={data}
-          defaultColumnVisibility={defaultColumnVisibility}
           primaryAction={
             permissions.can("create", "users") && (
               <New label={t`Account`} to={`new?${params.toString()}`} />
@@ -371,7 +370,7 @@ const EmployeesTable = memo(
           }
           renderActions={renderActions}
           renderContextMenu={renderContextMenu}
-          title={t`Employee Accounts`}
+          title={t`Permissions`}
           withSelectableRows={canEdit}
         />
         {bulkEditDrawer.isOpen && (
