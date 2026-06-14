@@ -1991,7 +1991,6 @@ export const path = {
 } as const;
 
 export const onboardingSequence = [
-  path.to.onboarding.theme,
   path.to.onboarding.user,
   path.to.onboarding.company,
   path.to.onboarding.plan

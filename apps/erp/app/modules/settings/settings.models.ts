@@ -87,6 +87,13 @@ const company = {
 export const companyValidator = z.object(company);
 export const onboardingCompanyValidator = z.object({
   ...company,
+  // Address is not collected during onboarding; it can be filled in later.
+  // The location table requires these columns to be non-null, so default to "".
+  addressLine1: z.string().default(""),
+  city: z.string().default(""),
+  stateProvince: z.string().default(""),
+  postalCode: z.string().default(""),
+  countryCode: z.string().default(""),
   next: z.string().min(1, { message: "Next is required" })
 });
 
