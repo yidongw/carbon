@@ -1338,6 +1338,9 @@ msgstr "选择公司"
 msgid "Choose another file"
 msgstr "选择另一个文件"
 
+msgid "Choose another file"
+msgstr "选择另一个文件"
+
 msgid "Choose your preferred language for the interface."
 msgstr "选择您偏好的界面语言。"
 
@@ -2136,6 +2139,9 @@ msgstr "日常使用"
 
 msgid "Dark"
 msgstr "深色"
+
+msgid "Dark Mode"
+msgstr "深色模式"
 
 msgid "Dark Mode"
 msgstr "深色模式"
@@ -7335,6 +7341,9 @@ msgstr "使用密钥登录"
 msgid "Sign Out"
 msgstr "登出"
 
+msgid "Sign Out"
+msgstr "登出"
+
 msgid "Signed in as {name}"
 msgstr "以 {name} 身份登录"
 
@@ -7815,6 +7824,9 @@ msgstr "模板 ID"
 
 msgid "Templates"
 msgstr ""
+
+msgid "Terms and Privacy"
+msgstr "条款和隐私"
 
 msgid "Terms and Privacy"
 msgstr "条款和隐私"

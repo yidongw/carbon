@@ -1338,6 +1338,9 @@ msgstr "会社を選択"
 msgid "Choose another file"
 msgstr "別のファイルを選択"
 
+msgid "Choose another file"
+msgstr "別のファイルを選択"
+
 msgid "Choose your preferred language for the interface."
 msgstr "インターフェースの言語を選択してください。"
 
@@ -2136,6 +2139,9 @@ msgstr "日次使用量"
 
 msgid "Dark"
 msgstr "ダーク"
+
+msgid "Dark Mode"
+msgstr "ダークモード"
 
 msgid "Dark Mode"
 msgstr "ダークモード"
@@ -7335,6 +7341,9 @@ msgstr "パスキーでサインイン"
 msgid "Sign Out"
 msgstr "サインアウト"
 
+msgid "Sign Out"
+msgstr "サインアウト"
+
 msgid "Signed in as {name}"
 msgstr "{name}としてサインインしています"
 
@@ -7815,6 +7824,9 @@ msgstr "テンプレートID"
 
 msgid "Templates"
 msgstr ""
+
+msgid "Terms and Privacy"
+msgstr "利用規約とプライバシー"
 
 msgid "Terms and Privacy"
 msgstr "利用規約とプライバシー"

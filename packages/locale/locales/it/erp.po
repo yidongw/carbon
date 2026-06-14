@@ -1338,6 +1338,9 @@ msgstr "Scegli un'azienda"
 msgid "Choose another file"
 msgstr "Scegli un altro file"
 
+msgid "Choose another file"
+msgstr "Scegli un altro file"
+
 msgid "Choose your preferred language for the interface."
 msgstr "Scegli la tua lingua preferita per l'interfaccia."
 
@@ -2136,6 +2139,9 @@ msgstr "Utilizzo Giornaliero"
 
 msgid "Dark"
 msgstr "Scuro"
+
+msgid "Dark Mode"
+msgstr "Modalità scura"
 
 msgid "Dark Mode"
 msgstr "Modalità scura"
@@ -7335,6 +7341,9 @@ msgstr "Accedi con Passkey"
 msgid "Sign Out"
 msgstr "Esci"
 
+msgid "Sign Out"
+msgstr "Esci"
+
 msgid "Signed in as {name}"
 msgstr "Accesso effettuato come {name}"
 
@@ -7815,6 +7824,9 @@ msgstr "ID Modello"
 
 msgid "Templates"
 msgstr ""
+
+msgid "Terms and Privacy"
+msgstr "Termini e Privacy"
 
 msgid "Terms and Privacy"
 msgstr "Termini e Privacy"

@@ -1338,6 +1338,9 @@ msgstr "Выберите компанию"
 msgid "Choose another file"
 msgstr "Выбрать другой файл"
 
+msgid "Choose another file"
+msgstr "Выбрать другой файл"
+
 msgid "Choose your preferred language for the interface."
 msgstr "Выберите предпочитаемый язык для интерфейса."
 
@@ -2136,6 +2139,9 @@ msgstr "Ежедневное использование"
 
 msgid "Dark"
 msgstr "Тёмный"
+
+msgid "Dark Mode"
+msgstr "Тёмный режим"
 
 msgid "Dark Mode"
 msgstr "Тёмный режим"
@@ -7335,6 +7341,9 @@ msgstr "Войти с помощью Passkey"
 msgid "Sign Out"
 msgstr "Выход"
 
+msgid "Sign Out"
+msgstr "Выход"
+
 msgid "Signed in as {name}"
 msgstr "Вы вошли как {name}"
 
@@ -7815,6 +7824,9 @@ msgstr "ID шаблона"
 
 msgid "Templates"
 msgstr ""
+
+msgid "Terms and Privacy"
+msgstr "Условия и конфиденциальность"
 
 msgid "Terms and Privacy"
 msgstr "Условия и конфиденциальность"

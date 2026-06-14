@@ -1338,6 +1338,9 @@ msgstr "Wybierz firmę"
 msgid "Choose another file"
 msgstr "Wybierz inny plik"
 
+msgid "Choose another file"
+msgstr "Wybierz inny plik"
+
 msgid "Choose your preferred language for the interface."
 msgstr "Wybierz preferowany język interfejsu."
 
@@ -2136,6 +2139,9 @@ msgstr "Dzienne użycie"
 
 msgid "Dark"
 msgstr "Ciemny"
+
+msgid "Dark Mode"
+msgstr "Tryb ciemny"
 
 msgid "Dark Mode"
 msgstr "Tryb ciemny"
@@ -7335,6 +7341,9 @@ msgstr "Zaloguj się za pomocą klucza dostępu"
 msgid "Sign Out"
 msgstr "Wyloguj sie"
 
+msgid "Sign Out"
+msgstr "Wyloguj sie"
+
 msgid "Signed in as {name}"
 msgstr "Zalogowano jako {name}"
 
@@ -7815,6 +7824,9 @@ msgstr "Identyfikator szablonu"
 
 msgid "Templates"
 msgstr ""
+
+msgid "Terms and Privacy"
+msgstr "Regulamin i prywatnosc"
 
 msgid "Terms and Privacy"
 msgstr "Regulamin i prywatnosc"

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { getBrowserEnv } from "@carbon/env";
+=======
+import { getBrowserEnv } from "@carbon/auth";
+>>>>>>> 33bf3b8be (feat: move lang select to avatar menu (#735))
 
 export const supportedLanguages = [
   "en",
