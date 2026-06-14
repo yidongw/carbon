@@ -25,6 +25,9 @@ import {
   getMethodMaterialsByMakeMethod,
   getMethodOperationsByMakeMethodId,
   itemManufacturingValidator,
+  methodBindings,
+  partConfigurationParametersBindings,
+  partConfigurationRuleBindings,
   partValidator,
   upsertItemManufacturing,
   upsertPart
@@ -267,6 +270,7 @@ export default function PartDetailsRoute() {
               {methodData.partManufacturing?.requiresConfiguration && (
                 <ConfigurationParametersForm
                   key={`options:${itemId}`}
+                  bindings={partConfigurationParametersBindings(itemId)}
                   parameters={
                     methodData.configurationParametersAndGroups.parameters
                   }
@@ -287,6 +291,10 @@ export default function PartDetailsRoute() {
             <>
               <BillOfMaterial
                 key={`bom:${itemId}`}
+                methodBindings={methodBindings(itemId)}
+                configurationRuleBindings={partConfigurationRuleBindings(
+                  itemId
+                )}
                 makeMethod={methodData.makeMethod}
                 // @ts-ignore
                 materials={methodData.methodMaterials ?? []}
@@ -303,6 +311,10 @@ export default function PartDetailsRoute() {
               />
               <BillOfProcess
                 key={`bop:${itemId}`}
+                methodBindings={methodBindings(itemId)}
+                configurationRuleBindings={partConfigurationRuleBindings(
+                  itemId
+                )}
                 makeMethod={methodData.makeMethod}
                 // @ts-ignore
                 operations={methodData.methodOperations ?? []}

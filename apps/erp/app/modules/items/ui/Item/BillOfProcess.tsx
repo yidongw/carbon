@@ -68,7 +68,7 @@ import {
   LuTriangleAlert,
   LuX
 } from "react-icons/lu";
-import { useFetcher, useFetchers, useParams } from "react-router";
+import { useFetcher, useFetchers, useSearchParams } from "react-router";
 import { z } from "zod";
 import {
   DirectionAwareTabs,
@@ -125,8 +125,10 @@ import type { action as editMethodOperationStepAction } from "~/routes/x+/items+
 import type { action as editMethodOperationToolAction } from "~/routes/x+/items+/methods+/operation.tool.$id";
 import type { action as newMethodOperationToolAction } from "~/routes/x+/items+/methods+/operation.tool.new";
 import { useItems, useTools } from "~/stores";
-import { getPrivateUrl, path } from "~/utils/path";
+import { getPrivateUrl } from "~/utils/path";
+import type { ConfigurationRuleBindings } from "../../configurationRuleBindings";
 import { methodOperationValidator } from "../../items.models";
+import type { MethodBindings } from "../../methodBindings";
 import type {
   ConfigurationParameter,
   ConfigurationRule,
@@ -147,6 +149,7 @@ type MethodMaterialType = {
 };
 
 type BillOfProcessProps = {
+  methodBindings: MethodBindings;
   configurable?: boolean;
   configurationRules?: ConfigurationRule[];
   makeMethod: MakeMethod;
@@ -158,6 +161,7 @@ type BillOfProcessProps = {
   })[];
   parameters?: ConfigurationParameter[];
   tags: { name: string }[];
+  configurationRuleBindings: ConfigurationRuleBindings;
 };
 
 type PendingWorkInstructions = {
@@ -200,16 +204,20 @@ const initialOperation: Omit<
 };
 
 const BillOfProcess = ({
+  methodBindings,
   configurable = false,
   configurationRules,
   makeMethod,
   materials,
   operations: initialOperations,
   parameters,
-  tags
+  tags,
+  configurationRuleBindings
 }: BillOfProcessProps) => {
   const permissions = usePermissions();
   const { t } = useLingui();
+  const [searchParams] = useSearchParams();
+  const materialId = searchParams.get("materialId");
   const isReadOnly =
     permissions.can("update", "parts") === false ||
     makeMethod.status !== "Draft";
@@ -272,7 +280,7 @@ const BillOfProcess = ({
     operationsById.set(operation.id, operation);
   });
 
-  const pendingOperations = usePendingOperations();
+  const pendingOperations = usePendingOperations(methodBindings);
 
   // Replace existing operations with pending ones
   pendingOperations.forEach((pendingOperation) => {
@@ -395,7 +403,7 @@ const BillOfProcess = ({
       formData.append("updates", JSON.stringify(updates));
       sortOrderFetcher.submit(formData, {
         method: "post",
-        action: path.to.methodOperationsOrder
+        action: methodBindings.urls.methodOperationsOrder
       });
     },
     1000,
@@ -441,7 +449,7 @@ const BillOfProcess = ({
         { id },
         {
           method: "post",
-          action: path.to.methodOperationsDelete
+          action: methodBindings.urls.methodOperationsDelete
         }
       );
     }
@@ -495,6 +503,7 @@ const BillOfProcess = ({
               }}
             >
               <OperationForm
+                methodBindings={methodBindings}
                 isReadOnly={isReadOnly}
                 configurable={configurable}
                 item={item}
@@ -610,6 +619,7 @@ const BillOfProcess = ({
         content: (
           <div className="flex w-full flex-col py-4">
             <ParametersForm
+              methodBindings={methodBindings}
               parameters={parameters}
               operationId={item.id!}
               temporaryItems={temporaryItems}
@@ -656,6 +666,7 @@ const BillOfProcess = ({
         content: (
           <div className="flex w-full flex-col py-4">
             <AttributesForm
+              methodBindings={methodBindings}
               steps={steps}
               operationId={item.id!}
               temporaryItems={temporaryItems}
@@ -685,6 +696,7 @@ const BillOfProcess = ({
         content: (
           <div className="flex w-full flex-col py-4">
             <ToolsForm
+              methodBindings={methodBindings}
               tools={tools}
               operationId={item.id!}
               temporaryItems={temporaryItems}
@@ -809,8 +821,6 @@ const BillOfProcess = ({
     configuratorDisclosure.onOpen();
   };
 
-  const { materialId } = useParams();
-
   const rulesByField = new Map(
     configurationRules?.map((rule) => [rule.field, rule]) ?? []
   );
@@ -879,6 +889,7 @@ const BillOfProcess = ({
           // @ts-ignore
           parameters={parameters ?? []}
           onClose={configuratorDisclosure.onClose}
+          configurationRuleBindings={configurationRuleBindings}
         />
       )}
     </Card>
@@ -888,6 +899,7 @@ const BillOfProcess = ({
 export default BillOfProcess;
 
 type OperationFormProps = {
+  methodBindings: MethodBindings;
   configurable: boolean;
   isReadOnly: boolean;
   item: ItemWithData;
@@ -902,6 +914,7 @@ type OperationFormProps = {
 };
 
 function OperationForm({
+  methodBindings,
   isReadOnly,
   configurable,
   item,
@@ -1048,8 +1061,8 @@ function OperationForm({
     <ValidatedForm
       action={
         temporaryItems[item.id]
-          ? path.to.newMethodOperation
-          : path.to.methodOperation(item.id!)
+          ? methodBindings.urls.newMethodOperation
+          : methodBindings.urls.methodOperation(item.id!)
       }
       method="post"
       defaultValues={item.data}
@@ -1720,6 +1733,7 @@ function OperationForm({
 }
 
 function AttributesForm({
+  methodBindings,
   operationId,
   configurable,
   isDisabled,
@@ -1729,6 +1743,7 @@ function AttributesForm({
   onConfigure,
   itemMentions
 }: {
+  methodBindings: MethodBindings;
   operationId: string;
   configurable: boolean;
   isDisabled: boolean;
@@ -1779,7 +1794,7 @@ function AttributesForm({
       formData.append("updates", JSON.stringify(updates));
       sortOrderFetcher.submit(formData, {
         method: "post",
-        action: path.to.methodOperationStepOrder(operationId)
+        action: methodBindings.urls.methodOperationStepOrder(operationId)
       });
     },
     1000,
@@ -1845,7 +1860,7 @@ function AttributesForm({
       {!isDisabled && (
         <div className="p-6 border bg-card rounded-lg mb-6">
           <ValidatedForm
-            action={path.to.newMethodOperationStep}
+            action={methodBindings.urls.newMethodOperationStep}
             method="post"
             validator={operationStepValidator}
             fetcher={fetcher}
@@ -1983,6 +1998,7 @@ function AttributesForm({
                 >
                   {(dragControls) => (
                     <AttributesListItem
+                      methodBindings={methodBindings}
                       attribute={step}
                       operationId={operationId}
                       typeOptions={typeOptions}
@@ -2035,6 +2051,7 @@ function DraggableStepItem({
 }
 
 function AttributesListItem({
+  methodBindings,
   attribute,
   operationId,
   typeOptions,
@@ -2046,6 +2063,7 @@ function AttributesListItem({
   dragControls,
   itemMentions
 }: {
+  methodBindings: MethodBindings;
   attribute: OperationStep;
   operationId: string;
   typeOptions: { label: JSX.Element; value: string }[];
@@ -2142,7 +2160,7 @@ function AttributesListItem({
     <div className={cn("border-b p-6", className)}>
       {disclosure.isOpen ? (
         <ValidatedForm
-          action={path.to.methodOperationStep(id)}
+          action={methodBindings.urls.methodOperationStep(id)}
           method="post"
           validator={operationStepValidator}
           fetcher={fetcher}
@@ -2436,7 +2454,7 @@ function AttributesListItem({
       )}
       {deleteModalDisclosure.isOpen && (
         <ConfirmDelete
-          action={path.to.deleteMethodOperationStep(id)}
+          action={methodBindings.urls.deleteMethodOperationStep(id)}
           isOpen={deleteModalDisclosure.isOpen}
           name={name}
           text={`Are you sure you want to delete the ${name} attribute from this operation? This cannot be undone.`}
@@ -2453,6 +2471,7 @@ function AttributesListItem({
 }
 
 function ParametersForm({
+  methodBindings,
   operationId,
   configurable,
   isDisabled,
@@ -2461,6 +2480,7 @@ function ParametersForm({
   rulesByField,
   onConfigure
 }: {
+  methodBindings: MethodBindings;
   operationId: string;
   configurable: boolean;
   isDisabled: boolean;
@@ -2491,7 +2511,7 @@ function ParametersForm({
       {!isDisabled && (
         <div className="p-6 border rounded-lg bg-card">
           <ValidatedForm
-            action={path.to.newMethodOperationParameter}
+            action={methodBindings.urls.newMethodOperationParameter}
             method="post"
             validator={operationParameterValidator}
             fetcher={fetcher}
@@ -2535,6 +2555,7 @@ function ParametersForm({
             .map((p, index) => (
               <ParametersListItem
                 key={p.id}
+                methodBindings={methodBindings}
                 parameter={p}
                 operationId={operationId}
                 className={index === parameters.length - 1 ? "border-none" : ""}
@@ -2556,6 +2577,7 @@ function ParametersForm({
 }
 
 function ParametersListItem({
+  methodBindings,
   parameter: { key, value, id, updatedBy, updatedAt, createdBy, createdAt },
   operationId,
   className,
@@ -2564,6 +2586,7 @@ function ParametersListItem({
   onConfigure,
   isDisabled = false
 }: {
+  methodBindings: MethodBindings;
   parameter: OperationParameter;
   operationId: string;
   className?: string;
@@ -2601,7 +2624,7 @@ function ParametersListItem({
     <div className={cn("border-b p-6", className)}>
       {disclosure.isOpen ? (
         <ValidatedForm
-          action={path.to.methodOperationParameter(id)}
+          action={methodBindings.urls.methodOperationParameter(id)}
           method="post"
           validator={operationParameterValidator}
           fetcher={fetcher}
@@ -2732,7 +2755,7 @@ function ParametersListItem({
       )}
       {deleteModalDisclosure.isOpen && (
         <ConfirmDelete
-          action={path.to.deleteMethodOperationParameter(id)}
+          action={methodBindings.urls.deleteMethodOperationParameter(id)}
           isOpen={deleteModalDisclosure.isOpen}
           name={key}
           text={`Are you sure you want to delete the ${key} parameter from this operation? This cannot be undone.`}
@@ -2749,11 +2772,13 @@ function ParametersListItem({
 }
 
 function ToolsForm({
+  methodBindings,
   operationId,
   isDisabled,
   tools,
   temporaryItems
 }: {
+  methodBindings: MethodBindings;
   operationId: string;
   isDisabled: boolean;
   tools: OperationTool[];
@@ -2781,7 +2806,7 @@ function ToolsForm({
       {!isDisabled && (
         <div className="p-6 border rounded-lg bg-card">
           <ValidatedForm
-            action={path.to.newMethodOperationTool}
+            action={methodBindings.urls.newMethodOperationTool}
             method="post"
             validator={operationToolValidator}
             fetcher={fetcher}
@@ -2826,6 +2851,7 @@ function ToolsForm({
             .map((t, index) => (
               <ToolsListItem
                 key={t.id}
+                methodBindings={methodBindings}
                 tool={t}
                 operationId={operationId}
                 className={index === tools.length - 1 ? "border-none" : ""}
@@ -2844,11 +2870,13 @@ function ToolsForm({
 }
 
 function ToolsListItem({
+  methodBindings,
   tool: { toolId, quantity, id, updatedBy, updatedAt, createdBy, createdAt },
   operationId,
   className,
   isDisabled = false
 }: {
+  methodBindings: MethodBindings;
   tool: OperationTool;
   operationId: string;
   className?: string;
@@ -2881,7 +2909,7 @@ function ToolsListItem({
     <div className={cn("border-b p-6 bg-card", className)}>
       {disclosure.isOpen ? (
         <ValidatedForm
-          action={path.to.methodOperationTool(id)}
+          action={methodBindings.urls.methodOperationTool(id)}
           method="post"
           validator={operationToolValidator}
           fetcher={fetcher}
@@ -2970,7 +2998,7 @@ function ToolsListItem({
       )}
       {deleteModalDisclosure.isOpen && (
         <ConfirmDelete
-          action={path.to.deleteMethodOperationTool(id)}
+          action={methodBindings.urls.deleteMethodOperationTool(id)}
           isOpen={deleteModalDisclosure.isOpen}
           name={tool.readableIdWithRevision}
           text={`Are you sure you want to delete ${tool.readableIdWithRevision} from this operation? This cannot be undone.`}
@@ -3046,7 +3074,7 @@ function makeItem(
   };
 }
 
-function usePendingOperations() {
+function usePendingOperations(methodBindings: MethodBindings) {
   type PendingItem = ReturnType<typeof useFetchers>[number] & {
     formData: FormData;
   };
@@ -3054,8 +3082,8 @@ function usePendingOperations() {
   return useFetchers()
     .filter((fetcher): fetcher is PendingItem => {
       return (
-        (fetcher.formAction === path.to.newMethodOperation ||
-          fetcher.formAction?.includes("/items/methods/operation/")) ??
+        (fetcher.formAction === methodBindings.urls.newMethodOperation ||
+          fetcher.formAction?.includes("/methods/operation/")) ??
         false
       );
     })
