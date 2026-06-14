@@ -83,6 +83,8 @@ export const path = {
         generatePath(
           `${api}/production/methods/${id}/bom.csv?withOperations=${withOperations}`
         ),
+      jobBillOfProcessPreview: (jobId: string) =>
+        generatePath(`${api}/production/jobs/${jobId}/bill-of-process`),
       jobs: `${api}/production/jobs`,
       kanban: (id: string) => generatePath(`${api}/kanban/${id}`),
       kanbanCollision: (id: string) =>
@@ -1052,6 +1054,17 @@ export const path = {
     jobProductionEvents: (id: string) => generatePath(`${x}/job/${id}/events`),
     jobProductionQuantities: (id: string) =>
       generatePath(`${x}/job/${id}/quantities`),
+    jobProductionQuantity: (jobId: string, quantityId: string) =>
+      generatePath(`${x}/job/${jobId}/quantities/${quantityId}`),
+    newJobProductionQuantity: (
+      jobId: string,
+      opts?: { jobOperationId?: string }
+    ) => {
+      const base = generatePath(`${x}/job/${jobId}/quantities/new`);
+      const opId = opts?.jobOperationId;
+      if (!opId) return base;
+      return `${base}?${new URLSearchParams({ jobOperationId: opId }).toString()}`;
+    },
     jobs: `${x}/production/jobs`,
     jobRecalculate: (id: string) => generatePath(`${x}/job/${id}/recalculate`),
     jobRelease: (id: string) => generatePath(`${x}/job/${id}/release`),

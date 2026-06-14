@@ -91,7 +91,7 @@ export function BarProgress({
   segments,
   className,
   activeClassName = "bg-emerald-500",
-  inactiveClassName = "bg-muted"
+  inactiveClassName = "bg-foreground/15"
 }: BarProgressProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [barCount, setBarCount] = useState(0);

@@ -41,6 +41,7 @@ import {
 import { RealtimeDataProvider } from "~/components";
 import { PrimaryNavigation, Topbar } from "~/components/Layout";
 import { TimeCardWarning } from "~/components/TimeCardWarning";
+import { OverlayHost, OverlayProvider } from "~/components/Overlay";
 import TrainingPanel from "~/components/TrainingPanel";
 import { useTrainingPanel } from "~/hooks/useTrainingPanel";
 import { getOpenClockEntry } from "~/modules/people";
@@ -264,40 +265,43 @@ export default function AuthenticatedRoute() {
             }}
           >
             <RealtimeDataProvider>
-              <TooltipProvider>
-                <div className="flex flex-col h-screen">
-                  <Topbar />
-                  <div className="flex flex-1 h-[calc(100vh-49px)] relative">
-                    <PrimaryNavigation />
-                    <main className="flex-1 overflow-y-auto scrollbar-hide border-l border-t bg-muted sm:rounded-tl-2xl relative z-10">
-                      <Outlet />
-                    </main>
+              <OverlayProvider>
+                <TooltipProvider>
+                  <div className="flex flex-col h-screen">
+                    <Topbar />
+                    <div className="flex flex-1 h-[calc(100vh-49px)] relative">
+                      <PrimaryNavigation />
+                      <main className="flex-1 overflow-y-auto scrollbar-hide border-l border-t bg-muted sm:rounded-tl-2xl relative z-10">
+                        <Outlet />
+                      </main>
+                    </div>
                   </div>
-                </div>
-                <TrainingPanel
-                  training={training}
-                  isOpen={isOpen}
-                  onDismiss={dismiss}
-                />
-                {companySettings?.timeCardEnabled && (
-                  <Suspense fallback={null}>
-                    <Await resolve={openClockEntry}>
-                      {(resolved) => (
-                        <TimeCardWarning
-                          openClockEntry={
-                            resolved?.data
-                              ? {
-                                  id: resolved.data.id,
-                                  clockIn: resolved.data.clockIn
-                                }
-                              : null
-                          }
-                        />
-                      )}
-                    </Await>
-                  </Suspense>
-                )}
-              </TooltipProvider>
+                  <TrainingPanel
+                    training={training}
+                    isOpen={isOpen}
+                    onDismiss={dismiss}
+                  />
+                  {companySettings?.timeCardEnabled && (
+                    <Suspense fallback={null}>
+                      <Await resolve={openClockEntry}>
+                        {(resolved) => (
+                          <TimeCardWarning
+                            openClockEntry={
+                              resolved?.data
+                                ? {
+                                    id: resolved.data.id,
+                                    clockIn: resolved.data.clockIn
+                                  }
+                                : null
+                            }
+                          />
+                        )}
+                      </Await>
+                    </Suspense>
+                  )}
+                  <OverlayHost />
+                </TooltipProvider>
+              </OverlayProvider>
             </RealtimeDataProvider>
           </PrintingProvider>
         </CarbonProvider>

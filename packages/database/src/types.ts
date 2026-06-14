@@ -53532,6 +53532,7 @@ export type Database = {
           autodeskUrn: string | null
           companyId: string | null
           completedDate: string | null
+          completedOperationCount: number | null
           configuration: Json | null
           createdAt: string | null
           createdBy: string | null
@@ -53558,10 +53559,12 @@ export type Database = {
           modelUploadId: string | null
           name: string | null
           notes: Json | null
+          operationCount: number | null
           priority: number | null
           productionQuantity: number | null
           quantity: number | null
           quantityComplete: number | null
+          quantityFullyComplete: number | null
           quantityReceivedToInventory: number | null
           quantityShipped: number | null
           quoteId: string | null

@@ -8,7 +8,7 @@ type ActivityProps = {
   activityMessage: ReactNode;
   activityTime: string;
   activityIcon?: ReactNode;
-  comment?: string | null;
+  comment?: ReactNode;
 };
 
 const Activity = ({
@@ -40,11 +40,9 @@ const Activity = ({
             </span>
             <span className="text-gray-400">{activityMessage}</span>
           </p>
-          {comment && (
-            <p className="text-sm text-muted-foreground mt-1 italic">
-              {comment}
-            </p>
-          )}
+          {comment ? (
+            <div className="mt-1 text-sm text-muted-foreground">{comment}</div>
+          ) : null}
           <div className="text-sm text-gray-400 mt-1">
             {formatTimeAgo(activityTime)}
           </div>

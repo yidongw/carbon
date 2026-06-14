@@ -1359,6 +1359,38 @@ export async function getProductionEventsPage(
   };
 }
 
+export async function getProductionQuantitiesPage(
+  client: SupabaseClient<Database>,
+  jobOperationId: string,
+  companyId: string,
+  page: number = 1
+) {
+  const pageSize = 20;
+  const offset = (page - 1) * pageSize;
+
+  const query = client
+    .from("productionQuantity")
+    .select("*, scrapReason(name)", { count: "exact" })
+    .eq("jobOperationId", jobOperationId)
+    .eq("companyId", companyId)
+    .order("createdAt", { ascending: false })
+    .range(offset, offset + pageSize - 1);
+
+  const { data, error, count } = await query;
+
+  if (error) {
+    return { error };
+  }
+
+  return {
+    data,
+    count,
+    page,
+    pageSize,
+    hasMore: count !== null && offset + pageSize < count
+  };
+}
+
 export async function getProductionEventsByOperations(
   client: SupabaseClient<Database>,
   jobOperationIds: string[]

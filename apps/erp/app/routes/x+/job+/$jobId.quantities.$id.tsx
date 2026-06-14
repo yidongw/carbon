@@ -10,7 +10,7 @@ import {
   productionQuantityValidator,
   upsertProductionQuantity
 } from "~/modules/production";
-import { ProductionQuantityForm } from "~/modules/production/ui/Jobs";
+import ProductionQuantityForm from "~/modules/production/ui/Jobs/ProductionQuantityForm";
 import { getParams, path } from "~/utils/path";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
@@ -48,7 +48,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const { jobId } = params;
   if (!jobId) throw notFound("jobId or id not found");
 
+  const isOverlay =
+    new URL(request.url).searchParams.get("overlay") === "true";
   const formData = await request.formData();
+
   const validation = await validator(productionQuantityValidator).validate(
     formData
   );
@@ -60,7 +63,6 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const { id, ...d } = validation.data;
   if (!id) throw new Error("id not found");
 
-  // If the type is not Scrap, set the scrapReasonId and notes to null
   if (d.type !== "Scrap") {
     d.scrapReasonId = undefined;
   }
@@ -82,7 +84,14 @@ export async function action({ request, params }: ActionFunctionArgs) {
     );
   }
 
-  throw redirect(
+  if (isOverlay) {
+    return data(
+      { ok: true as const, jobId },
+      await flash(request, success("Updated production quantity"))
+    );
+  }
+
+  return redirect(
     `${path.to.jobProductionQuantities(jobId)}?${getParams(request)}`,
     await flash(request, success("Updated production quantity"))
   );
