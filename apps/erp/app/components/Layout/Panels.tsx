@@ -8,6 +8,8 @@ import { createContext, useContext, useEffect, useRef, useState } from "react";
 import type { ImperativePanelHandle } from "react-resizable-panels";
 
 interface PanelContextType {
+  hasExplorer: boolean;
+  setHasExplorer: (v: boolean) => void;
   isExplorerCollapsed: boolean;
   isPropertiesCollapsed: boolean;
   toggleExplorer: () => void;
@@ -17,6 +19,9 @@ interface PanelContextType {
 }
 
 const PanelContext = createContext<PanelContextType>({
+  hasExplorer: false,
+  // biome-ignore lint/suspicious/noEmptyBlockStatements: suppressed due to migration
+  setHasExplorer: () => {},
   isExplorerCollapsed: false,
   isPropertiesCollapsed: false,
   // biome-ignore lint/suspicious/noEmptyBlockStatements: suppressed due to migration
@@ -45,6 +50,7 @@ export function PanelProvider({ children }: PanelProviderProps) {
   const isBrowser = typeof window !== "undefined";
   const isMobile = useIsMobile();
 
+  const [hasExplorer, setHasExplorer] = useState(false);
   const [isExplorerCollapsed, setIsExplorerCollapsed] = useState(
     isBrowser ? isMobile : false
   );
@@ -53,6 +59,8 @@ export function PanelProvider({ children }: PanelProviderProps) {
   );
 
   const value = {
+    hasExplorer,
+    setHasExplorer,
     isExplorerCollapsed,
     isPropertiesCollapsed,
     toggleExplorer: () => setIsExplorerCollapsed((prev) => !prev),
@@ -85,34 +93,43 @@ export function ResizablePanels({
   content,
   properties
 }: ResizablePanelsProps) {
-  const { isExplorerCollapsed, isPropertiesCollapsed, setIsExplorerCollapsed } =
+  const { isExplorerCollapsed, isPropertiesCollapsed, setIsExplorerCollapsed, setHasExplorer } =
     usePanels();
   const panelRef = useRef<ImperativePanelHandle>(null);
 
   useEffect(() => {
+    setHasExplorer(!!explorer);
+  }, [explorer, setHasExplorer]);
+
+  useEffect(() => {
+    if (!explorer) return;
     if (isExplorerCollapsed) {
       panelRef.current?.collapse();
     } else {
       panelRef.current?.expand();
     }
-  }, [isExplorerCollapsed]);
+  }, [isExplorerCollapsed, explorer]);
 
   return (
     <ResizablePanelGroup direction="horizontal">
-      <ResizablePanel
-        ref={panelRef}
-        order={1}
-        minSize={10}
-        className="bg-card shadow-lg"
-        collapsible
-        defaultSize={isExplorerCollapsed ? 0 : 20}
-        collapsedSize={0}
-        onCollapse={() => setIsExplorerCollapsed(true)}
-        onExpand={() => setIsExplorerCollapsed(false)}
-      >
-        {!isExplorerCollapsed && explorer}
-      </ResizablePanel>
-      <ResizableHandle withHandle />
+      {explorer && (
+        <>
+          <ResizablePanel
+            ref={panelRef}
+            order={1}
+            minSize={10}
+            className="bg-card shadow-lg"
+            collapsible
+            defaultSize={isExplorerCollapsed ? 0 : 20}
+            collapsedSize={0}
+            onCollapse={() => setIsExplorerCollapsed(true)}
+            onExpand={() => setIsExplorerCollapsed(false)}
+          >
+            {!isExplorerCollapsed && explorer}
+          </ResizablePanel>
+          <ResizableHandle withHandle />
+        </>
+      )}
       <ResizablePanel order={2} className="z-1 relative">
         <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
           {content}

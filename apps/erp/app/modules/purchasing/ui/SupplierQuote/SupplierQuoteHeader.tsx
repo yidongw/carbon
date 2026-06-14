@@ -73,7 +73,7 @@ const SupplierQuoteHeader = () => {
   const { id } = useParams();
   if (!id) throw new Error("id not found");
 
-  const { toggleExplorer, toggleProperties } = usePanels();
+  const { hasExplorer, toggleExplorer, toggleProperties } = usePanels();
   const { t } = useLingui();
   const permissions = usePermissions();
   const revalidator = useRevalidator();
@@ -134,12 +134,12 @@ const SupplierQuoteHeader = () => {
       <div className="flex flex-shrink-0 items-center justify-between p-2 bg-background border-b h-[50px] overflow-x-auto scrollbar-hide">
         <HStack className="w-full justify-between">
           <HStack>
-            <IconButton
+            {hasExplorer && <IconButton
               aria-label={t`Toggle Explorer`}
               icon={<LuPanelLeft />}
               onClick={toggleExplorer}
               variant="ghost"
-            />
+            />}
             <Link to={path.to.supplierQuoteDetails(id)}>
               <Heading size="h4">
                 <span>{routeData?.quote?.supplierQuoteId}</span>
