@@ -8,6 +8,7 @@ import {
   CommandList,
   CommandSeparator,
   HStack,
+  IconButton,
   Modal,
   ModalContent,
   ShortcutKey,
@@ -448,10 +449,18 @@ const SearchButton = () => {
 
   return (
     <div>
+      <IconButton
+        aria-label="Search"
+        icon={<LuSearch />}
+        variant="ghost"
+        className="md:hidden"
+        onClick={openSearchModal}
+      />
+
       <Button
         leftIcon={<LuSearch />}
         variant="secondary"
-        className="w-[200px] px-2 hover:scale-100"
+        className="hidden w-[200px] px-2 hover:scale-100 md:inline-flex"
         onClick={openSearchModal}
       >
         <HStack className="w-full">
