@@ -2,6 +2,7 @@
 -- documentId references productionQuantityReport.id (superseded on report revision).
 
 ALTER TYPE "approvalDocumentType" ADD VALUE IF NOT EXISTS 'productionQuantityReport';
+COMMIT;
 
 CREATE INDEX IF NOT EXISTS "approvalRequest_companyId_documentType_status_idx"
   ON "approvalRequest" ("companyId", "documentType", "status");
