@@ -117,7 +117,7 @@ const TableHeader = <T extends object>({
   withSearch,
   withSelectableRows
 }: HeaderProps<T>) => {
-  const { t, i18n } = useLingui();
+  const { t } = useLingui();
   const [params, setParams] = useUrlParams();
   const currentFilters = params.getAll("filter").filter(Boolean);
   const currentSorts = params.getAll("sort").filter(Boolean);
@@ -142,11 +142,7 @@ const TableHeader = <T extends object>({
   }, [fetcher.state, fetcher.data?.success]);
 
   const { currentView, hasView } = useSavedViews();
-  const translateText = (value: string | undefined) => {
-    if (!value) return value;
-    return i18n._(value);
-  };
-  const viewTitle = translateText(currentView?.name ?? title);
+  const viewTitle = currentView?.name ?? title;
   // const viewDescription = currentView?.description ?? "";
   const savedViewFormValidator = useMemo(
     () =>
