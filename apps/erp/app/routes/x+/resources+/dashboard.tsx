@@ -354,14 +354,14 @@ export default function MaintenanceDashboard() {
   ]);
 
   return (
-    <div className="flex flex-col gap-4 w-full p-4 h-[calc(100dvh-var(--header-height))] overflow-y-auto overscroll-contain scrollbar-thin scrollbar-thumb-rounded-full scrollbar-thumb-muted-foreground">
+    <div className="@container flex flex-col gap-4 w-full p-4 h-[calc(100dvh-var(--header-height))] overflow-y-auto overscroll-contain scrollbar-thin scrollbar-thumb-rounded-full scrollbar-thumb-muted-foreground">
       <HStack spacing={1} className="hidden md:flex">
         <CollapsibleSidebarTrigger />
         <Heading size="h2">
           <Trans>Dashboard</Trans>
         </Heading>
       </HStack>
-      <div className="grid w-full gap-4 grid-cols-1 lg:grid-cols-3">
+      <div className="grid w-full gap-4 grid-cols-1 @sm:grid-cols-2 @2xl:grid-cols-3">
         <Card>
           <CardHeader className="flex-row gap-2">
             <LuWrench className="text-muted-foreground" />
@@ -370,7 +370,7 @@ export default function MaintenanceDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <HStack className="justify-between w-full items-center">
+            <div className="flex flex-wrap items-center justify-between gap-2 w-full">
               <h3 className="text-5xl font-medium tracking-tighter">
                 {openDispatches}
               </h3>
@@ -387,7 +387,7 @@ export default function MaintenanceDashboard() {
                   <Trans>View Open</Trans>
                 </Link>
               </Button>
-            </HStack>
+            </div>
           </CardContent>
         </Card>
 
@@ -399,7 +399,7 @@ export default function MaintenanceDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <HStack className="justify-between w-full items-center">
+            <div className="flex flex-wrap items-center justify-between gap-2 w-full">
               <h3 className="text-5xl font-medium tracking-tighter">
                 {openScheduled}
               </h3>
@@ -416,7 +416,7 @@ export default function MaintenanceDashboard() {
                   <Trans>View Scheduled</Trans>
                 </Link>
               </Button>
-            </HStack>
+            </div>
           </CardContent>
         </Card>
 
@@ -428,7 +428,7 @@ export default function MaintenanceDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <HStack className="justify-between w-full items-center">
+            <div className="flex flex-wrap items-center justify-between gap-2 w-full">
               <h3 className="text-5xl font-medium tracking-tighter">
                 {openReactive}
               </h3>
@@ -445,15 +445,15 @@ export default function MaintenanceDashboard() {
                   <Trans>View Reactive</Trans>
                 </Link>
               </Button>
-            </HStack>
+            </div>
           </CardContent>
         </Card>
       </div>
 
       <Card>
-        <HStack className="justify-between items-center">
+        <div className="flex flex-wrap items-center justify-between">
           <CardHeader>
-            <div className="flex w-full justify-start items-center gap-2">
+            <div className="flex flex-wrap justify-start items-center gap-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -488,7 +488,7 @@ export default function MaintenanceDashboard() {
               />
             </div>
           </CardHeader>
-          <CardAction className="flex-row items-center gap-2">
+          <CardAction className="flex-row items-center gap-2 shrink-0">
             <DateSelect
               value={interval}
               onValueChange={onIntervalChange}
@@ -517,7 +517,7 @@ export default function MaintenanceDashboard() {
               </DropdownMenuContent>
             </DropdownMenu>
           </CardAction>
-        </HStack>
+        </div>
         <CardContent className="flex-col gap-4">
           <VStack className="pl-[3px]" spacing={0}>
             {isFetching ? (
