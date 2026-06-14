@@ -1,5 +1,5 @@
 import { Badge, MenuIcon, MenuItem, useDisclosure } from "@carbon/react";
-import { useLingui } from "@lingui/react/macro";
+import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useMemo, useState } from "react";
 import { LuPencil, LuTrash } from "react-icons/lu";
@@ -11,6 +11,10 @@ import { useDateFormatter, usePermissions, useUrlParams } from "~/hooks";
 import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
 import type { ProductionQuantity, ScrapReason } from "../../types";
+import {
+  PRODUCTION_QUANTITY_TYPES,
+  useProductionQuantityTypeLabel
+} from "./productionQuantityLabels";
 
 type ProductionQuantitiesTableProps = {
   data: ProductionQuantity[];
@@ -28,6 +32,7 @@ const ProductionQuantitiesTable = memo(
   }: ProductionQuantitiesTableProps) => {
     const { jobId } = useParams();
     const { t } = useLingui();
+    const typeLabel = useProductionQuantityTypeLabel();
     if (!jobId) throw new Error("Job ID is required");
     const { formatDateTime } = useDateFormatter();
     const [people] = usePeople();
@@ -89,13 +94,13 @@ const ProductionQuantitiesTable = memo(
                     : "red"
               }
             >
-              {row.original.type}
+              {typeLabel(row.original.type)}
             </Badge>
           ),
           meta: {
             filter: {
               type: "static",
-              options: ["Production", "Rework", "Scrap"].map((type) => ({
+              options: PRODUCTION_QUANTITY_TYPES.map((type) => ({
                 value: type,
                 label: (
                   <Badge
@@ -107,7 +112,7 @@ const ProductionQuantitiesTable = memo(
                           : "red"
                     }
                   >
-                    {type}
+                    {typeLabel(type)}
                   </Badge>
                 )
               }))
@@ -153,7 +158,7 @@ const ProductionQuantitiesTable = memo(
           cell: ({ row }) => formatDateTime(row.original.createdAt)
         }
       ];
-    }, [operations, people, scrapReasons, t, formatDateTime]);
+    }, [operations, people, scrapReasons, t, typeLabel, formatDateTime]);
 
     const permissions = usePermissions();
 
@@ -185,7 +190,7 @@ const ProductionQuantitiesTable = memo(
             onClick={() => navigate(row.id)}
           >
             <MenuIcon icon={<LuPencil />} />
-            Edit Quantity
+            <Trans>Edit Quantity</Trans>
           </MenuItem>
           <MenuItem
             destructive
@@ -193,7 +198,7 @@ const ProductionQuantitiesTable = memo(
             onClick={() => onDelete(row)}
           >
             <MenuIcon icon={<LuTrash />} />
-            Delete Quantity
+            <Trans>Delete Quantity</Trans>
           </MenuItem>
         </>
       ),
@@ -223,13 +228,11 @@ const ProductionQuantitiesTable = memo(
           <ConfirmDelete
             action={path.to.deleteProductionQuantity(selectedEvent.id)}
             isOpen
-            name={`${
-              selectedEvent.jobOperation?.description ?? "Operation"
-            } by ${
+            name={t`${selectedEvent.jobOperation?.description ?? t`Operation`} by ${
               people.find((p) => p.id === selectedEvent.createdBy)?.name ??
-              "Unknown Employee"
+              t`Unknown Employee`
             }`}
-            text="Are you sure you want to delete this production quantity? This action cannot be undone."
+            text={t`Are you sure you want to delete this production quantity? This action cannot be undone.`}
             onCancel={onDeleteCancel}
             onSubmit={onDeleteCancel}
           />

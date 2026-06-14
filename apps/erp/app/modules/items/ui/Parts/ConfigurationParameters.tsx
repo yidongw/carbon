@@ -1,12 +1,5 @@
-import {
-  Array as ArrayInput,
-  Combobox,
-  Hidden,
-  Input,
-  Select,
-  Submit,
-  ValidatedForm
-} from "@carbon/form";
+import { Combobox, Hidden, Select, Submit, ValidatedForm } from "@carbon/form";
+import { Array as ArrayInput, Input } from "~/components/Form";
 import {
   Button,
   Card,
@@ -71,6 +64,7 @@ import { EmployeeAvatar } from "~/components";
 import { ConfiguratorDataTypeIcon } from "~/components/Configurator/Icons";
 import { Enumerable } from "~/components/Enumerable";
 import { useShape } from "~/components/Form/Shape";
+import { useConfiguratorDataTypeLabel } from "~/utils/configuratorDataTypeLabels";
 import { ConfirmDelete } from "~/components/Modals";
 import { useDateFormatter } from "~/hooks";
 import type {
@@ -78,7 +72,6 @@ import type {
   ConfigurationParametersBindings
 } from "~/modules/items";
 import { configurationParameterDataTypes } from "~/modules/items";
-import { capitalize } from "~/utils/string";
 
 type ConfigurationParameterGroup = {
   id: string;
@@ -97,6 +90,7 @@ export default function ConfigurationParametersForm({
   groups: ConfigurationParameterGroup[];
 }) {
   const { t } = useLingui();
+  const dataTypeLabel = useConfiguratorDataTypeLabel();
   const {
     isList,
     isMaterial,
@@ -245,7 +239,7 @@ export default function ConfigurationParametersForm({
                               type={type}
                               className="mr-2"
                             />
-                            {capitalize(type)}
+                            {dataTypeLabel(type)}
                           </HStack>
                         ),
                         value: type
@@ -722,6 +716,7 @@ function ParameterGroup({
   setSelectedGroup: (group: ConfigurationParameterGroup) => void;
 }) {
   const { t } = useLingui();
+  const groupDisplayName = group.isUngrouped ? t`Ungrouped` : group.name;
   const {
     setNodeRef,
     attributes,
@@ -733,7 +728,7 @@ function ParameterGroup({
     id: group.id,
     data: { type: "group", group } satisfies GroupData,
     attributes: {
-      roleDescription: `Group: ${group.name}`
+      roleDescription: t`Group: ${groupDisplayName}`
     }
   });
 
@@ -765,7 +760,7 @@ function ParameterGroup({
               {...listeners}
               className="cursor-grab"
             />
-            <h3 className="font-semibold">{group.name}</h3>
+            <h3 className="font-semibold">{groupDisplayName}</h3>
           </HStack>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -829,6 +824,7 @@ function ConfigurableParameter({
   isOverlay?: boolean;
 }) {
   const { t } = useLingui();
+  const dataTypeLabel = useConfiguratorDataTypeLabel();
   const { formatRelativeTime } = useDateFormatter();
   const { isList, isMaterial, key, onChangeCheckForListType, updateKey } =
     useConfigurationParameters(parameter);
@@ -931,7 +927,7 @@ function ConfigurableParameter({
                   label: (
                     <HStack className="w-full">
                       <ConfiguratorDataTypeIcon type={type} className="mr-2" />
-                      {capitalize(type)}
+                      {dataTypeLabel(type)}
                     </HStack>
                   ),
                   value: type

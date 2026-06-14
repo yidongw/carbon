@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { DataType } from "~/modules/shared";
+import { optionalRequiredStringArray } from "~/utils/zodFields";
 
 export const attributeValidator = z
   .object({
@@ -8,21 +9,24 @@ export const attributeValidator = z
     name: z.string().min(1, { message: "Name is required" }),
     userAttributeCategoryId: z.string().min(20),
     attributeDataTypeId: zfd.numeric(),
-    listOptions: z.string().min(1).array().optional(),
+    listOptions: optionalRequiredStringArray,
     canSelfManage: zfd.checkbox()
   })
-  .refine((input) => {
-    // allows bar to be optional only when foo is 'foo'
-    if (
-      input.attributeDataTypeId === DataType.List &&
-      (input.listOptions === undefined ||
-        input.listOptions.length === 0 ||
-        input.listOptions.some((option) => option.length === 0))
-    )
-      return false;
+  .refine(
+    (input) => {
+      // allows bar to be optional only when foo is 'foo'
+      if (
+        input.attributeDataTypeId === DataType.List &&
+        (input.listOptions === undefined ||
+          input.listOptions.length === 0 ||
+          input.listOptions.some((option) => option.length === 0))
+      )
+        return false;
 
-    return true;
-  });
+      return true;
+    },
+    { message: "List options are required", path: ["listOptions"] }
+  );
 
 export const attributeCategoryValidator = z.object({
   id: zfd.text(z.string().optional()),

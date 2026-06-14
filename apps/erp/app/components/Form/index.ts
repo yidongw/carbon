@@ -1,5 +1,4 @@
 import {
-  Array,
   ArrayNumeric,
   Boolean,
   Combobox,
@@ -9,7 +8,6 @@ import {
   DateTimePicker,
   DefaultDisabledSubmit,
   Hidden,
-  Input,
   InputControlled,
   MultiSelect,
   Number,
@@ -26,6 +24,8 @@ import {
 } from "@carbon/form";
 
 import Abilities from "./Abilities";
+import Array from "./Array";
+import Input from "./Input";
 import Ability from "./Ability";
 import Account, { AccountControlled } from "./Account";
 import AddressAutocomplete from "./AddressAutocomplete";

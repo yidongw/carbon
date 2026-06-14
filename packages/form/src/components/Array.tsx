@@ -9,6 +9,7 @@ import {
   Input as InputBase,
   VStack
 } from "@carbon/react";
+import type { ReactNode } from "react";
 import { forwardRef, useRef } from "react";
 import { flushSync } from "react-dom";
 import { IoMdAdd, IoMdClose } from "react-icons/io";
@@ -20,6 +21,9 @@ type FormArrayProps = InputProps & {
   name: string;
   label?: string;
   isRequired?: boolean;
+  addButtonLabel?: ReactNode;
+  removeItemAriaLabel?: string;
+  formatError?: (error: string) => ReactNode;
 };
 
 const Array = forwardRef<HTMLInputElement, FormArrayProps>(
@@ -28,6 +32,9 @@ const Array = forwardRef<HTMLInputElement, FormArrayProps>(
       name,
       label,
       isRequired,
+      addButtonLabel = "New Option",
+      removeItemAriaLabel = "Remove item",
+      formatError = (error) => error,
       isDisabled: isDisabledProp,
       isReadOnly: isReadOnlyProp,
       ...rest
@@ -68,6 +75,8 @@ const Array = forwardRef<HTMLInputElement, FormArrayProps>(
               onRemove={() => remove(index)}
               isDisabled={isDisabled}
               isReadOnly={isReadOnly}
+              removeItemAriaLabel={removeItemAriaLabel}
+              formatError={formatError}
               {...rest}
             />
           ))}
@@ -77,10 +86,10 @@ const Array = forwardRef<HTMLInputElement, FormArrayProps>(
             onClick={onAdd}
             isDisabled={isDisabled || isReadOnly}
           >
-            {items.length > 0 ? "Add another option" : "Add option"}
+            {addButtonLabel}
           </Button>
         </VStack>
-        {error && <FormErrorMessage>{error}</FormErrorMessage>}
+        {error && <FormErrorMessage>{formatError(error)}</FormErrorMessage>}
       </FormControl>
     );
   }
@@ -91,10 +100,15 @@ Array.displayName = "Array";
 type ArrayInputProps = InputProps & {
   name: string;
   onRemove: () => void;
+  removeItemAriaLabel: string;
+  formatError: (error: string) => ReactNode;
 };
 
 const ArrayInput = forwardRef<HTMLInputElement, ArrayInputProps>(
-  ({ name, onRemove, isDisabled, isReadOnly, ...rest }, ref) => {
+  (
+    { name, onRemove, removeItemAriaLabel, formatError, isDisabled, isReadOnly, ...rest },
+    ref
+  ) => {
     const { getInputProps, error } = useField(name);
 
     return (
@@ -111,14 +125,14 @@ const ArrayInput = forwardRef<HTMLInputElement, ArrayInputProps>(
           />
           <IconButton
             variant="ghost"
-            aria-label="Remove item"
+            aria-label={removeItemAriaLabel}
             icon={<IoMdClose />}
             onClick={onRemove}
             isDisabled={isDisabled || isReadOnly}
           />
         </HStack>
 
-        {error && <FormErrorMessage>{error}</FormErrorMessage>}
+        {error && <FormErrorMessage>{formatError(error)}</FormErrorMessage>}
       </FormControl>
     );
   }
