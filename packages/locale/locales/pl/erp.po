@@ -3716,6 +3716,9 @@ msgstr "Wiadomości e-mail"
 msgid "Emoji"
 msgstr "Emoji"
 
+msgid "Employed"
+msgstr "Zatrudniony"
+
 msgid "Employee"
 msgstr "Pracownik"
 
@@ -6684,6 +6687,9 @@ msgstr "Koszt dodatkowy niepodlegający opodatkowaniu"
 
 msgid "None"
 msgstr "Brak"
+
+msgid "Offboarded"
+msgstr "Wypisany"
 
 msgid "Not enough jobs to cover quantity"
 msgstr "Niewystarczająca liczba zadań do pokrycia ilości"

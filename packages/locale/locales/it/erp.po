@@ -3722,6 +3722,9 @@ msgstr "Email"
 msgid "Emoji"
 msgstr "Emoji"
 
+msgid "Employed"
+msgstr "Impiegato"
+
 msgid "Employee"
 msgstr "Dipendente"
 
@@ -6689,6 +6692,9 @@ msgstr "Costo Add-On Non Tassabile"
 
 msgid "None"
 msgstr "Nessuno"
+
+msgid "Offboarded"
+msgstr "Uscito"
 
 msgid "Not enough jobs to cover quantity"
 msgstr "Non ci sono abbastanza lavori per coprire la quantità"

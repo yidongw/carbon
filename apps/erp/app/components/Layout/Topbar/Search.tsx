@@ -57,7 +57,6 @@ import useQualitySubmodules from "~/modules/quality/ui/useQualitySubmodules";
 import useResourcesSubmodules from "~/modules/resources/ui/useResourcesSubmodules";
 import useSalesSubmodules from "~/modules/sales/ui/useSalesSubmodules";
 import useSettingsSubmodules from "~/modules/settings/ui/useSettingsSubmodules";
-import useUsersSubmodules from "~/modules/users/ui/useUsersSubmodules";
 import type { SearchResponse } from "~/routes/api+/search";
 import { useUIStore } from "~/stores/ui";
 
@@ -489,7 +488,6 @@ function useGroupedSubmodules() {
   const documents = useDocumentsSubmodules();
   const accounting = useAccountingSubmodules();
   const invoicing = useInvoicingSubmodules();
-  const users = useUsersSubmodules();
   const settings = useSettingsSubmodules();
   const people = usePeopleSubmodules();
   const quality = useQualitySubmodules();
@@ -515,8 +513,7 @@ function useGroupedSubmodules() {
     people,
     production,
     resources,
-    settings,
-    users
+    settings
   };
 
   const ungroupedSubmodules: Record<string, { links: Route[] }> = {

@@ -37,7 +37,7 @@ function routeIsActive(
   const routePathname = routeTo.split("?")[0];
   if (exact) return pathname === routePathname;
   return (
-    pathname.includes(routePathname) &&
+    (pathname === routePathname || pathname.startsWith(`${routePathname}/`)) &&
     !`${pathname}${search}`.includes("view=")
   );
 }

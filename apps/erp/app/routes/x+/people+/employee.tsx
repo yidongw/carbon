@@ -6,7 +6,6 @@ import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useLoaderData } from "react-router";
 import { getAttributeCategories, getPeople } from "~/modules/people";
 import { PeopleTable } from "~/modules/people/ui/People";
-import { getEmployeeTypes } from "~/modules/users";
 import { path } from "~/utils/path";
 import { getGenericQueryFilters } from "~/utils/query";
 
@@ -24,32 +23,21 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const { limit, offset, sorts, filters } =
     getGenericQueryFilters(searchParams);
 
-  const [attributeCategories, employeeTypes, people] = await Promise.all([
+  const [attributeCategories, people, departments] = await Promise.all([
     getAttributeCategories(client, companyId),
-    getEmployeeTypes(client, companyId),
-    getPeople(client, companyId, {
-      search,
-      limit,
-      offset,
-      sorts,
-      filters
-    })
+    getPeople(client, companyId, { search, limit, offset, sorts, filters }),
+    client
+      .from("employeeSummary")
+      .select("id, departmentName")
+      .eq("companyId", companyId)
   ]);
+
   if (attributeCategories.error) {
     throw redirect(
       path.to.authenticatedRoot,
       await flash(
         request,
         error(attributeCategories.error, "Error loading attribute categories")
-      )
-    );
-  }
-  if (employeeTypes.error) {
-    throw redirect(
-      path.to.authenticatedRoot,
-      await flash(
-        request,
-        error(employeeTypes.error, "Error loading employee types")
       )
     );
   }
@@ -60,16 +48,20 @@ export async function loader({ request }: LoaderFunctionArgs) {
     );
   }
 
+  const departmentByEmployeeId = Object.fromEntries(
+    (departments.data ?? []).map((d) => [d.id, d.departmentName])
+  );
+
   return {
     attributeCategories: attributeCategories.data,
-    employeeTypes: employeeTypes.data ?? [],
+    departmentByEmployeeId,
     people: people.data ?? [],
     count: people.count ?? 0
   };
 }
 
 export default function ResourcesPeopleRoute() {
-  const { attributeCategories, count, employeeTypes, people } =
+  const { attributeCategories, count, departmentByEmployeeId, people } =
     useLoaderData<typeof loader>();
 
   return (
@@ -78,7 +70,7 @@ export default function ResourcesPeopleRoute() {
         attributeCategories={attributeCategories}
         data={people ?? []}
         count={count ?? 0}
-        employeeTypes={employeeTypes}
+        departmentByEmployeeId={departmentByEmployeeId}
       />
       <Outlet />
     </VStack>

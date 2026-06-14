@@ -3715,6 +3715,9 @@ msgstr "メール"
 msgid "Emoji"
 msgstr "絵文字"
 
+msgid "Employed"
+msgstr "在職"
+
 msgid "Employee"
 msgstr "従業員"
 
@@ -6681,6 +6684,9 @@ msgstr "非課税アドオンコスト"
 
 msgid "None"
 msgstr "なし"
+
+msgid "Offboarded"
+msgstr "退職"
 
 msgid "Not enough jobs to cover quantity"
 msgstr "数量をカバーするのに十分なジョブがありません"
