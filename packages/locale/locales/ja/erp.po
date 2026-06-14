@@ -105,6 +105,9 @@ msgstr "顧客とは、あなたの部品またはサービスを購入する企
 msgid "A issue record tracks quality issues and their resolution process."
 msgstr "問題レコードは品質問題とその解決プロセスを追跡します。"
 
+msgid "A job is a set of work to be done to fulfill an order or increase inventory"
+msgstr ""
+
 msgid "A material is a physical item used to make a part that can be used across multiple jobs"
 msgstr "材料は、複数のジョブで使用できるパーツを作成するために使用される物理的なアイテムです"
 
@@ -362,6 +365,9 @@ msgstr "要件を追加"
 
 msgid "Add Risk"
 msgstr "リスクを追加"
+
+msgid "Add Row"
+msgstr ""
 
 msgid "Add rule"
 msgstr "ルールを追加"
@@ -1534,6 +1540,12 @@ msgstr "保全ディスパッチが作業現場から作成されるときの通
 msgid "Configure notifications for when new suggestions are submitted."
 msgstr "新しい提案が送信されたときの通知を設定します。"
 
+msgid "Configure quantities"
+msgstr ""
+
+msgid "Configure the content displayed on job traveler PDFs."
+msgstr "ジョブトラベラーPDFに表示されるコンテンツを設定します。"
+
 msgid "Configure the default accounts used for various transaction types across your system"
 msgstr "様々なトランザクションタイプに使用されるデフォルトアカウントをシステム全体で設定します"
 
@@ -1651,6 +1663,9 @@ msgstr "見積に変換"
 
 msgid "Copied link to clipboard"
 msgstr "クリップボードにリンクをコピーしました"
+
+msgid "Copied!"
+msgstr "コピーしました!"
 
 msgid "Copy"
 msgstr "コピー"
@@ -2404,6 +2419,9 @@ msgstr "RFQを削除"
 
 msgid "Delete Risk"
 msgstr "リスクを削除"
+
+msgid "Delete row"
+msgstr ""
 
 msgid "Delete rows"
 msgstr "行を削除"
@@ -3585,6 +3603,9 @@ msgstr "故障モード"
 msgid "Failure Modes"
 msgstr "障害モード"
 
+msgid "False"
+msgstr ""
+
 msgid "Favorite"
 msgstr "お気に入り"
 
@@ -4580,6 +4601,9 @@ msgstr "製造業者"
 msgid "Manufacturing"
 msgstr "製造"
 
+msgid "Many Jobs"
+msgstr ""
+
 msgid "Mark as Planned"
 msgstr "計画済みとしてマーク"
 
@@ -4971,6 +4995,9 @@ msgstr "新しい請求書"
 
 msgid "New Item Group"
 msgstr "新しいアイテムグループ"
+
+msgid "New Job"
+msgstr ""
 
 msgid "New Kanban"
 msgstr "新しいカンバン"
@@ -6198,6 +6225,9 @@ msgstr "品質タイプ"
 msgid "Quantities"
 msgstr "数量"
 
+msgid "Quantities Per Job"
+msgstr ""
+
 msgid "Quantity"
 msgstr "数量"
 
@@ -6221,9 +6251,6 @@ msgstr "購買注文数量"
 
 msgid "Quantity on Sales Order"
 msgstr "販売注文の数量"
-
-msgid "Quantity Per Job"
-msgstr "ジョブあたりの数量"
 
 msgid "Quantity per Parent"
 msgstr "親あたりの数量"
@@ -7302,6 +7329,9 @@ msgstr "サインアウト"
 msgid "Signed in as {name}"
 msgstr "{name}としてサインインしています"
 
+msgid "Single Job"
+msgstr ""
+
 msgid "Size"
 msgstr "サイズ"
 
@@ -7322,6 +7352,9 @@ msgstr "会社の祝日に予定されたメンテナンスをスキップする
 
 msgid "Skipped"
 msgstr "スキップ"
+
+msgid "Some cells have invalid values. Fix the highlighted cells before saving."
+msgstr ""
 
 msgid "Something went wrong. Please try again."
 msgstr "何か問題が発生しました。もう一度お試しください。"
@@ -7795,6 +7828,15 @@ msgstr "計算方法の後、現金割引が利用可能になるまでの日数
 msgid "The amount of days after the calculation method that the payment is due"
 msgstr "計算方法の後の支払い期日までの日数"
 
+msgid "The billing address used on purchase orders and other purchasing documents."
+msgstr "購買注文およびその他の購買文書で使用される請求先住所。"
+
+msgid "The billing address used on quotes, sales orders, invoices, and other sales documents."
+msgstr "見積書、販売注文書、請求書、およびその他の販売文書で使用される請求先住所。"
+
+msgid "The bulk jobs form creates multiple jobs for the same item across multiple due dates."
+msgstr ""
+
 msgid "The date the customer expects to receive the goods"
 msgstr "顧客が商品を受け取ることを期待する日付"
 
@@ -8041,14 +8083,14 @@ msgstr "合計"
 msgid "Total Hours"
 msgstr "合計時間"
 
+msgid "Total Jobs"
+msgstr ""
+
 msgid "Total Minutes"
 msgstr "合計分"
 
 msgid "Total Price"
 msgstr "合計価格"
-
-msgid "Total Quantity"
-msgstr "合計数量"
 
 msgid "Total:"
 msgstr "合計:"
@@ -8151,6 +8193,9 @@ msgstr "試算表"
 
 msgid "Triggers"
 msgstr "トリガー"
+
+msgid "True"
+msgstr ""
 
 msgid "Tuesday"
 msgstr "火曜日"

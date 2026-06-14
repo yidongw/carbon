@@ -105,6 +105,9 @@ msgstr "Un client est une entreprise ou une personne qui achète vos pièces ou 
 msgid "A issue record tracks quality issues and their resolution process."
 msgstr "Un enregistrement de problème suit les problèmes de qualité et leur processus de résolution."
 
+msgid "A job is a set of work to be done to fulfill an order or increase inventory"
+msgstr ""
+
 msgid "A material is a physical item used to make a part that can be used across multiple jobs"
 msgstr "Un matériau est un article physique utilisé pour fabriquer une pièce qui peut être utilisée dans plusieurs travaux"
 
@@ -362,6 +365,9 @@ msgstr "Ajouter une exigence"
 
 msgid "Add Risk"
 msgstr "Ajouter un risque"
+
+msgid "Add Row"
+msgstr ""
 
 msgid "Add rule"
 msgstr "Ajouter une règle"
@@ -1534,6 +1540,12 @@ msgstr "Configurez les notifications pour lorsque les ordres de maintenance sont
 msgid "Configure notifications for when new suggestions are submitted."
 msgstr "Configurez les notifications pour lorsque de nouvelles suggestions sont soumises."
 
+msgid "Configure quantities"
+msgstr ""
+
+msgid "Configure the content displayed on job traveler PDFs."
+msgstr "Configurez le contenu affiché sur les PDF de bon de travail."
+
 msgid "Configure the default accounts used for various transaction types across your system"
 msgstr "Configurez les comptes par défaut utilisés pour différents types de transactions dans votre système"
 
@@ -1651,6 +1663,9 @@ msgstr "Convertir en devis"
 
 msgid "Copied link to clipboard"
 msgstr "Lien copié dans le presse-papiers"
+
+msgid "Copied!"
+msgstr "Copié !"
 
 msgid "Copy"
 msgstr "Copier"
@@ -2404,6 +2419,9 @@ msgstr "Supprimer RFQ"
 
 msgid "Delete Risk"
 msgstr "Supprimer le risque"
+
+msgid "Delete row"
+msgstr ""
 
 msgid "Delete rows"
 msgstr "Supprimer les lignes"
@@ -3585,6 +3603,9 @@ msgstr "Mode de défaillance"
 msgid "Failure Modes"
 msgstr "Modes de défaillance"
 
+msgid "False"
+msgstr ""
+
 msgid "Favorite"
 msgstr "Favori"
 
@@ -4580,6 +4601,9 @@ msgstr "Fabricant"
 msgid "Manufacturing"
 msgstr "Fabrication"
 
+msgid "Many Jobs"
+msgstr ""
+
 msgid "Mark as Planned"
 msgstr "Marquer comme planifié"
 
@@ -4971,6 +4995,9 @@ msgstr "Nouvelle facture"
 
 msgid "New Item Group"
 msgstr "Nouveau groupe d'articles"
+
+msgid "New Job"
+msgstr ""
 
 msgid "New Kanban"
 msgstr "Nouveau Kanban"
@@ -6198,6 +6225,9 @@ msgstr "Type Qualité"
 msgid "Quantities"
 msgstr "Quantités"
 
+msgid "Quantities Per Job"
+msgstr ""
+
 msgid "Quantity"
 msgstr "Quantité"
 
@@ -6221,9 +6251,6 @@ msgstr "Quantité en commande d'achat"
 
 msgid "Quantity on Sales Order"
 msgstr "Quantité sur Commande Vente"
-
-msgid "Quantity Per Job"
-msgstr "Quantité Par Travail"
 
 msgid "Quantity per Parent"
 msgstr "Quantité par Parent"
@@ -7302,6 +7329,9 @@ msgstr "Se déconnecter"
 msgid "Signed in as {name}"
 msgstr "Connecté en tant que {name}"
 
+msgid "Single Job"
+msgstr ""
+
 msgid "Size"
 msgstr "Taille"
 
@@ -7322,6 +7352,9 @@ msgstr "Ignorer la maintenance programmée lors des jours fériés de l'entrepri
 
 msgid "Skipped"
 msgstr "Ignoré"
+
+msgid "Some cells have invalid values. Fix the highlighted cells before saving."
+msgstr ""
 
 msgid "Something went wrong. Please try again."
 msgstr "Quelque chose s'est mal passé. Veuillez réessayer."
@@ -7795,6 +7828,15 @@ msgstr "Le nombre de jours après la méthode de calcul pendant lesquels la remi
 msgid "The amount of days after the calculation method that the payment is due"
 msgstr "Le nombre de jours après la méthode de calcul que le paiement est dû"
 
+msgid "The billing address used on purchase orders and other purchasing documents."
+msgstr "L'adresse de facturation utilisée sur les commandes d'achat et autres documents d'approvisionnement."
+
+msgid "The billing address used on quotes, sales orders, invoices, and other sales documents."
+msgstr "L'adresse de facturation utilisée sur les devis, les commandes de vente, les factures et autres documents de vente."
+
+msgid "The bulk jobs form creates multiple jobs for the same item across multiple due dates."
+msgstr ""
+
 msgid "The date the customer expects to receive the goods"
 msgstr "La date à laquelle le client s'attend à recevoir les marchandises"
 
@@ -8041,14 +8083,14 @@ msgstr "Total"
 msgid "Total Hours"
 msgstr "Heures totales"
 
+msgid "Total Jobs"
+msgstr ""
+
 msgid "Total Minutes"
 msgstr "Minutes totales"
 
 msgid "Total Price"
 msgstr "Prix Total"
-
-msgid "Total Quantity"
-msgstr "Quantité Totale"
 
 msgid "Total:"
 msgstr "Total :"
@@ -8151,6 +8193,9 @@ msgstr "Balance de vérification"
 
 msgid "Triggers"
 msgstr "Déclencheurs"
+
+msgid "True"
+msgstr ""
 
 msgid "Tuesday"
 msgstr "Mardi"

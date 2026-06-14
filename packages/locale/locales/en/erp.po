@@ -105,6 +105,9 @@ msgstr "A customer is a business or person who buys your parts or services."
 msgid "A issue record tracks quality issues and their resolution process."
 msgstr "A issue record tracks quality issues and their resolution process."
 
+msgid "A job is a set of work to be done to fulfill an order or increase inventory"
+msgstr "A job is a set of work to be done to fulfill an order or increase inventory"
+
 msgid "A material is a physical item used to make a part that can be used across multiple jobs"
 msgstr "A material is a physical item used to make a part that can be used across multiple jobs"
 
@@ -362,6 +365,9 @@ msgstr "Add Requirement"
 
 msgid "Add Risk"
 msgstr "Add Risk"
+
+msgid "Add Row"
+msgstr "Add Row"
 
 msgid "Add rule"
 msgstr "Add rule"
@@ -1534,6 +1540,12 @@ msgstr "Configure notifications for when maintenance dispatches are created from
 msgid "Configure notifications for when new suggestions are submitted."
 msgstr "Configure notifications for when new suggestions are submitted."
 
+msgid "Configure quantities"
+msgstr "Configure quantities"
+
+msgid "Configure the content displayed on job traveler PDFs."
+msgstr "Configure the content displayed on job traveler PDFs."
+
 msgid "Configure the default accounts used for various transaction types across your system"
 msgstr "Configure the default accounts used for various transaction types across your system"
 
@@ -1651,6 +1663,9 @@ msgstr "Convert to Quote"
 
 msgid "Copied link to clipboard"
 msgstr "Copied link to clipboard"
+
+msgid "Copied!"
+msgstr "Copied!"
 
 msgid "Copy"
 msgstr "Copy"
@@ -2404,6 +2419,9 @@ msgstr "Delete RFQ"
 
 msgid "Delete Risk"
 msgstr "Delete Risk"
+
+msgid "Delete row"
+msgstr "Delete row"
 
 msgid "Delete rows"
 msgstr "Delete rows"
@@ -3585,6 +3603,9 @@ msgstr "Failure Mode"
 msgid "Failure Modes"
 msgstr "Failure Modes"
 
+msgid "False"
+msgstr "False"
+
 msgid "Favorite"
 msgstr "Favorite"
 
@@ -4580,6 +4601,9 @@ msgstr "Manufacturer"
 msgid "Manufacturing"
 msgstr "Manufacturing"
 
+msgid "Many Jobs"
+msgstr "Many Jobs"
+
 msgid "Mark as Planned"
 msgstr "Mark as Planned"
 
@@ -4971,6 +4995,9 @@ msgstr "New Invoice"
 
 msgid "New Item Group"
 msgstr "New Item Group"
+
+msgid "New Job"
+msgstr "New Job"
 
 msgid "New Kanban"
 msgstr "New Kanban"
@@ -6198,6 +6225,9 @@ msgstr "Quality Type"
 msgid "Quantities"
 msgstr "Quantities"
 
+msgid "Quantities Per Job"
+msgstr "Quantities Per Job"
+
 msgid "Quantity"
 msgstr "Quantity"
 
@@ -6221,9 +6251,6 @@ msgstr "Quantity on Purchase Order"
 
 msgid "Quantity on Sales Order"
 msgstr "Quantity on Sales Order"
-
-msgid "Quantity Per Job"
-msgstr "Quantity Per Job"
 
 msgid "Quantity per Parent"
 msgstr "Quantity per Parent"
@@ -7302,6 +7329,9 @@ msgstr "Sign Out"
 msgid "Signed in as {name}"
 msgstr "Signed in as {name}"
 
+msgid "Single Job"
+msgstr "Single Job"
+
 msgid "Size"
 msgstr "Size"
 
@@ -7322,6 +7352,9 @@ msgstr "Skip scheduled maintenance on company holidays"
 
 msgid "Skipped"
 msgstr "Skipped"
+
+msgid "Some cells have invalid values. Fix the highlighted cells before saving."
+msgstr "Some cells have invalid values. Fix the highlighted cells before saving."
 
 msgid "Something went wrong. Please try again."
 msgstr "Something went wrong. Please try again."
@@ -7795,6 +7828,15 @@ msgstr "The amount of days after the calculation method that the cash discount i
 msgid "The amount of days after the calculation method that the payment is due"
 msgstr "The amount of days after the calculation method that the payment is due"
 
+msgid "The billing address used on purchase orders and other purchasing documents."
+msgstr "The billing address used on purchase orders and other purchasing documents."
+
+msgid "The billing address used on quotes, sales orders, invoices, and other sales documents."
+msgstr "The billing address used on quotes, sales orders, invoices, and other sales documents."
+
+msgid "The bulk jobs form creates multiple jobs for the same item across multiple due dates."
+msgstr "The bulk jobs form creates multiple jobs for the same item across multiple due dates."
+
 msgid "The date the customer expects to receive the goods"
 msgstr "The date the customer expects to receive the goods"
 
@@ -8041,14 +8083,14 @@ msgstr "Total"
 msgid "Total Hours"
 msgstr "Total Hours"
 
+msgid "Total Jobs"
+msgstr "Total Jobs"
+
 msgid "Total Minutes"
 msgstr "Total Minutes"
 
 msgid "Total Price"
 msgstr "Total Price"
-
-msgid "Total Quantity"
-msgstr "Total Quantity"
 
 msgid "Total:"
 msgstr "Total:"
@@ -8151,6 +8193,9 @@ msgstr "Trial Balance"
 
 msgid "Triggers"
 msgstr "Triggers"
+
+msgid "True"
+msgstr "True"
 
 msgid "Tuesday"
 msgstr "Tuesday"

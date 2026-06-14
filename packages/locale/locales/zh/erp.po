@@ -105,6 +105,9 @@ msgstr "客户是购买您的零件或服务的企业或个人。"
 msgid "A issue record tracks quality issues and their resolution process."
 msgstr "问题记录跟踪质量问题及其解决过程。"
 
+msgid "A job is a set of work to be done to fulfill an order or increase inventory"
+msgstr ""
+
 msgid "A material is a physical item used to make a part that can be used across multiple jobs"
 msgstr "材料是用于制造零件的物理项目，可以在多个工作中使用"
 
@@ -362,6 +365,9 @@ msgstr "添加要求"
 
 msgid "Add Risk"
 msgstr "添加风险"
+
+msgid "Add Row"
+msgstr ""
 
 msgid "Add rule"
 msgstr "添加规则"
@@ -1534,6 +1540,12 @@ msgstr "配置当从车间创建维护派遣时的通知。通知根据故障模
 msgid "Configure notifications for when new suggestions are submitted."
 msgstr "配置在提交新建议时的通知。"
 
+msgid "Configure quantities"
+msgstr ""
+
+msgid "Configure the content displayed on job traveler PDFs."
+msgstr "配置在工作单据PDF上显示的内容。"
+
 msgid "Configure the default accounts used for various transaction types across your system"
 msgstr "配置用于系统中各种交易类型的默认账户"
 
@@ -1651,6 +1663,9 @@ msgstr "转换为报价"
 
 msgid "Copied link to clipboard"
 msgstr "已复制链接到剪贴板"
+
+msgid "Copied!"
+msgstr "已复制！"
 
 msgid "Copy"
 msgstr "复制"
@@ -2404,6 +2419,9 @@ msgstr "删除询价单"
 
 msgid "Delete Risk"
 msgstr "删除风险"
+
+msgid "Delete row"
+msgstr ""
 
 msgid "Delete rows"
 msgstr "删除行"
@@ -3585,6 +3603,9 @@ msgstr "故障模式"
 msgid "Failure Modes"
 msgstr "故障模式"
 
+msgid "False"
+msgstr ""
+
 msgid "Favorite"
 msgstr "收藏"
 
@@ -4580,6 +4601,9 @@ msgstr "制造商"
 msgid "Manufacturing"
 msgstr "制造"
 
+msgid "Many Jobs"
+msgstr ""
+
 msgid "Mark as Planned"
 msgstr "标记为已计划"
 
@@ -4971,6 +4995,9 @@ msgstr "新发票"
 
 msgid "New Item Group"
 msgstr "新建项目组"
+
+msgid "New Job"
+msgstr ""
 
 msgid "New Kanban"
 msgstr "新看板"
@@ -6198,6 +6225,9 @@ msgstr "质量类型"
 msgid "Quantities"
 msgstr "数量"
 
+msgid "Quantities Per Job"
+msgstr ""
+
 msgid "Quantity"
 msgstr "数量"
 
@@ -6221,9 +6251,6 @@ msgstr "采购订单数量"
 
 msgid "Quantity on Sales Order"
 msgstr "销售订单数量"
-
-msgid "Quantity Per Job"
-msgstr "每个工作的数量"
 
 msgid "Quantity per Parent"
 msgstr "每个父项的数量"
@@ -7302,6 +7329,9 @@ msgstr "登出"
 msgid "Signed in as {name}"
 msgstr "以 {name} 身份登录"
 
+msgid "Single Job"
+msgstr ""
+
 msgid "Size"
 msgstr "大小"
 
@@ -7322,6 +7352,9 @@ msgstr "跳过公司假期的计划维护"
 
 msgid "Skipped"
 msgstr "已跳过"
+
+msgid "Some cells have invalid values. Fix the highlighted cells before saving."
+msgstr ""
 
 msgid "Something went wrong. Please try again."
 msgstr "出现问题。请重试。"
@@ -7795,6 +7828,15 @@ msgstr "计算方法后可用现金折扣的天数"
 msgid "The amount of days after the calculation method that the payment is due"
 msgstr "计算方法后的天数，在该天数后付款到期"
 
+msgid "The billing address used on purchase orders and other purchasing documents."
+msgstr "用于采购订单和其他采购文件的账单地址。"
+
+msgid "The billing address used on quotes, sales orders, invoices, and other sales documents."
+msgstr "用于报价单、销售订单、发票和其他销售文件的账单地址。"
+
+msgid "The bulk jobs form creates multiple jobs for the same item across multiple due dates."
+msgstr ""
+
 msgid "The date the customer expects to receive the goods"
 msgstr "客户期望收到货物的日期"
 
@@ -8041,14 +8083,14 @@ msgstr "总计"
 msgid "Total Hours"
 msgstr "总小时"
 
+msgid "Total Jobs"
+msgstr ""
+
 msgid "Total Minutes"
 msgstr "总分钟"
 
 msgid "Total Price"
 msgstr "总价"
-
-msgid "Total Quantity"
-msgstr "总数量"
 
 msgid "Total:"
 msgstr "总计："
@@ -8151,6 +8193,9 @@ msgstr "试算平衡表"
 
 msgid "Triggers"
 msgstr "触发器"
+
+msgid "True"
+msgstr ""
 
 msgid "Tuesday"
 msgstr "星期二"

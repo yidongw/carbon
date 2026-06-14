@@ -49,6 +49,23 @@ export async function action({ request }: ActionFunctionArgs) {
       // invalid JSON — skip configuration
     }
   }
+
+  const configTableRows = Array.isArray(configuration?.configTable)
+    ? configuration.configTable
+    : [];
+  const configTablePrimaryKeys = Array.isArray(
+    configuration?.configTablePrimaryKeys
+  )
+    ? configuration.configTablePrimaryKeys
+    : ["Quantities"];
+  const hasConfiguredJobs = configTableRows.length > 0;
+
+  const getConfiguredJobQuantity = (row: Record<string, unknown>) =>
+    configTablePrimaryKeys.reduce(
+      (sum: number, key: string) => sum + (Number(row[key]) || 0),
+      0
+    );
+
   const jobs = Math.ceil(totalQuantity / quantityPerJob);
   const quantityOfLastJob = totalQuantity - (jobs - 1) * quantityPerJob;
 
@@ -98,14 +115,26 @@ export async function action({ request }: ActionFunctionArgs) {
       "T"
     )[0];
 
+    const configTableRow = hasConfiguredJobs
+      ? configTableRows[i % configTableRows.length]
+      : undefined;
+    const configurationForJob = configTableRow
+      ? { ...configuration, configTable: [configTableRow] }
+      : configuration;
+    const jobQuantity = configTableRow
+      ? getConfiguredJobQuantity(configTableRow)
+      : i === jobs - 1
+        ? quantityOfLastJob
+        : quantityPerJob;
+
     const createJob = await insertJob(
       serviceRole,
       {
         ...jobData,
-        quantity: i === jobs - 1 ? quantityOfLastJob : quantityPerJob,
+        quantity: jobQuantity,
         dueDate,
         storageUnitId: storageUnitId ?? undefined,
-        configuration,
+        configuration: configurationForJob,
         companyId,
         createdBy: userId,
         customFields: setCustomFields(formData)
