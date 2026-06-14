@@ -3255,6 +3255,9 @@ msgstr "Emails"
 msgid "Emoji"
 msgstr "Emoji"
 
+msgid "Employed"
+msgstr "Employed"
+
 msgid "Employee"
 msgstr "Employee"
 
@@ -4474,6 +4477,9 @@ msgstr "Investments in Subsidiaries"
 
 msgid "Invite"
 msgstr "Invite"
+
+msgid "Invited"
+msgstr "Invited"
 
 msgid "Invoice"
 msgstr "Invoice"
@@ -5911,6 +5917,9 @@ msgstr "Non-Taxable Charges"
 
 msgid "None"
 msgstr "None"
+
+msgid "Offboarded"
+msgstr "Offboarded"
 
 msgid "Not enough jobs to cover quantity"
 msgstr "Not enough jobs to cover quantity"

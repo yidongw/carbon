@@ -7,7 +7,6 @@ import {
   LuFolderCheck,
   LuLandmark,
   LuSettings,
-  LuShield,
   LuShoppingCart,
   LuSquareStack,
   LuTvMinimalPlay,
@@ -88,12 +87,6 @@ export function useModules() {
       name: t`Documents`,
       to: path.to.documents,
       icon: LuFiles
-    },
-    {
-      permission: "users",
-      name: t`Users`,
-      to: path.to.employeeAccounts,
-      icon: LuShield
     },
     {
       permission: "settings",

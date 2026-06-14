@@ -56,9 +56,26 @@ export async function loader({ request }: LoaderFunctionArgs) {
     );
   }
 
+  const employeeIds = employees.data?.map((e) => e.id!).filter(Boolean) ?? [];
+  const userFlags =
+    employeeIds.length > 0
+      ? await client
+          .from("user")
+          .select("id, admin, developer")
+          .in("id", employeeIds)
+      : { data: [] };
+
+  const userFlagsById = Object.fromEntries(
+    (userFlags.data ?? []).map((u) => [u.id, u])
+  );
+
   return {
     count: employees.count ?? 0,
-    employees: employees.data ?? [],
+    employees: (employees.data ?? []).map((e) => ({
+      ...e,
+      admin: userFlagsById[e.id!]?.admin ?? false,
+      developer: userFlagsById[e.id!]?.developer ?? false
+    })),
     employeeTypes: employeeTypes.data,
     unrevokedInviteEmails: invites.data?.map((i) => i.email) ?? []
   };

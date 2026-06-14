@@ -4,8 +4,8 @@ import { useLocale } from "@react-aria/i18n";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useMemo } from "react";
 import {
-  LuBriefcase,
   LuMail,
+  LuNetwork,
   LuPencil,
   LuToggleRight,
   LuUser,
@@ -13,10 +13,8 @@ import {
 } from "react-icons/lu";
 import { useNavigate } from "react-router";
 import { Avatar, EmployeeAvatar, Hyperlink, New, Table } from "~/components";
-import { Enumerable } from "~/components/Enumerable";
 import { usePermissions, useUrlParams } from "~/hooks";
 import { DataType } from "~/modules/shared";
-import type { EmployeeType } from "~/modules/users";
 import { path } from "~/utils/path";
 import type { AttributeCategory, Person } from "../../types";
 
@@ -24,28 +22,21 @@ type PeopleTableProps = {
   attributeCategories: AttributeCategory[];
   data: Person[];
   count: number;
-  employeeTypes: Partial<EmployeeType>[];
+  departmentByEmployeeId: Record<string, string | null>;
 };
 
 const PeopleTable = memo(
-  ({ attributeCategories, data, count, employeeTypes }: PeopleTableProps) => {
+  ({
+    attributeCategories,
+    data,
+    count,
+    departmentByEmployeeId
+  }: PeopleTableProps) => {
     const { t } = useLingui();
     const { locale } = useLocale();
     const navigate = useNavigate();
     const permissions = usePermissions();
     const [params] = useUrlParams();
-
-    const employeeTypesById = useMemo(
-      () =>
-        employeeTypes.reduce<Record<string, Partial<EmployeeType>>>(
-          (acc, type) => {
-            if (type.id) acc[type.id] = type;
-            return acc;
-          },
-          {}
-        ),
-      [employeeTypes]
-    );
 
     const renderGenericAttribute = useCallback(
       (
@@ -135,37 +126,24 @@ const PeopleTable = memo(
           }
         },
         {
-          id: "employeeTypeId",
-          header: t`Employee Type`,
-          cell: ({ row }) => (
-            <Enumerable
-              value={
-                employeeTypesById[row.original.employeeTypeId ?? ""]
-                  ?.name as string
-              }
-            />
-          ),
+          id: "department",
+          header: t`Department`,
+          cell: ({ row }) =>
+            departmentByEmployeeId[row.original.id!] ?? null,
           meta: {
-            filter: {
-              type: "static",
-              options: employeeTypes.map((type) => ({
-                value: type.id!,
-                label: <Enumerable value={type.name!} />
-              }))
-            },
-            icon: <LuBriefcase />
+            icon: <LuNetwork />
           }
         },
         {
           accessorKey: "active",
-          header: t`Active`,
+          header: t`Employed`,
           cell: (item) => <Checkbox isChecked={item.getValue<boolean>()} />,
           meta: {
             filter: {
               type: "static",
               options: [
-                { value: "true", label: t`Active` },
-                { value: "false", label: t`Inactive` }
+                { value: "true", label: t`Employed` },
+                { value: "false", label: t`Offboarded` }
               ]
             },
             icon: <LuToggleRight />
@@ -195,8 +173,7 @@ const PeopleTable = memo(
       return [...defaultColumns, ...additionalColumns];
     }, [
       attributeCategories,
-      employeeTypes,
-      employeeTypesById,
+      departmentByEmployeeId,
       renderGenericAttribute,
       t
     ]);
@@ -230,7 +207,7 @@ const PeopleTable = memo(
             left: ["Select", "User"]
           }}
           primaryAction={
-            permissions.can("create", "users") && (
+            permissions.can("create", "people") && (
               <New
                 label={t`Employee`}
                 to={`${path.to.newEmployee}?${params.toString()}`}
