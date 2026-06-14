@@ -4020,6 +4020,9 @@ msgstr "निरीक्षण स्तर"
 msgid "Inspection Status"
 msgstr "निरीक्षण स्थिति"
 
+msgid "Inspections"
+msgstr "निरीक्षण"
+
 msgid "Inspector"
 msgstr "निरीक्षक"
 
@@ -4247,6 +4250,12 @@ msgstr "जॉब ऑपरेशन"
 
 msgid "Job Operations"
 msgstr "कार्य संचालन"
+
+msgid "Job Traveler"
+msgstr "जॉब ट्रैवलर"
+
+msgid "Job traveler PDFs include work instructions."
+msgstr "जॉब ट्रैवलर पीडीएफ में कार्य निर्देश शामिल हैं।"
 
 msgid "Jobs"
 msgstr "नौकरियां"

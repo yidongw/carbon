@@ -4020,6 +4020,9 @@ msgstr "検査レベル"
 msgid "Inspection Status"
 msgstr "検査ステータス"
 
+msgid "Inspections"
+msgstr "検査"
+
 msgid "Inspector"
 msgstr "検査官"
 
@@ -4247,6 +4250,12 @@ msgstr "作業操作"
 
 msgid "Job Operations"
 msgstr "ジョブ操作"
+
+msgid "Job Traveler"
+msgstr "ジョブトラベラー"
+
+msgid "Job traveler PDFs include work instructions."
+msgstr "ジョブトラベラーPDFに作業指示が含まれています。"
 
 msgid "Jobs"
 msgstr "ジョブ"

@@ -42,7 +42,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   if (trackedEntities.error) {
     throw redirect(
-      path.to.inventory,
+      path.to.inventoryQuantities,
       await flash(request, error(null, "Error loading tracked entities"))
     );
   }

@@ -3,6 +3,7 @@ import {
   LuContainer,
   LuCreditCard,
   LuFileText,
+  LuLayoutDashboard,
   LuLayoutList,
   LuPackageSearch,
   LuSquareChartGantt,
@@ -19,6 +20,16 @@ export default function usePurchasingSubmodules() {
   const { addSavedViewsToRoutes } = useSavedViews();
 
   const purchasingRoutes: AuthenticatedRouteGroup[] = [
+    {
+      name: t`Dashboard`,
+      routes: [
+        {
+          name: t`Dashboard`,
+          to: path.to.purchasingDashboard,
+          icon: <LuLayoutDashboard />
+        }
+      ]
+    },
     {
       name: t`Manage`,
       routes: [

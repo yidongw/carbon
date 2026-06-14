@@ -4020,6 +4020,9 @@ msgstr "Poziom kontroli"
 msgid "Inspection Status"
 msgstr "Stan kontroli"
 
+msgid "Inspections"
+msgstr "Inspekcje"
+
 msgid "Inspector"
 msgstr "Inspektor"
 
@@ -4247,6 +4250,12 @@ msgstr "Operacja zadania"
 
 msgid "Job Operations"
 msgstr "Operacje Zadań"
+
+msgid "Job Traveler"
+msgstr "Dokument Podróży Pracy"
+
+msgid "Job traveler PDFs include work instructions."
+msgstr "Pliki PDF podróżnika zadania zawierają instrukcje pracy."
 
 msgid "Jobs"
 msgstr "Zadania"

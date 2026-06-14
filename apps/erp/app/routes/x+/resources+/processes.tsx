@@ -38,7 +38,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   if (processes.error) {
     throw redirect(
-      path.to.resources,
+      path.to.resourcesDashboard,
       await flash(request, error(processes.error, "Failed to load processes"))
     );
   }

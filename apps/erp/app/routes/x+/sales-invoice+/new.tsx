@@ -22,7 +22,7 @@ import { path } from "~/utils/path";
 
 export const handle: Handle = {
   breadcrumb: msg`Sales`,
-  to: path.to.sales,
+  to: path.to.salesDashboard,
   module: "sales"
 };
 

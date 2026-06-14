@@ -4020,6 +4020,9 @@ msgstr "Nivel de Inspección"
 msgid "Inspection Status"
 msgstr "Estado de Inspección"
 
+msgid "Inspections"
+msgstr "Inspecciones"
+
 msgid "Inspector"
 msgstr "Inspector"
 
@@ -4247,6 +4250,12 @@ msgstr "Operación de Trabajo"
 
 msgid "Job Operations"
 msgstr "Operaciones de Trabajo"
+
+msgid "Job Traveler"
+msgstr "Viajero de Trabajo"
+
+msgid "Job traveler PDFs include work instructions."
+msgstr "Los PDF del viajero de trabajo incluyen instrucciones de trabajo."
 
 msgid "Jobs"
 msgstr "Trabajos"

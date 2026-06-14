@@ -4020,6 +4020,9 @@ msgstr "Уровень проверки"
 msgid "Inspection Status"
 msgstr "Статус проверки"
 
+msgid "Inspections"
+msgstr "Проверки"
+
 msgid "Inspector"
 msgstr "Инспектор"
 
@@ -4247,6 +4250,12 @@ msgstr "Операция задания"
 
 msgid "Job Operations"
 msgstr "Операции задания"
+
+msgid "Job Traveler"
+msgstr "Путевой лист работы"
+
+msgid "Job traveler PDFs include work instructions."
+msgstr "PDF-документы маршрутного листа включают рабочие инструкции."
 
 msgid "Jobs"
 msgstr "Работы"
