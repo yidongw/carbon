@@ -54,7 +54,7 @@
     "lint": "turbo run lint",
     "lingui:check": "pnpm run lingui:extract && pnpm run lingui:compile",
     "lingui:compile": "lingui compile --namespace es",
-    "lingui:extract": "lingui extract --clean",
+    "lingui:extract": "tsx scripts/gen-seed-display-names.ts && lingui extract --clean",
     "lingui:clean": "node ./scripts/strip-po-headers.mjs",
     "prepare": "pnpm exec husky install",
     "test": "turbo run test",

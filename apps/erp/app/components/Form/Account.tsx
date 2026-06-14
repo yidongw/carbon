@@ -1,6 +1,7 @@
 import type { ComboboxProps } from "@carbon/form";
 import { Combobox } from "@carbon/form";
 import { Badge, Combobox as ComboboxBase, useMount } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import { useEffect, useMemo, useState } from "react";
 import { useFetcher } from "react-router";
 import type { AccountClass, getAccountsList } from "~/modules/accounting";
@@ -10,6 +11,7 @@ import {
   getClientCache,
   getCompanyId
 } from "~/utils/react-query";
+import { translateSeedDisplayName } from "~/utils/seedDataDisplayName";
 
 type AccountData = {
   id: string;
@@ -61,6 +63,7 @@ const badgeColors: Record<
 };
 
 function useAccountOptions(classes?: AccountClass[]) {
+  const { i18n } = useLingui();
   const accounts = useAccounts(classes);
 
   return useMemo(
@@ -70,13 +73,13 @@ function useAccountOptions(classes?: AccountClass[]) {
         label: (
           <div className="flex items-center justify-between w-full gap-2">
             <span className="truncate">
-              <span className="text-muted-foreground">{c.number}</span> {c.name}
+              <span className="text-muted-foreground">{c.number}</span> {translateSeedDisplayName(c.name, i18n)}
             </span>
             {c.class && <Badge variant={badgeColors[c.class]}>{c.class}</Badge>}
           </div>
         )
       })),
-    [accounts]
+    [accounts, i18n]
   );
 }
 
