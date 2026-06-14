@@ -8,8 +8,7 @@ import type { LoaderFunctionArgs } from "react-router";
 import { Await, redirect, useLoaderData, useParams } from "react-router";
 import { CadModel, DeferredFiles } from "~/components";
 import { usePanels } from "~/components/Layout";
-import { usePermissions, useRouteData } from "~/hooks";
-import type { Job } from "~/modules/production";
+import { usePermissions } from "~/hooks";
 import {
   getJob,
   getJobMakeMethodById,
@@ -119,7 +118,6 @@ export default function JobMakeMethodRoute() {
   const { methodId, jobId } = useParams();
   if (!methodId) throw new Error("Could not find methodId");
   if (!jobId) throw new Error("Could not find jobId");
-  const routeData = useRouteData<{ job: Job }>(path.to.job(jobId));
   const loaderData = useLoaderData<typeof loader>();
   const {
     job,

@@ -4,19 +4,25 @@ import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data, redirect, useLoaderData } from "react-router";
+import { z } from "zod";
 import { getConfigurationParameters } from "~/modules/items";
 import {
+  assertSupplierQuantityAllowedForOperation,
+  createJobOperationSupplierQuantityReport,
   createProductionQuantityReport,
+  defaultActorKindFromOperationType,
   getJob,
+  getJobOperationActorContext,
   getJobOperations,
   isJobLocked,
-  productionQuantityCreateFormValidator
+  productionQuantityCreateFormValidator,
+  seededActorFromOperationContext,
+  validateActorMatchesOperationSupplierRouting
 } from "~/modules/production";
 import { productionQuantityLineJsonValidator } from "~/modules/production/productionQuantityReport.models";
 import ProductionQuantityForm from "~/modules/production/ui/Jobs/ProductionQuantityForm";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { getParams, path } from "~/utils/path";
-import { z } from "zod";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
   const { client, companyId } = await requirePermissions(request, {
@@ -29,10 +35,16 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const jobOperationId =
     new URL(request.url).searchParams.get("jobOperationId") ?? "";
 
-  const [job, jobOperations] = await Promise.all([
+  const [job, jobOperations, opContext] = await Promise.all([
     getJob(client, jobId),
-    jobOperationId ? null : getJobOperations(client, jobId)
+    jobOperationId ? null : getJobOperations(client, jobId),
+    getJobOperationActorContext(client, jobOperationId, companyId)
   ]);
+  const actorContext = {
+    ...opContext,
+    defaultActorKind: defaultActorKindFromOperationType(opContext.operationType),
+    seededActor: seededActorFromOperationContext(opContext)
+  };
 
   const configurationParameters = job.data?.itemId
     ? (await getConfigurationParameters(client, job.data.itemId, companyId))
@@ -47,7 +59,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       operationOptions: [] as const,
       configurationParameters:
         configurationParameters.length > 0 ? configurationParameters : null,
-      itemId
+      itemId,
+      ...actorContext
     };
   }
 
@@ -62,7 +75,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     operationOptions,
     configurationParameters:
       configurationParameters.length > 0 ? configurationParameters : null,
-    itemId
+    itemId,
+    ...actorContext
   };
 }
 
@@ -100,7 +114,35 @@ export async function action({ request, params }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
-  const { employeeId, notes, lines: linesJson } = validation.data;
+  const {
+    actorKind,
+    employeeId,
+    supplierProcessId,
+    operationUnitCost,
+    operationMinimumCost,
+    snapshotPricingEdited,
+    notes,
+    lines: linesJson,
+    jobOperationId
+  } = validation.data;
+
+  const routingValidation = await validateActorMatchesOperationSupplierRouting(
+    client,
+    jobOperationId,
+    companyId,
+    { actorKind, employeeId, supplierProcessId }
+  );
+  if (routingValidation.error) {
+    return validationError(
+      {
+        fieldErrors: {
+          supplierProcessId: routingValidation.error.message
+        },
+        formId: validation.formId
+      },
+      validation.submittedData
+    );
+  }
 
   let lines: z.infer<typeof productionQuantityLineJsonValidator>[];
   try {
@@ -118,18 +160,61 @@ export async function action({ request, params }: ActionFunctionArgs) {
     );
   }
 
-  const reportResult = await createProductionQuantityReport(client, {
-    companyId,
-    jobId,
-    jobOperationId: validation.data.jobOperationId,
-    userId,
-    employeeId: employeeId?.trim() ? employeeId : userId,
-    notes: notes?.trim() ? notes : null,
-    lines: lines.map((line) => ({
-      ...line,
-      scrapReasonId: line.type === "Scrap" ? line.scrapReasonId : undefined
-    }))
-  });
+  const mappedLines = lines.map((line) => ({
+    ...line,
+    scrapReasonId: line.type === "Scrap" ? line.scrapReasonId : undefined
+  }));
+
+  if (actorKind === "supplier") {
+    const operationCheck = await assertSupplierQuantityAllowedForOperation(
+      client,
+      jobOperationId,
+      companyId
+    );
+    if (operationCheck.error) {
+      return data(
+        {},
+        await flash(
+          request,
+          error(
+            operationCheck.error,
+            operationCheck.error.message ??
+              "Supplier quantities cannot be recorded for Inside operations"
+          )
+        )
+      );
+    }
+  }
+
+  const reportResult =
+    actorKind === "supplier"
+      ? await createJobOperationSupplierQuantityReport(client, {
+          companyId,
+          jobId,
+          jobOperationId,
+          supplierProcessId: supplierProcessId!,
+          userId,
+          notes: notes?.trim() ? notes : null,
+          lines: mappedLines,
+          snapshotPricing:
+            operationUnitCost != null
+              ? {
+                  operationUnitCost,
+                  operationMinimumCost: operationMinimumCost ?? 0
+                }
+              : undefined,
+          snapshotPricingEdited: snapshotPricingEdited === "1"
+        })
+      : await createProductionQuantityReport(client, {
+          companyId,
+          jobId,
+          jobOperationId,
+          userId,
+          employeeId: employeeId?.trim() ? employeeId : userId,
+          notes: notes?.trim() ? notes : null,
+          lines: mappedLines
+        });
+
   if (reportResult.error) {
     return data(
       {},
@@ -154,12 +239,23 @@ export async function action({ request, params }: ActionFunctionArgs) {
 }
 
 export default function NewProductionQuantityRoute() {
-  const { jobOperationId, operationOptions, configurationParameters, itemId } =
-    useLoaderData<typeof loader>();
+  const {
+    jobOperationId,
+    operationOptions,
+    configurationParameters,
+    itemId,
+    processId,
+    operationType,
+    defaultActorKind,
+    seededActor
+  } = useLoaderData<typeof loader>();
   const initialValues = {
     jobOperationId,
     notes: "",
-    employeeId: "",
+    employeeId: seededActor.employeeId,
+    actorKind: seededActor.actorKind,
+    supplierProcessId: seededActor.supplierProcessId,
+    supplierId: seededActor.supplierId,
     lines: [{ type: "Production" as const, quantity: 0 }]
   };
 
@@ -169,6 +265,10 @@ export default function NewProductionQuantityRoute() {
       operationOptions={[...(operationOptions ?? [])]}
       configurationParameters={configurationParameters}
       itemId={itemId}
+      processId={processId}
+      operationType={operationType}
+      defaultActorKind={defaultActorKind}
+      lockActorSelection={seededActor.lockActorSelection}
     />
   );
 }

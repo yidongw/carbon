@@ -1,5 +1,7 @@
 import { z } from "zod";
 import { zfd } from "zod-form-data";
+import { optionalRequiredStringArray } from "~/utils/zodFields";
+import { requiresInsideLaborFields } from "../production/operationType";
 import {
   methodItemType,
   methodOperationOrders,
@@ -8,7 +10,6 @@ import {
   sourcingType,
   standardFactorType
 } from "../shared";
-import { optionalRequiredStringArray } from "~/utils/zodFields";
 
 export const batchPropertyDataTypes = [
   "text",
@@ -463,7 +464,7 @@ export const methodOperationValidator = z
   })
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return !!data.setupUnit;
       }
       return true;
@@ -475,7 +476,7 @@ export const methodOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return !!data.laborUnit;
       }
       return true;
@@ -487,7 +488,7 @@ export const methodOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return !!data.laborUnit;
       }
       return true;
@@ -499,7 +500,7 @@ export const methodOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return Number.isFinite(data.setupTime);
       }
       return true;
@@ -511,7 +512,7 @@ export const methodOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return Number.isFinite(data.laborTime);
       }
       return true;
@@ -523,7 +524,7 @@ export const methodOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return Number.isFinite(data.machineTime);
       }
       return true;

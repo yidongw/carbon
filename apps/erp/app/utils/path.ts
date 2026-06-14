@@ -91,11 +91,35 @@ export const path = {
         generatePath(
           `${api}/production/operations/${operationId}/quantity-reports`
         ),
+      operationSupplierQuantityReports: (operationId: string) =>
+        generatePath(
+          `${api}/production/operations/${operationId}/supplier-quantity-reports`
+        ),
+      operationSubcontractPricing: (
+        operationId: string,
+        supplierProcessId: string
+      ) =>
+        generatePath(
+          `${api}/production/operations/${operationId}/subcontract-pricing?supplierProcessId=${encodeURIComponent(supplierProcessId)}`
+        ),
       quantityReportLines: (reportId: string, includeInvalidated?: boolean) =>
         generatePath(
           `${api}/production/quantity-reports/${reportId}/lines${
             includeInvalidated ? "?includeInvalidated=true" : ""
           }`
+        ),
+      supplierQuantityReportLines: (
+        reportId: string,
+        includeInvalidated?: boolean
+      ) =>
+        generatePath(
+          `${api}/production/supplier-quantity-reports/${reportId}/lines${
+            includeInvalidated ? "?includeInvalidated=true" : ""
+          }`
+        ),
+      supplierQuantityReportCreatePo: (reportId: string) =>
+        generatePath(
+          `${api}/production/supplier-quantity-reports/${reportId}/create-po`
         ),
       itemConfigTable: (itemId: string) =>
         generatePath(`${api}/items/${itemId}/config-table`),
@@ -222,6 +246,8 @@ export const path = {
         generatePath(`${api}/purchasing/supplier-locations/${id}`),
       supplierProcesses: (id?: string) =>
         generatePath(`${api}/purchasing/supplier-processes/${id}`),
+      supplierProcessesBySupplier: (id: string) =>
+        generatePath(`${api}/purchasing/supplier-processes-by-supplier/${id}`),
       supplierTypes: `${api}/purchasing/supplier-types`,
       tags: (table?: string) =>
         generatePath(`${api}/shared/tags?table=${table}`),

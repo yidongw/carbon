@@ -1,4 +1,11 @@
-import { closeSync, copyFileSync, openSync } from "node:fs";
+import {
+  closeSync,
+  copyFileSync,
+  openSync,
+  readFileSync,
+  renameSync,
+  rmSync
+} from "node:fs";
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
 import * as dotenv from "dotenv";
@@ -21,6 +28,10 @@ if (!/(localhost|127\.0\.0\.1)/.test(dbUrl)) {
   process.exit(1);
 }
 
+const parsedLocalDbUrl = new URL(dbUrl.replace("@localhost:", "@127.0.0.1:"));
+parsedLocalDbUrl.searchParams.set("sslmode", "disable");
+const localDbUrl = parsedLocalDbUrl.toString();
+
 const typesPath = join("packages", "database", "src", "types.ts");
 const fnTypesPath = join(
   "packages",
@@ -30,18 +41,20 @@ const fnTypesPath = join(
   "lib",
   "types.ts"
 );
+const supabaseBin = join("node_modules", ".bin", "supabase");
 
 // Pipe supabase stdout directly to the types file to avoid spawnSync's 1MB
 // default buffer cap (generated types are ~MBs).
-const out = openSync(typesPath, "w");
+const tmpTypesPath = `${typesPath}.tmp`;
+const out = openSync(tmpTypesPath, "w");
 const r = spawnSync(
-  "supabase",
+  supabaseBin,
   [
     "gen",
     "types",
     "typescript",
     "--db-url",
-    dbUrl,
+    localDbUrl,
     "--schema",
     "public",
     "--schema",
@@ -54,9 +67,18 @@ const r = spawnSync(
 closeSync(out);
 
 if (r.status !== 0) {
+  rmSync(tmpTypesPath, { force: true });
   console.error(`supabase gen types failed (exit ${r.status})`);
   process.exit(r.status ?? 1);
 }
 
+const generatedTypes = readFileSync(tmpTypesPath, "utf-8");
+if (!generatedTypes.trimEnd().endsWith("} as const")) {
+  rmSync(tmpTypesPath, { force: true });
+  console.error("supabase gen types produced incomplete output");
+  process.exit(1);
+}
+
+renameSync(tmpTypesPath, typesPath);
 copyFileSync(typesPath, fnTypesPath);
 console.log(`wrote ${typesPath}\nwrote ${fnTypesPath}`);

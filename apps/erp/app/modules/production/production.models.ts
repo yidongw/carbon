@@ -8,6 +8,10 @@ import {
   procedureStepType,
   standardFactorType
 } from "../shared";
+import {
+  requiresInsideLaborFields,
+  requiresStrictOutsideRoutingFields
+} from "./operationType";
 import { productionQuantityLineJsonValidator } from "./productionQuantityReport.models";
 
 export const KPIs = [
@@ -296,7 +300,7 @@ export const jobOperationValidator = baseJobOperationValidator
   )
   .refine(
     (data) => {
-      if (data.operationType === "Outside") {
+      if (requiresStrictOutsideRoutingFields(data.operationType)) {
         return Number.isFinite(data.operationMinimumCost);
       }
       return true;
@@ -308,7 +312,7 @@ export const jobOperationValidator = baseJobOperationValidator
   )
   .refine(
     (data) => {
-      if (data.operationType === "Outside") {
+      if (requiresStrictOutsideRoutingFields(data.operationType)) {
         return Number.isFinite(data.operationUnitCost);
       }
       return true;
@@ -320,7 +324,7 @@ export const jobOperationValidator = baseJobOperationValidator
   )
   .refine(
     (data) => {
-      if (data.operationType === "Outside") {
+      if (requiresStrictOutsideRoutingFields(data.operationType)) {
         return Number.isFinite(data.operationLeadTime);
       }
       return true;
@@ -332,7 +336,7 @@ export const jobOperationValidator = baseJobOperationValidator
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return !!data.setupUnit;
       }
       return true;
@@ -344,7 +348,7 @@ export const jobOperationValidator = baseJobOperationValidator
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return !!data.laborUnit;
       }
       return true;
@@ -356,7 +360,7 @@ export const jobOperationValidator = baseJobOperationValidator
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return !!data.laborUnit;
       }
       return true;
@@ -368,7 +372,7 @@ export const jobOperationValidator = baseJobOperationValidator
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return Number.isFinite(data.setupTime);
       }
       return true;
@@ -380,7 +384,7 @@ export const jobOperationValidator = baseJobOperationValidator
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return Number.isFinite(data.laborTime);
       }
       return true;
@@ -392,7 +396,7 @@ export const jobOperationValidator = baseJobOperationValidator
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return Number.isFinite(data.machineTime);
       }
       return true;
@@ -404,7 +408,7 @@ export const jobOperationValidator = baseJobOperationValidator
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return Number.isFinite(data.machineRate);
       }
       return true;
@@ -416,7 +420,7 @@ export const jobOperationValidator = baseJobOperationValidator
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return Number.isFinite(data.overheadRate);
       }
       return true;
@@ -428,7 +432,7 @@ export const jobOperationValidator = baseJobOperationValidator
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return Number.isFinite(data.laborRate);
       }
       return true;
@@ -447,7 +451,7 @@ export const jobOperationValidatorForReleasedJob = baseJobOperationValidator
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return !!data.workCenterId;
       }
       return true;
@@ -459,7 +463,7 @@ export const jobOperationValidatorForReleasedJob = baseJobOperationValidator
   )
   .refine(
     (data) => {
-      if (data.operationType === "Outside") {
+      if (requiresStrictOutsideRoutingFields(data.operationType)) {
         return Number.isFinite(data.operationMinimumCost);
       }
       return true;
@@ -471,7 +475,7 @@ export const jobOperationValidatorForReleasedJob = baseJobOperationValidator
   )
   .refine(
     (data) => {
-      if (data.operationType === "Outside") {
+      if (requiresStrictOutsideRoutingFields(data.operationType)) {
         return Number.isFinite(data.operationUnitCost);
       }
       return true;
@@ -483,7 +487,7 @@ export const jobOperationValidatorForReleasedJob = baseJobOperationValidator
   )
   .refine(
     (data) => {
-      if (data.operationType === "Outside") {
+      if (requiresStrictOutsideRoutingFields(data.operationType)) {
         return Number.isFinite(data.operationLeadTime);
       }
       return true;
@@ -495,7 +499,7 @@ export const jobOperationValidatorForReleasedJob = baseJobOperationValidator
   )
   .refine(
     (data) => {
-      if (data.operationType === "Outside") {
+      if (requiresStrictOutsideRoutingFields(data.operationType)) {
         return !!data.operationSupplierProcessId;
       }
       return true;
@@ -507,7 +511,7 @@ export const jobOperationValidatorForReleasedJob = baseJobOperationValidator
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return !!data.setupUnit;
       }
       return true;
@@ -519,7 +523,7 @@ export const jobOperationValidatorForReleasedJob = baseJobOperationValidator
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return !!data.laborUnit;
       }
       return true;
@@ -531,7 +535,7 @@ export const jobOperationValidatorForReleasedJob = baseJobOperationValidator
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return !!data.laborUnit;
       }
       return true;
@@ -543,7 +547,7 @@ export const jobOperationValidatorForReleasedJob = baseJobOperationValidator
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return Number.isFinite(data.setupTime);
       }
       return true;
@@ -555,7 +559,7 @@ export const jobOperationValidatorForReleasedJob = baseJobOperationValidator
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return Number.isFinite(data.laborTime);
       }
       return true;
@@ -567,7 +571,7 @@ export const jobOperationValidatorForReleasedJob = baseJobOperationValidator
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return Number.isFinite(data.machineTime);
       }
       return true;
@@ -579,7 +583,7 @@ export const jobOperationValidatorForReleasedJob = baseJobOperationValidator
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return Number.isFinite(data.machineRate);
       }
       return true;
@@ -591,7 +595,7 @@ export const jobOperationValidatorForReleasedJob = baseJobOperationValidator
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return Number.isFinite(data.overheadRate);
       }
       return true;
@@ -603,7 +607,7 @@ export const jobOperationValidatorForReleasedJob = baseJobOperationValidator
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return Number.isFinite(data.laborRate);
       }
       return true;
@@ -897,17 +901,38 @@ export const productionQuantityValidator = z.object({
   configuration: z.any().optional()
 });
 
+export const productionActorKinds = ["employee", "supplier"] as const;
+
 /** Remix form for creating a quantity report with one or more typed lines (`lines` is JSON). */
 export const productionQuantityCreateFormValidator = z
   .object({
     jobOperationId: z.string().min(1, { message: "Operation is required" }),
+    actorKind: z.enum(productionActorKinds).default("employee"),
     employeeId: zfd.text(z.string().optional()),
+    supplierProcessId: zfd.text(z.string().optional()),
+    operationUnitCost: zfd.numeric(z.number().min(0).optional()),
+    operationMinimumCost: zfd.numeric(z.number().min(0).optional()),
+    snapshotPricingEdited: zfd.text(z.string().optional()),
     notes: zfd.text(z.string().optional()),
     lines: zfd.text(
       z.string().min(1, { message: "Quantity lines are required" })
     )
   })
   .superRefine((data, ctx) => {
+    if (data.actorKind === "employee" && !data.employeeId) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Employee is required",
+        path: ["employeeId"]
+      });
+    }
+    if (data.actorKind === "supplier" && !data.supplierProcessId) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Supplier process is required",
+        path: ["supplierProcessId"]
+      });
+    }
     try {
       const parsed = JSON.parse(data.lines) as unknown;
       const result = z
@@ -931,14 +956,33 @@ export const productionQuantityCreateFormValidator = z
     }
   });
 
-export const jobOperationPickupValidator = z.object({
-  id: zfd.text(z.string().optional()),
-  jobOperationId: z.string().min(1, { message: "Operation is required" }),
-  employeeId: z.string().min(1, { message: "Employee is required" }),
-  quantity: zfd.numeric(z.number().min(0)),
-  configuration: z.any().optional(),
-  notes: zfd.text(z.string().optional()),
-});
+export const jobOperationPickupValidator = z
+  .object({
+    id: zfd.text(z.string().optional()),
+    jobOperationId: z.string().min(1, { message: "Operation is required" }),
+    actorKind: z.enum(productionActorKinds).default("employee"),
+    employeeId: zfd.text(z.string().optional()),
+    supplierProcessId: zfd.text(z.string().optional()),
+    quantity: zfd.numeric(z.number().min(0)),
+    configuration: z.any().optional(),
+    notes: zfd.text(z.string().optional())
+  })
+  .superRefine((data, ctx) => {
+    if (data.actorKind === "employee" && !data.employeeId) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Employee is required",
+        path: ["employeeId"]
+      });
+    }
+    if (data.actorKind === "supplier" && !data.supplierProcessId) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Supplier process is required",
+        path: ["supplierProcessId"]
+      });
+    }
+  });
 
 export const scheduleOperationUpdateValidator = z.object({
   id: z.string().min(1, { message: "ID is required" }),

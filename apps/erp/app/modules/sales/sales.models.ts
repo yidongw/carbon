@@ -3,6 +3,10 @@ import { zfd } from "zod-form-data";
 import { address, contact } from "~/types/validators";
 import { currencyCodes } from "../accounting";
 import {
+  requiresInsideLaborFields,
+  requiresStrictOutsideRoutingFields
+} from "../production/operationType";
+import {
   incoterms,
   methodItemType,
   methodOperationOrders,
@@ -491,7 +495,7 @@ export const quoteOperationValidator = z
   })
   .refine(
     (data) => {
-      if (data.operationType === "Outside") {
+      if (requiresStrictOutsideRoutingFields(data.operationType)) {
         return Number.isFinite(data.operationMinimumCost);
       }
       return true;
@@ -503,7 +507,7 @@ export const quoteOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Outside") {
+      if (requiresStrictOutsideRoutingFields(data.operationType)) {
         return Number.isFinite(data.operationUnitCost);
       }
       return true;
@@ -515,7 +519,7 @@ export const quoteOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Outside") {
+      if (requiresStrictOutsideRoutingFields(data.operationType)) {
         return Number.isFinite(data.operationLeadTime);
       }
       return true;
@@ -527,7 +531,7 @@ export const quoteOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return !!data.setupUnit;
       }
       return true;
@@ -539,7 +543,7 @@ export const quoteOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return !!data.laborUnit;
       }
       return true;
@@ -551,7 +555,7 @@ export const quoteOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return !!data.laborUnit;
       }
       return true;
@@ -563,7 +567,7 @@ export const quoteOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return Number.isFinite(data.setupTime);
       }
       return true;
@@ -575,7 +579,7 @@ export const quoteOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return Number.isFinite(data.laborTime);
       }
       return true;
@@ -587,7 +591,7 @@ export const quoteOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return Number.isFinite(data.machineTime);
       }
       return true;
@@ -599,7 +603,7 @@ export const quoteOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return Number.isFinite(data.machineRate);
       }
       return true;
@@ -611,7 +615,7 @@ export const quoteOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return Number.isFinite(data.overheadRate);
       }
       return true;
@@ -623,7 +627,7 @@ export const quoteOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return Number.isFinite(data.laborRate);
       }
       return true;

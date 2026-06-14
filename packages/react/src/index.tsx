@@ -102,6 +102,12 @@ import Copy from "./Copy";
 import { Count } from "./Count";
 import type { CreatableComboboxProps } from "./CreateableCombobox";
 import { CreatableCombobox } from "./CreateableCombobox";
+import type {
+  GroupedCreatableComboboxGroup,
+  GroupedCreatableComboboxOption,
+  GroupedCreatableComboboxProps
+} from "./GroupedCreatableCombobox";
+import { GroupedCreatableCombobox } from "./GroupedCreatableCombobox";
 import type { CreatableMultiSelectProps } from "./CreateableMultiSelect";
 import { CreatableMultiSelect } from "./CreateableMultiSelect";
 import {
@@ -413,6 +419,7 @@ export {
   Count,
   CreatableCombobox,
   CreatableMultiSelect,
+  GroupedCreatableCombobox,
   DatePicker,
   DateRangePicker,
   DateTimePicker,
@@ -626,6 +633,9 @@ export type {
   ComboboxProps,
   CreatableComboboxProps,
   CreatableMultiSelectProps,
+  GroupedCreatableComboboxGroup,
+  GroupedCreatableComboboxOption,
+  GroupedCreatableComboboxProps,
   InputProps,
   JSONContent,
   Modifier,

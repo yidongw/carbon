@@ -340,62 +340,84 @@ export async function listProductionQuantityReportLines(
   return query;
 }
 
-export async function getOperationQuantitySummary(
-  client: SupabaseClient<Database>,
-  jobOperationId: string,
-  companyId: string
-): Promise<{ data: OperationQuantitySummary | null; error: unknown }> {
-  const { data: lines, error } = await client
-    .from("productionQuantity")
-    .select("type, quantity, configuration")
-    .eq("jobOperationId", jobOperationId)
-    .eq("companyId", companyId)
-    .is("invalidatedAt", null);
-
-  if (error) {
-    return { data: null, error };
+function accumulateConfigBreakdown(
+  lines: { type: string; configuration: Json | null }[] | null,
+  totals: {
+    productionConfigurations: Json[];
+    scrapConfigurations: Json[];
+    reworkConfigurations: Json[];
   }
-
-  let production = 0;
-  let scrap = 0;
-  let rework = 0;
-  const productionConfigurations: Json[] = [];
-  const scrapConfigurations: Json[] = [];
-  const reworkConfigurations: Json[] = [];
-
+) {
   for (const line of lines ?? []) {
+    if (!line.configuration) continue;
     switch (line.type) {
       case "Production":
-        production += line.quantity;
-        if (line.configuration) {
-          productionConfigurations.push(line.configuration);
-        }
+        totals.productionConfigurations.push(line.configuration);
         break;
       case "Scrap":
-        scrap += line.quantity;
-        if (line.configuration) {
-          scrapConfigurations.push(line.configuration);
-        }
+        totals.scrapConfigurations.push(line.configuration);
         break;
       case "Rework":
-        rework += line.quantity;
-        if (line.configuration) {
-          reworkConfigurations.push(line.configuration);
-        }
+        totals.reworkConfigurations.push(line.configuration);
         break;
       default:
         break;
     }
   }
+}
+
+export async function getOperationQuantitySummary(
+  client: SupabaseClient<Database>,
+  jobOperationId: string,
+  companyId: string
+): Promise<{ data: OperationQuantitySummary | null; error: unknown }> {
+  const [{ data: employeeLines, error: employeeError }, { data: supplierLines, error: supplierError }, { data: jobOperation, error: operationError }] =
+    await Promise.all([
+      client
+        .from("productionQuantity")
+        .select("type, quantity, configuration")
+        .eq("jobOperationId", jobOperationId)
+        .eq("companyId", companyId)
+        .is("invalidatedAt", null),
+      client
+        .from("jobOperationSupplierQuantity")
+        .select("type, quantity, configuration")
+        .eq("jobOperationId", jobOperationId)
+        .eq("companyId", companyId)
+        .is("invalidatedAt", null),
+      client
+        .from("jobOperation")
+        .select("quantityComplete, quantityScrapped, quantityReworked")
+        .eq("id", jobOperationId)
+        .eq("companyId", companyId)
+        .single()
+    ]);
+
+  if (employeeError || supplierError || operationError) {
+    return { data: null, error: employeeError ?? supplierError ?? operationError };
+  }
+
+  const totals = {
+    production: jobOperation?.quantityComplete ?? 0,
+    scrap: jobOperation?.quantityScrapped ?? 0,
+    rework: jobOperation?.quantityReworked ?? 0,
+    productionConfigurations: [] as Json[],
+    scrapConfigurations: [] as Json[],
+    reworkConfigurations: [] as Json[]
+  };
+
+  // Headline totals come from jobOperation rollups; config breakdown unions active lines.
+  accumulateConfigBreakdown(employeeLines, totals);
+  accumulateConfigBreakdown(supplierLines, totals);
 
   return {
     data: {
-      production,
-      scrap,
-      rework,
-      productionConfigurations,
-      scrapConfigurations,
-      reworkConfigurations
+      production: totals.production,
+      scrap: totals.scrap,
+      rework: totals.rework,
+      productionConfigurations: totals.productionConfigurations,
+      scrapConfigurations: totals.scrapConfigurations,
+      reworkConfigurations: totals.reworkConfigurations
     },
     error: null
   };
