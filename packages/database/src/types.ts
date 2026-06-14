@@ -28496,12 +28496,84 @@ export type Database = {
           },
         ]
       }
+      jobOperationPickup: {
+        Row: {
+          companyId: string
+          configuration: Json | null
+          createdAt: string
+          createdBy: string
+          employeeId: string
+          id: string
+          jobOperationId: string
+          notes: string | null
+          quantity: number
+          updatedAt: string | null
+          updatedBy: string | null
+        }
+        Insert: {
+          companyId: string
+          configuration?: Json | null
+          createdAt?: string
+          createdBy: string
+          employeeId: string
+          id?: string
+          jobOperationId: string
+          notes?: string | null
+          quantity: number
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Update: {
+          companyId?: string
+          configuration?: Json | null
+          createdAt?: string
+          createdBy?: string
+          employeeId?: string
+          id?: string
+          jobOperationId?: string
+          notes?: string | null
+          quantity?: number
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jobOperationPickup_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobOperationPickup_jobOperationId_fkey"
+            columns: ["jobOperationId"]
+            isOneToOne: false
+            referencedRelation: "jobOperation"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobOperationPickup_employeeId_fkey"
+            columns: ["employeeId"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobOperationPickup_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       productionQuantity: {
         Row: {
           companyId: string
           configuration: Json | null
           createdAt: string
           createdBy: string
+          employeeId: string
           id: string
           jobOperationId: string
           laborProductionEventId: string | null
@@ -28519,6 +28591,7 @@ export type Database = {
           configuration?: Json | null
           createdAt?: string
           createdBy: string
+          employeeId: string
           id?: string
           jobOperationId: string
           laborProductionEventId?: string | null
@@ -28536,6 +28609,7 @@ export type Database = {
           configuration?: Json | null
           createdAt?: string
           createdBy?: string
+          employeeId?: string
           id?: string
           jobOperationId?: string
           laborProductionEventId?: string | null

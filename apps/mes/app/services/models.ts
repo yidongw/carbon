@@ -221,6 +221,14 @@ export const maintenanceDispatchIssueValidator = z.object({
   adjustmentType: z.enum(["Positive Adjmt.", "Negative Adjmt."])
 });
 
+export const jobOperationPickupValidator = z.object({
+  jobOperationId: z.string().min(1, { message: "Operation is required" }),
+  employeeId: z.string().min(1, { message: "Employee is required" }),
+  quantity: zfd.numeric(z.number().min(0, { message: "Quantity is required" })),
+  configuration: z.any().optional(),
+  notes: zfd.text(z.string().optional()),
+});
+
 export const maintenanceDispatchIssueTrackedEntityValidator = z.object({
   maintenanceDispatchItemId: z.string(),
   children: z.array(

@@ -12,13 +12,9 @@ import {
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { LuTable } from "react-icons/lu";
-import {
-  type FetcherWithComponents,
-  useNavigate,
-  useParams
-} from "react-router";
+import { useNavigate, useParams } from "react-router";
 import type { z } from "zod";
 import {
   Employee,
@@ -28,15 +24,20 @@ import {
   Submit,
   TextArea
 } from "~/components/Form";
-import ScrapReason from "~/components/Form/ScrapReason";
 import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions } from "~/hooks";
 import { isConfigTableOverlaySuccess } from "../../configTableOverlay";
-type ConfigurationParameter = { key: string; label: string; dataType: string; listOptions?: string[] | null };
+import { jobOperationPickupValidator } from "~/modules/production/production.models";
 import { path } from "~/utils/path";
 import { computeJobConfigTableTotal } from "../../jobConfiguration";
-import { productionQuantityValidator } from "../../production.models";
 import { QuantityWithConfigTable } from "./QuantityWithConfigTable";
+
+type ConfigurationParameter = {
+  key: string;
+  label: string;
+  dataType: string;
+  listOptions?: string[] | null;
+};
 
 type ConfigRow = Record<string, string | number | boolean>;
 
@@ -47,7 +48,11 @@ function getInitialConfigState(configuration: unknown) {
     typeof configuration !== "object" ||
     Array.isArray(configuration)
   ) {
-    return { rows: null as ConfigRow[] | null, primaryKeys: [] as string[], total: 0 };
+    return {
+      rows: null as ConfigRow[] | null,
+      primaryKeys: [] as string[],
+      total: 0
+    };
   }
 
   const cfg = configuration as Record<string, unknown>;
@@ -55,7 +60,9 @@ function getInitialConfigState(configuration: unknown) {
     ? (cfg.configTable as ConfigRow[])
     : null;
   const primaryKeys = Array.isArray(cfg.configTablePrimaryKeys)
-    ? cfg.configTablePrimaryKeys.filter((k): k is string => typeof k === "string")
+    ? cfg.configTablePrimaryKeys.filter(
+        (k): k is string => typeof k === "string"
+      )
     : [];
 
   return {
@@ -65,21 +72,17 @@ function getInitialConfigState(configuration: unknown) {
   };
 }
 
-export type ProductionQuantityFormProps = {
-  initialValues: z.infer<typeof productionQuantityValidator>;
-  operationOptions?: {
-    label: string;
-    value: string;
-    helperText?: string;
-  }[];
+export type PickupFormProps = {
+  initialValues: z.infer<typeof jobOperationPickupValidator>;
+  operationOptions?: { label: string; value: string }[];
   configurationParameters?: ConfigurationParameter[] | null;
   itemId?: string | null;
   onDismiss?: () => void;
   action?: string;
-  fetcher?: FetcherWithComponents<unknown>;
+  fetcher?: import("react-router").FetcherWithComponents<unknown>;
 };
 
-const ProductionQuantityForm = ({
+const PickupForm = ({
   initialValues,
   operationOptions,
   configurationParameters,
@@ -87,7 +90,7 @@ const ProductionQuantityForm = ({
   onDismiss: onDismissProp,
   action: formAction,
   fetcher
-}: ProductionQuantityFormProps) => {
+}: PickupFormProps) => {
   const permissions = usePermissions();
   const { t } = useLingui();
   const navigate = useNavigate();
@@ -97,7 +100,7 @@ const ProductionQuantityForm = ({
     onDismissProp ??
     (() => {
       if (jobId) {
-        navigate(path.to.jobProductionQuantities(jobId));
+        navigate(path.to.jobPickups(jobId));
         return;
       }
       navigate(-1);
@@ -105,22 +108,17 @@ const ProductionQuantityForm = ({
 
   const initialConfig = getInitialConfigState(initialValues.configuration);
 
-  const [type, setType] = useState<"Production" | "Scrap" | "Rework">(
-    initialValues.type
-  );
   const [quantity, setQuantity] = useState(initialValues.quantity ?? 0);
   const [configTableRows, setConfigTableRows] = useState<ConfigRow[] | null>(
     initialConfig.rows
   );
-  const [configTablePrimaryKeys, setConfigTablePrimaryKeys] = useState<string[]>(
-    initialConfig.primaryKeys
-  );
+  const [configTablePrimaryKeys, setConfigTablePrimaryKeys] = useState<
+    string[]
+  >(initialConfig.primaryKeys);
   const [configTableTotal, setConfigTableTotal] = useState(initialConfig.total);
   const { openOverlay } = useOverlay();
-  const formBodyRef = useRef<HTMLDivElement>(null);
 
-  const hasConfigurationParameters =
-    (configurationParameters?.length ?? 0) > 0;
+  const hasConfigurationParameters = (configurationParameters?.length ?? 0) > 0;
 
   const isEditing = initialValues.id !== undefined;
   const presetJobOperationIdOnCreate =
@@ -128,32 +126,6 @@ const ProductionQuantityForm = ({
   const isDisabled = isEditing
     ? !permissions.can("update", "production")
     : !permissions.can("create", "production");
-
-  useEffect(() => {
-    if (!isOverlay) return;
-
-    const focusFirstField = () => {
-      const root = formBodyRef.current;
-      if (!root) return;
-
-      const combobox = root.querySelector<HTMLElement>(
-        'button[role="combobox"]:not([disabled])'
-      );
-      if (combobox) {
-        combobox.focus();
-        return;
-      }
-
-      root
-        .querySelector<HTMLElement>(
-          'input:not([type="hidden"]):not([disabled])'
-        )
-        ?.focus();
-    };
-
-    const frame = requestAnimationFrame(focusFirstField);
-    return () => cancelAnimationFrame(frame);
-  }, [isOverlay]);
 
   const handleConfigTableSubmit = (
     rows: ConfigRow[],
@@ -175,10 +147,7 @@ const ProductionQuantityForm = ({
       overlay.to.itemConfigTable(itemId, {
         configuration:
           configTableRows && configTablePrimaryKeys.length > 0
-            ? {
-                configTable: configTableRows,
-                configTablePrimaryKeys
-              }
+            ? { configTable: configTableRows, configTablePrimaryKeys }
             : initialValues.configuration
       }),
       {
@@ -199,9 +168,7 @@ const ProductionQuantityForm = ({
       <div
         className={cn(
           "absolute right-0 top-0 z-10 m-px flex h-[calc(100%-2px)] w-10 items-center justify-center border-l border-border rounded-r-md pointer-events-none transition-colors",
-          configTableTotal > 0
-            ? "text-emerald-500"
-            : "text-muted-foreground"
+          configTableTotal > 0 ? "text-emerald-500" : "text-muted-foreground"
         )}
         aria-hidden
       >
@@ -211,7 +178,7 @@ const ProductionQuantityForm = ({
 
   const form = (
     <ValidatedForm
-      validator={productionQuantityValidator}
+      validator={jobOperationPickupValidator}
       method="post"
       defaultValues={initialValues}
       className="flex flex-col h-full"
@@ -221,15 +188,15 @@ const ProductionQuantityForm = ({
       <DrawerHeader>
         <DrawerTitle>
           {isEditing ? (
-            <Trans>Edit Production Quantity</Trans>
+            <Trans>Edit Pickup</Trans>
           ) : (
-            <Trans>Create Production Quantity</Trans>
+            <Trans>Record Pickup</Trans>
           )}
         </DrawerTitle>
       </DrawerHeader>
       <DrawerBody>
         <Hidden name="id" />
-        <VStack ref={formBodyRef} spacing={4}>
+        <VStack spacing={4}>
           {isEditing || presetJobOperationIdOnCreate ? (
             <Hidden name="jobOperationId" />
           ) : (
@@ -262,22 +229,7 @@ const ProductionQuantityForm = ({
               onChange={setQuantity}
             />
           ) : (
-            <Number name="quantity" label={t`Quantity`} />
-          )}
-          <Select
-            name="type"
-            label={t`Quantity Type`}
-            options={[
-              { label: "Production", value: "Production" },
-              { label: "Scrap", value: "Scrap" },
-              { label: "Rework", value: "Rework" }
-            ]}
-            onChange={(value) =>
-              setType(value?.value as "Production" | "Scrap" | "Rework")
-            }
-          />
-          {type === "Scrap" && (
-            <ScrapReason name="scrapReasonId" label={t`Scrap Reason`} />
+            <Number name="quantity" label={t`Quantity`} minValue={0} />
           )}
           <TextArea name="notes" label={t`Notes`} />
         </VStack>
@@ -311,4 +263,4 @@ const ProductionQuantityForm = ({
   );
 };
 
-export default ProductionQuantityForm;
+export default PickupForm;

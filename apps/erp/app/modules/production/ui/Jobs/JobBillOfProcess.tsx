@@ -152,6 +152,7 @@ import {
   procedureSyncValidator
 } from "../../production.models";
 import {
+  getJobPickupsPage,
   getProductionEventsPage,
   getProductionQuantitiesPage
 } from "../../production.service";
@@ -232,7 +233,9 @@ function makeItems(
   job?: Job,
   onAddProductionQuantity?: (operationId: string) => void,
   onOpenConfigSummary?: (operationId: string) => void,
-  hasConfigurationParameters?: boolean
+  hasConfigurationParameters?: boolean,
+  pickupTotals?: Map<string, number>,
+  onAddPickup?: (operationId: string) => void
 ): ItemWithData[] {
   return operations.map((operation) =>
     makeItem(
@@ -245,7 +248,9 @@ function makeItems(
       job,
       onAddProductionQuantity,
       onOpenConfigSummary,
-      hasConfigurationParameters
+      hasConfigurationParameters,
+      pickupTotals,
+      onAddPickup
     )
   );
 }
@@ -260,7 +265,9 @@ function makeItem(
   job?: Job,
   onAddProductionQuantity?: (operationId: string) => void,
   onOpenConfigSummary?: (operationId: string) => void,
-  hasConfigurationParameters?: boolean
+  hasConfigurationParameters?: boolean,
+  pickupTotals?: Map<string, number>,
+  onAddPickup?: (operationId: string) => void
 ): ItemWithData {
   return {
     id: operation.id!,
@@ -315,9 +322,13 @@ function makeItem(
       ? null
       : {
           complete: operation.quantityComplete ?? 0,
+          pickup: pickupTotals?.get(operation.id!) ?? 0,
           target: job?.quantity ?? 0,
           onAddQuantity: onAddProductionQuantity
             ? () => onAddProductionQuantity(operation.id!)
+            : undefined,
+          onAddPickup: onAddPickup
+            ? () => onAddPickup(operation.id!)
             : undefined,
           onOpenConfigTable:
             hasConfigurationParameters && onOpenConfigSummary
@@ -469,6 +480,15 @@ type OperationProductionQuantity =
     scrapReason?: { name: string | null } | null;
   };
 
+type OperationPickup = Database["public"]["Tables"]["jobOperationPickup"]["Row"] & {
+  employee?: {
+    id: string;
+    firstName: string | null;
+    lastName: string | null;
+    avatarUrl: string | null;
+  } | null;
+};
+
 const JobBillOfProcess = ({
   jobMakeMethodId,
   locationId,
@@ -593,6 +613,58 @@ const JobBillOfProcess = ({
           );
         }
       : undefined;
+
+  const onAddPickup =
+    !isDisabled && permissions.can("create", "production")
+      ? (operationId: string) => {
+          openOverlay(
+            overlay.to.newJobPickup(jobId, {
+              jobOperationId: operationId
+            }),
+            {
+              onSuccess: () => {
+                setPickups([]);
+                setPickupPage(0);
+                setPickupHasMore(true);
+                setPickupCount(0);
+                setPickupScrollKey((k) => k + 1);
+              }
+            }
+          );
+        }
+      : undefined;
+
+  // Load pickup totals for all operations so the progress strip can display them
+  useEffect(() => {
+    if (!carbon || initialOperations.length === 0) return;
+
+    const operationIds = initialOperations.map((o) => o.id).filter(Boolean) as string[];
+    if (operationIds.length === 0) return;
+
+    let cancelled = false;
+
+    const load = async () => {
+      const { data } = await carbon
+        .from("jobOperationPickup")
+        .select("jobOperationId, quantity")
+        .in("jobOperationId", operationIds)
+        .eq("companyId", companyId);
+
+      if (cancelled || !data) return;
+
+      const totals = new Map<string, number>();
+      for (const row of data) {
+        totals.set(
+          row.jobOperationId,
+          (totals.get(row.jobOperationId) ?? 0) + (row.quantity as number)
+        );
+      }
+      setPickupTotals(totals);
+    };
+
+    void load();
+    return () => { cancelled = true; };
+  }, [carbon, companyId, initialOperations]);
 
   const onToggleItem = (id: string) => {
     if (!permissions.can("update", "parts")) return;
@@ -741,6 +813,13 @@ const JobBillOfProcess = ({
   const [quantityIsLoading, setQuantityIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [quantityHasMore, setQuantityHasMore] = useState(true);
+  const [pickups, setPickups] = useState<OperationPickup[]>([]);
+  const [pickupCount, setPickupCount] = useState<number>(0);
+  const [pickupPage, setPickupPage] = useState(0);
+  const [pickupIsLoading, setPickupIsLoading] = useState(false);
+  const [pickupHasMore, setPickupHasMore] = useState(true);
+  const [pickupScrollKey, setPickupScrollKey] = useState(0);
+  const [pickupTotals, setPickupTotals] = useState<Map<string, number>>(new Map());
   const addOperationButtonRef = useRef<HTMLButtonElement>(null);
   const [configurationParameters, setConfigurationParameters] = useState<
     ConfigurationParameter[] | null
@@ -778,20 +857,31 @@ const JobBillOfProcess = ({
       setConfigSummaryLoading(true);
       configSummaryModal.onOpen();
 
-      const { data, error } = await carbon
-        .from("productionQuantity")
-        .select("configuration")
-        .eq("jobOperationId", operationId)
-        .eq("companyId", companyId)
-        .eq("type", "Production");
+      const [quantityResult, pickupResult] = await Promise.all([
+        carbon
+          .from("productionQuantity")
+          .select("configuration")
+          .eq("jobOperationId", operationId)
+          .eq("companyId", companyId)
+          .eq("type", "Production"),
+        carbon
+          .from("jobOperationPickup")
+          .select("configuration")
+          .eq("jobOperationId", operationId)
+          .eq("companyId", companyId)
+      ]);
 
-      if (error) {
-        toast.error(error.message);
+      if (quantityResult.error) {
+        toast.error(quantityResult.error.message);
         setConfigSummaryLoading(false);
         return;
       }
 
-      const reportedConfigurations = (data ?? [])
+      const reportedConfigurations = (quantityResult.data ?? [])
+        .map((row) => row.configuration)
+        .filter((config): config is NonNullable<typeof config> => config != null);
+
+      const pickupConfigurations = (pickupResult.data ?? [])
         .map((row) => row.configuration)
         .filter((config): config is NonNullable<typeof config> => config != null);
 
@@ -799,6 +889,7 @@ const JobBillOfProcess = ({
         buildReportedTargetRows({
           targetConfiguration: jobData?.job?.configuration,
           reportedConfigurations,
+          pickupConfigurations,
           parameters: configurationParameters,
           defaultQuantityLabel: t`Quantities`
         })
@@ -829,7 +920,9 @@ const JobBillOfProcess = ({
     jobData?.job,
     onAddProductionQuantity,
     hasConfigurationParameters ? openConfigSummary : undefined,
-    hasConfigurationParameters
+    hasConfigurationParameters,
+    pickupTotals,
+    onAddPickup
   ).map((item) => ({
     ...item,
     checked: checkedState[item.id] ?? false
@@ -843,6 +936,10 @@ const JobBillOfProcess = ({
     setQuantityPage(0);
     setHasMore(true);
     setQuantityHasMore(true);
+    setPickups([]);
+    setPickupCount(0);
+    setPickupPage(0);
+    setPickupHasMore(true);
   }, []);
 
   useEffect(() => {
@@ -868,6 +965,103 @@ const JobBillOfProcess = ({
       cancelled = true;
     };
   }, [carbon, companyId, selectedItemId, temporaryItems]);
+
+  useEffect(() => {
+    if (!selectedItemId || temporaryItems[selectedItemId] || !carbon) return;
+
+    let cancelled = false;
+
+    const loadPickupCount = async () => {
+      const { count } = await carbon
+        .from("jobOperationPickup")
+        .select("id", { count: "exact", head: true })
+        .eq("jobOperationId", selectedItemId)
+        .eq("companyId", companyId);
+
+      if (!cancelled) {
+        setPickupCount(count ?? 0);
+      }
+    };
+
+    void loadPickupCount();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [carbon, companyId, selectedItemId, temporaryItems]);
+
+  useRealtimeChannel({
+    topic: `pickup-counts:${selectedItemId}`,
+    enabled: !!selectedItemId && !temporaryItems[selectedItemId ?? ""],
+    setup(channel) {
+      return channel.on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "jobOperationPickup",
+          filter: `jobOperationId=eq.${selectedItemId}`
+        },
+        (payload) => {
+          switch (payload.eventType) {
+            case "INSERT": {
+              const inserted = payload.new as OperationPickup;
+              setPickups((prev) => {
+                if (prev.some((p) => p.id === inserted.id)) return prev;
+                return [inserted, ...prev];
+              });
+              setPickupCount((count) => count + 1);
+              setPickupTotals((prev) => {
+                const next = new Map(prev);
+                next.set(
+                  inserted.jobOperationId,
+                  (next.get(inserted.jobOperationId) ?? 0) + (inserted.quantity as number)
+                );
+                return next;
+              });
+              break;
+            }
+            case "UPDATE": {
+              const updated = payload.new as OperationPickup;
+              const previous = payload.old as { id: string; quantity?: number; jobOperationId?: string };
+              setPickups((prev) =>
+                prev.map((p) => (p.id === updated.id ? updated : p))
+              );
+              if (previous.jobOperationId && previous.quantity !== undefined) {
+                setPickupTotals((prev) => {
+                  const next = new Map(prev);
+                  const opId = updated.jobOperationId;
+                  const oldQty = previous.quantity as number;
+                  const newQty = updated.quantity as number;
+                  next.set(opId, Math.max(0, (next.get(opId) ?? 0) - oldQty + newQty));
+                  return next;
+                });
+              }
+              break;
+            }
+            case "DELETE": {
+              const deleted = payload.old as { id: string; jobOperationId?: string; quantity?: number };
+              setPickups((prev) => prev.filter((p) => p.id !== deleted.id));
+              setPickupCount((count) => Math.max(0, count - 1));
+              if (deleted.jobOperationId && deleted.quantity !== undefined) {
+                setPickupTotals((prev) => {
+                  const next = new Map(prev);
+                  next.set(
+                    deleted.jobOperationId!,
+                    Math.max(0, (next.get(deleted.jobOperationId!) ?? 0) - (deleted.quantity as number))
+                  );
+                  return next;
+                });
+              }
+              break;
+            }
+            default:
+              break;
+          }
+        }
+      );
+    }
+  });
 
   useRealtimeChannel({
     topic: `production-events:${selectedItemId}`,
@@ -1021,6 +1215,34 @@ const JobBillOfProcess = ({
     quantityPage
   ]);
 
+  const loadMorePickups = useCallback(async () => {
+    if (pickupIsLoading || !pickupHasMore || !selectedItemId) return;
+
+    setPickupIsLoading(true);
+
+    const result = await getJobPickupsPage(
+      carbon!,
+      selectedItemId,
+      companyId,
+      pickupPage + 1
+    );
+
+    if (result.data && result.data.length > 0) {
+      setPickups((prev) => [...prev, ...(result.data as OperationPickup[])]);
+      setPickupPage((prevPage) => prevPage + 1);
+      if (result.count != null) {
+        setPickupCount(result.count);
+      }
+      if (result.hasMore === false) {
+        setPickupHasMore(false);
+      }
+    } else {
+      setPickupHasMore(false);
+    }
+
+    setPickupIsLoading(false);
+  }, [pickupIsLoading, pickupHasMore, carbon, selectedItemId, companyId, pickupPage]);
+
   const [tabChangeRerender, setTabChangeRerender] = useState<number>(1);
 
   const initialWorkInstructions = useMemo(
@@ -1054,6 +1276,7 @@ const JobBillOfProcess = ({
     const steps = operationDetails?.jobOperationStep ?? [];
     const quantityCount =
       item.id === selectedItemId ? productionQuantityCount : 0;
+    const currentPickupCount = item.id === selectedItemId ? pickupCount : 0;
     const canRecordQuantity =
       !isDisabled &&
       permissions.can("create", "production") &&
@@ -1102,6 +1325,17 @@ const JobBillOfProcess = ({
     }) => (
       <ProductionQuantityActivity
         item={quantityItem}
+        configurationParameters={configurationParameters}
+      />
+    );
+
+    const PickupActivityRowWrapper = ({
+      item: pickupItem
+    }: {
+      item: OperationPickup;
+    }) => (
+      <PickupActivityRow
+        item={pickupItem}
         configurationParameters={configurationParameters}
       />
     );
@@ -1228,6 +1462,51 @@ const JobBillOfProcess = ({
         label: (
           <span className="flex items-center gap-2">
             <span>
+              <Trans>Pickups</Trans>
+            </span>
+            {currentPickupCount > 0 && <Count count={currentPickupCount} />}
+          </span>
+        ),
+        content: (
+          <motion.div
+            className="flex w-full flex-col gap-4 py-6 pr-2 min-h-[300px]"
+            initial={{ opacity: 0, filter: "blur(4px)" }}
+            animate={{ opacity: 1, filter: "blur(0px)" }}
+            transition={{
+              type: "spring",
+              bounce: 0.2,
+              duration: 0.75,
+              delay: 0.15
+            }}
+          >
+            {canRecordQuantity && onAddPickup && (
+              <HStack className="justify-end">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => onAddPickup(item.id)}
+                >
+                  <LuCirclePlus className="mr-1.5 h-4 w-4" />
+                  <Trans>Record pickup</Trans>
+                </Button>
+              </HStack>
+            )}
+            <InfiniteScroll
+              key={pickupScrollKey}
+              component={PickupActivityRowWrapper}
+              items={pickups}
+              loadMore={loadMorePickups}
+              hasMore={pickupHasMore}
+            />
+          </motion.div>
+        )
+      },
+      {
+        id: 6,
+        disabled: item.data.operationType === "Outside",
+        label: (
+          <span className="flex items-center gap-2">
+            <span>
               <Trans>Quantities</Trans>
             </span>
             {quantityCount > 0 && <Count count={quantityCount} />}
@@ -1267,7 +1546,7 @@ const JobBillOfProcess = ({
         )
       },
       {
-        id: 6,
+        id: 7,
         disabled: item.data.operationType === "Outside",
         label: t`Events`,
         content: (
@@ -1292,7 +1571,7 @@ const JobBillOfProcess = ({
         )
       },
       {
-        id: 7,
+        id: 8,
         disabled: item.data.operationType === "Outside",
         label: t`Chat`,
         content: <OperationChat jobOperationId={item.id} />
@@ -3512,6 +3791,61 @@ const ProductionQuantityActivity = ({
           >
             {typeLabel(item.type)}
           </Badge>
+        </span>
+      }
+      activityTime={item.createdAt}
+      activityTimeDetail={
+        item.createdAt ? formatDateTime(item.createdAt) : undefined
+      }
+      comment={
+        commentParts.length > 0 ? (
+          <div className="flex flex-col gap-1.5">{commentParts}</div>
+        ) : undefined
+      }
+    />
+  );
+};
+
+type PickupActivityRowProps = {
+  item: OperationPickup;
+  configurationParameters?: ConfigurationParameter[] | null;
+};
+
+const PickupActivityRow = ({ item, configurationParameters }: PickupActivityRowProps) => {
+  const { formatDateTime } = useDateFormatter();
+  const { t } = useLingui();
+
+  const configParts =
+    configurationParameters?.length && item.configuration
+      ? getConfigRowDisplayParts(
+          item.configuration,
+          configurationParameters,
+          t`Quantities`
+        )
+      : [];
+
+  const commentParts: ReactNode[] = [];
+  if (configParts.length > 0) {
+    commentParts.push(
+      <div key="config" className="mb-1">
+        <ConfigQuantityBreakdown parts={configParts} />
+      </div>
+    );
+  }
+  if (item.notes) {
+    commentParts.push(
+      <p key="notes" className="text-sm text-muted-foreground">
+        {item.notes}
+      </p>
+    );
+  }
+
+  return (
+    <Activity
+      employeeId={item.employeeId}
+      activityMessage={
+        <span className="inline-flex flex-wrap items-center gap-2">
+          {t`picked up ${item.quantity} units`}
         </span>
       }
       activityTime={item.createdAt}

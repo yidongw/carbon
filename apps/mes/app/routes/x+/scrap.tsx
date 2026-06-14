@@ -25,7 +25,8 @@ export async function action({ request }: ActionFunctionArgs) {
   const insertScrap = await insertScrapQuantity(client, {
     ...d,
     companyId,
-    createdBy: userId
+    createdBy: userId,
+    employeeId: userId
   });
 
   if (insertScrap.error) {

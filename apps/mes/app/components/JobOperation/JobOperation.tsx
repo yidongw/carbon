@@ -104,6 +104,7 @@ import type {
   JobMakeMethod,
   JobMaterial,
   JobOperationParameter,
+  JobOperationPickup,
   JobOperationStep,
   Kanban,
   OperationWithDetails,
@@ -127,6 +128,7 @@ import { IssueMaterialModal } from "./components/IssueMaterialModal";
 import { MaintenanceDispatch } from "./components/MaintenanceDispatch";
 import { ParametersListItem } from "./components/Parameter";
 import { QualityIssueModal } from "./components/QualityIssueModal";
+import { PickupModal } from "./components/PickupModal";
 import { QuantityModal } from "./components/QuantityModal";
 import { ReworkModal } from "./components/ReworkModal";
 import { SerialSelectorModal } from "./components/SerialSelectorModal";
@@ -159,6 +161,9 @@ type JobOperationProps = {
     }[]
   >;
   operation: OperationWithDetails;
+  pickups: JobOperationPickup[];
+  suggestedQuantity: number;
+  pickupConfiguration: unknown;
   procedure: Promise<{
     attributes: JobOperationStep[];
     parameters: JobOperationParameter[];
@@ -187,6 +192,9 @@ export const JobOperation = ({
   method,
   nonConformanceActions,
   operation: originalOperation,
+  pickups,
+  suggestedQuantity,
+  pickupConfiguration,
   procedure,
   thumbnailPath,
   trackedEntities,
@@ -246,6 +254,7 @@ export const JobOperation = ({
     laborProductionEvent,
     machineProductionEvent,
     operation,
+    pickupModal,
     progress,
     reworkModal,
     scrapModal,
@@ -1390,6 +1399,64 @@ export const JobOperation = ({
             <Separator />
             <div className="flex flex-col items-start justify-between w-full">
               <div className="flex flex-col gap-4 p-4 lg:p-6 w-full">
+                <HStack className="justify-between w-full">
+                  <Heading size="h3">
+                    <Trans>Pickups</Trans>
+                  </Heading>
+                  <Button
+                    aria-label="Log Pickup"
+                    leftIcon={<LuHardHat />}
+                    variant="secondary"
+                    onClick={pickupModal.onOpen}
+                  >
+                    <Trans>Log Pickup</Trans>
+                  </Button>
+                </HStack>
+                <Table className="w-full">
+                  <Thead>
+                    <Tr>
+                      <Th><Trans>Employee</Trans></Th>
+                      <Th><Trans>Quantity</Trans></Th>
+                      <Th />
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {pickups.length === 0 ? (
+                      <Tr>
+                        <Td colSpan={3} className="py-8 text-muted-foreground text-center">
+                          <Trans>No pickups logged</Trans>
+                        </Td>
+                      </Tr>
+                    ) : (
+                      pickups.map((pickup) => (
+                        <Tr key={pickup.id}>
+                          <Td>
+                            {pickup.employee
+                              ? `${(pickup.employee as { firstName: string; lastName: string }).firstName} ${(pickup.employee as { firstName: string; lastName: string }).lastName}`
+                              : pickup.employeeId}
+                          </Td>
+                          <Td>{pickup.quantity}</Td>
+                          <Td className="text-right">
+                            <PickupDeleteButton pickupId={pickup.id} />
+                          </Td>
+                        </Tr>
+                      ))
+                    )}
+                  </Tbody>
+                </Table>
+                {pickupModal.isOpen && (
+                  <PickupModal
+                    jobOperationId={operation.id}
+                    configuration={pickupConfiguration}
+                    onClose={pickupModal.onClose}
+                  />
+                )}
+              </div>
+            </div>
+
+            <Separator />
+            <div className="flex flex-col items-start justify-between w-full">
+              <div className="flex flex-col gap-4 p-4 lg:p-6 w-full">
                 <Heading size="h3">
                   <Trans>Files</Trans>
                 </Heading>
@@ -2360,6 +2427,7 @@ export const JobOperation = ({
                   parentIsSerial={parentIsSerial}
                   parentIsBatch={parentIsBatch}
                   setupProductionEvent={setupProductionEvent}
+                  suggestedQuantity={suggestedQuantity}
                   trackedEntityId={trackedEntityId}
                   onClose={completeModal.onClose}
                 />
@@ -2461,6 +2529,24 @@ export const JobOperation = ({
     </>
   );
 };
+
+function PickupDeleteButton({ pickupId }: { pickupId: string }) {
+  const fetcher = useFetcher();
+  return (
+    <IconButton
+      aria-label="Delete pickup"
+      variant="ghost"
+      icon={<FaTrash className="text-destructive" />}
+      className="h-8 w-8"
+      onClick={() =>
+        fetcher.submit(
+          {},
+          { method: "post", action: path.to.operationPickupDelete(pickupId) }
+        )
+      }
+    />
+  );
+}
 
 function recordSetIsStarted(
   attributes: JobOperationStep[],

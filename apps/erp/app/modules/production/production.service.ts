@@ -20,6 +20,7 @@ import type {
   deadlineTypes,
   failureModeValidator,
   jobMaterialValidator,
+  jobOperationPickupValidator,
   jobOperationStatus,
   jobOperationValidator,
   jobStatus,
@@ -2258,9 +2259,10 @@ export async function updateProductionQuantity(
     id: string;
     updatedBy: string;
     companyId: string;
+    createdBy?: string;
   }
 ) {
-  const { id, updatedBy, companyId, ...updateData } = productionQuantity;
+  const { id, updatedBy, companyId, createdBy, ...updateData } = productionQuantity;
 
   return client
     .from("productionQuantity")
@@ -2280,15 +2282,19 @@ export async function upsertProductionQuantity(
   productionQuantity:
     | (Omit<z.infer<typeof productionQuantityValidator>, "id"> & {
         companyId: string;
+        createdBy: string;
+        employeeId: string;
       })
     | (Omit<z.infer<typeof productionQuantityValidator>, "id"> & {
         id: string;
         updatedBy: string;
         companyId: string;
+        createdBy?: string;
+        employeeId: string;
       })
 ) {
   if ("updatedBy" in productionQuantity) {
-    const { id, updatedBy, companyId, ...updateData } = productionQuantity;
+    const { id, updatedBy, companyId, createdBy, ...updateData } = productionQuantity;
 
     return client
       .from("productionQuantity")
@@ -2305,7 +2311,6 @@ export async function upsertProductionQuantity(
     return (
       client
         .from("productionQuantity")
-        // @ts-expect-error TS2769 - TODO: fix type
         .insert([productionQuantity])
         .select("id")
         .single()
@@ -2586,6 +2591,138 @@ export async function updateJob(
 }
 
 /** @deprecated Use insertJob for new jobs, updateJob for existing jobs */
+export async function getJobOperationPickups(
+  client: SupabaseClient<Database>,
+  jobOperationId: string
+) {
+  return client
+    .from("jobOperationPickup")
+    .select("*, employee:user!jobOperationPickup_employeeId_fkey(id, firstName, lastName, avatarUrl)")
+    .eq("jobOperationId", jobOperationId)
+    .order("createdAt", { ascending: false });
+}
+
+export async function getJobOperationPickup(
+  client: SupabaseClient<Database>,
+  id: string
+) {
+  return client
+    .from("jobOperationPickup")
+    .select("*")
+    .eq("id", id)
+    .single();
+}
+
+export async function upsertJobOperationPickup(
+  client: SupabaseClient<Database>,
+  pickup:
+    | (Omit<z.infer<typeof jobOperationPickupValidator>, "id"> & {
+        companyId: string;
+        createdBy: string;
+      })
+    | (Omit<z.infer<typeof jobOperationPickupValidator>, "id"> & {
+        id: string;
+        updatedBy: string;
+        companyId: string;
+      })
+) {
+  if ("updatedBy" in pickup) {
+    const { id, updatedBy, companyId, ...updateData } = pickup;
+    return client
+      .from("jobOperationPickup")
+      .update({
+        ...sanitize(updateData),
+        updatedBy,
+        updatedAt: new Date().toISOString()
+      })
+      .eq("id", id)
+      .eq("companyId", companyId)
+      .select()
+      .single();
+  } else {
+    const { configuration: rawConfiguration, ...rest } = pickup;
+    let configuration: unknown;
+    if (rawConfiguration) {
+      try {
+        configuration =
+          typeof rawConfiguration === "string"
+            ? JSON.parse(rawConfiguration)
+            : rawConfiguration;
+      } catch {
+        configuration = undefined;
+      }
+    }
+    return client
+      .from("jobOperationPickup")
+      .insert([sanitize({ ...rest, configuration: configuration as Json | null })])
+      .select("id")
+      .single();
+  }
+}
+
+export async function deleteJobOperationPickup(
+  client: SupabaseClient<Database>,
+  id: string
+) {
+  return client.from("jobOperationPickup").delete().eq("id", id);
+}
+
+export async function getJobPickupsByOperations(
+  client: SupabaseClient<Database>,
+  jobOperationIds: string[],
+  args?: { search?: string | null } & GenericQueryFilters
+) {
+  if (jobOperationIds.length === 0) {
+    return { data: [], count: 0, error: null };
+  }
+
+  let query = client
+    .from("jobOperationPickup")
+    .select(
+      "*, employee:user!jobOperationPickup_employeeId_fkey(id, firstName, lastName, avatarUrl), jobOperation(description, jobMakeMethod(parentMaterialId, item(readableIdWithRevision)))",
+      { count: "exact" }
+    )
+    .in("jobOperationId", jobOperationIds);
+
+  if (args) {
+    query = setGenericQueryFilters(query, args, [
+      { column: "createdAt", ascending: false }
+    ]);
+  }
+
+  return query;
+}
+
+export async function getJobPickupsPage(
+  client: SupabaseClient<Database>,
+  jobOperationId: string,
+  companyId: string,
+  page = 1
+) {
+  const pageSize = 20;
+  const offset = (page - 1) * pageSize;
+
+  const { data, error, count } = await client
+    .from("jobOperationPickup")
+    .select("*, employee:user!jobOperationPickup_employeeId_fkey(id, firstName, lastName, avatarUrl)", {
+      count: "exact"
+    })
+    .eq("jobOperationId", jobOperationId)
+    .eq("companyId", companyId)
+    .order("createdAt", { ascending: false })
+    .range(offset, offset + pageSize - 1);
+
+  if (error) return { error };
+
+  return {
+    data,
+    count,
+    page,
+    pageSize,
+    hasMore: count !== null && offset + pageSize < count
+  };
+}
+
 export async function upsertJob(
   client: SupabaseClient<Database>,
   job:

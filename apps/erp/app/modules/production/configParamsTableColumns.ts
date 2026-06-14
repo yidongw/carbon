@@ -236,21 +236,25 @@ export function getConfigRowDisplayParts(
 
 export type ReportedTargetCell = {
   reported: number;
+  pickup: number;
   target: number;
 };
 
-export type ReportedTargetRow = ConfigTableRow & {
+export type ReportedTargetRow = {
+  [key: string]: string | number | boolean | Record<string, ReportedTargetCell>;
   cells: Record<string, ReportedTargetCell>;
 };
 
 export function buildReportedTargetRows({
   targetConfiguration,
   reportedConfigurations,
+  pickupConfigurations = [],
   parameters,
   defaultQuantityLabel
 }: {
   targetConfiguration: unknown;
   reportedConfigurations: unknown[];
+  pickupConfigurations?: unknown[];
   parameters: ConfigurationParameter[];
   defaultQuantityLabel: string;
 }): ReportedTargetRow[] {
@@ -264,6 +268,10 @@ export function buildReportedTargetRows({
     reportedConfigurations.flatMap((config) => getConfigTableRows(config)),
     columns
   );
+  const pickupRows = mergeConfigTableRows(
+    pickupConfigurations.flatMap((config) => getConfigTableRows(config)),
+    columns
+  );
 
   const targetByKey = new Map(
     targetRows.map((row) => [getMergeKey(row, columns), row])
@@ -271,19 +279,24 @@ export function buildReportedTargetRows({
   const reportedByKey = new Map(
     reportedRows.map((row) => [getMergeKey(row, columns), row])
   );
+  const pickupByKey = new Map(
+    pickupRows.map((row) => [getMergeKey(row, columns), row])
+  );
 
-  const keys = new Set([...targetByKey.keys(), ...reportedByKey.keys()]);
+  const keys = new Set([...targetByKey.keys(), ...reportedByKey.keys(), ...pickupByKey.keys()]);
 
   return Array.from(keys).map((key) => {
     const targetRow = targetByKey.get(key);
     const reportedRow = reportedByKey.get(key);
-    const baseRow: ConfigTableRow = { ...(targetRow ?? reportedRow ?? {}) };
+    const pickupRow = pickupByKey.get(key);
+    const baseRow: ConfigTableRow = { ...(targetRow ?? reportedRow ?? pickupRow ?? {}) };
 
     const cells: Record<string, ReportedTargetCell> = {};
     for (const col of columns) {
       if (col.type !== "quantity") continue;
       cells[col.key] = {
         reported: Number(reportedRow?.[col.key]) || 0,
+        pickup: Number(pickupRow?.[col.key]) || 0,
         target: Number(targetRow?.[col.key]) || 0
       };
     }

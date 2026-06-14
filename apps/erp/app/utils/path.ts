@@ -1056,6 +1056,15 @@ export const path = {
     jobProductionEvent: (jobId: string, eventId: string) =>
       generatePath(`${x}/job/${jobId}/events/${eventId}`),
     jobProductionEvents: (id: string) => generatePath(`${x}/job/${id}/events`),
+    jobPickups: (id: string) => generatePath(`${x}/job/${id}/pickups`),
+    newJobPickup: (jobId: string, opts?: { jobOperationId?: string }) => {
+      const base = generatePath(`${x}/job/${jobId}/pickups/new`);
+      const opId = opts?.jobOperationId;
+      if (!opId) return base;
+      return `${base}?${new URLSearchParams({ jobOperationId: opId }).toString()}`;
+    },
+    deleteJobPickup: (id: string) =>
+      generatePath(`${x}/job/methods/pickup/delete/${id}`),
     jobProductionQuantities: (id: string) =>
       generatePath(`${x}/job/${id}/quantities`),
     jobProductionQuantity: (jobId: string, quantityId: string) =>

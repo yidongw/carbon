@@ -9,7 +9,7 @@ import {
 function getColumnWidthClass(column: ConfigColumn): string {
   switch (column.type) {
     case "quantity":
-      return "w-[7rem] min-w-[7rem] max-w-[7rem]";
+      return "w-[10rem] min-w-[10rem] max-w-[10rem]";
     case "numeric":
     case "boolean":
       return "w-[8rem] min-w-[8rem] max-w-[8rem]";
@@ -21,12 +21,10 @@ function getColumnWidthClass(column: ConfigColumn): string {
   }
 }
 
-function formatQuantityPair(reported: number, target: number) {
-  const format = (n: number) =>
-    Number.isInteger(n)
-      ? String(n)
-      : n.toLocaleString(undefined, { maximumFractionDigits: 4 });
-  return `${format(reported)} / ${format(target)}`;
+function fmt(n: number) {
+  return Number.isInteger(n)
+    ? String(n)
+    : n.toLocaleString(undefined, { maximumFractionDigits: 4 });
 }
 
 type ConfigParamsReportedTargetTableProps = {
@@ -82,11 +80,14 @@ export function ConfigParamsReportedTargetTable({
                     )}
                   >
                     {col.type === "quantity" ? (
-                      <span>
-                        {formatQuantityPair(
-                          row.cells[col.key]?.reported ?? 0,
-                          row.cells[col.key]?.target ?? 0
-                        )}
+                      <span className="inline-flex items-baseline gap-0.5">
+                        <span className="text-emerald-500">{fmt(row.cells[col.key]?.reported ?? 0)}</span>
+                        <span className="text-muted-foreground/50 text-xs">/</span>
+                        <span className={row.cells[col.key]?.pickup > 0 ? "text-blue-600" : "text-muted-foreground"}>
+                          {fmt(row.cells[col.key]?.pickup ?? 0)}
+                        </span>
+                        <span className="text-muted-foreground/50 text-xs">/</span>
+                        <span className="text-muted-foreground">{fmt(row.cells[col.key]?.target ?? 0)}</span>
                       </span>
                     ) : (
                       String(row[col.key] ?? "")

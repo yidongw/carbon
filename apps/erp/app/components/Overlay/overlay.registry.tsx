@@ -5,6 +5,41 @@ import { renderLazyOverlay } from "./renderLazyOverlay";
 import type { OverlayRegistryEntry } from "./types";
 
 export const overlayRegistry = {
+  newJobPickup: {
+    type: "drawer",
+    render: renderLazyOverlay(
+      (ctx) => {
+        const data = ctx.loaderData as
+          | {
+              jobOperationId: string;
+              operationOptions: { label: string; value: string }[];
+              configurationParameters?:
+                | {
+                    key: string;
+                    label: string;
+                    dataType: string;
+                    listOptions?: string[] | null;
+                  }[]
+                | null;
+              itemId?: string | null;
+            }
+          | undefined;
+        if (!data) return null;
+        return {
+          initialValues: {
+            jobOperationId: data.jobOperationId,
+            quantity: 0,
+            notes: "",
+            employeeId: ""
+          },
+          operationOptions: data.operationOptions ?? [],
+          configurationParameters: data.configurationParameters ?? null,
+          itemId: data.itemId ?? null
+        };
+      },
+      () => import("~/modules/production/ui/Jobs/PickupForm")
+    )
+  },
   newJobProductionQuantity: {
     type: "drawer",
     render: renderLazyOverlay(
@@ -33,7 +68,7 @@ export const overlayRegistry = {
             quantity: 0,
             scrapReasonId: "",
             notes: "",
-            createdBy: ""
+            employeeId: ""
           },
           operationOptions: data.operationOptions ?? [],
           configurationParameters: data.configurationParameters ?? null,

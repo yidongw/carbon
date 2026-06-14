@@ -8,17 +8,15 @@ import { getConfigurationParameters } from "~/modules/items";
 import {
   getJob,
   getJobOperations,
-  isJobLocked,
-  productionQuantityValidator,
-  upsertProductionQuantity
+  jobOperationPickupValidator,
+  upsertJobOperationPickup
 } from "~/modules/production";
-import ProductionQuantityForm from "~/modules/production/ui/Jobs/ProductionQuantityForm";
-import { requireUnlocked } from "~/utils/lockedGuard.server";
+import PickupForm from "~/modules/production/ui/Jobs/PickupForm";
 import { getParams, path } from "~/utils/path";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
   const { client, companyId } = await requirePermissions(request, {
-    create: "production"
+    view: "production"
   });
 
   const { jobId } = params;
@@ -32,22 +30,11 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     jobOperationId ? null : getJobOperations(client, jobId)
   ]);
 
-  const configurationParameters = job.data?.itemId
-    ? (await getConfigurationParameters(client, job.data.itemId, companyId))
-        .parameters
-    : [];
-
   const itemId = job.data?.itemId ?? null;
 
-  if (jobOperationId) {
-    return {
-      jobOperationId,
-      operationOptions: [] as const,
-      configurationParameters:
-        configurationParameters.length > 0 ? configurationParameters : null,
-      itemId
-    };
-  }
+  const configurationParameters = itemId
+    ? (await getConfigurationParameters(client, itemId, companyId)).parameters
+    : [];
 
   const operationOptions =
     jobOperations?.data?.map((operation) => ({
@@ -56,11 +43,11 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     })) ?? [];
 
   return {
-    jobOperationId: "",
+    jobOperationId,
     operationOptions,
+    itemId,
     configurationParameters:
-      configurationParameters.length > 0 ? configurationParameters : null,
-    itemId
+      configurationParameters.length > 0 ? configurationParameters : null
   };
 }
 
@@ -71,26 +58,13 @@ export async function action({ request, params }: ActionFunctionArgs) {
   });
 
   const { jobId } = params;
-  if (!jobId) {
-    throw notFound("jobId not found");
-  }
-
-  const { client: viewClient } = await requirePermissions(request, {
-    view: "production"
-  });
-  const job = await getJob(viewClient, jobId);
-  await requireUnlocked({
-    request,
-    isLocked: isJobLocked(job.data?.status),
-    redirectTo: path.to.job(jobId),
-    message: "Cannot modify a locked job. Reopen it first."
-  });
+  if (!jobId) throw notFound("jobId not found");
 
   const isOverlay =
     new URL(request.url).searchParams.get("overlay") === "true";
   const formData = await request.formData();
 
-  const validation = await validator(productionQuantityValidator).validate(
+  const validation = await validator(jobOperationPickupValidator).validate(
     formData
   );
 
@@ -98,12 +72,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
-  // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
-  const { id, configuration: rawConfiguration, employeeId, ...rest } = validation.data;
-
-  if (rest.type !== "Scrap") {
-    rest.scrapReasonId = undefined;
-  }
+  const { configuration: rawConfiguration, id: _id, ...rest } = validation.data;
 
   let configuration: unknown;
   if (rawConfiguration) {
@@ -112,55 +81,50 @@ export async function action({ request, params }: ActionFunctionArgs) {
         typeof rawConfiguration === "string"
           ? JSON.parse(rawConfiguration)
           : rawConfiguration;
-    } catch (parseError) {
-      console.error(parseError);
+    } catch {
+      configuration = undefined;
     }
   }
 
-  const insert = await upsertProductionQuantity(client, {
+  const insert = await upsertJobOperationPickup(client, {
     ...rest,
     configuration,
     companyId,
-    createdBy: userId,
-    employeeId: employeeId ?? userId
+    createdBy: userId
   });
+
   if (insert.error) {
     return data(
       {},
-      await flash(
-        request,
-        error(insert.error, "Failed to insert production quantity")
-      )
+      await flash(request, error(insert.error, "Failed to record pickup"))
     );
   }
 
   if (isOverlay) {
     return data(
       { ok: true as const, jobId },
-      await flash(request, success("Production quantity created"))
+      await flash(request, success("Pickup recorded"))
     );
   }
 
   return redirect(
-    `${path.to.jobProductionQuantities(jobId)}?${getParams(request)}`,
-    await flash(request, success("Production quantity created"))
+    `${path.to.jobPickups(jobId)}?${getParams(request)}`,
+    await flash(request, success("Pickup recorded"))
   );
 }
 
-export default function NewProductionQuantityRoute() {
+export default function NewJobPickupRoute() {
   const { jobOperationId, operationOptions, configurationParameters, itemId } =
     useLoaderData<typeof loader>();
   const initialValues = {
-    type: "Production" as const,
     jobOperationId,
     quantity: 0,
-    scrapReasonId: "",
     notes: "",
     employeeId: ""
   };
 
   return (
-    <ProductionQuantityForm
+    <PickupForm
       initialValues={initialValues}
       operationOptions={[...(operationOptions ?? [])]}
       configurationParameters={configurationParameters}

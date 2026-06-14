@@ -71,7 +71,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
-  const { id, configuration: rawConfiguration, ...rest } = validation.data;
+  const { id, configuration: rawConfiguration, employeeId, ...rest } = validation.data;
   if (!id) throw new Error("id not found");
 
   if (rest.type !== "Scrap") {
@@ -95,7 +95,8 @@ export async function action({ request, params }: ActionFunctionArgs) {
     ...rest,
     configuration,
     companyId,
-    updatedBy: userId
+    updatedBy: userId,
+    employeeId: employeeId ?? userId
   });
 
   if (update.error) {
@@ -132,7 +133,7 @@ export default function EditProductionQuantityRoute() {
     quantity: productionQuantity?.quantity ?? 0,
     scrapReasonId: productionQuantity?.scrapReasonId ?? "",
     notes: productionQuantity?.notes ?? "",
-    createdBy: productionQuantity?.createdBy ?? "",
+    employeeId: productionQuantity?.employeeId ?? "",
     configuration: productionQuantity?.configuration ?? undefined
   };
 
