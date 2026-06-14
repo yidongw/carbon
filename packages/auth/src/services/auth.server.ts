@@ -487,11 +487,15 @@ export async function exchangePkceCode(
   cookieCompanyId: string | null
 ): Promise<AuthSession | null> {
   const storage = new Map([[pkceEntry.k, pkceEntry.v]]);
+  // persistSession must remain true (the default) so Supabase uses the custom
+  // storage adapter above when looking up the code verifier. When
+  // persistSession is false, auth-js ignores the provided storage and falls
+  // back to its own internal memoryStorage — the pre-seeded verifier would
+  // never be found and the exchange would fail with an empty code_verifier.
   const client = createClient<Database, "public">(SUPABASE_URL!, SUPABASE_ANON_KEY!, {
     auth: {
       flowType: "pkce",
       autoRefreshToken: false,
-      persistSession: false,
       storage: {
         getItem: (key) => storage.get(key) ?? null,
         setItem: (key, value) => { storage.set(key, value); },

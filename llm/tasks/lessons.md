@@ -74,6 +74,13 @@ Patterns learned from corrections. Review at the start of each session.
 - "not scrollable" defaulted me to vertical scroll; the user meant **horizontal** ("horizontal scroll bro"). Confirm the axis before investigating.
 - This machine runs several Carbon worktrees, each with its own ERP dev server on a different port (`carbon/login` on :3000, `carbon/ui-fix` on :52046 per `.env.local` `PORT_ERP`). Before browser-testing a worktree edit, confirm which port serves *this* worktree (`lsof -p <pid>` → cwd), or HMR won't reflect your changes. Dev-bypass login: enter `DEV_BYPASS_EMAIL` on the login form (only works if the dev server was started after that env var was set, else it falls back to OTP via Inbucket on `PORT_INBUCKET`).
 
+## Supabase PKCE: `persistSession: false` silently ignores the custom storage adapter
+
+- In `@supabase/auth-js`, when `persistSession: false`, the client ignores any `storage` option and uses its own internal `memoryStorage` instead. This affects BOTH writes AND reads.
+- In the PKCE magic-link flow, `exchangePkceCode` pre-seeds a `Map` with the code verifier and passes it as `storage`. With `persistSession: false`, the Map is ignored and `exchangeCodeForSession` reads from empty internal storage → sends empty `code_verifier` → Supabase rejects with "expired or already used".
+- The same bug affected `sendMagicLink` (fixed in `9e646783c` by removing `persistSession: false`). `exchangePkceCode` was missed.
+- Rule: **never set `persistSession: false` when providing a custom storage adapter** to a Supabase PKCE client. The default (`persistSession: true`) is required for Supabase to actually use the adapter.
+
 ## Bash fallbacks when tools are missing
 
 - `pandoc` is not on the user's machine. For `.docx` extraction, use the `anthropic-skills:docx` skill's `unpack.py` (needs `defusedxml`; install via `mise x python@3.14.2 -- pip install defusedxml`) or an equivalent Python/JS extraction, rather than assuming pandoc is available.
