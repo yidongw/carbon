@@ -155,7 +155,16 @@ import {
   getProductionEventsPage,
   getProductionQuantitiesPage
 } from "../../production.service";
+import type { ConfigurationParameter } from "~/modules/items/types";
+import { getConfigurationParameters } from "~/modules/items";
+import {
+  buildReportedTargetRows,
+  getConfigRowDisplayParts,
+  type ReportedTargetRow
+} from "../../configParamsTableColumns";
+import { ConfigQuantityBreakdown } from "./ConfigQuantityBreakdown";
 import type { Job, JobOperation } from "../../types";
+import { ConfigParamsReportedTargetTable } from "./ConfigParamsReportedTargetTable";
 import { JobOperationStatus, JobOperationTags } from "./JobOperationStatus";
 import { OperationDueDatePicker } from "./OperationDueDatePicker";
 import {
@@ -221,7 +230,9 @@ function makeItems(
   t: ReturnType<typeof useLingui>["t"],
   jobId: string,
   job?: Job,
-  onAddProductionQuantity?: (operationId: string) => void
+  onAddProductionQuantity?: (operationId: string) => void,
+  onOpenConfigSummary?: (operationId: string) => void,
+  hasConfigurationParameters?: boolean
 ): ItemWithData[] {
   return operations.map((operation) =>
     makeItem(
@@ -232,7 +243,9 @@ function makeItems(
       t,
       jobId,
       job,
-      onAddProductionQuantity
+      onAddProductionQuantity,
+      onOpenConfigSummary,
+      hasConfigurationParameters
     )
   );
 }
@@ -245,7 +258,9 @@ function makeItem(
   t: ReturnType<typeof useLingui>["t"],
   jobId: string,
   job?: Job,
-  onAddProductionQuantity?: (operationId: string) => void
+  onAddProductionQuantity?: (operationId: string) => void,
+  onOpenConfigSummary?: (operationId: string) => void,
+  hasConfigurationParameters?: boolean
 ): ItemWithData {
   return {
     id: operation.id!,
@@ -303,7 +318,11 @@ function makeItem(
           target: job?.quantity ?? 0,
           onAddQuantity: onAddProductionQuantity
             ? () => onAddProductionQuantity(operation.id!)
-            : undefined
+            : undefined,
+          onOpenConfigTable:
+            hasConfigurationParameters && onOpenConfigSummary
+              ? () => onOpenConfigSummary(operation.id!)
+              : undefined
         },
     footer: temporaryItems[operation.id!] ? null : (
       <HStack className="w-full justify-between">
@@ -575,24 +594,6 @@ const JobBillOfProcess = ({
         }
       : undefined;
 
-  const items = makeItems(
-    operations,
-    tags,
-    temporaryItems,
-    {
-      itemId,
-      salesOrderLineId,
-      customerId
-    },
-    t,
-    jobId,
-    jobData?.job,
-    onAddProductionQuantity
-  ).map((item) => ({
-    ...item,
-    checked: checkedState[item.id] ?? false
-  }));
-
   const onToggleItem = (id: string) => {
     if (!permissions.can("update", "parts")) return;
     setCheckedState((prev) => ({
@@ -741,6 +742,98 @@ const JobBillOfProcess = ({
   const [hasMore, setHasMore] = useState(true);
   const [quantityHasMore, setQuantityHasMore] = useState(true);
   const addOperationButtonRef = useRef<HTMLButtonElement>(null);
+  const [configurationParameters, setConfigurationParameters] = useState<
+    ConfigurationParameter[] | null
+  >(null);
+  const configSummaryModal = useDisclosure();
+  const [configSummaryOperationId, setConfigSummaryOperationId] = useState<
+    string | null
+  >(null);
+  const [configSummaryRows, setConfigSummaryRows] = useState<
+    ReportedTargetRow[]
+  >([]);
+  const [configSummaryLoading, setConfigSummaryLoading] = useState(false);
+
+  const hasConfigurationParameters =
+    (configurationParameters?.length ?? 0) > 0;
+
+  useEffect(() => {
+    if (!itemId || !carbon) return;
+
+    void getConfigurationParameters(carbon, itemId, companyId).then(
+      ({ parameters }) => {
+        setConfigurationParameters(
+          parameters.length > 0 ? parameters : null
+        );
+      }
+    );
+  }, [carbon, companyId, itemId]);
+
+  const openConfigSummary = useCallback(
+    async (operationId: string) => {
+      if (!carbon || !configurationParameters?.length) return;
+
+      setConfigSummaryOperationId(operationId);
+      setConfigSummaryRows([]);
+      setConfigSummaryLoading(true);
+      configSummaryModal.onOpen();
+
+      const { data, error } = await carbon
+        .from("productionQuantity")
+        .select("configuration")
+        .eq("jobOperationId", operationId)
+        .eq("companyId", companyId)
+        .eq("type", "Production");
+
+      if (error) {
+        toast.error(error.message);
+        setConfigSummaryLoading(false);
+        return;
+      }
+
+      const reportedConfigurations = (data ?? [])
+        .map((row) => row.configuration)
+        .filter((config): config is NonNullable<typeof config> => config != null);
+
+      setConfigSummaryRows(
+        buildReportedTargetRows({
+          targetConfiguration: jobData?.job?.configuration,
+          reportedConfigurations,
+          parameters: configurationParameters,
+          defaultQuantityLabel: t`Quantities`
+        })
+      );
+      setConfigSummaryLoading(false);
+    },
+    [
+      carbon,
+      companyId,
+      configSummaryModal,
+      configurationParameters,
+      jobData?.job?.configuration,
+      t
+    ]
+  );
+
+  const items = makeItems(
+    operations,
+    tags,
+    temporaryItems,
+    {
+      itemId,
+      salesOrderLineId,
+      customerId
+    },
+    t,
+    jobId,
+    jobData?.job,
+    onAddProductionQuantity,
+    hasConfigurationParameters ? openConfigSummary : undefined,
+    hasConfigurationParameters
+  ).map((item) => ({
+    ...item,
+    checked: checkedState[item.id] ?? false
+  }));
 
   useEffect(() => {
     setProductionEvents([]);
@@ -1006,7 +1099,12 @@ const JobBillOfProcess = ({
       item: quantityItem
     }: {
       item: OperationProductionQuantity;
-    }) => <ProductionQuantityActivity item={quantityItem} />;
+    }) => (
+      <ProductionQuantityActivity
+        item={quantityItem}
+        configurationParameters={configurationParameters}
+      />
+    );
 
     const tabs = [
       {
@@ -1316,8 +1414,52 @@ const JobBillOfProcess = ({
     />
   );
 
+  const configSummaryOperation = configSummaryOperationId
+    ? operationsById.get(configSummaryOperationId)
+    : undefined;
+
+  const configSummaryModalElement = hasConfigurationParameters ? (
+    <Modal
+      open={configSummaryModal.isOpen}
+      onOpenChange={(open) => {
+        if (!open) configSummaryModal.onClose();
+      }}
+    >
+      <ModalContent
+        className={cn(
+          "flex w-fit min-w-[20rem] max-w-[min(90vw,56rem)] max-h-[85dvh] flex-col overflow-hidden",
+          "md:w-fit sm:w-fit sm:max-w-[min(90vw,56rem)]"
+        )}
+      >
+        <ModalHeader className="mb-4 shrink-0">
+          <ModalTitle>
+            {configSummaryOperation?.description ?? (
+              <Trans>Configuration quantities</Trans>
+            )}
+          </ModalTitle>
+        </ModalHeader>
+        <ModalBody className="mb-0 min-h-0 flex-1 overflow-y-auto overflow-x-auto pb-6">
+          {configSummaryLoading ? (
+            <Loading isLoading />
+          ) : (
+            <ConfigParamsReportedTargetTable
+              rows={configSummaryRows}
+              parameters={configurationParameters ?? []}
+            />
+          )}
+        </ModalBody>
+        <ModalFooter className="shrink-0">
+          <Button variant="secondary" onClick={configSummaryModal.onClose}>
+            <Trans>Close</Trans>
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  ) : null;
+
   if (routeJob) {
     return (
+      <>
       <div className="flex min-h-full flex-col">
         <HStack className="shrink-0 items-center justify-between border-b border-border px-4 py-3 pr-12">
           <h3 className="text-base font-medium font-headline tracking-tight text-foreground">
@@ -1338,10 +1480,13 @@ const JobBillOfProcess = ({
         </HStack>
         <div className="flex-1 px-3 py-3">{list}</div>
       </div>
+      {configSummaryModalElement}
+      </>
     );
   }
 
   return (
+    <>
     <Card>
       <HStack className="justify-between">
         <CardHeader>
@@ -1367,6 +1512,8 @@ const JobBillOfProcess = ({
       </HStack>
       <CardContent>{list}</CardContent>
     </Card>
+    {configSummaryModalElement}
+    </>
   );
 };
 
@@ -3302,6 +3449,7 @@ function ProcedureSyncModal({
 
 type ProductionQuantityActivityProps = {
   item: OperationProductionQuantity;
+  configurationParameters?: ConfigurationParameter[] | null;
 };
 
 function getProductionQuantityBadgeVariant(
@@ -3318,29 +3466,60 @@ function getProductionQuantityBadgeVariant(
 }
 
 const ProductionQuantityActivity = ({
-  item
+  item,
+  configurationParameters
 }: ProductionQuantityActivityProps) => {
+  const { t } = useLingui();
   const { formatDateTime } = useDateFormatter();
   const typeLabel = useProductionQuantityTypeLabel();
   const getActivityMessage = useProductionQuantityActivityMessage();
 
-  const comment = [
-    item.notes,
-    item.createdAt ? formatDateTime(item.createdAt) : null
-  ]
-    .filter(Boolean)
-    .join(" · ");
+  const configParts =
+    configurationParameters?.length && item.configuration
+      ? getConfigRowDisplayParts(
+          item.configuration,
+          configurationParameters,
+          t`Quantities`
+        )
+      : [];
 
+  const commentParts: ReactNode[] = [];
+  if (configParts.length > 0) {
+    commentParts.push(
+      <div key="config" className="mb-1">
+        <ConfigQuantityBreakdown parts={configParts} />
+      </div>
+    );
+  }
+  if (item.notes) {
+    commentParts.push(
+      <p key="notes" className="text-sm text-muted-foreground">
+        {item.notes}
+      </p>
+    );
+  }
   return (
     <Activity
       employeeId={item.createdBy}
-      activityMessage={getActivityMessage(item)}
+      activityMessage={
+        <span className="inline-flex flex-wrap items-center gap-2">
+          {getActivityMessage(item)}
+          <Badge
+            variant={getProductionQuantityBadgeVariant(item.type)}
+            className="shrink-0"
+          >
+            {typeLabel(item.type)}
+          </Badge>
+        </span>
+      }
       activityTime={item.createdAt}
-      comment={comment || undefined}
-      activityIcon={
-        <Badge variant={getProductionQuantityBadgeVariant(item.type)}>
-          {typeLabel(item.type)}
-        </Badge>
+      activityTimeDetail={
+        item.createdAt ? formatDateTime(item.createdAt) : undefined
+      }
+      comment={
+        commentParts.length > 0 ? (
+          <div className="flex flex-col gap-1.5">{commentParts}</div>
+        ) : undefined
       }
     />
   );

@@ -4,12 +4,6 @@ import {
   cn,
   HStack,
   IconButton,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalTitle,
   Table,
   Tbody,
   Td,
@@ -22,7 +16,9 @@ import { useState } from "react";
 import { LuPlus, LuTrash2 } from "react-icons/lu";
 import { Enumerable } from "~/components/Enumerable";
 import { useShape } from "~/components/Form/Shape";
+import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
 import type { ConfigurationParameter } from "~/modules/items/types";
+import { buildConfigTableActionResponse } from "~/modules/production/configTableOverlay";
 
 type Row = Record<string, string | number | boolean>;
 
@@ -41,13 +37,11 @@ type Column = {
   options?: string[];
 };
 
-type ConfigParamsTableModalProps = {
-  open: boolean;
+export type ConfigParamsTableModalProps = {
   parameters: ConfigurationParameter[];
-  onClose: () => void;
-  onSubmit: (rows: Row[], total: number, primaryKeys: string[]) => void;
   initialRows?: Row[];
-};
+  jobDisplayId?: string | null;
+} & OverlayFormInjectedProps;
 
 function buildColumns(
   parameters: ConfigurationParameter[],
@@ -259,12 +253,15 @@ function validateCell(
   }
 }
 
-export function ConfigParamsTableModal({
-  open,
+function ConfigParamsTableModal({
   parameters,
-  onClose,
-  onSubmit,
-  initialRows
+  initialRows,
+  jobDisplayId,
+  onDismiss,
+  action: formAction,
+  fetcher,
+  confirmMode,
+  onConfirmSuccess
 }: ConfigParamsTableModalProps) {
   const { t } = useLingui();
   const materialShapeOptions = useShape();
@@ -336,178 +333,201 @@ export function ConfigParamsTableModal({
     setValidationError("");
     const rowsToSave = populatedRows.map(({ row }) => row);
     const mergedRows = mergeRows(rowsToSave, columns);
-    onSubmit(mergedRows, computeTotal(mergedRows, primaryKeys), primaryKeys);
+
+    const configuration = {
+      configTable: mergedRows,
+      configTablePrimaryKeys: primaryKeys
+    };
+
+    if (confirmMode === "client") {
+      onConfirmSuccess(buildConfigTableActionResponse(configuration));
+      return;
+    }
+
+    if (!formAction) return;
+
+    const formData = new FormData();
+    formData.append("configuration", JSON.stringify(configuration));
+    fetcher.submit(formData, { method: "post", action: formAction });
   };
 
-  return (
-    <Modal open={open} onOpenChange={onClose}>
-      <ModalContent
-        size="xxxlarge"
-        className="w-fit min-w-[min(36rem,calc(100vw-2rem))] max-w-[calc(100vw-2rem)] sm:w-fit md:w-fit"
-      >
-        <ModalHeader>
-          <ModalTitle>
-            <Trans>Configuration Parameters</Trans>
-          </ModalTitle>
-        </ModalHeader>
-        <ModalBody className="overflow-hidden">
-          <div className="max-w-full overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent">
-            <Table className="w-auto min-w-max table-fixed">
-              <Thead>
-                <Tr>
-                  {columns.map((col) => (
-                    <Th
-                      key={col.key}
-                      className={cn(
-                        "px-3 text-xs whitespace-nowrap",
-                        getColumnWidthClass(col)
-                      )}
-                    >
-                      {col.label}
-                    </Th>
-                  ))}
-                  <Th className="px-3 w-10 min-w-10 max-w-10" />
-                </Tr>
-              </Thead>
-              <Tbody>
-                {rows.map((row, rowIndex) => (
-                  <Tr key={rowIndex}>
-                    {columns.map((col) => {
-                      const cellValue = row[col.key];
-                      const isInvalid = invalidCells.has(
-                        getCellKey(rowIndex, col.key)
-                      );
-                      const inputClassName = cn(
-                        "w-full rounded border border-border bg-background px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-ring",
-                        col.type === "quantity" &&
-                          "border-sky-300 bg-sky-50/30 dark:border-sky-700 dark:bg-sky-950/20",
-                        isInvalid &&
-                          "border-destructive focus:ring-destructive dark:border-destructive"
-                      );
+  const tableSection = (
+    <>
+      <div className="max-w-full overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent">
+        <Table className="w-auto min-w-max table-fixed">
+          <Thead>
+            <Tr>
+              {columns.map((col) => (
+                <Th
+                  key={col.key}
+                  className={cn(
+                    "px-3 text-xs whitespace-nowrap",
+                    getColumnWidthClass(col)
+                  )}
+                >
+                  {col.label}
+                </Th>
+              ))}
+              <Th className="px-3 w-10 min-w-10 max-w-10" />
+            </Tr>
+          </Thead>
+          <Tbody>
+            {rows.map((row, rowIndex) => (
+              <Tr key={rowIndex}>
+                {columns.map((col) => {
+                  const cellValue = row[col.key];
+                  const isInvalid = invalidCells.has(
+                    getCellKey(rowIndex, col.key)
+                  );
+                  const inputClassName = cn(
+                    "w-full rounded border border-border bg-background px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-ring",
+                    col.type === "quantity" &&
+                      "border-sky-300 bg-sky-50/30 dark:border-sky-700 dark:bg-sky-950/20",
+                    isInvalid &&
+                      "border-destructive focus:ring-destructive dark:border-destructive"
+                  );
 
-                      return (
-                        <Td
-                          key={col.key}
-                          className={cn(
-                            "px-3 py-1.5",
-                            getColumnWidthClass(col)
-                          )}
+                  return (
+                    <Td
+                      key={col.key}
+                      className={cn("px-3 py-1.5", getColumnWidthClass(col))}
+                    >
+                      {["quantity", "numeric"].includes(col.type) ? (
+                        <input
+                          type="number"
+                          min={col.type === "quantity" ? 0 : undefined}
+                          value={
+                            typeof cellValue === "boolean"
+                              ? ""
+                              : (cellValue ?? "")
+                          }
+                          onFocus={(e) => e.currentTarget.select()}
+                          onChange={(e) =>
+                            updateCell(
+                              rowIndex,
+                              col.key,
+                              normalizeNumberInputValue(e.target.value)
+                            )
+                          }
+                          onBlur={(e) => {
+                            if (e.currentTarget.value === "") {
+                              updateCell(rowIndex, col.key, 0);
+                            }
+                          }}
+                          className={cn(inputClassName, "min-w-[64px]")}
+                        />
+                      ) : col.type === "list" ? (
+                        <select
+                          value={String(cellValue ?? "")}
+                          onChange={(e) =>
+                            updateCell(rowIndex, col.key, e.target.value)
+                          }
+                          className={cn(inputClassName, "min-w-[80px]")}
                         >
-                          {["quantity", "numeric"].includes(col.type) ? (
-                            <input
-                              type="number"
-                              min={col.type === "quantity" ? 0 : undefined}
-                              value={
-                                typeof cellValue === "boolean"
-                                  ? ""
-                                  : (cellValue ?? "")
-                              }
-                              onFocus={(e) => e.currentTarget.select()}
-                              onChange={(e) =>
-                                updateCell(
-                                  rowIndex,
-                                  col.key,
-                                  normalizeNumberInputValue(e.target.value)
-                                )
-                              }
-                              onBlur={(e) => {
-                                if (e.currentTarget.value === "") {
-                                  updateCell(rowIndex, col.key, 0);
-                                }
-                              }}
-                              className={cn(inputClassName, "min-w-[64px]")}
-                            />
-                          ) : col.type === "list" ? (
-                            <select
-                              value={String(cellValue ?? "")}
-                              onChange={(e) =>
-                                updateCell(rowIndex, col.key, e.target.value)
-                              }
-                              className={cn(inputClassName, "min-w-[80px]")}
-                            >
-                              {col.options?.map((opt) => (
-                                <option key={opt} value={opt}>
-                                  {opt}
-                                </option>
-                              ))}
-                            </select>
-                          ) : col.type === "boolean" ? (
-                            <select
-                              value={String(cellValue ?? "")}
-                              onChange={(e) =>
-                                updateCell(rowIndex, col.key, e.target.value)
-                              }
-                              className={cn(inputClassName, "min-w-[80px]")}
-                            >
-                              <option value="" />
-                              <option value="true">{t`True`}</option>
-                              <option value="false">{t`False`}</option>
-                            </select>
-                          ) : col.type === "material" ? (
-                            <Combobox
-                              value={String(cellValue ?? "")}
-                              options={materialOptions}
-                              isClearable
-                              onChange={(value) =>
-                                updateCell(rowIndex, col.key, value)
-                              }
-                              className={cn(inputClassName, "min-w-[80px]")}
-                            />
-                          ) : (
-                            <input
-                              type="text"
-                              value={String(cellValue ?? "")}
-                              onChange={(e) =>
-                                updateCell(rowIndex, col.key, e.target.value)
-                              }
-                              className={cn(inputClassName, "min-w-[80px]")}
-                            />
-                          )}
-                        </Td>
-                      );
-                    })}
-                    <Td className="px-3 py-1.5 w-10 min-w-10 max-w-10">
-                      <IconButton
-                        icon={<LuTrash2 />}
-                        aria-label={t`Delete row`}
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => deleteRow(rowIndex)}
-                      />
+                          {col.options?.map((opt) => (
+                            <option key={opt} value={opt}>
+                              {opt}
+                            </option>
+                          ))}
+                        </select>
+                      ) : col.type === "boolean" ? (
+                        <select
+                          value={String(cellValue ?? "")}
+                          onChange={(e) =>
+                            updateCell(rowIndex, col.key, e.target.value)
+                          }
+                          className={cn(inputClassName, "min-w-[80px]")}
+                        >
+                          <option value="" />
+                          <option value="true">{t`True`}</option>
+                          <option value="false">{t`False`}</option>
+                        </select>
+                      ) : col.type === "material" ? (
+                        <Combobox
+                          value={String(cellValue ?? "")}
+                          options={materialOptions}
+                          isClearable
+                          onChange={(value) =>
+                            updateCell(rowIndex, col.key, value)
+                          }
+                          className={cn(inputClassName, "min-w-[80px]")}
+                        />
+                      ) : (
+                        <input
+                          type="text"
+                          value={String(cellValue ?? "")}
+                          onChange={(e) =>
+                            updateCell(rowIndex, col.key, e.target.value)
+                          }
+                          className={cn(inputClassName, "min-w-[80px]")}
+                        />
+                      )}
                     </Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          </div>
-          {validationError && (
-            <div className="text-sm text-destructive">{validationError}</div>
-          )}
-          <HStack className="mt-4 justify-between">
-            <Button
-              type="button"
-              variant="secondary"
-              size="sm"
-              onClick={addRow}
-              leftIcon={<LuPlus />}
-            >
-              <Trans>Add Row</Trans>
-            </Button>
-            <span className="text-sm text-muted-foreground">
-              <Trans>Total</Trans>:{" "}
-              <strong className="text-foreground">{total}</strong>
-            </span>
-          </HStack>
-        </ModalBody>
-        <ModalFooter>
-          <Button type="button" variant="ghost" onClick={onClose}>
-            <Trans>Cancel</Trans>
-          </Button>
-          <Button type="button" variant="primary" onClick={handleSubmit}>
-            <Trans>Confirm</Trans>
-          </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+                  );
+                })}
+                <Td className="px-3 py-1.5 w-10 min-w-10 max-w-10">
+                  <IconButton
+                    icon={<LuTrash2 />}
+                    aria-label={t`Delete row`}
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => deleteRow(rowIndex)}
+                  />
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      </div>
+      {validationError && (
+        <div className="text-sm text-destructive">{validationError}</div>
+      )}
+      <HStack className="mt-4 justify-between">
+        <Button
+          type="button"
+          variant="secondary"
+          size="sm"
+          onClick={addRow}
+          leftIcon={<LuPlus />}
+        >
+          <Trans>Add Row</Trans>
+        </Button>
+        <span className="text-sm text-muted-foreground">
+          <Trans>Total</Trans>:{" "}
+          <strong className="text-foreground">{total}</strong>
+        </span>
+      </HStack>
+    </>
+  );
+
+  const footer = (
+    <HStack className="justify-end gap-2">
+      <Button type="button" variant="ghost" onClick={onDismiss}>
+        <Trans>Cancel</Trans>
+      </Button>
+      <Button type="button" variant="primary" onClick={handleSubmit}>
+        <Trans>Confirm</Trans>
+      </Button>
+    </HStack>
+  );
+
+  return (
+      <div className="flex min-h-full flex-col">
+        <div className="shrink-0 border-b border-border px-6 py-4 pr-12">
+          <h3 className="text-base font-medium font-headline tracking-tight text-foreground">
+            <Trans>Configuration Parameters</Trans>
+          </h3>
+          {jobDisplayId ? (
+            <p className="mt-1 text-sm text-muted-foreground">{jobDisplayId}</p>
+          ) : null}
+        </div>
+        <div className="flex-1 overflow-hidden px-6 py-4">{tableSection}</div>
+        <div className="shrink-0 border-t border-border px-6 py-4">
+          {footer}
+        </div>
+      </div>
   );
 }
+
+export { ConfigParamsTableModal };
+export default ConfigParamsTableModal;

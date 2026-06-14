@@ -85,6 +85,10 @@ export const path = {
         ),
       jobBillOfProcessPreview: (jobId: string) =>
         generatePath(`${api}/production/jobs/${jobId}/bill-of-process`),
+      jobConfigTable: (jobId: string) =>
+        generatePath(`${api}/production/jobs/${jobId}/config-table`),
+      itemConfigTable: (itemId: string) =>
+        generatePath(`${api}/items/${itemId}/config-table`),
       jobs: `${api}/production/jobs`,
       kanban: (id: string) => generatePath(`${api}/kanban/${id}`),
       kanbanCollision: (id: string) =>

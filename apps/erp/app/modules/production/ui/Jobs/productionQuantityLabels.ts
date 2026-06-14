@@ -38,15 +38,11 @@ export function useProductionQuantityActivityMessage() {
   return (item: ProductionQuantityActivityItem) => {
     const qty = item.quantity;
     switch (item.type) {
-      case "Production":
-        return t`recorded ${qty} units of production`;
-      case "Rework":
-        return t`recorded ${qty} units of rework`;
       case "Scrap": {
         const reason = item.scrapReason?.name;
         return reason
-          ? t`recorded ${qty} units of scrap (${reason})`
-          : t`recorded ${qty} units of scrap`;
+          ? t`recorded ${qty} units (${reason})`
+          : t`recorded ${qty} units`;
       }
       default:
         return t`recorded ${qty} units`;

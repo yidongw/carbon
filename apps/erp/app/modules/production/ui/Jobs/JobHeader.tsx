@@ -222,7 +222,7 @@ const JobHeader = () => {
                 onClick={deleteJobModal.onOpen}
               >
                 <DropdownMenuIcon icon={<LuTrash />} />
-                Delete Job
+                <Trans>Delete Job</Trans>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

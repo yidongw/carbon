@@ -4,7 +4,9 @@ import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data, redirect, useLoaderData } from "react-router";
+import { getConfigurationParameters } from "~/modules/items";
 import {
+  getJob,
   getJobOperations,
   getProductionQuantity,
   productionQuantityValidator,
@@ -14,7 +16,7 @@ import ProductionQuantityForm from "~/modules/production/ui/Jobs/ProductionQuant
 import { getParams, path } from "~/utils/path";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
-  const { client } = await requirePermissions(request, {
+  const { client, companyId } = await requirePermissions(request, {
     view: "production"
   });
 
@@ -22,9 +24,10 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   if (!id) throw notFound("id not found");
   if (!jobId) throw notFound("jobId not found");
 
-  const [productionQuantity, jobOperations] = await Promise.all([
+  const [productionQuantity, jobOperations, job] = await Promise.all([
     getProductionQuantity(client, id),
-    getJobOperations(client, jobId)
+    getJobOperations(client, jobId),
+    getJob(client, jobId)
   ]);
 
   const operationOptions =
@@ -33,9 +36,17 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       value: operation.id
     })) ?? [];
 
+  const configurationParameters = job.data?.itemId
+    ? (await getConfigurationParameters(client, job.data.itemId, companyId))
+        .parameters
+    : [];
+
   return {
     productionQuantity: productionQuantity?.data ?? null,
-    operationOptions
+    operationOptions,
+    configurationParameters:
+      configurationParameters.length > 0 ? configurationParameters : null,
+    itemId: job.data?.itemId ?? null
   };
 }
 
@@ -60,16 +71,29 @@ export async function action({ request, params }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
-  const { id, ...d } = validation.data;
+  const { id, configuration: rawConfiguration, ...rest } = validation.data;
   if (!id) throw new Error("id not found");
 
-  if (d.type !== "Scrap") {
-    d.scrapReasonId = undefined;
+  if (rest.type !== "Scrap") {
+    rest.scrapReasonId = undefined;
+  }
+
+  let configuration: unknown;
+  if (rawConfiguration) {
+    try {
+      configuration =
+        typeof rawConfiguration === "string"
+          ? JSON.parse(rawConfiguration)
+          : rawConfiguration;
+    } catch (parseError) {
+      console.error(parseError);
+    }
   }
 
   const update = await upsertProductionQuantity(client, {
     id,
-    ...d,
+    ...rest,
+    configuration,
     companyId,
     updatedBy: userId
   });
@@ -98,7 +122,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 }
 
 export default function EditProductionQuantityRoute() {
-  const { productionQuantity, operationOptions } =
+  const { productionQuantity, operationOptions, configurationParameters, itemId } =
     useLoaderData<typeof loader>();
 
   const initialValues = {
@@ -108,7 +132,8 @@ export default function EditProductionQuantityRoute() {
     quantity: productionQuantity?.quantity ?? 0,
     scrapReasonId: productionQuantity?.scrapReasonId ?? "",
     notes: productionQuantity?.notes ?? "",
-    createdBy: productionQuantity?.createdBy ?? ""
+    createdBy: productionQuantity?.createdBy ?? "",
+    configuration: productionQuantity?.configuration ?? undefined
   };
 
   return (
@@ -116,6 +141,8 @@ export default function EditProductionQuantityRoute() {
       key={initialValues.id}
       initialValues={initialValues}
       operationOptions={operationOptions ?? []}
+      configurationParameters={configurationParameters}
+      itemId={itemId}
     />
   );
 }

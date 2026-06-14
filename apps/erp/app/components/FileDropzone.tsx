@@ -1,3 +1,4 @@
+import { Trans } from "@lingui/react/macro";
 import type React from "react";
 import { useDropzone } from "react-dropzone";
 import { LuCloudUpload } from "react-icons/lu";
@@ -29,9 +30,13 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
       <input {...getInputProps()} />
       <LuCloudUpload className="mx-auto h-12 w-12 text-muted-foreground" />
       <p className="mt-2 text-sm text-muted-foreground">
-        {multiple
-          ? "Drag and drop some files here, or click to select files"
-          : "Drag and drop a file here, or click to select a file"}
+        {multiple ? (
+          <Trans>
+            Drag and drop some files here, or click to select files
+          </Trans>
+        ) : (
+          <Trans>Drag and drop a file here, or click to select a file</Trans>
+        )}
       </p>
     </div>
   );

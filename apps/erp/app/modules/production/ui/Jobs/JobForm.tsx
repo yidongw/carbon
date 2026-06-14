@@ -13,11 +13,9 @@ import {
   TabsList,
   TabsTrigger,
   toast,
-  useDisclosure,
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import type { ComponentProps } from "react";
 import { useState } from "react";
 import { LuDiamond, LuLayers, LuTable } from "react-icons/lu";
 import type { z } from "zod";
@@ -34,7 +32,9 @@ import {
   SequenceOrCustomId,
   Submit
 } from "~/components/Form";
+import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions, useUser } from "~/hooks";
+import { isConfigTableOverlaySuccess } from "../../configTableOverlay";
 import type {
   ConfigurationParameter,
   ConfigurationParameterGroup
@@ -48,45 +48,9 @@ import {
   isJobLocked,
   jobValidator
 } from "../../production.models";
-import { ConfigParamsTableModal } from "./ConfigParamsTableModal";
 import { getDeadlineIcon } from "./Deadline";
-
-type QuantityFieldProps = ComponentProps<typeof NumberControlled> & {
-  configTableMode: "single" | "bulk";
-  hasConfigurationParameters: boolean;
-  onOpenConfigTable: (mode: "single" | "bulk") => void;
-};
-
-function QuantityWithConfigTable({
-  configTableMode,
-  hasConfigurationParameters,
-  onOpenConfigTable,
-  ...props
-}: QuantityFieldProps) {
-  const { t } = useLingui();
-
-  if (!hasConfigurationParameters) {
-    return <NumberControlled {...props} />;
-  }
-
-  return (
-    <div
-      role="button"
-      tabIndex={0}
-      aria-label={t`Configure quantities`}
-      className="cursor-pointer [&_input]:pointer-events-none [&_input]:cursor-pointer"
-      onClick={() => onOpenConfigTable(configTableMode)}
-      onKeyDown={(event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          onOpenConfigTable(configTableMode);
-        }
-      }}
-    >
-      <NumberControlled {...props} />
-    </div>
-  );
-}
+import { useDeadlineTypeLabel } from "./jobLabels";
+import { QuantityWithConfigTable } from "./QuantityWithConfigTable";
 
 type JobFormValues = z.infer<typeof jobValidator> & {
   description: string;
@@ -101,6 +65,7 @@ type JobFormProps = {
 const JobForm = ({ initialValues }: JobFormProps) => {
   const permissions = usePermissions();
   const { t } = useLingui();
+  const getDeadlineTypeLabel = useDeadlineTypeLabel();
   const { company } = useUser();
   const { carbon } = useCarbon();
   const [type, setType] = useState<MethodItemType>(
@@ -148,7 +113,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
     modelUploadId: initialValues.modelUploadId ?? null
   });
 
-  const configTableDisclosure = useDisclosure();
+  const { openOverlay } = useOverlay();
   const [configurationParameters, setConfigurationParameters] = useState<{
     parameters: ConfigurationParameter[];
     groups: ConfigurationParameterGroup[];
@@ -207,7 +172,6 @@ const JobForm = ({ initialValues }: JobFormProps) => {
         scrapQuantity: Math.ceil(total * prev.scrapPercentage)
       }));
     }
-    configTableDisclosure.onClose();
   };
 
   const onItemChange = async (itemId: string) => {
@@ -285,8 +249,35 @@ const JobForm = ({ initialValues }: JobFormProps) => {
   };
 
   const openConfigTable = (mode: "single" | "bulk") => {
+    if (!itemData.itemId) return;
     setConfigTableMode(mode);
-    configTableDisclosure.onOpen();
+
+    const onSuccess = (data: unknown) => {
+      if (!isConfigTableOverlaySuccess(data)) return;
+      handleConfigTableSubmit(
+        data.configuration.configTable,
+        data.total,
+        data.primaryKeys
+      );
+    };
+
+    if (isEditing && initialValues.id) {
+      openOverlay(overlay.to.jobConfigTable(initialValues.id), { onSuccess });
+      return;
+    }
+
+    openOverlay(
+      overlay.to.itemConfigTable(itemData.itemId, {
+        configuration:
+          configTableRows && configTablePrimaryKeys.length > 0
+            ? {
+                configTable: configTableRows,
+                configTablePrimaryKeys
+              }
+            : undefined
+      }),
+      { onSuccess }
+    );
   };
 
   const getQuantityAdornment = () =>
@@ -416,9 +407,8 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                         }
                         adornment={getQuantityAdornment()}
                         minValue={0}
-                        configTableMode="single"
                         hasConfigurationParameters={!!configurationParameters}
-                        onOpenConfigTable={openConfigTable}
+                        onOpenConfigTable={() => openConfigTable("single")}
                       />
                       <NumberControlled
                         name="scrapQuantity"
@@ -450,7 +440,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                           label: (
                             <div className="flex gap-1 items-center">
                               {getDeadlineIcon(d)}
-                              <span>{d}</span>
+                              <span>{getDeadlineTypeLabel(d)}</span>
                             </div>
                           )
                         }))}
@@ -565,9 +555,8 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                           isDisabled={configTableTotal > 0}
                           adornment={getQuantityAdornment()}
                           minValue={0}
-                          configTableMode="bulk"
                           hasConfigurationParameters={!!configurationParameters}
-                          onOpenConfigTable={openConfigTable}
+                          onOpenConfigTable={() => openConfigTable("bulk")}
                         />
 
                         <NumberControlled
@@ -604,7 +593,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                             label: (
                               <div className="flex gap-1 items-center">
                                 {getDeadlineIcon(d)}
-                                <span>{d}</span>
+                                <span>{getDeadlineTypeLabel(d)}</span>
                               </div>
                             )
                           }))}
@@ -631,15 +620,6 @@ const JobForm = ({ initialValues }: JobFormProps) => {
         </VStack>
       </Tabs>
 
-      {configTableDisclosure.isOpen && configurationParameters && (
-        <ConfigParamsTableModal
-          open
-          parameters={configurationParameters.parameters}
-          onClose={configTableDisclosure.onClose}
-          onSubmit={handleConfigTableSubmit}
-          initialRows={configTableRows ?? undefined}
-        />
-      )}
     </>
   );
 };

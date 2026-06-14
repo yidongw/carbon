@@ -24,7 +24,6 @@ import {
   TooltipContent,
   TooltipTrigger,
   toast,
-  useDisclosure,
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
@@ -32,7 +31,7 @@ import type { PostgrestResponse } from "@supabase/supabase-js";
 import { Suspense, useCallback, useEffect, useState } from "react";
 import { LuCopy, LuLink, LuTable, LuUnlink2 } from "react-icons/lu";
 import { RiProgress8Line } from "react-icons/ri";
-import { Await, useFetcher, useParams } from "react-router";
+import { Await, useFetcher, useParams, useRevalidator } from "react-router";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 import {
@@ -50,6 +49,7 @@ import {
   UnitOfMeasure
 } from "~/components/Form";
 import CustomFormInlineFields from "~/components/Form/CustomFormInlineFields";
+import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
 import type { TrackedEntity } from "~/modules/inventory/types";
 import type {
@@ -63,12 +63,13 @@ import { copyToClipboard } from "~/utils/string";
 import { computeJobConfigTableTotal } from "../../jobConfiguration";
 import { deadlineTypes, isJobLocked } from "../../production.models";
 import type { Job } from "../../types";
-import { ConfigParamsTableModal } from "./ConfigParamsTableModal";
 import { getDeadlineIcon } from "./Deadline";
+import { useDeadlineTypeLabel } from "./jobLabels";
 
 const JobProperties = () => {
   const { jobId } = useParams();
   const { t } = useLingui();
+  const getDeadlineTypeLabel = useDeadlineTypeLabel();
   if (!jobId) throw new Error("jobId not found");
 
   const routeData = useRouteData<{
@@ -82,15 +83,12 @@ const JobProperties = () => {
   const { carbon } = useCarbon();
   const { company } = useUser();
 
-  const configTableDisclosure = useDisclosure();
+  const { openOverlay } = useOverlay();
+  const { revalidate } = useRevalidator();
   const [configurationParameters, setConfigurationParameters] = useState<{
     parameters: ConfigurationParameter[];
     groups: ConfigurationParameterGroup[];
   } | null>(null);
-  const [configTableRows, setConfigTableRows] = useState<
-    Record<string, any>[] | null
-  >(null);
-  const [configTableTotal, setConfigTableTotal] = useState(0);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: suppressed due to migration
   useEffect(() => {
@@ -114,27 +112,6 @@ const JobProperties = () => {
           parameters: params,
           groups: groups.data ?? []
         });
-        const existingConfig = routeData?.job?.configuration as Record<
-          string,
-          any
-        > | null;
-        if (existingConfig?.configTable) {
-          const rows = existingConfig.configTable;
-          setConfigTableRows(rows);
-          const primaryParam = params.find(
-            (p: ConfigurationParameter) => p.dataType === "list"
-          );
-          const primaryKeys =
-            existingConfig.configTablePrimaryKeys ??
-            (primaryParam?.listOptions?.length
-              ? primaryParam.listOptions
-              : ["Quantities"]);
-          const total = computeJobConfigTableTotal({
-            configTable: rows,
-            configTablePrimaryKeys: primaryKeys
-          });
-          setConfigTableTotal(total);
-        }
       }
     });
   }, [routeData?.job?.itemId]);
@@ -243,38 +220,9 @@ const JobProperties = () => {
   const isLocked = isJobLocked(routeData?.job?.status);
   const isDisabled = !canUpdate || isLocked;
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: suppressed due to migration
-  const onUpdateConfiguration = useCallback(
-    (rows: Record<string, any>[], primaryKeys: string[]) => {
-      const formData = new FormData();
-      formData.append("ids", jobId);
-      formData.append("field", "configuration");
-      formData.append(
-        "value",
-        JSON.stringify({
-          configTable: rows,
-          configTablePrimaryKeys: primaryKeys
-        })
-      );
-      fetcher.submit(formData, {
-        method: "post",
-        action: path.to.bulkUpdateJob
-      });
-    },
-    [jobId]
+  const configTableTotal = computeJobConfigTableTotal(
+    routeData?.job?.configuration
   );
-
-  const handleConfigTableSubmit = (
-    rows: Record<string, any>[],
-    total: number,
-    primaryKeys: string[]
-  ) => {
-    setConfigTableRows(rows);
-    setConfigTableTotal(total);
-    onUpdateConfiguration(rows, primaryKeys);
-    configTableDisclosure.onClose();
-  };
-
   const configuredQuantity =
     configTableTotal > 0 ? configTableTotal : (routeData?.job?.quantity ?? 0);
 
@@ -489,7 +437,11 @@ const JobProperties = () => {
                   "text-emerald-500 hover:text-emerald-500"
               )}
               isDisabled={isDisabled}
-              onClick={() => configTableDisclosure.onOpen()}
+              onClick={() =>
+                openOverlay(overlay.to.jobConfigTable(jobId), {
+                  onCreated: revalidate
+                })
+              }
             />
           </HStack>
         </VStack>
@@ -597,14 +549,14 @@ const JobProperties = () => {
             return (
               <div className="flex gap-1 items-center">
                 {getDeadlineIcon(deadlineType)}
-                <span>{deadlineType}</span>
+                <span>{getDeadlineTypeLabel(deadlineType)}</span>
               </div>
             );
           }}
           isReadOnly={isDisabled}
           options={deadlineTypes.map((d) => ({
             value: d,
-            label: d
+            label: getDeadlineTypeLabel(d)
           }))}
           onChange={(value) => {
             onUpdate("deadlineType", value?.value ?? null);
