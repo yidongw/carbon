@@ -319,12 +319,14 @@ const SalesOrderSummary = ({
             </HStack>
             {(routeData?.invoiceSummary?.currencyMismatchCount ?? 0) > 0 && (
               <span className="text-xs text-muted-foreground">
-                Excludes {routeData?.invoiceSummary?.currencyMismatchCount}{" "}
-                invoice
-                {(routeData?.invoiceSummary?.currencyMismatchCount ?? 0) > 1
-                  ? "s"
-                  : ""}{" "}
-                in a different currency.
+                <Trans>
+                  Excludes {routeData?.invoiceSummary?.currencyMismatchCount}{" "}
+                  invoice
+                  {(routeData?.invoiceSummary?.currencyMismatchCount ?? 0) > 1
+                    ? "s"
+                    : ""}{" "}
+                  in a different currency.
+                </Trans>
               </span>
             )}
           </VStack>
@@ -476,7 +478,7 @@ function LineItems({
                         </Badge>
                         {(line.taxPercent ?? 0) > 0 ? (
                           <Badge variant="red">
-                            {percentFormatter.format(line.taxPercent ?? 0)} Tax
+                            <Trans>{percentFormatter.format(line.taxPercent ?? 0)} Tax</Trans>
                           </Badge>
                         ) : null}
                       </div>
@@ -556,11 +558,11 @@ function LineItems({
                 <Table>
                   <Tbody>
                     <Tr>
-                      <Td>Quantity</Td>
+                      <Td><Trans>Quantity</Trans></Td>
                       <Td className="text-right">{line.saleQuantity}</Td>
                     </Tr>
                     <Tr>
-                      <Td>Unit Price</Td>
+                      <Td><Trans>Unit Price</Trans></Td>
                       <Td className="text-right">
                         <MotionNumber
                           value={line.convertedUnitPrice ?? 0}
@@ -570,7 +572,7 @@ function LineItems({
                       </Td>
                     </Tr>
                     <Tr className="border-b border-border">
-                      <Td>Extended Price</Td>
+                      <Td><Trans>Extended Price</Trans></Td>
                       <Td className="text-right">
                         <MotionNumber
                           value={
@@ -585,7 +587,7 @@ function LineItems({
 
                     {Number(line.addOnCost ?? 0) > 0 && (
                       <Tr>
-                        <Td>Additional Charges</Td>
+                        <Td><Trans>Additional Charges</Trans></Td>
                         <Td className="text-right">
                           <MotionNumber
                             value={line.addOnCost ?? 0}
@@ -601,7 +603,7 @@ function LineItems({
 
                     {Number(line.nonTaxableAddOnCost ?? 0) > 0 && (
                       <Tr>
-                        <Td>Non-Taxable Charges</Td>
+                        <Td><Trans>Non-Taxable Charges</Trans></Td>
                         <Td className="text-right">
                           <MotionNumber
                             value={line.nonTaxableAddOnCost ?? 0}
@@ -616,7 +618,7 @@ function LineItems({
                     )}
 
                     <Tr key="subtotal">
-                      <Td>Subtotal</Td>
+                      <Td><Trans>Subtotal</Trans></Td>
                       <Td className="text-right">
                         <MotionNumber
                           value={
@@ -637,7 +639,7 @@ function LineItems({
 
                     <Tr key="tax" className="border-b border-border">
                       <Td>
-                        Tax ({percentFormatter.format(line.taxPercent ?? 0)})
+                        <Trans>Tax ({percentFormatter.format(line.taxPercent ?? 0)})</Trans>
                       </Td>
                       <Td className="text-right">
                         <MotionNumber
@@ -658,7 +660,7 @@ function LineItems({
                     </Tr>
 
                     <Tr key="total" className="font-bold">
-                      <Td>Total</Td>
+                      <Td><Trans>Total</Trans></Td>
                       <Td className="text-right">
                         <MotionNumber
                           value={

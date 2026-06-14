@@ -16,7 +16,7 @@ import {
   VStack
 } from "@carbon/react";
 import { getItemReadableId } from "@carbon/utils";
-import { Trans } from "@lingui/react/macro";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { useLocale } from "@react-aria/i18n";
 import { motion } from "framer-motion";
 import { useMemo, useState } from "react";
@@ -49,6 +49,7 @@ const LineItems = ({
   formatter: Intl.NumberFormat;
   locale: string;
 }) => {
+  const { t } = useLingui();
   const { company } = useUser();
   const accounts = useAccounts();
   const { id } = useParams();
@@ -99,7 +100,7 @@ const LineItems = ({
 
         const isGlAccount = line.supplierQuoteLineType === "G/L Account";
         const itemReadableId = isGlAccount
-          ? line.description || "Indirect Expense"
+          ? line.description || t`Indirect Expense`
           : getItemReadableId(items, line.itemId);
         if (!line || !prices || !line.id) {
           return null;
@@ -218,20 +219,20 @@ const LinePricingOptions = ({
       <Table>
         <Thead>
           <Tr>
-            <Th>Quantity</Th>
-            <Th>Unit Price</Th>
-            <Th>Shipping</Th>
-            <Th>Tax</Th>
-            <Th>Lead Time</Th>
+            <Th><Trans>Quantity</Trans></Th>
+            <Th><Trans>Unit Price</Trans></Th>
+            <Th><Trans>Shipping</Trans></Th>
+            <Th><Trans>Tax</Trans></Th>
+            <Th><Trans>Lead Time</Trans></Th>
 
-            <Th className="text-right">Total</Th>
+            <Th className="text-right"><Trans>Total</Trans></Th>
           </Tr>
         </Thead>
         <Tbody>
           {!Array.isArray(options) || options.length === 0 ? (
             <Tr>
               <Td colSpan={6} className="text-center py-8">
-                No pricing options found
+                <Trans>No pricing options found</Trans>
               </Td>
             </Tr>
           ) : (
@@ -336,7 +337,7 @@ const SupplierQuoteSummary = () => {
             <SupplierAvatar supplierId={routeData?.quote.supplierId ?? null} />
             {routeData?.quote?.expirationDate && (
               <span className="text-muted-foreground text-sm">
-                Expires {formatDate(routeData?.quote.expirationDate)}
+                <Trans>Expires {formatDate(routeData?.quote.expirationDate)}</Trans>
               </span>
             )}
           </div>

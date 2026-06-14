@@ -1,3 +1,4 @@
+import { useLingui } from "@lingui/react/macro";
 import type { CalendarDate, DateValue } from "@internationalized/date";
 import { createCalendar } from "@internationalized/date";
 import type { CalendarProps } from "@react-aria/calendar";
@@ -11,6 +12,7 @@ import { CalendarButton } from "./Button";
 import { CalendarGrid } from "./CalendarGrid";
 
 export const Calendar = (props: CalendarProps<DateValue>) => {
+  const { t } = useLingui();
   const { locale } = useLocale();
   const state = useCalendarState({
     ...props,
@@ -37,7 +39,7 @@ export const Calendar = (props: CalendarProps<DateValue>) => {
         <CalendarButton
           {...prevButtonProps}
           icon={<BiChevronLeft />}
-          aria-label="Previous"
+          aria-label={t`Previous`}
         />
 
         <Heading as="h2" size="h3" className="flex-1 text-center">
@@ -46,7 +48,7 @@ export const Calendar = (props: CalendarProps<DateValue>) => {
         <CalendarButton
           {...nextButtonProps}
           icon={<BiChevronRight />}
-          aria-label="Next"
+          aria-label={t`Next`}
         />
       </div>
       <CalendarGrid state={state} />

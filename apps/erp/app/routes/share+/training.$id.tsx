@@ -1,5 +1,6 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
 import type { JSONContent } from "@carbon/react";
+import { Trans, useLingui } from "@lingui/react/macro";
 import {
   Alert,
   AlertDescription,
@@ -236,6 +237,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 }
 
 export default function TrainingWizard() {
+  const { t } = useLingui();
   const { training, questions } = useLoaderData<typeof loader>();
   const actionData = useActionData<ActionData>();
   const submit = useSubmit();
@@ -369,7 +371,7 @@ export default function TrainingWizard() {
               </div>
               <div className="flex flex-col">
                 <span className="uppercase text-[10px] font-display font-bold text-muted-foreground">
-                  Training
+                  <Trans>Training</Trans>
                 </span>
                 <CardTitle className="text-2xl">{training.name}</CardTitle>
               </div>
@@ -406,7 +408,7 @@ export default function TrainingWizard() {
           onClick={handlePrevious}
           isDisabled={currentStep === 0}
         >
-          Previous
+          <Trans>Previous</Trans>
         </Button>
 
         {isLastStep && questions.length > 0 ? (
@@ -418,7 +420,7 @@ export default function TrainingWizard() {
             onClick={handleSubmit}
             isDisabled={!canProceed}
           >
-            Submit Training
+            <Trans>Submit Training</Trans>
           </Button>
         ) : questions.length === 0 ? (
           <Button
@@ -428,7 +430,7 @@ export default function TrainingWizard() {
             rightIcon={<LuCircleCheck />}
             onClick={handleSubmit}
           >
-            Complete Training
+            <Trans>Complete Training</Trans>
           </Button>
         ) : (
           <Button
@@ -439,14 +441,14 @@ export default function TrainingWizard() {
             onClick={handleNext}
             isDisabled={!canProceed}
           >
-            {isContentStep ? "Start Questions" : "Next Question"}
+            {isContentStep ? t`Start Questions` : t`Next Question`}
           </Button>
         )}
       </div>
 
       {!isContentStep && questions.length > 0 && (
         <div className="text-sm text-muted-foreground">
-          Question {currentQuestionIndex + 1} of {questions.length}
+          <Trans>Question {currentQuestionIndex + 1} of {questions.length}</Trans>
         </div>
       )}
     </VStack>
@@ -463,6 +465,7 @@ function ContentStep({
     estimatedDuration: string | null;
   };
 }) {
+  const { t } = useLingui();
   const hasContent =
     training.content &&
     typeof training.content === "object" &&
@@ -485,7 +488,7 @@ function ContentStep({
 
       {training.estimatedDuration && (
         <div className="text-sm text-muted-foreground">
-          Estimated duration: {training.estimatedDuration}
+          <Trans>Estimated duration: {training.estimatedDuration}</Trans>
         </div>
       )}
 
@@ -498,7 +501,7 @@ function ContentStep({
         />
       ) : (
         <p className="text-muted-foreground italic">
-          No training content available. Please proceed to the questions.
+          <Trans>No training content available. Please proceed to the questions.</Trans>
         </p>
       )}
     </VStack>
@@ -522,6 +525,7 @@ function QuestionStep({
     value: string | string[] | number | boolean | Record<string, string>
   ) => void;
 }) {
+  const { t } = useLingui();
   const renderQuestionInput = () => {
     switch (question.type) {
       case "MultipleChoice":
@@ -556,11 +560,11 @@ function QuestionStep({
           >
             <label className="flex items-center gap-3 p-3 border rounded-md cursor-pointer hover:bg-accent">
               <RadioGroupItem value="true" id="true" />
-              <span>True</span>
+              <span><Trans>True</Trans></span>
             </label>
             <label className="flex items-center gap-3 p-3 border rounded-md cursor-pointer hover:bg-accent">
               <RadioGroupItem value="false" id="false" />
-              <span>False</span>
+              <span><Trans>False</Trans></span>
             </label>
           </RadioGroup>
         );
@@ -620,7 +624,7 @@ function QuestionStep({
                     }}
                   >
                     <SelectTrigger className="flex-1">
-                      <SelectValue placeholder="Select a match..." />
+                      <SelectValue placeholder={t`Select a match...`} />
                     </SelectTrigger>
                     <SelectContent>
                       {rightOptions.map((option: string, optIndex: number) => (
@@ -650,18 +654,18 @@ function QuestionStep({
               }
               className="max-w-xs"
             >
-              <NumberInput placeholder="Enter your answer..." />
+              <NumberInput placeholder={t`Enter your answer...`} />
             </NumberField>
             {(question.tolerance ?? 0) > 0 && (
               <p className="text-sm text-muted-foreground">
-                Tolerance: +/- {question.tolerance}
+                <Trans>Tolerance: +/- {question.tolerance}</Trans>
               </p>
             )}
           </div>
         );
 
       default:
-        return <p>Unknown question type</p>;
+        return <p><Trans>Unknown question type</Trans></p>;
     }
   };
 
@@ -669,7 +673,7 @@ function QuestionStep({
     <VStack spacing={4} className="w-full">
       <div className="flex flex-col gap-2">
         <h3 className="text-lg font-display font-bold">
-          Question {questionIndex + 1} of {totalQuestions}
+          <Trans>Question {questionIndex + 1} of {totalQuestions}</Trans>
         </h3>
         <p className="text-base">{question.question}</p>
       </div>
@@ -692,6 +696,7 @@ function ResultsView({
   onRetry: () => void;
   audioRef: React.RefObject<HTMLAudioElement>;
 }) {
+  const { t } = useLingui();
   const scorePercent = Math.round(actionData.score * 100);
 
   return (
@@ -714,7 +719,7 @@ function ResultsView({
             </div>
             <div className="flex flex-col">
               <span className="uppercase text-[10px] font-display font-bold text-muted-foreground">
-                Training Complete
+                <Trans>Training Complete</Trans>
               </span>
               <CardTitle className="text-2xl">{training.name}</CardTitle>
             </div>
@@ -729,7 +734,7 @@ function ResultsView({
                   actionData.passed ? "text-emerald-500" : "text-red-500"
                 )}
               >
-                {actionData.passed ? "Passed" : "Failed"}
+                {actionData.passed ? t`Passed` : t`Failed`}
               </span>
               <div
                 className={cn(
@@ -740,11 +745,10 @@ function ResultsView({
                 {scorePercent}%
               </div>
               <p className="text-sm text-muted-foreground">
-                {actionData.correctAnswers} of {actionData.totalQuestions}{" "}
-                correct
+                <Trans>{actionData.correctAnswers} of {actionData.totalQuestions} correct</Trans>
               </p>
               <p className="text-sm text-muted-foreground">
-                (Passing score: {Math.round(PASSING_THRESHOLD * 100)}%)
+                <Trans>(Passing score: {Math.round(PASSING_THRESHOLD * 100)}%)</Trans>
               </p>
             </div>
 
@@ -752,23 +756,19 @@ function ResultsView({
               {actionData.passed ? (
                 <>
                   <p className="text-base text-muted-foreground">
-                    Congratulations! You have successfully completed this
-                    training. Your completion has been recorded.
+                    <Trans>Congratulations! You have successfully completed this training. Your completion has been recorded.</Trans>
                   </p>
                   <Alert variant="success">
                     <LuCircleCheck className="h-4 w-4" />
-                    <AlertTitle>Training Complete</AlertTitle>
+                    <AlertTitle><Trans>Training Complete</Trans></AlertTitle>
                     <AlertDescription>
-                      This training has been marked as completed for your
-                      records.
+                      <Trans>This training has been marked as completed for your records.</Trans>
                     </AlertDescription>
                   </Alert>
                 </>
               ) : (
                 <p className="text-base text-muted-foreground">
-                  Unfortunately, you did not pass this training. You need at
-                  least {Math.round(PASSING_THRESHOLD * 100)}% to pass. Please
-                  review the material and try again.
+                  <Trans>Unfortunately, you did not pass this training. You need at least {Math.round(PASSING_THRESHOLD * 100)}% to pass. Please review the material and try again.</Trans>
                 </p>
               )}
 
@@ -782,7 +782,7 @@ function ResultsView({
                     rightIcon={<LuRefreshCcw />}
                     className="flex-1"
                   >
-                    Retry Training
+                    <Trans>Retry Training</Trans>
                   </Button>
                 )}
                 <Button
@@ -793,7 +793,7 @@ function ResultsView({
                   leftIcon={<LuHouse />}
                   className="flex-1"
                 >
-                  <Link to="/">Return Home</Link>
+                  <Link to="/"><Trans>Return Home</Trans></Link>
                 </Button>
               </HStack>
             </div>
@@ -804,7 +804,7 @@ function ResultsView({
       {questions.length > 0 && (
         <Card className="w-full">
           <CardHeader>
-            <CardTitle>Question Review</CardTitle>
+            <CardTitle><Trans>Question Review</Trans></CardTitle>
           </CardHeader>
           <CardContent>
             <VStack spacing={4}>
@@ -837,23 +837,23 @@ function ResultsView({
                         </p>
                         <p className="text-sm mt-2">
                           <span className="text-muted-foreground">
-                            Your answer:{" "}
+                            <Trans>Your answer:</Trans>{" "}
                           </span>
                           <span
                             className={
                               isCorrect ? "text-emerald-600" : "text-red-600"
                             }
                           >
-                            {formatAnswer(userAnswer?.value, question)}
+                            {formatAnswer(userAnswer?.value, question, t)}
                           </span>
                         </p>
                         {!isCorrect && (
                           <p className="text-sm mt-1">
                             <span className="text-muted-foreground">
-                              Correct answer:{" "}
+                              <Trans>Correct answer:</Trans>{" "}
                             </span>
                             <span className="text-emerald-600">
-                              {formatCorrectAnswer(question)}
+                              {formatCorrectAnswer(question, t)}
                             </span>
                           </p>
                         )}
@@ -888,15 +888,16 @@ function ResultsView({
 
 function formatAnswer(
   value: UserAnswer["value"] | undefined,
-  question: TrainingQuestion
+  question: TrainingQuestion,
+  t: ReturnType<typeof useLingui>["t"]
 ): string {
   if (value === undefined || value === "" || value === null) {
-    return "Not answered";
+    return t`Not answered`;
   }
 
   switch (question.type) {
     case "TrueFalse":
-      return value === "true" ? "True" : "False";
+      return value === "true" ? t`True` : t`False`;
     case "MultipleAnswers":
       return Array.isArray(value) ? value.join(", ") : String(value);
     case "MatchingPairs":
@@ -911,12 +912,15 @@ function formatAnswer(
   }
 }
 
-function formatCorrectAnswer(question: TrainingQuestion): string {
+function formatCorrectAnswer(
+  question: TrainingQuestion,
+  t: ReturnType<typeof useLingui>["t"]
+): string {
   switch (question.type) {
     case "MultipleChoice":
       return question.correctAnswers?.[0] ?? "";
     case "TrueFalse":
-      return question.correctBoolean ? "True" : "False";
+      return question.correctBoolean ? t`True` : t`False`;
     case "MultipleAnswers":
       return question.correctAnswers?.join(", ") ?? "";
     case "MatchingPairs":

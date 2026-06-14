@@ -344,7 +344,7 @@ const GroupedCreatableCombobox = forwardRef<
         {isClearable && !isReadOnly && value && (
           <IconButton
             variant={isInlinePreview ? "secondary" : "ghost"}
-            aria-label="Clear"
+            aria-label={t`Clear`}
             icon={<LuX />}
             onClick={() => onChange?.("")}
             size={isInlinePreview ? "sm" : size}
