@@ -55,7 +55,7 @@ export function PickupModal({
             quantity: 0
           }}
           fetcher={fetcher}
-          onSubmit={onClose}
+          onSuccess={onClose}
         >
           <ModalHeader>
             <ModalTitle>
