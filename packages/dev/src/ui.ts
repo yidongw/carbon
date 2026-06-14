@@ -1,6 +1,6 @@
 import Table from "cli-table3";
 import pc from "picocolors";
-import { type AppId, TLD } from "./constants.js";
+import type { AppId } from "./constants.js";
 import type { Container } from "./services/compose.js";
 import {
   PORT_NAMES,
