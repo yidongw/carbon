@@ -98,12 +98,34 @@ double_confirm_changes = true
 enable_confirmations = false
 
 [auth.email.template.invite]
-subject = "You have been invited to Carbon"
+subject = "You have been invited to Jilio"
 content_path = "./supabase/templates/invite.html"
 
 [auth.email.template.magic_link]
-subject = "Your Carbon Magic Link"
+subject = "Your Jilio Magic Link"
 content_path = "./supabase/templates/magic-link.html"
+
+[auth.email.smtp]
+enabled = true
+host = "smtp.resend.com"
+port = 465
+user = "resend"
+pass = "env(RESEND_API_KEY)"
+admin_email = "no-reply@jilio.xyz"
+sender_name = "Jilio"
+
+[remotes.dev]
+project_id = "otlrpaixphrtlwqhvdpl"
+
+[remotes.staging]
+project_id = "vsfkrbofqvssvmdwpfwr"
+
+[remotes.staging.auth]
+site_url = "https://staging-app.jilio.xyz"
+additional_redirect_urls = ["https://staging-app.jilio.xyz", "https://staging-app.jilio.xyz/**", "https://*.vercel.app", "https://*.vercel.app/*"]
+
+[remotes.prod]
+project_id = "cfhsxrmpzwzvjzwcimod"
 
 
 [auth.external.google]
