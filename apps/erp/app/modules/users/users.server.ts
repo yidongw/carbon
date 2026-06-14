@@ -664,20 +664,22 @@ export async function getUserClaims(userId: string, companyId: string) {
         userId,
         companyId
       );
-      if (rawClaims.error || rawClaims.data === null) {
+      if (rawClaims.error) {
         console.error(rawClaims);
         throw new Error("Failed to get claims");
       }
 
       // convert rawClaims to permissions
-      claims = makePermissionsFromClaims(rawClaims.data as Json[]);
+      claims = rawClaims.data === null
+        ? { permissions: {}, role: null }
+        : makePermissionsFromClaims(rawClaims.data as Json[]);
+
+      if (!claims) {
+        claims = { permissions: {}, role: null };
+      }
 
       // store claims in redis
       await redis.set(getPermissionCacheKey(userId), JSON.stringify(claims));
-
-      if (!claims) {
-        throw new Error("Failed to get claims");
-      }
     }
 
     return claims;
