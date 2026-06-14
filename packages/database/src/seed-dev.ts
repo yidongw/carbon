@@ -181,25 +181,27 @@ async function seedDev() {
       userId
     ]);
 
-    // Step 3: Begin transaction for all database operations
+    // Step 3: Create + seed the company in a single transaction
     console.log("3. Starting database transaction...");
     await client.query("BEGIN");
 
     try {
-      // Generate company ID using xid() function
-      console.log("4. Generating company ID...");
-      const xidResult = await client.query("SELECT xid() as id");
-      const companyId = xidResult.rows[0].id as string;
+      // Create the company. No companyGroupId -> seed_company() creates the group.
+      console.log("4. Creating company...");
+      const companyResult = await client.query(
+        `INSERT INTO company (name, "baseCurrencyCode") VALUES ($1, 'USD') RETURNING id`,
+        [DEV_COMPANY_NAME]
+      );
+      const companyId = companyResult.rows[0].id as string;
       console.log(`   Company ID: ${companyId}`);
 
-      // Create company group
-      console.log("5. Creating company group...");
-      const companyGroupResult = await client.query(
-        `INSERT INTO "companyGroup" (name, "createdBy") VALUES ($1, $2) RETURNING id`,
-        [DEV_COMPANY_NAME, userId]
-      );
-      const companyGroupId = companyGroupResult.rows[0].id as string;
-      console.log(`   Company Group ID: ${companyGroupId}`);
+      // Seed all default data through the same RPC the app uses on onboarding.
+      console.log("5. Seeding company via seed_company() RPC...");
+      await client.query(`SELECT seed_company($1, $2, NULL, $3::jsonb)`, [
+        companyId,
+        userId,
+        JSON.stringify(companySeedData)
+      ]);
 
       // Create the company
       console.log("6. Creating company...");
@@ -549,7 +551,7 @@ async function seedDev() {
       );
       const locationId = locationResult.rows[0].id;
 
-      // Link employee to location (employeeJob)
+      // Link the employee to the location (employeeJob)
       await client.query(
         `INSERT INTO "employeeJob" (id, "companyId", "locationId") VALUES ($1, $2, $3)`,
         [userId, companyId, locationId]
