@@ -68767,7 +68767,11 @@ export type Database = {
         | "Other Expense"
         | "Tax"
         | "Investments"
-      approvalDocumentType: "purchaseOrder" | "qualityDocument" | "supplier"
+      approvalDocumentType:
+        | "purchaseOrder"
+        | "qualityDocument"
+        | "supplier"
+        | "productionQuantityReport"
       approvalStatus: "Pending" | "Approved" | "Rejected" | "Cancelled"
       configurationParameterDataType:
         | "text"
@@ -70038,7 +70042,12 @@ export const Constants = {
         "Tax",
         "Investments",
       ],
-      approvalDocumentType: ["purchaseOrder", "qualityDocument", "supplier"],
+      approvalDocumentType: [
+        "purchaseOrder",
+        "qualityDocument",
+        "supplier",
+        "productionQuantityReport"
+      ],
       approvalStatus: ["Pending", "Approved", "Rejected", "Cancelled"],
       configurationParameterDataType: [
         "text",

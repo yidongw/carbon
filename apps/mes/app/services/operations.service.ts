@@ -913,6 +913,8 @@ export async function insertProductionQuantity(
     companyId: string;
     createdBy: string;
     employeeId: string;
+    paymentYear?: number | null;
+    paymentMonth?: number | null;
   }
 ) {
   return client

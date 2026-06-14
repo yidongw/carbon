@@ -16,12 +16,22 @@ export function completeOverlayConfirm({
   onClose: (id: string) => void;
   i18n: I18n;
 }) {
-  if (
-    typeof data !== "object" ||
-    data === null ||
-    !("ok" in data) ||
-    data.ok !== true
-  ) {
+  if (typeof data !== "object" || data === null) {
+    toast.error(i18n._(msg`Update failed`));
+    return;
+  }
+
+  if ("ok" in data && data.ok === false) {
+    const message =
+      "error" in data && typeof data.error === "string" && data.error
+        ? data.error
+        : i18n._(msg`Update failed`);
+    toast.error(message);
+    return;
+  }
+
+  if (!("ok" in data) || data.ok !== true) {
+    toast.error(i18n._(msg`Update failed`));
     return;
   }
 

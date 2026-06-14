@@ -1,4 +1,5 @@
 import { assertIsPost, error, notFound } from "@carbon/auth";
+import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data } from "react-router";
@@ -7,7 +8,9 @@ import {
   createProductionQuantityReportValidator,
   getOperationQuantitySummary,
   isJobLocked,
-  listProductionQuantityReportsForOperation
+  listProductionQuantityReportsForOperation,
+  resolveProductionQuantityCanAutoApprove,
+  syncProductionQuantityReportApproval
 } from "~/modules/production";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 
@@ -72,6 +75,18 @@ export async function action({ request, params }: ActionFunctionArgs) {
     create: "production"
   });
 
+  const serviceRole = getCarbonServiceRole();
+  const canAutoApprove = await resolveProductionQuantityCanAutoApprove(
+    serviceRole,
+    companyId,
+    userId,
+    0
+  );
+
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth() + 1;
+
   const { operationId } = params;
   if (!operationId) throw notFound("operationId not found");
 
@@ -116,7 +131,9 @@ export async function action({ request, params }: ActionFunctionArgs) {
     userId,
     employeeId: employeeId ?? userId,
     notes: notes ?? null,
-    lines
+    lines,
+    paymentYear: canAutoApprove ? currentYear : null,
+    paymentMonth: canAutoApprove ? currentMonth : null
   });
 
   if (result.error) {
@@ -124,6 +141,17 @@ export async function action({ request, params }: ActionFunctionArgs) {
       { error: result.error.message ?? "Failed to create report" },
       { status: 500 }
     );
+  }
+
+  if (result.data?.id) {
+    await syncProductionQuantityReportApproval(serviceRole, {
+      reportId: result.data.id,
+      companyId,
+      userId,
+      canAutoApprove,
+      paymentYear: canAutoApprove ? currentYear : null,
+      paymentMonth: canAutoApprove ? currentMonth : null
+    });
   }
 
   return { report: result.data };

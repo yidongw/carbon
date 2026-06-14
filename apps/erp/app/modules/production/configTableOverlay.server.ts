@@ -1,7 +1,19 @@
+import type { Json } from "@carbon/database";
 import { buildConfigTableActionResponse } from "./configTableOverlay";
 import type { ConfigTableReferenceContext } from "./configParamsTableColumns";
+import { computeJobConfigTableTotal } from "./jobConfiguration";
 
 export { buildConfigTableActionResponse };
+
+/** Persist configuration and keep `job.quantity` in sync with the config table total. */
+export function jobConfigurationUpdateFields(
+  configuration: Record<string, unknown>
+): { configuration: Json; quantity: number } {
+  return {
+    configuration: configuration as Json,
+    quantity: computeJobConfigTableTotal(configuration)
+  };
+}
 
 export function parseConfigurationFormValue(
   raw: FormDataEntryValue | null

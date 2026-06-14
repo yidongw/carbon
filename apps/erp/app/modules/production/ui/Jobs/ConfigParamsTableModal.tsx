@@ -146,11 +146,22 @@ function normalizeRow(row: Row, columns: Column[]): Row {
     columns.map((col) => {
       const value = row[col.key];
 
-      if (!["quantity", "numeric"].includes(col.type)) {
-        return [col.key, value ?? ""];
+      if (col.type === "quantity") {
+        if (value === undefined || value === null || value === "") {
+          return [col.key, 0];
+        }
+        const parsed = Number(value);
+        return [col.key, Number.isFinite(parsed) ? parsed : 0];
       }
 
-      return [col.key, normalizeNumberInputValue(String(value ?? ""))];
+      if (col.type === "numeric") {
+        if (value === undefined || value === null || value === "") {
+          return [col.key, ""];
+        }
+        return [col.key, normalizeNumberInputValue(String(value))];
+      }
+
+      return [col.key, value ?? ""];
     })
   );
 }
@@ -238,12 +249,11 @@ function validateCell(
   const stringValue = String(value ?? "").trim();
 
   switch (column.type) {
-    case "quantity":
-      return (
-        stringValue !== "" &&
-        Number.isFinite(Number(value)) &&
-        Number(value) >= 0
-      );
+    case "quantity": {
+      if (value === "" || value === undefined || value === null) return true;
+      const num = Number(value);
+      return Number.isFinite(num) && num >= 0;
+    }
     case "numeric":
       return stringValue !== "" && Number.isFinite(Number(value));
     case "boolean":
@@ -589,7 +599,13 @@ function ConfigParamsTableModal({
       <Button type="button" variant="ghost" onClick={onDismiss}>
         <Trans>Cancel</Trans>
       </Button>
-      <Button type="button" variant="primary" onClick={handleSubmit}>
+      <Button
+        type="button"
+        variant="primary"
+        isLoading={fetcher.state !== "idle"}
+        isDisabled={fetcher.state !== "idle"}
+        onClick={handleSubmit}
+      >
         <Trans>Confirm</Trans>
       </Button>
     </HStack>

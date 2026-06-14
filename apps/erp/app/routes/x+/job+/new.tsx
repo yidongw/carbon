@@ -8,6 +8,15 @@ import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
 import { useUrlParams, useUser } from "~/hooks";
 import { insertJob, jobValidator } from "~/modules/production";
+import { getDefaultStorageUnitForJob } from "~/modules/inventory";
+import { getItemReplenishment } from "~/modules/items";
+import {
+  calculateJobPriority,
+  jobValidator,
+  upsertJob,
+  upsertJobMethod
+} from "~/modules/production";
+import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
 import { JobForm } from "~/modules/production/ui/Jobs";
 import type { MethodItemType } from "~/modules/shared";
 import { setCustomFields } from "~/utils/form";
@@ -48,6 +57,77 @@ export async function action({ request }: ActionFunctionArgs) {
   const result = await insertJob(getCarbonServiceRole(), {
     ...data,
     jobId: data.jobId || undefined,
+  // Fetch manufacturing data for lead time and scrap percentage
+  const [nextSequenceResult, manufacturing] = await Promise.all([
+    useNextSequence
+      ? getNextSequence(client, "job", companyId)
+      : Promise.resolve({ data: null, error: null }),
+    getItemReplenishment(client, validation.data.itemId, companyId)
+  ]);
+
+  if (useNextSequence) {
+    if (nextSequenceResult.error) {
+      throw redirect(
+        path.to.newJob,
+        await flash(
+          request,
+          error(nextSequenceResult.error, "Failed to get next sequence")
+        )
+      );
+    }
+    // @ts-expect-error TS2322 - TODO: fix type
+    jobId = nextSequenceResult.data;
+  }
+
+  const leadTime = manufacturing.data?.leadTime ?? 7;
+
+  if (!jobId) throw new Error("jobId is not defined");
+  const { id: _id, ...d } = validation.data;
+
+  // Calculate scrap quantity from the item's scrap percentage if not set
+  const scrapPercentage = manufacturing.data?.scrapPercentage ?? 0;
+  const calculatedScrapQuantity =
+    scrapPercentage > 0
+      ? Math.ceil(validation.data.quantity * scrapPercentage)
+      : 0;
+  // Use the form value if set, otherwise use calculated value
+  const scrapQuantity =
+    d.scrapQuantity && d.scrapQuantity > 0
+      ? d.scrapQuantity
+      : calculatedScrapQuantity;
+
+  let configuration = undefined;
+  let quantity = d.quantity;
+  if (d.configuration) {
+    try {
+      const parsed = JSON.parse(d.configuration) as Record<string, unknown>;
+      const fields = jobConfigurationUpdateFields(parsed);
+      configuration = fields.configuration;
+      quantity = fields.quantity;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const storageUnitId = await getDefaultStorageUnitForJob(
+    client,
+    validation.data.itemId,
+    validation.data.locationId,
+    companyId
+  );
+
+  // Calculate priority based on due date and deadline type
+  const priority = await calculateJobPriority(client, {
+    dueDate: d.dueDate ?? null,
+    deadlineType: d.deadlineType,
+    companyId,
+    locationId: validation.data.locationId
+  });
+
+  const createJob = await upsertJob(client, {
+    ...d,
+    jobId,
+    quantity,
     configuration,
     companyId,
     createdBy: userId,

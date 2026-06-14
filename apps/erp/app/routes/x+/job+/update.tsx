@@ -8,6 +8,7 @@ import {
   recalculateJobRequirements,
   upsertJobMethod
 } from "~/modules/production";
+import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
 import { requireUnlockedBulk } from "~/utils/lockedGuard.server";
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -238,16 +239,42 @@ export async function action({ request }: ActionFunctionArgs) {
       }
 
       return quantityUpdate;
-    case "configuration":
-      return await client
+    case "configuration": {
+      const configuration = value ? JSON.parse(value) : null;
+      const configurationUpdate = await client
         .from("job")
         .update({
-          configuration: value ? JSON.parse(value) : null,
+          ...(configuration && typeof configuration === "object"
+            ? jobConfigurationUpdateFields(
+                configuration as Record<string, unknown>
+              )
+            : { configuration: null }),
           updatedBy: userId,
           updatedAt: new Date().toISOString()
         })
         .in("id", ids as string[])
         .eq("companyId", companyId);
+
+      if (configurationUpdate.error) {
+        return configurationUpdate;
+      }
+
+      if (configuration && typeof configuration === "object") {
+        for await (const id of ids) {
+          const recalculate = await recalculateJobRequirements(serviceRole, {
+            id: id as string,
+            companyId,
+            userId
+          });
+          if (recalculate.error) {
+            console.error(recalculate.error);
+            return recalculate;
+          }
+        }
+      }
+
+      return configurationUpdate;
+    }
     case "salesOrderId":
     case "salesOrderLineId":
       if (!value) {

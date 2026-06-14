@@ -27,7 +27,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const [attributeCategories, employeeTypes, people] = await Promise.all([
     getAttributeCategories(client, companyId),
     getEmployeeTypes(client, companyId),
-    getPeople(client, companyId, { search, limit, offset, sorts, filters })
+    getPeople(client, companyId, {
+      search,
+      limit,
+      offset,
+      sorts,
+      filters
+    })
   ]);
   if (attributeCategories.error) {
     throw redirect(

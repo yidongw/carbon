@@ -80,6 +80,20 @@ export async function action({ request }: ActionFunctionArgs) {
   assertIsPost(request);
   const { client, companyId, userId } = await requirePermissions(request, {});
 
+  // Managers with production_update auto-approve their own entries by setting
+  // the payment period immediately. Employees leave it null (pending approval).
+  let canAutoApprove = false;
+  try {
+    await requirePermissions(request, { update: "production" });
+    canAutoApprove = true;
+  } catch {
+    canAutoApprove = false;
+  }
+
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth() + 1;
+
   const formData = await request.formData();
   const validation = await validator(nonScrapQuantityValidator).validate(
     formData
@@ -91,7 +105,6 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const serviceRole = await getCarbonServiceRole();
 
-  // Get current job operation and production quantities to check if operation will be finished
   const [jobOperation, productionQuantities] = await Promise.all([
     serviceRole
       .from("jobOperation")
@@ -133,6 +146,9 @@ export async function action({ request }: ActionFunctionArgs) {
       body: {
         type: "jobOperationSerialComplete",
         ...validation.data,
+        employeeId: userId,
+        paymentYear: canAutoApprove ? currentYear : null,
+        paymentMonth: canAutoApprove ? currentMonth : null,
         companyId,
         userId
       }
@@ -205,6 +221,9 @@ export async function action({ request }: ActionFunctionArgs) {
       body: {
         type: "jobOperationBatchComplete",
         ...validation.data,
+        employeeId: userId,
+        paymentYear: canAutoApprove ? currentYear : null,
+        paymentMonth: canAutoApprove ? currentMonth : null,
         companyId,
         userId
       }
@@ -263,9 +282,11 @@ export async function action({ request }: ActionFunctionArgs) {
     const { trackedEntityId, trackingType, ...d } = validation.data;
     const insertProduction = await insertProductionQuantity(client, {
       ...d,
+      employeeId: userId,
+      paymentYear: canAutoApprove ? currentYear : null,
+      paymentMonth: canAutoApprove ? currentMonth : null,
       companyId,
-      createdBy: userId,
-      employeeId: userId
+      createdBy: userId
     });
 
     if (insertProduction.error) {

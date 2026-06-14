@@ -28,7 +28,7 @@ import {
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { PostgrestResponse } from "@supabase/supabase-js";
-import { Suspense, useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { LuCopy, LuLink, LuTable, LuUnlink2 } from "react-icons/lu";
 import { RiProgress8Line } from "react-icons/ri";
 import { Await, useFetcher, useParams, useRevalidator } from "react-router";
@@ -60,7 +60,6 @@ import type { MethodItemType } from "~/modules/shared";
 import type { action } from "~/routes/x+/items+/update";
 import { path } from "~/utils/path";
 import { copyToClipboard } from "~/utils/string";
-import { computeJobConfigTableTotal } from "../../jobConfiguration";
 import { deadlineTypes, isJobLocked } from "../../production.models";
 import type { Job } from "../../types";
 import { getDeadlineIcon } from "./Deadline";
@@ -117,11 +116,21 @@ const JobProperties = () => {
   }, [routeData?.job?.itemId]);
 
   const fetcher = useFetcher<typeof action>();
+  const prevFetcherState = useRef(fetcher.state);
   useEffect(() => {
+    const finishedSubmitting =
+      prevFetcherState.current !== "idle" && fetcher.state === "idle";
+    prevFetcherState.current = fetcher.state;
+
+    if (!finishedSubmitting || !fetcher.data) return;
+
     if (fetcher.data?.error) {
       toast.error(fetcher.data.error.message);
+      return;
     }
-  }, [fetcher.data]);
+
+    revalidate();
+  }, [fetcher.state, fetcher.data, revalidate]);
 
   const [type, setType] = useState<MethodItemType>(
     (routeData?.job?.itemType ?? "Part") as MethodItemType
@@ -220,11 +229,7 @@ const JobProperties = () => {
   const isLocked = isJobLocked(routeData?.job?.status);
   const isDisabled = !canUpdate || isLocked;
 
-  const configTableTotal = computeJobConfigTableTotal(
-    routeData?.job?.configuration
-  );
-  const configuredQuantity =
-    configTableTotal > 0 ? configTableTotal : (routeData?.job?.quantity ?? 0);
+  const quantity = routeData?.job?.quantity ?? 0;
 
   return (
     <VStack
@@ -425,7 +430,7 @@ const JobProperties = () => {
           <span className="text-xs text-muted-foreground">{t`Quantity`}</span>
           <HStack spacing={0} className="w-full justify-between">
             <span className="flex flex-grow line-clamp-1 items-center">
-              {configuredQuantity}
+              {quantity}
             </span>
             <IconButton
               icon={<LuTable size="1em" strokeWidth="3" />}
@@ -433,8 +438,7 @@ const JobProperties = () => {
               size="sm"
               variant="secondary"
               className={cn(
-                configTableTotal > 0 &&
-                  "text-emerald-500 hover:text-emerald-500"
+                quantity > 0 && "text-emerald-500 hover:text-emerald-500"
               )}
               isDisabled={isDisabled}
               onClick={() =>

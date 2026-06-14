@@ -2408,21 +2408,54 @@ export async function updateProductionQuantity(
   return upsertProductionQuantity(client, productionQuantity);
 }
 
+export type ProductionQuantityApprovalContext = {
+  userId: string;
+  canAutoApprove: boolean;
+  paymentYear: number | null;
+  paymentMonth: number | null;
+  serviceRole?: SupabaseClient<Database>;
+};
+
+// Dynamic import keeps production.service ↔ productionQuantityReport.service
+// edges acyclic.
+async function syncProductionPayApproval(
+  client: SupabaseClient<Database>,
+  reportId: string,
+  companyId: string,
+  approval: ProductionQuantityApprovalContext
+) {
+  const { syncProductionQuantityReportApproval } = await import(
+    "./productionQuantityReport.service"
+  );
+  await syncProductionQuantityReportApproval(approval.serviceRole ?? client, {
+    reportId,
+    companyId,
+    userId: approval.userId,
+    canAutoApprove: approval.canAutoApprove,
+    paymentYear: approval.paymentYear,
+    paymentMonth: approval.paymentMonth
+  });
+}
+
+type UpsertProductionQuantityInput =
+  | (Omit<z.infer<typeof productionQuantityValidator>, "id"> & {
+      companyId: string;
+      createdBy: string;
+      employeeId: string;
+    })
+  | (Omit<z.infer<typeof productionQuantityValidator>, "id"> & {
+      id: string;
+      updatedBy: string;
+      companyId: string;
+      createdBy?: string;
+      employeeId: string;
+    });
+
 export async function upsertProductionQuantity(
   client: SupabaseClient<Database>,
-  productionQuantity:
-    | (Omit<z.infer<typeof productionQuantityValidator>, "id"> & {
-        companyId: string;
-        createdBy: string;
-        employeeId: string;
-      })
-    | (Omit<z.infer<typeof productionQuantityValidator>, "id"> & {
-        id: string;
-        updatedBy: string;
-        companyId: string;
-        createdBy?: string;
-        employeeId: string;
-      })
+  productionQuantity: UpsertProductionQuantityInput & {
+    approval?: ProductionQuantityApprovalContext;
+  }
 ) {
   const {
     createProductionQuantityReport,
@@ -2430,7 +2463,7 @@ export async function upsertProductionQuantity(
   } = await import("./productionQuantityReport.service");
 
   if ("updatedBy" in productionQuantity) {
-    const { id, updatedBy, companyId, employeeId, ...updateData } =
+    const { id, updatedBy, companyId, employeeId, approval, ...updateData } =
       productionQuantity;
 
     const { data: existing, error: existingError } = await client
@@ -2490,11 +2523,22 @@ export async function upsertProductionQuantity(
       companyId,
       userId: updatedBy,
       employeeId,
-      lines
+      lines,
+      paymentYear: approval?.canAutoApprove ? approval.paymentYear : null,
+      paymentMonth: approval?.canAutoApprove ? approval.paymentMonth : null
     });
 
     if (result.error) {
       return { data: null, error: result.error };
+    }
+
+    if (approval) {
+      await syncProductionPayApproval(
+        client,
+        existing.reportId,
+        companyId,
+        approval
+      );
     }
 
     const updatedLine =
@@ -2505,7 +2549,7 @@ export async function upsertProductionQuantity(
     return { data: updatedLine, error: null };
   }
 
-  const { companyId, createdBy, employeeId, jobOperationId, ...rest } =
+  const { companyId, createdBy, employeeId, jobOperationId, approval, ...rest } =
     productionQuantity;
 
   const { data: operation, error: operationError } = await client
@@ -2537,11 +2581,22 @@ export async function upsertProductionQuantity(
         scrapReasonId: rest.scrapReasonId,
         notes: rest.notes
       }
-    ]
+    ],
+    paymentYear: approval?.canAutoApprove ? approval.paymentYear : null,
+    paymentMonth: approval?.canAutoApprove ? approval.paymentMonth : null
   });
 
   if (result.error) {
     return { data: null, error: result.error };
+  }
+
+  if (approval && result.data?.id) {
+    await syncProductionPayApproval(
+      client,
+      result.data.id,
+      companyId,
+      approval
+    );
   }
 
   return {
@@ -2866,8 +2921,21 @@ export async function upsertJobOperationPickup(
         companyId: string;
       })
 ) {
-  if ("updatedBy" in pickup) {
-    const { id, updatedBy, companyId, ...updateData } = pickup;
+  const pickupRow = pickup as typeof pickup & {
+    actorKind?: string;
+    supplierProcessId?: string;
+    employeeId?: string;
+  };
+
+  if ("updatedBy" in pickupRow) {
+    const {
+      id,
+      updatedBy,
+      companyId,
+      actorKind: _actorKind,
+      supplierProcessId: _supplierProcessId,
+      ...updateData
+    } = pickupRow;
     return client
       .from("jobOperationPickup")
       .update({
@@ -2880,7 +2948,12 @@ export async function upsertJobOperationPickup(
       .select()
       .single();
   } else {
-    const { configuration: rawConfiguration, ...rest } = pickup;
+    const {
+      configuration: rawConfiguration,
+      actorKind: _actorKind,
+      supplierProcessId: _supplierProcessId,
+      ...rest
+    } = pickupRow;
     let configuration: unknown;
     if (rawConfiguration) {
       try {

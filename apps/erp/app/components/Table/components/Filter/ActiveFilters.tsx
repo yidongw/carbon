@@ -20,6 +20,7 @@ import { LuX } from "react-icons/lu";
 import { useFetcher } from "react-router";
 import Filter from "./Filter";
 import type { ColumnFilter } from "./types";
+import { parseFilterParam } from "~/utils/query";
 import { useFilters } from "./useFilters";
 
 function getCurrentValues(value: string, isArray: boolean | undefined) {
@@ -33,19 +34,21 @@ type ActiveFiltersProps = {
 
 const ActiveFilters = ({ filters }: ActiveFiltersProps) => {
   const { urlFiltersParams } = useFilters();
+
   return (
     <HStack spacing={2}>
-      {urlFiltersParams.map((f) => {
-        const [key, operator, value] = f.split(":");
-        const columnFilter = filters.find((f) => f.accessorKey === key);
+      {urlFiltersParams.map((param) => {
+        const parsed = parseFilterParam(param);
+        if (!parsed) return null;
+        const columnFilter = filters.find((f) => f.accessorKey === parsed.column);
         if (!columnFilter) return null;
 
         return (
           <ActiveFilter
-            key={key}
+            key={`${parsed.column}:${param}`}
             filter={columnFilter}
-            operator={operator}
-            value={value}
+            operator={parsed.operator}
+            value={parsed.value}
           />
         );
       })}
@@ -133,7 +136,7 @@ const ActiveFilter = ({ filter, operator, value }: ActiveFilterProps) => {
       return typeof node === "string"
         ? translate(node)
         : reactNodeToString(node);
-    }
+    return label || v;
   };
 
   const translate = (text: string) => i18n._(text);
@@ -250,9 +253,7 @@ const ActiveFilter = ({ filter, operator, value }: ActiveFilterProps) => {
         className="rounded-l-none border-l-0 px-1 w-6"
         size="sm"
         variant="secondary"
-        onClick={() => {
-          removeKey(filter.accessorKey);
-        }}
+        onClick={() => removeKey(filter.accessorKey)}
       >
         <LuX />
       </Button>

@@ -10996,17 +10996,3 @@ msgstr "你的名字"
 msgid "yourself"
 msgstr "你自己"
 
-msgid "Zoom Box"
-msgstr "缩放框"
-
-msgid "Zoom in"
-msgstr "放大"
-
-msgid "Zoom out"
-msgstr "缩小"
-
-msgid "ZPL (Thermal Label)"
-msgstr "ZPL（热敏标签）"
-
-msgid "ZPL Label Preview"
-msgstr "ZPL 标签预览"
