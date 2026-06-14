@@ -59,6 +59,8 @@ import Sort from "./Sort";
 
 type HeaderProps<T> = {
   renderActions?: (selectedRows: T[]) => ReactNode;
+  featuredColumns: Set<string>;
+  onPinnedReorder: (newLeft: string[]) => void;
   columnAccessors: Record<string, string>;
   columnOrder: ColumnOrderState;
   columnPinning: ColumnPinningState;
@@ -75,6 +77,7 @@ type HeaderProps<T> = {
   primaryAction?: ReactNode;
   pagination: PaginationProps;
   selectedRows: T[];
+  setFeaturedColumns: (cols: Set<string>) => void;
   setColumnOrder: (newOrder: ColumnOrderState) => void;
   setEditMode: (editMode: boolean) => void;
   table?: string;
@@ -87,6 +90,7 @@ type HeaderProps<T> = {
 };
 
 const TableHeader = <T extends object>({
+  featuredColumns,
   compact,
   columnAccessors,
   columnOrder,
@@ -97,10 +101,12 @@ const TableHeader = <T extends object>({
   editMode,
   filters,
   importCSV,
+  onPinnedReorder,
   primaryAction,
   pagination,
   selectedRows,
   renderActions,
+  setFeaturedColumns,
   setColumnOrder,
   setEditMode,
   table,
@@ -302,8 +308,11 @@ const TableHeader = <T extends object>({
           <Sort columnAccessors={columnAccessors} />
 
           <Columns
+            featuredColumns={featuredColumns}
             columnOrder={columnOrder}
             columns={columns}
+            onPinnedReorder={onPinnedReorder}
+            setFeaturedColumns={setFeaturedColumns}
             setColumnOrder={setColumnOrder}
             withSelectableRows={withSelectableRows}
           />
