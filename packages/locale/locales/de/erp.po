@@ -280,6 +280,30 @@ msgstr ""
 msgid "Accumulated Depreciation"
 msgstr "Kumulierte Abschreibung"
 
+msgid "Accounts Payable"
+msgstr ""
+
+msgid "Accounts Payable Billing Address"
+msgstr "Konten Zahlbar Rechnungsadresse"
+
+msgid "Accounts Receivable"
+msgstr ""
+
+msgid "Accounts Receivable Billing Address"
+msgstr "Rechnungsadresse für Forderungen"
+
+msgid "Accrued Expenses"
+msgstr ""
+
+msgid "Accrued Wages & Salaries"
+msgstr ""
+
+msgid "Accumulated Amortization"
+msgstr ""
+
+msgid "Accumulated Depreciation"
+msgstr "Kumulierte Abschreibung"
+
 msgid "Accumulated Depreciation on Disposal"
 msgstr ""
 
@@ -448,6 +472,9 @@ msgstr "Drucker hinzufügen"
 msgid "Add Property"
 msgstr "Eigenschaft hinzufügen"
 
+msgid "Add quantity"
+msgstr ""
+
 msgid "Add Question"
 msgstr "Frage hinzufügen"
 
@@ -578,6 +605,9 @@ msgid "All Work Centers"
 msgstr "Alle Arbeitszentren"
 
 msgid "Allows acknowledge & continue"
+msgstr ""
+
+msgid "Alpha"
 msgstr ""
 
 msgid "Always"
@@ -1262,6 +1292,12 @@ msgstr ""
 msgid "Bag"
 msgstr "Tasche"
 
+msgid "Bad Debts Expense"
+msgstr ""
+
+msgid "Bag"
+msgstr "Tasche"
+
 msgid "Balance Sheet"
 msgstr "Bilanz"
 
@@ -1315,6 +1351,9 @@ msgstr "Stückliste"
 
 msgid "Bill of Materials"
 msgstr "Stückliste"
+
+msgid "Bill of process"
+msgstr ""
 
 msgid "Bill of Process"
 msgstr "Fertigungsprozess"
@@ -1490,6 +1529,9 @@ msgstr "Kann nicht in den Teile-Bucket ohne Element-ID verschoben werden"
 
 msgid "Cannot place order - no supplier associated with this item"
 msgstr "Bestellung kann nicht aufgegeben werden - kein Lieferant mit diesem Artikel verknüpft"
+
+msgid "Cannot post — shipment contains expired tracked entities."
+msgstr ""
 
 msgid "Cannot send RFQ"
 msgstr "RFQ kann nicht gesendet werden"
@@ -1734,6 +1776,9 @@ msgstr "Kommentar"
 
 msgid "Comments"
 msgstr "Kommentare"
+
+msgid "Common Stock / Share Capital"
+msgstr ""
 
 msgid "Companies"
 msgstr "Unternehmen"
@@ -2165,6 +2210,9 @@ msgstr "Kostenhistorie"
 msgid "Cost of Goods Sold"
 msgstr "Kosten der verkauften Waren"
 
+msgid "Cost of Goods Sold - Direct"
+msgstr ""
+
 msgid "Costing"
 msgstr "Kostenberechnung"
 
@@ -2203,6 +2251,11 @@ msgstr "PDF konnte nicht erstellt werden. Versuchen Sie es erneut."
 
 msgid "Could not prepare region image for analysis"
 msgstr "Konnte Regionsbild nicht für die Analyse vorbereiten"
+msgid "Costing Method"
+msgstr ""
+
+msgid "Could not load job data."
+msgstr ""
 
 msgid "Couldn't load documents"
 msgstr "Dokumente konnten nicht geladen werden"
@@ -2263,6 +2316,12 @@ msgstr ""
 msgid "Create Quote Revision"
 msgstr "Angebotrevision erstellen"
 
+msgid "Create new rule"
+msgstr ""
+
+msgid "Create Quote Revision"
+msgstr "Angebotrevision erstellen"
+
 msgid "Create Revision"
 msgstr "Revision erstellen"
 
@@ -2280,6 +2339,12 @@ msgstr "Arbeitszentrum erstellen"
 
 msgid "Created"
 msgstr "Erstellt"
+
+msgid "Created At"
+msgstr "Erstellt am"
+
+msgid "Created account"
+msgstr ""
 
 msgid "Created At"
 msgstr "Erstellt am"
@@ -2428,6 +2493,9 @@ msgstr ""
 
 msgid "Current Password"
 msgstr "Aktuelles Passwort"
+
+msgid "Current process"
+msgstr ""
 
 msgid "Current quantity"
 msgstr "Aktuelle Menge"
@@ -3478,6 +3546,9 @@ msgstr "Prozess bearbeiten"
 msgid "Edit purchase order line type"
 msgstr "Bestellpositionstyp bearbeiten"
 
+msgid "Edit quantity"
+msgstr ""
+
 msgid "Edit Question"
 msgstr "Frage bearbeiten"
 
@@ -3643,6 +3714,9 @@ msgstr "Aktivieren Sie die Audit-Protokollierung in den Einstellungen, um Änder
 msgid "Enable digital quotes for your company. This will allow you to send digital quotes to your customers, and allow them to accept them online."
 msgstr "Aktivieren Sie digitale Angebote für Ihr Unternehmen. Dies ermöglicht es Ihnen, digitale Angebote an Ihre Kunden zu senden und ihnen, diese online zu akzeptieren."
 
+msgid "Enable full accrual accounting with journal entries, financial reports, and general ledger posting."
+msgstr ""
+
 msgid "Enable in Settings"
 msgstr "In Einstellungen aktivieren"
 
@@ -3700,6 +3774,12 @@ msgstr "Enddatum"
 msgid "End Time"
 msgstr "Endzeit"
 
+msgid "Enforce constraints on receipts, shipments, transfers and job operations for this item."
+msgstr ""
+
+msgid "Enforce per-item validation across receipts, shipments, transfers and adjustments."
+msgstr ""
+
 msgid "Enforce per-item validation and guidelines across receipts, shipments, transfers, and adjustments."
 msgstr "Erzwingen Sie eine Validierung und Richtlinien pro Artikel über Eingänge, Lieferungen, Transfers und Anpassungen hinweg."
 
@@ -3756,6 +3836,7 @@ msgstr "Eigenkapital, Gesamt"
 
 msgid "ERP, MES, QMS"
 msgstr "ERP, MES, QMS"
+msgstr ""
 
 msgid "Equipment Malfunction"
 msgstr "Fehlfunktion der Ausrüstung"
@@ -3867,6 +3948,12 @@ msgstr "Überschreitet {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB insgesamt – entfernen
 
 msgid "Exchange Rate"
 msgstr "Wechselkurs"
+
+msgid "Every condition must match"
+msgstr ""
+
+msgid "Everything from Starter"
+msgstr "Alles aus dem Starter-Plan"
 
 msgid "Every condition must match"
 msgstr ""
@@ -4395,6 +4482,11 @@ msgstr "Oberfläche"
 msgid "Finish To"
 msgstr "Fertigstellen zu"
 
+#. placeholder {0}: item.quantityProgress.complete
+#. placeholder {1}: item.quantityProgress.target
+msgid "Finished {0} of {1} units"
+msgstr ""
+
 msgid "Finished Goods"
 msgstr "Fertigwaren"
 
@@ -4498,6 +4590,9 @@ msgstr "Von Standort"
 msgid "From Storage Unit"
 msgstr "Von Lagereinheit"
 
+msgid "Fully complete ({qtyThrough}/{qtyTotal}): minimum quantity completed across routing operations (suited to linear flows), versus total job quantity."
+msgstr ""
+
 msgid "Fully trained for"
 msgstr "Vollständig geschult für"
 
@@ -4574,6 +4669,9 @@ msgstr "Guten Morgen, {0}"
 
 msgid "Google Places API key not configured"
 msgstr "Google Places API-Schlüssel nicht konfiguriert"
+
+msgid "GR/IR Clearing"
+msgstr ""
 
 msgid "Grade"
 msgstr "Klasse"
@@ -4760,6 +4858,9 @@ msgstr "Einnahmen-/Bilanzblatt"
 
 msgid "Incoming"
 msgstr "Eingehend"
+
+msgid "Income Statement"
+msgstr "Gewinn- und Verlustrechnung"
 
 msgid "Income Statement"
 msgstr "Gewinn- und Verlustrechnung"
@@ -5121,6 +5222,9 @@ msgstr "Artikel muss einem ausgewählten Typ ODER einer ausgewählten Gruppe ent
 
 msgid "Item Scope"
 msgstr "Artikelbereich"
+
+msgid "Item Posting Group"
+msgstr ""
 
 msgid "Item Posting Group"
 msgstr ""
@@ -5497,6 +5601,12 @@ msgstr ""
 msgid "Maintenance"
 msgstr "Wartung"
 
+msgid "Machinery & Equipment"
+msgstr ""
+
+msgid "Maintenance"
+msgstr "Wartung"
+
 msgid "Maintenance Dispatch"
 msgstr "Wartungsversand"
 
@@ -5599,6 +5709,9 @@ msgid "Manufacturing Defect"
 msgstr "Herstellungsfehler"
 
 msgid "Manufacturing Services Revenue"
+msgstr ""
+
+msgid "Many Jobs"
 msgstr ""
 
 msgid "Mark as Planned"
@@ -6392,6 +6505,9 @@ msgstr "Keine neuen Benachrichtigungen"
 msgid "No notes"
 msgstr "Keine Notizen"
 
+msgid "No operators."
+msgstr ""
+
 msgid "No option found."
 msgstr "Keine Option gefunden."
 
@@ -6637,6 +6753,12 @@ msgstr "Im MES öffnen"
 msgid "Open Issues"
 msgstr "Offene Probleme"
 
+msgid "Open Issues"
+msgstr "Offene Probleme"
+
+msgid "Open job"
+msgstr ""
+
 msgid "Open menu"
 msgstr "Menü öffnen"
 
@@ -6721,6 +6843,12 @@ msgstr ""
 msgid "Options"
 msgstr "Optionen"
 
+msgid "Optional context for this rule"
+msgstr ""
+
+msgid "Options"
+msgstr "Optionen"
+
 msgid "Order"
 msgstr "Bestellung"
 
@@ -6759,6 +6887,15 @@ msgstr "Ursprung"
 
 msgid "Other Type"
 msgstr "Sonstiger Typ"
+
+msgid "Other Assets"
+msgstr ""
+
+msgid "Other Expenses"
+msgstr ""
+
+msgid "Other Income"
+msgstr ""
 
 msgid "Other Assets"
 msgstr ""
@@ -6968,6 +7105,8 @@ msgstr "Zahlungsbedingungen"
 
 msgid "PDF"
 msgstr "PDF"
+msgid "PDF Watermark"
+msgstr ""
 
 msgid "PDFs"
 msgstr "PDFs"
@@ -7318,6 +7457,9 @@ msgstr "Prozesse"
 
 msgid "Processes"
 msgstr "Prozesse"
+
+msgid "Processes ({completedOps}/{totalOps}): done versus total on the top-level job routing."
+msgstr ""
 
 msgid "Product Label Size"
 msgstr "Produktetikettengröße"
@@ -7957,6 +8099,33 @@ msgstr "Bericht"
 msgid "Reports"
 msgstr "Berichte"
 
+msgid "reported"
+msgstr ""
+
+#. placeholder {0}: item.quantity
+msgid "reported {0} units"
+msgstr ""
+
+#. placeholder {0}: item.quantity
+msgid "reported {0} units of production"
+msgstr ""
+
+#. placeholder {0}: item.quantity
+msgid "reported {0} units rework"
+msgstr ""
+
+#. placeholder {0}: item.quantity
+msgid "reported {0} units scrapped"
+msgstr ""
+
+#. placeholder {0}: item.quantity
+#. placeholder {1}: item.scrapReason.name
+msgid "reported {0} units scrapped ({1})"
+msgstr ""
+
+msgid "Reports"
+msgstr "Berichte"
+
 msgid "Request Approval"
 msgstr "Genehmigung anfordern"
 
@@ -8238,6 +8407,12 @@ msgstr "Verkaufsrabatt"
 
 msgid "Sales"
 msgstr "Verkauf"
+
+msgid "Sales Commissions"
+msgstr ""
+
+msgid "Sales Contact"
+msgstr "Verkaufskontakt"
 
 msgid "Sales Commissions"
 msgstr ""
@@ -8604,6 +8779,21 @@ msgstr ""
 msgid "Selected"
 msgstr "Ausgewählt"
 
+msgid "Select surfaces"
+msgstr ""
+
+msgid "Select the groups that should complete this training"
+msgstr "Wählen Sie die Gruppen aus, die diese Schulung absolvieren sollen"
+
+msgid "Select value"
+msgstr ""
+
+msgid "Select values"
+msgstr ""
+
+msgid "Selected"
+msgstr "Ausgewählt"
+
 msgid "Selected Operation"
 msgstr "Ausgewählter Vorgang"
 
@@ -8901,6 +9091,9 @@ msgstr "Zeigen Sie Teilminiaturen auf Angeboten, Verkaufsaufträgen, Verkaufsrec
 
 msgid "Show sync options"
 msgstr "Synchronisierungsoptionen anzeigen"
+
+msgid "Shown as a faint background behind every page of generated PDFs"
+msgstr ""
 
 msgid "Shown to the user when this rule fails."
 msgstr ""
@@ -9300,6 +9493,12 @@ msgstr ""
 msgid "Supplier Part ID"
 msgstr "Lieferanten-Artikel-ID"
 
+msgid "Supplier Overview"
+msgstr ""
+
+msgid "Supplier Part ID"
+msgstr "Lieferanten-Artikel-ID"
+
 msgid "Supplier Part Number"
 msgstr "Lieferantenteilnummer"
 
@@ -9538,6 +9737,9 @@ msgstr "Das Datum, an dem der Artikel vor Ort erforderlich ist, um die prognosti
 msgid "The endpoint that receives a POST request with the updated data when the table is updated"
 msgstr "Der Endpunkt, der eine POST-Anfrage mit den aktualisierten Daten empfängt, wenn die Tabelle aktualisiert wird"
 
+msgid "The following assemblies have no operations. Please assign an operation to each before releasing."
+msgstr ""
+
 msgid "The following line items are missing prices or lead times:"
 msgstr "Die folgenden Positionen haben keine Preise oder Lieferzeiten:"
 
@@ -9633,6 +9835,9 @@ msgstr "Dies ist der Monat, in dem Ihr Steuerjahr beginnt."
 
 msgid "This item's bill of materials has no inputs with shelf-life enabled, so no expiry will be calculated from the BOM."
 msgstr "Die Stückliste dieses Artikels hat keine Eingaben mit aktivierter Haltbarkeitsdauer, daher wird kein Verfallsdatum aus der Stückliste berechnet."
+
+msgid "This job has no root make method or routing to display."
+msgstr ""
 
 msgid "This job will be received to inventory. It will no longer be available on the shop floor."
 msgstr "Dieser Auftrag wird im Bestand eingegangen. Er ist nicht mehr auf der Werkstatt verfügbar."
@@ -9829,6 +10034,9 @@ msgstr "Summe"
 msgid "Traceability"
 msgstr "Rückverfolgbarkeit"
 
+msgid "Total:"
+msgstr "Gesamt:"
+
 msgid "Traceability"
 msgstr "Rückverfolgbarkeit"
 
@@ -9967,6 +10175,9 @@ msgstr ""
 msgid "Trial Balance"
 msgstr ""
 
+msgid "True"
+msgstr ""
+
 msgid "Tuesday"
 msgstr "Dienstag"
 
@@ -10005,6 +10216,12 @@ msgstr "Ballon entfernen"
 
 msgid "Unapproved Supplier"
 msgstr "Nicht genehmigter Lieferant"
+
+msgid "Unassign rule"
+msgstr ""
+
+msgid "Unassigned"
+msgstr "Nicht zugewiesen"
 
 msgid "Unassign rule"
 msgstr ""
@@ -10074,6 +10291,8 @@ msgstr "Nicht unterstützter Quelldokumenttyp: {sourceDocument}"
 
 msgid "Untitled Diagram"
 msgstr "Unbenanntes Diagramm"
+msgid "Untitled operation"
+msgstr ""
 
 msgid "UoM"
 msgstr "UoM"
@@ -10150,6 +10369,12 @@ msgstr ""
 msgid "Updated At"
 msgstr "Aktualisiert am"
 
+msgid "Updated account"
+msgstr ""
+
+msgid "Updated At"
+msgstr "Aktualisiert am"
+
 msgid "Updated By"
 msgstr "Aktualisiert von"
 
@@ -10162,6 +10387,12 @@ msgstr "Upgrade to Business"
 #. placeholder {0}: targetCopy.noun
 msgid "Upgrade to unlock {0} rules"
 msgstr "Upgrade to unlock {0} rules"
+
+msgid "Upgrade to Business"
+msgstr "Upgrade to Business"
+
+msgid "Upgrade"
+msgstr ""
 
 msgid "Upgrade to Business"
 msgstr "Upgrade to Business"
@@ -10341,6 +10572,9 @@ msgstr "Anhang anzeigen"
 
 msgid "View Attributes"
 msgstr "Attribute anzeigen"
+
+msgid "View bill of process"
+msgstr ""
 
 msgid "View Contact"
 msgstr "Kontakt anzeigen"
