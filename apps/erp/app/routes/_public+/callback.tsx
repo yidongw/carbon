@@ -5,7 +5,7 @@ import {
   error,
   safeRedirect
 } from "@carbon/auth";
-import { refreshAccessToken } from "@carbon/auth/auth.server";
+import { makeAuthSession } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { getCompanyId, setCompanyId } from "@carbon/auth/company.server";
 import {
@@ -14,7 +14,6 @@ import {
   getAuthSession,
   setAuthSession
 } from "@carbon/auth/session.server";
-import { getUserById } from "@carbon/auth/users.server";
 import { validator } from "@carbon/form";
 import {
   Alert,
@@ -61,6 +60,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const { refreshToken, userId, redirectTo } = validation.data;
   const serviceRole = getCarbonServiceRole();
 
+<<<<<<< HEAD
   // Pre-session: no user-authed client yet, so query memberships with the
   // service role. Prefer an employee company as the active one; fall back to
   // any membership so auth/RLS can deny a pure portal user later.
@@ -75,20 +75,59 @@ export async function action({ request }: ActionFunctionArgs) {
     pickable.find((c) => c.companyId === cookieCompanyId) ?? pickable[0];
   const companyId = match?.companyId ?? undefined;
   const companyGroupId = match?.companyGroupId ?? "";
+=======
+  const [companies, { data: sessionData, error: sessionError }] =
+    await Promise.all([
+      serviceRole
+        .from("userToCompany")
+        .select("companyId, ...company(companyGroupId)")
+        .eq("userId", userId)
+        .limit(50),
+      serviceRole.auth.refreshSession({ refresh_token: refreshToken })
+    ]);
 
-  const authSession = await refreshAccessToken(
-    refreshToken,
-    companyId,
-    companyGroupId
+  if (!sessionData?.session || sessionError) {
+    return redirect(
+      path.to.root,
+      await flash(request, error(sessionError, "Invalid refresh token"))
+    );
+  }
+
+  if (sessionData.session.user.id !== userId) {
+    return redirect(
+      path.to.root,
+      await flash(request, error(null, "Session mismatch"))
+    );
+  }
+
+  if (companies.error) {
+    return redirect(
+      path.to.root,
+      await flash(request, error(companies.error, "Failed to load company"))
+    );
+  }
+
+  const cookieCompanyId = getCompanyId(request);
+  const match = (companies.data?.find((c) => c.companyId === cookieCompanyId) ??
+    companies.data?.[0]) as
+    | { companyId: string; companyGroupId: string | null }
+    | undefined;
+>>>>>>> b05127514 (perf(auth): speed up login callback and reduce redundant DB calls)
+
+  const authSession = makeAuthSession(
+    sessionData.session,
+    match?.companyId ?? "",
+    match?.companyGroupId ?? ""
   );
 
   if (!authSession) {
     return redirect(
       path.to.root,
-      await flash(request, error(authSession, "Invalid refresh token"))
+      await flash(request, error(null, "Invalid session"))
     );
   }
 
+<<<<<<< HEAD
   const user = await getUserById(authSession.userId);
 
   if (user?.data) {
@@ -115,6 +154,18 @@ export async function action({ request }: ActionFunctionArgs) {
       await flash(request, error(user.error, "User not found"))
     );
   }
+=======
+  const sessionCookie = await setAuthSession(request, {
+    authSession
+  });
+  const companyIdCookie = setCompanyId(authSession.companyId);
+  return redirect(safeRedirect(redirectTo, path.to.authenticatedRoot), {
+    headers: [
+      ["Set-Cookie", sessionCookie],
+      ["Set-Cookie", companyIdCookie]
+    ]
+  });
+>>>>>>> b05127514 (perf(auth): speed up login callback and reduce redundant DB calls)
 }
 
 export default function AuthCallback() {
