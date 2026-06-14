@@ -1,7 +1,7 @@
 import type { Database, Json } from "@carbon/database";
 import { fetchAllFromTable } from "@carbon/database";
 import { getLocalTimeZone, now, today } from "@internationalized/date";
-import type { SupabaseClient } from "@supabase/supabase-js";
+import type { PostgrestError, SupabaseClient } from "@supabase/supabase-js";
 import { nanoid } from "nanoid";
 import type { z } from "zod";
 import type { StorageItem } from "~/types";
@@ -674,6 +674,33 @@ export async function getStorageUnitChildren(
     .order("name");
 }
 
+// Descendants of the given root ids, from just below the roots (depth > 1) down
+// to `maxDepth` inclusive. A node is a descendant of a root when that root
+// appears in its ancestorPath, so a single `overlaps` query returns the
+// subtrees in one round trip. Used to render the tree expanded by default;
+// the depth cap keeps very deep trees from loading their entire subtree
+// eagerly — anything below `maxDepth` still lazy-loads on demand.
+export async function getStorageUnitSubtrees(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  locationId: string,
+  rootIds: string[],
+  maxDepth: number
+) {
+  if (rootIds.length === 0) {
+    return { data: [] as any[], error: null };
+  }
+  return client
+    .from("storageUnits_recursive")
+    .select("*")
+    .eq("companyId", companyId)
+    .eq("locationId", locationId)
+    .gt("depth", 1)
+    .lte("depth", maxDepth)
+    .overlaps("ancestorPath", rootIds)
+    .order("name");
+}
+
 // Set of storageUnit ids that have at least one child in the given location.
 // Drives whether the table renders an expand chevron on a row.
 export async function getStorageUnitParentIdsWithChildren(
@@ -1029,10 +1056,19 @@ export async function updateTrackedEntityExpiry(
 ) {
   const existing = await client
     .from("trackedEntity")
-    .select("expirationDate, attributes")
+    .select("expirationDate, attributes, status")
     .eq("id", args.trackedEntityId)
     .single();
   if (existing.error) return existing;
+
+  if (existing.data?.status === "Consumed") {
+    return {
+      data: null,
+      error: {
+        message: "Cannot edit expiry of a consumed tracked entity"
+      } as unknown as PostgrestError
+    };
+  }
 
   const prevAttrs =
     (existing.data?.attributes as Record<string, unknown> | null) ?? {};
@@ -1341,6 +1377,71 @@ export async function insertManualInventoryAdjustment(
       }
       return { data: null };
     }
+  }
+
+  // Resolve the correct stock target for a negative adjustment when:
+  //   - readableId is provided: always resolve via serial number (currentQuantity
+  //     may point to the wrong row due to loose null == undefined matching), OR
+  //   - No currentQuantity found at all: fall back to untracked (legacy) stock.
+  //
+  //   1. If readableId is provided, adjust the entity with that serial number that
+  //      has positive stock. If not found, return an error — never silently fall back.
+  //   2. If no readableId, fall back to untracked (legacy) stock.
+  if (
+    data.entryType === "Negative Adjmt." &&
+    (readableId || !currentQuantity)
+  ) {
+    if (readableId) {
+      // storageUnitQuantities is scoped to this item + location.
+      // Filter to positive-qty rows only — multiple entities can share a readableId
+      // if the same serial was used across repeated positive adjustments.
+      const resolvedQtyRow = storageUnitQuantities?.data?.find(
+        (q) =>
+          q.readableId === readableId &&
+          q.trackedEntityId != null &&
+          (q.quantity ?? 0) > 0
+      );
+      if (!resolvedQtyRow) {
+        return { error: "Serial number not found" };
+      }
+      const resolvedId = resolvedQtyRow.trackedEntityId as string;
+      const resolvedQty = resolvedQtyRow.quantity ?? 0;
+      if (data.quantity > resolvedQty) {
+        return { error: "Insufficient quantity for negative adjustment" };
+      }
+      const entityUpdate = await client
+        .from("trackedEntity")
+        .update({ quantity: resolvedQty - data.quantity, readableId })
+        .eq("id", resolvedId);
+      if (entityUpdate.error) return entityUpdate;
+      return client
+        .from("itemLedger")
+        .insert([
+          {
+            ...data,
+            trackedEntityId: resolvedId,
+            quantity: -Math.abs(data.quantity)
+          }
+        ])
+        .select("*")
+        .single();
+    }
+    // No serial number — fall back to legacy (untracked) stock
+    const legacyQty =
+      storageUnitQuantities?.data?.find(
+        (q) =>
+          q.trackedEntityId == null && q.storageUnitId == data.storageUnitId
+      )?.quantity ?? 0;
+    if (data.quantity > legacyQty) {
+      return { error: "Insufficient quantity for negative adjustment" };
+    }
+    return client
+      .from("itemLedger")
+      .insert([
+        { ...data, trackedEntityId: null, quantity: -Math.abs(data.quantity) }
+      ])
+      .select("*")
+      .single();
   }
 
   // Check if it's a negative adjustment and if the quantity is sufficient
@@ -1890,6 +1991,22 @@ export async function getStorageUnitDescendants(
     .contains("ancestorPath", [storageUnitId]);
 }
 
+export async function expandStorageUnitIdsWithDescendants(
+  client: SupabaseClient<Database>,
+  storageUnitIds: string[]
+): Promise<string[]> {
+  if (storageUnitIds.length === 0) return [];
+  const { data } = await client
+    .from("storageUnits_recursive")
+    .select("id")
+    .overlaps("ancestorPath", storageUnitIds);
+  const expanded = new Set<string>(storageUnitIds);
+  (data ?? []).forEach((row) => {
+    if (row.id) expanded.add(row.id);
+  });
+  return Array.from(expanded);
+}
+
 // ----------------------------------------------------------------------------
 // storageType CRUD (mirrors materialType in items.service.ts)
 // ----------------------------------------------------------------------------
@@ -2035,4 +2152,241 @@ export async function getTrackedEntityExpirations(
     },
     {}
   );
+}
+
+export async function insertStockTransfer(
+  client: SupabaseClient<Database>,
+  input: {
+    locationId: string;
+    lines: Array<{
+      itemId: string;
+      fromStorageUnitId?: string | null;
+      toStorageUnitId?: string | null;
+      quantity?: number;
+      requiresSerialTracking?: boolean;
+      requiresBatchTracking?: boolean;
+    }>;
+    companyId: string;
+    createdBy: string;
+    stockTransferId?: string;
+    customFields?: Json;
+  }
+): Promise<{
+  data: { id: string; stockTransferId: string } | null;
+  error: PostgrestError | { message: string } | null;
+}> {
+  const { locationId, lines, companyId, createdBy, customFields } = input;
+
+  let stockTransferId = input.stockTransferId;
+  if (!stockTransferId) {
+    const sequence = await client.rpc("get_next_sequence", {
+      sequence_name: "stockTransfer",
+      company_id: companyId
+    });
+    if (sequence.error || !sequence.data) {
+      return {
+        data: null,
+        error: sequence.error ?? { message: "Failed to get sequence" }
+      };
+    }
+    stockTransferId = sequence.data;
+  }
+
+  const linesWithExpandedSerialTracking = lines.reduce<typeof lines>(
+    (acc, line) => {
+      if (line.quantity && !Number.isInteger(line.quantity)) {
+        return acc;
+      }
+      if (line.requiresSerialTracking && line.quantity && line.quantity > 1) {
+        acc.push(
+          ...Array.from({ length: line.quantity }, () => ({
+            ...line,
+            quantity: 1
+          }))
+        );
+      } else {
+        acc.push(line);
+      }
+      return acc;
+    },
+    []
+  );
+
+  const createTransfer = await client
+    .from("stockTransfer")
+    .insert({
+      stockTransferId,
+      locationId,
+      status: "Released",
+      companyId,
+      createdBy,
+      customFields
+    })
+    .select("id")
+    .single();
+
+  if (createTransfer.error || !createTransfer.data) {
+    return { data: null, error: createTransfer.error };
+  }
+
+  const createLines = await client.from("stockTransferLine").insert(
+    linesWithExpandedSerialTracking.map((line) => ({
+      ...line,
+      stockTransferId: createTransfer.data.id,
+      companyId,
+      createdBy
+    }))
+  );
+
+  if (createLines.error) {
+    await client
+      .from("stockTransfer")
+      .delete()
+      .eq("id", createTransfer.data.id);
+    return { data: null, error: createLines.error };
+  }
+
+  return {
+    data: { id: createTransfer.data.id, stockTransferId: stockTransferId! },
+    error: null
+  };
+}
+
+export async function insertWarehouseTransfer(
+  client: SupabaseClient<Database>,
+  input: {
+    fromLocationId: string;
+    toLocationId: string;
+    companyId: string;
+    createdBy: string;
+    transferId?: string;
+    status?: Database["public"]["Enums"]["warehouseTransferStatus"];
+    transferDate?: string;
+    expectedReceiptDate?: string;
+    notes?: string;
+    reference?: string;
+    customFields?: Json;
+  }
+): Promise<{
+  data: { id: string; transferId: string } | null;
+  error: PostgrestError | { message: string } | null;
+}> {
+  const {
+    fromLocationId,
+    toLocationId,
+    companyId,
+    createdBy,
+    status = "Draft",
+    transferDate,
+    expectedReceiptDate,
+    notes,
+    reference,
+    customFields
+  } = input;
+
+  let transferId = input.transferId;
+  if (!transferId) {
+    const sequence = await client.rpc("get_next_sequence", {
+      sequence_name: "warehouseTransfer",
+      company_id: companyId
+    });
+    if (sequence.error || !sequence.data) {
+      return {
+        data: null,
+        error: sequence.error ?? { message: "Failed to get sequence" }
+      };
+    }
+    transferId = sequence.data;
+  }
+
+  const createTransfer = await client
+    .from("warehouseTransfer")
+    .insert({
+      transferId,
+      fromLocationId,
+      toLocationId,
+      status,
+      transferDate: transferDate || null,
+      expectedReceiptDate: expectedReceiptDate || null,
+      notes: notes || null,
+      reference: reference || null,
+      companyId,
+      createdBy,
+      customFields
+    })
+    .select("id")
+    .single();
+
+  if (createTransfer.error || !createTransfer.data) {
+    return { data: null, error: createTransfer.error };
+  }
+
+  return {
+    data: { id: createTransfer.data.id, transferId: transferId! },
+    error: null
+  };
+}
+
+export async function updateStockTransfer(
+  client: SupabaseClient<Database>,
+  input: {
+    id: string;
+    locationId?: string;
+    stockTransferId?: string;
+    updatedBy: string;
+    customFields?: Json;
+  }
+): Promise<{
+  data: { id: string } | null;
+  error: PostgrestError | null;
+}> {
+  const { id, updatedBy, customFields, ...fields } = input;
+  return client
+    .from("stockTransfer")
+    .update(
+      sanitize({
+        ...fields,
+        customFields,
+        updatedBy,
+        updatedAt: new Date().toISOString()
+      })
+    )
+    .eq("id", id)
+    .select("id")
+    .single();
+}
+
+export async function updateWarehouseTransfer(
+  client: SupabaseClient<Database>,
+  input: {
+    id: string;
+    fromLocationId?: string;
+    toLocationId?: string;
+    transferId?: string;
+    status?: Database["public"]["Enums"]["warehouseTransferStatus"];
+    transferDate?: string;
+    expectedReceiptDate?: string;
+    notes?: string;
+    reference?: string;
+    updatedBy: string;
+    customFields?: Json;
+  }
+): Promise<{
+  data: { id: string } | null;
+  error: PostgrestError | null;
+}> {
+  const { id, updatedBy, customFields, ...fields } = input;
+  return client
+    .from("warehouseTransfer")
+    .update(
+      sanitize({
+        ...fields,
+        customFields,
+        updatedBy,
+        updatedAt: today(getLocalTimeZone()).toString()
+      })
+    )
+    .eq("id", id)
+    .select("id")
+    .single();
 }

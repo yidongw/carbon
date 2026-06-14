@@ -57,6 +57,7 @@ export async function action({ request }: ActionFunctionArgs) {
     }
     case "defaultMethodType":
     case "name":
+    case "description":
     case "replenishmentSystem":
     case "unitOfMeasureCode":
       if (field === "replenishmentSystem" && value !== "Buy and Make") {
@@ -187,6 +188,7 @@ export async function action({ request }: ActionFunctionArgs) {
                 .from("item")
                 .select("id")
                 .eq("readableId", readableId)
+                .eq("type", "Material")
                 .eq("companyId", companyId)
             ]);
 
@@ -416,6 +418,7 @@ export async function action({ request }: ActionFunctionArgs) {
         .from("item")
         .select("id")
         .eq("readableId", currentReadableId)
+        .eq("type", "Part")
         .eq("companyId", companyId);
       if (relatedItems.error) {
         return relatedItems;
@@ -480,6 +483,7 @@ export async function action({ request }: ActionFunctionArgs) {
         .from("item")
         .select("id")
         .eq("readableId", currentConsumableId)
+        .eq("type", "Consumable")
         .eq("companyId", companyId);
       if (relatedConsumables.error) {
         return relatedConsumables;
@@ -546,6 +550,7 @@ export async function action({ request }: ActionFunctionArgs) {
         .from("item")
         .select("id")
         .eq("readableId", currentMaterialId)
+        .eq("type", "Material")
         .eq("companyId", companyId);
       if (relatedMaterials.error) {
         return relatedMaterials;
@@ -607,6 +612,7 @@ export async function action({ request }: ActionFunctionArgs) {
         .from("item")
         .select("id")
         .eq("readableId", currentToolId)
+        .eq("type", "Tool")
         .eq("companyId", companyId);
       if (relatedTools.error) {
         return relatedTools;

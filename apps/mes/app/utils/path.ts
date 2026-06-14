@@ -14,6 +14,7 @@ export const path = {
       batchNumbers: (itemId: string) =>
         generatePath(`${api}/batch-numbers?itemId=${itemId}`),
       failureModes: `${api}/failure-modes`,
+      qualityIssueTypes: `${api}/quality-issue-types`,
       serialNumbers: (itemId: string) =>
         generatePath(`${api}/serial-numbers?itemId=${itemId}`)
     },
@@ -108,9 +109,13 @@ export const path = {
     kanbanComplete: (id: string) => `${ERP_URL}/api/kanban/complete/${id}`,
     inspectionSteps: `${x}/steps/inspection`,
     inventoryAdjustment: `${x}/adjustment`,
+    jobDag: (id: string) => generatePath(`${x}/job/${id}`),
+    jobs: `${x}/jobs`,
     issue: `${x}/issue`,
     issueTrackedEntity: `${x}/issue-tracked-entity`,
+    qualityIssueNew: `${x}/quality-issue/new`,
     location: `${x}/location`,
+    manualPrint: `${x}/print`,
     login: "/login",
     logout: "/logout",
     maintenance: `${x}/maintenance`,
@@ -123,6 +128,7 @@ export const path = {
     messagingNotify: `${x}/proxy/api/messaging/notify`,
     newMaintenanceDispatch: `${x}/dispatch/new`,
     onboarding: `${ERP_URL}/onboarding`,
+    printingSettings: `${ERP_URL}/x/settings/printing`,
     operation: (id: string) => generatePath(`${x}/operation/${id}`),
     operations: `${x}/operations?saved=1`,
     productionEvent: `${x}/event`,
@@ -132,6 +138,9 @@ export const path = {
     refreshSession: "/refresh-session",
     requestAccess: "/request-access",
     rework: `${x}/rework`,
+    reworkTargets: (operationId: string) =>
+      generatePath(`${x}/rework-targets/${operationId}`),
+    triggerRework: `${x}/trigger-rework`,
     root: "/",
     scrap: `${x}/scrap`,
     scrapReasons: `${api}/scrap-reasons`,

@@ -76,13 +76,46 @@ export async function pullStack(
   }
 }
 
+/** Resolved image refs for the dev compose file (tags as pinned in compose). */
+export async function devComposeImageRefs(
+  root: string,
+  slug: string
+): Promise<string[] | null> {
+  const r = await execa(
+    "docker",
+    devArgs(slug, "--env-file", ".env.local", "config", "--images"),
+    { cwd: root, reject: false }
+  );
+  if (r.exitCode !== 0) return null;
+  const refs = (r.stdout ?? "")
+    .split("\n")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  return refs.length > 0 ? refs : null;
+}
+
+/** True when `docker image inspect` succeeds for every ref (parallel). */
+export async function allImagesPresentLocally(
+  refs: string[]
+): Promise<boolean> {
+  const results = await Promise.all(
+    refs.map((ref) =>
+      execa("docker", ["image", "inspect", ref], {
+        stdio: "ignore",
+        reject: false
+      }).then((x) => x.exitCode === 0)
+    )
+  );
+  return results.every(Boolean);
+}
+
 export async function stopStack(
   root: string,
   slug: string,
   withVolumes: boolean
 ) {
-  const args = devArgs(slug, "down");
-  if (withVolumes) args.push("-v");
+  const args = devArgs(slug, "--env-file", ".env.local", "down");
+  if (withVolumes) args.push("-v", "--remove-orphans");
   await execa("docker", args, { cwd: root, stdio: "ignore", reject: false });
 }
 
@@ -106,7 +139,18 @@ export async function bootSharedRedis(root: string) {
 export async function destroyProjectVolumes(cwd: string, project: string) {
   await execa(
     "docker",
-    ["compose", "-f", COMPOSE_DEV_FILE, "-p", project, "down", "-v"],
+    [
+      "compose",
+      "-f",
+      COMPOSE_DEV_FILE,
+      "--env-file",
+      ".env.local",
+      "-p",
+      project,
+      "down",
+      "-v",
+      "--remove-orphans"
+    ],
     { cwd, stdio: "ignore", reject: false }
   );
 }
@@ -228,6 +272,94 @@ export async function dockerProjectStates(): Promise<Map<string, string>> {
     else if (!out.has(project)) out.set(project, state);
   }
   return out;
+}
+
+// Destroy a compose project by force-removing its containers, volumes, and
+// networks using raw docker commands. Works even when the compose file or
+// worktree directory no longer exists (orphaned projects).
+export async function destroyProject(project: string) {
+  // Find containers belonging to the project.
+  const ctr = await execa(
+    "docker",
+    [
+      "ps",
+      "-a",
+      "-q",
+      "--filter",
+      `label=com.docker.compose.project=${project}`
+    ],
+    { reject: false }
+  );
+  const ids = (ctr.stdout ?? "")
+    .split("\n")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (ids.length > 0) {
+    await execa("docker", ["rm", "-f", ...ids], {
+      reject: false,
+      stdio: "ignore"
+    });
+  }
+
+  // Remove volumes prefixed with the project name.
+  const vol = await execa(
+    "docker",
+    ["volume", "ls", "-q", "--filter", `name=${project}_`],
+    {
+      reject: false
+    }
+  );
+  const vols = (vol.stdout ?? "")
+    .split("\n")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (vols.length > 0) {
+    await execa("docker", ["volume", "rm", "-f", ...vols], {
+      reject: false,
+      stdio: "ignore"
+    });
+  }
+
+  // Remove networks prefixed with the project name.
+  const net = await execa(
+    "docker",
+    ["network", "ls", "-q", "--filter", `name=${project}_`],
+    {
+      reject: false
+    }
+  );
+  const nets = (net.stdout ?? "")
+    .split("\n")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (nets.length > 0) {
+    await execa("docker", ["network", "rm", ...nets], {
+      reject: false,
+      stdio: "ignore"
+    });
+  }
+}
+
+// List all docker compose project names that start with "carbon-".
+export async function listCarbonProjects(): Promise<string[]> {
+  const r = await execa(
+    "docker",
+    [
+      "ps",
+      "-a",
+      "--format",
+      '{{.Label "com.docker.compose.project"}}',
+      "--filter",
+      "label=com.docker.compose.project"
+    ],
+    { reject: false }
+  );
+  const all = new Set<string>();
+  for (const line of (r.stdout ?? "").split("\n")) {
+    const name = line.trim();
+    if (name && name.startsWith("carbon-")) all.add(name);
+  }
+  return [...all];
 }
 
 // ---------------------------------------------------------------------------

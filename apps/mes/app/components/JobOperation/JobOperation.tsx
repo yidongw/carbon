@@ -5,6 +5,9 @@ import type { JSONContent } from "@carbon/react";
 import {
   Badge,
   BarProgress,
+  BottomSheet,
+  BottomSheetBody,
+  BottomSheetContent,
   Button,
   Card,
   CardContent,
@@ -25,7 +28,6 @@ import {
   ScrollArea,
   Separator,
   SidebarTrigger,
-  SplitButton,
   Table,
   Tabs,
   TabsContent,
@@ -43,6 +45,7 @@ import {
   useDisclosure,
   useKeyboardWedge,
   useMode,
+  useRouteData,
   VStack
 } from "@carbon/react";
 import type { TrackedEntityAttributes } from "@carbon/utils";
@@ -50,8 +53,7 @@ import {
   convertDateStringToIsoString,
   convertKbToString,
   formatDurationMilliseconds,
-  getItemReadableId,
-  labelSizes
+  getItemReadableId
 } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { PostgrestSingleResponse } from "@supabase/supabase-js";
@@ -75,18 +77,19 @@ import {
   LuGitPullRequest,
   LuHammer,
   LuHardHat,
-  LuPrinter,
   LuQrCode,
   LuSquareUser,
   LuTimer,
-  LuTriangleAlert
+  LuTriangleAlert,
+  LuWrench
 } from "react-icons/lu";
 import { Await, Link, useFetcher, useNavigate, useParams } from "react-router";
 import {
   DeadlineIcon,
   FileIcon,
   FilePreview,
-  OperationStatusIcon
+  OperationStatusIcon,
+  PrintButton
 } from "~/components";
 import {
   MethodIcon,
@@ -123,7 +126,9 @@ import {
 import { IssueMaterialModal } from "./components/IssueMaterialModal";
 import { MaintenanceDispatch } from "./components/MaintenanceDispatch";
 import { ParametersListItem } from "./components/Parameter";
+import { QualityIssueModal } from "./components/QualityIssueModal";
 import { QuantityModal } from "./components/QuantityModal";
+import { ReworkModal } from "./components/ReworkModal";
 import { SerialSelectorModal } from "./components/SerialSelectorModal";
 import {
   DeleteStepRecordModal,
@@ -212,6 +217,8 @@ export const JobOperation = ({
 
   const attributeRecordModal = useDisclosure();
   const attributeRecordDeleteModal = useDisclosure();
+  const maintenanceModal = useDisclosure();
+  const qualityIssueModal = useDisclosure();
   const [activeStep, setActiveStep] = useState(
     parentIsSerial ? serialIndex : 0
   );
@@ -227,6 +234,7 @@ export const JobOperation = ({
     attributeRecordModal.isOpen || attributeRecordDeleteModal.isOpen;
 
   const {
+    actionsSheet,
     availableEntities,
     active,
     activeTab,
@@ -377,36 +385,10 @@ export const JobOperation = ({
     attributeRecordDeleteModal.onClose();
   };
 
-  const navigateToTrackingLabels = (
-    zpl?: boolean,
-    {
-      labelSize,
-      trackedEntityId
-    }: { labelSize?: string; trackedEntityId?: string } = {}
-  ) => {
-    if (!window) return;
-    if (!operationId) return;
-
-    if (zpl) {
-      window.open(
-        window.location.origin +
-          path.to.file.operationLabelsZpl(operationId, {
-            labelSize,
-            trackedEntityId
-          }),
-        "_blank"
-      );
-    } else {
-      window.open(
-        window.location.origin +
-          path.to.file.operationLabelsPdf(operationId, {
-            labelSize,
-            trackedEntityId
-          }),
-        "_blank"
-      );
-    }
-  };
+  const layoutData = useRouteData<{ location: string }>(
+    path.to.authenticatedRoot
+  );
+  const locationId = layoutData?.location;
 
   const completeFetcher = useFetcher<Result>();
   useKeyboardWedge({
@@ -462,13 +444,7 @@ export const JobOperation = ({
                 >
                   <Trans>Model</Trans>
                 </TabsTrigger>
-                <TabsTrigger
-                  disabled={
-                    !operation.workInstruction ||
-                    Object.keys(operation.workInstruction).length === 0
-                  }
-                  value="procedure"
-                >
+                <TabsTrigger value="procedure">
                   <Trans>Procedure</Trans>
                 </TabsTrigger>
                 <TabsTrigger value="chat">
@@ -598,9 +574,12 @@ export const JobOperation = ({
                   <ItemThumbnail thumbnailPath={thumbnailPath} size="xl" />
                 )}
                 <div className="flex flex-col flex-grow">
-                  <Heading size="h3" className="line-clamp-1">
-                    {operation.description}
-                  </Heading>
+                  <HStack spacing={2}>
+                    <Heading size="h3" className="line-clamp-1">
+                      {operation.description}
+                    </Heading>
+                    {operation.reworkId && <Badge variant="red">Rework</Badge>}
+                  </HStack>
                   <p className="text-muted-foreground line-clamp-1">
                     {operation.itemDescription}{" "}
                   </p>
@@ -965,6 +944,7 @@ export const JobOperation = ({
                     aria-label="Issue Material"
                     leftIcon={<LuGitBranchPlus />}
                     variant="secondary"
+                    size="lg"
                     onClick={() => {
                       flushSync(() => {
                         setSelectedMaterial(null);
@@ -1003,19 +983,19 @@ export const JobOperation = ({
 
                       return (
                         <>
-                          <Table className="w-full">
+                          <Table className="w-full text-base">
                             <Thead>
                               <Tr>
-                                <Th>
+                                <Th className="text-sm">
                                   <Trans>Part</Trans>
                                 </Th>
-                                <Th className="lg:table-cell hidden">
+                                <Th className="text-sm lg:table-cell hidden">
                                   <Trans>Source</Trans>
                                 </Th>
-                                <Th>
+                                <Th className="text-sm">
                                   <Trans>Estimated</Trans>
                                 </Th>
-                                <Th>
+                                <Th className="text-sm">
                                   <Trans>Actual</Trans>
                                 </Th>
                                 <Th className="text-right" />
@@ -1054,6 +1034,7 @@ export const JobOperation = ({
                                       <Tr
                                         key={`material-${material.id}`}
                                         className={cn(
+                                          "[&>td]:py-3",
                                           !isRelatedToOperation &&
                                             "opacity-50 hover:opacity-100"
                                         )}
@@ -1064,13 +1045,13 @@ export const JobOperation = ({
                                             className="justify-between"
                                           >
                                             <VStack spacing={0}>
-                                              <span className="font-semibold">
+                                              <span className="font-semibold text-base">
                                                 {getItemReadableId(
                                                   items,
                                                   material.itemId ?? ""
                                                 )}
                                               </span>
-                                              <span className="text-muted-foreground text-xs">
+                                              <span className="text-muted-foreground text-sm">
                                                 {material.description}
                                               </span>
                                             </VStack>
@@ -1199,6 +1180,7 @@ export const JobOperation = ({
                                             material.requiresSerialTracking) && (
                                             <Button
                                               className="flex-shrink-0"
+                                              size="lg"
                                               variant={
                                                 someRelatedMaterialIsIssued ||
                                                 !isRelatedToOperation
@@ -1381,6 +1363,8 @@ export const JobOperation = ({
                             <IssueMaterialModal
                               operationId={operation.id}
                               expiredEntityPolicy={expiredEntityPolicy}
+                              locationId={locationId}
+                              workCenterId={operation.workCenterId ?? undefined}
                               material={selectedMaterial ?? undefined}
                               parentId={trackedEntityId ?? ""}
                               parentIdIsSerialized={
@@ -1420,13 +1404,13 @@ export const JobOperation = ({
                 >
                   <Await resolve={files}>
                     {(resolvedFiles) => (
-                      <Table className="w-full">
+                      <Table className="w-full text-base">
                         <Thead>
                           <Tr>
-                            <Th>
+                            <Th className="text-sm">
                               <Trans>Name</Trans>
                             </Th>
-                            <Th>
+                            <Th className="text-sm">
                               <Trans>Size</Trans>
                             </Th>
                             <Th></Th>
@@ -1445,14 +1429,14 @@ export const JobOperation = ({
                           ) : (
                             <>
                               {modelUpload?.modelName && (
-                                <Tr>
+                                <Tr className="[&>td]:py-3">
                                   <Td>
                                     <HStack>
                                       <LuAxis3D className="text-emerald-500 w-6 h-6" />
                                       <span>{modelUpload.modelName}</span>
                                     </HStack>
                                   </Td>
-                                  <Td className="text-xs font-mono">
+                                  <Td className="text-sm font-mono">
                                     {modelUpload.modelSize
                                       ? convertKbToString(
                                           Math.floor(
@@ -1491,7 +1475,10 @@ export const JobOperation = ({
                               {resolvedFiles.map((file) => {
                                 const type = getFileType(file.name);
                                 return (
-                                  <Tr key={`file-${file.id}`}>
+                                  <Tr
+                                    key={`file-${file.id}`}
+                                    className="[&>td]:py-3"
+                                  >
                                     <Td>
                                       <HStack>
                                         <FileIcon type={type} />
@@ -1527,7 +1514,7 @@ export const JobOperation = ({
                                         </span>
                                       </HStack>
                                     </Td>
-                                    <Td className="text-xs font-mono">
+                                    <Td className="text-sm font-mono">
                                       {convertKbToString(
                                         Math.floor(
                                           (file.metadata?.size ?? 0) / 1024
@@ -1581,31 +1568,32 @@ export const JobOperation = ({
                       </Heading>
                       {trackedEntities?.length > 0 && (
                         <HStack>
-                          <SplitButton
-                            leftIcon={<LuQrCode />}
-                            dropdownItems={labelSizes.map((size) => ({
-                              label: size.name,
-                              onClick: () =>
-                                navigateToTrackingLabels(!!size.zpl, {
-                                  labelSize: size.id
-                                })
-                            }))}
-                            // TODO: if we knew the preferred label size, we could use that here
-                            onClick={() => navigateToTrackingLabels(false)}
+                          <PrintButton
+                            sourceDocument="Operation"
+                            sourceDocumentId={operationId!}
+                            locationId={locationId}
+                            context="workCenter"
+                            workCenterId={operation.workCenterId ?? undefined}
+                            fileRoutes={{
+                              pdf: path.to.file.operationLabelsPdf,
+                              zpl: path.to.file.operationLabelsZpl
+                            }}
+                          />
+                          <Button
+                            variant="secondary"
+                            size="lg"
+                            leftIcon={<LuBarcode />}
                           >
-                            <Trans>Tracking Labels</Trans>
-                          </SplitButton>
-                          <Button variant="secondary" leftIcon={<LuBarcode />}>
                             <Trans>Scan</Trans>
                           </Button>
                         </HStack>
                       )}
                     </HStack>
 
-                    <Table className="w-full">
+                    <Table className="w-full text-base">
                       <Thead>
                         <Tr>
-                          <Th>
+                          <Th className="text-sm">
                             <Trans>Serial</Trans>
                           </Th>
                           <Th className="text-right" />
@@ -1624,31 +1612,38 @@ export const JobOperation = ({
                           </Tr>
                         ) : (
                           trackedEntities?.map((entity) => (
-                            <Tr key={`serial-${entity.id}`}>
-                              <Td className="flex gap-2 items-center">
-                                <span>{entity.id}</span>
-                                {entity.id === trackedEntityId && (
-                                  <LuCheck className="text-emerald-500 size-4" />
-                                )}
-                                <Copy text={entity.id} />
+                            <Tr
+                              key={`serial-${entity.id}`}
+                              className="[&>td]:py-3"
+                            >
+                              <Td>
+                                <div className="flex gap-2 items-center">
+                                  <span>{entity.id}</span>
+                                  {entity.id === trackedEntityId && (
+                                    <LuCheck className="text-emerald-500 size-4" />
+                                  )}
+                                  <Copy text={entity.id} />
+                                </div>
                               </Td>
 
                               <Td className="text-right">
                                 <div className="flex justify-end gap-2">
-                                  <IconButton
-                                    aria-label="Print Label"
-                                    size="sm"
-                                    icon={<LuPrinter />}
-                                    variant="secondary"
-                                    onClick={() => {
-                                      navigateToTrackingLabels(false, {
-                                        trackedEntityId: entity.id
-                                      });
+                                  <PrintButton
+                                    sourceDocument="Entity"
+                                    sourceDocumentId={entity.id}
+                                    locationId={locationId}
+                                    context="workCenter"
+                                    workCenterId={
+                                      operation.workCenterId ?? undefined
+                                    }
+                                    fileRoutes={{
+                                      pdf: path.to.file.trackedEntityLabelPdf,
+                                      zpl: path.to.file.trackedEntityLabelZpl
                                     }}
                                   />
                                   <Button
                                     variant="secondary"
-                                    size="sm"
+                                    size="lg"
                                     isDisabled={entity.id === trackedEntityId}
                                     onClick={() => {
                                       const entityIndex =
@@ -1958,16 +1953,9 @@ export const JobOperation = ({
                     <Await resolve={workCenter}>
                       {(resolvedWorkCenter) =>
                         resolvedWorkCenter.data && (
-                          <VStack spacing={1}>
-                            <HStack className="justify-between items-start w-full">
-                              <Heading size="h4" className="line-clamp-1">
-                                {resolvedWorkCenter.data?.name}
-                              </Heading>
-                              <MaintenanceDispatch
-                                workCenter={resolvedWorkCenter.data}
-                              />
-                            </HStack>
-                          </VStack>
+                          <Heading size="h4" className="line-clamp-1">
+                            {resolvedWorkCenter.data?.name}
+                          </Heading>
                         )
                       }
                     </Await>
@@ -2078,31 +2066,6 @@ export const JobOperation = ({
                 trackedEntityId={trackedEntityId}
               />
               <div className="flex flex-row md:flex-col items-center gap-2 justify-center">
-                {/* <IconButtonWithTooltip
-                  icon={
-                    <FaRedoAlt className="text-accent-foreground group-hover:text-accent-foreground/80" />
-                  }
-                  tooltip="Log Rework"
-                  onClick={reworkModal.onOpen}
-                /> 
-                */}
-                <IconButtonWithTooltip
-                  disabled={
-                    parentIsSerial &&
-                    trackedEntities.some(
-                      (entity) =>
-                        entity.id === trackedEntityId &&
-                        `Operation ${operationId}` in
-                          (entity.attributes as TrackedEntityAttributes)
-                    )
-                  }
-                  icon={
-                    <FaTrash className="text-accent-foreground group-hover:text-accent-foreground/80" />
-                  }
-                  tooltip={t`Log Scrap`}
-                  onClick={scrapModal.onOpen}
-                />
-
                 <IconButtonWithTooltip
                   disabled={
                     parentIsSerial &&
@@ -2120,14 +2083,11 @@ export const JobOperation = ({
                   onClick={completeModal.onOpen}
                 />
                 <IconButtonWithTooltip
-                  icon={<FaCheck />}
-                  variant={
-                    operation.quantityComplete === operation.operationQuantity
-                      ? "success"
-                      : "default"
+                  icon={
+                    <LuEllipsisVertical className="text-accent-foreground group-hover:text-accent-foreground/80" />
                   }
-                  tooltip={t`Close Out`}
-                  onClick={finishModal.onOpen}
+                  tooltip={t`More Actions`}
+                  onClick={actionsSheet.onOpen}
                 />
               </div>
             </div>
@@ -2249,12 +2209,21 @@ export const JobOperation = ({
                     {operation.quantityComplete}/{operation.targetQuantity}
                   </span>
                   <BarProgress
-                    activeClassName={
-                      operation.operationStatus === "Paused" &&
-                      operation.quantityComplete < operation.targetQuantity
-                        ? "bg-yellow-500"
-                        : "bg-emerald-500"
-                    }
+                    segments={[
+                      {
+                        value: operation.quantityComplete,
+                        className: "bg-emerald-500"
+                      },
+                      {
+                        value: operation.quantityReworked ?? 0,
+                        className: "bg-yellow-500"
+                      },
+                      {
+                        value: operation.quantityScrapped ?? 0,
+                        className: "bg-red-500"
+                      }
+                    ]}
+                    max={operation.targetQuantity || 1}
                     progress={
                       (operation.quantityComplete / operation.targetQuantity) *
                       100
@@ -2266,17 +2235,102 @@ export const JobOperation = ({
           </Times>
         )}
       </Tabs>
+      <BottomSheet
+        open={actionsSheet.isOpen}
+        onOpenChange={(open) => {
+          if (!open) actionsSheet.onClose();
+        }}
+      >
+        <BottomSheetContent className="max-w-md mx-auto">
+          <BottomSheetBody>
+            <div className="flex flex-col gap-2 pb-2">
+              <button
+                type="button"
+                className="flex items-center gap-3 rounded-lg bg-accent px-4 py-4 text-accent-foreground ring-1 ring-black/5 active:scale-[0.98] transition-transform"
+                onClick={() => {
+                  actionsSheet.onClose();
+                  scrapModal.onOpen();
+                }}
+              >
+                <FaTrash className="size-4 shrink-0 fill-muted-foreground" />
+                <span className="text-base/6 font-medium">
+                  <Trans>Scrap</Trans>
+                </span>
+              </button>
+              <button
+                type="button"
+                className="flex items-center gap-3 rounded-lg bg-accent px-4 py-4 text-accent-foreground ring-1 ring-black/5 active:scale-[0.98] transition-transform"
+                onClick={() => {
+                  actionsSheet.onClose();
+                  reworkModal.onOpen();
+                }}
+              >
+                <LuGitPullRequest className="size-4 shrink-0 stroke-muted-foreground" />
+                <span className="text-base/6 font-medium">
+                  <Trans>Rework</Trans>
+                </span>
+              </button>
+              <button
+                type="button"
+                className="flex items-center gap-3 rounded-lg bg-accent px-4 py-4 text-accent-foreground ring-1 ring-black/5 active:scale-[0.98] transition-transform"
+                onClick={() => {
+                  actionsSheet.onClose();
+                  finishModal.onOpen();
+                }}
+              >
+                <LuCheck className="size-4 shrink-0 stroke-muted-foreground" />
+                <span className="text-base/6 font-medium">
+                  <Trans>Finish</Trans>
+                </span>
+              </button>
+              <Suspense>
+                <Await resolve={workCenter}>
+                  {(resolvedWorkCenter) =>
+                    resolvedWorkCenter.data &&
+                    !resolvedWorkCenter.data.isBlocked ? (
+                      <button
+                        type="button"
+                        className="flex items-center gap-3 rounded-lg bg-accent px-4 py-4 text-accent-foreground ring-1 ring-black/5 active:scale-[0.98] transition-transform"
+                        onClick={() => {
+                          actionsSheet.onClose();
+                          maintenanceModal.onOpen();
+                        }}
+                      >
+                        <LuWrench className="size-4 shrink-0 stroke-muted-foreground" />
+                        <span className="text-base/6 font-medium">
+                          <Trans>Maintenance</Trans>
+                        </span>
+                      </button>
+                    ) : null
+                  }
+                </Await>
+              </Suspense>
+              <button
+                type="button"
+                className="flex items-center gap-3 rounded-lg bg-accent px-4 py-4 text-accent-foreground ring-1 ring-black/5 active:scale-[0.98] transition-transform"
+                onClick={() => {
+                  actionsSheet.onClose();
+                  qualityIssueModal.onOpen();
+                }}
+              >
+                <LuTriangleAlert className="size-4 shrink-0 stroke-muted-foreground" />
+                <span className="text-base/6 font-medium">
+                  <Trans>Quality Issue</Trans>
+                </span>
+              </button>
+            </div>
+          </BottomSheetBody>
+        </BottomSheetContent>
+      </BottomSheet>
       {reworkModal.isOpen && (
-        <QuantityModal
-          type="rework"
-          laborProductionEvent={laborProductionEvent}
-          machineProductionEvent={machineProductionEvent}
+        <ReworkModal
           operation={operation}
+          jobId={job.id!}
+          isOpen={reworkModal.isOpen}
+          onClose={reworkModal.onClose}
+          trackedEntities={trackedEntities}
           parentIsSerial={parentIsSerial}
           parentIsBatch={parentIsBatch}
-          setupProductionEvent={setupProductionEvent}
-          trackedEntityId={trackedEntityId}
-          onClose={reworkModal.onClose}
         />
       )}
       {scrapModal.isOpen && (
@@ -2381,6 +2435,29 @@ export const JobOperation = ({
           description={t`Are you sure you want to delete this step?`}
         />
       )}
+
+      <QualityIssueModal
+        operationId={operation.id}
+        trackedEntityId={
+          parentIsSerial || parentIsBatch ? trackedEntityId : undefined
+        }
+        isOpen={qualityIssueModal.isOpen}
+        onClose={qualityIssueModal.onClose}
+      />
+
+      <Suspense key={`maintenance-modal-${operationId}`}>
+        <Await resolve={workCenter}>
+          {(resolvedWorkCenter) =>
+            resolvedWorkCenter.data && (
+              <MaintenanceDispatch
+                workCenter={resolvedWorkCenter.data}
+                isOpen={maintenanceModal.isOpen}
+                onClose={maintenanceModal.onClose}
+              />
+            )
+          }
+        </Await>
+      </Suspense>
     </>
   );
 };

@@ -5,13 +5,16 @@ import {
   getCarbon,
   getMESUrl
 } from "@carbon/auth";
-import { setCompanyId } from "@carbon/auth/company.server";
+import { getCompanyId, setCompanyId } from "@carbon/auth/company.server";
 import {
   destroyAuthSession,
   requireAuthSession,
   updateCompanySession
 } from "@carbon/auth/session.server";
 import { isAuditLogEnabled } from "@carbon/database/audit";
+import type { PrintingSettings } from "@carbon/printing";
+import { getPrinterRoutes } from "@carbon/printing";
+import { PrintingProvider } from "@carbon/printing/ui";
 import {
   ItarPopup,
   TooltipProvider,
@@ -44,7 +47,8 @@ import { getOpenClockEntry } from "~/modules/people";
 import {
   getCompanies,
   getCompanyIntegrations,
-  getCompanySettings
+  getCompanySettings,
+  getEmployeeCompanies
 } from "~/modules/settings";
 import { getCustomFieldsSchemas } from "~/modules/shared/shared.server";
 import {
@@ -52,6 +56,7 @@ import {
   isApprovalRequired
 } from "~/modules/shared/shared.service";
 import {
+  getModulePreferences,
   getUser,
   getUserClaims,
   getUserDefaults,
@@ -100,6 +105,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   // Parallelize all requests
   const [
     companies,
+    employeeCompaniesResult,
     stripeCustomer,
     customFields,
     integrations,
@@ -109,9 +115,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
     claims,
     groups,
     defaults,
-    auditLogEnabled
+    auditLogEnabled,
+    modulePreferences,
+    printerRoutes
   ] = await Promise.all([
     getCompanies(client, userId),
+    getEmployeeCompanies(client, userId),
     getStripeCustomerByCompanyId(companyId, userId),
     getCustomFieldsSchemas(client, { companyId }),
     getCompanyIntegrations(client, companyId),
@@ -121,17 +130,44 @@ export async function loader({ request }: LoaderFunctionArgs) {
     getUserClaims(userId, companyId),
     getUserGroups(client, userId),
     getUserDefaults(client, userId, companyId),
-    isAuditLogEnabled(client, companyId)
+    isAuditLogEnabled(client, companyId),
+    getModulePreferences(client, userId, companyId),
+    getPrinterRoutes(client, companyId)
   ]);
 
   if (!claims || user.error || !user.data || !groups.data) {
     throw await destroyAuthSession(request);
   }
 
+  const employeeCompanies = employeeCompaniesResult.data ?? [];
+  const hasMultipleCompanies = employeeCompanies.length > 1;
+
+  // Send multi-company users to the picker, preserving where they were headed.
+  const redirectToPicker = () => {
+    const url = new URL(request.url);
+    const dest = `${url.pathname}${url.search}`;
+    return redirect(
+      `${path.to.selectCompany}?redirectTo=${encodeURIComponent(dest)}`
+    );
+  };
+
+  // Multi-company users must actively choose a company. The companyId cookie is
+  // the "has chosen this session" marker — set only by the picker / company
+  // switch and cleared on logout. Until it's present, force the picker so we
+  // never silently serve the alphabetically-first company.
+  if (hasMultipleCompanies && !getCompanyId(request)) {
+    throw redirectToPicker();
+  }
+
   let company = companies.data?.find((c) => c.companyId === companyId);
 
   if (!company && companies.data?.length) {
-    company = companies.data[0];
+    // Session company is no longer valid (e.g. access revoked). Multi-company
+    // users re-pick; single-company users auto-enter their only company.
+    if (hasMultipleCompanies) {
+      throw redirectToPicker();
+    }
+    company = employeeCompanies[0] ?? companies.data[0];
     const sessionCookie = await updateCompanySession(
       request,
       company.id!,
@@ -170,7 +206,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
     plan: stripeCustomer?.planId,
     role: claims?.role,
     user: user.data,
+    modulePreferences: modulePreferences.data ?? [],
     savedViews: savedViews.data ?? [],
+    printerRoutes: printerRoutes.data ?? [],
     supplierApprovalRequired: isApprovalRequired(client, "supplier", companyId),
     openClockEntry: companySettings.data?.timeCardEnabled
       ? getOpenClockEntry(client, userId, companyId)
@@ -179,7 +217,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export default function AuthenticatedRoute() {
-  const { session, user, companySettings, openClockEntry } =
+  const { session, user, companySettings, openClockEntry, printerRoutes } =
     useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const { isOpen, training, dismiss } = useTrainingPanel();
@@ -215,42 +253,53 @@ export default function AuthenticatedRoute() {
         />
       ) : (
         <CarbonProvider session={session}>
-          <RealtimeDataProvider>
-            <TooltipProvider>
-              <div className="flex flex-col h-screen">
-                <Topbar />
-                <div className="flex flex-1 h-[calc(100vh-49px)] relative">
-                  <PrimaryNavigation />
-                  <main className="flex-1 overflow-y-auto scrollbar-hide border-l border-t bg-muted sm:rounded-tl-2xl relative z-10">
-                    <Outlet />
-                  </main>
+          <PrintingProvider
+            value={{
+              printing:
+                (companySettings?.printing as PrintingSettings | null) ?? null,
+              printerRoutes,
+              useMetric: Boolean(companySettings?.useMetric),
+              printPath: path.to.manualPrint,
+              settingsPath: path.to.printingSettings
+            }}
+          >
+            <RealtimeDataProvider>
+              <TooltipProvider>
+                <div className="flex flex-col h-screen">
+                  <Topbar />
+                  <div className="flex flex-1 h-[calc(100vh-49px)] relative">
+                    <PrimaryNavigation />
+                    <main className="flex-1 overflow-y-auto scrollbar-hide border-l border-t bg-muted sm:rounded-tl-2xl relative z-10">
+                      <Outlet />
+                    </main>
+                  </div>
                 </div>
-              </div>
-              <TrainingPanel
-                training={training}
-                isOpen={isOpen}
-                onDismiss={dismiss}
-              />
-              {companySettings?.timeCardEnabled && (
-                <Suspense fallback={null}>
-                  <Await resolve={openClockEntry}>
-                    {(resolved) => (
-                      <TimeCardWarning
-                        openClockEntry={
-                          resolved?.data
-                            ? {
-                                id: resolved.data.id,
-                                clockIn: resolved.data.clockIn
-                              }
-                            : null
-                        }
-                      />
-                    )}
-                  </Await>
-                </Suspense>
-              )}
-            </TooltipProvider>
-          </RealtimeDataProvider>
+                <TrainingPanel
+                  training={training}
+                  isOpen={isOpen}
+                  onDismiss={dismiss}
+                />
+                {companySettings?.timeCardEnabled && (
+                  <Suspense fallback={null}>
+                    <Await resolve={openClockEntry}>
+                      {(resolved) => (
+                        <TimeCardWarning
+                          openClockEntry={
+                            resolved?.data
+                              ? {
+                                  id: resolved.data.id,
+                                  clockIn: resolved.data.clockIn
+                                }
+                              : null
+                          }
+                        />
+                      )}
+                    </Await>
+                  </Suspense>
+                )}
+              </TooltipProvider>
+            </RealtimeDataProvider>
+          </PrintingProvider>
         </CarbonProvider>
       )}
     </div>

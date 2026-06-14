@@ -6,6 +6,7 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
+  Checkbox,
   cn,
   DatePicker,
   DropdownMenu,
@@ -26,7 +27,6 @@ import {
   ModalTitle,
   NumberField,
   NumberInput,
-  SplitButton,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -35,7 +35,6 @@ import {
   VStack
 } from "@carbon/react";
 import type { TrackedEntityAttributes } from "@carbon/utils";
-import { labelSizes } from "@carbon/utils";
 import { parseDate } from "@internationalized/date";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { PostgrestResponse } from "@supabase/supabase-js";
@@ -45,7 +44,6 @@ import {
   LuCircleAlert,
   LuEllipsisVertical,
   LuGroup,
-  LuQrCode,
   LuSplit,
   LuTrash,
   LuX
@@ -59,11 +57,16 @@ import {
   useRevalidator,
   useSubmit
 } from "react-router";
-import { DocumentPreview, Empty, ItemThumbnail } from "~/components";
+import {
+  DocumentPreview,
+  Empty,
+  ItemThumbnail,
+  PrintButton
+} from "~/components";
 import DocumentIcon from "~/components/DocumentIcon";
 import { Enumerable } from "~/components/Enumerable";
 import FileDropzone from "~/components/FileDropzone";
-import { StorageUnitDrillSelect } from "~/components/Form/StorageUnitDrillSelect";
+import StorageUnit from "~/components/Form/StorageUnit";
 import { useUnitOfMeasure } from "~/components/Form/UnitOfMeasure";
 import { ConfirmDelete } from "~/components/Modals";
 import { useRouteData, useUser } from "~/hooks";
@@ -92,6 +95,16 @@ const ReceiptLines = () => {
   const routeData = useRouteData<{
     receipt: Receipt;
     receiptLines: ReceiptLine[];
+    fixedAssetLines: {
+      id: string;
+      purchaseOrderLineId: string;
+      assetId: string;
+      assetName: string | null;
+      assetReadableId: string | null;
+      description: string | null;
+      received: boolean;
+      serialNumber: string | null;
+    }[];
     receiptFiles: PostgrestResponse<StorageItem>;
     receiptLineTracking: ItemTracking[];
     batchProperties: PostgrestResponse<BatchProperty>;
@@ -278,10 +291,102 @@ const ReceiptLines = () => {
           </div>
         </CardContent>
       </Card>
+      {routeData?.fixedAssetLines && routeData.fixedAssetLines.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              <Trans>Fixed Assets</Trans>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="border rounded-lg">
+              {routeData.fixedAssetLines.map((line, index) => (
+                <ReceiptFixedAssetLineItem
+                  key={line.id}
+                  line={line}
+                  isReadOnly={isPosted}
+                  className={
+                    index < routeData.fixedAssetLines.length - 1
+                      ? "border-b"
+                      : ""
+                  }
+                />
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
       <Outlet />
     </>
   );
 };
+
+function ReceiptFixedAssetLineItem({
+  line,
+  isReadOnly,
+  className
+}: {
+  line: {
+    id: string;
+    purchaseOrderLineId: string;
+    assetId: string;
+    assetName: string | null;
+    assetReadableId: string | null;
+    description: string | null;
+    received: boolean;
+    serialNumber: string | null;
+  };
+  isReadOnly: boolean;
+  className?: string;
+}) {
+  const fetcher = useFetcher();
+  const [serialNumber, setSerialNumber] = useState(line.serialNumber ?? "");
+
+  const updateField = (field: string, value: string) => {
+    const formData = new FormData();
+    formData.append("id", line.id);
+    formData.append("field", field);
+    formData.append("value", value);
+    fetcher.submit(formData, {
+      method: "post",
+      action: path.to.receiptFixedAssetLineUpdate
+    });
+  };
+
+  return (
+    <div className={cn("flex items-center gap-4 p-6", className)}>
+      <Checkbox
+        isChecked={line.received}
+        disabled={isReadOnly}
+        onCheckedChange={(checked) =>
+          updateField("received", String(checked === true))
+        }
+      />
+      <VStack spacing={0} className="flex-1 min-w-0">
+        <span className="text-sm font-medium">
+          {line.assetName ?? line.description ?? "Fixed Asset"}
+        </span>
+        {line.assetReadableId && (
+          <span className="text-xs text-muted-foreground">
+            {line.assetReadableId}
+          </span>
+        )}
+      </VStack>
+      <Input
+        placeholder="Serial Number"
+        value={serialNumber}
+        isDisabled={isReadOnly}
+        className="w-48"
+        onChange={(e) => setSerialNumber(e.target.value)}
+        onBlur={() => {
+          if (serialNumber !== (line.serialNumber ?? "")) {
+            updateField("serialNumber", serialNumber);
+          }
+        }}
+      />
+    </div>
+  );
+}
 
 function ReceiptLineItem({
   line,
@@ -350,7 +455,7 @@ function ReceiptLineItem({
               aria-label={t`Line options`}
               variant="secondary"
               icon={<LuEllipsisVertical />}
-              size="sm"
+              size="md"
             />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
@@ -470,7 +575,7 @@ function ReceiptLineItem({
             <label className="text-xs text-muted-foreground">
               Storage Unit
             </label>
-            <StorageUnitDrillSelect
+            <StorageUnit
               locationId={line.locationId}
               value={line.storageUnitId}
               isReadOnly={isReadOnly}
@@ -478,7 +583,7 @@ function ReceiptLineItem({
                 onUpdate({
                   lineId: line.id!,
                   field: "storageUnitId",
-                  value: storageUnit
+                  value: storageUnit?.id ?? ""
                 });
               }}
             />
@@ -719,28 +824,6 @@ function BatchForm({
     updateBatchNumber(newValues);
   };
 
-  const navigateToLineTrackingLabels = (zpl?: boolean, labelSize?: string) => {
-    if (!window) return;
-    if (zpl) {
-      window.open(
-        window.location.origin +
-          path.to.file.receiptLabelsZpl(receipt?.id ?? "", {
-            lineId: line.id!,
-            labelSize
-          }),
-        "_blank"
-      );
-    } else {
-      window.open(
-        window.location.origin +
-          path.to.file.receiptLabelsPdf(receipt?.id ?? "", {
-            lineId: line.id!,
-            labelSize
-          }),
-        "_blank"
-      );
-    }
-  };
   const propertiesDisclosure = useDisclosure();
 
   return (
@@ -748,22 +831,30 @@ function BatchForm({
       <div className="flex justify-between items-center gap-4">
         <Heading size="h4">Batch Properties</Heading>
         <div className="flex items-center gap-2">
-          <SplitButton
-            size="sm"
-            leftIcon={<LuQrCode />}
-            dropdownItems={labelSizes.map((size) => ({
-              label: size.name,
-              onClick: () => navigateToLineTrackingLabels(!!size.zpl, size.id)
-            }))}
-            onClick={() => navigateToLineTrackingLabels(false)}
-            variant="secondary"
-          >
-            Tracking Labels
-          </SplitButton>
+          {values.number.trim() !== "" && (
+            <PrintButton
+              sourceDocument="Receipt"
+              sourceDocumentId={receipt?.id ?? ""}
+              locationId={receipt?.locationId ?? undefined}
+              context="receiving"
+              fileRoutes={{
+                pdf: (id, opts) =>
+                  path.to.file.receiptLabelsPdf(id, {
+                    ...opts,
+                    lineId: line.id!
+                  }),
+                zpl: (id, opts) =>
+                  path.to.file.receiptLabelsZpl(id, {
+                    ...opts,
+                    lineId: line.id!
+                  })
+              }}
+            />
+          )}
           <Button
             variant="secondary"
             leftIcon={<LuGroup />}
-            size="sm"
+            size="md"
             onClick={propertiesDisclosure.onOpen}
           >
             Edit Properties
@@ -972,47 +1063,31 @@ function SerialForm({
     [line.id, line.itemId, receipt?.id, validateSerialNumber, expiryDate]
   );
 
-  const navigateToLineTrackingLabels = (zpl?: boolean, labelSize?: string) => {
-    if (!window) return;
-    if (zpl) {
-      window.open(
-        window.location.origin +
-          path.to.file.receiptLabelsZpl(receipt?.id ?? "", {
-            lineId: line.id!,
-            labelSize
-          }),
-        "_blank"
-      );
-    } else {
-      window.open(
-        window.location.origin +
-          path.to.file.receiptLabelsPdf(receipt?.id ?? "", {
-            lineId: line.id!,
-            labelSize
-          }),
-        "_blank"
-      );
-    }
-  };
   const propertiesDisclosure = useDisclosure();
-  console.log({ serialNumbers, expiryDate });
+
   return (
     <div className="flex flex-col gap-6 p-6 border rounded-lg">
       <div className="flex justify-between items-center gap-6">
         <Heading size="h4">Serial Numbers</Heading>
         <div className="flex items-center gap-2">
-          <SplitButton
-            size="sm"
-            leftIcon={<LuQrCode />}
-            dropdownItems={labelSizes.map((size) => ({
-              label: size.name,
-              onClick: () => navigateToLineTrackingLabels(!!size.zpl, size.id)
-            }))}
-            onClick={() => navigateToLineTrackingLabels(false)}
-            variant="secondary"
-          >
-            Tracking Labels
-          </SplitButton>
+          <PrintButton
+            sourceDocument="Receipt"
+            sourceDocumentId={receipt?.id ?? ""}
+            locationId={receipt?.locationId ?? undefined}
+            context="receiving"
+            fileRoutes={{
+              pdf: (id, opts) =>
+                path.to.file.receiptLabelsPdf(id, {
+                  ...opts,
+                  lineId: line.id!
+                }),
+              zpl: (id, opts) =>
+                path.to.file.receiptLabelsZpl(id, {
+                  ...opts,
+                  lineId: line.id!
+                })
+            }}
+          />
         </div>
       </div>
 

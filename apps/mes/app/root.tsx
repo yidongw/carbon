@@ -47,13 +47,41 @@ import { getTheme } from "./services/theme.server";
 export const middleware = [flashMiddleware];
 export const clientMiddleware = [flashClientMiddleware];
 
-export function links() {
-  return [
-    { rel: "stylesheet", href: Tailwind },
-    { rel: "stylesheet", href: Background },
-    { rel: "stylesheet", href: NProgress }
-  ];
-}
+export const links: Route.LinksFunction = () => [
+  { rel: "stylesheet", href: Tailwind },
+  { rel: "stylesheet", href: Background },
+  { rel: "stylesheet", href: NProgress },
+  {
+    rel: "icon",
+    type: "image/svg+xml",
+    href: "/carbon-mark-light.svg",
+    media: "(prefers-color-scheme: light)"
+  },
+  {
+    rel: "icon",
+    type: "image/svg+xml",
+    href: "/carbon-mark-dark.svg",
+    media: "(prefers-color-scheme: dark)"
+  },
+  {
+    rel: "icon",
+    type: "image/png",
+    sizes: "32x32",
+    href: "/favicon-32x32.png"
+  },
+  {
+    rel: "icon",
+    type: "image/png",
+    sizes: "16x16",
+    href: "/favicon-16x16.png"
+  },
+  {
+    rel: "apple-touch-icon",
+    sizes: "180x180",
+    href: "/apple-touch-icon.png"
+  },
+  { rel: "manifest", href: "/site.webmanifest" }
+];
 
 export const meta: MetaFunction = () => {
   return [
@@ -65,11 +93,13 @@ export const meta: MetaFunction = () => {
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
   const {
+    AUTH_PROVIDERS,
     CARBON_EDITION,
     CARBON_API_URL,
     CONTROLLED_ENVIRONMENT,
     ERP_URL,
     MES_URL,
+    NODE_ENV,
     POSTHOG_API_HOST,
     POSTHOG_PROJECT_PUBLIC_KEY,
     SUPABASE_URL,
@@ -85,11 +115,13 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   return data(
     {
       env: {
+        AUTH_PROVIDERS,
         CARBON_EDITION,
         CARBON_API_URL,
         CONTROLLED_ENVIRONMENT,
         ERP_URL,
         MES_URL,
+        NODE_ENV,
         POSTHOG_API_HOST,
         POSTHOG_PROJECT_PUBLIC_KEY,
         SUPABASE_URL,
@@ -110,6 +142,14 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
+  const contentType = request.headers.get("content-type") ?? "";
+  if (
+    !contentType.includes("multipart/form-data") &&
+    !contentType.includes("application/x-www-form-urlencoded")
+  ) {
+    return data({ error: "Invalid content type" }, { status: 400 });
+  }
+
   const validation = await validator(modeValidator).validate(
     await request.formData()
   );
@@ -183,7 +223,6 @@ function Document({
         />
         <Meta />
         <title>{title}</title>
-        <link rel="manifest" href="/site.webmanifest" />
         <Links />
       </head>
       <body className="h-full bg-background antialiased selection:bg-primary/10 selection:text-primary">
@@ -240,9 +279,14 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
       <div className="light">
         <div className="flex flex-col w-full h-screen  items-center justify-center space-y-4 ">
           <img
-            src="/carbon-logo-mark.svg"
+            src="/carbon-mark-light.svg"
             alt="Carbon Logo"
-            className="block max-w-[60px]"
+            className="block max-w-[60px] dark:hidden"
+          />
+          <img
+            src="/carbon-mark-dark.svg"
+            alt="Carbon Logo"
+            className="max-w-[60px] hidden dark:block"
           />
           <Heading size="h1">Something went wrong</Heading>
           <p className="text-muted-foreground max-w-2xl">{message}</p>
