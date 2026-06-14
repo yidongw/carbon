@@ -368,7 +368,7 @@ export default function QualityDashboard() {
     (kpiFetcher.data as any)?.meta?.qualityIssueTarget ?? qualityIssueTarget;
 
   return (
-    <div className="flex flex-col gap-4 w-full p-4 h-[calc(100dvh-var(--header-height))] overflow-y-auto overscroll-contain scrollbar-thin scrollbar-thumb-rounded-full scrollbar-thumb-muted-foreground">
+    <div className="@container flex flex-col gap-4 w-full p-4 h-[calc(100dvh-var(--header-height))] overflow-y-auto overscroll-contain scrollbar-thin scrollbar-thumb-rounded-full scrollbar-thumb-muted-foreground">
       <HStack spacing={1} className="hidden md:flex">
         <CollapsibleSidebarTrigger />
         <Heading size="h2">
@@ -377,7 +377,7 @@ export default function QualityDashboard() {
       </HStack>
 
       {/* KPI Cards */}
-      <div className="grid w-full gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid w-full gap-4 grid-cols-1 @sm:grid-cols-2 @4xl:grid-cols-4">
         <Card>
           <CardHeader className="flex-row gap-2">
             <LuCircleAlert className="text-muted-foreground" />
@@ -386,7 +386,7 @@ export default function QualityDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <HStack className="justify-between w-full items-center">
+            <div className="flex flex-wrap items-center justify-between gap-2 w-full">
               <h3 className="text-5xl font-medium tracking-tighter">
                 {openIssuesCount}
               </h3>
@@ -401,7 +401,7 @@ export default function QualityDashboard() {
                   <Trans>View</Trans>
                 </Link>
               </Button>
-            </HStack>
+            </div>
           </CardContent>
         </Card>
 
@@ -413,7 +413,7 @@ export default function QualityDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <HStack className="justify-between w-full items-center">
+            <div className="flex flex-wrap items-center justify-between gap-2 w-full">
               <h3 className="text-5xl font-medium tracking-tighter">
                 {containedCount}
               </h3>
@@ -428,7 +428,7 @@ export default function QualityDashboard() {
                   <Trans>View</Trans>
                 </Link>
               </Button>
-            </HStack>
+            </div>
           </CardContent>
         </Card>
 
@@ -440,7 +440,7 @@ export default function QualityDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <HStack className="justify-between w-full items-center">
+            <div className="flex flex-wrap items-center justify-between gap-2 w-full">
               <h3 className="text-5xl font-medium tracking-tighter">
                 {openActionsCount}
               </h3>
@@ -455,7 +455,7 @@ export default function QualityDashboard() {
                   <Trans>View</Trans>
                 </Link>
               </Button>
-            </HStack>
+            </div>
           </CardContent>
         </Card>
 
@@ -479,9 +479,9 @@ export default function QualityDashboard() {
 
       {/* Unified Chart Card */}
       <Card>
-        <HStack className="justify-between items-center">
+        <div className="flex flex-wrap items-center justify-between">
           <CardHeader>
-            <div className="flex w-full justify-start items-center gap-2">
+            <div className="flex flex-wrap justify-start items-center gap-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -515,7 +515,7 @@ export default function QualityDashboard() {
               />
             </div>
           </CardHeader>
-          <CardAction className="flex-row items-center gap-2">
+          <CardAction className="flex-row items-center gap-2 shrink-0">
             <DateSelect
               value={interval}
               onValueChange={onIntervalChange}
@@ -544,7 +544,7 @@ export default function QualityDashboard() {
               </DropdownMenuContent>
             </DropdownMenu>
           </CardAction>
-        </HStack>
+        </div>
         <CardContent className="flex-col gap-4">
           <div className="h-[30dvw] md:h-[23dvw] min-h-[300px]">
             {selectedChart === "weeklyTracking" && (

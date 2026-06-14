@@ -310,7 +310,7 @@ export default function ProductionDashboard() {
   }, [kpiFetcher.data?.data]);
 
   return (
-    <div className="flex flex-col gap-4 w-full p-4 h-[calc(100dvh-var(--header-height))] overflow-y-auto overscroll-contain scrollbar-thin scrollbar-thumb-rounded-full scrollbar-thumb-muted-foreground">
+    <div className="@container flex flex-col gap-4 w-full p-4 h-[calc(100dvh-var(--header-height))] overflow-y-auto overscroll-contain scrollbar-thin scrollbar-thumb-rounded-full scrollbar-thumb-muted-foreground">
       <HStack spacing={1} className="hidden md:flex">
         <CollapsibleSidebarTrigger />
         <Heading size="h2">
@@ -326,7 +326,7 @@ export default function ProductionDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <HStack className="justify-between w-full items-center">
+            <div className="flex flex-wrap items-center justify-between gap-2 w-full">
               <h3 className="text-5xl font-medium tracking-tighter">
                 {activeJobs}
               </h3>
@@ -343,7 +343,7 @@ export default function ProductionDashboard() {
                   <Trans>View Active Jobs</Trans>
                 </Link>
               </Button>
-            </HStack>
+            </div>
           </CardContent>
         </Card>
 
@@ -356,7 +356,7 @@ export default function ProductionDashboard() {
           </CardHeader>
 
           <CardContent>
-            <HStack className="justify-between w-full items-center">
+            <div className="flex flex-wrap items-center justify-between gap-2 w-full">
               <h3 className="text-5xl font-medium tracking-tighter">
                 {assignedJobs}
               </h3>
@@ -369,14 +369,14 @@ export default function ProductionDashboard() {
                   <Trans>View Assigned Jobs</Trans>
                 </Link>
               </Button>
-            </HStack>
+            </div>
           </CardContent>
         </Card>
 
         <Card className="col-span-full">
-          <HStack className="justify-between items-center">
+          <div className="flex flex-wrap items-center justify-between">
             <CardHeader>
-              <div className="flex w-full justify-start items-center gap-2">
+              <div className="flex flex-wrap justify-start items-center gap-2">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
@@ -403,7 +403,7 @@ export default function ProductionDashboard() {
                 </DropdownMenu>
               </div>
             </CardHeader>
-            <CardAction className="flex-row items-center gap-2">
+            <CardAction className="flex-row items-center gap-2 shrink-0">
               <DateSelect
                 value={interval}
                 onValueChange={onIntervalChange}
@@ -432,7 +432,7 @@ export default function ProductionDashboard() {
                 </DropdownMenuContent>
               </DropdownMenu>
             </CardAction>
-          </HStack>
+          </div>
           <CardContent className="min-h-[320px] flex-col gap-4">
             <VStack className="pl-[3px]" spacing={0}>
               {isFetching ? (
