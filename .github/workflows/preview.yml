@@ -63,7 +63,10 @@ jobs:
       - name: Trigger test agent
         if: github.event.action != 'closed'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Must be a user PAT, NOT the default GITHUB_TOKEN: comments created
+          # by GITHUB_TOKEN do not trigger workflow runs, so agent-trigger.yml
+          # (issue_comment) would never fire and the bot would never be called.
+          GH_TOKEN: ${{ secrets.AGENT_PAT }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           TEST_AGENT: ${{ vars.TEST_AGENT || '/cc' }}
         run: |
