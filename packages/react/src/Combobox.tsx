@@ -99,7 +99,7 @@ const Combobox = forwardRef<HTMLButtonElement, ComboboxProps>(
     return (
       <HStack
         className={cn(isInlinePreview ? "w-full" : "min-w-0 flex-grow")}
-        spacing={isInlinePreview ? 2 : 1}
+        spacing={1}
       >
         {isInlinePreview && value && (
           <span className="flex flex-grow line-clamp-1 items-center">
@@ -172,11 +172,11 @@ const Combobox = forwardRef<HTMLButtonElement, ComboboxProps>(
         </Popover>
         {isClearable && !isReadOnly && value && (
           <IconButton
-            variant="ghost"
+            variant={isInlinePreview ? "secondary" : "ghost"}
             aria-label="Clear"
             icon={<LuX />}
             onClick={() => onChange?.("")}
-            size={size === "sm" ? "md" : size}
+            size={isInlinePreview ? "sm" : size === "sm" ? "md" : size}
           />
         )}
       </HStack>
