@@ -5542,9 +5542,6 @@ msgstr "Ładowanie..."
 msgid "Loading…"
 msgstr "Ładowanie…"
 
-msgid "Loading..."
-msgstr "Ładowanie..."
-
 msgid "Location"
 msgstr "Lokalizacja"
 
@@ -8062,6 +8059,9 @@ msgstr "Odśwież"
 msgid "Refresh exchange rate"
 msgstr "Odśwież kurs wymiany"
 
+msgid "Refresh QR code"
+msgstr "Odśwież kod QR"
+
 msgid "Reject"
 msgstr "Odrzuć"
 
@@ -8671,6 +8671,9 @@ msgstr "Skanuj lub wybierz śledzony element z tej partii i zapisz wynik inspekc
 msgid "Scan the tracking ID for this line"
 msgstr "Skanuj identyfikator śledzenia dla tej linii"
 
+msgid "Scan with WeChat to sign in"
+msgstr "Skanuj z WeChacie, aby się zarejestrować"
+
 msgid "SCAR"
 msgstr "SCAR"
 
@@ -9254,14 +9257,6 @@ msgstr "Zaloguj się za pomocą Google"
 msgid "Sign in with Outlook"
 msgstr "Zaloguj się za pomocą Outlook"
 
-msgid "Sign in with Passkey"
-msgstr "Zaloguj się za pomocą klucza dostępu"
-
-msgid "Sign Out"
-msgstr "Wyloguj sie"
-
-msgid "Sign Out"
-msgstr "Wyloguj sie"
 
 msgid "Sign Out"
 msgstr "Wyloguj sie"
@@ -10939,6 +10934,9 @@ msgstr "Dokumentacja Webhooków"
 
 msgid "Website"
 msgstr "Strona internetowa"
+
+msgid "WeChat QR"
+msgstr "Kod QR WeChatu"
 
 msgid "Wednesday"
 msgstr "Środa"
