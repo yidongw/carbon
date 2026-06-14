@@ -52,7 +52,7 @@ import {
   Table,
   TrackingTypeIcon
 } from "~/components";
-import { useItemPostingGroups } from "~/components/Form/ItemPostingGroup";
+import type { ItemPostingGroupListItem } from "~/modules/items";
 import { ReplenishmentSystemIcon } from "~/components/Icons";
 import { ConfirmDelete } from "~/components/Modals";
 import { useDateFormatter, usePermissions } from "~/hooks";
@@ -71,9 +71,10 @@ type PartsTableProps = {
   data: Part[];
   tags: { name: string }[];
   count: number;
+  itemPostingGroups: ItemPostingGroupListItem[];
 };
 
-const PartsTable = memo(({ data, tags, count }: PartsTableProps) => {
+const PartsTable = memo(({ data, tags, count, itemPostingGroups: rawItemPostingGroups }: PartsTableProps) => {
   const { t } = useLingui();
   const navigate = useNavigate();
   const permissions = usePermissions();
@@ -109,7 +110,11 @@ const PartsTable = memo(({ data, tags, count }: PartsTableProps) => {
   const [selectedItem, setSelectedItem] = useState<Part | null>(null);
 
   const [people] = usePeople();
-  const itemPostingGroups = useItemPostingGroups();
+  const itemPostingGroups = useMemo(
+    () =>
+      rawItemPostingGroups.map((g) => ({ value: g.id, label: g.name })),
+    [rawItemPostingGroups]
+  );
   const customColumns = useCustomColumns<Part>("part");
 
   const columns = useMemo<ColumnDef<Part>[]>(() => {
