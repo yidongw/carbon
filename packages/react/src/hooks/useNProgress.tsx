@@ -6,13 +6,17 @@ export function useNProgress() {
   const transition = useNavigation();
 
   useEffect(() => {
-    if (
-      (transition.state === "loading" || transition.state === "submitting") &&
-      !NProgress.isStarted()
-    ) {
-      NProgress.start();
-    } else {
-      NProgress.done();
+    try {
+      if (
+        (transition.state === "loading" || transition.state === "submitting") &&
+        !NProgress.isStarted()
+      ) {
+        NProgress.start();
+      } else if (NProgress.isStarted()) {
+        NProgress.done();
+      }
+    } catch {
+      // NProgress DOM manipulation can fail transiently; ignore to avoid crashing the app
     }
   }, [transition.state]);
 }
