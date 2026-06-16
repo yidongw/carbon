@@ -1,5 +1,4 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { AsyncLocalStorage } from "node:async_hooks";
 
 export type SoftDeleteContext = {
   includeDeleted?: boolean;
@@ -7,7 +6,28 @@ export type SoftDeleteContext = {
   deletedBy?: string | null;
 };
 
-export const softDeleteStorage = new AsyncLocalStorage<SoftDeleteContext>();
+export interface SoftDeleteStorage {
+  getStore(): SoftDeleteContext | undefined;
+  run<R>(store: SoftDeleteContext, fn: () => R): R;
+}
+
+// Default no-op storage. Server code calls `setSoftDeleteStorage` from
+// `./soft-delete.server` to install a real AsyncLocalStorage-backed impl.
+// Keeping `node:async_hooks` out of this module lets it ship in the browser
+// bundle (pulled in via the universal Supabase client) without breaking Vite.
+let storageImpl: SoftDeleteStorage = {
+  getStore: () => undefined,
+  run: (_store, fn) => fn()
+};
+
+export function setSoftDeleteStorage(impl: SoftDeleteStorage): void {
+  storageImpl = impl;
+}
+
+export const softDeleteStorage: SoftDeleteStorage = {
+  getStore: () => storageImpl.getStore(),
+  run: (store, fn) => storageImpl.run(store, fn)
+};
 
 /** Tables that keep hard DELETE (auth tokens, user purge, etc.). */
 export const HARD_DELETE_TABLES = new Set<string>([
@@ -151,20 +171,6 @@ export function isSoftDeletableTable(table: string): boolean {
   if (HARD_DELETE_TABLES.has(table)) return false;
   const base = resolveSoftDeleteBaseTable(table);
   return SOFT_DELETE_TABLES.has(base);
-}
-
-export function withIncludeDeleted<T>(fn: () => Promise<T>): Promise<T> {
-  const parent = softDeleteStorage.getStore();
-  return softDeleteStorage.run(
-    { ...parent, includeDeleted: true },
-    fn
-  );
-}
-
-/** Internal bulk cleanup (method rebuild, edge-function sync) keeps hard DELETE. */
-export function withHardDelete<T>(fn: () => Promise<T>): Promise<T> {
-  const parent = softDeleteStorage.getStore();
-  return softDeleteStorage.run({ ...parent, hardDelete: true }, fn);
 }
 
 type WrapSoftDeleteOptions = {
