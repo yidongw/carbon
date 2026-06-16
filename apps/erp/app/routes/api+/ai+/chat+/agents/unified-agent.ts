@@ -167,5 +167,6 @@ ${COMMON_AGENT_RULES}`,
     call_tool: callToolTool
   },
   handoffs: [],
-  maxTurns: 20
+  maxTurns: 20,
+  lastMessages: 100
 });
