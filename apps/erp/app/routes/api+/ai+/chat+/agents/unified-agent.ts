@@ -42,12 +42,20 @@ const searchToolsTool = tool({
       results = results.filter((t) => t.classification === classification);
     if (query) {
       const q = query.toLowerCase();
-      results = results.filter(
-        (t) =>
-          t.name.toLowerCase().includes(q) ||
-          t.description.toLowerCase().includes(q) ||
-          t.module.toLowerCase().includes(q)
-      );
+      const words = q.split(/\s+/).filter((w) => w.length > 2);
+      results = results.filter((t) => {
+        const text = `${t.name} ${t.description} ${t.module}`.toLowerCase();
+        // Full phrase match OR any meaningful word matches
+        return text.includes(q) || words.some((w) => text.includes(w));
+      });
+      // Rank: full phrase matches first
+      results.sort((a, b) => {
+        const aText = `${a.name} ${a.description} ${a.module}`.toLowerCase();
+        const bText = `${b.name} ${b.description} ${b.module}`.toLowerCase();
+        const aFull = aText.includes(q) ? 1 : 0;
+        const bFull = bText.includes(q) ? 1 : 0;
+        return bFull - aFull;
+      });
     }
 
     const paginated = results.slice(offset, offset + limit);
