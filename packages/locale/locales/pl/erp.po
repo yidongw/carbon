@@ -1383,7 +1383,7 @@ msgid "Carrier Account"
 msgstr "Konto przewoźnika"
 
 msgid "Case"
-msgstr "Obudowa"
+msgstr "Skrzynia"
 
 msgid "Cash & Bank"
 msgstr "Dokładki i Bank"
@@ -2910,7 +2910,7 @@ msgid "Drop your file here, or click to browse."
 msgstr "Upuść plik tutaj lub kliknij, aby przeglądać."
 
 msgid "Drum"
-msgstr "Misa"
+msgstr "Beczka"
 
 #. placeholder {0}: formatDate(routeData?.purchaseInvoice.dateDue)
 #. placeholder {0}: formatDate(routeData?.salesInvoice.dateDue)
@@ -2955,7 +2955,7 @@ msgid "Duration"
 msgstr "Czas trwania"
 
 msgid "Each"
-msgstr "Każda"
+msgstr "szt."
 
 #. placeholder {0}: zeroQuantityLine.type
 msgid "Each line must have a quantity greater than zero ({0})"
@@ -4032,7 +4032,7 @@ msgid "Fixed Shelf Life"
 msgstr "Stały okres przydatności"
 
 msgid "Foot"
-msgstr "Stopka"
+msgstr "stopa"
 
 msgid "For growing businesses that need support"
 msgstr "Dla rozwijających się firm, które potrzebują wsparcia"
@@ -5207,7 +5207,7 @@ msgid "Message"
 msgstr "Meska"
 
 msgid "Meter"
-msgstr "Miernik"
+msgstr "Metr"
 
 msgid "Method"
 msgstr "Metoda"
@@ -8940,7 +8940,7 @@ msgid "Tolerance: +/- {0}"
 msgstr "Tolerancja: ±{0}"
 
 msgid "Ton"
-msgstr "I to bardzo."
+msgstr "Tona"
 
 msgid "Tool"
 msgstr "Narzędzie"
@@ -9744,7 +9744,7 @@ msgid "Would Match"
 msgstr "Byłoby w zgodzie"
 
 msgid "Yard"
-msgstr "Plac (Yard)"
+msgstr "Jard"
 
 msgid "Year"
 msgstr "Rok"

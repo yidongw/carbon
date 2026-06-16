@@ -1136,7 +1136,7 @@ msgid "Bad Debts Expense"
 msgstr "Fehldebtoren Ausgaben"
 
 msgid "Bag"
-msgstr "Tasche"
+msgstr "Beutel"
 
 msgid "Balance Sheet"
 msgstr "Bilanz"
@@ -1242,7 +1242,7 @@ msgid "Bot verification failed. Please try again."
 msgstr "Bot-Verifikation fehlgeschlagen. Bitte versuchen Sie es erneut."
 
 msgid "Box"
-msgstr "Kasten"
+msgstr "Karton"
 
 msgid "Breadcrumb"
 msgstr "Breadcrumb-Navigation"
@@ -1383,7 +1383,7 @@ msgid "Carrier Account"
 msgstr "Spediteurkonto"
 
 msgid "Case"
-msgstr "Fall"
+msgstr "Kiste"
 
 msgid "Cash & Bank"
 msgstr "Kasse und Bank"
@@ -2955,7 +2955,7 @@ msgid "Duration"
 msgstr "Dauer"
 
 msgid "Each"
-msgstr "Jede"
+msgstr "Stück"
 
 #. placeholder {0}: zeroQuantityLine.type
 msgid "Each line must have a quantity greater than zero ({0})"
@@ -7464,7 +7464,7 @@ msgid "Role:"
 msgstr "Rolle:"
 
 msgid "Roll"
-msgstr "Rollen"
+msgstr "Rolle"
 
 msgid "Root Cause Analysis"
 msgstr "Ursachenanalyse"
@@ -9744,7 +9744,7 @@ msgid "Would Match"
 msgstr "Macht Pass"
 
 msgid "Yard"
-msgstr "Hof"
+msgstr "Yard"
 
 msgid "Year"
 msgstr "Jahr"
