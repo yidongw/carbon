@@ -207,6 +207,8 @@ export function Document({
         />
         <Meta />
         <title>{title}</title>
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
+        <link rel="shortcut icon" href="/favicon.svg?v=2" />
         <link rel="manifest" href="/site.webmanifest" />
         <Links />
       </head>
