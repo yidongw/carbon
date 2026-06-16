@@ -10653,7 +10653,7 @@
       "name": "items_upsertPart",
       "module": "items",
       "classification": "WRITE",
-      "description": "Create or update a part (manufactured/purchased item). Pass the full part object in the \"part\" field.",
+      "description": "Create, add, or update a part/item (manufactured/purchased). Use this to add new parts to the catalog or update existing ones. Pass the full part object in the \"part\" field.",
       "paramCount": 1,
       "serviceParams": [
         "client",
