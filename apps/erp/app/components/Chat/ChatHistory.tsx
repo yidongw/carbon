@@ -11,14 +11,17 @@ import {
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useState } from "react";
+import { useFetcher } from "react-router";
 import { LuMenu, LuSearch, LuTrash } from "react-icons/lu";
 import { useDateFormatter } from "~/hooks";
+import { path } from "~/utils/path";
 
 type Chat = {
-  id: string;
-  title: string | null;
+  chatId: string;
+  title?: string;
   createdAt: Date;
   updatedAt: Date;
+  messageCount: number;
 };
 
 function ChatHistorySkeleton() {
@@ -43,22 +46,47 @@ export function ChatHistory({
 }) {
   const { t } = useLingui();
   const { formatTimeAgo } = useDateFormatter();
-  const [, setParams] = useUrlParams();
+  const [params, setParams] = useUrlParams();
+  const fetcher = useFetcher();
 
   const [searchQuery, setSearchQuery] = useState("");
   const historyDisclosure = useDisclosure();
 
-  // Debounced search to avoid too many API calls
   const debouncedSearch = useDebounce(setSearchQuery, 300);
 
+  const currentChatId = params.get("c");
+
   const handleChatSelect = (chatId: string) => {
-    setParams({ chatId });
+    setParams({ c: chatId });
     historyDisclosure.onClose();
   };
 
   const handleDeleteChat = (e: React.MouseEvent, chatId: string) => {
-    alert(`Delete chat ${chatId}`);
+    e.stopPropagation();
+    fetcher.submit(
+      { chatId },
+      { method: "DELETE", action: path.to.api.chats, encType: "application/json" }
+    );
+    // If deleting the active chat, clear it
+    if (currentChatId === chatId) {
+      setParams({ c: null });
+    }
   };
+
+  const filteredChats = searchQuery
+    ? chats.filter((c) =>
+        (c.title ?? "").toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : chats;
+
+  // Optimistically hide deleted chats
+  const deletingId =
+    fetcher.state !== "idle"
+      ? (fetcher.json as { chatId?: string } | null)?.chatId
+      : null;
+  const visibleChats = deletingId
+    ? filteredChats.filter((c) => c.chatId !== deletingId)
+    : filteredChats;
 
   return (
     <Popover
@@ -89,7 +117,7 @@ export function ChatHistory({
           <div className="max-h-80 overflow-y-auto">
             {isLoading ? (
               <ChatHistorySkeleton />
-            ) : chats?.length === 0 ? (
+            ) : visibleChats.length === 0 ? (
               <div className="flex items-center justify-center py-8">
                 <div className="text-sm text-muted-foreground">
                   {searchQuery ? (
@@ -101,14 +129,14 @@ export function ChatHistory({
               </div>
             ) : (
               <div className="space-y-4">
-                {chats?.map((chat: Chat) => (
+                {visibleChats.map((chat) => (
                   <div
-                    key={chat.id}
+                    key={chat.chatId}
                     className="group relative flex items-center justify-between hover:bg-muted/50 rounded-md p-2 -m-2"
                   >
                     <button
                       type="button"
-                      onClick={() => handleChatSelect(chat.id)}
+                      onClick={() => handleChatSelect(chat.chatId)}
                       className="flex-1 text-left"
                     >
                       <div className="flex flex-col gap-1">
@@ -116,13 +144,17 @@ export function ChatHistory({
                           {chat.title || t`New chat`}
                         </div>
                         <div className="text-xs text-muted-foreground">
-                          {formatTimeAgo(chat.updatedAt.toISOString())}
+                          {formatTimeAgo(
+                            chat.updatedAt instanceof Date
+                              ? chat.updatedAt.toISOString()
+                              : String(chat.updatedAt)
+                          )}
                         </div>
                       </div>
                     </button>
                     <button
                       type="button"
-                      onClick={(e) => handleDeleteChat(e, chat.id)}
+                      onClick={(e) => handleDeleteChat(e, chat.chatId)}
                       className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1 hover:bg-destructive/10 rounded-sm"
                       title={t`Delete chat`}
                     >
