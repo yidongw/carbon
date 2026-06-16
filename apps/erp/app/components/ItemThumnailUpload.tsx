@@ -78,7 +78,6 @@ export function ItemThumbnailUpload({
         toast.info(t`Uploading ${file.name}`);
         const formData = new FormData();
         formData.append("file", file);
-        formData.append("contained", "true");
 
         try {
           const response = await fetch(
