@@ -39,7 +39,7 @@ function friendlyDeleteItemError(err: { code?: string; message?: string }) {
     if (err.message?.includes("trackedEntity_itemId_fkey")) {
       return "Item has tracked entities linked to it and cannot be deleted. Deactivate the item instead.";
     }
-    return "Item is still referenced by other records and cannot be deleted. Remove those references or deactivate the item instead.";
+    return "Item is still referenced by other records and cannot be deleted. Remove those references, archive the item instead, or deactivate it.";
   }
   return err.message ?? "Failed to delete item";
 }

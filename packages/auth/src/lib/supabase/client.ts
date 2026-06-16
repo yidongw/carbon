@@ -1,4 +1,5 @@
 import type { Database } from "@carbon/database";
+import { wrapSoftDeleteClient } from "@carbon/database/soft-delete";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { createClient } from "@supabase/supabase-js";
 import type { MutableRefObject } from "react";
@@ -40,7 +41,8 @@ const fetchWithRetry: typeof fetch = async (input, init) => {
 
 export const getCarbonClient = (
   supabaseKey: string,
-  accessToken?: string
+  accessToken?: string,
+  options?: { deletedBy?: string | null }
 ): SupabaseClient<Database, "public"> => {
   const headers = accessToken
     ? { Authorization: `Bearer ${accessToken}` }
@@ -57,7 +59,7 @@ export const getCarbonClient = (
     }
   });
 
-  return client;
+  return wrapSoftDeleteClient(client, options);
 };
 
 export const getCarbonAPIKeyClient = (apiKey: string) => {
@@ -74,30 +76,37 @@ export const getCarbonAPIKeyClient = (apiKey: string) => {
     }
   );
 
-  return client;
+  return wrapSoftDeleteClient(client);
 };
 
 export const createCarbonWithAuthGetter = (
   store: MutableRefObject<StoreApi<{ accessToken: string }>>
 ) => {
-  return createClient<Database, "public">(SUPABASE_URL!, SUPABASE_ANON_KEY!, {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false
-    },
-    global: {
-      fetch: fetchWithRetry
-    },
-    async accessToken() {
-      if (!store.current) return null;
-      const state = store.current.getState();
-      return state.accessToken;
-    }
-  });
+  const client = wrapSoftDeleteClient(
+    createClient<Database, "public">(SUPABASE_URL!, SUPABASE_ANON_KEY!, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      },
+      global: {
+        fetch: fetchWithRetry
+      },
+      async accessToken() {
+        if (!store.current) return null;
+        const state = store.current.getState();
+        return state.accessToken;
+      }
+    })
+  );
+
+  return client;
 };
 
-export const getCarbon = (accessToken?: string) => {
-  return getCarbonClient(SUPABASE_ANON_KEY!, accessToken);
+export const getCarbon = (
+  accessToken?: string,
+  deletedBy?: string | null
+) => {
+  return getCarbonClient(SUPABASE_ANON_KEY!, accessToken, { deletedBy });
 };
 
 export const carbonClient = getCarbon();

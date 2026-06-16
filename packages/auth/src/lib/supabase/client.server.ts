@@ -3,6 +3,8 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { SUPABASE_SERVICE_ROLE_KEY } from "../../config/env";
 import { getCarbonClient } from "./client";
 
-export const getCarbonServiceRole = (): SupabaseClient<Database> => {
-  return getCarbonClient(SUPABASE_SERVICE_ROLE_KEY!);
+export const getCarbonServiceRole = (
+  deletedBy?: string | null
+): SupabaseClient<Database> => {
+  return getCarbonClient(SUPABASE_SERVICE_ROLE_KEY!, undefined, { deletedBy });
 };
