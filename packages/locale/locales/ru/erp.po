@@ -1242,7 +1242,7 @@ msgid "Bot verification failed. Please try again."
 msgstr "Проверка бота не прошла. Попробуйте снова."
 
 msgid "Box"
-msgstr "Блок"
+msgstr "Коробка"
 
 msgid "Breadcrumb"
 msgstr "Навигационная цепочка"
@@ -1383,7 +1383,7 @@ msgid "Carrier Account"
 msgstr "Счет перевозчика"
 
 msgid "Case"
-msgstr "Дело"
+msgstr "Ящик"
 
 msgid "Cash & Bank"
 msgstr "Деньги и Банки"
@@ -4032,7 +4032,7 @@ msgid "Fixed Shelf Life"
 msgstr "Фиксированный срок годности"
 
 msgid "Foot"
-msgstr "Опорная ножка"
+msgstr "Фут"
 
 msgid "For growing businesses that need support"
 msgstr "Для растущих компаний, нуждающихся в поддержке"
@@ -4862,7 +4862,7 @@ msgid "List View"
 msgstr "Списковой вид"
 
 msgid "Liter"
-msgstr "Литер"
+msgstr "Литр"
 
 msgid "Live reloading"
 msgstr "Живая перезагрузка"
@@ -7464,7 +7464,7 @@ msgid "Role:"
 msgstr "Роль:"
 
 msgid "Roll"
-msgstr "колледжа"
+msgstr "Рулон"
 
 msgid "Root Cause Analysis"
 msgstr "Анализ первопричин"
@@ -8940,7 +8940,7 @@ msgid "Tolerance: +/- {0}"
 msgstr "Толерантность: ±{0}"
 
 msgid "Ton"
-msgstr "т"
+msgstr "Тонна"
 
 msgid "Tool"
 msgstr "Инструмент"
@@ -9744,7 +9744,7 @@ msgid "Would Match"
 msgstr "Было бы совпадение"
 
 msgid "Yard"
-msgstr "Двор"
+msgstr "Ярд"
 
 msgid "Year"
 msgstr "Год"

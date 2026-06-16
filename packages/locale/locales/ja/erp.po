@@ -1136,7 +1136,7 @@ msgid "Bad Debts Expense"
 msgstr "Bad Debts負債費"
 
 msgid "Bag"
-msgstr "虫"
+msgstr "袋"
 
 msgid "Balance Sheet"
 msgstr "貸借対照表"
@@ -1383,7 +1383,7 @@ msgid "Carrier Account"
 msgstr "キャリアアカウント"
 
 msgid "Case"
-msgstr "症例"
+msgstr "ケース"
 
 msgid "Cash & Bank"
 msgstr "キャッシュと銀行"
@@ -2910,7 +2910,7 @@ msgid "Drop your file here, or click to browse."
 msgstr "ファイルをここにドラッグするか、クリックして参照してください。"
 
 msgid "Drum"
-msgstr "ドラム"
+msgstr "ドラム缶"
 
 #. placeholder {0}: formatDate(routeData?.purchaseInvoice.dateDue)
 #. placeholder {0}: formatDate(routeData?.salesInvoice.dateDue)
@@ -2955,7 +2955,7 @@ msgid "Duration"
 msgstr "期間"
 
 msgid "Each"
-msgstr "各"
+msgstr "個"
 
 #. placeholder {0}: zeroQuantityLine.type
 msgid "Each line must have a quantity greater than zero ({0})"
@@ -4032,7 +4032,7 @@ msgid "Fixed Shelf Life"
 msgstr "固定棚卸し期間"
 
 msgid "Foot"
-msgstr "足"
+msgstr "フィート"
 
 msgid "For growing businesses that need support"
 msgstr "成長中のビジネスをサポートするために"

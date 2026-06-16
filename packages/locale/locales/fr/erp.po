@@ -1242,7 +1242,7 @@ msgid "Bot verification failed. Please try again."
 msgstr "Vérification du bot échouée. Veuillez essayer à nouveau."
 
 msgid "Box"
-msgstr "Femelle"
+msgstr "Boîte"
 
 msgid "Breadcrumb"
 msgstr "Fil d'Ariane"
@@ -1383,7 +1383,7 @@ msgid "Carrier Account"
 msgstr "Compte de transporteur"
 
 msgid "Case"
-msgstr "Affaire"
+msgstr "Caisse"
 
 msgid "Cash & Bank"
 msgstr "Caissière et Banque"
@@ -2910,7 +2910,7 @@ msgid "Drop your file here, or click to browse."
 msgstr "Déposez votre fichier ici, ou cliquez pour parcourir."
 
 msgid "Drum"
-msgstr "Tambour"
+msgstr "Fût"
 
 #. placeholder {0}: formatDate(routeData?.purchaseInvoice.dateDue)
 #. placeholder {0}: formatDate(routeData?.salesInvoice.dateDue)
@@ -2955,7 +2955,7 @@ msgid "Duration"
 msgstr "Durée"
 
 msgid "Each"
-msgstr "Pour chaque"
+msgstr "Pièce"
 
 #. placeholder {0}: zeroQuantityLine.type
 msgid "Each line must have a quantity greater than zero ({0})"
@@ -4080,7 +4080,7 @@ msgid "Gains and Losses on Disposal"
 msgstr "Profits/pertes sur les cessions"
 
 msgid "Gallon"
-msgstr "Bidon"
+msgstr "Gallon"
 
 msgid "Gauge"
 msgstr "Jauge"
@@ -5207,7 +5207,7 @@ msgid "Message"
 msgstr "Message"
 
 msgid "Meter"
-msgstr "Compteur"
+msgstr "Mètre"
 
 msgid "Method"
 msgstr "Méthode"
@@ -6161,7 +6161,7 @@ msgid "Other Type"
 msgstr "Autre Type"
 
 msgid "Ounce"
-msgstr "Une fois"
+msgstr "Once"
 
 msgid "Outgoing"
 msgstr "Sortant"
@@ -9744,7 +9744,7 @@ msgid "Would Match"
 msgstr "Matchrait"
 
 msgid "Yard"
-msgstr "Yard"
+msgstr "Verge"
 
 msgid "Year"
 msgstr "Année"

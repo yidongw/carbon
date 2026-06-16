@@ -1242,7 +1242,7 @@ msgid "Bot verification failed. Please try again."
 msgstr "机器人验证失败，请重试。"
 
 msgid "Box"
-msgstr "箱子"
+msgstr "箱"
 
 msgid "Breadcrumb"
 msgstr "导航"
@@ -1383,7 +1383,7 @@ msgid "Carrier Account"
 msgstr "承运商账户"
 
 msgid "Case"
-msgstr "案例"
+msgstr "箱"
 
 msgid "Cash & Bank"
 msgstr "现金及银行"
@@ -2910,7 +2910,7 @@ msgid "Drop your file here, or click to browse."
 msgstr "拖文件到这里，或点击浏览。"
 
 msgid "Drum"
-msgstr "大桶"
+msgstr "桶"
 
 #. placeholder {0}: formatDate(routeData?.purchaseInvoice.dateDue)
 #. placeholder {0}: formatDate(routeData?.salesInvoice.dateDue)
@@ -4032,7 +4032,7 @@ msgid "Fixed Shelf Life"
 msgstr "固定保质期"
 
 msgid "Foot"
-msgstr "脚"
+msgstr "英尺"
 
 msgid "For growing businesses that need support"
 msgstr "对于成长型企业所需的支援"
@@ -6224,7 +6224,7 @@ msgid "Overwrite the target manufacturing method with the quote method"
 msgstr "覆盖目标制造方法为报价制造方法"
 
 msgid "Pack"
-msgstr "包装"
+msgstr "包"
 
 msgid "Packing Slip"
 msgstr "包装单"

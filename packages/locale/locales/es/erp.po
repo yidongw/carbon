@@ -1383,7 +1383,7 @@ msgid "Carrier Account"
 msgstr "Cuenta de Transportista"
 
 msgid "Case"
-msgstr "Caso"
+msgstr "Caja"
 
 msgid "Cash & Bank"
 msgstr "Caja y Banco"
@@ -5207,7 +5207,7 @@ msgid "Message"
 msgstr "Mensaje"
 
 msgid "Meter"
-msgstr "Medidor"
+msgstr "Metro"
 
 msgid "Method"
 msgstr "Método"
@@ -8940,7 +8940,7 @@ msgid "Tolerance: +/- {0}"
 msgstr "Tolerancia: ±{0}"
 
 msgid "Ton"
-msgstr "Ton"
+msgstr "Tonelada"
 
 msgid "Tool"
 msgstr "Herramienta"
@@ -9744,7 +9744,7 @@ msgid "Would Match"
 msgstr "Coincide"
 
 msgid "Yard"
-msgstr "Trabajador/a no especializado/a"
+msgstr "Yarda"
 
 msgid "Year"
 msgstr "Año"

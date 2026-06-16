@@ -1383,7 +1383,7 @@ msgid "Carrier Account"
 msgstr "Conta da Transportadora"
 
 msgid "Case"
-msgstr "Processo"
+msgstr "Caixa"
 
 msgid "Cash & Bank"
 msgstr "Caixa e Banco"
@@ -4305,7 +4305,7 @@ msgid "Inbox"
 msgstr "Caixa de entrada"
 
 msgid "Inch"
-msgstr "Polegadas"
+msgstr "Polegada"
 
 msgid "Include extra parts in shipment"
 msgstr "Incluir peças extras no envio"
@@ -5207,7 +5207,7 @@ msgid "Message"
 msgstr "Mensagem"
 
 msgid "Meter"
-msgstr "Medidor"
+msgstr "Metro"
 
 msgid "Method"
 msgstr "Método"
@@ -9744,7 +9744,7 @@ msgid "Would Match"
 msgstr "Mata-Mata"
 
 msgid "Yard"
-msgstr "Yard"
+msgstr "Jarda"
 
 msgid "Year"
 msgstr "Ano"
