@@ -2955,7 +2955,7 @@ msgid "Duration"
 msgstr "持续时间"
 
 msgid "Each"
-msgstr "个"
+msgstr "件"
 
 #. placeholder {0}: zeroQuantityLine.type
 msgid "Each line must have a quantity greater than zero ({0})"
