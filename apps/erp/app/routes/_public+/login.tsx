@@ -144,10 +144,13 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const user = await getUserByEmail(email);
 
-  const devBypassEmail = process.env.DEV_BYPASS_EMAIL;
+  const devBypassEmails =
+    process.env.DEV_BYPASS_EMAIL
+      ?.split(",")
+      .map((entry) => entry.trim().toLowerCase())
+      .filter(Boolean) ?? [];
   if (
-    devBypassEmail &&
-    email.toLowerCase() === devBypassEmail.toLowerCase() &&
+    devBypassEmails.includes(email.toLowerCase()) &&
     user.data?.active
   ) {
     const authSession = await signInWithBypassEmail(email);
