@@ -27,6 +27,7 @@ export const path = {
           `${api}/items/methods/${methodId}/bom.csv?withOperations=${withOperations}`
         ),
       chat: `${api}/ai/chat`,
+      chatConfirmProposal: `${api}/ai/chat/confirm-proposal`,
       chats: `${api}/ai/chats`,
       countries: `${api}/countries`,
       currencies: `${api}/accounting/currencies`,
