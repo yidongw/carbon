@@ -1,7 +1,7 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { smoothStream } from "ai";
 import type { ActionFunctionArgs } from "react-router";
-import { orchestrationAgent } from "./agents/orchestration-agent";
+import { unifiedAgent as orchestrationAgent } from "./agents/unified-agent";
 import { createChatContext } from "./agents/shared/context";
 
 export async function action({ request }: ActionFunctionArgs) {
