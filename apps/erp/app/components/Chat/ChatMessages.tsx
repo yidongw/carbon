@@ -1,8 +1,10 @@
 import type { UIMessage } from "ai";
+import { Fragment } from "react";
 import { LuPaperclip } from "react-icons/lu";
 import { Message, MessageContent } from "~/components/Message";
 import { FaviconStack } from "./Favicon";
 import { Markdown } from "./Markdown/Markdown";
+import { ProposalCard, type ProposalToolOutput } from "./ProposalCard";
 
 interface ChatMessagesProps {
   messages: UIMessage[];
@@ -65,6 +67,27 @@ function extractFileParts(parts: UIMessage["parts"]) {
   return parts.filter((part) => part.type === "file");
 }
 
+/**
+ * Extract propose_writes tool parts (one card per part) that are ready to show
+ */
+function extractProposalParts(
+  parts: UIMessage["parts"]
+): Array<{ index: number; output: ProposalToolOutput }> {
+  const result: Array<{ index: number; output: ProposalToolOutput }> = [];
+  parts.forEach((part, index) => {
+    if ((part as { type?: string }).type !== "tool-propose_writes") return;
+    const output = (part as { output?: ProposalToolOutput }).output;
+    if (
+      output &&
+      output.status === "awaiting_confirmation" &&
+      Array.isArray(output.changes)
+    ) {
+      result.push({ index, output });
+    }
+  });
+  return result;
+}
+
 export function ChatMessages({
   messages,
   isStreaming = false
@@ -80,6 +103,9 @@ export function ChatMessages({
 
         // Extract file parts
         const fileParts = extractFileParts(parts);
+
+        // Extract propose_writes confirmation cards
+        const proposalParts = extractProposalParts(parts);
 
         // Extract sources from AI SDK and webSearch
         const aiSdkSources = extractAiSdkSources(parts);
@@ -166,6 +192,15 @@ export function ChatMessages({
                 </MessageContent>
               </Message>
             )}
+
+            {/* Render confirmation cards for any propose_writes tool parts */}
+            {proposalParts.map((p) => (
+              <Fragment key={`${message.id}-proposal-${p.index}`}>
+                <div className="max-w-[80%]">
+                  <ProposalCard output={p.output} />
+                </div>
+              </Fragment>
+            ))}
 
             {/* Render sources as stacked favicons - show immediately when available */}
             {shouldShowSources && (
