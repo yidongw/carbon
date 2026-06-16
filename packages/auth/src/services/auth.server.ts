@@ -392,15 +392,22 @@ export async function requirePermissions(
     );
   }
 
+  const effectiveUserId = getEffectiveUser(
+    request,
+    companyId,
+    userId,
+    consoleMode
+  );
+
   return {
     client:
       !!requiredPermissions.bypassRls && myClaims.role === "employee"
-        ? getCarbonServiceRole()
-        : getCarbon(accessToken),
+        ? getCarbonServiceRole(effectiveUserId)
+        : getCarbon(accessToken, effectiveUserId),
     companyId,
     companyGroupId,
     email,
-    userId: getEffectiveUser(request, companyId, userId, consoleMode),
+    userId: effectiveUserId,
     sessionUserId: userId,
     consoleMode
   };
