@@ -271,6 +271,9 @@ export function Document({
         />
         <Meta />
         <title>{title}</title>
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=6" />
+        <link rel="shortcut icon" href="/favicon.ico?v=6" />
+        <link rel="manifest" href="/site.webmanifest" />
         <Links />
       </head>
       <body className="h-full overflow-hidden bg-background antialiased selection:bg-primary/10 selection:text-primary">
