@@ -126,8 +126,11 @@ const callToolTool = tool({
 
 export const unifiedAgent = createAgent({
   name: "assistant",
-  model: openai("gpt-4o"),
+  model: openai.chat("gpt-4o"),
   temperature: 0.3,
+  modelSettings: {
+    parallel_tool_calls: false
+  },
   instructions: (ctx) => `You are an AI assistant for ${ctx.companyName}, a manufacturing ERP system.
 
 You have full access to the ERP via three tools:
