@@ -9641,7 +9641,7 @@
       "name": "items_getPart",
       "module": "items",
       "classification": "READ",
-      "description": "get part",
+      "description": "Get details of a single part by ID.",
       "paramCount": 1,
       "serviceParams": [
         "client",
@@ -9667,7 +9667,7 @@
       "name": "items_getParts",
       "module": "items",
       "classification": "READ",
-      "description": "get parts",
+      "description": "List all parts (manufactured or purchased items) in the system.",
       "paramCount": 4,
       "serviceParams": [
         "client",
@@ -11632,7 +11632,7 @@
       "name": "items_upsertService",
       "module": "items",
       "classification": "WRITE",
-      "description": "upsert service",
+      "description": "Create or update a service item (non-physical item).",
       "paramCount": 1,
       "serviceParams": [
         "client",
@@ -17775,7 +17775,7 @@
       "name": "purchasing_getPurchaseOrder",
       "module": "purchasing",
       "classification": "READ",
-      "description": "get purchase order",
+      "description": "Get details of a single purchase order by ID.",
       "paramCount": 1,
       "serviceParams": [
         "client",
@@ -17827,7 +17827,7 @@
       "name": "purchasing_getPurchaseOrders",
       "module": "purchasing",
       "classification": "READ",
-      "description": "get purchase orders",
+      "description": "List purchase orders. Filter by status (Draft, Submitted, Approved, Open, To Receive, To Receive and Invoice, To Invoice, Received, Closed) or supplierId.",
       "paramCount": 5,
       "serviceParams": [
         "client",
@@ -17953,7 +17953,7 @@
       "name": "purchasing_getPurchaseOrderLines",
       "module": "purchasing",
       "classification": "READ",
-      "description": "get purchase order lines",
+      "description": "Get the line items of a purchase order.",
       "paramCount": 1,
       "serviceParams": [
         "client",
@@ -18113,7 +18113,7 @@
       "name": "purchasing_getSupplier",
       "module": "purchasing",
       "classification": "READ",
-      "description": "get supplier",
+      "description": "Get details of a single supplier by ID.",
       "paramCount": 1,
       "serviceParams": [
         "client",
@@ -18712,7 +18712,7 @@
       "name": "purchasing_getSuppliers",
       "module": "purchasing",
       "classification": "READ",
-      "description": "get suppliers",
+      "description": "List all suppliers. Can filter by status (Active, Inactive, Pending, Rejected).",
       "paramCount": 5,
       "serviceParams": [
         "client",
@@ -19471,7 +19471,7 @@
       "name": "purchasing_insertPurchaseOrder",
       "module": "purchasing",
       "classification": "WRITE",
-      "description": "Create a new purchase order with all business logic - generates sequence, creates supplier interaction, resolves payment/shipping defaults from supplier. LLM can create a PO with just supplierId.",
+      "description": "Create a new purchase order with all business logic. Requires supplierId.",
       "paramCount": 15,
       "serviceParams": [
         "client",
@@ -19539,7 +19539,7 @@
       "name": "purchasing_updatePurchaseOrder",
       "module": "purchasing",
       "classification": "WRITE",
-      "description": "Update an existing purchase order - handles exchange rate updates when currency changes",
+      "description": "Update an existing purchase order.",
       "paramCount": 11,
       "serviceParams": [
         "client",
@@ -27704,7 +27704,7 @@
       "name": "sales_getCustomers",
       "module": "sales",
       "classification": "READ",
-      "description": "get customers",
+      "description": "List all customers.",
       "paramCount": 3,
       "serviceParams": [
         "client",
@@ -28270,7 +28270,7 @@
       "name": "sales_getQuotes",
       "module": "sales",
       "classification": "READ",
-      "description": "get quotes",
+      "description": "List sales quotes.",
       "paramCount": 3,
       "serviceParams": [
         "client",
