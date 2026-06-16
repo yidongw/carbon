@@ -29,12 +29,24 @@ export async function action({ request, params }: ActionFunctionArgs) {
     };
   }
 
+  let groupId =
+    validation.data.configurationParameterGroupId == "null"
+      ? null
+      : (validation.data.configurationParameterGroupId ?? null);
+
+  if (groupId === null) {
+    const { data: ungrouped } = await client
+      .from("configurationParameterGroup")
+      .select("id")
+      .eq("itemId", itemId)
+      .eq("isUngrouped", true)
+      .maybeSingle();
+    groupId = ungrouped?.id ?? null;
+  }
+
   const upsert = await updateConfigurationParameterOrder(client, {
     ...validation.data,
-    configurationParameterGroupId:
-      validation.data.configurationParameterGroupId == "null"
-        ? null
-        : (validation.data.configurationParameterGroupId ?? null),
+    configurationParameterGroupId: groupId,
     updatedBy: userId
   });
 
