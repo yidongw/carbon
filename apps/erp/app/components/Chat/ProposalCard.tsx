@@ -14,6 +14,7 @@ import {
   Thead,
   Tr
 } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import { LuCheck, LuCircleAlert, LuCircleCheck, LuX } from "react-icons/lu";
 import { useUser } from "~/hooks";
@@ -104,6 +105,7 @@ export function ProposalCard({ output }: ProposalCardProps) {
   const [state, setState] = useState<CardState>({ kind: "idle" });
   const { sendMessage } = useChatActions();
   const { accessToken } = useCarbon();
+  const { t } = useLingui();
   const {
     id: userId,
     company: { id: companyId }
@@ -197,8 +199,9 @@ export function ProposalCard({ output }: ProposalCardProps) {
         </div>
         <p className="text-xs text-muted-foreground">{output.summary}</p>
         <p className="text-xs text-muted-foreground">
-          {output.changes.length} change
-          {output.changes.length === 1 ? "" : "s"} pending your approval
+          {output.changes.length === 1
+            ? t`1 change pending your approval`
+            : t`${output.changes.length} changes pending your approval`}
         </p>
       </CardHeader>
 
@@ -240,8 +243,8 @@ export function ProposalCard({ output }: ProposalCardProps) {
                 <Table>
                   <Thead>
                     <Tr>
-                      <Th className="w-1/3">Field</Th>
-                      <Th>Value</Th>
+                      <Th className="w-1/3">{t`Field`}</Th>
+                      <Th>{t`Value`}</Th>
                     </Tr>
                   </Thead>
                   <Tbody>
@@ -263,10 +266,10 @@ export function ProposalCard({ output }: ProposalCardProps) {
 
       <CardFooter className="flex items-center justify-between gap-2 px-4 py-3 border-t">
         <div className="text-xs text-muted-foreground">
-          {state.kind === "submitting" && "Executing changes…"}
+          {state.kind === "submitting" && t`Executing changes…`}
           {state.kind === "done" &&
-            `${state.response.succeeded} succeeded, ${state.response.failed} failed`}
-          {state.kind === "cancelled" && "Cancelled"}
+            t`${state.response.succeeded} succeeded, ${state.response.failed} failed`}
+          {state.kind === "cancelled" && t`Cancelled`}
           {state.kind === "error" && (
             <span className="text-red-500">{state.message}</span>
           )}
@@ -279,7 +282,7 @@ export function ProposalCard({ output }: ProposalCardProps) {
             isDisabled={decided || state.kind === "submitting"}
             leftIcon={<LuX />}
           >
-            Cancel
+            {t`Cancel`}
           </Button>
           <Button
             variant={isDestructive ? "destructive" : "primary"}
@@ -289,7 +292,7 @@ export function ProposalCard({ output }: ProposalCardProps) {
             isLoading={state.kind === "submitting"}
             leftIcon={<LuCheck />}
           >
-            Confirm
+            {t`Confirm`}
           </Button>
         </div>
       </CardFooter>
