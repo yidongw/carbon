@@ -1383,7 +1383,7 @@ msgid "Carrier Account"
 msgstr "承运商账户"
 
 msgid "Case"
-msgstr "箱"
+msgstr "盒"
 
 msgid "Cash & Bank"
 msgstr "现金及银行"

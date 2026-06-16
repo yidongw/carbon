@@ -1383,7 +1383,7 @@ msgid "Carrier Account"
 msgstr "Cuenta de Transportista"
 
 msgid "Case"
-msgstr "Caja"
+msgstr "Cajón"
 
 msgid "Cash & Bank"
 msgstr "Caja y Banco"
