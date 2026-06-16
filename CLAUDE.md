@@ -85,6 +85,12 @@
 - NEVER update the cache about staged/uncommitted code.
 - NEVER rebuild the database to test changes. Wait for the user to do that.
 
+## Git Workflow
+
+- **NEVER create a PR unless the user explicitly asks you to.** Do not create PRs autonomously at the end of a task — commit and push the branch, then stop.
+- **NEVER create PRs to `crbnos/carbon`.** This repo is a fork of that upstream. Always open PRs to `yidongw/carbon` targeting `dev`.
+- Always use `gh pr create --repo yidongw/carbon --base dev` — never omit `--repo`, as `gh` will otherwise default to the upstream (`crbnos/carbon`).
+
 ## Browser Automation
 
 Use `agent-browser` for web automation. Run `agent-browser --help` for all commands.
