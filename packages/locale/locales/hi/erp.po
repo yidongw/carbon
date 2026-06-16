@@ -1136,7 +1136,7 @@ msgid "Bad Debts Expense"
 msgstr "क्रेडिट देय खर्च"
 
 msgid "Bag"
-msgstr "चाय पी"
+msgstr "थैला"
 
 msgid "Balance Sheet"
 msgstr "बैलेंस शीटName"
@@ -1242,7 +1242,7 @@ msgid "Bot verification failed. Please try again."
 msgstr "बॉट वेरिफाइशन असफल हो गई। कृपया फिर से प्रयास करें।"
 
 msgid "Box"
-msgstr "बक्साthe gradient will be drawn bilinearly"
+msgstr "बक्सा"
 
 msgid "Breadcrumb"
 msgstr "ब्रेडक्रम्ब"
@@ -1383,7 +1383,7 @@ msgid "Carrier Account"
 msgstr "वाहक खाता"
 
 msgid "Case"
-msgstr "मामला"
+msgstr "संदूक"
 
 msgid "Cash & Bank"
 msgstr "पैसा और बैंक"
@@ -2910,7 +2910,7 @@ msgid "Drop your file here, or click to browse."
 msgstr "अपनी फ़ाइल यहाँ ड्रॉप करें, या ब्राउज़ करने के लिए क्लिक करें।"
 
 msgid "Drum"
-msgstr "हाइड्रसConstellation name (optional)"
+msgstr "ड्रम"
 
 #. placeholder {0}: formatDate(routeData?.purchaseInvoice.dateDue)
 #. placeholder {0}: formatDate(routeData?.salesInvoice.dateDue)
@@ -2955,7 +2955,7 @@ msgid "Duration"
 msgstr "अवधि"
 
 msgid "Each"
-msgstr "Newnatam"
+msgstr "नग"
 
 #. placeholder {0}: zeroQuantityLine.type
 msgid "Each line must have a quantity greater than zero ({0})"
@@ -4080,7 +4080,7 @@ msgid "Gains and Losses on Disposal"
 msgstr "निपटान पर लाभ और हानि"
 
 msgid "Gallon"
-msgstr "गैल\tगैलन"
+msgstr "गैलन"
 
 msgid "Gauge"
 msgstr "गेज"
@@ -6565,7 +6565,7 @@ msgid "Potential Data Loss"
 msgstr "संभावित डेटा हानि"
 
 msgid "Pound"
-msgstr "पाउण्ड"
+msgstr "पाउंड"
 
 msgid "Pre-filled for a new item when expiry is Fixed Duration."
 msgstr "समाप्ति Fixed Duration होने पर नई वस्तु के लिए पूर्व-भरी हुई।"
@@ -7464,7 +7464,7 @@ msgid "Role:"
 msgstr "भूमिका:"
 
 msgid "Roll"
-msgstr "रोल।"
+msgstr "रोल"
 
 msgid "Root Cause Analysis"
 msgstr "कारण विश्लेषण"
@@ -8940,7 +8940,7 @@ msgid "Tolerance: +/- {0}"
 msgstr "तOLERANCE: ± {0}"
 
 msgid "Ton"
-msgstr "टोन"
+msgstr "टन"
 
 msgid "Tool"
 msgstr "उपकरण"

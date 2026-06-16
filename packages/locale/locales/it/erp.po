@@ -1242,7 +1242,7 @@ msgid "Bot verification failed. Please try again."
 msgstr "Verifica del bot fallita. Riprova, per favore."
 
 msgid "Box"
-msgstr "Box"
+msgstr "Scatola"
 
 msgid "Breadcrumb"
 msgstr "Breadcrumb"
@@ -1383,7 +1383,7 @@ msgid "Carrier Account"
 msgstr "Conto Vettore"
 
 msgid "Case"
-msgstr "Caso"
+msgstr "Cassa"
 
 msgid "Cash & Bank"
 msgstr "Denaro e Banca"
@@ -2955,7 +2955,7 @@ msgid "Duration"
 msgstr "Durata"
 
 msgid "Each"
-msgstr "Ciascuno"
+msgstr "Pezzo"
 
 #. placeholder {0}: zeroQuantityLine.type
 msgid "Each line must have a quantity greater than zero ({0})"
@@ -4080,7 +4080,7 @@ msgid "Gains and Losses on Disposal"
 msgstr "/minusvalenze da cessione"
 
 msgid "Gallon"
-msgstr "Galloni"
+msgstr "Gallone"
 
 msgid "Gauge"
 msgstr "Calibro"
@@ -4305,7 +4305,7 @@ msgid "Inbox"
 msgstr "Posta in arrivo"
 
 msgid "Inch"
-msgstr "Inch"
+msgstr "Pollice"
 
 msgid "Include extra parts in shipment"
 msgstr "Includi parti extra nella spedizione"
@@ -4862,7 +4862,7 @@ msgid "List View"
 msgstr "Vista elenco"
 
 msgid "Liter"
-msgstr "Litri"
+msgstr "Litro"
 
 msgid "Live reloading"
 msgstr "Ricaricamento in tempo reale"
@@ -5207,7 +5207,7 @@ msgid "Message"
 msgstr "Messaggio"
 
 msgid "Meter"
-msgstr "Metri"
+msgstr "Metro"
 
 msgid "Method"
 msgstr "Metodo"
@@ -6161,7 +6161,7 @@ msgid "Other Type"
 msgstr "Altro Tipo"
 
 msgid "Ounce"
-msgstr "oncia"
+msgstr "Oncia"
 
 msgid "Outgoing"
 msgstr "In uscita"
@@ -6224,7 +6224,7 @@ msgid "Overwrite the target manufacturing method with the quote method"
 msgstr "Sovrascrivi il metodo di produzione target con il metodo di quotazione"
 
 msgid "Pack"
-msgstr "Conf."
+msgstr "Confezione"
 
 msgid "Packing Slip"
 msgstr "Documento di trasporto"
@@ -8940,7 +8940,7 @@ msgid "Tolerance: +/- {0}"
 msgstr "Tolleranza: ±{0}"
 
 msgid "Ton"
-msgstr "[ton]"
+msgstr "Tonnellata"
 
 msgid "Tool"
 msgstr "Attrezzo"
@@ -9744,7 +9744,7 @@ msgid "Would Match"
 msgstr "Si corrisponde"
 
 msgid "Yard"
-msgstr "Yard"
+msgstr "Iarda"
 
 msgid "Year"
 msgstr "Anno"
