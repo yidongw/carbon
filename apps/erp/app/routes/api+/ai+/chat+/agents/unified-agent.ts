@@ -25,6 +25,61 @@ function getClassification(name: string): ToolMeta["classification"] | null {
   return TOOLS.find((t) => t.name === name)?.classification ?? null;
 }
 
+type JsonSchema = {
+  type?: string;
+  required?: string[];
+  properties?: Record<string, JsonSchema>;
+  items?: JsonSchema;
+};
+
+function isEmpty(v: unknown): boolean {
+  return (
+    v === undefined ||
+    v === null ||
+    (typeof v === "string" && v.trim() === "")
+  );
+}
+
+// Walks a JSON-schema-shaped object and returns dotted paths of required
+// fields that are missing/empty in `value`. Used to reject propose_writes
+// calls where the LLM forgot to gather a required input.
+function findMissingRequiredFields(
+  schema: unknown,
+  value: unknown,
+  pathPrefix = ""
+): string[] {
+  if (!schema || typeof schema !== "object") return [];
+  const s = schema as JsonSchema;
+  const missing: string[] = [];
+
+  if (Array.isArray(s.required) && s.properties) {
+    for (const key of s.required) {
+      const child =
+        value && typeof value === "object"
+          ? (value as Record<string, unknown>)[key]
+          : undefined;
+      const childPath = pathPrefix ? `${pathPrefix}.${key}` : key;
+      if (isEmpty(child)) {
+        missing.push(childPath);
+      }
+    }
+  }
+
+  if (s.properties && value && typeof value === "object") {
+    for (const [key, subSchema] of Object.entries(s.properties)) {
+      const childPath = pathPrefix ? `${pathPrefix}.${key}` : key;
+      const child = (value as Record<string, unknown>)[key];
+      if (child !== undefined && child !== null) {
+        missing.push(
+          ...findMissingRequiredFields(subSchema, child, childPath)
+        );
+      }
+    }
+  }
+
+  return missing;
+}
+
 const searchToolsTool = tool({
   description:
     "Discover available ERP tools by name, description, or module. Always call this first before attempting a task you haven't done before.",
@@ -199,6 +254,10 @@ const proposeWritesTool = tool({
     const ctx = executionOptions?.experimental_context as ChatContext;
 
     // Validate every change refers to a known WRITE/DESTRUCTIVE tool
+    // AND that every required field from the tool's schema is present.
+    // This catches the LLM forgetting to gather a required field before
+    // proposing — we reject server-side so the user never sees a card
+    // that would fail at execution time.
     const enriched: PendingProposalChange[] = [];
     for (const c of changes) {
       const meta = TOOLS.find((t) => t.name === c.name);
@@ -212,6 +271,14 @@ const proposeWritesTool = tool({
           error: `Tool '${c.name}' is ${meta.classification}, not WRITE/DESTRUCTIVE. Use call_tool for READ operations.`
         };
       }
+
+      const missing = findMissingRequiredFields(meta.schema, c.arguments);
+      if (missing.length > 0) {
+        return {
+          error: `Cannot stage '${c.name}': missing required field${missing.length === 1 ? "" : "s"} ${missing.map((m) => `"${m}"`).join(", ")}. ASK THE USER for the missing value(s) before calling propose_writes again. Do not invent or default these values.`
+        };
+      }
+
       enriched.push({
         name: c.name,
         arguments: c.arguments,
@@ -273,13 +340,20 @@ Workflow for READ tasks ("show me…", "list…", "find…"):
 
 Workflow for WRITE/DESTRUCTIVE tasks ("create…", "add…", "update…", "delete…", "submit…", "approve…"):
 1. search_tools → describe_tool to confirm parameters
-2. Gather every related change (e.g. a purchase order header and all its line items) into one propose_writes call
-3. After propose_writes returns, STOP. Tell the user briefly that you've staged the changes and they should review the card. DO NOT call any further tools. The user will click Confirm or Cancel.
-4. Wait for the next user turn. They will tell you the result.
+2. **Check every required field in the schema.** If the user hasn't given you a value for a required field, ASK THEM FIRST in plain language. Never invent IDs, never default a value the user didn't ask for, never use placeholder values like "TBD" or "auto-generated". Only continue when you have every required value.
+3. Once you have everything, gather every related change (e.g. a purchase order header and all its line items) into ONE propose_writes call.
+4. After propose_writes returns, STOP. Tell the user briefly that you've staged the changes and they should review the card. DO NOT call any further tools. The user will click Confirm or Cancel.
+5. Wait for the next user turn. They will tell you the result.
 
 NEVER call a WRITE/DESTRUCTIVE tool through call_tool — it will be rejected.
 NEVER call propose_writes for READ operations.
+NEVER call propose_writes with placeholder, invented, or assumed values for required fields — ask the user instead.
 NEVER call any tool after propose_writes in the same turn — let the user respond first.
+
+If you don't know what value to use for a required field, ask the user. Examples:
+  - User: "create a part called foo" → ask "What part number / readable ID should I use? (e.g. FOO-001)"
+  - User: "create a PO" → ask which supplier, which lines, which dates
+  - User: "delete the supplier" → ask which one by name or ID if ambiguous
 
 Module guide (use exact module names when filtering search_tools):
 - items: parts, services, tools, consumables, unit of measure, materials, configurations
