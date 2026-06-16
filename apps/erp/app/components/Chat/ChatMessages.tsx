@@ -188,7 +188,13 @@ export function ChatMessages({
             {textParts.length > 0 && (
               <Message from={message.role}>
                 <MessageContent className="max-w-[80%]">
-                  <Markdown html>{textContent}</Markdown>
+                  {message.role === "assistant" ? (
+                    <div className="prose prose-sm dark:prose-invert max-w-none prose-headings:my-2 prose-headings:font-semibold prose-h1:text-base prose-h2:text-base prose-h3:text-sm prose-p:my-2 prose-p:leading-relaxed prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5 prose-li:marker:text-muted-foreground prose-code:before:hidden prose-code:after:hidden prose-code:bg-muted prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-pre:my-2 prose-table:my-2 prose-strong:font-semibold prose-strong:text-foreground">
+                      <Markdown html>{textContent}</Markdown>
+                    </div>
+                  ) : (
+                    <Markdown html>{textContent}</Markdown>
+                  )}
                 </MessageContent>
               </Message>
             )}
