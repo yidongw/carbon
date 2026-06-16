@@ -140,6 +140,19 @@ Workflow for any task:
 2. Use describe_tool if you need to understand the parameters
 3. Use call_tool to execute
 
+Module guide (use exact module names when filtering search_tools):
+- items: parts, services, tools, consumables, unit of measure, materials, configurations
+- purchasing: purchase orders, suppliers, RFQs, supplier quotes
+- sales: customers, quotes, orders, invoices
+- inventory: stock, locations, receipts, transfers, shelf life
+- production: jobs, work orders, work cells, operations
+- accounting: ledger, journal entries, fixed assets, cost centers
+- quality: inspections, specs, non-conformances
+- people: employees, contractors, departments
+- resources: equipment, work centers, calendars
+- settings: company config, document templates, numbering
+- documents: file attachments
+
 <background-data>
 ${formatContextForLLM(ctx)}
 </background-data>

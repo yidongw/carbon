@@ -10653,7 +10653,7 @@
       "name": "items_upsertPart",
       "module": "items",
       "classification": "WRITE",
-      "description": "upsert part",
+      "description": "Create or update a part (manufactured/purchased item). Pass the full part object in the \"part\" field.",
       "paramCount": 1,
       "serviceParams": [
         "client",
@@ -10667,7 +10667,67 @@
       "schema": {
         "type": "object",
         "properties": {
-          "part": {}
+          "part": {
+            "type": "object",
+            "description": "Part data. For new parts omit id to auto-generate, or set id for a specific part number.",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Part number / readable ID (e.g. \"P-001\"). Auto-generated if omitted."
+              },
+              "name": {
+                "type": "string",
+                "description": "Short description of the part (required)"
+              },
+              "description": {
+                "type": "string",
+                "description": "Longer description (optional)"
+              },
+              "replenishmentSystem": {
+                "type": "string",
+                "enum": [
+                  "Buy",
+                  "Make",
+                  "Buy and Make"
+                ],
+                "description": "How the part is obtained (required). Use \"Buy\" for purchased parts, \"Make\" for manufactured."
+              },
+              "defaultMethodType": {
+                "type": "string",
+                "enum": [
+                  "Purchase to Order",
+                  "Pull from Inventory",
+                  "Make to Order"
+                ],
+                "description": "Default procurement method (required). Use \"Purchase to Order\" for Buy parts, \"Make to Order\" for Make parts."
+              },
+              "itemTrackingType": {
+                "type": "string",
+                "enum": [
+                  "Inventory",
+                  "Non-Inventory",
+                  "Serial",
+                  "Batch"
+                ],
+                "description": "How inventory is tracked (required). Use \"Inventory\" for standard parts."
+              },
+              "unitOfMeasureCode": {
+                "type": "string",
+                "description": "Unit of measure code (required), e.g. \"EA\" for each, \"LB\" for pounds. Call items_getUnitOfMeasuresList to see available codes."
+              },
+              "unitCost": {
+                "type": "number",
+                "description": "Standard unit cost (optional)"
+              }
+            },
+            "required": [
+              "name",
+              "replenishmentSystem",
+              "defaultMethodType",
+              "itemTrackingType",
+              "unitOfMeasureCode"
+            ]
+          }
         },
         "required": [
           "part"
