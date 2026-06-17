@@ -36,6 +36,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       .select("*")
       .eq("type", "Production")
       .eq("jobOperationId", operationId)
+      .is("invalidatedAt", null)
   ]);
 
   if (

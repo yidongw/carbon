@@ -160,18 +160,25 @@ import {
 } from "../../production.models";
 import {
   getJobPickupsPage,
-  getProductionEventsPage,
-  getProductionQuantitiesPage
+  getProductionEventsPage
 } from "../../production.service";
+import {
+  getOperationQuantitySummary,
+  listProductionQuantityReportsForOperation,
+  type OperationQuantitySummary as OperationQuantitySummaryData,
+  type ProductionQuantityReportWithLines
+} from "../../productionQuantityReport.service";
 import type { Job, JobOperation } from "../../types";
 import { ConfigParamsReportedTargetTable } from "./ConfigParamsReportedTargetTable";
 import { ConfigQuantityBreakdown } from "./ConfigQuantityBreakdown";
 import { JobOperationStatus, JobOperationTags } from "./JobOperationStatus";
 import { OperationDueDatePicker } from "./OperationDueDatePicker";
+import { OperationQuantitySummaryView } from "./OperationQuantitySummary";
+import { ProductionQuantityDispositionDrawer } from "./ProductionQuantityDispositionDrawer";
+import { ProductionQuantityReportCard } from "./ProductionQuantityReportCard";
+import { ProductionQuantityReportHistoryDrawer } from "./ProductionQuantityReportHistoryDrawer";
 import {
   useProductionEventActivityMessage,
-  useProductionQuantityActivityMessage,
-  useProductionQuantityTypeLabel,
   useRelativeCreatedUpdatedText
 } from "./productionQuantityLabels";
 
@@ -471,11 +478,6 @@ const usePendingOperations = (jobId: string) => {
     }, []);
 };
 
-type OperationProductionQuantity =
-  Database["public"]["Tables"]["productionQuantity"]["Row"] & {
-    scrapReason?: { name: string | null } | null;
-  };
-
 type OperationPickup =
   Database["public"]["Tables"]["jobOperationPickup"]["Row"] & {
     employee?: {
@@ -606,7 +608,12 @@ const JobBillOfProcess = ({
           openOverlay(
             overlay.to.newJobProductionQuantity(jobId, {
               jobOperationId: operationId
-            })
+            }),
+            {
+              onSuccess: () => {
+                void refreshQuantityDataRef.current();
+              }
+            }
           );
         }
       : undefined;
@@ -803,11 +810,16 @@ const JobBillOfProcess = ({
   const [productionEvents, setProductionEvents] = useState<
     Database["public"]["Tables"]["productionEvent"]["Row"][]
   >([]);
-  const [productionQuantities, setProductionQuantities] = useState<
-    OperationProductionQuantity[]
+  const [quantityReports, setQuantityReports] = useState<
+    ProductionQuantityReportWithLines[]
   >([]);
-  const [productionQuantityCount, setProductionQuantityCount] =
-    useState<number>(0);
+  const [operationQuantitySummary, setOperationQuantitySummary] =
+    useState<OperationQuantitySummaryData | null>(null);
+  const [quantityReportCount, setQuantityReportCount] = useState<number>(0);
+  const [dispositionReport, setDispositionReport] =
+    useState<ProductionQuantityReportWithLines | null>(null);
+  const [historyReport, setHistoryReport] =
+    useState<ProductionQuantityReportWithLines | null>(null);
   const [page, setPage] = useState(0);
   const [quantityPage, setQuantityPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -824,6 +836,9 @@ const JobBillOfProcess = ({
     new Map()
   );
   const addOperationButtonRef = useRef<HTMLButtonElement>(null);
+  const refreshQuantityDataRef = useRef<() => Promise<void>>(() =>
+    Promise.resolve()
+  );
   const [configurationParameters, setConfigurationParameters] = useState<
     ConfigurationParameter[] | null
   >(null);
@@ -863,7 +878,8 @@ const JobBillOfProcess = ({
           .select("configuration")
           .eq("jobOperationId", operationId)
           .eq("companyId", companyId)
-          .eq("type", "Production"),
+          .eq("type", "Production")
+          .is("invalidatedAt", null),
         carbon
           .from("jobOperationPickup")
           .select("configuration")
@@ -934,8 +950,9 @@ const JobBillOfProcess = ({
 
   useEffect(() => {
     setProductionEvents([]);
-    setProductionQuantities([]);
-    setProductionQuantityCount(0);
+    setQuantityReports([]);
+    setOperationQuantitySummary(null);
+    setQuantityReportCount(0);
     setPage(0);
     setQuantityPage(0);
     setHasMore(true);
@@ -953,13 +970,13 @@ const JobBillOfProcess = ({
 
     const loadQuantityCount = async () => {
       const { count } = await carbon
-        .from("productionQuantity")
+        .from("productionQuantityReport")
         .select("id", { count: "exact", head: true })
         .eq("jobOperationId", selectedItemId)
         .eq("companyId", companyId);
 
       if (!cancelled) {
-        setProductionQuantityCount(count ?? 0);
+        setQuantityReportCount(count ?? 0);
       }
     };
 
@@ -1151,72 +1168,84 @@ const JobBillOfProcess = ({
     setIsLoading(false);
   }, [isLoading, hasMore, carbon, selectedItemId, companyId, page]);
 
+  const refreshQuantityData = useCallback(async () => {
+    if (!carbon || !selectedItemId || temporaryItems[selectedItemId]) return;
+
+    const [summaryResult, reportsResult] = await Promise.all([
+      getOperationQuantitySummary(carbon, selectedItemId, companyId),
+      listProductionQuantityReportsForOperation(carbon, {
+        jobOperationId: selectedItemId,
+        companyId,
+        page: 1
+      })
+    ]);
+
+    if (summaryResult.data) {
+      setOperationQuantitySummary(summaryResult.data);
+    }
+    if (reportsResult.data) {
+      setQuantityReports(reportsResult.data);
+      setQuantityReportCount(reportsResult.count);
+      setQuantityPage(1);
+      setQuantityHasMore(reportsResult.hasMore);
+    }
+  }, [carbon, companyId, selectedItemId, temporaryItems]);
+
+  refreshQuantityDataRef.current = refreshQuantityData;
+
+  useEffect(() => {
+    void refreshQuantityData();
+  }, [refreshQuantityData]);
+
   useRealtimeChannel({
     topic: `production-quantities:${selectedItemId}`,
     enabled: !!selectedItemId && !temporaryItems[selectedItemId ?? ""],
     setup(channel) {
-      return channel.on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "productionQuantity",
-          filter: `jobOperationId=eq.${selectedItemId}`
-        },
-        (payload) => {
-          switch (payload.eventType) {
-            case "INSERT": {
-              const inserted = payload.new as OperationProductionQuantity;
-              setProductionQuantities((prev) => {
-                if (prev.some((q) => q.id === inserted.id)) return prev;
-                return [inserted, ...prev];
-              });
-              setProductionQuantityCount((count) => count + 1);
-              break;
-            }
-            case "UPDATE": {
-              const updated = payload.new as OperationProductionQuantity;
-              setProductionQuantities((prev) =>
-                prev.map((q) => (q.id === updated.id ? updated : q))
-              );
-              break;
-            }
-            case "DELETE": {
-              const deleted = payload.old as { id: string };
-              setProductionQuantities((prev) =>
-                prev.filter((q) => q.id !== deleted.id)
-              );
-              setProductionQuantityCount((count) => Math.max(0, count - 1));
-              break;
-            }
-            default:
-              break;
-          }
-        }
-      );
+      const onQuantityChange = () => {
+        void refreshQuantityData();
+      };
+      return channel
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "productionQuantity",
+            filter: `jobOperationId=eq.${selectedItemId}`
+          },
+          onQuantityChange
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "productionQuantityReport",
+            filter: `jobOperationId=eq.${selectedItemId}`
+          },
+          onQuantityChange
+        );
     }
   });
 
-  const loadMoreProductionQuantities = useCallback(async () => {
-    if (quantityIsLoading || !quantityHasMore || !selectedItemId) return;
+  const loadMoreQuantityReports = useCallback(async () => {
+    if (quantityIsLoading || !quantityHasMore || !selectedItemId || !carbon) {
+      return;
+    }
 
     setQuantityIsLoading(true);
 
-    const result = await getProductionQuantitiesPage(
-      carbon!,
-      selectedItemId,
+    const result = await listProductionQuantityReportsForOperation(carbon, {
+      jobOperationId: selectedItemId,
       companyId,
-      quantityPage + 1
-    );
+      page: quantityPage + 1
+    });
 
     if (result.data && result.data.length > 0) {
-      setProductionQuantities((prev) => [
-        ...prev,
-        ...(result.data as OperationProductionQuantity[])
-      ]);
+      setQuantityReports((prev) => [...prev, ...result.data!]);
       setQuantityPage((prevPage) => prevPage + 1);
       if (result.count != null) {
-        setProductionQuantityCount(result.count);
+        setQuantityReportCount(result.count);
       }
       if (result.hasMore === false) {
         setQuantityHasMore(false);
@@ -1234,6 +1263,16 @@ const JobBillOfProcess = ({
     companyId,
     quantityPage
   ]);
+
+  const handleQuantityReportSaved = useCallback(
+    (updated: ProductionQuantityReportWithLines) => {
+      setQuantityReports((prev) =>
+        prev.map((r) => (r.id === updated.id ? updated : r))
+      );
+      void refreshQuantityData();
+    },
+    [refreshQuantityData]
+  );
 
   const loadMorePickups = useCallback(async () => {
     if (pickupIsLoading || !pickupHasMore || !selectedItemId) return;
@@ -1301,8 +1340,9 @@ const JobBillOfProcess = ({
     const tools = operationDetails?.jobOperationTool ?? [];
     const parameters = operationDetails?.jobOperationParameter ?? [];
     const steps = operationDetails?.jobOperationStep ?? [];
-    const quantityCount =
-      item.id === selectedItemId ? productionQuantityCount : 0;
+    const quantityCount = item.id === selectedItemId ? quantityReportCount : 0;
+    const canEditQuantityReport =
+      !isDisabled && permissions.can("update", "production");
     const currentPickupCount = item.id === selectedItemId ? pickupCount : 0;
     const canRecordQuantity =
       !isDisabled &&
@@ -1345,14 +1385,17 @@ const JobBillOfProcess = ({
       </div>
     );
 
-    const QuantityActivityRow = ({
-      item: quantityItem
+    const QuantityReportRow = ({
+      item: reportItem
     }: {
-      item: OperationProductionQuantity;
+      item: ProductionQuantityReportWithLines;
     }) => (
-      <ProductionQuantityActivity
-        item={quantityItem}
+      <ProductionQuantityReportCard
+        report={reportItem}
         configurationParameters={configurationParameters}
+        canEdit={canEditQuantityReport}
+        onEdit={() => setDispositionReport(reportItem)}
+        onHistory={() => setHistoryReport(reportItem)}
       />
     );
 
@@ -1551,23 +1594,36 @@ const JobBillOfProcess = ({
               delay: 0.15
             }}
           >
-            {canRecordQuantity && onAddProductionQuantity && (
-              <HStack className="justify-end">
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => onAddProductionQuantity(item.id)}
-                >
-                  <LuCirclePlus className="mr-1.5 h-4 w-4" />
-                  <Trans>Record quantity</Trans>
-                </Button>
+            {(item.id === selectedItemId ||
+              (canRecordQuantity && onAddProductionQuantity)) && (
+              <HStack className="w-full flex-wrap items-center justify-between gap-2">
+                <HStack className="min-w-0 flex-wrap items-center gap-2">
+                  {item.id === selectedItemId ? (
+                    <OperationQuantitySummaryView
+                      summary={operationQuantitySummary}
+                      configurationParameters={configurationParameters}
+                    />
+                  ) : null}
+                </HStack>
+                {canRecordQuantity && onAddProductionQuantity ? (
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    className="shrink-0"
+                    onClick={() => onAddProductionQuantity(item.id)}
+                  >
+                    <LuCirclePlus className="mr-1.5 h-4 w-4" />
+                    <Trans>Record quantity</Trans>
+                  </Button>
+                ) : null}
               </HStack>
             )}
             <InfiniteScroll
-              component={QuantityActivityRow}
-              items={productionQuantities}
-              loadMore={loadMoreProductionQuantities}
+              component={QuantityReportRow}
+              items={item.id === selectedItemId ? quantityReports : []}
+              loadMore={loadMoreQuantityReports}
               hasMore={quantityHasMore}
+              listClassName="gap-5 pt-2"
             />
           </motion.div>
         )
@@ -1763,6 +1819,29 @@ const JobBillOfProcess = ({
     </Modal>
   ) : null;
 
+  const quantityDrawerElements = (
+    <>
+      {dispositionReport ? (
+        <ProductionQuantityDispositionDrawer
+          report={dispositionReport}
+          configurationParameters={configurationParameters}
+          itemId={itemId}
+          open
+          onClose={() => setDispositionReport(null)}
+          onSaved={handleQuantityReportSaved}
+        />
+      ) : null}
+      {historyReport ? (
+        <ProductionQuantityReportHistoryDrawer
+          reportId={historyReport.id}
+          configurationParameters={configurationParameters}
+          open
+          onClose={() => setHistoryReport(null)}
+        />
+      ) : null}
+    </>
+  );
+
   if (routeJob) {
     return (
       <>
@@ -1789,6 +1868,7 @@ const JobBillOfProcess = ({
           </div>
         </div>
         {configSummaryModalElement}
+        {quantityDrawerElements}
       </>
     );
   }
@@ -1821,6 +1901,7 @@ const JobBillOfProcess = ({
         <CardContent>{list}</CardContent>
       </Card>
       {configSummaryModalElement}
+      {quantityDrawerElements}
     </>
   );
 };
@@ -3754,84 +3835,6 @@ function ProcedureSyncModal({
     </Modal>
   );
 }
-
-type ProductionQuantityActivityProps = {
-  item: OperationProductionQuantity;
-  configurationParameters?: ConfigurationParameter[] | null;
-};
-
-function getProductionQuantityBadgeVariant(
-  type: OperationProductionQuantity["type"]
-) {
-  switch (type) {
-    case "Production":
-      return "green" as const;
-    case "Rework":
-      return "orange" as const;
-    default:
-      return "red" as const;
-  }
-}
-
-const ProductionQuantityActivity = ({
-  item,
-  configurationParameters
-}: ProductionQuantityActivityProps) => {
-  const { t } = useLingui();
-  const { formatDateTime } = useDateFormatter();
-  const typeLabel = useProductionQuantityTypeLabel();
-  const getActivityMessage = useProductionQuantityActivityMessage();
-
-  const configParts =
-    configurationParameters?.length && item.configuration
-      ? getConfigRowDisplayParts(
-          item.configuration,
-          configurationParameters,
-          t`Quantities`
-        )
-      : [];
-
-  const commentParts: ReactNode[] = [];
-  if (configParts.length > 0) {
-    commentParts.push(
-      <div key="config" className="mb-1">
-        <ConfigQuantityBreakdown parts={configParts} />
-      </div>
-    );
-  }
-  if (item.notes) {
-    commentParts.push(
-      <p key="notes" className="text-sm text-muted-foreground">
-        {item.notes}
-      </p>
-    );
-  }
-  return (
-    <Activity
-      employeeId={item.createdBy}
-      activityMessage={
-        <span className="inline-flex flex-wrap items-center gap-2">
-          {getActivityMessage(item)}
-          <Badge
-            variant={getProductionQuantityBadgeVariant(item.type)}
-            className="shrink-0"
-          >
-            {typeLabel(item.type)}
-          </Badge>
-        </span>
-      }
-      activityTime={item.createdAt}
-      activityTimeDetail={
-        item.createdAt ? formatDateTime(item.createdAt) : undefined
-      }
-      comment={
-        commentParts.length > 0 ? (
-          <div className="flex flex-col gap-1.5">{commentParts}</div>
-        ) : undefined
-      }
-    />
-  );
-};
 
 type PickupActivityRowProps = {
   item: OperationPickup;

@@ -28567,6 +28567,94 @@ export type Database = {
           },
         ]
       }
+      productionQuantityReport: {
+        Row: {
+          companyId: string
+          createdAt: string
+          createdBy: string
+          employeeId: string
+          id: string
+          jobId: string
+          jobOperationId: string
+          notes: string | null
+          originalConfiguration: Json | null
+          originalQuantity: number
+          updatedAt: string | null
+          updatedBy: string | null
+        }
+        Insert: {
+          companyId: string
+          createdAt?: string
+          createdBy: string
+          employeeId: string
+          id?: string
+          jobId: string
+          jobOperationId: string
+          notes?: string | null
+          originalConfiguration?: Json | null
+          originalQuantity?: number
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Update: {
+          companyId?: string
+          createdAt?: string
+          createdBy?: string
+          employeeId?: string
+          id?: string
+          jobId?: string
+          jobOperationId?: string
+          notes?: string | null
+          originalConfiguration?: Json | null
+          originalQuantity?: number
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "productionQuantityReport_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "productionQuantityReport_jobId_fkey"
+            columns: ["jobId"]
+            isOneToOne: false
+            referencedRelation: "job"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "productionQuantityReport_jobOperationId_fkey"
+            columns: ["jobOperationId"]
+            isOneToOne: false
+            referencedRelation: "jobOperation"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "productionQuantityReport_employeeId_fkey"
+            columns: ["employeeId"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "productionQuantityReport_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "productionQuantityReport_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       productionQuantity: {
         Row: {
           companyId: string
@@ -28575,11 +28663,14 @@ export type Database = {
           createdBy: string
           employeeId: string
           id: string
+          invalidatedAt: string | null
+          invalidatedBy: string | null
           jobOperationId: string
           laborProductionEventId: string | null
           machineProductionEventId: string | null
           notes: string | null
           quantity: number
+          reportId: string
           scrapReasonId: string | null
           setupProductionEventId: string | null
           type: Database["public"]["Enums"]["productionQuantityType"]
@@ -28593,11 +28684,14 @@ export type Database = {
           createdBy: string
           employeeId: string
           id?: string
+          invalidatedAt?: string | null
+          invalidatedBy?: string | null
           jobOperationId: string
           laborProductionEventId?: string | null
           machineProductionEventId?: string | null
           notes?: string | null
           quantity: number
+          reportId: string
           scrapReasonId?: string | null
           setupProductionEventId?: string | null
           type?: Database["public"]["Enums"]["productionQuantityType"]
@@ -28611,11 +28705,14 @@ export type Database = {
           createdBy?: string
           employeeId?: string
           id?: string
+          invalidatedAt?: string | null
+          invalidatedBy?: string | null
           jobOperationId?: string
           laborProductionEventId?: string | null
           machineProductionEventId?: string | null
           notes?: string | null
           quantity?: number
+          reportId?: string
           scrapReasonId?: string | null
           setupProductionEventId?: string | null
           type?: Database["public"]["Enums"]["productionQuantityType"]

@@ -273,6 +273,10 @@ msgstr "Activo"
 msgid "Active Jobs"
 msgstr "Trabajos Activos"
 
+#. placeholder {0}: report.originalQuantity
+msgid "Active line total ({lineTotal}) differs from originally reported ({0}). Saving anyway."
+msgstr ""
+
 msgid "Active Statuses"
 msgstr "Estados Activos"
 
@@ -350,6 +354,9 @@ msgstr "Agregar grupo"
 
 msgid "Add Item"
 msgstr "Agregar Artículo"
+
+msgid "Add line"
+msgstr ""
 
 msgid "Add Line"
 msgstr "Agregar Línea"
@@ -2960,6 +2967,10 @@ msgstr ""
 msgid "Each"
 msgstr "Cada"
 
+#. placeholder {0}: zeroQuantityLine.type
+msgid "Each line must have a quantity greater than zero ({0})"
+msgstr ""
+
 msgid "Edit"
 msgstr "Editar"
 
@@ -2986,6 +2997,9 @@ msgstr "Editar Categoría"
 
 msgid "Edit column visibility"
 msgstr "Editar visibilidad de columnas"
+
+msgid "Edit configuration"
+msgstr ""
 
 msgid "Edit Contact"
 msgstr "Editar Contacto"
@@ -3334,6 +3348,13 @@ msgstr "Ingrese el número de PO"
 
 msgid "Entered At Receipt"
 msgstr "Ingresado en la Recepción"
+
+#. placeholder {0}: enteredBy?.name
+msgid "Entered by {0}"
+msgstr ""
+
+msgid "Entered by System"
+msgstr ""
 
 msgid "Entities"
 msgstr "Entidades"
@@ -3926,6 +3947,9 @@ msgid "Files attached here ride along on every purchase order email by default. 
 msgstr ""
 
 msgid "Files attached here ride along on every purchase order email sent to this supplier (in addition to company-wide defaults)."
+msgstr ""
+
+msgid "Fill cell"
 msgstr ""
 
 msgid "Filter"
@@ -5756,6 +5780,9 @@ msgstr "No hay piezas añadidas aún"
 msgid "No planning data"
 msgstr "Sin datos de planificación"
 
+msgid "No previous versions"
+msgstr ""
+
 msgid "No pricing for selected quantity"
 msgstr "Sin precios para la cantidad seleccionada"
 
@@ -6045,6 +6072,10 @@ msgid "Orders submitted"
 msgstr "Pedidos enviados"
 
 msgid "Origin"
+msgstr ""
+
+#. placeholder {0}: report.originalQuantity
+msgid "Originally reported {0} units"
 msgstr ""
 
 msgid "Other Assets"
@@ -6769,6 +6800,9 @@ msgstr "Cantidad en Orden de Venta"
 msgid "Quantity per Parent"
 msgstr "Cantidad por Padre"
 
+msgid "Quantity report updated"
+msgstr ""
+
 msgid "Quantity Type"
 msgstr "Tipo de Cantidad"
 
@@ -7019,6 +7053,9 @@ msgstr "Eliminar de la Lista de Precios"
 msgid "Remove item"
 msgstr "Eliminar artículo"
 
+msgid "Remove line"
+msgstr ""
+
 msgid "Remove order"
 msgstr "Eliminar orden"
 
@@ -7097,7 +7134,17 @@ msgstr "Sistema de Reabastecimiento"
 msgid "Report"
 msgstr "Informe"
 
+msgid "Report history"
+msgstr ""
+
 msgid "reported"
+msgstr ""
+
+#. placeholder {0}: report.originalQuantity
+msgid "Reported {0} units"
+msgstr ""
+
+msgid "Reported {totalQuantity} units"
 msgstr ""
 
 msgid "Reports"
@@ -7484,6 +7531,9 @@ msgstr "Cantidad de Rechazo"
 msgid "Scrap Quantity Per Job"
 msgstr "Cantidad de Desperdicio Por Trabajo"
 
+msgid "Scrap reason"
+msgstr ""
+
 msgid "Scrap Reason"
 msgstr "Motivo de Rechazo"
 
@@ -7649,6 +7699,9 @@ msgstr "Seleccionar fila"
 
 msgid "Select scope"
 msgstr "Seleccionar alcance"
+
+msgid "Select scrap reason"
+msgstr ""
 
 msgid "Select Supplier Status"
 msgstr "Seleccionar Estado del Proveedor"

@@ -2,11 +2,16 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import type { LoaderFunctionArgs } from "react-router";
 import { getConfigurationParameters } from "~/modules/items";
 import type { ConfigurationParameter } from "~/modules/items/types";
-import { parseInitialConfigurationFromRequest } from "~/modules/production/configTableOverlay.server";
+import { buildConfigTableEditorState } from "~/modules/production/configParamsTableColumns";
+import {
+  parseInitialConfigurationFromRequest,
+  parseReferenceContextFromRequest
+} from "~/modules/production/configTableOverlay.server";
 
 export type ItemConfigTableOverlayLoaderData = {
   parameters: ConfigurationParameter[];
   initialRows?: Record<string, string | number | boolean>[];
+  referenceByRowIndex?: Array<Record<string, number>>;
   itemReadableId: string | null;
 };
 
@@ -36,9 +41,31 @@ export async function loader({
     .eq("companyId", companyId)
     .maybeSingle();
 
+  const referenceContext = parseReferenceContextFromRequest(request);
+  const initialRowsFromRequest = parseInitialConfigurationFromRequest(request);
+  const currentConfiguration =
+    initialRowsFromRequest !== undefined
+      ? { configTable: initialRowsFromRequest }
+      : undefined;
+
+  let initialRows = initialRowsFromRequest;
+  let referenceByRowIndex: Array<Record<string, number>> | undefined;
+
+  if (referenceContext) {
+    const editorState = buildConfigTableEditorState({
+      parameters,
+      defaultQuantityLabel: "Quantities",
+      currentConfiguration,
+      referenceContext
+    });
+    initialRows = editorState.rows;
+    referenceByRowIndex = editorState.referenceByRowIndex;
+  }
+
   return {
     parameters,
-    initialRows: parseInitialConfigurationFromRequest(request),
+    initialRows,
+    referenceByRowIndex,
     itemReadableId: item.data?.readableIdWithRevision ?? null
   };
 }

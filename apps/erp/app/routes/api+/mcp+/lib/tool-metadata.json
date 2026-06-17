@@ -1,5 +1,5 @@
 {
-  "generated": "2026-06-17T05:31:09.883Z",
+  "generated": "2026-06-17T05:59:21.998Z",
   "totalTools": 1199,
   "modules": 15,
   "tools": [
@@ -13516,10 +13516,11 @@
       "module": "production",
       "classification": "DESTRUCTIVE",
       "description": "delete production quantity",
-      "paramCount": 1,
+      "paramCount": 2,
       "serviceParams": [
         "client",
-        "productionQuantityId"
+        "productionQuantityId",
+        "args"
       ],
       "injectAuth": [
         "companyId"
@@ -13529,10 +13530,15 @@
         "properties": {
           "productionQuantityId": {
             "type": "string"
+          },
+          "args": {
+            "type": "object",
+            "properties": {}
           }
         },
         "required": [
-          "productionQuantityId"
+          "productionQuantityId",
+          "args"
         ]
       }
     },

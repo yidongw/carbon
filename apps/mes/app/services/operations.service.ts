@@ -653,7 +653,8 @@ export async function getProductionQuantitiesForJobOperation(
   return client
     .from("productionQuantity")
     .select("*")
-    .eq("jobOperationId", operationId);
+    .eq("jobOperationId", operationId)
+    .is("invalidatedAt", null);
 }
 
 export async function getRecentJobOperationsByEmployee(
@@ -881,6 +882,83 @@ export async function insertAttributeRecord(
   });
 }
 
+async function insertProductionQuantityLine(
+  client: SupabaseClient<Database>,
+  args: {
+    jobOperationId: string;
+    quantity: number;
+    type: "Production" | "Rework" | "Scrap";
+    companyId: string;
+    createdBy: string;
+    employeeId: string;
+    notes?: string;
+    scrapReasonId?: string;
+    configuration?: unknown;
+  }
+) {
+  const { data: operation, error: operationError } = await client
+    .from("jobOperation")
+    .select("jobMakeMethodId")
+    .eq("id", args.jobOperationId)
+    .single();
+  if (operationError || !operation || !operation.jobMakeMethodId) {
+    return {
+      data: null,
+      error: operationError ?? new Error("Operation not found")
+    };
+  }
+  const { data: makeMethod, error: makeMethodError } = await client
+    .from("jobMakeMethod")
+    .select("jobId")
+    .eq("id", operation.jobMakeMethodId)
+    .single();
+  if (makeMethodError || !makeMethod) {
+    return {
+      data: null,
+      error: makeMethodError ?? new Error("Make method not found")
+    };
+  }
+
+  const { data: report, error: reportError } = await client
+    .from("productionQuantityReport")
+    .insert({
+      companyId: args.companyId,
+      jobId: makeMethod.jobId,
+      jobOperationId: args.jobOperationId,
+      employeeId: args.employeeId,
+      originalQuantity: args.quantity,
+      originalConfiguration: (args.configuration as Json | null) ?? null,
+      notes: args.notes ?? null,
+      createdBy: args.createdBy
+    })
+    .select("id")
+    .single();
+  if (reportError || !report) {
+    return {
+      data: null,
+      error: reportError ?? new Error("Failed to create report")
+    };
+  }
+
+  return client
+    .from("productionQuantity")
+    .insert(
+      sanitize({
+        reportId: report.id,
+        jobOperationId: args.jobOperationId,
+        quantity: args.quantity,
+        type: args.type,
+        companyId: args.companyId,
+        createdBy: args.createdBy,
+        employeeId: args.employeeId,
+        notes: args.notes,
+        scrapReasonId: args.scrapReasonId,
+        configuration: (args.configuration as Json | null) ?? null
+      })
+    )
+    .select("*");
+}
+
 export async function insertReworkQuantity(
   client: SupabaseClient<Database>,
   data: z.infer<typeof nonScrapQuantityValidator> & {
@@ -889,21 +967,15 @@ export async function insertReworkQuantity(
     employeeId: string;
   }
 ) {
-  const {
-    trackedEntityId: _trackedEntityId,
-    trackingType: _trackingType,
-    ...insert
-  } = data;
-
-  return client
-    .from("productionQuantity")
-    .insert(
-      sanitize({
-        ...insert,
-        type: "Rework"
-      })
-    )
-    .select("*");
+  return insertProductionQuantityLine(client, {
+    jobOperationId: data.jobOperationId,
+    quantity: data.quantity,
+    type: "Rework",
+    companyId: data.companyId,
+    createdBy: data.createdBy,
+    employeeId: data.employeeId,
+    notes: data.notes
+  });
 }
 
 export async function insertProductionQuantity(
@@ -914,15 +986,15 @@ export async function insertProductionQuantity(
     employeeId: string;
   }
 ) {
-  return client
-    .from("productionQuantity")
-    .insert(
-      sanitize({
-        ...data,
-        type: "Production"
-      })
-    )
-    .select("*");
+  return insertProductionQuantityLine(client, {
+    jobOperationId: data.jobOperationId,
+    quantity: data.quantity,
+    type: "Production",
+    companyId: data.companyId,
+    createdBy: data.createdBy,
+    employeeId: data.employeeId,
+    notes: data.notes
+  });
 }
 
 export async function insertScrapQuantity(
@@ -933,15 +1005,16 @@ export async function insertScrapQuantity(
     employeeId: string;
   }
 ) {
-  return client
-    .from("productionQuantity")
-    .insert(
-      sanitize({
-        ...data,
-        type: "Scrap"
-      })
-    )
-    .select("*");
+  return insertProductionQuantityLine(client, {
+    jobOperationId: data.jobOperationId,
+    quantity: data.quantity,
+    type: "Scrap",
+    companyId: data.companyId,
+    createdBy: data.createdBy,
+    employeeId: data.employeeId,
+    notes: data.notes,
+    scrapReasonId: data.scrapReasonId
+  });
 }
 
 export async function getJobOperationPickups(

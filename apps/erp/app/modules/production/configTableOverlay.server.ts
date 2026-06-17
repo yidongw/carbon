@@ -1,3 +1,4 @@
+import type { ConfigTableReferenceContext } from "./configParamsTableColumns";
 import { buildConfigTableActionResponse } from "./configTableOverlay";
 
 export { buildConfigTableActionResponse };
@@ -41,6 +42,38 @@ export function parseInitialConfigurationFromRequest(
     return Array.isArray(configTable)
       ? (configTable as Record<string, string | number | boolean>[])
       : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+export function parseReferenceContextFromRequest(
+  request: Request
+): ConfigTableReferenceContext | undefined {
+  const raw = new URL(request.url).searchParams.get("referenceContext");
+  if (!raw) return undefined;
+
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (
+      typeof parsed !== "object" ||
+      parsed === null ||
+      Array.isArray(parsed)
+    ) {
+      return undefined;
+    }
+    const ctx = parsed as Record<string, unknown>;
+    if (ctx.mode !== "original" && ctx.mode !== "remaining") {
+      return undefined;
+    }
+    if (!Array.isArray(ctx.otherLineConfigurations)) {
+      return undefined;
+    }
+    return {
+      mode: ctx.mode,
+      originalConfiguration: ctx.originalConfiguration,
+      otherLineConfigurations: ctx.otherLineConfigurations
+    };
   } catch {
     return undefined;
   }
