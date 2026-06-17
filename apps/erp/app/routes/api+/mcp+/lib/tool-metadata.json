@@ -1,6 +1,6 @@
 {
-  "generated": "2026-06-17T04:22:45.661Z",
-  "totalTools": 1193,
+  "generated": "2026-06-17T05:31:09.883Z",
+  "totalTools": 1199,
   "modules": 15,
   "tools": [
     {
@@ -16571,6 +16571,198 @@
         },
         "required": [
           "id"
+        ]
+      }
+    },
+    {
+      "name": "production_getJobOperationPickups",
+      "module": "production",
+      "classification": "READ",
+      "description": "get job operation pickups",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "jobOperationId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobOperationId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "jobOperationId"
+        ]
+      }
+    },
+    {
+      "name": "production_getJobOperationPickup",
+      "module": "production",
+      "classification": "READ",
+      "description": "get job operation pickup",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "id"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "production_upsertJobOperationPickup",
+      "module": "production",
+      "classification": "WRITE",
+      "description": "upsert job operation pickup",
+      "paramCount": 6,
+      "serviceParams": [
+        "client",
+        "pickup"
+      ],
+      "injectAuth": [
+        "companyId",
+        "createdBy",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "jobOperationId": {
+            "type": "string"
+          },
+          "employeeId": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "configuration": {},
+          "notes": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "jobOperationId",
+          "employeeId"
+        ]
+      }
+    },
+    {
+      "name": "production_deleteJobOperationPickup",
+      "module": "production",
+      "classification": "DESTRUCTIVE",
+      "description": "delete job operation pickup",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "id"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "production_getJobPickupsByOperations",
+      "module": "production",
+      "classification": "READ",
+      "description": "get job pickups by operations",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "jobOperationIds",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobOperationIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "args": {
+            "type": "object",
+            "properties": {
+              "search": {
+                "type": "object",
+                "properties": {
+                  "limit": {
+                    "type": "integer",
+                    "default": 100
+                  },
+                  "offset": {
+                    "type": "integer",
+                    "default": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "jobOperationIds"
+        ]
+      }
+    },
+    {
+      "name": "production_getJobPickupsPage",
+      "module": "production",
+      "classification": "READ",
+      "description": "get job pickups page",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "jobOperationId",
+        "companyId",
+        "page = 1"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobOperationId": {
+            "type": "string"
+          },
+          "page = 1": {}
+        },
+        "required": [
+          "jobOperationId",
+          "page = 1"
         ]
       }
     },

@@ -891,6 +891,9 @@ msgstr "Czy na pewno chcesz usunąć tę kartę kanban? Tej operacji nie można 
 msgid "Are you sure you want to delete this maintenance dispatch? This cannot be undone."
 msgstr "Czy na pewno chcesz usunąć tę dyspozycję konserwacji? Tej operacji nie można cofnąć."
 
+msgid "Are you sure you want to delete this pickup? This action cannot be undone."
+msgstr ""
+
 msgid "Are you sure you want to delete this production quantity? This action cannot be undone."
 msgstr ""
 
@@ -2545,6 +2548,9 @@ msgstr "Usuń partnera"
 msgid "Delete Payment Term"
 msgstr "Usuń Warunki Płatności"
 
+msgid "Delete Pickup"
+msgstr ""
+
 msgid "Delete Portal"
 msgstr "Usuń Portal"
 
@@ -3094,6 +3100,9 @@ msgstr "Edytuj Warunki Płatności"
 
 msgid "Edit Permissions"
 msgstr "Uprawnienia do edycji"
+
+msgid "Edit Pickup"
+msgstr ""
 
 msgid "Edit Portal"
 msgstr "Edytuj Portal"
@@ -6272,6 +6281,20 @@ msgstr "Wybierz datę lub pozostaw puste pole, aby je wyczyścić."
 msgid "Pick List"
 msgstr "Lista pobrania"
 
+#. placeholder {0}: item.quantity
+msgid "picked up {0} units"
+msgstr ""
+
+msgid "Pickup"
+msgstr ""
+
+#. placeholder {0}: selectedPickup.employeeId
+msgid "pickup by {0}"
+msgstr ""
+
+msgid "Pickups"
+msgstr ""
+
 msgid "Pieces/Hour"
 msgstr "Sztuk/Godzina"
 
@@ -6899,6 +6922,12 @@ msgstr ""
 msgid "Record deleted"
 msgstr "Rekord usunięty"
 
+msgid "Record pickup"
+msgstr ""
+
+msgid "Record Pickup"
+msgstr ""
+
 msgid "Record production quantity"
 msgstr ""
 
@@ -6909,6 +6938,9 @@ msgid "recorded {qty} units"
 msgstr ""
 
 msgid "recorded {qty} units ({reason})"
+msgstr ""
+
+msgid "Recorded At"
 msgstr ""
 
 msgid "Records"

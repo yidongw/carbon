@@ -300,6 +300,9 @@ msgstr "Редактировать"
 msgid "Email Address"
 msgstr "Электронная почта"
 
+msgid "Employee"
+msgstr ""
+
 msgid "Empty work centers"
 msgstr "Пустые рабочие центры"
 
@@ -460,6 +463,9 @@ msgstr "Записать готовые"
 msgid "Log completed for {0}"
 msgstr "Записать готовые для {0}"
 
+msgid "Log Pickup"
+msgstr ""
+
 msgid "Log Rework"
 msgstr "Записать доработку"
 
@@ -583,6 +589,9 @@ msgstr "Опция не найдена."
 msgid "No options found."
 msgstr "Варианты не найдены."
 
+msgid "No pickups logged"
+msgstr ""
+
 msgid "No printer configured"
 msgstr "Принтер не настроен"
 
@@ -670,6 +679,9 @@ msgstr "Пауза"
 #. placeholder {2}: columnOrder.length
 msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "Столбец {0} взят с позиции: {1} из {2}"
+
+msgid "Pickups"
+msgstr ""
 
 msgid "Pin Out"
 msgstr "Выход по PIN"

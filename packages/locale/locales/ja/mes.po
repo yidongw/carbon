@@ -300,6 +300,9 @@ msgstr "編集"
 msgid "Email Address"
 msgstr "メールアドレス"
 
+msgid "Employee"
+msgstr ""
+
 msgid "Empty work centers"
 msgstr "空の作業センター"
 
@@ -460,6 +463,9 @@ msgstr "完了を記録"
 msgid "Log completed for {0}"
 msgstr "{0} の完了を記録"
 
+msgid "Log Pickup"
+msgstr ""
+
 msgid "Log Rework"
 msgstr "手直しを記録"
 
@@ -583,6 +589,9 @@ msgstr "オプションが見つかりません。"
 msgid "No options found."
 msgstr "オプションが見つかりません。"
 
+msgid "No pickups logged"
+msgstr ""
+
 msgid "No printer configured"
 msgstr "プリンターが設定されていません"
 
@@ -670,6 +679,9 @@ msgstr "一時停止"
 #. placeholder {2}: columnOrder.length
 msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "カラム {0} を位置 {1}/{2} で選択しました"
+
+msgid "Pickups"
+msgstr ""
 
 msgid "Pin Out"
 msgstr "ピンアウト"

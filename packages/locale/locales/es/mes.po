@@ -300,6 +300,9 @@ msgstr "Editar"
 msgid "Email Address"
 msgstr "Correo electrónico"
 
+msgid "Employee"
+msgstr ""
+
 msgid "Empty work centers"
 msgstr "Centros de trabajo vacíos"
 
@@ -460,6 +463,9 @@ msgstr "Registrar completados"
 msgid "Log completed for {0}"
 msgstr "Registrar completados para {0}"
 
+msgid "Log Pickup"
+msgstr ""
+
 msgid "Log Rework"
 msgstr "Registrar retrabajo"
 
@@ -583,6 +589,9 @@ msgstr "No se encontró ninguna opción."
 msgid "No options found."
 msgstr "No se encontraron opciones."
 
+msgid "No pickups logged"
+msgstr ""
+
 msgid "No printer configured"
 msgstr "Sin impresora configurada"
 
@@ -670,6 +679,9 @@ msgstr "Pausar"
 #. placeholder {2}: columnOrder.length
 msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "Se tomó la columna {0} en la posición: {1} de {2}"
+
+msgid "Pickups"
+msgstr ""
 
 msgid "Pin Out"
 msgstr "Cerrar sesión con PIN"

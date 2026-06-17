@@ -46,6 +46,7 @@ import {
   LuListChecks,
   LuMapPin,
   LuMaximize2,
+  LuPackageOpen,
   LuPencil,
   LuQrCode,
   LuSquareUser,
@@ -910,6 +911,16 @@ const JobsTable = memo(
             >
               <MenuIcon icon={<LuHash />} />
               <Trans>Record production quantity</Trans>
+            </MenuItem>
+          ) : null}
+          {permissions.can("create", "production") && row.id ? (
+            <MenuItem
+              onClick={() => {
+                openOverlay(overlay.to.newJobPickup(row.id!));
+              }}
+            >
+              <MenuIcon icon={<LuPackageOpen />} />
+              <Trans>Record pickup</Trans>
             </MenuItem>
           ) : null}
           <MenuItem
