@@ -112,16 +112,13 @@ function makeAuthSession(
   if (!supabaseSession.refresh_token)
     throw new Error("User should have a refresh token");
 
-  if (!supabaseSession.user?.email)
-    throw new Error("User should have an email");
-
   return {
     accessToken: supabaseSession.access_token,
     companyId,
     companyGroupId,
     refreshToken: supabaseSession.refresh_token,
     userId: supabaseSession.user.id,
-    email: supabaseSession.user.email,
+    email: supabaseSession.user.email ?? null,
     expiresIn:
       (supabaseSession.expires_in ?? 3000) - REFRESH_ACCESS_TOKEN_THRESHOLD,
     expiresAt: supabaseSession.expires_at ?? -1
@@ -298,7 +295,8 @@ export async function requirePermissions(
   }
 
   const authSession = await requireAuthSession(request);
-  const { accessToken, companyId, companyGroupId, email, userId } = authSession;
+  const { accessToken, companyId, companyGroupId, userId } = authSession;
+  const email = authSession.email ?? "";
   const consoleMode = authSession.console === companyId;
 
   const myClaims = await getUserClaims(userId, companyId);

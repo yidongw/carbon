@@ -324,7 +324,7 @@ export async function action(args: ActionFunctionArgs) {
             lastName: supplier.data.contact.lastName ?? undefined
           },
           sender: {
-            email: buyer.data.email,
+            email: buyer.data.email ?? "",
             firstName: buyer.data.firstName,
             lastName: buyer.data.lastName
           },

@@ -39,6 +39,9 @@ start_tunnel() {
   local logfile
   logfile=$(mktemp /tmp/cf-tunnel-XXXXXX)
 
+  # Replace only the tunnel for THIS port — never touch other worktrees' tunnels.
+  pkill -f "cloudflared tunnel --url http://127.0.0.1:${port} " 2>/dev/null || true
+
   cloudflared tunnel --url "http://127.0.0.1:${port}" --no-autoupdate \
     >"$logfile" 2>&1 &
 
@@ -75,9 +78,9 @@ declare -a SERVICES=(
   "Inngest    PORT_INNGEST"
 )
 
-echo "Stopping existing cloudflared tunnels…"
-pkill -f "cloudflared tunnel" 2>/dev/null && sleep 1 || true
-echo ""
+# Per-port replacement happens inside start_tunnel; we never blanket-kill other
+# worktrees' tunnels. Track the ports we manage so we can wait on just those.
+declare -a MY_PORTS=()
 
 for entry in "${SERVICES[@]}"; do
   label=$(echo "$entry" | awk '{print $1}')
@@ -89,6 +92,7 @@ for entry in "${SERVICES[@]}"; do
     continue
   fi
 
+  MY_PORTS+=("$port")
   printf "  %-10s port %-5s  →  starting…" "$label" "$port"
   url=$(start_tunnel "$port")
   printf -v "URL_${label}" '%s' "$url"
@@ -115,10 +119,15 @@ if [ -n "$ERP_URL" ]; then
   echo ""
 
   if command -v "$DOCKER" &>/dev/null; then
-    echo "Restarting GoTrue to apply new allow list…"
+    # Restart THIS worktree's GoTrue (derived project, not a hardcoded stack),
+    # and pass --env-file so ${SUPABASE_JWT_SECRET} etc. aren't blanked — an
+    # empty JWT secret crash-loops GoTrue and 503s all auth.
+    project="carbon-$(env_get CARBON_WORKTREE)"
+    echo "Restarting GoTrue ($project) to apply new allow list…"
     "$DOCKER" compose \
       -f "$REPO/docker-compose.dev.yml" \
-      -p "carbon-carbon" \
+      -p "$project" \
+      --env-file "$ENV_LOCAL" \
       up -d --no-deps gotrue 2>/dev/null
     echo "GoTrue restarted."
     echo ""
@@ -150,6 +159,12 @@ trap 'echo ""; echo "Tunnels still running. Re-run to restart with new URLs."; e
 
 echo "Press Ctrl+C to stop all tunnels."
 
-while pgrep -f "cloudflared tunnel" > /dev/null; do
+# Wait only on the tunnels this worktree started, not every worktree's.
+while :; do
+  alive=0
+  for p in "${MY_PORTS[@]}"; do
+    pgrep -f "cloudflared tunnel --url http://127.0.0.1:${p} " >/dev/null 2>&1 && alive=1
+  done
+  [ "$alive" = "1" ] || break
   sleep 2
 done

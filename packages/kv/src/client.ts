@@ -46,11 +46,7 @@ function createRedis() {
 
 function getRedis(): Redis {
   const existing = global.__redis;
-  if (
-    !existing ||
-    existing.status === "end" ||
-    existing.status === "close"
-  ) {
+  if (!existing || existing.status === "end" || existing.status === "close") {
     global.__redis = createRedis();
   }
   return global.__redis;

@@ -96,6 +96,7 @@
     "pdfjs-dist": "5.4.296",
     "performant-array-to-tree": "1.11.0",
     "posthog-js": "catalog:",
+    "qrcode.react": "catalog:",
     "react": "catalog:",
     "react-colorful": "5.6.1",
     "react-confetti-explosion": "3.0.3",

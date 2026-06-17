@@ -7169,6 +7169,9 @@ msgstr "刷新"
 msgid "Refresh exchange rate"
 msgstr "刷新汇率"
 
+msgid "Refresh QR code"
+msgstr ""
+
 msgid "Reject"
 msgstr "拒绝"
 
@@ -7693,6 +7696,9 @@ msgstr "扫描或从这批物料中选择一个追踪实体并记录检验结果
 msgid "Scan the tracking ID for this line"
 msgstr "扫描此行的追踪ID"
 
+msgid "Scan with WeChat to sign in"
+msgstr ""
+
 msgid "SCAR"
 msgstr "SCAR"
 
@@ -8201,6 +8207,9 @@ msgid "Sign in with Outlook"
 msgstr "使用Outlook登录"
 
 msgid "Sign in with Passkey"
+msgstr ""
+
+msgid "Sign in with WeChat"
 msgstr ""
 
 msgid "Sign Out"
@@ -9679,6 +9688,9 @@ msgstr "Webhooks 文档"
 
 msgid "Website"
 msgstr "网站"
+
+msgid "WeChat QR"
+msgstr ""
 
 msgid "Wednesday"
 msgstr "星期三"

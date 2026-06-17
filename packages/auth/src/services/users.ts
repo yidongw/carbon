@@ -23,9 +23,7 @@ export function isValidCachedClaims(
   } | null
 ): claims is { permissions: Record<string, Permission>; role: string } {
   return (
-    !!claims &&
-    !!claims.role &&
-    Object.keys(claims.permissions).length > 0
+    !!claims && !!claims.role && Object.keys(claims.permissions).length > 0
   );
 }
 

@@ -7169,6 +7169,9 @@ msgstr "Aktualisieren"
 msgid "Refresh exchange rate"
 msgstr "Wechselkurs aktualisieren"
 
+msgid "Refresh QR code"
+msgstr ""
+
 msgid "Reject"
 msgstr "Ablehnen"
 
@@ -7693,6 +7696,9 @@ msgstr "Scannen oder wählen Sie eine nachverfölgte Entität aus diesem Los aus
 msgid "Scan the tracking ID for this line"
 msgstr "Scannen Sie die Tracking-ID für diese Zeile"
 
+msgid "Scan with WeChat to sign in"
+msgstr ""
+
 msgid "SCAR"
 msgstr "SCAR"
 
@@ -8201,6 +8207,9 @@ msgid "Sign in with Outlook"
 msgstr "Mit Outlook anmelden"
 
 msgid "Sign in with Passkey"
+msgstr ""
+
+msgid "Sign in with WeChat"
 msgstr ""
 
 msgid "Sign Out"
@@ -9679,6 +9688,9 @@ msgstr "Webhooks-Dokumentation"
 
 msgid "Website"
 msgstr "Website"
+
+msgid "WeChat QR"
+msgstr ""
 
 msgid "Wednesday"
 msgstr "Mittwoch"
