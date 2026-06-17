@@ -111,6 +111,8 @@ export async function action({ request, params }: ActionFunctionArgs) {
     configuration: rawConfiguration,
     id: _id,
     actorKind,
+    employeeId: _employeeId,
+    supplierProcessId: _supplierProcessId,
     ...rest
   } = validation.data;
 
@@ -130,7 +132,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     actorKind === "supplier"
       ? await upsertJobOperationSupplierPickup(client, {
           jobOperationId: rest.jobOperationId,
-          supplierProcessId: rest.supplierProcessId!,
+          supplierProcessId: validation.data.supplierProcessId!,
           quantity: rest.quantity,
           configuration,
           notes: rest.notes ?? null,
@@ -138,8 +140,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
           createdBy: userId
         })
       : await upsertJobOperationPickup(client, {
-          ...rest,
-          employeeId: rest.employeeId!,
+          jobOperationId: rest.jobOperationId,
+          quantity: rest.quantity,
+          notes: rest.notes,
+          employeeId: validation.data.employeeId!,
           configuration,
           companyId,
           createdBy: userId

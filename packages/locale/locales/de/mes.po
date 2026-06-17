@@ -72,6 +72,12 @@ msgstr "Ersatzteil hinzufügen"
 msgid "All"
 msgstr "Alle"
 
+msgid "approved"
+msgstr ""
+
+msgid "Approved"
+msgstr ""
+
 msgid "Are you sure you want to delete this step?"
 msgstr "Möchten Sie diesen Schritt wirklich löschen?"
 
@@ -298,6 +304,9 @@ msgstr "Doppelte Seriennummer"
 msgid "Duration"
 msgstr "Dauer"
 
+msgid "Earned"
+msgstr ""
+
 msgid "Edit"
 msgstr "Bearbeiten"
 
@@ -375,6 +384,9 @@ msgstr "Zurück zur Operation"
 
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "Haben Sie ein technisches Problem? Kontaktieren Sie den <0>Carbon Support.</0>"
+
+msgid "History"
+msgstr ""
 
 msgid "I understand and want to complete without issuing"
 msgstr "Ich verstehe und möchte ohne Ausgabe abschließen"
@@ -539,6 +551,9 @@ msgstr "Muss zwischen {minValue} und {maxValue} {unitOfMeasureCode} liegen"
 msgid "My Hours"
 msgstr "Meine Stunden"
 
+msgid "My Salary"
+msgstr ""
+
 msgid "Name"
 msgstr "Name"
 
@@ -556,6 +571,9 @@ msgstr "Keine aktiven Instandhaltungseinsätze"
 
 msgid "No active operations"
 msgstr "Keine aktiven Arbeitsgänge"
+
+msgid "No approved completions this period"
+msgstr ""
 
 msgid "No assigned operations"
 msgstr "Keine zugewiesenen Arbeitsgänge"
@@ -669,6 +687,12 @@ msgstr "Vom Bediener durchgeführt"
 msgid "Optional"
 msgstr "Optional"
 
+msgid "Owed"
+msgstr ""
+
+msgid "Paid"
+msgstr ""
+
 msgid "Parameters"
 msgstr "Parameter"
 
@@ -680,6 +704,15 @@ msgstr "Prüfung bestanden"
 
 msgid "Pause"
 msgstr "Pause"
+
+msgid "Pending"
+msgstr ""
+
+msgid "Pending Approval"
+msgstr ""
+
+msgid "Period"
+msgstr ""
 
 #. placeholder {0}: startColumn?.title
 #. placeholder {1}: startIndex + 1
@@ -731,6 +764,9 @@ msgstr "Prozesse"
 
 msgid "Progress"
 msgstr "Fortschritt"
+
+msgid "Qty"
+msgstr ""
 
 msgid "Quality Issue"
 msgstr "Qualitätsproblem"
@@ -962,6 +998,9 @@ msgstr "Die abgeschlossene Menge für diesen Arbeitsgang ist geringer als die er
 msgid "There are serial or batch tracked materials on the bill of material that have not been fully issued. Completing without issuing may result in incorrect traceability records."
 msgstr "Es gibt serien- oder chargenverfolgte Materialien in der Stückliste, die noch nicht vollständig ausgegeben wurden. Ein Abschluss ohne Ausgabe kann zu fehlerhaften Rückverfolgbarkeitsdaten führen."
 
+msgid "This Period"
+msgstr ""
+
 msgid "Thumbnail"
 msgstr "Vorschaubild"
 
@@ -997,6 +1036,9 @@ msgstr "Nachricht eingeben..."
 
 msgid "Unissued serial/batch materials"
 msgstr "Nicht ausgegebene Serien-/Chargenmaterialien"
+
+msgid "unit"
+msgstr ""
 
 msgid "Unknown"
 msgstr "Unbekannt"

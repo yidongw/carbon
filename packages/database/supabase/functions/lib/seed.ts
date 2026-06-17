@@ -8,6 +8,7 @@ export {
   accounts,
   currencies,
   customerStatuses,
+  defaultApprovalRules,
   dimensions,
   failureModes,
   fiscalYearSettings,

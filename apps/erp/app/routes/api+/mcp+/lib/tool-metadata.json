@@ -1,6 +1,6 @@
 {
-  "generated": "2026-06-17T06:11:49.424Z",
-  "totalTools": 1205,
+  "generated": "2026-06-17T06:44:34.962Z",
+  "totalTools": 1226,
   "modules": 15,
   "tools": [
     {
@@ -13123,6 +13123,652 @@
       }
     },
     {
+      "name": "people_getEmployeeSalaryList",
+      "module": "people",
+      "classification": "READ",
+      "description": "get employee salary list",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "year",
+        "month",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "number"
+          },
+          "month": {
+            "type": "number"
+          },
+          "args": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "default": 100
+              },
+              "offset": {
+                "type": "integer",
+                "default": 0
+              },
+              "search": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        },
+        "required": [
+          "year",
+          "month"
+        ]
+      }
+    },
+    {
+      "name": "people_getEmployeeSalaryRecord",
+      "module": "people",
+      "classification": "READ",
+      "description": "get employee salary record",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "employeeId",
+        "companyId",
+        "year",
+        "month"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "employeeId": {
+            "type": "string"
+          },
+          "year": {
+            "type": "number"
+          },
+          "month": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "employeeId",
+          "year",
+          "month"
+        ]
+      }
+    },
+    {
+      "name": "people_getSalaryRecordBalances",
+      "module": "people",
+      "classification": "READ",
+      "description": "get salary record balances",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "salaryRecordId",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "salaryRecordId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "salaryRecordId"
+        ]
+      }
+    },
+    {
+      "name": "people_getAmountOwed",
+      "module": "people",
+      "classification": "READ",
+      "description": "get amount owed",
+      "paramCount": 2,
+      "serviceParams": [
+        "record"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "totalEarned": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "totalPaid": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "people_getEmployeeSalaryCompletions",
+      "module": "people",
+      "classification": "READ",
+      "description": "get employee salary completions",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "employeeId",
+        "companyId",
+        "year",
+        "month"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "employeeId": {
+            "type": "string"
+          },
+          "year": {
+            "type": "number"
+          },
+          "month": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "employeeId",
+          "year",
+          "month"
+        ]
+      }
+    },
+    {
+      "name": "people_getPendingSalaryCompletions",
+      "module": "people",
+      "classification": "READ",
+      "description": "get pending salary completions",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "employeeId",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "employeeId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "employeeId"
+        ]
+      }
+    },
+    {
+      "name": "people_getCompanyPendingSalaryCompletions",
+      "module": "people",
+      "classification": "READ",
+      "description": "get company pending salary completions",
+      "paramCount": 0,
+      "serviceParams": [
+        "client",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "people_resolveProductionPayApprovalScope",
+      "module": "people",
+      "classification": "WRITE",
+      "description": "resolve production pay approval scope",
+      "paramCount": 3,
+      "serviceParams": [
+        "filters"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "column": {
+            "type": "string"
+          },
+          "operator": {
+            "type": "string"
+          },
+          "value": {}
+        },
+        "required": [
+          "column",
+          "operator"
+        ]
+      }
+    },
+    {
+      "name": "people_resolveProductionPayApprovalStatus",
+      "module": "people",
+      "classification": "WRITE",
+      "description": "resolve production pay approval status",
+      "paramCount": 2,
+      "serviceParams": [
+        "filters"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "column": {
+            "type": "string"
+          },
+          "value": {}
+        },
+        "required": [
+          "column",
+          "value"
+        ]
+      }
+    },
+    {
+      "name": "people_getProductionPayApprovals",
+      "module": "people",
+      "classification": "READ",
+      "description": "get production pay approvals",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "scope",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "scope": {},
+          "args": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "default": 100
+              },
+              "offset": {
+                "type": "integer",
+                "default": 0
+              },
+              "search": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        },
+        "required": [
+          "scope"
+        ]
+      }
+    },
+    {
+      "name": "people_getProductionPayApprovalRequestRows",
+      "module": "people",
+      "classification": "READ",
+      "description": "get production pay approval request rows",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "scope",
+        "args",
+        "enrichmentClient"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "scope": {},
+          "args": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "default": 100
+              },
+              "offset": {
+                "type": "integer",
+                "default": 0
+              },
+              "search": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          },
+          "enrichmentClient": {}
+        },
+        "required": [
+          "scope"
+        ]
+      }
+    },
+    {
+      "name": "people_computeProductionQuantityReportEarnedAmount",
+      "module": "people",
+      "classification": "WRITE",
+      "description": "compute production quantity report earned amount",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "reportId",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "reportId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "reportId"
+        ]
+      }
+    },
+    {
+      "name": "people_rejectProductionQuantity",
+      "module": "people",
+      "classification": "WRITE",
+      "description": "reject production quantity",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "productionQuantityId",
+        "updatedBy"
+      ],
+      "injectAuth": [
+        "companyId",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "productionQuantityId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "productionQuantityId"
+        ]
+      }
+    },
+    {
+      "name": "people_approveProductionQuantity",
+      "module": "people",
+      "classification": "WRITE",
+      "description": "approve production quantity",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "productionQuantityId",
+        "year",
+        "month",
+        "updatedBy"
+      ],
+      "injectAuth": [
+        "companyId",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "productionQuantityId": {
+            "type": "string"
+          },
+          "year": {
+            "type": "number"
+          },
+          "month": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "productionQuantityId",
+          "year",
+          "month"
+        ]
+      }
+    },
+    {
+      "name": "people_getEmployeeSalaryPayments",
+      "module": "people",
+      "classification": "READ",
+      "description": "get employee salary payments",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "salaryRecordId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "salaryRecordId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "salaryRecordId"
+        ]
+      }
+    },
+    {
+      "name": "people_getCompanySalaryPayments",
+      "module": "people",
+      "classification": "READ",
+      "description": "get company salary payments",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "year",
+        "month",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "number"
+          },
+          "month": {
+            "type": "number"
+          },
+          "args": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "default": 100
+              },
+              "offset": {
+                "type": "integer",
+                "default": 0
+              },
+              "search": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        },
+        "required": [
+          "year",
+          "month"
+        ]
+      }
+    },
+    {
+      "name": "people_getSalaryReadyToPay",
+      "module": "people",
+      "classification": "READ",
+      "description": "get salary ready to pay",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "year",
+        "month",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "number"
+          },
+          "month": {
+            "type": "number"
+          },
+          "args": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "default": 100
+              },
+              "offset": {
+                "type": "integer",
+                "default": 0
+              },
+              "search": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        },
+        "required": [
+          "year",
+          "month"
+        ]
+      }
+    },
+    {
+      "name": "people_recordSalaryPayment",
+      "module": "people",
+      "classification": "WRITE",
+      "description": "record salary payment",
+      "paramCount": 4,
+      "serviceParams": [
+        "client",
+        "data"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "salaryRecordId": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "paidAt": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "salaryRecordId",
+          "paidAt"
+        ]
+      }
+    },
+    {
+      "name": "people_getEmployeeSalaryHistory",
+      "module": "people",
+      "classification": "READ",
+      "description": "get employee salary history",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "employeeId",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "employeeId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "employeeId"
+        ]
+      }
+    },
+    {
       "name": "production_convertSalesOrderLinesToJobs",
       "module": "production",
       "classification": "WRITE",
@@ -16465,7 +17111,7 @@
       "module": "production",
       "classification": "WRITE",
       "description": "upsert production quantity",
-      "paramCount": 3,
+      "paramCount": 1,
       "serviceParams": [
         "client",
         "productionQuantity"
@@ -16478,18 +17124,10 @@
       "schema": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string"
-          },
-          "jobOperationId": {
-            "type": "string"
-          },
-          "type": {
-            "type": "number"
-          }
+          "productionQuantity": {}
         },
         "required": [
-          "jobOperationId"
+          "productionQuantity"
         ]
       }
     },
@@ -35141,16 +35779,51 @@
       }
     },
     {
+      "name": "shared_cancelApprovalRequestsForDocument",
+      "module": "shared",
+      "classification": "WRITE",
+      "description": "cancel approval requests for document",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "documentType",
+        "documentId",
+        "userId",
+        "decisionNotes"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "documentType": {
+            "type": "string"
+          },
+          "documentId": {
+            "type": "string"
+          },
+          "decisionNotes": {}
+        },
+        "required": [
+          "documentType",
+          "documentId",
+          "decisionNotes"
+        ]
+      }
+    },
+    {
       "name": "shared_approveRequest",
       "module": "shared",
       "classification": "WRITE",
       "description": "approve request",
-      "paramCount": 2,
+      "paramCount": 3,
       "serviceParams": [
         "db",
         "id",
         "userId",
-        "notes"
+        "notes",
+        "options"
       ],
       "injectAuth": [
         "companyId",
@@ -35164,7 +35837,8 @@
           },
           "notes": {
             "type": "string"
-          }
+          },
+          "options": {}
         },
         "required": [
           "id"
@@ -36279,12 +36953,13 @@
       "module": "shared",
       "classification": "WRITE",
       "description": "reject request",
-      "paramCount": 2,
+      "paramCount": 3,
       "serviceParams": [
         "db",
         "id",
         "userId",
-        "notes"
+        "notes",
+        "options"
       ],
       "injectAuth": [
         "companyId",
@@ -36298,7 +36973,8 @@
           },
           "notes": {
             "type": "string"
-          }
+          },
+          "options": {}
         },
         "required": [
           "id"
@@ -36534,6 +37210,41 @@
           "quantity",
           "fallbackUnitPrice",
           "exchangeRate"
+        ]
+      }
+    },
+    {
+      "name": "shared_requestProductionPayApproval",
+      "module": "shared",
+      "classification": "WRITE",
+      "description": "request production pay approval",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "reportId": {
+            "type": "string"
+          },
+          "requestedBy": {
+            "type": "string"
+          },
+          "amount": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "reportId",
+          "requestedBy"
         ]
       }
     },

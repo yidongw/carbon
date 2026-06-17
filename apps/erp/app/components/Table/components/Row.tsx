@@ -88,15 +88,15 @@ const Row = <T extends object>({
 const MemoizedRow = memo(
   Row,
   (prev, next) =>
-    next.rowIsSelected === false &&
-    prev.rowIsSelected === false &&
-    next.isRowSelected === prev.isRowSelected &&
-    next.selectedCell?.row === prev.row.index &&
-    next.row.index === prev.selectedCell?.row &&
-    next.selectedCell?.column === prev.selectedCell?.column &&
-    next.isEditing === prev.isEditing &&
-    next.isEditMode === prev.isEditMode &&
-    next.pinnedColumns === prev.pinnedColumns
+    prev.row.id === next.row.id &&
+    prev.row.original === next.row.original &&
+    prev.isRowSelected === next.isRowSelected &&
+    prev.rowIsSelected === next.rowIsSelected &&
+    prev.isEditing === next.isEditing &&
+    prev.isEditMode === next.isEditMode &&
+    prev.selectedCell?.row === next.selectedCell?.row &&
+    prev.selectedCell?.column === next.selectedCell?.column &&
+    prev.pinnedColumns === next.pinnedColumns
 ) as typeof Row;
 
 export default MemoizedRow;

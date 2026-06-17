@@ -1,7 +1,7 @@
 import { assertIsPost, error, notFound } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
-import type { Json } from "@carbon/database";
+import { trigger } from "@carbon/jobs";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data } from "react-router";
 import { getConfigurationParameters } from "~/modules/items";
@@ -9,6 +9,7 @@ import type { ConfigurationParameter } from "~/modules/items/types";
 import { getJob, isJobLocked } from "~/modules/production";
 import {
   buildConfigTableActionResponse,
+  jobConfigurationUpdateFields,
   parseConfigurationFormValue
 } from "~/modules/production/configTableOverlay.server";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
@@ -86,7 +87,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   );
   if (!configuration) {
     return data(
-      {},
+      { ok: false as const, error: "Invalid configuration data" },
       await flash(request, error("Invalid configuration data", "Update failed"))
     );
   }
@@ -94,7 +95,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const update = await client
     .from("job")
     .update({
-      configuration: configuration as Json,
+      ...jobConfigurationUpdateFields(configuration),
       updatedBy: userId,
       updatedAt: new Date().toISOString()
     })
@@ -103,13 +104,20 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   if (update.error) {
     return data(
-      {},
+      { ok: false as const, error: update.error.message },
       await flash(
         request,
         error(update.error, "Failed to update configuration")
       )
     );
   }
+
+  await trigger("recalculate", {
+    type: "jobRequirements",
+    id: jobId,
+    companyId,
+    userId
+  });
 
   // Toast is shown client-side when the job config overlay closes (translated).
   return data(buildConfigTableActionResponse(configuration));

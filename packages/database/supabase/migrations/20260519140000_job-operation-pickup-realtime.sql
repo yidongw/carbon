@@ -1,2 +1,8 @@
 ALTER TABLE "jobOperationPickup" REPLICA IDENTITY FULL;
-ALTER PUBLICATION supabase_realtime ADD TABLE "jobOperationPickup";
+DO $$
+BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE "jobOperationPickup";
+EXCEPTION WHEN duplicate_object THEN
+  NULL;
+END;
+$$;

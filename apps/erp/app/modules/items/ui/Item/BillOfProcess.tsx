@@ -989,6 +989,7 @@ function OperationForm({
     operationMinimumCost: number;
     operationLeadTime: number;
     operationUnitCost: number;
+    insideUnitCost: number;
   }>({
     description: item.data.description ?? "",
     laborTime: item.data.laborTime ?? 0,
@@ -1007,7 +1008,8 @@ function OperationForm({
     setupUnitHint: getUnitHint(item.data.setupUnit),
     operationMinimumCost: item.data.operationMinimumCost ?? 0,
     operationLeadTime: item.data.operationLeadTime ?? 0,
-    operationUnitCost: item.data.operationUnitCost ?? 0
+    operationUnitCost: item.data.operationUnitCost ?? 0,
+    insideUnitCost: (item.data as any).insideUnitCost ?? 0
   });
 
   const onProcessChange = async (processId: string) => {
@@ -1230,35 +1232,69 @@ function OperationForm({
         />
 
         {isInsideOperationType(processData.operationType) ? (
-          <WorkCenter
-            name="workCenterId"
-            label={t`Work Center`}
-            isOptional
-            processId={processData.processId}
-            isConfigured={rulesByField.has(key("workCenterId"))}
-            onConfigure={
-              configurable && !temporaryItems[item.id]
-                ? () => {
-                    onConfigure({
-                      label: t`Work Center`,
-                      field: key("workCenterId"),
-                      code: rulesByField.get(key("workCenterId"))?.code,
-                      defaultValue: processData.workCenterId,
-                      returnType: {
-                        type: "text",
-                        helperText:
-                          "the unique identifier for the work center. you can get this from the URL when editing a work center"
-                      }
-                    });
-                  }
-                : undefined
-            }
-            onChange={(value) => {
-              if (value) {
-                onWorkCenterChange(value?.value as string);
+          <>
+            <WorkCenter
+              name="workCenterId"
+              label={t`Work Center`}
+              isOptional
+              processId={processData.processId}
+              isConfigured={rulesByField.has(key("workCenterId"))}
+              onConfigure={
+                configurable && !temporaryItems[item.id]
+                  ? () => {
+                      onConfigure({
+                        label: t`Work Center`,
+                        field: key("workCenterId"),
+                        code: rulesByField.get(key("workCenterId"))?.code,
+                        defaultValue: processData.workCenterId,
+                        returnType: {
+                          type: "text",
+                          helperText:
+                            "the unique identifier for the work center. you can get this from the URL when editing a work center"
+                        }
+                      });
+                    }
+                  : undefined
               }
-            }}
-          />
+              onChange={(value) => {
+                if (value) {
+                  onWorkCenterChange(value?.value as string);
+                }
+              }}
+            />
+            <NumberControlled
+              name="insideUnitCost"
+              label={t`Unit rate`}
+              minValue={0}
+              value={processData.insideUnitCost}
+              formatOptions={{
+                style: "currency",
+                currency: baseCurrency
+              }}
+              onChange={(newValue) =>
+                setProcessData((d) => ({
+                  ...d,
+                  insideUnitCost: newValue ?? 0
+                }))
+              }
+              isConfigured={rulesByField.has(key("insideUnitCost"))}
+              onConfigure={
+                configurable && !temporaryItems[item.id]
+                  ? () => {
+                      onConfigure({
+                        label: t`Unit rate`,
+                        field: key("insideUnitCost"),
+                        code: rulesByField.get(key("insideUnitCost"))?.code,
+                        defaultValue: processData.insideUnitCost,
+                        returnType: {
+                          type: "numeric"
+                        }
+                      });
+                    }
+                  : undefined
+              }
+            />
+          </>
         ) : null}
         {showsSupplierRoutingFields(processData.operationType) ? (
           <>

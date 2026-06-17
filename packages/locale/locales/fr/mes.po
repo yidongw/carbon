@@ -72,6 +72,12 @@ msgstr "Ajouter une pièce de rechange"
 msgid "All"
 msgstr "Tout"
 
+msgid "approved"
+msgstr ""
+
+msgid "Approved"
+msgstr ""
+
 msgid "Are you sure you want to delete this step?"
 msgstr "Êtes-vous sûr de vouloir supprimer cette étape ?"
 
@@ -298,6 +304,9 @@ msgstr "Numéro de série en double"
 msgid "Duration"
 msgstr "Durée"
 
+msgid "Earned"
+msgstr ""
+
 msgid "Edit"
 msgstr "Modifier"
 
@@ -375,6 +384,9 @@ msgstr "Revenir à l'opération"
 
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "Vous avez un problème technique ? Contactez le <0>Support Carbon.</0>"
+
+msgid "History"
+msgstr ""
 
 msgid "I understand and want to complete without issuing"
 msgstr "Je comprends et souhaite terminer sans distribuer"
@@ -539,6 +551,9 @@ msgstr "Doit être entre {minValue} et {maxValue} {unitOfMeasureCode}"
 msgid "My Hours"
 msgstr "Mes heures"
 
+msgid "My Salary"
+msgstr ""
+
 msgid "Name"
 msgstr "Nom"
 
@@ -556,6 +571,9 @@ msgstr "Aucune intervention de maintenance active"
 
 msgid "No active operations"
 msgstr "Aucune opération active"
+
+msgid "No approved completions this period"
+msgstr ""
 
 msgid "No assigned operations"
 msgstr "Aucune opération assignée"
@@ -669,6 +687,12 @@ msgstr "Effectué par l'opérateur"
 msgid "Optional"
 msgstr "Optionnel"
 
+msgid "Owed"
+msgstr ""
+
+msgid "Paid"
+msgstr ""
+
 msgid "Parameters"
 msgstr "Paramètres"
 
@@ -680,6 +704,15 @@ msgstr "Inspection réussie"
 
 msgid "Pause"
 msgstr "Pause"
+
+msgid "Pending"
+msgstr ""
+
+msgid "Pending Approval"
+msgstr ""
+
+msgid "Period"
+msgstr ""
 
 #. placeholder {0}: startColumn?.title
 #. placeholder {1}: startIndex + 1
@@ -731,6 +764,9 @@ msgstr "Processus"
 
 msgid "Progress"
 msgstr "Progression"
+
+msgid "Qty"
+msgstr ""
 
 msgid "Quality Issue"
 msgstr "Problème de qualité"
@@ -962,6 +998,9 @@ msgstr "La quantité produite pour cette opération est inférieure à la quanti
 msgid "There are serial or batch tracked materials on the bill of material that have not been fully issued. Completing without issuing may result in incorrect traceability records."
 msgstr "Il existe des matériaux suivis par numéro de série ou par lot dans la nomenclature qui n'ont pas été entièrement distribués. Terminer sans distribuer peut entraîner des enregistrements de traçabilité incorrects."
 
+msgid "This Period"
+msgstr ""
+
 msgid "Thumbnail"
 msgstr "Miniature"
 
@@ -997,6 +1036,9 @@ msgstr "Saisissez un message..."
 
 msgid "Unissued serial/batch materials"
 msgstr "Matériaux série/lot non distribués"
+
+msgid "unit"
+msgstr ""
 
 msgid "Unknown"
 msgstr "Inconnu"

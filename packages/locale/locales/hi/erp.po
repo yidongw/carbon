@@ -25,6 +25,9 @@ msgstr "\"{storageUnitName}\" के {childCount} सीधे नेस्ट�
 msgid "\"{storageUnitName}\" has 1 direct nested storage unit. Deleting it will also delete that unit and anything underneath it. This cannot be undone."
 msgstr "\"{storageUnitName}\" के पास 1 सीधी नेस्टेड स्टोरेज यूनिट है। इसे हटाने से वह यूनिट और इसके अंदर की कोई भी चीज़ भी हटा दी जाएगी। यह पूर्ववत नहीं किया जा सकता।"
 
+msgid "(all must match)"
+msgstr ""
+
 #. placeholder {0}: selectedEvent.jobOperation?.description ?? t`Operation`
 msgid "{0} (supplier)"
 msgstr ""
@@ -279,6 +282,12 @@ msgstr "सक्रिय नौकरियां"
 
 #. placeholder {0}: report.originalQuantity
 msgid "Active line total ({lineTotal}) differs from originally reported ({0}). Saving anyway."
+msgstr ""
+
+msgid "Active Rules"
+msgstr ""
+
+msgid "Active Rules (in priority order)"
 msgstr ""
 
 msgid "Active Statuses"
@@ -614,8 +623,17 @@ msgstr "अनुमोदन नियम"
 msgid "Approve"
 msgstr "मंजूरी दें"
 
+msgid "Approve here or manage all pending items on the quantity review page."
+msgstr ""
+
 msgid "Approved By"
 msgstr "द्वारा अनुमोदित"
+
+msgid "approved completion(s)"
+msgstr ""
+
+msgid "Approved completions"
+msgstr ""
 
 msgid "AQL"
 msgstr "AQL"
@@ -728,6 +746,10 @@ msgstr ""
 #. placeholder {0}: apiKey.name
 msgid "Are you sure you want to delete the API key: {0}? This cannot be undone."
 msgstr "क्या आप सुनिश्चित हैं कि आप API कुंजी को हटाना चाहते हैं: {0}? यह पूर्ववत नहीं किया जा सकता।"
+
+#. placeholder {0}: rule.name ?? ""
+msgid "Are you sure you want to delete the assignment rule: {0}? This cannot be undone."
+msgstr ""
 
 msgid "Are you sure you want to delete the contractor: {name}? This cannot be undone."
 msgstr "क्या आप सुनिश्चित हैं कि आप ठेकेदार को हटाना चाहते हैं: {name}? यह पूर्ववत नहीं किया जा सकता।"
@@ -1021,11 +1043,17 @@ msgstr ""
 msgid "Assign To"
 msgstr "को असाइन करें"
 
+msgid "Assign to Group"
+msgstr ""
+
 msgid "Assign to Groups"
 msgstr "समूहों को असाइन करें"
 
 msgid "Assigned"
 msgstr "नियुक्त"
+
+msgid "Assigned Group"
+msgstr ""
 
 msgid "Assigned to Me"
 msgstr "मुझे असाइन किया गया"
@@ -1035,6 +1063,12 @@ msgstr "असाइनी"
 
 msgid "Assignment"
 msgstr "असाइनमेंट"
+
+msgid "Assignment Rule Simulation"
+msgstr ""
+
+msgid "Assignment Rules"
+msgstr ""
 
 msgid "Assignments"
 msgstr "असाइनमेंट"
@@ -1548,6 +1582,9 @@ msgstr ""
 msgid "Coming soon"
 msgstr "जल्द ही आ रहा है"
 
+msgid "comma separated IDs"
+msgstr ""
+
 msgid "comma-separated values"
 msgstr ""
 
@@ -1619,6 +1656,12 @@ msgstr "पूर्ण बारकोड"
 
 msgid "Completion Time"
 msgstr "पूर्ण होने का समय"
+
+msgid "condition"
+msgstr ""
+
+msgid "conditions"
+msgstr ""
 
 msgid "Conditions"
 msgstr ""
@@ -1920,6 +1963,9 @@ msgstr "सही उत्तर"
 
 msgid "Correct Answers"
 msgstr "सही उत्तर"
+
+msgid "Correct quantities"
+msgstr ""
 
 msgid "Corrective Action"
 msgstr "सुधार के लिए की गई कार्रवाई"
@@ -2439,6 +2485,9 @@ msgstr "डिफ़ॉल्ट यूनिट"
 
 msgid "Defaults"
 msgstr "डिफ़ॉल्ट"
+
+msgid "Defaults to the full outstanding amount"
+msgstr ""
 
 msgid "Deferred Revenue"
 msgstr ""
@@ -2980,6 +3029,9 @@ msgstr "Newnatam"
 
 #. placeholder {0}: zeroQuantityLine.type
 msgid "Each line must have a quantity greater than zero ({0})"
+msgstr ""
+
+msgid "Earned"
 msgstr ""
 
 msgid "Edit"
@@ -4060,6 +4112,9 @@ msgstr "स्थान से"
 msgid "From Storage Unit"
 msgstr "स्टोरेज यूनिट से"
 
+msgid "Fully paid"
+msgstr ""
+
 msgid "Fully trained for"
 msgstr "पूरी तरह प्रशिक्षित"
 
@@ -4609,6 +4664,9 @@ msgstr "जॉब आईडी"
 msgid "Job Location"
 msgstr "जॉब स्थान"
 
+msgid "Job Matching Results"
+msgstr ""
+
 msgid "Job Materials"
 msgstr "कार्य सामग्री"
 
@@ -4623,6 +4681,9 @@ msgstr "नौकरियां"
 
 msgid "Jobs Assigned to Me"
 msgstr "मुझे सौंपी गई नौकरियां"
+
+msgid "Jobs Checked"
+msgstr ""
 
 msgid "Jobs in progress"
 msgstr "चल रहे कार्य"
@@ -4915,6 +4976,9 @@ msgstr ""
 msgid "Lot Size:"
 msgstr "लॉट साइज:"
 
+msgid "Lower runs first"
+msgstr ""
+
 msgid "Machine"
 msgstr "मशीन"
 
@@ -5068,6 +5132,12 @@ msgid "Match any (OR)"
 msgstr ""
 
 msgid "Match none"
+msgstr ""
+
+msgid "Matched"
+msgstr ""
+
+msgid "Matched Rule"
 msgstr ""
 
 msgid "matches"
@@ -5384,6 +5454,9 @@ msgstr "नया अनुमोदन नियम"
 msgid "New Assignment"
 msgstr "नया असाइनमेंट"
 
+msgid "New Assignment Rule"
+msgstr ""
+
 msgid "New Attribute"
 msgstr "नई विशेषता"
 
@@ -5649,6 +5722,9 @@ msgstr "कोई कार्रवाई की आवश्यकता न�
 msgid "No active jobs found for this sales order. The order will be cancelled directly."
 msgstr ""
 
+msgid "No active jobs to simulate against"
+msgstr ""
+
 msgid "No active plan"
 msgstr "कोई सक्रिय योजना नहीं"
 
@@ -5657,6 +5733,9 @@ msgstr "कोई सक्रिय उद्धरण नहीं"
 
 msgid "No addresses found"
 msgstr "कोई पता नहीं मिला"
+
+msgid "No approved completions this period"
+msgstr ""
 
 #. placeholder {0}: auditConfig.retentionDays
 msgid "No archived logs yet. Logs older than {0} days will be automatically archived and available for download here."
@@ -5684,6 +5763,9 @@ msgid "No completed jobs within range"
 msgstr "निर्धारित सीमा के भीतर कोई पूर्ण किए गए कार्य नहीं"
 
 msgid "No condition may match"
+msgstr ""
+
+msgid "No conditions — rule matches all jobs"
 msgstr ""
 
 msgid "No configuration quantities recorded yet."
@@ -5725,6 +5807,12 @@ msgstr "अभी तक कोई कर्मचारी असाइन न�
 msgid "No employees found"
 msgstr "कोई कर्मचारी नहीं मिला"
 
+msgid "No employees have an outstanding balance this period."
+msgstr ""
+
+msgid "No entries"
+msgstr ""
+
 msgid "No fields found."
 msgstr ""
 
@@ -5754,6 +5842,12 @@ msgstr ""
 
 msgid "No logo uploaded"
 msgstr "कोई लोगो अपलोड नहीं किया गया"
+
+msgid "No match"
+msgstr ""
+
+msgid "No Match"
+msgstr ""
 
 msgid "No matches"
 msgstr "कोई जोड़ नहीं"
@@ -6052,6 +6146,9 @@ msgstr "वैकल्पिक"
 msgid "Optional context for this rule"
 msgstr ""
 
+msgid "Optional payment notes"
+msgstr ""
+
 msgid "Options"
 msgstr "विकल्प"
 
@@ -6125,6 +6222,12 @@ msgstr "आउटपुट कभी भी अपनी कच्ची सा�
 msgid "Outside"
 msgstr ""
 
+msgid "Outstanding"
+msgstr ""
+
+msgid "Outstanding balance"
+msgstr ""
+
 msgid "Overdue"
 msgstr "अतिदेय"
 
@@ -6176,8 +6279,17 @@ msgstr "पैकिंग स्लिप"
 msgid "Page {pdfViewPage} of {documentPageCount}"
 msgstr ""
 
+msgid "Paid"
+msgstr ""
+
 msgid "Paid Amount:"
 msgstr "भुगतान की गई राशि:"
+
+msgid "Paid at"
+msgstr ""
+
+msgid "Paid by"
+msgstr ""
 
 msgid "Paid Date"
 msgstr "भुगतान की गई तारीख"
@@ -6242,11 +6354,20 @@ msgstr "पथ"
 msgid "Paused"
 msgstr ""
 
+msgid "Pay period"
+msgstr ""
+
 msgid "Payables"
 msgstr "देय खाते"
 
 msgid "Payment"
 msgstr "भुगतान"
+
+msgid "Payment date"
+msgstr ""
+
+msgid "Payment history"
+msgstr ""
 
 msgid "Payment Method"
 msgstr "भुगतान विधि"
@@ -6256,6 +6377,15 @@ msgstr "भुगतान अवधि"
 
 msgid "Payment Terms"
 msgstr "भुगतान शर्तें"
+
+msgid "payment(s)"
+msgstr ""
+
+msgid "Payments"
+msgstr ""
+
+msgid "Payroll"
+msgstr ""
 
 msgid "PDF"
 msgstr "PDF"
@@ -6277,6 +6407,12 @@ msgstr ""
 
 msgid "Pending"
 msgstr "लंबित"
+
+msgid "Pending approval"
+msgstr ""
+
+msgid "Pending payment"
+msgstr ""
 
 msgid "Pension Obligations"
 msgstr ""
@@ -6630,6 +6766,9 @@ msgstr "उत्पादन मात्रा"
 msgid "Production Quantities"
 msgstr "उत्पादन मात्रा"
 
+msgid "Production quantities approved for this pay period."
+msgstr ""
+
 msgid "Production Quantity"
 msgstr "उत्पादन मात्रा"
 
@@ -6832,6 +6971,12 @@ msgstr "प्रति पैरेंट मात्रा"
 msgid "Quantity report updated"
 msgstr ""
 
+msgid "Quantity review"
+msgstr ""
+
+msgid "Quantity Review"
+msgstr ""
+
 msgid "Quantity Type"
 msgstr "मात्रा प्रकार"
 
@@ -6984,6 +7129,9 @@ msgstr ""
 
 msgid "Record deleted"
 msgstr "रिकॉर्ड हटाया गया"
+
+msgid "Record payment"
+msgstr ""
 
 msgid "Record pickup"
 msgstr ""
@@ -7200,6 +7348,9 @@ msgstr "राशि सीमा के आधार पर क्रय आद
 msgid "Require approval for quality documents in your workflow"
 msgstr "आपके वर्कफ़्लो में गुणवत्ता दस्तावेज़ों के लिए अनुमोदन की आवश्यकता है"
 
+msgid "Require approval for reported production quantities before salary periods are assigned"
+msgstr ""
+
 msgid "Required"
 msgstr "आवश्यक"
 
@@ -7298,6 +7449,9 @@ msgstr "रिवर्स चार्ज टैक्स देय"
 msgid "Reverse the related journal entries"
 msgstr "संबंधित जर्नल प्रविष्टियों को उलट दें"
 
+msgid "Review"
+msgstr ""
+
 msgid "Revision"
 msgstr "संस्करण"
 
@@ -7386,6 +7540,9 @@ msgstr "नियम हर ग्राहक पर लागू होता 
 msgid "Rule applies to every item."
 msgstr "नियम हर आइटम पर लागू होता है।"
 
+msgid "Rule Name"
+msgstr ""
+
 msgid "Rule Type"
 msgstr "नियम प्रकार"
 
@@ -7408,6 +7565,15 @@ msgid "Safety Stock:"
 msgstr "सुरक्षा स्टॉक:"
 
 msgid "Salaries - Administrative"
+msgstr ""
+
+msgid "Salary"
+msgstr ""
+
+msgid "Salary Detail"
+msgstr ""
+
+msgid "Salary for {periodLabel}"
 msgstr ""
 
 msgid "Sale Price"
@@ -7502,6 +7668,9 @@ msgstr ""
 
 msgid "Save View"
 msgstr "दृश्य सहेजें"
+
+msgid "Saved"
+msgstr ""
 
 msgid "Saving..."
 msgstr ""
@@ -7665,6 +7834,9 @@ msgstr ""
 
 msgid "Select an assignee"
 msgstr "एक असाइनी चुनें"
+
+msgid "Select an employee for {periodLabel}"
+msgstr ""
 
 msgid "Select an issue type"
 msgstr "एक समस्या प्रकार चुनें"
@@ -8037,6 +8209,9 @@ msgstr "साइन आउट"
 msgid "Signed in as {name}"
 msgstr "{name} के रूप में साइन इन किया गया"
 
+msgid "Simulate"
+msgstr ""
+
 msgid "Single Job"
 msgstr ""
 
@@ -8294,6 +8469,9 @@ msgstr "अनुमोदन के लिए सबमिट करें"
 
 msgid "Submit Inspection"
 msgstr "निरीक्षण जमा करें"
+
+msgid "Submitted"
+msgstr ""
 
 msgid "Submitted By"
 msgstr "द्वारा प्रस्तुत"
@@ -8830,6 +9008,9 @@ msgstr "उपकरण"
 msgid "Total"
 msgstr "कुल"
 
+msgid "Total earned"
+msgstr ""
+
 msgid "Total Hours"
 msgstr "कुल घंटे"
 
@@ -8838,6 +9019,9 @@ msgstr ""
 
 msgid "Total Minutes"
 msgstr "कुल मिनट"
+
+msgid "Total paid"
+msgstr ""
 
 msgid "Total Price"
 msgstr "कुल मूल्य"
@@ -9019,6 +9203,9 @@ msgstr ""
 msgid "Unit Price"
 msgstr "यूनिट मूल्य"
 
+msgid "Unit rate"
+msgstr ""
+
 msgid "Unit Sale Price"
 msgstr "यूनिट विक्रय मूल्य"
 
@@ -9068,6 +9255,9 @@ msgid "Update"
 msgstr "अपडेट करें"
 
 msgid "Update costs on"
+msgstr ""
+
+msgid "Update failed"
 msgstr ""
 
 msgid "Update Inventory"
@@ -9243,6 +9433,9 @@ msgstr "वैध तक"
 
 msgid "Validating job..."
 msgstr "नौकरी को मान्य कर रहे हैं..."
+
+msgid "value"
+msgstr ""
 
 msgid "Value"
 msgstr "मान"
@@ -9597,6 +9790,12 @@ msgstr "वर्कफ़्लो"
 
 msgid "Worst Performing Machines"
 msgstr "सबसे खराब प्रदर्शन करने वाली मशीनें"
+
+msgid "Would Assign To"
+msgstr ""
+
+msgid "Would Match"
+msgstr ""
 
 msgid "Yard"
 msgstr "यार्ड"
