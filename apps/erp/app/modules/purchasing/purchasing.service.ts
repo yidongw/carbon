@@ -1588,6 +1588,8 @@ export async function upsertPurchaseOrder(
         companyGroupId: string;
         createdBy: string;
         customFields?: Json;
+        jobId?: string;
+        jobReadableId?: string;
       })
     | (Omit<
         z.infer<typeof purchaseOrderValidator>,
@@ -1597,6 +1599,8 @@ export async function upsertPurchaseOrder(
         purchaseOrderId: string;
         updatedBy: string;
         customFields?: Json;
+        jobId?: string;
+        jobReadableId?: string;
       }),
   receiptRequestedDate?: string
 ) {

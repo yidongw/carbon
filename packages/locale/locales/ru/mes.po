@@ -203,6 +203,10 @@ msgstr "Режим консоли"
 msgid "Consumed expired"
 msgstr "Потреблено истекшее"
 
+msgid "Create"
+msgstr ""
+
+#. placeholder {0}: group.heading
 #. placeholder {0}: search.trim() === "" ? (createLabel ?? label) : search
 #. placeholder {0}: search.trim() === "" ? label : search
 msgid "Create {0}"
@@ -606,6 +610,9 @@ msgstr "Результаты отсутствуют"
 
 msgid "No results found"
 msgstr "Ничего не найдено"
+
+msgid "No results found."
+msgstr ""
 
 msgid "No scheduled time"
 msgstr "Нет запланированного времени"

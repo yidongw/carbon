@@ -203,6 +203,10 @@ msgstr "Mode console"
 msgid "Consumed expired"
 msgstr "Consommé expiré"
 
+msgid "Create"
+msgstr ""
+
+#. placeholder {0}: group.heading
 #. placeholder {0}: search.trim() === "" ? (createLabel ?? label) : search
 #. placeholder {0}: search.trim() === "" ? label : search
 msgid "Create {0}"
@@ -606,6 +610,9 @@ msgstr "Aucun résultat trouvé"
 
 msgid "No results found"
 msgstr "Aucun résultat trouvé"
+
+msgid "No results found."
+msgstr ""
 
 msgid "No scheduled time"
 msgstr "Aucun horaire planifié"

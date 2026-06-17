@@ -1,6 +1,6 @@
 {
-  "generated": "2026-06-17T05:59:21.998Z",
-  "totalTools": 1199,
+  "generated": "2026-06-17T06:11:49.424Z",
+  "totalTools": 1205,
   "modules": 15,
   "tools": [
     {
@@ -13543,6 +13543,37 @@
       }
     },
     {
+      "name": "production_deleteJobOperationSupplierQuantity",
+      "module": "production",
+      "classification": "DESTRUCTIVE",
+      "description": "delete job operation supplier quantity",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "supplierQuantityId",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "supplierQuantityId": {
+            "type": "string"
+          },
+          "args": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        "required": [
+          "supplierQuantityId",
+          "args"
+        ]
+      }
+    },
+    {
       "name": "production_getActiveJobOperationByJobId",
       "module": "production",
       "classification": "READ",
@@ -14418,6 +14449,113 @@
       "serviceParams": [
         "client",
         "jobOperationId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobOperationId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "jobOperationId"
+        ]
+      }
+    },
+    {
+      "name": "production_getJobOperationActorContext",
+      "module": "production",
+      "classification": "READ",
+      "description": "get job operation actor context",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "jobOperationId",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobOperationId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "jobOperationId"
+        ]
+      }
+    },
+    {
+      "name": "production_validateActorMatchesOperationSupplierRouting",
+      "module": "production",
+      "classification": "WRITE",
+      "description": "validate actor matches operation supplier routing",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "jobOperationId",
+        "companyId",
+        "actor"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobOperationId": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "object",
+            "properties": {
+              "actorKind": {
+                "type": "string",
+                "enum": [
+                  "employee",
+                  "supplier"
+                ]
+              },
+              "employeeId": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "supplierProcessId": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "actorKind"
+            ]
+          }
+        },
+        "required": [
+          "jobOperationId",
+          "actor"
+        ]
+      }
+    },
+    {
+      "name": "production_assertSupplierQuantityAllowedForOperation",
+      "module": "production",
+      "classification": "WRITE",
+      "description": "assert supplier quantity allowed for operation",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "jobOperationId",
+        "companyId"
       ],
       "injectAuth": [
         "companyId"
@@ -16635,7 +16773,7 @@
       "module": "production",
       "classification": "WRITE",
       "description": "upsert job operation pickup",
-      "paramCount": 6,
+      "paramCount": 1,
       "serviceParams": [
         "client",
         "pickup"
@@ -16648,26 +16786,10 @@
       "schema": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string"
-          },
-          "jobOperationId": {
-            "type": "string"
-          },
-          "employeeId": {
-            "type": "string"
-          },
-          "quantity": {
-            "type": "number"
-          },
-          "configuration": {},
-          "notes": {
-            "type": "string"
-          }
+          "pickup": {}
         },
         "required": [
-          "jobOperationId",
-          "employeeId"
+          "pickup"
         ]
       }
     },
@@ -16748,6 +16870,80 @@
       "module": "production",
       "classification": "READ",
       "description": "get job pickups page",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "jobOperationId",
+        "companyId",
+        "page = 1"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobOperationId": {
+            "type": "string"
+          },
+          "page = 1": {}
+        },
+        "required": [
+          "jobOperationId",
+          "page = 1"
+        ]
+      }
+    },
+    {
+      "name": "production_upsertJobOperationSupplierPickup",
+      "module": "production",
+      "classification": "WRITE",
+      "description": "upsert job operation supplier pickup",
+      "paramCount": 6,
+      "serviceParams": [
+        "client",
+        "pickup"
+      ],
+      "injectAuth": [
+        "companyId",
+        "createdBy",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobOperationId": {
+            "type": "string"
+          },
+          "supplierProcessId": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "configuration": {},
+          "notes": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "jobOperationId",
+          "supplierProcessId",
+          "quantity"
+        ]
+      }
+    },
+    {
+      "name": "production_getJobSupplierPickupsPage",
+      "module": "production",
+      "classification": "READ",
+      "description": "get job supplier pickups page",
       "paramCount": 2,
       "serviceParams": [
         "client",
@@ -20068,7 +20264,7 @@
       "module": "purchasing",
       "classification": "WRITE",
       "description": "upsert supplier process",
-      "paramCount": 5,
+      "paramCount": 6,
       "serviceParams": [
         "client",
         "supplierProcess"
@@ -20091,6 +20287,9 @@
             "type": "string"
           },
           "minimumCost": {
+            "type": "number"
+          },
+          "unitCost": {
             "type": "number"
           },
           "leadTime": {

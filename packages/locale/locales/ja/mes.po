@@ -203,6 +203,10 @@ msgstr "コンソールモード"
 msgid "Consumed expired"
 msgstr "消費期限切れ"
 
+msgid "Create"
+msgstr ""
+
+#. placeholder {0}: group.heading
 #. placeholder {0}: search.trim() === "" ? (createLabel ?? label) : search
 #. placeholder {0}: search.trim() === "" ? label : search
 msgid "Create {0}"
@@ -606,6 +610,9 @@ msgstr "結果がありません"
 
 msgid "No results found"
 msgstr "結果が見つかりません"
+
+msgid "No results found."
+msgstr ""
 
 msgid "No scheduled time"
 msgstr "予定時間なし"

@@ -7,6 +7,7 @@ import { inngest } from "./inngest/client.ts";
  * to `trigger("notify", payload)` with minimal changes.
  */
 const taskToEvent = {
+  "release-job": "carbon/release-job",
   "accounting-backfill": "carbon/accounting-backfill",
   "model-thumbnail": "carbon/model-thumbnail",
   notify: "carbon/notify",

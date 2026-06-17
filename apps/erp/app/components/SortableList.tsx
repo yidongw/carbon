@@ -135,7 +135,7 @@ function SortableListItem<T>({
                 )}
               >
                 <div className="flex flex-col w-full">
-                  <div className="flex w-full items-center gap-x-2 truncate pl-3">
+                  <div className="flex w-full min-w-0 items-center gap-x-2 pl-3">
                     {/* List Remove Actions */}
                     {!isReadOnly && (
                       <Checkbox
@@ -153,12 +153,12 @@ function SortableListItem<T>({
 
                     <div
                       key={`${item.checked}`}
-                      className="px-1 flex flex-grow truncate"
+                      className="px-1 flex min-w-0 flex-grow"
                       role="button"
                     >
                       <HStack
                         className={cn(
-                          "w-full justify-between pr-8",
+                          "w-full min-w-0 justify-between pr-8",
                           !isReadOnly && "cursor-grab"
                         )}
                       >
@@ -184,14 +184,17 @@ function SortableListItem<T>({
                                 onSelectItem(item.id);
                               }
                             }}
-                            className={item.checked ? "text-red-400" : ""}
+                            className={cn(
+                              "min-w-0 flex-1",
+                              item.checked ? "text-red-400" : ""
+                            )}
                           >
                             {item.title}
                           </div>
                         )}
 
                         {item.details && (
-                          <div className="flex flex-shrink-0">
+                          <div className="ml-2 flex shrink-0 overflow-visible">
                             {item.details}
                           </div>
                         )}

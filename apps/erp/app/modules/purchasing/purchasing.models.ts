@@ -225,6 +225,7 @@ export const purchaseOrderLineValidator = z
     inventoryUnitOfMeasureCode: zfd.text(z.string().optional()),
     jobId: zfd.text(z.string().optional()),
     jobOperationId: zfd.text(z.string().optional()),
+    jobOperationSupplierQuantityReportId: zfd.text(z.string().optional()),
     locationId: zfd.text(z.string().optional()),
     promisedDate: zfd.text(z.string().optional()),
     purchaseQuantity: zfd.numeric(z.number().optional()),
@@ -414,6 +415,7 @@ export const supplierProcessValidator = z.object({
   supplierId: z.string().min(1, { message: "Supplier is required" }),
   processId: z.string().min(1, { message: "Process is required" }),
   minimumCost: zfd.numeric(z.number().min(0)),
+  unitCost: zfd.numeric(z.number().min(0)),
   leadTime: zfd.numeric(z.number().min(0))
 });
 

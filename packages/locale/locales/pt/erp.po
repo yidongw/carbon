@@ -26,7 +26,11 @@ msgid "\"{storageUnitName}\" has 1 direct nested storage unit. Deleting it will 
 msgstr "\"{storageUnitName}\" tem 1 unidade de armazenamento aninhada direta. Deletá-la também excluirá essa unidade e tudo abaixo dela. Isso não pode ser desfeito."
 
 #. placeholder {0}: selectedEvent.jobOperation?.description ?? t`Operation`
-#. placeholder {1}: people.find((p) => p.id === selectedEvent.createdBy)?.name ?? t`Unknown Employee`
+msgid "{0} (supplier)"
+msgstr ""
+
+#. placeholder {0}: selectedEvent.jobOperation?.description ?? t`Operation`
+#. placeholder {1}: people.find((p) => p.id === selectedEvent.createdBy) ?.name ?? t`Unknown Employee`
 msgid "{0} by {1}"
 msgstr ""
 
@@ -324,6 +328,9 @@ msgstr "Adicione qualquer nota sobre sua decisão..."
 
 msgid "Add Approval Requirement"
 msgstr "Adicionar Requisito de Aprovação"
+
+msgid "Add at least one line with quantity greater than zero"
+msgstr ""
 
 msgid "Add Calibration Record"
 msgstr "Adicionar Registro de Calibração"
@@ -1523,15 +1530,6 @@ msgstr "Recolher Custos"
 msgid "Collapse features table"
 msgstr ""
 
-msgid "Collapse Labor"
-msgstr "Recolher Trabalho"
-
-msgid "Collapse Machine"
-msgstr "Recolher Máquina"
-
-msgid "Collapse Setup"
-msgstr "Recolher Configuração"
-
 msgid "Collapse subtree"
 msgstr "Recolher subárvore"
 
@@ -1972,6 +1970,7 @@ msgstr "País"
 msgid "Create"
 msgstr "Criar"
 
+#. placeholder {0}: group.heading
 #. placeholder {0}: search.trim() === "" ? (createLabel ?? label) : search
 #. placeholder {0}: search.trim() === "" ? label : search
 msgid "Create {0}"
@@ -2002,6 +2001,9 @@ msgstr "Criar uma conta"
 msgid "Create audit trail entries"
 msgstr "Criar entradas de trilha de auditoria"
 
+msgid "Create employee"
+msgstr ""
+
 msgid "Create Issue"
 msgstr "Criar Problema"
 
@@ -2017,6 +2019,9 @@ msgstr "Criar Kanban"
 msgid "Create new rule"
 msgstr ""
 
+msgid "Create PO"
+msgstr ""
+
 msgid "Create Production Quantity"
 msgstr ""
 
@@ -2028,6 +2033,9 @@ msgstr "Criar Revisão"
 
 msgid "Create Rule"
 msgstr "Criar Regra"
+
+msgid "Create supplier"
+msgstr ""
 
 msgid "Create User"
 msgstr "Criar Utilizador"
@@ -2141,6 +2149,9 @@ msgstr "Linha de transferência de estoque criada"
 
 msgid "Created storage type"
 msgstr "Tipo de armazenamento criado"
+
+msgid "Created supplier process"
+msgstr ""
 
 #. placeholder {0}: fetcher.data.data.name
 msgid "Created supplier: {0}"
@@ -3208,6 +3219,9 @@ msgstr "Editar Peça do Fornecedor"
 msgid "Edit supplier process"
 msgstr "Editar processo do fornecedor"
 
+msgid "Edit supplier quantity report"
+msgstr ""
+
 msgid "Edit Supplier Type"
 msgstr "Editar Tipo de Fornecedor"
 
@@ -3504,15 +3518,6 @@ msgstr "Expandir Custos"
 msgid "Expand features table"
 msgstr ""
 
-msgid "Expand Labor"
-msgstr "Expandir Trabalho"
-
-msgid "Expand Machine"
-msgstr "Expandir Máquina"
-
-msgid "Expand Setup"
-msgstr "Expandir Configuração"
-
 msgid "Expand subtree"
 msgstr "Expandir subárvore"
 
@@ -3681,6 +3686,9 @@ msgstr "Falha ao criar linha de transferência de estoque: {0}"
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create storage type: {0}"
 msgstr "Falha ao criar tipo de armazenamento: {0}"
+
+msgid "Failed to create supplier process"
+msgstr ""
 
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create supplier: {0}"
@@ -4322,6 +4330,9 @@ msgstr ""
 msgid "Inside"
 msgstr ""
 
+msgid "Inside and Outside"
+msgstr ""
+
 msgid "Inspect"
 msgstr "Inspecionar"
 
@@ -4769,6 +4780,9 @@ msgstr "Modo Claro"
 msgid "Likelihood"
 msgstr "Probabilidade"
 
+msgid "Line"
+msgstr ""
+
 msgid "Line Item Comparison"
 msgstr "Comparação de Itens de Linha"
 
@@ -4830,6 +4844,9 @@ msgstr ""
 
 msgid "Loading item details..."
 msgstr "Carregando detalhes do item..."
+
+msgid "Loading subcontract pricing…"
+msgstr ""
 
 msgid "Loading..."
 msgstr "Carregando..."
@@ -5813,6 +5830,9 @@ msgstr "Sem resultados"
 msgid "No results found"
 msgstr "Nenhum resultado encontrado"
 
+msgid "No results found."
+msgstr ""
+
 msgid "No rules assigned"
 msgstr ""
 
@@ -6075,7 +6095,7 @@ msgid "Origin"
 msgstr ""
 
 #. placeholder {0}: report.originalQuantity
-msgid "Originally reported {0} units"
+msgid "Originally reported <0>{0}</0> units"
 msgstr ""
 
 msgid "Other Assets"
@@ -6312,7 +6332,7 @@ msgstr "Escolha uma data ou deixe em branco para limpar."
 msgid "Pick List"
 msgstr "Lista de Coleta"
 
-#. placeholder {0}: item.quantity
+#. placeholder {0}: pickup.quantity
 msgid "picked up {0} units"
 msgstr ""
 
@@ -6402,6 +6422,9 @@ msgid "PO Number"
 msgstr "Número da PO"
 
 msgid "PO PDF"
+msgstr ""
+
+msgid "PO pricing: min <0>{minCost}</0>, unit <1>{unitPrice}</1> (snapshotted)"
 msgstr ""
 
 msgid "Policy"
@@ -6497,6 +6520,9 @@ msgstr "Ações de quebra de preço"
 msgid "Price Break History"
 msgstr "Histórico de Faixa de Preço"
 
+msgid "Price breakdown"
+msgstr ""
+
 msgid "Price Breaks"
 msgstr "Quebras de Preço"
 
@@ -6511,6 +6537,9 @@ msgstr "Preços"
 
 msgid "Pricing"
 msgstr "Preços"
+
+msgid "Pricing from the supplier process (first quantity on this job)."
+msgstr ""
 
 msgid "Pricing Rule"
 msgstr "Regra de Preço"
@@ -7140,11 +7169,14 @@ msgstr ""
 msgid "reported"
 msgstr ""
 
-#. placeholder {0}: report.originalQuantity
-msgid "Reported {0} units"
+msgid "Reported {totalQuantity} units"
 msgstr ""
 
-msgid "Reported {totalQuantity} units"
+#. placeholder {0}: report.originalQuantity
+msgid "Reported <0>{0}</0> units"
+msgstr ""
+
+msgid "Reported <0>{totalQuantity}</0> units"
 msgstr ""
 
 msgid "Reports"
@@ -7687,6 +7719,9 @@ msgstr "Selecionar Tipo de Item"
 
 msgid "Select items"
 msgstr "Selecionar itens"
+
+msgid "Select name"
+msgstr ""
 
 msgid "Select Printer"
 msgstr ""
@@ -8999,6 +9034,9 @@ msgstr ""
 msgid "unknown location"
 msgstr "localização desconhecida"
 
+msgid "Unknown Supplier"
+msgstr ""
+
 msgid "Unlimited Functional Support"
 msgstr "Suporte Funcional Ilimitado"
 
@@ -9190,6 +9228,9 @@ msgstr "Os utilizadores podem atualizar este valor para si próprios"
 
 msgid "Users to Update"
 msgstr "Utilizadores a Atualizar"
+
+msgid "Using saved subcontract pricing for this supplier on this job."
+msgstr ""
 
 msgid "Valid From"
 msgstr "Válido a partir de"

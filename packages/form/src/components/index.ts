@@ -12,6 +12,8 @@ import type { CreatableMultiSelectProps } from "./CreatableMultiSelect";
 import CreatableMultiSelect from "./CreatableMultiSelect";
 import DatePicker from "./DatePicker";
 import DateTimePicker from "./DateTimePicker";
+import type { GroupedCreatableComboboxProps } from "./GroupedCreatableCombobox";
+import GroupedCreatableCombobox from "./GroupedCreatableCombobox";
 import Hidden from "./Hidden";
 import Input from "./Input";
 import InputControlled from "./InputControlled";
@@ -41,6 +43,7 @@ export {
   CountryFlag,
   CreatableCombobox,
   CreatableMultiSelect,
+  GroupedCreatableCombobox,
   DatePicker,
   DateTimePicker,
   DefaultDisabledSubmit,
@@ -68,6 +71,7 @@ export type {
   ComboboxProps,
   CreatableComboboxProps,
   CreatableMultiSelectProps,
+  GroupedCreatableComboboxProps,
   MultiSelectProps,
   SelectProps
 };
