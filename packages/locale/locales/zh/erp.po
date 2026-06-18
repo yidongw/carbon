@@ -55,9 +55,17 @@ msgstr "{0}/{1}正确"
 msgid "{0} orders"
 msgstr "{0} 个订单"
 
+#. placeholder {0}: fmt(diff)
+msgid "{0} over goal"
+msgstr "多了 {0}"
+
 #. placeholder {0}: selectedProcesses.length
 msgid "{0} Processes"
 msgstr "{0} 工序"
+
+#. placeholder {0}: fmt(Math.abs(diff))
+msgid "{0} short of goal"
+msgstr "少了 {0}"
 
 #. placeholder {0}: percentFormatter.format(line.taxPercent ?? 0)
 msgid "{0} Tax"
@@ -1030,6 +1038,9 @@ msgstr "指派"
 msgid "Assigned Group"
 msgstr "已分配的组"
 
+msgid "Assigned quantity"
+msgstr "已分配"
+
 msgid "Assigned to Me"
 msgstr "分配给我的"
 
@@ -1598,6 +1609,9 @@ msgstr "已完成工作通知"
 
 msgid "Completed Qty"
 msgstr "已完成数量"
+
+msgid "Completed quantity"
+msgstr "已完成"
 
 msgid "Completion Barcode"
 msgstr "完成条码"
@@ -3261,9 +3275,6 @@ msgstr "在职"
 msgid "Employee"
 msgstr "员工"
 
-msgid "Employee Accounts"
-msgstr "员工账户"
-
 msgid "Employee Type"
 msgstr "员工类型"
 
@@ -4129,6 +4140,9 @@ msgstr "获取方法"
 
 msgid "GL Account"
 msgstr "总账科目"
+
+msgid "Goal quantity for this configuration."
+msgstr "此配置的目标数量。"
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -5918,9 +5932,6 @@ msgstr "非税费用"
 msgid "None"
 msgstr "无"
 
-msgid "Offboarded"
-msgstr "已离职"
-
 msgid "Not enough jobs to cover quantity"
 msgstr "工作不足以覆盖数量"
 
@@ -5972,6 +5983,9 @@ msgstr "OEE影响"
 msgid "of"
 msgstr "的"
 
+msgid "Offboarded"
+msgstr "已离职"
+
 msgid "OK"
 msgstr "确定"
 
@@ -5992,6 +6006,9 @@ msgstr "在销售订单上"
 
 msgid "On Storage Unit"
 msgstr "在存储单元上"
+
+msgid "On target"
+msgstr "已达到目标"
 
 msgid "Onshape Status"
 msgstr "Onshape状态"
@@ -6880,8 +6897,14 @@ msgstr "数量"
 msgid "Quantity ({qtyThrough}/{qtyTotal}): completed quantity across all operations."
 msgstr "数量（{qtyThrough}/{qtyTotal}）：所有工序的已完成数量。"
 
+msgid "Quantity assigned or picked up for this operation."
+msgstr "为该操作分配或领取的数量。"
+
 msgid "Quantity Completed"
 msgstr "已完成数量"
+
+msgid "Quantity finished and reported for this operation."
+msgstr "已完成并报告的本工序数量。"
 
 msgid "Quantity is derived from completed serials/batches in MES and cannot be edited."
 msgstr "数量由MES中已完成的批次/序列号推导得出，无法编辑。"
@@ -8637,6 +8660,9 @@ msgstr "选择一个或多个客户。"
 
 msgid "Target one or more items."
 msgstr "定位一个或多个物品。"
+
+msgid "Target quantity"
+msgstr "目标"
 
 msgid "Target Version"
 msgstr "目标版本"
