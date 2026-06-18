@@ -65176,6 +65176,15 @@ export type Database = {
           title: string
         }[]
       }
+      seed_company: {
+        Args: {
+          company_id: string
+          parent_company_id?: string
+          seed?: Json
+          user_id: string
+        }
+        Returns: undefined
+      }
       set_shelf_life_for_operation: {
         Args: {
           p_event: Database["public"]["Enums"]["shelfLifeTriggerTiming"]
