@@ -3908,6 +3908,9 @@ msgstr "Modos de Falha"
 msgid "False"
 msgstr "Falso"
 
+msgid "Family name is shown first"
+msgstr ""
+
 msgid "Favorite"
 msgstr "Favorito"
 
@@ -4003,9 +4006,6 @@ msgstr "Primeiro Nome"
 
 msgid "First name is required"
 msgstr "Nome é obrigatório"
-
-msgid "First name is shown first"
-msgstr ""
 
 msgid "First Operation"
 msgstr "Primeira Operação"
@@ -4129,6 +4129,9 @@ msgstr "IDs gerados estão ativados"
 
 msgid "Get Method"
 msgstr "Obter Método"
+
+msgid "Given name is shown first"
+msgstr ""
 
 msgid "GL Account"
 msgstr "Conta de Garantia"
@@ -4755,9 +4758,6 @@ msgstr "Sobrenome"
 
 msgid "Last name is required"
 msgstr "Sobrenome é obrigatório"
-
-msgid "Last name is shown first"
-msgstr ""
 
 #. placeholder {0}: formatDateTime(lastSyncedAt)
 msgid "Last synced: {0}"

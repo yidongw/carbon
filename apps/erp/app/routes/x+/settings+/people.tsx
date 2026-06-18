@@ -288,9 +288,9 @@ export default function PeopleSettingsRoute() {
               <VStack className="items-start" spacing={1}>
                 <span className="font-medium">
                   {companySettings.lastNameFirst ? (
-                    <Trans>Last name is shown first</Trans>
+                    <Trans>Family name is shown first</Trans>
                   ) : (
-                    <Trans>First name is shown first</Trans>
+                    <Trans>Given name is shown first</Trans>
                   )}
                 </span>
                 <span className="text-sm text-muted-foreground">
