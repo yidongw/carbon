@@ -50,9 +50,17 @@ msgstr "{0} supprimé avec succès"
 msgid "{0} orders"
 msgstr "{0} commandes"
 
+#. placeholder {0}: fmt(diff)
+msgid "{0} over goal"
+msgstr "{0} au-dessus de la cible"
+
 #. placeholder {0}: selectedProcesses.length
 msgid "{0} Processes"
 msgstr "{0} Processus"
+
+#. placeholder {0}: fmt(Math.abs(diff))
+msgid "{0} short of goal"
+msgstr "manque à {0}"
 
 #. placeholder {0}: percentFormatter.format(line.taxPercent ?? 0)
 msgid "{0} Tax"
@@ -1077,6 +1085,9 @@ msgstr "Assigné"
 msgid "Assigned Group"
 msgstr "Groupe attribué"
 
+msgid "Assigned quantity"
+msgstr "Quantité assignée"
+
 msgid "Assigned to Me"
 msgstr "Assigné à moi"
 
@@ -1693,6 +1704,9 @@ msgstr "Notifications de travaux terminés"
 
 msgid "Completed Qty"
 msgstr "Quantité Complétée"
+
+msgid "Completed quantity"
+msgstr "Quantité réalisée"
 
 msgid "Completion Barcode"
 msgstr "Code-barres d'achèvement"
@@ -3418,9 +3432,6 @@ msgstr "Emoji"
 msgid "Employee"
 msgstr "Employé"
 
-msgid "Employee Accounts"
-msgstr "Comptes Employés"
-
 msgid "Employee Type"
 msgstr "Type d'employé"
 
@@ -4378,6 +4389,9 @@ msgstr "Obtenir la méthode"
 
 msgid "GL Account"
 msgstr "Compte Général"
+
+msgid "Goal quantity for this configuration."
+msgstr "Quantité cible pour cette configuration."
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -6305,6 +6319,9 @@ msgstr "Impact OEE"
 msgid "of"
 msgstr "de"
 
+msgid "Offboarded"
+msgstr "Parti"
+
 msgid "OK"
 msgstr "OK"
 
@@ -6328,6 +6345,9 @@ msgstr "Sur commande client"
 
 msgid "On Storage Unit"
 msgstr "Sur l'unité de stockage"
+
+msgid "On target"
+msgstr "À cible"
 
 msgid "Onshape Status"
 msgstr "Statut Onshape"
@@ -7290,8 +7310,14 @@ msgstr "Quantité"
 msgid "Quantity ({qtyThrough}/{qtyTotal}): completed quantity across all operations."
 msgstr "Quantité ({qtyThrough}/{qtyTotal}): quantité complétée dans toutes les opérations."
 
+msgid "Quantity assigned or picked up for this operation."
+msgstr "Quantité attribuée ou prélevée pour cette opération."
+
 msgid "Quantity Completed"
 msgstr "Quantité complétée"
+
+msgid "Quantity finished and reported for this operation."
+msgstr "Quantité produite et rapportée pour cette opération."
 
 msgid "Quantity is derived from completed serials/batches in MES and cannot be edited."
 msgstr "La quantité est dérivée des numéros de série/lots complétés dans MES et ne peut pas être modifiée."
@@ -9085,6 +9111,9 @@ msgstr "Ciblez un ou plusieurs clients."
 
 msgid "Target one or more items."
 msgstr "Version cible"
+
+msgid "Target quantity"
+msgstr "Quantité cible"
 
 msgid "Target Version"
 msgstr "Version cible"
