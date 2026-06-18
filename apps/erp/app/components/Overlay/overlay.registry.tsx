@@ -1,4 +1,3 @@
-import type { ConfigurationParameter } from "~/modules/items/types";
 import type { ItemConfigTableOverlayLoaderData } from "~/routes/api+/items.$itemId.config-table";
 import type { JobBillOfProcessOverlayLoaderData } from "~/routes/api+/production.jobs.$jobId.bill-of-process";
 import type { JobConfigTableOverlayLoaderData } from "~/routes/api+/production.jobs.$jobId.config-table";
@@ -22,6 +21,10 @@ export const overlayRegistry = {
                     listOptions?: string[] | null;
                   }[]
                 | null;
+              configReferenceSource?: {
+                jobConfiguration: unknown;
+                reportedConfigurations: unknown[];
+              } | null;
               itemId?: string | null;
               processId?: string | null;
               operationType?: string | null;
@@ -48,6 +51,7 @@ export const overlayRegistry = {
           },
           operationOptions: data.operationOptions ?? [],
           configurationParameters: data.configurationParameters ?? null,
+          configReferenceSource: data.configReferenceSource ?? null,
           itemId: data.itemId ?? null,
           processId: data.processId ?? null,
           operationType: data.operationType ?? null,
@@ -68,7 +72,18 @@ export const overlayRegistry = {
           | {
               jobOperationId: string;
               operationOptions: { label: string; value: string }[];
-              configurationParameters?: ConfigurationParameter[] | null;
+              configurationParameters?:
+                | {
+                    key: string;
+                    label: string;
+                    dataType: string;
+                    listOptions?: string[] | null;
+                  }[]
+                | null;
+              configReferenceSource?: {
+                jobConfiguration: unknown;
+                reportedConfigurations: unknown[];
+              } | null;
               itemId?: string | null;
               processId?: string | null;
               operationType?: string | null;
@@ -97,6 +112,7 @@ export const overlayRegistry = {
           },
           operationOptions: data.operationOptions ?? [],
           configurationParameters: data.configurationParameters ?? null,
+          configReferenceSource: data.configReferenceSource ?? null,
           itemId: data.itemId ?? null,
           processId: data.processId ?? null,
           operationType: data.operationType ?? null,
@@ -159,7 +175,18 @@ export const overlayRegistry = {
                 configuration?: unknown;
               } | null;
               operationOptions: { label: string; value: string }[];
-              configurationParameters?: ConfigurationParameter[] | null;
+              configurationParameters?:
+                | {
+                    key: string;
+                    label: string;
+                    dataType: string;
+                    listOptions?: string[] | null;
+                  }[]
+                | null;
+              configReferenceSource?: {
+                jobConfiguration: unknown;
+                reportedConfigurations: unknown[];
+              } | null;
               itemId?: string | null;
               processId?: string | null;
               operationType?: string | null;
@@ -170,6 +197,7 @@ export const overlayRegistry = {
         const shared = {
           operationOptions: data.operationOptions ?? [],
           configurationParameters: data.configurationParameters ?? null,
+          configReferenceSource: data.configReferenceSource ?? null,
           itemId: data.itemId ?? null,
           processId: data.processId ?? null,
           operationType: data.operationType ?? null

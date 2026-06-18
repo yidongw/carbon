@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   buildConfigTableEditorState,
+  buildJobRemainingReferenceContext,
   fillValueFromReference
 } from "./configParamsTableColumns";
 
@@ -102,6 +103,33 @@ describe("buildConfigTableEditorState", () => {
     });
 
     expect(rows[0]?.M).toBe(3);
+  });
+});
+
+describe("buildJobRemainingReferenceContext", () => {
+  const jobConfiguration = {
+    configTable: [{ color: "红色", size: "M", M: 14, L: 0, XL: 0 }],
+    configTablePrimaryKeys: ["M", "L", "XL"]
+  };
+
+  it("computes remaining quantities from job target minus reported", () => {
+    const referenceContext = buildJobRemainingReferenceContext({
+      jobConfiguration,
+      reportedConfigurations: [
+        {
+          configTable: [{ color: "红色", size: "M", M: 10, L: 0, XL: 0 }]
+        }
+      ]
+    });
+
+    const { referenceByRowIndex } = buildConfigTableEditorState({
+      parameters,
+      defaultQuantityLabel: "Quantities",
+      currentConfiguration: { configTable: [] },
+      referenceContext
+    });
+
+    expect(referenceByRowIndex[0]?.M).toBe(4);
   });
 });
 

@@ -24,6 +24,10 @@ import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions } from "~/hooks";
 import type { ProductionQuantityLineInput } from "~/modules/production/productionQuantityReport.models";
 import { path } from "~/utils/path";
+import {
+  buildJobRemainingReferenceContext,
+  type ConfigReferenceSource
+} from "../../configParamsTableColumns";
 import { isConfigTableOverlaySuccess } from "../../configTableOverlay";
 import { computeJobConfigTableTotal } from "../../jobConfiguration";
 import type { productionActorKinds } from "../../production.models";
@@ -104,6 +108,7 @@ export type ProductionQuantityFormProps = {
     helperText?: string;
   }[];
   configurationParameters?: ConfigurationParameter[] | null;
+  configReferenceSource?: ConfigReferenceSource | null;
   itemId?: string | null;
   processId?: string | null;
   operationType?: string | null;
@@ -137,6 +142,7 @@ const ProductionQuantityForm = ({
   initialValues,
   operationOptions,
   configurationParameters,
+  configReferenceSource,
   itemId,
   processId,
   operationType,
@@ -275,6 +281,10 @@ const ProductionQuantityForm = ({
   const openConfigTable = () => {
     if (!itemId) return;
 
+    const referenceContext = configReferenceSource
+      ? buildJobRemainingReferenceContext(configReferenceSource)
+      : undefined;
+
     openOverlay(
       overlay.to.itemConfigTable(itemId, {
         configuration:
@@ -284,7 +294,8 @@ const ProductionQuantityForm = ({
                 configTablePrimaryKeys
               }
             : (initialValues as z.infer<typeof productionQuantityValidator>)
-                .configuration
+                .configuration,
+        referenceContext
       }),
       {
         onSuccess: (data) => {
@@ -461,6 +472,7 @@ const ProductionQuantityForm = ({
                 lines={lines}
                 setLines={setLines}
                 configurationParameters={configurationParameters}
+                configReferenceSource={configReferenceSource}
                 itemId={itemId}
                 isDisabled={isDisabled}
               />

@@ -21,6 +21,7 @@ import {
   seededActorFromOperationContext,
   validateActorMatchesOperationSupplierRouting
 } from "~/modules/production";
+import { getConfigReferenceSourceForOperation } from "~/modules/production/configTableOverlay.server";
 import { productionQuantityLineJsonValidator } from "~/modules/production/productionQuantityReport.models";
 import ProductionQuantityForm from "~/modules/production/ui/Jobs/ProductionQuantityForm";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
@@ -57,12 +58,23 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const itemId = job.data?.itemId ?? null;
 
+  const configReferenceSource = await getConfigReferenceSourceForOperation(
+    client,
+    {
+      jobId,
+      jobOperationId: jobOperationId || undefined,
+      companyId,
+      reportKind: "productionQuantity"
+    }
+  );
+
   if (jobOperationId) {
     return {
       jobOperationId,
       operationOptions: [] as const,
       configurationParameters:
         configurationParameters.length > 0 ? configurationParameters : null,
+      configReferenceSource,
       itemId,
       ...actorContext
     };
@@ -79,6 +91,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     operationOptions,
     configurationParameters:
       configurationParameters.length > 0 ? configurationParameters : null,
+    configReferenceSource,
     itemId,
     ...actorContext
   };
@@ -260,6 +273,7 @@ export default function NewProductionQuantityRoute() {
     jobOperationId,
     operationOptions,
     configurationParameters,
+    configReferenceSource,
     itemId,
     processId,
     operationType,
@@ -281,6 +295,7 @@ export default function NewProductionQuantityRoute() {
       initialValues={initialValues}
       operationOptions={[...(operationOptions ?? [])]}
       configurationParameters={configurationParameters}
+      configReferenceSource={configReferenceSource}
       itemId={itemId}
       processId={processId}
       operationType={operationType}
