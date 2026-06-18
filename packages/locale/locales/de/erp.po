@@ -55,9 +55,17 @@ msgstr "{0} von {1} korrekt"
 msgid "{0} orders"
 msgstr "{0} Bestellungen"
 
+#. placeholder {0}: fmt(diff)
+msgid "{0} over goal"
+msgstr "{0} über Zielìnhalt"
+
 #. placeholder {0}: selectedProcesses.length
 msgid "{0} Processes"
 msgstr "{0} Prozesse"
+
+#. placeholder {0}: fmt(Math.abs(diff))
+msgid "{0} short of goal"
+msgstr "{0} kurz vor Ziel"
 
 #. placeholder {0}: percentFormatter.format(line.taxPercent ?? 0)
 msgid "{0} Tax"
@@ -1030,6 +1038,9 @@ msgstr "Zugewiesen"
 msgid "Assigned Group"
 msgstr "Eingeteilte Gruppe"
 
+msgid "Assigned quantity"
+msgstr "Zuweisungszahl"
+
 msgid "Assigned to Me"
 msgstr "Mir zugewiesen"
 
@@ -1598,6 +1609,9 @@ msgstr "Abgeschlossene Auftragsbenachrichtigungen"
 
 msgid "Completed Qty"
 msgstr "Abgeschlossene Menge"
+
+msgid "Completed quantity"
+msgstr "Fertige Menge"
 
 msgid "Completion Barcode"
 msgstr "Fertigstellungs-Barcode"
@@ -3261,9 +3275,6 @@ msgstr "Beschäftigt"
 msgid "Employee"
 msgstr "Mitarbeiter"
 
-msgid "Employee Accounts"
-msgstr "Mitarbeiterkonten"
-
 msgid "Employee Type"
 msgstr "Mitarbeitertyp"
 
@@ -4129,6 +4140,9 @@ msgstr "Methode abrufen"
 
 msgid "GL Account"
 msgstr "Kontenkskonto"
+
+msgid "Goal quantity for this configuration."
+msgstr "Zimenge für diese Konfiguration."
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -5918,9 +5932,6 @@ msgstr "Nichtsteuerbare Gebühren"
 msgid "None"
 msgstr "Keine"
 
-msgid "Offboarded"
-msgstr "Ausgeschieden"
-
 msgid "Not enough jobs to cover quantity"
 msgstr "Nicht genug Aufträge zur Deckung der Menge"
 
@@ -5972,6 +5983,9 @@ msgstr "OEE-Auswirkung"
 msgid "of"
 msgstr "von"
 
+msgid "Offboarded"
+msgstr "Ausgeschieden"
+
 msgid "OK"
 msgstr "OK"
 
@@ -5992,6 +6006,9 @@ msgstr "In Verkaufsauftrag"
 
 msgid "On Storage Unit"
 msgstr "Auf Lagereinheit"
+
+msgid "On target"
+msgstr "Auf Zielposition"
 
 msgid "Onshape Status"
 msgstr "Onshape-Status"
@@ -6880,8 +6897,14 @@ msgstr "Menge"
 msgid "Quantity ({qtyThrough}/{qtyTotal}): completed quantity across all operations."
 msgstr "Menge ({{qtyThrough}}/{{qtyTotal}})): Fertigkeitsmenge über alle Betriebe."
 
+msgid "Quantity assigned or picked up for this operation."
+msgstr "Menge zugewiesen oder für diese Operation abgeholt."
+
 msgid "Quantity Completed"
 msgstr "Abgeschlossene Menge"
+
+msgid "Quantity finished and reported for this operation."
+msgstr "Anzahl der fertigen und gemeldeten Teile für diese Operation."
 
 msgid "Quantity is derived from completed serials/batches in MES and cannot be edited."
 msgstr "Die Menge wird aus abgeschlossenen Seriennummern/Chargen in MES abgeleitet und kann nicht bearbeitet werden."
@@ -8637,6 +8660,9 @@ msgstr "Zielgruppe: ein oder mehrere Kunden."
 
 msgid "Target one or more items."
 msgstr "Zielversion"
+
+msgid "Target quantity"
+msgstr "Zimenge"
 
 msgid "Target Version"
 msgstr "Zielversion"

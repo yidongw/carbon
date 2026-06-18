@@ -55,9 +55,17 @@ msgstr "{0} из {1} верных"
 msgid "{0} orders"
 msgstr "{0} заказов"
 
+#. placeholder {0}: fmt(diff)
+msgid "{0} over goal"
+msgstr "над {0} цели"
+
 #. placeholder {0}: selectedProcesses.length
 msgid "{0} Processes"
 msgstr "{0} Процессов"
+
+#. placeholder {0}: fmt(Math.abs(diff))
+msgid "{0} short of goal"
+msgstr "не достигнуто {0}"
 
 #. placeholder {0}: percentFormatter.format(line.taxPercent ?? 0)
 msgid "{0} Tax"
@@ -1030,6 +1038,9 @@ msgstr "Назначено"
 msgid "Assigned Group"
 msgstr "Назначенный группа"
 
+msgid "Assigned quantity"
+msgstr "Назначено количество"
+
 msgid "Assigned to Me"
 msgstr "Назначено мне"
 
@@ -1598,6 +1609,9 @@ msgstr "Завершенные уведомления о работах"
 
 msgid "Completed Qty"
 msgstr "Завершённое кол-во"
+
+msgid "Completed quantity"
+msgstr "Количество выполнено"
 
 msgid "Completion Barcode"
 msgstr "Штрихкод завершения"
@@ -3261,9 +3275,6 @@ msgstr "Работает"
 msgid "Employee"
 msgstr "Сотрудник"
 
-msgid "Employee Accounts"
-msgstr "Учетные записи сотрудников"
-
 msgid "Employee Type"
 msgstr "Тип сотрудника"
 
@@ -4129,6 +4140,9 @@ msgstr "Получить метод"
 
 msgid "GL Account"
 msgstr "Окончательный счет"
+
+msgid "Goal quantity for this configuration."
+msgstr "Количество целевых единиц для этой конфигурации."
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -5918,9 +5932,6 @@ msgstr "Налоговые сборы не облагаемые налогом"
 msgid "None"
 msgstr "Нет"
 
-msgid "Offboarded"
-msgstr "Уволен"
-
 msgid "Not enough jobs to cover quantity"
 msgstr "Недостаточно заданий для покрытия количества"
 
@@ -5972,6 +5983,9 @@ msgstr "Влияние OEE"
 msgid "of"
 msgstr "из"
 
+msgid "Offboarded"
+msgstr "Уволен"
+
 msgid "OK"
 msgstr "ОК"
 
@@ -5992,6 +6006,9 @@ msgstr "На заказе продажи"
 
 msgid "On Storage Unit"
 msgstr "На складском отделении"
+
+msgid "On target"
+msgstr "На целевую"
 
 msgid "Onshape Status"
 msgstr "Статус Onshape"
@@ -6880,8 +6897,14 @@ msgstr "Количество"
 msgid "Quantity ({qtyThrough}/{qtyTotal}): completed quantity across all operations."
 msgstr "Количество ({qtyThrough}/{qtyTotal}): выполненная сумма по всем операциям."
 
+msgid "Quantity assigned or picked up for this operation."
+msgstr "Количество назначено или забрано для этой операции."
+
 msgid "Quantity Completed"
 msgstr "Завершено количество"
+
+msgid "Quantity finished and reported for this operation."
+msgstr "Количество成品和报告的此操作的数量。"
 
 msgid "Quantity is derived from completed serials/batches in MES and cannot be edited."
 msgstr "Количество определяется на основе завершенных серийных номеров/партий в MES и не может быть отредактировано."
@@ -8637,6 +8660,9 @@ msgstr "Выберите одного или нескольких клиенто
 
 msgid "Target one or more items."
 msgstr "Целевая версия"
+
+msgid "Target quantity"
+msgstr "Целевое количество"
 
 msgid "Target Version"
 msgstr "Целевая версия"

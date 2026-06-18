@@ -55,9 +55,17 @@ msgstr "{0} of {1} correct"
 msgid "{0} orders"
 msgstr "{0} orders"
 
+#. placeholder {0}: fmt(diff)
+msgid "{0} over goal"
+msgstr "{0} over goal"
+
 #. placeholder {0}: selectedProcesses.length
 msgid "{0} Processes"
 msgstr "{0} Processes"
+
+#. placeholder {0}: fmt(Math.abs(diff))
+msgid "{0} short of goal"
+msgstr "{0} short of goal"
 
 #. placeholder {0}: percentFormatter.format(line.taxPercent ?? 0)
 msgid "{0} Tax"
@@ -1030,6 +1038,9 @@ msgstr "Assigned"
 msgid "Assigned Group"
 msgstr "Assigned Group"
 
+msgid "Assigned quantity"
+msgstr "Assigned quantity"
+
 msgid "Assigned to Me"
 msgstr "Assigned to Me"
 
@@ -1598,6 +1609,9 @@ msgstr "Completed Job Notifications"
 
 msgid "Completed Qty"
 msgstr "Completed Qty"
+
+msgid "Completed quantity"
+msgstr "Completed quantity"
 
 msgid "Completion Barcode"
 msgstr "Completion Barcode"
@@ -3261,9 +3275,6 @@ msgstr "Employed"
 msgid "Employee"
 msgstr "Employee"
 
-msgid "Employee Accounts"
-msgstr "Employee Accounts"
-
 msgid "Employee Type"
 msgstr "Employee Type"
 
@@ -4129,6 +4140,9 @@ msgstr "Get Method"
 
 msgid "GL Account"
 msgstr "GL Account"
+
+msgid "Goal quantity for this configuration."
+msgstr "Goal quantity for this configuration."
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -5918,9 +5932,6 @@ msgstr "Non-Taxable Charges"
 msgid "None"
 msgstr "None"
 
-msgid "Offboarded"
-msgstr "Offboarded"
-
 msgid "Not enough jobs to cover quantity"
 msgstr "Not enough jobs to cover quantity"
 
@@ -5972,6 +5983,9 @@ msgstr "OEE Impact"
 msgid "of"
 msgstr "of"
 
+msgid "Offboarded"
+msgstr "Offboarded"
+
 msgid "OK"
 msgstr "OK"
 
@@ -5992,6 +6006,9 @@ msgstr "On Sales Order"
 
 msgid "On Storage Unit"
 msgstr "On Storage Unit"
+
+msgid "On target"
+msgstr "On target"
 
 msgid "Onshape Status"
 msgstr "Onshape Status"
@@ -6880,8 +6897,14 @@ msgstr "Quantity"
 msgid "Quantity ({qtyThrough}/{qtyTotal}): completed quantity across all operations."
 msgstr "Quantity ({qtyThrough}/{qtyTotal}): completed quantity across all operations."
 
+msgid "Quantity assigned or picked up for this operation."
+msgstr "Quantity assigned or picked up for this operation."
+
 msgid "Quantity Completed"
 msgstr "Quantity Completed"
+
+msgid "Quantity finished and reported for this operation."
+msgstr "Quantity finished and reported for this operation."
 
 msgid "Quantity is derived from completed serials/batches in MES and cannot be edited."
 msgstr "Quantity is derived from completed serials/batches in MES and cannot be edited."
@@ -8637,6 +8660,9 @@ msgstr "Target one or more customers."
 
 msgid "Target one or more items."
 msgstr "Target one or more items."
+
+msgid "Target quantity"
+msgstr "Target quantity"
 
 msgid "Target Version"
 msgstr "Target Version"

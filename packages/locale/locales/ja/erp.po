@@ -55,9 +55,17 @@ msgstr "{0} 件中 {1} 件正解"
 msgid "{0} orders"
 msgstr "{0}件の注文"
 
+#. placeholder {0}: fmt(diff)
+msgid "{0} over goal"
+msgstr "目標を上回る {0}"
+
 #. placeholder {0}: selectedProcesses.length
 msgid "{0} Processes"
 msgstr "{0}個のプロセス"
+
+#. placeholder {0}: fmt(Math.abs(diff))
+msgid "{0} short of goal"
+msgstr "目標に{0}足りません"
 
 #. placeholder {0}: percentFormatter.format(line.taxPercent ?? 0)
 msgid "{0} Tax"
@@ -1030,6 +1038,9 @@ msgstr "割り当て済み"
 msgid "Assigned Group"
 msgstr "割り当てグループ"
 
+msgid "Assigned quantity"
+msgstr "割当数量"
+
 msgid "Assigned to Me"
 msgstr "私に割り当てられた"
 
@@ -1598,6 +1609,9 @@ msgstr "完了したジョブ通知"
 
 msgid "Completed Qty"
 msgstr "完了数量"
+
+msgid "Completed quantity"
+msgstr "完成数量"
 
 msgid "Completion Barcode"
 msgstr "完了バーコード"
@@ -3261,9 +3275,6 @@ msgstr "在職"
 msgid "Employee"
 msgstr "従業員"
 
-msgid "Employee Accounts"
-msgstr "従業員アカウント"
-
 msgid "Employee Type"
 msgstr "従業員タイプ"
 
@@ -4129,6 +4140,9 @@ msgstr "メソッドを取得"
 
 msgid "GL Account"
 msgstr "Gl Akānto"
+
+msgid "Goal quantity for this configuration."
+msgstr "この構成の目標数量。"
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -5918,9 +5932,6 @@ msgstr "非課税料金"
 msgid "None"
 msgstr "なし"
 
-msgid "Offboarded"
-msgstr "退職"
-
 msgid "Not enough jobs to cover quantity"
 msgstr "数量をカバーするのに十分なジョブがありません"
 
@@ -5972,6 +5983,9 @@ msgstr "OEE影響"
 msgid "of"
 msgstr "の"
 
+msgid "Offboarded"
+msgstr "退職"
+
 msgid "OK"
 msgstr "OK"
 
@@ -5992,6 +6006,9 @@ msgstr "販売注文中"
 
 msgid "On Storage Unit"
 msgstr "保管ユニット上"
+
+msgid "On target"
+msgstr "目標に 맞る"
 
 msgid "Onshape Status"
 msgstr "Onshape ステータス"
@@ -6880,8 +6897,14 @@ msgstr "数量"
 msgid "Quantity ({qtyThrough}/{qtyTotal}): completed quantity across all operations."
 msgstr "量（{qtyThrough}/{qtyTotal}）：すべての作業で完了した合計数。"
 
+msgid "Quantity assigned or picked up for this operation."
+msgstr "この作業に割り当てられたまたは受け取った数量。"
+
 msgid "Quantity Completed"
 msgstr "完了数量"
+
+msgid "Quantity finished and reported for this operation."
+msgstr "この作業で完了且つ報告された数量。"
 
 msgid "Quantity is derived from completed serials/batches in MES and cannot be edited."
 msgstr "数量はMESで完了したシリアル/バッチから導出されており、編集することはできません。"
@@ -8637,6 +8660,9 @@ msgstr "1つ以上の顧客をターゲットにします。"
 
 msgid "Target one or more items."
 msgstr "ターゲットバージョン"
+
+msgid "Target quantity"
+msgstr "目標数量"
 
 msgid "Target Version"
 msgstr "ターゲットバージョン"
