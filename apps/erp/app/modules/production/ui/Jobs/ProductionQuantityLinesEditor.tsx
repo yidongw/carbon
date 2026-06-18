@@ -15,7 +15,11 @@ import { useCallback, useMemo } from "react";
 import { LuPlus, LuTrash2 } from "react-icons/lu";
 import { useScrapReasons } from "~/components/Form/ScrapReason";
 import { overlay, useOverlay } from "~/components/Overlay";
-import type { ConfigTableReferenceContext } from "~/modules/production/configParamsTableColumns";
+import {
+  buildJobRemainingReferenceContext,
+  type ConfigReferenceSource,
+  type ConfigTableReferenceContext
+} from "~/modules/production/configParamsTableColumns";
 import { isConfigTableOverlaySuccess } from "~/modules/production/configTableOverlay";
 import { computeJobConfigTableTotal } from "~/modules/production/jobConfiguration";
 import type { ProductionQuantityLineInput } from "~/modules/production/productionQuantityReport.models";
@@ -70,13 +74,47 @@ export function getConfigFromEditableLine(
   return line.configuration as Record<string, unknown>;
 }
 
+function buildReferenceContextForLine(
+  line: EditableProductionQuantityLine,
+  lineKey: string,
+  lines: EditableProductionQuantityLine[],
+  configReferenceContext?: {
+    originalConfiguration?: unknown;
+    configReferenceSource?: ConfigReferenceSource | null;
+  } | null
+): ConfigTableReferenceContext | undefined {
+  if (!configReferenceContext) return undefined;
+
+  if (configReferenceContext.originalConfiguration != null) {
+    return {
+      mode: line.type === "Production" ? "original" : "remaining",
+      originalConfiguration: configReferenceContext.originalConfiguration,
+      otherLineConfigurations: lines
+        .filter((l) => l.key !== lineKey)
+        .map((l) => getConfigFromEditableLine(l))
+        .filter(
+          (config): config is Record<string, unknown> => config !== undefined
+        )
+    };
+  }
+
+  if (configReferenceContext.configReferenceSource) {
+    return buildJobRemainingReferenceContext(
+      configReferenceContext.configReferenceSource
+    );
+  }
+
+  return undefined;
+}
+
 export function ProductionQuantityLinesEditor({
   lines,
   setLines,
   configurationParameters,
   itemId,
   isDisabled = false,
-  configReferenceContext
+  configReferenceContext,
+  configReferenceSource
 }: {
   lines: EditableProductionQuantityLine[];
   setLines: React.Dispatch<
@@ -89,6 +127,8 @@ export function ProductionQuantityLinesEditor({
   configReferenceContext?: {
     originalConfiguration: unknown;
   } | null;
+  /** When set (first submit), hints = job target − already reported on the operation. */
+  configReferenceSource?: ConfigReferenceSource | null;
 }) {
   const { t } = useLingui();
   const { openOverlay } = useOverlay();
@@ -119,21 +159,16 @@ export function ProductionQuantityLinesEditor({
       if (!line) return;
 
       const cfg = getConfigFromEditableLine(line);
-      const referenceContext: ConfigTableReferenceContext | undefined =
+      const referenceContext = buildReferenceContextForLine(
+        line,
+        lineKey,
+        lines,
         configReferenceContext
-          ? {
-              mode: line.type === "Production" ? "original" : "remaining",
-              originalConfiguration:
-                configReferenceContext.originalConfiguration,
-              otherLineConfigurations: lines
-                .filter((l) => l.key !== lineKey)
-                .map((l) => getConfigFromEditableLine(l))
-                .filter(
-                  (config): config is Record<string, unknown> =>
-                    config !== undefined
-                )
-            }
-          : undefined;
+          ? configReferenceContext
+          : configReferenceSource
+            ? { configReferenceSource }
+            : null
+      );
 
       openOverlay(
         overlay.to.itemConfigTable(itemId, {
@@ -151,7 +186,7 @@ export function ProductionQuantityLinesEditor({
         }
       );
     },
-    [configReferenceContext, itemId, lines, openOverlay, updateLine]
+    [configReferenceContext, configReferenceSource, itemId, lines, openOverlay, updateLine]
   );
 
   const addLine = () => {
