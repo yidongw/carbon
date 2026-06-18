@@ -5,10 +5,12 @@ import {
   LuClock,
   LuFileBadge2,
   LuGroup,
+  LuLink,
   LuListChecks,
   LuMonitor,
   LuNetwork,
   LuShield,
+  LuUserCheck,
   LuUsers
 } from "react-icons/lu";
 import { useSavedViews } from "~/hooks/useSavedViews";
@@ -33,6 +35,16 @@ export default function usePeopleSubmodules() {
           name: t`Permissions`,
           to: path.to.employeeAccounts,
           icon: <LuShield />
+        },
+        {
+          name: t`Invite Links`,
+          to: path.to.peopleInviteLinks,
+          icon: <LuLink />
+        },
+        {
+          name: t`Applications`,
+          to: path.to.peopleApplications,
+          icon: <LuUserCheck />
         },
         {
           name: t`Operators`,

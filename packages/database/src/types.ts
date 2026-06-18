@@ -10940,6 +10940,74 @@ export type Database = {
           },
         ]
       }
+      inviteLink: {
+        Row: {
+          code: string
+          companyId: string
+          createdAt: string
+          createdBy: string
+          employeeTypeId: string
+          expiresAt: string | null
+          id: string
+          label: string | null
+          locationId: string
+          revokedAt: string | null
+        }
+        Insert: {
+          code: string
+          companyId: string
+          createdAt?: string
+          createdBy: string
+          employeeTypeId: string
+          expiresAt?: string | null
+          id?: string
+          label?: string | null
+          locationId: string
+          revokedAt?: string | null
+        }
+        Update: {
+          code?: string
+          companyId?: string
+          createdAt?: string
+          createdBy?: string
+          employeeTypeId?: string
+          expiresAt?: string | null
+          id?: string
+          label?: string | null
+          locationId?: string
+          revokedAt?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inviteLink_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inviteLink_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inviteLink_employeeTypeId_fkey"
+            columns: ["employeeTypeId"]
+            isOneToOne: false
+            referencedRelation: "employeeType"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inviteLink_locationId_fkey"
+            columns: ["locationId"]
+            isOneToOne: false
+            referencedRelation: "location"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       item: {
         Row: {
           active: boolean
@@ -19965,6 +20033,67 @@ export type Database = {
             columns: ["materialSubstanceId"]
             isOneToOne: false
             referencedRelation: "materialSubstance"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      membershipApplication: {
+        Row: {
+          companyId: string
+          createdAt: string
+          employeeTypeId: string
+          id: string
+          inviteLinkId: string
+          locationId: string
+          reviewedAt: string | null
+          reviewedBy: string | null
+          status: Database["public"]["Enums"]["membershipApplicationStatus"]
+          userId: string
+        }
+        Insert: {
+          companyId: string
+          createdAt?: string
+          employeeTypeId: string
+          id?: string
+          inviteLinkId: string
+          locationId: string
+          reviewedAt?: string | null
+          reviewedBy?: string | null
+          status?: Database["public"]["Enums"]["membershipApplicationStatus"]
+          userId: string
+        }
+        Update: {
+          companyId?: string
+          createdAt?: string
+          employeeTypeId?: string
+          id?: string
+          inviteLinkId?: string
+          locationId?: string
+          reviewedAt?: string | null
+          reviewedBy?: string | null
+          status?: Database["public"]["Enums"]["membershipApplicationStatus"]
+          userId?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "membershipApplication_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "membershipApplication_inviteLinkId_fkey"
+            columns: ["inviteLinkId"]
+            isOneToOne: false
+            referencedRelation: "inviteLink"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "membershipApplication_userId_fkey"
+            columns: ["userId"]
+            isOneToOne: false
+            referencedRelation: "user"
             referencedColumns: ["id"]
           },
         ]
@@ -65567,6 +65696,7 @@ export type Database = {
         | "supplier"
         | "productionQuantityReport"
       approvalStatus: "Pending" | "Approved" | "Rejected" | "Cancelled"
+      membershipApplicationStatus: "pending" | "approved" | "rejected"
       configurationParameterDataType:
         | "text"
         | "numeric"
@@ -66817,6 +66947,7 @@ export const Constants = {
         "productionQuantityReport"
       ],
       approvalStatus: ["Pending", "Approved", "Rejected", "Cancelled"],
+      membershipApplicationStatus: ["pending", "approved", "rejected"],
       configurationParameterDataType: [
         "text",
         "numeric",

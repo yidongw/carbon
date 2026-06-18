@@ -877,6 +877,8 @@ export const path = {
     employeeType: (id: string) =>
       generatePath(`${x}/people/employee-types/${id}`),
     employeeTypes: `${x}/people/employee-types`,
+    peopleInviteLinks: `${x}/people/invite-links`,
+    peopleApplications: `${x}/people/applications`,
     operators: `${x}/people/operators`,
     operator: (id: string) => generatePath(`${x}/people/operators/${id}`),
     operatorResetPin: (id: string) =>
@@ -1025,6 +1027,10 @@ export const path = {
     location: (id: string) => generatePath(`${x}/resources/locations/${id}`),
     locations: `${x}/resources/locations`,
     login: "/login",
+    joinLink: (code: string) => generatePath(`/join/${code}`),
+    joinLinkApply: (code: string) => generatePath(`/join/${code}/apply`),
+    joinLinkSubmitted: (code: string) =>
+      generatePath(`/join/${code}/submitted`),
     logout: "/logout",
     logos: `${x}/settings/logos`,
     maintenanceDispatch: (id: string) => generatePath(`${x}/maintenance/${id}`),
@@ -1153,6 +1159,7 @@ export const path = {
     newEmployeeAbility: (id: string) =>
       generatePath(`${x}/resources/ability/${id}/employee/new`),
     newEmployeeType: `${x}/people/employee-types/new`,
+    newInviteLink: `${x}/people/invite-links/new`,
     newFailureMode: `${x}/resources/failure-modes/new`,
     newFixture: `${x}/fixture/new`,
     newFixtureSupplier: (id: string) =>
@@ -1578,6 +1585,9 @@ export const path = {
       generatePath(`${x}/quality/required-actions/${id}`),
     requiredActions: `${x}/quality/required-actions`,
     resendInvite: `${x}/people/resend-invite`,
+    revokeInviteLink: `${x}/people/invite-links/revoke`,
+    updateInviteLinkExpiry: `${x}/people/invite-links/update-expiry`,
+    reviewMembershipApplication: `${x}/people/applications/review`,
     resourcesDashboard: `${x}/resources/dashboard`,
     resourcesSettings: `${x}/settings/resources`,
     revision: (id: string) => generatePath(`${x}/items/revisions/${id}`),
