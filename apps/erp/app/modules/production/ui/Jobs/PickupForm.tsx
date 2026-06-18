@@ -19,6 +19,10 @@ import { ProductionActorFields } from "./ProductionActorFields";
 import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions } from "~/hooks";
 import { isConfigTableOverlaySuccess } from "../../configTableOverlay";
+import {
+  buildJobRemainingReferenceContext,
+  type ConfigReferenceSource
+} from "../../configParamsTableColumns";
 import { jobOperationPickupValidator } from "~/modules/production/production.models";
 import { path } from "~/utils/path";
 import { computeJobConfigTableTotal } from "../../jobConfiguration";
@@ -68,6 +72,7 @@ export type PickupFormProps = {
   initialValues: z.infer<typeof jobOperationPickupValidator>;
   operationOptions?: { label: string; value: string }[];
   configurationParameters?: ConfigurationParameter[] | null;
+  configReferenceSource?: ConfigReferenceSource | null;
   itemId?: string | null;
   processId?: string | null;
   operationType?: string | null;
@@ -83,6 +88,7 @@ const PickupForm = ({
   initialValues,
   operationOptions,
   configurationParameters,
+  configReferenceSource,
   itemId,
   processId,
   operationType,
@@ -145,12 +151,21 @@ const PickupForm = ({
   const openConfigTable = () => {
     if (!itemId) return;
 
+    const referenceContext = configReferenceSource
+      ? buildJobRemainingReferenceContext(configReferenceSource, {
+          excludeConfigurations: isEditing
+            ? [initialValues.configuration]
+            : undefined
+        })
+      : undefined;
+
     openOverlay(
       overlay.to.itemConfigTable(itemId, {
         configuration:
           configTableRows && configTablePrimaryKeys.length > 0
             ? { configTable: configTableRows, configTablePrimaryKeys }
-            : initialValues.configuration
+            : initialValues.configuration,
+        referenceContext
       }),
       {
         onSuccess: (data) => {

@@ -1,7 +1,12 @@
-import type { Json } from "@carbon/database";
+import type { Database, Json } from "@carbon/database";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { buildConfigTableActionResponse } from "./configTableOverlay";
-import type { ConfigTableReferenceContext } from "./configParamsTableColumns";
+import type {
+  ConfigReferenceSource,
+  ConfigTableReferenceContext
+} from "./configParamsTableColumns";
 import { computeJobConfigTableTotal } from "./jobConfiguration";
+import { getJob } from "./production.service";
 
 export { buildConfigTableActionResponse };
 
@@ -49,6 +54,67 @@ export function parseInitialConfigurationFromRequest(
   } catch {
     return undefined;
   }
+}
+
+export async function getConfigReferenceSourceForOperation(
+  client: SupabaseClient<Database>,
+  {
+    jobId,
+    jobOperationId,
+    companyId,
+    reportKind
+  }: {
+    jobId: string;
+    jobOperationId?: string;
+    companyId: string;
+    reportKind: "pickup" | "productionQuantity";
+  }
+): Promise<ConfigReferenceSource | null> {
+  const job = await getJob(client, jobId);
+  const jobConfiguration = job.data?.configuration ?? null;
+  if (!jobConfiguration) return null;
+
+  if (!jobOperationId) {
+    return { jobConfiguration, reportedConfigurations: [] };
+  }
+
+  if (reportKind === "pickup") {
+    const [employeePickups, supplierPickups] = await Promise.all([
+      client
+        .from("jobOperationPickup")
+        .select("configuration")
+        .eq("jobOperationId", jobOperationId)
+        .eq("companyId", companyId),
+      client
+        .from("jobOperationSupplierPickup")
+        .select("configuration")
+        .eq("jobOperationId", jobOperationId)
+        .eq("companyId", companyId)
+    ]);
+
+    const reportedConfigurations = [
+      ...(employeePickups.data ?? []),
+      ...(supplierPickups.data ?? [])
+    ]
+      .map((row) => row.configuration)
+      .filter((config) => config != null);
+
+    return { jobConfiguration, reportedConfigurations };
+  }
+
+  const quantities = await client
+    .from("productionQuantity")
+    .select("configuration")
+    .eq("jobOperationId", jobOperationId)
+    .eq("companyId", companyId)
+    .eq("type", "Production")
+    .is("invalidatedAt", null);
+
+  const reportedConfigurations = (quantities.data ?? [])
+    .map((row) => row.configuration)
+    .filter((config) => config != null);
+
+  return { jobConfiguration, reportedConfigurations };
 }
 
 export function parseReferenceContextFromRequest(

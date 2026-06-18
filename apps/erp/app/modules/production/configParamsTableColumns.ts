@@ -418,3 +418,29 @@ export function buildConfigTableEditorState({
 export function fillValueFromReference(referenceValue: number) {
   return Math.max(0, referenceValue);
 }
+
+/** Job target config plus already-reported line configs for an operation. */
+export type ConfigReferenceSource = {
+  jobConfiguration: unknown;
+  reportedConfigurations: unknown[];
+};
+
+/** Hint quantities = job required − already reported (per config row/column). */
+export function buildJobRemainingReferenceContext(
+  source: ConfigReferenceSource,
+  options?: {
+    excludeConfigurations?: unknown[];
+  }
+): ConfigTableReferenceContext {
+  const exclude = new Set(
+    (options?.excludeConfigurations ?? []).filter((config) => config != null)
+  );
+
+  return {
+    mode: "remaining",
+    originalConfiguration: source.jobConfiguration,
+    otherLineConfigurations: source.reportedConfigurations.filter(
+      (config) => config != null && !exclude.has(config)
+    )
+  };
+}
