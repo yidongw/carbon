@@ -924,14 +924,14 @@ export const productionQuantityCreateFormValidator = z
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: "Employee is required",
-        path: ["employeeId"]
+        path: ["productionActorSelection"]
       });
     }
     if (data.actorKind === "supplier" && !data.supplierProcessId) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: "Supplier process is required",
-        path: ["supplierProcessId"]
+        path: ["productionActorSelection"]
       });
     }
     try {
@@ -973,14 +973,14 @@ export const jobOperationPickupValidator = z
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: "Employee is required",
-        path: ["employeeId"]
+        path: ["productionActorSelection"]
       });
     }
     if (data.actorKind === "supplier" && !data.supplierProcessId) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: "Supplier process is required",
-        path: ["supplierProcessId"]
+        path: ["productionActorSelection"]
       });
     }
   });
