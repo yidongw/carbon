@@ -51,8 +51,6 @@ Both ERP and MES services receive identical environment variable configurations 
 #### Authentication & Database
 - `SUPABASE_*` - Supabase database and auth configuration
 - `SESSION_SECRET` - Session management
-- `AUTH_PROVIDERS` - Comma-separated login providers (`email`, `google`, `azure`, `wechat`)
-- `WECHAT_MP_APP_ID` / `WECHAT_MP_APP_SECRET` / `WECHAT_WEBHOOK_TOKEN` - WeChat 公众号 (ERP gets all three; MES gets app id/secret for in-app OAuth)
 
 #### External Services
 - `CLOUDFLARE_TURNSTILE_*` - Bot protection
@@ -143,7 +141,6 @@ The deployment process consists of two jobs:
 The deployment system supports multi-tenant deployments by:
 - Storing workspace configurations in a `workspaces` table in Supabase
 - Each workspace has its own AWS account, region, domain, certificates, and service credentials
-- WeChat credentials per workspace: `wechat_mp_app_id`, `wechat_mp_app_secret`, `wechat_webhook_token` (set via `ci:set-wechat-credentials`)
 - The CI deployment script (`ci/src/deploy.ts`) iterates through active workspaces and deploys to each
 
 ### Health Checks

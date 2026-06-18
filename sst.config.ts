@@ -95,9 +95,6 @@ export default $config({
         SUPABASE_URL: process.env.SUPABASE_URL,
         VERCEL_ENV: "production",
         VERCEL_URL: process.env.URL_ERP ?? "itar.carbon.ms",
-        WECHAT_MP_APP_ID: process.env.WECHAT_MP_APP_ID,
-        WECHAT_MP_APP_SECRET: process.env.WECHAT_MP_APP_SECRET,
-        WECHAT_WEBHOOK_TOKEN: process.env.WECHAT_WEBHOOK_TOKEN,
         XERO_CLIENT_ID: process.env.XERO_CLIENT_ID,
         XERO_CLIENT_SECRET: process.env.XERO_CLIENT_SECRET,
         XERO_WEBHOOK_SECRET: process.env.XERO_WEBHOOK_SECRET,
@@ -180,8 +177,6 @@ export default $config({
         SUPABASE_URL: process.env.SUPABASE_URL,
         VERCEL_ENV: "production",
         VERCEL_URL: process.env.URL_MES ?? "mes.itar.carbon.ms",
-        WECHAT_MP_APP_ID: process.env.WECHAT_MP_APP_ID,
-        WECHAT_MP_APP_SECRET: process.env.WECHAT_MP_APP_SECRET,
       },
       transform: {
         loadBalancer: {

@@ -343,7 +343,6 @@ Users can belong to multiple companies with different roles:
 ### API Routes (ERP only)
 
 - `/api/wechat-qr-url` - Mints a parametric MP QR (scene stored in Redis) for desktop scan-login
-- `/api/webhook/wechat` - WeChat 接口配置信息 verification (GET) and scan/subscribe events (POST) for QR login
 
 ### Protected Routes
 
@@ -361,15 +360,6 @@ Environment variables in `packages/auth/src/config/env.ts`:
 - `SESSION_SECRET` - Cookie encryption secret
 - `REFRESH_ACCESS_TOKEN_THRESHOLD` - Token refresh timing
 - `DOMAIN` - Cookie domain for production
-- `AUTH_PROVIDERS` - Comma-separated providers; include `wechat` to enable WeChat login UI
-- `WECHAT_MP_APP_ID` / `WECHAT_MP_APP_SECRET` - 公众号 app credentials
-- `WECHAT_WEBHOOK_TOKEN` - Token from 接口配置信息 (must match WeChat console; used to verify `/api/webhook/wechat`)
-
-### Production WeChat setup (per workspace)
-
-1. WeChat console (公众号): set 接口配置信息 URL to `https://<erp-host>/api/webhook/wechat` and Token; set 网页授权域名 to `<erp-host>` (no `https://`).
-2. Control-plane `workspaces` row: `auth_providers` includes `wechat`; set `wechat_mp_app_id`, `wechat_mp_app_secret`, `wechat_webhook_token` (via `ci:set-wechat-credentials` or SQL).
-3. Deploy via CI so `sst.config.ts` passes env vars to ECS. In-app OAuth callback is `https://<erp-host>/auth/wechat-callback` (derived automatically; no env var).
 
 ## Onboarding Email System
 
