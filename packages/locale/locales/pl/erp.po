@@ -3261,9 +3261,6 @@ msgstr "Zatrudniony"
 msgid "Employee"
 msgstr "Pracownik"
 
-msgid "Employee Accounts"
-msgstr "Konta pracowników"
-
 msgid "Employee Type"
 msgstr "Typ pracownika"
 
@@ -3302,6 +3299,9 @@ msgstr "Włącz, aby umożliwić tryb wspólnej stacji roboczej."
 
 msgid "Enable to automatically post transactions to the general ledger."
 msgstr "Włącz, aby automatycznie księgować transakcje w księdze głównej."
+
+msgid "Enable to display names with the family name first."
+msgstr ""
 
 msgid "Enable to generate IDs and descriptions for raw materials."
 msgstr "Włącz, aby generować identyfikatory i opisy dla surowców."
@@ -4003,6 +4003,9 @@ msgstr "Imię"
 
 msgid "First name is required"
 msgstr "Imię jest wymagane"
+
+msgid "First name is shown first"
+msgstr ""
 
 msgid "First Operation"
 msgstr "Pierwsza operacja"
@@ -4753,6 +4756,9 @@ msgstr "Nazwisko"
 msgid "Last name is required"
 msgstr "Nazwisko jest wymagane"
 
+msgid "Last name is shown first"
+msgstr ""
+
 #. placeholder {0}: formatDateTime(lastSyncedAt)
 msgid "Last synced: {0}"
 msgstr "Ostatnia synchronizacja: {0}"
@@ -5364,6 +5370,12 @@ msgstr "Mój zapisany widok"
 msgid "Name"
 msgstr "Nazwa"
 
+msgid "Name Display"
+msgstr ""
+
+msgid "Names appear as family name followed by given name across the app."
+msgstr ""
+
 msgid "Navigate"
 msgstr "Nawiguj"
 
@@ -5918,9 +5930,6 @@ msgstr "Nierachunkoweciągi"
 msgid "None"
 msgstr "Brak"
 
-msgid "Offboarded"
-msgstr "Wypisany"
-
 msgid "Not enough jobs to cover quantity"
 msgstr "Niewystarczająca liczba zadań do pokrycia ilości"
 
@@ -5971,6 +5980,9 @@ msgstr "Wpływ OEE"
 
 msgid "of"
 msgstr "z"
+
+msgid "Offboarded"
+msgstr "Wypisany"
 
 msgid "OK"
 msgstr "OK"
@@ -8114,6 +8126,9 @@ msgstr "Skróty"
 
 msgid "Show Durations"
 msgstr "Pokaż czasy trwania"
+
+msgid "Show family name before given name, as used in Chinese and other East Asian locales."
+msgstr ""
 
 msgid "Show on card right"
 msgstr "Pokaż na kartce prawo"

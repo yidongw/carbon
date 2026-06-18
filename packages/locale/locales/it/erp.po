@@ -3261,9 +3261,6 @@ msgstr "Impiegato"
 msgid "Employee"
 msgstr "Dipendente"
 
-msgid "Employee Accounts"
-msgstr "Account Dipendenti"
-
 msgid "Employee Type"
 msgstr "Tipo di Dipendente"
 
@@ -3302,6 +3299,9 @@ msgstr "Abilita per consentire la modalità workstation condivisa."
 
 msgid "Enable to automatically post transactions to the general ledger."
 msgstr "Abilita per registrare automaticamente le transazioni nella contabilità generale."
+
+msgid "Enable to display names with the family name first."
+msgstr ""
 
 msgid "Enable to generate IDs and descriptions for raw materials."
 msgstr "Abilita per generare ID e descrizioni per le materie prime."
@@ -4003,6 +4003,9 @@ msgstr "Nome"
 
 msgid "First name is required"
 msgstr "Nome richiesto"
+
+msgid "First name is shown first"
+msgstr ""
 
 msgid "First Operation"
 msgstr "Prima Operazione"
@@ -4753,6 +4756,9 @@ msgstr "Cognome"
 msgid "Last name is required"
 msgstr "Cognome è richiesto"
 
+msgid "Last name is shown first"
+msgstr ""
+
 #. placeholder {0}: formatDateTime(lastSyncedAt)
 msgid "Last synced: {0}"
 msgstr "Ultimo sincronizzato: {0}"
@@ -5364,6 +5370,12 @@ msgstr "La mia vista salvata"
 msgid "Name"
 msgstr "Nome"
 
+msgid "Name Display"
+msgstr ""
+
+msgid "Names appear as family name followed by given name across the app."
+msgstr ""
+
 msgid "Navigate"
 msgstr "Naviga"
 
@@ -5918,9 +5930,6 @@ msgstr "Spese non imponibili"
 msgid "None"
 msgstr "Nessuno"
 
-msgid "Offboarded"
-msgstr "Uscito"
-
 msgid "Not enough jobs to cover quantity"
 msgstr "Non ci sono abbastanza lavori per coprire la quantità"
 
@@ -5971,6 +5980,9 @@ msgstr "Impatto OEE"
 
 msgid "of"
 msgstr "di"
+
+msgid "Offboarded"
+msgstr "Uscito"
 
 msgid "OK"
 msgstr "OK"
@@ -8114,6 +8126,9 @@ msgstr "Scorciatoie"
 
 msgid "Show Durations"
 msgstr "Mostra durate"
+
+msgid "Show family name before given name, as used in Chinese and other East Asian locales."
+msgstr ""
 
 msgid "Show on card right"
 msgstr "Mostra sul lato destro"

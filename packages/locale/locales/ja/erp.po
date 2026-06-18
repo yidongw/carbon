@@ -3261,9 +3261,6 @@ msgstr "在職"
 msgid "Employee"
 msgstr "従業員"
 
-msgid "Employee Accounts"
-msgstr "従業員アカウント"
-
 msgid "Employee Type"
 msgstr "従業員タイプ"
 
@@ -3302,6 +3299,9 @@ msgstr "共有ワークステーションモードを有効にします。"
 
 msgid "Enable to automatically post transactions to the general ledger."
 msgstr "自動的にトランザクションを総勘定元帳に転記するには有効にしてください。"
+
+msgid "Enable to display names with the family name first."
+msgstr ""
 
 msgid "Enable to generate IDs and descriptions for raw materials."
 msgstr "有効にして、原材料のIDと説明を生成します。"
@@ -4003,6 +4003,9 @@ msgstr "名"
 
 msgid "First name is required"
 msgstr "最初の名前は必須です"
+
+msgid "First name is shown first"
+msgstr ""
 
 msgid "First Operation"
 msgstr "最初の操作"
@@ -4753,6 +4756,9 @@ msgstr "姓"
 msgid "Last name is required"
 msgstr "最終名は必須です"
 
+msgid "Last name is shown first"
+msgstr ""
+
 #. placeholder {0}: formatDateTime(lastSyncedAt)
 msgid "Last synced: {0}"
 msgstr "最後に同期: {0}"
@@ -5364,6 +5370,12 @@ msgstr "マイ保存ビュー"
 msgid "Name"
 msgstr "名前"
 
+msgid "Name Display"
+msgstr ""
+
+msgid "Names appear as family name followed by given name across the app."
+msgstr ""
+
 msgid "Navigate"
 msgstr "ナビゲート"
 
@@ -5918,9 +5930,6 @@ msgstr "非課税料金"
 msgid "None"
 msgstr "なし"
 
-msgid "Offboarded"
-msgstr "退職"
-
 msgid "Not enough jobs to cover quantity"
 msgstr "数量をカバーするのに十分なジョブがありません"
 
@@ -5971,6 +5980,9 @@ msgstr "OEE影響"
 
 msgid "of"
 msgstr "の"
+
+msgid "Offboarded"
+msgstr "退職"
 
 msgid "OK"
 msgstr "OK"
@@ -8114,6 +8126,9 @@ msgstr "ショートカット"
 
 msgid "Show Durations"
 msgstr "期間を表示"
+
+msgid "Show family name before given name, as used in Chinese and other East Asian locales."
+msgstr ""
 
 msgid "Show on card right"
 msgstr "右上に表示"

@@ -3261,9 +3261,6 @@ msgstr "Работает"
 msgid "Employee"
 msgstr "Сотрудник"
 
-msgid "Employee Accounts"
-msgstr "Учетные записи сотрудников"
-
 msgid "Employee Type"
 msgstr "Тип сотрудника"
 
@@ -3302,6 +3299,9 @@ msgstr "Включите, чтобы разрешить режим общей р
 
 msgid "Enable to automatically post transactions to the general ledger."
 msgstr "Включите, чтобы автоматически отправлять транзакции в главную книгу."
+
+msgid "Enable to display names with the family name first."
+msgstr ""
 
 msgid "Enable to generate IDs and descriptions for raw materials."
 msgstr "Включите для создания идентификаторов и описаний для сырья."
@@ -4003,6 +4003,9 @@ msgstr "Имя"
 
 msgid "First name is required"
 msgstr "Имя является обязательным"
+
+msgid "First name is shown first"
+msgstr ""
 
 msgid "First Operation"
 msgstr "Первая операция"
@@ -4753,6 +4756,9 @@ msgstr "Фамилия"
 msgid "Last name is required"
 msgstr "Фамилия обязательна"
 
+msgid "Last name is shown first"
+msgstr ""
+
 #. placeholder {0}: formatDateTime(lastSyncedAt)
 msgid "Last synced: {0}"
 msgstr "Последняя синхронизация: {0}"
@@ -5364,6 +5370,12 @@ msgstr "Мой сохраненный вид"
 msgid "Name"
 msgstr "Имя"
 
+msgid "Name Display"
+msgstr ""
+
+msgid "Names appear as family name followed by given name across the app."
+msgstr ""
+
 msgid "Navigate"
 msgstr "Навигация"
 
@@ -5918,9 +5930,6 @@ msgstr "Налоговые сборы не облагаемые налогом"
 msgid "None"
 msgstr "Нет"
 
-msgid "Offboarded"
-msgstr "Уволен"
-
 msgid "Not enough jobs to cover quantity"
 msgstr "Недостаточно заданий для покрытия количества"
 
@@ -5971,6 +5980,9 @@ msgstr "Влияние OEE"
 
 msgid "of"
 msgstr "из"
+
+msgid "Offboarded"
+msgstr "Уволен"
 
 msgid "OK"
 msgstr "ОК"
@@ -8114,6 +8126,9 @@ msgstr "Сочетания клавиш"
 
 msgid "Show Durations"
 msgstr "Показать длительность"
+
+msgid "Show family name before given name, as used in Chinese and other East Asian locales."
+msgstr ""
 
 msgid "Show on card right"
 msgstr "Показать справа на карте"
