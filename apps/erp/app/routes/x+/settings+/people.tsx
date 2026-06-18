@@ -33,6 +33,7 @@ import { redirect, useFetcher, useLoaderData } from "react-router";
 import {
   getCompanySettings,
   updateConsoleSetting,
+  updateLastNameFirstSetting,
   updateTimeCardSetting
 } from "~/modules/settings";
 import type { Handle } from "~/utils/handle";
@@ -74,6 +75,12 @@ export async function action({ request }: ActionFunctionArgs) {
     const update = await updateTimeCardSetting(client, companyId, enabled);
     if (update.error) return { success: false, message: update.error.message };
     return { success: true, message: "Timecard settings updated" };
+  }
+
+  if (intent === "lastNameFirst") {
+    const update = await updateLastNameFirstSetting(client, companyId, enabled);
+    if (update.error) return { success: false, message: update.error.message };
+    return { success: true, message: "Name display settings updated" };
   }
 
   if (intent === "console") {
@@ -148,6 +155,16 @@ export default function PeopleSettingsRoute() {
     (checked: boolean) => {
       fetcher.submit(
         { intent: "timeCard", enabled: String(checked) },
+        { method: "POST" }
+      );
+    },
+    [fetcher]
+  );
+
+  const handleLastNameFirstToggle = useCallback(
+    (checked: boolean) => {
+      fetcher.submit(
+        { intent: "lastNameFirst", enabled: String(checked) },
         { method: "POST" }
       );
     },
@@ -248,6 +265,50 @@ export default function PeopleSettingsRoute() {
               <Switch
                 checked={companySettings.timeCardEnabled ?? false}
                 onCheckedChange={handleTimeCardToggle}
+                disabled={isToggling}
+              />
+            </HStack>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              <Trans>Name Display</Trans>
+            </CardTitle>
+            <CardDescription>
+              <Trans>
+                Show family name before given name, as used in Chinese and other
+                East Asian locales.
+              </Trans>
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <HStack className="justify-between items-center">
+              <VStack className="items-start" spacing={1}>
+                <span className="font-medium">
+                  {companySettings.lastNameFirst ? (
+                    <Trans>Last name is shown first</Trans>
+                  ) : (
+                    <Trans>First name is shown first</Trans>
+                  )}
+                </span>
+                <span className="text-sm text-muted-foreground">
+                  {companySettings.lastNameFirst ? (
+                    <Trans>
+                      Names appear as family name followed by given name across
+                      the app.
+                    </Trans>
+                  ) : (
+                    <Trans>
+                      Enable to display names with the family name first.
+                    </Trans>
+                  )}
+                </span>
+              </VStack>
+              <Switch
+                checked={companySettings.lastNameFirst ?? false}
+                onCheckedChange={handleLastNameFirstToggle}
                 disabled={isToggling}
               />
             </HStack>

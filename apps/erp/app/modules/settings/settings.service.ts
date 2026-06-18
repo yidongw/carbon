@@ -646,6 +646,17 @@ export async function updateTimeCardSetting(
     .eq("id", companyId);
 }
 
+export async function updateLastNameFirstSetting(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  lastNameFirst: boolean
+) {
+  return client
+    .from("companySettings")
+    .update(sanitize({ lastNameFirst }))
+    .eq("id", companyId);
+}
+
 export async function updateKanbanOutputSetting(
   client: SupabaseClient<Database>,
   companyId: string,
