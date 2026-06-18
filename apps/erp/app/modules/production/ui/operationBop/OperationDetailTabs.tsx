@@ -27,11 +27,11 @@ export function OperationDetailTabs({
     <div className="flex w-full flex-col overflow-hidden rounded-b-lg border border-border bg-card shadow-sm">
       <div
         className={cn(
-          "flex w-full flex-row bg-muted/40",
+          "grid w-full grid-cols-2 gap-px bg-border sm:grid-cols-4",
           expandedSection && "border-b border-border"
         )}
       >
-        {sections.map((section, index) => {
+        {sections.map((section) => {
           const isExpanded = expandedId === section.id;
           return (
             <button
@@ -48,9 +48,8 @@ export function OperationDetailTabs({
                   : section.accessibilityLabel
               }
               className={cn(
-                "group relative flex flex-1 min-w-0 items-center gap-2 border-b-2 px-3 py-2.5 text-left transition-[color,background-color,border-color] duration-200",
+                "group relative flex min-w-0 items-center gap-2 border-b-2 bg-muted/40 px-3 py-2.5 text-left transition-[color,background-color,border-color] duration-200",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
-                index > 0 && "border-l border-border",
                 isExpanded
                   ? "z-10 -mb-px border-b-primary bg-background text-foreground"
                   : "z-0 border-b-transparent text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -81,7 +80,7 @@ export function OperationDetailTabs({
               </span>
               <span
                 className={cn(
-                  "min-w-0 flex-1 truncate text-sm font-medium tabular-nums transition-colors duration-200",
+                  "min-w-0 flex-1 text-sm font-medium text-balance tabular-nums transition-colors duration-200",
                   isExpanded
                     ? "text-foreground"
                     : "text-muted-foreground group-hover:text-foreground",
