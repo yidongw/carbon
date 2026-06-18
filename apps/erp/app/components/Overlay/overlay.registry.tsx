@@ -21,6 +21,10 @@ export const overlayRegistry = {
                     listOptions?: string[] | null;
                   }[]
                 | null;
+              configReferenceSource?: {
+                jobConfiguration: unknown;
+                reportedConfigurations: unknown[];
+              } | null;
               itemId?: string | null;
               processId?: string | null;
               operationType?: string | null;
@@ -47,6 +51,7 @@ export const overlayRegistry = {
           },
           operationOptions: data.operationOptions ?? [],
           configurationParameters: data.configurationParameters ?? null,
+          configReferenceSource: data.configReferenceSource ?? null,
           itemId: data.itemId ?? null,
           processId: data.processId ?? null,
           operationType: data.operationType ?? null,
@@ -75,6 +80,10 @@ export const overlayRegistry = {
                     listOptions?: string[] | null;
                   }[]
                 | null;
+              configReferenceSource?: {
+                jobConfiguration: unknown;
+                reportedConfigurations: unknown[];
+              } | null;
               itemId?: string | null;
               processId?: string | null;
               operationType?: string | null;
@@ -103,6 +112,7 @@ export const overlayRegistry = {
           },
           operationOptions: data.operationOptions ?? [],
           configurationParameters: data.configurationParameters ?? null,
+          configReferenceSource: data.configReferenceSource ?? null,
           itemId: data.itemId ?? null,
           processId: data.processId ?? null,
           operationType: data.operationType ?? null,
@@ -173,6 +183,10 @@ export const overlayRegistry = {
                     listOptions?: string[] | null;
                   }[]
                 | null;
+              configReferenceSource?: {
+                jobConfiguration: unknown;
+                reportedConfigurations: unknown[];
+              } | null;
               itemId?: string | null;
               processId?: string | null;
               operationType?: string | null;
@@ -183,6 +197,7 @@ export const overlayRegistry = {
         const shared = {
           operationOptions: data.operationOptions ?? [],
           configurationParameters: data.configurationParameters ?? null,
+          configReferenceSource: data.configReferenceSource ?? null,
           itemId: data.itemId ?? null,
           processId: data.processId ?? null,
           operationType: data.operationType ?? null

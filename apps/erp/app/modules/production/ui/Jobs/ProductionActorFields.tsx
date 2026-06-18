@@ -1,5 +1,5 @@
-import { GroupedCreatableCombobox, useField } from "@carbon/form";
-import { FormErrorMessage, useDisclosure } from "@carbon/react";
+import { GroupedCreatableCombobox } from "@carbon/form";
+import { useDisclosure } from "@carbon/react";
 import { getFaviconUrl } from "@carbon/utils";
 import { useLingui } from "@lingui/react/macro";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -111,10 +111,6 @@ export function ProductionActorFields({
   const [supplierProcessId, setSupplierProcessId] = useState(
     supplierProcessIdValue ?? ""
   );
-
-  const { error: employeeError } = useField("employeeId");
-  const { error: supplierError } = useField("supplierProcessId");
-  const actorError = employeeError ?? supplierError;
 
   const [people] = usePeople();
   const [suppliers] = useSuppliers();
@@ -346,7 +342,6 @@ export function ProductionActorFields({
         onChange={handleChange}
         isReadOnly={lockActorSelection}
       />
-      {actorError ? <FormErrorMessage>{actorError}</FormErrorMessage> : null}
       <Hidden name="actorKind" value={actorKind} />
       <Hidden name="employeeId" value={employeeId} />
       <Hidden name="supplierProcessId" value={supplierProcessId} />

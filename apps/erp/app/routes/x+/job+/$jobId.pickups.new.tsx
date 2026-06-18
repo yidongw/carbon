@@ -16,6 +16,7 @@ import {
   upsertJobOperationSupplierPickup,
   validateActorMatchesOperationSupplierRouting
 } from "~/modules/production";
+import { getConfigReferenceSourceForOperation } from "~/modules/production/configTableOverlay.server";
 import PickupForm from "~/modules/production/ui/Jobs/PickupForm";
 import { getParams, path } from "~/utils/path";
 
@@ -47,6 +48,16 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     ? (await getConfigurationParameters(client, itemId, companyId)).parameters
     : [];
 
+  const configReferenceSource = await getConfigReferenceSourceForOperation(
+    client,
+    {
+      jobId,
+      jobOperationId: jobOperationId || undefined,
+      companyId,
+      reportKind: "pickup"
+    }
+  );
+
   const operationOptions =
     jobOperations?.data?.map((operation) => ({
       label: operation.description ?? "",
@@ -59,6 +70,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     itemId,
     configurationParameters:
       configurationParameters.length > 0 ? configurationParameters : null,
+    configReferenceSource,
     ...actorContext
   };
 }
@@ -173,6 +185,7 @@ export default function NewJobPickupRoute() {
     jobOperationId,
     operationOptions,
     configurationParameters,
+    configReferenceSource,
     itemId,
     processId,
     operationType,
@@ -193,6 +206,7 @@ export default function NewJobPickupRoute() {
       initialValues={initialValues}
       operationOptions={[...(operationOptions ?? [])]}
       configurationParameters={configurationParameters}
+      configReferenceSource={configReferenceSource}
       itemId={itemId}
       processId={processId}
       operationType={operationType}
