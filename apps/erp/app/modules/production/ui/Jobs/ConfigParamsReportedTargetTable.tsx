@@ -1,17 +1,17 @@
 import {
   cn,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   Table,
   Tbody,
   Td,
   Th,
   Thead,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
   Tr
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import {
   buildConfigColumns,
   type ConfigColumn,
@@ -64,14 +64,27 @@ function QuantityTooltip({
     else delta = t`${fmt(Math.abs(diff))} short of goal`;
   }
 
+  const [open, setOpen] = useState(false);
+
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <span className="cursor-default underline decoration-dotted decoration-muted-foreground/40 underline-offset-2">
+    <Popover open={open} onOpenChange={setOpen} modal={false}>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className="cursor-default underline decoration-dotted decoration-muted-foreground/40 underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 rounded-sm"
+          onMouseEnter={() => setOpen(true)}
+          onMouseLeave={() => setOpen(false)}
+        >
           {children}
-        </span>
-      </TooltipTrigger>
-      <TooltipContent className="max-w-xs text-xs">
+        </button>
+      </PopoverTrigger>
+      <PopoverContent
+        align="start"
+        className="max-w-xs p-3 text-xs"
+        onMouseEnter={() => setOpen(true)}
+        onMouseLeave={() => setOpen(false)}
+        onOpenAutoFocus={(event) => event.preventDefault()}
+      >
         <p className="font-medium">{label}</p>
         <p className="text-muted-foreground">{description}</p>
         {delta ? (
@@ -85,8 +98,8 @@ function QuantityTooltip({
             {delta}
           </p>
         ) : null}
-      </TooltipContent>
-    </Tooltip>
+      </PopoverContent>
+    </Popover>
   );
 }
 
