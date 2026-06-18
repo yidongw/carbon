@@ -2,9 +2,9 @@ import {
   CarbonEdition,
   CarbonProvider,
   CONTROLLED_ENVIRONMENT,
-  getCarbon,
   getMESUrl
 } from "@carbon/auth";
+import { getCarbon } from "@carbon/auth/client.server";
 import { setCompanyId } from "@carbon/auth/company.server";
 import {
   destroyAuthSession,

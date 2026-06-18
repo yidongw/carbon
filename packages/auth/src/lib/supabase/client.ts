@@ -1,5 +1,4 @@
 import type { Database } from "@carbon/database";
-import { wrapSoftDeleteClient } from "@carbon/database/soft-delete";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { createClient } from "@supabase/supabase-js";
 import type { MutableRefObject } from "react";
@@ -41,14 +40,13 @@ const fetchWithRetry: typeof fetch = async (input, init) => {
 
 export const getCarbonClient = (
   supabaseKey: string,
-  accessToken?: string,
-  options?: { deletedBy?: string | null }
+  accessToken?: string
 ): SupabaseClient<Database, "public"> => {
   const headers = accessToken
     ? { Authorization: `Bearer ${accessToken}` }
     : undefined;
 
-  const client = createClient<Database, "public">(SUPABASE_URL!, supabaseKey, {
+  return createClient<Database, "public">(SUPABASE_URL!, supabaseKey, {
     auth: {
       autoRefreshToken: false,
       persistSession: false
@@ -58,12 +56,10 @@ export const getCarbonClient = (
       ...(headers ? { headers } : {})
     }
   });
-
-  return wrapSoftDeleteClient(client, options);
 };
 
 export const getCarbonAPIKeyClient = (apiKey: string) => {
-  const client = createClient<Database, "public">(
+  return createClient<Database, "public">(
     SUPABASE_URL!,
     SUPABASE_ANON_KEY!,
     {
@@ -75,38 +71,26 @@ export const getCarbonAPIKeyClient = (apiKey: string) => {
       }
     }
   );
-
-  return wrapSoftDeleteClient(client);
 };
 
 export const createCarbonWithAuthGetter = (
   store: MutableRefObject<StoreApi<{ accessToken: string }>>
 ) => {
-  const client = wrapSoftDeleteClient(
-    createClient<Database, "public">(SUPABASE_URL!, SUPABASE_ANON_KEY!, {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false
-      },
-      global: {
-        fetch: fetchWithRetry
-      },
-      async accessToken() {
-        if (!store.current) return null;
-        const state = store.current.getState();
-        return state.accessToken;
-      }
-    })
-  );
-
-  return client;
+  return createClient<Database, "public">(SUPABASE_URL!, SUPABASE_ANON_KEY!, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false
+    },
+    global: {
+      fetch: fetchWithRetry
+    },
+    async accessToken() {
+      if (!store.current) return null;
+      const state = store.current.getState();
+      return state.accessToken;
+    }
+  });
 };
 
-export const getCarbon = (
-  accessToken?: string,
-  deletedBy?: string | null
-) => {
-  return getCarbonClient(SUPABASE_ANON_KEY!, accessToken, { deletedBy });
-};
-
-export const carbonClient = getCarbon();
+/** Browser-safe client for OAuth flows only (no soft-delete wrapper). */
+export const carbonClient = getCarbonClient(SUPABASE_ANON_KEY!);

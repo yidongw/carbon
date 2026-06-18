@@ -74,7 +74,8 @@ BEGIN
 END $$;
 
 -- Jobs list view: hide soft-deleted jobs (still join deleted items for history).
-CREATE OR REPLACE VIEW "jobs" WITH(SECURITY_INVOKER=true) AS
+DROP VIEW IF EXISTS "jobs";
+CREATE VIEW "jobs" WITH(SECURITY_INVOKER=true) AS
 WITH job_model AS (
   SELECT
     j.id AS job_id,

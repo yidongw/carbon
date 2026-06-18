@@ -1,10 +1,10 @@
 import {
   CarbonProvider,
   getAppUrl,
-  getCarbon,
   getCompanies,
   getUser
 } from "@carbon/auth";
+import { getCarbon } from "@carbon/auth/client.server";
 import {
   destroyAuthSession,
   requireAuthSession

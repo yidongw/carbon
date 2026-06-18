@@ -41,6 +41,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           curve: Json
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           name: string
           shadowWeeks: number
@@ -53,6 +55,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           curve?: Json
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name: string
           shadowWeeks?: number
@@ -65,6 +69,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           curve?: Json
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name?: string
           shadowWeeks?: number
@@ -182,6 +188,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           incomeBalance: Database["public"]["Enums"]["glIncomeBalance"]
           isGroup: boolean
@@ -202,6 +210,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           incomeBalance: Database["public"]["Enums"]["glIncomeBalance"]
           isGroup?: boolean
@@ -222,6 +232,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           incomeBalance?: Database["public"]["Enums"]["glIncomeBalance"]
           isGroup?: boolean
@@ -1252,6 +1264,8 @@ export type Database = {
           city: string | null
           companyId: string
           countryCode: string | null
+          deletedAt: string | null
+          deletedBy: string | null
           fax: string | null
           id: string
           phone: string | null
@@ -1264,6 +1278,8 @@ export type Database = {
           city?: string | null
           companyId: string
           countryCode?: string | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           fax?: string | null
           id?: string
           phone?: string | null
@@ -1276,6 +1292,8 @@ export type Database = {
           city?: string | null
           companyId?: string
           countryCode?: string | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           fax?: string | null
           id?: string
           phone?: string | null
@@ -1325,6 +1343,8 @@ export type Database = {
           companyId: string
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           expiresAt: string | null
           id: string
           keyHash: string
@@ -1339,6 +1359,8 @@ export type Database = {
           companyId: string
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           expiresAt?: string | null
           id?: string
           keyHash: string
@@ -1353,6 +1375,8 @@ export type Database = {
           companyId?: string
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           expiresAt?: string | null
           id?: string
           keyHash?: string
@@ -1899,45 +1923,6 @@ export type Database = {
         }
         Relationships: []
       }
-      auditLog_AuNu97SqYWUxBx1Nc8seAb: {
-        Row: {
-          actorId: string | null
-          createdAt: string
-          diff: Json | null
-          entityId: string
-          entityType: string
-          id: string
-          metadata: Json | null
-          operation: string
-          recordId: string | null
-          tableName: string
-        }
-        Insert: {
-          actorId?: string | null
-          createdAt?: string
-          diff?: Json | null
-          entityId: string
-          entityType: string
-          id?: string
-          metadata?: Json | null
-          operation: string
-          recordId?: string | null
-          tableName: string
-        }
-        Update: {
-          actorId?: string | null
-          createdAt?: string
-          diff?: Json | null
-          entityId?: string
-          entityType?: string
-          id?: string
-          metadata?: Json | null
-          operation?: string
-          recordId?: string | null
-          tableName?: string
-        }
-        Relationships: []
-      }
       auditLogArchive: {
         Row: {
           archivePath: string
@@ -2006,6 +1991,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           dataType: Database["public"]["Enums"]["configurationParameterDataType"]
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           itemId: string
           label: string
@@ -2019,6 +2006,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           dataType: Database["public"]["Enums"]["configurationParameterDataType"]
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           itemId: string
           label: string
@@ -2032,6 +2021,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           dataType?: Database["public"]["Enums"]["configurationParameterDataType"]
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           itemId?: string
           label?: string
@@ -2257,6 +2248,8 @@ export type Database = {
           companyGroupId: string | null
           countryCode: string | null
           createdAt: string
+          deletedAt: string | null
+          deletedBy: string | null
           email: string | null
           eori: string | null
           fax: string | null
@@ -2289,6 +2282,8 @@ export type Database = {
           companyGroupId?: string | null
           countryCode?: string | null
           createdAt?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           email?: string | null
           eori?: string | null
           fax?: string | null
@@ -2321,6 +2316,8 @@ export type Database = {
           companyGroupId?: string | null
           countryCode?: string | null
           createdAt?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           email?: string | null
           eori?: string | null
           fax?: string | null
@@ -3109,6 +3106,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           dataType: Database["public"]["Enums"]["configurationParameterDataType"]
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           itemId: string
           key: string
@@ -3125,6 +3124,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           dataType: Database["public"]["Enums"]["configurationParameterDataType"]
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           itemId: string
           key: string
@@ -3141,6 +3142,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           dataType?: Database["public"]["Enums"]["configurationParameterDataType"]
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           itemId?: string
           key?: string
@@ -3311,6 +3314,8 @@ export type Database = {
       configurationParameterGroup: {
         Row: {
           companyId: string
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           isUngrouped: boolean
           itemId: string
@@ -3319,6 +3324,8 @@ export type Database = {
         }
         Insert: {
           companyId: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           isUngrouped?: boolean
           itemId: string
@@ -3327,6 +3334,8 @@ export type Database = {
         }
         Update: {
           companyId?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           isUngrouped?: boolean
           itemId?: string
@@ -3796,6 +3805,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           hoursPerWeek: number
           id: string
           tags: string[] | null
@@ -3808,6 +3819,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           hoursPerWeek?: number
           id: string
           tags?: string[] | null
@@ -3820,6 +3833,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           hoursPerWeek?: number
           id?: string
           tags?: string[] | null
@@ -4018,6 +4033,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           name: string
           ownerId: string | null
@@ -4030,6 +4047,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name: string
           ownerId?: string | null
@@ -4042,6 +4061,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name?: string
           ownerId?: string | null
@@ -4465,6 +4486,8 @@ export type Database = {
           customerTypeId: string | null
           customFields: Json | null
           defaultCc: string[] | null
+          deletedAt: string | null
+          deletedBy: string | null
           embedding: unknown
           fax: string | null
           id: string
@@ -4490,6 +4513,8 @@ export type Database = {
           customerTypeId?: string | null
           customFields?: Json | null
           defaultCc?: string[] | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           embedding?: unknown
           fax?: string | null
           id?: string
@@ -4515,6 +4540,8 @@ export type Database = {
           customerTypeId?: string | null
           customFields?: Json | null
           defaultCc?: string[] | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           embedding?: unknown
           fax?: string | null
           id?: string
@@ -5845,6 +5872,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           name: string
           tags: string[] | null
@@ -5856,6 +5885,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name: string
           tags?: string[] | null
@@ -5867,6 +5898,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name?: string
           tags?: string[] | null
@@ -6113,6 +6146,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           name: string
           protected: boolean
@@ -6125,6 +6160,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name: string
           protected?: boolean
@@ -6137,6 +6174,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name?: string
           protected?: boolean
@@ -6252,6 +6291,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           dataTypeId: number
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           listOptions: string[] | null
           name: string
@@ -6268,6 +6309,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           dataTypeId: number
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           listOptions?: string[] | null
           name: string
@@ -6284,6 +6327,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           dataTypeId?: number
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           listOptions?: string[] | null
           name?: string
@@ -7037,6 +7082,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           name: string
           parentDepartmentId: string | null
@@ -7049,6 +7096,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name: string
           parentDepartmentId?: string | null
@@ -7061,6 +7110,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name?: string
           parentDepartmentId?: string | null
@@ -7103,6 +7154,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "department"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "department_parentDepartmentId_fkey"
+            columns: ["parentDepartmentId"]
+            isOneToOne: false
+            referencedRelation: "employeeSalaryRecords"
+            referencedColumns: ["departmentId"]
           },
         ]
       }
@@ -7354,6 +7412,8 @@ export type Database = {
           companyId: string
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           description: string | null
           extension: string | null
           id: string
@@ -7375,6 +7435,8 @@ export type Database = {
           companyId: string
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           extension?: string | null
           id?: string
@@ -7396,6 +7458,8 @@ export type Database = {
           companyId?: string
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           extension?: string | null
           id?: string
@@ -7936,6 +8000,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "employeeJob_departmentId_fkey"
+            columns: ["departmentId"]
+            isOneToOne: false
+            referencedRelation: "employeeSalaryRecords"
+            referencedColumns: ["departmentId"]
+          },
+          {
             foreignKeyName: "employeeJob_id_fkey"
             columns: ["id"]
             isOneToOne: false
@@ -8056,6 +8127,299 @@ export type Database = {
           },
           {
             foreignKeyName: "employeeJob_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+        ]
+      }
+      employeeSalaryPayment: {
+        Row: {
+          amount: number
+          companyId: string
+          createdAt: string
+          id: string
+          notes: string | null
+          paidAt: string
+          paidBy: string
+          salaryRecordId: string
+        }
+        Insert: {
+          amount: number
+          companyId: string
+          createdAt?: string
+          id?: string
+          notes?: string | null
+          paidAt?: string
+          paidBy: string
+          salaryRecordId: string
+        }
+        Update: {
+          amount?: number
+          companyId?: string
+          createdAt?: string
+          id?: string
+          notes?: string | null
+          paidAt?: string
+          paidBy?: string
+          salaryRecordId?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "employeeSalaryPayment_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryPayment_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryPayment_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "customFieldTables"
+            referencedColumns: ["companyId"]
+          },
+          {
+            foreignKeyName: "employeeSalaryPayment_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "integrations"
+            referencedColumns: ["companyId"]
+          },
+          {
+            foreignKeyName: "employeeSalaryPayment_paidBy_fkey"
+            columns: ["paidBy"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryPayment_paidBy_fkey"
+            columns: ["paidBy"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryPayment_paidBy_fkey"
+            columns: ["paidBy"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryPayment_paidBy_fkey"
+            columns: ["paidBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryPayment_paidBy_fkey"
+            columns: ["paidBy"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "employeeSalaryPayment_salaryRecordId_fkey"
+            columns: ["salaryRecordId"]
+            isOneToOne: false
+            referencedRelation: "employeeSalaryRecord"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryPayment_salaryRecordId_fkey"
+            columns: ["salaryRecordId"]
+            isOneToOne: false
+            referencedRelation: "employeeSalaryRecords"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      employeeSalaryRecord: {
+        Row: {
+          companyId: string
+          createdAt: string
+          createdBy: string
+          employeeId: string
+          id: string
+          month: number
+          notes: string | null
+          status: Database["public"]["Enums"]["salaryRecordStatus"]
+          totalEarned: number
+          totalPaid: number
+          updatedAt: string | null
+          updatedBy: string | null
+          year: number
+        }
+        Insert: {
+          companyId: string
+          createdAt?: string
+          createdBy: string
+          employeeId: string
+          id?: string
+          month: number
+          notes?: string | null
+          status?: Database["public"]["Enums"]["salaryRecordStatus"]
+          totalEarned?: number
+          totalPaid?: number
+          updatedAt?: string | null
+          updatedBy?: string | null
+          year: number
+        }
+        Update: {
+          companyId?: string
+          createdAt?: string
+          createdBy?: string
+          employeeId?: string
+          id?: string
+          month?: number
+          notes?: string | null
+          status?: Database["public"]["Enums"]["salaryRecordStatus"]
+          totalEarned?: number
+          totalPaid?: number
+          updatedAt?: string | null
+          updatedBy?: string | null
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "employeeSalaryRecord_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "customFieldTables"
+            referencedColumns: ["companyId"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "integrations"
+            referencedColumns: ["companyId"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_employeeId_fkey"
+            columns: ["employeeId"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_employeeId_fkey"
+            columns: ["employeeId"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_employeeId_fkey"
+            columns: ["employeeId"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_employeeId_fkey"
+            columns: ["employeeId"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_employeeId_fkey"
+            columns: ["employeeId"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_updatedBy_fkey"
             columns: ["updatedBy"]
             isOneToOne: false
             referencedRelation: "userDefaults"
@@ -8473,6 +8837,8 @@ export type Database = {
           companyId: string
           createdAt: string
           customerId: string | null
+          deletedAt: string | null
+          deletedBy: string | null
           documentId: string
           documentType: Database["public"]["Enums"]["externalLinkDocumentType"]
           expiresAt: string | null
@@ -8483,6 +8849,8 @@ export type Database = {
           companyId: string
           createdAt?: string
           customerId?: string | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           documentId: string
           documentType: Database["public"]["Enums"]["externalLinkDocumentType"]
           expiresAt?: string | null
@@ -8493,6 +8861,8 @@ export type Database = {
           companyId?: string
           createdAt?: string
           customerId?: string | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           documentId?: string
           documentType?: Database["public"]["Enums"]["externalLinkDocumentType"]
           expiresAt?: string | null
@@ -9120,6 +9490,8 @@ export type Database = {
           createdBy: string
           customFields: Json
           dateAcquired: string | null
+          deletedAt: string | null
+          deletedBy: string | null
           description: string | null
           gaugeCalibrationStatus: Database["public"]["Enums"]["gaugeCalibrationStatus"]
           gaugeId: string
@@ -9145,6 +9517,8 @@ export type Database = {
           createdBy: string
           customFields?: Json
           dateAcquired?: string | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           gaugeCalibrationStatus?: Database["public"]["Enums"]["gaugeCalibrationStatus"]
           gaugeId: string
@@ -9170,6 +9544,8 @@ export type Database = {
           createdBy?: string
           customFields?: Json
           dateAcquired?: string | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           gaugeCalibrationStatus?: Database["public"]["Enums"]["gaugeCalibrationStatus"]
           gaugeId?: string
@@ -9603,6 +9979,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           name: string
           updatedAt: string | null
@@ -9613,6 +9991,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name: string
           updatedAt?: string | null
@@ -9623,6 +10003,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name?: string
           updatedAt?: string | null
@@ -9733,6 +10115,8 @@ export type Database = {
         Row: {
           companyId: string | null
           createdAt: string
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           isCustomerOrgGroup: boolean
           isCustomerTypeGroup: boolean
@@ -9746,6 +10130,8 @@ export type Database = {
         Insert: {
           companyId?: string | null
           createdAt?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           isCustomerOrgGroup?: boolean
           isCustomerTypeGroup?: boolean
@@ -9759,6 +10145,8 @@ export type Database = {
         Update: {
           companyId?: string | null
           createdAt?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           isCustomerOrgGroup?: boolean
           isCustomerTypeGroup?: boolean
@@ -9807,6 +10195,8 @@ export type Database = {
           createdBy: string
           customFields: Json | null
           date: string
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           name: string
           tags: string[] | null
@@ -9820,6 +10210,8 @@ export type Database = {
           createdBy: string
           customFields?: Json | null
           date: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name: string
           tags?: string[] | null
@@ -9833,6 +10225,8 @@ export type Database = {
           createdBy?: string
           customFields?: Json | null
           date?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name?: string
           tags?: string[] | null
@@ -10948,6 +11342,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           defaultMethodType: Database["public"]["Enums"]["methodType"] | null
+          deletedAt: string | null
+          deletedBy: string | null
           description: string | null
           embedding: unknown
           id: string
@@ -10974,6 +11370,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           defaultMethodType?: Database["public"]["Enums"]["methodType"] | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           embedding?: unknown
           id?: string
@@ -11000,6 +11398,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           defaultMethodType?: Database["public"]["Enums"]["methodType"] | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           embedding?: unknown
           id?: string
@@ -11805,6 +12205,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           description: string | null
           id: string
           name: string
@@ -11818,6 +12220,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           id?: string
           name: string
@@ -11831,6 +12235,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           id?: string
           name?: string
@@ -12190,6 +12596,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           description: string | null
           id: string
           message: string
@@ -12206,6 +12614,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           id?: string
           message: string
@@ -12222,6 +12632,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           id?: string
           message?: string
@@ -12663,6 +13075,8 @@ export type Database = {
           createdBy: string
           customFields: Json | null
           days: number | null
+          deletedAt: string | null
+          deletedBy: string | null
           itemId: string
           mode: Database["public"]["Enums"]["shelfLifeMode"]
           triggerProcessId: string | null
@@ -12677,6 +13091,8 @@ export type Database = {
           createdBy: string
           customFields?: Json | null
           days?: number | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           itemId: string
           mode: Database["public"]["Enums"]["shelfLifeMode"]
           triggerProcessId?: string | null
@@ -12691,6 +13107,8 @@ export type Database = {
           createdBy?: string
           customFields?: Json | null
           days?: number | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           itemId?: string
           mode?: Database["public"]["Enums"]["shelfLifeMode"]
           triggerProcessId?: string | null
@@ -13073,6 +13491,8 @@ export type Database = {
           customerId: string | null
           customFields: Json | null
           deadlineType: Database["public"]["Enums"]["deadlineType"]
+          deletedAt: string | null
+          deletedBy: string | null
           dueDate: string | null
           estimatedTime: number | null
           id: string
@@ -13113,6 +13533,8 @@ export type Database = {
           customerId?: string | null
           customFields?: Json | null
           deadlineType?: Database["public"]["Enums"]["deadlineType"]
+          deletedAt?: string | null
+          deletedBy?: string | null
           dueDate?: string | null
           estimatedTime?: number | null
           id?: string
@@ -13153,6 +13575,8 @@ export type Database = {
           customerId?: string | null
           customFields?: Json | null
           deadlineType?: Database["public"]["Enums"]["deadlineType"]
+          deletedAt?: string | null
+          deletedBy?: string | null
           dueDate?: string | null
           estimatedTime?: number | null
           id?: string
@@ -13465,6 +13889,163 @@ export type Database = {
           },
         ]
       }
+      jobAssignmentRule: {
+        Row: {
+          active: boolean
+          companyId: string
+          conditions: Json
+          createdAt: string
+          createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
+          description: string | null
+          id: string
+          name: string
+          priority: number
+          targetGroupId: string
+          updatedAt: string | null
+          updatedBy: string | null
+        }
+        Insert: {
+          active?: boolean
+          companyId: string
+          conditions?: Json
+          createdAt?: string
+          createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          priority?: number
+          targetGroupId: string
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Update: {
+          active?: boolean
+          companyId?: string
+          conditions?: Json
+          createdAt?: string
+          createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          priority?: number
+          targetGroupId?: string
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jobAssignmentRule_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobAssignmentRule_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobAssignmentRule_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "customFieldTables"
+            referencedColumns: ["companyId"]
+          },
+          {
+            foreignKeyName: "jobAssignmentRule_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "integrations"
+            referencedColumns: ["companyId"]
+          },
+          {
+            foreignKeyName: "jobAssignmentRule_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobAssignmentRule_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobAssignmentRule_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobAssignmentRule_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobAssignmentRule_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "jobAssignmentRule_targetGroupId_fkey"
+            columns: ["targetGroupId"]
+            isOneToOne: false
+            referencedRelation: "group"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobAssignmentRule_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobAssignmentRule_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobAssignmentRule_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobAssignmentRule_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobAssignmentRule_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+        ]
+      }
       jobFavorite: {
         Row: {
           jobId: string
@@ -13534,6 +14115,142 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "userDefaults"
             referencedColumns: ["userId"]
+          },
+        ]
+      }
+      jobGroupAssignment: {
+        Row: {
+          assignedAt: string
+          assignedBy: string
+          companyId: string
+          groupId: string
+          id: string
+          jobId: string
+          ruleId: string | null
+        }
+        Insert: {
+          assignedAt?: string
+          assignedBy: string
+          companyId: string
+          groupId: string
+          id?: string
+          jobId: string
+          ruleId?: string | null
+        }
+        Update: {
+          assignedAt?: string
+          assignedBy?: string
+          companyId?: string
+          groupId?: string
+          id?: string
+          jobId?: string
+          ruleId?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jobGroupAssignment_assignedBy_fkey"
+            columns: ["assignedBy"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobGroupAssignment_assignedBy_fkey"
+            columns: ["assignedBy"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobGroupAssignment_assignedBy_fkey"
+            columns: ["assignedBy"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobGroupAssignment_assignedBy_fkey"
+            columns: ["assignedBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobGroupAssignment_assignedBy_fkey"
+            columns: ["assignedBy"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "jobGroupAssignment_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobGroupAssignment_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobGroupAssignment_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "customFieldTables"
+            referencedColumns: ["companyId"]
+          },
+          {
+            foreignKeyName: "jobGroupAssignment_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "integrations"
+            referencedColumns: ["companyId"]
+          },
+          {
+            foreignKeyName: "jobGroupAssignment_groupId_fkey"
+            columns: ["groupId"]
+            isOneToOne: false
+            referencedRelation: "group"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobGroupAssignment_jobId_fkey"
+            columns: ["jobId"]
+            isOneToOne: false
+            referencedRelation: "job"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobGroupAssignment_jobId_fkey"
+            columns: ["jobId"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobGroupAssignment_jobId_fkey"
+            columns: ["jobId"]
+            isOneToOne: false
+            referencedRelation: "openProductionOrders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobGroupAssignment_ruleId_fkey"
+            columns: ["ruleId"]
+            isOneToOne: false
+            referencedRelation: "jobAssignmentRule"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobGroupAssignment_ruleId_fkey"
+            columns: ["ruleId"]
+            isOneToOne: false
+            referencedRelation: "jobAssignmentRules"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -13791,6 +14508,8 @@ export type Database = {
           createdBy: string
           customFields: Json | null
           defaultStorageUnit: boolean | null
+          deletedAt: string | null
+          deletedBy: string | null
           description: string
           estimatedQuantity: number | null
           id: string
@@ -13821,6 +14540,8 @@ export type Database = {
           createdBy: string
           customFields?: Json | null
           defaultStorageUnit?: boolean | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description: string
           estimatedQuantity?: number | null
           id?: string
@@ -13851,6 +14572,8 @@ export type Database = {
           createdBy?: string
           customFields?: Json | null
           defaultStorageUnit?: boolean | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string
           estimatedQuantity?: number | null
           id?: string
@@ -14103,10 +14826,13 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           description: string | null
           dueDate: string | null
           hasConflict: boolean | null
           id: string
+          insideUnitCost: number
           jobId: string
           jobMakeMethodId: string | null
           laborRate: number
@@ -14148,10 +14874,13 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           dueDate?: string | null
           hasConflict?: boolean | null
           id?: string
+          insideUnitCost?: number
           jobId: string
           jobMakeMethodId?: string | null
           laborRate?: number
@@ -14193,10 +14922,13 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           dueDate?: string | null
           hasConflict?: boolean | null
           id?: string
+          insideUnitCost?: number
           jobId?: string
           jobMakeMethodId?: string | null
           laborRate?: number
@@ -14728,6 +15460,8 @@ export type Database = {
           companyId: string
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           key: string
           operationId: string
@@ -14739,6 +15473,8 @@ export type Database = {
           companyId: string
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           key: string
           operationId: string
@@ -14750,6 +15486,8 @@ export type Database = {
           companyId?: string
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           key?: string
           operationId?: string
@@ -14857,6 +15595,8 @@ export type Database = {
           configuration: Json | null
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           employeeId: string
           id: string
           jobOperationId: string
@@ -14870,6 +15610,8 @@ export type Database = {
           configuration?: Json | null
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           employeeId: string
           id?: string
           jobOperationId: string
@@ -14883,6 +15625,8 @@ export type Database = {
           configuration?: Json | null
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           employeeId?: string
           id?: string
           jobOperationId?: string
@@ -15018,6 +15762,8 @@ export type Database = {
           companyId: string
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           description: Json | null
           fileTypes: string[] | null
           id: string
@@ -15039,6 +15785,8 @@ export type Database = {
           companyId: string
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: Json | null
           fileTypes?: string[] | null
           id?: string
@@ -15060,6 +15808,8 @@ export type Database = {
           companyId?: string
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: Json | null
           fileTypes?: string[] | null
           id?: string
@@ -16144,6 +16894,8 @@ export type Database = {
           companyId: string
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           operationId: string
           quantity: number
@@ -16155,6 +16907,8 @@ export type Database = {
           companyId: string
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           operationId: string
           quantity?: number
@@ -16166,6 +16920,8 @@ export type Database = {
           companyId?: string
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           operationId?: string
           quantity?: number
@@ -16344,6 +17100,8 @@ export type Database = {
           createdAt: string
           createdBy: string | null
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           description: string | null
           id: string
           journalEntryId: string
@@ -16366,6 +17124,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string | null
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           id?: string
           journalEntryId: string
@@ -16388,6 +17148,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string | null
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           id?: string
           journalEntryId?: string
@@ -16583,6 +17345,8 @@ export type Database = {
           companyId: string
           createdAt: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           description: string | null
           documentId: string | null
           documentLineReference: string | null
@@ -16606,6 +17370,8 @@ export type Database = {
           companyId: string
           createdAt?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           documentId?: string | null
           documentLineReference?: string | null
@@ -16629,6 +17395,8 @@ export type Database = {
           companyId?: string
           createdAt?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           documentId?: string | null
           documentLineReference?: string | null
@@ -16853,6 +17621,8 @@ export type Database = {
           conversionFactor: number
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           itemId: string
           jobId: string | null
@@ -16873,6 +17643,8 @@ export type Database = {
           conversionFactor?: number
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           itemId: string
           jobId?: string | null
@@ -16893,6 +17665,8 @@ export type Database = {
           conversionFactor?: number
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           itemId?: string
           jobId?: string | null
@@ -17192,6 +17966,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           latitude: number | null
           longitude: number | null
@@ -17212,6 +17988,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           latitude?: number | null
           longitude?: number | null
@@ -17232,6 +18010,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           latitude?: number | null
           longitude?: number | null
@@ -17285,6 +18065,8 @@ export type Database = {
           content: Json
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           duration: number | null
           id: string
           locationId: string | null
@@ -17314,6 +18096,8 @@ export type Database = {
           content?: Json
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           duration?: number | null
           id?: string
           locationId?: string | null
@@ -17343,6 +18127,8 @@ export type Database = {
           content?: Json
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           duration?: number | null
           id?: string
           locationId?: string | null
@@ -17595,6 +18381,8 @@ export type Database = {
           companyId: string
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           maintenanceDispatchId: string
           updatedAt: string | null
@@ -17605,6 +18393,8 @@ export type Database = {
           companyId: string
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           maintenanceDispatchId: string
           updatedAt?: string | null
@@ -17615,6 +18405,8 @@ export type Database = {
           companyId?: string
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           maintenanceDispatchId?: string
           updatedAt?: string | null
@@ -17740,6 +18532,8 @@ export type Database = {
           companyId: string
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           duration: number | null
           employeeId: string
           endTime: string | null
@@ -17755,6 +18549,8 @@ export type Database = {
           companyId: string
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           duration?: number | null
           employeeId: string
           endTime?: string | null
@@ -17770,6 +18566,8 @@ export type Database = {
           companyId?: string
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           duration?: number | null
           employeeId?: string
           endTime?: string | null
@@ -17964,6 +18762,8 @@ export type Database = {
           companyId: string
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           itemId: string
           maintenanceDispatchId: string
@@ -17978,6 +18778,8 @@ export type Database = {
           companyId: string
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           itemId: string
           maintenanceDispatchId: string
@@ -17992,6 +18794,8 @@ export type Database = {
           companyId?: string
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           itemId?: string
           maintenanceDispatchId?: string
@@ -18487,6 +19291,8 @@ export type Database = {
           companyId: string
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           name: string
           type: Database["public"]["Enums"]["maintenanceFailureModeType"]
@@ -18497,6 +19303,8 @@ export type Database = {
           companyId: string
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name: string
           type?: Database["public"]["Enums"]["maintenanceFailureModeType"]
@@ -18507,6 +19315,8 @@ export type Database = {
           companyId?: string
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name?: string
           type?: Database["public"]["Enums"]["maintenanceFailureModeType"]
@@ -18620,6 +19430,8 @@ export type Database = {
           companyId: string
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           description: string | null
           estimatedDuration: number | null
           frequency: Database["public"]["Enums"]["maintenanceFrequency"]
@@ -18647,6 +19459,8 @@ export type Database = {
           companyId: string
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           estimatedDuration?: number | null
           frequency: Database["public"]["Enums"]["maintenanceFrequency"]
@@ -18674,6 +19488,8 @@ export type Database = {
           companyId?: string
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           estimatedDuration?: number | null
           frequency?: Database["public"]["Enums"]["maintenanceFrequency"]
@@ -18851,6 +19667,8 @@ export type Database = {
           companyId: string
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           itemId: string
           maintenanceScheduleId: string
@@ -18863,6 +19681,8 @@ export type Database = {
           companyId: string
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           itemId: string
           maintenanceScheduleId: string
@@ -18875,6 +19695,8 @@ export type Database = {
           companyId?: string
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           itemId?: string
           maintenanceScheduleId?: string
@@ -19452,6 +20274,8 @@ export type Database = {
       materialDimension: {
         Row: {
           companyId: string | null
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           isMetric: boolean
           materialFormId: string
@@ -19459,6 +20283,8 @@ export type Database = {
         }
         Insert: {
           companyId?: string | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           isMetric?: boolean
           materialFormId: string
@@ -19466,6 +20292,8 @@ export type Database = {
         }
         Update: {
           companyId?: string | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           isMetric?: boolean
           materialFormId?: string
@@ -19512,18 +20340,24 @@ export type Database = {
       materialFinish: {
         Row: {
           companyId: string | null
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           materialSubstanceId: string
           name: string
         }
         Insert: {
           companyId?: string | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           materialSubstanceId: string
           name: string
         }
         Update: {
           companyId?: string | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           materialSubstanceId?: string
           name?: string
@@ -19573,6 +20407,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           name: string
           tags: string[] | null
@@ -19585,6 +20421,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name: string
           tags?: string[] | null
@@ -19597,6 +20435,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name?: string
           tags?: string[] | null
@@ -19707,18 +20547,24 @@ export type Database = {
       materialGrade: {
         Row: {
           companyId: string | null
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           materialSubstanceId: string
           name: string
         }
         Insert: {
           companyId?: string | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           materialSubstanceId: string
           name: string
         }
         Update: {
           companyId?: string | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           materialSubstanceId?: string
           name?: string
@@ -19768,6 +20614,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           name: string
           tags: string[] | null
@@ -19780,6 +20628,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name: string
           tags?: string[] | null
@@ -19792,6 +20642,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name?: string
           tags?: string[] | null
@@ -19903,6 +20755,8 @@ export type Database = {
         Row: {
           code: string
           companyId: string | null
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           materialFormId: string
           materialSubstanceId: string
@@ -19911,6 +20765,8 @@ export type Database = {
         Insert: {
           code: string
           companyId?: string | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           materialFormId: string
           materialSubstanceId: string
@@ -19919,6 +20775,8 @@ export type Database = {
         Update: {
           code?: string
           companyId?: string | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           materialFormId?: string
           materialSubstanceId?: string
@@ -20046,6 +20904,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           itemId: string
           itemType: string
@@ -20070,6 +20930,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           itemId: string
           itemType?: string
@@ -20094,6 +20956,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           itemId?: string
           itemType?: string
@@ -20332,8 +21196,11 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           description: string
           id: string
+          insideUnitCost: number
           laborTime: number
           laborUnit: Database["public"]["Enums"]["factor"]
           machineTime: number
@@ -20361,8 +21228,11 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description: string
           id?: string
+          insideUnitCost?: number
           laborTime?: number
           laborUnit?: Database["public"]["Enums"]["factor"]
           machineTime?: number
@@ -20390,8 +21260,11 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string
           id?: string
+          insideUnitCost?: number
           laborTime?: number
           laborUnit?: Database["public"]["Enums"]["factor"]
           machineTime?: number
@@ -20618,6 +21491,8 @@ export type Database = {
           companyId: string
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           key: string
           operationId: string
@@ -20629,6 +21504,8 @@ export type Database = {
           companyId: string
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           key: string
           operationId: string
@@ -20640,6 +21517,8 @@ export type Database = {
           companyId?: string
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           key?: string
           operationId?: string
@@ -20732,6 +21611,8 @@ export type Database = {
           companyId: string
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           description: Json | null
           fileTypes: string[] | null
           id: string
@@ -20751,6 +21632,8 @@ export type Database = {
           companyId: string
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: Json | null
           fileTypes?: string[] | null
           id?: string
@@ -20770,6 +21653,8 @@ export type Database = {
           companyId?: string
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: Json | null
           fileTypes?: string[] | null
           id?: string
@@ -20870,6 +21755,8 @@ export type Database = {
           companyId: string
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           operationId: string
           quantity: number
@@ -20881,6 +21768,8 @@ export type Database = {
           companyId: string
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           operationId: string
           quantity?: number
@@ -20892,6 +21781,8 @@ export type Database = {
           companyId?: string
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           operationId?: string
           quantity?: number
@@ -21202,6 +22093,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           description: string | null
           dueDate: string | null
           id: string
@@ -21231,6 +22124,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           dueDate?: string | null
           id?: string
@@ -21262,6 +22157,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           dueDate?: string | null
           id?: string
@@ -24603,6 +25500,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           name: string
           updatedAt: string | null
@@ -24613,6 +25512,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name: string
           updatedAt?: string | null
@@ -24623,6 +25524,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name?: string
           updatedAt?: string | null
@@ -25341,6 +26244,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           hoursPerWeek: number
           id: string
           tags: string[] | null
@@ -25354,6 +26259,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           hoursPerWeek?: number
           id: string
           tags?: string[] | null
@@ -25367,6 +26274,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           hoursPerWeek?: number
           id?: string
           tags?: string[] | null
@@ -25902,6 +26811,8 @@ export type Database = {
           createdBy: string
           customerIds: string[] | null
           customerTypeIds: string[] | null
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           itemIds: string[] | null
           itemPostingGroupId: string | null
@@ -25924,6 +26835,8 @@ export type Database = {
           createdBy: string
           customerIds?: string[] | null
           customerTypeIds?: string[] | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           itemIds?: string[] | null
           itemPostingGroupId?: string | null
@@ -25946,6 +26859,8 @@ export type Database = {
           createdBy?: string
           customerIds?: string[] | null
           customerTypeIds?: string[] | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           itemIds?: string[] | null
           itemPostingGroupId?: string | null
@@ -26074,6 +26989,8 @@ export type Database = {
           content: Json
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           description: string | null
           id: string
           name: string
@@ -26090,6 +27007,8 @@ export type Database = {
           content?: Json
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           id?: string
           name: string
@@ -26106,6 +27025,8 @@ export type Database = {
           content?: Json
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           id?: string
           name?: string
@@ -26604,6 +27525,8 @@ export type Database = {
           createdBy: string
           customFields: Json | null
           defaultStandardFactor: Database["public"]["Enums"]["factor"]
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           name: string
           processType: Database["public"]["Enums"]["processType"]
@@ -26619,6 +27542,8 @@ export type Database = {
           createdBy: string
           customFields?: Json | null
           defaultStandardFactor: Database["public"]["Enums"]["factor"]
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name: string
           processType?: Database["public"]["Enums"]["processType"]
@@ -26634,6 +27559,8 @@ export type Database = {
           createdBy?: string
           customFields?: Json | null
           defaultStandardFactor?: Database["public"]["Enums"]["factor"]
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name?: string
           processType?: Database["public"]["Enums"]["processType"]
@@ -26747,6 +27674,8 @@ export type Database = {
           companyId: string
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           duration: number | null
           employeeId: string | null
           endTime: string | null
@@ -26764,6 +27693,8 @@ export type Database = {
           companyId: string
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           duration?: number | null
           employeeId?: string | null
           endTime?: string | null
@@ -26781,6 +27712,8 @@ export type Database = {
           companyId?: string
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           duration?: number | null
           employeeId?: string | null
           endTime?: string | null
@@ -26993,6 +27926,8 @@ export type Database = {
           laborProductionEventId: string | null
           machineProductionEventId: string | null
           notes: string | null
+          paymentMonth: number | null
+          paymentYear: number | null
           quantity: number
           reportId: string
           scrapReasonId: string | null
@@ -27014,6 +27949,8 @@ export type Database = {
           laborProductionEventId?: string | null
           machineProductionEventId?: string | null
           notes?: string | null
+          paymentMonth?: number | null
+          paymentYear?: number | null
           quantity: number
           reportId: string
           scrapReasonId?: string | null
@@ -27035,6 +27972,8 @@ export type Database = {
           laborProductionEventId?: string | null
           machineProductionEventId?: string | null
           notes?: string | null
+          paymentMonth?: number | null
+          paymentYear?: number | null
           quantity?: number
           reportId?: string
           scrapReasonId?: string | null
@@ -27433,6 +28372,8 @@ export type Database = {
           dateDue: string | null
           dateIssued: string | null
           datePaid: string | null
+          deletedAt: string | null
+          deletedBy: string | null
           exchangeRate: number
           exchangeRateUpdatedAt: string | null
           id: string
@@ -27467,6 +28408,8 @@ export type Database = {
           dateDue?: string | null
           dateIssued?: string | null
           datePaid?: string | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           exchangeRate?: number
           exchangeRateUpdatedAt?: string | null
           id?: string
@@ -27501,6 +28444,8 @@ export type Database = {
           dateDue?: string | null
           dateIssued?: string | null
           datePaid?: string | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           exchangeRate?: number
           exchangeRateUpdatedAt?: string | null
           id?: string
@@ -28520,6 +29465,8 @@ export type Database = {
           createdBy: string
           currencyCode: string | null
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           exchangeRate: number | null
           exchangeRateUpdatedAt: string | null
           externalNotes: Json | null
@@ -28550,6 +29497,8 @@ export type Database = {
           createdBy: string
           currencyCode?: string | null
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           exchangeRate?: number | null
           exchangeRateUpdatedAt?: string | null
           externalNotes?: Json | null
@@ -28580,6 +29529,8 @@ export type Database = {
           createdBy?: string
           currencyCode?: string | null
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           exchangeRate?: number | null
           exchangeRateUpdatedAt?: string | null
           externalNotes?: Json | null
@@ -30021,6 +30972,8 @@ export type Database = {
           createdAt: string | null
           createdBy: string | null
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           employeeId: string | null
           expirationDate: string | null
           id: string
@@ -30040,6 +30993,8 @@ export type Database = {
           createdAt?: string | null
           createdBy?: string | null
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           employeeId?: string | null
           expirationDate?: string | null
           id?: string
@@ -30059,6 +31014,8 @@ export type Database = {
           createdAt?: string | null
           createdBy?: string | null
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           employeeId?: string | null
           expirationDate?: string | null
           id?: string
@@ -30848,6 +31805,8 @@ export type Database = {
           content: Json | null
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           description: string | null
           id: string
           name: string
@@ -30863,6 +31822,8 @@ export type Database = {
           content?: Json | null
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           id?: string
           name: string
@@ -30878,6 +31839,8 @@ export type Database = {
           content?: Json | null
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           id?: string
           name?: string
@@ -31217,6 +32180,8 @@ export type Database = {
           customerLocationId: string | null
           customerReference: string | null
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           digitalQuoteAcceptedBy: string | null
           digitalQuoteAcceptedByEmail: string | null
           digitalQuoteRejectedBy: string | null
@@ -31253,6 +32218,8 @@ export type Database = {
           customerLocationId?: string | null
           customerReference?: string | null
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           digitalQuoteAcceptedBy?: string | null
           digitalQuoteAcceptedByEmail?: string | null
           digitalQuoteRejectedBy?: string | null
@@ -31289,6 +32256,8 @@ export type Database = {
           customerLocationId?: string | null
           customerReference?: string | null
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           digitalQuoteAcceptedBy?: string | null
           digitalQuoteAcceptedByEmail?: string | null
           digitalQuoteRejectedBy?: string | null
@@ -31669,6 +32638,8 @@ export type Database = {
           customerPartId: string | null
           customerPartRevision: string | null
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           description: string
           estimatorId: string | null
           externalNotes: Json | null
@@ -31701,6 +32672,8 @@ export type Database = {
           customerPartId?: string | null
           customerPartRevision?: string | null
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description: string
           estimatorId?: string | null
           externalNotes?: Json | null
@@ -31733,6 +32706,8 @@ export type Database = {
           customerPartId?: string | null
           customerPartRevision?: string | null
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string
           estimatorId?: string | null
           externalNotes?: Json | null
@@ -32007,6 +32982,8 @@ export type Database = {
           convertedUnitPrice: number | null
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           discountPercent: number
           exchangeRate: number | null
           leadTime: number
@@ -32028,6 +33005,8 @@ export type Database = {
           convertedUnitPrice?: number | null
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           discountPercent?: number
           exchangeRate?: number | null
           leadTime?: number
@@ -32049,6 +33028,8 @@ export type Database = {
           convertedUnitPrice?: number | null
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           discountPercent?: number
           exchangeRate?: number | null
           leadTime?: number
@@ -32183,6 +33164,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           itemId: string
           parentMaterialId: string | null
@@ -32199,6 +33182,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           itemId: string
           parentMaterialId?: string | null
@@ -32215,6 +33200,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           itemId?: string
           parentMaterialId?: string | null
@@ -32431,6 +33418,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           description: string
           id: string
           itemId: string
@@ -32457,6 +33446,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description: string
           id?: string
           itemId: string
@@ -32483,6 +33474,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string
           id?: string
           itemId?: string
@@ -32737,8 +33730,11 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           description: string | null
           id: string
+          insideUnitCost: number
           laborRate: number
           laborTime: number
           laborUnit: Database["public"]["Enums"]["factor"]
@@ -32771,8 +33767,11 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           id?: string
+          insideUnitCost?: number
           laborRate?: number
           laborTime?: number
           laborUnit?: Database["public"]["Enums"]["factor"]
@@ -32805,8 +33804,11 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           id?: string
+          insideUnitCost?: number
           laborRate?: number
           laborTime?: number
           laborUnit?: Database["public"]["Enums"]["factor"]
@@ -33066,6 +34068,8 @@ export type Database = {
           companyId: string
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           key: string
           operationId: string
@@ -33077,6 +34081,8 @@ export type Database = {
           companyId: string
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           key: string
           operationId: string
@@ -33088,6 +34094,8 @@ export type Database = {
           companyId?: string
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           key?: string
           operationId?: string
@@ -33187,6 +34195,8 @@ export type Database = {
           companyId: string
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           description: Json | null
           fileTypes: string[] | null
           id: string
@@ -33206,6 +34216,8 @@ export type Database = {
           companyId: string
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: Json | null
           fileTypes?: string[] | null
           id?: string
@@ -33225,6 +34237,8 @@ export type Database = {
           companyId?: string
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: Json | null
           fileTypes?: string[] | null
           id?: string
@@ -33332,6 +34346,8 @@ export type Database = {
           companyId: string
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           operationId: string
           quantity: number
@@ -33343,6 +34359,8 @@ export type Database = {
           companyId: string
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           operationId: string
           quantity?: number
@@ -33354,6 +34372,8 @@ export type Database = {
           companyId?: string
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           operationId?: string
           quantity?: number
@@ -33801,6 +34821,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           externalDocumentId: string | null
           id: string
           internalNotes: Json | null
@@ -33827,6 +34849,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           externalDocumentId?: string | null
           id?: string
           internalNotes?: Json | null
@@ -33853,6 +34877,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           externalDocumentId?: string | null
           id?: string
           internalNotes?: Json | null
@@ -34099,6 +35125,8 @@ export type Database = {
           conversionFactor: number | null
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           itemId: string
           lineId: string | null
@@ -34120,6 +35148,8 @@ export type Database = {
           conversionFactor?: number | null
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           itemId: string
           lineId?: string | null
@@ -34141,6 +35171,8 @@ export type Database = {
           conversionFactor?: number | null
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           itemId?: string
           lineId?: string | null
@@ -34306,6 +35338,8 @@ export type Database = {
           companyId: string
           createdAt: string
           createdBy: string | null
+          deletedAt: string | null
+          deletedBy: string | null
           description: string | null
           id: string
           itemId: string | null
@@ -34325,6 +35359,8 @@ export type Database = {
           companyId: string
           createdAt?: string
           createdBy?: string | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           id?: string
           itemId?: string | null
@@ -34344,6 +35380,8 @@ export type Database = {
           companyId?: string
           createdAt?: string
           createdBy?: string | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           id?: string
           itemId?: string | null
@@ -34550,6 +35588,8 @@ export type Database = {
           dateDue: string | null
           dateIssued: string | null
           datePaid: string | null
+          deletedAt: string | null
+          deletedBy: string | null
           exchangeRate: number
           exchangeRateUpdatedAt: string | null
           externalNotes: Json
@@ -34586,6 +35626,8 @@ export type Database = {
           dateDue?: string | null
           dateIssued?: string | null
           datePaid?: string | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           exchangeRate?: number
           exchangeRateUpdatedAt?: string | null
           externalNotes?: Json
@@ -34622,6 +35664,8 @@ export type Database = {
           dateDue?: string | null
           dateIssued?: string | null
           datePaid?: string | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           exchangeRate?: number
           exchangeRateUpdatedAt?: string | null
           externalNotes?: Json
@@ -34851,6 +35895,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json
+          deletedAt: string | null
+          deletedBy: string | null
           description: string | null
           exchangeRate: number
           externalNotes: Json
@@ -34889,6 +35935,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           exchangeRate?: number
           externalNotes?: Json
@@ -34927,6 +35975,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           exchangeRate?: number
           externalNotes?: Json
@@ -35398,6 +36448,8 @@ export type Database = {
           customerLocationId: string | null
           customerReference: string | null
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           exchangeRate: number | null
           exchangeRateUpdatedAt: string | null
           externalNotes: Json | null
@@ -35429,6 +36481,8 @@ export type Database = {
           customerLocationId?: string | null
           customerReference?: string | null
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           exchangeRate?: number | null
           exchangeRateUpdatedAt?: string | null
           externalNotes?: Json | null
@@ -35460,6 +36514,8 @@ export type Database = {
           customerLocationId?: string | null
           customerReference?: string | null
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           exchangeRate?: number | null
           exchangeRateUpdatedAt?: string | null
           externalNotes?: Json | null
@@ -35795,6 +36851,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           description: string | null
           exchangeRate: number | null
           externalNotes: Json | null
@@ -35841,6 +36899,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           exchangeRate?: number | null
           externalNotes?: Json | null
@@ -35887,6 +36947,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           exchangeRate?: number | null
           externalNotes?: Json | null
@@ -36642,6 +37704,8 @@ export type Database = {
           customerLocationId: string | null
           customerReference: string | null
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           employeeId: string | null
           expirationDate: string | null
           externalNotes: Json | null
@@ -36671,6 +37735,8 @@ export type Database = {
           customerLocationId?: string | null
           customerReference?: string | null
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           employeeId?: string | null
           expirationDate?: string | null
           externalNotes?: Json | null
@@ -36700,6 +37766,8 @@ export type Database = {
           customerLocationId?: string | null
           customerReference?: string | null
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           employeeId?: string | null
           expirationDate?: string | null
           externalNotes?: Json | null
@@ -37024,6 +38092,8 @@ export type Database = {
           customerPartId: string
           customerPartRevision: string | null
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           description: string | null
           externalNotes: Json | null
           id: string
@@ -37045,6 +38115,8 @@ export type Database = {
           customerPartId: string
           customerPartRevision?: string | null
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           externalNotes?: Json | null
           id?: string
@@ -37066,6 +38138,8 @@ export type Database = {
           customerPartId?: string
           customerPartRevision?: string | null
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           externalNotes?: Json | null
           id?: string
@@ -37271,6 +38345,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           name: string
           updatedAt: string | null
@@ -37281,6 +38357,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name: string
           updatedAt?: string | null
@@ -37291,6 +38369,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name?: string
           updatedAt?: string | null
@@ -37397,7 +38477,7 @@ export type Database = {
           },
         ]
       }
-      searchIndex_4LHZAreB41XrYn93Vh1Zsv: {
+      searchIndex_AFpizXgpyqeQKU9rswHy6P: {
         Row: {
           createdAt: string
           description: string | null
@@ -37439,469 +38519,7 @@ export type Database = {
         }
         Relationships: []
       }
-      searchIndex_5FKxtncGUBMSpnjSJDmHwx: {
-        Row: {
-          createdAt: string
-          description: string | null
-          entityId: string
-          entityType: string
-          id: number
-          link: string
-          metadata: Json | null
-          searchVector: unknown
-          tags: string[] | null
-          title: string
-          updatedAt: string | null
-        }
-        Insert: {
-          createdAt?: string
-          description?: string | null
-          entityId: string
-          entityType: string
-          id?: number
-          link: string
-          metadata?: Json | null
-          searchVector?: unknown
-          tags?: string[] | null
-          title: string
-          updatedAt?: string | null
-        }
-        Update: {
-          createdAt?: string
-          description?: string | null
-          entityId?: string
-          entityType?: string
-          id?: number
-          link?: string
-          metadata?: Json | null
-          searchVector?: unknown
-          tags?: string[] | null
-          title?: string
-          updatedAt?: string | null
-        }
-        Relationships: []
-      }
-      searchIndex_AuNu97SqYWUxBx1Nc8seAb: {
-        Row: {
-          createdAt: string
-          description: string | null
-          entityId: string
-          entityType: string
-          id: number
-          link: string
-          metadata: Json | null
-          searchVector: unknown
-          tags: string[] | null
-          title: string
-          updatedAt: string | null
-        }
-        Insert: {
-          createdAt?: string
-          description?: string | null
-          entityId: string
-          entityType: string
-          id?: number
-          link: string
-          metadata?: Json | null
-          searchVector?: unknown
-          tags?: string[] | null
-          title: string
-          updatedAt?: string | null
-        }
-        Update: {
-          createdAt?: string
-          description?: string | null
-          entityId?: string
-          entityType?: string
-          id?: number
-          link?: string
-          metadata?: Json | null
-          searchVector?: unknown
-          tags?: string[] | null
-          title?: string
-          updatedAt?: string | null
-        }
-        Relationships: []
-      }
-      searchIndex_B8ME2HajaDnq3m46FK4XFG: {
-        Row: {
-          createdAt: string
-          description: string | null
-          entityId: string
-          entityType: string
-          id: number
-          link: string
-          metadata: Json | null
-          searchVector: unknown
-          tags: string[] | null
-          title: string
-          updatedAt: string | null
-        }
-        Insert: {
-          createdAt?: string
-          description?: string | null
-          entityId: string
-          entityType: string
-          id?: number
-          link: string
-          metadata?: Json | null
-          searchVector?: unknown
-          tags?: string[] | null
-          title: string
-          updatedAt?: string | null
-        }
-        Update: {
-          createdAt?: string
-          description?: string | null
-          entityId?: string
-          entityType?: string
-          id?: number
-          link?: string
-          metadata?: Json | null
-          searchVector?: unknown
-          tags?: string[] | null
-          title?: string
-          updatedAt?: string | null
-        }
-        Relationships: []
-      }
-      searchIndex_Bx6L2cSgmGDvxS2HmgKyoQ: {
-        Row: {
-          createdAt: string
-          description: string | null
-          entityId: string
-          entityType: string
-          id: number
-          link: string
-          metadata: Json | null
-          searchVector: unknown
-          tags: string[] | null
-          title: string
-          updatedAt: string | null
-        }
-        Insert: {
-          createdAt?: string
-          description?: string | null
-          entityId: string
-          entityType: string
-          id?: number
-          link: string
-          metadata?: Json | null
-          searchVector?: unknown
-          tags?: string[] | null
-          title: string
-          updatedAt?: string | null
-        }
-        Update: {
-          createdAt?: string
-          description?: string | null
-          entityId?: string
-          entityType?: string
-          id?: number
-          link?: string
-          metadata?: Json | null
-          searchVector?: unknown
-          tags?: string[] | null
-          title?: string
-          updatedAt?: string | null
-        }
-        Relationships: []
-      }
-      searchIndex_Fdq4uXaHvgLR88Sq3XUr1u: {
-        Row: {
-          createdAt: string
-          description: string | null
-          entityId: string
-          entityType: string
-          id: number
-          link: string
-          metadata: Json | null
-          searchVector: unknown
-          tags: string[] | null
-          title: string
-          updatedAt: string | null
-        }
-        Insert: {
-          createdAt?: string
-          description?: string | null
-          entityId: string
-          entityType: string
-          id?: number
-          link: string
-          metadata?: Json | null
-          searchVector?: unknown
-          tags?: string[] | null
-          title: string
-          updatedAt?: string | null
-        }
-        Update: {
-          createdAt?: string
-          description?: string | null
-          entityId?: string
-          entityType?: string
-          id?: number
-          link?: string
-          metadata?: Json | null
-          searchVector?: unknown
-          tags?: string[] | null
-          title?: string
-          updatedAt?: string | null
-        }
-        Relationships: []
-      }
-      searchIndex_Gu4o392fwTyuVRrBaKF9A7: {
-        Row: {
-          createdAt: string
-          description: string | null
-          entityId: string
-          entityType: string
-          id: number
-          link: string
-          metadata: Json | null
-          searchVector: unknown
-          tags: string[] | null
-          title: string
-          updatedAt: string | null
-        }
-        Insert: {
-          createdAt?: string
-          description?: string | null
-          entityId: string
-          entityType: string
-          id?: number
-          link: string
-          metadata?: Json | null
-          searchVector?: unknown
-          tags?: string[] | null
-          title: string
-          updatedAt?: string | null
-        }
-        Update: {
-          createdAt?: string
-          description?: string | null
-          entityId?: string
-          entityType?: string
-          id?: number
-          link?: string
-          metadata?: Json | null
-          searchVector?: unknown
-          tags?: string[] | null
-          title?: string
-          updatedAt?: string | null
-        }
-        Relationships: []
-      }
-      searchIndex_KGL3fieAtcXLUTXQ6AhTen: {
-        Row: {
-          createdAt: string
-          description: string | null
-          entityId: string
-          entityType: string
-          id: number
-          link: string
-          metadata: Json | null
-          searchVector: unknown
-          tags: string[] | null
-          title: string
-          updatedAt: string | null
-        }
-        Insert: {
-          createdAt?: string
-          description?: string | null
-          entityId: string
-          entityType: string
-          id?: number
-          link: string
-          metadata?: Json | null
-          searchVector?: unknown
-          tags?: string[] | null
-          title: string
-          updatedAt?: string | null
-        }
-        Update: {
-          createdAt?: string
-          description?: string | null
-          entityId?: string
-          entityType?: string
-          id?: number
-          link?: string
-          metadata?: Json | null
-          searchVector?: unknown
-          tags?: string[] | null
-          title?: string
-          updatedAt?: string | null
-        }
-        Relationships: []
-      }
-      searchIndex_PPb5C9kDMSTrcqjikg2z8: {
-        Row: {
-          createdAt: string
-          description: string | null
-          entityId: string
-          entityType: string
-          id: number
-          link: string
-          metadata: Json | null
-          searchVector: unknown
-          tags: string[] | null
-          title: string
-          updatedAt: string | null
-        }
-        Insert: {
-          createdAt?: string
-          description?: string | null
-          entityId: string
-          entityType: string
-          id?: number
-          link: string
-          metadata?: Json | null
-          searchVector?: unknown
-          tags?: string[] | null
-          title: string
-          updatedAt?: string | null
-        }
-        Update: {
-          createdAt?: string
-          description?: string | null
-          entityId?: string
-          entityType?: string
-          id?: number
-          link?: string
-          metadata?: Json | null
-          searchVector?: unknown
-          tags?: string[] | null
-          title?: string
-          updatedAt?: string | null
-        }
-        Relationships: []
-      }
-      searchIndex_QxysmWpo9Naa1mcmFmy1p4: {
-        Row: {
-          createdAt: string
-          description: string | null
-          entityId: string
-          entityType: string
-          id: number
-          link: string
-          metadata: Json | null
-          searchVector: unknown
-          tags: string[] | null
-          title: string
-          updatedAt: string | null
-        }
-        Insert: {
-          createdAt?: string
-          description?: string | null
-          entityId: string
-          entityType: string
-          id?: number
-          link: string
-          metadata?: Json | null
-          searchVector?: unknown
-          tags?: string[] | null
-          title: string
-          updatedAt?: string | null
-        }
-        Update: {
-          createdAt?: string
-          description?: string | null
-          entityId?: string
-          entityType?: string
-          id?: number
-          link?: string
-          metadata?: Json | null
-          searchVector?: unknown
-          tags?: string[] | null
-          title?: string
-          updatedAt?: string | null
-        }
-        Relationships: []
-      }
-      searchIndex_RXBxgx5T9uFeABUTAk8Qww: {
-        Row: {
-          createdAt: string
-          description: string | null
-          entityId: string
-          entityType: string
-          id: number
-          link: string
-          metadata: Json | null
-          searchVector: unknown
-          tags: string[] | null
-          title: string
-          updatedAt: string | null
-        }
-        Insert: {
-          createdAt?: string
-          description?: string | null
-          entityId: string
-          entityType: string
-          id?: number
-          link: string
-          metadata?: Json | null
-          searchVector?: unknown
-          tags?: string[] | null
-          title: string
-          updatedAt?: string | null
-        }
-        Update: {
-          createdAt?: string
-          description?: string | null
-          entityId?: string
-          entityType?: string
-          id?: number
-          link?: string
-          metadata?: Json | null
-          searchVector?: unknown
-          tags?: string[] | null
-          title?: string
-          updatedAt?: string | null
-        }
-        Relationships: []
-      }
-      searchIndex_VYYmNBb1wEo3X9XuPwgv2C: {
-        Row: {
-          createdAt: string
-          description: string | null
-          entityId: string
-          entityType: string
-          id: number
-          link: string
-          metadata: Json | null
-          searchVector: unknown
-          tags: string[] | null
-          title: string
-          updatedAt: string | null
-        }
-        Insert: {
-          createdAt?: string
-          description?: string | null
-          entityId: string
-          entityType: string
-          id?: number
-          link: string
-          metadata?: Json | null
-          searchVector?: unknown
-          tags?: string[] | null
-          title: string
-          updatedAt?: string | null
-        }
-        Update: {
-          createdAt?: string
-          description?: string | null
-          entityId?: string
-          entityType?: string
-          id?: number
-          link?: string
-          metadata?: Json | null
-          searchVector?: unknown
-          tags?: string[] | null
-          title?: string
-          updatedAt?: string | null
-        }
-        Relationships: []
-      }
-      searchIndex_Wk32ngpot17ifsp4rvfEqw: {
+      searchIndex_DVgBbwjK8wiGLJtGyzKgvN: {
         Row: {
           createdAt: string
           description: string | null
@@ -38506,6 +39124,8 @@ export type Database = {
           createdBy: string
           customerId: string | null
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           externalDocumentId: string | null
           externalNotes: Json | null
           id: string
@@ -38537,6 +39157,8 @@ export type Database = {
           createdBy: string
           customerId?: string | null
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           externalDocumentId?: string | null
           externalNotes?: Json | null
           id?: string
@@ -38568,6 +39190,8 @@ export type Database = {
           createdBy?: string
           customerId?: string | null
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           externalDocumentId?: string | null
           externalNotes?: Json | null
           id?: string
@@ -38852,6 +39476,8 @@ export type Database = {
           companyId: string
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           fulfillmentId: string | null
           id: string
           itemId: string
@@ -38873,6 +39499,8 @@ export type Database = {
           companyId: string
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           fulfillmentId?: string | null
           id?: string
           itemId: string
@@ -38894,6 +39522,8 @@ export type Database = {
           companyId?: string
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           fulfillmentId?: string | null
           id?: string
           itemId?: string
@@ -39496,6 +40126,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           locationId: string
           notes: Json | null
@@ -39512,6 +40144,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           locationId: string
           notes?: Json | null
@@ -39528,6 +40162,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           locationId?: string
           notes?: Json | null
@@ -39960,6 +40596,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           name: string
           updatedAt: string | null
@@ -39970,6 +40608,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name: string
           updatedAt?: string | null
@@ -39980,6 +40620,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name?: string
           updatedAt?: string | null
@@ -40093,6 +40735,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           locationId: string
           name: string
@@ -40109,6 +40753,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           locationId: string
           name: string
@@ -40125,6 +40771,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           locationId?: string
           name?: string
@@ -40262,6 +40910,8 @@ export type Database = {
           attachmentPath: string | null
           companyId: string
           createdAt: string
+          deletedAt: string | null
+          deletedBy: string | null
           emoji: string
           id: string
           path: string
@@ -40273,6 +40923,8 @@ export type Database = {
           attachmentPath?: string | null
           companyId: string
           createdAt?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           emoji?: string
           id?: string
           path: string
@@ -40284,6 +40936,8 @@ export type Database = {
           attachmentPath?: string | null
           companyId?: string
           createdAt?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           emoji?: string
           id?: string
           path?: string
@@ -40367,6 +41021,8 @@ export type Database = {
           currencyCode: string | null
           customFields: Json | null
           defaultCc: string[] | null
+          deletedAt: string | null
+          deletedBy: string | null
           embedding: unknown
           fax: string | null
           id: string
@@ -40394,6 +41050,8 @@ export type Database = {
           currencyCode?: string | null
           customFields?: Json | null
           defaultCc?: string[] | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           embedding?: unknown
           fax?: string | null
           id?: string
@@ -40421,6 +41079,8 @@ export type Database = {
           currencyCode?: string | null
           customFields?: Json | null
           defaultCc?: string[] | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           embedding?: unknown
           fax?: string | null
           id?: string
@@ -41934,6 +42594,8 @@ export type Database = {
           createdBy: string
           currencyCode: string | null
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           exchangeRate: number | null
           exchangeRateUpdatedAt: string | null
           expirationDate: string | null
@@ -41962,6 +42624,8 @@ export type Database = {
           createdBy: string
           currencyCode?: string | null
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           exchangeRate?: number | null
           exchangeRateUpdatedAt?: string | null
           expirationDate?: string | null
@@ -41990,6 +42654,8 @@ export type Database = {
           createdBy?: string
           currencyCode?: string | null
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           exchangeRate?: number | null
           exchangeRateUpdatedAt?: string | null
           expirationDate?: string | null
@@ -42290,6 +42956,8 @@ export type Database = {
           costCenterId: string | null
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           description: string
           externalNotes: Json | null
           id: string
@@ -42316,6 +42984,8 @@ export type Database = {
           costCenterId?: string | null
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description: string
           externalNotes?: Json | null
           id?: string
@@ -42342,6 +43012,8 @@ export type Database = {
           costCenterId?: string | null
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string
           externalNotes?: Json | null
           id?: string
@@ -43113,6 +43785,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           name: string
           protected: boolean
@@ -43125,6 +43799,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name: string
           protected?: boolean
@@ -43137,6 +43813,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name?: string
           protected?: boolean
@@ -43653,6 +44331,8 @@ export type Database = {
           companyId: string
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           description: string | null
           filters: string[] | null
           id: string
@@ -43670,6 +44350,8 @@ export type Database = {
           companyId: string
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           filters?: string[] | null
           id?: string
@@ -43687,6 +44369,8 @@ export type Database = {
           companyId?: string
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           filters?: string[] | null
           id?: string
@@ -44024,6 +44708,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           dataType: Database["public"]["Enums"]["configurationParameterDataType"]
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           key: string
           label: string
@@ -44040,6 +44726,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           dataType: Database["public"]["Enums"]["configurationParameterDataType"]
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           key: string
           label: string
@@ -44056,6 +44744,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           dataType?: Database["public"]["Enums"]["configurationParameterDataType"]
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           key?: string
           label?: string
@@ -44504,6 +45194,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           itemId: string
           itemType: string
@@ -44528,6 +45220,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           itemId: string
           itemType?: string
@@ -44552,6 +45246,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           itemId?: string
           itemType?: string
@@ -44769,8 +45465,11 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           description: string
           id: string
+          insideUnitCost: number
           laborTime: number
           laborUnit: Database["public"]["Enums"]["factor"]
           machineTime: number
@@ -44798,8 +45497,11 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string
           id?: string
+          insideUnitCost?: number
           laborTime?: number
           laborUnit?: Database["public"]["Enums"]["factor"]
           machineTime?: number
@@ -44827,8 +45529,11 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string
           id?: string
+          insideUnitCost?: number
           laborTime?: number
           laborUnit?: Database["public"]["Enums"]["factor"]
           machineTime?: number
@@ -45034,6 +45739,8 @@ export type Database = {
           companyId: string
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           key: string
           operationId: string
@@ -45045,6 +45752,8 @@ export type Database = {
           companyId: string
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           key: string
           operationId: string
@@ -45056,6 +45765,8 @@ export type Database = {
           companyId?: string
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           key?: string
           operationId?: string
@@ -45176,6 +45887,8 @@ export type Database = {
           companyId: string
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           description: Json | null
           fileTypes: string[] | null
           id: string
@@ -45195,6 +45908,8 @@ export type Database = {
           companyId: string
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: Json | null
           fileTypes?: string[] | null
           id?: string
@@ -45214,6 +45929,8 @@ export type Database = {
           companyId?: string
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: Json | null
           fileTypes?: string[] | null
           id?: string
@@ -45342,6 +46059,8 @@ export type Database = {
           companyId: string
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           operationId: string
           quantity: number
@@ -45353,6 +46072,8 @@ export type Database = {
           companyId: string
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           operationId: string
           quantity?: number
@@ -45364,6 +46085,8 @@ export type Database = {
           companyId?: string
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           operationId?: string
           quantity?: number
@@ -45617,6 +46340,8 @@ export type Database = {
           companyId: string
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           employeeId: string
           id: string
           note: string | null
@@ -45630,6 +46355,8 @@ export type Database = {
           companyId: string
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           employeeId: string
           id?: string
           note?: string | null
@@ -45643,6 +46370,8 @@ export type Database = {
           companyId?: string
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           employeeId?: string
           id?: string
           note?: string | null
@@ -46443,6 +47172,8 @@ export type Database = {
           content: Json | null
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           description: string | null
           estimatedDuration: string | null
           frequency: Database["public"]["Enums"]["trainingFrequency"]
@@ -46462,6 +47193,8 @@ export type Database = {
           content?: Json | null
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           estimatedDuration?: string | null
           frequency?: Database["public"]["Enums"]["trainingFrequency"]
@@ -46481,6 +47214,8 @@ export type Database = {
           content?: Json | null
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           description?: string | null
           estimatedDuration?: string | null
           frequency?: Database["public"]["Enums"]["trainingFrequency"]
@@ -46649,6 +47384,8 @@ export type Database = {
           companyId: string
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           groupIds: string[] | null
           id: string
           trainingId: string
@@ -46659,6 +47396,8 @@ export type Database = {
           companyId: string
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           groupIds?: string[] | null
           id?: string
           trainingId: string
@@ -46669,6 +47408,8 @@ export type Database = {
           companyId?: string
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           groupIds?: string[] | null
           id?: string
           trainingId?: string
@@ -47154,6 +47895,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           id: string
           name: string
           tags: string[] | null
@@ -47167,6 +47910,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name: string
           tags?: string[] | null
@@ -47180,6 +47925,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           id?: string
           name?: string
           tags?: string[] | null
@@ -48110,6 +48857,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           expectedReceiptDate: string | null
           fromLocationId: string
           id: string
@@ -48128,6 +48877,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           expectedReceiptDate?: string | null
           fromLocationId: string
           id?: string
@@ -48146,6 +48897,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           expectedReceiptDate?: string | null
           fromLocationId?: string
           id?: string
@@ -48280,6 +49033,8 @@ export type Database = {
           createdAt: string
           createdBy: string
           customFields: Json | null
+          deletedAt: string | null
+          deletedBy: string | null
           fromLocationId: string
           fromStorageUnitId: string | null
           id: string
@@ -48300,6 +49055,8 @@ export type Database = {
           createdAt?: string
           createdBy: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           fromLocationId: string
           fromStorageUnitId?: string | null
           id?: string
@@ -48320,6 +49077,8 @@ export type Database = {
           createdAt?: string
           createdBy?: string
           customFields?: Json | null
+          deletedAt?: string | null
+          deletedBy?: string | null
           fromLocationId?: string
           fromStorageUnitId?: string | null
           id?: string
@@ -48526,6 +49285,8 @@ export type Database = {
           companyId: string
           createdAt: string
           createdBy: string
+          deletedAt: string | null
+          deletedBy: string | null
           errorCount: number
           id: string
           lastError: string | null
@@ -48545,6 +49306,8 @@ export type Database = {
           companyId: string
           createdAt?: string
           createdBy: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           errorCount?: number
           id?: string
           lastError?: string | null
@@ -48564,6 +49327,8 @@ export type Database = {
           companyId?: string
           createdAt?: string
           createdBy?: string
+          deletedAt?: string | null
+          deletedBy?: string | null
           errorCount?: number
           id?: string
           lastError?: string | null
@@ -50858,6 +51623,167 @@ export type Database = {
         }
         Relationships: []
       }
+      employeeSalaryRecords: {
+        Row: {
+          amountOwed: number | null
+          avatarUrl: string | null
+          companyId: string | null
+          createdAt: string | null
+          createdBy: string | null
+          departmentId: string | null
+          departmentName: string | null
+          employeeId: string | null
+          employeeName: string | null
+          firstName: string | null
+          id: string | null
+          lastName: string | null
+          month: number | null
+          notes: string | null
+          pendingAmount: number | null
+          pendingCount: number | null
+          status: Database["public"]["Enums"]["salaryRecordStatus"] | null
+          totalEarned: number | null
+          totalPaid: number | null
+          updatedAt: string | null
+          updatedBy: string | null
+          year: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "employeeSalaryRecord_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "customFieldTables"
+            referencedColumns: ["companyId"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "integrations"
+            referencedColumns: ["companyId"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_employeeId_fkey"
+            columns: ["employeeId"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_employeeId_fkey"
+            columns: ["employeeId"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_employeeId_fkey"
+            columns: ["employeeId"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_employeeId_fkey"
+            columns: ["employeeId"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_employeeId_fkey"
+            columns: ["employeeId"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "employeeSalaryRecord_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+        ]
+      }
       employeeSummary: {
         Row: {
           avatarUrl: string | null
@@ -51837,6 +52763,130 @@ export type Database = {
           },
         ]
       }
+      jobAssignmentRules: {
+        Row: {
+          active: boolean | null
+          companyId: string | null
+          conditions: Json | null
+          createdAt: string | null
+          createdBy: string | null
+          description: string | null
+          id: string | null
+          name: string | null
+          priority: number | null
+          targetGroupId: string | null
+          targetGroupName: string | null
+          updatedAt: string | null
+          updatedBy: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jobAssignmentRule_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobAssignmentRule_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobAssignmentRule_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "customFieldTables"
+            referencedColumns: ["companyId"]
+          },
+          {
+            foreignKeyName: "jobAssignmentRule_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "integrations"
+            referencedColumns: ["companyId"]
+          },
+          {
+            foreignKeyName: "jobAssignmentRule_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobAssignmentRule_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobAssignmentRule_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobAssignmentRule_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobAssignmentRule_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "jobAssignmentRule_targetGroupId_fkey"
+            columns: ["targetGroupId"]
+            isOneToOne: false
+            referencedRelation: "group"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobAssignmentRule_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobAssignmentRule_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobAssignmentRule_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobAssignmentRule_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobAssignmentRule_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+        ]
+      }
       jobMaterialWithMakeMethodId: {
         Row: {
           companyId: string | null
@@ -52756,10 +53806,13 @@ export type Database = {
           customerId: string | null
           customFields: Json | null
           deadlineType: Database["public"]["Enums"]["deadlineType"] | null
+          deletedAt: string | null
+          deletedBy: string | null
           description: string | null
           dueDate: string | null
           estimatedTime: number | null
           id: string | null
+          itemDeletedAt: string | null
           itemId: string | null
           itemReadableIdWithRevision: string | null
           itemTrackingType:
@@ -59556,7 +60609,7 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["invoiceCountryCode"]
+            columns: ["customerCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
@@ -59570,7 +60623,7 @@ export type Database = {
           },
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["customerCountryCode"]
+            columns: ["invoiceCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
@@ -64459,10 +65512,11 @@ export type Database = {
           readableId: string
           readableIdWithRevision: string
           replenishmentSystem: Database["public"]["Enums"]["itemReplenishmentSystem"]
-          requiresInspection: boolean
           revision: string
           revisions: Json
           tags: string[]
+          templateId: string
+          templateName: string
           thumbnailPath: string
           unitOfMeasure: string
           unitOfMeasureCode: string
@@ -65091,6 +66145,7 @@ export type Database = {
         Args: { operation_id: string }
         Returns: boolean
       }
+      is_visible: { Args: { deleted_at: string }; Returns: boolean }
       items_search: {
         Args: {
           match_count: number
@@ -65376,6 +66431,15 @@ export type Database = {
       }
       sync_purchase_invoice_line_price_change: {
         Args: { p_new: Json; p_old: Json; p_operation: string; p_table: string }
+        Returns: undefined
+      }
+      sync_salary_record: {
+        Args: {
+          p_company_id: string
+          p_employee_id: string
+          p_month: number
+          p_year: number
+        }
         Returns: undefined
       }
       sync_set_initial_dependency_status: {
@@ -65987,6 +67051,7 @@ export type Database = {
         | "Work Center"
       riskStatus: "Open" | "In Review" | "Mitigating" | "Closed" | "Accepted"
       role: "customer" | "employee" | "supplier"
+      salaryRecordStatus: "Unpaid" | "Partially Paid" | "Paid"
       salesInvoiceLineType:
         | "Comment"
         | "Part"
@@ -66814,7 +67879,7 @@ export const Constants = {
         "purchaseOrder",
         "qualityDocument",
         "supplier",
-        "productionQuantityReport"
+        "productionQuantityReport",
       ],
       approvalStatus: ["Pending", "Approved", "Rejected", "Cancelled"],
       configurationParameterDataType: [
@@ -67277,6 +68342,7 @@ export const Constants = {
       ],
       riskStatus: ["Open", "In Review", "Mitigating", "Closed", "Accepted"],
       role: ["customer", "employee", "supplier"],
+      salaryRecordStatus: ["Unpaid", "Partially Paid", "Paid"],
       salesInvoiceLineType: [
         "Comment",
         "Part",

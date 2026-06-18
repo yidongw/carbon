@@ -1,9 +1,9 @@
 import {
   CONTROLLED_ENVIRONMENT,
   error,
-  getBrowserEnv,
-  getCarbon
+  getBrowserEnv
 } from "@carbon/auth";
+import { getCarbon } from "@carbon/auth/client.server";
 import { flashClientMiddleware } from "@carbon/auth/middleware/flash.client";
 import {
   flashHeadersContext,

@@ -17,9 +17,11 @@ import {
   SUPABASE_URL,
   getAppUrl
 } from "../config/env";
-import { getCarbon } from "../lib/supabase";
-import { getCarbonAPIKeyClient } from "../lib/supabase/client";
-import { getCarbonServiceRole } from "../lib/supabase/client.server";
+import {
+  getCarbon,
+  getCarbonAPIKeyClient,
+  getCarbonServiceRole
+} from "../lib/supabase/client.server";
 import type { AuthSession } from "../types";
 import { path } from "../utils/path";
 import { error } from "../utils/result";

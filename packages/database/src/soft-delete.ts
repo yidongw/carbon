@@ -147,6 +147,10 @@ export function resolveSoftDeleteBaseTable(table: string): string {
   return SOFT_DELETE_VIEW_BASE[table] ?? table;
 }
 
+export function isSoftDeleteView(table: string): boolean {
+  return table in SOFT_DELETE_VIEW_BASE;
+}
+
 export function isSoftDeletableTable(table: string): boolean {
   if (HARD_DELETE_TABLES.has(table)) return false;
   const base = resolveSoftDeleteBaseTable(table);
@@ -228,7 +232,8 @@ function wrapBuilder(
       if (
         prop === "select" &&
         typeof value === "function" &&
-        !shouldIncludeDeleted(ctx)
+        !shouldIncludeDeleted(ctx) &&
+        !isSoftDeleteView(table)
       ) {
         return (...args: unknown[]) => {
           const selected = value.apply(target, args);

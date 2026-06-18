@@ -1,4 +1,4 @@
-import { getCarbon } from "@carbon/auth";
+import { getCarbon } from "@carbon/auth/client.server";
 import { getOrRefreshAuthSession } from "@carbon/auth/session.server";
 import { Button, Spinner } from "@carbon/react";
 import { useEffect } from "react";
