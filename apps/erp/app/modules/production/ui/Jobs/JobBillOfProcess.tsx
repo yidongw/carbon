@@ -2034,7 +2034,7 @@ const JobBillOfProcess = ({
   if (routeJob) {
     return (
       <>
-        <div className="flex w-max max-w-[min(42rem,calc(100vw-1.5rem))] flex-col">
+        <div className="flex w-[min(42rem,calc(100vw-1.5rem))] flex-col">
           <HStack className="shrink-0 items-center justify-between border-b border-border px-4 py-3 pr-12">
             <h3 className="text-base font-medium font-headline tracking-tight text-foreground">
               <Trans>Bill of Process</Trans>
