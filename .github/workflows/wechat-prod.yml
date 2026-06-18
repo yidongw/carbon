@@ -1,0 +1,33 @@
+name: Set WeChat Prod Credentials
+
+on:
+  workflow_dispatch:
+
+jobs:
+  set-credentials:
+    name: Update workspace WeChat env
+    runs-on: ubuntu-latest
+
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      WECHAT_MP_APP_ID: ${{ secrets.WECHAT_MP_APP_ID }}
+      WECHAT_MP_APP_SECRET: ${{ secrets.WECHAT_MP_APP_SECRET }}
+      WECHAT_WEBHOOK_TOKEN: ${{ secrets.WECHAT_WEBHOOK_TOKEN }}
+      TARGET_URL_ERP: app.jilio.xyz
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Set WeChat credentials on workspace
+        run: pnpm --filter ci ci:set-wechat-credentials

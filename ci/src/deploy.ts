@@ -69,6 +69,9 @@ export type Workspace = {
   stripe_webhook_secret: string | null;
   url_erp: string | null;
   url_mes: string | null;
+  wechat_mp_app_id: string | null;
+  wechat_mp_app_secret: string | null;
+  wechat_webhook_token: string | null;
   xero_client_id: string | null;
   xero_client_secret: string | null;
   xero_webhook_secret: string | null;
@@ -152,6 +155,9 @@ async function deploy(): Promise<void> {
         stripe_webhook_secret,
         url_erp,
         url_mes,
+        wechat_mp_app_id,
+        wechat_mp_app_secret,
+        wechat_webhook_token,
         xero_client_id,
         xero_client_secret,
         xero_webhook_secret,
@@ -306,6 +312,9 @@ async function deploy(): Promise<void> {
           URL_ERP: url_erp,
           URL_MES: url_mes,
           VERCEL_ENV: "production",
+          WECHAT_MP_APP_ID: wechat_mp_app_id ?? undefined,
+          WECHAT_MP_APP_SECRET: wechat_mp_app_secret ?? undefined,
+          WECHAT_WEBHOOK_TOKEN: wechat_webhook_token ?? undefined,
           XERO_CLIENT_ID: xero_client_id ?? undefined,
           XERO_CLIENT_SECRET: xero_client_secret ?? undefined,
           XERO_WEBHOOK_SECRET: xero_webhook_secret ?? undefined,
