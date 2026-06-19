@@ -1,5 +1,6 @@
 import type { Database, Json } from "@carbon/database";
 import { fetchAllFromTable } from "@carbon/database";
+import { withIncludeDeleted } from "@carbon/database/soft-delete";
 import type { PickPartial } from "@carbon/utils";
 import { getLocalTimeZone, now, today } from "@internationalized/date";
 import type {
@@ -513,8 +514,14 @@ export async function getConfigurationParametersByQuoteLineId(
 
 export async function getCustomer(
   client: SupabaseClient<Database>,
-  customerId: string
+  customerId: string,
+  options?: { includeDeleted?: boolean }
 ) {
+  if (options?.includeDeleted) {
+    return withIncludeDeleted(() =>
+      client.from("customer").select("*").eq("id", customerId).single()
+    );
+  }
   return client.from("customers").select("*").eq("id", customerId).single();
 }
 
@@ -1272,10 +1279,12 @@ export async function getQuoteLinesList(
   client: SupabaseClient<Database>,
   quoteId: string
 ) {
-  return client
-    .from("quoteLine")
-    .select("id, description, ...item(readableIdWithRevision)")
-    .eq("quoteId", quoteId);
+  return withIncludeDeleted(() =>
+    client
+      .from("quoteLine")
+      .select("id, description, ...item(readableIdWithRevision)")
+      .eq("quoteId", quoteId)
+  );
 }
 
 type QuoteMethod = NonNullable<
@@ -1291,23 +1300,27 @@ export async function getQuoteMakeMethod(
   client: SupabaseClient<Database>,
   quoteMakeMethodId: string
 ) {
-  return client
-    .from("quoteMakeMethod")
-    .select("*, ...item(itemType:type)")
-    .eq("id", quoteMakeMethodId)
-    .single();
+  return withIncludeDeleted(() =>
+    client
+      .from("quoteMakeMethod")
+      .select("*, ...item(itemType:type)")
+      .eq("id", quoteMakeMethodId)
+      .single()
+  );
 }
 
 export async function getRootQuoteMakeMethod(
   client: SupabaseClient<Database>,
   quoteLineId: string
 ) {
-  return client
-    .from("quoteMakeMethod")
-    .select("*, ...item(itemType:type)")
-    .eq("quoteLineId", quoteLineId)
-    .is("parentMaterialId", null)
-    .single();
+  return withIncludeDeleted(() =>
+    client
+      .from("quoteMakeMethod")
+      .select("*, ...item(itemType:type)")
+      .eq("quoteLineId", quoteLineId)
+      .is("parentMaterialId", null)
+      .single()
+  );
 }
 
 export async function getQuoteMethodTrees(
@@ -1329,9 +1342,11 @@ export async function getQuoteMethodTreeArray(
   client: SupabaseClient<Database>,
   quoteId: string
 ) {
-  return client.rpc("get_quote_methods", {
-    qid: quoteId
-  });
+  return withIncludeDeleted(() =>
+    client.rpc("get_quote_methods", {
+      qid: quoteId
+    })
+  );
 }
 
 function getQuoteMethodTreeArrayToTree(

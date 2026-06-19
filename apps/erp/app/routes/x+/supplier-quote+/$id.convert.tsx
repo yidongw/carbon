@@ -57,7 +57,9 @@ export async function action({ request, params }: ActionFunctionArgs) {
   ]);
 
   if (supplierApprovalRequired && quote.data?.supplierId) {
-    const supplier = await getSupplier(serviceRole, quote.data.supplierId);
+    const supplier = await getSupplier(serviceRole, quote.data.supplierId, {
+      includeDeleted: true
+    });
     if (supplier.data?.status !== "Active") {
       throw redirect(
         path.to.supplierQuoteDetails(id),

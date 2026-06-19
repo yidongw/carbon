@@ -156,7 +156,7 @@ export async function action(args: ActionFunctionArgs) {
           await Promise.all([
             getCompany(client, companyId),
             getCompanySettings(client, companyId),
-            getCustomer(client, quote.data.customerId!),
+            getCustomer(client, quote.data.customerId!, { includeDeleted: true }),
             getCustomerContact(client, customerContactId),
             getUser(client, userId)
           ]);

@@ -83,7 +83,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       ? getQuote(client, opportunity.data.quotes[0].id)
       : Promise.resolve(null),
     salesOrder.data?.customerId
-      ? getCustomer(client, salesOrder.data.customerId)
+      ? getCustomer(client, salesOrder.data.customerId, { includeDeleted: true })
       : Promise.resolve(null),
     getCompanySettings(serviceRole, companyId),
     getSalesOrderInvoiceLines(client, orderId)

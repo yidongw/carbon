@@ -88,7 +88,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 
   const [company, supplier, actionTasks] = await Promise.all([
     getCompany(serviceRole, externalLink.data.companyId),
-    getSupplier(serviceRole, issue.data.supplierId),
+    getSupplier(serviceRole, issue.data.supplierId, { includeDeleted: true }),
     getIssueActionTasks(
       serviceRole,
       issue.data.nonConformanceId,

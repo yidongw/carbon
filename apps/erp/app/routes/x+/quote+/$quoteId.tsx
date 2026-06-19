@@ -102,7 +102,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     opportunityDocuments,
     companySettings
   ] = await Promise.all([
-    getCustomer(client, quote.data?.customerId ?? ""),
+    getCustomer(client, quote.data?.customerId ?? "", { includeDeleted: true }),
     getQuoteShipment(client, quoteId),
     getQuotePayment(client, quoteId),
     getQuoteLines(client, quoteId),

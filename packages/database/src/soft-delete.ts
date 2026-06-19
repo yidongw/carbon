@@ -165,6 +165,9 @@ export function withIncludeDeleted<T>(fn: () => Promise<T>): Promise<T> {
   );
 }
 
+/** Alias for reads of historical records that may reference soft-deleted rows. */
+export const withHistoricalReads = withIncludeDeleted;
+
 /** Internal bulk cleanup (method rebuild, edge-function sync) keeps hard DELETE. */
 export function withHardDelete<T>(fn: () => Promise<T>): Promise<T> {
   const parent = softDeleteStorage.getStore();

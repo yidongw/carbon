@@ -54,7 +54,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const [supplier, interaction, files] = await Promise.all([
     purchaseInvoice.data?.supplierId
-      ? getSupplier(client, purchaseInvoice.data.supplierId)
+      ? getSupplier(client, purchaseInvoice.data.supplierId, { includeDeleted: true })
       : null,
     getSupplierInteraction(client, purchaseInvoice.data.supplierInteractionId!),
     getSupplierInteractionDocuments(

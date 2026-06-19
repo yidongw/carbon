@@ -23,6 +23,9 @@ const COMPANY_ID = "AVKwodN9KfL8fnKTti5dBL";
 const USER_ID = "72f2f6f0-02ec-4de0-84c4-d4165d1d6d40";
 const LOCATION_ID = "loc_6AHEeYpT2YyvAWzrmaYZoQ";
 const UOM = "EA";
+const CUSTOMER_ID = "cust_SgQQKqXxaJyonwTdhm7Kbc";
+const SUPPLIER_ID = "sup_8YQPcsECBts2qGNPD9MsYG";
+const SUPPLIER_INTERACTION_ID = "si_64pRWoMwMAvpYFUtd8DiRx";
 const TEST_PREFIX = `SD-TEST-${Date.now()}`;
 
 type WrappedClient = ReturnType<typeof getClient>;
@@ -419,6 +422,375 @@ async function testJobsView(client: WrappedClient) {
   console.log("✓ view jobs");
 }
 
+async function testJobWithDeletedItem(client: WrappedClient) {
+  const readableId = `${TEST_PREFIX}-JOB-ITEM-DEL`;
+  const itemId = await insertItemFixture(
+    client,
+    { itemType: "Part", subtypeTable: "part", listView: "parts" },
+    readableId
+  );
+
+  const { data: job, error: jobError } = await client
+    .from("job")
+    .insert({
+      jobId: `${TEST_PREFIX}-J002`,
+      itemId,
+      unitOfMeasureCode: UOM,
+      locationId: LOCATION_ID,
+      quantity: 1,
+      companyId: COMPANY_ID,
+      createdBy: USER_ID
+    })
+    .select("id")
+    .single();
+  assert(!jobError && job, `insert job failed: ${jobError?.message}`);
+
+  const { error: deleteItemError } = await client
+    .from("item")
+    .delete()
+    .eq("id", itemId);
+  assert(!deleteItemError, `item soft delete failed: ${deleteItemError?.message}`);
+
+  const { data: hiddenFromParts } = await client
+    .from("parts")
+    .select("id")
+    .eq("id", itemId)
+    .maybeSingle();
+  assert(!hiddenFromParts, "deleted item should be hidden from parts view");
+
+  const { data: jobRow, error: jobSelectError } = await client
+    .from("jobs")
+    .select("id, itemId, name, itemDeletedAt")
+    .eq("id", job.id)
+    .single();
+  assert(
+    !jobSelectError && jobRow?.id === job.id,
+    `jobs view should still return job after item delete: ${jobSelectError?.message}`
+  );
+  assert(jobRow?.itemId === itemId, "job should keep itemId after item delete");
+  assert(jobRow?.itemDeletedAt, "job should expose itemDeletedAt after item delete");
+
+  const { data: methodRows, error: methodError } = await client.rpc("get_job_method", {
+    jid: job.id
+  });
+  assert(!methodError, `get_job_method failed: ${methodError?.message}`);
+  assert(
+    methodRows && methodRows.length > 0,
+    "get_job_method should return root row after item delete"
+  );
+
+  const { data: makeMethod, error: makeMethodError } = await withIncludeDeleted(async () =>
+    client
+      .from("jobMakeMethod")
+      .select("*, ...item(itemType:type, methodRevision:revision)")
+      .eq("jobId", job.id)
+      .is("parentMaterialId", null)
+      .eq("companyId", COMPANY_ID)
+      .maybeSingle()
+  );
+  assert(
+    !makeMethodError,
+    `jobMakeMethod with item embed failed: ${makeMethodError?.message}`
+  );
+
+  await withHardDelete(async () => {
+    await client.from("job").delete().eq("id", job.id);
+    await client.from("part").delete().eq("id", readableId);
+    await client.from("item").delete().eq("id", itemId);
+  });
+
+  console.log("✓ job remains loadable after item soft delete");
+}
+
+async function testHistoricalDocumentLinesWithDeletedItem(client: WrappedClient) {
+  const readableId = `${TEST_PREFIX}-DOC-PART`;
+  const itemId = await insertItemFixture(
+    client,
+    { itemType: "Part", subtypeTable: "part", listView: "parts" },
+    readableId
+  );
+
+  const { data: quote, error: quoteError } = await client
+    .from("quote")
+    .insert({
+      quoteId: `${TEST_PREFIX}-Q`,
+      customerId: CUSTOMER_ID,
+      companyId: COMPANY_ID,
+      createdBy: USER_ID
+    })
+    .select("id")
+    .single();
+  assert(!quoteError && quote, `insert quote failed: ${quoteError?.message}`);
+
+  const { data: quoteLine, error: quoteLineError } = await client
+    .from("quoteLine")
+    .insert({
+      quoteId: quote.id,
+      itemId,
+      description: "Deleted item quote line",
+      companyId: COMPANY_ID,
+      createdBy: USER_ID
+    })
+    .select("id")
+    .single();
+  assert(
+    !quoteLineError && quoteLine,
+    `insert quoteLine failed: ${quoteLineError?.message}`
+  );
+
+  const { data: salesOrder, error: salesOrderError } = await client
+    .from("salesOrder")
+    .insert({
+      salesOrderId: `${TEST_PREFIX}-SO`,
+      customerId: CUSTOMER_ID,
+      companyId: COMPANY_ID,
+      createdBy: USER_ID,
+      orderDate: "2099-06-18",
+      currencyCode: "USD"
+    })
+    .select("id")
+    .single();
+  assert(
+    !salesOrderError && salesOrder,
+    `insert salesOrder failed: ${salesOrderError?.message}`
+  );
+
+  const { data: salesOrderLine, error: salesOrderLineError } = await client
+    .from("salesOrderLine")
+    .insert({
+      salesOrderId: salesOrder.id,
+      itemId,
+      description: "Deleted item SO line",
+      companyId: COMPANY_ID,
+      createdBy: USER_ID,
+      saleQuantity: 1,
+      unitPrice: 1,
+      salesOrderLineType: "Part"
+    })
+    .select("id")
+    .single();
+  assert(
+    !salesOrderLineError && salesOrderLine,
+    `insert salesOrderLine failed: ${salesOrderLineError?.message}`
+  );
+
+  const { data: purchaseOrder, error: purchaseOrderError } = await client
+    .from("purchaseOrder")
+    .insert({
+      purchaseOrderId: `${TEST_PREFIX}-PO`,
+      supplierId: SUPPLIER_ID,
+      supplierInteractionId: SUPPLIER_INTERACTION_ID,
+      companyId: COMPANY_ID,
+      createdBy: USER_ID,
+      currencyCode: "USD"
+    })
+    .select("id")
+    .single();
+  assert(
+    !purchaseOrderError && purchaseOrder,
+    `insert purchaseOrder failed: ${purchaseOrderError?.message}`
+  );
+
+  const { data: purchaseOrderLine, error: purchaseOrderLineError } = await client
+    .from("purchaseOrderLine")
+    .insert({
+      purchaseOrderId: purchaseOrder.id,
+      itemId,
+      description: "Deleted item PO line",
+      companyId: COMPANY_ID,
+      createdBy: USER_ID,
+      purchaseQuantity: 1,
+      purchaseOrderLineType: "Part"
+    })
+    .select("id")
+    .single();
+  assert(
+    !purchaseOrderLineError && purchaseOrderLine,
+    `insert purchaseOrderLine failed: ${purchaseOrderLineError?.message}`
+  );
+
+  const { data: receipt, error: receiptError } = await client
+    .from("receipt")
+    .insert({
+      receiptId: `${TEST_PREFIX}-RCV`,
+      locationId: LOCATION_ID,
+      companyId: COMPANY_ID,
+      createdBy: USER_ID
+    })
+    .select("id")
+    .single();
+  assert(!receiptError && receipt, `insert receipt failed: ${receiptError?.message}`);
+
+  const { data: receiptLine, error: receiptLineError } = await client
+    .from("receiptLine")
+    .insert({
+      receiptId: receipt.id,
+      itemId,
+      orderQuantity: 1,
+      unitOfMeasure: UOM,
+      unitPrice: 1,
+      companyId: COMPANY_ID,
+      createdBy: USER_ID
+    })
+    .select("id")
+    .single();
+  assert(
+    !receiptLineError && receiptLine,
+    `insert receiptLine failed: ${receiptLineError?.message}`
+  );
+
+  const { error: quoteLinePriceError } = await client.from("quoteLinePrice").insert({
+    quoteId: quote.id,
+    quoteLineId: quoteLine.id,
+    quantity: 1,
+    unitPrice: 1,
+    createdBy: USER_ID
+  });
+  assert(!quoteLinePriceError, `insert quoteLinePrice failed: ${quoteLinePriceError?.message}`);
+
+  const { data: supplierQuote, error: supplierQuoteError } = await client
+    .from("supplierQuote")
+    .insert({
+      supplierQuoteId: `${TEST_PREFIX}-SQ`,
+      supplierId: SUPPLIER_ID,
+      supplierInteractionId: SUPPLIER_INTERACTION_ID,
+      companyId: COMPANY_ID,
+      createdBy: USER_ID,
+      status: "Draft"
+    })
+    .select("id")
+    .single();
+  assert(
+    !supplierQuoteError && supplierQuote,
+    `insert supplierQuote failed: ${supplierQuoteError?.message}`
+  );
+
+  const { data: supplierQuoteLine, error: supplierQuoteLineError } = await client
+    .from("supplierQuoteLine")
+    .insert({
+      supplierQuoteId: supplierQuote.id,
+      itemId,
+      description: "Deleted item supplier quote line",
+      companyId: COMPANY_ID,
+      createdBy: USER_ID,
+      quantity: [1]
+    })
+    .select("id")
+    .single();
+  assert(
+    !supplierQuoteLineError && supplierQuoteLine,
+    `insert supplierQuoteLine failed: ${supplierQuoteLineError?.message}`
+  );
+
+  const { error: deleteItemError } = await client
+    .from("item")
+    .delete()
+    .eq("id", itemId);
+  assert(!deleteItemError, `item soft delete failed: ${deleteItemError?.message}`);
+
+  const { data: quoteLineRow, error: quoteLineSelectError } = await client
+    .from("quoteLines")
+    .select("id, itemId, itemDeletedAt")
+    .eq("id", quoteLine.id)
+    .single();
+  assert(
+    !quoteLineSelectError && quoteLineRow?.id === quoteLine.id,
+    `quoteLines view should keep line after item delete: ${quoteLineSelectError?.message}`
+  );
+  assert(quoteLineRow?.itemDeletedAt, "quoteLines should expose itemDeletedAt");
+
+  const { data: salesOrderLineRow, error: salesOrderLineSelectError } = await client
+    .from("salesOrderLines")
+    .select("id, itemId, itemDeletedAt")
+    .eq("id", salesOrderLine.id)
+    .single();
+  assert(
+    !salesOrderLineSelectError && salesOrderLineRow?.id === salesOrderLine.id,
+    `salesOrderLines view should keep line after item delete: ${salesOrderLineSelectError?.message}`
+  );
+  assert(
+    salesOrderLineRow?.itemDeletedAt,
+    "salesOrderLines should expose itemDeletedAt"
+  );
+
+  const { data: quoteHeader } = await client
+    .from("quotes")
+    .select("id")
+    .eq("id", quote.id)
+    .maybeSingle();
+  assert(quoteHeader, "quotes header should remain loadable after item delete");
+
+  const { data: poLineRow, error: poLineSelectError } = await client
+    .from("purchaseOrderLines")
+    .select("id, itemId, itemDeletedAt")
+    .eq("id", purchaseOrderLine.id)
+    .single();
+  assert(
+    !poLineSelectError && poLineRow?.id === purchaseOrderLine.id,
+    `purchaseOrderLines should keep line after item delete: ${poLineSelectError?.message}`
+  );
+
+  const { data: receiptLineRow, error: receiptLineSelectError } = await client
+    .from("receiptLines")
+    .select("id, itemId, itemDeletedAt")
+    .eq("id", receiptLine.id)
+    .single();
+  assert(
+    !receiptLineSelectError && receiptLineRow?.id === receiptLine.id,
+    `receiptLines should keep line after item delete: ${receiptLineSelectError?.message}`
+  );
+
+  const { data: quoteLinePriceRow, error: quoteLinePriceSelectError } = await client
+    .from("quoteLinePrices")
+    .select("id, itemId, itemDeletedAt")
+    .eq("id", quoteLine.id)
+    .single();
+  assert(
+    !quoteLinePriceSelectError && quoteLinePriceRow?.id === quoteLine.id,
+    `quoteLinePrices should keep line after item delete: ${quoteLinePriceSelectError?.message}`
+  );
+
+  const { data: supplierQuoteLineRow, error: supplierQuoteLineSelectError } =
+    await client
+      .from("supplierQuoteLines")
+      .select("id, itemId, itemDeletedAt")
+      .eq("id", supplierQuoteLine.id)
+      .single();
+  assert(
+    !supplierQuoteLineSelectError &&
+      supplierQuoteLineRow?.id === supplierQuoteLine.id,
+    `supplierQuoteLines should keep line after item delete: ${supplierQuoteLineSelectError?.message}`
+  );
+
+  const { data: supplierQuoteHeader } = await client
+    .from("supplierQuotes")
+    .select("id")
+    .eq("id", supplierQuote.id)
+    .maybeSingle();
+  assert(
+    supplierQuoteHeader,
+    "supplierQuotes header should remain loadable after item delete"
+  );
+
+  await withHardDelete(async () => {
+    await client.from("supplierQuoteLine").delete().eq("id", supplierQuoteLine.id);
+    await client.from("supplierQuote").delete().eq("id", supplierQuote.id);
+    await client.from("quoteLinePrice").delete().eq("quoteLineId", quoteLine.id);
+    await client.from("receiptLine").delete().eq("id", receiptLine.id);
+    await client.from("receipt").delete().eq("id", receipt.id);
+    await client.from("purchaseOrderLine").delete().eq("id", purchaseOrderLine.id);
+    await client.from("purchaseOrder").delete().eq("id", purchaseOrder.id);
+    await client.from("salesOrderLine").delete().eq("id", salesOrderLine.id);
+    await client.from("salesOrder").delete().eq("id", salesOrder.id);
+    await client.from("quoteLine").delete().eq("id", quoteLine.id);
+    await client.from("quote").delete().eq("id", quote.id);
+    await client.from("part").delete().eq("id", readableId);
+    await client.from("item").delete().eq("id", itemId);
+  });
+
+  console.log("✓ historical document lines survive item soft delete");
+}
+
 async function testDeactivatedPartStillVisible(client: WrappedClient) {
   const readableId = `${TEST_PREFIX}-INACTIVE`;
   const itemId = await insertItemFixture(
@@ -531,6 +903,8 @@ async function main() {
 
   await testGaugesView(client);
   await testJobsView(client);
+  await testJobWithDeletedItem(client);
+  await testHistoricalDocumentLinesWithDeletedItem(client);
   await testDeactivatedPartStillVisible(client);
   await testSimpleTableSoftDeletes(client);
 

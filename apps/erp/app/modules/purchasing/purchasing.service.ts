@@ -1,5 +1,6 @@
 import type { Database, Json } from "@carbon/database";
 import { fetchAllFromTable } from "@carbon/database";
+import { withIncludeDeleted } from "@carbon/database/soft-delete";
 import { getPurchaseOrderStatus } from "@carbon/utils";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import type {
@@ -395,8 +396,14 @@ export async function getPurchasingTerms(
 
 export async function getSupplier(
   client: SupabaseClient<Database>,
-  supplierId: string
+  supplierId: string,
+  options?: { includeDeleted?: boolean }
 ) {
+  if (options?.includeDeleted) {
+    return withIncludeDeleted(() =>
+      client.from("supplier").select("*").eq("id", supplierId).single()
+    );
+  }
   return client.from("suppliers").select("*").eq("id", supplierId).single();
 }
 

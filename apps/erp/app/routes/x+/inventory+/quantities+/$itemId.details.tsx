@@ -111,7 +111,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const [quantities, item] = await Promise.all([
     getItemQuantities(client, itemId, companyId, locationId),
-    getItem(client, itemId)
+    getItem(client, itemId, { includeDeleted: true })
   ]);
   if (quantities.error) {
     throw redirect(

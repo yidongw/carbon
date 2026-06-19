@@ -57,7 +57,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const serviceRole = getCarbonServiceRole();
   const [customer, opportunity, companySettings] = await Promise.all([
     salesInvoice.data?.customerId
-      ? getCustomer(client, salesInvoice.data.customerId)
+      ? getCustomer(client, salesInvoice.data.customerId, { includeDeleted: true })
       : null,
     salesInvoice.data?.opportunityId
       ? getOpportunity(client, salesInvoice.data.opportunityId)

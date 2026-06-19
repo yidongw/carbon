@@ -368,7 +368,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const [supplier, interaction, approvalRequest, companySettings] =
     await Promise.all([
       purchaseOrder.data?.supplierId
-        ? getSupplier(client, purchaseOrder.data.supplierId)
+        ? getSupplier(client, purchaseOrder.data.supplierId, { includeDeleted: true })
         : null,
       getSupplierInteraction(client, purchaseOrder.data.supplierInteractionId),
       // Only fetch approval request if status is "Needs Approval"

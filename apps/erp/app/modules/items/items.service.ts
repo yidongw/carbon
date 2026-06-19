@@ -1,5 +1,6 @@
 import type { Database, Json } from "@carbon/database";
 import { fetchAllFromTable } from "@carbon/database";
+import { withIncludeDeleted } from "@carbon/database/soft-delete";
 import type { Kysely, KyselyDatabase } from "@carbon/database/client";
 import type {
   ConditionAst,
@@ -439,8 +440,13 @@ export async function getConsumablesList(
       .order("name")
   );
 }
-export async function getItem(client: SupabaseClient<Database>, id: string) {
-  return client.from("item").select("*").eq("id", id).single();
+export async function getItem(
+  client: SupabaseClient<Database>,
+  id: string,
+  options?: { includeDeleted?: boolean }
+) {
+  const query = () => client.from("item").select("*").eq("id", id).single();
+  return options?.includeDeleted ? withIncludeDeleted(query) : query();
 }
 
 export async function getItemCost(
@@ -448,12 +454,14 @@ export async function getItemCost(
   itemId: string,
   companyId: string
 ) {
-  return client
-    .from("itemCost")
-    .select("*, ...item(readableIdWithRevision)")
-    .eq("itemId", itemId)
-    .eq("companyId", companyId)
-    .single();
+  return withIncludeDeleted(() =>
+    client
+      .from("itemCost")
+      .select("*, ...item(readableIdWithRevision)")
+      .eq("itemId", itemId)
+      .eq("companyId", companyId)
+      .single()
+  );
 }
 
 export async function getItemCostHistory(
@@ -717,6 +725,7 @@ export async function getMaterialUsedIn(
   itemId: string,
   companyId: string
 ) {
+  return withIncludeDeleted(async () => {
   const [
     issues,
     jobMaterials,
@@ -824,6 +833,7 @@ export async function getMaterialUsedIn(
     shipmentLines: shipmentLines.data ?? [],
     supplierQuotes: supplierQuotes.data ?? []
   };
+  });
 }
 
 export async function getMakeMethods(
@@ -1435,6 +1445,7 @@ export async function getPartUsedIn(
   itemId: string,
   companyId: string
 ) {
+  return withIncludeDeleted(async () => {
   const [
     issues,
     jobMaterials,
@@ -1564,6 +1575,7 @@ export async function getPartUsedIn(
     shipmentLines: shipmentLines.data ?? [],
     supplierQuotes: supplierQuotes.data ?? []
   };
+  });
 }
 
 export async function getPickMethod(

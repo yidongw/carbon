@@ -87,7 +87,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     );
   }
 
-  const item = await getItem(client, itemId);
+  const item = await getItem(client, itemId, { includeDeleted: true });
   if (item.error || !item.data) {
     throw redirect(
       path.to.inventoryQuantities,

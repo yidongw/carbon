@@ -1,5 +1,6 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
+import { withIncludeDeleted } from "@carbon/database/soft-delete";
 import { Footer, JobTravelerPageContent } from "@carbon/documents/pdf";
 import type { JSONContent } from "@carbon/react";
 import { getPreferenceHeaders } from "@carbon/react";
@@ -43,11 +44,13 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   }
 
   // Get all make methods for this job
-  const jobMakeMethods = await serviceRole
-    .from("jobMakeMethod")
-    .select("*, ...item(itemType:type)")
-    .eq("jobId", jobId)
-    .order("createdAt", { ascending: true });
+  const jobMakeMethods = await withIncludeDeleted(() =>
+    serviceRole
+      .from("jobMakeMethod")
+      .select("*, ...item(itemType:type)")
+      .eq("jobId", jobId)
+      .order("createdAt", { ascending: true })
+  );
 
   if (jobMakeMethods.error || !jobMakeMethods.data) {
     console.error(jobMakeMethods.error);

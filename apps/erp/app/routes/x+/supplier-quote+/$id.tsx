@@ -59,7 +59,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     await Promise.all([
       getSupplierInteraction(serviceRole, quote.data.supplierInteractionId!),
       getCurrencyByCode(serviceRole, companyGroupId, quote.data.currencyCode!),
-      getSupplier(serviceRole, quote.data.supplierId!),
+      getSupplier(serviceRole, quote.data.supplierId!, { includeDeleted: true }),
       getCompanySettings(serviceRole, companyId)
     ]);
 

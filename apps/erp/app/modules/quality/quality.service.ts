@@ -1,5 +1,6 @@
 import type { Database, Json } from "@carbon/database";
 import { fetchAllFromTable } from "@carbon/database";
+import { withIncludeDeleted } from "@carbon/database/soft-delete";
 import type { JSONContent } from "@carbon/react";
 import { parseDate } from "@internationalized/date";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -479,12 +480,14 @@ export async function getIssueItems(
   id: string,
   companyId: string
 ) {
-  return client
-    .from("nonConformanceItem")
-    .select("*, ...item(name)")
-    .eq("nonConformanceId", id)
-    .eq("companyId", companyId)
-    .order("createdAt", { ascending: true });
+  return withIncludeDeleted(() =>
+    client
+      .from("nonConformanceItem")
+      .select("*, ...item(name)")
+      .eq("nonConformanceId", id)
+      .eq("companyId", companyId)
+      .order("createdAt", { ascending: true })
+  );
 }
 
 export async function getIssueAssociations(
@@ -492,6 +495,7 @@ export async function getIssueAssociations(
   nonConformanceId: string,
   companyId: string
 ) {
+  return withIncludeDeleted(async () => {
   const [
     items,
     jobOperations,
@@ -809,6 +813,7 @@ export async function getIssueAssociations(
       })
     )
   };
+  });
 }
 
 export async function getIssueReviewers(

@@ -1,3 +1,4 @@
+import { withIncludeDeleted } from "@carbon/database/soft-delete";
 import { error, success } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
@@ -78,16 +79,18 @@ export async function action({ request, params }: ActionFunctionArgs) {
   // Get job information to determine location
   const [jobResult, itemReplenishments] = await Promise.all([
     getJob(client, jobId),
-    client
-      .from("itemReplenishment")
-      .select(
-        "itemId, leadTime, lotSize, manufacturingBlocked, purchasingBlocked, preferredSupplierId, requiresConfiguration, scrapPercentage, ...item(replenishmentSystem)"
-      )
-      .in(
-        "itemId",
-        sessionItems.map((item) => item.itemId)
-      )
-      .eq("companyId", companyId)
+    withIncludeDeleted(() =>
+      client
+        .from("itemReplenishment")
+        .select(
+          "itemId, leadTime, lotSize, manufacturingBlocked, purchasingBlocked, preferredSupplierId, requiresConfiguration, scrapPercentage, ...item(replenishmentSystem)"
+        )
+        .in(
+          "itemId",
+          sessionItems.map((item) => item.itemId)
+        )
+        .eq("companyId", companyId)
+    )
   ]);
   if (jobResult.error || !jobResult.data) {
     return data(
