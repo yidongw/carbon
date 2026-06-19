@@ -71,32 +71,24 @@ const ApplicationsTable = memo(({ data, count }: ApplicationsTableProps) => {
         id: "applicant",
         header: t`Applicant`,
         cell: ({ row }) => (
-          <Enumerable value={getApplicantName(row.original)} />
+          <span className="font-medium">{getApplicantName(row.original)}</span>
         ),
         meta: { icon: <LuUsers /> }
       },
       {
         id: "email",
         header: t`Email`,
-        cell: ({ row }) => (
-          <Enumerable value={row.original.applicant?.email ?? "—"} />
-        )
+        cell: ({ row }) => row.original.applicant?.email ?? "—"
       },
       {
         id: "role",
         header: t`Role`,
-        cell: ({ row }) => (
-          <Enumerable value={row.original.employeeType?.name ?? "—"} />
-        )
+        cell: ({ row }) => row.original.employeeType?.name ?? "—"
       },
       {
         id: "inviter",
         header: t`Invited By`,
-        cell: ({ row }) => (
-          <Enumerable
-            value={row.original.inviteLink?.inviter?.fullName ?? "—"}
-          />
-        )
+        cell: ({ row }) => row.original.inviteLink?.inviter?.fullName ?? "—"
       },
       {
         id: "status",
@@ -108,11 +100,7 @@ const ApplicationsTable = memo(({ data, count }: ApplicationsTableProps) => {
       {
         accessorKey: "createdAt",
         header: t`Submitted`,
-        cell: ({ row }) => (
-          <Enumerable
-            value={new Date(row.original.createdAt).toLocaleString()}
-          />
-        )
+        cell: ({ row }) => new Date(row.original.createdAt).toLocaleString()
       }
     ];
   }, [getApplicantName, getApplicationStatus, t]);
