@@ -5,14 +5,7 @@ import { fetchAllFromTable } from "@carbon/database";
 import { useInterval, useRealtimeChannel } from "@carbon/react";
 import { useEffect } from "react";
 import { useUser } from "~/hooks";
-import {
-  refetchPeople,
-  ensurePersonInStore,
-  useCustomers,
-  useItems,
-  usePeople,
-  useSuppliers
-} from "~/stores";
+import { useCustomers, useItems, usePeople, useSuppliers } from "~/stores";
 import type { Item } from "~/stores/items";
 import type { ListItem } from "~/types";
 
@@ -393,19 +386,18 @@ const RealtimeDataProvider = ({ children }: { children: React.ReactNode }) => {
             table: "employee"
           },
           async (payload) => {
-            const rowCompanyId =
-              payload.eventType === "DELETE"
-                ? (payload.old as { companyId?: string }).companyId
-                : (payload.new as { companyId?: string }).companyId;
-            if (rowCompanyId && rowCompanyId !== companyId) return;
-
-            if (payload.eventType === "INSERT") {
-              const inserted = payload.new as { id: string };
-              await ensurePersonInStore(carbon, companyId, inserted.id);
-              return;
+            // TODO: there's a cleaner way of doing this, but since customers and suppliers
+            // are also in the users table, we can't automatically add/update/delete them
+            // from our list of employees. So for now we just refetch.
+            const { data } = await carbon
+              .from("employees")
+              .select("id, name, firstName, lastName, avatarUrl")
+              .eq("companyId", companyId)
+              .order("name");
+            if (data) {
+              // @ts-ignore
+              setPeople(data);
             }
-
-            await refetchPeople(carbon, companyId);
           }
         );
     }
