@@ -3,7 +3,7 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { LuCalendarClock, LuCopy, LuLink, LuShieldOff } from "react-icons/lu";
-import { useFetcher, useRevalidator } from "react-router";
+import { useFetcher, useNavigate, useRevalidator } from "react-router";
 import { New, Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { usePermissions, useUrlParams } from "~/hooks";
@@ -33,8 +33,8 @@ const InviteLinksTable = memo(({ data, count }: InviteLinksTableProps) => {
   const { t } = useLingui();
   const [params] = useUrlParams();
   const permissions = usePermissions();
+  const navigate = useNavigate();
   const revokeFetcher = useFetcher();
-  const revalidator = useRevalidator();
   const [expiryModal, setExpiryModal] = useState<InviteLinkRow | null>(null);
   const prevStateRef = useRef(revokeFetcher.state);
 
@@ -42,10 +42,11 @@ const InviteLinksTable = memo(({ data, count }: InviteLinksTableProps) => {
   useEffect(() => {
     // Check if state changed from submitting/loading to idle
     if (prevStateRef.current !== "idle" && revokeFetcher.state === "idle") {
-      revalidator.revalidate();
+      // Navigate to same route to trigger loader refetch
+      navigate(".", { replace: true });
     }
     prevStateRef.current = revokeFetcher.state;
-  }, [revokeFetcher.state, revalidator]);
+  }, [revokeFetcher.state, navigate]);
 
   const getStatus = useCallback((row: InviteLinkRow) => {
     if (isInviteLinkExpired(row)) {
