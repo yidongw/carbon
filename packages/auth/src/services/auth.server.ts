@@ -616,3 +616,97 @@ export async function verifyAuthSession(authSession: AuthSession) {
 
   return Boolean(authAccount);
 }
+
+/**
+ * Seeds a bypass user with full company data.
+ * Used for bypass+*@mail.com emails to auto-create and seed on first login.
+ */
+export async function seedBypassUser(email: string): Promise<void> {
+  const client = getCarbonServiceRole();
+
+  // Infer first name from email (same logic as seed-dev)
+  const localPart = email.split("@")[0]!;
+  const firstName = localPart
+    .split(/[.+_-]/)[0]!
+    .charAt(0)
+    .toUpperCase() +
+    localPart.split(/[.+_-]/)[0]!.slice(1).toLowerCase();
+
+  // Create user in Supabase Auth
+  const { data: newUser, error: createError } =
+    await client.auth.admin.createUser({
+      email,
+      password: "password",
+      email_confirm: true,
+      app_metadata: {
+        role: "employee",
+        provider: "email",
+        providers: ["email"]
+      }
+    });
+
+  if (createError || !newUser.user) {
+    throw new Error(`Failed to create bypass user: ${createError?.message}`);
+  }
+
+  const userId = newUser.user.id;
+
+  // Update user's first name
+  await client.from("user").update({ firstName }).eq("id", userId);
+
+  // Create company
+  const { data: companyData, error: companyError } = await client
+    .from("company")
+    .insert({ name: `Bypass ${firstName}'s Company`, baseCurrencyCode: "USD" })
+    .select("id")
+    .single();
+
+  if (companyError || !companyData) {
+    throw new Error(`Failed to create company: ${companyError?.message}`);
+  }
+
+  const companyId = companyData.id;
+
+  // Seed company data using the RPC function
+  // Import seed data dynamically to avoid circular dependencies
+  const { companySeedData, defaultLocation } = await import("@carbon/database/seed");
+
+  const { error: seedError } = await client.rpc("seed_company", {
+    company_id: companyId,
+    user_id: userId,
+    parent_company_id: null,
+    seed: companySeedData as any
+  });
+
+  if (seedError) {
+    throw new Error(`Failed to seed company: ${seedError.message}`);
+  }
+
+  // Create default location
+  const { data: locationData, error: locationError } = await client
+    .from("location")
+    .insert({
+      name: defaultLocation.name,
+      addressLine1: defaultLocation.addressLine1,
+      city: defaultLocation.city,
+      stateProvince: defaultLocation.stateProvince,
+      postalCode: defaultLocation.postalCode,
+      countryCode: defaultLocation.countryCode,
+      timezone: defaultLocation.timezone,
+      companyId,
+      createdBy: "system"
+    })
+    .select("id")
+    .single();
+
+  if (locationError || !locationData) {
+    throw new Error(`Failed to create location: ${locationError?.message}`);
+  }
+
+  // Link employee to location
+  await client.from("employeeJob").insert({
+    id: userId,
+    companyId,
+    locationId: locationData.id
+  });
+}

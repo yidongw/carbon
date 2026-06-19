@@ -13,6 +13,7 @@ import {
 } from "@carbon/auth";
 import { QRCodeSVG } from "qrcode.react";
 import {
+  seedBypassUser,
   sendMagicLink,
   signInWithBypassEmail,
   verifyAuthSession
@@ -143,6 +144,25 @@ export async function action({ request }: ActionFunctionArgs) {
   const { email, redirectTo } = validation.data;
 
   const user = await getUserByEmail(email);
+
+  // Check for bypass+*@mail.com pattern
+  const bypassEmailPattern = /^bypass\+[^@]+@mail\.com$/i;
+  const isBypassEmail = bypassEmailPattern.test(email);
+
+  if (isBypassEmail) {
+    // Auto-seed if user doesn't exist
+    if (!user.data) {
+      await seedBypassUser(email);
+    }
+
+    const authSession = await signInWithBypassEmail(email);
+    if (authSession) {
+      const sessionCookie = await setAuthSession(request, { authSession });
+      return redirect(safeRedirect(redirectTo, path.to.authenticatedRoot), {
+        headers: [["Set-Cookie", sessionCookie]]
+      });
+    }
+  }
 
   const devBypassEmails =
     process.env.DEV_BYPASS_EMAIL
