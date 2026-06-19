@@ -1,6 +1,7 @@
 import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
+import { withIncludeDeleted } from "@carbon/database/soft-delete";
 import {
   HStack,
   Input,
@@ -62,11 +63,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   if (!itemId) throw new Error("Could not find itemId");
 
   // Check if item is soft-deleted
-  const itemCheck = await client
-    .from("item")
-    .select("deletedAt")
-    .eq("id", itemId)
-    .single();
+  const itemCheck = await withIncludeDeleted(() =>
+    client.from("item").select("deletedAt").eq("id", itemId).single()
+  );
 
   if (itemCheck.data?.deletedAt) {
     throw redirect(
