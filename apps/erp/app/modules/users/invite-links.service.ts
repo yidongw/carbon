@@ -24,7 +24,7 @@ export async function getInviteLinks(
         employeeType:employeeTypeId(name),
         inviter:createdBy(fullName),
         location:locationId(name),
-        membershipApplications(count)
+        membershipApplication(count)
       `,
       { count: "exact" }
     )
