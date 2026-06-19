@@ -2,27 +2,40 @@
 
 ## Overview
 
-Job Bill of Process (BOP) operation statuses are defined in `apps/erp/app/modules/production/production.models.ts` as `jobOperationStatus`:
+Display labels for enums and constants in `apps/erp/app/modules/production/production.models.ts` are translated via hooks in `apps/erp/app/modules/production/productionLabels.ts`.
 
-- Todo, Ready, Waiting, In Progress, Paused, Done, Canceled
+## Translated enums
 
-## Translation
+| Constant | Hook |
+|----------|------|
+| `jobStatus` | `useJobStatusLabel()` |
+| `jobOperationStatus` | `useJobOperationStatusLabel()` |
+| `deadlineTypes` | `useDeadlineTypeLabel()` |
+| `procedureStatus` | `useProcedureStatusLabel()` |
+| `maintenanceDispatchPriority` | `useMaintenanceDispatchPriorityLabel()` |
+| `maintenanceDispatchStatus` | `useMaintenanceDispatchStatusLabel()` |
+| `maintenanceFrequency` | `useMaintenanceFrequencyLabel()` |
+| `maintenanceSeverity` | `useMaintenanceSeverityLabel()` |
+| `maintenanceSource` | `useMaintenanceSourceLabel()` |
+| `oeeImpact` | `useOeeImpactLabel()` |
+| `KPIs` | `useKpiLabel()`, `useKpiEmptyMessage()` |
 
-Operation status labels are translated via `useJobOperationStatusLabel()` in `apps/erp/app/modules/production/ui/Jobs/jobLabels.ts`, following the same pattern as `useJobStatusLabel()` for job-level statuses.
+`jobLabels.ts` re-exports job/deadline/operation hooks for backward compatibility.
 
 ## UI Components
 
-Components that display operation status labels:
+Operation status labels:
+- `JobOperationStatus.tsx`, `JobOperationsTable.tsx`, `ItemCard.tsx`
 
-- `JobOperationStatus.tsx` — status dropdown on BOP operations (icon button + menu)
-- `JobOperationsTable.tsx` — operations table status dropdown
-- `ItemCard.tsx` — Kanban card status text (alongside `JobOperationStatus` icon)
+Procedure status:
+- `ProcedureStatus.tsx`
 
-## Locale Catalog
-
-Strings live in `packages/locale/locales/{locale}/erp.po`. Most statuses (Ready, In Progress, Paused, Done, Canceled) were already in the catalog; Todo and Waiting were added when operation status labels were wired to Lingui.
+Maintenance enums (resources module, same values as production.models):
+- `MaintenanceStatus.tsx`, `MaintenancePriority.tsx`, `MaintenanceSource.tsx`, `MaintenanceSeverity.tsx`, `MaintenanceOeeImpact.tsx`
+- `MaintenanceSchedulesTable.tsx`, `MaintenanceScheduleForm.tsx`, `MaintenanceDispatchForm.tsx`, `MaintenanceDispatchesTable.tsx`
 
 ## Related
 
-- Job-level status translation: `useJobStatusLabel()` in same file, used by `JobStatus.tsx`
-- MES app still renders raw `operation.operationStatus` strings in some places (e.g. `OperationsList.tsx`)
+- Production quantity/event labels: `productionQuantityLabels.ts` (`Production`, `Rework`, `Scrap`, `Inside`, `Outside`, etc.)
+- Job-level status badge: `JobStatus.tsx` uses `useJobStatusLabel()`
+- Production dashboard KPI labels are translated inline (same strings as `useKpiLabel()`)

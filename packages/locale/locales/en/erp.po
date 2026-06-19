@@ -579,6 +579,9 @@ msgstr "An item cannot be added to itself."
 msgid "and {remaining} more"
 msgstr "and {remaining} more"
 
+msgid "Annual"
+msgstr "Annual"
+
 msgid "API and Webhooks"
 msgstr "API and Webhooks"
 
@@ -2201,6 +2204,9 @@ msgstr "Created work center"
 msgid "Creating part..."
 msgstr "Creating part..."
 
+msgid "Critical"
+msgstr "Critical"
+
 msgid "CSV column"
 msgstr "CSV column"
 
@@ -2326,6 +2332,9 @@ msgstr "Customer Types"
 
 msgid "Customers"
 msgstr "Customers"
+
+msgid "Daily"
+msgstr "Daily"
 
 msgid "Daily Usage"
 msgstr "Daily Usage"
@@ -2892,6 +2901,9 @@ msgstr "Don't Cancel"
 
 msgid "Done"
 msgstr "Done"
+
+msgid "Down"
+msgstr "Down"
 
 msgid "Download"
 msgstr "Download"
@@ -4207,6 +4219,9 @@ msgstr "Helper information"
 msgid "Hide, pin and reorder columns"
 msgstr "Hide, pin and reorder columns"
 
+msgid "High"
+msgstr "High"
+
 msgid "Higher priority wins ties and applies first for markups"
 msgstr "Higher priority wins ties and applies first for markups"
 
@@ -4272,6 +4287,9 @@ msgstr "If you wish to change the part numbers, please click Cancel and manually
 
 msgid "Image"
 msgstr "Image"
+
+msgid "Impact"
+msgstr "Impact"
 
 msgid "Implementation Support"
 msgstr "Implementation Support"
@@ -4957,6 +4975,9 @@ msgstr "Lot Size Variance"
 msgid "Lot Size:"
 msgstr "Lot Size:"
 
+msgid "Low"
+msgstr "Low"
+
 msgid "Lower runs first"
 msgstr "Lower runs first"
 
@@ -5211,6 +5232,9 @@ msgstr "Mean Time To Repair"
 msgid "Measurement Standard"
 msgstr "Measurement Standard"
 
+msgid "Medium"
+msgstr "Medium"
+
 msgid "Medium section heading."
 msgstr "Medium section heading."
 
@@ -5324,6 +5348,9 @@ msgstr "Modules"
 
 msgid "Monday"
 msgstr "Monday"
+
+msgid "Monthly"
+msgstr "Monthly"
 
 msgid "More"
 msgstr "More"
@@ -5803,6 +5830,9 @@ msgstr "No groups assigned"
 msgid "No image"
 msgstr "No image"
 
+msgid "No Impact"
+msgstr "No Impact"
+
 msgid "No issue types configured"
 msgstr "No issue types configured"
 
@@ -5917,6 +5947,9 @@ msgstr "Nominal Cost"
 msgid "Non Conformance Type"
 msgstr "Non Conformance Type"
 
+msgid "Non-Conformance"
+msgstr "Non-Conformance"
+
 msgid "Non-Inventory"
 msgstr "Non-Inventory"
 
@@ -5979,6 +6012,9 @@ msgstr "Numeric"
 
 msgid "OEE Impact"
 msgstr "OEE Impact"
+
+msgid "OEM Required"
+msgstr "OEM Required"
 
 msgid "of"
 msgstr "of"
@@ -6102,6 +6138,9 @@ msgstr "Operator gets a warning. Stock still goes through."
 
 msgid "Operator must pick a different batch/serial."
 msgstr "Operator must pick a different batch/serial."
+
+msgid "Operator Performed"
+msgstr "Operator Performed"
 
 msgid "operator@company.com"
 msgstr "operator@company.com"
@@ -6602,6 +6641,9 @@ msgstr "Press '/' for commands"
 msgid "Prev"
 msgstr "Prev"
 
+msgid "Preventive"
+msgstr "Preventive"
+
 msgid "Preventive Action"
 msgstr "Preventive Action"
 
@@ -6942,6 +6984,9 @@ msgstr "Quantity Type"
 msgid "Quantity updated"
 msgstr "Quantity updated"
 
+msgid "Quarterly"
+msgstr "Quarterly"
+
 msgid "Question"
 msgstr "Question"
 
@@ -7007,6 +7052,9 @@ msgstr "Rate limit exceeded"
 
 msgid "Reactivate"
 msgstr "Reactivate"
+
+msgid "Reactive"
+msgstr "Reactive"
 
 msgid "Read rows"
 msgstr "Read rows"
@@ -7677,6 +7725,9 @@ msgstr "Schedule"
 
 msgid "Schedule Name"
 msgstr "Schedule Name"
+
+msgid "Scheduled"
+msgstr "Scheduled"
 
 msgid "Scheduled Maintenance"
 msgstr "Scheduled Maintenance"
@@ -8594,6 +8645,9 @@ msgstr "Supply"
 msgid "Supply & Demand"
 msgstr "Supply & Demand"
 
+msgid "Support Required"
+msgstr "Support Required"
+
 #. placeholder {0}: supportedModelTypes.join(", ")
 msgid "Supports {0} files"
 msgstr "Supports {0} files"
@@ -8924,6 +8978,9 @@ msgstr "To-do List"
 
 msgid "Today"
 msgstr "Today"
+
+msgid "Todo"
+msgstr "Todo"
 
 msgid "Toggle"
 msgstr "Toggle"
@@ -9589,6 +9646,9 @@ msgstr "Voiding this receipt will:"
 msgid "Voiding this shipment will:"
 msgstr "Voiding this shipment will:"
 
+msgid "Waiting"
+msgstr "Waiting"
+
 msgid "Warehouse Transfer"
 msgstr "Warehouse Transfer"
 
@@ -9654,6 +9714,9 @@ msgstr "WeChat QR"
 
 msgid "Wednesday"
 msgstr "Wednesday"
+
+msgid "Weekly"
+msgstr "Weekly"
 
 msgid "Weeks Open"
 msgstr "Weeks Open"

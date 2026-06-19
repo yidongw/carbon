@@ -579,6 +579,9 @@ msgstr "Przedmiot nie może być dodany do siebie."
 msgid "and {remaining} more"
 msgstr "i {remaining} więcej"
 
+msgid "Annual"
+msgstr "Rocznie"
+
 msgid "API and Webhooks"
 msgstr "API i Webhooks"
 
@@ -2201,6 +2204,9 @@ msgstr "Utworzono centrum pracy"
 msgid "Creating part..."
 msgstr "Tworzenie części..."
 
+msgid "Critical"
+msgstr "Krytyczny"
+
 msgid "CSV column"
 msgstr "Kolumna CSV"
 
@@ -2326,6 +2332,9 @@ msgstr "Typy klientów"
 
 msgid "Customers"
 msgstr "Klienci"
+
+msgid "Daily"
+msgstr "Codziennie"
 
 msgid "Daily Usage"
 msgstr "Dzienne użycie"
@@ -2892,6 +2901,9 @@ msgstr "Nie anuluj"
 
 msgid "Done"
 msgstr "Gotowe"
+
+msgid "Down"
+msgstr "Przestój"
 
 msgid "Download"
 msgstr "Pobierz"
@@ -4207,6 +4219,9 @@ msgstr "Informacje pomocnicze"
 msgid "Hide, pin and reorder columns"
 msgstr "Ukryj, przypnij i zmień kolejność kolumn"
 
+msgid "High"
+msgstr "Wysoki"
+
 msgid "Higher priority wins ties and applies first for markups"
 msgstr "Wyższy priorytet wygrywa remisy i jest stosowany jako pierwszy dla marż"
 
@@ -4272,6 +4287,9 @@ msgstr "Jeśli chcesz zmienić numery części, kliknij Anuluj i ręcznie przypi
 
 msgid "Image"
 msgstr "Obrazek"
+
+msgid "Impact"
+msgstr "Wpływ"
 
 msgid "Implementation Support"
 msgstr "Wsparcie wdrażania"
@@ -4957,6 +4975,9 @@ msgstr "Wariacja ilości towaru"
 msgid "Lot Size:"
 msgstr "Rozmiar partii:"
 
+msgid "Low"
+msgstr "Niski"
+
 msgid "Lower runs first"
 msgstr "Niska pierwsza"
 
@@ -5211,6 +5232,9 @@ msgstr "Średni czas naprawy"
 msgid "Measurement Standard"
 msgstr "Standard Pomiaru"
 
+msgid "Medium"
+msgstr "Średni"
+
 msgid "Medium section heading."
 msgstr "Sekcja średniego stopnia zagłębienia."
 
@@ -5324,6 +5348,9 @@ msgstr "Moduły"
 
 msgid "Monday"
 msgstr "Poniedziałek"
+
+msgid "Monthly"
+msgstr "Miesięcznie"
 
 msgid "More"
 msgstr "Więcej"
@@ -5803,6 +5830,9 @@ msgstr "Brak przypisanych grup"
 msgid "No image"
 msgstr "Brak obrazu"
 
+msgid "No Impact"
+msgstr "Brak wpływu"
+
 msgid "No issue types configured"
 msgstr "Brak skonfigurowanych typów problemów"
 
@@ -5917,6 +5947,9 @@ msgstr "Koszt nominalny"
 msgid "Non Conformance Type"
 msgstr "Typ niezgodności"
 
+msgid "Non-Conformance"
+msgstr "Niezgodność"
+
 msgid "Non-Inventory"
 msgstr "Poza zapasami"
 
@@ -5979,6 +6012,9 @@ msgstr "Numerowy"
 
 msgid "OEE Impact"
 msgstr "Wpływ OEE"
+
+msgid "OEM Required"
+msgstr "Wymagany OEM"
 
 msgid "of"
 msgstr "z"
@@ -6102,6 +6138,9 @@ msgstr "Operator otrzymuje ostrzeżenie. Zapasy przechodzą dalej."
 
 msgid "Operator must pick a different batch/serial."
 msgstr "Operator musi wybrać inną partię/numer seryjny."
+
+msgid "Operator Performed"
+msgstr "Wykonane przez operatora"
 
 msgid "operator@company.com"
 msgstr "operator@spółka.com"
@@ -6602,6 +6641,9 @@ msgstr "Naciśnij '/' dla poleceń"
 msgid "Prev"
 msgstr "Poprz"
 
+msgid "Preventive"
+msgstr "Prewencyjny"
+
 msgid "Preventive Action"
 msgstr "Akcja zapobiegawcza"
 
@@ -6942,6 +6984,9 @@ msgstr "Typ ilości"
 msgid "Quantity updated"
 msgstr "Ilość zaktualizowana"
 
+msgid "Quarterly"
+msgstr "Kwartalnie"
+
 msgid "Question"
 msgstr "Pytanie"
 
@@ -7007,6 +7052,9 @@ msgstr "Przekroczono limit szybkości"
 
 msgid "Reactivate"
 msgstr "Ponownie aktywuj"
+
+msgid "Reactive"
+msgstr "Reaktywny"
 
 msgid "Read rows"
 msgstr "Odczytaj wiersze"
@@ -7677,6 +7725,9 @@ msgstr "Harmonogram"
 
 msgid "Schedule Name"
 msgstr "Nazwa harmonogramu"
+
+msgid "Scheduled"
+msgstr "Zaplanowany"
 
 msgid "Scheduled Maintenance"
 msgstr "Zaplanowana konserwacja"
@@ -8594,6 +8645,9 @@ msgstr "Dostawa"
 msgid "Supply & Demand"
 msgstr "Podaż i Popyt"
 
+msgid "Support Required"
+msgstr "Wymagane wsparcie"
+
 #. placeholder {0}: supportedModelTypes.join(", ")
 msgid "Supports {0} files"
 msgstr "Obsługuje pliki {0}"
@@ -8924,6 +8978,9 @@ msgstr "Lista zadań"
 
 msgid "Today"
 msgstr "Dzisiaj"
+
+msgid "Todo"
+msgstr "Do zrobienia"
 
 msgid "Toggle"
 msgstr "Przełącz"
@@ -9589,6 +9646,9 @@ msgstr "Anulowanie tego paragonu spowoduje:"
 msgid "Voiding this shipment will:"
 msgstr "Anulowanie tej przesyłki spowoduje:"
 
+msgid "Waiting"
+msgstr "Oczekujące"
+
 msgid "Warehouse Transfer"
 msgstr "Transfer magazynu"
 
@@ -9654,6 +9714,9 @@ msgstr "Kod QR WeChatu"
 
 msgid "Wednesday"
 msgstr "Środa"
+
+msgid "Weekly"
+msgstr "Tygodniowo"
 
 msgid "Weeks Open"
 msgstr "Tygodnie otwarte"
