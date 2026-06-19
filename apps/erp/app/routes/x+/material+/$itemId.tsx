@@ -55,10 +55,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   );
 
   if (itemCheck.data?.deletedAt) {
-    throw redirect(
-      path.to.items,
-      await flash(request, error(null, "This item has been deleted"))
-    );
+    throw redirect("/x/deleted?type=material");
   }
 
   const [materialSummary, supplierParts, pickMethods, tags] = await Promise.all(
