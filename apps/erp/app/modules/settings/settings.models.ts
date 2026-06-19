@@ -391,3 +391,7 @@ export const documentSectionValidator = zfd.formData({
   content: jsonField(z.any(), "Invalid section content"),
   config: jsonField(sectionConfigSchema, "Invalid section config").optional()
 });
+
+export const lastNameFirstSettingsValidator = z.object({
+  lastNameFirst: zfd.checkbox()
+});

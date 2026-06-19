@@ -97,7 +97,12 @@ import {
   MethodItemTypeIcon,
   TrackingTypeIcon
 } from "~/components/Icons";
-import { useDateFormatter, useUrlParams, useUser } from "~/hooks";
+import {
+  useDateFormatter,
+  useFormatPersonName,
+  useUrlParams,
+  useUser
+} from "~/hooks";
 import type { productionEventType } from "~/services/models";
 import { getFileType } from "~/services/operations.service";
 import type {
@@ -248,6 +253,7 @@ export const JobOperation = ({
     id: userId,
     company: { id: companyId }
   } = useUser();
+  const formatPersonName = useFormatPersonName();
 
   const [items] = useItems();
   const { downloadFile, downloadModel, getFilePath } = useFiles(job);
@@ -1508,7 +1514,12 @@ export const JobOperation = ({
                         <Tr key={pickup.id}>
                           <Td>
                             {pickup.employee
-                              ? `${(pickup.employee as unknown as { firstName: string; lastName: string }).firstName} ${(pickup.employee as unknown as { firstName: string; lastName: string }).lastName}`
+                              ? formatPersonName(
+                                  pickup.employee as unknown as {
+                                    firstName: string;
+                                    lastName: string;
+                                  }
+                                )
                               : pickup.employeeId}
                           </Td>
                           <Td>{pickup.quantity}</Td>

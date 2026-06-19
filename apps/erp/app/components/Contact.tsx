@@ -8,6 +8,7 @@ import {
 } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import { Link } from "react-router";
+import { useFormatPersonName } from "~/hooks";
 import type { Action } from "~/types";
 
 type ContactProps = {
@@ -32,7 +33,11 @@ enum UserStatus {
 
 const Contact = ({ contact, url, user, actions }: ContactProps) => {
   const { t } = useLingui();
-  const name = `${contact.firstName ?? ""} ${contact.lastName ?? ""}`;
+  const formatPersonName = useFormatPersonName();
+  const name = formatPersonName({
+    firstName: contact.firstName,
+    lastName: contact.lastName
+  });
   const userStatus = user
     ? user.active
       ? UserStatus.Active

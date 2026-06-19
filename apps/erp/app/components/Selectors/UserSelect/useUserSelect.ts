@@ -12,6 +12,7 @@ import {
   useState
 } from "react";
 import { useFetcher } from "react-router";
+import { useFormatPersonName } from "~/hooks";
 import type { Group, User } from "~/modules/users";
 import { path } from "~/utils/path";
 
@@ -46,6 +47,8 @@ const defaultProps = {
 };
 
 export default function useUserSelect(props: UserSelectProps) {
+  const formatPersonName = useFormatPersonName();
+
   /* Inner Props */
   const innerProps = useMemo(
     () => ({
@@ -140,7 +143,12 @@ export default function useUserSelect(props: UserSelectProps) {
         return {
           ...user,
           uid: getOptionId(groupId, user.id),
-          label: user.fullName || ""
+          label:
+            formatPersonName({
+              firstName: user.firstName,
+              lastName: user.lastName,
+              fullName: user.fullName
+            }) || ""
         };
       });
 
@@ -168,7 +176,13 @@ export default function useUserSelect(props: UserSelectProps) {
           }
           return acc;
         }, []);
-  }, [groupsFetcher.data, innerProps.usersOnly, instanceId, fetchedMembers]);
+  }, [
+    formatPersonName,
+    groupsFetcher.data,
+    innerProps.usersOnly,
+    instanceId,
+    fetchedMembers
+  ]);
 
   /* Pre-populate controlled component after data loads */
   useEffect(() => {
@@ -729,7 +743,12 @@ export default function useUserSelect(props: UserSelectProps) {
             newSelectionItems[user.id] = {
               ...user,
               uid: getOptionId(id, user.id),
-              label: user.fullName || ""
+              label:
+                formatPersonName({
+                  firstName: user.firstName,
+                  lastName: user.lastName,
+                  fullName: user.fullName
+                }) || ""
             };
           });
 

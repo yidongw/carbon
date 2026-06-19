@@ -60,7 +60,7 @@ const RealtimeDataProvider = ({ children }: { children: React.ReactNode }) => {
       fetchAllFromTable(
         carbon,
         "employees",
-        "id, name, email, avatarUrl",
+        "id, name, firstName, lastName, email, avatarUrl",
         (query) => query.eq("companyId", companyId).order("name")
       )
     ]);

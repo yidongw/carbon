@@ -21,7 +21,7 @@ import {
 } from "react-icons/lu";
 import { Avatar, New, Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
-import { usePermissions, useUrlParams } from "~/hooks";
+import { useFormatPersonName, usePermissions, useUrlParams } from "~/hooks";
 import type { Supplier } from "~/modules/users";
 import {
   DeactivateUsersModal,
@@ -52,6 +52,7 @@ const SupplierAccountsTable = memo(
     unrevokedInviteEmails
   }: SupplierAccountsTableProps) => {
     const { t } = useLingui();
+    const formatPersonName = useFormatPersonName();
     const permissions = usePermissions();
     const [params] = useUrlParams();
 
@@ -101,17 +102,24 @@ const SupplierAccountsTable = memo(
       return [
         {
           header: t`User`,
-          cell: ({ row }) => (
-            <HStack>
-              <Avatar
-                size="sm"
-                name={row.original.user?.fullName ?? undefined}
-                path={row.original.user?.avatarUrl ?? undefined}
-              />
+          cell: ({ row }) => {
+            const name = formatPersonName({
+              firstName: row.original.user?.firstName,
+              lastName: row.original.user?.lastName,
+              fullName: row.original.user?.fullName
+            });
+            return (
+              <HStack>
+                <Avatar
+                  size="sm"
+                  name={name || undefined}
+                  path={row.original.user?.avatarUrl ?? undefined}
+                />
 
-              <span>{row.original.user?.fullName ?? ""}</span>
-            </HStack>
-          ),
+                <span>{name}</span>
+              </HStack>
+            );
+          },
           meta: {
             icon: <LuUser />
           }

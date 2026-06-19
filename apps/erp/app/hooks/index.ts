@@ -9,6 +9,7 @@ import { useCompanySettings } from "./useCompanySettings";
 import { useCurrencyFormatter } from "./useCurrencyFormatter";
 import { useDateFormatter } from "./useDateFormatter";
 import { useFlags } from "./useFlags";
+import { useFormatPersonName } from "./useFormatPersonName";
 import { useGooglePlaces } from "./useGooglePlaces";
 import { useAllModules, useModules, useSettingsModule } from "./useModules";
 import { useMovingCellRef } from "./useMovingCellRef";
@@ -30,6 +31,7 @@ export {
   useCurrencyFormatter,
   useDateFormatter,
   useFlags,
+  useFormatPersonName,
   useGooglePlaces,
   useAllModules,
   useModules,

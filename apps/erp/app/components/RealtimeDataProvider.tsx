@@ -138,10 +138,15 @@ const RealtimeDataProvider = ({ children }: { children: React.ReactNode }) => {
       fetchAllFromTable<{
         id: string;
         name: string;
+        firstName: string;
+        lastName: string;
         email: string;
         avatarUrl: string;
-      }>(carbon, "employees", "id, name, email, avatarUrl", (query) =>
-        query.eq("companyId", companyId).order("name")
+      }>(
+        carbon,
+        "employees",
+        "id, name, firstName, lastName, email, avatarUrl",
+        (query) => query.eq("companyId", companyId).order("name")
       )
     ]);
 
@@ -398,7 +403,7 @@ const RealtimeDataProvider = ({ children }: { children: React.ReactNode }) => {
             // from our list of employees. So for now we just refetch.
             const { data } = await carbon
               .from("employees")
-              .select("id, name, avatarUrl")
+              .select("id, name, firstName, lastName, avatarUrl")
               .eq("companyId", companyId)
               .order("name");
             if (data) {

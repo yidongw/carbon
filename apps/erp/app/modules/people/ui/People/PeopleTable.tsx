@@ -17,7 +17,7 @@ import { useNavigate } from "react-router";
 import { Avatar, EmployeeAvatar, Hyperlink, New, Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { useLocations } from "~/components/Form/Location";
-import { usePermissions, useUrlParams } from "~/hooks";
+import { useFormatPersonName, usePermissions, useUrlParams } from "~/hooks";
 import { DataType } from "~/modules/shared";
 import type { EmployeeType } from "~/modules/users";
 import { path } from "~/utils/path";
@@ -34,6 +34,7 @@ const PeopleTable = memo(
   ({ attributeCategories, data, count, employeeTypes }: PeopleTableProps) => {
     const { t } = useLingui();
     const { locale } = useLocale();
+    const formatPersonName = useFormatPersonName();
     const navigate = useNavigate();
     const permissions = usePermissions();
     const locations = useLocations();
@@ -81,21 +82,22 @@ const PeopleTable = memo(
 
         if (dataType === DataType.User) {
           if (!user) return null;
+          const name = formatPersonName({ fullName: user.fullName });
           return (
             <HStack>
               <Avatar
                 size="sm"
-                name={user.fullName ?? undefined}
+                name={name || undefined}
                 path={user.avatarUrl}
               />
-              <p>{user.fullName ?? ""}</p>
+              <p>{name}</p>
             </HStack>
           );
         }
 
         return "Unknown";
       },
-      [locale]
+      [formatPersonName, locale]
     );
 
     const columns = useMemo<ColumnDef<(typeof data)[number]>[]>(() => {
