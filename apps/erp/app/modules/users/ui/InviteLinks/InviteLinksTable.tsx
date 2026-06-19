@@ -1,9 +1,9 @@
 import { MenuIcon, MenuItem } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { LuCalendarClock, LuCopy, LuLink, LuShieldOff } from "react-icons/lu";
-import { useFetcher } from "react-router";
+import { useFetcher, useRevalidator } from "react-router";
 import { New, Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { usePermissions, useUrlParams } from "~/hooks";
@@ -34,7 +34,15 @@ const InviteLinksTable = memo(({ data, count }: InviteLinksTableProps) => {
   const [params] = useUrlParams();
   const permissions = usePermissions();
   const revokeFetcher = useFetcher();
+  const revalidator = useRevalidator();
   const [expiryModal, setExpiryModal] = useState<InviteLinkRow | null>(null);
+
+  // Revalidate when revoke action completes
+  useEffect(() => {
+    if (revokeFetcher.state === "idle" && revokeFetcher.data) {
+      revalidator.revalidate();
+    }
+  }, [revokeFetcher.state, revokeFetcher.data, revalidator]);
 
   const getStatus = useCallback((row: InviteLinkRow) => {
     if (isInviteLinkExpired(row)) {
