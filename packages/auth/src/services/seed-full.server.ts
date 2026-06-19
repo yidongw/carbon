@@ -11,26 +11,25 @@ export async function seedFullDemoData(
   userId: string,
   locationId: string
 ): Promise<void> {
-  // Helper to check if a row exists
-  const rowExists = async (table: string, column: string, value: string): Promise<boolean> => {
-    const { data } = await client
-      .from(table as any)
-      .select("id")
-      .eq(column as any, value)
-      .eq("companyId" as any, companyId)
-      .limit(1)
-      .maybeSingle();
-    return !!data;
-  };
+  try {
+    console.log(`[seedFullDemoData] Starting for company ${companyId}`);
 
-  // Helper to get next sequence value
-  const nextSeq = async (entityName: string): Promise<string> => {
-    const { data } = await client.rpc("next_sequence_value", {
-      entity_name: entityName,
-      company_id: companyId
-    });
-    return data as string;
-  };
+    // Helper to check if a row exists
+    const rowExists = async (table: string, column: string, value: string): Promise<boolean> => {
+      try {
+        const { data } = await client
+          .from(table as any)
+          .select("id")
+          .eq(column as any, value)
+          .eq("companyId" as any, companyId)
+          .limit(1)
+          .maybeSingle();
+        return !!data;
+      } catch (err) {
+        console.error(`[rowExists] Error checking ${table}.${column}:`, err);
+        return false;
+      }
+    };
 
   // Supplier types
   const supplierTypeNames = ["Raw Material", "Electronics", "Contract Manufacturing"];
@@ -503,38 +502,55 @@ export async function seedFullDemoData(
     },
   ];
 
+  console.log(`[seedFullDemoData] Seeding ${itemsData.length} items...`);
   const itemIds: Record<string, string> = {};
   for (const item of itemsData) {
-    const { data: existing } = await client
-      .from("item")
-      .select("id")
-      .eq("readableId", item.readableId)
-      .eq("companyId", companyId)
-      .limit(1)
-      .maybeSingle();
+    try {
+      const { data: existing } = await client
+        .from("item")
+        .select("id")
+        .eq("readableId", item.readableId)
+        .eq("companyId", companyId)
+        .limit(1)
+        .maybeSingle();
 
-    if (existing) {
-      itemIds[item.readableId] = existing.id;
-      continue;
+      if (existing) {
+        itemIds[item.readableId] = existing.id;
+        console.log(`[seedFullDemoData] Item ${item.readableId} already exists`);
+        continue;
+      }
+
+      const { data, error } = await client
+        .from("item")
+        .insert({
+          readableId: item.readableId,
+          name: item.name,
+          description: item.description,
+          type: item.type,
+          replenishmentSystem: item.replenishmentSystem,
+          itemTrackingType: item.itemTrackingType,
+          unitOfMeasureCode: item.uom,
+          active: true,
+          companyId,
+          createdBy: userId
+        })
+        .select("id")
+        .single();
+
+      if (error) {
+        console.error(`[seedFullDemoData] Error creating item ${item.readableId}:`, error);
+      } else if (data) {
+        itemIds[item.readableId] = data.id;
+        console.log(`[seedFullDemoData] Created item ${item.readableId}`);
+      }
+    } catch (err) {
+      console.error(`[seedFullDemoData] Exception creating item ${item.readableId}:`, err);
     }
+  }
 
-    const { data } = await client
-      .from("item")
-      .insert({
-        readableId: item.readableId,
-        name: item.name,
-        description: item.description,
-        type: item.type,
-        replenishmentSystem: item.replenishmentSystem,
-        itemTrackingType: item.itemTrackingType,
-        unitOfMeasureCode: item.uom,
-        active: true,
-        companyId,
-        createdBy: userId
-      })
-      .select("id")
-      .single();
-
-    if (data) itemIds[item.readableId] = data.id;
+  console.log(`[seedFullDemoData] Completed. Created ${Object.keys(itemIds).length} items`);
+  } catch (err) {
+    console.error("[seedFullDemoData] Fatal error:", err);
+    throw err;
   }
 }
