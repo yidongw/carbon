@@ -46,6 +46,11 @@ msgstr "{0} giorni"
 msgid "{0} deleted successfully"
 msgstr "{0} eliminato con successo"
 
+#. placeholder {0}: data.inviterName
+#. placeholder {1}: data.roleName
+msgid "{0} invited you to join as {1}."
+msgstr ""
+
 #. placeholder {0}: actionData.correctAnswers
 #. placeholder {1}: actionData.totalQuestions
 msgid "{0} of {1} correct"
@@ -564,6 +569,9 @@ msgstr "Conferma e continua"
 msgid "Alpha"
 msgstr "Alpha"
 
+msgid "Already a Member"
+msgstr ""
+
 msgid "Always"
 msgstr "Sempre"
 
@@ -597,6 +605,12 @@ msgstr "Chiave API"
 msgid "API Keys"
 msgstr "Chiavi API"
 
+msgid "Applicant"
+msgstr ""
+
+msgid "Applications"
+msgstr ""
+
 msgid "Applies to"
 msgstr "Applica a"
 
@@ -620,6 +634,9 @@ msgstr "Approva"
 
 msgid "Approve here or manage all pending items on the quantity review page."
 msgstr "Accetta qui o gestisci tutti gli itemi pendenti sulla pagina di revisione quantità."
+
+msgid "Approved"
+msgstr ""
 
 msgid "Approved By"
 msgstr "Approvato da"
@@ -1294,6 +1311,9 @@ msgstr "da {byUser}"
 msgid "By accepting the invite, you agree to the <0>Terms of Service</0> and <1>Privacy Policy</1>."
 msgstr "Accettando l'invito, accetti i <0>Termini di Servizio</0> e l'<1>Informativa sulla Privacy</1>."
 
+msgid "By requesting access, you agree to the <0>Terms of Service</0> and <1>Privacy Policy</1>."
+msgstr ""
+
 msgid "By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy Policy.</1>"
 msgstr "Accedendo, accetti i <0>Termini di Servizio</0> e l'<1>Informativa sulla Privacy.</1>"
 
@@ -1856,6 +1876,9 @@ msgstr "Copia numero lavoro"
 msgid "Copy link"
 msgstr "Copiare link"
 
+msgid "Copy Link"
+msgstr ""
+
 msgid "Copy link to consumable"
 msgstr "Copia il collegamento al consumabile"
 
@@ -2033,6 +2056,9 @@ msgstr "Crea voci di audit trail"
 msgid "Create employee"
 msgstr "Crea dipendente"
 
+msgid "Create Invite Link"
+msgstr ""
+
 msgid "Create Issue"
 msgstr "Crea Problema"
 
@@ -2044,6 +2070,9 @@ msgstr "Crea Lavori"
 
 msgid "Create Kanban"
 msgstr "Crea Kanban"
+
+msgid "Create Link"
+msgstr ""
 
 msgid "Create new rule"
 msgstr "Crea nuova regola"
@@ -2444,6 +2473,9 @@ msgstr "Approvatore Predefinito"
 
 msgid "Default CC Recipients"
 msgstr "Destinatari CC predefiniti"
+
+msgid "Default Location"
+msgstr ""
 
 msgid "Default Method"
 msgstr "Metodo Predefinito"
@@ -3588,6 +3620,9 @@ msgstr "Scade"
 msgid "Expires {0}"
 msgstr "Scade {0}"
 
+msgid "Expires At"
+msgstr ""
+
 msgid "Expires At (optional)"
 msgstr "Scade il (facoltativo)"
 
@@ -4162,6 +4197,9 @@ msgstr ""
 msgid "GL Account"
 msgstr "Conto bancario"
 
+msgid "Go to App"
+msgstr ""
+
 msgid "Goal quantity for this configuration."
 msgstr "Quantità obiettivo per questa configurazione."
 
@@ -4477,6 +4515,9 @@ msgstr "Indirizzo email non valido"
 msgid "Invalid Invite"
 msgstr "Invito Non Valido"
 
+msgid "Invalid Invite Link"
+msgstr ""
+
 msgid "Invalid or expired verification code"
 msgstr "Codice di verifica invalido o scaduto"
 
@@ -4519,8 +4560,23 @@ msgstr "Investimenti nelle Società Controllate"
 msgid "Invite"
 msgstr "Invita"
 
+msgid "Invite Link"
+msgstr ""
+
+msgid "Invite Link Expired"
+msgstr ""
+
+msgid "Invite Links"
+msgstr ""
+
 msgid "Invited"
 msgstr "Invitato"
+
+msgid "Invited By"
+msgstr ""
+
+msgid "Inviter"
+msgstr ""
 
 msgid "Invoice"
 msgstr "Fattura"
@@ -4703,6 +4759,7 @@ msgid "Jobs Required"
 msgstr "Lavori Richiesti"
 
 #. placeholder {0}: company?.name ?? "Company"
+#. placeholder {0}: data.companyName
 msgid "Join {0}"
 msgstr "Unisciti a {0}"
 
@@ -4741,6 +4798,9 @@ msgstr "Kit"
 
 msgid "Label"
 msgstr "Etichetta"
+
+msgid "Label (optional)"
+msgstr ""
 
 msgid "Label is required"
 msgstr "Etichetta è richiesta"
@@ -7360,6 +7420,12 @@ msgstr "Rapporti"
 msgid "Request Approval"
 msgstr "Richiedi Approvazione"
 
+msgid "Request Submitted"
+msgstr ""
+
+msgid "Request to Join"
+msgstr ""
+
 msgid "Requested Date"
 msgstr "Data Richiesta"
 
@@ -7503,6 +7569,12 @@ msgstr "Revoca Invito"
 
 msgid "Revoke Invites"
 msgstr "Revoca inviti"
+
+msgid "Revoke Link"
+msgstr ""
+
+msgid "Revoked"
+msgstr ""
 
 msgid "Rework"
 msgstr "Riprogettazione"
@@ -8053,6 +8125,9 @@ msgstr "Imposta percentuali di markup predefinite per ogni categoria di costo su
 msgid "Set due date"
 msgstr "Imposta data di scadenza"
 
+msgid "Set Expiration"
+msgstr ""
+
 msgid "Set Pricing"
 msgstr "Imposta Prezzi"
 
@@ -8227,6 +8302,9 @@ msgstr "Fondo di sfondo debole dietro ogni pagina dei PDF generati"
 
 msgid "Shown to the user when this rule fails."
 msgstr "Dimostrato al utente quando questa regola fallisce."
+
+msgid "Sign In to Request Access"
+msgstr ""
 
 msgid "Sign in with Email"
 msgstr "Accedi con Email"
@@ -8885,6 +8963,12 @@ msgstr "Queste informazioni verranno utilizzate nelle intestazioni dei documenti
 msgid "This information will be visible to all users, so be careful what you share."
 msgstr "Queste informazioni saranno visibili a tutti gli utenti, quindi fai attenzione a ciò che condividi."
 
+msgid "This invite link is invalid or has expired. Please contact the person who shared it with you."
+msgstr ""
+
+msgid "This invite link is no longer accepting new requests."
+msgstr ""
+
 msgid "This is a unique identifier for the webhook"
 msgstr "Questo è un identificatore univoco per il webhook"
 
@@ -9295,6 +9379,9 @@ msgstr "UdM"
 
 msgid "Update"
 msgstr "Aggiorna"
+
+msgid "Update Expiration"
+msgstr ""
 
 msgid "Update failed"
 msgstr "Aggiornamento fallito"
@@ -9871,6 +9958,10 @@ msgstr "Sì, Rifiuta"
 msgid "Yes, Update IDs"
 msgstr "Sì, Aggiorna ID"
 
+#. placeholder {0}: data.companyName
+msgid "You already have access to {0}."
+msgstr ""
+
 msgid "You can change the UI style any time through the theme setting"
 msgstr "Puoi cambiare lo stile dell'interfaccia in qualsiasi momento attraverso le impostazioni del tema"
 
@@ -9912,6 +10003,16 @@ msgstr "Il tuo invito non è valido o è già stato accettato. Contatta il suppo
 
 msgid "Your Name"
 msgstr "Il tuo nome"
+
+msgid "Your request has been submitted."
+msgstr ""
+
+#. placeholder {0}: data.companyName
+msgid "Your request to join {0} has already been submitted and is pending review."
+msgstr ""
+
+msgid "Your request to join {companyName} has been submitted. An admin will review your application soon."
+msgstr ""
 
 msgid "yourself"
 msgstr "te stesso"

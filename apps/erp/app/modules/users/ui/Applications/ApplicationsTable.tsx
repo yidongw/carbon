@@ -38,6 +38,22 @@ const ApplicationsTable = memo(({ data, count }: ApplicationsTableProps) => {
   const permissions = usePermissions();
   const fetcher = useFetcher();
 
+  const getApplicationStatus = useCallback(
+    (status: MembershipApplicationRow["status"]) => {
+      switch (status) {
+        case "pending":
+          return t`Pending`;
+        case "approved":
+          return t`Approved`;
+        case "rejected":
+          return t`Rejected`;
+        default:
+          return status;
+      }
+    },
+    [t]
+  );
+
   const getApplicantName = useCallback((row: MembershipApplicationRow) => {
     return (
       row.applicant?.fullName ??
@@ -86,7 +102,7 @@ const ApplicationsTable = memo(({ data, count }: ApplicationsTableProps) => {
         id: "status",
         header: t`Status`,
         cell: ({ row }) => (
-          <Enumerable value={row.original.status} className="capitalize" />
+          <Enumerable value={getApplicationStatus(row.original.status)} />
         )
       },
       {
@@ -99,7 +115,7 @@ const ApplicationsTable = memo(({ data, count }: ApplicationsTableProps) => {
         )
       }
     ];
-  }, [getApplicantName, t]);
+  }, [getApplicantName, getApplicationStatus, t]);
 
   const renderContextMenu = useCallback(
     (row: MembershipApplicationRow) => {
