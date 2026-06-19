@@ -3314,6 +3314,9 @@ msgstr "Включите, чтобы разрешить режим общей р
 msgid "Enable to automatically post transactions to the general ledger."
 msgstr "Включите, чтобы автоматически отправлять транзакции в главную книгу."
 
+msgid "Enable to display names with the family name first."
+msgstr ""
+
 msgid "Enable to generate IDs and descriptions for raw materials."
 msgstr "Включите для создания идентификаторов и описаний для сырья."
 
@@ -3919,6 +3922,9 @@ msgstr "Режимы отказа"
 msgid "False"
 msgstr "Незакон"
 
+msgid "Family name is shown first"
+msgstr ""
+
 msgid "Favorite"
 msgstr "Избранное"
 
@@ -4137,6 +4143,9 @@ msgstr "Сгенерированные ID включены"
 
 msgid "Get Method"
 msgstr "Получить метод"
+
+msgid "Given name is shown first"
+msgstr ""
 
 msgid "GL Account"
 msgstr "Окончательный счет"
@@ -5377,6 +5386,12 @@ msgstr "Мой сохраненный вид"
 
 msgid "Name"
 msgstr "Имя"
+
+msgid "Name Display"
+msgstr ""
+
+msgid "Names appear as family name followed by given name across the app."
+msgstr ""
 
 msgid "Navigate"
 msgstr "Навигация"
@@ -8137,6 +8152,9 @@ msgstr "Сочетания клавиш"
 
 msgid "Show Durations"
 msgstr "Показать длительность"
+
+msgid "Show family name before given name, as used in Chinese and other East Asian locales."
+msgstr ""
 
 msgid "Show on card right"
 msgstr "Показать справа на карте"

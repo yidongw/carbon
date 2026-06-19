@@ -3314,6 +3314,9 @@ msgstr "Włącz, aby umożliwić tryb wspólnej stacji roboczej."
 msgid "Enable to automatically post transactions to the general ledger."
 msgstr "Włącz, aby automatycznie księgować transakcje w księdze głównej."
 
+msgid "Enable to display names with the family name first."
+msgstr ""
+
 msgid "Enable to generate IDs and descriptions for raw materials."
 msgstr "Włącz, aby generować identyfikatory i opisy dla surowców."
 
@@ -3919,6 +3922,9 @@ msgstr "Tryby awarii"
 msgid "False"
 msgstr "Nie"
 
+msgid "Family name is shown first"
+msgstr ""
+
 msgid "Favorite"
 msgstr "Ulubione"
 
@@ -4137,6 +4143,9 @@ msgstr "Wygenerowane identyfikatory są włączone"
 
 msgid "Get Method"
 msgstr "Pobierz metodę"
+
+msgid "Given name is shown first"
+msgstr ""
 
 msgid "GL Account"
 msgstr "Konto GL"
@@ -5377,6 +5386,12 @@ msgstr "Mój zapisany widok"
 
 msgid "Name"
 msgstr "Nazwa"
+
+msgid "Name Display"
+msgstr ""
+
+msgid "Names appear as family name followed by given name across the app."
+msgstr ""
 
 msgid "Navigate"
 msgstr "Nawiguj"
@@ -8137,6 +8152,9 @@ msgstr "Skróty"
 
 msgid "Show Durations"
 msgstr "Pokaż czasy trwania"
+
+msgid "Show family name before given name, as used in Chinese and other East Asian locales."
+msgstr ""
 
 msgid "Show on card right"
 msgstr "Pokaż na kartce prawo"

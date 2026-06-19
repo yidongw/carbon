@@ -4,6 +4,7 @@ import { Avatar, HStack, useDisclosure } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useFetcher } from "react-router";
+import { useFormatPersonName } from "~/hooks";
 import type {
   getSupplierContacts,
   SupplierContact as SupplierContactType
@@ -41,6 +42,7 @@ const SupplierContactPreview = (
 
 const SupplierContact = (props: SupplierContactSelectProps) => {
   const { t } = useLingui();
+  const formatPersonName = useFormatPersonName();
   const supplierContactsFetcher =
     useFetcher<Awaited<ReturnType<typeof getSupplierContacts>>>();
 
@@ -63,10 +65,17 @@ const SupplierContact = (props: SupplierContactSelectProps) => {
     () =>
       supplierContactsFetcher.data?.data?.map((c) => ({
         value: c.id,
-        label: c.contact?.fullName ?? c.contact?.email ?? "Unknown"
+        label:
+          formatPersonName({
+            firstName: c.contact?.firstName,
+            lastName: c.contact?.lastName,
+            fullName: c.contact?.fullName
+          }) ||
+          c.contact?.email ||
+          "Unknown"
       })) ?? [],
 
-    [supplierContactsFetcher.data]
+    [formatPersonName, supplierContactsFetcher.data]
   );
 
   const onChange = (

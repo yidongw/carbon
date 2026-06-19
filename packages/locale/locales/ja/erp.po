@@ -3314,6 +3314,9 @@ msgstr "共有ワークステーションモードを有効にします。"
 msgid "Enable to automatically post transactions to the general ledger."
 msgstr "自動的にトランザクションを総勘定元帳に転記するには有効にしてください。"
 
+msgid "Enable to display names with the family name first."
+msgstr ""
+
 msgid "Enable to generate IDs and descriptions for raw materials."
 msgstr "有効にして、原材料のIDと説明を生成します。"
 
@@ -3919,6 +3922,9 @@ msgstr "障害モード"
 msgid "False"
 msgstr "false"
 
+msgid "Family name is shown first"
+msgstr ""
+
 msgid "Favorite"
 msgstr "お気に入り"
 
@@ -4137,6 +4143,9 @@ msgstr "生成されたIDが有効です"
 
 msgid "Get Method"
 msgstr "メソッドを取得"
+
+msgid "Given name is shown first"
+msgstr ""
 
 msgid "GL Account"
 msgstr "Gl Akānto"
@@ -5377,6 +5386,12 @@ msgstr "マイ保存ビュー"
 
 msgid "Name"
 msgstr "名前"
+
+msgid "Name Display"
+msgstr ""
+
+msgid "Names appear as family name followed by given name across the app."
+msgstr ""
 
 msgid "Navigate"
 msgstr "ナビゲート"
@@ -8137,6 +8152,9 @@ msgstr "ショートカット"
 
 msgid "Show Durations"
 msgstr "期間を表示"
+
+msgid "Show family name before given name, as used in Chinese and other East Asian locales."
+msgstr ""
 
 msgid "Show on card right"
 msgstr "右上に表示"

@@ -21,7 +21,7 @@ import {
 } from "react-icons/lu";
 import { Avatar, New, Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
-import { usePermissions, useUrlParams } from "~/hooks";
+import { usePermissions, useUrlParams, useFormatPersonName } from "~/hooks";
 import type { Customer } from "~/modules/users";
 import {
   DeactivateUsersModal,
@@ -52,6 +52,7 @@ const CustomerAccountsTable = memo(
     unrevokedInviteEmails
   }: CustomerAccountsTableProps) => {
     const { t } = useLingui();
+    const formatPersonName = useFormatPersonName();
     const permissions = usePermissions();
     const [params] = useUrlParams();
     const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
@@ -99,23 +100,27 @@ const CustomerAccountsTable = memo(
       return [
         {
           header: t`User`,
-          cell: ({ row }) => (
+          cell: ({ row }) => {
+            const name =
+              formatPersonName({
+                firstName: row.original.user?.firstName,
+                lastName: row.original.user?.lastName,
+                fullName: row.original.user?.fullName
+              }) ||
+              row.original.user?.email ||
+              "Unknown";
+            return (
             <HStack>
               <Avatar
                 size="sm"
-                // @ts-ignore
-                name={row.original.user?.fullName}
-                // @ts-ignore
+                name={name}
                 path={row.original.user?.avatarUrl}
               />
 
-              <span>
-                {row.original.user?.fullName ??
-                  row.original.user?.email ??
-                  "Unknown"}
-              </span>
+              <span>{name}</span>
             </HStack>
-          ),
+            );
+          },
           meta: {
             icon: <LuUser />
           }

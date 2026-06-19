@@ -353,3 +353,7 @@ export const accountsReceivableBillingAddressValidator =
 export const timeCardSettingsValidator = z.object({
   timeCardEnabled: zfd.checkbox()
 });
+
+export const lastNameFirstSettingsValidator = z.object({
+  lastNameFirst: zfd.checkbox()
+});
