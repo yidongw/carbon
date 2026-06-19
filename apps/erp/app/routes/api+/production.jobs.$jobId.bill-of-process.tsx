@@ -3,12 +3,14 @@ import type { JSONContent } from "@carbon/react";
 import type { ComponentProps } from "react";
 import type { LoaderFunctionArgs } from "react-router";
 import {
+  getJobMaterialsByMethodId,
+  getJobOperationsByMethodId
+} from "~/modules/production";
+import {
   getJob,
   getJobMakeMethodById,
-  getJobMaterialsByMethodId,
-  getJobOperationsByMethodId,
   getRootMakeMethod
-} from "~/modules/production";
+} from "~/modules/production/production.historical.server";
 import type JobBillOfProcess from "~/modules/production/ui/Jobs/JobBillOfProcess";
 import { getTagsList } from "~/modules/shared";
 

@@ -16,10 +16,10 @@ import SalesInvoiceExplorer from "~/modules/invoicing/ui/SalesInvoice/SalesInvoi
 import SalesInvoiceHeader from "~/modules/invoicing/ui/SalesInvoice/SalesInvoiceHeader";
 import SalesInvoiceProperties from "~/modules/invoicing/ui/SalesInvoice/SalesInvoiceProperties";
 import {
-  getCustomer,
   getOpportunity,
   getOpportunityDocuments
 } from "~/modules/sales/sales.service";
+import { getCustomer } from "~/modules/sales/sales.historical.server";
 import { getCompanySettings } from "~/modules/settings";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";

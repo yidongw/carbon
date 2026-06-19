@@ -6,7 +6,8 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data } from "react-router";
 import { getConfigurationParameters } from "~/modules/items";
 import type { ConfigurationParameter } from "~/modules/items/types";
-import { getJob, isJobLocked } from "~/modules/production";
+import { isJobLocked } from "~/modules/production";
+import { getJob } from "~/modules/production/production.historical.server";
 import {
   buildConfigTableActionResponse,
   jobConfigurationUpdateFields,

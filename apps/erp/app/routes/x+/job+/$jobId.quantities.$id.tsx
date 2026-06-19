@@ -9,7 +9,6 @@ import { z } from "zod";
 import { getConfigurationParameters } from "~/modules/items";
 import { computeProductionQuantityReportEarnedAmount } from "~/modules/people";
 import {
-  getJob,
   getJobOperationActorContext,
   getJobOperationSupplierQuantityReport,
   getJobOperations,
@@ -22,6 +21,7 @@ import {
   resolveProductionQuantityCanAutoApprove,
   syncProductionQuantityReportApproval
 } from "~/modules/production";
+import { getJob } from "~/modules/production/production.historical.server";
 import { productionQuantityLineJsonValidator } from "~/modules/production/productionQuantityReport.models";
 import {
   isProductionQuantityReportId,

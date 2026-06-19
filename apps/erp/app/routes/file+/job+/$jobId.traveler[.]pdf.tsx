@@ -1,6 +1,5 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
-import { withIncludeDeleted } from "@carbon/database/soft-delete";
 import { Footer, JobTravelerPageContent } from "@carbon/documents/pdf";
 import type { JSONContent } from "@carbon/react";
 import { getPreferenceHeaders } from "@carbon/react";
@@ -15,7 +14,11 @@ import {
 import type { LoaderFunctionArgs } from "react-router";
 import {
   getJob,
+  getJobMakeMethodsForJob,
   getJobMethodTree,
+  getItemWithModelUpload
+} from "~/modules/production/production.historical.server";
+import {
   getJobOperationsByMethodId,
   getTrackedEntityByJobId
 } from "~/modules/production/production.service";
@@ -44,13 +47,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   }
 
   // Get all make methods for this job
-  const jobMakeMethods = await withIncludeDeleted(() =>
-    serviceRole
-      .from("jobMakeMethod")
-      .select("*, ...item(itemType:type)")
-      .eq("jobId", jobId)
-      .order("createdAt", { ascending: true })
-  );
+  const jobMakeMethods = await getJobMakeMethodsForJob(serviceRole, jobId);
 
   if (jobMakeMethods.error || !jobMakeMethods.data) {
     console.error(jobMakeMethods.error);
@@ -95,11 +92,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     jobMakeMethods.data.map(async (makeMethod) => {
       const [operations, item] = await Promise.all([
         getJobOperationsByMethodId(serviceRole, makeMethod.id),
-        serviceRole
-          .from("item")
-          .select("*, modelUpload(thumbnailPath)")
-          .eq("id", makeMethod.itemId ?? "")
-          .single()
+        getItemWithModelUpload(serviceRole, makeMethod.itemId ?? ""),
       ]);
 
       if (operations.error || !operations.data) {

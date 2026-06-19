@@ -32,7 +32,7 @@ import {
 } from "react-router";
 import z from "zod";
 import { zfd } from "zod-form-data";
-import { getSupplier } from "~/modules/purchasing";
+import { getSupplier } from "~/modules/purchasing/purchasing.historical.server";
 import type { IssueActionTask } from "~/modules/quality";
 import {
   getIssueActionTasks,

@@ -20,17 +20,19 @@ import { getCurrencyByCode } from "~/modules/accounting";
 import { getSupplierPriceBreaksForItems } from "~/modules/items";
 import type { SalesOrderLine } from "~/modules/sales";
 import {
-  getCustomer,
   getOpportunityDocuments,
   getOrCreateOpportunityForRecord,
   getQuote,
   getQuoteLinePricesByQuoteId,
   getQuoteLines,
-  getQuoteMethodTrees,
   getQuotePayment,
   getQuoteShipment,
   getSalesOrderLines
 } from "~/modules/sales";
+import {
+  getCustomer,
+  getQuoteMethodTrees
+} from "~/modules/sales/sales.historical.server";
 import {
   QuoteExplorer,
   QuoteHeader,

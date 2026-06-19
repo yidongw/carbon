@@ -11,11 +11,11 @@ import { redirect } from "react-router";
 import { upsertDocument } from "~/modules/documents";
 import {
   finalizeQuote,
-  getCustomer,
   getCustomerContact,
   getQuote,
   quoteFinalizeValidator
 } from "~/modules/sales";
+import { getCustomer } from "~/modules/sales/sales.historical.server";
 import { getCompany, getCompanySettings } from "~/modules/settings";
 import { upsertExternalLink } from "~/modules/shared";
 import { getUser } from "~/modules/users/users.server";

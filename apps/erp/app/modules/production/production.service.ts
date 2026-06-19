@@ -1,6 +1,5 @@
 import type { Database, Json } from "@carbon/database";
 import { fetchAllFromTable } from "@carbon/database";
-import { withIncludeDeleted } from "@carbon/database/soft-delete";
 import type { JSONContent } from "@carbon/react";
 import { parseDate } from "@internationalized/date";
 import type { FileObject, StorageError } from "@supabase/storage-js";
@@ -844,22 +843,18 @@ export async function getJobDocumentsWithItemId(
 }
 
 export async function getJob(client: SupabaseClient<Database>, id: string) {
-  return withIncludeDeleted(() =>
-    client.from("jobs").select("*").eq("id", id).single()
-  );
+  return client.from("jobs").select("*").eq("id", id).single();
 }
 
 export async function getJobByOperationId(
   client: SupabaseClient<Database>,
   operationId: string
 ) {
-  return withIncludeDeleted(() =>
-    client
-      .from("jobOperation")
-      .select("...job(id, companyId, customerId)")
-      .eq("id", operationId)
-      .single()
-  );
+  return client
+    .from("jobOperation")
+    .select("...job(id, companyId, customerId)")
+    .eq("id", operationId)
+    .single();
 }
 
 export async function getJobPurchaseOrderLines(
@@ -927,14 +922,12 @@ export async function getJobMakeMethodById(
   jobMakeMethodId: string,
   companyId: string
 ) {
-  return withIncludeDeleted(() =>
-    client
-      .from("jobMakeMethod")
-      .select("*, ...item(itemType:type, methodRevision:revision)")
-      .eq("id", jobMakeMethodId)
-      .eq("companyId", companyId)
-      .single()
-  );
+  return client
+    .from("jobMakeMethod")
+    .select("*, ...item(itemType:type, methodRevision:revision)")
+    .eq("id", jobMakeMethodId)
+    .eq("companyId", companyId)
+    .single();
 }
 
 export async function getRootMakeMethod(
@@ -942,15 +935,13 @@ export async function getRootMakeMethod(
   jobId: string,
   companyId: string
 ) {
-  return withIncludeDeleted(() =>
-    client
-      .from("jobMakeMethod")
-      .select("*, ...item(itemType:type, methodRevision:revision)")
-      .eq("jobId", jobId)
-      .is("parentMaterialId", null)
-      .eq("companyId", companyId)
-      .single()
-  );
+  return client
+    .from("jobMakeMethod")
+    .select("*, ...item(itemType:type, methodRevision:revision)")
+    .eq("jobId", jobId)
+    .is("parentMaterialId", null)
+    .eq("companyId", companyId)
+    .single();
 }
 
 export async function getJobMaterialsWithQuantityOnHand(
@@ -992,14 +983,12 @@ export async function getJobMethodTreeArray(
   client: SupabaseClient<Database>,
   jobId: string
 ) {
-  return withIncludeDeleted(() =>
-    client.rpc("get_job_method", {
-      jid: jobId
-    })
-  );
+  return client.rpc("get_job_method", {
+    jid: jobId
+  });
 }
 
-function getJobMethodTreeArrayToTree(items: JobMethod[]): JobMethodTreeItem[] {
+export function getJobMethodTreeArrayToTree(items: JobMethod[]): JobMethodTreeItem[] {
   // function traverseAndRenameIds(node: JobMethodTreeItem) {
   //   const clone = structuredClone(node);
   //   clone.id = `node-${Math.random().toString(16).slice(2)}`;

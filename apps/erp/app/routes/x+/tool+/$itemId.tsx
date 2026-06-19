@@ -33,11 +33,11 @@ import {
   getMakeMethodById,
   getMakeMethods,
   getMethodTree,
-  getPartUsedIn,
   getPickMethods,
   getSupplierParts,
   getTool
 } from "~/modules/items";
+import { getPartUsedIn } from "~/modules/items/items.historical.server";
 import { BoMActions, BoMExplorer } from "~/modules/items/ui/Item";
 import type { UsedInNode } from "~/modules/items/ui/Item/UsedIn";
 import { UsedInSkeleton, UsedInTree } from "~/modules/items/ui/Item/UsedIn";

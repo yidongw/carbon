@@ -6,12 +6,12 @@ import { validationError, validator } from "@carbon/form";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data, redirect, useLoaderData } from "react-router";
 import {
-  getJob,
   getJobOperations,
   isJobLocked,
   productionEventValidator,
   upsertProductionEvent
 } from "~/modules/production";
+import { getJob } from "~/modules/production/production.historical.server";
 import { ProductionEventForm } from "~/modules/production/ui/Jobs";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { getParams, path } from "~/utils/path";

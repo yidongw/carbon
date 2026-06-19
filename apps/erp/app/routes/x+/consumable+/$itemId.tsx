@@ -18,10 +18,10 @@ import type { ConsumableSummary, ItemFile } from "~/modules/items";
 import {
   getConsumable,
   getItemFiles,
-  getMaterialUsedIn,
   getPickMethods,
   getSupplierParts
 } from "~/modules/items";
+import { getMaterialUsedIn } from "~/modules/items/items.historical.server";
 import {
   ConsumableHeader,
   ConsumableProperties

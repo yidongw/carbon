@@ -12,7 +12,6 @@ import {
   createJobOperationSupplierQuantityReport,
   createProductionQuantityReport,
   defaultActorKindFromOperationType,
-  getJob,
   getJobOperationActorContext,
   getJobOperations,
   isJobLocked,
@@ -21,6 +20,7 @@ import {
   seededActorFromOperationContext,
   validateActorMatchesOperationSupplierRouting
 } from "~/modules/production";
+import { getJob } from "~/modules/production/production.historical.server";
 import { getConfigReferenceSourceForOperation } from "~/modules/production/configTableOverlay.server";
 import { productionQuantityLineJsonValidator } from "~/modules/production/productionQuantityReport.models";
 import ProductionQuantityForm from "~/modules/production/ui/Jobs/ProductionQuantityForm";

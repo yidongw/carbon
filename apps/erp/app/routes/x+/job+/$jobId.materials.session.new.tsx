@@ -1,4 +1,3 @@
-import { withIncludeDeleted } from "@carbon/database/soft-delete";
 import { error, success } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
@@ -17,7 +16,10 @@ import {
   upsertStockTransfer,
   upsertStockTransferLines
 } from "~/modules/inventory";
-import { getJob } from "~/modules/production";
+import {
+  getItemReplenishmentsForItems,
+  getJob
+} from "~/modules/production/production.historical.server";
 import { getNextSequence } from "~/modules/settings";
 import { getOrCreatePeriods } from "~/modules/shared/shared.server";
 import { path } from "~/utils/path";
@@ -79,17 +81,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
   // Get job information to determine location
   const [jobResult, itemReplenishments] = await Promise.all([
     getJob(client, jobId),
-    withIncludeDeleted(() =>
-      client
-        .from("itemReplenishment")
-        .select(
-          "itemId, leadTime, lotSize, manufacturingBlocked, purchasingBlocked, preferredSupplierId, requiresConfiguration, scrapPercentage, ...item(replenishmentSystem)"
-        )
-        .in(
-          "itemId",
-          sessionItems.map((item) => item.itemId)
-        )
-        .eq("companyId", companyId)
+    getItemReplenishmentsForItems(
+      client,
+      companyId,
+      sessionItems.map((item) => item.itemId)
     )
   ]);
   if (jobResult.error || !jobResult.data) {

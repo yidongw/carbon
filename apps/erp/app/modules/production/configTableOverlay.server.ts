@@ -6,7 +6,7 @@ import type {
   ConfigTableReferenceContext
 } from "./configParamsTableColumns";
 import { computeJobConfigTableTotal } from "./jobConfiguration";
-import { getJob } from "./production.service";
+import { getJob } from "./production.historical.server";
 
 export { buildConfigTableActionResponse };
 

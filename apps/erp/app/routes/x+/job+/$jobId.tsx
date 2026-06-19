@@ -18,11 +18,10 @@ import { flattenTree } from "~/components/TreeView";
 import { getConfigurationParameters } from "~/modules/items";
 import type { JobMethodTreeItem } from "~/modules/production";
 import {
-  getJob,
   getJobDocuments,
-  getJobMethodTree,
   getTrackedEntitiesByJobId
 } from "~/modules/production";
+import { getJob, getJobMethodTree } from "~/modules/production/production.historical.server";
 import {
   JobBoMExplorer,
   JobHeader,

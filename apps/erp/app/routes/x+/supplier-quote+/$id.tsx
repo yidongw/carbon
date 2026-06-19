@@ -10,13 +10,13 @@ import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import { getCurrencyByCode } from "~/modules/accounting";
 import {
   getSiblingQuotesForQuote,
-  getSupplier,
   getSupplierInteraction,
   getSupplierInteractionDocuments,
   getSupplierQuote,
   getSupplierQuoteLinePricesByQuoteId,
   getSupplierQuoteLines
 } from "~/modules/purchasing";
+import { getSupplier } from "~/modules/purchasing/purchasing.historical.server";
 import {
   SupplierQuoteHeader,
   SupplierQuoteProperties

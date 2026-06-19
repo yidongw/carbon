@@ -10,7 +10,8 @@ import {
 import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useLoaderData } from "react-router";
 import InventoryItemHeader from "~/modules/inventory/ui/Inventory/InventoryItemHeader";
-import { getItem, getPickMethod, upsertPickMethod } from "~/modules/items";
+import { getPickMethod, upsertPickMethod } from "~/modules/items";
+import { getItem } from "~/modules/items/items.historical.server";
 import { getLocationsList } from "~/modules/resources";
 import { getUserDefaults } from "~/modules/users/users.server";
 import { path } from "~/utils/path";

@@ -31,19 +31,21 @@ import { usePanels } from "~/components/Layout";
 import { usePermissions, useRealtime, useRouteData, useCurrencyFormatter } from "~/hooks";
 import type { Job, JobPurchaseOrderLine } from "~/modules/production";
 import {
-  getJob,
   getJobDocumentsWithItemId,
-  getJobMakeMethodById,
   getJobMaterialsByMethodId,
   getJobOperationsByMethodId,
   getJobPurchaseOrderLines,
   getProductionDataByOperations,
-  getRootMakeMethod,
   isJobLocked,
   jobValidator,
   recalculateJobRequirements,
   upsertJob
 } from "~/modules/production";
+import {
+  getJob,
+  getJobMakeMethodById,
+  getRootMakeMethod
+} from "~/modules/production/production.historical.server";
 import {
   JobBillOfMaterial,
   JobBillOfProcess,

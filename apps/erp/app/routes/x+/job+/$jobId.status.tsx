@@ -5,12 +5,12 @@ import { flash } from "@carbon/auth/session.server";
 import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
 import {
-  createPurchaseOrdersFromJob,
   jobStatus,
   recalculateJobRequirements,
   runMRP,
   updateJobStatus
 } from "~/modules/production";
+import { createPurchaseOrdersFromJob } from "~/modules/production/purchaseOrderFromJob.server";
 import { triggerJobRelease } from "~/modules/production/production.server";
 import { path, requestReferrer } from "~/utils/path";
 

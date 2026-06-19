@@ -36,13 +36,13 @@ import {
   getQuoteOperationsByLine,
   getQuoteOperationsByMethodId,
   getRelatedPricesForQuoteLine,
-  getRootQuoteMakeMethod,
   isQuoteLocked,
   quoteLineValidator,
   resolvePurchaseToOrderPrices,
   resolveQuoteLinePrices,
   upsertQuoteLine
 } from "~/modules/sales";
+import { getRootQuoteMakeMethod } from "~/modules/sales/sales.historical.server";
 import {
   OpportunityLineDocuments,
   OpportunityLineNotes

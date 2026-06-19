@@ -6,11 +6,11 @@ import { VStack } from "@carbon/react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { redirect, useLoaderData } from "react-router";
 import {
-  getItemCost,
   getItemCostHistory,
   itemCostValidator,
   upsertItemCost
 } from "~/modules/items";
+import { getItemCost } from "~/modules/items/items.historical.server";
 import { ItemCostingForm } from "~/modules/items/ui/Item";
 import { ItemCostHistoryChart } from "~/modules/items/ui/Item/ItemCostHistoryChart";
 import { getCustomFields, setCustomFields } from "~/utils/form";

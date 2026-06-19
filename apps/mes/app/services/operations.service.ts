@@ -1,5 +1,4 @@
 import type { Database } from "@carbon/database";
-import { withIncludeDeleted } from "@carbon/database/soft-delete";
 import type { JSONContent } from "@carbon/react";
 import {
   type FlatTree,
@@ -218,13 +217,11 @@ export async function getJobByOperationId(
     .eq("id", operationId)
     .single();
   if (operation.error) return operation;
-  return withIncludeDeleted(() =>
-    client
-      .from("jobs")
-      .select("*, customer(name)")
-      .eq("id", operation.data.jobId)
-      .single()
-  );
+  return client
+    .from("jobs")
+    .select("*, customer(name)")
+    .eq("id", operation.data.jobId)
+    .single();
 }
 
 const getItemFiles = async (

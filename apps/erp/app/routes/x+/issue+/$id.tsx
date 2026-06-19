@@ -17,11 +17,11 @@ import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import { getItemFiles } from "~/modules/items";
 import {
   getIssue,
-  getIssueAssociations,
   getIssueSuppliers,
   getIssueTypesList,
   getRequiredActionsList
 } from "~/modules/quality";
+import { getIssueAssociations } from "~/modules/quality/quality.historical.server";
 import type { IssueAssociationNode } from "~/modules/quality/types";
 import {
   IssueAssociationsSkeleton,

@@ -8,9 +8,9 @@ import { data, Link, redirect, useFetcher, useLoaderData } from "react-router";
 
 import { getKanban } from "~/modules/inventory";
 import {
-  getJob,
   updateKanbanJob
 } from "~/modules/production/production.service";
+import { getJob } from "~/modules/production/production.historical.server";
 import { path } from "~/utils/path";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {

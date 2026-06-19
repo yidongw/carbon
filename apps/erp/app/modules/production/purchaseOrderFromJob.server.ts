@@ -1,4 +1,5 @@
 import type { Database } from "@carbon/database";
+import { withIncludeDeleted } from "@carbon/database/soft-delete";
 import {
   calculateOutsideProcessingPurchaseOrderLines,
   toPurchaseOrderItemLineType
@@ -132,7 +133,9 @@ export async function createPurchaseOrdersFromJob(
 
   const { data: items, error: itemsError } =
     itemIds.length > 0
-      ? await client.from("item").select("*").in("id", itemIds)
+      ? await withIncludeDeleted(() =>
+          client.from("item").select("*").in("id", itemIds)
+        )
       : { data: [], error: null };
 
   if (itemsError) {

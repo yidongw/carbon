@@ -20,12 +20,12 @@ import {
   getPurchaseOrderDelivery,
   getPurchaseOrderLines,
   getPurchaseOrderLocations,
-  getSupplier,
   getSupplierContact,
   getSupplierInteraction,
   getSupplierInteractionDocuments,
   purchaseOrderApprovalValidator
 } from "~/modules/purchasing";
+import { getSupplier } from "~/modules/purchasing/purchasing.historical.server";
 import {
   // PurchaseOrderExplorer,
   PurchaseOrderHeader,

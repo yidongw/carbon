@@ -2,7 +2,7 @@ import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { Ratelimit, redis } from "@carbon/kv";
 import { supportedModelTypes } from "@carbon/utils";
 import type { LoaderFunctionArgs } from "react-router";
-import { getJobByOperationId } from "~/modules/production";
+import { getJobByOperationId } from "~/modules/production/production.historical.server";
 import { getCustomerPortal } from "~/modules/shared/shared.service";
 
 const supportedFileTypes: Record<string, string> = {

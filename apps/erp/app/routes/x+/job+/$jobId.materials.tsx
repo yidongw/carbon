@@ -6,10 +6,8 @@ import { getLocalTimeZone, today } from "@internationalized/date";
 import type { LoaderFunctionArgs } from "react-router";
 import { redirect, useLoaderData } from "react-router";
 import { usePanels } from "~/components/Layout";
-import {
-  getJob,
-  getJobMaterialsWithQuantityOnHand
-} from "~/modules/production";
+import { getJobMaterialsWithQuantityOnHand } from "~/modules/production";
+import { getJob } from "~/modules/production/production.historical.server";
 import { JobMaterialsTable } from "~/modules/production/ui/Jobs";
 import { getCompanySettings } from "~/modules/settings";
 import { path } from "~/utils/path";

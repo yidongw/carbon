@@ -7,7 +7,6 @@ import { data, redirect, useLoaderData } from "react-router";
 import { getConfigurationParameters } from "~/modules/items";
 import {
   defaultActorKindFromOperationType,
-  getJob,
   getJobOperationActorContext,
   getJobOperations,
   jobOperationPickupValidator,
@@ -16,6 +15,7 @@ import {
   upsertJobOperationSupplierPickup,
   validateActorMatchesOperationSupplierRouting
 } from "~/modules/production";
+import { getJob } from "~/modules/production/production.historical.server";
 import { getConfigReferenceSourceForOperation } from "~/modules/production/configTableOverlay.server";
 import PickupForm from "~/modules/production/ui/Jobs/PickupForm";
 import { getParams, path } from "~/utils/path";

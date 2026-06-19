@@ -9,7 +9,9 @@ import type { LoaderFunctionArgs } from "react-router";
 import {
   getJob,
   getJobMakeMethodById,
-  getJobMethodTree,
+  getJobMethodTree
+} from "~/modules/production/production.historical.server";
+import {
   getJobOperationsByMethodId,
   getTrackedEntityByJobId
 } from "~/modules/production/production.service";

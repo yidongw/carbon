@@ -19,10 +19,10 @@ import {
   getItemFiles,
   getMakeMethods,
   getMaterial,
-  getMaterialUsedIn,
   getPickMethods,
   getSupplierParts
 } from "~/modules/items";
+import { getMaterialUsedIn } from "~/modules/items/items.historical.server";
 import type { UsedInNode } from "~/modules/items/ui/Item/UsedIn";
 import { UsedInSkeleton, UsedInTree } from "~/modules/items/ui/Item/UsedIn";
 import {

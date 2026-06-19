@@ -11,13 +11,12 @@ import { CadModel, DeferredFiles } from "~/components";
 import { usePanels } from "~/components/Layout";
 import { usePermissions } from "~/hooks";
 import {
-  getJob,
-  getJobMakeMethodById,
   getJobMaterialsByMethodId,
   getJobOperationsByMethodId,
   getPartDocuments,
   getProductionDataByOperations
 } from "~/modules/production";
+import { getJob, getJobMakeMethodById } from "~/modules/production/production.historical.server";
 import {
   JobBillOfMaterial,
   JobBillOfProcess,

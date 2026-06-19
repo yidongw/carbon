@@ -7,12 +7,14 @@ import {
   getIssue,
   getIssueActionTasks,
   getIssueApprovalTasks,
-  getIssueAssociations,
-  getIssueItems,
   getIssueReviewers,
   getIssueTypes,
   getRequiredActionsList
 } from "~/modules/quality";
+import {
+  getIssueAssociations,
+  getIssueItems
+} from "~/modules/quality/quality.historical.server";
 import { getCompany } from "~/modules/settings";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {

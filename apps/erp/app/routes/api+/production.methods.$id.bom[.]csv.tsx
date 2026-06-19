@@ -2,7 +2,7 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import type { LoaderFunctionArgs } from "react-router";
 import { flattenTree } from "~/components/TreeView";
 import type { JobOperation } from "~/modules/production";
-import { getJobMethodTree } from "~/modules/production";
+import { getJobMethodTree } from "~/modules/production/production.historical.server";
 import type { BomOperation } from "~/utils/bom";
 import {
   calculateMadePartCosts,

@@ -10,10 +10,10 @@ import { Await, redirect, useLoaderData, useParams } from "react-router";
 import { CadModel } from "~/components";
 import { usePermissions } from "~/hooks";
 import {
-  getQuoteMakeMethod,
   getQuoteMaterialsByMethodId,
   getQuoteOperationsByMethodId
 } from "~/modules/sales";
+import { getQuoteMakeMethod } from "~/modules/sales/sales.historical.server";
 import {
   QuoteBillOfMaterial,
   QuoteBillOfProcess,

@@ -6,10 +6,10 @@ import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
 import {
   convertSupplierQuoteToOrder,
-  getSupplier,
   getSupplierQuote,
   selectedLinesValidator
 } from "~/modules/purchasing";
+import { getSupplier } from "~/modules/purchasing/purchasing.historical.server";
 import { isApprovalRequired } from "~/modules/shared";
 import { path } from "~/utils/path";
 

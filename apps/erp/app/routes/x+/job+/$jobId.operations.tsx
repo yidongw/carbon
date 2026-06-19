@@ -5,7 +5,8 @@ import { useMount, VStack } from "@carbon/react";
 import type { LoaderFunctionArgs } from "react-router";
 import { redirect, useLoaderData } from "react-router";
 import { usePanels } from "~/components/Layout";
-import { getJob, getJobOperations } from "~/modules/production";
+import { getJobOperations } from "~/modules/production";
+import { getJob } from "~/modules/production/production.historical.server";
 import { JobOperationsTable } from "~/modules/production/ui/Jobs";
 
 import { path } from "~/utils/path";

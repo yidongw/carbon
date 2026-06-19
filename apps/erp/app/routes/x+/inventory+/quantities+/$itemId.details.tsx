@@ -12,7 +12,6 @@ import {
   InventoryDetails
 } from "~/modules/inventory";
 import {
-  getItem,
   getItemQuantities,
   getItemShelfLife,
   getItemStorageUnitQuantities,
@@ -23,6 +22,7 @@ import {
   getPickMethod,
   upsertPickMethod
 } from "~/modules/items";
+import { getItem } from "~/modules/items/items.historical.server";
 import { getLocationsList } from "~/modules/resources";
 import type { MethodItemType, MethodType } from "~/modules/shared";
 import { getTagsList } from "~/modules/shared";

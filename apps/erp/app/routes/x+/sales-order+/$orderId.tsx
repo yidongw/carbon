@@ -8,7 +8,6 @@ import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useParams } from "react-router";
 import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import {
-  getCustomer,
   getOpportunityDocuments,
   getOrCreateOpportunityForSalesOrder,
   getQuote,
@@ -18,6 +17,7 @@ import {
   getSalesOrderLines,
   getSalesOrderRelatedItems
 } from "~/modules/sales";
+import { getCustomer } from "~/modules/sales/sales.historical.server";
 import {
   // SalesOrderExplorer,
   SalesOrderHeader,

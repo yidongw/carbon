@@ -15,10 +15,10 @@ import {
 // import PurchaseInvoiceExplorer from "~/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceExplorer";
 import PurchaseInvoiceProperties from "~/modules/invoicing/ui/PurchaseInvoice/PurchaseInvoiceProperties";
 import {
-  getSupplier,
   getSupplierInteraction,
   getSupplierInteractionDocuments
 } from "~/modules/purchasing/purchasing.service";
+import { getSupplier } from "~/modules/purchasing/purchasing.historical.server";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 

@@ -7,7 +7,6 @@ import { redirect, useLoaderData, useParams } from "react-router";
 import { JobOperation } from "~/components/JobOperation";
 import { getCompanySettings } from "~/services/inventory.service";
 import {
-  getJobByOperationId,
   getJobFiles,
   getJobMakeMethod,
   getJobMaterialsByOperationId,
@@ -23,6 +22,7 @@ import {
   getTrackedEntitiesByMakeMethodId,
   getWorkCenter
 } from "~/services/operations.service";
+import { getJobByOperationId } from "~/services/operations.server";
 import type { OperationWithDetails } from "~/services/types";
 
 type ExpiredEntityPolicy = "Warn" | "Block" | "BlockWithOverride";
