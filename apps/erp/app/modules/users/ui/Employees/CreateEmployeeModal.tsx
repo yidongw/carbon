@@ -1,3 +1,4 @@
+import { useCarbon } from "@carbon/auth";
 import { ValidatedForm } from "@carbon/form";
 import {
   Button,
@@ -20,6 +21,7 @@ import { Hidden, Input, Location, Select, Submit } from "~/components/Form";
 import { useUser } from "~/hooks";
 import type { getEmployeeTypes, getInvitable } from "~/modules/users";
 import { createEmployeeValidator } from "~/modules/users";
+import { ensurePersonInStore } from "~/stores/people";
 import { path } from "~/utils/path";
 
 type CreateEmployeeModalResponse =
@@ -41,7 +43,11 @@ const CreateEmployeeModal = ({
   onSuccess
 }: CreateEmployeeModalProps) => {
   const { t } = useLingui();
-  const { defaults } = useUser();
+  const { carbon } = useCarbon();
+  const {
+    defaults,
+    company: { id: companyId }
+  } = useUser();
   const navigate = useNavigate();
   const formFetcher = useFetcher<CreateEmployeeModalResponse>();
   const employeeTypeFetcher =
@@ -66,16 +72,27 @@ const CreateEmployeeModal = ({
 
     if (formFetcher.state === "loading" && data.success === true) {
       handledSuccessRef.current = true;
-      onSuccess?.({ userId: data.userId });
-      onClose?.();
-      toast.success(t`Successfully invited employee`);
+      void ensurePersonInStore(carbon, companyId, data.userId).then(() => {
+        onSuccess?.({ userId: data.userId });
+        onClose?.();
+        toast.success(t`Successfully invited employee`);
+      });
       return;
     }
 
     if (formFetcher.state === "idle" && data.success === false) {
       toast.error(data.message);
     }
-  }, [formFetcher.data, formFetcher.state, onClose, onSuccess, type, t]);
+  }, [
+    carbon,
+    companyId,
+    formFetcher.data,
+    formFetcher.state,
+    onClose,
+    onSuccess,
+    type,
+    t
+  ]);
 
   const employeeTypeOptions =
     employeeTypeFetcher.data?.data?.map((et) => ({
