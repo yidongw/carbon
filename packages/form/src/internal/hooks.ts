@@ -111,7 +111,7 @@ export const useHasActiveFormSubmit = ({
 }: InternalFormContextValue): boolean => {
   let navigation = useNavigation();
   const hasActiveSubmission = fetcher
-    ? fetcher.state === "submitting"
+    ? fetcher.state === "submitting" || fetcher.state === "loading"
     : navigation.state === "submitting" || navigation.state === "loading";
   return hasActiveSubmission;
 };
