@@ -49,7 +49,13 @@ export async function getPublicInviteLinkByCode(
     .eq("code", code)
     .maybeSingle();
 
-  if (inviteLink.error || !inviteLink.data) {
+  if (inviteLink.error) {
+    console.error('[getPublicInviteLinkByCode] Database error:', inviteLink.error);
+    return { success: false, message: `Database error: ${inviteLink.error.message}` };
+  }
+
+  if (!inviteLink.data) {
+    console.log('[getPublicInviteLinkByCode] No invite link found for code:', code);
     return { success: false, message: "Invite link not found" };
   }
 
