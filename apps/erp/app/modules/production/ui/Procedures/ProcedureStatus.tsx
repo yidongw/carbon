@@ -1,5 +1,6 @@
 import { Badge, Status } from "@carbon/react";
 import { LuLock } from "react-icons/lu";
+import { useProcedureStatusLabel } from "../../productionLabels";
 import type { procedureStatus } from "../../production.models";
 
 type ProcedureStatusProps = {
@@ -8,39 +9,45 @@ type ProcedureStatusProps = {
 };
 
 const ProcedureStatus = ({ status, iconOnly }: ProcedureStatusProps) => {
+  const getProcedureStatusLabel = useProcedureStatusLabel();
+
+  if (!status) return null;
+
+  const label = getProcedureStatusLabel(status);
+
   switch (status) {
     case "Draft":
       return (
         <Status color="gray" iconOnly={iconOnly}>
-          {status}
+          {label}
         </Status>
       );
     case "Active":
       if (iconOnly) {
         return (
           <Status color="green" iconOnly>
-            {status}
+            {label}
           </Status>
         );
       }
       return (
         <Badge variant="green">
           <LuLock className="size-3 mr-1" />
-          {status}
+          {label}
         </Badge>
       );
     case "Archived":
       if (iconOnly) {
         return (
           <Status color="red" iconOnly>
-            {status}
+            {label}
           </Status>
         );
       }
       return (
         <Badge variant="red">
           <LuLock className="size-3 mr-1" />
-          {status}
+          {label}
         </Badge>
       );
     default:

@@ -2,6 +2,7 @@ import { BsExclamationSquareFill } from "react-icons/bs";
 import { HighPriorityIcon } from "~/assets/icons/HighPriorityIcon";
 import { LowPriorityIcon } from "~/assets/icons/LowPriorityIcon";
 import { MediumPriorityIcon } from "~/assets/icons/MediumPriorityIcon";
+import { useMaintenanceDispatchPriorityLabel } from "~/modules/production/productionLabels";
 import type { maintenanceDispatchPriority } from "../../resources.models";
 
 type MaintenancePriorityProps = {
@@ -13,33 +14,40 @@ function MaintenancePriority({
   priority,
   className
 }: MaintenancePriorityProps) {
+  const getMaintenanceDispatchPriorityLabel =
+    useMaintenanceDispatchPriorityLabel();
+
+  if (!priority) return null;
+
+  const label = getMaintenanceDispatchPriorityLabel(priority);
+
   switch (priority) {
     case "Low":
       return (
         <div className={`flex gap-1 items-center ${className ?? ""}`}>
           <LowPriorityIcon />
-          <span>{priority}</span>
+          <span>{label}</span>
         </div>
       );
     case "Medium":
       return (
         <div className={`flex gap-1 items-center ${className ?? ""}`}>
           <MediumPriorityIcon />
-          <span>{priority}</span>
+          <span>{label}</span>
         </div>
       );
     case "High":
       return (
         <div className={`flex gap-1 items-center ${className ?? ""}`}>
           <HighPriorityIcon />
-          <span>{priority}</span>
+          <span>{label}</span>
         </div>
       );
     case "Critical":
       return (
         <div className={`flex gap-1 items-center ${className ?? ""}`}>
           <BsExclamationSquareFill className="text-red-500" />
-          <span>{priority}</span>
+          <span>{label}</span>
         </div>
       );
     default:

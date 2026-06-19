@@ -579,6 +579,9 @@ msgstr "Элемент не может быть добавлен к самому
 msgid "and {remaining} more"
 msgstr "и ещё {remaining}"
 
+msgid "Annual"
+msgstr "Ежегодно"
+
 msgid "API and Webhooks"
 msgstr "API и Webhooks"
 
@@ -2201,6 +2204,9 @@ msgstr "Рабочий центр создан"
 msgid "Creating part..."
 msgstr "Создание детали..."
 
+msgid "Critical"
+msgstr "Критический"
+
 msgid "CSV column"
 msgstr "Столбец CSV"
 
@@ -2326,6 +2332,9 @@ msgstr "Типы клиентов"
 
 msgid "Customers"
 msgstr "Клиенты"
+
+msgid "Daily"
+msgstr "Ежедневно"
 
 msgid "Daily Usage"
 msgstr "Ежедневное использование"
@@ -2892,6 +2901,9 @@ msgstr "Не отменять"
 
 msgid "Done"
 msgstr "Готово"
+
+msgid "Down"
+msgstr "Простой"
 
 msgid "Download"
 msgstr "Скачать"
@@ -4216,6 +4228,9 @@ msgstr "Информация о помощи"
 msgid "Hide, pin and reorder columns"
 msgstr "Скрывать, закреплять и переупорядочивать столбцы"
 
+msgid "High"
+msgstr "Высокий"
+
 msgid "Higher priority wins ties and applies first for markups"
 msgstr "Более высокий приоритет выигрывает при равенстве и применяется первым для наценок"
 
@@ -4281,6 +4296,9 @@ msgstr "Если вы хотите изменить номера деталей,
 
 msgid "Image"
 msgstr "Изображение"
+
+msgid "Impact"
+msgstr "Влияние"
 
 msgid "Implementation Support"
 msgstr "Поддержка внедрения"
@@ -4966,6 +4984,9 @@ msgstr "Количество партии разности"
 msgid "Lot Size:"
 msgstr "Размер партии:"
 
+msgid "Low"
+msgstr "Низкий"
+
 msgid "Lower runs first"
 msgstr "Низкие первоначально"
 
@@ -5220,6 +5241,9 @@ msgstr "Среднее время на ремонт"
 msgid "Measurement Standard"
 msgstr "Стандарт измерения"
 
+msgid "Medium"
+msgstr "Средний"
+
 msgid "Medium section heading."
 msgstr "Средний заголовок раздела"
 
@@ -5333,6 +5357,9 @@ msgstr "Модули"
 
 msgid "Monday"
 msgstr "Понедельник"
+
+msgid "Monthly"
+msgstr "Ежемесячно"
 
 msgid "More"
 msgstr "Ещё"
@@ -5818,6 +5845,9 @@ msgstr "Нет назначенных групп"
 msgid "No image"
 msgstr "Нет изображения"
 
+msgid "No Impact"
+msgstr "Без влияния"
+
 msgid "No issue types configured"
 msgstr "Типы проблем не настроены"
 
@@ -5932,6 +5962,9 @@ msgstr "Номинальная стоимость"
 msgid "Non Conformance Type"
 msgstr "Тип несоответствия"
 
+msgid "Non-Conformance"
+msgstr "Несоответствие"
+
 msgid "Non-Inventory"
 msgstr "Не в наличии"
 
@@ -5994,6 +6027,9 @@ msgstr "Числовой"
 
 msgid "OEE Impact"
 msgstr "Влияние OEE"
+
+msgid "OEM Required"
+msgstr "Требуется OEM"
 
 msgid "of"
 msgstr "из"
@@ -6117,6 +6153,9 @@ msgstr "Оператор получит предупреждение. Товар
 
 msgid "Operator must pick a different batch/serial."
 msgstr "Оператор должен выбрать другую партию/серию."
+
+msgid "Operator Performed"
+msgstr "Выполнено оператором"
 
 msgid "operator@company.com"
 msgstr "оператор@компания.ком"
@@ -6617,6 +6656,9 @@ msgstr "Нажмите '/' для команд"
 msgid "Prev"
 msgstr "Пред"
 
+msgid "Preventive"
+msgstr "Профилактический"
+
 msgid "Preventive Action"
 msgstr "корректирующих и предупреждающих"
 
@@ -6957,6 +6999,9 @@ msgstr "Тип количества"
 msgid "Quantity updated"
 msgstr "Количество обновлено"
 
+msgid "Quarterly"
+msgstr "Ежеквартально"
+
 msgid "Question"
 msgstr "Вопрос"
 
@@ -7022,6 +7067,9 @@ msgstr "Превышен лимит запросов"
 
 msgid "Reactivate"
 msgstr "Переактивировать"
+
+msgid "Reactive"
+msgstr "Реактивный"
 
 msgid "Read rows"
 msgstr "Читать строки"
@@ -7692,6 +7740,9 @@ msgstr "График"
 
 msgid "Schedule Name"
 msgstr "Имя расписания"
+
+msgid "Scheduled"
+msgstr "Плановый"
 
 msgid "Scheduled Maintenance"
 msgstr "Плановое обслуживание"
@@ -8612,6 +8663,9 @@ msgstr "Поставка"
 msgid "Supply & Demand"
 msgstr "Предложение и спрос"
 
+msgid "Support Required"
+msgstr "Требуется поддержка"
+
 #. placeholder {0}: supportedModelTypes.join(", ")
 msgid "Supports {0} files"
 msgstr "Поддерживает {0} файлы"
@@ -8942,6 +8996,9 @@ msgstr "Список задач"
 
 msgid "Today"
 msgstr "Сегодня"
+
+msgid "Todo"
+msgstr "К выполнению"
 
 msgid "Toggle"
 msgstr "Переключить"
@@ -9607,6 +9664,9 @@ msgstr "Аннулирование этого чека приведет к:"
 msgid "Voiding this shipment will:"
 msgstr "Отмена этой отправки приведет к:"
 
+msgid "Waiting"
+msgstr "Ожидание"
+
 msgid "Warehouse Transfer"
 msgstr "Передача между складами"
 
@@ -9672,6 +9732,9 @@ msgstr "Вконтакт"
 
 msgid "Wednesday"
 msgstr "Среда"
+
+msgid "Weekly"
+msgstr "Еженедельно"
 
 msgid "Weeks Open"
 msgstr "Недель открыто"

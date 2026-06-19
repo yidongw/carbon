@@ -579,6 +579,9 @@ msgstr "一个物品不能添加到自身。"
 msgid "and {remaining} more"
 msgstr "和剩余{remaining}项"
 
+msgid "Annual"
+msgstr "每年"
+
 msgid "API and Webhooks"
 msgstr "API和Webhooks"
 
@@ -2201,6 +2204,9 @@ msgstr "已创建工作中心"
 msgid "Creating part..."
 msgstr "正在创建零件..."
 
+msgid "Critical"
+msgstr "严重"
+
 msgid "CSV column"
 msgstr "CSV列"
 
@@ -2326,6 +2332,9 @@ msgstr "客户类型"
 
 msgid "Customers"
 msgstr "客户"
+
+msgid "Daily"
+msgstr "每日"
 
 msgid "Daily Usage"
 msgstr "每日使用"
@@ -2892,6 +2901,9 @@ msgstr "不要取消"
 
 msgid "Done"
 msgstr "完成"
+
+msgid "Down"
+msgstr "停机"
 
 msgid "Download"
 msgstr "下载"
@@ -4216,6 +4228,9 @@ msgstr "帮助信息"
 msgid "Hide, pin and reorder columns"
 msgstr "隐藏、固定和重新排序列"
 
+msgid "High"
+msgstr "高"
+
 msgid "Higher priority wins ties and applies first for markups"
 msgstr "优先级较高者获胜并优先应用"
 
@@ -4281,6 +4296,9 @@ msgstr "如果您想更改产品编号，请先取消并手动为每一行物品
 
 msgid "Image"
 msgstr "图片"
+
+msgid "Impact"
+msgstr "有影响"
 
 msgid "Implementation Support"
 msgstr "实施支持"
@@ -4966,6 +4984,9 @@ msgstr "批号偏差"
 msgid "Lot Size:"
 msgstr "批号数量:"
 
+msgid "Low"
+msgstr "低"
+
 msgid "Lower runs first"
 msgstr "先运行较低的"
 
@@ -5220,6 +5241,9 @@ msgstr "平均修复时间"
 msgid "Measurement Standard"
 msgstr "测量标准"
 
+msgid "Medium"
+msgstr "中"
+
 msgid "Medium section heading."
 msgstr "中级标题。"
 
@@ -5333,6 +5357,9 @@ msgstr "模块"
 
 msgid "Monday"
 msgstr "星期一"
+
+msgid "Monthly"
+msgstr "每月"
 
 msgid "More"
 msgstr "更多"
@@ -5818,6 +5845,9 @@ msgstr "未分配组别"
 msgid "No image"
 msgstr "没有图片"
 
+msgid "No Impact"
+msgstr "无影响"
+
 msgid "No issue types configured"
 msgstr "未配置任何问题类型"
 
@@ -5932,6 +5962,9 @@ msgstr "名义成本"
 msgid "Non Conformance Type"
 msgstr "不符合类型"
 
+msgid "Non-Conformance"
+msgstr "不合格"
+
 msgid "Non-Inventory"
 msgstr "非库存"
 
@@ -5994,6 +6027,9 @@ msgstr "数字"
 
 msgid "OEE Impact"
 msgstr "OEE影响"
+
+msgid "OEM Required"
+msgstr "需要原厂支持"
 
 msgid "of"
 msgstr "的"
@@ -6117,6 +6153,9 @@ msgstr "操作员收到警告。库存仍然通过。"
 
 msgid "Operator must pick a different batch/serial."
 msgstr "操作员必须选择不同的批次/序列。"
+
+msgid "Operator Performed"
+msgstr "操作员执行"
 
 msgid "operator@company.com"
 msgstr "操作员@公司.com"
@@ -6617,6 +6656,9 @@ msgstr "按 '/' 查看命令"
 msgid "Prev"
 msgstr "上一页"
 
+msgid "Preventive"
+msgstr "预防性"
+
 msgid "Preventive Action"
 msgstr "预防措施"
 
@@ -6957,6 +6999,9 @@ msgstr "数量类型"
 msgid "Quantity updated"
 msgstr "数量已更新"
 
+msgid "Quarterly"
+msgstr "每季度"
+
 msgid "Question"
 msgstr "问题"
 
@@ -7022,6 +7067,9 @@ msgstr "速率限制已超出"
 
 msgid "Reactivate"
 msgstr "重新激活"
+
+msgid "Reactive"
+msgstr "响应性"
 
 msgid "Read rows"
 msgstr "读取行数"
@@ -7692,6 +7740,9 @@ msgstr "计划"
 
 msgid "Schedule Name"
 msgstr "计划名称"
+
+msgid "Scheduled"
+msgstr "计划"
 
 msgid "Scheduled Maintenance"
 msgstr "计划维护"
@@ -8612,6 +8663,9 @@ msgstr "供应"
 msgid "Supply & Demand"
 msgstr "供应与需求"
 
+msgid "Support Required"
+msgstr "需要支持"
+
 #. placeholder {0}: supportedModelTypes.join(", ")
 msgid "Supports {0} files"
 msgstr "支持{0}文件"
@@ -8942,6 +8996,9 @@ msgstr "待办事项列表"
 
 msgid "Today"
 msgstr "今天"
+
+msgid "Todo"
+msgstr "待办"
 
 msgid "Toggle"
 msgstr "切换"
@@ -9607,6 +9664,9 @@ msgstr "取消此收据将："
 msgid "Voiding this shipment will:"
 msgstr "取消此发货将："
 
+msgid "Waiting"
+msgstr "等待中"
+
 msgid "Warehouse Transfer"
 msgstr "仓库转移"
 
@@ -9672,6 +9732,9 @@ msgstr "微信二维码"
 
 msgid "Wednesday"
 msgstr "星期三"
+
+msgid "Weekly"
+msgstr "每周"
 
 msgid "Weeks Open"
 msgstr "开放周数"

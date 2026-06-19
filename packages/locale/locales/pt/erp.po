@@ -579,6 +579,9 @@ msgstr "Um item não pode ser adicionado a si mesmo."
 msgid "and {remaining} more"
 msgstr "e {remaining} mais"
 
+msgid "Annual"
+msgstr "Anual"
+
 msgid "API and Webhooks"
 msgstr "API e Webhooks"
 
@@ -2201,6 +2204,9 @@ msgstr "Centro de trabalho criado"
 msgid "Creating part..."
 msgstr "Criando peça..."
 
+msgid "Critical"
+msgstr "Crítico"
+
 msgid "CSV column"
 msgstr "Coluna CSV"
 
@@ -2326,6 +2332,9 @@ msgstr "Tipos de Cliente"
 
 msgid "Customers"
 msgstr "Clientes"
+
+msgid "Daily"
+msgstr "Diário"
 
 msgid "Daily Usage"
 msgstr "Uso Diário"
@@ -2892,6 +2901,9 @@ msgstr "Não Cancelar"
 
 msgid "Done"
 msgstr "Concluído"
+
+msgid "Down"
+msgstr "Parado"
 
 msgid "Download"
 msgstr "Baixar"
@@ -4216,6 +4228,9 @@ msgstr "Informação auxiliar"
 msgid "Hide, pin and reorder columns"
 msgstr "Ocultar, fixar e reordenar colunas"
 
+msgid "High"
+msgstr "Alto"
+
 msgid "Higher priority wins ties and applies first for markups"
 msgstr "Prioridade mais alta vence empates e se aplica primeiro para margens"
 
@@ -4281,6 +4296,9 @@ msgstr "Se deseja alterar os números das peças, clique em Cancelar e atribua m
 
 msgid "Image"
 msgstr "Imagem"
+
+msgid "Impact"
+msgstr "Impacto"
 
 msgid "Implementation Support"
 msgstr "Suporte de Implementação"
@@ -4966,6 +4984,9 @@ msgstr "Variação de Tamanho de Lote"
 msgid "Lot Size:"
 msgstr "Tamanho do Lote:"
 
+msgid "Low"
+msgstr "Baixo"
+
 msgid "Lower runs first"
 msgstr "Baixas primeiro"
 
@@ -5220,6 +5241,9 @@ msgstr "Tempo Médio de Reparo"
 msgid "Measurement Standard"
 msgstr "Padrão de Medição"
 
+msgid "Medium"
+msgstr "Médio"
+
 msgid "Medium section heading."
 msgstr "Título médio"
 
@@ -5333,6 +5357,9 @@ msgstr "Módulos"
 
 msgid "Monday"
 msgstr "Segunda-feira"
+
+msgid "Monthly"
+msgstr "Mensal"
 
 msgid "More"
 msgstr "Mais"
@@ -5818,6 +5845,9 @@ msgstr "Nenhum grupo atribuído"
 msgid "No image"
 msgstr "Sem imagem"
 
+msgid "No Impact"
+msgstr "Sem impacto"
+
 msgid "No issue types configured"
 msgstr "Nenhum tipo de problema configurado"
 
@@ -5932,6 +5962,9 @@ msgstr "Custo Nominal"
 msgid "Non Conformance Type"
 msgstr "Tipo de Não Conformidade"
 
+msgid "Non-Conformance"
+msgstr "Não conformidade"
+
 msgid "Non-Inventory"
 msgstr "Não-Inventário"
 
@@ -5994,6 +6027,9 @@ msgstr "Numerico"
 
 msgid "OEE Impact"
 msgstr "Impacto OEE"
+
+msgid "OEM Required"
+msgstr "OEM necessário"
 
 msgid "of"
 msgstr "de"
@@ -6117,6 +6153,9 @@ msgstr "O operador recebe um aviso. O estoque ainda passa."
 
 msgid "Operator must pick a different batch/serial."
 msgstr "O operador deve escolher um lote/série diferente."
+
+msgid "Operator Performed"
+msgstr "Realizado pelo operador"
 
 msgid "operator@company.com"
 msgstr "operador@empresa.com"
@@ -6617,6 +6656,9 @@ msgstr "pressione '/' para comandos"
 msgid "Prev"
 msgstr "Anterior"
 
+msgid "Preventive"
+msgstr "Preventivo"
+
 msgid "Preventive Action"
 msgstr "Ação Preventiva"
 
@@ -6957,6 +6999,9 @@ msgstr "Tipo de Quantidade"
 msgid "Quantity updated"
 msgstr "Quantidade atualizada"
 
+msgid "Quarterly"
+msgstr "Trimestral"
+
 msgid "Question"
 msgstr "Pergunta"
 
@@ -7022,6 +7067,9 @@ msgstr "Limite de taxa excedido"
 
 msgid "Reactivate"
 msgstr "Reativar"
+
+msgid "Reactive"
+msgstr "Reativo"
 
 msgid "Read rows"
 msgstr "Ler linhas"
@@ -7692,6 +7740,9 @@ msgstr "Cronograma"
 
 msgid "Schedule Name"
 msgstr "Nome da Agenda"
+
+msgid "Scheduled"
+msgstr "Agendado"
 
 msgid "Scheduled Maintenance"
 msgstr "Manutenção Agendada"
@@ -8612,6 +8663,9 @@ msgstr "Fornecimento"
 msgid "Supply & Demand"
 msgstr "Oferta e Procura"
 
+msgid "Support Required"
+msgstr "Suporte necessário"
+
 #. placeholder {0}: supportedModelTypes.join(", ")
 msgid "Supports {0} files"
 msgstr "Suporta ficheiros {0}"
@@ -8942,6 +8996,9 @@ msgstr "Lista de Tarefas"
 
 msgid "Today"
 msgstr "Hoje"
+
+msgid "Todo"
+msgstr "A fazer"
 
 msgid "Toggle"
 msgstr "Alternar"
@@ -9607,6 +9664,9 @@ msgstr "Anular este recibo irá:"
 msgid "Voiding this shipment will:"
 msgstr "Anular este envio irá:"
 
+msgid "Waiting"
+msgstr "Aguardando"
+
 msgid "Warehouse Transfer"
 msgstr "Transferência de Armazém"
 
@@ -9672,6 +9732,9 @@ msgstr "QR Code do WeChat"
 
 msgid "Wednesday"
 msgstr "Quarta-feira"
+
+msgid "Weekly"
+msgstr "Semanal"
 
 msgid "Weeks Open"
 msgstr "Semanas Abertas"
