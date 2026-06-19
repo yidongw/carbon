@@ -57,7 +57,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     }
   }
 
-  const serviceRole = getCarbonServiceRole();
+  const serviceRole = getCarbonServiceRole(userId);
   const createQuotationLine = await upsertQuoteLine(serviceRole, {
     ...d,
     companyId,

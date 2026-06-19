@@ -30,7 +30,7 @@ export const handle: Handle = {
 };
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
-  const { client, companyId } = await requirePermissions(request, {
+  const { client, companyId, userId } = await requirePermissions(request, {
     view: "invoicing"
   });
 
@@ -54,7 +54,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     );
   }
 
-  const serviceRole = getCarbonServiceRole();
+  const serviceRole = getCarbonServiceRole(userId);
   const [customer, opportunity, companySettings] = await Promise.all([
     salesInvoice.data?.customerId
       ? getCustomer(client, salesInvoice.data.customerId, { includeDeleted: true })

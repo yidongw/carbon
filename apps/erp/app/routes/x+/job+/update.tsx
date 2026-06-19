@@ -38,7 +38,7 @@ export async function action({ request }: ActionFunctionArgs) {
   });
   if (lockedError) return lockedError;
 
-  const serviceRole = await getCarbonServiceRole();
+  const serviceRole = await getCarbonServiceRole(userId);
 
   if (field === "delete") {
     return await client

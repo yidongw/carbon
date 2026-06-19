@@ -19,7 +19,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     create: "inventory"
   });
 
-  const serviceRole = getCarbonServiceRole();
+  const serviceRole = getCarbonServiceRole(userId);
   const salesOrderLine = await getSalesOrderLine(serviceRole, lineId);
 
   if (salesOrderLine.error) {

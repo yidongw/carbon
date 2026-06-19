@@ -53,7 +53,7 @@ export async function action({ request }: ActionFunctionArgs) {
     create: "quality"
   });
 
-  const serviceRole = await getCarbonServiceRole();
+  const serviceRole = await getCarbonServiceRole(userId);
 
   const formData = await request.formData();
   const validation = await validator(issueValidator).validate(formData);

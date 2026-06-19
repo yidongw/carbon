@@ -48,7 +48,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   const selectedLines = parseResult.data;
 
-  const serviceRole = getCarbonServiceRole();
+  const serviceRole = getCarbonServiceRole(userId);
 
   // Check supplier approval status
   const [quote, supplierApprovalRequired] = await Promise.all([

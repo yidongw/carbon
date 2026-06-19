@@ -15,7 +15,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   if (!receiptId) throw new Error("receiptId not found");
 
   try {
-    const serviceRole = getCarbonServiceRole();
+    const serviceRole = getCarbonServiceRole(userId);
 
     const { data: receipt } = await client
       .from("receipt")

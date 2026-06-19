@@ -29,7 +29,7 @@ export async function action({ request }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
-  const client = getCarbonServiceRole();
+  const client = getCarbonServiceRole(userId);
 
   const companyInsert = await insertCompany(client, validation.data);
   if (companyInsert.error) {

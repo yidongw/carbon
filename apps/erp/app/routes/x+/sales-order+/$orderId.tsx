@@ -34,7 +34,7 @@ export const handle: Handle = {
 };
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
-  const { client, companyId } = await requirePermissions(request, {
+  const { client, companyId, userId } = await requirePermissions(request, {
     view: "sales",
     bypassRls: true
   });
@@ -77,7 +77,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   if (!opportunity.data) throw new Error("Failed to get opportunity record");
 
-  const serviceRole = getCarbonServiceRole();
+  const serviceRole = getCarbonServiceRole(userId);
   const [quote, customer, companySettings, invoiceLines] = await Promise.all([
     opportunity.data.quotes[0]?.id
       ? getQuote(client, opportunity.data.quotes[0].id)

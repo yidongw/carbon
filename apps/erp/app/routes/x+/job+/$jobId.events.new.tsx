@@ -87,7 +87,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   }
 
   if (d.endTime) {
-    const serviceRole = await getCarbonServiceRole();
+    const serviceRole = await getCarbonServiceRole(userId);
     await serviceRole.functions.invoke("post-production-event", {
       body: {
         productionEventId: insert.data.id,

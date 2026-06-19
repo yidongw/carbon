@@ -54,7 +54,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     role: "employee"
   });
 
-  const serviceRole = getCarbonServiceRole();
+  const serviceRole = getCarbonServiceRole(userId);
   const { id } = params;
   if (!id) throw new Error("Rule ID is required");
 

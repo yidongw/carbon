@@ -15,7 +15,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const { jobId } = params;
   if (!jobId) throw new Error("Could not find jobId");
 
-  const recalculate = await recalculateJobRequirements(getCarbonServiceRole(), {
+  const recalculate = await recalculateJobRequirements(getCarbonServiceRole(userId), {
     id: jobId,
     companyId,
     userId

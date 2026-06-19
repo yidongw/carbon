@@ -21,7 +21,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const { rfqId: id } = params;
   if (!id) throw new Error("Could not find id");
 
-  const serviceRole = getCarbonServiceRole();
+  const serviceRole = getCarbonServiceRole(userId);
   const convert = await convertSalesRfqToQuote(serviceRole, {
     id,
     companyId,

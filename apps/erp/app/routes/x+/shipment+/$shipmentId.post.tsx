@@ -29,7 +29,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const acknowledged = formData.get("acknowledged") === "true";
 
   // Item Rule evaluation across every line on this shipment before posting.
-  const serviceRole = getCarbonServiceRole();
+  const serviceRole = getCarbonServiceRole(userId);
   const { data: lines } = await serviceRole
     .from("shipmentLine")
     .select(

@@ -74,7 +74,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     );
   }
 
-  const serviceRole = await getCarbonServiceRole();
+  const serviceRole = await getCarbonServiceRole(userId);
 
   if (children && children.length > 0) {
     // Tracked entities (serial/batch)

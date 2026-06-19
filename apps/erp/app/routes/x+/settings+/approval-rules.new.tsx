@@ -43,7 +43,7 @@ export async function action({ request }: ActionFunctionArgs) {
     role: "employee"
   });
 
-  const serviceRole = getCarbonServiceRole();
+  const serviceRole = getCarbonServiceRole(userId);
 
   const formData = await request.formData();
   const validation = await validator(approvalRuleValidator).validate(formData);

@@ -56,7 +56,7 @@ export async function action(args: ActionFunctionArgs) {
     };
   }
 
-  const serviceRole = getCarbonServiceRole();
+  const serviceRole = getCarbonServiceRole(userId);
 
   try {
     const postSalesInvoice = await serviceRole.functions.invoke(

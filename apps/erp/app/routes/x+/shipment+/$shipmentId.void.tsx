@@ -15,7 +15,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   if (!shipmentId) throw new Error("shipmentId not found");
 
   try {
-    const serviceRole = getCarbonServiceRole();
+    const serviceRole = getCarbonServiceRole(userId);
 
     // Verify shipment is posted before allowing void
     const { data: shipment } = await client

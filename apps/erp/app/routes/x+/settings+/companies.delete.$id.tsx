@@ -28,7 +28,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 }
 
 export async function action({ request, params }: ActionFunctionArgs) {
-  await requirePermissions(request, {
+  const { userId } = await requirePermissions(request, {
     delete: "settings"
   });
 
@@ -41,7 +41,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   }
 
   const { error: deleteError } = await deleteSubsidiary(
-    getCarbonServiceRole(),
+    getCarbonServiceRole(userId),
     id
   );
   if (deleteError) {

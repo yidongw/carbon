@@ -29,7 +29,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const { companyId, userId } = await requirePermissions(request, {
     create: "production"
   });
-  const serviceRole = getCarbonServiceRole();
+  const serviceRole = getCarbonServiceRole(userId);
 
   const formData = await request.formData();
   const validation = await validator(salesOrderToJobValidator).validate(

@@ -5,7 +5,7 @@ import type { ActionFunctionArgs } from "react-router";
 import { data } from "react-router";
 
 export async function action({ request, context }: ActionFunctionArgs) {
-  const { client, companyId } = await requirePermissions(request, {
+  const { client, companyId, userId } = await requirePermissions(request, {
     create: "inventory"
   });
 
@@ -49,7 +49,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
       console.error(error);
     }
 
-    const serviceRole = await getCarbonServiceRole();
+    const serviceRole = await getCarbonServiceRole(userId);
     // Use a transaction to ensure data consistency
     const { error } = await serviceRole.rpc(
       "update_receipt_line_batch_tracking",
@@ -121,7 +121,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
       }
     }
 
-    const serviceRole = await getCarbonServiceRole();
+    const serviceRole = await getCarbonServiceRole(userId);
     // Use a transaction to ensure data consistency
     const { error } = await serviceRole.rpc(
       "update_receipt_line_serial_tracking",

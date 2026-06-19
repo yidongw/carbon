@@ -31,7 +31,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { supplierId } = params;
   if (!supplierId) throw new Error("Could not find supplierId");
 
-  const serviceRole = getCarbonServiceRole();
+  const serviceRole = getCarbonServiceRole(userId);
   // Kick off approval in parallel — it only needs supplier.status, so we chain
   // off the supplier fetch rather than waiting for the whole Promise.all to
   // settle.

@@ -55,7 +55,7 @@ export async function action({ request }: ActionFunctionArgs) {
     currentShipment.data.locationId !== d.locationId;
 
   if (shipmentDataHasChanged) {
-    const serviceRole = getCarbonServiceRole();
+    const serviceRole = getCarbonServiceRole(userId);
     switch (d.sourceDocument) {
       case "Sales Order":
         const salesOrderShipment = await serviceRole.functions.invoke<{

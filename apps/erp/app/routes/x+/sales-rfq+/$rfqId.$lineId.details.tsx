@@ -29,7 +29,7 @@ import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { path } from "~/utils/path";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
-  const { companyId } = await requirePermissions(request, {
+  const { companyId, userId } = await requirePermissions(request, {
     view: "sales"
   });
 
@@ -37,7 +37,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   if (!rfqId) throw new Error("Could not find rfqId");
   if (!lineId) throw new Error("Could not find lineId");
 
-  const serviceRole = await getCarbonServiceRole();
+  const serviceRole = await getCarbonServiceRole(userId);
 
   const line = await getSalesRFQLine(serviceRole, lineId);
 

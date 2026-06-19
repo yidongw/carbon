@@ -29,12 +29,12 @@ export const handle: Handle = {
 };
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const { companyGroupId } = await requirePermissions(request, {
+  const { companyGroupId, userId } = await requirePermissions(request, {
     view: "settings"
   });
 
   const companies = await getSubsidiaries(
-    getCarbonServiceRole(),
+    getCarbonServiceRole(userId),
     companyGroupId
   );
 

@@ -37,7 +37,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   const { filePath, enumMappings, ...columnMappings } = validation.data;
 
-  const serviceRole = getCarbonServiceRole();
+  const serviceRole = getCarbonServiceRole(userId);
   const importResult = await importCsv(serviceRole, {
     table,
     filePath: filePath as string,

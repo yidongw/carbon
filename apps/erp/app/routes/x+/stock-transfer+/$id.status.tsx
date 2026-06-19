@@ -43,7 +43,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   // when picking begins (handled by the picking flow).
   const COMMITTING_STATUSES = new Set(["Released", "Completed"]);
   if (COMMITTING_STATUSES.has(status)) {
-    const serviceRole = getCarbonServiceRole();
+    const serviceRole = getCarbonServiceRole(userId);
     const { data: lines } = await serviceRole
       .from("stockTransferLine")
       .select("id, itemId, fromStorageUnitId, toStorageUnitId, quantity")

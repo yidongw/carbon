@@ -24,7 +24,7 @@ import {
 import { path } from "~/utils/path";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
-  const { companyId } = await requirePermissions(request, {
+  const { companyId, userId } = await requirePermissions(request, {
     view: "users",
     role: "employee"
   });
@@ -32,7 +32,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { employeeId } = params;
   if (!employeeId) throw notFound("employeeId not found");
 
-  const client = getCarbonServiceRole();
+  const client = getCarbonServiceRole(userId);
   const [rawClaims, employee, employeeTypes] = await Promise.all([
     getClaims(client, employeeId, companyId),
     getEmployee(client, employeeId, companyId),

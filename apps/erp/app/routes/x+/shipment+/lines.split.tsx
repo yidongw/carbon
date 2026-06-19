@@ -40,7 +40,7 @@ export async function action({ request }: ActionFunctionArgs) {
     };
   }
 
-  const serviceRole = getCarbonServiceRole();
+  const serviceRole = getCarbonServiceRole(userId);
 
   const salesOrderShipment = await serviceRole.functions.invoke<{
     id: string;

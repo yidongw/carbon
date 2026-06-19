@@ -16,12 +16,12 @@ export const handle: Handle = {
 };
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const { client, companyId } = await requirePermissions(request, {
+  const { client, companyId, userId } = await requirePermissions(request, {
     view: "settings",
     role: "employee"
   });
 
-  const serviceRole = getCarbonServiceRole();
+  const serviceRole = getCarbonServiceRole(userId);
 
   const [rules, groupsResult] = await Promise.all([
     getApprovalRules(serviceRole, companyId),

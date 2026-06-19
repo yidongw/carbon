@@ -12,7 +12,7 @@ export async function action({ request }: ActionFunctionArgs) {
     create: "accounting"
   });
 
-  const serviceRole = getCarbonServiceRole();
+  const serviceRole = getCarbonServiceRole(userId);
 
   const journalEntry = await serviceRole.functions.invoke<{
     id: string;

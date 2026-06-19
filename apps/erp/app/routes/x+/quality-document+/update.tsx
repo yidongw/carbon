@@ -176,7 +176,7 @@ export async function action({ request }: ActionFunctionArgs) {
     update: "quality"
   });
 
-  const serviceRole = getCarbonServiceRole();
+  const serviceRole = getCarbonServiceRole(userId);
   const formData = await request.formData();
   const ids = formData.getAll("ids");
   const field = formData.get("field");

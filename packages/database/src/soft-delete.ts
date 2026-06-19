@@ -179,9 +179,10 @@ type WrapSoftDeleteOptions = {
 };
 
 function getContext(options?: WrapSoftDeleteOptions): SoftDeleteContext {
+  const store = softDeleteStorage.getStore();
   return {
-    ...softDeleteStorage.getStore(),
-    deletedBy: options?.deletedBy ?? softDeleteStorage.getStore()?.deletedBy ?? null
+    ...store,
+    deletedBy: options?.deletedBy ?? store?.deletedBy ?? null
   };
 }
 
@@ -196,7 +197,7 @@ function shouldHardDelete(ctx: SoftDeleteContext): boolean {
 function softDeletePayload(ctx: SoftDeleteContext): Record<string, string | null> {
   const deletedAt = new Date().toISOString();
   const deletedBy = ctx.deletedBy ?? null;
-  return deletedBy
+  return deletedBy !== null
     ? { deletedAt, deletedBy }
     : { deletedAt, deletedBy: null };
 }

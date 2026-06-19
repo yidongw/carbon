@@ -64,7 +64,7 @@ import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { path } from "~/utils/path";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
-  const { client, companyId } = await requirePermissions(request, {
+  const { client, companyId, userId } = await requirePermissions(request, {
     view: "sales"
   });
 
@@ -72,7 +72,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   if (!quoteId) throw new Error("Could not find quoteId");
   if (!lineId) throw new Error("Could not find lineId");
 
-  const serviceRole = await getCarbonServiceRole();
+  const serviceRole = await getCarbonServiceRole(userId);
 
   const [line, operations, prices] = await Promise.all([
     getQuoteLine(serviceRole, lineId),
@@ -209,7 +209,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     !!d.quantity?.length;
 
   if (needsSeed) {
-    const serviceRole = getCarbonServiceRole();
+    const serviceRole = getCarbonServiceRole(userId);
     const existingPrices = await serviceRole
       .from("quoteLinePrice")
       .select("quantity")

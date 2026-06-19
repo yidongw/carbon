@@ -33,13 +33,13 @@ export const handle: Handle = {
 };
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
-  const { companyId, companyGroupId } = await requirePermissions(request, {
+  const { companyId, companyGroupId, userId } = await requirePermissions(request, {
     view: "purchasing"
   });
 
   const { id } = params;
   if (!id) throw new Error("Could not find id");
-  const serviceRole = await getCarbonServiceRole();
+  const serviceRole = await getCarbonServiceRole(userId);
 
   const [quote, lines, prices, siblingQuotes] = await Promise.all([
     getSupplierQuote(serviceRole, id),

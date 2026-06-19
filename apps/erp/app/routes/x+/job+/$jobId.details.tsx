@@ -189,7 +189,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     );
   }
 
-  const recalculate = await recalculateJobRequirements(getCarbonServiceRole(), {
+  const recalculate = await recalculateJobRequirements(getCarbonServiceRole(userId), {
     id,
     companyId,
     userId

@@ -103,7 +103,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     create: "production"
   });
 
-  const serviceRole = getCarbonServiceRole();
+  const serviceRole = getCarbonServiceRole(userId);
   const canAutoApprove = await resolveProductionQuantityCanAutoApprove(
     serviceRole,
     companyId,

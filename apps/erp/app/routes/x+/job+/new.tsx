@@ -141,7 +141,7 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   const upsertMethod = await upsertJobMethod(
-    getCarbonServiceRole(),
+    getCarbonServiceRole(userId),
     "itemToJob",
     {
       sourceId: d.itemId,

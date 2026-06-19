@@ -23,7 +23,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
       message: "Invalid form data"
     };
 
-  const serviceRole = await getCarbonServiceRole();
+  const serviceRole = await getCarbonServiceRole(userId);
 
   // @ts-expect-error TS2345 - TODO: fix type
   const copy = await copyQuote(serviceRole, {

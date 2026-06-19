@@ -33,7 +33,7 @@ export async function action({ request }: ActionFunctionArgs) {
     return { success: false, error: "Failed to get current item" };
   }
 
-  const result = await createRevision(getCarbonServiceRole(), {
+  const result = await createRevision(getCarbonServiceRole(userId), {
     item: currentItem.data,
     revision: validation.data.revision,
     createdBy: userId

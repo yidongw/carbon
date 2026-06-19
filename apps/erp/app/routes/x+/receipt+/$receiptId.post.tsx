@@ -25,7 +25,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   // Item Rule evaluation across every line on this receipt before posting.
   // Use service role so item / storageUnit reads are not blocked by RLS for
   // users who have `inventory.update` but not `parts.view` etc.
-  const serviceRole = getCarbonServiceRole();
+  const serviceRole = getCarbonServiceRole(userId);
   const { data: lines } = await serviceRole
     .from("receiptLine")
     .select(

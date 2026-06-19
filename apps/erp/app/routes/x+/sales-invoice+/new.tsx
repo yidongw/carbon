@@ -44,7 +44,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       if (!sourceDocumentId) throw new Error("Missing sourceDocumentId");
 
       result = await createSalesInvoiceFromSalesOrder(
-        getCarbonServiceRole(),
+        getCarbonServiceRole(userId),
         sourceDocumentId,
         companyId,
         userId
@@ -65,7 +65,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     case "Shipment":
       if (!sourceDocumentId) throw new Error("Missing sourceDocumentId");
       result = await createSalesInvoiceFromShipment(
-        getCarbonServiceRole(),
+        getCarbonServiceRole(userId),
         sourceDocumentId,
         companyId,
         userId

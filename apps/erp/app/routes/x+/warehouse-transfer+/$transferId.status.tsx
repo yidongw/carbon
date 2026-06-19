@@ -47,7 +47,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     "Completed"
   ]);
   if (COMMITTING_STATUSES.has(status)) {
-    const serviceRole = getCarbonServiceRole();
+    const serviceRole = getCarbonServiceRole(userId);
     const { data: lines } = await serviceRole
       .from("warehouseTransferLine")
       .select(

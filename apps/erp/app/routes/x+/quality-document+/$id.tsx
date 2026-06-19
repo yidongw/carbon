@@ -122,7 +122,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   const { approvalRequestId, decision, notes } = validation.data;
 
-  const serviceRole = getCarbonServiceRole();
+  const serviceRole = getCarbonServiceRole(userId);
 
   // Verify user can approve this request
   const approvalRequest = await getLatestApprovalRequestForDocument(

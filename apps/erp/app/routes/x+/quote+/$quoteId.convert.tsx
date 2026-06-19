@@ -65,7 +65,7 @@ export async function action(args: ActionFunctionArgs) {
   const customerContact = notificationValidation.data?.customerContact;
   const cc = notificationValidation.data?.cc;
 
-  const serviceRole = getCarbonServiceRole();
+  const serviceRole = getCarbonServiceRole(userId);
   const convert = await convertQuoteToOrder(serviceRole, {
     id: quoteId,
     purchaseOrderNumber: poNumber ?? "",

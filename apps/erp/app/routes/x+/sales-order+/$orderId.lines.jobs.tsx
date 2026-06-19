@@ -31,7 +31,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     );
   }
 
-  const serviceRole = getCarbonServiceRole();
+  const serviceRole = getCarbonServiceRole(userId);
 
   const convertedJobs = await convertSalesOrderLinesToJobs(serviceRole, {
     orderId,

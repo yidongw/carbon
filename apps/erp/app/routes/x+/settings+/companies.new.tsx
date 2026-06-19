@@ -44,7 +44,7 @@ export async function action({ request }: ActionFunctionArgs) {
     ...locationData
   } = validation.data;
 
-  const client = getCarbonServiceRole();
+  const client = getCarbonServiceRole(userId);
 
   const companyInsert = await insertCompany(client, {
     ...locationData,

@@ -46,7 +46,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
       );
     }
 
-    const serviceRole = await getCarbonServiceRole();
+    const serviceRole = await getCarbonServiceRole(userId);
     const upsertMethod = await upsertJobMethod(serviceRole, "itemToJob", {
       sourceId: job.data.itemId,
       targetId: jobId,

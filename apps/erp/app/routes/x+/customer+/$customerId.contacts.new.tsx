@@ -19,12 +19,12 @@ import { customerContactsQuery } from "~/utils/react-query";
 
 export async function action({ request, params }: ActionFunctionArgs) {
   assertIsPost(request);
-  const { companyId } = await requirePermissions(request, {
+  const { companyId, userId } = await requirePermissions(request, {
     create: "sales"
   });
 
   // RLS doesn't work for selecting a contact with no customer
-  const client = getCarbonServiceRole();
+  const client = getCarbonServiceRole(userId);
 
   const { customerId } = params;
   if (!customerId) throw notFound("customerId not found");

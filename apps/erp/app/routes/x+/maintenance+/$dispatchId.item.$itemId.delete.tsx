@@ -32,7 +32,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     message: "Cannot modify a locked dispatch. Reopen it first."
   });
 
-  const serviceRole = await getCarbonServiceRole();
+  const serviceRole = await getCarbonServiceRole(userId);
 
   const result = await serviceRole.functions.invoke("issue", {
     body: {

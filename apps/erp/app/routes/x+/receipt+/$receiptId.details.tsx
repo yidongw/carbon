@@ -54,7 +54,7 @@ export async function action({ request }: ActionFunctionArgs) {
     currentReceipt.data.locationId !== d.locationId;
 
   if (receiptDataHasChanged) {
-    const serviceRole = getCarbonServiceRole();
+    const serviceRole = getCarbonServiceRole(userId);
     switch (d.sourceDocument) {
       case "Purchase Order":
         const purchaseOrderReceipt = await serviceRole.functions.invoke<{

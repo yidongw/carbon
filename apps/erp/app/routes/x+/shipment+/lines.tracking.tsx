@@ -6,7 +6,7 @@ import type { ActionFunctionArgs } from "react-router";
 import { data } from "react-router";
 
 export async function action({ request }: ActionFunctionArgs) {
-  const { client, companyId } = await requirePermissions(request, {
+  const { client, companyId, userId } = await requirePermissions(request, {
     create: "inventory"
   });
 
@@ -53,7 +53,7 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
-  const serviceRole = await getCarbonServiceRole();
+  const serviceRole = await getCarbonServiceRole(userId);
 
   // Prepare new attributes by merging with existing ones
   const existingAttributes = trackedEntity.attributes || {};

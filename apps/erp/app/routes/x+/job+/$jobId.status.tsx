@@ -55,13 +55,13 @@ export async function action({ request, params }: ActionFunctionArgs) {
   }
 
   if (["Planned", "Ready"].includes(status) && !shouldSchedule) {
-    const serviceRole = getCarbonServiceRole();
+    const serviceRole = getCarbonServiceRole(userId);
     await recalculateJobRequirements(serviceRole, {
       id,
       companyId,
       userId
     });
-    await runMRP(getCarbonServiceRole(), {
+    await runMRP(getCarbonServiceRole(userId), {
       type: "job",
       id,
       companyId,
@@ -182,7 +182,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   }
 
   if (status === "Closed") {
-    const serviceRole = await getCarbonServiceRole();
+    const serviceRole = await getCarbonServiceRole(userId);
     await serviceRole.functions.invoke("close-job", {
       body: { jobId: id, userId, companyId }
     });

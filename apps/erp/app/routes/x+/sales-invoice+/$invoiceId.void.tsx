@@ -15,7 +15,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   if (!invoiceId) throw new Error("invoiceId not found");
 
   try {
-    const serviceRole = getCarbonServiceRole();
+    const serviceRole = getCarbonServiceRole(userId);
 
     // Verify invoice is posted before allowing void
     const { data: salesInvoice } = await client

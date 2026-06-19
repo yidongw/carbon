@@ -28,7 +28,7 @@ export const handle: Handle = {
 };
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const { client, companyId } = await requirePermissions(request, {
+  const { client, companyId, userId } = await requirePermissions(request, {
     view: "settings"
   });
 
@@ -53,7 +53,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   let archives: Awaited<ReturnType<typeof getAuditLogArchives>> = [];
   if (enabled) {
     try {
-      const serviceRole = getCarbonServiceRole();
+      const serviceRole = getCarbonServiceRole(userId);
       archives = await getAuditLogArchives(serviceRole, companyId);
     } catch {
       // Archives table might not exist
@@ -67,7 +67,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-  const { client, companyId } = await requirePermissions(request, {
+  const { client, companyId, userId } = await requirePermissions(request, {
     update: "settings"
   });
 
@@ -126,7 +126,7 @@ export async function action({ request }: ActionFunctionArgs) {
       }
 
       try {
-        const serviceRole = getCarbonServiceRole();
+        const serviceRole = getCarbonServiceRole(userId);
         const downloadUrl = await getArchiveDownloadUrl(serviceRole, archiveId);
         // Redirect to the signed URL for download
         return redirect(downloadUrl);

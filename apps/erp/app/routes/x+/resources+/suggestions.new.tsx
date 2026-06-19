@@ -27,7 +27,7 @@ export async function action({ request }: ActionFunctionArgs) {
     path,
     userId: formUserId
   } = validation.data;
-  const serviceRole = await getCarbonServiceRole();
+  const serviceRole = await getCarbonServiceRole(userId);
 
   const insertSuggestion = await serviceRole
     .from("suggestion")

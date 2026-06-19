@@ -69,7 +69,7 @@ export async function action({ request }: ActionFunctionArgs) {
         })
       );
 
-      return { data: update.data };
+      const serviceRole = await getCarbonServiceRole(userId);
     case "source":
     case "priority":
     case "name":

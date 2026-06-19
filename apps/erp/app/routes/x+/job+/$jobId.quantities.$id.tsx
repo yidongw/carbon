@@ -180,7 +180,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     update: "production"
   });
 
-  const serviceRole = getCarbonServiceRole();
+  const serviceRole = getCarbonServiceRole(userId);
   const resolveCanAutoApprove = async (reportId?: string | null) => {
     const amount =
       reportId != null

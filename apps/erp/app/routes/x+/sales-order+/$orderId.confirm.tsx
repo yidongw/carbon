@@ -37,7 +37,7 @@ export async function action(args: ActionFunctionArgs) {
       };
     }
 
-    const serviceRole = getCarbonServiceRole();
+    const serviceRole = getCarbonServiceRole(userId);
 
     const salesOrder = await getSalesOrder(serviceRole, orderId);
     if (salesOrder.error) {
@@ -163,7 +163,7 @@ export async function action(args: ActionFunctionArgs) {
       };
     }
 
-    await runMRP(getCarbonServiceRole(), {
+    await runMRP(getCarbonServiceRole(userId), {
       type: "salesOrder",
       id: orderId,
       companyId: companyId,

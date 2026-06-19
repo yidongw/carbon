@@ -18,7 +18,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const { id } = params;
   if (!id) throw new Error("Could not find id");
 
-  const serviceRole = await getCarbonServiceRole();
+  const serviceRole = await getCarbonServiceRole(userId);
   const result = await closeIssue(serviceRole, {
     nonConformanceId: id,
     companyId,

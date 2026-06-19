@@ -29,7 +29,7 @@ export async function action({ request }: ActionFunctionArgs) {
     bypassRls: true
   });
 
-  const serviceRole = await getCarbonServiceRole();
+  const serviceRole = await getCarbonServiceRole(userId);
 
   const formData = await request.formData();
   const validation = await validator(bulkJobValidator).validate(formData);

@@ -48,7 +48,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   const { name: fileName, path: documentPath, size, lineId } = validation.data;
 
-  const serviceRole = getCarbonServiceRole();
+  const serviceRole = getCarbonServiceRole(userId);
 
   const quote = await getQuote(serviceRole, quoteId);
   if (quote.error || !quote.data) {

@@ -53,7 +53,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   // 2. Auto-create an NCR and navigate the user straight to it so MRB can
   //    formally disposition (scrap / rework / return / use-as-is).
-  const serviceRole = await getCarbonServiceRole();
+  const serviceRole = await getCarbonServiceRole(userId);
 
   const [inspection, userDefaults, issueTypes] = await Promise.all([
     getInboundInspection(client, id),

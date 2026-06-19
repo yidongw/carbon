@@ -35,7 +35,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const intent = formData.get("intent");
 
   if (intent === "request-approval") {
-    const serviceRole = getCarbonServiceRole();
+    const serviceRole = getCarbonServiceRole(userId);
 
     const pending = await hasPendingApproval(
       serviceRole,
@@ -104,7 +104,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   }
 
   if (intent === "make-inactive") {
-    const serviceRole = getCarbonServiceRole();
+    const serviceRole = getCarbonServiceRole(userId);
 
     const canApprove = await canApproveRequest(
       serviceRole,
@@ -152,7 +152,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   const { approvalRequestId, decision, notes } = validation.data;
 
-  const serviceRole = getCarbonServiceRole();
+  const serviceRole = getCarbonServiceRole(userId);
 
   const approvalRequest = await getLatestApprovalRequestForDocument(
     serviceRole,

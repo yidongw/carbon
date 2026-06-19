@@ -60,7 +60,7 @@ export async function action({ request }: ActionFunctionArgs) {
   // status="Released"), so this is the gate where rules must fire before
   // any stock-moving is started. Evaluate against the destination side
   // (`toStorageUnitId`) — that's where stock will land.
-  const serviceRole = getCarbonServiceRole();
+  const serviceRole = getCarbonServiceRole(userId);
   const { violations, ruleNames } = await evaluateLinesForSurface({
     client: serviceRole,
     companyId,

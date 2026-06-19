@@ -19,12 +19,12 @@ import { supplierContactsQuery } from "~/utils/react-query";
 
 export async function action({ request, params }: ActionFunctionArgs) {
   assertIsPost(request);
-  const { companyId } = await requirePermissions(request, {
+  const { companyId, userId } = await requirePermissions(request, {
     create: "purchasing"
   });
 
   // RLS doesn't work for selecting a contact with no supplier
-  const client = getCarbonServiceRole();
+  const client = getCarbonServiceRole(userId);
 
   const { supplierId } = params;
   if (!supplierId) throw notFound("supplierId not found");

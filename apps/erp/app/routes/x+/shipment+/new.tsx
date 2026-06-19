@@ -26,7 +26,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const sourceDocumentId = (formData.get("sourceDocumentId") as string) ?? "";
 
   const defaults = await getUserDefaults(client, userId, companyId);
-  const serviceRole = getCarbonServiceRole();
+  const serviceRole = getCarbonServiceRole(userId);
 
   switch (sourceDocument) {
     case "Sales Order":
