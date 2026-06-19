@@ -38,7 +38,7 @@ export const meta = () => {
 };
 
 const defaultColumnPinning = {
-  left: ["customerReference", "salesOrderStatus"]
+  left: ["customerReference"]
 };
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
