@@ -55,7 +55,7 @@ export async function action({ request }: ActionFunctionArgs) {
         };
       }
 
-      const serviceRole = await getCarbonServiceRole();
+      const serviceRole = await getCarbonServiceRole(userId);
       await Promise.all(
         ids.map(async (id) => {
           await serviceRole.functions.invoke("create", {
@@ -69,7 +69,7 @@ export async function action({ request }: ActionFunctionArgs) {
         })
       );
 
-      const serviceRole = await getCarbonServiceRole(userId);
+      return { data: update.data };
     case "source":
     case "priority":
     case "name":
