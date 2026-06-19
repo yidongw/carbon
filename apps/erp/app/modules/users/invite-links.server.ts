@@ -54,6 +54,13 @@ export async function getPublicInviteLinkByCode(
   }
 
   const expired = isInviteLinkExpired(inviteLink.data);
+
+  // Debug logging
+  console.log('[getPublicInviteLinkByCode] code:', code);
+  console.log('[getPublicInviteLinkByCode] expiresAt:', inviteLink.data.expiresAt);
+  console.log('[getPublicInviteLinkByCode] revokedAt:', inviteLink.data.revokedAt);
+  console.log('[getPublicInviteLinkByCode] expired:', expired);
+
   let alreadyApplied = false;
   let alreadyMember = false;
 
