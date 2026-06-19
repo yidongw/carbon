@@ -20,6 +20,7 @@ import { useTags } from "~/hooks/useTags";
 import { path } from "~/utils/path";
 import { jobOperationStatus } from "../../production.models";
 import type { Job, JobOperation } from "../../types";
+import { useJobOperationStatusLabel } from "./jobLabels";
 
 function useOptimisticJobStatus(operationId: string) {
   const fetchers = useFetchers();
@@ -47,6 +48,7 @@ export function JobOperationStatus({
   onChange?: (status: JobOperation["status"]) => void;
 }) {
   const { t } = useLingui();
+  const getJobOperationStatusLabel = useJobOperationStatusLabel();
   const params = useParams();
   const jobId = jobIdProp ?? params.jobId ?? operation.jobId;
   if (!jobId) throw new Error("Job ID is required");
@@ -109,7 +111,7 @@ export function JobOperationStatus({
                 <DropdownMenuIcon
                   icon={<OperationStatusIcon status={status} />}
                 />
-                <span>{status}</span>
+                <span>{getJobOperationStatusLabel(status)}</span>
               </DropdownMenuRadioItem>
             ))}
           </DropdownMenuRadioGroup>

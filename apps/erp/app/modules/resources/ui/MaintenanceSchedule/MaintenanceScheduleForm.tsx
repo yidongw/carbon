@@ -29,7 +29,6 @@ import type { z } from "zod";
 import { HighPriorityIcon } from "~/assets/icons/HighPriorityIcon";
 import { LowPriorityIcon } from "~/assets/icons/LowPriorityIcon";
 import { MediumPriorityIcon } from "~/assets/icons/MediumPriorityIcon";
-import { Enumerable } from "~/components/Enumerable";
 import {
   Hidden,
   Input,
@@ -39,6 +38,10 @@ import {
   WorkCenter
 } from "~/components/Form";
 import { usePermissions } from "~/hooks";
+import {
+  useMaintenanceDispatchPriorityLabel,
+  useMaintenanceFrequencyLabel
+} from "~/modules/production/productionLabels";
 import { path } from "~/utils/path";
 import {
   maintenanceDispatchPriority,
@@ -108,6 +111,9 @@ const MaintenanceScheduleForm = ({
   onClose
 }: MaintenanceScheduleFormProps) => {
   const { t } = useLingui();
+  const getMaintenanceFrequencyLabel = useMaintenanceFrequencyLabel();
+  const getMaintenanceDispatchPriorityLabel =
+    useMaintenanceDispatchPriorityLabel();
   const permissions = usePermissions();
   const fetcher = useFetcher<PostgrestResponse<{ id: string }>>();
 
@@ -171,7 +177,7 @@ const MaintenanceScheduleForm = ({
                   label={t`Frequency`}
                   options={maintenanceFrequency.map((freq) => ({
                     value: freq,
-                    label: <Enumerable value={freq} />
+                    label: getMaintenanceFrequencyLabel(freq)
                   }))}
                 />
                 <Select
@@ -182,7 +188,7 @@ const MaintenanceScheduleForm = ({
                     label: (
                       <div className="flex gap-1 items-center">
                         {getPriorityIcon(priority)}
-                        <span>{priority}</span>
+                        <span>{getMaintenanceDispatchPriorityLabel(priority)}</span>
                       </div>
                     )
                   }))}

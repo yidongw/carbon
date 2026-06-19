@@ -129,7 +129,7 @@ const MaintenanceDispatchesTable = memo(
               type: "static",
               options: maintenanceSource.map((source) => ({
                 value: source,
-                label: source
+                label: <MaintenanceSource source={source} />
               }))
             }
           }
