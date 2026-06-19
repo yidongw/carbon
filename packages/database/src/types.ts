@@ -2886,6 +2886,7 @@ export type Database = {
           inventoryShelfLife: Json
           jobTravelerIncludeWorkInstructions: boolean
           kanbanOutput: Database["public"]["Enums"]["kanbanOutput"]
+          lastNameFirst: boolean
           maintenanceAdvanceDays: number
           maintenanceDispatchNotificationGroup: string[] | null
           maintenanceGenerateInAdvance: boolean
@@ -2927,6 +2928,7 @@ export type Database = {
           inventoryShelfLife?: Json
           jobTravelerIncludeWorkInstructions?: boolean
           kanbanOutput?: Database["public"]["Enums"]["kanbanOutput"]
+          lastNameFirst?: boolean
           maintenanceAdvanceDays?: number
           maintenanceDispatchNotificationGroup?: string[] | null
           maintenanceGenerateInAdvance?: boolean
@@ -2968,6 +2970,7 @@ export type Database = {
           inventoryShelfLife?: Json
           jobTravelerIncludeWorkInstructions?: boolean
           kanbanOutput?: Database["public"]["Enums"]["kanbanOutput"]
+          lastNameFirst?: boolean
           maintenanceAdvanceDays?: number
           maintenanceDispatchNotificationGroup?: string[] | null
           maintenanceGenerateInAdvance?: boolean

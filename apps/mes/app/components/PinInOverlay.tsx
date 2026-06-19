@@ -11,6 +11,7 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { LuCheck, LuLoader, LuLogOut, LuSearch, LuX } from "react-icons/lu";
 import { useFetcher } from "react-router";
+import { useFormatPersonName } from "~/hooks";
 import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
 
@@ -39,7 +40,13 @@ function addRecentOperator(companyId: string, userId: string) {
   }
 }
 
-type Person = { id: string; name: string; avatarUrl: string | null };
+type Person = {
+  id: string;
+  name: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  avatarUrl: string | null;
+};
 
 export function PinInOverlay({
   companyId,
@@ -57,6 +64,7 @@ export function PinInOverlay({
   onDismiss?: () => void;
 }) {
   const { t } = useLingui();
+  const formatPersonName = useFormatPersonName();
   const [people] = usePeople();
   const [search, setSearch] = useState("");
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
@@ -79,12 +87,22 @@ export function PinInOverlay({
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [dismissable, onDismiss]);
 
+  const getPersonName = useCallback(
+    (person: Person) =>
+      formatPersonName({
+        firstName: person.firstName,
+        lastName: person.lastName,
+        fullName: person.name
+      }) || person.name,
+    [formatPersonName]
+  );
+
   const submitPinIn = useCallback(
     (person: Person, pinValue: string) => {
       addRecentOperator(companyId, person.id);
       const formData = new FormData();
       formData.append("userId", person.id);
-      formData.append("name", person.name);
+      formData.append("name", getPersonName(person));
       formData.append("avatarUrl", person.avatarUrl ?? "");
       if (pinValue) formData.append("pin", pinValue);
       pinInFetcher.submit(formData, {
@@ -92,7 +110,7 @@ export function PinInOverlay({
         action: path.to.consolePinIn
       });
     },
-    [companyId, pinInFetcher]
+    [companyId, getPersonName, pinInFetcher]
   );
 
   useEffect(() => {
@@ -121,7 +139,15 @@ export function PinInOverlay({
       list = list.filter((p) => locationEmployeeIds.includes(p.id));
     }
     const filtered = query
-      ? list.filter((p) => p.name.toLowerCase().includes(query))
+      ? list.filter((p) => {
+          const displayName = getPersonName(p).toLowerCase();
+          return (
+            displayName.includes(query) ||
+            p.firstName?.toLowerCase().includes(query) ||
+            p.lastName?.toLowerCase().includes(query) ||
+            p.name.toLowerCase().includes(query)
+          );
+        })
       : list;
 
     const sorted = [...filtered].sort((a, b) => {
@@ -130,7 +156,7 @@ export function PinInOverlay({
       if (aRecent !== -1 && bRecent !== -1) return aRecent - bRecent;
       if (aRecent !== -1) return -1;
       if (bRecent !== -1) return 1;
-      return a.name.localeCompare(b.name);
+      return getPersonName(a).localeCompare(getPersonName(b));
     });
 
     // When searching, return flat list. When browsing, split into groups.
@@ -140,7 +166,7 @@ export function PinInOverlay({
     const recent = sorted.filter((p) => recentIds.includes(p.id));
     const others = sorted.filter((p) => !recentIds.includes(p.id));
     return { recent, others, all: sorted };
-  }, [people, search, recentIds, locationEmployeeIds, sessionUserId]);
+  }, [getPersonName, people, search, recentIds, locationEmployeeIds, sessionUserId]);
 
   // Track if we've submitted a pin-in attempt
   const hasSubmittedPinIn = useRef(false);
@@ -287,7 +313,7 @@ export function PinInOverlay({
           <div className="border-t px-4 py-3">
             <div className="flex flex-col items-center gap-2">
               <p className="text-xs text-muted-foreground">
-                <Trans>Enter PIN for {selectedPerson.name}</Trans>
+                <Trans>Enter PIN for {getPersonName(selectedPerson)}</Trans>
               </p>
               <div className="flex items-center gap-3">
                 <InputOTP
@@ -372,6 +398,14 @@ function OperatorRow({
   isSelected: boolean;
   onSelect: (person: Person) => void;
 }) {
+  const formatPersonName = useFormatPersonName();
+  const displayName =
+    formatPersonName({
+      firstName: person.firstName,
+      lastName: person.lastName,
+      fullName: person.name
+    }) || person.name;
+
   return (
     <button
       type="button"
@@ -382,10 +416,10 @@ function OperatorRow({
     >
       <Avatar
         size="xs"
-        name={person.name}
+        name={displayName}
         src={person.avatarUrl ?? undefined}
       />
-      <span className="text-sm flex-1 truncate">{person.name}</span>
+      <span className="text-sm flex-1 truncate">{displayName}</span>
       {isSelected && <LuCheck className="h-3.5 w-3.5 text-primary shrink-0" />}
     </button>
   );

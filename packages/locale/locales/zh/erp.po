@@ -3314,6 +3314,9 @@ msgstr "启用共享工作站模式"
 msgid "Enable to automatically post transactions to the general ledger."
 msgstr "启用自动将交易记入总账。"
 
+msgid "Enable to display names with the family name first."
+msgstr "启用后，姓名将以姓氏在前的格式显示。"
+
 msgid "Enable to generate IDs and descriptions for raw materials."
 msgstr "启用生成原材料的ID和描述功能。"
 
@@ -3919,6 +3922,9 @@ msgstr "故障模式"
 msgid "False"
 msgstr "假"
 
+msgid "Family name is shown first"
+msgstr "姓氏在前显示"
+
 msgid "Favorite"
 msgstr "收藏"
 
@@ -4137,6 +4143,9 @@ msgstr "生成的ID已启用"
 
 msgid "Get Method"
 msgstr "获取方法"
+
+msgid "Given name is shown first"
+msgstr "名字在前显示"
 
 msgid "GL Account"
 msgstr "总账科目"
@@ -5377,6 +5386,12 @@ msgstr "我的已保存视图"
 
 msgid "Name"
 msgstr "名称"
+
+msgid "Name Display"
+msgstr "姓名显示"
+
+msgid "Names appear as family name followed by given name across the app."
+msgstr "应用中的人员姓名将按“姓 名”格式显示。"
 
 msgid "Navigate"
 msgstr "导航"
@@ -8137,6 +8152,9 @@ msgstr "快捷键"
 
 msgid "Show Durations"
 msgstr "显示时长"
+
+msgid "Show family name before given name, as used in Chinese and other East Asian locales."
+msgstr "将姓氏显示在名字之前，适用于中文等东亚语言习惯。"
 
 msgid "Show on card right"
 msgstr "在卡片右侧显示"

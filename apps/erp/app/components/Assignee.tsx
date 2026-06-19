@@ -22,7 +22,7 @@ import { forwardRef, useMemo, useState } from "react";
 import { LuSettings2, LuUser } from "react-icons/lu";
 import { RxCheck } from "react-icons/rx";
 import { useFetcher, useFetchers } from "react-router";
-import { usePermissions, useUser } from "~/hooks";
+import { usePermissions, useUser, useFormatPersonName } from "~/hooks";
 import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
 import EmployeeAvatar from "./EmployeeAvatar";
@@ -66,6 +66,7 @@ const Assign = forwardRef<HTMLButtonElement, AssigneeProps>(
     const [people] = usePeople();
     const fetcher = useFetcher<{}>();
     const user = useUser();
+    const formatPersonName = useFormatPersonName();
     const permissions = usePermissions();
 
     const handleChange = (value: string) => {
@@ -86,15 +87,25 @@ const Assign = forwardRef<HTMLButtonElement, AssigneeProps>(
           .filter((person) => person.id !== user.id)
           .map((person) => ({
             value: person.id,
-            label: person.name
+            label: formatPersonName({
+              firstName: person.firstName,
+              lastName: person.lastName,
+              fullName: person.name
+            })
           })) ?? [];
 
       return [
         { value: "", label: t`Unassigned` },
-        { value: user.id, label: `${user.firstName} ${user.lastName}` },
+        {
+          value: user.id,
+          label: formatPersonName({
+            firstName: user.firstName,
+            lastName: user.lastName
+          })
+        },
         ...base
       ];
-    }, [people, user, t]);
+    }, [formatPersonName, people, user, t]);
 
     const assigneeLabel = useMemo(() => {
       if (!value) return t`Unassigned`;

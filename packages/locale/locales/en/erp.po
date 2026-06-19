@@ -3314,6 +3314,9 @@ msgstr "Enable to allow shared workstation mode."
 msgid "Enable to automatically post transactions to the general ledger."
 msgstr "Enable to automatically post transactions to the general ledger."
 
+msgid "Enable to display names with the family name first."
+msgstr "Enable to display names with the family name first."
+
 msgid "Enable to generate IDs and descriptions for raw materials."
 msgstr "Enable to generate IDs and descriptions for raw materials."
 
@@ -3919,6 +3922,9 @@ msgstr "Failure Modes"
 msgid "False"
 msgstr "False"
 
+msgid "Family name is shown first"
+msgstr "Family name is shown first"
+
 msgid "Favorite"
 msgstr "Favorite"
 
@@ -4137,6 +4143,9 @@ msgstr "Generated IDs are enabled"
 
 msgid "Get Method"
 msgstr "Get Method"
+
+msgid "Given name is shown first"
+msgstr "Given name is shown first"
 
 msgid "GL Account"
 msgstr "GL Account"
@@ -5377,6 +5386,12 @@ msgstr "My Saved View"
 
 msgid "Name"
 msgstr "Name"
+
+msgid "Name Display"
+msgstr "Name Display"
+
+msgid "Names appear as family name followed by given name across the app."
+msgstr "Names appear as family name followed by given name across the app."
 
 msgid "Navigate"
 msgstr "Navigate"
@@ -8137,6 +8152,9 @@ msgstr "Shortcuts"
 
 msgid "Show Durations"
 msgstr "Show Durations"
+
+msgid "Show family name before given name, as used in Chinese and other East Asian locales."
+msgstr "Show family name before given name, as used in Chinese and other East Asian locales."
 
 msgid "Show on card right"
 msgstr "Show on card right"

@@ -45,7 +45,7 @@ import {
 } from "react-icons/lu";
 import { Form, Link, useFetcher } from "react-router";
 import { Avatar as UserAvatar } from "~/components";
-import { usePermissions, useRouteData, useUser } from "~/hooks";
+import { usePermissions, useRouteData, useUser, useFormatPersonName } from "~/hooks";
 import { useTheme } from "~/hooks/useTheme";
 import type { Company } from "~/modules/settings";
 import type { action } from "~/root";
@@ -55,10 +55,14 @@ import { path } from "~/utils/path";
 const AvatarMenu = () => {
   const { t } = useLingui();
   const user = useUser();
+  const formatPersonName = useFormatPersonName();
   const routeData = useRouteData<{ company: Company; companies: Company[] }>(
     path.to.authenticatedRoot
   );
-  const name = `${user.firstName} ${user.lastName}`;
+  const name = formatPersonName({
+    firstName: user.firstName,
+    lastName: user.lastName
+  });
   const { isOwner } = usePermissions();
   const edition = useEdition();
 

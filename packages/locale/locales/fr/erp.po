@@ -3314,6 +3314,9 @@ msgstr "Activez pour autoriser le mode poste de travail partagé."
 msgid "Enable to automatically post transactions to the general ledger."
 msgstr "Activez pour publier automatiquement les transactions dans le grand livre."
 
+msgid "Enable to display names with the family name first."
+msgstr ""
+
 msgid "Enable to generate IDs and descriptions for raw materials."
 msgstr "Activez pour générer des identifiants et des descriptions pour les matières premières."
 
@@ -3919,6 +3922,9 @@ msgstr "Modes de défaillance"
 msgid "False"
 msgstr "Faux"
 
+msgid "Family name is shown first"
+msgstr ""
+
 msgid "Favorite"
 msgstr "Favori"
 
@@ -4137,6 +4143,9 @@ msgstr "Les IDs générés sont activés"
 
 msgid "Get Method"
 msgstr "Obtenir la méthode"
+
+msgid "Given name is shown first"
+msgstr ""
 
 msgid "GL Account"
 msgstr "Compte Général"
@@ -5377,6 +5386,12 @@ msgstr "Ma vue enregistrée"
 
 msgid "Name"
 msgstr "Nom"
+
+msgid "Name Display"
+msgstr ""
+
+msgid "Names appear as family name followed by given name across the app."
+msgstr ""
 
 msgid "Navigate"
 msgstr "Naviguer"
@@ -8137,6 +8152,9 @@ msgstr "Raccourcis"
 
 msgid "Show Durations"
 msgstr "Afficher les durées"
+
+msgid "Show family name before given name, as used in Chinese and other East Asian locales."
+msgstr ""
 
 msgid "Show on card right"
 msgstr "Afficher sur la carte à droite"

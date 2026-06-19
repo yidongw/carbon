@@ -1,6 +1,7 @@
 import type { AvatarProps } from "@carbon/react";
 import { cn, HStack } from "@carbon/react";
 import { Trans } from "@lingui/react/macro";
+import { useFormatPersonName } from "~/hooks";
 import { usePeople } from "~/stores";
 import Avatar from "./Avatar";
 
@@ -21,6 +22,7 @@ const EmployeeAvatar = ({
   ...props
 }: EmployeeAvatarProps) => {
   const [people] = usePeople();
+  const formatPersonName = useFormatPersonName();
   if (!employeeId) return null;
 
   if (employeeId === "system") {
@@ -42,6 +44,13 @@ const EmployeeAvatar = ({
   }
 
   const person = people.find((p) => p.id === employeeId);
+  const displayName = person
+    ? formatPersonName({
+        firstName: person.firstName,
+        lastName: person.lastName,
+        fullName: person.name
+      })
+    : "";
 
   if (!person) {
     return <Avatar size={size ?? "xs"} path={undefined} />;
@@ -57,11 +66,11 @@ const EmployeeAvatar = ({
       <Avatar
         size={size ?? "xs"}
         path={person.avatarUrl ?? undefined}
-        name={person?.name ?? ""}
+        name={displayName}
       />
       {withName && (
         <span className="min-w-0 break-words text-sm font-medium leading-5">
-          {person.name}
+          {displayName}
         </span>
       )}
     </HStack>
