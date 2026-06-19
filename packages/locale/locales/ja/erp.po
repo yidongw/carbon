@@ -2736,6 +2736,9 @@ msgstr "倉庫移動を削除"
 msgid "Delete Webhook"
 msgstr "Webhookを削除"
 
+msgid "Deleted"
+msgstr ""
+
 msgid "Delivery Date"
 msgstr "配送日"
 
@@ -4150,6 +4153,9 @@ msgstr ""
 msgid "GL Account"
 msgstr "Gl Akānto"
 
+msgid "Go Back"
+msgstr ""
+
 msgid "Goal quantity for this configuration."
 msgstr "この構成の目標数量。"
 
@@ -4608,6 +4614,9 @@ msgstr "アイテム"
 
 msgid "Item {scannedItem} is not the same as the item {expectedItem}"
 msgstr "アイテム {scannedItem} は、アイテム {expectedItem} と同じではありません"
+
+msgid "Item Deleted"
+msgstr ""
 
 msgid "Item Group"
 msgstr "品目グループ"
@@ -8753,6 +8762,9 @@ msgstr "見積書、販売注文書、請求書、およびその他の販売文
 msgid "The bulk jobs form creates multiple jobs for the same item across multiple due dates."
 msgstr "bulk jobs formを作成すると、同じ品物を複数の期限で作業を割り当てます。"
 
+msgid "The customer you're looking for has been deleted."
+msgstr ""
+
 msgid "The date the customer expects to receive the goods"
 msgstr "顧客が商品を受け取ることを期待する日付"
 
@@ -8764,6 +8776,12 @@ msgstr "以下の組み立て品は、作業を割り当てなければリリー
 
 msgid "The following line items are missing prices or lead times:"
 msgstr "以下の行項目は価格またはリードタイムが不足しています:"
+
+msgid "The item you're looking for has been deleted."
+msgstr ""
+
+msgid "The job you're looking for has been deleted."
+msgstr ""
 
 msgid "The lot will still be rejected, but an NCR cannot be auto-created until at least one Issue Type is configured."
 msgstr "ロットは引き続き却下されますが、少なくとも1つの問題タイプが設定されるまでNCRは自動作成できません。"
@@ -8789,6 +8807,9 @@ msgstr "見積書が作成されました"
 msgid "The quote will be copied with a revision suffix"
 msgstr "見積書は改訂サフィックス付きでコピーされます"
 
+msgid "The resource you're looking for has been deleted."
+msgstr ""
+
 msgid "The revision number of the part"
 msgstr "部品のリビジョン番号"
 
@@ -8797,6 +8818,9 @@ msgstr "部品のサイズ"
 
 msgid "The storage service didn't respond in time. Please try again."
 msgstr "ストレージサービスが時間内に応答しませんでした。もう一度お試しください。"
+
+msgid "The supplier you're looking for has been deleted."
+msgstr ""
 
 msgid "The unit price of the item at the time of the purchase"
 msgstr "購入時のアイテムの単価"
@@ -9504,6 +9528,9 @@ msgstr "問題を表示"
 
 msgid "View Item Master"
 msgstr "アイテムマスターを表示"
+
+msgid "View List"
+msgstr ""
 
 msgid "View maintenance dispatch"
 msgstr "メンテナンスディスパッチを表示"

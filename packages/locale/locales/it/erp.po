@@ -2736,6 +2736,9 @@ msgstr "Elimina Trasferimento Magazzino"
 msgid "Delete Webhook"
 msgstr "Elimina Webhook"
 
+msgid "Deleted"
+msgstr ""
+
 msgid "Delivery Date"
 msgstr "Data di consegna"
 
@@ -4150,6 +4153,9 @@ msgstr ""
 msgid "GL Account"
 msgstr "Conto bancario"
 
+msgid "Go Back"
+msgstr ""
+
 msgid "Goal quantity for this configuration."
 msgstr "Quantità obiettivo per questa configurazione."
 
@@ -4608,6 +4614,9 @@ msgstr "Articolo"
 
 msgid "Item {scannedItem} is not the same as the item {expectedItem}"
 msgstr "L'articolo {scannedItem} non è lo stesso dell'articolo {expectedItem}"
+
+msgid "Item Deleted"
+msgstr ""
 
 msgid "Item Group"
 msgstr "Gruppo Articoli"
@@ -8753,6 +8762,9 @@ msgstr "L'indirizzo di fatturazione utilizzato su preventivi, ordini di vendita,
 msgid "The bulk jobs form creates multiple jobs for the same item across multiple due dates."
 msgstr "La scheda bulk crea più lavori per lo stesso articolo su diverse date scadute."
 
+msgid "The customer you're looking for has been deleted."
+msgstr ""
+
 msgid "The date the customer expects to receive the goods"
 msgstr "La data in cui il cliente si aspetta di ricevere la merce"
 
@@ -8764,6 +8776,12 @@ msgstr "Le seguenti assemblee non hanno operazioni. Per favore assegna un'operaz
 
 msgid "The following line items are missing prices or lead times:"
 msgstr "I seguenti articoli di riga non hanno prezzi o tempi di consegna:"
+
+msgid "The item you're looking for has been deleted."
+msgstr ""
+
+msgid "The job you're looking for has been deleted."
+msgstr ""
 
 msgid "The lot will still be rejected, but an NCR cannot be auto-created until at least one Issue Type is configured."
 msgstr "Il lotto sarà comunque rifiutato, ma un NCR non può essere creato automaticamente fino a quando non è configurato almeno un tipo di problema."
@@ -8789,6 +8807,9 @@ msgstr "Il preventivo è stato creato"
 msgid "The quote will be copied with a revision suffix"
 msgstr "Il preventivo verrà copiato con un suffisso di revisione"
 
+msgid "The resource you're looking for has been deleted."
+msgstr ""
+
 msgid "The revision number of the part"
 msgstr "Il numero di revisione della parte"
 
@@ -8797,6 +8818,9 @@ msgstr "La dimensione della parte"
 
 msgid "The storage service didn't respond in time. Please try again."
 msgstr "Il servizio di archiviazione non ha risposto in tempo. Riprova."
+
+msgid "The supplier you're looking for has been deleted."
+msgstr ""
 
 msgid "The unit price of the item at the time of the purchase"
 msgstr "Il prezzo unitario dell'articolo al momento dell'acquisto"
@@ -9504,6 +9528,9 @@ msgstr "Visualizza Problema"
 
 msgid "View Item Master"
 msgstr "Visualizza Anagrafica Articolo"
+
+msgid "View List"
+msgstr ""
 
 msgid "View maintenance dispatch"
 msgstr "Visualizza manutenzione dispatch"

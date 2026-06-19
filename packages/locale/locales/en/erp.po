@@ -2736,6 +2736,9 @@ msgstr "Delete Warehouse Transfer"
 msgid "Delete Webhook"
 msgstr "Delete Webhook"
 
+msgid "Deleted"
+msgstr "Deleted"
+
 msgid "Delivery Date"
 msgstr "Delivery Date"
 
@@ -4150,6 +4153,9 @@ msgstr "Given name is shown first"
 msgid "GL Account"
 msgstr "GL Account"
 
+msgid "Go Back"
+msgstr "Go Back"
+
 msgid "Goal quantity for this configuration."
 msgstr "Goal quantity for this configuration."
 
@@ -4608,6 +4614,9 @@ msgstr "Item"
 
 msgid "Item {scannedItem} is not the same as the item {expectedItem}"
 msgstr "Item {scannedItem} is not the same as the item {expectedItem}"
+
+msgid "Item Deleted"
+msgstr "Item Deleted"
 
 msgid "Item Group"
 msgstr "Item Group"
@@ -8753,6 +8762,9 @@ msgstr "The billing address used on quotes, sales orders, invoices, and other sa
 msgid "The bulk jobs form creates multiple jobs for the same item across multiple due dates."
 msgstr "The bulk jobs form creates multiple jobs for the same item across multiple due dates."
 
+msgid "The customer you're looking for has been deleted."
+msgstr "The customer you're looking for has been deleted."
+
 msgid "The date the customer expects to receive the goods"
 msgstr "The date the customer expects to receive the goods"
 
@@ -8764,6 +8776,12 @@ msgstr "The following assemblies have no operations. Please assign an operation 
 
 msgid "The following line items are missing prices or lead times:"
 msgstr "The following line items are missing prices or lead times:"
+
+msgid "The item you're looking for has been deleted."
+msgstr "The item you're looking for has been deleted."
+
+msgid "The job you're looking for has been deleted."
+msgstr "The job you're looking for has been deleted."
 
 msgid "The lot will still be rejected, but an NCR cannot be auto-created until at least one Issue Type is configured."
 msgstr "The lot will still be rejected, but an NCR cannot be auto-created until at least one Issue Type is configured."
@@ -8789,6 +8807,9 @@ msgstr "The quote has been created"
 msgid "The quote will be copied with a revision suffix"
 msgstr "The quote will be copied with a revision suffix"
 
+msgid "The resource you're looking for has been deleted."
+msgstr "The resource you're looking for has been deleted."
+
 msgid "The revision number of the part"
 msgstr "The revision number of the part"
 
@@ -8797,6 +8818,9 @@ msgstr "The size of the part"
 
 msgid "The storage service didn't respond in time. Please try again."
 msgstr "The storage service didn't respond in time. Please try again."
+
+msgid "The supplier you're looking for has been deleted."
+msgstr "The supplier you're looking for has been deleted."
 
 msgid "The unit price of the item at the time of the purchase"
 msgstr "The unit price of the item at the time of the purchase"
@@ -9504,6 +9528,9 @@ msgstr "View Issue"
 
 msgid "View Item Master"
 msgstr "View Item Master"
+
+msgid "View List"
+msgstr "View List"
 
 msgid "View maintenance dispatch"
 msgstr "View maintenance dispatch"
