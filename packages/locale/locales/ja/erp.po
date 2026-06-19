@@ -49,7 +49,7 @@ msgstr "{0}が正常に削除されました"
 #. placeholder {0}: data.inviterName
 #. placeholder {1}: data.roleName
 msgid "{0} invited you to join as {1}."
-msgstr ""
+msgstr "{0} は{1}としてあなたを招待しました。"
 
 #. placeholder {0}: actionData.correctAnswers
 #. placeholder {1}: actionData.totalQuestions
@@ -562,7 +562,7 @@ msgid "Alpha"
 msgstr "アルファ"
 
 msgid "Already a Member"
-msgstr ""
+msgstr "既に会員です"
 
 msgid "Always"
 msgstr "常に"
@@ -595,10 +595,10 @@ msgid "API Keys"
 msgstr "APIキー"
 
 msgid "Applicant"
-msgstr ""
+msgstr "申請者"
 
 msgid "Applications"
-msgstr ""
+msgstr "アプリケーション"
 
 msgid "Applies to"
 msgstr "Applies to"
@@ -625,7 +625,7 @@ msgid "Approve here or manage all pending items on the quantity review page."
 msgstr "承認してくださいまたはすべての未承認品物を量検ページで管理することができます。"
 
 msgid "Approved"
-msgstr ""
+msgstr "承認済み"
 
 msgid "Approved By"
 msgstr "承認者"
@@ -1298,7 +1298,7 @@ msgid "By accepting the invite, you agree to the <0>Terms of Service</0> and <1>
 msgstr "招待を受け入れることで、<0>利用規約</0>および<1>プライバシーポリシー</1>に同意するものとします。"
 
 msgid "By requesting access, you agree to the <0>Terms of Service</0> and <1>Privacy Policy</1>."
-msgstr ""
+msgstr "アクセスを要求することにより、<0>利用規約</0>および<1>プライバシーポリシー</1>に同意します。"
 
 msgid "By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy Policy.</1>"
 msgstr "サインインすることで、<0>利用規約</0>および<1>プライバシーポリシー</1>に同意するものとします。"
@@ -1860,7 +1860,7 @@ msgid "Copy link"
 msgstr "リンクをコピー"
 
 msgid "Copy Link"
-msgstr ""
+msgstr "コピーリンク"
 
 msgid "Copy link to consumable"
 msgstr "消耗品へのリンクをコピー"
@@ -2040,7 +2040,7 @@ msgid "Create employee"
 msgstr "創業者を登録する"
 
 msgid "Create Invite Link"
-msgstr ""
+msgstr "招待リンクを作成する"
 
 msgid "Create Issue"
 msgstr "問題を作成"
@@ -2055,7 +2055,7 @@ msgid "Create Kanban"
 msgstr "カンバンを作成"
 
 msgid "Create Link"
-msgstr ""
+msgstr "作成リンク"
 
 msgid "Create new rule"
 msgstr "新規ルールを作成"
@@ -2452,7 +2452,7 @@ msgid "Default CC Recipients"
 msgstr "デフォルトCC受信者"
 
 msgid "Default Location"
-msgstr ""
+msgstr "デフォルト場所"
 
 msgid "Default Method"
 msgstr "デフォルト方法"
@@ -3592,7 +3592,7 @@ msgid "Expires {0}"
 msgstr "有効期限は{0}"
 
 msgid "Expires At"
-msgstr ""
+msgstr "有効期限"
 
 msgid "Expires At (optional)"
 msgstr "有効期限（オプション）"
@@ -4163,7 +4163,7 @@ msgid "GL Account"
 msgstr "Gl Akānto"
 
 msgid "Go to App"
-msgstr ""
+msgstr "アプリへ-go"
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -4472,7 +4472,7 @@ msgid "Invalid Invite"
 msgstr "無効な招待"
 
 msgid "Invalid Invite Link"
-msgstr ""
+msgstr "無効な招待リンク"
 
 msgid "Invalid or expired verification code"
 msgstr "無効或者過期的驗證碼"
@@ -4517,22 +4517,22 @@ msgid "Invite"
 msgstr "招待"
 
 msgid "Invite Link"
-msgstr ""
+msgstr "招待リンク"
 
 msgid "Invite Link Expired"
-msgstr ""
+msgstr "招待リンクが有効ではありません"
 
 msgid "Invite Links"
-msgstr ""
+msgstr "招待リンク"
 
 msgid "Invited"
 msgstr "招待済み"
 
 msgid "Invited By"
-msgstr ""
+msgstr "招待された/by"
 
 msgid "Inviter"
-msgstr ""
+msgstr "招待者"
 
 msgid "Invoice"
 msgstr "請求書"
@@ -4756,7 +4756,7 @@ msgid "Label"
 msgstr "ラベル"
 
 msgid "Label (optional)"
-msgstr ""
+msgstr "オプションラベル"
 
 msgid "Label is required"
 msgstr "ラベルは必須です"
@@ -7332,10 +7332,10 @@ msgid "Request Approval"
 msgstr "承認をリクエスト"
 
 msgid "Request Submitted"
-msgstr ""
+msgstr "リクエストが提出されました"
 
 msgid "Request to Join"
-msgstr ""
+msgstr "参加依頼"
 
 msgid "Requested Date"
 msgstr "リクエスト日"
@@ -7482,10 +7482,10 @@ msgid "Revoke Invites"
 msgstr "招待を取り消す"
 
 msgid "Revoke Link"
-msgstr ""
+msgstr "取り消しリンク"
 
 msgid "Revoked"
-msgstr ""
+msgstr "撤回"
 
 msgid "Rework"
 msgstr "再作成"
@@ -8034,7 +8034,7 @@ msgid "Set due date"
 msgstr "期限を設定"
 
 msgid "Set Expiration"
-msgstr ""
+msgstr "期限設定"
 
 msgid "Set Pricing"
 msgstr "価格設定"
@@ -8209,7 +8209,7 @@ msgid "Shown to the user when this rule fails."
 msgstr "このルールが失敗した場合に表示されます。"
 
 msgid "Sign In to Request Access"
-msgstr ""
+msgstr "サインインしてアクセスを要求してください"
 
 msgid "Sign in with Email"
 msgstr "メールでサインイン"
@@ -8863,10 +8863,10 @@ msgid "This information will be visible to all users, so be careful what you sha
 msgstr "この情報はすべてのユーザーに表示されるため、共有する内容に注意してください。"
 
 msgid "This invite link is invalid or has expired. Please contact the person who shared it with you."
-msgstr ""
+msgstr "この招待リンクは無効或者期切れです。共有した人にお問い合わせください。"
 
 msgid "This invite link is no longer accepting new requests."
-msgstr ""
+msgstr "この招待リンクは新しいリクエストを受け付けていません。"
 
 msgid "This is a unique identifier for the webhook"
 msgstr "これはウェブフックの一意の識別子です"
@@ -9277,7 +9277,7 @@ msgid "Update"
 msgstr "更新"
 
 msgid "Update Expiration"
-msgstr ""
+msgstr "更新期限"
 
 msgid "Update failed"
 msgstr "更新失敗"
@@ -9850,7 +9850,7 @@ msgstr "はい、IDを更新"
 
 #. placeholder {0}: data.companyName
 msgid "You already have access to {0}."
-msgstr ""
+msgstr "{0}へのアクセスは既にあります。"
 
 msgid "You can change the UI style any time through the theme setting"
 msgstr "テーマ設定からいつでもUIスタイルを変更できます"
@@ -9895,14 +9895,14 @@ msgid "Your Name"
 msgstr "お名前"
 
 msgid "Your request has been submitted."
-msgstr ""
+msgstr "ご要求が提出されました。"
 
 #. placeholder {0}: data.companyName
 msgid "Your request to join {0} has already been submitted and is pending review."
-msgstr ""
+msgstr "あなたの{0}への参加リクエストは既に提出されており、審査中です。"
 
 msgid "Your request to join {companyName} has been submitted. An admin will review your application soon."
-msgstr ""
+msgstr "あなたの{companyName}への入社申請が提出されました。管理者が申請を審査しますのでお待ちください。"
 
 msgid "yourself"
 msgstr "自分自身"

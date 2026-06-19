@@ -49,7 +49,7 @@ msgstr "{0} सफलतापूर्वक हटाया गया"
 #. placeholder {0}: data.inviterName
 #. placeholder {1}: data.roleName
 msgid "{0} invited you to join as {1}."
-msgstr ""
+msgstr "{0} आपको {1} के साथ जुड़ने में इवाई किया है।"
 
 #. placeholder {0}: actionData.correctAnswers
 #. placeholder {1}: actionData.totalQuestions
@@ -562,7 +562,7 @@ msgid "Alpha"
 msgstr "अल्फा"
 
 msgid "Already a Member"
-msgstr ""
+msgstr "जानते हैं एक सदस्य"
 
 msgid "Always"
 msgstr "हमेशा"
@@ -595,10 +595,10 @@ msgid "API Keys"
 msgstr "एपीआई कुंजियाँ"
 
 msgid "Applicant"
-msgstr ""
+msgstr "प्रतिबंधित व्यक्ति"
 
 msgid "Applications"
-msgstr ""
+msgstr "प्रयोग स्क्रिप्टेशन"
 
 msgid "Applies to"
 msgstr "अप्लाई होता है"
@@ -625,7 +625,7 @@ msgid "Approve here or manage all pending items on the quantity review page."
 msgstr "स्वीकार करें या सभी अनुपस्थित सामग्री को मात्र मात्रा समीक्षा पृष्ठ पर प्रबंधित करें।"
 
 msgid "Approved"
-msgstr ""
+msgstr "APPROVED"
 
 msgid "Approved By"
 msgstr "द्वारा अनुमोदित"
@@ -1298,7 +1298,7 @@ msgid "By accepting the invite, you agree to the <0>Terms of Service</0> and <1>
 msgstr "आमंत्रण स्वीकार करके, आप <0>सेवा की शर्तें</0> और <1>गोपनीयता नीति</1> से सहमत हैं।"
 
 msgid "By requesting access, you agree to the <0>Terms of Service</0> and <1>Privacy Policy</1>."
-msgstr ""
+msgstr "द अक्सरिशा को मांगने से आप <0>सेवानीति की शर्तें</0> और <1>स่วนियत पध्दति</1> को सहमत होते हैं।"
 
 msgid "By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy Policy.</1>"
 msgstr "साइन इन करके, आप <0>सेवा की शर्तें</0> और <1>गोपनीयता नीति</1> से सहमत हैं।"
@@ -1860,7 +1860,7 @@ msgid "Copy link"
 msgstr "प्रतिरूप जोड़ना"
 
 msgid "Copy Link"
-msgstr ""
+msgstr "कopi कीलक"
 
 msgid "Copy link to consumable"
 msgstr "उपभोग्य के लिए लिंक कॉपी करें"
@@ -2040,7 +2040,7 @@ msgid "Create employee"
 msgstr "नियोक्ता बनाएं"
 
 msgid "Create Invite Link"
-msgstr ""
+msgstr "भेजने की लिंक बनाएं"
 
 msgid "Create Issue"
 msgstr "समस्या बनाएं"
@@ -2055,7 +2055,7 @@ msgid "Create Kanban"
 msgstr "कनबन बनाएं"
 
 msgid "Create Link"
-msgstr ""
+msgstr "संबंधित लिंक बनाएँ"
 
 msgid "Create new rule"
 msgstr "नया नियम बनाएं"
@@ -2452,7 +2452,7 @@ msgid "Default CC Recipients"
 msgstr "डिफ़ॉल्ट CC प्राप्तकर्ता"
 
 msgid "Default Location"
-msgstr ""
+msgstr "प्रतिरूप स्थान"
 
 msgid "Default Method"
 msgstr "डिफ़ॉल्ट विधि"
@@ -3592,7 +3592,7 @@ msgid "Expires {0}"
 msgstr "अवैध हो जाएगा {0}"
 
 msgid "Expires At"
-msgstr ""
+msgstr "समाप्त होने की बिल्डी"
 
 msgid "Expires At (optional)"
 msgstr "समाप्त होता है (वैकल्पिक)"
@@ -4163,7 +4163,7 @@ msgid "GL Account"
 msgstr "क्रेडिट अकाउंट"
 
 msgid "Go to App"
-msgstr ""
+msgstr "अpp जाओ"
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -4472,7 +4472,7 @@ msgid "Invalid Invite"
 msgstr "अमान्य निमंत्रण"
 
 msgid "Invalid Invite Link"
-msgstr ""
+msgstr "अवैध इमिटेव लिंक"
 
 msgid "Invalid or expired verification code"
 msgstr "अवैध या समाप्त हो गया पुष्टि कोड"
@@ -4517,22 +4517,22 @@ msgid "Invite"
 msgstr "आमंत्रित करें"
 
 msgid "Invite Link"
-msgstr ""
+msgstr "अमनत लिंक"
 
 msgid "Invite Link Expired"
-msgstr ""
+msgstr "इंवाइट लिंक समाप्त हो गई"
 
 msgid "Invite Links"
-msgstr ""
+msgstr "अवलोकन लिंक्स"
 
 msgid "Invited"
 msgstr "आमंत्रित"
 
 msgid "Invited By"
-msgstr ""
+msgstr "इंवाइट द्वारा"
 
 msgid "Inviter"
-msgstr ""
+msgstr "इंवाइटर"
 
 msgid "Invoice"
 msgstr "चालान"
@@ -4756,7 +4756,7 @@ msgid "Label"
 msgstr "लेबल"
 
 msgid "Label (optional)"
-msgstr ""
+msgstr "लेबल (वैकल्पिक)"
 
 msgid "Label is required"
 msgstr "लेबल आवश्यक है"
@@ -7332,10 +7332,10 @@ msgid "Request Approval"
 msgstr "अनुमोदन का अनुरोध करें"
 
 msgid "Request Submitted"
-msgstr ""
+msgstr "अनुरोध भेजा गया है"
 
 msgid "Request to Join"
-msgstr ""
+msgstr "आवेदन करें"
 
 msgid "Requested Date"
 msgstr "अनुरोधित तारीख"
@@ -7482,10 +7482,10 @@ msgid "Revoke Invites"
 msgstr "आमंत्रण रद्द करें"
 
 msgid "Revoke Link"
-msgstr ""
+msgstr "रिवोक लिंक"
 
 msgid "Revoked"
-msgstr ""
+msgstr "कार्यक्रम रद्द किया गया है"
 
 msgid "Rework"
 msgstr "पुनर्निर्माण"
@@ -8034,7 +8034,7 @@ msgid "Set due date"
 msgstr "देय तारीख सेट करें"
 
 msgid "Set Expiration"
-msgstr ""
+msgstr "समाप्ति सेट करें"
 
 msgid "Set Pricing"
 msgstr "मूल्य निर्धारण सेट करें"
@@ -8209,7 +8209,7 @@ msgid "Shown to the user when this rule fails."
 msgstr "द्वारा उपयोगकर्ता दिखाया गया जब यह नियम विफल होता है।"
 
 msgid "Sign In to Request Access"
-msgstr ""
+msgstr "साइन इन करके पहुंच शपथ करें"
 
 msgid "Sign in with Email"
 msgstr "ईमेल के साथ साइन इन करें"
@@ -8863,10 +8863,10 @@ msgid "This information will be visible to all users, so be careful what you sha
 msgstr "यह जानकारी सभी उपयोगकर्ताओं को दिखाई देगी, इसलिए सावधान रहें कि आप क्या साझा करते हैं।"
 
 msgid "This invite link is invalid or has expired. Please contact the person who shared it with you."
-msgstr ""
+msgstr "इस इंवेट लिंक कृपया है अवैध या समाप्त हो गई है। कृपया आपको इससे साझा करने वाले व्यक्ति से संपर्क करें।"
 
 msgid "This invite link is no longer accepting new requests."
-msgstr ""
+msgstr "इस आमंत्रण लिंक कोई नए अनुरोध स्वीकार नहीं कर रहा है।"
 
 msgid "This is a unique identifier for the webhook"
 msgstr "यह वेबहुक के लिए एक अद्वितीय पहचानकर्ता है"
@@ -9277,7 +9277,7 @@ msgid "Update"
 msgstr "अपडेट करें"
 
 msgid "Update Expiration"
-msgstr ""
+msgstr "अपडेट वृद्धि"
 
 msgid "Update failed"
 msgstr "अपडेट विफल हो गया"
@@ -9850,7 +9850,7 @@ msgstr "हाँ, आईडी अपडेट करें"
 
 #. placeholder {0}: data.companyName
 msgid "You already have access to {0}."
-msgstr ""
+msgstr "आप पहले से {0} का एक्सेस रखते हैं।"
 
 msgid "You can change the UI style any time through the theme setting"
 msgstr "आप किसी भी समय थीम सेटिंग के माध्यम से UI शैली को बदल सकते हैं"
@@ -9895,14 +9895,14 @@ msgid "Your Name"
 msgstr "आपका नाम"
 
 msgid "Your request has been submitted."
-msgstr ""
+msgstr "आपका याचिका संरचना की है।"
 
 #. placeholder {0}: data.companyName
 msgid "Your request to join {0} has already been submitted and is pending review."
-msgstr ""
+msgstr "आपका {0} में योगदान की रिक्वेस्ट पहले से ही भर पड़ी है और इसे परीक्षण के लिए जुटा हुआ है।"
 
 msgid "Your request to join {companyName} has been submitted. An admin will review your application soon."
-msgstr ""
+msgstr "आपका {companyName} की जोड़ें की मांग सबमिट हुई है। एक अधिकारी आपकी प्रतिबंधित मांग को शायद जल्दी ही समीक्षा करेगा।"
 
 msgid "yourself"
 msgstr "अपने आप"

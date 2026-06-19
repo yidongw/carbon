@@ -49,7 +49,7 @@ msgstr "{0} eliminado correctamente"
 #. placeholder {0}: data.inviterName
 #. placeholder {1}: data.roleName
 msgid "{0} invited you to join as {1}."
-msgstr ""
+msgstr "{0} te ha invitado a unirte como {1}."
 
 #. placeholder {0}: actionData.correctAnswers
 #. placeholder {1}: actionData.totalQuestions
@@ -562,7 +562,7 @@ msgid "Alpha"
 msgstr "Álfa"
 
 msgid "Already a Member"
-msgstr ""
+msgstr "Miembro existente"
 
 msgid "Always"
 msgstr "Siempre"
@@ -595,10 +595,10 @@ msgid "API Keys"
 msgstr "Claves API"
 
 msgid "Applicant"
-msgstr ""
+msgstr "Solicitante"
 
 msgid "Applications"
-msgstr ""
+msgstr "Aplicaciones"
 
 msgid "Applies to"
 msgstr "Aplica a"
@@ -625,7 +625,7 @@ msgid "Approve here or manage all pending items on the quantity review page."
 msgstr "Aprova aquí o gestiona todos los artículos pendientes en la página de revisión de cantidad."
 
 msgid "Approved"
-msgstr ""
+msgstr "Aprobado"
 
 msgid "Approved By"
 msgstr "Aprobado por"
@@ -1298,7 +1298,7 @@ msgid "By accepting the invite, you agree to the <0>Terms of Service</0> and <1>
 msgstr "Al aceptar la invitación, aceptas los <0>Términos de Servicio</0> y la <1>Política de Privacidad</1>."
 
 msgid "By requesting access, you agree to the <0>Terms of Service</0> and <1>Privacy Policy</1>."
-msgstr ""
+msgstr "Al solicitar acceso, aceptas los <0>Términos de Servicio</0> y la <1>Política de Privacidad</1>."
 
 msgid "By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy Policy.</1>"
 msgstr "Al iniciar sesión, aceptas los <0>Términos de Servicio</0> y la <1>Política de Privacidad.</1>"
@@ -1860,7 +1860,7 @@ msgid "Copy link"
 msgstr "Copiar enlace"
 
 msgid "Copy Link"
-msgstr ""
+msgstr "Copiar Enlace"
 
 msgid "Copy link to consumable"
 msgstr "Copiar enlace al consumible"
@@ -2040,7 +2040,7 @@ msgid "Create employee"
 msgstr "Crear empleado"
 
 msgid "Create Invite Link"
-msgstr ""
+msgstr "Crear enlace de invitación"
 
 msgid "Create Issue"
 msgstr "Crear Problema"
@@ -2055,7 +2055,7 @@ msgid "Create Kanban"
 msgstr "Crear Kanban"
 
 msgid "Create Link"
-msgstr ""
+msgstr "Crear Enlace"
 
 msgid "Create new rule"
 msgstr "Crear nueva regla"
@@ -2452,7 +2452,7 @@ msgid "Default CC Recipients"
 msgstr "Destinatarios CC predeterminados"
 
 msgid "Default Location"
-msgstr ""
+msgstr "Ubicación predeterminada"
 
 msgid "Default Method"
 msgstr "Método Predeterminado"
@@ -3592,7 +3592,7 @@ msgid "Expires {0}"
 msgstr "Expira {0}"
 
 msgid "Expires At"
-msgstr ""
+msgstr "Vence El"
 
 msgid "Expires At (optional)"
 msgstr "Expira en (opcional)"
@@ -4163,7 +4163,7 @@ msgid "GL Account"
 msgstr "Cuenta General"
 
 msgid "Go to App"
-msgstr ""
+msgstr "Ir a la App"
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -4472,7 +4472,7 @@ msgid "Invalid Invite"
 msgstr "Invitación Inválida"
 
 msgid "Invalid Invite Link"
-msgstr ""
+msgstr "Enlace de invitación inválido"
 
 msgid "Invalid or expired verification code"
 msgstr "Código de verificación inválido o expirado"
@@ -4517,22 +4517,22 @@ msgid "Invite"
 msgstr "Invitar"
 
 msgid "Invite Link"
-msgstr ""
+msgstr "Enlace de Invitación"
 
 msgid "Invite Link Expired"
-msgstr ""
+msgstr "Enlace de Invitación Vencido"
 
 msgid "Invite Links"
-msgstr ""
+msgstr "Enlaces de Invitación"
 
 msgid "Invited"
 msgstr "Invitado"
 
 msgid "Invited By"
-msgstr ""
+msgstr "Invitado por"
 
 msgid "Inviter"
-msgstr ""
+msgstr "Invitar"
 
 msgid "Invoice"
 msgstr "Factura"
@@ -4756,7 +4756,7 @@ msgid "Label"
 msgstr "Etiqueta"
 
 msgid "Label (optional)"
-msgstr ""
+msgstr "Etiqueta (opcional)"
 
 msgid "Label is required"
 msgstr "Etiqueta es requerida"
@@ -7332,10 +7332,10 @@ msgid "Request Approval"
 msgstr "Solicitar Aprobación"
 
 msgid "Request Submitted"
-msgstr ""
+msgstr "Solicitud enviada"
 
 msgid "Request to Join"
-msgstr ""
+msgstr "Solicitud para unirse"
 
 msgid "Requested Date"
 msgstr "Fecha Solicitada"
@@ -7482,10 +7482,10 @@ msgid "Revoke Invites"
 msgstr "Revocar Invitaciones"
 
 msgid "Revoke Link"
-msgstr ""
+msgstr "Deshacer Enlace"
 
 msgid "Revoked"
-msgstr ""
+msgstr "Deshabilitado"
 
 msgid "Rework"
 msgstr "Rehacer"
@@ -8034,7 +8034,7 @@ msgid "Set due date"
 msgstr "Establecer fecha de vencimiento"
 
 msgid "Set Expiration"
-msgstr ""
+msgstr "Establecer Fecha de Vencimiento"
 
 msgid "Set Pricing"
 msgstr "Establecer Precio"
@@ -8209,7 +8209,7 @@ msgid "Shown to the user when this rule fails."
 msgstr "Mostrado al usuario cuando esta regla falla."
 
 msgid "Sign In to Request Access"
-msgstr ""
+msgstr "Iniciar sesión para solicitar acceso"
 
 msgid "Sign in with Email"
 msgstr "Iniciar sesión con correo electrónico"
@@ -8863,10 +8863,10 @@ msgid "This information will be visible to all users, so be careful what you sha
 msgstr "Esta información será visible para todos los usuarios, así que ten cuidado con lo que compartes."
 
 msgid "This invite link is invalid or has expired. Please contact the person who shared it with you."
-msgstr ""
+msgstr "Este enlace de invitación es inválido o ha expirado. Por favor, contácte al persona que se lo compartió."
 
 msgid "This invite link is no longer accepting new requests."
-msgstr ""
+msgstr "Este enlace de invitación ya no acepta nuevas solicitudes."
 
 msgid "This is a unique identifier for the webhook"
 msgstr "Este es un identificador único para el webhook"
@@ -9277,7 +9277,7 @@ msgid "Update"
 msgstr "Actualizar"
 
 msgid "Update Expiration"
-msgstr ""
+msgstr "Actualizar expiración"
 
 msgid "Update failed"
 msgstr "Actualización fallida"
@@ -9850,7 +9850,7 @@ msgstr "Sí, Actualizar IDs"
 
 #. placeholder {0}: data.companyName
 msgid "You already have access to {0}."
-msgstr ""
+msgstr "Ya tienes acceso a {0}."
 
 msgid "You can change the UI style any time through the theme setting"
 msgstr "Puedes cambiar el estilo de la interfaz en cualquier momento a través la configuración de tema"
@@ -9895,14 +9895,14 @@ msgid "Your Name"
 msgstr "Tu Nombre"
 
 msgid "Your request has been submitted."
-msgstr ""
+msgstr "Tu solicitud ha sido enviada."
 
 #. placeholder {0}: data.companyName
 msgid "Your request to join {0} has already been submitted and is pending review."
-msgstr ""
+msgstr "Tu solicitud para unirte a {0} ya ha sido enviada y está pendiente de revisión."
 
 msgid "Your request to join {companyName} has been submitted. An admin will review your application soon."
-msgstr ""
+msgstr "Tu solicitud para unirte a {companyName} ha sido enviada. Un administrador revisará tu aplicación pronto."
 
 msgid "yourself"
 msgstr "ti mismo"
