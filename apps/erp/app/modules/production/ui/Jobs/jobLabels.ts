@@ -1,5 +1,9 @@
 import { useLingui } from "@lingui/react/macro";
-import type { deadlineTypes, jobStatus } from "../../production.models";
+import type {
+  deadlineTypes,
+  jobOperationStatus,
+  jobStatus
+} from "../../production.models";
 
 export function useJobStatusLabel() {
   const { t } = useLingui();
@@ -26,6 +30,31 @@ export function useJobStatusLabel() {
         return t`Overdue`;
       case "Due Today":
         return t`Due Today`;
+      default:
+        return status;
+    }
+  };
+}
+
+export function useJobOperationStatusLabel() {
+  const { t } = useLingui();
+
+  return (status: (typeof jobOperationStatus)[number]) => {
+    switch (status) {
+      case "Todo":
+        return t`Todo`;
+      case "Ready":
+        return t`Ready`;
+      case "Waiting":
+        return t`Waiting`;
+      case "In Progress":
+        return t`In Progress`;
+      case "Paused":
+        return t`Paused`;
+      case "Done":
+        return t`Done`;
+      case "Canceled":
+        return t`Canceled`;
       default:
         return status;
     }
