@@ -5,6 +5,7 @@ import {
   LuTriangleAlert,
   LuWrench
 } from "react-icons/lu";
+import { useMaintenanceSeverityLabel } from "~/modules/production/productionLabels";
 import type { maintenanceSeverity } from "../../resources.models";
 
 type MaintenanceSeverityProps = {
@@ -16,6 +17,12 @@ function MaintenanceSeverity({
   severity,
   className
 }: MaintenanceSeverityProps) {
+  const getMaintenanceSeverityLabel = useMaintenanceSeverityLabel();
+
+  if (!severity) return null;
+
+  const label = getMaintenanceSeverityLabel(severity);
+
   switch (severity) {
     case "Preventive":
       return (
@@ -24,7 +31,7 @@ function MaintenanceSeverity({
           className={cn(className, "inline-flex items-center gap-1")}
         >
           <LuSettings />
-          {severity}
+          {label}
         </Badge>
       );
     case "Operator Performed":
@@ -34,7 +41,7 @@ function MaintenanceSeverity({
           className={cn(className, "inline-flex items-center gap-1")}
         >
           <LuSquareUser />
-          {severity}
+          {label}
         </Badge>
       );
     case "Support Required":
@@ -44,7 +51,7 @@ function MaintenanceSeverity({
           className={cn(className, "inline-flex items-center gap-1")}
         >
           <LuWrench />
-          {severity}
+          {label}
         </Badge>
       );
     case "OEM Required":
@@ -54,7 +61,7 @@ function MaintenanceSeverity({
           className={cn(className, "inline-flex items-center gap-1")}
         >
           <LuTriangleAlert />
-          {severity}
+          {label}
         </Badge>
       );
     default:

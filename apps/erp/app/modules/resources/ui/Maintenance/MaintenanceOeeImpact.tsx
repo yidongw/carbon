@@ -5,6 +5,7 @@ import {
   LuCircleX,
   LuTriangleAlert
 } from "react-icons/lu";
+import { useOeeImpactLabel } from "~/modules/production/productionLabels";
 import type { oeeImpact } from "../../resources.models";
 
 type MaintenanceOeeImpactProps = {
@@ -16,6 +17,12 @@ function MaintenanceOeeImpact({
   oeeImpact,
   className
 }: MaintenanceOeeImpactProps) {
+  const getOeeImpactLabel = useOeeImpactLabel();
+
+  if (!oeeImpact) return null;
+
+  const label = getOeeImpactLabel(oeeImpact);
+
   switch (oeeImpact) {
     case "Down":
       return (
@@ -24,7 +31,7 @@ function MaintenanceOeeImpact({
           className={cn(className, "inline-flex items-center gap-1")}
         >
           <LuCircleX className="h-3 w-3" />
-          Down
+          {label}
         </Badge>
       );
     case "Planned":
@@ -34,7 +41,7 @@ function MaintenanceOeeImpact({
           className={cn(className, "inline-flex items-center gap-1")}
         >
           <LuCalendar className="h-3 w-3" />
-          Planned
+          {label}
         </Badge>
       );
     case "Impact":
@@ -44,7 +51,7 @@ function MaintenanceOeeImpact({
           className={cn(className, "inline-flex items-center gap-1")}
         >
           <LuTriangleAlert className="h-3 w-3" />
-          Impact
+          {label}
         </Badge>
       );
     case "No Impact":
@@ -54,7 +61,7 @@ function MaintenanceOeeImpact({
           className={cn(className, "inline-flex items-center gap-1")}
         >
           <LuCircleCheck className="h-3 w-3" />
-          No Impact
+          {label}
         </Badge>
       );
     default:
