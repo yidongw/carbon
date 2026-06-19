@@ -127,9 +127,7 @@ export async function action({ request }: ActionFunctionArgs) {
     return data(
       {
         success: true as const,
-        userId: result.userId,
-        firstName,
-        lastName
+        userId: result.userId
       },
       await flash(request, success("Successfully invited employee"))
     );
