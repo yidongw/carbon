@@ -110,6 +110,9 @@ export function ProductionActorFields({
   const [supplierProcessId, setSupplierProcessId] = useState(
     supplierProcessIdValue ?? ""
   );
+  const [pendingEmployeeId, setPendingEmployeeId] = useState<string | null>(
+    null
+  );
 
   const [people] = usePeople();
   const [suppliers] = useSuppliers();
@@ -331,6 +334,14 @@ export function ProductionActorFields({
     applySelection(option?.value ?? "");
   };
 
+  useEffect(() => {
+    if (!pendingEmployeeId) return;
+    if (!people.some((person) => person.id === pendingEmployeeId)) return;
+
+    applySelection(encodeActorSelection("employee", pendingEmployeeId));
+    setPendingEmployeeId(null);
+  }, [pendingEmployeeId, people]);
+
   return (
     <div className="w-full">
       <GroupedCreatableCombobox
@@ -370,7 +381,7 @@ export function ProductionActorFields({
             triggerRef.current?.click();
           }}
           onSuccess={({ userId }) => {
-            applySelection(encodeActorSelection("employee", userId));
+            setPendingEmployeeId(userId);
           }}
         />
       )}
