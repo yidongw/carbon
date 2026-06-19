@@ -59,39 +59,30 @@ export function JobOperationProgress({
     firstUnfinished === -1 ? sorted.length - 1 : firstUnfinished;
   const shouldCollapse = sorted.length > 4;
 
-  let display: { op: Operation; showEllipsisAfter: boolean }[];
-  if (!shouldCollapse) {
-    display = sorted.map((op) => ({ op, showEllipsisAfter: false }));
-  } else if (activeIdx === 0 || activeIdx === sorted.length - 1) {
-    display = [
-      { op: sorted[0], showEllipsisAfter: true },
-      { op: sorted[sorted.length - 1], showEllipsisAfter: false }
-    ];
-  } else {
-    display = [
-      { op: sorted[0], showEllipsisAfter: true },
-      { op: sorted[activeIdx], showEllipsisAfter: true },
-      { op: sorted[sorted.length - 1], showEllipsisAfter: false }
-    ];
-  }
+  const visibleIndices = shouldCollapse
+    ? [...new Set([0, activeIdx, sorted.length - 1])].sort((a, b) => a - b)
+    : sorted.map((_, i) => i);
 
   return (
     <Tooltip delayDuration={150}>
       <TooltipTrigger asChild>
         <div className="flex items-center gap-1.5 cursor-default">
-          {display.map(({ op, showEllipsisAfter }) => (
-            <Fragment key={op.id}>
-              <OperationPill operation={op} />
-              {showEllipsisAfter && (
-                <span
-                  aria-hidden="true"
-                  className="text-muted-foreground text-xs select-none leading-none"
-                >
-                  ···
-                </span>
-              )}
-            </Fragment>
-          ))}
+          {visibleIndices.map((idx, i) => {
+            const hasGapBefore = i > 0 && idx - visibleIndices[i - 1] > 1;
+            return (
+              <Fragment key={sorted[idx].id}>
+                {hasGapBefore && (
+                  <span
+                    aria-hidden="true"
+                    className="text-muted-foreground text-xs select-none leading-none"
+                  >
+                    ···
+                  </span>
+                )}
+                <OperationPill operation={sorted[idx]} />
+              </Fragment>
+            );
+          })}
         </div>
       </TooltipTrigger>
       <TooltipContent align="start" className="w-96 p-2">
