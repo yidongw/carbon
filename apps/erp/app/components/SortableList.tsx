@@ -6,7 +6,7 @@ import { LayoutGroup, motion, Reorder, useDragControls } from "framer-motion";
 import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
-import { LuPlus, LuTable, LuTrash } from "react-icons/lu";
+import { LuCircleCheckBig, LuCircleDashed, LuLoaderCircle, LuTable, LuTrash } from "react-icons/lu";
 import Empty from "./Empty";
 
 export interface Item {
@@ -341,30 +341,28 @@ function QuantityProgressStrip({
     100 - completePercent
   );
   const isOverTarget = target > 0 && complete > target;
-
-  const iconButtonClass =
-    "flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-foreground/80 transition-[transform,background-color] duration-150 hover:bg-muted hover:text-foreground active:scale-95 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring";
+  const unassigned = Math.max(0, target - complete - pickup);
 
   const indicator = (
-    <div className="flex items-center gap-2 whitespace-nowrap rounded-full border border-border/70 bg-background px-2 py-0.5 shadow-sm">
+    <div className="flex items-center gap-2.5 sm:gap-2 whitespace-nowrap rounded-full border border-border/40 bg-transparent px-3 py-1 shadow-none backdrop-blur-sm sm:px-2 sm:py-0.5">
       {/* Finished group */}
       {onAddQuantity ? (
         <button
           type="button"
-          className="flex items-center gap-0.5 rounded transition-opacity duration-150 hover:opacity-70 active:scale-95 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          className="flex items-center gap-1 sm:gap-0.5 rounded transition-opacity duration-150 hover:opacity-70 active:scale-95 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           aria-label={t`Add production quantity`}
           onClick={(event) => {
             event.stopPropagation();
             onAddQuantity();
           }}
         >
-          <LuPlus className={cn("h-3.5 w-3.5 shrink-0", isOverTarget ? "text-amber-500" : "text-foreground/80")} strokeWidth={2.5} />
-          <span className={cn("text-sm font-medium tabular-nums leading-none tracking-tight", isOverTarget ? "text-amber-500" : "text-foreground")}>
+          <LuCircleCheckBig className="h-4 w-4 sm:h-3.5 sm:w-3.5 shrink-0 text-emerald-600" strokeWidth={2.5} />
+          <span className="text-base sm:text-sm font-medium tabular-nums leading-none tracking-tight text-emerald-600">
             {formatQuantityValue(complete)}
           </span>
         </button>
       ) : (
-        <span className={cn("text-sm font-medium tabular-nums leading-none tracking-tight", isOverTarget ? "text-amber-500" : "text-foreground")}>
+        <span className="text-base sm:text-sm font-medium tabular-nums leading-none tracking-tight text-emerald-600">
           {formatQuantityValue(complete)}
         </span>
       )}
@@ -372,41 +370,51 @@ function QuantityProgressStrip({
       {onAddPickup ? (
         <button
           type="button"
-          className="flex items-center gap-0.5 rounded transition-opacity duration-150 hover:opacity-70 active:scale-95 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          className="flex items-center gap-1 sm:gap-0.5 rounded transition-opacity duration-150 hover:opacity-70 active:scale-95 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           aria-label={t`Add pickup`}
           onClick={(event) => {
             event.stopPropagation();
             onAddPickup();
           }}
         >
-          <LuPlus className={cn("h-3.5 w-3.5 shrink-0", pickup > 0 ? "text-blue-600" : "text-foreground/80")} strokeWidth={2.5} />
-          <span className={cn("text-sm font-medium tabular-nums leading-none tracking-tight", pickup > 0 ? "text-blue-600" : "text-muted-foreground")}>
+          <LuLoaderCircle className="h-4 w-4 sm:h-3.5 sm:w-3.5 shrink-0 text-blue-600" strokeWidth={2.5} />
+          <span className="text-base sm:text-sm font-medium tabular-nums leading-none tracking-tight text-blue-600">
             {formatQuantityValue(pickup)}
           </span>
         </button>
       ) : (
-        <span className={cn("text-sm font-medium tabular-nums leading-none tracking-tight", pickup > 0 ? "text-blue-600" : "text-muted-foreground")}>
+        <span className="text-base sm:text-sm font-medium tabular-nums leading-none tracking-tight text-blue-600">
           {formatQuantityValue(pickup)}
         </span>
       )}
-      {/* Target */}
-      <span className="text-sm font-medium tabular-nums leading-none tracking-tight text-muted-foreground">
-        {formatQuantityValue(target)}
+      {/* Unassigned */}
+      <span className="flex items-center gap-1 sm:gap-0.5">
+        <LuCircleDashed className="h-4 w-4 sm:h-3.5 sm:w-3.5 shrink-0 text-muted-foreground" strokeWidth={2.5} />
+        <span className="text-base sm:text-sm font-medium tabular-nums leading-none tracking-tight text-muted-foreground">
+          {formatQuantityValue(unassigned)}
+        </span>
       </span>
-      {/* Config summary */}
+      {/* Target + config summary */}
       {onOpenConfigTable ? (
         <button
           type="button"
-          className={iconButtonClass}
+          className="flex items-center gap-1 sm:gap-0.5 rounded transition-opacity duration-150 hover:opacity-70 active:scale-95 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           aria-label={t`View configuration quantities`}
           onClick={(event) => {
             event.stopPropagation();
             onOpenConfigTable();
           }}
         >
-          <LuTable className="h-3 w-3" strokeWidth={2.5} />
+          <LuTable className="h-3.5 w-3.5 sm:h-3 sm:w-3 shrink-0 text-foreground/80" strokeWidth={2.5} />
+          <span className="text-base sm:text-sm font-medium tabular-nums leading-none tracking-tight text-foreground">
+            {formatQuantityValue(target)}
+          </span>
         </button>
-      ) : null}
+      ) : (
+        <span className="text-base sm:text-sm font-medium tabular-nums leading-none tracking-tight text-foreground">
+          {formatQuantityValue(target)}
+        </span>
+      )}
     </div>
   );
 
@@ -432,9 +440,9 @@ function QuantityProgressStrip({
     <div
       className="w-full min-w-0 shrink-0"
       role="img"
-      aria-label={t`Finished ${complete} of ${target} units, ${pickup} picked up`}
+      aria-label={t`Finished ${complete} of ${target} units, ${pickup} picked up, ${unassigned} unassigned`}
     >
-      <div className="relative h-7 w-full">
+      <div className="relative h-9 sm:h-7 w-full">
         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2">
           {progressLine}
         </div>
