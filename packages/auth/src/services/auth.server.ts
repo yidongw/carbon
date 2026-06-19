@@ -742,9 +742,9 @@ export async function seedBypassUser(email: string): Promise<void> {
     { readableId: "FASTENER-KIT-02", name: "M8 Fastener Kit", description: "M8 bolts nuts washers kit", type: "Consumable", replenishmentSystem: "Buy", itemTrackingType: "Inventory", uom: "EA" },
     { readableId: "GREASE-TUBE", name: "Lithium Grease", description: "Multi-purpose lithium grease", type: "Consumable", replenishmentSystem: "Buy", itemTrackingType: "Inventory", uom: "EA" },
     { readableId: "CUTTING-FLUID", name: "CNC Cutting Fluid", description: "Water-soluble cutting fluid", type: "Consumable", replenishmentSystem: "Buy", itemTrackingType: "Inventory", uom: "GAL" },
-    { readableId: "ASSEMBLY-MOTOR-001", name: "Electric Motor Assembly M1", description: "Complete electric motor assembly", type: "Product", replenishmentSystem: "Make", itemTrackingType: "Inventory", uom: "EA" },
-    { readableId: "ASSEMBLY-PUMP-001", name: "Hydraulic Pump Assembly P1", description: "Hydraulic pump with bracket", type: "Product", replenishmentSystem: "Make", itemTrackingType: "Inventory", uom: "EA" },
-    { readableId: "ASSEMBLY-CTRL-001", name: "Control Unit Assembly C1", description: "Control unit with PCB and housing", type: "Product", replenishmentSystem: "Make", itemTrackingType: "Inventory", uom: "EA" },
+    { readableId: "ASSEMBLY-MOTOR-001", name: "Electric Motor Assembly M1", description: "Complete electric motor assembly", type: "Part", replenishmentSystem: "Make", itemTrackingType: "Inventory", uom: "EA" },
+    { readableId: "ASSEMBLY-PUMP-001", name: "Hydraulic Pump Assembly P1", description: "Hydraulic pump with bracket", type: "Part", replenishmentSystem: "Make", itemTrackingType: "Inventory", uom: "EA" },
+    { readableId: "ASSEMBLY-CTRL-001", name: "Control Unit Assembly C1", description: "Control unit with PCB and housing", type: "Part", replenishmentSystem: "Make", itemTrackingType: "Inventory", uom: "EA" },
   ];
 
   for (const item of sampleItems) {
