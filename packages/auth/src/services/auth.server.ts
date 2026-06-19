@@ -707,4 +707,62 @@ export async function seedBypassUser(email: string): Promise<void> {
     companyId,
     locationId: locationData.id
   });
+
+  // Seed sample items for demo/testing
+  const sampleItems = [
+    {
+      readableId: "STEEL-ROD-01",
+      name: "1020 Steel Rod 1 inch",
+      description: "Cold-rolled 1020 steel rod, 1\" diameter",
+      type: "Material",
+      replenishmentSystem: "Buy",
+      itemTrackingType: "Inventory",
+      unitOfMeasureCode: "EA"
+    },
+    {
+      readableId: "BEARING-6205",
+      name: "6205 Deep Groove Bearing",
+      description: "SKF 6205-2RS deep groove ball bearing",
+      type: "Part",
+      replenishmentSystem: "Buy",
+      itemTrackingType: "Inventory",
+      unitOfMeasureCode: "EA"
+    },
+    {
+      readableId: "BRACKET-001",
+      name: "Mounting Bracket A",
+      description: "Machined aluminum mounting bracket, Type A",
+      type: "Part",
+      replenishmentSystem: "Make",
+      itemTrackingType: "Inventory",
+      unitOfMeasureCode: "EA"
+    },
+    {
+      readableId: "SHAFT-ASM-001",
+      name: "Drive Shaft Assembly",
+      description: "Precision-machined drive shaft assembly",
+      type: "Part",
+      replenishmentSystem: "Make",
+      itemTrackingType: "Inventory",
+      unitOfMeasureCode: "EA"
+    },
+    {
+      readableId: "CTRL-PCB-001",
+      name: "Control PCB Rev2",
+      description: "Motor control printed circuit board, revision 2",
+      type: "Part",
+      replenishmentSystem: "Buy",
+      itemTrackingType: "Inventory",
+      unitOfMeasureCode: "EA"
+    }
+  ];
+
+  await client.from("item").insert(
+    sampleItems.map(item => ({
+      ...item,
+      active: true,
+      companyId,
+      createdBy: userId
+    }))
+  );
 }
