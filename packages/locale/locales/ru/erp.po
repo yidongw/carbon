@@ -49,7 +49,7 @@ msgstr "{0} успешно удален"
 #. placeholder {0}: data.inviterName
 #. placeholder {1}: data.roleName
 msgid "{0} invited you to join as {1}."
-msgstr ""
+msgstr "{0} пригласил вас присоединиться как {1}."
 
 #. placeholder {0}: actionData.correctAnswers
 #. placeholder {1}: actionData.totalQuestions
@@ -570,7 +570,7 @@ msgid "Alpha"
 msgstr "Алфабет"
 
 msgid "Already a Member"
-msgstr ""
+msgstr "Уже есть аккаунт"
 
 msgid "Always"
 msgstr "Всегда"
@@ -606,10 +606,10 @@ msgid "API Keys"
 msgstr "API ключи"
 
 msgid "Applicant"
-msgstr ""
+msgstr "Абитуриент"
 
 msgid "Applications"
-msgstr ""
+msgstr "Приложения"
 
 msgid "Applies to"
 msgstr "Нападается"
@@ -636,7 +636,7 @@ msgid "Approve here or manage all pending items on the quantity review page."
 msgstr "Оцените здесь или управляйте всеми просроченными предметами на странице оценки количества."
 
 msgid "Approved"
-msgstr ""
+msgstr "Утвержден"
 
 msgid "Approved By"
 msgstr "Одобрено"
@@ -1312,7 +1312,7 @@ msgid "By accepting the invite, you agree to the <0>Terms of Service</0> and <1>
 msgstr "Принимая приглашение, вы соглашаетесь с <0>Условиями обслуживания</0> и <1>Политикой конфиденциальности</1>."
 
 msgid "By requesting access, you agree to the <0>Terms of Service</0> and <1>Privacy Policy</1>."
-msgstr ""
+msgstr "По запросу доступа вы соглашаетесь с <0>Условиями использования</0> и <1>Политикой конфиденциальности</1>."
 
 msgid "By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy Policy.</1>"
 msgstr "Подписываясь, вы соглашаетесь с <0>Условиями обслуживания</0> и <1>Политикой конфиденциальности.</1>"
@@ -1877,7 +1877,7 @@ msgid "Copy link"
 msgstr "Копировать ссылку"
 
 msgid "Copy Link"
-msgstr ""
+msgstr "Копировать ссылку"
 
 msgid "Copy link to consumable"
 msgstr "Скопировать ссылку на расходный материал"
@@ -2057,7 +2057,7 @@ msgid "Create employee"
 msgstr "Создать сотрудника"
 
 msgid "Create Invite Link"
-msgstr ""
+msgstr "Создать ссылку на приглашение"
 
 msgid "Create Issue"
 msgstr "Создать проблему"
@@ -2072,7 +2072,7 @@ msgid "Create Kanban"
 msgstr "Создать Kanban"
 
 msgid "Create Link"
-msgstr ""
+msgstr "Создать ссылку"
 
 msgid "Create new rule"
 msgstr "Создать новый правил"
@@ -2475,7 +2475,7 @@ msgid "Default CC Recipients"
 msgstr "Получатели CC по умолчанию"
 
 msgid "Default Location"
-msgstr ""
+msgstr "Стандартное местоположение"
 
 msgid "Default Method"
 msgstr "Метод по умолчанию"
@@ -3621,7 +3621,7 @@ msgid "Expires {0}"
 msgstr "Истекает {0}"
 
 msgid "Expires At"
-msgstr ""
+msgstr "Истекает в"
 
 msgid "Expires At (optional)"
 msgstr "Истекает (опционально)"
@@ -4198,7 +4198,7 @@ msgid "GL Account"
 msgstr "Окончательный счет"
 
 msgid "Go to App"
-msgstr ""
+msgstr "Перейти к приложению"
 
 msgid "Goal quantity for this configuration."
 msgstr "Количество целевых единиц для этой конфигурации."
@@ -4516,7 +4516,7 @@ msgid "Invalid Invite"
 msgstr "Недействительное приглашение"
 
 msgid "Invalid Invite Link"
-msgstr ""
+msgstr "Недействительная приглашения ссылка"
 
 msgid "Invalid or expired verification code"
 msgstr "Неверный или истекший срок действия код подтверждения"
@@ -4561,22 +4561,22 @@ msgid "Invite"
 msgstr "Пригласить"
 
 msgid "Invite Link"
-msgstr ""
+msgstr "Ссылка для приглашения"
 
 msgid "Invite Link Expired"
-msgstr ""
+msgstr "Ссылка на приглашение истекла"
 
 msgid "Invite Links"
-msgstr ""
+msgstr "Ссылки для приглашения"
 
 msgid "Invited"
 msgstr "Приглашён"
 
 msgid "Invited By"
-msgstr ""
+msgstr "Приглашенный bởi"
 
 msgid "Inviter"
-msgstr ""
+msgstr "Приглашать"
 
 msgid "Invoice"
 msgstr "Счет"
@@ -4800,7 +4800,7 @@ msgid "Label"
 msgstr "Метка"
 
 msgid "Label (optional)"
-msgstr ""
+msgstr "Опционально: Название<label>"
 
 msgid "Label is required"
 msgstr "Оставшийся поле обязательно"
@@ -7421,10 +7421,10 @@ msgid "Request Approval"
 msgstr "Запросить одобрение"
 
 msgid "Request Submitted"
-msgstr ""
+msgstr "Запрос отправлен"
 
 msgid "Request to Join"
-msgstr ""
+msgstr "Запрос на участие"
 
 msgid "Requested Date"
 msgstr "Запрашиваемая дата"
@@ -7571,10 +7571,10 @@ msgid "Revoke Invites"
 msgstr "Отозвать приглашения"
 
 msgid "Revoke Link"
-msgstr ""
+msgstr "Отменить ссылку"
 
 msgid "Revoked"
-msgstr ""
+msgstr "Отозван"
 
 msgid "Rework"
 msgstr "Ремонт"
@@ -8126,7 +8126,7 @@ msgid "Set due date"
 msgstr "Установить срок"
 
 msgid "Set Expiration"
-msgstr ""
+msgstr "Установить срок истечения"
 
 msgid "Set Pricing"
 msgstr "Установить цену"
@@ -8304,7 +8304,7 @@ msgid "Shown to the user when this rule fails."
 msgstr "Показано пользователю при failure этого правила."
 
 msgid "Sign In to Request Access"
-msgstr ""
+msgstr "Войдите, чтобы запросить доступ"
 
 msgid "Sign in with Email"
 msgstr "Войти с помощью электронной почты"
@@ -8964,10 +8964,10 @@ msgid "This information will be visible to all users, so be careful what you sha
 msgstr "Эта информация будет видна всем пользователям, поэтому будьте осторожны с тем, что вы делитесь."
 
 msgid "This invite link is invalid or has expired. Please contact the person who shared it with you."
-msgstr ""
+msgstr "Этот ссылочный код приглашения недействителен или истек. Пожалуйста, свяжитесь с тем человеком, который его с вами поделился."
 
 msgid "This invite link is no longer accepting new requests."
-msgstr ""
+msgstr "Этот ссылочный код больше не принимает новые запросы."
 
 msgid "This is a unique identifier for the webhook"
 msgstr "Это уникальный идентификатор для вебхука"
@@ -9381,7 +9381,7 @@ msgid "Update"
 msgstr "Обновить"
 
 msgid "Update Expiration"
-msgstr ""
+msgstr "Обновление истечения сроков"
 
 msgid "Update failed"
 msgstr "Обновление не удалось"
@@ -9960,7 +9960,7 @@ msgstr "Да, обновить ID"
 
 #. placeholder {0}: data.companyName
 msgid "You already have access to {0}."
-msgstr ""
+msgstr "У вас уже есть доступ к {0}."
 
 msgid "You can change the UI style any time through the theme setting"
 msgstr "Вы можете изменить стиль интерфейса в любое время через настройку темы"
@@ -10005,14 +10005,14 @@ msgid "Your Name"
 msgstr "Ваше имя"
 
 msgid "Your request has been submitted."
-msgstr ""
+msgstr "Ваш запрос был отправлен."
 
 #. placeholder {0}: data.companyName
 msgid "Your request to join {0} has already been submitted and is pending review."
-msgstr ""
+msgstr "Ваш запрос на присоединение к {0} уже был отправлен и находится в процессе рассмотрения."
 
 msgid "Your request to join {companyName} has been submitted. An admin will review your application soon."
-msgstr ""
+msgstr "Ваш запрос на вступление в {companyName} был отправлен. Администратор проверит вашу заявку в ближайшее время."
 
 msgid "yourself"
 msgstr "себя"
