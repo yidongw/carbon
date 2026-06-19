@@ -55,22 +55,22 @@ export default function DeletedPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen py-12">
-      <VStack spacing={6} className="max-w-md w-full px-4">
+    <div className="flex items-center justify-center min-h-[100vh] -mt-16">
+      <VStack spacing={8} className="max-w-md w-full px-4">
         <div className="flex items-center justify-center w-20 h-20 rounded-full bg-orange-100 dark:bg-orange-900/20 mx-auto">
           <LuTriangleAlert className="w-10 h-10 text-orange-600 dark:text-orange-400" />
         </div>
 
-        <VStack spacing={2} className="text-center">
+        <VStack spacing={4} className="text-center">
           <h1 className="text-2xl font-semibold text-foreground">
             <Trans>Item Deleted</Trans>
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground text-base">
             {getMessage()}
           </p>
         </VStack>
 
-        <HStack spacing={3} className="w-full justify-center">
+        <HStack spacing={3} className="w-full justify-center pt-2">
           <Button
             variant="secondary"
             onClick={() => navigate(-1)}
