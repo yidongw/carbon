@@ -1,9 +1,16 @@
 import { MenuIcon, MenuItem } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from "react";
 import { LuCalendarClock, LuCopy, LuLink, LuShieldOff } from "react-icons/lu";
-import { useFetcher, useNavigate, useRevalidator } from "react-router";
+import { useFetcher, useRevalidator } from "react-router";
 import { New, Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { usePermissions, useUrlParams } from "~/hooks";
@@ -33,27 +40,76 @@ const InviteLinksTable = memo(({ data, count }: InviteLinksTableProps) => {
   const { t } = useLingui();
   const [params] = useUrlParams();
   const permissions = usePermissions();
-  const navigate = useNavigate();
   const revokeFetcher = useFetcher();
+  const revalidator = useRevalidator();
   const [expiryModal, setExpiryModal] = useState<InviteLinkRow | null>(null);
-  const prevStateRef = useRef(revokeFetcher.state);
+  // Track locally-revoked IDs that haven't yet been confirmed by the server
+  const [locallyRevoked, setLocallyRevoked] = useState<Set<string>>(new Set());
+  const prevFetcherStateRef = useRef(revokeFetcher.state);
+  // Capture pending id so we can still reference it after fetcher returns to idle
+  const lastSubmittedIdRef = useRef<string | null>(null);
 
-  // Revalidate when revoke action completes
+  // ID currently being submitted to the server
+  const pendingRevokeId = revokeFetcher.formData?.get("id") as string | null;
+
+  // Keep latest submitted ID so the post-completion effect knows which row was revoked
+  if (pendingRevokeId && pendingRevokeId !== lastSubmittedIdRef.current) {
+    lastSubmittedIdRef.current = pendingRevokeId;
+  }
+
+  // After fetcher completes successfully, mark as locally revoked and revalidate
   useEffect(() => {
-    // Check if state changed from submitting/loading to idle
-    if (prevStateRef.current !== "idle" && revokeFetcher.state === "idle") {
-      // Navigate to same route to trigger loader refetch
-      navigate(".", { replace: true });
-    }
-    prevStateRef.current = revokeFetcher.state;
-  }, [revokeFetcher.state, navigate]);
+    const wasSubmitting = prevFetcherStateRef.current !== "idle";
+    const nowIdle = revokeFetcher.state === "idle";
 
-  const getStatus = useCallback((row: InviteLinkRow) => {
-    if (isInviteLinkExpired(row)) {
-      return row.revokedAt ? t`Revoked` : t`Expired`;
+    if (wasSubmitting && nowIdle && revokeFetcher.data !== undefined) {
+      const submittedId = lastSubmittedIdRef.current;
+      if (submittedId) {
+        setLocallyRevoked((prev) => new Set([...prev, submittedId]));
+      }
+      // Force loader to re-run so we get fresh server data
+      revalidator.revalidate();
     }
-    return t`Active`;
-  }, [t]);
+    prevFetcherStateRef.current = revokeFetcher.state;
+  }, [revokeFetcher.state, revokeFetcher.data, revalidator]);
+
+  // Clean up locallyRevoked entries once server data confirms them
+  useEffect(() => {
+    if (locallyRevoked.size === 0) return;
+    const confirmedIds = new Set(
+      data.filter((row) => row.revokedAt != null).map((row) => row.id)
+    );
+    const stillPending = new Set(
+      [...locallyRevoked].filter((id) => !confirmedIds.has(id))
+    );
+    if (stillPending.size !== locallyRevoked.size) {
+      setLocallyRevoked(stillPending);
+    }
+  }, [data, locallyRevoked]);
+
+  // Merge server data with optimistic + locally-confirmed revoked state
+  const displayData = useMemo(() => {
+    if (!pendingRevokeId && locallyRevoked.size === 0) return data;
+    const nowIso = new Date().toISOString();
+    return data.map((row) => {
+      const isOptimisticallyRevoking = row.id === pendingRevokeId;
+      const isLocallyRevoked = locallyRevoked.has(row.id);
+      if ((isOptimisticallyRevoking || isLocallyRevoked) && !row.revokedAt) {
+        return { ...row, revokedAt: nowIso };
+      }
+      return row;
+    });
+  }, [data, pendingRevokeId, locallyRevoked]);
+
+  const getStatus = useCallback(
+    (row: InviteLinkRow) => {
+      if (isInviteLinkExpired(row)) {
+        return row.revokedAt ? t`Revoked` : t`Expired`;
+      }
+      return t`Active`;
+    },
+    [t]
+  );
 
   const columns = useMemo<ColumnDef<InviteLinkRow>[]>(() => {
     return [
@@ -80,24 +136,38 @@ const InviteLinksTable = memo(({ data, count }: InviteLinksTableProps) => {
       {
         id: "status",
         header: t`Status`,
-        cell: ({ row }) => <Enumerable value={getStatus(row.original)} />
+        cell: ({ row }) => {
+          const isPending =
+            pendingRevokeId === row.original.id &&
+            revokeFetcher.state !== "idle";
+          return (
+            <div className="flex items-center gap-2">
+              <Enumerable value={getStatus(row.original)} />
+              {isPending && (
+                <span className="text-xs text-muted-foreground">
+                  <Trans>Revoking...</Trans>
+                </span>
+              )}
+            </div>
+          );
+        }
       },
       {
         id: "applications",
         header: t`Applications`,
-        cell: ({ row }) => String(
-          row.original.membershipApplication?.[0]?.count ?? 0
-        )
+        cell: ({ row }) =>
+          String(row.original.membershipApplication?.[0]?.count ?? 0)
       },
       {
         accessorKey: "expiresAt",
         header: t`Expires`,
-        cell: ({ row }) => row.original.expiresAt
-          ? new Date(row.original.expiresAt).toLocaleDateString()
-          : "—"
+        cell: ({ row }) =>
+          row.original.expiresAt
+            ? new Date(row.original.expiresAt).toLocaleDateString()
+            : "—"
       }
     ];
-  }, [getStatus, t]);
+  }, [getStatus, pendingRevokeId, revokeFetcher.state, t]);
 
   const copyLink = useCallback(async (code: string) => {
     await navigator.clipboard.writeText(`${ERP_URL}${path.to.joinLink(code)}`);
@@ -106,6 +176,8 @@ const InviteLinksTable = memo(({ data, count }: InviteLinksTableProps) => {
   const renderContextMenu = useCallback(
     (row: InviteLinkRow) => {
       const expired = isInviteLinkExpired(row);
+      const isPending =
+        pendingRevokeId === row.id && revokeFetcher.state !== "idle";
 
       return (
         <>
@@ -114,7 +186,7 @@ const InviteLinksTable = memo(({ data, count }: InviteLinksTableProps) => {
             <Trans>Copy Link</Trans>
           </MenuItem>
           <MenuItem
-            disabled={!permissions.can("update", "users")}
+            disabled={expired || !permissions.can("update", "users")}
             onClick={() => setExpiryModal(row)}
           >
             <MenuIcon icon={<LuCalendarClock />} />
@@ -122,7 +194,9 @@ const InviteLinksTable = memo(({ data, count }: InviteLinksTableProps) => {
           </MenuItem>
           <MenuItem
             destructive
-            disabled={expired || !permissions.can("update", "users")}
+            disabled={
+              expired || isPending || !permissions.can("update", "users")
+            }
             onClick={() => {
               revokeFetcher.submit(
                 { id: row.id },
@@ -134,18 +208,18 @@ const InviteLinksTable = memo(({ data, count }: InviteLinksTableProps) => {
             }}
           >
             <MenuIcon icon={<LuShieldOff />} />
-            <Trans>Revoke Link</Trans>
+            {isPending ? <Trans>Revoking...</Trans> : <Trans>Revoke Link</Trans>}
           </MenuItem>
         </>
       );
     },
-    [copyLink, permissions, revokeFetcher]
+    [copyLink, pendingRevokeId, permissions, revokeFetcher]
   );
 
   return (
     <>
       <Table<InviteLinkRow>
-        data={data}
+        data={displayData}
         columns={columns}
         count={count}
         primaryAction={
