@@ -15,7 +15,7 @@ import {
   VStack
 } from "@carbon/react";
 import { getItemReadableId } from "@carbon/utils";
-import { Trans } from "@lingui/react/macro";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { useLocale } from "@react-aria/i18n";
 import { motion } from "framer-motion";
 import { useState } from "react";
@@ -55,6 +55,7 @@ const LineItems = ({
   purchaseInvoiceLines: PurchaseInvoiceLine[];
   shouldConvertCurrency: boolean;
 }) => {
+  const { t } = useLingui();
   const [items] = useItems();
   const accounts = useAccounts();
   const { invoiceId } = useParams();
@@ -79,9 +80,9 @@ const LineItems = ({
         const isFixedAsset = line.invoiceLineType === "Fixed Asset";
         const isIndirect = isGlAccount || isFixedAsset;
         const itemReadableId = isGlAccount
-          ? line.description || "Indirect Expense"
+          ? line.description || t`Indirect Expense`
           : isFixedAsset
-            ? line.assetReadableId || "Fixed Asset"
+            ? line.assetReadableId || t`Fixed Asset`
             : getItemReadableId(items, line.itemId);
         const lineTotal = (line.unitPrice ?? 0) * (line.quantity ?? 0);
         const supplierLineTotal =
@@ -141,16 +142,16 @@ const LineItems = ({
                               line.id!
                             )}
                           >
-                            Edit
+                            <Trans>Edit</Trans>
                           </Link>
                         </Button>
                       </HStack>
                       <span className="text-muted-foreground text-base truncate">
                         {isGlAccount
                           ? (accounts.find((a) => a.id === line.accountId)
-                              ?.name ?? "Indirect Expense")
+                              ?.name ?? t`Indirect Expense`)
                           : isFixedAsset
-                            ? line.description || "Fixed Asset"
+                            ? line.description || t`Fixed Asset`
                             : line.description}
                       </span>
                     </VStack>
@@ -204,7 +205,10 @@ const LineItems = ({
                         </Badge>
                         {(line.taxPercent ?? 0) > 0 ? (
                           <Badge variant="red">
-                            {percentFormatter.format(line.taxPercent ?? 0)} Tax
+                            <Trans>
+                              {percentFormatter.format(line.taxPercent ?? 0)}{" "}
+                              Tax
+                            </Trans>
                           </Badge>
                         ) : null}
                       </div>
@@ -276,7 +280,9 @@ const LineItems = ({
                       </Td>
                     </Tr>
                     <Tr>
-                      <Td>Shipping Cost</Td>
+                      <Td>
+                        <Trans>Shipping Cost</Trans>
+                      </Td>
                       <Td className="text-right">
                         <VStack spacing={0}>
                           <span>
@@ -312,7 +318,9 @@ const LineItems = ({
 
                     <Tr key="tax" className="border-b border-border">
                       <Td>
-                        Tax ({percentFormatter.format(line.taxPercent ?? 0)})
+                        <Trans>
+                          Tax ({percentFormatter.format(line.taxPercent ?? 0)})
+                        </Trans>
                       </Td>
                       <Td className="text-right">
                         <VStack spacing={0}>
@@ -441,7 +449,9 @@ const PurchaseInvoiceSummary = ({
             />
             {routeData?.purchaseInvoice?.dateDue && (
               <span className="text-muted-foreground text-sm">
-                Due {formatDate(routeData?.purchaseInvoice.dateDue)}
+                <Trans>
+                  Due {formatDate(routeData?.purchaseInvoice.dateDue)}
+                </Trans>
               </span>
             )}
           </div>
@@ -459,7 +469,9 @@ const PurchaseInvoiceSummary = ({
 
         <VStack spacing={2} className="mt-8">
           <HStack className="justify-between text-base text-muted-foreground w-full">
-            <span>Subtotal:</span>
+            <span>
+              <Trans>Subtotal:</Trans>
+            </span>
             <VStack spacing={0} className="items-end">
               <span>{formatter.format(subtotal)}</span>
               {shouldConvertCurrency && (
@@ -471,7 +483,9 @@ const PurchaseInvoiceSummary = ({
           </HStack>
 
           <HStack className="justify-between text-base text-muted-foreground w-full">
-            <span>Tax:</span>
+            <span>
+              <Trans>Tax:</Trans>
+            </span>
             <VStack spacing={0} className="items-end">
               <span>{formatter.format(tax)}</span>
               {shouldConvertCurrency && (
@@ -486,7 +500,9 @@ const PurchaseInvoiceSummary = ({
             {shippingCost > 0 ? (
               <>
                 <VStack spacing={0}>
-                  <span>Shipping:</span>
+                  <span>
+                    <Trans>Shipping:</Trans>
+                  </span>
                   {isEditable && (
                     <Button
                       variant="link"
@@ -522,7 +538,9 @@ const PurchaseInvoiceSummary = ({
           </HStack>
 
           <HStack className="justify-between text-xl font-bold w-full">
-            <span>Total:</span>
+            <span>
+              <Trans>Total:</Trans>
+            </span>
             <VStack spacing={0} className="items-end">
               <span>{formatter.format(total)}</span>
               {shouldConvertCurrency && (

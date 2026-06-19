@@ -21,6 +21,7 @@ import {
   VStack
 } from "@carbon/react";
 import { Editor } from "@carbon/react/Editor";
+import type { useLingui } from "@lingui/react/macro";
 import type { PostgrestResponse } from "@supabase/supabase-js";
 import { nanoid } from "nanoid";
 import { useEffect, useState } from "react";
@@ -53,16 +54,35 @@ function getPriorityIcon(
   }
 }
 
-function getSeverityLabel(severity: (typeof maintenanceSeverity)[number]) {
+function _getPriorityLabel(
+  priority: (typeof maintenanceDispatchPriority)[number],
+  t: ReturnType<typeof useLingui>["t"]
+) {
+  switch (priority) {
+    case "Critical":
+      return t`Critical`;
+    case "High":
+      return t`High`;
+    case "Medium":
+      return t`Medium`;
+    case "Low":
+      return t`Low`;
+  }
+}
+
+function getSeverityLabel(
+  severity: (typeof maintenanceSeverity)[number],
+  t: ReturnType<typeof useLingui>["t"]
+) {
   switch (severity) {
     case "Preventive":
-      return "Preventive";
+      return t`Preventive`;
     case "Operator Performed":
-      return "Operator Performed";
+      return t`Operator Performed`;
     case "Support Required":
-      return "Support Required";
+      return t`Support Required`;
     case "OEM Required":
-      return "OEM Required";
+      return t`OEM Required`;
   }
 }
 

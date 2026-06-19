@@ -104,12 +104,15 @@ async function translateOne(src, localeName) {
   return null;
 }
 
-async function pool(items, n, worker) {
+async function pool(items, n, worker, onBatch) {
   let idx = 0, done = 0;
   const total = items.length;
   const tick = () => {
     done++;
-    if (done % 10 === 0 || done === total) process.stdout.write(`\r    ${done}/${total}   `);
+    if (done % 10 === 0 || done === total) {
+      process.stdout.write(`\r    ${done}/${total}   `);
+      if (onBatch) onBatch();
+    }
   };
   const run = async () => {
     while (idx < items.length) {
@@ -153,7 +156,7 @@ for (const path of paths) {
       totalFailed++;
       if (failedSamples.length < 10) failedSamples.push(`${locale}: ${JSON.stringify(item.msgid)}`);
     }
-  });
+  }, () => writeFileSync(path, po.toString()));
   writeFileSync(path, po.toString());
   console.log(`    wrote ${path} (+${okThisFile}/${missing.length})`);
 }

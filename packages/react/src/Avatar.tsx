@@ -99,7 +99,7 @@ const Avatar = forwardRef<HTMLSpanElement, AvatarProps>(
               className="h-full w-full text-muted"
               role="img"
               style={name ? { color } : undefined}
-              aria-label=" avatar"
+              aria-label={name ? `${name} avatar` : "avatar"}
             >
               <path
                 fill="currentColor"

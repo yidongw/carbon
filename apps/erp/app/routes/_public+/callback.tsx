@@ -5,14 +5,17 @@ import {
   error,
   safeRedirect
 } from "@carbon/auth";
-import { exchangePkceCode, makeAuthSessionFromTokens } from "@carbon/auth/auth.server";
+import {
+  exchangePkceCode,
+  makeAuthSessionFromTokens
+} from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { getCompanyId, setCompanyId } from "@carbon/auth/company.server";
 import {
   destroyAuthSession,
   flash,
-  getPkceCookie,
   getAuthSession,
+  getPkceCookie,
   setAuthSession
 } from "@carbon/auth/session.server";
 import { validator } from "@carbon/form";
@@ -56,7 +59,11 @@ export async function loader({ request }: LoaderFunctionArgs) {
     }
 
     const cookieCompanyId = getCompanyId(request);
-    const authSession = await exchangePkceCode(code, pkceEntry, cookieCompanyId);
+    const authSession = await exchangePkceCode(
+      code,
+      pkceEntry,
+      cookieCompanyId
+    );
 
     if (!authSession) {
       return data({

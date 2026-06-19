@@ -64,6 +64,7 @@ import {
   useSearchParams
 } from "react-router";
 import type { Result } from "~/types";
+import { useFormatValidationError } from "~/utils/formatValidationError";
 import { path } from "~/utils/path";
 
 export const meta: MetaFunction = () => {
@@ -218,6 +219,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function LoginRoute() {
   const { t } = useLingui();
+  const formatError = useFormatValidationError();
   const {
     hasOutlookAuth,
     hasGoogleAuth,
@@ -445,7 +447,7 @@ export default function LoginRoute() {
     });
 
     if (error) {
-      toast.error(error.message);
+      toast.error(formatError(error.message));
     }
   };
 
@@ -461,7 +463,7 @@ export default function LoginRoute() {
     });
 
     if (error) {
-      toast.error(error.message);
+      toast.error(formatError(error.message));
     }
   };
 
@@ -661,7 +663,8 @@ export default function LoginRoute() {
                         <Trans>Authentication Error</Trans>
                       </AlertTitle>
                       <AlertDescription>
-                        {fetcher.data?.message}
+                        {fetcher.data?.message &&
+                          formatError(fetcher.data.message)}
                       </AlertDescription>
                     </Alert>
                   )}

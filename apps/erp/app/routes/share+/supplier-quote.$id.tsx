@@ -36,7 +36,7 @@ import {
 } from "@carbon/react";
 import { Editor } from "@carbon/react/Editor";
 import { formatDate } from "@carbon/utils";
-import { useLingui } from "@lingui/react/macro";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { useLocale } from "@react-aria/i18n";
 import { motion } from "framer-motion";
 import type { Dispatch, SetStateAction } from "react";
@@ -212,15 +212,19 @@ const Header = ({
         )}
         {quote?.expirationDate && (
           <p className="text-lg text-muted-foreground">
-            Expires {formatDate(quote.expirationDate, undefined, locale)}
+            <Trans>
+              Expires {formatDate(quote.expirationDate, undefined, locale)}
+            </Trans>
           </p>
         )}
       </div>
 
       {quote.status === "Draft" ? (
         <span className="text-base font-semibold foreground">
-          Please fill the columns marked with the <EditableBadge /> icon to
-          provide pricing
+          <Trans>
+            Please fill the columns marked with the <EditableBadge /> icon to
+            provide pricing
+          </Trans>
         </span>
       ) : null}
     </VStack>
@@ -236,6 +240,7 @@ const NotesEditorModal = ({
   onSave: (content: JSONContent) => void;
   quoteStatus: SupplierQuote["status"];
 }) => {
+  const { t: _t } = useLingui();
   const isDraft = quoteStatus === "Draft";
   const modal = useDisclosure();
 
@@ -282,7 +287,7 @@ const NotesEditorModal = ({
             modal.onOpen();
           }}
         >
-          {hasNotes ? "Edit Notes" : "Add Notes"}
+          {hasNotes ? <Trans>Edit Notes</Trans> : <Trans>Add Notes</Trans>}
         </Button>
 
         {modal.isOpen && (
@@ -298,15 +303,19 @@ const NotesEditorModal = ({
               onClick={(e) => e.stopPropagation()}
             >
               <ModalHeader>
-                <ModalTitle>Edit Notes</ModalTitle>
+                <ModalTitle>
+                  <Trans>Edit Notes</Trans>
+                </ModalTitle>
                 <ModalDescription>
-                  Add or edit notes for this line item
+                  <Trans>Add or edit notes for this line item</Trans>
                 </ModalDescription>
               </ModalHeader>
               <ModalBody>
                 <VStack spacing={4} className="w-full">
                   <div className="flex flex-col gap-2 w-full">
-                    <Label>Notes</Label>
+                    <Label>
+                      <Trans>Notes</Trans>
+                    </Label>
                     <Editor
                       initialValue={editorContent}
                       onChange={handleEditorChange}
@@ -318,9 +327,11 @@ const NotesEditorModal = ({
               </ModalBody>
               <ModalFooter>
                 <Button variant="secondary" onClick={handleCancel}>
-                  Cancel
+                  <Trans>Cancel</Trans>
                 </Button>
-                <Button onClick={handleSave}>Save Notes</Button>
+                <Button onClick={handleSave}>
+                  <Trans>Save Notes</Trans>
+                </Button>
               </ModalFooter>
             </ModalContent>
           </Modal>
@@ -351,6 +362,7 @@ const LineItems = ({
   quoteLinePrices: SupplierQuoteLinePrice[];
   onSaveNotes: (lineId: string, content: JSONContent) => void;
 }) => {
+  const { t } = useLingui();
   const { quoteLines, thumbnails } = useLoaderData<typeof loader>().data!;
   const [openItems, setOpenItems] = useState<string[]>(() =>
     Array.isArray(quoteLines) && quoteLines.length > 0
@@ -371,7 +383,7 @@ const LineItems = ({
 
         const isGlAccount = line.supplierQuoteLineType === "G/L Account";
         const lineHeading = isGlAccount
-          ? line.description || "Indirect Expense"
+          ? line.description || t`Indirect Expense`
           : line.itemReadableId;
 
         return (
@@ -414,7 +426,11 @@ const LineItems = ({
                     </HStack>
                   </div>
                   <span className="text-muted-foreground text-base truncate">
-                    {isGlAccount ? "Indirect Expense" : line.description}
+                    {isGlAccount ? (
+                      <Trans>Indirect Expense</Trans>
+                    ) : (
+                      line.description
+                    )}
                   </span>
                 </div>
               </VStack>
@@ -471,6 +487,7 @@ const LinePricing = ({
   quoteStatus: SupplierQuote["status"];
   quoteLinePrices: SupplierQuoteLinePrice[];
 }) => {
+  const { t: _t } = useLingui();
   const pricingOptions =
     quoteLinePrices
       ?.filter((price) => price.supplierQuoteLineId === line.id)
@@ -618,32 +635,44 @@ const LinePricing = ({
         <Thead>
           <Tr className="whitespace-nowrap">
             <Th className="w-[50px]" />
-            <Th className="w-2">Quantity</Th>
+            <Th className="w-2">
+              <Trans>Quantity</Trans>
+            </Th>
             <Th className="w-[150px]">
               <HStack spacing={4}>
-                <span>Unit Price</span>
+                <span>
+                  <Trans>Unit Price</Trans>
+                </span>
                 {quoteStatus === "Draft" ? <EditableBadge /> : null}
               </HStack>
             </Th>
             <Th className="w-[120px]">
               <HStack spacing={4}>
-                <span>Lead Time</span>
+                <span>
+                  <Trans>Lead Time</Trans>
+                </span>
                 {quoteStatus === "Draft" ? <EditableBadge /> : null}
               </HStack>
             </Th>
             <Th className="w-[150px]">
               <HStack spacing={4}>
-                <span>Shipping Cost</span>
+                <span>
+                  <Trans>Shipping Cost</Trans>
+                </span>
                 {quoteStatus === "Draft" ? <EditableBadge /> : null}
               </HStack>
             </Th>
             <Th className="w-[150px]">
               <HStack spacing={4}>
-                <span>Tax</span>
+                <span>
+                  <Trans>Tax</Trans>
+                </span>
                 {quoteStatus === "Draft" ? <EditableBadge /> : null}
               </HStack>
             </Th>
-            <Th className="w-[100px]">Total</Th>
+            <Th className="w-[100px]">
+              <Trans>Total</Trans>
+            </Th>
           </Tr>
         </Thead>
         <Tbody>
@@ -784,7 +813,7 @@ const LinePricing = ({
                   </>
                 ) : (
                   <Td colSpan={4} className="text-muted-foreground">
-                    Select to provide pricing
+                    <Trans>Select to provide pricing</Trans>
                   </Td>
                 )}
                 <Td className="w-[150px]">
@@ -928,7 +957,7 @@ const Quote = ({
                   isDisabled={!eachSelectedLineHasPricingAndLeadTime}
                   className="w-full text-lg"
                 >
-                  Submit Quote
+                  <Trans>Submit Quote</Trans>
                 </Button>
                 <Button
                   onClick={declineModal.onOpen}
@@ -936,7 +965,7 @@ const Quote = ({
                   variant="secondary"
                   className="w-full text-lg"
                 >
-                  Decline Quote
+                  <Trans>Decline Quote</Trans>
                 </Button>
               </VStack>
             )}
@@ -963,9 +992,13 @@ const Quote = ({
               }}
             >
               <ModalHeader>
-                <ModalTitle>Submit Quote</ModalTitle>
+                <ModalTitle>
+                  <Trans>Submit Quote</Trans>
+                </ModalTitle>
                 <ModalDescription>
-                  Are you sure you want to submit the updated pricing?
+                  <Trans>
+                    Are you sure you want to submit the updated pricing?
+                  </Trans>
                 </ModalDescription>
               </ModalHeader>
               <ModalBody>
@@ -979,25 +1012,25 @@ const Quote = ({
                   <Input
                     name="digitalSupplierQuoteSubmittedBy"
                     label={t`Your Name`}
-                    placeholder="Enter your name"
+                    placeholder={t`Enter your name`}
                   />
                   <Input
                     name="digitalSupplierQuoteSubmittedByEmail"
                     label={t`Your Email`}
-                    placeholder="Enter your email"
+                    placeholder={t`Enter your email`}
                   />
                 </div>
               </ModalBody>
               <ModalFooter>
                 <Button variant="secondary" onClick={submitModal.onClose}>
-                  Cancel
+                  <Trans>Cancel</Trans>
                 </Button>
                 <Button
                   isLoading={fetcher.state !== "idle"}
                   isDisabled={fetcher.state !== "idle"}
                   type="submit"
                 >
-                  Submit
+                  <Trans>Submit</Trans>
                 </Button>
               </ModalFooter>
             </ValidatedForm>
@@ -1024,9 +1057,11 @@ const Quote = ({
               }}
             >
               <ModalHeader>
-                <ModalTitle>Decline Quote</ModalTitle>
+                <ModalTitle>
+                  <Trans>Decline Quote</Trans>
+                </ModalTitle>
                 <ModalDescription>
-                  Are you sure you want to decline this quote?
+                  <Trans>Are you sure you want to decline this quote?</Trans>
                 </ModalDescription>
               </ModalHeader>
               <ModalBody>
@@ -1039,18 +1074,18 @@ const Quote = ({
                   <Input
                     name="digitalSupplierQuoteSubmittedBy"
                     label={t`Your Name`}
-                    placeholder="Enter your name"
+                    placeholder={t`Enter your name`}
                   />
                   <Input
                     name="digitalSupplierQuoteSubmittedByEmail"
                     label={t`Your Email`}
-                    placeholder="Enter your email"
+                    placeholder={t`Enter your email`}
                   />
                 </div>
               </ModalBody>
               <ModalFooter>
                 <Button variant="ghost" onClick={declineModal.onClose}>
-                  Cancel
+                  <Trans>Cancel</Trans>
                 </Button>
                 <Button
                   isLoading={fetcher.state !== "idle"}
@@ -1058,7 +1093,7 @@ const Quote = ({
                   type="submit"
                   variant="destructive"
                 >
-                  Decline Quote
+                  <Trans>Decline Quote</Trans>
                 </Button>
               </ModalFooter>
             </ValidatedForm>
@@ -1085,6 +1120,7 @@ export const ErrorMessage = ({
 };
 
 export default function ExternalSupplierQuote() {
+  const { t } = useLingui();
   const { state, data } = useLoaderData<typeof loader>();
 
   switch (state) {
@@ -1095,22 +1131,22 @@ export default function ExternalSupplierQuote() {
       }
       return (
         <ErrorMessage
-          title="Quote not found"
-          message="Oops! The link you're trying to access is not valid."
+          title={t`Quote not found`}
+          message={t`Oops! The link you're trying to access is not valid.`}
         />
       );
     case QuoteState.Expired:
       return (
         <ErrorMessage
-          title="Quote expired"
-          message="Oops! The link you're trying to access has expired or is no longer valid."
+          title={t`Quote expired`}
+          message={t`Oops! The link you're trying to access has expired or is no longer valid.`}
         />
       );
     case QuoteState.NotFound:
       return (
         <ErrorMessage
-          title="Quote not found"
-          message="Oops! The link you're trying to access is not valid."
+          title={t`Quote not found`}
+          message={t`Oops! The link you're trying to access is not valid.`}
         />
       );
   }

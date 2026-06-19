@@ -3,6 +3,7 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import type { JSONContent } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import type { FileObject } from "@supabase/storage-js";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { redirect, useLoaderData, useParams } from "react-router";
@@ -106,6 +107,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 }
 
 export default function SupplierQuoteDetailsRoute() {
+  const { t } = useLingui();
   const { internalNotes, externalNotes } = useLoaderData<typeof loader>();
   const { id } = useParams();
   if (!id) throw new Error("Could not find id");
@@ -152,7 +154,7 @@ export default function SupplierQuoteDetailsRoute() {
       <SupplierInteractionNotes
         key={`notes-${initialValues.id}`}
         id={routeData.quote.id}
-        title="Notes"
+        title={t`Notes`}
         table="supplierQuote"
         internalNotes={internalNotes}
         externalNotes={externalNotes}

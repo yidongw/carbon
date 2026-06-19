@@ -12,6 +12,12 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+msgid " Enter a reason below to record the override."
+msgstr " Podaj powód, aby zarejestrować nadpisanie."
+
+msgid " The issue will go through with a warning."
+msgstr " Problem przejdzie z ostrzeżeniem."
+
 #. placeholder {0}: attribute.name
 #. placeholder {1}: activeStep + 1
 msgid "{0} - Set {1}"
@@ -42,11 +48,17 @@ msgstr "{0} z {1} ukończonych"
 msgid "{0} Scrapped"
 msgstr "{0} Odrzuconych"
 
+msgid "A new batch entity was created from a split:"
+msgstr "Nowa jednostka lotej została utworzona z podziału:"
+
 msgid "About"
 msgstr "O programie"
 
 msgid "Account Settings"
 msgstr "Ustawienia konta"
+
+msgid "Action Menu"
+msgstr "Menu Akcji"
 
 msgid "Active"
 msgstr "Aktywne"
@@ -63,11 +75,20 @@ msgstr "Dodaj i wydaj"
 msgid "Add a printer in the printing settings to print labels directly."
 msgstr ""
 
+msgid "Add Batch"
+msgstr "Dodaj.Batch"
+
 msgid "Add Inventory"
 msgstr "Dodaj zapasy"
 
 msgid "Add Spare Part"
 msgstr "Dodaj część zamienną"
+
+msgid "Add to Inventory"
+msgstr "Dodaj do magazynu"
+
+msgid "Adjustment Type"
+msgstr "Typ dostosowania"
 
 msgid "All"
 msgstr "Wszystkie"
@@ -77,6 +98,9 @@ msgstr "zgodny"
 
 msgid "Approved"
 msgstr "Zatwierdzone"
+
+msgid "are past their expiration date."
+msgstr "wygasły."
 
 msgid "Are you sure you want to delete this step?"
 msgstr "Czy na pewno chcesz usunąć ten krok?"
@@ -92,6 +116,9 @@ msgstr ""
 
 msgid "Are you sure you want to leave this page?"
 msgstr ""
+
+msgid "Are you sure you want to scrap this batch?"
+msgstr "Czy na pewno chcesz zlikwidować ten lote?"
 
 msgid "Assigned"
 msgstr "Przypisane"
@@ -118,8 +145,24 @@ msgstr "Partia jest niedostępna"
 msgid "Batch Number {0}"
 msgstr "Numer partii {0}"
 
+#. placeholder {0}: bn.status
+msgid "Batch number is {0}"
+msgstr "Numer lote jest {0}"
+
+msgid "Batch number is not available"
+msgstr "Numer lote nie jest dostępny"
+
 msgid "Batch number is required"
 msgstr "Numer partii jest wymagany"
+
+msgid "Batch Split Occurred"
+msgstr "Zdjęto lote podzielone"
+
+msgid "batches"
+msgstr "lote"
+
+msgid "Big section heading."
+msgstr "Duża sekcja nagłówek."
 
 #. placeholder {0}: column.blockingDispatchReadableId
 msgid "Blocked by {0}"
@@ -127,6 +170,9 @@ msgstr "Zablokowane przez {0}"
 
 msgid "Blocking"
 msgstr "Blokujące"
+
+msgid "Bullet List"
+msgstr "Lista punktowa"
 
 msgid "But don't worry. You can use the forgot password flow to request a new magic link."
 msgstr "Ale nie martw się. Możesz użyć funkcji resetowania hasła, aby poprosić o nowy magiczny link."
@@ -136,6 +182,9 @@ msgstr "Logując się, akceptujesz <0>Regulamin</0> i <1>Politykę prywatności.
 
 msgid "Cancel"
 msgstr "Anuluj"
+
+msgid "Canvas showing the model in the 3D Viewer"
+msgstr "Kanvas pokazujący model w 3D Viewer"
 
 msgid "Carbon Logo"
 msgstr "Logo Carbon"
@@ -167,6 +216,9 @@ msgstr "Zakończ zmianę"
 #. placeholder {0}: formatTime(openEntry.clockIn, locale)
 msgid "Clocked in since {0}"
 msgstr "Zalogowany od {0}"
+
+msgid "Collapse"
+msgstr "Zwiń"
 
 #. placeholder {0}: active.data.current.column.title
 #. placeholder {1}: overColumnPosition + 1
@@ -212,6 +264,25 @@ msgstr "Zużyte wygasłe"
 msgid "Continue with WeChat"
 msgstr "Następnie z WeChat"
 
+msgid "Convert"
+msgstr "Konwertuj"
+
+msgid "Convert this tracked entity into a quantity of 1 of a new size."
+msgstr "Konwertuj ten śledzony element na ilość 1 nowej wielkości."
+
+#. placeholder {0}: itemType === "Material" ? "Size" : "Revision"
+msgid "Convert to New {0}"
+msgstr "Konwertuj na Nowy {0}"
+
+msgid "Copied!"
+msgstr "Skopiowano!"
+
+msgid "Copy"
+msgstr "Kopiuj"
+
+msgid "Copy to clipboard"
+msgstr "Skopiuj do schowka"
+
 msgid "Create"
 msgstr "Twórz"
 
@@ -220,6 +291,12 @@ msgstr "Twórz"
 #. placeholder {0}: search.trim() === "" ? label : search
 msgid "Create {0}"
 msgstr "Utwórz {0}"
+
+msgid "Create a list with numbering."
+msgstr "Stwórz listę z numeracją."
+
+msgid "Create a simple bullet list."
+msgstr "Stwórz prostą listę punktową."
 
 msgid "Create Issue"
 msgstr ""
@@ -329,14 +406,35 @@ msgstr "Zakończ operacje"
 msgid "Enter PIN for {0}"
 msgstr "Wprowadź PIN dla {0}"
 
+msgid "Entity converted successfully"
+msgstr "Element zostal powodznie przekonwertowany"
+
 msgid "Error"
 msgstr "Błąd"
+
+msgid "Error downloading file"
+msgstr "Błąd podczas pobierania pliku"
 
 msgid "Estimated"
 msgstr "Szacowane"
 
+msgid "Expand"
+msgstr "Rozwiń"
+
+msgid "Expired"
+msgstr "Z期kszony"
+
+msgid "Expired stock selected"
+msgstr "Zabrakła zapasów wybrane"
+
+msgid "Expires"
+msgstr "Scaduje"
+
 msgid "Failed to complete inventory adjustment"
 msgstr "Nie udało się zakończyć korekty zapasów"
+
+msgid "Failed to convert entity"
+msgstr "Nie udało się przekonwertować entitii"
 
 msgid "Failed to end operations"
 msgstr "Nie udało się zakończyć operacji"
@@ -388,6 +486,18 @@ msgstr ""
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "Masz problem techniczny? Skontaktuj się z <0>Wsparciem Carbon.</0>"
 
+msgid "Heading 1"
+msgstr "Nagłówek 1"
+
+msgid "Heading 2"
+msgstr "Nagłówek 2"
+
+msgid "Heading 3"
+msgstr "Pod标题3"
+
+msgid "Helper information"
+msgstr "Informacje pomocnicze"
+
 msgid "History"
 msgstr "Historia"
 
@@ -402,6 +512,9 @@ msgstr "Pomysły, sugestie lub problemy z tą stroną?"
 
 msgid "Ideas, suggestions or problems?"
 msgstr "Pomysły, sugestie lub problemy?"
+
+msgid "Image"
+msgstr "Obrazek"
 
 msgid "Impact"
 msgstr "Wpływ"
@@ -453,6 +566,9 @@ msgstr "Karta obiegowa zlecenia"
 
 msgid "Jobs"
 msgstr ""
+
+msgid "Just start typing with plain text."
+msgstr "Zacznij pisać przy użyciu zwykłego tekstu."
 
 msgid "Kit"
 msgstr "Zestaw"
@@ -523,17 +639,29 @@ msgstr "Ręcznie usuń pozycje z zapasów"
 msgid "matches"
 msgstr "pasuje do"
 
+msgid "Material"
+msgstr "Materiał"
+
+msgid "Material and parent ID are required to unconsume"
+msgstr "Material i identyfikator nadrzędnego elementu są wymagane do odanulowania"
+
 msgid "Materials"
 msgstr "Materiały"
 
 msgid "Maximum number of records reached"
 msgstr "Osiągnięto maksymalną liczbę rekordów"
 
+msgid "Medium section heading."
+msgstr "Sekcja średniego stopnia zagłębienia."
+
 msgid "Metric"
 msgstr ""
 
 msgid "Model"
 msgstr "Model"
+
+msgid "Model data is missing"
+msgstr "Brak danych modelu"
 
 msgid "More Actions"
 msgstr ""
@@ -566,11 +694,21 @@ msgstr "Nazwa"
 msgid "New"
 msgstr "Nowy"
 
+#. placeholder {0}: itemType === "Material" ? "Size" : "Revision"
+msgid "New {0}"
+msgstr "Nowa {0}"
+
 msgid "New Record"
 msgstr "Nowy rekord"
 
 msgid "Next"
 msgstr "Następny"
+
+msgid "Next Month"
+msgstr "Następny miesiąc"
+
+msgid "Next Year"
+msgstr "Następny rok"
 
 msgid "No active maintenance dispatches"
 msgstr "Brak aktywnych zleceń utrzymania ruchu"
@@ -589,6 +727,9 @@ msgstr "Brak dostępnych filtrów"
 
 msgid "No available serial numbers found"
 msgstr "Nie znaleziono dostępnych numerów seryjnych"
+
+msgid "No consumed materials"
+msgstr "Brak wykorzystanych materiałów"
 
 msgid "No dispatches assigned to you"
 msgstr "Brak zleceń przypisanych do Ciebie"
@@ -662,11 +803,17 @@ msgstr "Brak gniazd produkcyjnych"
 msgid "Notes"
 msgstr "Notatki"
 
+msgid "Numbered List"
+msgstr "Lista numerowana"
+
 msgid "OEE Impact"
 msgstr "Wpływ na OEE"
 
 msgid "OEM Required"
 msgstr "Wymagany OEM"
+
+msgid "of the selected"
+msgstr "z wybranych"
 
 #. placeholder {0}: batch.quantity
 msgid "Only {0} available"
@@ -677,6 +824,12 @@ msgstr "Ups. Nie powinieneś widzieć tej strony. Docelowo będzie to strona gł
 
 msgid "Open"
 msgstr "Otwarte"
+
+msgid "Open date picker"
+msgstr "Otwórz kalendarzeselectora"
+
+msgid "Open date time picker"
+msgstr "Otwórz wybieracz daty i czasu"
 
 msgid "Open Jobs"
 msgstr ""
@@ -693,6 +846,9 @@ msgstr "Wykonane przez operatora"
 msgid "Optional"
 msgstr "Opcjonalnie"
 
+msgid "Override required"
+msgstr "Zastąpienie wymagane"
+
 msgid "Owed"
 msgstr "Zwyczajowo"
 
@@ -701,6 +857,12 @@ msgstr "Opłacone"
 
 msgid "Parameters"
 msgstr "Parametry"
+
+msgid "Parent tracking ID is required for batch tracked items."
+msgstr "Identyfikator nadrzędny jest wymagany dla pozycji śledzonych po lote."
+
+msgid "Parent tracking ID is required for serial tracked items."
+msgstr "ID nadzoru rodzica jest wymagany dla elementów śledzonych w serii."
 
 msgid "Part"
 msgstr "Część"
@@ -738,14 +900,32 @@ msgstr "Planowane"
 msgid "Please record all steps for this operation before closing."
 msgstr "Zarejestruj wszystkie kroki dla tej operacji przed zamknięciem."
 
+msgid "Please select a batch to unconsume"
+msgstr "Proszę wybrać lote do ponownego konsumowania"
+
 msgid "Please select an item"
 msgstr "Wybierz pozycję"
+
+msgid "Please select an item to issue."
+msgstr "Proszę wybrać pozycję do wydania."
+
+msgid "Please select at least one item to unconsume"
+msgstr "Proszę wybrać przynajmniej jedno element do odanulowania"
 
 msgid "Prev"
 msgstr "Poprzedni"
 
 msgid "Preventive"
 msgstr "Prewencyjne"
+
+msgid "Previous"
+msgstr "Poprzedni"
+
+msgid "Previous Month"
+msgstr "Poprzedni miesiąc"
+
+msgid "Previous Year"
+msgstr "Poprzedni rok"
 
 msgid "Print"
 msgstr ""
@@ -771,6 +951,9 @@ msgstr "Procesy"
 msgid "Progress"
 msgstr "Postęp"
 
+msgid "Pull from Inventory"
+msgstr "Wyciągnij z magazynu"
+
 msgid "Qty"
 msgstr "Ilość"
 
@@ -783,8 +966,15 @@ msgstr ""
 msgid "Quantity"
 msgstr "Ilość"
 
+#. placeholder {0}: batchOption.availableQuantity
+msgid "Quantity cannot exceed available quantity ({0})"
+msgstr "Ilość nie może przekroczyć dostępnej ilości ({0})"
+
 msgid "Quantity must be greater than 0"
 msgstr "Ilość musi być większa od 0"
+
+msgid "Reason for issuing expired stock"
+msgstr "Powód wydania zakończonego w terminie produktu"
 
 msgid "Reason for rework"
 msgstr ""
@@ -802,6 +992,9 @@ msgstr "Rekord {0}"
 msgid "Remove"
 msgstr "Usuń"
 
+msgid "Remove Batch Number"
+msgstr "Usuń numer loteu =>$1"
+
 msgid "Remove filter"
 msgstr "Usuń filtr"
 
@@ -810,6 +1003,12 @@ msgstr "Usuń zapasy"
 
 msgid "Remove part"
 msgstr "Usuń część"
+
+msgid "Remove Serial Number"
+msgstr "Usuń numer seryjny"
+
+msgid "Reset zoom"
+msgstr "Zresetuj powięzkę"
 
 msgid "Rework"
 msgstr ""
@@ -826,6 +1025,9 @@ msgstr "Zapisz"
 msgid "Scan"
 msgstr "Skanuj"
 
+msgid "Scan batch number"
+msgstr "Skanuj numer loteu"
+
 msgid "Scan or enter serial number"
 msgstr "Skanuj lub wprowadź numer seryjny"
 
@@ -836,7 +1038,7 @@ msgid "Schedule"
 msgstr "Harmonogram"
 
 msgid "Scrap"
-msgstr ""
+msgstr "Skrepe"
 
 msgid "Scrap Reason"
 msgstr "Przyczyna odrzutu"
@@ -881,6 +1083,12 @@ msgstr "Wybierz pozycję..."
 msgid "Select Batch {0}"
 msgstr "Wybierz partię {0}"
 
+msgid "Select batch number"
+msgstr "Wybierz numer loteu"
+
+msgid "Select batch to unconsume"
+msgstr "Wybierz lote do odanulania"
+
 msgid "Select Printer"
 msgstr ""
 
@@ -890,6 +1098,10 @@ msgstr "Wybierz numer seryjny {0}"
 
 msgid "Select Serial Number"
 msgstr "Wybierz numer seryjny"
+
+#. placeholder {0}: index + 1
+msgid "Select Serial Number {0}"
+msgstr "Wybierz Numer Seryjny {0}"
 
 msgid "Select the operation to go back to. All operations from that point to the current operation will be redone."
 msgstr ""
@@ -904,6 +1116,10 @@ msgstr "Seryjny"
 msgid "Serial Number {0}"
 msgstr "Numer seryjny {0}"
 
+#. placeholder {0}: sn.status
+msgid "Serial number is {0}"
+msgstr "Numer seryjny to {0}"
+
 msgid "Serial number is not available"
 msgstr "Numer seryjny jest niedostępny"
 
@@ -915,6 +1131,13 @@ msgstr ""
 
 msgid "Serial Numbers"
 msgstr "Numery seryjne"
+
+#. placeholder {0}: input.readableId
+msgid "Serial: {0}"
+msgstr "Serie: {0}"
+
+msgid "serials"
+msgstr "seriale"
 
 msgid "Set Clock Out"
 msgstr "Ustaw zakończenie zmiany"
@@ -945,6 +1168,9 @@ msgstr "Zalogowany jako {stationName}"
 
 msgid "Size"
 msgstr "Rozmiar"
+
+msgid "Small section heading."
+msgstr "Mniejszy nagłówek sekcji"
 
 msgid "Source"
 msgstr "Źródło"
@@ -997,12 +1223,24 @@ msgstr "Zmień operatora"
 msgid "Tag"
 msgstr "Tag"
 
+msgid "Text"
+msgstr "Tekst"
+
 #. placeholder {0}: operation.operationQuantity
 msgid "The completed quantity for this operation is less than the required quantity of {0}."
 msgstr "Ukończona ilość dla tej operacji jest mniejsza niż wymagana ilość {0}."
 
+msgid "The remaining quantity will be removed from inventory and issued to the job"
+msgstr "Reszta ilości zostanie usunięta z magazynu i wydzielona do zadania"
+
+msgid "There are no consumed materials to unconsume."
+msgstr "Brak materiałów zużytych do ponownego wykorzystania."
+
 msgid "There are serial or batch tracked materials on the bill of material that have not been fully issued. Completing without issuing may result in incorrect traceability records."
 msgstr "Na liście materiałowej znajdują się materiały śledzone seryjnie lub partiami, które nie zostały w pełni wydane. Ukończenie bez wydania może skutkować nieprawidłowymi rekordami śledzenia."
+
+msgid "This operation has been deleted"
+msgstr "Ta operacja została usunięta"
 
 msgid "This Period"
 msgstr "Ten okres"
@@ -1017,8 +1255,17 @@ msgstr "Wpisy czasu pracy"
 msgid "Time Worked: {0}"
 msgstr "Przepracowany czas: {0}"
 
+msgid "To-do List"
+msgstr "Lista zadań"
+
 msgid "Today"
 msgstr "Dzisiaj"
+
+msgid "Toggle"
+msgstr "Włącz/Schowaj"
+
+msgid "Toggle Sidebar"
+msgstr "Przełącz bocznik"
 
 msgid "Tools"
 msgstr "Narzędzia"
@@ -1034,11 +1281,17 @@ msgstr "Czas całkowity: {0}"
 msgid "Total: {0}"
 msgstr "Razem: {0}"
 
+msgid "Track tasks with a to-do list."
+msgstr "Śledź zadania za pomocą listy zadań."
+
 msgid "Tracking"
 msgstr ""
 
 msgid "Type a message..."
 msgstr "Wpisz wiadomość..."
+
+msgid "Unconsume"
+msgstr "Odnechanie"
 
 msgid "Unissued serial/batch materials"
 msgstr "Niewydane materiały seryjne/partyjne"
@@ -1057,6 +1310,9 @@ msgstr "Aktualizuj"
 
 msgid "Updated successfully"
 msgstr "Zaktualizowano pomyślnie"
+
+msgid "Upload an image from your computer."
+msgstr "Wczytaj obraz z komputera."
 
 #. placeholder {0}: fileUpload.name
 msgid "Uploaded: {0}"

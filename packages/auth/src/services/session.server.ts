@@ -1,6 +1,10 @@
 import { redis } from "@carbon/kv";
 import { Edition } from "@carbon/utils";
-import { createCookie, createCookieSessionStorage, redirect } from "react-router";
+import {
+  createCookie,
+  createCookieSessionStorage,
+  redirect
+} from "react-router";
 
 import {
   CarbonEdition,
@@ -259,7 +263,7 @@ const pkceVerifierCookie = createCookie("sb-pkce-cv", {
   maxAge: 15 * 60, // 15 minutes — long enough to receive and click the email
   httpOnly: true,
   sameSite: "lax",
-  secure: VERCEL_ENV === "production"
+  secure: process.env.VERCEL_ENV === "production"
 });
 
 export type PkceEntry = { k: string; v: string };
@@ -277,6 +281,8 @@ export async function getPkceCookie(
     const parsed = JSON.parse(raw);
     if (typeof parsed?.k === "string" && typeof parsed?.v === "string")
       return parsed as PkceEntry;
-  } catch {}
+  } catch {
+    // invalid JSON: fall through to return null
+  }
   return null;
 }

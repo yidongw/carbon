@@ -146,7 +146,7 @@ const LineItems = ({
                           <Link
                             to={path.to.salesInvoiceLine(invoiceId, line.id!)}
                           >
-                            Edit
+                            <Trans>Edit</Trans>
                           </Link>
                         </Button>
                       </HStack>
@@ -202,7 +202,10 @@ const LineItems = ({
                         </Badge>
                         {(line.taxPercent ?? 0) > 0 ? (
                           <Badge variant="red">
-                            {percentFormatter.format(line.taxPercent ?? 0)} Tax
+                            <Trans>
+                              {percentFormatter.format(line.taxPercent ?? 0)}{" "}
+                              Tax
+                            </Trans>
                           </Badge>
                         ) : null}
                       </div>
@@ -260,7 +263,9 @@ const LineItems = ({
                       </Td>
                     </Tr>
                     <Tr>
-                      <Td>Shipping Cost</Td>
+                      <Td>
+                        <Trans>Shipping Cost</Trans>
+                      </Td>
                       <Td className="text-right">
                         <VStack spacing={0}>
                           <span>
@@ -296,7 +301,9 @@ const LineItems = ({
 
                     <Tr key="tax" className="border-b border-border">
                       <Td>
-                        Tax ({percentFormatter.format(line.taxPercent ?? 0)})
+                        <Trans>
+                          Tax ({percentFormatter.format(line.taxPercent ?? 0)})
+                        </Trans>
                       </Td>
                       <Td className="text-right">
                         <VStack spacing={0}>
@@ -440,7 +447,7 @@ const SalesInvoiceSummary = ({
             />
             {routeData?.salesInvoice?.dateDue && (
               <span className="text-muted-foreground text-sm">
-                Due {formatDate(routeData?.salesInvoice.dateDue)}
+                <Trans>Due {formatDate(routeData?.salesInvoice.dateDue)}</Trans>
               </span>
             )}
           </div>
@@ -458,7 +465,9 @@ const SalesInvoiceSummary = ({
 
         <VStack spacing={2} className="mt-8">
           <HStack className="justify-between text-base text-muted-foreground w-full">
-            <span>Subtotal:</span>
+            <span>
+              <Trans>Subtotal:</Trans>
+            </span>
             <VStack spacing={0} className="items-end">
               <span>{formatter.format(subtotal)}</span>
               {shouldConvertCurrency && (
@@ -470,7 +479,9 @@ const SalesInvoiceSummary = ({
           </HStack>
 
           <HStack className="justify-between text-base text-muted-foreground w-full">
-            <span>Tax:</span>
+            <span>
+              <Trans>Tax:</Trans>
+            </span>
             <VStack spacing={0} className="items-end">
               <span>{formatter.format(tax)}</span>
               {shouldConvertCurrency && (
@@ -485,7 +496,9 @@ const SalesInvoiceSummary = ({
             {shippingCost > 0 ? (
               <>
                 <VStack spacing={0}>
-                  <span>Shipping:</span>
+                  <span>
+                    <Trans>Shipping:</Trans>
+                  </span>
                   {isEditable && (
                     <Button
                       variant="link"
@@ -521,7 +534,9 @@ const SalesInvoiceSummary = ({
           </HStack>
 
           <HStack className="justify-between text-xl font-bold w-full">
-            <span>Total:</span>
+            <span>
+              <Trans>Total:</Trans>
+            </span>
             <VStack spacing={0} className="items-end">
               <span>{formatter.format(total)}</span>
               {shouldConvertCurrency && (
