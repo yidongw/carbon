@@ -59,16 +59,12 @@ const InviteLinksTable = memo(({ data, count }: InviteLinksTableProps) => {
       {
         id: "role",
         header: t`Role`,
-        cell: ({ row }) => (
-          <Enumerable value={row.original.employeeType?.name ?? "—"} />
-        )
+        cell: ({ row }) => row.original.employeeType?.name ?? "—"
       },
       {
         id: "inviter",
         header: t`Inviter`,
-        cell: ({ row }) => (
-          <Enumerable value={row.original.inviter?.fullName ?? "—"} />
-        )
+        cell: ({ row }) => row.original.inviter?.fullName ?? "—"
       },
       {
         id: "status",
@@ -78,26 +74,16 @@ const InviteLinksTable = memo(({ data, count }: InviteLinksTableProps) => {
       {
         id: "applications",
         header: t`Applications`,
-        cell: ({ row }) => (
-          <Enumerable
-            value={String(
-              row.original.membershipApplication?.[0]?.count ?? 0
-            )}
-          />
+        cell: ({ row }) => String(
+          row.original.membershipApplication?.[0]?.count ?? 0
         )
       },
       {
         accessorKey: "expiresAt",
         header: t`Expires`,
-        cell: ({ row }) => (
-          <Enumerable
-            value={
-              row.original.expiresAt
-                ? new Date(row.original.expiresAt).toLocaleString()
-                : "—"
-            }
-          />
-        )
+        cell: ({ row }) => row.original.expiresAt
+          ? new Date(row.original.expiresAt).toLocaleDateString()
+          : "—"
       }
     ];
   }, [getStatus, t]);
