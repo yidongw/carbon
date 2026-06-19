@@ -23,7 +23,7 @@ import { createEmployeeValidator } from "~/modules/users";
 import { path } from "~/utils/path";
 
 type CreateEmployeeModalResponse =
-  | { success: true; userId: string; firstName: string; lastName: string }
+  | { success: true; userId: string }
   | { success: false; message: string };
 
 type CreateEmployeeModalProps = {
@@ -31,11 +31,7 @@ type CreateEmployeeModalProps = {
   type?: "modal" | "route";
   open?: boolean;
   onClose?: () => void;
-  onSuccess?: (data: {
-    userId: string;
-    firstName: string;
-    lastName: string;
-  }) => void;
+  onSuccess?: (data: { userId: string }) => void;
 };
 
 const CreateEmployeeModal = ({
@@ -70,11 +66,7 @@ const CreateEmployeeModal = ({
 
     if (formFetcher.state === "loading" && data.success === true) {
       handledSuccessRef.current = true;
-      onSuccess?.({
-        userId: data.userId,
-        firstName: data.firstName,
-        lastName: data.lastName
-      });
+      onSuccess?.({ userId: data.userId });
       onClose?.();
       toast.success(t`Successfully invited employee`);
       return;
