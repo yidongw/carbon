@@ -10,6 +10,7 @@ import { flash } from "@carbon/auth/session.server";
 import { InviteEmail } from "@carbon/documents/email";
 import { validationError, validator } from "@carbon/form";
 import { sendEmail } from "@carbon/lib/resend.server";
+import { getCarbonStore } from "@carbon/react";
 import { render } from "@react-email/components";
 import { nanoid } from "nanoid";
 import type {
@@ -24,6 +25,7 @@ import {
   getInvitable
 } from "~/modules/users";
 import { createEmployeeAccount } from "~/modules/users/users.server";
+import { refetchPeople } from "~/stores/people";
 import { path } from "~/utils/path";
 import { getCompanyId } from "~/utils/react-query";
 
@@ -127,9 +129,7 @@ export async function action({ request }: ActionFunctionArgs) {
     return data(
       {
         success: true as const,
-        userId: result.userId,
-        firstName,
-        lastName
+        userId: result.userId
       },
       await flash(request, success("Successfully invited employee"))
     );
@@ -141,15 +141,36 @@ export async function action({ request }: ActionFunctionArgs) {
   );
 }
 
-export async function clientAction({ serverAction }: ClientActionFunctionArgs) {
+export async function clientAction({
+  request,
+  serverAction
+}: ClientActionFunctionArgs) {
   const companyId = getCompanyId();
+  const modal = (await request.clone().formData()).get("type") === "modal";
+  const result = await serverAction();
+
   window.clientCache?.invalidateQueries({
     predicate: (query) => {
       const queryKey = query.queryKey as string[];
       return queryKey[0] === "groupsByType" && queryKey[1] === companyId;
     }
   });
-  return await serverAction();
+
+  if (
+    modal &&
+    companyId &&
+    result &&
+    typeof result === "object" &&
+    "success" in result &&
+    result.success === true
+  ) {
+    const carbonStore = getCarbonStore();
+    if (carbonStore) {
+      await refetchPeople(carbonStore.getState().carbon, companyId);
+    }
+  }
+
+  return result;
 }
 
 export default function () {

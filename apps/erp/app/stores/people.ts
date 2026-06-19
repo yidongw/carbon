@@ -1,3 +1,6 @@
+import type { Database } from "@carbon/database";
+import { fetchAllFromTable } from "@carbon/database";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { atom } from "nanostores";
 import { useMemo } from "react";
 import { useFormatPersonName, useNanoStore } from "~/hooks";
@@ -9,7 +12,35 @@ export type PersonListItem = ListItem & {
   lastName?: string | null;
 };
 
+const PERSON_SELECT =
+  "id, name, firstName, lastName, email, avatarUrl" as const;
+
 const $peopleStore = atom<PersonListItem[]>([]);
+
+async function persistPeopleToIdb(people: PersonListItem[]) {
+  const idb = (await import("localforage")).default;
+  await idb.setItem("people", people);
+}
+
+export async function refetchPeople(
+  carbon: SupabaseClient<Database>,
+  companyId: string
+) {
+  const { data, error } = await fetchAllFromTable<PersonListItem>(
+    carbon,
+    "employees",
+    PERSON_SELECT,
+    (query) => query.eq("companyId", companyId).order("name")
+  );
+
+  if (error || !data) {
+    console.error("Failed to refetch people:", error);
+    return;
+  }
+
+  $peopleStore.set(data);
+  await persistPeopleToIdb(data);
+}
 
 export const usePeople = () => {
   const [people, setPeople] = useNanoStore($peopleStore, "people");
