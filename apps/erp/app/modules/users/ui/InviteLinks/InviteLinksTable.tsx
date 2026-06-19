@@ -57,10 +57,9 @@ const InviteLinksTable = memo(({ data, count }: InviteLinksTableProps) => {
         accessorKey: "label",
         header: t`Label`,
         cell: ({ row }) => (
-          <Enumerable
-            value={row.original.label ?? row.original.code}
-            className="font-medium"
-          />
+          <span className="font-medium">
+            {row.original.label ?? row.original.code}
+          </span>
         ),
         meta: { icon: <LuLink /> }
       },
