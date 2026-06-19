@@ -61,6 +61,20 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { itemId } = params;
   if (!itemId) throw new Error("Could not find itemId");
 
+  // Check if item is soft-deleted
+  const itemCheck = await client
+    .from("item")
+    .select("deletedAt")
+    .eq("id", itemId)
+    .single();
+
+  if (itemCheck.data?.deletedAt) {
+    throw redirect(
+      path.to.items,
+      await flash(request, error(null, "This item has been deleted"))
+    );
+  }
+
   const [partSummary, supplierParts, pickMethods, tags] = await Promise.all([
     getPart(client, itemId, companyId),
     getSupplierParts(client, itemId, companyId),
