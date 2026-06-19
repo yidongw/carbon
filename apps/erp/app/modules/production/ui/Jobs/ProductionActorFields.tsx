@@ -14,7 +14,7 @@ import {
 import type { productionActorKinds } from "~/modules/production/production.models";
 import { SupplierProcessForm } from "~/modules/purchasing/ui/Supplier";
 import { CreateEmployeeModal } from "~/modules/users/ui/Employees";
-import { usePeople, useSuppliers } from "~/stores";
+import { usePeople, useSuppliers, waitForPersonInStore } from "~/stores";
 
 type ActorKind = (typeof productionActorKinds)[number];
 
@@ -109,9 +109,6 @@ export function ProductionActorFields({
   const [employeeId, setEmployeeId] = useState(employeeIdValue ?? "");
   const [supplierProcessId, setSupplierProcessId] = useState(
     supplierProcessIdValue ?? ""
-  );
-  const [pendingEmployeeId, setPendingEmployeeId] = useState<string | null>(
-    null
   );
 
   const [people] = usePeople();
@@ -334,14 +331,6 @@ export function ProductionActorFields({
     applySelection(option?.value ?? "");
   };
 
-  useEffect(() => {
-    if (!pendingEmployeeId) return;
-    if (!people.some((person) => person.id === pendingEmployeeId)) return;
-
-    applySelection(encodeActorSelection("employee", pendingEmployeeId));
-    setPendingEmployeeId(null);
-  }, [pendingEmployeeId, people]);
-
   return (
     <div className="w-full">
       <GroupedCreatableCombobox
@@ -381,7 +370,16 @@ export function ProductionActorFields({
             triggerRef.current?.click();
           }}
           onSuccess={({ userId }) => {
-            setPendingEmployeeId(userId);
+            void (async () => {
+              const appeared = await waitForPersonInStore(userId);
+              if (!appeared) {
+                console.warn(
+                  "Timed out waiting for employee in people store:",
+                  userId
+                );
+              }
+              applySelection(encodeActorSelection("employee", userId));
+            })();
           }}
         />
       )}

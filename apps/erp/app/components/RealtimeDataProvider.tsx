@@ -5,7 +5,14 @@ import { fetchAllFromTable } from "@carbon/database";
 import { useInterval, useRealtimeChannel } from "@carbon/react";
 import { useEffect } from "react";
 import { useUser } from "~/hooks";
-import { useCustomers, useItems, usePeople, useSuppliers } from "~/stores";
+import {
+  fetchEmployeeForPeopleStore,
+  upsertPersonInPeopleStore,
+  useCustomers,
+  useItems,
+  usePeople,
+  useSuppliers
+} from "~/stores";
 import type { Item } from "~/stores/items";
 import type { ListItem } from "~/types";
 
@@ -396,30 +403,20 @@ const RealtimeDataProvider = ({ children }: { children: React.ReactNode }) => {
                   return;
                 }
 
-                const { data, error } = await carbon
-                  .from("employees")
-                  .select("id, name, firstName, lastName, avatarUrl")
-                  .eq("id", inserted.id)
-                  .eq("companyId", companyId)
-                  .maybeSingle();
-
-                if (error) {
-                  console.error(
-                    "Failed to load new employee for people store:",
-                    error
+                const data = await fetchEmployeeForPeopleStore(
+                  carbon,
+                  companyId,
+                  inserted.id
+                );
+                if (!data) {
+                  console.warn(
+                    "Employee realtime INSERT received but employees view row not found:",
+                    inserted.id
                   );
                   return;
                 }
-                if (!data) return;
 
-                setPeople((people) => {
-                  if (people.some((person) => person.id === data.id)) {
-                    return people;
-                  }
-                  return [...people, data].sort((a, b) =>
-                    a.name.localeCompare(b.name)
-                  );
-                });
+                upsertPersonInPeopleStore(data);
                 break;
               }
               case "UPDATE": {
@@ -431,20 +428,11 @@ const RealtimeDataProvider = ({ children }: { children: React.ReactNode }) => {
                   return;
                 }
 
-                const { data, error } = await carbon
-                  .from("employees")
-                  .select("id, name, firstName, lastName, avatarUrl")
-                  .eq("id", updated.id)
-                  .eq("companyId", companyId)
-                  .maybeSingle();
-
-                if (error) {
-                  console.error(
-                    "Failed to load updated employee for people store:",
-                    error
-                  );
-                  return;
-                }
+                const data = await fetchEmployeeForPeopleStore(
+                  carbon,
+                  companyId,
+                  updated.id
+                );
 
                 if (!data) {
                   setPeople((people) =>
@@ -453,13 +441,7 @@ const RealtimeDataProvider = ({ children }: { children: React.ReactNode }) => {
                   break;
                 }
 
-                setPeople((people) =>
-                  people
-                    .map((person) =>
-                      person.id === data.id ? { ...person, ...data } : person
-                    )
-                    .sort((a, b) => a.name.localeCompare(b.name))
-                );
+                upsertPersonInPeopleStore(data);
                 break;
               }
               case "DELETE": {
