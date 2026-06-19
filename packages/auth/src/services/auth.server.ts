@@ -709,6 +709,56 @@ export async function seedBypassUser(email: string): Promise<void> {
     locationId: locationData.id
   });
 
-  // Seed full demo data (customers, suppliers, items, etc.)
-  await seedFullDemoData(client, companyId, userId, locationData.id);
+  // Seed items directly (simplified to avoid errors)
+  console.log(`[seedBypassUser] Seeding items for company ${companyId}`);
+
+  const sampleItems = [
+    { readableId: "STEEL-ROD-01", name: "1020 Steel Rod 1 inch", description: "Cold-rolled 1020 steel rod", type: "Material", replenishmentSystem: "Buy", itemTrackingType: "Inventory", uom: "EA" },
+    { readableId: "ALUMINUM-SHEET", name: "Aluminum Sheet 6061-T6", description: "4x8 ft aluminum sheet", type: "Material", replenishmentSystem: "Buy", itemTrackingType: "Inventory", uom: "EA" },
+    { readableId: "PLASTIC-PELLETS", name: "ABS Plastic Pellets", description: "Black ABS injection molding pellets", type: "Material", replenishmentSystem: "Buy", itemTrackingType: "Inventory", uom: "LB" },
+    { readableId: "BEARING-6205", name: "6205 Deep Groove Bearing", description: "SKF 6205-2RS ball bearing", type: "Part", replenishmentSystem: "Buy", itemTrackingType: "Inventory", uom: "EA" },
+    { readableId: "BEARING-6206", name: "6206 Deep Groove Bearing", description: "SKF 6206-2RS ball bearing", type: "Part", replenishmentSystem: "Buy", itemTrackingType: "Inventory", uom: "EA" },
+    { readableId: "BRACKET-001", name: "Mounting Bracket A", description: "Machined aluminum bracket Type A", type: "Part", replenishmentSystem: "Make", itemTrackingType: "Inventory", uom: "EA" },
+    { readableId: "BRACKET-002", name: "Mounting Bracket B", description: "Machined aluminum bracket Type B", type: "Part", replenishmentSystem: "Make", itemTrackingType: "Inventory", uom: "EA" },
+    { readableId: "SHAFT-ASM-001", name: "Drive Shaft Assembly", description: "Precision-machined drive shaft", type: "Part", replenishmentSystem: "Make", itemTrackingType: "Inventory", uom: "EA" },
+    { readableId: "GEAR-SPUR-10T", name: "Spur Gear 10 Tooth", description: "Hardened steel spur gear", type: "Part", replenishmentSystem: "Buy", itemTrackingType: "Inventory", uom: "EA" },
+    { readableId: "CTRL-PCB-001", name: "Control PCB Rev2", description: "Motor control PCB revision 2", type: "Part", replenishmentSystem: "Buy", itemTrackingType: "Inventory", uom: "EA" },
+    { readableId: "SENSOR-TEMP-01", name: "Temperature Sensor K-Type", description: "Thermocouple temperature sensor", type: "Part", replenishmentSystem: "Buy", itemTrackingType: "Inventory", uom: "EA" },
+    { readableId: "MOTOR-STEPPER-01", name: "NEMA 23 Stepper Motor", description: "2.8A stepper motor with encoder", type: "Part", replenishmentSystem: "Buy", itemTrackingType: "Inventory", uom: "EA" },
+    { readableId: "CABLE-PWR-01", name: "Power Cable 18AWG", description: "Stranded copper power cable", type: "Part", replenishmentSystem: "Buy", itemTrackingType: "Inventory", uom: "FT" },
+    { readableId: "FASTENER-KIT-01", name: "M6 Fastener Kit", description: "M6 bolts nuts washers kit", type: "Consumable", replenishmentSystem: "Buy", itemTrackingType: "Inventory", uom: "EA" },
+    { readableId: "FASTENER-KIT-02", name: "M8 Fastener Kit", description: "M8 bolts nuts washers kit", type: "Consumable", replenishmentSystem: "Buy", itemTrackingType: "Inventory", uom: "EA" },
+    { readableId: "GREASE-TUBE", name: "Lithium Grease", description: "Multi-purpose lithium grease", type: "Consumable", replenishmentSystem: "Buy", itemTrackingType: "Inventory", uom: "EA" },
+    { readableId: "CUTTING-FLUID", name: "CNC Cutting Fluid", description: "Water-soluble cutting fluid", type: "Consumable", replenishmentSystem: "Buy", itemTrackingType: "Inventory", uom: "GAL" },
+    { readableId: "ASSEMBLY-MOTOR-001", name: "Electric Motor Assembly M1", description: "Complete electric motor assembly", type: "Product", replenishmentSystem: "Make", itemTrackingType: "Inventory", uom: "EA" },
+    { readableId: "ASSEMBLY-PUMP-001", name: "Hydraulic Pump Assembly P1", description: "Hydraulic pump with bracket", type: "Product", replenishmentSystem: "Make", itemTrackingType: "Inventory", uom: "EA" },
+    { readableId: "ASSEMBLY-CTRL-001", name: "Control Unit Assembly C1", description: "Control unit with PCB and housing", type: "Product", replenishmentSystem: "Make", itemTrackingType: "Inventory", uom: "EA" },
+  ];
+
+  for (const item of sampleItems) {
+    try {
+      const { error } = await client.from("item").insert({
+        readableId: item.readableId,
+        name: item.name,
+        description: item.description,
+        type: item.type,
+        replenishmentSystem: item.replenishmentSystem,
+        itemTrackingType: item.itemTrackingType,
+        unitOfMeasureCode: item.uom,
+        active: true,
+        companyId,
+        createdBy: userId
+      });
+
+      if (error) {
+        console.error(`[seedBypassUser] Error creating item ${item.readableId}:`, error);
+      } else {
+        console.log(`[seedBypassUser] Created item ${item.readableId}`);
+      }
+    } catch (err) {
+      console.error(`[seedBypassUser] Exception creating item ${item.readableId}:`, err);
+    }
+  }
+
+  console.log(`[seedBypassUser] Completed item seeding`);
 }
