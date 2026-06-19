@@ -5,7 +5,7 @@ import { fetchAllFromTable } from "@carbon/database";
 import { useInterval, useRealtimeChannel } from "@carbon/react";
 import { useEffect } from "react";
 import { useUser } from "~/hooks";
-import { useCustomers, useItems, usePeople, useSuppliers, refetchPeople } from "~/stores";
+import { useCustomers, useItems, usePeople, useSuppliers } from "~/stores";
 import type { Item } from "~/stores/items";
 import type { ListItem } from "~/types";
 
@@ -386,13 +386,98 @@ const RealtimeDataProvider = ({ children }: { children: React.ReactNode }) => {
             table: "employee"
           },
           async (payload) => {
-            const rowCompanyId =
-              payload.eventType === "DELETE"
-                ? (payload.old as { companyId?: string }).companyId
-                : (payload.new as { companyId?: string }).companyId;
-            if (rowCompanyId && rowCompanyId !== companyId) return;
+            switch (payload.eventType) {
+              case "INSERT": {
+                const inserted = payload.new as {
+                  id: string;
+                  companyId?: string;
+                };
+                if (inserted.companyId && inserted.companyId !== companyId) {
+                  return;
+                }
 
-            await refetchPeople(carbon, companyId);
+                const { data, error } = await carbon
+                  .from("employees")
+                  .select("id, name, firstName, lastName, avatarUrl")
+                  .eq("id", inserted.id)
+                  .eq("companyId", companyId)
+                  .maybeSingle();
+
+                if (error) {
+                  console.error(
+                    "Failed to load new employee for people store:",
+                    error
+                  );
+                  return;
+                }
+                if (!data) return;
+
+                setPeople((people) => {
+                  if (people.some((person) => person.id === data.id)) {
+                    return people;
+                  }
+                  return [...people, data].sort((a, b) =>
+                    a.name.localeCompare(b.name)
+                  );
+                });
+                break;
+              }
+              case "UPDATE": {
+                const updated = payload.new as {
+                  id: string;
+                  companyId?: string;
+                };
+                if (updated.companyId && updated.companyId !== companyId) {
+                  return;
+                }
+
+                const { data, error } = await carbon
+                  .from("employees")
+                  .select("id, name, firstName, lastName, avatarUrl")
+                  .eq("id", updated.id)
+                  .eq("companyId", companyId)
+                  .maybeSingle();
+
+                if (error) {
+                  console.error(
+                    "Failed to load updated employee for people store:",
+                    error
+                  );
+                  return;
+                }
+
+                if (!data) {
+                  setPeople((people) =>
+                    people.filter((person) => person.id !== updated.id)
+                  );
+                  break;
+                }
+
+                setPeople((people) =>
+                  people
+                    .map((person) =>
+                      person.id === data.id ? { ...person, ...data } : person
+                    )
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                );
+                break;
+              }
+              case "DELETE": {
+                const deleted = payload.old as {
+                  id: string;
+                  companyId?: string;
+                };
+                if (deleted.companyId && deleted.companyId !== companyId) {
+                  return;
+                }
+                setPeople((people) =>
+                  people.filter((person) => person.id !== deleted.id)
+                );
+                break;
+              }
+              default:
+                break;
+            }
           }
         );
     }
