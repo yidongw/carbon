@@ -708,6 +708,12 @@ export async function seedBypassUser(email: string): Promise<void> {
     throw new Error(`Failed to create location: ${locationError?.message}`);
   }
 
+  // Link user to company
+  await client.from("userToCompany").insert({
+    userId,
+    companyId
+  });
+
   // Link employee to location
   await client.from("employeeJob").insert({
     id: userId,
