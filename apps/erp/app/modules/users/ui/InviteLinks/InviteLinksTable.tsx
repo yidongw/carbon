@@ -21,7 +21,7 @@ export type InviteLinkRow = {
   employeeType: { name: string } | null;
   inviter: { fullName: string | null } | null;
   location: { name: string } | null;
-  membershipApplications: { count: number }[] | null;
+  membershipApplication: { count: number }[] | null;
 };
 
 type InviteLinksTableProps = {
@@ -81,7 +81,7 @@ const InviteLinksTable = memo(({ data, count }: InviteLinksTableProps) => {
         cell: ({ row }) => (
           <Enumerable
             value={String(
-              row.original.membershipApplications?.[0]?.count ?? 0
+              row.original.membershipApplication?.[0]?.count ?? 0
             )}
           />
         )

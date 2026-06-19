@@ -135,7 +135,6 @@ const ApplicationsTable = memo(({ data, count }: ApplicationsTableProps) => {
               );
             }}
           >
-          >
             <MenuIcon icon={<LuX />} />
             <Trans>Reject</Trans>
           </MenuItem>
