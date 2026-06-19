@@ -2,6 +2,7 @@ import type { JSONContent } from "@tiptap/react";
 
 export {
   CarbonContext,
+  getCarbonStore,
   type ICarbonStore,
   setCarbonHmrStore,
   useCarbon

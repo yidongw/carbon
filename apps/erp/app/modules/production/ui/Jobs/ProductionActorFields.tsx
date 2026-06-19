@@ -14,7 +14,7 @@ import {
 import type { productionActorKinds } from "~/modules/production/production.models";
 import { SupplierProcessForm } from "~/modules/purchasing/ui/Supplier";
 import { CreateEmployeeModal } from "~/modules/users/ui/Employees";
-import { usePeople, useSuppliers } from "~/stores";
+import { usePeople, useSuppliers, waitForPersonInStore } from "~/stores";
 
 type ActorKind = (typeof productionActorKinds)[number];
 
@@ -111,7 +111,7 @@ export function ProductionActorFields({
     supplierProcessIdValue ?? ""
   );
 
-  const [people, setPeople] = usePeople();
+  const [people] = usePeople();
   const [suppliers] = useSuppliers();
   const supplierProcesses = useSupplierProcesses({
     processId: processId ?? undefined
@@ -208,27 +208,6 @@ export function ProductionActorFields({
         )
       })) ?? [];
 
-    const pinnedEmployeeId = employeeId?.trim();
-    if (pinnedEmployeeId) {
-      const pinnedValue = encodeActorSelection("employee", pinnedEmployeeId);
-      if (!employeeOptions.some((option) => option.value === pinnedValue)) {
-        const person = people.find((p) => p.id === pinnedEmployeeId);
-        employeeOptions.unshift({
-          value: pinnedValue,
-          label: (
-            <div className="flex flex-row items-center gap-2 flex-grow">
-              <Avatar
-                name={person?.name ?? ""}
-                path={person?.avatarUrl ?? null}
-                size="xs"
-              />
-              <span>{person?.name ?? t`Employee`}</span>
-            </div>
-          )
-        });
-      }
-    }
-
     const supplierOptions = supplierProcesses.map((supplierProcess) => {
       const supplier = suppliers.find(
         (s) => s.id === supplierProcess.supplierId
@@ -308,7 +287,6 @@ export function ProductionActorFields({
     });
   }, [
     people,
-    employeeId,
     supplierProcesses,
     suppliers,
     supplierProcessIdValue,
@@ -391,17 +369,17 @@ export function ProductionActorFields({
             newEmployeeModal.onClose();
             triggerRef.current?.click();
           }}
-          onSuccess={({ userId, firstName, lastName }) => {
-            const name = `${firstName} ${lastName}`.trim();
-            setPeople((current) => {
-              if (current.some((person) => person.id === userId)) {
-                return current;
+          onSuccess={({ userId }) => {
+            void (async () => {
+              const appeared = await waitForPersonInStore(userId);
+              if (!appeared) {
+                console.warn(
+                  "Timed out waiting for employee in people store:",
+                  userId
+                );
               }
-              return [...current, { id: userId, name, avatarUrl: null }].sort(
-                (a, b) => a.name.localeCompare(b.name)
-              );
-            });
-            applySelection(encodeActorSelection("employee", userId));
+              applySelection(encodeActorSelection("employee", userId));
+            })();
           }}
         />
       )}
