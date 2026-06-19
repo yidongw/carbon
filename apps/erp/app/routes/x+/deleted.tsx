@@ -1,76 +1,30 @@
 import { Button, HStack, VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
-import { Trans, useLingui } from "@lingui/react/macro";
+import { Trans } from "@lingui/react/macro";
 import { LuTriangleAlert, LuArrowLeft } from "react-icons/lu";
-import { useNavigate, useSearchParams } from "react-router";
+import { useNavigate } from "react-router";
 import type { Handle } from "~/utils/handle";
-import { path } from "~/utils/path";
 
 export const handle: Handle = {
   breadcrumb: msg`Deleted`
 };
 
 export default function DeletedPage() {
-  const { t } = useLingui();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const type = searchParams.get("type") || "item";
-
-  const getMessage = () => {
-    switch (type) {
-      case "job":
-        return t`The job you're looking for has been deleted.`;
-      case "part":
-      case "material":
-      case "tool":
-      case "consumable":
-      case "item":
-        return t`The item you're looking for has been deleted.`;
-      case "customer":
-        return t`The customer you're looking for has been deleted.`;
-      case "supplier":
-        return t`The supplier you're looking for has been deleted.`;
-      default:
-        return t`The resource you're looking for has been deleted.`;
-    }
-  };
-
-  const getListPath = () => {
-    switch (type) {
-      case "job":
-        return path.to.jobs;
-      case "part":
-      case "material":
-      case "tool":
-      case "consumable":
-      case "item":
-        return path.to.items;
-      case "customer":
-        return path.to.customers;
-      case "supplier":
-        return path.to.suppliers;
-      default:
-        return "/x";
-    }
-  };
 
   return (
-    <div className="flex items-center justify-center min-h-[100vh] -mt-16">
-      <VStack spacing={8} className="max-w-md w-full px-4">
-        <div className="flex items-center justify-center w-20 h-20 rounded-full bg-orange-100 dark:bg-orange-900/20 mx-auto">
-          <LuTriangleAlert className="w-10 h-10 text-orange-600 dark:text-orange-400" />
-        </div>
-
-        <VStack spacing={4} className="text-center">
-          <h1 className="text-2xl font-semibold text-foreground">
-            <Trans>Item Deleted</Trans>
-          </h1>
-          <p className="text-muted-foreground text-base">
-            {getMessage()}
+    <div className="flex items-center justify-center h-screen">
+      <VStack spacing={6} className="max-w-2xl px-4">
+        <HStack spacing={6} className="items-center">
+          <div className="flex items-center justify-center w-16 h-16 rounded-full bg-orange-100 dark:bg-orange-900/20 flex-shrink-0">
+            <LuTriangleAlert className="w-8 h-8 text-orange-600 dark:text-orange-400" />
+          </div>
+          <p className="text-lg text-foreground">
+            <Trans>What you're looking for has been deleted.</Trans>
           </p>
-        </VStack>
+        </HStack>
 
-        <HStack spacing={3} className="w-full justify-center pt-2">
+        <div className="flex justify-start w-full pl-[88px]">
           <Button
             variant="secondary"
             onClick={() => navigate(-1)}
@@ -78,13 +32,7 @@ export default function DeletedPage() {
           >
             <Trans>Go Back</Trans>
           </Button>
-          <Button
-            variant="primary"
-            onClick={() => navigate(getListPath())}
-          >
-            <Trans>View List</Trans>
-          </Button>
-        </HStack>
+        </div>
       </VStack>
     </div>
   );

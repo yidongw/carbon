@@ -4615,9 +4615,6 @@ msgstr "Article"
 msgid "Item {scannedItem} is not the same as the item {expectedItem}"
 msgstr "L'article {scannedItem} n'est pas le même que l'article {expectedItem}"
 
-msgid "Item Deleted"
-msgstr ""
-
 msgid "Item Group"
 msgstr "Groupe d'articles"
 
@@ -8762,9 +8759,6 @@ msgstr "L'adresse de facturation utilisée sur les devis, les commandes de vente
 msgid "The bulk jobs form creates multiple jobs for the same item across multiple due dates."
 msgstr "Les formules de lots créent plusieurs emplois pour le même article sur plusieurs dates d'expiration."
 
-msgid "The customer you're looking for has been deleted."
-msgstr ""
-
 msgid "The date the customer expects to receive the goods"
 msgstr "La date à laquelle le client s'attend à recevoir les marchandises"
 
@@ -8776,12 +8770,6 @@ msgstr "Les éléments suivants n'ont pas de tâches. Veuillez attribuer une tâ
 
 msgid "The following line items are missing prices or lead times:"
 msgstr "Les articles de ligne suivants n'ont pas de prix ou de délais de livraison :"
-
-msgid "The item you're looking for has been deleted."
-msgstr ""
-
-msgid "The job you're looking for has been deleted."
-msgstr ""
 
 msgid "The lot will still be rejected, but an NCR cannot be auto-created until at least one Issue Type is configured."
 msgstr "Le lot sera toujours rejeté, mais une NCR ne peut pas être créée automatiquement tant qu'au moins un type de problème n'est pas configuré."
@@ -8807,9 +8795,6 @@ msgstr "Le devis a été créé"
 msgid "The quote will be copied with a revision suffix"
 msgstr "Le devis sera copié avec un suffixe de révision"
 
-msgid "The resource you're looking for has been deleted."
-msgstr ""
-
 msgid "The revision number of the part"
 msgstr "Le numéro de révision de la pièce"
 
@@ -8818,9 +8803,6 @@ msgstr "La taille de la pièce"
 
 msgid "The storage service didn't respond in time. Please try again."
 msgstr "Le service de stockage n'a pas répondu à temps. Veuillez réessayer."
-
-msgid "The supplier you're looking for has been deleted."
-msgstr ""
 
 msgid "The unit price of the item at the time of the purchase"
 msgstr "Le prix unitaire de l'article au moment de l'achat"
@@ -9529,9 +9511,6 @@ msgstr "Afficher le problème"
 msgid "View Item Master"
 msgstr "Afficher la fiche article"
 
-msgid "View List"
-msgstr ""
-
 msgid "View maintenance dispatch"
 msgstr "Afficher la dépêche de maintenance"
 
@@ -9711,6 +9690,9 @@ msgstr "Coût moyen pondéré de l'année dernière calculé lors de la validati
 
 msgid "Welcome to Carbon"
 msgstr "Bienvenue dans Carbon"
+
+msgid "What you're looking for has been deleted."
+msgstr ""
 
 msgid "When"
 msgstr "Quand"

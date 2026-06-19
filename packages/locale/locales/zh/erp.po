@@ -4615,9 +4615,6 @@ msgstr "物品"
 msgid "Item {scannedItem} is not the same as the item {expectedItem}"
 msgstr "物品{scannedItem}与预期物品{expectedItem}不符"
 
-msgid "Item Deleted"
-msgstr ""
-
 msgid "Item Group"
 msgstr "物品组"
 
@@ -8762,9 +8759,6 @@ msgstr "用于报价、销售订单、发票及其他销售文件的账单地址
 msgid "The bulk jobs form creates multiple jobs for the same item across multiple due dates."
 msgstr "批量工作表单为同一物品在多个截止日期创建多个工作。"
 
-msgid "The customer you're looking for has been deleted."
-msgstr ""
-
 msgid "The date the customer expects to receive the goods"
 msgstr "客户预计收货日期"
 
@@ -8776,12 +8770,6 @@ msgstr "以下装配暂无操作，请为每个装配分配操作后再发布。
 
 msgid "The following line items are missing prices or lead times:"
 msgstr "以下行物品缺少价格或交货期："
-
-msgid "The item you're looking for has been deleted."
-msgstr ""
-
-msgid "The job you're looking for has been deleted."
-msgstr ""
 
 msgid "The lot will still be rejected, but an NCR cannot be auto-created until at least one Issue Type is configured."
 msgstr "该批料仍会被拒收，但在配置至少一种问题类型之前，无法自动创建NCR。"
@@ -8807,9 +8795,6 @@ msgstr "报价已创建"
 msgid "The quote will be copied with a revision suffix"
 msgstr "报价将附带修订后缀复制"
 
-msgid "The resource you're looking for has been deleted."
-msgstr ""
-
 msgid "The revision number of the part"
 msgstr "产品的修订号"
 
@@ -8818,9 +8803,6 @@ msgstr "产品的尺寸"
 
 msgid "The storage service didn't respond in time. Please try again."
 msgstr "存储服务未及时响应，请重试。"
-
-msgid "The supplier you're looking for has been deleted."
-msgstr ""
 
 msgid "The unit price of the item at the time of the purchase"
 msgstr "采购时该物品的单价"
@@ -9529,9 +9511,6 @@ msgstr "查看问题"
 msgid "View Item Master"
 msgstr "查看物品主数据"
 
-msgid "View List"
-msgstr ""
-
 msgid "View maintenance dispatch"
 msgstr "查看维护调度"
 
@@ -9711,6 +9690,9 @@ msgstr "上一年度平均成本在发票记账时计算"
 
 msgid "Welcome to Carbon"
 msgstr "欢迎使用 Carbon"
+
+msgid "What you're looking for has been deleted."
+msgstr ""
 
 msgid "When"
 msgstr "当"

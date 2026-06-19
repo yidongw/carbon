@@ -4615,9 +4615,6 @@ msgstr "आइटम"
 msgid "Item {scannedItem} is not the same as the item {expectedItem}"
 msgstr "आइटम {scannedItem} आइटम {expectedItem} के समान नहीं है"
 
-msgid "Item Deleted"
-msgstr ""
-
 msgid "Item Group"
 msgstr "आइटम समूह"
 
@@ -8762,9 +8759,6 @@ msgstr "उद्धरण, बिक्री आदेश, चालान औ
 msgid "The bulk jobs form creates multiple jobs for the same item across multiple due dates."
 msgstr "माला निर्माण रूपांकन प्रक्रिया एक ही वस्तु के लिए कई तारीखों पर विभिन्न निर्धारण दिनांकों पर समान नौकरियाँ बनाती है।"
 
-msgid "The customer you're looking for has been deleted."
-msgstr ""
-
 msgid "The date the customer expects to receive the goods"
 msgstr "वह तारीख जिस दिन ग्राहक को सामान प्राप्त होने की उम्मीद है"
 
@@ -8776,12 +8770,6 @@ msgstr "निम्नलिखित संयोजनों में को
 
 msgid "The following line items are missing prices or lead times:"
 msgstr "निम्नलिखित लाइन आइटम कीमतें या लीड समय गायब हैं:"
-
-msgid "The item you're looking for has been deleted."
-msgstr ""
-
-msgid "The job you're looking for has been deleted."
-msgstr ""
 
 msgid "The lot will still be rejected, but an NCR cannot be auto-created until at least one Issue Type is configured."
 msgstr "लॉट अभी भी अस्वीकार कर दिया जाएगा, लेकिन कम से कम एक Issue Type कॉन्फ़िगर होने तक NCR स्वचालित रूप से नहीं बनाया जा सकता।"
@@ -8807,9 +8795,6 @@ msgstr "उद्धरण बनाया जा चुका है"
 msgid "The quote will be copied with a revision suffix"
 msgstr "उद्धरण को एक संशोधन प्रत्यय के साथ कॉपी किया जाएगा"
 
-msgid "The resource you're looking for has been deleted."
-msgstr ""
-
 msgid "The revision number of the part"
 msgstr "भाग की संशोधन संख्या"
 
@@ -8818,9 +8803,6 @@ msgstr "भाग का आकार"
 
 msgid "The storage service didn't respond in time. Please try again."
 msgstr "स्टोरेज सेवा समय पर प्रतिक्रिया नहीं दे सकी। कृपया पुनः प्रयास करें।"
-
-msgid "The supplier you're looking for has been deleted."
-msgstr ""
 
 msgid "The unit price of the item at the time of the purchase"
 msgstr "खरीद के समय आइटम की यूनिट कीमत"
@@ -9529,9 +9511,6 @@ msgstr "समस्या देखें"
 msgid "View Item Master"
 msgstr "आइटम मास्टर देखें"
 
-msgid "View List"
-msgstr ""
-
 msgid "View maintenance dispatch"
 msgstr "रखरखाव डिस्पैच देखें"
 
@@ -9711,6 +9690,9 @@ msgstr "पिछले साल की भारित औसत लागत 
 
 msgid "Welcome to Carbon"
 msgstr "कार्बन में आपका स्वागत है"
+
+msgid "What you're looking for has been deleted."
+msgstr ""
 
 msgid "When"
 msgstr "कब"

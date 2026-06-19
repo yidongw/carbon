@@ -4615,9 +4615,6 @@ msgstr "Przedmiot"
 msgid "Item {scannedItem} is not the same as the item {expectedItem}"
 msgstr "Pozycja {scannedItem} nie jest taka sama jak pozycja {expectedItem}"
 
-msgid "Item Deleted"
-msgstr ""
-
 msgid "Item Group"
 msgstr "Grupa Pozycji"
 
@@ -8762,9 +8759,6 @@ msgstr "Adres rozliczeniowy używany na ofertach, zamówieniach sprzedaży, fakt
 msgid "The bulk jobs form creates multiple jobs for the same item across multiple due dates."
 msgstr "Formułarz bulków tworzy wiele zadań dla tego samego elementu na różne terminy wygaśnięcia."
 
-msgid "The customer you're looking for has been deleted."
-msgstr ""
-
 msgid "The date the customer expects to receive the goods"
 msgstr "Data, w której klient spodziewa się otrzymać towary"
 
@@ -8776,12 +8770,6 @@ msgstr "Poniższe zestawy składowych nie mają żadnych operacji. Proszę przyd
 
 msgid "The following line items are missing prices or lead times:"
 msgstr "Następujące pozycje linii nie mają cen lub czasów realizacji:"
-
-msgid "The item you're looking for has been deleted."
-msgstr ""
-
-msgid "The job you're looking for has been deleted."
-msgstr ""
 
 msgid "The lot will still be rejected, but an NCR cannot be auto-created until at least one Issue Type is configured."
 msgstr "Partia będzie nadal odrzucona, ale NCR nie może być automatycznie utworzony, dopóki nie zostanie skonfigurowany co najmniej jeden typ problemu."
@@ -8807,9 +8795,6 @@ msgstr "Oferta została utworzona"
 msgid "The quote will be copied with a revision suffix"
 msgstr "Oferta zostanie skopiowana z sufiksem wersji"
 
-msgid "The resource you're looking for has been deleted."
-msgstr ""
-
 msgid "The revision number of the part"
 msgstr "Numer wersji części"
 
@@ -8818,9 +8803,6 @@ msgstr "Rozmiar części"
 
 msgid "The storage service didn't respond in time. Please try again."
 msgstr "Usługa magazynowania nie odpowiedziała w czasie. Spróbuj ponownie."
-
-msgid "The supplier you're looking for has been deleted."
-msgstr ""
 
 msgid "The unit price of the item at the time of the purchase"
 msgstr "Cena jednostkowa towaru w momencie zakupu"
@@ -9529,9 +9511,6 @@ msgstr "Wyświetl Problem"
 msgid "View Item Master"
 msgstr "Wyświetl Główny Katalog Pozycji"
 
-msgid "View List"
-msgstr ""
-
 msgid "View maintenance dispatch"
 msgstr "Wyświetl dyspozycję konserwacji"
 
@@ -9711,6 +9690,9 @@ msgstr "Średni ważony koszt z ostatniego roku obliczony podczas księgowania f
 
 msgid "Welcome to Carbon"
 msgstr "Witaj w Carbon"
+
+msgid "What you're looking for has been deleted."
+msgstr ""
 
 msgid "When"
 msgstr "Kiedy"
