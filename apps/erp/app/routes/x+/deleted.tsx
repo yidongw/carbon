@@ -13,7 +13,7 @@ export default function DeletedPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center">
+    <div className="flex items-center justify-center min-h-[calc(100vh-128px)] py-8">
       <VStack spacing={6} className="max-w-2xl px-4">
         <HStack spacing={6} className="items-center">
           <div className="flex items-center justify-center w-16 h-16 rounded-full bg-orange-100 dark:bg-orange-900/20 flex-shrink-0">
