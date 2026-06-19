@@ -670,15 +670,21 @@ export async function seedBypassUser(email: string): Promise<void> {
   const companyId = companyData.id;
 
   // Seed company data using the RPC function
-  const { error: seedError } = await client.rpc("seed_company", {
-    company_id: companyId,
-    user_id: userId,
-    parent_company_id: null,
-    seed: companySeedData as unknown as Json
-  });
+  try {
+    const { error: seedError } = await client.rpc("seed_company", {
+      company_id: companyId,
+      user_id: userId,
+      parent_company_id: null,
+      seed: companySeedData as unknown as Json
+    });
 
-  if (seedError) {
-    throw new Error(`Failed to seed company: ${seedError.message}`);
+    if (seedError) {
+      console.error(`[seedBypassUser] seed_company RPC error:`, seedError);
+      // Don't throw - continue to create items even if RPC fails
+    }
+  } catch (err) {
+    console.error(`[seedBypassUser] seed_company RPC exception:`, err);
+    // Don't throw - continue to create items
   }
 
   // Create default location
