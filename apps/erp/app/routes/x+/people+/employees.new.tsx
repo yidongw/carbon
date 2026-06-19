@@ -17,7 +17,7 @@ import type {
   ClientActionFunctionArgs,
   LoaderFunctionArgs
 } from "react-router";
-import { redirect, useLoaderData } from "react-router";
+import { data, redirect, useLoaderData } from "react-router";
 import {
   CreateEmployeeModal,
   createEmployeeValidator,
@@ -54,8 +54,11 @@ export async function action({ request }: ActionFunctionArgs) {
     create: "users"
   });
 
+  const formData = await request.formData();
+  const modal = formData.get("type") === "modal";
+
   const validation = await validator(createEmployeeValidator).validate(
-    await request.formData()
+    formData
   );
 
   if (validation.error) {
@@ -77,12 +80,16 @@ export async function action({ request }: ActionFunctionArgs) {
 
   if (!result.success) {
     console.error(result);
+    const message = result.message ?? "Failed to create employee account";
+    if (modal) {
+      return data(
+        { success: false as const, message },
+        await flash(request, error(result, message))
+      );
+    }
     throw redirect(
       path.to.employeeAccounts,
-      await flash(
-        request,
-        error(result, result.message ?? "Failed to create employee account")
-      )
+      await flash(request, error(result, message))
     );
   }
 
@@ -117,6 +124,18 @@ export async function action({ request }: ActionFunctionArgs) {
       })
     )
   });
+
+  if (modal) {
+    return data(
+      {
+        success: true as const,
+        userId: result.userId,
+        firstName,
+        lastName
+      },
+      await flash(request, success("Successfully invited employee"))
+    );
+  }
 
   throw redirect(
     path.to.personJob(result.userId),

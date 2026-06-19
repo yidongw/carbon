@@ -1,5 +1,6 @@
 import { ValidatedForm } from "@carbon/form";
 import {
+  Button,
   HStack,
   Modal,
   ModalBody,
@@ -8,33 +9,81 @@ import {
   ModalHeader,
   ModalOverlay,
   ModalTitle,
+  toast,
   useMount,
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
+import { useEffect, useRef } from "react";
 import { useFetcher, useNavigate } from "react-router";
-import { Input, Location, Select, Submit } from "~/components/Form";
+import { Hidden, Input, Location, Select, Submit } from "~/components/Form";
 import { useUser } from "~/hooks";
 import type { getEmployeeTypes, getInvitable } from "~/modules/users";
 import { createEmployeeValidator } from "~/modules/users";
-import type { Result } from "~/types";
 import { path } from "~/utils/path";
 
+type CreateEmployeeModalResponse =
+  | { success: true; userId: string; firstName: string; lastName: string }
+  | { success: false; message: string };
+
 type CreateEmployeeModalProps = {
-  invitable: NonNullable<Awaited<ReturnType<typeof getInvitable>>["data"]>;
+  invitable?: NonNullable<Awaited<ReturnType<typeof getInvitable>>["data"]>;
+  type?: "modal" | "route";
+  open?: boolean;
+  onClose?: () => void;
+  onSuccess?: (data: {
+    userId: string;
+    firstName: string;
+    lastName: string;
+  }) => void;
 };
 
-const CreateEmployeeModal = ({ invitable }: CreateEmployeeModalProps) => {
+const CreateEmployeeModal = ({
+  type = "route",
+  open = true,
+  onClose,
+  onSuccess
+}: CreateEmployeeModalProps) => {
   const { t } = useLingui();
   const { defaults } = useUser();
   const navigate = useNavigate();
-  const formFetcher = useFetcher<Result>();
+  const formFetcher = useFetcher<CreateEmployeeModalResponse>();
   const employeeTypeFetcher =
     useFetcher<Awaited<ReturnType<typeof getEmployeeTypes>>>();
+  const handledSuccessRef = useRef(false);
 
   useMount(() => {
     employeeTypeFetcher.load(path.to.api.employeeTypes);
   });
+
+  useEffect(() => {
+    if (open) {
+      handledSuccessRef.current = false;
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (type !== "modal") return;
+
+    const data = formFetcher.data;
+    if (!data || handledSuccessRef.current) return;
+
+    if (formFetcher.state === "loading" && data.success === true) {
+      handledSuccessRef.current = true;
+      onSuccess?.({
+        userId: data.userId,
+        firstName: data.firstName,
+        lastName: data.lastName
+      });
+      onClose?.();
+      toast.success(t`Successfully invited employee`);
+      return;
+    }
+
+    if (formFetcher.state === "idle" && data.success === false) {
+      toast.error(data.message);
+    }
+  }, [formFetcher.data, formFetcher.state, onClose, onSuccess, type, t]);
 
   const employeeTypeOptions =
     employeeTypeFetcher.data?.data?.map((et) => ({
@@ -42,11 +91,19 @@ const CreateEmployeeModal = ({ invitable }: CreateEmployeeModalProps) => {
       label: et.name
     })) ?? [];
 
+  const handleClose = () => {
+    if (type === "modal") {
+      onClose?.();
+      return;
+    }
+    navigate(-1);
+  };
+
   return (
     <Modal
-      open
-      onOpenChange={(open) => {
-        if (!open) navigate(-1);
+      open={open}
+      onOpenChange={(isOpen) => {
+        if (!isOpen) handleClose();
       }}
     >
       <ModalOverlay />
@@ -61,6 +118,7 @@ const CreateEmployeeModal = ({ invitable }: CreateEmployeeModalProps) => {
           fetcher={formFetcher}
           className="flex flex-col h-full"
         >
+          {type === "modal" ? <Hidden name="type" value="modal" /> : null}
           <ModalHeader>
             <ModalTitle>
               <Trans>Create an account</Trans>
@@ -88,6 +146,11 @@ const CreateEmployeeModal = ({ invitable }: CreateEmployeeModalProps) => {
               <Submit isLoading={formFetcher.state !== "idle"}>
                 <Trans>Invite</Trans>
               </Submit>
+              {type === "modal" ? (
+                <Button size="md" variant="solid" onClick={handleClose}>
+                  <Trans>Cancel</Trans>
+                </Button>
+              ) : null}
             </HStack>
           </ModalFooter>
         </ValidatedForm>

@@ -3,7 +3,6 @@ import { useDisclosure } from "@carbon/react";
 import { getFaviconUrl } from "@carbon/utils";
 import { useLingui } from "@lingui/react/macro";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router";
 import Avatar from "~/components/Avatar";
 import { Hidden } from "~/components/Form";
 import { useSupplierProcesses } from "~/components/Form/SupplierProcess";
@@ -14,8 +13,8 @@ import {
 } from "~/modules/production/operationType";
 import type { productionActorKinds } from "~/modules/production/production.models";
 import { SupplierProcessForm } from "~/modules/purchasing/ui/Supplier";
+import { CreateEmployeeModal } from "~/modules/users/ui/Employees";
 import { usePeople, useSuppliers } from "~/stores";
-import { path } from "~/utils/path";
 
 type ActorKind = (typeof productionActorKinds)[number];
 
@@ -81,8 +80,8 @@ export function ProductionActorFields({
   onSupplierProcessChange?: (supplierProcessId: string) => void;
 }) {
   const { t } = useLingui();
-  const navigate = useNavigate();
   const newSupplierProcessModal = useDisclosure();
+  const newEmployeeModal = useDisclosure();
   const triggerRef = useRef<HTMLButtonElement>(null);
 
   const resolvedDefault =
@@ -112,7 +111,7 @@ export function ProductionActorFields({
     supplierProcessIdValue ?? ""
   );
 
-  const [people] = usePeople();
+  const [people, setPeople] = usePeople();
   const [suppliers] = useSuppliers();
   const supplierProcesses = useSupplierProcesses({
     processId: processId ?? undefined
@@ -121,6 +120,10 @@ export function ProductionActorFields({
   const openCreateSupplierProcess = useCallback(() => {
     newSupplierProcessModal.onOpen();
   }, [newSupplierProcessModal.onOpen]);
+
+  const openCreateEmployee = useCallback(() => {
+    newEmployeeModal.onOpen();
+  }, [newEmployeeModal.onOpen]);
 
   useEffect(() => {
     setSelection(initialSelection);
@@ -205,6 +208,27 @@ export function ProductionActorFields({
         )
       })) ?? [];
 
+    const pinnedEmployeeId = employeeId?.trim();
+    if (pinnedEmployeeId) {
+      const pinnedValue = encodeActorSelection("employee", pinnedEmployeeId);
+      if (!employeeOptions.some((option) => option.value === pinnedValue)) {
+        const person = people.find((p) => p.id === pinnedEmployeeId);
+        employeeOptions.unshift({
+          value: pinnedValue,
+          label: (
+            <div className="flex flex-row items-center gap-2 flex-grow">
+              <Avatar
+                name={person?.name ?? ""}
+                path={person?.avatarUrl ?? null}
+                size="xs"
+              />
+              <span>{person?.name ?? t`Employee`}</span>
+            </div>
+          )
+        });
+      }
+    }
+
     const supplierOptions = supplierProcesses.map((supplierProcess) => {
       const supplier = suppliers.find(
         (s) => s.id === supplierProcess.supplierId
@@ -262,9 +286,7 @@ export function ProductionActorFields({
         heading: t`Employees`,
         options: employeeOptions,
         createLabel: t`Create employee`,
-        onCreateOption: lockActorSelection
-          ? undefined
-          : () => navigate(path.to.newEmployee)
+        onCreateOption: lockActorSelection ? undefined : openCreateEmployee
       },
       ...(showSupplierActors
         ? [
@@ -286,6 +308,7 @@ export function ProductionActorFields({
     });
   }, [
     people,
+    employeeId,
     supplierProcesses,
     suppliers,
     supplierProcessIdValue,
@@ -293,7 +316,7 @@ export function ProductionActorFields({
     lockActorSelection,
     actorKind,
     processId,
-    navigate,
+    openCreateEmployee,
     openCreateSupplierProcess,
     showSupplierActors,
     t
@@ -358,6 +381,27 @@ export function ProductionActorFields({
             minimumCost: 0,
             unitCost: 0,
             leadTime: 0
+          }}
+        />
+      )}
+      {newEmployeeModal.isOpen && (
+        <CreateEmployeeModal
+          type="modal"
+          onClose={() => {
+            newEmployeeModal.onClose();
+            triggerRef.current?.click();
+          }}
+          onSuccess={({ userId, firstName, lastName }) => {
+            const name = `${firstName} ${lastName}`.trim();
+            setPeople((current) => {
+              if (current.some((person) => person.id === userId)) {
+                return current;
+              }
+              return [...current, { id: userId, name, avatarUrl: null }].sort(
+                (a, b) => a.name.localeCompare(b.name)
+              );
+            });
+            applySelection(encodeActorSelection("employee", userId));
           }}
         />
       )}
