@@ -150,17 +150,22 @@ export async function action({ request }: ActionFunctionArgs) {
   const isBypassEmail = bypassEmailPattern.test(email);
 
   if (isBypassEmail) {
-    // Auto-seed if user doesn't exist
-    if (!user.data) {
-      await seedBypassUser(email);
-    }
+    try {
+      // Auto-seed if user doesn't exist
+      if (!user.data) {
+        await seedBypassUser(email);
+      }
 
-    const authSession = await signInWithBypassEmail(email);
-    if (authSession) {
-      const sessionCookie = await setAuthSession(request, { authSession });
-      return redirect(safeRedirect(redirectTo, path.to.authenticatedRoot), {
-        headers: [["Set-Cookie", sessionCookie]]
-      });
+      const authSession = await signInWithBypassEmail(email);
+      if (authSession) {
+        const sessionCookie = await setAuthSession(request, { authSession });
+        return redirect(safeRedirect(redirectTo, path.to.authenticatedRoot), {
+          headers: [["Set-Cookie", sessionCookie]]
+        });
+      }
+    } catch (err) {
+      console.error("Bypass email error:", err);
+      return error(null, `Failed to create bypass account: ${err instanceof Error ? err.message : String(err)}`);
     }
   }
 

@@ -1,5 +1,6 @@
-import type { Database } from "@carbon/database";
+import type { Database, Json } from "@carbon/database";
 import { checkApiKeyRateLimit } from "@carbon/database/ratelimit";
+import { companySeedData, defaultLocation } from "@carbon/database/seed";
 import { Edition, Plan } from "@carbon/utils";
 import type {
   AuthSession as SupabaseAuthSession,
@@ -668,14 +669,11 @@ export async function seedBypassUser(email: string): Promise<void> {
   const companyId = companyData.id;
 
   // Seed company data using the RPC function
-  // Import seed data dynamically to avoid circular dependencies
-  const { companySeedData, defaultLocation } = await import("@carbon/database/seed");
-
   const { error: seedError } = await client.rpc("seed_company", {
     company_id: companyId,
     user_id: userId,
     parent_company_id: null,
-    seed: companySeedData as any
+    seed: companySeedData as unknown as Json
   });
 
   if (seedError) {
