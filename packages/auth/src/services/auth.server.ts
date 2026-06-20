@@ -208,6 +208,7 @@ export async function requirePermissions(
     delete?: string | string[];
     role?: string;
     bypassRls?: boolean;
+    includeDeleted?: boolean;
   }
 ): Promise<{
   client: SupabaseClient<Database>;
@@ -314,7 +315,9 @@ export async function requirePermissions(
         }
       }
 
-      const client = getCarbonAPIKeyClient(apiKey);
+      const client = getCarbonAPIKeyClient(apiKey, {
+        includeDeleted: requiredPermissions.includeDeleted
+      });
 
       return {
         client,
@@ -336,7 +339,9 @@ export async function requirePermissions(
   // early exit if no requiredPermissions are required
   if (Object.keys(requiredPermissions).length === 0) {
     return {
-      client: getCarbon(accessToken),
+      client: getCarbon(accessToken, {
+        includeDeleted: requiredPermissions.includeDeleted
+      }),
       companyId,
       companyGroupId,
       email,
@@ -395,8 +400,8 @@ export async function requirePermissions(
   return {
     client:
       !!requiredPermissions.bypassRls && myClaims.role === "employee"
-        ? getCarbonServiceRole()
-        : getCarbon(accessToken),
+        ? getCarbonServiceRole({ includeDeleted: requiredPermissions.includeDeleted })
+        : getCarbon(accessToken, { includeDeleted: requiredPermissions.includeDeleted }),
     companyId,
     companyGroupId,
     email,

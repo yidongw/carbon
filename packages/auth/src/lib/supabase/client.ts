@@ -1,4 +1,5 @@
 import type { Database } from "@carbon/database";
+import { wrapClient } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { createClient } from "@supabase/supabase-js";
 import type { MutableRefObject } from "react";
@@ -60,7 +61,10 @@ export const getCarbonClient = (
   return client;
 };
 
-export const getCarbonAPIKeyClient = (apiKey: string) => {
+export const getCarbonAPIKeyClient = (
+  apiKey: string,
+  options?: { includeDeleted?: boolean }
+) => {
   const client = createClient<Database, "public">(
     SUPABASE_URL!,
     SUPABASE_ANON_KEY!,
@@ -74,7 +78,7 @@ export const getCarbonAPIKeyClient = (apiKey: string) => {
     }
   );
 
-  return client;
+  return wrapClient(client, options);
 };
 
 export const createCarbonWithAuthGetter = (
@@ -96,8 +100,12 @@ export const createCarbonWithAuthGetter = (
   });
 };
 
-export const getCarbon = (accessToken?: string) => {
-  return getCarbonClient(SUPABASE_ANON_KEY!, accessToken);
+export const getCarbon = (
+  accessToken?: string,
+  options?: { includeDeleted?: boolean }
+) => {
+  const client = getCarbonClient(SUPABASE_ANON_KEY!, accessToken);
+  return wrapClient(client, options);
 };
 
 export const carbonClient = getCarbon();

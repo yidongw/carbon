@@ -199,6 +199,43 @@ export function fromActive(client: SupabaseClient) {
 }
 
 /**
+ * Wrap a Supabase client to automatically filter deleted records.
+ * The wrapped client's .from() method will filter WHERE deletedAt IS NULL
+ * for all tables that support soft delete.
+ *
+ * @param includeDeleted - If true, don't filter deleted records (default: false)
+ *
+ * @example
+ * // Default: auto-filter deleted records
+ * const client = wrapClient(supabaseClient);
+ * const items = await client.from("item").select("*");  // Filtered!
+ *
+ * // Include deleted records
+ * const client = wrapClient(supabaseClient, { includeDeleted: true });
+ * const allItems = await client.from("item").select("*");  // Not filtered
+ */
+export function wrapClient(
+  client: SupabaseClient,
+  options?: { includeDeleted?: boolean }
+): SupabaseClient {
+  if (options?.includeDeleted) {
+    return client;
+  }
+
+  const originalFrom = client.from.bind(client);
+
+  // Override the from method
+  client.from = ((table: string) => {
+    const builder = originalFrom(table);
+    return SOFT_DELETE_TABLES.has(table)
+      ? filterDeleted(builder)
+      : builder;
+  }) as any;
+
+  return client;
+}
+
+/**
  * Require a record to not be deleted, or throw redirect to /x/deleted.
  * Use this in detail page loaders.
  *
