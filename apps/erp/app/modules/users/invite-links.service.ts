@@ -52,7 +52,7 @@ export async function getMembershipApplications(
     .select(
       `
         *,
-        applicant:userId(id, email, fullName, firstName, lastName),
+        applicant:userId(id, email, fullName, firstName, lastName, avatarUrl, phone, wechat_unionid),
         employeeType:employeeTypeId(name),
         location:locationId(name),
         inviteLink:inviteLinkId(label, inviter:createdBy(fullName))

@@ -9829,8 +9829,14 @@ msgstr "Dokumentacja Webhooków"
 msgid "Website"
 msgstr "Strona internetowa"
 
+msgid "WeChat"
+msgstr "WeChat"
+
 msgid "WeChat QR"
 msgstr "Kod QR WeChatu"
+
+msgid "WeChat sign-in"
+msgstr "Logowanie przez WeChat"
 
 msgid "Wednesday"
 msgstr "Środa"
