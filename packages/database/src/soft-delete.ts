@@ -199,49 +199,15 @@ export function fromActive(client: SupabaseClient) {
 }
 
 /**
- * Wrap a Supabase client to automatically filter deleted records.
- * The wrapped client's .from() method will filter WHERE deletedAt IS NULL
- * for all tables that support soft delete.
+ * No-op wrapper for backwards compatibility.
+ * Soft-delete filtering is now manual via filterDeleted() in list queries.
  *
- * @param includeDeleted - If true, don't filter deleted records (default: false)
- *
- * @example
- * // Default: auto-filter deleted records
- * const client = wrapClient(supabaseClient);
- * const items = await client.from("item").select("*");  // Filtered!
- *
- * // Include deleted records
- * const client = wrapClient(supabaseClient, { includeDeleted: true });
- * const allItems = await client.from("item").select("*");  // Not filtered
+ * @deprecated Use filterDeleted() explicitly in list queries instead.
  */
 export function wrapClient(
   client: SupabaseClient,
-  options?: { includeDeleted?: boolean }
+  _options?: { includeDeleted?: boolean }
 ): SupabaseClient {
-  if (options?.includeDeleted) {
-    return client;
-  }
-
-  const originalFrom = client.from.bind(client);
-
-  // Override the from method to wrap the query builder
-  client.from = ((table: string) => {
-    const builder = originalFrom(table);
-
-    if (!SOFT_DELETE_TABLES.has(table)) {
-      return builder;
-    }
-
-    // Wrap the select method to add the filter
-    const originalSelect = builder.select.bind(builder);
-    builder.select = ((...args: any[]) => {
-      const query = originalSelect(...args);
-      return (query as any).is("deletedAt", null);
-    }) as any;
-
-    return builder;
-  }) as any;
-
   return client;
 }
 

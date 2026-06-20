@@ -56,8 +56,7 @@ export const handle: Handle = {
 export async function loader({ request, params }: LoaderFunctionArgs) {
   const { client, companyId } = await requirePermissions(request, {
     view: "parts",
-    bypassRls: true,
-    includeDeleted: true  // Allow deleted items in BOM/relationships
+    bypassRls: true
   });
 
   const { itemId } = params;
