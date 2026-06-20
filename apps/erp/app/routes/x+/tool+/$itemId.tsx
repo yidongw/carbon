@@ -62,15 +62,20 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { itemId } = params;
   if (!itemId) throw new Error("Could not find itemId");
 
+  // Check if item is deleted (RPC functions don't return deletedAt)
+  const itemCheck = await client
+    .from("item")
+    .select("deletedAt")
+    .eq("id", itemId)
+    .single();
+  assertNotDeleted(itemCheck.data);
+
   const [toolSummary, supplierParts, pickMethods, tags] = await Promise.all([
     getTool(client, itemId, companyId),
     getSupplierParts(client, itemId, companyId),
     getPickMethods(client, itemId, companyId),
     getTagsList(client, companyId, "tool")
   ]);
-
-  // Block access to deleted items
-  assertNotDeleted(toolSummary.data);
 
   if (toolSummary.error) {
     throw redirect(
