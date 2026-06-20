@@ -4384,6 +4384,9 @@ msgstr ""
 msgid "Impact"
 msgstr "Impacto"
 
+msgid "Impact"
+msgstr "Impacto"
+
 msgid "Implementation Support"
 msgstr "Soporte de Implementación"
 
@@ -7059,6 +7062,9 @@ msgstr "Tipo de Cantidad"
 #. placeholder {0}: numberFormatter.format(forecastQuantity)
 msgid "Quantity: {0}"
 msgstr ""
+
+msgid "Quarterly"
+msgstr "Trimestral"
 
 msgid "Quarterly"
 msgstr "Trimestral"

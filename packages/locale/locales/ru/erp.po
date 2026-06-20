@@ -4384,6 +4384,9 @@ msgstr ""
 msgid "Impact"
 msgstr "Влияние"
 
+msgid "Impact"
+msgstr "Влияние"
+
 msgid "Implementation Support"
 msgstr "Поддержка внедрения"
 
@@ -7059,6 +7062,9 @@ msgstr "Тип количества"
 #. placeholder {0}: numberFormatter.format(forecastQuantity)
 msgid "Quantity: {0}"
 msgstr ""
+
+msgid "Quarterly"
+msgstr "Ежеквартально"
 
 msgid "Quarterly"
 msgstr "Ежеквартально"
