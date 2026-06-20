@@ -32,7 +32,10 @@ const Employee = ({ type, inline, ...props }: EmployeeSelectProps) => {
         label: (
           <div className="flex flex-row items-center gap-2 flex-grow">
             <Avatar name={person.name} path={person.avatarUrl} size="xs" />
-            <span>{person.name}</span>
+            <span>
+              {person.name}
+              {person.number ? ` (${person.number})` : ""}
+            </span>
           </div>
         )
       })) ?? [];
