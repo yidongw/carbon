@@ -15,7 +15,7 @@ export default function DeletedPage() {
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-128px)] py-8">
       <VStack spacing={6} className="w-full max-w-2xl px-4">
-        <HStack spacing={6} className="items-center justify-center">
+        <HStack spacing={6} className="items-center justify-center w-full">
           <div className="flex items-center justify-center w-16 h-16 rounded-full bg-orange-100 dark:bg-orange-900/20 flex-shrink-0">
             <LuTriangleAlert className="w-8 h-8 text-orange-600 dark:text-orange-400" />
           </div>
