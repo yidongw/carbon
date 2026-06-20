@@ -9915,3 +9915,9 @@ msgstr "你的名字"
 
 msgid "yourself"
 msgstr "你自己"
+
+msgid "What you're looking for has been deleted."
+msgstr "您要查找的内容已被删除。"
+
+msgid "Go Back"
+msgstr "返回"

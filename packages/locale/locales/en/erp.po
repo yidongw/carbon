@@ -9915,3 +9915,9 @@ msgstr "Your Name"
 
 msgid "yourself"
 msgstr "yourself"
+
+msgid "What you're looking for has been deleted."
+msgstr "What you're looking for has been deleted."
+
+msgid "Go Back"
+msgstr "Go Back"
