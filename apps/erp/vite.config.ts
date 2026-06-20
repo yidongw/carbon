@@ -9,6 +9,11 @@ import babelMacros from "vite-plugin-babel-macros";
 export default defineConfig(({ isSsrBuild, mode }) => {
   applyDotenvToProcessEnv(mode, __dirname);
 
+  // Ensure DEV_BYPASS_EMAIL is set for local dev
+  if (!process.env.DEV_BYPASS_EMAIL) {
+    process.env.DEV_BYPASS_EMAIL = "bypass@mail.com";
+  }
+
   return {
     build: {
       minify: true,
