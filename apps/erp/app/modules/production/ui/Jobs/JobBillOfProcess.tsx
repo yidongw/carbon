@@ -68,7 +68,6 @@ import {
   LuActivity,
   LuChevronRight,
   LuCirclePlus,
-  LuDollarSign,
   LuEllipsisVertical,
   LuGripVertical,
   LuHammer,
@@ -77,7 +76,6 @@ import {
   LuMaximize2,
   LuMinimize2,
   LuPaperclip,
-  LuPlay,
   LuRefreshCcw,
   LuSend,
   LuSettings2,
@@ -110,7 +108,7 @@ import {
   UnitHint,
   WorkCenter
 } from "~/components/Form";
-import Procedure from "~/components/Form/Procedure";
+import Procedure, { useProcedures } from "~/components/Form/Procedure";
 import { SupplierProcessPreview } from "~/components/Form/SupplierProcess";
 import { getUnitHint } from "~/components/Form/UnitHint";
 import UnitOfMeasure, {
@@ -119,6 +117,7 @@ import UnitOfMeasure, {
 import { ProcedureStepTypeIcon } from "~/components/Icons";
 import InfiniteScroll from "~/components/InfiniteScroll";
 import { ConfirmDelete } from "~/components/Modals";
+import { overlay, useOverlay } from "~/components/Overlay";
 import type { Item, SortableItemRenderProps } from "~/components/SortableList";
 import { SortableList, SortableListItem } from "~/components/SortableList";
 import {
@@ -153,7 +152,10 @@ import {
   jobOperationValidatorForReleasedJob,
   procedureSyncValidator
 } from "../../production.models";
-import { getProductionEventsPage } from "../../production.service";
+import {
+  getProductionEventsPage,
+  getProductionQuantitiesPage
+} from "../../production.service";
 import type { Job, JobOperation } from "../../types";
 import { JobOperationStatus, JobOperationTags } from "./JobOperationStatus";
 import { OperationDueDatePicker } from "./OperationDueDatePicker";
@@ -161,11 +163,11 @@ import { OperationDueDatePicker } from "./OperationDueDatePicker";
 export type Operation = z.infer<typeof jobOperationValidator> & {
   assignee: string | null;
   dueDate?: string | null;
-  manuallyScheduled?: boolean;
+  jobId?: string;
   status: JobOperation["status"];
   tags: string[] | null;
   workInstruction: JSONContent | null;
-  reworkId: string | null;
+  quantityComplete?: number | null;
 };
 
 type ItemWithData = Item & {
@@ -195,6 +197,9 @@ type JobBillOfProcessProps = {
   itemId: string;
   salesOrderLineId: string;
   customerId: string;
+  /** When rendered outside `/x/job/:jobId` (e.g. jobs table preview modal). */
+  routeJobId?: string;
+  routeJob?: Job;
 };
 
 function makeItems(
@@ -202,10 +207,22 @@ function makeItems(
   tags: { name: string }[],
   temporaryItems: TemporaryItems,
   urlParams: { [key: string]: string },
-  t: ReturnType<typeof useLingui>["t"]
+  t: ReturnType<typeof useLingui>["t"],
+  jobId: string,
+  job?: Job,
+  onAddProductionQuantity?: (operationId: string) => void
 ): ItemWithData[] {
   return operations.map((operation) =>
-    makeItem(operation, tags, temporaryItems, urlParams, t)
+    makeItem(
+      operation,
+      tags,
+      temporaryItems,
+      urlParams,
+      t,
+      jobId,
+      job,
+      onAddProductionQuantity
+    )
   );
 }
 
@@ -214,18 +231,18 @@ function makeItem(
   tags: { name: string }[],
   temporaryItems: TemporaryItems,
   urlParams: { [key: string]: string },
-  t: ReturnType<typeof useLingui>["t"]
+  t: ReturnType<typeof useLingui>["t"],
+  jobId: string,
+  job?: Job,
+  onAddProductionQuantity?: (operationId: string) => void
 ): ItemWithData {
   return {
     id: operation.id!,
     title: (
       <VStack spacing={0}>
-        <HStack spacing={2}>
-          <h3 className="font-semibold truncate cursor-pointer">
-            {operation.description}
-          </h3>
-          {operation.reworkId && <Badge variant="red">Rework</Badge>}
-        </HStack>
+        <h3 className="font-semibold truncate cursor-pointer">
+          {operation.description}
+        </h3>
         {operation.operationType === "Outside" && (
           <SupplierProcessPreview
             processId={operation.processId}
@@ -265,10 +282,19 @@ function makeItem(
         )}
       </HStack>
     ),
+    quantityProgress: temporaryItems[operation.id!]
+      ? null
+      : {
+          complete: operation.quantityComplete ?? 0,
+          target: job?.quantity ?? 0,
+          onAddQuantity: onAddProductionQuantity
+            ? () => onAddProductionQuantity(operation.id!)
+            : undefined
+        },
     footer: temporaryItems[operation.id!] ? null : (
       <HStack className="w-full justify-between">
         <HStack>
-          <JobOperationStatus operation={operation} />
+          <JobOperationStatus operation={operation} jobId={jobId} job={job} />
           <Assignee
             table="jobOperation"
             id={operation.id!}
@@ -280,29 +306,8 @@ function makeItem(
           <OperationDueDatePicker
             operationId={operation.id!}
             dueDate={operation.dueDate ?? null}
-            manuallyScheduled={operation.manuallyScheduled}
           />
           <JobOperationTags operation={operation} availableTags={tags} />
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <a
-                href={path.to.external.mesJobOperation(operation.id!)}
-                title={t`Open in MES`}
-              >
-                <IconButton
-                  icon={<LuPlay />}
-                  variant="secondary"
-                  aria-label={t`Open in MES`}
-                  size="sm"
-                />
-              </a>
-            </TooltipTrigger>
-            <TooltipContent>
-              <span>
-                <Trans>Open in MES</Trans>
-              </span>
-            </TooltipContent>
-          </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
@@ -354,7 +359,6 @@ const initialOperation: Omit<
   overheadRate: 0,
   processId: "",
   procedureId: "",
-  reworkId: null,
   setupTime: 0,
   setupUnit: "Total Minutes",
   status: "Todo",
@@ -379,12 +383,10 @@ type TemporaryItems = {
   [key: string]: Operation;
 };
 
-const usePendingOperations = () => {
+const usePendingOperations = (jobId: string) => {
   type PendingItem = ReturnType<typeof useFetchers>[number] & {
     formData: FormData;
   };
-  const { jobId } = useParams();
-  if (!jobId) throw new Error("jobId not found");
 
   return useFetchers()
     .filter((fetcher): fetcher is PendingItem => {
@@ -407,6 +409,11 @@ const usePendingOperations = () => {
     }, []);
 };
 
+type OperationProductionQuantity =
+  Database["public"]["Tables"]["productionQuantity"]["Row"] & {
+    scrapReason?: { name: string | null } | null;
+  };
+
 const JobBillOfProcess = ({
   jobMakeMethodId,
   locationId,
@@ -415,7 +422,9 @@ const JobBillOfProcess = ({
   tags,
   itemId,
   salesOrderLineId,
-  customerId
+  customerId,
+  routeJobId,
+  routeJob
 }: JobBillOfProcessProps) => {
   const { t } = useLingui();
   // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
@@ -423,6 +432,7 @@ const JobBillOfProcess = ({
   const sortOrderFetcher = useFetcher<{}>();
   const deleteOperationFetcher = useFetcher<{ success: boolean }>();
   const permissions = usePermissions();
+  const { openOverlay } = useOverlay();
   const {
     id: userId,
     company: { id: companyId }
@@ -434,9 +444,11 @@ const JobBillOfProcess = ({
     selected ? selected : null
   );
 
-  const { jobId } = useParams();
+  const paramsJobId = useParams().jobId;
+  const jobId = routeJobId ?? paramsJobId;
   if (!jobId) throw new Error("jobId not found");
-  const jobData = useRouteData<{ job: Job }>(path.to.job(jobId));
+  const routeJobData = useRouteData<{ job: Job }>(path.to.job(jobId));
+  const jobData = routeJob ? { job: routeJob } : routeJobData;
   const [temporaryItems, setTemporaryItems] = useState<TemporaryItems>({});
   const [workInstructions, setWorkInstructions] =
     useState<PendingWorkInstructions>(() => {
@@ -458,7 +470,11 @@ const JobBillOfProcess = ({
 
   const operationsById = new Map<
     string,
-    Operation & { jobOperationTool: OperationTool[] }
+    Operation & {
+      jobOperationTool: OperationTool[];
+      jobOperationParameter: OperationParameter[];
+      jobOperationStep: JobOperationStep[];
+    }
   >();
 
   // Add initial operations to map
@@ -467,24 +483,27 @@ const JobBillOfProcess = ({
     operationsById.set(operation.id, operation);
   });
 
-  const pendingOperations = usePendingOperations();
+  const pendingOperations = usePendingOperations(jobId);
 
   // Replace existing operations with pending ones
   pendingOperations.forEach((pendingOperation) => {
     if (!pendingOperation.id) {
       operationsById.set("temporary", {
         ...pendingOperation,
+        jobId,
         assignee: null,
-        reworkId: null,
         status: "Todo",
         workInstruction: {},
         jobOperationTool: [],
+        jobOperationParameter: [],
+        jobOperationStep: [],
         tags: []
       });
     } else {
       operationsById.set(pendingOperation.id, {
         ...operationsById.get(pendingOperation.id)!,
-        ...pendingOperation
+        ...pendingOperation,
+        jobId
       });
     }
   });
@@ -493,13 +512,31 @@ const JobBillOfProcess = ({
   Object.entries(temporaryItems).forEach(([id, operation]) => {
     operationsById.set(id, {
       ...operation,
-      jobOperationTool: []
+      jobId,
+      jobOperationTool: [],
+      jobOperationParameter: [],
+      jobOperationStep: []
     });
   });
 
   const operations = Array.from(operationsById.values()).sort(
     (a, b) => (orderState[a.id!] ?? a.order) - (orderState[b.id!] ?? b.order)
   );
+
+  const isDisabled = ["Completed", "Cancelled"].includes(
+    jobData?.job?.status ?? ""
+  );
+
+  const onAddProductionQuantity =
+    !isDisabled && permissions.can("create", "production")
+      ? (operationId: string) => {
+          openOverlay(
+            overlay.to.newJobProductionQuantity(jobId, {
+              jobOperationId: operationId
+            })
+          );
+        }
+      : undefined;
 
   const items = makeItems(
     operations,
@@ -510,15 +547,14 @@ const JobBillOfProcess = ({
       salesOrderLineId,
       customerId
     },
-    t
+    t,
+    jobId,
+    jobData?.job,
+    onAddProductionQuantity
   ).map((item) => ({
     ...item,
     checked: checkedState[item.id] ?? false
   }));
-
-  const isDisabled = ["Completed", "Cancelled"].includes(
-    jobData?.job?.status ?? ""
-  );
 
   const onToggleItem = (id: string) => {
     if (!permissions.can("update", "parts")) return;
@@ -540,7 +576,8 @@ const JobBillOfProcess = ({
       ...initialOperation,
       id: operationId,
       order: newOrder,
-      jobMakeMethodId
+      jobMakeMethodId,
+      jobId
     };
 
     setTemporaryItems((prev) => ({
@@ -655,10 +692,52 @@ const JobBillOfProcess = ({
   const [productionEvents, setProductionEvents] = useState<
     Database["public"]["Tables"]["productionEvent"]["Row"][]
   >([]);
+  const [productionQuantities, setProductionQuantities] = useState<
+    OperationProductionQuantity[]
+  >([]);
+  const [productionQuantityCount, setProductionQuantityCount] =
+    useState<number>(0);
   const [page, setPage] = useState(0);
+  const [quantityPage, setQuantityPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [quantityIsLoading, setQuantityIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [quantityHasMore, setQuantityHasMore] = useState(true);
   const addOperationButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    setProductionEvents([]);
+    setProductionQuantities([]);
+    setProductionQuantityCount(0);
+    setPage(0);
+    setQuantityPage(0);
+    setHasMore(true);
+    setQuantityHasMore(true);
+  }, []);
+
+  useEffect(() => {
+    if (!selectedItemId || temporaryItems[selectedItemId] || !carbon) return;
+
+    let cancelled = false;
+
+    const loadQuantityCount = async () => {
+      const { count } = await carbon
+        .from("productionQuantity")
+        .select("id", { count: "exact", head: true })
+        .eq("jobOperationId", selectedItemId)
+        .eq("companyId", companyId);
+
+      if (!cancelled) {
+        setProductionQuantityCount(count ?? 0);
+      }
+    };
+
+    void loadQuantityCount();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [carbon, companyId, selectedItemId, temporaryItems]);
 
   useRealtimeChannel({
     topic: `production-events:${selectedItemId}`,
@@ -728,20 +807,106 @@ const JobBillOfProcess = ({
     setIsLoading(false);
   }, [isLoading, hasMore, carbon, selectedItemId, companyId, page]);
 
-  const [tabChangeRerender, setTabChangeRerender] = useState<number>(1);
-
-  useEffect(() => {
-    if (initialOperations) {
-      setWorkInstructions(
-        initialOperations.reduce((acc, operation) => {
-          if (operation.workInstruction && operation.id) {
-            acc[operation.id] = operation.workInstruction;
+  useRealtimeChannel({
+    topic: `production-quantities:${selectedItemId}`,
+    enabled: !!selectedItemId && !temporaryItems[selectedItemId ?? ""],
+    setup(channel) {
+      return channel.on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "productionQuantity",
+          filter: `jobOperationId=eq.${selectedItemId}`
+        },
+        (payload) => {
+          switch (payload.eventType) {
+            case "INSERT": {
+              const inserted = payload.new as OperationProductionQuantity;
+              setProductionQuantities((prev) => {
+                if (prev.some((q) => q.id === inserted.id)) return prev;
+                return [inserted, ...prev];
+              });
+              setProductionQuantityCount((count) => count + 1);
+              break;
+            }
+            case "UPDATE": {
+              const updated = payload.new as OperationProductionQuantity;
+              setProductionQuantities((prev) =>
+                prev.map((q) => (q.id === updated.id ? updated : q))
+              );
+              break;
+            }
+            case "DELETE": {
+              const deleted = payload.old as { id: string };
+              setProductionQuantities((prev) =>
+                prev.filter((q) => q.id !== deleted.id)
+              );
+              setProductionQuantityCount((count) => Math.max(0, count - 1));
+              break;
+            }
+            default:
+              break;
           }
-          return acc;
-        }, {} as PendingWorkInstructions)
+        }
       );
     }
-  }, [initialOperations]);
+  });
+
+  const loadMoreProductionQuantities = useCallback(async () => {
+    if (quantityIsLoading || !quantityHasMore || !selectedItemId) return;
+
+    setQuantityIsLoading(true);
+
+    const result = await getProductionQuantitiesPage(
+      carbon!,
+      selectedItemId,
+      companyId,
+      quantityPage + 1
+    );
+
+    if (result.data && result.data.length > 0) {
+      setProductionQuantities((prev) => [
+        ...prev,
+        ...(result.data as OperationProductionQuantity[])
+      ]);
+      setQuantityPage((prevPage) => prevPage + 1);
+      if (result.count != null) {
+        setProductionQuantityCount(result.count);
+      }
+      if (result.hasMore === false) {
+        setQuantityHasMore(false);
+      }
+    } else {
+      setQuantityHasMore(false);
+    }
+
+    setQuantityIsLoading(false);
+  }, [
+    quantityIsLoading,
+    quantityHasMore,
+    carbon,
+    selectedItemId,
+    companyId,
+    quantityPage
+  ]);
+
+  const [tabChangeRerender, setTabChangeRerender] = useState<number>(1);
+
+  const initialWorkInstructions = useMemo(
+    () =>
+      initialOperations.reduce((acc, operation) => {
+        if (operation.workInstruction && operation.id) {
+          acc[operation.id] = operation.workInstruction;
+        }
+        return acc;
+      }, {} as PendingWorkInstructions),
+    [initialOperations]
+  );
+
+  useEffect(() => {
+    setWorkInstructions(initialWorkInstructions);
+  }, [initialWorkInstructions]);
 
   const renderListItem = ({
     item,
@@ -751,59 +916,71 @@ const JobBillOfProcess = ({
     onRemoveItem
   }: SortableItemRenderProps<ItemWithData>) => {
     const isOpen = item.id === selectedItemId;
+    const isNewOperation = item.id in temporaryItems;
 
-    const tools =
-      initialOperations.find((o) => o.id === item.id)?.jobOperationTool ?? [];
-    const parameters =
-      initialOperations.find((o) => o.id === item.id)?.jobOperationParameter ??
-      [];
-    const steps =
-      initialOperations.find((o) => o.id === item.id)?.jobOperationStep ?? [];
+    const operationDetails = operationsById.get(item.id);
+    const tools = operationDetails?.jobOperationTool ?? [];
+    const parameters = operationDetails?.jobOperationParameter ?? [];
+    const steps = operationDetails?.jobOperationStep ?? [];
+    const quantityCount =
+      item.id === selectedItemId ? productionQuantityCount : 0;
+    const canRecordQuantity =
+      !isDisabled &&
+      permissions.can("create", "production") &&
+      !temporaryItems[item.id];
+
+    const operationFormContent = (
+      <div className="flex w-full flex-col pr-2 py-2">
+        <motion.div
+          initial={{ opacity: 0, filter: "blur(4px)" }}
+          animate={{ opacity: 1, filter: "blur(0px)" }}
+          transition={{
+            type: "spring",
+            bounce: 0.2,
+            duration: 0.75,
+            delay: 0.15
+          }}
+        >
+          <OperationForm
+            item={item}
+            jobId={jobId}
+            isDisabled={isDisabled}
+            job={jobData?.job}
+            locationId={locationId}
+            workInstruction={workInstructions[item.id] ?? {}}
+            setWorkInstructions={setWorkInstructions}
+            setTemporaryItems={setTemporaryItems}
+            setSelectedItemId={setSelectedItemId}
+            temporaryItems={temporaryItems}
+            onSubmit={() => {
+              setSelectedItemId(null);
+              addOperationButtonRef.current?.scrollIntoView({
+                behavior: "smooth",
+                block: "nearest",
+                inline: "center"
+              });
+            }}
+          />
+        </motion.div>
+      </div>
+    );
+
+    const QuantityActivityRow = ({
+      item: quantityItem
+    }: {
+      item: OperationProductionQuantity;
+    }) => <ProductionQuantityActivity item={quantityItem} />;
 
     const tabs = [
       {
         id: 0,
         label: t`Details`,
-        content: (
-          <div className="flex w-full flex-col pr-2 py-2">
-            <motion.div
-              initial={{ opacity: 0, filter: "blur(4px)" }}
-              animate={{ opacity: 1, filter: "blur(0px)" }}
-              transition={{
-                type: "spring",
-                bounce: 0.2,
-                duration: 0.75,
-                delay: 0.15
-              }}
-            >
-              <OperationForm
-                item={item}
-                isDisabled={isDisabled}
-                job={jobData?.job}
-                locationId={locationId}
-                workInstruction={workInstructions[item.id] ?? {}}
-                setWorkInstructions={setWorkInstructions}
-                setTemporaryItems={setTemporaryItems}
-                setSelectedItemId={setSelectedItemId}
-                temporaryItems={temporaryItems}
-                onSubmit={() => {
-                  setSelectedItemId(null);
-                  addOperationButtonRef.current?.scrollIntoView({
-                    behavior: "smooth",
-                    block: "nearest",
-                    inline: "center"
-                  });
-                }}
-              />
-            </motion.div>
-          </div>
-        )
+        content: operationFormContent
       },
       {
         id: 1,
         label: t`Instructions`,
-        disabled:
-          item.id in temporaryItems || item.data.operationType === "Outside",
+        disabled: item.data.operationType === "Outside",
         content: (
           <div className="flex flex-col">
             <div>
@@ -839,8 +1016,7 @@ const JobBillOfProcess = ({
       },
       {
         id: 2,
-        disabled:
-          item.id in temporaryItems || item.data.operationType === "Outside",
+        disabled: item.data.operationType === "Outside",
         label: (
           <span className="flex items-center gap-2">
             <span>
@@ -864,8 +1040,7 @@ const JobBillOfProcess = ({
       },
       {
         id: 3,
-        disabled:
-          item.id in temporaryItems || item.data.operationType === "Outside",
+        disabled: item.data.operationType === "Outside",
         label: (
           <span className="flex items-center gap-2">
             <span>
@@ -890,8 +1065,7 @@ const JobBillOfProcess = ({
       },
       {
         id: 4,
-        disabled:
-          item.id in temporaryItems || item.data.operationType === "Outside",
+        disabled: item.data.operationType === "Outside",
         label: (
           <span className="flex items-center gap-2">
             <span>
@@ -915,35 +1089,76 @@ const JobBillOfProcess = ({
       },
       {
         id: 5,
-        disabled:
-          item.id in temporaryItems || item.data.operationType === "Outside",
-        label: t`Events`,
+        disabled: item.data.operationType === "Outside",
+        label: (
+          <span className="flex items-center gap-2">
+            <span>
+              <Trans>Quantities</Trans>
+            </span>
+            {quantityCount > 0 && <Count count={quantityCount} />}
+          </span>
+        ),
         content: (
-          <div className="flex w-full flex-col pr-2 py-6 min-h-[300px]">
-            <motion.div
-              initial={{ opacity: 0, filter: "blur(4px)" }}
-              animate={{ opacity: 1, filter: "blur(0px)" }}
-              transition={{
-                type: "spring",
-                bounce: 0.2,
-                duration: 0.75,
-                delay: 0.15
-              }}
-            >
-              <InfiniteScroll
-                component={ProductionEventActivity}
-                items={productionEvents}
-                loadMore={loadMoreProductionEvents}
-                hasMore={hasMore}
-              />
-            </motion.div>
-          </div>
+          <motion.div
+            className="flex w-full flex-col gap-4 py-6 pr-2 min-h-[300px]"
+            initial={{ opacity: 0, filter: "blur(4px)" }}
+            animate={{ opacity: 1, filter: "blur(0px)" }}
+            transition={{
+              type: "spring",
+              bounce: 0.2,
+              duration: 0.75,
+              delay: 0.15
+            }}
+          >
+            {canRecordQuantity && onAddProductionQuantity && (
+              <HStack className="justify-end">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => onAddProductionQuantity(item.id)}
+                >
+                  <LuCirclePlus className="mr-1.5 h-4 w-4" />
+                  <Trans>Record quantity</Trans>
+                </Button>
+              </HStack>
+            )}
+            <InfiniteScroll
+              component={QuantityActivityRow}
+              items={productionQuantities}
+              loadMore={loadMoreProductionQuantities}
+              hasMore={quantityHasMore}
+            />
+          </motion.div>
         )
       },
       {
         id: 6,
-        disabled:
-          item.id in temporaryItems || item.data.operationType === "Outside",
+        disabled: item.data.operationType === "Outside",
+        label: t`Events`,
+        content: (
+          <motion.div
+            className="flex w-full flex-col pr-2 py-6 min-h-[300px]"
+            initial={{ opacity: 0, filter: "blur(4px)" }}
+            animate={{ opacity: 1, filter: "blur(0px)" }}
+            transition={{
+              type: "spring",
+              bounce: 0.2,
+              duration: 0.75,
+              delay: 0.15
+            }}
+          >
+            <InfiniteScroll
+              component={ProductionEventActivity}
+              items={productionEvents}
+              loadMore={loadMoreProductionEvents}
+              hasMore={hasMore}
+            />
+          </motion.div>
+        )
+      },
+      {
+        id: 7,
+        disabled: item.data.operationType === "Outside",
         label: t`Chat`,
         content: <OperationChat jobOperationId={item.id} />
       }
@@ -968,7 +1183,11 @@ const JobBillOfProcess = ({
               onClick={
                 isOpen
                   ? () => {
-                      setSelectedItemId(null);
+                      if (isNewOperation) {
+                        onRemoveItem(item.id);
+                      } else {
+                        setSelectedItemId(null);
+                      }
                     }
                   : () => {
                       setSelectedItemId(item.id);
@@ -1027,13 +1246,17 @@ const JobBillOfProcess = ({
                         layout
                         className="w-full "
                       >
-                        <DirectionAwareTabs
-                          className="mr-auto"
-                          tabs={tabs}
-                          onChange={() =>
-                            setTabChangeRerender(tabChangeRerender + 1)
-                          }
-                        />
+                        {isNewOperation ? (
+                          operationFormContent
+                        ) : (
+                          <DirectionAwareTabs
+                            className="mr-auto"
+                            tabs={tabs}
+                            onChange={() =>
+                              setTabChangeRerender(tabChangeRerender + 1)
+                            }
+                          />
+                        )}
                       </motion.div>
                     </div>
                   </motion.div>
@@ -1045,6 +1268,41 @@ const JobBillOfProcess = ({
       />
     );
   };
+
+  const list = (
+    <SortableList
+      items={items}
+      onReorder={onReorder}
+      onToggleItem={onToggleItem}
+      onRemoveItem={onRemoveItem}
+      renderItem={renderListItem}
+    />
+  );
+
+  if (routeJob) {
+    return (
+      <div className="flex min-h-full flex-col">
+        <HStack className="shrink-0 items-center justify-between border-b border-border px-4 py-3 pr-12">
+          <h3 className="text-base font-medium font-headline tracking-tight text-foreground">
+            <Trans>Bill of Process</Trans>
+          </h3>
+          <Button
+            ref={addOperationButtonRef}
+            variant="secondary"
+            isDisabled={
+              !permissions.can("update", "production") ||
+              selectedItemId !== null ||
+              isDisabled
+            }
+            onClick={onAddItem}
+          >
+            <Trans>Add Operation</Trans>
+          </Button>
+        </HStack>
+        <div className="flex-1 px-3 py-3">{list}</div>
+      </div>
+    );
+  }
 
   return (
     <Card>
@@ -1070,15 +1328,7 @@ const JobBillOfProcess = ({
           </Button>
         </CardAction>
       </HStack>
-      <CardContent>
-        <SortableList
-          items={items}
-          onReorder={onReorder}
-          onToggleItem={onToggleItem}
-          onRemoveItem={onRemoveItem}
-          renderItem={renderListItem}
-        />
-      </CardContent>
+      <CardContent>{list}</CardContent>
     </Card>
   );
 };
@@ -2100,8 +2350,156 @@ function ParametersListItem({
   );
 }
 
+function abbreviateOperationUnit(unit: string | null | undefined) {
+  switch (unit) {
+    case "Minutes/Piece":
+      return "min/pc";
+    case "Hours/Piece":
+      return "hr/pc";
+    case "Seconds/Piece":
+      return "sec/pc";
+    case "Total Minutes":
+      return "min";
+    case "Total Hours":
+      return "hr";
+    case "Total Seconds":
+      return "sec";
+    default:
+      return (unit ?? "")
+        .replace("Minutes", "min")
+        .replace("Minute", "min")
+        .replace("Hours", "hr")
+        .replace("Hour", "hr")
+        .replace("Seconds", "sec")
+        .replace("Second", "sec")
+        .replace("Piece", "pc")
+        .replace("Total ", "");
+  }
+}
+
+function formatOperationTabSummary(time: number, unit: string) {
+  return `${time} ${abbreviateOperationUnit(unit)}`;
+}
+
+type OperationDetailSection = {
+  id: string;
+  label: ReactNode;
+  icon: ReactNode;
+  accessibilityLabel: string;
+  summary?: string;
+  summaryTitle?: string;
+  content: ReactNode;
+  contentClassName?: string;
+};
+
+function OperationDetailTabs({
+  sections
+}: {
+  sections: OperationDetailSection[];
+}) {
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const expandedSection = sections.find((section) => section.id === expandedId);
+
+  return (
+    <div className="flex w-full flex-col overflow-hidden rounded-b-lg border border-border bg-card shadow-sm">
+      <div
+        className={cn(
+          "flex w-full flex-row bg-muted/40",
+          expandedSection && "border-b border-border"
+        )}
+      >
+        {sections.map((section, index) => {
+          const isExpanded = expandedId === section.id;
+          return (
+            <button
+              key={section.id}
+              type="button"
+              title={
+                section.summary && !isExpanded
+                  ? section.summaryTitle
+                  : undefined
+              }
+              aria-label={
+                section.summary && !isExpanded && section.summaryTitle
+                  ? `${section.accessibilityLabel}, ${section.summaryTitle}`
+                  : section.accessibilityLabel
+              }
+              className={cn(
+                "group relative flex flex-1 min-w-0 items-center gap-2 border-b-2 px-3 py-2.5 text-left transition-[color,background-color,border-color] duration-200",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
+                index > 0 && "border-l border-border",
+                isExpanded
+                  ? "z-10 -mb-px border-b-primary bg-background text-foreground"
+                  : "z-0 border-b-transparent text-muted-foreground hover:bg-muted hover:text-foreground"
+              )}
+              onClick={() => setExpandedId(isExpanded ? null : section.id)}
+            >
+              <motion.span
+                animate={{ rotate: isExpanded ? 90 : 0 }}
+                transition={{ type: "spring", bounce: 0, duration: 0.25 }}
+                className={cn(
+                  "flex shrink-0 transition-colors duration-200",
+                  isExpanded
+                    ? "text-foreground"
+                    : "text-muted-foreground group-hover:text-foreground"
+                )}
+              >
+                <LuChevronRight className="h-4 w-4" />
+              </motion.span>
+              <span
+                className={cn(
+                  "shrink-0 transition-colors duration-200",
+                  isExpanded
+                    ? "text-foreground"
+                    : "text-muted-foreground group-hover:text-foreground"
+                )}
+              >
+                {section.icon}
+              </span>
+              <span
+                className={cn(
+                  "min-w-0 flex-1 truncate text-sm font-medium tabular-nums transition-colors duration-200",
+                  isExpanded
+                    ? "text-foreground"
+                    : "text-muted-foreground group-hover:text-foreground",
+                  section.summary && !isExpanded && "text-foreground/90"
+                )}
+              >
+                {section.summary && !isExpanded
+                  ? section.summary
+                  : section.label}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+      <div className="relative overflow-hidden rounded-b-lg border-t border-border bg-background">
+        {sections.map((section) => {
+          const isVisible = expandedId === section.id;
+          return (
+            <div
+              key={section.id}
+              className={cn(
+                section.contentClassName ??
+                  "grid w-full grid-cols-1 gap-x-8 gap-y-4 px-4 pb-4 pt-4 lg:grid-cols-3",
+                "transition-opacity duration-200",
+                isVisible
+                  ? "relative opacity-100"
+                  : "pointer-events-none absolute inset-x-0 top-0 h-0 overflow-hidden opacity-0"
+              )}
+            >
+              {section.content}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function OperationForm({
   item,
+  jobId,
   isDisabled,
   job,
   locationId,
@@ -2113,6 +2511,7 @@ function OperationForm({
   onSubmit
 }: {
   item: ItemWithData;
+  jobId: string;
   isDisabled: boolean;
   job?: Job;
   locationId: string;
@@ -2123,10 +2522,8 @@ function OperationForm({
   onSubmit: () => void;
   temporaryItems: TemporaryItems;
 }) {
-  const { jobId } = useParams();
   const { t } = useLingui();
   const { company } = useUser();
-  if (!jobId) throw new Error("jobId not found");
 
   const fetcher = useFetcher<{
     id: string;
@@ -2150,11 +2547,6 @@ function OperationForm({
     }
   }, [item.id, fetcher.data, onSubmit, setTemporaryItems]);
 
-  const machineDisclosure = useDisclosure();
-  const laborDisclosure = useDisclosure();
-  const setupDisclosure = useDisclosure();
-  const costingDisclosure = useDisclosure();
-  const procedureDisclosure = useDisclosure();
   const [procedureWasChanged, setProcedureWasChanged] = useState(false);
   const procedureSyncDisclosure = useDisclosure();
 
@@ -2199,6 +2591,23 @@ function OperationForm({
     setupUnit: item.data.setupUnit ?? "Total Minutes",
     setupUnitHint: getUnitHint(item.data.setupUnit)
   });
+
+  const { procedures } = useProcedures({ processId: processData.processId });
+
+  const procedureTabSummary = useMemo(() => {
+    if (!processData.procedureId) return undefined;
+    const procedure = procedures.find((p) => p.id === processData.procedureId);
+    return procedure?.name ?? "…";
+  }, [processData.procedureId, procedures]);
+
+  const procedureTabSummaryTitle = useMemo(() => {
+    if (!processData.procedureId) return undefined;
+    const procedure = procedures.find((p) => p.id === processData.procedureId);
+    if (!procedure) return undefined;
+    return procedure.version
+      ? `${procedure.name} v${procedure.version}`
+      : procedure.name;
+  }, [processData.procedureId, procedures]);
 
   const onProcessChange = async (processId: string) => {
     if (!carbon || !processId) return;
@@ -2439,441 +2848,312 @@ function OperationForm({
             />
           </>
         ) : (
-          <WorkCenter
-            name="workCenterId"
-            label={t`Work Center`}
-            autoSelectSingleOption={Boolean(processData.processId)}
-            locationId={locationId}
-            isOptional={["Draft", "Planned"].includes(job?.status ?? "")}
-            processId={processData.processId}
-            onChange={(value) => {
-              if (value) {
-                onWorkCenterChange(value?.value as string);
+          <>
+            <WorkCenter
+              name="workCenterId"
+              label={t`Work Center`}
+              autoSelectSingleOption={Boolean(processData.processId)}
+              locationId={locationId}
+              isOptional={["Draft", "Planned"].includes(job?.status ?? "")}
+              processId={processData.processId}
+              onChange={(value) => {
+                if (value) {
+                  onWorkCenterChange(value?.value as string);
+                }
+              }}
+            />
+            <NumberControlled
+              name="laborRate"
+              label={t`Labor Rate`}
+              minValue={0}
+              value={processData.laborRate}
+              formatOptions={{
+                style: "currency",
+                currency: baseCurrency
+              }}
+              onChange={(newValue) =>
+                setProcessData((d) => ({
+                  ...d,
+                  laborRate: newValue
+                }))
               }
-            }}
-          />
+            />
+            <NumberControlled
+              name="machineRate"
+              label={t`Machine Rate`}
+              minValue={0}
+              value={processData.machineRate}
+              formatOptions={{
+                style: "currency",
+                currency: baseCurrency
+              }}
+              onChange={(newValue) =>
+                setProcessData((d) => ({
+                  ...d,
+                  machineRate: newValue
+                }))
+              }
+            />
+            <NumberControlled
+              name="overheadRate"
+              label={t`Overhead Rate`}
+              minValue={0}
+              value={processData.overheadRate}
+              formatOptions={{
+                style: "currency",
+                currency: baseCurrency
+              }}
+              onChange={(newValue) =>
+                setProcessData((d) => ({
+                  ...d,
+                  overheadRate: newValue
+                }))
+              }
+            />
+          </>
         )}
       </div>
 
       {processData.operationType === "Inside" && (
-        <>
-          <div className="border border-border rounded-md shadow-sm p-4 flex flex-col gap-4">
-            <HStack
-              className="w-full justify-between cursor-pointer"
-              onClick={setupDisclosure.onToggle}
-            >
-              <HStack>
-                <TimeTypeIcon type="Setup" />
-                <Label>
-                  <Trans>Setup</Trans>
-                </Label>
-              </HStack>
-              <HStack>
-                {(processData.setupTime ?? 0) > 0 && (
-                  <Badge variant="secondary">
-                    <TimeTypeIcon type="Setup" className="h-3 w-3 mr-1" />
-                    {processData.setupTime} {processData.setupUnit}
-                  </Badge>
-                )}
-                <IconButton
-                  icon={<LuChevronRight />}
-                  aria-label={
-                    setupDisclosure.isOpen ? t`Collapse Setup` : t`Expand Setup`
-                  }
-                  variant="ghost"
-                  size="md"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setupDisclosure.onToggle();
-                  }}
-                  className={`transition-transform ${
-                    setupDisclosure.isOpen ? "rotate-90" : ""
-                  }`}
-                />
-              </HStack>
-            </HStack>
-            <div
-              className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
-                setupDisclosure.isOpen ? "" : "hidden"
-              }`}
-            >
-              <UnitHint
-                name="setupHint"
-                label={t`Setup`}
-                value={processData.setupUnitHint}
-                onChange={(hint) => {
-                  setProcessData((d) => ({
-                    ...d,
-                    setupUnitHint: hint,
-                    setupUnit:
-                      hint === "Fixed" ? "Total Minutes" : "Minutes/Piece"
-                  }));
-                }}
-              />
-              <NumberControlled
-                name="setupTime"
-                label={t`Setup Time`}
-                isOptional={false}
-                minValue={0}
-                value={processData.setupTime}
-                onChange={(newValue) =>
-                  setProcessData((d) => ({
-                    ...d,
-                    setupTime: newValue
-                  }))
-                }
-              />
-              <StandardFactor
-                name="setupUnit"
-                label={t`Setup Unit`}
-                isOptional={false}
-                hint={processData.setupUnitHint}
-                value={processData.setupUnit}
-                onChange={(newValue) => {
-                  setProcessData((d) => ({
-                    ...d,
-                    setupUnit: newValue?.value ?? "Total Minutes"
-                  }));
-                }}
-              />
-            </div>
-          </div>
-
-          <div className="border border-border rounded-md shadow-sm p-4 flex flex-col gap-4">
-            <HStack
-              className="w-full justify-between cursor-pointer"
-              onClick={laborDisclosure.onToggle}
-            >
-              <HStack>
-                <TimeTypeIcon type="Labor" />
-                <Label>
-                  <Trans>Labor</Trans>
-                </Label>
-              </HStack>
-              <HStack>
-                {(processData.laborTime ?? 0) > 0 && (
-                  <Badge variant="secondary">
-                    <TimeTypeIcon type="Labor" className="h-3 w-3 mr-1" />
-                    {processData.laborTime} {processData.laborUnit}
-                  </Badge>
-                )}
-                <IconButton
-                  icon={<LuChevronRight />}
-                  aria-label={
-                    laborDisclosure.isOpen ? t`Collapse Labor` : t`Expand Labor`
-                  }
-                  variant="ghost"
-                  size="md"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    laborDisclosure.onToggle();
-                  }}
-                  className={`transition-transform ${
-                    laborDisclosure.isOpen ? "rotate-90" : ""
-                  }`}
-                />
-              </HStack>
-            </HStack>
-            <div
-              className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
-                laborDisclosure.isOpen ? "" : "hidden"
-              }`}
-            >
-              <UnitHint
-                name="laborHint"
-                label={t`Labor`}
-                value={processData.laborUnitHint}
-                onChange={(hint) => {
-                  setProcessData((d) => ({
-                    ...d,
-                    laborUnitHint: hint,
-                    laborUnit:
-                      hint === "Fixed" ? "Total Minutes" : "Minutes/Piece"
-                  }));
-                }}
-              />
-              <NumberControlled
-                name="laborTime"
-                label={t`Labor Time`}
-                isOptional={false}
-                minValue={0}
-                value={processData.laborTime}
-                onChange={(newValue) =>
-                  setProcessData((d) => ({
-                    ...d,
-                    laborTime: newValue
-                  }))
-                }
-              />
-              <StandardFactor
-                name="laborUnit"
-                label={t`Labor Unit`}
-                isOptional={false}
-                hint={processData.laborUnitHint}
-                value={processData.laborUnit}
-                onChange={(newValue) => {
-                  setProcessData((d) => ({
-                    ...d,
-                    laborUnit: newValue?.value ?? "Total Minutes"
-                  }));
-                }}
-              />
-            </div>
-          </div>
-
-          <div className="border border-border rounded-md shadow-sm p-4 flex flex-col gap-4">
-            <HStack
-              className="w-full justify-between cursor-pointer"
-              onClick={machineDisclosure.onToggle}
-            >
-              <HStack>
-                <TimeTypeIcon type="Machine" />
-                <Label>
-                  <Trans>Machine</Trans>
-                </Label>
-              </HStack>
-              <HStack>
-                {(processData.machineTime ?? 0) > 0 && (
-                  <Badge variant="secondary">
-                    <TimeTypeIcon type="Machine" className="h-3 w-3 mr-1" />
-                    {processData.machineTime} {processData.machineUnit}
-                  </Badge>
-                )}
-                <IconButton
-                  icon={<LuChevronRight />}
-                  aria-label={
-                    machineDisclosure.isOpen
-                      ? t`Collapse Machine`
-                      : t`Expand Machine`
-                  }
-                  variant="ghost"
-                  size="md"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    machineDisclosure.onToggle();
-                  }}
-                  className={`transition-transform ${
-                    machineDisclosure.isOpen ? "rotate-90" : ""
-                  }`}
-                />
-              </HStack>
-            </HStack>
-            <div
-              className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
-                machineDisclosure.isOpen ? "" : "hidden"
-              }`}
-            >
-              <UnitHint
-                name="machineHint"
-                label={t`Machine`}
-                value={processData.machineUnitHint}
-                onChange={(hint) => {
-                  setProcessData((d) => ({
-                    ...d,
-                    machineUnitHint: hint,
-                    machineUnit:
-                      hint === "Fixed" ? "Total Minutes" : "Minutes/Piece"
-                  }));
-                }}
-              />
-              <NumberControlled
-                name="machineTime"
-                label={t`Machine Time`}
-                isOptional={false}
-                minValue={0}
-                value={processData.machineTime}
-                onChange={(newValue) =>
-                  setProcessData((d) => ({
-                    ...d,
-                    machineTime: newValue
-                  }))
-                }
-              />
-              <StandardFactor
-                name="machineUnit"
-                label={t`Machine Unit`}
-                isOptional={false}
-                hint={processData.machineUnitHint}
-                value={processData.machineUnit}
-                onChange={(newValue) => {
-                  setProcessData((d) => ({
-                    ...d,
-                    machineUnit: newValue?.value ?? "Total Minutes"
-                  }));
-                }}
-              />
-            </div>
-          </div>
-
-          <div className="border border-border rounded-md shadow-sm p-4 flex flex-col gap-4">
-            <HStack
-              className="w-full justify-between cursor-pointer"
-              onClick={costingDisclosure.onToggle}
-            >
-              <HStack>
-                <LuDollarSign />
-                <Label>Costing</Label>
-              </HStack>
-              <HStack>
-                <IconButton
-                  icon={<LuChevronRight />}
-                  aria-label={
-                    costingDisclosure.isOpen
-                      ? "Collapse Costing"
-                      : "Expand Costing"
-                  }
-                  variant="ghost"
-                  size="md"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    costingDisclosure.onToggle();
-                  }}
-                  className={`transition-transform ${
-                    costingDisclosure.isOpen ? "rotate-90" : ""
-                  }`}
-                />
-              </HStack>
-            </HStack>
-            <div
-              className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
-                costingDisclosure.isOpen ? "" : "hidden"
-              }`}
-            >
-              <NumberControlled
-                name="laborRate"
-                label={t`Labor Rate`}
-                minValue={0}
-                value={processData.laborRate}
-                formatOptions={{
-                  style: "currency",
-                  currency: baseCurrency
-                }}
-                onChange={(newValue) =>
-                  setProcessData((d) => ({
-                    ...d,
-                    laborRate: newValue
-                  }))
-                }
-              />
-              <NumberControlled
-                name="machineRate"
-                label={t`Machine Rate`}
-                minValue={0}
-                value={processData.machineRate}
-                formatOptions={{
-                  style: "currency",
-                  currency: baseCurrency
-                }}
-                onChange={(newValue) =>
-                  setProcessData((d) => ({
-                    ...d,
-                    machineRate: newValue
-                  }))
-                }
-              />
-              <NumberControlled
-                name="overheadRate"
-                label={t`Overhead Rate`}
-                minValue={0}
-                value={processData.overheadRate}
-                formatOptions={{
-                  style: "currency",
-                  currency: baseCurrency
-                }}
-                onChange={(newValue) =>
-                  setProcessData((d) => ({
-                    ...d,
-                    overheadRate: newValue
-                  }))
-                }
-              />
-            </div>
-          </div>
-
-          <div className="border border-border rounded-md shadow-sm p-4 flex flex-col gap-4">
-            <HStack
-              className="w-full justify-between cursor-pointer"
-              onClick={procedureDisclosure.onToggle}
-            >
-              <HStack>
-                <LuListChecks />
-                <Label>Procedure</Label>
-              </HStack>
-              <HStack>
-                {processData.procedureId && (
-                  <Badge variant="secondary">
-                    <LuListChecks className="h-3 w-3 mr-1" />
-                    Procedure
-                  </Badge>
-                )}
-                <IconButton
-                  icon={<LuChevronRight />}
-                  aria-label={
-                    procedureDisclosure.isOpen
-                      ? "Collapse Procedure"
-                      : "Expand Procedure"
-                  }
-                  variant="ghost"
-                  size="md"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    procedureDisclosure.onToggle();
-                  }}
-                  className={`transition-transform ${
-                    procedureDisclosure.isOpen ? "rotate-90" : ""
-                  }`}
-                />
-              </HStack>
-            </HStack>
-            <div
-              className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-1 pb-4 ${
-                procedureDisclosure.isOpen ? "" : "hidden"
-              }`}
-            >
-              <Procedure
-                name="procedureId"
-                label={t`Procedure`}
-                processId={processData.processId}
-                value={processData.procedureId}
-                onChange={(value) => {
-                  if (value && value.value !== item.data.procedureId) {
-                    setProcedureWasChanged(true);
-                  }
-                  setProcessData((d) => ({
-                    ...d,
-                    procedureId: value?.value as string
-                  }));
-                }}
-              />
-              {!temporaryItems[item.id] && processData.procedureId && (
-                <div className="flex flex-col gap-2 w-auto">
-                  {procedureWasChanged && (
-                    <span className="text-sm text-muted-foreground">
-                      The procedure was changed, but not synced to the
-                      operation.
-                    </span>
+        <OperationDetailTabs
+          sections={[
+            {
+              id: "setup",
+              label: <Trans>Setup</Trans>,
+              accessibilityLabel: t`Setup`,
+              icon: <TimeTypeIcon type="Setup" />,
+              summary:
+                (processData.setupTime ?? 0) > 0
+                  ? formatOperationTabSummary(
+                      processData.setupTime,
+                      processData.setupUnit
+                    )
+                  : undefined,
+              summaryTitle:
+                (processData.setupTime ?? 0) > 0
+                  ? `${processData.setupTime} ${processData.setupUnit}`
+                  : undefined,
+              content: (
+                <>
+                  <UnitHint
+                    name="setupHint"
+                    label={t`Setup`}
+                    value={processData.setupUnitHint}
+                    onChange={(hint) => {
+                      setProcessData((d) => ({
+                        ...d,
+                        setupUnitHint: hint,
+                        setupUnit:
+                          hint === "Fixed" ? "Total Minutes" : "Minutes/Piece"
+                      }));
+                    }}
+                  />
+                  <NumberControlled
+                    name="setupTime"
+                    label={t`Setup Time`}
+                    isOptional={false}
+                    minValue={0}
+                    value={processData.setupTime}
+                    onChange={(newValue) =>
+                      setProcessData((d) => ({
+                        ...d,
+                        setupTime: newValue
+                      }))
+                    }
+                  />
+                  <StandardFactor
+                    name="setupUnit"
+                    label={t`Setup Unit`}
+                    isOptional={false}
+                    hint={processData.setupUnitHint}
+                    value={processData.setupUnit}
+                    onChange={(newValue) => {
+                      setProcessData((d) => ({
+                        ...d,
+                        setupUnit: newValue?.value ?? "Total Minutes"
+                      }));
+                    }}
+                  />
+                </>
+              )
+            },
+            {
+              id: "labor",
+              label: <Trans>Labor</Trans>,
+              accessibilityLabel: t`Labor`,
+              icon: <TimeTypeIcon type="Labor" />,
+              summary:
+                (processData.laborTime ?? 0) > 0
+                  ? formatOperationTabSummary(
+                      processData.laborTime,
+                      processData.laborUnit
+                    )
+                  : undefined,
+              summaryTitle:
+                (processData.laborTime ?? 0) > 0
+                  ? `${processData.laborTime} ${processData.laborUnit}`
+                  : undefined,
+              content: (
+                <>
+                  <UnitHint
+                    name="laborHint"
+                    label={t`Labor`}
+                    value={processData.laborUnitHint}
+                    onChange={(hint) => {
+                      setProcessData((d) => ({
+                        ...d,
+                        laborUnitHint: hint,
+                        laborUnit:
+                          hint === "Fixed" ? "Total Minutes" : "Minutes/Piece"
+                      }));
+                    }}
+                  />
+                  <NumberControlled
+                    name="laborTime"
+                    label={t`Labor Time`}
+                    isOptional={false}
+                    minValue={0}
+                    value={processData.laborTime}
+                    onChange={(newValue) =>
+                      setProcessData((d) => ({
+                        ...d,
+                        laborTime: newValue
+                      }))
+                    }
+                  />
+                  <StandardFactor
+                    name="laborUnit"
+                    label={t`Labor Unit`}
+                    isOptional={false}
+                    hint={processData.laborUnitHint}
+                    value={processData.laborUnit}
+                    onChange={(newValue) => {
+                      setProcessData((d) => ({
+                        ...d,
+                        laborUnit: newValue?.value ?? "Total Minutes"
+                      }));
+                    }}
+                  />
+                </>
+              )
+            },
+            {
+              id: "machine",
+              label: <Trans>Machine</Trans>,
+              accessibilityLabel: t`Machine`,
+              icon: <TimeTypeIcon type="Machine" />,
+              summary:
+                (processData.machineTime ?? 0) > 0
+                  ? formatOperationTabSummary(
+                      processData.machineTime,
+                      processData.machineUnit
+                    )
+                  : undefined,
+              summaryTitle:
+                (processData.machineTime ?? 0) > 0
+                  ? `${processData.machineTime} ${processData.machineUnit}`
+                  : undefined,
+              content: (
+                <>
+                  <UnitHint
+                    name="machineHint"
+                    label={t`Machine`}
+                    value={processData.machineUnitHint}
+                    onChange={(hint) => {
+                      setProcessData((d) => ({
+                        ...d,
+                        machineUnitHint: hint,
+                        machineUnit:
+                          hint === "Fixed" ? "Total Minutes" : "Minutes/Piece"
+                      }));
+                    }}
+                  />
+                  <NumberControlled
+                    name="machineTime"
+                    label={t`Machine Time`}
+                    isOptional={false}
+                    minValue={0}
+                    value={processData.machineTime}
+                    onChange={(newValue) =>
+                      setProcessData((d) => ({
+                        ...d,
+                        machineTime: newValue
+                      }))
+                    }
+                  />
+                  <StandardFactor
+                    name="machineUnit"
+                    label={t`Machine Unit`}
+                    isOptional={false}
+                    hint={processData.machineUnitHint}
+                    value={processData.machineUnit}
+                    onChange={(newValue) => {
+                      setProcessData((d) => ({
+                        ...d,
+                        machineUnit: newValue?.value ?? "Total Minutes"
+                      }));
+                    }}
+                  />
+                </>
+              )
+            },
+            {
+              id: "procedure",
+              label: <Trans>Procedure</Trans>,
+              accessibilityLabel: t`Procedure`,
+              icon: <LuListChecks />,
+              summary: procedureTabSummary,
+              summaryTitle: procedureTabSummaryTitle,
+              contentClassName:
+                "grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-1 pb-4 px-4 pt-4",
+              content: (
+                <>
+                  <Procedure
+                    name="procedureId"
+                    label={t`Procedure`}
+                    processId={processData.processId}
+                    value={processData.procedureId}
+                    onChange={(value) => {
+                      if (value && value.value !== item.data.procedureId) {
+                        setProcedureWasChanged(true);
+                      }
+                      setProcessData((d) => ({
+                        ...d,
+                        procedureId: value?.value as string
+                      }));
+                    }}
+                  />
+                  {!temporaryItems[item.id] && processData.procedureId && (
+                    <div className="flex flex-col gap-2 w-auto">
+                      {procedureWasChanged && (
+                        <span className="text-sm text-muted-foreground">
+                          The procedure was changed, but not synced to the
+                          operation.
+                        </span>
+                      )}
+                      <div>
+                        <Button
+                          variant="secondary"
+                          rightIcon={<LuRefreshCcw />}
+                          onClick={procedureSyncDisclosure.onOpen}
+                        >
+                          Sync Procedure
+                        </Button>
+                        {procedureSyncDisclosure.isOpen && (
+                          <ProcedureSyncModal
+                            operationId={item.id}
+                            procedureId={processData.procedureId}
+                            onClose={procedureSyncDisclosure.onClose}
+                          />
+                        )}
+                      </div>
+                    </div>
                   )}
-                  <div>
-                    <Button
-                      variant="secondary"
-                      rightIcon={<LuRefreshCcw />}
-                      onClick={procedureSyncDisclosure.onOpen}
-                    >
-                      Sync Procedure
-                    </Button>
-                    {procedureSyncDisclosure.isOpen && (
-                      <ProcedureSyncModal
-                        operationId={item.id}
-                        procedureId={processData.procedureId}
-                        onClose={procedureSyncDisclosure.onClose}
-                      />
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </>
+                </>
+              )
+            }
+          ]}
+        />
       )}
       <motion.div
         className="flex w-full items-center justify-end p-2"
@@ -2967,6 +3247,70 @@ function ProcedureSyncModal({
     </Modal>
   );
 }
+
+type ProductionQuantityActivityProps = {
+  item: OperationProductionQuantity;
+};
+
+function getProductionQuantityActivityMessage(
+  item: OperationProductionQuantity
+) {
+  const qty = item.quantity;
+  switch (item.type) {
+    case "Production":
+      return `recorded ${qty} units of production`;
+    case "Rework":
+      return `recorded ${qty} units of rework`;
+    case "Scrap": {
+      const reason = item.scrapReason?.name;
+      return reason
+        ? `recorded ${qty} units of scrap (${reason})`
+        : `recorded ${qty} units of scrap`;
+    }
+    default:
+      return `recorded ${qty} units`;
+  }
+}
+
+function getProductionQuantityBadgeVariant(
+  type: OperationProductionQuantity["type"]
+) {
+  switch (type) {
+    case "Production":
+      return "green" as const;
+    case "Rework":
+      return "orange" as const;
+    default:
+      return "red" as const;
+  }
+}
+
+const ProductionQuantityActivity = ({
+  item
+}: ProductionQuantityActivityProps) => {
+  const { formatDateTime } = useDateFormatter();
+
+  const comment = [
+    item.notes,
+    item.createdAt ? formatDateTime(item.createdAt) : null
+  ]
+    .filter(Boolean)
+    .join(" · ");
+
+  return (
+    <Activity
+      employeeId={item.createdBy}
+      activityMessage={getProductionQuantityActivityMessage(item)}
+      activityTime={item.createdAt}
+      comment={comment || undefined}
+      activityIcon={
+        <Badge variant={getProductionQuantityBadgeVariant(item.type)}>
+          {item.type}
+        </Badge>
+      }
+    />
+  );
+};
 
 type ProductionEventActivityProps = {
   item: Database["public"]["Tables"]["productionEvent"]["Row"];
