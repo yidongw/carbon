@@ -6,7 +6,7 @@ import { LayoutGroup, motion, Reorder, useDragControls } from "framer-motion";
 import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
-import { LuTrash } from "react-icons/lu";
+import { LuCircleCheckBig, LuCircleDashed, LuLoaderCircle, LuTable, LuTrash } from "react-icons/lu";
 import Empty from "./Empty";
 
 export interface Item {
@@ -279,6 +279,144 @@ function SortableList<T extends Item>({
 SortableList.displayName = "SortableList";
 
 export { SortableList, SortableListItem };
+
+function formatQuantityValue(value: number) {
+  return Number.isInteger(value)
+    ? value
+    : value.toLocaleString(undefined, { maximumFractionDigits: 4 });
+}
+
+function getPercent(value: number, target: number) {
+  if (target > 0) return Math.min(100, (value / target) * 100);
+  return value > 0 ? 100 : 0;
+}
+
+function QuantityProgressStrip({
+  progress,
+  t
+}: {
+  progress: NonNullable<Item["quantityProgress"]>;
+  t: ReturnType<typeof useLingui>["t"];
+}) {
+  const { complete, pickup, target, onAddQuantity, onAddPickup, onOpenConfigTable } = progress;
+  const completePercent = getPercent(complete, target);
+  const pickupPercent = Math.min(
+    getPercent(pickup, target),
+    100 - completePercent
+  );
+  const isOverTarget = target > 0 && complete > target;
+  const unassigned = Math.max(0, target - complete - pickup);
+
+  const indicator = (
+    <div className="flex items-center gap-2.5 sm:gap-2 whitespace-nowrap rounded-full border border-border/40 bg-transparent px-3 py-1 shadow-none backdrop-blur-sm sm:px-2 sm:py-0.5">
+      {/* Finished group */}
+      {onAddQuantity ? (
+        <button
+          type="button"
+          className="flex items-center gap-1 sm:gap-0.5 rounded transition-opacity duration-150 hover:opacity-70 active:scale-95 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          aria-label={t`Add production quantity`}
+          onClick={(event) => {
+            event.stopPropagation();
+            onAddQuantity();
+          }}
+        >
+          <LuCircleCheckBig className="h-4 w-4 sm:h-3.5 sm:w-3.5 shrink-0 text-emerald-600" strokeWidth={2.5} />
+          <span className="text-base sm:text-sm font-medium tabular-nums leading-none tracking-tight text-emerald-600">
+            {formatQuantityValue(complete)}
+          </span>
+        </button>
+      ) : (
+        <span className="text-base sm:text-sm font-medium tabular-nums leading-none tracking-tight text-emerald-600">
+          {formatQuantityValue(complete)}
+        </span>
+      )}
+      {/* Pickup group */}
+      {onAddPickup ? (
+        <button
+          type="button"
+          className="flex items-center gap-1 sm:gap-0.5 rounded transition-opacity duration-150 hover:opacity-70 active:scale-95 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          aria-label={t`Add pickup`}
+          onClick={(event) => {
+            event.stopPropagation();
+            onAddPickup();
+          }}
+        >
+          <LuLoaderCircle className="h-4 w-4 sm:h-3.5 sm:w-3.5 shrink-0 text-blue-600" strokeWidth={2.5} />
+          <span className="text-base sm:text-sm font-medium tabular-nums leading-none tracking-tight text-blue-600">
+            {formatQuantityValue(pickup)}
+          </span>
+        </button>
+      ) : (
+        <span className="text-base sm:text-sm font-medium tabular-nums leading-none tracking-tight text-blue-600">
+          {formatQuantityValue(pickup)}
+        </span>
+      )}
+      {/* Unassigned */}
+      <span className="flex items-center gap-1 sm:gap-0.5">
+        <LuCircleDashed className="h-4 w-4 sm:h-3.5 sm:w-3.5 shrink-0 text-muted-foreground" strokeWidth={2.5} />
+        <span className="text-base sm:text-sm font-medium tabular-nums leading-none tracking-tight text-muted-foreground">
+          {formatQuantityValue(unassigned)}
+        </span>
+      </span>
+      {/* Target + config summary */}
+      {onOpenConfigTable ? (
+        <button
+          type="button"
+          className="flex items-center gap-1 sm:gap-0.5 rounded transition-opacity duration-150 hover:opacity-70 active:scale-95 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          aria-label={t`View configuration quantities`}
+          onClick={(event) => {
+            event.stopPropagation();
+            onOpenConfigTable();
+          }}
+        >
+          <LuTable className="h-3.5 w-3.5 sm:h-3 sm:w-3 shrink-0 text-foreground/80" strokeWidth={2.5} />
+          <span className="text-base sm:text-sm font-medium tabular-nums leading-none tracking-tight text-foreground">
+            {formatQuantityValue(target)}
+          </span>
+        </button>
+      ) : (
+        <span className="text-base sm:text-sm font-medium tabular-nums leading-none tracking-tight text-foreground">
+          {formatQuantityValue(target)}
+        </span>
+      )}
+    </div>
+  );
+
+  const progressLine = (
+    <div className="relative h-0.5 w-full overflow-hidden bg-muted-foreground/35">
+      <div
+        className={cn(
+          "absolute inset-y-0 left-0 transition-[width] duration-300 ease-out",
+          isOverTarget ? "bg-amber-500/90" : "bg-emerald-500"
+        )}
+        style={{ width: `${completePercent}%` }}
+      />
+      {pickupPercent > 0 && (
+        <div
+          className="absolute inset-y-0 bg-blue-600 transition-[width,left] duration-300 ease-out"
+          style={{ left: `${completePercent}%`, width: `${pickupPercent}%` }}
+        />
+      )}
+    </div>
+  );
+
+  return (
+    <div
+      className="w-full min-w-0 shrink-0"
+      role="img"
+      aria-label={t`Finished ${complete} of ${target} units, ${pickup} picked up, ${unassigned} unassigned`}
+    >
+      <div className="relative h-9 sm:h-7 w-full">
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2">
+          {progressLine}
+        </div>
+        <div className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2">
+          {indicator}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function getParallelizedOrder(index: number, item: Item, items: Item[]) {
   if (item?.order !== "With Previous") return index + 1;

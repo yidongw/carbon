@@ -26,6 +26,7 @@ import { Hyperlink, New, Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { useLocations } from "~/components/Form/Location";
 import { usePermissions, useUrlParams } from "~/hooks";
+import { useMaintenanceFrequencyLabel } from "~/modules/production/productionLabels";
 import { path } from "~/utils/path";
 import {
   maintenanceDispatchPriority,
@@ -44,6 +45,7 @@ type MaintenanceSchedulesTableProps = {
 const MaintenanceSchedulesTable = memo(
   ({ data, count, locations, locationId }: MaintenanceSchedulesTableProps) => {
     const { t } = useLingui();
+    const getMaintenanceFrequencyLabel = useMaintenanceFrequencyLabel();
     const { locale } = useLocale();
     const [params] = useUrlParams();
     const navigate = useNavigate();
@@ -139,7 +141,9 @@ const MaintenanceSchedulesTable = memo(
                 {showDays ? (
                   renderDays(row.original)
                 ) : (
-                  <Enumerable value={frequency} />
+                  <Badge variant="outline">
+                    {getMaintenanceFrequencyLabel(frequency)}
+                  </Badge>
                 )}
               </HStack>
             );
@@ -150,7 +154,7 @@ const MaintenanceSchedulesTable = memo(
               type: "static",
               options: maintenanceFrequency.map((freq) => ({
                 value: freq,
-                label: freq
+                label: getMaintenanceFrequencyLabel(freq)
               }))
             },
             pluralHeader: t`Frequencies`
@@ -212,7 +216,7 @@ const MaintenanceSchedulesTable = memo(
           }
         }
       ];
-    }, [allDaysSelected, allLocations, renderDays, t, locale]);
+    }, [allDaysSelected, allLocations, getMaintenanceFrequencyLabel, renderDays, t, locale]);
 
     const renderContextMenu = useCallback(
       (row: MaintenanceSchedule) => {

@@ -102,8 +102,12 @@ export function useFilters() {
           )
         });
       } else if (values.length === 0) {
+        const newFilters = urlFiltersParams.filter(
+          (_, index) => index !== filterIndex
+        );
         setParams({
-          filter: urlFiltersParams.filter((_, index) => index !== filterIndex)
+          filter: newFilters.length > 0 ? newFilters : undefined,
+          ...(newFilters.length === 0 ? { offset: 0 } : {})
         });
       } else {
         setParams({
@@ -113,18 +117,24 @@ export function useFilters() {
         });
       }
     } else {
+      const newFilters = urlFiltersParams.filter(
+        (_, index) => index !== filterIndex
+      );
       setParams({
-        filter: urlFiltersParams.filter((_, index) => index !== filterIndex)
+        filter: newFilters.length > 0 ? newFilters : undefined,
+        ...(newFilters.length === 0 ? { offset: 0 } : {})
       });
     }
   };
 
   const removeKey = (key: string) => {
+    const newFilters = urlFiltersParams.filter((f) => {
+      const [filterKey] = f.split(":");
+      return filterKey !== key;
+    });
     setParams({
-      filter: urlFiltersParams.filter((f) => {
-        const [filterKey] = f.split(":");
-        return filterKey !== key;
-      })
+      filter: newFilters.length > 0 ? newFilters : undefined,
+      ...(newFilters.length === 0 ? { offset: 0 } : {})
     });
   };
 
@@ -137,7 +147,10 @@ export function useFilters() {
   };
 
   const clearFilters = () => {
-    setParams({ filter: undefined });
+    setParams({
+      filter: undefined,
+      offset: 0
+    });
   };
 
   const hasFilters = urlFiltersParams.filter(Boolean).length > 0;

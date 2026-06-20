@@ -23,7 +23,7 @@ import {
   useNProgress
 } from "@carbon/react";
 import { getStripeCustomerByCompanyId } from "@carbon/stripe/stripe.server";
-import { Edition } from "@carbon/utils";
+import { Edition, formatPersonName } from "@carbon/utils";
 import posthog from "posthog-js";
 import { Suspense } from "react";
 import type {
@@ -119,7 +119,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     }),
     client
       .from("companySettings")
-      .select("timeCardEnabled, consoleEnabled, printing, useMetric")
+      .select("timeCardEnabled, consoleEnabled, lastNameFirst")
       .eq("id", companyId)
       .single(),
     getOpenClockEntry(client, effectiveUserId, companyId),
@@ -136,8 +136,10 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
   const locationEmployeeIds =
     locationEmployees.data?.map((e: { id: string }) => e.id) ?? [];
-  const timeCardEnabled = companySettings.data?.timeCardEnabled ?? false;
-  const consoleEnabled = companySettings.data?.consoleEnabled ?? false;
+  const timeCardEnabled =
+    (companySettings.data as any)?.timeCardEnabled ?? false;
+  const consoleEnabled = (companySettings.data as any)?.consoleEnabled ?? false;
+  const lastNameFirst = (companySettings.data as any)?.lastNameFirst ?? false;
 
   // Get active maintenance count after we have the location
   const activeMaintenanceCount = await getActiveMaintenanceEventsCount(
@@ -193,7 +195,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
         (companySettings.data?.printing as PrintingSettings | null) ?? null,
       printerRoutes: printerRoutes.data ?? [],
       timeCardEnabled,
-      useMetric: companySettings.data?.useMetric ?? false,
+      lastNameFirst,
       user: user.data
     },
     headers.has("Set-Cookie") ? { headers } : undefined
@@ -217,7 +219,7 @@ export default function AuthenticatedRoute() {
     printing,
     printerRoutes,
     timeCardEnabled,
-    useMetric,
+    lastNameFirst,
     user
   } = useLoaderData<typeof loader>();
 
@@ -241,7 +243,13 @@ export default function AuthenticatedRoute() {
   useMount(() => {
     posthog.identify(user?.id, {
       email: user?.email,
-      name: `${user?.firstName} ${user?.lastName}`
+      name: formatPersonName(
+        {
+          firstName: user?.firstName,
+          lastName: user?.lastName
+        },
+        lastNameFirst
+      )
     });
   });
 

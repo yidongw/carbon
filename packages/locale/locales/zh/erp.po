@@ -38,6 +38,11 @@ msgstr "{0} 天"
 msgid "{0} deleted successfully"
 msgstr "{0} 已成功删除"
 
+#. placeholder {0}: data.inviterName
+#. placeholder {1}: data.roleName
+msgid "{0} invited you to join as {1}."
+msgstr "{0} 邀请您以 {1} 身份加入。"
+
 #. placeholder {0}: actionData.correctAnswers
 #. placeholder {1}: actionData.totalQuestions
 msgid "{0} of {1} correct"
@@ -47,9 +52,17 @@ msgstr "{0}/{1}正确"
 msgid "{0} orders"
 msgstr "{0} 个订单"
 
+#. placeholder {0}: fmt(diff)
+msgid "{0} over goal"
+msgstr "多了 {0}"
+
 #. placeholder {0}: selectedProcesses.length
 msgid "{0} Processes"
 msgstr "{0} 工序"
+
+#. placeholder {0}: fmt(Math.abs(diff))
+msgid "{0} short of goal"
+msgstr "少了 {0}"
 
 #. placeholder {0}: percentFormatter.format(line.taxPercent ?? 0)
 msgid "{0} Tax"
@@ -62,6 +75,9 @@ msgstr "{0}个未检测的实体将被释放到可用状态。已检测通过的
 #. placeholder {0}: file.name
 msgid "{0} uploaded successfully"
 msgstr "{0} 上传成功"
+
+msgid "{days} days ({formatted})"
+msgstr "{days} 天（{formatted}）"
 
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB限制"
@@ -272,7 +288,7 @@ msgid "Activate Work Center"
 msgstr "激活工作中心"
 
 msgid "Active"
-msgstr "激活"
+msgstr "活跃"
 
 msgid "Active Jobs"
 msgstr "活跃工作"
@@ -520,6 +536,9 @@ msgstr "允许确认并继续"
 msgid "Alpha"
 msgstr "Alpha"
 
+msgid "Already a Member"
+msgstr "您已是成员"
+
 msgid "Always"
 msgstr "始终"
 
@@ -538,26 +557,8 @@ msgstr ""
 msgid "and {remaining} more"
 msgstr "和剩余{remaining}项"
 
-msgid "Annotation added"
-msgstr ""
-
-msgid "Annotation deleted"
-msgstr ""
-
-msgid "Annotation text"
-msgstr ""
-
-msgid "Annotation text is required"
-msgstr ""
-
-msgid "Annotation updated"
-msgstr ""
-
-msgid "Any item group"
-msgstr ""
-
-msgid "Any item type"
-msgstr ""
+msgid "Annual"
+msgstr "每年"
 
 msgid "API and Webhooks"
 msgstr "API和Webhooks"
@@ -574,8 +575,11 @@ msgstr "API密钥"
 msgid "API Keys"
 msgstr "API密钥"
 
-msgid "API keys for programmatic access to your Carbon data."
-msgstr ""
+msgid "Applicant"
+msgstr "申请人"
+
+msgid "Applications"
+msgstr "申请"
 
 msgid "Applies to"
 msgstr "适用于"
@@ -609,6 +613,12 @@ msgstr "审批规则"
 
 msgid "Approve"
 msgstr "批准"
+
+msgid "Approve here or manage all pending items on the quantity review page."
+msgstr "在此批准，或在数量审核页面管理所有待处理的物品。"
+
+msgid "Approved"
+msgstr "已批准"
 
 msgid "Approved By"
 msgstr "批准人"
@@ -1020,6 +1030,12 @@ msgstr "分配到组别"
 msgid "Assigned"
 msgstr "指派"
 
+msgid "Assigned Group"
+msgstr "已分配的组"
+
+msgid "Assigned quantity"
+msgstr "已分配"
+
 msgid "Assigned to Me"
 msgstr "分配给我的"
 
@@ -1223,7 +1239,7 @@ msgid "Bot verification failed. Please try again."
 msgstr "机器人验证失败，请重试。"
 
 msgid "Box"
-msgstr "箱子"
+msgstr "箱"
 
 msgid "Breadcrumb"
 msgstr "导航"
@@ -1263,6 +1279,9 @@ msgstr "由{byUser}"
 
 msgid "By accepting the invite, you agree to the <0>Terms of Service</0> and <1>Privacy Policy</1>."
 msgstr "通过接受邀请，您同意<0>服务条款</0>和<1>隐私政策</1>。"
+
+msgid "By requesting access, you agree to the <0>Terms of Service</0> and <1>Privacy Policy</1>."
+msgstr "申请访问即表示您同意<0>服务条款</0>和<1>隐私政策</1>。"
 
 msgid "By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy Policy.</1>"
 msgstr "通过登录，您同意<0>服务条款</0>和<1>隐私政策</1>。"
@@ -1391,7 +1410,7 @@ msgid "Carrier Account"
 msgstr "承运商账户"
 
 msgid "Case"
-msgstr "案例"
+msgstr "盒"
 
 msgid "Cash & Bank"
 msgstr "现金及银行"
@@ -1619,6 +1638,9 @@ msgstr "已完成工作通知"
 msgid "Completed Qty"
 msgstr "已完成数量"
 
+msgid "Completed quantity"
+msgstr "已完成"
+
 msgid "Completion Barcode"
 msgstr "完成条码"
 
@@ -1841,6 +1863,9 @@ msgstr "复制工作编号"
 msgid "Copy link"
 msgstr "复制链接"
 
+msgid "Copy Link"
+msgstr "复制链接"
+
 msgid "Copy link to consumable"
 msgstr "复制可消耗项链接"
 
@@ -2021,6 +2046,12 @@ msgstr "创建账户"
 msgid "Create audit trail entries"
 msgstr "创建审计追踪条目"
 
+msgid "Create employee"
+msgstr "创建员工"
+
+msgid "Create Invite Link"
+msgstr "创建邀请链接"
+
 msgid "Create Issue"
 msgstr "创建问题"
 
@@ -2032,6 +2063,9 @@ msgstr "创建工作"
 
 msgid "Create Kanban"
 msgstr "创建看板"
+
+msgid "Create Link"
+msgstr "创建链接"
 
 msgid "Create new rule"
 msgstr "创建新规则"
@@ -2173,6 +2207,9 @@ msgstr "已创建工作中心"
 msgid "Creating part..."
 msgstr "正在创建零件..."
 
+msgid "Critical"
+msgstr "严重"
+
 msgid "CSV column"
 msgstr "CSV列"
 
@@ -2299,8 +2336,8 @@ msgstr "客户类型"
 msgid "Customers"
 msgstr "客户"
 
-msgid "Customize the layout of your PDF documents — reorder sections, hide what you don't need, and add your own blocks."
-msgstr ""
+msgid "Daily"
+msgstr "每日"
 
 msgid "Daily Usage"
 msgstr "每日使用"
@@ -2413,6 +2450,9 @@ msgstr ""
 
 msgid "Default CC Recipients"
 msgstr "默认抄送收件人"
+
+msgid "Default Location"
+msgstr "默认位置"
 
 msgid "Default Method"
 msgstr "默认方法"
@@ -2844,6 +2884,9 @@ msgstr "不要取消"
 msgid "Done"
 msgstr "完成"
 
+msgid "Down"
+msgstr "停机"
+
 msgid "Download"
 msgstr "下载"
 
@@ -2899,7 +2942,7 @@ msgid "Drop your file here, or click to browse."
 msgstr "拖文件到这里，或点击浏览。"
 
 msgid "Drum"
-msgstr "大桶"
+msgstr "桶"
 
 msgid "Due"
 msgstr ""
@@ -2950,7 +2993,7 @@ msgid "e.g. Zebra 2x1"
 msgstr ""
 
 msgid "Each"
-msgstr "个"
+msgstr "件"
 
 msgid "Edit"
 msgstr "编辑"
@@ -3231,11 +3274,11 @@ msgstr "电子邮件"
 msgid "Emoji"
 msgstr "表情符号"
 
+msgid "Employed"
+msgstr "在职"
+
 msgid "Employee"
 msgstr "员工"
-
-msgid "Employee Accounts"
-msgstr "员工账户"
 
 msgid "Employee Type"
 msgstr "员工类型"
@@ -3282,8 +3325,8 @@ msgstr "启用共享工作站模式"
 msgid "Enable to automatically post transactions to the general ledger."
 msgstr "启用自动将交易记入总账。"
 
-msgid "Enable to configure tax-specific depreciation methods on asset classes (e.g., MACRS, accelerated)."
-msgstr ""
+msgid "Enable to display names with the family name first."
+msgstr "启用后，姓名将以姓氏在前的格式显示。"
 
 msgid "Enable to generate IDs and descriptions for raw materials."
 msgstr "启用生成原材料的ID和描述功能。"
@@ -3507,6 +3550,9 @@ msgstr "预期收货"
 
 msgid "Expected Receipt Date"
 msgstr "预计收货日期"
+
+msgid "Expiration"
+msgstr "过期时间"
 
 msgid "Expiration Date"
 msgstr "有效期"
@@ -3947,6 +3993,9 @@ msgstr "故障模式"
 msgid "False"
 msgstr "假"
 
+msgid "Family name is shown first"
+msgstr "姓氏在前显示"
+
 msgid "Favorite"
 msgstr "收藏"
 
@@ -4092,7 +4141,7 @@ msgid "Fixed Shelf Life"
 msgstr "固定保质期"
 
 msgid "Foot"
-msgstr "脚"
+msgstr "英尺"
 
 msgid "For growing businesses that need support"
 msgstr "对于成长型企业所需的支援"
@@ -4188,8 +4237,17 @@ msgstr "生成的ID已启用"
 msgid "Get Method"
 msgstr "获取方法"
 
+msgid "Given name is shown first"
+msgstr "名字在前显示"
+
 msgid "GL Account"
 msgstr "总账科目"
+
+msgid "Go to App"
+msgstr "进入应用"
+
+msgid "Goal quantity for this configuration."
+msgstr "此配置的目标数量。"
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -4247,6 +4305,9 @@ msgstr "帮助信息"
 
 msgid "Hide, pin and reorder columns"
 msgstr "隐藏、固定和重新排序列"
+
+msgid "High"
+msgstr "高"
 
 msgid "Higher priority wins ties and applies first for markups"
 msgstr "优先级较高者获胜并优先应用"
@@ -4317,8 +4378,8 @@ msgstr "如果您想更改产品编号，请先取消并手动为每一行物品
 msgid "Image"
 msgstr "图片"
 
-msgid "Imperial"
-msgstr ""
+msgid "Impact"
+msgstr "有影响"
 
 msgid "Implementation Support"
 msgstr "实施支持"
@@ -4348,7 +4409,7 @@ msgid "in selected period"
 msgstr "在选定期间"
 
 msgid "Inactive"
-msgstr "无效"
+msgstr "停用"
 
 msgid "Inactive actions will not appear in selection lists"
 msgstr "不活动的动作不会出现在选择列表中"
@@ -4497,6 +4558,9 @@ msgstr "无效的电子邮件地址"
 msgid "Invalid Invite"
 msgstr "无效邀请"
 
+msgid "Invalid Invite Link"
+msgstr "无效的邀请链接"
+
 msgid "Invalid or expired verification code"
 msgstr "无效或过期的验证码"
 
@@ -4545,8 +4609,23 @@ msgstr "子公司投资"
 msgid "Invite"
 msgstr "邀请"
 
+msgid "Invite Link"
+msgstr "邀请链接"
+
+msgid "Invite Link Expired"
+msgstr "邀请链接已过期"
+
+msgid "Invite Links"
+msgstr "邀请链接"
+
 msgid "Invited"
-msgstr ""
+msgstr "已邀请"
+
+msgid "Invited By"
+msgstr "邀请人"
+
+msgid "Inviter"
+msgstr "邀请者"
 
 msgid "Invoice"
 msgstr "发票"
@@ -4726,6 +4805,7 @@ msgid "Jobs Required"
 msgstr "所需工作数量"
 
 #. placeholder {0}: company?.name ?? "Company"
+#. placeholder {0}: data.companyName
 msgid "Join {0}"
 msgstr "加入{0}"
 
@@ -4764,6 +4844,9 @@ msgstr "套件"
 
 msgid "Label"
 msgstr "标签"
+
+msgid "Label (optional)"
+msgstr "标签（可选）"
 
 msgid "Label is required"
 msgstr "必填项"
@@ -5009,6 +5092,12 @@ msgstr "批号偏差"
 
 msgid "Lot Size:"
 msgstr "批号数量:"
+
+msgid "Low"
+msgstr "低"
+
+msgid "Lower runs first"
+msgstr "先运行较低的"
 
 msgid "Machine"
 msgstr "机器"
@@ -5267,8 +5356,8 @@ msgstr "平均修复时间"
 msgid "Measurement Standard"
 msgstr "测量标准"
 
-msgid "Media Size"
-msgstr ""
+msgid "Medium"
+msgstr "中"
 
 msgid "Medium section heading."
 msgstr "中级标题。"
@@ -5387,6 +5476,9 @@ msgstr "模块"
 msgid "Monday"
 msgstr "星期一"
 
+msgid "Monthly"
+msgstr "每月"
+
 msgid "More"
 msgstr "更多"
 
@@ -5439,6 +5531,12 @@ msgstr "我的已保存视图"
 
 msgid "Name"
 msgstr "名称"
+
+msgid "Name Display"
+msgstr "姓名显示"
+
+msgid "Names appear as family name followed by given name across the app."
+msgstr "应用中的人员姓名将按“姓 名”格式显示。"
 
 msgid "Navigate"
 msgstr "导航"
@@ -5817,6 +5915,15 @@ msgstr "尚未分配员工。添加组后可见状态。"
 msgid "No employees found"
 msgstr "未找到员工"
 
+msgid "No employees have an outstanding balance this period."
+msgstr "本期没有员工有未结余额。"
+
+msgid "No entries"
+msgstr "无记录"
+
+msgid "No expiration"
+msgstr "永不过期"
+
 msgid "No fields found."
 msgstr "未找到任何字段。"
 
@@ -5837,6 +5944,9 @@ msgstr "未分配组别"
 
 msgid "No image"
 msgstr "没有图片"
+
+msgid "No Impact"
+msgstr "无影响"
 
 msgid "No issue types configured"
 msgstr "未配置任何问题类型"
@@ -5955,6 +6065,9 @@ msgstr "名义成本"
 msgid "Non Conformance Type"
 msgstr "不符合类型"
 
+msgid "Non-Conformance"
+msgstr "不合格"
+
 msgid "Non-Inventory"
 msgstr "非库存"
 
@@ -6018,8 +6131,14 @@ msgstr "编号列表"
 msgid "OEE Impact"
 msgstr "OEE影响"
 
+msgid "OEM Required"
+msgstr "需要原厂支持"
+
 msgid "of"
 msgstr "的"
+
+msgid "Offboarded"
+msgstr "已离职"
 
 msgid "OK"
 msgstr "确定"
@@ -6041,6 +6160,9 @@ msgstr "在销售订单上"
 
 msgid "On Storage Unit"
 msgstr "在存储单元上"
+
+msgid "On target"
+msgstr "已达到目标"
 
 msgid "Onshape Status"
 msgstr "Onshape状态"
@@ -6134,6 +6256,9 @@ msgstr "操作员收到警告。库存仍然通过。"
 
 msgid "Operator must pick a different batch/serial."
 msgstr "操作员必须选择不同的批次/序列。"
+
+msgid "Operator Performed"
+msgstr "操作员执行"
 
 msgid "operator@company.com"
 msgstr "操作员@公司.com"
@@ -6266,7 +6391,7 @@ msgid "Overwrite the target manufacturing method with the quote method"
 msgstr "覆盖目标制造方法为报价制造方法"
 
 msgid "Pack"
-msgstr "包装"
+msgstr "包"
 
 msgid "Packing Slip"
 msgstr "包装单"
@@ -6583,6 +6708,9 @@ msgstr "按 '/' 查看命令"
 msgid "Prev"
 msgstr "上一页"
 
+msgid "Preventive"
+msgstr "预防性"
+
 msgid "Preventive Action"
 msgstr "预防措施"
 
@@ -6886,8 +7014,17 @@ msgstr "数量"
 msgid "Quantity"
 msgstr "数量"
 
+msgid "Quantity ({qtyThrough}/{qtyTotal}): completed quantity across all operations."
+msgstr "数量（{qtyThrough}/{qtyTotal}）：所有工序的已完成数量。"
+
+msgid "Quantity assigned or picked up for this operation."
+msgstr "为该操作分配或领取的数量。"
+
 msgid "Quantity Completed"
 msgstr "已完成数量"
+
+msgid "Quantity finished and reported for this operation."
+msgstr "已完成并报告的本工序数量。"
 
 msgid "Quantity is derived from completed serials/batches in MES and cannot be edited."
 msgstr "数量由MES中已完成的批次/序列号推导得出，无法编辑。"
@@ -6919,6 +7056,9 @@ msgstr "数量类型"
 #. placeholder {0}: numberFormatter.format(forecastQuantity)
 msgid "Quantity: {0}"
 msgstr ""
+
+msgid "Quarterly"
+msgstr "每季度"
 
 msgid "Question"
 msgstr "问题"
@@ -6988,6 +7128,9 @@ msgstr "速率限制已超出"
 
 msgid "Reactivate"
 msgstr "重新激活"
+
+msgid "Reactive"
+msgstr "响应性"
 
 msgid "Read rows"
 msgstr "读取行数"
@@ -7231,6 +7374,12 @@ msgstr ""
 msgid "Request Approval"
 msgstr "请求批准"
 
+msgid "Request Submitted"
+msgstr "申请已提交"
+
+msgid "Request to Join"
+msgstr "申请加入"
+
 msgid "Requested Date"
 msgstr "请求日期"
 
@@ -7362,6 +7511,15 @@ msgstr "撤销邀请"
 
 msgid "Revoke Invites"
 msgstr "撤销邀请"
+
+msgid "Revoke Link"
+msgstr "撤销链接"
+
+msgid "Revoked"
+msgstr "已撤销"
+
+msgid "Rework"
+msgstr "返工"
 
 msgid "RFQ"
 msgstr "询价单"
@@ -7579,6 +7737,9 @@ msgstr "计划"
 msgid "Schedule Name"
 msgstr "计划名称"
 
+msgid "Scheduled"
+msgstr "计划"
+
 msgid "Scheduled Maintenance"
 msgstr "计划维护"
 
@@ -7739,6 +7900,9 @@ msgstr "选择客户类型"
 msgid "Select customers"
 msgstr "选择客户"
 
+msgid "Select date *"
+msgstr "选择日期 *"
+
 msgid "Select date range to filter net change and balance at date"
 msgstr "选择日期范围以筛选净变动和该日期的余额"
 
@@ -7877,6 +8041,9 @@ msgstr "为新报价行设置每个成本类别的默认标记百分比"
 
 msgid "Set due date"
 msgstr "设置到期日期"
+
+msgid "Set Expiration"
+msgstr "设置过期时间"
 
 msgid "Set Pricing"
 msgstr "设置价格"
@@ -8044,6 +8211,12 @@ msgstr ""
 msgid "Show Durations"
 msgstr "显示时长"
 
+msgid "Show family name before given name, as used in Chinese and other East Asian locales."
+msgstr "将姓氏显示在名字之前，适用于中文等东亚语言习惯。"
+
+msgid "Show on card right"
+msgstr "在卡片右侧显示"
+
 msgid "Show parent items"
 msgstr "显示父级物品"
 
@@ -8058,6 +8231,9 @@ msgstr "生成的PDF每一页背后显示为淡色背景"
 
 msgid "Shown to the user when this rule fails."
 msgstr "当此规则失败时显示给用户。"
+
+msgid "Sign In to Request Access"
+msgstr "登录以申请访问"
 
 msgid "Sign in with Email"
 msgstr "使用电子邮件登录"
@@ -8359,6 +8535,9 @@ msgstr "成功复制报价"
 msgid "Successfully created a new revision"
 msgstr "成功创建新版本"
 
+msgid "Successfully invited employee"
+msgstr "已成功邀请员工"
+
 msgid "Suffix"
 msgstr "后缀"
 
@@ -8479,6 +8658,9 @@ msgstr "供应"
 msgid "Supply & Demand"
 msgstr "供应与需求"
 
+msgid "Support Required"
+msgstr "需要支持"
+
 #. placeholder {0}: supportedModelTypes.join(", ")
 msgid "Supports {0} files"
 msgstr "支持{0}文件"
@@ -8539,6 +8721,9 @@ msgstr "选择一个或多个客户。"
 
 msgid "Target one or more items."
 msgstr "定位一个或多个物品。"
+
+msgid "Target quantity"
+msgstr "目标"
 
 msgid "Target Version"
 msgstr "目标版本"
@@ -8626,8 +8811,8 @@ msgstr "以下装配暂无操作，请为每个装配分配操作后再发布。
 msgid "The following line items are missing prices or lead times:"
 msgstr "以下行物品缺少价格或交货期："
 
-msgid "The latest date to place this PO so it arrives by the need-by date, given the supplier's lead time."
-msgstr ""
+msgid "The invite link will expire on the selected date"
+msgstr "邀请链接将在所选日期过期"
 
 msgid "The lot will still be rejected, but an NCR cannot be auto-created until at least one Issue Type is configured."
 msgstr "该批料仍会被拒收，但在配置至少一种问题类型之前，无法自动创建NCR。"
@@ -8691,6 +8876,12 @@ msgstr "这些信息将用于文档标题"
 
 msgid "This information will be visible to all users, so be careful what you share."
 msgstr "请谨慎分享信息，因为这将对所有用户可见。"
+
+msgid "This invite link is invalid or has expired. Please contact the person who shared it with you."
+msgstr "此邀请链接无效或已过期。请联系分享此链接的人员。"
+
+msgid "This invite link is no longer accepting new requests."
+msgstr "此邀请链接已不再接受新的申请。"
 
 msgid "This is a unique identifier for the webhook"
 msgstr "这是Webhook的唯一标识符"
@@ -8805,6 +8996,9 @@ msgstr "待办事项列表"
 
 msgid "Today"
 msgstr "今天"
+
+msgid "Todo"
+msgstr "待办"
 
 msgid "Toggle"
 msgstr "切换"
@@ -9108,8 +9302,11 @@ msgstr "单位"
 msgid "Update"
 msgstr "更新"
 
-msgid "Update costs on"
-msgstr ""
+msgid "Update Expiration"
+msgstr "更新过期时间"
+
+msgid "Update failed"
+msgstr "更新失败"
 
 msgid "Update Inventory"
 msgstr "更新库存"
@@ -9474,6 +9671,9 @@ msgstr "取消此收据将："
 msgid "Voiding this shipment will:"
 msgstr "取消此发货将："
 
+msgid "Waiting"
+msgstr "等待中"
+
 msgid "Warehouse Transfer"
 msgstr "仓库转移"
 
@@ -9528,8 +9728,20 @@ msgstr "Webhooks 文档"
 msgid "Website"
 msgstr "网站"
 
+msgid "WeChat"
+msgstr "微信"
+
+msgid "WeChat QR"
+msgstr "微信二维码"
+
+msgid "WeChat sign-in"
+msgstr "微信登录"
+
 msgid "Wednesday"
 msgstr "星期三"
+
+msgid "Weekly"
+msgstr "每周"
 
 msgid "Weeks Open"
 msgstr "开放周数"
@@ -9657,8 +9869,9 @@ msgstr "是，拒收"
 msgid "Yes, Update IDs"
 msgstr "是，更新ID"
 
-msgid "You belong to more than one company. Pick where to work."
-msgstr ""
+#. placeholder {0}: data.companyName
+msgid "You already have access to {0}."
+msgstr "您已拥有 {0} 的访问权限。"
 
 msgid "You can change the UI style any time through the theme setting"
 msgstr "您可以通过主题设置随时更改UI风格"
@@ -9705,6 +9918,16 @@ msgstr "您的邀请无效或已被接受。如果您认为这是一个错误，
 
 msgid "Your Name"
 msgstr "你的名字"
+
+msgid "Your request has been submitted."
+msgstr "您的申请已提交。"
+
+#. placeholder {0}: data.companyName
+msgid "Your request to join {0} has already been submitted and is pending review."
+msgstr "您加入 {0} 的申请已提交，正在等待审核。"
+
+msgid "Your request to join {companyName} has been submitted. An admin will review your application soon."
+msgstr "您加入 {companyName} 的申请已提交。管理员将尽快审核您的申请。"
 
 msgid "yourself"
 msgstr "你自己"

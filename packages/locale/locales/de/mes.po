@@ -395,7 +395,7 @@ msgstr "Arbeitsgänge beenden"
 msgid "End Time"
 msgstr ""
 
-#. placeholder {0}: selectedPerson.name
+#. placeholder {0}: getPersonName(selectedPerson)
 msgid "Enter PIN for {0}"
 msgstr "PIN für {0} eingeben"
 

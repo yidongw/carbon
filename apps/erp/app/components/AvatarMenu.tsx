@@ -40,8 +40,8 @@ import {
   LuUser
 } from "react-icons/lu";
 import { Form, Link, useFetcher } from "react-router";
-import { Avatar } from "~/components";
-import { usePermissions, useUser } from "~/hooks";
+import { Avatar as UserAvatar } from "~/components";
+import { usePermissions, useRouteData, useUser, useFormatPersonName } from "~/hooks";
 import { useTheme } from "~/hooks/useTheme";
 import type { action } from "~/root";
 import { startModeTransition } from "~/utils/dom";
@@ -50,7 +50,14 @@ import { path } from "~/utils/path";
 const AvatarMenu = () => {
   const { t } = useLingui();
   const user = useUser();
-  const name = `${user.firstName} ${user.lastName}`;
+  const formatPersonName = useFormatPersonName();
+  const routeData = useRouteData<{ company: Company; companies: Company[] }>(
+    path.to.authenticatedRoot
+  );
+  const name = formatPersonName({
+    firstName: user.firstName,
+    lastName: user.lastName
+  });
   const { isOwner } = usePermissions();
   const edition = useEdition();
 

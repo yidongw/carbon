@@ -31,6 +31,8 @@ import { Enumerable } from "~/components/Enumerable";
 import { OperationStatusIcon } from "~/components/Icons";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
 import { operationTypes } from "~/modules/shared";
+import { useJobOperationStatusLabel } from "~/modules/production/ui/Jobs/jobLabels";
+import { useOperationTypeLabel } from "~/modules/production/ui/Jobs/productionQuantityLabels";
 import { path } from "~/utils/path";
 import { jobOperationStatus } from "../../production.models";
 import type { Job, JobOperation } from "../../types";
@@ -43,6 +45,8 @@ type JobOperationsTableProps = {
 const JobOperationsTable = memo(({ data, count }: JobOperationsTableProps) => {
   const { jobId } = useParams();
   const { t } = useLingui();
+  const operationTypeLabel = useOperationTypeLabel();
+  const getJobOperationStatusLabel = useJobOperationStatusLabel();
   if (!jobId) throw new Error("Job ID is required");
 
   const routeData = useRouteData<{ job: Job }>(path.to.job(jobId));
@@ -105,7 +109,7 @@ const JobOperationsTable = memo(({ data, count }: JobOperationsTableProps) => {
                       <DropdownMenuIcon
                         icon={<OperationStatusIcon status={status} />}
                       />
-                      <span>{status}</span>
+                      <span>{getJobOperationStatusLabel(status)}</span>
                     </DropdownMenuRadioItem>
                   ))}
                 </DropdownMenuRadioGroup>
@@ -199,7 +203,7 @@ const JobOperationsTable = memo(({ data, count }: JobOperationsTableProps) => {
         }
       }
     ];
-  }, [isPaused, jobId, onOperationStatusChange, t]);
+  }, [getJobOperationStatusLabel, isPaused, jobId, onOperationStatusChange, operationTypeLabel, t]);
 
   const { carbon } = useCarbon();
   const { id: userId } = useUser();

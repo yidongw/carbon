@@ -6,11 +6,13 @@ import {
   useUrlParams
 } from "@carbon/react";
 import { useDateFormatter } from "./useDateFormatter";
+import { useFormatPersonName } from "./useFormatPersonName";
 import { useRealtime } from "./useRealtime";
 import { useUser } from "./useUser";
 
 export {
   useDateFormatter,
+  useFormatPersonName,
   useNanoStore,
   useOptimisticLocation,
   usePrinting,

@@ -14,21 +14,40 @@ jobs:
     steps:
       - name: Post deploying status
         if: github.event.action != 'closed'
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           BRANCH: ${{ github.event.pull_request.head.ref }}
           SHA: ${{ github.event.pull_request.head.sha }}
         run: |
+          retry() {
+            local attempt=1
+            local max_attempts=3
+            local delay=5
+            while [ "$attempt" -le "$max_attempts" ]; do
+              if "$@"; then
+                return 0
+              fi
+              if [ "$attempt" -lt "$max_attempts" ]; then
+                echo "Attempt ${attempt} failed, retrying in ${delay}s..."
+                sleep "$delay"
+                delay=$((delay * 2))
+              fi
+              attempt=$((attempt + 1))
+            done
+            return 1
+          }
+
           # Delete previous bot comment so the new one triggers a notification
-          PREV_ID=$(gh api "repos/yidongw/carbon/issues/${PR_NUMBER}/comments" \
-            --jq '[.[] | select(.user.login == "github-actions[bot]")] | last | .id // empty')
+          PREV_ID=$(retry gh api "repos/yidongw/carbon/issues/${PR_NUMBER}/comments" \
+            --jq '[.[] | select(.user.login == "github-actions[bot]")] | last | .id // empty') || true
           if [ -n "$PREV_ID" ]; then
-            gh api -X DELETE "repos/yidongw/carbon/issues/comments/${PREV_ID}" 2>/dev/null || true
+            retry gh api -X DELETE "repos/yidongw/carbon/issues/comments/${PREV_ID}" 2>/dev/null || true
           fi
           BODY=$(printf '### Preview Deployment\n\n**ERP:** deploying...\n\nBuilt from `%s` @ `%s`\nRunning in dev mode — stack traces enabled.' \
             "$BRANCH" "$SHA")
-          gh pr comment "$PR_NUMBER" --repo yidongw/carbon --body "$BODY"
+          retry gh pr comment "$PR_NUMBER" --repo yidongw/carbon --body "$BODY"
 
       - name: Start preview
         if: github.event.action != 'closed'
@@ -45,17 +64,43 @@ jobs:
 
       - name: Post preview URL
         if: github.event.action != 'closed'
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           BRANCH: ${{ github.event.pull_request.head.ref }}
           SHA: ${{ github.event.pull_request.head.sha }}
         run: |
+          retry() {
+            local attempt=1
+            local max_attempts=3
+            local delay=5
+            while [ "$attempt" -le "$max_attempts" ]; do
+              if "$@"; then
+                return 0
+              fi
+              if [ "$attempt" -lt "$max_attempts" ]; then
+                echo "Attempt ${attempt} failed, retrying in ${delay}s..."
+                sleep "$delay"
+                delay=$((delay * 2))
+              fi
+              attempt=$((attempt + 1))
+            done
+            return 1
+          }
+
           PR_URL="https://erp-pr-${PR_NUMBER}.foxhole.bot"
           BODY=$(printf '### Preview Deployment\n\n**ERP:** %s\n\nBuilt from `%s` @ `%s`\nRunning in dev mode — stack traces enabled.' \
             "$PR_URL" "$BRANCH" "$SHA")
           # Edit the "deploying..." comment in place (already notified above)
-          gh pr comment "$PR_NUMBER" \
+          retry gh pr comment "$PR_NUMBER" \
             --repo yidongw/carbon \
             --body "$BODY" \
-            --edit-last
+            --edit-last \
+            || retry gh pr comment "$PR_NUMBER" --repo yidongw/carbon --body "$BODY"
+          # Notify Discord directly without waiting for the GitHub webhook roundtrip
+          retry curl -sf -X POST "http://localhost:3002/preview-ready" \
+            -H "Authorization: Bearer ${PREVIEW_READY_SECRET}" \
+            -H "Content-Type: application/json" \
+            -d "{\"repo\":\"yidongw/carbon\",\"prNumber\":${PR_NUMBER},\"previewUrl\":\"${PR_URL}\"}" \
+            || true

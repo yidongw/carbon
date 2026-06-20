@@ -11,7 +11,9 @@ import {
   productionQuantityValidator,
   upsertProductionQuantity
 } from "~/modules/production";
-import { ProductionQuantityForm } from "~/modules/production/ui/Jobs";
+import { getConfigReferenceSourceForOperation } from "~/modules/production/configTableOverlay.server";
+import { productionQuantityLineJsonValidator } from "~/modules/production/productionQuantityReport.models";
+import ProductionQuantityForm from "~/modules/production/ui/Jobs/ProductionQuantityForm";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { getParams, path } from "~/utils/path";
 
@@ -23,7 +25,50 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { jobId } = params;
   if (!jobId) throw notFound("jobId not found");
 
-  const jobOperations = await getJobOperations(client, jobId);
+  const jobOperationId =
+    new URL(request.url).searchParams.get("jobOperationId") ?? "";
+
+  const [job, jobOperations, opContext] = await Promise.all([
+    getJob(client, jobId),
+    jobOperationId ? null : getJobOperations(client, jobId),
+    getJobOperationActorContext(client, jobOperationId, companyId)
+  ]);
+  const actorContext = {
+    ...opContext,
+    defaultActorKind: defaultActorKindFromOperationType(
+      opContext.operationType
+    ),
+    seededActor: seededActorFromOperationContext(opContext)
+  };
+
+  const configurationParameters = job.data?.itemId
+    ? (await getConfigurationParameters(client, job.data.itemId, companyId))
+        .parameters
+    : [];
+
+  const itemId = job.data?.itemId ?? null;
+
+  const configReferenceSource = await getConfigReferenceSourceForOperation(
+    client,
+    {
+      jobId,
+      jobOperationId: jobOperationId || undefined,
+      companyId,
+      reportKind: "productionQuantity"
+    }
+  );
+
+  if (jobOperationId) {
+    return {
+      jobOperationId,
+      operationOptions: [] as const,
+      configurationParameters:
+        configurationParameters.length > 0 ? configurationParameters : null,
+      configReferenceSource,
+      itemId,
+      ...actorContext
+    };
+  }
 
   const operationOptions =
     jobOperations.data?.map((operation) => ({
@@ -31,7 +76,15 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       value: operation.id
     })) ?? [];
 
-  return { operationOptions };
+  return {
+    jobOperationId: "",
+    operationOptions,
+    configurationParameters:
+      configurationParameters.length > 0 ? configurationParameters : null,
+    configReferenceSource,
+    itemId,
+    ...actorContext
+  };
 }
 
 export async function action({ request, params }: ActionFunctionArgs) {
@@ -98,7 +151,17 @@ export async function action({ request, params }: ActionFunctionArgs) {
 }
 
 export default function NewProductionQuantityRoute() {
-  const { operationOptions } = useLoaderData<typeof loader>();
+  const {
+    jobOperationId,
+    operationOptions,
+    configurationParameters,
+    configReferenceSource,
+    itemId,
+    processId,
+    operationType,
+    defaultActorKind,
+    seededActor
+  } = useLoaderData<typeof loader>();
   const initialValues = {
     type: "Production" as const,
     jobOperationId: "",
@@ -111,7 +174,14 @@ export default function NewProductionQuantityRoute() {
   return (
     <ProductionQuantityForm
       initialValues={initialValues}
-      operationOptions={operationOptions ?? []}
+      operationOptions={[...(operationOptions ?? [])]}
+      configurationParameters={configurationParameters}
+      configReferenceSource={configReferenceSource}
+      itemId={itemId}
+      processId={processId}
+      operationType={operationType}
+      defaultActorKind={defaultActorKind}
+      lockActorSelection={seededActor.lockActorSelection}
     />
   );
 }

@@ -1046,6 +1046,138 @@ const JobBillOfProcess = ({
     );
   };
 
+  const list = (
+    <SortableList
+      items={items}
+      onReorder={onReorder}
+      onToggleItem={onToggleItem}
+      onRemoveItem={onRemoveItem}
+      renderItem={renderListItem}
+    />
+  );
+
+  const configSummaryOperation = configSummaryOperationId
+    ? operationsById.get(configSummaryOperationId)
+    : undefined;
+
+  const configSummaryModalElement = hasConfigurationParameters ? (
+    <Modal
+      open={configSummaryModal.isOpen}
+      onOpenChange={(open) => {
+        if (!open) configSummaryModal.onClose();
+      }}
+    >
+      <ModalContent
+        className={cn(
+          "flex w-fit min-w-[20rem] max-w-[min(90vw,56rem)] max-h-[85dvh] flex-col overflow-hidden",
+          "md:w-fit sm:w-fit sm:max-w-[min(90vw,56rem)]"
+        )}
+      >
+        <ModalHeader className="mb-4 shrink-0">
+          <ModalTitle>
+            {configSummaryOperation?.description ?? (
+              <Trans>Configuration quantities</Trans>
+            )}
+          </ModalTitle>
+        </ModalHeader>
+        <ModalBody className="mb-0 min-h-0 flex-1 overflow-y-auto overflow-x-auto pb-6">
+          {configSummaryLoading ? (
+            <Loading isLoading />
+          ) : (
+            <ConfigParamsReportedTargetTable
+              rows={configSummaryRows}
+              parameters={configurationParameters ?? []}
+            />
+          )}
+        </ModalBody>
+        <ModalFooter className="shrink-0">
+          <Button variant="secondary" onClick={configSummaryModal.onClose}>
+            <Trans>Close</Trans>
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  ) : null;
+
+  const quantityDrawerElements = (
+    <>
+      {dispositionReport ? (
+        <ProductionQuantityDispositionDrawer
+          report={dispositionReport}
+          configurationParameters={configurationParameters}
+          itemId={itemId}
+          open
+          onClose={() => setDispositionReport(null)}
+          onSaved={handleQuantityReportSaved}
+        />
+      ) : null}
+      {historyReport ? (
+        <ProductionQuantityReportHistoryDrawer
+          reportId={historyReport.id}
+          configurationParameters={configurationParameters}
+          open
+          onClose={() => setHistoryReport(null)}
+        />
+      ) : null}
+      {supplierDispositionReport ? (
+        <SupplierQuantityDispositionDrawer
+          report={supplierDispositionReport}
+          configurationParameters={configurationParameters}
+          itemId={itemId}
+          open
+          onClose={() => setSupplierDispositionReport(null)}
+          onSaved={handleSupplierQuantityReportSaved}
+        />
+      ) : null}
+      {supplierHistoryReport ? (
+        <ProductionQuantityReportHistoryDrawer
+          reportId={supplierHistoryReport.id}
+          linesApiPath={path.to.api.supplierQuantityReportLines(
+            supplierHistoryReport.id,
+            true
+          )}
+          supplierId={supplierHistoryReport.supplierProcess?.supplierId}
+          reportCreatedBy={supplierHistoryReport.createdBy}
+          configurationParameters={configurationParameters}
+          open
+          onClose={() => setSupplierHistoryReport(null)}
+        />
+      ) : null}
+    </>
+  );
+
+  if (routeJob) {
+    return (
+      <>
+        <div className="flex w-[min(42rem,calc(100vw-1.5rem))] flex-col">
+          <HStack className="shrink-0 items-center justify-between border-b border-border px-4 py-3 pr-12">
+            <h3 className="text-base font-medium font-headline tracking-tight text-foreground">
+              <Trans>Bill of Process</Trans>
+            </h3>
+            <Button
+              ref={addOperationButtonRef}
+              variant="secondary"
+              isDisabled={
+                !permissions.can("update", "production") ||
+                selectedItemId !== null ||
+                isDisabled
+              }
+              onClick={onAddItem}
+              className="transition-transform active:scale-[0.96]"
+            >
+              <Trans>Add Operation</Trans>
+            </Button>
+          </HStack>
+          <div className="min-h-0 max-h-[min(72vh,48rem)] overflow-y-auto px-3 py-3">
+            {list}
+          </div>
+        </div>
+        {configSummaryModalElement}
+        {quantityDrawerElements}
+      </>
+    );
+  }
+
   return (
     <Card>
       <HStack className="justify-between">

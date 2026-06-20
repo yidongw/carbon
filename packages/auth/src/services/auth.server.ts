@@ -439,7 +439,7 @@ export async function sendMagicLink(
   email: string,
   redirectTo?: string
 ): Promise<
-  | { error: null; pkceEntry: { k: string; v: string } }
+  | { error: null; pkceEntry: { k: string; v: string; redirectTo?: string } }
   | { error: Error; pkceEntry: null }
 > {
   // Use an in-memory storage so the Supabase PKCE client stores the code
@@ -474,7 +474,10 @@ export async function sendMagicLink(
 
   const { error: otpError } = await client.auth.signInWithOtp({
     email,
-    options: { emailRedirectTo: callbackUrl }
+    options: {
+      emailRedirectTo: callbackUrl,
+      data: { app_url: appUrl }
+    }
   });
 
   if (otpError) return { error: otpError, pkceEntry: null };
@@ -491,7 +494,14 @@ export async function sendMagicLink(
     };
   }
 
-  return { error: null, pkceEntry: { k: entry[0], v: entry[1] } };
+  return {
+    error: null,
+    pkceEntry: {
+      k: entry[0],
+      v: entry[1],
+      redirectTo: redirectTo?.startsWith("/") ? redirectTo : undefined
+    }
+  };
 }
 
 // Exchange a PKCE auth code for a session entirely server-side.
@@ -503,23 +513,19 @@ export async function exchangePkceCode(
   cookieCompanyId: string | null
 ): Promise<AuthSession | null> {
   const storage = new Map([[pkceEntry.k, pkceEntry.v]]);
-  const client = createClient<Database, "public">(
-    SUPABASE_URL!,
-    SUPABASE_ANON_KEY!,
-    {
-      auth: {
-        flowType: "pkce",
-        autoRefreshToken: false,
-        persistSession: false,
-        storage: {
-          getItem: (key) => storage.get(key) ?? null,
-          setItem: (key, value) => {
-            storage.set(key, value);
-          },
-          removeItem: (key) => {
-            storage.delete(key);
-          }
-        }
+  // persistSession must remain true (the default) so Supabase uses the custom
+  // storage adapter above when looking up the code verifier. When
+  // persistSession is false, auth-js ignores the provided storage and falls
+  // back to its own internal memoryStorage — the pre-seeded verifier would
+  // never be found and the exchange would fail with an empty code_verifier.
+  const client = createClient<Database, "public">(SUPABASE_URL!, SUPABASE_ANON_KEY!, {
+    auth: {
+      flowType: "pkce",
+      autoRefreshToken: false,
+      storage: {
+        getItem: (key) => storage.get(key) ?? null,
+        setItem: (key, value) => { storage.set(key, value); },
+        removeItem: (key) => { storage.delete(key); }
       }
     }
   );

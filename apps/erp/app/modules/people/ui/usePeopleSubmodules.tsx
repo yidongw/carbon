@@ -3,8 +3,14 @@ import {
   LuCalendarClock,
   LuCalendarHeart,
   LuClock,
+  LuFileBadge2,
+  LuGroup,
+  LuLink,
   LuListChecks,
+  LuMonitor,
   LuNetwork,
+  LuShield,
+  LuUserCheck,
   LuUsers
 } from "react-icons/lu";
 import { useSavedViews } from "~/hooks/useSavedViews";
@@ -24,6 +30,32 @@ export default function usePeopleSubmodules() {
           to: path.to.people,
           icon: <LuUsers />,
           table: "employee"
+        },
+        {
+          name: t`Permissions`,
+          to: path.to.employeeAccounts,
+          icon: <LuShield />
+        },
+        {
+          name: t`Invite Links`,
+          to: path.to.peopleInviteLinks,
+          icon: <LuLink />
+        },
+        {
+          name: t`Applications`,
+          to: `${path.to.peopleApplications}?filter=${encodeURIComponent("status:eq:pending")}`,
+          icon: <LuUserCheck />
+        },
+        {
+          name: t`Operators`,
+          to: path.to.operators,
+          icon: <LuMonitor />,
+          setting: "consoleEnabled" as any
+        },
+        {
+          name: t`Groups`,
+          to: path.to.groups,
+          icon: <LuGroup />
         },
         {
           name: t`Timecards`,
@@ -46,6 +78,11 @@ export default function usePeopleSubmodules() {
           name: t`Departments`,
           to: path.to.departments,
           icon: <LuNetwork />
+        },
+        {
+          name: t`Employee Types`,
+          to: path.to.employeeTypes,
+          icon: <LuFileBadge2 />
         },
         {
           name: t`Holidays`,

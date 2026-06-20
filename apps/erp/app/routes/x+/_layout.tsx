@@ -22,7 +22,7 @@ import {
   useMount
 } from "@carbon/react";
 import { getStripeCustomerByCompanyId } from "@carbon/stripe/stripe.server";
-import { Edition } from "@carbon/utils";
+import { Edition, formatPersonName } from "@carbon/utils";
 import posthog from "posthog-js";
 import { Suspense } from "react";
 import type {
@@ -77,7 +77,6 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
 
   if (
     currentUrl.pathname.startsWith("/x/settings") ||
-    currentUrl.pathname.startsWith("/x/users") ||
     currentUrl.pathname.startsWith("/refresh-session") ||
     currentUrl.pathname.startsWith("/x/acknowledge") ||
     currentUrl.pathname.startsWith("/x/shared/views")
@@ -248,7 +247,13 @@ export default function AuthenticatedRoute() {
 
     posthog.identify(user.id, {
       email: user.email,
-      name: `${user.firstName} ${user.lastName}`
+      name: formatPersonName(
+        {
+          firstName: user.firstName,
+          lastName: user.lastName
+        },
+        companySettings?.lastNameFirst ?? false
+      )
     });
   });
 

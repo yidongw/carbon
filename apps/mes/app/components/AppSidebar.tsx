@@ -58,7 +58,7 @@ import {
   LuWrench
 } from "react-icons/lu";
 import { Await, Form, Link, useFetcher, useLocation } from "react-router";
-import { useUser } from "~/hooks";
+import { useFormatPersonName, useUser } from "~/hooks";
 import type { action } from "~/root";
 import type { Location } from "~/services/types";
 import type { PinnedInUser } from "~/types";
@@ -324,7 +324,11 @@ export function UserNav({
 }) {
   const { t } = useLingui();
   const user = useUser();
-  const stationName = `${user.firstName} ${user.lastName}`;
+  const formatPersonName = useFormatPersonName();
+  const stationName = formatPersonName({
+    firstName: user.firstName,
+    lastName: user.lastName
+  });
   const { isMobile } = useSidebar();
 
   const mode = useMode();

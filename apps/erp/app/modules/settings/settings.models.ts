@@ -354,39 +354,6 @@ export const timeCardSettingsValidator = z.object({
   timeCardEnabled: zfd.checkbox()
 });
 
-// The editor submits the block list as a JSON string in a hidden field; we
-// parse it and validate every block against the shared schema.
-const jsonField = <T>(schema: z.ZodType<T>, message: string) =>
-  zfd.text(
-    z.string().transform((value, ctx) => {
-      try {
-        return schema.parse(JSON.parse(value));
-      } catch {
-        ctx.addIssue({ code: z.ZodIssueCode.custom, message });
-        return z.NEVER;
-      }
-    })
-  );
-
-export const documentTemplateValidator = zfd.formData({
-  documentType: zfd.text(documentTemplateTypeSchema),
-  blocks: jsonField(z.array(blockSchema), "Invalid document template blocks"),
-  theme: jsonField(themeSchema, "Invalid document theme"),
-  settings: jsonField(documentSettingsSchema, "Invalid document settings"),
-  headerSectionId: zfd.text(z.string().optional()),
-  footerSectionId: zfd.text(z.string().optional()),
-  // Header layout config (logo) is edited inline and saved with the template;
-  // the action upserts it onto the referenced header section.
-  headerConfig: jsonField(
-    sectionConfigSchema,
-    "Invalid header config"
-  ).optional()
-});
-
-export const documentSectionValidator = zfd.formData({
-  id: zfd.text(z.string().optional()),
-  name: zfd.text(z.string().min(1)),
-  placement: zfd.text(documentSectionPlacementSchema),
-  content: jsonField(z.any(), "Invalid section content"),
-  config: jsonField(sectionConfigSchema, "Invalid section config").optional()
+export const lastNameFirstSettingsValidator = z.object({
+  lastNameFirst: zfd.checkbox()
 });

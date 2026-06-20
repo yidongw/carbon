@@ -50,7 +50,9 @@ import { Tags } from "~/components/Form";
 import { useDateFormatter } from "~/hooks";
 import { useTags } from "~/hooks/useTags";
 import { getDeadlineIcon } from "~/modules/production/ui/Jobs/Deadline";
+import { useJobOperationStatusLabel } from "~/modules/production/ui/Jobs/jobLabels";
 import { JobOperationStatus } from "~/modules/production/ui/Jobs/JobOperationStatus";
+import { jobOperationStatus } from "~/modules/production/production.models";
 import { getPrivateUrl, path } from "~/utils/path";
 import { useKanban } from "../context/KanbanContext";
 import type { Item } from "../types";
@@ -99,6 +101,7 @@ type ItemCardProps = {
 
 export function ItemCard({ item, isOverlay, progressByItemId }: ItemCardProps) {
   const { t } = useLingui();
+  const getJobOperationStatusLabel = useJobOperationStatusLabel();
   const { formatDate, formatRelativeTime } = useDateFormatter();
   const { displaySettings, selectedGroup, setSelectedGroup, tags } =
     useKanban();
@@ -307,7 +310,11 @@ export function ItemCard({ item, isOverlay, progressByItemId }: ItemCardProps) {
               }}
               className="size-4 p-0 hover:bg-transparent"
             />
-            <span className="text-sm">{status}</span>
+            <span className="text-sm">
+              {getJobOperationStatusLabel(
+                status as (typeof jobOperationStatus)[number]
+              )}
+            </span>
           </HStack>
         )}
         {/* @ts-expect-error TS2339 */}

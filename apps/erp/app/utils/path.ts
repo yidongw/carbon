@@ -48,8 +48,8 @@ export const path = {
       digitalSupplierQuote: (id: string) =>
         generatePath(`${api}/purchasing/digital-quote/${id}`),
       docs: `${api}/docs`,
-      employeeTypes: `${api}/users/employee-types`,
-      emptyPermissions: `${api}/users/empty-permissions`,
+      employeeTypes: `${api}/people/employee-types`,
+      emptyPermissions: `${api}/people/empty-permissions`,
       failureModes: `${api}/resources/failure-modes`,
       gauges: `${api}/quality/gauges`,
       generateCsvColumns: (table: string) =>
@@ -59,15 +59,7 @@ export const path = {
           `${api}/quality/inspection-document/${inspectionDocumentId}/balloon-analyze`
         ),
       groupsByType: (type?: string) =>
-        generatePath(`${api}/users/groups?type=${type}`),
-      groupsByTypeWithUsers: (type?: string) =>
-        generatePath(`${api}/users/groups?type=${type}&include=users`),
-      groupMembers: (groupId: string) =>
-        generatePath(`${api}/users/groups/${groupId}/members`),
-      usersSearch: (q: string) =>
-        generatePath(`${api}/users/search?q=${encodeURIComponent(q)}`),
-      usersBatch: (ids: string[]) =>
-        generatePath(`${api}/users/batch?ids=${ids.join(",")}`),
+        generatePath(`${api}/people/groups?type=${type}`),
       item: (type: string) => generatePath(`${api}/item/${type}`),
       itemCostRecalculate: (itemId: string) =>
         generatePath(`${api}/items/${itemId}/recalculate-cost`),
@@ -535,7 +527,7 @@ export const path = {
     batchPropertyOrder: (itemId: string) =>
       generatePath(`${x}/inventory/batch-property/${itemId}/property/order`),
     billing: `${x}/settings/billing`,
-    bulkEditPermissions: `${x}/users/bulk-edit-permissions`,
+    bulkEditPermissions: `${x}/people/bulk-edit-permissions`,
     bulkUpdateItems: `${x}/items/update`,
     bulkUpdateProductionPlanning: `${x}/production/planning/update`,
     bulkUpdatePurchasingPlanning: `${x}/purchasing/planning/update`,
@@ -628,7 +620,7 @@ export const path = {
       generatePath(`${x}/customer/${id}/details`),
     customerRoot: `${x}/customer`,
     customers: `${x}/sales/customers`,
-    customerAccounts: `${x}/users/customers`,
+    customerAccounts: `${x}/people/customers`,
     customerAccounting: (id: string) =>
       generatePath(`${x}/customer/${id}/accounting`),
     customerContact: (customerId: string, id: string) =>
@@ -666,7 +658,7 @@ export const path = {
     customFieldList: (id: string) =>
       generatePath(`${x}/settings/custom-fields/${id}`),
 
-    deactivateUsers: `${x}/users/deactivate`,
+    deactivateUsers: `${x}/people/deactivate`,
     defaultRevision: (id: string) =>
       generatePath(`${x}/items/revisions/default/${id}`),
     deleteAbility: (id: string) =>
@@ -722,7 +714,7 @@ export const path = {
     deleteEmployeeAbility: (abilityId: string, id: string) =>
       generatePath(`${x}/resources/ability/${abilityId}/employee/delete/${id}`),
     deleteEmployeeType: (id: string) =>
-      generatePath(`${x}/users/employee-types/delete/${id}`),
+      generatePath(`${x}/people/employee-types/delete/${id}`),
     deleteFailureMode: (id: string) =>
       generatePath(`${x}/resources/failure-modes/delete/${id}`),
     deleteGauge: (id: string) =>
@@ -731,7 +723,7 @@ export const path = {
       generatePath(`${x}/quality/calibrations/delete/${id}`),
     deleteGaugeType: (id: string) =>
       generatePath(`${x}/quality/gauge-types/delete/${id}`),
-    deleteGroup: (id: string) => generatePath(`${x}/users/groups/delete/${id}`),
+    deleteGroup: (id: string) => generatePath(`${x}/people/groups/delete/${id}`),
     deleteHoliday: (id: string) =>
       generatePath(`${x}/people/holidays/delete/${id}`),
     deleteTimecard: (id: string) =>
@@ -919,15 +911,17 @@ export const path = {
     documentsTrash: `${x}/documents/search?q=trash`,
     employeeAbility: (abilityId: string, id: string) =>
       generatePath(`${x}/resources/ability/${abilityId}/employee/${id}`),
-    employeeAccount: (id: string) => generatePath(`${x}/users/employees/${id}`),
-    employeeAccounts: `${x}/users/employees`,
+    employeeAccount: (id: string) => generatePath(`${x}/people/employees/${id}`),
+    employeeAccounts: `${x}/people/employees`,
     employeeType: (id: string) =>
-      generatePath(`${x}/users/employee-types/${id}`),
-    employeeTypes: `${x}/users/employee-types`,
-    operators: `${x}/users/operators`,
-    operator: (id: string) => generatePath(`${x}/users/operators/${id}`),
+      generatePath(`${x}/people/employee-types/${id}`),
+    employeeTypes: `${x}/people/employee-types`,
+    peopleInviteLinks: `${x}/people/invite-links`,
+    peopleApplications: `${x}/people/applications`,
+    operators: `${x}/people/operators`,
+    operator: (id: string) => generatePath(`${x}/people/operators/${id}`),
     operatorResetPin: (id: string) =>
-      generatePath(`${x}/users/operators/reset-pin/${id}`),
+      generatePath(`${x}/people/operators/reset-pin/${id}`),
     externalCustomer: (id: string) => generatePath(`/share/customer/${id}`),
     externalCustomerFile: (id: string, path: string) =>
       generatePath(`/share/customer/${id}/${path}`),
@@ -960,8 +954,8 @@ export const path = {
       generatePath(`${x}/quality/gauges/deactivate/${id}`),
     gaugeTypes: `${x}/quality/gauge-types`,
     gaugeType: (id: string) => generatePath(`${x}/quality/gauge-types/${id}`),
-    group: (id: string) => generatePath(`${x}/users/groups/${id}`),
-    groups: `${x}/users/groups`,
+    group: (id: string) => generatePath(`${x}/people/groups/${id}`),
+    groups: `${x}/people/groups`,
     holiday: (id: string) => generatePath(`${x}/people/holidays/${id}`),
     holidays: `${x}/people/holidays`,
     import: (tableId: string) => generatePath(`${x}/shared/import/${tableId}`),
@@ -1064,6 +1058,10 @@ export const path = {
     location: (id: string) => generatePath(`${x}/resources/locations/${id}`),
     locations: `${x}/resources/locations`,
     login: "/login",
+    joinLink: (code: string) => generatePath(`/join/${code}`),
+    joinLinkApply: (code: string) => generatePath(`/join/${code}/apply`),
+    joinLinkSubmitted: (code: string) =>
+      generatePath(`/join/${code}/submitted`),
     logout: "/logout",
     logos: `${x}/settings/logos`,
     maintenanceDispatch: (id: string) => generatePath(`${x}/maintenance/${id}`),
@@ -1173,7 +1171,7 @@ export const path = {
     newExchangeRate: `${x}/accounting/exchange-rates/new`,
     newDimension: `${x}/accounting/dimensions/new`,
     newCustomer: `${x}/customer/new`,
-    newCustomerAccount: `${x}/users/customers/new`,
+    newCustomerAccount: `${x}/people/customers/new`,
     newCustomerContact: (id: string) =>
       generatePath(`${x}/customer/${id}/contacts/new`),
     newCustomerLocation: (id: string) =>
@@ -1187,11 +1185,12 @@ export const path = {
     newDemandProjection: `${x}/production/projections/new`,
     newDepartment: `${x}/people/departments/new`,
     newDocument: `${x}/documents/new`,
-    newEmployee: `${x}/users/employees/new`,
-    newOperator: `${x}/users/operators/new`,
+    newEmployee: `${x}/people/employees/new`,
+    newOperator: `${x}/people/operators/new`,
     newEmployeeAbility: (id: string) =>
       generatePath(`${x}/resources/ability/${id}/employee/new`),
-    newEmployeeType: `${x}/users/employee-types/new`,
+    newEmployeeType: `${x}/people/employee-types/new`,
+    newInviteLink: `${x}/people/invite-links/new`,
     newFailureMode: `${x}/resources/failure-modes/new`,
     newFixture: `${x}/fixture/new`,
     newFixtureSupplier: (id: string) =>
@@ -1199,7 +1198,7 @@ export const path = {
     newGauge: `${x}/quality/gauges/new`,
     newGaugeCalibrationRecord: `${x}/quality/calibrations/new`,
     newGaugeType: `${x}/quality/gauge-types/new`,
-    newGroup: `${x}/users/groups/new`,
+    newGroup: `${x}/people/groups/new`,
     newHoliday: `${x}/people/holidays/new`,
     newTimecard: `${x}/people/timecard/new`,
     newInvestigationType: `${x}/quality/investigation-types/new`,
@@ -1300,7 +1299,7 @@ export const path = {
     newServiceSupplier: (id: string) =>
       generatePath(`${x}/service/${id}/purchasing/new`),
     newSupplier: `${x}/supplier/new`,
-    newSupplierAccount: `${x}/users/suppliers/new`,
+    newSupplierAccount: `${x}/people/suppliers/new`,
     newSupplierContact: (id: string) =>
       generatePath(`${x}/supplier/${id}/contacts/new`),
     newSupplierLocation: (id: string) =>
@@ -1561,11 +1560,14 @@ export const path = {
     requiredAction: (id: string) =>
       generatePath(`${x}/quality/required-actions/${id}`),
     requiredActions: `${x}/quality/required-actions`,
-    resendInvite: `${x}/users/resend-invite`,
-    resources: `${x}/resources`,
+    resendInvite: `${x}/people/resend-invite`,
+    revokeInviteLink: `${x}/people/invite-links/revoke`,
+    updateInviteLinkExpiry: `${x}/people/invite-links/update-expiry`,
+    reviewMembershipApplication: `${x}/people/applications/review`,
+    resourcesDashboard: `${x}/resources/dashboard`,
     resourcesSettings: `${x}/settings/resources`,
     revision: (id: string) => generatePath(`${x}/items/revisions/${id}`),
-    revokeInvite: `${x}/users/revoke-invite`,
+    revokeInvite: `${x}/people/revoke-invite`,
     risks: `${x}/quality/risks`,
     risk: (id: string) => generatePath(`${x}/quality/risks/${id}`),
     root: "/",
@@ -1747,7 +1749,7 @@ export const path = {
     supplierApproval: (id: string) =>
       generatePath(`${x}/supplier/${id}/approval`),
     suppliers: `${x}/purchasing/suppliers`,
-    supplierAccounts: `${x}/users/suppliers`,
+    supplierAccounts: `${x}/people/suppliers`,
     supplierAccounting: (id: string) =>
       generatePath(`${x}/supplier/${id}/accounting`),
     supplierContact: (supplierId: string, id: string) =>
@@ -1834,7 +1836,7 @@ export const path = {
     uom: (id: string) => generatePath(`${x}/items/uom/${id}`),
     uoms: `${x}/items/uom`,
     userAttribute: (id: string) => generatePath(`${x}/account/${id}/attribute`),
-    users: `${x}/users`,
+    users: `${x}/people`,
     webhook: (id: string) => generatePath(`${x}/settings/webhooks/${id}`),
     webhooks: `${x}/settings/webhooks`,
     workCenters: `${x}/resources/work-centers`,

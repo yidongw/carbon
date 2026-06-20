@@ -96,7 +96,7 @@ import {
   MethodItemTypeIcon,
   TrackingTypeIcon
 } from "~/components/Icons";
-import { useDateFormatter, useUrlParams, useUser } from "~/hooks";
+import { useDateFormatter, useFormatPersonName, useUrlParams, useUser } from "~/hooks";
 import type { productionEventType } from "~/services/models";
 import { getFileType } from "~/services/operations.service";
 import type {
@@ -211,6 +211,7 @@ export const JobOperation = ({
     id: userId,
     company: { id: companyId }
   } = useUser();
+  const formatPersonName = useFormatPersonName();
 
   const [items] = useItems();
   const { downloadFile, downloadModel, getFilePath } = useFiles(job);
@@ -1384,6 +1385,69 @@ export const JobOperation = ({
                     }}
                   </Await>
                 </Suspense>
+              </div>
+            </div>
+
+            <Separator />
+            <div className="flex flex-col items-start justify-between w-full">
+              <div className="flex flex-col gap-4 p-4 lg:p-6 w-full">
+                <HStack className="justify-between w-full">
+                  <Heading size="h3">
+                    <Trans>Pickups</Trans>
+                  </Heading>
+                  <Button
+                    aria-label="Log Pickup"
+                    leftIcon={<LuHardHat />}
+                    variant="secondary"
+                    onClick={pickupModal.onOpen}
+                  >
+                    <Trans>Log Pickup</Trans>
+                  </Button>
+                </HStack>
+                <Table className="w-full">
+                  <Thead>
+                    <Tr>
+                      <Th><Trans>Employee</Trans></Th>
+                      <Th><Trans>Quantity</Trans></Th>
+                      <Th />
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {pickups.length === 0 ? (
+                      <Tr>
+                        <Td colSpan={3} className="py-8 text-muted-foreground text-center">
+                          <Trans>No pickups logged</Trans>
+                        </Td>
+                      </Tr>
+                    ) : (
+                      pickups.map((pickup) => (
+                        <Tr key={pickup.id}>
+                          <Td>
+                            {pickup.employee
+                              ? formatPersonName(
+                                  pickup.employee as {
+                                    firstName: string;
+                                    lastName: string;
+                                  }
+                                )
+                              : pickup.employeeId}
+                          </Td>
+                          <Td>{pickup.quantity}</Td>
+                          <Td className="text-right">
+                            <PickupDeleteButton pickupId={pickup.id} />
+                          </Td>
+                        </Tr>
+                      ))
+                    )}
+                  </Tbody>
+                </Table>
+                {pickupModal.isOpen && (
+                  <PickupModal
+                    jobOperationId={operation.id}
+                    configuration={pickupConfiguration}
+                    onClose={pickupModal.onClose}
+                  />
+                )}
               </div>
             </div>
 
