@@ -1,6 +1,7 @@
 import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
+import { assertNotDeleted } from "~/utils/loader";
 import {
   HStack,
   Input,
@@ -55,7 +56,8 @@ export const handle: Handle = {
 export async function loader({ request, params }: LoaderFunctionArgs) {
   const { client, companyId } = await requirePermissions(request, {
     view: "parts",
-    bypassRls: true
+    bypassRls: true,
+    includeDeleted: true  // Allow deleted items in BOM/relationships
   });
 
   const { itemId } = params;
@@ -67,6 +69,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     getPickMethods(client, itemId, companyId),
     getTagsList(client, companyId, "part")
   ]);
+
+  // Block access to deleted items
+  assertNotDeleted(partSummary.data);
 
   if (partSummary.data?.companyId !== companyId) {
     throw redirect(path.to.items);
