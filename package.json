@@ -12,6 +12,7 @@
     "husky": "8.0.3",
     "lint-staged": "16.4.0",
     "npm-run-all": "catalog:",
+    "pofile": "^1.1.4",
     "postcss-nesting": "12.1.5",
     "rimraf": "catalog:",
     "supabase": "catalog:",
