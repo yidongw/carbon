@@ -5,14 +5,7 @@ import { fetchAllFromTable } from "@carbon/database";
 import { useInterval, useRealtimeChannel } from "@carbon/react";
 import { useEffect } from "react";
 import { useUser } from "~/hooks";
-import {
-  fetchEmployeeForPeopleStore,
-  upsertPersonInPeopleStore,
-  useCustomers,
-  useItems,
-  usePeople,
-  useSuppliers
-} from "~/stores";
+import { useCustomers, useItems, usePeople, useSuppliers } from "~/stores";
 import type { Item } from "~/stores/items";
 import type { ListItem } from "~/types";
 
@@ -393,72 +386,17 @@ const RealtimeDataProvider = ({ children }: { children: React.ReactNode }) => {
             table: "employee"
           },
           async (payload) => {
-            switch (payload.eventType) {
-              case "INSERT": {
-                const inserted = payload.new as {
-                  id: string;
-                  companyId?: string;
-                };
-                if (inserted.companyId && inserted.companyId !== companyId) {
-                  return;
-                }
-
-                const data = await fetchEmployeeForPeopleStore(
-                  carbon,
-                  companyId,
-                  inserted.id
-                );
-                if (!data) {
-                  console.warn(
-                    "Employee realtime INSERT received but employees view row not found:",
-                    inserted.id
-                  );
-                  return;
-                }
-
-                upsertPersonInPeopleStore(data);
-                break;
-              }
-              case "UPDATE": {
-                const updated = payload.new as {
-                  id: string;
-                  companyId?: string;
-                };
-                if (updated.companyId && updated.companyId !== companyId) {
-                  return;
-                }
-
-                const data = await fetchEmployeeForPeopleStore(
-                  carbon,
-                  companyId,
-                  updated.id
-                );
-
-                if (!data) {
-                  setPeople((people) =>
-                    people.filter((person) => person.id !== updated.id)
-                  );
-                  break;
-                }
-
-                upsertPersonInPeopleStore(data);
-                break;
-              }
-              case "DELETE": {
-                const deleted = payload.old as {
-                  id: string;
-                  companyId?: string;
-                };
-                if (deleted.companyId && deleted.companyId !== companyId) {
-                  return;
-                }
-                setPeople((people) =>
-                  people.filter((person) => person.id !== deleted.id)
-                );
-                break;
-              }
-              default:
-                break;
+            // TODO: there's a cleaner way of doing this, but since customers and suppliers
+            // are also in the users table, we can't automatically add/update/delete them
+            // from our list of employees. So for now we just refetch.
+            const { data } = await carbon
+              .from("employees")
+              .select("id, name, firstName, lastName, avatarUrl")
+              .eq("companyId", companyId)
+              .order("name");
+            if (data) {
+              // @ts-ignore
+              setPeople(data);
             }
           }
         );
