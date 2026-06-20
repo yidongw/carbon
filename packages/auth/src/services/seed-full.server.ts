@@ -435,7 +435,7 @@ export async function seedFullDemoData(
       type: "Part",
       replenishmentSystem: "Buy",
       itemTrackingType: "Inventory",
-      uom: "FT",
+      uom: "FOOT",
     },
     {
       readableId: "FASTENER-KIT-01",
@@ -471,7 +471,7 @@ export async function seedFullDemoData(
       type: "Consumable",
       replenishmentSystem: "Buy",
       itemTrackingType: "Inventory",
-      uom: "GAL",
+      uom: "GL",
     },
     {
       readableId: "ASSEMBLY-MOTOR-001",
