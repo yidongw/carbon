@@ -23,6 +23,7 @@ import { LowPriorityIcon } from "~/assets/icons/LowPriorityIcon";
 import { MediumPriorityIcon } from "~/assets/icons/MediumPriorityIcon";
 import { Hidden, Location, Submit, WorkCenter } from "~/components/Form";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
+import { useMaintenanceDispatchPriorityLabel } from "~/modules/production/productionLabels";
 import { getPrivateUrl, path } from "~/utils/path";
 import {
   isMaintenanceDispatchLocked,
@@ -62,6 +63,8 @@ const MaintenanceDispatchForm = ({
   failureModes = []
 }: MaintenanceDispatchFormProps) => {
   const { t } = useLingui();
+  const getMaintenanceDispatchPriorityLabel =
+    useMaintenanceDispatchPriorityLabel();
   const permissions = usePermissions();
   const {
     company: { id: companyId }
@@ -163,7 +166,7 @@ const MaintenanceDispatchForm = ({
                   label: (
                     <div className="flex gap-1 items-center">
                       {getPriorityIcon(priority)}
-                      <span>{priority}</span>
+                      <span>{getMaintenanceDispatchPriorityLabel(priority)}</span>
                     </div>
                   )
                 }))}

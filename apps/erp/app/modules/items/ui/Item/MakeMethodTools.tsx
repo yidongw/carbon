@@ -238,7 +238,7 @@ const MakeMethodTools = ({
             {itemLink && (
               <MenubarItem leftIcon={<LuGitFork />} asChild>
                 <Link prefetch="intent" to={itemLink}>
-                  Item Master
+                  <Trans>Item Master</Trans>
                 </Link>
               </MenubarItem>
             )}
@@ -360,7 +360,7 @@ const MakeMethodTools = ({
               fetcher={fetcher}
               action={path.to.makeMethodGet}
               validator={getMethodValidator}
-              onSubmit={getMethodModal.onClose}
+              onSuccess={getMethodModal.onClose}
             >
               <ModalHeader>
                 <ModalTitle>Get Method</ModalTitle>
@@ -464,7 +464,7 @@ const MakeMethodTools = ({
               fetcher={fetcher}
               action={path.to.makeMethodSave}
               validator={getMethodValidator}
-              onSubmit={saveMethodModal.onClose}
+              onSuccess={saveMethodModal.onClose}
             >
               <ModalHeader>
                 <ModalTitle>Save Method</ModalTitle>
@@ -561,7 +561,7 @@ const MakeMethodTools = ({
                   makeMethods.length === 1 ? selectedVersion.id : undefined,
                 version: maxVersion + 1
               }}
-              onSubmit={newVersionModal.onClose}
+              onSuccess={newVersionModal.onClose}
             >
               <ModalHeader>
                 <ModalTitle>New Version</ModalTitle>

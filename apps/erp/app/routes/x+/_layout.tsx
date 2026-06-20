@@ -16,11 +16,10 @@ import {
   ItarPopup,
   TooltipProvider,
   useKeyboardWedge,
-  useMount,
-  useNProgress
+  useMount
 } from "@carbon/react";
 import { getStripeCustomerByCompanyId } from "@carbon/stripe/stripe.server";
-import { Edition } from "@carbon/utils";
+import { Edition, formatPersonName } from "@carbon/utils";
 import posthog from "posthog-js";
 import { Suspense } from "react";
 import type {
@@ -36,8 +35,10 @@ import {
   useNavigate
 } from "react-router";
 import { RealtimeDataProvider } from "~/components";
-import { PrimaryNavigation, Topbar } from "~/components/Layout";
+import { FloatingChat } from "~/components/Chat";
+import { PrimaryNavigation, Topbar, TopbarProvider } from "~/components/Layout";
 import { TimeCardWarning } from "~/components/TimeCardWarning";
+import { OverlayHost, OverlayProvider } from "~/components/Overlay";
 import TrainingPanel from "~/components/TrainingPanel";
 import { useTrainingPanel } from "~/hooks/useTrainingPanel";
 import { getOpenClockEntry } from "~/modules/people";
@@ -52,7 +53,6 @@ import {
   isApprovalRequired
 } from "~/modules/shared/shared.service";
 import {
-  getModulePreferences,
   getUser,
   getUserClaims,
   getUserDefaults,
@@ -62,11 +62,18 @@ import { ERP_URL, MES_URL, path } from "~/utils/path";
 
 export const shouldRevalidate: ShouldRevalidateFunction = ({
   currentUrl,
+  formAction,
   defaultShouldRevalidate
 }) => {
+  // After a magic-link login the callback action redirects here via useFetcher.
+  // React Router would otherwise revalidate all loaders a second time even though
+  // the session was just established — skip it.
+  if (formAction?.startsWith("/callback")) {
+    return false;
+  }
+
   if (
     currentUrl.pathname.startsWith("/x/settings") ||
-    currentUrl.pathname.startsWith("/x/users") ||
     currentUrl.pathname.startsWith("/refresh-session") ||
     currentUrl.pathname.startsWith("/x/acknowledge") ||
     currentUrl.pathname.startsWith("/x/shared/views")
@@ -78,7 +85,7 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
 };
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const authSession = await requireAuthSession(request, { verify: true });
+  const authSession = await requireAuthSession(request);
   const { accessToken, companyId, expiresAt, expiresIn, userId } = authSession;
 
   // Block ERP access when console mode is active on this terminal.
@@ -111,7 +118,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     groups,
     defaults,
     auditLogEnabled,
-    modulePreferences
+    supplierApprovalRequired
   ] = await Promise.all([
     getCompanies(client, userId),
     getStripeCustomerByCompanyId(companyId, userId),
@@ -124,7 +131,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     getUserGroups(client, userId),
     getUserDefaults(client, userId, companyId),
     isAuditLogEnabled(client, companyId),
-    getModulePreferences(client, userId, companyId)
+    isApprovalRequired(client, "supplier", companyId)
   ]);
 
   if (!claims || user.error || !user.data || !groups.data) {
@@ -173,9 +180,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
     plan: stripeCustomer?.planId,
     role: claims?.role,
     user: user.data,
-    modulePreferences: modulePreferences.data ?? [],
     savedViews: savedViews.data ?? [],
-    supplierApprovalRequired: isApprovalRequired(client, "supplier", companyId),
+    supplierApprovalRequired,
     openClockEntry: companySettings.data?.timeCardEnabled
       ? getOpenClockEntry(client, userId, companyId)
       : null
@@ -186,9 +192,8 @@ export default function AuthenticatedRoute() {
   const { session, user, companySettings, openClockEntry } =
     useLoaderData<typeof loader>();
   const navigate = useNavigate();
-  const { isOpen, training, dismiss } = useTrainingPanel();
+  const { training, dismiss } = useTrainingPanel();
 
-  useNProgress();
   useKeyboardWedge({
     test: (input) => input.startsWith(MES_URL) || input.startsWith(ERP_URL),
     callback: (input) => {
@@ -206,12 +211,18 @@ export default function AuthenticatedRoute() {
 
     posthog.identify(user.id, {
       email: user.email,
-      name: `${user.firstName} ${user.lastName}`
+      name: formatPersonName(
+        {
+          firstName: user.firstName,
+          lastName: user.lastName
+        },
+        companySettings?.lastNameFirst ?? false
+      )
     });
   });
 
   return (
-    <div className="h-[100dvh] flex flex-col">
+    <div className="h-[100dvh] flex flex-col overflow-hidden">
       {user?.acknowledgedITAR === false && CONTROLLED_ENVIRONMENT ? (
         <ItarPopup
           acknowledgeAction={path.to.acknowledge}
@@ -220,19 +231,28 @@ export default function AuthenticatedRoute() {
       ) : (
         <CarbonProvider session={session}>
           <RealtimeDataProvider>
+            <TopbarProvider>
+            <OverlayProvider>
             <TooltipProvider>
-              <div className="flex flex-col h-screen">
+              <div
+                className="flex flex-col h-screen"
+                style={{
+                  paddingLeft: "var(--chat-panel-left, 0px)",
+                  paddingRight: "var(--chat-panel-right, 0px)",
+                  transition: "padding-left 0.35s ease-out, padding-right 0.35s ease-out",
+                }}
+              >
                 <Topbar />
                 <div className="flex flex-1 h-[calc(100vh-49px)] relative">
                   <PrimaryNavigation />
-                  <main className="flex-1 overflow-y-auto scrollbar-hide border-l border-t bg-muted sm:rounded-tl-2xl relative z-10">
+                  <main className="flex-1 overflow-y-auto overflow-x-hidden overscroll-contain scrollbar-hide border-l border-t bg-muted sm:rounded-tl-2xl relative z-10">
                     <Outlet />
                   </main>
                 </div>
               </div>
               <TrainingPanel
                 training={training}
-                isOpen={isOpen}
+                isOpen={false}
                 onDismiss={dismiss}
               />
               {companySettings?.timeCardEnabled && (
@@ -253,7 +273,11 @@ export default function AuthenticatedRoute() {
                   </Await>
                 </Suspense>
               )}
+              <OverlayHost />
+              <FloatingChat />
             </TooltipProvider>
+            </OverlayProvider>
+            </TopbarProvider>
           </RealtimeDataProvider>
         </CarbonProvider>
       )}

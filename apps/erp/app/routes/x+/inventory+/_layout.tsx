@@ -17,7 +17,7 @@ export const meta: MetaFunction = () => {
 
 export const handle: Handle = {
   breadcrumb: msg`Inventory`,
-  to: path.to.inventory,
+  to: path.to.inventoryQuantities,
   module: "inventory"
 };
 
@@ -42,9 +42,9 @@ export default function InventoryRoute() {
 
   return (
     <CollapsibleSidebarProvider>
-      <div className="grid grid-cols-[auto_1fr] w-full h-full">
+      <div className="flex flex-col md:grid md:grid-cols-[auto_1fr] w-full h-full">
         <GroupedContentSidebar groups={groups} />
-        <VStack spacing={0} className="h-full">
+        <VStack spacing={0} className="h-full flex-1 min-h-0">
           <Outlet />
         </VStack>
       </div>

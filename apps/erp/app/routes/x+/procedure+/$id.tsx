@@ -16,7 +16,7 @@ import {
   useLoaderData,
   useParams
 } from "react-router";
-import { PanelProvider, ResizablePanels } from "~/components/Layout/Panels";
+import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import { usePermissions, useUser } from "~/hooks";
 import { getProcedure, getProcedureVersions } from "~/modules/production";
 import ProcedureExplorer from "~/modules/production/ui/Procedures/ProcedureExplorer";
@@ -72,8 +72,8 @@ export default function ProcedureRoute() {
     <PanelProvider key={`${id}-${procedure.version}`}>
       <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
         <ProcedureHeader />
-        <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
-          <div className="flex grow overflow-hidden">
+        <div className="flex flex-1 min-h-0 overflow-hidden w-full">
+          <div className="flex flex-1 min-h-0 h-full overflow-hidden">
             <ResizablePanels
               explorer={
                 <ProcedureExplorer
@@ -81,7 +81,7 @@ export default function ProcedureRoute() {
                 />
               }
               content={
-                <div className="bg-background h-[calc(100dvh-99px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
+                <div className="bg-background h-full min-h-0 overflow-y-auto overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
                   <ProcedureEditor />
                   <Outlet />
                 </div>

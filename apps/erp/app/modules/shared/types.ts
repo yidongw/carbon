@@ -58,6 +58,22 @@ export type ApprovalRule = NonNullable<
 
 export type ApprovalDecision = "Approved" | "Rejected";
 
+/**
+ * Per-document-type context passed into approveRequest / rejectRequest. Each
+ * key holds the inputs required by a specific document type's handler. Adding
+ * a new approval document type should mean adding a key here (and a handler
+ * in shared.service.ts) — not editing the shared approve/reject functions.
+ */
+export type ApproveRequestOptions = {
+  productionPay?: {
+    paymentYear: number;
+    paymentMonth: number;
+    supabaseClient: import("@supabase/supabase-js").SupabaseClient<
+      import("@carbon/database").Database
+    >;
+  };
+};
+
 export type ApprovalStatus = Database["public"]["Enums"]["approvalStatus"];
 
 export type BillOfMaterialNodeType =

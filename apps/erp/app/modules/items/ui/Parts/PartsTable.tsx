@@ -33,6 +33,7 @@ import {
   LuCheck,
   LuGitPullRequestArrow,
   LuGroup,
+  LuLayoutTemplate,
   LuLoaderCircle,
   LuPencil,
   LuTag,
@@ -51,7 +52,7 @@ import {
   Table,
   TrackingTypeIcon
 } from "~/components";
-import { useItemPostingGroups } from "~/components/Form/ItemPostingGroup";
+import type { ItemPostingGroupListItem } from "~/modules/items";
 import { ReplenishmentSystemIcon } from "~/components/Icons";
 import { ConfirmDelete } from "~/components/Modals";
 import { useDateFormatter, usePermissions } from "~/hooks";
@@ -70,9 +71,10 @@ type PartsTableProps = {
   data: Part[];
   tags: { name: string }[];
   count: number;
+  itemPostingGroups: ItemPostingGroupListItem[];
 };
 
-const PartsTable = memo(({ data, tags, count }: PartsTableProps) => {
+const PartsTable = memo(({ data, tags, count, itemPostingGroups: rawItemPostingGroups }: PartsTableProps) => {
   const { t } = useLingui();
   const navigate = useNavigate();
   const permissions = usePermissions();
@@ -108,7 +110,11 @@ const PartsTable = memo(({ data, tags, count }: PartsTableProps) => {
   const [selectedItem, setSelectedItem] = useState<Part | null>(null);
 
   const [people] = usePeople();
-  const itemPostingGroups = useItemPostingGroups();
+  const itemPostingGroups = useMemo(
+    () =>
+      rawItemPostingGroups.map((g) => ({ value: g.id, label: g.name })),
+    [rawItemPostingGroups]
+  );
   const customColumns = useCustomColumns<Part>("part");
 
   const columns = useMemo<ColumnDef<Part>[]>(() => {
@@ -117,15 +123,20 @@ const PartsTable = memo(({ data, tags, count }: PartsTableProps) => {
         accessorKey: "id",
         header: t`Part ID`,
         cell: ({ row }) => (
-          <HStack className="py-1 min-w-[200px] truncate" spacing={2}>
+          <HStack className="py-1 w-full min-w-0 max-w-[200px]" spacing={2}>
             <ItemThumbnail
               size="md"
               thumbnailPath={row.original.thumbnailPath}
               type="Part"
             />
-            <Hyperlink to={path.to.partDetails(row.original.id!)}>
-              <VStack spacing={0}>
-                {row.original.readableIdWithRevision}
+            <Hyperlink
+              to={path.to.partDetails(row.original.id!)}
+              className="min-w-0"
+            >
+              <VStack spacing={0} className="min-w-0">
+                <span className="w-full truncate">
+                  {row.original.readableIdWithRevision}
+                </span>
                 <div className="w-full truncate text-muted-foreground text-xs">
                   {row.original.name}
                 </div>
@@ -135,6 +146,17 @@ const PartsTable = memo(({ data, tags, count }: PartsTableProps) => {
         ),
         meta: {
           icon: <LuBookMarked />
+        }
+      },
+      {
+        accessorKey: "templateName",
+        header: t`Template`,
+        cell: (item) => {
+          const name = item.getValue<string | null>();
+          return name ? <Badge variant="secondary">{name}</Badge> : null;
+        },
+        meta: {
+          icon: <LuLayoutTemplate />
         }
       },
       {
@@ -149,29 +171,6 @@ const PartsTable = memo(({ data, tags, count }: PartsTableProps) => {
           icon: <LuAlignJustify />
         }
       },
-      {
-        accessorKey: "itemPostingGroupId",
-        header: t`Item Group`,
-        cell: (item) => {
-          const itemPostingGroupId = item.getValue<string>();
-          const itemPostingGroup = itemPostingGroups.find(
-            (group) => group.value === itemPostingGroupId
-          );
-          const label = itemPostingGroup?.label;
-          return label ? <Badge variant="secondary">{label}</Badge> : null;
-        },
-        meta: {
-          filter: {
-            type: "static",
-            options: itemPostingGroups.map((group) => ({
-              value: group.value,
-              label: <Badge variant="secondary">{group.label}</Badge>
-            }))
-          },
-          icon: <LuGroup />
-        }
-      },
-
       {
         accessorKey: "replenishmentSystem",
         header: t`Replenishment`,
@@ -251,6 +250,28 @@ const PartsTable = memo(({ data, tags, count }: PartsTableProps) => {
         }
       },
 
+      {
+        accessorKey: "itemPostingGroupId",
+        header: t`Item Group`,
+        cell: (item) => {
+          const itemPostingGroupId = item.getValue<string>();
+          const itemPostingGroup = itemPostingGroups.find(
+            (group) => group.value === itemPostingGroupId
+          );
+          const label = itemPostingGroup?.label;
+          return label ? <Badge variant="secondary">{label}</Badge> : null;
+        },
+        meta: {
+          filter: {
+            type: "static",
+            options: itemPostingGroups.map((group) => ({
+              value: group.value,
+              label: <Badge variant="secondary">{group.label}</Badge>
+            }))
+          },
+          icon: <LuGroup />
+        }
+      },
       {
         accessorKey: "tags",
         header: t`Tags`,

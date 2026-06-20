@@ -41,6 +41,7 @@ import { Suspense, useRef } from "react";
 import { BsFillHexagonFill } from "react-icons/bs";
 import {
   LuActivity,
+  LuBanknote,
   LuBuilding,
   LuCalendarDays,
   LuChevronDown,
@@ -57,7 +58,7 @@ import {
   LuWrench
 } from "react-icons/lu";
 import { Await, Form, Link, useFetcher, useLocation } from "react-router";
-import { useUser } from "~/hooks";
+import { useFormatPersonName, useUser } from "~/hooks";
 import type { action } from "~/root";
 import type { Location } from "~/services/types";
 import type { PinnedInUser } from "~/types";
@@ -209,6 +210,11 @@ export function OperationsNav({
       to: path.to.recent
     },
     {
+      title: t`My Salary`,
+      icon: LuBanknote,
+      to: path.to.salary
+    },
+    {
       title: t`Maintenance`,
       icon: LuWrench,
       label: (activeMaintenanceCount ?? 0).toString(),
@@ -316,7 +322,11 @@ export function UserNav({
 }) {
   const { t } = useLingui();
   const user = useUser();
-  const stationName = `${user.firstName} ${user.lastName}`;
+  const formatPersonName = useFormatPersonName();
+  const stationName = formatPersonName({
+    firstName: user.firstName,
+    lastName: user.lastName
+  });
   const { isMobile } = useSidebar();
 
   const mode = useMode();

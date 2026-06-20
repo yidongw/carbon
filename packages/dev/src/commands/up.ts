@@ -4,7 +4,7 @@ import { execa } from "execa";
 import { join } from "pathe";
 import type { AppId } from "../constants.js";
 import { renderEnv, syncAppPortlessConfigs, writeEnv } from "../env.js";
-import { currentBranch } from "../git.js";
+import { currentBranch, isLinkedWorktree } from "../git.js";
 import { onShutdown } from "../helpers.js";
 import { pickApps, pickBorrowSlug } from "../prompts.js";
 import {
@@ -34,6 +34,7 @@ import {
 } from "../services/migrations.js";
 import {
   branchToPrefix,
+  claimAppHosts,
   ensurePortlessInstalled,
   ensureProxyPrivileges,
   hostsFileInSync,
@@ -68,8 +69,6 @@ type UpOpts = {
   pull?: boolean;
   /** When true, show a picker to borrow another worktree's running containers. */
   borrow?: boolean;
-  /** When false, skip portless proxy and use localhost URLs. */
-  portless?: boolean;
 };
 
 type Ctx = {
@@ -98,13 +97,9 @@ export async function up(opts: UpOpts = {}) {
   loadDotenv({ path: join(root, ".env.local"), override: false });
   loadDotenv({ path: join(root, ".env"), override: false });
 
-  // --no-portless flag or CARBON_PORTLESS=0 to use http://localhost:PORT URLs
-  // and skip the portless proxy setup (useful when the .dev TLD cert is not
-  // trusted). The flag takes precedence over the env var.
-  const portless =
-    opts.portless !== undefined
-      ? opts.portless
-      : process.env.CARBON_PORTLESS !== "0";
+  // Set CARBON_PORTLESS=0 to use http://localhost:PORT URLs and skip the
+  // portless proxy setup (useful when the .dev TLD cert is not trusted).
+  const portless = process.env.CARBON_PORTLESS !== "0";
 
   intro("Carbon · dev up");
 
@@ -141,6 +136,7 @@ export async function up(opts: UpOpts = {}) {
 
   await refreshStaleCopyFiles(root);
   await ensureDepsInstalled(root);
+  if (selectedApps.length > 0) await compileLocaleCatalogs(root);
 
   const ctx = await provisionSlot(root, slug, portless, borrowedEntry);
   if (borrowedEntry) {
@@ -203,6 +199,17 @@ async function ensureDepsInstalled(root: string) {
   else log.info("pnpm install skipped (lockfile in sync)");
 }
 
+// Compile lingui .po catalogs → the .mjs files the app loaders import at runtime
+// (apps/*/app/services/lingui.server.ts globs `locales/*/erp.mjs`). `turbo run
+// build` produces these via the //#lingui:compile task, but `crbn up` spawns
+// `react-router dev` directly and never runs that task — so without this the
+// compiled catalogs don't exist in dev and switching the UI language silently
+// loads an empty catalog (a no-op). Mirrors the build step.
+async function compileLocaleCatalogs(root: string) {
+  await execa("pnpm", ["lingui:compile"], { cwd: root });
+  log.step("compiled locale catalogs");
+}
+
 async function provisionSlot(
   root: string,
   slug: string,
@@ -217,13 +224,6 @@ async function provisionSlot(
         // Always resolve own slot so PORT_ERP/PORT_MES are claimed for this
         // worktree and won't collide with the borrowed stack's running dev servers.
         const ownSlot = await resolveSlot(slug, root);
-        // Pin well-known ports in localhost mode so URLs are predictable and
-        // OAuth redirect URIs can be registered once in Google/Azure console.
-        if (!portless && !borrowedEntry) {
-          ownSlot.ports.PORT_API = 54321;
-          ownSlot.ports.PORT_ERP = 3000;
-          ownSlot.ports.PORT_MES = 3001;
-        }
         const slot = borrowedEntry
           ? {
               // Backend ports (DB, API, Studio, Inbucket, Inngest) come from the
@@ -239,13 +239,21 @@ async function provisionSlot(
               jwt: borrowedEntry.jwt
             }
           : ownSlot;
+        // Prefix every non-default branch. Portless auto-prefixes only in
+        // linked worktrees; main checkout gets the same shape via per-app
+        // portless.json stamped below.
         const branch = await currentBranch(root);
+        const linked = await isLinkedWorktree();
         const branchPrefix = branchToPrefix(branch, slug);
 
         ctx = { root, slug, branchPrefix, ...slot };
 
         writeEnv(root, renderEnv({ slug, portless, branchPrefix, ...slot }));
-        syncAppPortlessConfigs(root);
+        syncAppPortlessConfigs({
+          worktreeRoot: root,
+          branchPrefix: portless ? branchPrefix : null,
+          linked
+        });
         // Use override: true so freshly written .env.local values replace any
         // stale values already in process.env from the initial load at startup.
         loadDotenv({ path: join(root, ".env.local"), override: true });
@@ -395,18 +403,12 @@ async function runDatabaseMigrations(
   ]);
 }
 
-async function setupPortless(ctx: Ctx, _selectedApps: AppId[]) {
+async function setupPortless(ctx: Ctx, selectedApps: AppId[]) {
   await tasks([
-    {
-      title: "Prune stale portless routes",
-      task: async () => {
-        await pruneStaleRoutes();
-        return "orphans cleaned";
-      }
-    },
     {
       title: "Start portless proxy",
       task: async (msg) => {
+        pruneStaleRoutes(ctx.branchPrefix);
         startProxyDaemon(ctx.root);
         msg("waiting for proxy on :443");
         await waitForProxyReady();
@@ -423,26 +425,26 @@ async function setupPortless(ctx: Ctx, _selectedApps: AppId[]) {
         );
         return `${count} aliases registered`;
       }
+    },
+    {
+      title: "Reserve app hostnames",
+      task: async () => {
+        const killed = await claimAppHosts(ctx.branchPrefix, selectedApps);
+        return killed > 0
+          ? `killed ${killed} orphan portless process${killed === 1 ? "" : "es"}`
+          : "no orphans found";
+      }
     }
   ]);
 }
 
-// Verify /etc/hosts has all expected entries. Root proxy auto-syncs via
-// fs.watch on routes.json, but there's a race between alias registration
-// and the watcher firing. Poll briefly, then fall back to sudo sync.
+// Skip sudo sync when root daemon already auto-syncs, or hosts unchanged.
 async function ensureHostsFile() {
   if (proxyRunsAsRoot()) {
-    // Give the root daemon a moment to pick up new routes.
-    const deadline = Date.now() + 3_000;
-    while (Date.now() < deadline) {
-      if (hostsFileInSync()) {
-        log.info("/etc/hosts verified in sync");
-        return;
-      }
-      await new Promise((r) => setTimeout(r, 300));
-    }
-    log.warn("/etc/hosts not in sync after 3s — falling back to manual sync");
-  } else if (hostsFileInSync()) {
+    log.info("/etc/hosts auto-synced by root proxy daemon");
+    return;
+  }
+  if (hostsFileInSync()) {
     log.info("/etc/hosts already in sync — skipping sudo");
     return;
   }

@@ -401,7 +401,11 @@ export const registerProductionTools: RegisterTools = (server, ctx) => {
       annotations: DESTRUCTIVE_ANNOTATIONS,
     },
     withErrorHandling(async (params) => {
-      const result = await deleteProductionQuantity(ctx.client, params.productionQuantityId);
+      const result = await deleteProductionQuantity(
+        ctx.client,
+        params.productionQuantityId,
+        { companyId: ctx.companyId, userId: ctx.userId }
+      );
       return toMcpResult(result);
     }, "Failed: production_deleteProductionQuantity"),
   );
@@ -1828,7 +1832,20 @@ export const registerProductionTools: RegisterTools = (server, ctx) => {
       annotations: WRITE_ANNOTATIONS,
     },
     withErrorHandling(async (params) => {
-      const result = await updateProductionQuantity(ctx.client, { ...params.productionQuantity, companyId: ctx.companyId, updatedBy: ctx.userId });
+      const pq = params.productionQuantity;
+      if (!pq.id) {
+        return toMcpResult({
+          data: null,
+          error: new Error("productionQuantity.id is required for updates")
+        });
+      }
+      const result = await updateProductionQuantity(ctx.client, {
+        ...pq,
+        id: pq.id,
+        companyId: ctx.companyId,
+        updatedBy: ctx.userId,
+        employeeId: pq.employeeId ?? ctx.userId
+      });
       return toMcpResult(result);
     }, "Failed: production_updateProductionQuantity"),
   );
@@ -1843,7 +1860,25 @@ export const registerProductionTools: RegisterTools = (server, ctx) => {
       annotations: WRITE_ANNOTATIONS,
     },
     withErrorHandling(async (params) => {
-      const result = await upsertProductionQuantity(ctx.client, { ...params.productionQuantity, companyId: ctx.companyId, updatedBy: ctx.userId });
+      const pq = params.productionQuantity;
+      const employeeId = pq.employeeId ?? ctx.userId;
+      const result = await upsertProductionQuantity(
+        ctx.client,
+        "id" in pq && pq.id
+          ? {
+              ...pq,
+              id: pq.id,
+              companyId: ctx.companyId,
+              updatedBy: ctx.userId,
+              employeeId
+            }
+          : {
+              ...pq,
+              companyId: ctx.companyId,
+              createdBy: ctx.userId,
+              employeeId
+            }
+      );
       return toMcpResult(result);
     }, "Failed: production_upsertProductionQuantity"),
   );

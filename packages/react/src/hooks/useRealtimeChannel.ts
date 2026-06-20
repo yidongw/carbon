@@ -1,4 +1,3 @@
-import { NODE_ENV } from "@carbon/env";
 import type { RealtimeChannel, SupabaseClient } from "@supabase/supabase-js";
 import { REALTIME_SUBSCRIBE_STATES } from "@supabase/supabase-js";
 import { useCallback, useEffect, useRef } from "react";
@@ -41,7 +40,7 @@ export const useRealtimeChannel = <TDeps extends any[]>(
     setup,
     enabled = true,
     dependencies = [],
-    notifyOnSubscribeError = NODE_ENV === "development"
+    notifyOnSubscribeError = process.env.NODE_ENV === "development"
   } = options;
   const channelRef = useRef<RealtimeChannel | null>(null);
   const isTearingDownRef = useRef(false);

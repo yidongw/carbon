@@ -7,6 +7,7 @@ import { error, success } from "../utils/result";
 import {
   getClaims,
   getPermissionCacheKey,
+  isValidCachedClaims,
   makePermissionsFromClaims
 } from "./users";
 
@@ -18,6 +19,10 @@ export async function getUserByEmail(email: string) {
     .single();
 }
 
+export async function getUserById(id: string) {
+  return getCarbonServiceRole().from("user").select("*").eq("id", id).single();
+}
+
 export async function getUserClaims(userId: string, companyId: string) {
   let claims: {
     permissions: Record<string, Permission>;
@@ -27,10 +32,13 @@ export async function getUserClaims(userId: string, companyId: string) {
   try {
     const cachedClaims = await redis.get(getPermissionCacheKey(userId));
     if (cachedClaims) {
-      claims = JSON.parse(cachedClaims) as {
+      const parsed = JSON.parse(cachedClaims) as {
         permissions: Record<string, Permission>;
         role: string | null;
       };
+      if (isValidCachedClaims(parsed)) {
+        claims = parsed;
+      }
     }
   } catch (e) {
     console.error("Failed to get claims from redis", e);
@@ -43,20 +51,22 @@ export async function getUserClaims(userId: string, companyId: string) {
         userId,
         companyId
       );
-      if (rawClaims.error || rawClaims.data === null) {
+      if (rawClaims.error) {
         console.error(rawClaims);
         throw new Error("Failed to get claims");
       }
 
       // convert rawClaims to permissions
-      claims = makePermissionsFromClaims(rawClaims.data as Json[]);
+      claims = rawClaims.data === null
+        ? { permissions: {}, role: null }
+        : makePermissionsFromClaims(rawClaims.data as Json[]);
+
+      if (!claims) {
+        claims = { permissions: {}, role: null };
+      }
 
       // store claims in redis
       await redis.set(getPermissionCacheKey(userId), JSON.stringify(claims));
-
-      if (!claims) {
-        throw new Error("Failed to get claims");
-      }
     }
 
     return claims;
@@ -244,10 +254,14 @@ export async function deactivateUser(
       return error(user.error, "Failed to get user");
     }
 
+    const userEmail = user.data?.email;
+    if (!userEmail) {
+      return success("User already deactivated");
+    }
     const invite = await serviceRole
       .from("invite")
       .select("*")
-      .eq("email", user.data?.email)
+      .eq("email", userEmail)
       .eq("companyId", companyId)
       .maybeSingle();
 

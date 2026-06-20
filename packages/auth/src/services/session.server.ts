@@ -1,6 +1,6 @@
 import { redis } from "@carbon/kv";
 import { Edition } from "@carbon/utils";
-import { createCookieSessionStorage, redirect } from "react-router";
+import { createCookie, createCookieSessionStorage, redirect } from "react-router";
 
 import {
   CarbonEdition,
@@ -250,4 +250,43 @@ export async function updateCompanySession(
   }
 
   return sessionStorage.commitSession(session, { maxAge: SESSION_MAX_AGE });
+}
+
+// Short-lived cookie that carries the PKCE code verifier from the login action
+// to the /callback loader. Only sent on requests to /callback.
+const pkceVerifierCookie = createCookie("sb-pkce-cv", {
+  path: "/callback",
+  maxAge: 15 * 60, // 15 minutes — long enough to receive and click the email
+  httpOnly: true,
+  sameSite: "lax",
+  secure: VERCEL_ENV === "production"
+});
+
+export type PkceEntry = { k: string; v: string; redirectTo?: string };
+
+export async function setPkceCookie(pkceEntry: PkceEntry): Promise<string> {
+  return pkceVerifierCookie.serialize(JSON.stringify(pkceEntry));
+}
+
+export async function destroyPkceCookie(): Promise<string> {
+  return pkceVerifierCookie.serialize("", { maxAge: 0 });
+}
+
+export async function getPkceCookie(
+  request: Request
+): Promise<PkceEntry | null> {
+  const raw = await pkceVerifierCookie.parse(request.headers.get("cookie"));
+  if (typeof raw !== "string" || !raw) return null;
+  try {
+    const parsed = JSON.parse(raw);
+    if (typeof parsed?.k === "string" && typeof parsed?.v === "string") {
+      return {
+        k: parsed.k,
+        v: parsed.v,
+        redirectTo:
+          typeof parsed.redirectTo === "string" ? parsed.redirectTo : undefined
+      };
+    }
+  } catch {}
+  return null;
 }

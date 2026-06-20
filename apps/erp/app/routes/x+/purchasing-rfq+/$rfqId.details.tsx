@@ -5,6 +5,7 @@ import { validationError, validator } from "@carbon/form";
 import type { JSONContent } from "@carbon/react";
 import { VStack } from "@carbon/react";
 import type { FileObject } from "@supabase/storage-js";
+import { useLingui } from "@lingui/react/macro";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { redirect, useLoaderData, useParams } from "react-router";
 import { DeferredFiles } from "~/components";
@@ -107,6 +108,7 @@ type LinkedSupplierQuote = {
 };
 
 export default function PurchasingRFQDetailsRoute() {
+  const { t } = useLingui();
   const { internalNotes } = useLoaderData<typeof loader>();
   const { rfqId } = useParams();
   if (!rfqId) throw new Error("Could not find rfqId");
@@ -134,7 +136,7 @@ export default function PurchasingRFQDetailsRoute() {
         key={`notes-${rfqId}`}
         id={rfqData.rfqSummary.id}
         table="purchasingRfq"
-        title="Notes"
+        title={t`Notes`}
         internalNotes={internalNotes}
       />
       <DeferredFiles key={`documents-${rfqId}`} resolve={rfqData.files}>

@@ -1,4 +1,4 @@
-import { error, success } from "@carbon/auth";
+import { error, isValidCachedClaims, success } from "@carbon/auth";
 import { deleteAuthAccount } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash, requireAuthSession } from "@carbon/auth/session.server";
@@ -120,6 +120,118 @@ export async function acceptInvite(
     .eq("code", code)
     .select("*")
     .single();
+}
+
+export async function grantEmployeeAccess(
+  client: SupabaseClient<Database>,
+  {
+    userId,
+    companyId,
+    employeeTypeId,
+    locationId
+  }: {
+    userId: string;
+    companyId: string;
+    employeeTypeId: string;
+    locationId: string;
+  }
+): Promise<{ success: false; message: string } | { success: true }> {
+  const existingEmployee = await client
+    .from("employee")
+    .select("id, active")
+    .eq("id", userId)
+    .eq("companyId", companyId)
+    .maybeSingle();
+
+  if (existingEmployee.data?.active) {
+    return {
+      success: false,
+      message: "This user is already an employee in this company"
+    };
+  }
+
+  const employeeTypePermissions = await getPermissionsByEmployeeType(
+    client,
+    employeeTypeId
+  );
+  if (employeeTypePermissions.error) {
+    return { success: false, message: employeeTypePermissions.error.message };
+  }
+
+  const permissions = makePermissionsFromEmployeeType(employeeTypePermissions);
+  const serviceRole = getCarbonServiceRole();
+
+  if (existingEmployee.data) {
+    const [activate, addUser, updateType] = await Promise.all([
+      activateEmployee(serviceRole, { userId, companyId }),
+      addUserToCompany(serviceRole, { userId, companyId, role: "employee" }),
+      serviceRole
+        .from("employee")
+        .update({ employeeTypeId, active: true })
+        .eq("id", userId)
+        .eq("companyId", companyId)
+    ]);
+
+    if (activate.error) {
+      return { success: false, message: activate.error.message };
+    }
+    if (addUser.error) {
+      return { success: false, message: addUser.error.message };
+    }
+    if (updateType.error) {
+      return { success: false, message: updateType.error.message };
+    }
+
+    const existingJob = await serviceRole
+      .from("employeeJob")
+      .select("id")
+      .eq("id", userId)
+      .eq("companyId", companyId)
+      .maybeSingle();
+
+    if (!existingJob.data) {
+      const jobInsert = await insertEmployeeJob(serviceRole, {
+        id: userId,
+        companyId,
+        locationId
+      });
+      if (jobInsert.error) {
+        return { success: false, message: jobInsert.error.message };
+      }
+    }
+  } else {
+    const [employeeInsert, jobInsert, addUser] = await Promise.all([
+      insertEmployee(serviceRole, {
+        id: userId,
+        employeeTypeId,
+        active: true,
+        companyId
+      }),
+      insertEmployeeJob(serviceRole, { id: userId, companyId, locationId }),
+      addUserToCompany(serviceRole, { userId, companyId, role: "employee" })
+    ]);
+
+    if (employeeInsert.error) {
+      return { success: false, message: employeeInsert.error.message };
+    }
+    if (jobInsert.error) {
+      return { success: false, message: jobInsert.error.message };
+    }
+    if (addUser.error) {
+      return { success: false, message: addUser.error.message };
+    }
+  }
+
+  const setPermissions = await setUserPermissions(
+    serviceRole,
+    userId,
+    permissions
+  );
+  if (setPermissions.error) {
+    return { success: false, message: setPermissions.error.message };
+  }
+
+  return { success: true };
 }
 
 async function activateCustomer(
@@ -645,10 +757,13 @@ export async function getUserClaims(userId: string, companyId: string) {
   try {
     const cachedClaims = await redis.get(getPermissionCacheKey(userId));
     if (cachedClaims) {
-      claims = JSON.parse(cachedClaims) as {
+      const parsed = JSON.parse(cachedClaims) as {
         permissions: Record<string, Permission>;
         role: string | null;
       };
+      if (isValidCachedClaims(parsed)) {
+        claims = parsed;
+      }
     }
   } catch (e) {
     console.error("Failed to get claims from redis", e);
@@ -661,20 +776,22 @@ export async function getUserClaims(userId: string, companyId: string) {
         userId,
         companyId
       );
-      if (rawClaims.error || rawClaims.data === null) {
+      if (rawClaims.error) {
         console.error(rawClaims);
         throw new Error("Failed to get claims");
       }
 
       // convert rawClaims to permissions
-      claims = makePermissionsFromClaims(rawClaims.data as Json[]);
+      claims = rawClaims.data === null
+        ? { permissions: {}, role: null }
+        : makePermissionsFromClaims(rawClaims.data as Json[]);
+
+      if (!claims) {
+        claims = { permissions: {}, role: null };
+      }
 
       // store claims in redis
       await redis.set(getPermissionCacheKey(userId), JSON.stringify(claims));
-
-      if (!claims) {
-        throw new Error("Failed to get claims");
-      }
     }
 
     return claims;

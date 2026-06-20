@@ -3,9 +3,11 @@ import { useMemo } from "react";
 import {
   LuArrowLeftRight,
   LuAxis3D,
+  LuBanknote,
   LuBetweenHorizontalStart,
   LuBookOpen,
   LuCalendar1,
+  LuCircleCheck,
   LuCoins,
   LuEuro,
   LuFileSpreadsheet,
@@ -27,10 +29,33 @@ const accountingOnlyRoutes = new Set<string>([
   path.to.accountingJournals
 ]);
 
+/** Payroll routes stay visible when full GL accounting is disabled. */
+const payrollRoutes = [path.to.accountingSalary, path.to.accountingPayments];
+
+const isPayrollRoute = (to: string) =>
+  payrollRoutes.some((base) => to === base || to.startsWith(`${base}?`));
+
 export default function useAccountingSubmodules() {
   const { t } = useLingui();
   const accountingRoutes: AuthenticatedRouteGroup[] = useMemo(
     () => [
+      {
+        name: t`Payroll`,
+        routes: [
+          {
+            name: t`Salary`,
+            to: path.to.accountingSalary,
+            role: "employee",
+            icon: <LuBanknote />
+          },
+          {
+            name: t`Payments`,
+            to: path.to.accountingPayments,
+            role: "employee",
+            icon: <LuCircleCheck />
+          }
+        ]
+      },
       {
         name: t`Reports`,
         routes: [
@@ -134,6 +159,9 @@ export default function useAccountingSubmodules() {
   const isRouteVisible = (route: { to: string; role?: string }) => {
     if (route.role && !permissions.is(route.role as Role)) return false;
     if (!hasMultipleCompanies && multiCompanyRoutes.has(route.to)) return false;
+    if (isPayrollRoute(route.to)) {
+      return permissions.can("view", "people");
+    }
     if (!accountingEnabled && accountingOnlyRoutes.has(route.to)) return false;
     return true;
   };

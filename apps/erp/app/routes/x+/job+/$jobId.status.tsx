@@ -5,11 +5,13 @@ import { flash } from "@carbon/auth/session.server";
 import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
 import {
+  createPurchaseOrdersFromJob,
   jobStatus,
   recalculateJobRequirements,
   runMRP,
   updateJobStatus
 } from "~/modules/production";
+import { triggerJobRelease } from "~/modules/production/production.server";
 import { path, requestReferrer } from "~/utils/path";
 
 export async function action({ request, params }: ActionFunctionArgs) {
@@ -52,7 +54,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     }
   }
 
-  if (["Planned", "Ready"].includes(status)) {
+  if (["Planned", "Ready"].includes(status) && !shouldSchedule) {
     const serviceRole = getCarbonServiceRole();
     await recalculateJobRequirements(serviceRole, {
       id,
@@ -73,48 +75,95 @@ export async function action({ request, params }: ActionFunctionArgs) {
         selectedPurchaseOrdersBySupplierId ?? "{}"
       );
 
-      const serviceRole = getCarbonServiceRole();
-      const [scheduler] = await Promise.all([
-        serviceRole.functions.invoke("schedule", {
-          body: {
-            jobId: id,
-            companyId,
-            userId,
-            mode: "initial",
-            direction: "backward"
-          }
-        }),
-        serviceRole.functions.invoke("create", {
-          body: {
-            type: "purchaseOrderFromJob",
-            jobId: id,
-            purchaseOrdersBySupplierId,
-            companyId,
-            userId
-          }
-        })
-      ]);
+      const { data: company, error: companyError } = await client
+        .from("company")
+        .select("companyGroupId")
+        .eq("id", companyId)
+        .single();
 
-      if (scheduler.error) {
+      if (companyError || !company?.companyGroupId) {
         throw redirect(
           requestReferrer(request) ?? path.to.job(id),
-          await flash(request, error(scheduler.error, "Failed to schedule job"))
+          await flash(
+            request,
+            error(companyError, "Failed to load company for purchase orders")
+          )
+        );
+      }
+
+      const purchaseOrderCreate = await createPurchaseOrdersFromJob(client, {
+        jobId: id,
+        purchaseOrdersBySupplierId,
+        companyId,
+        companyGroupId: company.companyGroupId,
+        userId
+      });
+
+      if (purchaseOrderCreate.error) {
+        const message =
+          purchaseOrderCreate.error instanceof Error
+            ? purchaseOrderCreate.error.message
+            : "Failed to create purchase orders for outside operations";
+        throw redirect(
+          requestReferrer(request) ?? path.to.job(id),
+          await flash(request, error(purchaseOrderCreate.error, message))
+        );
+      }
+
+      const statusUpdate = await updateJobStatus(client, {
+        id,
+        status,
+        updatedBy: userId
+      });
+
+      if (statusUpdate.error) {
+        throw redirect(
+          requestReferrer(request) ?? path.to.job(id),
+          await flash(
+            request,
+            error(statusUpdate.error, "Failed to update job status")
+          )
         );
       }
 
       if (status === "Ready") {
-        await client
+        const { error: releasedDateError } = await client
           .from("job")
           .update({
             releasedDate: new Date().toISOString()
           })
           .eq("id", id);
+
+        if (releasedDateError) {
+          throw redirect(
+            requestReferrer(request) ?? path.to.job(id),
+            await flash(
+              request,
+              error(releasedDateError, "Failed to set job release date")
+            )
+          );
+        }
       }
+
+      await triggerJobRelease(id, companyId, userId);
+
+      throw redirect(
+        requestReferrer(request) ?? path.to.job(id),
+        await flash(
+          request,
+          success(
+            "Job released. Material requirements, MRP, and scheduling are updating in the background."
+          )
+        )
+      );
     } catch (err) {
+      if (err instanceof Response) {
+        throw err;
+      }
       console.error(err);
       throw redirect(
         requestReferrer(request) ?? path.to.job(id),
-        await flash(request, error(err, "Failed to schedule job"))
+        await flash(request, error(err, "Failed to release job"))
       );
     }
   }
@@ -127,7 +176,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   });
   if (update.error) {
     throw redirect(
-      requestReferrer(request) ?? path.to.job(id),
+      path.to.job(id),
       await flash(request, error(update.error, "Failed to update job status"))
     );
   }

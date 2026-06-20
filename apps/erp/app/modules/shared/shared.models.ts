@@ -13,7 +13,8 @@ export const approvalDecisionValidator = z.object({
 export const approvalDocumentType = [
   "purchaseOrder",
   "qualityDocument",
-  "supplier"
+  "supplier",
+  "productionQuantityReport"
 ] as const;
 
 export type ApprovalDocumentType =
@@ -22,7 +23,8 @@ export type ApprovalDocumentType =
 export const approvalDocumentTypeLabel: Record<ApprovalDocumentType, string> = {
   purchaseOrder: "Purchase Order",
   qualityDocument: "Quality Document",
-  supplier: "Supplier"
+  supplier: "Supplier",
+  productionQuantityReport: "Quantity Review"
 };
 
 export const approvalDocumentTypesWithAmounts: ApprovalDocumentType[] = [
@@ -178,7 +180,11 @@ export const noteValidator = z.object({
   note: z.string().min(1, { message: "Note is required" })
 });
 
-export const operationTypes = ["Inside", "Outside"] as const;
+export const operationTypes = [
+  "Inside",
+  "Outside",
+  "Inside and Outside"
+] as const;
 
 export const procedureStepType = [
   "Task",

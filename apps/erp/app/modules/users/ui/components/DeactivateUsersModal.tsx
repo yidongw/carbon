@@ -65,7 +65,7 @@ const DeactivateUsersModal = ({
               method="post"
               action={path.to.deactivateUsers}
               validator={deactivateUsersValidator}
-              onSubmit={onClose}
+              onSuccess={onClose}
             >
               {userIds.map((id, index) => (
                 <input

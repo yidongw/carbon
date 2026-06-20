@@ -410,9 +410,7 @@ const PurchaseOrderLineForm = ({
                 className="w-full"
                 fetcher={fetcher}
                 isDisabled={isLocked}
-                onSubmit={() => {
-                  if (type === "modal") onClose?.();
-                }}
+                onSuccess={type === "modal" ? onClose : undefined}
               >
                 <HStack
                   className={cn(
@@ -433,7 +431,7 @@ const PurchaseOrderLineForm = ({
                         ? isGLAccount
                           ? indirectData.description || "G/L Account"
                           : getItemReadableId(items, itemData?.itemId) || "..."
-                        : "New Purchase Order Line"}
+                        : t`New Purchase Order Line`}
                     </ModalCardTitle>
                     <ModalCardDescription>
                       {isOutsideProcessing ? (
@@ -465,7 +463,7 @@ const PurchaseOrderLineForm = ({
                           </div>
                         </div>
                       ) : (
-                        "A purchase order line contains order details for a particular item"
+                        <Trans>A purchase order line contains order details for a particular item</Trans>
                       )}
                     </ModalCardDescription>
                   </ModalCardHeader>

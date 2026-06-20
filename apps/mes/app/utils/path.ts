@@ -91,6 +91,9 @@ export const path = {
     acknowledge: `${x}/acknowledge`,
     active: `${x}/active`,
     assigned: `${x}/assigned`,
+    salary: `${x}/salary`,
+    salaryMonth: (year: number, month: number) =>
+      generatePath(`${x}/salary/${year}/${month}`),
     authenticatedRoot: x,
     callback: "/callback",
     companySwitch: (companyId: string) =>
@@ -110,6 +113,8 @@ export const path = {
     inventoryAdjustment: `${x}/adjustment`,
     issue: `${x}/issue`,
     issueTrackedEntity: `${x}/issue-tracked-entity`,
+    operationPickupNew: `${x}/operation-pickup/new`,
+    operationPickupDelete: (id: string) => generatePath(`${x}/operation-pickup/${id}/delete`),
     location: `${x}/location`,
     login: "/login",
     logout: "/logout",

@@ -17,6 +17,7 @@ import {
   upsertJob,
   upsertJobMethod
 } from "~/modules/production";
+import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
 import { JobForm } from "~/modules/production/ui/Jobs";
 import { getNextSequence } from "~/modules/settings";
 import type { MethodItemType } from "~/modules/shared";
@@ -87,9 +88,13 @@ export async function action({ request }: ActionFunctionArgs) {
       : calculatedScrapQuantity;
 
   let configuration = undefined;
+  let quantity = d.quantity;
   if (d.configuration) {
     try {
-      configuration = JSON.parse(d.configuration);
+      const parsed = JSON.parse(d.configuration) as Record<string, unknown>;
+      const fields = jobConfigurationUpdateFields(parsed);
+      configuration = fields.configuration;
+      quantity = fields.quantity;
     } catch (error) {
       console.error(error);
     }
@@ -113,6 +118,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const createJob = await upsertJob(client, {
     ...d,
     jobId,
+    quantity,
     configuration,
     // @ts-expect-error TS2353 - TODO: fix type
     priority,

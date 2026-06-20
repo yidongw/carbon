@@ -4,31 +4,32 @@ import type { stockTransferStatusType } from "~/modules/inventory";
 
 type StockTransferStatusProps = {
   status?: (typeof stockTransferStatusType)[number] | null;
+  iconOnly?: boolean;
 };
 
-const StockTransferStatus = ({ status }: StockTransferStatusProps) => {
+const StockTransferStatus = ({ status, iconOnly }: StockTransferStatusProps) => {
   switch (status) {
     case "Draft":
       return (
-        <Status color="gray">
+        <Status color="gray" iconOnly={iconOnly}>
           <Trans>Draft</Trans>
         </Status>
       );
     case "Released":
       return (
-        <Status color="orange">
+        <Status color="orange" iconOnly={iconOnly}>
           <Trans>Released</Trans>
         </Status>
       );
     case "In Progress":
       return (
-        <Status color="blue">
+        <Status color="blue" iconOnly={iconOnly}>
           <Trans>In Progress</Trans>
         </Status>
       );
     case "Completed":
       return (
-        <Status color="green">
+        <Status color="green" iconOnly={iconOnly}>
           <Trans>Completed</Trans>
         </Status>
       );

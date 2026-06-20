@@ -1,5 +1,6 @@
 import { Badge, cn } from "@carbon/react";
 import { LuCalendarClock, LuRefreshCcwDot, LuShieldX } from "react-icons/lu";
+import { useMaintenanceSourceLabel } from "~/modules/production/productionLabels";
 import type { maintenanceSource } from "../../resources.models";
 
 type MaintenanceSourceProps = {
@@ -8,6 +9,12 @@ type MaintenanceSourceProps = {
 };
 
 function MaintenanceSource({ source, className }: MaintenanceSourceProps) {
+  const getMaintenanceSourceLabel = useMaintenanceSourceLabel();
+
+  if (!source) return null;
+
+  const label = getMaintenanceSourceLabel(source);
+
   switch (source) {
     case "Scheduled":
       return (
@@ -16,7 +23,7 @@ function MaintenanceSource({ source, className }: MaintenanceSourceProps) {
           className={cn(className, "inline-flex items-center gap-1")}
         >
           <LuCalendarClock />
-          {source}
+          {label}
         </Badge>
       );
     case "Reactive":
@@ -26,7 +33,7 @@ function MaintenanceSource({ source, className }: MaintenanceSourceProps) {
           className={cn(className, "inline-flex items-center gap-1")}
         >
           <LuRefreshCcwDot />
-          {source}
+          {label}
         </Badge>
       );
     case "Non-Conformance":
@@ -36,7 +43,7 @@ function MaintenanceSource({ source, className }: MaintenanceSourceProps) {
           className={cn(className, "inline-flex items-center gap-1")}
         >
           <LuShieldX />
-          {source}
+          {label}
         </Badge>
       );
 

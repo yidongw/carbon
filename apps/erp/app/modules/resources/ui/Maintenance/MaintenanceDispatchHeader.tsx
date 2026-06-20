@@ -1,16 +1,13 @@
 import {
-  Button,
   Copy,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuIcon,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
-  Heading,
-  HStack,
   IconButton,
   useDisclosure,
-  VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import {
@@ -18,9 +15,18 @@ import {
   LuCirclePlay,
   LuEllipsisVertical,
   LuLoaderCircle,
+  LuPanelLeft,
+  LuPanelRight,
   LuTrash
 } from "react-icons/lu";
-import { Link, useFetcher, useParams } from "react-router";
+import { createPortal } from "react-dom";
+import { useFetcher, useParams } from "react-router";
+import {
+  DetailTopbarContent,
+  DetailTopbarId,
+  usePanels,
+  useTopbarLeft
+} from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData } from "~/hooks";
 import { path } from "~/utils/path";
@@ -28,10 +34,11 @@ import { isMaintenanceDispatchLocked } from "../../resources.models";
 import type { MaintenanceDispatchDetail } from "../../types";
 import MaintenanceStatus from "./MaintenanceStatus";
 
-const MaintenanceDispatchHeader = () => {
+function MaintenanceDispatchTopbarLeft({ dispatchId }: { dispatchId: string }) {
   const { t } = useLingui();
-  const { dispatchId } = useParams();
-  if (!dispatchId) throw new Error("dispatchId not found");
+  const permissions = usePermissions();
+  const statusFetcher = useFetcher<{}>();
+  const deleteModal = useDisclosure();
 
   const routeData = useRouteData<{
     dispatch: MaintenanceDispatchDetail;
@@ -39,120 +46,98 @@ const MaintenanceDispatchHeader = () => {
 
   const status = routeData?.dispatch?.status;
   const isLocked = isMaintenanceDispatchLocked(status);
-  const permissions = usePermissions();
-  const statusFetcher = useFetcher<{}>();
-  const deleteModal = useDisclosure();
 
   return (
     <>
-      <div className="flex flex-shrink-0 items-center justify-between px-4 py-2 bg-card border-b border-border h-[50px] overflow-x-auto scrollbar-hide dark:border-none dark:shadow-[inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)]">
-        <VStack spacing={0}>
-          <HStack>
-            <Link to={path.to.maintenanceDispatch(dispatchId)}>
-              <Heading size="h4" className="flex items-center gap-2">
-                <span>{routeData?.dispatch?.maintenanceDispatchId}</span>
-              </Heading>
-            </Link>
-            <MaintenanceStatus status={status} />
-            <Copy text={routeData?.dispatch?.maintenanceDispatchId ?? ""} />
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <IconButton
-                  aria-label={t`More options`}
-                  icon={<LuEllipsisVertical />}
-                  variant="secondary"
-                  size="sm"
-                />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem
-                  disabled={
-                    !["In Progress", "Completed"].includes(status ?? "") ||
-                    statusFetcher.state !== "idle" ||
-                    !permissions.can("update", "resources")
-                  }
-                  onClick={() => {
-                    statusFetcher.submit(
-                      { status: "Open" },
-                      {
-                        method: "post",
-                        action: path.to.maintenanceDispatchStatus(dispatchId)
-                      }
-                    );
-                  }}
-                >
-                  <DropdownMenuIcon icon={<LuLoaderCircle />} />
-                  <Trans>Reopen</Trans>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  destructive
-                  disabled={
-                    isLocked ||
-                    !permissions.can("delete", "resources") ||
-                    !permissions.is("employee")
-                  }
-                  onClick={deleteModal.onOpen}
-                >
-                  <DropdownMenuIcon icon={<LuTrash />} />
-                  <Trans>Delete Dispatch</Trans>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </HStack>
-        </VStack>
-
-        <HStack>
-          <statusFetcher.Form
-            method="post"
-            action={path.to.maintenanceDispatchStatus(dispatchId)}
-          >
-            <input type="hidden" name="status" value="In Progress" />
-            <Button
-              type="submit"
-              leftIcon={<LuCirclePlay />}
-              variant={
-                status === "Open" || status === "Assigned"
-                  ? "primary"
-                  : "secondary"
-              }
-              isDisabled={
+      <DetailTopbarContent>
+        <DetailTopbarId to={path.to.maintenanceDispatch(dispatchId)}>
+          {routeData?.dispatch?.maintenanceDispatchId}
+        </DetailTopbarId>
+        <MaintenanceStatus iconOnly status={status} />
+        <Copy text={routeData?.dispatch?.maintenanceDispatchId ?? ""} />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <IconButton
+              aria-label={t`More options`}
+              icon={<LuEllipsisVertical />}
+              variant="secondary"
+              size="sm"
+            />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem
+              disabled={
                 !["Open", "Assigned"].includes(status ?? "") ||
                 statusFetcher.state !== "idle" ||
                 !permissions.can("update", "resources")
               }
-              isLoading={
-                statusFetcher.state !== "idle" &&
-                statusFetcher.formData?.get("status") === "In Progress"
-              }
+              onClick={() => {
+                statusFetcher.submit(
+                  { status: "In Progress" },
+                  {
+                    method: "post",
+                    action: path.to.maintenanceDispatchStatus(dispatchId)
+                  }
+                );
+              }}
             >
+              <DropdownMenuIcon icon={<LuCirclePlay />} />
               <Trans>Start</Trans>
-            </Button>
-          </statusFetcher.Form>
-
-          <statusFetcher.Form
-            method="post"
-            action={path.to.maintenanceDispatchStatus(dispatchId)}
-          >
-            <input type="hidden" name="status" value="Completed" />
-            <Button
-              type="submit"
-              leftIcon={<LuCircleCheck />}
-              variant={status === "In Progress" ? "primary" : "secondary"}
-              isDisabled={
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              disabled={
                 status !== "In Progress" ||
                 statusFetcher.state !== "idle" ||
                 !permissions.can("update", "resources")
               }
-              isLoading={
-                statusFetcher.state !== "idle" &&
-                statusFetcher.formData?.get("status") === "Completed"
-              }
+              onClick={() => {
+                statusFetcher.submit(
+                  { status: "Completed" },
+                  {
+                    method: "post",
+                    action: path.to.maintenanceDispatchStatus(dispatchId)
+                  }
+                );
+              }}
             >
+              <DropdownMenuIcon icon={<LuCircleCheck />} />
               <Trans>Complete</Trans>
-            </Button>
-          </statusFetcher.Form>
-        </HStack>
-      </div>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              disabled={
+                !["In Progress", "Completed"].includes(status ?? "") ||
+                statusFetcher.state !== "idle" ||
+                !permissions.can("update", "resources")
+              }
+              onClick={() => {
+                statusFetcher.submit(
+                  { status: "Open" },
+                  {
+                    method: "post",
+                    action: path.to.maintenanceDispatchStatus(dispatchId)
+                  }
+                );
+              }}
+            >
+              <DropdownMenuIcon icon={<LuLoaderCircle />} />
+              <Trans>Reopen</Trans>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              destructive
+              disabled={
+                isLocked ||
+                !permissions.can("delete", "resources") ||
+                !permissions.is("employee")
+              }
+              onClick={deleteModal.onOpen}
+            >
+              <DropdownMenuIcon icon={<LuTrash />} />
+              <Trans>Delete Dispatch</Trans>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </DetailTopbarContent>
       {deleteModal.isOpen && (
         <ConfirmDelete
           action={path.to.deleteMaintenanceDispatch(dispatchId)}
@@ -167,6 +152,38 @@ const MaintenanceDispatchHeader = () => {
           }}
         />
       )}
+    </>
+  );
+}
+
+const MaintenanceDispatchHeader = () => {
+  const { dispatchId } = useParams();
+  if (!dispatchId) throw new Error("dispatchId not found");
+
+  const { leftSlotEl } = useTopbarLeft();
+  const { t } = useLingui();
+  const { hasExplorer, toggleExplorer, toggleProperties } = usePanels();
+
+  return (
+    <>
+      {leftSlotEl && createPortal(<MaintenanceDispatchTopbarLeft dispatchId={dispatchId} />, leftSlotEl)}
+      <div className="flex-shrink-0 h-[50px] flex items-center gap-1 px-2 bg-card border-b border-border dark:border-none dark:shadow-[inset_0_0_1px_rgb(255_255_255_/_0.24),_0_0_0_0.5px_rgb(0,0,0,1),0px_0px_4px_rgba(0,_0,_0,_0.08)]">
+        {hasExplorer && (
+          <IconButton
+            aria-label={t`Toggle Explorer`}
+            icon={<LuPanelLeft />}
+            onClick={toggleExplorer}
+            variant="ghost"
+          />
+        )}
+        <div className="flex-1" />
+        <IconButton
+          aria-label={t`Toggle Properties`}
+          icon={<LuPanelRight />}
+          onClick={toggleProperties}
+          variant="ghost"
+        />
+      </div>
     </>
   );
 };

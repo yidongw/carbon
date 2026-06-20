@@ -7,6 +7,10 @@ import { corsHeaders } from "../lib/headers.ts";
 import { getSupabaseServiceRole } from "../lib/supabase.ts";
 import { Database } from "../lib/types.ts";
 import { getNextSequence } from "../shared/get-next-sequence.ts";
+import {
+  calculateOutsideProcessingPurchaseOrderLines,
+  toPurchaseOrderItemLineType,
+} from "../lib/outside-processing-pricing.ts";
 
 const pool = getConnectionPool(1);
 const db = getDatabaseClient<DB>(pool);
@@ -413,24 +417,30 @@ serve(async (req: Request) => {
               .map((d) => d.operationSupplierProcessId)
               .filter(Boolean)
           );
+          const supplierProcessIdList = Array.from(supplierProcessIds);
+          const outsideOperationIds = outsideOperations.map((d) => d.id);
+
           const [supplierProcesses, existingPurchaseOrderLines] =
             await Promise.all([
-              client
-                .from("supplierProcess")
-                .select("*")
-                .in("id", Array.from(supplierProcessIds)),
-              client
-                .from("purchaseOrderLine")
-                .select("*")
-                .eq("jobId", jobId)
-                .eq(
-                  "jobOperationId",
-                  outsideOperations.map((d) => d.id)
-                ),
+              supplierProcessIdList.length > 0
+                ? client
+                    .from("supplierProcess")
+                    .select("*")
+                    .in("id", supplierProcessIdList)
+                : Promise.resolve({ data: [], error: null }),
+              outsideOperationIds.length > 0
+                ? client
+                    .from("purchaseOrderLine")
+                    .select("*")
+                    .eq("jobId", jobId)
+                    .in("jobOperationId", outsideOperationIds)
+                : Promise.resolve({ data: [], error: null }),
             ]);
 
           if (supplierProcesses.error)
             throw new Error(supplierProcesses.error.message);
+          if (existingPurchaseOrderLines.error)
+            throw new Error(existingPurchaseOrderLines.error.message);
 
           const outsideOperationsBySupplierId = outsideOperations.reduce<
             Record<
@@ -467,21 +477,29 @@ serve(async (req: Request) => {
               .filter(Boolean)
           );
 
+          const supplierIdList = Array.from(supplierIds);
+          const itemIdList = Array.from(itemIds);
+
           const [suppliers, supplierPayments, supplierShipping, items] =
             await Promise.all([
-              client
-                .from("supplier")
-                .select("*")
-                .in("id", Array.from(supplierIds)),
-              client
-                .from("supplierPayment")
-                .select("*")
-                .in("supplierId", Array.from(supplierIds)),
-              client
-                .from("supplierShipping")
-                .select("*")
-                .in("supplierId", Array.from(supplierIds)),
-              client.from("item").select("*").in("id", Array.from(itemIds)),
+              supplierIdList.length > 0
+                ? client.from("supplier").select("*").in("id", supplierIdList)
+                : Promise.resolve({ data: [], error: null }),
+              supplierIdList.length > 0
+                ? client
+                    .from("supplierPayment")
+                    .select("*")
+                    .in("supplierId", supplierIdList)
+                : Promise.resolve({ data: [], error: null }),
+              supplierIdList.length > 0
+                ? client
+                    .from("supplierShipping")
+                    .select("*")
+                    .in("supplierId", supplierIdList)
+                : Promise.resolve({ data: [], error: null }),
+              itemIdList.length > 0
+                ? client.from("item").select("*").in("id", itemIdList)
+                : Promise.resolve({ data: [], error: null }),
             ]);
 
           if (suppliers.error) throw new Error(suppliers.error.message);
@@ -641,43 +659,57 @@ serve(async (req: Request) => {
                 );
 
                 if (item && supplierProcess) {
-                  const totalCostWithUnitPrice =
-                    (operation.operationUnitCost ?? 0) *
-                    (operation.operationQuantity ?? 0);
-                  const totalCostWithMinimumCost =
-                    (operation.operationMinimumCost ?? 0) >
-                    totalCostWithUnitPrice
-                      ? operation.operationMinimumCost ?? 0
-                      : totalCostWithUnitPrice;
+                  const unitCost =
+                    operation.operationUnitCost ?? supplierProcess.unitCost ?? 0;
+                  const minimumCost =
+                    operation.operationMinimumCost ??
+                    supplierProcess.minimumCost ??
+                    0;
+                  const quantity = operation.operationQuantity ?? 1;
+                  const exchangeRate =
+                    exchangeRates.find(
+                      (d) =>
+                        d.currencyCode ===
+                        suppliers.data?.find((d) => d.id === supplier)
+                          ?.currencyCode
+                    )?.exchangeRate ?? 1;
 
-                  // Create purchase order line
-                  purchaseOrderLineInserts.push({
-                    purchaseOrderId,
-                    purchaseOrderLineType: item.type,
-                    itemId: item.id,
-                    description: item.name || item.description,
-                    purchaseQuantity: operation.operationQuantity || 1,
-                    purchaseUnitOfMeasureCode: item.unitOfMeasureCode,
-                    inventoryUnitOfMeasureCode: item.unitOfMeasureCode,
-                    conversionFactor: 1,
-                    supplierUnitPrice:
-                      operation.operationQuantity &&
-                      operation.operationQuantity > 0
-                        ? totalCostWithMinimumCost / operation.operationQuantity
-                        : totalCostWithMinimumCost,
-                    locationId: job.data?.locationId,
-                    jobId: job.data?.id,
-                    jobOperationId: operation.id,
-                    companyId,
-                    createdBy: userId,
-                    exchangeRate:
-                      exchangeRates.find(
-                        (d) =>
-                          d.currencyCode ===
-                          suppliers.data?.find((d) => d.id === supplier)
-                            ?.currencyCode
-                      )?.exchangeRate ?? 1,
-                  });
+                  const pricingLines = calculateOutsideProcessingPurchaseOrderLines(
+                    {
+                      quantity,
+                      unitCost,
+                      minimumCost,
+                      minimumCostDescription: `Minimum cost - ${operation.description ?? item.name ?? "Outside processing"}`
+                    }
+                  );
+
+                  const purchaseOrderLineType = toPurchaseOrderItemLineType(
+                    item.type
+                  );
+
+                  for (const pricingLine of pricingLines) {
+                    purchaseOrderLineInserts.push({
+                      purchaseOrderId,
+                      purchaseOrderLineType,
+                      itemId: item.id,
+                      description: pricingLine.isMinimumCostLine
+                        ? pricingLine.description
+                        : item.name || item.description,
+                      purchaseQuantity: pricingLine.purchaseQuantity,
+                      purchaseUnitOfMeasureCode: item.unitOfMeasureCode,
+                      inventoryUnitOfMeasureCode: item.unitOfMeasureCode,
+                      conversionFactor: 1,
+                      supplierUnitPrice: pricingLine.supplierUnitPrice,
+                      locationId: job.data?.locationId,
+                      jobId: job.data?.id,
+                      jobOperationId: pricingLine.isMinimumCostLine
+                        ? undefined
+                        : operation.id,
+                      companyId,
+                      createdBy: userId,
+                      exchangeRate
+                    });
+                  }
                 }
               }
 
@@ -693,7 +725,9 @@ serve(async (req: Request) => {
         }
       } catch (err) {
         console.error(err);
-        return new Response(JSON.stringify(err), {
+        const message =
+          err instanceof Error ? err.message : String(err ?? "Unknown error");
+        return new Response(JSON.stringify({ message }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
           status: 500,
         });

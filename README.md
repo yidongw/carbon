@@ -228,6 +228,10 @@ $ cp ./.env.example ./.env
 - You should set environment variables like the following.
   - `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID="******.apps.googleusercontent.com"`
   - `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_SECRET="GOCSPX-****************"`
+- Sign-in with WeChat requires a WeChat 公众号 (a free **测试号** works for dev) and `"wechat"` added to `AUTH_PROVIDERS`. It enables two flows — an in-app **Sign in with WeChat** button (inside the WeChat browser) and a desktop **QR-scan** login. Set:
+  - `WECHAT_MP_APP_ID` / `WECHAT_MP_APP_SECRET` — from the 公众号 / 测试号 console
+  - `WECHAT_WEBHOOK_TOKEN` — in 接口配置信息, set this Token and the URL `https://<host>/api/webhook/wechat` (QR-scan event push)
+  - The in-app flow's callback `https://<host>/auth/wechat-callback` is derived automatically from the request — no env var to set; just register that host under 网页授权域名
 
 2. **Supabase**: Backend services run inside the per-worktree docker stack — `crbn up` boots them and writes everything you need into `.env.local` automatically:
 

@@ -118,7 +118,7 @@ const SupplierInteractionNotes = ({
             <CardHeader>
               <CardTitle>{title}</CardTitle>
               <CardDescription>
-                {tab === "internal" ? "Internal Notes" : "External Notes"}
+                {tab === "internal" ? t`Internal Notes` : t`External Notes`}
               </CardDescription>
             </CardHeader>
             <CardAction>

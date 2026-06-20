@@ -11,6 +11,9 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
@@ -19,7 +22,7 @@ import { forwardRef, useMemo, useState } from "react";
 import { LuSettings2, LuUser } from "react-icons/lu";
 import { RxCheck } from "react-icons/rx";
 import { useFetcher, useFetchers } from "react-router";
-import { usePermissions, useUser } from "~/hooks";
+import { usePermissions, useUser, useFormatPersonName } from "~/hooks";
 import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
 import EmployeeAvatar from "./EmployeeAvatar";
@@ -37,6 +40,7 @@ export type AssigneeProps = Omit<
   isReadOnly?: boolean;
   placeholder?: string;
   variant?: AssigneeVariants;
+  iconOnly?: boolean;
   onChange?: (selected: string) => void;
 };
 
@@ -50,6 +54,7 @@ const Assign = forwardRef<HTMLButtonElement, AssigneeProps>(
       isReadOnly,
       placeholder,
       variant = "button",
+      iconOnly = false,
       onChange,
       className,
       ...props
@@ -61,6 +66,7 @@ const Assign = forwardRef<HTMLButtonElement, AssigneeProps>(
     const [people] = usePeople();
     const fetcher = useFetcher<{}>();
     const user = useUser();
+    const formatPersonName = useFormatPersonName();
     const permissions = usePermissions();
 
     const handleChange = (value: string) => {
@@ -81,15 +87,33 @@ const Assign = forwardRef<HTMLButtonElement, AssigneeProps>(
           .filter((person) => person.id !== user.id)
           .map((person) => ({
             value: person.id,
-            label: person.name
+            label: formatPersonName({
+              firstName: person.firstName,
+              lastName: person.lastName,
+              fullName: person.name
+            })
           })) ?? [];
 
       return [
         { value: "", label: t`Unassigned` },
-        { value: user.id, label: `${user.firstName} ${user.lastName}` },
+        {
+          value: user.id,
+          label: formatPersonName({
+            firstName: user.firstName,
+            lastName: user.lastName
+          })
+        },
         ...base
       ];
-    }, [people, user, t]);
+    }, [formatPersonName, people, user, t]);
+
+    const assigneeLabel = useMemo(() => {
+      if (!value) return t`Unassigned`;
+      return (
+        options.find((option) => option.value === value)?.label ??
+        t`Unassigned`
+      );
+    }, [options, t, value]);
 
     return (
       <VStack spacing={2}>
@@ -112,44 +136,76 @@ const Assign = forwardRef<HTMLButtonElement, AssigneeProps>(
             ))}
 
           <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-              {variant === "button" ? (
-                <button
-                  className={cn(
-                    buttonVariants({
-                      variant: "secondary",
-                      size: size,
-                      isDisabled: isReadOnly || !permissions.is("employee"),
-                      isLoading: fetcher.state !== "idle",
-                      isIcon: false,
-                      className
-                    })
-                  )}
-                  role="combobox"
-                  aria-expanded={open}
-                  aria-controls="assignee-options"
-                  ref={ref}
-                  onClick={() => setOpen(true)}
-                  disabled={isReadOnly}
-                  {...props}
-                >
-                  {value ? (
-                    <EmployeeAvatar
-                      size={size === "sm" ? "xxs" : "xs"}
-                      employeeId={value ?? null}
-                    />
-                  ) : (
-                    <div className="flex items-center justify-start gap-2">
-                      <LuUser
-                        className={size === "sm" ? "w-3 h-3" : "w-4 h-4"}
+            {variant === "button" ? (
+              iconOnly ? (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <PopoverTrigger asChild>
+                      <IconButton
+                        aria-label={`${t`Toggle Assignee`}: ${assigneeLabel}`}
+                        icon={
+                          value ? (
+                            <EmployeeAvatar
+                              size={size === "sm" ? "xxs" : "xs"}
+                              employeeId={value ?? null}
+                              withName={false}
+                            />
+                          ) : (
+                            <LuUser />
+                          )
+                        }
+                        size={size}
+                        variant="secondary"
+                        isDisabled={isReadOnly || !permissions.is("employee")}
+                        isLoading={fetcher.state !== "idle"}
                       />
-                      <span>
-                        <Trans>Unassigned</Trans>
-                      </span>
-                    </div>
-                  )}
-                </button>
+                    </PopoverTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <span>{assigneeLabel}</span>
+                  </TooltipContent>
+                </Tooltip>
               ) : (
+                <PopoverTrigger asChild>
+                  <button
+                    className={cn(
+                      buttonVariants({
+                        variant: "secondary",
+                        size: size,
+                        isDisabled: isReadOnly || !permissions.is("employee"),
+                        isLoading: fetcher.state !== "idle",
+                        isIcon: false,
+                        className
+                      })
+                    )}
+                    role="combobox"
+                    aria-expanded={open}
+                    aria-controls="assignee-options"
+                    ref={ref}
+                    onClick={() => setOpen(true)}
+                    disabled={isReadOnly}
+                    {...props}
+                  >
+                    {value ? (
+                      <EmployeeAvatar
+                        size={size === "sm" ? "xxs" : "xs"}
+                        employeeId={value ?? null}
+                      />
+                    ) : (
+                      <div className="flex items-center justify-start gap-2">
+                        <LuUser
+                          className={size === "sm" ? "w-3 h-3" : "w-4 h-4"}
+                        />
+                        <span>
+                          <Trans>Unassigned</Trans>
+                        </span>
+                      </div>
+                    )}
+                  </button>
+                </PopoverTrigger>
+              )
+            ) : (
+              <PopoverTrigger asChild>
                 <IconButton
                   aria-label={t`Toggle Assignee`}
                   icon={<LuSettings2 />}
@@ -157,8 +213,8 @@ const Assign = forwardRef<HTMLButtonElement, AssigneeProps>(
                   variant="secondary"
                   isDisabled={isReadOnly || !permissions.is("employee")}
                 />
-              )}
-            </PopoverTrigger>
+              </PopoverTrigger>
+            )}
             <PopoverContent
               align="start"
               className="min-w-[--radix-popover-trigger-width] p-0"

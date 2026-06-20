@@ -5,13 +5,17 @@ import type {
   AuthSession as SupabaseAuthSession,
   SupabaseClient
 } from "@supabase/supabase-js";
+import { createClient } from "@supabase/supabase-js";
 import { createHash } from "crypto";
 import { redirect } from "react-router";
 import {
   CarbonEdition,
   REFRESH_ACCESS_TOKEN_THRESHOLD,
   STRIPE_BYPASS_COMPANY_IDS,
-  VERCEL_URL
+  SUPABASE_ANON_KEY,
+  SUPABASE_SERVICE_ROLE_KEY,
+  SUPABASE_URL,
+  getAppUrl
 } from "../config/env";
 import { getCarbon } from "../lib/supabase";
 import { getCarbonAPIKeyClient } from "../lib/supabase/client";
@@ -24,7 +28,6 @@ import {
   flash,
   requireAuthSession
 } from "./session.server";
-import { getCompaniesForUser } from "./users";
 import { getUserClaims } from "./users.server";
 
 export async function createEmailAuthAccount(
@@ -97,7 +100,7 @@ function getCompanyIdFromAPIKey(apiKey: string) {
     .single();
 }
 
-function makeAuthSession(
+export function makeAuthSession(
   supabaseSession: SupabaseAuthSession | null,
   companyId: string,
   companyGroupId: string
@@ -107,19 +110,52 @@ function makeAuthSession(
   if (!supabaseSession.refresh_token)
     throw new Error("User should have a refresh token");
 
-  if (!supabaseSession.user?.email)
-    throw new Error("User should have an email");
-
   return {
     accessToken: supabaseSession.access_token,
     companyId,
     companyGroupId,
     refreshToken: supabaseSession.refresh_token,
     userId: supabaseSession.user.id,
-    email: supabaseSession.user.email,
+    email: supabaseSession.user.email ?? null,
     expiresIn:
       (supabaseSession.expires_in ?? 3000) - REFRESH_ACCESS_TOKEN_THRESHOLD,
     expiresAt: supabaseSession.expires_at ?? -1
+  };
+}
+
+/** Build an AuthSession directly from raw tokens without a Supabase round-trip.
+ *  The caller must have already verified the accessToken (e.g. via getUser). */
+export function makeAuthSessionFromTokens(
+  accessToken: string,
+  refreshToken: string,
+  user: { id: string; email?: string | null },
+  companyId: string,
+  companyGroupId: string
+): AuthSession {
+  let expiresAt = -1;
+  try {
+    const payload = JSON.parse(
+      Buffer.from(accessToken.split(".")[1], "base64url").toString()
+    );
+    expiresAt = payload.exp ?? -1;
+  } catch {}
+  return {
+    accessToken,
+    refreshToken,
+    userId: user.id,
+    email: user.email ?? null,
+    companyId,
+    companyGroupId,
+    expiresIn:
+      expiresAt > 0
+        ? Math.max(
+            0,
+            expiresAt -
+              Math.floor(Date.now() / 1000) -
+              REFRESH_ACCESS_TOKEN_THRESHOLD
+          )
+        : 3000 - REFRESH_ACCESS_TOKEN_THRESHOLD,
+    expiresAt
   };
 }
 
@@ -292,20 +328,15 @@ export async function requirePermissions(
     }
   }
 
-  const { accessToken, companyId, companyGroupId, email, userId } =
-    await requireAuthSession(request);
   const authSession = await requireAuthSession(request);
+  const { accessToken, companyId, companyGroupId, userId } = authSession;
+  const email = authSession.email ?? "";
   const consoleMode = authSession.console === companyId;
-
-  const myClaims = await getUserClaims(userId, companyId);
 
   // early exit if no requiredPermissions are required
   if (Object.keys(requiredPermissions).length === 0) {
     return {
-      client:
-        requiredPermissions.bypassRls && myClaims.role === "employee"
-          ? getCarbonServiceRole()
-          : getCarbon(accessToken),
+      client: getCarbon(accessToken),
       companyId,
       companyGroupId,
       email,
@@ -314,6 +345,8 @@ export async function requirePermissions(
       consoleMode
     };
   }
+
+  const myClaims = await getUserClaims(userId, companyId);
 
   const hasRequiredPermissions = Object.entries(requiredPermissions).every(
     ([action, permission]) => {
@@ -393,13 +426,118 @@ export async function sendInviteByEmail(
   });
 }
 
-export async function sendMagicLink(email: string) {
-  return getCarbonServiceRole().auth.signInWithOtp({
-    email,
-    options: {
-      emailRedirectTo: `${VERCEL_URL}/callback`
+export async function sendMagicLink(
+  email: string,
+  redirectTo?: string
+): Promise<
+  | { error: null; pkceEntry: { k: string; v: string; redirectTo?: string } }
+  | { error: Error; pkceEntry: null }
+> {
+  // Use an in-memory storage so the Supabase PKCE client stores the code
+  // verifier somewhere we can read after the call.
+  const storage = new Map<string, string>();
+  // Use the service role key (same as the original sendMagicLink) so that the
+  // OTP call bypasses rate limits and auth policies.
+  // persistSession must be true (the default) so Supabase uses the custom
+  // storage adapter above. When persistSession=false Supabase ignores the
+  // provided storage and falls back to its own internal memoryStorage, so the
+  // PKCE code verifier is never written to our Map.
+  const client = createClient<Database, "public">(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!, {
+    auth: {
+      flowType: "pkce",
+      autoRefreshToken: false,
+      storage: {
+        getItem: (key) => storage.get(key) ?? null,
+        setItem: (key, value) => { storage.set(key, value); },
+        removeItem: (key) => { storage.delete(key); }
+      }
     }
   });
+
+  const appUrl = getAppUrl();
+  const callbackUrl = redirectTo
+    ? `${appUrl}/callback?redirectTo=${encodeURIComponent(redirectTo)}`
+    : `${appUrl}/callback`;
+
+  const { error: otpError } = await client.auth.signInWithOtp({
+    email,
+    options: {
+      emailRedirectTo: callbackUrl,
+      data: { app_url: appUrl }
+    }
+  });
+
+  if (otpError) {
+    return { error: otpError, pkceEntry: null };
+  }
+
+  // The Supabase client stored the code verifier in our Map under a key
+  // ending with "-code-verifier".
+  const entry = [...storage.entries()].find(([k]) => k.endsWith("-code-verifier"));
+  if (!entry) {
+    return { error: new Error("PKCE code verifier was not generated"), pkceEntry: null };
+  }
+
+  return {
+    error: null,
+    pkceEntry: {
+      k: entry[0],
+      v: entry[1],
+      redirectTo: redirectTo?.startsWith("/") ? redirectTo : undefined
+    }
+  };
+}
+
+// Exchange a PKCE auth code for a session entirely server-side.
+// Pre-seeds the in-memory storage with the code verifier captured during
+// sendMagicLink so the Supabase client can complete the PKCE handshake.
+export async function exchangePkceCode(
+  code: string,
+  pkceEntry: { k: string; v: string },
+  cookieCompanyId: string | null
+): Promise<AuthSession | null> {
+  const storage = new Map([[pkceEntry.k, pkceEntry.v]]);
+  // persistSession must remain true (the default) so Supabase uses the custom
+  // storage adapter above when looking up the code verifier. When
+  // persistSession is false, auth-js ignores the provided storage and falls
+  // back to its own internal memoryStorage — the pre-seeded verifier would
+  // never be found and the exchange would fail with an empty code_verifier.
+  const client = createClient<Database, "public">(SUPABASE_URL!, SUPABASE_ANON_KEY!, {
+    auth: {
+      flowType: "pkce",
+      autoRefreshToken: false,
+      storage: {
+        getItem: (key) => storage.get(key) ?? null,
+        setItem: (key, value) => { storage.set(key, value); },
+        removeItem: (key) => { storage.delete(key); }
+      }
+    }
+  });
+
+  const { data: { session }, error: exchangeError } =
+    await client.auth.exchangeCodeForSession(code);
+
+  if (!session || exchangeError) return null;
+
+  const { data: companies } = await getCarbonServiceRole()
+    .from("userToCompany")
+    .select("companyId, ...company(companyGroupId)")
+    .eq("userId", session.user.id)
+    .limit(50);
+
+  const rows = companies as Array<{
+    companyId: string;
+    companyGroupId: string | null;
+  }> | null;
+
+  const match =
+    rows?.find((c) => c.companyId === cookieCompanyId) ?? rows?.[0];
+
+  return makeAuthSession(
+    session,
+    match?.companyId ?? "",
+    match?.companyGroupId ?? ""
+  );
 }
 
 export async function signInWithBypassEmail(
@@ -410,28 +548,31 @@ export async function signInWithBypassEmail(
   const { data: linkData, error: linkError } =
     await client.auth.admin.generateLink({ type: "magiclink", email });
 
-  if (linkError || !linkData?.properties?.hashed_token) return null;
+  if (linkError || !linkData?.properties?.hashed_token || !linkData.user) return null;
 
-  const { data: sessionData, error: verifyError } = await client.auth.verifyOtp(
-    { token_hash: linkData.properties.hashed_token, type: "magiclink" }
-  );
+  // verifyOtp and the DB lookup are independent — run them in parallel
+  const [{ data: sessionData, error: verifyError }, { data: utc }] =
+    await Promise.all([
+      client.auth.verifyOtp({
+        token_hash: linkData.properties.hashed_token,
+        type: "magiclink"
+      }),
+      client
+        .from("userToCompany")
+        .select("companyId, ...company(companyGroupId)")
+        .eq("userId", linkData.user.id)
+        .limit(1)
+        .maybeSingle()
+    ]);
 
   if (verifyError || !sessionData?.session) return null;
 
-  const companies = await getCompaniesForUser(
-    client,
-    sessionData.session.user.id
-  );
-  const { data: companyRecord } = await client
-    .from("company")
-    .select("companyGroupId")
-    .eq("id", companies?.[0] ?? "")
-    .single();
+  const match = utc as { companyId: string; companyGroupId: string | null } | null;
 
   return makeAuthSession(
     sessionData.session,
-    companies?.[0] ?? "",
-    companyRecord?.companyGroupId ?? ""
+    match?.companyId ?? "",
+    match?.companyGroupId ?? ""
   );
 }
 
@@ -443,18 +584,20 @@ export async function signInWithEmail(email: string, password: string) {
   });
 
   if (!data.session || error) return null;
-  const companies = await getCompaniesForUser(client, data.user.id);
 
-  const { data: companyRecord } = await client
-    .from("company")
-    .select("companyGroupId")
-    .eq("id", companies?.[0] ?? "")
-    .single();
+  const { data: utc } = await client
+    .from("userToCompany")
+    .select("companyId, ...company(companyGroupId)")
+    .eq("userId", data.user.id)
+    .limit(1)
+    .maybeSingle();
+
+  const match = utc as { companyId: string; companyGroupId: string | null } | null;
 
   return makeAuthSession(
     data.session,
-    companies?.[0] ?? "",
-    companyRecord?.companyGroupId ?? ""
+    match?.companyId ?? "",
+    match?.companyGroupId ?? ""
   );
 }
 

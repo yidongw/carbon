@@ -8,6 +8,7 @@ import {
   LuGlassWater,
   LuGroup,
   LuHammer,
+  LuLayoutTemplate,
   LuPizza,
   LuPuzzle,
   LuRuler,
@@ -50,6 +51,11 @@ export default function useItemsSubmodules() {
           to: path.to.consumables,
           icon: <LuPizza />,
           table: "consumable"
+        },
+        {
+          name: t`Templates`,
+          to: path.to.templates,
+          icon: <LuLayoutTemplate />
         }
       ]
     },

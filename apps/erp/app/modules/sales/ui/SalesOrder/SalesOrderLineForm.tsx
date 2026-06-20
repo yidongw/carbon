@@ -30,7 +30,8 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { useCallback, useEffect, useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { LuChevronRight, LuPlus, LuTrash, LuTruck } from "react-icons/lu";
-import { useParams } from "react-router";
+import { useFetcher, useParams } from "react-router";
+import type { action } from "~/routes/x+/sales-order+/$orderId.$lineId.details";
 import type { z } from "zod";
 import { MethodIcon } from "~/components";
 import {
@@ -86,6 +87,7 @@ const SalesOrderLineForm = ({
   const { carbon } = useCarbon();
   const { company } = useUser();
   const { orderId } = useParams();
+  const fetcher = useFetcher<typeof action>();
 
   if (!orderId) throw new Error("orderId not found");
 
@@ -322,10 +324,9 @@ const SalesOrderLineForm = ({
                   : path.to.newSalesOrderLine(orderId)
               }
               className="w-full"
+              fetcher={fetcher}
               isDisabled={isEditing && isLocked}
-              onSubmit={() => {
-                if (type === "modal") onClose?.();
-              }}
+              onSuccess={type === "modal" ? onClose : undefined}
             >
               <HStack className="w-full justify-between items-start">
                 <ModalCardHeader>

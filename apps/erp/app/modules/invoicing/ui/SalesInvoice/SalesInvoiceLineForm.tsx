@@ -27,7 +27,8 @@ import { getItemReadableId } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useEffect, useState } from "react";
 import { LuChevronRight, LuCircleAlert, LuPlus, LuTruck } from "react-icons/lu";
-import { useParams } from "react-router";
+import { useFetcher, useParams } from "react-router";
+import type { action } from "~/routes/x+/sales-invoice+/$invoiceId.$lineId.details";
 import type { z } from "zod";
 import { MethodIcon } from "~/components";
 import {
@@ -77,6 +78,7 @@ const SalesInvoiceLineForm = ({
 
   const { company, defaults } = useUser();
   const { invoiceId } = useParams();
+  const fetcher = useFetcher<typeof action>();
 
   if (!invoiceId) throw new Error("invoiceId not found");
 
@@ -286,10 +288,9 @@ const SalesInvoiceLineForm = ({
                 : path.to.newSalesInvoiceLine(invoiceId)
             }
             className="w-full"
+            fetcher={fetcher}
             isDisabled={isEditing && isLocked}
-            onSubmit={() => {
-              if (type === "modal") onClose?.();
-            }}
+            onSuccess={type === "modal" ? onClose : undefined}
           >
             <ModalCardHeader>
               <ModalCardTitle

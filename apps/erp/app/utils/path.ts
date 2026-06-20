@@ -46,14 +46,14 @@ export const path = {
       digitalSupplierQuote: (id: string) =>
         generatePath(`${api}/purchasing/digital-quote/${id}`),
       docs: `${api}/docs`,
-      employeeTypes: `${api}/users/employee-types`,
-      emptyPermissions: `${api}/users/empty-permissions`,
+      employeeTypes: `${api}/people/employee-types`,
+      emptyPermissions: `${api}/people/empty-permissions`,
       failureModes: `${api}/resources/failure-modes`,
       gauges: `${api}/quality/gauges`,
       generateCsvColumns: (table: string) =>
         generatePath(`${api}/ai/csv/${table}/columns`),
       groupsByType: (type?: string) =>
-        generatePath(`${api}/users/groups?type=${type}`),
+        generatePath(`${api}/people/groups?type=${type}`),
       item: (type: string) => generatePath(`${api}/item/${type}`),
       itemCostRecalculate: (itemId: string) =>
         generatePath(`${api}/items/${itemId}/recalculate-cost`),
@@ -69,6 +69,46 @@ export const path = {
         generatePath(
           `${api}/production/methods/${id}/bom.csv?withOperations=${withOperations}`
         ),
+      jobBillOfProcessPreview: (jobId: string) =>
+        generatePath(`${api}/production/jobs/${jobId}/bill-of-process`),
+      jobConfigTable: (jobId: string) =>
+        generatePath(`${api}/production/jobs/${jobId}/config-table`),
+      operationQuantityReports: (operationId: string) =>
+        generatePath(
+          `${api}/production/operations/${operationId}/quantity-reports`
+        ),
+      operationSupplierQuantityReports: (operationId: string) =>
+        generatePath(
+          `${api}/production/operations/${operationId}/supplier-quantity-reports`
+        ),
+      operationSubcontractPricing: (
+        operationId: string,
+        supplierProcessId: string
+      ) =>
+        generatePath(
+          `${api}/production/operations/${operationId}/subcontract-pricing?supplierProcessId=${encodeURIComponent(supplierProcessId)}`
+        ),
+      quantityReportLines: (reportId: string, includeInvalidated?: boolean) =>
+        generatePath(
+          `${api}/production/quantity-reports/${reportId}/lines${
+            includeInvalidated ? "?includeInvalidated=true" : ""
+          }`
+        ),
+      supplierQuantityReportLines: (
+        reportId: string,
+        includeInvalidated?: boolean
+      ) =>
+        generatePath(
+          `${api}/production/supplier-quantity-reports/${reportId}/lines${
+            includeInvalidated ? "?includeInvalidated=true" : ""
+          }`
+        ),
+      supplierQuantityReportCreatePo: (reportId: string) =>
+        generatePath(
+          `${api}/production/supplier-quantity-reports/${reportId}/create-po`
+        ),
+      itemConfigTable: (itemId: string) =>
+        generatePath(`${api}/items/${itemId}/config-table`),
       jobs: `${api}/production/jobs`,
       kanban: (id: string) => generatePath(`${api}/kanban/${id}`),
       kanbanCollision: (id: string) =>
@@ -192,6 +232,8 @@ export const path = {
         generatePath(`${api}/purchasing/supplier-locations/${id}`),
       supplierProcesses: (id?: string) =>
         generatePath(`${api}/purchasing/supplier-processes/${id}`),
+      supplierProcessesBySupplier: (id: string) =>
+        generatePath(`${api}/purchasing/supplier-processes-by-supplier/${id}`),
       supplierTypes: `${api}/purchasing/supplier-types`,
       tags: (table?: string) =>
         generatePath(`${api}/shared/tags?table=${table}`),
@@ -202,7 +244,8 @@ export const path = {
         generatePath(`${api}/resources/work-centers?location=${id}`),
       workCenters: `${api}/resources/work-centers`,
       paymentTerms: `${api}/accounting/payment-terms`,
-      shippingMethods: `${api}/inventory/shipping-methods`
+      shippingMethods: `${api}/inventory/shipping-methods`,
+      templates: `${api}/items/templates`
     },
     external: {
       mes: MES_URL,
@@ -441,7 +484,7 @@ export const path = {
     batchPropertyOrder: (itemId: string) =>
       generatePath(`${x}/inventory/batch-property/${itemId}/property/order`),
     billing: `${x}/settings/billing`,
-    bulkEditPermissions: `${x}/users/bulk-edit-permissions`,
+    bulkEditPermissions: `${x}/people/bulk-edit-permissions`,
     bulkUpdateItems: `${x}/items/update`,
     bulkUpdateProductionPlanning: `${x}/production/planning/update`,
     bulkUpdatePurchasingPlanning: `${x}/purchasing/planning/update`,
@@ -534,7 +577,7 @@ export const path = {
       generatePath(`${x}/customer/${id}/details`),
     customerRoot: `${x}/customer`,
     customers: `${x}/sales/customers`,
-    customerAccounts: `${x}/users/customers`,
+    customerAccounts: `${x}/people/customers`,
     customerAccounting: (id: string) =>
       generatePath(`${x}/customer/${id}/accounting`),
     customerContact: (customerId: string, id: string) =>
@@ -572,7 +615,7 @@ export const path = {
     customFieldList: (id: string) =>
       generatePath(`${x}/settings/custom-fields/${id}`),
 
-    deactivateUsers: `${x}/users/deactivate`,
+    deactivateUsers: `${x}/people/deactivate`,
     defaultRevision: (id: string) =>
       generatePath(`${x}/items/revisions/default/${id}`),
     deleteAbility: (id: string) =>
@@ -628,7 +671,7 @@ export const path = {
     deleteEmployeeAbility: (abilityId: string, id: string) =>
       generatePath(`${x}/resources/ability/${abilityId}/employee/delete/${id}`),
     deleteEmployeeType: (id: string) =>
-      generatePath(`${x}/users/employee-types/delete/${id}`),
+      generatePath(`${x}/people/employee-types/delete/${id}`),
     deleteFailureMode: (id: string) =>
       generatePath(`${x}/resources/failure-modes/delete/${id}`),
     deleteGauge: (id: string) =>
@@ -637,7 +680,7 @@ export const path = {
       generatePath(`${x}/quality/calibrations/delete/${id}`),
     deleteGaugeType: (id: string) =>
       generatePath(`${x}/quality/gauge-types/delete/${id}`),
-    deleteGroup: (id: string) => generatePath(`${x}/users/groups/delete/${id}`),
+    deleteGroup: (id: string) => generatePath(`${x}/people/groups/delete/${id}`),
     deleteHoliday: (id: string) =>
       generatePath(`${x}/people/holidays/delete/${id}`),
     deleteTimecard: (id: string) =>
@@ -770,6 +813,8 @@ export const path = {
       generatePath(`${x}/shared/views/delete/${id}`),
     deleteScrapReason: (id: string) =>
       generatePath(`${x}/production/scrap-reasons/delete/${id}`),
+    deleteJobRule: (id: string) =>
+      generatePath(`${x}/production/job-rules/delete/${id}`),
     deleteShift: (id: string) =>
       generatePath(`${x}/people/shifts/delete/${id}`),
     deleteShipment: (id: string) => generatePath(`${x}/shipment/${id}/delete`),
@@ -827,15 +872,17 @@ export const path = {
     documentsTrash: `${x}/documents/search?q=trash`,
     employeeAbility: (abilityId: string, id: string) =>
       generatePath(`${x}/resources/ability/${abilityId}/employee/${id}`),
-    employeeAccount: (id: string) => generatePath(`${x}/users/employees/${id}`),
-    employeeAccounts: `${x}/users/employees`,
+    employeeAccount: (id: string) => generatePath(`${x}/people/employees/${id}`),
+    employeeAccounts: `${x}/people/employees`,
     employeeType: (id: string) =>
-      generatePath(`${x}/users/employee-types/${id}`),
-    employeeTypes: `${x}/users/employee-types`,
-    operators: `${x}/users/operators`,
-    operator: (id: string) => generatePath(`${x}/users/operators/${id}`),
+      generatePath(`${x}/people/employee-types/${id}`),
+    employeeTypes: `${x}/people/employee-types`,
+    peopleInviteLinks: `${x}/people/invite-links`,
+    peopleApplications: `${x}/people/applications`,
+    operators: `${x}/people/operators`,
+    operator: (id: string) => generatePath(`${x}/people/operators/${id}`),
     operatorResetPin: (id: string) =>
-      generatePath(`${x}/users/operators/reset-pin/${id}`),
+      generatePath(`${x}/people/operators/reset-pin/${id}`),
     externalCustomer: (id: string) => generatePath(`/share/customer/${id}`),
     externalCustomerFile: (id: string, path: string) =>
       generatePath(`/share/customer/${id}/${path}`),
@@ -859,8 +906,8 @@ export const path = {
       generatePath(`${x}/quality/gauges/deactivate/${id}`),
     gaugeTypes: `${x}/quality/gauge-types`,
     gaugeType: (id: string) => generatePath(`${x}/quality/gauge-types/${id}`),
-    group: (id: string) => generatePath(`${x}/users/groups/${id}`),
-    groups: `${x}/users/groups`,
+    group: (id: string) => generatePath(`${x}/people/groups/${id}`),
+    groups: `${x}/people/groups`,
     holiday: (id: string) => generatePath(`${x}/people/holidays/${id}`),
     holidays: `${x}/people/holidays`,
     import: (tableId: string) => generatePath(`${x}/shared/import/${tableId}`),
@@ -870,7 +917,7 @@ export const path = {
     integrationDeactivate: (id: string) =>
       generatePath(`${x}/settings/integrations/deactivate/${id}`),
     integrations: `${x}/settings/integrations`,
-    inventory: `${x}/inventory/quantities`,
+    inventoryQuantities: `${x}/inventory/quantities`,
     inventoryItem: (id: string) =>
       generatePath(`${x}/inventory/quantities/${id}/details`),
     inventoryItemActivity: (id: string) =>
@@ -948,8 +995,28 @@ export const path = {
     jobProductionEvent: (jobId: string, eventId: string) =>
       generatePath(`${x}/job/${jobId}/events/${eventId}`),
     jobProductionEvents: (id: string) => generatePath(`${x}/job/${id}/events`),
+    jobPickups: (id: string) => generatePath(`${x}/job/${id}/pickups`),
+    newJobPickup: (jobId: string, opts?: { jobOperationId?: string }) => {
+      const base = generatePath(`${x}/job/${jobId}/pickups/new`);
+      const opId = opts?.jobOperationId;
+      if (!opId) return base;
+      return `${base}?${new URLSearchParams({ jobOperationId: opId }).toString()}`;
+    },
+    deleteJobPickup: (id: string) =>
+      generatePath(`${x}/job/methods/pickup/delete/${id}`),
     jobProductionQuantities: (id: string) =>
       generatePath(`${x}/job/${id}/quantities`),
+    jobProductionQuantity: (jobId: string, quantityId: string) =>
+      generatePath(`${x}/job/${jobId}/quantities/${quantityId}`),
+    newJobProductionQuantity: (
+      jobId: string,
+      opts?: { jobOperationId?: string }
+    ) => {
+      const base = generatePath(`${x}/job/${jobId}/quantities/new`);
+      const opId = opts?.jobOperationId;
+      if (!opId) return base;
+      return `${base}?${new URLSearchParams({ jobOperationId: opId }).toString()}`;
+    },
     jobs: `${x}/production/jobs`,
     jobRecalculate: (id: string) => generatePath(`${x}/job/${id}/recalculate`),
     jobRelease: (id: string) => generatePath(`${x}/job/${id}/release`),
@@ -960,6 +1027,10 @@ export const path = {
     location: (id: string) => generatePath(`${x}/resources/locations/${id}`),
     locations: `${x}/resources/locations`,
     login: "/login",
+    joinLink: (code: string) => generatePath(`/join/${code}`),
+    joinLinkApply: (code: string) => generatePath(`/join/${code}/apply`),
+    joinLinkSubmitted: (code: string) =>
+      generatePath(`/join/${code}/submitted`),
     logout: "/logout",
     logos: `${x}/settings/logos`,
     maintenanceDispatch: (id: string) => generatePath(`${x}/maintenance/${id}`),
@@ -1069,7 +1140,7 @@ export const path = {
     newExchangeRate: `${x}/accounting/exchange-rates/new`,
     newDimension: `${x}/accounting/dimensions/new`,
     newCustomer: `${x}/customer/new`,
-    newCustomerAccount: `${x}/users/customers/new`,
+    newCustomerAccount: `${x}/people/customers/new`,
     newCustomerContact: (id: string) =>
       generatePath(`${x}/customer/${id}/contacts/new`),
     newCustomerLocation: (id: string) =>
@@ -1083,11 +1154,12 @@ export const path = {
     newDemandProjection: `${x}/production/projections/new`,
     newDepartment: `${x}/people/departments/new`,
     newDocument: `${x}/documents/new`,
-    newEmployee: `${x}/users/employees/new`,
-    newOperator: `${x}/users/operators/new`,
+    newEmployee: `${x}/people/employees/new`,
+    newOperator: `${x}/people/operators/new`,
     newEmployeeAbility: (id: string) =>
       generatePath(`${x}/resources/ability/${id}/employee/new`),
-    newEmployeeType: `${x}/users/employee-types/new`,
+    newEmployeeType: `${x}/people/employee-types/new`,
+    newInviteLink: `${x}/people/invite-links/new`,
     newFailureMode: `${x}/resources/failure-modes/new`,
     newFixture: `${x}/fixture/new`,
     newFixtureSupplier: (id: string) =>
@@ -1095,7 +1167,7 @@ export const path = {
     newGauge: `${x}/quality/gauges/new`,
     newGaugeCalibrationRecord: `${x}/quality/calibrations/new`,
     newGaugeType: `${x}/quality/gauge-types/new`,
-    newGroup: `${x}/users/groups/new`,
+    newGroup: `${x}/people/groups/new`,
     newHoliday: `${x}/people/holidays/new`,
     newTimecard: `${x}/people/timecard/new`,
     newInvestigationType: `${x}/quality/investigation-types/new`,
@@ -1192,12 +1264,13 @@ export const path = {
     newStorageType: `${x}/inventory/storage-types/new`,
     newShipment: `${x}/shipment/new`,
     newShift: `${x}/people/shifts/new`,
+    newJobRule: `${x}/production/job-rules/new`,
     newShippingMethod: `${x}/inventory/shipping-methods/new`,
     newService: `${x}/service/new`,
     newServiceSupplier: (id: string) =>
       generatePath(`${x}/service/${id}/purchasing/new`),
     newSupplier: `${x}/supplier/new`,
-    newSupplierAccount: `${x}/users/suppliers/new`,
+    newSupplierAccount: `${x}/people/suppliers/new`,
     newSupplierContact: (id: string) =>
       generatePath(`${x}/supplier/${id}/contacts/new`),
     newSupplierLocation: (id: string) =>
@@ -1266,6 +1339,29 @@ export const path = {
     peopleTimecard: `${x}/people/timecard`,
     timecard: (id: string) => generatePath(`${x}/people/timecard/${id}`),
     contact: `${x}/people/contact`,
+    accountingSalary: `${x}/accounting/salary`,
+    accountingPayments: `${x}/accounting/payments`,
+    quantityReview: `${x}/production/quantity-review`,
+    quantityReviewReport: (reportId: string) =>
+      generatePath(`${x}/production/quantity-review/report/${reportId}`),
+    quantityReviewForEmployee: (employeeId: string) =>
+      `${x}/production/quantity-review?filter=approvalStatus:eq:Pending&filter=employeeId:eq:${employeeId}`,
+    employeeSalary: (id: string) => generatePath(`${x}/accounting/salary/${id}`),
+    employeeSalaryMonth: (id: string, year: number, month: number) =>
+      generatePath(`${x}/accounting/salary/${id}/${year}/${month}`),
+    newSalaryPayment: (id: string, year: number, month: number) =>
+      generatePath(`${x}/accounting/salary/${id}/${year}/${month}/pay`),
+    recordSalaryPayment: (year: number, month: number, returnTo?: string) => {
+      const params = new URLSearchParams({
+        year: String(year),
+        month: String(month),
+        recordPayment: "1"
+      });
+      if (returnTo) {
+        params.set("returnTo", returnTo);
+      }
+      return `${x}/accounting/salary?${params.toString()}`;
+    },
     person: (id: string) => generatePath(`${x}/person/${id}`),
     personDetails: (id: string) => generatePath(`${x}/person/${id}/details`),
     personJob: (id: string) => generatePath(`${x}/person/${id}/job`),
@@ -1287,6 +1383,60 @@ export const path = {
     suggestion: (id: string) =>
       generatePath(`${x}/resources/suggestions/${id}`),
     suggestions: `${x}/resources/suggestions`,
+    template: (id: string) => generatePath(`${x}/template/${id}`),
+    templateConfigurationParameter: (templateId: string) =>
+      generatePath(`${x}/template/${templateId}/parameter`),
+    templateConfigurationParameterGroup: (templateId: string) =>
+      generatePath(`${x}/template/${templateId}/parameter/group`),
+    templateConfigurationParameterGroupOrder: (templateId: string) =>
+      generatePath(`${x}/template/${templateId}/parameter/group/order`),
+    templateConfigurationParameterOrder: (templateId: string) =>
+      generatePath(`${x}/template/${templateId}/parameter/order`),
+    templateConfigurationRule: (templateId: string) =>
+      generatePath(`${x}/template/${templateId}/rule`),
+    templateDeleteConfigurationParameter: (templateId: string, id: string) =>
+      generatePath(`${x}/template/${templateId}/parameter/delete/${id}`),
+    templateDeleteConfigurationParameterGroup: (
+      templateId: string,
+      id: string
+    ) =>
+      generatePath(`${x}/template/${templateId}/parameter/group/delete/${id}`),
+    templateDeleteConfigurationRule: (templateId: string, field: string) =>
+      generatePath(`${x}/template/${templateId}/rule/delete/${field}`),
+    deleteTemplate: (id: string) =>
+      generatePath(`${x}/template/${id}/delete`),
+    templateDetails: (id: string) =>
+      generatePath(`${x}/template/${id}/details`),
+    templateMethodMaterial: (id: string) =>
+      generatePath(`${x}/template/methods/material/${id}`),
+    templateMethodMaterialsOrder: `${x}/template/methods/material/order`,
+    templateMethodOperation: (id: string) =>
+      generatePath(`${x}/template/methods/operation/${id}`),
+    templateMethodOperationParameter: (id: string) =>
+      generatePath(`${x}/template/methods/operation/parameter/${id}`),
+    templateMethodOperationStep: (id: string) =>
+      generatePath(`${x}/template/methods/operation/step/${id}`),
+    templateMethodOperationStepOrder: (operationId: string) =>
+      generatePath(`${x}/template/methods/operation/${operationId}/step/order`),
+    templateMethodOperationTool: (id: string) =>
+      generatePath(`${x}/template/methods/operation/tool/${id}`),
+    templateMethodOperationsDelete: `${x}/template/methods/operation/delete`,
+    templateMethodOperationsOrder: `${x}/template/methods/operation/order`,
+    templateNew: `${x}/template/new`,
+    templateNewMethodMaterial: `${x}/template/methods/material/new`,
+    templateNewMethodOperation: `${x}/template/methods/operation/new`,
+    templateNewMethodOperationParameter: `${x}/template/methods/operation/parameter/new`,
+    templateNewMethodOperationStep: `${x}/template/methods/operation/step/new`,
+    templateNewMethodOperationTool: `${x}/template/methods/operation/tool/new`,
+    templateDeleteMethodMaterial: (id: string) =>
+      generatePath(`${x}/template/methods/material/delete/${id}`),
+    templateDeleteMethodOperationParameter: (id: string) =>
+      generatePath(`${x}/template/methods/operation/parameter/delete/${id}`),
+    templateDeleteMethodOperationStep: (id: string) =>
+      generatePath(`${x}/template/methods/operation/step/delete/${id}`),
+    templateDeleteMethodOperationTool: (id: string) =>
+      generatePath(`${x}/template/methods/operation/tool/delete/${id}`),
+    templates: `${x}/items/templates`,
     procedure: (id: string) => generatePath(`${x}/procedure/${id}`),
     procedureStep: (id: string, attributeId: string) =>
       generatePath(`${x}/procedure/${id}/steps/${attributeId}`),
@@ -1301,8 +1451,11 @@ export const path = {
       generatePath(`${x}/resources/processes/activate/${id}`),
     processDeactivate: (id: string) =>
       generatePath(`${x}/resources/processes/deactivate/${id}`),
-    production: `${x}/production`,
+    productionDashboard: `${x}/production/dashboard`,
     productionPlanning: `${x}/production/planning`,
+    jobRules: `${x}/production/job-rules`,
+    jobRule: (id: string) => generatePath(`${x}/production/job-rules/${id}`),
+    jobRulesSimulate: `${x}/production/job-rules/simulate`,
     productionPlanningItem: (itemId: string) =>
       generatePath(`${x}/production/planning/${itemId}`),
     peopleSettings: `${x}/settings/people`,
@@ -1350,10 +1503,10 @@ export const path = {
     purchaseOrderStatus: (id: string) =>
       generatePath(`${x}/purchase-order/${id}/status`),
     purchaseOrders: `${x}/purchasing/orders`,
-    purchasing: `${x}/purchasing`,
+    purchasingDashboard: `${x}/purchasing/dashboard`,
     purchasingPlanning: `${x}/purchasing/planning`,
     purchasingSettings: `${x}/settings/purchasing`,
-    quality: `${x}/quality`,
+    qualityDashboard: `${x}/quality/dashboard`,
     qualityActions: `${x}/quality/actions`,
     inboundInspections: `${x}/quality/inbound-inspections`,
     inboundInspection: (id: string) =>
@@ -1437,16 +1590,19 @@ export const path = {
     requiredAction: (id: string) =>
       generatePath(`${x}/quality/required-actions/${id}`),
     requiredActions: `${x}/quality/required-actions`,
-    resendInvite: `${x}/users/resend-invite`,
-    resources: `${x}/resources`,
+    resendInvite: `${x}/people/resend-invite`,
+    revokeInviteLink: `${x}/people/invite-links/revoke`,
+    updateInviteLinkExpiry: `${x}/people/invite-links/update-expiry`,
+    reviewMembershipApplication: `${x}/people/applications/review`,
+    resourcesDashboard: `${x}/resources/dashboard`,
     resourcesSettings: `${x}/settings/resources`,
     revision: (id: string) => generatePath(`${x}/items/revisions/${id}`),
-    revokeInvite: `${x}/users/revoke-invite`,
+    revokeInvite: `${x}/people/revoke-invite`,
     risks: `${x}/quality/risks`,
     risk: (id: string) => generatePath(`${x}/quality/risks/${id}`),
     root: "/",
     routings: `${x}/items/routing`,
-    sales: `${x}/sales`,
+    salesDashboard: `${x}/sales/dashboard`,
     salesInvoice: (id: string) => generatePath(`${x}/sales-invoice/${id}`),
     salesInvoiceDetails: (id: string) =>
       generatePath(`${x}/sales-invoice/${id}/details`),
@@ -1620,7 +1776,7 @@ export const path = {
     supplierApproval: (id: string) =>
       generatePath(`${x}/supplier/${id}/approval`),
     suppliers: `${x}/purchasing/suppliers`,
-    supplierAccounts: `${x}/users/suppliers`,
+    supplierAccounts: `${x}/people/suppliers`,
     supplierAccounting: (id: string) =>
       generatePath(`${x}/supplier/${id}/accounting`),
     supplierContact: (supplierId: string, id: string) =>
@@ -1707,7 +1863,7 @@ export const path = {
     uom: (id: string) => generatePath(`${x}/items/uom/${id}`),
     uoms: `${x}/items/uom`,
     userAttribute: (id: string) => generatePath(`${x}/account/${id}/attribute`),
-    users: `${x}/users`,
+    users: `${x}/people`,
     webhook: (id: string) => generatePath(`${x}/settings/webhooks/${id}`),
     webhooks: `${x}/settings/webhooks`,
     workCenters: `${x}/resources/work-centers`,
@@ -1719,7 +1875,6 @@ export const path = {
 } as const;
 
 export const onboardingSequence = [
-  path.to.onboarding.theme,
   path.to.onboarding.user,
   path.to.onboarding.company,
   path.to.onboarding.plan

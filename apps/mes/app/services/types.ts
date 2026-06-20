@@ -4,6 +4,7 @@ import type {
   getJobMakeMethod,
   getJobMaterialsByOperationId,
   getJobOperationById,
+  getJobOperationPickups,
   getJobOperationProcedure,
   getJobOperationsByWorkCenter,
   getKanbanByJobId,
@@ -79,6 +80,10 @@ export type ProductionEvent = NonNullable<
 
 export type ProductionQuantity = NonNullable<
   Awaited<ReturnType<typeof getProductionQuantitiesForJobOperation>>["data"]
+>[number];
+
+export type JobOperationPickup = NonNullable<
+  Awaited<ReturnType<typeof getJobOperationPickups>>["data"]
 >[number];
 
 export type StorageItem = FileObject & {

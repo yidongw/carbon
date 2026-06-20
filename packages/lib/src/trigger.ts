@@ -14,6 +14,7 @@ const taskToEvent = {
   recalculate: "carbon/recalculate",
   "user-admin": "carbon/user-admin",
   "schedule-job": "carbon/reschedule-job",
+  "release-job": "carbon/release-job",
   "post-transactions": "carbon/post-transaction",
   onboard: "carbon/onboard",
   "accounting-backfill": "carbon/accounting-backfill",

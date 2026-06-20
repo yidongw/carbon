@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import { cn } from "./utils/cn";
 
 const BAR_WIDTH = 2;
@@ -66,6 +66,8 @@ interface BarProgressProps {
   gradient?: boolean;
   /** Invert the gradient to green-yellow-red */
   invertGradient?: boolean;
+  /** Height of each bar segment in pixels (default: 14) */
+  barHeight?: number;
   /** Additional class names for the outer wrapper */
   className?: string;
   /** Class name for the active (filled) bars (ignored when gradient is true) */
@@ -81,12 +83,14 @@ export function BarProgress({
   value,
   gradient = false,
   invertGradient = false,
+  barHeight = BAR_HEIGHT,
   className,
   activeClassName = "bg-emerald-500",
-  inactiveClassName = "bg-muted"
+  inactiveClassName = "bg-foreground/15"
 }: BarProgressProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [barCount, setBarCount] = useState(0);
+  // Start with a placeholder count so bars are visible on first paint (avoids flash on remount).
+  const [barCount, setBarCount] = useState(1);
 
   const calculateBars = useCallback(() => {
     if (!containerRef.current) return;
@@ -95,11 +99,14 @@ export function BarProgress({
     // width = bars * BAR_WIDTH + (bars - 1) * BAR_GAP
     // width = bars * (BAR_WIDTH + BAR_GAP) - BAR_GAP
     // bars = floor((width + BAR_GAP) / (BAR_WIDTH + BAR_GAP))
-    const count = Math.floor((width + BAR_GAP) / (BAR_WIDTH + BAR_GAP));
-    setBarCount(Math.max(count, 1));
+    const count = Math.max(
+      Math.floor((width + BAR_GAP) / (BAR_WIDTH + BAR_GAP)),
+      1
+    );
+    setBarCount((prev) => (prev === count ? prev : count));
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const el = containerRef.current;
     if (!el) return;
 
@@ -141,8 +148,7 @@ export function BarProgress({
         aria-label={label ?? "Progress"}
         className="flex w-full items-center gap-[3px]"
       >
-        {barCount > 0 &&
-          Array.from({ length: barCount }, (_, i) => {
+        {Array.from({ length: barCount }, (_, i) => {
             const isActive = i < activeBars;
             const gradientStyle =
               isActive && gradient && barCount > 0
@@ -165,7 +171,7 @@ export function BarProgress({
                 )}
                 style={{
                   width: BAR_WIDTH,
-                  height: BAR_HEIGHT,
+                  height: barHeight,
                   ...gradientStyle
                 }}
               />

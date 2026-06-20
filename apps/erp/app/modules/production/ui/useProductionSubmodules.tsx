@@ -2,7 +2,10 @@ import { useLingui } from "@lingui/react/macro";
 import {
   LuChartLine,
   LuCirclePlay,
+  LuClipboardCheck,
+  LuLayoutDashboard,
   LuListChecks,
+  LuShieldCheck,
   LuSquareChartGantt,
   LuSquareKanban,
   LuTrash
@@ -18,7 +21,17 @@ export default function useProductionSubmodules() {
 
   const productionRoutes: AuthenticatedRouteGroup[] = [
     {
-      name: t`Production`,
+      name: t`Dashboard`,
+      routes: [
+        {
+          name: t`Dashboard`,
+          to: path.to.productionDashboard,
+          icon: <LuLayoutDashboard />
+        }
+      ]
+    },
+    {
+      name: t`Manage`,
       routes: [
         {
           name: t`Jobs`,
@@ -31,6 +44,12 @@ export default function useProductionSubmodules() {
           to: path.to.procedures,
           icon: <LuListChecks />,
           table: "procedure",
+          role: "employee"
+        },
+        {
+          name: t`Quantity Review`,
+          to: `${path.to.quantityReview}?filter=${encodeURIComponent("approvalStatus:eq:Pending")}`,
+          icon: <LuClipboardCheck />,
           role: "employee"
         }
       ]
@@ -61,6 +80,12 @@ export default function useProductionSubmodules() {
       name: t`Configure`,
       routes: [
         {
+          name: t`Assignment Rules`,
+          to: path.to.jobRules,
+          role: "employee",
+          icon: <LuShieldCheck />
+        },
+        {
           name: t`Scrap Reasons`,
           to: path.to.scrapReasons,
           role: "employee",
@@ -75,6 +100,9 @@ export default function useProductionSubmodules() {
     groups: productionRoutes
       .filter((group) => {
         const filteredRoutes = group.routes.filter((route) => {
+          if (route.to.startsWith(path.to.quantityReview)) {
+            return permissions.can("view", "people");
+          }
           if (route.role) {
             return permissions.is(route.role);
           } else {
@@ -88,6 +116,9 @@ export default function useProductionSubmodules() {
         ...group,
         routes: group.routes
           .filter((route) => {
+            if (route.to.startsWith(path.to.quantityReview)) {
+              return permissions.can("view", "people");
+            }
             if (route.role) {
               return permissions.is(route.role);
             } else {

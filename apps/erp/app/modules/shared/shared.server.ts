@@ -260,7 +260,7 @@ export async function sendSalesOrderEmail(args: {
       lastName: customer.data.contact.lastName ?? undefined
     },
     sender: {
-      email: seller.data.email,
+      email: seller.data.email ?? "",
       firstName: seller.data.firstName,
       lastName: seller.data.lastName
     },
@@ -274,9 +274,9 @@ export async function sendSalesOrderEmail(args: {
     .createSignedUrl(documentFilePath, 3600);
 
   await trigger("send-email", {
-    to: [seller.data.email, customer.data.contact.email!],
+    to: [seller.data.email ?? "", customer.data.contact.email!],
     cc: ccSelections?.length ? ccSelections : undefined,
-    from: seller.data.email,
+    from: seller.data.email ?? "",
     subject: `Order ${salesOrder.data.salesOrderId} from ${company.data.name}`,
     html,
     text,
@@ -324,20 +324,28 @@ export async function getOrCreatePeriods(
       ranges.map((r) => r.startDate)
     )
     .where("periodType", "=", "Week")
+    .orderBy("createdAt", "asc")
     .execute();
 
-  if (existingPeriods.length === ranges.length) {
-    return existingPeriods.map(toPlainPeriod);
+  // Keep one period per start date (duplicates can exist in legacy data)
+  const periodByStartDate = new Map<
+    string,
+    (typeof existingPeriods)[number]
+  >();
+  for (const period of existingPeriods) {
+    const startDate = dateToString(period.startDate);
+    if (!periodByStartDate.has(startDate)) {
+      periodByStartDate.set(startDate, period);
+    }
   }
 
-  // Find missing periods
-  const existingStartDates = new Set(
-    existingPeriods.map((p) => dateToString(p.startDate))
+  const periodsToCreate = ranges.filter(
+    (r) => !periodByStartDate.has(r.startDate)
   );
 
-  const periodsToCreate = ranges.filter(
-    (r) => !existingStartDates.has(r.startDate)
-  );
+  if (periodsToCreate.length === 0) {
+    return ranges.map((r) => toPlainPeriod(periodByStartDate.get(r.startDate)!));
+  }
 
   // Create missing periods in a transaction
   const created = await db.transaction().execute(async (trx) => {
@@ -355,7 +363,14 @@ export async function getOrCreatePeriods(
       .execute();
   });
 
-  return [...existingPeriods, ...created].map(toPlainPeriod);
+  for (const period of created) {
+    const startDate = dateToString(period.startDate);
+    if (!periodByStartDate.has(startDate)) {
+      periodByStartDate.set(startDate, period);
+    }
+  }
+
+  return ranges.map((r) => toPlainPeriod(periodByStartDate.get(r.startDate)!));
 }
 
 /** Convert a pg DATE value (Date object or string) to an ISO date string. */

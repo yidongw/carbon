@@ -4,6 +4,7 @@ import {
   LuClipboardCheck,
   LuDraftingCompass,
   LuFileText,
+  LuLayoutDashboard,
   LuListChecks,
   LuOctagonX,
   LuShapes,
@@ -23,6 +24,16 @@ export default function useQualitySubmodules() {
   const { addSavedViewsToRoutes } = useSavedViews();
 
   const qualityRoutes: AuthenticatedRouteGroup[] = [
+    {
+      name: t`Dashboard`,
+      routes: [
+        {
+          name: t`Dashboard`,
+          to: path.to.qualityDashboard,
+          icon: <LuLayoutDashboard />
+        }
+      ]
+    },
     {
       name: t`Issues`,
       routes: [

@@ -5,6 +5,7 @@ import {
   Command,
   createImageUpload,
   createMentionExtension,
+  createPlaceholder,
   EditorBubble,
   EditorCommand,
   EditorCommandEmpty,
@@ -19,6 +20,7 @@ import {
   renderItems
 } from "@carbon/tiptap";
 import TextStyle from "@tiptap/extension-text-style";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Separator } from "../Separator";
@@ -28,7 +30,7 @@ import { LinkSelector } from "./components/LinkSelector";
 import { NodeSelector } from "./components/NodeSelector";
 import { TextButtons } from "./components/TextButton";
 import { defaultExtensions } from "./extensions";
-import { getSuggestionItems } from "./slash";
+import { useSuggestionItems } from "./slash";
 
 interface MentionConfig {
   /**
@@ -73,6 +75,7 @@ const Editor = ({
   disableFileUpload,
   mentions
 }: EditorProp) => {
+  const { t } = useLingui();
   const [openNode, setOpenNode] = useState(false);
   const [openColor, setOpenColor] = useState(false);
   const [openLink, setOpenLink] = useState(false);
@@ -90,25 +93,22 @@ const Editor = ({
       onUpload: uploadHandler,
       validateFn: (file) => {
         if (disableFileUpload) {
-          toast.error("File upload is not supported for external scars");
+          toast.error(t`File upload is not supported for external scars`);
           return false;
         }
         if (!file.type.includes("image/")) {
-          toast.error(`File type ${file.type} not supported.`);
+          toast.error(t`File type ${file.type} not supported.`);
           return false;
         } else if (file.size / 1024 / 1024 > 20) {
-          toast.error("File size too big (max 20MB).");
+          toast.error(t`File size too big (max 20MB).`);
           return false;
         }
         return true;
       }
     });
-  }, [onUpload, disableFileUpload]);
+  }, [onUpload, disableFileUpload, t]);
 
-  const suggestionItems = useMemo(
-    () => getSuggestionItems(uploadFn),
-    [uploadFn]
-  );
+  const suggestionItems = useSuggestionItems(uploadFn);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: suppressed due to migration
   const mentionExtension = useMemo(() => {
@@ -128,6 +128,7 @@ const Editor = ({
   const extensions = useMemo(
     () => [
       ...defaultExtensions,
+      createPlaceholder(t`Press '/' for commands`),
       TextStyle,
       Command.configure({
         suggestion: {
@@ -137,7 +138,7 @@ const Editor = ({
       }),
       ...(mentionExtension ? [mentionExtension] : [])
     ],
-    [suggestionItems, mentionExtension]
+    [suggestionItems, mentionExtension, t]
   );
 
   return (
@@ -164,7 +165,7 @@ const Editor = ({
       >
         <EditorCommand className="z-50 h-auto max-h-[330px] overflow-y-auto rounded-md border border-muted bg-background px-1 py-2 shadow-md transition-[opacity,transform]">
           <EditorCommandEmpty className="px-2 text-muted-foreground">
-            No results
+            <Trans>No results</Trans>
           </EditorCommandEmpty>
           <EditorCommandList>
             {suggestionItems.map((item) => (

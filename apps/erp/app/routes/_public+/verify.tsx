@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { assertIsPost, error, RATE_LIMIT } from "@carbon/auth";
+import { assertIsPost, error, RATE_LIMIT, safeRedirect } from "@carbon/auth";
 import {
   createEmailAuthAccount,
   signInWithEmail
@@ -21,6 +21,7 @@ import {
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
+import { useFormatValidationError } from "~/utils/formatValidationError";
 import { LuCircleAlert } from "react-icons/lu";
 import type {
   ActionFunctionArgs,
@@ -50,9 +51,11 @@ const verifyValidator = z.object({
 });
 
 export async function loader({ request }: LoaderFunctionArgs) {
+  const url = new URL(request.url);
+  const redirectTo = url.searchParams.get("redirectTo");
   const authSession = await getAuthSession(request);
   if (authSession) {
-    throw redirect(path.to.authenticatedRoot);
+    throw redirect(safeRedirect(redirectTo, path.to.authenticatedRoot));
   }
 
   return null;
@@ -133,6 +136,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function VerifyRoute() {
   const { t } = useLingui();
+  const formatError = useFormatValidationError();
   const [searchParams] = useSearchParams();
   const email = searchParams.get("email") ?? "";
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
@@ -171,7 +175,7 @@ export default function VerifyRoute() {
                 <AlertTitle>
                   <Trans>Verification Error</Trans>
                 </AlertTitle>
-                <AlertDescription>{fetcher.data?.message}</AlertDescription>
+                <AlertDescription>{fetcher.data?.message && formatError(fetcher.data.message)}</AlertDescription>
               </Alert>
             )}
 

@@ -250,7 +250,7 @@ export async function getPurchaseOrderDelivery(
     .from("purchaseOrderDelivery")
     .select("*")
     .eq("id", purchaseOrderId)
-    .single();
+    .maybeSingle();
 }
 
 export async function getPurchaseOrderLocations(
@@ -272,7 +272,7 @@ export async function getPurchaseOrderPayment(
     .from("purchaseOrderPayment")
     .select("*")
     .eq("id", purchaseOrderId)
-    .single();
+    .maybeSingle();
 }
 
 export async function getPurchaseOrderLines(
@@ -1295,6 +1295,8 @@ export async function upsertPurchaseOrder(
         companyGroupId: string;
         createdBy: string;
         customFields?: Json;
+        jobId?: string;
+        jobReadableId?: string;
       })
     | (Omit<
         z.infer<typeof purchaseOrderValidator>,
@@ -1304,6 +1306,8 @@ export async function upsertPurchaseOrder(
         purchaseOrderId: string;
         updatedBy: string;
         customFields?: Json;
+        jobId?: string;
+        jobReadableId?: string;
       }),
   receiptRequestedDate?: string
 ) {

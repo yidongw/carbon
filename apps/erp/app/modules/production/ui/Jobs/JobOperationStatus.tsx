@@ -20,6 +20,7 @@ import { useTags } from "~/hooks/useTags";
 import { path } from "~/utils/path";
 import { jobOperationStatus } from "../../production.models";
 import type { Job, JobOperation } from "../../types";
+import { useJobOperationStatusLabel } from "./jobLabels";
 
 function useOptimisticJobStatus(operationId: string) {
   const fetchers = useFetchers();
@@ -35,20 +36,25 @@ function useOptimisticJobStatus(operationId: string) {
 
 export function JobOperationStatus({
   operation,
+  jobId: jobIdProp,
+  job: jobProp,
   className,
   onChange
 }: {
   operation: { id?: string; status: JobOperation["status"]; jobId?: string };
+  jobId?: string;
+  job?: Job;
   className?: string;
   onChange?: (status: JobOperation["status"]) => void;
 }) {
   const { t } = useLingui();
+  const getJobOperationStatusLabel = useJobOperationStatusLabel();
   const params = useParams();
-  const jobId = params.jobId ?? operation.jobId;
+  const jobId = jobIdProp ?? params.jobId ?? operation.jobId;
   if (!jobId) throw new Error("Job ID is required");
 
   const routeData = useRouteData<{ job: Job }>(path.to.job(jobId));
-  const isPaused = routeData?.job?.status === "Paused";
+  const isPaused = (jobProp ?? routeData?.job)?.status === "Paused";
   const submit = useSubmit();
   const permissions = usePermissions();
   const optimisticStatus = useOptimisticJobStatus(operation.id!);
@@ -105,7 +111,7 @@ export function JobOperationStatus({
                 <DropdownMenuIcon
                   icon={<OperationStatusIcon status={status} />}
                 />
-                <span>{status}</span>
+                <span>{getJobOperationStatusLabel(status)}</span>
               </DropdownMenuRadioItem>
             ))}
           </DropdownMenuRadioGroup>
