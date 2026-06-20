@@ -1,12 +1,18 @@
 import type { AvatarProps } from "@carbon/react";
 import { cn, HStack } from "@carbon/react";
+import type { PersonNameParts } from "@carbon/utils";
 import { Trans } from "@lingui/react/macro";
 import { useFormatPersonName } from "~/hooks";
 import { usePeople } from "~/stores";
 import Avatar from "./Avatar";
 
+type EmployeeAvatarFallback = PersonNameParts & {
+  avatarUrl?: string | null;
+};
+
 type EmployeeAvatarProps = AvatarProps & {
   employeeId: string | null;
+  fallback?: EmployeeAvatarFallback;
   className?: string;
   withName?: boolean;
   /** Applied to the avatar+name row (e.g. `items-start` so the name lines up with the avatar top in dense headers). */
@@ -15,6 +21,7 @@ type EmployeeAvatarProps = AvatarProps & {
 
 const EmployeeAvatar = ({
   employeeId,
+  fallback,
   size,
   withName = true,
   className,
@@ -43,16 +50,15 @@ const EmployeeAvatar = ({
     );
   }
 
-  const person = people.find((p) => p.id === employeeId);
-  const displayName = person
-    ? formatPersonName({
-        firstName: person.firstName,
-        lastName: person.lastName,
-        fullName: person.name
-      })
-    : "";
+  const storePerson = people.find((p) => p.id === employeeId);
+  const displayName = formatPersonName({
+    firstName: storePerson?.firstName ?? fallback?.firstName,
+    lastName: storePerson?.lastName ?? fallback?.lastName,
+    fullName: storePerson?.name ?? fallback?.fullName
+  });
+  const avatarUrl = storePerson?.avatarUrl ?? fallback?.avatarUrl ?? undefined;
 
-  if (!person) {
+  if (!storePerson && !fallback) {
     return <Avatar size={size ?? "xs"} path={undefined} />;
   }
 
@@ -60,17 +66,19 @@ const EmployeeAvatar = ({
     <HStack
       className={cn(
         "min-w-0 gap-2 no-underline hover:no-underline",
-        rowClassName ?? "items-center"
+        rowClassName ?? "items-center",
+        className
       )}
     >
       <Avatar
         size={size ?? "xs"}
-        path={person.avatarUrl ?? undefined}
+        path={avatarUrl}
         name={displayName}
+        {...props}
       />
       {withName && (
         <span className="min-w-0 break-words text-sm font-medium leading-5">
-          {displayName}
+          {displayName || "—"}
         </span>
       )}
     </HStack>

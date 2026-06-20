@@ -10144,8 +10144,14 @@ msgstr "Webhooks Docs"
 msgid "Website"
 msgstr "Website"
 
+msgid "WeChat"
+msgstr "WeChat"
+
 msgid "WeChat QR"
 msgstr "WeChat QR"
+
+msgid "WeChat sign-in"
+msgstr "WeChat sign-in"
 
 msgid "Wednesday"
 msgstr "Wednesday"
