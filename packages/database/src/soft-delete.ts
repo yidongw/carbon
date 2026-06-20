@@ -173,6 +173,32 @@ export function filterDeleted<T>(queryBuilder: T): T {
 }
 
 /**
+ * Wrap client.from() to automatically filter deleted records.
+ * Only filters tables that support soft delete.
+ *
+ * @example
+ * const client = getCarbon(request);
+ * const activeFrom = fromActive(client);
+ *
+ * // Automatically filtered
+ * const items = await activeFrom("item").select("*");
+ *
+ * // Not filtered (doesn't have deletedAt)
+ * const users = await activeFrom("user").select("*");
+ *
+ * // Need deleted records? Use base client
+ * const allItems = await client.from("item").select("*");
+ */
+export function fromActive(client: SupabaseClient) {
+  return (table: string) => {
+    const builder = client.from(table);
+    return SOFT_DELETE_TABLES.has(table)
+      ? filterDeleted(builder)
+      : builder;
+  };
+}
+
+/**
  * Require a record to not be deleted, or throw redirect to /x/deleted.
  * Use this in detail page loaders.
  *
