@@ -33,8 +33,8 @@ const PersonHeader = () => {
   return (
     <>
       <Card>
-        <HStack className="justify-between items-center p-6 pl-0">
-          <CardHeader className="pt-0">
+        <HStack className="justify-between items-start p-6 pl-0">
+          <CardHeader>
             <CardTitle className="text-2xl">
               {routeData?.employeeSummary?.name}
             </CardTitle>
