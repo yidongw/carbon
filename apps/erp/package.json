@@ -134,8 +134,6 @@
     "@lingui/vite-plugin": "catalog:",
     "@react-router/dev": "catalog:",
     "@tailwindcss/container-queries": "catalog:",
-    "@tailwindcss/forms": "catalog:",
-    "@tailwindcss/line-clamp": "catalog:",
     "@tailwindcss/typography": "catalog:",
     "@types/d3": "7.4.3",
     "@types/d3-force": "3.0.10",
