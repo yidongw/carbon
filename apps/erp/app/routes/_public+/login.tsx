@@ -2,8 +2,8 @@ import {
   AUTH_PROVIDERS,
   assertIsPost,
   CarbonEdition,
-  CLOUDFLARE_TURNSTILE_SITE_KEY,
   CLOUDFLARE_TURNSTILE_SECRET_KEY,
+  CLOUDFLARE_TURNSTILE_SITE_KEY,
   CONTROLLED_ENVIRONMENT,
   carbonClient,
   error,
@@ -11,7 +11,6 @@ import {
   RATE_LIMIT,
   safeRedirect
 } from "@carbon/auth";
-import { QRCodeSVG } from "qrcode.react";
 import {
   sendMagicLink,
   signInWithBypassEmail,
@@ -25,8 +24,7 @@ import {
 } from "@carbon/auth/session.server";
 import { getUserByEmail } from "@carbon/auth/users.server";
 import { sendVerificationCode } from "@carbon/auth/verification.server";
-import { Hidden, Submit, ValidatedForm, validator } from "@carbon/form";
-import Input from "~/components/Form/Input";
+import { Hidden, Input, Submit, ValidatedForm, validator } from "@carbon/form";
 import { Ratelimit, redis } from "@carbon/kv";
 import {
   Alert,
@@ -43,6 +41,7 @@ import {
 import { Edition } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { Turnstile } from "@marsidev/react-turnstile";
+import { QRCodeSVG } from "qrcode.react";
 import { useEffect, useState } from "react";
 import { LuCircleAlert } from "react-icons/lu";
 import { SiWechat } from "react-icons/si";
@@ -59,8 +58,8 @@ import {
   useSearchParams
 } from "react-router";
 import type { Result } from "~/types";
-import { path } from "~/utils/path";
 import { useFormatValidationError } from "~/utils/formatValidationError";
+import { path } from "~/utils/path";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Carbon | Login" }];
@@ -147,14 +146,10 @@ export async function action({ request }: ActionFunctionArgs) {
   const user = await getUserByEmail(email);
 
   const devBypassEmails =
-    process.env.DEV_BYPASS_EMAIL
-      ?.split(",")
+    process.env.DEV_BYPASS_EMAIL?.split(",")
       .map((entry) => entry.trim().toLowerCase())
       .filter(Boolean) ?? [];
-  if (
-    devBypassEmails.includes(email.toLowerCase()) &&
-    user.data?.active
-  ) {
+  if (devBypassEmails.includes(email.toLowerCase()) && user.data?.active) {
     const authSession = await signInWithBypassEmail(email);
     if (authSession) {
       const sessionCookie = await setAuthSession(request, { authSession });
