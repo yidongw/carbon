@@ -9830,13 +9830,13 @@ msgid "Website"
 msgstr "ウェブサイト"
 
 msgid "WeChat"
-msgstr ""
+msgstr "WeChat"
 
 msgid "WeChat QR"
 msgstr "WeChat QRコード"
 
 msgid "WeChat sign-in"
-msgstr ""
+msgstr "WeChatでサインイン"
 
 msgid "Wednesday"
 msgstr "水曜日"
