@@ -69,6 +69,19 @@ export async function getWeChatUserInfo(
   };
 }
 
+export function splitWeChatNickname(nickname: string) {
+  const trimmed = nickname.trim();
+  if (!trimmed) {
+    return { firstName: "", lastName: "" };
+  }
+
+  const parts = trimmed.split(/\s+/);
+  return {
+    firstName: parts[0] ?? trimmed,
+    lastName: parts.slice(1).join(" ")
+  };
+}
+
 export async function findOrCreateWeChatUser(
   unionid: string,
   nickname: string,
@@ -84,18 +97,33 @@ export async function findOrCreateWeChatUser(
   console.log("[wechat findOrCreate] existing lookup", existing.error ? `ERROR: ${JSON.stringify(existing.error)}` : existing.data ? "found" : "not found");
 
   if (existing.data) {
-    // Returning user: refresh the avatar from WeChat if it changed or was missing
-    // (an earlier login may have captured none). Leave their name untouched.
+    const { firstName, lastName } = splitWeChatNickname(nickname);
+    const updates: {
+      avatarUrl?: string;
+      firstName?: string;
+      lastName?: string;
+    } = {};
+
     if (avatarUrl && avatarUrl !== existing.data.avatarUrl) {
-      const { data: refreshed } = await serviceRole
-        .from("user")
-        .update({ avatarUrl })
-        .eq("id", existing.data.id)
-        .select("*")
-        .single();
-      return refreshed ?? existing.data;
+      updates.avatarUrl = avatarUrl;
     }
-    return existing.data;
+
+    if (firstName && !existing.data.firstName?.trim()) {
+      updates.firstName = firstName;
+      updates.lastName = lastName;
+    }
+
+    if (Object.keys(updates).length === 0) {
+      return existing.data;
+    }
+
+    const { data: refreshed } = await serviceRole
+      .from("user")
+      .update(updates)
+      .eq("id", existing.data.id)
+      .select("*")
+      .single();
+    return refreshed ?? existing.data;
   }
 
   // The synthetic email lives ONLY on the auth user: generateLink (our magic-link
@@ -121,14 +149,14 @@ export async function findOrCreateWeChatUser(
   // The create_public_user trigger fires synchronously and inserts a bare row.
   // Update it with WeChat-specific fields rather than inserting again (which
   // would conflict on the primary key).
-  const nameParts = nickname.trim().split(/\s+/);
+  const { firstName, lastName } = splitWeChatNickname(nickname);
   const { data: updatedUser } = await serviceRole
     .from("user")
     .update({
       email: null,
       wechat_unionid: unionid,
-      firstName: nameParts[0] ?? nickname,
-      lastName: nameParts.slice(1).join(" "),
+      firstName,
+      lastName,
       avatarUrl: avatarUrl || null,
     })
     .eq("id", authUser.user.id)

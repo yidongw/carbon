@@ -107,7 +107,16 @@ const OperatorsTable = memo(
         {
           header: "Operator",
           cell: ({ row }) => (
-            <EmployeeAvatar size="sm" employeeId={row.original.id} />
+            <EmployeeAvatar
+              size="sm"
+              employeeId={row.original.id}
+              fallback={{
+                firstName: row.original.firstName,
+                lastName: row.original.lastName,
+                fullName: row.original.name,
+                avatarUrl: row.original.avatarUrl
+              }}
+            />
           ),
           meta: {
             icon: <LuUser />
