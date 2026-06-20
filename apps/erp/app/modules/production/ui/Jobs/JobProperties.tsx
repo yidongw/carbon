@@ -1,3 +1,4 @@
+import { useCarbon } from "@carbon/auth";
 import type { Json } from "@carbon/database";
 import {
   DatePicker,
@@ -9,27 +10,21 @@ import {
 import {
   Badge,
   Button,
+  cn,
   HStack,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  ModalTitle,
+  IconButton,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
   toast,
-  useDisclosure,
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { PostgrestResponse } from "@supabase/supabase-js";
-import { Suspense, useCallback, useEffect, useState } from "react";
-import { LuCopy, LuLink, LuUnlink2 } from "react-icons/lu";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { LuCopy, LuLink, LuTable, LuUnlink2 } from "react-icons/lu";
 import { RiProgress8Line } from "react-icons/ri";
-import { Await, useFetcher, useParams } from "react-router";
+import { Await, useFetcher, useParams, useRevalidator } from "react-router";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 import {
@@ -47,8 +42,13 @@ import {
   UnitOfMeasure
 } from "~/components/Form";
 import CustomFormInlineFields from "~/components/Form/CustomFormInlineFields";
-import { usePermissions, useRouteData } from "~/hooks";
+import { overlay, useOverlay } from "~/components/Overlay";
+import { usePermissions, useRouteData, useUser } from "~/hooks";
 import type { TrackedEntity } from "~/modules/inventory/types";
+import type {
+  ConfigurationParameter,
+  ConfigurationParameterGroup
+} from "~/modules/items/types";
 import type { MethodItemType } from "~/modules/shared";
 import type { action } from "~/routes/x+/items+/update";
 import { path } from "~/utils/path";
@@ -56,10 +56,12 @@ import { copyToClipboard } from "~/utils/string";
 import { deadlineTypes, isJobLocked } from "../../production.models";
 import type { Job } from "../../types";
 import { getDeadlineIcon } from "./Deadline";
+import { useDeadlineTypeLabel } from "./jobLabels";
 
 const JobProperties = () => {
   const { jobId } = useParams();
   const { t } = useLingui();
+  const getDeadlineTypeLabel = useDeadlineTypeLabel();
   if (!jobId) throw new Error("jobId not found");
 
   const routeData = useRouteData<{
@@ -68,14 +70,58 @@ const JobProperties = () => {
     trackedEntities: Promise<PostgrestResponse<TrackedEntity>>;
   }>(path.to.job(jobId));
 
-  const unlinkDisclosure = useDisclosure();
+  const { carbon } = useCarbon();
+  const { company } = useUser();
+
+  const { openOverlay } = useOverlay();
+  const { revalidate } = useRevalidator();
+  const [configurationParameters, setConfigurationParameters] = useState<{
+    parameters: ConfigurationParameter[];
+    groups: ConfigurationParameterGroup[];
+  } | null>(null);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: suppressed due to migration
+  useEffect(() => {
+    const itemId = routeData?.job?.itemId;
+    if (!itemId || !carbon || !company?.id) return;
+    Promise.all([
+      carbon
+        .from("configurationParameter")
+        .select("*")
+        .eq("itemId", itemId)
+        .eq("companyId", company.id),
+      carbon
+        .from("configurationParameterGroup")
+        .select("*")
+        .eq("itemId", itemId)
+        .eq("companyId", company.id)
+    ]).then(([parameters, groups]) => {
+      const params = parameters.data ?? [];
+      if (params.length > 0) {
+        setConfigurationParameters({
+          parameters: params,
+          groups: groups.data ?? []
+        });
+      }
+    });
+  }, [routeData?.job?.itemId]);
 
   const fetcher = useFetcher<typeof action>();
+  const prevFetcherState = useRef(fetcher.state);
   useEffect(() => {
+    const finishedSubmitting =
+      prevFetcherState.current !== "idle" && fetcher.state === "idle";
+    prevFetcherState.current = fetcher.state;
+
+    if (!finishedSubmitting || !fetcher.data) return;
+
     if (fetcher.data?.error) {
       toast.error(fetcher.data.error.message);
+      return;
     }
-  }, [fetcher.data]);
+
+    revalidate();
+  }, [fetcher.state, fetcher.data, revalidate]);
 
   const [type, setType] = useState<MethodItemType>(
     (routeData?.job?.itemType ?? "Part") as MethodItemType
@@ -174,10 +220,12 @@ const JobProperties = () => {
   const isLocked = isJobLocked(routeData?.job?.status);
   const isDisabled = !canUpdate || isLocked;
 
+  const quantity = routeData?.job?.quantity ?? 0;
+
   return (
     <VStack
       spacing={4}
-      className="w-96 bg-card h-full overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent border-l border-border px-4 py-2 text-sm"
+      className="w-full min-w-0 bg-card h-full overflow-y-auto overflow-x-hidden overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent px-4 py-2 text-sm"
     >
       <VStack spacing={4}>
         <HStack className="w-full justify-between">
@@ -283,16 +331,14 @@ const JobProperties = () => {
             }}
           </Await>
         </Suspense>
-      </VStack>
 
-      {routeData?.job?.customerId &&
-      routeData?.job?.salesOrderId &&
-      routeData?.job?.salesOrderLineId ? (
-        <VStack spacing={0}>
-          <span className="text-xs text-muted-foreground">
-            <Trans>Target</Trans>
-          </span>
-          <HStack className="group w-full justify-between" spacing={0}>
+        <span className="text-xs text-muted-foreground">
+          <Trans>Target</Trans>
+        </span>
+        {routeData?.job?.customerId &&
+        routeData?.job?.salesOrderId &&
+        routeData?.job?.salesOrderLineId ? (
+          <HStack className="group" spacing={1}>
             <Hyperlink
               to={path.to.salesOrderLine(
                 routeData.job.salesOrderId,
@@ -309,34 +355,36 @@ const JobProperties = () => {
               variant="ghost"
               size="sm"
               leftIcon={<LuUnlink2 className="w-3 h-3" />}
-              onClick={unlinkDisclosure.onOpen}
+              onClick={() => {
+                onUpdate("salesOrderLineId", null);
+              }}
             >
               Unlink
             </Button>
           </HStack>
-        </VStack>
-      ) : (
-        <ValidatedForm
-          defaultValues={{
-            storageUnitId: routeData?.job?.storageUnitId ?? undefined
-          }}
-          validator={z.object({
-            storageUnitId: zfd.text(z.string().optional())
-          })}
-          className="w-full"
-        >
-          <StorageUnit
-            label={t`Target`}
-            name="storageUnitId"
-            inline
-            locationId={routeData?.job?.locationId ?? undefined}
-            isReadOnly={isDisabled}
-            onChange={(value) => {
-              onUpdate("storageUnitId", value?.id ?? null);
+        ) : (
+          <ValidatedForm
+            defaultValues={{
+              storageUnitId: routeData?.job?.storageUnitId ?? undefined
             }}
-          />
-        </ValidatedForm>
-      )}
+            validator={z.object({
+              storageUnitId: zfd.text(z.string().optional())
+            })}
+            className="w-full"
+          >
+            <StorageUnit
+              label=""
+              name="storageUnitId"
+              inline
+              locationId={routeData?.job?.locationId ?? undefined}
+              isReadOnly={isDisabled}
+              onChange={(value) => {
+                onUpdate("storageUnitId", value?.id ?? null);
+              }}
+            />
+          </ValidatedForm>
+        )}
+      </VStack>
 
       <Assignee
         id={jobId}
@@ -368,26 +416,52 @@ const JobProperties = () => {
           }}
         />
       </ValidatedForm>
-      <ValidatedForm
-        defaultValues={{ quantity: routeData?.job?.quantity ?? undefined }}
-        validator={z.object({
-          quantity: zfd.numeric(
-            z.number().min(0, { message: "Quantity is required" })
-          )
-        })}
-        className="w-full"
-      >
-        <NumberControlled
-          label={t`Quantity`}
-          name="quantity"
-          inline
-          isReadOnly={isDisabled}
-          value={routeData?.job?.quantity ?? 0}
-          onChange={(value) => {
-            onUpdate("quantity", value);
-          }}
-        />
-      </ValidatedForm>
+      {configurationParameters ? (
+        <VStack className="w-full">
+          <span className="text-xs text-muted-foreground">{t`Quantity`}</span>
+          <HStack spacing={0} className="w-full justify-between">
+            <span className="flex flex-grow line-clamp-1 items-center">
+              {quantity}
+            </span>
+            <IconButton
+              icon={<LuTable size="1em" strokeWidth="3" />}
+              aria-label={t`Configure quantities`}
+              size="sm"
+              variant="secondary"
+              className={cn(
+                quantity > 0 && "text-emerald-500 hover:text-emerald-500"
+              )}
+              isDisabled={isDisabled}
+              onClick={() =>
+                openOverlay(overlay.to.jobConfigTable(jobId), {
+                  onCreated: revalidate
+                })
+              }
+            />
+          </HStack>
+        </VStack>
+      ) : (
+        <ValidatedForm
+          defaultValues={{ quantity: routeData?.job?.quantity ?? undefined }}
+          validator={z.object({
+            quantity: zfd.numeric(
+              z.number().min(0, { message: "Quantity is required" })
+            )
+          })}
+          className="w-full"
+        >
+          <NumberControlled
+            label={t`Quantity`}
+            name="quantity"
+            inline
+            isReadOnly={isDisabled}
+            value={routeData?.job?.quantity ?? 0}
+            onChange={(value) => {
+              onUpdate("quantity", value);
+            }}
+          />
+        </ValidatedForm>
+      )}
       <ValidatedForm
         defaultValues={{
           scrapQuantity: routeData?.job?.scrapQuantity ?? undefined
@@ -470,14 +544,14 @@ const JobProperties = () => {
             return (
               <div className="flex gap-1 items-center">
                 {getDeadlineIcon(deadlineType)}
-                <span>{deadlineType}</span>
+                <span>{getDeadlineTypeLabel(deadlineType)}</span>
               </div>
             );
           }}
           isReadOnly={isDisabled}
           options={deadlineTypes.map((d) => ({
             value: d,
-            label: d
+            label: getDeadlineTypeLabel(d)
           }))}
           onChange={(value) => {
             onUpdate("deadlineType", value?.value ?? null);
@@ -580,47 +654,6 @@ const JobProperties = () => {
         onUpdate={onUpdateCustomFields}
       />
 
-      {unlinkDisclosure.isOpen && (
-        <Modal
-          open={unlinkDisclosure.isOpen}
-          onOpenChange={(open) => {
-            if (!open) unlinkDisclosure.onClose();
-          }}
-        >
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>
-              <ModalTitle>
-                <Trans>Unlink job from sales order?</Trans>
-              </ModalTitle>
-            </ModalHeader>
-            <ModalBody>
-              <p className="text-sm text-muted-foreground">
-                <Trans>
-                  This will remove {routeData?.job?.jobId}'s link to{" "}
-                  {routeData?.job?.salesOrderReadableId}. The job will no longer
-                  appear under the sales order and shipments won't find it.
-                </Trans>
-              </p>
-            </ModalBody>
-            <ModalFooter>
-              <Button variant="secondary" onClick={unlinkDisclosure.onClose}>
-                <Trans>Cancel</Trans>
-              </Button>
-              <Button
-                variant="destructive"
-                leftIcon={<LuUnlink2 className="w-3 h-3" />}
-                onClick={() => {
-                  onUpdate("salesOrderLineId", null);
-                  unlinkDisclosure.onClose();
-                }}
-              >
-                <Trans>Unlink</Trans>
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
-      )}
     </VStack>
   );
 };

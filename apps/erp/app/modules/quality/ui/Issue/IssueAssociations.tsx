@@ -878,10 +878,9 @@ function NewTrackedEntityAssociation({ items }: { items?: string[] }) {
 
     setTrackedEntities(
       data?.map((entity) => ({
-        label: entity.readableId
-          ? `${entity.readableId} — ${entity.id}`
-          : entity.id,
-        value: entity.id
+        label: entity.readableId ?? entity.id,
+        value: entity.id,
+        helper: entity.id
       })) ?? []
     );
     setTrackedEntitiesAreLoading(false);

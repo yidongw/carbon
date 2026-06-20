@@ -14,12 +14,12 @@ import {
   getSupplierContact,
   getSupplierInteractionDocuments,
   getSupplierInteractionLineDocuments,
-  insertSupplierQuote,
   purchasingRfqFinalizeValidator,
   updatePurchasingRFQStatus,
+  upsertSupplierQuote,
   upsertSupplierQuoteLine
 } from "~/modules/purchasing";
-import { getCompany } from "~/modules/settings";
+import { getCompany, getNextSequence } from "~/modules/settings";
 import { upsertExternalLink } from "~/modules/shared";
 import { getUser } from "~/modules/users/users.server";
 import { path } from "~/utils/path";
@@ -110,7 +110,6 @@ export async function action({ request, params }: ActionFunctionArgs) {
     contactEmail: string;
     contactFirstName: string;
     supplierQuoteId: string;
-    supplierQuoteReadableId: string;
     externalLinkId: string;
   }> = [];
 
@@ -120,9 +119,19 @@ export async function action({ request, params }: ActionFunctionArgs) {
       (sc) => sc.supplierId === supplierId
     );
 
+    // Get next sequence number for the supplier quote
+    const sequence = await getNextSequence(client, "supplierQuote", companyId);
+    if (sequence.error || !sequence.data) {
+      console.error("Failed to get sequence:", sequence.error);
+      continue;
+    }
+
     // Create the supplier quote
-    const quoteResult = await insertSupplierQuote(client, {
+    const quoteResult = await upsertSupplierQuote(client, {
+      supplierQuoteId: sequence.data,
+      supplierQuoteType: "Purchase",
       supplierId,
+      quotedDate: new Date().toISOString().split("T")[0],
       companyId,
       companyGroupId,
       createdBy: userId
@@ -134,7 +143,6 @@ export async function action({ request, params }: ActionFunctionArgs) {
     }
 
     const supplierQuoteId = quoteResult.data.id;
-    const supplierQuoteReadableId = quoteResult.data.supplierQuoteId;
     createdQuotes.push(supplierQuoteId);
 
     // Create quote lines for each RFQ line that has an itemId
@@ -203,8 +211,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
         emailsToSend.push({
           contactEmail: supplierContact.data.contact.email,
           contactFirstName: supplierContact.data.contact.firstName ?? "there",
-          supplierQuoteId,
-          supplierQuoteReadableId,
+          supplierQuoteId: sequence.data,
           externalLinkId: externalLinkResult.data.id
         });
       }
@@ -273,7 +280,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     for (const email of emailsToSend) {
       try {
         const externalQuoteUrl = `${baseUrl}${path.to.externalSupplierQuote(email.externalLinkId)}`;
-        const emailSubject = `Supplier Quote ${email.supplierQuoteReadableId} from ${company.data.name}`;
+        const emailSubject = `Supplier Quote ${email.supplierQuoteId} from ${company.data.name}`;
         const emailBody = `Hey ${email.contactFirstName},\n\nPlease provide pricing and lead time(s) for the linked quote:`;
         const emailSignature = `Thanks,\n${user.data.firstName} ${user.data.lastName}\n${company.data.name}`;
 
@@ -289,8 +296,8 @@ export async function action({ request, params }: ActionFunctionArgs) {
         htmlParts.push(`<br><br>${emailSignature.replace(/\n/g, "<br>")}`);
 
         await trigger("send-email", {
-          to: [user.data.email, email.contactEmail],
-          from: user.data.email,
+          to: [user.data.email ?? "", email.contactEmail],
+          from: user.data.email ?? "",
           subject: emailSubject,
           html: htmlParts.join(""),
           text: `${emailBody}\n\n${externalQuoteUrl}\n\n${emailSignature}`,

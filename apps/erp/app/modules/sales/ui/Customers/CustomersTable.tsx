@@ -14,7 +14,6 @@ import {
   LuCalendar,
   LuEuro,
   LuGlobe,
-  LuHash,
   LuPencil,
   LuPhone,
   LuPrinter,
@@ -35,7 +34,7 @@ import {
 import { Enumerable } from "~/components/Enumerable";
 import { useCustomerTypes } from "~/components/Form/CustomerType";
 import { ConfirmDelete } from "~/components/Modals";
-import { useCompanySettings, useDateFormatter, usePermissions } from "~/hooks";
+import { useDateFormatter, usePermissions } from "~/hooks";
 import { useCustomColumns } from "~/hooks/useCustomColumns";
 import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
@@ -66,26 +65,10 @@ const CustomersTable = memo(
     );
 
     const customerTypes = useCustomerTypes();
-    const companySettings = useCompanySettings();
-    const showCustomerReadableId =
-      companySettings?.showCustomerReadableId ?? false;
 
     const customColumns = useCustomColumns<Customer>("customer");
     const columns = useMemo<ColumnDef<Customer>[]>(() => {
-      const idColumn: ColumnDef<Customer> = {
-        accessorKey: "readableId",
-        header: t`ID`,
-        cell: ({ row }) => (
-          <span className="font-mono text-xs text-muted-foreground">
-            {row.original.readableId ?? ""}
-          </span>
-        ),
-        meta: {
-          icon: <LuHash />
-        }
-      };
       const defaultColumns: ColumnDef<Customer>[] = [
-        ...(showCustomerReadableId ? [idColumn] : []),
         {
           accessorKey: "name",
           header: t`Name`,
@@ -273,8 +256,7 @@ const CustomersTable = memo(
       tags,
       t,
       translateStatus,
-      formatDate,
-      showCustomerReadableId
+      formatDate
     ]);
 
     const renderContextMenu = useMemo(

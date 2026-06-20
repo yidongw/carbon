@@ -14,9 +14,6 @@ import {
   InputGroup,
   InputLeftElement,
   Skeleton,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
   useDisclosure,
   VStack
 } from "@carbon/react";
@@ -96,17 +93,11 @@ const revisionValidator = z.array(
   })
 );
 
-export type JobMaterialUsage = {
-  byMaterialId: Record<string, number>;
-  byJobId: Record<string, number>;
-};
-
 export function UsedInTree({
   tree,
   revisions: revisionsJson,
   itemReadableId,
   itemReadableIdWithRevision,
-  jobMaterialUsage,
   hasSizesInsteadOfRevisions = false,
   filterText: filterTextProp,
   hideSearch
@@ -115,7 +106,6 @@ export function UsedInTree({
   revisions?: Json;
   itemReadableId: string;
   itemReadableIdWithRevision: string;
-  jobMaterialUsage?: JobMaterialUsage;
   hasSizesInsteadOfRevisions?: boolean;
   filterText?: string;
   hideSearch?: boolean;
@@ -123,9 +113,6 @@ export function UsedInTree({
   const { t } = useLingui();
   const [filterTextInternal, setFilterTextInternal] = useState("");
   const filterText = filterTextProp ?? filterTextInternal;
-
-  const jobMaterialQuantities = jobMaterialUsage?.byMaterialId ?? {};
-  const jobQuantities = jobMaterialUsage?.byJobId ?? {};
 
   const revisions = (
     revisionValidator.safeParse(revisionsJson)?.data ?? []
@@ -140,8 +127,8 @@ export function UsedInTree({
   return (
     <VStack className="w-full p-2">
       {!hideSearch && (
-        <HStack className="w-full py-1 sticky top-0 z-10 bg-card -mt-2 pt-2 -mx-2 px-2">
-          <InputGroup size="sm" className="flex grow">
+        <HStack className="w-full py">
+          <InputGroup size="sm" className="flex flex-grow">
             <InputLeftElement>
               <LuSearch className="h-4 w-4" />
             </InputLeftElement>
@@ -158,7 +145,7 @@ export function UsedInTree({
           filterText={filterText}
           node={{
             key: (revisions?.[0]?.type as UsedInKey) ?? "Part",
-            name: hasSizesInsteadOfRevisions ? "Sizes" : "Revisions",
+            name: hasSizesInsteadOfRevisions ? t`Sizes` : t`Revisions`,
             module: "parts",
             children: revisions
           }}
@@ -171,8 +158,6 @@ export function UsedInTree({
             filterText={filterText}
             node={node}
             itemReadableIdWithRevision={itemReadableIdWithRevision}
-            jobMaterialQuantities={jobMaterialQuantities}
-            jobQuantities={jobQuantities}
           />
         ))}
       </VStack>
@@ -394,15 +379,11 @@ function getNextRevision(maxRevision: string) {
 export function UsedInItem({
   node,
   itemReadableIdWithRevision,
-  filterText,
-  jobMaterialQuantities,
-  jobQuantities
+  filterText
 }: {
   node: UsedInNode;
   filterText: string;
   itemReadableIdWithRevision: string;
-  jobMaterialQuantities?: Record<string, number>;
-  jobQuantities?: Record<string, number>;
 }) {
   const { t } = useLingui();
   const [isExpanded, setIsExpanded] = useState(
@@ -465,34 +446,6 @@ export function UsedInItem({
                   />
                 )}
                 <span className="truncate">{child.documentReadableId}</span>
-                {node.key === "jobMaterials" &&
-                  jobMaterialQuantities &&
-                  child.id in jobMaterialQuantities && (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Badge variant="outline" className="ml-2">
-                          {jobMaterialQuantities[child.id]}
-                        </Badge>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        Estimated quantity required for this job material
-                      </TooltipContent>
-                    </Tooltip>
-                  )}
-                {node.key === "jobs" &&
-                  jobQuantities &&
-                  child.id in jobQuantities && (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Badge variant="outline" className="ml-2">
-                          {jobQuantities[child.id]}
-                        </Badge>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        Production quantity for this job
-                      </TooltipContent>
-                    </Tooltip>
-                  )}
                 {child.version && (
                   <Badge variant="outline" className="ml-2">
                     V{child.version}

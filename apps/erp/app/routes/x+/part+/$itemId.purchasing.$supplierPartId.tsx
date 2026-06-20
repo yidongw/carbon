@@ -149,7 +149,6 @@ export default function EditPartSupplierRoute() {
     unitPrice: supplierPart.unitPrice ?? 0,
     supplierUnitOfMeasureCode: supplierPart.supplierUnitOfMeasureCode ?? "EA",
     minimumOrderQuantity: supplierPart.minimumOrderQuantity ?? 1,
-    orderMultiple: supplierPart.orderMultiple ?? 1,
     conversionFactor: supplierPart.conversionFactor ?? 1
   };
 

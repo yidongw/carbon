@@ -1,10 +1,10 @@
 import { useLingui } from "@lingui/react/macro";
-import { IoBalloonOutline } from "react-icons/io5";
 import {
   LuCircleGauge,
   LuClipboardCheck,
   LuDraftingCompass,
   LuFileText,
+  LuLayoutDashboard,
   LuListChecks,
   LuOctagonX,
   LuShapes,
@@ -24,6 +24,16 @@ export default function useQualitySubmodules() {
   const { addSavedViewsToRoutes } = useSavedViews();
 
   const qualityRoutes: AuthenticatedRouteGroup[] = [
+    {
+      name: t`Dashboard`,
+      routes: [
+        {
+          name: t`Dashboard`,
+          to: path.to.qualityDashboard,
+          icon: <LuLayoutDashboard />
+        }
+      ]
+    },
     {
       name: t`Issues`,
       routes: [
@@ -49,6 +59,17 @@ export default function useQualitySubmodules() {
       ]
     },
     {
+      name: t`Inspections`,
+      routes: [
+        {
+          name: t`Inbound Inspections`,
+          to: path.to.inboundInspections,
+          icon: <LuClipboardCheck />,
+          table: "inboundInspection"
+        }
+      ]
+    },
+    {
       name: t`Calibrations`,
       routes: [
         {
@@ -60,22 +81,6 @@ export default function useQualitySubmodules() {
           name: t`Records`,
           to: path.to.calibrations,
           icon: <LuCircleGauge />
-        }
-      ]
-    },
-    {
-      name: t`Inspection`,
-      routes: [
-        {
-          name: t`Inbound Inspections`,
-          to: path.to.inboundInspections,
-          icon: <LuClipboardCheck />,
-          table: "inboundInspection"
-        },
-        {
-          name: t`Inspection Documents`,
-          to: path.to.inspectionDocuments,
-          icon: <IoBalloonOutline />
         }
       ]
     },

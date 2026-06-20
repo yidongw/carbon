@@ -1,5 +1,6 @@
 import { assertIsPost, error, success } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
+import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import { getLocalTimeZone, parseDate, today } from "@internationalized/date";
@@ -7,8 +8,10 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { redirect, useNavigate } from "react-router";
 import { useRouteData, useUser } from "~/hooks";
 import type { GaugeType } from "~/modules/quality";
-import { gaugeValidator, insertGauge } from "~/modules/quality";
+import { gaugeValidator, upsertGauge } from "~/modules/quality";
 import GaugeForm from "~/modules/quality/ui/Gauge/GaugeForm";
+
+import { getNextSequence } from "~/modules/settings";
 import { setCustomFields } from "~/utils/form";
 import { getParams, path } from "~/utils/path";
 
@@ -33,6 +36,27 @@ export async function action({ request }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
+  let gaugeId = validation.data.gaugeId;
+  const useNextSequence = !gaugeId;
+  if (useNextSequence) {
+    const nextSequence = await getNextSequence(
+      getCarbonServiceRole(),
+      "gauge",
+      companyId
+    );
+    if (nextSequence.error) {
+      throw redirect(
+        path.to.newGauge,
+        await flash(
+          request,
+          error(nextSequence.error, "Failed to get next sequence")
+        )
+      );
+    }
+    gaugeId = nextSequence.data;
+  }
+
+  if (!gaugeId) throw new Error("gaugeId is not defined");
   const { id: _id, ...d } = validation.data;
 
   const gaugeCalibrationStatus = d.nextCalibrationDate
@@ -43,25 +67,33 @@ export async function action({ request }: ActionFunctionArgs) {
         : "Pending"
     : "Pending";
 
-  const result = await insertGauge(client, {
+  const createGauge = await upsertGauge(client, {
     ...d,
-    gaugeId: d.gaugeId || undefined,
+    gaugeId,
     gaugeCalibrationStatus,
     companyId,
     createdBy: userId,
     customFields: setCustomFields(formData)
   });
 
-  if (result.error || !result.data) {
+  if (createGauge.error || !createGauge.data) {
     throw redirect(
       path.to.gauges,
-      await flash(request, error(result.error, "Failed to insert gauge"))
+      await flash(request, error(createGauge.error, "Failed to insert gauge"))
+    );
+  }
+
+  const readableId = createGauge.data?.gaugeId;
+  if (!readableId) {
+    throw redirect(
+      path.to.gauges,
+      await flash(request, error("Failed to insert gauge"))
     );
   }
 
   throw redirect(
     `${path.to.gauges}?${getParams(request)}`,
-    await flash(request, success(`Gauge ${result.data.gaugeId} created`))
+    await flash(request, success(`Gauge ${readableId} created`))
   );
 }
 

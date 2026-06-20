@@ -8,8 +8,9 @@ import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
 import { useUrlParams, useUser } from "~/hooks";
 import type { SalesRFQStatusType } from "~/modules/sales";
-import { insertSalesRFQ, salesRfqValidator } from "~/modules/sales";
+import { salesRfqValidator, upsertSalesRFQ } from "~/modules/sales";
 import { SalesRFQForm } from "~/modules/sales/ui/SalesRFQ";
+import { getNextSequence } from "~/modules/settings";
 import { setCustomFields } from "~/utils/form";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
@@ -32,22 +33,43 @@ export async function action({ request }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
-  const result = await insertSalesRFQ(client, {
+  let rfqId = validation.data.rfqId;
+  const useNextSequence = !rfqId;
+
+  if (useNextSequence) {
+    const nextSequence = await getNextSequence(client, "salesRfq", companyId);
+    if (nextSequence.error) {
+      throw redirect(
+        path.to.newSalesRFQ,
+        await flash(
+          request,
+          error(nextSequence.error, "Failed to get next sequence")
+        )
+      );
+    }
+    rfqId = nextSequence.data;
+  }
+
+  if (!rfqId) throw new Error("rfqId is not defined");
+
+  const createSalesRFQ = await upsertSalesRFQ(client, {
     ...validation.data,
-    rfqId: validation.data.rfqId || undefined,
+    rfqId,
     companyId,
     createdBy: userId,
     customFields: setCustomFields(formData)
   });
 
-  if (result.error || !result.data) {
+  if (createSalesRFQ.error || !createSalesRFQ.data?.[0]) {
     throw redirect(
       path.to.salesRfqs,
-      await flash(request, error(result.error, "Failed to insert RFQ"))
+      await flash(request, error(createSalesRFQ.error, "Failed to insert RFQ"))
     );
   }
 
-  throw redirect(path.to.salesRfq(result.data.id));
+  const order = createSalesRFQ.data?.[0];
+
+  throw redirect(path.to.salesRfq(order.id!));
 }
 
 export default function SalesRFQNewRoute() {

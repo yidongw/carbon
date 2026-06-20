@@ -7,10 +7,11 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { redirect, useLoaderData } from "react-router";
 import {
   getFailureModesList,
-  insertMaintenanceDispatch,
-  maintenanceDispatchValidator
+  maintenanceDispatchValidator,
+  upsertMaintenanceDispatch
 } from "~/modules/resources";
 import MaintenanceDispatchForm from "~/modules/resources/ui/Maintenance/MaintenanceDispatchForm";
+import { getNextSequence } from "~/modules/settings";
 import { getUserDefaults } from "~/modules/users/users.server";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
@@ -52,16 +53,32 @@ export async function action({ request }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
+  const nextSequence = await getNextSequence(
+    client,
+    "maintenanceDispatch",
+    companyId
+  );
+  if (nextSequence.error) {
+    throw redirect(
+      path.to.maintenanceDispatches,
+      await flash(
+        request,
+        error(nextSequence.error, "Failed to get next sequence")
+      )
+    );
+  }
+
   const content = validation.data.content
     ? JSON.parse(validation.data.content)
-    : undefined;
+    : {};
 
-  const result = await insertMaintenanceDispatch(client, {
+  const insertDispatch = await upsertMaintenanceDispatch(client, {
+    maintenanceDispatchId: nextSequence.data,
     status: validation.data.status,
     priority: validation.data.priority,
-    severity: validation.data.severity || undefined,
-    source: validation.data.source || undefined,
-    oeeImpact: validation.data.oeeImpact || undefined,
+    severity: validation.data.severity || "Support Required",
+    source: validation.data.source || "Reactive",
+    oeeImpact: validation.data.oeeImpact || "No Impact",
     workCenterId: validation.data.workCenterId || undefined,
     locationId: validation.data.locationId,
     assignee: validation.data.assignee || undefined,
@@ -73,18 +90,26 @@ export async function action({ request }: ActionFunctionArgs) {
     createdBy: userId
   });
 
-  if (result.error || !result.data) {
+  if (insertDispatch.error) {
     throw redirect(
       path.to.maintenanceDispatches,
       await flash(
         request,
-        error(result.error, "Failed to create maintenance dispatch")
+        error(insertDispatch.error, "Failed to create maintenance dispatch")
       )
     );
   }
 
+  const newId = insertDispatch.data?.id;
+  if (!newId) {
+    throw redirect(
+      path.to.maintenanceDispatches,
+      await flash(request, error(null, "Failed to get new dispatch ID"))
+    );
+  }
+
   throw redirect(
-    path.to.maintenanceDispatch(result.data.id),
+    path.to.maintenanceDispatch(newId),
     await flash(request, success("Created maintenance dispatch"))
   );
 }

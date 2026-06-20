@@ -28,6 +28,7 @@ import {
   Boolean,
   ItemPostingGroup,
   Tags,
+  Template,
   UnitOfMeasure
 } from "~/components/Form";
 import CustomFormInlineFields from "~/components/Form/CustomFormInlineFields";
@@ -51,33 +52,17 @@ import type {
   PickMethod,
   SupplierPart
 } from "../../types";
-import { FileBadge, ItemDescription } from "../Item";
+import { FileBadge } from "../Item";
 
-type PartPropertiesProps = {
-  data?: {
-    itemId: string;
-    locations: ListItem[];
-    partSummary: PartSummary;
-    files: Promise<ItemFile[]>;
-    supplierParts: SupplierPart[];
-    pickMethods: PickMethod[];
-    makeMethods: Promise<PostgrestResponse<MakeMethod>>;
-    tags: { name: string }[];
-  };
-};
-
-const PartProperties = ({ data }: PartPropertiesProps) => {
+const PartProperties = () => {
   const { t } = useLingui();
-  const params = useParams();
-  const itemId = data?.itemId ?? params.itemId;
+  const { itemId } = useParams();
   if (!itemId) throw new Error("itemId not found");
 
   const sharedPartsData = useRouteData<{ locations: ListItem[] }>(
     path.to.partRoot
   );
-  // When `data` is injected (subassembly context), this hook won't match a
-  // route and returns undefined — harmless, hooks must be called unconditionally.
-  const routeDataFromRoute = useRouteData<{
+  const routeData = useRouteData<{
     partSummary: PartSummary;
     files: Promise<ItemFile[]>;
     supplierParts: SupplierPart[];
@@ -85,9 +70,8 @@ const PartProperties = ({ data }: PartPropertiesProps) => {
     makeMethods: Promise<PostgrestResponse<MakeMethod>>;
     tags: { name: string }[];
   }>(path.to.part(itemId));
-  const routeData = data ?? routeDataFromRoute;
 
-  const locations = data?.locations ?? sharedPartsData?.locations ?? [];
+  const locations = sharedPartsData?.locations ?? [];
   const supplierParts = routeData?.supplierParts ?? [];
   const pickMethods = routeData?.pickMethods ?? [];
 
@@ -117,8 +101,8 @@ const PartProperties = ({ data }: PartPropertiesProps) => {
         | "itemPostingGroupId"
         | "partId"
         | "name"
-        | "description"
         | "replenishmentSystem"
+        | "templateId"
         | "unitOfMeasureCode"
         | "requiresInspection",
       value: string | null
@@ -181,7 +165,7 @@ const PartProperties = ({ data }: PartPropertiesProps) => {
   return (
     <VStack
       spacing={4}
-      className="w-96 bg-card h-full overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent border-l border-border px-4 py-2 text-sm"
+      className="w-full min-w-0 bg-card h-full overflow-y-auto overflow-x-hidden overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent px-4 py-2 text-sm"
     >
       <VStack spacing={2}>
         <HStack className="w-full justify-between">
@@ -293,7 +277,6 @@ const PartProperties = ({ data }: PartPropertiesProps) => {
                 name="name"
                 inline
                 size="sm"
-                characterLimit={40}
                 value={routeData?.partSummary?.name ?? ""}
                 onBlur={(e) => {
                   onUpdate("name", e.target.value ?? null);
@@ -337,6 +320,26 @@ const PartProperties = ({ data }: PartPropertiesProps) => {
           isClearable
           onChange={(value) => {
             onUpdate("itemPostingGroupId", value?.value ?? null);
+          }}
+        />
+      </ValidatedForm>
+
+      <ValidatedForm
+        defaultValues={{
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          templateId: (routeData?.partSummary as any)?.templateId ?? undefined
+        }}
+        validator={z.object({
+          templateId: z.string().nullable().optional()
+        })}
+        className="w-full"
+      >
+        <Template
+          label={t`Template`}
+          name="templateId"
+          inline
+          onChange={(value) => {
+            onUpdate("templateId", value?.value ?? null);
           }}
         />
       </ValidatedForm>
@@ -505,11 +508,6 @@ const PartProperties = ({ data }: PartPropertiesProps) => {
           }}
         />
       </ValidatedForm>
-
-      <ItemDescription
-        value={routeData?.partSummary?.description ?? ""}
-        onChange={(value) => onUpdate("description", value)}
-      />
 
       <VStack spacing={2}>
         <HStack className="w-full justify-between">

@@ -18,16 +18,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.search);
   const type = searchParams.get("type");
-  const includeUsers = searchParams.get("include") === "users";
 
-  const selectCols = includeUsers
-    ? "id, name, companyId, isEmployeeTypeGroup, isCustomerOrgGroup, isCustomerTypeGroup, isSupplierOrgGroup, isSupplierTypeGroup, parentId, users"
-    : "id, name, companyId, isEmployeeTypeGroup, isCustomerOrgGroup, isCustomerTypeGroup, isSupplierOrgGroup, isSupplierTypeGroup, parentId";
-
-  const query = client
-    .from("groups")
-    .select(selectCols)
-    .eq("companyId", companyId);
+  const query = client.from("groups").select("*").eq("companyId", companyId);
 
   if (type === "employee") {
     query.eq("isCustomerOrgGroup", false);

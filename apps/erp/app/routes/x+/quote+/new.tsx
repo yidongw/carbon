@@ -8,8 +8,9 @@ import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
 import { useUrlParams, useUser } from "~/hooks";
 import type { QuotationStatusType } from "~/modules/sales";
-import { insertQuote, quoteValidator } from "~/modules/sales";
+import { quoteValidator, upsertQuote } from "~/modules/sales";
 import { QuoteForm } from "~/modules/sales/ui/Quotes";
+import { getNextSequence } from "~/modules/settings";
 import { setCustomFields } from "~/utils/form";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
@@ -35,25 +36,44 @@ export async function action({ request }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
-  const { id: _id, ...data } = validation.data;
+  let quoteId = validation.data.quoteId;
+  const useNextSequence = !quoteId;
 
-  const result = await insertQuote(client, {
-    ...data,
-    quoteId: data.quoteId || undefined,
+  if (useNextSequence) {
+    const nextSequence = await getNextSequence(client, "quote", companyId);
+    if (nextSequence.error) {
+      throw redirect(
+        path.to.newQuote,
+        await flash(
+          request,
+          error(nextSequence.error, "Failed to get next sequence")
+        )
+      );
+    }
+    quoteId = nextSequence.data;
+  }
+
+  if (!quoteId) throw new Error("quoteId is not defined");
+
+  const createQuote = await upsertQuote(client, {
+    ...validation.data,
+    quoteId,
     companyId,
     companyGroupId,
     createdBy: userId,
     customFields: setCustomFields(formData)
   });
 
-  if (result.error || !result.data) {
+  if (createQuote.error || !createQuote.data?.[0]) {
     throw redirect(
       path.to.quotes,
-      await flash(request, error(result.error, "Failed to insert quote"))
+      await flash(request, error(createQuote.error, "Failed to insert quote"))
     );
   }
 
-  throw redirect(path.to.quote(result.data.id));
+  const order = createQuote.data?.[0];
+
+  throw redirect(path.to.quote(order.id!));
 }
 
 export default function QuoteNewRoute() {

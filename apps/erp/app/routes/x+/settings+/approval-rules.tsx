@@ -30,9 +30,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       .select("id, name")
       .eq("companyId", companyId)
       .eq("isCustomerOrgGroup", false)
-      .eq("isCustomerTypeGroup", false)
       .eq("isSupplierOrgGroup", false)
-      .eq("isSupplierTypeGroup", false)
   ]);
 
   if (rules.error) {
@@ -67,15 +65,21 @@ export async function loader({ request }: LoaderFunctionArgs) {
     (r) => r.documentType === "supplier"
   );
 
+  const productionPayRules = enrichedRules.filter(
+    (r) => r.documentType === "productionQuantityReport"
+  );
+
   return {
     poRules,
     qdRules,
-    supplierRules
+    supplierRules,
+    productionPayRules
   };
 }
 
 export default function ApprovalSettingsRoute() {
-  const { poRules, qdRules, supplierRules } = useLoaderData<typeof loader>();
+  const { poRules, qdRules, supplierRules, productionPayRules } =
+    useLoaderData<typeof loader>();
 
   return (
     <>
@@ -83,6 +87,7 @@ export default function ApprovalSettingsRoute() {
         poRules={poRules}
         qdRules={qdRules}
         supplierRules={supplierRules}
+        productionPayRules={productionPayRules}
       />
       <Outlet />
     </>

@@ -34,8 +34,7 @@ import {
   LuShapes,
   LuStar,
   LuTag,
-  LuWarehouse,
-  LuX
+  LuWarehouse
 } from "react-icons/lu";
 import { useFetcher } from "react-router";
 import {
@@ -47,7 +46,7 @@ import {
 } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { useLocations } from "~/components/Form/Location";
-import StorageUnit from "~/components/Form/StorageUnit";
+import { useStorageUnits } from "~/components/Form/StorageUnit";
 import { useUnitOfMeasure } from "~/components/Form/UnitOfMeasure";
 import { useFilters } from "~/components/Table/components/Filter/useFilters";
 import { useUrlParams } from "~/hooks";
@@ -73,7 +72,6 @@ type InventoryTableProps = {
   substances: ListItem[];
   tags: string[];
   storageTypes: { id: string; name: string }[];
-  storageUnits: { id: string; name: string }[];
 };
 
 const InventoryTable = memo(
@@ -84,8 +82,7 @@ const InventoryTable = memo(
     forms,
     substances,
     tags,
-    storageTypes,
-    storageUnits
+    storageTypes
   }: InventoryTableProps) => {
     const [params] = useUrlParams();
     const { t } = useLingui();
@@ -98,10 +95,7 @@ const InventoryTable = memo(
 
     const locations = useLocations();
     const unitOfMeasures = useUnitOfMeasure();
-    const storageUnitNameById = useMemo(
-      () => new Map(storageUnits.map((s) => [s.id, s.name])),
-      [storageUnits]
-    );
+    const { options: storageUnitOptions } = useStorageUnits(locationId);
 
     const filters = useFilters();
     const materialSubstanceId = filters.getFilter("materialSubstanceId")?.[0];
@@ -521,60 +515,19 @@ const InventoryTable = memo(
               ).storageUnitIds ?? [];
             return (
               <HStack spacing={0} className="gap-1">
-                {ids.map((id) => (
-                  <Enumerable
-                    key={id}
-                    value={storageUnitNameById.get(id) ?? id}
-                  />
-                ))}
+                {ids.map((id) => {
+                  const opt = storageUnitOptions.find((o) => o.value === id);
+                  const label = typeof opt?.label === "string" ? opt.label : id;
+                  return <Enumerable key={id} value={label} />;
+                })}
               </HStack>
             );
           },
           meta: {
             filter: {
-              type: "custom",
-              isArray: true,
-              getLabel: (v: string) => storageUnitNameById.get(v) ?? v,
-              render: ({ values, toggle }) => {
-                const VISIBLE = 3;
-                const visible = values.slice(0, VISIBLE);
-                const overflow = values.length - visible.length;
-                return (
-                  <div className="flex flex-col gap-2">
-                    {values.length > 0 && (
-                      <div className="flex flex-wrap gap-1">
-                        {visible.map((v) => {
-                          const label = storageUnitNameById.get(v) ?? v;
-                          return (
-                            <Badge
-                              key={v}
-                              variant="secondary"
-                              className="cursor-pointer gap-1 max-w-[160px]"
-                              onClick={() => toggle(v)}
-                            >
-                              <span className="truncate">{label}</span>
-                              <LuX className="h-3 w-3 shrink-0" />
-                            </Badge>
-                          );
-                        })}
-                        {overflow > 0 && (
-                          <Badge variant="secondary" className="gap-1">
-                            +{overflow} more
-                          </Badge>
-                        )}
-                      </div>
-                    )}
-                    <StorageUnit
-                      locationId={locationId}
-                      value={null}
-                      onChange={(storageUnit) => {
-                        if (storageUnit) toggle(storageUnit.id);
-                      }}
-                      allowCreate={false}
-                    />
-                  </div>
-                );
-              }
+              type: "fetcher",
+              endpoint: path.to.api.storageUnits(locationId),
+              isArray: true
             },
             pluralHeader: t`Storage Units`,
             icon: <LuBoxes />
@@ -607,7 +560,7 @@ const InventoryTable = memo(
       substances,
       tags,
       storageTypes,
-      storageUnitNameById,
+      storageUnitOptions,
       unitOfMeasures,
       t,
       translateReplenishment
@@ -683,5 +636,5 @@ InventoryTable.displayName = "InventoryTable";
 export default InventoryTable;
 
 function getLocationPath(locationId: string) {
-  return `${path.to.inventory}?location=${locationId}`;
+  return `${path.to.inventoryQuantities}?location=${locationId}`;
 }

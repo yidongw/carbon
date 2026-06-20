@@ -1,9 +1,4 @@
-import workerSrc from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 import { Fragment, startTransition } from "react";
-import { pdfjs } from "react-pdf";
-
-pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
-
 import { hydrateRoot } from "react-dom/client";
 import { HydratedRouter } from "react-router/dom";
 
@@ -17,6 +12,20 @@ import { HydratedRouter } from "react-router/dom";
 //   }, []);
 //   return null;
 // }
+
+// Cloudflare can inject anonymous nodes at the start of <body>, which breaks
+// body-level hydration. Remove those leading nodes before hydrating so the
+// server and client trees line up again.
+function stripInjectedBodyNodes() {
+  while (
+    document.body.firstChild &&
+    document.body.firstChild.tagName !== "DIV"
+  ) {
+    document.body.removeChild(document.body.firstChild);
+  }
+}
+
+stripInjectedBodyNodes();
 
 startTransition(() => {
   hydrateRoot(

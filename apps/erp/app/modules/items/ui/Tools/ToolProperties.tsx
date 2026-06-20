@@ -40,33 +40,17 @@ import type {
   SupplierPart,
   Tool
 } from "../../types";
-import { FileBadge, ItemDescription } from "../Item";
+import { FileBadge } from "../Item";
 
-type ToolPropertiesProps = {
-  data?: {
-    itemId: string;
-    locations: ListItem[];
-    toolSummary: Tool;
-    files: Promise<ItemFile[]>;
-    supplierParts: SupplierPart[];
-    pickMethods: PickMethod[];
-    makeMethods: Promise<PostgrestResponse<MakeMethod>>;
-    tags: { name: string }[];
-  };
-};
-
-const ToolProperties = ({ data }: ToolPropertiesProps) => {
+const ToolProperties = () => {
   const { t } = useLingui();
-  const params = useParams();
-  const itemId = data?.itemId ?? params.itemId;
+  const { itemId } = useParams();
   if (!itemId) throw new Error("itemId not found");
 
   const sharedToolsData = useRouteData<{ locations: ListItem[] }>(
     path.to.toolRoot
   );
-  // When `data` is injected (subassembly context), this hook won't match a
-  // route and returns undefined — harmless, hooks must be called unconditionally.
-  const routeDataFromRoute = useRouteData<{
+  const routeData = useRouteData<{
     toolSummary: Tool;
     files: Promise<ItemFile[]>;
     supplierParts: SupplierPart[];
@@ -74,9 +58,8 @@ const ToolProperties = ({ data }: ToolPropertiesProps) => {
     makeMethods: Promise<PostgrestResponse<MakeMethod>>;
     tags: { name: string }[];
   }>(path.to.tool(itemId));
-  const routeData = data ?? routeDataFromRoute;
 
-  const locations = data?.locations ?? sharedToolsData?.locations ?? [];
+  const locations = sharedToolsData?.locations ?? [];
   const supplierParts = routeData?.supplierParts ?? [];
   const pickMethods = routeData?.pickMethods ?? [];
 
@@ -101,7 +84,6 @@ const ToolProperties = ({ data }: ToolPropertiesProps) => {
     (
       field:
         | "name"
-        | "description"
         | "replenishmentSystem"
         | "defaultMethodType"
         | "itemTrackingType"
@@ -168,7 +150,7 @@ const ToolProperties = ({ data }: ToolPropertiesProps) => {
   return (
     <VStack
       spacing={4}
-      className="w-96 bg-card h-full overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent border-l border-border px-4 py-2 text-sm"
+      className="w-full min-w-0 bg-card h-full overflow-y-auto overflow-x-hidden overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent px-4 py-2 text-sm"
     >
       <VStack spacing={2}>
         <HStack className="w-full justify-between">
@@ -282,7 +264,6 @@ const ToolProperties = ({ data }: ToolPropertiesProps) => {
                 name="name"
                 inline
                 size="sm"
-                characterLimit={40}
                 value={routeData?.toolSummary?.name ?? ""}
                 onBlur={(e) => {
                   onUpdate("name", e.target.value ?? null);
@@ -472,11 +453,6 @@ const ToolProperties = ({ data }: ToolPropertiesProps) => {
           </Badge>
         )}
       </VStack>
-
-      <ItemDescription
-        value={routeData?.toolSummary?.description ?? ""}
-        onChange={(value) => onUpdate("description", value)}
-      />
 
       <VStack spacing={2}>
         <HStack className="w-full justify-between">

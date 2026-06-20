@@ -1,11 +1,5 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
-import { ensureFont, SalesOrderPDF } from "@carbon/documents/pdf";
-import {
-  collectSectionIds,
-  resolveTemplate,
-  templateShowsThumbnails,
-  toDocumentTemplate
-} from "@carbon/documents/template";
+import { SalesOrderPDF } from "@carbon/documents/pdf";
 import type { JSONContent } from "@carbon/react";
 import { getPreferenceHeaders } from "@carbon/react";
 import { renderToStream } from "@react-pdf/renderer";
@@ -21,9 +15,7 @@ import {
 import {
   getAccountsReceivableBillingAddress,
   getCompany,
-  getCompanySettings,
-  getDocumentTemplate,
-  resolveSections
+  getCompanySettings
 } from "~/modules/settings";
 import { getBase64ImageFromSupabase } from "~/modules/shared";
 
@@ -44,8 +36,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     salesOrderLocations,
     terms,
     paymentTerms,
-    shippingMethods,
-    documentTemplate
+    shippingMethods
   ] = await Promise.all([
     getCompany(client, companyId),
     getCompanySettings(client, companyId),
@@ -55,8 +46,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     getSalesOrderCustomerDetails(client, id),
     getSalesTerms(client, companyId),
     getPaymentTermsList(client, companyId),
-    getShippingMethodsList(client, companyId),
-    getDocumentTemplate(client, companyId, "salesOrder")
+    getShippingMethodsList(client, companyId)
   ]);
 
   if (company.error) {
@@ -89,11 +79,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     throw new Error("Failed to load sales order");
   }
 
-  const templateConfig = toDocumentTemplate(
-    documentTemplate.data,
-    "salesOrder"
-  );
-  const showThumbnails = templateShowsThumbnails(templateConfig, "salesOrder");
+  const showThumbnails =
+    companySettings.data?.includeThumbnailsOnSalesPdfs ?? true;
 
   let thumbnails: Record<string, string | null> = {};
 
@@ -131,14 +118,6 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const { locale } = getPreferenceHeaders(request);
 
-  const resolved = resolveTemplate("salesOrder", templateConfig);
-  const sections = await resolveSections(
-    client,
-    companyId,
-    collectSectionIds(resolved)
-  );
-  await ensureFont(resolved.settings.fontFamily);
-
   const stream = await renderToStream(
     <SalesOrderPDF
       company={company.data as any}
@@ -162,8 +141,6 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       shippingMethods={shippingMethods.data ?? []}
       title="Sales Order"
       thumbnails={thumbnails}
-      template={templateConfig}
-      sections={sections}
     />
   );
 

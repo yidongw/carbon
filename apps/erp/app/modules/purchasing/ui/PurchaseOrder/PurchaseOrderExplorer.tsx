@@ -20,22 +20,10 @@ import {
 } from "@carbon/react";
 import { getItemReadableId } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useMemo, useRef, useState } from "react";
-import {
-  LuCirclePlus,
-  LuEllipsisVertical,
-  LuSettings2,
-  LuTrash
-} from "react-icons/lu";
+import { useRef, useState } from "react";
+import { LuCirclePlus, LuEllipsisVertical, LuTrash } from "react-icons/lu";
 import { Link, useParams } from "react-router";
 import { Empty, ItemThumbnail, MethodItemTypeIcon } from "~/components";
-import type { DragHandleBindings } from "~/components/LineReorder";
-import {
-  ReorderableLineList,
-  ReorderableRow,
-  ReorderEditBar,
-  useLineOrderEditMode
-} from "~/components/LineReorder";
 import {
   useOptimisticLocation,
   usePermissions,
@@ -80,25 +68,15 @@ export default function PurchaseOrderExplorer() {
   const deleteLineDisclosure = useDisclosure();
   const [deleteLine, setDeleteLine] = useState<PurchaseOrderLine | null>(null);
 
+  // Check if PO is in a locked state (finalized/approved)
   const isLocked = isPurchaseOrderLocked(
     purchaseOrderData?.purchaseOrder?.status
   );
+  // Adding new lines is NOT allowed on locked POs (would increase total)
+  // For unlocked POs, only Draft status allows adding new lines
   const isDisabled = isLocked
-    ? true
+    ? true // No new lines on locked POs
     : purchaseOrderData?.purchaseOrder?.status !== "Draft";
-
-  const lines = useMemo(
-    () => purchaseOrderData?.lines ?? [],
-    [purchaseOrderData]
-  );
-
-  const canReorder =
-    !isDisabled && permissions.can("update", "purchasing") && lines.length > 1;
-
-  const editMode = useLineOrderEditMode<PurchaseOrderLine>({
-    actionPath: path.to.purchaseOrderLineOrder(orderId),
-    lines
-  });
 
   const onDeleteLine = (line: PurchaseOrderLine) => {
     setDeleteLine(line);
@@ -125,30 +103,15 @@ export default function PurchaseOrderExplorer() {
           className="flex-1 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent"
           spacing={0}
         >
-          {lines.length > 0 ? (
-            editMode.isEditing ? (
-              <ReorderableLineList<PurchaseOrderLine>
-                lines={editMode.draft}
-                activeLine={editMode.activeLine}
-                onDragStart={editMode.handleDragStart}
-                onDragEnd={editMode.handleDragEnd}
-                renderRow={(line, dragHandle) => (
-                  <PurchaseOrderLineBody line={line} dragHandle={dragHandle} />
-                )}
-                renderOverlay={(line) => (
-                  <PurchaseOrderLineBody line={line} isOverlay />
-                )}
+          {purchaseOrderData?.lines && purchaseOrderData?.lines?.length > 0 ? (
+            purchaseOrderData?.lines.map((line) => (
+              <PurchaseOrderLineItem
+                key={line.id}
+                isDisabled={isDisabled}
+                line={line}
+                onDelete={onDeleteLine}
               />
-            ) : (
-              lines.map((line) => (
-                <PurchaseOrderLineItem
-                  key={line.id}
-                  isDisabled={isDisabled}
-                  line={line}
-                  onDelete={onDeleteLine}
-                />
-              ))
-            )
+            ))
           ) : (
             <Empty>
               {permissions.can("update", "sales") && (
@@ -164,51 +127,29 @@ export default function PurchaseOrderExplorer() {
             </Empty>
           )}
         </VStack>
-        <div className="w-full flex border-t border-border p-4 gap-2">
-          {editMode.isEditing ? (
-            <ReorderEditBar
-              isSaving={editMode.isSaving}
-              isDirty={editMode.isDirty}
-              onSave={editMode.save}
-              onCancel={editMode.cancelEditMode}
-            />
-          ) : (
-            <>
-              <Tooltip>
-                <TooltipTrigger className="flex-1">
-                  <Button
-                    ref={newButtonRef}
-                    className="w-full"
-                    isDisabled={
-                      isDisabled || !permissions.can("update", "sales")
-                    }
-                    leftIcon={<LuCirclePlus />}
-                    variant="secondary"
-                    onClick={newPurchaseOrderLineDisclosure.onOpen}
-                  >
-                    <Trans>Add Line Item</Trans>
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <HStack>
-                    <span>
-                      <Trans>New Line Item</Trans>
-                    </span>
-                    <Kbd>{prettifyShortcut("Command+Shift+l")}</Kbd>
-                  </HStack>
-                </TooltipContent>
-              </Tooltip>
-              {canReorder && lines.length > 0 && (
-                <IconButton
-                  aria-label="Reorder lines"
-                  icon={<LuSettings2 />}
-                  variant="ghost"
-                  className="text-muted-foreground"
-                  onClick={editMode.enterEditMode}
-                />
-              )}
-            </>
-          )}
+        <div className="w-full flex flex-0 sm:flex-row border-t border-border p-4 sm:justify-start sm:space-x-2">
+          <Tooltip>
+            <TooltipTrigger className="w-full">
+              <Button
+                ref={newButtonRef}
+                className="w-full"
+                isDisabled={isDisabled || !permissions.can("update", "sales")}
+                leftIcon={<LuCirclePlus />}
+                variant="secondary"
+                onClick={newPurchaseOrderLineDisclosure.onOpen}
+              >
+                <Trans>Add Line Item</Trans>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <HStack>
+                <span>
+                  <Trans>New Line Item</Trans>
+                </span>
+                <Kbd>{prettifyShortcut("Command+Shift+l")}</Kbd>
+              </HStack>
+            </TooltipContent>
+          </Tooltip>
         </div>
       </VStack>
       {newPurchaseOrderLineDisclosure.isOpen && (
@@ -222,41 +163,6 @@ export default function PurchaseOrderExplorer() {
         <DeletePurchaseOrderLine line={deleteLine!} onCancel={onDeleteCancel} />
       )}
     </>
-  );
-}
-
-function PurchaseOrderLineBody({
-  line,
-  dragHandle,
-  isOverlay
-}: {
-  line: PurchaseOrderLine;
-  dragHandle?: DragHandleBindings;
-  isOverlay?: boolean;
-}) {
-  const [items] = useItems();
-  return (
-    <ReorderableRow dragHandle={dragHandle} isOverlay={isOverlay}>
-      <HStack spacing={2} className="flex-grow min-w-0 p-2 pr-10">
-        <ItemThumbnail thumbnailPath={line.thumbnailPath} type="Part" />
-        <VStack spacing={0} className="min-w-0">
-          <span className="font-semibold line-clamp-1">
-            {line.purchaseOrderLineType === "G/L Account"
-              ? line.description || "Indirect Expense"
-              : line.purchaseOrderLineType === "Fixed Asset"
-                ? (line as any).assetReadableId || "Fixed Asset"
-                : getItemReadableId(items, line.itemId)}
-          </span>
-          <span className="text-muted-foreground text-xs truncate line-clamp-1">
-            {line.purchaseOrderLineType === "G/L Account"
-              ? "G/L Account"
-              : line.purchaseOrderLineType === "Fixed Asset"
-                ? (line as any).assetName || line.description
-                : line.description}
-          </span>
-        </VStack>
-      </HStack>
-    </ReorderableRow>
   );
 }
 
@@ -310,17 +216,13 @@ function PurchaseOrderLineItem({
             <VStack spacing={0} className="min-w-0">
               <span className="font-semibold line-clamp-1">
                 {line.purchaseOrderLineType === "G/L Account"
-                  ? line.description || "G/L Account"
-                  : line.purchaseOrderLineType === "Fixed Asset"
-                    ? (line as any).assetReadableId || "Fixed Asset"
-                    : getItemReadableId(items, line.itemId)}
+                  ? line.description || "Indirect Expense"
+                  : getItemReadableId(items, line.itemId)}
               </span>
               <span className="text-muted-foreground text-xs truncate line-clamp-1">
                 {line.purchaseOrderLineType === "G/L Account"
                   ? "G/L Account"
-                  : line.purchaseOrderLineType === "Fixed Asset"
-                    ? line.assetName || line.description
-                    : line.description}
+                  : line.description}
               </span>
             </VStack>
           </HStack>

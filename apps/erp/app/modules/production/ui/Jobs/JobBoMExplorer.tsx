@@ -6,7 +6,6 @@ import {
   DropdownMenuContent,
   DropdownMenuIcon,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
   HoverCard,
   HoverCardContent,
@@ -25,7 +24,6 @@ import {
   LuBraces,
   LuChevronDown,
   LuChevronRight,
-  LuChevronsUpDown,
   LuEllipsisVertical,
   LuExternalLink,
   LuSearch,
@@ -70,7 +68,6 @@ const JobBoMExplorer = ({ method }: JobBoMExplorerProps) => {
 
   // Generate hierarchical BOM IDs (1, 1.1, 1.1.1, etc.)
   const bomIds = useMemo(() => generateBomIds(method), [method]);
-
   const bomIdMap = useMemo(
     () => new Map(method.map((node, index) => [node.id, bomIds[index]])),
     [method, bomIds]
@@ -106,11 +103,6 @@ const JobBoMExplorer = ({ method }: JobBoMExplorerProps) => {
     },
     isEager: true
   });
-
-  const allExpanded = useMemo(
-    () => method.every((m) => !m.hasChildren || nodes[m.id]?.expanded),
-    [method, nodes]
-  );
 
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedMaterialId = searchParams.get("materialId");
@@ -178,23 +170,6 @@ const JobBoMExplorer = ({ method }: JobBoMExplorerProps) => {
                   />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem
-                    onClick={() => {
-                      if (allExpanded) {
-                        collapseAllBelowDepth(1);
-                      } else {
-                        expandAllBelowDepth(0);
-                      }
-                    }}
-                  >
-                    <DropdownMenuIcon icon={<LuChevronsUpDown />} />
-                    {allExpanded ? (
-                      <Trans>Collapse all</Trans>
-                    ) : (
-                      <Trans>Expand all</Trans>
-                    )}
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
                     <a
                       href={path.to.api.jobBillOfMaterialsCsv(jobId, false)}
@@ -269,7 +244,7 @@ const JobBoMExplorer = ({ method }: JobBoMExplorerProps) => {
               getNodeProps={getNodeProps}
               getTreeProps={getTreeProps}
               renderNode={({ node, state }) => (
-                <HoverCard openDelay={500} closeDelay={0}>
+                <HoverCard openDelay={500}>
                   <HoverCardTrigger asChild>
                     <div
                       key={node.id}
@@ -353,10 +328,7 @@ const JobBoMExplorer = ({ method }: JobBoMExplorerProps) => {
                       </div>
                     </div>
                   </HoverCardTrigger>
-                  <HoverCardContent
-                    side="right"
-                    className="pointer-events-none"
-                  >
+                  <HoverCardContent side="right">
                     <NodePreview node={node} />
                   </HoverCardContent>
                 </HoverCard>

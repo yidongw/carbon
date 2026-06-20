@@ -54,7 +54,6 @@ import { path } from "~/utils/path";
 type WorkCentersTableProps = {
   data: WorkCenter[];
   count: number;
-  departments: ListItem[];
   locations: ListItem[];
 };
 
@@ -67,7 +66,7 @@ const defaultColumnVisibility = {
 };
 
 const WorkCentersTable = memo(
-  ({ data, count, departments, locations }: WorkCentersTableProps) => {
+  ({ data, count, locations }: WorkCentersTableProps) => {
     const { t } = useLingui();
     const navigate = useNavigate();
     const [params] = useUrlParams();
@@ -167,21 +166,6 @@ const WorkCentersTable = memo(
             filter: {
               type: "static",
               options: locations.map(({ name }) => ({
-                value: name,
-                label: <Enumerable value={name} />
-              }))
-            }
-          }
-        },
-        {
-          accessorKey: "departmentName",
-          header: t`Department`,
-          cell: (item) => <Enumerable value={item.getValue<string>()} />,
-          meta: {
-            icon: <LuBuilding2 />,
-            filter: {
-              type: "static",
-              options: departments.map(({ name }) => ({
                 value: name,
                 label: <Enumerable value={name} />
               }))

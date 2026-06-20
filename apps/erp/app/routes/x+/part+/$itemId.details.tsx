@@ -25,6 +25,9 @@ import {
   getMethodMaterialsByMakeMethod,
   getMethodOperationsByMakeMethodId,
   itemManufacturingValidator,
+  methodBindings,
+  partConfigurationParametersBindings,
+  partConfigurationRuleBindings,
   partValidator,
   upsertItemManufacturing,
   upsertPart
@@ -57,14 +60,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const requestedMethodId = url.searchParams.get("methodId");
 
-  const [makeMethods] = await Promise.all([
-    getMakeMethods(client, itemId, companyId)
-    // client.storage
-    //   .from("private")
-    //   .list(`${companyId}/default-attachments/item/${itemId}`)
-  ]);
-  // const defaultAttachments = defaultAttachmentsResult.data ?? [];
-
+  const makeMethods = await getMakeMethods(client, itemId, companyId);
   const makeMethod = requestedMethodId
     ? (makeMethods.data?.find((m) => m.id === requestedMethodId) ??
       makeMethods.data?.find((m) => m.status === "Active") ??
@@ -267,6 +263,7 @@ export default function PartDetailsRoute() {
               {methodData.partManufacturing?.requiresConfiguration && (
                 <ConfigurationParametersForm
                   key={`options:${itemId}`}
+                  bindings={partConfigurationParametersBindings(itemId)}
                   parameters={
                     methodData.configurationParametersAndGroups.parameters
                   }
@@ -287,6 +284,10 @@ export default function PartDetailsRoute() {
             <>
               <BillOfMaterial
                 key={`bom:${itemId}`}
+                methodBindings={methodBindings(itemId)}
+                configurationRuleBindings={partConfigurationRuleBindings(
+                  itemId
+                )}
                 makeMethod={methodData.makeMethod}
                 // @ts-ignore
                 materials={methodData.methodMaterials ?? []}
@@ -303,6 +304,10 @@ export default function PartDetailsRoute() {
               />
               <BillOfProcess
                 key={`bop:${itemId}`}
+                methodBindings={methodBindings(itemId)}
+                configurationRuleBindings={partConfigurationRuleBindings(
+                  itemId
+                )}
                 makeMethod={methodData.makeMethod}
                 // @ts-ignore
                 operations={methodData.methodOperations ?? []}
@@ -333,13 +338,6 @@ export default function PartDetailsRoute() {
               />
             )}
           </DeferredFiles>
-
-          {/* <DefaultAttachmentsPanel
-            files={defaultAttachments ?? []}
-            storagePathPrefix={`default-attachments/item/${itemId}`}
-            title={t`Default Attachments on Purchase Orders`}
-            description={t`Files attached here ride along whenever this item appears on a purchase order email.`}
-          /> */}
 
           <CadModel
             isReadOnly={!permissions.can("update", "parts")}

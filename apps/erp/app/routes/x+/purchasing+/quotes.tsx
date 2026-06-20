@@ -1,11 +1,10 @@
+import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
+import { flash } from "@carbon/auth/session.server";
 import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
-import { Trans } from "@lingui/react/macro";
-import { Suspense } from "react";
 import type { LoaderFunctionArgs } from "react-router";
-import { Await, Outlet, useLoaderData } from "react-router";
-import { TableSkeleton } from "~/components/Skeletons";
+import { Outlet, redirect, useLoaderData } from "react-router";
 import { getSupplierQuotes } from "~/modules/purchasing/purchasing.service";
 import { SupplierQuotesTable } from "~/modules/purchasing/ui/SupplierQuote";
 import type { Handle } from "~/utils/handle";
@@ -30,7 +29,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const { limit, offset, sorts, filters } =
     getGenericQueryFilters(searchParams);
 
-  const quotes = getSupplierQuotes(client, companyId, {
+  const quotes = await getSupplierQuotes(client, companyId, {
     search,
     limit,
     offset,
@@ -38,33 +37,25 @@ export async function loader({ request }: LoaderFunctionArgs) {
     filters
   });
 
+  if (quotes.error) {
+    redirect(
+      path.to.authenticatedRoot,
+      await flash(request, error(quotes.error, "Failed to fetch quotes"))
+    );
+  }
+
   return {
-    quotes
+    count: quotes.count ?? 0,
+    quotes: quotes.data ?? []
   };
 }
 
 export default function SupplierQuotesRoute() {
-  const { quotes } = useLoaderData<typeof loader>();
+  const { count, quotes } = useLoaderData<typeof loader>();
 
   return (
     <VStack spacing={0} className="h-full">
-      <Suspense fallback={<TableSkeleton />}>
-        <Await
-          resolve={quotes}
-          errorElement={
-            <div className="p-4 text-sm text-red-500">
-              <Trans>Failed to load quotes.</Trans>
-            </div>
-          }
-        >
-          {(quotes) => (
-            <SupplierQuotesTable
-              data={quotes.data ?? []}
-              count={quotes.count ?? 0}
-            />
-          )}
-        </Await>
-      </Suspense>
+      <SupplierQuotesTable data={quotes} count={count} />
       <Outlet />
     </VStack>
   );

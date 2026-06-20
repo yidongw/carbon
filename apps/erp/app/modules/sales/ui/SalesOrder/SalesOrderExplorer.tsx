@@ -31,7 +31,6 @@ import {
   LuCirclePlus,
   LuEllipsisVertical,
   LuSearch,
-  LuSettings2,
   LuTrash,
   LuTruck
 } from "react-icons/lu";
@@ -43,13 +42,6 @@ import {
   MethodIcon,
   MethodItemTypeIcon
 } from "~/components";
-import type { DragHandleBindings } from "~/components/LineReorder";
-import {
-  ReorderableLineList,
-  ReorderableRow,
-  ReorderEditBar,
-  useLineOrderEditMode
-} from "~/components/LineReorder";
 import { LevelLine } from "~/components/TreeView";
 import {
   useOptimisticLocation,
@@ -184,15 +176,6 @@ export default function SalesOrderExplorer() {
     }
   });
 
-  const lines = salesOrderData?.lines ?? [];
-  const canReorder =
-    !isDisabled && permissions.can("update", "sales") && lines.length > 1;
-
-  const editMode = useLineOrderEditMode<SalesOrderLine>({
-    actionPath: path.to.salesOrderLineOrder(orderId),
-    lines
-  });
-
   return (
     <>
       <VStack className="w-full h-[calc(100dvh-99px)] justify-between">
@@ -200,30 +183,15 @@ export default function SalesOrderExplorer() {
           className="flex-1 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent"
           spacing={0}
         >
-          {lines.length > 0 ? (
-            editMode.isEditing ? (
-              <ReorderableLineList<SalesOrderLine>
-                lines={editMode.draft}
-                activeLine={editMode.activeLine}
-                onDragStart={editMode.handleDragStart}
-                onDragEnd={editMode.handleDragEnd}
-                renderRow={(line, dragHandle) => (
-                  <SalesOrderLineBody line={line} dragHandle={dragHandle} />
-                )}
-                renderOverlay={(line) => (
-                  <SalesOrderLineBody line={line} isOverlay />
-                )}
+          {salesOrderData?.lines && salesOrderData?.lines?.length > 0 ? (
+            salesOrderData?.lines.map((line) => (
+              <SalesOrderLineItem
+                key={line.id}
+                isDisabled={isDisabled}
+                line={line}
+                onDelete={onDeleteLine}
               />
-            ) : (
-              lines.map((line) => (
-                <SalesOrderLineItem
-                  key={line.id}
-                  isDisabled={isDisabled}
-                  line={line}
-                  onDelete={onDeleteLine}
-                />
-              ))
-            )
+            ))
           ) : (
             <Empty>
               {permissions.can("update", "sales") && (
@@ -239,51 +207,29 @@ export default function SalesOrderExplorer() {
             </Empty>
           )}
         </VStack>
-        <div className="w-full flex border-t border-border p-4 gap-2">
-          {editMode.isEditing ? (
-            <ReorderEditBar
-              isSaving={editMode.isSaving}
-              isDirty={editMode.isDirty}
-              onSave={editMode.save}
-              onCancel={editMode.cancelEditMode}
-            />
-          ) : (
-            <>
-              <Tooltip>
-                <TooltipTrigger className="flex-1">
-                  <Button
-                    ref={newButtonRef}
-                    className="w-full"
-                    isDisabled={
-                      isDisabled || !permissions.can("update", "sales")
-                    }
-                    leftIcon={<LuCirclePlus />}
-                    variant="secondary"
-                    onClick={newSalesOrderLineDisclosure.onOpen}
-                  >
-                    <Trans>Add Line Item</Trans>
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <HStack>
-                    <span>
-                      <Trans>New Line Item</Trans>
-                    </span>
-                    <Kbd>{prettifyShortcut("Command+Shift+l")}</Kbd>
-                  </HStack>
-                </TooltipContent>
-              </Tooltip>
-              {canReorder && lines.length > 0 && (
-                <IconButton
-                  aria-label="Reorder lines"
-                  icon={<LuSettings2 />}
-                  variant="ghost"
-                  className="text-muted-foreground"
-                  onClick={editMode.enterEditMode}
-                />
-              )}
-            </>
-          )}
+        <div className="w-full flex flex-0 sm:flex-row border-t border-border p-4 sm:justify-start sm:space-x-2">
+          <Tooltip>
+            <TooltipTrigger className="w-full">
+              <Button
+                ref={newButtonRef}
+                className="w-full"
+                isDisabled={isDisabled || !permissions.can("update", "sales")}
+                leftIcon={<LuCirclePlus />}
+                variant="secondary"
+                onClick={newSalesOrderLineDisclosure.onOpen}
+              >
+                <Trans>Add Line Item</Trans>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <HStack>
+                <span>
+                  <Trans>New Line Item</Trans>
+                </span>
+                <Kbd>{prettifyShortcut("Command+Shift+l")}</Kbd>
+              </HStack>
+            </TooltipContent>
+          </Tooltip>
         </div>
       </VStack>
       {newSalesOrderLineDisclosure.isOpen && (
@@ -297,33 +243,6 @@ export default function SalesOrderExplorer() {
         <DeleteSalesOrderLine line={deleteLine!} onCancel={onDeleteCancel} />
       )}
     </>
-  );
-}
-
-function SalesOrderLineBody({
-  line,
-  dragHandle,
-  isOverlay
-}: {
-  line: SalesOrderLine;
-  dragHandle?: DragHandleBindings;
-  isOverlay?: boolean;
-}) {
-  const [items] = useItems();
-  return (
-    <ReorderableRow dragHandle={dragHandle} isOverlay={isOverlay}>
-      <HStack spacing={2} className="flex-grow min-w-0 p-2 pr-10">
-        <ItemThumbnail thumbnailPath={line.thumbnailPath} type="Part" />
-        <VStack spacing={0} className="min-w-0">
-          <span className="font-semibold line-clamp-1">
-            {getItemReadableId(items, line.itemId)}
-          </span>
-          <span className="text-muted-foreground text-xs truncate line-clamp-1">
-            {line.description}
-          </span>
-        </VStack>
-      </HStack>
-    </ReorderableRow>
   );
 }
 
@@ -380,14 +299,10 @@ function SalesOrderLineItem({
 
           <VStack spacing={0} className="min-w-0">
             <span className="font-semibold line-clamp-1">
-              {line.salesOrderLineType === "Fixed Asset"
-                ? (line as any).assetReadableId || "Fixed Asset"
-                : getItemReadableId(items, line.itemId)}
+              {getItemReadableId(items, line.itemId)}
             </span>
             <span className="text-muted-foreground text-xs truncate line-clamp-1">
-              {line.salesOrderLineType === "Fixed Asset"
-                ? (line as any).assetName || line.description
-                : line.description}
+              {line.description}
             </span>
           </VStack>
         </HStack>

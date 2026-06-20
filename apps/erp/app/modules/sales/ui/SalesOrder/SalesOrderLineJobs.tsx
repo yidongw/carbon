@@ -191,7 +191,7 @@ export function SalesOrderLineJobs({
                 unitOfMeasureCode: line.unitOfMeasureCode ?? undefined
               }}
               className="flex flex-col h-full"
-              onSubmit={newJobDisclosure.onClose}
+              onSuccess={newJobDisclosure.onClose}
             >
               <ModalHeader>
                 <ModalTitle>
@@ -477,25 +477,6 @@ function JobDetails({ job }: { job: Job }) {
                     ) : (
                       <div className="py-2 w-full">
                         <BarProgress
-                          segments={[
-                            {
-                              value: operation.quantityComplete ?? 0,
-                              className: "bg-emerald-500"
-                            },
-                            {
-                              value: operation.quantityReworked ?? 0,
-                              className: "bg-yellow-500"
-                            },
-                            {
-                              value: operation.quantityScrapped ?? 0,
-                              className: "bg-red-500"
-                            }
-                          ]}
-                          max={
-                            (operation.targetQuantity ??
-                              operation.operationQuantity) ||
-                            1
-                          }
                           progress={Math.min(
                             ((operation.quantityComplete ?? 0) /
                               (operation.targetQuantity ??

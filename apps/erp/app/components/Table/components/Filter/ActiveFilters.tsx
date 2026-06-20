@@ -20,12 +20,8 @@ import { LuX } from "react-icons/lu";
 import { useFetcher } from "react-router";
 import Filter from "./Filter";
 import type { ColumnFilter } from "./types";
+import { parseFilterParam } from "~/utils/query";
 import { useFilters } from "./useFilters";
-
-function getCurrentValues(value: string, isArray: boolean | undefined) {
-  if (!value) return [];
-  return isArray ? value.split(",") : [value];
-}
 
 type ActiveFiltersProps = {
   filters: ColumnFilter[];
@@ -33,19 +29,21 @@ type ActiveFiltersProps = {
 
 const ActiveFilters = ({ filters }: ActiveFiltersProps) => {
   const { urlFiltersParams } = useFilters();
+
   return (
     <HStack spacing={2}>
-      {urlFiltersParams.map((f) => {
-        const [key, operator, value] = f.split(":");
-        const columnFilter = filters.find((f) => f.accessorKey === key);
+      {urlFiltersParams.map((param) => {
+        const parsed = parseFilterParam(param);
+        if (!parsed) return null;
+        const columnFilter = filters.find((f) => f.accessorKey === parsed.column);
         if (!columnFilter) return null;
 
         return (
           <ActiveFilter
-            key={key}
+            key={`${parsed.column}:${param}`}
             filter={columnFilter}
-            operator={operator}
-            value={value}
+            operator={parsed.operator}
+            value={parsed.value}
           />
         );
       })}
@@ -63,7 +61,7 @@ type ActiveFilterProps = {
 };
 
 const ActiveFilter = ({ filter, operator, value }: ActiveFilterProps) => {
-  const { t, i18n } = useLingui();
+  const { t } = useLingui();
   const { hasFilter, removeKey, toggleFilter } = useFilters();
 
   const [open, setOpen] = useState(false);
@@ -114,29 +112,30 @@ const ActiveFilter = ({ filter, operator, value }: ActiveFilterProps) => {
   }, [fetcher.data, filter.filter.type]);
 
   const makeLabel = (v: string) => {
-    const [first, ...others] = v.split(",");
-    if (others && others.length > 0) {
-      return `${1 + others.length} ${
-        filter.pluralHeader
-          ? translate(filter.pluralHeader)
-          : `${translate(filter.header)}s`
-      }`;
-    } else {
-      if (filter.filter.type === "custom" && filter.filter.getLabel) {
-        const node = filter.filter.getLabel(first);
-        if (node == null) return first;
+    const values = v.split(",");
+    if (values.length > 1) {
+      const labels = values.map((val) => {
+        const node = options.find((o) => o.value === val)?.label ?? "";
         return typeof node === "string"
-          ? translate(node)
+          ? node
           : reactNodeToString(node);
+      });
+      if (labels.every(Boolean)) {
+        return labels.join(", ");
       }
-      const node = options.find((o) => o.value === v)?.label ?? "";
-      return typeof node === "string"
-        ? translate(node)
-        : reactNodeToString(node);
+      return `${values.length} ${
+        filter.pluralHeader
+          ? filter.pluralHeader
+          : `${filter.header}s`
+      }`;
     }
+    const node = options.find((o) => o.value === v)?.label ?? "";
+    const label =
+      typeof node === "string"
+        ? node
+        : reactNodeToString(node);
+    return label || v;
   };
-
-  const translate = (text: string) => i18n._(text);
 
   return (
     <HStack spacing={0}>
@@ -146,12 +145,12 @@ const ActiveFilter = ({ filter, operator, value }: ActiveFilterProps) => {
         size="sm"
         variant="secondary"
       >
-        {translate(filter.header)}
+        {filter.header}
       </Button>
       <Button className="rounded-none border-l-0" size="sm" variant="secondary">
         {operator === "eq" ? (
           <Trans>is</Trans>
-        ) : operator === "in" || operator === "contains" ? (
+        ) : operator === "in" ? (
           <Trans>is any of</Trans>
         ) : (
           <Trans>matches</Trans>
@@ -160,7 +159,7 @@ const ActiveFilter = ({ filter, operator, value }: ActiveFilterProps) => {
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
-            className="rounded-none max-w-[200px]"
+            className="rounded-none"
             role="combobox"
             variant="secondary"
             onClick={() => {
@@ -168,81 +167,55 @@ const ActiveFilter = ({ filter, operator, value }: ActiveFilterProps) => {
             }}
             size="sm"
           >
-            <span className="truncate">{makeLabel(value)}</span>
+            {makeLabel(value)}
           </Button>
         </PopoverTrigger>
         <PopoverContent
           align="start"
-          className={
-            filter.filter.type === "custom"
-              ? "w-auto p-0"
-              : "min-w-[200px] w-[var(--radix-popover-trigger-width)] p-0"
-          }
+          className="min-w-[200px] w-[--radix-popover-trigger-width] p-0"
           sticky="always"
         >
-          {filter.filter.type === "custom" ? (
-            <div className="w-auto min-w-[280px] p-2">
-              {filter.filter.render({
-                values: getCurrentValues(value, filter.filter.isArray),
-                toggle: (v) =>
-                  toggleFilter(
-                    filter.accessorKey,
-                    v,
-                    filter.filter.type === "custom"
-                      ? filter.filter.isArray
-                      : false
-                  ),
-                close: () => setOpen(false)
+          <Command>
+            <CommandInput
+              value={input}
+              onValueChange={setInput}
+              placeholder={t`Search...`}
+              className="h-9"
+            />
+            <CommandEmpty>
+              {loading ? (
+                <Trans>Loading...</Trans>
+              ) : (
+                <Trans>No options found.</Trans>
+              )}
+            </CommandEmpty>
+            <CommandGroup>
+              {options.map((option) => {
+                const isChecked = hasFilter(filter.accessorKey, option.value);
+                return (
+                  <CommandItem
+                    value={reactNodeToString(option.label).replace(/"/g, '\\"')}
+                    key={option.value}
+                    onSelect={() => {
+                      toggleFilter(
+                        filter.accessorKey,
+                        option.value,
+                        filter.filter.isArray
+                      );
+                      setInput("");
+                    }}
+                  >
+                    <HStack spacing={2}>
+                      <Checkbox id={option.value} isChecked={isChecked} />
+                      <label htmlFor={option.value}>
+                        {option.label}
+                      </label>
+                    </HStack>
+                  </CommandItem>
+                );
               })}
-            </div>
-          ) : (
-            <Command>
-              <CommandInput
-                value={input}
-                onValueChange={setInput}
-                placeholder={t`Search...`}
-                className="h-9"
-              />
-              <CommandEmpty>
-                {loading ? (
-                  <Trans>Loading...</Trans>
-                ) : (
-                  <Trans>No options found.</Trans>
-                )}
-              </CommandEmpty>
-              <CommandGroup>
-                {options.map((option) => {
-                  const isChecked = hasFilter(filter.accessorKey, option.value);
-                  return (
-                    <CommandItem
-                      value={reactNodeToString(option.label).replace(
-                        /"/g,
-                        '\\"'
-                      )}
-                      key={option.value}
-                      onSelect={() => {
-                        toggleFilter(
-                          filter.accessorKey,
-                          option.value,
-                          filter.filter.isArray
-                        );
-                        setInput("");
-                      }}
-                    >
-                      <HStack spacing={2}>
-                        <Checkbox id={option.value} isChecked={isChecked} />
-                        <label htmlFor={option.value}>
-                          {typeof option.label === "string"
-                            ? translate(option.label)
-                            : option.label}
-                        </label>
-                      </HStack>
-                    </CommandItem>
-                  );
-                })}
-              </CommandGroup>
-            </Command>
-          )}
+            </CommandGroup>
+          </Command>
         </PopoverContent>
       </Popover>
       <Button
@@ -250,9 +223,7 @@ const ActiveFilter = ({ filter, operator, value }: ActiveFilterProps) => {
         className="rounded-l-none border-l-0 px-1 w-6"
         size="sm"
         variant="secondary"
-        onClick={() => {
-          removeKey(filter.accessorKey);
-        }}
+        onClick={() => removeKey(filter.accessorKey)}
       >
         <LuX />
       </Button>

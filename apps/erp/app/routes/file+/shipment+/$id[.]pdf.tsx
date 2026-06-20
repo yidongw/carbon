@@ -1,12 +1,6 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
-import { ensureFont, PackingSlipPDF } from "@carbon/documents/pdf";
-import {
-  collectSectionIds,
-  resolveTemplate,
-  templateShowsThumbnails,
-  toDocumentTemplate
-} from "@carbon/documents/template";
+import { PackingSlipPDF } from "@carbon/documents/pdf";
 import type { JSONContent } from "@carbon/react";
 import { getPreferenceHeaders } from "@carbon/react";
 import { renderToStream } from "@react-pdf/renderer";
@@ -29,11 +23,7 @@ import {
   getSalesOrderShipment,
   getSalesTerms
 } from "~/modules/sales";
-import {
-  getCompany,
-  getDocumentTemplate,
-  resolveSections
-} from "~/modules/settings";
+import { getCompany, getCompanySettings } from "~/modules/settings";
 import { getBase64ImageFromSupabase } from "~/modules/shared";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
@@ -44,11 +34,14 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { id } = params;
   if (!id) throw new Error("Could not find id");
 
-  const [company, shipment, shipmentLines] = await Promise.all([
-    getCompany(client, companyId),
-    getShipment(client, id),
-    getShipmentLinesWithDetails(client, id)
-  ]);
+  const [company, companySettings, shipment, shipmentLines] = await Promise.all(
+    [
+      getCompany(client, companyId),
+      getCompanySettings(client, companyId),
+      getShipment(client, id),
+      getShipmentLinesWithDetails(client, id)
+    ]
+  );
 
   if (company.error) {
     console.error(company.error);
@@ -80,24 +73,6 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   }
 
   const { locale } = getPreferenceHeaders(request);
-
-  const documentTemplate = await getDocumentTemplate(
-    client,
-    companyId,
-    "packingSlip"
-  );
-  const templateConfig = toDocumentTemplate(
-    documentTemplate.data,
-    "packingSlip"
-  );
-  const resolvedTemplate = resolveTemplate("packingSlip", templateConfig);
-  const showThumbnails = templateShowsThumbnails(templateConfig, "packingSlip");
-  const templateSections = await resolveSections(
-    client,
-    companyId,
-    collectSectionIds(resolvedTemplate)
-  );
-  await ensureFont(resolvedTemplate.settings.fontFamily);
 
   switch (shipment.data.sourceDocument) {
     case "Sales Order": {
@@ -139,7 +114,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
       let thumbnails: Record<string, string | null> = {};
 
-      if (showThumbnails) {
+      if (companySettings.data?.includeThumbnailsOnSalesPdfs ?? true) {
         const thumbnailPaths = shipmentLines.data?.reduce<
           Record<string, string | null>
         >((acc, line) => {
@@ -196,8 +171,6 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
           trackedEntities={shipmentTracking.data ?? []}
           title="Packing Slip"
           thumbnails={thumbnails}
-          template={templateConfig}
-          sections={templateSections}
         />
       );
 
@@ -260,7 +233,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
       let thumbnails: Record<string, string | null> = {};
 
-      if (showThumbnails) {
+      if (companySettings.data?.includeThumbnailsOnSalesPdfs ?? true) {
         const thumbnailPaths = shipmentLines.data?.reduce<
           Record<string, string | null>
         >((acc, line) => {
@@ -317,8 +290,6 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
           trackedEntities={shipmentTracking.data ?? []}
           title="Packing Slip"
           thumbnails={thumbnails}
-          template={templateConfig}
-          sections={templateSections}
         />
       );
 
@@ -376,7 +347,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
       let poThumbnails: Record<string, string | null> = {};
 
-      if (showThumbnails) {
+      if (companySettings.data?.includeThumbnailsOnPurchasingPdfs ?? true) {
         const poThumbnailPaths = shipmentLines.data?.reduce<
           Record<string, string | null>
         >((acc, line) => {
@@ -433,8 +404,6 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
           trackedEntities={poShipmentTracking.data ?? []}
           title="Packing Slip"
           thumbnails={poThumbnails}
-          template={templateConfig}
-          sections={templateSections}
         />
       );
 

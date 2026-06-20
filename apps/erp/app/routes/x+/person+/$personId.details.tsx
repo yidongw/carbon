@@ -1,6 +1,8 @@
 import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
+import { Card, CardContent, CardHeader, CardTitle } from "@carbon/react";
+import { Trans } from "@lingui/react/macro";
 import type { LoaderFunctionArgs } from "react-router";
 import { redirect, useLoaderData } from "react-router";
 import { getAccount } from "~/modules/account";
@@ -31,5 +33,16 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 export default function PersonProfileRoute() {
   const { user } = useLoaderData<typeof loader>();
 
-  return <ProfileForm user={user} />;
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>
+          <Trans>Profile</Trans>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <ProfileForm user={user} />
+      </CardContent>
+    </Card>
+  );
 }

@@ -61,7 +61,6 @@ export default function CustomerEditRoute() {
   const initialValues = {
     ...routeData.customer,
     id: routeData?.customer?.id ?? undefined,
-    readableId: routeData?.customer?.readableId ?? undefined,
     name: routeData?.customer?.name ?? "",
     customerTypeId: routeData?.customer?.customerTypeId ?? undefined,
     customerStatusId: routeData?.customer?.customerStatusId ?? undefined,

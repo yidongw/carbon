@@ -3,16 +3,15 @@ import { useMemo } from "react";
 import {
   LuArrowLeftRight,
   LuAxis3D,
+  LuBanknote,
   LuBetweenHorizontalStart,
   LuBookOpen,
-  LuBuilding2,
   LuCalendar1,
-  LuClock,
+  LuCircleCheck,
   LuCoins,
   LuEuro,
   LuFileSpreadsheet,
   LuHandCoins,
-  LuLayers,
   LuScale,
   LuSheet,
   LuTrendingUp
@@ -27,15 +26,36 @@ const accountingOnlyRoutes = new Set<string>([
   path.to.incomeStatement,
   path.to.trialBalance,
   path.to.intercompany,
-  path.to.accountingJournals,
-  path.to.fixedAssets,
-  path.to.depreciationRuns
+  path.to.accountingJournals
 ]);
+
+/** Payroll routes stay visible when full GL accounting is disabled. */
+const payrollRoutes = [path.to.accountingSalary, path.to.accountingPayments];
+
+const isPayrollRoute = (to: string) =>
+  payrollRoutes.some((base) => to === base || to.startsWith(`${base}?`));
 
 export default function useAccountingSubmodules() {
   const { t } = useLingui();
   const accountingRoutes: AuthenticatedRouteGroup[] = useMemo(
     () => [
+      {
+        name: t`Payroll`,
+        routes: [
+          {
+            name: t`Salary`,
+            to: path.to.accountingSalary,
+            role: "employee",
+            icon: <LuBanknote />
+          },
+          {
+            name: t`Payments`,
+            to: path.to.accountingPayments,
+            role: "employee",
+            icon: <LuCircleCheck />
+          }
+        ]
+      },
       {
         name: t`Reports`,
         routes: [
@@ -60,7 +80,7 @@ export default function useAccountingSubmodules() {
         ]
       },
       {
-        name: t`General Ledger`,
+        name: t`Manage`,
         routes: [
           {
             name: t`Intercompany`,
@@ -78,31 +98,8 @@ export default function useAccountingSubmodules() {
       },
 
       {
-        name: t`Fixed Assets`,
-        routes: [
-          {
-            name: t`Assets`,
-            to: path.to.fixedAssets,
-            role: "employee",
-            icon: <LuBuilding2 />
-          },
-          {
-            name: t`Depreciation`,
-            to: path.to.depreciationRuns,
-            role: "employee",
-            icon: <LuClock />
-          }
-        ]
-      },
-      {
         name: t`Configure`,
         routes: [
-          {
-            name: t`Asset Classes`,
-            to: path.to.assetClasses,
-            role: "employee",
-            icon: <LuLayers />
-          },
           {
             name: t`Chart of Accounts`,
             to: path.to.chartOfAccounts,
@@ -162,6 +159,9 @@ export default function useAccountingSubmodules() {
   const isRouteVisible = (route: { to: string; role?: string }) => {
     if (route.role && !permissions.is(route.role as Role)) return false;
     if (!hasMultipleCompanies && multiCompanyRoutes.has(route.to)) return false;
+    if (isPayrollRoute(route.to)) {
+      return permissions.can("view", "people");
+    }
     if (!accountingEnabled && accountingOnlyRoutes.has(route.to)) return false;
     return true;
   };

@@ -11,18 +11,22 @@ import {
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useState } from "react";
-import { useNavigate } from "react-router";
-import type { z } from "zod";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  Employee,
-  Hidden,
-  Number,
-  Select,
-  Submit,
-  TextArea
-} from "~/components/Form";
+  type FetcherWithComponents,
+  useNavigate,
+  useParams
+} from "react-router";
+import type { z } from "zod";
+import { Hidden, Number, Select, Submit, TextArea } from "~/components/Form";
+import {
+  ProductionActorFields,
+  selectionFromInitialValues
+} from "./ProductionActorFields";
+import { SupplierSubcontractPricingFields } from "./SupplierSubcontractPricingFields";
+import type { productionActorKinds } from "../../production.models";
 import ScrapReason from "~/components/Form/ScrapReason";
+import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions } from "~/hooks";
 import { isConfigTableOverlaySuccess } from "../../configTableOverlay";
 import {
@@ -43,8 +47,59 @@ import {
   ProductionQuantityLinesEditor
 } from "./ProductionQuantityLinesEditor";
 
-type ProductionQuantityFormProps = {
-  initialValues: z.infer<typeof productionQuantityValidator>;
+type ConfigRow = Record<string, string | number | boolean>;
+
+function getInitialConfigState(configuration: unknown) {
+  if (
+    configuration === null ||
+    configuration === undefined ||
+    typeof configuration !== "object" ||
+    Array.isArray(configuration)
+  ) {
+    return {
+      rows: null as ConfigRow[] | null,
+      primaryKeys: [] as string[],
+      total: 0
+    };
+  }
+
+  const cfg = configuration as Record<string, unknown>;
+  const rows = Array.isArray(cfg.configTable)
+    ? (cfg.configTable as ConfigRow[])
+    : null;
+  const primaryKeys = Array.isArray(cfg.configTablePrimaryKeys)
+    ? cfg.configTablePrimaryKeys.filter((k): k is string => typeof k === "string")
+    : [];
+
+  return {
+    rows,
+    primaryKeys,
+    total: computeJobConfigTableTotal(cfg)
+  };
+}
+
+type ConfigurationParameter = {
+  key: string;
+  label: string;
+  dataType: string;
+  listOptions?: string[] | null;
+};
+
+export type ProductionQuantityCreateInitialValues = {
+  jobOperationId: string;
+  actorKind?: "employee" | "supplier";
+  employeeId?: string;
+  supplierProcessId?: string;
+  /** Display-only: resolves supplier Name label before process options load. */
+  supplierId?: string;
+  notes?: string;
+  lines: ProductionQuantityLineInput[];
+};
+
+export type ProductionQuantityFormProps = {
+  initialValues:
+    | z.infer<typeof productionQuantityValidator>
+    | ProductionQuantityCreateInitialValues;
   operationOptions?: {
     label: string;
     value: string;
@@ -61,6 +116,25 @@ type ProductionQuantityFormProps = {
   action?: string;
   fetcher?: FetcherWithComponents<unknown>;
 };
+
+function toEditableLines(
+  input: ProductionQuantityLineInput[]
+): EditableProductionQuantityLine[] {
+  return input.map((l, i) => ({
+    ...l,
+    key: `line-${i}-${Math.random().toString(36).slice(2, 9)}`
+  }));
+}
+
+function isCreateMultiLineInitial(
+  v: ProductionQuantityFormProps["initialValues"]
+): v is ProductionQuantityCreateInitialValues {
+  return (
+    !("id" in v && v.id) &&
+    "lines" in v &&
+    Array.isArray((v as ProductionQuantityCreateInitialValues).lines)
+  );
+}
 
 const ProductionQuantityForm = ({
   initialValues,
@@ -79,13 +153,27 @@ const ProductionQuantityForm = ({
   const permissions = usePermissions();
   const { t } = useLingui();
   const navigate = useNavigate();
-  const onClose = () => navigate(-1);
+  const { jobId } = useParams();
+  const isOverlay = fetcher != null;
+  const onDismiss =
+    onDismissProp ??
+    (() => {
+      if (jobId) {
+        navigate(path.to.jobProductionQuantities(jobId));
+        return;
+      }
+      navigate(-1);
+    });
 
-  const [type, setType] = useState<"Production" | "Scrap" | "Rework">(
-    initialValues.type
+  const isEditing = Boolean(
+    "id" in initialValues &&
+      initialValues.id != null &&
+      String(initialValues.id).trim() !== ""
   );
+  const isCreateMultiLine = !isEditing && isCreateMultiLineInitial(initialValues);
 
-  const isEditing = initialValues.id !== undefined;
+  const presetJobOperationIdOnCreate =
+    !isEditing && Boolean(initialValues.jobOperationId);
   const isDisabled = isEditing
     ? !permissions.can("update", "production")
     : !permissions.can("create", "production");
@@ -401,14 +489,8 @@ const ProductionQuantityForm = ({
                   onChange={setQuantity}
                 />
               ) : (
-                <Select
-                  name="jobOperationId"
-                  label={t`Operation`}
-                  options={operationOptions ?? []}
-                />
+                <Number name="quantity" label={t`Quantity`} />
               )}
-              <Employee name="createdBy" label={t`Employee`} />
-              <Number name="quantity" label={t`Quantity`} />
               <Select
                 name="type"
                 label={t`Quantity Type`}
@@ -424,21 +506,45 @@ const ProductionQuantityForm = ({
               {type === "Scrap" && (
                 <ScrapReason name="scrapReasonId" label={t`Scrap Reason`} />
               )}
-              <TextArea name="notes" label={t`Notes`} />
-            </VStack>
-          </DrawerBody>
-          <DrawerFooter>
-            <HStack>
-              <Submit isDisabled={isDisabled}>
-                <Trans>Save</Trans>
-              </Submit>
-              <Button variant="solid" onClick={onClose}>
-                Cancel
-              </Button>
-            </HStack>
-          </DrawerFooter>
-        </ValidatedForm>
-      </DrawerContent>
+            </>
+          )}
+
+          <TextArea name="notes" label={t`Notes`} />
+        </VStack>
+      </DrawerBody>
+      <DrawerFooter>
+        <HStack>
+          <Submit
+            isDisabled={isDisabled || hasZeroQuantityLine}
+            className="transition-transform active:scale-[0.96]"
+          >
+            <Trans>Save</Trans>
+          </Submit>
+          <Button
+            variant="solid"
+            type="button"
+            onClick={onDismiss}
+            className="transition-transform active:scale-[0.96]"
+          >
+            <Trans>Cancel</Trans>
+          </Button>
+        </HStack>
+      </DrawerFooter>
+    </ValidatedForm>
+  );
+
+  if (isOverlay) {
+    return form;
+  }
+
+  return (
+    <Drawer
+      open
+      onOpenChange={(open) => {
+        if (!open) onDismiss();
+      }}
+    >
+      <DrawerContent>{form}</DrawerContent>
     </Drawer>
   );
 };

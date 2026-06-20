@@ -8,10 +8,11 @@ import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
 import { useUrlParams, useUser } from "~/hooks";
 import {
-  insertSupplierQuote,
-  supplierQuoteValidator
+  supplierQuoteValidator,
+  upsertSupplierQuote
 } from "~/modules/purchasing";
 import { SupplierQuoteForm } from "~/modules/purchasing/ui/SupplierQuote";
+import { getNextSequence } from "~/modules/settings/settings.service";
 import { setCustomFields } from "~/utils/form";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
@@ -37,28 +38,49 @@ export async function action({ request }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
-  const { id: _id, ...data } = validation.data;
+  let supplierQuoteId = validation.data.supplierQuoteId;
+  const useNextSequence = !supplierQuoteId;
 
-  const result = await insertSupplierQuote(client, {
-    ...data,
-    supplierQuoteId: data.supplierQuoteId || undefined,
+  if (useNextSequence) {
+    const nextSequence = await getNextSequence(
+      client,
+      "supplierQuote",
+      companyId
+    );
+    if (nextSequence.error) {
+      throw redirect(
+        path.to.newSupplierQuote,
+        await flash(
+          request,
+          error(nextSequence.error, "Failed to get next sequence")
+        )
+      );
+    }
+    supplierQuoteId = nextSequence.data;
+  }
+
+  if (!supplierQuoteId) throw new Error("supplierQuoteId is not defined");
+
+  const createSupplierQuote = await upsertSupplierQuote(client, {
+    ...validation.data,
+    supplierQuoteId,
     companyId,
     companyGroupId,
     createdBy: userId,
     customFields: setCustomFields(formData)
   });
 
-  if (result.error || !result.data) {
+  if (createSupplierQuote.error || !createSupplierQuote.data?.id) {
     throw redirect(
       path.to.supplierQuotes,
       await flash(
         request,
-        error(result.error, "Failed to insert supplier quote")
+        error(createSupplierQuote.error, "Failed to insert supplier quote")
       )
     );
   }
 
-  throw redirect(path.to.supplierQuote(result.data.id));
+  throw redirect(path.to.supplierQuote(createSupplierQuote.data.id));
 }
 
 export default function SupplierQuoteNewRoute() {

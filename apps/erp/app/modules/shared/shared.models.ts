@@ -1,5 +1,4 @@
 import type { Database } from "@carbon/database";
-import { textToTiptap } from "@carbon/utils";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 
@@ -14,7 +13,8 @@ export const approvalDecisionValidator = z.object({
 export const approvalDocumentType = [
   "purchaseOrder",
   "qualityDocument",
-  "supplier"
+  "supplier",
+  "productionQuantityReport"
 ] as const;
 
 export type ApprovalDocumentType =
@@ -23,7 +23,8 @@ export type ApprovalDocumentType =
 export const approvalDocumentTypeLabel: Record<ApprovalDocumentType, string> = {
   purchaseOrder: "Purchase Order",
   qualityDocument: "Quality Document",
-  supplier: "Supplier"
+  supplier: "Supplier",
+  productionQuantityReport: "Quantity Review"
 };
 
 export const approvalDocumentTypesWithAmounts: ApprovalDocumentType[] = [
@@ -179,7 +180,11 @@ export const noteValidator = z.object({
   note: z.string().min(1, { message: "Note is required" })
 });
 
-export const operationTypes = ["Inside", "Outside"] as const;
+export const operationTypes = [
+  "Inside",
+  "Outside",
+  "Inside and Outside"
+] as const;
 
 export const procedureStepType = [
   "Task",
@@ -226,21 +231,13 @@ export const operationStepValidator = z
     description: z
       .string()
       .min(1, { message: "Description is required" })
-      // Returns `any`: the tiptap doc is consumed both as a DB Json value and as
-      // editor JSONContent, and a narrower type breaks one of the two call sites.
-      .transform((val): any => {
-        let parsed: unknown;
+      .transform((val) => {
         try {
-          parsed = JSON.parse(val);
-          // biome-ignore lint/correctness/noUnusedVariables: raw text is not JSON
+          return JSON.parse(val);
+          // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
         } catch (e) {
-          parsed = val;
+          return {};
         }
-        // Always store a tiptap doc object, never a scalar string (jsonb scalar
-        // strings break method copies) and never silently drop content to {}.
-        if (typeof parsed === "string") return textToTiptap(parsed);
-        if (parsed && typeof parsed === "object") return parsed;
-        return textToTiptap(String(val));
       }),
     type: z.enum(procedureStepType, {
       errorMap: () => ({ message: "Type is required" })

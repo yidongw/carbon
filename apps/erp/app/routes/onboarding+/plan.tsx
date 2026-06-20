@@ -118,7 +118,7 @@ export async function action({ request }: ActionFunctionArgs) {
     userId,
     companyId,
     name: company.data?.name,
-    email: user.data?.email
+    email: user.data?.email ?? ""
   });
 
   throw redirect(url);
@@ -146,7 +146,7 @@ export default function OnboardingPlan() {
   return (
     <>
       <div className="flex flex-col max-w-2xl w-full min-h-screen md:min-h-0">
-        <div className="sticky top-0 bg-background z-10 mb-4 rounded-2xl">
+        <div className="sticky top-0 bg-background z-10 pb-4">
           <CardHeader>
             <CardTitle>
               <Trans>Select a plan</Trans>

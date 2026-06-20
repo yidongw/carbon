@@ -1,9 +1,10 @@
-import { assertIsPost } from "@carbon/auth";
+import { assertIsPost, success } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
+import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import { useRouteData } from "@carbon/react";
 import type { ActionFunctionArgs } from "react-router";
-import { useNavigate, useParams } from "react-router";
+import { redirect, useNavigate, useParams } from "react-router";
 import type { ConsumableSummary } from "~/modules/items";
 import { supplierPartValidator, upsertSupplierPart } from "~/modules/items";
 import { SupplierPartForm } from "~/modules/items/ui/Item";
@@ -67,7 +68,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
     }
   }
 
-  return { success: true, message: "Consumable supplier created" };
+  throw redirect(
+    path.to.consumablePurchasing(itemId),
+    await flash(request, success("Consumable supplier created"))
+  );
 }
 
 export default function NewConsumableSupplierRoute() {
@@ -89,7 +93,6 @@ export default function NewConsumableSupplierRoute() {
     unitPrice: 0,
     supplierUnitOfMeasureCode: "EA",
     minimumOrderQuantity: 1,
-    orderMultiple: 1,
     conversionFactor: 1
   };
 

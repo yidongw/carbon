@@ -1,7 +1,6 @@
 import { assertIsPost, error, success } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
-import { getStorageRulesDataForTarget } from "@carbon/ee/storage-rules.server";
 import { validationError, validator } from "@carbon/form";
 import { VStack } from "@carbon/react";
 import { pluckUnique } from "@carbon/utils";
@@ -25,9 +24,10 @@ import {
   upsertPickMethod,
   upsertPickMethodWithShelfLife
 } from "~/modules/items";
+import { getItemRulesDataForItem } from "~/modules/items/itemRules.server";
 import { PickMethodForm } from "~/modules/items/ui/Item";
+import ItemRuleAssignments from "~/modules/items/ui/ItemRules/ItemRuleAssignments";
 import { getLocationsList } from "~/modules/resources";
-import RuleAssignmentsList from "~/modules/storageRules/ui/RuleAssignmentsList";
 import { getUserDefaults } from "~/modules/users/users.server";
 import { getDatabaseClient } from "~/services/database.server";
 import { useItems } from "~/stores";
@@ -122,11 +122,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     getItemStorageUnitQuantities(client, itemId, companyId, locationId),
     getItemShelfLife(client, itemId),
     getBomHasShelfLifeManagedInput(client, itemId, companyId),
-    getStorageRulesDataForTarget(client, {
-      targetType: "item",
-      targetId: itemId,
-      companyId
-    })
+    getItemRulesDataForItem(client, itemId, companyId)
   ]);
   if (quantities.error) {
     throw redirect(
@@ -289,9 +285,8 @@ export default function PartInventoryRoute() {
         quantities={quantities}
         storageUnits={storageUnits.options}
       />
-      <RuleAssignmentsList
-        targetType="item"
-        targetId={itemId}
+      <ItemRuleAssignments
+        itemId={itemId}
         assignments={ruleAssignments as never}
         library={ruleLibrary as never}
       />

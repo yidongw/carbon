@@ -1,17 +1,16 @@
-import { usePrinting } from "@carbon/printing/ui";
 import {
   useNanoStore,
   useOptimisticLocation,
   useRouteData,
   useUrlParams
 } from "@carbon/react";
-import { useCompanySettings } from "./useCompanySettings";
+
 import { useCurrencyFormatter } from "./useCurrencyFormatter";
 import { useDateFormatter } from "./useDateFormatter";
 import { useFlags } from "./useFlags";
 import { useFormatPersonName } from "./useFormatPersonName";
 import { useGooglePlaces } from "./useGooglePlaces";
-import { useAllModules, useModules, useSettingsModule } from "./useModules";
+import { useModules } from "./useModules";
 import { useMovingCellRef } from "./useMovingCellRef";
 import { useNextItemId } from "./useNextItemId";
 import { useNotifications } from "./useNotifications";
@@ -27,15 +26,12 @@ import { useTrainingPanel } from "./useTrainingPanel";
 import { useUser } from "./useUser";
 
 export {
-  useCompanySettings,
   useCurrencyFormatter,
   useDateFormatter,
   useFlags,
   useFormatPersonName,
   useGooglePlaces,
-  useAllModules,
   useModules,
-  useSettingsModule,
   useMovingCellRef,
   useNanoStore,
   useNextItemId,
@@ -45,7 +41,6 @@ export {
   usePercentFormatter,
   usePermissions,
   usePlanGate,
-  usePrinting,
   useRealtime,
   useRouteData,
   useScrollPosition,

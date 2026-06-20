@@ -10,7 +10,6 @@ import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
 import { sanitize } from "~/utils/supabase";
 import { getDefaultStorageUnitForJob } from "../inventory";
-import { getEmployeeJob } from "../people";
 import type {
   operationParameterValidator,
   operationStepValidator,
@@ -20,6 +19,7 @@ import type {
   deadlineTypes,
   failureModeValidator,
   jobMaterialValidator,
+  jobOperationPickupValidator,
   jobOperationStatus,
   jobOperationValidator,
   jobStatus,
@@ -38,6 +38,7 @@ import type {
   productionQuantityValidator,
   scrapReasonValidator
 } from "./production.models";
+import { allowsSupplierQuantityActor, locksActorToOperationSupplier } from "./operationType";
 import type { Job } from "./types";
 
 export async function convertSalesOrderLinesToJobs(
@@ -514,12 +515,32 @@ export async function deleteProductionEvent(
 
 export async function deleteProductionQuantity(
   client: SupabaseClient<Database>,
-  productionQuantityId: string
+  productionQuantityId: string,
+  args: { companyId: string; userId: string }
 ) {
-  return client
-    .from("productionQuantity")
-    .delete()
-    .eq("id", productionQuantityId);
+  const { invalidateProductionQuantity } = await import(
+    "./productionQuantityReport.service"
+  );
+  return invalidateProductionQuantity(client, {
+    productionQuantityId,
+    companyId: args.companyId,
+    userId: args.userId
+  });
+}
+
+export async function deleteJobOperationSupplierQuantity(
+  client: SupabaseClient<Database>,
+  supplierQuantityId: string,
+  args: { companyId: string; userId: string }
+) {
+  const { invalidateJobOperationSupplierQuantity } = await import(
+    "./jobOperationSupplierQuantityReport.service"
+  );
+  return invalidateJobOperationSupplierQuantity(client, {
+    supplierQuantityId,
+    companyId: args.companyId,
+    userId: args.userId
+  });
 }
 
 export async function getActiveJobOperationByJobId(
@@ -843,7 +864,7 @@ export async function getJobPurchaseOrderLines(
   return client
     .from("purchaseOrderLine")
     .select(
-      "id, itemId, purchaseQuantity, quantityReceived, quantityShipped, purchaseOrder(id, purchaseOrderId, status, supplierId, supplierInteractionId), jobOperation(id, description, operationQuantity)"
+      "id, itemId, description, purchaseQuantity, quantityReceived, quantityShipped, supplierUnitPrice, unitPrice, taxAmount, shippingCost, purchaseOrder(id, purchaseOrderId, status, supplierId, supplierInteractionId, currencyCode, exchangeRate), jobOperation(id, description, operationQuantity, operationMinimumCost, operationUnitCost)"
     )
     .eq("jobId", jobId);
 }
@@ -1050,6 +1071,119 @@ export async function getJobOperation(
     .single();
 }
 
+/**
+ * Returns the routing context loaders need to seed the unified actor field:
+ * the operation's `processId` (for SupplierProcess options) and `operationType`
+ * (for actor defaulting). Returns nulls for unknown / empty operation ids.
+ */
+export async function getJobOperationActorContext(
+  client: SupabaseClient<Database>,
+  jobOperationId: string,
+  companyId: string
+): Promise<{
+  processId: string | null;
+  operationType: string | null;
+  operationSupplierProcessId: string | null;
+  supplierId: string | null;
+}> {
+  if (!jobOperationId) {
+    return {
+      processId: null,
+      operationType: null,
+      operationSupplierProcessId: null,
+      supplierId: null
+    };
+  }
+
+  const { data: operation } = await client
+    .from("jobOperation")
+    .select("processId, operationType, operationSupplierProcessId")
+    .eq("id", jobOperationId)
+    .eq("companyId", companyId)
+    .single();
+
+  let supplierId: string | null = null;
+  if (operation?.operationSupplierProcessId) {
+    const { data: supplierProcess } = await client
+      .from("supplierProcess")
+      .select("supplierId")
+      .eq("id", operation.operationSupplierProcessId)
+      .maybeSingle();
+    supplierId = supplierProcess?.supplierId ?? null;
+  }
+
+  return {
+    processId: operation?.processId ?? null,
+    operationType: operation?.operationType ?? null,
+    operationSupplierProcessId: operation?.operationSupplierProcessId ?? null,
+    supplierId
+  };
+}
+
+export async function validateActorMatchesOperationSupplierRouting(
+  client: SupabaseClient<Database>,
+  jobOperationId: string,
+  companyId: string,
+  actor: {
+    actorKind: "employee" | "supplier";
+    employeeId?: string | null;
+    supplierProcessId?: string | null;
+  }
+): Promise<{ error: { message: string } | null }> {
+  const context = await getJobOperationActorContext(
+    client,
+    jobOperationId,
+    companyId
+  );
+
+  if (
+    !locksActorToOperationSupplier(
+      context.operationType,
+      context.operationSupplierProcessId
+    )
+  ) {
+    return { error: null };
+  }
+
+  if (
+    actor.actorKind !== "supplier" ||
+    actor.supplierProcessId?.trim() !==
+      context.operationSupplierProcessId?.trim()
+  ) {
+    return {
+      error: {
+        message:
+          "Supplier must match the supplier assigned on the operation details"
+      }
+    };
+  }
+
+  return { error: null };
+}
+
+export async function assertSupplierQuantityAllowedForOperation(
+  client: SupabaseClient<Database>,
+  jobOperationId: string,
+  companyId: string
+): Promise<{ error: { message: string } | null }> {
+  const { operationType } = await getJobOperationActorContext(
+    client,
+    jobOperationId,
+    companyId
+  );
+
+  if (!allowsSupplierQuantityActor(operationType)) {
+    return {
+      error: {
+        message:
+          "Supplier quantities cannot be recorded for Inside operations"
+      }
+    };
+  }
+
+  return { error: null };
+}
+
 export async function getJobOperations(
   client: SupabaseClient<Database>,
   jobId: string,
@@ -1078,16 +1212,6 @@ export async function getJobOperations(
   }
 
   return query;
-}
-
-export async function getJobOperationDependencies(
-  client: SupabaseClient<Database>,
-  jobId: string
-) {
-  return client
-    .from("jobOperationDependency")
-    .select("operationId, dependsOnId")
-    .eq("jobId", jobId);
 }
 
 export async function getJobOperationsAssignedToEmployee(
@@ -1359,6 +1483,53 @@ export async function getProductionEventsPage(
   };
 }
 
+export async function getProductionQuantitiesByOperation(
+  client: SupabaseClient<Database>,
+  jobOperationId: string,
+  companyId: string
+) {
+  return client
+    .from("productionQuantity")
+    .select("id, configuration, type, quantity")
+    .eq("jobOperationId", jobOperationId)
+    .eq("companyId", companyId)
+    .is("invalidatedAt", null)
+    .order("createdAt", { ascending: false });
+}
+
+export async function getProductionQuantitiesPage(
+  client: SupabaseClient<Database>,
+  jobOperationId: string,
+  companyId: string,
+  page: number = 1
+) {
+  const pageSize = 20;
+  const offset = (page - 1) * pageSize;
+
+  const query = client
+    .from("productionQuantity")
+    .select("*, scrapReason(name)", { count: "exact" })
+    .eq("jobOperationId", jobOperationId)
+    .eq("companyId", companyId)
+    .is("invalidatedAt", null)
+    .order("createdAt", { ascending: false })
+    .range(offset, offset + pageSize - 1);
+
+  const { data, error, count } = await query;
+
+  if (error) {
+    return { error };
+  }
+
+  return {
+    data,
+    count,
+    page,
+    pageSize,
+    hasMore: count !== null && offset + pageSize < count
+  };
+}
+
 export async function getProductionEventsByOperations(
   client: SupabaseClient<Database>,
   jobOperationIds: string[]
@@ -1454,8 +1625,12 @@ export async function getProductionQuantity(
 export async function getProductionQuantities(
   client: SupabaseClient<Database>,
   jobOperationIds: string[],
-  args?: { search: string | null } & GenericQueryFilters
+  args?: { search: string | null } & Partial<GenericQueryFilters>
 ) {
+  if (jobOperationIds.length === 0) {
+    return { data: [], count: 0, error: null };
+  }
+
   let query = client
     .from("productionQuantity")
     .select(
@@ -1464,7 +1639,8 @@ export async function getProductionQuantities(
         count: "exact"
       }
     )
-    .in("jobOperationId", jobOperationIds);
+    .in("jobOperationId", jobOperationIds)
+    .is("invalidatedAt", null);
 
   if (args?.search) {
     query = query.or(`jobOperation.description.ilike.%${args.search}%`);
@@ -1476,7 +1652,7 @@ export async function getProductionQuantities(
     ]);
   }
 
-  return query;
+  return await query;
 }
 
 export async function getProductionDataByOperations(
@@ -1489,7 +1665,8 @@ export async function getProductionDataByOperations(
       .select(
         "*, jobOperation(description, jobMakeMethod(parentMaterialId, item(readableIdWithRevision)))"
       )
-      .in("jobOperationId", jobOperationIds),
+      .in("jobOperationId", jobOperationIds)
+      .is("invalidatedAt", null),
     client
       .from("productionEvent")
       .select(
@@ -1779,6 +1956,114 @@ export async function getTrackedEntityByJobId(
   };
 }
 
+export type JobCurrentProcessInfo = {
+  operationId: string;
+  description: string | null;
+  reportedTotal: number;
+};
+
+export async function getTrackedEntitiesByJobMakeMethodIds(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  jobMakeMethodIds: string[]
+): Promise<Record<string, string>> {
+  if (jobMakeMethodIds.length === 0) return {};
+
+  const { data } = await client
+    .from("trackedEntity")
+    .select("readableId, attributes")
+    .in("attributes->>Job Make Method", jobMakeMethodIds)
+    .eq("companyId", companyId);
+
+  if (!data) return {};
+
+  return data.reduce<Record<string, string>>((acc, curr) => {
+    if (
+      curr.attributes !== null &&
+      typeof curr.attributes === "object" &&
+      "Job Make Method" in curr.attributes &&
+      curr.readableId
+    ) {
+      acc[curr.attributes["Job Make Method"] as string] = curr.readableId;
+    }
+    return acc;
+  }, {});
+}
+
+export async function getItemIdsWithConfigurationParameters(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  itemIds: string[]
+): Promise<string[]> {
+  if (itemIds.length === 0) return [];
+
+  const { data } = await client
+    .from("configurationParameter")
+    .select("itemId")
+    .in("itemId", itemIds)
+    .eq("companyId", companyId);
+
+  if (!data) return [];
+  return [...new Set(data.map((row) => row.itemId))];
+}
+
+/** Root routing only: first operation by `order` where status is not Done/Canceled. */
+export async function getCurrentProcessByJobIds(
+  client: SupabaseClient<Database>,
+  jobs: Pick<Job, "id" | "jobMakeMethodId">[]
+): Promise<Record<string, JobCurrentProcessInfo | null>> {
+  const jobsForQuery = jobs.filter(
+    (job): job is Pick<Job, "id" | "jobMakeMethodId"> & { id: string } =>
+      Boolean(job.id)
+  );
+  if (jobsForQuery.length === 0) return {};
+
+  const jobIds = jobsForQuery.map((job) => job.id);
+  const { data: ops } = await client
+    .from("jobOperation")
+    .select(
+      "id, jobId, description, order, status, quantityComplete, quantityScrapped, quantityReworked, jobMakeMethodId"
+    )
+    .in("jobId", jobIds);
+
+  const metaByJobId = new Map(
+    jobsForQuery.map((job) => [job.id, job.jobMakeMethodId ?? null])
+  );
+
+  const opsByJob = new Map<string, NonNullable<typeof ops>>();
+  for (const op of ops ?? []) {
+    const list = opsByJob.get(op.jobId) ?? [];
+    list.push(op);
+    opsByJob.set(op.jobId, list);
+  }
+
+  const result: Record<string, JobCurrentProcessInfo | null> = {};
+  for (const job of jobsForQuery) {
+    const rootMakeMethodId = metaByJobId.get(job.id);
+    let list = opsByJob.get(job.id) ?? [];
+    if (rootMakeMethodId) {
+      list = list.filter((op) => op.jobMakeMethodId === rootMakeMethodId);
+    }
+    list.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    const current = list.find(
+      (op) => op.status !== "Done" && op.status !== "Canceled"
+    );
+    if (!current) {
+      result[job.id] = null;
+      continue;
+    }
+    result[job.id] = {
+      operationId: current.id,
+      description: current.description,
+      reportedTotal:
+        (current.quantityComplete ?? 0) +
+        (current.quantityScrapped ?? 0) +
+        (current.quantityReworked ?? 0)
+    };
+  }
+  return result;
+}
+
 export async function getTrackedEntitiesByJobId(
   client: SupabaseClient<Database>,
   jobId: string
@@ -2040,7 +2325,6 @@ export async function updateJobOperationDueDate(
     .from("jobOperation")
     .update({
       dueDate,
-      manuallyScheduled: dueDate !== null,
       updatedBy,
       updatedAt: new Date().toISOString()
     })
@@ -2105,40 +2389,270 @@ export async function updateProductionQuantity(
     id: string;
     updatedBy: string;
     companyId: string;
+    createdBy?: string;
+    employeeId: string;
   }
 ) {
-  const { id, updatedBy, companyId, ...updateData } = productionQuantity;
-
-  return client
-    .from("productionQuantity")
-    .update({
-      ...sanitize(updateData),
-      updatedBy,
-      updatedAt: new Date().toISOString()
-    })
-    .eq("id", id)
-    .eq("companyId", companyId)
-    .select()
-    .single();
+  return upsertProductionQuantity(client, productionQuantity);
 }
+
+export type ProductionQuantityApprovalContext = {
+  userId: string;
+  canAutoApprove: boolean;
+  paymentYear: number | null;
+  paymentMonth: number | null;
+  serviceRole?: SupabaseClient<Database>;
+};
+
+// Dynamic import keeps production.service ↔ productionQuantityReport.service
+// edges acyclic.
+async function syncProductionPayApproval(
+  client: SupabaseClient<Database>,
+  reportId: string,
+  companyId: string,
+  approval: ProductionQuantityApprovalContext
+) {
+  const { syncProductionQuantityReportApproval } = await import(
+    "./productionQuantityReport.service"
+  );
+  await syncProductionQuantityReportApproval(approval.serviceRole ?? client, {
+    reportId,
+    companyId,
+    userId: approval.userId,
+    canAutoApprove: approval.canAutoApprove,
+    paymentYear: approval.paymentYear,
+    paymentMonth: approval.paymentMonth
+  });
+}
+
+type UpsertProductionQuantityInput =
+  | (Omit<z.infer<typeof productionQuantityValidator>, "id"> & {
+      companyId: string;
+      createdBy: string;
+      employeeId: string;
+    })
+  | (Omit<z.infer<typeof productionQuantityValidator>, "id"> & {
+      id: string;
+      updatedBy: string;
+      companyId: string;
+      createdBy?: string;
+      employeeId: string;
+    });
 
 export async function upsertProductionQuantity(
   client: SupabaseClient<Database>,
-  productionQuantity:
-    | (Omit<z.infer<typeof productionQuantityValidator>, "id"> & {
+  productionQuantity: UpsertProductionQuantityInput & {
+    approval?: ProductionQuantityApprovalContext;
+  }
+) {
+  const {
+    createProductionQuantityReport,
+    replaceProductionQuantityReportLines
+  } = await import("./productionQuantityReport.service");
+
+  if ("updatedBy" in productionQuantity) {
+    const { id, updatedBy, companyId, employeeId, approval, ...updateData } =
+      productionQuantity;
+
+    const { data: existing, error: existingError } = await client
+      .from("productionQuantity")
+      .select(
+        "id, reportId, invalidatedAt, type, quantity, configuration, scrapReasonId, notes"
+      )
+      .eq("id", id)
+      .eq("companyId", companyId)
+      .single();
+
+    if (existingError || !existing) {
+      return {
+        data: null,
+        error: existingError ?? new Error("Production quantity not found")
+      };
+    }
+
+    if (existing.invalidatedAt) {
+      return {
+        data: null,
+        error: new Error("Cannot update invalidated production quantity")
+      };
+    }
+
+    const { data: activeLines, error: linesError } = await client
+      .from("productionQuantity")
+      .select("id, type, quantity, configuration, scrapReasonId, notes")
+      .eq("reportId", existing.reportId)
+      .eq("companyId", companyId)
+      .is("invalidatedAt", null);
+
+    if (linesError) {
+      return { data: null, error: linesError };
+    }
+
+    const lines = (activeLines ?? []).map((line) =>
+      line.id === id
+        ? {
+            type: updateData.type,
+            quantity: updateData.quantity,
+            configuration: updateData.configuration,
+            scrapReasonId: updateData.scrapReasonId,
+            notes: updateData.notes
+          }
+        : {
+            type: line.type,
+            quantity: line.quantity,
+            configuration: line.configuration ?? undefined,
+            scrapReasonId: line.scrapReasonId ?? undefined,
+            notes: line.notes ?? undefined
+          }
+    );
+
+    const result = await replaceProductionQuantityReportLines(client, {
+      reportId: existing.reportId,
+      companyId,
+      userId: updatedBy,
+      employeeId,
+      lines,
+      paymentYear: approval?.canAutoApprove ? approval.paymentYear : null,
+      paymentMonth: approval?.canAutoApprove ? approval.paymentMonth : null
+    });
+
+    if (result.error) {
+      return { data: null, error: result.error };
+    }
+
+    if (approval) {
+      await syncProductionPayApproval(
+        client,
+        existing.reportId,
+        companyId,
+        approval
+      );
+    }
+
+    const updatedLine =
+      result.data?.activeLines.find((line) => line.type === updateData.type) ??
+      result.data?.activeLines[0] ??
+      null;
+
+    return { data: updatedLine, error: null };
+  }
+
+  const { companyId, createdBy, employeeId, jobOperationId, approval, ...rest } =
+    productionQuantity;
+
+  const { data: operation, error: operationError } = await client
+    .from("jobOperation")
+    .select("jobId")
+    .eq("id", jobOperationId)
+    .eq("companyId", companyId)
+    .single();
+
+  if (operationError || !operation?.jobId) {
+    return {
+      data: null,
+      error: operationError ?? new Error("Job operation not found")
+    };
+  }
+
+  const result = await createProductionQuantityReport(client, {
+    companyId,
+    jobId: operation.jobId,
+    jobOperationId,
+    userId: createdBy,
+    employeeId,
+    notes: rest.notes ?? null,
+    lines: [
+      {
+        type: rest.type,
+        quantity: rest.quantity,
+        configuration: rest.configuration,
+        scrapReasonId: rest.scrapReasonId,
+        notes: rest.notes
+      }
+    ],
+    paymentYear: approval?.canAutoApprove ? approval.paymentYear : null,
+    paymentMonth: approval?.canAutoApprove ? approval.paymentMonth : null
+  });
+
+  if (result.error) {
+    return { data: null, error: result.error };
+  }
+
+  if (approval && result.data?.id) {
+    await syncProductionPayApproval(
+      client,
+      result.data.id,
+      companyId,
+      approval
+    );
+  }
+
+  return {
+    data: result.data?.activeLines[0] ?? null,
+    error: null
+  };
+}
+
+export async function getJobOperationPickups(
+  client: SupabaseClient<Database>,
+  jobOperationId: string
+) {
+  return client
+    .from("jobOperationPickup")
+    .select("*, employee:user!jobOperationPickup_employeeId_fkey(id, firstName, lastName, avatarUrl)")
+    .eq("jobOperationId", jobOperationId)
+    .order("createdAt", { ascending: false });
+}
+
+export async function getJobOperationPickup(
+  client: SupabaseClient<Database>,
+  id: string
+) {
+  return client
+    .from("jobOperationPickup")
+    .select("*")
+    .eq("id", id)
+    .single();
+}
+
+export async function upsertJobOperationPickup(
+  client: SupabaseClient<Database>,
+  pickup:
+    | (Omit<
+        z.infer<typeof jobOperationPickupValidator>,
+        "id" | "actorKind" | "supplierProcessId"
+      > & {
+        employeeId: string;
         companyId: string;
+        createdBy: string;
       })
-    | (Omit<z.infer<typeof productionQuantityValidator>, "id"> & {
+    | (Omit<
+        z.infer<typeof jobOperationPickupValidator>,
+        "id" | "actorKind" | "supplierProcessId"
+      > & {
         id: string;
+        employeeId: string;
         updatedBy: string;
         companyId: string;
       })
 ) {
-  if ("updatedBy" in productionQuantity) {
-    const { id, updatedBy, companyId, ...updateData } = productionQuantity;
+  const pickupRow = pickup as typeof pickup & {
+    actorKind?: string;
+    supplierProcessId?: string;
+    employeeId?: string;
+  };
 
+  if ("updatedBy" in pickupRow) {
+    const {
+      id,
+      updatedBy,
+      companyId,
+      actorKind: _actorKind,
+      supplierProcessId: _supplierProcessId,
+      ...updateData
+    } = pickupRow;
     return client
-      .from("productionQuantity")
+      .from("jobOperationPickup")
       .update({
         ...sanitize(updateData),
         updatedBy,
@@ -2149,290 +2663,181 @@ export async function upsertProductionQuantity(
       .select()
       .single();
   } else {
-    return (
-      client
-        .from("productionQuantity")
-        // @ts-expect-error TS2769 - TODO: fix type
-        .insert([productionQuantity])
-        .select("id")
-        .single()
-    );
+    const {
+      configuration: rawConfiguration,
+      actorKind: _actorKind,
+      supplierProcessId: _supplierProcessId,
+      ...rest
+    } = pickupRow;
+    let configuration: unknown;
+    if (rawConfiguration) {
+      try {
+        configuration =
+          typeof rawConfiguration === "string"
+            ? JSON.parse(rawConfiguration)
+            : rawConfiguration;
+      } catch {
+        configuration = undefined;
+      }
+    }
+    return client
+      .from("jobOperationPickup")
+      .insert([sanitize({ ...rest, configuration: configuration as Json | null })])
+      .select("id")
+      .single();
   }
 }
 
-export async function insertJob(
+export async function deleteJobOperationPickup(
   client: SupabaseClient<Database>,
-  input: {
-    itemId: string;
+  id: string
+) {
+  return client.from("jobOperationPickup").delete().eq("id", id);
+}
+
+export async function getJobPickupsByOperations(
+  client: SupabaseClient<Database>,
+  jobOperationIds: string[],
+  args?: { search?: string | null } & GenericQueryFilters
+) {
+  if (jobOperationIds.length === 0) {
+    return { data: [], count: 0, error: null };
+  }
+
+  let query = client
+    .from("jobOperationPickup")
+    .select(
+      "*, employee:user!jobOperationPickup_employeeId_fkey(id, firstName, lastName, avatarUrl), jobOperation(description, jobMakeMethod(parentMaterialId, item(readableIdWithRevision)))",
+      { count: "exact" }
+    )
+    .in("jobOperationId", jobOperationIds);
+
+  if (args) {
+    query = setGenericQueryFilters(query, args, [
+      { column: "createdAt", ascending: false }
+    ]);
+  }
+
+  return query;
+}
+
+export async function getJobPickupsPage(
+  client: SupabaseClient<Database>,
+  jobOperationId: string,
+  companyId: string,
+  page = 1
+) {
+  const pageSize = 20;
+  const offset = (page - 1) * pageSize;
+
+  const { data, error, count } = await client
+    .from("jobOperationPickup")
+    .select("*, employee:user!jobOperationPickup_employeeId_fkey(id, firstName, lastName, avatarUrl)", {
+      count: "exact"
+    })
+    .eq("jobOperationId", jobOperationId)
+    .eq("companyId", companyId)
+    .order("createdAt", { ascending: false })
+    .range(offset, offset + pageSize - 1);
+
+  if (error) return { error };
+
+  return {
+    data,
+    count,
+    page,
+    pageSize,
+    hasMore: count !== null && offset + pageSize < count
+  };
+}
+
+export async function upsertJobOperationSupplierPickup(
+  client: SupabaseClient<Database>,
+  pickup: {
+    jobOperationId: string;
+    supplierProcessId: string;
     quantity: number;
+    configuration?: unknown;
+    notes?: string | null;
     companyId: string;
     createdBy: string;
-    jobId?: string;
-    locationId?: string;
-    dueDate?: string;
-    startDate?: string;
-    priority?: number;
-    status?: (typeof jobStatus)[number];
-    deadlineType?: (typeof deadlineTypes)[number];
-    storageUnitId?: string;
-    unitOfMeasureCode?: string;
-    customerId?: string;
-    salesOrderId?: string;
-    salesOrderLineId?: string;
-    quoteId?: string;
-    quoteLineId?: string;
-    parentJobId?: string;
-    modelUploadId?: string;
-    notes?: string;
-    customFields?: Json;
-    configuration?: Record<string, unknown>;
-  },
-  options?: {
-    skipMethod?: boolean;
-    skipRecalculate?: boolean;
-    methodSource?: "item" | "quoteLine";
+    id?: string;
+    updatedBy?: string;
   }
-): Promise<{
-  data: { id: string; jobId: string } | null;
-  error: PostgrestError | null;
-}> {
-  let jobId: string;
-  if (input.jobId) {
-    jobId = input.jobId;
-  } else {
-    const seq = await client.rpc("get_next_sequence", {
-      sequence_name: "job",
-      company_id: input.companyId
-    });
-    if (seq.error || !seq.data) {
-      return {
-        data: null,
-        error:
-          seq.error ??
-          ({ message: "Failed to generate job sequence" } as PostgrestError)
-      };
-    }
-    jobId = seq.data;
+) {
+  const operationValidation = await assertSupplierQuantityAllowedForOperation(
+    client,
+    pickup.jobOperationId,
+    pickup.companyId
+  );
+  if (operationValidation.error) {
+    return { data: null, error: operationValidation.error };
   }
 
-  let locationId = input.locationId;
-  if (!locationId) {
-    const employeeJob = await getEmployeeJob(
-      client,
-      input.createdBy,
-      input.companyId
-    );
-    locationId = employeeJob.data?.locationId ?? undefined;
-
-    if (!locationId) {
-      const defaultLocation = await client
-        .from("location")
-        .select("id")
-        .eq("companyId", input.companyId)
-        .limit(1)
-        .single();
-      locationId = defaultLocation.data?.id ?? undefined;
-    }
-
-    if (!locationId) {
-      return {
-        data: null,
-        error: { message: "No location found for job" } as PostgrestError
-      };
+  let configuration: Json | null = null;
+  if (pickup.configuration) {
+    try {
+      configuration =
+        typeof pickup.configuration === "string"
+          ? JSON.parse(pickup.configuration)
+          : (pickup.configuration as Json);
+    } catch {
+      configuration = null;
     }
   }
 
-  const replenishment = await client
-    .from("itemReplenishment")
-    .select("leadTime, scrapPercentage, lotSize")
-    .eq("itemId", input.itemId)
-    .eq("companyId", input.companyId)
-    .maybeSingle();
-
-  const leadTime = replenishment.data?.leadTime ?? 7;
-  const scrapPercentage = replenishment.data?.scrapPercentage ?? 0;
-
-  const dueDate = input.dueDate ?? null;
-  const startDate =
-    input.startDate ??
-    (dueDate
-      ? parseDate(dueDate).subtract({ days: leadTime }).toString()
-      : null);
-
-  const deadlineType =
-    input.deadlineType ?? (dueDate ? "Hard Deadline" : "No Deadline");
-
-  const priority =
-    input.priority ??
-    (await calculateJobPriority(client, {
-      dueDate,
-      deadlineType,
-      companyId: input.companyId,
-      locationId
-    }));
-
-  const storageUnitId =
-    input.storageUnitId ??
-    (await getDefaultStorageUnitForJob(
-      client,
-      input.itemId,
-      locationId,
-      input.companyId
-    ));
-
-  const scrapQuantity =
-    scrapPercentage > 0 ? Math.ceil(input.quantity * scrapPercentage) : 0;
-
-  const job = await client
-    .from("job")
-    .insert({
-      jobId,
-      itemId: input.itemId,
-      quantity: input.quantity,
-      scrapQuantity,
-      locationId,
-      dueDate,
-      startDate,
-      deadlineType,
-      priority,
-      status: input.status ?? "Draft",
-      storageUnitId,
-      unitOfMeasureCode: input.unitOfMeasureCode ?? "EA",
-      customerId: input.customerId,
-      salesOrderId: input.salesOrderId,
-      salesOrderLineId: input.salesOrderLineId,
-      quoteId: input.quoteId,
-      quoteLineId: input.quoteLineId,
-      parentJobId: input.parentJobId,
-      modelUploadId: input.modelUploadId,
-      notes: input.notes,
-      customFields: input.customFields,
-      companyId: input.companyId,
-      createdBy: input.createdBy,
-      updatedBy: input.createdBy
-    })
-    .select("id")
-    .single();
-
-  if (job.error) {
-    return { data: null, error: job.error };
-  }
-
-  const createdJobId = job.data.id;
-
-  if (!options?.skipMethod) {
-    const methodSource =
-      options?.methodSource ??
-      (input.quoteId && input.quoteLineId ? "quoteLine" : "item");
-
-    if (methodSource === "quoteLine" && input.quoteId && input.quoteLineId) {
-      const body: Record<string, unknown> = {
-        type: "quoteLineToJob",
-        sourceId: `${input.quoteId}:${input.quoteLineId}`,
-        targetId: createdJobId,
-        companyId: input.companyId,
-        userId: input.createdBy
-      };
-      if (input.configuration) body.configuration = input.configuration;
-      const { error } = await client.functions.invoke("get-method", { body });
-      if (error) {
-        console.error("Failed to copy method from quote line:", error);
-      }
-    } else {
-      const body: Record<string, unknown> = {
-        type: "itemToJob",
-        sourceId: input.itemId,
-        targetId: createdJobId,
-        companyId: input.companyId,
-        userId: input.createdBy
-      };
-      if (input.configuration) body.configuration = input.configuration;
-      const { error } = await client.functions.invoke("get-method", { body });
-      if (error) {
-        console.error("Failed to copy method from item:", error);
-      }
-    }
-  }
-
-  if (!options?.skipRecalculate) {
-    await client.functions.invoke("recalculate", {
-      body: {
-        type: "jobRequirements",
-        id: createdJobId,
-        companyId: input.companyId,
-        userId: input.createdBy
-      }
-    });
-  }
-
-  return { data: { id: createdJobId, jobId }, error: null };
-}
-
-export async function updateJob(
-  client: SupabaseClient<Database>,
-  input: {
-    id: string;
-    updatedBy: string;
-    quantity?: number;
-    dueDate?: string | null;
-    startDate?: string | null;
-    status?: (typeof jobStatus)[number];
-    priority?: number;
-    deadlineType?: (typeof deadlineTypes)[number];
-    locationId?: string;
-    storageUnitId?: string;
-    unitOfMeasureCode?: string;
-    customerId?: string | null;
-    salesOrderId?: string | null;
-    salesOrderLineId?: string | null;
-    quoteId?: string | null;
-    quoteLineId?: string | null;
-    parentJobId?: string | null;
-    modelUploadId?: string | null;
-    notes?: string | null;
-    customFields?: Json;
-    scrapQuantity?: number;
-    itemId?: string;
-  }
-): Promise<{ data: { id: string } | null; error: PostgrestError | null }> {
-  const { id, updatedBy, ...updates } = input;
-
-  let priority = updates.priority;
-  if (
-    (updates.dueDate !== undefined || updates.deadlineType !== undefined) &&
-    priority === undefined
-  ) {
-    const existing = await client
-      .from("job")
-      .select("dueDate, deadlineType, companyId, locationId")
+  if (pickup.id && pickup.updatedBy) {
+    const { id, updatedBy, companyId, ...updateData } = pickup;
+    return client
+      .from("jobOperationSupplierPickup")
+      .update({
+        ...sanitize(updateData),
+        configuration,
+        updatedBy,
+        updatedAt: new Date().toISOString()
+      })
       .eq("id", id)
+      .eq("companyId", companyId)
+      .select()
       .single();
-
-    if (existing.data) {
-      priority = await calculateJobPriority(client, {
-        jobId: id,
-        dueDate: updates.dueDate ?? existing.data.dueDate,
-        deadlineType: updates.deadlineType ?? existing.data.deadlineType,
-        companyId: existing.data.companyId,
-        locationId: existing.data.locationId
-      });
-    }
   }
 
+  const { configuration: _c, id: _id, updatedBy: _u, ...rest } = pickup;
   return client
-    .from("job")
-    .update({
-      ...sanitize(updates),
-      ...(priority !== undefined && { priority }),
-      updatedBy,
-      updatedAt: new Date().toISOString()
-    })
-    .eq("id", id)
+    .from("jobOperationSupplierPickup")
+    .insert([sanitize({ ...rest, configuration })])
     .select("id")
     .single();
 }
 
-/** @deprecated Use insertJob for new jobs, updateJob for existing jobs */
+export async function getJobSupplierPickupsPage(
+  client: SupabaseClient<Database>,
+  jobOperationId: string,
+  companyId: string,
+  page = 1
+) {
+  const pageSize = 20;
+  const offset = (page - 1) * pageSize;
+
+  const { data, error, count } = await client
+    .from("jobOperationSupplierPickup")
+    .select("*, supplierProcess(id, supplierId, processId)", { count: "exact" })
+    .eq("jobOperationId", jobOperationId)
+    .eq("companyId", companyId)
+    .order("createdAt", { ascending: false })
+    .range(offset, offset + pageSize - 1);
+
+  if (error) return { error };
+
+  return {
+    data,
+    count,
+    page,
+    pageSize,
+    hasMore: count !== null && offset + pageSize < count
+  };
+}
+
 export async function upsertJob(
   client: SupabaseClient<Database>,
   job:
@@ -3349,114 +3754,6 @@ export async function upsertDemandProjections(
     data: hasError ? null : toUpsert,
     error: hasError ? results.find((r) => r.error)?.error : null
   };
-}
-
-export type JobCurrentProcessInfo = {
-  operationId: string;
-  description: string | null;
-  reportedTotal: number;
-};
-
-export async function getTrackedEntitiesByJobMakeMethodIds(
-  client: SupabaseClient<Database>,
-  companyId: string,
-  jobMakeMethodIds: string[]
-): Promise<Record<string, string>> {
-  if (jobMakeMethodIds.length === 0) return {};
-
-  const { data } = await client
-    .from("trackedEntity")
-    .select("readableId, attributes")
-    .in("attributes->>Job Make Method", jobMakeMethodIds)
-    .eq("companyId", companyId);
-
-  if (!data) return {};
-
-  return data.reduce<Record<string, string>>((acc, curr) => {
-    if (
-      curr.attributes !== null &&
-      typeof curr.attributes === "object" &&
-      "Job Make Method" in curr.attributes &&
-      curr.readableId
-    ) {
-      acc[curr.attributes["Job Make Method"] as string] = curr.readableId;
-    }
-    return acc;
-  }, {});
-}
-
-export async function getItemIdsWithConfigurationParameters(
-  client: SupabaseClient<Database>,
-  companyId: string,
-  itemIds: string[]
-): Promise<string[]> {
-  if (itemIds.length === 0) return [];
-
-  const { data } = await client
-    .from("configurationParameter")
-    .select("itemId")
-    .in("itemId", itemIds)
-    .eq("companyId", companyId);
-
-  if (!data) return [];
-  return [...new Set(data.map((row) => row.itemId))];
-}
-
-/** Root routing only: first operation by `order` where status is not Done/Canceled. */
-export async function getCurrentProcessByJobIds(
-  client: SupabaseClient<Database>,
-  jobs: Pick<Job, "id" | "jobMakeMethodId">[]
-): Promise<Record<string, JobCurrentProcessInfo | null>> {
-  const jobsForQuery = jobs.filter(
-    (job): job is Pick<Job, "id" | "jobMakeMethodId"> & { id: string } =>
-      Boolean(job.id)
-  );
-  if (jobsForQuery.length === 0) return {};
-
-  const jobIds = jobsForQuery.map((job) => job.id);
-  const { data: ops } = await client
-    .from("jobOperation")
-    .select(
-      "id, jobId, description, order, status, quantityComplete, quantityScrapped, quantityReworked, jobMakeMethodId"
-    )
-    .in("jobId", jobIds);
-
-  const metaByJobId = new Map(
-    jobsForQuery.map((job) => [job.id, job.jobMakeMethodId ?? null])
-  );
-
-  const opsByJob = new Map<string, NonNullable<typeof ops>>();
-  for (const op of ops ?? []) {
-    const list = opsByJob.get(op.jobId) ?? [];
-    list.push(op);
-    opsByJob.set(op.jobId, list);
-  }
-
-  const result: Record<string, JobCurrentProcessInfo | null> = {};
-  for (const job of jobsForQuery) {
-    const rootMakeMethodId = metaByJobId.get(job.id);
-    let list = opsByJob.get(job.id) ?? [];
-    if (rootMakeMethodId) {
-      list = list.filter((op) => op.jobMakeMethodId === rootMakeMethodId);
-    }
-    list.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-    const current = list.find(
-      (op) => op.status !== "Done" && op.status !== "Canceled"
-    );
-    if (!current) {
-      result[job.id] = null;
-      continue;
-    }
-    result[job.id] = {
-      operationId: current.id,
-      description: current.description,
-      reportedTotal:
-        (current.quantityComplete ?? 0) +
-        (current.quantityScrapped ?? 0) +
-        (current.quantityReworked ?? 0)
-    };
-  }
-  return result;
 }
 
 /**

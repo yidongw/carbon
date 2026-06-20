@@ -8,9 +8,6 @@ import {
   Td,
   Th,
   Thead,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
   Tr
 } from "@carbon/react";
 import { Trans } from "@lingui/react/macro";
@@ -66,7 +63,6 @@ export function PriceTracePopover({
   ) : (
     <button
       type="button"
-      aria-label="How this price was calculated"
       className="text-xxs text-muted-foreground hover:text-foreground inline-flex items-center gap-0.5"
     >
       <LuCalculator className="size-3" />
@@ -75,18 +71,7 @@ export function PriceTracePopover({
 
   return (
     <Popover>
-      {children ? (
-        <PopoverTrigger asChild>{trigger}</PopoverTrigger>
-      ) : (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <PopoverTrigger asChild>{trigger}</PopoverTrigger>
-          </TooltipTrigger>
-          <TooltipContent>
-            <Trans>How this price was calculated</Trans>
-          </TooltipContent>
-        </Tooltip>
-      )}
+      <PopoverTrigger asChild>{trigger}</PopoverTrigger>
       <PopoverContent align="end" sideOffset={8} className="max-w-[800px] p-0">
         <div className="px-4 py-3 border-b border-border">
           <p className="text-sm font-semibold">

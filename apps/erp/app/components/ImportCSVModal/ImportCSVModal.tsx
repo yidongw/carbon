@@ -1,11 +1,12 @@
 import { Hidden, ValidatedForm } from "@carbon/form";
-import { Modal, ModalContent, toast } from "@carbon/react";
-import { useEffect, useState } from "react";
+import { Button, Modal, ModalContent, ModalFooter, toast } from "@carbon/react";
+import Papa from "papaparse";
+import { useCallback, useEffect, useState } from "react";
 import { flushSync } from "react-dom";
 import { useFetcher } from "react-router";
 import { z } from "zod";
 
-import { type fieldMappings, importSchemas } from "~/modules/shared";
+import { fieldMappings, importSchemas } from "~/modules/shared";
 import type { action } from "~/routes/x+/shared+/import.$tableId";
 import { path } from "~/utils/path";
 import { AnimatedSizeContainer } from "../AnimatedSizeContainer";
@@ -57,6 +58,19 @@ export const ImportCSVModal = ({ table, onClose }: ImportCSVModalProps) => {
     }
   }, [file, fileColumns, page]);
 
+  const downloadTemplate = useCallback(() => {
+    const mapping = fieldMappings[table];
+    const headers = Object.values(mapping).map((field) => field.label);
+    const csv = Papa.unparse({ fields: headers, data: [] });
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${table}-template.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }, [table]);
+
   return (
     <Modal
       open
@@ -66,7 +80,7 @@ export const ImportCSVModal = ({ table, onClose }: ImportCSVModalProps) => {
         }
       }}
     >
-      <ModalContent onInteractOutside={(e) => e.preventDefault()}>
+      <ModalContent>
         <div className="relative">
           <AnimatedSizeContainer height>
             <ImportCsvContext.Provider
@@ -121,6 +135,13 @@ export const ImportCSVModal = ({ table, onClose }: ImportCSVModalProps) => {
             </ImportCsvContext.Provider>
           </AnimatedSizeContainer>
         </div>
+        {page === ImportCSVPage.UploadCSV && (
+          <ModalFooter>
+            <Button variant="secondary" onClick={downloadTemplate}>
+              Download Template
+            </Button>
+          </ModalFooter>
+        )}
       </ModalContent>
     </Modal>
   );

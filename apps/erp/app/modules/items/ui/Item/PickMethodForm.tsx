@@ -11,13 +11,7 @@ import {
   CardTitle,
   ChoiceCardGroup,
   Combobox,
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuIcon,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
   HStack,
-  IconButton,
   Label,
   Switch,
   VStack
@@ -28,14 +22,10 @@ import { useEffect, useMemo, useState } from "react";
 import {
   LuCalendarClock,
   LuClipboardCheck,
-  LuEllipsisVertical,
   LuLayers,
-  LuSettings,
   LuTriangleAlert
 } from "react-icons/lu";
-import { Link } from "react-router";
 import type { z } from "zod";
-import { useAuditLog } from "~/components/AuditLog";
 import {
   CustomFormFields,
   Hidden,
@@ -44,8 +34,8 @@ import {
   ShelfLifeStartTiming,
   Submit
 } from "~/components/Form";
-import StorageUnit from "~/components/Form/StorageUnit";
-import { usePermissions, useSettings, useUser } from "~/hooks";
+import { StorageUnitDrillSelectField } from "~/components/Form/StorageUnitDrillSelect";
+import { usePermissions, useSettings } from "~/hooks";
 import type { ListItem } from "~/types";
 import { path } from "~/utils/path";
 import {
@@ -94,7 +84,6 @@ const PickMethodForm = ({
 }: PickMethodFormProps) => {
   const permissions = usePermissions();
   const { t } = useLingui();
-  const { company } = useUser();
 
   const locationOptions = locations.map((location) => ({
     label: location.name,
@@ -103,25 +92,6 @@ const PickMethodForm = ({
 
   const shelfLifeApplicable =
     itemTrackingType === "Serial" || itemTrackingType === "Batch";
-  const { trigger: shelfLifeHistoryTrigger, drawer: shelfLifeHistoryDrawer } =
-    useAuditLog({
-      entityType: "itemShelfLife",
-      entityId: initialValues.itemId,
-      companyId: company.id,
-      variant: "dropdown",
-      triggerLabel: t`Shelf-Life History`,
-      drawerTitle: t`Shelf-Life History`
-    });
-
-  const { trigger: inventoryHistoryTrigger, drawer: inventoryHistoryDrawer } =
-    useAuditLog({
-      entityType: "item",
-      entityId: initialValues.itemId,
-      companyId: company.id,
-      variant: "dropdown",
-      triggerLabel: t`Inventory History`,
-      drawerTitle: t`Inventory History`
-    });
 
   return (
     <Card>
@@ -138,42 +108,20 @@ const PickMethodForm = ({
           </CardHeader>
 
           <CardAction>
-            <HStack spacing={2}>
-              <Combobox
-                asButton
-                size="sm"
-                value={initialValues.locationId}
-                options={locationOptions}
-                onChange={(selected) => {
-                  // hard refresh because initialValues update has no effect otherwise
-                  window.location.href = getLocationPath(
-                    initialValues.itemId,
-                    selected,
-                    type
-                  );
-                }}
-              />
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <IconButton
-                    aria-label={t`Inventory actions`}
-                    icon={<LuEllipsisVertical />}
-                    size="sm"
-                    variant="secondary"
-                  />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  {shelfLifeHistoryTrigger}
-                  {inventoryHistoryTrigger}
-                  <DropdownMenuItem asChild>
-                    <Link to={path.to.auditLog}>
-                      <DropdownMenuIcon icon={<LuSettings />} />
-                      <Trans>Open Audit Log</Trans>
-                    </Link>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </HStack>
+            <Combobox
+              asButton
+              size="sm"
+              value={initialValues.locationId}
+              options={locationOptions}
+              onChange={(selected) => {
+                // hard refresh because initialValues update has no effect otherwise
+                window.location.href = getLocationPath(
+                  initialValues.itemId,
+                  selected,
+                  type
+                );
+              }}
+            />
           </CardAction>
         </HStack>
 
@@ -181,10 +129,11 @@ const PickMethodForm = ({
           <Hidden name="itemId" />
           <Hidden name="locationId" />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-4 w-full">
-            <StorageUnit
+            <StorageUnitDrillSelectField
               name="defaultStorageUnitId"
               label={t`Default Storage Unit`}
               locationId={initialValues.locationId}
+              className="w-full"
             />
 
             {shelfLifeApplicable && (
@@ -204,8 +153,6 @@ const PickMethodForm = ({
           </Submit>
         </CardFooter>
       </ValidatedForm>
-      {shelfLifeHistoryDrawer}
-      {inventoryHistoryDrawer}
     </Card>
   );
 };

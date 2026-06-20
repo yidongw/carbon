@@ -17,6 +17,15 @@ export interface Item {
   isTemporary?: boolean;
   order?: "With Previous" | "After Previous";
   title: ReactNode;
+  /** Filled strip between the main block and footer (e.g. operation quantity progress). */
+  quantityProgress?: {
+    complete: number;
+    pickup: number;
+    target: number;
+    onAddQuantity?: () => void;
+    onAddPickup?: () => void;
+    onOpenConfigTable?: () => void;
+  } | null;
 }
 
 interface SortableItem<T> extends Item {
@@ -103,17 +112,22 @@ function SortableListItem<T>({
                   marginTop: 10,
                   marginBottom: 10,
                   position: "relative",
-                  overflow: "hidden"
+                  overflow: item.quantityProgress != null ? "visible" : "hidden"
                 }
               : {
                   position: "relative",
-                  overflow: "hidden"
+                  overflow: item.quantityProgress != null ? "visible" : "hidden"
                 }
           }
           whileDrag={{ zIndex: 9999 }}
         >
-          <div className={cn(isExpanded ? "w-full" : "", "z-20 ")}>
-            <motion.div className="w-full py-3 px-3" layout="position">
+          <div
+            className={cn(
+              isExpanded ? "w-full" : "",
+              "relative z-20 flex w-full min-w-0 flex-col"
+            )}
+          >
+            <motion.div className="w-full px-3 pt-3" layout="position">
               <div
                 className={cn(
                   "items-center justify-between w-full gap-2",
@@ -121,7 +135,7 @@ function SortableListItem<T>({
                 )}
               >
                 <div className="flex flex-col w-full">
-                  <div className="flex w-full items-center gap-x-2 truncate pl-3">
+                  <div className="flex w-full min-w-0 items-center gap-x-2 pl-3">
                     {/* List Remove Actions */}
                     {!isReadOnly && (
                       <Checkbox
@@ -139,12 +153,12 @@ function SortableListItem<T>({
 
                     <div
                       key={`${item.checked}`}
-                      className="px-1 flex flex-grow truncate"
+                      className="px-1 flex min-w-0 flex-grow"
                       role="button"
                     >
                       <HStack
                         className={cn(
-                          "w-full justify-between pr-8",
+                          "w-full min-w-0 justify-between pr-8",
                           !isReadOnly && "cursor-grab"
                         )}
                       >
@@ -170,14 +184,17 @@ function SortableListItem<T>({
                                 onSelectItem(item.id);
                               }
                             }}
-                            className={item.checked ? "text-red-400" : ""}
+                            className={cn(
+                              "min-w-0 flex-1",
+                              item.checked ? "text-red-400" : ""
+                            )}
                           >
                             {item.title}
                           </div>
                         )}
 
                         {item.details && (
-                          <div className="flex flex-shrink-0">
+                          <div className="ml-2 flex shrink-0 overflow-visible">
                             {item.details}
                           </div>
                         )}
@@ -188,10 +205,29 @@ function SortableListItem<T>({
 
                 {/* List Item Children */}
               </div>
-              {renderExtra && renderExtra(item)}
             </motion.div>
+            {item.quantityProgress != null && (
+              <QuantityProgressStrip progress={item.quantityProgress} t={t} />
+            )}
+            {renderExtra && (
+              <motion.div
+                className={cn(
+                  "w-full px-3",
+                  item.quantityProgress == null && !item.footer && "pb-3"
+                )}
+                layout="position"
+              >
+                {renderExtra(item)}
+              </motion.div>
+            )}
             {item.footer && (
-              <div className="flex w-full items-center border-t border-border px-3 py-2">
+              <div
+                className={cn(
+                  "flex w-full items-center px-3 py-2",
+                  (isExpanded || item.quantityProgress == null) &&
+                    "border-t border-border"
+                )}
+              >
                 {item.footer}
               </div>
             )}

@@ -401,10 +401,10 @@ const ProductionPlanningTable = ({
                 ) : hasOrders ? (
                   <HStack>
                     <PulsingDot />
-                    <span>Make {orderQuantity}</span>
+                    <span>Order {orderQuantity}</span>
                   </HStack>
                 ) : (
-                  "Make"
+                  "Order"
                 )}
               </Button>
             </div>

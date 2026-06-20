@@ -15,6 +15,8 @@ type EmployeeAvatarProps = AvatarProps & {
   fallback?: EmployeeAvatarFallback;
   className?: string;
   withName?: boolean;
+  /** Applied to the avatar+name row (e.g. `items-start` so the name lines up with the avatar top in dense headers). */
+  rowClassName?: string;
 };
 
 const EmployeeAvatar = ({
@@ -23,6 +25,7 @@ const EmployeeAvatar = ({
   size,
   withName = true,
   className,
+  rowClassName,
   ...props
 }: EmployeeAvatarProps) => {
   const [people] = usePeople();
@@ -31,10 +34,15 @@ const EmployeeAvatar = ({
 
   if (employeeId === "system") {
     return (
-      <HStack className="truncate no-underline hover:no-underline">
+      <HStack
+        className={cn(
+          "min-w-0 gap-2 no-underline hover:no-underline",
+          rowClassName ?? "items-center"
+        )}
+      >
         <Avatar size={size ?? "xs"} path={undefined} />
         {withName && (
-          <span>
+          <span className="min-w-0 break-words text-sm font-medium leading-5">
             <Trans>System</Trans>
           </span>
         )}

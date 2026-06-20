@@ -14,18 +14,17 @@ import {
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useFetcher } from "react-router";
 import type { z } from "zod";
-import { PrintButton } from "~/components";
 import {
   Hidden,
   Input,
   Location,
   StorageTypes,
+  StorageUnit,
   Submit
 } from "~/components/Form";
 import { usePermissions } from "~/hooks";
 import { storageUnitValidator } from "~/modules/inventory";
 import { path } from "~/utils/path";
-import { StorageUnitParentSelect } from "./StorageUnitParentSelect";
 
 type StorageUnitFormProps = {
   locationId: string;
@@ -93,7 +92,7 @@ const StorageUnitForm = ({
                   name="locationId"
                   label={t`Location`}
                 />
-                <StorageUnitParentSelect
+                <StorageUnit
                   name="parentId"
                   label={t`Parent Storage Unit`}
                   locationId={locationId}
@@ -116,20 +115,6 @@ const StorageUnitForm = ({
                 <Button size="md" variant="solid" onClick={onClose}>
                   <Trans>Cancel</Trans>
                 </Button>
-                {isEditing && initialValues.id && (
-                  <PrintButton
-                    sourceDocument="StorageUnit"
-                    sourceDocumentId={initialValues.id}
-                    locationId={locationId || undefined}
-                    context="inventory"
-                    fileRoutes={{
-                      pdf: (id: string, opts?: { labelSize?: string }) =>
-                        path.to.file.storageUnitLabelsPdf(id, opts),
-                      zpl: (id: string, opts?: { labelSize?: string }) =>
-                        path.to.file.storageUnitLabelsZpl(id, opts)
-                    }}
-                  />
-                )}
               </HStack>
             </ModalDrawerFooter>
           </ValidatedForm>

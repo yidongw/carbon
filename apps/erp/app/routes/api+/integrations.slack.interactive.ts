@@ -14,8 +14,10 @@ import { z } from "zod";
 import {
   getIssueTypesList,
   getIssueWorkflowsList,
-  insertIssue
+  upsertIssue
 } from "~/modules/quality/quality.service";
+
+import { getNextSequence } from "~/modules/settings/settings.service";
 import { path } from "~/utils/path";
 
 const slackInteractivePayloadSchema = z.object({
@@ -398,19 +400,23 @@ async function handleViewSubmission(
       throw new Error("No channel configured for Slack integration");
     }
 
-    const employee = await getCarbonEmployeeFromSlackId(
-      serviceRole,
-      slackToken,
-      user_id,
-      companyId
-    );
+    const [nextSequence, employee] = await Promise.all([
+      getNextSequence(serviceRole, "nonConformance", companyId),
+      getCarbonEmployeeFromSlackId(serviceRole, slackToken, user_id, companyId)
+    ]);
+
+    if (nextSequence.error || !nextSequence.data) {
+      throw new Error("Failed to get next sequence number");
+    }
 
     if (employee.error || !employee.data) {
       console.error(employee.error);
       throw new Error("Failed to get employee");
     }
 
-    const createResult = await insertIssue(serviceRole, {
+    const createResult = await upsertIssue(serviceRole, {
+      nonConformanceId: nextSequence.data,
+      approvalRequirements: [],
       companyId,
       createdBy: employee.data?.id,
       description,
@@ -420,6 +426,7 @@ async function handleViewSubmission(
       nonConformanceWorkflowId: workflowId,
       openDate: new Date().toISOString(),
       priority: severity,
+      requiredActionIds: [],
       source: "Internal"
     });
 
@@ -438,7 +445,7 @@ async function handleViewSubmission(
           companyId,
           description,
           id: ncrId,
-          nonConformanceId: createResult.data.nonConformanceId,
+          nonConformanceId: nextSequence.data,
           severity,
           title,
           userId: employee.data?.id

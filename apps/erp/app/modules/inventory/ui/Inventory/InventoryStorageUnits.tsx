@@ -1,4 +1,3 @@
-import { useStorageRuleViolations } from "@carbon/ee/storage-rules";
 import {
   DatePicker,
   Hidden,
@@ -6,7 +5,6 @@ import {
   Submit,
   ValidatedForm
 } from "@carbon/form";
-import { LabelDownloadModal } from "@carbon/printing/ui";
 import {
   Button,
   Card,
@@ -19,6 +17,10 @@ import {
   DropdownMenuContent,
   DropdownMenuIcon,
   DropdownMenuItem,
+  DropdownMenuPortal,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
   HStack,
   IconButton,
@@ -34,28 +36,33 @@ import {
   Th,
   Thead,
   Tr,
-  toast,
   useDisclosure,
   VStack
 } from "@carbon/react";
+import { labelSizes } from "@carbon/utils";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { nanoid } from "nanoid";
 import { useMemo, useState } from "react";
 import {
-  LuCheck,
   LuEllipsisVertical,
   LuPencil,
   LuPrinter,
   LuQrCode
 } from "react-icons/lu";
-import { Outlet, useFetcher } from "react-router";
+import { Outlet } from "react-router";
 import type { z } from "zod";
 import { Enumerable } from "~/components/Enumerable";
-import { Input, Location, Select, TextArea } from "~/components/Form";
-import StorageUnit from "~/components/Form/StorageUnit";
+import {
+  Input,
+  Location,
+  Select,
+  StorageUnit,
+  TextArea
+} from "~/components/Form";
 import { useUnitOfMeasure } from "~/components/Form/UnitOfMeasure";
-import { usePermissions, usePrinting } from "~/hooks";
+import { usePermissions } from "~/hooks";
+import { useItemRuleViolations } from "~/hooks/useItemRuleViolations";
 import type {
   ItemStorageUnitQuantities,
   itemTrackingTypes,
@@ -89,7 +96,7 @@ const InventoryStorageUnits = ({
   const permissions = usePermissions();
   const { t } = useLingui();
   const adjustmentModal = useDisclosure();
-  const ruleViolations = useStorageRuleViolations({
+  const ruleViolations = useItemRuleViolations({
     action: path.to.inventoryItemAdjustment(pickMethod.itemId),
     onSuccess: adjustmentModal.onClose
   });
@@ -158,47 +165,25 @@ const InventoryStorageUnits = ({
     adjustmentModal.onOpen();
   };
 
-  const { printerRoutes, resolvePrinterRoute } = usePrinting();
-  const printerModal = useDisclosure();
-  const downloadModal = useDisclosure();
-  const printFetcher = useFetcher<{ success: boolean; message: string }>();
-  const [pendingPrintEntityId, setPendingPrintEntityId] = useState<
-    string | null
-  >(null);
-  const locationId = pickMethod.locationId;
-  const defaultPrinter = resolvePrinterRoute(locationId, "inventory");
-  const [selectedPrinterId, setSelectedPrinterId] = useState<string>(
-    defaultPrinter?.id ?? ""
-  );
-
-  const handlePrintLabel = (trackedEntityId: string) => {
-    setPendingPrintEntityId(trackedEntityId);
-    if (printerRoutes.length > 0) {
-      setSelectedPrinterId(defaultPrinter?.id ?? printerRoutes[0]?.id ?? "");
-      printerModal.onOpen();
+  const navigateToLabel = (
+    trackedEntityId: string,
+    zpl?: boolean,
+    labelSize?: string
+  ) => {
+    if (!window) return;
+    if (zpl) {
+      window.open(
+        window.location.origin +
+          path.to.file.trackedEntityLabelZpl(trackedEntityId, { labelSize }),
+        "_blank"
+      );
     } else {
-      downloadModal.onOpen();
+      window.open(
+        window.location.origin +
+          path.to.file.trackedEntityLabelPdf(trackedEntityId, { labelSize }),
+        "_blank"
+      );
     }
-  };
-
-  const handleConfirmPrint = () => {
-    if (!pendingPrintEntityId || !selectedPrinterId) return;
-    printFetcher.submit(
-      {
-        sourceDocument: "Entity",
-        sourceDocumentId: pendingPrintEntityId,
-        locationId,
-        printerRouteId: selectedPrinterId
-      },
-      {
-        method: "POST",
-        action: path.to.manualPrint,
-        encType: "application/json"
-      }
-    );
-    toast.success("Print job queued");
-    printerModal.onClose();
-    setPendingPrintEntityId(null);
   };
 
   return (
@@ -291,14 +276,30 @@ const InventoryStorageUnits = ({
                             <Trans>Update Quantity</Trans>
                           </DropdownMenuItem>
                           {item.trackedEntityId && (
-                            <DropdownMenuItem
-                              onClick={() =>
-                                handlePrintLabel(item.trackedEntityId!)
-                              }
-                            >
-                              <DropdownMenuIcon icon={<LuPrinter />} />
-                              <Trans>Print Label</Trans>
-                            </DropdownMenuItem>
+                            <DropdownMenuSub>
+                              <DropdownMenuSubTrigger>
+                                <LuPrinter className="mr-2 h-4 w-4" />
+                                <Trans>Print Label</Trans>
+                              </DropdownMenuSubTrigger>
+                              <DropdownMenuPortal>
+                                <DropdownMenuSubContent>
+                                  {labelSizes.map((size) => (
+                                    <DropdownMenuItem
+                                      key={size.id}
+                                      onClick={() =>
+                                        navigateToLabel(
+                                          item.trackedEntityId!,
+                                          !!size.zpl,
+                                          size.id
+                                        )
+                                      }
+                                    >
+                                      {size.name}
+                                    </DropdownMenuItem>
+                                  ))}
+                                </DropdownMenuSubContent>
+                              </DropdownMenuPortal>
+                            </DropdownMenuSub>
                           )}
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -437,73 +438,6 @@ const InventoryStorageUnits = ({
         </Modal>
       )}
       <ruleViolations.ViolationModal />
-      {printerModal.isOpen && pendingPrintEntityId && (
-        <Modal open onOpenChange={(open) => !open && printerModal.onClose()}>
-          <ModalContent>
-            <ModalHeader>
-              <ModalTitle>
-                <Trans>Select Printer</Trans>
-              </ModalTitle>
-            </ModalHeader>
-            <ModalBody>
-              <div className="flex flex-col gap-1">
-                {printerRoutes.map((route) => (
-                  <button
-                    type="button"
-                    key={route.id}
-                    className={`flex items-center gap-3 rounded-lg border p-3 text-left transition-colors ${
-                      selectedPrinterId === route.id
-                        ? "border-primary bg-primary/5"
-                        : "border-border hover:bg-muted"
-                    }`}
-                    onClick={() => setSelectedPrinterId(route.id)}
-                  >
-                    <LuPrinter className="size-4 text-muted-foreground shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <span className="text-sm font-medium">{route.name}</span>
-                      <span className="text-xs text-muted-foreground ml-2 uppercase">
-                        {route.format}
-                      </span>
-                    </div>
-                    {selectedPrinterId === route.id && (
-                      <LuCheck className="size-4 text-primary shrink-0" />
-                    )}
-                  </button>
-                ))}
-              </div>
-            </ModalBody>
-            <ModalFooter>
-              <div className="flex gap-2">
-                <Button
-                  variant="primary"
-                  leftIcon={<LuPrinter />}
-                  disabled={!selectedPrinterId}
-                  onClick={handleConfirmPrint}
-                >
-                  <Trans>Print</Trans>
-                </Button>
-                <Button variant="solid" onClick={printerModal.onClose}>
-                  <Trans>Cancel</Trans>
-                </Button>
-              </div>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
-      )}
-      {downloadModal.isOpen && pendingPrintEntityId && (
-        <LabelDownloadModal
-          sourceDocumentId={pendingPrintEntityId}
-          fileRoutes={{
-            pdf: path.to.file.trackedEntityLabelPdf,
-            zpl: path.to.file.trackedEntityLabelZpl
-          }}
-          isOpen={downloadModal.isOpen}
-          onClose={() => {
-            downloadModal.onClose();
-            setPendingPrintEntityId(null);
-          }}
-        />
-      )}
       <Outlet />
     </>
   );

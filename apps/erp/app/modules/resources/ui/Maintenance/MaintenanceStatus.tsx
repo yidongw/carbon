@@ -5,6 +5,7 @@ import type { maintenanceDispatchStatus } from "../../resources.models";
 type MaintenanceStatusProps = {
   status?: (typeof maintenanceDispatchStatus)[number] | null;
   className?: string;
+  iconOnly?: boolean;
 };
 
 function MaintenanceStatus({ status, className, iconOnly }: MaintenanceStatusProps) {

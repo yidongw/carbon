@@ -7,14 +7,11 @@ import {
 } from "@carbon/form";
 import {
   Badge,
-  Button,
   cn,
   FormControl,
   FormLabel,
   HStack,
-  IconButton,
   Input,
-  Label,
   ModalCard,
   ModalCardBody,
   ModalCardContent,
@@ -36,7 +33,7 @@ import { getLocalTimeZone, today } from "@internationalized/date";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { PostgrestResponse } from "@supabase/supabase-js";
 import { useEffect, useMemo, useState } from "react";
-import { LuBox, LuChevronRight, LuLandmark, LuReceipt } from "react-icons/lu";
+import { LuBox, LuReceipt } from "react-icons/lu";
 import { useFetcher, useParams } from "react-router";
 import type { z } from "zod";
 import {
@@ -72,10 +69,7 @@ import { path } from "~/utils/path";
 import DeletePurchaseOrderLine from "./DeletePurchaseOrderLine";
 
 type PurchaseOrderLineFormProps = {
-  initialValues: z.infer<typeof purchaseOrderLineValidator> & {
-    assetReadableId?: string;
-    assetName?: string;
-  };
+  initialValues: z.infer<typeof purchaseOrderLineValidator>;
   type?: "card" | "modal";
   onClose?: () => void;
 };
@@ -119,7 +113,6 @@ const PurchaseOrderLineForm = ({
     purchaseUom: string;
     requiredDate: string | null;
     storageUnitId: string | null;
-    supplierPartId: string;
     supplierShippingCost: number;
     supplierTaxAmount: number;
     supplierUnitPrice: number;
@@ -136,7 +129,6 @@ const PurchaseOrderLineForm = ({
     priceBreaks: [],
     requiredDate: initialValues?.requiredDate ?? null,
     storageUnitId: initialValues.storageUnitId ?? "",
-    supplierPartId: initialValues.supplierPartId ?? "",
     supplierShippingCost: initialValues.supplierShippingCost ?? 0,
     supplierTaxAmount: initialValues.supplierTaxAmount ?? 0,
     supplierUnitPrice: initialValues.supplierUnitPrice ?? 0,
@@ -172,14 +164,12 @@ const PurchaseOrderLineForm = ({
 
   const isEditing = initialValues.id !== undefined;
   const isGLAccount = initialValues.purchaseOrderLineType === "G/L Account";
-  const isFixedAsset = initialValues.purchaseOrderLineType === "Fixed Asset";
-  const [activeTab, setActiveTab] = useState<"item" | "gl-account" | "asset">(
-    isFixedAsset ? "asset" : isGLAccount ? "gl-account" : "item"
+  const [activeTab, setActiveTab] = useState<"direct" | "indirect">(
+    isGLAccount ? "indirect" : "direct"
   );
 
   const [indirectData, setIndirectData] = useState<{
     accountId: string;
-    assetId: string;
     costCenterId: string;
     description: string;
     purchaseQuantity: number;
@@ -190,7 +180,6 @@ const PurchaseOrderLineForm = ({
     taxPercent: number;
   }>({
     accountId: initialValues.accountId ?? "",
-    assetId: initialValues.assetId ?? "",
     costCenterId: initialValues.costCenterId ?? "",
     description: initialValues.description ?? "",
     purchaseQuantity: initialValues.purchaseQuantity ?? 1,
@@ -226,47 +215,6 @@ const PurchaseOrderLineForm = ({
     indirectData.supplierShippingCost,
     indirectData.taxPercent
   ]);
-
-  const costsDisclosure = useDisclosure();
-  const indirectCostsDisclosure = useDisclosure();
-
-  const [assetOptions, setAssetOptions] = useState<
-    { value: string; label: string; locationId: string | null }[]
-  >([]);
-
-  useMount(() => {
-    (async () => {
-      const assets = await carbon
-        .from("fixedAsset")
-        .select("id, fixedAssetId, name, locationId")
-        .eq("companyId", company.id)
-        .eq("status", "Draft")
-        .order("fixedAssetId");
-      const options = (assets.data ?? []).map((a) => ({
-        value: a.id,
-        label: `${a.fixedAssetId} — ${a.name}`,
-        locationId: a.locationId
-      }));
-      if (
-        initialValues.assetId &&
-        !options.some((o) => o.value === initialValues.assetId)
-      ) {
-        const current = await carbon
-          .from("fixedAsset")
-          .select("id, fixedAssetId, name, locationId")
-          .eq("id", initialValues.assetId)
-          .single();
-        if (current.data) {
-          options.unshift({
-            value: current.data.id,
-            label: `${current.data.fixedAssetId} — ${current.data.name}`,
-            locationId: current.data.locationId
-          });
-        }
-      }
-      setAssetOptions(options);
-    })();
-  });
 
   // Load price breaks on mount when editing so quantity changes resolve correctly
   useMount(() => {
@@ -316,7 +264,6 @@ const PurchaseOrderLineForm = ({
       purchaseUom: "",
       requiredDate: null,
       storageUnitId: "",
-      supplierPartId: "",
       supplierShippingCost: 0,
       supplierTaxAmount: 0,
       supplierUnitPrice: 0,
@@ -398,7 +345,6 @@ const PurchaseOrderLineForm = ({
               ? null
               : today(getLocalTimeZone()).add({ days: leadTime }).toString(),
           storageUnitId: inventory.data?.defaultStorageUnitId ?? null,
-          supplierPartId: supplierPart?.data?.supplierPartId ?? "",
           supplierTaxAmount: 0,
           taxPercent: 0,
           priceBreaks: breaks,
@@ -442,9 +388,7 @@ const PurchaseOrderLineForm = ({
     <>
       <Tabs
         value={activeTab}
-        onValueChange={(v) =>
-          setActiveTab(v as "item" | "gl-account" | "asset")
-        }
+        onValueChange={(v) => setActiveTab(v as "direct" | "indirect")}
         className="w-full"
       >
         <ModalCardProvider type={type}>
@@ -466,9 +410,7 @@ const PurchaseOrderLineForm = ({
                 className="w-full"
                 fetcher={fetcher}
                 isDisabled={isLocked}
-                onSubmit={() => {
-                  if (type === "modal") onClose?.();
-                }}
+                onSuccess={type === "modal" ? onClose : undefined}
               >
                 <HStack
                   className={cn(
@@ -481,33 +423,22 @@ const PurchaseOrderLineForm = ({
                       className={cn(
                         isEditing &&
                           !isGLAccount &&
-                          !isFixedAsset &&
                           !itemData?.itemId &&
                           "text-muted-foreground"
                       )}
                     >
                       {isEditing
-                        ? isFixedAsset
-                          ? initialValues.assetReadableId || "Fixed Asset"
-                          : isGLAccount
-                            ? indirectData.description || "G/L Account"
-                            : getItemReadableId(items, itemData?.itemId) ||
-                              "..."
-                        : "New Purchase Order Line"}
+                        ? isGLAccount
+                          ? indirectData.description || "G/L Account"
+                          : getItemReadableId(items, itemData?.itemId) || "..."
+                        : t`New Purchase Order Line`}
                     </ModalCardTitle>
                     <ModalCardDescription>
                       {isOutsideProcessing ? (
                         <Badge variant="default">Outside Processing</Badge>
                       ) : isEditing ? (
                         <div className="flex flex-col items-start gap-1">
-                          <span>
-                            {isFixedAsset
-                              ? initialValues.assetName ||
-                                indirectData.description
-                              : isGLAccount
-                                ? "G/L Account"
-                                : itemData?.description}
-                          </span>
+                          <span>{itemData?.description}</span>
                           <div className="flex items-center gap-2">
                             <Badge variant="outline">
                               {initialValues?.purchaseQuantity}
@@ -532,24 +463,20 @@ const PurchaseOrderLineForm = ({
                           </div>
                         </div>
                       ) : (
-                        "A purchase order line contains order details for a particular item"
+                        <Trans>A purchase order line contains order details for a particular item</Trans>
                       )}
                     </ModalCardDescription>
                   </ModalCardHeader>
                   <div className="flex-shrink-0">
                     {!isEditing && (
                       <TabsList>
-                        <TabsTrigger value="item">
+                        <TabsTrigger value="direct">
                           <LuBox className="mr-1" />
-                          <Trans>Item</Trans>
+                          <Trans>Direct</Trans>
                         </TabsTrigger>
-                        <TabsTrigger value="gl-account">
+                        <TabsTrigger value="indirect">
                           <LuReceipt className="mr-1" />
-                          <Trans>GL Account</Trans>
-                        </TabsTrigger>
-                        <TabsTrigger value="asset">
-                          <LuLandmark className="mr-1" />
-                          <Trans>Asset</Trans>
+                          <Trans>Indirect</Trans>
                         </TabsTrigger>
                       </TabsList>
                     )}
@@ -563,7 +490,7 @@ const PurchaseOrderLineForm = ({
                     value={routeData?.purchaseOrder?.exchangeRate ?? 1}
                   />
 
-                  <TabsContent value="item">
+                  <TabsContent value="direct">
                     <Hidden name="purchaseOrderLineType" value={itemType} />
                     <Hidden
                       name="inventoryUnitOfMeasureCode"
@@ -590,18 +517,6 @@ const PurchaseOrderLineForm = ({
                           name="description"
                           value={itemData.description}
                           isOptional={false}
-                        />
-
-                        <InputControlled
-                          name="supplierPartId"
-                          label={t`Supplier Part Number`}
-                          value={itemData.supplierPartId}
-                          onChange={(value) =>
-                            setItemData((d) => ({
-                              ...d,
-                              supplierPartId: value
-                            }))
-                          }
                         />
 
                         {isOutsideProcessing && (
@@ -693,13 +608,54 @@ const PurchaseOrderLineForm = ({
                             }))
                           }
                         />
+                        <NumberControlled
+                          name="supplierShippingCost"
+                          label={t`Shipping`}
+                          minValue={0}
+                          value={itemData.supplierShippingCost}
+                          formatOptions={{
+                            style: "currency",
+                            currency:
+                              routeData?.purchaseOrder?.currencyCode ??
+                              company.baseCurrencyCode
+                          }}
+                          onChange={(value) =>
+                            setItemData((d) => ({
+                              ...d,
+                              supplierShippingCost: value
+                            }))
+                          }
+                        />
+                        <NumberControlled
+                          name="supplierTaxAmount"
+                          label={t`Tax`}
+                          value={itemData.supplierTaxAmount}
+                          formatOptions={{
+                            style: "currency",
+                            currency:
+                              routeData?.purchaseOrder?.currencyCode ??
+                              company.baseCurrencyCode
+                          }}
+                          onChange={(value) => {
+                            const subtotal =
+                              itemData.supplierUnitPrice *
+                                itemData.purchaseQuantity +
+                              itemData.supplierShippingCost;
+                            setItemData((d) => ({
+                              ...d,
+                              supplierTaxAmount: value,
+                              taxPercent: subtotal > 0 ? value / subtotal : 0
+                            }));
+                          }}
+                        />
                         {[
                           "Item",
                           "Part",
                           "Service",
                           "Material",
                           "Tool",
-                          "Consumable"
+                          "Consumable",
+                          "Fixed Asset"
                         ].includes(itemType) &&
                           !isOutsideProcessing && (
                             <Location
@@ -715,7 +671,8 @@ const PurchaseOrderLineForm = ({
                           "Service",
                           "Material",
                           "Tool",
-                          "Consumable"
+                          "Consumable",
+                          "Fixed Asset"
                         ].includes(itemType) &&
                           !isOutsideProcessing && (
                             <StorageUnit
@@ -733,381 +690,180 @@ const PurchaseOrderLineForm = ({
                               }}
                             />
                           )}
+                        <NumberControlled
+                          name="taxPercent"
+                          label={t`Tax Percent`}
+                          value={itemData.taxPercent}
+                          minValue={0}
+                          maxValue={1}
+                          step={0.0001}
+                          formatOptions={{
+                            style: "percent",
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 2
+                          }}
+                          onChange={(value) => {
+                            const subtotal =
+                              itemData.supplierUnitPrice *
+                                itemData.purchaseQuantity +
+                              itemData.supplierShippingCost;
+                            setItemData((d) => ({
+                              ...d,
+                              taxPercent: value,
+                              supplierTaxAmount: subtotal * value
+                            }));
+                          }}
+                        />
 
                         <CustomFormFields table="purchaseOrderLine" />
-                      </div>
-
-                      <div className="w-full border border-border rounded-md shadow-sm p-4 flex flex-col gap-4 mt-4">
-                        <HStack
-                          className="w-full justify-between cursor-pointer"
-                          onClick={costsDisclosure.onToggle}
-                        >
-                          <Label>
-                            <Trans>Tax &amp; Shipping</Trans>
-                          </Label>
-                          <HStack>
-                            {itemData.taxPercent > 0 && (
-                              <Badge variant="red">
-                                {percentFormatter.format(itemData.taxPercent)}{" "}
-                                <Trans>Tax</Trans>
-                              </Badge>
-                            )}
-                            {itemData.supplierShippingCost > 0 && (
-                              <Badge variant="secondary">
-                                {currencyFormatter.format(
-                                  itemData.supplierShippingCost
-                                )}
-                              </Badge>
-                            )}
-                            <IconButton
-                              icon={<LuChevronRight />}
-                              aria-label={
-                                costsDisclosure.isOpen
-                                  ? t`Collapse Costs`
-                                  : t`Expand Costs`
-                              }
-                              variant="ghost"
-                              size="md"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                costsDisclosure.onToggle();
-                              }}
-                              className={`transition-transform ${costsDisclosure.isOpen ? "rotate-90" : ""}`}
-                            />
-                          </HStack>
-                        </HStack>
-                        <div
-                          className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
-                            costsDisclosure.isOpen ? "" : "hidden"
-                          }`}
-                        >
-                          <NumberControlled
-                            name="supplierShippingCost"
-                            label={t`Shipping`}
-                            minValue={0}
-                            value={itemData.supplierShippingCost}
-                            formatOptions={{
-                              style: "currency",
-                              currency:
-                                routeData?.purchaseOrder?.currencyCode ??
-                                company.baseCurrencyCode
-                            }}
-                            onChange={(value) =>
-                              setItemData((d) => ({
-                                ...d,
-                                supplierShippingCost: value
-                              }))
-                            }
-                          />
-                          <NumberControlled
-                            name="supplierTaxAmount"
-                            label={t`Tax Amount`}
-                            value={itemData.supplierTaxAmount}
-                            formatOptions={{
-                              style: "currency",
-                              currency:
-                                routeData?.purchaseOrder?.currencyCode ??
-                                company.baseCurrencyCode
-                            }}
-                            onChange={(value) => {
-                              const subtotal =
-                                itemData.supplierUnitPrice *
-                                  itemData.purchaseQuantity +
-                                itemData.supplierShippingCost;
-                              setItemData((d) => ({
-                                ...d,
-                                supplierTaxAmount: value,
-                                taxPercent: subtotal > 0 ? value / subtotal : 0
-                              }));
-                            }}
-                          />
-                          <NumberControlled
-                            name="taxPercent"
-                            label={t`Tax Percent`}
-                            value={itemData.taxPercent}
-                            minValue={0}
-                            maxValue={1}
-                            step={0.0001}
-                            formatOptions={{
-                              style: "percent",
-                              minimumFractionDigits: 0,
-                              maximumFractionDigits: 2
-                            }}
-                            onChange={(value) => {
-                              const subtotal =
-                                itemData.supplierUnitPrice *
-                                  itemData.purchaseQuantity +
-                                itemData.supplierShippingCost;
-                              setItemData((d) => ({
-                                ...d,
-                                taxPercent: value,
-                                supplierTaxAmount: subtotal * value
-                              }));
-                            }}
-                          />
-                        </div>
                       </div>
                     </VStack>
                   </TabsContent>
 
-                  {(activeTab === "gl-account" || activeTab === "asset") && (
-                    <>
-                      <Hidden
-                        name="purchaseOrderLineType"
-                        value={
-                          activeTab === "asset" ? "Fixed Asset" : "G/L Account"
-                        }
-                      />
-                      <Hidden
-                        name="description"
-                        value={indirectData.description}
-                      />
-                      <VStack>
-                        <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
-                          {activeTab === "gl-account" ? (
-                            <>
-                              <Account
-                                name="accountId"
-                                label={t`GL Account`}
-                                classes={["Expense"]}
-                                isOptional={false}
-                              />
-                              <CostCenter
-                                name="costCenterId"
-                                label={t`Cost Center`}
-                                isOptional
-                              />
-                            </>
-                          ) : (
-                            <>
-                              <Combobox
-                                name="assetId"
-                                label={t`Fixed Asset`}
-                                isOptional={false}
-                                options={assetOptions}
-                                value={indirectData.assetId}
-                                onChange={(selected) => {
-                                  setIndirectData((d) => ({
-                                    ...d,
-                                    assetId: (selected?.value as string) ?? ""
-                                  }));
-                                  const asset = assetOptions.find(
-                                    (o) => o.value === selected?.value
-                                  );
-                                  if (asset?.locationId && !locationId) {
-                                    setLocationId(asset.locationId);
-                                  }
-                                }}
-                              />
-                              <Location
-                                name="locationId"
-                                label={t`Location`}
-                                value={locationId}
-                                onChange={(newLocation) => {
-                                  setLocationId(newLocation?.value ?? "");
-                                }}
-                              />
-                            </>
-                          )}
-                          <FormControl
-                            className={
-                              activeTab === "asset"
-                                ? "col-span-1"
-                                : "col-span-3"
-                            }
-                          >
-                            <FormLabel>
-                              <Trans>Description</Trans>
-                            </FormLabel>
-                            <Input
-                              value={indirectData.description}
-                              onChange={(e) =>
-                                setIndirectData((d) => ({
-                                  ...d,
-                                  description: e.target.value
-                                }))
-                              }
-                            />
-                          </FormControl>
-                          <DatePicker
-                            name="requiredDate"
-                            label={t`Required Date`}
-                            value={indirectData.requiredDate ?? undefined}
-                            onChange={(date) => {
+                  <TabsContent value="indirect">
+                    <Hidden name="purchaseOrderLineType" value="G/L Account" />
+                    <Hidden
+                      name="description"
+                      value={indirectData.description}
+                    />
+                    <VStack>
+                      <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
+                        <Account
+                          name="accountId"
+                          label={t`GL Account`}
+                          classes={["Asset", "Expense"]}
+                        />
+                        <FormControl>
+                          <FormLabel>
+                            <Trans>Description</Trans>
+                          </FormLabel>
+                          <Input
+                            value={indirectData.description}
+                            onChange={(e) =>
                               setIndirectData((d) => ({
                                 ...d,
-                                requiredDate: date
-                              }));
-                            }}
-                          />
-                          <NumberControlled
-                            name="purchaseQuantity"
-                            label={t`Quantity`}
-                            isOptional={false}
-                            isDisabled={activeTab === "asset"}
-                            value={
-                              activeTab === "asset"
-                                ? 1
-                                : indirectData.purchaseQuantity
-                            }
-                            onChange={(value) =>
-                              setIndirectData((d) => ({
-                                ...d,
-                                purchaseQuantity: value
+                                description: e.target.value
                               }))
                             }
                           />
-                          <NumberControlled
-                            name="supplierUnitPrice"
-                            label={t`Unit Price`}
-                            isOptional={false}
-                            value={indirectData.supplierUnitPrice}
-                            formatOptions={{
-                              style: "currency",
-                              currency:
-                                routeData?.purchaseOrder?.currencyCode ??
-                                company.baseCurrencyCode
-                            }}
-                            onChange={(value) =>
-                              setIndirectData((d) => ({
-                                ...d,
-                                supplierUnitPrice: value
-                              }))
-                            }
-                          />
-                          <CustomFormFields table="purchaseOrderLine" />
-                        </div>
-
-                        <div className="h-4" />
-
-                        <div className="w-full border border-border rounded-md shadow-sm p-4 flex flex-col gap-4">
-                          <HStack
-                            className="w-full justify-between cursor-pointer"
-                            onClick={indirectCostsDisclosure.onToggle}
-                          >
-                            <Label>
-                              <Trans>Tax &amp; Shipping</Trans>
-                            </Label>
-                            <HStack>
-                              {indirectData.taxPercent > 0 && (
-                                <Badge variant="red">
-                                  {percentFormatter.format(
-                                    indirectData.taxPercent
-                                  )}{" "}
-                                  <Trans>Tax</Trans>
-                                </Badge>
-                              )}
-                              {indirectData.supplierShippingCost > 0 && (
-                                <Badge variant="secondary">
-                                  {currencyFormatter.format(
-                                    indirectData.supplierShippingCost
-                                  )}
-                                </Badge>
-                              )}
-                              <IconButton
-                                icon={<LuChevronRight />}
-                                aria-label={
-                                  indirectCostsDisclosure.isOpen
-                                    ? t`Collapse Costs`
-                                    : t`Expand Costs`
-                                }
-                                variant="ghost"
-                                size="md"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  indirectCostsDisclosure.onToggle();
-                                }}
-                                className={`transition-transform ${indirectCostsDisclosure.isOpen ? "rotate-90" : ""}`}
-                              />
-                            </HStack>
-                          </HStack>
-                          <div
-                            className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
-                              indirectCostsDisclosure.isOpen ? "" : "hidden"
-                            }`}
-                          >
-                            <NumberControlled
-                              name="supplierShippingCost"
-                              label={t`Shipping`}
-                              minValue={0}
-                              value={indirectData.supplierShippingCost}
-                              formatOptions={{
-                                style: "currency",
-                                currency:
-                                  routeData?.purchaseOrder?.currencyCode ??
-                                  company.baseCurrencyCode
-                              }}
-                              onChange={(value) =>
-                                setIndirectData((d) => ({
-                                  ...d,
-                                  supplierShippingCost: value
-                                }))
-                              }
-                            />
-                            <NumberControlled
-                              name="supplierTaxAmount"
-                              label={t`Tax Amount`}
-                              value={indirectData.supplierTaxAmount}
-                              formatOptions={{
-                                style: "currency",
-                                currency:
-                                  routeData?.purchaseOrder?.currencyCode ??
-                                  company.baseCurrencyCode
-                              }}
-                              onChange={(value) => {
-                                const subtotal =
-                                  indirectData.supplierUnitPrice *
-                                    indirectData.purchaseQuantity +
-                                  indirectData.supplierShippingCost;
-                                setIndirectData((d) => ({
-                                  ...d,
-                                  supplierTaxAmount: value,
-                                  taxPercent:
-                                    subtotal > 0 ? value / subtotal : 0
-                                }));
-                              }}
-                            />
-                            <NumberControlled
-                              name="taxPercent"
-                              label={t`Tax Percent`}
-                              value={indirectData.taxPercent}
-                              minValue={0}
-                              maxValue={1}
-                              step={0.0001}
-                              formatOptions={{
-                                style: "percent",
-                                minimumFractionDigits: 0,
-                                maximumFractionDigits: 2
-                              }}
-                              onChange={(value) => {
-                                const subtotal =
-                                  indirectData.supplierUnitPrice *
-                                    indirectData.purchaseQuantity +
-                                  indirectData.supplierShippingCost;
-                                setIndirectData((d) => ({
-                                  ...d,
-                                  taxPercent: value,
-                                  supplierTaxAmount: subtotal * value
-                                }));
-                              }}
-                            />
-                          </div>
-                        </div>
-                      </VStack>
-                    </>
-                  )}
+                        </FormControl>
+                        <CostCenter
+                          name="costCenterId"
+                          label={t`Cost Center`}
+                          isOptional
+                        />
+                        <DatePicker
+                          name="requiredDate"
+                          label={t`Required Date`}
+                          value={indirectData.requiredDate ?? undefined}
+                          onChange={(date) => {
+                            setIndirectData((d) => ({
+                              ...d,
+                              requiredDate: date
+                            }));
+                          }}
+                        />
+                        <NumberControlled
+                          name="purchaseQuantity"
+                          label={t`Quantity`}
+                          value={indirectData.purchaseQuantity}
+                          onChange={(value) =>
+                            setIndirectData((d) => ({
+                              ...d,
+                              purchaseQuantity: value
+                            }))
+                          }
+                        />
+                        <NumberControlled
+                          name="supplierUnitPrice"
+                          label={t`Unit Price`}
+                          value={indirectData.supplierUnitPrice}
+                          formatOptions={{
+                            style: "currency",
+                            currency:
+                              routeData?.purchaseOrder?.currencyCode ??
+                              company.baseCurrencyCode
+                          }}
+                          onChange={(value) =>
+                            setIndirectData((d) => ({
+                              ...d,
+                              supplierUnitPrice: value
+                            }))
+                          }
+                        />
+                        <NumberControlled
+                          name="supplierShippingCost"
+                          label={t`Shipping`}
+                          minValue={0}
+                          value={indirectData.supplierShippingCost}
+                          formatOptions={{
+                            style: "currency",
+                            currency:
+                              routeData?.purchaseOrder?.currencyCode ??
+                              company.baseCurrencyCode
+                          }}
+                          onChange={(value) =>
+                            setIndirectData((d) => ({
+                              ...d,
+                              supplierShippingCost: value
+                            }))
+                          }
+                        />
+                        <NumberControlled
+                          name="supplierTaxAmount"
+                          label={t`Tax`}
+                          value={indirectData.supplierTaxAmount}
+                          formatOptions={{
+                            style: "currency",
+                            currency:
+                              routeData?.purchaseOrder?.currencyCode ??
+                              company.baseCurrencyCode
+                          }}
+                          onChange={(value) => {
+                            const subtotal =
+                              indirectData.supplierUnitPrice *
+                                indirectData.purchaseQuantity +
+                              indirectData.supplierShippingCost;
+                            setIndirectData((d) => ({
+                              ...d,
+                              supplierTaxAmount: value,
+                              taxPercent: subtotal > 0 ? value / subtotal : 0
+                            }));
+                          }}
+                        />
+                        <NumberControlled
+                          name="taxPercent"
+                          label={t`Tax Percent`}
+                          value={indirectData.taxPercent}
+                          minValue={0}
+                          maxValue={1}
+                          step={0.0001}
+                          formatOptions={{
+                            style: "percent",
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 2
+                          }}
+                          onChange={(value) => {
+                            const subtotal =
+                              indirectData.supplierUnitPrice *
+                                indirectData.purchaseQuantity +
+                              indirectData.supplierShippingCost;
+                            setIndirectData((d) => ({
+                              ...d,
+                              taxPercent: value,
+                              supplierTaxAmount: subtotal * value
+                            }));
+                          }}
+                        />
+                        <CustomFormFields table="purchaseOrderLine" />
+                      </div>
+                    </VStack>
+                  </TabsContent>
                 </ModalCardBody>
                 <ModalCardFooter>
-                  <HStack className="justify-end gap-2">
-                    {onClose && (
-                      <Button variant="ghost" onClick={onClose}>
-                        <Trans>Cancel</Trans>
-                      </Button>
-                    )}
-                    <Submit isDisabled={isDisabled} withBlocker={false}>
-                      <Trans>Save</Trans>
-                    </Submit>
-                  </HStack>
+                  <Submit isDisabled={isDisabled} withBlocker={false}>
+                    <Trans>Save</Trans>
+                  </Submit>
                 </ModalCardFooter>
               </ValidatedForm>
             </ModalCardContent>

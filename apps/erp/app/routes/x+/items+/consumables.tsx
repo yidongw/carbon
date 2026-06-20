@@ -1,11 +1,10 @@
+import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
+import { flash } from "@carbon/auth/session.server";
 import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
-import { Trans } from "@lingui/react/macro";
-import { Suspense } from "react";
 import type { LoaderFunctionArgs } from "react-router";
-import { Await, Outlet, useLoaderData } from "react-router";
-import { TableSkeleton } from "~/components/Skeletons";
+import { Outlet, redirect, useLoaderData } from "react-router";
 import { getConsumables } from "~/modules/items";
 import { ConsumablesTable } from "~/modules/items/ui/Consumables";
 import { getTagsList } from "~/modules/shared";
@@ -32,49 +31,42 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const { limit, offset, sorts, filters } =
     getGenericQueryFilters(searchParams);
 
-  // Tags are small/cheap — keep them blocking so filters render immediately.
-  const tags = await getTagsList(client, companyId, "consumable");
+  const [consumables, tags] = await Promise.all([
+    getConsumables(client, companyId, {
+      search,
+      supplierId,
+      limit,
+      offset,
+      sorts,
+      filters
+    }),
+    getTagsList(client, companyId, "consumable")
+  ]);
 
-  // Defer the heavy consumables query: the page navigates instantly and
-  // renders a table skeleton while the rows stream in.
-  const consumables = getConsumables(client, companyId, {
-    search,
-    supplierId,
-    limit,
-    offset,
-    sorts,
-    filters
-  });
+  if (consumables.error) {
+    redirect(
+      path.to.authenticatedRoot,
+      await flash(
+        request,
+        error(consumables.error, "Failed to fetch consumables")
+      )
+    );
+  }
 
   return {
-    consumables,
+    count: consumables.count ?? 0,
+    consumables: consumables.data ?? [],
     tags: tags.data ?? []
   };
 }
 
 export default function ConsumablesSearchRoute() {
-  const { consumables, tags } = useLoaderData<typeof loader>();
+  const { count, consumables, tags } = useLoaderData<typeof loader>();
+  useLoaderData<typeof loader>();
 
   return (
     <VStack spacing={0} className="h-full">
-      <Suspense fallback={<TableSkeleton />}>
-        <Await
-          resolve={consumables}
-          errorElement={
-            <div className="p-4 text-sm text-red-500">
-              <Trans>Failed to load consumables.</Trans>
-            </div>
-          }
-        >
-          {(consumables) => (
-            <ConsumablesTable
-              data={consumables.data ?? []}
-              count={consumables.count ?? 0}
-              tags={tags}
-            />
-          )}
-        </Await>
-      </Suspense>
+      <ConsumablesTable data={consumables} count={count} tags={tags} />
       <Outlet />
     </VStack>
   );

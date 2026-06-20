@@ -14,10 +14,11 @@ import {
   getIssueTypesList,
   getIssueWorkflowsList,
   getRequiredActionsList,
-  insertIssue,
-  issueValidator
+  issueValidator,
+  upsertIssue
 } from "~/modules/quality";
 import IssueForm from "~/modules/quality/ui/Issue/IssueForm";
+import { getNextSequence } from "~/modules/settings";
 import { getCompanyIntegrations } from "~/modules/settings/settings.server";
 import { setCustomFields } from "~/utils/form";
 import type { Handle } from "~/utils/handle";
@@ -61,41 +62,46 @@ export async function action({ request }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
-  const d = validation.data;
+  const nextSequence = await getNextSequence(
+    serviceRole,
+    "nonConformance",
+    companyId
+  );
+  if (nextSequence.error) {
+    throw redirect(
+      path.to.newIssue,
+      await flash(
+        request,
+        error(nextSequence.error, "Failed to get next sequence")
+      )
+    );
+  }
 
-  const createResult = await insertIssue(serviceRole, {
-    nonConformanceId: d.nonConformanceId || undefined,
-    name: d.name,
-    priority: d.priority,
-    source: d.source,
-    locationId: d.locationId,
-    nonConformanceTypeId: d.nonConformanceTypeId,
-    openDate: d.openDate,
-    description: d.description,
-    nonConformanceWorkflowId: d.nonConformanceWorkflowId,
-    dueDate: d.dueDate,
-    closeDate: d.closeDate,
-    quantity: d.quantity,
-    requiredActionIds: d.requiredActionIds,
-    approvalRequirements: d.approvalRequirements,
-    items: d.items,
-    jobOperationId: d.jobOperationId,
-    customerId: d.customerId,
-    salesOrderLineId: d.salesOrderLineId,
-    operationSupplierProcessId: d.operationSupplierProcessId,
+  // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
+  const { id, ...nonConformance } = validation.data;
+
+  const createIssue = await upsertIssue(serviceRole, {
+    ...nonConformance,
+    nonConformanceId: nextSequence.data,
     companyId,
     createdBy: userId,
     customFields: setCustomFields(formData)
   });
 
-  if (createResult.error || !createResult.data) {
+  if (createIssue.error || !createIssue.data) {
     throw redirect(
       path.to.issues,
-      await flash(request, error(createResult.error, "Failed to insert issue"))
+      await flash(request, error(createIssue.error, "Failed to insert issue"))
     );
   }
 
-  const ncrId = createResult.data.id;
+  const ncrId = createIssue.data?.id;
+  if (!ncrId) {
+    throw redirect(
+      path.to.issues,
+      await flash(request, error("Failed to insert issue"))
+    );
+  }
 
   // Pre-associate tracked entities passed via query string (used by the
   // "Create Issue from Inspection" button on inbound inspection lots).
@@ -152,7 +158,7 @@ export async function action({ request }: ActionFunctionArgs) {
       carbonUrl: `${ERP_URL}${path.to.issue(ncrId)}`,
       issue: {
         id: ncrId,
-        nonConformanceId: createResult.data.nonConformanceId,
+        nonConformanceId: nextSequence.data,
         title: validation.data.name,
         description: validation.data.description ?? "",
         severity: validation.data.priority
@@ -292,7 +298,7 @@ async function autoLinkJobOperationDisposition(
     }
   }
 
-  // Disposition row: find or create. insertIssue may have already inserted
+  // Disposition row: find or create. upsertIssue may have already inserted
   // one for this item via the form's `items` array.
   const existingItem = await client
     .from("nonConformanceItem")

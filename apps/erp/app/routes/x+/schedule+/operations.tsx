@@ -126,7 +126,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     const userDefaults = await getUserDefaults(client, userId, companyId);
     if (userDefaults.error) {
       throw redirect(
-        path.to.inventory,
+        path.to.inventoryQuantities,
         await flash(
           request,
           error(userDefaults.error, "Failed to load default location")
@@ -141,7 +141,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     const locations = await getLocationsList(client, companyId);
     if (locations.error || !locations.data?.length) {
       throw redirect(
-        path.to.inventory,
+        path.to.inventoryQuantities,
         await flash(
           request,
           error(locations.error, "Failed to load any locations")
@@ -268,9 +268,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
         targetQuantity: op.targetQuantity,
         quantity: op.operationQuantity,
         quantityCompleted: op.quantityComplete,
-        quantityReworked: op.quantityReworked,
         quantityScrapped: op.quantityScrapped,
-        reworkId: op.reworkId,
         salesOrderReadableId: op.salesOrderReadableId,
         salesOrderId: op.salesOrderId,
         salesOrderLineId: op.salesOrderLineId,
@@ -310,12 +308,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   };
 }
 
-type ScheduleDisplaySettings = DisplaySettings & {
-  emptyWorkCenters: boolean;
-};
-
-const defaultDisplaySettings: ScheduleDisplaySettings = {
-  emptyWorkCenters: true,
+const defaultDisplaySettings: DisplaySettings = {
   showDuration: true,
   showCustomer: true,
   showDescription: true,
@@ -348,10 +341,6 @@ function KanbanSchedule() {
     DISPLAY_SETTINGS_KEY,
     defaultDisplaySettings
   );
-  const mergedDisplaySettings = useMemo(
-    () => ({ ...defaultDisplaySettings, ...displaySettings }),
-    [displaySettings]
-  );
 
   useEffect(() => {
     setItems(initialItems);
@@ -364,19 +353,6 @@ function KanbanSchedule() {
   useEffect(() => {
     setItems((prevItems) => sortItems(prevItems));
   }, [sortItems]);
-
-  const visibleColumns = useMemo(() => {
-    if (mergedDisplaySettings.emptyWorkCenters) {
-      return columns;
-    }
-
-    const workCenterIdsWithOperations = new Set(
-      items.map((item) => item.columnId)
-    );
-    return columns.filter((column) =>
-      workCenterIdsWithOperations.has(column.id)
-    );
-  }, [columns, items, mergedDisplaySettings.emptyWorkCenters]);
 
   const { progressByOperation } = useProgressByOperation(
     items,
@@ -488,35 +464,7 @@ function KanbanSchedule() {
                 </div>
                 <Separator />
                 <span className="text-xs font-medium text-muted-foreground">
-                  <Trans>Columns</Trans>
-                </span>
-                <VStack>
-                  {(
-                    [
-                      {
-                        key: "emptyWorkCenters",
-                        label: t`Empty work centers`
-                      }
-                    ] as const
-                  ).map(({ key, label }) => (
-                    <Switch
-                      key={key}
-                      variant="small"
-                      label={label}
-                      checked={mergedDisplaySettings[key]}
-                      onCheckedChange={(checked) =>
-                        setDisplaySettings((prev) => ({
-                          ...defaultDisplaySettings,
-                          ...prev,
-                          [key]: checked
-                        }))
-                      }
-                    />
-                  ))}
-                </VStack>
-                <Separator />
-                <span className="text-xs font-medium text-muted-foreground">
-                  <Trans>Cards</Trans>
+                  <Trans>Display Settings</Trans>
                 </span>
                 <VStack>
                   {[
@@ -534,13 +482,10 @@ function KanbanSchedule() {
                       variant="small"
                       label={label}
                       checked={
-                        mergedDisplaySettings[
-                          key as keyof typeof mergedDisplaySettings
-                        ]
+                        displaySettings[key as keyof typeof displaySettings]
                       }
                       onCheckedChange={(checked) =>
                         setDisplaySettings((prev) => ({
-                          ...defaultDisplaySettings,
                           ...prev,
                           [key]: checked
                         }))
@@ -564,11 +509,20 @@ function KanbanSchedule() {
         <div className="flex flex-1 min-h-0 w-full relative">
           {columns.length > 0 ? (
             <Kanban
-              columns={visibleColumns}
+              columns={columns}
               items={items}
               progressByItemId={progressByOperation}
               tags={tags}
-              {...mergedDisplaySettings}
+              showCustomer={displaySettings.showCustomer}
+              showDescription={displaySettings.showDescription}
+              showDueDate={displaySettings.showDueDate}
+              showDuration={displaySettings.showDuration}
+              showEmployee={displaySettings.showEmployee}
+              showProgress={displaySettings.showProgress}
+              showQuantity={displaySettings.showQuantity}
+              showStatus={displaySettings.showStatus}
+              showSalesOrder={displaySettings.showSalesOrder}
+              showThumbnail={displaySettings.showThumbnail}
             />
           ) : hasFilters ? (
             <div className="flex flex-col w-full h-full items-center justify-center gap-4">

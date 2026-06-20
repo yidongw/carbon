@@ -55,7 +55,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   const serviceRole = getCarbonServiceRole();
 
-  const accept = await acceptInvite(serviceRole, code, authSession?.email);
+  const accept = await acceptInvite(serviceRole, code, authSession?.email ?? undefined);
   if (accept.error) {
     throw redirect(
       path.to.root,
@@ -112,21 +112,17 @@ const Heading = motion.create(_Heading);
 const Button = motion.create(_Button);
 
 export default function Invite() {
-  const { success, company } = useLoaderData<typeof loader>();
   const { t } = useLingui();
+  const { success, company } = useLoaderData<typeof loader>();
+
   if (!success) {
     return (
       <VStack spacing={4} className="max-w-lg items-center text-center">
-        <div className="flex justify-center mb-8">
+        <div className="flex justify-center mb-4">
           <img
-            src="/carbon-mark-light.svg"
+            src="/carbon-logo-mark.svg"
             alt={t`Carbon Logo`}
-            className="w-24 dark:hidden"
-          />
-          <img
-            src="/carbon-mark-dark.svg"
-            alt={t`Carbon Logo`}
-            className="w-24 hidden dark:block"
+            className="w-36"
           />
         </div>
         <VStack spacing={2} className="text-center w-full">
@@ -156,21 +152,16 @@ export default function Invite() {
           initial={{ opacity: 0, scale: 0.4 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 2, ease: "easeInOut" }}
-          src="/carbon-mark-light.svg"
-          alt="Carbon Logo"
-          className="w-24 dark:hidden"
-        />
-        <img
-          src="/carbon-mark-dark.svg"
-          alt="Carbon Logo"
-          className="w-24 hidden dark:block"
+          src="/carbon-logo-mark.svg"
+          alt={t`Carbon Logo`}
+          className="w-24 mb-3"
         />
 
         <Heading
           {...fade}
           transition={{ duration: 1.2, ease: "easeInOut", delay: 1.5 }}
           size="h1"
-          className="mb-4"
+          className="m-0"
         >
           <Trans>Welcome to Carbon</Trans>
         </Heading>

@@ -2,12 +2,14 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import type { ActionFunctionArgs } from "react-router";
 import { data } from "react-router";
 import { z } from "zod";
+import { getDefaultStorageUnitForJob } from "~/modules/inventory";
 import {
-  insertJob,
   productionOrderValidator,
   recalculateJobRequirements,
+  upsertJob,
   upsertJobMethod
 } from "~/modules/production";
+import { getNextSequence } from "~/modules/settings/settings.service";
 
 const itemsValidator = z
   .object({
@@ -154,21 +156,57 @@ export async function action({ request }: ActionFunctionArgs) {
           for (const order of orders) {
             if (!order.existingId) {
               // Create new job
-              const createJob = await insertJob(
+              const nextSequence = await getNextSequence(
+                client,
+                "job",
+                companyId
+              );
+              if (nextSequence.error) {
+                const errorMsg = `Failed to generate job sequence for item ${item.id}: ${nextSequence.error.message}`;
+                console.error(errorMsg);
+                errors.push(errorMsg);
+                continue;
+              }
+
+              const jobId = nextSequence.data;
+              if (!jobId) {
+                const errorMsg = `Failed to generate job ID for item ${item.id}`;
+                console.error(errorMsg);
+                errors.push(errorMsg);
+                continue;
+              }
+
+              const storageUnitId = await getDefaultStorageUnitForJob(
+                client,
+                item.id,
+                locationId,
+                companyId
+              );
+
+              // Calculate scrap quantity based on scrap percentage
+              const scrapPercentage = manufacturing.data?.scrapPercentage ?? 0;
+              const scrapQuantity =
+                scrapPercentage > 0
+                  ? Math.ceil(order.quantity * scrapPercentage)
+                  : 0;
+
+              const createJob = await upsertJob(
                 client,
                 {
                   itemId: item.id,
+                  jobId,
                   quantity: order.quantity,
+                  scrapQuantity,
                   startDate: order.startDate ?? undefined,
                   dueDate: order.dueDate ?? undefined,
                   deadlineType: order.isASAP ? "ASAP" : "Soft Deadline",
-                  status: "Planned",
                   locationId,
+                  storageUnitId: storageUnitId ?? undefined,
                   companyId,
                   createdBy: userId,
                   unitOfMeasureCode: "EA"
                 },
-                { skipMethod: true, skipRecalculate: true }
+                "Planned"
               );
 
               if (createJob.error) {

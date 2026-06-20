@@ -3,18 +3,10 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { ResizablePanel, ResizablePanelGroup, VStack } from "@carbon/react";
 import { pluckUnique } from "@carbon/utils";
-import { Trans } from "@lingui/react/macro";
-import { Suspense } from "react";
 import type { LoaderFunctionArgs } from "react-router";
-import { Await, Outlet, redirect, useLoaderData } from "react-router";
-import { TableSkeleton } from "~/components/Skeletons";
+import { Outlet, redirect, useLoaderData } from "react-router";
 import type { InventoryItem } from "~/modules/inventory";
-import {
-  expandStorageUnitIdsWithDescendants,
-  getInventoryItems,
-  getStorageTypesList,
-  getStorageUnitsList
-} from "~/modules/inventory";
+import { getInventoryItems, getStorageTypesList } from "~/modules/inventory";
 import InventoryTable from "~/modules/inventory/ui/Inventory/InventoryTable";
 import {
   getMaterialFormsList,
@@ -39,22 +31,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const { limit, offset, sorts, filters } =
     getGenericQueryFilters(searchParams);
 
-  const storageUnitFilter = filters?.find(
-    (f) => f.column === "storageUnitIds" && f.value
-  );
-  if (storageUnitFilter?.value) {
-    const ids = storageUnitFilter.value.split(",");
-    const expanded = await expandStorageUnitIdsWithDescendants(client, ids);
-    storageUnitFilter.value = expanded.join(",");
-  }
-
   let locationId = searchParams.get("location");
 
   if (!locationId) {
     const userDefaults = await getUserDefaults(client, userId, companyId);
     if (userDefaults.error) {
       throw redirect(
-        path.to.inventory,
+        path.to.inventoryQuantities,
         await flash(
           request,
           error(userDefaults.error, "Failed to load default location")
@@ -69,7 +52,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     const locations = await getLocationsList(client, companyId);
     if (locations.error || !locations.data?.length) {
       throw redirect(
-        path.to.inventory,
+        path.to.inventoryQuantities,
         await flash(
           request,
           error(locations.error, "Failed to load any locations")
@@ -79,48 +62,53 @@ export async function loader({ request }: LoaderFunctionArgs) {
     locationId = locations.data?.[0].id as string;
   }
 
-  // Cheap filter lookups feed the toolbar — keep them blocking.
-  const [forms, substances, tags, storageTypes, storageUnits] =
+  const [inventoryItems, forms, substances, tags, storageTypes] =
     await Promise.all([
+      getInventoryItems(client, locationId, companyId, {
+        search,
+        limit,
+        offset,
+        sorts,
+        filters
+      }),
       getMaterialFormsList(client, companyId),
       getMaterialSubstancesList(client, companyId),
       getTagsList(client, companyId),
-      getStorageTypesList(client, companyId),
-      getStorageUnitsList(client, companyId)
+      getStorageTypesList(client, companyId)
     ]);
+
+  if (inventoryItems.error) {
+    redirect(
+      path.to.authenticatedRoot,
+      await flash(
+        request,
+        error(inventoryItems.error, "Failed to fetch inventory items")
+      )
+    );
+  }
 
   const uniqueTags = pluckUnique(tags.data, (t) => t.name);
 
-  // Defer the heavy inventory query: the page renders instantly and rows stream
-  // into the skeleton. (The location is resolved above, so the query is scoped.)
-  const inventoryItems = getInventoryItems(client, locationId, companyId, {
-    search,
-    limit,
-    offset,
-    sorts,
-    filters
-  });
-
   return {
-    inventoryItems,
+    count: inventoryItems.count ?? 0,
+    inventoryItems: (inventoryItems.data ?? []) as InventoryItem[],
     locationId,
     forms: forms.data ?? [],
     substances: substances.data ?? [],
     tags: uniqueTags,
-    storageTypes: storageTypes.data ?? [],
-    storageUnits: storageUnits.data ?? []
+    storageTypes: storageTypes.data ?? []
   };
 }
 
 export default function QuantitiesRoute() {
   const {
+    count,
     inventoryItems,
     locationId,
     forms,
     substances,
     tags,
-    storageTypes,
-    storageUnits
+    storageTypes
   } = useLoaderData<typeof loader>();
 
   return (
@@ -132,29 +120,15 @@ export default function QuantitiesRoute() {
           minSize={25}
           className="bg-background"
         >
-          <Suspense fallback={<TableSkeleton />}>
-            <Await
-              resolve={inventoryItems}
-              errorElement={
-                <div className="p-4 text-sm text-red-500">
-                  <Trans>Failed to load inventory.</Trans>
-                </div>
-              }
-            >
-              {(inventoryItems) => (
-                <InventoryTable
-                  data={(inventoryItems.data ?? []) as InventoryItem[]}
-                  count={inventoryItems.count ?? 0}
-                  locationId={locationId}
-                  forms={forms}
-                  substances={substances}
-                  tags={tags}
-                  storageTypes={storageTypes}
-                  storageUnits={storageUnits}
-                />
-              )}
-            </Await>
-          </Suspense>
+          <InventoryTable
+            data={inventoryItems}
+            count={count}
+            locationId={locationId}
+            forms={forms}
+            substances={substances}
+            tags={tags}
+            storageTypes={storageTypes}
+          />
         </ResizablePanel>
         <Outlet />
       </ResizablePanelGroup>

@@ -106,21 +106,7 @@ export const plannedOrderValidator = z.object({
   supplierId: zfd.text(z.string().optional()),
   itemReadableId: zfd.text(z.string().optional()),
   unitPrice: zfd.numeric(z.number().optional()),
-  unitOfMeasureCode: zfd.text(z.string().optional()),
-  // ── Reorder-policy attribution (populated by calculateOrders for
-  // MRP-suggested orders; absent for user-added "Add Order" rows). ──
-  policyName: zfd.text(z.string().optional()),
-  reason: zfd.text(z.string().optional()),
-  triggerValues: z
-    .object({
-      projectedStock: z.number().optional(),
-      safetyStock: z.number().optional(),
-      reorderPoint: z.number().optional(),
-      reorderQuantity: z.number().optional(),
-      lotSize: z.number().optional(),
-      leadTime: z.number().optional()
-    })
-    .optional()
+  unitOfMeasureCode: zfd.text(z.string().optional())
 });
 
 export type PlannedOrder = z.infer<typeof plannedOrderValidator>;
@@ -133,14 +119,11 @@ export const purchaseOrderValidator = z.object({
       message: "Type is required"
     })
   }),
-  status: z.enum(purchaseOrderStatusType).optional(),
   supplierId: z.string().min(1, { message: "Supplier is required" }),
   locationId: zfd.text(z.string().optional()),
   supplierLocationId: zfd.text(z.string().optional()),
   supplierContactId: zfd.text(z.string().optional()),
   supplierReference: zfd.text(z.string().optional()),
-  orderDate: zfd.text(z.string().optional()),
-  notes: z.any().optional(),
   currencyCode: zfd.text(z.string().optional()),
   exchangeRate: zfd.numeric(z.number().optional()),
   exchangeRateUpdatedAt: zfd.text(z.string().optional())
@@ -207,14 +190,11 @@ export const purchaseOrderLineValidator = z
   .object({
     id: zfd.text(z.string().optional()),
     purchaseOrderId: z.string().min(1, { message: "Order is required" }),
-    purchaseOrderLineType: z.enum(
-      [...methodItemType, "G/L Account", "Fixed Asset"],
-      {
-        errorMap: (issue, ctx) => ({
-          message: "Type is required"
-        })
-      }
-    ),
+    purchaseOrderLineType: z.enum([...methodItemType, "G/L Account"], {
+      errorMap: (issue, ctx) => ({
+        message: "Type is required"
+      })
+    }),
     itemId: zfd.text(z.string().optional()),
     accountId: zfd.text(z.string().optional()),
     costCenterId: zfd.text(z.string().optional()),
@@ -225,13 +205,13 @@ export const purchaseOrderLineValidator = z
     inventoryUnitOfMeasureCode: zfd.text(z.string().optional()),
     jobId: zfd.text(z.string().optional()),
     jobOperationId: zfd.text(z.string().optional()),
+    jobOperationSupplierQuantityReportId: zfd.text(z.string().optional()),
     locationId: zfd.text(z.string().optional()),
     promisedDate: zfd.text(z.string().optional()),
     purchaseQuantity: zfd.numeric(z.number().optional()),
     purchaseUnitOfMeasureCode: zfd.text(z.string().optional()),
     requiredDate: zfd.text(z.string().optional()),
     storageUnitId: zfd.text(z.string().optional()),
-    supplierPartId: zfd.text(z.string().optional()),
     supplierShippingCost: zfd.numeric(z.number().optional()),
     supplierTaxAmount: zfd.numeric(z.number().optional()),
     supplierUnitPrice: zfd.numeric(z.number().optional())
@@ -262,16 +242,6 @@ export const purchaseOrderLineValidator = z
     {
       message: "Description is required",
       path: ["description"]
-    }
-  )
-  .refine(
-    (data) =>
-      data.purchaseOrderLineType === "Fixed Asset"
-        ? (data.purchaseQuantity ?? 1) === 1
-        : true,
-    {
-      message: "Fixed Asset quantity must be 1",
-      path: ["purchaseQuantity"]
     }
   );
 
@@ -329,7 +299,6 @@ export const selectedLinesValidator = z.record(z.string(), selectedLineSchema);
 
 export const supplierValidator = z.object({
   id: zfd.text(z.string().optional()),
-  readableId: zfd.text(z.string().optional()),
   name: z.string().min(1, { message: "Name is required" }),
   supplierStatus: z.preprocess(
     (val) => (val === "" ? undefined : val),
@@ -345,7 +314,6 @@ export const supplierValidator = z.object({
 
 export const supplierApprovalValidator = z.object({
   id: zfd.text(z.string().optional()),
-  readableId: zfd.text(z.string().optional()),
   name: z.string().min(1, { message: "Name is required" }),
   supplierStatus: z.enum(supplierStatusType, {
     errorMap: (issue, ctx) => ({
@@ -414,6 +382,7 @@ export const supplierProcessValidator = z.object({
   supplierId: z.string().min(1, { message: "Supplier is required" }),
   processId: z.string().min(1, { message: "Process is required" }),
   minimumCost: zfd.numeric(z.number().min(0)),
+  unitCost: zfd.numeric(z.number().min(0)),
   leadTime: zfd.numeric(z.number().min(0))
 });
 

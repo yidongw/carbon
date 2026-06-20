@@ -35,21 +35,9 @@ import type {
   PickMethod,
   SupplierPart
 } from "../../types";
-import { FileBadge, ItemDescription } from "../Item";
+import { FileBadge } from "../Item";
 
-type ConsumablePropertiesProps = {
-  data?: {
-    itemId: string;
-    locations: ListItem[];
-    consumableSummary: Consumable;
-    files: Promise<ItemFile[]>;
-    supplierParts: SupplierPart[];
-    pickMethods: PickMethod[];
-    tags: { name: string }[];
-  };
-};
-
-const ConsumableProperties = ({ data }: ConsumablePropertiesProps) => {
+const ConsumableProperties = () => {
   const { t } = useLingui();
   const translateMethodType = (v: string) =>
     v === "Purchase to Order"
@@ -65,25 +53,21 @@ const ConsumableProperties = ({ data }: ConsumablePropertiesProps) => {
         : v === "Serial"
           ? t`Serial`
           : t`Batch`;
-  const params = useParams();
-  const itemId = data?.itemId ?? params.itemId;
+  const { itemId } = useParams();
   if (!itemId) throw new Error("itemId not found");
 
   const sharedConsumablesData = useRouteData<{ locations: ListItem[] }>(
     path.to.consumableRoot
   );
-  // When `data` is injected (subassembly context), this hook won't match a
-  // route and returns undefined — harmless, hooks must be called unconditionally.
-  const routeDataFromRoute = useRouteData<{
+  const routeData = useRouteData<{
     consumableSummary: Consumable;
     files: Promise<ItemFile[]>;
     supplierParts: SupplierPart[];
     pickMethods: PickMethod[];
     tags: { name: string }[];
   }>(path.to.consumable(itemId));
-  const routeData = data ?? routeDataFromRoute;
 
-  const locations = data?.locations ?? sharedConsumablesData?.locations ?? [];
+  const locations = sharedConsumablesData?.locations ?? [];
   const supplierParts = routeData?.supplierParts ?? [];
   const pickMethods = routeData?.pickMethods ?? [];
 
@@ -107,7 +91,6 @@ const ConsumableProperties = ({ data }: ConsumablePropertiesProps) => {
     (
       field:
         | "name"
-        | "description"
         | "replenishmentSystem"
         | "defaultMethodType"
         | "itemTrackingType"
@@ -175,7 +158,7 @@ const ConsumableProperties = ({ data }: ConsumablePropertiesProps) => {
   return (
     <VStack
       spacing={4}
-      className="w-96 bg-card h-full overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent border-l border-border px-4 py-2 text-sm"
+      className="w-full min-w-0 bg-card h-full overflow-y-auto overflow-x-hidden overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent px-4 py-2 text-sm"
     >
       <VStack spacing={2}>
         <HStack className="w-full justify-between">
@@ -271,7 +254,6 @@ const ConsumableProperties = ({ data }: ConsumablePropertiesProps) => {
                 name="name"
                 inline
                 size="sm"
-                characterLimit={40}
                 value={routeData?.consumableSummary?.name ?? ""}
                 onBlur={(e) => {
                   onUpdate("name", e.target.value ?? null);
@@ -395,11 +377,6 @@ const ConsumableProperties = ({ data }: ConsumablePropertiesProps) => {
           value={routeData?.consumableSummary?.unitOfMeasure ?? null}
         />
       </VStack>
-
-      <ItemDescription
-        value={routeData?.consumableSummary?.description ?? ""}
-        onChange={(value) => onUpdate("description", value)}
-      />
 
       <VStack spacing={2}>
         <HStack className="w-full justify-between">

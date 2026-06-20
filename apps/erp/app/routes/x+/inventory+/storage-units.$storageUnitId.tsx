@@ -7,13 +7,7 @@ import type {
   ClientActionFunctionArgs,
   LoaderFunctionArgs
 } from "react-router";
-import {
-  data,
-  Outlet,
-  redirect,
-  useLoaderData,
-  useNavigate
-} from "react-router";
+import { data, redirect, useLoaderData, useNavigate } from "react-router";
 import {
   getStorageUnit,
   StorageUnitForm,
@@ -116,14 +110,11 @@ export default function EditStorageUnitRoute() {
   };
 
   return (
-    <>
-      <StorageUnitForm
-        key={initialValues.id}
-        initialValues={initialValues}
-        locationId={initialValues.locationId}
-        onClose={() => navigate(-1)}
-      />
-      <Outlet />
-    </>
+    <StorageUnitForm
+      key={initialValues.id}
+      initialValues={initialValues}
+      locationId={initialValues.locationId}
+      onClose={() => navigate(-1)}
+    />
   );
 }

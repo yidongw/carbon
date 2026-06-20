@@ -3,6 +3,10 @@ import { zfd } from "zod-form-data";
 import { address, contact } from "~/types/validators";
 import { currencyCodes } from "../accounting";
 import {
+  requiresInsideLaborFields,
+  requiresStrictOutsideRoutingFields
+} from "../production/operationType";
+import {
   incoterms,
   methodItemType,
   methodOperationOrders,
@@ -64,7 +68,6 @@ export const customerLocationValidator = z.object({
 
 export const customerValidator = z.object({
   id: zfd.text(z.string().optional()),
-  readableId: zfd.text(z.string().optional()),
   name: z.string().min(1, { message: "Name is required" }),
   customerStatusId: zfd.text(z.string().optional()),
   customerTypeId: zfd.text(z.string().optional()),
@@ -289,7 +292,6 @@ export const quoteStatusType = [
 export const quoteValidator = z.object({
   id: zfd.text(z.string().optional()),
   quoteId: zfd.text(z.string().optional()),
-  name: zfd.text(z.string().optional()),
   salesPersonId: zfd.text(z.string().optional()),
   estimatorId: zfd.text(z.string().optional()),
   customerId: z.string().min(1, { message: "Customer is required" }),
@@ -487,11 +489,12 @@ export const quoteOperationValidator = z
     operationSupplierProcessId: zfd.text(z.string().optional()),
     operationMinimumCost: zfd.numeric(z.number().min(0).optional()),
     operationUnitCost: zfd.numeric(z.number().min(0).optional()),
-    operationLeadTime: zfd.numeric(z.number().min(0).optional())
+    operationLeadTime: zfd.numeric(z.number().min(0).optional()),
+    insideUnitCost: zfd.numeric(z.number().min(0).optional())
   })
   .refine(
     (data) => {
-      if (data.operationType === "Outside") {
+      if (requiresStrictOutsideRoutingFields(data.operationType)) {
         return Number.isFinite(data.operationMinimumCost);
       }
       return true;
@@ -503,7 +506,7 @@ export const quoteOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Outside") {
+      if (requiresStrictOutsideRoutingFields(data.operationType)) {
         return Number.isFinite(data.operationUnitCost);
       }
       return true;
@@ -515,7 +518,7 @@ export const quoteOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Outside") {
+      if (requiresStrictOutsideRoutingFields(data.operationType)) {
         return Number.isFinite(data.operationLeadTime);
       }
       return true;
@@ -527,7 +530,7 @@ export const quoteOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return !!data.setupUnit;
       }
       return true;
@@ -539,7 +542,7 @@ export const quoteOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return !!data.laborUnit;
       }
       return true;
@@ -551,7 +554,7 @@ export const quoteOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return !!data.laborUnit;
       }
       return true;
@@ -563,7 +566,7 @@ export const quoteOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return Number.isFinite(data.setupTime);
       }
       return true;
@@ -575,7 +578,7 @@ export const quoteOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return Number.isFinite(data.laborTime);
       }
       return true;
@@ -587,7 +590,7 @@ export const quoteOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return Number.isFinite(data.machineTime);
       }
       return true;
@@ -599,7 +602,7 @@ export const quoteOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return Number.isFinite(data.machineRate);
       }
       return true;
@@ -611,7 +614,7 @@ export const quoteOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return Number.isFinite(data.overheadRate);
       }
       return true;
@@ -623,7 +626,7 @@ export const quoteOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return Number.isFinite(data.laborRate);
       }
       return true;
@@ -707,7 +710,6 @@ export const salesConfirmValidator = z
 export const salesOrderValidator = z.object({
   id: zfd.text(z.string().optional()),
   salesOrderId: zfd.text(z.string().optional()),
-  orderDate: zfd.text(z.string().optional()),
   requestedDate: zfd.text(z.string().optional()),
   promisedDate: zfd.text(z.string().optional()),
   status: z.enum(salesOrderStatusType).optional(),
@@ -824,11 +826,8 @@ export const salesOrderLineValidator = z
   )
   .refine(
     (data) => {
-      if (
-        data.salesOrderLineType !== "Comment" &&
-        data.salesOrderLineType !== "Fixed Asset" &&
-        !data.methodType
-      ) {
+      // If sales order line type is not "Comment", we require a method type
+      if (data.salesOrderLineType !== "Comment" && !data.methodType) {
         return false;
       }
       return true;
@@ -836,16 +835,6 @@ export const salesOrderLineValidator = z
     {
       message: "Method type is required",
       path: ["methodType"]
-    }
-  )
-  .refine(
-    (data) =>
-      data.salesOrderLineType === "Fixed Asset"
-        ? (data.saleQuantity ?? 1) === 1
-        : true,
-    {
-      message: "Fixed Asset quantity must be 1",
-      path: ["saleQuantity"]
     }
   );
 

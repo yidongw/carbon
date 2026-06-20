@@ -1,11 +1,5 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
-import { ensureFont, PurchaseOrderPDF } from "@carbon/documents/pdf";
-import {
-  collectSectionIds,
-  resolveTemplate,
-  templateShowsThumbnails,
-  toDocumentTemplate
-} from "@carbon/documents/template";
+import { PurchaseOrderPDF } from "@carbon/documents/pdf";
 import type { JSONContent } from "@carbon/react";
 import { getPreferenceHeaders } from "@carbon/react";
 import { renderToStream } from "@react-pdf/renderer";
@@ -20,9 +14,7 @@ import {
 import {
   getAccountsPayableBillingAddress,
   getCompany,
-  getCompanySettings,
-  getDocumentTemplate,
-  resolveSections
+  getCompanySettings
 } from "~/modules/settings";
 import { getBase64ImageFromSupabase } from "~/modules/shared";
 
@@ -42,8 +34,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     purchaseOrderLines,
     purchaseOrderLocations,
     terms,
-    paymentTerms,
-    documentTemplate
+    paymentTerms
   ] = await Promise.all([
     getCompany(client, companyId),
     getCompanySettings(client, companyId),
@@ -52,8 +43,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     getPurchaseOrderLines(client, orderId),
     getPurchaseOrderLocations(client, orderId),
     getPurchasingTerms(client, companyId),
-    getPaymentTermsList(client, companyId),
-    getDocumentTemplate(client, companyId, "purchaseOrder")
+    getPaymentTermsList(client, companyId)
   ]);
 
   if (company.error) {
@@ -86,14 +76,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     throw new Error("Failed to load purchase order");
   }
 
-  const templateConfig = toDocumentTemplate(
-    documentTemplate.data,
-    "purchaseOrder"
-  );
-  const showThumbnails = templateShowsThumbnails(
-    templateConfig,
-    "purchaseOrder"
-  );
+  const showThumbnails =
+    companySettings.data?.includeThumbnailsOnPurchasingPdfs ?? true;
 
   let thumbnails: Record<string, string | null> = {};
 
@@ -131,14 +115,6 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const { locale } = getPreferenceHeaders(request);
 
-  const resolved = resolveTemplate("purchaseOrder", templateConfig);
-  const sections = await resolveSections(
-    client,
-    companyId,
-    collectSectionIds(resolved)
-  );
-  await ensureFont(resolved.settings.fontFamily);
-
   const stream = await renderToStream(
     <PurchaseOrderPDF
       company={company.data as any}
@@ -155,8 +131,6 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       purchaseOrderLocations={purchaseOrderLocations.data}
       terms={(terms?.data?.purchasingTerms || {}) as JSONContent}
       thumbnails={thumbnails}
-      template={templateConfig}
-      sections={sections}
     />
   );
 

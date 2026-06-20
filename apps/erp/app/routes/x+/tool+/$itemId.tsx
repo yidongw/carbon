@@ -25,7 +25,7 @@ import {
   useLoaderData,
   useParams
 } from "react-router";
-import { ResizablePanels } from "~/components/Layout";
+import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import { flattenTree } from "~/components/TreeView";
 import type { ItemFile, ToolSummary } from "~/modules/items";
 import {
@@ -141,10 +141,11 @@ export default function ToolRoute() {
   const [filterText, setFilterText] = useState("");
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
+    <PanelProvider>
+      <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
       <ToolHeader />
       <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
-        <div className="flex flex-grow overflow-hidden">
+        <div className="flex flex-1 min-h-0 h-full overflow-hidden">
           <ResizablePanels
             explorer={
               <div className="flex flex-col h-full">
@@ -230,8 +231,7 @@ export default function ToolRoute() {
                                 quoteMaterials,
                                 salesOrderLines,
                                 shipmentLines,
-                                supplierQuotes,
-                                jobMaterialUsage
+                                supplierQuotes
                               } = resolvedUsedIn;
 
                               const tree: UsedInNode[] = [
@@ -337,7 +337,6 @@ export default function ToolRoute() {
                                     toolData.toolSummary
                                       ?.readableIdWithRevision ?? ""
                                   }
-                                  jobMaterialUsage={jobMaterialUsage}
                                   filterText={filterText}
                                   hideSearch
                                 />
@@ -378,20 +377,19 @@ export default function ToolRoute() {
                               quoteMaterials,
                               salesOrderLines,
                               shipmentLines,
-                              supplierQuotes,
-                              jobMaterialUsage
+                              supplierQuotes
                             } = resolvedUsedIn;
 
                             const tree: UsedInNode[] = [
                               {
                                 key: "issues",
-                                name: "Issues",
+                                name: t`Issues`,
                                 module: "quality",
                                 children: issues
                               },
                               {
                                 key: "jobs",
-                                name: "Jobs",
+                                name: t`Jobs`,
                                 module: "production",
                                 children: jobs.map((job) => ({
                                   ...job,
@@ -400,26 +398,26 @@ export default function ToolRoute() {
                               },
                               {
                                 key: "jobMaterials",
-                                name: "Job Materials",
+                                name: t`Job Materials`,
                                 module: "production",
                                 children: jobMaterials
                               },
                               {
                                 key: "maintenanceDispatchItems",
-                                name: "Maintenance",
+                                name: t`Maintenance`,
                                 module: "resources",
                                 children: maintenanceDispatchItems
                               },
                               {
                                 key: "methodMaterials",
-                                name: "Method Materials",
+                                name: t`Method Materials`,
                                 module: "parts",
                                 // @ts-expect-error
                                 children: methodMaterials
                               },
                               {
                                 key: "purchaseOrderLines",
-                                name: "Purchase Orders",
+                                name: t`Purchase Orders`,
                                 module: "purchasing",
                                 children: purchaseOrderLines.map((po) => ({
                                   ...po,
@@ -428,7 +426,7 @@ export default function ToolRoute() {
                               },
                               {
                                 key: "receiptLines",
-                                name: "Receipts",
+                                name: t`Receipts`,
                                 module: "inventory",
                                 children: receiptLines.map((receipt) => ({
                                   ...receipt,
@@ -437,13 +435,13 @@ export default function ToolRoute() {
                               },
                               {
                                 key: "quoteLines",
-                                name: "Quotes",
+                                name: t`Quotes`,
                                 module: "sales",
                                 children: quoteLines
                               },
                               {
                                 key: "quoteMaterials",
-                                name: "Quote Materials",
+                                name: t`Quote Materials`,
                                 module: "sales",
                                 children: quoteMaterials?.map((qm) => ({
                                   ...qm,
@@ -453,13 +451,13 @@ export default function ToolRoute() {
                               },
                               {
                                 key: "salesOrderLines",
-                                name: "Sales Orders",
+                                name: t`Sales Orders`,
                                 module: "sales",
                                 children: salesOrderLines
                               },
                               {
                                 key: "shipmentLines",
-                                name: "Shipments",
+                                name: t`Shipments`,
                                 module: "inventory",
                                 children: shipmentLines.map((shipment) => ({
                                   ...shipment,
@@ -468,7 +466,7 @@ export default function ToolRoute() {
                               },
                               {
                                 key: "supplierQuotes",
-                                name: "Supplier Quotes",
+                                name: t`Supplier Quotes`,
                                 module: "purchasing",
                                 children: supplierQuotes
                               }
@@ -485,7 +483,6 @@ export default function ToolRoute() {
                                   toolData.toolSummary
                                     ?.readableIdWithRevision ?? ""
                                 }
-                                jobMaterialUsage={jobMaterialUsage}
                                 filterText={filterText}
                                 hideSearch
                               />
@@ -499,7 +496,7 @@ export default function ToolRoute() {
               </div>
             }
             content={
-              <div className="h-[calc(100dvh-99px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
+              <div className="h-full min-h-0 overflow-y-auto overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
                 <Outlet />
               </div>
             }
@@ -508,5 +505,6 @@ export default function ToolRoute() {
         </div>
       </div>
     </div>
+    </PanelProvider>
   );
 }

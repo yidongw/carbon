@@ -8,9 +8,6 @@ import {
   MenuIcon,
   MenuItem,
   ScrollArea,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
   useMount,
   VStack
 } from "@carbon/react";
@@ -289,40 +286,7 @@ const JobMaterialsTable = memo(
                     <span className="text-red-500">
                       {formatter.format(quantityOnHandInStorageUnit)}
                     </span>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <span>
-                          <LuFlag className="text-red-500" />
-                        </span>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <div className="flex flex-col gap-1 text-xs">
-                          <div className="font-medium">
-                            Storage unit demand exceeds supply
-                          </div>
-                          <div>
-                            On hand at unit:{" "}
-                            {formatter.format(quantityOnHandInStorageUnit)}
-                          </div>
-                          <div>
-                            In transit to unit:{" "}
-                            {formatter.format(quantityInTransitToStorageUnit)}
-                          </div>
-                          <div>
-                            Required at unit:{" "}
-                            {formatter.format(quantityRequiredByStorageUnit)}
-                          </div>
-                          <div className="font-medium">
-                            Net:{" "}
-                            {formatter.format(
-                              quantityOnHandInStorageUnit +
-                                quantityInTransitToStorageUnit -
-                                quantityRequiredByStorageUnit
-                            )}
-                          </div>
-                        </div>
-                      </TooltipContent>
-                    </Tooltip>
+                    <LuFlag className="text-red-500" />
                   </>
                 ) : (
                   <span>{formatter.format(quantityOnHandInStorageUnit)}</span>
@@ -367,29 +331,7 @@ const JobMaterialsTable = memo(
                     <span className="text-red-500">
                       {formatter.format(quantityOnHand)}
                     </span>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <span>
-                          <LuFlag className="text-red-500" />
-                        </span>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <div className="flex flex-col gap-1 text-xs">
-                          <div className="font-medium">
-                            Future demand exceeds supply
-                          </div>
-                          <div>On hand: {formatter.format(quantityOnHand)}</div>
-                          <div>Incoming: {formatter.format(incoming)}</div>
-                          <div>Required: {formatter.format(required)}</div>
-                          <div className="font-medium">
-                            Net:{" "}
-                            {formatter.format(
-                              quantityOnHand + incoming - required
-                            )}
-                          </div>
-                        </div>
-                      </TooltipContent>
-                    </Tooltip>
+                    <LuFlag className="text-red-500" />
                   </>
                 ) : (
                   <span>{formatter.format(quantityOnHand)}</span>

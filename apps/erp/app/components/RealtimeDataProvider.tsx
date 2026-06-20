@@ -120,19 +120,14 @@ const RealtimeDataProvider = ({ children }: { children: React.ReactNode }) => {
         name: string;
         website: string;
         supplierStatus: string;
-        readableId: string | null;
-      }>(
-        carbon,
-        "supplier",
-        "id, name, website, supplierStatus, readableId",
-        (query) => query.eq("companyId", companyId).order("name")
+      }>(carbon, "supplier", "id, name, website, supplierStatus", (query) =>
+        query.eq("companyId", companyId).order("name")
       ),
       fetchAllFromTable<{
         id: string;
         name: string;
         website: string;
-        readableId: string | null;
-      }>(carbon, "customer", "id, name, website, readableId", (query) =>
+      }>(carbon, "customer", "id, name, website", (query) =>
         query.eq("companyId", companyId).order("name")
       ),
       fetchAllFromTable<{

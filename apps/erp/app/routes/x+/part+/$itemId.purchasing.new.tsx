@@ -1,9 +1,10 @@
-import { assertIsPost } from "@carbon/auth";
+import { assertIsPost, success } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
+import { flash } from "@carbon/auth/session.server";
 import { validator } from "@carbon/form";
 import { useRouteData } from "@carbon/react";
 import type { ActionFunctionArgs } from "react-router";
-import { useNavigate, useParams } from "react-router";
+import { redirect, useNavigate, useParams } from "react-router";
 import type { PartSummary } from "~/modules/items";
 import { supplierPartValidator, upsertSupplierPart } from "~/modules/items";
 import { SupplierPartForm } from "~/modules/items/ui/Item";
@@ -70,7 +71,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
     }
   }
 
-  return { success: true, message: "Part supplier created" };
+  throw redirect(
+    path.to.partPurchasing(itemId),
+    await flash(request, success("Part supplier created"))
+  );
 }
 
 export default function NewPartSupplierRoute() {
@@ -89,7 +93,6 @@ export default function NewPartSupplierRoute() {
     unitPrice: 0,
     supplierUnitOfMeasureCode: "EA",
     minimumOrderQuantity: 1,
-    orderMultiple: 1,
     conversionFactor: 1
   };
 

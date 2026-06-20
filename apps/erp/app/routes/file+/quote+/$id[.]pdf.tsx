@@ -1,11 +1,5 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
-import { ensureFont, QuotePDF } from "@carbon/documents/pdf";
-import {
-  collectSectionIds,
-  resolveTemplate,
-  templateShowsThumbnails,
-  toDocumentTemplate
-} from "@carbon/documents/template";
+import { QuotePDF } from "@carbon/documents/pdf";
 import type { JSONContent } from "@carbon/react";
 import { getPreferenceHeaders } from "@carbon/react";
 import { renderToStream } from "@react-pdf/renderer";
@@ -24,9 +18,7 @@ import {
 import {
   getAccountsReceivableBillingAddress,
   getCompany,
-  getCompanySettings,
-  getDocumentTemplate,
-  resolveSections
+  getCompanySettings
 } from "~/modules/settings";
 import { getBase64ImageFromSupabase } from "~/modules/shared";
 
@@ -55,8 +47,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     quoteShipment,
     paymentTerms,
     terms,
-    shippingMethods,
-    documentTemplate
+    shippingMethods
   ] = await Promise.all([
     getCompany(client, companyId),
     getCompanySettings(client, companyId),
@@ -69,8 +60,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     getQuoteShipment(client, id),
     getPaymentTermsList(client, companyId),
     getSalesTerms(client, companyId),
-    getShippingMethodsList(client, companyId),
-    getDocumentTemplate(client, companyId, "quote")
+    getShippingMethodsList(client, companyId)
   ]);
 
   if (company.error) {
@@ -97,8 +87,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     throw new Error("Failed to load quote");
   }
 
-  const templateConfig = toDocumentTemplate(documentTemplate.data, "quote");
-  const showThumbnails = templateShowsThumbnails(templateConfig, "quote");
+  const showThumbnails =
+    companySettings.data?.includeThumbnailsOnSalesPdfs ?? true;
 
   let thumbnails: Record<string, string | null> = {};
 
@@ -146,14 +136,6 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     }
   }
 
-  const resolved = resolveTemplate("quote", templateConfig);
-  const sections = await resolveSections(
-    client,
-    companyId,
-    collectSectionIds(resolved)
-  );
-  await ensureFont(resolved.settings.fontFamily);
-
   const stream = await renderToStream(
     <QuotePDF
       company={company.data as any}
@@ -175,8 +157,6 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       shippingMethods={shippingMethods.data ?? []}
       terms={(terms?.data?.salesTerms ?? {}) as JSONContent}
       thumbnails={thumbnails}
-      template={templateConfig}
-      sections={sections}
     />
   );
 

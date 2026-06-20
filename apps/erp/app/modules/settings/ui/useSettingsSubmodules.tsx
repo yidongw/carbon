@@ -1,20 +1,19 @@
 import { useLingui } from "@lingui/react/macro";
 import { useMemo } from "react";
 import {
+  LuBarcode,
   LuBox,
   LuCircleCheck,
   LuClipboardCheck,
   LuCreditCard,
   LuCrown,
   LuFactory,
-  LuFileText,
   LuHistory,
   LuImage,
   LuKey,
   LuLandmark,
   LuLayoutDashboard,
   LuNetwork,
-  LuPrinter,
   LuSheet,
   LuShoppingCart,
   LuSquareStack,
@@ -44,14 +43,6 @@ export default function useSettingsSubmodules() {
         name: t`Company`,
         routes: [
           {
-            name: t`Billing`,
-            to: path.to.billing,
-            role: "employee",
-            icon: <LuCreditCard />,
-            requiresOwnership: true,
-            requiresCloudEnvironment: true
-          },
-          {
             name: t`Company`,
             to: path.to.company,
             role: "employee",
@@ -64,22 +55,24 @@ export default function useSettingsSubmodules() {
             icon: <LuNetwork />
           },
           {
-            name: t`Document Templates`,
-            to: path.to.documentTemplates,
+            name: t`Billing`,
+            to: path.to.billing,
             role: "employee",
-            icon: <LuFileText />
+            icon: <LuCreditCard />,
+            requiresOwnership: true,
+            requiresCloudEnvironment: true
+          },
+          {
+            name: t`Labels`,
+            to: path.to.labelsSettings,
+            role: "employee",
+            icon: <LuBarcode />
           },
           {
             name: t`Logos`,
             to: path.to.logos,
             role: "employee",
             icon: <LuImage />
-          },
-          {
-            name: t`Printing`,
-            to: path.to.printingSettings,
-            role: "employee",
-            icon: <LuPrinter />
           }
         ]
       },

@@ -1,11 +1,5 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
-import { ensureFont, SalesInvoicePDF } from "@carbon/documents/pdf";
-import {
-  collectSectionIds,
-  resolveTemplate,
-  templateShowsThumbnails,
-  toDocumentTemplate
-} from "@carbon/documents/template";
+import { SalesInvoicePDF } from "@carbon/documents/pdf";
 import type { JSONContent } from "@carbon/react";
 import { getPreferenceHeaders } from "@carbon/react";
 import { renderToStream } from "@react-pdf/renderer";
@@ -18,13 +12,11 @@ import {
   getSalesInvoiceLines,
   getSalesInvoiceShipment
 } from "~/modules/invoicing";
-import { getSalesOrdersByIds, getSalesTerms } from "~/modules/sales";
+import { getSalesTerms } from "~/modules/sales";
 import {
   getAccountsReceivableBillingAddress,
   getCompany,
-  getCompanySettings,
-  getDocumentTemplate,
-  resolveSections
+  getCompanySettings
 } from "~/modules/settings";
 import { getBase64ImageFromSupabase } from "~/modules/shared";
 
@@ -46,8 +38,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     salesInvoiceShipment,
     terms,
     paymentTerms,
-    shippingMethods,
-    documentTemplate
+    shippingMethods
   ] = await Promise.all([
     getCompany(client, companyId),
     getCompanySettings(client, companyId),
@@ -58,8 +49,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     getSalesInvoiceShipment(client, id),
     getSalesTerms(client, companyId),
     getPaymentTermsList(client, companyId),
-    getShippingMethodsList(client, companyId),
-    getDocumentTemplate(client, companyId, "salesInvoice")
+    getShippingMethodsList(client, companyId)
   ]);
 
   if (company.error) {
@@ -97,14 +87,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     throw new Error("Failed to load sales order");
   }
 
-  const templateConfig = toDocumentTemplate(
-    documentTemplate.data,
-    "salesInvoice"
-  );
-  const showThumbnails = templateShowsThumbnails(
-    templateConfig,
-    "salesInvoice"
-  );
+  const showThumbnails =
+    companySettings.data?.includeThumbnailsOnSalesPdfs ?? true;
 
   let thumbnails: Record<string, string | null> = {};
 
@@ -140,42 +124,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       }, {}) ?? {};
   }
 
-  // Resolve the human-readable numbers of any sales orders linked to this
-  // invoice's lines. An invoice can be billed against more than one sales
-  // order, so we collect the distinct set.
-  const linkedSalesOrderIds = Array.from(
-    new Set(
-      (salesInvoiceLines.data ?? [])
-        .map((line) => line.salesOrderId)
-        .filter((salesOrderId): salesOrderId is string => Boolean(salesOrderId))
-    )
-  );
-
-  let salesOrderIds: string[] = [];
-  if (linkedSalesOrderIds.length > 0) {
-    const salesOrders = await getSalesOrdersByIds(client, linkedSalesOrderIds);
-    if (salesOrders.error) {
-      console.error(salesOrders.error);
-    }
-    salesOrderIds = Array.from(
-      new Set((salesOrders.data ?? []).map((order) => order.salesOrderId))
-    ).sort();
-  }
-
   const { locale } = getPreferenceHeaders(request);
-
-  // Resolve against the effective template (default when nothing is stored) so
-  // built-in / forked header & footer sections render even before a company
-  // saves a custom layout.
-  const resolved = resolveTemplate("salesInvoice", templateConfig);
-  const sections = await resolveSections(
-    client,
-    companyId,
-    collectSectionIds(resolved)
-  );
-
-  // Register the chosen Google font (no-op for built-ins / Inter) before render.
-  await ensureFont(resolved.settings.fontFamily);
 
   const stream = await renderToStream(
     <SalesInvoicePDF
@@ -189,7 +138,6 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       }}
       salesInvoice={salesInvoice.data}
       salesInvoiceLines={salesInvoiceLines.data ?? []}
-      salesOrderIds={salesOrderIds}
       salesInvoiceLocations={salesInvoiceLocations.data}
       salesInvoiceShipment={salesInvoiceShipment.data}
       accountsReceivableBillingAddress={
@@ -202,8 +150,6 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       shippingMethods={shippingMethods.data ?? []}
       title="Sales Invoice"
       thumbnails={thumbnails}
-      template={templateConfig}
-      sections={sections}
     />
   );
 

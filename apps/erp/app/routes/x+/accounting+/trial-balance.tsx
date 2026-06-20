@@ -2,7 +2,6 @@ import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { VStack } from "@carbon/react";
-import { useState } from "react";
 import type { LoaderFunctionArgs } from "react-router";
 import { redirect, useLoaderData } from "react-router";
 import type { Chart } from "~/modules/accounting";
@@ -159,7 +158,6 @@ export default function TrialBalanceRoute() {
     isForeignCurrency,
     parentCurrency
   } = useLoaderData<typeof loader>();
-  const [search, setSearch] = useState("");
 
   return (
     <VStack spacing={0} className="h-full">
@@ -169,14 +167,11 @@ export default function TrialBalanceRoute() {
         isMultiCompany={isMultiCompany}
         isForeignCurrency={isForeignCurrency}
         parentCurrency={parentCurrency}
-        search={search}
-        onSearchChange={setSearch}
       />
       <TrialBalanceTree
         data={trialBalance}
         showTranslated={showTranslated}
         parentCurrency={parentCurrency}
-        search={search}
       />
     </VStack>
   );

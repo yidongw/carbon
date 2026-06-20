@@ -43,13 +43,11 @@ import type { QuoteMethod } from "../../types";
 type QuoteBoMExplorerProps = {
   methods: FlatTree<QuoteMethod>;
   isSearchExpanded?: boolean;
-  isAllExpanded?: boolean;
 };
 
 const QuoteBoMExplorer = ({
   methods,
-  isSearchExpanded = false,
-  isAllExpanded = false
+  isSearchExpanded = false
 }: QuoteBoMExplorerProps) => {
   const { t } = useLingui();
   const parentRef = useRef<HTMLDivElement>(null);
@@ -109,15 +107,6 @@ const QuoteBoMExplorer = ({
     },
     isEager: true
   });
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: only react to isAllExpanded changes
-  useEffect(() => {
-    if (isAllExpanded) {
-      expandAllBelowDepth(0);
-    } else {
-      collapseAllBelowDepth(1);
-    }
-  }, [isAllExpanded]);
 
   const params = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -194,7 +183,7 @@ const QuoteBoMExplorer = ({
             getNodeProps={getNodeProps}
             getTreeProps={getTreeProps}
             renderNode={({ node, state }) => (
-              <HoverCard openDelay={500} closeDelay={0}>
+              <HoverCard openDelay={500}>
                 <HoverCardTrigger asChild>
                   <div
                     key={node.id}
@@ -275,7 +264,7 @@ const QuoteBoMExplorer = ({
                     </div>
                   </div>
                 </HoverCardTrigger>
-                <HoverCardContent side="right" className="pointer-events-none">
+                <HoverCardContent side="right">
                   <NodePreview node={node} />
                 </HoverCardContent>
               </HoverCard>

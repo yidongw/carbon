@@ -12,11 +12,10 @@ import { renderAsync } from "@react-email/components";
 import { parseAcceptLanguage } from "intl-parse-accept-language";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useParams } from "react-router";
-import { PanelProvider, ResizablePanels } from "~/components/Layout/Panels";
+import { PanelProvider, ResizablePanels } from "~/components/Layout";
 import { getPaymentTermsList } from "~/modules/accounting";
 import { upsertDocument } from "~/modules/documents";
 import {
-  getDefaultAttachmentsForPO,
   getPurchaseOrder,
   getPurchaseOrderDelivery,
   getPurchaseOrderLines,
@@ -28,7 +27,7 @@ import {
   purchaseOrderApprovalValidator
 } from "~/modules/purchasing";
 import {
-  PurchaseOrderExplorer,
+  // PurchaseOrderExplorer,
   PurchaseOrderHeader,
   PurchaseOrderProperties
 } from "~/modules/purchasing/ui/PurchaseOrder";
@@ -38,7 +37,6 @@ import {
   canApproveRequest,
   canCancelRequest,
   getLatestApprovalRequestForDocument,
-  getLowerTierApproverUserIds,
   rejectRequest
 } from "~/modules/shared";
 import { getUser } from "~/modules/users/users.server";
@@ -155,41 +153,6 @@ export async function action(args: ActionFunctionArgs) {
     }
   }
 
-  // Notified-of-spend cascade. Purchase orders use tiered amount rules,
-  // so when a decision is made at a high tier we ping the approvers of
-  // every enabled rule with a strictly lower threshold — they get
-  // visibility into spend that bypassed their tier. Filtered to exclude
-  // the requester (already notified above) and the current approver.
-  try {
-    const lowerTierIds = await getLowerTierApproverUserIds(
-      serviceRole,
-      "purchaseOrder",
-      companyId,
-      approvalRequest.data.amount ?? undefined
-    );
-    const recipients = lowerTierIds.filter(
-      (id) => id !== requestedBy && id !== userId
-    );
-    if (recipients.length > 0) {
-      await trigger("notify", {
-        event:
-          decision === "Approved"
-            ? NotificationEvent.ApprovalApproved
-            : NotificationEvent.ApprovalRejected,
-        companyId,
-        documentId: orderId,
-        documentType: "purchaseOrder",
-        recipient: { type: "users", userIds: recipients },
-        from: userId
-      });
-    }
-  } catch (e) {
-    console.error(
-      "Failed to trigger lower-tier spend notification for purchase order",
-      e
-    );
-  }
-
   // If approved, handle post-approval tasks: PDF generation, document creation, email, price updates
   if (decision === "Approved") {
     const purchaseOrder = await getPurchaseOrder(serviceRole, orderId);
@@ -287,7 +250,7 @@ export async function action(args: ActionFunctionArgs) {
                 lastName: supplier.data?.contact?.lastName ?? undefined
               },
               sender: {
-                email: buyer.data.email,
+                email: buyer.data.email ?? "",
                 firstName: buyer.data.firstName,
                 lastName: buyer.data.lastName
               },
@@ -302,9 +265,9 @@ export async function action(args: ActionFunctionArgs) {
               .createSignedUrl(documentFilePath!, 3600);
 
             await trigger("send-email", {
-              to: [buyer.data.email, supplierEmail],
+              to: [buyer.data.email ?? "", supplierEmail],
               cc: ccSelections?.length ? ccSelections : undefined,
-              from: buyer.data.email,
+              from: buyer.data.email ?? "",
               subject: `Purchase Order ${purchaseOrder.data.purchaseOrderId} from ${company.data.name}`,
               html,
               text,
@@ -336,7 +299,6 @@ export async function action(args: ActionFunctionArgs) {
             body: {
               purchaseOrderId: orderId,
               companyId,
-              userId,
               source: "purchaseOrder",
               updatePrices: true,
               updateLeadTimes: false
@@ -464,37 +426,6 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     canDelete = isRequester;
   }
 
-  const itemIds = Array.from(
-    new Set(
-      (lines.data ?? []).map((l) => l.itemId).filter((id): id is string => !!id)
-    )
-  );
-  const supplierInteractionId = purchaseOrder.data?.supplierInteractionId;
-  const [defaultAttachments, adHocDocs] = await Promise.all([
-    getDefaultAttachmentsForPO(serviceRole, {
-      companyId,
-      supplierId: purchaseOrder.data?.supplierId ?? null,
-      itemIds
-    }),
-    supplierInteractionId
-      ? getSupplierInteractionDocuments(
-          serviceRole,
-          companyId,
-          supplierInteractionId
-        )
-      : Promise.resolve([])
-  ]);
-  const adHocAttachments = adHocDocs.map((d) => ({
-    source: "po" as const,
-    name: d.name,
-    size:
-      (d.metadata as { size?: number } | null | undefined)?.size != null
-        ? Math.round(((d.metadata as { size?: number }).size as number) / 1024)
-        : null,
-    path: `${companyId}/supplier-interaction/${supplierInteractionId}/${d.name}`
-  }));
-  const resolvedAttachments = [...defaultAttachments, ...adHocAttachments];
-
   return {
     purchaseOrder: purchaseOrder.data,
     purchaseOrderDelivery: purchaseOrderDelivery.data,
@@ -510,8 +441,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     canApprove,
     canReopen,
     canDelete,
-    defaultCc,
-    resolvedAttachments
+    defaultCc
   };
 }
 
@@ -524,12 +454,12 @@ export default function PurchaseOrderRoute() {
     <PanelProvider>
       <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
         <PurchaseOrderHeader />
-        <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
-          <div className="flex flex-grow overflow-hidden">
+        <div className="flex flex-1 min-h-0 overflow-hidden w-full">
+          <div className="flex flex-1 min-h-0 h-full overflow-hidden">
             <ResizablePanels
-              explorer={<PurchaseOrderExplorer />}
+              // explorer={<PurchaseOrderExplorer />}
               content={
-                <div className="h-[calc(100dvh-99px)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
+                <div className="h-full min-h-0 overflow-y-auto overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
                   <VStack spacing={2} className="p-2">
                     <Outlet />
                   </VStack>

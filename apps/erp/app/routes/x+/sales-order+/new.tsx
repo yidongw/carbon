@@ -6,8 +6,9 @@ import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
 import { useUrlParams, useUser } from "~/hooks";
-import { insertSalesOrder, salesOrderValidator } from "~/modules/sales";
+import { salesOrderValidator, upsertSalesOrder } from "~/modules/sales";
 import { SalesOrderForm } from "~/modules/sales/ui/SalesOrder";
+import { getNextSequence } from "~/modules/settings";
 import { setCustomFields } from "~/utils/form";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
@@ -32,25 +33,49 @@ export async function action({ request }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
-  const { id: _id, ...data } = validation.data;
+  // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
+  const { id, ...d } = validation.data;
+  let salesOrderId = d.salesOrderId;
+  const useNextSequence = !salesOrderId;
 
-  const result = await insertSalesOrder(client, {
-    ...data,
-    salesOrderId: data.salesOrderId || undefined,
+  if (useNextSequence) {
+    const nextSequence = await getNextSequence(client, "salesOrder", companyId);
+    if (nextSequence.error) {
+      throw redirect(
+        path.to.newSalesOrder,
+        await flash(
+          request,
+          error(nextSequence.error, "Failed to get next sequence")
+        )
+      );
+    }
+    salesOrderId = nextSequence.data;
+  }
+
+  if (!salesOrderId) throw new Error("salesOrderId is not defined");
+
+  const createSalesOrder = await upsertSalesOrder(client, {
+    ...d,
+    salesOrderId,
     companyId,
     companyGroupId,
     createdBy: userId,
     customFields: setCustomFields(formData)
   });
 
-  if (result.error || !result.data) {
+  if (createSalesOrder.error || !createSalesOrder.data?.[0]) {
     throw redirect(
       path.to.salesOrders,
-      await flash(request, error(result.error, "Failed to insert sales order"))
+      await flash(
+        request,
+        error(createSalesOrder.error, "Failed to insert sales order")
+      )
     );
   }
 
-  throw redirect(path.to.salesOrder(result.data.id));
+  const order = createSalesOrder.data?.[0];
+
+  throw redirect(path.to.salesOrder(order.id!));
 }
 
 export default function SalesOrderNewRoute() {

@@ -1,5 +1,6 @@
 import {
   assertIsPost,
+  CONTROLLED_ENVIRONMENT,
   callbackValidator,
   carbonClient,
   error,
@@ -17,13 +18,7 @@ import {
   setAuthSession
 } from "@carbon/auth/session.server";
 import { validator } from "@carbon/form";
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-  LoadingBars,
-  VStack
-} from "@carbon/react";
+import { Alert, AlertDescription, AlertTitle, cn, VStack } from "@carbon/react";
 import { Trans } from "@lingui/react/macro";
 import { useEffect, useRef, useState } from "react";
 import { LuTriangleAlert } from "react-icons/lu";
@@ -37,6 +32,7 @@ import {
   useSearchParams
 } from "react-router";
 import { path } from "~/utils/path";
+import { useFormatValidationError } from "~/utils/formatValidationError";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
@@ -165,6 +161,7 @@ export default function AuthCallback() {
   const fetcher = useFetcher<{}>();
   const isAuthenticating = useRef(false);
   const [error, setError] = useState<string | null>(loaderError ?? null);
+  const formatError = useFormatValidationError();
 
   const { hash } = useLocation();
   const [searchParams] = useSearchParams();
@@ -189,12 +186,14 @@ export default function AuthCallback() {
       ) {
         isAuthenticating.current = true;
 
+        const accessToken = session?.access_token;
         const refreshToken = session?.refresh_token;
         const userId = session?.user.id;
 
-        if (!refreshToken || !userId) return;
+        if (!accessToken || !refreshToken || !userId) return;
 
         const formData = new FormData();
+        formData.append("accessToken", accessToken);
         formData.append("refreshToken", refreshToken);
         formData.append("userId", userId);
         if (redirectTo) formData.append("redirectTo", redirectTo);
@@ -218,7 +217,7 @@ export default function AuthCallback() {
               <AlertTitle>
                 <Trans>Error</Trans>
               </AlertTitle>
-              <AlertDescription>{error}</AlertDescription>
+              <AlertDescription>{formatError(error)}</AlertDescription>
             </Alert>
             {error.includes("expired") && (
               <>
@@ -230,7 +229,18 @@ export default function AuthCallback() {
           </VStack>
         </div>
       ) : (
-        <LoadingBars />
+        <div
+          className={cn(
+            "hexagon-loader-container",
+            CONTROLLED_ENVIRONMENT && "grayscale"
+          )}
+        >
+          <div className="hexagon-loader">
+            <div className="hexagon" />
+            <div className="hexagon" />
+            <div className="hexagon" />
+          </div>
+        </div>
       )}
     </div>
   );

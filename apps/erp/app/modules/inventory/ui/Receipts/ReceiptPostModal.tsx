@@ -1,5 +1,4 @@
 import { useCarbon } from "@carbon/auth";
-import { useStorageRuleViolations } from "@carbon/ee/storage-rules";
 import {
   Alert,
   AlertDescription,
@@ -9,6 +8,7 @@ import {
   Modal,
   ModalBody,
   ModalContent,
+  ModalDescription,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
@@ -24,6 +24,7 @@ import { useState } from "react";
 import { LuTriangleAlert } from "react-icons/lu";
 import { useNavigation, useParams } from "react-router";
 import { useUser } from "~/hooks";
+import { useItemRuleViolations } from "~/hooks/useItemRuleViolations";
 import { useItems } from "~/stores";
 import { path } from "~/utils/path";
 import { getReceiptTracking } from "../../inventory.service";
@@ -37,10 +38,6 @@ const ReceiptPostModal = ({ onClose }: { onClose: () => void }) => {
   const [items] = useItems();
   const routeData = useRouteData<{
     receiptLines: ReceiptLine[];
-    fixedAssetLines: {
-      id: string;
-      received: boolean;
-    }[];
   }>(path.to.receipt(receiptId));
 
   const navigation = useNavigation();
@@ -77,14 +74,10 @@ const ReceiptPostModal = ({ onClose }: { onClose: () => void }) => {
       companyId
     );
 
-    const hasReceiptLines = routeData?.receiptLines.some(
-      (line) => (line.receivedQuantity ?? 0) > 0
-    );
-    const hasFaLines = (routeData?.fixedAssetLines ?? []).some(
-      (line) => line.received
-    );
-
-    if (!hasReceiptLines && !hasFaLines) {
+    if (
+      routeData?.receiptLines.length === 0 ||
+      routeData?.receiptLines.every((line) => line.receivedQuantity === 0)
+    ) {
       setValidationErrors([
         {
           itemReadableId: null,
@@ -102,6 +95,9 @@ const ReceiptPostModal = ({ onClose }: { onClose: () => void }) => {
           return attributes["Receipt Line"] === line.id;
         });
 
+        const _attributes = trackedEntity?.attributes as
+          | TrackedEntityAttributes
+          | undefined;
         if (!trackedEntity?.readableId) {
           errors.push({
             itemReadableId: getItemReadableId(items, line.itemId) ?? null,
@@ -119,7 +115,9 @@ const ReceiptPostModal = ({ onClose }: { onClose: () => void }) => {
         });
 
         const quantityWithSerial = trackedEntities?.reduce((acc, tracking) => {
+          const _attributes = tracking.attributes as TrackedEntityAttributes;
           const serialNumber = tracking.readableId;
+
           return acc + (serialNumber ? 1 : 0);
         }, 0);
 
@@ -141,11 +139,16 @@ const ReceiptPostModal = ({ onClose }: { onClose: () => void }) => {
     validateReceiptTracking();
   });
 
-  const ruleViolations = useStorageRuleViolations({
+  const ruleViolations = useItemRuleViolations({
     action: path.to.receiptPost(receiptId),
     onSuccess: onClose
   });
   const { fetcher } = ruleViolations;
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    ruleViolations.submit(new FormData());
+  };
 
   return (
     <Modal
@@ -160,9 +163,12 @@ const ReceiptPostModal = ({ onClose }: { onClose: () => void }) => {
           <ModalTitle>
             <Trans>Post Receipt</Trans>
           </ModalTitle>
+          <ModalDescription>
+            <Trans>Are you sure you want to post this receipt?</Trans>
+          </ModalDescription>
         </ModalHeader>
         <ModalBody>
-          {validationErrors.length > 0 ? (
+          {validationErrors.length > 0 && (
             <Alert variant="destructive">
               <LuTriangleAlert className="h-4 w-4" />
               <AlertTitle>
@@ -184,10 +190,6 @@ const ReceiptPostModal = ({ onClose }: { onClose: () => void }) => {
                 </ul>
               </AlertDescription>
             </Alert>
-          ) : (
-            <p className="text-sm text-muted-foreground">
-              <Trans>Are you sure you want to post this receipt?</Trans>
-            </p>
           )}
         </ModalBody>
         <ModalFooter>
@@ -195,12 +197,7 @@ const ReceiptPostModal = ({ onClose }: { onClose: () => void }) => {
             <Button variant="solid" onClick={onClose}>
               <Trans>Cancel</Trans>
             </Button>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                ruleViolations.submit(new FormData());
-              }}
-            >
+            <form onSubmit={handleSubmit}>
               <Button
                 isLoading={fetcher.state !== "idle"}
                 isDisabled={

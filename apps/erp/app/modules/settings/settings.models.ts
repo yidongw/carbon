@@ -1,15 +1,8 @@
-import {
-  blockSchema,
-  documentSectionPlacementSchema,
-  documentSettingsSchema,
-  documentTemplateTypeSchema,
-  sectionConfigSchema,
-  themeSchema
-} from "@carbon/documents/template";
 import { labelSizes } from "@carbon/utils";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { DataType } from "~/modules/shared";
+import { optionalRequiredStringArray } from "~/utils/zodFields";
 
 export const modulesType = [
   "Accounting",
@@ -71,7 +64,7 @@ const company = {
   addressLine1: z.string().min(1, { message: "Address is required" }),
   addressLine2: zfd.text(z.string().optional()),
   city: z.string().min(1, { message: "City is required" }),
-  stateProvince: zfd.text(z.string().optional()),
+  stateProvince: z.string().min(1, { message: "State / Province is required" }),
   postalCode: z.string().min(1, { message: "Postal Code is required" }),
   countryCode: z.string().min(1, { message: "Country is required" }),
   baseCurrencyCode: zfd.text(z.string()),
@@ -104,7 +97,7 @@ export const customFieldValidator = z
     dataTypeId: zfd.numeric(
       z.number().min(1, { message: "Data type is required" })
     ),
-    listOptions: z.string().min(1).array().optional(),
+    listOptions: optionalRequiredStringArray,
     tags: z.array(z.string()).optional(),
     required: zfd.checkbox()
   })
@@ -199,11 +192,6 @@ export const materialUnitsValidator = z.object({
   useMetric: zfd.checkbox()
 });
 
-export {
-  printerRouteValidator,
-  updateAssignmentValidator
-} from "@carbon/printing";
-
 export const productLabelSizeValidator = z.object({
   productLabelSize: z.enum(
     labelSizes.map((size) => size.id) as [string, ...string[]],
@@ -211,6 +199,14 @@ export const productLabelSizeValidator = z.object({
       message: "Product label size is required"
     }
   )
+});
+
+export const includeThumbnailsOnPurchasingPdfsValidator = z.object({
+  includeThumbnailsOnPurchasingPdfs: zfd.checkbox()
+});
+
+export const includeThumbnailsOnSalesPdfsValidator = z.object({
+  includeThumbnailsOnSalesPdfs: zfd.checkbox()
 });
 
 export const rfqReadyValidator = z.object({
@@ -317,6 +313,10 @@ export const webhookValidator = z
       path: ["onDelete"]
     }
   );
+
+export const jobTravelerSettingsValidator = z.object({
+  jobTravelerIncludeWorkInstructions: zfd.checkbox()
+});
 
 export const consoleSettingsValidator = z.object({
   consoleEnabled: zfd.checkbox()

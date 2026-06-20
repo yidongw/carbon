@@ -1,12 +1,11 @@
+import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
+import { flash } from "@carbon/auth/session.server";
 import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
-import { Trans } from "@lingui/react/macro";
-import { Suspense } from "react";
 import type { LoaderFunctionArgs } from "react-router";
-import { Await, Outlet, useLoaderData } from "react-router";
-import { TableSkeleton } from "~/components/Skeletons";
-import { getParts } from "~/modules/items";
+import { Outlet, redirect, useLoaderData } from "react-router";
+import { getItemPostingGroupsList, getParts } from "~/modules/items";
 import { PartsTable } from "~/modules/items/ui/Parts";
 import { getTagsList } from "~/modules/shared";
 import type { Handle } from "~/utils/handle";
@@ -33,52 +32,48 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const { limit, offset, sorts, filters } =
     getGenericQueryFilters(searchParams);
 
-  // Tags are small/cheap — keep them blocking so filters render immediately.
-  const tags = await getTagsList(client, companyId, "part");
+  const [parts, tags, itemPostingGroups] = await Promise.all([
+    getParts(client, companyId, {
+      search,
+      supplierId,
+      limit,
+      offset,
+      sorts,
+      filters
+    }),
+    getTagsList(client, companyId, "part"),
+    getItemPostingGroupsList(client, companyId)
+  ]);
 
-  // Defer the heavy parts query: the page navigates instantly and renders a
-  // table skeleton while the rows stream in. (Permissions are already enforced
-  // above; getParts is scoped to companyId, so there is no per-row auth to await.)
-  const parts = getParts(client, companyId, {
-    search,
-    supplierId,
-    limit,
-    offset,
-    sorts,
-    filters
-  });
+  if (parts.error) {
+    redirect(
+      path.to.authenticatedRoot,
+      await flash(request, error(parts.error, "Failed to fetch parts"))
+    );
+  }
 
   return {
-    parts,
-    tags: tags.data ?? []
+    count: parts.count ?? 0,
+    parts: parts.data ?? [],
+    tags: tags.data ?? [],
+    itemPostingGroups: itemPostingGroups.data ?? []
   };
 }
 
 export default function PartsSearchRoute() {
-  const { parts, tags } = useLoaderData<typeof loader>();
+  const { count, parts, tags, itemPostingGroups } =
+    useLoaderData<typeof loader>();
 
   useRealtime("part");
 
   return (
     <VStack spacing={0} className="h-full">
-      <Suspense fallback={<TableSkeleton />}>
-        <Await
-          resolve={parts}
-          errorElement={
-            <div className="p-4 text-sm text-red-500">
-              <Trans>Failed to load parts.</Trans>
-            </div>
-          }
-        >
-          {(parts) => (
-            <PartsTable
-              data={parts.data ?? []}
-              count={parts.count ?? 0}
-              tags={tags}
-            />
-          )}
-        </Await>
-      </Suspense>
+      <PartsTable
+        data={parts}
+        count={count}
+        tags={tags}
+        itemPostingGroups={itemPostingGroups}
+      />
       <Outlet />
     </VStack>
   );

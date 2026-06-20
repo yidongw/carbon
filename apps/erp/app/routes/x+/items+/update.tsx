@@ -57,7 +57,6 @@ export async function action({ request }: ActionFunctionArgs) {
     }
     case "defaultMethodType":
     case "name":
-    case "description":
     case "replenishmentSystem":
     case "unitOfMeasureCode":
       if (field === "replenishmentSystem" && value !== "Buy and Make") {
@@ -188,7 +187,6 @@ export async function action({ request }: ActionFunctionArgs) {
                 .from("item")
                 .select("id")
                 .eq("readableId", readableId)
-                .eq("type", "Material")
                 .eq("companyId", companyId)
             ]);
 
@@ -418,7 +416,6 @@ export async function action({ request }: ActionFunctionArgs) {
         .from("item")
         .select("id")
         .eq("readableId", currentReadableId)
-        .eq("type", "Part")
         .eq("companyId", companyId);
       if (relatedItems.error) {
         return relatedItems;
@@ -451,6 +448,37 @@ export async function action({ request }: ActionFunctionArgs) {
 
         return itemUpdates;
       }
+    case "templateId": {
+      if (items.length !== 1) {
+        return {
+          error: { message: "Can only update template for one item at a time" },
+          data: null
+        };
+      }
+      const [templateItemId] = items as string[];
+      const templatePartData = await client
+        .from("item")
+        .select("readableId")
+        .eq("id", templateItemId)
+        .eq("companyId", companyId)
+        .single();
+
+      if (templatePartData.error || !templatePartData.data?.readableId) {
+        return { error: { message: "Item not found" }, data: null };
+      }
+
+      const templateUpdate = await (
+        client as unknown as { from: (t: string) => any }
+      )
+        .from("part")
+        .update({ templateId: value || null })
+        .eq("id", templatePartData.data.readableId)
+        .eq("companyId", companyId);
+
+      if (templateUpdate.error) return templateUpdate;
+
+      return { data: null, error: null };
+    }
     case "consumableId":
       if (items.length > 1) {
         return {
@@ -483,7 +511,6 @@ export async function action({ request }: ActionFunctionArgs) {
         .from("item")
         .select("id")
         .eq("readableId", currentConsumableId)
-        .eq("type", "Consumable")
         .eq("companyId", companyId);
       if (relatedConsumables.error) {
         return relatedConsumables;
@@ -550,7 +577,6 @@ export async function action({ request }: ActionFunctionArgs) {
         .from("item")
         .select("id")
         .eq("readableId", currentMaterialId)
-        .eq("type", "Material")
         .eq("companyId", companyId);
       if (relatedMaterials.error) {
         return relatedMaterials;
@@ -612,7 +638,6 @@ export async function action({ request }: ActionFunctionArgs) {
         .from("item")
         .select("id")
         .eq("readableId", currentToolId)
-        .eq("type", "Tool")
         .eq("companyId", companyId);
       if (relatedTools.error) {
         return relatedTools;

@@ -120,13 +120,15 @@ export async function action({ request, params }: ActionFunctionArgs) {
       })
     ];
 
-    promises.push(
-      recalculateJobOperationDependencies(serviceRole, {
-        jobId,
-        companyId,
-        userId
-      })
-    );
+    if (validation.data.jobOperationId) {
+      promises.push(
+        recalculateJobOperationDependencies(serviceRole, {
+          jobId,
+          companyId,
+          userId
+        })
+      );
+    }
 
     const [recalculateResult, recalculateDependencies] =
       await Promise.all(promises);

@@ -1,4 +1,4 @@
-import { error, success } from "@carbon/auth";
+import { error, isValidCachedClaims, success } from "@carbon/auth";
 import { deleteAuthAccount } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash, requireAuthSession } from "@carbon/auth/session.server";
@@ -757,10 +757,13 @@ export async function getUserClaims(userId: string, companyId: string) {
   try {
     const cachedClaims = await redis.get(getPermissionCacheKey(userId));
     if (cachedClaims) {
-      claims = JSON.parse(cachedClaims) as {
+      const parsed = JSON.parse(cachedClaims) as {
         permissions: Record<string, Permission>;
         role: string | null;
       };
+      if (isValidCachedClaims(parsed)) {
+        claims = parsed;
+      }
     }
   } catch (e) {
     console.error("Failed to get claims from redis", e);
@@ -773,20 +776,22 @@ export async function getUserClaims(userId: string, companyId: string) {
         userId,
         companyId
       );
-      if (rawClaims.error || rawClaims.data === null) {
+      if (rawClaims.error) {
         console.error(rawClaims);
         throw new Error("Failed to get claims");
       }
 
       // convert rawClaims to permissions
-      claims = makePermissionsFromClaims(rawClaims.data as Json[]);
+      claims = rawClaims.data === null
+        ? { permissions: {}, role: null }
+        : makePermissionsFromClaims(rawClaims.data as Json[]);
+
+      if (!claims) {
+        claims = { permissions: {}, role: null };
+      }
 
       // store claims in redis
       await redis.set(getPermissionCacheKey(userId), JSON.stringify(claims));
-
-      if (!claims) {
-        throw new Error("Failed to get claims");
-      }
     }
 
     return claims;
@@ -811,38 +816,6 @@ export async function getUserDefaults(
     .eq("userId", userId)
     .eq("companyId", companyId)
     .maybeSingle();
-}
-
-export async function getModulePreferences(
-  client: SupabaseClient<Database>,
-  userId: string,
-  companyId: string
-) {
-  return client
-    .from("userModulePreference")
-    .select("module, position, hidden")
-    .eq("userId", userId)
-    .eq("companyId", companyId)
-    .order("position");
-}
-
-export async function upsertModulePreferences(
-  client: SupabaseClient<Database>,
-  userId: string,
-  companyId: string,
-  preferences: { module: string; position: number; hidden: boolean }[]
-) {
-  return client.from("userModulePreference").upsert(
-    preferences.map((p) => ({
-      userId,
-      companyId,
-      module: p.module,
-      position: p.position,
-      hidden: p.hidden,
-      updatedAt: new Date().toISOString()
-    })),
-    { onConflict: "userId,companyId,module" }
-  );
 }
 
 async function insertCustomerAccount(

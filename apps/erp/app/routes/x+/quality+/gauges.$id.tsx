@@ -13,7 +13,7 @@ import {
   gaugeValidator,
   getGauge,
   getGaugeCalibrationRecordsByGaugeId,
-  updateGauge
+  upsertGauge
 } from "~/modules/quality";
 import GaugeForm from "~/modules/quality/ui/Gauge/GaugeForm";
 import { getCustomFields, setCustomFields } from "~/utils/form";
@@ -80,22 +80,11 @@ export async function action({ request, params }: ActionFunctionArgs) {
         : "Pending"
     : "Pending";
 
-  const update = await updateGauge(client, {
+  const update = await upsertGauge(client, {
     id,
     gaugeId,
     gaugeCalibrationStatus,
-    gaugeTypeId: d.gaugeTypeId,
-    gaugeRole: d.gaugeRole,
-    supplierId: d.supplierId || null,
-    modelNumber: d.modelNumber || null,
-    serialNumber: d.serialNumber || null,
-    description: d.description || null,
-    dateAcquired: d.dateAcquired || null,
-    lastCalibrationDate: d.lastCalibrationDate || null,
-    nextCalibrationDate: d.nextCalibrationDate || null,
-    locationId: d.locationId || null,
-    storageUnitId: d.storageUnitId || null,
-    calibrationIntervalInMonths: d.calibrationIntervalInMonths,
+    ...d,
     customFields: setCustomFields(formData),
     updatedBy: userId
   });

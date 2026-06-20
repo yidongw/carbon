@@ -12,9 +12,10 @@ import {
   deleteIssue,
   getInboundInspection,
   getIssueTypesList,
-  insertIssue
+  upsertIssue
 } from "~/modules/quality";
 import { dispositionInboundInspection } from "~/modules/quality/quality.server";
+import { getNextSequence } from "~/modules/settings";
 import { getCompanyIntegrations } from "~/modules/settings/settings.server";
 import { getUserDefaults } from "~/modules/users/users.server";
 import { path } from "~/utils/path";
@@ -89,6 +90,21 @@ export async function action({ request, params }: ActionFunctionArgs) {
     );
   }
 
+  const nextSequence = await getNextSequence(
+    serviceRole,
+    "nonConformance",
+    companyId
+  );
+  if (nextSequence.error || !nextSequence.data) {
+    throw redirect(
+      path.to.inboundInspection(id),
+      await flash(
+        request,
+        error(nextSequence.error, "Lot rejected, but failed to open NCR")
+      )
+    );
+  }
+
   const supplierName = insp.supplier?.name ?? "supplier";
   const receiptReadableId = insp.receipt?.receiptId ?? "";
   const itemReadableId =
@@ -104,33 +120,37 @@ export async function action({ request, params }: ActionFunctionArgs) {
     .filter(Boolean)
     .join(" ");
 
-  const createResult = await insertIssue(serviceRole, {
+  const createIssue = await upsertIssue(serviceRole, {
+    nonConformanceId: nextSequence.data,
     name: issueTitle,
     description: `Auto-created from inbound inspection ${inspectionReadableId}. Lot size ${insp.lotSize}, sample ${insp.sampleSize}, Ac ${insp.acceptanceNumber} / Re ${insp.rejectionNumber}. Supplier: ${supplierName}.`,
     priority: "Medium",
     source: "Internal",
     locationId,
     nonConformanceTypeId: issueType.id,
+    nonConformanceWorkflowId: undefined,
     openDate: today(getLocalTimeZone()).toString(),
     quantity: Number(insp.lotSize ?? 0),
     items: insp.itemId ? [insp.itemId] : [],
+    requiredActionIds: [],
+    approvalRequirements: [],
     companyId,
     createdBy: userId
   });
 
-  if (createResult.error || !createResult.data) {
+  if (createIssue.error || !createIssue.data?.id) {
     throw redirect(
       path.to.inboundInspection(id),
       await flash(
         request,
-        error(createResult.error, "Lot rejected, but failed to create NCR")
+        error(createIssue.error, "Lot rejected, but failed to create NCR")
       )
     );
   }
 
-  const ncrId = createResult.data.id;
+  const ncrId = createIssue.data.id;
 
-  // insertIssue inserted nonConformanceItem rows with default qty 0 and
+  // upsertIssue inserted nonConformanceItem rows with default qty 0 and
   // disposition 'Pending'. Now that we know the lot context, overwrite with
   // the actual lot quantity and default the MRB's starting disposition to
   // 'Scrap' (the most conservative outcome — they can downgrade to Rework /
@@ -258,7 +278,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
       carbonUrl: `${ERP_URL}${path.to.issue(ncrId)}`,
       issue: {
         id: ncrId,
-        nonConformanceId: createResult.data.nonConformanceId,
+        nonConformanceId: nextSequence.data,
         title: issueTitle,
         description: `Auto-created from inbound inspection ${inspectionReadableId || id}`,
         severity: "Medium"

@@ -50,18 +50,6 @@ export async function action({ request, params }: ActionFunctionArgs) {
   // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
   const { id, ...d } = validation.data;
 
-  if (d.salesOrderLineType === "Comment") {
-    d.accountId = undefined;
-    d.assetId = undefined;
-    d.itemId = undefined;
-  } else if (d.salesOrderLineType === "Fixed Asset") {
-    d.accountId = undefined;
-    d.itemId = undefined;
-  } else {
-    d.accountId = undefined;
-    d.assetId = undefined;
-  }
-
   const createSalesOrderLine = await upsertSalesOrderLine(client, {
     ...d,
     companyId,

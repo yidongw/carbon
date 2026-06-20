@@ -21,7 +21,7 @@ import {
   getPurchaseOrderPayment,
   isPurchaseOrderLocked,
   purchaseOrderValidator,
-  updatePurchaseOrder
+  upsertPurchaseOrder
 } from "~/modules/purchasing";
 import {
   PurchaseOrderDeliveryForm,
@@ -97,7 +97,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const isLocked = isPurchaseOrderLocked(purchaseOrder.data?.status);
 
   // If locked, require delete permission; otherwise require update permission
-  const { client, companyGroupId, userId } = await requirePermissions(request, {
+  const { client, userId } = await requirePermissions(request, {
     ...(isLocked ? { delete: "purchasing" } : { update: "purchasing" })
   });
 
@@ -117,30 +117,22 @@ export async function action({ request, params }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
-  const result = await updatePurchaseOrder(
-    client,
-    {
-      id: orderId,
-      status: validation.data.status,
-      supplierId: validation.data.supplierId,
-      currencyCode: validation.data.currencyCode,
-      orderDate: validation.data.orderDate,
-      supplierContactId: validation.data.supplierContactId || null,
-      supplierLocationId: validation.data.supplierLocationId || null,
-      supplierReference: validation.data.supplierReference,
-      purchaseOrderType: validation.data.purchaseOrderType,
-      notes: validation.data.notes,
-      customFields: setCustomFields(formData),
-      updatedBy: userId
-    },
-    companyGroupId
-  );
-  if (result.error) {
+  const { purchaseOrderId, ...d } = validation.data;
+  if (!purchaseOrderId) throw new Error("Could not find purchaseOrderId");
+
+  const updatePurchaseOrder = await upsertPurchaseOrder(client, {
+    id: orderId,
+    purchaseOrderId,
+    ...d,
+    updatedBy: userId,
+    customFields: setCustomFields(formData)
+  });
+  if (updatePurchaseOrder.error) {
     throw redirect(
       path.to.purchaseOrder(orderId),
       await flash(
         request,
-        error(result.error, "Failed to update purchase order")
+        error(updatePurchaseOrder.error, "Failed to update purchase order")
       )
     );
   }
@@ -191,38 +183,35 @@ export default function PurchaseOrderBasicRoute() {
     ...getCustomFields(orderData?.purchaseOrder?.customFields)
   };
 
+  const delivery = orderData?.purchaseOrderDelivery;
   const deliveryInitialValues = {
-    id: orderData?.purchaseOrderDelivery.id,
-    locationId: orderData?.purchaseOrderDelivery.locationId ?? "",
-    supplierShippingCost:
-      orderData?.purchaseOrderDelivery.supplierShippingCost ?? 0,
-    shippingMethodId: orderData?.purchaseOrderDelivery.shippingMethodId ?? "",
-    shippingTermId: orderData?.purchaseOrderDelivery.shippingTermId ?? "",
-    trackingNumber: orderData?.purchaseOrderDelivery.trackingNumber ?? "",
-    receiptRequestedDate:
-      orderData?.purchaseOrderDelivery.receiptRequestedDate ?? "",
-    receiptPromisedDate:
-      orderData?.purchaseOrderDelivery.receiptPromisedDate ?? "",
-    deliveryDate: orderData?.purchaseOrderDelivery.deliveryDate ?? "",
-    notes: orderData?.purchaseOrderDelivery.notes ?? "",
-    dropShipment: orderData?.purchaseOrderDelivery.dropShipment ?? false,
-    customerId: orderData?.purchaseOrderDelivery.customerId ?? "",
-    customerLocationId:
-      orderData?.purchaseOrderDelivery.customerLocationId ?? "",
-    incoterm: orderData?.purchaseOrderDelivery.incoterm ?? undefined,
-    incotermLocation: orderData?.purchaseOrderDelivery.incotermLocation ?? "",
-    ...getCustomFields(orderData?.purchaseOrderDelivery.customFields)
+    id: delivery?.id ?? orderId,
+    locationId: delivery?.locationId ?? "",
+    supplierShippingCost: delivery?.supplierShippingCost ?? 0,
+    shippingMethodId: delivery?.shippingMethodId ?? "",
+    shippingTermId: delivery?.shippingTermId ?? "",
+    trackingNumber: delivery?.trackingNumber ?? "",
+    receiptRequestedDate: delivery?.receiptRequestedDate ?? "",
+    receiptPromisedDate: delivery?.receiptPromisedDate ?? "",
+    deliveryDate: delivery?.deliveryDate ?? "",
+    notes: delivery?.notes ?? "",
+    dropShipment: delivery?.dropShipment ?? false,
+    customerId: delivery?.customerId ?? "",
+    customerLocationId: delivery?.customerLocationId ?? "",
+    incoterm: delivery?.incoterm ?? undefined,
+    incotermLocation: delivery?.incotermLocation ?? "",
+    ...getCustomFields(delivery?.customFields)
   };
   const paymentInitialValues = {
-    id: purchaseOrderPayment.id,
-    invoiceSupplierId: purchaseOrderPayment.invoiceSupplierId ?? "",
+    id: purchaseOrderPayment?.id ?? orderId,
+    invoiceSupplierId: purchaseOrderPayment?.invoiceSupplierId ?? "",
     invoiceSupplierLocationId:
-      purchaseOrderPayment.invoiceSupplierLocationId ?? undefined,
+      purchaseOrderPayment?.invoiceSupplierLocationId ?? undefined,
     invoiceSupplierContactId:
-      purchaseOrderPayment.invoiceSupplierContactId ?? undefined,
-    paymentTermId: purchaseOrderPayment.paymentTermId ?? undefined,
-    paymentComplete: purchaseOrderPayment.paymentComplete ?? undefined,
-    ...getCustomFields(purchaseOrderPayment.customFields)
+      purchaseOrderPayment?.invoiceSupplierContactId ?? undefined,
+    paymentTermId: purchaseOrderPayment?.paymentTermId ?? undefined,
+    paymentComplete: purchaseOrderPayment?.paymentComplete ?? undefined,
+    ...getCustomFields(purchaseOrderPayment?.customFields)
   };
 
   const { company } = useUser();

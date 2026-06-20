@@ -1,5 +1,8 @@
+import { TRANSACTION_SURFACES } from "@carbon/utils";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
+import { optionalRequiredStringArray } from "~/utils/zodFields";
+import { requiresInsideLaborFields } from "../production/operationType";
 import {
   methodItemType,
   methodOperationOrders,
@@ -247,6 +250,41 @@ export const configurationParameterOrderValidator = z.object({
   configurationParameterGroupId: zfd.text(z.string().nullable())
 });
 
+export const templateCreateValidator = z.object({
+  name: z.string().min(1, { message: "Name is required" }),
+  description: zfd.text(z.string().optional())
+});
+
+export const templateConfigurationParameterValidator = z
+  .object({
+    id: zfd.text(z.string().optional()),
+    templateId: z.string().min(1, { message: "Template ID is required" }),
+    key: zfd.text(z.string().optional()),
+    label: z.string().min(1, { message: "Label is required" }),
+    dataType: z.enum([...configurationParameterDataTypes, "date"]),
+    listOptions: optionalRequiredStringArray,
+    configurationParameterGroupId: z.string().optional(),
+    materialFormFilterId: zfd.text(z.string().optional())
+  })
+  .refine(
+    (data) => {
+      if (data.dataType === "list") {
+        return !!data.listOptions;
+      }
+      return true;
+    },
+    { message: "List options are required", path: ["listOptions"] }
+  )
+  .refine(
+    (data) => {
+      return !!data.key?.match(/^[\p{L}\p{N}]+(_[\p{L}\p{N}]+)*$/u);
+    },
+    {
+      message:
+        "Key must use letters or numbers, with underscores only between words"
+    }
+  );
+
 export const configurationParameterValidator = z
   .object({
     id: zfd.text(z.string().optional()),
@@ -254,7 +292,7 @@ export const configurationParameterValidator = z
     key: zfd.text(z.string().optional()),
     label: z.string().min(1, { message: "Label is required" }),
     dataType: z.enum([...configurationParameterDataTypes, "date"]),
-    listOptions: z.string().min(1).array().optional(),
+    listOptions: optionalRequiredStringArray,
     configurationParameterGroupId: z.string().optional(),
     materialFormFilterId: zfd.text(z.string().optional())
   })
@@ -270,9 +308,12 @@ export const configurationParameterValidator = z
 
   .refine(
     (data) => {
-      return data.key?.match(/^[a-zA-Z0-9]+(_[a-zA-Z0-9]+)*$/);
+      return !!data.key?.match(/^[\p{L}\p{N}]+(_[\p{L}\p{N}]+)*$/u);
     },
-    { message: "Key must be lowercase and underscore separated" }
+    {
+      message:
+        "Key must use letters or numbers, with underscores only between words"
+    }
   );
 
 export const configurationRuleValidator = z.object({
@@ -420,11 +461,12 @@ export const methodOperationValidator = z
     operationSupplierProcessId: zfd.text(z.string().optional()),
     operationMinimumCost: zfd.numeric(z.number().min(0).optional()),
     operationUnitCost: zfd.numeric(z.number().min(0).optional()),
-    operationLeadTime: zfd.numeric(z.number().min(0).optional())
+    operationLeadTime: zfd.numeric(z.number().min(0).optional()),
+    insideUnitCost: zfd.numeric(z.number().min(0).optional())
   })
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return !!data.setupUnit;
       }
       return true;
@@ -436,7 +478,7 @@ export const methodOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return !!data.laborUnit;
       }
       return true;
@@ -448,7 +490,7 @@ export const methodOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return !!data.laborUnit;
       }
       return true;
@@ -460,7 +502,7 @@ export const methodOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return Number.isFinite(data.setupTime);
       }
       return true;
@@ -472,7 +514,7 @@ export const methodOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return Number.isFinite(data.laborTime);
       }
       return true;
@@ -484,7 +526,7 @@ export const methodOperationValidator = z
   )
   .refine(
     (data) => {
-      if (data.operationType === "Inside") {
+      if (requiresInsideLaborFields(data.operationType)) {
         return Number.isFinite(data.machineTime);
       }
       return true;
@@ -636,7 +678,8 @@ export const partValidator = applyStorageAndShelfLifeRefines(
       id: z.string().min(1, { message: "Part ID is required" }).max(255),
       revision: z.string().min(1, { message: "Revision is required" }),
       modelUploadId: zfd.text(z.string().optional()),
-      lotSize: zfd.numeric(z.number().min(0).optional())
+      lotSize: zfd.numeric(z.number().min(0).optional()),
+      templateId: zfd.text(z.string().optional())
     })
   )
 );
@@ -748,7 +791,6 @@ export const supplierPartValidator = z.object({
   supplierPartId: z.string().optional(),
   supplierUnitOfMeasureCode: zfd.text(z.string().optional()),
   minimumOrderQuantity: zfd.numeric(z.number().min(0)),
-  orderMultiple: zfd.numeric(z.number().min(1)).optional(),
   conversionFactor: zfd.numeric(z.number().min(0)),
   unitPrice: zfd.numeric(z.number().min(0).optional())
 });
@@ -772,3 +814,71 @@ export const unitOfMeasureValidator = z.object({
   code: z.string().min(1, { message: "Code is required" }).max(10),
   name: z.string().min(1, { message: "Name is required" }).max(50)
 });
+
+export const itemRuleSeverities = ["error", "warn"] as const;
+
+export const itemRuleOperators = [
+  "eq",
+  "neq",
+  "in",
+  "notIn",
+  "isSet",
+  "isNotSet",
+  "gt",
+  "lt"
+] as const;
+
+const itemRuleConditionValueSchema = z.union([
+  z.string(),
+  z.number(),
+  z.boolean(),
+  z.array(z.union([z.string(), z.number(), z.boolean()])),
+  z.null()
+]);
+
+const itemRuleConditionSchema = z.object({
+  field: z.string().min(1, { message: "Field is required" }),
+  op: z.enum(itemRuleOperators),
+  value: itemRuleConditionValueSchema.optional()
+});
+
+export const itemRuleMatchKinds = ["all", "any", "none"] as const;
+
+export const itemRuleConditionAstSchema = z.object({
+  kind: z.enum(itemRuleMatchKinds),
+  conditions: z
+    .array(itemRuleConditionSchema)
+    .min(1, { message: "At least one condition is required" })
+});
+
+// conditionAst arrives as a JSON-encoded string in form data; pre-parse before validating.
+const itemRuleConditionAstFormField = z.preprocess((raw) => {
+  if (typeof raw !== "string") return raw;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return raw;
+  }
+}, itemRuleConditionAstSchema);
+
+export const itemRuleValidator = z.object({
+  id: zfd.text(z.string().optional()),
+  name: z.string().min(1, { message: "Name is required" }).max(120),
+  description: zfd.text(z.string().optional()),
+  message: z.string().min(1, { message: "Message is required" }).max(500),
+  severity: z.enum(itemRuleSeverities),
+  active: zfd.checkbox(),
+  surfaces: zfd
+    .repeatableOfType(z.enum(TRANSACTION_SURFACES))
+    .refine((arr) => arr.length >= 1, {
+      message: "Pick at least one surface"
+    }),
+  conditionAst: itemRuleConditionAstFormField
+});
+
+export const itemRuleAssignmentValidator = z.object({
+  itemId: z.string().min(1, { message: "Item ID is required" }),
+  ruleId: z.string().min(1, { message: "Rule ID is required" })
+});
+
+export const itemRuleAcknowledgeValidator = zfd.checkbox();

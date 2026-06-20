@@ -33,15 +33,9 @@ export type FilterProps = Omit<
 
 const Filter = forwardRef<HTMLButtonElement, FilterProps>(
   ({ filters, trigger = "button", ...props }, ref) => {
-    const { t, i18n } = useLingui();
-    const {
-      clearFilters,
-      getFilter,
-      hasFilter,
-      hasFilters,
-      hasFilterKey,
-      toggleFilter
-    } = useFilters();
+    const { t } = useLingui();
+    const { clearFilters, hasFilter, hasFilters, hasFilterKey, toggleFilter } =
+      useFilters();
 
     const [open, setOpen] = useState(false);
     const [input, setInput] = useState("");
@@ -81,16 +75,14 @@ const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       }
     }, [fetcher.data, activeFilter]);
 
-    const translate = useCallback((value: string) => i18n._(value), [i18n]);
-
     const columnFilters = useMemo(
       () =>
         filters.map((f) => ({
           value: f.accessorKey,
-          label: translate(f.header),
+          label: f.header,
           icon: f.icon
         })),
-      [filters, translate]
+      [filters]
     );
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: suppressed due to migration
@@ -113,8 +105,6 @@ const Filter = forwardRef<HTMLButtonElement, FilterProps>(
         } else if (filter?.filter.type === "fetcher") {
           setLoading(true);
           fetcher.load(filter.filter.endpoint);
-        } else if (filter?.filter.type === "custom") {
-          setActiveOptions([]);
         }
       },
 
@@ -167,102 +157,85 @@ const Filter = forwardRef<HTMLButtonElement, FilterProps>(
         </PopoverTrigger>
         <PopoverContent
           align="start"
-          className="min-w-[var(--radix-popover-trigger-width)] p-0"
+          className="min-w-[--radix-popover-trigger-width] p-0"
         >
-          {activeFilter?.filter.type === "custom" ? (
-            <div className="w-auto min-w-[280px] p-2">
-              {activeFilter.filter.render({
-                values: getFilter(activeFilter.accessorKey),
-                toggle: (value) =>
-                  toggleFilter(
-                    activeFilter.accessorKey,
-                    value,
-                    activeFilter.filter.type === "custom"
-                      ? activeFilter.filter.isArray
-                      : false
-                  ),
-                close: () => setOpen(false)
-              })}
-            </div>
-          ) : (
-            <Command>
-              <CommandInput
-                value={input}
-                onValueChange={setInput}
-                placeholder={t`Search...`}
-                className="h-9"
-              />
-              <CommandEmpty>
-                {loading ? (
-                  <Trans>Loading...</Trans>
-                ) : (
-                  <Trans>No available filters</Trans>
-                )}
-              </CommandEmpty>
-              {activeFilter === null ? (
+          <Command>
+            <CommandInput
+              value={input}
+              onValueChange={setInput}
+              placeholder={t`Search...`}
+              className="h-9"
+            />
+            <CommandEmpty>
+              {loading ? (
+                <Trans>Loading...</Trans>
+              ) : (
+                <Trans>No available filters</Trans>
+              )}
+            </CommandEmpty>
+            {activeFilter === null ? (
+              <CommandGroup>
+                {columnFilters
+                  .filter((column) => !hasFilterKey(column.value))
+                  .map((option) => (
+                    <CommandItem
+                      key={option.value}
+                      value={`${option.label}:${option.value}`.replace(
+                        /"/g,
+                        '\\"'
+                      )}
+                      onSelect={updateActiveOptions}
+                      className="flex items-center gap-2"
+                    >
+                      {option.icon}
+                      {option.label}
+                    </CommandItem>
+                  ))}
+              </CommandGroup>
+            ) : (
+              <div className="max-h-[300px] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent">
                 <CommandGroup>
-                  {columnFilters
-                    .filter((column) => !hasFilterKey(column.value))
-                    .map((option) => (
+                  {activeOptions.map((option) => {
+                    const isChecked = hasFilter(
+                      activeFilter.accessorKey,
+                      option.value
+                    );
+                    return (
                       <CommandItem
-                        key={option.value}
-                        value={`${option.label}:${option.value}`.replace(
+                        value={reactNodeToString(option.label).replace(
                           /"/g,
                           '\\"'
                         )}
-                        onSelect={updateActiveOptions}
-                        className="flex items-center gap-2"
+                        key={option.value}
+                        onSelect={() => {
+                          toggleFilter(
+                            activeFilter.accessorKey,
+                            option.value,
+                            activeFilter.filter.isArray
+                          );
+                          setInput("");
+                        }}
                       >
-                        {option.icon}
-                        {option.label}
+                        <HStack spacing={2}>
+                          <Checkbox id={option.value} isChecked={isChecked} />
+                          <label htmlFor={option.value}>
+                            <VStack spacing={0}>
+                              <span>{option.label}</span>
+                              {option.helperText && (
+                                <p className="text-xs text-muted-foreground truncate">
+                                  {option.helperText}
+                                </p>
+                              )}
+                            </VStack>
+                          </label>
+                        </HStack>
                       </CommandItem>
-                    ))}
+                    );
+                  })}
                 </CommandGroup>
-              ) : (
-                <div className="max-h-[300px] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent">
-                  <CommandGroup>
-                    {activeOptions.map((option) => {
-                      const isChecked = hasFilter(
-                        activeFilter.accessorKey,
-                        option.value
-                      );
-                      return (
-                        <CommandItem
-                          value={reactNodeToString(option.label).replace(
-                            /"/g,
-                            '\\"'
-                          )}
-                          key={option.value}
-                          onSelect={() => {
-                            toggleFilter(
-                              activeFilter.accessorKey,
-                              option.value,
-                              activeFilter.filter.isArray
-                            );
-                            setInput("");
-                          }}
-                        >
-                          <HStack spacing={2}>
-                            <Checkbox id={option.value} isChecked={isChecked} />
-                            <label htmlFor={option.value}>
-                              <VStack spacing={0}>
-                                <span>{option.label}</span>
-                                {option.helperText && (
-                                  <p className="text-xs text-muted-foreground truncate">
-                                    {translate(option.helperText)}
-                                  </p>
-                                )}
-                              </VStack>
-                            </label>
-                          </HStack>
-                        </CommandItem>
-                      );
-                    })}
-                  </CommandGroup>
-                </div>
-              )}
-            </Command>
-          )}
+              </div>
+            )}
+          </Command>
         </PopoverContent>
       </Popover>
     );

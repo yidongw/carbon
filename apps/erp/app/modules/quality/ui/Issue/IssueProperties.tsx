@@ -156,7 +156,7 @@ const IssueProperties = () => {
   return (
     <VStack
       spacing={4}
-      className="w-96 bg-card h-full overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent border-l border-border px-4 py-2 text-sm"
+      className="w-full min-w-0 bg-card h-full overflow-y-auto overflow-x-hidden overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent px-4 py-2 text-sm"
     >
       <VStack spacing={2}>
         <HStack className="w-full justify-between">
@@ -230,7 +230,7 @@ const IssueProperties = () => {
             </Tooltip>
           </HStack>
         </HStack>
-        <VStack spacing={1}>
+        <VStack spacing={0}>
           <span className="text-sm tracking-tight">
             {routeData?.nonConformance?.nonConformanceId}
           </span>
@@ -241,7 +241,7 @@ const IssueProperties = () => {
             validator={z.object({
               name: z.string()
             })}
-            className="w-full"
+            className="w-full -mt-2"
           >
             <span className="text-xs text-muted-foreground">
               <InputControlled

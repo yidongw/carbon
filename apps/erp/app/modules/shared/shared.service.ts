@@ -1,5 +1,7 @@
 import type { Database } from "@carbon/database";
 import type { Kysely, KyselyDatabase } from "@carbon/database/client";
+import { trigger } from "@carbon/jobs";
+import { NotificationEvent } from "@carbon/notifications";
 import { getPurchaseOrderStatus, supportedModelTypes } from "@carbon/utils";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { GenericQueryFilters } from "~/utils/query";
@@ -17,17 +19,232 @@ import type {
   ApprovalRequestForCancelCheck,
   ApprovalRequestForViewCheck,
   ApprovalRule,
+  ApproveRequestOptions,
   CreateApprovalRequestInput,
   UpsertApprovalRuleInput
 } from "./types";
+
+const PRODUCTION_PAY_DOCUMENT_TYPE = "productionQuantityReport" as const;
+const SUPERSEDE_NOTES = "Superseded by report revision";
+
+type ApprovalDocumentTypeName = (typeof approvalDocumentType)[number];
+type ApprovalTransaction = Parameters<
+  Parameters<ReturnType<Kysely<KyselyDatabase>["transaction"]>["execute"]>[0]
+>[0];
+
+type InTxContext = {
+  trx: ApprovalTransaction;
+  documentId: string;
+  userId: string;
+  now: string;
+  options?: ApproveRequestOptions;
+};
+
+type PostTxContext = {
+  documentId: string;
+  userId: string;
+  options?: ApproveRequestOptions;
+};
+
+type PostTxResult = { error?: { message: string } } | void;
+
+/**
+ * Each approval document type registers its own approve/reject behaviour and
+ * any post-commit side effects. Adding a new approvable document type should
+ * mean adding one entry here, not editing approveRequest / rejectRequest.
+ */
+type ApprovalDocumentHandler = {
+  validateOptions?: (
+    operation: "approve" | "reject",
+    options?: ApproveRequestOptions
+  ) => string | null;
+  onApproveInTransaction?: (ctx: InTxContext) => Promise<void>;
+  onRejectInTransaction?: (ctx: InTxContext) => Promise<void>;
+  afterApprove?: (ctx: PostTxContext) => Promise<PostTxResult>;
+  afterReject?: (ctx: PostTxContext) => Promise<PostTxResult>;
+};
+
+const approvalHandlers: Record<ApprovalDocumentTypeName, ApprovalDocumentHandler> = {
+  purchaseOrder: {
+    async onApproveInTransaction({ trx, documentId, userId, now }) {
+      const lines = await trx
+        .selectFrom("purchaseOrderLine")
+        .select([
+          "purchaseOrderLineType",
+          "invoicedComplete",
+          "receivedComplete"
+        ])
+        .where("purchaseOrderId", "=", documentId)
+        .execute();
+
+      const { status: calculatedStatus } = getPurchaseOrderStatus(lines);
+
+      const poUpdate = await trx
+        .updateTable("purchaseOrder")
+        .set({ status: calculatedStatus, updatedBy: userId, updatedAt: now })
+        .where("id", "=", documentId)
+        .where("status", "=", "Needs Approval")
+        .returning(["id"])
+        .executeTakeFirst();
+
+      if (!poUpdate) {
+        throw new Error(
+          "Failed to update purchase order status - it may no longer be in 'Needs Approval' state"
+        );
+      }
+    },
+    async onRejectInTransaction({ trx, documentId, userId, now }) {
+      const poUpdate = await trx
+        .updateTable("purchaseOrder")
+        .set({ status: "Rejected", updatedBy: userId, updatedAt: now })
+        .where("id", "=", documentId)
+        .where("status", "=", "Needs Approval")
+        .returning(["id"])
+        .executeTakeFirst();
+
+      if (!poUpdate) {
+        throw new Error(
+          "Failed to update purchase order status - it may no longer be in 'Needs Approval' state"
+        );
+      }
+    }
+  },
+
+  qualityDocument: {
+    async onApproveInTransaction({ trx, documentId, userId, now }) {
+      const qdUpdate = await trx
+        .updateTable("qualityDocument")
+        .set({ status: "Active", updatedBy: userId, updatedAt: now })
+        .where("id", "=", documentId)
+        .returning(["id"])
+        .executeTakeFirst();
+
+      if (!qdUpdate) {
+        throw new Error("Failed to update quality document status");
+      }
+    }
+    // Note: qualityDocument rejection doesn't change status (stays Draft)
+  },
+
+  supplier: {
+    async onApproveInTransaction({ trx, documentId, userId, now }) {
+      const supplierUpdate = await trx
+        .updateTable("supplier")
+        .set({ supplierStatus: "Active", updatedBy: userId, updatedAt: now })
+        .where("id", "=", documentId)
+        .returning(["id"])
+        .executeTakeFirst();
+
+      if (!supplierUpdate) {
+        throw new Error("Failed to update supplier status");
+      }
+    },
+    async onRejectInTransaction({ trx, documentId, userId, now }) {
+      const supplierUpdate = await trx
+        .updateTable("supplier")
+        .set({ supplierStatus: "Rejected", updatedBy: userId, updatedAt: now })
+        .where("id", "=", documentId)
+        .returning(["id"])
+        .executeTakeFirst();
+
+      if (!supplierUpdate) {
+        throw new Error("Failed to update supplier status");
+      }
+    }
+  },
+
+  productionQuantityReport: {
+    validateOptions(operation, options) {
+      const ctx = options?.productionPay;
+      if (!ctx?.supabaseClient) {
+        return `Production pay ${operation} requires database client`;
+      }
+      if (operation === "approve") {
+        if (ctx.paymentYear == null || ctx.paymentMonth == null) {
+          return "Production pay approval requires payment period";
+        }
+      }
+      return null;
+    },
+    async afterApprove({ documentId, userId, options }) {
+      const ctx = options!.productionPay!;
+      const now = new Date().toISOString();
+      const { error } = await ctx.supabaseClient
+        .from("productionQuantity")
+        .update({
+          paymentYear: ctx.paymentYear,
+          paymentMonth: ctx.paymentMonth,
+          updatedBy: userId,
+          updatedAt: now
+        })
+        .eq("reportId", documentId)
+        .is("paymentYear", null)
+        .is("invalidatedAt", null);
+
+      if (error) {
+        return {
+          error: {
+            message:
+              error.message ?? "Failed to apply payment period to quantities"
+          }
+        };
+      }
+    },
+    async afterReject({ documentId, userId, options }) {
+      const ctx = options!.productionPay!;
+      const now = new Date().toISOString();
+      const { error } = await ctx.supabaseClient
+        .from("productionQuantity")
+        .update({
+          invalidatedAt: now,
+          invalidatedBy: userId,
+          updatedBy: userId,
+          updatedAt: now
+        })
+        .eq("reportId", documentId)
+        .is("paymentYear", null)
+        .is("invalidatedAt", null);
+
+      if (error) {
+        return {
+          error: {
+            message:
+              error.message ?? "Failed to invalidate production quantities"
+          }
+        };
+      }
+    }
+  }
+};
+
+export async function cancelApprovalRequestsForDocument(
+  client: SupabaseClient<Database>,
+  documentType: (typeof approvalDocumentType)[number],
+  documentId: string,
+  userId: string,
+  decisionNotes: string = SUPERSEDE_NOTES
+) {
+  const now = new Date().toISOString();
+  return client
+    .from("approvalRequest")
+    .update({
+      status: "Cancelled",
+      decisionNotes,
+      updatedBy: userId,
+      updatedAt: now
+    })
+    .eq("documentType", documentType)
+    .eq("documentId", documentId)
+    .in("status", ["Pending", "Approved"]);
+}
 
 export async function approveRequest(
   db: Kysely<KyselyDatabase>,
   id: string,
   userId: string,
-  notes?: string
+  notes?: string,
+  options?: ApproveRequestOptions
 ) {
-  // Pre-flight check: verify approval request exists and is pending
   const approvalRequest = await db
     .selectFrom("approvalRequest")
     .select(["id", "status", "documentType", "documentId", "companyId"])
@@ -46,11 +263,16 @@ export async function approveRequest(
   }
 
   const { documentType, documentId } = approvalRequest;
+  const handler = approvalHandlers[documentType as ApprovalDocumentTypeName];
   const now = new Date().toISOString();
+
+  const optionsError = handler?.validateOptions?.("approve", options);
+  if (optionsError) {
+    return { error: { message: optionsError }, data: null };
+  }
 
   try {
     const result = await db.transaction().execute(async (trx) => {
-      // 1. Update approval request to "Approved"
       const updatedApproval = await trx
         .updateTable("approvalRequest")
         .set({
@@ -65,77 +287,43 @@ export async function approveRequest(
         .returning(["id", "documentType", "documentId"])
         .executeTakeFirstOrThrow();
 
-      // 2. Update document status based on type
-      if (documentType === "purchaseOrder") {
-        // Fetch PO lines to calculate new status
-        const lines = await trx
-          .selectFrom("purchaseOrderLine")
-          .select([
-            "purchaseOrderLineType",
-            "invoicedComplete",
-            "receivedComplete"
-          ])
-          .where("purchaseOrderId", "=", documentId)
-          .execute();
-
-        const { status: calculatedStatus } = getPurchaseOrderStatus(lines);
-
-        // Update PO status (only if currently "Needs Approval")
-        const poUpdate = await trx
-          .updateTable("purchaseOrder")
-          .set({
-            status: calculatedStatus,
-            updatedBy: userId,
-            updatedAt: now
-          })
-          .where("id", "=", documentId)
-          .where("status", "=", "Needs Approval")
-          .returning(["id"])
-          .executeTakeFirst();
-
-        if (!poUpdate) {
-          throw new Error(
-            "Failed to update purchase order status - it may no longer be in 'Needs Approval' state"
-          );
-        }
-      } else if (documentType === "qualityDocument") {
-        const qdUpdate = await trx
-          .updateTable("qualityDocument")
-          .set({
-            status: "Active",
-            updatedBy: userId,
-            updatedAt: now
-          })
-          .where("id", "=", documentId)
-          .returning(["id"])
-          .executeTakeFirst();
-
-        if (!qdUpdate) {
-          throw new Error("Failed to update quality document status");
-        }
-      } else if (documentType === "supplier") {
-        const supplierUpdate = await trx
-          .updateTable("supplier")
-          .set({
-            supplierStatus: "Active",
-            updatedBy: userId,
-            updatedAt: now
-          })
-          .where("id", "=", documentId)
-          .returning(["id"])
-          .executeTakeFirst();
-
-        if (!supplierUpdate) {
-          throw new Error("Failed to update supplier status");
-        }
-      }
+      await handler?.onApproveInTransaction?.({
+        trx,
+        documentId,
+        userId,
+        now,
+        options
+      });
 
       return updatedApproval;
     });
 
+    const postResult = await handler?.afterApprove?.({
+      documentId: result.documentId,
+      userId,
+      options
+    });
+
+    if (postResult?.error) {
+      // Revert the approval since the post-commit side effect failed.
+      const rollbackNow = new Date().toISOString();
+      await db
+        .updateTable("approvalRequest")
+        .set({
+          status: "Pending",
+          decisionBy: null,
+          decisionAt: null,
+          decisionNotes: null,
+          updatedBy: userId,
+          updatedAt: rollbackNow
+        })
+        .where("id", "=", id)
+        .execute();
+      return { error: postResult.error, data: null };
+    }
+
     return { data: result, error: null };
   } catch (error) {
-    // Transaction automatically rolled back on error
     return {
       error: {
         message:
@@ -161,42 +349,28 @@ export async function canApproveRequest(
     return false;
   }
 
-  // Authority flows upward only. Find the tier that matches this request's
-  // amount; a user may approve at that tier or any HIGHER tier, but never
-  // from a lower one (a $1k approver must not approve a $1M order).
-  // Amount-less document types (quality, supplier) match the base tier
-  // (lowerBoundAmount 0), so every rule qualifies and behavior is unchanged.
-  const matched = await getApprovalRuleByAmount(
-    client,
-    approvalRequest.documentType,
-    approvalRequest.companyId,
-    approvalRequest.amount ?? undefined
-  );
-  const tierFloor = matched.data?.lowerBoundAmount ?? 0;
-
   const userGroups = await client.rpc("groups_for_user", { uid: userId });
   const userGroupIds = userGroups.data || [];
 
-  return rules.data
-    .filter((rule) => (rule.lowerBoundAmount ?? 0) >= tierFloor)
-    .some((rule) => {
-      if (rule.defaultApproverId === userId) {
-        return true;
-      }
+  // Check if user can approve via any rule (higher amount approvers can approve lower amounts)
+  return rules.data.some((rule) => {
+    if (rule.defaultApproverId === userId) {
+      return true;
+    }
 
-      const approverGroupIds = rule.approverGroupIds;
-      if (!approverGroupIds || approverGroupIds.length === 0) {
-        return false;
-      }
+    const approverGroupIds = rule.approverGroupIds;
+    if (!approverGroupIds || approverGroupIds.length === 0) {
+      return false;
+    }
 
-      // Direct individual approver
-      if (approverGroupIds.includes(userId)) {
-        return true;
-      }
+    // Check if user ID is directly in approverGroupIds (for individual approvers)
+    if (approverGroupIds.includes(userId)) {
+      return true;
+    }
 
-      // Member of an approver group
-      return approverGroupIds.some((groupId) => userGroupIds.includes(groupId));
-    });
+    // Check if user belongs to any of the approver groups
+    return approverGroupIds.some((groupId) => userGroupIds.includes(groupId));
+  });
 }
 
 /**
@@ -437,8 +611,6 @@ export async function getApprovalRuleByAmount(
     .eq("enabled", true);
 
   if (amount !== undefined && amount !== null) {
-    // The matching tier is the highest one whose floor is at or below the
-    // amount; the next tier's floor is where its coverage ends.
     query = query.lte("lowerBoundAmount", amount);
   } else {
     query = query.eq("lowerBoundAmount", 0);
@@ -478,44 +650,6 @@ export async function getApproverUserIdsForRule(
     ? [...new Set([...ids, defaultId])]
     : [...new Set(ids)];
   return combined;
-}
-
-/**
- * "Notified of spend" cascade resolver. When a tiered approval lands at
- * a high tier, approvers of every enabled rule with a strictly lower
- * `lowerBoundAmount` get pinged — visibility into spend that bypassed
- * their tier. Returns deduped user IDs.
- */
-export async function getLowerTierApproverUserIds(
-  client: SupabaseClient<Database>,
-  documentType: (typeof approvalDocumentType)[number],
-  companyId: string,
-  amount: number | null | undefined
-): Promise<string[]> {
-  if (amount == null) return [];
-
-  const matched = await getApprovalRuleByAmount(
-    client,
-    documentType,
-    companyId,
-    amount
-  );
-  if (!matched.data) return [];
-
-  const lowerRules = await client
-    .from("approvalRule")
-    .select("approverGroupIds, defaultApproverId")
-    .eq("documentType", documentType)
-    .eq("companyId", companyId)
-    .eq("enabled", true)
-    .lt("lowerBoundAmount", matched.data.lowerBoundAmount ?? 0);
-
-  if (lowerRules.error || !lowerRules.data?.length) return [];
-
-  const expanded = await Promise.all(
-    lowerRules.data.map((rule) => getApproverUserIdsForRule(client, rule))
-  );
-  return [...new Set(expanded.flat())];
 }
 
 export async function getApprovalRuleById(
@@ -1122,9 +1256,9 @@ export async function rejectRequest(
   db: Kysely<KyselyDatabase>,
   id: string,
   userId: string,
-  notes?: string
+  notes?: string,
+  options?: ApproveRequestOptions
 ) {
-  // Pre-flight check: verify approval request exists and is pending
   const approvalRequest = await db
     .selectFrom("approvalRequest")
     .select(["id", "status", "documentType", "documentId"])
@@ -1143,11 +1277,16 @@ export async function rejectRequest(
   }
 
   const { documentType, documentId } = approvalRequest;
+  const handler = approvalHandlers[documentType as ApprovalDocumentTypeName];
   const now = new Date().toISOString();
+
+  const optionsError = handler?.validateOptions?.("reject", options);
+  if (optionsError) {
+    return { error: { message: optionsError }, data: null };
+  }
 
   try {
     const result = await db.transaction().execute(async (trx) => {
-      // 1. Update approval request to "Rejected"
       const updatedApproval = await trx
         .updateTable("approvalRequest")
         .set({
@@ -1162,51 +1301,29 @@ export async function rejectRequest(
         .returning(["id", "documentType", "documentId"])
         .executeTakeFirstOrThrow();
 
-      // 2. Update document status based on type
-      if (documentType === "purchaseOrder") {
-        const poUpdate = await trx
-          .updateTable("purchaseOrder")
-          .set({
-            status: "Rejected",
-            updatedBy: userId,
-            updatedAt: now
-          })
-          .where("id", "=", documentId)
-          .where("status", "=", "Needs Approval")
-          .returning(["id"])
-          .executeTakeFirst();
-
-        if (!poUpdate) {
-          throw new Error(
-            "Failed to update purchase order status - it may no longer be in 'Needs Approval' state"
-          );
-        }
-      }
-      // Note: qualityDocument rejection doesn't change status (stays Draft)
-
-      if (documentType === "supplier") {
-        const supplierUpdate = await trx
-          .updateTable("supplier")
-          .set({
-            supplierStatus: "Rejected",
-            updatedBy: userId,
-            updatedAt: now
-          })
-          .where("id", "=", documentId)
-          .returning(["id"])
-          .executeTakeFirst();
-
-        if (!supplierUpdate) {
-          throw new Error("Failed to update supplier status");
-        }
-      }
+      await handler?.onRejectInTransaction?.({
+        trx,
+        documentId,
+        userId,
+        now,
+        options
+      });
 
       return updatedApproval;
     });
 
+    const postResult = await handler?.afterReject?.({
+      documentId: result.documentId,
+      userId,
+      options
+    });
+
+    if (postResult?.error) {
+      return { error: postResult.error, data: null };
+    }
+
     return { data: result, error: null };
   } catch (error) {
-    // Transaction automatically rolled back on error
     return {
       error: {
         message:
@@ -1371,4 +1488,75 @@ export function resolveSupplierPrice(
       fallbackUnitPrice * exchangeRate
     ) / exchangeRate
   );
+}
+
+export async function requestProductionPayApproval(
+  client: SupabaseClient<Database>,
+  args: {
+    reportId: string;
+    companyId: string;
+    requestedBy: string;
+    amount?: number | null;
+  }
+): Promise<{ data: { id: string } | null; error: { message: string } | null; skipped?: boolean }> {
+  const { reportId, companyId, requestedBy, amount } = args;
+
+  const approvalRequired = await isApprovalRequired(
+    client,
+    PRODUCTION_PAY_DOCUMENT_TYPE,
+    companyId
+  );
+  if (!approvalRequired) {
+    return { data: null, error: null, skipped: true };
+  }
+
+  await cancelApprovalRequestsForDocument(
+    client,
+    PRODUCTION_PAY_DOCUMENT_TYPE,
+    reportId,
+    requestedBy
+  );
+
+  const created = await createApprovalRequest(client, {
+    documentType: PRODUCTION_PAY_DOCUMENT_TYPE,
+    documentId: reportId,
+    companyId,
+    requestedBy,
+    createdBy: requestedBy,
+    amount: amount ?? undefined
+  });
+
+  if (created.error || !created.data?.id) {
+    return {
+      data: null,
+      error: { message: created.error?.message ?? "Failed to create approval request" }
+    };
+  }
+
+  const rule = await getApprovalRuleByAmount(
+    client,
+    PRODUCTION_PAY_DOCUMENT_TYPE,
+    companyId,
+    amount ?? undefined
+  );
+  const approverIds = rule.data
+    ? await getApproverUserIdsForRule(client, rule.data)
+    : [];
+
+  if (approverIds.length > 0) {
+    try {
+      await trigger("notify", {
+        event: NotificationEvent.ApprovalRequested,
+        companyId,
+        documentId: reportId,
+        documentType: PRODUCTION_PAY_DOCUMENT_TYPE,
+        recipient: { type: "users", userIds: approverIds },
+        from: requestedBy
+      });
+    } catch (e) {
+      console.error("Failed to trigger production pay approval notification", e);
+    }
+  }
+
+  return { data: { id: created.data.id }, error: null };
 }

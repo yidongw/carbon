@@ -139,6 +139,11 @@ export const supplierProcessesQuery = (processId: string) => ({
   staleTime: RefreshRate.Low
 });
 
+export const supplierProcessesBySupplierQuery = (supplierId: string) => ({
+  queryKey: ["supplierProcessesBySupplier", supplierId],
+  staleTime: RefreshRate.Low
+});
+
 export const supplierTypesQuery = (companyId: string | null) => ({
   queryKey: ["supplierTypes", companyId ?? "null"],
   staleTime: RefreshRate.Low
@@ -149,25 +154,16 @@ export const uomsQuery = (companyId: string | null) => ({
   staleTime: RefreshRate.Medium
 });
 
-export const storageRulesQuery = (
-  companyId: string | null,
-  targetType?: "item" | "storageUnit" | "workCenter" | null
-) => ({
-  queryKey: ["storageRules", targetType ?? "all", companyId ?? "null"],
+export const itemRulesQuery = (companyId: string | null) => ({
+  queryKey: ["itemRules", companyId ?? "null"],
   staleTime: RefreshRate.Low
 });
 
-export const storageRuleAssignmentsQuery = (
-  targetType: "item" | "storageUnit" | "workCenter",
-  targetId: string,
+export const itemRuleAssignmentsQuery = (
+  itemId: string,
   companyId: string | null
 ) => ({
-  queryKey: [
-    "storageRuleAssignments",
-    targetType,
-    targetId,
-    companyId ?? "null"
-  ],
+  queryKey: ["itemRuleAssignments", itemId, companyId ?? "null"],
   staleTime: RefreshRate.Low
 });
 

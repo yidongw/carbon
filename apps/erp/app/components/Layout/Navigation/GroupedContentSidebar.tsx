@@ -1,5 +1,6 @@
 import {
   Button,
+  buttonVariants,
   cn,
   DropdownMenu,
   DropdownMenuContent,
@@ -20,7 +21,7 @@ import {
   LuGripVertical,
   LuTrash
 } from "react-icons/lu";
-import { Link, useSubmit } from "react-router";
+import { Link, useNavigate, useSubmit } from "react-router";
 import { ConfirmDelete } from "~/components/Modals";
 import { useOptimisticLocation } from "~/hooks";
 import type { RouteGroup } from "~/types";
@@ -157,6 +158,29 @@ const GroupedContentSidebar = ({
   width?: number;
   exactMatch?: boolean;
 }) => {
+  return (
+    <>
+      {/* Mobile: horizontal nav bar. md:hidden removes it from flow on desktop (no JS, no flash). */}
+      <div className="md:hidden">
+        <MobileGroupedNav groups={groups} exactMatch={exactMatch} />
+      </div>
+      {/* Desktop: collapsible sidebar. display:contents makes CollapsibleSidebar a direct grid child. */}
+      <div className="hidden md:contents">
+        <GroupedContentSidebarDesktop groups={groups} width={width} exactMatch={exactMatch} />
+      </div>
+    </>
+  );
+};
+
+const GroupedContentSidebarDesktop = ({
+  groups,
+  width = 240,
+  exactMatch = false
+}: {
+  groups: RouteGroup[];
+  width?: number;
+  exactMatch?: boolean;
+}) => {
   const { t } = useLingui();
   const location = useOptimisticLocation();
   const submit = useSubmit();
@@ -203,10 +227,7 @@ const GroupedContentSidebar = ({
                 {group.name}
               </h4>
               {group.routes.map((route) => {
-                const isActive = exactMatch
-                  ? location.pathname === route.to
-                  : location.pathname.includes(route.to) &&
-                    !`${location.pathname}${location.search}`.includes("view=");
+                const isActive = routeIsActive(route.to, location.pathname, location.search, exactMatch);
 
                 const hasViews = route.views && route.views.length > 0;
                 const isExpanded = expandedViews[route.name];
@@ -234,7 +255,7 @@ const GroupedContentSidebar = ({
                       >
                         <Link
                           to={route.to + (route.q ? `?q=${route.q}` : "")}
-                          prefetch="viewport"
+                          prefetch="intent"
                         >
                           {route.name}
                         </Link>
@@ -362,7 +383,7 @@ const ViewsReorderGroup = ({
                     : "hover:bg-active hover:text-active-foreground"
                 )}
               >
-                <Link to={view.to} prefetch="viewport">
+                <Link to={view.to} prefetch="intent">
                   {view.name}
                 </Link>
               </Button>

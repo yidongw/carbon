@@ -1,10 +1,5 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
-import { ensureFont, IssuePDF } from "@carbon/documents/pdf";
-import {
-  collectSectionIds,
-  resolveTemplate,
-  toDocumentTemplate
-} from "@carbon/documents/template";
+import { IssuePDF } from "@carbon/documents/pdf";
 import { getPreferenceHeaders } from "@carbon/react";
 import { renderToStream } from "@react-pdf/renderer";
 import type { LoaderFunctionArgs } from "react-router";
@@ -18,11 +13,7 @@ import {
   getIssueTypes,
   getRequiredActionsList
 } from "~/modules/quality";
-import {
-  getCompany,
-  getDocumentTemplate,
-  resolveSections
-} from "~/modules/settings";
+import { getCompany } from "~/modules/settings";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
   const { client, companyId } = await requirePermissions(request, {
@@ -166,20 +157,6 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const { locale } = getPreferenceHeaders(request);
 
-  const documentTemplate = await getDocumentTemplate(
-    client,
-    companyId,
-    "issue"
-  );
-  const templateConfig = toDocumentTemplate(documentTemplate.data, "issue");
-  const resolved = resolveTemplate("issue", templateConfig);
-  const sections = await resolveSections(
-    client,
-    companyId,
-    collectSectionIds(resolved)
-  );
-  await ensureFont(resolved.settings.fontFamily);
-
   const stream = await renderToStream(
     <IssuePDF
       company={company.data as any}
@@ -194,8 +171,6 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       assignees={userNames}
       jobOperationStepRecords={jobOperationStepRecords.data ?? []}
       operationToJobId={operationToJobId}
-      template={templateConfig}
-      sections={sections}
     />
   );
 

@@ -8,10 +8,12 @@ import {
   LuGlassWater,
   LuGroup,
   LuHammer,
+  LuLayoutTemplate,
   LuPizza,
   LuPuzzle,
   LuRuler,
-  LuShapes
+  LuShapes,
+  LuShieldCheck
 } from "react-icons/lu";
 import { usePermissions } from "~/hooks";
 import { useSavedViews } from "~/hooks/useSavedViews";
@@ -49,11 +51,16 @@ export default function useItemsSubmodules() {
           to: path.to.consumables,
           icon: <LuPizza />,
           table: "consumable"
+        },
+        {
+          name: t`Templates`,
+          to: path.to.templates,
+          icon: <LuLayoutTemplate />
         }
       ]
     },
     {
-      name: t`Material Properties`,
+      name: t`Configure Materials`,
       routes: [
         {
           name: t`Dimensions`,
@@ -101,6 +108,12 @@ export default function useItemsSubmodules() {
           to: path.to.itemPostingGroups,
           role: "employee",
           icon: <LuGroup />
+        },
+        {
+          name: t`Rules`,
+          to: path.to.itemRules,
+          role: "employee",
+          icon: <LuShieldCheck />
         },
         {
           name: t`Units`,

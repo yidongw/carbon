@@ -40,7 +40,7 @@ import {
   Number,
   Select,
   Submit,
-  TextArea,
+  Template,
   UnitOfMeasure
 } from "~/components/Form";
 import { ReplenishmentSystemIcon } from "~/components/Icons";
@@ -275,11 +275,7 @@ const PartForm = ({ initialValues, type = "card", onClose }: PartFormProps) => {
                   isReadOnly={isEditing}
                 />
 
-                <Input
-                  name="name"
-                  label={t`Short Description`}
-                  characterLimit={40}
-                />
+                <Input name="name" label={t`Short Description`} />
 
                 <Select
                   name="replenishmentSystem"
@@ -321,6 +317,9 @@ const PartForm = ({ initialValues, type = "card", onClose }: PartFormProps) => {
                     isClearable
                   />
                 )}
+                {!isEditing && (
+                  <Template name="templateId" label={t`Template`} />
+                )}
                 {!isEditing && replenishmentSystem !== "Make" && (
                   <Number
                     name="unitCost"
@@ -339,9 +338,6 @@ const PartForm = ({ initialValues, type = "card", onClose }: PartFormProps) => {
                 <ItemStorageFields />
 
                 <CustomFormFields table="part" tags={initialValues.tags} />
-              </div>
-              <div className="mt-4 w-full">
-                <TextArea name="description" label={t`Long Description`} />
               </div>
               <VStack spacing={2} className="mt-4 w-full">
                 <label

@@ -1,4 +1,4 @@
-import { Badge, Checkbox, HStack, MenuIcon, MenuItem } from "@carbon/react";
+import { Checkbox, HStack, MenuIcon, MenuItem } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useLocale } from "@react-aria/i18n";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -9,7 +9,6 @@ import {
   LuPencil,
   LuToggleRight,
   LuUser,
-  LuUserCheck,
   LuUsers
 } from "react-icons/lu";
 import { useNavigate } from "react-router";
@@ -38,7 +37,6 @@ const PeopleTable = memo(
     const formatPersonName = useFormatPersonName();
     const navigate = useNavigate();
     const permissions = usePermissions();
-    const locations = useLocations();
     const [params] = useUrlParams();
 
     const renderGenericAttribute = useCallback(
@@ -150,14 +148,6 @@ const PeopleTable = memo(
                 { value: "false", label: t`Offboarded` }
               ]
             },
-            icon: <LuUserCheck />
-          }
-        },
-        {
-          accessorKey: "active",
-          header: t`Active`,
-          cell: (item) => <Checkbox isChecked={item.getValue<boolean>()} />,
-          meta: {
             icon: <LuToggleRight />
           }
         }

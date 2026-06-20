@@ -18,7 +18,6 @@ import {
   LuCircleCheckBig,
   LuClipboardList,
   LuHash,
-  LuPlay,
   LuRefreshCcwDot,
   LuRotateCcw,
   LuTriangleAlert,
@@ -27,7 +26,6 @@ import {
 import { useFetcher, useFetchers, useParams, useSubmit } from "react-router";
 import { Hyperlink, Table } from "~/components";
 import { EditableNumber } from "~/components/Editable";
-import { Enumerable } from "~/components/Enumerable";
 import { OperationStatusIcon } from "~/components/Icons";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
 import { operationTypes } from "~/modules/shared";
@@ -130,20 +128,6 @@ const JobOperationsTable = memo(({ data, count }: JobOperationsTableProps) => {
         }
       },
       {
-        id: "mes",
-        header: t`MES`,
-        cell: ({ row }) => (
-          <Button size="sm" variant="secondary" leftIcon={<LuPlay />} asChild>
-            <a href={path.to.external.mesJobOperation(row.original.id)}>
-              {t`Open`}
-            </a>
-          </Button>
-        ),
-        meta: {
-          icon: <LuPlay />
-        }
-      },
-      {
         id: "item",
         header: t`Item`,
         cell: ({ row }) => {
@@ -156,13 +140,14 @@ const JobOperationsTable = memo(({ data, count }: JobOperationsTableProps) => {
       {
         accessorKey: "operationType",
         header: t`Operation Type`,
-        cell: (item) => <Enumerable value={item.getValue<string>() ?? null} />,
+        cell: (item) =>
+          operationTypeLabel(item.getValue<string>() ?? ""),
         meta: {
           filter: {
             type: "static",
             options: operationTypes.map((value) => ({
               value,
-              label: <Enumerable value={value ?? null} />
+              label: operationTypeLabel(value)
             }))
           },
           icon: <LuWrench />

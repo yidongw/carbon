@@ -5,6 +5,7 @@ import type { procedureStatus } from "../../production.models";
 
 type ProcedureStatusProps = {
   status?: (typeof procedureStatus)[number] | null;
+  iconOnly?: boolean;
 };
 
 const ProcedureStatus = ({ status, iconOnly }: ProcedureStatusProps) => {
