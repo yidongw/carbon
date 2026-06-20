@@ -9829,8 +9829,14 @@ msgstr "वेबहुक डॉक्स"
 msgid "Website"
 msgstr "वेबसाइट"
 
+msgid "WeChat"
+msgstr ""
+
 msgid "WeChat QR"
 msgstr "व्हाट्सएप क्यूआरसी"
+
+msgid "WeChat sign-in"
+msgstr ""
 
 msgid "Wednesday"
 msgstr "बुधवार"

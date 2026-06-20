@@ -9829,8 +9829,14 @@ msgstr "Webhooks 文档"
 msgid "Website"
 msgstr "网站"
 
+msgid "WeChat"
+msgstr "微信"
+
 msgid "WeChat QR"
 msgstr "微信二维码"
+
+msgid "WeChat sign-in"
+msgstr "微信登录"
 
 msgid "Wednesday"
 msgstr "星期三"

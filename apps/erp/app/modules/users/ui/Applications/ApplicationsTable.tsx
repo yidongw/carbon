@@ -15,7 +15,7 @@ import { flushSync } from "react-dom";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { LuCheck, LuUsers, LuX } from "react-icons/lu";
 import { useFetcher, useRevalidator } from "react-router";
-import { Table } from "~/components";
+import { Table, Avatar } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { usePermissions, useUrlParams } from "~/hooks";
 import { path } from "~/utils/path";
@@ -31,6 +31,9 @@ export type MembershipApplicationRow = {
     fullName: string | null;
     firstName: string | null;
     lastName: string | null;
+    avatarUrl: string | null;
+    phone: string | null;
+    wechat_unionid: string | null;
   } | null;
   employeeType: { name: string } | null;
   location: { name: string } | null;
@@ -271,14 +274,65 @@ const ApplicationsTable = memo(({ data, count }: ApplicationsTableProps) => {
     return [
       {
         id: "applicant",
+        accessorFn: (row) => {
+          const applicant = row.applicant;
+          return [
+            applicant?.fullName ??
+              [applicant?.firstName, applicant?.lastName].filter(Boolean).join(" "),
+            applicant?.email,
+            applicant?.phone,
+            applicant?.wechat_unionid,
+            applicant?.avatarUrl
+          ]
+            .filter(Boolean)
+            .join("|");
+        },
         header: t`Applicant`,
-        cell: ({ row }) => getApplicantName(row.original),
+        cell: ({ row }) => {
+          const applicant = row.original.applicant;
+          if (!applicant) return "—";
+
+          const name = getApplicantName(row.original);
+
+          return (
+            <div className="flex items-center gap-3 min-w-0">
+              <Avatar path={applicant.avatarUrl} name={name} size="sm" />
+              <div className="min-w-0">
+                <div className="font-medium truncate">{name}</div>
+                {applicant.wechat_unionid && (
+                  <div
+                    className="text-xs text-muted-foreground truncate"
+                    title={applicant.wechat_unionid}
+                  >
+                    {t`WeChat`} · {applicant.wechat_unionid.slice(-8)}
+                  </div>
+                )}
+                {applicant.phone && (
+                  <div className="text-xs text-muted-foreground tabular-nums">
+                    {applicant.phone}
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        },
         meta: { icon: <LuUsers /> }
       },
       {
         id: "email",
         header: t`Email`,
-        cell: ({ row }) => row.original.applicant?.email ?? "—"
+        accessorFn: (row) =>
+          row.applicant?.email ??
+          (row.applicant?.wechat_unionid ? "wechat" : null),
+        cell: ({ row }) => {
+          if (row.original.applicant?.email) {
+            return row.original.applicant.email;
+          }
+          if (row.original.applicant?.wechat_unionid) {
+            return t`WeChat sign-in`;
+          }
+          return "—";
+        }
       },
       {
         id: "role",
