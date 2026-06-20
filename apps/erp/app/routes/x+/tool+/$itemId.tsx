@@ -1,6 +1,7 @@
 import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
+import { assertNotDeleted } from "~/utils/loader";
 import {
   HStack,
   Input,
@@ -67,6 +68,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     getPickMethods(client, itemId, companyId),
     getTagsList(client, companyId, "tool")
   ]);
+
+  // Block access to deleted items
+  assertNotDeleted(toolSummary.data);
 
   if (toolSummary.error) {
     throw redirect(

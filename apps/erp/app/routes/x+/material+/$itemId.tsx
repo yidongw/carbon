@@ -1,6 +1,7 @@
 import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
+import { assertNotDeleted } from "~/utils/loader";
 import { useRouteData } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
 import { useLingui } from "@lingui/react/macro";
@@ -56,6 +57,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       getTagsList(client, companyId, "material")
     ]
   );
+
+  // Block access to deleted items
+  assertNotDeleted(materialSummary.data);
 
   if (materialSummary.error) {
     throw redirect(
