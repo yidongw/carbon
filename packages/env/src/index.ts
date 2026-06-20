@@ -398,7 +398,10 @@ export const RATE_LIMIT = parseInt(
 );
 
 export function getAppUrl() {
-  if (VERCEL_ENV === "production" || NODE_ENV === "production") {
+  const vercelEnv = process.env.VERCEL_ENV;
+  const nodeEnv = process.env.NODE_ENV;
+
+  if (vercelEnv === "production" || nodeEnv === "production") {
     return ERP_URL
       ? ERP_URL
       : CONTROLLED_ENVIRONMENT
@@ -406,7 +409,7 @@ export function getAppUrl() {
         : "https://app.carbon.ms";
   }
 
-  if (VERCEL_ENV === "preview") {
+  if (vercelEnv === "preview") {
     // ERP_URL takes precedence when set (e.g. a staging deployment with a
     // custom domain). Without it the PKCE callback URL would be the
     // Vercel-generated branch URL, which differs from the custom domain the
@@ -423,7 +426,10 @@ export function getAppUrl() {
 }
 
 export function getMESUrl() {
-  if (VERCEL_ENV === "production" || NODE_ENV === "production") {
+  const vercelEnv = process.env.VERCEL_ENV;
+  const nodeEnv = process.env.NODE_ENV;
+
+  if (vercelEnv === "production" || nodeEnv === "production") {
     return MES_URL
       ? MES_URL
       : CONTROLLED_ENVIRONMENT
@@ -431,7 +437,7 @@ export function getMESUrl() {
         : "https://mes.carbon.ms";
   }
 
-  if (VERCEL_ENV === "preview") {
+  if (vercelEnv === "preview") {
     return `https://${process.env.VERCEL_BRANCH_URL ?? process.env.VERCEL_URL}`;
   }
 
