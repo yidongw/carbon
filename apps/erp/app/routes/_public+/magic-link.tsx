@@ -1,7 +1,60 @@
 import { CONTROLLED_ENVIRONMENT, SUPABASE_URL } from "@carbon/auth";
 import { Button, Heading, VStack } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useNavigate, useSearchParams } from "react-router";
+import type { LoaderFunctionArgs } from "react-router";
+import { redirect, useNavigate, useSearchParams } from "react-router";
+
+function resolveCallbackUrl(
+  requestUrl: URL,
+  redirectTo: string | null,
+  encodedCallback: string | null
+): string | null {
+  if (encodedCallback) {
+    try {
+      return decodeURIComponent(encodedCallback);
+    } catch {
+      return null;
+    }
+  }
+
+  if (redirectTo?.includes("/callback")) {
+    return redirectTo;
+  }
+
+  if (redirectTo?.startsWith("/")) {
+    return `${requestUrl.origin}/callback?redirectTo=${encodeURIComponent(redirectTo)}`;
+  }
+
+  return null;
+}
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  const url = new URL(request.url);
+  const token = url.searchParams.get("token");
+  if (!token) {
+    throw redirect("/");
+  }
+
+  const callbackUrl = resolveCallbackUrl(
+    url,
+    url.searchParams.get("redirectTo"),
+    url.searchParams.get("callback")
+  );
+
+  if (callbackUrl) {
+    try {
+      const targetHost = new URL(callbackUrl).host;
+      if (url.host !== targetHost) {
+        const targetOrigin = new URL(callbackUrl).origin;
+        throw redirect(`${targetOrigin}/magic-link?${url.searchParams.toString()}`);
+      }
+    } catch (error) {
+      if (error instanceof Response) throw error;
+    }
+  }
+
+  return null;
+}
 
 export default function ConfirmMagicLink() {
   const { t } = useLingui();
@@ -9,18 +62,28 @@ export default function ConfirmMagicLink() {
   const navigate = useNavigate();
 
   const token = params.get("token");
-  // redirectTo is the full callback URL embedded by sendMagicLink via {{ .RedirectTo }}
-  // in the email template. It carries the correct origin (preview or production)
-  // so Supabase redirects back to wherever the user actually requested sign-in from.
+  // {{ .RedirectTo }} from the email template is the full callback URL built by
+  // sendMagicLink (e.g. https://app/callback?redirectTo=%2Fjoin%2Fcode%2Fapply).
   const redirectTo = params.get("redirectTo");
+  const encodedCallback = params.get("callback");
   if (!token) {
     navigate("/");
     return null;
   }
 
+  const getCallbackUrl = () => {
+    return (
+      resolveCallbackUrl(
+        new URL(window.location.href),
+        redirectTo,
+        encodedCallback
+      ) ?? `${window.location.origin}/callback`
+    );
+  };
+
   const getConfirmationURL = (token: string) => {
-    const callbackUrl = redirectTo ?? `${window?.location.origin}/callback`;
-    return `${SUPABASE_URL}/auth/v1/verify?token=${token}&type=magiclink&redirect_to=${callbackUrl}`;
+    const callbackUrl = getCallbackUrl();
+    return `${SUPABASE_URL}/auth/v1/verify?token=${token}&type=magiclink&redirect_to=${encodeURIComponent(callbackUrl)}`;
   };
 
   return (
