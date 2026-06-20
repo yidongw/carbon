@@ -16,7 +16,7 @@ import {
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useEffect, useRef } from "react";
 import { useFetcher, useNavigate } from "react-router";
-import { Hidden, Input, Location, Select, Submit } from "~/components/Form";
+import { Hidden, Input, Location, Select, SequenceOrCustomId, Submit } from "~/components/Form";
 import { useUser } from "~/hooks";
 import type { getEmployeeTypes, getInvitable } from "~/modules/users";
 import { createEmployeeValidator } from "~/modules/users";
@@ -132,6 +132,12 @@ const CreateEmployeeModal = ({
                 <Input name="firstName" label={t`First Name`} />
                 <Input name="lastName" label={t`Last Name`} />
               </div>
+              <SequenceOrCustomId
+                name="number"
+                label={t`ID Number`}
+                table="user"
+                isOptional
+              />
               <Select
                 name="employeeType"
                 label={t`Employee Type`}

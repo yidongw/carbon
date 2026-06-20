@@ -55,6 +55,7 @@ const ProfileForm = ({ user }: ProfileFormProps) => {
                 <Input name="firstName" label={t`First Name`} />
                 <Input name="lastName" label={t`Last Name`} />
               </div>
+              <Input name="number" label={t`ID Number`} />
               <PhoneInput name="phone" label={t`Phone`} />
               <TextArea
                 name="about"
