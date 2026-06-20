@@ -1,27 +1,24 @@
 # Soft Delete Usage Guide
 
-This implementation uses a **simple, explicit** approach to soft delete:
-- Filter deleted records at query layer (not database layer)
+This implementation uses a **safe-by-default** approach to soft delete:
+- All clients auto-filter deleted records by default
+- Opt-in to include deleted records when needed
 - Block deleted items at route layer
 - Relationships work naturally
 
 ## Quick Start
 
-### 1. List Queries (filter deleted records)
+### 1. List Queries (auto-filtered by default)
 
-Use `fromActive()` to automatically filter all soft-delete tables:
+**The client automatically filters deleted records** - no code changes needed!
 
 ```typescript
-import { fromActive } from "@carbon/database";
-
 export async function loader({ request }: LoaderFunctionArgs) {
   const { client } = await requirePermissions(request, { view: "items" });
   
-  // One-line opt-in for automatic filtering
-  const activeFrom = fromActive(client);
-  
-  // Automatically filters WHERE deletedAt IS NULL
-  const items = await activeFrom("item")
+  // Automatically filters WHERE deletedAt IS NULL - nothing to do!
+  const items = await client
+    .from("item")
     .select("*")
     .eq("companyId", companyId);
   
@@ -54,13 +51,16 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 
 ### 3. Historical Reads (include deleted records)
 
-Just use the base client - don't use `fromActive()`:
+Pass `includeDeleted: true` to `requirePermissions()`:
 
 ```typescript
 export async function loader({ params, request }: LoaderFunctionArgs) {
-  const { client } = await requirePermissions(request, { view: "quotes" });
+  const { client } = await requirePermissions(request, {
+    view: "quotes",
+    includeDeleted: true  // ← Include deleted records
+  });
   
-  // Quote might reference deleted items - that's OK!
+  // Quote might reference deleted items - now we can see them!
   const quote = await client
     .from("quote")
     .select(`
@@ -73,7 +73,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
     .eq("id", params.quoteId)
     .single();
   
-  assertNotDeleted(quote.data);  // Block deleted quote, but not deleted items
+  assertNotDeleted(quote.data);  // Block deleted quote, but allow deleted items
   
   return json({ quote: quote.data });
 }
@@ -122,46 +122,57 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
 ## Common Patterns
 
-### Pattern: Filter lists, allow deleted references
+### Pattern: Default filtering with historical references
 
 ```typescript
-const activeFrom = fromActive(client);
+// By default, client filters deleted records
+const { client } = await requirePermissions(request, { view: "jobs" });
 
 // List only active jobs
-const jobs = await activeFrom("job").select("*, item(*)");
+const jobs = await client.from("job").select("*, item(*)");
 // ✅ Only returns jobs WHERE deletedAt IS NULL
-// ✅ But job.item can still be deleted (historical reference)
+// ✅ But to see deleted items in the references, use includeDeleted:
+
+const { client } = await requirePermissions(request, {
+  view: "jobs",
+  includeDeleted: true
+});
+const jobs = await client.from("job").select("*, item(*)");
+// ✅ Now job.item can be deleted (historical reference)
 ```
 
 ### Pattern: Search/autocomplete
 
 ```typescript
-const activeFrom = fromActive(client);
+// Default client auto-filters
+const { client } = await requirePermissions(request, { view: "items" });
 
-const items = await activeFrom("item")
+const items = await client
+  .from("item")
   .select("id, name")
   .ilike("name", `%${search}%`)
   .limit(10);
 // ✅ Automatically filters deleted items from search
 ```
 
-### Pattern: Mixed filtering
+### Pattern: Mixed queries
 
 ```typescript
-const activeFrom = fromActive(client);
+const { client } = await requirePermissions(request, { view: "production" });
 
 const data = await Promise.all([
-  activeFrom("job").select("*"),        // Filtered
-  client.from("productionEvent").select("*"),  // Not filtered (no deletedAt)
-  activeFrom("item").select("*")        // Filtered
+  client.from("job").select("*"),             // Auto-filtered
+  client.from("productionEvent").select("*"), // No deletedAt, not affected
+  client.from("item").select("*")             // Auto-filtered
 ]);
+// All soft-delete tables automatically filtered
 ```
 
 ## Migration Guide
 
-### Before (old client wrapper approach):
+### Before (old soft-delete-v1):
 ```typescript
-const serviceRole = getCarbonServiceRole(userId);  // Always passed userId
+const serviceRole = getCarbonServiceRole(userId);
 const items = await serviceRole.from("item").select("*");  // Auto-filtered
 
 // Need historical?
@@ -170,15 +181,18 @@ const allItems = await withIncludeDeleted(() =>
 );
 ```
 
-### After (new explicit approach):
+### After (soft-delete-v2):
 ```typescript
-const client = getCarbonServiceRole();  // No userId needed for reads
-const activeFrom = fromActive(client);
-
-const items = await activeFrom("item").select("*");  // Explicit filter
+// Default: auto-filtered (no changes needed!)
+const { client } = await requirePermissions(request, { view: "items" });
+const items = await client.from("item").select("*");
 
 // Need historical?
-const allItems = await client.from("item").select("*");  // Explicit no-filter
+const { client } = await requirePermissions(request, {
+  view: "items",
+  includeDeleted: true  // ← Simple opt-in
+});
+const allItems = await client.from("item").select("*");
 ```
 
 ## Supported Tables
