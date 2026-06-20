@@ -1135,11 +1135,17 @@ msgstr "阻止保存直到解决"
 msgid "BoM"
 msgstr "物料清单"
 
+msgid "BOM"
+msgstr ""
+
 msgid "BoM + BoP"
 msgstr "BoM + BoP"
 
 msgid "BOM synced successfully"
 msgstr "物料清单同步成功"
+
+msgid "BOP"
+msgstr ""
 
 msgid "Breadcrumb"
 msgstr "面包屑"
@@ -1519,6 +1525,9 @@ msgstr "完成时间"
 
 msgid "Conditions"
 msgstr "条件"
+
+msgid "Config Params"
+msgstr ""
 
 msgid "Configuration Parameters"
 msgstr "配置参数"
@@ -3584,6 +3593,9 @@ msgstr "未能更新报价行"
 msgid "Failed to update supplier quote line"
 msgstr "未能更新供应商报价行"
 
+msgid "Failed to update template"
+msgstr ""
+
 msgid "Failed to update thumbnail path"
 msgstr "无法更新缩略图路径"
 
@@ -5157,6 +5169,9 @@ msgstr "新供应商"
 msgid "New Supplier Part"
 msgstr "新供应商零件"
 
+msgid "New Template"
+msgstr ""
+
 msgid "New Timecard"
 msgstr "新时间卡"
 
@@ -5287,6 +5302,9 @@ msgstr "未安排休息日"
 
 msgid "No default attachments yet."
 msgstr "还没有默认附件。"
+
+msgid "No description"
+msgstr ""
 
 msgid "No draft versions available"
 msgstr "没有可用的草稿版本"
@@ -5590,6 +5608,9 @@ msgstr "开放计划"
 
 msgid "Open task details"
 msgstr "打开任务详情"
+
+msgid "Open Template"
+msgstr ""
 
 msgid "Operation"
 msgstr "操作"
@@ -7897,6 +7918,9 @@ msgstr "税:"
 
 msgid "Temperature"
 msgstr "温度"
+
+msgid "Template"
+msgstr ""
 
 msgid "Template ID"
 msgstr "模板 ID"

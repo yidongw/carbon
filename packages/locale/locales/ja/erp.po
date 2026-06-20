@@ -1135,11 +1135,17 @@ msgstr "解決されるまで保存をブロックします"
 msgid "BoM"
 msgstr "BoM"
 
+msgid "BOM"
+msgstr ""
+
 msgid "BoM + BoP"
 msgstr "BoM + BoP"
 
 msgid "BOM synced successfully"
 msgstr "BOMが正常に同期されました"
+
+msgid "BOP"
+msgstr ""
 
 msgid "Breadcrumb"
 msgstr "パンくずリスト"
@@ -1519,6 +1525,9 @@ msgstr "完了時間"
 
 msgid "Conditions"
 msgstr "条件"
+
+msgid "Config Params"
+msgstr ""
 
 msgid "Configuration Parameters"
 msgstr "設定パラメータ"
@@ -3584,6 +3593,9 @@ msgstr "見積行の更新に失敗しました"
 msgid "Failed to update supplier quote line"
 msgstr "仕入先見積行の更新に失敗しました"
 
+msgid "Failed to update template"
+msgstr ""
+
 msgid "Failed to update thumbnail path"
 msgstr "サムネイルパスの更新に失敗しました"
 
@@ -5157,6 +5169,9 @@ msgstr "新しいサプライヤー"
 msgid "New Supplier Part"
 msgstr "新しいサプライヤー部品"
 
+msgid "New Template"
+msgstr ""
+
 msgid "New Timecard"
 msgstr "新しいタイムカード"
 
@@ -5287,6 +5302,9 @@ msgstr "休暇の予定がありません"
 
 msgid "No default attachments yet."
 msgstr "まだデフォルト添付ファイルがありません。"
+
+msgid "No description"
+msgstr ""
 
 msgid "No draft versions available"
 msgstr "ドラフト版は利用できません"
@@ -5590,6 +5608,9 @@ msgstr "スケジュール済みを開く"
 
 msgid "Open task details"
 msgstr "タスク詳細を開く"
+
+msgid "Open Template"
+msgstr ""
 
 msgid "Operation"
 msgstr "操作"
@@ -7897,6 +7918,9 @@ msgstr "税:"
 
 msgid "Temperature"
 msgstr "温度"
+
+msgid "Template"
+msgstr ""
 
 msgid "Template ID"
 msgstr "テンプレートID"

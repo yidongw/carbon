@@ -1135,11 +1135,17 @@ msgstr "Блокирует сохранение до разрешения"
 msgid "BoM"
 msgstr "BoM"
 
+msgid "BOM"
+msgstr ""
+
 msgid "BoM + BoP"
 msgstr "BoM + BoP"
 
 msgid "BOM synced successfully"
 msgstr "BOM успешно синхронизирован"
+
+msgid "BOP"
+msgstr ""
 
 msgid "Breadcrumb"
 msgstr "Навигационная цепочка"
@@ -1519,6 +1525,9 @@ msgstr "Время завершения"
 
 msgid "Conditions"
 msgstr "Условия"
+
+msgid "Config Params"
+msgstr ""
 
 msgid "Configuration Parameters"
 msgstr "Параметры конфигурации"
@@ -3584,6 +3593,9 @@ msgstr "Не удалось обновить строку предложения
 msgid "Failed to update supplier quote line"
 msgstr "Не удалось обновить строку предложения поставщика"
 
+msgid "Failed to update template"
+msgstr ""
+
 msgid "Failed to update thumbnail path"
 msgstr "Не удалось обновить путь миниатюры"
 
@@ -5157,6 +5169,9 @@ msgstr "Новый поставщик"
 msgid "New Supplier Part"
 msgstr "Новая деталь поставщика"
 
+msgid "New Template"
+msgstr ""
+
 msgid "New Timecard"
 msgstr "Новая табель учета рабочего времени"
 
@@ -5287,6 +5302,9 @@ msgstr "Нет запланированных выходных"
 
 msgid "No default attachments yet."
 msgstr "Пока нет вложений по умолчанию."
+
+msgid "No description"
+msgstr ""
 
 msgid "No draft versions available"
 msgstr "Нет доступных черновиков версий"
@@ -5590,6 +5608,9 @@ msgstr "Открытые запланированные"
 
 msgid "Open task details"
 msgstr "Открыть детали задачи"
+
+msgid "Open Template"
+msgstr ""
 
 msgid "Operation"
 msgstr "Операция"
@@ -7897,6 +7918,9 @@ msgstr "Налог:"
 
 msgid "Temperature"
 msgstr "Температура"
+
+msgid "Template"
+msgstr ""
 
 msgid "Template ID"
 msgstr "ID шаблона"

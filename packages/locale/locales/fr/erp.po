@@ -1135,11 +1135,17 @@ msgstr "Bloque la sauvegarde jusqu'à résolution"
 msgid "BoM"
 msgstr "BoM"
 
+msgid "BOM"
+msgstr ""
+
 msgid "BoM + BoP"
 msgstr "BoM + BoP"
 
 msgid "BOM synced successfully"
 msgstr "BOM synchronisé avec succès"
+
+msgid "BOP"
+msgstr ""
 
 msgid "Breadcrumb"
 msgstr "Fil d'Ariane"
@@ -1519,6 +1525,9 @@ msgstr "Temps d'exécution"
 
 msgid "Conditions"
 msgstr "Conditions"
+
+msgid "Config Params"
+msgstr ""
 
 msgid "Configuration Parameters"
 msgstr "Paramètres de configuration"
@@ -3584,6 +3593,9 @@ msgstr "Échec de la mise à jour de la ligne de devis"
 msgid "Failed to update supplier quote line"
 msgstr "Échec de la mise à jour de la ligne de devis fournisseur"
 
+msgid "Failed to update template"
+msgstr ""
+
 msgid "Failed to update thumbnail path"
 msgstr "Échec de la mise à jour du chemin de la miniature"
 
@@ -5157,6 +5169,9 @@ msgstr "Nouveau Fournisseur"
 msgid "New Supplier Part"
 msgstr "Nouvelle pièce fournisseur"
 
+msgid "New Template"
+msgstr ""
+
 msgid "New Timecard"
 msgstr "Nouvelle Feuille de Temps"
 
@@ -5287,6 +5302,9 @@ msgstr "Aucun jour de congé prévu"
 
 msgid "No default attachments yet."
 msgstr "Aucune pièce jointe par défaut pour le moment."
+
+msgid "No description"
+msgstr ""
 
 msgid "No draft versions available"
 msgstr "Aucune version brouillon disponible"
@@ -5590,6 +5608,9 @@ msgstr "Planifiés ouverts"
 
 msgid "Open task details"
 msgstr "Ouvrir les détails de la tâche"
+
+msgid "Open Template"
+msgstr ""
 
 msgid "Operation"
 msgstr "Opération"
@@ -7897,6 +7918,9 @@ msgstr "Taxe :"
 
 msgid "Temperature"
 msgstr "Température"
+
+msgid "Template"
+msgstr ""
 
 msgid "Template ID"
 msgstr "ID de modèle"

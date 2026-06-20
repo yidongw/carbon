@@ -66,21 +66,18 @@ import {
   LuGripVertical,
   LuKeySquare
 } from "react-icons/lu";
-import { useFetcher, useFetchers, useParams, useSubmit } from "react-router";
+import { useFetcher, useFetchers, useSubmit } from "react-router";
 import { EmployeeAvatar } from "~/components";
 import { ConfiguratorDataTypeIcon } from "~/components/Configurator/Icons";
 import { Enumerable } from "~/components/Enumerable";
 import { useShape } from "~/components/Form/Shape";
 import { ConfirmDelete } from "~/components/Modals";
 import { useDateFormatter } from "~/hooks";
-import type { ConfigurationParameter } from "~/modules/items";
-import {
-  configurationParameterDataTypes,
-  configurationParameterGroupValidator,
-  configurationParameterValidator
+import type {
+  ConfigurationParameter,
+  ConfigurationParametersBindings
 } from "~/modules/items";
-import type { action as configurationParameterAction } from "~/routes/x+/part+/$itemId.parameter";
-import { path } from "~/utils/path";
+import { configurationParameterDataTypes } from "~/modules/items";
 import { capitalize } from "~/utils/string";
 
 type ConfigurationParameterGroup = {
@@ -91,9 +88,11 @@ type ConfigurationParameterGroup = {
 };
 
 export default function ConfigurationParametersForm({
+  bindings,
   parameters: initialParameters,
   groups: initialGroups
 }: {
+  bindings: ConfigurationParametersBindings;
   parameters: ConfigurationParameter[];
   groups: ConfigurationParameterGroup[];
 }) {
@@ -101,18 +100,17 @@ export default function ConfigurationParametersForm({
   const {
     isList,
     isMaterial,
-    itemId,
     key,
     onChangeCheckForListType,
     setKey,
     setIsList,
     setIsMaterial,
     updateKey
-  } = useConfigurationParameters();
+  } = useConfigurationParameters(undefined);
 
   const materialShapeOptions = useShape();
   const submit = useSubmit();
-  const fetcher = useFetcher<typeof configurationParameterAction>();
+  const fetcher = useFetcher<{ success?: boolean }>();
 
   useEffect(() => {
     if (fetcher.data?.success === false) {
@@ -129,7 +127,9 @@ export default function ConfigurationParametersForm({
     initialParameters.map((parameter) => [parameter.id, parameter])
   );
 
-  const pendingParameters = usePendingParameters({ itemId });
+  const pendingParameters = usePendingParameters({
+    configurationParameterOrderUrl: bindings.urls.configurationParameterOrder
+  });
 
   // merge pending parameters and existing parameters
   for (let pendingParameter of pendingParameters) {
@@ -152,7 +152,10 @@ export default function ConfigurationParametersForm({
     initialGroups.map((group) => [group.id, group])
   );
 
-  const pendingGroups = usePendingGroups({ itemId });
+  const pendingGroups = usePendingGroups({
+    configurationParameterGroupOrderUrl:
+      bindings.urls.configurationParameterGroupOrder
+  });
 
   // merge pending groups and existing groups
   for (let pendingGroup of pendingGroups) {
@@ -190,9 +193,9 @@ export default function ConfigurationParametersForm({
           <div className="flex flex-col gap-4">
             <div className="p-6 border rounded-lg">
               <ValidatedForm
-                action={path.to.configurationParameter(itemId)}
+                action={bindings.urls.configurationParameter}
                 method="post"
-                validator={configurationParameterValidator}
+                validator={bindings.parameterValidator}
                 fetcher={fetcher}
                 resetAfterSubmit
                 onSubmit={() => {
@@ -201,7 +204,7 @@ export default function ConfigurationParametersForm({
                   setIsMaterial(false);
                 }}
                 defaultValues={{
-                  itemId: itemId,
+                  [bindings.ownerField]: bindings.ownerId,
                   key: "",
                   label: "",
                   dataType: "numeric",
@@ -212,7 +215,7 @@ export default function ConfigurationParametersForm({
                 className="w-full"
               >
                 <Hidden name="id" />
-                <Hidden name="itemId" />
+                <Hidden name={bindings.ownerField} />
                 <Hidden name="key" value={key} />
                 <VStack spacing={4}>
                   <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
@@ -275,7 +278,7 @@ export default function ConfigurationParametersForm({
                       isLoading={
                         fetcher.state !== "idle" &&
                         fetcher.formAction ===
-                          path.to.configurationParameter(itemId)
+                          bindings.urls.configurationParameter
                       }
                     >
                       <Trans>Add Parameter</Trans>
@@ -321,6 +324,7 @@ export default function ConfigurationParametersForm({
                           )}
                         >
                           <ParameterGroup
+                            bindings={bindings}
                             group={group}
                             parameters={groupParameters}
                             deleteGroupDisclosure={deleteGroupDisclosure}
@@ -337,6 +341,7 @@ export default function ConfigurationParametersForm({
                       <DragOverlay>
                         {activeGroup && (
                           <ParameterGroup
+                            bindings={bindings}
                             group={activeGroup}
                             deleteGroupDisclosure={deleteGroupDisclosure}
                             groupDisclosure={groupDisclosure}
@@ -351,6 +356,7 @@ export default function ConfigurationParametersForm({
                         )}
                         {activeParameter && (
                           <ConfigurableParameter
+                            bindings={bindings}
                             parameter={activeParameter}
                             isOverlay
                           />
@@ -367,8 +373,7 @@ export default function ConfigurationParametersForm({
       </Card>
       {deleteGroupDisclosure.isOpen && selectedGroup && (
         <ConfirmDelete
-          action={path.to.deleteConfigurationParameterGroup(
-            itemId,
+          action={bindings.urls.deleteConfigurationParameterGroup(
             selectedGroup.id
           )}
           isOpen
@@ -396,9 +401,9 @@ export default function ConfigurationParametersForm({
         >
           <ModalContent>
             <ValidatedForm
-              action={path.to.configurationParameterGroup(itemId)}
+              action={bindings.urls.configurationParameterGroup}
               method="post"
-              validator={configurationParameterGroupValidator}
+              validator={bindings.parameterGroupValidator}
               fetcher={fetcher}
               defaultValues={{
                 id: selectedGroup?.id,
@@ -434,12 +439,12 @@ export default function ConfigurationParametersForm({
                   isDisabled={
                     fetcher.state !== "idle" &&
                     fetcher.formAction ===
-                      path.to.configurationParameterGroup(itemId)
+                      bindings.urls.configurationParameterGroup
                   }
                   isLoading={
                     fetcher.state !== "idle" &&
                     fetcher.formAction ===
-                      path.to.configurationParameterGroup(itemId)
+                      bindings.urls.configurationParameterGroup
                   }
                 >
                   <Trans>Save</Trans>
@@ -532,7 +537,7 @@ export default function ConfigurationParametersForm({
       },
       {
         method: "post",
-        action: path.to.configurationParameterGroupOrder(itemId),
+        action: bindings.urls.configurationParameterGroupOrder,
         navigate: false,
         fetcherKey: `group:${activeGroup.id}`
       }
@@ -620,7 +625,7 @@ export default function ConfigurationParametersForm({
           },
           {
             method: "post",
-            action: path.to.configurationParameterOrder(activeParameter.itemId),
+            action: bindings.urls.configurationParameterOrder,
             navigate: false,
             fetcherKey: `parameter:${activeParameter.id}`
           }
@@ -643,7 +648,7 @@ export default function ConfigurationParametersForm({
           },
           {
             method: "post",
-            action: path.to.configurationParameterOrder(activeParameter.itemId),
+            action: bindings.urls.configurationParameterOrder,
             navigate: false,
             fetcherKey: `parameter:${activeParameter.id}`
           }
@@ -679,7 +684,7 @@ export default function ConfigurationParametersForm({
           },
           {
             method: "post",
-            action: path.to.configurationParameterOrder(activeParameter.itemId),
+            action: bindings.urls.configurationParameterOrder,
             navigate: false,
             fetcherKey: `parameter:${activeParameter.id}`
           }
@@ -700,6 +705,7 @@ const variants = cva("border rounded-lg", {
 });
 
 function ParameterGroup({
+  bindings,
   group,
   isOverlay,
   parameters,
@@ -707,6 +713,7 @@ function ParameterGroup({
   deleteGroupDisclosure,
   setSelectedGroup
 }: {
+  bindings: ConfigurationParametersBindings;
   group: ConfigurationParameterGroup;
   parameters: ConfigurationParameter[];
   isOverlay?: boolean;
@@ -800,7 +807,11 @@ function ParameterGroup({
           className={cn("flex flex-col gap-2", parameters.length > 0 && "p-2")}
         >
           {parameters.map((parameter) => (
-            <ConfigurableParameter key={parameter.id} parameter={parameter} />
+            <ConfigurableParameter
+              key={parameter.id}
+              bindings={bindings}
+              parameter={parameter}
+            />
           ))}
         </div>
       </SortableContext>
@@ -809,9 +820,11 @@ function ParameterGroup({
 }
 
 function ConfigurableParameter({
+  bindings,
   parameter,
   isOverlay
 }: {
+  bindings: ConfigurationParametersBindings;
   parameter: ConfigurationParameter;
   isOverlay?: boolean;
 }) {
@@ -824,7 +837,7 @@ function ConfigurableParameter({
   const disclosure = useDisclosure();
   const deleteParameterDisclosure = useDisclosure();
   const submitted = useRef(false);
-  const fetcher = useFetcher<typeof configurationParameterAction>();
+  const fetcher = useFetcher<{ success?: boolean }>();
 
   const {
     attributes,
@@ -873,9 +886,9 @@ function ConfigurableParameter({
     >
       {disclosure.isOpen ? (
         <ValidatedForm
-          action={path.to.configurationParameter(parameter.itemId)}
+          action={bindings.urls.configurationParameter}
           method="post"
-          validator={configurationParameterValidator}
+          validator={bindings.parameterValidator}
           fetcher={fetcher}
           resetAfterSubmit
           onSubmit={() => {
@@ -883,7 +896,7 @@ function ConfigurableParameter({
           }}
           defaultValues={{
             id: parameter.id,
-            itemId: parameter.itemId,
+            [bindings.ownerField]: bindings.ownerId,
             key: parameter.key,
             label: parameter.label,
             dataType: parameter.dataType,
@@ -892,7 +905,7 @@ function ConfigurableParameter({
           }}
         >
           <Hidden name="id" />
-          <Hidden name="itemId" />
+          <Hidden name={bindings.ownerField} />
           <Hidden name="key" value={key} />
           <VStack spacing={4}>
             <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
@@ -949,8 +962,7 @@ function ConfigurableParameter({
                 isDisabled={fetcher.state !== "idle"}
                 isLoading={
                   fetcher.state !== "idle" &&
-                  fetcher.formAction ===
-                    path.to.configurationParameter(parameter.itemId)
+                  fetcher.formAction === bindings.urls.configurationParameter
                 }
               >
                 <Trans>Save</Trans>
@@ -1081,10 +1093,7 @@ function ConfigurableParameter({
       )}
       {deleteParameterDisclosure.isOpen && (
         <ConfirmDelete
-          action={path.to.deleteConfigurationParameter(
-            parameter.itemId,
-            parameter.id
-          )}
+          action={bindings.urls.deleteConfigurationParameter(parameter.id)}
           isOpen={deleteParameterDisclosure.isOpen}
           name={parameter.label}
           text={t`Are you sure you want to delete the ${parameter.label} parameter? This will not update any formulas that are using this parameter.`}
@@ -1100,9 +1109,9 @@ function ConfigurableParameter({
   );
 }
 
-function useConfigurationParameters(parameter?: ConfigurationParameter) {
-  const { itemId } = useParams();
-  if (!itemId) throw new Error("Could not find itemId");
+function useConfigurationParameters(
+  parameter: ConfigurationParameter | undefined
+) {
   const [key, setKey] = useState(parameter?.key ?? "");
   const [isList, setIsList] = useState(parameter?.dataType === "list");
   const [isMaterial, setIsMaterial] = useState(
@@ -1124,9 +1133,9 @@ function useConfigurationParameters(parameter?: ConfigurationParameter) {
     const label = e.target.value;
     setKey(
       label
-        .toLowerCase()
-        .replace(/ /g, "_")
-        .replace(/[^a-z0-9_]/g, "")
+        .trim()
+        .replace(/\s+/g, "_")
+        .replace(/[^\p{L}\p{N}_]/gu, "")
     );
   };
 
@@ -1134,7 +1143,6 @@ function useConfigurationParameters(parameter?: ConfigurationParameter) {
     key,
     isList,
     isMaterial,
-    itemId,
     onChangeCheckForListType,
     setKey,
     setIsList,
@@ -1143,15 +1151,17 @@ function useConfigurationParameters(parameter?: ConfigurationParameter) {
   };
 }
 
-function usePendingGroups({ itemId }: { itemId: string }) {
+function usePendingGroups({
+  configurationParameterGroupOrderUrl
+}: {
+  configurationParameterGroupOrderUrl: string;
+}) {
   type PendingItem = ReturnType<typeof useFetchers>[number] & {
     formData: FormData;
   };
   return useFetchers()
     .filter((fetcher): fetcher is PendingItem => {
-      return (
-        fetcher.formAction === path.to.configurationParameterGroupOrder(itemId)
-      );
+      return fetcher.formAction === configurationParameterGroupOrderUrl;
     })
     .map((fetcher) => {
       let id = String(fetcher.formData.get("id"));
@@ -1160,13 +1170,17 @@ function usePendingGroups({ itemId }: { itemId: string }) {
     });
 }
 
-function usePendingParameters({ itemId }: { itemId: string }) {
+function usePendingParameters({
+  configurationParameterOrderUrl
+}: {
+  configurationParameterOrderUrl: string;
+}) {
   type PendingItem = ReturnType<typeof useFetchers>[number] & {
     formData: FormData;
   };
   return useFetchers()
     .filter((fetcher): fetcher is PendingItem => {
-      return fetcher.formAction === path.to.configurationParameterOrder(itemId);
+      return fetcher.formAction === configurationParameterOrderUrl;
     })
     .map((fetcher) => {
       let configurationParameterGroupId = String(

@@ -49,13 +49,7 @@ import {
   LuTruck,
   LuX
 } from "react-icons/lu";
-import {
-  Link,
-  useFetcher,
-  useFetchers,
-  useParams,
-  useSearchParams
-} from "react-router";
+import { Link, useFetcher, useFetchers, useSearchParams } from "react-router";
 import type { z } from "zod";
 import {
   MethodIcon,
@@ -92,9 +86,10 @@ import type {
 import { methodType, sourcingType } from "~/modules/shared";
 import type { Item as ItemType } from "~/stores";
 import { useItems } from "~/stores";
-import { path } from "~/utils/path";
+import type { ConfigurationRuleBindings } from "../../configurationRuleBindings";
 import type { methodOperationValidator } from "../../items.models";
 import { methodMaterialValidator } from "../../items.models";
+import type { MethodBindings } from "../../methodBindings";
 import type {
   ConfigurationParameter,
   ConfigurationRule,
@@ -120,6 +115,7 @@ type ItemWithData = SortableItem & {
 };
 
 type BillOfMaterialProps = {
+  methodBindings: MethodBindings;
   configurable?: boolean;
   makeMethod: MakeMethod;
   materials: Material[];
@@ -127,6 +123,7 @@ type BillOfMaterialProps = {
   parameters?: ConfigurationParameter[];
   configurationRules?: ConfigurationRule[];
   replenishmentSystem?: string;
+  configurationRuleBindings: ConfigurationRuleBindings;
 };
 
 type OrderState = {
@@ -156,13 +153,15 @@ const initialMethodMaterial: Omit<Material, "makeMethodId" | "order"> & {
 };
 
 const BillOfMaterial = ({
+  methodBindings,
   configurable = false,
   configurationRules,
   makeMethod,
   materials: initialMaterials,
   operations,
   parameters,
-  replenishmentSystem
+  replenishmentSystem,
+  configurationRuleBindings
 }: BillOfMaterialProps) => {
   const permissions = usePermissions();
   const { t } = useLingui();
@@ -197,7 +196,7 @@ const BillOfMaterial = ({
     materialsById.set(material.id, material);
   });
 
-  const pendingMaterials = usePendingMaterials();
+  const pendingMaterials = usePendingMaterials(methodBindings);
 
   // Replace existing materials with pending ones
   pendingMaterials.forEach((pendingMaterial) => {
@@ -289,7 +288,7 @@ const BillOfMaterial = ({
     } else {
       fetcher.submit(new FormData(), {
         method: "post",
-        action: path.to.deleteMethodMaterial(id)
+        action: methodBindings.urls.deleteMethodMaterial(id)
       });
     }
 
@@ -305,7 +304,7 @@ const BillOfMaterial = ({
     formData.append("updates", JSON.stringify(updates));
     fetcher.submit(formData, {
       method: "post",
-      action: path.to.methodMaterialsOrder
+      action: methodBindings.urls.methodMaterialsOrder
     });
   }, 1000);
 
@@ -458,6 +457,7 @@ const BillOfMaterial = ({
                           }}
                         >
                           <MaterialForm
+                            methodBindings={methodBindings}
                             configurable={configurable}
                             isReadOnly={isReadOnly}
                             item={item}
@@ -571,6 +571,7 @@ const BillOfMaterial = ({
           open={configuratorDisclosure.isOpen}
           parameters={parameters ?? []}
           onClose={configuratorDisclosure.onClose}
+          configurationRuleBindings={configurationRuleBindings}
         />
       )}
     </Card>
@@ -580,6 +581,7 @@ const BillOfMaterial = ({
 export default BillOfMaterial;
 
 function MaterialForm({
+  methodBindings,
   configurable,
   isReadOnly,
   item,
@@ -593,6 +595,7 @@ function MaterialForm({
   setTemporaryItems,
   onSubmit
 }: {
+  methodBindings: MethodBindings;
   configurable: boolean;
   isReadOnly: boolean;
   item: ItemWithData;
@@ -614,7 +617,6 @@ function MaterialForm({
     success: boolean;
     message: string;
   }>();
-  const params = useParams();
   const { company, defaults } = useUser();
   const [locationId, setLocationId] = useState<string | undefined>(
     defaults.locationId ?? undefined
@@ -704,7 +706,10 @@ function MaterialForm({
 
   const onItemChange = async (itemId: string) => {
     if (!carbon) return;
-    if (itemId === params.itemId) {
+    if (
+      methodBindings.bomItemBlacklistId &&
+      itemId === methodBindings.bomItemBlacklistId
+    ) {
       toast.error(t`An item cannot be added to itself.`);
       return;
     }
@@ -751,8 +756,8 @@ function MaterialForm({
     <ValidatedForm
       action={
         temporaryItems[item.id]
-          ? path.to.newMethodMaterial
-          : path.to.methodMaterial(item.id!)
+          ? methodBindings.urls.newMethodMaterial
+          : methodBindings.urls.methodMaterial(item.id!)
       }
       method="post"
       defaultValues={{
@@ -783,7 +788,11 @@ function MaterialForm({
 
       <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
         <Item
-          blacklist={[params.itemId!]}
+          blacklist={
+            methodBindings.bomItemBlacklistId
+              ? [methodBindings.bomItemBlacklistId]
+              : []
+          }
           name="itemId"
           label={itemType}
           includeInactive
@@ -1325,7 +1334,7 @@ function getFieldKey(field: string, itemId: string) {
   return `${field}:${itemId}`;
 }
 
-const usePendingMaterials = () => {
+const usePendingMaterials = (methodBindings: MethodBindings) => {
   type PendingItem = ReturnType<typeof useFetchers>[number] & {
     formData: FormData;
   };
@@ -1333,8 +1342,8 @@ const usePendingMaterials = () => {
   return useFetchers()
     .filter((fetcher): fetcher is PendingItem => {
       return (
-        (fetcher.formAction === path.to.newMethodMaterial ||
-          fetcher.formAction?.includes("/items/methods/material/")) ??
+        (fetcher.formAction === methodBindings.urls.newMethodMaterial ||
+          fetcher.formAction?.includes("/methods/material/")) ??
         false
       );
     })

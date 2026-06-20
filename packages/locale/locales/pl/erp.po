@@ -1135,11 +1135,17 @@ msgstr "Blokuje zapis do czasu rozwiązania"
 msgid "BoM"
 msgstr "BoM"
 
+msgid "BOM"
+msgstr ""
+
 msgid "BoM + BoP"
 msgstr "BoM + BoP"
 
 msgid "BOM synced successfully"
 msgstr "BOM zsynchronizowany pomyślnie"
+
+msgid "BOP"
+msgstr ""
 
 msgid "Breadcrumb"
 msgstr "Nawigacja"
@@ -1519,6 +1525,9 @@ msgstr "Czas ukończenia"
 
 msgid "Conditions"
 msgstr "Warunki"
+
+msgid "Config Params"
+msgstr ""
 
 msgid "Configuration Parameters"
 msgstr "Parametry konfiguracji"
@@ -3584,6 +3593,9 @@ msgstr "Nie udało się zaktualizować linii oferty"
 msgid "Failed to update supplier quote line"
 msgstr "Nie udało się zaktualizować linii oferty dostawcy"
 
+msgid "Failed to update template"
+msgstr ""
+
 msgid "Failed to update thumbnail path"
 msgstr "Nie udało się zaktualizować ścieżki miniatury"
 
@@ -5157,6 +5169,9 @@ msgstr "Nowy Dostawca"
 msgid "New Supplier Part"
 msgstr "Nowa część dostawcy"
 
+msgid "New Template"
+msgstr ""
+
 msgid "New Timecard"
 msgstr "Nowy Timecard"
 
@@ -5287,6 +5302,9 @@ msgstr "Brak zaplanowanych dni wolnych"
 
 msgid "No default attachments yet."
 msgstr "Brak domyślnych załączników."
+
+msgid "No description"
+msgstr ""
 
 msgid "No draft versions available"
 msgstr "Brak dostępnych wersji roboczych"
@@ -5590,6 +5608,9 @@ msgstr "Otwarte zaplanowane"
 
 msgid "Open task details"
 msgstr "Otwórz szczegóły zadania"
+
+msgid "Open Template"
+msgstr ""
 
 msgid "Operation"
 msgstr "Operacja"
@@ -7897,6 +7918,9 @@ msgstr "Podatek:"
 
 msgid "Temperature"
 msgstr "Temperatura"
+
+msgid "Template"
+msgstr ""
 
 msgid "Template ID"
 msgstr "Identyfikator szablonu"

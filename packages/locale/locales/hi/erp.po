@@ -1135,11 +1135,17 @@ msgstr "सहेजने को तब तक ब्लॉक करता ह
 msgid "BoM"
 msgstr "BoM"
 
+msgid "BOM"
+msgstr ""
+
 msgid "BoM + BoP"
 msgstr "BoM + BoP"
 
 msgid "BOM synced successfully"
 msgstr "BOM सफलतापूर्वक सिंक हो गया"
+
+msgid "BOP"
+msgstr ""
 
 msgid "Breadcrumb"
 msgstr "ब्रेडक्रम्ब"
@@ -1519,6 +1525,9 @@ msgstr "पूर्ण होने का समय"
 
 msgid "Conditions"
 msgstr "शर्तें"
+
+msgid "Config Params"
+msgstr ""
 
 msgid "Configuration Parameters"
 msgstr "कॉन्फ़िगरेशन पैरामीटर"
@@ -3584,6 +3593,9 @@ msgstr "उद्धरण पंक्ति को अपडेट करन�
 msgid "Failed to update supplier quote line"
 msgstr "आपूर्तिकर्ता उद्धरण लाइन को अपडेट करने में विफल"
 
+msgid "Failed to update template"
+msgstr ""
+
 msgid "Failed to update thumbnail path"
 msgstr "थंबनेल पथ अपडेट करने में विफल"
 
@@ -5157,6 +5169,9 @@ msgstr "नया आपूर्तिकर्ता"
 msgid "New Supplier Part"
 msgstr "नया आपूर्तिकर्ता भाग"
 
+msgid "New Template"
+msgstr ""
+
 msgid "New Timecard"
 msgstr "नया टाइमकार्ड"
 
@@ -5287,6 +5302,9 @@ msgstr "कोई दिन बंद निर्धारित नहीं �
 
 msgid "No default attachments yet."
 msgstr "अभी तक कोई डिफ़ॉल्ट अटैचमेंट नहीं है।"
+
+msgid "No description"
+msgstr ""
 
 msgid "No draft versions available"
 msgstr "कोई ड्राफ्ट संस्करण उपलब्ध नहीं है"
@@ -5590,6 +5608,9 @@ msgstr "खुली अनुसूचित"
 
 msgid "Open task details"
 msgstr "कार्य विवरण खोलें"
+
+msgid "Open Template"
+msgstr ""
 
 msgid "Operation"
 msgstr "ऑपरेशन"
@@ -7897,6 +7918,9 @@ msgstr "कर:"
 
 msgid "Temperature"
 msgstr "तापमान"
+
+msgid "Template"
+msgstr ""
 
 msgid "Template ID"
 msgstr "टेम्पलेट आईडी"

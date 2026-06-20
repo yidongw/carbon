@@ -1135,11 +1135,17 @@ msgstr "Blockiert Speichern bis behoben"
 msgid "BoM"
 msgstr "BoM"
 
+msgid "BOM"
+msgstr ""
+
 msgid "BoM + BoP"
 msgstr "BoM + BoP"
 
 msgid "BOM synced successfully"
 msgstr "BOM erfolgreich synchronisiert"
+
+msgid "BOP"
+msgstr ""
 
 msgid "Breadcrumb"
 msgstr "Breadcrumb-Navigation"
@@ -1519,6 +1525,9 @@ msgstr "Abschlusszeit"
 
 msgid "Conditions"
 msgstr "Bedingungen"
+
+msgid "Config Params"
+msgstr ""
 
 msgid "Configuration Parameters"
 msgstr "Konfigurationsparameter"
@@ -3584,6 +3593,9 @@ msgstr "Angebot konnte nicht aktualisiert werden"
 msgid "Failed to update supplier quote line"
 msgstr "Fehler beim Aktualisieren der Lieferantenangebotszeile"
 
+msgid "Failed to update template"
+msgstr ""
+
 msgid "Failed to update thumbnail path"
 msgstr "Fehler beim Aktualisieren des Miniaturbildpfads"
 
@@ -5157,6 +5169,9 @@ msgstr "Neuer Lieferant"
 msgid "New Supplier Part"
 msgstr "Neuer Lieferantenteil"
 
+msgid "New Template"
+msgstr ""
+
 msgid "New Timecard"
 msgstr "Neue Zeiterfassung"
 
@@ -5287,6 +5302,9 @@ msgstr "Keine Tage frei geplant"
 
 msgid "No default attachments yet."
 msgstr "Noch keine Standardanhänge vorhanden."
+
+msgid "No description"
+msgstr ""
 
 msgid "No draft versions available"
 msgstr "Keine Entwurfsversionen verfügbar"
@@ -5590,6 +5608,9 @@ msgstr "Offene geplante Wartungen"
 
 msgid "Open task details"
 msgstr "Aufgabendetails öffnen"
+
+msgid "Open Template"
+msgstr ""
 
 msgid "Operation"
 msgstr "Betrieb"
@@ -7897,6 +7918,9 @@ msgstr "Steuern:"
 
 msgid "Temperature"
 msgstr "Temperatur"
+
+msgid "Template"
+msgstr ""
 
 msgid "Template ID"
 msgstr "Vorlagen-ID"
