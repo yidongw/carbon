@@ -454,7 +454,8 @@ export async function createEmployeeAccount(
     employeeType,
     locationId,
     companyId,
-    createdBy
+    createdBy,
+    number
   }: {
     email: string;
     firstName: string;
@@ -463,6 +464,7 @@ export async function createEmployeeAccount(
     locationId: string;
     companyId: string;
     createdBy: string;
+    number?: string;
   }
 ): Promise<
   | { success: false; message: string }
@@ -511,12 +513,27 @@ export async function createEmployeeAccount(
     }
 
     userId = createSupabaseUser.data.user.id;
+
+    // Auto-generate number if not provided
+    let userNumber = number;
+    if (!userNumber) {
+      const nextSequence = await client.rpc("get_next_sequence", {
+        sequence_name: "user",
+        company_id: companyId
+      });
+
+      if (nextSequence.data) {
+        userNumber = nextSequence.data;
+      }
+    }
+
     const createCarbonUser = await createUser(serviceRole, {
       id: userId,
       email: email.toLowerCase(),
       firstName,
       lastName,
-      avatarUrl: null
+      avatarUrl: null,
+      number: userNumber
     });
 
     if (createCarbonUser.error) {

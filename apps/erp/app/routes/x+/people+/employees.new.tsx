@@ -63,7 +63,7 @@ export async function action({ request }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
-  const { email, firstName, lastName, locationId, employeeType } =
+  const { email, firstName, lastName, locationId, employeeType, number } =
     validation.data;
 
   const result = await createEmployeeAccount(client, {
@@ -73,7 +73,8 @@ export async function action({ request }: ActionFunctionArgs) {
     employeeType,
     locationId,
     companyId,
-    createdBy: userId
+    createdBy: userId,
+    number
   });
 
   if (!result.success) {
