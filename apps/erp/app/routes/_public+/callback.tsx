@@ -60,8 +60,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       });
     }
 
-    const redirectTo =
-      url.searchParams.get("redirectTo") ?? pkceEntry.redirectTo ?? undefined;
+    const redirectTo = url.searchParams.get("redirectTo") ?? undefined;
     const sessionCookie = await setAuthSession(request, { authSession });
     const companyIdCookie = setCompanyId(authSession.companyId);
     const pkceCookie = await destroyPkceCookie();
