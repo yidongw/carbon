@@ -73,6 +73,8 @@ export const meta: MetaFunction = () => {
 };
 
 export async function loader({ request }: LoaderFunctionArgs) {
+  const url = new URL(request.url);
+  const redirectTo = url.searchParams.get("redirectTo");
   const authSession = await getAuthSession(request);
   const hasOutlookAuth = isAuthProviderEnabled("azure");
   const hasGoogleAuth = isAuthProviderEnabled("google");
@@ -80,7 +82,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   if (authSession) {
     if (await verifyAuthSession(authSession)) {
-      throw redirect(path.to.authenticatedRoot);
+      throw redirect(safeRedirect(redirectTo, path.to.authenticatedRoot));
     }
     const cookieHeaders = await clearAuthCookies(request);
     return data(
@@ -181,7 +183,10 @@ export async function action({ request }: ActionFunctionArgs) {
       return error(null, "Failed to send magic link");
     }
 
-    const pkceHeader = await setPkceCookie(magicLink.pkceEntry);
+    const pkceHeader = await setPkceCookie({
+      ...magicLink.pkceEntry,
+      redirectTo: safeRedirect(redirectTo, path.to.authenticatedRoot)
+    });
     return data(
       { success: true, mode: "login" },
       { headers: [["Set-Cookie", pkceHeader]] }

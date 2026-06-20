@@ -19,8 +19,6 @@ export const setCarbonHmrStore = (store: StoreApi<ICarbonStore>) => {
   __hmrStore = store;
 };
 
-export const getCarbonStore = () => __hmrStore;
-
 export const useCarbon = () => {
   let store = useContext(CarbonContext);
 

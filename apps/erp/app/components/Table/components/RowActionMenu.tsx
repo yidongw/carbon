@@ -23,6 +23,7 @@ function RowActionMenu<T>({ row, renderContextMenu }: RowActionMenuProps<T>) {
 export default memo(RowActionMenu, (prev, next) => {
   return (
     prev.rowKey === next.rowKey &&
+    prev.row === next.row &&
     prev.renderContextMenu === next.renderContextMenu
   );
 }) as typeof RowActionMenu;

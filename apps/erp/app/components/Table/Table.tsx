@@ -460,6 +460,12 @@ const Table = <T extends object>({
   const table = useReactTable({
     data: internalData,
     columns: internalColumns,
+    getRowId: (row, index) => {
+      if (row && typeof row === "object" && "id" in row && row.id != null) {
+        return String((row as { id: unknown }).id);
+      }
+      return String(index);
+    },
     state: {
       columnVisibility,
       columnOrder,
@@ -470,7 +476,6 @@ const Table = <T extends object>({
     onColumnOrderChange: setColumnOrder,
     onColumnPinningChange: setColumnPinning,
     onRowSelectionChange: setRowSelection,
-    getRowId,
     getCoreRowModel: getCoreRowModel(),
     meta: {
       // These are not part of the standard API, but are accessible via table.options.meta

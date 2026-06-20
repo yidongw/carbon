@@ -267,10 +267,14 @@ const pkceVerifierCookie = createCookie("sb-pkce-cv", {
   secure: VERCEL_ENV === "production"
 });
 
-export type PkceEntry = { k: string; v: string };
+export type PkceEntry = { k: string; v: string; redirectTo?: string };
 
 export async function setPkceCookie(pkceEntry: PkceEntry): Promise<string> {
   return pkceVerifierCookie.serialize(JSON.stringify(pkceEntry));
+}
+
+export async function destroyPkceCookie(): Promise<string> {
+  return pkceVerifierCookie.serialize("", { maxAge: 0 });
 }
 
 export async function getPkceCookie(
@@ -280,8 +284,14 @@ export async function getPkceCookie(
   if (typeof raw !== "string" || !raw) return null;
   try {
     const parsed = JSON.parse(raw);
-    if (typeof parsed?.k === "string" && typeof parsed?.v === "string")
-      return parsed as PkceEntry;
+    if (typeof parsed?.k === "string" && typeof parsed?.v === "string") {
+      return {
+        k: parsed.k,
+        v: parsed.v,
+        redirectTo:
+          typeof parsed.redirectTo === "string" ? parsed.redirectTo : undefined
+      };
+    }
   } catch {}
   return null;
 }

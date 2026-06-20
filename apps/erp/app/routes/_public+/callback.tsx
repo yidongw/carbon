@@ -13,6 +13,7 @@ import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { getCompanyId, setCompanyId } from "@carbon/auth/company.server";
 import {
   destroyAuthSession,
+  destroyPkceCookie,
   flash,
   getAuthSession,
   getPkceCookie,
@@ -73,14 +74,17 @@ export async function loader({ request }: LoaderFunctionArgs) {
       });
     }
 
-    const redirectTo = url.searchParams.get("redirectTo") ?? undefined;
+    const redirectTo =
+      url.searchParams.get("redirectTo") ?? pkceEntry.redirectTo ?? undefined;
     const sessionCookie = await setAuthSession(request, { authSession });
     const companyIdCookie = setCompanyId(authSession.companyId);
+    const pkceCookie = await destroyPkceCookie();
 
     return redirect(safeRedirect(redirectTo, path.to.authenticatedRoot), {
       headers: [
         ["Set-Cookie", sessionCookie],
-        ["Set-Cookie", companyIdCookie]
+        ["Set-Cookie", companyIdCookie],
+        ["Set-Cookie", pkceCookie]
       ]
     });
   }
