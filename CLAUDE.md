@@ -87,7 +87,7 @@
 
 ## Git Workflow
 
-- **NEVER create a PR unless the user explicitly asks you to.** Do not create PRs autonomously at the end of a task — commit and push the branch, then stop.
+- **Always commit and push your work.** After completing a task, create a PR unless the user explicitly asks not to or the work is not meant to be merged.
 - **NEVER create PRs to `crbnos/carbon`.** This repo is a fork of that upstream. Always open PRs to `yidongw/carbon` targeting `dev`.
 - Always use `gh pr create --repo yidongw/carbon --base dev` — never omit `--repo`, as `gh` will otherwise default to the upstream (`crbnos/carbon`).
 
