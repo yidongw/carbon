@@ -224,12 +224,22 @@ export function wrapClient(
 
   const originalFrom = client.from.bind(client);
 
-  // Override the from method
+  // Override the from method to wrap the query builder
   client.from = ((table: string) => {
     const builder = originalFrom(table);
-    return SOFT_DELETE_TABLES.has(table)
-      ? filterDeleted(builder)
-      : builder;
+
+    if (!SOFT_DELETE_TABLES.has(table)) {
+      return builder;
+    }
+
+    // Wrap the select method to add the filter
+    const originalSelect = builder.select.bind(builder);
+    builder.select = ((...args: any[]) => {
+      const query = originalSelect(...args);
+      return (query as any).is("deletedAt", null);
+    }) as any;
+
+    return builder;
   }) as any;
 
   return client;
