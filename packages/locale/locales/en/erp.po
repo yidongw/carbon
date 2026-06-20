@@ -4320,6 +4320,9 @@ msgstr "Icons"
 msgid "ID"
 msgstr "ID"
 
+msgid "ID Number"
+msgstr "ID Number"
+
 msgid "Ideas, suggestions or problems with this page?"
 msgstr "Ideas, suggestions or problems with this page?"
 

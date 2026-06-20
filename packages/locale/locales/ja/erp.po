@@ -85,7 +85,7 @@ msgid "{0} uploaded successfully"
 msgstr "{0}が正常にアップロードされました"
 
 msgid "{days} days ({formatted})"
-msgstr ""
+msgstr "{days}日（{formatted}）"
 
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB制限"
@@ -3362,7 +3362,7 @@ msgid "Enable to automatically post transactions to the general ledger."
 msgstr "自動的にトランザクションを総勘定元帳に転記するには有効にしてください。"
 
 msgid "Enable to display names with the family name first."
-msgstr ""
+msgstr "FAMILY_NAME_first で名前を表示する機能を有効にします。"
 
 msgid "Enable to generate IDs and descriptions for raw materials."
 msgstr "有効にして、原材料のIDと説明を生成します。"
@@ -3601,7 +3601,7 @@ msgid "Expected Receipt Date"
 msgstr "予想受取日"
 
 msgid "Expiration"
-msgstr ""
+msgstr "期限"
 
 msgid "Expiration Date"
 msgstr "有効期限"
@@ -3973,7 +3973,7 @@ msgid "False"
 msgstr "false"
 
 msgid "Family name is shown first"
-msgstr ""
+msgstr "FAMILY NAME IS SHOWN FIRST"
 
 msgid "Favorite"
 msgstr "お気に入り"
@@ -4195,7 +4195,7 @@ msgid "Get Method"
 msgstr "メソッドを取得"
 
 msgid "Given name is shown first"
-msgstr ""
+msgstr "名前は姓が先に表示されます"
 
 msgid "GL Account"
 msgstr "Gl Akānto"
@@ -4319,6 +4319,9 @@ msgstr "アイコン"
 
 msgid "ID"
 msgstr "ID"
+
+msgid "ID Number"
+msgstr "ID番号"
 
 msgid "Ideas, suggestions or problems with this page?"
 msgstr "このページについてのアイデア、提案、または問題はありますか？"
@@ -5478,10 +5481,10 @@ msgid "Name"
 msgstr "名前"
 
 msgid "Name Display"
-msgstr ""
+msgstr "名前表示"
 
 msgid "Names appear as family name followed by given name across the app."
-msgstr ""
+msgstr "アプリケーション全体で、名前は-family name に-given name が付く順番で表示されます。"
 
 msgid "Navigate"
 msgstr "ナビゲート"
@@ -5891,7 +5894,7 @@ msgid "No entries"
 msgstr "無エントリ"
 
 msgid "No expiration"
-msgstr ""
+msgstr "無効期限なし"
 
 msgid "No fields found."
 msgstr "No fields found."
@@ -7993,7 +7996,7 @@ msgid "Select customers"
 msgstr "顧客を選択"
 
 msgid "Select date *"
-msgstr ""
+msgstr "選択日付 *"
 
 msgid "Select date range to filter net change and balance at date"
 msgstr "日付範囲を選択して、純変化と日付時点の残高をフィルタリングします"
@@ -8289,7 +8292,7 @@ msgid "Show Durations"
 msgstr "期間を表示"
 
 msgid "Show family name before given name, as used in Chinese and other East Asian locales."
-msgstr ""
+msgstr "中国語や東南アジアの地域で使用されるように、-family名を-given名前に表示します。"
 
 msgid "Show on card right"
 msgstr "右上に表示"
@@ -8631,7 +8634,7 @@ msgid "Successfully created a new revision"
 msgstr "新しいリビジョンが正常に作成されました"
 
 msgid "Successfully invited employee"
-msgstr ""
+msgstr "成功して社員を招待しました"
 
 msgid "Suffix"
 msgstr "サフィックス"
@@ -8910,7 +8913,7 @@ msgid "The following line items are missing prices or lead times:"
 msgstr "以下の行項目は価格またはリードタイムが不足しています:"
 
 msgid "The invite link will expire on the selected date"
-msgstr ""
+msgstr "選択した日付で招待リンクは有効期限が切れます"
 
 msgid "The lot will still be rejected, but an NCR cannot be auto-created until at least one Issue Type is configured."
 msgstr "ロットは引き続き却下されますが、少なくとも1つの問題タイプが設定されるまでNCRは自動作成できません。"

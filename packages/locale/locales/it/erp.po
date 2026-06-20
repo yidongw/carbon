@@ -3362,7 +3362,7 @@ msgid "Enable to automatically post transactions to the general ledger."
 msgstr "Abilita per registrare automaticamente le transazioni nella contabilità generale."
 
 msgid "Enable to display names with the family name first."
-msgstr ""
+msgstr "Abilita per visualizzare i nomi con il cognome in primo piano."
 
 msgid "Enable to generate IDs and descriptions for raw materials."
 msgstr "Abilita per generare ID e descrizioni per le materie prime."
@@ -3601,7 +3601,7 @@ msgid "Expected Receipt Date"
 msgstr "Data di Ricezione Prevista"
 
 msgid "Expiration"
-msgstr ""
+msgstr "Scadenza"
 
 msgid "Expiration Date"
 msgstr "Data di scadenza"
@@ -3973,7 +3973,7 @@ msgid "False"
 msgstr "Falso"
 
 msgid "Family name is shown first"
-msgstr ""
+msgstr "Il cognome viene mostrato prima"
 
 msgid "Favorite"
 msgstr "Preferito"
@@ -4195,7 +4195,7 @@ msgid "Get Method"
 msgstr "Ottieni Metodo"
 
 msgid "Given name is shown first"
-msgstr ""
+msgstr "Il nome viene mostrato prima"
 
 msgid "GL Account"
 msgstr "Conto bancario"
@@ -4319,6 +4319,9 @@ msgstr "Icone"
 
 msgid "ID"
 msgstr "ID"
+
+msgid "ID Number"
+msgstr "Numero ID"
 
 msgid "Ideas, suggestions or problems with this page?"
 msgstr "Idee, suggerimenti o problemi con questa pagina?"
@@ -5478,10 +5481,10 @@ msgid "Name"
 msgstr "Nome"
 
 msgid "Name Display"
-msgstr ""
+msgstr "Nome Visualizzazione"
 
 msgid "Names appear as family name followed by given name across the app."
-msgstr ""
+msgstr "I nomi appaiono come cognome seguito dal nome civile nell'applicazione."
 
 msgid "Navigate"
 msgstr "Naviga"
@@ -5891,7 +5894,7 @@ msgid "No entries"
 msgstr "Nessun ingresso"
 
 msgid "No expiration"
-msgstr ""
+msgstr "Senza scadenza"
 
 msgid "No fields found."
 msgstr "Nessun campo trovato."
@@ -7993,7 +7996,7 @@ msgid "Select customers"
 msgstr "Seleziona clienti"
 
 msgid "Select date *"
-msgstr ""
+msgstr "Seleziona data *"
 
 msgid "Select date range to filter net change and balance at date"
 msgstr "Seleziona l'intervallo di date per filtrare la variazione netta e il saldo alla data"
@@ -8289,7 +8292,7 @@ msgid "Show Durations"
 msgstr "Mostra durate"
 
 msgid "Show family name before given name, as used in Chinese and other East Asian locales."
-msgstr ""
+msgstr "Mostra il nome della famiglia prima del nome dato, come nel caso delle località cinesi e altre asiatiche orientali."
 
 msgid "Show on card right"
 msgstr "Mostra sul lato destro"
@@ -8631,7 +8634,7 @@ msgid "Successfully created a new revision"
 msgstr "Revisione creata con successo"
 
 msgid "Successfully invited employee"
-msgstr ""
+msgstr "Invito all'impiegato riuscito"
 
 msgid "Suffix"
 msgstr "Suffisso"
@@ -8910,7 +8913,7 @@ msgid "The following line items are missing prices or lead times:"
 msgstr "I seguenti articoli di riga non hanno prezzi o tempi di consegna:"
 
 msgid "The invite link will expire on the selected date"
-msgstr ""
+msgstr "Il collegamento di invito scadrà il giorno selezionato"
 
 msgid "The lot will still be rejected, but an NCR cannot be auto-created until at least one Issue Type is configured."
 msgstr "Il lotto sarà comunque rifiutato, ma un NCR non può essere creato automaticamente fino a quando non è configurato almeno un tipo di problema."

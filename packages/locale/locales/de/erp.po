@@ -3362,7 +3362,7 @@ msgid "Enable to automatically post transactions to the general ledger."
 msgstr "Aktivieren Sie diese Option, um Transaktionen automatisch ins Hauptbuch zu buchen."
 
 msgid "Enable to display names with the family name first."
-msgstr ""
+msgstr "Aktivieren Sie, um Namen mit dem Familiennamen zuerst anzuzeigen."
 
 msgid "Enable to generate IDs and descriptions for raw materials."
 msgstr "Aktivieren Sie diese Option, um IDs und Beschreibungen für Rohstoffe zu generieren."
@@ -3601,7 +3601,7 @@ msgid "Expected Receipt Date"
 msgstr "Erwartetes Eingangsdatum"
 
 msgid "Expiration"
-msgstr ""
+msgstr "Ablaufdatum"
 
 msgid "Expiration Date"
 msgstr "Ablaufdatum"
@@ -3973,7 +3973,7 @@ msgid "False"
 msgstr "Falsch"
 
 msgid "Family name is shown first"
-msgstr ""
+msgstr "Nachname wird vorangestellt"
 
 msgid "Favorite"
 msgstr "Favorit"
@@ -4195,7 +4195,7 @@ msgid "Get Method"
 msgstr "Methode abrufen"
 
 msgid "Given name is shown first"
-msgstr ""
+msgstr "Vorname wird vor dem Nachnamen angezeigt"
 
 msgid "GL Account"
 msgstr "Kontenkskonto"
@@ -4319,6 +4319,9 @@ msgstr "Icone"
 
 msgid "ID"
 msgstr "ID"
+
+msgid "ID Number"
+msgstr "ID-Nr."
 
 msgid "Ideas, suggestions or problems with this page?"
 msgstr "Ideen, Vorschläge oder Probleme mit dieser Seite?"
@@ -5478,10 +5481,10 @@ msgid "Name"
 msgstr "Name"
 
 msgid "Name Display"
-msgstr ""
+msgstr "Name Anzeigen"
 
 msgid "Names appear as family name followed by given name across the app."
-msgstr ""
+msgstr "Namen werden im ganzen App als Familienname gefolgt von Vorname angezeigt."
 
 msgid "Navigate"
 msgstr "Navigieren"
@@ -5891,7 +5894,7 @@ msgid "No entries"
 msgstr "Keine Einträge"
 
 msgid "No expiration"
-msgstr ""
+msgstr "Keine Ablaufdatum"
 
 msgid "No fields found."
 msgstr "Keine Felder gefunden."
@@ -7993,7 +7996,7 @@ msgid "Select customers"
 msgstr "Kunden auswählen"
 
 msgid "Select date *"
-msgstr ""
+msgstr "Wählen Siedatum *"
 
 msgid "Select date range to filter net change and balance at date"
 msgstr "Wählen Sie einen Datumsbereich aus, um die Nettoänderung und den Saldo zum Stichtag zu filtern"
@@ -8289,7 +8292,7 @@ msgid "Show Durations"
 msgstr "Dauern anzeigen"
 
 msgid "Show family name before given name, as used in Chinese and other East Asian locales."
-msgstr ""
+msgstr "Zeige das Familienname vor dem Vornamen an, wie es in chinesischen und anderen östasiatischen Regionen üblich ist."
 
 msgid "Show on card right"
 msgstr "Rechts auf der Karte anzeigen"
@@ -8631,7 +8634,7 @@ msgid "Successfully created a new revision"
 msgstr "Neue Revision erfolgreich erstellt"
 
 msgid "Successfully invited employee"
-msgstr ""
+msgstr "Erfolgreich eingeladen"
 
 msgid "Suffix"
 msgstr "Suffix"
@@ -8910,7 +8913,7 @@ msgid "The following line items are missing prices or lead times:"
 msgstr "Die folgenden Positionen haben keine Preise oder Lieferzeiten:"
 
 msgid "The invite link will expire on the selected date"
-msgstr ""
+msgstr "Der Einladungslink wird am ausgewählten Datum ablaufen"
 
 msgid "The lot will still be rejected, but an NCR cannot be auto-created until at least one Issue Type is configured."
 msgstr "Das Los wird weiterhin abgelehnt, aber ein NCR kann nicht automatisch erstellt werden, bis mindestens ein Problemtyp konfiguriert ist."
