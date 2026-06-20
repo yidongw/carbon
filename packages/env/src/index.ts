@@ -390,6 +390,11 @@ export const RATE_LIMIT = parseInt(
   10
 );
 
+export const DEV_BYPASS_EMAIL = getEnv("DEV_BYPASS_EMAIL", {
+  isRequired: false,
+  isSecret: true
+});
+
 export function getAppUrl() {
   if (VERCEL_ENV === "production" || NODE_ENV === "production") {
     return ERP_URL

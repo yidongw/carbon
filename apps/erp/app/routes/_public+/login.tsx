@@ -5,6 +5,7 @@ import {
   CLOUDFLARE_TURNSTILE_SITE_KEY,
   CONTROLLED_ENVIRONMENT,
   carbonClient,
+  DEV_BYPASS_EMAIL,
   error,
   isAuthProviderEnabled,
   magicLinkValidator,
@@ -61,8 +62,8 @@ import {
   useSearchParams
 } from "react-router";
 import type { Result } from "~/types";
-import { path } from "~/utils/path";
 import { useFormatValidationError } from "~/utils/formatValidationError";
+import { path } from "~/utils/path";
 
 export const meta: MetaFunction = () => {
   return [{ title: "Carbon | Login" }];
@@ -117,7 +118,7 @@ export async function action({ request }: ActionFunctionArgs) {
     return error(validation.error, "Invalid email address");
   }
 
-  const { email, turnstileToken } = validation.data;
+  const { email, turnstileToken, redirectTo } = validation.data;
 
   if (
     CarbonEdition === Edition.Cloud &&
@@ -152,10 +153,9 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const user = await getUserByEmail(email);
 
-  const devBypassEmail = process.env.DEV_BYPASS_EMAIL;
   if (
-    devBypassEmail &&
-    email.toLowerCase() === devBypassEmail.toLowerCase() &&
+    DEV_BYPASS_EMAIL &&
+    email.toLowerCase() === DEV_BYPASS_EMAIL.toLowerCase() &&
     user.data?.active
   ) {
     const authSession = await signInWithBypassEmail(email);
