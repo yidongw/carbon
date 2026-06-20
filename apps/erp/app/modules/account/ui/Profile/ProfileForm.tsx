@@ -31,7 +31,11 @@ const ProfileForm = ({ user }: ProfileFormProps) => {
       method="post"
       action={isSelf ? path.to.profile : path.to.person(personId)}
       validator={accountProfileValidator}
-      defaultValues={{ ...user, phone: user.phone ?? undefined }}
+      defaultValues={{
+        ...user,
+        phone: user.phone ?? undefined,
+        number: user.number ?? undefined
+      }}
       fetcher={fetcher}
       className="w-full"
     >
@@ -55,6 +59,7 @@ const ProfileForm = ({ user }: ProfileFormProps) => {
                 <Input name="firstName" label={t`First Name`} />
                 <Input name="lastName" label={t`Last Name`} />
               </div>
+              <Input name="number" label={t`ID Number`} />
               <PhoneInput name="phone" label={t`Phone`} />
               <TextArea
                 name="about"

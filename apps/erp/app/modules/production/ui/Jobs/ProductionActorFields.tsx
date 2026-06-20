@@ -203,7 +203,10 @@ export function ProductionActorFields({
         label: (
           <div className="flex flex-row items-center gap-2 flex-grow">
             <Avatar name={person.name} path={person.avatarUrl} size="xs" />
-            <span>{person.name}</span>
+            <span>
+              {person.name}
+              {person.number ? ` (${person.number})` : ""}
+            </span>
           </div>
         )
       })) ?? [];
@@ -222,7 +225,10 @@ export function ProductionActorFields({
                 path={person?.avatarUrl ?? null}
                 size="xs"
               />
-              <span>{person?.name ?? t`Employee`}</span>
+              <span>
+                {person?.name ?? t`Employee`}
+                {person?.number ? ` (${person.number})` : ""}
+              </span>
             </div>
           )
         });

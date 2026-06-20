@@ -306,7 +306,7 @@ export async function getUsers(client: SupabaseClient<Database>) {
   }>(
     client,
     "user",
-    "id, firstName, lastName, fullName, email, avatarUrl",
+    "id, firstName, lastName, fullName, email, avatarUrl, number",
     (query) => query.eq("active", true).order("lastName")
   );
 }

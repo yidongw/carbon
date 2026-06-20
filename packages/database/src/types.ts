@@ -51305,6 +51305,7 @@ export type Database = {
           id: string
           isConsoleOperator: boolean
           lastName: string
+          number: string | null
           phone: string | null
           updatedAt: string | null
           wechat_unionid: string | null
@@ -51324,6 +51325,7 @@ export type Database = {
           id: string
           isConsoleOperator?: boolean
           lastName?: string
+          number?: string | null
           phone?: string | null
           updatedAt?: string | null
           wechat_unionid?: string | null
@@ -51343,6 +51345,7 @@ export type Database = {
           id?: string
           isConsoleOperator?: boolean
           lastName?: string
+          number?: string | null
           phone?: string | null
           updatedAt?: string | null
           wechat_unionid?: string | null
@@ -55191,6 +55194,7 @@ export type Database = {
         Row: {
           active: boolean | null
           avatarUrl: string | null
+          number: string | null
           companyId: string | null
           email: string | null
           employeeTypeId: string | null
