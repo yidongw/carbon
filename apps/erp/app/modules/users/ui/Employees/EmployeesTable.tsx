@@ -97,7 +97,16 @@ const EmployeesTable = memo(
                 row.original.id!
               )}?${params.toString()}`}
             >
-              <EmployeeAvatar size="sm" employeeId={row.original.id} />
+              <EmployeeAvatar
+                size="sm"
+                employeeId={row.original.id}
+                fallback={{
+                  firstName: row.original.firstName,
+                  lastName: row.original.lastName,
+                  fullName: row.original.name,
+                  avatarUrl: row.original.avatarUrl
+                }}
+              />
             </Hyperlink>
           ),
           meta: {
