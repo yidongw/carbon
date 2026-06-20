@@ -1,6 +1,6 @@
 {
-  "generated": "2026-06-13T02:22:15.288Z",
-  "totalTools": 1188,
+  "generated": "2026-06-20T01:54:27.445Z",
+  "totalTools": 1191,
   "modules": 15,
   "tools": [
     {
@@ -17359,6 +17359,90 @@
         },
         "required": [
           "forecasts"
+        ]
+      }
+    },
+    {
+      "name": "production_getTrackedEntitiesByJobMakeMethodIds",
+      "module": "production",
+      "classification": "READ",
+      "description": "get tracked entities by job make method ids",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "jobMakeMethodIds"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobMakeMethodIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "jobMakeMethodIds"
+        ]
+      }
+    },
+    {
+      "name": "production_getItemIdsWithConfigurationParameters",
+      "module": "production",
+      "classification": "READ",
+      "description": "get item ids with configuration parameters",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "itemIds"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "itemIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "itemIds"
+        ]
+      }
+    },
+    {
+      "name": "production_getCurrentProcessByJobIds",
+      "module": "production",
+      "classification": "READ",
+      "description": "get current process by job ids",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "jobs"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobs": {
+            "type": "array",
+            "items": {}
+          }
+        },
+        "required": [
+          "jobs"
         ]
       }
     },

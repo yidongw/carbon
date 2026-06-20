@@ -1,6 +1,14 @@
 /// <reference types="node" />
 import { Edition, isBrowser, parseBoolean } from "@carbon/utils";
 
+// Ensure VERCEL_ENV and NODE_ENV are set before any code tries to access them
+if (typeof process !== "undefined" && !process.env.VERCEL_ENV) {
+  process.env.VERCEL_ENV = process.env.NODE_ENV || "development";
+}
+if (typeof process !== "undefined" && !process.env.NODE_ENV) {
+  process.env.NODE_ENV = "development";
+}
+
 declare global {
   interface Window {
     env: {
@@ -97,6 +105,10 @@ export function getEnv(
   const value = source[name as keyof typeof source];
 
   if (!value && isRequired) {
+    // VERCEL_ENV is often not set in local dev - provide a sensible default
+    if (name === "VERCEL_ENV" || name === "NODE_ENV") {
+      return "development";
+    }
     throw new Error(`${name} is not set`);
   }
 
@@ -342,7 +354,9 @@ export const VERCEL_ENV =
   getEnv("VERCEL_ENV", {
     isRequired: false,
     isSecret: false
-  }) ?? NODE_ENV;
+  }) ??
+  NODE_ENV ??
+  "development";
 
 export const POSTHOG_API_HOST = getEnv("POSTHOG_API_HOST", {
   isSecret: false

@@ -132,6 +132,40 @@ function makeAuthSession(
   };
 }
 
+export function makeAuthSessionFromTokens(
+  accessToken: string,
+  refreshToken: string,
+  user: { id: string; email?: string | null },
+  companyId: string,
+  companyGroupId: string
+): AuthSession {
+  let expiresAt = -1;
+  try {
+    const payload = JSON.parse(
+      Buffer.from(accessToken.split(".")[1], "base64url").toString()
+    );
+    expiresAt = payload.exp ?? -1;
+  } catch {}
+  return {
+    accessToken,
+    refreshToken,
+    userId: user.id,
+    email: user.email ?? null,
+    companyId,
+    companyGroupId,
+    expiresIn:
+      expiresAt > 0
+        ? Math.max(
+            0,
+            expiresAt -
+              Math.floor(Date.now() / 1000) -
+              REFRESH_ACCESS_TOKEN_THRESHOLD
+          )
+        : 3000 - REFRESH_ACCESS_TOKEN_THRESHOLD,
+    expiresAt
+  };
+}
+
 /**
  * Determines the effective user based on console mode and pin-in state.
  * If console mode is on and an operator is pinned in, returns
@@ -413,18 +447,26 @@ export async function sendMagicLink(
   const storage = new Map<string, string>();
   // Use the service role key (same as the original sendMagicLink) so that the
   // OTP call bypasses rate limits and auth policies.
-  const client = createClient<Database, "public">(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!, {
-    auth: {
-      flowType: "pkce",
-      autoRefreshToken: false,
-      persistSession: false,
-      storage: {
-        getItem: (key) => storage.get(key) ?? null,
-        setItem: (key, value) => { storage.set(key, value); },
-        removeItem: (key) => { storage.delete(key); }
+  const client = createClient<Database, "public">(
+    SUPABASE_URL!,
+    SUPABASE_SERVICE_ROLE_KEY!,
+    {
+      auth: {
+        flowType: "pkce",
+        autoRefreshToken: false,
+        persistSession: false,
+        storage: {
+          getItem: (key) => storage.get(key) ?? null,
+          setItem: (key, value) => {
+            storage.set(key, value);
+          },
+          removeItem: (key) => {
+            storage.delete(key);
+          }
+        }
       }
     }
-  });
+  );
 
   const callbackUrl = redirectTo
     ? `${VERCEL_URL}/callback?redirectTo=${encodeURIComponent(redirectTo)}`
@@ -439,9 +481,14 @@ export async function sendMagicLink(
 
   // The Supabase client stored the code verifier in our Map under a key
   // ending with "-code-verifier".
-  const entry = [...storage.entries()].find(([k]) => k.endsWith("-code-verifier"));
+  const entry = [...storage.entries()].find(([k]) =>
+    k.endsWith("-code-verifier")
+  );
   if (!entry) {
-    return { error: new Error("PKCE code verifier was not generated"), pkceEntry: null };
+    return {
+      error: new Error("PKCE code verifier was not generated"),
+      pkceEntry: null
+    };
   }
 
   return { error: null, pkceEntry: { k: entry[0], v: entry[1] } };
@@ -456,21 +503,31 @@ export async function exchangePkceCode(
   cookieCompanyId: string | null
 ): Promise<AuthSession | null> {
   const storage = new Map([[pkceEntry.k, pkceEntry.v]]);
-  const client = createClient<Database, "public">(SUPABASE_URL!, SUPABASE_ANON_KEY!, {
-    auth: {
-      flowType: "pkce",
-      autoRefreshToken: false,
-      persistSession: false,
-      storage: {
-        getItem: (key) => storage.get(key) ?? null,
-        setItem: (key, value) => { storage.set(key, value); },
-        removeItem: (key) => { storage.delete(key); }
+  const client = createClient<Database, "public">(
+    SUPABASE_URL!,
+    SUPABASE_ANON_KEY!,
+    {
+      auth: {
+        flowType: "pkce",
+        autoRefreshToken: false,
+        persistSession: false,
+        storage: {
+          getItem: (key) => storage.get(key) ?? null,
+          setItem: (key, value) => {
+            storage.set(key, value);
+          },
+          removeItem: (key) => {
+            storage.delete(key);
+          }
+        }
       }
     }
-  });
+  );
 
-  const { data: { session }, error: exchangeError } =
-    await client.auth.exchangeCodeForSession(code);
+  const {
+    data: { session },
+    error: exchangeError
+  } = await client.auth.exchangeCodeForSession(code);
 
   if (!session || exchangeError) return null;
 
@@ -485,8 +542,7 @@ export async function exchangePkceCode(
     companyGroupId: string | null;
   }> | null;
 
-  const match =
-    rows?.find((c) => c.companyId === cookieCompanyId) ?? rows?.[0];
+  const match = rows?.find((c) => c.companyId === cookieCompanyId) ?? rows?.[0];
 
   return makeAuthSession(
     session,

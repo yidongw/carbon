@@ -1,6 +1,10 @@
 import { redis } from "@carbon/kv";
 import { Edition } from "@carbon/utils";
-import { createCookie, createCookieSessionStorage, redirect } from "react-router";
+import {
+  createCookie,
+  createCookieSessionStorage,
+  redirect
+} from "react-router";
 
 import {
   CarbonEdition,
@@ -8,7 +12,8 @@ import {
   REFRESH_ACCESS_TOKEN_THRESHOLD,
   SESSION_KEY,
   SESSION_MAX_AGE,
-  SESSION_SECRET
+  SESSION_SECRET,
+  VERCEL_ENV
 } from "../config/env";
 import type { AuthSession, Result } from "../types";
 import { getCookieDomain } from "../utils/cookie";
