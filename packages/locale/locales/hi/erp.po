@@ -3362,7 +3362,7 @@ msgid "Enable to automatically post transactions to the general ledger."
 msgstr "सामान्य खाता बही में लेनदेन को स्वचालित रूप से पोस्ट करने के लिए सक्षम करें।"
 
 msgid "Enable to display names with the family name first."
-msgstr ""
+msgstr "परिस्थिति विकसित करें जिसमें परिवार का नाम पहले ही दिखाए जाए."
 
 msgid "Enable to generate IDs and descriptions for raw materials."
 msgstr "कच्चे माल के लिए आईडी और विवरण उत्पन्न करने के लिए सक्षम करें।"
@@ -3601,7 +3601,7 @@ msgid "Expected Receipt Date"
 msgstr "अपेक्षित प्राप्ति तारीख"
 
 msgid "Expiration"
-msgstr ""
+msgstr "अवैधता"
 
 msgid "Expiration Date"
 msgstr "समाप्ति तारीख"
@@ -3973,7 +3973,7 @@ msgid "False"
 msgstr "ज़रूरी"
 
 msgid "Family name is shown first"
-msgstr ""
+msgstr "परिवार का नाम पहले दिखायी देता है"
 
 msgid "Favorite"
 msgstr "पसंदीदा"
@@ -4195,7 +4195,7 @@ msgid "Get Method"
 msgstr "विधि प्राप्त करें"
 
 msgid "Given name is shown first"
-msgstr ""
+msgstr "दी गई नाम पहले दिखाई जाता है"
 
 msgid "GL Account"
 msgstr "क्रेडिट अकाउंट"
@@ -4319,6 +4319,9 @@ msgstr "इंजोक्स"
 
 msgid "ID"
 msgstr "आईडी"
+
+msgid "ID Number"
+msgstr "आईडी नंबर"
 
 msgid "Ideas, suggestions or problems with this page?"
 msgstr "इस पृष्ठ के बारे में विचार, सुझाव या समस्याएं?"
@@ -5478,10 +5481,10 @@ msgid "Name"
 msgstr "नाम"
 
 msgid "Name Display"
-msgstr ""
+msgstr "नाम दिखाएं"
 
 msgid "Names appear as family name followed by given name across the app."
-msgstr ""
+msgstr "फैमिली नाम के बाद में दिए गए नाम प्रत्येक अप्प में दिखाई देते हैं।"
 
 msgid "Navigate"
 msgstr "नेविगेट करें"
@@ -5891,7 +5894,7 @@ msgid "No entries"
 msgstr "कोई एंट्री नहीं है"
 
 msgid "No expiration"
-msgstr ""
+msgstr "कोई अवतरण की तारिख नहीं है"
 
 msgid "No fields found."
 msgstr "कोई क्षेत्र नहीं पाया गया।"
@@ -7993,7 +7996,7 @@ msgid "Select customers"
 msgstr "ग्राहकों का चयन करें"
 
 msgid "Select date *"
-msgstr ""
+msgstr "पक्ष चुनें *"
 
 msgid "Select date range to filter net change and balance at date"
 msgstr "तारीख की सीमा चुनें नेट परिवर्तन और तारीख पर शेष को फ़िल्टर करने के लिए"
@@ -8289,7 +8292,7 @@ msgid "Show Durations"
 msgstr "अवधि दिखाएं"
 
 msgid "Show family name before given name, as used in Chinese and other East Asian locales."
-msgstr ""
+msgstr "चीनी और अन्य पूर्वाधिकारी देशों की तरह प्रदर्शित नाम के बाद मिलाना दिखाएं"
 
 msgid "Show on card right"
 msgstr "दाएं कार्ड पर दिखाएं"
@@ -8631,7 +8634,7 @@ msgid "Successfully created a new revision"
 msgstr "सफलतापूर्वक एक नया संशोधन बनाया गया"
 
 msgid "Successfully invited employee"
-msgstr ""
+msgstr "सफलतापूर्वक कर्मचारी इंवेटिड"
 
 msgid "Suffix"
 msgstr "प्रत्यय"
@@ -8910,7 +8913,7 @@ msgid "The following line items are missing prices or lead times:"
 msgstr "निम्नलिखित लाइन आइटम कीमतें या लीड समय गायब हैं:"
 
 msgid "The invite link will expire on the selected date"
-msgstr ""
+msgstr "चयनित तारीख पर आमंत्रण लिंक की वैधता समाप्त होगी"
 
 msgid "The lot will still be rejected, but an NCR cannot be auto-created until at least one Issue Type is configured."
 msgstr "लॉट अभी भी अस्वीकार कर दिया जाएगा, लेकिन कम से कम एक Issue Type कॉन्फ़िगर होने तक NCR स्वचालित रूप से नहीं बनाया जा सकता।"

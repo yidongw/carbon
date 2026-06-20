@@ -50,14 +50,15 @@ export async function action({ request }: ActionFunctionArgs) {
       return validationError(validation.error);
     }
 
-    const { firstName, lastName, about, phone } = validation.data;
+    const { firstName, lastName, about, phone, number } = validation.data;
 
     const updateAccount = await updatePublicAccount(client, {
       id: userId,
       firstName,
       lastName,
       about,
-      phone
+      phone,
+      number
     });
     if (updateAccount.error)
       return data(

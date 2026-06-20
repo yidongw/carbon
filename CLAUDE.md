@@ -35,6 +35,7 @@
 - Diff behavior between main and your changes when relevant.
 - Ask: "Would a staff engineer approve this?"
 - Run tests, check logs, and demonstrate correctness.
+- **When UI changes don't appear:** Add a visible test string (e.g., "XYZTEST123") to verify you're editing the correct component file BEFORE debugging build/cache systems. If the test string doesn't appear after building, you're editing the wrong file - trace backwards from the actual UI to find the right component.
 
 ### Autonomous Bug Fixing
 

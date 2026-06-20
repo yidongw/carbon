@@ -13,7 +13,8 @@ export const accountProfileValidator = z.object({
   firstName: z.string().min(1, { message: "First name is required" }),
   lastName: z.string().min(1, { message: "Last name is required" }),
   about: z.string(),
-  phone: zfd.text(z.string().optional())
+  phone: zfd.text(z.string().optional()),
+  number: zfd.text(z.string().optional()).transform(val => val === "" ? undefined : val)
 });
 
 export const accountLanguageValidator = z.object({

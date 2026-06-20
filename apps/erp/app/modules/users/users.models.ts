@@ -25,7 +25,8 @@ export const createEmployeeValidator = z.object({
   firstName: z.string().min(1, { message: "First name is required" }),
   lastName: z.string().min(1, { message: "Last name is required" }),
   employeeType: z.string().min(1, { message: "Employee type is required" }),
-  locationId: z.string().min(1, { message: "Location is required" })
+  locationId: z.string().min(1, { message: "Location is required" }),
+  number: z.string().optional().transform(val => val === "" ? undefined : val)
 });
 
 export const createOperatorValidator = z.object({

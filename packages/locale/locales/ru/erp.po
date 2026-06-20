@@ -3362,7 +3362,7 @@ msgid "Enable to automatically post transactions to the general ledger."
 msgstr "Включите, чтобы автоматически отправлять транзакции в главную книгу."
 
 msgid "Enable to display names with the family name first."
-msgstr ""
+msgstr "Включить отображение имён с фамилии в начале."
 
 msgid "Enable to generate IDs and descriptions for raw materials."
 msgstr "Включите для создания идентификаторов и описаний для сырья."
@@ -3601,7 +3601,7 @@ msgid "Expected Receipt Date"
 msgstr "Ожидаемая дата получения"
 
 msgid "Expiration"
-msgstr ""
+msgstr "Срок годности"
 
 msgid "Expiration Date"
 msgstr "Дата истечения"
@@ -3973,7 +3973,7 @@ msgid "False"
 msgstr "Незакон"
 
 msgid "Family name is shown first"
-msgstr ""
+msgstr "Фамилия отображается первым"
 
 msgid "Favorite"
 msgstr "Избранное"
@@ -4195,7 +4195,7 @@ msgid "Get Method"
 msgstr "Получить метод"
 
 msgid "Given name is shown first"
-msgstr ""
+msgstr "Имя отображается первым"
 
 msgid "GL Account"
 msgstr "Окончательный счет"
@@ -4319,6 +4319,9 @@ msgstr "Иконки"
 
 msgid "ID"
 msgstr "ID"
+
+msgid "ID Number"
+msgstr "Номер ID"
 
 msgid "Ideas, suggestions or problems with this page?"
 msgstr "Идеи, предложения или проблемы на этой странице?"
@@ -5478,10 +5481,10 @@ msgid "Name"
 msgstr "Имя"
 
 msgid "Name Display"
-msgstr ""
+msgstr "Наименование отображения"
 
 msgid "Names appear as family name followed by given name across the app."
-msgstr ""
+msgstr "Имена отображаются как фамилия за пределами инициалов вThroughout the application."
 
 msgid "Navigate"
 msgstr "Навигация"
@@ -5891,7 +5894,7 @@ msgid "No entries"
 msgstr "Нет записей"
 
 msgid "No expiration"
-msgstr ""
+msgstr "Без срока годности"
 
 msgid "No fields found."
 msgstr "Ни один поле не найдено."
@@ -7993,7 +7996,7 @@ msgid "Select customers"
 msgstr "Выберите клиентов"
 
 msgid "Select date *"
-msgstr ""
+msgstr "Выберите дату *"
 
 msgid "Select date range to filter net change and balance at date"
 msgstr "Выберите диапазон дат для фильтрации чистого изменения и баланса на дату"
@@ -8289,7 +8292,7 @@ msgid "Show Durations"
 msgstr "Показать длительность"
 
 msgid "Show family name before given name, as used in Chinese and other East Asian locales."
-msgstr ""
+msgstr "Показывать фамилию перед именем, как это используется в Китае和其他东亚地区。"
 
 msgid "Show on card right"
 msgstr "Показать справа на карте"
@@ -8631,7 +8634,7 @@ msgid "Successfully created a new revision"
 msgstr "Успешно создана новая редакция"
 
 msgid "Successfully invited employee"
-msgstr ""
+msgstr "Успешно пригласили сотрудника"
 
 msgid "Suffix"
 msgstr "Суффикс"
@@ -8910,7 +8913,7 @@ msgid "The following line items are missing prices or lead times:"
 msgstr "Следующие позиции отсутствуют цены или сроки поставки:"
 
 msgid "The invite link will expire on the selected date"
-msgstr ""
+msgstr "Ссылка на приглашение истечет в选定日期将会过期"
 
 msgid "The lot will still be rejected, but an NCR cannot be auto-created until at least one Issue Type is configured."
 msgstr "Партия все еще будет отклонена, но NCR не может быть автоматически создана до тех пор, пока не будет настроен хотя бы один тип проблемы."

@@ -4320,6 +4320,9 @@ msgstr "图标"
 msgid "ID"
 msgstr "ID"
 
+msgid "ID Number"
+msgstr "编号"
+
 msgid "Ideas, suggestions or problems with this page?"
 msgstr "本页有任何建议、意见或问题吗？"
 

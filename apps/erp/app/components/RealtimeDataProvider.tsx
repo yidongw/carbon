@@ -75,6 +75,7 @@ const RealtimeDataProvider = ({ children }: { children: React.ReactNode }) => {
 
   const hydrate = async () => {
     const idb = (await import("localforage")).default;
+
     if (!hydratedFromIdb) {
       hydratedFromIdb = true;
 
@@ -87,10 +88,11 @@ const RealtimeDataProvider = ({ children }: { children: React.ReactNode }) => {
       idb.getItem("suppliers").then((data) => {
         if (data && !hydratedFromServer) setSuppliers(data as ListItem[], true);
       });
-      idb.getItem("people").then((data) => {
-        // @ts-ignore
-        if (data && !hydratedFromServer) setPeople(data, true);
-      });
+      // Don't load people from cache since we just cleared it above
+      // idb.getItem("people").then((data) => {
+      //   // @ts-ignore
+      //   if (data && !hydratedFromServer) setPeople(data, true);
+      // });
     }
 
     if (!carbon || !accessToken || hydratedFromServer) return;
@@ -137,7 +139,8 @@ const RealtimeDataProvider = ({ children }: { children: React.ReactNode }) => {
         lastName: string;
         email: string;
         avatarUrl: string;
-      }>(carbon, "employees", "id, name, firstName, lastName, email, avatarUrl", (query) =>
+        number: string | null;
+      }>(carbon, "employees", "id, name, firstName, lastName, email, avatarUrl, number", (query) =>
         query.eq("companyId", companyId).order("name")
       )
     ]);
@@ -391,9 +394,10 @@ const RealtimeDataProvider = ({ children }: { children: React.ReactNode }) => {
             // from our list of employees. So for now we just refetch.
             const { data } = await carbon
               .from("employees")
-              .select("id, name, firstName, lastName, avatarUrl")
+              .select("id, name, firstName, lastName, avatarUrl, email, number")
               .eq("companyId", companyId)
               .order("name");
+
             if (data) {
               // @ts-ignore
               setPeople(data);
