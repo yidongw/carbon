@@ -430,7 +430,7 @@ export async function sendMagicLink(
   email: string,
   redirectTo?: string
 ): Promise<
-  | { error: null; pkceEntry: { k: string; v: string } }
+  | { error: null; pkceEntry: { k: string; v: string; redirectTo?: string } }
   | { error: Error; pkceEntry: null }
 > {
   // Use an in-memory storage so the Supabase PKCE client stores the code
@@ -461,7 +461,10 @@ export async function sendMagicLink(
 
   const { error: otpError } = await client.auth.signInWithOtp({
     email,
-    options: { emailRedirectTo: callbackUrl }
+    options: {
+      emailRedirectTo: callbackUrl,
+      data: { app_url: appUrl }
+    }
   });
 
   if (otpError) {
@@ -475,7 +478,14 @@ export async function sendMagicLink(
     return { error: new Error("PKCE code verifier was not generated"), pkceEntry: null };
   }
 
-  return { error: null, pkceEntry: { k: entry[0], v: entry[1] } };
+  return {
+    error: null,
+    pkceEntry: {
+      k: entry[0],
+      v: entry[1],
+      redirectTo: redirectTo?.startsWith("/") ? redirectTo : undefined
+    }
+  };
 }
 
 // Exchange a PKCE auth code for a session entirely server-side.

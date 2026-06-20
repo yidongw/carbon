@@ -46,6 +46,11 @@ msgstr "{0} Tage"
 msgid "{0} deleted successfully"
 msgstr "{0} erfolgreich gelöscht"
 
+#. placeholder {0}: data.inviterName
+#. placeholder {1}: data.roleName
+msgid "{0} invited you to join as {1}."
+msgstr "{0} hat Sie eingeladen, als {1} beizutreten."
+
 #. placeholder {0}: actionData.correctAnswers
 #. placeholder {1}: actionData.totalQuestions
 msgid "{0} of {1} correct"
@@ -78,6 +83,9 @@ msgstr "{0} nicht beprobte Entitäten werden freigegeben. Beprobte Annahmen blei
 #. placeholder {0}: file.name
 msgid "{0} uploaded successfully"
 msgstr "{0} erfolgreich hochgeladen"
+
+msgid "{days} days ({formatted})"
+msgstr ""
 
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB-Limit"
@@ -564,6 +572,9 @@ msgstr "Zulassen und fortsetzen"
 msgid "Alpha"
 msgstr "Alpha"
 
+msgid "Already a Member"
+msgstr "Schon Mitglied?"
+
 msgid "Always"
 msgstr "Immer"
 
@@ -597,6 +608,12 @@ msgstr "API-Schlüssel"
 msgid "API Keys"
 msgstr "API-Schlüssel"
 
+msgid "Applicant"
+msgstr "Antragsteller"
+
+msgid "Applications"
+msgstr "Anwendungen"
+
 msgid "Applies to"
 msgstr "Befällt"
 
@@ -620,6 +637,9 @@ msgstr "Genehmigen"
 
 msgid "Approve here or manage all pending items on the quantity review page."
 msgstr "Genehmigen Sie hier oder verwalten Sie alle laufenden Bestände auf der Mengeprüfungsseite."
+
+msgid "Approved"
+msgstr "Genehmigt"
 
 msgid "Approved By"
 msgstr "Genehmigt von"
@@ -1294,6 +1314,9 @@ msgstr "von {byUser}"
 msgid "By accepting the invite, you agree to the <0>Terms of Service</0> and <1>Privacy Policy</1>."
 msgstr "Durch Annahme der Einladung stimmen Sie den <0>Nutzungsbedingungen</0> und der <1>Datenschutzrichtlinie</1> zu."
 
+msgid "By requesting access, you agree to the <0>Terms of Service</0> and <1>Privacy Policy</1>."
+msgstr "Durch den Anmeldevorgang stimmen Sie den <0> Nutzungsbedingungen </0> und der <1> Datenschutzerklärung </1> zu."
+
 msgid "By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy Policy.</1>"
 msgstr "Durch die Anmeldung stimmen Sie den <0>Nutzungsbedingungen</0> und der <1>Datenschutzrichtlinie</1> zu."
 
@@ -1856,6 +1879,9 @@ msgstr "Job-Nummer kopieren"
 msgid "Copy link"
 msgstr "Link kopieren"
 
+msgid "Copy Link"
+msgstr "kopieren"
+
 msgid "Copy link to consumable"
 msgstr "Link zum Verbrauchsmaterial kopieren"
 
@@ -2033,6 +2059,9 @@ msgstr "Audit-Trail-Einträge erstellen"
 msgid "Create employee"
 msgstr "Erstellen Sie Mitarbeiter"
 
+msgid "Create Invite Link"
+msgstr "Erstelle Einladungslink"
+
 msgid "Create Issue"
 msgstr "Problem erstellen"
 
@@ -2044,6 +2073,9 @@ msgstr "Aufträge erstellen"
 
 msgid "Create Kanban"
 msgstr "Kanban erstellen"
+
+msgid "Create Link"
+msgstr "Erstelle Link"
 
 msgid "Create new rule"
 msgstr "Erstellen Sie eine neue Regel"
@@ -2444,6 +2476,9 @@ msgstr "Standardgenehmiger"
 
 msgid "Default CC Recipients"
 msgstr "Standard-CC-Empfänger"
+
+msgid "Default Location"
+msgstr "Standardposition"
 
 msgid "Default Method"
 msgstr "Standardmethode"
@@ -3565,6 +3600,9 @@ msgstr "Erwarteter Eingang"
 msgid "Expected Receipt Date"
 msgstr "Erwartetes Eingangsdatum"
 
+msgid "Expiration"
+msgstr ""
+
 msgid "Expiration Date"
 msgstr "Ablaufdatum"
 
@@ -4162,6 +4200,9 @@ msgstr ""
 msgid "GL Account"
 msgstr "Kontenkskonto"
 
+msgid "Go to App"
+msgstr "Wechseln Sie zur Anwendung"
+
 msgid "Goal quantity for this configuration."
 msgstr "Zimenge für diese Konfiguration."
 
@@ -4477,6 +4518,9 @@ msgstr "Ungültige E-Mail-Adresse"
 msgid "Invalid Invite"
 msgstr "Ungültige Einladung"
 
+msgid "Invalid Invite Link"
+msgstr "Ungültiger Einladungslink"
+
 msgid "Invalid or expired verification code"
 msgstr "Ungültiger oder abgelaufener Bestätigungscode"
 
@@ -4519,8 +4563,23 @@ msgstr "Investitionen in Tochtergesellschaften"
 msgid "Invite"
 msgstr "Einladen"
 
+msgid "Invite Link"
+msgstr "Einladungslink"
+
+msgid "Invite Link Expired"
+msgstr "Einladungslink abgelaufen"
+
+msgid "Invite Links"
+msgstr "Einladungs-Links"
+
 msgid "Invited"
 msgstr "Eingeladen"
+
+msgid "Invited By"
+msgstr "Geladen Von"
+
+msgid "Inviter"
+msgstr "Bereitigen"
 
 msgid "Invoice"
 msgstr "Rechnung"
@@ -4703,6 +4762,7 @@ msgid "Jobs Required"
 msgstr "Aufträge erforderlich"
 
 #. placeholder {0}: company?.name ?? "Company"
+#. placeholder {0}: data.companyName
 msgid "Join {0}"
 msgstr "Treten Sie {0} bei"
 
@@ -4741,6 +4801,9 @@ msgstr "Bausatz"
 
 msgid "Label"
 msgstr "Bezeichnung"
+
+msgid "Label (optional)"
+msgstr "Bezeichnung (optional)"
 
 msgid "Label is required"
 msgstr "Label ist erforderlich"
@@ -5826,6 +5889,9 @@ msgstr "Keine Mitarbeiter haben einen offenen Rechnungsbetrag für diesen Zeitra
 
 msgid "No entries"
 msgstr "Keine Einträge"
+
+msgid "No expiration"
+msgstr ""
 
 msgid "No fields found."
 msgstr "Keine Felder gefunden."
@@ -7360,6 +7426,12 @@ msgstr "Berichte"
 msgid "Request Approval"
 msgstr "Genehmigung anfordern"
 
+msgid "Request Submitted"
+msgstr "Anfrage gesendet"
+
+msgid "Request to Join"
+msgstr "Anfrage zur Teilnahme stellen"
+
 msgid "Requested Date"
 msgstr "Angeforderte Datum"
 
@@ -7503,6 +7575,12 @@ msgstr "Einladung widerrufen"
 
 msgid "Revoke Invites"
 msgstr "Einladungen widerrufen"
+
+msgid "Revoke Link"
+msgstr "Zurückziehen des Links"
+
+msgid "Revoked"
+msgstr "Gefesselt"
 
 msgid "Rework"
 msgstr "Umwelt"
@@ -7914,6 +7992,9 @@ msgstr "Kundentypen auswählen"
 msgid "Select customers"
 msgstr "Kunden auswählen"
 
+msgid "Select date *"
+msgstr ""
+
 msgid "Select date range to filter net change and balance at date"
 msgstr "Wählen Sie einen Datumsbereich aus, um die Nettoänderung und den Saldo zum Stichtag zu filtern"
 
@@ -8052,6 +8133,9 @@ msgstr "Legen Sie standardmäßige Aufschlagsprozentsätze für jede Kostenkateg
 
 msgid "Set due date"
 msgstr "Fälligkeitsdatum festlegen"
+
+msgid "Set Expiration"
+msgstr "Set Ablaufdatum"
 
 msgid "Set Pricing"
 msgstr "Preisgestaltung festlegen"
@@ -8227,6 +8311,9 @@ msgstr "Hintergrund als schwaches Hintergrundbild hinter jeder Seite der generie
 
 msgid "Shown to the user when this rule fails."
 msgstr "Gezeigt wird, wenn diese Regel fehlschlägt."
+
+msgid "Sign In to Request Access"
+msgstr "Anmelden, um den Zugriff anzufragen"
 
 msgid "Sign in with Email"
 msgstr "Mit E-Mail anmelden"
@@ -8543,6 +8630,9 @@ msgstr "Angebot erfolgreich kopiert"
 msgid "Successfully created a new revision"
 msgstr "Neue Revision erfolgreich erstellt"
 
+msgid "Successfully invited employee"
+msgstr ""
+
 msgid "Suffix"
 msgstr "Suffix"
 
@@ -8819,6 +8909,9 @@ msgstr "Folgende Assemblagen haben keine Operationen. Bitte zu jedem eine Operat
 msgid "The following line items are missing prices or lead times:"
 msgstr "Die folgenden Positionen haben keine Preise oder Lieferzeiten:"
 
+msgid "The invite link will expire on the selected date"
+msgstr ""
+
 msgid "The lot will still be rejected, but an NCR cannot be auto-created until at least one Issue Type is configured."
 msgstr "Das Los wird weiterhin abgelehnt, aber ein NCR kann nicht automatisch erstellt werden, bis mindestens ein Problemtyp konfiguriert ist."
 
@@ -8884,6 +8977,12 @@ msgstr "Diese Informationen werden in Dokumentkopfzeilen verwendet"
 
 msgid "This information will be visible to all users, so be careful what you share."
 msgstr "Diese Informationen sind für alle Benutzer sichtbar, daher seien Sie vorsichtig, was Sie teilen."
+
+msgid "This invite link is invalid or has expired. Please contact the person who shared it with you."
+msgstr "Dieser Einladungslink ist ungültig oder abgelaufen. Bitte kontaktieren Sie die Person, die ihn Ihnen gesendet hat."
+
+msgid "This invite link is no longer accepting new requests."
+msgstr "Dieser Einladungslink akzeptiert derzeit keine neuen Anfragen."
 
 msgid "This is a unique identifier for the webhook"
 msgstr "Dies ist eine eindeutige Kennung für den Webhook"
@@ -9295,6 +9394,9 @@ msgstr "UoM"
 
 msgid "Update"
 msgstr "Aktualisieren"
+
+msgid "Update Expiration"
+msgstr "Ablauf aktualisieren"
 
 msgid "Update failed"
 msgstr "Updateschritt fehlgeschlagen"
@@ -9871,6 +9973,10 @@ msgstr "Ja, ablehnen"
 msgid "Yes, Update IDs"
 msgstr "Ja, IDs aktualisieren"
 
+#. placeholder {0}: data.companyName
+msgid "You already have access to {0}."
+msgstr "Sie haben bereits Zugriff auf {0}."
+
 msgid "You can change the UI style any time through the theme setting"
 msgstr "Sie können den UI-Stil jederzeit über die Design-Einstellung ändern"
 
@@ -9912,6 +10018,16 @@ msgstr "Ihre Einladung ist ungültig oder wurde bereits akzeptiert. Bitte kontak
 
 msgid "Your Name"
 msgstr "Ihr Name"
+
+msgid "Your request has been submitted."
+msgstr "Ihre Anfrage wurde eingereicht."
+
+#. placeholder {0}: data.companyName
+msgid "Your request to join {0} has already been submitted and is pending review."
+msgstr "Ihre Anfrage zur Teilnahme an {0} wurde bereits eingereicht und wird geprüft."
+
+msgid "Your request to join {companyName} has been submitted. An admin will review your application soon."
+msgstr "Ihre Anfrage zur Beigabe zu {companyName} wurde eingereicht. Ein Admin wird Ihre Anwendung bald durchsehen."
 
 msgid "yourself"
 msgstr "dir selbst"

@@ -13,25 +13,27 @@ export function useUrlParams(): [
   const setSearchParams = useCallback(
     (params: Record<string, string | string[] | number | undefined | null>) => {
       Object.entries(params).forEach(([name, value]) => {
-        if (value) {
-          if (Array.isArray(value)) {
-            if (value.length === 0) {
-              searchParams.delete(name);
-            } else {
-              value.forEach((v, i) => {
-                if (i === 0) {
-                  searchParams.set(name, v.toString());
-                } else {
-                  searchParams.append(name, v.toString());
-                }
-              });
-            }
-          } else {
-            searchParams.set(name, value.toString());
-          }
-        } else {
+        if (value === undefined || value === null || value === "") {
           searchParams.delete(name);
+          return;
         }
+
+        if (Array.isArray(value)) {
+          if (value.length === 0) {
+            searchParams.delete(name);
+          } else {
+            value.forEach((v, i) => {
+              if (i === 0) {
+                searchParams.set(name, v.toString());
+              } else {
+                searchParams.append(name, v.toString());
+              }
+            });
+          }
+          return;
+        }
+
+        searchParams.set(name, value.toString());
       });
 
       submit(searchParams);
