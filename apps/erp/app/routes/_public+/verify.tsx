@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { assertIsPost, error, RATE_LIMIT } from "@carbon/auth";
+import { assertIsPost, error, RATE_LIMIT, safeRedirect } from "@carbon/auth";
 import {
   createEmailAuthAccount,
   signInWithEmail
@@ -51,9 +51,11 @@ const verifyValidator = z.object({
 });
 
 export async function loader({ request }: LoaderFunctionArgs) {
+  const url = new URL(request.url);
+  const redirectTo = url.searchParams.get("redirectTo");
   const authSession = await getAuthSession(request);
   if (authSession) {
-    throw redirect(path.to.authenticatedRoot);
+    throw redirect(safeRedirect(redirectTo, path.to.authenticatedRoot));
   }
 
   return null;

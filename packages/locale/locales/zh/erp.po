@@ -46,6 +46,11 @@ msgstr "{0} 天"
 msgid "{0} deleted successfully"
 msgstr "{0} 已成功删除"
 
+#. placeholder {0}: data.inviterName
+#. placeholder {1}: data.roleName
+msgid "{0} invited you to join as {1}."
+msgstr "{0} 邀请您以 {1} 身份加入。"
+
 #. placeholder {0}: actionData.correctAnswers
 #. placeholder {1}: actionData.totalQuestions
 msgid "{0} of {1} correct"
@@ -78,6 +83,9 @@ msgstr "{0}个未检测的实体将被释放到可用状态。已检测通过的
 #. placeholder {0}: file.name
 msgid "{0} uploaded successfully"
 msgstr "{0} 上传成功"
+
+msgid "{days} days ({formatted})"
+msgstr "{days} 天（{formatted}）"
 
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB限制"
@@ -564,6 +572,9 @@ msgstr "允许确认并继续"
 msgid "Alpha"
 msgstr "Alpha"
 
+msgid "Already a Member"
+msgstr "您已是成员"
+
 msgid "Always"
 msgstr "始终"
 
@@ -597,6 +608,12 @@ msgstr "API密钥"
 msgid "API Keys"
 msgstr "API密钥"
 
+msgid "Applicant"
+msgstr "申请人"
+
+msgid "Applications"
+msgstr "申请"
+
 msgid "Applies to"
 msgstr "适用于"
 
@@ -620,6 +637,9 @@ msgstr "批准"
 
 msgid "Approve here or manage all pending items on the quantity review page."
 msgstr "在此批准，或在数量审核页面管理所有待处理的物品。"
+
+msgid "Approved"
+msgstr "已批准"
 
 msgid "Approved By"
 msgstr "批准人"
@@ -1294,6 +1314,9 @@ msgstr "由{byUser}"
 msgid "By accepting the invite, you agree to the <0>Terms of Service</0> and <1>Privacy Policy</1>."
 msgstr "通过接受邀请，您同意<0>服务条款</0>和<1>隐私政策</1>。"
 
+msgid "By requesting access, you agree to the <0>Terms of Service</0> and <1>Privacy Policy</1>."
+msgstr "申请访问即表示您同意<0>服务条款</0>和<1>隐私政策</1>。"
+
 msgid "By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy Policy.</1>"
 msgstr "通过登录，您同意<0>服务条款</0>和<1>隐私政策</1>。"
 
@@ -1856,6 +1879,9 @@ msgstr "复制工作编号"
 msgid "Copy link"
 msgstr "复制链接"
 
+msgid "Copy Link"
+msgstr "复制链接"
+
 msgid "Copy link to consumable"
 msgstr "复制可消耗项链接"
 
@@ -2033,6 +2059,9 @@ msgstr "创建审计追踪条目"
 msgid "Create employee"
 msgstr "创建员工"
 
+msgid "Create Invite Link"
+msgstr "创建邀请链接"
+
 msgid "Create Issue"
 msgstr "创建问题"
 
@@ -2044,6 +2073,9 @@ msgstr "创建工作"
 
 msgid "Create Kanban"
 msgstr "创建看板"
+
+msgid "Create Link"
+msgstr "创建链接"
 
 msgid "Create new rule"
 msgstr "创建新规则"
@@ -2444,6 +2476,9 @@ msgstr "默认审批人"
 
 msgid "Default CC Recipients"
 msgstr "默认抄送收件人"
+
+msgid "Default Location"
+msgstr "默认位置"
 
 msgid "Default Method"
 msgstr "默认方法"
@@ -3565,6 +3600,9 @@ msgstr "预期收货"
 msgid "Expected Receipt Date"
 msgstr "预计收货日期"
 
+msgid "Expiration"
+msgstr "过期时间"
+
 msgid "Expiration Date"
 msgstr "有效期"
 
@@ -4162,6 +4200,9 @@ msgstr "名字在前显示"
 msgid "GL Account"
 msgstr "总账科目"
 
+msgid "Go to App"
+msgstr "进入应用"
+
 msgid "Goal quantity for this configuration."
 msgstr "此配置的目标数量。"
 
@@ -4477,6 +4518,9 @@ msgstr "无效的电子邮件地址"
 msgid "Invalid Invite"
 msgstr "无效邀请"
 
+msgid "Invalid Invite Link"
+msgstr "无效的邀请链接"
+
 msgid "Invalid or expired verification code"
 msgstr "无效或过期的验证码"
 
@@ -4519,8 +4563,23 @@ msgstr "子公司投资"
 msgid "Invite"
 msgstr "邀请"
 
+msgid "Invite Link"
+msgstr "邀请链接"
+
+msgid "Invite Link Expired"
+msgstr "邀请链接已过期"
+
+msgid "Invite Links"
+msgstr "邀请链接"
+
 msgid "Invited"
 msgstr "已邀请"
+
+msgid "Invited By"
+msgstr "邀请人"
+
+msgid "Inviter"
+msgstr "邀请者"
 
 msgid "Invoice"
 msgstr "发票"
@@ -4703,6 +4762,7 @@ msgid "Jobs Required"
 msgstr "所需工作数量"
 
 #. placeholder {0}: company?.name ?? "Company"
+#. placeholder {0}: data.companyName
 msgid "Join {0}"
 msgstr "加入{0}"
 
@@ -4741,6 +4801,9 @@ msgstr "套件"
 
 msgid "Label"
 msgstr "标签"
+
+msgid "Label (optional)"
+msgstr "标签（可选）"
 
 msgid "Label is required"
 msgstr "必填项"
@@ -5826,6 +5889,9 @@ msgstr "本期没有员工有未结余额。"
 
 msgid "No entries"
 msgstr "无记录"
+
+msgid "No expiration"
+msgstr "永不过期"
 
 msgid "No fields found."
 msgstr "未找到任何字段。"
@@ -7360,6 +7426,12 @@ msgstr "报表"
 msgid "Request Approval"
 msgstr "请求批准"
 
+msgid "Request Submitted"
+msgstr "申请已提交"
+
+msgid "Request to Join"
+msgstr "申请加入"
+
 msgid "Requested Date"
 msgstr "请求日期"
 
@@ -7503,6 +7575,12 @@ msgstr "撤销邀请"
 
 msgid "Revoke Invites"
 msgstr "撤销邀请"
+
+msgid "Revoke Link"
+msgstr "撤销链接"
+
+msgid "Revoked"
+msgstr "已撤销"
 
 msgid "Rework"
 msgstr "返工"
@@ -7914,6 +7992,9 @@ msgstr "选择客户类型"
 msgid "Select customers"
 msgstr "选择客户"
 
+msgid "Select date *"
+msgstr "选择日期 *"
+
 msgid "Select date range to filter net change and balance at date"
 msgstr "选择日期范围以筛选净变动和该日期的余额"
 
@@ -8052,6 +8133,9 @@ msgstr "为新报价行设置每个成本类别的默认标记百分比"
 
 msgid "Set due date"
 msgstr "设置到期日期"
+
+msgid "Set Expiration"
+msgstr "设置过期时间"
 
 msgid "Set Pricing"
 msgstr "设置价格"
@@ -8227,6 +8311,9 @@ msgstr "生成的PDF每一页背后显示为淡色背景"
 
 msgid "Shown to the user when this rule fails."
 msgstr "当此规则失败时显示给用户。"
+
+msgid "Sign In to Request Access"
+msgstr "登录以申请访问"
 
 msgid "Sign in with Email"
 msgstr "使用电子邮件登录"
@@ -8543,6 +8630,9 @@ msgstr "成功复制报价"
 msgid "Successfully created a new revision"
 msgstr "成功创建新版本"
 
+msgid "Successfully invited employee"
+msgstr "已成功邀请员工"
+
 msgid "Suffix"
 msgstr "后缀"
 
@@ -8819,6 +8909,9 @@ msgstr "以下装配暂无操作，请为每个装配分配操作后再发布。
 msgid "The following line items are missing prices or lead times:"
 msgstr "以下行物品缺少价格或交货期："
 
+msgid "The invite link will expire on the selected date"
+msgstr "邀请链接将在所选日期过期"
+
 msgid "The lot will still be rejected, but an NCR cannot be auto-created until at least one Issue Type is configured."
 msgstr "该批料仍会被拒收，但在配置至少一种问题类型之前，无法自动创建NCR。"
 
@@ -8884,6 +8977,12 @@ msgstr "这些信息将用于文档标题"
 
 msgid "This information will be visible to all users, so be careful what you share."
 msgstr "请谨慎分享信息，因为这将对所有用户可见。"
+
+msgid "This invite link is invalid or has expired. Please contact the person who shared it with you."
+msgstr "此邀请链接无效或已过期。请联系分享此链接的人员。"
+
+msgid "This invite link is no longer accepting new requests."
+msgstr "此邀请链接已不再接受新的申请。"
 
 msgid "This is a unique identifier for the webhook"
 msgstr "这是Webhook的唯一标识符"
@@ -9295,6 +9394,9 @@ msgstr "单位"
 
 msgid "Update"
 msgstr "更新"
+
+msgid "Update Expiration"
+msgstr "更新过期时间"
 
 msgid "Update failed"
 msgstr "更新失败"
@@ -9871,6 +9973,10 @@ msgstr "是，拒收"
 msgid "Yes, Update IDs"
 msgstr "是，更新ID"
 
+#. placeholder {0}: data.companyName
+msgid "You already have access to {0}."
+msgstr "您已拥有 {0} 的访问权限。"
+
 msgid "You can change the UI style any time through the theme setting"
 msgstr "您可以通过主题设置随时更改UI风格"
 
@@ -9912,6 +10018,16 @@ msgstr "您的邀请无效或已被接受。如果您认为这是一个错误，
 
 msgid "Your Name"
 msgstr "你的名字"
+
+msgid "Your request has been submitted."
+msgstr "您的申请已提交。"
+
+#. placeholder {0}: data.companyName
+msgid "Your request to join {0} has already been submitted and is pending review."
+msgstr "您加入 {0} 的申请已提交，正在等待审核。"
+
+msgid "Your request to join {companyName} has been submitted. An admin will review your application soon."
+msgstr "您加入 {companyName} 的申请已提交。管理员将尽快审核您的申请。"
 
 msgid "yourself"
 msgstr "你自己"

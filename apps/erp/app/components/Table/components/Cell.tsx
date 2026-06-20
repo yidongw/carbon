@@ -113,7 +113,9 @@ const Cell = <T extends object>({
 
 // Cells re-render based on their own value, not row identity. Multi-field
 // cells should subscribe to all fields they read (e.g. via the column
-// accessor's `id` returning a derived value).
+// accessor's `id` returning a derived value). Also compare row.original so
+// index-stable cell ids do not show stale data when rows are inserted or
+// reordered.
 const MemoizedCell = memo(
   Cell,
   (prev, next) =>
@@ -123,6 +125,7 @@ const MemoizedCell = memo(
     next.isEditing === prev.isEditing &&
     next.isEditMode === prev.isEditMode &&
     next.cell.getValue() === prev.cell.getValue() &&
+    prev.cell.row.original === next.cell.row.original &&
     next.pinnedColumns === prev.pinnedColumns &&
     next.columnIndex === prev.columnIndex &&
     // getPinnedStyles is applied to the Td below; its identity changes when
