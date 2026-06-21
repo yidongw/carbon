@@ -1665,9 +1665,11 @@ const JobBillOfProcess = ({
         label: (
           <span className="flex items-center gap-2">
             <span>
-              <Trans>Pickups</Trans>
+              <Trans>Production Logs</Trans>
             </span>
-            {currentPickupCount > 0 && <Count count={currentPickupCount} />}
+            {(currentPickupCount + quantityCount) > 0 && (
+              <Count count={currentPickupCount + quantityCount} />
+            )}
           </span>
         ),
         content: (
@@ -1682,8 +1684,9 @@ const JobBillOfProcess = ({
               delay: 0.15
             }}
           >
-            {canRecordQuantity && onAddPickup && (
-              <HStack className="justify-end">
+            {/* Action Buttons */}
+            <HStack className="justify-end gap-2">
+              {canRecordQuantity && onAddPickup && (
                 <Button
                   variant="secondary"
                   size="sm"
@@ -1693,77 +1696,55 @@ const JobBillOfProcess = ({
                   <LuCirclePlus className="mr-1.5 h-4 w-4" />
                   <Trans>Record pickup</Trans>
                 </Button>
-              </HStack>
+              )}
+              {canRecordQuantity && onAddProductionQuantity && (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="shrink-0 transition-transform active:scale-[0.96]"
+                  onClick={() => onAddProductionQuantity(item.id)}
+                >
+                  <LuCirclePlus className="mr-1.5 h-4 w-4" />
+                  <Trans>Record quantity</Trans>
+                </Button>
+              )}
+            </HStack>
+
+            {/* Summary View */}
+            {item.id === selectedItemId && operationQuantitySummary && (
+              <OperationQuantitySummaryView
+                summary={operationQuantitySummary}
+                configurationParameters={configurationParameters}
+              />
             )}
-            <InfiniteScroll
-              key={pickupScrollKey}
-              component={PickupActivityRowWrapper}
-              items={pickups}
-              loadMore={loadMorePickups}
-              hasMore={pickupHasMore}
-            />
+
+            {/* Merged Pickups and Quantities */}
+            <VStack spacing={4}>
+              {/* Pickups Section */}
+              <InfiniteScroll
+                key={pickupScrollKey}
+                component={PickupActivityRowWrapper}
+                items={pickups}
+                loadMore={loadMorePickups}
+                hasMore={pickupHasMore}
+              />
+
+              {/* Quantities Section */}
+              {item.id === selectedItemId && (
+                <InfiniteScroll
+                  component={QuantityReportRow}
+                  items={quantityReports}
+                  loadMore={loadMoreQuantityReports}
+                  hasMore={quantityHasMore}
+                  listClassName="gap-5 pt-2"
+                />
+              )}
+            </VStack>
           </motion.div>
         )
       },
       {
         id: 6,
-        disabled: false,
-        label: (
-          <span className="flex items-center gap-2">
-            <span>
-              <Trans>Quantities</Trans>
-            </span>
-            {quantityCount > 0 && <Count count={quantityCount} />}
-          </span>
-        ),
-        content: (
-          <motion.div
-            className="flex w-full flex-col gap-4 py-6 pr-2 min-h-[300px]"
-            initial={{ opacity: 0, filter: "blur(4px)" }}
-            animate={{ opacity: 1, filter: "blur(0px)" }}
-            transition={{
-              type: "spring",
-              bounce: 0.2,
-              duration: 0.75,
-              delay: 0.15
-            }}
-          >
-            {(item.id === selectedItemId ||
-              (canRecordQuantity && onAddProductionQuantity)) && (
-              <HStack className="w-full flex-wrap items-center justify-between gap-2">
-                <HStack className="min-w-0 flex-wrap items-center gap-2">
-                  {item.id === selectedItemId ? (
-                    <OperationQuantitySummaryView
-                      summary={operationQuantitySummary}
-                      configurationParameters={configurationParameters}
-                    />
-                  ) : null}
-                </HStack>
-                {canRecordQuantity && onAddProductionQuantity ? (
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    className="shrink-0 transition-transform active:scale-[0.96]"
-                    onClick={() => onAddProductionQuantity(item.id)}
-                  >
-                    <LuCirclePlus className="mr-1.5 h-4 w-4" />
-                    <Trans>Record quantity</Trans>
-                  </Button>
-                ) : null}
-              </HStack>
-            )}
-            <InfiniteScroll
-              component={QuantityReportRow}
-              items={item.id === selectedItemId ? quantityReports : []}
-              loadMore={loadMoreQuantityReports}
-              hasMore={quantityHasMore}
-              listClassName="gap-5 pt-2"
-            />
-          </motion.div>
-        )
-      },
-      {
-        id: 7,
         disabled: disablesOutsideBopDetailTabs(item.data.operationType),
         label: t`Events`,
         content: (
@@ -1788,7 +1769,7 @@ const JobBillOfProcess = ({
         )
       },
       {
-        id: 8,
+        id: 7,
         disabled: disablesOutsideBopDetailTabs(item.data.operationType),
         label: t`Chat`,
         content: <OperationChat jobOperationId={item.id} />
