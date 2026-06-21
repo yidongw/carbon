@@ -30,7 +30,7 @@ import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions } from "~/hooks";
 import { isConfigTableOverlaySuccess } from "../../configTableOverlay";
 import {
-  buildJobRemainingReferenceContext,
+  buildProductionConfigTableReferenceContext,
   type ConfigReferenceSource
 } from "../../configParamsTableColumns";
 import type { ProductionQuantityLineInput } from "~/modules/production/productionQuantityReport.models";
@@ -275,9 +275,12 @@ const ProductionQuantityForm = ({
   const openConfigTable = () => {
     if (!itemId) return;
 
-    const referenceContext = configReferenceSource
-      ? buildJobRemainingReferenceContext(configReferenceSource)
-      : undefined;
+    const referenceContext = buildProductionConfigTableReferenceContext({
+      source: configReferenceSource,
+      employeeId: actorKind === "employee" ? employeeId : undefined,
+      jobId: jobId ?? undefined,
+      jobOperationId: jobOperationIdState || undefined
+    });
 
     openOverlay(
       overlay.to.itemConfigTable(itemId, {
@@ -371,6 +374,9 @@ const ProductionQuantityForm = ({
         defaultActorKind ??
         "employee") as (typeof productionActorKinds)[number]
   );
+  const [employeeId, setEmployeeId] = useState(
+    () => actorFieldValues.employeeId ?? ""
+  );
   const [supplierProcessId, setSupplierProcessId] = useState(
     () => actorFieldValues.supplierProcessId ?? ""
   );
@@ -439,6 +445,7 @@ const ProductionQuantityForm = ({
             supplierProcessIdValue={actorFieldValues.supplierProcessId}
             supplierIdValue={actorFieldValues.supplierId}
             onActorKindChange={setActorKind}
+            onEmployeeChange={setEmployeeId}
             onSupplierProcessChange={setSupplierProcessId}
           />
 
@@ -463,6 +470,9 @@ const ProductionQuantityForm = ({
                 configReferenceSource={configReferenceSource}
                 itemId={itemId}
                 isDisabled={isDisabled}
+                employeeId={actorKind === "employee" ? employeeId : undefined}
+                jobId={jobId ?? undefined}
+                jobOperationId={jobOperationIdState || undefined}
               />
             </>
           ) : (

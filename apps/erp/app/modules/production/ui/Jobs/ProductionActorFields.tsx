@@ -65,7 +65,8 @@ export function ProductionActorFields({
   supplierProcessIdValue,
   supplierIdValue,
   onActorKindChange,
-  onSupplierProcessChange
+  onSupplierProcessChange,
+  onEmployeeChange
 }: {
   processId?: string | null;
   operationType?: OperationType | string | null;
@@ -78,6 +79,7 @@ export function ProductionActorFields({
   supplierIdValue?: string;
   onActorKindChange?: (kind: ActorKind) => void;
   onSupplierProcessChange?: (supplierProcessId: string) => void;
+  onEmployeeChange?: (employeeId: string) => void;
 }) {
   const { t } = useLingui();
   const newSupplierProcessModal = useDisclosure();
@@ -134,10 +136,12 @@ export function ProductionActorFields({
         setEmployeeId(decoded.id);
         setSupplierProcessId("");
         onSupplierProcessChange?.("");
+        onEmployeeChange?.(decoded.id);
       } else {
         setSupplierProcessId(decoded.id);
         setEmployeeId("");
         onSupplierProcessChange?.(decoded.id);
+        onEmployeeChange?.("");
       }
       onActorKindChange?.(decoded.kind);
       return;
@@ -147,12 +151,14 @@ export function ProductionActorFields({
     setEmployeeId("");
     setSupplierProcessId("");
     onSupplierProcessChange?.("");
+    onEmployeeChange?.("");
     onActorKindChange?.(resolvedDefault);
   }, [
     initialSelection,
     resolvedDefault,
     onActorKindChange,
-    onSupplierProcessChange
+    onSupplierProcessChange,
+    onEmployeeChange
   ]);
 
   useEffect(() => {
@@ -346,10 +352,12 @@ export function ProductionActorFields({
       setEmployeeId(decoded.id);
       setSupplierProcessId("");
       onSupplierProcessChange?.("");
+      onEmployeeChange?.(decoded.id);
     } else {
       setSupplierProcessId(decoded.id);
       setEmployeeId("");
       onSupplierProcessChange?.(decoded.id);
+      onEmployeeChange?.("");
     }
   };
 

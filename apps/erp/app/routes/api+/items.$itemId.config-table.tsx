@@ -5,7 +5,8 @@ import type { ConfigurationParameter } from "~/modules/items/types";
 import { buildConfigTableEditorState } from "~/modules/production/configParamsTableColumns";
 import {
   parseInitialConfigurationFromRequest,
-  parseReferenceContextFromRequest
+  parseReferenceContextFromRequest,
+  resolveConfigTableReferenceContext
 } from "~/modules/production/configTableOverlay.server";
 
 export type ItemConfigTableOverlayLoaderData = {
@@ -41,7 +42,14 @@ export async function loader({
     .eq("companyId", companyId)
     .maybeSingle();
 
-  const referenceContext = parseReferenceContextFromRequest(request);
+  const parsedReferenceContext = parseReferenceContextFromRequest(request);
+  const referenceContext = parsedReferenceContext
+    ? await resolveConfigTableReferenceContext(
+        client,
+        companyId,
+        parsedReferenceContext
+      )
+    : undefined;
   const initialRowsFromRequest = parseInitialConfigurationFromRequest(request);
   const currentConfiguration =
     initialRowsFromRequest !== undefined
