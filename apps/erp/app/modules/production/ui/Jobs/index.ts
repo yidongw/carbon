@@ -22,6 +22,7 @@ import JobsTable from "./JobsTable";
 import PickupForm from "./PickupForm";
 import ProductionEventForm from "./ProductionEventForm";
 import ProductionEventsTable from "./ProductionEventsTable";
+import ProductionLogsTable from "./ProductionLogsTable";
 import ProductionPickupsTable from "./ProductionPickupsTable";
 import ProductionQuantitiesTable from "./ProductionQuantitiesTable";
 import ProductionQuantityForm from "./ProductionQuantityForm";
@@ -49,6 +50,7 @@ export {
   PickupForm,
   ProductionEventForm,
   ProductionEventsTable,
+  ProductionLogsTable,
   ProductionPickupsTable,
   ProductionQuantitiesTable,
   ProductionQuantityForm
