@@ -148,7 +148,8 @@ const RealtimeDataProvider = ({ children }: { children: React.ReactNode }) => {
 
         // If query failed (likely because number column doesn't exist in view yet), try without number
         if (employeesResult.error) {
-          return fetchAllFromTable<{
+          console.warn("Failed to fetch employees with number field, falling back without it:", employeesResult.error);
+          const fallbackResult = await fetchAllFromTable<{
             id: string;
             name: string;
             firstName: string;
@@ -158,6 +159,12 @@ const RealtimeDataProvider = ({ children }: { children: React.ReactNode }) => {
           }>(carbon, "employees", "id, name, firstName, lastName, email, avatarUrl", (query) =>
             query.eq("companyId", companyId).order("name")
           );
+
+          if (fallbackResult.error) {
+            console.error("Failed to fetch employees even without number field:", fallbackResult.error);
+          }
+
+          return fallbackResult;
         }
 
         return employeesResult;
@@ -421,11 +428,16 @@ const RealtimeDataProvider = ({ children }: { children: React.ReactNode }) => {
 
             // If query failed (number column doesn't exist yet), fetch without it
             if (result.error) {
+              console.warn("Realtime: Failed to fetch employees with number field, falling back:", result.error);
               result = await carbon
                 .from("employees")
                 .select("id, name, firstName, lastName, avatarUrl, email")
                 .eq("companyId", companyId)
                 .order("name");
+
+              if (result.error) {
+                console.error("Realtime: Failed to fetch employees even without number field:", result.error);
+              }
             }
 
             if (result.data) {
