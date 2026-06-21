@@ -176,6 +176,14 @@ export function ProductionQuantityLinesEditor({
         employeeId
       );
 
+      console.log('[MULTI-LINE DEBUG] Opening config table with:', {
+        employeeId,
+        hasReferenceContext: !!referenceContext,
+        contextEmployeeId: referenceContext?.employeeId,
+        contextHasPickups: !!referenceContext?.pickupsByEmployee,
+        pickupsCount: referenceContext?.pickupsByEmployee ? Object.keys(referenceContext.pickupsByEmployee).length : 0
+      });
+
       openOverlay(
         overlay.to.itemConfigTable(itemId, {
           configuration: cfg,
