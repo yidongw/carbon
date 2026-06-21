@@ -2,7 +2,6 @@ import { useLingui } from "@lingui/react/macro";
 import {
   LuChartLine,
   LuCirclePlay,
-  LuClipboardCheck,
   LuLayoutDashboard,
   LuListChecks,
   LuPackage,
@@ -56,14 +55,8 @@ export default function useProductionSubmodules() {
         },
         {
           name: t`Production Quantities`,
-          to: path.to.productionQuantities,
+          to: `${path.to.productionQuantities}?filter=${encodeURIComponent("approvalStatus:eq:Pending")}`,
           icon: <LuPackageCheck />,
-          role: "employee"
-        },
-        {
-          name: t`Quantity Review`,
-          to: `${path.to.quantityReview}?filter=${encodeURIComponent("approvalStatus:eq:Pending")}`,
-          icon: <LuClipboardCheck />,
           role: "employee"
         }
       ]
@@ -114,9 +107,6 @@ export default function useProductionSubmodules() {
     groups: productionRoutes
       .filter((group) => {
         const filteredRoutes = group.routes.filter((route) => {
-          if (route.to.startsWith(path.to.quantityReview)) {
-            return permissions.can("view", "people");
-          }
           if (route.role) {
             return permissions.is(route.role);
           } else {
@@ -130,9 +120,6 @@ export default function useProductionSubmodules() {
         ...group,
         routes: group.routes
           .filter((route) => {
-            if (route.to.startsWith(path.to.quantityReview)) {
-              return permissions.can("view", "people");
-            }
             if (route.role) {
               return permissions.is(route.role);
             } else {

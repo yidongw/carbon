@@ -42,23 +42,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   return {
     count: pickups.count ?? 0,
-    pickups:
-      pickups.data?.map((pickup) => ({
-        id: pickup.id,
-        jobOperationId: pickup.jobOperationId,
-        employeeId: pickup.employeeId,
-        quantity: pickup.quantity,
-        notes: pickup.notes,
-        createdAt: pickup.createdAt,
-        jobId: pickup.jobOperation?.jobId ?? null,
-        jobIdFormatted: pickup.jobOperation?.job?.jobId ?? null,
-        operationDescription: pickup.jobOperation?.description ?? null,
-        employeeName:
-          pickup.employee?.fullName ??
-          ([pickup.employee?.firstName, pickup.employee?.lastName]
-            .filter(Boolean)
-            .join(" ") || null)
-      })) ?? []
+    pickups: pickups.data ?? []
   };
 }
 

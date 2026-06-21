@@ -2729,7 +2729,11 @@ export async function getCompanyJobOperationPickups(
   let query = client
     .from("jobOperationPickup")
     .select(
-      "*, employee:user!jobOperationPickup_employeeId_fkey(id, firstName, lastName, fullName, avatarUrl), jobOperation!inner(id, description, jobId, job:jobId(jobId))",
+      `*, employee:user!jobOperationPickup_employeeId_fkey(id, firstName, lastName, fullName, avatarUrl),
+      jobOperation!inner(id, description, jobId,
+        process:processId(name),
+        job:jobId(jobId, item:itemId(readableIdWithRevision, name))
+      )`,
       { count: "exact" }
     )
     .eq("companyId", companyId);

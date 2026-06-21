@@ -1,4 +1,4 @@
-import { Avatar, Badge, Button, HStack, toast, VStack } from "@carbon/react";
+import { Avatar, Badge, Button, HStack, IconButton, toast, VStack } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -9,11 +9,12 @@ import {
   LuCircleCheck,
   LuCircleX,
   LuHash,
+  LuPlus,
   LuUser
 } from "react-icons/lu";
 import type { FetcherWithComponents } from "react-router";
 import { useFetcher, useRevalidator } from "react-router";
-import { Table } from "~/components";
+import { New, Table } from "~/components";
 import type {
   ProductionPayApprovalRequestStatus,
   ProductionPayApprovalStatus
@@ -69,6 +70,10 @@ type ApprovalsTableProps = {
   onPeriodChange: (year: number, month: number) => void;
   /** POST target for approve/reject (current route URL with pay-period query params). */
   submitAction: string;
+  /** When true, show the new production quantity action beside the pay period picker. */
+  showCreateAction?: boolean;
+  /** Table title override. */
+  title?: string;
   /** When true, omits page chrome for use inside another layout (e.g. accounting payments). */
   embedded?: boolean;
 };
@@ -181,6 +186,8 @@ const ApprovalsTable = memo(
     onPeriodChange,
     employees,
     submitAction,
+    showCreateAction = false,
+    title,
     embedded = false
   }: ApprovalsTableProps) => {
     const { t } = useLingui();
@@ -202,7 +209,7 @@ const ApprovalsTable = memo(
     const openRejectCorrection = useCallback((target: RejectCorrectionTarget) => {
       pendingRejectTargetRef.current = target;
       setRejectCorrection(null);
-      void reportFetcher.load(path.to.quantityReviewReport(target.reportId));
+      void reportFetcher.load(path.to.productionQuantityReport(target.reportId));
     }, [reportFetcher]);
 
     useEffect(() => {
@@ -439,16 +446,31 @@ const ApprovalsTable = memo(
         table="productionPayApproval"
         primaryAction={
           !embedded && (status === "pending" || status === "all") ? (
-            <SalaryPeriodPicker
-              year={year}
-              month={month}
-              onChange={onPeriodChange}
+            <HStack>
+              {showCreateAction ? (
+                <New
+                  label={<Trans>New Production Quantity</Trans>}
+                  to={path.to.newProductionQuantity}
+                  icon={<IconButton icon={<LuPlus />} label="New" />}
+                />
+              ) : null}
+              <SalaryPeriodPicker
+                year={year}
+                month={month}
+                onChange={onPeriodChange}
+              />
+            </HStack>
+          ) : showCreateAction ? (
+            <New
+              label={<Trans>New Production Quantity</Trans>}
+              to={path.to.newProductionQuantity}
+              icon={<IconButton icon={<LuPlus />} label="New" />}
             />
           ) : undefined
         }
         withSearch={!embedded}
         withPagination
-        title={embedded ? undefined : t`Quantity Review`}
+        title={embedded ? undefined : (title ?? t`Quantity Review`)}
       />
       {rejectCorrection ? (
         <ProductionQuantityDispositionDrawer
