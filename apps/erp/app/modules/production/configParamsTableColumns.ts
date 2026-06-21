@@ -339,6 +339,9 @@ export function buildConfigTableEditorState({
   rows: ConfigTableRow[];
   referenceByRowIndex: Array<Record<string, number>>;
 } {
+  if (referenceContext) {
+    alert(`[HINT DEBUG] employeeId: ${referenceContext.employeeId || 'NONE'}, hasPickups: ${!!referenceContext.pickupsByEmployee}, pickupsCount: ${referenceContext.pickupsByEmployee ? Object.keys(referenceContext.pickupsByEmployee).length : 0}`);
+  }
   const { columns } = buildConfigColumns(parameters, defaultQuantityLabel);
 
   if (!referenceContext) {
