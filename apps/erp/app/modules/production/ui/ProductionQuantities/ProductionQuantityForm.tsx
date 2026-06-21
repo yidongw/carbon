@@ -12,13 +12,14 @@ import {
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router";
+import { useLocation, useNavigate, useSearchParams } from "react-router";
 import type { z } from "zod";
 import { Hidden, Select, Submit, TextArea } from "~/components/Form";
 import { ProductionActorFields } from "../Jobs/ProductionActorFields";
 import { ProductionQuantityLinesEditor } from "../Jobs/ProductionQuantityLinesEditor";
 import { SupplierSubcontractPricingFields } from "../Jobs/SupplierSubcontractPricingFields";
 import { usePermissions } from "~/hooks";
+import { preventDismissOnPortaledContent } from "~/utils/dom";
 import type { ConfigReferenceSource } from "../../configParamsTableColumns";
 import type { ProductionQuantityLineInput } from "~/modules/production/productionQuantityReport.models";
 import { path } from "~/utils/path";
@@ -32,6 +33,7 @@ type ConfigurationParameter = {
 };
 
 export type ProductionQuantityFormProps = {
+  jobId?: string;
   jobOperationId: string;
   jobOptions?: { label: string; value: string }[];
   operationOptions?: { label: string; value: string }[];
@@ -54,6 +56,7 @@ export type ProductionQuantityFormProps = {
 };
 
 export const ProductionQuantityForm = ({
+  jobId: initialJobId,
   jobOperationId: initialJobOperationId,
   jobOptions,
   operationOptions,
@@ -73,29 +76,63 @@ export const ProductionQuantityForm = ({
   const permissions = usePermissions();
   const { t } = useLingui();
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
   const isOverlay = fetcher != null;
   const onDismiss = onDismissProp ?? (() => navigate(path.to.productionQuantities));
 
-  const selectedJobId = searchParams.get("jobId") ?? "";
+  const selectedJobId = searchParams.get("jobId") ?? initialJobId ?? "";
+  const selectedJobOperationId =
+    searchParams.get("jobOperationId") ?? initialJobOperationId ?? "";
   const [lines, setLines] = useState<ProductionQuantityLineInput[]>([
     { type: "Production", quantity: 0, configuration: undefined }
   ]);
 
   const isDisabled = !permissions.can("create", "production");
 
-  // When job changes, update URL to reload operations
-  const handleJobChange = (value: string) => {
+  const updateSearchParams = (updates: {
+    jobId?: string | null;
+    jobOperationId?: string | null;
+  }) => {
     const newParams = new URLSearchParams(searchParams);
-    newParams.set("jobId", value);
-    newParams.delete("jobOperationId");
-    navigate(`?${newParams.toString()}`, { replace: true });
+    if (updates.jobId !== undefined) {
+      if (updates.jobId) {
+        newParams.set("jobId", updates.jobId);
+      } else {
+        newParams.delete("jobId");
+      }
+    }
+    if (updates.jobOperationId !== undefined) {
+      if (updates.jobOperationId) {
+        newParams.set("jobOperationId", updates.jobOperationId);
+      } else {
+        newParams.delete("jobOperationId");
+      }
+    }
+
+    const search = newParams.toString();
+    navigate(
+      {
+        pathname: location.pathname,
+        search: search ? `?${search}` : ""
+      },
+      { replace: true }
+    );
+  };
+
+  const handleJobChange = (value: string) => {
+    updateSearchParams({ jobId: value, jobOperationId: null });
+  };
+
+  const handleOperationChange = (value: string) => {
+    updateSearchParams({ jobOperationId: value });
   };
 
   const lockActorSelection = Boolean(lockActorSelectionProp);
 
   const initialValues = {
-    jobOperationId: initialJobOperationId,
+    jobId: selectedJobId || undefined,
+    jobOperationId: selectedJobOperationId || undefined,
     actorKind: defaultActorKind ?? "employee",
     employeeId: seededActor?.kind === "employee" ? seededActor.employeeId : undefined,
     supplierProcessId:
@@ -106,6 +143,7 @@ export const ProductionQuantityForm = ({
 
   const form = (
     <ValidatedForm
+      key={`${selectedJobId}:${selectedJobOperationId}`}
       validator={productionQuantityCreateFormValidator}
       method="post"
       defaultValues={initialValues}
@@ -124,16 +162,19 @@ export const ProductionQuantityForm = ({
             name="jobId"
             label={t`Job`}
             options={jobOptions ?? []}
-            defaultValue={selectedJobId}
             onChange={(newValue) => {
               if (newValue?.value) handleJobChange(newValue.value);
             }}
           />
           <Select
+            key={selectedJobId || "no-job"}
             name="jobOperationId"
             label={t`Operation`}
             options={operationOptions ?? []}
             isDisabled={!selectedJobId}
+            onChange={(newValue) => {
+              if (newValue?.value) handleOperationChange(newValue.value);
+            }}
           />
           <ProductionActorFields
             processId={processId}
@@ -146,7 +187,7 @@ export const ProductionQuantityForm = ({
           />
           {defaultActorKind === "supplier" && (
             <SupplierSubcontractPricingFields
-              jobOperationId={initialJobOperationId}
+              jobOperationId={selectedJobOperationId}
               supplierProcessId={initialValues.supplierProcessId}
             />
           )}
@@ -193,7 +234,12 @@ export const ProductionQuantityForm = ({
         if (!open) onDismiss();
       }}
     >
-      <DrawerContent>{form}</DrawerContent>
+      <DrawerContent
+        onPointerDownOutside={preventDismissOnPortaledContent}
+        onInteractOutside={preventDismissOnPortaledContent}
+      >
+        {form}
+      </DrawerContent>
     </Drawer>
   );
 };

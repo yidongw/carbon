@@ -12,7 +12,7 @@ import {
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router";
+import { useLocation, useNavigate, useSearchParams } from "react-router";
 import type { z } from "zod";
 import { Hidden, Number, Select, Submit, TextArea } from "~/components/Form";
 import { ProductionActorFields } from "../Jobs/ProductionActorFields";
@@ -24,6 +24,7 @@ import {
   type ConfigReferenceSource
 } from "../../configParamsTableColumns";
 import { jobOperationPickupValidator } from "~/modules/production/production.models";
+import { preventDismissOnPortaledContent } from "~/utils/dom";
 import { path } from "~/utils/path";
 import { computeJobConfigTableTotal } from "../../jobConfiguration";
 import { QuantityWithConfigTable } from "../Jobs/QuantityWithConfigTable";
@@ -69,7 +70,9 @@ function getInitialConfigState(configuration: unknown) {
 }
 
 export type PickupFormProps = {
-  initialValues: z.infer<typeof jobOperationPickupValidator>;
+  initialValues: z.infer<typeof jobOperationPickupValidator> & {
+    jobId?: string;
+  };
   jobOptions?: { label: string; value: string }[];
   operationOptions?: { label: string; value: string }[];
   configurationParameters?: ConfigurationParameter[] | null;
@@ -104,14 +107,17 @@ export const PickupForm = ({
   const permissions = usePermissions();
   const { t } = useLingui();
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
   const isOverlay = fetcher != null;
   const onDismiss =
     onDismissProp ?? (() => navigate(path.to.pickups));
 
   const initialConfig = getInitialConfigState(initialValues.configuration);
 
-  const selectedJobId = searchParams.get("jobId") ?? "";
+  const selectedJobId = searchParams.get("jobId") ?? initialValues.jobId ?? "";
+  const selectedJobOperationId =
+    searchParams.get("jobOperationId") ?? initialValues.jobOperationId ?? "";
   const [quantity, setQuantity] = useState(initialValues.quantity ?? 0);
   const [configTableRows, setConfigTableRows] = useState<ConfigRow[] | null>(
     initialConfig.rows
@@ -131,12 +137,42 @@ export const PickupForm = ({
     ? !permissions.can("update", "production")
     : !permissions.can("create", "production");
 
-  // When job changes, update URL to reload operations
-  const handleJobChange = (value: string) => {
+  const updateSearchParams = (updates: {
+    jobId?: string | null;
+    jobOperationId?: string | null;
+  }) => {
     const newParams = new URLSearchParams(searchParams);
-    newParams.set("jobId", value);
-    newParams.delete("jobOperationId");
-    navigate(`?${newParams.toString()}`, { replace: true });
+    if (updates.jobId !== undefined) {
+      if (updates.jobId) {
+        newParams.set("jobId", updates.jobId);
+      } else {
+        newParams.delete("jobId");
+      }
+    }
+    if (updates.jobOperationId !== undefined) {
+      if (updates.jobOperationId) {
+        newParams.set("jobOperationId", updates.jobOperationId);
+      } else {
+        newParams.delete("jobOperationId");
+      }
+    }
+
+    const search = newParams.toString();
+    navigate(
+      {
+        pathname: location.pathname,
+        search: search ? `?${search}` : ""
+      },
+      { replace: true }
+    );
+  };
+
+  const handleJobChange = (value: string) => {
+    updateSearchParams({ jobId: value, jobOperationId: null });
+  };
+
+  const handleOperationChange = (value: string) => {
+    updateSearchParams({ jobOperationId: value });
   };
 
   const handleConfigTableSubmit = (
@@ -188,9 +224,14 @@ export const PickupForm = ({
 
   const form = (
     <ValidatedForm
+      key={`${selectedJobId}:${selectedJobOperationId}`}
       validator={jobOperationPickupValidator}
       method="post"
-      defaultValues={initialValues}
+      defaultValues={{
+        ...initialValues,
+        jobId: selectedJobId || undefined,
+        jobOperationId: selectedJobOperationId || undefined
+      }}
       className="flex flex-col h-full"
       action={formAction}
       fetcher={fetcher}
@@ -212,7 +253,6 @@ export const PickupForm = ({
               name="jobId"
               label={t`Job`}
               options={jobOptions ?? []}
-              defaultValue={selectedJobId}
               onChange={(newValue) => {
                 if (newValue?.value) handleJobChange(newValue.value);
               }}
@@ -222,10 +262,14 @@ export const PickupForm = ({
             <Hidden name="jobOperationId" />
           ) : (
             <Select
+              key={selectedJobId || "no-job"}
               name="jobOperationId"
               label={t`Operation`}
               options={operationOptions ?? []}
               isDisabled={!selectedJobId}
+              onChange={(newValue) => {
+                if (newValue?.value) handleOperationChange(newValue.value);
+              }}
             />
           )}
           <ProductionActorFields
@@ -296,7 +340,12 @@ export const PickupForm = ({
         if (!open) onDismiss();
       }}
     >
-      <DrawerContent>{form}</DrawerContent>
+      <DrawerContent
+        onPointerDownOutside={preventDismissOnPortaledContent}
+        onInteractOutside={preventDismissOnPortaledContent}
+      >
+        {form}
+      </DrawerContent>
     </Drawer>
   );
 };

@@ -242,6 +242,7 @@ export default function NewPickupRoute() {
   return (
     <PickupForm
       initialValues={{
+        jobId: loaderData.jobId,
         jobOperationId: loaderData.jobOperationId,
         actorKind: loaderData.defaultActorKind,
         employeeId:

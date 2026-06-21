@@ -252,6 +252,7 @@ export default function NewProductionQuantityRoute() {
 
   return (
     <ProductionQuantityForm
+      jobId={loaderData.jobId}
       jobOperationId={loaderData.jobOperationId}
       jobOptions={loaderData.jobOptions}
       operationOptions={loaderData.operationOptions}

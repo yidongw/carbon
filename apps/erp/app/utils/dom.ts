@@ -1,3 +1,15 @@
+/** Keep drawers/dialogs open when the user interacts with portaled select menus. */
+export function preventDismissOnPortaledContent(event: Event) {
+  const target = event.target as HTMLElement | null;
+  if (
+    target?.closest('[role="listbox"]') ||
+    target?.closest("[data-radix-select-viewport]") ||
+    target?.closest("[data-radix-popper-content-wrapper]")
+  ) {
+    event.preventDefault();
+  }
+}
+
 export function scrollIntoView(element: HTMLElement | undefined | null) {
   element?.scrollIntoView({
     inline: "nearest",
