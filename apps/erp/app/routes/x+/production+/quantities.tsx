@@ -5,6 +5,7 @@ import { VStack } from "@carbon/react";
 import { trigger } from "@carbon/jobs";
 import { NotificationEvent } from "@carbon/notifications";
 import { msg } from "@lingui/core/macro";
+import { useLingui } from "@lingui/react/macro";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import {
   Outlet,
@@ -307,6 +308,7 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function ProductionQuantitiesRoute() {
+  const { t } = useLingui();
   const { rows, count, status, year, month, employees } =
     useLoaderData<typeof loader>();
   const navigate = useNavigate();
