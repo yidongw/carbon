@@ -55,13 +55,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.search);
-  const hasStatusFilter = [...searchParams.getAll("filter")].some((filter) =>
-    filter.startsWith("approvalStatus:")
-  );
+  const filterParams = searchParams.getAll("filter");
 
-  if (!hasStatusFilter) {
-    searchParams.append("filter", defaultPendingFilter);
-    throw redirect(`${path.to.productionQuantities}?${searchParams.toString()}`);
+  // Default to pending on first landing only; allow clearing filters to show all rows.
+  if (filterParams.length === 0 && searchParams.toString() === "") {
+    throw redirect(
+      `${path.to.productionQuantities}?filter=${encodeURIComponent(defaultPendingFilter)}`
+    );
   }
 
   const now = new Date();
