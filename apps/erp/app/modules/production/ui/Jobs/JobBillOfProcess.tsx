@@ -1577,6 +1577,18 @@ const JobBillOfProcess = ({
     }) => {
       const { formatDateTime } = useDateFormatter();
       const formatPersonName = useFormatPersonName();
+      const [people] = usePeople();
+
+      const reporterName = (userId: string) => {
+        const person = people.find((p) => p.id === userId);
+        return person
+          ? formatPersonName({
+              firstName: person.firstName,
+              lastName: person.lastName,
+              fullName: person.name
+            })
+          : userId;
+      };
 
       // Group by employee
       const employeeGroups = useMemo(() => {
@@ -1684,16 +1696,31 @@ const JobBillOfProcess = ({
                     {group.pickups.map((pickup) => {
                       return (
                         <VStack key={pickup.id} spacing={1} className="w-full">
-                          {/* White row: reporter avatar, total, time */}
+                          {/* White row: total, time, reporter (icon only) at the end */}
                           <HStack className="items-center text-sm px-1 gap-2">
-                            <EmployeeAvatar
-                              employeeId={pickup.pickup.createdBy}
-                              size="xs"
-                            />
                             <span className="font-medium">{pickup.pickup.quantity}</span>
                             <span className="text-muted-foreground">
                               {formatDateTime(pickup.createdAt)}
                             </span>
+                            <HStack className="ml-auto items-center gap-1.5">
+                              <span className="text-muted-foreground">
+                                <Trans>Reporter</Trans>
+                              </span>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="cursor-help">
+                                    <EmployeeAvatar
+                                      employeeId={pickup.pickup.createdBy}
+                                      size="xs"
+                                      withName={false}
+                                    />
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  {reporterName(pickup.pickup.createdBy)}
+                                </TooltipContent>
+                              </Tooltip>
+                            </HStack>
                           </HStack>
                           {/* Grey box: configs (left) + pickup | total (right) */}
                           <HStack className="w-full justify-between items-center bg-muted px-3 py-2.5 rounded-lg gap-2">
@@ -1729,16 +1756,31 @@ const JobBillOfProcess = ({
                       );
                       return (
                         <VStack key={report.id} spacing={1} className="w-full">
-                          {/* White row: reporter avatar, total, time */}
+                          {/* White row: total, time, reporter (icon only) at the end */}
                           <HStack className="items-center text-sm px-1 gap-2">
-                            <EmployeeAvatar
-                              employeeId={report.report.createdBy}
-                              size="xs"
-                            />
                             <span className="font-medium">{reportTotal}</span>
                             <span className="text-muted-foreground">
                               {formatDateTime(report.createdAt)}
                             </span>
+                            <HStack className="ml-auto items-center gap-1.5">
+                              <span className="text-muted-foreground">
+                                <Trans>Reporter</Trans>
+                              </span>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="cursor-help">
+                                    <EmployeeAvatar
+                                      employeeId={report.report.createdBy}
+                                      size="xs"
+                                      withName={false}
+                                    />
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  {reporterName(report.report.createdBy)}
+                                </TooltipContent>
+                              </Tooltip>
+                            </HStack>
                           </HStack>
                           {/* One grey box per quantity line */}
                           {lines.map((qty, idx) => (

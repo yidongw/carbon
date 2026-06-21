@@ -12908,6 +12908,10 @@ msgstr "已发布"
 msgid "remaining"
 msgstr "剩余"
 
+#: apps/erp/app/modules/production/ui/Jobs/JobBillOfProcess.tsx
+msgid "Reporter"
+msgstr "报告人"
+
 #: apps/erp/app/modules/quality/ui/Issue/AssociatedItemsList.tsx:642
 msgid "Remaining after split stays on the original row."
 msgstr "分隔后剩余的留在原行。"
