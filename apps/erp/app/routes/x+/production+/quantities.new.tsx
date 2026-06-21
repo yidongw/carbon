@@ -137,7 +137,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
         : undefined;
       return {
         label: itemReadableId
-          ? `${job.jobId} - ${itemReadableId}`
+          ? `${job.jobId} (${itemReadableId})`
           : (job.jobId ?? ""),
         value: job.id!
       };
