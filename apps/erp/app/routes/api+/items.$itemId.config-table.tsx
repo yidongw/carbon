@@ -69,12 +69,12 @@ export async function loader({
     referenceByRowIndex = editorState.referenceByRowIndex;
   }
 
-  const debugInfo = referenceContext ? `[EmpID: ${referenceContext.employeeId || 'NONE'}, Pickups: ${referenceContext.pickupsByEmployee ? Object.keys(referenceContext.pickupsByEmployee).length : 0}]` : '[NO REF CTX]';
+  const debugInfo = referenceContext ? `EmpID=${referenceContext.employeeId || 'NONE'} Pickups=${referenceContext.pickupsByEmployee ? Object.keys(referenceContext.pickupsByEmployee).length : 0}` : 'NO-REF-CTX';
 
   return {
     parameters,
     initialRows,
     referenceByRowIndex,
-    itemReadableId: `${item.data?.readableIdWithRevision ?? 'Item'} ${debugInfo}`
+    itemReadableId: `${debugInfo} | ${item.data?.readableIdWithRevision ?? 'Item'}`
   };
 }
