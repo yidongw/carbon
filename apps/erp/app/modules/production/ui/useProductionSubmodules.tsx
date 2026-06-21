@@ -5,6 +5,8 @@ import {
   LuClipboardCheck,
   LuLayoutDashboard,
   LuListChecks,
+  LuPackage,
+  LuPackageCheck,
   LuShieldCheck,
   LuSquareChartGantt,
   LuSquareKanban,
@@ -44,6 +46,18 @@ export default function useProductionSubmodules() {
           to: path.to.procedures,
           icon: <LuListChecks />,
           table: "procedure",
+          role: "employee"
+        },
+        {
+          name: t`Pickups`,
+          to: path.to.pickups,
+          icon: <LuPackage />,
+          role: "employee"
+        },
+        {
+          name: t`Production Quantities`,
+          to: path.to.productionQuantities,
+          icon: <LuPackageCheck />,
           role: "employee"
         },
         {
