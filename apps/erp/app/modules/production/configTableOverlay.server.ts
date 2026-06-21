@@ -158,7 +158,9 @@ export function parseReferenceContextFromRequest(
     return {
       mode: ctx.mode,
       originalConfiguration: ctx.originalConfiguration,
-      otherLineConfigurations: ctx.otherLineConfigurations
+      otherLineConfigurations: ctx.otherLineConfigurations,
+      employeeId: typeof ctx.employeeId === "string" ? ctx.employeeId : undefined,
+      pickupsByEmployee: ctx.pickupsByEmployee && typeof ctx.pickupsByEmployee === "object" ? ctx.pickupsByEmployee as Record<string, { quantity: number; configuration: unknown }[]> : undefined
     };
   } catch {
     return undefined;
