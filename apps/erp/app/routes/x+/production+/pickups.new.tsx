@@ -55,8 +55,18 @@ export async function loader({ request }: LoaderFunctionArgs) {
   if (jobId) {
     const [job, operations] = await Promise.all([
       getJob(client, jobId),
-      getJobOperations(client, jobId)
+      getJobOperations(client, jobId, {
+        search: null,
+        limit: 1000,
+        offset: 0,
+        sorts: [{ sortBy: "order", sortAsc: true }],
+        filters: []
+      })
     ]);
+
+    if (operations.error) {
+      throw error(operations.error, "Failed to fetch job operations");
+    }
 
     jobOperations = operations.data ?? [];
     itemId = job.data?.itemId ?? null;
