@@ -38,7 +38,7 @@ export function ProductionQuantitiesTable({
   count
 }: ProductionQuantitiesTableProps) {
   const navigate = useNavigate();
-  const dateFormatter = useDateFormatter();
+  const { formatDateTime } = useDateFormatter();
 
   const columns: ColumnDef<ProductionQuantityReport>[] = [
     {
@@ -80,7 +80,7 @@ export function ProductionQuantitiesTable({
       header: () => <Trans>Created At</Trans>,
       cell: ({ row }) => {
         const date = row.original.createdAt;
-        return date ? dateFormatter.format(new Date(date)) : "-";
+        return date ? formatDateTime(date) : "-";
       }
     }
   ];
