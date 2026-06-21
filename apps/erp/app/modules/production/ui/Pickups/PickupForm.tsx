@@ -11,7 +11,7 @@ import {
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import type { z } from "zod";
 import { Hidden, Number, Select, Submit, TextArea } from "~/components/Form";
@@ -111,9 +111,7 @@ export const PickupForm = ({
 
   const initialConfig = getInitialConfigState(initialValues.configuration);
 
-  const [selectedJobId, setSelectedJobId] = useState(
-    searchParams.get("jobId") ?? ""
-  );
+  const selectedJobId = searchParams.get("jobId") ?? "";
   const [quantity, setQuantity] = useState(initialValues.quantity ?? 0);
   const [configTableRows, setConfigTableRows] = useState<ConfigRow[] | null>(
     initialConfig.rows
@@ -123,12 +121,6 @@ export const PickupForm = ({
   >(initialConfig.primaryKeys);
   const [configTableTotal, setConfigTableTotal] = useState(initialConfig.total);
   const { openOverlay } = useOverlay();
-
-  // Sync selectedJobId with URL params when they change
-  useEffect(() => {
-    const jobIdFromUrl = searchParams.get("jobId") ?? "";
-    setSelectedJobId(jobIdFromUrl);
-  }, [searchParams]);
 
   const hasConfigurationParameters = (configurationParameters?.length ?? 0) > 0;
 
@@ -141,7 +133,6 @@ export const PickupForm = ({
 
   // When job changes, update URL to reload operations
   const handleJobChange = (value: string) => {
-    setSelectedJobId(value);
     const newParams = new URLSearchParams(searchParams);
     newParams.set("jobId", value);
     newParams.delete("jobOperationId");
@@ -221,7 +212,7 @@ export const PickupForm = ({
               name="jobId"
               label={t`Job`}
               options={jobOptions}
-              value={selectedJobId}
+              defaultValue={selectedJobId}
               onChange={(e) => {
                 const value = e?.currentTarget?.value;
                 if (value) handleJobChange(value);
