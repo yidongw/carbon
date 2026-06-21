@@ -76,7 +76,15 @@ export const overlay = {
         params.set("configuration", JSON.stringify(opts.configuration));
       }
       if (opts?.referenceContext !== undefined) {
-        params.set("referenceContext", JSON.stringify(opts.referenceContext));
+        const refContextJson = JSON.stringify(opts.referenceContext);
+        console.log('[OVERLAY URL] referenceContext being serialized:', {
+          hasEmployeeId: !!opts.referenceContext.employeeId,
+          employeeId: opts.referenceContext.employeeId,
+          hasPickupsByEmployee: !!opts.referenceContext.pickupsByEmployee,
+          pickupsCount: opts.referenceContext.pickupsByEmployee ? Object.keys(opts.referenceContext.pickupsByEmployee).length : 0,
+          jsonLength: refContextJson.length
+        });
+        params.set("referenceContext", refContextJson);
       }
       return {
         id: "itemConfigTable",
