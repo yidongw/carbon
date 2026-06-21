@@ -1653,10 +1653,7 @@ const JobBillOfProcess = ({
                   <VStack spacing={2}>
                     {/* Employee Header */}
                     <HStack className="justify-between items-center">
-                      <HStack spacing={2}>
-                        <EmployeeAvatar employeeId={group.employeeId} />
-                        <span className="font-medium">{group.employeeName}</span>
-                      </HStack>
+                      <EmployeeAvatar employeeId={group.employeeId} />
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <div className="text-sm text-muted-foreground cursor-help">
