@@ -81,7 +81,8 @@ function buildReferenceContextForLine(
   configReferenceContext?: {
     originalConfiguration?: unknown;
     configReferenceSource?: ConfigReferenceSource | null;
-  } | null
+  } | null,
+  employeeId?: string
 ): ConfigTableReferenceContext | undefined {
   if (!configReferenceContext) return undefined;
 
@@ -100,7 +101,8 @@ function buildReferenceContextForLine(
 
   if (configReferenceContext.configReferenceSource) {
     return buildJobRemainingReferenceContext(
-      configReferenceContext.configReferenceSource
+      configReferenceContext.configReferenceSource,
+      { employeeId }
     );
   }
 
@@ -114,7 +116,8 @@ export function ProductionQuantityLinesEditor({
   itemId,
   isDisabled = false,
   configReferenceContext,
-  configReferenceSource
+  configReferenceSource,
+  employeeId
 }: {
   lines: EditableProductionQuantityLine[];
   setLines: React.Dispatch<
@@ -129,6 +132,8 @@ export function ProductionQuantityLinesEditor({
   } | null;
   /** When set (first submit), hints = job target − already reported on the operation. */
   configReferenceSource?: ConfigReferenceSource | null;
+  /** When set, use pickup-based hints for this employee */
+  employeeId?: string;
 }) {
   const { t } = useLingui();
   const { openOverlay } = useOverlay();
@@ -167,7 +172,8 @@ export function ProductionQuantityLinesEditor({
           ? configReferenceContext
           : configReferenceSource
             ? { configReferenceSource }
-            : null
+            : null,
+        employeeId
       );
 
       openOverlay(

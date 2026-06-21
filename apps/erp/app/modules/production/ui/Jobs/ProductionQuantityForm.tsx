@@ -483,6 +483,7 @@ const ProductionQuantityForm = ({
                 configReferenceSource={configReferenceSource}
                 itemId={itemId}
                 isDisabled={isDisabled}
+                employeeId={actorKind === "employee" ? employeeId : undefined}
               />
             </>
           ) : (
