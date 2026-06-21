@@ -126,9 +126,8 @@ export const ProductionQuantityForm = ({
               label={t`Job`}
               options={jobOptions}
               defaultValue={selectedJobId}
-              onChange={(e) => {
-                const value = e?.currentTarget?.value;
-                if (value) handleJobChange(value);
+              onChange={(newValue) => {
+                if (newValue?.value) handleJobChange(newValue.value);
               }}
             />
           )}
