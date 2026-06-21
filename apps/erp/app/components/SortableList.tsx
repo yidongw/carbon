@@ -440,7 +440,7 @@ function QuantityProgressStrip({
     <div
       className="w-full min-w-0 shrink-0"
       role="img"
-      aria-label={t`Finished ${complete} of ${target} units, ${pickup} picked up, ${unassigned} unassigned`}
+      aria-label={t`Finished ${complete} of ${target} units, ${pickup} in progress from pickups, ${unassigned} unassigned`}
     >
       <div className="relative h-9 sm:h-7 w-full">
         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2">
