@@ -37,7 +37,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     search: null,
     limit: 1000,
     offset: 0,
-    sorts: [{ id: "jobId", desc: true }],
+    sorts: [{ sortBy: "jobId", sortAsc: false }],
     filters: []
   });
 
