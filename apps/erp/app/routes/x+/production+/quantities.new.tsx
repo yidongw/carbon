@@ -33,10 +33,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const jobId = url.searchParams.get("jobId") ?? "";
   const jobOperationId = url.searchParams.get("jobOperationId") ?? "";
 
-  // Get list of jobs for the job selector with item info
+  // Get list of jobs for the job selector
   const jobs = await client
     .from("jobs")
-    .select("id, jobId, itemId, itemReadableIdWithRevision")
+    .select("id, jobId, itemId")
     .eq("companyId", companyId)
     .order("jobId", { ascending: false })
     .limit(1000);
@@ -46,6 +46,25 @@ export async function loader({ request }: LoaderFunctionArgs) {
       path.to.productionQuantities,
       await flash(request, error(jobs.error, "Failed to fetch jobs"))
     );
+  }
+
+  // Look up item readable IDs from the item table (stable columns)
+  const itemIds = [
+    ...new Set((jobs.data ?? []).map((j) => j.itemId).filter(Boolean))
+  ] as string[];
+
+  const itemReadableIdById = new Map<string, string>();
+  if (itemIds.length > 0) {
+    const items = await client
+      .from("item")
+      .select("id, readableIdWithRevision")
+      .in("id", itemIds);
+
+    for (const item of items.data ?? []) {
+      if (item.readableIdWithRevision) {
+        itemReadableIdById.set(item.id, item.readableIdWithRevision);
+      }
+    }
   }
 
   let jobOperations = null;
@@ -112,12 +131,17 @@ export async function loader({ request }: LoaderFunctionArgs) {
   };
 
   const jobOptions =
-    jobs.data?.map((job) => ({
-      label: job.itemReadableIdWithRevision
-        ? `${job.jobId} - ${job.itemReadableIdWithRevision}`
-        : (job.jobId ?? ""),
-      value: job.id!
-    })) ?? [];
+    jobs.data?.map((job) => {
+      const itemReadableId = job.itemId
+        ? itemReadableIdById.get(job.itemId)
+        : undefined;
+      return {
+        label: itemReadableId
+          ? `${job.jobId} - ${itemReadableId}`
+          : (job.jobId ?? ""),
+        value: job.id!
+      };
+    }) ?? [];
 
   const operationOptions =
     jobOperations?.map((operation) => ({
