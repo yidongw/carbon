@@ -1653,22 +1653,45 @@ const JobBillOfProcess = ({
       return (
         <VStack spacing={3} className="w-full">
           {employeeGroups.map((group) => {
-            const totalPickups = group.pickups.reduce(
-              (sum, p) => sum + (parseFloat(String(p.pickup.quantity)) || 0),
+            // Per-config remaining = picked up minus produced for each config
+            // param; negatives are clamped away (never shown).
+            const pickupByConfig = new Map<string, number>();
+            group.pickups.forEach((p) => {
+              (p.pickup.configuration as { configTable?: Record<string, number>[] } | null)
+                ?.configTable?.forEach((cfg) => {
+                  Object.entries(cfg).forEach(([k, v]) => {
+                    if (v > 0)
+                      pickupByConfig.set(k, (pickupByConfig.get(k) ?? 0) + v);
+                  });
+                });
+            });
+            const producedByConfig = new Map<string, number>();
+            group.quantities.forEach((q) => {
+              (q.report.activeLines ?? [])
+                .filter((l) => l.type === "Production")
+                .forEach((line) => {
+                  (line.configuration as { configTable?: Record<string, number>[] } | null)
+                    ?.configTable?.forEach((cfg) => {
+                      Object.entries(cfg).forEach(([k, v]) => {
+                        if (v > 0)
+                          producedByConfig.set(
+                            k,
+                            (producedByConfig.get(k) ?? 0) + v
+                          );
+                      });
+                    });
+                });
+            });
+            const remainingByConfig = Array.from(pickupByConfig.entries())
+              .map(
+                ([k, picked]) =>
+                  [k, picked - (producedByConfig.get(k) ?? 0)] as const
+              )
+              .filter(([, rem]) => rem > 0);
+            const remaining = remainingByConfig.reduce(
+              (sum, [, rem]) => sum + rem,
               0
             );
-            const totalProduction = group.quantities.reduce(
-              (sum, q) =>
-                sum +
-                (q.report.activeLines
-                  ?.filter((qty) => qty.type === "Production")
-                  .reduce(
-                    (s, qty) => s + (parseFloat(String(qty.quantity)) || 0),
-                    0
-                  ) ?? 0),
-              0
-            );
-            const remaining = totalPickups - totalProduction;
 
             return (
               <Card key={group.employeeId} className="w-full overflow-hidden">
@@ -1682,9 +1705,20 @@ const JobBillOfProcess = ({
                       </div>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <div className="text-xs">
-                        <div><Trans>Pickups</Trans>: {totalPickups}</div>
-                        <div><Trans>Production</Trans>: {totalProduction}</div>
+                      <div className="text-xs space-y-0.5 min-w-[80px]">
+                        {remainingByConfig.length > 0 ? (
+                          remainingByConfig.map(([k, rem]) => (
+                            <div
+                              key={k}
+                              className="flex justify-between gap-3"
+                            >
+                              <span>{k}</span>
+                              <span className="font-medium">{rem}</span>
+                            </div>
+                          ))
+                        ) : (
+                          <div>—</div>
+                        )}
                       </div>
                     </TooltipContent>
                   </Tooltip>
