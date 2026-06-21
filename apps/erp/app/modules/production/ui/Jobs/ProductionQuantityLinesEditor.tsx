@@ -16,7 +16,7 @@ import { LuPlus, LuTrash2 } from "react-icons/lu";
 import { useScrapReasons } from "~/components/Form/ScrapReason";
 import { overlay, useOverlay } from "~/components/Overlay";
 import {
-  buildJobRemainingReferenceContext,
+  buildProductionConfigTableReferenceContext,
   type ConfigReferenceSource,
   type ConfigTableReferenceContext
 } from "~/modules/production/configParamsTableColumns";
@@ -81,7 +81,10 @@ function buildReferenceContextForLine(
   configReferenceContext?: {
     originalConfiguration?: unknown;
     configReferenceSource?: ConfigReferenceSource | null;
-  } | null
+  } | null,
+  employeeId?: string,
+  jobId?: string,
+  jobOperationId?: string
 ): ConfigTableReferenceContext | undefined {
   if (!configReferenceContext) return undefined;
 
@@ -99,9 +102,20 @@ function buildReferenceContextForLine(
   }
 
   if (configReferenceContext.configReferenceSource) {
-    return buildJobRemainingReferenceContext(
-      configReferenceContext.configReferenceSource
-    );
+    const siblingLineConfigurations = lines
+      .filter((line) => line.key !== lineKey)
+      .map((line) => getConfigFromEditableLine(line))
+      .filter(
+        (config): config is Record<string, unknown> => config !== undefined
+      );
+
+    return buildProductionConfigTableReferenceContext({
+      source: configReferenceContext.configReferenceSource,
+      employeeId,
+      jobId,
+      jobOperationId,
+      siblingLineConfigurations
+    });
   }
 
   return undefined;
@@ -114,7 +128,10 @@ export function ProductionQuantityLinesEditor({
   itemId,
   isDisabled = false,
   configReferenceContext,
-  configReferenceSource
+  configReferenceSource,
+  employeeId,
+  jobId,
+  jobOperationId
 }: {
   lines: EditableProductionQuantityLine[];
   setLines: React.Dispatch<
@@ -129,6 +146,10 @@ export function ProductionQuantityLinesEditor({
   } | null;
   /** When set (first submit), hints = job target − already reported on the operation. */
   configReferenceSource?: ConfigReferenceSource | null;
+  /** When set, use pickup-based hints for this employee */
+  employeeId?: string;
+  jobId?: string;
+  jobOperationId?: string;
 }) {
   const { t } = useLingui();
   const { openOverlay } = useOverlay();
@@ -167,7 +188,10 @@ export function ProductionQuantityLinesEditor({
           ? configReferenceContext
           : configReferenceSource
             ? { configReferenceSource }
-            : null
+            : null,
+        employeeId,
+        jobId,
+        jobOperationId
       );
 
       openOverlay(
@@ -186,7 +210,7 @@ export function ProductionQuantityLinesEditor({
         }
       );
     },
-    [configReferenceContext, configReferenceSource, itemId, lines, openOverlay, updateLine]
+    [configReferenceContext, configReferenceSource, employeeId, itemId, jobId, jobOperationId, lines, openOverlay, updateLine]
   );
 
   const addLine = () => {

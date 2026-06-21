@@ -30,7 +30,7 @@ import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions } from "~/hooks";
 import { isConfigTableOverlaySuccess } from "../../configTableOverlay";
 import {
-  buildJobRemainingReferenceContext,
+  buildProductionConfigTableReferenceContext,
   type ConfigReferenceSource
 } from "../../configParamsTableColumns";
 import type { ProductionQuantityLineInput } from "~/modules/production/productionQuantityReport.models";
@@ -85,6 +85,12 @@ type ConfigurationParameter = {
   listOptions?: string[] | null;
 };
 
+function parseJobIdFromQuantitiesUrl(url?: string | null) {
+  if (!url) return undefined;
+  const match = url.match(/\/job\/([^/]+)\/quantities\/(?:new|[^/?]+)/);
+  return match?.[1];
+}
+
 export type ProductionQuantityCreateInitialValues = {
   jobOperationId: string;
   actorKind?: "employee" | "supplier";
@@ -108,6 +114,7 @@ export type ProductionQuantityFormProps = {
   configurationParameters?: ConfigurationParameter[] | null;
   configReferenceSource?: ConfigReferenceSource | null;
   itemId?: string | null;
+  jobId?: string | null;
   processId?: string | null;
   operationType?: string | null;
   defaultActorKind?: "employee" | "supplier";
@@ -142,6 +149,7 @@ const ProductionQuantityForm = ({
   configurationParameters,
   configReferenceSource,
   itemId,
+  jobId: jobIdProp,
   processId,
   operationType,
   defaultActorKind,
@@ -153,7 +161,12 @@ const ProductionQuantityForm = ({
   const permissions = usePermissions();
   const { t } = useLingui();
   const navigate = useNavigate();
-  const { jobId } = useParams();
+  const { jobId: jobIdFromParams } = useParams();
+  const jobId =
+    jobIdProp?.trim() ||
+    parseJobIdFromQuantitiesUrl(formAction) ||
+    jobIdFromParams?.trim() ||
+    undefined;
   const isOverlay = fetcher != null;
   const onDismiss =
     onDismissProp ??
@@ -275,9 +288,12 @@ const ProductionQuantityForm = ({
   const openConfigTable = () => {
     if (!itemId) return;
 
-    const referenceContext = configReferenceSource
-      ? buildJobRemainingReferenceContext(configReferenceSource)
-      : undefined;
+    const referenceContext = buildProductionConfigTableReferenceContext({
+      source: configReferenceSource,
+      employeeId: actorKind === "employee" ? employeeId : undefined,
+      jobId: jobId ?? undefined,
+      jobOperationId: jobOperationIdState || undefined
+    });
 
     openOverlay(
       overlay.to.itemConfigTable(itemId, {
@@ -371,6 +387,9 @@ const ProductionQuantityForm = ({
         defaultActorKind ??
         "employee") as (typeof productionActorKinds)[number]
   );
+  const [employeeId, setEmployeeId] = useState(
+    () => actorFieldValues.employeeId ?? ""
+  );
   const [supplierProcessId, setSupplierProcessId] = useState(
     () => actorFieldValues.supplierProcessId ?? ""
   );
@@ -439,6 +458,7 @@ const ProductionQuantityForm = ({
             supplierProcessIdValue={actorFieldValues.supplierProcessId}
             supplierIdValue={actorFieldValues.supplierId}
             onActorKindChange={setActorKind}
+            onEmployeeChange={setEmployeeId}
             onSupplierProcessChange={setSupplierProcessId}
           />
 
@@ -463,6 +483,9 @@ const ProductionQuantityForm = ({
                 configReferenceSource={configReferenceSource}
                 itemId={itemId}
                 isDisabled={isDisabled}
+                employeeId={actorKind === "employee" ? employeeId : undefined}
+                jobId={jobId ?? undefined}
+                jobOperationId={jobOperationIdState || undefined}
               />
             </>
           ) : (

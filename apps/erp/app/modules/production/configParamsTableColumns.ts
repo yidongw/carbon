@@ -319,6 +319,17 @@ export type ConfigTableReferenceContext = {
   originalConfiguration: unknown;
   /** Active sibling line configurations (excluding the line being edited). */
   otherLineConfigurations: unknown[];
+  /** When set, use pickup-based hints for this employee instead of job target hints */
+  employeeId?: string;
+  /** Pickup quantities by employee (for pickup-based hint calculation) */
+  pickupsByEmployee?: Record<string, { quantity: number; configuration: unknown }[]>;
+  /** Production quantities already reported by the selected employee */
+  employeeReportedConfigurations?: unknown[];
+  /** When set, the config-table loader fetches fresh pickup/reported data for this job operation */
+  jobId?: string;
+  jobOperationId?: string;
+  /** Sibling line configs in the current form (excluding the line being edited). */
+  siblingLineConfigurations?: unknown[];
 };
 
 export function buildConfigTableEditorState({
@@ -373,11 +384,45 @@ export function buildConfigTableEditorState({
     otherRows.map((row) => [getMergeKey(row, columns), row])
   );
 
+  const employeePickups =
+    referenceContext.employeeId && referenceContext.pickupsByEmployee
+      ? (referenceContext.pickupsByEmployee[referenceContext.employeeId] ?? [])
+      : [];
+  const usePickupHints = employeePickups.length > 0;
+
+  const pickupRows = usePickupHints
+    ? mergeConfigTableRows(
+        employeePickups.flatMap((pickup) =>
+          getConfigTableRows(pickup.configuration)
+        ),
+        columns
+      )
+    : [];
+
+  const employeeProducedRows = usePickupHints
+    ? mergeConfigTableRows(
+        (referenceContext.employeeReportedConfigurations ?? []).flatMap(
+          (config) => getConfigTableRows(config)
+        ),
+        columns
+      )
+    : [];
+  const employeeProducedByKey = new Map(
+    employeeProducedRows.map((row) => [getMergeKey(row, columns), row])
+  );
+
   const orderedKeys = [
     ...originalRows.map((row) => getMergeKey(row, columns)),
     ...currentRows
       .map((row) => getMergeKey(row, columns))
-      .filter((key) => !originalByKey.has(key))
+      .filter((key) => !originalByKey.has(key)),
+    ...pickupRows
+      .map((row) => getMergeKey(row, columns))
+      .filter(
+        (key) =>
+          !originalByKey.has(key) &&
+          !currentRows.some((row) => getMergeKey(row, columns) === key)
+      )
   ];
 
   const rows: ConfigTableRow[] = [];
@@ -400,12 +445,29 @@ export function buildConfigTableEditorState({
     const refs: Record<string, number> = {};
     for (const col of columns) {
       if (col.type !== "quantity") continue;
-      const originalQty = Number(originalByKey.get(key)?.[col.key]) || 0;
-      const otherQty = Number(otherByKey.get(key)?.[col.key]) || 0;
-      refs[col.key] =
-        referenceContext.mode === "original"
-          ? originalQty
-          : originalQty - otherQty;
+
+      if (usePickupHints) {
+        let pickupQty = 0;
+        for (const pickup of employeePickups) {
+          for (const pickupRow of getConfigTableRows(pickup.configuration)) {
+            if (getMergeKey(pickupRow, columns) === key) {
+              pickupQty += Number(pickupRow[col.key]) || 0;
+            }
+          }
+        }
+
+        const producedQty =
+          Number(employeeProducedByKey.get(key)?.[col.key]) || 0;
+        refs[col.key] = Math.max(0, pickupQty - producedQty);
+      } else {
+        // Default behavior: job target - already produced
+        const originalQty = Number(originalByKey.get(key)?.[col.key]) || 0;
+        const otherQty = Number(otherByKey.get(key)?.[col.key]) || 0;
+        refs[col.key] =
+          referenceContext.mode === "original"
+            ? originalQty
+            : originalQty - otherQty;
+      }
     }
 
     rows.push(row);
@@ -423,24 +485,85 @@ export function fillValueFromReference(referenceValue: number) {
 export type ConfigReferenceSource = {
   jobConfiguration: unknown;
   reportedConfigurations: unknown[];
+  /** Pickup data grouped by employee for pickup-based hints */
+  pickupsByEmployee?: Record<string, { quantity: number; configuration: unknown }[]>;
+  /** Production quantities grouped by employee */
+  reportedConfigurationsByEmployee?: Record<string, unknown[]>;
 };
 
-/** Hint quantities = job required − already reported (per config row/column). */
+/** Hint quantities = job required − already reported (per config row/column).
+ * When employeeId is provided, uses pickup-based hints (pickup - produced) instead. */
 export function buildJobRemainingReferenceContext(
   source: ConfigReferenceSource,
   options?: {
     excludeConfigurations?: unknown[];
+    employeeId?: string;
+    /** Sibling line configs in the current form (excluding the line being edited). */
+    siblingLineConfigurations?: unknown[];
   }
 ): ConfigTableReferenceContext {
   const exclude = new Set(
     (options?.excludeConfigurations ?? []).filter((config) => config != null)
   );
+  const siblingLineConfigurations = (options?.siblingLineConfigurations ?? [])
+    .filter((config) => config != null && !exclude.has(config));
+
+  const employeeId = options?.employeeId?.trim() || undefined;
+  const employeeReportedConfigurations = employeeId
+    ? [
+        ...(source.reportedConfigurationsByEmployee?.[employeeId] ?? []),
+        ...siblingLineConfigurations
+      ].filter((config) => config != null && !exclude.has(config))
+    : undefined;
 
   return {
     mode: "remaining",
     originalConfiguration: source.jobConfiguration,
-    otherLineConfigurations: source.reportedConfigurations.filter(
-      (config) => config != null && !exclude.has(config)
-    )
+    otherLineConfigurations: [
+      ...source.reportedConfigurations,
+      ...siblingLineConfigurations
+    ].filter((config) => config != null && !exclude.has(config)),
+    employeeId,
+    pickupsByEmployee: source.pickupsByEmployee,
+    employeeReportedConfigurations
   };
+}
+
+/** Build reference context for the item config-table overlay.
+ * When job + operation ids are available, the server reloads pickup/reported data. */
+export function buildProductionConfigTableReferenceContext({
+  source,
+  employeeId,
+  jobId,
+  jobOperationId,
+  siblingLineConfigurations = []
+}: {
+  source?: ConfigReferenceSource | null;
+  employeeId?: string;
+  jobId?: string;
+  jobOperationId?: string;
+  siblingLineConfigurations?: unknown[];
+}): ConfigTableReferenceContext | undefined {
+  const trimmedJobId = jobId?.trim();
+  const trimmedJobOperationId = jobOperationId?.trim();
+  const trimmedEmployeeId = employeeId?.trim() || undefined;
+
+  if (trimmedJobOperationId) {
+    return {
+      mode: "remaining",
+      originalConfiguration: null,
+      otherLineConfigurations: [],
+      employeeId: trimmedEmployeeId,
+      jobId: trimmedJobId,
+      jobOperationId: trimmedJobOperationId,
+      siblingLineConfigurations
+    };
+  }
+
+  if (!source) return undefined;
+
+  return buildJobRemainingReferenceContext(source, {
+    employeeId: trimmedEmployeeId,
+    siblingLineConfigurations
+  });
 }

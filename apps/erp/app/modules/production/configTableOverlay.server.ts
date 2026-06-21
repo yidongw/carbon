@@ -5,6 +5,7 @@ import type {
   ConfigReferenceSource,
   ConfigTableReferenceContext
 } from "./configParamsTableColumns";
+import { buildJobRemainingReferenceContext } from "./configParamsTableColumns";
 import { computeJobConfigTableTotal } from "./jobConfiguration";
 import { getJob } from "./production.service";
 
@@ -102,19 +103,108 @@ export async function getConfigReferenceSourceForOperation(
     return { jobConfiguration, reportedConfigurations };
   }
 
-  const quantities = await client
-    .from("productionQuantity")
-    .select("configuration")
-    .eq("jobOperationId", jobOperationId)
-    .eq("companyId", companyId)
-    .eq("type", "Production")
-    .is("invalidatedAt", null);
+  const [quantities, pickups] = await Promise.all([
+    client
+      .from("productionQuantity")
+      .select("employeeId, configuration")
+      .eq("jobOperationId", jobOperationId)
+      .eq("companyId", companyId)
+      .eq("type", "Production")
+      .is("invalidatedAt", null),
+    client
+      .from("jobOperationPickup")
+      .select("employeeId, quantity, configuration")
+      .eq("jobOperationId", jobOperationId)
+      .eq("companyId", companyId)
+  ]);
 
   const reportedConfigurations = (quantities.data ?? [])
     .map((row) => row.configuration)
     .filter((config) => config != null);
 
-  return { jobConfiguration, reportedConfigurations };
+  const reportedConfigurationsByEmployee: Record<string, unknown[]> = {};
+  for (const row of quantities.data ?? []) {
+    if (!row.employeeId || row.configuration == null) continue;
+    if (!reportedConfigurationsByEmployee[row.employeeId]) {
+      reportedConfigurationsByEmployee[row.employeeId] = [];
+    }
+    reportedConfigurationsByEmployee[row.employeeId].push(row.configuration);
+  }
+
+  // Group pickups by employee
+  const pickupsByEmployee: Record<string, { quantity: number; configuration: unknown }[]> = {};
+  for (const pickup of pickups.data ?? []) {
+    if (!pickup.employeeId) continue;
+    if (!pickupsByEmployee[pickup.employeeId]) {
+      pickupsByEmployee[pickup.employeeId] = [];
+    }
+    pickupsByEmployee[pickup.employeeId].push({
+      quantity: pickup.quantity,
+      configuration: pickup.configuration
+    });
+  }
+
+  return {
+    jobConfiguration,
+    reportedConfigurations,
+    reportedConfigurationsByEmployee,
+    pickupsByEmployee
+  };
+}
+
+async function resolveJobIdForOperation(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  jobOperationId: string,
+  jobId?: string
+): Promise<string | undefined> {
+  const trimmedJobId = jobId?.trim();
+  if (trimmedJobId) return trimmedJobId;
+
+  const { data: operation } = await client
+    .from("jobOperation")
+    .select("jobId")
+    .eq("id", jobOperationId)
+    .eq("companyId", companyId)
+    .maybeSingle();
+
+  return operation?.jobId?.trim() || undefined;
+}
+
+export async function resolveConfigTableReferenceContext(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  referenceContext: ConfigTableReferenceContext
+): Promise<ConfigTableReferenceContext> {
+  const jobOperationId = referenceContext.jobOperationId?.trim();
+  if (!jobOperationId) {
+    return referenceContext;
+  }
+
+  const jobId = await resolveJobIdForOperation(
+    client,
+    companyId,
+    jobOperationId,
+    referenceContext.jobId
+  );
+  if (!jobId) {
+    return referenceContext;
+  }
+
+  const source = await getConfigReferenceSourceForOperation(client, {
+    jobId,
+    jobOperationId,
+    companyId,
+    reportKind: "productionQuantity"
+  });
+  if (!source) {
+    return referenceContext;
+  }
+
+  return buildJobRemainingReferenceContext(source, {
+    employeeId: referenceContext.employeeId,
+    siblingLineConfigurations: referenceContext.siblingLineConfigurations ?? []
+  });
 }
 
 export function parseReferenceContextFromRequest(
@@ -132,13 +222,29 @@ export function parseReferenceContextFromRequest(
     if (ctx.mode !== "original" && ctx.mode !== "remaining") {
       return undefined;
     }
-    if (!Array.isArray(ctx.otherLineConfigurations)) {
+    const otherLineConfigurations = Array.isArray(ctx.otherLineConfigurations)
+      ? ctx.otherLineConfigurations
+      : [];
+    const jobId = typeof ctx.jobId === "string" ? ctx.jobId : undefined;
+    const jobOperationId =
+      typeof ctx.jobOperationId === "string" ? ctx.jobOperationId : undefined;
+    if (
+      otherLineConfigurations.length === 0 &&
+      ctx.originalConfiguration == null &&
+      !(jobId?.trim() && jobOperationId?.trim())
+    ) {
       return undefined;
     }
     return {
       mode: ctx.mode,
       originalConfiguration: ctx.originalConfiguration,
-      otherLineConfigurations: ctx.otherLineConfigurations
+      otherLineConfigurations,
+      employeeId: typeof ctx.employeeId === "string" ? ctx.employeeId : undefined,
+      jobId,
+      jobOperationId,
+      siblingLineConfigurations: Array.isArray(ctx.siblingLineConfigurations)
+        ? ctx.siblingLineConfigurations
+        : undefined
     };
   } catch {
     return undefined;

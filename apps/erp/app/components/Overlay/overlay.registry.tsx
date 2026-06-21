@@ -70,6 +70,7 @@ export const overlayRegistry = {
       (ctx) => {
         const data = ctx.loaderData as
           | {
+              jobId: string;
               jobOperationId: string;
               operationOptions: { label: string; value: string }[];
               configurationParameters?:
@@ -101,6 +102,7 @@ export const overlayRegistry = {
 
         const seeded = data.seededActor;
         return {
+          jobId: data.jobId,
           initialValues: {
             jobOperationId: data.jobOperationId,
             notes: "",
