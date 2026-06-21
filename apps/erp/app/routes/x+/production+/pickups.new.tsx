@@ -45,6 +45,24 @@ export async function loader({ request }: LoaderFunctionArgs) {
     throw error(jobs.error, "Failed to fetch jobs");
   }
 
+  const itemIds = [
+    ...new Set((jobs.data ?? []).map((j) => j.itemId).filter(Boolean))
+  ] as string[];
+
+  const itemReadableIdById = new Map<string, string>();
+  if (itemIds.length > 0) {
+    const items = await client
+      .from("item")
+      .select("id, readableIdWithRevision")
+      .in("id", itemIds);
+
+    for (const item of items.data ?? []) {
+      if (item.readableIdWithRevision) {
+        itemReadableIdById.set(item.id, item.readableIdWithRevision);
+      }
+    }
+  }
+
   let jobOperations = null;
   let opContext = null;
   let itemId = null;
@@ -116,10 +134,17 @@ export async function loader({ request }: LoaderFunctionArgs) {
       };
 
   const jobOptions =
-    jobs.data?.map((job) => ({
-      label: job.jobId ?? "",
-      value: job.id!
-    })) ?? [];
+    jobs.data?.map((job) => {
+      const itemReadableId = job.itemId
+        ? itemReadableIdById.get(job.itemId)
+        : undefined;
+      return {
+        label: itemReadableId
+          ? `${job.jobId} (${itemReadableId})`
+          : (job.jobId ?? ""),
+        value: job.id!
+      };
+    }) ?? [];
 
   const operationOptions =
     jobOperations?.map((operation) => ({
