@@ -1673,71 +1673,91 @@ const JobBillOfProcess = ({
                     </HStack>
 
                     {/* Pickups */}
-                    {group.pickups.map((pickup) => (
-                      <VStack key={pickup.id} spacing={0} className="w-full">
-                        {/* White row: reporter, quantity, time */}
-                        <HStack className="justify-between items-center bg-background px-3 py-2 rounded-t">
-                          <div className="text-sm">
-                            {pickup.pickup.createdBy !== pickup.pickup.employeeId &&
-                              pickup.pickup.createdByUser && (
-                                <span className="text-muted-foreground mr-2">
-                                  ({formatPersonName(pickup.pickup.createdByUser)})
+                    {group.pickups.map((pickup) => {
+                      const reporterDiffers =
+                        pickup.pickup.createdBy !== pickup.pickup.employeeId &&
+                        !!pickup.pickup.createdByUser;
+                      return (
+                        <VStack key={pickup.id} spacing={1} className="w-full">
+                          {/* White row: (reporter) | total | time */}
+                          <HStack className="items-center text-sm px-1 gap-2">
+                            {reporterDiffers && (
+                              <>
+                                <span className="text-muted-foreground">
+                                  {formatPersonName(pickup.pickup.createdByUser!)}
                                 </span>
-                              )}
-                            <span className="font-medium">{pickup.pickup.quantity}</span>
-                            {" | "}
-                            {formatDateTime(pickup.createdAt)}
-                          </div>
-                        </HStack>
-                        {/* Grey row: config (left) + pickup badge & total (right) */}
-                        <HStack className="justify-between items-center bg-muted px-3 py-2 rounded-b gap-2">
-                          <HStack className="flex-wrap gap-x-3 gap-y-1">
-                            {pickup.pickup.configuration?.configTable?.map((config: Record<string, number>, idx: number) =>
-                              Object.entries(config).filter(([_, value]) => value > 0).map(([key, value]) => (
-                                <HStack key={`${idx}-${key}`} spacing={1}>
-                                  <span className="text-sm font-medium">{key}</span>
-                                  <Badge variant="outline" className="text-xs bg-background">{value}</Badge>
-                                </HStack>
-                              ))
+                                <span className="text-muted-foreground/50">|</span>
+                              </>
                             )}
+                            <span className="font-medium">{pickup.pickup.quantity}</span>
+                            <span className="text-muted-foreground/50">|</span>
+                            <span className="text-muted-foreground">
+                              {formatDateTime(pickup.createdAt)}
+                            </span>
                           </HStack>
-                          <HStack className="gap-2 shrink-0">
-                            <Badge variant="green" className="text-xs uppercase">
-                              <Trans>pickup</Trans>
-                            </Badge>
-                            <Badge variant="outline" className="text-xs font-medium bg-background">
-                              <Trans>Total</Trans> {pickup.pickup.quantity}
-                            </Badge>
-                          </HStack>
-                        </HStack>
-                      </VStack>
-                    ))}
-
-                    {/* Quantities */}
-                    {group.quantities.map((report) => (
-                      <VStack key={report.id} spacing={1} className="w-full">
-                        {report.report.quantities?.map((qty, idx) => (
-                          <VStack key={idx} spacing={0} className="w-full">
-                            {/* White row: reporter if different, quantity, time */}
-                            <HStack className="justify-between items-center bg-background px-3 py-2 rounded-t">
-                              <div className="text-sm">
-                                {report.report.createdBy !== group.employeeId &&
-                                  report.report.createdByUser && (
-                                    <span className="text-muted-foreground mr-2">
-                                      ({formatPersonName(report.report.createdByUser)})
-                                    </span>
-                                  )}
-                                <span className="font-medium">{qty.quantity}</span>
-                                {" | "}
-                                {formatDateTime(report.createdAt)}
-                              </div>
+                          {/* Grey box: configs (left) + pickup | total (right) */}
+                          <HStack className="w-full justify-between items-center bg-muted px-3 py-2.5 rounded-lg gap-2">
+                            <HStack className="flex-wrap gap-x-3 gap-y-1">
+                              {pickup.pickup.configuration?.configTable?.map((config: Record<string, number>, idx: number) =>
+                                Object.entries(config).filter(([_, value]) => value > 0).map(([key, value]) => (
+                                  <HStack key={`${idx}-${key}`} spacing={1}>
+                                    <span className="text-sm font-medium">{key}</span>
+                                    <Badge variant="outline" className="text-xs bg-background">{value}</Badge>
+                                  </HStack>
+                                ))
+                              )}
                             </HStack>
-                            {/* Grey row: config (left) + type badge & total (right) */}
-                            <HStack className="justify-between items-center bg-muted px-3 py-2 rounded-b gap-2">
+                            <HStack className="gap-2 shrink-0">
+                              <Badge variant="green" className="text-xs uppercase">
+                                <Trans>pickup</Trans>
+                              </Badge>
+                              <Badge variant="outline" className="text-xs font-medium bg-background">
+                                <Trans>Total</Trans> {pickup.pickup.quantity}
+                              </Badge>
+                            </HStack>
+                          </HStack>
+                        </VStack>
+                      );
+                    })}
+
+                    {/* Quantities: one header row per report, one grey box per type */}
+                    {group.quantities.map((report) => {
+                      const reporterDiffers =
+                        report.report.createdBy !== group.employeeId &&
+                        !!report.report.createdByUser;
+                      const reportTotal =
+                        report.report.quantities?.reduce(
+                          (s, q) => s + (parseFloat(String(q.quantity)) || 0),
+                          0
+                        ) ?? 0;
+                      return (
+                        <VStack key={report.id} spacing={1} className="w-full">
+                          {/* White row: (reporter) | total | time */}
+                          <HStack className="items-center text-sm px-1 gap-2">
+                            {reporterDiffers && (
+                              <>
+                                <span className="text-muted-foreground">
+                                  {formatPersonName(report.report.createdByUser!)}
+                                </span>
+                                <span className="text-muted-foreground/50">|</span>
+                              </>
+                            )}
+                            <span className="font-medium">{reportTotal}</span>
+                            <span className="text-muted-foreground/50">|</span>
+                            <span className="text-muted-foreground">
+                              {formatDateTime(report.createdAt)}
+                            </span>
+                          </HStack>
+                          {/* One grey box per quantity type */}
+                          {report.report.quantities?.map((qty, idx) => (
+                            <HStack
+                              key={idx}
+                              className="w-full justify-between items-center bg-muted px-3 py-2.5 rounded-lg gap-2"
+                            >
                               <HStack className="flex-wrap gap-x-3 gap-y-1">
-                                {qty.configuration?.configTable?.map((config: Record<string, number>, idx: number) =>
+                                {qty.configuration?.configTable?.map((config: Record<string, number>, cidx: number) =>
                                   Object.entries(config).filter(([_, value]) => value > 0).map(([key, value]) => (
-                                    <HStack key={`${idx}-${key}`} spacing={1}>
+                                    <HStack key={`${cidx}-${key}`} spacing={1}>
                                       <span className="text-sm font-medium">{key}</span>
                                       <Badge variant="outline" className="text-xs bg-background">{value}</Badge>
                                     </HStack>
@@ -1762,10 +1782,10 @@ const JobBillOfProcess = ({
                                 </Badge>
                               </HStack>
                             </HStack>
-                          </VStack>
-                        ))}
-                      </VStack>
-                    ))}
+                          ))}
+                        </VStack>
+                      );
+                    })}
                   </VStack>
                 </CardContent>
               </Card>
