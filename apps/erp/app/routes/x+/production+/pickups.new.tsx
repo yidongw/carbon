@@ -42,7 +42,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
   });
 
   if (jobs.error) {
-    throw error(jobs.error, "Failed to fetch jobs");
+    throw redirect(
+      path.to.pickups,
+      await flash(request, error(jobs.error, "Failed to fetch jobs"))
+    );
   }
 
   let jobOperations = null;
@@ -58,11 +61,17 @@ export async function loader({ request }: LoaderFunctionArgs) {
     ]);
 
     if (job.error) {
-      throw error(job.error, "Failed to fetch job");
+      throw redirect(
+        path.to.pickups,
+        await flash(request, error(job.error, "Failed to fetch job"))
+      );
     }
 
     if (operations.error) {
-      throw error(operations.error, "Failed to fetch job operations");
+      throw redirect(
+        path.to.pickups,
+        await flash(request, error(operations.error, "Failed to fetch job operations"))
+      );
     }
 
     jobOperations = operations.data ?? [];
