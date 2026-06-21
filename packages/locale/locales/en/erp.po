@@ -2043,6 +2043,9 @@ msgstr "Created work center"
 msgid "Creating part..."
 msgstr "Creating part..."
 
+msgid "Credits"
+msgstr "Credits"
+
 msgid "CSV column"
 msgstr "CSV column"
 
@@ -2250,6 +2253,9 @@ msgstr "Deactivate Work Center"
 
 msgid "Deadline Type"
 msgstr "Deadline Type"
+
+msgid "Debits"
+msgstr "Debits"
 
 msgid "Decide what an operator sees if they try to issue a batch or serial that's already expired."
 msgstr "Decide what an operator sees if they try to issue a batch or serial that's already expired."
@@ -4322,6 +4328,9 @@ msgstr "Join {0}"
 
 msgid "Journal Entries"
 msgstr "Journal Entries"
+
+msgid "Journal Entry"
+msgstr "Journal Entry"
 
 msgid "Kanban"
 msgstr "Kanban"

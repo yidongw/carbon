@@ -2043,6 +2043,9 @@ msgstr "ワークセンターを作成しました"
 msgid "Creating part..."
 msgstr "パーツを作成中..."
 
+msgid "Credits"
+msgstr ""
+
 msgid "CSV column"
 msgstr "CSVカラム"
 
@@ -2250,6 +2253,9 @@ msgstr "ワークセンターを無効化"
 
 msgid "Deadline Type"
 msgstr "期限タイプ"
+
+msgid "Debits"
+msgstr ""
 
 msgid "Decide what an operator sees if they try to issue a batch or serial that's already expired."
 msgstr "オペレーターが既に期限切れのバッチまたはシリアルを発行しようとした場合に表示される内容を決定します。"
@@ -4321,6 +4327,9 @@ msgid "Join {0}"
 msgstr "{0}に参加"
 
 msgid "Journal Entries"
+msgstr ""
+
+msgid "Journal Entry"
 msgstr ""
 
 msgid "Kanban"

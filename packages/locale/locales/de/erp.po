@@ -2043,6 +2043,9 @@ msgstr "Arbeitszentrum erstellt"
 msgid "Creating part..."
 msgstr "Teil wird erstellt..."
 
+msgid "Credits"
+msgstr ""
+
 msgid "CSV column"
 msgstr "CSV-Spalte"
 
@@ -2250,6 +2253,9 @@ msgstr "Arbeitszentrum deaktivieren"
 
 msgid "Deadline Type"
 msgstr "Deadline-Typ"
+
+msgid "Debits"
+msgstr ""
 
 msgid "Decide what an operator sees if they try to issue a batch or serial that's already expired."
 msgstr "Entscheiden Sie, was ein Bediener sieht, wenn er versucht, einen Batch oder eine Seriennummer auszugeben, die bereits abgelaufen ist."
@@ -4321,6 +4327,9 @@ msgid "Join {0}"
 msgstr "Treten Sie {0} bei"
 
 msgid "Journal Entries"
+msgstr ""
+
+msgid "Journal Entry"
 msgstr ""
 
 msgid "Kanban"

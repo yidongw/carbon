@@ -2043,6 +2043,9 @@ msgstr "Utworzono centrum pracy"
 msgid "Creating part..."
 msgstr "Tworzenie części..."
 
+msgid "Credits"
+msgstr ""
+
 msgid "CSV column"
 msgstr "Kolumna CSV"
 
@@ -2250,6 +2253,9 @@ msgstr "Dezaktywuj Centrum Pracy"
 
 msgid "Deadline Type"
 msgstr "Typ terminu"
+
+msgid "Debits"
+msgstr ""
 
 msgid "Decide what an operator sees if they try to issue a batch or serial that's already expired."
 msgstr "Zdecyduj, co operator widzi, jeśli spróbuje wydać partię lub numer seryjny, który już wygasł."
@@ -4321,6 +4327,9 @@ msgid "Join {0}"
 msgstr "Dołącz do {0}"
 
 msgid "Journal Entries"
+msgstr ""
+
+msgid "Journal Entry"
 msgstr ""
 
 msgid "Kanban"
