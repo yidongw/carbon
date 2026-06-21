@@ -1,14 +1,13 @@
 import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
-import { flash } from "@carbon/auth/session.server";
 import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
 import type { LoaderFunctionArgs } from "react-router";
-import { Outlet, redirect, useLoaderData } from "react-router";
+import { Outlet, useLoaderData } from "react-router";
 import { ProductionQuantitiesTable } from "~/modules/production/ui/ProductionQuantities";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
-import { getGenericQueryFilters } from "~/utils/query";
+import { getGenericQueryFilters, setGenericQueryFilters } from "~/utils/query";
 
 export const handle: Handle = {
   breadcrumb: msg`Production Quantities`,
@@ -28,42 +27,37 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const { limit, offset, sorts, filters } =
     getGenericQueryFilters(searchParams);
 
-  // Query production quantity reports directly from the database
-  const query = client
+  let query = client
     .from("productionQuantityReport")
     .select(
       `
       *,
-      job:jobOperation!inner(
+      employee:user!productionQuantityReport_employeeId_fkey(id, firstName, lastName, fullName),
+      jobOperation!inner(
+        id,
+        description,
         jobId,
-        job(jobId, itemId),
-        description
-      ),
-      employee:employeeId(name)
+        job:jobId(jobId)
+      )
     `,
       { count: "exact" }
     )
-    .eq("companyId", companyId)
-    .order("createdAt", { ascending: false })
-    .range(offset, offset + limit - 1);
+    .eq("companyId", companyId);
 
   if (search) {
-    query.or(
-      `notes.ilike.%${search}%,job.jobId.ilike.%${search}%`,
-      { referencedTable: "job" }
+    query = query.or(
+      `notes.ilike.%${search}%,jobOperation.description.ilike.%${search}%`
     );
   }
+
+  query = setGenericQueryFilters(query, { limit, offset, sorts, filters }, [
+    { column: "createdAt", ascending: false }
+  ]);
 
   const { data, count, error: queryError } = await query;
 
   if (queryError) {
-    redirect(
-      path.to.productionDashboard,
-      await flash(
-        request,
-        error(queryError, "Failed to fetch production quantities")
-      )
-    );
+    throw error(queryError, "Failed to fetch production quantities");
   }
 
   return {

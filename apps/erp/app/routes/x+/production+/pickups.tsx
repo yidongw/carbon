@@ -1,11 +1,10 @@
 import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
-import { flash } from "@carbon/auth/session.server";
 import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
 import type { LoaderFunctionArgs } from "react-router";
-import { Outlet, redirect, useLoaderData } from "react-router";
-import { getJobOperationPickups } from "~/modules/production";
+import { Outlet, useLoaderData } from "react-router";
+import { getCompanyJobOperationPickups } from "~/modules/production";
 import { PickupsTable } from "~/modules/production/ui/Pickups";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
@@ -29,7 +28,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const { limit, offset, sorts, filters } =
     getGenericQueryFilters(searchParams);
 
-  const pickups = await getJobOperationPickups(client, companyId, {
+  const pickups = await getCompanyJobOperationPickups(client, companyId, {
     search,
     limit,
     offset,
@@ -38,18 +37,29 @@ export async function loader({ request }: LoaderFunctionArgs) {
   });
 
   if (pickups.error) {
-    redirect(
-      path.to.productionDashboard,
-      await flash(
-        request,
-        error(pickups.error, "Failed to fetch production pickups")
-      )
-    );
+    throw error(pickups.error, "Failed to fetch production pickups");
   }
 
   return {
     count: pickups.count ?? 0,
-    pickups: pickups.data ?? []
+    pickups:
+      pickups.data?.map((pickup) => ({
+        id: pickup.id,
+        jobOperationId: pickup.jobOperationId,
+        employeeId: pickup.employeeId,
+        quantity: pickup.quantity,
+        notes: pickup.notes,
+        createdAt: pickup.createdAt,
+        jobId: pickup.jobOperation?.jobId ?? null,
+        jobIdFormatted: pickup.jobOperation?.job?.jobId ?? null,
+        operationDescription: pickup.jobOperation?.description ?? null,
+        employeeName:
+          pickup.employee?.fullName ??
+          [pickup.employee?.firstName, pickup.employee?.lastName]
+            .filter(Boolean)
+            .join(" ") ||
+          null
+      })) ?? []
   };
 }
 

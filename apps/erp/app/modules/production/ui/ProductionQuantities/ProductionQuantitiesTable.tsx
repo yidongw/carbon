@@ -14,16 +14,17 @@ type ProductionQuantityReport = {
   originalQuantity: number;
   notes?: string | null;
   createdAt: string;
-  job?: {
+  jobOperation?: {
     jobId?: string | null;
+    description?: string | null;
     job?: {
       jobId?: string | null;
-      itemId?: string | null;
     } | null;
-    description?: string | null;
   } | null;
   employee?: {
-    name?: string | null;
+    fullName?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
   } | null;
 };
 
@@ -41,24 +42,29 @@ export function ProductionQuantitiesTable({
 
   const columns: ColumnDef<ProductionQuantityReport>[] = [
     {
-      accessorKey: "job.job.jobId",
+      accessorKey: "jobOperation.job.jobId",
       header: () => <Trans>Job</Trans>,
       cell: ({ row }) => {
-        const jobId = row.original.job?.jobId;
-        const jobIdFormatted = row.original.job?.job?.jobId;
+        const jobId = row.original.jobOperation?.jobId;
+        const jobIdFormatted = row.original.jobOperation?.job?.jobId;
         if (!jobId || !jobIdFormatted) return null;
         return <Hyperlink to={path.to.job(jobId)}>{jobIdFormatted}</Hyperlink>;
       }
     },
     {
-      accessorKey: "job.description",
+      accessorKey: "jobOperation.description",
       header: () => <Trans>Operation</Trans>,
-      cell: ({ row }) => row.original.job?.description ?? "-"
+      cell: ({ row }) => row.original.jobOperation?.description ?? "-"
     },
     {
-      accessorKey: "employee.name",
+      accessorKey: "employee.fullName",
       header: () => <Trans>Employee</Trans>,
-      cell: ({ row }) => row.original.employee?.name ?? "-"
+      cell: ({ row }) =>
+        row.original.employee?.fullName ??
+        [row.original.employee?.firstName, row.original.employee?.lastName]
+          .filter(Boolean)
+          .join(" ") ||
+        "-"
     },
     {
       accessorKey: "originalQuantity",
