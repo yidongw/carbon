@@ -127,10 +127,8 @@ export const PickupForm = ({
   // Sync selectedJobId with URL params when they change
   useEffect(() => {
     const jobIdFromUrl = searchParams.get("jobId") ?? "";
-    if (jobIdFromUrl !== selectedJobId) {
-      setSelectedJobId(jobIdFromUrl);
-    }
-  }, [searchParams, selectedJobId]);
+    setSelectedJobId(jobIdFromUrl);
+  }, [searchParams]);
 
   const hasConfigurationParameters = (configurationParameters?.length ?? 0) > 0;
 
