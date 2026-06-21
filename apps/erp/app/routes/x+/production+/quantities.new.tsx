@@ -36,7 +36,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   // Get list of jobs for the job selector with item info
   const jobs = await client
     .from("jobs")
-    .select("id, jobId, itemId, itemReadableId")
+    .select("id, jobId, itemId, itemReadableIdWithRevision")
     .eq("companyId", companyId)
     .order("jobId", { ascending: false })
     .limit(1000);
@@ -113,8 +113,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   const jobOptions =
     jobs.data?.map((job) => ({
-      label: job.itemReadableId
-        ? `${job.jobId} - ${job.itemReadableId}`
+      label: job.itemReadableIdWithRevision
+        ? `${job.jobId} - ${job.itemReadableIdWithRevision}`
         : (job.jobId ?? ""),
       value: job.id!
     })) ?? [];
