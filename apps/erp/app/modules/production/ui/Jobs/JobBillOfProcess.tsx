@@ -179,6 +179,7 @@ import {
   getOperationQuantitySummary,
   listProductionQuantityReportsForOperation,
   type OperationQuantitySummary as OperationQuantitySummaryData,
+  type ProductionQuantityReportLine,
   type ProductionQuantityReportWithLines
 } from "../../productionQuantityReport.service";
 import {
@@ -523,57 +524,63 @@ const EmployeeProductionLogsView = ({
       : userId;
   };
 
-  // Group by employee
+  // Group by employee. Pickups group by the pickup's employeeId; production
+  // quantity lines group by each LINE's employeeId (a single report created by
+  // one person can credit quantities to several employees), so a report is
+  // split across the cards of the employees its lines belong to.
   const employeeGroups = useMemo(() => {
+    type QuantityEntry = {
+      key: string;
+      createdBy: string;
+      createdAt: string;
+      lines: ProductionQuantityReportLine[];
+    };
     const groups = new Map<string, {
       employeeId: string;
-      employeeName: string;
       pickups: UnifiedPickupItem[];
-      quantities: UnifiedQuantityReportItem[];
+      quantityEntries: QuantityEntry[];
     }>();
 
-    // Add employee pickups
+    const ensureGroup = (empId: string) => {
+      if (!groups.has(empId)) {
+        groups.set(empId, {
+          employeeId: empId,
+          pickups: [],
+          quantityEntries: []
+        });
+      }
+      return groups.get(empId)!;
+    };
+
+    // Pickups -> grouped by the pickup's employee
     allPickups.forEach((pickup) => {
       if (pickup.kind === "employee") {
-        const empId = pickup.pickup.employeeId;
-        const empName = pickup.pickup.employee
-          ? formatPersonName(pickup.pickup.employee)
-          : empId;
-
-        if (!groups.has(empId)) {
-          groups.set(empId, {
-            employeeId: empId,
-            employeeName: empName,
-            pickups: [],
-            quantities: []
-          });
-        }
-        groups.get(empId)!.pickups.push(pickup);
+        ensureGroup(pickup.pickup.employeeId).pickups.push(pickup);
       }
     });
 
-    // Add employee quantities
+    // Production quantity lines -> grouped by each line's employee
     quantityReports.forEach((report) => {
-      if (report.actorKind === "employee") {
-        const empId = report.report.createdBy;
-        const empName = report.report.createdByUser
-          ? formatPersonName(report.report.createdByUser)
-          : empId;
-
-        if (!groups.has(empId)) {
-          groups.set(empId, {
-            employeeId: empId,
-            employeeName: empName,
-            pickups: [],
-            quantities: []
-          });
-        }
-        groups.get(empId)!.quantities.push(report);
-      }
+      if (report.actorKind !== "employee") return;
+      const lines = report.report.activeLines ?? [];
+      const byEmployee = new Map<string, ProductionQuantityReportLine[]>();
+      lines.forEach((line) => {
+        const list = byEmployee.get(line.employeeId) ?? [];
+        list.push(line);
+        byEmployee.set(line.employeeId, list);
+      });
+      byEmployee.forEach((empLines, empId) => {
+        ensureGroup(empId).quantityEntries.push({
+          key: `${report.id}-${empId}`,
+          createdBy: report.report.createdBy,
+          createdAt: report.createdAt,
+          lines: empLines
+        });
+      });
     });
 
     return Array.from(groups.values());
-  }, [allPickups, quantityReports, formatPersonName]);
+  }, [allPickups, quantityReports]);
 
   if (employeeGroups.length === 0 && !pickupHasMore && !quantityHasMore) {
     return (
@@ -599,8 +606,8 @@ const EmployeeProductionLogsView = ({
             });
         });
         const producedByConfig = new Map<string, number>();
-        group.quantities.forEach((q) => {
-          (q.report.activeLines ?? [])
+        group.quantityEntries.forEach((entry) => {
+          entry.lines
             .filter((l) => l.type === "Production")
             .forEach((line) => {
               (line.configuration as { configTable?: Record<string, number>[] } | null)
@@ -702,7 +709,7 @@ const EmployeeProductionLogsView = ({
                           )}
                         </HStack>
                         <HStack className="gap-2 shrink-0">
-                          <Badge variant="green" className="text-xs uppercase">
+                          <Badge variant="blue" className="text-xs uppercase">
                             <Trans>pickup</Trans>
                           </Badge>
                           <Badge variant="outline" className="text-xs font-medium bg-background">
@@ -714,20 +721,21 @@ const EmployeeProductionLogsView = ({
                   );
                 })}
 
-                {/* Quantities: one header row per report, one grey box per type */}
-                {group.quantities.map((report) => {
-                  const lines = report.report.activeLines ?? [];
+                {/* Quantities: one header row per report (for this employee),
+                    one grey box per line */}
+                {group.quantityEntries.map((entry) => {
+                  const lines = entry.lines;
                   const reportTotal = lines.reduce(
                     (s, q) => s + (parseFloat(String(q.quantity)) || 0),
                     0
                   );
                   return (
-                    <VStack key={report.id} spacing={1} className="w-full">
+                    <VStack key={entry.key} spacing={1} className="w-full">
                       {/* White row: total, time, reporter (icon only) at the end */}
                       <HStack className="items-center text-sm px-1 gap-2">
                         <span className="font-medium">{reportTotal}</span>
                         <span className="text-muted-foreground">
-                          {formatDateTime(report.createdAt)}
+                          {formatDateTime(entry.createdAt)}
                         </span>
                         <HStack className="ml-auto items-center gap-1.5">
                           <span className="text-muted-foreground">
@@ -737,14 +745,14 @@ const EmployeeProductionLogsView = ({
                             <TooltipTrigger asChild>
                               <span className="cursor-help">
                                 <EmployeeAvatar
-                                  employeeId={report.report.createdBy}
+                                  employeeId={entry.createdBy}
                                   size="xs"
                                   withName={false}
                                 />
                               </span>
                             </TooltipTrigger>
                             <TooltipContent>
-                              {reporterName(report.report.createdBy)}
+                              {reporterName(entry.createdBy)}
                             </TooltipContent>
                           </Tooltip>
                         </HStack>

@@ -84,3 +84,9 @@ Patterns learned from corrections. Review at the start of each session.
 ## Bash fallbacks when tools are missing
 
 - `pandoc` is not on the user's machine. For `.docx` extraction, use the `anthropic-skills:docx` skill's `unpack.py` (needs `defusedxml`; install via `mise x python@3.14.2 -- pip install defusedxml`) or an equivalent Python/JS extraction, rather than assuming pandoc is available.
+
+## React: don't define components inside render
+
+- **NEVER** define a component (e.g. `const FooView = (props) => {...}`) inside another component's body or render-prop callback, then render it as `<FooView/>`. Each parent render creates a new component identity, so React unmounts/remounts the whole subtree every render.
+- Symptom that exposed this: a Radix **tooltip would show once but never reopen** — the remount tore down the tooltip's internal state and left body `pointer-events` stuck. Hoisting the component to module scope (stable identity) fixed it.
+- Rule: hoist such components to module scope and pass everything via props. If it needs hooks, that's fine at module scope. Reference: `EmployeeProductionLogsView` in `apps/erp/app/modules/production/ui/Jobs/JobBillOfProcess.tsx` (was defined inside `renderListItem`).
