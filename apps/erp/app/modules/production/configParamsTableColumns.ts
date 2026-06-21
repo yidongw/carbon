@@ -319,6 +319,10 @@ export type ConfigTableReferenceContext = {
   originalConfiguration: unknown;
   /** Active sibling line configurations (excluding the line being edited). */
   otherLineConfigurations: unknown[];
+  /** When set, use pickup-based hints for this employee instead of job target hints */
+  employeeId?: string;
+  /** Pickup quantities by employee (for pickup-based hint calculation) */
+  pickupsByEmployee?: Record<string, { quantity: number; configuration: unknown }[]>;
 };
 
 export function buildConfigTableEditorState({
@@ -400,12 +404,34 @@ export function buildConfigTableEditorState({
     const refs: Record<string, number> = {};
     for (const col of columns) {
       if (col.type !== "quantity") continue;
-      const originalQty = Number(originalByKey.get(key)?.[col.key]) || 0;
-      const otherQty = Number(otherByKey.get(key)?.[col.key]) || 0;
-      refs[col.key] =
-        referenceContext.mode === "original"
-          ? originalQty
-          : originalQty - otherQty;
+
+      // If employee is selected and has pickups, use pickup-based hints
+      if (referenceContext.employeeId && referenceContext.pickupsByEmployee) {
+        const employeePickups = referenceContext.pickupsByEmployee[referenceContext.employeeId] ?? [];
+
+        // Find pickup quantity for this config row
+        let pickupQty = 0;
+        for (const pickup of employeePickups) {
+          const pickupRow = getConfigTableRows(pickup.configuration)[0];
+          if (pickupRow && getMergeKey(pickupRow, columns) === key) {
+            pickupQty += Number(pickupRow[col.key]) || 0;
+          }
+        }
+
+        // Calculate produced quantity for this employee
+        const producedQty = Number(otherByKey.get(key)?.[col.key]) || 0;
+
+        // Hint = pickup - produced
+        refs[col.key] = Math.max(0, pickupQty - producedQty);
+      } else {
+        // Default behavior: job target - already produced
+        const originalQty = Number(originalByKey.get(key)?.[col.key]) || 0;
+        const otherQty = Number(otherByKey.get(key)?.[col.key]) || 0;
+        refs[col.key] =
+          referenceContext.mode === "original"
+            ? originalQty
+            : originalQty - otherQty;
+      }
     }
 
     rows.push(row);
@@ -423,13 +449,17 @@ export function fillValueFromReference(referenceValue: number) {
 export type ConfigReferenceSource = {
   jobConfiguration: unknown;
   reportedConfigurations: unknown[];
+  /** Pickup data grouped by employee for pickup-based hints */
+  pickupsByEmployee?: Record<string, { quantity: number; configuration: unknown }[]>;
 };
 
-/** Hint quantities = job required − already reported (per config row/column). */
+/** Hint quantities = job required − already reported (per config row/column).
+ * When employeeId is provided, uses pickup-based hints (pickup - produced) instead. */
 export function buildJobRemainingReferenceContext(
   source: ConfigReferenceSource,
   options?: {
     excludeConfigurations?: unknown[];
+    employeeId?: string;
   }
 ): ConfigTableReferenceContext {
   const exclude = new Set(
@@ -441,6 +471,8 @@ export function buildJobRemainingReferenceContext(
     originalConfiguration: source.jobConfiguration,
     otherLineConfigurations: source.reportedConfigurations.filter(
       (config) => config != null && !exclude.has(config)
-    )
+    ),
+    employeeId: options?.employeeId,
+    pickupsByEmployee: source.pickupsByEmployee
   };
 }

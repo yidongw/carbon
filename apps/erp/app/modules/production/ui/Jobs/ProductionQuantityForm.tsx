@@ -276,7 +276,9 @@ const ProductionQuantityForm = ({
     if (!itemId) return;
 
     const referenceContext = configReferenceSource
-      ? buildJobRemainingReferenceContext(configReferenceSource)
+      ? buildJobRemainingReferenceContext(configReferenceSource, {
+          employeeId: actorKind === "employee" ? actorFieldValues.employeeId : undefined
+        })
       : undefined;
 
     openOverlay(

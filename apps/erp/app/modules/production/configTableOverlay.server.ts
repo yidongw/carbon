@@ -102,19 +102,39 @@ export async function getConfigReferenceSourceForOperation(
     return { jobConfiguration, reportedConfigurations };
   }
 
-  const quantities = await client
-    .from("productionQuantity")
-    .select("configuration")
-    .eq("jobOperationId", jobOperationId)
-    .eq("companyId", companyId)
-    .eq("type", "Production")
-    .is("invalidatedAt", null);
+  const [quantities, pickups] = await Promise.all([
+    client
+      .from("productionQuantity")
+      .select("configuration")
+      .eq("jobOperationId", jobOperationId)
+      .eq("companyId", companyId)
+      .eq("type", "Production")
+      .is("invalidatedAt", null),
+    client
+      .from("jobOperationPickup")
+      .select("employeeId, quantity, configuration")
+      .eq("jobOperationId", jobOperationId)
+      .eq("companyId", companyId)
+  ]);
 
   const reportedConfigurations = (quantities.data ?? [])
     .map((row) => row.configuration)
     .filter((config) => config != null);
 
-  return { jobConfiguration, reportedConfigurations };
+  // Group pickups by employee
+  const pickupsByEmployee: Record<string, { quantity: number; configuration: unknown }[]> = {};
+  for (const pickup of pickups.data ?? []) {
+    if (!pickup.employeeId) continue;
+    if (!pickupsByEmployee[pickup.employeeId]) {
+      pickupsByEmployee[pickup.employeeId] = [];
+    }
+    pickupsByEmployee[pickup.employeeId].push({
+      quantity: pickup.quantity,
+      configuration: pickup.configuration
+    });
+  }
+
+  return { jobConfiguration, reportedConfigurations, pickupsByEmployee };
 }
 
 export function parseReferenceContextFromRequest(
