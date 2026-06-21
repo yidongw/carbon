@@ -132,17 +132,36 @@ const RealtimeDataProvider = ({ children }: { children: React.ReactNode }) => {
       }>(carbon, "customer", "id, name, website", (query) =>
         query.eq("companyId", companyId).order("name")
       ),
-      fetchAllFromTable<{
-        id: string;
-        name: string;
-        firstName: string;
-        lastName: string;
-        email: string;
-        avatarUrl: string;
-        number: string | null;
-      }>(carbon, "employees", "id, name, firstName, lastName, email, avatarUrl, number", (query) =>
-        query.eq("companyId", companyId).order("name")
-      )
+      (async () => {
+        // Fetch employees - try with number field first, fallback without it
+        const employeesResult = await fetchAllFromTable<{
+          id: string;
+          name: string;
+          firstName: string;
+          lastName: string;
+          email: string;
+          avatarUrl: string;
+          number?: string | null;
+        }>(carbon, "employees", "id, name, firstName, lastName, email, avatarUrl, number", (query) =>
+          query.eq("companyId", companyId).order("name")
+        );
+
+        // If query failed (likely because number column doesn't exist in view yet), try without number
+        if (employeesResult.error) {
+          return fetchAllFromTable<{
+            id: string;
+            name: string;
+            firstName: string;
+            lastName: string;
+            email: string;
+            avatarUrl: string;
+          }>(carbon, "employees", "id, name, firstName, lastName, email, avatarUrl", (query) =>
+            query.eq("companyId", companyId).order("name")
+          );
+        }
+
+        return employeesResult;
+      })()
     ]);
 
     if (items.error) {
@@ -392,15 +411,26 @@ const RealtimeDataProvider = ({ children }: { children: React.ReactNode }) => {
             // TODO: there's a cleaner way of doing this, but since customers and suppliers
             // are also in the users table, we can't automatically add/update/delete them
             // from our list of employees. So for now we just refetch.
-            const { data } = await carbon
+
+            // Try fetching with number field first
+            let result = await carbon
               .from("employees")
               .select("id, name, firstName, lastName, avatarUrl, email, number")
               .eq("companyId", companyId)
               .order("name");
 
-            if (data) {
+            // If query failed (number column doesn't exist yet), fetch without it
+            if (result.error) {
+              result = await carbon
+                .from("employees")
+                .select("id, name, firstName, lastName, avatarUrl, email")
+                .eq("companyId", companyId)
+                .order("name");
+            }
+
+            if (result.data) {
               // @ts-ignore
-              setPeople(data);
+              setPeople(result.data);
             }
           }
         );
