@@ -11,11 +11,11 @@ import {
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router";
 import type { z } from "zod";
 import { Hidden, Number, Select, Submit, TextArea } from "~/components/Form";
-import { ProductionActorFields } from "../Jobs/ProductionActorFields";
+import { ProductionActorFields, selectionFromInitialValues } from "../Jobs/ProductionActorFields";
 import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions } from "~/hooks";
 import { isConfigTableOverlaySuccess } from "../../configTableOverlay";
@@ -133,6 +133,31 @@ export const PickupForm = ({
   const isEditing = initialValues.id !== undefined;
   const presetJobOperationIdOnCreate =
     !isEditing && Boolean(initialValues.jobOperationId);
+  const hasJobSelected = isEditing || Boolean(selectedJobId);
+  const hasOperationSelected =
+    isEditing || presetJobOperationIdOnCreate || Boolean(selectedJobOperationId);
+  const [actorSelection, setActorSelection] = useState(() =>
+    selectionFromInitialValues({
+      employeeId: initialValues.employeeId,
+      supplierProcessId: initialValues.supplierProcessId
+    })
+  );
+  const hasActorSelected = isEditing || Boolean(actorSelection);
+
+  useEffect(() => {
+    setActorSelection(
+      selectionFromInitialValues({
+        employeeId: initialValues.employeeId,
+        supplierProcessId: initialValues.supplierProcessId
+      })
+    );
+  }, [
+    selectedJobId,
+    selectedJobOperationId,
+    initialValues.employeeId,
+    initialValues.supplierProcessId
+  ]);
+
   const isDisabled = isEditing
     ? !permissions.can("update", "production")
     : !permissions.can("create", "production");
@@ -266,7 +291,7 @@ export const PickupForm = ({
               name="jobOperationId"
               label={t`Operation`}
               options={operationOptions ?? []}
-              isDisabled={!selectedJobId}
+              isDisabled={!hasJobSelected}
               onChange={(newValue) => {
                 if (newValue?.value) handleOperationChange(newValue.value);
               }}
@@ -277,9 +302,11 @@ export const PickupForm = ({
             operationType={operationType}
             defaultActorKind={defaultActorKind}
             lockActorSelection={lockActorSelection}
+            isDisabled={!hasOperationSelected}
             employeeIdValue={initialValues.employeeId}
             supplierProcessIdValue={initialValues.supplierProcessId}
             supplierIdValue={supplierId}
+            onSelectionChange={setActorSelection}
           />
           {configTableRows && (
             <Hidden
@@ -296,16 +323,25 @@ export const PickupForm = ({
               label={t`Quantity`}
               value={quantity}
               minValue={0}
-              isDisabled={isDisabled || configTableTotal > 0}
+              isDisabled={isDisabled || !hasActorSelected || configTableTotal > 0}
               configTableTotal={configTableTotal}
               hasConfigurationParameters
               onOpenConfigTable={openConfigTable}
               onChange={setQuantity}
             />
           ) : (
-            <Number name="quantity" label={t`Quantity`} minValue={0} />
+            <Number
+              name="quantity"
+              label={t`Quantity`}
+              minValue={0}
+              isDisabled={!hasActorSelected}
+            />
           )}
-          <TextArea name="notes" label={t`Notes`} />
+          <TextArea
+            name="notes"
+            label={t`Notes`}
+            isDisabled={!hasActorSelected}
+          />
         </VStack>
       </DrawerBody>
       <DrawerFooter>

@@ -61,18 +61,21 @@ export function ProductionActorFields({
   operationType,
   defaultActorKind,
   lockActorSelection,
+  isDisabled: isDisabledProp = false,
   employeeIdValue,
   supplierProcessIdValue,
   supplierIdValue,
   onActorKindChange,
   onSupplierProcessChange,
-  onEmployeeChange
+  onEmployeeChange,
+  onSelectionChange
 }: {
   processId?: string | null;
   operationType?: OperationType | string | null;
   defaultActorKind?: ActorKind;
   /** When true, the selected employee/supplier cannot be changed (edit flows). */
   lockActorSelection?: boolean;
+  isDisabled?: boolean;
   employeeIdValue?: string;
   supplierProcessIdValue?: string;
   /** Resolves supplier label before process options finish loading (edit prefill). */
@@ -80,6 +83,7 @@ export function ProductionActorFields({
   onActorKindChange?: (kind: ActorKind) => void;
   onSupplierProcessChange?: (supplierProcessId: string) => void;
   onEmployeeChange?: (employeeId: string) => void;
+  onSelectionChange?: (selection: string) => void;
 }) {
   const { t } = useLingui();
   const newSupplierProcessModal = useDisclosure();
@@ -129,6 +133,7 @@ export function ProductionActorFields({
 
   useEffect(() => {
     setSelection(initialSelection);
+    onSelectionChange?.(initialSelection);
     const decoded = decodeActorSelection(initialSelection);
     if (decoded) {
       setActorKind(decoded.kind);
@@ -158,7 +163,8 @@ export function ProductionActorFields({
     resolvedDefault,
     onActorKindChange,
     onSupplierProcessChange,
-    onEmployeeChange
+    onEmployeeChange,
+    onSelectionChange
   ]);
 
   useEffect(() => {
@@ -340,11 +346,13 @@ export function ProductionActorFields({
 
   const applySelection = (value: string) => {
     setSelection(value);
+    onSelectionChange?.(value);
     const decoded = decodeActorSelection(value);
     if (!decoded) {
       setEmployeeId("");
       setSupplierProcessId("");
       onSupplierProcessChange?.("");
+      onEmployeeChange?.("");
       setActorKind(resolvedDefault);
       onActorKindChange?.(resolvedDefault);
       return;
@@ -381,7 +389,7 @@ export function ProductionActorFields({
         groups={groups}
         value={selection}
         onChange={handleChange}
-        isReadOnly={lockActorSelection}
+        isReadOnly={lockActorSelection || isDisabledProp}
       />
       <Hidden name="actorKind" value={actorKind} />
       <Hidden name="employeeId" value={employeeId} />

@@ -11,11 +11,14 @@ import {
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router";
 import type { z } from "zod";
 import { Hidden, Select, Submit, TextArea } from "~/components/Form";
-import { ProductionActorFields } from "../Jobs/ProductionActorFields";
+import {
+  ProductionActorFields,
+  selectionFromInitialValues
+} from "../Jobs/ProductionActorFields";
 import { ProductionQuantityLinesEditor } from "../Jobs/ProductionQuantityLinesEditor";
 import { SupplierSubcontractPricingFields } from "../Jobs/SupplierSubcontractPricingFields";
 import { usePermissions } from "~/hooks";
@@ -84,6 +87,36 @@ export const ProductionQuantityForm = ({
   const selectedJobId = searchParams.get("jobId") ?? initialJobId ?? "";
   const selectedJobOperationId =
     searchParams.get("jobOperationId") ?? initialJobOperationId ?? "";
+  const hasJobSelected = Boolean(selectedJobId);
+  const hasOperationSelected = Boolean(selectedJobOperationId);
+  const [actorSelection, setActorSelection] = useState(() =>
+    selectionFromInitialValues({
+      employeeId: seededActor?.kind === "employee" ? seededActor.employeeId : undefined,
+      supplierProcessId:
+        seededActor?.kind === "supplier" ? seededActor.supplierProcessId : undefined
+    })
+  );
+  const hasActorSelected = Boolean(actorSelection);
+
+  useEffect(() => {
+    setActorSelection(
+      selectionFromInitialValues({
+        employeeId:
+          seededActor?.kind === "employee" ? seededActor.employeeId : undefined,
+        supplierProcessId:
+          seededActor?.kind === "supplier"
+            ? seededActor.supplierProcessId
+            : undefined
+      })
+    );
+  }, [
+    selectedJobId,
+    selectedJobOperationId,
+    seededActor?.kind,
+    seededActor?.employeeId,
+    seededActor?.supplierProcessId
+  ]);
+
   const [lines, setLines] = useState<ProductionQuantityLineInput[]>([
     { type: "Production", quantity: 0, configuration: undefined }
   ]);
@@ -171,7 +204,7 @@ export const ProductionQuantityForm = ({
             name="jobOperationId"
             label={t`Operation`}
             options={operationOptions ?? []}
-            isDisabled={!selectedJobId}
+            isDisabled={!hasJobSelected}
             onChange={(newValue) => {
               if (newValue?.value) handleOperationChange(newValue.value);
             }}
@@ -181,14 +214,17 @@ export const ProductionQuantityForm = ({
             operationType={operationType}
             defaultActorKind={defaultActorKind}
             lockActorSelection={lockActorSelection}
+            isDisabled={!hasOperationSelected}
             employeeIdValue={initialValues.employeeId}
             supplierProcessIdValue={initialValues.supplierProcessId}
             supplierIdValue={supplierId}
+            onSelectionChange={setActorSelection}
           />
           {defaultActorKind === "supplier" && (
             <SupplierSubcontractPricingFields
               jobOperationId={selectedJobOperationId}
               supplierProcessId={initialValues.supplierProcessId}
+              isDisabled={!hasActorSelected}
             />
           )}
           <ProductionQuantityLinesEditor
@@ -197,9 +233,14 @@ export const ProductionQuantityForm = ({
             configurationParameters={configurationParameters}
             configReferenceSource={configReferenceSource}
             itemId={itemId}
+            isDisabled={!hasActorSelected}
           />
           <Hidden name="lines" value={JSON.stringify(lines)} />
-          <TextArea name="notes" label={t`Notes`} />
+          <TextArea
+            name="notes"
+            label={t`Notes`}
+            isDisabled={!hasActorSelected}
+          />
         </VStack>
       </DrawerBody>
       <DrawerFooter>
