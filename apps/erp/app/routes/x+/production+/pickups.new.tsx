@@ -39,6 +39,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
     filters: []
   });
 
+  if (jobs.error) {
+    throw error(jobs.error, "Failed to fetch jobs");
+  }
+
   let jobOperations = null;
   let opContext = null;
   let itemId = null;
