@@ -137,6 +137,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     bomIdMap: Object.fromEntries(bomIdMap),
     events: events.data ?? [],
     pickups: allPickups,
+    productionQuantities: quantities.data ?? [],
     suggestedQuantity,
     pickupConfiguration,
     quantities: (quantities.data ?? []).reduce(
@@ -201,6 +202,7 @@ export default function OperationRoute() {
     materials,
     operation,
     pickups,
+    productionQuantities,
     suggestedQuantity,
     pickupConfiguration,
     procedure,
@@ -220,6 +222,7 @@ export default function OperationRoute() {
       materials={materials}
       method={jobMakeMethod}
       pickups={pickups}
+      productionQuantities={productionQuantities}
       suggestedQuantity={suggestedQuantity}
       pickupConfiguration={pickupConfiguration}
       trackedEntities={trackedEntities}

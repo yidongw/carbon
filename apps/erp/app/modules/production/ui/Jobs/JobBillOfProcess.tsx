@@ -157,6 +157,7 @@ import {
   type JobOperationSupplierQuantityReportWithLines,
   listJobOperationSupplierQuantityReportsForOperation
 } from "../../jobOperationSupplierQuantityReport.service";
+import { fetchInProgressQuantitiesByOperation } from "../../operationInProgressQuantity";
 import {
   defaultOperationTypeFromProcess,
   disablesOutsideBopDetailTabs,
@@ -265,7 +266,7 @@ function makeItems(
   onAddProductionQuantity?: (operationId: string) => void,
   onOpenConfigSummary?: (operationId: string) => void,
   hasConfigurationParameters?: boolean,
-  pickupTotals?: Map<string, number>,
+  inProgressByOperation?: Map<string, number>,
   onAddPickup?: (operationId: string) => void
 ): ItemWithData[] {
   return operations.map((operation) =>
@@ -281,7 +282,7 @@ function makeItems(
       onAddProductionQuantity,
       onOpenConfigSummary,
       hasConfigurationParameters,
-      pickupTotals,
+      inProgressByOperation,
       onAddPickup
     )
   );
@@ -299,7 +300,7 @@ function makeItem(
   onAddProductionQuantity?: (operationId: string) => void,
   onOpenConfigSummary?: (operationId: string) => void,
   hasConfigurationParameters?: boolean,
-  pickupTotals?: Map<string, number>,
+  inProgressByOperation?: Map<string, number>,
   onAddPickup?: (operationId: string) => void
 ): ItemWithData {
   return {
@@ -348,7 +349,7 @@ function makeItem(
       ? null
       : {
           complete: operation.quantityComplete ?? 0,
-          pickup: pickupTotals?.get(operation.id!) ?? 0,
+          pickup: inProgressByOperation?.get(operation.id!) ?? 0,
           target: jobQuantityTarget,
           onAddQuantity: onAddProductionQuantity
             ? () => onAddProductionQuantity(operation.id!)
@@ -642,73 +643,6 @@ const JobBillOfProcess = ({
         }
       : undefined;
 
-  const onAddPickup =
-    !isDisabled && permissions.can("create", "production")
-      ? (operationId: string) => {
-          openOverlay(
-            overlay.to.newJobPickup(jobId, {
-              jobOperationId: operationId
-            }),
-            {
-              onSuccess: () => {
-                setPickups([]);
-                setPickupPage(0);
-                setPickupHasMore(true);
-                setPickupCount(0);
-                setPickupScrollKey((k) => k + 1);
-              }
-            }
-          );
-        }
-      : undefined;
-
-  // Load pickup totals for all operations so the progress strip can display them
-  useEffect(() => {
-    if (!carbon || initialOperations.length === 0) return;
-
-    const operationIds = initialOperations
-      .map((o) => o.id)
-      .filter(Boolean) as string[];
-    if (operationIds.length === 0) return;
-
-    let cancelled = false;
-
-    const load = async () => {
-      const [{ data: employeePickups }, { data: supplierPickups }] =
-        await Promise.all([
-          carbon
-            .from("jobOperationPickup")
-            .select("jobOperationId, quantity")
-            .in("jobOperationId", operationIds)
-            .eq("companyId", companyId),
-          carbon
-            .from("jobOperationSupplierPickup")
-            .select("jobOperationId, quantity")
-            .in("jobOperationId", operationIds)
-            .eq("companyId", companyId)
-        ]);
-
-      if (cancelled) return;
-
-      const totals = new Map<string, number>();
-      for (const row of [
-        ...(employeePickups ?? []),
-        ...(supplierPickups ?? [])
-      ]) {
-        totals.set(
-          row.jobOperationId,
-          (totals.get(row.jobOperationId) ?? 0) + (row.quantity as number)
-        );
-      }
-      setPickupTotals(totals);
-    };
-
-    void load();
-    return () => {
-      cancelled = true;
-    };
-  }, [carbon, companyId, initialOperations]);
-
   const onToggleItem = (id: string) => {
     if (!permissions.can("update", "parts")) return;
     setCheckedState((prev) => ({
@@ -874,9 +808,67 @@ const JobBillOfProcess = ({
   const [pickupIsLoading, setPickupIsLoading] = useState(false);
   const [pickupHasMore, setPickupHasMore] = useState(true);
   const [pickupScrollKey, setPickupScrollKey] = useState(0);
-  const [pickupTotals, setPickupTotals] = useState<Map<string, number>>(
-    new Map()
+  const [inProgressByOperation, setInProgressByOperation] = useState<
+    Map<string, number>
+  >(new Map());
+  const refreshInProgressTotalsRef = useRef<
+    (operationIds?: string[]) => Promise<void>
+  >(() => Promise.resolve());
+  const refreshInProgressTotals = useCallback(
+    async (operationIds?: string[]) => {
+      if (!carbon) return;
+
+      const ids =
+        operationIds ??
+        (initialOperations
+          .map((operation) => operation.id)
+          .filter(Boolean) as string[]);
+      if (ids.length === 0) return;
+
+      const totals = await fetchInProgressQuantitiesByOperation(
+        carbon,
+        companyId,
+        ids
+      );
+      setInProgressByOperation((prev) => {
+        const next = new Map(prev);
+        for (const operationId of ids) {
+          next.set(operationId, totals.get(operationId) ?? 0);
+        }
+        return next;
+      });
+    },
+    [carbon, companyId, initialOperations]
   );
+
+  useEffect(() => {
+    if (!carbon || initialOperations.length === 0) return;
+    void refreshInProgressTotals();
+  }, [carbon, initialOperations, refreshInProgressTotals]);
+
+  refreshInProgressTotalsRef.current = refreshInProgressTotals;
+
+  const onAddPickup =
+    !isDisabled && permissions.can("create", "production")
+      ? (operationId: string) => {
+          openOverlay(
+            overlay.to.newJobPickup(jobId, {
+              jobOperationId: operationId
+            }),
+            {
+              onSuccess: () => {
+                setPickups([]);
+                setPickupPage(0);
+                setPickupHasMore(true);
+                setPickupCount(0);
+                setPickupScrollKey((k) => k + 1);
+                void refreshInProgressTotalsRef.current([operationId]);
+              }
+            }
+          );
+        }
+      : undefined;
+
   const addOperationButtonRef = useRef<HTMLButtonElement>(null);
   const refreshQuantityDataRef = useRef<() => Promise<void>>(() =>
     Promise.resolve()
@@ -986,7 +978,7 @@ const JobBillOfProcess = ({
     onAddProductionQuantity,
     hasConfigurationParameters ? openConfigSummary : undefined,
     hasConfigurationParameters,
-    pickupTotals,
+    inProgressByOperation,
     onAddPickup
   ).map((item) => ({
     ...item,
@@ -1100,15 +1092,7 @@ const JobBillOfProcess = ({
                   return [item, ...prev];
                 });
                 setPickupCount((count) => count + 1);
-                setPickupTotals((prev) => {
-                  const next = new Map(prev);
-                  next.set(
-                    inserted.jobOperationId,
-                    (next.get(inserted.jobOperationId) ?? 0) +
-                      (inserted.quantity as number)
-                  );
-                  return next;
-                });
+                void refreshInProgressTotals([inserted.jobOperationId]);
                 break;
               }
               case "UPDATE": {
@@ -1134,17 +1118,7 @@ const JobBillOfProcess = ({
                   previous.jobOperationId &&
                   previous.quantity !== undefined
                 ) {
-                  setPickupTotals((prev) => {
-                    const next = new Map(prev);
-                    const opId = updated.jobOperationId;
-                    const oldQty = previous.quantity as number;
-                    const newQty = updated.quantity as number;
-                    next.set(
-                      opId,
-                      Math.max(0, (next.get(opId) ?? 0) - oldQty + newQty)
-                    );
-                    return next;
-                  });
+                  void refreshInProgressTotals([updated.jobOperationId]);
                 }
                 break;
               }
@@ -1156,19 +1130,8 @@ const JobBillOfProcess = ({
                 };
                 setPickups((prev) => prev.filter((p) => p.id !== deleted.id));
                 setPickupCount((count) => Math.max(0, count - 1));
-                if (deleted.jobOperationId && deleted.quantity !== undefined) {
-                  setPickupTotals((prev) => {
-                    const next = new Map(prev);
-                    next.set(
-                      deleted.jobOperationId!,
-                      Math.max(
-                        0,
-                        (next.get(deleted.jobOperationId!) ?? 0) -
-                          (deleted.quantity as number)
-                      )
-                    );
-                    return next;
-                  });
+                if (deleted.jobOperationId) {
+                  void refreshInProgressTotals([deleted.jobOperationId]);
                 }
                 break;
               }
@@ -1190,6 +1153,9 @@ const JobBillOfProcess = ({
             setPickupPage(0);
             setPickupHasMore(true);
             setPickupScrollKey((k) => k + 1);
+            if (selectedItemId) {
+              void refreshInProgressTotals([selectedItemId]);
+            }
           }
         );
     }
@@ -1295,7 +1261,14 @@ const JobBillOfProcess = ({
     setQuantityHasMore(
       Boolean(employeeReports.hasMore || supplierReports.hasMore)
     );
-  }, [carbon, companyId, selectedItemId, temporaryItems]);
+    await refreshInProgressTotals([selectedItemId]);
+  }, [
+    carbon,
+    companyId,
+    refreshInProgressTotals,
+    selectedItemId,
+    temporaryItems
+  ]);
 
   refreshQuantityDataRef.current = refreshQuantityData;
 

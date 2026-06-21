@@ -115,6 +115,7 @@ import type {
   Kanban,
   OperationWithDetails,
   ProductionEvent,
+  ProductionQuantity,
   StorageItem,
   TrackedEntity,
   TrackedInput
@@ -168,6 +169,7 @@ type JobOperationProps = {
   >;
   operation: OperationWithDetails;
   pickups: JobOperationPickup[];
+  productionQuantities: ProductionQuantity[];
   suggestedQuantity: number;
   pickupConfiguration: unknown;
   procedure: Promise<{
@@ -227,6 +229,7 @@ export const JobOperation = ({
   nonConformanceActions,
   operation: originalOperation,
   pickups,
+  productionQuantities,
   suggestedQuantity,
   pickupConfiguration,
   procedure,
@@ -254,6 +257,37 @@ export const JobOperation = ({
     company: { id: companyId }
   } = useUser();
   const formatPersonName = useFormatPersonName();
+
+  // Calculate in-progress quantity: pickups minus productions, grouped by employee and configuration
+  const inProgressQuantity = useMemo(() => {
+    // Group pickups by employee and configuration
+    const pickupMap = new Map<string, number>();
+    for (const pickup of pickups) {
+      const key = `${pickup.employeeId}:${pickup.configuration ? JSON.stringify(pickup.configuration) : ""}`;
+      const current = pickupMap.get(key) ?? 0;
+      pickupMap.set(key, current + Number(pickup.quantity));
+    }
+
+    // Subtract productions (Production type only, not Scrap/Rework)
+    const productionsByKey = new Map<string, number>();
+    for (const prod of productionQuantities.filter(
+      (q) => q.type === "Production"
+    )) {
+      const key = `${prod.employeeId}:${prod.configuration ? JSON.stringify(prod.configuration) : ""}`;
+      const current = productionsByKey.get(key) ?? 0;
+      productionsByKey.set(key, current + Number(prod.quantity));
+    }
+
+    // Calculate total in progress
+    let total = 0;
+    for (const [key, pickupQty] of pickupMap.entries()) {
+      const productionQty = productionsByKey.get(key) ?? 0;
+      const inProgress = Math.max(0, pickupQty - productionQty);
+      total += inProgress;
+    }
+
+    return total;
+  }, [pickups, productionQuantities]);
 
   const [items] = useItems();
   const { downloadFile, downloadModel, getFilePath } = useFiles(job);
@@ -2359,30 +2393,29 @@ export const JobOperation = ({
                       <Trans>Quantity</Trans>
                     </TooltipContent>
                   </Tooltip>
-                  <span className="text-xs text-muted-foreground font-mono flex-shrink-0 flex-nowrap min-w-[100px]">
-                    {operation.quantityComplete}/{operation.targetQuantity}
-                  </span>
-                  <BarProgress
-                    segments={[
-                      {
-                        value: operation.quantityComplete,
-                        className: "bg-emerald-500"
-                      },
-                      {
-                        value: operation.quantityReworked ?? 0,
-                        className: "bg-yellow-500"
-                      },
-                      {
-                        value: operation.quantityScrapped ?? 0,
-                        className: "bg-red-500"
+                  <div className="flex flex-col gap-1 flex-1">
+                    <span className="text-xs text-muted-foreground font-mono flex-shrink-0 flex-nowrap">
+                      {operation.quantityComplete}/{operation.targetQuantity}
+                    </span>
+                    {inProgressQuantity > 0 && (
+                      <span className="text-xxs text-yellow-600">
+                        +{inProgressQuantity} picked up, not yet produced
+                      </span>
+                    )}
+                    <BarProgress
+                      activeClassName={
+                        operation.operationStatus === "Paused" &&
+                        operation.quantityComplete < operation.targetQuantity
+                          ? "bg-yellow-500"
+                          : "bg-emerald-500"
                       }
-                    ]}
-                    max={operation.targetQuantity || 1}
-                    progress={
-                      (operation.quantityComplete / operation.targetQuantity) *
-                      100
-                    }
-                  />
+                      progress={
+                        (operation.quantityComplete /
+                          operation.targetQuantity) *
+                        100
+                      }
+                    />
+                  </div>
                 </>
               </div>
             </div>
@@ -2495,6 +2528,8 @@ export const JobOperation = ({
           operation={operation}
           parentIsSerial={parentIsSerial}
           parentIsBatch={parentIsBatch}
+          pickups={pickups}
+          productionQuantities={productionQuantities}
           setupProductionEvent={setupProductionEvent}
           trackedEntityId={trackedEntityId}
           onClose={scrapModal.onClose}
@@ -2513,6 +2548,8 @@ export const JobOperation = ({
                   operation={operation}
                   parentIsSerial={parentIsSerial}
                   parentIsBatch={parentIsBatch}
+                  pickups={pickups}
+                  productionQuantities={productionQuantities}
                   setupProductionEvent={setupProductionEvent}
                   suggestedQuantity={suggestedQuantity}
                   trackedEntityId={trackedEntityId}
@@ -2539,6 +2576,8 @@ export const JobOperation = ({
                   laborProductionEvent={laborProductionEvent}
                   machineProductionEvent={machineProductionEvent}
                   operation={operation}
+                  pickups={pickups}
+                  productionQuantities={productionQuantities}
                   setupProductionEvent={setupProductionEvent}
                   trackedEntityId={trackedEntityId}
                   onClose={finishModal.onClose}

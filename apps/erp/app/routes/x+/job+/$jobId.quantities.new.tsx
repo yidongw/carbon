@@ -70,6 +70,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   if (jobOperationId) {
     return {
+      jobId,
       jobOperationId,
       operationOptions: [] as const,
       configurationParameters:
@@ -87,6 +88,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     })) ?? [];
 
   return {
+    jobId,
     jobOperationId: "",
     operationOptions,
     configurationParameters:
@@ -270,6 +272,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
 export default function NewProductionQuantityRoute() {
   const {
+    jobId,
     jobOperationId,
     operationOptions,
     configurationParameters,
@@ -297,6 +300,7 @@ export default function NewProductionQuantityRoute() {
       configurationParameters={configurationParameters}
       configReferenceSource={configReferenceSource}
       itemId={itemId}
+      jobId={jobId}
       processId={processId}
       operationType={operationType}
       defaultActorKind={defaultActorKind}
