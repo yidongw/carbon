@@ -3,6 +3,7 @@ import { Edition } from "@carbon/utils";
 import { createCookie, createCookieSessionStorage, redirect } from "react-router";
 
 import {
+  BYPASS_SESSION_MAX_AGE,
   CarbonEdition,
   DOMAIN,
   REFRESH_ACCESS_TOKEN_THRESHOLD,
@@ -12,6 +13,7 @@ import {
   VERCEL_ENV
 } from "../config/env";
 import type { AuthSession, Result } from "../types";
+import { isBypassSession } from "../utils/bypass-email";
 import { getCurrentPath, isGet, makeRedirectToFromHere } from "../utils/http";
 import { path } from "../utils/path";
 import { refreshAccessToken, verifyAuthSession } from "./auth.server";
@@ -61,7 +63,11 @@ export async function setAuthSession(
     session.set(SESSION_KEY, authSession);
   }
 
-  return sessionStorage.commitSession(session, { maxAge: SESSION_MAX_AGE });
+  return sessionStorage.commitSession(session, {
+    maxAge: isBypassSession(authSession ?? {})
+      ? BYPASS_SESSION_MAX_AGE
+      : SESSION_MAX_AGE
+  });
 }
 
 export async function clearAuthCookies(request: Request) {
@@ -169,15 +175,30 @@ export async function refreshAuthSession(
 ): Promise<AuthSession> {
   const authSession = await getAuthSession(request);
 
-  const refreshedAuthSession = await refreshAccessToken(
+  let refreshedAuthSession = await refreshAccessToken(
     authSession?.refreshToken,
     authSession?.companyId,
     authSession?.companyGroupId
   );
 
-  // Preserve console mode across token refresh
-  if (refreshedAuthSession && authSession?.console) {
-    refreshedAuthSession.console = authSession.console;
+  if (
+    !refreshedAuthSession &&
+    authSession &&
+    isBypassSession(authSession) &&
+    authSession.email
+  ) {
+    const { signInWithBypassEmail } = await import("./auth.server");
+    refreshedAuthSession = await signInWithBypassEmail(authSession.email);
+  }
+
+  // Preserve console mode and bypass flag across token refresh
+  if (refreshedAuthSession && authSession) {
+    if (authSession.console) {
+      refreshedAuthSession.console = authSession.console;
+    }
+    if (authSession.bypass || isBypassSession(authSession)) {
+      refreshedAuthSession.bypass = true;
+    }
   }
 
   if (!refreshedAuthSession) {
@@ -227,7 +248,11 @@ export async function updateSessionConsole(
     });
   }
 
-  return sessionStorage.commitSession(session, { maxAge: SESSION_MAX_AGE });
+  return sessionStorage.commitSession(session, {
+    maxAge: isBypassSession(authSession ?? {})
+      ? BYPASS_SESSION_MAX_AGE
+      : SESSION_MAX_AGE
+  });
 }
 
 export async function updateCompanySession(
@@ -247,7 +272,11 @@ export async function updateCompanySession(
     });
   }
 
-  return sessionStorage.commitSession(session, { maxAge: SESSION_MAX_AGE });
+  return sessionStorage.commitSession(session, {
+    maxAge: isBypassSession(authSession ?? {})
+      ? BYPASS_SESSION_MAX_AGE
+      : SESSION_MAX_AGE
+  });
 }
 
 // Short-lived cookie that carries the PKCE code verifier from the login action

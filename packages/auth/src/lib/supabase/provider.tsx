@@ -88,7 +88,7 @@ export const CarbonProvider = ({
     // refresh ten minutes before expiry
     const expiresAt = session.expiresAt ?? 0;
     const shouldRefresh = expiresAt - 60 * 10 < Date.now() / 1000;
-    const shouldReload = expiresAt < Date.now() / 1000;
+    const shouldReload = !session.bypass && expiresAt < Date.now() / 1000;
 
     if (shouldReload) {
       window.location.reload();
