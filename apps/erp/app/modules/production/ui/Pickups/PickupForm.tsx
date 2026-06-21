@@ -207,11 +207,11 @@ export const PickupForm = ({
       <DrawerBody>
         <Hidden name="id" />
         <VStack spacing={4}>
-          {!isEditing && jobOptions && (
+          {!isEditing && (
             <Select
               name="jobId"
               label={t`Job`}
-              options={jobOptions}
+              options={jobOptions ?? []}
               defaultValue={selectedJobId}
               onChange={(newValue) => {
                 if (newValue?.value) handleJobChange(newValue.value);
