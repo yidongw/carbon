@@ -1457,6 +1457,13 @@ const JobBillOfProcess = ({
     const canEditQuantityReport =
       !isDisabled && permissions.can("update", "production");
     const currentPickupCount = item.id === selectedItemId ? pickupCount : 0;
+    const pickupTotal =
+      item.id === selectedItemId
+        ? pickups.reduce(
+            (sum, p) => sum + (parseFloat(String(p.pickup.quantity)) || 0),
+            0
+          )
+        : 0;
     const canRecordQuantity =
       !isDisabled &&
       permissions.can("create", "production") &&
@@ -1956,7 +1963,7 @@ const JobBillOfProcess = ({
               {/* Summary Badges */}
               <HStack className="gap-2 flex-wrap">
                 <Badge variant="outline">
-                  <Trans>Total Pickups</Trans>: {pickupTotals.get(item.id) ?? 0}
+                  <Trans>Total Pickups</Trans>: {pickupTotal}
                 </Badge>
                 <Badge variant="outline">
                   <Trans>Total Production</Trans>: {
