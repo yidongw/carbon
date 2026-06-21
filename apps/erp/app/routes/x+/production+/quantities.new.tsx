@@ -48,7 +48,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
   }
 
   let jobOperations = null;
-  let opContext = null;
   let itemId = null;
   let configurationParameters = null;
   let configReferenceSource = null;
@@ -72,50 +71,38 @@ export async function loader({ request }: LoaderFunctionArgs) {
     itemId = job.data?.itemId ?? null;
   }
 
-  // If jobOperationId is selected, load operation context
-  if (jobOperationId) {
-    opContext = await getJobOperationActorContext(
+  // Load operation context (safe to call with empty jobOperationId)
+  const opContext = await getJobOperationActorContext(
+    client,
+    jobOperationId,
+    companyId
+  );
+
+  // If both jobId and jobOperationId are selected, load config params
+  if (jobId && jobOperationId && itemId) {
+    const params = await getConfigurationParameters(
       client,
-      jobOperationId,
+      itemId,
       companyId
     );
+    configurationParameters = params.parameters;
 
-    if (jobId && itemId) {
-      const params = await getConfigurationParameters(
-        client,
-        itemId,
-        companyId
-      );
-      configurationParameters = params.parameters;
-
-      configReferenceSource = await getConfigReferenceSourceForOperation(
-        client,
-        {
-          jobId,
-          jobOperationId,
-          companyId,
-          reportKind: "productionQuantity"
-        }
-      );
-    }
+    configReferenceSource = await getConfigReferenceSourceForOperation(
+      client,
+      {
+        jobId,
+        jobOperationId,
+        companyId,
+        reportKind: "productionQuantity"
+      }
+    );
   }
 
-  const actorContext = opContext
-    ? {
-        ...opContext,
-        defaultActorKind: defaultActorKindFromOperationType(
-          opContext.operationType
-        ),
-        seededActor: seededActorFromOperationContext(opContext)
-      }
-    : {
-        defaultActorKind: "employee" as const,
-        seededActor: null,
-        operationType: null,
-        processId: null,
-        lockActorSelection: false,
-        supplierId: undefined
-      };
+  const actorContext = {
+    ...opContext,
+    defaultActorKind: defaultActorKindFromOperationType(opContext.operationType),
+    seededActor: seededActorFromOperationContext(opContext)
+  };
 
   const jobOptions =
     jobs.data?.map((job) => ({
