@@ -23,7 +23,9 @@ import { path } from "~/utils/path";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const { client, companyId } = await requirePermissions(request, {
-    view: "production"
+    view: "production",
+    role: "employee",
+    bypassRls: true
   });
 
   const url = new URL(request.url);
