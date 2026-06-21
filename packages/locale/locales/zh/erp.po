@@ -6568,6 +6568,9 @@ msgstr "拾取了 {0} 个单位"
 msgid "Pickup"
 msgstr "提货"
 
+msgid "pickup"
+msgstr "提货"
+
 #. placeholder {0}: selectedPickup.employeeId
 msgid "pickup by {0}"
 msgstr "在 {0} 提取"
@@ -6832,6 +6835,33 @@ msgstr "产品标签尺寸"
 
 msgid "Production"
 msgstr "生产"
+
+msgid "Production Logs"
+msgstr "生产日志"
+
+msgid "Total Pickups"
+msgstr "总提货量"
+
+msgid "Total Production"
+msgstr "总生产量"
+
+msgid "Total Rework"
+msgstr "总返工量"
+
+msgid "Total Scrap"
+msgstr "总报废量"
+
+msgid "remaining"
+msgstr "剩余"
+
+msgid "No production logs"
+msgstr "无生产日志"
+
+msgid "Load more pickups"
+msgstr "加载更多提货"
+
+msgid "Load more quantities"
+msgstr "加载更多数量"
 
 msgid "Production Event"
 msgstr "生产事件"
