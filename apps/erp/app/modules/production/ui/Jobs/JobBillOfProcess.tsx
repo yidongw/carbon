@@ -1676,13 +1676,14 @@ const JobBillOfProcess = ({
                         !!pickup.pickup.createdByUser;
                       return (
                         <VStack key={pickup.id} spacing={1} className="w-full">
-                          {/* White row: (reporter) | total | time */}
+                          {/* White row: (reporter avatar) | total | time */}
                           <HStack className="items-center text-sm px-1 gap-2">
                             {reporterDiffers && (
                               <>
-                                <span className="text-muted-foreground">
-                                  {formatPersonName(pickup.pickup.createdByUser!)}
-                                </span>
+                                <EmployeeAvatar
+                                  employeeId={pickup.pickup.createdBy}
+                                  size="xs"
+                                />
                                 <span className="text-muted-foreground/50">|</span>
                               </>
                             )}
@@ -1729,13 +1730,14 @@ const JobBillOfProcess = ({
                         ) ?? 0;
                       return (
                         <VStack key={report.id} spacing={1} className="w-full">
-                          {/* White row: (reporter) | total | time */}
+                          {/* White row: (reporter avatar) | total | time */}
                           <HStack className="items-center text-sm px-1 gap-2">
                             {reporterDiffers && (
                               <>
-                                <span className="text-muted-foreground">
-                                  {formatPersonName(report.report.createdByUser!)}
-                                </span>
+                                <EmployeeAvatar
+                                  employeeId={report.report.createdBy}
+                                  size="xs"
+                                />
                                 <span className="text-muted-foreground/50">|</span>
                               </>
                             )}
