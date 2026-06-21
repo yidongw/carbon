@@ -1543,6 +1543,215 @@ const JobBillOfProcess = ({
       />
     );
 
+    const EmployeeProductionLogsView = ({
+      pickups: allPickups,
+      quantityReports,
+      pickupHasMore,
+      quantityHasMore,
+      loadMorePickups,
+      loadMoreQuantityReports,
+      pickupScrollKey
+    }: {
+      pickups: UnifiedPickupItem[];
+      quantityReports: UnifiedQuantityReportItem[];
+      pickupHasMore: boolean;
+      quantityHasMore: boolean;
+      loadMorePickups: () => Promise<void>;
+      loadMoreQuantityReports: () => Promise<void>;
+      pickupScrollKey: number;
+    }) => {
+      const { formatDateTime } = useDateFormatter();
+      const formatPersonName = useFormatPersonName();
+
+      // Group by employee
+      const employeeGroups = useMemo(() => {
+        const groups = new Map<string, {
+          employeeId: string;
+          employeeName: string;
+          pickups: UnifiedPickupItem[];
+          quantities: UnifiedQuantityReportItem[];
+        }>();
+
+        // Add employee pickups
+        allPickups.forEach((pickup) => {
+          if (pickup.kind === "employee") {
+            const empId = pickup.pickup.employeeId;
+            const empName = pickup.pickup.employee
+              ? formatPersonName(pickup.pickup.employee)
+              : empId;
+
+            if (!groups.has(empId)) {
+              groups.set(empId, {
+                employeeId: empId,
+                employeeName: empName,
+                pickups: [],
+                quantities: []
+              });
+            }
+            groups.get(empId)!.pickups.push(pickup);
+          }
+        });
+
+        // Add employee quantities
+        quantityReports.forEach((report) => {
+          if (report.actorKind === "employee") {
+            const empId = report.report.createdBy;
+            const empName = report.report.createdByUser
+              ? formatPersonName(report.report.createdByUser)
+              : empId;
+
+            if (!groups.has(empId)) {
+              groups.set(empId, {
+                employeeId: empId,
+                employeeName: empName,
+                pickups: [],
+                quantities: []
+              });
+            }
+            groups.get(empId)!.quantities.push(report);
+          }
+        });
+
+        return Array.from(groups.values());
+      }, [allPickups, quantityReports, formatPersonName]);
+
+      if (employeeGroups.length === 0 && !pickupHasMore && !quantityHasMore) {
+        return (
+          <div className="py-8 text-muted-foreground text-center">
+            <Trans>No production logs</Trans>
+          </div>
+        );
+      }
+
+      return (
+        <VStack spacing={3} className="w-full">
+          {employeeGroups.map((group) => {
+            const totalPickups = group.pickups.reduce(
+              (sum, p) => sum + Number(p.pickup.quantity),
+              0
+            );
+            const totalProduction = group.quantities
+              .filter((q) => q.report.quantities?.some((qty) => qty.type === "Production"))
+              .reduce((sum, q) =>
+                sum + (q.report.quantities?.filter((qty) => qty.type === "Production")
+                  .reduce((s, qty) => s + Number(qty.quantity), 0) ?? 0),
+                0
+              );
+            const remaining = totalPickups - totalProduction;
+
+            return (
+              <Card key={group.employeeId} className="w-full">
+                <CardContent className="p-4">
+                  <VStack spacing={2}>
+                    {/* Employee Header */}
+                    <HStack className="justify-between items-center">
+                      <HStack spacing={2}>
+                        <EmployeeAvatar employeeId={group.employeeId} />
+                        <span className="font-medium">{group.employeeName}</span>
+                      </HStack>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className="text-sm text-muted-foreground cursor-help">
+                            {remaining} <Trans>remaining</Trans>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <div className="text-xs">
+                            <div><Trans>Pickups</Trans>: {totalPickups}</div>
+                            <div><Trans>Production</Trans>: {totalProduction}</div>
+                          </div>
+                        </TooltipContent>
+                      </Tooltip>
+                    </HStack>
+
+                    {/* Pickups */}
+                    {group.pickups.map((pickup) => (
+                      <VStack key={pickup.id} spacing={1} className="w-full">
+                        <HStack className="justify-between items-center bg-background px-2 py-1 rounded">
+                          <div className="text-sm">
+                            {pickup.pickup.createdBy !== pickup.pickup.employeeId &&
+                              pickup.pickup.createdByUser && (
+                                <span className="text-muted-foreground mr-2">
+                                  ({formatPersonName(pickup.pickup.createdByUser)})
+                                </span>
+                              )}
+                            <span className="font-medium">{pickup.pickup.quantity}</span>
+                            {" | "}
+                            {formatDateTime(pickup.createdAt)}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs"><Trans>pickup</Trans></span>
+                            <span className="font-medium">{pickup.pickup.quantity}</span>
+                          </div>
+                        </HStack>
+                        {pickup.pickup.configuration && (
+                          <div className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
+                            {JSON.stringify(pickup.pickup.configuration)}
+                          </div>
+                        )}
+                      </VStack>
+                    ))}
+
+                    {/* Quantities */}
+                    {group.quantities.map((report) => (
+                      <VStack key={report.id} spacing={1} className="w-full">
+                        {report.report.quantities?.map((qty, idx) => (
+                          <div key={idx}>
+                            <HStack className="justify-between items-center bg-background px-2 py-1 rounded">
+                              <div className="text-sm">
+                                <span className="font-medium">{qty.quantity}</span>
+                                {" | "}
+                                {formatDateTime(report.createdAt)}
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Badge
+                                  variant={
+                                    qty.type === "Production"
+                                      ? "green"
+                                      : qty.type === "Rework"
+                                      ? "orange"
+                                      : "red"
+                                  }
+                                >
+                                  {qty.type}
+                                </Badge>
+                                <span className="font-medium">{qty.quantity}</span>
+                              </div>
+                            </HStack>
+                            {qty.configuration && (
+                              <div className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
+                                {JSON.stringify(qty.configuration)}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </VStack>
+                    ))}
+                  </VStack>
+                </CardContent>
+              </Card>
+            );
+          })}
+
+          {/* Load More Triggers */}
+          {pickupHasMore && (
+            <div className="text-center">
+              <Button variant="outline" size="sm" onClick={loadMorePickups}>
+                <Trans>Load more pickups</Trans>
+              </Button>
+            </div>
+          )}
+          {quantityHasMore && (
+            <div className="text-center">
+              <Button variant="outline" size="sm" onClick={loadMoreQuantityReports}>
+                <Trans>Load more quantities</Trans>
+              </Button>
+            </div>
+          )}
+        </VStack>
+      );
+    };
+
     const tabs = [
       {
         id: 0,
@@ -1684,62 +1893,73 @@ const JobBillOfProcess = ({
               delay: 0.15
             }}
           >
-            {/* Action Buttons */}
-            <HStack className="justify-end gap-2">
-              {canRecordQuantity && onAddPickup && (
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => onAddPickup(item.id)}
-                  className="transition-transform active:scale-[0.96]"
-                >
-                  <LuCirclePlus className="mr-1.5 h-4 w-4" />
-                  <Trans>Record pickup</Trans>
-                </Button>
-              )}
-              {canRecordQuantity && onAddProductionQuantity && (
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  className="shrink-0 transition-transform active:scale-[0.96]"
-                  onClick={() => onAddProductionQuantity(item.id)}
-                >
-                  <LuCirclePlus className="mr-1.5 h-4 w-4" />
-                  <Trans>Record quantity</Trans>
-                </Button>
-              )}
+            {/* Header with Summary Badges and Action Buttons */}
+            <HStack className="justify-between items-start gap-4 flex-wrap">
+              {/* Summary Badges */}
+              <HStack className="gap-2 flex-wrap">
+                <Badge variant="outline">
+                  <Trans>Total Pickups</Trans>: {pickupTotals.get(item.id) ?? 0}
+                </Badge>
+                <Badge variant="outline">
+                  <Trans>Total Production</Trans>: {
+                    item.id === selectedItemId
+                      ? (operationQuantitySummary?.production ?? 0)
+                      : 0
+                  }
+                </Badge>
+                <Badge variant="outline">
+                  <Trans>Total Rework</Trans>: {
+                    item.id === selectedItemId
+                      ? (operationQuantitySummary?.rework ?? 0)
+                      : 0
+                  }
+                </Badge>
+                <Badge variant="outline">
+                  <Trans>Total Scrap</Trans>: {
+                    item.id === selectedItemId
+                      ? (operationQuantitySummary?.scrap ?? 0)
+                      : 0
+                  }
+                </Badge>
+              </HStack>
+
+              {/* Action Buttons */}
+              <HStack className="gap-2">
+                {canRecordQuantity && onAddPickup && (
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => onAddPickup(item.id)}
+                    className="transition-transform active:scale-[0.96]"
+                  >
+                    <LuCirclePlus className="mr-1.5 h-4 w-4" />
+                    <Trans>Record pickup</Trans>
+                  </Button>
+                )}
+                {canRecordQuantity && onAddProductionQuantity && (
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    className="shrink-0 transition-transform active:scale-[0.96]"
+                    onClick={() => onAddProductionQuantity(item.id)}
+                  >
+                    <LuCirclePlus className="mr-1.5 h-4 w-4" />
+                    <Trans>Record quantity</Trans>
+                  </Button>
+                )}
+              </HStack>
             </HStack>
 
-            {/* Summary View */}
-            {item.id === selectedItemId && operationQuantitySummary && (
-              <OperationQuantitySummaryView
-                summary={operationQuantitySummary}
-                configurationParameters={configurationParameters}
-              />
-            )}
-
-            {/* Merged Pickups and Quantities */}
-            <VStack spacing={4}>
-              {/* Pickups Section */}
-              <InfiniteScroll
-                key={pickupScrollKey}
-                component={PickupActivityRowWrapper}
-                items={pickups}
-                loadMore={loadMorePickups}
-                hasMore={pickupHasMore}
-              />
-
-              {/* Quantities Section */}
-              {item.id === selectedItemId && (
-                <InfiniteScroll
-                  component={QuantityReportRow}
-                  items={quantityReports}
-                  loadMore={loadMoreQuantityReports}
-                  hasMore={quantityHasMore}
-                  listClassName="gap-5 pt-2"
-                />
-              )}
-            </VStack>
+            {/* Employee-Grouped Production Logs */}
+            <EmployeeProductionLogsView
+              pickups={pickups}
+              quantityReports={item.id === selectedItemId ? quantityReports : []}
+              pickupHasMore={pickupHasMore}
+              quantityHasMore={quantityHasMore}
+              loadMorePickups={loadMorePickups}
+              loadMoreQuantityReports={loadMoreQuantityReports}
+              pickupScrollKey={pickupScrollKey}
+            />
           </motion.div>
         )
       },
