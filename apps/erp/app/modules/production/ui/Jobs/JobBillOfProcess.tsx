@@ -1635,14 +1635,14 @@ const JobBillOfProcess = ({
         <VStack spacing={3} className="w-full">
           {employeeGroups.map((group) => {
             const totalPickups = group.pickups.reduce(
-              (sum, p) => sum + Number(p.pickup.quantity),
+              (sum, p) => sum + (parseFloat(String(p.pickup.quantity)) || 0),
               0
             );
             const totalProduction = group.quantities
               .filter((q) => q.report.quantities?.some((qty) => qty.type === "Production"))
               .reduce((sum, q) =>
                 sum + (q.report.quantities?.filter((qty) => qty.type === "Production")
-                  .reduce((s, qty) => s + Number(qty.quantity), 0) ?? 0),
+                  .reduce((s, qty) => s + (parseFloat(String(qty.quantity)) || 0), 0) ?? 0),
                 0
               );
             const remaining = totalPickups - totalProduction;
