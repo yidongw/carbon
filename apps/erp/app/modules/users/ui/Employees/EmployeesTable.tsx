@@ -374,7 +374,10 @@ const EmployeesTable = memo(
           data={data}
           primaryAction={
             permissions.can("create", "users") && (
-              <New label={t`Account`} to={`new?${params.toString()}`} />
+              <New
+                label={t`Account`}
+                to={`${path.to.newEmployee}?${params.toString()}`}
+              />
             )
           }
           renderActions={renderActions}
