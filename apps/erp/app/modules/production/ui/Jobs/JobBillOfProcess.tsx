@@ -1415,6 +1415,13 @@ const JobBillOfProcess = ({
     pickupPage
   ]);
 
+  // Auto-load pickups when operation is selected
+  useEffect(() => {
+    if (selectedItemId && pickups.length === 0 && !pickupIsLoading && pickupHasMore) {
+      void loadMorePickups();
+    }
+  }, [selectedItemId, pickups.length, pickupIsLoading, pickupHasMore, loadMorePickups]);
+
   const [tabChangeRerender, setTabChangeRerender] = useState<number>(1);
 
   const initialWorkInstructions = useMemo(
