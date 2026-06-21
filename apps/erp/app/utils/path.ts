@@ -971,6 +971,7 @@ export const path = {
     integrationDeactivate: (id: string) =>
       generatePath(`${x}/settings/integrations/deactivate/${id}`),
     integrations: `${x}/settings/integrations`,
+    inventory: `${x}/inventory`,
     inventoryQuantities: `${x}/inventory/quantities`,
     inventoryItem: (id: string) =>
       generatePath(`${x}/inventory/quantities/${id}/details`),
@@ -1475,9 +1476,11 @@ export const path = {
     purchaseOrderStatus: (id: string) =>
       generatePath(`${x}/purchase-order/${id}/status`),
     purchaseOrders: `${x}/purchasing/orders`,
+    purchasing: `${x}/purchasing`,
     purchasingDashboard: `${x}/purchasing/dashboard`,
     purchasingPlanning: `${x}/purchasing/planning`,
     purchasingSettings: `${x}/settings/purchasing`,
+    quality: `${x}/quality`,
     qualityDashboard: `${x}/quality/dashboard`,
     qualityActions: `${x}/quality/actions`,
     inboundInspections: `${x}/quality/inbound-inspections`,
@@ -1564,6 +1567,7 @@ export const path = {
       generatePath(`${x}/quality/required-actions/${id}`),
     requiredActions: `${x}/quality/required-actions`,
     resendInvite: `${x}/users/resend-invite`,
+    resources: `${x}/resources`,
     resourcesDashboard: `${x}/resources/dashboard`,
     resourcesSettings: `${x}/settings/resources`,
     revision: (id: string) => generatePath(`${x}/items/revisions/${id}`),
@@ -1572,6 +1576,7 @@ export const path = {
     risk: (id: string) => generatePath(`${x}/quality/risks/${id}`),
     root: "/",
     routings: `${x}/items/routing`,
+    sales: `${x}/sales`,
     salesDashboard: `${x}/sales/dashboard`,
     salesInvoice: (id: string) => generatePath(`${x}/sales-invoice/${id}`),
     salesInvoiceDetails: (id: string) =>

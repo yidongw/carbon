@@ -47,7 +47,6 @@ import { now, toCalendarDateTime } from "@internationalized/date";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { DateRange } from "@react-types/datepicker";
 import { Suspense, useEffect, useMemo, useState } from "react";
-import { CSVLink } from "react-csv";
 import { flushSync } from "react-dom";
 import {
   LuArrowUpRight,
@@ -70,6 +69,7 @@ import {
   Empty,
   Hyperlink
 } from "~/components";
+import { CSVLink } from "~/components/CSVLink";
 import { CollapsibleSidebarTrigger } from "~/components/Layout/Navigation";
 import { useUser } from "~/hooks/useUser";
 import type { ActiveProductionEvent } from "~/modules/production";
