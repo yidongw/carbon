@@ -1,9 +1,9 @@
 import {
   Card,
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuTrigger,
   cn,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
   Menu,
   Separator,
   VStack
@@ -15,9 +15,12 @@ import {
   type JSX,
   type KeyboardEvent,
   type MouseEvent,
-  type ReactNode
+  type ReactNode,
+  useCallback,
+  useState
 } from "react";
 import { useNavigate } from "react-router";
+import { useSwipeReveal } from "~/hooks/useSwipeReveal";
 
 const SYSTEM_COLUMN_IDS = new Set(["Select", "Actions", "Expand"]);
 
@@ -200,6 +203,18 @@ function TableCardRow<T extends object>({
 }: TableCardRowProps<T>) {
   const navigate = useNavigate();
   const rowHref = getRowHref?.(row.original);
+  const contextMenu = renderContextMenu?.(row.original);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const openMenu = useCallback(() => setMenuOpen(true), []);
+  const {
+    didSwipe,
+    isDragging,
+    offset: swipeOffset,
+    onTouchCancel,
+    onTouchEnd,
+    onTouchMove,
+    onTouchStart
+  } = useSwipeReveal({ onOpen: openMenu });
   const cellMap = Object.fromEntries(
     row.getAllCells().map((cell) => [cell.column.id, cell])
   );
@@ -232,6 +247,14 @@ function TableCardRow<T extends object>({
   const hasUnpinned = metadataNodes.length > 0;
 
   const handleCardClick = (event: MouseEvent<HTMLDivElement>) => {
+    if (menuOpen) {
+      setMenuOpen(false);
+      return;
+    }
+    if (didSwipe.current) {
+      didSwipe.current = false;
+      return;
+    }
     if (!rowHref || shouldIgnoreRowNavigation(event.target)) return;
     navigate(rowHref);
   };
@@ -244,7 +267,7 @@ function TableCardRow<T extends object>({
     }
   };
 
-  const cardContent = (
+  const card = (
     <Card
       role={rowHref ? "button" : undefined}
       tabIndex={rowHref ? 0 : undefined}
@@ -304,17 +327,39 @@ function TableCardRow<T extends object>({
     </Card>
   );
 
-  if (!renderContextMenu) return cardContent;
+  if (!contextMenu) return card;
 
   return (
-    <Menu type="context">
-      <ContextMenu>
-        <ContextMenuTrigger asChild>{cardContent}</ContextMenuTrigger>
-        <ContextMenuContent className="w-128">
-          {renderContextMenu(row.original)}
-        </ContextMenuContent>
-      </ContextMenu>
-    </Menu>
+    <div className="relative overflow-hidden rounded-lg">
+      <Menu type="dropdown">
+        <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen} modal={false}>
+          <DropdownMenuTrigger asChild>
+            <button
+              type="button"
+              tabIndex={-1}
+              aria-hidden
+              className="pointer-events-none absolute right-3 top-1/2 z-10 h-px w-px -translate-y-1/2 opacity-0"
+            />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            {contextMenu}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </Menu>
+      <div
+        className="relative touch-pan-y"
+        onTouchCancel={onTouchCancel}
+        onTouchEnd={onTouchEnd}
+        onTouchMove={onTouchMove}
+        onTouchStart={onTouchStart}
+        style={{
+          transform: `translateX(${swipeOffset}px)`,
+          transition: isDragging ? undefined : "transform 200ms ease-out"
+        }}
+      >
+        {card}
+      </div>
+    </div>
   );
 }
 
