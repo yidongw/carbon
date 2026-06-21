@@ -32,9 +32,11 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   // Get list of jobs for the job selector
   const jobs = await getJobs(client, companyId, {
+    search: null,
     limit: 1000,
     offset: 0,
-    sorts: [{ id: "jobId", desc: true }]
+    sorts: [{ id: "jobId", desc: true }],
+    filters: []
   });
 
   let jobOperations = null;
