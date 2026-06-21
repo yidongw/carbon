@@ -136,10 +136,7 @@ export const PickupForm = ({
   // When job changes, update URL to reload operations
   const handleJobChange = (value: string) => {
     setSelectedJobId(value);
-    const newParams = new URLSearchParams(searchParams);
-    newParams.set("jobId", value);
-    newParams.delete("jobOperationId");
-    setSearchParams(newParams, { replace: true });
+    navigate(`?jobId=${value}`, { replace: true });
   };
 
   const handleConfigTableSubmit = (
