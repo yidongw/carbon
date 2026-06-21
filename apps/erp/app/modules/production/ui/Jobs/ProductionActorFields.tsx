@@ -65,7 +65,8 @@ export function ProductionActorFields({
   supplierProcessIdValue,
   supplierIdValue,
   onActorKindChange,
-  onSupplierProcessChange
+  onSupplierProcessChange,
+  onEmployeeChange
 }: {
   processId?: string | null;
   operationType?: OperationType | string | null;
