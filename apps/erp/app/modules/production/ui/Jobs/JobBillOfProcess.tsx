@@ -670,9 +670,11 @@ const EmployeeProductionLogsView = ({
                 {group.pickups.map((pickup) => {
                   return (
                     <VStack key={pickup.id} spacing={1} className="w-full">
-                      {/* White row: total, time, reporter (icon only) at the end */}
+                      {/* White row: total badge, time, reporter (icon only) at the end */}
                       <HStack className="items-center text-sm px-1 gap-2">
-                        <span className="font-medium">{pickup.pickup.quantity}</span>
+                        <Badge variant="outline" className="text-xs font-medium">
+                          <Trans>Total</Trans>: {pickup.pickup.quantity}
+                        </Badge>
                         <span className="text-muted-foreground">
                           {formatDateTime(pickup.createdAt)}
                         </span>
@@ -731,9 +733,11 @@ const EmployeeProductionLogsView = ({
                   );
                   return (
                     <VStack key={entry.key} spacing={1} className="w-full">
-                      {/* White row: total, time, reporter (icon only) at the end */}
+                      {/* White row: total badge, time, reporter (icon only) at the end */}
                       <HStack className="items-center text-sm px-1 gap-2">
-                        <span className="font-medium">{reportTotal}</span>
+                        <Badge variant="outline" className="text-xs font-medium">
+                          <Trans>Total</Trans>: {reportTotal}
+                        </Badge>
                         <span className="text-muted-foreground">
                           {formatDateTime(entry.createdAt)}
                         </span>
@@ -2032,24 +2036,24 @@ const JobBillOfProcess = ({
             <HStack className="justify-between items-start gap-4 flex-wrap">
               {/* Summary Badges */}
               <HStack className="gap-2 flex-wrap">
-                <Badge variant="outline">
+                <Badge variant="blue">
                   <Trans>Total Pickups</Trans>: {pickupTotal}
                 </Badge>
-                <Badge variant="outline">
+                <Badge variant="green">
                   <Trans>Total Production</Trans>: {
                     item.id === selectedItemId
                       ? (operationQuantitySummary?.production ?? 0)
                       : 0
                   }
                 </Badge>
-                <Badge variant="outline">
+                <Badge variant="orange">
                   <Trans>Total Rework</Trans>: {
                     item.id === selectedItemId
                       ? (operationQuantitySummary?.rework ?? 0)
                       : 0
                   }
                 </Badge>
-                <Badge variant="outline">
+                <Badge variant="red">
                   <Trans>Total Scrap</Trans>: {
                     item.id === selectedItemId
                       ? (operationQuantitySummary?.scrap ?? 0)
