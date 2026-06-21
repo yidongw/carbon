@@ -55,10 +55,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
         operationDescription: pickup.jobOperation?.description ?? null,
         employeeName:
           pickup.employee?.fullName ??
-          [pickup.employee?.firstName, pickup.employee?.lastName]
+          ([pickup.employee?.firstName, pickup.employee?.lastName]
             .filter(Boolean)
-            .join(" ") ||
-          null
+            .join(" ") || null)
       })) ?? []
   };
 }

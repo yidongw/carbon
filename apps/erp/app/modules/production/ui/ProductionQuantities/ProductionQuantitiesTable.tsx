@@ -61,10 +61,9 @@ export function ProductionQuantitiesTable({
       header: () => <Trans>Employee</Trans>,
       cell: ({ row }) =>
         row.original.employee?.fullName ??
-        [row.original.employee?.firstName, row.original.employee?.lastName]
+        ([row.original.employee?.firstName, row.original.employee?.lastName]
           .filter(Boolean)
-          .join(" ") ||
-        "-"
+          .join(" ") || "-")
     },
     {
       accessorKey: "originalQuantity",
