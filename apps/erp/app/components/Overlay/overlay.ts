@@ -82,7 +82,9 @@ export const overlay = {
           employeeId: opts.referenceContext.employeeId,
           hasPickupsByEmployee: !!opts.referenceContext.pickupsByEmployee,
           pickupsCount: opts.referenceContext.pickupsByEmployee ? Object.keys(opts.referenceContext.pickupsByEmployee).length : 0,
-          jsonLength: refContextJson.length
+          jsonLength: refContextJson.length,
+          fullContext: opts.referenceContext,
+          serialized: refContextJson.substring(0, 500)
         });
         params.set("referenceContext", refContextJson);
       }

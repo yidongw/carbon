@@ -181,8 +181,16 @@ export function ProductionQuantityLinesEditor({
         hasReferenceContext: !!referenceContext,
         contextEmployeeId: referenceContext?.employeeId,
         contextHasPickups: !!referenceContext?.pickupsByEmployee,
-        pickupsCount: referenceContext?.pickupsByEmployee ? Object.keys(referenceContext.pickupsByEmployee).length : 0
+        pickupsCount: referenceContext?.pickupsByEmployee ? Object.keys(referenceContext.pickupsByEmployee).length : 0,
+        fullContext: referenceContext
       });
+
+      // TESTING: Alert to verify employeeId
+      if (employeeId) {
+        alert(`DEBUG: employeeId = ${employeeId}, pickupsCount = ${referenceContext?.pickupsByEmployee ? Object.keys(referenceContext.pickupsByEmployee).length : 0}`);
+      } else {
+        alert('DEBUG: employeeId is EMPTY!');
+      }
 
       openOverlay(
         overlay.to.itemConfigTable(itemId, {
