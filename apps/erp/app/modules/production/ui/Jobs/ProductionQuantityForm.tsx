@@ -275,25 +275,11 @@ const ProductionQuantityForm = ({
   const openConfigTable = () => {
     if (!itemId) return;
 
-    console.log('[DEBUG] openConfigTable called with:', {
-      actorKind,
-      employeeId,
-      hasConfigReferenceSource: !!configReferenceSource,
-      pickupsByEmployee: configReferenceSource?.pickupsByEmployee
-    });
-
     const referenceContext = configReferenceSource
       ? buildJobRemainingReferenceContext(configReferenceSource, {
           employeeId: actorKind === "employee" ? employeeId : undefined
         })
       : undefined;
-
-    console.log('[DEBUG] referenceContext:', {
-      hasContext: !!referenceContext,
-      employeeId: referenceContext?.employeeId,
-      hasPickupsByEmployee: !!referenceContext?.pickupsByEmployee,
-      pickupsCount: referenceContext?.pickupsByEmployee ? Object.keys(referenceContext.pickupsByEmployee).length : 0
-    });
 
     openOverlay(
       overlay.to.itemConfigTable(itemId, {

@@ -410,9 +410,7 @@ export function buildConfigTableEditorState({
 
       // If employee is selected and has pickups, use pickup-based hints
       if (referenceContext.employeeId && referenceContext.pickupsByEmployee) {
-        console.log('[DEBUG HINT] Using pickup-based hints for employee:', referenceContext.employeeId);
         const employeePickups = referenceContext.pickupsByEmployee[referenceContext.employeeId] ?? [];
-        console.log('[DEBUG HINT] Employee pickups:', employeePickups);
 
         // Find pickup quantity for this config row
         let pickupQty = 0;
@@ -423,18 +421,11 @@ export function buildConfigTableEditorState({
           }
         }
 
-        // Calculate produced quantity for this employee
-        const producedQty = Number(otherByKey.get(key)?.[col.key]) || 0;
-
-        console.log('[DEBUG HINT] Col:', col.key, 'Pickup:', pickupQty, 'Produced:', producedQty, 'Hint:', Math.max(0, pickupQty - producedQty));
-
-        // Hint = pickup - produced
-        refs[col.key] = Math.max(0, pickupQty - producedQty);
+        // For pickup-based hints, show the pickup quantity as the reference
+        // We don't subtract already-produced quantities because productionQuantity
+        // doesn't track which employee produced what
+        refs[col.key] = Math.max(0, pickupQty);
       } else {
-        console.log('[DEBUG HINT] Using job target hints (no employee or no pickups)', {
-          hasEmployeeId: !!referenceContext.employeeId,
-          hasPickupsByEmployee: !!referenceContext.pickupsByEmployee
-        });
         // Default behavior: job target - already produced
         const originalQty = Number(originalByKey.get(key)?.[col.key]) || 0;
         const otherQty = Number(otherByKey.get(key)?.[col.key]) || 0;
