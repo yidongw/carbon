@@ -11,7 +11,7 @@ import {
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import type { z } from "zod";
 import { Hidden, Select, Submit, TextArea } from "~/components/Form";
@@ -85,6 +85,14 @@ export const ProductionQuantityForm = ({
   ]);
 
   const isDisabled = !permissions.can("create", "production");
+
+  // Sync selectedJobId with URL params when they change
+  useEffect(() => {
+    const jobIdFromUrl = searchParams.get("jobId") ?? "";
+    if (jobIdFromUrl !== selectedJobId) {
+      setSelectedJobId(jobIdFromUrl);
+    }
+  }, [searchParams, selectedJobId]);
 
   // When job changes, update URL to reload operations
   const handleJobChange = (value: string) => {
