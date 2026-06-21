@@ -232,10 +232,36 @@ describe("buildProductionConfigTableReferenceContext", () => {
 
     expect(context).toEqual({
       mode: "remaining",
-      originalConfiguration: { configTable: [] },
+      originalConfiguration: null,
       otherLineConfigurations: [],
       employeeId: "emp1",
       jobId: "job1",
+      jobOperationId: "op1",
+      siblingLineConfigurations: []
+    });
+  });
+
+  it("defers pickup loading when only job operation is known", () => {
+    const context = buildProductionConfigTableReferenceContext({
+      source: {
+        jobConfiguration: {
+          configTable: [{ color: "红色", size: "M", M: 100, L: 100, XL: 0 }]
+        },
+        reportedConfigurations: [],
+        pickupsByEmployee: {
+          emp1: [{ quantity: 1, configuration: { configTable: [] } }]
+        }
+      },
+      employeeId: "emp1",
+      jobOperationId: "op1"
+    });
+
+    expect(context).toEqual({
+      mode: "remaining",
+      originalConfiguration: null,
+      otherLineConfigurations: [],
+      employeeId: "emp1",
+      jobId: undefined,
       jobOperationId: "op1",
       siblingLineConfigurations: []
     });

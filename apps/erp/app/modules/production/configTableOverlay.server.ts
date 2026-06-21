@@ -152,14 +152,42 @@ export async function getConfigReferenceSourceForOperation(
   };
 }
 
+async function resolveJobIdForOperation(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  jobOperationId: string,
+  jobId?: string
+): Promise<string | undefined> {
+  const trimmedJobId = jobId?.trim();
+  if (trimmedJobId) return trimmedJobId;
+
+  const { data: operation } = await client
+    .from("jobOperation")
+    .select("jobId")
+    .eq("id", jobOperationId)
+    .eq("companyId", companyId)
+    .maybeSingle();
+
+  return operation?.jobId?.trim() || undefined;
+}
+
 export async function resolveConfigTableReferenceContext(
   client: SupabaseClient<Database>,
   companyId: string,
   referenceContext: ConfigTableReferenceContext
 ): Promise<ConfigTableReferenceContext> {
-  const jobId = referenceContext.jobId?.trim();
   const jobOperationId = referenceContext.jobOperationId?.trim();
-  if (!jobId || !jobOperationId) {
+  if (!jobOperationId) {
+    return referenceContext;
+  }
+
+  const jobId = await resolveJobIdForOperation(
+    client,
+    companyId,
+    jobOperationId,
+    referenceContext.jobId
+  );
+  if (!jobId) {
     return referenceContext;
   }
 

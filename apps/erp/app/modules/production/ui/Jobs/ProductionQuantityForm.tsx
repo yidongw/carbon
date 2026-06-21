@@ -85,6 +85,12 @@ type ConfigurationParameter = {
   listOptions?: string[] | null;
 };
 
+function parseJobIdFromQuantitiesUrl(url?: string | null) {
+  if (!url) return undefined;
+  const match = url.match(/\/job\/([^/]+)\/quantities\/(?:new|[^/?]+)/);
+  return match?.[1];
+}
+
 export type ProductionQuantityCreateInitialValues = {
   jobOperationId: string;
   actorKind?: "employee" | "supplier";
@@ -108,6 +114,7 @@ export type ProductionQuantityFormProps = {
   configurationParameters?: ConfigurationParameter[] | null;
   configReferenceSource?: ConfigReferenceSource | null;
   itemId?: string | null;
+  jobId?: string | null;
   processId?: string | null;
   operationType?: string | null;
   defaultActorKind?: "employee" | "supplier";
@@ -142,6 +149,7 @@ const ProductionQuantityForm = ({
   configurationParameters,
   configReferenceSource,
   itemId,
+  jobId: jobIdProp,
   processId,
   operationType,
   defaultActorKind,
@@ -153,7 +161,12 @@ const ProductionQuantityForm = ({
   const permissions = usePermissions();
   const { t } = useLingui();
   const navigate = useNavigate();
-  const { jobId } = useParams();
+  const { jobId: jobIdFromParams } = useParams();
+  const jobId =
+    jobIdProp?.trim() ||
+    parseJobIdFromQuantitiesUrl(formAction) ||
+    jobIdFromParams?.trim() ||
+    undefined;
   const isOverlay = fetcher != null;
   const onDismiss =
     onDismissProp ??

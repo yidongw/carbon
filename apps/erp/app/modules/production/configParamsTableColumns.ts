@@ -548,10 +548,10 @@ export function buildProductionConfigTableReferenceContext({
   const trimmedJobOperationId = jobOperationId?.trim();
   const trimmedEmployeeId = employeeId?.trim() || undefined;
 
-  if (trimmedJobId && trimmedJobOperationId) {
+  if (trimmedJobOperationId) {
     return {
       mode: "remaining",
-      originalConfiguration: source?.jobConfiguration ?? null,
+      originalConfiguration: null,
       otherLineConfigurations: [],
       employeeId: trimmedEmployeeId,
       jobId: trimmedJobId,

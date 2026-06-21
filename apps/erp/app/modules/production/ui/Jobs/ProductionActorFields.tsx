@@ -176,6 +176,8 @@ export function ProductionActorFields({
       setSelection("");
       setEmployeeId("");
       setSupplierProcessId("");
+      onSupplierProcessChange?.("");
+      onEmployeeChange?.("");
     }
     setActorKind(next);
     onActorKindChange?.(next);
@@ -184,7 +186,9 @@ export function ProductionActorFields({
     lockActorSelection,
     defaultActorKind,
     selection,
-    onActorKindChange
+    onActorKindChange,
+    onSupplierProcessChange,
+    onEmployeeChange
   ]);
 
   useEffect(() => {
