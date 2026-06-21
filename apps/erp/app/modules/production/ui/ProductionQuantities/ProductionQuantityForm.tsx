@@ -11,7 +11,7 @@ import {
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import type { z } from "zod";
 import { Hidden, Select, Submit, TextArea } from "~/components/Form";
@@ -77,24 +77,15 @@ export const ProductionQuantityForm = ({
   const isOverlay = fetcher != null;
   const onDismiss = onDismissProp ?? (() => navigate(path.to.productionQuantities));
 
-  const [selectedJobId, setSelectedJobId] = useState(
-    searchParams.get("jobId") ?? ""
-  );
+  const selectedJobId = searchParams.get("jobId") ?? "";
   const [lines, setLines] = useState<ProductionQuantityLineInput[]>([
     { type: "Production", quantity: 0, configuration: undefined }
   ]);
 
   const isDisabled = !permissions.can("create", "production");
 
-  // Sync selectedJobId with URL params when they change
-  useEffect(() => {
-    const jobIdFromUrl = searchParams.get("jobId") ?? "";
-    setSelectedJobId(jobIdFromUrl);
-  }, [searchParams]);
-
   // When job changes, update URL to reload operations
   const handleJobChange = (value: string) => {
-    setSelectedJobId(value);
     const newParams = new URLSearchParams(searchParams);
     newParams.set("jobId", value);
     newParams.delete("jobOperationId");
@@ -134,7 +125,7 @@ export const ProductionQuantityForm = ({
               name="jobId"
               label={t`Job`}
               options={jobOptions}
-              value={selectedJobId}
+              defaultValue={selectedJobId}
               onChange={(e) => {
                 const value = e?.currentTarget?.value;
                 if (value) handleJobChange(value);
