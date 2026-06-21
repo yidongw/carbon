@@ -277,7 +277,7 @@ const ProductionQuantityForm = ({
 
     const referenceContext = configReferenceSource
       ? buildJobRemainingReferenceContext(configReferenceSource, {
-          employeeId: actorKind === "employee" ? actorFieldValues.employeeId : undefined
+          employeeId: actorKind === "employee" ? employeeId : undefined
         })
       : undefined;
 
@@ -373,6 +373,9 @@ const ProductionQuantityForm = ({
         defaultActorKind ??
         "employee") as (typeof productionActorKinds)[number]
   );
+  const [employeeId, setEmployeeId] = useState(
+    () => actorFieldValues.employeeId ?? ""
+  );
   const [supplierProcessId, setSupplierProcessId] = useState(
     () => actorFieldValues.supplierProcessId ?? ""
   );
@@ -441,6 +444,7 @@ const ProductionQuantityForm = ({
             supplierProcessIdValue={actorFieldValues.supplierProcessId}
             supplierIdValue={actorFieldValues.supplierId}
             onActorKindChange={setActorKind}
+            onEmployeeChange={setEmployeeId}
             onSupplierProcessChange={setSupplierProcessId}
           />
 
