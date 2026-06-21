@@ -164,7 +164,7 @@ const ProductionLogsTable = memo(
                 />
                 <New
                   label={t`Quantity`}
-                  to={path.to.newJobQuantity(jobId)}
+                  to={path.to.newJobProductionQuantity(jobId)}
                   leftIcon={<LuCirclePlus />}
                 />
               </>
