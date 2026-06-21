@@ -2729,7 +2729,8 @@ export async function getCompanyJobOperationPickups(
   let query = client
     .from("jobOperationPickup")
     .select(
-      `*, employee:user!jobOperationPickup_employeeId_fkey(id, firstName, lastName, fullName, avatarUrl),
+      `*, createdByUser:user!jobOperationPickup_createdBy_fkey(id, firstName, lastName, fullName, avatarUrl),
+      employee:user!jobOperationPickup_employeeId_fkey(id, firstName, lastName, fullName, avatarUrl),
       jobOperation!inner(id, description, jobId,
         process:processId(name),
         job:jobId(jobId, item:itemId(readableIdWithRevision, name))

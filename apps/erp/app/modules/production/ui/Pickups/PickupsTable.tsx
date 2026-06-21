@@ -1,13 +1,13 @@
-import { Avatar, HStack, IconButton, VStack } from "@carbon/react";
+import { IconButton, VStack } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useMemo } from "react";
 import { AiOutlinePartition } from "react-icons/ai";
 import { LuCalendar, LuHash, LuPlus, LuUser } from "react-icons/lu";
 import { New, Table } from "~/components";
+import { ProductionQuantityReportReporter } from "~/modules/production/ui/Jobs/ProductionQuantityReportReporter";
 import {
   formatDateTime,
-  getEmployeeName,
   getItemName,
   getItemReadableIdWithRevision,
   getJobReadableId,
@@ -18,17 +18,11 @@ import { path } from "~/utils/path";
 type JobOperationPickup = {
   id: string;
   jobOperationId: string;
-  employeeId?: string | null;
+  employeeId: string;
+  createdBy?: string | null;
   quantity: number;
   notes?: string | null;
   createdAt: string;
-  employee?: {
-    id: string;
-    firstName?: string | null;
-    lastName?: string | null;
-    fullName?: string | null;
-    avatarUrl?: string | null;
-  } | null;
   jobOperation?: {
     description?: string | null;
     jobId?: string | null;
@@ -57,16 +51,10 @@ export function PickupsTable({ data, count }: PickupsTableProps) {
         accessorKey: "employeeId",
         header: t`Employee`,
         cell: ({ row }) => (
-          <HStack className="items-center gap-2">
-            <Avatar
-              className="size-7"
-              src={row.original.employee?.avatarUrl ?? undefined}
-              name={getEmployeeName(row.original.employee)}
-            />
-            <span className="text-sm font-medium">
-              {getEmployeeName(row.original.employee)}
-            </span>
-          </HStack>
+          <ProductionQuantityReportReporter
+            employeeId={row.original.employeeId}
+            createdBy={row.original.createdBy}
+          />
         ),
         meta: { icon: <LuUser /> }
       },

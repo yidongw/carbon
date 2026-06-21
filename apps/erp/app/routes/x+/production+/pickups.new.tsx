@@ -236,7 +236,7 @@ export async function action({ request }: ActionFunctionArgs) {
           configuration,
           notes: rest.notes ?? null,
           companyId,
-          userId
+          createdBy: userId
         })
       : await upsertJobOperationPickup(client, {
           jobOperationId: rest.jobOperationId,
@@ -245,7 +245,7 @@ export async function action({ request }: ActionFunctionArgs) {
           configuration,
           notes: rest.notes ?? null,
           companyId,
-          userId
+          createdBy: userId
         });
 
   if (insert.error) {
