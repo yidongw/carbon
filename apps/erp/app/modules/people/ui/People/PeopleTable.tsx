@@ -10,8 +10,7 @@ import {
   LuPencil,
   LuToggleRight,
   LuUser,
-  LuUserCheck,
-  LuUsers
+  LuUserCheck
 } from "react-icons/lu";
 import { useNavigate } from "react-router";
 import { Avatar, EmployeeAvatar, Hyperlink, New, Table } from "~/components";
@@ -103,16 +102,23 @@ const PeopleTable = memo(
     const columns = useMemo<ColumnDef<(typeof data)[number]>[]>(() => {
       const defaultColumns: ColumnDef<(typeof data)[number]>[] = [
         {
-          header: t`User`,
+          header: t`Account`,
           cell: ({ row }) => (
-            <HStack>
-              <Hyperlink to={path.to.personDetails(row?.original.id!)}>
-                <EmployeeAvatar size="sm" employeeId={row?.original.id} />
-              </Hyperlink>
-            </HStack>
+            <Hyperlink to={path.to.personDetails(row.original.id!)}>
+              <EmployeeAvatar
+                size="sm"
+                employeeId={row.original.id}
+                fallback={{
+                  firstName: row.original.firstName,
+                  lastName: row.original.lastName,
+                  fullName: row.original.name,
+                  avatarUrl: row.original.avatarUrl
+                }}
+              />
+            </Hyperlink>
           ),
           meta: {
-            icon: <LuUsers />
+            icon: <LuUser />
           }
         },
 
@@ -267,7 +273,7 @@ const PeopleTable = memo(
           columns={columns}
           data={data}
           defaultColumnPinning={{
-            left: ["Select", "User"]
+            left: ["Select", "Account"]
           }}
           primaryAction={
             permissions.can("create", "users") && (

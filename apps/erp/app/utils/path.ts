@@ -968,7 +968,8 @@ export const path = {
       generatePath(`${x}/resources/ability/${abilityId}/employee/${id}`),
     employeeAccount: (id: string) =>
       generatePath(`${x}/people/employees/${id}`),
-    employeeAccounts: `${x}/people/employees`,
+    employeeAccounts: `${x}/people/permissions`,
+    permissions: `${x}/people/permissions`,
     employeeType: (id: string) =>
       generatePath(`${x}/people/employee-types/${id}`),
     employeeTypes: `${x}/people/employee-types`,
@@ -1453,7 +1454,7 @@ export const path = {
     paymentTerm: (id: string) =>
       generatePath(`${x}/accounting/payment-terms/${id}`),
     paymentTerms: `${x}/accounting/payment-terms`,
-    people: `${x}/people/employee`,
+    people: `${x}/people/employees`,
     peopleTimecard: `${x}/people/timecard`,
     timecard: (id: string) => generatePath(`${x}/people/timecard/${id}`),
     contact: `${x}/people/contact`,

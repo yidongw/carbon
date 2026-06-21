@@ -33,7 +33,7 @@ export default function usePeopleSubmodules() {
         },
         {
           name: t`Permissions`,
-          to: path.to.employeeAccounts,
+          to: path.to.permissions,
           icon: <LuShield />
         },
         {
