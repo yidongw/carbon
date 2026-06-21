@@ -1674,8 +1674,9 @@ const JobBillOfProcess = ({
 
                     {/* Pickups */}
                     {group.pickups.map((pickup) => (
-                      <VStack key={pickup.id} spacing={1} className="w-full">
-                        <HStack className="justify-between items-center bg-background px-2 py-1 rounded">
+                      <VStack key={pickup.id} spacing={0} className="w-full">
+                        {/* White row: reporter, quantity, time */}
+                        <HStack className="justify-between items-center bg-background px-3 py-2 rounded-t">
                           <div className="text-sm">
                             {pickup.pickup.createdBy !== pickup.pickup.employeeId &&
                               pickup.pickup.createdByUser && (
@@ -1687,13 +1688,19 @@ const JobBillOfProcess = ({
                             {" | "}
                             {formatDateTime(pickup.createdAt)}
                           </div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs"><Trans>pickup</Trans></span>
-                            <span className="font-medium">{pickup.pickup.quantity}</span>
-                          </div>
                         </HStack>
+                        {/* Grey row: pickup badge + total */}
+                        <HStack className="justify-between items-center bg-muted px-3 py-2 rounded-b">
+                          <Badge variant="outline" className="text-xs">
+                            <Trans>pickup</Trans>
+                          </Badge>
+                          <Badge variant="outline" className="text-xs font-medium">
+                            <Trans>Total</Trans> {pickup.pickup.quantity}
+                          </Badge>
+                        </HStack>
+                        {/* Configuration details if present */}
                         {pickup.pickup.configuration && (
-                          <div className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
+                          <div className="text-xs text-muted-foreground bg-muted px-3 py-2 mt-0.5 rounded">
                             {JSON.stringify(pickup.pickup.configuration)}
                           </div>
                         )}
@@ -1704,34 +1711,46 @@ const JobBillOfProcess = ({
                     {group.quantities.map((report) => (
                       <VStack key={report.id} spacing={1} className="w-full">
                         {report.report.quantities?.map((qty, idx) => (
-                          <div key={idx}>
-                            <HStack className="justify-between items-center bg-background px-2 py-1 rounded">
+                          <VStack key={idx} spacing={0} className="w-full">
+                            {/* White row: reporter if different, quantity, time */}
+                            <HStack className="justify-between items-center bg-background px-3 py-2 rounded-t">
                               <div className="text-sm">
+                                {report.report.createdBy !== group.employeeId &&
+                                  report.report.createdByUser && (
+                                    <span className="text-muted-foreground mr-2">
+                                      ({formatPersonName(report.report.createdByUser)})
+                                    </span>
+                                  )}
                                 <span className="font-medium">{qty.quantity}</span>
                                 {" | "}
                                 {formatDateTime(report.createdAt)}
                               </div>
-                              <div className="flex items-center gap-2">
-                                <Badge
-                                  variant={
-                                    qty.type === "Production"
-                                      ? "green"
-                                      : qty.type === "Rework"
-                                      ? "orange"
-                                      : "red"
-                                  }
-                                >
-                                  {qty.type}
-                                </Badge>
-                                <span className="font-medium">{qty.quantity}</span>
-                              </div>
                             </HStack>
+                            {/* Grey row: type badge + total */}
+                            <HStack className="justify-between items-center bg-muted px-3 py-2 rounded-b">
+                              <Badge
+                                variant={
+                                  qty.type === "Production"
+                                    ? "green"
+                                    : qty.type === "Rework"
+                                    ? "orange"
+                                    : "red"
+                                }
+                                className="text-xs uppercase"
+                              >
+                                {qty.type}
+                              </Badge>
+                              <Badge variant="outline" className="text-xs font-medium">
+                                <Trans>Total</Trans> {qty.quantity}
+                              </Badge>
+                            </HStack>
+                            {/* Configuration details if present */}
                             {qty.configuration && (
-                              <div className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
+                              <div className="text-xs text-muted-foreground bg-muted px-3 py-2 mt-0.5 rounded">
                                 {JSON.stringify(qty.configuration)}
                               </div>
                             )}
-                          </div>
+                          </VStack>
                         ))}
                       </VStack>
                     ))}
