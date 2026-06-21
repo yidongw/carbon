@@ -1645,13 +1645,17 @@ const JobBillOfProcess = ({
               (sum, p) => sum + (parseFloat(String(p.pickup.quantity)) || 0),
               0
             );
-            const totalProduction = group.quantities
-              .filter((q) => q.report.quantities?.some((qty) => qty.type === "Production"))
-              .reduce((sum, q) =>
-                sum + (q.report.quantities?.filter((qty) => qty.type === "Production")
-                  .reduce((s, qty) => s + (parseFloat(String(qty.quantity)) || 0), 0) ?? 0),
-                0
-              );
+            const totalProduction = group.quantities.reduce(
+              (sum, q) =>
+                sum +
+                (q.report.activeLines
+                  ?.filter((qty) => qty.type === "Production")
+                  .reduce(
+                    (s, qty) => s + (parseFloat(String(qty.quantity)) || 0),
+                    0
+                  ) ?? 0),
+              0
+            );
             const remaining = totalPickups - totalProduction;
 
             return (
@@ -1678,24 +1682,15 @@ const JobBillOfProcess = ({
 
                     {/* Pickups */}
                     {group.pickups.map((pickup) => {
-                      const reporterDiffers =
-                        pickup.pickup.createdBy !== pickup.pickup.employeeId &&
-                        !!pickup.pickup.createdByUser;
                       return (
                         <VStack key={pickup.id} spacing={1} className="w-full">
-                          {/* White row: (reporter avatar) | total | time */}
+                          {/* White row: reporter avatar, total, time */}
                           <HStack className="items-center text-sm px-1 gap-2">
-                            {reporterDiffers && (
-                              <>
-                                <EmployeeAvatar
-                                  employeeId={pickup.pickup.createdBy}
-                                  size="xs"
-                                />
-                                <span className="text-muted-foreground/50">|</span>
-                              </>
-                            )}
+                            <EmployeeAvatar
+                              employeeId={pickup.pickup.createdBy}
+                              size="xs"
+                            />
                             <span className="font-medium">{pickup.pickup.quantity}</span>
-                            <span className="text-muted-foreground/50">|</span>
                             <span className="text-muted-foreground">
                               {formatDateTime(pickup.createdAt)}
                             </span>
@@ -1727,41 +1722,32 @@ const JobBillOfProcess = ({
 
                     {/* Quantities: one header row per report, one grey box per type */}
                     {group.quantities.map((report) => {
-                      const reporterDiffers =
-                        report.report.createdBy !== group.employeeId &&
-                        !!report.report.createdByUser;
-                      const reportTotal =
-                        report.report.quantities?.reduce(
-                          (s, q) => s + (parseFloat(String(q.quantity)) || 0),
-                          0
-                        ) ?? 0;
+                      const lines = report.report.activeLines ?? [];
+                      const reportTotal = lines.reduce(
+                        (s, q) => s + (parseFloat(String(q.quantity)) || 0),
+                        0
+                      );
                       return (
                         <VStack key={report.id} spacing={1} className="w-full">
-                          {/* White row: (reporter avatar) | total | time */}
+                          {/* White row: reporter avatar, total, time */}
                           <HStack className="items-center text-sm px-1 gap-2">
-                            {reporterDiffers && (
-                              <>
-                                <EmployeeAvatar
-                                  employeeId={report.report.createdBy}
-                                  size="xs"
-                                />
-                                <span className="text-muted-foreground/50">|</span>
-                              </>
-                            )}
+                            <EmployeeAvatar
+                              employeeId={report.report.createdBy}
+                              size="xs"
+                            />
                             <span className="font-medium">{reportTotal}</span>
-                            <span className="text-muted-foreground/50">|</span>
                             <span className="text-muted-foreground">
                               {formatDateTime(report.createdAt)}
                             </span>
                           </HStack>
-                          {/* One grey box per quantity type */}
-                          {report.report.quantities?.map((qty, idx) => (
+                          {/* One grey box per quantity line */}
+                          {lines.map((qty, idx) => (
                             <HStack
                               key={idx}
                               className="w-full justify-between items-center bg-muted px-3 py-2.5 rounded-lg gap-2"
                             >
                               <HStack className="flex-wrap gap-x-3 gap-y-1">
-                                {qty.configuration?.configTable?.map((config: Record<string, number>, cidx: number) =>
+                                {(qty.configuration as { configTable?: Record<string, number>[] } | null)?.configTable?.map((config, cidx: number) =>
                                   Object.entries(config).filter(([_, value]) => value > 0).map(([key, value]) => (
                                     <HStack key={`${cidx}-${key}`} spacing={1}>
                                       <span className="text-sm font-medium">{key}</span>
