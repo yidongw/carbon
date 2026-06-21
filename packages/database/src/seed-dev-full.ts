@@ -100,14 +100,20 @@ async function seed() {
   try {
     // ─── Step 1: Ensure user exists ────────────────────────────────────────────
     console.log("1. Ensuring user exists...");
-    const { data: existingUsers } = await supabaseAdmin.auth.admin.listUsers();
-    const existingUser = existingUsers?.users?.find((u: any) => u.email === email);
+
+    // First try to get user from database
+    const userQuery = await client.query<{ id: string }>(
+      `SELECT id FROM "user" WHERE email = $1 LIMIT 1`,
+      [email]
+    );
 
     let userId: string;
+    let existingUser: any = null;
 
-    if (existingUser) {
-      console.log(`   Found existing user: ${existingUser.id}`);
-      userId = existingUser.id;
+    if (userQuery.rows.length > 0) {
+      userId = userQuery.rows[0]!.id;
+      console.log(`   Found existing user in database: ${userId}`);
+      // Update password
       await supabaseAdmin.auth.admin.updateUserById(userId, {
         password: DEV_PASSWORD,
       });
