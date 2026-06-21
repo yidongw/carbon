@@ -120,17 +120,15 @@ export const ProductionQuantityForm = ({
       </DrawerHeader>
       <DrawerBody>
         <VStack spacing={4}>
-          {jobOptions && (
-            <Select
-              name="jobId"
-              label={t`Job`}
-              options={jobOptions}
-              defaultValue={selectedJobId}
-              onChange={(newValue) => {
-                if (newValue?.value) handleJobChange(newValue.value);
-              }}
-            />
-          )}
+          <Select
+            name="jobId"
+            label={t`Job`}
+            options={jobOptions ?? []}
+            defaultValue={selectedJobId}
+            onChange={(newValue) => {
+              if (newValue?.value) handleJobChange(newValue.value);
+            }}
+          />
           <Select
             name="jobOperationId"
             label={t`Operation`}
