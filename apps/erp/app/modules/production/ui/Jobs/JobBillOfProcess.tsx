@@ -1699,9 +1699,16 @@ const JobBillOfProcess = ({
                           </Badge>
                         </HStack>
                         {/* Configuration details if present */}
-                        {pickup.pickup.configuration && (
-                          <div className="text-xs text-muted-foreground bg-muted px-3 py-2 mt-0.5 rounded">
-                            {JSON.stringify(pickup.pickup.configuration)}
+                        {pickup.pickup.configuration && pickup.pickup.configuration.configTable && (
+                          <div className="text-sm bg-muted px-3 py-2 mt-0.5 rounded flex flex-wrap gap-2">
+                            {pickup.pickup.configuration.configTable.map((config: Record<string, number>, idx: number) =>
+                              Object.entries(config).filter(([_, value]) => value > 0).map(([key, value]) => (
+                                <HStack key={`${idx}-${key}`} spacing={1}>
+                                  <span className="font-medium">{key}</span>
+                                  <Badge variant="outline" className="text-xs">{value}</Badge>
+                                </HStack>
+                              ))
+                            )}
                           </div>
                         )}
                       </VStack>
@@ -1745,9 +1752,16 @@ const JobBillOfProcess = ({
                               </Badge>
                             </HStack>
                             {/* Configuration details if present */}
-                            {qty.configuration && (
-                              <div className="text-xs text-muted-foreground bg-muted px-3 py-2 mt-0.5 rounded">
-                                {JSON.stringify(qty.configuration)}
+                            {qty.configuration && qty.configuration.configTable && (
+                              <div className="text-sm bg-muted px-3 py-2 mt-0.5 rounded flex flex-wrap gap-2">
+                                {qty.configuration.configTable.map((config: Record<string, number>, idx: number) =>
+                                  Object.entries(config).filter(([_, value]) => value > 0).map(([key, value]) => (
+                                    <HStack key={`${idx}-${key}`} spacing={1}>
+                                      <span className="font-medium">{key}</span>
+                                      <Badge variant="outline" className="text-xs">{value}</Badge>
+                                    </HStack>
+                                  ))
+                                )}
                               </div>
                             )}
                           </VStack>
