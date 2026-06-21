@@ -1671,27 +1671,27 @@ const JobBillOfProcess = ({
             const remaining = totalPickups - totalProduction;
 
             return (
-              <Card key={group.employeeId} className="w-full">
+              <Card key={group.employeeId} className="w-full overflow-hidden">
+                {/* Employee Header - grey bar */}
+                <HStack className="justify-between items-center bg-muted px-4 py-2.5">
+                  <EmployeeAvatar employeeId={group.employeeId} />
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="text-sm text-muted-foreground cursor-help">
+                        {remaining} <Trans>remaining</Trans>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <div className="text-xs">
+                        <div><Trans>Pickups</Trans>: {totalPickups}</div>
+                        <div><Trans>Production</Trans>: {totalProduction}</div>
+                      </div>
+                    </TooltipContent>
+                  </Tooltip>
+                </HStack>
+                {/* Body - white */}
                 <CardContent className="p-4">
                   <VStack spacing={2}>
-                    {/* Employee Header */}
-                    <HStack className="justify-between items-center">
-                      <EmployeeAvatar employeeId={group.employeeId} />
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <div className="text-sm text-muted-foreground cursor-help">
-                            {remaining} <Trans>remaining</Trans>
-                          </div>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <div className="text-xs">
-                            <div><Trans>Pickups</Trans>: {totalPickups}</div>
-                            <div><Trans>Production</Trans>: {totalProduction}</div>
-                          </div>
-                        </TooltipContent>
-                      </Tooltip>
-                    </HStack>
-
                     {/* Pickups */}
                     {group.pickups.map((pickup) => {
                       return (
