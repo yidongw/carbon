@@ -10,6 +10,8 @@ export interface AuthSession {
   expiresIn: number;
   expiresAt: number;
   console?: string;
+  /** Dev bypass logins skip session expiration enforcement. */
+  bypass?: boolean;
 }
 
 export type Company = NonNullable<
