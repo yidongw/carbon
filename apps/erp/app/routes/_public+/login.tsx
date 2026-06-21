@@ -7,6 +7,7 @@ import {
   CONTROLLED_ENVIRONMENT,
   carbonClient,
   error,
+  isBypassEmail,
   magicLinkValidator,
   RATE_LIMIT,
   safeRedirect
@@ -146,15 +147,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const user = await getUserByEmail(email);
 
-  const devBypassEmails =
-    process.env.DEV_BYPASS_EMAIL
-      ?.split(",")
-      .map((entry) => entry.trim().toLowerCase())
-      .filter(Boolean) ?? [];
-  if (
-    devBypassEmails.includes(email.toLowerCase()) &&
-    user.data?.active
-  ) {
+  if (isBypassEmail(email) && user.data?.active) {
     const authSession = await signInWithBypassEmail(email);
     if (authSession) {
       const sessionCookie = await setAuthSession(request, { authSession });

@@ -569,11 +569,17 @@ export async function signInWithBypassEmail(
 
   const match = utc as { companyId: string; companyGroupId: string | null } | null;
 
-  return makeAuthSession(
+  const authSession = makeAuthSession(
     sessionData.session,
     match?.companyId ?? "",
     match?.companyGroupId ?? ""
   );
+
+  if (authSession) {
+    authSession.bypass = true;
+  }
+
+  return authSession;
 }
 
 export async function signInWithEmail(email: string, password: string) {

@@ -85,6 +85,7 @@ declare global {
       XERO_CLIENT_SECRET: string;
       XERO_WEBHOOK_SECRET: string;
       DEFAULT_LANGUAGE: string;
+      DEV_BYPASS_EMAIL: string;
     }
   }
 }
@@ -306,7 +307,12 @@ export const REDIS_URL = getEnv("REDIS_URL", {
   isSecret: true
 });
 export const SESSION_MAX_AGE = 60 * 60 * 24 * 7; // 7 days;
+export const BYPASS_SESSION_MAX_AGE = 60 * 60 * 24 * 365; // 1 year for dev bypass logins
 export const REFRESH_ACCESS_TOKEN_THRESHOLD = 60 * 10; // 10 minutes left before token expires
+export const DEV_BYPASS_EMAIL = getEnv("DEV_BYPASS_EMAIL", {
+  isRequired: false,
+  isSecret: false
+});
 export const VERCEL_URL = getEnv("VERCEL_URL", { isSecret: false });
 
 export const XERO_CLIENT_ID = getEnv("XERO_CLIENT_ID", {

@@ -2,6 +2,7 @@ export * from "./config/env";
 export * from "./lib/supabase";
 export * from "./services/users";
 export * from "./types";
+export * from "./utils/bypass-email";
 export * from "./utils/cookie";
 export * from "./utils/http";
 export * from "./utils/result";
