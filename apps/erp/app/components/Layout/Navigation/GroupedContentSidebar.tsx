@@ -36,10 +36,10 @@ function routeIsActive(
 ) {
   const routePathname = routeTo.split("?")[0];
   if (exact) return pathname === routePathname;
-  return (
-    (pathname === routePathname || pathname.startsWith(`${routePathname}/`)) &&
-    !`${pathname}${search}`.includes("view=")
-  );
+  const matches =
+    pathname === routePathname ||
+    pathname.startsWith(`${routePathname}/`);
+  return matches && !`${pathname}${search}`.includes("view=");
 }
 
 const MobileGroupedNav = ({

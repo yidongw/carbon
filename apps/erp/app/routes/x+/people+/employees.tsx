@@ -4,95 +4,92 @@ import { flash } from "@carbon/auth/session.server";
 import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
 import type { LoaderFunctionArgs } from "react-router";
-import { Outlet, redirect, useLoaderData } from "react-router";
-import {
-  EmployeesTable,
-  getEmployees,
-  getEmployeeTypes,
-  getUnrevokedInviteEmails
-} from "~/modules/users";
+import { Outlet, redirect, useLoaderData, useLocation } from "react-router";
+import { getAttributeCategories, getPeople } from "~/modules/people";
+import { PeopleTable } from "~/modules/people/ui/People";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 import { getGenericQueryFilters } from "~/utils/query";
 
 export const handle: Handle = {
   breadcrumb: msg`Employees`,
-  to: path.to.employeeAccounts
+  to: path.to.people
 };
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const { client, companyId } = await requirePermissions(request, {
-    view: "users",
+    view: "people",
     role: "employee",
     bypassRls: true
   });
 
   const url = new URL(request.url);
+  const pathname = url.pathname;
+  const isEmployeesIndex = /\/employees\/?$/.test(pathname);
+
+  if (!isEmployeesIndex) {
+    return { isEmployeesIndex: false as const };
+  }
+
   const searchParams = new URLSearchParams(url.search);
-  const search = searchParams.get("search");
+  const search = searchParams.get("name");
 
   const { limit, offset, sorts, filters } =
     getGenericQueryFilters(searchParams);
 
-  const [employees, employeeTypes, invites] = await Promise.all([
-    getEmployees(client, companyId, { search, limit, offset, sorts, filters }),
-    getEmployeeTypes(client, companyId),
-    getUnrevokedInviteEmails(client, companyId)
+  const [attributeCategories, people, departments] = await Promise.all([
+    getAttributeCategories(client, companyId),
+    getPeople(client, companyId, { search, limit, offset, sorts, filters }),
+    client
+      .from("employeeSummary")
+      .select("id, departmentName")
+      .eq("companyId", companyId)
   ]);
 
-  if (employees.error) {
+  if (attributeCategories.error) {
     throw redirect(
-      path.to.users,
-      await flash(request, error(employees.error, "Error loading employees"))
-    );
-  }
-  if (employeeTypes.error) {
-    throw redirect(
-      path.to.users,
+      path.to.authenticatedRoot,
       await flash(
         request,
-        error(employeeTypes.error, "Error loading employee types")
+        error(attributeCategories.error, "Error loading attribute categories")
       )
     );
   }
+  if (people.error) {
+    throw redirect(
+      path.to.authenticatedRoot,
+      await flash(request, error(people.error, "Error loading people"))
+    );
+  }
 
-  const employeeIds = employees.data?.map((e) => e.id!).filter(Boolean) ?? [];
-  const userFlags =
-    employeeIds.length > 0
-      ? await client
-          .from("user")
-          .select("id, admin, developer")
-          .in("id", employeeIds)
-      : { data: [] };
-
-  const userFlagsById = Object.fromEntries(
-    (userFlags.data ?? []).map((u) => [u.id, u])
+  const departmentByEmployeeId = Object.fromEntries(
+    (departments.data ?? []).map((d) => [d.id, d.departmentName])
   );
 
   return {
-    count: employees.count ?? 0,
-    employees: (employees.data ?? []).map((e) => ({
-      ...e,
-      admin: userFlagsById[e.id!]?.admin ?? false,
-      developer: userFlagsById[e.id!]?.developer ?? false
-    })),
-    employeeTypes: employeeTypes.data,
-    unrevokedInviteEmails: invites.data?.map((i) => i.email) ?? []
+    isEmployeesIndex: true as const,
+    attributeCategories: attributeCategories.data,
+    departmentByEmployeeId,
+    people: people.data ?? [],
+    count: people.count ?? 0
   };
 }
 
-export default function UsersEmployeesRoute() {
-  const { count, employees, employeeTypes, unrevokedInviteEmails } =
-    useLoaderData<typeof loader>();
+export default function PeopleEmployeesRoute() {
+  const data = useLoaderData<typeof loader>();
+  const location = useLocation();
+  const isEmployeesIndex = /\/employees\/?$/.test(location.pathname);
 
   return (
     <VStack spacing={0} className="h-full">
-      <EmployeesTable
-        data={employees}
-        count={count}
-        employeeTypes={employeeTypes}
-        unrevokedInviteEmails={unrevokedInviteEmails}
-      />
+      {isEmployeesIndex && data.isEmployeesIndex && (
+        <PeopleTable
+          attributeCategories={data.attributeCategories}
+          data={data.people ?? []}
+          count={data.count ?? 0}
+          departmentByEmployeeId={data.departmentByEmployeeId}
+        />
+      )}
       <Outlet />
     </VStack>
   );
