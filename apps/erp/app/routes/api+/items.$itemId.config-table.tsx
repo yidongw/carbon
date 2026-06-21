@@ -42,6 +42,13 @@ export async function loader({
     .maybeSingle();
 
   const referenceContext = parseReferenceContextFromRequest(request);
+  console.log('[SERVER CONFIG TABLE] Parsed referenceContext:', {
+    hasContext: !!referenceContext,
+    employeeId: referenceContext?.employeeId,
+    hasPickupsByEmployee: !!referenceContext?.pickupsByEmployee,
+    pickupsCount: referenceContext?.pickupsByEmployee ? Object.keys(referenceContext.pickupsByEmployee).length : 0,
+    mode: referenceContext?.mode
+  });
   const initialRowsFromRequest = parseInitialConfigurationFromRequest(request);
   const currentConfiguration =
     initialRowsFromRequest !== undefined
@@ -62,10 +69,12 @@ export async function loader({
     referenceByRowIndex = editorState.referenceByRowIndex;
   }
 
+  const debugInfo = referenceContext ? `[EmpID: ${referenceContext.employeeId || 'NONE'}, Pickups: ${referenceContext.pickupsByEmployee ? Object.keys(referenceContext.pickupsByEmployee).length : 0}]` : '[NO REF CTX]';
+
   return {
     parameters,
     initialRows,
     referenceByRowIndex,
-    itemReadableId: item.data?.readableIdWithRevision ?? null
+    itemReadableId: `${item.data?.readableIdWithRevision ?? 'Item'} ${debugInfo}`
   };
 }
