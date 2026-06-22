@@ -16,6 +16,7 @@ import { useLocation, useNavigate, useSearchParams } from "react-router";
 import type { z } from "zod";
 import { Hidden, Number, Select, Submit, TextArea } from "~/components/Form";
 import { ProductionActorFields, selectionFromInitialValues } from "../Jobs/ProductionActorFields";
+import { getProductionFormCascadeState } from "../Jobs/productionFormCascade";
 import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions } from "~/hooks";
 import { isConfigTableOverlaySuccess } from "../../configTableOverlay";
@@ -135,17 +136,14 @@ export const PickupForm = ({
   const lockOperationSelection =
     !isEditing && Boolean(initialJobOperationIdRef.current);
   const hasJobSelected = isEditing || Boolean(selectedJobId);
-  const hasOperationSelected =
-    isEditing ||
-    Boolean(selectedJobOperationId) ||
-    Boolean(initialJobOperationIdRef.current);
+  const resolvedJobOperationId =
+    selectedJobOperationId || initialJobOperationIdRef.current;
   const [actorSelection, setActorSelection] = useState(() =>
     selectionFromInitialValues({
       employeeId: initialValues.employeeId,
       supplierProcessId: initialValues.supplierProcessId
     })
   );
-  const hasActorSelected = isEditing || Boolean(actorSelection);
 
   useEffect(() => {
     setActorSelection(
@@ -164,6 +162,19 @@ export const PickupForm = ({
   const isDisabled = isEditing
     ? !permissions.can("update", "production")
     : !permissions.can("create", "production");
+
+  const {
+    hasOperationSelected,
+    hasActorSelected,
+    areDetailFieldsDisabled
+  } = getProductionFormCascadeState({
+    isEditing,
+    hasJobPicker: !isEditing,
+    selectedJobId,
+    jobOperationId: resolvedJobOperationId,
+    actorSelection,
+    permissionDisabled: isDisabled
+  });
 
   const updateSearchParams = (updates: {
     jobId?: string | null;
@@ -326,7 +337,7 @@ export const PickupForm = ({
               label={t`Quantity`}
               value={quantity}
               minValue={0}
-              isDisabled={isDisabled || !hasActorSelected || configTableTotal > 0}
+              isDisabled={areDetailFieldsDisabled || configTableTotal > 0}
               configTableTotal={configTableTotal}
               hasConfigurationParameters
               onOpenConfigTable={
@@ -339,13 +350,13 @@ export const PickupForm = ({
               name="quantity"
               label={t`Quantity`}
               minValue={0}
-              isDisabled={!hasActorSelected}
+              isDisabled={areDetailFieldsDisabled}
             />
           )}
           <TextArea
             name="notes"
             label={t`Notes`}
-            isDisabled={!hasActorSelected}
+            isDisabled={areDetailFieldsDisabled}
           />
         </VStack>
       </DrawerBody>

@@ -49,6 +49,7 @@ import {
   normalizeUniqueLineTypes,
   ProductionQuantityLinesEditor
 } from "./ProductionQuantityLinesEditor";
+import { getProductionFormCascadeState } from "./productionFormCascade";
 
 type ConfigRow = Record<string, string | number | boolean>;
 
@@ -447,6 +448,15 @@ const ProductionQuantityForm = ({
     actorFieldValues.supplierProcessId
   ]);
 
+  const actorSelection = useMemo(
+    () =>
+      selectionFromInitialValues({
+        employeeId,
+        supplierProcessId
+      }),
+    [employeeId, supplierProcessId]
+  );
+
   const updateSearchParams = (updates: {
     jobId?: string | null;
     jobOperationId?: string | null;
@@ -485,23 +495,21 @@ const ProductionQuantityForm = ({
     updateSearchParams({ jobOperationId: value });
   };
 
-  const hasJobSelected = !hasJobPicker || Boolean(selectedJobId);
-  const hasOperationSelected = isEditing || Boolean(jobOperationIdState);
-  const hasActorSelected =
-    isEditing ||
-    (actorKind === "employee"
-      ? Boolean(employeeId.trim())
-      : Boolean(supplierProcessId.trim()));
-  const areDetailFieldsDisabled =
-    isDisabled ||
-    !hasJobSelected ||
-    !hasOperationSelected ||
-    !hasActorSelected;
-  const canSubmitCreate =
-    hasJobSelected &&
-    hasOperationSelected &&
-    hasActorSelected &&
-    !hasZeroQuantityLine;
+  const {
+    hasJobSelected,
+    hasOperationSelected,
+    hasActorSelected,
+    areDetailFieldsDisabled,
+    canSubmitDetails
+  } = getProductionFormCascadeState({
+    isEditing,
+    hasJobPicker,
+    selectedJobId,
+    jobOperationId: jobOperationIdState,
+    actorSelection,
+    permissionDisabled: isDisabled
+  });
+  const canSubmitCreate = canSubmitDetails && !hasZeroQuantityLine;
 
   const lockActorSelection =
     lockActorSelectionProp ??
