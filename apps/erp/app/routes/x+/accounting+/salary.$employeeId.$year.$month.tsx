@@ -7,9 +7,11 @@ import { redirect, useLoaderData } from "react-router";
 import {
   approveProductionQuantity,
   getEmployeeSalaryCompletions,
-  getEmployeeSalaryPayments,
-  getEmployeeSalaryRecord,
   getPendingSalaryCompletions
+} from "~/modules/production";
+import {
+  getEmployeeSalaryPayments,
+  getEmployeeSalaryRecord
 } from "~/modules/people";
 import { SalaryDetailView } from "~/modules/people/ui/Salary";
 import type { Handle } from "~/utils/handle";

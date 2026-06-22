@@ -16,9 +16,9 @@ import type { FetcherWithComponents } from "react-router";
 import { useFetcher, useRevalidator } from "react-router";
 import { New, Table } from "~/components";
 import type {
-  ProductionPayApprovalRequestStatus,
-  ProductionPayApprovalStatus
-} from "~/modules/people/people.models";
+  ProductionQuantityListRow,
+  ProductionQuantityPayStatus
+} from "~/modules/production/productionQuantityList.models";
 import SalaryPeriodPicker from "~/modules/people/ui/Salary/SalaryPeriodPicker";
 import {
   formatDateTime,
@@ -26,35 +26,14 @@ import {
   getItemReadableIdWithRevision,
   getJobReadableId,
   getProcessName
-} from "~/modules/people/ui/Salary/salaryDetail.utils";
+} from "~/modules/production/productionQuantityDisplay.utils";
 import type { ProductionQuantityReportWithLines } from "~/modules/production/productionQuantityReport.service";
 import { ProductionQuantityDispositionDrawer } from "~/modules/production/ui/Jobs/ProductionQuantityDispositionDrawer";
 import { ProductionQuantityReportReporter } from "~/modules/production/ui/Jobs/ProductionQuantityReportReporter";
 import { path } from "~/utils/path";
 
-export type ProductionQuantityTableRow = {
-  approvalRequestId?: string;
-  reportId?: string;
-  approvalStatus?: ProductionPayApprovalRequestStatus;
+export type ProductionQuantityTableRow = ProductionQuantityListRow & {
   canApprove?: boolean;
-  id: string;
-  quantity: number | null;
-  createdAt: string | null;
-  employeeId: string | null;
-  createdBy?: string | null;
-  jobId?: string | null;
-  itemId?: string | null;
-  paymentYear: number | null;
-  paymentMonth: number | null;
-  invalidatedAt: string | null;
-  employee?: {
-    id: string;
-    firstName: string | null;
-    lastName: string | null;
-    fullName: string | null;
-    avatarUrl: string | null;
-  } | null;
-  jobOperation?: unknown;
 };
 
 type ProductionQuantityEmployeeFilter = {
@@ -71,7 +50,7 @@ type ProductionQuantityFilterOption = {
 export type ProductionQuantitiesTableProps = {
   data: ProductionQuantityTableRow[];
   count: number;
-  status: ProductionPayApprovalStatus | "all";
+  status: ProductionQuantityPayStatus | "all";
   year: number;
   month: number;
   employees: ProductionQuantityEmployeeFilter[];

@@ -17,12 +17,12 @@ import {
 import { useCallback, useMemo } from "react";
 import {
   computeProductionQuantityReportEarnedAmount,
-  ensureProductionPayApprovalRequest,
+  ensureProductionQuantityApprovalRequest,
   getProductionQuantityReportFilterOptions,
   getProductionQuantityReportPayRows,
-  resolveProductionPayApprovalScope,
-  resolveProductionPayApprovalStatus
-} from "~/modules/people";
+  resolveProductionQuantityPayScope,
+  resolveProductionQuantityPayStatus
+} from "~/modules/production";
 import { ProductionQuantitiesTable } from "~/modules/production/ui/ProductionQuantities";
 import {
   replaceProductionQuantityReportLines,
@@ -77,8 +77,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const { limit, offset, sorts, filters } =
     getGenericQueryFilters(searchParams);
 
-  const scope = resolveProductionPayApprovalScope(filters);
-  const status = resolveProductionPayApprovalStatus(filters);
+  const scope = resolveProductionQuantityPayScope(filters);
+  const status = resolveProductionQuantityPayStatus(filters);
   const search = searchParams.get("search");
   const serviceRole = getCarbonServiceRole();
 
@@ -127,7 +127,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
         row.approvalStatus === "Pending" && row.paymentYear == null;
 
       if (!approvalRequestId && isPending && row.reportId) {
-        const ensured = await ensureProductionPayApprovalRequest(serviceRole, {
+        const ensured = await ensureProductionQuantityApprovalRequest(serviceRole, {
           reportId: row.reportId,
           companyId,
           requestedBy: row.createdBy ?? row.requestedBy ?? userId

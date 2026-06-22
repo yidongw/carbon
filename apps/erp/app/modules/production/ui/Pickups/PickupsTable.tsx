@@ -12,7 +12,7 @@ import {
   getItemReadableIdWithRevision,
   getJobReadableId,
   getProcessName
-} from "~/modules/people/ui/Salary/salaryDetail.utils";
+} from "~/modules/production/productionQuantityDisplay.utils";
 import { path } from "~/utils/path";
 
 type JobOperationPickup = {
