@@ -122,6 +122,7 @@ export type ProductionQuantityFormProps = {
   processId?: string | null;
   operationType?: string | null;
   defaultActorKind?: "employee" | "supplier";
+  lockJobSelection?: boolean;
   lockActorSelection?: boolean;
   /** When true, operation is shown but not editable (e.g. BOP overlay with preset operation). */
   lockOperationSelection?: boolean;
@@ -160,6 +161,7 @@ const ProductionQuantityForm = ({
   processId,
   operationType,
   defaultActorKind,
+  lockJobSelection: lockJobSelectionProp = false,
   lockActorSelection: lockActorSelectionProp,
   lockOperationSelection: lockOperationSelectionProp = false,
   onDismiss: onDismissProp,
@@ -540,6 +542,7 @@ const ProductionQuantityForm = ({
               name="jobId"
               label={t`Job`}
               options={jobOptions ?? []}
+              isDisabled={lockJobSelectionProp}
               onChange={(newValue) => {
                 if (newValue?.value) handleJobChange(newValue.value);
               }}

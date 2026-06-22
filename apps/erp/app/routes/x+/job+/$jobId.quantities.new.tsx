@@ -57,6 +57,10 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     : [];
 
   const itemId = job.data?.itemId ?? null;
+  const jobOption = {
+    label: job.data?.jobId ?? "",
+    value: jobId
+  };
 
   const configReferenceSource = await getConfigReferenceSourceForOperation(
     client,
@@ -76,6 +80,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   return {
     jobId,
+    jobOption,
     jobOperationId,
     operationOptions,
     configurationParameters:
@@ -260,6 +265,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 export default function NewProductionQuantityRoute() {
   const {
     jobId,
+    jobOption,
     jobOperationId,
     operationOptions,
     configurationParameters,
@@ -283,6 +289,7 @@ export default function NewProductionQuantityRoute() {
   return (
     <ProductionQuantityForm
       initialValues={initialValues}
+      jobOptions={[jobOption]}
       operationOptions={[...(operationOptions ?? [])]}
       configurationParameters={configurationParameters}
       configReferenceSource={configReferenceSource}
@@ -291,6 +298,7 @@ export default function NewProductionQuantityRoute() {
       processId={processId}
       operationType={operationType}
       defaultActorKind={defaultActorKind}
+      lockJobSelection
       lockActorSelection={seededActor.lockActorSelection}
     />
   );
