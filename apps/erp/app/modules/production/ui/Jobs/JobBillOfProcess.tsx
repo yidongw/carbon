@@ -723,15 +723,13 @@ const EmployeeProductionLogsView = ({
                   return (
                     <VStack key={pickup.id} spacing={1} className="w-full">
                       {/* White row: total badge, time, reporter (icon only) at the end */}
-                      <HStack spacing={0} className="w-full justify-between items-center text-sm px-1 gap-2">
-                        <HStack spacing={0} className="items-center gap-2">
-                          <Badge variant="outline" className="text-xs font-medium">
-                            <Trans>Total</Trans>: {pickup.pickup.quantity}
-                          </Badge>
-                          <span className="text-muted-foreground">
-                            {formatDateTime(pickup.createdAt)}
-                          </span>
-                        </HStack>
+                      <HStack spacing={0} className="w-full items-center text-sm px-1 gap-x-2 gap-y-1 flex-wrap">
+                        <Badge variant="outline" className="text-xs font-medium">
+                          <Trans>Total</Trans>: {pickup.pickup.quantity}
+                        </Badge>
+                        <span className="text-muted-foreground">
+                          {formatDateTime(pickup.createdAt)}
+                        </span>
                         <HStack spacing={0} className="items-center gap-1.5">
                           <span className="text-muted-foreground">
                             <Trans>Reporter</Trans>
@@ -789,16 +787,14 @@ const EmployeeProductionLogsView = ({
                     <VStack key={entry.key} spacing={1} className="w-full">
                       {/* White row: total badge, time, reporter (icon only) at the end */}
                       <HStack spacing={0} className="w-full justify-between items-center text-sm px-1 gap-2">
-                        <HStack spacing={0} className="items-center gap-2">
+                        <HStack spacing={0} className="items-center gap-x-2 gap-y-1 flex-wrap">
                           <Badge variant="outline" className="text-xs font-medium">
                             <Trans>Total</Trans>: {reportTotal}
                           </Badge>
                           <span className="text-muted-foreground">
                             {formatDateTime(entry.createdAt)}
                           </span>
-                        </HStack>
-                        <HStack spacing={0} className="items-center gap-3">
-                          <HStack className="items-center gap-1.5">
+                          <HStack spacing={0} className="items-center gap-1.5">
                             <span className="text-muted-foreground">
                               <Trans>Reporter</Trans>
                             </span>
@@ -817,7 +813,8 @@ const EmployeeProductionLogsView = ({
                               </TooltipContent>
                             </Tooltip>
                           </HStack>
-                          <HStack className="items-center">
+                        </HStack>
+                        <HStack spacing={0} className="items-center shrink-0">
                             {entry.hasHistory && (
                               <Button
                                 type="button"
