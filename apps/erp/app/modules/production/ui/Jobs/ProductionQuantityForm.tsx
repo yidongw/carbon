@@ -14,8 +14,10 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   type FetcherWithComponents,
+  useLocation,
   useNavigate,
-  useParams
+  useParams,
+  useSearchParams
 } from "react-router";
 import type { z } from "zod";
 import { Hidden, Number, Select, Submit, TextArea } from "~/components/Form";
@@ -23,6 +25,7 @@ import ScrapReason from "~/components/Form/ScrapReason";
 import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions } from "~/hooks";
 import type { ProductionQuantityLineInput } from "~/modules/production/productionQuantityReport.models";
+import { preventDismissOnPortaledContent } from "~/utils/dom";
 import { path } from "~/utils/path";
 import {
   buildProductionConfigTableReferenceContext,
@@ -44,6 +47,7 @@ import {
   normalizeUniqueLineTypes,
   ProductionQuantityLinesEditor
 } from "./ProductionQuantityLinesEditor";
+import { getProductionFormCascadeState } from "./productionFormCascade";
 import { QuantityWithConfigTable } from "./QuantityWithConfigTable";
 import { SupplierSubcontractPricingFields } from "./SupplierSubcontractPricingFields";
 
@@ -113,6 +117,7 @@ export type ProductionQuantityFormProps = {
     value: string;
     helperText?: string;
   }[];
+  jobOptions?: { label: string; value: string }[];
   configurationParameters?: ConfigurationParameter[] | null;
   configReferenceSource?: ConfigReferenceSource | null;
   itemId?: string | null;
@@ -120,7 +125,10 @@ export type ProductionQuantityFormProps = {
   processId?: string | null;
   operationType?: string | null;
   defaultActorKind?: "employee" | "supplier";
+  lockJobSelection?: boolean;
   lockActorSelection?: boolean;
+  /** When true, operation is shown but not editable (e.g. BOP overlay with preset operation). */
+  lockOperationSelection?: boolean;
   onDismiss?: () => void;
   action?: string;
   fetcher?: FetcherWithComponents<unknown>;
@@ -148,6 +156,7 @@ function isCreateMultiLineInitial(
 const ProductionQuantityForm = ({
   initialValues,
   operationOptions,
+  jobOptions,
   configurationParameters,
   configReferenceSource,
   itemId,
@@ -155,7 +164,9 @@ const ProductionQuantityForm = ({
   processId,
   operationType,
   defaultActorKind,
+  lockJobSelection: lockJobSelectionProp = false,
   lockActorSelection: lockActorSelectionProp,
+  lockOperationSelection: lockOperationSelectionProp = false,
   onDismiss: onDismissProp,
   action: formAction,
   fetcher
@@ -163,12 +174,19 @@ const ProductionQuantityForm = ({
   const permissions = usePermissions();
   const { t } = useLingui();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
   const { jobId: jobIdFromParams } = useParams();
-  const jobId =
-    jobIdProp?.trim() ||
-    parseJobIdFromQuantitiesUrl(formAction) ||
-    jobIdFromParams?.trim() ||
-    undefined;
+  const hasJobPicker = Boolean(jobOptions?.length);
+  const selectedJobId = hasJobPicker
+    ? (searchParams.get("jobId") ?? jobIdProp?.trim() ?? "")
+    : "";
+  const jobId = hasJobPicker
+    ? selectedJobId || undefined
+    : jobIdProp?.trim() ||
+      parseJobIdFromQuantitiesUrl(formAction) ||
+      jobIdFromParams?.trim() ||
+      undefined;
   const isOverlay = fetcher != null;
   const onDismiss =
     onDismissProp ??
@@ -188,8 +206,6 @@ const ProductionQuantityForm = ({
   const isCreateMultiLine =
     !isEditing && isCreateMultiLineInitial(initialValues);
 
-  const presetJobOperationIdOnCreate =
-    !isEditing && Boolean(initialValues.jobOperationId);
   const isDisabled = isEditing
     ? !permissions.can("update", "production")
     : !permissions.can("create", "production");
@@ -251,6 +267,24 @@ const ProductionQuantityForm = ({
       }))
     );
   }, [isCreateMultiLine, lines]);
+
+  const [jobOperationIdState, setJobOperationIdState] = useState(() => {
+    const fromUrl = searchParams.get("jobOperationId") ?? "";
+    if (fromUrl) return fromUrl;
+    if (isCreateMultiLineInitial(initialValues)) {
+      return (initialValues as ProductionQuantityCreateInitialValues)
+        .jobOperationId;
+    }
+    return (
+      (initialValues as z.infer<typeof productionQuantityValidator>)
+        .jobOperationId ?? ""
+    );
+  });
+
+  useEffect(() => {
+    if (isEditing) return;
+    setJobOperationIdState(searchParams.get("jobOperationId") ?? "");
+  }, [isEditing, searchParams]);
 
   useEffect(() => {
     if (!isOverlay) return;
@@ -329,8 +363,10 @@ const ProductionQuantityForm = ({
   const createDefaultValues = useMemo(() => {
     if (!isCreateMultiLine) return undefined;
     const init = initialValues as ProductionQuantityCreateInitialValues;
+    const operationId = jobOperationIdState || init.jobOperationId || "";
     return {
-      jobOperationId: init.jobOperationId,
+      ...(hasJobPicker && selectedJobId ? { jobId: selectedJobId } : {}),
+      ...(operationId ? { jobOperationId: operationId } : {}),
       notes: init.notes ?? "",
       lines: JSON.stringify(
         normalizeUniqueLineTypes(toEditableLines(init.lines)).map(
@@ -338,7 +374,13 @@ const ProductionQuantityForm = ({
         )
       )
     };
-  }, [isCreateMultiLine, initialValues]);
+  }, [
+    isCreateMultiLine,
+    initialValues,
+    hasJobPicker,
+    selectedJobId,
+    jobOperationIdState
+  ]);
 
   const editDefaultValues = useMemo(() => {
     if (isCreateMultiLine) return undefined;
@@ -403,16 +445,81 @@ const ProductionQuantityForm = ({
   const [supplierProcessId, setSupplierProcessId] = useState(
     () => actorFieldValues.supplierProcessId ?? ""
   );
-  const [jobOperationIdState, setJobOperationIdState] = useState(() => {
-    if (isCreateMultiLineInitial(initialValues)) {
-      return (initialValues as ProductionQuantityCreateInitialValues)
-        .jobOperationId;
+
+  useEffect(() => {
+    setEmployeeId(actorFieldValues.employeeId ?? "");
+    setSupplierProcessId(actorFieldValues.supplierProcessId ?? "");
+    if (actorFieldValues.actorKind) {
+      setActorKind(actorFieldValues.actorKind);
     }
-    return (
-      (initialValues as z.infer<typeof productionQuantityValidator>)
-        .jobOperationId ?? ""
+  }, [
+    actorFieldValues.actorKind,
+    actorFieldValues.employeeId,
+    actorFieldValues.supplierProcessId
+  ]);
+
+  const actorSelection = useMemo(
+    () =>
+      selectionFromInitialValues({
+        employeeId,
+        supplierProcessId
+      }),
+    [employeeId, supplierProcessId]
+  );
+
+  const updateSearchParams = (updates: {
+    jobId?: string | null;
+    jobOperationId?: string | null;
+  }) => {
+    const newParams = new URLSearchParams(searchParams);
+    if (updates.jobId !== undefined) {
+      if (updates.jobId) {
+        newParams.set("jobId", updates.jobId);
+      } else {
+        newParams.delete("jobId");
+      }
+    }
+    if (updates.jobOperationId !== undefined) {
+      if (updates.jobOperationId) {
+        newParams.set("jobOperationId", updates.jobOperationId);
+      } else {
+        newParams.delete("jobOperationId");
+      }
+    }
+
+    const search = newParams.toString();
+    navigate(
+      {
+        pathname: location.pathname,
+        search: search ? `?${search}` : ""
+      },
+      { replace: true }
     );
+  };
+
+  const handleJobChange = (value: string) => {
+    updateSearchParams({ jobId: value, jobOperationId: null });
+  };
+
+  const handleOperationChange = (value: string) => {
+    updateSearchParams({ jobOperationId: value });
+  };
+
+  const {
+    hasJobSelected,
+    hasOperationSelected,
+    hasActorSelected,
+    areDetailFieldsDisabled,
+    canSubmitDetails
+  } = getProductionFormCascadeState({
+    isEditing,
+    hasJobPicker,
+    selectedJobId,
+    jobOperationId: jobOperationIdState,
+    actorSelection,
+    permissionDisabled: isDisabled
   });
+  const canSubmitCreate = canSubmitDetails && !hasZeroQuantityLine;
 
   const lockActorSelection =
     lockActorSelectionProp ??
@@ -424,6 +531,7 @@ const ProductionQuantityForm = ({
 
   const form = (
     <ValidatedForm
+      key={hasJobPicker ? selectedJobId || "no-job" : undefined}
       validator={
         isCreateMultiLine
           ? productionQuantityCreateFormValidator
@@ -449,15 +557,35 @@ const ProductionQuantityForm = ({
       <DrawerBody>
         {isEditing ? <Hidden name="id" /> : null}
         <VStack ref={formBodyRef} spacing={4}>
-          {isEditing || presetJobOperationIdOnCreate ? (
+          {hasJobPicker && !isEditing ? (
+            <Select
+              name="jobId"
+              label={t`Job`}
+              options={jobOptions ?? []}
+              isDisabled={lockJobSelectionProp}
+              onChange={(newValue) => {
+                if (newValue?.value) handleJobChange(newValue.value);
+              }}
+            />
+          ) : null}
+          {isEditing ? (
             <Hidden name="jobOperationId" />
           ) : (
             <Select
+              key={hasJobPicker ? selectedJobId || "no-job" : "job-operation"}
               name="jobOperationId"
               label={t`Operation`}
               options={operationOptions ?? []}
+              isDisabled={
+                lockOperationSelectionProp || (hasJobPicker && !hasJobSelected)
+              }
               onChange={(value) => {
-                setJobOperationIdState(value?.value ?? "");
+                if (lockOperationSelectionProp) return;
+                const next = value?.value ?? "";
+                setJobOperationIdState(next);
+                if (next) {
+                  handleOperationChange(next);
+                }
               }}
             />
           )}
@@ -466,6 +594,7 @@ const ProductionQuantityForm = ({
             operationType={operationType}
             defaultActorKind={defaultActorKind}
             lockActorSelection={lockActorSelection}
+            isDisabled={!hasOperationSelected}
             employeeIdValue={actorFieldValues.employeeId}
             supplierProcessIdValue={actorFieldValues.supplierProcessId}
             supplierIdValue={actorFieldValues.supplierId}
@@ -481,7 +610,7 @@ const ProductionQuantityForm = ({
             <SupplierSubcontractPricingFields
               jobOperationId={jobOperationIdState}
               supplierProcessId={supplierProcessId}
-              isDisabled={isDisabled}
+              isDisabled={areDetailFieldsDisabled}
             />
           ) : null}
 
@@ -494,7 +623,7 @@ const ProductionQuantityForm = ({
                 configurationParameters={configurationParameters}
                 configReferenceSource={configReferenceSource}
                 itemId={itemId}
-                isDisabled={isDisabled}
+                isDisabled={areDetailFieldsDisabled}
                 employeeId={actorKind === "employee" ? employeeId : undefined}
                 jobId={jobId ?? undefined}
                 jobOperationId={jobOperationIdState || undefined}
@@ -517,14 +646,21 @@ const ProductionQuantityForm = ({
                   label={t`Quantity`}
                   value={quantity}
                   minValue={0}
-                  isDisabled={isDisabled || configTableTotal > 0}
+                  isDisabled={areDetailFieldsDisabled}
+                  isReadOnly={configTableTotal > 0}
                   configTableTotal={configTableTotal}
                   hasConfigurationParameters
-                  onOpenConfigTable={openConfigTable}
+                  onOpenConfigTable={
+                    hasActorSelected ? openConfigTable : undefined
+                  }
                   onChange={setQuantity}
                 />
               ) : (
-                <Number name="quantity" label={t`Quantity`} />
+                <Number
+                  name="quantity"
+                  label={t`Quantity`}
+                  isDisabled={areDetailFieldsDisabled}
+                />
               )}
               <Select
                 name="type"
@@ -544,13 +680,20 @@ const ProductionQuantityForm = ({
             </>
           )}
 
-          <TextArea name="notes" label={t`Notes`} />
+          <TextArea
+            name="notes"
+            label={t`Notes`}
+            isDisabled={areDetailFieldsDisabled}
+          />
         </VStack>
       </DrawerBody>
       <DrawerFooter>
         <HStack>
           <Submit
-            isDisabled={isDisabled || hasZeroQuantityLine}
+            isDisabled={
+              isDisabled ||
+              (isCreateMultiLine ? !canSubmitCreate : hasZeroQuantityLine)
+            }
             className="transition-transform active:scale-[0.96]"
           >
             <Trans>Save</Trans>
@@ -579,7 +722,12 @@ const ProductionQuantityForm = ({
         if (!open) onDismiss();
       }}
     >
-      <DrawerContent>{form}</DrawerContent>
+      <DrawerContent
+        onPointerDownOutside={preventDismissOnPortaledContent}
+        onInteractOutside={preventDismissOnPortaledContent}
+      >
+        {form}
+      </DrawerContent>
     </Drawer>
   );
 };

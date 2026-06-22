@@ -3,8 +3,8 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data } from "react-router";
-import { computeProductionQuantityReportEarnedAmount } from "~/modules/people";
 import {
+  computeProductionQuantityReportEarnedAmount,
   isJobLocked,
   listProductionQuantityReportLines,
   replaceProductionQuantityReportLines,

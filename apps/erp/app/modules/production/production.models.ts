@@ -784,6 +784,7 @@ export const procedureValidator = z.object({
 export const procedureStepValidator = z
   .object({
     id: zfd.text(z.string().optional()),
+    jobId: zfd.text(z.string().optional()),
     procedureId: z.string().min(1, { message: "Procedure is required" }),
     name: z.string().min(1, { message: "Name is required" }),
     description: zfd.text(z.string().optional()),
@@ -960,6 +961,7 @@ export const productionQuantityCreateFormValidator = z
 export const jobOperationPickupValidator = z
   .object({
     id: zfd.text(z.string().optional()),
+    jobId: zfd.text(z.string().optional()),
     jobOperationId: z.string().min(1, { message: "Operation is required" }),
     actorKind: z.enum(productionActorKinds).default("employee"),
     employeeId: zfd.text(z.string().optional()),

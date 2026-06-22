@@ -1,12 +1,12 @@
 import type { Database, Json } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { computeProductionQuantityReportEarnedAmount } from "~/modules/people/people.service";
 import {
   canApproveRequest,
   cancelApprovalRequestsForDocument,
   requestProductionPayApproval
 } from "~/modules/shared";
 import { computeJobConfigTableTotal } from "./jobConfiguration";
+import { computeProductionQuantityReportEarnedAmount } from "./productionQuantityList.service";
 import type { ProductionQuantityLineInput } from "./productionQuantityReport.models";
 
 export type ProductionQuantityReportLine =

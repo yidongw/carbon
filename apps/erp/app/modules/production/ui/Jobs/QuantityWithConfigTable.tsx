@@ -21,7 +21,7 @@ export type QuantityWithConfigTableProps = {
   value: number;
   onChange?: (value: number) => void;
   hasConfigurationParameters: boolean;
-  onOpenConfigTable: () => void;
+  onOpenConfigTable?: () => void;
   /** Sum of configured quantity columns; drives adornment color. */
   configTableTotal?: number;
   minValue?: number;

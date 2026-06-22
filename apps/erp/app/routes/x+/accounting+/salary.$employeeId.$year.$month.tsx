@@ -5,13 +5,15 @@ import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { redirect, useLoaderData } from "react-router";
 import {
-  approveProductionQuantity,
-  getEmployeeSalaryCompletions,
   getEmployeeSalaryPayments,
-  getEmployeeSalaryRecord,
-  getPendingSalaryCompletions
+  getEmployeeSalaryRecord
 } from "~/modules/people";
 import { SalaryDetailView } from "~/modules/people/ui/Salary";
+import {
+  approveProductionQuantity,
+  getEmployeeSalaryCompletions,
+  getPendingSalaryCompletions
+} from "~/modules/production";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 

@@ -7,8 +7,8 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data, redirect, useLoaderData } from "react-router";
 import { z } from "zod";
 import { getConfigurationParameters } from "~/modules/items";
-import { computeProductionQuantityReportEarnedAmount } from "~/modules/people";
 import {
+  computeProductionQuantityReportEarnedAmount,
   getJob,
   getJobOperationActorContext,
   getJobOperationSupplierQuantityReport,
