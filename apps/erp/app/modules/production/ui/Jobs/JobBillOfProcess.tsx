@@ -566,24 +566,20 @@ const EmployeeProductionLogsView = ({
       }
     });
 
-    // Production quantity lines -> grouped by each line's employee
+    // Production quantity reports -> grouped by the REPORT's employeeId (the
+    // employee the report is credited to, chosen on the form). This is stable:
+    // unlike a line's employeeId, it is NOT reassigned to the editor when a
+    // report is edited, and unlike createdBy it is the credited employee rather
+    // than the recorder. All of the report's active lines stay together, same
+    // as the old production quantity tab.
     quantityReports.forEach((report) => {
       if (report.actorKind !== "employee") return;
-      const lines = report.report.activeLines ?? [];
-      const byEmployee = new Map<string, ProductionQuantityReportLine[]>();
-      lines.forEach((line) => {
-        const list = byEmployee.get(line.employeeId) ?? [];
-        list.push(line);
-        byEmployee.set(line.employeeId, list);
-      });
-      byEmployee.forEach((empLines, empId) => {
-        ensureGroup(empId).quantityEntries.push({
-          key: `${report.id}-${empId}`,
-          report: report.report,
-          createdBy: report.report.createdBy,
-          createdAt: report.createdAt,
-          lines: empLines
-        });
+      ensureGroup(report.report.employeeId).quantityEntries.push({
+        key: report.id,
+        report: report.report,
+        createdBy: report.report.createdBy,
+        createdAt: report.createdAt,
+        lines: report.report.activeLines ?? []
       });
     });
 
@@ -749,47 +745,53 @@ const EmployeeProductionLogsView = ({
                         <span className="text-muted-foreground">
                           {formatDateTime(entry.createdAt)}
                         </span>
-                        <HStack className="ml-auto items-center gap-1.5">
-                          <span className="text-muted-foreground">
-                            <Trans>Reporter</Trans>
-                          </span>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <span className="cursor-help">
-                                <EmployeeAvatar
-                                  employeeId={entry.createdBy}
-                                  size="xs"
-                                  withName={false}
-                                />
-                              </span>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              {reporterName(entry.createdBy)}
-                            </TooltipContent>
-                          </Tooltip>
-                          {entry.report.hasHistory && (
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="sm"
-                              aria-label="View history"
-                              onClick={() => onHistoryReport(entry.report)}
-                              className="h-7 w-7 p-0 transition-transform active:scale-[0.96]"
-                            >
-                              <LuHistory className="h-4 w-4" />
-                            </Button>
-                          )}
-                          {canEditQuantityReport && (
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="sm"
-                              aria-label="Edit report"
-                              onClick={() => onEditReport(entry.report)}
-                              className="h-7 w-7 p-0 transition-transform active:scale-[0.96]"
-                            >
-                              <LuPencil className="h-4 w-4" />
-                            </Button>
+                        <HStack className="ml-auto items-center gap-3">
+                          <HStack className="items-center gap-1.5">
+                            <span className="text-muted-foreground">
+                              <Trans>Reporter</Trans>
+                            </span>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="cursor-help">
+                                  <EmployeeAvatar
+                                    employeeId={entry.createdBy}
+                                    size="xs"
+                                    withName={false}
+                                  />
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                {reporterName(entry.createdBy)}
+                              </TooltipContent>
+                            </Tooltip>
+                          </HStack>
+                          {(entry.report.hasHistory || canEditQuantityReport) && (
+                            <HStack className="items-center">
+                              {entry.report.hasHistory && (
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  aria-label="View history"
+                                  onClick={() => onHistoryReport(entry.report)}
+                                  className="h-7 w-7 p-0 transition-transform active:scale-[0.96]"
+                                >
+                                  <LuHistory className="h-4 w-4" />
+                                </Button>
+                              )}
+                              {canEditQuantityReport && (
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  aria-label="Edit report"
+                                  onClick={() => onEditReport(entry.report)}
+                                  className="h-7 w-7 p-0 transition-transform active:scale-[0.96]"
+                                >
+                                  <LuPencil className="h-4 w-4" />
+                                </Button>
+                              )}
+                            </HStack>
                           )}
                         </HStack>
                       </HStack>
