@@ -123,6 +123,8 @@ export type ProductionQuantityFormProps = {
   operationType?: string | null;
   defaultActorKind?: "employee" | "supplier";
   lockActorSelection?: boolean;
+  /** When true, operation is shown but not editable (e.g. BOP overlay with preset operation). */
+  lockOperationSelection?: boolean;
   onDismiss?: () => void;
   action?: string;
   fetcher?: FetcherWithComponents<unknown>;
@@ -159,6 +161,7 @@ const ProductionQuantityForm = ({
   operationType,
   defaultActorKind,
   lockActorSelection: lockActorSelectionProp,
+  lockOperationSelection: lockOperationSelectionProp = false,
   onDismiss: onDismissProp,
   action: formAction,
   fetcher
@@ -172,9 +175,6 @@ const ProductionQuantityForm = ({
   const hasJobPicker = Boolean(jobOptions?.length);
   const selectedJobId = hasJobPicker
     ? (searchParams.get("jobId") ?? jobIdProp?.trim() ?? "")
-    : "";
-  const selectedJobOperationId = hasJobPicker
-    ? (searchParams.get("jobOperationId") ?? "")
     : "";
   const jobId = hasJobPicker
     ? selectedJobId || undefined
@@ -200,10 +200,6 @@ const ProductionQuantityForm = ({
   );
   const isCreateMultiLine = !isEditing && isCreateMultiLineInitial(initialValues);
 
-  const presetJobOperationIdOnCreate =
-    !isEditing &&
-    !hasJobPicker &&
-    Boolean(initialValues.jobOperationId);
   const isDisabled = isEditing
     ? !permissions.can("update", "production")
     : !permissions.can("create", "production");
@@ -340,8 +336,10 @@ const ProductionQuantityForm = ({
   const createDefaultValues = useMemo(() => {
     if (!isCreateMultiLine) return undefined;
     const init = initialValues as ProductionQuantityCreateInitialValues;
+    const operationId = jobOperationIdState || init.jobOperationId || "";
     return {
-      jobOperationId: init.jobOperationId,
+      ...(hasJobPicker && selectedJobId ? { jobId: selectedJobId } : {}),
+      ...(operationId ? { jobOperationId: operationId } : {}),
       notes: init.notes ?? "",
       lines: JSON.stringify(
         normalizeUniqueLineTypes(toEditableLines(init.lines)).map(
@@ -349,7 +347,13 @@ const ProductionQuantityForm = ({
         )
       )
     };
-  }, [isCreateMultiLine, initialValues]);
+  }, [
+    isCreateMultiLine,
+    initialValues,
+    hasJobPicker,
+    selectedJobId,
+    jobOperationIdState
+  ]);
 
   const editDefaultValues = useMemo(() => {
     if (isCreateMultiLine) return undefined;
@@ -411,9 +415,8 @@ const ProductionQuantityForm = ({
     () => actorFieldValues.supplierProcessId ?? ""
   );
   const [jobOperationIdState, setJobOperationIdState] = useState(() => {
-    if (hasJobPicker) {
-      return selectedJobOperationId;
-    }
+    const fromUrl = searchParams.get("jobOperationId") ?? "";
+    if (fromUrl) return fromUrl;
     if (isCreateMultiLineInitial(initialValues)) {
       return (initialValues as ProductionQuantityCreateInitialValues)
         .jobOperationId;
@@ -425,9 +428,9 @@ const ProductionQuantityForm = ({
   });
 
   useEffect(() => {
-    if (!hasJobPicker) return;
+    if (isEditing) return;
     setJobOperationIdState(searchParams.get("jobOperationId") ?? "");
-  }, [hasJobPicker, searchParams]);
+  }, [isEditing, searchParams]);
 
   const updateSearchParams = (updates: {
     jobId?: string | null;
@@ -480,11 +483,7 @@ const ProductionQuantityForm = ({
 
   const form = (
     <ValidatedForm
-      key={
-        hasJobPicker
-          ? `${selectedJobId}:${jobOperationIdState}`
-          : undefined
-      }
+      key={hasJobPicker ? selectedJobId || "no-job" : undefined}
       validator={
         isCreateMultiLine
           ? productionQuantityCreateFormValidator
@@ -518,19 +517,23 @@ const ProductionQuantityForm = ({
               }}
             />
           ) : null}
-          {isEditing || presetJobOperationIdOnCreate ? (
+          {isEditing ? (
             <Hidden name="jobOperationId" />
           ) : (
             <Select
-              key={hasJobPicker ? selectedJobId || "no-job" : undefined}
+              key={hasJobPicker ? selectedJobId || "no-job" : "job-operation"}
               name="jobOperationId"
               label={t`Operation`}
               options={operationOptions ?? []}
-              isDisabled={hasJobPicker && !hasJobSelected}
+              isDisabled={
+                lockOperationSelectionProp ||
+                (hasJobPicker && !hasJobSelected)
+              }
               onChange={(value) => {
+                if (lockOperationSelectionProp) return;
                 const next = value?.value ?? "";
                 setJobOperationIdState(next);
-                if (hasJobPicker && next) {
+                if (next) {
                   handleOperationChange(next);
                 }
               }}

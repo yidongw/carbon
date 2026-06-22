@@ -120,7 +120,8 @@ export const overlayRegistry = {
           operationType: data.operationType ?? null,
           defaultActorKind:
             seeded?.actorKind ?? data.defaultActorKind ?? "employee",
-          lockActorSelection: seeded?.lockActorSelection ?? false
+          lockActorSelection: seeded?.lockActorSelection ?? false,
+          lockOperationSelection: Boolean(data.jobOperationId)
         };
       },
       () => import("~/modules/production/ui/Jobs/ProductionQuantityForm")

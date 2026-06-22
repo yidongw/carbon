@@ -40,7 +40,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const [job, jobOperations, opContext] = await Promise.all([
     getJob(client, jobId),
-    jobOperationId ? null : getJobOperations(client, jobId),
+    getJobOperations(client, jobId),
     getJobOperationActorContext(client, jobOperationId, companyId)
   ]);
   const actorContext = {
@@ -68,19 +68,6 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     }
   );
 
-  if (jobOperationId) {
-    return {
-      jobId,
-      jobOperationId,
-      operationOptions: [] as const,
-      configurationParameters:
-        configurationParameters.length > 0 ? configurationParameters : null,
-      configReferenceSource,
-      itemId,
-      ...actorContext
-    };
-  }
-
   const operationOptions =
     jobOperations?.data?.map((operation) => ({
       label: operation.description ?? "",
@@ -89,7 +76,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   return {
     jobId,
-    jobOperationId: "",
+    jobOperationId,
     operationOptions,
     configurationParameters:
       configurationParameters.length > 0 ? configurationParameters : null,
