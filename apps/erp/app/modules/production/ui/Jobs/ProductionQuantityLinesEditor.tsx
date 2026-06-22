@@ -238,12 +238,13 @@ export function ProductionQuantityLinesEditor({
     );
   };
 
+  const showConfig = Boolean(configurationParameters?.length && itemId);
+
   return (
     <VStack className="w-full items-stretch gap-3">
       {lines.map((line) => {
         const cfg = getConfigFromEditableLine(line);
         const configTotal = computeJobConfigTableTotal(cfg);
-        const showConfig = Boolean(configurationParameters?.length && itemId);
 
         return (
           <div
@@ -253,7 +254,7 @@ export function ProductionQuantityLinesEditor({
             <HStack className="w-full min-w-0 items-center justify-between gap-2">
               <div className="min-w-0 flex-1">
                 <Select
-                  disabled={isDisabled}
+                  disabled={showConfig ? isDisabled : false}
                   value={line.type}
                   onValueChange={(value) =>
                     updateLine(line.key, {
@@ -319,7 +320,7 @@ export function ProductionQuantityLinesEditor({
               value={line.quantity}
               onChange={(quantity) => updateLine(line.key, { quantity })}
               minValue={0}
-              isDisabled={isDisabled}
+              isDisabled={showConfig ? isDisabled : false}
               isReadOnly={configTotal > 0}
               hasConfigurationParameters={showConfig}
               onOpenConfigTable={
@@ -366,7 +367,7 @@ export function ProductionQuantityLinesEditor({
           type="button"
           variant="secondary"
           size="sm"
-          isDisabled={isDisabled}
+          isDisabled={showConfig ? isDisabled : false}
           onClick={addLine}
           className="transition-transform active:scale-[0.96]"
         >

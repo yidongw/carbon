@@ -12,10 +12,10 @@ import {
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate, useParams, useSearchParams } from "react-router";
 import type { z } from "zod";
 import { Hidden, Number, Select, Submit, TextArea } from "~/components/Form";
-import { ProductionActorFields } from "./ProductionActorFields";
+import { ProductionActorFields, selectionFromInitialValues } from "./ProductionActorFields";
 import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions } from "~/hooks";
 import { isConfigTableOverlaySuccess } from "../../configTableOverlay";
@@ -70,6 +70,8 @@ function getInitialConfigState(configuration: unknown) {
 
 export type PickupFormProps = {
   initialValues: z.infer<typeof jobOperationPickupValidator>;
+  jobOptions?: { label: string; value: string }[];
+  jobId?: string | null;
   operationOptions?: { label: string; value: string }[];
   configurationParameters?: ConfigurationParameter[] | null;
   configReferenceSource?: ConfigReferenceSource | null;
@@ -77,6 +79,7 @@ export type PickupFormProps = {
   processId?: string | null;
   operationType?: string | null;
   defaultActorKind?: "employee" | "supplier";
+  lockJobSelection?: boolean;
   lockActorSelection?: boolean;
   supplierId?: string;
   onDismiss?: () => void;
@@ -86,6 +89,8 @@ export type PickupFormProps = {
 
 const PickupForm = ({
   initialValues,
+  jobOptions,
+  jobId: jobIdProp,
   operationOptions,
   configurationParameters,
   configReferenceSource,
@@ -93,6 +98,7 @@ const PickupForm = ({
   processId,
   operationType,
   defaultActorKind,
+  lockJobSelection: lockJobSelectionProp,
   lockActorSelection: lockActorSelectionProp,
   supplierId,
   onDismiss: onDismissProp,
@@ -102,7 +108,13 @@ const PickupForm = ({
   const permissions = usePermissions();
   const { t } = useLingui();
   const navigate = useNavigate();
-  const { jobId } = useParams();
+  const { jobId: jobIdFromParams } = useParams();
+  const [searchParams] = useSearchParams();
+  const hasJobPicker = Boolean(jobOptions?.length);
+  const selectedJobId = hasJobPicker
+    ? (searchParams.get("jobId") ?? jobIdProp?.trim() ?? "")
+    : jobIdProp ?? jobIdFromParams ?? "";
+  const jobId = selectedJobId || jobIdFromParams;
   const isOverlay = fetcher != null;
   const onDismiss =
     onDismissProp ??
@@ -134,6 +146,42 @@ const PickupForm = ({
   const isDisabled = isEditing
     ? !permissions.can("update", "production")
     : !permissions.can("create", "production");
+
+  // Track operation selection for submit validation
+  const [selectedOperation, setSelectedOperation] = useState(
+    initialValues.jobOperationId || ""
+  );
+
+  const updateSearchParams = (updates: {
+    jobId?: string | null;
+    jobOperationId?: string | null;
+  }) => {
+    const newParams = new URLSearchParams(searchParams);
+    if (updates.jobId !== undefined) {
+      if (updates.jobId) {
+        newParams.set("jobId", updates.jobId);
+      } else {
+        newParams.delete("jobId");
+      }
+    }
+    if (updates.jobOperationId !== undefined) {
+      if (updates.jobOperationId) {
+        newParams.set("jobOperationId", updates.jobOperationId);
+      } else {
+        newParams.delete("jobOperationId");
+      }
+    }
+    navigate(
+      {
+        search: newParams.toString()
+      },
+      { replace: true }
+    );
+  };
+
+  const handleJobChange = (value: string) => {
+    updateSearchParams({ jobId: value, jobOperationId: null });
+  };
 
   const handleConfigTableSubmit = (
     rows: ConfigRow[],
@@ -203,13 +251,32 @@ const PickupForm = ({
       <DrawerBody>
         <Hidden name="id" />
         <VStack spacing={4}>
-          {isEditing || presetJobOperationIdOnCreate ? (
+          {jobOptions && !isEditing ? (
+            <Select
+              name="jobId"
+              label={t`Job`}
+              options={jobOptions}
+              isDisabled={lockJobSelectionProp}
+              onChange={(newValue) => {
+                if (newValue?.value) handleJobChange(newValue.value);
+              }}
+            />
+          ) : null}
+          {isEditing ? (
             <Hidden name="jobOperationId" />
           ) : (
             <Select
+              key={hasJobPicker ? selectedJobId || "no-job" : "job-operation"}
               name="jobOperationId"
               label={t`Operation`}
               options={operationOptions ?? []}
+              isDisabled={
+                presetJobOperationIdOnCreate ||
+                (hasJobPicker && !selectedJobId)
+              }
+              onChange={(newValue) => {
+                setSelectedOperation(newValue?.value ?? "");
+              }}
             />
           )}
           <ProductionActorFields
@@ -244,7 +311,12 @@ const PickupForm = ({
               onChange={setQuantity}
             />
           ) : (
-            <Number name="quantity" label={t`Quantity`} minValue={0} />
+            <Number
+              name="quantity"
+              label={t`Quantity`}
+              minValue={0}
+              onChange={(value) => setQuantity(value)}
+            />
           )}
           <TextArea name="notes" label={t`Notes`} />
         </VStack>
@@ -252,7 +324,7 @@ const PickupForm = ({
       <DrawerFooter>
         <HStack>
           <Submit
-            isDisabled={isDisabled}
+            isDisabled={isDisabled || quantity === 0 || !selectedOperation}
             className="transition-transform active:scale-[0.96]"
           >
             <Trans>Save</Trans>

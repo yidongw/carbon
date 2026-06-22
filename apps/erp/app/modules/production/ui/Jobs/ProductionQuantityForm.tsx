@@ -263,16 +263,20 @@ const ProductionQuantityForm = ({
   }, [isCreateMultiLine, lines]);
 
   const [jobOperationIdState, setJobOperationIdState] = useState(() => {
-    const fromUrl = searchParams.get("jobOperationId") ?? "";
-    if (fromUrl) return fromUrl;
+    // Check initialValues first (for overlays), then URL params (for routes)
+    let initial: string;
     if (isCreateMultiLineInitial(initialValues)) {
-      return (initialValues as ProductionQuantityCreateInitialValues)
+      initial = (initialValues as ProductionQuantityCreateInitialValues)
         .jobOperationId;
+    } else {
+      initial = (
+        (initialValues as z.infer<typeof productionQuantityValidator>)
+          .jobOperationId ?? ""
+      );
     }
-    return (
-      (initialValues as z.infer<typeof productionQuantityValidator>)
-        .jobOperationId ?? ""
-    );
+    // URL params override initialValues (for route navigation)
+    const fromUrl = searchParams.get("jobOperationId") ?? "";
+    return fromUrl || initial;
   });
 
   useEffect(() => {
@@ -495,6 +499,15 @@ const ProductionQuantityForm = ({
     updateSearchParams({ jobOperationId: value });
   };
 
+  // When operation is locked AND preset in initialValues (overlay from BOP),
+  // bypass cascade state initialization issues and use initialValues directly
+  const isOperationPresetAndLocked = lockOperationSelectionProp &&
+    Boolean(initialValues.jobOperationId) &&
+    !isEditing;
+  const effectiveJobOperationId = isOperationPresetAndLocked
+    ? initialValues.jobOperationId
+    : jobOperationIdState;
+
   const {
     hasJobSelected,
     hasOperationSelected,
@@ -505,7 +518,7 @@ const ProductionQuantityForm = ({
     isEditing,
     hasJobPicker,
     selectedJobId,
-    jobOperationId: jobOperationIdState,
+    jobOperationId: effectiveJobOperationId,
     actorSelection,
     permissionDisabled: isDisabled
   });
@@ -583,7 +596,7 @@ const ProductionQuantityForm = ({
             operationType={operationType}
             defaultActorKind={defaultActorKind}
             lockActorSelection={lockActorSelection}
-            isDisabled={!hasOperationSelected}
+            isDisabled={hasConfigurationParameters ? !hasOperationSelected : false}
             employeeIdValue={actorFieldValues.employeeId}
             supplierProcessIdValue={actorFieldValues.supplierProcessId}
             supplierIdValue={actorFieldValues.supplierId}
@@ -672,7 +685,7 @@ const ProductionQuantityForm = ({
           <TextArea
             name="notes"
             label={t`Notes`}
-            isDisabled={areDetailFieldsDisabled}
+            isDisabled={hasConfigurationParameters ? areDetailFieldsDisabled : false}
           />
         </VStack>
       </DrawerBody>
@@ -681,7 +694,11 @@ const ProductionQuantityForm = ({
           <Submit
             isDisabled={
               isDisabled ||
-              (isCreateMultiLine ? !canSubmitCreate : hasZeroQuantityLine)
+              (isCreateMultiLine
+                ? hasConfigurationParameters
+                  ? !canSubmitCreate
+                  : !hasOperationSelected || hasZeroQuantityLine
+                : hasZeroQuantityLine)
             }
             className="transition-transform active:scale-[0.96]"
           >
