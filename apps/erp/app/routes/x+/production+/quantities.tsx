@@ -18,6 +18,7 @@ import {
 import { useCallback, useMemo } from "react";
 import {
   computeProductionQuantityReportEarnedAmount,
+  getProductionQuantityReportPayRows,
   getProductionPayApprovalRequestRows,
   resolveProductionPayApprovalScope,
   resolveProductionPayApprovalStatus
@@ -89,7 +90,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   }
 
   const serviceRole = getCarbonServiceRole();
-  const result = await getProductionPayApprovalRequestRows(
+  const result = await getProductionQuantityReportPayRows(
     client,
     companyId,
     scope,
@@ -104,6 +105,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const rows = await Promise.all(
     baseRows.map(async (row) => {
       const canApproveRow =
+        row.approvalRequestId &&
         row.approvalStatus === "Pending"
           ? await canApproveRequest(
               serviceRole,

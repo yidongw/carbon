@@ -189,15 +189,16 @@ export type ProductionPayApprovalRequestStatus =
   | "Cancelled";
 
 export type ProductionPayApprovalRequestRow = {
-  approvalRequestId: string;
+  approvalRequestId?: string;
   reportId: string;
-  approvalStatus: ProductionPayApprovalRequestStatus;
+  approvalStatus?: ProductionPayApprovalRequestStatus;
   amount: number | null;
   requestedBy: string | null;
   id: string;
   quantity: number;
   createdAt: string | null;
   employeeId: string | null;
+  createdBy?: string | null;
   paymentYear: number | null;
   paymentMonth: number | null;
   invalidatedAt: string | null;

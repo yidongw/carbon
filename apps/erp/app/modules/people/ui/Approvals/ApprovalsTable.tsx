@@ -1,4 +1,4 @@
-import { Avatar, Badge, Button, HStack, IconButton, toast, VStack } from "@carbon/react";
+import { Badge, Button, HStack, IconButton, toast, VStack } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -21,11 +21,11 @@ import type {
 } from "~/modules/people/people.models";
 import type { ProductionQuantityReportWithLines } from "~/modules/production/productionQuantityReport.service";
 import { ProductionQuantityDispositionDrawer } from "~/modules/production/ui/Jobs/ProductionQuantityDispositionDrawer";
+import { ProductionQuantityReportReporter } from "~/modules/production/ui/Jobs/ProductionQuantityReportReporter";
 import { path } from "~/utils/path";
 import SalaryPeriodPicker from "../Salary/SalaryPeriodPicker";
 import {
   formatDateTime,
-  getEmployeeName,
   getItemName,
   getItemReadableIdWithRevision,
   getJobReadableId,
@@ -41,6 +41,7 @@ export type PayApprovalRow = {
   quantity: number | null;
   createdAt: string | null;
   employeeId: string | null;
+  createdBy?: string | null;
   paymentYear: number | null;
   paymentMonth: number | null;
   invalidatedAt: string | null;
@@ -289,18 +290,15 @@ const ApprovalsTable = memo(
         {
           accessorKey: "employeeId",
           header: t`Employee`,
-          cell: ({ row }) => (
-            <HStack className="items-center gap-2">
-              <Avatar
-                className="size-7"
-                src={row.original.employee?.avatarUrl ?? undefined}
-                name={getEmployeeName(row.original.employee)}
+          cell: ({ row }) =>
+            row.original.employeeId ? (
+              <ProductionQuantityReportReporter
+                employeeId={row.original.employeeId}
+                createdBy={row.original.createdBy}
               />
-              <span className="text-sm font-medium">
-                {getEmployeeName(row.original.employee)}
-              </span>
-            </HStack>
-          ),
+            ) : (
+              "—"
+            ),
           meta: {
             icon: <LuUser />,
             pluralHeader: t`Employees`,
@@ -409,10 +407,10 @@ const ApprovalsTable = memo(
           id: "actions",
           header: () => <span className="sr-only">{t`Actions`}</span>,
           cell: ({ row }) => {
-            const requestId =
-              row.original.approvalRequestId ?? row.original.id;
+            const requestId = row.original.approvalRequestId;
             const reportId = row.original.reportId ?? row.original.id;
             const showActions =
+              requestId &&
               row.original.canApprove &&
               rowStatus(row.original) === "Pending";
 

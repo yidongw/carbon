@@ -1205,7 +1205,7 @@ export async function getCompanyPendingSalaryCompletions(
 }
 
 const productionPayApprovalSelect = `
-  id, quantity, createdAt, employeeId, paymentYear, paymentMonth, invalidatedAt, reportId,
+  id, quantity, createdAt, employeeId, createdBy, paymentYear, paymentMonth, invalidatedAt, reportId,
   employee:user!productionQuantity_employeeId_fkey(id, firstName, lastName, fullName, avatarUrl),
   jobOperation!inner(id, description, insideUnitCost, jobId,
     process:processId(name),
@@ -1214,13 +1214,130 @@ const productionPayApprovalSelect = `
 `;
 
 const productionPayApprovalReportSelect = `
-  id, employeeId, originalQuantity, jobOperationId,
+  id, employeeId, createdBy, originalQuantity, jobOperationId,
   employee:user!productionQuantityReport_employeeId_fkey(id, firstName, lastName, fullName, avatarUrl),
   jobOperation!inner(id, description, insideUnitCost, jobId,
     process:processId(name),
     job:jobId(jobId, item:itemId(readableIdWithRevision, name))
   )
 `;
+
+const productionQuantityReportListSelect = `
+  id, employeeId, createdBy, originalQuantity, jobOperationId, createdAt, notes,
+  employee:user!productionQuantityReport_employeeId_fkey(id, firstName, lastName, fullName, avatarUrl),
+  jobOperation!inner(id, description, insideUnitCost, jobId,
+    process:processId(name),
+    job:jobId(jobId, item:itemId(readableIdWithRevision, name))
+  )
+`;
+
+type ProductionQuantityLinePayState = {
+  paymentYear: number | null;
+  invalidatedAt: string | null;
+};
+
+function deriveLinePayStatus(
+  lines: ProductionQuantityLinePayState[]
+): ProductionPayApprovalStatus {
+  if (lines.length === 0) return "pending";
+  const active = lines.filter((line) => !line.invalidatedAt);
+  if (active.length === 0) return "rejected";
+  if (active.some((line) => line.paymentYear != null)) return "approved";
+  return "pending";
+}
+
+function scopeWantsStatus(
+  scope: ProductionPayApprovalScope,
+  status: ProductionPayApprovalStatus
+): boolean {
+  if (scope.mode === "all") return true;
+  if (scope.mode === "single") return scope.status === status;
+  return scope.statuses.includes(status);
+}
+
+async function getProductionQuantityReportIdsForScope(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  scope: ProductionPayApprovalScope,
+  enrichmentClient?: SupabaseClient<Database>
+): Promise<Set<string> | null> {
+  if (scope.mode === "all") return null;
+
+  const db = enrichmentClient ?? client;
+  const ids = new Set<string>();
+  const latestApprovalByReport = new Map<
+    string,
+    ProductionPayApprovalRequestStatus
+  >();
+
+  const approvalStatuses: ProductionPayApprovalRequestStatus[] = [];
+  if (scopeWantsStatus(scope, "pending")) approvalStatuses.push("Pending");
+  if (scopeWantsStatus(scope, "approved")) approvalStatuses.push("Approved");
+  if (scopeWantsStatus(scope, "rejected")) {
+    approvalStatuses.push("Rejected", "Cancelled");
+  }
+
+  if (approvalStatuses.length > 0) {
+    const { data: requests } = await db
+      .from("approvalRequest")
+      .select("documentId, status, requestedAt")
+      .eq("companyId", companyId)
+      .eq("documentType", "productionQuantityReport")
+      .in("status", approvalStatuses)
+      .order("requestedAt", { ascending: false });
+
+    for (const req of requests ?? []) {
+      if (!latestApprovalByReport.has(req.documentId)) {
+        latestApprovalByReport.set(
+          req.documentId,
+          req.status as ProductionPayApprovalRequestStatus
+        );
+      }
+    }
+
+    for (const [reportId, status] of latestApprovalByReport) {
+      const bucket: ProductionPayApprovalStatus =
+        status === "Pending"
+          ? "pending"
+          : status === "Approved"
+            ? "approved"
+            : "rejected";
+      if (scopeWantsStatus(scope, bucket)) {
+        ids.add(reportId);
+      }
+    }
+  }
+
+  const { data: lineRows, error: lineRowsError } = await db
+    .from("productionQuantity")
+    .select("reportId, paymentYear, invalidatedAt")
+    .eq("companyId", companyId)
+    .eq("type", "Production")
+    .not("reportId", "is", null);
+
+  if (!lineRowsError) {
+    const linesByReport = new Map<string, ProductionQuantityLinePayState[]>();
+    for (const line of lineRows ?? []) {
+      if (!line.reportId) continue;
+      const bucket = linesByReport.get(line.reportId) ?? [];
+      bucket.push({
+        paymentYear: line.paymentYear,
+        invalidatedAt: line.invalidatedAt
+      });
+      linesByReport.set(line.reportId, bucket);
+    }
+
+    for (const [reportId, lines] of linesByReport) {
+      if (latestApprovalByReport.has(reportId)) continue;
+      const bucket = deriveLinePayStatus(lines);
+      if (scopeWantsStatus(scope, bucket)) {
+        ids.add(reportId);
+      }
+    }
+  }
+
+  return ids;
+}
 
 function normalizeProductionPayApprovalStatus(
   value: string
@@ -1603,6 +1720,7 @@ export async function getProductionPayApprovalRequestRows(
     string,
     {
       employeeId: string | null;
+      createdBy: string | null;
       quantity: number;
       employee: ProductionPayApprovalRequestRow["employee"];
       jobOperation: unknown;
@@ -1629,6 +1747,7 @@ export async function getProductionPayApprovalRequestRows(
     for (const report of reports ?? []) {
       reportFallbackById.set(report.id, {
         employeeId: report.employeeId,
+        createdBy: report.createdBy,
         quantity: report.originalQuantity ?? 0,
         employee: report.employee,
         jobOperation: report.jobOperation
@@ -1658,6 +1777,7 @@ export async function getProductionPayApprovalRequestRows(
       quantity: totalQty,
       createdAt: req.requestedAt ?? primary?.createdAt ?? null,
       employeeId: primary?.employeeId ?? fallback?.employeeId ?? null,
+      createdBy: primary?.createdBy ?? fallback?.createdBy ?? null,
       paymentYear,
       paymentMonth,
       invalidatedAt: primary?.invalidatedAt ?? null,
@@ -1672,6 +1792,215 @@ export async function getProductionPayApprovalRequestRows(
     count: requests.count,
     status: requests.status,
     statusText: requests.statusText
+  };
+}
+
+/** Lists all production quantity reports with approval + line enrichment. */
+export async function getProductionQuantityReportPayRows(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  scope: ProductionPayApprovalScope,
+  args?: GenericQueryFilters & { search: string | null },
+  enrichmentClient?: SupabaseClient<Database>
+) {
+  const scopeReportIds = await getProductionQuantityReportIdsForScope(
+    client,
+    companyId,
+    scope,
+    enrichmentClient
+  );
+
+  if (scopeReportIds && scopeReportIds.size === 0) {
+    return {
+      data: [],
+      error: null,
+      count: 0,
+      status: 200,
+      statusText: "OK"
+    };
+  }
+
+  let query = client
+    .from("productionQuantityReport")
+    .select(productionQuantityReportListSelect, { count: "exact" })
+    .eq("companyId", companyId);
+
+  if (scopeReportIds) {
+    query = query.in("id", [...scopeReportIds]);
+  }
+
+  const filterEmployeeIds = getEmployeeIdsFromFilters(args?.filters);
+  if (filterEmployeeIds) {
+    query = query.in("employeeId", filterEmployeeIds);
+  }
+
+  if (args?.search) {
+    const term = args.search.trim();
+    if (term) {
+      const pattern = `%${term}%`;
+      const { data: employees, error: searchError } =
+        await getEmployeeIdsMatchingSearch(client, companyId, term);
+
+      if (searchError) {
+        return {
+          data: null,
+          error: searchError,
+          count: null,
+          status: 0,
+          statusText: ""
+        };
+      }
+
+      const employeeIds = employees?.map((row) => row.id) ?? [];
+      const conditions = [
+        `notes.ilike.${pattern}`,
+        `jobOperation.description.ilike.${pattern}`
+      ];
+      if (employeeIds.length > 0) {
+        conditions.push(`employeeId.in.(${employeeIds.join(",")})`);
+      }
+      query = query.or(conditions.join(","));
+    }
+  }
+
+  const dbFilters = args?.filters?.filter(
+    (f) => f.column !== "approvalStatus" && f.column !== "employeeId"
+  );
+  if (args) {
+    query = setGenericQueryFilters(
+      query,
+      { ...args, filters: dbFilters },
+      [{ column: "createdAt", ascending: false }]
+    );
+  } else {
+    query = query.order("createdAt", { ascending: false });
+  }
+
+  const reports = await query;
+  if (reports.error) {
+    return reports;
+  }
+
+  const reportList = reports.data ?? [];
+  if (reportList.length === 0) {
+    return {
+      data: [],
+      error: null,
+      count: reports.count ?? 0,
+      status: reports.status,
+      statusText: reports.statusText
+    };
+  }
+
+  const reportIds = reportList.map((report) => report.id);
+  const linesClient = enrichmentClient ?? client;
+
+  const [{ data: approvals, error: approvalsError }, { data: lines, error: linesError }] =
+    await Promise.all([
+      linesClient
+        .from("approvalRequest")
+        .select("id, documentId, status, amount, requestedBy, requestedAt")
+        .eq("companyId", companyId)
+        .eq("documentType", "productionQuantityReport")
+        .in("documentId", reportIds)
+        .order("requestedAt", { ascending: false }),
+      linesClient
+        .from("productionQuantity")
+        .select(productionPayApprovalSelect)
+        .in("reportId", reportIds)
+        .eq("companyId", companyId)
+        .eq("type", "Production")
+        .is("invalidatedAt", null)
+    ]);
+
+  if (approvalsError) {
+    return {
+      data: null,
+      error: approvalsError,
+      count: null,
+      status: 0,
+      statusText: ""
+    };
+  }
+
+  if (linesError) {
+    return {
+      data: null,
+      error: linesError,
+      count: null,
+      status: 0,
+      statusText: ""
+    };
+  }
+
+  const latestApprovalByReport = new Map<
+    string,
+    NonNullable<typeof approvals>[number]
+  >();
+  for (const approval of approvals ?? []) {
+    if (!latestApprovalByReport.has(approval.documentId)) {
+      latestApprovalByReport.set(approval.documentId, approval);
+    }
+  }
+
+  const linesByReport = new Map<string, NonNullable<typeof lines>>();
+  for (const line of lines ?? []) {
+    if (!line.reportId) continue;
+    const bucket = linesByReport.get(line.reportId) ?? [];
+    bucket.push(line);
+    linesByReport.set(line.reportId, bucket);
+  }
+
+  const rows: ProductionPayApprovalRequestRow[] = [];
+  for (const report of reportList) {
+    const approval = latestApprovalByReport.get(report.id);
+    const reportLines = linesByReport.get(report.id) ?? [];
+    const primary = reportLines[0];
+    const totalQty =
+      reportLines.length > 0
+        ? reportLines.reduce((sum, line) => sum + (line.quantity ?? 0), 0)
+        : (report.originalQuantity ?? 0);
+    const paymentYear = primary?.paymentYear ?? null;
+    const paymentMonth = primary?.paymentMonth ?? null;
+    const lineStatus = deriveLinePayStatus(
+      reportLines.map((line) => ({
+        paymentYear: line.paymentYear,
+        invalidatedAt: line.invalidatedAt
+      }))
+    );
+    const approvalStatus: ProductionPayApprovalRequestStatus | undefined =
+      approval?.status ??
+      (lineStatus === "pending"
+        ? "Pending"
+        : lineStatus === "approved"
+          ? "Approved"
+          : "Rejected");
+
+    rows.push({
+      approvalRequestId: approval?.id,
+      reportId: report.id,
+      approvalStatus,
+      amount: approval?.amount ?? null,
+      requestedBy: approval?.requestedBy ?? null,
+      id: approval?.id ?? report.id,
+      quantity: totalQty,
+      createdAt: approval?.requestedAt ?? primary?.createdAt ?? report.createdAt ?? null,
+      employeeId: primary?.employeeId ?? report.employeeId ?? null,
+      createdBy: primary?.createdBy ?? report.createdBy ?? null,
+      paymentYear,
+      paymentMonth,
+      invalidatedAt: primary?.invalidatedAt ?? null,
+      employee: primary?.employee ?? report.employee ?? null,
+      jobOperation: primary?.jobOperation ?? report.jobOperation
+    });
+  }
+
+  return {
+    data: rows,
+    error: null,
+    count: reports.count,
+    status: reports.status,
+    statusText: reports.statusText
   };
 }
 
