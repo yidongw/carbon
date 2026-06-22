@@ -433,6 +433,18 @@ const ProductionQuantityForm = ({
     () => actorFieldValues.supplierProcessId ?? ""
   );
 
+  useEffect(() => {
+    setEmployeeId(actorFieldValues.employeeId ?? "");
+    setSupplierProcessId(actorFieldValues.supplierProcessId ?? "");
+    if (actorFieldValues.actorKind) {
+      setActorKind(actorFieldValues.actorKind);
+    }
+  }, [
+    actorFieldValues.actorKind,
+    actorFieldValues.employeeId,
+    actorFieldValues.supplierProcessId
+  ]);
+
   const updateSearchParams = (updates: {
     jobId?: string | null;
     jobOperationId?: string | null;
@@ -472,7 +484,22 @@ const ProductionQuantityForm = ({
   };
 
   const hasJobSelected = !hasJobPicker || Boolean(selectedJobId);
-  const hasOperationSelected = Boolean(jobOperationIdState);
+  const hasOperationSelected = isEditing || Boolean(jobOperationIdState);
+  const hasActorSelected =
+    isEditing ||
+    (actorKind === "employee"
+      ? Boolean(employeeId.trim())
+      : Boolean(supplierProcessId.trim()));
+  const areQuantityFieldsDisabled =
+    isDisabled ||
+    !hasJobSelected ||
+    !hasOperationSelected ||
+    !hasActorSelected;
+  const canSubmitCreate =
+    hasJobSelected &&
+    hasOperationSelected &&
+    hasActorSelected &&
+    !hasZeroQuantityLine;
 
   const lockActorSelection =
     lockActorSelectionProp ??
@@ -545,7 +572,7 @@ const ProductionQuantityForm = ({
             operationType={operationType}
             defaultActorKind={defaultActorKind}
             lockActorSelection={lockActorSelection}
-            isDisabled={hasJobPicker && !hasOperationSelected}
+            isDisabled={!hasOperationSelected}
             employeeIdValue={actorFieldValues.employeeId}
             supplierProcessIdValue={actorFieldValues.supplierProcessId}
             supplierIdValue={actorFieldValues.supplierId}
@@ -561,7 +588,7 @@ const ProductionQuantityForm = ({
             <SupplierSubcontractPricingFields
               jobOperationId={jobOperationIdState}
               supplierProcessId={supplierProcessId}
-              isDisabled={isDisabled}
+              isDisabled={areQuantityFieldsDisabled}
             />
           ) : null}
 
@@ -574,7 +601,7 @@ const ProductionQuantityForm = ({
                 configurationParameters={configurationParameters}
                 configReferenceSource={configReferenceSource}
                 itemId={itemId}
-                isDisabled={isDisabled}
+                isDisabled={areQuantityFieldsDisabled}
                 employeeId={actorKind === "employee" ? employeeId : undefined}
                 jobId={jobId ?? undefined}
                 jobOperationId={jobOperationIdState || undefined}
@@ -597,14 +624,20 @@ const ProductionQuantityForm = ({
                   label={t`Quantity`}
                   value={quantity}
                   minValue={0}
-                  isDisabled={isDisabled || configTableTotal > 0}
+                  isDisabled={
+                    areQuantityFieldsDisabled || configTableTotal > 0
+                  }
                   configTableTotal={configTableTotal}
                   hasConfigurationParameters
                   onOpenConfigTable={openConfigTable}
                   onChange={setQuantity}
                 />
               ) : (
-                <Number name="quantity" label={t`Quantity`} />
+                <Number
+                  name="quantity"
+                  label={t`Quantity`}
+                  isDisabled={areQuantityFieldsDisabled}
+                />
               )}
               <Select
                 name="type"
@@ -630,7 +663,10 @@ const ProductionQuantityForm = ({
       <DrawerFooter>
         <HStack>
           <Submit
-            isDisabled={isDisabled || hasZeroQuantityLine}
+            isDisabled={
+              isDisabled ||
+              (isCreateMultiLine ? !canSubmitCreate : hasZeroQuantityLine)
+            }
             className="transition-transform active:scale-[0.96]"
           >
             <Trans>Save</Trans>
