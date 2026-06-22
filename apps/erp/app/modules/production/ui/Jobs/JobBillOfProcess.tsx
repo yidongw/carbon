@@ -723,7 +723,7 @@ const EmployeeProductionLogsView = ({
                   return (
                     <VStack key={pickup.id} spacing={1} className="w-full">
                       {/* White row: total badge, time, reporter (icon only) at the end */}
-                      <HStack className="w-full items-center text-sm px-1 gap-2">
+                      <HStack spacing={0} className="w-full items-center text-sm px-1 gap-2">
                         <Badge variant="outline" className="text-xs font-medium">
                           <Trans>Total</Trans>: {pickup.pickup.quantity}
                         </Badge>
@@ -786,7 +786,7 @@ const EmployeeProductionLogsView = ({
                   return (
                     <VStack key={entry.key} spacing={1} className="w-full">
                       {/* White row: total badge, time, reporter (icon only) at the end */}
-                      <HStack className="w-full items-center text-sm px-1 gap-2">
+                      <HStack spacing={0} className="w-full items-center text-sm px-1 gap-2">
                         <Badge variant="outline" className="text-xs font-medium">
                           <Trans>Total</Trans>: {reportTotal}
                         </Badge>
