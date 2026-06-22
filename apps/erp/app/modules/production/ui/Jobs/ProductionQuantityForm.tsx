@@ -499,6 +499,11 @@ const ProductionQuantityForm = ({
     updateSearchParams({ jobOperationId: value });
   };
 
+  // When operation is locked (overlay from BOP), bypass cascade and treat as selected
+  const effectiveJobOperationId = lockOperationSelectionProp && initialValues.jobOperationId
+    ? initialValues.jobOperationId
+    : jobOperationIdState;
+
   const {
     hasJobSelected,
     hasOperationSelected,
@@ -509,7 +514,7 @@ const ProductionQuantityForm = ({
     isEditing,
     hasJobPicker,
     selectedJobId,
-    jobOperationId: jobOperationIdState,
+    jobOperationId: effectiveJobOperationId,
     actorSelection,
     permissionDisabled: isDisabled
   });
