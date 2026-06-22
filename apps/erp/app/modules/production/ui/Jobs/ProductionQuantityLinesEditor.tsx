@@ -366,7 +366,7 @@ export function ProductionQuantityLinesEditor({
           type="button"
           variant="secondary"
           size="sm"
-          isDisabled={isDisabled}
+          isDisabled={showConfig ? isDisabled : false}
           onClick={addLine}
           className="transition-transform active:scale-[0.96]"
         >
