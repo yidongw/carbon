@@ -821,7 +821,7 @@ const EmployeeProductionLogsView = ({
                                 size="sm"
                                 aria-label="View history"
                                 onClick={() =>
-                                  entry.kind === "employee"
+                                  group.kind === "employee"
                                     ? onHistoryReport(entry.employeeReport!)
                                     : onHistorySupplierReport(
                                         entry.supplierReport!
@@ -839,7 +839,7 @@ const EmployeeProductionLogsView = ({
                                 size="sm"
                                 aria-label="Edit report"
                                 onClick={() =>
-                                  entry.kind === "employee"
+                                  group.kind === "employee"
                                     ? onEditReport(entry.employeeReport!)
                                     : onEditSupplierReport(entry.supplierReport!)
                                 }
@@ -848,7 +848,7 @@ const EmployeeProductionLogsView = ({
                                 <LuPencil className="h-4 w-4" />
                               </Button>
                             )}
-                            {entry.kind === "supplier" &&
+                            {group.kind === "supplier" &&
                               canCreatePo &&
                               !entry.supplierReport!.purchaseOrderLineId && (
                                 <Button
