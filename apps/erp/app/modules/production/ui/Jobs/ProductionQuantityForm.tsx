@@ -263,16 +263,20 @@ const ProductionQuantityForm = ({
   }, [isCreateMultiLine, lines]);
 
   const [jobOperationIdState, setJobOperationIdState] = useState(() => {
-    const fromUrl = searchParams.get("jobOperationId") ?? "";
-    if (fromUrl) return fromUrl;
+    // Check initialValues first (for overlays), then URL params (for routes)
+    let initial: string;
     if (isCreateMultiLineInitial(initialValues)) {
-      return (initialValues as ProductionQuantityCreateInitialValues)
+      initial = (initialValues as ProductionQuantityCreateInitialValues)
         .jobOperationId;
+    } else {
+      initial = (
+        (initialValues as z.infer<typeof productionQuantityValidator>)
+          .jobOperationId ?? ""
+      );
     }
-    return (
-      (initialValues as z.infer<typeof productionQuantityValidator>)
-        .jobOperationId ?? ""
-    );
+    // URL params override initialValues (for route navigation)
+    const fromUrl = searchParams.get("jobOperationId") ?? "";
+    return fromUrl || initial;
   });
 
   useEffect(() => {
