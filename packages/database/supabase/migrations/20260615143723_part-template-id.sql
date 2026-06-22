@@ -3,15 +3,20 @@ ALTER TABLE "part"
   ADD COLUMN IF NOT EXISTS "templateId" TEXT,
   ADD CONSTRAINT "part_templateId_fkey" FOREIGN KEY ("templateId") REFERENCES "template"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
--- Update get_part_details to include templateId and templateName
-DROP FUNCTION IF EXISTS get_part_details;
+-- Recreate get_part_details to include templateId and templateName.
+-- Based on the latest definition (item-sourcing-type migration, which exposes
+-- "sourcingType" and "requiresInspection") with the template columns appended
+-- so this migration is ordered after main's last get_part_details redefinition.
+DROP FUNCTION IF EXISTS get_part_details(TEXT);
 CREATE OR REPLACE FUNCTION get_part_details(item_id TEXT)
 RETURNS TABLE (
     "active" BOOLEAN,
     "assignee" TEXT,
     "defaultMethodType" "methodType",
+    "sourcingType" "sourcingType",
     "description" TEXT,
     "itemTrackingType" "itemTrackingType",
+    "requiresInspection" BOOLEAN,
     "name" TEXT,
     "replenishmentSystem" "itemReplenishmentSystem",
     "unitOfMeasureCode" TEXT,
@@ -61,13 +66,16 @@ BEGIN
     FROM "item" i
     WHERE i."readableId" = v_readable_id
     AND i."companyId" = v_company_id
+    AND i."type" = 'Part'
   )
   SELECT
     i."active",
     i."assignee",
     i."defaultMethodType",
+    i."sourcingType",
     i."description",
     i."itemTrackingType",
+    i."requiresInspection",
     i."name",
     i."replenishmentSystem",
     i."unitOfMeasureCode",
@@ -114,7 +122,9 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Update parts view to include templateId and templateName
+-- Recreate parts view to include templateId and templateName.
+-- Based on the latest definition (item-sourcing-type migration) with the
+-- template columns appended at the end.
 CREATE OR REPLACE VIEW "parts" WITH (SECURITY_INVOKER=true) AS
 WITH latest_items AS (
   SELECT DISTINCT ON (i."readableId", i."companyId")
@@ -155,6 +165,7 @@ SELECT
   li."active",
   li."assignee",
   li."defaultMethodType",
+  li."sourcingType",
   li."description",
   li."itemTrackingType",
   li."name",
