@@ -215,6 +215,7 @@ const PickupForm = ({
               name="jobId"
               label={t`Job`}
               options={jobOptions}
+              value={jobId ?? undefined}
               isDisabled={lockJobSelectionProp}
             />
           ) : null}
