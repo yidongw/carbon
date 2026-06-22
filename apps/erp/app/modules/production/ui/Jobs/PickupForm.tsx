@@ -260,7 +260,12 @@ const PickupForm = ({
               onChange={setQuantity}
             />
           ) : (
-            <Number name="quantity" label={t`Quantity`} minValue={0} />
+            <Number
+              name="quantity"
+              label={t`Quantity`}
+              minValue={0}
+              onChange={(e) => setQuantity(Number(e.target.value) || 0)}
+            />
           )}
           <TextArea name="notes" label={t`Notes`} />
         </VStack>

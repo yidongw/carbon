@@ -352,6 +352,7 @@ export const PickupForm = ({
               label={t`Quantity`}
               minValue={0}
               isDisabled={isDisabled}
+              onChange={(e) => setQuantity(Number(e.target.value) || 0)}
             />
           )}
           <TextArea
