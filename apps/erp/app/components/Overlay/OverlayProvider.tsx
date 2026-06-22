@@ -76,17 +76,15 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
 
       // Update browser URL to include overlay parameter (makes it shareable)
       if (typeof window !== "undefined" && target.url) {
-        const currentUrl = new URL(window.location.href);
         const targetUrl = new URL(target.url, window.location.origin);
 
-        // If we're already on the right path, just update search params
-        if (currentUrl.pathname === targetUrl.pathname) {
-          window.history.replaceState(
-            {},
-            "",
-            `${targetUrl.pathname}${targetUrl.search}`
-          );
-        }
+        // Update URL to include the overlay parameter
+        // This makes the overlay shareable regardless of current path
+        window.history.replaceState(
+          {},
+          "",
+          `${targetUrl.pathname}${targetUrl.search}`
+        );
       }
 
       return instance.id;
