@@ -14,8 +14,10 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   type FetcherWithComponents,
+  useLocation,
   useNavigate,
-  useParams
+  useParams,
+  useSearchParams
 } from "react-router";
 import type { z } from "zod";
 import { Hidden, Number, Select, Submit, TextArea } from "~/components/Form";
@@ -34,6 +36,7 @@ import {
   type ConfigReferenceSource
 } from "../../configParamsTableColumns";
 import type { ProductionQuantityLineInput } from "~/modules/production/productionQuantityReport.models";
+import { preventDismissOnPortaledContent } from "~/utils/dom";
 import { path } from "~/utils/path";
 import { computeJobConfigTableTotal } from "../../jobConfiguration";
 import {
@@ -111,6 +114,7 @@ export type ProductionQuantityFormProps = {
     value: string;
     helperText?: string;
   }[];
+  jobOptions?: { label: string; value: string }[];
   configurationParameters?: ConfigurationParameter[] | null;
   configReferenceSource?: ConfigReferenceSource | null;
   itemId?: string | null;
@@ -146,6 +150,7 @@ function isCreateMultiLineInitial(
 const ProductionQuantityForm = ({
   initialValues,
   operationOptions,
+  jobOptions,
   configurationParameters,
   configReferenceSource,
   itemId,
@@ -161,12 +166,22 @@ const ProductionQuantityForm = ({
   const permissions = usePermissions();
   const { t } = useLingui();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
   const { jobId: jobIdFromParams } = useParams();
-  const jobId =
-    jobIdProp?.trim() ||
-    parseJobIdFromQuantitiesUrl(formAction) ||
-    jobIdFromParams?.trim() ||
-    undefined;
+  const hasJobPicker = Boolean(jobOptions?.length);
+  const selectedJobId = hasJobPicker
+    ? (searchParams.get("jobId") ?? jobIdProp?.trim() ?? "")
+    : "";
+  const selectedJobOperationId = hasJobPicker
+    ? (searchParams.get("jobOperationId") ?? "")
+    : "";
+  const jobId = hasJobPicker
+    ? selectedJobId || undefined
+    : jobIdProp?.trim() ||
+      parseJobIdFromQuantitiesUrl(formAction) ||
+      jobIdFromParams?.trim() ||
+      undefined;
   const isOverlay = fetcher != null;
   const onDismiss =
     onDismissProp ??
@@ -186,7 +201,9 @@ const ProductionQuantityForm = ({
   const isCreateMultiLine = !isEditing && isCreateMultiLineInitial(initialValues);
 
   const presetJobOperationIdOnCreate =
-    !isEditing && Boolean(initialValues.jobOperationId);
+    !isEditing &&
+    !hasJobPicker &&
+    Boolean(initialValues.jobOperationId);
   const isDisabled = isEditing
     ? !permissions.can("update", "production")
     : !permissions.can("create", "production");
@@ -394,6 +411,9 @@ const ProductionQuantityForm = ({
     () => actorFieldValues.supplierProcessId ?? ""
   );
   const [jobOperationIdState, setJobOperationIdState] = useState(() => {
+    if (hasJobPicker) {
+      return selectedJobOperationId;
+    }
     if (isCreateMultiLineInitial(initialValues)) {
       return (initialValues as ProductionQuantityCreateInitialValues)
         .jobOperationId;
@@ -403,6 +423,52 @@ const ProductionQuantityForm = ({
         .jobOperationId ?? ""
     );
   });
+
+  useEffect(() => {
+    if (!hasJobPicker) return;
+    setJobOperationIdState(searchParams.get("jobOperationId") ?? "");
+  }, [hasJobPicker, searchParams]);
+
+  const updateSearchParams = (updates: {
+    jobId?: string | null;
+    jobOperationId?: string | null;
+  }) => {
+    const newParams = new URLSearchParams(searchParams);
+    if (updates.jobId !== undefined) {
+      if (updates.jobId) {
+        newParams.set("jobId", updates.jobId);
+      } else {
+        newParams.delete("jobId");
+      }
+    }
+    if (updates.jobOperationId !== undefined) {
+      if (updates.jobOperationId) {
+        newParams.set("jobOperationId", updates.jobOperationId);
+      } else {
+        newParams.delete("jobOperationId");
+      }
+    }
+
+    const search = newParams.toString();
+    navigate(
+      {
+        pathname: location.pathname,
+        search: search ? `?${search}` : ""
+      },
+      { replace: true }
+    );
+  };
+
+  const handleJobChange = (value: string) => {
+    updateSearchParams({ jobId: value, jobOperationId: null });
+  };
+
+  const handleOperationChange = (value: string) => {
+    updateSearchParams({ jobOperationId: value });
+  };
+
+  const hasJobSelected = !hasJobPicker || Boolean(selectedJobId);
+  const hasOperationSelected = Boolean(jobOperationIdState);
 
   const lockActorSelection =
     lockActorSelectionProp ??
@@ -414,6 +480,11 @@ const ProductionQuantityForm = ({
 
   const form = (
     <ValidatedForm
+      key={
+        hasJobPicker
+          ? `${selectedJobId}:${jobOperationIdState}`
+          : undefined
+      }
       validator={
         isCreateMultiLine
           ? productionQuantityCreateFormValidator
@@ -437,15 +508,31 @@ const ProductionQuantityForm = ({
       <DrawerBody>
         {isEditing ? <Hidden name="id" /> : null}
         <VStack ref={formBodyRef} spacing={4}>
+          {hasJobPicker && !isEditing ? (
+            <Select
+              name="jobId"
+              label={t`Job`}
+              options={jobOptions ?? []}
+              onChange={(newValue) => {
+                if (newValue?.value) handleJobChange(newValue.value);
+              }}
+            />
+          ) : null}
           {isEditing || presetJobOperationIdOnCreate ? (
             <Hidden name="jobOperationId" />
           ) : (
             <Select
+              key={hasJobPicker ? selectedJobId || "no-job" : undefined}
               name="jobOperationId"
               label={t`Operation`}
               options={operationOptions ?? []}
+              isDisabled={hasJobPicker && !hasJobSelected}
               onChange={(value) => {
-                setJobOperationIdState(value?.value ?? "");
+                const next = value?.value ?? "";
+                setJobOperationIdState(next);
+                if (hasJobPicker && next) {
+                  handleOperationChange(next);
+                }
               }}
             />
           )}
@@ -454,6 +541,7 @@ const ProductionQuantityForm = ({
             operationType={operationType}
             defaultActorKind={defaultActorKind}
             lockActorSelection={lockActorSelection}
+            isDisabled={hasJobPicker && !hasOperationSelected}
             employeeIdValue={actorFieldValues.employeeId}
             supplierProcessIdValue={actorFieldValues.supplierProcessId}
             supplierIdValue={actorFieldValues.supplierId}
@@ -567,7 +655,12 @@ const ProductionQuantityForm = ({
         if (!open) onDismiss();
       }}
     >
-      <DrawerContent>{form}</DrawerContent>
+      <DrawerContent
+        onPointerDownOutside={preventDismissOnPortaledContent}
+        onInteractOutside={preventDismissOnPortaledContent}
+      >
+        {form}
+      </DrawerContent>
     </Drawer>
   );
 };

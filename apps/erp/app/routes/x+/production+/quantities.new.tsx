@@ -4,7 +4,8 @@ import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { data, redirect, useLoaderData } from "react-router";
+import { data, redirect, useLoaderData, useNavigate } from "react-router";
+import { z } from "zod";
 import { getConfigurationParameters } from "~/modules/items";
 import {
   createJobOperationSupplierQuantityReport,
@@ -20,7 +21,8 @@ import {
   validateActorMatchesOperationSupplierRouting
 } from "~/modules/production";
 import { getConfigReferenceSourceForOperation } from "~/modules/production/configTableOverlay.server";
-import { ProductionQuantityForm } from "~/modules/production/ui/ProductionQuantities";
+import { productionQuantityLineJsonValidator } from "~/modules/production/productionQuantityReport.models";
+import ProductionQuantityForm from "~/modules/production/ui/Jobs/ProductionQuantityForm";
 import { path } from "~/utils/path";
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -34,7 +36,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const jobId = url.searchParams.get("jobId") ?? "";
   const jobOperationId = url.searchParams.get("jobOperationId") ?? "";
 
-  // Get list of jobs for the job selector
   const jobs = await getJobs(client, companyId, {
     search: null,
     limit: 1000,
@@ -71,7 +72,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
   let configurationParameters = null;
   let configReferenceSource = null;
 
-  // If jobId is selected, load operations
   if (jobId) {
     const [job, operations] = await Promise.all([
       getJob(client, jobId),
@@ -90,7 +90,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
     itemId = job.data?.itemId ?? null;
   }
 
-  // If jobOperationId is selected, load operation context
   if (jobOperationId) {
     opContext = await getJobOperationActorContext(
       client,
@@ -183,6 +182,10 @@ export async function action({ request }: ActionFunctionArgs) {
     0
   );
 
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth() + 1;
+
   const formData = await request.formData();
   const validation = await validator(
     productionQuantityCreateFormValidator
@@ -228,32 +231,69 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
-  const lines = JSON.parse(linesJson);
+  let lines: z.infer<typeof productionQuantityLineJsonValidator>[];
+  try {
+    lines = z
+      .array(productionQuantityLineJsonValidator)
+      .parse(JSON.parse(linesJson));
+  } catch {
+    return validationError(
+      {
+        fieldErrors: { lines: "Invalid quantity lines" },
+        formId: validation.formId
+      },
+      validation.submittedData
+    );
+  }
+
+  const mappedLines = lines.map((line) => ({
+    ...line,
+    scrapReasonId: line.type === "Scrap" ? line.scrapReasonId : undefined
+  }));
+
+  const { data: operation, error: operationError } = await client
+    .from("jobOperation")
+    .select("jobId")
+    .eq("id", jobOperationId)
+    .eq("companyId", companyId)
+    .single();
+
+  if (operationError || !operation?.jobId) {
+    return data(
+      validation.submittedData,
+      await flash(request, error(operationError, "Job operation not found"))
+    );
+  }
 
   const result =
     actorKind === "supplier"
       ? await createJobOperationSupplierQuantityReport(client, {
+          companyId,
+          jobId: operation.jobId,
           jobOperationId,
           supplierProcessId: supplierProcessId!,
-          lines,
-          notes: notes ?? null,
-          operationUnitCost:
-            snapshotPricingEdited === "true" ? operationUnitCost : undefined,
-          operationMinimumCost:
-            snapshotPricingEdited === "true"
-              ? operationMinimumCost
+          userId,
+          notes: notes?.trim() ? notes : null,
+          lines: mappedLines,
+          snapshotPricing:
+            operationUnitCost != null
+              ? {
+                  operationUnitCost,
+                  operationMinimumCost: operationMinimumCost ?? 0
+                }
               : undefined,
-          companyId,
-          userId
+          snapshotPricingEdited: snapshotPricingEdited === "true"
         })
       : await createProductionQuantityReport(client, {
-          jobOperationId,
-          employeeId: employeeId!,
-          lines,
-          notes: notes ?? null,
           companyId,
+          jobId: operation.jobId,
+          jobOperationId,
           userId,
-          canAutoApprove
+          employeeId: employeeId?.trim() ? employeeId : userId,
+          notes: notes?.trim() ? notes : null,
+          lines: mappedLines,
+          paymentYear: canAutoApprove ? currentYear : null,
+          paymentMonth: canAutoApprove ? currentMonth : null
         });
 
   if (result.error) {
@@ -274,12 +314,22 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function NewProductionQuantityRoute() {
   const loaderData = useLoaderData<typeof loader>();
+  const navigate = useNavigate();
+  const seededActor = loaderData.seededActor;
 
   return (
     <ProductionQuantityForm
-      jobId={loaderData.jobId}
-      jobOperationId={loaderData.jobOperationId}
       jobOptions={loaderData.jobOptions}
+      jobId={loaderData.jobId}
+      initialValues={{
+        jobOperationId: loaderData.jobOperationId,
+        actorKind: seededActor?.actorKind ?? loaderData.defaultActorKind,
+        employeeId: seededActor?.employeeId,
+        supplierProcessId: seededActor?.supplierProcessId,
+        supplierId: seededActor?.supplierId,
+        notes: "",
+        lines: [{ type: "Production", quantity: 0 }]
+      }}
       operationOptions={loaderData.operationOptions}
       configurationParameters={loaderData.configurationParameters}
       configReferenceSource={loaderData.configReferenceSource}
@@ -288,8 +338,7 @@ export default function NewProductionQuantityRoute() {
       operationType={loaderData.operationType}
       defaultActorKind={loaderData.defaultActorKind}
       lockActorSelection={loaderData.lockActorSelection}
-      supplierId={loaderData.supplierId}
-      seededActor={loaderData.seededActor}
+      onDismiss={() => navigate(path.to.productionQuantities)}
     />
   );
 }
