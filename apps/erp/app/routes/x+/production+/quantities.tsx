@@ -58,9 +58,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.search);
   const filterParams = searchParams.getAll("filter");
+  const isQuantitiesIndex = url.pathname === path.to.productionQuantities;
 
   // Default to pending on first landing only; allow clearing filters to show all rows.
-  if (filterParams.length === 0 && searchParams.toString() === "") {
+  if (
+    isQuantitiesIndex &&
+    filterParams.length === 0 &&
+    searchParams.toString() === ""
+  ) {
     throw redirect(
       `${path.to.productionQuantities}?filter=${encodeURIComponent(defaultPendingFilter)}`
     );
