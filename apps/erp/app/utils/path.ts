@@ -1018,6 +1018,20 @@ export const path = {
       if (!opId) return base;
       return `${base}?${new URLSearchParams({ jobOperationId: opId }).toString()}`;
     },
+    jobDetailsWithPickupOverlay: (
+      jobId: string,
+      jobOperationId: string
+    ) => {
+      const base = generatePath(`${x}/job/${jobId}/details`);
+      return `${base}?${new URLSearchParams({ openPickup: "true", jobOperationId }).toString()}`;
+    },
+    jobDetailsWithQuantityOverlay: (
+      jobId: string,
+      jobOperationId: string
+    ) => {
+      const base = generatePath(`${x}/job/${jobId}/details`);
+      return `${base}?${new URLSearchParams({ openQuantity: "true", jobOperationId }).toString()}`;
+    },
     jobs: `${x}/production/jobs`,
     jobRecalculate: (id: string) => generatePath(`${x}/job/${id}/recalculate`),
     jobRelease: (id: string) => generatePath(`${x}/job/${id}/release`),

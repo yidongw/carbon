@@ -1875,6 +1875,41 @@ const JobBillOfProcess = ({
     setWorkInstructions(initialWorkInstructions);
   }, [initialWorkInstructions]);
 
+  // Auto-open overlay forms based on URL parameters
+  useEffect(() => {
+    const openPickup = params.get("openPickup");
+    const openQuantity = params.get("openQuantity");
+    const jobOperationId = params.get("jobOperationId");
+
+    if (openPickup === "true" && jobOperationId && onAddPickup) {
+      // Remove the URL params to prevent re-triggering
+      const newParams = new URLSearchParams(params);
+      newParams.delete("openPickup");
+      newParams.delete("jobOperationId");
+      window.history.replaceState(
+        {},
+        "",
+        `${window.location.pathname}?${newParams.toString()}`
+      );
+
+      // Open the pickup overlay
+      onAddPickup(jobOperationId);
+    } else if (openQuantity === "true" && jobOperationId && onAddProductionQuantity) {
+      // Remove the URL params to prevent re-triggering
+      const newParams = new URLSearchParams(params);
+      newParams.delete("openQuantity");
+      newParams.delete("jobOperationId");
+      window.history.replaceState(
+        {},
+        "",
+        `${window.location.pathname}?${newParams.toString()}`
+      );
+
+      // Open the quantity overlay
+      onAddProductionQuantity(jobOperationId);
+    }
+  }, [params, onAddPickup, onAddProductionQuantity]);
+
   const renderListItem = ({
     item,
     items,
