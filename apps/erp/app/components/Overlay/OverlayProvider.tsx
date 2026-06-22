@@ -30,7 +30,24 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
   const [instances, setInstances] = useState<OverlayInstance[]>([]);
 
   const closeOverlay = useCallback((id: string) => {
-    setInstances((prev) => prev.filter((i) => i.id !== id));
+    setInstances((prev) => {
+      const filtered = prev.filter((i) => i.id !== id);
+
+      // If no more overlays are open, clean up the URL
+      if (filtered.length === 0 && typeof window !== "undefined") {
+        const url = new URL(window.location.href);
+        if (url.searchParams.has("overlay")) {
+          url.searchParams.delete("overlay");
+          window.history.replaceState(
+            {},
+            "",
+            url.search ? `${url.pathname}${url.search}` : url.pathname
+          );
+        }
+      }
+
+      return filtered;
+    });
   }, []);
 
   const closeAll = useCallback(() => {
@@ -56,6 +73,21 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
         );
         return [...withoutSame, instance];
       });
+
+      // Update browser URL to include overlay parameter (makes it shareable)
+      if (typeof window !== "undefined" && target.url) {
+        const currentUrl = new URL(window.location.href);
+        const targetUrl = new URL(target.url, window.location.origin);
+
+        // If we're already on the right path, just update search params
+        if (currentUrl.pathname === targetUrl.pathname) {
+          window.history.replaceState(
+            {},
+            "",
+            `${targetUrl.pathname}${targetUrl.search}`
+          );
+        }
+      }
 
       return instance.id;
     },

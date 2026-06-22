@@ -26,30 +26,12 @@ export function OverlayUrlHandler() {
     const url = `${window.location.pathname}${window.location.search}`;
 
     // Open the overlay
-    openOverlay(
-      { id: overlayId, url },
-      {
-        onSuccess: () => {
-          // Optionally clean up URL params after overlay closes
-        }
-      }
-    );
-
-    // Remove overlay param from URL to prevent re-triggering on refresh
-    const newParams = new URLSearchParams(searchParams);
-    newParams.delete("overlay");
-
-    // Clean up the URL without page reload
-    window.history.replaceState(
-      {},
-      "",
-      newParams.toString()
-        ? `${window.location.pathname}?${newParams.toString()}`
-        : window.location.pathname
-    );
+    // Note: openOverlay will update the URL to include the overlay param
+    // and closeOverlay will remove it when the overlay closes
+    openOverlay({ id: overlayId, url });
 
     hasTriggered.current = true;
-  }, [searchParams, openOverlay, setSearchParams]);
+  }, [searchParams, openOverlay]);
 
   return null;
 }
