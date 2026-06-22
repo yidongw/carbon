@@ -199,6 +199,8 @@ export type ProductionPayApprovalRequestRow = {
   createdAt: string | null;
   employeeId: string | null;
   createdBy?: string | null;
+  jobId?: string | null;
+  itemId?: string | null;
   paymentYear: number | null;
   paymentMonth: number | null;
   invalidatedAt: string | null;

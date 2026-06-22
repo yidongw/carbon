@@ -42,6 +42,8 @@ export type PayApprovalRow = {
   createdAt: string | null;
   employeeId: string | null;
   createdBy?: string | null;
+  jobId?: string | null;
+  itemId?: string | null;
   paymentYear: number | null;
   paymentMonth: number | null;
   invalidatedAt: string | null;
@@ -61,6 +63,11 @@ type ApprovalEmployeeOption = {
   avatarUrl?: string | null;
 };
 
+type ApprovalFilterOption = {
+  id: string;
+  label: string;
+};
+
 type ApprovalsTableProps = {
   data: PayApprovalRow[];
   count: number;
@@ -68,6 +75,8 @@ type ApprovalsTableProps = {
   year: number;
   month: number;
   employees: ApprovalEmployeeOption[];
+  jobs?: ApprovalFilterOption[];
+  items?: ApprovalFilterOption[];
   onPeriodChange: (year: number, month: number) => void;
   /** POST target for approve/reject (current route URL with pay-period query params). */
   submitAction: string;
@@ -186,6 +195,8 @@ const ApprovalsTable = memo(
     month,
     onPeriodChange,
     employees,
+    jobs = [],
+    items = [],
     submitAction,
     showCreateAction = false,
     title,
@@ -313,16 +324,30 @@ const ApprovalsTable = memo(
           }
         },
         {
-          id: "job",
+          accessorKey: "jobId",
           header: t`Job`,
           cell: ({ row }) => (
             <span className="font-mono text-sm font-medium">
               {getJobReadableId(row.original)}
             </span>
-          )
+          ),
+          meta: {
+            icon: <LuBriefcase />,
+            pluralHeader: t`Jobs`,
+            filter: jobs.length
+              ? {
+                  type: "static" as const,
+                  options: jobs.map((job) => ({
+                    value: job.id,
+                    label: job.label
+                  })),
+                  isArray: false
+                }
+              : undefined
+          }
         },
         {
-          id: "item",
+          accessorKey: "itemId",
           header: t`Item`,
           cell: ({ row }) => (
             <VStack spacing={0}>
@@ -335,7 +360,18 @@ const ApprovalsTable = memo(
             </VStack>
           ),
           meta: {
-            icon: <AiOutlinePartition />
+            icon: <AiOutlinePartition />,
+            pluralHeader: t`Items`,
+            filter: items.length
+              ? {
+                  type: "static" as const,
+                  options: items.map((item) => ({
+                    value: item.id,
+                    label: item.label
+                  })),
+                  isArray: false
+                }
+              : undefined
           }
         },
         {
@@ -433,7 +469,7 @@ const ApprovalsTable = memo(
       }
 
       return cols;
-    }, [employees, fetcher, openRejectCorrection, status, submitAction, t]);
+    }, [employees, fetcher, items, jobs, openRejectCorrection, status, submitAction, t]);
 
     return (
       <>

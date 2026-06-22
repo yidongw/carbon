@@ -18,8 +18,8 @@ import {
 import { useCallback, useMemo } from "react";
 import {
   computeProductionQuantityReportEarnedAmount,
+  getProductionQuantityReportFilterOptions,
   getProductionQuantityReportPayRows,
-  getProductionPayApprovalRequestRows,
   resolveProductionPayApprovalScope,
   resolveProductionPayApprovalStatus
 } from "~/modules/people";
@@ -82,10 +82,23 @@ export async function loader({ request }: LoaderFunctionArgs) {
     .eq("companyId", companyId)
     .order("name", { ascending: true });
 
+  const {
+    jobs: jobOptions,
+    items: itemOptions,
+    error: filterOptionsError
+  } = await getProductionQuantityReportFilterOptions(client, companyId);
+
   if (employeeOptionsError) {
     console.error(
       "Failed to load employees for production quantity filters",
       employeeOptionsError
+    );
+  }
+
+  if (filterOptionsError) {
+    console.error(
+      "Failed to load job/item filters for production quantities",
+      filterOptionsError
     );
   }
 
@@ -127,7 +140,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
     status,
     year,
     month,
-    employees: employeeOptions ?? []
+    employees: employeeOptions ?? [],
+    jobs: jobOptions,
+    items: itemOptions
   };
 }
 
@@ -311,7 +326,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function ProductionQuantitiesRoute() {
   const { t } = useLingui();
-  const { rows, count, status, year, month, employees } =
+  const { rows, count, status, year, month, employees, jobs, items } =
     useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const location = useLocation();
@@ -344,6 +359,8 @@ export default function ProductionQuantitiesRoute() {
         year={year}
         month={month}
         employees={employees}
+        jobs={jobs}
+        items={items}
         onPeriodChange={onPeriodChange}
         submitAction={submitAction}
         showCreateAction

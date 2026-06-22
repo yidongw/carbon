@@ -1246,6 +1246,16 @@ function deriveLinePayStatus(
   return "pending";
 }
 
+function getItemIdFromJobOperation(jobOperation: unknown): string | null {
+  const jo = Array.isArray(jobOperation) ? jobOperation[0] : jobOperation;
+  if (!jo || typeof jo !== "object" || !("job" in jo)) return null;
+  const job = Array.isArray(jo.job) ? jo.job[0] : jo.job;
+  if (!job || typeof job !== "object" || !("item" in job)) return null;
+  const item = Array.isArray(job.item) ? job.item[0] : job.item;
+  if (!item || typeof item !== "object" || !("id" in item)) return null;
+  return typeof item.id === "string" ? item.id : null;
+}
+
 function scopeWantsStatus(
   scope: ProductionPayApprovalScope,
   status: ProductionPayApprovalStatus
@@ -1451,14 +1461,21 @@ async function getEmployeeIdsMatchingSearch(
 function getEmployeeIdsFromFilters(
   filters: GenericQueryFilters["filters"]
 ): string[] | null {
+  return getFilterValuesFromFilters(filters, "employeeId");
+}
+
+function getFilterValuesFromFilters(
+  filters: GenericQueryFilters["filters"],
+  column: string
+): string[] | null {
   if (!filters?.length) return null;
 
   const ids = new Set<string>();
   for (const filter of filters) {
-    if (filter.column !== "employeeId" || !filter.value) continue;
+    if (filter.column !== column || !filter.value) continue;
     if (filter.operator === "eq") {
       ids.add(filter.value);
-    } else if (filter.operator === "in") {
+    } else if (filter.operator === "in" || filter.operator === "contains") {
       for (const id of filter.value.split(",")) {
         const trimmed = id.trim();
         if (trimmed) ids.add(trimmed);
@@ -1467,6 +1484,57 @@ function getEmployeeIdsFromFilters(
   }
 
   return ids.size > 0 ? [...ids] : null;
+}
+
+export type ProductionQuantityReportFilterOption = {
+  id: string;
+  label: string;
+};
+
+export async function getProductionQuantityReportFilterOptions(
+  client: SupabaseClient<Database>,
+  companyId: string
+) {
+  const { data, error } = await client
+    .from("productionQuantityReport")
+    .select(
+      `jobId, job:jobId(id, jobId, item:itemId(id, readableIdWithRevision, name))`
+    )
+    .eq("companyId", companyId);
+
+  if (error) {
+    return { jobs: [] as ProductionQuantityReportFilterOption[], items: [] as ProductionQuantityReportFilterOption[], error };
+  }
+
+  const jobsMap = new Map<string, ProductionQuantityReportFilterOption>();
+  const itemsMap = new Map<string, ProductionQuantityReportFilterOption>();
+
+  for (const row of data ?? []) {
+    const job = Array.isArray(row.job) ? row.job[0] : row.job;
+    if (job?.id && job.jobId) {
+      jobsMap.set(job.id, { id: job.id, label: job.jobId });
+    }
+    const item = job?.item;
+    const itemRow = Array.isArray(item) ? item[0] : item;
+    if (itemRow?.id) {
+      const label =
+        itemRow.readableIdWithRevision?.trim() ||
+        itemRow.name?.trim() ||
+        itemRow.id;
+      itemsMap.set(itemRow.id, { id: itemRow.id, label });
+    }
+  }
+
+  const sortByLabel = (
+    a: ProductionQuantityReportFilterOption,
+    b: ProductionQuantityReportFilterOption
+  ) => a.label.localeCompare(b.label);
+
+  return {
+    jobs: [...jobsMap.values()].sort(sortByLabel),
+    items: [...itemsMap.values()].sort(sortByLabel),
+    error: null
+  };
 }
 
 async function getProductionQuantityReportIdsForEmployees(
@@ -1834,6 +1902,57 @@ export async function getProductionQuantityReportPayRows(
     query = query.in("employeeId", filterEmployeeIds);
   }
 
+  const filterJobIds = getFilterValuesFromFilters(args?.filters, "jobId");
+  const filterItemIds = getFilterValuesFromFilters(args?.filters, "itemId");
+  let resolvedJobIds: string[] | null = filterJobIds;
+
+  if (filterItemIds) {
+    const { data: jobsForItems, error: jobsForItemsError } = await client
+      .from("job")
+      .select("id")
+      .eq("companyId", companyId)
+      .in("itemId", filterItemIds);
+
+    if (jobsForItemsError) {
+      return {
+        data: null,
+        error: jobsForItemsError,
+        count: null,
+        status: 0,
+        statusText: ""
+      };
+    }
+
+    const itemJobIds = jobsForItems?.map((job) => job.id) ?? [];
+    if (itemJobIds.length === 0) {
+      return {
+        data: [],
+        error: null,
+        count: 0,
+        status: 200,
+        statusText: "OK"
+      };
+    }
+
+    resolvedJobIds = resolvedJobIds
+      ? resolvedJobIds.filter((id) => itemJobIds.includes(id))
+      : itemJobIds;
+
+    if (resolvedJobIds.length === 0) {
+      return {
+        data: [],
+        error: null,
+        count: 0,
+        status: 200,
+        statusText: "OK"
+      };
+    }
+  }
+
+  if (resolvedJobIds) {
+    query = query.in("jobId", resolvedJobIds);
+  }
+
   if (args?.search) {
     const term = args.search.trim();
     if (term) {
@@ -1864,7 +1983,11 @@ export async function getProductionQuantityReportPayRows(
   }
 
   const dbFilters = args?.filters?.filter(
-    (f) => f.column !== "approvalStatus" && f.column !== "employeeId"
+    (f) =>
+      f.column !== "approvalStatus" &&
+      f.column !== "employeeId" &&
+      f.column !== "jobId" &&
+      f.column !== "itemId"
   );
   if (args) {
     query = setGenericQueryFilters(
@@ -1976,6 +2099,8 @@ export async function getProductionQuantityReportPayRows(
           ? "Approved"
           : "Rejected");
 
+    const jobOperation = primary?.jobOperation ?? report.jobOperation;
+
     rows.push({
       approvalRequestId: approval?.id,
       reportId: report.id,
@@ -1987,11 +2112,13 @@ export async function getProductionQuantityReportPayRows(
       createdAt: approval?.requestedAt ?? primary?.createdAt ?? report.createdAt ?? null,
       employeeId: primary?.employeeId ?? report.employeeId ?? null,
       createdBy: primary?.createdBy ?? report.createdBy ?? null,
+      jobId: report.jobId ?? null,
+      itemId: getItemIdFromJobOperation(jobOperation),
       paymentYear,
       paymentMonth,
       invalidatedAt: primary?.invalidatedAt ?? null,
       employee: primary?.employee ?? report.employee ?? null,
-      jobOperation: primary?.jobOperation ?? report.jobOperation
+      jobOperation
     });
   }
 
