@@ -238,12 +238,13 @@ export function ProductionQuantityLinesEditor({
     );
   };
 
+  const showConfig = Boolean(configurationParameters?.length && itemId);
+
   return (
     <VStack className="w-full items-stretch gap-3">
       {lines.map((line) => {
         const cfg = getConfigFromEditableLine(line);
         const configTotal = computeJobConfigTableTotal(cfg);
-        const showConfig = Boolean(configurationParameters?.length && itemId);
 
         return (
           <div
