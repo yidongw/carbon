@@ -202,6 +202,7 @@ export default function NewJobPickupRoute() {
     seededActor
   } = useLoaderData<typeof loader>();
   const initialValues = {
+    jobId,
     jobOperationId,
     quantity: 0,
     notes: "",

@@ -211,25 +211,12 @@ const PickupForm = ({
         <Hidden name="id" />
         <VStack spacing={4}>
           {jobOptions && !isEditing ? (
-            lockJobSelectionProp && jobId ? (
-              <>
-                <Hidden name="jobId" value={jobId} />
-                <Select
-                  name="_jobId_display"
-                  label={t`Job`}
-                  options={jobOptions}
-                  value={jobId}
-                  isDisabled
-                />
-              </>
-            ) : (
-              <Select
-                name="jobId"
-                label={t`Job`}
-                options={jobOptions}
-                isDisabled={lockJobSelectionProp}
-              />
-            )
+            <Select
+              name="jobId"
+              label={t`Job`}
+              options={jobOptions}
+              isDisabled={lockJobSelectionProp}
+            />
           ) : null}
           {isEditing || presetJobOperationIdOnCreate ? (
             <Hidden name="jobOperationId" />
