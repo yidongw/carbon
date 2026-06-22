@@ -12,6 +12,7 @@
 - **No Laziness:** Identify root causes. Avoid temporary fixes. Apply senior developer standards.
 - **Minimal Impact:** Touch only what is necessary. Avoid introducing new bugs.
 - **Demand Elegance:** For non-trivial changes, pause and ask whether there is a more elegant solution. If a fix feels hacky, implement the solution you would choose knowing everything you now know. Critically evaluate your own work before presenting it.
+- **One Fix at a Time:** Make focused, surgical changes that address one issue without introducing regressions. When changing validation logic, explicitly verify that relaxing one constraint doesn't accidentally remove another required check.
 
 ## Workflow Orchestration
 
@@ -35,6 +36,7 @@
 - Diff behavior between main and your changes when relevant.
 - Ask: "Would a staff engineer approve this?"
 - Run tests, check logs, and demonstrate correctness.
+- **Test your own fixes in the browser before claiming they work.** Use `agent-browser` to navigate to the affected page/form, reproduce the bug, and verify it's fixed. Do NOT make the user test for you - they will waste time confirming fixes that don't actually work. Only tell the user "it's fixed" after you've verified it yourself.
 - **When UI changes don't appear:** Add a visible test string (e.g., "XYZTEST123") to verify you're editing the correct component file BEFORE debugging build/cache systems. If the test string doesn't appear after building, you're editing the wrong file - trace backwards from the actual UI to find the right component.
 
 ### Autonomous Bug Fixing
@@ -59,6 +61,46 @@
 - Create rules for yourself that prevent repeating the same mistake.
 - Iterate on these lessons rigorously until the mistake rate declines.
 - Review lessons at the start of each session when relevant to the project.
+
+## Architecture Patterns
+
+### Overlay vs Route Data Flow
+
+**Critical:** Overlays and routes have different data flow patterns. Understanding this prevents state initialization bugs.
+
+**How overlays work:**
+1. Overlay opens with a URL like `/x/job/123/quantities/new?jobOperationId=xxx&overlay=true`
+2. Route loader runs and extracts data from `request.url.searchParams` (HAS the params)
+3. Loader data flows through overlay registry which transforms it into component props
+4. Component receives data via `initialValues` prop
+5. **BUT** `window.location.search` (what `useSearchParams()` reads) remains at the parent page URL (NO params)
+
+**When initializing component state from URL params:**
+
+❌ **Wrong** (checks URL first, fails for overlays):
+```typescript
+const [state] = useState(() => {
+  const fromUrl = searchParams.get("key") ?? "";
+  if (fromUrl) return fromUrl;  // Returns empty for overlays!
+  return initialValues.key;      // Never reached
+});
+```
+
+✅ **Correct** (checks initialValues first):
+```typescript
+const [state] = useState(() => {
+  // Get from initialValues (works for both overlays and routes)
+  const initial = initialValues.key;
+  // Let URL params override (for route navigation)
+  const fromUrl = searchParams.get("key") ?? "";
+  return fromUrl || initial;
+});
+```
+
+**When debugging state/prop issues:**
+1. Trace the full flow: trigger → URL construction → loader → overlay registry → component initialization
+2. Don't fix symptoms - understand where data is lost in the chain
+3. Remember: overlay loaders see params, but overlay components' `useSearchParams()` don't
 
 ## Tool Rules
 
