@@ -46,6 +46,7 @@ export const overlayRegistry = {
           jobId: data.jobId,
           jobOptions: data.jobOption ? [data.jobOption] : undefined,
           initialValues: {
+            jobId: data.jobId,
             jobOperationId: data.jobOperationId,
             quantity: 0,
             notes: "",
