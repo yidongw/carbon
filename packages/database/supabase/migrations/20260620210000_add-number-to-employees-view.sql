@@ -3,7 +3,7 @@
 -- that origin/dev's version of this migration would otherwise drop.
 DROP VIEW IF EXISTS "employees";
 
-CREATE OR REPLACE VIEW "employees" WITH(SECURITY_INVOKER=true) AS
+CREATE VIEW "employees" WITH(SECURITY_INVOKER=true) AS
   SELECT
     u.id,
     u."email",
