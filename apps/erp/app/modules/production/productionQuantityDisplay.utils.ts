@@ -1,9 +1,11 @@
 type JobOperationItem = {
+  id?: string | null;
   readableIdWithRevision?: string | null;
   name?: string | null;
 };
 
 type JobOperationJob = {
+  id?: string | null;
   jobId?: string | null;
   item?: JobOperationItem | JobOperationItem[] | null;
 };
@@ -15,6 +17,7 @@ type JobOperationProcess = {
 type JobOperationNested = {
   description?: string | null;
   insideUnitCost?: number | null;
+  jobId?: string | null;
   job?: JobOperationJob | JobOperationJob[] | null;
   process?: JobOperationProcess | JobOperationProcess[] | null;
 };
@@ -92,4 +95,39 @@ export function getItemReadableIdWithRevision(row: JobOperationRow) {
 
 export function getItemName(row: JobOperationRow) {
   return getItem(row)?.name ?? "";
+}
+
+export function getJobInternalId(row: {
+  jobId?: string | null;
+  jobOperation?: JobOperationNested | JobOperationNested[] | null;
+}): string | null {
+  if (row.jobId?.trim()) return row.jobId.trim();
+  const jo = getJobOperation(row);
+  if (jo && "jobId" in jo && typeof jo.jobId === "string" && jo.jobId.trim()) {
+    return jo.jobId.trim();
+  }
+  const job = getJob(row);
+  return job?.id?.trim() || null;
+}
+
+export function getItemInternalId(row: {
+  itemId?: string | null;
+  jobOperation?: JobOperationNested | JobOperationNested[] | null;
+}): string | null {
+  if (row.itemId?.trim()) return row.itemId.trim();
+  const item = getItem(row);
+  return item?.id?.trim() || null;
+}
+
+export function hasConfigurationTable(configuration: unknown): boolean {
+  if (
+    configuration === null ||
+    configuration === undefined ||
+    typeof configuration !== "object" ||
+    Array.isArray(configuration)
+  ) {
+    return false;
+  }
+  const configTable = (configuration as Record<string, unknown>).configTable;
+  return Array.isArray(configTable) && configTable.length > 0;
 }

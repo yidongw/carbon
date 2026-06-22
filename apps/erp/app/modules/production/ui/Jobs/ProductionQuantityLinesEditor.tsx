@@ -319,7 +319,8 @@ export function ProductionQuantityLinesEditor({
               value={line.quantity}
               onChange={(quantity) => updateLine(line.key, { quantity })}
               minValue={0}
-              isDisabled={isDisabled || configTotal > 0}
+              isDisabled={isDisabled}
+              isReadOnly={configTotal > 0}
               hasConfigurationParameters={showConfig}
               onOpenConfigTable={
                 showConfig && !isDisabled

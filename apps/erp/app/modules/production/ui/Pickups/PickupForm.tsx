@@ -337,7 +337,8 @@ export const PickupForm = ({
               label={t`Quantity`}
               value={quantity}
               minValue={0}
-              isDisabled={areDetailFieldsDisabled || configTableTotal > 0}
+              isDisabled={areDetailFieldsDisabled}
+              isReadOnly={configTableTotal > 0}
               configTableTotal={configTableTotal}
               hasConfigurationParameters
               onOpenConfigTable={

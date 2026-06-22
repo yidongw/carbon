@@ -236,7 +236,8 @@ const PickupForm = ({
               label={t`Quantity`}
               value={quantity}
               minValue={0}
-              isDisabled={isDisabled || configTableTotal > 0}
+              isDisabled={isDisabled}
+              isReadOnly={configTableTotal > 0}
               configTableTotal={configTableTotal}
               hasConfigurationParameters
               onOpenConfigTable={openConfigTable}

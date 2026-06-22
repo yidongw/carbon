@@ -1,4 +1,4 @@
-import { Badge, Button, HStack, IconButton, toast, VStack } from "@carbon/react";
+import { Badge, Button, HStack, IconButton, toast } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -22,14 +22,16 @@ import type {
 import SalaryPeriodPicker from "~/modules/people/ui/Salary/SalaryPeriodPicker";
 import {
   formatDateTime,
-  getItemName,
-  getItemReadableIdWithRevision,
-  getJobReadableId,
   getProcessName
 } from "~/modules/production/productionQuantityDisplay.utils";
 import type { ProductionQuantityReportWithLines } from "~/modules/production/productionQuantityReport.service";
 import { ProductionQuantityDispositionDrawer } from "~/modules/production/ui/Jobs/ProductionQuantityDispositionDrawer";
 import { ProductionQuantityReportReporter } from "~/modules/production/ui/Jobs/ProductionQuantityReportReporter";
+import {
+  ProductionQuantityTableItemCell,
+  ProductionQuantityTableJobCell,
+  ProductionQuantityTableQuantityCell
+} from "~/modules/production/ui/ProductionQuantityTableCells";
 import { path } from "~/utils/path";
 
 export type ProductionQuantityTableRow = ProductionQuantityListRow & {
@@ -65,6 +67,7 @@ export type ProductionQuantitiesTableProps = {
   title?: string;
   /** When true, omits page chrome for use inside another layout. */
   embedded?: boolean;
+  configurableItemIds?: string[];
 };
 
 type ProductionQuantityActionData = {
@@ -181,9 +184,14 @@ const ProductionQuantitiesTable = memo(
     submitAction,
     showCreateAction = false,
     title,
-    embedded = false
+    embedded = false,
+    configurableItemIds = []
   }: ProductionQuantitiesTableProps) => {
     const { t } = useLingui();
+    const configurableItemIdSet = useMemo(
+      () => new Set(configurableItemIds),
+      [configurableItemIds]
+    );
     const fetcher = useFetcher<ProductionQuantityActionData>();
     const correctionFetcher = useFetcher<ProductionQuantityActionData>();
     const reportFetcher = useFetcher<ReportLoaderData>();
@@ -308,9 +316,7 @@ const ProductionQuantitiesTable = memo(
           accessorKey: "jobId",
           header: t`Job`,
           cell: ({ row }) => (
-            <span className="font-mono text-sm font-medium">
-              {getJobReadableId(row.original)}
-            </span>
+            <ProductionQuantityTableJobCell row={row.original} />
           ),
           meta: {
             icon: <LuBriefcase />,
@@ -331,14 +337,7 @@ const ProductionQuantitiesTable = memo(
           accessorKey: "itemId",
           header: t`Item`,
           cell: ({ row }) => (
-            <VStack spacing={0}>
-              <span className="text-sm font-medium">
-                {getItemReadableIdWithRevision(row.original)}
-              </span>
-              <div className="w-full truncate text-muted-foreground text-xs">
-                {getItemName(row.original) || "—"}
-              </div>
-            </VStack>
+            <ProductionQuantityTableItemCell row={row.original} />
           ),
           meta: {
             icon: <AiOutlinePartition />,
@@ -368,7 +367,10 @@ const ProductionQuantitiesTable = memo(
           accessorKey: "quantity",
           header: t`Qty`,
           cell: ({ row }) => (
-            <span className="tabular-nums">{row.original.quantity}</span>
+            <ProductionQuantityTableQuantityCell
+              row={row.original}
+              configurableItemIds={configurableItemIdSet}
+            />
           ),
           meta: {
             icon: <LuHash />,
@@ -450,7 +452,17 @@ const ProductionQuantitiesTable = memo(
       }
 
       return cols;
-    }, [employees, fetcher, items, jobs, openRejectCorrection, status, submitAction, t]);
+    }, [
+      configurableItemIdSet,
+      employees,
+      fetcher,
+      items,
+      jobs,
+      openRejectCorrection,
+      status,
+      submitAction,
+      t
+    ]);
 
     return (
       <>

@@ -18,11 +18,13 @@ import { useCallback, useMemo } from "react";
 import {
   computeProductionQuantityReportEarnedAmount,
   ensureProductionQuantityApprovalRequest,
+  getItemIdsWithConfigurationParameters,
   getProductionQuantityReportFilterOptions,
   getProductionQuantityReportPayRows,
   resolveProductionQuantityPayScope,
   resolveProductionQuantityPayStatus
 } from "~/modules/production";
+import { getItemInternalId } from "~/modules/production/productionQuantityDisplay.utils";
 import { ProductionQuantitiesTable } from "~/modules/production/ui/ProductionQuantities";
 import {
   replaceProductionQuantityReportLines,
@@ -153,6 +155,19 @@ export async function loader({ request }: LoaderFunctionArgs) {
     })
   );
 
+  const itemIds = [
+    ...new Set(
+      rows
+        .map((row) => getItemInternalId(row))
+        .filter((id): id is string => Boolean(id))
+    )
+  ];
+  const configurableItemIds = await getItemIdsWithConfigurationParameters(
+    client,
+    companyId,
+    itemIds
+  );
+
   return {
     rows,
     count: result.count ?? 0,
@@ -161,7 +176,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
     month,
     employees: employeeOptions ?? [],
     jobs: jobOptions,
-    items: itemOptions
+    items: itemOptions,
+    configurableItemIds
   };
 }
 
@@ -344,7 +360,7 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function ProductionQuantitiesRoute() {
-  const { rows, count, status, year, month, employees, jobs, items } =
+  const { rows, count, status, year, month, employees, jobs, items, configurableItemIds } =
     useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const location = useLocation();
@@ -382,6 +398,7 @@ export default function ProductionQuantitiesRoute() {
         onPeriodChange={onPeriodChange}
         submitAction={submitAction}
         showCreateAction
+        configurableItemIds={configurableItemIds}
       />
       <Outlet />
     </VStack>

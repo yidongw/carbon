@@ -85,8 +85,7 @@ export function ItemConfigQuantityInput({
   const canOpenConfigTable =
     hasConfigurationParameters &&
     onOpenConfigTable != null &&
-    !isDisabled &&
-    !isReadOnly;
+    !isDisabled;
   const showAdornment = canOpenConfigTable;
   const showStepper =
     !showAdornment && !isReadOnly && !isDisabled && size !== "sm";
@@ -115,9 +114,9 @@ export function ItemConfigQuantityInput({
           className={cn(
             "tabular-nums",
             showAdornment && "pr-10",
-            isDisabled &&
+            isReadOnly &&
               configTableTotal > 0 &&
-              "text-foreground disabled:text-foreground disabled:opacity-100"
+              "cursor-pointer text-foreground"
           )}
         />
         {showAdornment ? (

@@ -380,7 +380,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                         name="quantity"
                         label={t`Quantity`}
                         value={itemData.quantity}
-                        isDisabled={configTableTotal > 0}
+                        isReadOnly={configTableTotal > 0}
                         onChange={(value) =>
                           setItemData((prev) => ({
                             ...prev,
@@ -537,7 +537,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                               quantityPerJob: value
                             }))
                           }
-                          isDisabled={configTableTotal > 0}
+                          isReadOnly={configTableTotal > 0}
                           configTableTotal={configTableTotal}
                           minValue={0}
                           hasConfigurationParameters={!!configurationParameters}

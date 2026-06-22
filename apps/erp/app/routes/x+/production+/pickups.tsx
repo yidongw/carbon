@@ -4,7 +4,8 @@ import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
 import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, useLoaderData } from "react-router";
-import { getCompanyJobOperationPickups } from "~/modules/production";
+import { getCompanyJobOperationPickups, getItemIdsWithConfigurationParameters } from "~/modules/production";
+import { getItemInternalId } from "~/modules/production/productionQuantityDisplay.utils";
 import { PickupsTable } from "~/modules/production/ui/Pickups";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
@@ -40,18 +41,37 @@ export async function loader({ request }: LoaderFunctionArgs) {
     throw error(pickups.error, "Failed to fetch production pickups");
   }
 
+  const pickupRows = pickups.data ?? [];
+  const itemIds = [
+    ...new Set(
+      pickupRows
+        .map((pickup) => getItemInternalId(pickup))
+        .filter((id): id is string => Boolean(id))
+    )
+  ];
+  const configurableItemIds = await getItemIdsWithConfigurationParameters(
+    client,
+    companyId,
+    itemIds
+  );
+
   return {
     count: pickups.count ?? 0,
-    pickups: pickups.data ?? []
+    pickups: pickupRows,
+    configurableItemIds
   };
 }
 
 export default function PickupsRoute() {
-  const { count, pickups } = useLoaderData<typeof loader>();
+  const { count, pickups, configurableItemIds } = useLoaderData<typeof loader>();
 
   return (
     <VStack spacing={0} className="h-full">
-      <PickupsTable data={pickups} count={count} />
+      <PickupsTable
+        data={pickups}
+        count={count}
+        configurableItemIds={configurableItemIds}
+      />
       <Outlet />
     </VStack>
   );

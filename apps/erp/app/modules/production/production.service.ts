@@ -2733,7 +2733,7 @@ export async function getCompanyJobOperationPickups(
       employee:user!jobOperationPickup_employeeId_fkey(id, firstName, lastName, fullName, avatarUrl),
       jobOperation!inner(id, description, jobId,
         process:processId(name),
-        job:jobId(jobId, item:itemId(readableIdWithRevision, name))
+        job:jobId(id, jobId, item:itemId(id, readableIdWithRevision, name))
       )`,
       { count: "exact" }
     )

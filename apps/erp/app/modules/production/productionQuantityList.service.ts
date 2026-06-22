@@ -36,11 +36,11 @@ const employeePendingSalaryCompletionSelect = `
 `;
 
 const productionPayApprovalSelect = `
-  id, quantity, createdAt, employeeId, createdBy, paymentYear, paymentMonth, invalidatedAt, reportId,
+  id, quantity, createdAt, employeeId, createdBy, paymentYear, paymentMonth, invalidatedAt, reportId, configuration,
   employee:user!productionQuantity_employeeId_fkey(id, firstName, lastName, fullName, avatarUrl),
   jobOperation!inner(id, description, insideUnitCost, jobId,
     process:processId(name),
-    job:jobId(jobId, item:itemId(readableIdWithRevision, name))
+    job:jobId(id, jobId, item:itemId(id, readableIdWithRevision, name))
   )
 `;
 
@@ -49,7 +49,7 @@ const productionPayApprovalReportSelect = `
   employee:user!productionQuantityReport_employeeId_fkey(id, firstName, lastName, fullName, avatarUrl),
   jobOperation!inner(id, description, insideUnitCost, jobId,
     process:processId(name),
-    job:jobId(jobId, item:itemId(readableIdWithRevision, name))
+    job:jobId(id, jobId, item:itemId(id, readableIdWithRevision, name))
   )
 `;
 
@@ -58,7 +58,7 @@ const productionQuantityReportListSelect = `
   employee:user!productionQuantityReport_employeeId_fkey(id, firstName, lastName, fullName, avatarUrl),
   jobOperation!inner(id, description, insideUnitCost, jobId,
     process:processId(name),
-    job:jobId(jobId, item:itemId(readableIdWithRevision, name))
+    job:jobId(id, jobId, item:itemId(id, readableIdWithRevision, name))
   )
 `;
 
@@ -1026,6 +1026,7 @@ export async function getProductionQuantityReportPayRows(
       paymentYear,
       paymentMonth,
       invalidatedAt: primary?.invalidatedAt ?? null,
+      configuration: primary?.configuration ?? null,
       employee: primary?.employee ?? report.employee ?? null,
       jobOperation
     });

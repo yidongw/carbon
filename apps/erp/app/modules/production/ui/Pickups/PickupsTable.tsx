@@ -1,21 +1,21 @@
-import { IconButton, VStack } from "@carbon/react";
+import { IconButton } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useMemo } from "react";
 import { AiOutlinePartition } from "react-icons/ai";
 import { LuCalendar, LuHash, LuPlus, LuUser } from "react-icons/lu";
 import { New, Table } from "~/components";
+import { formatDateTime, getProcessName } from "~/modules/production/productionQuantityDisplay.utils";
 import { ProductionQuantityReportReporter } from "~/modules/production/ui/Jobs/ProductionQuantityReportReporter";
 import {
-  formatDateTime,
-  getItemName,
-  getItemReadableIdWithRevision,
-  getJobReadableId,
-  getProcessName
-} from "~/modules/production/productionQuantityDisplay.utils";
+  ProductionQuantityTableItemCell,
+  ProductionQuantityTableJobCell,
+  ProductionQuantityTableQuantityCell,
+  type ProductionQuantityTableRowLike
+} from "~/modules/production/ui/ProductionQuantityTableCells";
 import { path } from "~/utils/path";
 
-type JobOperationPickup = {
+type JobOperationPickup = ProductionQuantityTableRowLike & {
   id: string;
   jobOperationId: string;
   employeeId: string;
@@ -23,27 +23,24 @@ type JobOperationPickup = {
   quantity: number;
   notes?: string | null;
   createdAt: string;
-  jobOperation?: {
-    description?: string | null;
-    jobId?: string | null;
-    process?: { name?: string | null } | null;
-    job?: {
-      jobId?: string | null;
-      item?: {
-        readableIdWithRevision?: string | null;
-        name?: string | null;
-      } | null;
-    } | null;
-  } | null;
 };
 
 type PickupsTableProps = {
   data: JobOperationPickup[];
   count: number;
+  configurableItemIds?: string[];
 };
 
-export function PickupsTable({ data, count }: PickupsTableProps) {
+export function PickupsTable({
+  data,
+  count,
+  configurableItemIds = []
+}: PickupsTableProps) {
   const { t } = useLingui();
+  const configurableItemIdSet = useMemo(
+    () => new Set(configurableItemIds),
+    [configurableItemIds]
+  );
 
   const columns = useMemo<ColumnDef<JobOperationPickup>[]>(
     () => [
@@ -61,25 +58,12 @@ export function PickupsTable({ data, count }: PickupsTableProps) {
       {
         id: "job",
         header: t`Job`,
-        cell: ({ row }) => (
-          <span className="font-mono text-sm font-medium">
-            {getJobReadableId(row.original)}
-          </span>
-        )
+        cell: ({ row }) => <ProductionQuantityTableJobCell row={row.original} />
       },
       {
         id: "item",
         header: t`Item`,
-        cell: ({ row }) => (
-          <VStack spacing={0}>
-            <span className="text-sm font-medium">
-              {getItemReadableIdWithRevision(row.original)}
-            </span>
-            <div className="w-full truncate text-muted-foreground text-xs">
-              {getItemName(row.original) || "—"}
-            </div>
-          </VStack>
-        ),
+        cell: ({ row }) => <ProductionQuantityTableItemCell row={row.original} />,
         meta: { icon: <AiOutlinePartition /> }
       },
       {
@@ -93,7 +77,10 @@ export function PickupsTable({ data, count }: PickupsTableProps) {
         accessorKey: "quantity",
         header: t`Qty`,
         cell: ({ row }) => (
-          <span className="tabular-nums">{row.original.quantity}</span>
+          <ProductionQuantityTableQuantityCell
+            row={row.original}
+            configurableItemIds={configurableItemIdSet}
+          />
         ),
         meta: {
           icon: <LuHash />,
@@ -116,7 +103,7 @@ export function PickupsTable({ data, count }: PickupsTableProps) {
         meta: { icon: <LuCalendar /> }
       }
     ],
-    [t]
+    [configurableItemIdSet, t]
   );
 
   return (
