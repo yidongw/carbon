@@ -35,9 +35,16 @@ import { msg } from "@lingui/core/macro";
 const seedDisplayNameMessages: Record<string, MessageDescriptor> = {
 `;
 
-for (const n of names) {
-  out += `  ${JSON.stringify(n)}: msg\`${esc(n)}\`,\n`;
-}
+const isValidIdentifier = (str: string) =>
+  /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(str);
+
+out += names
+  .map((n) => {
+    const key = isValidIdentifier(n) ? n : JSON.stringify(n);
+    return `  ${key}: msg\`${esc(n)}\``;
+  })
+  .join(",\n");
+out += "\n";
 
 out += `};
 
