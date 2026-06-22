@@ -108,7 +108,7 @@ export function ProductionQuantityTableQuantityCell({
   }
 
   return (
-    <HStack spacing={1} className="justify-end">
+    <HStack spacing={1}>
       <span className="tabular-nums">{quantity}</span>
       <IconButton
         type="button"
