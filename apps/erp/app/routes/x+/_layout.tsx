@@ -38,7 +38,7 @@ import { RealtimeDataProvider } from "~/components";
 import { FloatingChat } from "~/components/Chat";
 import { PrimaryNavigation, Topbar, TopbarProvider } from "~/components/Layout";
 import { TimeCardWarning } from "~/components/TimeCardWarning";
-import { OverlayHost, OverlayProvider } from "~/components/Overlay";
+import { OverlayHost, OverlayProvider, OverlayUrlHandler } from "~/components/Overlay";
 import TrainingPanel from "~/components/TrainingPanel";
 import { useTrainingPanel } from "~/hooks/useTrainingPanel";
 import { getOpenClockEntry } from "~/modules/people";
@@ -274,6 +274,7 @@ export default function AuthenticatedRoute() {
                 </Suspense>
               )}
               <OverlayHost />
+              <OverlayUrlHandler />
               <FloatingChat />
             </TooltipProvider>
             </OverlayProvider>

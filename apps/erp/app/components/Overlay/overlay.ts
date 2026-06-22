@@ -7,6 +7,14 @@ export type OverlayTarget = {
   url: string;
 };
 
+/**
+ * Helper to add overlay parameter to URL
+ */
+function addOverlayParam(url: string, overlayId: OverlayId): string {
+  const sep = url.includes("?") ? "&" : "?";
+  return `${url}${sep}overlay=${overlayId}`;
+}
+
 export const overlay = {
   to: {
     newJobPickup(
@@ -14,10 +22,9 @@ export const overlay = {
       opts?: { jobOperationId?: string }
     ): OverlayTarget {
       const base = path.to.newJobPickup(jobId, opts);
-      const sep = base.includes("?") ? "&" : "?";
       return {
         id: "newJobPickup",
-        url: `${base}${sep}overlay=true`
+        url: addOverlayParam(base, "newJobPickup")
       };
     },
 
@@ -26,10 +33,9 @@ export const overlay = {
       opts?: { jobOperationId?: string }
     ): OverlayTarget {
       const base = path.to.newJobProductionQuantity(jobId, opts);
-      const sep = base.includes("?") ? "&" : "?";
       return {
         id: "newJobProductionQuantity",
-        url: `${base}${sep}overlay=true`
+        url: addOverlayParam(base, "newJobProductionQuantity")
       };
     },
 
@@ -37,23 +43,26 @@ export const overlay = {
       jobId: string,
       quantityId: string
     ): OverlayTarget {
+      const base = path.to.jobProductionQuantity(jobId, quantityId);
       return {
         id: "editJobProductionQuantity",
-        url: `${path.to.jobProductionQuantity(jobId, quantityId)}?overlay=true`
+        url: addOverlayParam(base, "editJobProductionQuantity")
       };
     },
 
     jobBillOfProcessPreview(jobId: string): OverlayTarget {
+      const base = path.to.api.jobBillOfProcessPreview(jobId);
       return {
         id: "jobBillOfProcessPreview",
-        url: path.to.api.jobBillOfProcessPreview(jobId)
+        url: addOverlayParam(base, "jobBillOfProcessPreview")
       };
     },
 
     jobConfigTable(jobId: string): OverlayTarget {
+      const base = path.to.api.jobConfigTable(jobId);
       return {
         id: "jobConfigTable",
-        url: path.to.api.jobConfigTable(jobId)
+        url: addOverlayParam(base, "jobConfigTable")
       };
     },
 
@@ -65,22 +74,25 @@ export const overlay = {
       }
     ): OverlayTarget {
       const base = path.to.api.itemConfigTable(itemId);
+      let url = base;
+
       if (
-        opts?.configuration === undefined &&
-        opts?.referenceContext === undefined
+        opts?.configuration !== undefined ||
+        opts?.referenceContext !== undefined
       ) {
-        return { id: "itemConfigTable", url: base };
+        const params = new URLSearchParams();
+        if (opts?.configuration !== undefined) {
+          params.set("configuration", JSON.stringify(opts.configuration));
+        }
+        if (opts?.referenceContext !== undefined) {
+          params.set("referenceContext", JSON.stringify(opts.referenceContext));
+        }
+        url = `${base}?${params.toString()}`;
       }
-      const params = new URLSearchParams();
-      if (opts?.configuration !== undefined) {
-        params.set("configuration", JSON.stringify(opts.configuration));
-      }
-      if (opts?.referenceContext !== undefined) {
-        params.set("referenceContext", JSON.stringify(opts.referenceContext));
-      }
+
       return {
         id: "itemConfigTable",
-        url: `${base}?${params.toString()}`
+        url: addOverlayParam(url, "itemConfigTable")
       };
     }
   }

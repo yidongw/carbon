@@ -1,5 +1,6 @@
 export { OverlayHost } from "./OverlayHost";
 export { OverlayProvider, useOverlay } from "./OverlayProvider";
+export { OverlayUrlHandler } from "./OverlayUrlHandler";
 export type { OverlayTarget } from "./overlay";
 export { overlay } from "./overlay";
 export type { OverlayId } from "./overlay.registry";
