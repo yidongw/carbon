@@ -148,7 +148,7 @@ import type { action as newJobOperationParameterAction } from "~/routes/x+/job+/
 import type { action as editJobOperationStepAction } from "~/routes/x+/job+/methods+/operation.step.$id";
 import type { action as editJobOperationToolAction } from "~/routes/x+/job+/methods+/operation.tool.$id";
 import type { action as newJobOperationToolAction } from "~/routes/x+/job+/methods+/operation.tool.new";
-import { useItems, usePeople, useTools } from "~/stores";
+import { useItems, usePeople, useSuppliers, useTools } from "~/stores";
 import { getPrivateUrl, path } from "~/utils/path";
 import {
   buildReportedTargetRows,
@@ -156,6 +156,7 @@ import {
   type ReportedTargetRow
 } from "../../configParamsTableColumns";
 import {
+  type JobOperationSupplierQuantityLine,
   type JobOperationSupplierQuantityReportWithLines,
   listJobOperationSupplierQuantityReportsForOperation
 } from "../../jobOperationSupplierQuantityReport.service";
@@ -503,7 +504,12 @@ const EmployeeProductionLogsView = ({
   loadMoreQuantityReports,
   canEditQuantityReport,
   onEditReport,
-  onHistoryReport
+  onHistoryReport,
+  onEditSupplierReport,
+  onHistorySupplierReport,
+  onCreateSupplierPo,
+  creatingPoReportId,
+  canCreatePo
 }: {
   pickups: UnifiedPickupItem[];
   quantityReports: UnifiedQuantityReportItem[];
@@ -514,10 +520,22 @@ const EmployeeProductionLogsView = ({
   canEditQuantityReport: boolean;
   onEditReport: (report: ProductionQuantityReportWithLines) => void;
   onHistoryReport: (report: ProductionQuantityReportWithLines) => void;
+  onEditSupplierReport: (
+    report: JobOperationSupplierQuantityReportWithLines
+  ) => void;
+  onHistorySupplierReport: (
+    report: JobOperationSupplierQuantityReportWithLines
+  ) => void;
+  onCreateSupplierPo: (
+    report: JobOperationSupplierQuantityReportWithLines
+  ) => void;
+  creatingPoReportId: string | null;
+  canCreatePo: boolean;
 }) => {
   const { formatDateTime } = useDateFormatter();
   const formatPersonName = useFormatPersonName();
   const [people] = usePeople();
+  const [suppliers] = useSuppliers();
 
   const reporterName = (userId: string) => {
     const person = people.find((p) => p.id === userId);
@@ -530,63 +548,76 @@ const EmployeeProductionLogsView = ({
       : userId;
   };
 
-  // Group by employee. Pickups group by the pickup's employeeId; production
-  // quantity lines group by each LINE's employeeId (a single report created by
-  // one person can credit quantities to several employees), so a report is
-  // split across the cards of the employees its lines belong to.
-  const employeeGroups = useMemo(() => {
+  // Group by actor. Employee pickups/reports group by the credited employee
+  // (report.employeeId is stable across edits); supplier pickups/reports group
+  // by supplierId. A report's active lines always stay together, same as the
+  // old production quantity tab.
+  const actorGroups = useMemo(() => {
     type QuantityEntry = {
       key: string;
-      report: ProductionQuantityReportWithLines;
       createdBy: string;
       createdAt: string;
-      lines: ProductionQuantityReportLine[];
+      hasHistory: boolean;
+      lines: (ProductionQuantityReportLine | JobOperationSupplierQuantityLine)[];
+      employeeReport?: ProductionQuantityReportWithLines;
+      supplierReport?: JobOperationSupplierQuantityReportWithLines;
     };
-    const groups = new Map<string, {
-      employeeId: string;
+    type ActorGroup = {
+      kind: "employee" | "supplier";
+      id: string;
       pickups: UnifiedPickupItem[];
       quantityEntries: QuantityEntry[];
-    }>();
+    };
+    const groups = new Map<string, ActorGroup>();
 
-    const ensureGroup = (empId: string) => {
-      if (!groups.has(empId)) {
-        groups.set(empId, {
-          employeeId: empId,
-          pickups: [],
-          quantityEntries: []
-        });
+    const ensureGroup = (kind: "employee" | "supplier", id: string) => {
+      const key = `${kind}:${id}`;
+      if (!groups.has(key)) {
+        groups.set(key, { kind, id, pickups: [], quantityEntries: [] });
       }
-      return groups.get(empId)!;
+      return groups.get(key)!;
     };
 
-    // Pickups -> grouped by the pickup's employee
+    // Pickups -> grouped by their actor (employee or supplier)
     allPickups.forEach((pickup) => {
       if (pickup.kind === "employee") {
-        ensureGroup(pickup.pickup.employeeId).pickups.push(pickup);
+        ensureGroup("employee", pickup.pickup.employeeId).pickups.push(pickup);
+      } else {
+        const supplierId = pickup.pickup.supplierProcess?.supplierId;
+        if (supplierId) ensureGroup("supplier", supplierId).pickups.push(pickup);
       }
     });
 
-    // Production quantity reports -> grouped by the REPORT's employeeId (the
-    // employee the report is credited to, chosen on the form). This is stable:
-    // unlike a line's employeeId, it is NOT reassigned to the editor when a
-    // report is edited, and unlike createdBy it is the credited employee rather
-    // than the recorder. All of the report's active lines stay together, same
-    // as the old production quantity tab.
+    // Quantity reports -> grouped by their actor. Employee reports key on the
+    // credited employeeId; supplier reports key on supplierId.
     quantityReports.forEach((report) => {
-      if (report.actorKind !== "employee") return;
-      ensureGroup(report.report.employeeId).quantityEntries.push({
-        key: report.id,
-        report: report.report,
-        createdBy: report.report.createdBy,
-        createdAt: report.createdAt,
-        lines: report.report.activeLines ?? []
-      });
+      if (report.actorKind === "employee") {
+        ensureGroup("employee", report.report.employeeId).quantityEntries.push({
+          key: report.id,
+          createdBy: report.report.createdBy,
+          createdAt: report.createdAt,
+          hasHistory: report.report.hasHistory,
+          lines: report.report.activeLines ?? [],
+          employeeReport: report.report
+        });
+      } else {
+        const supplierId = report.report.supplierProcess?.supplierId;
+        if (!supplierId) return;
+        ensureGroup("supplier", supplierId).quantityEntries.push({
+          key: report.id,
+          createdBy: report.report.createdBy,
+          createdAt: report.createdAt,
+          hasHistory: report.report.hasHistory,
+          lines: report.report.activeLines ?? [],
+          supplierReport: report.report
+        });
+      }
     });
 
     return Array.from(groups.values());
   }, [allPickups, quantityReports]);
 
-  if (employeeGroups.length === 0 && !pickupHasMore && !quantityHasMore) {
+  if (actorGroups.length === 0 && !pickupHasMore && !quantityHasMore) {
     return (
       <div className="py-8 text-muted-foreground text-center">
         <Trans>No production logs</Trans>
@@ -596,7 +627,7 @@ const EmployeeProductionLogsView = ({
 
   return (
     <VStack spacing={3} className="w-full">
-      {employeeGroups.map((group) => {
+      {actorGroups.map((group) => {
         // Per-config remaining = picked up minus produced for each config
         // param; negatives are clamped away (never shown).
         const pickupByConfig = new Map<string, number>();
@@ -637,11 +668,28 @@ const EmployeeProductionLogsView = ({
           0
         );
 
+        const supplierName =
+          group.kind === "supplier"
+            ? (suppliers.find((s) => s.id === group.id)?.name ?? group.id)
+            : null;
+
         return (
-          <Card key={group.employeeId} className="w-full overflow-hidden">
-            {/* Employee Header - grey bar */}
+          <Card
+            key={`${group.kind}:${group.id}`}
+            className="w-full overflow-hidden"
+          >
+            {/* Actor header - grey bar */}
             <HStack className="justify-between items-center bg-muted px-4 py-2.5">
-              <EmployeeAvatar employeeId={group.employeeId} />
+              {group.kind === "employee" ? (
+                <EmployeeAvatar employeeId={group.id} />
+              ) : (
+                <HStack className="min-w-0 items-center gap-2">
+                  <Avatar size="xs" name={supplierName ?? ""} />
+                  <span className="text-sm font-medium leading-5">
+                    {supplierName}
+                  </span>
+                </HStack>
+              )}
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div className="text-sm text-muted-foreground cursor-help">
@@ -765,34 +813,58 @@ const EmployeeProductionLogsView = ({
                               </TooltipContent>
                             </Tooltip>
                           </HStack>
-                          {(entry.report.hasHistory || canEditQuantityReport) && (
-                            <HStack className="items-center">
-                              {entry.report.hasHistory && (
+                          <HStack className="items-center">
+                            {entry.hasHistory && (
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                aria-label="View history"
+                                onClick={() =>
+                                  entry.kind === "employee"
+                                    ? onHistoryReport(entry.employeeReport!)
+                                    : onHistorySupplierReport(
+                                        entry.supplierReport!
+                                      )
+                                }
+                                className="h-7 w-7 p-0 transition-transform active:scale-[0.96]"
+                              >
+                                <LuHistory className="h-4 w-4" />
+                              </Button>
+                            )}
+                            {canEditQuantityReport && (
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                aria-label="Edit report"
+                                onClick={() =>
+                                  entry.kind === "employee"
+                                    ? onEditReport(entry.employeeReport!)
+                                    : onEditSupplierReport(entry.supplierReport!)
+                                }
+                                className="h-7 w-7 p-0 transition-transform active:scale-[0.96]"
+                              >
+                                <LuPencil className="h-4 w-4" />
+                              </Button>
+                            )}
+                            {entry.kind === "supplier" &&
+                              canCreatePo &&
+                              !entry.supplierReport!.purchaseOrderLineId && (
                                 <Button
                                   type="button"
-                                  variant="ghost"
+                                  variant="secondary"
                                   size="sm"
-                                  aria-label="View history"
-                                  onClick={() => onHistoryReport(entry.report)}
-                                  className="h-7 w-7 p-0 transition-transform active:scale-[0.96]"
+                                  isLoading={creatingPoReportId === entry.key}
+                                  onClick={() =>
+                                    onCreateSupplierPo(entry.supplierReport!)
+                                  }
+                                  className="ml-1 transition-transform active:scale-[0.96]"
                                 >
-                                  <LuHistory className="h-4 w-4" />
+                                  <Trans>Create PO</Trans>
                                 </Button>
                               )}
-                              {canEditQuantityReport && (
-                                <Button
-                                  type="button"
-                                  variant="ghost"
-                                  size="sm"
-                                  aria-label="Edit report"
-                                  onClick={() => onEditReport(entry.report)}
-                                  className="h-7 w-7 p-0 transition-transform active:scale-[0.96]"
-                                >
-                                  <LuPencil className="h-4 w-4" />
-                                </Button>
-                              )}
-                            </HStack>
-                          )}
+                          </HStack>
                         </HStack>
                       </HStack>
                       {/* One grey box per quantity line */}
@@ -2131,6 +2203,32 @@ const JobBillOfProcess = ({
               canEditQuantityReport={canEditQuantityReport}
               onEditReport={(report) => setDispositionReport(report)}
               onHistoryReport={(report) => setHistoryReport(report)}
+              onEditSupplierReport={(report) =>
+                setSupplierDispositionReport(report)
+              }
+              onHistorySupplierReport={(report) =>
+                setSupplierHistoryReport(report)
+              }
+              creatingPoReportId={creatingPoReportId}
+              canCreatePo={permissions.can("create", "purchasing")}
+              onCreateSupplierPo={async (report) => {
+                setCreatingPoReportId(report.id);
+                try {
+                  const res = await fetch(
+                    path.to.api.supplierQuantityReportCreatePo(report.id),
+                    { method: "POST", credentials: "include" }
+                  );
+                  const body = await res.json();
+                  if (!res.ok) {
+                    toast.error(body.error ?? "Failed to create PO");
+                    return;
+                  }
+                  toast.success("Purchase order line created");
+                  void refreshQuantityData();
+                } finally {
+                  setCreatingPoReportId(null);
+                }
+              }}
             />
           </motion.div>
         )
