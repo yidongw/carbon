@@ -561,8 +561,8 @@ async function seed() {
 
       for (const procName of wc.processes) {
         const procId = processIds[procName];
-        if (!procId) continue;
-        const wcId = workCenterIds[wc.name]!;
+        const wcId = workCenterIds[wc.name];
+        if (!procId || !wcId) continue;
         const existsLink = await client.query(
           `SELECT 1 FROM "workCenterProcess" WHERE "workCenterId" = $1 AND "processId" = $2 LIMIT 1`,
           [wcId, procId]
@@ -829,19 +829,24 @@ async function seed() {
       const jobRowId = jobRow.rows[0]!.id;
       console.log(`   Created job "${jobReadableId}": ${jobRowId}`);
 
-      if (cncProcessId) {
+      // Only create job operation if all required FKs exist
+      if (cncProcessId && cncWorkCenterId) {
         const opRow = await client.query<{ id: string }>(
           `INSERT INTO "jobOperation" ("jobId", "order", "processId", "workCenterId", description, "laborTime", "laborUnit", "companyId", "createdBy")
            VALUES ($1, 1, $2, $3, 'CNC mill bracket profile', 30, 'Minutes/Piece'::factor, $4, $5)
            RETURNING id`,
-          [jobRowId, cncProcessId, cncWorkCenterId ?? null, companyId, userId]
+          [jobRowId, cncProcessId, cncWorkCenterId, companyId, userId]
         );
         const opId = opRow.rows[0]!.id;
         console.log(`   Created job operation: ${opId}`);
 
         // Note: jobMaterial is skipped — it requires complex trigger/BOM logic
         // that is best managed through the application UI.
+      } else {
+        console.log(`   Skipped job operation - missing process or work center`);
       }
+    } else {
+      console.log(`   Skipped job creation - BRACKET-001 item not found`);
     }
 
     // ─── Step 20: Second location ─────────────────────────────────────────────
@@ -1161,8 +1166,8 @@ async function seed() {
 
     // ─── Step 25: supplier extensions ────────────────────────────────────────
     console.log("25. Seeding supplier extensions...");
-    const acmeSupplierId = supplierIds["Acme Steel Supply"]!;
-    const pacificSupplierId = supplierIds["Pacific Electronics"]!;
+    const acmeSupplierId = supplierIds["Acme Steel Supply"];
+    const pacificSupplierId = supplierIds["Pacific Electronics"];
 
     // supplierPart
     const existingSupplierPart = await client.query(
@@ -1196,7 +1201,7 @@ async function seed() {
     }
 
     // supplierProcess
-    const fastCNCSupplierId = supplierIds["FastCNC Services"]!;
+    const fastCNCSupplierId = supplierIds["FastCNC Services"];
     const cncProcId = processIds["CNC Machining"];
     if (fastCNCSupplierId && cncProcId) {
       const existingSP = await client.query(
@@ -1259,7 +1264,9 @@ async function seed() {
         console.log(`   Created make method for BRACKET-001`);
       }
 
-      if (makeMethodId && cncProcId) {
+      // Only create method operation if all required FKs exist
+      const cncWC = workCenterIds["CNC Mill #1"];
+      if (makeMethodId && cncProcId && cncWC) {
         const existingMO = await client.query<{ id: string }>(
           `SELECT id FROM "methodOperation" WHERE "makeMethodId" = $1 LIMIT 1`, [makeMethodId]
         );
@@ -1269,11 +1276,14 @@ async function seed() {
           const r = await client.query<{ id: string }>(
             `INSERT INTO "methodOperation" ("makeMethodId", "processId", "workCenterId", description, "laborTime", "laborUnit", "machineTime", "machineUnit", "companyId", "createdBy")
              VALUES ($1, $2, $3, 'CNC mill profile', 30, 'Minutes/Piece'::factor, 30, 'Minutes/Piece'::factor, $4, $5) RETURNING id`,
-            [makeMethodId, cncProcId, workCenterIds["CNC Mill #1"] ?? null, companyId, userId]
+            [makeMethodId, cncProcId, cncWC, companyId, userId]
           );
           methodOpId = r.rows[0]!.id;
           console.log(`   Created method operation`);
         }
+      } else if (makeMethodId && cncProcId) {
+        console.log(`   Skipped method operation - CNC Mill #1 work center not found`);
+      }
 
         // methodOperationStep
         if (methodOpId) {
@@ -1305,9 +1315,13 @@ async function seed() {
               );
               console.log(`   Created method material`);
             }
+          } else {
+            console.log(`   Skipped method material - STEEL-ROD-01 item not found`);
           }
         }
       }
+    } else {
+      console.log(`   Skipped make method - BRACKET-001 item not found`);
     }
 
     // ─── Step 27: template + templateMakeMethod + templateMethodOperation ──────
@@ -2636,7 +2650,8 @@ async function seed() {
 
     // ─── Step 59: productionEvent + productionQuantityReport + productionQuantity
     console.log("59. Seeding production events...");
-    if (jobOpId) {
+    // Only create production events if we have a job operation (which requires work center)
+    if (jobOpId && cncWCId) {
       const existingPE = await client.query(
         `SELECT 1 FROM "productionEvent" WHERE "jobOperationId" = $1 LIMIT 1`, [jobOpId]
       );
@@ -2645,7 +2660,7 @@ async function seed() {
         const peRow = await client.query<{id: string}>(
           `INSERT INTO "productionEvent" ("jobOperationId", type, "startTime", "endTime", "employeeId", "workCenterId", "companyId", "createdBy")
            VALUES ($1, 'Labor'::"productionEventType", NOW() - INTERVAL '2 hours', NOW() - INTERVAL '1 hour', $2, $3, $4, $5) RETURNING id`,
-          [jobOpId, employeeId, cncWCId ?? null, companyId, userId]
+          [jobOpId, employeeId, cncWCId, companyId, userId]
         );
         prodEventId = peRow.rows[0]!.id;
         console.log(`   Created production event`);
@@ -2694,6 +2709,8 @@ async function seed() {
           }
         }
       }
+    } else {
+      console.log(`   Skipped production events - job operation or work center not found`);
     }
 
     // ─── Step 60: purchaseOrderPayment + salesOrderPayment + salesOrderShipment
