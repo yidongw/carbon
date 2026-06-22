@@ -134,19 +134,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     productionQuantities: quantities.data ?? [],
     suggestedQuantity,
     pickupConfiguration,
-    quantities: (quantities.data ?? []).reduce(
-      (acc, curr) => {
-        if (curr.type === "Scrap") {
-          acc.scrap += curr.quantity;
-        } else if (curr.type === "Production") {
-          acc.production += curr.quantity;
-        } else if (curr.type === "Rework") {
-          acc.rework += curr.quantity;
-        }
-        return acc;
-      },
-      { scrap: 0, production: 0, rework: 0 }
-    ),
+    quantities: quantities.data ?? [],
     job: job.data,
     jobMakeMethod: jobMakeMethod.data,
     kanban: kanban.data,
@@ -199,6 +187,7 @@ export default function OperationRoute() {
     productionQuantities,
     suggestedQuantity,
     pickupConfiguration,
+    quantities,
     procedure,
     thumbnailPath,
     trackedEntities,
@@ -219,6 +208,7 @@ export default function OperationRoute() {
       productionQuantities={productionQuantities}
       suggestedQuantity={suggestedQuantity}
       pickupConfiguration={pickupConfiguration}
+      quantities={quantities}
       trackedEntities={trackedEntities}
       nonConformanceActions={nonConformanceActions}
       operation={operation}

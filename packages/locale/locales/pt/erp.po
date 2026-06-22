@@ -4974,6 +4974,12 @@ msgstr "Litro"
 msgid "Live reloading"
 msgstr "Recarregamento ao vivo"
 
+msgid "Load more pickups"
+msgstr ""
+
+msgid "Load more quantities"
+msgstr ""
+
 msgid "Load Templates"
 msgstr "Carregar Modelos"
 
@@ -5977,6 +5983,9 @@ msgstr "Sem preço para a quantidade selecionada"
 msgid "No pricing options found"
 msgstr "Nenhuma opção de preço encontrada"
 
+msgid "No production logs"
+msgstr ""
+
 msgid "No Quote"
 msgstr "Sem Cotação"
 
@@ -6565,6 +6574,9 @@ msgstr "Lista de Coleta"
 msgid "picked up {0} units"
 msgstr "pickingado {0} unidades"
 
+msgid "pickup"
+msgstr ""
+
 msgid "Pickup"
 msgstr "Pegar"
 
@@ -6838,6 +6850,9 @@ msgstr "Evento de Produção"
 
 msgid "Production Events"
 msgstr "Eventos de Produção"
+
+msgid "Production Logs"
+msgstr ""
 
 msgid "Production Qty"
 msgstr "Qtd. Produção"
@@ -7297,6 +7312,9 @@ msgstr "Liberar Trabalho"
 
 msgid "Released"
 msgstr "Liberado"
+
+msgid "remaining"
+msgstr ""
 
 msgid "Remaining after split stays on the original row."
 msgstr "Restante após divisão permanece na linha original."
@@ -9175,8 +9193,20 @@ msgstr "Total de Minutos"
 msgid "Total paid"
 msgstr "Total pago"
 
+msgid "Total Pickups"
+msgstr ""
+
 msgid "Total Price"
 msgstr "Preço Total"
+
+msgid "Total Production"
+msgstr ""
+
+msgid "Total Rework"
+msgstr ""
+
+msgid "Total Scrap"
+msgstr ""
 
 msgid "Total:"
 msgstr "Total:"

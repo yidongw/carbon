@@ -115,7 +115,6 @@ export async function action({ request, params }: ActionFunctionArgs) {
     reportId,
     companyId,
     userId,
-    employeeId: userId,
     notes: parsed.data.notes ?? null,
     lines: parsed.data.lines,
     paymentYear: canAutoApprove ? currentYear : null,

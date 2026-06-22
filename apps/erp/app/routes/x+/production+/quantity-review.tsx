@@ -213,7 +213,6 @@ export async function action({ request }: ActionFunctionArgs) {
       reportId,
       companyId: approvalRequest.companyId,
       userId,
-      employeeId: reportRow.employeeId ?? userId,
       notes,
       lines: lineValidation.data.lines.map((line) => ({
         ...line,

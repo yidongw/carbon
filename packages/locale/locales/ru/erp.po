@@ -4974,6 +4974,12 @@ msgstr "Литр"
 msgid "Live reloading"
 msgstr "Живая перезагрузка"
 
+msgid "Load more pickups"
+msgstr ""
+
+msgid "Load more quantities"
+msgstr ""
+
 msgid "Load Templates"
 msgstr "Загрузить шаблоны"
 
@@ -5977,6 +5983,9 @@ msgstr "Нет цен для выбранного количества"
 msgid "No pricing options found"
 msgstr "Нет доступных вариантов цен"
 
+msgid "No production logs"
+msgstr ""
+
 msgid "No Quote"
 msgstr "Нет предложения"
 
@@ -6565,6 +6574,9 @@ msgstr "Список подбора"
 msgid "picked up {0} units"
 msgstr "принят {0} единиц"
 
+msgid "pickup"
+msgstr ""
+
 msgid "Pickup"
 msgstr "Пicking"
 
@@ -6838,6 +6850,9 @@ msgstr "Производственное событие"
 
 msgid "Production Events"
 msgstr "События производства"
+
+msgid "Production Logs"
+msgstr ""
 
 msgid "Production Qty"
 msgstr "Кол-во производства"
@@ -7297,6 +7312,9 @@ msgstr "Выпустить задание"
 
 msgid "Released"
 msgstr "Выпущено"
+
+msgid "remaining"
+msgstr ""
 
 msgid "Remaining after split stays on the original row."
 msgstr "Остаток после разделения остается в исходной строке."
@@ -9175,8 +9193,20 @@ msgstr "Всего минут"
 msgid "Total paid"
 msgstr "Общая оплата"
 
+msgid "Total Pickups"
+msgstr ""
+
 msgid "Total Price"
 msgstr "Общая цена"
+
+msgid "Total Production"
+msgstr ""
+
+msgid "Total Rework"
+msgstr ""
+
+msgid "Total Scrap"
+msgstr ""
 
 msgid "Total:"
 msgstr "Итого:"

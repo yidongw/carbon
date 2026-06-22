@@ -407,8 +407,8 @@ msgstr "Редактировать"
 msgid "Email Address"
 msgstr "Электронная почта"
 
-msgid "Employee"
-msgstr "Сотрудник"
+#~ msgid "Employee"
+#~ msgstr "Сотрудник"
 
 msgid "Empty work centers"
 msgstr "Пустые рабочие центры"
@@ -769,8 +769,11 @@ msgstr "Опция не найдена."
 msgid "No options found."
 msgstr "Варианты не найдены."
 
-msgid "No pickups logged"
-msgstr "Ни один пикап не зарегистрирован"
+#~ msgid "No pickups logged"
+#~ msgstr "Ни один пикап не зарегистрирован"
+
+msgid "No production logs"
+msgstr ""
 
 msgid "No recent operations"
 msgstr "Нет недавних операций"
@@ -890,6 +893,9 @@ msgstr "Период"
 msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "Столбец {0} взят с позиции: {1} из {2}"
 
+msgid "pickup"
+msgstr ""
+
 msgid "Pickups"
 msgstr "Пicked Up"
 
@@ -950,6 +956,15 @@ msgstr "Параметры процесса"
 msgid "Processes"
 msgstr "Процессы"
 
+msgid "production"
+msgstr ""
+
+msgid "Production"
+msgstr ""
+
+msgid "Production Logs"
+msgstr ""
+
 msgid "Progress"
 msgstr "Прогресс"
 
@@ -982,6 +997,15 @@ msgstr "Записать"
 msgid "Record {0}"
 msgstr "Запись {0}"
 
+msgid "Record Pickup"
+msgstr ""
+
+msgid "Record Quantity"
+msgstr ""
+
+msgid "remaining"
+msgstr ""
+
 msgid "Remove"
 msgstr "Удалить"
 
@@ -1003,6 +1027,9 @@ msgstr "Удалить серийный номер"
 msgid "Reset zoom"
 msgstr "Сбросить масштаб"
 
+msgid "rework"
+msgstr ""
+
 msgid "Sales Order"
 msgstr "Заказ на продажу"
 
@@ -1020,6 +1047,9 @@ msgstr "Сканируйте или введите серийный номер"
 
 msgid "Schedule"
 msgstr "Расписание"
+
+msgid "scrap"
+msgstr ""
 
 msgid "Scrap"
 msgstr "Отходы"
@@ -1249,8 +1279,20 @@ msgstr "Переключить панель侧边栏"
 msgid "Tools"
 msgstr "Инструменты"
 
+msgid "Total Pickups"
+msgstr ""
+
+msgid "Total Production"
+msgstr ""
+
 msgid "Total Quantity"
 msgstr "Общее количество"
+
+msgid "Total Rework"
+msgstr ""
+
+msgid "Total Scrap"
+msgstr ""
 
 #. placeholder {0}: formatDuration(totalDuration)
 msgid "Total time: {0}"

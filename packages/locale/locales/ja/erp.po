@@ -4974,6 +4974,12 @@ msgstr "リットル"
 msgid "Live reloading"
 msgstr "ライブリロード中"
 
+msgid "Load more pickups"
+msgstr ""
+
+msgid "Load more quantities"
+msgstr ""
+
 msgid "Load Templates"
 msgstr "テンプレートを読み込む"
 
@@ -5977,6 +5983,9 @@ msgstr "選択した数量の価格設定がありません"
 msgid "No pricing options found"
 msgstr "価格オプションが見つかりません"
 
+msgid "No production logs"
+msgstr ""
+
 msgid "No Quote"
 msgstr "見積なし"
 
@@ -6565,6 +6574,9 @@ msgstr "ピッキングリスト"
 msgid "picked up {0} units"
 msgstr "{0}ユニットを取った"
 
+msgid "pickup"
+msgstr ""
+
 msgid "Pickup"
 msgstr "おとり"
 
@@ -6838,6 +6850,9 @@ msgstr "生産イベント"
 
 msgid "Production Events"
 msgstr "本番イベント"
+
+msgid "Production Logs"
+msgstr ""
 
 msgid "Production Qty"
 msgstr "生産数量"
@@ -7297,6 +7312,9 @@ msgstr "ジョブをリリース"
 
 msgid "Released"
 msgstr "リリース済み"
+
+msgid "remaining"
+msgstr ""
 
 msgid "Remaining after split stays on the original row."
 msgstr "分割後の残りは元の行に留まります。"
@@ -9175,8 +9193,20 @@ msgstr "合計分"
 msgid "Total paid"
 msgstr "合計支払い"
 
+msgid "Total Pickups"
+msgstr ""
+
 msgid "Total Price"
 msgstr "合計価格"
+
+msgid "Total Production"
+msgstr ""
+
+msgid "Total Rework"
+msgstr ""
+
+msgid "Total Scrap"
+msgstr ""
 
 msgid "Total:"
 msgstr "合計:"

@@ -69,11 +69,13 @@ import {
   LuEllipsisVertical,
   LuGripVertical,
   LuHammer,
+  LuHistory,
   LuInfo,
   LuListChecks,
   LuMaximize2,
   LuMinimize2,
   LuPaperclip,
+  LuPencil,
   LuRefreshCcw,
   LuSend,
   LuSettings2,
@@ -122,6 +124,7 @@ import type { Item, SortableItemRenderProps } from "~/components/SortableList";
 import { SortableList, SortableListItem } from "~/components/SortableList";
 import {
   useDateFormatter,
+  useFormatPersonName,
   usePermissions,
   useRouteData,
   useUrlParams,
@@ -145,7 +148,7 @@ import type { action as newJobOperationParameterAction } from "~/routes/x+/job+/
 import type { action as editJobOperationStepAction } from "~/routes/x+/job+/methods+/operation.step.$id";
 import type { action as editJobOperationToolAction } from "~/routes/x+/job+/methods+/operation.tool.$id";
 import type { action as newJobOperationToolAction } from "~/routes/x+/job+/methods+/operation.tool.new";
-import { useItems, usePeople, useTools } from "~/stores";
+import { useItems, usePeople, useSuppliers, useTools } from "~/stores";
 import { getPrivateUrl, path } from "~/utils/path";
 import {
   buildReportedTargetRows,
@@ -153,6 +156,7 @@ import {
   type ReportedTargetRow
 } from "../../configParamsTableColumns";
 import {
+  type JobOperationSupplierQuantityLine,
   type JobOperationSupplierQuantityReportWithLines,
   listJobOperationSupplierQuantityReportsForOperation
 } from "../../jobOperationSupplierQuantityReport.service";
@@ -178,6 +182,7 @@ import {
   getOperationQuantitySummary,
   listProductionQuantityReportsForOperation,
   type OperationQuantitySummary as OperationQuantitySummaryData,
+  type ProductionQuantityReportLine,
   type ProductionQuantityReportWithLines
 } from "../../productionQuantityReport.service";
 import {
@@ -490,6 +495,441 @@ type OperationPickup =
     } | null;
   };
 
+const EmployeeProductionLogsView = ({
+  pickups: allPickups,
+  quantityReports,
+  pickupHasMore,
+  quantityHasMore,
+  loadMorePickups,
+  loadMoreQuantityReports,
+  canEditQuantityReport,
+  onEditReport,
+  onHistoryReport,
+  onEditSupplierReport,
+  onHistorySupplierReport,
+  onCreateSupplierPo,
+  creatingPoReportId,
+  canCreatePo
+}: {
+  pickups: UnifiedPickupItem[];
+  quantityReports: UnifiedQuantityReportItem[];
+  pickupHasMore: boolean;
+  quantityHasMore: boolean;
+  loadMorePickups: () => Promise<void>;
+  loadMoreQuantityReports: () => Promise<void>;
+  canEditQuantityReport: boolean;
+  onEditReport: (report: ProductionQuantityReportWithLines) => void;
+  onHistoryReport: (report: ProductionQuantityReportWithLines) => void;
+  onEditSupplierReport: (
+    report: JobOperationSupplierQuantityReportWithLines
+  ) => void;
+  onHistorySupplierReport: (
+    report: JobOperationSupplierQuantityReportWithLines
+  ) => void;
+  onCreateSupplierPo: (
+    report: JobOperationSupplierQuantityReportWithLines
+  ) => void;
+  creatingPoReportId: string | null;
+  canCreatePo: boolean;
+}) => {
+  const { formatDateTime } = useDateFormatter();
+  const formatPersonName = useFormatPersonName();
+  const [people] = usePeople();
+  const [suppliers] = useSuppliers();
+
+  const reporterName = (userId: string) => {
+    const person = people.find((p) => p.id === userId);
+    return person
+      ? formatPersonName({
+          firstName: person.firstName,
+          lastName: person.lastName,
+          fullName: person.name
+        })
+      : userId;
+  };
+
+  // Group by actor. Employee pickups/reports group by the credited employee
+  // (report.employeeId is stable across edits); supplier pickups/reports group
+  // by supplierId. A report's active lines always stay together, same as the
+  // old production quantity tab.
+  const actorGroups = useMemo(() => {
+    type QuantityEntry = {
+      key: string;
+      createdBy: string;
+      createdAt: string;
+      hasHistory: boolean;
+      lines: (ProductionQuantityReportLine | JobOperationSupplierQuantityLine)[];
+      employeeReport?: ProductionQuantityReportWithLines;
+      supplierReport?: JobOperationSupplierQuantityReportWithLines;
+    };
+    type ActorGroup = {
+      kind: "employee" | "supplier";
+      id: string;
+      pickups: UnifiedPickupItem[];
+      quantityEntries: QuantityEntry[];
+    };
+    const groups = new Map<string, ActorGroup>();
+
+    const ensureGroup = (kind: "employee" | "supplier", id: string) => {
+      const key = `${kind}:${id}`;
+      if (!groups.has(key)) {
+        groups.set(key, { kind, id, pickups: [], quantityEntries: [] });
+      }
+      return groups.get(key)!;
+    };
+
+    // Pickups -> grouped by their actor (employee or supplier)
+    allPickups.forEach((pickup) => {
+      if (pickup.kind === "employee") {
+        ensureGroup("employee", pickup.pickup.employeeId).pickups.push(pickup);
+      } else {
+        const supplierId = pickup.pickup.supplierProcess?.supplierId;
+        if (supplierId) ensureGroup("supplier", supplierId).pickups.push(pickup);
+      }
+    });
+
+    // Quantity reports -> grouped by their actor. Employee reports key on the
+    // credited employeeId; supplier reports key on supplierId.
+    quantityReports.forEach((report) => {
+      if (report.actorKind === "employee") {
+        ensureGroup("employee", report.report.employeeId).quantityEntries.push({
+          key: report.id,
+          createdBy: report.report.createdBy,
+          createdAt: report.createdAt,
+          hasHistory: report.report.hasHistory,
+          lines: report.report.activeLines ?? [],
+          employeeReport: report.report
+        });
+      } else {
+        const supplierId = report.report.supplierProcess?.supplierId;
+        if (!supplierId) return;
+        ensureGroup("supplier", supplierId).quantityEntries.push({
+          key: report.id,
+          createdBy: report.report.createdBy,
+          createdAt: report.createdAt,
+          hasHistory: report.report.hasHistory,
+          lines: report.report.activeLines ?? [],
+          supplierReport: report.report
+        });
+      }
+    });
+
+    return Array.from(groups.values());
+  }, [allPickups, quantityReports]);
+
+  if (actorGroups.length === 0 && !pickupHasMore && !quantityHasMore) {
+    return (
+      <div className="py-8 text-muted-foreground text-center">
+        <Trans>No production logs</Trans>
+      </div>
+    );
+  }
+
+  return (
+    <VStack spacing={3} className="w-full">
+      {actorGroups.map((group) => {
+        // Per-config remaining = picked up minus produced for each config
+        // param; negatives are clamped away (never shown).
+        const pickupByConfig = new Map<string, number>();
+        group.pickups.forEach((p) => {
+          (p.pickup.configuration as { configTable?: Record<string, number>[] } | null)
+            ?.configTable?.forEach((cfg) => {
+              Object.entries(cfg).forEach(([k, v]) => {
+                if (v > 0)
+                  pickupByConfig.set(k, (pickupByConfig.get(k) ?? 0) + v);
+              });
+            });
+        });
+        const producedByConfig = new Map<string, number>();
+        group.quantityEntries.forEach((entry) => {
+          entry.lines
+            .filter((l) => l.type === "Production")
+            .forEach((line) => {
+              (line.configuration as { configTable?: Record<string, number>[] } | null)
+                ?.configTable?.forEach((cfg) => {
+                  Object.entries(cfg).forEach(([k, v]) => {
+                    if (v > 0)
+                      producedByConfig.set(
+                        k,
+                        (producedByConfig.get(k) ?? 0) + v
+                      );
+                  });
+                });
+            });
+        });
+        const remainingByConfig = Array.from(pickupByConfig.entries())
+          .map(
+            ([k, picked]) =>
+              [k, picked - (producedByConfig.get(k) ?? 0)] as const
+          )
+          .filter(([, rem]) => rem > 0);
+        const remaining = remainingByConfig.reduce(
+          (sum, [, rem]) => sum + rem,
+          0
+        );
+
+        const supplierName =
+          group.kind === "supplier"
+            ? (suppliers.find((s) => s.id === group.id)?.name ?? group.id)
+            : null;
+
+        return (
+          <Card
+            key={`${group.kind}:${group.id}`}
+            className="w-full overflow-hidden"
+          >
+            {/* Actor header - grey bar */}
+            <HStack className="justify-between items-center bg-muted px-4 py-2.5">
+              {group.kind === "employee" ? (
+                <EmployeeAvatar employeeId={group.id} />
+              ) : (
+                <HStack className="min-w-0 items-center gap-2">
+                  <Avatar size="xs" name={supplierName ?? ""} />
+                  <span className="text-sm font-medium leading-5">
+                    {supplierName}
+                  </span>
+                </HStack>
+              )}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="text-sm text-muted-foreground cursor-help">
+                    {remaining} <Trans>remaining</Trans>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <div className="text-xs space-y-0.5 min-w-[80px]">
+                    {remainingByConfig.length > 0 ? (
+                      remainingByConfig.map(([k, rem]) => (
+                        <div
+                          key={k}
+                          className="flex justify-between gap-3"
+                        >
+                          <span>{k}</span>
+                          <span className="font-medium">{rem}</span>
+                        </div>
+                      ))
+                    ) : (
+                      <div>—</div>
+                    )}
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            </HStack>
+            {/* Body - white */}
+            <CardContent className="p-4">
+              <VStack spacing={2}>
+                {/* Pickups */}
+                {group.pickups.map((pickup) => {
+                  return (
+                    <VStack key={pickup.id} spacing={1} className="w-full">
+                      {/* White row: total badge, time, reporter (icon only) at the end */}
+                      <HStack spacing={0} className="w-full items-center text-sm px-1 gap-x-2 gap-y-1 flex-wrap">
+                        <Badge variant="outline" className="text-xs font-medium">
+                          <Trans>Total</Trans>: {pickup.pickup.quantity}
+                        </Badge>
+                        <span className="text-muted-foreground">
+                          {formatDateTime(pickup.createdAt)}
+                        </span>
+                        <HStack spacing={0} className="items-center gap-1.5">
+                          <span className="text-muted-foreground">
+                            <Trans>Reporter</Trans>
+                          </span>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span className="cursor-help">
+                                <EmployeeAvatar
+                                  employeeId={pickup.pickup.createdBy}
+                                  size="xs"
+                                  withName={false}
+                                />
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              {reporterName(pickup.pickup.createdBy)}
+                            </TooltipContent>
+                          </Tooltip>
+                        </HStack>
+                      </HStack>
+                      {/* Grey box: configs (left) + pickup | total (right) */}
+                      <HStack className="w-full justify-between items-center bg-muted px-3 py-2.5 rounded-lg gap-2">
+                        <HStack className="flex-wrap gap-x-3 gap-y-1">
+                          {pickup.pickup.configuration?.configTable?.map((config: Record<string, number>, idx: number) =>
+                            Object.entries(config).filter(([_, value]) => value > 0).map(([key, value]) => (
+                              <HStack key={`${idx}-${key}`} spacing={1}>
+                                <span className="text-sm font-medium">{key}</span>
+                                <Badge variant="outline" className="text-xs bg-background">{value}</Badge>
+                              </HStack>
+                            ))
+                          )}
+                        </HStack>
+                        <HStack className="gap-2 shrink-0">
+                          <Badge variant="blue" className="text-xs uppercase">
+                            <Trans>pickup</Trans>
+                          </Badge>
+                          <Badge variant="outline" className="text-xs font-medium bg-background">
+                            <Trans>Total</Trans> {pickup.pickup.quantity}
+                          </Badge>
+                        </HStack>
+                      </HStack>
+                    </VStack>
+                  );
+                })}
+
+                {/* Quantities: one header row per report (for this employee),
+                    one grey box per line */}
+                {group.quantityEntries.map((entry) => {
+                  const lines = entry.lines;
+                  const reportTotal = lines.reduce(
+                    (s, q) => s + (parseFloat(String(q.quantity)) || 0),
+                    0
+                  );
+                  return (
+                    <VStack key={entry.key} spacing={1} className="w-full">
+                      {/* White row: total badge, time, reporter (icon only) at the end */}
+                      <HStack spacing={0} className="w-full justify-between items-center text-sm px-1 gap-2">
+                        <HStack spacing={0} className="items-center gap-x-2 gap-y-1 flex-wrap">
+                          <Badge variant="outline" className="text-xs font-medium">
+                            <Trans>Total</Trans>: {reportTotal}
+                          </Badge>
+                          <span className="text-muted-foreground">
+                            {formatDateTime(entry.createdAt)}
+                          </span>
+                          <HStack spacing={0} className="items-center gap-1.5">
+                            <span className="text-muted-foreground">
+                              <Trans>Reporter</Trans>
+                            </span>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="cursor-help">
+                                  <EmployeeAvatar
+                                    employeeId={entry.createdBy}
+                                    size="xs"
+                                    withName={false}
+                                  />
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                {reporterName(entry.createdBy)}
+                              </TooltipContent>
+                            </Tooltip>
+                          </HStack>
+                        </HStack>
+                        <HStack spacing={0} className="items-center shrink-0">
+                            {entry.hasHistory && (
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                aria-label="View history"
+                                onClick={() =>
+                                  group.kind === "employee"
+                                    ? onHistoryReport(entry.employeeReport!)
+                                    : onHistorySupplierReport(
+                                        entry.supplierReport!
+                                      )
+                                }
+                                className="h-7 w-7 p-0 transition-transform active:scale-[0.96]"
+                              >
+                                <LuHistory className="h-4 w-4" />
+                              </Button>
+                            )}
+                            {canEditQuantityReport && (
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                aria-label="Edit report"
+                                onClick={() =>
+                                  group.kind === "employee"
+                                    ? onEditReport(entry.employeeReport!)
+                                    : onEditSupplierReport(entry.supplierReport!)
+                                }
+                                className="h-7 w-7 p-0 transition-transform active:scale-[0.96]"
+                              >
+                                <LuPencil className="h-4 w-4" />
+                              </Button>
+                            )}
+                            {group.kind === "supplier" &&
+                              canCreatePo &&
+                              !entry.supplierReport!.purchaseOrderLineId && (
+                                <Button
+                                  type="button"
+                                  variant="secondary"
+                                  size="sm"
+                                  isLoading={creatingPoReportId === entry.key}
+                                  onClick={() =>
+                                    onCreateSupplierPo(entry.supplierReport!)
+                                  }
+                                  className="ml-1 transition-transform active:scale-[0.96]"
+                                >
+                                  <Trans>Create PO</Trans>
+                                </Button>
+                              )}
+                          </HStack>
+                        </HStack>
+                      {/* One grey box per quantity line */}
+                      {lines.map((qty, idx) => (
+                        <HStack
+                          key={idx}
+                          className="w-full justify-between items-center bg-muted px-3 py-2.5 rounded-lg gap-2"
+                        >
+                          <HStack className="flex-wrap gap-x-3 gap-y-1">
+                            {(qty.configuration as { configTable?: Record<string, number>[] } | null)?.configTable?.map((config, cidx: number) =>
+                              Object.entries(config).filter(([_, value]) => value > 0).map(([key, value]) => (
+                                <HStack key={`${cidx}-${key}`} spacing={1}>
+                                  <span className="text-sm font-medium">{key}</span>
+                                  <Badge variant="outline" className="text-xs bg-background">{value}</Badge>
+                                </HStack>
+                              ))
+                            )}
+                          </HStack>
+                          <HStack className="gap-2 shrink-0">
+                            <Badge
+                              variant={
+                                qty.type === "Production"
+                                  ? "green"
+                                  : qty.type === "Rework"
+                                  ? "orange"
+                                  : "red"
+                              }
+                              className="text-xs uppercase"
+                            >
+                              {qty.type}
+                            </Badge>
+                            <Badge variant="outline" className="text-xs font-medium bg-background">
+                              <Trans>Total</Trans> {qty.quantity}
+                            </Badge>
+                          </HStack>
+                        </HStack>
+                      ))}
+                    </VStack>
+                  );
+                })}
+              </VStack>
+            </CardContent>
+          </Card>
+        );
+      })}
+
+      {/* Load More Triggers */}
+      {pickupHasMore && (
+        <div className="text-center">
+          <Button variant="outline" size="sm" onClick={loadMorePickups}>
+            <Trans>Load more pickups</Trans>
+          </Button>
+        </div>
+      )}
+      {quantityHasMore && (
+        <div className="text-center">
+          <Button variant="outline" size="sm" onClick={loadMoreQuantityReports}>
+            <Trans>Load more quantities</Trans>
+          </Button>
+        </div>
+      )}
+    </VStack>
+  );
+};
+
 const JobBillOfProcess = ({
   jobMakeMethodId,
   locationId,
@@ -783,7 +1223,6 @@ const JobBillOfProcess = ({
   const [pickupPage, setPickupPage] = useState(0);
   const [pickupIsLoading, setPickupIsLoading] = useState(false);
   const [pickupHasMore, setPickupHasMore] = useState(true);
-  const [pickupScrollKey, setPickupScrollKey] = useState(0);
   const [inProgressByOperation, setInProgressByOperation] = useState<
     Map<string, number>
   >(new Map());
@@ -837,7 +1276,6 @@ const JobBillOfProcess = ({
                 setPickupPage(0);
                 setPickupHasMore(true);
                 setPickupCount(0);
-                setPickupScrollKey((k) => k + 1);
                 void refreshInProgressTotalsRef.current([operationId]);
               }
             }
@@ -1128,7 +1566,6 @@ const JobBillOfProcess = ({
             setPickups([]);
             setPickupPage(0);
             setPickupHasMore(true);
-            setPickupScrollKey((k) => k + 1);
             if (selectedItemId) {
               void refreshInProgressTotals([selectedItemId]);
             }
@@ -1414,6 +1851,13 @@ const JobBillOfProcess = ({
     pickupPage
   ]);
 
+  // Auto-load pickups when operation is selected
+  useEffect(() => {
+    if (selectedItemId && pickups.length === 0 && !pickupIsLoading && pickupHasMore) {
+      void loadMorePickups();
+    }
+  }, [selectedItemId, pickups.length, pickupIsLoading, pickupHasMore, loadMorePickups]);
+
   const [tabChangeRerender, setTabChangeRerender] = useState<number>(1);
 
   const initialWorkInstructions = useMemo(
@@ -1449,6 +1893,13 @@ const JobBillOfProcess = ({
     const canEditQuantityReport =
       !isDisabled && permissions.can("update", "production");
     const currentPickupCount = item.id === selectedItemId ? pickupCount : 0;
+    const pickupTotal =
+      item.id === selectedItemId
+        ? pickups.reduce(
+            (sum, p) => sum + (parseFloat(String(p.pickup.quantity)) || 0),
+            0
+          )
+        : 0;
     const canRecordQuantity =
       !isDisabled &&
       permissions.can("create", "production") &&
@@ -1665,55 +2116,11 @@ const JobBillOfProcess = ({
         label: (
           <span className="flex items-center gap-2">
             <span>
-              <Trans>Pickups</Trans>
+              <Trans>Production Logs</Trans>
             </span>
-            {currentPickupCount > 0 && <Count count={currentPickupCount} />}
-          </span>
-        ),
-        content: (
-          <motion.div
-            className="flex w-full flex-col gap-4 py-6 pr-2 min-h-[300px]"
-            initial={{ opacity: 0, filter: "blur(4px)" }}
-            animate={{ opacity: 1, filter: "blur(0px)" }}
-            transition={{
-              type: "spring",
-              bounce: 0.2,
-              duration: 0.75,
-              delay: 0.15
-            }}
-          >
-            {canRecordQuantity && onAddPickup && (
-              <HStack className="justify-end">
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => onAddPickup(item.id)}
-                  className="transition-transform active:scale-[0.96]"
-                >
-                  <LuCirclePlus className="mr-1.5 h-4 w-4" />
-                  <Trans>Record pickup</Trans>
-                </Button>
-              </HStack>
+            {(currentPickupCount + quantityCount) > 0 && (
+              <Count count={currentPickupCount + quantityCount} />
             )}
-            <InfiniteScroll
-              key={pickupScrollKey}
-              component={PickupActivityRowWrapper}
-              items={pickups}
-              loadMore={loadMorePickups}
-              hasMore={pickupHasMore}
-            />
-          </motion.div>
-        )
-      },
-      {
-        id: 6,
-        disabled: false,
-        label: (
-          <span className="flex items-center gap-2">
-            <span>
-              <Trans>Quantities</Trans>
-            </span>
-            {quantityCount > 0 && <Count count={quantityCount} />}
           </span>
         ),
         content: (
@@ -1728,18 +2135,50 @@ const JobBillOfProcess = ({
               delay: 0.15
             }}
           >
-            {(item.id === selectedItemId ||
-              (canRecordQuantity && onAddProductionQuantity)) && (
-              <HStack className="w-full flex-wrap items-center justify-between gap-2">
-                <HStack className="min-w-0 flex-wrap items-center gap-2">
-                  {item.id === selectedItemId ? (
-                    <OperationQuantitySummaryView
-                      summary={operationQuantitySummary}
-                      configurationParameters={configurationParameters}
-                    />
-                  ) : null}
-                </HStack>
-                {canRecordQuantity && onAddProductionQuantity ? (
+            {/* Header with Summary Badges and Action Buttons */}
+            <HStack className="justify-between items-start gap-4 flex-wrap">
+              {/* Summary Badges */}
+              <HStack className="gap-2 flex-wrap">
+                <Badge variant="blue">
+                  <Trans>Total Pickups</Trans>: {pickupTotal}
+                </Badge>
+                <Badge variant="green">
+                  <Trans>Total Production</Trans>: {
+                    item.id === selectedItemId
+                      ? (operationQuantitySummary?.production ?? 0)
+                      : 0
+                  }
+                </Badge>
+                <Badge variant="orange">
+                  <Trans>Total Rework</Trans>: {
+                    item.id === selectedItemId
+                      ? (operationQuantitySummary?.rework ?? 0)
+                      : 0
+                  }
+                </Badge>
+                <Badge variant="red">
+                  <Trans>Total Scrap</Trans>: {
+                    item.id === selectedItemId
+                      ? (operationQuantitySummary?.scrap ?? 0)
+                      : 0
+                  }
+                </Badge>
+              </HStack>
+
+              {/* Action Buttons */}
+              <HStack className="gap-2">
+                {canRecordQuantity && onAddPickup && (
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => onAddPickup(item.id)}
+                    className="transition-transform active:scale-[0.96]"
+                  >
+                    <LuCirclePlus className="mr-1.5 h-4 w-4" />
+                    <Trans>Record pickup</Trans>
+                  </Button>
+                )}
+                {canRecordQuantity && onAddProductionQuantity && (
                   <Button
                     variant="secondary"
                     size="sm"
@@ -1749,21 +2188,53 @@ const JobBillOfProcess = ({
                     <LuCirclePlus className="mr-1.5 h-4 w-4" />
                     <Trans>Record quantity</Trans>
                   </Button>
-                ) : null}
+                )}
               </HStack>
-            )}
-            <InfiniteScroll
-              component={QuantityReportRow}
-              items={item.id === selectedItemId ? quantityReports : []}
-              loadMore={loadMoreQuantityReports}
-              hasMore={quantityHasMore}
-              listClassName="gap-5 pt-2"
+            </HStack>
+
+            {/* Employee-Grouped Production Logs */}
+            <EmployeeProductionLogsView
+              pickups={pickups}
+              quantityReports={item.id === selectedItemId ? quantityReports : []}
+              pickupHasMore={pickupHasMore}
+              quantityHasMore={quantityHasMore}
+              loadMorePickups={loadMorePickups}
+              loadMoreQuantityReports={loadMoreQuantityReports}
+              canEditQuantityReport={canEditQuantityReport}
+              onEditReport={(report) => setDispositionReport(report)}
+              onHistoryReport={(report) => setHistoryReport(report)}
+              onEditSupplierReport={(report) =>
+                setSupplierDispositionReport(report)
+              }
+              onHistorySupplierReport={(report) =>
+                setSupplierHistoryReport(report)
+              }
+              creatingPoReportId={creatingPoReportId}
+              canCreatePo={permissions.can("create", "purchasing")}
+              onCreateSupplierPo={async (report) => {
+                setCreatingPoReportId(report.id);
+                try {
+                  const res = await fetch(
+                    path.to.api.supplierQuantityReportCreatePo(report.id),
+                    { method: "POST", credentials: "include" }
+                  );
+                  const body = await res.json();
+                  if (!res.ok) {
+                    toast.error(body.error ?? "Failed to create PO");
+                    return;
+                  }
+                  toast.success("Purchase order line created");
+                  void refreshQuantityData();
+                } finally {
+                  setCreatingPoReportId(null);
+                }
+              }}
             />
           </motion.div>
         )
       },
       {
-        id: 7,
+        id: 6,
         disabled: disablesOutsideBopDetailTabs(item.data.operationType),
         label: t`Events`,
         content: (
@@ -1788,7 +2259,7 @@ const JobBillOfProcess = ({
         )
       },
       {
-        id: 8,
+        id: 7,
         disabled: disablesOutsideBopDetailTabs(item.data.operationType),
         label: t`Chat`,
         content: <OperationChat jobOperationId={item.id} />

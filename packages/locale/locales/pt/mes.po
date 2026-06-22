@@ -407,8 +407,8 @@ msgstr "Editar"
 msgid "Email Address"
 msgstr "Endereço de E-mail"
 
-msgid "Employee"
-msgstr "Funcionário"
+#~ msgid "Employee"
+#~ msgstr "Funcionário"
 
 msgid "Empty work centers"
 msgstr "Centros de trabalho vazios"
@@ -769,8 +769,11 @@ msgstr "Nenhuma opção encontrada."
 msgid "No options found."
 msgstr "Nenhuma opção encontrada."
 
-msgid "No pickups logged"
-msgstr "Nenhum pico registrado"
+#~ msgid "No pickups logged"
+#~ msgstr "Nenhum pico registrado"
+
+msgid "No production logs"
+msgstr ""
 
 msgid "No recent operations"
 msgstr "Nenhuma operação recente"
@@ -890,6 +893,9 @@ msgstr "Período"
 msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "Coluna {0} selecionada na posição: {1} de {2}"
 
+msgid "pickup"
+msgstr ""
+
 msgid "Pickups"
 msgstr "Pegadas"
 
@@ -950,6 +956,15 @@ msgstr "Parâmetros do Processo"
 msgid "Processes"
 msgstr "Processos"
 
+msgid "production"
+msgstr ""
+
+msgid "Production"
+msgstr ""
+
+msgid "Production Logs"
+msgstr ""
+
 msgid "Progress"
 msgstr "Progresso"
 
@@ -982,6 +997,15 @@ msgstr "Registrar"
 msgid "Record {0}"
 msgstr "Registro {0}"
 
+msgid "Record Pickup"
+msgstr ""
+
+msgid "Record Quantity"
+msgstr ""
+
+msgid "remaining"
+msgstr ""
+
 msgid "Remove"
 msgstr "Remover"
 
@@ -1003,6 +1027,9 @@ msgstr "Remover Número de Série"
 msgid "Reset zoom"
 msgstr "Resetar zoom"
 
+msgid "rework"
+msgstr ""
+
 msgid "Sales Order"
 msgstr "Pedido de Venda"
 
@@ -1020,6 +1047,9 @@ msgstr "Escanear ou inserir número de série"
 
 msgid "Schedule"
 msgstr "Cronograma"
+
+msgid "scrap"
+msgstr ""
 
 msgid "Scrap"
 msgstr "Resíduo"
@@ -1249,8 +1279,20 @@ msgstr "Alternar Barra Lateral"
 msgid "Tools"
 msgstr "Ferramentas"
 
+msgid "Total Pickups"
+msgstr ""
+
+msgid "Total Production"
+msgstr ""
+
 msgid "Total Quantity"
 msgstr "Quantidade Total"
+
+msgid "Total Rework"
+msgstr ""
+
+msgid "Total Scrap"
+msgstr ""
 
 #. placeholder {0}: formatDuration(totalDuration)
 msgid "Total time: {0}"

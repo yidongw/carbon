@@ -407,8 +407,8 @@ msgstr "Edit"
 msgid "Email Address"
 msgstr "Email Address"
 
-msgid "Employee"
-msgstr "Employee"
+#~ msgid "Employee"
+#~ msgstr "Employee"
 
 msgid "Empty work centers"
 msgstr "Empty work centers"
@@ -769,8 +769,11 @@ msgstr "No option found."
 msgid "No options found."
 msgstr "No options found."
 
-msgid "No pickups logged"
-msgstr "No pickups logged"
+#~ msgid "No pickups logged"
+#~ msgstr "No pickups logged"
+
+msgid "No production logs"
+msgstr "No production logs"
 
 msgid "No recent operations"
 msgstr "No recent operations"
@@ -890,6 +893,9 @@ msgstr "Period"
 msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "Picked up Column {0} at position: {1} of {2}"
 
+msgid "pickup"
+msgstr "pickup"
+
 msgid "Pickups"
 msgstr "Pickups"
 
@@ -950,6 +956,15 @@ msgstr "Process Parameters"
 msgid "Processes"
 msgstr "Processes"
 
+msgid "production"
+msgstr "production"
+
+msgid "Production"
+msgstr "Production"
+
+msgid "Production Logs"
+msgstr "Production Logs"
+
 msgid "Progress"
 msgstr "Progress"
 
@@ -982,6 +997,15 @@ msgstr "Record"
 msgid "Record {0}"
 msgstr "Record {0}"
 
+msgid "Record Pickup"
+msgstr "Record Pickup"
+
+msgid "Record Quantity"
+msgstr "Record Quantity"
+
+msgid "remaining"
+msgstr "remaining"
+
 msgid "Remove"
 msgstr "Remove"
 
@@ -1003,6 +1027,9 @@ msgstr "Remove Serial Number"
 msgid "Reset zoom"
 msgstr "Reset zoom"
 
+msgid "rework"
+msgstr "rework"
+
 msgid "Sales Order"
 msgstr "Sales Order"
 
@@ -1020,6 +1047,9 @@ msgstr "Scan or enter serial number"
 
 msgid "Schedule"
 msgstr "Schedule"
+
+msgid "scrap"
+msgstr "scrap"
 
 msgid "Scrap"
 msgstr "Scrap"
@@ -1249,8 +1279,20 @@ msgstr "Toggle Sidebar"
 msgid "Tools"
 msgstr "Tools"
 
+msgid "Total Pickups"
+msgstr "Total Pickups"
+
+msgid "Total Production"
+msgstr "Total Production"
+
 msgid "Total Quantity"
 msgstr "Total Quantity"
+
+msgid "Total Rework"
+msgstr "Total Rework"
+
+msgid "Total Scrap"
+msgstr "Total Scrap"
 
 #. placeholder {0}: formatDuration(totalDuration)
 msgid "Total time: {0}"

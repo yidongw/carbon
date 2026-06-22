@@ -106,6 +106,7 @@ import type {
   Kanban,
   OperationWithDetails,
   ProductionEvent,
+  ProductionQuantity,
   StorageItem,
   TrackedEntity,
   TrackedInput
@@ -158,6 +159,7 @@ type JobOperationProps = {
   operation: OperationWithDetails;
   pickups: JobOperationPickup[];
   productionQuantities: ProductionQuantity[];
+  quantities: ProductionQuantity[];
   suggestedQuantity: number;
   pickupConfiguration: unknown;
   procedure: Promise<{
@@ -190,6 +192,7 @@ export const JobOperation = ({
   operation: originalOperation,
   pickups,
   productionQuantities,
+  quantities,
   suggestedQuantity,
   pickupConfiguration,
   procedure,
@@ -1449,54 +1452,238 @@ export const JobOperation = ({
               <div className="flex flex-col gap-4 p-4 lg:p-6 w-full">
                 <HStack className="justify-between w-full">
                   <Heading size="h3">
-                    <Trans>Pickups</Trans>
+                    <Trans>Production Logs</Trans>
                   </Heading>
-                  <Button
-                    aria-label="Log Pickup"
-                    leftIcon={<LuHardHat />}
-                    variant="secondary"
-                    onClick={pickupModal.onOpen}
-                  >
-                    <Trans>Log Pickup</Trans>
-                  </Button>
+                  <HStack>
+                    <Button
+                      aria-label="Record Pickup"
+                      leftIcon={<LuHardHat />}
+                      variant="secondary"
+                      onClick={pickupModal.onOpen}
+                    >
+                      <Trans>Record Pickup</Trans>
+                    </Button>
+                    <Button
+                      aria-label="Record Quantity"
+                      leftIcon={<LuCirclePlus />}
+                      variant="secondary"
+                      onClick={completeModal.onOpen}
+                    >
+                      <Trans>Record Quantity</Trans>
+                    </Button>
+                  </HStack>
                 </HStack>
-                <Table className="w-full">
-                  <Thead>
-                    <Tr>
-                      <Th><Trans>Employee</Trans></Th>
-                      <Th><Trans>Quantity</Trans></Th>
-                      <Th />
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    {pickups.length === 0 ? (
-                      <Tr>
-                        <Td colSpan={3} className="py-8 text-muted-foreground text-center">
-                          <Trans>No pickups logged</Trans>
-                        </Td>
-                      </Tr>
-                    ) : (
-                      pickups.map((pickup) => (
-                        <Tr key={pickup.id}>
-                          <Td>
-                            {pickup.employee
-                              ? formatPersonName(
-                                  pickup.employee as {
-                                    firstName: string;
-                                    lastName: string;
-                                  }
-                                )
-                              : pickup.employeeId}
-                          </Td>
-                          <Td>{pickup.quantity}</Td>
-                          <Td className="text-right">
-                            <PickupDeleteButton pickupId={pickup.id} />
-                          </Td>
-                        </Tr>
-                      ))
-                    )}
-                  </Tbody>
-                </Table>
+
+                {/* Summary Badges */}
+                <HStack className="gap-2 flex-wrap">
+                  <Badge variant="outline">
+                    <Trans>Total Pickups</Trans>: {pickups.reduce((sum, p) => sum + Number(p.quantity), 0)}
+                  </Badge>
+                  <Badge variant="outline">
+                    <Trans>Total Production</Trans>: {quantities.filter(q => q.type === "Production").reduce((sum, q) => sum + Number(q.quantity), 0)}
+                  </Badge>
+                  <Badge variant="outline">
+                    <Trans>Total Rework</Trans>: {quantities.filter(q => q.type === "Rework").reduce((sum, q) => sum + Number(q.quantity), 0)}
+                  </Badge>
+                  <Badge variant="outline">
+                    <Trans>Total Scrap</Trans>: {quantities.filter(q => q.type === "Scrap").reduce((sum, q) => sum + Number(q.quantity), 0)}
+                  </Badge>
+                </HStack>
+
+                {/* Production Logs by Employee */}
+                <div className="flex flex-col gap-2 w-full">
+                  {(() => {
+                    // Group all data by employee
+                    const employeeMap = new Map<string, {
+                      employeeId: string;
+                      employeeName: string;
+                      pickups: typeof pickups;
+                      production: typeof quantities;
+                      rework: typeof quantities;
+                      scrap: typeof quantities;
+                    }>();
+
+                    // Add pickups
+                    pickups.forEach((pickup) => {
+                      const employeeName = pickup.employee
+                        ? formatPersonName(pickup.employee as { firstName: string; lastName: string })
+                        : pickup.employeeId;
+
+                      if (!employeeMap.has(pickup.employeeId)) {
+                        employeeMap.set(pickup.employeeId, {
+                          employeeId: pickup.employeeId,
+                          employeeName,
+                          pickups: [],
+                          production: [],
+                          rework: [],
+                          scrap: []
+                        });
+                      }
+                      employeeMap.get(pickup.employeeId)!.pickups.push(pickup);
+                    });
+
+                    // Add quantities
+                    quantities.forEach((quantity) => {
+                      const employeeName = quantity.employee
+                        ? formatPersonName(quantity.employee as { firstName: string; lastName: string })
+                        : quantity.employeeId;
+
+                      if (!employeeMap.has(quantity.employeeId)) {
+                        employeeMap.set(quantity.employeeId, {
+                          employeeId: quantity.employeeId,
+                          employeeName,
+                          pickups: [],
+                          production: [],
+                          rework: [],
+                          scrap: []
+                        });
+                      }
+
+                      const emp = employeeMap.get(quantity.employeeId)!;
+                      if (quantity.type === "Production") {
+                        emp.production.push(quantity);
+                      } else if (quantity.type === "Rework") {
+                        emp.rework.push(quantity);
+                      } else if (quantity.type === "Scrap") {
+                        emp.scrap.push(quantity);
+                      }
+                    });
+
+                    const employees = Array.from(employeeMap.values());
+
+                    if (employees.length === 0) {
+                      return (
+                        <div className="py-8 text-muted-foreground text-center">
+                          <Trans>No production logs</Trans>
+                        </div>
+                      );
+                    }
+
+                    return employees.map((emp) => {
+                      const totalPickups = emp.pickups.reduce((sum, p) => sum + Number(p.quantity), 0);
+                      const totalProduction = emp.production.reduce((sum, q) => sum + Number(q.quantity), 0);
+                      const remaining = totalPickups - totalProduction;
+
+                      return (
+                        <Card key={emp.employeeId} className="w-full">
+                          <CardContent className="p-4">
+                            <div className="flex flex-col gap-2">
+                              {/* Employee Header with Remaining */}
+                              <div className="flex items-center justify-between">
+                                <div className="font-medium">{emp.employeeName}</div>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <div className="text-sm text-muted-foreground">
+                                      {remaining} <Trans>remaining</Trans>
+                                    </div>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <div className="text-xs">
+                                      <div><Trans>Pickups</Trans>: {totalPickups}</div>
+                                      <div><Trans>Production</Trans>: {totalProduction}</div>
+                                    </div>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </div>
+
+                              {/* Pickups */}
+                              {emp.pickups.map((pickup) => (
+                                <div key={pickup.id} className="flex flex-col gap-1">
+                                  <div className="flex items-center justify-between bg-background">
+                                    <div className="text-sm">
+                                      {pickup.createdBy !== pickup.employeeId && pickup.employee && (
+                                        <span className="text-muted-foreground mr-2">
+                                          ({formatPersonName(pickup.employee as { firstName: string; lastName: string })})
+                                        </span>
+                                      )}
+                                      <span className="font-medium">{pickup.quantity}</span> | {formatDate(pickup.createdAt)}
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-xs"><Trans>pickup</Trans></span>
+                                      <PickupDeleteButton pickupId={pickup.id} />
+                                    </div>
+                                  </div>
+                                  {pickup.configuration && (
+                                    <div className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
+                                      {JSON.stringify(pickup.configuration)}
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+
+                              {/* Production Quantities */}
+                              {emp.production.map((quantity) => (
+                                <div key={quantity.id} className="flex flex-col gap-1">
+                                  <div className="flex items-center justify-between bg-background">
+                                    <div className="text-sm">
+                                      {quantity.createdBy !== quantity.employeeId && quantity.createdByUser && (
+                                        <span className="text-muted-foreground mr-2">
+                                          ({formatPersonName(quantity.createdByUser as { firstName: string; lastName: string })})
+                                        </span>
+                                      )}
+                                      <span className="font-medium">{quantity.quantity}</span> | {formatDate(quantity.createdAt)}
+                                    </div>
+                                    <span className="text-xs text-right"><Trans>production</Trans></span>
+                                  </div>
+                                  {quantity.configuration && (
+                                    <div className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
+                                      {JSON.stringify(quantity.configuration)}
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+
+                              {/* Rework */}
+                              {emp.rework.map((quantity) => (
+                                <div key={quantity.id} className="flex flex-col gap-1">
+                                  <div className="flex items-center justify-between bg-background">
+                                    <div className="text-sm">
+                                      {quantity.createdBy !== quantity.employeeId && quantity.createdByUser && (
+                                        <span className="text-muted-foreground mr-2">
+                                          ({formatPersonName(quantity.createdByUser as { firstName: string; lastName: string })})
+                                        </span>
+                                      )}
+                                      <span className="font-medium">{quantity.quantity}</span> | {formatDate(quantity.createdAt)}
+                                    </div>
+                                    <span className="text-xs text-right"><Trans>rework</Trans></span>
+                                  </div>
+                                  {quantity.configuration && (
+                                    <div className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
+                                      {JSON.stringify(quantity.configuration)}
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+
+                              {/* Scrap */}
+                              {emp.scrap.map((quantity) => (
+                                <div key={quantity.id} className="flex flex-col gap-1">
+                                  <div className="flex items-center justify-between bg-background">
+                                    <div className="text-sm">
+                                      {quantity.createdBy !== quantity.employeeId && quantity.createdByUser && (
+                                        <span className="text-muted-foreground mr-2">
+                                          ({formatPersonName(quantity.createdByUser as { firstName: string; lastName: string })})
+                                        </span>
+                                      )}
+                                      <span className="font-medium">{quantity.quantity}</span> | {formatDate(quantity.createdAt)}
+                                    </div>
+                                    <span className="text-xs text-right"><Trans>scrap</Trans></span>
+                                  </div>
+                                  {quantity.configuration && (
+                                    <div className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
+                                      {JSON.stringify(quantity.configuration)}
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    });
+                  })()}
+                </div>
+
                 {pickupModal.isOpen && (
                   <PickupModal
                     jobOperationId={operation.id}

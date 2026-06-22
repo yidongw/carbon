@@ -529,9 +529,10 @@ export async function getProductionQuantitiesForJobOperation(
 ) {
   return client
     .from("productionQuantity")
-    .select("*")
+    .select("*, employee:employeeId(id, firstName, lastName, avatarUrl), createdByUser:createdBy(id, firstName, lastName, avatarUrl)")
     .eq("jobOperationId", operationId)
-    .is("invalidatedAt", null);
+    .is("invalidatedAt", null)
+    .order("createdAt", { ascending: false });
 }
 
 export async function getRecentJobOperationsByEmployee(

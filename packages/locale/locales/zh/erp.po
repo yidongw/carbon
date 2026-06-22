@@ -4974,6 +4974,12 @@ msgstr "升"
 msgid "Live reloading"
 msgstr "实时预览"
 
+msgid "Load more pickups"
+msgstr "加载更多提货"
+
+msgid "Load more quantities"
+msgstr "加载更多数量"
+
 msgid "Load Templates"
 msgstr "加载模板"
 
@@ -5977,6 +5983,9 @@ msgstr "选择的数量无定价"
 msgid "No pricing options found"
 msgstr "未找到定价选项"
 
+msgid "No production logs"
+msgstr "无生产日志"
+
 msgid "No Quote"
 msgstr "无报价"
 
@@ -6565,6 +6574,9 @@ msgstr "选择列表"
 msgid "picked up {0} units"
 msgstr "拾取了 {0} 个单位"
 
+msgid "pickup"
+msgstr "提货"
+
 msgid "Pickup"
 msgstr "提货"
 
@@ -6838,6 +6850,9 @@ msgstr "生产事件"
 
 msgid "Production Events"
 msgstr "生产事件"
+
+msgid "Production Logs"
+msgstr "生产日志"
 
 msgid "Production Qty"
 msgstr "生产数量"
@@ -7297,6 +7312,12 @@ msgstr "发布工作"
 
 msgid "Released"
 msgstr "已发布"
+
+msgid "remaining"
+msgstr "剩余"
+
+msgid "Reporter"
+msgstr "报告人"
 
 msgid "Remaining after split stays on the original row."
 msgstr "分隔后剩余的留在原行。"
@@ -9175,8 +9196,20 @@ msgstr "总分钟数"
 msgid "Total paid"
 msgstr "已付总额"
 
+msgid "Total Pickups"
+msgstr "总提货量"
+
 msgid "Total Price"
 msgstr "总计价格"
+
+msgid "Total Production"
+msgstr "总生产量"
+
+msgid "Total Rework"
+msgstr "总返工量"
+
+msgid "Total Scrap"
+msgstr "总报废量"
 
 msgid "Total:"
 msgstr "总计:"
