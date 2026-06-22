@@ -71,6 +71,7 @@ export const overlayRegistry = {
         const data = ctx.loaderData as
           | {
               jobId: string;
+              jobOption?: { label: string; value: string };
               jobOperationId: string;
               operationOptions: { label: string; value: string }[];
               configurationParameters?:
@@ -103,6 +104,7 @@ export const overlayRegistry = {
         const seeded = data.seededActor;
         return {
           jobId: data.jobId,
+          jobOptions: data.jobOption ? [data.jobOption] : undefined,
           initialValues: {
             jobOperationId: data.jobOperationId,
             notes: "",
@@ -120,7 +122,9 @@ export const overlayRegistry = {
           operationType: data.operationType ?? null,
           defaultActorKind:
             seeded?.actorKind ?? data.defaultActorKind ?? "employee",
-          lockActorSelection: seeded?.lockActorSelection ?? false
+          lockJobSelection: Boolean(data.jobOption),
+          lockActorSelection: seeded?.lockActorSelection ?? false,
+          lockOperationSelection: Boolean(data.jobOperationId)
         };
       },
       () => import("~/modules/production/ui/Jobs/ProductionQuantityForm")

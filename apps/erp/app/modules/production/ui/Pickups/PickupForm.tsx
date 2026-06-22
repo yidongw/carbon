@@ -11,11 +11,12 @@ import {
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate, useSearchParams } from "react-router";
 import type { z } from "zod";
 import { Hidden, Number, Select, Submit, TextArea } from "~/components/Form";
-import { ProductionActorFields } from "./ProductionActorFields";
+import { ProductionActorFields, selectionFromInitialValues } from "../Jobs/ProductionActorFields";
+import { getProductionFormCascadeState } from "../Jobs/productionFormCascade";
 import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions } from "~/hooks";
 import { isConfigTableOverlaySuccess } from "../../configTableOverlay";
@@ -24,9 +25,10 @@ import {
   type ConfigReferenceSource
 } from "../../configParamsTableColumns";
 import { jobOperationPickupValidator } from "~/modules/production/production.models";
+import { preventDismissOnPortaledContent } from "~/utils/dom";
 import { path } from "~/utils/path";
 import { computeJobConfigTableTotal } from "../../jobConfiguration";
-import { QuantityWithConfigTable } from "./QuantityWithConfigTable";
+import { QuantityWithConfigTable } from "../Jobs/QuantityWithConfigTable";
 
 type ConfigurationParameter = {
   key: string;
@@ -69,7 +71,10 @@ function getInitialConfigState(configuration: unknown) {
 }
 
 export type PickupFormProps = {
-  initialValues: z.infer<typeof jobOperationPickupValidator>;
+  initialValues: z.infer<typeof jobOperationPickupValidator> & {
+    jobId?: string;
+  };
+  jobOptions?: { label: string; value: string }[];
   operationOptions?: { label: string; value: string }[];
   configurationParameters?: ConfigurationParameter[] | null;
   configReferenceSource?: ConfigReferenceSource | null;
@@ -84,8 +89,9 @@ export type PickupFormProps = {
   fetcher?: import("react-router").FetcherWithComponents<unknown>;
 };
 
-const PickupForm = ({
+export const PickupForm = ({
   initialValues,
+  jobOptions,
   operationOptions,
   configurationParameters,
   configReferenceSource,
@@ -102,20 +108,17 @@ const PickupForm = ({
   const permissions = usePermissions();
   const { t } = useLingui();
   const navigate = useNavigate();
-  const { jobId } = useParams();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
   const isOverlay = fetcher != null;
   const onDismiss =
-    onDismissProp ??
-    (() => {
-      if (jobId) {
-        navigate(path.to.jobPickups(jobId));
-        return;
-      }
-      navigate(-1);
-    });
+    onDismissProp ?? (() => navigate(path.to.pickups));
 
   const initialConfig = getInitialConfigState(initialValues.configuration);
 
+  const selectedJobId = searchParams.get("jobId") ?? initialValues.jobId ?? "";
+  const selectedJobOperationId =
+    searchParams.get("jobOperationId") ?? initialValues.jobOperationId ?? "";
   const [quantity, setQuantity] = useState(initialValues.quantity ?? 0);
   const [configTableRows, setConfigTableRows] = useState<ConfigRow[] | null>(
     initialConfig.rows
@@ -129,11 +132,87 @@ const PickupForm = ({
   const hasConfigurationParameters = (configurationParameters?.length ?? 0) > 0;
 
   const isEditing = initialValues.id !== undefined;
-  const presetJobOperationIdOnCreate =
-    !isEditing && Boolean(initialValues.jobOperationId);
+  const initialJobOperationIdRef = useRef(initialValues.jobOperationId ?? "");
+  const lockOperationSelection =
+    !isEditing && Boolean(initialJobOperationIdRef.current);
+  const hasJobSelected = isEditing || Boolean(selectedJobId);
+  const resolvedJobOperationId =
+    selectedJobOperationId || initialJobOperationIdRef.current;
+  const [actorSelection, setActorSelection] = useState(() =>
+    selectionFromInitialValues({
+      employeeId: initialValues.employeeId,
+      supplierProcessId: initialValues.supplierProcessId
+    })
+  );
+
+  useEffect(() => {
+    setActorSelection(
+      selectionFromInitialValues({
+        employeeId: initialValues.employeeId,
+        supplierProcessId: initialValues.supplierProcessId
+      })
+    );
+  }, [
+    selectedJobId,
+    selectedJobOperationId,
+    initialValues.employeeId,
+    initialValues.supplierProcessId
+  ]);
+
   const isDisabled = isEditing
     ? !permissions.can("update", "production")
     : !permissions.can("create", "production");
+
+  const {
+    hasOperationSelected,
+    hasActorSelected,
+    areDetailFieldsDisabled
+  } = getProductionFormCascadeState({
+    isEditing,
+    hasJobPicker: !isEditing,
+    selectedJobId,
+    jobOperationId: resolvedJobOperationId,
+    actorSelection,
+    permissionDisabled: isDisabled
+  });
+
+  const updateSearchParams = (updates: {
+    jobId?: string | null;
+    jobOperationId?: string | null;
+  }) => {
+    const newParams = new URLSearchParams(searchParams);
+    if (updates.jobId !== undefined) {
+      if (updates.jobId) {
+        newParams.set("jobId", updates.jobId);
+      } else {
+        newParams.delete("jobId");
+      }
+    }
+    if (updates.jobOperationId !== undefined) {
+      if (updates.jobOperationId) {
+        newParams.set("jobOperationId", updates.jobOperationId);
+      } else {
+        newParams.delete("jobOperationId");
+      }
+    }
+
+    const search = newParams.toString();
+    navigate(
+      {
+        pathname: location.pathname,
+        search: search ? `?${search}` : ""
+      },
+      { replace: true }
+    );
+  };
+
+  const handleJobChange = (value: string) => {
+    updateSearchParams({ jobId: value, jobOperationId: null });
+  };
+
+  const handleOperationChange = (value: string) => {
+    updateSearchParams({ jobOperationId: value });
+  };
 
   const handleConfigTableSubmit = (
     rows: ConfigRow[],
@@ -184,9 +263,14 @@ const PickupForm = ({
 
   const form = (
     <ValidatedForm
+      key={`${selectedJobId}:${selectedJobOperationId}`}
       validator={jobOperationPickupValidator}
       method="post"
-      defaultValues={initialValues}
+      defaultValues={{
+        ...initialValues,
+        jobId: selectedJobId || undefined,
+        jobOperationId: selectedJobOperationId || undefined
+      }}
       className="flex flex-col h-full"
       action={formAction}
       fetcher={fetcher}
@@ -203,13 +287,28 @@ const PickupForm = ({
       <DrawerBody>
         <Hidden name="id" />
         <VStack spacing={4}>
-          {isEditing || presetJobOperationIdOnCreate ? (
+          {!isEditing && (
+            <Select
+              name="jobId"
+              label={t`Job`}
+              options={jobOptions ?? []}
+              onChange={(newValue) => {
+                if (newValue?.value) handleJobChange(newValue.value);
+              }}
+            />
+          )}
+          {isEditing || lockOperationSelection ? (
             <Hidden name="jobOperationId" />
           ) : (
             <Select
+              key={selectedJobId || "no-job"}
               name="jobOperationId"
               label={t`Operation`}
               options={operationOptions ?? []}
+              isDisabled={!hasJobSelected}
+              onChange={(newValue) => {
+                if (newValue?.value) handleOperationChange(newValue.value);
+              }}
             />
           )}
           <ProductionActorFields
@@ -217,9 +316,11 @@ const PickupForm = ({
             operationType={operationType}
             defaultActorKind={defaultActorKind}
             lockActorSelection={lockActorSelection}
+            isDisabled={!hasOperationSelected}
             employeeIdValue={initialValues.employeeId}
             supplierProcessIdValue={initialValues.supplierProcessId}
             supplierIdValue={supplierId}
+            onSelectionChange={setActorSelection}
           />
           {configTableRows && (
             <Hidden
@@ -236,17 +337,28 @@ const PickupForm = ({
               label={t`Quantity`}
               value={quantity}
               minValue={0}
-              isDisabled={isDisabled}
+              isDisabled={areDetailFieldsDisabled}
               isReadOnly={configTableTotal > 0}
               configTableTotal={configTableTotal}
               hasConfigurationParameters
-              onOpenConfigTable={openConfigTable}
+              onOpenConfigTable={
+                hasActorSelected ? openConfigTable : undefined
+              }
               onChange={setQuantity}
             />
           ) : (
-            <Number name="quantity" label={t`Quantity`} minValue={0} />
+            <Number
+              name="quantity"
+              label={t`Quantity`}
+              minValue={0}
+              isDisabled={areDetailFieldsDisabled}
+            />
           )}
-          <TextArea name="notes" label={t`Notes`} />
+          <TextArea
+            name="notes"
+            label={t`Notes`}
+            isDisabled={areDetailFieldsDisabled}
+          />
         </VStack>
       </DrawerBody>
       <DrawerFooter>
@@ -281,9 +393,12 @@ const PickupForm = ({
         if (!open) onDismiss();
       }}
     >
-      <DrawerContent>{form}</DrawerContent>
+      <DrawerContent
+        onPointerDownOutside={preventDismissOnPortaledContent}
+        onInteractOutside={preventDismissOnPortaledContent}
+      >
+        {form}
+      </DrawerContent>
     </Drawer>
   );
 };
-
-export default PickupForm;

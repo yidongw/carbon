@@ -1,4 +1,4 @@
-import { Avatar, Badge, Button, HStack, toast, VStack } from "@carbon/react";
+import { Badge, Button, HStack, IconButton, toast } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -9,71 +9,68 @@ import {
   LuCircleCheck,
   LuCircleX,
   LuHash,
+  LuPlus,
   LuUser
 } from "react-icons/lu";
 import type { FetcherWithComponents } from "react-router";
 import { useFetcher, useRevalidator } from "react-router";
-import { Table } from "~/components";
+import { New, Table } from "~/components";
 import type {
-  ProductionPayApprovalRequestStatus,
-  ProductionPayApprovalStatus
-} from "~/modules/people/people.models";
-import type { ProductionQuantityReportWithLines } from "~/modules/production/productionQuantityReport.service";
-import { ProductionQuantityDispositionDrawer } from "~/modules/production/ui/Jobs/ProductionQuantityDispositionDrawer";
-import { path } from "~/utils/path";
-import SalaryPeriodPicker from "../Salary/SalaryPeriodPicker";
+  ProductionQuantityListRow,
+  ProductionQuantityPayStatus
+} from "~/modules/production/productionQuantityList.models";
+import SalaryPeriodPicker from "~/modules/people/ui/Salary/SalaryPeriodPicker";
 import {
   formatDateTime,
-  getEmployeeName,
-  getItemName,
-  getItemReadableIdWithRevision,
-  getJobReadableId,
   getProcessName
-} from "../Salary/salaryDetail.utils";
+} from "~/modules/production/productionQuantityDisplay.utils";
+import type { ProductionQuantityReportWithLines } from "~/modules/production/productionQuantityReport.service";
+import { ProductionQuantityDispositionDrawer } from "~/modules/production/ui/Jobs/ProductionQuantityDispositionDrawer";
+import { ProductionQuantityReportReporter } from "~/modules/production/ui/Jobs/ProductionQuantityReportReporter";
+import {
+  ProductionQuantityTableItemCell,
+  ProductionQuantityTableJobCell,
+  ProductionQuantityTableQuantityCell
+} from "~/modules/production/ui/ProductionQuantityTableCells";
+import { path } from "~/utils/path";
 
-export type PayApprovalRow = {
-  approvalRequestId?: string;
-  reportId?: string;
-  approvalStatus?: ProductionPayApprovalRequestStatus;
+export type ProductionQuantityTableRow = ProductionQuantityListRow & {
   canApprove?: boolean;
-  id: string;
-  quantity: number | null;
-  createdAt: string | null;
-  employeeId: string | null;
-  paymentYear: number | null;
-  paymentMonth: number | null;
-  invalidatedAt: string | null;
-  employee?: {
-    id: string;
-    firstName: string | null;
-    lastName: string | null;
-    fullName: string | null;
-    avatarUrl: string | null;
-  } | null;
-  jobOperation?: unknown;
 };
 
-type ApprovalEmployeeOption = {
+type ProductionQuantityEmployeeFilter = {
   id: string;
   name: string | null;
   avatarUrl?: string | null;
 };
 
-type ApprovalsTableProps = {
-  data: PayApprovalRow[];
+type ProductionQuantityFilterOption = {
+  id: string;
+  label: string;
+};
+
+export type ProductionQuantitiesTableProps = {
+  data: ProductionQuantityTableRow[];
   count: number;
-  status: ProductionPayApprovalStatus | "all";
+  status: ProductionQuantityPayStatus | "all";
   year: number;
   month: number;
-  employees: ApprovalEmployeeOption[];
+  employees: ProductionQuantityEmployeeFilter[];
+  jobs?: ProductionQuantityFilterOption[];
+  items?: ProductionQuantityFilterOption[];
   onPeriodChange: (year: number, month: number) => void;
   /** POST target for approve/reject (current route URL with pay-period query params). */
   submitAction: string;
-  /** When true, omits page chrome for use inside another layout (e.g. accounting payments). */
+  /** When true, show the new production quantity action beside the pay period picker. */
+  showCreateAction?: boolean;
+  /** Table title override. */
+  title?: string;
+  /** When true, omits page chrome for use inside another layout. */
   embedded?: boolean;
+  configurableItemIds?: string[];
 };
 
-type ApprovalActionFetcherData = {
+type ProductionQuantityActionData = {
   ok?: boolean;
   error?: string;
   report?: ProductionQuantityReportWithLines;
@@ -103,7 +100,7 @@ type ReportLoaderData = {
   error?: string;
 };
 
-function ApprovalRowActions({
+function ProductionQuantityApprovalActions({
   requestId,
   reportId,
   submitAction,
@@ -113,7 +110,7 @@ function ApprovalRowActions({
   requestId: string;
   reportId: string;
   submitAction: string;
-  fetcher: FetcherWithComponents<ApprovalActionFetcherData>;
+  fetcher: FetcherWithComponents<ProductionQuantityActionData>;
   onReject: (target: RejectCorrectionTarget) => void;
 }) {
   const pendingId = fetcher.formData?.get("approvalRequestId");
@@ -158,7 +155,9 @@ function ApprovalRowActions({
   );
 }
 
-function rowStatus(row: PayApprovalRow): "Pending" | "Approved" | "Rejected" {
+function rowStatus(
+  row: ProductionQuantityTableRow
+): "Pending" | "Approved" | "Rejected" {
   if (row.approvalStatus) {
     if (row.approvalStatus === "Pending") return "Pending";
     if (row.approvalStatus === "Approved") return "Approved";
@@ -171,7 +170,7 @@ function rowStatus(row: PayApprovalRow): "Pending" | "Approved" | "Rejected" {
   return "Pending";
 }
 
-const ApprovalsTable = memo(
+const ProductionQuantitiesTable = memo(
   ({
     data,
     count,
@@ -180,12 +179,21 @@ const ApprovalsTable = memo(
     month,
     onPeriodChange,
     employees,
+    jobs = [],
+    items = [],
     submitAction,
-    embedded = false
-  }: ApprovalsTableProps) => {
+    showCreateAction = false,
+    title,
+    embedded = false,
+    configurableItemIds = []
+  }: ProductionQuantitiesTableProps) => {
     const { t } = useLingui();
-    const fetcher = useFetcher<ApprovalActionFetcherData>();
-    const correctionFetcher = useFetcher<ApprovalActionFetcherData>();
+    const configurableItemIdSet = useMemo(
+      () => new Set(configurableItemIds),
+      [configurableItemIds]
+    );
+    const fetcher = useFetcher<ProductionQuantityActionData>();
+    const correctionFetcher = useFetcher<ProductionQuantityActionData>();
     const reportFetcher = useFetcher<ReportLoaderData>();
     const revalidator = useRevalidator();
     const handledApproveRef = useRef<unknown>(undefined);
@@ -202,7 +210,7 @@ const ApprovalsTable = memo(
     const openRejectCorrection = useCallback((target: RejectCorrectionTarget) => {
       pendingRejectTargetRef.current = target;
       setRejectCorrection(null);
-      void reportFetcher.load(path.to.quantityReviewReport(target.reportId));
+      void reportFetcher.load(path.to.productionQuantityReport(target.reportId));
     }, [reportFetcher]);
 
     useEffect(() => {
@@ -267,8 +275,8 @@ const ApprovalsTable = memo(
       t
     ]);
 
-    const columns = useMemo<ColumnDef<PayApprovalRow>[]>(() => {
-      const cols: ColumnDef<PayApprovalRow>[] = [
+    const columns = useMemo<ColumnDef<ProductionQuantityTableRow>[]>(() => {
+      const cols: ColumnDef<ProductionQuantityTableRow>[] = [
         {
           id: "type",
           header: t`Type`,
@@ -282,18 +290,15 @@ const ApprovalsTable = memo(
         {
           accessorKey: "employeeId",
           header: t`Employee`,
-          cell: ({ row }) => (
-            <HStack className="items-center gap-2">
-              <Avatar
-                className="size-7"
-                src={row.original.employee?.avatarUrl ?? undefined}
-                name={getEmployeeName(row.original.employee)}
+          cell: ({ row }) =>
+            row.original.employeeId ? (
+              <ProductionQuantityReportReporter
+                employeeId={row.original.employeeId}
+                createdBy={row.original.createdBy}
               />
-              <span className="text-sm font-medium">
-                {getEmployeeName(row.original.employee)}
-              </span>
-            </HStack>
-          ),
+            ) : (
+              "—"
+            ),
           meta: {
             icon: <LuUser />,
             pluralHeader: t`Employees`,
@@ -308,29 +313,45 @@ const ApprovalsTable = memo(
           }
         },
         {
-          id: "job",
+          accessorKey: "jobId",
           header: t`Job`,
           cell: ({ row }) => (
-            <span className="font-mono text-sm font-medium">
-              {getJobReadableId(row.original)}
-            </span>
-          )
-        },
-        {
-          id: "item",
-          header: t`Item`,
-          cell: ({ row }) => (
-            <VStack spacing={0}>
-              <span className="text-sm font-medium">
-                {getItemReadableIdWithRevision(row.original)}
-              </span>
-              <div className="w-full truncate text-muted-foreground text-xs">
-                {getItemName(row.original) || "—"}
-              </div>
-            </VStack>
+            <ProductionQuantityTableJobCell row={row.original} />
           ),
           meta: {
-            icon: <AiOutlinePartition />
+            icon: <LuBriefcase />,
+            pluralHeader: t`Jobs`,
+            filter: jobs.length
+              ? {
+                  type: "static" as const,
+                  options: jobs.map((job) => ({
+                    value: job.id,
+                    label: job.label
+                  })),
+                  isArray: false
+                }
+              : undefined
+          }
+        },
+        {
+          accessorKey: "itemId",
+          header: t`Item`,
+          cell: ({ row }) => (
+            <ProductionQuantityTableItemCell row={row.original} />
+          ),
+          meta: {
+            icon: <AiOutlinePartition />,
+            pluralHeader: t`Items`,
+            filter: items.length
+              ? {
+                  type: "static" as const,
+                  options: items.map((item) => ({
+                    value: item.id,
+                    label: item.label
+                  })),
+                  isArray: false
+                }
+              : undefined
           }
         },
         {
@@ -346,7 +367,10 @@ const ApprovalsTable = memo(
           accessorKey: "quantity",
           header: t`Qty`,
           cell: ({ row }) => (
-            <span className="tabular-nums">{row.original.quantity}</span>
+            <ProductionQuantityTableQuantityCell
+              row={row.original}
+              configurableItemIds={configurableItemIdSet}
+            />
           ),
           meta: {
             icon: <LuHash />,
@@ -402,17 +426,17 @@ const ApprovalsTable = memo(
           id: "actions",
           header: () => <span className="sr-only">{t`Actions`}</span>,
           cell: ({ row }) => {
-            const requestId =
-              row.original.approvalRequestId ?? row.original.id;
+            const requestId = row.original.approvalRequestId;
             const reportId = row.original.reportId ?? row.original.id;
             const showActions =
+              requestId &&
               row.original.canApprove &&
               rowStatus(row.original) === "Pending";
 
             if (!showActions) return null;
 
             return (
-              <ApprovalRowActions
+              <ProductionQuantityApprovalActions
                 requestId={requestId}
                 reportId={reportId}
                 submitAction={submitAction}
@@ -428,62 +452,87 @@ const ApprovalsTable = memo(
       }
 
       return cols;
-    }, [employees, fetcher, openRejectCorrection, status, submitAction, t]);
+    }, [
+      configurableItemIdSet,
+      employees,
+      fetcher,
+      items,
+      jobs,
+      openRejectCorrection,
+      status,
+      submitAction,
+      t
+    ]);
 
     return (
       <>
-      <Table<PayApprovalRow>
-        data={data}
-        count={count}
-        columns={columns}
-        table="productionPayApproval"
-        primaryAction={
-          !embedded && (status === "pending" || status === "all") ? (
-            <SalaryPeriodPicker
-              year={year}
-              month={month}
-              onChange={onPeriodChange}
-            />
-          ) : undefined
-        }
-        withSearch={!embedded}
-        withPagination
-        title={embedded ? undefined : t`Quantity Review`}
-      />
-      {rejectCorrection ? (
-        <ProductionQuantityDispositionDrawer
-          report={rejectCorrection.report}
-          configurationParameters={rejectCorrection.configurationParameters}
-          itemId={rejectCorrection.itemId}
-          open
-          onClose={closeRejectCorrection}
-          onSaved={() => {
-            closeRejectCorrection();
-            revalidator.revalidate();
-          }}
-          saveAction={submitAction}
-          saveMethod="POST"
-          title={<Trans>Correct quantities</Trans>}
-          getSaveBody={(payload) => {
-            const formData = new FormData();
-            formData.set("intent", "rejectWithCorrection");
-            formData.set(
-              "approvalRequestId",
-              rejectCorrection.target.approvalRequestId
-            );
-            formData.set("lines", JSON.stringify(payload.lines));
-            if (payload.notes) {
-              formData.set("notes", payload.notes);
-            }
-            return formData;
-          }}
-          fetcher={correctionFetcher}
+        <Table<ProductionQuantityTableRow>
+          data={data}
+          count={count}
+          columns={columns}
+          table="productionPayApproval"
+          primaryAction={
+            !embedded && (status === "pending" || status === "all") ? (
+              <HStack>
+                {showCreateAction ? (
+                  <New
+                    label={<Trans>New Production Quantity</Trans>}
+                    to={path.to.newProductionQuantity}
+                    icon={<IconButton icon={<LuPlus />} label="New" />}
+                  />
+                ) : null}
+                <SalaryPeriodPicker
+                  year={year}
+                  month={month}
+                  onChange={onPeriodChange}
+                />
+              </HStack>
+            ) : showCreateAction ? (
+              <New
+                label={<Trans>New Production Quantity</Trans>}
+                to={path.to.newProductionQuantity}
+                icon={<IconButton icon={<LuPlus />} label="New" />}
+              />
+            ) : undefined
+          }
+          withSearch={!embedded}
+          withPagination
+          title={embedded ? undefined : (title ?? t`Production Quantities`)}
         />
-      ) : null}
+        {rejectCorrection ? (
+          <ProductionQuantityDispositionDrawer
+            report={rejectCorrection.report}
+            configurationParameters={rejectCorrection.configurationParameters}
+            itemId={rejectCorrection.itemId}
+            open
+            onClose={closeRejectCorrection}
+            onSaved={() => {
+              closeRejectCorrection();
+              revalidator.revalidate();
+            }}
+            saveAction={submitAction}
+            saveMethod="POST"
+            title={<Trans>Correct quantities</Trans>}
+            getSaveBody={(payload) => {
+              const formData = new FormData();
+              formData.set("intent", "rejectWithCorrection");
+              formData.set(
+                "approvalRequestId",
+                rejectCorrection.target.approvalRequestId
+              );
+              formData.set("lines", JSON.stringify(payload.lines));
+              if (payload.notes) {
+                formData.set("notes", payload.notes);
+              }
+              return formData;
+            }}
+            fetcher={correctionFetcher}
+          />
+        ) : null}
       </>
     );
   }
 );
 
-ApprovalsTable.displayName = "ApprovalsTable";
-export default ApprovalsTable;
+ProductionQuantitiesTable.displayName = "ProductionQuantitiesTable";
+export default ProductionQuantitiesTable;

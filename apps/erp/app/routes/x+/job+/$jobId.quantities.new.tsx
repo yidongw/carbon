@@ -40,7 +40,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const [job, jobOperations, opContext] = await Promise.all([
     getJob(client, jobId),
-    jobOperationId ? null : getJobOperations(client, jobId),
+    getJobOperations(client, jobId),
     getJobOperationActorContext(client, jobOperationId, companyId)
   ]);
   const actorContext = {
@@ -57,6 +57,10 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     : [];
 
   const itemId = job.data?.itemId ?? null;
+  const jobOption = {
+    label: job.data?.jobId ?? "",
+    value: jobId
+  };
 
   const configReferenceSource = await getConfigReferenceSourceForOperation(
     client,
@@ -68,19 +72,6 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     }
   );
 
-  if (jobOperationId) {
-    return {
-      jobId,
-      jobOperationId,
-      operationOptions: [] as const,
-      configurationParameters:
-        configurationParameters.length > 0 ? configurationParameters : null,
-      configReferenceSource,
-      itemId,
-      ...actorContext
-    };
-  }
-
   const operationOptions =
     jobOperations?.data?.map((operation) => ({
       label: operation.description ?? "",
@@ -89,7 +80,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   return {
     jobId,
-    jobOperationId: "",
+    jobOption,
+    jobOperationId,
     operationOptions,
     configurationParameters:
       configurationParameters.length > 0 ? configurationParameters : null,
@@ -273,6 +265,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 export default function NewProductionQuantityRoute() {
   const {
     jobId,
+    jobOption,
     jobOperationId,
     operationOptions,
     configurationParameters,
@@ -296,6 +289,7 @@ export default function NewProductionQuantityRoute() {
   return (
     <ProductionQuantityForm
       initialValues={initialValues}
+      jobOptions={[jobOption]}
       operationOptions={[...(operationOptions ?? [])]}
       configurationParameters={configurationParameters}
       configReferenceSource={configReferenceSource}
@@ -304,6 +298,7 @@ export default function NewProductionQuantityRoute() {
       processId={processId}
       operationType={operationType}
       defaultActorKind={defaultActorKind}
+      lockJobSelection
       lockActorSelection={seededActor.lockActorSelection}
     />
   );

@@ -1342,11 +1342,13 @@ export const path = {
     contact: `${x}/people/contact`,
     accountingSalary: `${x}/accounting/salary`,
     accountingPayments: `${x}/accounting/payments`,
-    quantityReview: `${x}/production/quantity-review`,
+    quantityReview: `${x}/production/quantities`,
+    productionQuantityReport: (reportId: string) =>
+      generatePath(`${x}/production/quantities/report/${reportId}`),
     quantityReviewReport: (reportId: string) =>
-      generatePath(`${x}/production/quantity-review/report/${reportId}`),
+      generatePath(`${x}/production/quantities/report/${reportId}`),
     quantityReviewForEmployee: (employeeId: string) =>
-      `${x}/production/quantity-review?filter=approvalStatus:eq:Pending&filter=employeeId:eq:${employeeId}`,
+      `${x}/production/quantities?filter=approvalStatus:eq:Pending&filter=employeeId:eq:${employeeId}`,
     employeeSalary: (id: string) => generatePath(`${x}/accounting/salary/${id}`),
     employeeSalaryMonth: (id: string, year: number, month: number) =>
       generatePath(`${x}/accounting/salary/${id}/${year}/${month}`),
@@ -1454,6 +1456,10 @@ export const path = {
       generatePath(`${x}/resources/processes/deactivate/${id}`),
     productionDashboard: `${x}/production/dashboard`,
     productionPlanning: `${x}/production/planning`,
+    pickups: `${x}/production/pickups`,
+    newPickup: `${x}/production/pickups/new`,
+    productionQuantities: `${x}/production/quantities`,
+    newProductionQuantity: `${x}/production/quantities/new`,
     jobRules: `${x}/production/job-rules`,
     jobRule: (id: string) => generatePath(`${x}/production/job-rules/${id}`),
     jobRulesSimulate: `${x}/production/job-rules/simulate`,

@@ -2721,6 +2721,39 @@ export async function getJobPickupsByOperations(
   return query;
 }
 
+export async function getCompanyJobOperationPickups(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  args?: { search?: string | null } & GenericQueryFilters
+) {
+  let query = client
+    .from("jobOperationPickup")
+    .select(
+      `*, createdByUser:user!jobOperationPickup_createdBy_fkey(id, firstName, lastName, fullName, avatarUrl),
+      employee:user!jobOperationPickup_employeeId_fkey(id, firstName, lastName, fullName, avatarUrl),
+      jobOperation!inner(id, description, jobId,
+        process:processId(name),
+        job:jobId(id, jobId, item:itemId(id, readableIdWithRevision, name))
+      )`,
+      { count: "exact" }
+    )
+    .eq("companyId", companyId);
+
+  if (args?.search) {
+    query = query.or(
+      `notes.ilike.%${args.search}%,jobOperation.description.ilike.%${args.search}%`
+    );
+  }
+
+  if (args) {
+    query = setGenericQueryFilters(query, args, [
+      { column: "createdAt", ascending: false }
+    ]);
+  }
+
+  return query;
+}
+
 export async function getJobPickupsPage(
   client: SupabaseClient<Database>,
   jobOperationId: string,
