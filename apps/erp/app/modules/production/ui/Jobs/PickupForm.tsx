@@ -218,13 +218,14 @@ const PickupForm = ({
               isDisabled={lockJobSelectionProp}
             />
           ) : null}
-          {isEditing || presetJobOperationIdOnCreate ? (
+          {isEditing ? (
             <Hidden name="jobOperationId" />
           ) : (
             <Select
               name="jobOperationId"
               label={t`Operation`}
               options={operationOptions ?? []}
+              isDisabled={presetJobOperationIdOnCreate}
             />
           )}
           <ProductionActorFields

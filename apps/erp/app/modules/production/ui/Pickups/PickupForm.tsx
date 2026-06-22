@@ -297,7 +297,7 @@ export const PickupForm = ({
               }}
             />
           )}
-          {isEditing || lockOperationSelection ? (
+          {isEditing ? (
             <Hidden name="jobOperationId" />
           ) : (
             <Select
@@ -305,7 +305,7 @@ export const PickupForm = ({
               name="jobOperationId"
               label={t`Operation`}
               options={operationOptions ?? []}
-              isDisabled={!hasJobSelected}
+              isDisabled={lockOperationSelection || !hasJobSelected}
               onChange={(newValue) => {
                 if (newValue?.value) handleOperationChange(newValue.value);
               }}
