@@ -867,7 +867,6 @@ const EmployeeProductionLogsView = ({
                               )}
                           </HStack>
                         </HStack>
-                      </HStack>
                       {/* One grey box per quantity line */}
                       {lines.map((qty, idx) => (
                         <HStack
