@@ -1,5 +1,6 @@
 -- Add number field to employees view
-CREATE OR REPLACE VIEW "employees" WITH(SECURITY_INVOKER=true) AS
+DROP VIEW IF EXISTS "employees";
+CREATE VIEW "employees" WITH(SECURITY_INVOKER=true) AS
   SELECT
     u.id,
     u."email",
