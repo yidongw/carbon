@@ -33,7 +33,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const [job, jobOperations, opContext] = await Promise.all([
     getJob(client, jobId),
-    jobOperationId ? null : getJobOperations(client, jobId),
+    getJobOperations(client, jobId),
     getJobOperationActorContext(client, jobOperationId, companyId)
   ]);
   const actorContext = {
