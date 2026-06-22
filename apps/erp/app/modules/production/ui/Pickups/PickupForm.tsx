@@ -364,7 +364,7 @@ export const PickupForm = ({
       <DrawerFooter>
         <HStack>
           <Submit
-            isDisabled={isDisabled}
+            isDisabled={isDisabled || quantity === 0}
             className="transition-transform active:scale-[0.96]"
           >
             <Trans>Save</Trans>
