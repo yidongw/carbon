@@ -33,7 +33,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const [job, jobOperations, opContext] = await Promise.all([
     getJob(client, jobId),
-    jobOperationId ? null : getJobOperations(client, jobId),
+    getJobOperations(client, jobId),
     getJobOperationActorContext(client, jobOperationId, companyId)
   ]);
   const actorContext = {
@@ -66,7 +66,14 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       value: operation.id!
     })) ?? [];
 
+  const jobOption = {
+    label: job.data?.jobId ?? "",
+    value: jobId
+  };
+
   return {
+    jobId,
+    jobOption,
     jobOperationId,
     operationOptions,
     itemId,
@@ -183,6 +190,8 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
 export default function NewJobPickupRoute() {
   const {
+    jobId,
+    jobOption,
     jobOperationId,
     operationOptions,
     configurationParameters,
@@ -194,6 +203,7 @@ export default function NewJobPickupRoute() {
     seededActor
   } = useLoaderData<typeof loader>();
   const initialValues = {
+    jobId,
     jobOperationId,
     quantity: 0,
     notes: "",
@@ -205,6 +215,8 @@ export default function NewJobPickupRoute() {
   return (
     <PickupForm
       initialValues={initialValues}
+      jobOptions={[jobOption]}
+      jobId={jobId}
       operationOptions={[...(operationOptions ?? [])]}
       configurationParameters={configurationParameters}
       configReferenceSource={configReferenceSource}
@@ -212,6 +224,7 @@ export default function NewJobPickupRoute() {
       processId={processId}
       operationType={operationType}
       defaultActorKind={defaultActorKind}
+      lockJobSelection
       lockActorSelection={seededActor.lockActorSelection}
       supplierId={seededActor.supplierId}
     />
