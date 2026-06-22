@@ -1,2 +1,2 @@
-export { default as PickupForm } from "../Jobs/PickupForm";
+export { PickupForm } from "./PickupForm";
 export { PickupsTable } from "./PickupsTable";
