@@ -283,6 +283,7 @@ export default function NewPickupRoute() {
         notes: undefined
       }}
       jobOptions={loaderData.jobOptions}
+      jobId={loaderData.jobId}
       operationOptions={loaderData.operationOptions}
       configurationParameters={loaderData.configurationParameters}
       configReferenceSource={loaderData.configReferenceSource}

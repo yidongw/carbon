@@ -70,6 +70,8 @@ function getInitialConfigState(configuration: unknown) {
 
 export type PickupFormProps = {
   initialValues: z.infer<typeof jobOperationPickupValidator>;
+  jobOptions?: { label: string; value: string }[];
+  jobId?: string | null;
   operationOptions?: { label: string; value: string }[];
   configurationParameters?: ConfigurationParameter[] | null;
   configReferenceSource?: ConfigReferenceSource | null;
@@ -77,6 +79,7 @@ export type PickupFormProps = {
   processId?: string | null;
   operationType?: string | null;
   defaultActorKind?: "employee" | "supplier";
+  lockJobSelection?: boolean;
   lockActorSelection?: boolean;
   supplierId?: string;
   onDismiss?: () => void;
@@ -86,6 +89,8 @@ export type PickupFormProps = {
 
 const PickupForm = ({
   initialValues,
+  jobOptions,
+  jobId: jobIdProp,
   operationOptions,
   configurationParameters,
   configReferenceSource,
@@ -93,6 +98,7 @@ const PickupForm = ({
   processId,
   operationType,
   defaultActorKind,
+  lockJobSelection: lockJobSelectionProp,
   lockActorSelection: lockActorSelectionProp,
   supplierId,
   onDismiss: onDismissProp,
@@ -102,7 +108,8 @@ const PickupForm = ({
   const permissions = usePermissions();
   const { t } = useLingui();
   const navigate = useNavigate();
-  const { jobId } = useParams();
+  const { jobId: jobIdFromParams } = useParams();
+  const jobId = jobIdProp ?? jobIdFromParams;
   const isOverlay = fetcher != null;
   const onDismiss =
     onDismissProp ??
@@ -203,6 +210,14 @@ const PickupForm = ({
       <DrawerBody>
         <Hidden name="id" />
         <VStack spacing={4}>
+          {jobOptions && !isEditing ? (
+            <Select
+              name="jobId"
+              label={t`Job`}
+              options={jobOptions}
+              isDisabled={lockJobSelectionProp}
+            />
+          ) : null}
           {isEditing || presetJobOperationIdOnCreate ? (
             <Hidden name="jobOperationId" />
           ) : (
