@@ -68,7 +68,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   const { data: report, error: reportError } = await client
     .from("productionQuantityReport")
-    .select("jobId, employeeId")
+    .select("jobId")
     .eq("id", reportId)
     .eq("companyId", companyId)
     .single();
@@ -115,8 +115,6 @@ export async function action({ request, params }: ActionFunctionArgs) {
     reportId,
     companyId,
     userId,
-    // Preserve the report's credited employee; only createdBy becomes the editor.
-    employeeId: report.employeeId,
     notes: parsed.data.notes ?? null,
     lines: parsed.data.lines,
     paymentYear: canAutoApprove ? currentYear : null,

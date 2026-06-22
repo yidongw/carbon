@@ -152,7 +152,6 @@ export async function replaceProductionQuantityReportLines(
     reportId: string;
     companyId: string;
     userId: string;
-    employeeId: string;
     notes?: string | null;
     lines: ProductionQuantityLineInput[];
     paymentYear?: number | null;
@@ -227,7 +226,9 @@ export async function replaceProductionQuantityReportLines(
     scrapReasonId: line.type === "Scrap" ? line.scrapReasonId ?? null : null,
     notes: line.notes ?? null,
     createdBy: args.userId,
-    employeeId: args.employeeId,
+    // The credited employee always comes from the report itself; only createdBy
+    // becomes the editor. Editing lines never reassigns the report's employee.
+    employeeId: report.data.employeeId,
     paymentYear: args.paymentYear ?? null,
     paymentMonth: args.paymentMonth ?? null
   }));
