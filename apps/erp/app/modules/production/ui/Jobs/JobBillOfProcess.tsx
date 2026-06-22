@@ -69,11 +69,13 @@ import {
   LuEllipsisVertical,
   LuGripVertical,
   LuHammer,
+  LuHistory,
   LuInfo,
   LuListChecks,
   LuMaximize2,
   LuMinimize2,
   LuPaperclip,
+  LuPencil,
   LuRefreshCcw,
   LuSend,
   LuSettings2,
@@ -498,7 +500,10 @@ const EmployeeProductionLogsView = ({
   pickupHasMore,
   quantityHasMore,
   loadMorePickups,
-  loadMoreQuantityReports
+  loadMoreQuantityReports,
+  canEditQuantityReport,
+  onEditReport,
+  onHistoryReport
 }: {
   pickups: UnifiedPickupItem[];
   quantityReports: UnifiedQuantityReportItem[];
@@ -506,6 +511,9 @@ const EmployeeProductionLogsView = ({
   quantityHasMore: boolean;
   loadMorePickups: () => Promise<void>;
   loadMoreQuantityReports: () => Promise<void>;
+  canEditQuantityReport: boolean;
+  onEditReport: (report: ProductionQuantityReportWithLines) => void;
+  onHistoryReport: (report: ProductionQuantityReportWithLines) => void;
 }) => {
   const { formatDateTime } = useDateFormatter();
   const formatPersonName = useFormatPersonName();
@@ -529,6 +537,7 @@ const EmployeeProductionLogsView = ({
   const employeeGroups = useMemo(() => {
     type QuantityEntry = {
       key: string;
+      report: ProductionQuantityReportWithLines;
       createdBy: string;
       createdAt: string;
       lines: ProductionQuantityReportLine[];
@@ -570,6 +579,7 @@ const EmployeeProductionLogsView = ({
       byEmployee.forEach((empLines, empId) => {
         ensureGroup(empId).quantityEntries.push({
           key: `${report.id}-${empId}`,
+          report: report.report,
           createdBy: report.report.createdBy,
           createdAt: report.createdAt,
           lines: empLines
@@ -757,6 +767,30 @@ const EmployeeProductionLogsView = ({
                               {reporterName(entry.createdBy)}
                             </TooltipContent>
                           </Tooltip>
+                          {entry.report.hasHistory && (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              aria-label="View history"
+                              onClick={() => onHistoryReport(entry.report)}
+                              className="h-7 w-7 p-0 transition-transform active:scale-[0.96]"
+                            >
+                              <LuHistory className="h-4 w-4" />
+                            </Button>
+                          )}
+                          {canEditQuantityReport && (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              aria-label="Edit report"
+                              onClick={() => onEditReport(entry.report)}
+                              className="h-7 w-7 p-0 transition-transform active:scale-[0.96]"
+                            >
+                              <LuPencil className="h-4 w-4" />
+                            </Button>
+                          )}
                         </HStack>
                       </HStack>
                       {/* One grey box per quantity line */}
@@ -2092,6 +2126,9 @@ const JobBillOfProcess = ({
               quantityHasMore={quantityHasMore}
               loadMorePickups={loadMorePickups}
               loadMoreQuantityReports={loadMoreQuantityReports}
+              canEditQuantityReport={canEditQuantityReport}
+              onEditReport={(report) => setDispositionReport(report)}
+              onHistoryReport={(report) => setHistoryReport(report)}
             />
           </motion.div>
         )
