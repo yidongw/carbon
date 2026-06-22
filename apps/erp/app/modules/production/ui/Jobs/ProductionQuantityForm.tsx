@@ -499,8 +499,12 @@ const ProductionQuantityForm = ({
     updateSearchParams({ jobOperationId: value });
   };
 
-  // When operation is locked (overlay from BOP), bypass cascade and treat as selected
-  const effectiveJobOperationId = lockOperationSelectionProp && initialValues.jobOperationId
+  // When operation is locked AND preset in initialValues (overlay from BOP),
+  // bypass cascade state initialization issues and use initialValues directly
+  const isOperationPresetAndLocked = lockOperationSelectionProp &&
+    Boolean(initialValues.jobOperationId) &&
+    !isEditing;
+  const effectiveJobOperationId = isOperationPresetAndLocked
     ? initialValues.jobOperationId
     : jobOperationIdState;
 
@@ -693,7 +697,7 @@ const ProductionQuantityForm = ({
               (isCreateMultiLine
                 ? hasConfigurationParameters
                   ? !canSubmitCreate
-                  : hasZeroQuantityLine
+                  : !hasOperationSelected || hasZeroQuantityLine
                 : hasZeroQuantityLine)
             }
             className="transition-transform active:scale-[0.96]"
