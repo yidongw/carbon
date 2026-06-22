@@ -146,26 +146,50 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
     if (hadUrlSynced) clearOverlayParams({ replace: true });
   }, [clearOverlayParams]);
 
-  // Reconcile URL -> overlay state: deep links and Back/Forward navigation.
+  // Reconcile URL -> overlay state for deep links and Back/Forward navigation.
+  //
+  // URL-synced overlays form a stack; the URL only ever names the *top* one.
+  // The URL is the source of truth for which is on top, so we close any
+  // URL-synced overlays stacked above the named one (leaving lower overlays —
+  // and their callbacks — intact) and open it if it isn't already present.
   useEffect(() => {
     const urlTarget = overlayFromUrlParams(searchParams);
-    const synced = [...instancesRef.current]
-      .reverse()
-      .find((i) => i.urlSynced);
+    const current = instancesRef.current;
 
-    if (urlTarget) {
-      if (!synced || synced.url !== urlTarget.url) {
-        if (synced) {
-          setInstances((prev) => prev.filter((i) => i.id !== synced.id));
-        }
-        // Already reflected in the URL, so don't push another entry.
-        addInstance(urlTarget, undefined, {
-          urlSynced: true,
-          pushedUrl: false
-        });
+    if (!urlTarget) {
+      // No overlay named in the URL -> close every URL-synced overlay.
+      const synced = new Set(
+        current.filter((i) => i.urlSynced).map((i) => i.id)
+      );
+      if (synced.size > 0) {
+        setInstances((prev) => prev.filter((i) => !synced.has(i.id)));
       }
-    } else if (synced) {
-      setInstances((prev) => prev.filter((i) => i.id !== synced.id));
+      return;
+    }
+
+    const matchIndex = current.findIndex(
+      (i) => i.urlSynced && i.url === urlTarget.url
+    );
+
+    if (matchIndex === -1) {
+      // Not open yet (deep link / forward navigation) -> open it on top.
+      // Already reflected in the URL, so don't push another history entry.
+      addInstance(urlTarget, undefined, {
+        urlSynced: true,
+        pushedUrl: false
+      });
+      return;
+    }
+
+    // Surface the named overlay: drop any URL-synced overlays above it.
+    const above = new Set(
+      current
+        .slice(matchIndex + 1)
+        .filter((i) => i.urlSynced)
+        .map((i) => i.id)
+    );
+    if (above.size > 0) {
+      setInstances((prev) => prev.filter((i) => !above.has(i.id)));
     }
   }, [searchParams, addInstance]);
 
