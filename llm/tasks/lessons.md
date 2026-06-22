@@ -90,3 +90,9 @@ Patterns learned from corrections. Review at the start of each session.
 - **NEVER** define a component (e.g. `const FooView = (props) => {...}`) inside another component's body or render-prop callback, then render it as `<FooView/>`. Each parent render creates a new component identity, so React unmounts/remounts the whole subtree every render.
 - Symptom that exposed this: a Radix **tooltip would show once but never reopen** — the remount tore down the tooltip's internal state and left body `pointer-events` stuck. Hoisting the component to module scope (stable identity) fixed it.
 - Rule: hoist such components to module scope and pass everything via props. If it needs hooks, that's fine at module scope. Reference: `EmployeeProductionLogsView` in `apps/erp/app/modules/production/ui/Jobs/JobBillOfProcess.tsx` (was defined inside `renderListItem`).
+
+## Lingui: new strings must be added to the en (source) catalog
+
+- A `<Trans>Foo</Trans>` whose msgid exists only in `zh/erp.po` (not `en/erp.po`) renders as a **6-char hash id** (e.g. `6LNArx`) at runtime, not the translation. Lingui treats the sourceLocale (`en`) catalog as the template; messages absent from it are excluded from compilation for ALL locales, and production builds strip default messages so only the bare hash id remains.
+- Fix: add the msgid to **`packages/locale/locales/en/erp.po`** with `msgstr` = the English text, AND to each target locale (e.g. `zh`) with the translation. Canonical way is `lingui extract` (needs node_modules); if unavailable, hand-edit both catalogs. Then rebuild (turbo `//#lingui:compile` reads the .po).
+- Symptom seen: the "Reporter" label showed as `6LNArx` because it was only added to zh, not en.

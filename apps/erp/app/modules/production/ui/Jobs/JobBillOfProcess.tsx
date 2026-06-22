@@ -498,8 +498,7 @@ const EmployeeProductionLogsView = ({
   pickupHasMore,
   quantityHasMore,
   loadMorePickups,
-  loadMoreQuantityReports,
-  pickupScrollKey
+  loadMoreQuantityReports
 }: {
   pickups: UnifiedPickupItem[];
   quantityReports: UnifiedQuantityReportItem[];
@@ -507,7 +506,6 @@ const EmployeeProductionLogsView = ({
   quantityHasMore: boolean;
   loadMorePickups: () => Promise<void>;
   loadMoreQuantityReports: () => Promise<void>;
-  pickupScrollKey: number;
 }) => {
   const { formatDateTime } = useDateFormatter();
   const formatPersonName = useFormatPersonName();
@@ -1117,7 +1115,6 @@ const JobBillOfProcess = ({
   const [pickupPage, setPickupPage] = useState(0);
   const [pickupIsLoading, setPickupIsLoading] = useState(false);
   const [pickupHasMore, setPickupHasMore] = useState(true);
-  const [pickupScrollKey, setPickupScrollKey] = useState(0);
   const [inProgressByOperation, setInProgressByOperation] = useState<
     Map<string, number>
   >(new Map());
@@ -1171,7 +1168,6 @@ const JobBillOfProcess = ({
                 setPickupPage(0);
                 setPickupHasMore(true);
                 setPickupCount(0);
-                setPickupScrollKey((k) => k + 1);
                 void refreshInProgressTotalsRef.current([operationId]);
               }
             }
@@ -1462,7 +1458,6 @@ const JobBillOfProcess = ({
             setPickups([]);
             setPickupPage(0);
             setPickupHasMore(true);
-            setPickupScrollKey((k) => k + 1);
             if (selectedItemId) {
               void refreshInProgressTotals([selectedItemId]);
             }
@@ -2097,7 +2092,6 @@ const JobBillOfProcess = ({
               quantityHasMore={quantityHasMore}
               loadMorePickups={loadMorePickups}
               loadMoreQuantityReports={loadMoreQuantityReports}
-              pickupScrollKey={pickupScrollKey}
             />
           </motion.div>
         )
