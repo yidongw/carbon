@@ -18,6 +18,7 @@ import {
 import { useCallback, useMemo } from "react";
 import {
   computeProductionQuantityReportEarnedAmount,
+  ensureProductionPayApprovalRequest,
   getProductionQuantityReportFilterOptions,
   getProductionQuantityReportPayRows,
   resolveProductionPayApprovalScope,
@@ -75,6 +76,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const scope = resolveProductionPayApprovalScope(filters);
   const status = resolveProductionPayApprovalStatus(filters);
   const search = searchParams.get("search");
+  const serviceRole = getCarbonServiceRole();
 
   const { data: employeeOptions, error: employeeOptionsError } = await client
     .from("employeeSummary")
@@ -86,7 +88,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     jobs: jobOptions,
     items: itemOptions,
     error: filterOptionsError
-  } = await getProductionQuantityReportFilterOptions(client, companyId);
+  } = await getProductionQuantityReportFilterOptions(client, companyId, serviceRole);
 
   if (employeeOptionsError) {
     console.error(
@@ -102,7 +104,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
     );
   }
 
-  const serviceRole = getCarbonServiceRole();
   const result = await getProductionQuantityReportPayRows(
     client,
     companyId,
@@ -117,9 +118,23 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const baseRows = result.data ?? [];
   const rows = await Promise.all(
     baseRows.map(async (row) => {
+      let approvalRequestId = row.approvalRequestId;
+      const isPending =
+        row.approvalStatus === "Pending" && row.paymentYear == null;
+
+      if (!approvalRequestId && isPending && row.reportId) {
+        const ensured = await ensureProductionPayApprovalRequest(serviceRole, {
+          reportId: row.reportId,
+          companyId,
+          requestedBy: row.createdBy ?? row.requestedBy ?? userId
+        });
+        if (ensured.data?.id) {
+          approvalRequestId = ensured.data.id;
+        }
+      }
+
       const canApproveRow =
-        row.approvalRequestId &&
-        row.approvalStatus === "Pending"
+        approvalRequestId && isPending
           ? await canApproveRequest(
               serviceRole,
               {
@@ -130,7 +145,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
               userId
             )
           : false;
-      return { ...row, canApprove: canApproveRow };
+      return { ...row, approvalRequestId, canApprove: canApproveRow };
     })
   );
 

@@ -2,6 +2,7 @@ import type { Database, Json } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import type { DataType } from "~/modules/shared";
+import { requestProductionPayApproval } from "~/modules/shared/shared.service";
 import type { Employee } from "~/modules/users";
 import { getEmployees } from "~/modules/users/users.service";
 import type { GenericQueryFilters } from "~/utils/query";
@@ -1323,6 +1324,7 @@ async function getProductionQuantityReportIdsForScope(
     .select("reportId, paymentYear, invalidatedAt")
     .eq("companyId", companyId)
     .eq("type", "Production")
+    .is("invalidatedAt", null)
     .not("reportId", "is", null);
 
   if (!lineRowsError) {
@@ -1347,6 +1349,34 @@ async function getProductionQuantityReportIdsForScope(
   }
 
   return ids;
+}
+
+async function getActiveProductionQuantityReportIds(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  enrichmentClient?: SupabaseClient<Database>
+) {
+  const db = enrichmentClient ?? client;
+  const { data, error } = await db
+    .from("productionQuantity")
+    .select("reportId")
+    .eq("companyId", companyId)
+    .eq("type", "Production")
+    .is("invalidatedAt", null)
+    .not("reportId", "is", null);
+
+  if (error) {
+    return { data: null as Set<string> | null, error };
+  }
+
+  return {
+    data: new Set(
+      (data ?? [])
+        .map((row) => row.reportId)
+        .filter((id): id is string => Boolean(id))
+    ),
+    error: null
+  };
 }
 
 function normalizeProductionPayApprovalStatus(
@@ -1493,14 +1523,39 @@ export type ProductionQuantityReportFilterOption = {
 
 export async function getProductionQuantityReportFilterOptions(
   client: SupabaseClient<Database>,
-  companyId: string
+  companyId: string,
+  enrichmentClient?: SupabaseClient<Database>
 ) {
+  const { data: activeReportIds, error: activeReportIdsError } =
+    await getActiveProductionQuantityReportIds(
+      client,
+      companyId,
+      enrichmentClient
+    );
+
+  if (activeReportIdsError) {
+    return {
+      jobs: [] as ProductionQuantityReportFilterOption[],
+      items: [] as ProductionQuantityReportFilterOption[],
+      error: activeReportIdsError
+    };
+  }
+
+  if (!activeReportIds || activeReportIds.size === 0) {
+    return {
+      jobs: [] as ProductionQuantityReportFilterOption[],
+      items: [] as ProductionQuantityReportFilterOption[],
+      error: null
+    };
+  }
+
   const { data, error } = await client
     .from("productionQuantityReport")
     .select(
       `jobId, job:jobId(id, jobId, item:itemId(id, readableIdWithRevision, name))`
     )
-    .eq("companyId", companyId);
+    .eq("companyId", companyId)
+    .in("id", [...activeReportIds]);
 
   if (error) {
     return { jobs: [] as ProductionQuantityReportFilterOption[], items: [] as ProductionQuantityReportFilterOption[], error };
@@ -1871,6 +1926,33 @@ export async function getProductionQuantityReportPayRows(
   args?: GenericQueryFilters & { search: string | null },
   enrichmentClient?: SupabaseClient<Database>
 ) {
+  const { data: activeReportIds, error: activeReportIdsError } =
+    await getActiveProductionQuantityReportIds(
+      client,
+      companyId,
+      enrichmentClient
+    );
+
+  if (activeReportIdsError) {
+    return {
+      data: null,
+      error: activeReportIdsError,
+      count: null,
+      status: 0,
+      statusText: ""
+    };
+  }
+
+  if (!activeReportIds || activeReportIds.size === 0) {
+    return {
+      data: [],
+      error: null,
+      count: 0,
+      status: 200,
+      statusText: "OK"
+    };
+  }
+
   const scopeReportIds = await getProductionQuantityReportIdsForScope(
     client,
     companyId,
@@ -1878,7 +1960,11 @@ export async function getProductionQuantityReportPayRows(
     enrichmentClient
   );
 
-  if (scopeReportIds && scopeReportIds.size === 0) {
+  const reportIdFilter = scopeReportIds
+    ? [...scopeReportIds].filter((id) => activeReportIds.has(id))
+    : [...activeReportIds];
+
+  if (reportIdFilter.length === 0) {
     return {
       data: [],
       error: null,
@@ -1891,11 +1977,8 @@ export async function getProductionQuantityReportPayRows(
   let query = client
     .from("productionQuantityReport")
     .select(productionQuantityReportListSelect, { count: "exact" })
-    .eq("companyId", companyId);
-
-  if (scopeReportIds) {
-    query = query.in("id", [...scopeReportIds]);
-  }
+    .eq("companyId", companyId)
+    .in("id", reportIdFilter);
 
   const filterEmployeeIds = getEmployeeIdsFromFilters(args?.filters);
   if (filterEmployeeIds) {
@@ -2129,6 +2212,49 @@ export async function getProductionQuantityReportPayRows(
     status: reports.status,
     statusText: reports.statusText
   };
+}
+
+export async function ensureProductionPayApprovalRequest(
+  client: SupabaseClient<Database>,
+  args: {
+    reportId: string;
+    companyId: string;
+    requestedBy: string;
+  }
+) {
+  const { reportId, companyId, requestedBy } = args;
+
+  const { data: pending, error: pendingError } = await client
+    .from("approvalRequest")
+    .select("id")
+    .eq("companyId", companyId)
+    .eq("documentType", "productionQuantityReport")
+    .eq("documentId", reportId)
+    .eq("status", "Pending")
+    .order("requestedAt", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (pendingError) {
+    return { data: null, error: pendingError };
+  }
+
+  if (pending?.id) {
+    return { data: { id: pending.id }, error: null };
+  }
+
+  const amount = await computeProductionQuantityReportEarnedAmount(
+    client,
+    reportId,
+    companyId
+  );
+
+  return requestProductionPayApproval(client, {
+    reportId,
+    companyId,
+    requestedBy,
+    amount
+  });
 }
 
 export async function computeProductionQuantityReportEarnedAmount(
