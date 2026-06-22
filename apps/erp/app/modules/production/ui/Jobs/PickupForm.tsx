@@ -264,7 +264,7 @@ const PickupForm = ({
               name="quantity"
               label={t`Quantity`}
               minValue={0}
-              onChange={(e) => setQuantity(Number(e.target.value) || 0)}
+              onChange={(value) => setQuantity(value)}
             />
           )}
           <TextArea name="notes" label={t`Notes`} />
