@@ -11,7 +11,7 @@ import {
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router";
 import type { z } from "zod";
 import { Hidden, Number, Select, Submit, TextArea } from "~/components/Form";
@@ -131,11 +131,14 @@ export const PickupForm = ({
   const hasConfigurationParameters = (configurationParameters?.length ?? 0) > 0;
 
   const isEditing = initialValues.id !== undefined;
-  const presetJobOperationIdOnCreate =
-    !isEditing && Boolean(initialValues.jobOperationId);
+  const initialJobOperationIdRef = useRef(initialValues.jobOperationId ?? "");
+  const lockOperationSelection =
+    !isEditing && Boolean(initialJobOperationIdRef.current);
   const hasJobSelected = isEditing || Boolean(selectedJobId);
   const hasOperationSelected =
-    isEditing || presetJobOperationIdOnCreate || Boolean(selectedJobOperationId);
+    isEditing ||
+    Boolean(selectedJobOperationId) ||
+    Boolean(initialJobOperationIdRef.current);
   const [actorSelection, setActorSelection] = useState(() =>
     selectionFromInitialValues({
       employeeId: initialValues.employeeId,
@@ -283,7 +286,7 @@ export const PickupForm = ({
               }}
             />
           )}
-          {isEditing || presetJobOperationIdOnCreate ? (
+          {isEditing || lockOperationSelection ? (
             <Hidden name="jobOperationId" />
           ) : (
             <Select
