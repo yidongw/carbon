@@ -351,13 +351,13 @@ export const PickupForm = ({
               name="quantity"
               label={t`Quantity`}
               minValue={0}
-              isDisabled={areDetailFieldsDisabled}
+              isDisabled={isDisabled}
             />
           )}
           <TextArea
             name="notes"
             label={t`Notes`}
-            isDisabled={areDetailFieldsDisabled}
+            isDisabled={hasConfigurationParameters ? areDetailFieldsDisabled : isDisabled}
           />
         </VStack>
       </DrawerBody>
