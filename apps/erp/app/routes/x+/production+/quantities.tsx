@@ -5,7 +5,6 @@ import { VStack } from "@carbon/react";
 import { trigger } from "@carbon/jobs";
 import { NotificationEvent } from "@carbon/notifications";
 import { msg } from "@lingui/core/macro";
-import { useLingui } from "@lingui/react/macro";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import {
   Outlet,
@@ -24,7 +23,7 @@ import {
   resolveProductionPayApprovalScope,
   resolveProductionPayApprovalStatus
 } from "~/modules/people";
-import { ApprovalsTable } from "~/modules/people/ui/Approvals";
+import { ProductionQuantitiesTable } from "~/modules/production/ui/ProductionQuantities";
 import {
   replaceProductionQuantityReportLines,
   replaceProductionQuantityReportLinesValidator,
@@ -345,7 +344,6 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function ProductionQuantitiesRoute() {
-  const { t } = useLingui();
   const { rows, count, status, year, month, employees, jobs, items } =
     useLoaderData<typeof loader>();
   const navigate = useNavigate();
@@ -372,7 +370,7 @@ export default function ProductionQuantitiesRoute() {
 
   return (
     <VStack spacing={0} className="h-full">
-      <ApprovalsTable
+      <ProductionQuantitiesTable
         data={rows}
         count={count}
         status={status}
@@ -384,7 +382,6 @@ export default function ProductionQuantitiesRoute() {
         onPeriodChange={onPeriodChange}
         submitAction={submitAction}
         showCreateAction
-        title={t`Production Quantities`}
       />
       <Outlet />
     </VStack>
