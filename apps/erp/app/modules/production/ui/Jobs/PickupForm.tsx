@@ -147,6 +147,11 @@ const PickupForm = ({
     ? !permissions.can("update", "production")
     : !permissions.can("create", "production");
 
+  // Track operation selection for submit validation
+  const [selectedOperation, setSelectedOperation] = useState(
+    initialValues.jobOperationId || ""
+  );
+
   const updateSearchParams = (updates: {
     jobId?: string | null;
     jobOperationId?: string | null;
@@ -269,6 +274,9 @@ const PickupForm = ({
                 presetJobOperationIdOnCreate ||
                 (hasJobPicker && !selectedJobId)
               }
+              onChange={(newValue) => {
+                setSelectedOperation(newValue?.value ?? "");
+              }}
             />
           )}
           <ProductionActorFields
@@ -316,7 +324,7 @@ const PickupForm = ({
       <DrawerFooter>
         <HStack>
           <Submit
-            isDisabled={isDisabled || quantity === 0}
+            isDisabled={isDisabled || quantity === 0 || !selectedOperation}
             className="transition-transform active:scale-[0.96]"
           >
             <Trans>Save</Trans>
