@@ -822,7 +822,10 @@ export async function getJobDocumentsWithItemId(
 }
 
 export async function getJob(client: SupabaseClient<Database>, id: string) {
-  return client.from("jobs").select("*").eq("id", id).single();
+  // limit(1) guards against the "jobs" view ever returning more than one row
+  // for a job (e.g. a job with duplicate root make methods); .single() still
+  // errors on zero rows so a missing/inaccessible job is handled as not-found.
+  return client.from("jobs").select("*").eq("id", id).limit(1).single();
 }
 
 export async function getJobByOperationId(
