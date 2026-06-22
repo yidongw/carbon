@@ -48,6 +48,7 @@ import {
   LuMaximize2,
   LuPackageOpen,
   LuPencil,
+  LuPlus,
   LuQrCode,
   LuSquareUser,
   LuTable,
@@ -264,11 +265,14 @@ const TrackingCell = memo(function TrackingCell({ job }: { job: Job }) {
 
 const JobQuantityCell = memo(function JobQuantityCell({
   job,
-  onOpenConfigTable
+  onOpenConfigTable,
+  onAddQuantity
 }: {
   job: Job;
   onOpenConfigTable: (e: MouseEvent, job: Job) => void;
+  onAddQuantity: (e: MouseEvent, job: Job) => void;
 }) {
+  const { t } = useLingui();
   const { itemIdsWithConfigurationParameters } = useJobsTableSupplemental();
   const permissions = usePermissions();
   const quantity = job.quantity ?? 0;
@@ -285,7 +289,7 @@ const JobQuantityCell = memo(function JobQuantityCell({
         <IconButton
           type="button"
           icon={<LuTable size="1em" strokeWidth={3} />}
-          aria-label="Configure quantities"
+          aria-label={t`Configure quantities`}
           size="sm"
           variant="secondary"
           className={cn(
@@ -299,14 +303,27 @@ const JobQuantityCell = memo(function JobQuantityCell({
   }
 
   if (["In Progress", "Released", "Paused"].includes(job.status ?? "")) {
+    const canAdd = permissions.can("create", "production");
     return (
-      <BarProgress
-        progress={(quantityComplete / quantity) * 100}
-        value={`${quantityComplete}/${quantity}`}
-      />
+      <HStack spacing={1} className="ml-auto justify-end">
+        <BarProgress
+          className="flex-1"
+          progress={(quantityComplete / quantity) * 100}
+          value={`${quantityComplete}/${quantity}`}
+        />
+        <IconButton
+          type="button"
+          icon={<LuPlus />}
+          aria-label={t`Add production quantity`}
+          size="sm"
+          variant="ghost"
+          isDisabled={!canAdd}
+          onClick={(e) => onAddQuantity(e, job)}
+        />
+      </HStack>
     );
   }
-  return quantity;
+  return <div className="ml-auto text-right tabular-nums">{quantity}</div>;
 });
 
 const JobsTable = memo(
@@ -372,6 +389,15 @@ const JobsTable = memo(
         });
       },
       [openOverlay, revalidate]
+    );
+
+    const openAddProductionQuantity = useCallback(
+      (e: MouseEvent, job: Job) => {
+        e.stopPropagation();
+        if (!job.id) return;
+        openOverlay(overlay.to.newJobProductionQuantity(job.id));
+      },
+      [openOverlay]
     );
 
     const fetcher = useFetcher<typeof action>();
@@ -490,11 +516,13 @@ const JobsTable = memo(
             <JobQuantityCell
               job={row.original}
               onOpenConfigTable={openConfigTable}
+              onAddQuantity={openAddProductionQuantity}
             />
           ),
           meta: {
             icon: <LuHash />,
-            renderTotal: true
+            renderTotal: true,
+            cellClassName: "justify-end"
           }
         },
         {
@@ -829,6 +857,7 @@ const JobsTable = memo(
       locations,
       openBillOfProcessPreview,
       openConfigTable,
+      openAddProductionQuantity,
       people,
       tags,
       getDeadlineTypeLabel,
