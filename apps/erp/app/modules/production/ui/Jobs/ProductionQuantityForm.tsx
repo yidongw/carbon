@@ -681,7 +681,11 @@ const ProductionQuantityForm = ({
           <Submit
             isDisabled={
               isDisabled ||
-              (isCreateMultiLine ? !canSubmitCreate : hasZeroQuantityLine)
+              (isCreateMultiLine
+                ? hasConfigurationParameters
+                  ? !canSubmitCreate
+                  : hasZeroQuantityLine
+                : hasZeroQuantityLine)
             }
             className="transition-transform active:scale-[0.96]"
           >
