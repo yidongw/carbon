@@ -33,6 +33,10 @@ export type OverlayInstance = {
   url: string;
   onCreated?: () => void;
   onSuccess?: (data: unknown) => void;
+  /** This overlay is mirrored in the page URL (see `overlay.ts` url codec). */
+  urlSynced?: boolean;
+  /** Opening this overlay pushed a history entry, so closing should go back. */
+  pushedUrl?: boolean;
 };
 
 export type OpenOverlayOptions = {
