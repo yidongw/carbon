@@ -253,7 +253,7 @@ export function ProductionQuantityLinesEditor({
             <HStack className="w-full min-w-0 items-center justify-between gap-2">
               <div className="min-w-0 flex-1">
                 <Select
-                  disabled={isDisabled}
+                  disabled={showConfig ? isDisabled : false}
                   value={line.type}
                   onValueChange={(value) =>
                     updateLine(line.key, {

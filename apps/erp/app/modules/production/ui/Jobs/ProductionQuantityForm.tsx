@@ -672,7 +672,7 @@ const ProductionQuantityForm = ({
           <TextArea
             name="notes"
             label={t`Notes`}
-            isDisabled={areDetailFieldsDisabled}
+            isDisabled={hasConfigurationParameters ? areDetailFieldsDisabled : false}
           />
         </VStack>
       </DrawerBody>
