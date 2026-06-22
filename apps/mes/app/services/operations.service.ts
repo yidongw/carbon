@@ -672,10 +672,14 @@ export async function getProductionQuantitiesForJobOperation(
   client: SupabaseClient<Database>,
   operationId: string
 ) {
-  return client
+  return (client as any)
     .from("productionQuantity")
-    .select("*")
-    .eq("jobOperationId", operationId);
+    .select(
+      "*, employee:employeeId(id, firstName, lastName, avatarUrl), createdByUser:createdBy(id, firstName, lastName, avatarUrl)"
+    )
+    .eq("jobOperationId", operationId)
+    .is("invalidatedAt", null)
+    .order("createdAt", { ascending: false });
 }
 
 export async function getRecentJobOperationsByEmployee(

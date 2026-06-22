@@ -119,7 +119,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const allPickups = pickups.data ?? [];
   const myPickups = allPickups.filter((p) => p.employeeId === userId);
   const myQuantities = (quantities.data ?? []).filter(
-    (q) => q.employeeId === userId && q.type === "Production"
+    (q: any) => q.employeeId === userId && q.type === "Production"
   );
 
   const myPickupTotal = myPickups.reduce(
@@ -127,7 +127,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     0
   );
   const myReportedTotal = myQuantities.reduce(
-    (sum, q) => sum + Number(q.quantity),
+    (sum: number, q: any) => sum + Number(q.quantity),
     0
   );
   const suggestedQuantity = Math.max(0, myPickupTotal - myReportedTotal);
@@ -140,19 +140,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     productionQuantities: quantities.data ?? [],
     suggestedQuantity,
     pickupConfiguration,
-    quantities: (quantities.data ?? []).reduce(
-      (acc, curr) => {
-        if (curr.type === "Scrap") {
-          acc.scrap += curr.quantity;
-        } else if (curr.type === "Production") {
-          acc.production += curr.quantity;
-        } else if (curr.type === "Rework") {
-          acc.rework += curr.quantity;
-        }
-        return acc;
-      },
-      { scrap: 0, production: 0, rework: 0 }
-    ),
+    quantities: quantities.data ?? [],
     job: job.data,
     jobMakeMethod: jobMakeMethod.data,
     kanban: kanban.data,
@@ -205,6 +193,7 @@ export default function OperationRoute() {
     productionQuantities,
     suggestedQuantity,
     pickupConfiguration,
+    quantities,
     procedure,
     thumbnailPath,
     trackedEntities,
@@ -225,6 +214,7 @@ export default function OperationRoute() {
       productionQuantities={productionQuantities}
       suggestedQuantity={suggestedQuantity}
       pickupConfiguration={pickupConfiguration}
+      quantities={quantities}
       trackedEntities={trackedEntities}
       nonConformanceActions={nonConformanceActions}
       operation={operation}

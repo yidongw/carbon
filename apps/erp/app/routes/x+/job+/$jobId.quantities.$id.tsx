@@ -268,7 +268,6 @@ export async function action({ request, params }: ActionFunctionArgs) {
           reportId: id,
           companyId,
           userId,
-          employeeId: validation.data.employeeId ?? userId,
           notes: notes?.trim() ? notes : null,
           lines: mappedLines,
           paymentYear: canAutoApprove ? currentYear : null,
@@ -321,7 +320,9 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const {
     id: lineId,
     configuration: rawConfiguration,
-    employeeId,
+    // employeeId is intentionally dropped: the credited employee is derived
+    // from the report inside replaceProductionQuantityReportLines.
+    employeeId: _employeeId,
     ...rest
   } = validation.data;
   if (!lineId) throw new Error("id not found");
@@ -413,7 +414,6 @@ export async function action({ request, params }: ActionFunctionArgs) {
         reportId,
         companyId,
         userId,
-        employeeId: employeeId ?? userId,
         lines,
         paymentYear: canAutoApprove ? currentYear : null,
         paymentMonth: canAutoApprove ? currentMonth : null

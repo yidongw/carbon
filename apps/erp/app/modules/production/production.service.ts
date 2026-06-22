@@ -2468,8 +2468,14 @@ export async function upsertProductionQuantity(
   } = await import("./productionQuantityReport.service");
 
   if ("updatedBy" in productionQuantity) {
-    const { id, updatedBy, companyId, employeeId, approval, ...updateData } =
-      productionQuantity;
+    const {
+      id,
+      updatedBy,
+      companyId,
+      employeeId: _employeeId,
+      approval,
+      ...updateData
+    } = productionQuantity;
 
     const { data: existing, error: existingError } = await client
       .from("productionQuantity")
@@ -2527,7 +2533,6 @@ export async function upsertProductionQuantity(
       reportId: existing.reportId,
       companyId,
       userId: updatedBy,
-      employeeId,
       lines,
       paymentYear: approval?.canAutoApprove ? approval.paymentYear : null,
       paymentMonth: approval?.canAutoApprove ? approval.paymentMonth : null
