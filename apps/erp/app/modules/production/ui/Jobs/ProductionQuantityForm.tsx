@@ -492,7 +492,7 @@ const ProductionQuantityForm = ({
     (actorKind === "employee"
       ? Boolean(employeeId.trim())
       : Boolean(supplierProcessId.trim()));
-  const areQuantityFieldsDisabled =
+  const areDetailFieldsDisabled =
     isDisabled ||
     !hasJobSelected ||
     !hasOperationSelected ||
@@ -591,7 +591,7 @@ const ProductionQuantityForm = ({
             <SupplierSubcontractPricingFields
               jobOperationId={jobOperationIdState}
               supplierProcessId={supplierProcessId}
-              isDisabled={areQuantityFieldsDisabled}
+              isDisabled={areDetailFieldsDisabled}
             />
           ) : null}
 
@@ -604,7 +604,7 @@ const ProductionQuantityForm = ({
                 configurationParameters={configurationParameters}
                 configReferenceSource={configReferenceSource}
                 itemId={itemId}
-                isDisabled={areQuantityFieldsDisabled}
+                isDisabled={areDetailFieldsDisabled}
                 employeeId={actorKind === "employee" ? employeeId : undefined}
                 jobId={jobId ?? undefined}
                 jobOperationId={jobOperationIdState || undefined}
@@ -628,18 +628,20 @@ const ProductionQuantityForm = ({
                   value={quantity}
                   minValue={0}
                   isDisabled={
-                    areQuantityFieldsDisabled || configTableTotal > 0
+                    areDetailFieldsDisabled || configTableTotal > 0
                   }
                   configTableTotal={configTableTotal}
                   hasConfigurationParameters
-                  onOpenConfigTable={openConfigTable}
+                  onOpenConfigTable={
+                    hasActorSelected ? openConfigTable : undefined
+                  }
                   onChange={setQuantity}
                 />
               ) : (
                 <Number
                   name="quantity"
                   label={t`Quantity`}
-                  isDisabled={areQuantityFieldsDisabled}
+                  isDisabled={areDetailFieldsDisabled}
                 />
               )}
               <Select
@@ -660,7 +662,11 @@ const ProductionQuantityForm = ({
             </>
           )}
 
-          <TextArea name="notes" label={t`Notes`} />
+          <TextArea
+            name="notes"
+            label={t`Notes`}
+            isDisabled={areDetailFieldsDisabled}
+          />
         </VStack>
       </DrawerBody>
       <DrawerFooter>

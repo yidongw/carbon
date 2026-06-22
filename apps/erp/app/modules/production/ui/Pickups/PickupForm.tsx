@@ -329,7 +329,9 @@ export const PickupForm = ({
               isDisabled={isDisabled || !hasActorSelected || configTableTotal > 0}
               configTableTotal={configTableTotal}
               hasConfigurationParameters
-              onOpenConfigTable={openConfigTable}
+              onOpenConfigTable={
+                hasActorSelected ? openConfigTable : undefined
+              }
               onChange={setQuantity}
             />
           ) : (

@@ -82,9 +82,12 @@ export function ItemConfigQuantityInput({
   openConfigAccessibilityLabel = "Configure quantities"
 }: ItemConfigQuantityInputProps) {
   const safeValue = Number.isFinite(value) ? value : 0;
-  const showAdornment = Boolean(
-    hasConfigurationParameters && onOpenConfigTable
-  );
+  const canOpenConfigTable =
+    hasConfigurationParameters &&
+    onOpenConfigTable != null &&
+    !isDisabled &&
+    !isReadOnly;
+  const showAdornment = canOpenConfigTable;
   const showStepper =
     !showAdornment && !isReadOnly && !isDisabled && size !== "sm";
 
@@ -111,12 +114,10 @@ export function ItemConfigQuantityInput({
           size={size}
           className={cn(
             "tabular-nums",
-            showAdornment &&
-              cn(
-                "pr-10",
-                isDisabled &&
-                  "text-foreground disabled:text-foreground disabled:opacity-100"
-              )
+            showAdornment && "pr-10",
+            isDisabled &&
+              configTableTotal > 0 &&
+              "text-foreground disabled:text-foreground disabled:opacity-100"
           )}
         />
         {showAdornment ? (
@@ -143,7 +144,7 @@ export function ItemConfigQuantityInput({
       {!hideLabel && label ? (
         <Label htmlFor={id}>{label}</Label>
       ) : null}
-      {showAdornment && onOpenConfigTable ? (
+      {canOpenConfigTable ? (
         <div
           role="button"
           tabIndex={0}
