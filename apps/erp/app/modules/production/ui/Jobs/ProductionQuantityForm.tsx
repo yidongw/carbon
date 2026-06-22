@@ -259,6 +259,24 @@ const ProductionQuantityForm = ({
     );
   }, [isCreateMultiLine, lines]);
 
+  const [jobOperationIdState, setJobOperationIdState] = useState(() => {
+    const fromUrl = searchParams.get("jobOperationId") ?? "";
+    if (fromUrl) return fromUrl;
+    if (isCreateMultiLineInitial(initialValues)) {
+      return (initialValues as ProductionQuantityCreateInitialValues)
+        .jobOperationId;
+    }
+    return (
+      (initialValues as z.infer<typeof productionQuantityValidator>)
+        .jobOperationId ?? ""
+    );
+  });
+
+  useEffect(() => {
+    if (isEditing) return;
+    setJobOperationIdState(searchParams.get("jobOperationId") ?? "");
+  }, [isEditing, searchParams]);
+
   useEffect(() => {
     if (!isOverlay) return;
 
@@ -414,23 +432,6 @@ const ProductionQuantityForm = ({
   const [supplierProcessId, setSupplierProcessId] = useState(
     () => actorFieldValues.supplierProcessId ?? ""
   );
-  const [jobOperationIdState, setJobOperationIdState] = useState(() => {
-    const fromUrl = searchParams.get("jobOperationId") ?? "";
-    if (fromUrl) return fromUrl;
-    if (isCreateMultiLineInitial(initialValues)) {
-      return (initialValues as ProductionQuantityCreateInitialValues)
-        .jobOperationId;
-    }
-    return (
-      (initialValues as z.infer<typeof productionQuantityValidator>)
-        .jobOperationId ?? ""
-    );
-  });
-
-  useEffect(() => {
-    if (isEditing) return;
-    setJobOperationIdState(searchParams.get("jobOperationId") ?? "");
-  }, [isEditing, searchParams]);
 
   const updateSearchParams = (updates: {
     jobId?: string | null;
