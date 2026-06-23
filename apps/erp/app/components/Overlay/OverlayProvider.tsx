@@ -11,10 +11,11 @@ import {
 import { useNavigate, useSearchParams } from "react-router";
 import {
   isUrlOverlay,
-  OVERLAY_URL_PARAMS,
   type OverlayTarget,
-  overlayFromUrlParams,
-  overlayToUrlParams
+  overlayStackFromParams,
+  paramsWithOverlay,
+  paramsWithoutOverlays,
+  paramsWithoutTopOverlay
 } from "./overlay";
 import { getOverlayRegistryEntry } from "./overlay.registry";
 import type { OpenOverlayOptions, OverlayInstance } from "./types";
@@ -46,17 +47,8 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
   const searchParamsRef = useRef(searchParams);
   searchParamsRef.current = searchParams;
 
-  const clearOverlayParams = useCallback(
-    (options?: { replace?: boolean }) => {
-      const next = new URLSearchParams(searchParamsRef.current);
-      let changed = false;
-      for (const key of OVERLAY_URL_PARAMS) {
-        if (next.has(key)) {
-          next.delete(key);
-          changed = true;
-        }
-      }
-      if (!changed) return;
+  const navigateToParams = useCallback(
+    (next: URLSearchParams, options?: { replace?: boolean }) => {
       const search = next.toString();
       navigate(
         { search: search ? `?${search}` : "" },
@@ -106,21 +98,17 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
       });
 
       if (id && urlSynced) {
-        const params = overlayToUrlParams(target);
-        if (params) {
-          const next = new URLSearchParams(searchParamsRef.current);
-          for (const [key, value] of Object.entries(params)) {
-            next.set(key, value);
-          }
-          // Push (not replace) so Back / close returns to where we were.
+        const next = paramsWithOverlay(searchParamsRef.current, target);
+        if (next) {
+          // Push (not replace) so Back / close returns to the previous stack.
           // No pathname given -> the current page URL is preserved.
-          navigate({ search: `?${next.toString()}` });
+          navigateToParams(next);
         }
       }
 
       return id;
     },
-    [addInstance, navigate]
+    [addInstance, navigateToParams]
   );
 
   const closeOverlay = useCallback(
@@ -130,66 +118,59 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
 
       if (!instance?.urlSynced) return;
       if (instance.pushedUrl) {
-        // Pop the entry we pushed when opening -> back to the previous URL.
+        // Pop the entry we pushed when opening -> back to the previous stack.
         navigate(-1);
       } else {
-        // Opened via deep link (no entry to pop) -> just strip the params.
-        clearOverlayParams({ replace: true });
+        // Opened via deep link (no entry to pop) -> pop this overlay's token.
+        navigateToParams(paramsWithoutTopOverlay(searchParamsRef.current), {
+          replace: true
+        });
       }
     },
-    [navigate, clearOverlayParams]
+    [navigate, navigateToParams]
   );
 
   const closeAll = useCallback(() => {
     const hadUrlSynced = instancesRef.current.some((i) => i.urlSynced);
     setInstances([]);
-    if (hadUrlSynced) clearOverlayParams({ replace: true });
-  }, [clearOverlayParams]);
+    if (hadUrlSynced) {
+      navigateToParams(paramsWithoutOverlays(searchParamsRef.current), {
+        replace: true
+      });
+    }
+  }, [navigateToParams]);
 
   // Reconcile URL -> overlay state for deep links and Back/Forward navigation.
   //
-  // URL-synced overlays form a stack; the URL only ever names the *top* one.
-  // The URL is the source of truth for which is on top, so we close any
-  // URL-synced overlays stacked above the named one (leaving lower overlays —
-  // and their callbacks — intact) and open it if it isn't already present.
+  // The URL encodes the full stack of URL-synced overlays (bottom -> top), so
+  // it is the source of truth: close any URL-synced overlay no longer in the
+  // URL, and open (in order) any that are in the URL but not yet present. This
+  // makes a refresh / deep link restore the entire stack, not just the top.
   useEffect(() => {
-    const urlTarget = overlayFromUrlParams(searchParams);
+    const desired = overlayStackFromParams(searchParams);
     const current = instancesRef.current;
 
-    if (!urlTarget) {
-      // No overlay named in the URL -> close every URL-synced overlay.
-      const synced = new Set(
-        current.filter((i) => i.urlSynced).map((i) => i.id)
-      );
-      if (synced.size > 0) {
-        setInstances((prev) => prev.filter((i) => !synced.has(i.id)));
-      }
-      return;
-    }
-
-    const matchIndex = current.findIndex(
-      (i) => i.urlSynced && i.url === urlTarget.url
+    const desiredUrls = new Set(desired.map((t) => t.url));
+    const presentUrls = new Set(
+      current.filter((i) => i.urlSynced).map((i) => i.url)
     );
 
-    if (matchIndex === -1) {
-      // Not open yet (deep link / forward navigation) -> open it on top.
-      // Already reflected in the URL, so don't push another history entry.
-      addInstance(urlTarget, undefined, {
-        urlSynced: true,
-        pushedUrl: false
-      });
-      return;
-    }
-
-    // Surface the named overlay: drop any URL-synced overlays above it.
-    const above = new Set(
+    const closeIds = new Set(
       current
-        .slice(matchIndex + 1)
-        .filter((i) => i.urlSynced)
+        .filter((i) => i.urlSynced && !desiredUrls.has(i.url))
         .map((i) => i.id)
     );
-    if (above.size > 0) {
-      setInstances((prev) => prev.filter((i) => !above.has(i.id)));
+    const toOpen = desired.filter((t) => !presentUrls.has(t.url));
+
+    if (closeIds.size === 0 && toOpen.length === 0) return;
+
+    if (closeIds.size > 0) {
+      setInstances((prev) => prev.filter((i) => !closeIds.has(i.id)));
+    }
+    // Append in stack order so z-index / render order stays bottom -> top.
+    // Already reflected in the URL, so don't push another history entry.
+    for (const target of toOpen) {
+      addInstance(target, undefined, { urlSynced: true, pushedUrl: false });
     }
   }, [searchParams, addInstance]);
 

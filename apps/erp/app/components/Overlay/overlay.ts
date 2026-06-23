@@ -89,18 +89,18 @@ export const overlay = {
 /**
  * URL state for overlays.
  *
- * URL-addressable overlays are mirrored on the *current page* URL with two
- * reserved, namespaced search params so they never clObber a page's own params:
- *   `?overlay=<id>&overlayArgs=<urlencoded args>`
+ * URL-addressable overlays are mirrored on the *current page* URL as a stack,
+ * using one reserved repeated search param so it never clObbers a page's own
+ * params. URLSearchParams preserves insertion order, so the values read back
+ * bottom -> top. Each value is a `id:<urlencoded args>` token:
+ *   `?overlay=newJobProductionQuantity:jobId%3D123&overlay=newJobPickup:jobId%3D123`
  * The pathname is left untouched — opening pushes a history entry, so the
- * browser Back button (or closing) returns to where you were.
+ * browser Back button (or closing) returns to the previous stack state.
  *
  * Only the overlays listed in `urlOverlays` participate; everything else stays
  * imperative-only (e.g. nested config modals shouldn't live in the URL).
  */
 export const OVERLAY_PARAM = "overlay";
-export const OVERLAY_ARGS_PARAM = "overlayArgs";
-export const OVERLAY_URL_PARAMS = [OVERLAY_PARAM, OVERLAY_ARGS_PARAM] as const;
 
 type UrlOverlayDef = {
   /** Pull the args needed to rebuild this overlay out of its loader URL. */
@@ -149,25 +149,63 @@ export function isUrlOverlay(id: OverlayId): boolean {
   return id in urlOverlays;
 }
 
-/** Page search params representing an open `target`, or null if not URL-addressable. */
-export function overlayToUrlParams(
-  target: OverlayTarget
-): Record<string, string> | null {
+/** Encode one stack entry as `id:<urlencoded args>` (args omitted when empty). */
+function encodeOverlayEntry(target: OverlayTarget): string | null {
   const def = urlOverlays[target.id];
   if (!def) return null;
-  return {
-    [OVERLAY_PARAM]: target.id,
-    [OVERLAY_ARGS_PARAM]: def.encode(target.url).toString()
-  };
+  const args = def.encode(target.url).toString();
+  return args ? `${target.id}:${args}` : target.id;
 }
 
-/** Read an open overlay target from the current page search params, or null. */
-export function overlayFromUrlParams(
-  params: URLSearchParams
-): OverlayTarget | null {
-  const id = params.get(OVERLAY_PARAM) as OverlayId | null;
-  if (!id) return null;
+/** Decode one `id:<urlencoded args>` token back into a target, or null. */
+function decodeOverlayEntry(token: string): OverlayTarget | null {
+  const sep = token.indexOf(":");
+  const id = (sep === -1 ? token : token.slice(0, sep)) as OverlayId;
   const def = urlOverlays[id];
   if (!def) return null;
-  return def.build(new URLSearchParams(params.get(OVERLAY_ARGS_PARAM) ?? ""));
+  return def.build(new URLSearchParams(sep === -1 ? "" : token.slice(sep + 1)));
+}
+
+/** Read the ordered overlay stack (bottom -> top) from the page params. */
+export function overlayStackFromParams(
+  params: URLSearchParams
+): OverlayTarget[] {
+  const stack: OverlayTarget[] = [];
+  for (const token of params.getAll(OVERLAY_PARAM)) {
+    const target = decodeOverlayEntry(token);
+    if (target) stack.push(target);
+  }
+  return stack;
+}
+
+/** Page params with `target` pushed onto the overlay stack, or null if not URL-addressable. */
+export function paramsWithOverlay(
+  params: URLSearchParams,
+  target: OverlayTarget
+): URLSearchParams | null {
+  const token = encodeOverlayEntry(target);
+  if (!token) return null;
+  const next = new URLSearchParams(params);
+  next.append(OVERLAY_PARAM, token);
+  return next;
+}
+
+/** Page params with the top overlay popped off the stack (other params kept). */
+export function paramsWithoutTopOverlay(
+  params: URLSearchParams
+): URLSearchParams {
+  const tokens = params.getAll(OVERLAY_PARAM);
+  const next = new URLSearchParams(params);
+  next.delete(OVERLAY_PARAM);
+  for (const token of tokens.slice(0, -1)) next.append(OVERLAY_PARAM, token);
+  return next;
+}
+
+/** Page params with the entire overlay stack cleared (other params kept). */
+export function paramsWithoutOverlays(
+  params: URLSearchParams
+): URLSearchParams {
+  const next = new URLSearchParams(params);
+  next.delete(OVERLAY_PARAM);
+  return next;
 }
