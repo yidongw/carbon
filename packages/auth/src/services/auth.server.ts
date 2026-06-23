@@ -540,7 +540,13 @@ export async function exchangePkceCode(
   );
 }
 
-export async function signInWithBypassEmail(
+/**
+ * Mint an authenticated session for an existing user without their password, by
+ * generating and immediately consuming a magic-link token via the Supabase admin
+ * API. Used after an out-of-band check has already proven the user's identity
+ * (dev bypass, or a verified email code).
+ */
+export async function signInWithEmailViaAdmin(
   email: string
 ): Promise<AuthSession | null> {
   const client = getCarbonServiceRole();
@@ -569,11 +575,17 @@ export async function signInWithBypassEmail(
 
   const match = utc as { companyId: string; companyGroupId: string | null } | null;
 
-  const authSession = makeAuthSession(
+  return makeAuthSession(
     sessionData.session,
     match?.companyId ?? "",
     match?.companyGroupId ?? ""
   );
+}
+
+export async function signInWithBypassEmail(
+  email: string
+): Promise<AuthSession | null> {
+  const authSession = await signInWithEmailViaAdmin(email);
 
   if (authSession) {
     authSession.bypass = true;

@@ -122,6 +122,20 @@ export const AUTH_PROVIDERS =
     isSecret: false
   }) ?? "email,google,azure";
 
+/**
+ * How existing users sign in with their email:
+ *   "code"       (default) – a 6-digit verification code is emailed
+ *   "magic-link"           – a magic link is emailed (legacy behavior)
+ * Set LOGIN_METHOD=magic-link to switch back to magic links.
+ */
+export const LOGIN_METHOD =
+  getEnv("LOGIN_METHOD", {
+    isRequired: false,
+    isSecret: false
+  }) === "magic-link"
+    ? "magic-link"
+    : "code";
+
 const CARBON_EDITION = getEnv("CARBON_EDITION", {
   isRequired: false,
   isSecret: false
