@@ -818,26 +818,55 @@ async function seed() {
     const cncWorkCenterId = workCenterIds["CNC Mill #1"];
 
     if (bracketItemId) {
-      const jobReadableId = await nextSeq("job");
-
-      const jobRow = await client.query<{ id: string }>(
-        `INSERT INTO job ("jobId", "itemId", "unitOfMeasureCode", "locationId", status, quantity, "companyId", "createdBy")
-         VALUES ($1, $2, 'EA', $3, 'Ready'::"jobStatus", 25, $4, $5)
-         RETURNING id`,
-        [jobReadableId, bracketItemId, locationId, companyId, userId]
+      // Idempotent: reuse the demo job for this item instead of inserting a new
+      // one on every run (otherwise repeated seeds pile up duplicate jobs, each
+      // with their own operation).
+      const existingJob = await client.query<{ id: string }>(
+        `SELECT id FROM job WHERE "itemId" = $1 AND "companyId" = $2 ORDER BY "createdAt" LIMIT 1`,
+        [bracketItemId, companyId]
       );
-      const jobRowId = jobRow.rows[0]!.id;
-      console.log(`   Created job "${jobReadableId}": ${jobRowId}`);
+
+      let jobRowId: string;
+      if (existingJob.rows.length > 0) {
+        jobRowId = existingJob.rows[0]!.id;
+        console.log(`   Job for BRACKET-001 already exists: ${jobRowId}`);
+      } else {
+        const jobReadableId = await nextSeq("job");
+        const jobRow = await client.query<{ id: string }>(
+          `INSERT INTO job ("jobId", "itemId", "unitOfMeasureCode", "locationId", status, quantity, "companyId", "createdBy")
+           VALUES ($1, $2, 'EA', $3, 'Ready'::"jobStatus", 25, $4, $5)
+           RETURNING id`,
+          [jobReadableId, bracketItemId, locationId, companyId, userId]
+        );
+        jobRowId = jobRow.rows[0]!.id;
+        console.log(`   Created job "${jobReadableId}": ${jobRowId}`);
+      }
 
       if (cncProcessId) {
-        const opRow = await client.query<{ id: string }>(
-          `INSERT INTO "jobOperation" ("jobId", "order", "processId", "workCenterId", description, "laborTime", "laborUnit", "companyId", "createdBy")
-           VALUES ($1, 1, $2, $3, 'CNC mill bracket profile', 30, 'Minutes/Piece'::factor, $4, $5)
-           RETURNING id`,
-          [jobRowId, cncProcessId, cncWorkCenterId ?? null, companyId, userId]
+        // The `insert_job_make_method_trigger` on `job` creates the root
+        // jobMakeMethod (parentMaterialId IS NULL). Operations MUST be linked
+        // to it, otherwise they are orphaned: they show up in the flat
+        // operations table (queried by jobId) but not in the Bill of Process
+        // (rendered per make method), and pollute the quantity/pickup drawers.
+        const rootMakeMethod = await client.query<{ id: string }>(
+          `SELECT id FROM "jobMakeMethod" WHERE "jobId" = $1 AND "parentMaterialId" IS NULL LIMIT 1`,
+          [jobRowId]
         );
-        const opId = opRow.rows[0]!.id;
-        console.log(`   Created job operation: ${opId}`);
+        const rootMakeMethodId = rootMakeMethod.rows[0]?.id ?? null;
+
+        const existingOp = await client.query(
+          `SELECT 1 FROM "jobOperation" WHERE "jobId" = $1 AND description = 'CNC mill bracket profile' LIMIT 1`,
+          [jobRowId]
+        );
+        if ((existingOp.rowCount ?? 0) === 0) {
+          const opRow = await client.query<{ id: string }>(
+            `INSERT INTO "jobOperation" ("jobId", "jobMakeMethodId", "order", "processId", "workCenterId", description, "laborTime", "laborUnit", "companyId", "createdBy")
+             VALUES ($1, $2, 1, $3, $4, 'CNC mill bracket profile', 30, 'Minutes/Piece'::factor, $5, $6)
+             RETURNING id`,
+            [jobRowId, rootMakeMethodId, cncProcessId, cncWorkCenterId ?? null, companyId, userId]
+          );
+          console.log(`   Created job operation: ${opRow.rows[0]!.id}`);
+        }
 
         // Note: jobMaterial is skipped — it requires complex trigger/BOM logic
         // that is best managed through the application UI.
