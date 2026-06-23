@@ -9023,6 +9023,12 @@ msgstr "Dieser Auftrag wird im Bestand eingegangen. Er ist nicht mehr auf der We
 msgid "This job will no longer be available on the shop floor."
 msgstr "Dieser Auftrag ist auf der Werkstatt nicht mehr verfügbar."
 
+msgid "This permanently deletes the quantity report and its entire history. This action cannot be undone."
+msgstr "Dadurch werden der Mengenbericht und sein gesamter Verlauf dauerhaft gelöscht. Diese Aktion kann nicht rückgängig gemacht werden."
+
+msgid "this quantity report"
+msgstr "diesen Mengenbericht"
+
 msgid "This sales order has lines that require jobs to be created"
 msgstr "Diese Bestellung hat Positionen, für die Aufträge erstellt werden müssen"
 

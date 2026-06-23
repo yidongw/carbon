@@ -9026,6 +9026,12 @@ msgstr "此工作将被接收至库存。它将不再在车间可用。"
 msgid "This job will no longer be available on the shop floor."
 msgstr "此工作将不再在车间可用。"
 
+msgid "This permanently deletes the quantity report and its entire history. This action cannot be undone."
+msgstr "这将永久删除该数量报告及其全部历史记录。此操作无法撤销。"
+
+msgid "this quantity report"
+msgstr "此数量报告"
+
 msgid "This sales order has lines that require jobs to be created"
 msgstr "此销售订单包含需要创建工作的行项"
 
