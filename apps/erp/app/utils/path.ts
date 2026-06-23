@@ -766,6 +766,8 @@ export const path = {
       generatePath(`${x}/job/methods/event/delete/${id}`),
     deleteProductionQuantity: (id: string) =>
       generatePath(`${x}/job/methods/quantity/delete/${id}`),
+    deleteProductionQuantityReport: (id: string) =>
+      generatePath(`${x}/job/methods/quantity-report/delete/${id}`),
     deleteDemandProjections: (itemId: string, locationId: string) =>
       generatePath(
         `${x}/production/projections/delete/${itemId}/${locationId}`

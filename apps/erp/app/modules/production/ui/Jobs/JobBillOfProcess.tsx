@@ -2434,6 +2434,11 @@ const JobBillOfProcess = ({
           open
           onClose={() => setDispositionReport(null)}
           onSaved={handleQuantityReportSaved}
+          deleteAction={
+            !isDisabled && permissions.can("delete", "production")
+              ? path.to.deleteProductionQuantityReport(dispositionReport.id)
+              : undefined
+          }
         />
       ) : null}
       {historyReport ? (

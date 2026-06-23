@@ -498,6 +498,43 @@ export async function getOperationQuantitySummary(
   };
 }
 
+/**
+ * Hard-deletes a production quantity report and its entire history.
+ *
+ * Deleting the `productionQuantityReport` row cascades to all of its
+ * `productionQuantity` lines (FK `reportId` is ON DELETE CASCADE), which in
+ * turn cascades to their operation notes. `approvalRequest.documentId` is a
+ * soft reference (no FK), so any approval requests for the report are removed
+ * first to avoid orphaning them.
+ *
+ * NOTE: `productionQuantityReport` has no DELETE RLS policy, so callers must
+ * pass a service-role client.
+ */
+export async function deleteProductionQuantityReport(
+  client: SupabaseClient<Database>,
+  args: {
+    reportId: string;
+    companyId: string;
+  }
+) {
+  const { error: approvalError } = await client
+    .from("approvalRequest")
+    .delete()
+    .eq("documentType", "productionQuantityReport")
+    .eq("documentId", args.reportId)
+    .eq("companyId", args.companyId);
+
+  if (approvalError) {
+    return { data: null, error: approvalError };
+  }
+
+  return client
+    .from("productionQuantityReport")
+    .delete()
+    .eq("id", args.reportId)
+    .eq("companyId", args.companyId);
+}
+
 export async function invalidateProductionQuantity(
   client: SupabaseClient<Database>,
   args: {
