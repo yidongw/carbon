@@ -2277,6 +2277,7 @@ const JobBillOfProcess = ({
         onToggleItem={onToggleItem}
         onRemoveItem={onRemoveItem}
         handleDrag={onCloseOnDrag}
+        dragHandle
         className="my-2 "
         renderExtra={(item) => (
           <div key={`${isOpen}`}>

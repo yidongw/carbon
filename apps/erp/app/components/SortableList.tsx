@@ -6,7 +6,7 @@ import { LayoutGroup, motion, Reorder, useDragControls } from "framer-motion";
 import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
-import { LuCircleCheckBig, LuCircleDashed, LuLoaderCircle, LuTable, LuTrash } from "react-icons/lu";
+import { LuCircleCheckBig, LuCircleDashed, LuGripVertical, LuLoaderCircle, LuTable, LuTrash } from "react-icons/lu";
 import Empty from "./Empty";
 
 export interface Item {
@@ -45,6 +45,8 @@ interface SortableListItemProps<T> {
   className?: string;
   handleDrag: () => void;
   isReadOnly?: boolean;
+  /** When true, the card can only be dragged via the grip handle (top-right), not the whole card. */
+  dragHandle?: boolean;
 }
 
 function SortableListItem<T>({
@@ -59,11 +61,11 @@ function SortableListItem<T>({
   isExpanded,
   isHighlighted,
   className,
-  isReadOnly = false
+  isReadOnly = false,
+  dragHandle = false
 }: SortableListItemProps<T>) {
   const { t } = useLingui();
   const [isDragging, setIsDragging] = useState(false);
-  const [isDraggable] = useState(!isExpanded && !isReadOnly);
   const dragControls = useDragControls();
   const itemRef = useRef<HTMLDivElement>(null);
 
@@ -97,12 +99,14 @@ function SortableListItem<T>({
             "relative z-auto grow",
             "h-full rounded-md bg-muted/40",
             "border border-border rounded-lg ",
-            !isExpanded && !isReadOnly && "cursor-grab",
+            !dragHandle && !isExpanded && !isReadOnly && "cursor-grab",
             isHighlighted && "border-2 border-primary",
             item.checked && !isDragging ? "w-7/10" : "w-full"
           )}
           key={item.id}
-          dragListener={!item.checked && !isExpanded && !isReadOnly}
+          dragListener={
+            !dragHandle && !item.checked && !isExpanded && !isReadOnly
+          }
           dragControls={dragControls}
           onDragEnd={handleDragEnd}
           style={
@@ -159,7 +163,7 @@ function SortableListItem<T>({
                       <HStack
                         className={cn(
                           "w-full min-w-0 justify-between pr-8",
-                          !isReadOnly && "cursor-grab"
+                          !dragHandle && !isReadOnly && "cursor-grab"
                         )}
                       >
                         {/* List Title */}
@@ -232,12 +236,28 @@ function SortableListItem<T>({
               </div>
             )}
           </div>
-          {!isReadOnly && (
-            <div
-              onPointerDown={isDraggable ? handleDragStart : undefined}
-              style={{ touchAction: "none" }}
-            />
-          )}
+          {dragHandle
+            ? !isExpanded &&
+              !isReadOnly &&
+              !item.checked && (
+                <button
+                  type="button"
+                  aria-label={t`Drag to reorder`}
+                  onPointerDown={handleDragStart}
+                  className="absolute right-9 top-3 z-20 flex cursor-grab touch-none items-center justify-center text-foreground/40 transition-colors hover:text-foreground/80 active:cursor-grabbing"
+                  style={{ touchAction: "none" }}
+                >
+                  <LuGripVertical className="h-5 w-5" />
+                </button>
+              )
+            : !isReadOnly && (
+                <div
+                  onPointerDown={
+                    !isExpanded && !isReadOnly ? handleDragStart : undefined
+                  }
+                  style={{ touchAction: "none" }}
+                />
+              )}
         </Reorder.Item>
         {/* List Delete Action Animation */}
 
