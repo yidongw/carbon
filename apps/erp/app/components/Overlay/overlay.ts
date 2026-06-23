@@ -1,6 +1,6 @@
 import type { ConfigTableReferenceContext } from "~/modules/production/configParamsTableColumns";
 import { path } from "~/utils/path";
-import type { OverlayId } from "./overlay.registry";
+import { getOverlayRegistryEntry, type OverlayId } from "./overlay.registry";
 
 export type OverlayTarget = {
   id: OverlayId;
@@ -150,19 +150,13 @@ export function serializeSearch(params: URLSearchParams): string {
 }
 
 /**
- * Allowlist of overlays that may be opened / restored via the URL. Overlays not
- * listed stay imperative-only (e.g. config modals, whose params aren't URL-safe).
- * Decode rebuilds a target by running the id's canonical `overlay.to.*` builder
- * with the params mirrored in the URL.
+ * Whether an overlay is mirrored in the page URL — driven by the registry's
+ * `urlAddressable` flag (see `overlay.registry.tsx`). Overlays without it stay
+ * imperative-only (e.g. config modals, whose params aren't URL-safe). Decode
+ * rebuilds a target by running the id's canonical `overlay.to.*` builder.
  */
-const urlOverlayIds = new Set<OverlayId>([
-  "newJobPickup",
-  "newJobProductionQuantity"
-]);
-
-/** Whether an overlay is mirrored in the page URL. */
 export function isUrlOverlay(id: OverlayId): boolean {
-  return urlOverlayIds.has(id);
+  return getOverlayRegistryEntry(id)?.urlAddressable === true;
 }
 
 /** Encode one stack entry as `id:key=val,key=val` (args omitted when empty). */
