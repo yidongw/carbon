@@ -334,7 +334,8 @@ const ProductionQuantityForm = ({
     });
 
     openOverlay(
-      overlay.to.itemConfigTable(itemId, {
+      overlay.to.itemConfigTable({
+        itemId,
         configuration:
           configTableRows && configTablePrimaryKeys.length > 0
             ? {

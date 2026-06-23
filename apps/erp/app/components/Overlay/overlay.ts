@@ -28,76 +28,84 @@ function overlayParams(
 
 export const overlay = {
   to: {
-    newJobPickup(
-      jobId: string,
-      opts?: { jobOperationId?: string }
-    ): OverlayTarget {
-      const base = path.to.newJobPickup(jobId, opts);
+    newJobPickup({
+      jobId,
+      jobOperationId
+    }: {
+      jobId: string;
+      jobOperationId?: string;
+    }): OverlayTarget {
+      const base = path.to.newJobPickup(jobId, { jobOperationId });
       const sep = base.includes("?") ? "&" : "?";
       return {
         id: "newJobPickup",
         url: `${base}${sep}overlay=true`,
-        params: overlayParams({ jobId, jobOperationId: opts?.jobOperationId })
+        params: overlayParams({ jobId, jobOperationId })
       };
     },
 
-    newJobProductionQuantity(
-      jobId: string,
-      opts?: { jobOperationId?: string }
-    ): OverlayTarget {
-      const base = path.to.newJobProductionQuantity(jobId, opts);
+    newJobProductionQuantity({
+      jobId,
+      jobOperationId
+    }: {
+      jobId: string;
+      jobOperationId?: string;
+    }): OverlayTarget {
+      const base = path.to.newJobProductionQuantity(jobId, { jobOperationId });
       const sep = base.includes("?") ? "&" : "?";
       return {
         id: "newJobProductionQuantity",
         url: `${base}${sep}overlay=true`,
-        params: overlayParams({ jobId, jobOperationId: opts?.jobOperationId })
+        params: overlayParams({ jobId, jobOperationId })
       };
     },
 
-    editJobProductionQuantity(
-      jobId: string,
-      quantityId: string
-    ): OverlayTarget {
+    editJobProductionQuantity({
+      jobId,
+      quantityId
+    }: {
+      jobId: string;
+      quantityId: string;
+    }): OverlayTarget {
       return {
         id: "editJobProductionQuantity",
         url: `${path.to.jobProductionQuantity(jobId, quantityId)}?overlay=true`
       };
     },
 
-    jobBillOfProcessPreview(jobId: string): OverlayTarget {
+    jobBillOfProcessPreview({ jobId }: { jobId: string }): OverlayTarget {
       return {
         id: "jobBillOfProcessPreview",
         url: path.to.api.jobBillOfProcessPreview(jobId)
       };
     },
 
-    jobConfigTable(jobId: string): OverlayTarget {
+    jobConfigTable({ jobId }: { jobId: string }): OverlayTarget {
       return {
         id: "jobConfigTable",
         url: path.to.api.jobConfigTable(jobId)
       };
     },
 
-    itemConfigTable(
-      itemId: string,
-      opts?: {
-        configuration?: unknown;
-        referenceContext?: ConfigTableReferenceContext;
-      }
-    ): OverlayTarget {
+    itemConfigTable({
+      itemId,
+      configuration,
+      referenceContext
+    }: {
+      itemId: string;
+      configuration?: unknown;
+      referenceContext?: ConfigTableReferenceContext;
+    }): OverlayTarget {
       const base = path.to.api.itemConfigTable(itemId);
-      if (
-        opts?.configuration === undefined &&
-        opts?.referenceContext === undefined
-      ) {
+      if (configuration === undefined && referenceContext === undefined) {
         return { id: "itemConfigTable", url: base };
       }
       const params = new URLSearchParams();
-      if (opts?.configuration !== undefined) {
-        params.set("configuration", JSON.stringify(opts.configuration));
+      if (configuration !== undefined) {
+        params.set("configuration", JSON.stringify(configuration));
       }
-      if (opts?.referenceContext !== undefined) {
-        params.set("referenceContext", JSON.stringify(opts.referenceContext));
+      if (referenceContext !== undefined) {
+        params.set("referenceContext", JSON.stringify(referenceContext));
       }
       return {
         id: "itemConfigTable",
@@ -142,32 +150,19 @@ export function serializeSearch(params: URLSearchParams): string {
 }
 
 /**
- * Adapt a `(jobId, { jobOperationId })` builder so it can be rebuilt from URL
- * params: require `jobId`, pass `jobOperationId` through when present.
- */
-function fromJobParams(
-  build: (jobId: string, opts?: { jobOperationId?: string }) => OverlayTarget
-) {
-  return (params: URLSearchParams): OverlayTarget | null => {
-    const jobId = params.get("jobId");
-    if (!jobId) return null;
-    return build(jobId, {
-      jobOperationId: params.get("jobOperationId") ?? undefined
-    });
-  };
-}
-
-/**
- * Which overlays are URL-addressable, and how to rebuild each from its mirrored
- * params. Decode dispatches here because the loader URL's path is overlay-
- * specific (e.g. `jobId` is a path segment), so params can't just be echoed
- * back — they must run through the canonical `overlay.to.*` builder.
+ * Which overlays are URL-addressable. Each value is the canonical `overlay.to.*`
+ * builder; decode hands it the params mirrored in the URL — the same flat object
+ * the builder produced when it was opened, so the keys line up by construction.
+ * The param is typed `any` because the URL yields a loose `Record<string,string>`
+ * while each builder declares its own required shape; that boundary is dynamic.
+ * Overlays absent here are imperative-only and can't be opened via the URL.
  */
 const urlOverlays: Partial<
-  Record<OverlayId, (params: URLSearchParams) => OverlayTarget | null>
+  // biome-ignore lint/suspicious/noExplicitAny: dynamic URL params -> typed builder
+  Record<OverlayId, (params: any) => OverlayTarget>
 > = {
-  newJobPickup: fromJobParams(overlay.to.newJobPickup),
-  newJobProductionQuantity: fromJobParams(overlay.to.newJobProductionQuantity)
+  newJobPickup: overlay.to.newJobPickup,
+  newJobProductionQuantity: overlay.to.newJobProductionQuantity
 };
 
 /** Whether an overlay is mirrored in the page URL. */
@@ -191,11 +186,11 @@ function decodeOverlayEntry(token: string): OverlayTarget | null {
   const build = urlOverlays[id];
   if (!build) return null;
 
-  const params = new URLSearchParams();
+  const params: Record<string, string> = {};
   if (sep !== -1) {
     for (const pair of token.slice(sep + 1).split(",")) {
       const eq = pair.indexOf("=");
-      if (eq !== -1) params.set(pair.slice(0, eq), pair.slice(eq + 1));
+      if (eq !== -1) params[pair.slice(0, eq)] = pair.slice(eq + 1);
     }
   }
   return build(params);

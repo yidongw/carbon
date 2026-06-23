@@ -195,7 +195,8 @@ export function ProductionQuantityLinesEditor({
       );
 
       openOverlay(
-        overlay.to.itemConfigTable(itemId, {
+        overlay.to.itemConfigTable({
+          itemId,
           configuration: cfg,
           referenceContext
         }),

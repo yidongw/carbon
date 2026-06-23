@@ -358,7 +358,7 @@ const JobsTable = memo(
 
     const openBillOfProcessPreview = useCallback(
       (jobId: string) => {
-        openOverlay(overlay.to.jobBillOfProcessPreview(jobId));
+        openOverlay(overlay.to.jobBillOfProcessPreview({ jobId }));
       },
       [openOverlay]
     );
@@ -367,7 +367,7 @@ const JobsTable = memo(
       (e: MouseEvent, job: Job) => {
         e.stopPropagation();
         if (!job.id) return;
-        openOverlay(overlay.to.jobConfigTable(job.id), {
+        openOverlay(overlay.to.jobConfigTable({ jobId: job.id }), {
           onCreated: revalidate
         });
       },
@@ -905,7 +905,9 @@ const JobsTable = memo(
           {permissions.can("create", "production") && row.id ? (
             <MenuItem
               onClick={() => {
-                openOverlay(overlay.to.newJobProductionQuantity(row.id!));
+                openOverlay(
+                  overlay.to.newJobProductionQuantity({ jobId: row.id! })
+                );
               }}
             >
               <MenuIcon icon={<LuHash />} />
@@ -915,7 +917,7 @@ const JobsTable = memo(
           {permissions.can("create", "production") && row.id ? (
             <MenuItem
               onClick={() => {
-                openOverlay(overlay.to.newJobPickup(row.id!));
+                openOverlay(overlay.to.newJobPickup({ jobId: row.id! }));
               }}
             >
               <MenuIcon icon={<LuPackageOpen />} />
