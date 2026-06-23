@@ -8,7 +8,7 @@ import {
   useRef,
   useState
 } from "react";
-import { useNavigate, useSearchParams } from "react-router";
+import { useLocation } from "react-router";
 import {
   isUrlOverlay,
   type OverlayTarget,
@@ -37,27 +37,38 @@ function createInstanceId() {
   return crypto.randomUUID();
 }
 
+/** Live page search params — overlay state lives in the URL, not the router. */
+function currentSearch(): URLSearchParams {
+  return new URLSearchParams(window.location.search);
+}
+
+/**
+ * Reflect the overlay stack in the URL via the History API — deliberately NOT
+ * `navigate()`, so opening/closing an overlay doesn't trigger a React Router
+ * navigation (which would revalidate the page's loaders). Only the URL changes.
+ * React Router's history state is preserved so its back/forward stays intact.
+ */
+function writeSearch(next: URLSearchParams, mode: "push" | "replace") {
+  const search = serializeSearch(next);
+  const url =
+    window.location.pathname +
+    (search ? `?${search}` : "") +
+    window.location.hash;
+  const state = window.history.state;
+  if (mode === "push") {
+    window.history.pushState(state, "", url);
+  } else {
+    window.history.replaceState(state, "", url);
+  }
+}
+
 export function OverlayProvider({ children }: { children: ReactNode }) {
   const [instances, setInstances] = useState<OverlayInstance[]>([]);
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const location = useLocation();
 
-  // Refs so callbacks/effects always read the latest without re-binding.
+  // Ref so callbacks/effects always read the latest instances without re-binding.
   const instancesRef = useRef(instances);
   instancesRef.current = instances;
-  const searchParamsRef = useRef(searchParams);
-  searchParamsRef.current = searchParams;
-
-  const navigateToParams = useCallback(
-    (next: URLSearchParams, options?: { replace?: boolean }) => {
-      const search = serializeSearch(next);
-      navigate(
-        { search: search ? `?${search}` : "" },
-        { replace: options?.replace }
-      );
-    },
-    [navigate]
-  );
 
   const addInstance = useCallback(
     (
@@ -99,56 +110,44 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
       });
 
       if (id && urlSynced) {
-        const next = paramsWithOverlay(searchParamsRef.current, target);
-        if (next) {
-          // Push (not replace) so Back / close returns to the previous stack.
-          // No pathname given -> the current page URL is preserved.
-          navigateToParams(next);
-        }
+        const next = paramsWithOverlay(currentSearch(), target);
+        // Push (not replace) so Back / close returns to the previous stack.
+        if (next) writeSearch(next, "push");
       }
 
       return id;
     },
-    [addInstance, navigateToParams]
+    [addInstance]
   );
 
-  const closeOverlay = useCallback(
-    (id: string) => {
-      const instance = instancesRef.current.find((i) => i.id === id);
-      setInstances((prev) => prev.filter((i) => i.id !== id));
+  const closeOverlay = useCallback((id: string) => {
+    const instance = instancesRef.current.find((i) => i.id === id);
+    setInstances((prev) => prev.filter((i) => i.id !== id));
 
-      if (!instance?.urlSynced) return;
-      if (instance.pushedUrl) {
-        // Pop the entry we pushed when opening -> back to the previous stack.
-        navigate(-1);
-      } else {
-        // Opened via deep link (no entry to pop) -> pop this overlay's token.
-        navigateToParams(paramsWithoutTopOverlay(searchParamsRef.current), {
-          replace: true
-        });
-      }
-    },
-    [navigate, navigateToParams]
-  );
+    if (!instance?.urlSynced) return;
+    if (instance.pushedUrl) {
+      // Pop the entry we pushed when opening; popstate then reconciles the rest.
+      window.history.back();
+    } else {
+      // Opened via deep link (no entry to pop) -> drop this overlay's token.
+      writeSearch(paramsWithoutTopOverlay(currentSearch()), "replace");
+    }
+  }, []);
 
   const closeAll = useCallback(() => {
     const hadUrlSynced = instancesRef.current.some((i) => i.urlSynced);
     setInstances([]);
     if (hadUrlSynced) {
-      navigateToParams(paramsWithoutOverlays(searchParamsRef.current), {
-        replace: true
-      });
+      writeSearch(paramsWithoutOverlays(currentSearch()), "replace");
     }
-  }, [navigateToParams]);
+  }, []);
 
-  // Reconcile URL -> overlay state for deep links and Back/Forward navigation.
-  //
-  // The URL encodes the full stack of URL-synced overlays (bottom -> top), so
-  // it is the source of truth: close any URL-synced overlay no longer in the
-  // URL, and open (in order) any that are in the URL but not yet present. This
-  // makes a refresh / deep link restore the entire stack, not just the top.
-  useEffect(() => {
-    const desired = overlayStackFromParams(searchParams);
+  // Reconcile overlay instances to whatever the URL says. The URL encodes the
+  // full stack (bottom -> top), so it is the source of truth: close any
+  // URL-synced overlay no longer in the URL, and open (in order) any that are in
+  // the URL but not yet present. A refresh / deep link restores the whole stack.
+  const reconcile = useCallback(() => {
+    const desired = overlayStackFromParams(currentSearch());
     const current = instancesRef.current;
 
     const desiredUrls = new Set(desired.map((t) => t.url));
@@ -168,12 +167,25 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
     if (closeIds.size > 0) {
       setInstances((prev) => prev.filter((i) => !closeIds.has(i.id)));
     }
-    // Append in stack order so z-index / render order stays bottom -> top.
-    // Already reflected in the URL, so don't push another history entry.
+    // Already reflected in the URL, so don't write it again.
     for (const target of toOpen) {
       addInstance(target, undefined, { urlSynced: true, pushedUrl: false });
     }
-  }, [searchParams, addInstance]);
+  }, [addInstance]);
+
+  // Deep links + React Router navigations (page changes drop overlay tokens, so
+  // this closes stale overlays). Our own open/close use the History API, which
+  // doesn't change the router location, so they don't trigger this.
+  useEffect(() => {
+    reconcile();
+  }, [location, reconcile]);
+
+  // Browser Back/Forward over our History-API entries (same router location, so
+  // the effect above won't fire) — reconcile against the popped URL.
+  useEffect(() => {
+    window.addEventListener("popstate", reconcile);
+    return () => window.removeEventListener("popstate", reconcile);
+  }, [reconcile]);
 
   const value = useMemo(
     () => ({ instances, openOverlay, closeOverlay, closeAll }),
