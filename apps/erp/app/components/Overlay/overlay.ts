@@ -159,8 +159,8 @@ export function isUrlOverlay(id: OverlayId): boolean {
   return getOverlayRegistryEntry(id)?.urlAddressable === true;
 }
 
-/** Encode one stack entry as `id:key=val,key=val` (args omitted when empty). */
-function encodeOverlayEntry(target: OverlayTarget): string | null {
+/** Encode an overlay as a `id:key=val,key=val` URL token, or null if not URL-addressable. */
+export function overlayToken(target: OverlayTarget): string | null {
   if (!isUrlOverlay(target.id)) return null;
   const args = Object.entries(target.params ?? {})
     .map(([key, value]) => `${key}=${value}`)
@@ -201,34 +201,13 @@ export function overlayStackFromParams(
   return stack;
 }
 
-/** Page params with `target` pushed onto the overlay stack, or null if not URL-addressable. */
-export function paramsWithOverlay(
+/** Page params carrying exactly `tokens` as the overlay stack (other params kept). */
+export function paramsWithOverlayTokens(
   params: URLSearchParams,
-  target: OverlayTarget
-): URLSearchParams | null {
-  const token = encodeOverlayEntry(target);
-  if (!token) return null;
-  const next = new URLSearchParams(params);
-  next.append(OVERLAY_PARAM, token);
-  return next;
-}
-
-/** Page params with the top overlay popped off the stack (other params kept). */
-export function paramsWithoutTopOverlay(
-  params: URLSearchParams
-): URLSearchParams {
-  const tokens = params.getAll(OVERLAY_PARAM);
-  const next = new URLSearchParams(params);
-  next.delete(OVERLAY_PARAM);
-  for (const token of tokens.slice(0, -1)) next.append(OVERLAY_PARAM, token);
-  return next;
-}
-
-/** Page params with the entire overlay stack cleared (other params kept). */
-export function paramsWithoutOverlays(
-  params: URLSearchParams
+  tokens: string[]
 ): URLSearchParams {
   const next = new URLSearchParams(params);
   next.delete(OVERLAY_PARAM);
+  for (const token of tokens) next.append(OVERLAY_PARAM, token);
   return next;
 }

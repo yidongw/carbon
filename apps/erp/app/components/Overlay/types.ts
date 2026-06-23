@@ -37,6 +37,8 @@ export type OverlayInstance = {
   onSuccess?: (data: unknown) => void;
   /** This overlay is mirrored in the page URL (see `overlay.ts` url codec). */
   urlSynced?: boolean;
+  /** Encoded URL token for url-synced overlays; re-asserted onto the URL after navigations. */
+  token?: string;
 };
 
 export type OpenOverlayOptions = {
