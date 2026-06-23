@@ -94,12 +94,13 @@ export function ProductionQuantityTableQuantityCell({
     event.stopPropagation();
     if (!itemId) return;
     openOverlay(
-      overlay.to.itemConfigTable(
+      overlay.to.itemConfigTable({
         itemId,
-        row.configuration !== undefined && row.configuration !== null
-          ? { configuration: row.configuration }
-          : undefined
-      )
+        configuration:
+          row.configuration !== undefined && row.configuration !== null
+            ? row.configuration
+            : undefined
+      })
     );
   };
 

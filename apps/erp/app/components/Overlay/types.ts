@@ -25,6 +25,8 @@ export type OverlayRegistryEntry = {
   render: OverlayRenderer;
   /** Default `"server"`. Use `"client"` when confirm should not POST (e.g. draft config on a parent form). */
   confirmMode?: OverlayConfirmMode;
+  /** Mirror this overlay in the page URL so it can be deep-linked / restored (see `overlay.ts` codec). */
+  urlAddressable?: boolean;
 };
 
 export type OverlayInstance = {
@@ -33,6 +35,10 @@ export type OverlayInstance = {
   url: string;
   onCreated?: () => void;
   onSuccess?: (data: unknown) => void;
+  /** This overlay is mirrored in the page URL (see `overlay.ts` url codec). */
+  urlSynced?: boolean;
+  /** Encoded URL token for url-synced overlays; re-asserted onto the URL after navigations. */
+  token?: string;
 };
 
 export type OpenOverlayOptions = {

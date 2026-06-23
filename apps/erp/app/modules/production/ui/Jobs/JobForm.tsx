@@ -262,12 +262,15 @@ const JobForm = ({ initialValues }: JobFormProps) => {
     };
 
     if (isEditing && initialValues.id) {
-      openOverlay(overlay.to.jobConfigTable(initialValues.id), { onSuccess });
+      openOverlay(overlay.to.jobConfigTable({ jobId: initialValues.id }), {
+        onSuccess
+      });
       return;
     }
 
     openOverlay(
-      overlay.to.itemConfigTable(itemData.itemId, {
+      overlay.to.itemConfigTable({
+        itemId: itemData.itemId,
         configuration:
           configTableRows && configTablePrimaryKeys.length > 0
             ? {
