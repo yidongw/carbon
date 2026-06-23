@@ -29016,6 +29016,7 @@ export type Database = {
       productionQuantity: {
         Row: {
           companyId: string
+          configuration: Json | null
           createdAt: string
           createdBy: string
           id: string
@@ -29032,6 +29033,7 @@ export type Database = {
         }
         Insert: {
           companyId: string
+          configuration?: Json | null
           createdAt?: string
           createdBy: string
           id?: string
@@ -29048,6 +29050,7 @@ export type Database = {
         }
         Update: {
           companyId?: string
+          configuration?: Json | null
           createdAt?: string
           createdBy?: string
           id?: string

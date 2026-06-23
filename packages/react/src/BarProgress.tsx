@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import { cn } from "./utils/cn";
 
 const BAR_WIDTH = 2;
@@ -97,16 +97,24 @@ export function BarProgress({
   inactiveClassName = "bg-foreground/15"
 }: BarProgressProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [barCount, setBarCount] = useState(0);
+  // Start with a placeholder count so bars are visible on first paint (avoids flash on remount).
+  const [barCount, setBarCount] = useState(1);
 
   const calculateBars = useCallback(() => {
     if (!containerRef.current) return;
     const width = containerRef.current.clientWidth;
-    const count = Math.floor((width + BAR_GAP) / (BAR_WIDTH + BAR_GAP));
-    setBarCount(Math.max(count, 1));
+    // Total width per bar = BAR_WIDTH + BAR_GAP, minus one trailing gap
+    // width = bars * BAR_WIDTH + (bars - 1) * BAR_GAP
+    // width = bars * (BAR_WIDTH + BAR_GAP) - BAR_GAP
+    // bars = floor((width + BAR_GAP) / (BAR_WIDTH + BAR_GAP))
+    const count = Math.max(
+      Math.floor((width + BAR_GAP) / (BAR_WIDTH + BAR_GAP)),
+      1
+    );
+    setBarCount((prev) => (prev === count ? prev : count));
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const el = containerRef.current;
     if (!el) return;
 

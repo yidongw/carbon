@@ -4,6 +4,9 @@ import type { OverlayId } from "./overlay.registry";
 
 export type OverlayType = "drawer" | "modal";
 
+/** How overlay content confirms: POST to `url` action, or client-only callback. */
+export type OverlayConfirmMode = "client" | "server";
+
 export type OverlayContentProps<TLoader = unknown> = {
   loaderData: TLoader | undefined;
   isLoading: boolean;
@@ -11,6 +14,8 @@ export type OverlayContentProps<TLoader = unknown> = {
   close: () => void;
   onCreated?: () => void;
   submitFetcher: FetcherWithComponents<unknown>;
+  confirmMode: OverlayConfirmMode;
+  onConfirmSuccess: (data: unknown) => void;
 };
 
 export type OverlayRenderer = ComponentType<OverlayContentProps>;
@@ -18,6 +23,8 @@ export type OverlayRenderer = ComponentType<OverlayContentProps>;
 export type OverlayRegistryEntry = {
   type: OverlayType;
   render: OverlayRenderer;
+  /** Default `"server"`. Use `"client"` when confirm should not POST (e.g. draft config on a parent form). */
+  confirmMode?: OverlayConfirmMode;
 };
 
 export type OverlayInstance = {
@@ -25,8 +32,10 @@ export type OverlayInstance = {
   overlayId: OverlayId;
   url: string;
   onCreated?: () => void;
+  onSuccess?: (data: unknown) => void;
 };
 
 export type OpenOverlayOptions = {
   onCreated?: () => void;
+  onSuccess?: (data: unknown) => void;
 };

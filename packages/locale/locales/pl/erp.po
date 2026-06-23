@@ -980,6 +980,9 @@ msgstr "Jesteś pewny?"
 msgid "As the company owner, you can transfer ownership to another employee. This will give them full access to billing and administrative settings."
 msgstr "Jako właściciel firmy możesz przenieść własność na innego pracownika. Daje mu to pełny dostęp do rozliczeń i ustawień administracyjnych."
 
+msgid "ASAP"
+msgstr ""
+
 msgid "Ascending"
 msgstr "Rosnąco"
 
@@ -1446,6 +1449,9 @@ msgstr ""
 msgid "Choose another file"
 msgstr "Wybierz inny plik"
 
+msgid "Choose file to upload or drag and drop"
+msgstr ""
+
 msgid "Choose your preferred language for the interface."
 msgstr "Wybierz preferowany język interfejsu."
 
@@ -1494,6 +1500,9 @@ msgstr "Zamknij"
 
 msgid "Close Date"
 msgstr "Data zamknięcia"
+
+msgid "Closed"
+msgstr ""
 
 msgid "Closed Date"
 msgstr "Data zamknięcia"
@@ -1626,6 +1635,9 @@ msgstr ""
 
 msgid "Configuration Parameters"
 msgstr "Parametry konfiguracji"
+
+msgid "Configuration quantities"
+msgstr ""
 
 msgid "Configurator"
 msgstr "Konfigurator"
@@ -2518,6 +2530,12 @@ msgstr "Usuń Święto"
 msgid "Delete Issue"
 msgstr "Usuń Problem"
 
+msgid "Delete Job"
+msgstr ""
+
+msgid "Delete Jobs"
+msgstr ""
+
 msgid "Delete Line"
 msgstr "Usuń linię"
 
@@ -2869,8 +2887,14 @@ msgstr "Wersja robocza"
 msgid "Drag & drop files, or click to browse"
 msgstr ""
 
+msgid "Drag and drop a file here, or click to select a file"
+msgstr ""
+
 msgid "Drag and drop a Purchase Order PDF here, or click to select a file"
 msgstr "Przeciągnij i upuść plik PDF zamówienia zakupu tutaj lub kliknij, aby wybrać plik"
+
+msgid "Drag and drop some files here, or click to select files"
+msgstr ""
 
 msgid "Drag handle"
 msgstr "Uchwyt do przeciągania"
@@ -2923,6 +2947,9 @@ msgstr "Data ukończenia ostatniego zadania"
 
 msgid "Due Days after {selectedCalculationMethod}"
 msgstr "Dni płatności po {selectedCalculationMethod}"
+
+msgid "Due Today"
+msgstr ""
 
 msgid "Duplicate"
 msgstr "Duplikuj"
@@ -3043,6 +3070,9 @@ msgstr ""
 
 msgid "Edit Item Group"
 msgstr "Edytuj grupę pozycji"
+
+msgid "Edit Job"
+msgstr ""
 
 msgid "Edit Kanban"
 msgstr "Edytuj Kanban"
@@ -4123,6 +4153,9 @@ msgstr ""
 
 msgid "Groups"
 msgstr "Grupy"
+
+msgid "Hard Deadline"
+msgstr ""
 
 msgid "Headquarters"
 msgstr ""
@@ -5663,6 +5696,9 @@ msgstr "Brak ukończonych zadań w wybranym zakresie"
 msgid "No condition may match"
 msgstr ""
 
+msgid "No configuration quantities recorded yet."
+msgstr ""
+
 msgid "No conversion is required"
 msgstr "Konwersja nie jest wymagana"
 
@@ -5677,6 +5713,9 @@ msgstr "Brak danych"
 
 msgid "No days off scheduled"
 msgstr "Brak zaplanowanych dni wolnych"
+
+msgid "No Deadline"
+msgstr ""
 
 msgid "No default attachments yet."
 msgstr ""
@@ -6218,6 +6257,9 @@ msgstr "Zatwierdź"
 msgid "Path"
 msgstr "Ścieżka"
 
+msgid "Paused"
+msgstr ""
+
 msgid "Payables"
 msgstr ""
 
@@ -6349,6 +6391,9 @@ msgstr "Plan"
 
 msgid "Plan Type"
 msgstr "Typ planu"
+
+msgid "Planned"
+msgstr ""
 
 msgid "Planned End"
 msgstr "Planowany koniec"
@@ -6806,6 +6851,9 @@ msgstr "Ilość na jednostkę nadrzędną"
 msgid "Quantity Type"
 msgstr "Typ ilości"
 
+msgid "Quantity updated"
+msgstr ""
+
 #. placeholder {0}: numberFormatter.format(forecastQuantity)
 msgid "Quantity: {0}"
 msgstr ""
@@ -6866,6 +6914,9 @@ msgstr "Ponownie aktywuj"
 
 msgid "Read rows"
 msgstr "Odczytaj wiersze"
+
+msgid "Ready"
+msgstr ""
 
 msgid "Ready for Quote"
 msgstr "Gotowy do wyceny"
@@ -6962,16 +7013,7 @@ msgstr ""
 msgid "recorded {qty} units"
 msgstr ""
 
-msgid "recorded {qty} units of production"
-msgstr ""
-
-msgid "recorded {qty} units of rework"
-msgstr ""
-
-msgid "recorded {qty} units of scrap"
-msgstr ""
-
-msgid "recorded {qty} units of scrap ({reason})"
+msgid "recorded {qty} units ({reason})"
 msgstr ""
 
 msgid "Records"
@@ -8019,6 +8061,9 @@ msgstr "Pomiń zaplanowaną konserwację w dni świąt firmowych"
 
 msgid "Skipped"
 msgstr "Pominięte"
+
+msgid "Soft Deadline"
+msgstr ""
 
 msgid "Some cells have invalid values. Fix the highlighted cells before saving."
 msgstr ""

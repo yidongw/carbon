@@ -980,6 +980,9 @@ msgstr "Вы уверены?"
 msgid "As the company owner, you can transfer ownership to another employee. This will give them full access to billing and administrative settings."
 msgstr "Как владелец компании, вы можете передать право собственности другому сотруднику. Это даст им полный доступ к биллингу и административным параметрам."
 
+msgid "ASAP"
+msgstr ""
+
 msgid "Ascending"
 msgstr "По возрастанию"
 
@@ -1446,6 +1449,9 @@ msgstr ""
 msgid "Choose another file"
 msgstr "Выбрать другой файл"
 
+msgid "Choose file to upload or drag and drop"
+msgstr ""
+
 msgid "Choose your preferred language for the interface."
 msgstr "Выберите предпочитаемый язык для интерфейса."
 
@@ -1494,6 +1500,9 @@ msgstr "Закрыть"
 
 msgid "Close Date"
 msgstr "Дата закрытия"
+
+msgid "Closed"
+msgstr ""
 
 msgid "Closed Date"
 msgstr "Дата закрытия"
@@ -1626,6 +1635,9 @@ msgstr ""
 
 msgid "Configuration Parameters"
 msgstr "Параметры конфигурации"
+
+msgid "Configuration quantities"
+msgstr ""
 
 msgid "Configurator"
 msgstr "Конфигуратор"
@@ -2518,6 +2530,12 @@ msgstr "Удалить праздник"
 msgid "Delete Issue"
 msgstr "Удалить проблему"
 
+msgid "Delete Job"
+msgstr ""
+
+msgid "Delete Jobs"
+msgstr ""
+
 msgid "Delete Line"
 msgstr "Удалить строку"
 
@@ -2869,8 +2887,14 @@ msgstr "Черновик"
 msgid "Drag & drop files, or click to browse"
 msgstr ""
 
+msgid "Drag and drop a file here, or click to select a file"
+msgstr ""
+
 msgid "Drag and drop a Purchase Order PDF here, or click to select a file"
 msgstr "Перетащите PDF-файл заказа на покупку сюда или нажмите, чтобы выбрать файл"
+
+msgid "Drag and drop some files here, or click to select files"
+msgstr ""
 
 msgid "Drag handle"
 msgstr "Ручка перетаскивания"
@@ -2923,6 +2947,9 @@ msgstr "Дата выполнения последнего задания"
 
 msgid "Due Days after {selectedCalculationMethod}"
 msgstr "Дни оплаты после {selectedCalculationMethod}"
+
+msgid "Due Today"
+msgstr ""
 
 msgid "Duplicate"
 msgstr "Дублировать"
@@ -3043,6 +3070,9 @@ msgstr ""
 
 msgid "Edit Item Group"
 msgstr "Редактировать группу товаров"
+
+msgid "Edit Job"
+msgstr ""
 
 msgid "Edit Kanban"
 msgstr "Редактировать Kanban"
@@ -4123,6 +4153,9 @@ msgstr ""
 
 msgid "Groups"
 msgstr "Группы"
+
+msgid "Hard Deadline"
+msgstr ""
 
 msgid "Headquarters"
 msgstr ""
@@ -5663,6 +5696,9 @@ msgstr "Нет завершенных работ в диапазоне"
 msgid "No condition may match"
 msgstr ""
 
+msgid "No configuration quantities recorded yet."
+msgstr ""
+
 msgid "No conversion is required"
 msgstr "Преобразование не требуется"
 
@@ -5677,6 +5713,9 @@ msgstr "Данные не существуют"
 
 msgid "No days off scheduled"
 msgstr "Нет запланированных выходных"
+
+msgid "No Deadline"
+msgstr ""
 
 msgid "No default attachments yet."
 msgstr ""
@@ -6218,6 +6257,9 @@ msgstr "Пройти"
 msgid "Path"
 msgstr "Путь"
 
+msgid "Paused"
+msgstr ""
+
 msgid "Payables"
 msgstr ""
 
@@ -6349,6 +6391,9 @@ msgstr "План"
 
 msgid "Plan Type"
 msgstr "Тип плана"
+
+msgid "Planned"
+msgstr ""
 
 msgid "Planned End"
 msgstr "Запланированное окончание"
@@ -6806,6 +6851,9 @@ msgstr "Количество на родителя"
 msgid "Quantity Type"
 msgstr "Тип количества"
 
+msgid "Quantity updated"
+msgstr ""
+
 #. placeholder {0}: numberFormatter.format(forecastQuantity)
 msgid "Quantity: {0}"
 msgstr ""
@@ -6866,6 +6914,9 @@ msgstr "Переактивировать"
 
 msgid "Read rows"
 msgstr "Читать строки"
+
+msgid "Ready"
+msgstr ""
 
 msgid "Ready for Quote"
 msgstr "Готово к предложению"
@@ -6962,16 +7013,7 @@ msgstr ""
 msgid "recorded {qty} units"
 msgstr ""
 
-msgid "recorded {qty} units of production"
-msgstr ""
-
-msgid "recorded {qty} units of rework"
-msgstr ""
-
-msgid "recorded {qty} units of scrap"
-msgstr ""
-
-msgid "recorded {qty} units of scrap ({reason})"
+msgid "recorded {qty} units ({reason})"
 msgstr ""
 
 msgid "Records"
@@ -8019,6 +8061,9 @@ msgstr "Пропускать запланированное техническо
 
 msgid "Skipped"
 msgstr "Пропущено"
+
+msgid "Soft Deadline"
+msgstr ""
 
 msgid "Some cells have invalid values. Fix the highlighted cells before saving."
 msgstr ""

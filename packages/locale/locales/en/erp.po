@@ -980,6 +980,9 @@ msgstr "Are you sure?"
 msgid "As the company owner, you can transfer ownership to another employee. This will give them full access to billing and administrative settings."
 msgstr "As the company owner, you can transfer ownership to another employee. This will give them full access to billing and administrative settings."
 
+msgid "ASAP"
+msgstr "ASAP"
+
 msgid "Ascending"
 msgstr "Ascending"
 
@@ -1446,6 +1449,9 @@ msgstr "Choose a serial number"
 msgid "Choose another file"
 msgstr "Choose another file"
 
+msgid "Choose file to upload or drag and drop"
+msgstr "Choose file to upload or drag and drop"
+
 msgid "Choose your preferred language for the interface."
 msgstr "Choose your preferred language for the interface."
 
@@ -1494,6 +1500,9 @@ msgstr "Close"
 
 msgid "Close Date"
 msgstr "Close Date"
+
+msgid "Closed"
+msgstr "Closed"
 
 msgid "Closed Date"
 msgstr "Closed Date"
@@ -1626,6 +1635,9 @@ msgstr "Config Params"
 
 msgid "Configuration Parameters"
 msgstr "Configuration Parameters"
+
+msgid "Configuration quantities"
+msgstr "Configuration quantities"
 
 msgid "Configurator"
 msgstr "Configurator"
@@ -2518,6 +2530,12 @@ msgstr "Delete Holiday"
 msgid "Delete Issue"
 msgstr "Delete Issue"
 
+msgid "Delete Job"
+msgstr "Delete Job"
+
+msgid "Delete Jobs"
+msgstr "Delete Jobs"
+
 msgid "Delete Line"
 msgstr "Delete Line"
 
@@ -2869,8 +2887,14 @@ msgstr "Draft"
 msgid "Drag & drop files, or click to browse"
 msgstr "Drag & drop files, or click to browse"
 
+msgid "Drag and drop a file here, or click to select a file"
+msgstr "Drag and drop a file here, or click to select a file"
+
 msgid "Drag and drop a Purchase Order PDF here, or click to select a file"
 msgstr "Drag and drop a Purchase Order PDF here, or click to select a file"
+
+msgid "Drag and drop some files here, or click to select files"
+msgstr "Drag and drop some files here, or click to select files"
 
 msgid "Drag handle"
 msgstr "Drag handle"
@@ -2923,6 +2947,9 @@ msgstr "Due Date of Last Job"
 
 msgid "Due Days after {selectedCalculationMethod}"
 msgstr "Due Days after {selectedCalculationMethod}"
+
+msgid "Due Today"
+msgstr "Due Today"
 
 msgid "Duplicate"
 msgstr "Duplicate"
@@ -3043,6 +3070,9 @@ msgstr "Edit Inspection Document"
 
 msgid "Edit Item Group"
 msgstr "Edit Item Group"
+
+msgid "Edit Job"
+msgstr "Edit Job"
 
 msgid "Edit Kanban"
 msgstr "Edit Kanban"
@@ -4123,6 +4153,9 @@ msgstr "Group: {groupDisplayName}"
 
 msgid "Groups"
 msgstr "Groups"
+
+msgid "Hard Deadline"
+msgstr "Hard Deadline"
 
 msgid "Headquarters"
 msgstr "Headquarters"
@@ -5663,6 +5696,9 @@ msgstr "No completed jobs within range"
 msgid "No condition may match"
 msgstr "No condition may match"
 
+msgid "No configuration quantities recorded yet."
+msgstr "No configuration quantities recorded yet."
+
 msgid "No conversion is required"
 msgstr "No conversion is required"
 
@@ -5677,6 +5713,9 @@ msgstr "No data exists"
 
 msgid "No days off scheduled"
 msgstr "No days off scheduled"
+
+msgid "No Deadline"
+msgstr "No Deadline"
 
 msgid "No default attachments yet."
 msgstr "No default attachments yet."
@@ -6218,6 +6257,9 @@ msgstr "Pass"
 msgid "Path"
 msgstr "Path"
 
+msgid "Paused"
+msgstr "Paused"
+
 msgid "Payables"
 msgstr "Payables"
 
@@ -6349,6 +6391,9 @@ msgstr "Plan"
 
 msgid "Plan Type"
 msgstr "Plan Type"
+
+msgid "Planned"
+msgstr "Planned"
 
 msgid "Planned End"
 msgstr "Planned End"
@@ -6806,6 +6851,9 @@ msgstr "Quantity per Parent"
 msgid "Quantity Type"
 msgstr "Quantity Type"
 
+msgid "Quantity updated"
+msgstr "Quantity updated"
+
 #. placeholder {0}: numberFormatter.format(forecastQuantity)
 msgid "Quantity: {0}"
 msgstr "Quantity: {0}"
@@ -6866,6 +6914,9 @@ msgstr "Reactivate"
 
 msgid "Read rows"
 msgstr "Read rows"
+
+msgid "Ready"
+msgstr "Ready"
 
 msgid "Ready for Quote"
 msgstr "Ready for Quote"
@@ -6962,17 +7013,8 @@ msgstr "Record the inspection result for this sample."
 msgid "recorded {qty} units"
 msgstr "recorded {qty} units"
 
-msgid "recorded {qty} units of production"
-msgstr "recorded {qty} units of production"
-
-msgid "recorded {qty} units of rework"
-msgstr "recorded {qty} units of rework"
-
-msgid "recorded {qty} units of scrap"
-msgstr "recorded {qty} units of scrap"
-
-msgid "recorded {qty} units of scrap ({reason})"
-msgstr "recorded {qty} units of scrap ({reason})"
+msgid "recorded {qty} units ({reason})"
+msgstr "recorded {qty} units ({reason})"
 
 msgid "Records"
 msgstr "Records"
@@ -8019,6 +8061,9 @@ msgstr "Skip scheduled maintenance on company holidays"
 
 msgid "Skipped"
 msgstr "Skipped"
+
+msgid "Soft Deadline"
+msgstr "Soft Deadline"
 
 msgid "Some cells have invalid values. Fix the highlighted cells before saving."
 msgstr "Some cells have invalid values. Fix the highlighted cells before saving."

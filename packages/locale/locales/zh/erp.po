@@ -980,6 +980,9 @@ msgstr "你确定吗？"
 msgid "As the company owner, you can transfer ownership to another employee. This will give them full access to billing and administrative settings."
 msgstr "作为公司所有者，您可以将所有权转移给另一名员工。这将授予他们对账单和管理设置的完全访问权限。"
 
+msgid "ASAP"
+msgstr "尽快"
+
 msgid "Ascending"
 msgstr "升序"
 
@@ -1446,6 +1449,9 @@ msgstr ""
 msgid "Choose another file"
 msgstr "选择另一个文件"
 
+msgid "Choose file to upload or drag and drop"
+msgstr "选择要上传的文件或拖放"
+
 msgid "Choose your preferred language for the interface."
 msgstr "选择您偏好的界面语言。"
 
@@ -1494,6 +1500,9 @@ msgstr "关闭"
 
 msgid "Close Date"
 msgstr "关闭日期"
+
+msgid "Closed"
+msgstr "已关闭"
 
 msgid "Closed Date"
 msgstr "关闭日期"
@@ -1626,6 +1635,9 @@ msgstr ""
 
 msgid "Configuration Parameters"
 msgstr "配置参数"
+
+msgid "Configuration quantities"
+msgstr ""
 
 msgid "Configurator"
 msgstr "配置器"
@@ -2518,6 +2530,12 @@ msgstr "删除假期"
 msgid "Delete Issue"
 msgstr "删除问题"
 
+msgid "Delete Job"
+msgstr "删除工作"
+
+msgid "Delete Jobs"
+msgstr "删除工作"
+
 msgid "Delete Line"
 msgstr "删除行"
 
@@ -2869,8 +2887,14 @@ msgstr "草稿"
 msgid "Drag & drop files, or click to browse"
 msgstr ""
 
+msgid "Drag and drop a file here, or click to select a file"
+msgstr "将文件拖放到此处，或点击选择文件"
+
 msgid "Drag and drop a Purchase Order PDF here, or click to select a file"
 msgstr "将采购订单 PDF 拖放到此处，或点击选择文件"
+
+msgid "Drag and drop some files here, or click to select files"
+msgstr "将文件拖放到此处，或点击选择文件"
 
 msgid "Drag handle"
 msgstr "拖动手柄"
@@ -2923,6 +2947,9 @@ msgstr "最后一个工作的截止日期"
 
 msgid "Due Days after {selectedCalculationMethod}"
 msgstr "到期天数（{selectedCalculationMethod}之后）"
+
+msgid "Due Today"
+msgstr "今日到期"
 
 msgid "Duplicate"
 msgstr "复制"
@@ -3043,6 +3070,9 @@ msgstr ""
 
 msgid "Edit Item Group"
 msgstr "编辑物品组"
+
+msgid "Edit Job"
+msgstr "编辑工作"
 
 msgid "Edit Kanban"
 msgstr "编辑看板"
@@ -4123,6 +4153,9 @@ msgstr ""
 
 msgid "Groups"
 msgstr "组"
+
+msgid "Hard Deadline"
+msgstr "硬性截止日期"
 
 msgid "Headquarters"
 msgstr "总部"
@@ -5663,6 +5696,9 @@ msgstr "范围内没有已完成的工作"
 msgid "No condition may match"
 msgstr ""
 
+msgid "No configuration quantities recorded yet."
+msgstr ""
+
 msgid "No conversion is required"
 msgstr "不需要转换"
 
@@ -5677,6 +5713,9 @@ msgstr "没有数据存在"
 
 msgid "No days off scheduled"
 msgstr "未安排休息日"
+
+msgid "No Deadline"
+msgstr "无截止日期"
 
 msgid "No default attachments yet."
 msgstr ""
@@ -6218,6 +6257,9 @@ msgstr "通过"
 msgid "Path"
 msgstr "路径"
 
+msgid "Paused"
+msgstr "已暂停"
+
 msgid "Payables"
 msgstr "应付账款"
 
@@ -6349,6 +6391,9 @@ msgstr "计划"
 
 msgid "Plan Type"
 msgstr "计划类型"
+
+msgid "Planned"
+msgstr "已计划"
 
 msgid "Planned End"
 msgstr "计划结束"
@@ -6806,6 +6851,9 @@ msgstr "每个父项的数量"
 msgid "Quantity Type"
 msgstr "数量类型"
 
+msgid "Quantity updated"
+msgstr ""
+
 #. placeholder {0}: numberFormatter.format(forecastQuantity)
 msgid "Quantity: {0}"
 msgstr ""
@@ -6866,6 +6914,9 @@ msgstr "重新激活"
 
 msgid "Read rows"
 msgstr "读取行"
+
+msgid "Ready"
+msgstr "就绪"
 
 msgid "Ready for Quote"
 msgstr "准备报价"
@@ -6951,7 +7002,7 @@ msgid "Record deleted"
 msgstr "记录已删除"
 
 msgid "Record production quantity"
-msgstr ""
+msgstr "记录生产数量"
 
 msgid "Record quantity"
 msgstr ""
@@ -6960,19 +7011,10 @@ msgid "Record the inspection result for this sample."
 msgstr ""
 
 msgid "recorded {qty} units"
-msgstr ""
+msgstr "记录了 {qty} 件"
 
-msgid "recorded {qty} units of production"
-msgstr ""
-
-msgid "recorded {qty} units of rework"
-msgstr ""
-
-msgid "recorded {qty} units of scrap"
-msgstr ""
-
-msgid "recorded {qty} units of scrap ({reason})"
-msgstr ""
+msgid "recorded {qty} units ({reason})"
+msgstr "记录了 {qty} 件（{reason}）"
 
 msgid "Records"
 msgstr "记录"
@@ -8019,6 +8061,9 @@ msgstr "跳过公司假期的计划维护"
 
 msgid "Skipped"
 msgstr "已跳过"
+
+msgid "Soft Deadline"
+msgstr "软性截止日期"
 
 msgid "Some cells have invalid values. Fix the highlighted cells before saving."
 msgstr ""

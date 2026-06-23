@@ -980,6 +980,9 @@ msgstr "Êtes-vous sûr ?"
 msgid "As the company owner, you can transfer ownership to another employee. This will give them full access to billing and administrative settings."
 msgstr "En tant que propriétaire de l'entreprise, vous pouvez transférer la propriété à un autre employé. Cela lui donnera un accès complet à la facturation et aux paramètres administratifs."
 
+msgid "ASAP"
+msgstr ""
+
 msgid "Ascending"
 msgstr "Croissant"
 
@@ -1446,6 +1449,9 @@ msgstr ""
 msgid "Choose another file"
 msgstr "Choisir un autre fichier"
 
+msgid "Choose file to upload or drag and drop"
+msgstr ""
+
 msgid "Choose your preferred language for the interface."
 msgstr "Choisissez votre langue préférée pour l'interface."
 
@@ -1494,6 +1500,9 @@ msgstr "Fermer"
 
 msgid "Close Date"
 msgstr "Date de fermeture"
+
+msgid "Closed"
+msgstr ""
 
 msgid "Closed Date"
 msgstr "Date de fermeture"
@@ -1626,6 +1635,9 @@ msgstr ""
 
 msgid "Configuration Parameters"
 msgstr "Paramètres de configuration"
+
+msgid "Configuration quantities"
+msgstr ""
 
 msgid "Configurator"
 msgstr "Configurateur"
@@ -2518,6 +2530,12 @@ msgstr "Supprimer le jour férié"
 msgid "Delete Issue"
 msgstr "Supprimer le problème"
 
+msgid "Delete Job"
+msgstr ""
+
+msgid "Delete Jobs"
+msgstr ""
+
 msgid "Delete Line"
 msgstr "Supprimer la ligne"
 
@@ -2869,8 +2887,14 @@ msgstr "Brouillon"
 msgid "Drag & drop files, or click to browse"
 msgstr ""
 
+msgid "Drag and drop a file here, or click to select a file"
+msgstr ""
+
 msgid "Drag and drop a Purchase Order PDF here, or click to select a file"
 msgstr "Glissez-déposez un PDF de bon de commande ici, ou cliquez pour sélectionner un fichier"
+
+msgid "Drag and drop some files here, or click to select files"
+msgstr ""
 
 msgid "Drag handle"
 msgstr "Poignée de déplacement"
@@ -2923,6 +2947,9 @@ msgstr "Date d'échéance du dernier travail"
 
 msgid "Due Days after {selectedCalculationMethod}"
 msgstr "Jours d'échéance après {selectedCalculationMethod}"
+
+msgid "Due Today"
+msgstr ""
 
 msgid "Duplicate"
 msgstr "Dupliquer"
@@ -3043,6 +3070,9 @@ msgstr ""
 
 msgid "Edit Item Group"
 msgstr "Modifier le groupe d'articles"
+
+msgid "Edit Job"
+msgstr ""
 
 msgid "Edit Kanban"
 msgstr "Modifier Kanban"
@@ -4123,6 +4153,9 @@ msgstr ""
 
 msgid "Groups"
 msgstr "Groupes"
+
+msgid "Hard Deadline"
+msgstr ""
 
 msgid "Headquarters"
 msgstr ""
@@ -5663,6 +5696,9 @@ msgstr "Aucun travail terminé dans la plage"
 msgid "No condition may match"
 msgstr ""
 
+msgid "No configuration quantities recorded yet."
+msgstr ""
+
 msgid "No conversion is required"
 msgstr "Aucune conversion n'est requise"
 
@@ -5677,6 +5713,9 @@ msgstr "Aucune donnée n'existe"
 
 msgid "No days off scheduled"
 msgstr "Aucun jour de congé prévu"
+
+msgid "No Deadline"
+msgstr ""
 
 msgid "No default attachments yet."
 msgstr ""
@@ -6218,6 +6257,9 @@ msgstr "Réussir"
 msgid "Path"
 msgstr "Chemin"
 
+msgid "Paused"
+msgstr ""
+
 msgid "Payables"
 msgstr ""
 
@@ -6349,6 +6391,9 @@ msgstr "Plan"
 
 msgid "Plan Type"
 msgstr "Type de plan"
+
+msgid "Planned"
+msgstr ""
 
 msgid "Planned End"
 msgstr "Fin prévue"
@@ -6806,6 +6851,9 @@ msgstr "Quantité par Parent"
 msgid "Quantity Type"
 msgstr "Type de quantité"
 
+msgid "Quantity updated"
+msgstr ""
+
 #. placeholder {0}: numberFormatter.format(forecastQuantity)
 msgid "Quantity: {0}"
 msgstr ""
@@ -6866,6 +6914,9 @@ msgstr "Réactiver"
 
 msgid "Read rows"
 msgstr "Lire les lignes"
+
+msgid "Ready"
+msgstr ""
 
 msgid "Ready for Quote"
 msgstr "Prêt pour devis"
@@ -6962,16 +7013,7 @@ msgstr ""
 msgid "recorded {qty} units"
 msgstr ""
 
-msgid "recorded {qty} units of production"
-msgstr ""
-
-msgid "recorded {qty} units of rework"
-msgstr ""
-
-msgid "recorded {qty} units of scrap"
-msgstr ""
-
-msgid "recorded {qty} units of scrap ({reason})"
+msgid "recorded {qty} units ({reason})"
 msgstr ""
 
 msgid "Records"
@@ -8019,6 +8061,9 @@ msgstr "Ignorer la maintenance programmée lors des jours fériés de l'entrepri
 
 msgid "Skipped"
 msgstr "Ignoré"
+
+msgid "Soft Deadline"
+msgstr ""
 
 msgid "Some cells have invalid values. Fix the highlighted cells before saving."
 msgstr ""
