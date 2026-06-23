@@ -4,6 +4,9 @@ import {
   cn,
   HStack,
   IconButton,
+  Loading,
+  Modal,
+  ModalContent,
   Table,
   Tbody,
   Td,
@@ -12,14 +15,20 @@ import {
   Tr
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LuPlus, LuTrash2 } from "react-icons/lu";
+import { useFetcher } from "react-router";
 import { Enumerable } from "~/components/Enumerable";
 import { useShape } from "~/components/Form/Shape";
 import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
 import type { ConfigurationParameter } from "~/modules/items/types";
-import { fillValueFromReference } from "~/modules/production/configParamsTableColumns";
+import {
+  type ConfigTableReferenceContext,
+  fillValueFromReference
+} from "~/modules/production/configParamsTableColumns";
 import { buildConfigTableActionResponse } from "~/modules/production/configTableOverlay";
+import type { ItemConfigTableOverlayLoaderData } from "~/routes/api+/items.$itemId.config-table";
+import { path } from "~/utils/path";
 
 type Row = Record<string, string | number | boolean>;
 
@@ -43,7 +52,12 @@ export type ConfigParamsTableModalProps = {
   initialRows?: Row[];
   referenceByRowIndex?: Array<Record<string, number>>;
   jobDisplayId?: string | null;
-} & OverlayFormInjectedProps;
+} & Omit<OverlayFormInjectedProps, "fetcher" | "action"> & {
+    // Optional so the same content can render as a plain local modal (client
+    // confirm) without the overlay's submit fetcher.
+    fetcher?: OverlayFormInjectedProps["fetcher"];
+    action?: string;
+  };
 
 function buildColumns(
   parameters: ConfigurationParameter[],
@@ -375,7 +389,7 @@ function ConfigParamsTableModal({
       return;
     }
 
-    if (!formAction) return;
+    if (!formAction || !fetcher) return;
 
     const formData = new FormData();
     formData.append("configuration", JSON.stringify(configuration));
@@ -602,8 +616,8 @@ function ConfigParamsTableModal({
       <Button
         type="button"
         variant="primary"
-        isLoading={fetcher.state !== "idle"}
-        isDisabled={fetcher.state !== "idle"}
+        isLoading={fetcher ? fetcher.state !== "idle" : false}
+        isDisabled={fetcher ? fetcher.state !== "idle" : false}
         onClick={handleSubmit}
       >
         <Trans>Confirm</Trans>
@@ -628,6 +642,92 @@ function ConfigParamsTableModal({
           {footer}
         </div>
       </div>
+  );
+}
+
+function configTableLoadUrl(
+  itemId: string,
+  configuration: unknown,
+  referenceContext?: ConfigTableReferenceContext
+): string {
+  const base = path.to.api.itemConfigTable(itemId);
+  const params = new URLSearchParams();
+  if (configuration !== undefined) {
+    params.set("configuration", JSON.stringify(configuration));
+  }
+  if (referenceContext !== undefined) {
+    params.set("referenceContext", JSON.stringify(referenceContext));
+  }
+  const query = params.toString();
+  return query ? `${base}?${query}` : base;
+}
+
+/**
+ * Local (non-overlay) config-table editor. A parent form owns the open state and
+ * gets the edited config via `onConfirm`. It loads parameters + click-to-fill
+ * reference data from the same `/api/items/:itemId/config-table` endpoint (so the
+ * server still resolves fresh pickup/reported hints for the selected operation),
+ * but it's a plain `useFetcher` — no overlay registry, no page-URL state. This
+ * replaces the old `confirmMode: "client"` overlay usage in the forms.
+ */
+export function ConfigParamsTableLocalModal({
+  open,
+  onClose,
+  onConfirm,
+  itemId,
+  configuration,
+  referenceContext,
+  jobDisplayId
+}: {
+  open: boolean;
+  onClose: () => void;
+  onConfirm: (data: unknown) => void;
+  itemId: string;
+  configuration?: unknown;
+  referenceContext?: ConfigTableReferenceContext;
+  jobDisplayId?: string | null;
+}) {
+  const fetcher = useFetcher<ItemConfigTableOverlayLoaderData | null>();
+  const load = useRef(fetcher.load);
+  load.current = fetcher.load;
+
+  useEffect(() => {
+    if (!open || !itemId) return;
+    void load.current(configTableLoadUrl(itemId, configuration, referenceContext));
+  }, [open, itemId, configuration, referenceContext]);
+
+  if (!open) return null;
+
+  const data = fetcher.data;
+  const isLoading = data === undefined && fetcher.state !== "idle";
+
+  return (
+    <Modal
+      open
+      onOpenChange={(next) => {
+        if (!next) onClose();
+      }}
+    >
+      <ModalContent className="flex max-h-[92vh] w-fit min-w-[20rem] max-w-[calc(100vw-1.5rem)] flex-col gap-0 overflow-hidden p-0 pt-0 [&>button]:z-20">
+        <div className="min-h-0 flex-1 overflow-auto">
+          {data?.parameters?.length ? (
+            <ConfigParamsTableModal
+              parameters={data.parameters}
+              initialRows={data.initialRows}
+              referenceByRowIndex={data.referenceByRowIndex}
+              jobDisplayId={jobDisplayId ?? data.itemReadableId}
+              confirmMode="client"
+              onConfirmSuccess={onConfirm}
+              onDismiss={onClose}
+            />
+          ) : (
+            <div className="flex min-h-[200px] items-center justify-center p-6">
+              <Loading isLoading={isLoading} />
+            </div>
+          )}
+        </div>
+      </ModalContent>
+    </Modal>
   );
 }
 

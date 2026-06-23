@@ -11,10 +11,9 @@ import {
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { LuPlus, LuTrash2 } from "react-icons/lu";
 import { useScrapReasons } from "~/components/Form/ScrapReason";
-import { overlay, useOverlay } from "~/components/Overlay";
 import {
   buildProductionConfigTableReferenceContext,
   type ConfigReferenceSource,
@@ -23,6 +22,7 @@ import {
 import { isConfigTableOverlaySuccess } from "~/modules/production/configTableOverlay";
 import { computeJobConfigTableTotal } from "~/modules/production/jobConfiguration";
 import type { ProductionQuantityLineInput } from "~/modules/production/productionQuantityReport.models";
+import { ConfigParamsTableLocalModal } from "./ConfigParamsTableModal";
 import { ItemConfigQuantityInput } from "./ItemConfigQuantityInput";
 
 type ConfigurationParameter = {
@@ -152,7 +152,6 @@ export function ProductionQuantityLinesEditor({
   jobOperationId?: string;
 }) {
   const { t } = useLingui();
-  const { openOverlay } = useOverlay();
   const scrapReasonOptions = useScrapReasons();
 
   const scrapOptions = useMemo(
@@ -172,6 +171,13 @@ export function ProductionQuantityLinesEditor({
     },
     [setLines]
   );
+
+  const [lineConfigModal, setLineConfigModal] = useState<{
+    lineKey: string;
+    lineQuantity: number;
+    configuration: unknown;
+    referenceContext?: ConfigTableReferenceContext;
+  } | null>(null);
 
   const openLineConfig = useCallback(
     (lineKey: string) => {
@@ -194,24 +200,26 @@ export function ProductionQuantityLinesEditor({
         jobOperationId
       );
 
-      openOverlay(
-        overlay.to.itemConfigTable({
-          itemId,
-          configuration: cfg,
-          referenceContext
-        }),
-        {
-          onSuccess: (data) => {
-            if (!isConfigTableOverlaySuccess(data)) return;
-            updateLine(lineKey, {
-              configuration: data.configuration,
-              quantity: data.total > 0 ? data.total : line.quantity
-            });
-          }
-        }
-      );
+      setLineConfigModal({
+        lineKey,
+        lineQuantity: line.quantity,
+        configuration: cfg,
+        referenceContext
+      });
     },
-    [configReferenceContext, configReferenceSource, employeeId, itemId, jobId, jobOperationId, lines, openOverlay, updateLine]
+    [configReferenceContext, configReferenceSource, employeeId, itemId, jobId, jobOperationId, lines]
+  );
+
+  const handleLineConfigConfirm = useCallback(
+    (data: unknown) => {
+      if (!lineConfigModal || !isConfigTableOverlaySuccess(data)) return;
+      updateLine(lineConfigModal.lineKey, {
+        configuration: data.configuration,
+        quantity: data.total > 0 ? data.total : lineConfigModal.lineQuantity
+      });
+      setLineConfigModal(null);
+    },
+    [lineConfigModal, updateLine]
   );
 
   const addLine = () => {
@@ -375,6 +383,16 @@ export function ProductionQuantityLinesEditor({
           <LuPlus className="mr-1.5 h-4 w-4" />
           <Trans>Add line</Trans>
         </Button>
+      ) : null}
+      {itemId && lineConfigModal ? (
+        <ConfigParamsTableLocalModal
+          open
+          onClose={() => setLineConfigModal(null)}
+          onConfirm={handleLineConfigConfirm}
+          itemId={itemId}
+          configuration={lineConfigModal.configuration}
+          referenceContext={lineConfigModal.referenceContext}
+        />
       ) : null}
     </VStack>
   );

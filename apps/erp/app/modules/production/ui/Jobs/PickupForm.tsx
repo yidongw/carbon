@@ -16,13 +16,14 @@ import { useNavigate, useParams, useSearchParams } from "react-router";
 import type { z } from "zod";
 import { Hidden, Number, Select, Submit, TextArea } from "~/components/Form";
 import { ProductionActorFields, selectionFromInitialValues } from "./ProductionActorFields";
-import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions } from "~/hooks";
 import { isConfigTableOverlaySuccess } from "../../configTableOverlay";
 import {
   buildJobRemainingReferenceContext,
-  type ConfigReferenceSource
+  type ConfigReferenceSource,
+  type ConfigTableReferenceContext
 } from "../../configParamsTableColumns";
+import { ConfigParamsTableLocalModal } from "./ConfigParamsTableModal";
 import { jobOperationPickupValidator } from "~/modules/production/production.models";
 import { path } from "~/utils/path";
 import { computeJobConfigTableTotal } from "../../jobConfiguration";
@@ -136,7 +137,6 @@ const PickupForm = ({
     string[]
   >(initialConfig.primaryKeys);
   const [configTableTotal, setConfigTableTotal] = useState(initialConfig.total);
-  const { openOverlay } = useOverlay();
 
   const hasConfigurationParameters = (configurationParameters?.length ?? 0) > 0;
 
@@ -196,6 +196,11 @@ const PickupForm = ({
     }
   };
 
+  const [configModal, setConfigModal] = useState<{
+    configuration: unknown;
+    referenceContext?: ConfigTableReferenceContext;
+  } | null>(null);
+
   const openConfigTable = () => {
     if (!itemId) return;
 
@@ -207,26 +212,22 @@ const PickupForm = ({
         })
       : undefined;
 
-    openOverlay(
-      overlay.to.itemConfigTable({
-        itemId,
-        configuration:
-          configTableRows && configTablePrimaryKeys.length > 0
-            ? { configTable: configTableRows, configTablePrimaryKeys }
-            : initialValues.configuration,
-        referenceContext
-      }),
-      {
-        onSuccess: (data) => {
-          if (!isConfigTableOverlaySuccess(data)) return;
-          handleConfigTableSubmit(
-            data.configuration.configTable,
-            data.total,
-            data.primaryKeys
-          );
-        }
-      }
+    const configuration =
+      configTableRows && configTablePrimaryKeys.length > 0
+        ? { configTable: configTableRows, configTablePrimaryKeys }
+        : initialValues.configuration;
+
+    setConfigModal({ configuration, referenceContext });
+  };
+
+  const handleConfigConfirm = (data: unknown) => {
+    if (!isConfigTableOverlaySuccess(data)) return;
+    handleConfigTableSubmit(
+      data.configuration.configTable,
+      data.total,
+      data.primaryKeys
     );
+    setConfigModal(null);
   };
 
   const lockActorSelection = isEditing || Boolean(lockActorSelectionProp);
@@ -343,19 +344,39 @@ const PickupForm = ({
     </ValidatedForm>
   );
 
+  const configModalNode =
+    itemId && configModal ? (
+      <ConfigParamsTableLocalModal
+        open
+        onClose={() => setConfigModal(null)}
+        onConfirm={handleConfigConfirm}
+        itemId={itemId}
+        configuration={configModal.configuration}
+        referenceContext={configModal.referenceContext}
+      />
+    ) : null;
+
   if (isOverlay) {
-    return form;
+    return (
+      <>
+        {form}
+        {configModalNode}
+      </>
+    );
   }
 
   return (
-    <Drawer
-      open
-      onOpenChange={(open) => {
-        if (!open) onDismiss();
-      }}
-    >
-      <DrawerContent>{form}</DrawerContent>
-    </Drawer>
+    <>
+      <Drawer
+        open
+        onOpenChange={(open) => {
+          if (!open) onDismiss();
+        }}
+      >
+        <DrawerContent>{form}</DrawerContent>
+      </Drawer>
+      {configModalNode}
+    </>
   );
 };
 
