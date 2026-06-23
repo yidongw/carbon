@@ -36,10 +36,20 @@ Located at `/packages/auth/`, the auth package provides:
 
 ### Login Process
 
-1. **Magic Link Flow** (Primary):
+1. **Email Code Flow** (Primary, default):
+
+   - Controlled by the `LOGIN_METHOD` env flag (`packages/env/src/index.ts`): default `"code"`; set `LOGIN_METHOD=magic-link` to restore the legacy magic-link flow below.
+   - User enters email on `/login`.
+   - **Existing active user**: `sendVerificationCode(email)` emails a 6-digit code (Redis-backed, 10-min TTL, via Resend — `verification.server.ts`), action returns `{ mode: "verify", email }`, client redirects to `/verify`.
+   - **New user (non-Enterprise)**: same code email, action returns `{ mode: "signup", email }`, also redirects to `/verify`.
+   - At `/verify`, after `verifyEmailCode` succeeds, the action branches on `getUserByEmail`:
+     - existing active user → `signInWithEmailViaAdmin(email)` mints a session (admin `generateLink` + `verifyOtp`, no password) and redirects into the app.
+     - new user → `createEmailAuthAccount` + `signInWithEmail` (temp password), redirects to onboarding.
+
+2. **Magic Link Flow** (legacy, only when `LOGIN_METHOD=magic-link`):
 
    - User enters email on `/login`
-   - System sends magic link via Supabase Auth
+   - System sends magic link via Supabase Auth (`sendMagicLink`, PKCE)
    - User clicks link, redirected to `/callback`
    - Callback exchanges tokens and creates session
 
@@ -333,7 +343,8 @@ Users can belong to multiple companies with different roles:
 
 ### Public Routes
 
-- `/_public+/login` - Login page (magic link, OAuth, WeChat)
+- `/_public+/login` - Login page (email code by default / magic link when `LOGIN_METHOD=magic-link`, OAuth, WeChat)
+- `/_public+/verify` - Email-code entry; signs in existing users or creates+onboards new ones
 - `/_public+/callback` - OAuth / magic-link callback and token exchange
 - `/_public+/auth.wechat` - Initiates the WeChat MP OAuth flow (in-app button)
 - `/_public+/auth.wechat.callback` - WeChat OAuth callback; creates session
