@@ -8,13 +8,16 @@ import {
   DrawerTitle,
   Label,
   toast,
+  useDisclosure,
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
+import { LuTrash2 } from "react-icons/lu";
 import type { FetcherWithComponents } from "react-router";
 import { useFetcher } from "react-router";
+import { ConfirmDelete } from "~/components/Modals";
 import { useOverlay } from "~/components/Overlay";
 import type { ProductionQuantityReportWithLines } from "~/modules/production/productionQuantityReport.service";
 import { path } from "~/utils/path";
@@ -52,6 +55,7 @@ export function ProductionQuantityDispositionDrawer({
   onClose,
   onSaved,
   saveAction,
+  deleteAction,
   title,
   saveMethod = "PATCH",
   getSaveBody,
@@ -65,6 +69,11 @@ export function ProductionQuantityDispositionDrawer({
   onSaved: (report: ProductionQuantityReportWithLines) => void;
   /** Defaults to the production quantity report lines API. */
   saveAction?: string;
+  /**
+   * When set, shows a destructive Delete button that hard-deletes the entire
+   * report (and its history) via this action after a confirmation warning.
+   */
+  deleteAction?: string;
   title?: ReactNode;
   saveMethod?: "PATCH" | "POST";
   /** When set, builds the request body (e.g. quantity-review reject-with-correction). */
@@ -93,6 +102,7 @@ export function ProductionQuantityDispositionDrawer({
   }>();
   const fetcher = externalFetcher ?? internalFetcher;
   const { instances: overlayInstances } = useOverlay();
+  const deleteModal = useDisclosure();
   const [lines, setLines] = useState<EditableProductionQuantityLine[]>([]);
   const [notes, setNotes] = useState(report.notes ?? "");
 
@@ -171,62 +181,89 @@ export function ProductionQuantityDispositionDrawer({
   const canSave = lines.length > 0 && lines.every((line) => line.quantity > 0);
 
   const preventDismissWhileOverlayOpen = (event: Event) => {
-    if (overlayInstances.length > 0) {
+    if (overlayInstances.length > 0 || deleteModal.isOpen) {
       event.preventDefault();
     }
   };
 
   return (
-    <Drawer
-      open={open}
-      onOpenChange={(isOpen) => {
-        if (!isOpen && overlayInstances.length === 0) {
-          onClose();
-        }
-      }}
-    >
-      <DrawerContent
-        className="flex w-full max-w-lg flex-col sm:max-w-lg"
-        onPointerDownOutside={preventDismissWhileOverlayOpen}
-        onInteractOutside={preventDismissWhileOverlayOpen}
+    <>
+      <Drawer
+        open={open}
+        onOpenChange={(isOpen) => {
+          if (!isOpen && overlayInstances.length === 0 && !deleteModal.isOpen) {
+            onClose();
+          }
+        }}
       >
-        <DrawerHeader>
-          <DrawerTitle>{title ?? <Trans>Disposition</Trans>}</DrawerTitle>
-        </DrawerHeader>
-        <DrawerBody className="flex w-full min-w-0 flex-col items-stretch gap-4">
-          <VStack className="w-full gap-1">
-            <Label>{t`Notes`}</Label>
-            <textarea
-              className="min-h-[4rem] w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-            />
-          </VStack>
+        <DrawerContent
+          className="flex w-full max-w-lg flex-col sm:max-w-lg"
+          onPointerDownOutside={preventDismissWhileOverlayOpen}
+          onInteractOutside={preventDismissWhileOverlayOpen}
+        >
+          <DrawerHeader>
+            <DrawerTitle>{title ?? <Trans>Disposition</Trans>}</DrawerTitle>
+          </DrawerHeader>
+          <DrawerBody className="flex w-full min-w-0 flex-col items-stretch gap-4">
+            <VStack className="w-full gap-1">
+              <Label>{t`Notes`}</Label>
+              <textarea
+                className="min-h-[4rem] w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+              />
+            </VStack>
 
-          <ProductionQuantityLinesEditor
-            lines={lines}
-            setLines={setLines}
-            configurationParameters={configurationParameters}
-            itemId={itemId}
-            configReferenceContext={{
-              originalConfiguration: report.originalConfiguration
-            }}
-          />
-        </DrawerBody>
-        <DrawerFooter>
-          <Button type="button" variant="secondary" onClick={onClose}>
-            <Trans>Cancel</Trans>
-          </Button>
-          <Button
-            type="button"
-            onClick={save}
-            isLoading={isSaving}
-            isDisabled={!canSave}
-          >
-            <Trans>Save</Trans>
-          </Button>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+            <ProductionQuantityLinesEditor
+              lines={lines}
+              setLines={setLines}
+              configurationParameters={configurationParameters}
+              itemId={itemId}
+              configReferenceContext={{
+                originalConfiguration: report.originalConfiguration
+              }}
+            />
+          </DrawerBody>
+          <DrawerFooter>
+            {deleteAction ? (
+              <Button
+                type="button"
+                variant="destructive"
+                leftIcon={<LuTrash2 />}
+                onClick={deleteModal.onOpen}
+                isDisabled={isSaving}
+                className="sm:mr-auto"
+              >
+                <Trans>Delete</Trans>
+              </Button>
+            ) : null}
+            <Button type="button" variant="secondary" onClick={onClose}>
+              <Trans>Cancel</Trans>
+            </Button>
+            <Button
+              type="button"
+              onClick={save}
+              isLoading={isSaving}
+              isDisabled={!canSave}
+            >
+              <Trans>Save</Trans>
+            </Button>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+      {deleteAction && deleteModal.isOpen ? (
+        <ConfirmDelete
+          action={deleteAction}
+          isOpen
+          name={t`this quantity report`}
+          text={t`This permanently deletes the quantity report and its entire history. This action cannot be undone.`}
+          onCancel={deleteModal.onClose}
+          onSubmit={() => {
+            deleteModal.onClose();
+            onClose();
+          }}
+        />
+      ) : null}
+    </>
   );
 }
