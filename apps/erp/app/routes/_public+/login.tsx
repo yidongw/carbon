@@ -8,6 +8,7 @@ import {
   carbonClient,
   error,
   isBypassEmail,
+  LOGIN_METHOD,
   magicLinkValidator,
   RATE_LIMIT,
   safeRedirect
@@ -158,20 +159,33 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   if (user.data && user.data.active) {
-    const magicLink = await sendMagicLink(email, redirectTo);
+    // Magic-link login (legacy). Set LOGIN_METHOD=magic-link to switch back.
+    if (LOGIN_METHOD === "magic-link") {
+      const magicLink = await sendMagicLink(email, redirectTo);
 
-    if (magicLink.error) {
-      return error(null, "Failed to send magic link");
+      if (magicLink.error) {
+        return error(null, "Failed to send magic link");
+      }
+
+      const pkceHeader = await setPkceCookie({
+        ...magicLink.pkceEntry,
+        redirectTo: safeRedirect(redirectTo, path.to.authenticatedRoot)
+      });
+      return data(
+        { success: true, mode: "login" },
+        { headers: [["Set-Cookie", pkceHeader]] }
+      );
     }
 
-    const pkceHeader = await setPkceCookie({
-      ...magicLink.pkceEntry,
-      redirectTo: safeRedirect(redirectTo, path.to.authenticatedRoot)
-    });
-    return data(
-      { success: true, mode: "login" },
-      { headers: [["Set-Cookie", pkceHeader]] }
-    );
+    // Code-based login (default): email a verification code and send the user to
+    // /verify, which signs them straight into the app.
+    const verificationSent = await sendVerificationCode(email);
+
+    if (!verificationSent) {
+      return error(null, "Failed to send verification code");
+    }
+
+    return { success: true, mode: "verify", email };
   } else if (CarbonEdition === Edition.Enterprise) {
     return { success: false, message: "User record not found" };
   } else {
@@ -220,7 +234,10 @@ export default function LoginRoute() {
 
   useEffect(() => {
     if (fetcher.data?.success && fetcher.data.mode) {
-      if (fetcher.data.mode === "signup" && mode !== "verify") {
+      if (
+        (fetcher.data.mode === "signup" || fetcher.data.mode === "verify") &&
+        mode !== "verify"
+      ) {
         setMode("verify");
         if (fetcher.data.email) {
           setSignupEmail(fetcher.data.email);

@@ -2,8 +2,10 @@ import crypto from "node:crypto";
 import { assertIsPost, error, RATE_LIMIT, safeRedirect } from "@carbon/auth";
 import {
   createEmailAuthAccount,
-  signInWithEmail
+  signInWithEmail,
+  signInWithEmailViaAdmin
 } from "@carbon/auth/auth.server";
+import { getUserByEmail } from "@carbon/auth/users.server";
 import {
   flash,
   getAuthSession,
@@ -100,7 +102,28 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
-  // Create the user account with a temporary password
+  // Existing active user: this is a code-based login, not a signup. Mint a session
+  // and send them straight into the app rather than re-creating their account.
+  const existingUser = await getUserByEmail(email);
+
+  if (existingUser.data && existingUser.data.active) {
+    const authSession = await signInWithEmailViaAdmin(email);
+
+    if (!authSession) {
+      return data(
+        error(null, "Failed to sign in user"),
+        await flash(request, error(null, "Failed to sign in user"))
+      );
+    }
+
+    const sessionCookie = await setAuthSession(request, { authSession });
+
+    return redirect(safeRedirect(redirectTo, path.to.authenticatedRoot), {
+      headers: [["Set-Cookie", sessionCookie]]
+    });
+  }
+
+  // New user: create the user account with a temporary password
   const temporaryPassword = crypto.randomBytes(16).toString("hex");
 
   const user = await createEmailAuthAccount(email, temporaryPassword);
