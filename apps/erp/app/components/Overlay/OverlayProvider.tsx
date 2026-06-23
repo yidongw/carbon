@@ -43,23 +43,21 @@ function currentSearch(): URLSearchParams {
 }
 
 /**
- * Reflect the overlay stack in the URL via the History API — deliberately NOT
- * `navigate()`, so opening/closing an overlay doesn't trigger a React Router
- * navigation (which would revalidate the page's loaders). Only the URL changes.
- * React Router's history state is preserved so its back/forward stays intact.
+ * Reflect the overlay stack in the URL via `history.replaceState` — deliberately
+ * NOT `navigate()` (which would revalidate the page's loaders) and NOT
+ * `pushState` (which would add a history entry React Router doesn't know about,
+ * desyncing its back/forward index tracking). We rewrite the *current* entry in
+ * place, preserving React Router's history state, so only the URL changes and RR
+ * stays perfectly consistent. Trade-off: the browser Back button doesn't close
+ * an overlay — the X / Esc / submit do (and restore the URL the same way).
  */
-function writeSearch(next: URLSearchParams, mode: "push" | "replace") {
+function writeSearch(next: URLSearchParams) {
   const search = serializeSearch(next);
   const url =
     window.location.pathname +
     (search ? `?${search}` : "") +
     window.location.hash;
-  const state = window.history.state;
-  if (mode === "push") {
-    window.history.pushState(state, "", url);
-  } else {
-    window.history.replaceState(state, "", url);
-  }
+  window.history.replaceState(window.history.state, "", url);
 }
 
 export function OverlayProvider({ children }: { children: ReactNode }) {
@@ -74,7 +72,7 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
     (
       target: OverlayTarget,
       options: OpenOverlayOptions | undefined,
-      meta: { urlSynced: boolean; pushedUrl: boolean }
+      meta: { urlSynced: boolean }
     ): string | null => {
       const entry = getOverlayRegistryEntry(target.id);
       if (!entry) return null;
@@ -85,8 +83,7 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
         url: target.url,
         onCreated: options?.onCreated,
         onSuccess: options?.onSuccess,
-        urlSynced: meta.urlSynced,
-        pushedUrl: meta.pushedUrl
+        urlSynced: meta.urlSynced
       };
 
       setInstances((prev) => {
@@ -104,15 +101,11 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
   const openOverlay = useCallback(
     (target: OverlayTarget, options?: OpenOverlayOptions): string | null => {
       const urlSynced = isUrlOverlay(target.id);
-      const id = addInstance(target, options, {
-        urlSynced,
-        pushedUrl: urlSynced
-      });
+      const id = addInstance(target, options, { urlSynced });
 
       if (id && urlSynced) {
         const next = paramsWithOverlay(currentSearch(), target);
-        // Push (not replace) so Back / close returns to the previous stack.
-        if (next) writeSearch(next, "push");
+        if (next) writeSearch(next);
       }
 
       return id;
@@ -124,13 +117,8 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
     const instance = instancesRef.current.find((i) => i.id === id);
     setInstances((prev) => prev.filter((i) => i.id !== id));
 
-    if (!instance?.urlSynced) return;
-    if (instance.pushedUrl) {
-      // Pop the entry we pushed when opening; popstate then reconciles the rest.
-      window.history.back();
-    } else {
-      // Opened via deep link (no entry to pop) -> drop this overlay's token.
-      writeSearch(paramsWithoutTopOverlay(currentSearch()), "replace");
+    if (instance?.urlSynced) {
+      writeSearch(paramsWithoutTopOverlay(currentSearch()));
     }
   }, []);
 
@@ -138,7 +126,7 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
     const hadUrlSynced = instancesRef.current.some((i) => i.urlSynced);
     setInstances([]);
     if (hadUrlSynced) {
-      writeSearch(paramsWithoutOverlays(currentSearch()), "replace");
+      writeSearch(paramsWithoutOverlays(currentSearch()));
     }
   }, []);
 
@@ -169,23 +157,18 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
     }
     // Already reflected in the URL, so don't write it again.
     for (const target of toOpen) {
-      addInstance(target, undefined, { urlSynced: true, pushedUrl: false });
+      addInstance(target, undefined, { urlSynced: true });
     }
   }, [addInstance]);
 
-  // Deep links + React Router navigations (page changes drop overlay tokens, so
-  // this closes stale overlays). Our own open/close use the History API, which
-  // doesn't change the router location, so they don't trigger this.
+  // Drive reconciliation off React Router navigations (and the initial mount):
+  // a deep link opens its overlays, and navigating to another page drops the
+  // overlay tokens so stale overlays close. Our own open/close use
+  // replaceState, which doesn't change the router location, so they don't
+  // re-trigger this — they update instances directly.
   useEffect(() => {
     reconcile();
   }, [location, reconcile]);
-
-  // Browser Back/Forward over our History-API entries (same router location, so
-  // the effect above won't fire) — reconcile against the popped URL.
-  useEffect(() => {
-    window.addEventListener("popstate", reconcile);
-    return () => window.removeEventListener("popstate", reconcile);
-  }, [reconcile]);
 
   const value = useMemo(
     () => ({ instances, openOverlay, closeOverlay, closeAll }),
