@@ -9026,6 +9026,12 @@ msgstr "This job will be received to inventory. It will no longer be available o
 msgid "This job will no longer be available on the shop floor."
 msgstr "This job will no longer be available on the shop floor."
 
+msgid "This permanently deletes the quantity report and its entire history. This action cannot be undone."
+msgstr "This permanently deletes the quantity report and its entire history. This action cannot be undone."
+
+msgid "this quantity report"
+msgstr "this quantity report"
+
 msgid "This sales order has lines that require jobs to be created"
 msgstr "This sales order has lines that require jobs to be created"
 

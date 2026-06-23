@@ -9023,6 +9023,12 @@ msgstr "このジョブはインベントリに受け取られます。ショッ
 msgid "This job will no longer be available on the shop floor."
 msgstr "このジョブはショップフロアで利用できなくなります。"
 
+msgid "This permanently deletes the quantity report and its entire history. This action cannot be undone."
+msgstr "これにより、数量レポートとその全履歴が完全に削除されます。この操作は元に戻せません。"
+
+msgid "this quantity report"
+msgstr "この数量レポート"
+
 msgid "This sales order has lines that require jobs to be created"
 msgstr "この販売注文には、ジョブを作成する必要があるラインがあります"
 

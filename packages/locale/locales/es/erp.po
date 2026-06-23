@@ -9023,6 +9023,12 @@ msgstr "Este trabajo será recibido en el inventario. Ya no estará disponible e
 msgid "This job will no longer be available on the shop floor."
 msgstr "Este trabajo ya no estará disponible en el piso de producción."
 
+msgid "This permanently deletes the quantity report and its entire history. This action cannot be undone."
+msgstr "Esto elimina permanentemente el informe de cantidad y todo su historial. Esta acción no se puede deshacer."
+
+msgid "this quantity report"
+msgstr "este informe de cantidad"
+
 msgid "This sales order has lines that require jobs to be created"
 msgstr "Esta orden de venta tiene líneas que requieren que se creen trabajos"
 
