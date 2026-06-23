@@ -142,27 +142,32 @@ export function serializeSearch(params: URLSearchParams): string {
 }
 
 /**
- * Rebuild a URL-addressable overlay from its mirrored params. Only the canonical
- * `overlay.to.*` builders are used, so the route shape lives in one place; the
- * args are read straight from the URL (no parsing of the loader path needed).
+ * Adapt a `(jobId, { jobOperationId })` builder so it can be rebuilt from URL
+ * params: require `jobId`, pass `jobOperationId` through when present.
+ */
+function fromJobParams(
+  build: (jobId: string, opts?: { jobOperationId?: string }) => OverlayTarget
+) {
+  return (params: URLSearchParams): OverlayTarget | null => {
+    const jobId = params.get("jobId");
+    if (!jobId) return null;
+    return build(jobId, {
+      jobOperationId: params.get("jobOperationId") ?? undefined
+    });
+  };
+}
+
+/**
+ * Which overlays are URL-addressable, and how to rebuild each from its mirrored
+ * params. Decode dispatches here because the loader URL's path is overlay-
+ * specific (e.g. `jobId` is a path segment), so params can't just be echoed
+ * back — they must run through the canonical `overlay.to.*` builder.
  */
 const urlOverlays: Partial<
   Record<OverlayId, (params: URLSearchParams) => OverlayTarget | null>
 > = {
-  newJobPickup: (params) => {
-    const jobId = params.get("jobId");
-    if (!jobId) return null;
-    return overlay.to.newJobPickup(jobId, {
-      jobOperationId: params.get("jobOperationId") ?? undefined
-    });
-  },
-  newJobProductionQuantity: (params) => {
-    const jobId = params.get("jobId");
-    if (!jobId) return null;
-    return overlay.to.newJobProductionQuantity(jobId, {
-      jobOperationId: params.get("jobOperationId") ?? undefined
-    });
-  }
+  newJobPickup: fromJobParams(overlay.to.newJobPickup),
+  newJobProductionQuantity: fromJobParams(overlay.to.newJobProductionQuantity)
 };
 
 /** Whether an overlay is mirrored in the page URL. */
