@@ -7,6 +7,7 @@ import type { OverlayRegistryEntry } from "./types";
 export const overlayRegistry = {
   newJobPickup: {
     type: "drawer",
+    urlAddressable: true,
     render: renderLazyOverlay(
       (ctx) => {
         const data = ctx.loaderData as
@@ -72,6 +73,7 @@ export const overlayRegistry = {
   },
   newJobProductionQuantity: {
     type: "drawer",
+    urlAddressable: true,
     render: renderLazyOverlay(
       (ctx) => {
         const data = ctx.loaderData as

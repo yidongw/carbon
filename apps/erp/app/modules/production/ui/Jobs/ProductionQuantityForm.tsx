@@ -339,7 +339,8 @@ const ProductionQuantityForm = ({
     });
 
     openOverlay(
-      overlay.to.itemConfigTable(itemId, {
+      overlay.to.itemConfigTable({
+        itemId,
         configuration:
           configTableRows && configTablePrimaryKeys.length > 0
             ? {
@@ -504,10 +505,6 @@ const ProductionQuantityForm = ({
     updateSearchParams({ jobId: value, jobOperationId: null });
   };
 
-  const handleOperationChange = (value: string) => {
-    updateSearchParams({ jobOperationId: value });
-  };
-
   // When operation is locked AND preset in initialValues (overlay from BOP),
   // bypass cascade state initialization issues and use initialValues directly
   const isOperationPresetAndLocked =
@@ -594,11 +591,11 @@ const ProductionQuantityForm = ({
               }
               onChange={(value) => {
                 if (lockOperationSelectionProp) return;
-                const next = value?.value ?? "";
-                setJobOperationIdState(next);
-                if (next) {
-                  handleOperationChange(next);
-                }
+                // Selecting an operation only updates local form state — it must
+                // not navigate. The value is submitted via the field; route mode
+                // doesn't need it in the URL and the overlay loads via its own
+                // fixed-URL fetcher. (PickupForm does the same.)
+                setJobOperationIdState(value?.value ?? "");
               }}
             />
           )}

@@ -1115,7 +1115,8 @@ const JobBillOfProcess = ({
     !isDisabled && permissions.can("create", "production")
       ? (operationId: string) => {
           openOverlay(
-            overlay.to.newJobProductionQuantity(jobId, {
+            overlay.to.newJobProductionQuantity({
+              jobId,
               jobOperationId: operationId
             }),
             {
@@ -1335,7 +1336,8 @@ const JobBillOfProcess = ({
     !isDisabled && permissions.can("create", "production")
       ? (operationId: string) => {
           openOverlay(
-            overlay.to.newJobPickup(jobId, {
+            overlay.to.newJobPickup({
+              jobId,
               jobOperationId: operationId
             }),
             {
