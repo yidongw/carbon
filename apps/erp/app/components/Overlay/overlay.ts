@@ -150,24 +150,19 @@ export function serializeSearch(params: URLSearchParams): string {
 }
 
 /**
- * Which overlays are URL-addressable. Each value is the canonical `overlay.to.*`
- * builder; decode hands it the params mirrored in the URL — the same flat object
- * the builder produced when it was opened, so the keys line up by construction.
- * The param is typed `any` because the URL yields a loose `Record<string,string>`
- * while each builder declares its own required shape; that boundary is dynamic.
- * Overlays absent here are imperative-only and can't be opened via the URL.
+ * Allowlist of overlays that may be opened / restored via the URL. Overlays not
+ * listed stay imperative-only (e.g. config modals, whose params aren't URL-safe).
+ * Decode rebuilds a target by running the id's canonical `overlay.to.*` builder
+ * with the params mirrored in the URL.
  */
-const urlOverlays: Partial<
-  // biome-ignore lint/suspicious/noExplicitAny: dynamic URL params -> typed builder
-  Record<OverlayId, (params: any) => OverlayTarget>
-> = {
-  newJobPickup: overlay.to.newJobPickup,
-  newJobProductionQuantity: overlay.to.newJobProductionQuantity
-};
+const urlOverlayIds = new Set<OverlayId>([
+  "newJobPickup",
+  "newJobProductionQuantity"
+]);
 
 /** Whether an overlay is mirrored in the page URL. */
 export function isUrlOverlay(id: OverlayId): boolean {
-  return id in urlOverlays;
+  return urlOverlayIds.has(id);
 }
 
 /** Encode one stack entry as `id:key=val,key=val` (args omitted when empty). */
@@ -183,8 +178,7 @@ function encodeOverlayEntry(target: OverlayTarget): string | null {
 function decodeOverlayEntry(token: string): OverlayTarget | null {
   const sep = token.indexOf(":");
   const id = (sep === -1 ? token : token.slice(0, sep)) as OverlayId;
-  const build = urlOverlays[id];
-  if (!build) return null;
+  if (!isUrlOverlay(id)) return null;
 
   const params: Record<string, string> = {};
   if (sep !== -1) {
@@ -193,6 +187,11 @@ function decodeOverlayEntry(token: string): OverlayTarget | null {
       if (eq !== -1) params[pair.slice(0, eq)] = pair.slice(eq + 1);
     }
   }
+  // The allowlist guarantees this id's builder accepts the mirrored params; the
+  // URL boundary is dynamic so `overlay.to[id]` is called as a loose builder.
+  const build = overlay.to[id] as (
+    params: Record<string, string>
+  ) => OverlayTarget;
   return build(params);
 }
 
