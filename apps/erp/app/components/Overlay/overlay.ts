@@ -109,15 +109,33 @@ export const overlay = {
  * URL-addressable overlays are mirrored on the *current page* URL as a stack,
  * using one reserved repeated search param so it never clObbers a page's own
  * params. URLSearchParams preserves insertion order, so the values read back
- * bottom -> top. Each value is a `id:<urlencoded args>` token:
- *   `?overlay=newJobProductionQuantity:jobId%3D123&overlay=newJobPickup:jobId%3D123`
- * The pathname is left untouched — opening pushes a history entry, so the
- * browser Back button (or closing) returns to the previous stack state.
+ * bottom -> top. Each value is a readable `id:key=val,key=val` token (args are
+ * comma-separated so no `&` ends up inside a value):
+ *   `?overlay=newJobProductionQuantity:jobId=123,jobOperationId=op-1&overlay=newJobPickup:jobId=123`
+ * Use `serializeSearch` (not `URLSearchParams.toString`) when navigating so the
+ * `: , =` stay un-escaped. The pathname is left untouched — opening pushes a
+ * history entry, so Back (or closing) returns to the previous stack state.
  *
  * Only the overlays listed in `urlOverlays` participate; everything else stays
  * imperative-only (e.g. nested config modals shouldn't live in the URL).
+ *
+ * Note: overlay param values must not themselves contain `,` or `=` (job ids /
+ * operation ids are url-safe, so this holds).
  */
 export const OVERLAY_PARAM = "overlay";
+
+/**
+ * Serialize search params keeping `: , =` human-readable. `URLSearchParams`
+ * correctly escapes `& + % #` and spaces; we just un-escape the safe chars so
+ * overlay tokens render as `id:key=val,key=val` instead of `%3A…%3D…%2C…`.
+ */
+export function serializeSearch(params: URLSearchParams): string {
+  return params
+    .toString()
+    .replace(/%3A/gi, ":")
+    .replace(/%2C/gi, ",")
+    .replace(/%3D/gi, "=");
+}
 
 /**
  * Rebuild a URL-addressable overlay from its mirrored params. Only the canonical
@@ -148,20 +166,30 @@ export function isUrlOverlay(id: OverlayId): boolean {
   return id in urlOverlays;
 }
 
-/** Encode one stack entry as `id:<urlencoded params>` (params omitted when empty). */
+/** Encode one stack entry as `id:key=val,key=val` (args omitted when empty). */
 function encodeOverlayEntry(target: OverlayTarget): string | null {
   if (!isUrlOverlay(target.id)) return null;
-  const params = new URLSearchParams(target.params).toString();
-  return params ? `${target.id}:${params}` : target.id;
+  const args = Object.entries(target.params ?? {})
+    .map(([key, value]) => `${key}=${value}`)
+    .join(",");
+  return args ? `${target.id}:${args}` : target.id;
 }
 
-/** Decode one `id:<urlencoded params>` token back into a target, or null. */
+/** Decode one `id:key=val,key=val` token back into a target, or null. */
 function decodeOverlayEntry(token: string): OverlayTarget | null {
   const sep = token.indexOf(":");
   const id = (sep === -1 ? token : token.slice(0, sep)) as OverlayId;
   const build = urlOverlays[id];
   if (!build) return null;
-  return build(new URLSearchParams(sep === -1 ? "" : token.slice(sep + 1)));
+
+  const params = new URLSearchParams();
+  if (sep !== -1) {
+    for (const pair of token.slice(sep + 1).split(",")) {
+      const eq = pair.indexOf("=");
+      if (eq !== -1) params.set(pair.slice(0, eq), pair.slice(eq + 1));
+    }
+  }
+  return build(params);
 }
 
 /** Read the ordered overlay stack (bottom -> top) from the page params. */

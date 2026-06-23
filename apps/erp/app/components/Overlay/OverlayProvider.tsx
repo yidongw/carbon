@@ -15,7 +15,8 @@ import {
   overlayStackFromParams,
   paramsWithOverlay,
   paramsWithoutOverlays,
-  paramsWithoutTopOverlay
+  paramsWithoutTopOverlay,
+  serializeSearch
 } from "./overlay";
 import { getOverlayRegistryEntry } from "./overlay.registry";
 import type { OpenOverlayOptions, OverlayInstance } from "./types";
@@ -49,7 +50,7 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
 
   const navigateToParams = useCallback(
     (next: URLSearchParams, options?: { replace?: boolean }) => {
-      const search = next.toString();
+      const search = serializeSearch(next);
       navigate(
         { search: search ? `?${search}` : "" },
         { replace: options?.replace }
