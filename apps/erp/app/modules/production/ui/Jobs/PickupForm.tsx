@@ -156,11 +156,6 @@ const PickupForm = ({
     jobId?: string | null;
     jobOperationId?: string | null;
   }) => {
-    // Overlay mode loads via a fixed-URL fetcher and tracks job/operation in
-    // local state, so changing them here neither refetches nor needs the URL —
-    // and writing it would clobber the overlay token and close the drawer. Only
-    // route mode uses these params to drive its loader.
-    if (isOverlay) return;
     const newParams = new URLSearchParams(searchParams);
     if (updates.jobId !== undefined) {
       if (updates.jobId) {

@@ -466,11 +466,6 @@ const ProductionQuantityForm = ({
     jobId?: string | null;
     jobOperationId?: string | null;
   }) => {
-    // Overlay mode loads via a fixed-URL fetcher and tracks job/operation in
-    // local state, so changing them here neither refetches nor needs the URL —
-    // and writing it would clobber the overlay token and close the drawer. Only
-    // route mode uses these params to drive its loader.
-    if (isOverlay) return;
     const newParams = new URLSearchParams(searchParams);
     if (updates.jobId !== undefined) {
       if (updates.jobId) {
@@ -499,10 +494,6 @@ const ProductionQuantityForm = ({
 
   const handleJobChange = (value: string) => {
     updateSearchParams({ jobId: value, jobOperationId: null });
-  };
-
-  const handleOperationChange = (value: string) => {
-    updateSearchParams({ jobOperationId: value });
   };
 
   // When operation is locked AND preset in initialValues (overlay from BOP),
@@ -589,11 +580,11 @@ const ProductionQuantityForm = ({
               }
               onChange={(value) => {
                 if (lockOperationSelectionProp) return;
-                const next = value?.value ?? "";
-                setJobOperationIdState(next);
-                if (next) {
-                  handleOperationChange(next);
-                }
+                // Selecting an operation only updates local form state — it must
+                // not navigate. The value is submitted via the field; route mode
+                // doesn't need it in the URL and the overlay loads via its own
+                // fixed-URL fetcher. (PickupForm does the same.)
+                setJobOperationIdState(value?.value ?? "");
               }}
             />
           )}
