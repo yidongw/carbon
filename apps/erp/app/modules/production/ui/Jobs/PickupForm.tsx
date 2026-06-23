@@ -156,7 +156,11 @@ const PickupForm = ({
     jobId?: string | null;
     jobOperationId?: string | null;
   }) => {
-    const newParams = new URLSearchParams(searchParams);
+    // Merge onto the live URL, not useSearchParams: the overlay is mirrored in
+    // the URL via the History API (replaceState), which React Router's
+    // useSearchParams doesn't observe — reading it here would drop the overlay
+    // token and close the drawer.
+    const newParams = new URLSearchParams(window.location.search);
     if (updates.jobId !== undefined) {
       if (updates.jobId) {
         newParams.set("jobId", updates.jobId);
