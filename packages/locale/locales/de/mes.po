@@ -312,6 +312,9 @@ msgstr "Bearbeiten"
 msgid "Email Address"
 msgstr "E-Mail-Adresse"
 
+msgid "Employee"
+msgstr ""
+
 msgid "Empty work centers"
 msgstr "Leere Arbeitszentren"
 
@@ -490,6 +493,9 @@ msgstr "Fertigmeldung"
 msgid "Log completed for {0}"
 msgstr "Fertigmeldung für {0}"
 
+msgid "Log Pickup"
+msgstr ""
+
 msgid "Log Rework"
 msgstr "Nacharbeit erfassen"
 
@@ -625,6 +631,9 @@ msgstr "Keine Optionen gefunden."
 msgid "No picking lists assigned"
 msgstr "Keine Kommissionierlisten zugewiesen"
 
+msgid "No pickups logged"
+msgstr ""
+
 msgid "No printer configured"
 msgstr "Kein Drucker konfiguriert"
 
@@ -736,6 +745,9 @@ msgstr "Spalte {0} aufgenommen an Position: {1} von {2}"
 
 msgid "Picking"
 msgstr "Kommissionierung"
+
+msgid "Pickups"
+msgstr ""
 
 msgid "Pin Out"
 msgstr "Abmelden"

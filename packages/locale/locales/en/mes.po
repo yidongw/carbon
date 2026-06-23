@@ -312,6 +312,9 @@ msgstr "Edit"
 msgid "Email Address"
 msgstr "Email Address"
 
+msgid "Employee"
+msgstr "Employee"
+
 msgid "Empty work centers"
 msgstr "Empty work centers"
 
@@ -490,6 +493,9 @@ msgstr "Log Completed"
 msgid "Log completed for {0}"
 msgstr "Log completed for {0}"
 
+msgid "Log Pickup"
+msgstr "Log Pickup"
+
 msgid "Log Rework"
 msgstr "Log Rework"
 
@@ -625,6 +631,9 @@ msgstr "No options found."
 msgid "No picking lists assigned"
 msgstr "No picking lists assigned"
 
+msgid "No pickups logged"
+msgstr "No pickups logged"
+
 msgid "No printer configured"
 msgstr "No printer configured"
 
@@ -736,6 +745,9 @@ msgstr "Picked up Column {0} at position: {1} of {2}"
 
 msgid "Picking"
 msgstr "Picking"
+
+msgid "Pickups"
+msgstr "Pickups"
 
 msgid "Pin Out"
 msgstr "Pin Out"

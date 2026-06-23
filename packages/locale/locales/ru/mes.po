@@ -312,6 +312,9 @@ msgstr "Редактировать"
 msgid "Email Address"
 msgstr "Электронная почта"
 
+msgid "Employee"
+msgstr ""
+
 msgid "Empty work centers"
 msgstr "Пустые рабочие центры"
 
@@ -490,6 +493,9 @@ msgstr "Записать готовые"
 msgid "Log completed for {0}"
 msgstr "Записать готовые для {0}"
 
+msgid "Log Pickup"
+msgstr ""
+
 msgid "Log Rework"
 msgstr "Записать доработку"
 
@@ -625,6 +631,9 @@ msgstr "Варианты не найдены."
 msgid "No picking lists assigned"
 msgstr "Нет назначенных списков комплектации"
 
+msgid "No pickups logged"
+msgstr ""
+
 msgid "No printer configured"
 msgstr "Принтер не настроен"
 
@@ -736,6 +745,9 @@ msgstr "Столбец {0} взят с позиции: {1} из {2}"
 
 msgid "Picking"
 msgstr "Комплектация"
+
+msgid "Pickups"
+msgstr ""
 
 msgid "Pin Out"
 msgstr "Выход по PIN"

@@ -894,6 +894,9 @@ msgstr "Are you sure you want to delete this kanban card? This cannot be undone.
 msgid "Are you sure you want to delete this maintenance dispatch? This cannot be undone."
 msgstr "Are you sure you want to delete this maintenance dispatch? This cannot be undone."
 
+msgid "Are you sure you want to delete this pickup? This action cannot be undone."
+msgstr "Are you sure you want to delete this pickup? This action cannot be undone."
+
 msgid "Are you sure you want to delete this production quantity? This action cannot be undone."
 msgstr "Are you sure you want to delete this production quantity? This action cannot be undone."
 
@@ -2572,6 +2575,9 @@ msgstr "Delete Payment Term"
 msgid "Delete Picking List"
 msgstr "Delete Picking List"
 
+msgid "Delete Pickup"
+msgstr "Delete Pickup"
+
 msgid "Delete Portal"
 msgstr "Delete Portal"
 
@@ -3124,6 +3130,9 @@ msgstr "Edit Permissions"
 
 msgid "Edit Picking List"
 msgstr "Edit Picking List"
+
+msgid "Edit Pickup"
+msgstr "Edit Pickup"
 
 msgid "Edit Portal"
 msgstr "Edit Portal"
@@ -6359,6 +6368,10 @@ msgstr "Pick tracked item"
 msgid "Picked quantity"
 msgstr "Picked quantity"
 
+#. placeholder {0}: item.quantity
+msgid "picked up {0} units"
+msgstr "picked up {0} units"
+
 msgid "Picking Lines"
 msgstr "Picking Lines"
 
@@ -6373,6 +6386,16 @@ msgstr "Picking List Notes"
 
 msgid "Picking Lists"
 msgstr "Picking Lists"
+
+msgid "Pickup"
+msgstr "Pickup"
+
+#. placeholder {0}: selectedPickup.employeeId
+msgid "pickup by {0}"
+msgstr "pickup by {0}"
+
+msgid "Pickups"
+msgstr "Pickups"
 
 msgid "Pieces/Hour"
 msgstr "Pieces/Hour"
@@ -7001,6 +7024,12 @@ msgstr "Record {0}"
 msgid "Record deleted"
 msgstr "Record deleted"
 
+msgid "Record pickup"
+msgstr "Record pickup"
+
+msgid "Record Pickup"
+msgstr "Record Pickup"
+
 msgid "Record production quantity"
 msgstr "Record production quantity"
 
@@ -7015,6 +7044,9 @@ msgstr "recorded {qty} units"
 
 msgid "recorded {qty} units ({reason})"
 msgstr "recorded {qty} units ({reason})"
+
+msgid "Recorded At"
+msgstr "Recorded At"
 
 msgid "Records"
 msgstr "Records"

@@ -312,6 +312,9 @@ msgstr "Modifica"
 msgid "Email Address"
 msgstr "Indirizzo Email"
 
+msgid "Employee"
+msgstr ""
+
 msgid "Empty work centers"
 msgstr "Centri di lavoro vuoti"
 
@@ -490,6 +493,9 @@ msgstr "Registra Completati"
 msgid "Log completed for {0}"
 msgstr "Registra completati per {0}"
 
+msgid "Log Pickup"
+msgstr ""
+
 msgid "Log Rework"
 msgstr "Registra Rilavorazione"
 
@@ -625,6 +631,9 @@ msgstr "Nessuna opzione trovata."
 msgid "No picking lists assigned"
 msgstr "Nessun elenco di prelievo assegnato"
 
+msgid "No pickups logged"
+msgstr ""
+
 msgid "No printer configured"
 msgstr "Nessuna stampante configurata"
 
@@ -736,6 +745,9 @@ msgstr "Colonna {0} presa dalla posizione: {1} di {2}"
 
 msgid "Picking"
 msgstr "Prelievo"
+
+msgid "Pickups"
+msgstr ""
 
 msgid "Pin Out"
 msgstr "Disconnetti"

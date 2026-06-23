@@ -8,6 +8,18 @@ export type OverlayTarget = {
 
 export const overlay = {
   to: {
+    newJobPickup(
+      jobId: string,
+      opts?: { jobOperationId?: string }
+    ): OverlayTarget {
+      const base = path.to.newJobPickup(jobId, opts);
+      const sep = base.includes("?") ? "&" : "?";
+      return {
+        id: "newJobPickup",
+        url: `${base}${sep}overlay=true`
+      };
+    },
+
     newJobProductionQuantity(
       jobId: string,
       opts?: { jobOperationId?: string }

@@ -312,6 +312,9 @@ msgstr "编辑"
 msgid "Email Address"
 msgstr "电子邮箱"
 
+msgid "Employee"
+msgstr ""
+
 msgid "Empty work centers"
 msgstr "空的工作中心"
 
@@ -490,6 +493,9 @@ msgstr "记录完成数量"
 msgid "Log completed for {0}"
 msgstr "记录 {0} 的完成数量"
 
+msgid "Log Pickup"
+msgstr ""
+
 msgid "Log Rework"
 msgstr "记录返工"
 
@@ -625,6 +631,9 @@ msgstr "未找到选项。"
 msgid "No picking lists assigned"
 msgstr "未分配拣货单"
 
+msgid "No pickups logged"
+msgstr ""
+
 msgid "No printer configured"
 msgstr "未配置打印机"
 
@@ -736,6 +745,9 @@ msgstr "已拾取列 {0}，位于第 {1} 个位置（共 {2} 个）"
 
 msgid "Picking"
 msgstr "拣选"
+
+msgid "Pickups"
+msgstr ""
 
 msgid "Pin Out"
 msgstr "退出登录"

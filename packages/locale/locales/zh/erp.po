@@ -894,6 +894,9 @@ msgstr "你确定要删除此看板卡吗？此操作无法撤销。"
 msgid "Are you sure you want to delete this maintenance dispatch? This cannot be undone."
 msgstr "您确定要删除此维护调度吗？此操作无法撤销。"
 
+msgid "Are you sure you want to delete this pickup? This action cannot be undone."
+msgstr ""
+
 msgid "Are you sure you want to delete this production quantity? This action cannot be undone."
 msgstr ""
 
@@ -2572,6 +2575,9 @@ msgstr "删除付款条款"
 msgid "Delete Picking List"
 msgstr ""
 
+msgid "Delete Pickup"
+msgstr ""
+
 msgid "Delete Portal"
 msgstr "删除门户"
 
@@ -3123,6 +3129,9 @@ msgid "Edit Permissions"
 msgstr "编辑权限"
 
 msgid "Edit Picking List"
+msgstr ""
+
+msgid "Edit Pickup"
 msgstr ""
 
 msgid "Edit Portal"
@@ -6359,6 +6368,10 @@ msgstr ""
 msgid "Picked quantity"
 msgstr ""
 
+#. placeholder {0}: item.quantity
+msgid "picked up {0} units"
+msgstr ""
+
 msgid "Picking Lines"
 msgstr ""
 
@@ -6372,6 +6385,16 @@ msgid "Picking List Notes"
 msgstr ""
 
 msgid "Picking Lists"
+msgstr ""
+
+msgid "Pickup"
+msgstr ""
+
+#. placeholder {0}: selectedPickup.employeeId
+msgid "pickup by {0}"
+msgstr ""
+
+msgid "Pickups"
 msgstr ""
 
 msgid "Pieces/Hour"
@@ -7001,6 +7024,12 @@ msgstr ""
 msgid "Record deleted"
 msgstr "记录已删除"
 
+msgid "Record pickup"
+msgstr ""
+
+msgid "Record Pickup"
+msgstr ""
+
 msgid "Record production quantity"
 msgstr "记录生产数量"
 
@@ -7015,6 +7044,9 @@ msgstr "记录了 {qty} 件"
 
 msgid "recorded {qty} units ({reason})"
 msgstr "记录了 {qty} 件（{reason}）"
+
+msgid "Recorded At"
+msgstr ""
 
 msgid "Records"
 msgstr "记录"

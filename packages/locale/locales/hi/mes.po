@@ -312,6 +312,9 @@ msgstr "संपादित करें"
 msgid "Email Address"
 msgstr "ईमेल पता"
 
+msgid "Employee"
+msgstr ""
+
 msgid "Empty work centers"
 msgstr "खाली कार्य केंद्र"
 
@@ -490,6 +493,9 @@ msgstr "पूर्ण लॉग करें"
 msgid "Log completed for {0}"
 msgstr "{0} के लिए पूर्ण लॉग करें"
 
+msgid "Log Pickup"
+msgstr ""
+
 msgid "Log Rework"
 msgstr "रीवर्क लॉग करें"
 
@@ -625,6 +631,9 @@ msgstr "कोई विकल्प नहीं मिला।"
 msgid "No picking lists assigned"
 msgstr "कोई पिकिंग सूची असाइन नहीं की गई"
 
+msgid "No pickups logged"
+msgstr ""
+
 msgid "No printer configured"
 msgstr "कोई प्रिंटर कॉन्फ़िगर नहीं किया गया"
 
@@ -736,6 +745,9 @@ msgstr "कॉलम {0} को स्थिति {1} पर उठाया �
 
 msgid "Picking"
 msgstr "पिकिंग"
+
+msgid "Pickups"
+msgstr ""
 
 msgid "Pin Out"
 msgstr "पिन आउट"
