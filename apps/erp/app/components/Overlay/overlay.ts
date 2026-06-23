@@ -13,13 +13,17 @@ export type OverlayTarget = {
   params?: Record<string, string>;
 };
 
-function jobOverlayParams(
-  jobId: string,
-  opts?: { jobOperationId?: string }
+/**
+ * Build the URL-mirrored params for any overlay, dropping nullish fields so
+ * optional args never land in the URL as `key=undefined`. (Same idea as
+ * lodash's `pickBy(obj, v => v != null)`.)
+ */
+function overlayParams(
+  params: Record<string, string | undefined>
 ): Record<string, string> {
-  const params: Record<string, string> = { jobId };
-  if (opts?.jobOperationId) params.jobOperationId = opts.jobOperationId;
-  return params;
+  return Object.fromEntries(
+    Object.entries(params).filter(([, value]) => value != null)
+  ) as Record<string, string>;
 }
 
 export const overlay = {
@@ -33,7 +37,7 @@ export const overlay = {
       return {
         id: "newJobPickup",
         url: `${base}${sep}overlay=true`,
-        params: jobOverlayParams(jobId, opts)
+        params: overlayParams({ jobId, jobOperationId: opts?.jobOperationId })
       };
     },
 
@@ -46,7 +50,7 @@ export const overlay = {
       return {
         id: "newJobProductionQuantity",
         url: `${base}${sep}overlay=true`,
-        params: jobOverlayParams(jobId, opts)
+        params: overlayParams({ jobId, jobOperationId: opts?.jobOperationId })
       };
     },
 
