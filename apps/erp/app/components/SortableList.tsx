@@ -72,7 +72,10 @@ function SortableListItem<T>({
   const handleDragStart = (event: any) => {
     if (isExpanded || isReadOnly) return;
     flushSync(() => setIsDragging(true));
-    dragControls.start(event, { snapToCursor: true });
+    // snapToCursor jumps the card so its origin meets the pointer. That's fine
+    // when the whole card is the drag surface, but with a corner grip handle it
+    // yanks the card toward the handle on a plain click. Skip it for the handle.
+    dragControls.start(event, dragHandle ? undefined : { snapToCursor: true });
     handleDrag();
   };
 
