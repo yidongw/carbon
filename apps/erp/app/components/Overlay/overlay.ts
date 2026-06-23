@@ -11,6 +11,14 @@ export type OverlayTarget = {
    * serialize them directly instead of parsing them back out of `url`.
    */
   params?: Record<string, string>;
+  /**
+   * In-memory data passed straight from the parent to the overlay component
+   * (surfaced as `ctx.props` in the renderer). Unlike `url`/`params` this never
+   * touches the URL — it's for parent-owned data (e.g. a draft `configuration`),
+   * not for fetching. Lost on refresh/deep-link, so url-addressable overlays
+   * shouldn't depend on it.
+   */
+  props?: Record<string, unknown>;
 };
 
 /**
@@ -87,29 +95,31 @@ export const overlay = {
       };
     },
 
-    itemConfigTable({
-      itemId,
-      configuration,
-      referenceContext
-    }: {
-      itemId: string;
-      configuration?: unknown;
-      referenceContext?: ConfigTableReferenceContext;
-    }): OverlayTarget {
+    itemConfigTable(
+      // Fetch key: identifies what to load. `referenceContext` is resolved
+      // server-side against the DB, so it stays in the URL.
+      {
+        itemId,
+        referenceContext
+      }: { itemId: string; referenceContext?: ConfigTableReferenceContext },
+      // Parent data: the draft `configuration` the component edits — passed
+      // straight through as props, never serialized into the URL.
+      props?: { configuration?: unknown }
+    ): OverlayTarget {
       const base = path.to.api.itemConfigTable(itemId);
-      if (configuration === undefined && referenceContext === undefined) {
-        return { id: "itemConfigTable", url: base };
-      }
-      const params = new URLSearchParams();
-      if (configuration !== undefined) {
-        params.set("configuration", JSON.stringify(configuration));
-      }
-      if (referenceContext !== undefined) {
-        params.set("referenceContext", JSON.stringify(referenceContext));
-      }
+      const url =
+        referenceContext !== undefined
+          ? `${base}?${new URLSearchParams({
+              referenceContext: JSON.stringify(referenceContext)
+            }).toString()}`
+          : base;
       return {
         id: "itemConfigTable",
-        url: `${base}?${params.toString()}`
+        url,
+        props:
+          props?.configuration !== undefined
+            ? { configuration: props.configuration }
+            : undefined
       };
     }
   }

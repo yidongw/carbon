@@ -195,11 +195,10 @@ export function ProductionQuantityLinesEditor({
       );
 
       openOverlay(
-        overlay.to.itemConfigTable({
-          itemId,
-          configuration: cfg,
-          referenceContext
-        }),
+        overlay.to.itemConfigTable(
+          { itemId, referenceContext },
+          { configuration: cfg }
+        ),
         {
           onSuccess: (data) => {
             if (!isConfigTableOverlaySuccess(data)) return;

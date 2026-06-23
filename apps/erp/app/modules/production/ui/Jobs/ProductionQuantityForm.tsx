@@ -334,18 +334,19 @@ const ProductionQuantityForm = ({
     });
 
     openOverlay(
-      overlay.to.itemConfigTable({
-        itemId,
-        configuration:
-          configTableRows && configTablePrimaryKeys.length > 0
-            ? {
-                configTable: configTableRows,
-                configTablePrimaryKeys
-              }
-            : (initialValues as z.infer<typeof productionQuantityValidator>)
-                .configuration,
-        referenceContext
-      }),
+      overlay.to.itemConfigTable(
+        { itemId, referenceContext },
+        {
+          configuration:
+            configTableRows && configTablePrimaryKeys.length > 0
+              ? {
+                  configTable: configTableRows,
+                  configTablePrimaryKeys
+                }
+              : (initialValues as z.infer<typeof productionQuantityValidator>)
+                  .configuration
+        }
+      ),
       {
         onSuccess: (data) => {
           if (!isConfigTableOverlaySuccess(data)) return;

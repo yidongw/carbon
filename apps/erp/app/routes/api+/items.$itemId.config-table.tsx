@@ -2,17 +2,21 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import type { LoaderFunctionArgs } from "react-router";
 import { getConfigurationParameters } from "~/modules/items";
 import type { ConfigurationParameter } from "~/modules/items/types";
-import { buildConfigTableEditorState } from "~/modules/production/configParamsTableColumns";
+import type { ConfigTableReferenceContext } from "~/modules/production/configParamsTableColumns";
 import {
-  parseInitialConfigurationFromRequest,
   parseReferenceContextFromRequest,
   resolveConfigTableReferenceContext
 } from "~/modules/production/configTableOverlay.server";
 
 export type ItemConfigTableOverlayLoaderData = {
   parameters: ConfigurationParameter[];
-  initialRows?: Record<string, string | number | boolean>[];
-  referenceByRowIndex?: Array<Record<string, number>>;
+  /**
+   * Reference context resolved against the DB (from the `referenceContext`
+   * query param). The draft `configuration` is NOT loaded here — it's parent
+   * data passed to the overlay via props; the row/editor state is built
+   * client-side in the overlay registry from `parameters` + this + that config.
+   */
+  referenceContext?: ConfigTableReferenceContext;
   itemReadableId: string | null;
 };
 
@@ -50,30 +54,10 @@ export async function loader({
         parsedReferenceContext
       )
     : undefined;
-  const initialRowsFromRequest = parseInitialConfigurationFromRequest(request);
-  const currentConfiguration =
-    initialRowsFromRequest !== undefined
-      ? { configTable: initialRowsFromRequest }
-      : undefined;
-
-  let initialRows = initialRowsFromRequest;
-  let referenceByRowIndex: Array<Record<string, number>> | undefined;
-
-  if (referenceContext) {
-    const editorState = buildConfigTableEditorState({
-      parameters,
-      defaultQuantityLabel: "Quantities",
-      currentConfiguration,
-      referenceContext
-    });
-    initialRows = editorState.rows;
-    referenceByRowIndex = editorState.referenceByRowIndex;
-  }
 
   return {
     parameters,
-    initialRows,
-    referenceByRowIndex,
+    referenceContext,
     itemReadableId: item.data?.readableIdWithRevision ?? null
   };
 }

@@ -208,14 +208,15 @@ const PickupForm = ({
       : undefined;
 
     openOverlay(
-      overlay.to.itemConfigTable({
-        itemId,
-        configuration:
-          configTableRows && configTablePrimaryKeys.length > 0
-            ? { configTable: configTableRows, configTablePrimaryKeys }
-            : initialValues.configuration,
-        referenceContext
-      }),
+      overlay.to.itemConfigTable(
+        { itemId, referenceContext },
+        {
+          configuration:
+            configTableRows && configTablePrimaryKeys.length > 0
+              ? { configTable: configTableRows, configTablePrimaryKeys }
+              : initialValues.configuration
+        }
+      ),
       {
         onSuccess: (data) => {
           if (!isConfigTableOverlaySuccess(data)) return;

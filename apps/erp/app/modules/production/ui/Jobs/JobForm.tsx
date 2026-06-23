@@ -269,16 +269,18 @@ const JobForm = ({ initialValues }: JobFormProps) => {
     }
 
     openOverlay(
-      overlay.to.itemConfigTable({
-        itemId: itemData.itemId,
-        configuration:
-          configTableRows && configTablePrimaryKeys.length > 0
-            ? {
-                configTable: configTableRows,
-                configTablePrimaryKeys
-              }
-            : undefined
-      }),
+      overlay.to.itemConfigTable(
+        { itemId: itemData.itemId },
+        {
+          configuration:
+            configTableRows && configTablePrimaryKeys.length > 0
+              ? {
+                  configTable: configTableRows,
+                  configTablePrimaryKeys
+                }
+              : undefined
+        }
+      ),
       { onSuccess }
     );
   };

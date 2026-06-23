@@ -1,6 +1,7 @@
 import type { ItemConfigTableOverlayLoaderData } from "~/routes/api+/items.$itemId.config-table";
 import type { JobBillOfProcessOverlayLoaderData } from "~/routes/api+/production.jobs.$jobId.bill-of-process";
 import type { JobConfigTableOverlayLoaderData } from "~/routes/api+/production.jobs.$jobId.config-table";
+import { buildConfigTableEditorState } from "~/modules/production/configParamsTableColumns";
 import { renderLazyOverlay } from "./renderLazyOverlay";
 import type { OverlayRegistryEntry } from "./types";
 
@@ -339,10 +340,38 @@ export const overlayRegistry = {
           | null
           | undefined;
         if (!data?.parameters?.length) return null;
+
+        // `configuration` is parent draft data passed via props — not loaded
+        // from the URL. Combine it with the loaded schema + DB-resolved
+        // reference here (this transform used to live in the loader).
+        const { configuration } = ctx.props as { configuration?: unknown };
+        const configTable =
+          configuration &&
+          typeof configuration === "object" &&
+          !Array.isArray(configuration) &&
+          Array.isArray((configuration as Record<string, unknown>).configTable)
+            ? ((configuration as Record<string, unknown>)
+                .configTable as Record<string, string | number | boolean>[])
+            : undefined;
+
+        let initialRows = configTable;
+        let referenceByRowIndex: Array<Record<string, number>> | undefined;
+        if (data.referenceContext) {
+          const editorState = buildConfigTableEditorState({
+            parameters: data.parameters,
+            defaultQuantityLabel: "Quantities",
+            currentConfiguration:
+              configTable !== undefined ? { configTable } : undefined,
+            referenceContext: data.referenceContext
+          });
+          initialRows = editorState.rows;
+          referenceByRowIndex = editorState.referenceByRowIndex;
+        }
+
         return {
           parameters: data.parameters,
-          initialRows: data.initialRows,
-          referenceByRowIndex: data.referenceByRowIndex,
+          initialRows,
+          referenceByRowIndex,
           jobDisplayId: data.itemReadableId
         };
       },
