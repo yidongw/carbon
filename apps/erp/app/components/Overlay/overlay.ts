@@ -5,7 +5,22 @@ import type { OverlayId } from "./overlay.registry";
 export type OverlayTarget = {
   id: OverlayId;
   url: string;
+  /**
+   * Structured params for URL-addressable overlays, mirrored verbatim into the
+   * page URL (e.g. `{ jobId, jobOperationId }`). Carried here so the codec can
+   * serialize them directly instead of parsing them back out of `url`.
+   */
+  params?: Record<string, string>;
 };
+
+function jobOverlayParams(
+  jobId: string,
+  opts?: { jobOperationId?: string }
+): Record<string, string> {
+  const params: Record<string, string> = { jobId };
+  if (opts?.jobOperationId) params.jobOperationId = opts.jobOperationId;
+  return params;
+}
 
 export const overlay = {
   to: {
@@ -17,7 +32,8 @@ export const overlay = {
       const sep = base.includes("?") ? "&" : "?";
       return {
         id: "newJobPickup",
-        url: `${base}${sep}overlay=true`
+        url: `${base}${sep}overlay=true`,
+        params: jobOverlayParams(jobId, opts)
       };
     },
 
@@ -29,7 +45,8 @@ export const overlay = {
       const sep = base.includes("?") ? "&" : "?";
       return {
         id: "newJobProductionQuantity",
-        url: `${base}${sep}overlay=true`
+        url: `${base}${sep}overlay=true`,
+        params: jobOverlayParams(jobId, opts)
       };
     },
 
@@ -102,45 +119,27 @@ export const overlay = {
  */
 export const OVERLAY_PARAM = "overlay";
 
-type UrlOverlayDef = {
-  /** Pull the args needed to rebuild this overlay out of its loader URL. */
-  encode: (loaderUrl: string) => URLSearchParams;
-  /** Rebuild the overlay target from previously-encoded args. */
-  build: (args: URLSearchParams) => OverlayTarget | null;
-};
-
-/** Extract `{ jobId, jobOperationId }` from a `/x/job/{jobId}/.../new?...` URL. */
-function jobOverlayArgs(loaderUrl: string): URLSearchParams {
-  const [pathname, query = ""] = loaderUrl.split("?");
-  const args = new URLSearchParams();
-  // pathname: /x/job/{jobId}/... -> ["", "x", "job", jobId, ...]
-  const jobId = pathname.split("/")[3];
-  if (jobId) args.set("jobId", jobId);
-  const jobOperationId = new URLSearchParams(query).get("jobOperationId");
-  if (jobOperationId) args.set("jobOperationId", jobOperationId);
-  return args;
-}
-
-const urlOverlays: Partial<Record<OverlayId, UrlOverlayDef>> = {
-  newJobPickup: {
-    encode: jobOverlayArgs,
-    build: (args) => {
-      const jobId = args.get("jobId");
-      if (!jobId) return null;
-      return overlay.to.newJobPickup(jobId, {
-        jobOperationId: args.get("jobOperationId") ?? undefined
-      });
-    }
+/**
+ * Rebuild a URL-addressable overlay from its mirrored params. Only the canonical
+ * `overlay.to.*` builders are used, so the route shape lives in one place; the
+ * args are read straight from the URL (no parsing of the loader path needed).
+ */
+const urlOverlays: Partial<
+  Record<OverlayId, (params: URLSearchParams) => OverlayTarget | null>
+> = {
+  newJobPickup: (params) => {
+    const jobId = params.get("jobId");
+    if (!jobId) return null;
+    return overlay.to.newJobPickup(jobId, {
+      jobOperationId: params.get("jobOperationId") ?? undefined
+    });
   },
-  newJobProductionQuantity: {
-    encode: jobOverlayArgs,
-    build: (args) => {
-      const jobId = args.get("jobId");
-      if (!jobId) return null;
-      return overlay.to.newJobProductionQuantity(jobId, {
-        jobOperationId: args.get("jobOperationId") ?? undefined
-      });
-    }
+  newJobProductionQuantity: (params) => {
+    const jobId = params.get("jobId");
+    if (!jobId) return null;
+    return overlay.to.newJobProductionQuantity(jobId, {
+      jobOperationId: params.get("jobOperationId") ?? undefined
+    });
   }
 };
 
@@ -149,21 +148,20 @@ export function isUrlOverlay(id: OverlayId): boolean {
   return id in urlOverlays;
 }
 
-/** Encode one stack entry as `id:<urlencoded args>` (args omitted when empty). */
+/** Encode one stack entry as `id:<urlencoded params>` (params omitted when empty). */
 function encodeOverlayEntry(target: OverlayTarget): string | null {
-  const def = urlOverlays[target.id];
-  if (!def) return null;
-  const args = def.encode(target.url).toString();
-  return args ? `${target.id}:${args}` : target.id;
+  if (!isUrlOverlay(target.id)) return null;
+  const params = new URLSearchParams(target.params).toString();
+  return params ? `${target.id}:${params}` : target.id;
 }
 
-/** Decode one `id:<urlencoded args>` token back into a target, or null. */
+/** Decode one `id:<urlencoded params>` token back into a target, or null. */
 function decodeOverlayEntry(token: string): OverlayTarget | null {
   const sep = token.indexOf(":");
   const id = (sep === -1 ? token : token.slice(0, sep)) as OverlayId;
-  const def = urlOverlays[id];
-  if (!def) return null;
-  return def.build(new URLSearchParams(sep === -1 ? "" : token.slice(sep + 1)));
+  const build = urlOverlays[id];
+  if (!build) return null;
+  return build(new URLSearchParams(sep === -1 ? "" : token.slice(sep + 1)));
 }
 
 /** Read the ordered overlay stack (bottom -> top) from the page params. */
