@@ -82,9 +82,7 @@ function buildReferenceContextForLine(
     originalConfiguration?: unknown;
     configReferenceSource?: ConfigReferenceSource | null;
   } | null,
-  employeeId?: string,
-  jobId?: string,
-  jobOperationId?: string
+  employeeId?: string
 ): ConfigTableReferenceContext | undefined {
   if (!configReferenceContext) return undefined;
 
@@ -112,8 +110,6 @@ function buildReferenceContextForLine(
     return buildProductionConfigTableReferenceContext({
       source: configReferenceContext.configReferenceSource,
       employeeId,
-      jobId,
-      jobOperationId,
       siblingLineConfigurations
     });
   }
@@ -176,7 +172,11 @@ export function ProductionQuantityLinesEditor({
     lineKey: string;
     lineQuantity: number;
     configuration: unknown;
-    referenceContext?: ConfigTableReferenceContext;
+    jobId?: string;
+    jobOperationId?: string;
+    buildReferenceContext: (
+      source: ConfigReferenceSource | null
+    ) => ConfigTableReferenceContext | undefined;
   } | null>(null);
 
   const openLineConfig = useCallback(
@@ -186,25 +186,27 @@ export function ProductionQuantityLinesEditor({
       if (!line) return;
 
       const cfg = getConfigFromEditableLine(line);
-      const referenceContext = buildReferenceContextForLine(
-        line,
-        lineKey,
-        lines,
-        configReferenceContext
-          ? configReferenceContext
-          : configReferenceSource
-            ? { configReferenceSource }
-            : null,
-        employeeId,
-        jobId,
-        jobOperationId
-      );
-
       setLineConfigModal({
         lineKey,
         lineQuantity: line.quantity,
         configuration: cfg,
-        referenceContext
+        jobId,
+        jobOperationId,
+        // Built from the source the modal fetches for this operation (or the
+        // in-memory original config for the "original" reference mode).
+        buildReferenceContext: (source) =>
+          buildReferenceContextForLine(
+            line,
+            lineKey,
+            lines,
+            configReferenceContext?.originalConfiguration != null
+              ? {
+                  originalConfiguration:
+                    configReferenceContext.originalConfiguration
+                }
+              : { configReferenceSource: source },
+            employeeId
+          )
       });
     },
     [configReferenceContext, configReferenceSource, employeeId, itemId, jobId, jobOperationId, lines]
@@ -390,8 +392,11 @@ export function ProductionQuantityLinesEditor({
           onClose={() => setLineConfigModal(null)}
           onConfirm={handleLineConfigConfirm}
           itemId={itemId}
+          jobId={lineConfigModal.jobId}
+          jobOperationId={lineConfigModal.jobOperationId}
+          reportKind="productionQuantity"
           configuration={lineConfigModal.configuration}
-          referenceContext={lineConfigModal.referenceContext}
+          buildReferenceContext={lineConfigModal.buildReferenceContext}
         />
       ) : null}
     </VStack>

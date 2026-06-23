@@ -1,4 +1,3 @@
-import type { ConfigTableReferenceContext } from "~/modules/production/configParamsTableColumns";
 import { path } from "~/utils/path";
 import { getOverlayRegistryEntry, type OverlayId } from "./overlay.registry";
 
@@ -11,6 +10,13 @@ export type OverlayTarget = {
    * serialize them directly instead of parsing them back out of `url`.
    */
   params?: Record<string, string>;
+  /**
+   * In-memory data passed straight to the overlay component (surfaced as
+   * `ctx.props` in the renderer). Unlike `url`/`params` it never touches the URL
+   * — it's for parent-owned data (e.g. a draft `configuration`) the loader can't
+   * fetch. Absent when the overlay is restored from a URL alone.
+   */
+  props?: Record<string, unknown>;
 };
 
 /**
@@ -87,29 +93,19 @@ export const overlay = {
       };
     },
 
-    itemConfigTable({
-      itemId,
-      configuration,
-      referenceContext
-    }: {
-      itemId: string;
-      configuration?: unknown;
-      referenceContext?: ConfigTableReferenceContext;
-    }): OverlayTarget {
-      const base = path.to.api.itemConfigTable(itemId);
-      if (configuration === undefined && referenceContext === undefined) {
-        return { id: "itemConfigTable", url: base };
-      }
-      const params = new URLSearchParams();
-      if (configuration !== undefined) {
-        params.set("configuration", JSON.stringify(configuration));
-      }
-      if (referenceContext !== undefined) {
-        params.set("referenceContext", JSON.stringify(referenceContext));
-      }
+    // Fetch key is just `itemId` (the loader reads parameters by it). The
+    // in-memory `configuration` rides the props channel — never the URL.
+    itemConfigTable(
+      { itemId }: { itemId: string },
+      props?: { configuration?: unknown }
+    ): OverlayTarget {
       return {
         id: "itemConfigTable",
-        url: `${base}?${params.toString()}`
+        url: path.to.api.itemConfigTable(itemId),
+        props:
+          props?.configuration !== undefined
+            ? { configuration: props.configuration }
+            : undefined
       };
     }
   }

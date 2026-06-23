@@ -32,8 +32,7 @@ import { usePermissions } from "~/hooks";
 import { isConfigTableOverlaySuccess } from "../../configTableOverlay";
 import {
   buildProductionConfigTableReferenceContext,
-  type ConfigReferenceSource,
-  type ConfigTableReferenceContext
+  type ConfigReferenceSource
 } from "../../configParamsTableColumns";
 import { ConfigParamsTableLocalModal } from "./ConfigParamsTableModal";
 import type { ProductionQuantityLineInput } from "~/modules/production/productionQuantityReport.models";
@@ -325,18 +324,13 @@ const ProductionQuantityForm = ({
 
   const [configModal, setConfigModal] = useState<{
     configuration: unknown;
-    referenceContext?: ConfigTableReferenceContext;
+    jobId?: string;
+    jobOperationId?: string;
+    employeeId?: string;
   } | null>(null);
 
   const openConfigTable = () => {
     if (!itemId) return;
-
-    const referenceContext = buildProductionConfigTableReferenceContext({
-      source: configReferenceSource,
-      employeeId: actorKind === "employee" ? employeeId : undefined,
-      jobId: jobId ?? undefined,
-      jobOperationId: jobOperationIdState || undefined
-    });
 
     const configuration =
       configTableRows && configTablePrimaryKeys.length > 0
@@ -344,7 +338,12 @@ const ProductionQuantityForm = ({
         : (initialValues as z.infer<typeof productionQuantityValidator>)
             .configuration;
 
-    setConfigModal({ configuration, referenceContext });
+    setConfigModal({
+      configuration,
+      jobId: jobId ?? undefined,
+      jobOperationId: jobOperationIdState || undefined,
+      employeeId: actorKind === "employee" ? employeeId : undefined
+    });
   };
 
   const handleConfigConfirm = (data: unknown) => {
@@ -719,8 +718,16 @@ const ProductionQuantityForm = ({
         onClose={() => setConfigModal(null)}
         onConfirm={handleConfigConfirm}
         itemId={itemId}
+        jobId={configModal.jobId}
+        jobOperationId={configModal.jobOperationId}
+        reportKind="productionQuantity"
         configuration={configModal.configuration}
-        referenceContext={configModal.referenceContext}
+        buildReferenceContext={(source) =>
+          buildProductionConfigTableReferenceContext({
+            source: source ?? undefined,
+            employeeId: configModal.employeeId
+          })
+        }
       />
     ) : null;
 

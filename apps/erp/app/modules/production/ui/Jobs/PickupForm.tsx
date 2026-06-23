@@ -20,8 +20,7 @@ import { usePermissions } from "~/hooks";
 import { isConfigTableOverlaySuccess } from "../../configTableOverlay";
 import {
   buildJobRemainingReferenceContext,
-  type ConfigReferenceSource,
-  type ConfigTableReferenceContext
+  type ConfigReferenceSource
 } from "../../configParamsTableColumns";
 import { ConfigParamsTableLocalModal } from "./ConfigParamsTableModal";
 import { jobOperationPickupValidator } from "~/modules/production/production.models";
@@ -198,26 +197,23 @@ const PickupForm = ({
 
   const [configModal, setConfigModal] = useState<{
     configuration: unknown;
-    referenceContext?: ConfigTableReferenceContext;
+    jobId?: string;
+    jobOperationId?: string;
   } | null>(null);
 
   const openConfigTable = () => {
     if (!itemId) return;
-
-    const referenceContext = configReferenceSource
-      ? buildJobRemainingReferenceContext(configReferenceSource, {
-          excludeConfigurations: isEditing
-            ? [initialValues.configuration]
-            : undefined
-        })
-      : undefined;
 
     const configuration =
       configTableRows && configTablePrimaryKeys.length > 0
         ? { configTable: configTableRows, configTablePrimaryKeys }
         : initialValues.configuration;
 
-    setConfigModal({ configuration, referenceContext });
+    setConfigModal({
+      configuration,
+      jobId: jobId ?? undefined,
+      jobOperationId: selectedOperation || undefined
+    });
   };
 
   const handleConfigConfirm = (data: unknown) => {
@@ -351,8 +347,19 @@ const PickupForm = ({
         onClose={() => setConfigModal(null)}
         onConfirm={handleConfigConfirm}
         itemId={itemId}
+        jobId={configModal.jobId}
+        jobOperationId={configModal.jobOperationId}
+        reportKind="pickup"
         configuration={configModal.configuration}
-        referenceContext={configModal.referenceContext}
+        buildReferenceContext={(source) =>
+          source
+            ? buildJobRemainingReferenceContext(source, {
+                excludeConfigurations: isEditing
+                  ? [initialValues.configuration]
+                  : undefined
+              })
+            : undefined
+        }
       />
     ) : null;
 
