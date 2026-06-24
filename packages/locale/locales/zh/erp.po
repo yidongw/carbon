@@ -948,11 +948,11 @@ msgstr "您确定要删除此看板卡片吗？此操作无法撤销。"
 msgid "Are you sure you want to delete this maintenance dispatch? This cannot be undone."
 msgstr "您确定要删除此维护调度吗？此操作无法撤销。"
 
-msgid "Are you sure you want to delete this pickup? This action cannot be undone."
-msgstr "您确定要删除此提货单吗？此操作无法撤销。"
+msgid "Are you sure you want to delete this process pickup? This action cannot be undone."
+msgstr "您确定要删除这条工序领料吗？此操作无法撤销。"
 
-msgid "Are you sure you want to delete this production quantity? This action cannot be undone."
-msgstr "您确定要删除此生产数量吗？此操作无法撤销。"
+msgid "Are you sure you want to delete this process completion? This action cannot be undone."
+msgstr "您确定要删除这条工序完成记录吗？此操作无法撤销。"
 
 msgid "Are you sure you want to delete this quality document?"
 msgstr "您确定要删除此质量文件吗？"
@@ -2093,8 +2093,8 @@ msgstr "创建操作员"
 msgid "Create PO"
 msgstr "创建采购订单"
 
-msgid "Create Production Quantity"
-msgstr "创建生产数量"
+msgid "Create Process Completion"
+msgstr "新建工序完成"
 
 msgid "Create Quote Revision"
 msgstr "创建报价修订版"
@@ -2652,8 +2652,11 @@ msgstr "删除合作伙伴"
 msgid "Delete Payment Term"
 msgstr "删除支付条款"
 
-msgid "Delete Pickup"
-msgstr "删除提货"
+msgid "Delete Process Pickup"
+msgstr "删除工序领料"
+
+msgid "Edit Process Pickup"
+msgstr "编辑工序领料"
 
 msgid "Delete Portal"
 msgstr "删除门户"
@@ -2679,8 +2682,8 @@ msgstr "删除采购订单"
 msgid "Delete Purchase Orders"
 msgstr "删除采购订单"
 
-msgid "Delete Quantity"
-msgstr "删除数量"
+msgid "Delete Process Completion"
+msgstr "删除工序完成"
 
 msgid "Delete Question"
 msgstr "删除问题"
@@ -3197,8 +3200,8 @@ msgstr "编辑定价规则"
 msgid "Edit Process"
 msgstr "编辑工序"
 
-msgid "Edit Production Quantity"
-msgstr "编辑生产数量"
+msgid "Edit Process Completion"
+msgstr "编辑工序完成"
 
 msgid "Edit purchase order line type"
 msgstr "编辑采购订单行类型"
@@ -4993,11 +4996,11 @@ msgstr "升"
 msgid "Live reloading"
 msgstr "实时预览"
 
-msgid "Load more pickups"
-msgstr "加载更多提货"
+msgid "Load more process pickups"
+msgstr "加载更多工序领料"
 
-msgid "Load more quantities"
-msgstr "加载更多数量"
+msgid "Load more process completions"
+msgstr "加载更多工序完成"
 
 msgid "Load Templates"
 msgstr "加载模板"
@@ -6614,15 +6617,15 @@ msgstr "拾取了 {0} 个单位"
 msgid "pickup"
 msgstr "提货"
 
-msgid "Pickup"
-msgstr "提货"
+msgid "Process Pickup"
+msgstr "工序领料"
 
 #. placeholder {0}: selectedPickup.employeeId
-msgid "pickup by {0}"
-msgstr "在 {0} 提取"
+msgid "Process Pickup by {0}"
+msgstr "工序领料：{0}"
 
-msgid "Pickups"
-msgstr "提货单"
+msgid "Process Pickups"
+msgstr "工序领料"
 
 msgid "Pieces/Hour"
 msgstr "件/小时"
@@ -6897,14 +6900,14 @@ msgstr "生产日志"
 msgid "Production Qty"
 msgstr "生产数量"
 
-msgid "Production Quantities"
-msgstr "生产数量"
+msgid "Process Completions"
+msgstr "工序完成"
 
 msgid "Production quantities approved for this pay period."
 msgstr "本支付周期已批准的生产数量。"
 
-msgid "Production Quantity"
-msgstr "生产数量"
+msgid "Process Completion"
+msgstr "工序完成"
 
 msgid "Professional Fees"
 msgstr "专业费用"
@@ -7287,14 +7290,23 @@ msgstr "记录已删除"
 msgid "Record payment"
 msgstr "记录付款"
 
-msgid "Record pickup"
-msgstr "记录取货"
+msgid "Add process completion"
+msgstr "添加工序完成"
+
+msgid "Add process pickup"
+msgstr "添加工序领料"
+
+msgid "Finished {complete} of {target} units, {pickup} in progress from process pickups, {unassigned} unassigned"
+msgstr "已完成 {complete}/{target} 个单位，工序领料 {pickup}，未分配 {unassigned}"
+
+msgid "Process Pickup"
+msgstr "工序领料"
 
 msgid "Record Pickup"
 msgstr "记录取货"
 
-msgid "Record production quantity"
-msgstr "记录生产数量"
+msgid "Process Completion"
+msgstr "工序完成"
 
 msgid "Record quantity"
 msgstr "记录数量"
@@ -9248,8 +9260,8 @@ msgstr "总分钟数"
 msgid "Total paid"
 msgstr "已付总额"
 
-msgid "Total Pickups"
-msgstr "总提货量"
+msgid "Total Process Pickups"
+msgstr "工序领料合计"
 
 msgid "Total Price"
 msgstr "总计价格"

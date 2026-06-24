@@ -892,9 +892,11 @@ msgstr "提货"
 
 msgid "Pickup suggestions:"
 msgstr "提货建议："
+msgid "process pickup"
+msgstr "工序领料"
 
-msgid "Pickups"
-msgstr "拾取"
+msgid "Process Pickups"
+msgstr "工序领料"
 
 msgid "Pin Out"
 msgstr "退出登录"
@@ -1278,6 +1280,8 @@ msgstr "工具"
 
 msgid "Total Pickups"
 msgstr "总提货次数"
+msgid "Total Process Pickups"
+msgstr "工序领料合计"
 
 msgid "Total Production"
 msgstr "总生产量"

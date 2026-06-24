@@ -44,7 +44,7 @@ import { getGenericQueryFilters } from "~/utils/query";
 const defaultPendingFilter = "approvalStatus:eq:Pending";
 
 export const handle: Handle = {
-  breadcrumb: msg`Production Quantities`,
+  breadcrumb: msg`Process Completions`,
   to: `${path.to.productionQuantities}?filter=${encodeURIComponent(defaultPendingFilter)}`,
   module: "production"
 };
