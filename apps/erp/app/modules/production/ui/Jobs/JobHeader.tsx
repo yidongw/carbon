@@ -333,8 +333,8 @@ const JobHeader = () => {
     { name: t`Materials`, to: path.to.jobMaterials(jobId) },
     { name: t`Operations`, to: path.to.jobOperations(jobId) },
     { name: t`Events`, to: path.to.jobProductionEvents(jobId) },
-    { name: t`Process Completions`, to: path.to.jobProductionQuantities(jobId) },
-    { name: t`Process Pickups`, to: path.to.jobPickups(jobId) },
+    { name: t`Quantities`, to: path.to.jobProductionQuantities(jobId) },
+    { name: t`Pickups`, to: path.to.jobPickups(jobId) },
     { name: t`Step Records`, to: path.to.jobOperationStepRecords(jobId) },
   ];
 

@@ -911,7 +911,7 @@ const JobsTable = memo(
               }}
             >
               <MenuIcon icon={<LuHash />} />
-              <Trans>Process Completion</Trans>
+              <Trans>Record production quantity</Trans>
             </MenuItem>
           ) : null}
           {permissions.can("create", "production") && row.id ? (
@@ -921,7 +921,7 @@ const JobsTable = memo(
               }}
             >
               <MenuIcon icon={<LuPackageOpen />} />
-              <Trans>Process Pickup</Trans>
+              <Trans>Record pickup</Trans>
             </MenuItem>
           ) : null}
           <MenuItem

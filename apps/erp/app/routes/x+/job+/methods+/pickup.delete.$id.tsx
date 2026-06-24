@@ -19,12 +19,12 @@ export async function action({ request, params }: ActionFunctionArgs) {
   if (deletion.error) {
     throw redirect(
       requestReferrer(request) ?? path.to.jobs,
-      await flash(request, error(deletion.error, "Failed to delete process pickup"))
+      await flash(request, error(deletion.error, "Failed to delete pickup"))
     );
   }
 
   throw redirect(
     requestReferrer(request) ?? path.to.jobs,
-    await flash(request, success("Successfully deleted process pickup"))
+    await flash(request, success("Successfully deleted pickup"))
   );
 }

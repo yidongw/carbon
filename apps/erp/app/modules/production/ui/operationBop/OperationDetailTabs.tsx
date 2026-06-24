@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { LuChevronRight } from "react-icons/lu";
-import { operationDetailSectionGridClass } from "./operationFormLayout";
 
 export type OperationDetailSection = {
   id: string;
@@ -103,7 +102,8 @@ export function OperationDetailTabs({
             <div
               key={section.id}
               className={cn(
-                section.contentClassName ?? operationDetailSectionGridClass,
+                section.contentClassName ??
+                  "grid w-full grid-cols-1 gap-x-8 gap-y-4 px-4 pb-4 pt-4 lg:grid-cols-3",
                 "transition-opacity duration-200",
                 isVisible
                   ? "relative opacity-100"

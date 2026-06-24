@@ -1,7 +1,8 @@
 import { Button, cn, HStack } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useMemo, useState } from "react";
-import { LuChevronRight, LuPlus } from "react-icons/lu";
+import { LuChevronRight } from "react-icons/lu";
+import { PillSegmentedControl } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { useShape } from "~/components/Form/Shape";
 import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
@@ -12,13 +13,14 @@ import type { AdjustmentMode, Column, Row } from "./configTableShared";
 import {
   buildColumns,
   computeTotal,
+  jobConfigQuantitiesModalBodyClassName,
+  jobConfigQuantitiesModalShellClassName,
   EditableConfigGrid,
   formatSignedTotal,
   getCellKey,
   getInitialRows,
   getMergeKey,
   hasValue,
-  makeDefaultRow,
   mergeRows,
   normalizeRow,
   ReadOnlyConfigTable,
@@ -263,8 +265,6 @@ function JobConfigQuantities({
     primaryKeys.some((key) => (Number(row[key]) || 0) !== 0)
   );
 
-  const addRow = () => setRows((prev) => [...prev, makeDefaultRow(columns)]);
-
   const deleteRow = (index: number) =>
     setRows((prev) => prev.filter((_, i) => i !== index));
 
@@ -350,7 +350,7 @@ function JobConfigQuantities({
     fetcher.state !== "idle" || !hasAdjustment || preview.hasNegative;
 
   return (
-    <div className="flex w-max min-w-full max-w-full flex-col">
+    <div className={jobConfigQuantitiesModalShellClassName}>
       <div className="shrink-0 border-b border-border px-6 py-4 pr-12">
         <h3 className="text-base font-medium font-headline tracking-tight text-foreground">
           <Trans>Configuration Parameters</Trans>
@@ -359,7 +359,7 @@ function JobConfigQuantities({
           <p className="mt-1 text-sm text-muted-foreground">{jobDisplayId}</p>
         ) : null}
       </div>
-      <div className="min-w-0 flex-1 overflow-x-auto overflow-y-auto px-6 py-4">
+      <div className={jobConfigQuantitiesModalBodyClassName}>
         <div className="flex flex-col gap-6">
           <section className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
@@ -387,39 +387,23 @@ function JobConfigQuantities({
               <h4 className="text-sm font-medium text-foreground">
                 <Trans>Add or remove quantity</Trans>
               </h4>
-              <div className="inline-flex rounded-md border border-border p-0.5">
-                {(["delta", "total"] as const).map((value) => (
-                  <button
-                    key={value}
-                    type="button"
-                    onClick={() => setMode(value)}
-                    className={cn(
-                      "rounded px-2.5 py-1 text-xs font-medium transition-colors",
-                      mode === value
-                        ? "bg-accent text-accent-foreground"
-                        : "text-muted-foreground hover:text-foreground"
-                    )}
-                  >
-                    {value === "delta" ? (
-                      <Trans>Delta</Trans>
-                    ) : (
-                      <Trans>Total</Trans>
-                    )}
-                  </button>
-                ))}
-              </div>
+              <PillSegmentedControl
+                value={mode}
+                onChange={setMode}
+                aria-label={t`Adjustment input mode`}
+                options={[
+                  { value: "delta", label: <Trans>Delta</Trans> },
+                  { value: "total", label: <Trans>Total</Trans> }
+                ]}
+              />
             </div>
             <p className="text-xs text-muted-foreground">
               {mode === "delta" ? (
                 <Trans>
-                  Enter a positive number to add or a negative number to remove.
-                  The change is recorded in the history below.
+                  Enter a positive number to add or a negative number to subtract.
                 </Trans>
               ) : (
-                <Trans>
-                  Enter the target quantity for each size. The change from the
-                  current quantity is recorded in the history.
-                </Trans>
+                <Trans>Enter the target quantity for each size.</Trans>
               )}
             </p>
             <EditableConfigGrid
@@ -433,20 +417,12 @@ function JobConfigQuantities({
               materialOptions={materialOptions}
               updateCell={updateCell}
               deleteRow={deleteRow}
+              allowRowMutations={false}
             />
             {validationError && (
               <div className="text-sm text-destructive">{validationError}</div>
             )}
-            <HStack className="mt-4 justify-between">
-              <Button
-                type="button"
-                variant="secondary"
-                size="sm"
-                onClick={addRow}
-                leftIcon={<LuPlus />}
-              >
-                <Trans>Add Row</Trans>
-              </Button>
+            <HStack className="mt-4 justify-end">
               <span className="text-sm text-muted-foreground">
                 <Trans>Adjustment</Trans>:{" "}
                 <strong className="text-foreground">

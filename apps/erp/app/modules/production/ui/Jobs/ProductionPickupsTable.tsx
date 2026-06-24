@@ -104,7 +104,7 @@ const ProductionPickupsTable = memo(
             onClick={() => onDelete(row)}
           >
             <MenuIcon icon={<LuTrash />} />
-            <Trans>Delete Process Pickup</Trans>
+            <Trans>Delete Pickup</Trans>
           </MenuItem>
         </>
       ),
@@ -120,18 +120,18 @@ const ProductionPickupsTable = memo(
           data={data}
           primaryAction={
             permissions.can("create", "production") && (
-              <New label={t`Process Pickup`} to={`new?${params.toString()}`} />
+              <New label={t`Pickup`} to={`new?${params.toString()}`} />
             )
           }
           renderContextMenu={renderContextMenu}
-          title={t`Process Pickups`}
+          title={t`Pickups`}
         />
         {deleteModal.isOpen && selectedPickup && (
           <ConfirmDelete
             action={path.to.deleteJobPickup(selectedPickup.id)}
             isOpen
-            name={t`Process Pickup by ${selectedPickup.employeeId}`}
-            text={t`Are you sure you want to delete this process pickup? This action cannot be undone.`}
+            name={t`pickup by ${selectedPickup.employeeId}`}
+            text={t`Are you sure you want to delete this pickup? This action cannot be undone.`}
             onCancel={onDeleteCancel}
             onSubmit={onDeleteCancel}
           />

@@ -477,7 +477,7 @@ const ProductionQuantitiesTable = memo(
               <HStack>
                 {showCreateAction ? (
                   <New
-                    label={<Trans>Process Completion</Trans>}
+                    label={<Trans>New Production Quantity</Trans>}
                     to={path.to.newProductionQuantity}
                     icon={<IconButton icon={<LuPlus />} label="New" />}
                   />
@@ -490,7 +490,7 @@ const ProductionQuantitiesTable = memo(
               </HStack>
             ) : showCreateAction ? (
               <New
-                label={<Trans>Process Completion</Trans>}
+                label={<Trans>New Production Quantity</Trans>}
                 to={path.to.newProductionQuantity}
                 icon={<IconButton icon={<LuPlus />} label="New" />}
               />
@@ -498,7 +498,7 @@ const ProductionQuantitiesTable = memo(
           }
           withSearch={!embedded}
           withPagination
-          title={embedded ? undefined : (title ?? t`Process Completions`)}
+          title={embedded ? undefined : (title ?? t`Production Quantities`)}
         />
         {rejectCorrection ? (
           <ProductionQuantityDispositionDrawer
