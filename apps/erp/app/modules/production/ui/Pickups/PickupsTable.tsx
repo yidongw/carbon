@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import { AiOutlinePartition } from "react-icons/ai";
 import { LuCalendar, LuHash, LuPlus, LuUser } from "react-icons/lu";
 import { New, Table } from "~/components";
-import { formatDateTime, getProcessName } from "~/modules/production/productionQuantityDisplay.utils";
+import { getProcessName } from "~/modules/production/productionQuantityDisplay.utils";
 import { ProductionQuantityReportReporter } from "~/modules/production/ui/Jobs/ProductionQuantityReportReporter";
 import {
   ProductionQuantityTableItemCell,
@@ -13,6 +13,8 @@ import {
   ProductionQuantityTableQuantityCell,
   type ProductionQuantityTableRowLike
 } from "~/modules/production/ui/ProductionQuantityTableCells";
+import { usePickupCreatedAtSave } from "~/modules/production/ui/useEditableCreatedAt";
+import { EditableCreatedAtCell } from "~/modules/production/ui/EditableCreatedAtCell";
 import { path } from "~/utils/path";
 
 type JobOperationPickup = ProductionQuantityTableRowLike & {
@@ -37,6 +39,7 @@ export function PickupsTable({
   configurableItemIds = []
 }: PickupsTableProps) {
   const { t } = useLingui();
+  const { saveCreatedAt, canEdit } = usePickupCreatedAtSave();
   const configurableItemIdSet = useMemo(
     () => new Set(configurableItemIds),
     [configurableItemIds]
@@ -97,14 +100,17 @@ export function PickupsTable({
         accessorKey: "createdAt",
         header: t`Submitted`,
         cell: ({ row }) => (
-          <span className="text-sm text-muted-foreground whitespace-nowrap">
-            {formatDateTime(row.original.createdAt)}
-          </span>
+          <EditableCreatedAtCell
+            createdAt={row.original.createdAt}
+            row={row.original}
+            onSave={saveCreatedAt}
+            canEdit={canEdit}
+          />
         ),
         meta: { icon: <LuCalendar /> }
       }
     ],
-    [configurableItemIdSet, t]
+    [canEdit, configurableItemIdSet, saveCreatedAt, t]
   );
 
   return (

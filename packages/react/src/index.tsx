@@ -101,6 +101,7 @@ import { GroupedCreatableCombobox } from "./GroupedCreatableCombobox";
 import type { CreatableMultiSelectProps } from "./CreateableMultiSelect";
 import { CreatableMultiSelect } from "./CreateableMultiSelect";
 import {
+  Calendar,
   DatePicker,
   DateRangePicker,
   DateTimePicker,
@@ -401,6 +402,7 @@ export {
   CreatableCombobox,
   CreatableMultiSelect,
   GroupedCreatableCombobox,
+  Calendar,
   DatePicker,
   DateRangePicker,
   DateTimePicker,
