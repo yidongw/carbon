@@ -6,6 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  Spinner,
   useDisclosure
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
@@ -80,9 +81,11 @@ export default function JobStatusMenu({ job }: { job: Job }) {
           <button
             type="button"
             aria-label={t`Change status`}
-            className="cursor-pointer rounded-full outline-none transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-ring"
+            disabled={busy}
+            className="inline-flex items-center gap-1.5 cursor-pointer rounded-full outline-none transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-default disabled:hover:opacity-100"
           >
             <JobStatus status={status} />
+            {busy && <Spinner className="size-3 text-muted-foreground" />}
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
