@@ -78,6 +78,7 @@ export function RegisteredOverlay({
 
   const contentProps = {
     loaderData: loadFetcher.data,
+    props: instance.props ?? {},
     isLoading,
     url: instance.url,
     close: () => onClose(instance.id),

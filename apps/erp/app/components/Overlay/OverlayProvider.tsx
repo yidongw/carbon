@@ -50,7 +50,8 @@ function createInstance(
     onCreated: options?.onCreated,
     onSuccess: options?.onSuccess,
     urlSynced,
-    token: urlSynced ? (overlayToken(target) ?? undefined) : undefined
+    token: urlSynced ? (overlayToken(target) ?? undefined) : undefined,
+    props: target.props
   };
 }
 

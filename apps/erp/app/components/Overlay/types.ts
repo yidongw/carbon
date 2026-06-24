@@ -7,8 +7,13 @@ export type OverlayType = "drawer" | "modal";
 /** How overlay content confirms: POST to `url` action, or client-only callback. */
 export type OverlayConfirmMode = "client" | "server";
 
-export type OverlayContentProps<TLoader = unknown> = {
+export type OverlayContentProps<
+  TLoader = unknown,
+  TProps extends Record<string, unknown> = Record<string, unknown>
+> = {
   loaderData: TLoader | undefined;
+  /** In-memory data passed from the parent at open time (see `OverlayTarget.props`). */
+  props: TProps;
   isLoading: boolean;
   url: string;
   close: () => void;
@@ -39,6 +44,8 @@ export type OverlayInstance = {
   urlSynced?: boolean;
   /** Encoded URL token for url-synced overlays; re-asserted onto the URL after navigations. */
   token?: string;
+  /** In-memory data passed from the parent at open time (see `OverlayTarget.props`). */
+  props?: Record<string, unknown>;
 };
 
 export type OpenOverlayOptions = {

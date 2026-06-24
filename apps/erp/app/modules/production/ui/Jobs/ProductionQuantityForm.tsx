@@ -22,7 +22,6 @@ import {
 import type { z } from "zod";
 import { Hidden, Number, Select, Submit, TextArea } from "~/components/Form";
 import ScrapReason from "~/components/Form/ScrapReason";
-import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions } from "~/hooks";
 import type { ProductionQuantityLineInput } from "~/modules/production/productionQuantityReport.models";
 import { preventDismissOnPortaledContent } from "~/utils/dom";
@@ -31,13 +30,16 @@ import {
   buildProductionConfigTableReferenceContext,
   type ConfigReferenceSource
 } from "../../configParamsTableColumns";
-import { isConfigTableOverlaySuccess } from "../../configTableOverlay";
 import { computeJobConfigTableTotal } from "../../jobConfiguration";
 import type { productionActorKinds } from "../../production.models";
 import {
   productionQuantityCreateFormValidator,
   productionQuantityValidator
 } from "../../production.models";
+import {
+  toConfigTableValue,
+  useConfigTableModal
+} from "./ConfigParamsTableModal";
 import {
   ProductionActorFields,
   selectionFromInitialValues
@@ -239,7 +241,6 @@ const ProductionQuantityForm = ({
     string[]
   >(initialConfig.primaryKeys);
   const [configTableTotal, setConfigTableTotal] = useState(initialConfig.total);
-  const { openOverlay } = useOverlay();
   const formBodyRef = useRef<HTMLDivElement>(null);
 
   const [lines, setLines] = useState<EditableProductionQuantityLine[]>(() => {
@@ -328,40 +329,33 @@ const ProductionQuantityForm = ({
     }
   };
 
+  const configModal = useConfigTableModal();
+
   const openConfigTable = () => {
     if (!itemId) return;
-
-    const referenceContext = buildProductionConfigTableReferenceContext({
-      source: configReferenceSource,
-      employeeId: actorKind === "employee" ? employeeId : undefined,
+    configModal.open({
+      itemId,
+      configuration: toConfigTableValue(
+        configTableRows,
+        configTablePrimaryKeys,
+        (initialValues as z.infer<typeof productionQuantityValidator>)
+          .configuration
+      ),
       jobId: jobId ?? undefined,
-      jobOperationId: jobOperationIdState || undefined
+      jobOperationId: jobOperationIdState || undefined,
+      reportKind: "productionQuantity",
+      buildReferenceContext: (source) =>
+        buildProductionConfigTableReferenceContext({
+          source: source ?? undefined,
+          employeeId: actorKind === "employee" ? employeeId : undefined
+        }),
+      onConfirm: (data) =>
+        handleConfigTableSubmit(
+          data.configuration.configTable,
+          data.total,
+          data.primaryKeys
+        )
     });
-
-    openOverlay(
-      overlay.to.itemConfigTable({
-        itemId,
-        configuration:
-          configTableRows && configTablePrimaryKeys.length > 0
-            ? {
-                configTable: configTableRows,
-                configTablePrimaryKeys
-              }
-            : (initialValues as z.infer<typeof productionQuantityValidator>)
-                .configuration,
-        referenceContext
-      }),
-      {
-        onSuccess: (data) => {
-          if (!isConfigTableOverlaySuccess(data)) return;
-          handleConfigTableSubmit(
-            data.configuration.configTable,
-            data.total,
-            data.primaryKeys
-          );
-        }
-      }
-    );
   };
 
   const createDefaultValues = useMemo(() => {
@@ -730,23 +724,31 @@ const ProductionQuantityForm = ({
   );
 
   if (isOverlay) {
-    return form;
+    return (
+      <>
+        {form}
+        {configModal.node}
+      </>
+    );
   }
 
   return (
-    <Drawer
-      open
-      onOpenChange={(open) => {
-        if (!open) onDismiss();
-      }}
-    >
-      <DrawerContent
-        onPointerDownOutside={preventDismissOnPortaledContent}
-        onInteractOutside={preventDismissOnPortaledContent}
+    <>
+      <Drawer
+        open
+        onOpenChange={(open) => {
+          if (!open) onDismiss();
+        }}
       >
-        {form}
-      </DrawerContent>
-    </Drawer>
+        <DrawerContent
+          onPointerDownOutside={preventDismissOnPortaledContent}
+          onInteractOutside={preventDismissOnPortaledContent}
+        >
+          {form}
+        </DrawerContent>
+      </Drawer>
+      {configModal.node}
+    </>
   );
 };
 
