@@ -71,6 +71,7 @@ import { Enumerable } from "~/components/Enumerable";
 import { useLocations } from "~/components/Form/Location";
 import { ConfirmDelete } from "~/components/Modals";
 import { overlay, useOverlay } from "~/components/Overlay";
+import { useIsCardCell } from "~/components/Table/components/cardCell";
 import { useDateFormatter, usePermissions, useUrlParams } from "~/hooks";
 import { useCustomColumns } from "~/hooks/useCustomColumns";
 import type { action } from "~/routes/x+/job+/update";
@@ -140,6 +141,7 @@ const RoutingProgressCell = memo(function RoutingProgressCell({
   onOpenBillOfProcess: (jobId: string) => void;
 }) {
   const { t } = useLingui();
+  const isCardCell = useIsCardCell();
   const completedOps = job.completedOperationCount ?? 0;
   const totalOps = job.operationCount ?? 0;
   const qtyThrough = job.quantityFullyComplete ?? 0;
@@ -220,6 +222,14 @@ const RoutingProgressCell = memo(function RoutingProgressCell({
           </TooltipContent>
         </Tooltip>
       </span>
+      {isCardCell && job.id && (
+        <button
+          type="button"
+          aria-label={t`View bill of process`}
+          className="absolute inset-0 z-[1] rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          onClick={openBopPreview}
+        />
+      )}
     </HStack>
   );
 });
@@ -279,6 +289,7 @@ const JobQuantityCell = memo(function JobQuantityCell({
 }) {
   const { itemIdsWithConfigurationParameters } = useJobsTableSupplemental();
   const permissions = usePermissions();
+  const isCardCell = useIsCardCell();
   const quantity = job.quantity ?? 0;
   const quantityComplete = job.quantityComplete ?? 0;
   const showConfiguredQuantityUi =
@@ -302,6 +313,14 @@ const JobQuantityCell = memo(function JobQuantityCell({
           isDisabled={!canConfigure}
           onClick={(e) => onOpenConfigTable(e, job)}
         />
+        {isCardCell && canConfigure && (
+          <button
+            type="button"
+            aria-label="Configure quantities"
+            className="absolute inset-0 z-[1] rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            onClick={(e) => onOpenConfigTable(e, job)}
+          />
+        )}
       </HStack>
     );
   }

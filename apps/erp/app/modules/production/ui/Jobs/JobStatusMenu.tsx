@@ -1,5 +1,6 @@
 "use client";
 import {
+  cn,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuIcon,
@@ -18,6 +19,7 @@ import {
   LuCircleStop
 } from "react-icons/lu";
 import { useFetcher } from "react-router";
+import { useIsCardCell } from "~/components/Table/components/cardCell";
 import { usePermissions } from "~/hooks";
 import { path } from "~/utils/path";
 import type { jobStatus } from "../../production.models";
@@ -33,6 +35,7 @@ import JobStatus from "./JobStatus";
 export default function JobStatusMenu({ job }: { job: Job }) {
   const { t } = useLingui();
   const permissions = usePermissions();
+  const isCardCell = useIsCardCell();
   // A KEYED fetcher: its state lives globally and reconnects after the cell is
   // rebuilt (the jobs table recreates its columns/cells on every render, which
   // would otherwise wipe any local component state mid-change). This is what
@@ -78,19 +81,43 @@ export default function JobStatusMenu({ job }: { job: Job }) {
   return (
     <>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <button
-            type="button"
-            aria-label={t`Change status`}
-            disabled={busy}
-            className="inline-flex items-center gap-1.5 cursor-pointer rounded-full outline-none transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-default disabled:hover:opacity-100"
-          >
-            <span className={busy ? "opacity-50" : undefined}>
+        {isCardCell ? (
+          // In the mobile card the whole pill is the tap target: render the
+          // badge as visuals and overlay a full-cover trigger.
+          <>
+            <span
+              className={cn(
+                "inline-flex items-center gap-1.5",
+                busy && "opacity-50"
+              )}
+            >
               <JobStatus status={status} />
+              {busy && <Spinner className="size-4 text-foreground" />}
             </span>
-            {busy && <Spinner className="size-4 text-foreground" />}
-          </button>
-        </DropdownMenuTrigger>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                aria-label={t`Change status`}
+                disabled={busy}
+                className="absolute inset-0 z-[1] rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              />
+            </DropdownMenuTrigger>
+          </>
+        ) : (
+          <DropdownMenuTrigger asChild>
+            <button
+              type="button"
+              aria-label={t`Change status`}
+              disabled={busy}
+              className="inline-flex items-center gap-1.5 cursor-pointer rounded-full outline-none transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-default disabled:hover:opacity-100"
+            >
+              <span className={busy ? "opacity-50" : undefined}>
+                <JobStatus status={status} />
+              </span>
+              {busy && <Spinner className="size-4 text-foreground" />}
+            </button>
+          </DropdownMenuTrigger>
+        )}
         <DropdownMenuContent align="start">
           {isDraft && (
             <DropdownMenuItem

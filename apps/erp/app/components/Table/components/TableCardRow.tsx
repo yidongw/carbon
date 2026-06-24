@@ -20,6 +20,7 @@ import {
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router";
 import { useSwipeReveal } from "~/hooks/useSwipeReveal";
+import { CardCellContext } from "./cardCell";
 
 const SYSTEM_COLUMN_IDS = new Set(["Select", "Actions", "Expand"]);
 
@@ -132,11 +133,17 @@ interface FieldChipProps {
 }
 
 function FieldChip({ header, icon, children, variant }: FieldChipProps) {
+  // Cells render inside the card; an actionable cell overlays a full-pill
+  // trigger (absolute inset-0), so the chip root is positioned relative.
+  const body = (
+    <CardCellContext.Provider value={true}>{children}</CardCellContext.Provider>
+  );
+
   if (variant === "featured") {
     return (
       <div
         className={cn(
-          "flex min-w-0 flex-col gap-1.5 rounded-lg border border-primary/25",
+          "relative flex min-w-0 flex-col gap-1.5 rounded-lg border border-primary/25",
           "bg-white px-3 py-2.5 shadow-sm dark:border-primary/30 dark:bg-card"
         )}
       >
@@ -147,7 +154,7 @@ function FieldChip({ header, icon, children, variant }: FieldChipProps) {
           </span>
         </div>
         <div className="min-w-0 text-base font-medium leading-snug text-foreground [&_.tabular-nums]:tabular-nums">
-          {children}
+          {body}
         </div>
       </div>
     );
@@ -156,13 +163,13 @@ function FieldChip({ header, icon, children, variant }: FieldChipProps) {
   return (
     <div
       className={cn(
-        "inline-flex max-w-full items-center gap-1.5 rounded-lg",
+        "relative inline-flex max-w-full items-center gap-1.5 rounded-lg",
         "border border-border/50 bg-muted/30 px-2 py-1 text-xs leading-snug"
       )}
     >
       {icon && <FieldIcon>{icon}</FieldIcon>}
       <span className="text-muted-foreground">{header}</span>
-      <span className="min-w-0 font-medium text-foreground">{children}</span>
+      <span className="min-w-0 font-medium text-foreground">{body}</span>
     </div>
   );
 }
