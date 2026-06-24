@@ -90,9 +90,7 @@ export default function JobStatusMenu({ job }: { job: Job }) {
               disabled={busy}
               onClick={() => submitStatus("Planned")}
             >
-              <DropdownMenuIcon
-                icon={<LuCheckCheck className="text-yellow-500" />}
-              />
+              <DropdownMenuIcon className="text-yellow-500" icon={<LuCheckCheck />} />
               <Trans>Mark as Planned</Trans>
             </DropdownMenuItem>
           )}
@@ -104,9 +102,7 @@ export default function JobStatusMenu({ job }: { job: Job }) {
             }
             onClick={releaseModal.onOpen}
           >
-            <DropdownMenuIcon
-              icon={<LuCirclePlay className="text-blue-600" />}
-            />
+            <DropdownMenuIcon className="text-blue-600" icon={<LuCirclePlay />} />
             <Trans>Release</Trans>
           </DropdownMenuItem>
           {isPaused ? (
@@ -114,9 +110,7 @@ export default function JobStatusMenu({ job }: { job: Job }) {
               disabled={busy}
               onClick={() => submitStatus("Ready")}
             >
-              <DropdownMenuIcon
-                icon={<LuCirclePlay className="text-blue-600" />}
-              />
+              <DropdownMenuIcon className="text-blue-600" icon={<LuCirclePlay />} />
               <Trans>Resume</Trans>
             </DropdownMenuItem>
           ) : (
@@ -124,9 +118,7 @@ export default function JobStatusMenu({ job }: { job: Job }) {
               disabled={!isRunning || busy}
               onClick={() => submitStatus("Paused")}
             >
-              <DropdownMenuIcon
-                icon={<LuCirclePause className="text-orange-500" />}
-              />
+              <DropdownMenuIcon className="text-orange-500" icon={<LuCirclePause />} />
               <Trans>Pause</Trans>
             </DropdownMenuItem>
           )}
@@ -134,18 +126,14 @@ export default function JobStatusMenu({ job }: { job: Job }) {
             disabled={isDone || busy}
             onClick={completeModal.onOpen}
           >
-            <DropdownMenuIcon
-              icon={<LuCircleCheck className="text-green-600" />}
-            />
+            <DropdownMenuIcon className="text-green-600" icon={<LuCircleCheck />} />
             <Trans>Complete</Trans>
           </DropdownMenuItem>
           <DropdownMenuItem
             disabled={isDone || busy}
             onClick={cancelModal.onOpen}
           >
-            <DropdownMenuIcon
-              icon={<LuCircleStop className="text-red-600" />}
-            />
+            <DropdownMenuIcon className="text-red-600" icon={<LuCircleStop />} />
             <Trans>Cancel</Trans>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
@@ -155,9 +143,7 @@ export default function JobStatusMenu({ job }: { job: Job }) {
               submitStatus(status === "Cancelled" ? "Draft" : "In Progress")
             }
           >
-            <DropdownMenuIcon
-              icon={<LuCirclePlay className="text-blue-600" />}
-            />
+            <DropdownMenuIcon className="text-blue-600" icon={<LuCirclePlay />} />
             <Trans>Reopen</Trans>
           </DropdownMenuItem>
         </DropdownMenuContent>
