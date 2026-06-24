@@ -370,6 +370,7 @@ const ProductionQuantitiesTable = memo(
             <ProductionQuantityTableQuantityCell
               row={row.original}
               configurableItemIds={configurableItemIdSet}
+              reportKind="productionQuantity"
             />
           ),
           meta: {

@@ -152,6 +152,34 @@ export async function getConfigReferenceSourceForOperation(
   };
 }
 
+/**
+ * Read a single reported row's saved configuration by record id. Used as the
+ * deep-link fallback for the read-only `itemConfigTable` overlay: in-app it
+ * gets the config via props, but a pasted URL has only the record id.
+ */
+export async function getReportedConfigurationById(
+  client: SupabaseClient<Database>,
+  {
+    recordId,
+    reportKind,
+    companyId
+  }: {
+    recordId: string;
+    reportKind: "pickup" | "productionQuantity";
+    companyId: string;
+  }
+): Promise<unknown | null> {
+  const table =
+    reportKind === "pickup" ? "jobOperationPickup" : "productionQuantity";
+  const { data } = await client
+    .from(table)
+    .select("configuration")
+    .eq("id", recordId)
+    .eq("companyId", companyId)
+    .maybeSingle();
+  return data?.configuration ?? null;
+}
+
 export async function resolveJobIdForOperation(
   client: SupabaseClient<Database>,
   companyId: string,
