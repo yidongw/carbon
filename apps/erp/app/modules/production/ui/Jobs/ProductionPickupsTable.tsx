@@ -7,7 +7,9 @@ import { useParams } from "react-router";
 import { EmployeeAvatar, Hyperlink, New, Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { ConfirmDelete } from "~/components/Modals";
-import { useDateFormatter, usePermissions, useUrlParams } from "~/hooks";
+import { usePermissions, useUrlParams } from "~/hooks";
+import { usePickupCreatedAtSave } from "~/modules/production/ui/useEditableCreatedAt";
+import { EditableCreatedAtCell } from "~/modules/production/ui/EditableCreatedAtCell";
 import { path } from "~/utils/path";
 import type { JobPickup } from "../../types";
 
@@ -22,8 +24,8 @@ const ProductionPickupsTable = memo(
     const { jobId } = useParams();
     const { t } = useLingui();
     if (!jobId) throw new Error("Job ID is required");
-    const { formatDateTime } = useDateFormatter();
     const permissions = usePermissions();
+    const { saveCreatedAt, canEdit } = usePickupCreatedAtSave();
 
     const columns = useMemo<ColumnDef<JobPickup>[]>(() => {
       return [
@@ -73,10 +75,17 @@ const ProductionPickupsTable = memo(
         {
           accessorKey: "createdAt",
           header: t`Recorded At`,
-          cell: ({ row }) => formatDateTime(row.original.createdAt)
+          cell: ({ row }) => (
+            <EditableCreatedAtCell
+              createdAt={row.original.createdAt}
+              row={row.original}
+              onSave={saveCreatedAt}
+              canEdit={canEdit}
+            />
+          )
         }
       ];
-    }, [operations, t, formatDateTime]);
+    }, [canEdit, operations, saveCreatedAt, t]);
 
     const deleteModal = useDisclosure();
     const [selectedPickup, setSelectedPickup] = useState<JobPickup | null>(
