@@ -214,9 +214,11 @@ const CadModelUpload = ({
     >
       <input {...getInputProps()} name="file" className="sr-only" />
       <div className="flex flex-col h-full w-full p-4">
-        <CardHeader>
-          <CardTitle>{title}</CardTitle>
-        </CardHeader>
+        {title && (
+          <CardHeader>
+            <CardTitle>{title}</CardTitle>
+          </CardHeader>
+        )}
 
         <div className="flex flex-col flex-grow items-center justify-center gap-2 p-6">
           {file && <Spinner className={cn("h-16 w-16", title && "-mt-16")} />}
