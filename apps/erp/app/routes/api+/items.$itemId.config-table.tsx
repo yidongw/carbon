@@ -3,7 +3,10 @@ import type { LoaderFunctionArgs } from "react-router";
 import { getConfigurationParameters } from "~/modules/items";
 import type { ConfigurationParameter } from "~/modules/items/types";
 import type { ConfigReferenceSource } from "~/modules/production/configParamsTableColumns";
-import { getConfigReferenceSourceForOperation } from "~/modules/production/configTableOverlay.server";
+import {
+  getConfigReferenceSourceForOperation,
+  resolveJobIdForOperation
+} from "~/modules/production/configTableOverlay.server";
 
 export type ItemConfigTableOverlayLoaderData = {
   parameters: ConfigurationParameter[];
@@ -44,12 +47,21 @@ export async function loader({
     .maybeSingle();
 
   const url = new URL(request.url);
-  const jobId = url.searchParams.get("jobId") ?? undefined;
   const jobOperationId = url.searchParams.get("jobOperationId") ?? undefined;
   const reportKind =
     url.searchParams.get("reportKind") === "pickup"
       ? "pickup"
       : "productionQuantity";
+
+  // Resolve the job from the operation when the caller didn't pass jobId.
+  const jobId = jobOperationId
+    ? await resolveJobIdForOperation(
+        client,
+        companyId,
+        jobOperationId,
+        url.searchParams.get("jobId") ?? undefined
+      )
+    : undefined;
 
   const referenceSource =
     jobId && jobOperationId
