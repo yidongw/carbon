@@ -11,6 +11,17 @@ export {
   formatOperationTabSummary
 } from "./operationBopFormatting";
 export {
+  operationDetailHintFieldClass,
+  operationDetailMetricFieldClass,
+  operationDetailSectionGridClass,
+  operationFormContainerClass,
+  operationFormDescriptionFieldClass,
+  operationFormGridClass,
+  operationFormPairFieldClass,
+  operationFormTypeFieldClass,
+  operationFormWorkCenterFieldClass
+} from "./operationFormLayout";
+export {
   operationTypeConfigureListOptions,
   useOperationTypeSelectOptions
 } from "./operationTypeSelectOptions";

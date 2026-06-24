@@ -192,6 +192,14 @@ import type { Job, JobOperation } from "../../types";
 import { OutsideOperationBadge } from "../OutsideOperationBadge";
 import {
   formatOperationTabSummary,
+  operationDetailHintFieldClass,
+  operationDetailMetricFieldClass,
+  operationFormContainerClass,
+  operationFormDescriptionFieldClass,
+  operationFormGridClass,
+  operationFormPairFieldClass,
+  operationFormTypeFieldClass,
+  operationFormWorkCenterFieldClass,
   OperationDetailTabs,
   useOperationTypeSelectOptions
 } from "../operationBop";
@@ -764,7 +772,7 @@ const EmployeeProductionLogsView = ({
                         </HStack>
                         <HStack className="gap-2 shrink-0">
                           <Badge variant="blue" className="text-xs uppercase">
-                          <Trans>Process Pickup</Trans>
+                            <Trans>pickup</Trans>
                           </Badge>
                           <Badge variant="outline" className="text-xs font-medium bg-background">
                             <Trans>Total</Trans> {pickup.pickup.quantity}
@@ -915,14 +923,14 @@ const EmployeeProductionLogsView = ({
       {pickupHasMore && (
         <div className="text-center">
           <Button variant="outline" size="sm" onClick={loadMorePickups}>
-            <Trans>Load more process pickups</Trans>
+            <Trans>Load more pickups</Trans>
           </Button>
         </div>
       )}
       {quantityHasMore && (
         <div className="text-center">
           <Button variant="outline" size="sm" onClick={loadMoreQuantityReports}>
-            <Trans>Load more process completions</Trans>
+            <Trans>Load more quantities</Trans>
           </Button>
         </div>
       )}
@@ -1908,7 +1916,7 @@ const JobBillOfProcess = ({
       !temporaryItems[item.id];
 
     const operationFormContent = (
-      <div className="flex w-full flex-col pr-2 py-2">
+      <div className="flex w-full min-w-0 flex-col py-2 pr-2">
         <motion.div
           initial={{ opacity: 0, filter: "blur(4px)" }}
           animate={{ opacity: 1, filter: "blur(0px)" }}
@@ -2142,7 +2150,7 @@ const JobBillOfProcess = ({
               {/* Summary Badges */}
               <HStack className="gap-2 flex-wrap">
                 <Badge variant="blue">
-                  <Trans>Total Process Pickups</Trans>: {pickupTotal}
+                  <Trans>Total Pickups</Trans>: {pickupTotal}
                 </Badge>
                 <Badge variant="green">
                   <Trans>Total Production</Trans>: {
@@ -2177,7 +2185,7 @@ const JobBillOfProcess = ({
                     className="transition-transform active:scale-[0.96]"
                   >
                     <LuCirclePlus className="mr-1.5 h-4 w-4" />
-                    <Trans>Process Pickup</Trans>
+                    <Trans>Record pickup</Trans>
                   </Button>
                 )}
                 {canRecordQuantity && onAddProductionQuantity && (
@@ -2188,7 +2196,7 @@ const JobBillOfProcess = ({
                     onClick={() => onAddProductionQuantity(item.id)}
                   >
                     <LuCirclePlus className="mr-1.5 h-4 w-4" />
-                    <Trans>Process Completion</Trans>
+                    <Trans>Record quantity</Trans>
                   </Button>
                 )}
               </HStack>
@@ -2356,6 +2364,7 @@ const JobBillOfProcess = ({
                         ) : (
                           <DirectionAwareTabs
                             className="mr-auto"
+                            initialTabId={5}
                             tabs={tabs}
                             onChange={() =>
                               setTabChangeRerender(tabChangeRerender + 1)
@@ -3849,7 +3858,8 @@ function OperationForm({
   };
 
   return (
-    <ValidatedForm
+    <div className={operationFormContainerClass}>
+      <ValidatedForm
       action={
         temporaryItems[item.id]
           ? path.to.newJobOperation(jobId)
@@ -3862,7 +3872,7 @@ function OperationForm({
           ? jobOperationValidator
           : jobOperationValidatorForReleasedJob
       }
-      className="w-full flex flex-col gap-y-4"
+      className="flex w-full min-w-0 flex-col gap-y-4"
       fetcher={fetcher}
     >
       <div>
@@ -3870,7 +3880,8 @@ function OperationForm({
         <Hidden name="jobMakeMethodId" />
         <Hidden name="order" />
       </div>
-      <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3">
+      <div className={operationFormGridClass}>
+        <div className={operationFormPairFieldClass}>
         <Process
           name="processId"
           label={t`Process`}
@@ -3878,12 +3889,16 @@ function OperationForm({
             onProcessChange(value?.value as string);
           }}
         />
+        </div>
+        <div className={operationFormPairFieldClass}>
         <Select
           name="operationOrder"
           label={t`Operation Order`}
           placeholder={t`Operation Order`}
           options={operationOrderOptions}
         />
+        </div>
+        <div className={operationFormTypeFieldClass}>
         <SelectControlled
           name="operationType"
           label={t`Operation Type`}
@@ -3912,7 +3927,9 @@ function OperationForm({
             }));
           }}
         />
+        </div>
 
+        <div className={operationFormDescriptionFieldClass}>
         <InputControlled
           name="description"
           label={t`Description`}
@@ -3920,11 +3937,12 @@ function OperationForm({
           onChange={(newValue) => {
             setProcessData((d) => ({ ...d, description: newValue }));
           }}
-          className="col-span-2"
         />
+        </div>
 
         {isInsideOperationType(processData.operationType) ? (
           <>
+            <div className={operationFormWorkCenterFieldClass}>
             <WorkCenter
               name="workCenterId"
               label={t`Work Center`}
@@ -3938,6 +3956,8 @@ function OperationForm({
                 }
               }}
             />
+            </div>
+            <div className={operationFormPairFieldClass}>
             <NumberControlled
               name="laborRate"
               label={t`Labor Rate`}
@@ -3954,6 +3974,8 @@ function OperationForm({
                 }))
               }
             />
+            </div>
+            <div className={operationFormPairFieldClass}>
             <NumberControlled
               name="machineRate"
               label={t`Machine Rate`}
@@ -3970,6 +3992,8 @@ function OperationForm({
                 }))
               }
             />
+            </div>
+            <div className={operationFormPairFieldClass}>
             <NumberControlled
               name="overheadRate"
               label={t`Overhead Rate`}
@@ -3986,6 +4010,8 @@ function OperationForm({
                 }))
               }
             />
+            </div>
+            <div className={operationFormPairFieldClass}>
             <NumberControlled
               name="insideUnitCost"
               label={t`Unit rate`}
@@ -4002,10 +4028,12 @@ function OperationForm({
                 }))
               }
             />
+            </div>
           </>
         ) : null}
         {showsSupplierRoutingFields(processData.operationType) ? (
           <>
+            <div className={operationFormWorkCenterFieldClass}>
             <SupplierProcess
               name="operationSupplierProcessId"
               label={t`Supplier`}
@@ -4022,6 +4050,8 @@ function OperationForm({
                 }
               }}
             />
+            </div>
+            <div className={operationFormPairFieldClass}>
             <NumberControlled
               name="operationMinimumCost"
               label={t`Minimum Cost`}
@@ -4039,6 +4069,8 @@ function OperationForm({
                 }))
               }
             />
+            </div>
+            <div className={operationFormPairFieldClass}>
             <NumberControlled
               name="operationUnitCost"
               label={t`Unit Cost`}
@@ -4056,6 +4088,8 @@ function OperationForm({
                 }))
               }
             />
+            </div>
+            <div className={operationFormPairFieldClass}>
             <NumberControlled
               name="operationLeadTime"
               label={t`Lead Time`}
@@ -4069,6 +4103,7 @@ function OperationForm({
                 }))
               }
             />
+            </div>
           </>
         ) : (
           <>
@@ -4101,6 +4136,7 @@ function OperationForm({
                   : undefined,
               content: (
                 <>
+                  <div className={operationDetailHintFieldClass}>
                   <UnitHint
                     name="setupHint"
                     label={t`Setup`}
@@ -4114,6 +4150,8 @@ function OperationForm({
                       }));
                     }}
                   />
+                  </div>
+                  <div className={operationDetailMetricFieldClass}>
                   <NumberControlled
                     name="setupTime"
                     label={t`Setup Time`}
@@ -4127,6 +4165,8 @@ function OperationForm({
                       }))
                     }
                   />
+                  </div>
+                  <div className={operationDetailMetricFieldClass}>
                   <StandardFactor
                     name="setupUnit"
                     label={t`Setup Unit`}
@@ -4140,6 +4180,7 @@ function OperationForm({
                       }));
                     }}
                   />
+                  </div>
                 </>
               )
             },
@@ -4161,6 +4202,7 @@ function OperationForm({
                   : undefined,
               content: (
                 <>
+                  <div className={operationDetailHintFieldClass}>
                   <UnitHint
                     name="laborHint"
                     label={t`Labor`}
@@ -4174,6 +4216,8 @@ function OperationForm({
                       }));
                     }}
                   />
+                  </div>
+                  <div className={operationDetailMetricFieldClass}>
                   <NumberControlled
                     name="laborTime"
                     label={t`Labor Time`}
@@ -4187,6 +4231,8 @@ function OperationForm({
                       }))
                     }
                   />
+                  </div>
+                  <div className={operationDetailMetricFieldClass}>
                   <StandardFactor
                     name="laborUnit"
                     label={t`Labor Unit`}
@@ -4200,6 +4246,7 @@ function OperationForm({
                       }));
                     }}
                   />
+                  </div>
                 </>
               )
             },
@@ -4221,6 +4268,7 @@ function OperationForm({
                   : undefined,
               content: (
                 <>
+                  <div className={operationDetailHintFieldClass}>
                   <UnitHint
                     name="machineHint"
                     label={t`Machine`}
@@ -4234,6 +4282,8 @@ function OperationForm({
                       }));
                     }}
                   />
+                  </div>
+                  <div className={operationDetailMetricFieldClass}>
                   <NumberControlled
                     name="machineTime"
                     label={t`Machine Time`}
@@ -4247,6 +4297,8 @@ function OperationForm({
                       }))
                     }
                   />
+                  </div>
+                  <div className={operationDetailMetricFieldClass}>
                   <StandardFactor
                     name="machineUnit"
                     label={t`Machine Unit`}
@@ -4260,6 +4312,7 @@ function OperationForm({
                       }));
                     }}
                   />
+                  </div>
                 </>
               )
             },
@@ -4271,7 +4324,7 @@ function OperationForm({
               summary: procedureTabSummary,
               summaryTitle: procedureTabSummaryTitle,
               contentClassName:
-                "grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-1 pb-4 px-4 pt-4",
+                "flex w-full min-w-0 flex-col gap-4 px-4 pb-4 pt-4",
               content: (
                 <>
                   <Procedure
@@ -4340,6 +4393,7 @@ function OperationForm({
         </motion.div>
       </motion.div>
     </ValidatedForm>
+    </div>
   );
 }
 
