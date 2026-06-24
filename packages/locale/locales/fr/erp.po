@@ -949,7 +949,7 @@ msgid "Are you sure you want to delete this maintenance dispatch? This cannot be
 msgstr "Êtes-vous sûr de vouloir supprimer cette demande de maintenance ? Cette action ne peut pas être annulée."
 
 msgid "Are you sure you want to delete this pickup? This action cannot be undone."
-msgstr "Voulez-vous supprimer cette prise ? Cette action ne peut pas être annulée."
+msgstr "Voulez-vous supprimer ce prélèvement de processus ? Cette action ne peut pas être annulée."
 
 msgid "Are you sure you want to delete this production quantity? This action cannot be undone."
 msgstr "Voulez-vous supprimer cette quantité de production ? Cette action ne peut pas être annulée."
@@ -2653,7 +2653,7 @@ msgid "Delete Payment Term"
 msgstr "Supprimer le délai de paiement"
 
 msgid "Delete Pickup"
-msgstr "Supprimer le retraitement"
+msgstr "Supprimer le prélèvement de processus"
 
 msgid "Delete Portal"
 msgstr "Supprimer le portail"
@@ -3180,7 +3180,7 @@ msgid "Edit Permissions"
 msgstr "Autorisations de modification"
 
 msgid "Edit Pickup"
-msgstr "Modifier le retraitement"
+msgstr "Modifier le prélèvement de processus"
 
 msgid "Edit Portal"
 msgstr "Modifier le portail"
@@ -4994,7 +4994,7 @@ msgid "Live reloading"
 msgstr "Rechargement en direct"
 
 msgid "Load more pickups"
-msgstr "charger plus de retraits"
+msgstr "Charger plus de prélèvements de processus"
 
 msgid "Load more quantities"
 msgstr "charger plus de quantités"
@@ -5671,7 +5671,7 @@ msgid "New Payment Term"
 msgstr "Nouveau Terme de Paiement"
 
 msgid "New Pickup"
-msgstr "Nouveau retrait"
+msgstr "Nouveau prélèvement de processus"
 
 msgid "New PIN"
 msgstr "Nouveau PIN"
@@ -6612,17 +6612,30 @@ msgid "picked up {0} units"
 msgstr "picks up {0} units"
 
 msgid "pickup"
-msgstr "retrait"
+msgstr "prélèvement de processus"
+
+msgid "Process Pickup"
+msgstr "prélèvement de processus"
+
+#. placeholder {0}: selectedPickup.employeeId
+msgid "Process Pickup by {0}"
+msgstr "Prélèvement de processus par {0}"
+
+msgid "Process Pickups"
+msgstr "prélèvements de processus"
+
+msgid "Total Process Pickups"
+msgstr "Total des prélèvements de processus"
 
 msgid "Pickup"
-msgstr "Picking up"
+msgstr "prélèvement de processus"
 
 #. placeholder {0}: selectedPickup.employeeId
 msgid "pickup by {0}"
-msgstr "picking up by {0}"
+msgstr "Prélèvement de processus par {0}"
 
 msgid "Pickups"
-msgstr "Picking"
+msgstr "prélèvements de processus"
 
 msgid "Pieces/Hour"
 msgstr "Pièces/Heure"
@@ -7287,11 +7300,17 @@ msgstr "Enregistrement supprimé"
 msgid "Record payment"
 msgstr "Paiement de la pièce"
 
+msgid "Add process pickup"
+msgstr "Ajouter un prélèvement de processus"
+
+msgid "Add process completion"
+msgstr "Ajouter un achèvement de processus"
+
 msgid "Record pickup"
-msgstr "Picking up de records"
+msgstr "Enregistrer le prélèvement de processus"
 
 msgid "Record Pickup"
-msgstr "Picking up un enregistrement"
+msgstr "Enregistrer le prélèvement de processus"
 
 msgid "Record production quantity"
 msgstr "Quantité de production du registre"
@@ -9249,7 +9268,7 @@ msgid "Total paid"
 msgstr "Paiement total"
 
 msgid "Total Pickups"
-msgstr "Total Pickups"
+msgstr "Total des prélèvements de processus"
 
 msgid "Total Price"
 msgstr "Prix Total"

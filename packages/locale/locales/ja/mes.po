@@ -609,7 +609,7 @@ msgid "Log In"
 msgstr "ログイン"
 
 msgid "Log Pickup"
-msgstr "ログアップルッド"
+msgstr "工程払い出しを記録"
 
 msgid "Log Rework"
 msgstr "手直しを記録"
@@ -888,13 +888,26 @@ msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "カラム {0} を位置 {1}/{2} で選択しました"
 
 msgid "pickup"
-msgstr "ピックアップ"
+msgstr "工程払い出し"
+
+msgid "Process Pickup"
+msgstr "工程払い出し"
+
+#. placeholder {0}: selectedPickup.employeeId
+msgid "Process Pickup by {0}"
+msgstr "{0} の工程払い出し"
+
+msgid "Process Pickups"
+msgstr "工程払い出し"
+
+msgid "Total Process Pickups"
+msgstr "工程払い出し合計"
 
 msgid "Pickup suggestions:"
-msgstr "ピックアップの提案："
+msgstr "工程払い出し候補:"
 
 msgid "Pickups"
-msgstr "Pickup"
+msgstr "工程払い出し"
 
 msgid "Pin Out"
 msgstr "ピンアウト"
@@ -995,7 +1008,7 @@ msgid "Record {0}"
 msgstr "レコード {0}"
 
 msgid "Record Pickup"
-msgstr "受取記録"
+msgstr "工程払い出しを記録"
 
 msgid "Record Quantity"
 msgstr "レコード数量"
@@ -1277,7 +1290,7 @@ msgid "Tools"
 msgstr "工具"
 
 msgid "Total Pickups"
-msgstr "総計ピックアップ"
+msgstr "工程払い出し合計"
 
 msgid "Total Production"
 msgstr "総生産量"
