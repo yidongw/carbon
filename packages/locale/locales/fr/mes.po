@@ -509,6 +509,9 @@ msgstr "Enregistrer la production"
 msgid "Log completed for {0}"
 msgstr "Enregistrer la production pour {0}"
 
+msgid "Log In"
+msgstr ""
+
 msgid "Log Pickup"
 msgstr ""
 

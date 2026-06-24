@@ -509,6 +509,9 @@ msgstr "Записать готовые"
 msgid "Log completed for {0}"
 msgstr "Записать готовые для {0}"
 
+msgid "Log In"
+msgstr ""
+
 msgid "Log Pickup"
 msgstr ""
 

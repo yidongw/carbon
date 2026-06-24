@@ -509,6 +509,9 @@ msgstr "记录完成数量"
 msgid "Log completed for {0}"
 msgstr "记录 {0} 的完成数量"
 
+msgid "Log In"
+msgstr ""
+
 msgid "Log Pickup"
 msgstr ""
 

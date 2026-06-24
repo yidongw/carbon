@@ -509,6 +509,9 @@ msgstr "Rejestruj ukończone"
 msgid "Log completed for {0}"
 msgstr "Rejestruj ukończone dla {0}"
 
+msgid "Log In"
+msgstr ""
+
 msgid "Log Pickup"
 msgstr ""
 

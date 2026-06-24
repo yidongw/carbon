@@ -509,6 +509,9 @@ msgstr "Log Completed"
 msgid "Log completed for {0}"
 msgstr "Log completed for {0}"
 
+msgid "Log In"
+msgstr "Log In"
+
 msgid "Log Pickup"
 msgstr "Log Pickup"
 
