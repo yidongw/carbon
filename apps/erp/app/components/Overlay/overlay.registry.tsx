@@ -1,6 +1,7 @@
 import type { ItemConfigTableOverlayLoaderData } from "~/routes/api+/items.$itemId.config-table";
 import type { JobBillOfProcessOverlayLoaderData } from "~/routes/api+/production.jobs.$jobId.bill-of-process";
 import type { JobConfigTableOverlayLoaderData } from "~/routes/api+/production.jobs.$jobId.config-table";
+import { buildConfigEditorRows } from "~/modules/production/ui/Jobs/ConfigParamsTableModal";
 import { renderLazyOverlay } from "./renderLazyOverlay";
 import type { OverlayRegistryEntry } from "./types";
 
@@ -313,6 +314,7 @@ export const overlayRegistry = {
   jobConfigTable: {
     type: "modal",
     confirmMode: "server",
+    urlAddressable: true,
     render: renderLazyOverlay(
       (ctx) => {
         const data = ctx.loaderData as
@@ -339,10 +341,16 @@ export const overlayRegistry = {
           | null
           | undefined;
         if (!data?.parameters?.length) return null;
+        // Draft config comes via the props channel; rows are computed here.
+        const { configuration } = ctx.props as { configuration?: unknown };
+        const { initialRows, referenceByRowIndex } = buildConfigEditorRows({
+          parameters: data.parameters,
+          configuration
+        });
         return {
           parameters: data.parameters,
-          initialRows: data.initialRows,
-          referenceByRowIndex: data.referenceByRowIndex,
+          initialRows,
+          referenceByRowIndex,
           jobDisplayId: data.itemReadableId
         };
       },

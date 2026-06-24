@@ -33,6 +33,10 @@ import {
   Submit
 } from "~/components/Form";
 import { overlay, useOverlay } from "~/components/Overlay";
+import {
+  toConfigTableValue,
+  useConfigTableModal
+} from "./ConfigParamsTableModal";
 import { usePermissions, useUser } from "~/hooks";
 import { isConfigTableOverlaySuccess } from "../../configTableOverlay";
 import type {
@@ -248,39 +252,37 @@ const JobForm = ({ initialValues }: JobFormProps) => {
     }
   };
 
+  const configModal = useConfigTableModal();
+
+  const applyConfig = (data: unknown) => {
+    if (!isConfigTableOverlaySuccess(data)) return;
+    handleConfigTableSubmit(
+      data.configuration.configTable,
+      data.total,
+      data.primaryKeys
+    );
+  };
+
   const openConfigTable = (mode: "single" | "bulk") => {
     if (!itemData.itemId) return;
     setConfigTableMode(mode);
 
-    const onSuccess = (data: unknown) => {
-      if (!isConfigTableOverlaySuccess(data)) return;
-      handleConfigTableSubmit(
-        data.configuration.configTable,
-        data.total,
-        data.primaryKeys
-      );
-    };
-
+    // Editing an existing job: the job's saved config is server-owned, so keep
+    // the server-confirm jobConfigTable overlay.
     if (isEditing && initialValues.id) {
       openOverlay(overlay.to.jobConfigTable({ jobId: initialValues.id }), {
-        onSuccess
+        onSuccess: applyConfig
       });
       return;
     }
 
-    openOverlay(
-      overlay.to.itemConfigTable({
-        itemId: itemData.itemId,
-        configuration:
-          configTableRows && configTablePrimaryKeys.length > 0
-            ? {
-                configTable: configTableRows,
-                configTablePrimaryKeys
-              }
-            : undefined
-      }),
-      { onSuccess }
-    );
+    // Creating: the config is an in-memory draft applied back to this form, so
+    // use a local modal rather than the overlay system.
+    configModal.open({
+      itemId: itemData.itemId,
+      configuration: toConfigTableValue(configTableRows, configTablePrimaryKeys),
+      onConfirm: applyConfig
+    });
   };
 
   return (
@@ -607,7 +609,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
           )}
         </VStack>
       </Tabs>
-
+      {configModal.node}
     </>
   );
 };

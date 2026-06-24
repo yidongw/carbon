@@ -152,7 +152,7 @@ export async function getConfigReferenceSourceForOperation(
   };
 }
 
-async function resolveJobIdForOperation(
+export async function resolveJobIdForOperation(
   client: SupabaseClient<Database>,
   companyId: string,
   jobOperationId: string,

@@ -4,6 +4,9 @@ import {
   cn,
   HStack,
   IconButton,
+  Loading,
+  Modal,
+  ModalContent,
   Table,
   Tbody,
   Td,
@@ -12,14 +15,26 @@ import {
   Tr
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useState } from "react";
+import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { LuPlus, LuTrash2 } from "react-icons/lu";
+import { useFetcher } from "react-router";
 import { Enumerable } from "~/components/Enumerable";
 import { useShape } from "~/components/Form/Shape";
 import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
 import type { ConfigurationParameter } from "~/modules/items/types";
-import { fillValueFromReference } from "~/modules/production/configParamsTableColumns";
-import { buildConfigTableActionResponse } from "~/modules/production/configTableOverlay";
+import {
+  buildConfigTableEditorState,
+  type ConfigReferenceSource,
+  type ConfigTableReferenceContext,
+  fillValueFromReference
+} from "~/modules/production/configParamsTableColumns";
+import {
+  buildConfigTableActionResponse,
+  type ConfigTableOverlaySuccess,
+  isConfigTableOverlaySuccess
+} from "~/modules/production/configTableOverlay";
+import type { ItemConfigTableOverlayLoaderData } from "~/routes/api+/items.$itemId.config-table";
+import { path } from "~/utils/path";
 
 type Row = Record<string, string | number | boolean>;
 
@@ -43,7 +58,12 @@ export type ConfigParamsTableModalProps = {
   initialRows?: Row[];
   referenceByRowIndex?: Array<Record<string, number>>;
   jobDisplayId?: string | null;
-} & OverlayFormInjectedProps;
+} & Omit<OverlayFormInjectedProps, "fetcher" | "action"> & {
+    // Optional so the same content can render as a plain local modal (client
+    // confirm) without the overlay's submit fetcher.
+    fetcher?: OverlayFormInjectedProps["fetcher"];
+    action?: string;
+  };
 
 function buildColumns(
   parameters: ConfigurationParameter[],
@@ -375,7 +395,7 @@ function ConfigParamsTableModal({
       return;
     }
 
-    if (!formAction) return;
+    if (!formAction || !fetcher) return;
 
     const formData = new FormData();
     formData.append("configuration", JSON.stringify(configuration));
@@ -602,8 +622,8 @@ function ConfigParamsTableModal({
       <Button
         type="button"
         variant="primary"
-        isLoading={fetcher.state !== "idle"}
-        isDisabled={fetcher.state !== "idle"}
+        isLoading={fetcher ? fetcher.state !== "idle" : false}
+        isDisabled={fetcher ? fetcher.state !== "idle" : false}
         onClick={handleSubmit}
       >
         <Trans>Confirm</Trans>
@@ -629,6 +649,222 @@ function ConfigParamsTableModal({
         </div>
       </div>
   );
+}
+
+function extractConfigTable(configuration: unknown): Row[] | undefined {
+  if (
+    !configuration ||
+    typeof configuration !== "object" ||
+    Array.isArray(configuration)
+  ) {
+    return undefined;
+  }
+  const table = (configuration as Record<string, unknown>).configTable;
+  return Array.isArray(table) ? (table as Row[]) : undefined;
+}
+
+/**
+ * Compute editor rows + click-to-fill hints (client-side) from the raw inputs:
+ * the fetched `parameters`, the in-memory draft `configuration`, and (when there
+ * are reference hints) a fully-built `referenceContext`. Shared by the local
+ * modal and the table-cell overlay render.
+ */
+export function buildConfigEditorRows({
+  parameters,
+  configuration,
+  referenceContext
+}: {
+  parameters: ConfigurationParameter[];
+  configuration?: unknown;
+  referenceContext?: ConfigTableReferenceContext;
+}): { initialRows?: Row[]; referenceByRowIndex?: Array<Record<string, number>> } {
+  const configTable = extractConfigTable(configuration);
+  if (!referenceContext) return { initialRows: configTable };
+  const editor = buildConfigTableEditorState({
+    parameters,
+    defaultQuantityLabel: "Quantities",
+    currentConfiguration:
+      configTable !== undefined ? { configTable } : undefined,
+    referenceContext
+  });
+  return {
+    initialRows: editor.rows,
+    referenceByRowIndex: editor.referenceByRowIndex
+  };
+}
+
+/** Endpoint URL carrying only the fetch keys (ids) — never the draft config. */
+function configSourceUrl(
+  itemId: string,
+  keys: {
+    jobId?: string;
+    jobOperationId?: string;
+    reportKind?: "pickup" | "productionQuantity";
+  }
+): string {
+  const base = path.to.api.itemConfigTable(itemId);
+  const params = new URLSearchParams();
+  if (keys.jobId) params.set("jobId", keys.jobId);
+  if (keys.jobOperationId) params.set("jobOperationId", keys.jobOperationId);
+  if (keys.reportKind) params.set("reportKind", keys.reportKind);
+  const query = params.toString();
+  return query ? `${base}?${query}` : base;
+}
+
+/**
+ * Local (non-overlay) config-table editor. A parent form owns the open state and
+ * gets the edited config via `onConfirm`.
+ *
+ * Clean fetch/pass split: only fetch keys (`itemId` + `jobId`/`jobOperationId`/
+ * `reportKind`) go to the loader, which returns `parameters` + the DB-resolved
+ * `referenceSource`. The in-memory draft `configuration` is a prop, and the
+ * parent supplies `buildReferenceContext(source)` (it owns the in-memory
+ * reference inputs). Editor rows + hints are computed here, client-side.
+ */
+export function ConfigParamsTableLocalModal({
+  open,
+  onClose,
+  onConfirm,
+  itemId,
+  jobId,
+  jobOperationId,
+  reportKind,
+  configuration,
+  buildReferenceContext,
+  jobDisplayId
+}: {
+  open: boolean;
+  onClose: () => void;
+  onConfirm: (data: unknown) => void;
+  itemId: string;
+  jobId?: string;
+  jobOperationId?: string;
+  reportKind?: "pickup" | "productionQuantity";
+  configuration?: unknown;
+  buildReferenceContext?: (
+    source: ConfigReferenceSource | null
+  ) => ConfigTableReferenceContext | undefined;
+  jobDisplayId?: string | null;
+}) {
+  const fetcher = useFetcher<ItemConfigTableOverlayLoaderData | null>();
+  const load = useRef(fetcher.load);
+  load.current = fetcher.load;
+
+  useEffect(() => {
+    if (!open || !itemId) return;
+    void load.current(
+      configSourceUrl(itemId, { jobId, jobOperationId, reportKind })
+    );
+  }, [open, itemId, jobId, jobOperationId, reportKind]);
+
+  if (!open) return null;
+
+  const data = fetcher.data;
+  const isLoading = data === undefined && fetcher.state !== "idle";
+  const referenceContext = data
+    ? buildReferenceContext?.(data.referenceSource)
+    : undefined;
+  const { initialRows, referenceByRowIndex } = data?.parameters?.length
+    ? buildConfigEditorRows({
+        parameters: data.parameters,
+        configuration,
+        referenceContext
+      })
+    : {};
+
+  return (
+    <Modal
+      open
+      onOpenChange={(next) => {
+        if (!next) onClose();
+      }}
+    >
+      <ModalContent className="flex max-h-[92vh] w-fit min-w-[20rem] max-w-[calc(100vw-1.5rem)] flex-col gap-0 overflow-hidden p-0 pt-0 [&>button]:z-20">
+        <div className="min-h-0 flex-1 overflow-auto">
+          {data?.parameters?.length ? (
+            <ConfigParamsTableModal
+              parameters={data.parameters}
+              initialRows={initialRows}
+              referenceByRowIndex={referenceByRowIndex}
+              jobDisplayId={jobDisplayId ?? data.itemReadableId}
+              confirmMode="client"
+              onConfirmSuccess={onConfirm}
+              onDismiss={onClose}
+            />
+          ) : (
+            <div className="flex min-h-[200px] items-center justify-center p-6">
+              <Loading isLoading={isLoading} />
+            </div>
+          )}
+        </div>
+      </ModalContent>
+    </Modal>
+  );
+}
+
+/**
+ * Build the editor's `configuration` input from the current table rows, falling
+ * back to a saved/initial configuration when nothing has been edited yet.
+ */
+export function toConfigTableValue(
+  rows: Row[] | null | undefined,
+  primaryKeys: string[],
+  fallback?: unknown
+): unknown {
+  return rows && primaryKeys.length > 0
+    ? { configTable: rows, configTablePrimaryKeys: primaryKeys }
+    : fallback;
+}
+
+type ConfigTableModalRequest = {
+  itemId: string;
+  configuration?: unknown;
+  jobId?: string;
+  jobOperationId?: string;
+  reportKind?: "pickup" | "productionQuantity";
+  buildReferenceContext?: (
+    source: ConfigReferenceSource | null
+  ) => ConfigTableReferenceContext | undefined;
+  jobDisplayId?: string | null;
+  /** Receives the validated edited config when the user confirms. */
+  onConfirm: (result: ConfigTableOverlaySuccess) => void;
+};
+
+/**
+ * Manage a single local config-table editor. Call `open(request)` to show it;
+ * render `node`. Handles open state, the success check, and closing — so callers
+ * just describe what to fetch/pass and what to do on confirm.
+ */
+export function useConfigTableModal(): {
+  open: (request: ConfigTableModalRequest) => void;
+  node: ReactNode;
+} {
+  const [request, setRequest] = useState<ConfigTableModalRequest | null>(null);
+  const open = useCallback(
+    (next: ConfigTableModalRequest) => setRequest(next),
+    []
+  );
+  const close = useCallback(() => setRequest(null), []);
+
+  const node = request ? (
+    <ConfigParamsTableLocalModal
+      open
+      onClose={close}
+      onConfirm={(data) => {
+        if (isConfigTableOverlaySuccess(data)) request.onConfirm(data);
+        close();
+      }}
+      itemId={request.itemId}
+      jobId={request.jobId}
+      jobOperationId={request.jobOperationId}
+      reportKind={request.reportKind}
+      configuration={request.configuration}
+      buildReferenceContext={request.buildReferenceContext}
+      jobDisplayId={request.jobDisplayId}
+    />
+  ) : null;
+
+  return { open, node };
 }
 
 export { ConfigParamsTableModal };

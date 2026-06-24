@@ -16,13 +16,15 @@ import { useNavigate, useParams, useSearchParams } from "react-router";
 import type { z } from "zod";
 import { Hidden, Number, Select, Submit, TextArea } from "~/components/Form";
 import { ProductionActorFields, selectionFromInitialValues } from "./ProductionActorFields";
-import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions } from "~/hooks";
-import { isConfigTableOverlaySuccess } from "../../configTableOverlay";
 import {
   buildJobRemainingReferenceContext,
   type ConfigReferenceSource
 } from "../../configParamsTableColumns";
+import {
+  toConfigTableValue,
+  useConfigTableModal
+} from "./ConfigParamsTableModal";
 import { jobOperationPickupValidator } from "~/modules/production/production.models";
 import { path } from "~/utils/path";
 import { computeJobConfigTableTotal } from "../../jobConfiguration";
@@ -136,7 +138,6 @@ const PickupForm = ({
     string[]
   >(initialConfig.primaryKeys);
   const [configTableTotal, setConfigTableTotal] = useState(initialConfig.total);
-  const { openOverlay } = useOverlay();
 
   const hasConfigurationParameters = (configurationParameters?.length ?? 0) > 0;
 
@@ -196,37 +197,35 @@ const PickupForm = ({
     }
   };
 
+  const configModal = useConfigTableModal();
+
   const openConfigTable = () => {
     if (!itemId) return;
-
-    const referenceContext = configReferenceSource
-      ? buildJobRemainingReferenceContext(configReferenceSource, {
-          excludeConfigurations: isEditing
-            ? [initialValues.configuration]
-            : undefined
-        })
-      : undefined;
-
-    openOverlay(
-      overlay.to.itemConfigTable({
-        itemId,
-        configuration:
-          configTableRows && configTablePrimaryKeys.length > 0
-            ? { configTable: configTableRows, configTablePrimaryKeys }
-            : initialValues.configuration,
-        referenceContext
-      }),
-      {
-        onSuccess: (data) => {
-          if (!isConfigTableOverlaySuccess(data)) return;
-          handleConfigTableSubmit(
-            data.configuration.configTable,
-            data.total,
-            data.primaryKeys
-          );
-        }
-      }
-    );
+    configModal.open({
+      itemId,
+      configuration: toConfigTableValue(
+        configTableRows,
+        configTablePrimaryKeys,
+        initialValues.configuration
+      ),
+      jobId: jobId ?? undefined,
+      jobOperationId: selectedOperation || undefined,
+      reportKind: "pickup",
+      buildReferenceContext: (source) =>
+        source
+          ? buildJobRemainingReferenceContext(source, {
+              excludeConfigurations: isEditing
+                ? [initialValues.configuration]
+                : undefined
+            })
+          : undefined,
+      onConfirm: (data) =>
+        handleConfigTableSubmit(
+          data.configuration.configTable,
+          data.total,
+          data.primaryKeys
+        )
+    });
   };
 
   const lockActorSelection = isEditing || Boolean(lockActorSelectionProp);
@@ -344,18 +343,26 @@ const PickupForm = ({
   );
 
   if (isOverlay) {
-    return form;
+    return (
+      <>
+        {form}
+        {configModal.node}
+      </>
+    );
   }
 
   return (
-    <Drawer
-      open
-      onOpenChange={(open) => {
-        if (!open) onDismiss();
-      }}
-    >
-      <DrawerContent>{form}</DrawerContent>
-    </Drawer>
+    <>
+      <Drawer
+        open
+        onOpenChange={(open) => {
+          if (!open) onDismiss();
+        }}
+      >
+        <DrawerContent>{form}</DrawerContent>
+      </Drawer>
+      {configModal.node}
+    </>
   );
 };
 

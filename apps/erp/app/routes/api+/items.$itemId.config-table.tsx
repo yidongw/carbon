@@ -2,18 +2,22 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import type { LoaderFunctionArgs } from "react-router";
 import { getConfigurationParameters } from "~/modules/items";
 import type { ConfigurationParameter } from "~/modules/items/types";
-import { buildConfigTableEditorState } from "~/modules/production/configParamsTableColumns";
+import type { ConfigReferenceSource } from "~/modules/production/configParamsTableColumns";
 import {
-  parseInitialConfigurationFromRequest,
-  parseReferenceContextFromRequest,
-  resolveConfigTableReferenceContext
+  getConfigReferenceSourceForOperation,
+  resolveJobIdForOperation
 } from "~/modules/production/configTableOverlay.server";
 
 export type ItemConfigTableOverlayLoaderData = {
   parameters: ConfigurationParameter[];
-  initialRows?: Record<string, string | number | boolean>[];
-  referenceByRowIndex?: Array<Record<string, number>>;
   itemReadableId: string | null;
+  /**
+   * DB-resolved reference source for the selected operation (pickups / reported
+   * configs) used to compute click-to-fill hints. The client builds the actual
+   * reference context + editor rows from this + its in-memory inputs — only ids
+   * are sent here, never the draft configuration or sibling configs.
+   */
+  referenceSource: ConfigReferenceSource | null;
 };
 
 export async function loader({
@@ -42,38 +46,36 @@ export async function loader({
     .eq("companyId", companyId)
     .maybeSingle();
 
-  const parsedReferenceContext = parseReferenceContextFromRequest(request);
-  const referenceContext = parsedReferenceContext
-    ? await resolveConfigTableReferenceContext(
+  const url = new URL(request.url);
+  const jobOperationId = url.searchParams.get("jobOperationId") ?? undefined;
+  const reportKind =
+    url.searchParams.get("reportKind") === "pickup"
+      ? "pickup"
+      : "productionQuantity";
+
+  // Resolve the job from the operation when the caller didn't pass jobId.
+  const jobId = jobOperationId
+    ? await resolveJobIdForOperation(
         client,
         companyId,
-        parsedReferenceContext
+        jobOperationId,
+        url.searchParams.get("jobId") ?? undefined
       )
     : undefined;
-  const initialRowsFromRequest = parseInitialConfigurationFromRequest(request);
-  const currentConfiguration =
-    initialRowsFromRequest !== undefined
-      ? { configTable: initialRowsFromRequest }
-      : undefined;
 
-  let initialRows = initialRowsFromRequest;
-  let referenceByRowIndex: Array<Record<string, number>> | undefined;
-
-  if (referenceContext) {
-    const editorState = buildConfigTableEditorState({
-      parameters,
-      defaultQuantityLabel: "Quantities",
-      currentConfiguration,
-      referenceContext
-    });
-    initialRows = editorState.rows;
-    referenceByRowIndex = editorState.referenceByRowIndex;
-  }
+  const referenceSource =
+    jobId && jobOperationId
+      ? await getConfigReferenceSourceForOperation(client, {
+          jobId,
+          jobOperationId,
+          companyId,
+          reportKind
+        })
+      : null;
 
   return {
     parameters,
-    initialRows,
-    referenceByRowIndex,
-    itemReadableId: item.data?.readableIdWithRevision ?? null
+    itemReadableId: item.data?.readableIdWithRevision ?? null,
+    referenceSource
   };
 }
