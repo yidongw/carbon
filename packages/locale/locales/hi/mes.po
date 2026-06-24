@@ -61,7 +61,7 @@ msgid "Add & Issue"
 msgstr "जोड़ें और जारी करें"
 
 msgid "Add a printer in the printing settings to print labels directly."
-msgstr "प्रिंटिंग सेटिंग्स में एक प्रिंटर जोड़ें ताकि लेबल सीधे प्रिंट कर सकें।"
+msgstr ""
 
 msgid "Add Inventory"
 msgstr "इन्वेंटरी जोड़ें"
@@ -73,10 +73,10 @@ msgid "All"
 msgstr "सभी"
 
 msgid "approved"
-msgstr ""
+msgstr "स्वीकृत"
 
 msgid "Approved"
-msgstr ""
+msgstr "स्वीकृत"
 
 msgid "Are you sure you want to delete this step?"
 msgstr "क्या आप सुनिश्चित हैं कि आप इस चरण को हटाना चाहते हैं?"
@@ -88,10 +88,10 @@ msgid "Are you sure you want to end all production events? This will end all act
 msgstr "क्या आप सुनिश्चित हैं कि आप सभी उत्पादन घटनाओं को समाप्त करना चाहते हैं? यह सभी सक्रिय संचालन को पूरा किए बिना या समाप्त किए बिना समाप्त कर देगा।"
 
 msgid "Are you sure you want to finish this operation? This will end all active production events for this operation."
-msgstr "क्या आप सुनिश्चित हैं कि आप इस ऑपरेशन को समाप्त करना चाहते हैं? यह इस ऑपरेशन के लिए सभी सक्रिय उत्पादन इवेंट को समाप्त कर देगा।"
+msgstr ""
 
 msgid "Are you sure you want to leave this page?"
-msgstr "क्या आप वाकई इस पृष्ठ को छोड़ना चाहते हैं?"
+msgstr ""
 
 msgid "Assigned"
 msgstr "निर्दिष्ट"
@@ -109,10 +109,10 @@ msgid "Authentication Error"
 msgstr "प्रमाणीकरण त्रुटि"
 
 msgid "available"
-msgstr "उपलब्ध"
+msgstr ""
 
 msgid "Batch"
-msgstr "बैच"
+msgstr ""
 
 msgid "Batch is not available"
 msgstr "बैच उपलब्ध नहीं है"
@@ -141,7 +141,7 @@ msgid "Cancel"
 msgstr "रद्द करें"
 
 msgid "Cancelled"
-msgstr "रद्द किया गया"
+msgstr ""
 
 msgid "Carbon Logo"
 msgstr "कार्बन लोगो"
@@ -201,7 +201,7 @@ msgid "Complete"
 msgstr "पूर्ण करें"
 
 msgid "Complete All"
-msgstr "सभी को पूर्ण करें"
+msgstr ""
 
 msgid "Completed"
 msgstr "पूर्ण"
@@ -216,7 +216,7 @@ msgid "Consumed expired"
 msgstr "खपत की गई समाप्त"
 
 msgid "Create"
-msgstr ""
+msgstr "बनाएं"
 
 #. placeholder {0}: group.heading
 #. placeholder {0}: search.trim() === "" ? (createLabel ?? label) : search
@@ -225,13 +225,13 @@ msgid "Create {0}"
 msgstr "{0} बनाएं"
 
 msgid "Create Issue"
-msgstr "समस्या बनाएं"
+msgstr ""
 
 msgid "Create Quality Issue"
-msgstr "गुणवत्ता समस्या बनाएं"
+msgstr ""
 
 msgid "Create Rework"
-msgstr "रीवर्क बनाएं"
+msgstr ""
 
 msgid "Customer"
 msgstr "ग्राहक"
@@ -246,7 +246,7 @@ msgid "Deadline"
 msgstr "समय सीमा"
 
 msgid "Default"
-msgstr "डिफ़ॉल्ट"
+msgstr ""
 
 msgid "Default Storage Unit"
 msgstr "डिफ़ॉल्ट स्टोरेज यूनिट"
@@ -262,10 +262,10 @@ msgid "Delete Timecard ({0})"
 msgstr "टाइमकार्ड हटाएं ({0})"
 
 msgid "Describe the problem..."
-msgstr "समस्या का वर्णन करें..."
+msgstr ""
 
 msgid "Describe what needs to be reworked..."
-msgstr "वर्णन करें कि क्या रीवर्क करने की आवश्यकता है..."
+msgstr ""
 
 msgid "Description"
 msgstr "विवरण"
@@ -286,10 +286,10 @@ msgid "Download"
 msgstr "डाउनलोड"
 
 msgid "Download Labels"
-msgstr "लेबल डाउनलोड करें"
+msgstr ""
 
 msgid "Draft"
-msgstr "ड्राफ्ट"
+msgstr ""
 
 msgid "Drag and drop a file here, or click to select a file"
 msgstr "यहाँ एक फ़ाइल को ड्रैग और ड्रॉप करें, या फ़ाइल चुनने के लिए क्लिक करें"
@@ -317,7 +317,7 @@ msgid "Duration"
 msgstr "अवधि"
 
 msgid "Earned"
-msgstr ""
+msgstr "कमाई"
 
 msgid "Edit"
 msgstr "संपादित करें"
@@ -326,7 +326,7 @@ msgid "Email Address"
 msgstr "ईमेल पता"
 
 msgid "Employee"
-msgstr ""
+msgstr "कर्मचारी"
 
 msgid "Empty work centers"
 msgstr "खाली कार्य केंद्र"
@@ -345,16 +345,16 @@ msgid "Estimated"
 msgstr "अनुमानित"
 
 msgid "Expired"
-msgstr "समाप्त"
+msgstr ""
 
 msgid "Expired {date}"
-msgstr "समाप्त {date}"
+msgstr ""
 
 msgid "Expires {date}"
-msgstr "समाप्त होता है {date}"
+msgstr ""
 
 msgid "Expiring first"
-msgstr "पहले समाप्त होने वाले"
+msgstr ""
 
 msgid "Failed to complete inventory adjustment"
 msgstr "इन्वेंटरी समायोजन पूरा करने में विफल"
@@ -391,29 +391,29 @@ msgid "Filter"
 msgstr "फ़िल्टर"
 
 msgid "Finish"
-msgstr "समाप्त करें"
+msgstr ""
 
 #. placeholder {0}: operation.itemReadableId
 msgid "Finish {0}"
-msgstr "{0} को समाप्त करें"
+msgstr ""
 
 msgid "Finish Anyways"
-msgstr "वैसे भी समाप्त करें"
+msgstr ""
 
 msgid "Forgot to Clock Out?"
 msgstr "घड़ी से बाहर निकलना भूल गए?"
 
 msgid "Go back to operation"
-msgstr "ऑपरेशन पर वापस जाएं"
+msgstr ""
 
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "क्या आपको कोई तकनीकी समस्या है? <0>Carbon Support</0> से संपर्क करें।"
 
 msgid "History"
-msgstr ""
+msgstr "इतिहास"
 
 msgid "How many were actually picked?"
-msgstr "वास्तव में कितने चुने गए?"
+msgstr ""
 
 msgid "I understand and want to complete without issuing"
 msgstr "मैं समझता हूँ और बिना जारी किए पूरा करना चाहता हूँ"
@@ -431,7 +431,7 @@ msgid "Impact"
 msgstr "प्रभाव"
 
 msgid "Imperial"
-msgstr "इंपीरियल"
+msgstr ""
 
 msgid "In Progress"
 msgstr "प्रगति में"
@@ -458,7 +458,7 @@ msgid "Issue Material"
 msgstr "सामग्री जारी करें"
 
 msgid "Issue Type"
-msgstr "समस्या प्रकार"
+msgstr ""
 
 msgid "Item"
 msgstr "वस्तु"
@@ -476,7 +476,7 @@ msgid "Job Traveler"
 msgstr "जॉब ट्रैवलर"
 
 msgid "Jobs"
-msgstr "नौकरियां"
+msgstr ""
 
 msgid "Kit"
 msgstr "किट"
@@ -485,13 +485,13 @@ msgid "Labor"
 msgstr "श्रम"
 
 msgid "Leave this page"
-msgstr "इस पृष्ठ को छोड़ें"
+msgstr ""
 
 msgid "Let's build something"
 msgstr "चलिए कुछ बनाते हैं"
 
 msgid "lines"
-msgstr "लाइनें"
+msgstr ""
 
 msgid "Loading item details..."
 msgstr "आइटम विवरण लोड हो रहे हैं..."
@@ -510,10 +510,10 @@ msgid "Log completed for {0}"
 msgstr "{0} के लिए पूर्ण लॉग करें"
 
 msgid "Log In"
-msgstr ""
+msgstr "दाखिल होना"
 
 msgid "Log Pickup"
-msgstr ""
+msgstr "लॉग अप"
 
 msgid "Log Rework"
 msgstr "रीवर्क लॉग करें"
@@ -548,7 +548,7 @@ msgid "Manually remove items from inventory"
 msgstr "इन्वेंटरी से आइटम को मैन्युअली हटाएं"
 
 msgid "Mark Short"
-msgstr "कम चिह्नित करें"
+msgstr ""
 
 msgid "matches"
 msgstr "मेल खाता है"
@@ -560,13 +560,13 @@ msgid "Maximum number of records reached"
 msgstr "रिकॉर्ड की अधिकतम संख्या तक पहुंच गई"
 
 msgid "Metric"
-msgstr "मीट्रिक"
+msgstr ""
 
 msgid "Model"
 msgstr "मॉडल"
 
 msgid "More Actions"
-msgstr "अधिक क्रियाएं"
+msgstr ""
 
 msgid "More options"
 msgstr "अधिक विकल्प"
@@ -588,7 +588,7 @@ msgid "My Hours"
 msgstr "मेरे घंटे"
 
 msgid "My Salary"
-msgstr ""
+msgstr "मेरी वेतन"
 
 msgid "Name"
 msgstr "नाम"
@@ -600,7 +600,7 @@ msgid "New Record"
 msgstr "नया रिकॉर्ड"
 
 msgid "Newest first"
-msgstr "सबसे नया पहले"
+msgstr ""
 
 msgid "Next"
 msgstr "अगला"
@@ -612,7 +612,7 @@ msgid "No active operations"
 msgstr "कोई सक्रिय संचालन नहीं"
 
 msgid "No approved completions this period"
-msgstr ""
+msgstr "किसी भी मान्यता प्राप्त समाप्ति इस अवधि के लिए नहीं हैं"
 
 msgid "No assigned operations"
 msgstr "कोई नियुक्त ऑपरेशन नहीं"
@@ -624,7 +624,7 @@ msgid "No available serial numbers found"
 msgstr "कोई उपलब्ध सीरियल नंबर नहीं मिला"
 
 msgid "No available tracked entities found"
-msgstr "कोई उपलब्ध ट्रैक किए गए इकाइयां नहीं मिलीं"
+msgstr ""
 
 msgid "No dispatches assigned to you"
 msgstr "आपको कोई डिस्पैच असाइन नहीं किया गया है"
@@ -642,7 +642,7 @@ msgid "No materials"
 msgstr "कोई सामग्री नहीं"
 
 msgid "No open jobs"
-msgstr "कोई खुली नौकरी नहीं"
+msgstr ""
 
 msgid "No operators"
 msgstr "कोई ऑपरेटर नहीं"
@@ -654,13 +654,13 @@ msgid "No options found."
 msgstr "कोई विकल्प नहीं मिला।"
 
 msgid "No picking lists assigned"
-msgstr "कोई पिकिंग सूची असाइन नहीं की गई"
-
-msgid "No pickups logged"
 msgstr ""
 
+msgid "No pickups logged"
+msgstr "कोई लोड नहीं लॉग किया गया"
+
 msgid "No printer configured"
-msgstr "कोई प्रिंटर कॉन्फ़िगर नहीं किया गया"
+msgstr ""
 
 msgid "No recent operations"
 msgstr "कोई हाल के संचालन नहीं"
@@ -675,7 +675,7 @@ msgid "No results found"
 msgstr "कोई परिणाम नहीं मिला"
 
 msgid "No results found."
-msgstr ""
+msgstr "कोई परिणाम नहीं मिला।"
 
 msgid "No scheduled time"
 msgstr "कोई निर्धारित समय नहीं"
@@ -684,19 +684,19 @@ msgid "No serial numbers"
 msgstr "कोई सीरियल नंबर नहीं"
 
 msgid "No serial numbers found"
-msgstr "कोई सीरियल नंबर नहीं मिला"
+msgstr ""
 
 msgid "No spare parts added yet"
 msgstr "अभी तक कोई स्पेयर पार्ट्स नहीं जोड़े गए हैं"
 
 msgid "No stock"
-msgstr "कोई स्टॉक नहीं"
+msgstr ""
 
 msgid "No time entries for this week"
 msgstr "इस सप्ताह के लिए कोई समय प्रविष्टि नहीं"
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
-msgstr "इस आइटम के लिए कोई गोदाम स्टॉक रिकॉर्ड पर नहीं है। आप इसे अभी भी चुन सकते हैं — ऑन-हैंड नकारात्मक हो जाएगा जब तक गिनती समेकित नहीं हो जाती।"
+msgstr ""
 
 msgid "No work centers are blocked"
 msgstr "कोई कार्य केंद्र अवरुद्ध नहीं हैं"
@@ -714,7 +714,7 @@ msgid "OEM Required"
 msgstr "OEM आवश्यक"
 
 msgid "Oldest first"
-msgstr "सबसे पुराना पहले"
+msgstr ""
 
 #. placeholder {0}: batch.quantity
 msgid "Only {0} available"
@@ -727,7 +727,7 @@ msgid "Open"
 msgstr "खुला"
 
 msgid "Open Jobs"
-msgstr "खुली नौकरियां"
+msgstr ""
 
 msgid "Operations"
 msgstr "संचालन"
@@ -742,10 +742,10 @@ msgid "Optional"
 msgstr "वैकल्पिक"
 
 msgid "Owed"
-msgstr ""
+msgstr "देय"
 
 msgid "Paid"
-msgstr ""
+msgstr "भुगतान"
 
 msgid "Parameters"
 msgstr "पैरामीटर"
@@ -760,25 +760,25 @@ msgid "Pause"
 msgstr "रोकें"
 
 msgid "Pending"
-msgstr ""
+msgstr "अपूर्ण"
 
 msgid "Pending Approval"
-msgstr ""
+msgstr "अनुमोदन की प्रतीक्षा में है"
 
 msgid "Period"
-msgstr ""
+msgstr "काल"
 
 msgid "Pick"
-msgstr "चुनें"
+msgstr ""
 
 msgid "Pick tracked item"
-msgstr "ट्रैक किए गए आइटम को चुनें"
+msgstr ""
 
 msgid "Picked"
-msgstr "उठाया गया"
+msgstr ""
 
 msgid "Picked quantity"
-msgstr "चुना गया मात्रा"
+msgstr ""
 
 #. placeholder {0}: startColumn?.title
 #. placeholder {1}: startIndex + 1
@@ -787,10 +787,10 @@ msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "कॉलम {0} को स्थिति {1} पर उठाया गया: {2} में से"
 
 msgid "Picking"
-msgstr "पिकिंग"
+msgstr ""
 
 msgid "Pickups"
-msgstr ""
+msgstr "ग्रैब"
 
 msgid "Pin Out"
 msgstr "पिन आउट"
@@ -811,10 +811,10 @@ msgid "Preventive"
 msgstr "निवारक"
 
 msgid "Print"
-msgstr "प्रिंट करें"
+msgstr ""
 
 msgid "Printer Settings"
-msgstr "प्रिंटर सेटिंग्स"
+msgstr ""
 
 msgid "Priority"
 msgstr "प्राथमिकता"
@@ -835,13 +835,13 @@ msgid "Progress"
 msgstr "प्रगति"
 
 msgid "Qty"
-msgstr ""
+msgstr "क्वांटिटी"
 
 msgid "Quality Issue"
-msgstr "गुणवत्ता समस्या"
+msgstr ""
 
 msgid "Quality issue created"
-msgstr "गुणवत्ता समस्या बनाई गई"
+msgstr ""
 
 msgid "Quantity"
 msgstr "मात्रा"
@@ -850,7 +850,7 @@ msgid "Quantity must be greater than 0"
 msgstr "मात्रा 0 से अधिक होनी चाहिए"
 
 msgid "Reason for rework"
-msgstr "रीवर्क का कारण"
+msgstr ""
 
 msgid "Recent"
 msgstr "हाल ही में"
@@ -875,10 +875,10 @@ msgid "Remove part"
 msgstr "भाग हटाएं"
 
 msgid "Rework"
-msgstr "रीवर्क"
+msgstr ""
 
 msgid "Rework created successfully"
-msgstr "रीवर्क सफलतापूर्वक बनाया गया"
+msgstr ""
 
 msgid "Sales Order"
 msgstr "बिक्रय आदेश"
@@ -893,16 +893,16 @@ msgid "Scan or enter serial number"
 msgstr "स्कैन करें या सीरियल नंबर दर्ज करें"
 
 msgid "Scan or enter tracking number"
-msgstr "स्कैन करें या ट्रैकिंग नंबर दर्ज करें"
+msgstr ""
 
 msgid "Scan or search serial number..."
-msgstr "सीरियल नंबर स्कैन या खोजें..."
+msgstr ""
 
 msgid "Schedule"
 msgstr "शेड्यूल"
 
 msgid "Scrap"
-msgstr "स्क्रैप"
+msgstr ""
 
 msgid "Scrap Reason"
 msgstr "स्क्रैप कारण"
@@ -914,7 +914,7 @@ msgid "Search"
 msgstr "खोजें"
 
 msgid "Search by job or item ID"
-msgstr "जॉब या आइटम आईडी से खोजें"
+msgstr ""
 
 msgid "Search operators..."
 msgstr "ऑपरेटर खोजें..."
@@ -948,7 +948,7 @@ msgid "Select Batch {0}"
 msgstr "बैच {0} चुनें"
 
 msgid "Select Printer"
-msgstr "प्रिंटर चुनें"
+msgstr ""
 
 #. placeholder {0}: index + 1
 msgid "Select Serial {0}"
@@ -958,7 +958,7 @@ msgid "Select Serial Number"
 msgstr "सीरियल नंबर चुनें"
 
 msgid "Select the operation to go back to. All operations from that point to the current operation will be redone."
-msgstr "उस ऑपरेशन को चुनें जिस पर वापस जाना है। उस बिंदु से वर्तमान ऑपरेशन तक के सभी ऑपरेशन फिर से किए जाएंगे।"
+msgstr ""
 
 msgid "Send"
 msgstr "भेजें"
@@ -977,7 +977,7 @@ msgid "Serial number is required"
 msgstr "सीरियल नंबर आवश्यक है"
 
 msgid "Serial numbers"
-msgstr "सीरियल नंबर"
+msgstr ""
 
 msgid "Serial Numbers"
 msgstr "सीरियल नंबर"
@@ -992,10 +992,10 @@ msgid "Setup"
 msgstr "सेटअप"
 
 msgid "Short"
-msgstr "कम"
+msgstr ""
 
 msgid "Short pick {itemName}"
-msgstr "Short pick {itemName}"
+msgstr ""
 
 msgid "Sign in with Email"
 msgstr "ईमेल के साथ साइन इन करें"
@@ -1007,7 +1007,7 @@ msgid "Sign in with Outlook"
 msgstr "Outlook के साथ साइन इन करें"
 
 msgid "Sign in with Passkey"
-msgstr "पासकी के साथ साइन इन करें"
+msgstr ""
 
 msgid "Sign Out"
 msgstr "साइन आउट"
@@ -1043,7 +1043,7 @@ msgid "Statuses"
 msgstr "स्थितियाँ"
 
 msgid "Stay on this page"
-msgstr "इस पृष्ठ पर रहें"
+msgstr ""
 
 msgid "Steps"
 msgstr "चरण"
@@ -1077,10 +1077,10 @@ msgid "There are serial or batch tracked materials on the bill of material that 
 msgstr "बिल ऑफ मेटेरियल पर सीरियल या बैच ट्रैक किए गए मेटेरियल हैं जो पूरी तरह से जारी नहीं किए गए हैं। जारी किए बिना पूरा करने से गलत ट्रेसेबिलिटी रिकॉर्ड हो सकते हैं।"
 
 msgid "This lot is expired and can't be picked."
-msgstr "यह लॉट समाप्त हो गया है और इसे चुना नहीं जा सकता।"
+msgstr ""
 
 msgid "This Period"
-msgstr ""
+msgstr "यह अवधि"
 
 msgid "Thumbnail"
 msgstr "थंबनेल"
@@ -1110,7 +1110,7 @@ msgid "Total: {0}"
 msgstr "कुल: {0}"
 
 msgid "Tracking"
-msgstr "ट्रैकिंग"
+msgstr ""
 
 msgid "Type a message..."
 msgstr "एक संदेश लिखें..."
@@ -1119,20 +1119,20 @@ msgid "Unissued serial/batch materials"
 msgstr "अजारी सीरीज़/बैच सामग्री"
 
 msgid "unit"
-msgstr ""
+msgstr "विधि"
 
 msgid "Unknown"
 msgstr "अज्ञात"
 
 msgid "Unpick"
-msgstr "अनपिक करें"
+msgstr ""
 
 #. placeholder {0}: pickedLots[0].trackedEntity.readableId
 msgid "Unpick {0}"
-msgstr "अनपिक {0}"
+msgstr ""
 
 msgid "Unsaved changes"
-msgstr "असहेजे परिवर्तन"
+msgstr ""
 
 msgid "Update"
 msgstr "अपडेट करें"

@@ -13,7 +13,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
-msgstr ""
+msgstr " स्वीकारकर्ता एक व्यवसाय या व्यक्ति है जो आपको भागों या सेवाओं की बिक्री करता है।"
 
 #. placeholder {0}: fieldDef?.label ?? condition.field
 msgid "\"{0}\" isn't available on the selected surface(s). Pick another field."
@@ -26,16 +26,16 @@ msgid "\"{storageUnitName}\" has 1 direct nested storage unit. Deleting it will 
 msgstr "\"{storageUnitName}\" के पास 1 सीधी नेस्टेड स्टोरेज यूनिट है। इसे हटाने से वह यूनिट और इसके अंदर की कोई भी चीज़ भी हटा दी जाएगी। यह पूर्ववत नहीं किया जा सकता।"
 
 msgid "(all must match)"
-msgstr ""
+msgstr "सब कुछ"
 
 #. placeholder {0}: selectedEvent.jobOperation?.description ?? t`Operation`
 msgid "{0} (supplier)"
-msgstr ""
+msgstr "{0} (सुप्लायर)"
 
 #. placeholder {0}: selectedEvent.jobOperation?.description ?? t`Operation`
 #. placeholder {1}: people.find((p) => p.id === selectedEvent.createdBy) ?.name ?? t`Unknown Employee`
 msgid "{0} by {1}"
-msgstr ""
+msgstr "{0} द्वारा {1}"
 
 #. placeholder {0}: rule.escalationDays
 msgid "{0} days"
@@ -104,10 +104,10 @@ msgid "1 day"
 msgstr "1 दिन"
 
 msgid "1% 10 Net 30"
-msgstr ""
+msgstr "1% 10 नेट 30"
 
 msgid "2% 10 Net 30"
-msgstr ""
+msgstr "2% 10 नेट 30"
 
 msgid "3D Model"
 msgstr "3D मॉडल"
@@ -131,7 +131,7 @@ msgid "A issue record tracks quality issues and their resolution process."
 msgstr "एक समस्या रिकॉर्ड गुणवत्ता समस्याओं और उनकी समाधान प्रक्रिया को ट्रैक करता है।"
 
 msgid "A job is a set of work to be done to fulfill an order or increase inventory"
-msgstr ""
+msgstr "कार्य एक आदेश या स्टॉक को पूरा करने या बढ़ाने के लिए करने की जिम्मेदारी है"
 
 msgid "A material is a physical item used to make a part that can be used across multiple jobs"
 msgstr "एक सामग्री एक भौतिक वस्तु है जिसका उपयोग एक भाग बनाने के लिए किया जाता है जिसे कई नौकरियों में उपयोग किया जा सकता है"
@@ -224,25 +224,25 @@ msgid "Accounts"
 msgstr "खाते"
 
 msgid "Accounts Payable"
-msgstr ""
+msgstr "कोर्स पेमेंट"
 
 msgid "Accounts Receivable"
-msgstr ""
+msgstr "क्रेडिट से आय"
 
 msgid "Accrued Expenses"
-msgstr ""
+msgstr "अनुमानित व्यय"
 
 msgid "Accrued Wages & Salaries"
-msgstr ""
+msgstr "वेतन और वेतन की सामान्य राशि"
 
 msgid "Accumulated Amortization"
-msgstr ""
+msgstr "कुल विनियमन"
 
 msgid "Accumulated Depreciation"
-msgstr ""
+msgstr "डेबिट ह्रास व्यय, 2,000 रूपए; क्रेडिट संचित ह्रास, रु।"
 
 msgid "Accumulated Depreciation on Disposal"
-msgstr ""
+msgstr "भंडारण निष्कर्षण पर जमा विनाश"
 
 msgid "Accumulation Period (Weeks)"
 msgstr "संचय अवधि (सप्ताह)"
@@ -285,13 +285,13 @@ msgstr "सक्रिय नौकरियां"
 
 #. placeholder {0}: report.originalQuantity
 msgid "Active line total ({lineTotal}) differs from originally reported ({0}). Saving anyway."
-msgstr ""
+msgstr "सक्रिय रेखा कुल ({lineTotal}) मूल रूप से रिपोर्ट किए गए ({0}) से अलग है। फिर भी बचाना जारी रखें।"
 
 msgid "Active Rules"
-msgstr ""
+msgstr "सक्रिय नियम"
 
 msgid "Active Rules (in priority order)"
-msgstr ""
+msgstr "सक्रिय नियम (प्राथमिकता के अनुसार)"
 
 msgid "Active Statuses"
 msgstr "सक्रिय स्थितियाँ"
@@ -342,7 +342,7 @@ msgid "Add Approval Requirement"
 msgstr "अनुमोदन आवश्यकता जोड़ें"
 
 msgid "Add at least one line with quantity greater than zero"
-msgstr ""
+msgstr "कम से एक लाइन जोड़ें जिसकी मात्रा कोई संख्या हो"
 
 msgid "Add Calibration Record"
 msgstr "कैलिब्रेशन रिकॉर्ड जोड़ें"
@@ -354,7 +354,7 @@ msgid "Add Company"
 msgstr "कंपनी जोड़ें"
 
 msgid "Add condition"
-msgstr ""
+msgstr "दशा स्थापित करें"
 
 msgid "Add Contractor"
 msgstr "ठेकेदार जोड़ें"
@@ -366,7 +366,7 @@ msgid "Add Feature"
 msgstr ""
 
 msgid "Add from library…"
-msgstr ""
+msgstr "अड्डा से जोड़..."
 
 msgid "Add Group"
 msgstr "समूह जोड़ें"
@@ -375,7 +375,7 @@ msgid "Add Item"
 msgstr "आइटम जोड़ें"
 
 msgid "Add line"
-msgstr ""
+msgstr "जोड़ें लाइन"
 
 msgid "Add Line"
 msgstr "लाइन जोड़ें"
@@ -417,7 +417,7 @@ msgid "Add Question"
 msgstr "प्रश्न जोड़ें"
 
 msgid "Add Receipt"
-msgstr ""
+msgstr "प्राप्ति रिक्वेस्ट जोड़ें"
 
 msgid "Add Required Actions"
 msgstr "आवश्यक कार्य जोड़ें"
@@ -429,16 +429,16 @@ msgid "Add Risk"
 msgstr "जोखिम जोड़ें"
 
 msgid "Add Row"
-msgstr ""
+msgstr "अड्डा जोड़ें"
 
 msgid "Add rule"
-msgstr ""
+msgstr "नियम जोड़ें"
 
 msgid "Add Selector"
 msgstr ""
 
 msgid "Add Shipment"
-msgstr ""
+msgstr "निर्यात करना"
 
 msgid "Add Shipping"
 msgstr "शिपिंग जोड़ें"
@@ -483,13 +483,13 @@ msgid "Advanced"
 msgstr "उन्नत"
 
 msgid "Advertising & Marketing"
-msgstr ""
+msgstr "विज्ञापन और प्रचार"
 
 msgid "After"
 msgstr "के बाद"
 
 msgid "After Previous"
-msgstr ""
+msgstr "पिछला"
 
 msgid "AI Tokens"
 msgstr "एआई टोकन"
@@ -510,7 +510,7 @@ msgid "All Documents"
 msgstr "सभी दस्तावेज़"
 
 msgid "All Employees"
-msgstr ""
+msgstr "सभी कर्मचारियों के लिए"
 
 msgid "All Items"
 msgstr "सभी आइटम"
@@ -531,10 +531,10 @@ msgid "All Work Centers"
 msgstr "सभी कार्य केंद्र"
 
 msgid "Allows acknowledge & continue"
-msgstr ""
+msgstr "मान लें और आगे बढ़ें"
 
 msgid "Alpha"
-msgstr ""
+msgstr "अल्फा"
 
 msgid "Always"
 msgstr "हमेशा"
@@ -594,7 +594,7 @@ msgid "API keys for programmatic access to your Carbon data."
 msgstr ""
 
 msgid "Applies to"
-msgstr ""
+msgstr "अप्लाई होता है"
 
 msgid "Applies to all"
 msgstr ""
@@ -627,16 +627,16 @@ msgid "Approve"
 msgstr "मंजूरी दें"
 
 msgid "Approve here or manage all pending items on the quantity review page."
-msgstr ""
+msgstr "स्वीकार करें या सभी अनुपस्थित सामग्री को मात्र मात्रा समीक्षा पृष्ठ पर प्रबंधित करें।"
 
 msgid "Approved By"
 msgstr "द्वारा अनुमोदित"
 
 msgid "approved completion(s)"
-msgstr ""
+msgstr "स्वीकृत पूर्ति(यों)"
 
 msgid "Approved completions"
-msgstr ""
+msgstr "स्वीकृत पूर्णता"
 
 msgid "AQL"
 msgstr "AQL"
@@ -744,7 +744,7 @@ msgstr "क्या आप सुनिश्चित हैं कि आप 
 #. placeholder {0}: account.name
 #. placeholder {1}: account.number ? ` (${account.number})` : ""
 msgid "Are you sure you want to delete the account: {0}{1}? This cannot be undone."
-msgstr ""
+msgstr "क्या आप सुनिश्चित हैं कि खाते को हटाना चाहते हैं: {0}{1} ? यह वापस नहीं लिया जा सकता।"
 
 #. placeholder {0}: apiKey.name
 msgid "Are you sure you want to delete the API key: {0}? This cannot be undone."
@@ -752,7 +752,7 @@ msgstr "क्या आप सुनिश्चित हैं कि आप 
 
 #. placeholder {0}: rule.name ?? ""
 msgid "Are you sure you want to delete the assignment rule: {0}? This cannot be undone."
-msgstr ""
+msgstr "क्या आप सुनिश्चित हैं कि व्यवस्था नियम को हटाना चाहते हैं: {0} ? यह नहीं undone किया जा सकता।"
 
 msgid "Are you sure you want to delete the contractor: {name}? This cannot be undone."
 msgstr "क्या आप सुनिश्चित हैं कि आप ठेकेदार को हटाना चाहते हैं: {name}? यह पूर्ववत नहीं किया जा सकता।"
@@ -931,10 +931,10 @@ msgid "Are you sure you want to delete this maintenance dispatch? This cannot be
 msgstr "क्या आप सुनिश्चित हैं कि आप इस रखरखाव प्रेषण को हटाना चाहते हैं? यह पूर्ववत नहीं किया जा सकता।"
 
 msgid "Are you sure you want to delete this pickup? This action cannot be undone."
-msgstr ""
+msgstr "क्या आप सुनिश्चित हैं कि इस ग्राहक को हटाना चाहते हैं? यह कार्रवाई वापस नहीं ली जा सकती।"
 
 msgid "Are you sure you want to delete this production quantity? This action cannot be undone."
-msgstr ""
+msgstr "क्या आप सुनिश्चित हैं कि आप इस उत्पादन मात्रा को हटाना चाहते हैं? यह कार्रवाई वापस नहीं ली जा सकती।"
 
 msgid "Are you sure you want to delete this quality document?"
 msgstr "क्या आप सुनिश्चित हैं कि आप इस गुणवत्ता दस्तावेज़ को हटाना चाहते हैं?"
@@ -996,10 +996,10 @@ msgid "Are you sure you want to revoke the invitations for these users?"
 msgstr "क्या आप सुनिश्चित हैं कि आप इन उपयोगकर्ताओं के लिए आमंत्रण रद्द करना चाहते हैं?"
 
 msgid "Are you sure you want to send an invite to these users?"
-msgstr ""
+msgstr "आप शायद इन उपयोगकर्ताओं को आमंत्रित करना चाहते हैं?"
 
 msgid "Are you sure you want to send an invite to this user?"
-msgstr ""
+msgstr "आपकी पुष्टि के साथ इस उपयोगकर्ता को आमंत्रित भेजना चाहते हैं?"
 
 msgid "Are you sure you want to void this purchase invoice? This action will reverse all financial transactions and cannot be undone."
 msgstr "क्या आप सुनिश्चित हैं कि आप इस खरीद चालान को रद्द करना चाहते हैं? यह कार्रवाई सभी वित्तीय लेनदेन को उलट देगी और इसे पूर्ववत नहीं किया जा सकता।"
@@ -1020,7 +1020,7 @@ msgid "As the company owner, you can transfer ownership to another employee. Thi
 msgstr "कंपनी के मालिक के रूप में, आप स्वामित्व किसी अन्य कर्मचारी को स्थानांतरित कर सकते हैं। यह उन्हें बिलिंग और प्रशासनिक सेटिंग्स तक पूर्ण पहुंच देगा।"
 
 msgid "ASAP"
-msgstr ""
+msgstr "आसानी से (Aasani se)"
 
 msgid "Ascending"
 msgstr "आरोही"
@@ -1047,7 +1047,7 @@ msgid "Assign To"
 msgstr "को असाइन करें"
 
 msgid "Assign to Group"
-msgstr ""
+msgstr "निर्दिष्ट समूह को नियुक्त करें"
 
 msgid "Assign to Groups"
 msgstr "समूहों को असाइन करें"
@@ -1056,7 +1056,7 @@ msgid "Assigned"
 msgstr "नियुक्त"
 
 msgid "Assigned Group"
-msgstr ""
+msgstr "नियुक्त समूह"
 
 msgid "Assigned to Me"
 msgstr "मुझे असाइन किया गया"
@@ -1068,10 +1068,10 @@ msgid "Assignment"
 msgstr "असाइनमेंट"
 
 msgid "Assignment Rule Simulation"
-msgstr ""
+msgstr "प्रारंभिक निर्धारण नियम सिमुलेशन"
 
 msgid "Assignment Rules"
-msgstr ""
+msgstr "नियुक्ति नियम"
 
 msgid "Assignments"
 msgstr "असाइनमेंट"
@@ -1080,7 +1080,7 @@ msgid "Assigns this storage unit to a work center (lineside)"
 msgstr ""
 
 msgid "At least one condition must match"
-msgstr ""
+msgstr "कम से एक स्थिति को मेल खाना चाहिए"
 
 msgid "Attach File"
 msgstr "फ़ाइल संलग्न करें"
@@ -1170,10 +1170,10 @@ msgid "Backflush"
 msgstr "बैकफ्लश"
 
 msgid "Bad Debts Expense"
-msgstr ""
+msgstr "क्रेडिट देय खर्च"
 
 msgid "Bag"
-msgstr ""
+msgstr "चाय पी"
 
 msgid "Balance Sheet"
 msgstr "बैलेंस शीटName"
@@ -1182,16 +1182,16 @@ msgid "Balloon"
 msgstr ""
 
 msgid "Bank - Cash"
-msgstr ""
+msgstr "बैंक - कैश"
 
 msgid "Bank - Foreign Currency"
-msgstr ""
+msgstr "बैंक - विदेशी मुद्रा"
 
 msgid "Bank - Local Currency"
-msgstr ""
+msgstr "स्थानीय मुद्रा"
 
 msgid "Bank Charges & Fees"
-msgstr ""
+msgstr "बैंक शुल्क और शुल्क"
 
 msgid "Base Currency"
 msgstr "आधारभूत मुद्रा"
@@ -1255,13 +1255,13 @@ msgid "Blocked by {0}"
 msgstr "{0} द्वारा अवरुद्ध"
 
 msgid "Blocks save until resolved"
-msgstr ""
+msgstr "ब्लॉक बचत के लिए सुलझने तक"
 
 msgid "BoM"
 msgstr "BoM"
 
 msgid "BOM"
-msgstr ""
+msgstr "बॉम"
 
 msgid "BoM + BoP"
 msgstr "BoM + BoP"
@@ -1270,19 +1270,19 @@ msgid "BOM synced successfully"
 msgstr "BOM सफलतापूर्वक सिंक हो गया"
 
 msgid "Boolean"
-msgstr ""
+msgstr "मान"
 
 msgid "BOP"
-msgstr ""
+msgstr "बीपी"
 
 msgid "Box"
-msgstr ""
+msgstr "बक्साthe gradient will be drawn bilinearly"
 
 msgid "Breadcrumb"
 msgstr "ब्रेडक्रम्ब"
 
 msgid "Browse library"
-msgstr ""
+msgstr "खोज़ किताब"
 
 msgid "Bucket"
 msgstr "बकेट"
@@ -1291,7 +1291,7 @@ msgid "Buildings"
 msgstr ""
 
 msgid "Buildings & Leasehold Improvements"
-msgstr ""
+msgstr "भंडारे & किराया संपत्ति सुधार"
 
 msgid "Bulk Import"
 msgstr "बल्क आयात"
@@ -1399,7 +1399,7 @@ msgid "Cannot place order - no supplier associated with this item"
 msgstr "इस आइटम के साथ कोई आपूर्तिकर्ता जुड़ा नहीं है - ऑर्डर नहीं दे सकते"
 
 msgid "Cannot post — shipment contains expired tracked entities."
-msgstr ""
+msgstr "नहीं पोस्ट कर सकते हैं - संचारित वस्तुओं में समय से पहले व्यापार किया गया है।"
 
 msgid "Cannot send RFQ"
 msgstr "RFQ नहीं भेज सकते"
@@ -1438,10 +1438,10 @@ msgid "Carrier Account"
 msgstr "वाहक खाता"
 
 msgid "Case"
-msgstr ""
+msgstr "मामला"
 
 msgid "Cash & Bank"
-msgstr ""
+msgstr "पैसा और बैंक"
 
 msgid "Category"
 msgstr "श्रेणी"
@@ -1501,7 +1501,7 @@ msgid "Choose another file"
 msgstr "दूसरी फ़ाइल चुनें"
 
 msgid "Choose file to upload or drag and drop"
-msgstr ""
+msgstr "चुनें या अपलोड करने के लिए फ़ाइल चुनें।"
 
 msgid "Choose your preferred language for the interface."
 msgstr "अपनी पसंद की भाषा इंटरफेस के लिए चुनें।"
@@ -1553,7 +1553,7 @@ msgid "Close Date"
 msgstr "बंद करने की तारीख"
 
 msgid "Closed"
-msgstr ""
+msgstr "बंद"
 
 msgid "Closed Date"
 msgstr "बंद तारीख"
@@ -1565,7 +1565,7 @@ msgid "Cloud-Hosted"
 msgstr "क्लाउड-होस्टेड"
 
 msgid "COD"
-msgstr ""
+msgstr "कॉड"
 
 msgid "Code"
 msgstr "कोड"
@@ -1599,9 +1599,12 @@ msgstr "जल्द ही आ रहा है"
 
 msgid "comma separated IDs"
 msgstr ""
+"अंग्रेज़ी से हिंदी में अनुवाद:\n"
+"\n"
+","
 
 msgid "comma-separated values"
-msgstr ""
+msgstr "स separated मान्यताएं"
 
 msgid "Comment"
 msgstr "टिप्पणी"
@@ -1610,7 +1613,7 @@ msgid "Comments"
 msgstr "टिप्पणियाँ"
 
 msgid "Common Stock / Share Capital"
-msgstr ""
+msgstr "सामान्य स्टॉक / शेयर राजधानी"
 
 msgid "Companies"
 msgstr "कंपनियां"
@@ -1673,22 +1676,22 @@ msgid "Completion Time"
 msgstr "पूर्ण होने का समय"
 
 msgid "condition"
-msgstr ""
+msgstr "व्यवस्था"
 
 msgid "conditions"
-msgstr ""
+msgstr "विशिष्ट"
 
 msgid "Conditions"
-msgstr ""
+msgstr "शर्त"
 
 msgid "Config Params"
-msgstr ""
+msgstr "सेटिंग्स पैरामीटर"
 
 msgid "Configuration Parameters"
 msgstr "कॉन्फ़िगरेशन पैरामीटर"
 
 msgid "Configuration quantities"
-msgstr ""
+msgstr "सेटिंग्स की मात्रा"
 
 msgid "Configurator"
 msgstr "कॉन्फ़िगरेटर"
@@ -1721,13 +1724,13 @@ msgid "Configure notifications for when new suggestions are submitted."
 msgstr "नए सुझाव जमा किए जाने पर सूचनाएं कॉन्फ़िगर करें।"
 
 msgid "Configure quantities"
-msgstr ""
+msgstr "निर्धारित मात्रा"
 
 msgid "Configure the default accounts used for various transaction types across your system"
 msgstr "विभिन्न लेनदेन प्रकारों के लिए आपके सिस्टम में उपयोग किए जाने वाले डिफ़ॉल्ट खातों को कॉन्फ़िगर करें"
 
 msgid "Configure the start months for your fiscal and tax years"
-msgstr ""
+msgstr "निर्धारित करें अपने वित्तीय और कर वर्षों के शुरुआती महीने"
 
 msgid "Configure when purchased item costs should be updated from supplier transactions."
 msgstr ""
@@ -1812,7 +1815,7 @@ msgid "Containment"
 msgstr "समावेशन"
 
 msgid "Containment Action"
-msgstr ""
+msgstr "कंटेनमेंट एक्शन"
 
 msgid "Contractor"
 msgstr "ठेकेदार"
@@ -1980,25 +1983,25 @@ msgid "Correct Answers"
 msgstr "सही उत्तर"
 
 msgid "Correct quantities"
-msgstr ""
+msgstr "सही मात्रा"
 
 msgid "Corrective Action"
-msgstr ""
+msgstr "सुधार के लिए की गई कार्रवाई"
 
 msgid "Cost Center"
-msgstr ""
+msgstr "लागत केंद्र"
 
 msgid "Cost Centers"
-msgstr ""
+msgstr "लागत केंद्र"
 
 msgid "Cost History"
 msgstr "लागत इतिहास"
 
 msgid "Cost of Goods Sold"
-msgstr ""
+msgstr "बेचे गए सामान की लागत"
 
 msgid "Cost of Goods Sold - Direct"
-msgstr ""
+msgstr "कीमतें उत्पादों की बिक्री - सीधा"
 
 msgid "Costing"
 msgstr "लागत"
@@ -2007,7 +2010,7 @@ msgid "Costing & Posting"
 msgstr "लागत और पोस्टिंग"
 
 msgid "Costing Method"
-msgstr ""
+msgstr "लागत प्रणाली"
 
 msgid "Could not analyze cropped region"
 msgstr ""
@@ -2063,7 +2066,7 @@ msgid "Create audit trail entries"
 msgstr "ऑडिट ट्रेल प्रविष्टियां बनाएं"
 
 msgid "Create employee"
-msgstr ""
+msgstr "नियोक्ता बनाएं"
 
 msgid "Create Issue"
 msgstr "समस्या बनाएं"
@@ -2078,13 +2081,13 @@ msgid "Create Kanban"
 msgstr "कनबन बनाएं"
 
 msgid "Create new rule"
-msgstr ""
+msgstr "नया नियम बनाएं"
 
 msgid "Create PO"
-msgstr ""
+msgstr "निर्यात प्रारूप (Create PO)"
 
 msgid "Create Production Quantity"
-msgstr ""
+msgstr "स्थापित उत्पादन मात्रा बनाएं"
 
 msgid "Create Quote Revision"
 msgstr "उद्धरण संशोधन बनाएं"
@@ -2096,7 +2099,7 @@ msgid "Create Rule"
 msgstr "नियम बनाएं"
 
 msgid "Create supplier"
-msgstr ""
+msgstr "सस्प्लायर बनाएं"
 
 msgid "Create User"
 msgstr "उपयोगकर्ता बनाएं"
@@ -2112,13 +2115,13 @@ msgstr "बनाया गया"
 
 #. placeholder {0}: formatRelativeTime(record.createdAt ?? "")
 msgid "Created {0}"
-msgstr ""
+msgstr "प्रारंभ किया गया है {0}"
 
 msgid "Created {relativeTime}"
-msgstr ""
+msgstr "प्राप्त {relativeTime}"
 
 msgid "Created account"
-msgstr ""
+msgstr "रचना की गई खाता"
 
 msgid "Created At"
 msgstr "बनाया गया"
@@ -2212,11 +2215,11 @@ msgid "Created storage type"
 msgstr "भंडारण प्रकार बनाया गया"
 
 msgid "Created supplier process"
-msgstr ""
+msgstr "संचालित स्वीपर प्रक्रिया बनाया"
 
 #. placeholder {0}: fetcher.data.data.name
 msgid "Created supplier: {0}"
-msgstr ""
+msgstr "सृजन किया गया वित्तीय प्रदाता: {0}"
 
 msgid "Created tool"
 msgstr "टूल बनाया गया"
@@ -2249,13 +2252,13 @@ msgid "Current"
 msgstr "वर्तमान"
 
 msgid "Current Liabilities"
-msgstr ""
+msgstr "मौजूदा ऋण"
 
 msgid "Current Password"
 msgstr "वर्तमान पासवर्ड"
 
 msgid "Current process"
-msgstr ""
+msgstr "वर्तमान प्रक्रिया"
 
 msgid "Current quantity"
 msgstr "वर्तमान मात्रा"
@@ -2282,10 +2285,10 @@ msgid "Customer Accounts"
 msgstr "ग्राहक खाते"
 
 msgid "Customer Communication"
-msgstr ""
+msgstr "ग्राहक संचार"
 
 msgid "Customer Complaint"
-msgstr ""
+msgstr "ग्राहक की शिकायत"
 
 msgid "Customer Contact"
 msgstr "ग्राहक संपर्क"
@@ -2324,7 +2327,7 @@ msgid "Customer Parts"
 msgstr "ग्राहक पार्ट्स"
 
 msgid "Customer Payment Discounts"
-msgstr ""
+msgstr "ग्राहक भुगतान पर छूट"
 
 msgid "Customer PO"
 msgstr "ग्राहक PO"
@@ -2339,7 +2342,7 @@ msgid "Customer Portals"
 msgstr "ग्राहक पोर्टल"
 
 msgid "Customer Prepayments"
-msgstr ""
+msgstr "ग्राहक के पूर्व भुगतान"
 
 msgid "Customer Revision"
 msgstr "ग्राहक संशोधन"
@@ -2511,19 +2514,19 @@ msgid "Defaults"
 msgstr "डिफ़ॉल्ट"
 
 msgid "Defaults to the full outstanding amount"
-msgstr ""
+msgstr "पूर्ण राशि तक सेट होने की व्यवस्था है"
 
 msgid "Deferred Revenue"
-msgstr ""
+msgstr "प्रतीक्षित आय"
 
 msgid "Deferred Tax Assets"
-msgstr ""
+msgstr "भुगतान से पहले कर संपत्ति"
 
 msgid "Deferred Tax Expense"
 msgstr ""
 
 msgid "Deferred Tax Liabilities"
-msgstr ""
+msgstr "प्रत्यक्ष कर देयताएं"
 
 msgid "Defines how many tracked entities are inspected per lot, and how many failures are tolerated before the lot is rejected."
 msgstr "परिभाषित करता है कि प्रति लॉट कितनी ट्रैक की गई संस्थाओं का निरीक्षण किया जाता है, और लॉट को अस्वीकार करने से पहले कितनी विफलताओं को सहन किया जाता है।"
@@ -2601,10 +2604,10 @@ msgid "Delete Issue"
 msgstr "समस्या हटाएं"
 
 msgid "Delete Job"
-msgstr ""
+msgstr "मुक्त करें नौकरी"
 
 msgid "Delete Jobs"
-msgstr ""
+msgstr "मुक्त करें जॉब्स"
 
 msgid "Delete Line"
 msgstr "लाइन हटाएं"
@@ -2643,7 +2646,7 @@ msgid "Delete Picking List"
 msgstr ""
 
 msgid "Delete Pickup"
-msgstr ""
+msgstr "मिटाना लेना"
 
 msgid "Delete Portal"
 msgstr "पोर्टल हटाएं"
@@ -2670,7 +2673,7 @@ msgid "Delete Purchase Orders"
 msgstr "खरीद आदेश हटाएं"
 
 msgid "Delete Quantity"
-msgstr ""
+msgstr "मात्रा हटाएं"
 
 msgid "Delete Question"
 msgstr "प्रश्न हटाएं"
@@ -2694,7 +2697,7 @@ msgid "Delete Risk"
 msgstr "जोखिम हटाएं"
 
 msgid "Delete row"
-msgstr ""
+msgstr "हस्तांतरण करें"
 
 msgid "Delete rows"
 msgstr "पंक्तियों को हटाएं"
@@ -2703,7 +2706,7 @@ msgid "Delete Rule"
 msgstr "नियम हटाएं"
 
 msgid "Delete Sales Invoice"
-msgstr ""
+msgstr "माला विक्री बिल हटाएं"
 
 msgid "Delete Sales Order"
 msgstr "बिक्रय आदेश हटाएं"
@@ -2811,10 +2814,10 @@ msgid "Depreciation"
 msgstr ""
 
 msgid "Depreciation & Amortization"
-msgstr ""
+msgstr "विनाश और व्यय"
 
 msgid "Depreciation Expense"
-msgstr ""
+msgstr "डेबिट संचित ह्रास, 2,000 रूपए; क्रेडिट ह्रास व्यय, रु।"
 
 msgid "Depreciation Run"
 msgstr ""
@@ -2829,7 +2832,7 @@ msgid "Description of Issue"
 msgstr "समस्या का विवरण"
 
 msgid "Design Error"
-msgstr ""
+msgstr "डिज़ाइन में गड़बड़ी"
 
 msgid "Detail"
 msgstr "विवरण"
@@ -2842,15 +2845,15 @@ msgstr ""
 
 #. placeholder {0}: formatDurationMilliseconds(item.duration * 1000)
 msgid "did {0} of labor"
-msgstr ""
+msgstr "काम में {0}"
 
 #. placeholder {0}: formatDurationMilliseconds(item.duration * 1000)
 msgid "did {0} of machine"
-msgstr ""
+msgstr "किया गया है {0} मशीन"
 
 #. placeholder {0}: formatDurationMilliseconds(item.duration * 1000)
 msgid "did {0} of setup"
-msgstr ""
+msgstr "किया गया था {0} सेटअप"
 
 msgid "Digital Quote"
 msgstr "डिजिटल उद्धरण"
@@ -2865,7 +2868,7 @@ msgid "Dimensions"
 msgstr "आयाम"
 
 msgid "Direct"
-msgstr ""
+msgstr "दिशा"
 
 msgid "Disabled"
 msgstr "अक्षम"
@@ -2907,7 +2910,7 @@ msgid "Dispositions"
 msgstr "निपटान"
 
 msgid "Dividends Payable"
-msgstr ""
+msgstr "वित्तीय ब्याज payable"
 
 msgid "Do you want to overwrite the user's current permissions with the default permissions for this employee type?"
 msgstr "क्या आप उपयोगकर्ता की वर्तमान अनुमतियों को इस कर्मचारी प्रकार के लिए डिफ़ॉल्ट अनुमतियों से अधिलेखित करना चाहते हैं?"
@@ -2925,10 +2928,10 @@ msgid "Document:"
 msgstr "दस्तावेज़:"
 
 msgid "Documentation"
-msgstr ""
+msgstr "दस्तावेजीकरण"
 
 msgid "Documentation Error"
-msgstr ""
+msgstr "डॉक्यूमेंटेशन में गड़बड़ी"
 
 msgid "Documents"
 msgstr "दस्तावेज़"
@@ -2961,13 +2964,13 @@ msgid "Drag & drop files, or click to browse"
 msgstr ""
 
 msgid "Drag and drop a file here, or click to select a file"
-msgstr ""
+msgstr "ड्रैग एंड ड्रॉप एक फ़ाइल यहाँ डालें, या क्लिक करके एक फ़ाइल चुनें"
 
 msgid "Drag and drop a Purchase Order PDF here, or click to select a file"
 msgstr "यहाँ एक खरीद आदेश PDF को ड्रैग और ड्रॉप करें, या एक फ़ाइल चुनने के लिए क्लिक करें"
 
 msgid "Drag and drop some files here, or click to select files"
-msgstr ""
+msgstr "ड्रैग एंड ड्रॉप कुछ फ़ाइलें यहाँ डालें, या क्लिक करके फ़ाइलों को चुनें"
 
 msgid "Drag handle"
 msgstr "ड्रैग हैंडल"
@@ -3000,7 +3003,7 @@ msgid "Drop your file here, or click to browse."
 msgstr "अपनी फ़ाइल यहाँ ड्रॉप करें, या ब्राउज़ करने के लिए क्लिक करें।"
 
 msgid "Drum"
-msgstr ""
+msgstr "हाइड्रसConstellation name (optional)"
 
 msgid "Due"
 msgstr ""
@@ -3022,7 +3025,7 @@ msgid "Due Days after {selectedCalculationMethod}"
 msgstr "{selectedCalculationMethod} के बाद देय दिन"
 
 msgid "Due Today"
-msgstr ""
+msgstr "आज की तारीख है"
 
 msgid "Duplicate"
 msgstr "डुप्लिकेट"
@@ -3052,20 +3055,20 @@ msgid "e.g. Zebra 2x1"
 msgstr ""
 
 msgid "Each"
-msgstr ""
+msgstr "Newnatam"
 
 #. placeholder {0}: zeroQuantityLine.type
 msgid "Each line must have a quantity greater than zero ({0})"
-msgstr ""
+msgstr "प्रत्येक रेखा की मात्रा से अधिक होनी चाहिए ({0})"
 
 msgid "Earned"
-msgstr ""
+msgstr "कमाई"
 
 msgid "Edit"
 msgstr "संपादित करें"
 
 msgid "Edit Account"
-msgstr ""
+msgstr "संपादित खाता"
 
 msgid "Edit API Key"
 msgstr "API Key संपादित करें"
@@ -3089,7 +3092,7 @@ msgid "Edit column visibility"
 msgstr "कॉलम दृश्यता संपादित करें"
 
 msgid "Edit configuration"
-msgstr ""
+msgstr "सेटिंग्स संपादित करें"
 
 msgid "Edit Contact"
 msgstr "संपर्क संपादित करें"
@@ -3155,7 +3158,7 @@ msgid "Edit Item Group"
 msgstr "आइटम ग्रुप संपादित करें"
 
 msgid "Edit Job"
-msgstr ""
+msgstr "संपादित करें नौकरी"
 
 msgid "Edit Kanban"
 msgstr "कनबन संपादित करें"
@@ -3209,7 +3212,7 @@ msgid "Edit Picking List"
 msgstr ""
 
 msgid "Edit Pickup"
-msgstr ""
+msgstr "संपादित लेना"
 
 msgid "Edit Portal"
 msgstr "पोर्टल संपादित करें"
@@ -3227,13 +3230,13 @@ msgid "Edit Process"
 msgstr "प्रक्रिया संपादित करें"
 
 msgid "Edit Production Quantity"
-msgstr ""
+msgstr "संपादन उत्पादन मात्रा"
 
 msgid "Edit purchase order line type"
 msgstr "क्रय आदेश लाइन प्रकार संपादित करें"
 
 msgid "Edit Quantity"
-msgstr ""
+msgstr "संपादित मात्रा"
 
 msgid "Edit Question"
 msgstr "प्रश्न संपादित करें"
@@ -3248,7 +3251,7 @@ msgid "Edit Revision"
 msgstr "संशोधन संपादित करें"
 
 msgid "Edit rule"
-msgstr ""
+msgstr "संपादन नियम"
 
 msgid "Edit Rule"
 msgstr "नियम संपादित करें"
@@ -3302,7 +3305,7 @@ msgid "Edit supplier process"
 msgstr "आपूर्तिकर्ता प्रक्रिया संपादित करें"
 
 msgid "Edit supplier quantity report"
-msgstr ""
+msgstr "स्वीकारकर्ता मात्रा रिपोर्ट संपादित करें"
 
 msgid "Edit Supplier Type"
 msgstr "आपूर्तिकर्ता प्रकार संपादित करें"
@@ -3380,7 +3383,7 @@ msgid "Enable digital quotes for your company. This will allow you to send digit
 msgstr "अपनी कंपनी के लिए डिजिटल उद्धरण सक्षम करें। यह आपको अपने ग्राहकों को डिजिटल उद्धरण भेजने की अनुमति देगा, और उन्हें ऑनलाइन स्वीकार करने की अनुमति देगा।"
 
 msgid "Enable full accrual accounting with journal entries, financial reports, and general ledger posting."
-msgstr ""
+msgstr "पूर्ण वित्तीय संकल्पना खाता प्रबंधन के लिए जोरबद्दल पत्र, वित्तीय रिपोर्ट और सामान्य लेजर पोस्टिंग सक्षम करें।"
 
 msgid "Enable in Settings"
 msgstr "सेटिंग्स में सक्षम करें"
@@ -3428,7 +3431,7 @@ msgid "End Time"
 msgstr "समाप्ति समय"
 
 msgid "Enforce per-item validation and guidelines across receipts, shipments, transfers, and adjustments."
-msgstr ""
+msgstr "निर्धारित प्रत्येक वस्तु की सत्यापन और नियमों का सख्तीकरण रिक्वेस्ट, शिपमेंट्स, ट्रांसफर्स, और समायोजनों में से सभी।"
 
 msgid "Engineering Contact"
 msgstr "इंजीनियरिंग संपर्क"
@@ -3447,10 +3450,10 @@ msgstr "रसीद पर दर्ज"
 
 #. placeholder {0}: enteredBy?.name
 msgid "Entered by {0}"
-msgstr ""
+msgstr "द्वारा {0}"
 
 msgid "Entered by System"
-msgstr ""
+msgstr "प्रणाली द्वारा प्रवेश किया गया है"
 
 msgid "Entities"
 msgstr "संस्थाएं"
@@ -3468,13 +3471,13 @@ msgid "Entity is {status}"
 msgstr "Entity {status} है"
 
 msgid "EORI"
-msgstr ""
+msgstr "ईआरआई"
 
 msgid "Equipment Malfunction"
-msgstr ""
+msgstr "उपकरण की खराबी"
 
 msgid "Equity"
-msgstr ""
+msgstr "इक्विटी"
 
 msgid "ERP, MES, QMS"
 msgstr "ERP, MES, QMS"
@@ -3570,7 +3573,7 @@ msgid "Events"
 msgstr "घटनाएं"
 
 msgid "Every condition must match"
-msgstr ""
+msgstr "हर स्थिति को मैच करना चाहिए"
 
 msgid "Everything from Starter"
 msgstr "स्टार्टर से सब कुछ"
@@ -3582,7 +3585,7 @@ msgid "Exchange Rate"
 msgstr "विनिमय दर"
 
 msgid "Exchange Rates"
-msgstr ""
+msgstr "विनिमय दरें"
 
 msgid "Expand"
 msgstr "विस्तार करें"
@@ -3779,11 +3782,11 @@ msgid "Failed to create storage type: {0}"
 msgstr "भंडारण प्रकार बनाने में विफल: {0}"
 
 msgid "Failed to create supplier process"
-msgstr ""
+msgstr "सupplier प्रक्रिया बनाने में विफल हो गया"
 
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create supplier: {0}"
-msgstr ""
+msgstr "{0} निर्माता प्रदाता बनाने में विफल हो गया:"
 
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create tool: {0}"
@@ -3927,7 +3930,7 @@ msgid "Failed to update supplier quote line"
 msgstr "आपूर्तिकर्ता उद्धरण लाइन को अपडेट करने में विफल"
 
 msgid "Failed to update template"
-msgstr ""
+msgstr "नमूने टेम्पलेट अपडेट करने में विफल रहा"
 
 msgid "Failed to update thumbnail path"
 msgstr "थंबनेल पथ अपडेट करने में विफल"
@@ -3972,7 +3975,7 @@ msgid "Failure Modes"
 msgstr "विफलता मोड्स"
 
 msgid "False"
-msgstr ""
+msgstr "ज़रूरी"
 
 msgid "Favorite"
 msgstr "पसंदीदा"
@@ -4002,7 +4005,7 @@ msgid "Fetch"
 msgstr "लाएं"
 
 msgid "Field"
-msgstr ""
+msgstr "क्षेत्र"
 
 msgid "Field info"
 msgstr ""
@@ -4049,7 +4052,7 @@ msgid "Files attached here ride along on every purchase order email sent to this
 msgstr ""
 
 msgid "Fill cell"
-msgstr ""
+msgstr "भरना कोशिश करें"
 
 msgid "Filter"
 msgstr "फ़िल्टर"
@@ -4067,7 +4070,7 @@ msgid "Finish To"
 msgstr "समाप्त करने के लिए"
 
 msgid "Finished Goods"
-msgstr ""
+msgstr "तैयार सामान"
 
 msgid "Finishes"
 msgstr "फिनिशेस"
@@ -4079,7 +4082,7 @@ msgid "First Operation"
 msgstr "पहली ऑपरेशन"
 
 msgid "Fiscal Year"
-msgstr ""
+msgstr "वित्तीय वर्ष"
 
 msgid "Fiscal Year Settings"
 msgstr "वित्तीय वर्ष सेटिंग्स"
@@ -4094,10 +4097,10 @@ msgid "Fixed Asset"
 msgstr ""
 
 msgid "Fixed Asset Acquisition Cost"
-msgstr ""
+msgstr "फिक्स्ड एसेट एक्विजिशन कॉस्ट"
 
 msgid "Fixed Asset Acquisition Cost on Disposal"
-msgstr ""
+msgstr "निपटान पर निश्चित संपत्ति अधिग्रहण लागत"
 
 msgid "Fixed Assets"
 msgstr ""
@@ -4109,7 +4112,7 @@ msgid "Fixed Shelf Life"
 msgstr "निश्चित शेल्फ जीवन"
 
 msgid "Foot"
-msgstr ""
+msgstr "फुट"
 
 msgid "For growing businesses that need support"
 msgstr "बढ़ते हुए व्यवसायों के लिए जिन्हें समर्थन की आवश्यकता है"
@@ -4122,10 +4125,10 @@ msgid "Forecast method: <0>{0}</0>. This row was not derived from active jobs, s
 msgstr ""
 
 msgid "Foreign Exchange Gains"
-msgstr ""
+msgstr "विदेशी मुद्रा लाभ"
 
 msgid "Foreign Exchange Losses"
-msgstr ""
+msgstr "विदेशी मुद्रा हानियाँ"
 
 msgid "Forgot to Clock Out?"
 msgstr "क्या आप क्लॉक आउट करना भूल गए?"
@@ -4134,7 +4137,7 @@ msgid "Format"
 msgstr "प्रारूप"
 
 msgid "Freight & Shipping Out"
-msgstr ""
+msgstr "ग्राहकी और संचालन बाहर"
 
 msgid "Frequencies"
 msgstr "आवृत्तियाँ"
@@ -4152,16 +4155,16 @@ msgid "From Storage Unit"
 msgstr "स्टोरेज यूनिट से"
 
 msgid "Fully paid"
-msgstr ""
+msgstr "पूरी तरह से भुगतान किया गया"
 
 msgid "Fully trained for"
 msgstr "पूरी तरह प्रशिक्षित"
 
 msgid "Gains and Losses on Disposal"
-msgstr ""
+msgstr "निपटान पर लाभ और हानि"
 
 msgid "Gallon"
-msgstr ""
+msgstr "गैल\tगैलन"
 
 msgid "Gauge"
 msgstr "गेज"
@@ -4209,7 +4212,7 @@ msgid "Get Method"
 msgstr "विधि प्राप्त करें"
 
 msgid "GL Account"
-msgstr ""
+msgstr "क्रेडिट अकाउंट"
 
 #. placeholder {0}: user.firstName
 msgid "Good afternoon, {0}"
@@ -4227,7 +4230,7 @@ msgid "Google Places API key not configured"
 msgstr "Google Places API key कॉन्फ़िगर नहीं है"
 
 msgid "GR/IR Clearing"
-msgstr ""
+msgstr "GR/IR साफ़ करना"
 
 msgid "Grade"
 msgstr "ग्रेड"
@@ -4245,16 +4248,16 @@ msgid "Group Name"
 msgstr "समूह का नाम"
 
 msgid "Group: {groupDisplayName}"
-msgstr ""
+msgstr "किसान : {groupDisplayName}"
 
 msgid "Groups"
 msgstr "समूह"
 
 msgid "Hard Deadline"
-msgstr ""
+msgstr "अंतिम तिथि"
 
 msgid "Headquarters"
-msgstr ""
+msgstr "मुख्यालय"
 
 msgid "Help"
 msgstr "मदद"
@@ -4377,7 +4380,7 @@ msgid "Inbox"
 msgstr "इनबॉक्स"
 
 msgid "Inch"
-msgstr ""
+msgstr "इंच"
 
 msgid "Include extra parts in shipment"
 msgstr "शिपमेंट में अतिरिक्त पार्ट्स शामिल करें"
@@ -4392,7 +4395,7 @@ msgid "Income Statement"
 msgstr "इनकम स्टेटमेंट"
 
 msgid "Income Tax Expense"
-msgstr ""
+msgstr "आयकर खर्च"
 
 msgid "Income/Balance"
 msgstr "आय/शेष"
@@ -4401,7 +4404,7 @@ msgid "Incoming"
 msgstr "आने वाली"
 
 msgid "Incoming Materials"
-msgstr ""
+msgstr "आने वाली सामग्री"
 
 msgid "Incoterm"
 msgstr "Incoterm"
@@ -4410,10 +4413,10 @@ msgid "Incoterm Location"
 msgstr "इनकोटर्म स्थान"
 
 msgid "Indirect"
-msgstr ""
+msgstr "अनुपातिक"
 
 msgid "Indirect Materials & Services"
-msgstr ""
+msgstr "अनुपातिक सामग्री और सेवाएं"
 
 msgid "Infrastructure"
 msgstr "बुनियादी ढांचा"
@@ -4428,13 +4431,13 @@ msgid "Insert rows"
 msgstr "पंक्तियाँ सम्मिलित करें"
 
 msgid "Insert token"
-msgstr ""
+msgstr "नमूद करें"
 
 msgid "Inside"
-msgstr ""
+msgstr "अंदर"
 
 msgid "Inside and Outside"
-msgstr ""
+msgstr "बाहर और अंदर"
 
 msgid "Inspect"
 msgstr "निरीक्षण करें"
@@ -4476,10 +4479,10 @@ msgid "Instructions are inherited from the procedure."
 msgstr "निर्देश प्रक्रिया से विरासत में मिले हैं।"
 
 msgid "Insurance"
-msgstr ""
+msgstr "असurance"
 
 msgid "Intangible Assets"
-msgstr ""
+msgstr "अस्थिर संपत्ति"
 
 msgid "Integration not found"
 msgstr "एकीकरण नहीं मिला"
@@ -4488,16 +4491,16 @@ msgid "Integrations"
 msgstr "एकीकरण"
 
 msgid "Inter-Company Payables"
-msgstr ""
+msgstr "Inter-Company चुकाए"
 
 msgid "Inter-Company Receivables"
-msgstr ""
+msgstr "Inter-Company रिसाव"
 
 msgid "Intercompany"
-msgstr ""
+msgstr "अंतरसंस्था"
 
 msgid "Interest Expense"
-msgstr ""
+msgstr "रुचि व्यय"
 
 msgid "Internal"
 msgstr "आंतरिक"
@@ -4515,7 +4518,7 @@ msgid "Inventory"
 msgstr "इन्वेंटरी"
 
 msgid "Inventory & Stock"
-msgstr ""
+msgstr "पूर्वक्ष & स्टॉक"
 
 msgid "Inventory actions"
 msgstr ""
@@ -4524,7 +4527,7 @@ msgid "Inventory Adjustment"
 msgstr "इन्वेंटरी समायोजन"
 
 msgid "Inventory Adjustments"
-msgstr ""
+msgstr "पूर्वक्षय"
 
 msgid "Inventory History"
 msgstr ""
@@ -4536,10 +4539,10 @@ msgid "Inventory Qty"
 msgstr "इन्वेंटरी मात्रा"
 
 msgid "Inventory Reserves / Allowances"
-msgstr ""
+msgstr "भंडारण आरक्षित / अनुमतियाँ"
 
 msgid "Inventory Shipped Not Invoiced"
-msgstr ""
+msgstr "इन्वेंटरी शिप किया गया इनवॉइस नहीं किया गया"
 
 msgid "Inventory Tracking"
 msgstr "इन्वेंटरी ट्रैकिंग"
@@ -4548,7 +4551,7 @@ msgid "Inventory Unit of Measure"
 msgstr "इन्वेंटरी माप की इकाई"
 
 msgid "Investments in Subsidiaries"
-msgstr ""
+msgstr "निवेश विस्तार"
 
 msgid "Invite"
 msgstr "आमंत्रित करें"
@@ -4683,7 +4686,7 @@ msgid "Item must match a selected type OR a selected group"
 msgstr ""
 
 msgid "Item Posting Group"
-msgstr ""
+msgstr "वित्तीय वर्ग (Vittiya Varg)"
 
 msgid "Item Scope"
 msgstr "आइटम स्कोप"
@@ -4713,7 +4716,7 @@ msgid "Job Location"
 msgstr "जॉब स्थान"
 
 msgid "Job Matching Results"
-msgstr ""
+msgstr "कार्य मेल खोज परिणाम"
 
 msgid "Job Materials"
 msgstr "कार्य सामग्री"
@@ -4731,7 +4734,7 @@ msgid "Jobs Assigned to Me"
 msgstr "मुझे सौंपी गई नौकरियां"
 
 msgid "Jobs Checked"
-msgstr ""
+msgstr "काम जांचे"
 
 msgid "Jobs in progress"
 msgstr "चल रहे कार्य"
@@ -4744,10 +4747,10 @@ msgid "Join {0}"
 msgstr "{0} में शामिल हों"
 
 msgid "Journal Entries"
-msgstr ""
+msgstr "नकली प्रवाह"
 
 msgid "Journal Entry"
-msgstr ""
+msgstr "नवीनीकरण विवरण"
 
 msgid "Kanban"
 msgstr "कनबन"
@@ -4777,17 +4780,17 @@ msgid "Label"
 msgstr "लेबल"
 
 msgid "Label is required"
-msgstr ""
+msgstr "लेबल आवश्यक है"
 
 msgid "Label to complete the current operation for this kanban"
-msgstr ""
+msgstr "स्थिति पूरा करें | इस कैनबन के लिए"
 
 #. placeholder {0}: row.original.replenishmentSystem === "Make" ? "Job" : "Order"
 msgid "Label to create a {0} for this kanban"
-msgstr ""
+msgstr "लेबल बनाएं जो इस कैनबन के लिए {0} होगा"
 
 msgid "Label to start the next operation for this kanban"
-msgstr ""
+msgstr "शुरू करने की अगली ऑपरेशन लेबल"
 
 msgid "Labels"
 msgstr "लेबल"
@@ -4796,10 +4799,10 @@ msgid "Labor"
 msgstr "श्रम"
 
 msgid "Labor & Machine Absorption"
-msgstr ""
+msgstr "कर्मचारी और मशीन अवशोषण"
 
 msgid "Labor & Machine Variance"
-msgstr ""
+msgstr "म machinery aur labor varna"
 
 msgid "Labor Rate"
 msgstr "श्रम दर"
@@ -4869,7 +4872,7 @@ msgid "Let's build something"
 msgstr "चलिए कुछ बनाते हैं"
 
 msgid "Let's set up your new company"
-msgstr ""
+msgstr "आपकी नई कंपनी को सेटअप करने के लिए"
 
 msgid "Let's setup your account"
 msgstr "आइए अपना खाता सेट अप करें"
@@ -4878,7 +4881,7 @@ msgid "Letter"
 msgstr "अक्षर"
 
 msgid "Liabilities"
-msgstr ""
+msgstr "देनदारियाँ"
 
 msgid "Light"
 msgstr "हल्का"
@@ -4890,7 +4893,7 @@ msgid "Likelihood"
 msgstr "संभावना"
 
 msgid "Line"
-msgstr ""
+msgstr "लाइन"
 
 msgid "Line Item Comparison"
 msgstr "लाइन आइटम तुलना"
@@ -4928,19 +4931,19 @@ msgid "Linked PO"
 msgstr ""
 
 msgid "List"
-msgstr ""
+msgstr "सूची"
 
 msgid "List Options"
 msgstr "सूची विकल्प"
 
 msgid "List options are required"
-msgstr ""
+msgstr "चयनों की सूची आवश्यक है"
 
 msgid "List Parameters"
 msgstr "सूची पैरामीटर"
 
 msgid "Liter"
-msgstr ""
+msgstr "लीटर"
 
 msgid "Live reloading"
 msgstr "लाइव रीलोडिंग"
@@ -4955,7 +4958,7 @@ msgid "Loading item details..."
 msgstr "आइटम विवरण लोड हो रहे हैं..."
 
 msgid "Loading subcontract pricing…"
-msgstr ""
+msgstr "लोडिंग स्वीकार करने की लागत..."
 
 msgid "Loading..."
 msgstr "लोड हो रहा है..."
@@ -4998,10 +5001,10 @@ msgid "Long Description"
 msgstr "लंबा विवरण"
 
 msgid "Long-Term Debt / Loans"
-msgstr ""
+msgstr "दीर्घकालिक ऋण/कर्ज"
 
 msgid "Long-Term Liabilities"
-msgstr ""
+msgstr "दीर्घकालिक ऋण"
 
 msgid "Looks empty here"
 msgstr "यहाँ खाली लगता है"
@@ -5019,13 +5022,13 @@ msgid "Lot Size"
 msgstr "लॉट आकार"
 
 msgid "Lot Size Variance"
-msgstr ""
+msgstr "प्रिस्टेम विवरण"
 
 msgid "Lot Size:"
 msgstr "लॉट साइज:"
 
 msgid "Lower runs first"
-msgstr ""
+msgstr "निचले रन पहले"
 
 msgid "Machine"
 msgstr "मशीन"
@@ -5043,13 +5046,13 @@ msgid "Machine Unit"
 msgstr "मशीन यूनिट"
 
 msgid "Machinery & Equipment"
-msgstr ""
+msgstr "मशीनरी और उपकरण"
 
 msgid "Maintenance"
 msgstr "रखरखाव"
 
 msgid "Maintenance Dispatch"
-msgstr ""
+msgstr "रखरखाव डिस्पैच"
 
 msgid "Maintenance Dispatch Notifications"
 msgstr "रखरखाव डिस्पैच सूचनाएं"
@@ -5058,7 +5061,7 @@ msgid "Maintenance Dispatches"
 msgstr "रखरखाव प्रेषण"
 
 msgid "Maintenance Expense"
-msgstr ""
+msgstr "रखरखाव व्यय"
 
 msgid "Maintenance Scheduling"
 msgstr "रखरखाव शेड्यूलिंग"
@@ -5132,13 +5135,13 @@ msgid "Manufacturing"
 msgstr "विनिर्माण"
 
 msgid "Manufacturing Defect"
-msgstr ""
+msgstr "मैन्युफैक्चरिंग डिफेक्ट"
 
 msgid "Manufacturing Services Revenue"
-msgstr ""
+msgstr "उत्पादन सेवाओं की आय"
 
 msgid "Many Jobs"
-msgstr ""
+msgstr "कामों की संख्या"
 
 msgid "Mark as Planned"
 msgstr "योजना के रूप में चिह्नित करें"
@@ -5168,28 +5171,28 @@ msgid "Mark to delete"
 msgstr "हटाने के लिए चिह्नित करें"
 
 msgid "Match"
-msgstr ""
+msgstr "मैच"
 
 msgid "Match all"
-msgstr ""
+msgstr "मैच सभी"
 
 msgid "Match all (AND)"
 msgstr ""
 
 msgid "Match any"
-msgstr ""
+msgstr "मेल खाने की कोई भी चीज़"
 
 msgid "Match any (OR)"
 msgstr ""
 
 msgid "Match none"
-msgstr ""
+msgstr "मैच नहीं हैं"
 
 msgid "Matched"
-msgstr ""
+msgstr "मेल खाया"
 
 msgid "Matched Rule"
-msgstr ""
+msgstr "मैच किया गया नियम"
 
 msgid "matches"
 msgstr "मेल खाता है"
@@ -5231,7 +5234,7 @@ msgid "Material IDs"
 msgstr "सामग्री आईडी"
 
 msgid "Material Issue"
-msgstr ""
+msgstr "सामग्री से जुड़ी समस्या"
 
 msgid "Material Properties"
 msgstr ""
@@ -5255,7 +5258,7 @@ msgid "Material Types"
 msgstr "सामग्री प्रकार"
 
 msgid "Material Usage Variance"
-msgstr ""
+msgstr "सामग्री उपयोग विवरण"
 
 msgid "Materials"
 msgstr "सामग्री"
@@ -5303,10 +5306,10 @@ msgid "MES"
 msgstr ""
 
 msgid "Message"
-msgstr ""
+msgstr "संदेश"
 
 msgid "Meter"
-msgstr ""
+msgstr "मीटर"
 
 msgid "Method"
 msgstr "तरीका"
@@ -5476,16 +5479,16 @@ msgid "Negative Adjustment"
 msgstr "नकारात्मक समायोजन"
 
 msgid "Net 15"
-msgstr ""
+msgstr "नेट 15"
 
 msgid "Net 30"
-msgstr ""
+msgstr "नेट 30"
 
 msgid "Net 60"
-msgstr ""
+msgstr "नेट 60"
 
 msgid "Net EOM 10th"
-msgstr ""
+msgstr "नेट ईओएम 10 वीं"
 
 msgid "Never"
 msgstr "कभी नहीं"
@@ -5506,7 +5509,7 @@ msgid "New Assignment"
 msgstr "नया असाइनमेंट"
 
 msgid "New Assignment Rule"
-msgstr ""
+msgstr "नया नियुक्ति नियम"
 
 msgid "New Attribute"
 msgstr "नई विशेषता"
@@ -5566,7 +5569,7 @@ msgid "New Item Group"
 msgstr "नया आइटम समूह"
 
 msgid "New Job"
-msgstr ""
+msgstr "नया काम"
 
 msgid "New Kanban"
 msgstr "नया कानबन"
@@ -5608,7 +5611,7 @@ msgid "New Non Conformance Type"
 msgstr "नया गैर अनुरूपता प्रकार"
 
 msgid "New Option"
-msgstr ""
+msgstr "नया विकल्प"
 
 msgid "New Owner"
 msgstr "नया मालिक"
@@ -5659,7 +5662,7 @@ msgid "New RFQ"
 msgstr "नया RFQ"
 
 msgid "New rule"
-msgstr ""
+msgstr "नया नियम"
 
 msgid "New Rule"
 msgstr "नया नियम"
@@ -5698,13 +5701,13 @@ msgid "New Storage Unit"
 msgstr "नया स्टोरेज यूनिट"
 
 msgid "New Supplier"
-msgstr ""
+msgstr "नया स्वीपर"
 
 msgid "New Supplier Part"
 msgstr "नया आपूर्तिकर्ता भाग"
 
 msgid "New Template"
-msgstr ""
+msgstr "नया टेम्पलेट"
 
 msgid "New Timecard"
 msgstr "नया टाइमकार्ड"
@@ -5728,7 +5731,7 @@ msgid "New Version"
 msgstr "नया संस्करण"
 
 msgid "New Warehouse Transfer"
-msgstr ""
+msgstr "नया स्टोरहाउस ट्रांसफर"
 
 msgid "New Webhook"
 msgstr "नया Webhook"
@@ -5780,7 +5783,7 @@ msgid "No active jobs found for this sales order. The order will be cancelled di
 msgstr ""
 
 msgid "No active jobs to simulate against"
-msgstr ""
+msgstr "कोई सक्रिय कार्य नहीं है जिसके खिलाफ सिमुलेशन करना है"
 
 msgid "No active plan"
 msgstr "कोई सक्रिय योजना नहीं"
@@ -5792,7 +5795,7 @@ msgid "No addresses found"
 msgstr "कोई पता नहीं मिला"
 
 msgid "No approved completions this period"
-msgstr ""
+msgstr "किसी भी मान्यता प्राप्त समाधान इस अवधि के लिए नहीं हैं"
 
 #. placeholder {0}: auditConfig.retentionDays
 msgid "No archived logs yet. Logs older than {0} days will be automatically archived and available for download here."
@@ -5823,13 +5826,13 @@ msgid "No completed jobs within range"
 msgstr "निर्धारित सीमा के भीतर कोई पूर्ण किए गए कार्य नहीं"
 
 msgid "No condition may match"
-msgstr ""
+msgstr "कोई स्थिति नहीं मेल कर सकती है"
 
 msgid "No conditions — rule matches all jobs"
-msgstr ""
+msgstr "नियमों के बिना - नियम सभी नौकरियों को मैच करता है"
 
 msgid "No configuration quantities recorded yet."
-msgstr ""
+msgstr "कॉन्फ़िगरेशन मात्राएँ अभी तक रिकॉर्ड नहीं की गई हैं।"
 
 msgid "No conversion is required"
 msgstr "कोई रूपांतरण आवश्यक नहीं है"
@@ -5847,13 +5850,13 @@ msgid "No days off scheduled"
 msgstr "कोई दिन बंद निर्धारित नहीं है"
 
 msgid "No Deadline"
-msgstr ""
+msgstr "अपडेट निर्धारित नहीं है"
 
 msgid "No default attachments yet."
 msgstr ""
 
 msgid "No description"
-msgstr ""
+msgstr "कोई विवरण नहीं है"
 
 msgid "No draft versions available"
 msgstr "कोई ड्राफ्ट संस्करण उपलब्ध नहीं है"
@@ -5868,13 +5871,13 @@ msgid "No employees found"
 msgstr "कोई कर्मचारी नहीं मिला"
 
 msgid "No employees have an outstanding balance this period."
-msgstr ""
+msgstr "कोई कर्मचारी इस अवधि में किसी भी बिल्कुल संतुलन नहीं रखते हैं।"
 
 msgid "No entries"
-msgstr ""
+msgstr "कोई एंट्री नहीं है"
 
 msgid "No fields found."
-msgstr ""
+msgstr "कोई क्षेत्र नहीं पाया गया।"
 
 msgid "No files"
 msgstr "कोई फ़ाइलें नहीं"
@@ -5904,10 +5907,10 @@ msgid "No logo uploaded"
 msgstr "कोई लोगो अपलोड नहीं किया गया"
 
 msgid "No match"
-msgstr ""
+msgstr "कोई मैच नहीं है"
 
 msgid "No Match"
-msgstr ""
+msgstr "मैच नहीं है"
 
 msgid "No matches"
 msgstr "कोई जोड़ नहीं"
@@ -5925,7 +5928,7 @@ msgid "No operations require picking at this location"
 msgstr ""
 
 msgid "No operators."
-msgstr ""
+msgstr "कोई ऑपरेटर नहीं है।"
 
 msgid "No option found."
 msgstr "कोई विकल्प नहीं मिला।"
@@ -5955,7 +5958,7 @@ msgid "No planning data"
 msgstr "कोई योजना डेटा नहीं"
 
 msgid "No previous versions"
-msgstr ""
+msgstr "पिछले संस्करणों की कोई नहीं है"
 
 msgid "No pricing for selected quantity"
 msgstr "चयनित मात्रा के लिए कोई मूल्य निर्धारण नहीं"
@@ -5988,10 +5991,10 @@ msgid "No results found"
 msgstr "कोई परिणाम नहीं मिला"
 
 msgid "No results found."
-msgstr ""
+msgstr "कोई परिणाम नहीं मिला।"
 
 msgid "No rules assigned"
-msgstr ""
+msgstr "कोई नियम निर्धारित नहीं हैं"
 
 msgid "No samples inspected yet."
 msgstr "अभी तक कोई नमूना निरीक्षण नहीं किया गया है।"
@@ -6009,10 +6012,10 @@ msgid "No time entries for this week"
 msgstr "इस सप्ताह के लिए कोई समय प्रविष्टि नहीं"
 
 msgid "No value needed"
-msgstr ""
+msgstr "न कोई मूल्य आवश्यक है"
 
 msgid "No values available"
-msgstr ""
+msgstr "कोई मूल्य उपलब्ध नहीं हैं"
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
 msgstr ""
@@ -6087,7 +6090,7 @@ msgid "Number of inventory units per purchase unit"
 msgstr "प्रति क्रय इकाई इन्वेंटरी इकाइयों की संख्या"
 
 msgid "Numeric"
-msgstr ""
+msgstr "संख्या"
 
 msgid "OEE Impact"
 msgstr "OEE प्रभाव"
@@ -6180,10 +6183,10 @@ msgid "Open task details"
 msgstr "कार्य विवरण खोलें"
 
 msgid "Open Template"
-msgstr ""
+msgstr "ओपन टेम्पलेट"
 
 msgid "Operating Expenses"
-msgstr ""
+msgstr "कार्यात्मक खर्च"
 
 msgid "Operation"
 msgstr "ऑपरेशन"
@@ -6222,10 +6225,10 @@ msgid "Optional"
 msgstr "वैकल्पिक"
 
 msgid "Optional context for this rule"
-msgstr ""
+msgstr "वैकल्पिक संदर्भ यह नियम के लिए"
 
 msgid "Optional payment notes"
-msgstr ""
+msgstr "वैकल्पिक भुगतान नोट्स"
 
 msgid "Options"
 msgstr "विकल्प"
@@ -6271,22 +6274,22 @@ msgstr ""
 
 #. placeholder {0}: report.originalQuantity
 msgid "Originally reported <0>{0}</0> units"
-msgstr ""
+msgstr "मूल रूप से रिपोर्ट किया गया <0>{0}</0> इकाई"
 
 msgid "Other Assets"
-msgstr ""
+msgstr "अन्य संपत्ति"
 
 msgid "Other Expenses"
-msgstr ""
+msgstr "अन्य व्यय"
 
 msgid "Other Income"
-msgstr ""
+msgstr "अन्य आय"
 
 msgid "Other Type"
 msgstr "अन्य प्रकार"
 
 msgid "Ounce"
-msgstr ""
+msgstr "आउंस"
 
 msgid "Outgoing"
 msgstr "बाहर जाने वाला"
@@ -6298,13 +6301,13 @@ msgid "Output never outlasts its raw materials. Falls back to the fixed duration
 msgstr "आउटपुट कभी भी अपनी कच्ची सामग्री से अधिक समय तक नहीं रहता। जब किसी इनपुट की समाप्ति तारीख नहीं होती है तो निर्धारित अवधि पर वापस आता है।"
 
 msgid "Outside"
-msgstr ""
+msgstr "बाहर"
 
 msgid "Outstanding"
-msgstr ""
+msgstr "अनुपस्थित"
 
 msgid "Outstanding balance"
-msgstr ""
+msgstr "अनुपस्थित बैलेंस"
 
 msgid "Overdue"
 msgstr "अतिदेय"
@@ -6316,7 +6319,7 @@ msgid "Overhead Rate (Hourly)"
 msgstr "ओवरहेड दर (प्रति घंटा)"
 
 msgid "Overhead Variance"
-msgstr ""
+msgstr "व्यावसायिक विवरण"
 
 msgid "Override needs the inventory:update permission and a reason."
 msgstr "ओवरराइड के लिए inventory:update अनुमति और एक कारण की आवश्यकता है।"
@@ -6349,7 +6352,7 @@ msgid "Overwrite the target manufacturing method with the quote method"
 msgstr "उद्धरण विधि के साथ लक्ष्य विनिर्माण विधि को अधिलेखित करें"
 
 msgid "Pack"
-msgstr ""
+msgstr "पैक"
 
 msgid "Packing Slip"
 msgstr "पैकिंग स्लिप"
@@ -6358,22 +6361,22 @@ msgid "Page {pdfViewPage} of {documentPageCount}"
 msgstr ""
 
 msgid "Paid"
-msgstr ""
+msgstr "मुआवज़ा"
 
 msgid "Paid Amount:"
 msgstr "भुगतान की गई राशि:"
 
 msgid "Paid at"
-msgstr ""
+msgstr "भुगतान किया गया था"
 
 msgid "Paid by"
-msgstr ""
+msgstr "देय द्वारा"
 
 msgid "Paid Date"
 msgstr "भुगतान की गई तारीख"
 
 msgid "Pallet"
-msgstr ""
+msgstr "पैलेट"
 
 msgid "Parameters"
 msgstr "पैरामीटर"
@@ -6388,7 +6391,7 @@ msgid "Parent Department"
 msgstr "मूल विभाग"
 
 msgid "Parent Group"
-msgstr ""
+msgstr "मातृ समूह"
 
 msgid "Parent Item"
 msgstr ""
@@ -6430,22 +6433,22 @@ msgid "Path"
 msgstr "पथ"
 
 msgid "Paused"
-msgstr ""
+msgstr "रुका हुआ"
 
 msgid "Pay period"
-msgstr ""
+msgstr "मासिक भुगतान"
 
 msgid "Payables"
-msgstr ""
+msgstr "देय खाते"
 
 msgid "Payment"
 msgstr "भुगतान"
 
 msgid "Payment date"
-msgstr ""
+msgstr "देय तिथि"
 
 msgid "Payment history"
-msgstr ""
+msgstr "भुगतान इतिहास"
 
 msgid "Payment Method"
 msgstr "भुगतान विधि"
@@ -6457,13 +6460,13 @@ msgid "Payment Terms"
 msgstr "भुगतान शर्तें"
 
 msgid "payment(s)"
-msgstr ""
+msgstr "भुगतान (s)"
 
 msgid "Payments"
-msgstr ""
+msgstr "भुगतान"
 
 msgid "Payroll"
-msgstr ""
+msgstr "वेतन"
 
 msgid "PDF"
 msgstr "PDF"
@@ -6481,19 +6484,19 @@ msgid "PDF Preview"
 msgstr ""
 
 msgid "PDF Watermark"
-msgstr ""
+msgstr "पीडीएफ पानी मार्क"
 
 msgid "Pending"
 msgstr "लंबित"
 
 msgid "Pending approval"
-msgstr ""
+msgstr "अनुमोदन की प्रतीक्षा में है"
 
 msgid "Pending payment"
-msgstr ""
+msgstr "अपूर्त पेमेंट"
 
 msgid "Pension Obligations"
-msgstr ""
+msgstr "निर्वेतन कर दायित्व"
 
 msgid "People"
 msgstr "लोग"
@@ -6557,7 +6560,7 @@ msgstr ""
 
 #. placeholder {0}: pickup.quantity
 msgid "picked up {0} units"
-msgstr ""
+msgstr "लिया गया है {0} इकाई"
 
 msgid "Picking Lines"
 msgstr ""
@@ -6575,14 +6578,14 @@ msgid "Picking Lists"
 msgstr ""
 
 msgid "Pickup"
-msgstr ""
+msgstr "लेना"
 
 #. placeholder {0}: selectedPickup.employeeId
 msgid "pickup by {0}"
-msgstr ""
+msgstr "ले लेने का समय है {0}"
 
 msgid "Pickups"
-msgstr ""
+msgstr "ग्रैब"
 
 msgid "Pieces/Hour"
 msgstr "Pieces/Hour"
@@ -6591,7 +6594,7 @@ msgid "Pieces/Minute"
 msgstr "Pieces/Minute"
 
 msgid "Pin column"
-msgstr ""
+msgstr "पिन कॉलम"
 
 msgid "Pinned"
 msgstr "पिन किया गया"
@@ -6603,7 +6606,7 @@ msgid "Plan Type"
 msgstr "योजना प्रकार"
 
 msgid "Planned"
-msgstr ""
+msgstr "योजना किया गया"
 
 msgid "Planned End"
 msgstr "नियोजित अंत"
@@ -6663,7 +6666,7 @@ msgid "PO PDF"
 msgstr ""
 
 msgid "PO pricing: min <0>{minCost}</0>, unit <1>{unitPrice}</1> (snapshotted)"
-msgstr ""
+msgstr "प्राइस ऑफ पॉइंटिंग: मिनिमम <0> {minCost} </0>, यूनिट <1> {unitPrice} </1> (स्नैपशॉटेड)"
 
 msgid "Policy"
 msgstr ""
@@ -6714,7 +6717,7 @@ msgid "Potential Data Loss"
 msgstr "संभावित डेटा हानि"
 
 msgid "Pound"
-msgstr ""
+msgstr "पाउण्ड"
 
 msgid "Pre-filled for a new item when expiry is Fixed Duration."
 msgstr "समाप्ति Fixed Duration होने पर नई वस्तु के लिए पूर्व-भरी हुई।"
@@ -6726,13 +6729,13 @@ msgid "Prefix"
 msgstr "उपसर्ग"
 
 msgid "Prepaid/ Pro forma"
-msgstr ""
+msgstr "प्रीपेड/ प्रो फ़ॉर्म"
 
 msgid "Prev"
 msgstr "पिछला"
 
 msgid "Preventive Action"
-msgstr ""
+msgstr "निवारक कार्रवाई"
 
 msgid "Preview"
 msgstr "पूर्वावलोकन"
@@ -6759,7 +6762,7 @@ msgid "Price Break History"
 msgstr "मूल्य ब्रेक इतिहास"
 
 msgid "Price breakdown"
-msgstr ""
+msgstr "कीमत विभाजन"
 
 msgid "Price Breaks"
 msgstr "मूल्य ब्रेक"
@@ -6777,7 +6780,7 @@ msgid "Pricing"
 msgstr "मूल्य निर्धारण"
 
 msgid "Pricing from the supplier process (first quantity on this job)."
-msgstr ""
+msgstr "कार्य पर पहली मात्रा से आपूर्तिकर्ता की कीमत प्रक्रिया (पहली मात्रा पर नौकरी)"
 
 msgid "Pricing Rule"
 msgstr "मूल्य निर्धारण नियम"
@@ -6839,7 +6842,7 @@ msgid "Process"
 msgstr "प्रक्रिया"
 
 msgid "Process Deviation"
-msgstr ""
+msgstr "प्रक्रिया विचलन"
 
 msgid "Process Name"
 msgstr "प्रक्रिया नाम"
@@ -6851,7 +6854,7 @@ msgid "Processes"
 msgstr "प्रक्रियाएं"
 
 msgid "Processes ({completedOps}/{totalOps}): operations marked Done."
-msgstr ""
+msgstr "प्रक्रियाएं ({completedOps}/{totalOps}): किए गए ऑपरेशनों को मार्क किया हुआ।"
 
 msgid "Production"
 msgstr "उत्पादन"
@@ -6869,13 +6872,13 @@ msgid "Production Quantities"
 msgstr "उत्पादन मात्रा"
 
 msgid "Production quantities approved for this pay period."
-msgstr ""
+msgstr "उत्पादन मात्रा स्वीकृत किए गए इस भुगतान अवधि के लिए।"
 
 msgid "Production Quantity"
 msgstr "उत्पादन मात्रा"
 
 msgid "Professional Fees"
-msgstr ""
+msgstr "व्यावसायिक शुल्क"
 
 msgid "Profile"
 msgstr "प्रोफ़ाइल"
@@ -6902,7 +6905,7 @@ msgid "Properties"
 msgstr "गुण"
 
 msgid "Property, Plant & Equipment"
-msgstr ""
+msgstr "वनस्पति, संपत्ति और उपकरण"
 
 msgid "Public"
 msgstr "सार्वजनिक"
@@ -6962,13 +6965,13 @@ msgid "Purchase orders required"
 msgstr "क्रय आदेश आवश्यक हैं"
 
 msgid "Purchase Price Variance"
-msgstr ""
+msgstr "क्रय मूल्य विवरण"
 
 msgid "Purchase Qty"
 msgstr "खरीद मात्रा"
 
 msgid "Purchase Tax Payable"
-msgstr ""
+msgstr "खरीद कर देय"
 
 msgid "Purchase to Order"
 msgstr "खरीद से ऑर्डर"
@@ -6989,23 +6992,23 @@ msgid "Purchasing Contact"
 msgstr "क्रय संपर्क"
 
 msgid "Purchasing RFQ"
-msgstr ""
+msgstr "RFQ खरीदना"
 
 msgid "Purchasing Unit of Measure"
 msgstr "क्रय माप की इकाई"
 
 msgid "Push record changes to external systems the moment they happen."
-msgstr ""
+msgstr "प्राप्त करने वाली संशोधनों को बाहरी प्रणालियों में तुरंत संचारित करें।"
 
 #. placeholder {0}: row.original.replenishmentSystem === "Make" ? "Job" : "Order"
 msgid "QR Code to create a {0} for this kanban"
-msgstr ""
+msgstr "QR कोड को इस कैनबन के लिए एक {0} बनाने के लिए"
 
 msgid "QR Code to start the next operation for this kanban"
-msgstr ""
+msgstr "QR कोड शुरू करें अगले ऑपरेशन के लिए इस कैनबन का"
 
 msgid "Qty"
-msgstr ""
+msgstr "क्वांटिटी"
 
 msgid "Qty to Order"
 msgstr "ऑर्डर करने की मात्रा"
@@ -7038,13 +7041,13 @@ msgid "Quantities"
 msgstr "मात्रा"
 
 msgid "Quantities Per Job"
-msgstr ""
+msgstr "मात्राएं प्रति नौकरी"
 
 msgid "Quantity"
 msgstr "मात्रा"
 
 msgid "Quantity ({qtyThrough}/{qtyTotal}): completed quantity across all operations."
-msgstr ""
+msgstr "मात्रा ({{qtyThrough}}/{qtyTotal}}): सभी प्रक्रियाओं में पूरा मात्रा।"
 
 msgid "Quantity Completed"
 msgstr "पूर्ण मात्रा"
@@ -7071,19 +7074,19 @@ msgid "Quantity per Parent"
 msgstr "प्रति पैरेंट मात्रा"
 
 msgid "Quantity report updated"
-msgstr ""
+msgstr "मात्रा रिपोर्ट अपडेट किया गया"
 
 msgid "Quantity review"
-msgstr ""
+msgstr "मात्रा समीक्षा"
 
 msgid "Quantity Review"
-msgstr ""
+msgstr "मात्रा समीक्षा"
 
 msgid "Quantity Type"
 msgstr "मात्रा प्रकार"
 
 msgid "Quantity updated"
-msgstr ""
+msgstr "मात्रा अद्यतन किया गया"
 
 #. placeholder {0}: numberFormatter.format(forecastQuantity)
 msgid "Quantity: {0}"
@@ -7135,7 +7138,7 @@ msgid "Quoting"
 msgstr ""
 
 msgid "R&D Expenses"
-msgstr ""
+msgstr "री&D लागत"
 
 msgid "Rate Limit"
 msgstr "दर सीमा"
@@ -7147,7 +7150,7 @@ msgid "Read rows"
 msgstr "पंक्तियों को पढ़ें"
 
 msgid "Ready"
-msgstr ""
+msgstr "तैयार"
 
 msgid "Ready for Quote"
 msgstr "उद्धरण के लिए तैयार"
@@ -7192,7 +7195,7 @@ msgid "Receipts"
 msgstr "रसीदें"
 
 msgid "Receivables"
-msgstr ""
+msgstr "प्राप्य"
 
 msgid "Receive"
 msgstr "प्राप्त करें"
@@ -7227,37 +7230,37 @@ msgstr "रिकॉर्ड करें"
 
 #. placeholder {0}: index + 1
 msgid "Record {0}"
-msgstr ""
+msgstr "रिकॉर्ड {0}"
 
 msgid "Record deleted"
 msgstr "रिकॉर्ड हटाया गया"
 
 msgid "Record payment"
-msgstr ""
+msgstr "रिकॉर्ड भुगतान"
 
 msgid "Record pickup"
-msgstr ""
+msgstr "प्राप्त करने की रिकॉर्ड"
 
 msgid "Record Pickup"
-msgstr ""
+msgstr "प्राप्त करें"
 
 msgid "Record production quantity"
-msgstr ""
+msgstr "प्रोडक्शन की मात्रा रिकॉर्ड"
 
 msgid "Record quantity"
-msgstr ""
+msgstr "रिकॉर्ड मात्रा"
 
 msgid "Record the inspection result for this sample."
 msgstr ""
 
 msgid "recorded {qty} units"
-msgstr ""
+msgstr "रिकॉर्ड की गई {qty} इकाइयाँ"
 
 msgid "recorded {qty} units ({reason})"
-msgstr ""
+msgstr "रिकॉर्ड किया गया {qty} इकाइयाँ ({reason})"
 
 msgid "Recorded At"
-msgstr ""
+msgstr "रिकॉर्ड किया गया था"
 
 msgid "Records"
 msgstr "रिकॉर्ड"
@@ -7315,7 +7318,7 @@ msgid "Remove {0}"
 msgstr "{0} को हटाएं"
 
 msgid "Remove condition"
-msgstr ""
+msgstr "मुक्ति का स्थान"
 
 msgid "Remove feature"
 msgstr ""
@@ -7327,7 +7330,7 @@ msgid "Remove Filters"
 msgstr "फ़िल्टर हटाएं"
 
 msgid "Remove from card right"
-msgstr ""
+msgstr "हटाएं कार्ड दाईं ओर"
 
 msgid "Remove from Price List"
 msgstr "मूल्य सूची से हटाएं"
@@ -7336,7 +7339,7 @@ msgid "Remove item"
 msgstr "आइटम हटाएं"
 
 msgid "Remove line"
-msgstr ""
+msgstr "हिलो लाइन हटाएं"
 
 msgid "Remove order"
 msgstr "ऑर्डर हटाएं"
@@ -7360,7 +7363,7 @@ msgid "Rendering label preview..."
 msgstr ""
 
 msgid "Rent & Utilities (Non-Factory)"
-msgstr ""
+msgstr "किराया और सुविधाएं (नॉन-फैक्ट्री)"
 
 msgid "Reopen"
 msgstr "फिर से खोलें"
@@ -7417,20 +7420,20 @@ msgid "Report"
 msgstr "रिपोर्ट"
 
 msgid "Report history"
-msgstr ""
+msgstr "निष्कर्ष रिपोर्ट"
 
 msgid "reported"
-msgstr ""
+msgstr "रिपोर्टेड"
 
 msgid "Reported {totalQuantity} units"
-msgstr ""
+msgstr "प्राप्त {totalQuantity} इकाइयाँ"
 
 #. placeholder {0}: report.originalQuantity
 msgid "Reported <0>{0}</0> units"
-msgstr ""
+msgstr "प्रतिपादित <0>{0}</0> इकाइयाँ"
 
 msgid "Reported <0>{totalQuantity}</0> units"
-msgstr ""
+msgstr "प्रतिपादित <0> {totalQuantity} </0> इकाइयाँ"
 
 msgid "Reports"
 msgstr "रिपोर्ट"
@@ -7454,7 +7457,7 @@ msgid "Require approval for quality documents in your workflow"
 msgstr "आपके वर्कफ़्लो में गुणवत्ता दस्तावेज़ों के लिए अनुमोदन की आवश्यकता है"
 
 msgid "Require approval for reported production quantities before salary periods are assigned"
-msgstr ""
+msgstr "मूल्यांकनित उत्पादन मात्रा के लिए अनुमति प्राप्त करने से पहले वेतन अवधियों को निर्धारित करने से पहल"
 
 msgid "Required"
 msgstr "आवश्यक"
@@ -7484,7 +7487,7 @@ msgid "Reserved"
 msgstr "आरक्षित"
 
 msgid "Reserves (Currency Translation)"
-msgstr ""
+msgstr "संचय (वährाकार अनुवाद)"
 
 msgid "Reset"
 msgstr "रीसेट करें"
@@ -7525,7 +7528,7 @@ msgid "Results per page"
 msgstr "प्रति पृष्ठ परिणाम"
 
 msgid "Retained Earnings"
-msgstr ""
+msgstr "प्रतिधारित कमाई प्रतिधारित आय"
 
 msgid "Retry"
 msgstr "पुनः प्रयास करें"
@@ -7537,7 +7540,7 @@ msgid "Rev {revision}"
 msgstr "Rev {revision}"
 
 msgid "Revenue"
-msgstr ""
+msgstr "राजस्व"
 
 msgid "Reverse all inventory adjustments"
 msgstr "सभी इन्वेंटरी समायोजन को उलट दें"
@@ -7549,13 +7552,13 @@ msgid "Reverse any item ledger entries from this invoice"
 msgstr "इस चालान से किसी भी आइटम लेजर प्रविष्टियों को उलट दें"
 
 msgid "Reverse Charge Tax Payable"
-msgstr ""
+msgstr "रिवर्स चार्ज टैक्स देय"
 
 msgid "Reverse the related journal entries"
 msgstr "संबंधित जर्नल प्रविष्टियों को उलट दें"
 
 msgid "Review"
-msgstr ""
+msgstr "परीक्षा"
 
 msgid "Revision"
 msgstr "संस्करण"
@@ -7574,13 +7577,13 @@ msgid "Revoke Invites"
 msgstr "आमंत्रण रद्द करें"
 
 msgid "Rework"
-msgstr ""
+msgstr "पुनर्निर्माण"
 
 msgid "RFQ"
 msgstr "RFQ"
 
 msgid "RFQ (Sales)"
-msgstr ""
+msgstr "RFQ (बिक्री)"
 
 msgid "RFQ Date"
 msgstr "RFQ तारीख"
@@ -7619,13 +7622,13 @@ msgid "Role:"
 msgstr "भूमिका:"
 
 msgid "Roll"
-msgstr ""
+msgstr "रोल।"
 
 msgid "Root Cause Analysis"
-msgstr ""
+msgstr "कारण विश्लेषण"
 
 msgid "Rounding Account"
-msgstr ""
+msgstr "राउंडिंग अकाउंट"
 
 msgid "Route all AP invoices to one address (e.g. corporate headquarters) instead of individual purchasers."
 msgstr ""
@@ -7637,7 +7640,7 @@ msgid "rows"
 msgstr "पंक्तियाँ"
 
 msgid "Rule"
-msgstr ""
+msgstr "नियम"
 
 msgid "Rule applies to every customer."
 msgstr "नियम हर ग्राहक पर लागू होता है।"
@@ -7646,13 +7649,13 @@ msgid "Rule applies to every item."
 msgstr "नियम हर आइटम पर लागू होता है।"
 
 msgid "Rule Name"
-msgstr ""
+msgstr "नियम नाम"
 
 msgid "Rule Type"
 msgstr "नियम प्रकार"
 
 msgid "Rules"
-msgstr ""
+msgstr "नियम"
 
 msgid "Run Test"
 msgstr "टेस्ट चलाएं"
@@ -7670,16 +7673,16 @@ msgid "Safety Stock:"
 msgstr "सुरक्षा स्टॉक:"
 
 msgid "Salaries - Administrative"
-msgstr ""
+msgstr "वेतन - प्रशासनिक"
 
 msgid "Salary"
-msgstr ""
+msgstr "वेतन"
 
 msgid "Salary Detail"
-msgstr ""
+msgstr "वेतन विवरण"
 
 msgid "Salary for {periodLabel}"
-msgstr ""
+msgstr "वेतन के लिए {periodLabel}"
 
 msgid "Sale Price"
 msgstr "विक्रय मूल्य"
@@ -7688,13 +7691,13 @@ msgid "Sales"
 msgstr "बिक्रय"
 
 msgid "Sales Commissions"
-msgstr ""
+msgstr "विक्री आय कमीशन"
 
 msgid "Sales Contact"
 msgstr "बिक्रय संपर्क"
 
 msgid "Sales Discounts"
-msgstr ""
+msgstr "बिक्री पर छूट"
 
 msgid "Sales Funnel"
 msgstr "बिक्रय फनल"
@@ -7736,7 +7739,7 @@ msgid "Sales Revenue"
 msgstr "बिक्रय राजस्व"
 
 msgid "Sales Tax Payable"
-msgstr ""
+msgstr "बिक्रय कर देय"
 
 msgid "Sample"
 msgstr "नमूना"
@@ -7770,16 +7773,16 @@ msgid "Save Method"
 msgstr "विधि सहेजें"
 
 msgid "Save Step"
-msgstr ""
+msgstr "बनाएं कदम"
 
 msgid "Save Tool"
-msgstr ""
+msgstr "बनाने की टूल"
 
 msgid "Save View"
 msgstr "दृश्य सहेजें"
 
 msgid "Saved"
-msgstr ""
+msgstr "बचाया गया"
 
 msgid "Saving..."
 msgstr ""
@@ -7830,7 +7833,7 @@ msgid "Scopes"
 msgstr "स्कोप"
 
 msgid "Scrap"
-msgstr ""
+msgstr "व्यर्थ"
 
 msgid "Scrap Percent"
 msgstr "स्क्रैप प्रतिशत"
@@ -7845,7 +7848,7 @@ msgid "Scrap Quantity Per Job"
 msgstr "प्रति जॉब स्क्रैप मात्रा"
 
 msgid "Scrap reason"
-msgstr ""
+msgstr "क्षति कारण"
 
 msgid "Scrap Reason"
 msgstr "स्क्रैप कारण"
@@ -7854,7 +7857,7 @@ msgid "Scrap Reasons"
 msgstr "स्क्रैप कारण"
 
 msgid "Scrap Sales"
-msgstr ""
+msgstr "विक्री व्यर्थ"
 
 msgid "Search"
 msgstr "खोज"
@@ -7881,7 +7884,7 @@ msgid "Search employees..."
 msgstr "कर्मचारियों को खोजें..."
 
 msgid "Search fields..."
-msgstr ""
+msgstr "खोज क्षेत्र..."
 
 msgid "Search for existing or create a new one"
 msgstr "मौजूदा को खोजें या नया बनाएं"
@@ -7890,7 +7893,7 @@ msgid "Search Job"
 msgstr "Job खोजें"
 
 msgid "Search operators..."
-msgstr ""
+msgstr "खोज ऑपरेटर..."
 
 msgid "Search processes..."
 msgstr "प्रक्रियाओं को खोजें..."
@@ -7948,7 +7951,7 @@ msgid "Select an assignee"
 msgstr "एक असाइनी चुनें"
 
 msgid "Select an employee for {periodLabel}"
-msgstr ""
+msgstr "विभाग के लिए चुनें {periodLabel}"
 
 msgid "Select an issue type"
 msgstr "एक समस्या प्रकार चुनें"
@@ -7990,7 +7993,7 @@ msgid "Select Employee Type"
 msgstr "कर्मचारी प्रकार चुनें"
 
 msgid "Select field"
-msgstr ""
+msgstr "विकल्प क्षेत्र चुनें"
 
 msgid "Select Gauge"
 msgstr "गेज चुनें"
@@ -8005,7 +8008,7 @@ msgid "Select items"
 msgstr "आइटम चुनें"
 
 msgid "Select name"
-msgstr ""
+msgstr "व्यक्ति का नाम चुनें"
 
 msgid "Select Printer"
 msgstr ""
@@ -8020,7 +8023,7 @@ msgid "Select scope"
 msgstr "स्कोप चुनें"
 
 msgid "Select scrap reason"
-msgstr ""
+msgstr "विस्थापित कारण चुनें"
 
 msgid "Select Supplier Status"
 msgstr "आपूर्तिकर्ता स्थिति चुनें"
@@ -8029,16 +8032,16 @@ msgid "Select Supplier Type"
 msgstr "आपूर्तिकर्ता प्रकार चुनें"
 
 msgid "Select surfaces"
-msgstr ""
+msgstr "निर्धारित सतहें चुनें"
 
 msgid "Select the groups that should complete this training"
 msgstr "उन समूहों का चयन करें जिन्हें इस प्रशिक्षण को पूरा करना चाहिए"
 
 msgid "Select value"
-msgstr ""
+msgstr "चुनें मान"
 
 msgid "Select values"
-msgstr ""
+msgstr "चुनें मूल्य"
 
 msgid "Selected"
 msgstr "चयनित"
@@ -8060,10 +8063,10 @@ msgid "Send"
 msgstr "भेजें"
 
 msgid "Send Invite"
-msgstr ""
+msgstr "भेजे जाने की आमंत्रण"
 
 msgid "Send Invites"
-msgstr ""
+msgstr "भेजे आमंत्रण"
 
 msgid "Send RFQ to Suppliers"
 msgstr "आपूर्तिकर्ताओं को RFQ भेजें"
@@ -8105,7 +8108,7 @@ msgid "Serial/Batch #"
 msgstr "सीरीज़/बैच #"
 
 msgid "Service Charge Account"
-msgstr ""
+msgstr "सेवा शुल्क खाता"
 
 msgid "Set Clock Out"
 msgstr "क्लॉक आउट सेट करें"
@@ -8277,7 +8280,7 @@ msgid "Short pick {itemName}"
 msgstr ""
 
 msgid "Short-Term Loans"
-msgstr ""
+msgstr "क्षुद्र-मध्य कालीन ऋण"
 
 msgid "Shortcuts"
 msgstr "शॉर्टकट"
@@ -8295,7 +8298,7 @@ msgid "Show Durations"
 msgstr "अवधि दिखाएं"
 
 msgid "Show on card right"
-msgstr ""
+msgstr "दाएं कार्ड पर दिखाएं"
 
 msgid "Show parent items"
 msgstr "माता-पिता की वस्तुओं को दिखाएं"
@@ -8307,10 +8310,10 @@ msgid "Show sync options"
 msgstr "सिंक विकल्प दिखाएं"
 
 msgid "Shown as a faint background behind every page of generated PDFs"
-msgstr ""
+msgstr "प्रत्येक पीडीएफ के हर पेज पर दिखाई देने वाली हल्की पृष्ठभूमि"
 
 msgid "Shown to the user when this rule fails."
-msgstr ""
+msgstr "द्वारा उपयोगकर्ता दिखाया गया जब यह नियम विफल होता है।"
 
 msgid "Sign in with Email"
 msgstr "ईमेल के साथ साइन इन करें"
@@ -8331,10 +8334,10 @@ msgid "Signed in as {name}"
 msgstr "{name} के रूप में साइन इन किया गया"
 
 msgid "Simulate"
-msgstr ""
+msgstr "सिमुलेट"
 
 msgid "Single Job"
-msgstr ""
+msgstr "एक नौकरी"
 
 msgid "Size"
 msgstr "आकार"
@@ -8358,10 +8361,10 @@ msgid "Skipped"
 msgstr "छोड़ा गया"
 
 msgid "Soft Deadline"
-msgstr ""
+msgstr "अंतिम समय"
 
 msgid "Some cells have invalid values. Fix the highlighted cells before saving."
-msgstr ""
+msgstr "कुछเซลลों में अवैध मान हैं। सेव करने से पहले निर्दिष्ट कोशिश करें।"
 
 msgid "Something went wrong. Please try again."
 msgstr "कुछ गलत हो गया। कृपया पुनः प्रयास करें।"
@@ -8488,13 +8491,13 @@ msgid "Started"
 msgstr "शुरू किया गया"
 
 msgid "started labor"
-msgstr ""
+msgstr "शुरू हुआ श्रम"
 
 msgid "started machine"
-msgstr ""
+msgstr "शुरू हुआ मशीन"
 
 msgid "started setup"
-msgstr ""
+msgstr "शुरू हुआ सेटअप"
 
 msgid "State / Province"
 msgstr "राज्य / प्रांत"
@@ -8530,7 +8533,7 @@ msgid "Steps"
 msgstr "चरण"
 
 msgid "Stock Transfer"
-msgstr ""
+msgstr "स्टॉक ट्रांसफ़र"
 
 msgid "Stock Transfer ID"
 msgstr "स्टॉक ट्रांसफर आईडी"
@@ -8587,7 +8590,7 @@ msgid "Subassembly"
 msgstr "उप-विधानसभा"
 
 msgid "Subcontracting Variance"
-msgstr ""
+msgstr "विसंगति के लिए सस्थापना"
 
 msgid "Submit anonymously"
 msgstr "गुमनाम रूप से सबमिट करें"
@@ -8599,7 +8602,7 @@ msgid "Submit Inspection"
 msgstr "निरीक्षण जमा करें"
 
 msgid "Submitted"
-msgstr ""
+msgstr "प्रस्तुत किया गया है"
 
 msgid "Submitted By"
 msgstr "द्वारा प्रस्तुत"
@@ -8671,7 +8674,7 @@ msgid "Supplier Invoice Number"
 msgstr "आपूर्तिकर्ता चालान संख्या"
 
 msgid "Supplier Issue"
-msgstr ""
+msgstr "सप्लायर से जुड़ी समस्या"
 
 msgid "Supplier Location"
 msgstr "आपूर्तिकर्ता स्थान"
@@ -8680,7 +8683,7 @@ msgid "Supplier Order Number"
 msgstr "आपूर्तिकर्ता ऑर्डर संख्या"
 
 msgid "Supplier Overview"
-msgstr ""
+msgstr "सpliers का विवरण"
 
 msgid "Supplier Part ID"
 msgstr "आपूर्तिकर्ता भाग ID"
@@ -8692,7 +8695,7 @@ msgid "Supplier Parts"
 msgstr "आपूर्तिकर्ता पार्ट्स"
 
 msgid "Supplier Payment Discounts"
-msgstr ""
+msgstr "सप्लायर भुगतान पर छूट"
 
 msgid "Supplier Processes"
 msgstr "आपूर्तिकर्ता प्रक्रियाएं"
@@ -8753,7 +8756,7 @@ msgid "Supports {0} files"
 msgstr "{0} फ़ाइलों को समर्थन करता है"
 
 msgid "Surfaces"
-msgstr ""
+msgstr "सफाई"
 
 msgid "Suspected Failure Mode"
 msgstr "संदिग्ध विफलता मोड"
@@ -8765,10 +8768,10 @@ msgid "Sync"
 msgstr "सिंक करें"
 
 msgid "Sync Procedure"
-msgstr ""
+msgstr "सिंक प्रक्रिया"
 
 msgid "Syncing the procedure will update the operation with the new work instructions, steps, and parameters. Any steps that are not part of the procedure will be removed."
-msgstr ""
+msgstr "सिंक्रोनाइज़ करने की प्रक्रिया संचालन को नए कार्य निर्देशों, चरणों और मापदंडों के साथ अपडेट करेगी। केवल प्रक्रिया का हिस्सा नहीं होने वाले कोई भी चरण हटा दिए जाएंगे।"
 
 msgid "System"
 msgstr "सिस्टम"
@@ -8837,7 +8840,7 @@ msgid "Tax ID"
 msgstr "टैक्स आईडी"
 
 msgid "Tax Liabilities"
-msgstr ""
+msgstr "कर लाभावधि"
 
 msgid "Tax Percent"
 msgstr "कर प्रतिशत"
@@ -8849,13 +8852,13 @@ msgid "Temperature"
 msgstr "तापमान"
 
 msgid "Template"
-msgstr ""
+msgstr "मॉडल"
 
 msgid "Template ID"
 msgstr ""
 
 msgid "Templates"
-msgstr ""
+msgstr "मॉडल"
 
 msgid "Terms and Privacy"
 msgstr "शर्तें और गोपनीयता"
@@ -8870,10 +8873,10 @@ msgid "Test Value"
 msgstr "परीक्षण मान"
 
 msgid "Testing Failure"
-msgstr ""
+msgstr "परीक्षण विफलता"
 
 msgid "Text"
-msgstr ""
+msgstr "पाठ"
 
 msgid "Text size"
 msgstr ""
@@ -8885,7 +8888,7 @@ msgid "The amount of days after the calculation method that the payment is due"
 msgstr "गणना विधि के बाद दिनों की संख्या जिसके बाद भुगतान देय है"
 
 msgid "The bulk jobs form creates multiple jobs for the same item across multiple due dates."
-msgstr ""
+msgstr "माला निर्माण रूपांकन प्रक्रिया एक ही वस्तु के लिए कई तारीखों पर विभिन्न निर्धारण दिनांकों पर समान नौकरियाँ बनाती है।"
 
 msgid "The date the customer expects to receive the goods"
 msgstr "वह तारीख जिस दिन ग्राहक को सामान प्राप्त होने की उम्मीद है"
@@ -8897,7 +8900,7 @@ msgid "The endpoint that receives a POST request with the updated data when the 
 msgstr "वह एंडपॉइंट जो तालिका अपडेट होने पर अपडेट किए गए डेटा के साथ POST अनुरोध प्राप्त करता है"
 
 msgid "The following assemblies have no operations. Please assign an operation to each before releasing."
-msgstr ""
+msgstr "निम्नलिखित संयोजनों में कोई ऑपरेशन नहीं है। प्रत्येक को पहले रिलीज़ करने से पहले एक ऑपरेशन आवंटित करें।"
 
 msgid "The following line items are missing prices or lead times:"
 msgstr "निम्नलिखित लाइन आइटम कीमतें या लीड समय गायब हैं:"
@@ -8924,7 +8927,7 @@ msgid "The percentage of the cash discount. Use 0 for no discount."
 msgstr "नकद छूट का प्रतिशत। कोई छूट नहीं के लिए 0 का उपयोग करें।"
 
 msgid "The procedure was changed, but not synced to the operation."
-msgstr ""
+msgstr "प्रक्रिया में बदलाव किया गया, लेकिन ऑपरेशन से सिंक नहीं हुआ।"
 
 msgid "The quantity of the item to be reordered on scan-based replenishment."
 msgstr "स्कैन-आधारित पुनःपूर्ति पर पुनः ऑर्डर किए जाने वाली वस्तु की मात्रा।"
@@ -9116,7 +9119,7 @@ msgid "Toggle views"
 msgstr "दृश्य टॉगल करें"
 
 msgid "Toggle visibility"
-msgstr ""
+msgstr "प्राप्त करना"
 
 msgid "Tol-"
 msgstr ""
@@ -9128,7 +9131,7 @@ msgid "Tolerance (+/-)"
 msgstr "सहनशीलता (+/-)"
 
 msgid "Ton"
-msgstr ""
+msgstr "टोन"
 
 msgid "Tool"
 msgstr "उपकरण"
@@ -9146,19 +9149,19 @@ msgid "Total"
 msgstr "कुल"
 
 msgid "Total earned"
-msgstr ""
+msgstr "कुल कमाई"
 
 msgid "Total Hours"
 msgstr "कुल घंटे"
 
 msgid "Total Jobs"
-msgstr ""
+msgstr "कुल नौकरियाँ"
 
 msgid "Total Minutes"
 msgstr "कुल मिनट"
 
 msgid "Total paid"
-msgstr ""
+msgstr "कुल भुगतान किया गया"
 
 msgid "Total Price"
 msgstr "कुल मूल्य"
@@ -9224,7 +9227,7 @@ msgid "Training Assignments"
 msgstr "प्रशिक्षण असाइनमेंट"
 
 msgid "Training Issue"
-msgstr ""
+msgstr "प्रशिक्षण से जुड़ी समस्या"
 
 msgid "Trainings"
 msgstr "प्रशिक्षण"
@@ -9263,16 +9266,16 @@ msgid "Trash"
 msgstr "ट्रैश"
 
 msgid "Travel & Entertainment"
-msgstr ""
+msgstr "यात्रा और मनोरंजन"
 
 msgid "Trial Balance"
-msgstr ""
+msgstr "परीक्षा संतुलन"
 
 msgid "Triggers"
 msgstr ""
 
 msgid "True"
-msgstr ""
+msgstr "स्वीकार"
 
 msgid "Tuesday"
 msgstr "मंगलवार"
@@ -9305,7 +9308,7 @@ msgid "Unapproved Supplier"
 msgstr "अनुमोदित नहीं आपूर्तिकर्ता"
 
 msgid "Unassign rule"
-msgstr ""
+msgstr "अनप्रतिबंधित"
 
 msgid "Unassigned"
 msgstr "अनुत्तरित"
@@ -9314,7 +9317,7 @@ msgid "Unballoon"
 msgstr ""
 
 msgid "Ungrouped"
-msgstr ""
+msgstr "अनग्रुपीकृत"
 
 msgid "Uninstall"
 msgstr "अनइंस्टॉल करें"
@@ -9341,7 +9344,7 @@ msgid "Unit Price"
 msgstr "यूनिट मूल्य"
 
 msgid "Unit rate"
-msgstr ""
+msgstr "व्युत्पन्न दर"
 
 msgid "Unit Sale Price"
 msgstr "यूनिट विक्रय मूल्य"
@@ -9353,13 +9356,13 @@ msgid "Unknown"
 msgstr "अज्ञात"
 
 msgid "Unknown Employee"
-msgstr ""
+msgstr "अज्ञात कर्मचारी"
 
 msgid "unknown location"
 msgstr "अज्ञात स्थान"
 
 msgid "Unknown Supplier"
-msgstr ""
+msgstr "अज्ञात सupplier"
 
 msgid "Unlimited Functional Support"
 msgstr "असीमित कार्यात्मक समर्थन"
@@ -9378,7 +9381,7 @@ msgid "Unpick {0}"
 msgstr ""
 
 msgid "Unpin column"
-msgstr ""
+msgstr "अपकेंद्रित करें"
 
 msgid "Unsaved changes"
 msgstr ""
@@ -9390,7 +9393,7 @@ msgid "Untitled Diagram"
 msgstr ""
 
 msgid "Untitled operation"
-msgstr ""
+msgstr "अनिर्धारित कार्य"
 
 msgid "UoM"
 msgstr "UoM"
@@ -9402,7 +9405,7 @@ msgid "Update costs on"
 msgstr ""
 
 msgid "Update failed"
-msgstr ""
+msgstr "अपडेट विफल हो गया"
 
 msgid "Update Inventory"
 msgstr "इन्वेंटरी अपडेट करें"
@@ -9447,10 +9450,10 @@ msgid "Updated"
 msgstr "अपडेट किया गया"
 
 msgid "Updated {relativeTime}"
-msgstr ""
+msgstr "अपडेटेड {relativeTime}"
 
 msgid "Updated account"
-msgstr ""
+msgstr "अपडेट की गई खाता"
 
 msgid "Updated At"
 msgstr "अपडेट किया गया"
@@ -9462,7 +9465,7 @@ msgid "Updated successfully"
 msgstr "सफलतापूर्वक अपडेट किया गया"
 
 msgid "Upgrade"
-msgstr ""
+msgstr "अपग्रेड"
 
 msgid "Upgrade to Business"
 msgstr "बिजनेस में अपग्रेड करें"
@@ -9564,7 +9567,7 @@ msgid "Users to Update"
 msgstr "अपडेट करने के लिए उपयोगकर्ता"
 
 msgid "Using saved subcontract pricing for this supplier on this job."
-msgstr ""
+msgstr "उपयोग किए गए सेवा प्राइसिंग के लिए बचत की उपस्थिति इस आपूर्तिकर्ता के लिए इस नौकरी में।"
 
 msgid "Valid From"
 msgstr "वैध से"
@@ -9579,7 +9582,7 @@ msgid "Validating job..."
 msgstr "नौकरी को मान्य कर रहे हैं..."
 
 msgid "value"
-msgstr ""
+msgstr "मूल्य"
 
 msgid "Value"
 msgstr "मान"
@@ -9588,7 +9591,7 @@ msgid "Value source by surface"
 msgstr ""
 
 msgid "Variances"
-msgstr ""
+msgstr "अनियमितताएं"
 
 msgid "VAT Number"
 msgstr "VAT संख्या"
@@ -9597,7 +9600,7 @@ msgid "Vehicles"
 msgstr ""
 
 msgid "Verification"
-msgstr ""
+msgstr "सत्यापन"
 
 msgid "Verification Error"
 msgstr "सत्यापन त्रुटि"
@@ -9639,7 +9642,7 @@ msgid "View Attributes"
 msgstr "विशेषताएं देखें"
 
 msgid "View bill of process"
-msgstr ""
+msgstr "देखें बिल प्रक्रिया"
 
 msgid "View Contact"
 msgstr "संपर्क देखें"
@@ -9783,7 +9786,7 @@ msgid "Warehouse Transfers"
 msgstr "गोदाम स्थानांतरण"
 
 msgid "Warn"
-msgstr ""
+msgstr "अलर्ज"
 
 msgid "Warn but allow"
 msgstr "चेतावनी दें लेकिन अनुमति दें"
@@ -9903,7 +9906,7 @@ msgid "WIP"
 msgstr "WIP"
 
 msgid "With Previous"
-msgstr ""
+msgstr "पिछले"
 
 msgid "Won"
 msgstr "जीता"
@@ -9924,7 +9927,7 @@ msgid "Work Centers"
 msgstr "कार्य केंद्र"
 
 msgid "Work In Progress (WIP)"
-msgstr ""
+msgstr "काम प्रगति पर है (WIP)"
 
 msgid "Work Instructions"
 msgstr "कार्य निर्देश"
@@ -9942,13 +9945,13 @@ msgid "Worst Performing Machines"
 msgstr "सबसे खराब प्रदर्शन करने वाली मशीनें"
 
 msgid "Would Assign To"
-msgstr ""
+msgstr "किसी को नियुक्त करें"
 
 msgid "Would Match"
-msgstr ""
+msgstr "मेल खाता है"
 
 msgid "Yard"
-msgstr ""
+msgstr "यार्ड"
 
 msgid "Year"
 msgstr "साल"
