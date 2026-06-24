@@ -371,7 +371,8 @@ const TableHeader = <T extends object>({
           className={cn(
             compact
               ? "px-4 py-1.5 justify-between bg-card border-b border-border w-full"
-              : "px-4 md:px-0 py-1.5 justify-between bg-card w-full"
+              : "px-4 md:px-0 py-1.5 justify-between bg-card w-full",
+            "flex-nowrap overflow-x-auto [&::-webkit-scrollbar]:hidden [scrollbar-width:none]"
           )}
         >
           <ActiveFilters filters={filters} />

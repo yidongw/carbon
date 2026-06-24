@@ -9,7 +9,7 @@ type JobStatusProps = {
   iconOnly?: boolean;
 };
 
-const STATUS_COLOR_MAP: Record<
+export const STATUS_COLOR_MAP: Record<
   (typeof jobStatus)[number],
   "gray" | "yellow" | "blue" | "orange" | "green" | "red"
 > = {
@@ -25,16 +25,27 @@ const STATUS_COLOR_MAP: Record<
   Cancelled: "red"
 } as const;
 
-function JobStatus({ status, className, iconOnly }: JobStatusProps) {
+// Display text mirrors the badge label, mapping "Ready" -> "Released" while
+// keeping every status translated. Shared so filter options can render the same
+// text the chip extracts via reactNodeToString.
+export function useJobStatusDisplayText() {
   const { t } = useLingui();
   const getJobStatusLabel = useJobStatusLabel();
+
+  return (status: (typeof jobStatus)[number]) =>
+    status === "Ready" ? t`Released` : getJobStatusLabel(status);
+}
+
+function JobStatus({ status, className, iconOnly }: JobStatusProps) {
+  const getJobStatusLabel = useJobStatusLabel();
+  const getDisplayText = useJobStatusDisplayText();
 
   if (!status) return null;
 
   const color = STATUS_COLOR_MAP[status];
   if (!color) return null;
 
-  const displayText = status === "Ready" ? t`Released` : getJobStatusLabel(status);
+  const displayText = getDisplayText(status);
   const tooltip = status === "Ready" ? getJobStatusLabel("Ready") : undefined;
 
   return (

@@ -11,6 +11,7 @@ import {
   IconButton,
   MenuIcon,
   MenuItem,
+  Status,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -79,7 +80,10 @@ import { deadlineTypes, isJobLocked, jobStatus } from "../../production.models";
 import type { JobCurrentProcessInfo } from "../../production.service";
 import type { Job } from "../../types";
 import { getDeadlineIcon } from "./Deadline";
-import JobStatus from "./JobStatus";
+import JobStatus, {
+  STATUS_COLOR_MAP,
+  useJobStatusDisplayText
+} from "./JobStatus";
 import { useDeadlineTypeLabel } from "./jobLabels";
 
 type JobsTableProps = {
@@ -154,11 +158,14 @@ const RoutingProgressCell = memo(function RoutingProgressCell({
   };
 
   return (
-    <HStack spacing={1} className="w-[10.5rem] min-w-[10.5rem]">
+    <HStack
+      spacing={1}
+      className="w-full md:w-[10.5rem] md:min-w-[10.5rem]"
+    >
       <Tooltip>
         <TooltipTrigger asChild>
           <div className="min-w-0 flex-1 cursor-help">
-            <div className="flex flex-row gap-2 md:flex-col md:gap-1 w-full">
+            <div className="flex flex-col gap-1 w-full">
               <div className="flex items-center gap-1.5 flex-1 min-w-0">
                 <LuWorkflow className="h-3 w-3 flex-shrink-0 text-muted-foreground" />
                 <BarProgress
@@ -321,6 +328,7 @@ const JobsTable = memo(
     const navigate = useNavigate();
     const { t } = useLingui();
     const getDeadlineTypeLabel = useDeadlineTypeLabel();
+    const getJobStatusDisplayText = useJobStatusDisplayText();
     const { formatDate } = useDateFormatter();
     const [params] = useUrlParams();
     const parts = useParts();
@@ -578,7 +586,14 @@ const JobsTable = memo(
               type: "static",
               options: jobStatus.map((status) => ({
                 value: status,
-                label: <JobStatus status={status} />
+                // Render the translated text as children so the badge shows in
+                // the dropdown AND reactNodeToString extracts the translated
+                // label for the active-filter chip.
+                label: (
+                  <Status color={STATUS_COLOR_MAP[status]}>
+                    {getJobStatusDisplayText(status)}
+                  </Status>
+                )
               }))
             },
             pluralHeader: t`Statuses`,
@@ -832,6 +847,7 @@ const JobsTable = memo(
       people,
       tags,
       getDeadlineTypeLabel,
+      getJobStatusDisplayText,
       t,
       todaysDate
     ]);
