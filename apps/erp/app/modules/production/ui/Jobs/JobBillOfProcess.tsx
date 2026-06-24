@@ -2289,95 +2289,71 @@ const JobBillOfProcess = ({
         handleDrag={onCloseOnDrag}
         dragHandle
         className="my-2 "
-        renderExtra={(item) => (
-          <div key={`${isOpen}`}>
-            <motion.button
-              layout
-              onClick={
-                isOpen
-                  ? () => {
-                      if (isNewOperation) {
-                        onRemoveItem(item.id);
-                      } else {
-                        setSelectedItemId(null);
-                      }
+        renderHeaderAction={() => (
+          <button
+            type="button"
+            aria-label={isOpen ? t`Close operation` : t`Edit operation`}
+            onClick={
+              isOpen
+                ? () => {
+                    if (isNewOperation) {
+                      onRemoveItem(item.id);
+                    } else {
+                      setSelectedItemId(null);
                     }
-                  : () => {
-                      setSelectedItemId(item.id);
-                    }
-              }
-              key="collapse"
-              className={cn("absolute right-3 top-3 z-10")}
-            >
+                  }
+                : () => {
+                    setSelectedItemId(item.id);
+                  }
+            }
+            className="flex items-center justify-center"
+          >
+            {isOpen ? (
+              <LuX className="h-5 w-5 text-foreground" />
+            ) : (
+              <LuSettings2 className="stroke-1 h-5 w-5 text-foreground/80 hover:stroke-primary/70" />
+            )}
+          </button>
+        )}
+        renderExtra={() => (
+          <LayoutGroup id={`${item.id}`}>
+            <AnimatePresence mode="popLayout">
               {isOpen ? (
-                <motion.span
-                  initial={{ opacity: 0, filter: "blur(4px)" }}
-                  animate={{ opacity: 1, filter: "blur(0px)" }}
-                  exit={{ opacity: 1, filter: "blur(0px)" }}
-                  transition={{
-                    type: "spring",
-                    duration: 1.95
-                  }}
-                >
-                  <LuX className="h-5 w-5 text-foreground" />
-                </motion.span>
-              ) : (
-                <motion.span
-                  initial={{ opacity: 0, filter: "blur(4px)" }}
-                  animate={{ opacity: 1, filter: "blur(0px)" }}
-                  exit={{ opacity: 1, filter: "blur(0px)" }}
-                  transition={{
-                    type: "spring",
-                    duration: 0.95
-                  }}
-                >
-                  <LuSettings2 className="stroke-1 h-5 w-5 text-foreground/80  hover:stroke-primary/70 " />
-                </motion.span>
-              )}
-            </motion.button>
-
-            <LayoutGroup id={`${item.id}`}>
-              <AnimatePresence mode="popLayout">
-                {isOpen ? (
-                  <motion.div className="flex w-full flex-col ">
-                    <div className=" w-full p-2">
-                      <motion.div
-                        initial={{
-                          y: 0,
-                          opacity: 0,
-                          filter: "blur(4px)"
-                        }}
-                        animate={{
-                          y: 0,
-                          opacity: 1,
-                          filter: "blur(0px)"
-                        }}
-                        transition={{
-                          type: "spring",
-                          duration: 0.15
-                        }}
-                        layout
-                        className="w-full "
-                      >
-                        {isNewOperation ? (
-                          operationFormContent
-                        ) : (
-                          <DirectionAwareTabs
-                            className="mr-auto"
-                            initialTabId={5}
-                            tabs={tabs}
-                            onChange={() =>
-                              setTabChangeRerender(tabChangeRerender + 1)
-                            }
-                          />
-                        )}
-                      </motion.div>
-                    </div>
-                  </motion.div>
-                ) : null}
-              </AnimatePresence>
-            </LayoutGroup>
-          </div>
+                <motion.div className="flex w-full flex-col">
+                  <div className="w-full p-2">
+                    <motion.div
+                      initial={{
+                        opacity: 0,
+                        filter: "blur(4px)"
+                      }}
+                      animate={{
+                        opacity: 1,
+                        filter: "blur(0px)"
+                      }}
+                      transition={{
+                        type: "spring",
+                        duration: 0.15
+                      }}
+                      className="w-full"
+                    >
+                      {isNewOperation ? (
+                        operationFormContent
+                      ) : (
+                        <DirectionAwareTabs
+                          className="mr-auto"
+                          initialTabId={5}
+                          tabs={tabs}
+                          onChange={() =>
+                            setTabChangeRerender(tabChangeRerender + 1)
+                          }
+                        />
+                      )}
+                    </motion.div>
+                  </div>
+                </motion.div>
+              ) : null}
+            </AnimatePresence>
+          </LayoutGroup>
         )}
       />
     );
