@@ -3,62 +3,89 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuIcon,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuTrigger,
   useDisclosure
 } from "@carbon/react";
-import { Trans, useLingui } from "@lingui/react/macro";
-import {
-  LuCheckCheck,
-  LuCircleCheck,
-  LuCirclePause,
-  LuCirclePlay,
-  LuCircleStop
-} from "react-icons/lu";
-import { useFetcher } from "react-router";
+import { useLingui } from "@lingui/react/macro";
+import { useEffect, useRef } from "react";
+import { useFetcher, useRevalidator } from "react-router";
 import { usePermissions } from "~/hooks";
 import { path } from "~/utils/path";
-import type { jobStatus } from "../../production.models";
+import { jobStatus } from "../../production.models";
 import type { Job } from "../../types";
 import { JobCancelModal, JobCompleteModal, JobStartModal } from "./JobHeader";
-import JobStatus from "./JobStatus";
+import JobStatus, { JobStatusIcon, useJobStatusDisplayText } from "./JobStatus";
+
+type Status = (typeof jobStatus)[number];
+
+// Statuses offered in the inline menu (the two deprecated, derived-only badges
+// are display-only and never set directly).
+const SELECTABLE_STATUSES = jobStatus.filter(
+  (s) => s !== "Overdue" && s !== "Due Today"
+);
 
 /**
- * Clickable status badge that opens a menu to change a job's status inline.
- * Mirrors the status actions in the job header (JobTopbarLeft) and reuses the
- * same modals so side-effect flows (release/complete/cancel) stay consistent.
+ * Clickable status badge that opens a colorful radio menu to change a job's
+ * status inline (modeled on the operation status menu). Transitions with side
+ * effects (Release / Complete / Cancel) open the existing modals so the proper
+ * flows run; the rest post directly. The table is revalidated on completion.
  */
 export default function JobStatusMenu({ job }: { job: Job }) {
   const { t } = useLingui();
   const permissions = usePermissions();
+  const getDisplayText = useJobStatusDisplayText();
   const fetcher = useFetcher<{}>();
+  const { revalidate } = useRevalidator();
 
   const releaseModal = useDisclosure();
   const cancelModal = useDisclosure();
   const completeModal = useDisclosure();
 
-  const optimisticStatus = fetcher.formData?.get("status") as
-    | (typeof jobStatus)[number]
-    | undefined;
-  const status = optimisticStatus ?? job.status;
+  // Refresh the table once a status change settles (the action redirects to the
+  // referrer, but revalidating explicitly keeps the inline row in sync).
+  const prevState = useRef(fetcher.state);
+  useEffect(() => {
+    if (prevState.current !== "idle" && fetcher.state === "idle") {
+      revalidate();
+    }
+    prevState.current = fetcher.state;
+  }, [fetcher.state, revalidate]);
+
+  const optimisticStatus = fetcher.formData?.get("status") as Status | undefined;
+  const status = (optimisticStatus ?? job.status) as Status | null;
 
   const canUpdate = permissions.can("update", "production");
   if (!job.id || !canUpdate) {
     return <JobStatus status={status} />;
   }
 
-  const isDraft = ["Draft", "Planned"].includes(status ?? "");
-  const isPaused = status === "Paused";
-  const isRunning = ["Ready", "In Progress"].includes(status ?? "");
-  const isDone = ["Completed", "Cancelled"].includes(status ?? "");
-  const busy = fetcher.state !== "idle";
-
-  const submitStatus = (next: (typeof jobStatus)[number]) =>
+  const submitStatus = (next: Status) =>
     fetcher.submit(
       { status: next },
       { method: "post", action: path.to.jobStatus(job.id!) }
     );
+
+  const onSelect = (next: Status) => {
+    if (next === status) return;
+    switch (next) {
+      case "Ready":
+        // Resuming a paused job is a direct transition; releasing a
+        // draft/planned job needs the release modal (PO selection, scheduling).
+        if (status === "Paused") submitStatus("Ready");
+        else releaseModal.onOpen();
+        break;
+      case "Completed":
+        completeModal.onOpen();
+        break;
+      case "Cancelled":
+        cancelModal.onOpen();
+        break;
+      default:
+        submitStatus(next);
+    }
+  };
 
   return (
     <>
@@ -73,67 +100,17 @@ export default function JobStatusMenu({ job }: { job: Job }) {
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
-          {isDraft && (
-            <DropdownMenuItem
-              disabled={busy}
-              onClick={() => submitStatus("Planned")}
-            >
-              <DropdownMenuIcon icon={<LuCheckCheck />} />
-              <Trans>Mark as Planned</Trans>
-            </DropdownMenuItem>
-          )}
-          <DropdownMenuItem
-            disabled={
-              !isDraft ||
-              busy ||
-              (job.quantity === 0 && job.scrapQuantity === 0)
-            }
-            onClick={releaseModal.onOpen}
+          <DropdownMenuRadioGroup
+            value={status ?? undefined}
+            onValueChange={(value) => onSelect(value as Status)}
           >
-            <DropdownMenuIcon icon={<LuCirclePlay />} />
-            <Trans>Release</Trans>
-          </DropdownMenuItem>
-          {isPaused ? (
-            <DropdownMenuItem
-              disabled={busy}
-              onClick={() => submitStatus("Ready")}
-            >
-              <DropdownMenuIcon icon={<LuCirclePlay />} />
-              <Trans>Resume</Trans>
-            </DropdownMenuItem>
-          ) : (
-            <DropdownMenuItem
-              disabled={!isRunning || busy}
-              onClick={() => submitStatus("Paused")}
-            >
-              <DropdownMenuIcon icon={<LuCirclePause />} />
-              <Trans>Pause</Trans>
-            </DropdownMenuItem>
-          )}
-          <DropdownMenuItem
-            disabled={isDone || busy}
-            onClick={completeModal.onOpen}
-          >
-            <DropdownMenuIcon icon={<LuCircleCheck />} />
-            <Trans>Complete</Trans>
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            disabled={isDone || busy}
-            onClick={cancelModal.onOpen}
-          >
-            <DropdownMenuIcon icon={<LuCircleStop />} />
-            <Trans>Cancel</Trans>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            disabled={!isDone || busy}
-            onClick={() =>
-              submitStatus(status === "Cancelled" ? "Draft" : "In Progress")
-            }
-          >
-            <DropdownMenuIcon icon={<LuCirclePlay />} />
-            <Trans>Reopen</Trans>
-          </DropdownMenuItem>
+            {SELECTABLE_STATUSES.map((s) => (
+              <DropdownMenuRadioItem key={s} value={s}>
+                <DropdownMenuIcon icon={<JobStatusIcon status={s} />} />
+                <span>{getDisplayText(s)}</span>
+              </DropdownMenuRadioItem>
+            ))}
+          </DropdownMenuRadioGroup>
         </DropdownMenuContent>
       </DropdownMenu>
       {releaseModal.isOpen && (
