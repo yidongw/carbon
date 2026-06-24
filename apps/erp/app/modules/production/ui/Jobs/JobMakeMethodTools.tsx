@@ -267,7 +267,7 @@ const JobMakeMethodTools = ({ makeMethod }: { makeMethod?: JobMakeMethod }) => {
     <Fragment key={jobId}>
       {permissions.can("update", "production") &&
         (isJobMethod || isJobMakeMethod) && (
-          <Menubar>
+          <Menubar className="overflow-x-auto overscroll-x-contain">
             <HStack className="w-full justify-start">
               <HStack spacing={0}>
                 <MenubarItem

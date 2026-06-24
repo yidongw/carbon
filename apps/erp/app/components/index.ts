@@ -31,6 +31,11 @@ import ItemThumbnail from "./ItemThumbnail";
 import Location from "./Location";
 import New from "./New";
 import RealtimeDataProvider from "./RealtimeDataProvider";
+import {
+  ReorderableSection,
+  ReorderableSectionGroup,
+  useReorderableOrder
+} from "./ReorderableSection";
 import SearchFilter from "./SearchFilter";
 import { SearchLandingPage } from "./SearchLandingPage";
 import Select from "./Select";
@@ -68,6 +73,8 @@ export {
   New,
   OperationStatusIcon,
   RealtimeDataProvider,
+  ReorderableSection,
+  ReorderableSectionGroup,
   SearchFilter,
   SearchLandingPage,
   Select,
@@ -76,5 +83,6 @@ export {
   Table,
   TimeTypeIcon,
   TrackingTypeIcon,
-  useOptimisticAssignment
+  useOptimisticAssignment,
+  useReorderableOrder
 };
