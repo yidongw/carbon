@@ -170,20 +170,20 @@ export async function action({ request, params }: ActionFunctionArgs) {
   if (insert.error) {
     return data(
       {},
-      await flash(request, error(insert.error, "Failed to record pickup"))
+      await flash(request, error(insert.error, "Failed to record process pickup"))
     );
   }
 
   if (isOverlay) {
     return data(
       { ok: true as const, jobId },
-      await flash(request, success("Pickup recorded"))
+      await flash(request, success("Process pickup recorded"))
     );
   }
 
   return redirect(
     `${path.to.jobPickups(jobId)}?${getParams(request)}`,
-    await flash(request, success("Pickup recorded"))
+    await flash(request, success("Process pickup recorded"))
   );
 }
 

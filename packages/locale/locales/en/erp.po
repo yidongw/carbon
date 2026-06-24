@@ -947,11 +947,11 @@ msgstr "Are you sure you want to delete this kanban card? This cannot be undone.
 msgid "Are you sure you want to delete this maintenance dispatch? This cannot be undone."
 msgstr "Are you sure you want to delete this maintenance dispatch? This cannot be undone."
 
-msgid "Are you sure you want to delete this pickup? This action cannot be undone."
-msgstr "Are you sure you want to delete this pickup? This action cannot be undone."
+msgid "Are you sure you want to delete this process pickup? This action cannot be undone."
+msgstr "Are you sure you want to delete this process pickup? This action cannot be undone."
 
-msgid "Are you sure you want to delete this production quantity? This action cannot be undone."
-msgstr "Are you sure you want to delete this production quantity? This action cannot be undone."
+msgid "Are you sure you want to delete this process completion? This action cannot be undone."
+msgstr "Are you sure you want to delete this process completion? This action cannot be undone."
 
 msgid "Are you sure you want to delete this quality document?"
 msgstr "Are you sure you want to delete this quality document?"
@@ -2092,8 +2092,8 @@ msgstr "Create Operator"
 msgid "Create PO"
 msgstr "Create PO"
 
-msgid "Create Production Quantity"
-msgstr "Create Production Quantity"
+msgid "Create Process Completion"
+msgstr "Create Process Completion"
 
 msgid "Create Quote Revision"
 msgstr "Create Quote Revision"
@@ -2651,8 +2651,11 @@ msgstr "Delete Partner"
 msgid "Delete Payment Term"
 msgstr "Delete Payment Term"
 
-msgid "Delete Pickup"
-msgstr "Delete Pickup"
+msgid "Delete Process Pickup"
+msgstr "Delete Process Pickup"
+
+msgid "Edit Process Pickup"
+msgstr "Edit Process Pickup"
 
 msgid "Delete Portal"
 msgstr "Delete Portal"
@@ -2678,8 +2681,8 @@ msgstr "Delete Purchase Order"
 msgid "Delete Purchase Orders"
 msgstr "Delete Purchase Orders"
 
-msgid "Delete Quantity"
-msgstr "Delete Quantity"
+msgid "Delete Process Completion"
+msgstr "Delete Process Completion"
 
 msgid "Delete Question"
 msgstr "Delete Question"
@@ -3196,8 +3199,8 @@ msgstr "Edit Pricing Rule"
 msgid "Edit Process"
 msgstr "Edit Process"
 
-msgid "Edit Production Quantity"
-msgstr "Edit Production Quantity"
+msgid "Edit Process Completion"
+msgstr "Edit Process Completion"
 
 msgid "Edit purchase order line type"
 msgstr "Edit purchase order line type"
@@ -4992,11 +4995,11 @@ msgstr "Liter"
 msgid "Live reloading"
 msgstr "Live reloading"
 
-msgid "Load more pickups"
-msgstr "Load more pickups"
+msgid "Load more process pickups"
+msgstr "Load more process pickups"
 
-msgid "Load more quantities"
-msgstr "Load more quantities"
+msgid "Load more process completions"
+msgstr "Load more process completions"
 
 msgid "Load Templates"
 msgstr "Load Templates"
@@ -6617,11 +6620,11 @@ msgid "Pickup"
 msgstr "Pickup"
 
 #. placeholder {0}: selectedPickup.employeeId
-msgid "pickup by {0}"
-msgstr "pickup by {0}"
+msgid "Process Pickup by {0}"
+msgstr "Process Pickup by {0}"
 
-msgid "Pickups"
-msgstr "Pickups"
+msgid "Process Pickups"
+msgstr "Process Pickups"
 
 msgid "Pieces/Hour"
 msgstr "Pieces/Hour"
@@ -6896,14 +6899,14 @@ msgstr "Production Logs"
 msgid "Production Qty"
 msgstr "Production Qty"
 
-msgid "Production Quantities"
-msgstr "Production Quantities"
+msgid "Process Completions"
+msgstr "Process Completions"
 
 msgid "Production quantities approved for this pay period."
 msgstr "Production quantities approved for this pay period."
 
-msgid "Production Quantity"
-msgstr "Production Quantity"
+msgid "Process Completion"
+msgstr "Process Completion"
 
 msgid "Professional Fees"
 msgstr "Professional Fees"
@@ -7286,14 +7289,23 @@ msgstr "Record deleted"
 msgid "Record payment"
 msgstr "Record payment"
 
-msgid "Record pickup"
-msgstr "Record pickup"
+msgid "Add process completion"
+msgstr "Add process completion"
+
+msgid "Add process pickup"
+msgstr "Add process pickup"
+
+msgid "Finished {complete} of {target} units, {pickup} in progress from process pickups, {unassigned} unassigned"
+msgstr "Finished {complete} of {target} units, {pickup} in progress from process pickups, {unassigned} unassigned"
+
+msgid "Process Pickup"
+msgstr "Process Pickup"
 
 msgid "Record Pickup"
 msgstr "Record Pickup"
 
-msgid "Record production quantity"
-msgstr "Record production quantity"
+msgid "Process Completion"
+msgstr "Process Completion"
 
 msgid "Record quantity"
 msgstr "Record quantity"
@@ -9247,8 +9259,8 @@ msgstr "Total Minutes"
 msgid "Total paid"
 msgstr "Total paid"
 
-msgid "Total Pickups"
-msgstr "Total Pickups"
+msgid "Total Process Pickups"
+msgstr "Total Process Pickups"
 
 msgid "Total Price"
 msgstr "Total Price"

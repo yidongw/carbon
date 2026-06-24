@@ -949,7 +949,7 @@ msgid "Are you sure you want to delete this maintenance dispatch? This cannot be
 msgstr "क्या आप सुनिश्चित हैं कि आप इस रखरखाव प्रेषण को हटाना चाहते हैं? यह पूर्ववत नहीं किया जा सकता।"
 
 msgid "Are you sure you want to delete this pickup? This action cannot be undone."
-msgstr "क्या आप सुनिश्चित हैं कि इस ग्राहक को हटाना चाहते हैं? यह कार्रवाई वापस नहीं ली जा सकती।"
+msgstr "क्या आप वाकई यह प्रक्रिया निकासी हटाना चाहते हैं? यह कार्रवाई वापस नहीं की जा सकती।"
 
 msgid "Are you sure you want to delete this production quantity? This action cannot be undone."
 msgstr "क्या आप सुनिश्चित हैं कि आप इस उत्पादन मात्रा को हटाना चाहते हैं? यह कार्रवाई वापस नहीं ली जा सकती।"
@@ -2653,7 +2653,7 @@ msgid "Delete Payment Term"
 msgstr "भुगतान अवधि हटाएं"
 
 msgid "Delete Pickup"
-msgstr "मिटाना लेना"
+msgstr "प्रक्रिया निकासी हटाएं"
 
 msgid "Delete Portal"
 msgstr "पोर्टल हटाएं"
@@ -3180,7 +3180,7 @@ msgid "Edit Permissions"
 msgstr "अनुमतियों को संपादित करें"
 
 msgid "Edit Pickup"
-msgstr "संपादित लेना"
+msgstr "प्रक्रिया निकासी संपादित करें"
 
 msgid "Edit Portal"
 msgstr "पोर्टल संपादित करें"
@@ -4994,7 +4994,7 @@ msgid "Live reloading"
 msgstr "लाइव रीलोडिंग"
 
 msgid "Load more pickups"
-msgstr "लोड और मोर पिकअप्स"
+msgstr "और प्रक्रिया निकासियाँ लोड करें"
 
 msgid "Load more quantities"
 msgstr "लोड औरेडर की मात्रा"
@@ -5671,7 +5671,7 @@ msgid "New Payment Term"
 msgstr "नया भुगतान शर्त"
 
 msgid "New Pickup"
-msgstr "नई पीकाचुअन"
+msgstr "नई प्रक्रिया निकासी"
 
 msgid "New PIN"
 msgstr "नया PIN"
@@ -6612,17 +6612,30 @@ msgid "picked up {0} units"
 msgstr "लिया गया है {0} इकाई"
 
 msgid "pickup"
-msgstr "पीकअप"
+msgstr "प्रक्रिया निकासी"
+
+msgid "Process Pickup"
+msgstr "प्रक्रिया निकासी"
+
+#. placeholder {0}: selectedPickup.employeeId
+msgid "Process Pickup by {0}"
+msgstr "{0} की प्रक्रिया निकासी"
+
+msgid "Process Pickups"
+msgstr "प्रक्रिया निकासियाँ"
+
+msgid "Total Process Pickups"
+msgstr "कुल प्रक्रिया निकासियाँ"
 
 msgid "Pickup"
-msgstr "लेना"
+msgstr "प्रक्रिया निकासी"
 
 #. placeholder {0}: selectedPickup.employeeId
 msgid "pickup by {0}"
-msgstr "ले लेने का समय है {0}"
+msgstr "{0} की प्रक्रिया निकासी"
 
 msgid "Pickups"
-msgstr "ग्रैब"
+msgstr "प्रक्रिया निकासियाँ"
 
 msgid "Pieces/Hour"
 msgstr "Pieces/Hour"
@@ -7287,11 +7300,17 @@ msgstr "रिकॉर्ड हटाया गया"
 msgid "Record payment"
 msgstr "रिकॉर्ड भुगतान"
 
+msgid "Add process pickup"
+msgstr "प्रक्रिया निकासी जोड़ें"
+
+msgid "Add process completion"
+msgstr "प्रक्रिया पूर्णता जोड़ें"
+
 msgid "Record pickup"
-msgstr "प्राप्त करने की रिकॉर्ड"
+msgstr "प्रक्रिया निकासी दर्ज करें"
 
 msgid "Record Pickup"
-msgstr "प्राप्त करें"
+msgstr "प्रक्रिया निकासी दर्ज करें"
 
 msgid "Record production quantity"
 msgstr "प्रोडक्शन की मात्रा रिकॉर्ड"
@@ -9249,7 +9268,7 @@ msgid "Total paid"
 msgstr "कुल भुगतान किया गया"
 
 msgid "Total Pickups"
-msgstr "कुल पीकअप्स"
+msgstr "कुल प्रक्रिया निकासियाँ"
 
 msgid "Total Price"
 msgstr "कुल मूल्य"

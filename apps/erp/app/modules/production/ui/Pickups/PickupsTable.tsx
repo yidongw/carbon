@@ -115,10 +115,10 @@ export function PickupsTable({
       table="jobOperationPickup"
       withSearch
       withPagination
-      title={t`Pickups`}
+      title={t`Process Pickups`}
       primaryAction={
         <New
-          label={<Trans>New Pickup</Trans>}
+          label={<Trans>Process Pickup</Trans>}
           to={path.to.newPickup}
           icon={<IconButton icon={<LuPlus />} label="New" />}
         />
