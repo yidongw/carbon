@@ -178,7 +178,10 @@ function JobTopbarLeft({ jobId }: { jobId: string }) {
                   )
                 }
               >
-                <DropdownMenuIcon icon={<LuCheckCheck />} />
+                <DropdownMenuIcon
+                  className="text-yellow-500"
+                  icon={<LuCheckCheck />}
+                />
                 <Trans>Mark as Planned</Trans>
               </DropdownMenuItem>
             )}
@@ -192,7 +195,10 @@ function JobTopbarLeft({ jobId }: { jobId: string }) {
               }
               onClick={releaseModal.onOpen}
             >
-              <DropdownMenuIcon icon={<LuCirclePlay />} />
+              <DropdownMenuIcon
+                className="text-blue-600"
+                icon={<LuCirclePlay />}
+              />
               <Trans>Release</Trans>
             </DropdownMenuItem>
             {isPaused ? (
@@ -208,7 +214,10 @@ function JobTopbarLeft({ jobId }: { jobId: string }) {
                   )
                 }
               >
-                <DropdownMenuIcon icon={<LuCirclePlay />} />
+                <DropdownMenuIcon
+                  className="text-blue-600"
+                  icon={<LuCirclePlay />}
+                />
                 <Trans>Resume</Trans>
               </DropdownMenuItem>
             ) : (
@@ -225,7 +234,10 @@ function JobTopbarLeft({ jobId }: { jobId: string }) {
                   )
                 }
               >
-                <DropdownMenuIcon icon={<LuCirclePause />} />
+                <DropdownMenuIcon
+                  className="text-orange-500"
+                  icon={<LuCirclePause />}
+                />
                 <Trans>Pause</Trans>
               </DropdownMenuItem>
             )}
@@ -237,7 +249,10 @@ function JobTopbarLeft({ jobId }: { jobId: string }) {
               }
               onClick={completeModal.onOpen}
             >
-              <DropdownMenuIcon icon={<LuCircleCheck />} />
+              <DropdownMenuIcon
+                className="text-green-600"
+                icon={<LuCircleCheck />}
+              />
               <Trans>Complete</Trans>
             </DropdownMenuItem>
             <DropdownMenuItem
@@ -248,7 +263,10 @@ function JobTopbarLeft({ jobId }: { jobId: string }) {
               }
               onClick={cancelModal.onOpen}
             >
-              <DropdownMenuIcon icon={<LuCircleStop />} />
+              <DropdownMenuIcon
+                className="text-red-600"
+                icon={<LuCircleStop />}
+              />
               <Trans>Cancel</Trans>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -265,7 +283,10 @@ function JobTopbarLeft({ jobId }: { jobId: string }) {
                 )
               }
             >
-              <DropdownMenuIcon icon={<LuCirclePlay />} />
+              <DropdownMenuIcon
+                className="text-blue-600"
+                icon={<LuCirclePlay />}
+              />
               <Trans>Reopen</Trans>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
