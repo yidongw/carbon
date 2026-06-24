@@ -32,6 +32,11 @@ import Location from "./Location";
 import New from "./New";
 import { PillSegmentedControl } from "./PillSegmentedControl";
 import RealtimeDataProvider from "./RealtimeDataProvider";
+import {
+  ReorderableSection,
+  ReorderableSectionGroup,
+  useReorderableOrder
+} from "./ReorderableSection";
 import SearchFilter from "./SearchFilter";
 import { SearchLandingPage } from "./SearchLandingPage";
 import Select from "./Select";
@@ -70,6 +75,8 @@ export {
   PillSegmentedControl,
   OperationStatusIcon,
   RealtimeDataProvider,
+  ReorderableSection,
+  ReorderableSectionGroup,
   SearchFilter,
   SearchLandingPage,
   Select,
@@ -78,5 +85,6 @@ export {
   Table,
   TimeTypeIcon,
   TrackingTypeIcon,
-  useOptimisticAssignment
+  useOptimisticAssignment,
+  useReorderableOrder
 };

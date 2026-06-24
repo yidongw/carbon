@@ -17,6 +17,7 @@ import {
   VStack
 } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
+import type { ReactNode } from "react";
 import { Suspense } from "react";
 import { LuShoppingCart } from "react-icons/lu";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
@@ -25,10 +26,18 @@ import {
   CadModel,
   DeferredFiles,
   Hyperlink,
-  SupplierAvatar
+  ReorderableSection,
+  ReorderableSectionGroup,
+  SupplierAvatar,
+  useReorderableOrder
 } from "~/components";
 import { usePanels } from "~/components/Layout";
-import { usePermissions, useRealtime, useRouteData, useCurrencyFormatter } from "~/hooks";
+import {
+  useCurrencyFormatter,
+  usePermissions,
+  useRealtime,
+  useRouteData
+} from "~/hooks";
 import type { Job, JobPurchaseOrderLine } from "~/modules/production";
 import {
   getJob,
@@ -45,13 +54,13 @@ import {
   upsertJob
 } from "~/modules/production";
 import {
+  groupJobPurchaseOrderLines,
   JobBillOfMaterial,
   JobBillOfProcess,
   JobDocuments,
   JobEstimatesVsActuals,
   JobNotes,
   JobPurchaseOrderPriceBreakdown,
-  groupJobPurchaseOrderLines,
   JobRiskRegister
 } from "~/modules/production/ui/Jobs";
 import JobMakeMethodTools from "~/modules/production/ui/Jobs/JobMakeMethodTools";
@@ -205,6 +214,21 @@ export async function action({ request, params }: ActionFunctionArgs) {
   throw redirect(path.to.job(id), await flash(request, success("Updated job")));
 }
 
+const SECTION_ORDER_STORAGE_KEY = "jobDetailsSectionOrder";
+
+// Default top-to-bottom order. Bill of Process is pinned first by default; the
+// user can drag any section to reorder, and the order is remembered per browser.
+const DEFAULT_SECTION_ORDER = [
+  "bop",
+  "notes",
+  "bom",
+  "purchaseOrders",
+  "estimates",
+  "documents",
+  "cad",
+  "risk"
+] as const;
+
 export default function JobDetailsRoute() {
   const { t } = useLingui();
   const {
@@ -239,44 +263,59 @@ export default function JobDetailsRoute() {
   useRealtime("modelUpload", `modelPath=eq.(${jobData?.job.modelPath})`);
 
   const methodId = makeMethod?.id;
+  const isReadOnly = !permissions.can("update", "production");
 
-  return (
-    <div className="h-[calc(100dvh-49px)] w-full items-start overflow-y-auto overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent">
-      <VStack spacing={2} className="p-2">
-        <JobMakeMethodTools makeMethod={makeMethod ?? undefined} />
+  const [sectionOrder, setSectionOrder] = useReorderableOrder(
+    SECTION_ORDER_STORAGE_KEY,
+    DEFAULT_SECTION_ORDER
+  );
 
+  const sections: Record<string, { label: string; node: ReactNode }> = {
+    bop: {
+      label: t`Bill of Process`,
+      node: methodId ? (
+        <JobBillOfProcess
+          key={`bop:${methodId}`}
+          jobMakeMethodId={methodId}
+          // @ts-ignore
+          materials={materials}
+          // @ts-ignore
+          operations={operations}
+          locationId={jobData?.job?.locationId ?? ""}
+          tags={tags}
+          itemId={makeMethod.itemId}
+          salesOrderLineId={jobData?.job.salesOrderLineId ?? ""}
+          customerId={jobData?.job.customerId ?? ""}
+        />
+      ) : null
+    },
+    notes: {
+      label: t`Notes`,
+      node: (
         <JobNotes
           id={jobId}
           title={jobData?.job.jobId ?? ""}
           subTitle={jobData?.job.itemReadableIdWithRevision ?? ""}
           notes={notes}
         />
-
-        {methodId && (
-          <>
-            <JobBillOfMaterial
-              key={`bom:${methodId}`}
-              jobMakeMethodId={methodId}
-              // @ts-ignore
-              materials={materials}
-              // @ts-ignore
-              operations={operations}
-            />
-            <JobBillOfProcess
-              key={`bop:${methodId}`}
-              jobMakeMethodId={methodId}
-              // @ts-ignore
-              materials={materials}
-              // @ts-ignore
-              operations={operations}
-              locationId={jobData?.job?.locationId ?? ""}
-              tags={tags}
-              itemId={makeMethod.itemId}
-              salesOrderLineId={jobData?.job.salesOrderLineId ?? ""}
-              customerId={jobData?.job.customerId ?? ""}
-            />
-          </>
-        )}
+      )
+    },
+    bom: {
+      label: t`Bill of Material`,
+      node: methodId ? (
+        <JobBillOfMaterial
+          key={`bom:${methodId}`}
+          jobMakeMethodId={methodId}
+          // @ts-ignore
+          materials={materials}
+          // @ts-ignore
+          operations={operations}
+        />
+      ) : null
+    },
+    purchaseOrders: {
+      label: t`Purchase Orders`,
+      node: (
         <Suspense>
           <Await resolve={purchaseOrderLines}>
             {(purchaseOrderLines) => (
@@ -286,7 +325,11 @@ export default function JobDetailsRoute() {
             )}
           </Await>
         </Suspense>
-
+      )
+    },
+    estimates: {
+      label: t`Estimates vs Actuals`,
+      node: (
         <Suspense
           fallback={
             <div className="flex w-full h-full rounded bg-gradient-to-tr from-background to-card items-center justify-center min-h-[200px]">
@@ -308,7 +351,11 @@ export default function JobDetailsRoute() {
             )}
           </Await>
         </Suspense>
-
+      )
+    },
+    documents: {
+      label: t`Documents`,
+      node: (
         <DeferredFiles resolve={files}>
           {(resolvedFiles) => (
             <JobDocuments
@@ -320,19 +367,55 @@ export default function JobDetailsRoute() {
             />
           )}
         </DeferredFiles>
+      )
+    },
+    cad: {
+      label: t`CAD Model`,
+      node: isReadOnly ? null : (
+        <Card>
+          <CardHeader>
+            <CardTitle>{t`CAD Model`}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <CadModel
+              isReadOnly={isReadOnly}
+              metadata={{
+                jobId: jobData?.job?.id ?? undefined,
+                itemId: jobData?.job?.itemId ?? undefined
+              }}
+              modelPath={jobData?.job?.modelPath ?? null}
+              uploadClassName="aspect-square min-h-[420px] max-h-[70vh]"
+              viewerClassName="aspect-square min-h-[420px] max-h-[70vh]"
+            />
+          </CardContent>
+        </Card>
+      )
+    },
+    risk: {
+      label: t`Risk Register`,
+      node: <JobRiskRegister jobId={jobId} itemId={jobData?.job?.itemId ?? ""} />
+    }
+  };
 
-        <CadModel
-          isReadOnly={!permissions.can("update", "production")}
-          metadata={{
-            jobId: jobData?.job?.id ?? undefined,
-            itemId: jobData?.job?.itemId ?? undefined
-          }}
-          modelPath={jobData?.job?.modelPath ?? null}
-          title={t`CAD Model`}
-          uploadClassName="aspect-square min-h-[420px] max-h-[70vh]"
-          viewerClassName="aspect-square min-h-[420px] max-h-[70vh]"
-        />
-        <JobRiskRegister jobId={jobId} itemId={jobData?.job?.itemId ?? ""} />
+  return (
+    <div className="h-[calc(100dvh-49px)] w-full items-start overflow-y-auto overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent">
+      <VStack spacing={2} className="p-2">
+        <JobMakeMethodTools makeMethod={makeMethod ?? undefined} />
+
+        <ReorderableSectionGroup
+          order={sectionOrder}
+          onReorder={setSectionOrder}
+        >
+          {sectionOrder.map((id) => {
+            const section = sections[id];
+            if (!section) return null;
+            return (
+              <ReorderableSection key={id} id={id} label={section.label}>
+                {section.node}
+              </ReorderableSection>
+            );
+          })}
+        </ReorderableSectionGroup>
       </VStack>
     </div>
   );
