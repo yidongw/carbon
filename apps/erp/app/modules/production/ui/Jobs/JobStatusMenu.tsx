@@ -49,37 +49,35 @@ export default function JobStatusMenu({ job }: { job: Job }) {
       | undefined) ??
     (fetcher.formAction?.includes("/complete") ? "Completed" : undefined);
 
-  const inFlight = fetcher.state !== "idle";
-
-  // The new status, captured ONLY when a submit actually completes (a non-idle
-  // -> idle transition that didn't fail). Shown until the row read-back catches
-  // up. Setting it strictly on completion means the badge never flips before the
-  // server confirms, and it doesn't wait on the laggy read-back either.
+  // Show the new status the instant the server's success response lands.
+  // fetcher.data is populated the moment the action returns — well before the
+  // fetcher re-reads the table (that read-back lags several seconds). Keying off
+  // the response (not the fetcher going idle, which waits on the read-back)
+  // makes the badge flip in ~300ms, while never flipping before the server
+  // actually confirms.
   const [confirmed, setConfirmed] = useState<
     (typeof jobStatus)[number] | null
   >(null);
   const targetRef = useRef<(typeof jobStatus)[number] | null>(null);
-  const prevState = useRef(fetcher.state);
   useEffect(() => {
     if (submitting) targetRef.current = submitting;
-    if (prevState.current !== "idle" && fetcher.state === "idle") {
-      if (fetcher.data?.success !== false && targetRef.current) {
-        setConfirmed(targetRef.current);
-      }
+    if (fetcher.data?.success === true && targetRef.current) {
+      setConfirmed(targetRef.current);
+    } else if (fetcher.data?.success === false) {
       targetRef.current = null;
     }
-    prevState.current = fetcher.state;
-  }, [fetcher.state, submitting, fetcher.data]);
+  }, [fetcher.data, submitting]);
 
-  // Drop the optimistic value once the loader reflects it.
+  // Drop the optimistic value once the row read-back finally reflects it.
   useEffect(() => {
     if (confirmed && job.status === confirmed) setConfirmed(null);
   }, [confirmed, job.status]);
 
-  // Old status + spinner while in flight; the confirmed new status the instant
-  // it settles. No premature flip, no dead gap.
+  // Old status + spinner until the server confirms, then the new status. Stop
+  // the spinner as soon as we have the confirmed status (the fetcher may still
+  // be busy doing its slow background read-back).
   const status = confirmed ?? job.status;
-  const busy = inFlight;
+  const busy = fetcher.state !== "idle" && !confirmed;
 
   const canUpdate = permissions.can("update", "production");
   if (!job.id || !canUpdate) {
