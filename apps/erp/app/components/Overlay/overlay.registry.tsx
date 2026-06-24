@@ -314,6 +314,7 @@ export const overlayRegistry = {
   jobConfigTable: {
     type: "modal",
     confirmMode: "server",
+    urlAddressable: true,
     render: renderLazyOverlay(
       (ctx) => {
         const data = ctx.loaderData as

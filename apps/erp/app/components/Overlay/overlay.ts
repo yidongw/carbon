@@ -89,7 +89,9 @@ export const overlay = {
     jobConfigTable({ jobId }: { jobId: string }): OverlayTarget {
       return {
         id: "jobConfigTable",
-        url: path.to.api.jobConfigTable(jobId)
+        url: path.to.api.jobConfigTable(jobId),
+        // url-addressable: fully fetched by jobId, so deep-link restores it.
+        params: { jobId }
       };
     },
 
