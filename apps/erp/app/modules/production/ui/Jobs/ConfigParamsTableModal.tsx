@@ -64,11 +64,14 @@ export type ConfigParamsTableModalProps = {
   initialRows?: Row[];
   referenceByRowIndex?: Array<Record<string, number>>;
   jobDisplayId?: string | null;
-} & Omit<OverlayFormInjectedProps, "fetcher" | "action"> & {
+} & Omit<OverlayFormInjectedProps, "fetcher" | "action" | "confirmMode"> & {
     // Optional so the same content can render as a plain local modal (client
     // confirm) without the overlay's submit fetcher.
     fetcher?: OverlayFormInjectedProps["fetcher"];
     action?: string;
+    // Overlays inject "server" | "none"; the standalone local-modal path adds
+    // "client" (confirm via callback), which is intentionally not an overlay mode.
+    confirmMode: OverlayFormInjectedProps["confirmMode"] | "client";
   };
 
 function buildColumns(
@@ -320,6 +323,8 @@ function ConfigParamsTableModal({
   onConfirmSuccess
 }: ConfigParamsTableModalProps) {
   const { t } = useLingui();
+  // `"none"` is a read-only view: cells are disabled and the only button closes.
+  const readOnly = confirmMode === "none";
   const materialShapeOptions = useShape();
   const materialOptions = materialShapeOptions.map((shape) => ({
     label: <Enumerable value={shape.label} />,
@@ -472,6 +477,7 @@ function ConfigParamsTableModal({
                             <input
                               type="number"
                               min={0}
+                              disabled={readOnly}
                               value={
                                 typeof cellValue === "boolean"
                                   ? ""
@@ -492,30 +498,33 @@ function ConfigParamsTableModal({
                               }}
                               className={cn(inputClassName, "min-w-0 flex-1")}
                             />
-                            <button
-                              type="button"
-                              className={cn(
-                                "shrink-0 rounded px-1 py-0.5 text-xs tabular-nums transition-colors hover:bg-muted",
-                                referenceValue < 0
-                                  ? "text-destructive"
-                                  : "text-muted-foreground hover:text-foreground"
-                              )}
-                              title={t`Fill cell`}
-                              onClick={() =>
-                                updateCell(
-                                  rowIndex,
-                                  col.key,
-                                  fillValueFromReference(referenceValue)
-                                )
-                              }
-                            >
-                              {formatReferenceValue(referenceValue)}
-                            </button>
+                            {readOnly ? null : (
+                              <button
+                                type="button"
+                                className={cn(
+                                  "shrink-0 rounded px-1 py-0.5 text-xs tabular-nums transition-colors hover:bg-muted",
+                                  referenceValue < 0
+                                    ? "text-destructive"
+                                    : "text-muted-foreground hover:text-foreground"
+                                )}
+                                title={t`Fill cell`}
+                                onClick={() =>
+                                  updateCell(
+                                    rowIndex,
+                                    col.key,
+                                    fillValueFromReference(referenceValue)
+                                  )
+                                }
+                              >
+                                {formatReferenceValue(referenceValue)}
+                              </button>
+                            )}
                           </div>
                         ) : (
                           <input
                             type="number"
                             min={col.type === "quantity" ? 0 : undefined}
+                            disabled={readOnly}
                             value={
                               typeof cellValue === "boolean"
                                 ? ""
@@ -540,6 +549,7 @@ function ConfigParamsTableModal({
                       ) : col.type === "list" ? (
                         <select
                           value={String(cellValue ?? "")}
+                          disabled={readOnly}
                           onChange={(e) =>
                             updateCell(rowIndex, col.key, e.target.value)
                           }
@@ -554,6 +564,7 @@ function ConfigParamsTableModal({
                       ) : col.type === "boolean" ? (
                         <select
                           value={String(cellValue ?? "")}
+                          disabled={readOnly}
                           onChange={(e) =>
                             updateCell(rowIndex, col.key, e.target.value)
                           }
@@ -568,6 +579,7 @@ function ConfigParamsTableModal({
                           value={String(cellValue ?? "")}
                           options={materialOptions}
                           isClearable
+                          isReadOnly={readOnly}
                           onChange={(value) =>
                             updateCell(rowIndex, col.key, value)
                           }
@@ -577,6 +589,7 @@ function ConfigParamsTableModal({
                         <input
                           type="text"
                           value={String(cellValue ?? "")}
+                          disabled={readOnly}
                           onChange={(e) =>
                             updateCell(rowIndex, col.key, e.target.value)
                           }
@@ -587,13 +600,15 @@ function ConfigParamsTableModal({
                   );
                 })}
                 <Td className="px-3 py-1.5 w-10 min-w-10 max-w-10">
-                  <IconButton
-                    icon={<LuTrash2 />}
-                    aria-label={t`Delete row`}
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => deleteRow(rowIndex)}
-                  />
+                  {readOnly ? null : (
+                    <IconButton
+                      icon={<LuTrash2 />}
+                      aria-label={t`Delete row`}
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => deleteRow(rowIndex)}
+                    />
+                  )}
                 </Td>
               </Tr>
             ))}
@@ -604,15 +619,19 @@ function ConfigParamsTableModal({
         <div className="text-sm text-destructive">{validationError}</div>
       )}
       <HStack className="mt-4 justify-between">
-        <Button
-          type="button"
-          variant="secondary"
-          size="sm"
-          onClick={addRow}
-          leftIcon={<LuPlus />}
-        >
-          <Trans>Add Row</Trans>
-        </Button>
+        {readOnly ? (
+          <span />
+        ) : (
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            onClick={addRow}
+            leftIcon={<LuPlus />}
+          >
+            <Trans>Add Row</Trans>
+          </Button>
+        )}
         <span className="text-sm text-muted-foreground">
           <Trans>Total</Trans>:{" "}
           <strong className="text-foreground">{total}</strong>
@@ -621,7 +640,13 @@ function ConfigParamsTableModal({
     </>
   );
 
-  const footer = (
+  const footer = readOnly ? (
+    <HStack className="justify-end">
+      <Button type="button" variant="primary" onClick={onDismiss}>
+        <Trans>Close</Trans>
+      </Button>
+    </HStack>
+  ) : (
     <HStack className="justify-end gap-2">
       <Button type="button" variant="ghost" onClick={onDismiss}>
         <Trans>Cancel</Trans>

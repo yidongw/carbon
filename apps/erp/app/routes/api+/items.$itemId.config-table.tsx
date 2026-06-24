@@ -5,6 +5,7 @@ import type { ConfigurationParameter } from "~/modules/items/types";
 import type { ConfigReferenceSource } from "~/modules/production/configParamsTableColumns";
 import {
   getConfigReferenceSourceForOperation,
+  getReportedConfigurationById,
   resolveJobIdForOperation
 } from "~/modules/production/configTableOverlay.server";
 
@@ -18,6 +19,12 @@ export type ItemConfigTableOverlayLoaderData = {
    * are sent here, never the draft configuration or sibling configs.
    */
   referenceSource: ConfigReferenceSource | null;
+  /**
+   * Saved configuration for a single reported row, fetched by `recordId` only
+   * for the deep-link case. In-app the overlay receives this via props instead,
+   * so this stays `null` for the common path.
+   */
+  configuration: unknown;
 };
 
 export async function loader({
@@ -73,9 +80,20 @@ export async function loader({
         })
       : null;
 
+  // Deep-link fallback: rebuild a read-only view's saved config from its id.
+  const recordId = url.searchParams.get("recordId") ?? undefined;
+  const configuration = recordId
+    ? await getReportedConfigurationById(client, {
+        recordId,
+        reportKind,
+        companyId
+      })
+    : null;
+
   return {
     parameters,
     itemReadableId: item.data?.readableIdWithRevision ?? null,
-    referenceSource
+    referenceSource,
+    configuration
   };
 }

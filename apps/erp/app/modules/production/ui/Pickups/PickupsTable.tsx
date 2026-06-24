@@ -84,6 +84,7 @@ export function PickupsTable({
           <ProductionQuantityTableQuantityCell
             row={row.original}
             configurableItemIds={configurableItemIdSet}
+            reportKind="pickup"
           />
         ),
         meta: {

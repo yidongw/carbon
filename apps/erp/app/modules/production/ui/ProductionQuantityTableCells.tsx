@@ -80,10 +80,13 @@ export function ProductionQuantityTableItemCell({
 
 export function ProductionQuantityTableQuantityCell({
   row,
-  configurableItemIds
+  configurableItemIds,
+  reportKind = "productionQuantity"
 }: {
   row: ProductionQuantityTableRowLike;
   configurableItemIds?: Set<string>;
+  /** Which record table `row.id` belongs to, so a deep link can refetch it. */
+  reportKind?: "productionQuantity" | "pickup";
 }) {
   const { t } = useLingui();
   const { openOverlay } = useOverlay();
@@ -98,7 +101,7 @@ export function ProductionQuantityTableQuantityCell({
     if (!itemId) return;
     openOverlay(
       overlay.to.itemConfigTable(
-        { itemId },
+        { itemId, recordId: row.id, reportKind },
         {
           configuration:
             row.configuration !== undefined && row.configuration !== null

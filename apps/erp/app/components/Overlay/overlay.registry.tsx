@@ -8,7 +8,6 @@ import type { OverlayRegistryEntry } from "./types";
 export const overlayRegistry = {
   newJobPickup: {
     type: "drawer",
-    urlAddressable: true,
     render: renderLazyOverlay(
       (ctx) => {
         const data = ctx.loaderData as
@@ -74,7 +73,6 @@ export const overlayRegistry = {
   },
   newJobProductionQuantity: {
     type: "drawer",
-    urlAddressable: true,
     render: renderLazyOverlay(
       (ctx) => {
         const data = ctx.loaderData as
@@ -313,8 +311,6 @@ export const overlayRegistry = {
   },
   jobConfigTable: {
     type: "modal",
-    confirmMode: "server",
-    urlAddressable: true,
     render: renderLazyOverlay(
       (ctx) => {
         const data = ctx.loaderData as
@@ -333,7 +329,10 @@ export const overlayRegistry = {
   },
   itemConfigTable: {
     type: "modal",
-    confirmMode: "client",
+    // Read-only view: its only button dismisses (never POSTs). Url-addressable
+    // like the rest — config rides props in-app, with a server-fetched fallback
+    // for deep links.
+    confirmMode: "none",
     render: renderLazyOverlay(
       (ctx) => {
         const data = ctx.loaderData as
@@ -341,8 +340,13 @@ export const overlayRegistry = {
           | null
           | undefined;
         if (!data?.parameters?.length) return null;
-        // Draft config comes via the props channel; rows are computed here.
-        const { configuration } = ctx.props as { configuration?: unknown };
+        // Config comes via props in-app; on a deep link props is empty, so fall
+        // back to the row's saved config fetched by the loader.
+        const { configuration: fromProps } = ctx.props as {
+          configuration?: unknown;
+        };
+        const configuration =
+          fromProps !== undefined ? fromProps : data.configuration;
         const { initialRows, referenceByRowIndex } = buildConfigEditorRows({
           parameters: data.parameters,
           configuration

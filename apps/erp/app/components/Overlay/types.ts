@@ -4,8 +4,17 @@ import type { OverlayId } from "./overlay.registry";
 
 export type OverlayType = "drawer" | "modal";
 
-/** How overlay content confirms: POST to `url` action, or client-only callback. */
-export type OverlayConfirmMode = "client" | "server";
+/**
+ * What an overlay's primary button does:
+ * - `"server"` — Confirm: POST to the route's action.
+ * - `"none"` — read-only view: no Confirm, the button just dismisses.
+ *
+ * There's deliberately no client-callback mode: handing a result to a parent in
+ * memory means there's no URL to restore from, i.e. it's a local modal, not an
+ * overlay. (The shared config modal supports `"client"` for that standalone
+ * use — see its own prop type — but no registry overlay can.)
+ */
+export type OverlayConfirmMode = "server" | "none";
 
 export type OverlayContentProps<
   TLoader = unknown,
@@ -28,10 +37,11 @@ export type OverlayRenderer = ComponentType<OverlayContentProps>;
 export type OverlayRegistryEntry = {
   type: OverlayType;
   render: OverlayRenderer;
-  /** Default `"server"`. Use `"client"` when confirm should not POST (e.g. draft config on a parent form). */
+  /**
+   * What the primary button does (default `"server"`). See `OverlayConfirmMode`.
+   * `"none"` marks a read-only view whose button only dismisses.
+   */
   confirmMode?: OverlayConfirmMode;
-  /** Mirror this overlay in the page URL so it can be deep-linked / restored (see `overlay.ts` codec). */
-  urlAddressable?: boolean;
 };
 
 export type OverlayInstance = {
