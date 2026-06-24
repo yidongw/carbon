@@ -609,7 +609,7 @@ msgid "Log In"
 msgstr "Войти"
 
 msgid "Log Pickup"
-msgstr "Зарегистрировать выдачу в процесс"
+msgstr "Пicking up log"
 
 msgid "Log Rework"
 msgstr "Записать доработку"
@@ -888,26 +888,13 @@ msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "Столбец {0} взят с позиции: {1} из {2}"
 
 msgid "pickup"
-msgstr "выдача в процесс"
-
-msgid "Process Pickup"
-msgstr "выдача в процесс"
-
-#. placeholder {0}: selectedPickup.employeeId
-msgid "Process Pickup by {0}"
-msgstr "Выдача в процесс от {0}"
-
-msgid "Process Pickups"
-msgstr "выдачи в процесс"
-
-msgid "Total Process Pickups"
-msgstr "Всего выдач в процесс"
+msgstr "выберите для получения"
 
 msgid "Pickup suggestions:"
-msgstr "Подсказки по выдаче в процесс:"
+msgstr "Предложения для забора:"
 
 msgid "Pickups"
-msgstr "выдачи в процесс"
+msgstr "Пicked Up"
 
 msgid "Pin Out"
 msgstr "Выход по PIN"
@@ -1008,7 +995,7 @@ msgid "Record {0}"
 msgstr "Запись {0}"
 
 msgid "Record Pickup"
-msgstr "Зарегистрировать выдачу в процесс"
+msgstr "Запись получения"
 
 msgid "Record Quantity"
 msgstr "Записать количество"
@@ -1290,7 +1277,7 @@ msgid "Tools"
 msgstr "Инструменты"
 
 msgid "Total Pickups"
-msgstr "Всего выдач в процесс"
+msgstr "Общее количество вытащенных заказов"
 
 msgid "Total Production"
 msgstr "Общее производство"
