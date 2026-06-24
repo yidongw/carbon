@@ -10,7 +10,7 @@ import {
   useDisclosure
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   LuCheckCheck,
   LuCircleCheck,
@@ -34,7 +34,7 @@ import JobStatus from "./JobStatus";
 export default function JobStatusMenu({ job }: { job: Job }) {
   const { t } = useLingui();
   const permissions = usePermissions();
-  const fetcher = useFetcher<{}>();
+  const fetcher = useFetcher<{ success?: boolean }>();
 
   const releaseModal = useDisclosure();
   const cancelModal = useDisclosure();
@@ -48,36 +48,41 @@ export default function JobStatusMenu({ job }: { job: Job }) {
       | (typeof jobStatus)[number]
       | undefined) ??
     (fetcher.formAction?.includes("/complete") ? "Completed" : undefined);
-  const inFlight = fetcher.state !== "idle";
 
-  // Once a submit settles we keep showing its target until the loader catches
-  // up. This applies the change only AFTER the server confirmed it (no premature
-  // flip while a modal validates or a request is in flight) and survives
-  // revalidation lag, where reading the row back can be momentarily stale.
-  const [confirmed, setConfirmed] = useState<
-    (typeof jobStatus)[number] | null
-  >(null);
-  const submittingRef = useRef<(typeof jobStatus)[number] | null>(null);
-  const prevState = useRef(fetcher.state);
+  // Remember the requested status so the badge keeps a spinner from the
+  // click/confirm until the row actually reflects it. This avoids a premature
+  // flip (we never show the new status early) AND the gap where the spinner
+  // disappears a beat before the new status arrives.
+  const [pending, setPending] = useState<(typeof jobStatus)[number] | null>(
+    null
+  );
   useEffect(() => {
-    if (submitting) submittingRef.current = submitting;
-    if (prevState.current !== "idle" && fetcher.state === "idle") {
-      if (submittingRef.current) setConfirmed(submittingRef.current);
-      submittingRef.current = null;
+    if (submitting) setPending(submitting);
+  }, [submitting]);
+
+  // Clear once the row reflects the target (success), or the request reported a
+  // failure, so the spinner never sticks.
+  useEffect(() => {
+    if (!pending) return;
+    if (job.status === pending) {
+      setPending(null);
+    } else if (fetcher.state === "idle" && fetcher.data?.success === false) {
+      setPending(null);
     }
-    prevState.current = fetcher.state;
-  }, [fetcher.state, submitting]);
+  }, [pending, job.status, fetcher.state, fetcher.data]);
 
-  // Drop the optimistic value once the loader actually reflects it.
+  // Safety net: if the row never catches up (e.g. a modal flow failed without a
+  // success flag), stop the spinner after a grace period.
   useEffect(() => {
-    if (confirmed && job.status === confirmed) setConfirmed(null);
-  }, [confirmed, job.status]);
+    if (!pending || fetcher.state !== "idle") return;
+    const timer = setTimeout(() => setPending(null), 10000);
+    return () => clearTimeout(timer);
+  }, [pending, fetcher.state, job.status]);
 
-  // While a change is in flight keep showing the prior status (with a spinner)
-  // so the badge never flips before the server commits; once it settles show
-  // the confirmed target.
-  const status = inFlight ? job.status : confirmed ?? job.status;
-  const busy = inFlight;
+  // Always show the real status; the spinner conveys the in-progress change,
+  // and the badge only changes once the row genuinely reflects it.
+  const status = job.status;
+  const busy = pending !== null && job.status !== pending;
 
   const canUpdate = permissions.can("update", "production");
   if (!job.id || !canUpdate) {
@@ -89,13 +94,15 @@ export default function JobStatusMenu({ job }: { job: Job }) {
   const isRunning = ["Ready", "In Progress"].includes(status ?? "");
   const isDone = ["Completed", "Cancelled"].includes(status ?? "");
 
-  const submitStatus = (next: (typeof jobStatus)[number]) =>
+  const submitStatus = (next: (typeof jobStatus)[number]) => {
+    setPending(next);
     fetcher.submit(
       { status: next },
       // stay=1 keeps inline changes on the jobs list (e.g. "Mark as Planned"
       // would otherwise redirect to the job's materials page).
       { method: "post", action: `${path.to.jobStatus(job.id!)}?stay=1` }
     );
+  };
 
   return (
     <>
