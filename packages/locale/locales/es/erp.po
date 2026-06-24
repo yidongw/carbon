@@ -11,6 +11,7 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
+"POT-Creation-Date: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " Un proveedor es una empresa o persona que te vende partes o servicios."
@@ -434,6 +435,9 @@ msgstr "Agregue opciones arriba primero"
 msgid "Add or edit notes for this line item"
 msgstr "Agregar o editar notas para este ítem"
 
+msgid "Add or remove quantity"
+msgstr "Agregar o eliminar cantidad"
+
 msgid "Add Pair"
 msgstr "Agregar par"
 
@@ -511,6 +515,9 @@ msgstr "Línea de Dirección 1"
 
 msgid "Address Line 2"
 msgstr "Línea de Dirección 2"
+
+msgid "Adjustment"
+msgstr "Ajuste"
 
 msgid "Adjustment Type"
 msgstr "Tipo de Ajuste"
@@ -2786,6 +2793,9 @@ msgstr "Fecha de Entrega"
 msgid "Delivery Location"
 msgstr "Ubicación de Entrega"
 
+msgid "Delta"
+msgstr "Delta"
+
 msgid "Demand"
 msgstr "Demanda"
 
@@ -3409,11 +3419,20 @@ msgstr "Contacto de Ingeniería"
 msgid "Enter a batch number before setting the expiration date"
 msgstr "Ingrese un número de lote antes de establecer la fecha de vencimiento"
 
+msgid "Enter a positive number to add or a negative number to remove. The change is recorded in the history below."
+msgstr "Ingrese un número positivo para agregar o uno negativo para eliminar. El cambio se registra en el historial debajo."
+
+msgid "Enter an adjustment before saving."
+msgstr "Ingrese una ajuste antes de guardar."
+
 msgid "Enter or scan serial number"
 msgstr "Ingrese o escanee el número de serie"
 
 msgid "Enter PO number"
 msgstr "Ingrese el número de PO"
+
+msgid "Enter the target quantity for each size. The change from the current quantity is recorded in the history."
+msgstr "Ingrese la cantidad objetivo para cada tamaño. El cambio desde la cantidad actual se registra en el historial."
 
 msgid "Enter your answer..."
 msgstr "Ingrese su respuesta..."
@@ -4975,10 +4994,10 @@ msgid "Live reloading"
 msgstr "Recarga en vivo"
 
 msgid "Load more pickups"
-msgstr ""
+msgstr "Cargar más recogidas"
 
 msgid "Load more quantities"
-msgstr ""
+msgstr "Cargar más cantidades"
 
 msgid "Load Templates"
 msgstr "Cargar Plantillas"
@@ -5651,6 +5670,9 @@ msgstr "Nueva Contraseña"
 msgid "New Payment Term"
 msgstr "Nuevo Término de Pago"
 
+msgid "New Pickup"
+msgstr "Nueva Recogida"
+
 msgid "New PIN"
 msgstr "Nuevo PIN"
 
@@ -5665,6 +5687,9 @@ msgstr "Nueva Regla de Precios"
 
 msgid "New Process"
 msgstr "Nuevo Proceso"
+
+msgid "New Production Quantity"
+msgstr "Nueva Cantidad de Producción"
 
 msgid "New Purchase Order Line"
 msgstr "Nueva Línea de Orden de Compra"
@@ -5740,6 +5765,9 @@ msgstr "Nuevo Registro de Tiempo"
 
 msgid "New Tool"
 msgstr "Nueva Herramienta"
+
+msgid "New total"
+msgstr "Nuevo total"
 
 msgid "New Training"
 msgstr "Nuevo Entrenamiento"
@@ -5838,6 +5866,9 @@ msgstr "No se encontraron registros de calibración"
 
 msgid "No changes recorded"
 msgstr "Sin cambios registrados"
+
+msgid "No changes yet."
+msgstr "Aún no hay cambios."
 
 msgid "No chat history"
 msgstr "Sin historial de chat"
@@ -5984,7 +6015,13 @@ msgid "No pricing options found"
 msgstr "No se encontraron opciones de precios"
 
 msgid "No production logs"
-msgstr ""
+msgstr "Sin registros de producción"
+
+msgid "No production reported yet."
+msgstr "Aún no se ha reportado producción."
+
+msgid "No quantity recorded yet."
+msgstr "Aún no se ha registrado ninguna cantidad."
 
 msgid "No Quote"
 msgstr "Sin Cotización"
@@ -6575,7 +6612,7 @@ msgid "picked up {0} units"
 msgstr "Recogido {0} unidades"
 
 msgid "pickup"
-msgstr ""
+msgstr "retirar"
 
 msgid "Pickup"
 msgstr "Picking up"
@@ -6845,6 +6882,9 @@ msgstr "Tamaño de Etiqueta de Producto"
 msgid "Production"
 msgstr "Producción"
 
+msgid "Production already reported per operation. Click a number to pull it into the editor above."
+msgstr "Producción ya reportada por operación. Haz clic en un número para incorporarlo al editor上方。"
+
 msgid "Production Event"
 msgstr "Evento de Producción"
 
@@ -6852,7 +6892,7 @@ msgid "Production Events"
 msgstr "Eventos de Producción"
 
 msgid "Production Logs"
-msgstr ""
+msgstr "Registros de Producción"
 
 msgid "Production Qty"
 msgstr "Cantidad de Producción"
@@ -7314,7 +7354,7 @@ msgid "Released"
 msgstr "Liberado"
 
 msgid "remaining"
-msgstr ""
+msgstr "restante"
 
 msgid "Remaining after split stays on the original row."
 msgstr "Lo restante después de dividir permanece en la fila original."
@@ -7440,6 +7480,12 @@ msgstr "Reportadas <0>{0}</0> unidades"
 
 msgid "Reported <0>{totalQuantity}</0> units"
 msgstr "Reportados <0>{totalQuantity}</0> unidades"
+
+msgid "Reported by process"
+msgstr "Reportado por proceso"
+
+msgid "Reporter"
+msgstr "Reportero"
 
 msgid "Reports"
 msgstr "Informes"
@@ -8993,6 +9039,9 @@ msgstr "Estas direcciones de correo electrónico se copiarán automáticamente e
 msgid "These jobs have operations assigned to this work center:"
 msgstr "Estos trabajos tienen operaciones asignadas a este centro de trabajo:"
 
+msgid "This adjustment would take a quantity below zero."
+msgstr "Esta ajuste tomaría una cantidad por debajo de cero."
+
 msgid "This information will be used on document headers"
 msgstr "Esta información se utilizará en los encabezados de documentos"
 
@@ -9200,19 +9249,19 @@ msgid "Total paid"
 msgstr "Pagado total"
 
 msgid "Total Pickups"
-msgstr ""
+msgstr "Total Recogidas"
 
 msgid "Total Price"
 msgstr "Precio Total"
 
 msgid "Total Production"
-msgstr ""
+msgstr "Producción Total"
 
 msgid "Total Rework"
-msgstr ""
+msgstr "Total Rehacer"
 
 msgid "Total Scrap"
-msgstr ""
+msgstr "Total Residuo"
 
 msgid "Total:"
 msgstr "Total:"
@@ -9678,6 +9727,9 @@ msgstr "Ver Atributos"
 
 msgid "View bill of process"
 msgstr "Ver folio de proceso"
+
+msgid "View configuration parameters"
+msgstr "Ver parámetros de configuración"
 
 msgid "View Contact"
 msgstr "Ver Contacto"

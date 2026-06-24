@@ -407,9 +407,6 @@ msgstr "Editar"
 msgid "Email Address"
 msgstr "Correo electrónico"
 
-#~ msgid "Employee"
-#~ msgstr "Empleado"
-
 msgid "Empty work centers"
 msgstr "Centros de trabajo vacíos"
 
@@ -769,11 +766,8 @@ msgstr "No se encontró ninguna opción."
 msgid "No options found."
 msgstr "No se encontraron opciones."
 
-#~ msgid "No pickups logged"
-#~ msgstr "Sin registros de recogida"
-
 msgid "No production logs"
-msgstr ""
+msgstr "Sin registros de producción"
 
 msgid "No recent operations"
 msgstr "No hay operaciones recientes"
@@ -894,7 +888,10 @@ msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "Se tomó la columna {0} en la posición: {1} de {2}"
 
 msgid "pickup"
-msgstr ""
+msgstr "retirar"
+
+msgid "Pickup suggestions:"
+msgstr "Sugerencias de recogida:"
 
 msgid "Pickups"
 msgstr "Picking up"
@@ -957,13 +954,13 @@ msgid "Processes"
 msgstr "Procesos"
 
 msgid "production"
-msgstr ""
+msgstr "producción"
 
 msgid "Production"
-msgstr ""
+msgstr "Producción"
 
 msgid "Production Logs"
-msgstr ""
+msgstr "Registros de Producción"
 
 msgid "Progress"
 msgstr "Progreso"
@@ -998,13 +995,13 @@ msgid "Record {0}"
 msgstr "Registro {0}"
 
 msgid "Record Pickup"
-msgstr ""
+msgstr "Registro de Recogida"
 
 msgid "Record Quantity"
-msgstr ""
+msgstr "Cantidad registrada"
 
 msgid "remaining"
-msgstr ""
+msgstr "restante"
 
 msgid "Remove"
 msgstr "Eliminar"
@@ -1028,7 +1025,7 @@ msgid "Reset zoom"
 msgstr "Restablecer el acercamiento"
 
 msgid "rework"
-msgstr ""
+msgstr "retrabajar"
 
 msgid "Sales Order"
 msgstr "Orden de venta"
@@ -1049,7 +1046,7 @@ msgid "Schedule"
 msgstr "Programación"
 
 msgid "scrap"
-msgstr ""
+msgstr "residuo"
 
 msgid "Scrap"
 msgstr "Residuo"
@@ -1280,19 +1277,19 @@ msgid "Tools"
 msgstr "Herramientas"
 
 msgid "Total Pickups"
-msgstr ""
+msgstr "Total Recogidas"
 
 msgid "Total Production"
-msgstr ""
+msgstr "Producción Total"
 
 msgid "Total Quantity"
 msgstr "Cantidad total"
 
 msgid "Total Rework"
-msgstr ""
+msgstr "Total Rehacer"
 
 msgid "Total Scrap"
-msgstr ""
+msgstr "Total Desperdicio"
 
 #. placeholder {0}: formatDuration(totalDuration)
 msgid "Total time: {0}"

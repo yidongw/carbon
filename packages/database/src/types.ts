@@ -13533,6 +13533,65 @@ export type Database = {
           },
         ]
       }
+      jobConfigurationHistory: {
+        Row: {
+          companyId: string
+          configuration: Json
+          createdAt: string
+          createdBy: string
+          id: string
+          jobId: string
+          quantity: number
+        }
+        Insert: {
+          companyId: string
+          configuration: Json
+          createdAt?: string
+          createdBy: string
+          id?: string
+          jobId: string
+          quantity?: number
+        }
+        Update: {
+          companyId?: string
+          configuration?: Json
+          createdAt?: string
+          createdBy?: string
+          id?: string
+          jobId?: string
+          quantity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jobConfigurationHistory_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobConfigurationHistory_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobConfigurationHistory_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "jobConfigurationHistory_jobId_fkey"
+            columns: ["jobId"]
+            isOneToOne: false
+            referencedRelation: "job"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       jobFavorite: {
         Row: {
           jobId: string

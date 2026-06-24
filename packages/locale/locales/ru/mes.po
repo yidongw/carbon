@@ -407,9 +407,6 @@ msgstr "Редактировать"
 msgid "Email Address"
 msgstr "Электронная почта"
 
-#~ msgid "Employee"
-#~ msgstr "Сотрудник"
-
 msgid "Empty work centers"
 msgstr "Пустые рабочие центры"
 
@@ -769,11 +766,8 @@ msgstr "Опция не найдена."
 msgid "No options found."
 msgstr "Варианты не найдены."
 
-#~ msgid "No pickups logged"
-#~ msgstr "Ни один пикап не зарегистрирован"
-
 msgid "No production logs"
-msgstr ""
+msgstr "Нет производственных логов"
 
 msgid "No recent operations"
 msgstr "Нет недавних операций"
@@ -894,7 +888,10 @@ msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "Столбец {0} взят с позиции: {1} из {2}"
 
 msgid "pickup"
-msgstr ""
+msgstr "выберите для получения"
+
+msgid "Pickup suggestions:"
+msgstr "Предложения для забора:"
 
 msgid "Pickups"
 msgstr "Пicked Up"
@@ -957,13 +954,13 @@ msgid "Processes"
 msgstr "Процессы"
 
 msgid "production"
-msgstr ""
+msgstr "производство"
 
 msgid "Production"
-msgstr ""
+msgstr "Производство"
 
 msgid "Production Logs"
-msgstr ""
+msgstr "Логи производства"
 
 msgid "Progress"
 msgstr "Прогресс"
@@ -998,13 +995,13 @@ msgid "Record {0}"
 msgstr "Запись {0}"
 
 msgid "Record Pickup"
-msgstr ""
+msgstr "Запись получения"
 
 msgid "Record Quantity"
-msgstr ""
+msgstr "Записать количество"
 
 msgid "remaining"
-msgstr ""
+msgstr "оставшееся"
 
 msgid "Remove"
 msgstr "Удалить"
@@ -1028,7 +1025,7 @@ msgid "Reset zoom"
 msgstr "Сбросить масштаб"
 
 msgid "rework"
-msgstr ""
+msgstr "переработка"
 
 msgid "Sales Order"
 msgstr "Заказ на продажу"
@@ -1049,7 +1046,7 @@ msgid "Schedule"
 msgstr "Расписание"
 
 msgid "scrap"
-msgstr ""
+msgstr "отходы"
 
 msgid "Scrap"
 msgstr "Отходы"
@@ -1280,19 +1277,19 @@ msgid "Tools"
 msgstr "Инструменты"
 
 msgid "Total Pickups"
-msgstr ""
+msgstr "Общее количество вытащенных заказов"
 
 msgid "Total Production"
-msgstr ""
+msgstr "Общее производство"
 
 msgid "Total Quantity"
 msgstr "Общее количество"
 
 msgid "Total Rework"
-msgstr ""
+msgstr "Общая переработка"
 
 msgid "Total Scrap"
-msgstr ""
+msgstr "Общий брак"
 
 #. placeholder {0}: formatDuration(totalDuration)
 msgid "Total time: {0}"

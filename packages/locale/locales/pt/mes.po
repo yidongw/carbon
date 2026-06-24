@@ -407,9 +407,6 @@ msgstr "Editar"
 msgid "Email Address"
 msgstr "Endereço de E-mail"
 
-#~ msgid "Employee"
-#~ msgstr "Funcionário"
-
 msgid "Empty work centers"
 msgstr "Centros de trabalho vazios"
 
@@ -769,11 +766,8 @@ msgstr "Nenhuma opção encontrada."
 msgid "No options found."
 msgstr "Nenhuma opção encontrada."
 
-#~ msgid "No pickups logged"
-#~ msgstr "Nenhum pico registrado"
-
 msgid "No production logs"
-msgstr ""
+msgstr "Sem registos de produção"
 
 msgid "No recent operations"
 msgstr "Nenhuma operação recente"
@@ -894,7 +888,10 @@ msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "Coluna {0} selecionada na posição: {1} de {2}"
 
 msgid "pickup"
-msgstr ""
+msgstr "retirada"
+
+msgid "Pickup suggestions:"
+msgstr "Sugestões de retirada:"
 
 msgid "Pickups"
 msgstr "Pegadas"
@@ -957,13 +954,13 @@ msgid "Processes"
 msgstr "Processos"
 
 msgid "production"
-msgstr ""
+msgstr "produção"
 
 msgid "Production"
-msgstr ""
+msgstr "Produção"
 
 msgid "Production Logs"
-msgstr ""
+msgstr "Registros de Produção"
 
 msgid "Progress"
 msgstr "Progresso"
@@ -998,13 +995,13 @@ msgid "Record {0}"
 msgstr "Registro {0}"
 
 msgid "Record Pickup"
-msgstr ""
+msgstr "Registo da Entrega"
 
 msgid "Record Quantity"
-msgstr ""
+msgstr "Quantidade Registada"
 
 msgid "remaining"
-msgstr ""
+msgstr "restante"
 
 msgid "Remove"
 msgstr "Remover"
@@ -1028,7 +1025,7 @@ msgid "Reset zoom"
 msgstr "Resetar zoom"
 
 msgid "rework"
-msgstr ""
+msgstr "retrabalho"
 
 msgid "Sales Order"
 msgstr "Pedido de Venda"
@@ -1049,7 +1046,7 @@ msgid "Schedule"
 msgstr "Cronograma"
 
 msgid "scrap"
-msgstr ""
+msgstr "perda"
 
 msgid "Scrap"
 msgstr "Resíduo"
@@ -1280,19 +1277,19 @@ msgid "Tools"
 msgstr "Ferramentas"
 
 msgid "Total Pickups"
-msgstr ""
+msgstr "Total Retiradas"
 
 msgid "Total Production"
-msgstr ""
+msgstr "Produção Total"
 
 msgid "Total Quantity"
 msgstr "Quantidade Total"
 
 msgid "Total Rework"
-msgstr ""
+msgstr "Total Rejeição"
 
 msgid "Total Scrap"
-msgstr ""
+msgstr "Scrap Total"
 
 #. placeholder {0}: formatDuration(totalDuration)
 msgid "Total time: {0}"

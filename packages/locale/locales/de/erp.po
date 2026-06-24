@@ -11,6 +11,7 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
+"POT-Creation-Date: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " Ein Lieferant ist eine Geschäftsperson oder ein Unternehmer, der Ihnen Teile oder Dienstleistungen verkauft."
@@ -85,7 +86,7 @@ msgid "{0} uploaded successfully"
 msgstr "{0} erfolgreich hochgeladen"
 
 msgid "{days} days ({formatted})"
-msgstr ""
+msgstr "{days} Tage ({formatted})"
 
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB-Limit"
@@ -434,6 +435,9 @@ msgstr "Fügen Sie zuerst Optionen hinzu"
 msgid "Add or edit notes for this line item"
 msgstr "Fügen Sie oder bearbeiten Sie Notizen für diesen Eintrag hinzu"
 
+msgid "Add or remove quantity"
+msgstr "Fügen Sie eine Anzahl hinzu oder entfernen Sie sie"
+
 msgid "Add Pair"
 msgstr "Paar hinzufügen"
 
@@ -511,6 +515,9 @@ msgstr "Adresszeile 1"
 
 msgid "Address Line 2"
 msgstr "Adresszeile 2"
+
+msgid "Adjustment"
+msgstr "Anpassung"
 
 msgid "Adjustment Type"
 msgstr "Anpassungstyp"
@@ -2786,6 +2793,9 @@ msgstr "Lieferdatum"
 msgid "Delivery Location"
 msgstr "Lieferort"
 
+msgid "Delta"
+msgstr "Delta"
+
 msgid "Demand"
 msgstr "Nachfrage"
 
@@ -3409,11 +3419,20 @@ msgstr "Technischer Kontakt"
 msgid "Enter a batch number before setting the expiration date"
 msgstr "Geben Sie eine Chargennummer ein, bevor Sie das Ablaufdatum festlegen"
 
+msgid "Enter a positive number to add or a negative number to remove. The change is recorded in the history below."
+msgstr "Geben Sie eine positive Zahl ein, um hinzuzufügen, oder eine negative Zahl ein, um zu entfernen. Die Änderung wird im Historiebereich unten protokolliert."
+
+msgid "Enter an adjustment before saving."
+msgstr "Führen Sie eine Anpassung durch vor dem Speichern."
+
 msgid "Enter or scan serial number"
 msgstr "Seriennummer eingeben oder scannen"
 
 msgid "Enter PO number"
 msgstr "PO-Nummer eingeben"
+
+msgid "Enter the target quantity for each size. The change from the current quantity is recorded in the history."
+msgstr "Geben Sie die Zielmenge für jede Größe an. Der Unterschied zur aktuellen Menge wird in der Geschichte protokolliert."
 
 msgid "Enter your answer..."
 msgstr "Geben Sie Ihre Antwort..."
@@ -4975,10 +4994,10 @@ msgid "Live reloading"
 msgstr "Live-Neuladen"
 
 msgid "Load more pickups"
-msgstr ""
+msgstr "Lade mehr Abholungen"
 
 msgid "Load more quantities"
-msgstr ""
+msgstr "Lade mehr Mengen"
 
 msgid "Load Templates"
 msgstr "Vorlagen laden"
@@ -5651,6 +5670,9 @@ msgstr "Neues Passwort"
 msgid "New Payment Term"
 msgstr "Neuer Zahlungsbegriff"
 
+msgid "New Pickup"
+msgstr "Neuer Abholvorgang"
+
 msgid "New PIN"
 msgstr "Neue PIN"
 
@@ -5665,6 +5687,9 @@ msgstr "Neue Preisregel"
 
 msgid "New Process"
 msgstr "Neuer Prozess"
+
+msgid "New Production Quantity"
+msgstr "Neue Produktionsmenge"
 
 msgid "New Purchase Order Line"
 msgstr "Neue Bestellposition"
@@ -5740,6 +5765,9 @@ msgstr "Neue Zeiterfassung"
 
 msgid "New Tool"
 msgstr "Neues Werkzeug"
+
+msgid "New total"
+msgstr "Neuer Gesamtwert"
 
 msgid "New Training"
 msgstr "Neue Schulung"
@@ -5838,6 +5866,9 @@ msgstr "Keine Kalibrierungsdatensätze gefunden"
 
 msgid "No changes recorded"
 msgstr "Keine Änderungen aufgezeichnet"
+
+msgid "No changes yet."
+msgstr "Noch keine Änderungen."
 
 msgid "No chat history"
 msgstr "Keine Chat-Verlauf"
@@ -5984,7 +6015,13 @@ msgid "No pricing options found"
 msgstr "Keine Preisoptionen gefunden"
 
 msgid "No production logs"
-msgstr ""
+msgstr "Keine Produktionsprotokolle"
+
+msgid "No production reported yet."
+msgstr "Keine Produktion berichtet yet."
+
+msgid "No quantity recorded yet."
+msgstr "Keine Menge aufgezeichnet noch."
 
 msgid "No Quote"
 msgstr "Kein Angebot"
@@ -6575,7 +6612,7 @@ msgid "picked up {0} units"
 msgstr "genommen wurden {0} Einheiten"
 
 msgid "pickup"
-msgstr ""
+msgstr "Abholung"
 
 msgid "Pickup"
 msgstr "Aufheben"
@@ -6845,6 +6882,9 @@ msgstr "Produktetikettengröße"
 msgid "Production"
 msgstr "Produktion"
 
+msgid "Production already reported per operation. Click a number to pull it into the editor above."
+msgstr "Produktion bereits pro Operation berichtet. Klicken Sie auf ein Zahlensymbol, um es in den Editor über Ihnen einzufügen."
+
 msgid "Production Event"
 msgstr "Produktionsereignis"
 
@@ -6852,7 +6892,7 @@ msgid "Production Events"
 msgstr "Produktionsereignisse"
 
 msgid "Production Logs"
-msgstr ""
+msgstr "Produktionsprotokolle"
 
 msgid "Production Qty"
 msgstr "Produktionsmenge"
@@ -7314,7 +7354,7 @@ msgid "Released"
 msgstr "Freigegeben"
 
 msgid "remaining"
-msgstr ""
+msgstr "verbleibend"
 
 msgid "Remaining after split stays on the original row."
 msgstr "Verbleibende Menge bleibt in der ursprünglichen Zeile."
@@ -7440,6 +7480,12 @@ msgstr "Berichtet werden <0>{0}</0> Einheiten"
 
 msgid "Reported <0>{totalQuantity}</0> units"
 msgstr "Berichtet wurden <0>{totalQuantity}</0> Einheiten"
+
+msgid "Reported by process"
+msgstr "Berichtet von Prozess"
+
+msgid "Reporter"
+msgstr "Berichtersteller"
 
 msgid "Reports"
 msgstr "Berichte"
@@ -8993,6 +9039,9 @@ msgstr "Diese E-Mail-Adressen werden automatisch in CC auf alle Angebots-E-Mails
 msgid "These jobs have operations assigned to this work center:"
 msgstr "Diese Aufträge haben Operationen, die diesem Arbeitszentrum zugewiesen sind:"
 
+msgid "This adjustment would take a quantity below zero."
+msgstr "Diese Anpassung würde eine Menge unter null durchführen."
+
 msgid "This information will be used on document headers"
 msgstr "Diese Informationen werden in Dokumentkopfzeilen verwendet"
 
@@ -9200,19 +9249,19 @@ msgid "Total paid"
 msgstr "Gesamtpreis"
 
 msgid "Total Pickups"
-msgstr ""
+msgstr "Gesamtanhaltungen"
 
 msgid "Total Price"
 msgstr "Gesamtpreis"
 
 msgid "Total Production"
-msgstr ""
+msgstr "Gesamtproduktion"
 
 msgid "Total Rework"
-msgstr ""
+msgstr "Gesamt-Rework"
 
 msgid "Total Scrap"
-msgstr ""
+msgstr "Gesamt Abfall"
 
 msgid "Total:"
 msgstr "Gesamt:"
@@ -9678,6 +9727,9 @@ msgstr "Attribute anzeigen"
 
 msgid "View bill of process"
 msgstr "Anzeige Rechnungsvorgang"
+
+msgid "View configuration parameters"
+msgstr "Anzeigen Konfigurationsparameter"
 
 msgid "View Contact"
 msgstr "Kontakt anzeigen"

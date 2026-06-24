@@ -434,6 +434,9 @@ msgstr "Add options above first"
 msgid "Add or edit notes for this line item"
 msgstr "Add or edit notes for this line item"
 
+msgid "Add or remove quantity"
+msgstr "Add or remove quantity"
+
 msgid "Add Pair"
 msgstr "Add Pair"
 
@@ -511,6 +514,9 @@ msgstr "Address Line 1"
 
 msgid "Address Line 2"
 msgstr "Address Line 2"
+
+msgid "Adjustment"
+msgstr "Adjustment"
 
 msgid "Adjustment Type"
 msgstr "Adjustment Type"
@@ -2786,6 +2792,9 @@ msgstr "Delivery Date"
 msgid "Delivery Location"
 msgstr "Delivery Location"
 
+msgid "Delta"
+msgstr "Delta"
+
 msgid "Demand"
 msgstr "Demand"
 
@@ -3409,11 +3418,20 @@ msgstr "Engineering Contact"
 msgid "Enter a batch number before setting the expiration date"
 msgstr "Enter a batch number before setting the expiration date"
 
+msgid "Enter a positive number to add or a negative number to remove. The change is recorded in the history below."
+msgstr "Enter a positive number to add or a negative number to remove. The change is recorded in the history below."
+
+msgid "Enter an adjustment before saving."
+msgstr "Enter an adjustment before saving."
+
 msgid "Enter or scan serial number"
 msgstr "Enter or scan serial number"
 
 msgid "Enter PO number"
 msgstr "Enter PO number"
+
+msgid "Enter the target quantity for each size. The change from the current quantity is recorded in the history."
+msgstr "Enter the target quantity for each size. The change from the current quantity is recorded in the history."
 
 msgid "Enter your answer..."
 msgstr "Enter your answer..."
@@ -5651,6 +5669,9 @@ msgstr "New Password"
 msgid "New Payment Term"
 msgstr "New Payment Term"
 
+msgid "New Pickup"
+msgstr "New Pickup"
+
 msgid "New PIN"
 msgstr "New PIN"
 
@@ -5665,6 +5686,9 @@ msgstr "New Pricing Rule"
 
 msgid "New Process"
 msgstr "New Process"
+
+msgid "New Production Quantity"
+msgstr "New Production Quantity"
 
 msgid "New Purchase Order Line"
 msgstr "New Purchase Order Line"
@@ -5740,6 +5764,9 @@ msgstr "New Timecard"
 
 msgid "New Tool"
 msgstr "New Tool"
+
+msgid "New total"
+msgstr "New total"
 
 msgid "New Training"
 msgstr "New Training"
@@ -5838,6 +5865,9 @@ msgstr "No calibration records found"
 
 msgid "No changes recorded"
 msgstr "No changes recorded"
+
+msgid "No changes yet."
+msgstr "No changes yet."
 
 msgid "No chat history"
 msgstr "No chat history"
@@ -5985,6 +6015,12 @@ msgstr "No pricing options found"
 
 msgid "No production logs"
 msgstr "No production logs"
+
+msgid "No production reported yet."
+msgstr "No production reported yet."
+
+msgid "No quantity recorded yet."
+msgstr "No quantity recorded yet."
 
 msgid "No Quote"
 msgstr "No Quote"
@@ -6845,6 +6881,9 @@ msgstr "Product Label Size"
 msgid "Production"
 msgstr "Production"
 
+msgid "Production already reported per operation. Click a number to pull it into the editor above."
+msgstr "Production already reported per operation. Click a number to pull it into the editor above."
+
 msgid "Production Event"
 msgstr "Production Event"
 
@@ -7316,9 +7355,6 @@ msgstr "Released"
 msgid "remaining"
 msgstr "remaining"
 
-msgid "Reporter"
-msgstr "Reporter"
-
 msgid "Remaining after split stays on the original row."
 msgstr "Remaining after split stays on the original row."
 
@@ -7443,6 +7479,12 @@ msgstr "Reported <0>{0}</0> units"
 
 msgid "Reported <0>{totalQuantity}</0> units"
 msgstr "Reported <0>{totalQuantity}</0> units"
+
+msgid "Reported by process"
+msgstr "Reported by process"
+
+msgid "Reporter"
+msgstr "Reporter"
 
 msgid "Reports"
 msgstr "Reports"
@@ -8996,6 +9038,9 @@ msgstr "These email addresses will be automatically CC'd on all quote emails sen
 msgid "These jobs have operations assigned to this work center:"
 msgstr "These jobs have operations assigned to this work center:"
 
+msgid "This adjustment would take a quantity below zero."
+msgstr "This adjustment would take a quantity below zero."
+
 msgid "This information will be used on document headers"
 msgstr "This information will be used on document headers"
 
@@ -9681,6 +9726,9 @@ msgstr "View Attributes"
 
 msgid "View bill of process"
 msgstr "View bill of process"
+
+msgid "View configuration parameters"
+msgstr "View configuration parameters"
 
 msgid "View Contact"
 msgstr "View Contact"

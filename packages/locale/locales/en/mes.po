@@ -407,9 +407,6 @@ msgstr "Edit"
 msgid "Email Address"
 msgstr "Email Address"
 
-#~ msgid "Employee"
-#~ msgstr "Employee"
-
 msgid "Empty work centers"
 msgstr "Empty work centers"
 
@@ -769,9 +766,6 @@ msgstr "No option found."
 msgid "No options found."
 msgstr "No options found."
 
-#~ msgid "No pickups logged"
-#~ msgstr "No pickups logged"
-
 msgid "No production logs"
 msgstr "No production logs"
 
@@ -895,6 +889,9 @@ msgstr "Picked up Column {0} at position: {1} of {2}"
 
 msgid "pickup"
 msgstr "pickup"
+
+msgid "Pickup suggestions:"
+msgstr "Pickup suggestions:"
 
 msgid "Pickups"
 msgstr "Pickups"

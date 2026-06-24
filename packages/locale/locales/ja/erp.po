@@ -11,6 +11,7 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
+"POT-Creation-Date: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " A supplier is a business or person who sells you parts or services."
@@ -434,6 +435,9 @@ msgstr "上記のオプションを追加してください"
 msgid "Add or edit notes for this line item"
 msgstr "この行項目のメモを追加または編集します"
 
+msgid "Add or remove quantity"
+msgstr "数量を追加または削除"
+
 msgid "Add Pair"
 msgstr "ペアを追加"
 
@@ -511,6 +515,9 @@ msgstr "住所 1行目"
 
 msgid "Address Line 2"
 msgstr "住所2行目"
+
+msgid "Adjustment"
+msgstr "調整"
 
 msgid "Adjustment Type"
 msgstr "調整タイプ"
@@ -2786,6 +2793,9 @@ msgstr "配送日"
 msgid "Delivery Location"
 msgstr "配送先"
 
+msgid "Delta"
+msgstr "デルタ"
+
 msgid "Demand"
 msgstr "需要"
 
@@ -3409,11 +3419,20 @@ msgstr "エンジニアリング担当者"
 msgid "Enter a batch number before setting the expiration date"
 msgstr "有効期限を設定する前にバッチ番号を入力してください"
 
+msgid "Enter a positive number to add or a negative number to remove. The change is recorded in the history below."
+msgstr "正の数を入力すると追加、負の数を入力すると削除します。変更履歴は下に記録されます。"
+
+msgid "Enter an adjustment before saving."
+msgstr "保存する前に調整値を入力してください。"
+
 msgid "Enter or scan serial number"
 msgstr "シリアル番号を入力またはスキャンしてください"
 
 msgid "Enter PO number"
 msgstr "PO番号を入力"
+
+msgid "Enter the target quantity for each size. The change from the current quantity is recorded in the history."
+msgstr "各サイズの対象数量を入力してください。現在数量との差分は履歴に記録されます。"
 
 msgid "Enter your answer..."
 msgstr "あなたの回答を入力してください..."
@@ -4975,10 +4994,10 @@ msgid "Live reloading"
 msgstr "ライブリロード中"
 
 msgid "Load more pickups"
-msgstr ""
+msgstr "更多ピックアップをロード"
 
 msgid "Load more quantities"
-msgstr ""
+msgstr "更多数量を読み込む"
 
 msgid "Load Templates"
 msgstr "テンプレートを読み込む"
@@ -5651,6 +5670,9 @@ msgstr "新しいパスワード"
 msgid "New Payment Term"
 msgstr "新しい支払い条件"
 
+msgid "New Pickup"
+msgstr "新規ピックアップ"
+
 msgid "New PIN"
 msgstr "新しいPIN"
 
@@ -5665,6 +5687,9 @@ msgstr "新しい価格設定ルール"
 
 msgid "New Process"
 msgstr "新しいプロセス"
+
+msgid "New Production Quantity"
+msgstr "新規生産数量"
 
 msgid "New Purchase Order Line"
 msgstr "新しい購買注文行"
@@ -5740,6 +5765,9 @@ msgstr "新しいタイムカード"
 
 msgid "New Tool"
 msgstr "新しいツール"
+
+msgid "New total"
+msgstr "新規合計"
 
 msgid "New Training"
 msgstr "新しいトレーニング"
@@ -5838,6 +5866,9 @@ msgstr "キャリブレーション記録が見つかりません"
 
 msgid "No changes recorded"
 msgstr "変更が記録されていません"
+
+msgid "No changes yet."
+msgstr "まだ変更はありません。"
 
 msgid "No chat history"
 msgstr "チャット履歴がありません"
@@ -5984,7 +6015,13 @@ msgid "No pricing options found"
 msgstr "価格オプションが見つかりません"
 
 msgid "No production logs"
-msgstr ""
+msgstr "生産ログがありません"
+
+msgid "No production reported yet."
+msgstr "生産情報がまだ報告されていません。"
+
+msgid "No quantity recorded yet."
+msgstr "まだ数量が記録されていません。"
 
 msgid "No Quote"
 msgstr "見積なし"
@@ -6575,7 +6612,7 @@ msgid "picked up {0} units"
 msgstr "{0}ユニットを取った"
 
 msgid "pickup"
-msgstr ""
+msgstr "ピックアップ"
 
 msgid "Pickup"
 msgstr "おとり"
@@ -6845,6 +6882,9 @@ msgstr "製品ラベルサイズ"
 msgid "Production"
 msgstr "生産"
 
+msgid "Production already reported per operation. Click a number to pull it into the editor above."
+msgstr "生産は既に各工程で報告されています。上のエディターに取り込むために数字をクリックしてください。"
+
 msgid "Production Event"
 msgstr "生産イベント"
 
@@ -6852,7 +6892,7 @@ msgid "Production Events"
 msgstr "本番イベント"
 
 msgid "Production Logs"
-msgstr ""
+msgstr "生産ログ"
 
 msgid "Production Qty"
 msgstr "生産数量"
@@ -7314,7 +7354,7 @@ msgid "Released"
 msgstr "リリース済み"
 
 msgid "remaining"
-msgstr ""
+msgstr "残り"
 
 msgid "Remaining after split stays on the original row."
 msgstr "分割後の残りは元の行に留まります。"
@@ -7440,6 +7480,12 @@ msgstr "報告済み<0>{0}</0>単位"
 
 msgid "Reported <0>{totalQuantity}</0> units"
 msgstr "報告済み<0>{totalQuantity}</0>個"
+
+msgid "Reported by process"
+msgstr "プロセスによって報告"
+
+msgid "Reporter"
+msgstr "レポートラー"
 
 msgid "Reports"
 msgstr "レポート"
@@ -8993,6 +9039,9 @@ msgstr "これらのメールアドレスは、顧客に送信されるすべて
 msgid "These jobs have operations assigned to this work center:"
 msgstr "これらのジョブにはこのワークセンターに割り当てられた操作があります:"
 
+msgid "This adjustment would take a quantity below zero."
+msgstr "この調整はゼロ未満の数量を設定します。"
+
 msgid "This information will be used on document headers"
 msgstr "この情報はドキュメントヘッダーで使用されます"
 
@@ -9200,19 +9249,19 @@ msgid "Total paid"
 msgstr "合計支払い"
 
 msgid "Total Pickups"
-msgstr ""
+msgstr "総計ピックアップ"
 
 msgid "Total Price"
 msgstr "合計価格"
 
 msgid "Total Production"
-msgstr ""
+msgstr "総生産量"
 
 msgid "Total Rework"
-msgstr ""
+msgstr "総計リワーク"
 
 msgid "Total Scrap"
-msgstr ""
+msgstr "総合不良"
 
 msgid "Total:"
 msgstr "合計:"
@@ -9678,6 +9727,9 @@ msgstr "属性を表示"
 
 msgid "View bill of process"
 msgstr "見る請求書のプロセス"
+
+msgid "View configuration parameters"
+msgstr "設定パラメータを表示"
 
 msgid "View Contact"
 msgstr "連絡先を表示"
