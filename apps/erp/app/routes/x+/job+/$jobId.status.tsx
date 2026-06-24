@@ -25,6 +25,9 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   const url = new URL(request.url);
   const shouldSchedule = url.searchParams.get("schedule") === "1";
+  // Inline callers (e.g. the jobs table status menu) stay on the referring page
+  // instead of being sent to the job's sub-pages.
+  const stay = url.searchParams.get("stay") === "1";
 
   const formData = await request.formData();
   const status = formData.get("status") as (typeof jobStatus)[number];
@@ -188,7 +191,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     });
   }
 
-  if (status === "Planned") {
+  if (status === "Planned" && !stay) {
     throw redirect(
       path.to.jobMaterials(id),
       await flash(request, success("Job marked as planned"))

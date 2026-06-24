@@ -95,7 +95,9 @@ export default function JobStatusMenu({ job }: { job: Job }) {
   const submitStatus = (next: (typeof jobStatus)[number]) =>
     fetcher.submit(
       { status: next },
-      { method: "post", action: path.to.jobStatus(job.id!) }
+      // stay=1 keeps inline changes on the jobs list (e.g. "Mark as Planned"
+      // would otherwise redirect to the job's materials page).
+      { method: "post", action: `${path.to.jobStatus(job.id!)}?stay=1` }
     );
 
   return (
