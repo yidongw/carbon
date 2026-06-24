@@ -41,43 +41,46 @@ export default function JobStatusMenu({ job }: { job: Job }) {
   const cancelModal = useDisclosure();
   const completeModal = useDisclosure();
 
-  // The status we just requested via a direct (modal-less) transition. Kept so
-  // the badge can show a spinner from the click until the row actually reflects
-  // the change — the brief fetcher "busy" flash alone isn't perceptible.
-  const [pending, setPending] = useState<(typeof jobStatus)[number] | null>(
-    null
-  );
-  const sawBusy = useRef(false);
+  // The status currently being submitted — a direct click, the cancel/release
+  // modal forms (all send a `status` field), or the complete modal (posts to
+  // the dedicated complete route).
+  const submitting =
+    (fetcher.formData?.get("status") as
+      | (typeof jobStatus)[number]
+      | undefined) ??
+    (fetcher.formAction?.includes("/complete") ? "Completed" : undefined);
+  const inFlight = fetcher.state !== "idle";
 
-  // Refresh the table once a status change settles (the action redirects to the
-  // referrer, but revalidating explicitly keeps the inline row in sync).
+  // Once a submit settles we keep showing its target until the loader catches
+  // up. This applies the change only AFTER the server confirmed it (no premature
+  // flip while a modal validates or a request is in flight) and survives
+  // revalidation lag, where reading the row back can be momentarily stale.
+  const [confirmed, setConfirmed] = useState<
+    (typeof jobStatus)[number] | null
+  >(null);
+  const submittingRef = useRef<(typeof jobStatus)[number] | null>(null);
   const prevState = useRef(fetcher.state);
   useEffect(() => {
-    if (fetcher.state !== "idle") sawBusy.current = true;
+    if (submitting) submittingRef.current = submitting;
     if (prevState.current !== "idle" && fetcher.state === "idle") {
+      if (submittingRef.current) setConfirmed(submittingRef.current);
+      submittingRef.current = null;
+      // Also refresh the table so the rest of the row reflects any side effects.
       revalidator.revalidate();
     }
     prevState.current = fetcher.state;
-  }, [fetcher.state, revalidator]);
+  }, [fetcher.state, submitting, revalidator]);
 
-  // Stop the spinner once the row reflects the requested status (success), or
-  // once everything settled without it changing (failure) — never stuck.
+  // Drop the optimistic value once the loader actually reflects it.
   useEffect(() => {
-    if (!pending) return;
-    if (
-      job.status === pending ||
-      (sawBusy.current &&
-        fetcher.state === "idle" &&
-        revalidator.state === "idle")
-    ) {
-      setPending(null);
-    }
-  }, [pending, job.status, fetcher.state, revalidator.state]);
+    if (confirmed && job.status === confirmed) setConfirmed(null);
+  }, [confirmed, job.status]);
 
-  // Reflect the server state only — never optimistically flip the badge while a
-  // change is still in flight or could fail (e.g. the release flow validates,
-  // creates POs, and schedules before it commits).
-  const status = job.status;
+  // While a change is in flight keep showing the prior status (with a spinner)
+  // so the badge never flips before the server commits; once it settles show
+  // the confirmed target.
+  const status = inFlight ? job.status : confirmed ?? job.status;
+  const busy = inFlight;
 
   const canUpdate = permissions.can("update", "production");
   if (!job.id || !canUpdate) {
@@ -88,16 +91,12 @@ export default function JobStatusMenu({ job }: { job: Job }) {
   const isPaused = status === "Paused";
   const isRunning = ["Ready", "In Progress"].includes(status ?? "");
   const isDone = ["Completed", "Cancelled"].includes(status ?? "");
-  const busy = pending !== null || fetcher.state !== "idle";
 
-  const submitStatus = (next: (typeof jobStatus)[number]) => {
-    sawBusy.current = false;
-    setPending(next);
+  const submitStatus = (next: (typeof jobStatus)[number]) =>
     fetcher.submit(
       { status: next },
       { method: "post", action: path.to.jobStatus(job.id!) }
     );
-  };
 
   return (
     <>
