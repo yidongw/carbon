@@ -10,7 +10,7 @@ import {
   useDisclosure
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   LuCheckCheck,
   LuCircleCheck,
@@ -35,26 +35,48 @@ export default function JobStatusMenu({ job }: { job: Job }) {
   const { t } = useLingui();
   const permissions = usePermissions();
   const fetcher = useFetcher<{}>();
-  const { revalidate } = useRevalidator();
+  const revalidator = useRevalidator();
 
   const releaseModal = useDisclosure();
   const cancelModal = useDisclosure();
   const completeModal = useDisclosure();
 
+  // The status we just requested via a direct (modal-less) transition. Kept so
+  // the badge can show a spinner from the click until the row actually reflects
+  // the change — the brief fetcher "busy" flash alone isn't perceptible.
+  const [pending, setPending] = useState<(typeof jobStatus)[number] | null>(
+    null
+  );
+  const sawBusy = useRef(false);
+
   // Refresh the table once a status change settles (the action redirects to the
   // referrer, but revalidating explicitly keeps the inline row in sync).
   const prevState = useRef(fetcher.state);
   useEffect(() => {
+    if (fetcher.state !== "idle") sawBusy.current = true;
     if (prevState.current !== "idle" && fetcher.state === "idle") {
-      revalidate();
+      revalidator.revalidate();
     }
     prevState.current = fetcher.state;
-  }, [fetcher.state, revalidate]);
+  }, [fetcher.state, revalidator]);
+
+  // Stop the spinner once the row reflects the requested status (success), or
+  // once everything settled without it changing (failure) — never stuck.
+  useEffect(() => {
+    if (!pending) return;
+    if (
+      job.status === pending ||
+      (sawBusy.current &&
+        fetcher.state === "idle" &&
+        revalidator.state === "idle")
+    ) {
+      setPending(null);
+    }
+  }, [pending, job.status, fetcher.state, revalidator.state]);
 
   // Reflect the server state only — never optimistically flip the badge while a
   // change is still in flight or could fail (e.g. the release flow validates,
-  // creates POs, and schedules before it commits). The row updates once the
-  // fetcher settles, via revalidate() below.
+  // creates POs, and schedules before it commits).
   const status = job.status;
 
   const canUpdate = permissions.can("update", "production");
@@ -66,13 +88,16 @@ export default function JobStatusMenu({ job }: { job: Job }) {
   const isPaused = status === "Paused";
   const isRunning = ["Ready", "In Progress"].includes(status ?? "");
   const isDone = ["Completed", "Cancelled"].includes(status ?? "");
-  const busy = fetcher.state !== "idle";
+  const busy = pending !== null || fetcher.state !== "idle";
 
-  const submitStatus = (next: (typeof jobStatus)[number]) =>
+  const submitStatus = (next: (typeof jobStatus)[number]) => {
+    sawBusy.current = false;
+    setPending(next);
     fetcher.submit(
       { status: next },
       { method: "post", action: path.to.jobStatus(job.id!) }
     );
+  };
 
   return (
     <>
@@ -84,8 +109,10 @@ export default function JobStatusMenu({ job }: { job: Job }) {
             disabled={busy}
             className="inline-flex items-center gap-1.5 cursor-pointer rounded-full outline-none transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-default disabled:hover:opacity-100"
           >
-            <JobStatus status={status} />
-            {busy && <Spinner className="size-3 text-muted-foreground" />}
+            <span className={busy ? "opacity-50" : undefined}>
+              <JobStatus status={status} />
+            </span>
+            {busy && <Spinner className="size-4 text-foreground" />}
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
