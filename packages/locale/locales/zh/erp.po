@@ -11,6 +11,7 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
+"POT-Creation-Date: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " 供应商是向您出售产品或服务的商家或个人。"
@@ -434,6 +435,9 @@ msgstr "先添加上方选项"
 msgid "Add or edit notes for this line item"
 msgstr "为该行项添加或编辑备注"
 
+msgid "Add or remove quantity"
+msgstr "增加或减少数量"
+
 msgid "Add Pair"
 msgstr "添加配对"
 
@@ -511,6 +515,9 @@ msgstr "地址行1"
 
 msgid "Address Line 2"
 msgstr "地址行2"
+
+msgid "Adjustment"
+msgstr "调整"
 
 msgid "Adjustment Type"
 msgstr "调整类型"
@@ -2786,6 +2793,9 @@ msgstr "交货日期"
 msgid "Delivery Location"
 msgstr "交货地点"
 
+msgid "Delta"
+msgstr "增减"
+
 msgid "Demand"
 msgstr "需求"
 
@@ -3409,11 +3419,20 @@ msgstr "工程联系人"
 msgid "Enter a batch number before setting the expiration date"
 msgstr "在设置有效期之前，请输入批号"
 
+msgid "Enter a positive number to add or a negative number to remove. The change is recorded in the history below."
+msgstr "输入正数添加，负数移除。变更记录在下方的历史中。"
+
+msgid "Enter an adjustment before saving."
+msgstr "保存前请输入调整值。"
+
 msgid "Enter or scan serial number"
 msgstr "输入或扫描序列号"
 
 msgid "Enter PO number"
 msgstr "输入采购订单号"
+
+msgid "Enter the target quantity for each size. The change from the current quantity is recorded in the history."
+msgstr "输入每个尺寸的目标数量。当前数量与历史记录中的差异将被记录。"
 
 msgid "Enter your answer..."
 msgstr "输入您的答案..."
@@ -5651,6 +5670,9 @@ msgstr "新密码"
 msgid "New Payment Term"
 msgstr "新的付款条款"
 
+msgid "New Pickup"
+msgstr "新提货"
+
 msgid "New PIN"
 msgstr "新PIN"
 
@@ -5665,6 +5687,9 @@ msgstr "新的定价规则"
 
 msgid "New Process"
 msgstr "新建工序"
+
+msgid "New Production Quantity"
+msgstr "新的生产数量"
 
 msgid "New Purchase Order Line"
 msgstr "新采购订单行"
@@ -5740,6 +5765,9 @@ msgstr "新的考勤记录"
 
 msgid "New Tool"
 msgstr "新工具"
+
+msgid "New total"
+msgstr "新总数"
 
 msgid "New Training"
 msgstr "新培训"
@@ -5838,6 +5866,9 @@ msgstr "未找到校准记录"
 
 msgid "No changes recorded"
 msgstr "未记录任何更改"
+
+msgid "No changes yet."
+msgstr "暂无更改。"
 
 msgid "No chat history"
 msgstr "没有聊天记录"
@@ -5985,6 +6016,12 @@ msgstr "未找到定价选项"
 
 msgid "No production logs"
 msgstr "无生产日志"
+
+msgid "No production reported yet."
+msgstr "尚未报告生产情况。"
+
+msgid "No quantity recorded yet."
+msgstr "尚未记录数量。"
 
 msgid "No Quote"
 msgstr "无报价"
@@ -6845,6 +6882,9 @@ msgstr "产品标签尺寸"
 msgid "Production"
 msgstr "生产"
 
+msgid "Production already reported per operation. Click a number to pull it into the editor above."
+msgstr "工序已上报生产数量。点击数字将其传入上方编辑器。"
+
 msgid "Production Event"
 msgstr "生产事件"
 
@@ -7316,9 +7356,6 @@ msgstr "已发布"
 msgid "remaining"
 msgstr "剩余"
 
-msgid "Reporter"
-msgstr "报告人"
-
 msgid "Remaining after split stays on the original row."
 msgstr "分隔后剩余的留在原行。"
 
@@ -7443,6 +7480,12 @@ msgstr "报告了<0>{0}</0>个单位"
 
 msgid "Reported <0>{totalQuantity}</0> units"
 msgstr "报告了<0>{totalQuantity}</0>个单位"
+
+msgid "Reported by process"
+msgstr "由工序上报"
+
+msgid "Reporter"
+msgstr "报告人"
 
 msgid "Reports"
 msgstr "报表"
@@ -8996,6 +9039,9 @@ msgstr "这些电子邮件地址将在发送给客户的报价邮件中自动抄
 msgid "These jobs have operations assigned to this work center:"
 msgstr "这些工作已分配至该工作中心的操作："
 
+msgid "This adjustment would take a quantity below zero."
+msgstr "此调整将涉及一个负数量。"
+
 msgid "This information will be used on document headers"
 msgstr "这些信息将用于文档标题"
 
@@ -9681,6 +9727,9 @@ msgstr "查看属性"
 
 msgid "View bill of process"
 msgstr "查看工序清单"
+
+msgid "View configuration parameters"
+msgstr "查看配置参数"
 
 msgid "View Contact"
 msgstr "查看联系人"

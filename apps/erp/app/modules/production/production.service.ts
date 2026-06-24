@@ -15,6 +15,10 @@ import type {
   operationStepValidator,
   operationToolValidator
 } from "../shared";
+import {
+  allowsSupplierQuantityActor,
+  locksActorToOperationSupplier
+} from "./operationType";
 import type {
   deadlineTypes,
   failureModeValidator,
@@ -38,7 +42,6 @@ import type {
   productionQuantityValidator,
   scrapReasonValidator
 } from "./production.models";
-import { allowsSupplierQuantityActor, locksActorToOperationSupplier } from "./operationType";
 import type { Job } from "./types";
 
 export async function convertSalesOrderLinesToJobs(
@@ -846,6 +849,88 @@ export async function getJob(client: SupabaseClient<Database>, id: string) {
   return client.from("jobs").select("*").eq("id", id).single();
 }
 
+export async function getJobConfigurationHistory(
+  client: SupabaseClient<Database>,
+  jobId: string,
+  companyId: string
+) {
+  return client
+    .from("jobConfigurationHistory")
+    .select(
+      `id, quantity, configuration, createdAt, createdBy,
+       createdByUser:user!jobConfigurationHistory_createdBy_fkey(id, fullName, avatarUrl)`
+    )
+    .eq("jobId", jobId)
+    .eq("companyId", companyId)
+    .order("createdAt", { ascending: false });
+}
+
+export async function getJobProductionQuantitySummary(
+  client: SupabaseClient<Database>,
+  jobId: string,
+  companyId: string
+) {
+  const operations = await client
+    .from("jobOperation")
+    .select("id, description, order")
+    .eq("jobId", jobId)
+    .eq("companyId", companyId);
+  if (operations.error) {
+    return { data: null, error: operations.error };
+  }
+
+  const operationList = operations.data ?? [];
+  if (operationList.length === 0) {
+    return { data: [], error: null };
+  }
+
+  const quantities = await client
+    .from("productionQuantity")
+    .select("jobOperationId, quantity, configuration")
+    .in(
+      "jobOperationId",
+      operationList.map((operation) => operation.id)
+    )
+    .eq("companyId", companyId)
+    .eq("type", "Production")
+    .is("invalidatedAt", null);
+  if (quantities.error) {
+    return { data: null, error: quantities.error };
+  }
+
+  const rowsByOperation = new Map<
+    string,
+    { quantity: number | null; configuration: Json | null }[]
+  >();
+  for (const row of quantities.data ?? []) {
+    if (!row.jobOperationId) continue;
+    const existing = rowsByOperation.get(row.jobOperationId);
+    if (existing) {
+      existing.push({
+        quantity: row.quantity,
+        configuration: row.configuration
+      });
+    } else {
+      rowsByOperation.set(row.jobOperationId, [
+        { quantity: row.quantity, configuration: row.configuration }
+      ]);
+    }
+  }
+
+  const summary = operationList
+    .filter((operation) => rowsByOperation.has(operation.id))
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+    .map((operation) => ({
+      operationId: operation.id,
+      label: operation.description ?? "",
+      configurations: (rowsByOperation.get(operation.id) ?? []).map(
+        (row) => row.configuration
+      )
+    }));
+
+  return { data: summary, error: null };
+}
+
 export async function getJobByOperationId(
   client: SupabaseClient<Database>,
   operationId: string
@@ -1175,8 +1260,7 @@ export async function assertSupplierQuantityAllowedForOperation(
   if (!allowsSupplierQuantityActor(operationType)) {
     return {
       error: {
-        message:
-          "Supplier quantities cannot be recorded for Inside operations"
+        message: "Supplier quantities cannot be recorded for Inside operations"
       }
     };
   }
@@ -2537,8 +2621,14 @@ export async function upsertProductionQuantity(
     return { data: updatedLine, error: null };
   }
 
-  const { companyId, createdBy, employeeId, jobOperationId, approval, ...rest } =
-    productionQuantity;
+  const {
+    companyId,
+    createdBy,
+    employeeId,
+    jobOperationId,
+    approval,
+    ...rest
+  } = productionQuantity;
 
   const { data: operation, error: operationError } = await client
     .from("jobOperation")
@@ -2599,7 +2689,9 @@ export async function getJobOperationPickups(
 ) {
   return client
     .from("jobOperationPickup")
-    .select("*, employee:user!jobOperationPickup_employeeId_fkey(id, firstName, lastName, avatarUrl)")
+    .select(
+      "*, employee:user!jobOperationPickup_employeeId_fkey(id, firstName, lastName, avatarUrl)"
+    )
     .eq("jobOperationId", jobOperationId)
     .order("createdAt", { ascending: false });
 }
@@ -2608,11 +2700,7 @@ export async function getJobOperationPickup(
   client: SupabaseClient<Database>,
   id: string
 ) {
-  return client
-    .from("jobOperationPickup")
-    .select("*")
-    .eq("id", id)
-    .single();
+  return client.from("jobOperationPickup").select("*").eq("id", id).single();
 }
 
 export async function upsertJobOperationPickup(
@@ -2682,7 +2770,9 @@ export async function upsertJobOperationPickup(
     }
     return client
       .from("jobOperationPickup")
-      .insert([sanitize({ ...rest, configuration: configuration as Json | null })])
+      .insert([
+        sanitize({ ...rest, configuration: configuration as Json | null })
+      ])
       .select("id")
       .single();
   }
@@ -2765,9 +2855,12 @@ export async function getJobPickupsPage(
 
   const { data, error, count } = await client
     .from("jobOperationPickup")
-    .select("*, employee:user!jobOperationPickup_employeeId_fkey(id, firstName, lastName, avatarUrl)", {
-      count: "exact"
-    })
+    .select(
+      "*, employee:user!jobOperationPickup_employeeId_fkey(id, firstName, lastName, avatarUrl)",
+      {
+        count: "exact"
+      }
+    )
     .eq("jobOperationId", jobOperationId)
     .eq("companyId", companyId)
     .order("createdAt", { ascending: false })

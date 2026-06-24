@@ -407,9 +407,6 @@ msgstr "编辑"
 msgid "Email Address"
 msgstr "电子邮箱"
 
-#~ msgid "Employee"
-#~ msgstr "员工"
-
 msgid "Empty work centers"
 msgstr "空的工作中心"
 
@@ -769,11 +766,8 @@ msgstr "未找到选项。"
 msgid "No options found."
 msgstr "未找到选项。"
 
-#~ msgid "No pickups logged"
-#~ msgstr "无拣货记录"
-
 msgid "No production logs"
-msgstr ""
+msgstr "无生产日志"
 
 msgid "No recent operations"
 msgstr "无近期工序"
@@ -894,7 +888,10 @@ msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "已拾取列 {0}，位于第 {1} 个位置（共 {2} 个）"
 
 msgid "pickup"
-msgstr ""
+msgstr "提货"
+
+msgid "Pickup suggestions:"
+msgstr "提货建议："
 
 msgid "Pickups"
 msgstr "拾取"
@@ -957,13 +954,13 @@ msgid "Processes"
 msgstr "工序"
 
 msgid "production"
-msgstr ""
+msgstr "生产"
 
 msgid "Production"
-msgstr ""
+msgstr "生产"
 
 msgid "Production Logs"
-msgstr ""
+msgstr "生产日志"
 
 msgid "Progress"
 msgstr "进度"
@@ -998,13 +995,13 @@ msgid "Record {0}"
 msgstr "记录 {0}"
 
 msgid "Record Pickup"
-msgstr ""
+msgstr "记录取货"
 
 msgid "Record Quantity"
-msgstr ""
+msgstr "记录数量"
 
 msgid "remaining"
-msgstr ""
+msgstr "剩余"
 
 msgid "Remove"
 msgstr "移除"
@@ -1028,7 +1025,7 @@ msgid "Reset zoom"
 msgstr "重置缩放"
 
 msgid "rework"
-msgstr ""
+msgstr "返工"
 
 msgid "Sales Order"
 msgstr "销售订单"
@@ -1049,7 +1046,7 @@ msgid "Schedule"
 msgstr "排程"
 
 msgid "scrap"
-msgstr ""
+msgstr "废料"
 
 msgid "Scrap"
 msgstr "废料"
@@ -1280,19 +1277,19 @@ msgid "Tools"
 msgstr "工具"
 
 msgid "Total Pickups"
-msgstr ""
+msgstr "总提货次数"
 
 msgid "Total Production"
-msgstr ""
+msgstr "总生产量"
 
 msgid "Total Quantity"
 msgstr "总数量"
 
 msgid "Total Rework"
-msgstr ""
+msgstr "总返工"
 
 msgid "Total Scrap"
-msgstr ""
+msgstr "总废料"
 
 #. placeholder {0}: formatDuration(totalDuration)
 msgid "Total time: {0}"

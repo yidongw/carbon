@@ -1,7 +1,7 @@
+import { buildConfigEditorRows } from "~/modules/production/ui/Jobs/ConfigParamsTableModal";
 import type { ItemConfigTableOverlayLoaderData } from "~/routes/api+/items.$itemId.config-table";
 import type { JobBillOfProcessOverlayLoaderData } from "~/routes/api+/production.jobs.$jobId.bill-of-process";
 import type { JobConfigTableOverlayLoaderData } from "~/routes/api+/production.jobs.$jobId.config-table";
-import { buildConfigEditorRows } from "~/modules/production/ui/Jobs/ConfigParamsTableModal";
 import { renderLazyOverlay } from "./renderLazyOverlay";
 import type { OverlayRegistryEntry } from "./types";
 
@@ -321,10 +321,12 @@ export const overlayRegistry = {
         return {
           parameters: data.parameters,
           initialRows: data.initialRows,
-          jobDisplayId: data.jobDisplayId
+          jobDisplayId: data.jobDisplayId,
+          history: data.history,
+          processQuantities: data.processQuantities
         };
       },
-      () => import("~/modules/production/ui/Jobs/ConfigParamsTableModal")
+      () => import("~/modules/production/ui/Jobs/JobConfigQuantities")
     )
   },
   itemConfigTable: {

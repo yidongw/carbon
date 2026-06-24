@@ -407,9 +407,6 @@ msgstr "संपादित करें"
 msgid "Email Address"
 msgstr "ईमेल पता"
 
-#~ msgid "Employee"
-#~ msgstr "कर्मचारी"
-
 msgid "Empty work centers"
 msgstr "खाली कार्य केंद्र"
 
@@ -769,11 +766,8 @@ msgstr "कोई विकल्प नहीं मिला।"
 msgid "No options found."
 msgstr "कोई विकल्प नहीं मिला।"
 
-#~ msgid "No pickups logged"
-#~ msgstr "कोई लोड नहीं लॉग किया गया"
-
 msgid "No production logs"
-msgstr ""
+msgstr "कोई उत्पादन लॉग नहीं"
 
 msgid "No recent operations"
 msgstr "कोई हाल के संचालन नहीं"
@@ -894,7 +888,10 @@ msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "कॉलम {0} को स्थिति {1} पर उठाया गया: {2} में से"
 
 msgid "pickup"
-msgstr ""
+msgstr "पीकअप"
+
+msgid "Pickup suggestions:"
+msgstr "पहचान सUGGESTIONS:"
 
 msgid "Pickups"
 msgstr "ग्रैब"
@@ -957,13 +954,13 @@ msgid "Processes"
 msgstr "प्रक्रियाएं"
 
 msgid "production"
-msgstr ""
+msgstr "उत्पादन"
 
 msgid "Production"
-msgstr ""
+msgstr "उत्पादन"
 
 msgid "Production Logs"
-msgstr ""
+msgstr "उत्पादन लॉग्स"
 
 msgid "Progress"
 msgstr "प्रगति"
@@ -998,13 +995,13 @@ msgid "Record {0}"
 msgstr "रिकॉर्ड {0}"
 
 msgid "Record Pickup"
-msgstr ""
+msgstr "रिकॉर्ड पीकअप"
 
 msgid "Record Quantity"
-msgstr ""
+msgstr "रिकॉर्ड गुणता"
 
 msgid "remaining"
-msgstr ""
+msgstr "शेष"
 
 msgid "Remove"
 msgstr "हटाएं"
@@ -1028,7 +1025,7 @@ msgid "Reset zoom"
 msgstr "रीसेट फोकस"
 
 msgid "rework"
-msgstr ""
+msgstr "रिउपर्कार"
 
 msgid "Sales Order"
 msgstr "बिक्रय आदेश"
@@ -1049,7 +1046,7 @@ msgid "Schedule"
 msgstr "शेड्यूल"
 
 msgid "scrap"
-msgstr ""
+msgstr "बाजारी निषेध"
 
 msgid "Scrap"
 msgstr "स्क्रॅप"
@@ -1280,19 +1277,19 @@ msgid "Tools"
 msgstr "उपकरण"
 
 msgid "Total Pickups"
-msgstr ""
+msgstr "कुल पीकअप्स"
 
 msgid "Total Production"
-msgstr ""
+msgstr "कुल उत्पादन"
 
 msgid "Total Quantity"
 msgstr "कुल मात्रा"
 
 msgid "Total Rework"
-msgstr ""
+msgstr "कुल रियोकॉम्बीनेशन"
 
 msgid "Total Scrap"
-msgstr ""
+msgstr "कुल डॅपर्ट"
 
 #. placeholder {0}: formatDuration(totalDuration)
 msgid "Total time: {0}"

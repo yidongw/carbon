@@ -407,9 +407,6 @@ msgstr "編集"
 msgid "Email Address"
 msgstr "メールアドレス"
 
-#~ msgid "Employee"
-#~ msgstr "従業員"
-
 msgid "Empty work centers"
 msgstr "空の作業センター"
 
@@ -769,11 +766,8 @@ msgstr "オプションが見つかりません。"
 msgid "No options found."
 msgstr "オプションが見つかりません。"
 
-#~ msgid "No pickups logged"
-#~ msgstr "No pickups logged"
-
 msgid "No production logs"
-msgstr ""
+msgstr "生産ログがありません"
 
 msgid "No recent operations"
 msgstr "最近の工程はありません"
@@ -894,7 +888,10 @@ msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "カラム {0} を位置 {1}/{2} で選択しました"
 
 msgid "pickup"
-msgstr ""
+msgstr "ピックアップ"
+
+msgid "Pickup suggestions:"
+msgstr "ピックアップの提案："
 
 msgid "Pickups"
 msgstr "Pickup"
@@ -957,13 +954,13 @@ msgid "Processes"
 msgstr "プロセス一覧"
 
 msgid "production"
-msgstr ""
+msgstr "生産"
 
 msgid "Production"
-msgstr ""
+msgstr "生産"
 
 msgid "Production Logs"
-msgstr ""
+msgstr "生産ログ"
 
 msgid "Progress"
 msgstr "進捗"
@@ -998,13 +995,13 @@ msgid "Record {0}"
 msgstr "レコード {0}"
 
 msgid "Record Pickup"
-msgstr ""
+msgstr "受取記録"
 
 msgid "Record Quantity"
-msgstr ""
+msgstr "レコード数量"
 
 msgid "remaining"
-msgstr ""
+msgstr "残り"
 
 msgid "Remove"
 msgstr "削除"
@@ -1028,7 +1025,7 @@ msgid "Reset zoom"
 msgstr "ズームをリセット"
 
 msgid "rework"
-msgstr ""
+msgstr "再加工"
 
 msgid "Sales Order"
 msgstr "受注"
@@ -1049,7 +1046,7 @@ msgid "Schedule"
 msgstr "スケジュール"
 
 msgid "scrap"
-msgstr ""
+msgstr "廃棄物"
 
 msgid "Scrap"
 msgstr "廃棄物"
@@ -1280,19 +1277,19 @@ msgid "Tools"
 msgstr "工具"
 
 msgid "Total Pickups"
-msgstr ""
+msgstr "総計ピックアップ"
 
 msgid "Total Production"
-msgstr ""
+msgstr "総生産量"
 
 msgid "Total Quantity"
 msgstr "合計数量"
 
 msgid "Total Rework"
-msgstr ""
+msgstr "総計リワーク"
 
 msgid "Total Scrap"
-msgstr ""
+msgstr "総合不良"
 
 #. placeholder {0}: formatDuration(totalDuration)
 msgid "Total time: {0}"
