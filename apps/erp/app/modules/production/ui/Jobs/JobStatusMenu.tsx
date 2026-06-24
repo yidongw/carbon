@@ -50,10 +50,11 @@ export default function JobStatusMenu({ job }: { job: Job }) {
     prevState.current = fetcher.state;
   }, [fetcher.state, revalidate]);
 
-  const optimisticStatus = fetcher.formData?.get("status") as
-    | (typeof jobStatus)[number]
-    | undefined;
-  const status = optimisticStatus ?? job.status;
+  // Reflect the server state only — never optimistically flip the badge while a
+  // change is still in flight or could fail (e.g. the release flow validates,
+  // creates POs, and schedules before it commits). The row updates once the
+  // fetcher settles, via revalidate() below.
+  const status = job.status;
 
   const canUpdate = permissions.can("update", "production");
   if (!job.id || !canUpdate) {
