@@ -125,7 +125,13 @@ const MemoizedCell = memo(
     next.isEditMode === prev.isEditMode &&
     next.cell.getValue() === prev.cell.getValue() &&
     next.pinnedColumns === prev.pinnedColumns &&
-    next.columnIndex === prev.columnIndex
+    next.columnIndex === prev.columnIndex &&
+    // getPinnedStyles is applied to the Td below; its identity changes when
+    // columnPinning/columnSizeMap update (it's a useCallback keyed on them).
+    // Without this the cell keeps the styles from the first render — when
+    // columnSizeMap was still empty — so pinned cells stick at left:0 and
+    // cover the checkbox column once widths are measured.
+    prev.getPinnedStyles === next.getPinnedStyles
 ) as typeof Cell;
 
 export default MemoizedCell;
