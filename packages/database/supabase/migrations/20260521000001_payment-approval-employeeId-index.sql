@@ -13,9 +13,8 @@ FOR UPDATE USING (
   has_company_permission('people_update', "companyId")
 );
 
--- Recreate the salary sync trigger to include "invalidatedAt", which was added by
--- 20260520120000. The initial trigger in 20260518000003 omitted it to avoid a
--- "column does not exist" error at migration time.
+-- Ensure the salary sync trigger includes "invalidatedAt".
+-- 20260520120001 already creates it correctly; this is a safe no-op on fresh DBs.
 DROP TRIGGER IF EXISTS trg_sync_salary_on_production_quantity ON "productionQuantity";
 CREATE TRIGGER trg_sync_salary_on_production_quantity
 AFTER INSERT OR UPDATE OF "paymentYear", "paymentMonth", "quantity", "invalidatedAt"
