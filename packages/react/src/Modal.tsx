@@ -76,33 +76,54 @@ const ModalContent = forwardRef<
   ComponentPropsWithoutRef<typeof DialogPrimitive.Content> &
     VariantProps<typeof ModalContentVariants> & {
       withCloseButton?: boolean;
+      /** Raises overlay + content above other stacked dialogs (e.g. nested overlays). */
+      stackZIndex?: number;
     }
->(({ className, children, size, withCloseButton = true, ...props }, ref) => (
-  <ClientOnly fallback={null}>
-    {() => (
-      <ModalPortal>
-        <ModalOverlay>
-          <DialogPrimitive.Content
-            ref={ref}
-            className={cn(ModalContentVariants({ size }), className)}
-            {...props}
+>(
+  (
+    {
+      className,
+      children,
+      size,
+      withCloseButton = true,
+      stackZIndex,
+      ...props
+    },
+    ref
+  ) => (
+    <ClientOnly fallback={null}>
+      {() => (
+        <ModalPortal>
+          <ModalOverlay
+            style={
+              stackZIndex !== undefined ? { zIndex: stackZIndex } : undefined
+            }
           >
-            {children}
-            {withCloseButton && (
-              <DialogPrimitive.Close
-                type="button"
-                className="absolute right-4 top-4 rounded-full opacity-70 transition-opacity hover:opacity-100 outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-foreground-muted p-3 hover:bg-accent/80"
-              >
-                <LuX className="h-4 w-4" />
-                <span className="sr-only">Close</span>
-              </DialogPrimitive.Close>
-            )}
-          </DialogPrimitive.Content>
-        </ModalOverlay>
-      </ModalPortal>
-    )}
-  </ClientOnly>
-));
+            <DialogPrimitive.Content
+              ref={ref}
+              className={cn(ModalContentVariants({ size }), className)}
+              style={
+                stackZIndex !== undefined ? { zIndex: stackZIndex } : undefined
+              }
+              {...props}
+            >
+              {children}
+              {withCloseButton && (
+                <DialogPrimitive.Close
+                  type="button"
+                  className="absolute right-4 top-4 rounded-full opacity-70 transition-opacity hover:opacity-100 outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-foreground-muted p-3 hover:bg-accent/80"
+                >
+                  <LuX className="h-4 w-4" />
+                  <span className="sr-only">Close</span>
+                </DialogPrimitive.Close>
+              )}
+            </DialogPrimitive.Content>
+          </ModalOverlay>
+        </ModalPortal>
+      )}
+    </ClientOnly>
+  )
+);
 ModalContent.displayName = DialogPrimitive.Content.displayName;
 
 const ModalHeader = ({

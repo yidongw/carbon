@@ -1,10 +1,11 @@
 import { HStack, IconButton } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
-import { LuSquarePen } from "react-icons/lu";
+import { LuArrowLeft, LuSquarePen } from "react-icons/lu";
+import { useLocation, useNavigate } from "react-router";
 import { usePermissions, useUser } from "~/hooks";
+import { path } from "~/utils/path";
 import AvatarMenu from "../../AvatarMenu";
 import Breadcrumbs from "./Breadcrumbs";
-import CompanySwitcher from "./CompanySwitcher";
 import CreateMenu from "./CreateMenu";
 import Notifications from "./Notifications";
 import Search from "./Search";
@@ -12,9 +13,12 @@ import Suggestion from "./Suggestion";
 
 const Topbar = () => {
   const { t } = useLingui();
+  const navigate = useNavigate();
+  const location = useLocation();
   const permissions = usePermissions();
   const user = useUser();
   const notificationsKey = `${user.id}:${user.company.id}`;
+  const onDashboard = location.pathname === path.to.authenticatedRoot;
 
   return (
     <div className="h-[49px] grid grid-cols-[1fr_200px_1fr] bg-background text-foreground px-4 top-0 sticky z-10 items-center">
@@ -22,13 +26,27 @@ const Topbar = () => {
         <Breadcrumbs />
       </div>
       <div className="flex-1 md:hidden">
-        <CompanySwitcher />
+        {!onDashboard ? (
+          <IconButton
+            aria-label={t`Back`}
+            icon={<LuArrowLeft />}
+            variant="ghost"
+            onClick={() => navigate(-1)}
+          />
+        ) : null}
       </div>
       <div className="flex justify-center">
-        {permissions.is("employee") ? <Search /> : <div />}
+        <div className="md:hidden">
+          <Breadcrumbs />
+        </div>
       </div>
       <HStack spacing={1} className="flex-1 justify-end py-2">
-        <div className="hidden sm:block">
+        {permissions.is("employee") ? (
+          <div className="md:absolute md:left-1/2 md:-translate-x-1/2">
+            <Search />
+          </div>
+        ) : null}
+        <div className="hidden md:block">
           <Suggestion />
         </div>
         <CreateMenu

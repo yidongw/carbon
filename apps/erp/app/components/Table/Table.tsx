@@ -1,9 +1,5 @@
 import {
-  ActionMenu,
   Button,
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuTrigger,
   cn,
   DropdownMenu,
   DropdownMenuContent,
@@ -11,7 +7,6 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-  Menu,
   Table as TableBase,
   Tbody,
   Td,
@@ -60,7 +55,7 @@ import {
   LuTrendingUpDown,
   LuTriangleAlert
 } from "react-icons/lu";
-import { useNavigation } from "react-router";
+import { useLocation, useNavigation } from "react-router";
 import { useSpinDelay } from "spin-delay";
 import type {
   EditableTableCellComponent,
@@ -72,6 +67,8 @@ import {
   IndeterminateCheckbox,
   Pagination,
   Row,
+  RowActionMenu,
+  TableCardRow,
   TableHeader,
   usePagination,
   useSort
@@ -86,6 +83,7 @@ interface TableProps<T extends object> {
   count?: number;
   compact?: boolean;
   data: T[];
+  defaultFeaturedColumns?: string[];
   defaultColumnOrder?: string[];
   defaultColumnPinning?: ColumnPinningState;
   defaultColumnVisibility?: Record<string, boolean>;
@@ -111,6 +109,7 @@ interface TableProps<T extends object> {
   renderActions?: (selectedRows: T[]) => ReactNode;
   renderContextMenu?: (row: T) => JSX.Element | null;
   renderExpandedRow?: (row: T) => ReactNode;
+  getRowHref?: (row: T) => string | undefined;
 }
 
 type AggregateFunction = "sum" | "average" | "min" | "max" | "median" | "count";
@@ -228,6 +227,7 @@ const Table = <T extends object>({
   columns,
   compact = false,
   count = 0,
+  defaultFeaturedColumns,
   defaultColumnOrder,
   defaultColumnPinning,
   defaultColumnVisibility,
@@ -249,7 +249,8 @@ const Table = <T extends object>({
   onSelectedRowsChange,
   renderActions,
   renderContextMenu,
-  renderExpandedRow
+  renderExpandedRow,
+  getRowHref
 }: TableProps<T>) => {
   const { i18n } = useLingui();
   const tableContainerRef = useRef<HTMLDivElement>(null);
@@ -389,6 +390,25 @@ const Table = <T extends object>({
       });
     }
   }, [view]);
+
+  /* Featured Columns (card right) */
+  const [featuredColumns, setFeaturedColumns] = useState<Set<string>>(
+    () => new Set(defaultFeaturedColumns ?? [])
+  );
+
+  // Tracks the in-flight columnPinning.left so that multiple onReorder calls
+  // within the same JS tick (framer-motion fires once per crossed boundary)
+  // each build on the previous call's result rather than a stale closure.
+  const pinnedLeftRef = useRef<string[]>(columnPinning.left ?? []);
+  pinnedLeftRef.current = columnPinning.left ?? [];
+
+  const handlePinnedReorder = useCallback((newUserLeft: string[]) => {
+    const userSet = new Set(newUserLeft);
+    const systemPinned = pinnedLeftRef.current.filter((id) => !userSet.has(id));
+    const fullLeft = [...systemPinned, ...newUserLeft];
+    pinnedLeftRef.current = fullLeft;
+    setColumnPinning((prev) => ({ ...prev, left: fullLeft }));
+  }, []);
 
   /* Sorting */
   const { isSorted, toggleSortByAscending, toggleSortByDescending } = useSort();
@@ -755,7 +775,9 @@ const Table = <T extends object>({
   useEffect(() => {
     const calculateColumnWidths = () => {
       const tableWrapperEl = getTableWrapperEl();
-      if (!tableWrapperEl) return;
+      // Skip if container has no width — DOM is not ready or table is hidden.
+      // Writing all-zero widths would collapse every sticky column to left:0.
+      if (!tableWrapperEl || tableWrapperEl.clientWidth === 0) return;
 
       const columnWidths: ColumnSizeMap = new Map();
       let leftPinnedWidth = 0;
@@ -798,18 +820,35 @@ const Table = <T extends object>({
         });
       });
 
-      setColumnSizeMap(columnWidths);
+      setColumnSizeMap((previous) => {
+        if (previous.size !== columnWidths.size) return columnWidths;
+        for (const [id, size] of columnWidths) {
+          const prev = previous.get(id);
+          if (
+            !prev ||
+            Math.abs(prev.width - size.width) > 1 ||
+            Math.abs(prev.startX - size.startX) > 1
+          ) {
+            return columnWidths;
+          }
+        }
+        return previous;
+      });
     };
 
     // Initial calculation
     calculateColumnWidths();
 
-    // Add resize observer to handle window/table size changes
+    // Debounce resize — immediate updates remount row menus (e.g. ActionMenu).
+    let resizeTimer: ReturnType<typeof setTimeout> | undefined;
+    const scheduleCalculate = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(calculateColumnWidths, 100);
+    };
+
     const tableWrapper = getTableWrapperEl();
     if (tableWrapper) {
-      const resizeObserver = new ResizeObserver(() => {
-        calculateColumnWidths();
-      });
+      const resizeObserver = new ResizeObserver(scheduleCalculate);
       resizeObserver.observe(tableWrapper);
       // Also observe the table itself: internal layout changes (e.g. tree
       // expansion adding rows/widening columns) resize the table without
@@ -817,7 +856,10 @@ const Table = <T extends object>({
       if (tableRef.current) {
         resizeObserver.observe(tableRef.current);
       }
-      return () => resizeObserver.disconnect();
+      return () => {
+        clearTimeout(resizeTimer);
+        resizeObserver.disconnect();
+      };
     }
   }, [
     getTableWrapperEl,
@@ -831,31 +873,42 @@ const Table = <T extends object>({
   //   .getLeftVisibleLeafColumns()
   //   .findLast((c) => c.getIsPinned() === "left");
 
-  const getPinnedStyles = (column: Column<T>): CSSProperties => {
-    const isPinned = column.getIsPinned();
-    if (!isPinned) return {};
+  const getPinnedStyles = useCallback(
+    (column: Column<T>): CSSProperties => {
+      const isPinned = column.getIsPinned();
+      if (!isPinned) return {};
 
-    const pinnedPosition = columnSizeMap.get(column.id);
-    const startX = pinnedPosition?.startX ?? 0;
+      // Right-pinned user columns are card-only — no sticky on the desktop table.
+      // Only system columns (Actions) remain sticky on the right.
+      if (isPinned === "right" && column.id !== "Actions") return {};
 
-    return {
-      position: "sticky",
-      left: isPinned === "left" ? startX : undefined,
-      right: isPinned === "right" ? 0 : undefined,
-      zIndex: 2,
-      maxWidth:
-        isPinned === "right" &&
-        column.columnDef.header?.toString() === "Actions"
-          ? 60
-          : undefined
-    };
-  };
+      let startX = 0;
+      if (isPinned === "left") {
+        for (const id of columnPinning.left ?? []) {
+          if (id === column.id) break;
+          startX += columnSizeMap.get(id)?.width ?? 0;
+        }
+      }
 
+      return {
+        position: "sticky",
+        left: isPinned === "left" ? startX : undefined,
+        right: isPinned === "right" ? 0 : undefined,
+        zIndex: 2,
+        maxWidth: isPinned === "right" ? 60 : undefined
+      };
+    },
+    [columnPinning.left, columnSizeMap]
+  );
+
+  const location = useLocation();
   const navigation = useNavigation();
   const { hasFilters, clearFilters } = useFilters();
-  const isLoading = useSpinDelay(navigation.state === "loading", {
-    delay: 300
-  });
+  const isRevalidatingCurrentRoute = useSpinDelay(
+    navigation.state === "loading" &&
+      navigation.location?.pathname === location.pathname,
+    { delay: 300 }
+  );
 
   return (
     <VStack
@@ -867,6 +920,7 @@ const Table = <T extends object>({
       )}
     >
       <TableHeader
+        featuredColumns={featuredColumns}
         columnAccessors={columnAccessors}
         columnOrder={columnOrder}
         columnPinning={columnPinning}
@@ -881,6 +935,8 @@ const Table = <T extends object>({
         primaryAction={primaryAction}
         renderActions={renderActions}
         selectedRows={selectedRows}
+        setFeaturedColumns={setFeaturedColumns}
+        onPinnedReorder={handlePinnedReorder}
         setColumnOrder={setColumnOrder}
         setEditMode={setEditMode}
         table={tableName}
@@ -893,18 +949,60 @@ const Table = <T extends object>({
         sort={sort}
       />
 
+      {/* Mobile card view */}
+      <div className="md:hidden w-full flex-1 min-h-0 overflow-y-auto">
+        {rows.length === 0 ? (
+          <div className="flex flex-col w-full h-full items-center justify-center gap-4 py-16">
+            <div className="flex justify-center items-center h-12 w-12 rounded-full bg-foreground text-background">
+              <LuTriangleAlert className="h-6 w-6 flex-shrink-0" />
+            </div>
+            <span className="text-xs font-mono font-light text-foreground uppercase">
+              {hasFilters ? (
+                <Trans>No results found</Trans>
+              ) : (
+                <Trans>No data exists</Trans>
+              )}
+            </span>
+            {hasFilters ? (
+              <Button variant="secondary" onClick={clearFilters}>
+                <Trans>Remove Filters</Trans>
+              </Button>
+            ) : (
+              primaryAction
+            )}
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3 px-3 py-2">
+            {rows.map((row) => (
+              <TableCardRow
+                key={row.id}
+                row={row}
+                pinnedColumns={table.getLeftVisibleLeafColumns()}
+                centerColumns={table.getCenterVisibleLeafColumns()}
+                featuredColumns={featuredColumns}
+                getRowHref={getRowHref}
+                renderContextMenu={renderContextMenu}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Desktop table view */}
       <div
         id="table-container"
         className={cn(
-          "w-full h-full overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent"
+          // contain:inline-size caps this scroll container's width to the grid
+          // track instead of letting the wide table expand the min-width:auto
+          // flex/grid ancestor chain (which kills horizontal scrolling).
+          "hidden md:block w-full h-full overflow-x-auto [contain:inline-size] [scrollbar-gutter:stable] scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent"
         )}
-        style={{ contain: "strict" }}
         ref={tableContainerRef}
         onKeyDown={editMode ? onKeyDown : undefined}
       >
         <div className="flex max-w-full h-full">
           {rows.length === 0 ? (
-            isLoading ? (
+            isRevalidatingCurrentRoute ? (
               <div className="flex h-full w-full items-start justify-center">
                 <TableBase full className="w-full">
                   <Thead>
@@ -1092,37 +1190,10 @@ const Table = <T extends object>({
                   const handleRowClick = renderExpandedRow
                     ? () => toggleRowExpanded(row.index)
                     : undefined;
-                  const rowContent = renderContextMenu ? (
-                    <Menu type="context" key={row.index}>
-                      <ContextMenu>
-                        <ContextMenuTrigger asChild>
-                          <Row
-                            editableComponents={editableComponents}
-                            isEditing={isEditing}
-                            isEditMode={editMode}
-                            isRowSelected={
-                              row.index in rowSelection &&
-                              !!rowSelection[row.index]
-                            }
-                            pinnedColumns={pinnedColumnsKey}
-                            selectedCell={selectedCell}
-                            row={row}
-                            rowIsSelected={selectedCell?.row === row.index}
-                            getPinnedStyles={getPinnedStyles}
-                            onCellClick={onCellClick}
-                            onCellUpdate={onCellUpdate}
-                            onClick={handleRowClick}
-                            className={
-                              renderExpandedRow ? "cursor-pointer" : undefined
-                            }
-                          />
-                        </ContextMenuTrigger>
-                        <ContextMenuContent className="w-128">
-                          {renderContextMenu(row.original)}
-                        </ContextMenuContent>
-                      </ContextMenu>
-                    </Menu>
-                  ) : (
+                  // Desktop rows use the Actions column ActionMenu (dropdown) only.
+                  // Do not wrap the row in ContextMenu — nesting dropdown inside
+                  // ContextMenuTrigger causes the menu to flash closed on open.
+                  const rowContent = (
                     <Row
                       key={row.id}
                       editableComponents={editableComponents}
@@ -1258,12 +1329,17 @@ function getActionColumn<T>(
       header: () => (
         <span className="sr-only">{translateLabel("Actions")}</span>
       ),
-      cell: (item) => (
-        <div className="flex justify-end">
-          <ActionMenu>{renderContextMenu(item.row.original)}</ActionMenu>
-        </div>
+      cell: ({ row }) => (
+        <RowActionMenu
+          rowKey={row.id}
+          row={row.original}
+          renderContextMenu={renderContextMenu}
+        />
       ),
-      size: 60
+      size: 60,
+      meta: {
+        cellClassName: "transition-none"
+      }
     }
   ];
 }

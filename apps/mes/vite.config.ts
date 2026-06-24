@@ -37,7 +37,14 @@ export default defineConfig(({ mode, isSsrBuild }) => {
     server: {
       port: 3001,
       strictPort: true,
-      allowedHosts: [".ngrok-free.app", ".w.modal.host", ".w.modal.dev", ".dev", ".localhost"],
+      allowedHosts: [
+        ".ngrok-free.app",
+        ".trycloudflare.com",
+        ".w.modal.host",
+        ".w.modal.dev",
+        ".dev",
+        ".localhost"
+      ],
     },
     plugins: [
       tailwindcss(),

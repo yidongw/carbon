@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { months } from "~/modules/shared";
+import { optionalRequiredStringArray } from "~/utils/zodFields";
 import {
   itemLedgerDocumentTypes,
   itemLedgerTypes
@@ -512,7 +513,7 @@ export const dimensionValidator = z.object({
   }),
   active: zfd.checkbox(),
   required: zfd.checkbox(),
-  dimensionValues: z.string().min(1).array().optional()
+  dimensionValues: optionalRequiredStringArray
 });
 
 // -- Fixed Asset Models --

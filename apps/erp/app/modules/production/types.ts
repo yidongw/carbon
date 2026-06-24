@@ -7,6 +7,7 @@ import type {
   getJobMaterialsWithQuantityOnHand,
   getJobMethodTree,
   getJobOperations,
+  getJobPickupsByOperations,
   getJobPurchaseOrderLines,
   getMaintenanceDispatch,
   getMaintenanceDispatchComments,
@@ -108,6 +109,10 @@ export type ProductionEvent = NonNullable<
 
 export type ProductionQuantity = NonNullable<
   Awaited<ReturnType<typeof getProductionQuantities>>["data"]
+>[number];
+
+export type JobPickup = NonNullable<
+  Awaited<ReturnType<typeof getJobPickupsByOperations>>["data"]
 >[number];
 
 export type Procedures = NonNullable<

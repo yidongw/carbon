@@ -1,5 +1,4 @@
 import {
-  Array,
   ArrayNumeric,
   Boolean,
   Combobox,
@@ -9,7 +8,6 @@ import {
   DateTimePicker,
   DefaultDisabledSubmit,
   Hidden,
-  Input,
   InputControlled,
   MultiSelect,
   Number,
@@ -29,6 +27,7 @@ import Abilities from "./Abilities";
 import Ability from "./Ability";
 import Account, { AccountControlled } from "./Account";
 import AddressAutocomplete from "./AddressAutocomplete";
+import Array from "./Array";
 import AssetClass, { useAssetClasses } from "./AssetClass";
 import Color from "./Color";
 import ConversionFactor from "./ConversionFactor";
@@ -48,6 +47,7 @@ import EmailRecipients from "./EmailRecipients";
 import EmojiPicker from "./EmojiPicker";
 import Employee from "./Employee";
 import Employees from "./Employees";
+import Input from "./Input";
 import Item, { useConfigurableItems } from "./Item";
 import ItemPostingGroup from "./ItemPostingGroup";
 import Items from "./Items";
@@ -78,6 +78,7 @@ import SupplierStatus from "./SupplierStatus";
 import Suppliers from "./Suppliers";
 import SupplierType from "./SupplierType";
 import Tags from "./Tags";
+import Template from "./Template";
 import Tool from "./Tool";
 import UnitHint from "./UnitHint";
 import UnitOfMeasure from "./UnitOfMeasure";
@@ -162,6 +163,7 @@ export {
   SupplierStatus,
   SupplierType,
   Tags,
+  Template,
   TextArea,
   TimePicker,
   Timezone,

@@ -32,7 +32,7 @@ const InventoryItemHeader = ({
             isIcon
             variant="ghost"
             onClick={() =>
-              navigate(`${path.to.inventory}?${params.toString()}`)
+              navigate(`${path.to.inventoryQuantities}?${params.toString()}`)
             }
           >
             <LuX className="w-4 h-4" />

@@ -21,7 +21,7 @@ export default function usePeopleSubmodules() {
       routes: [
         {
           name: t`Employees`,
-          to: path.to.people,
+          to: `${path.to.people}?filter=active:eq:true`,
           icon: <LuUsers />,
           table: "employee"
         },

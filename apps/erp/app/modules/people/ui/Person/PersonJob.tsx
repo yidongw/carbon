@@ -6,6 +6,7 @@ import type { z } from "zod";
 import {
   CustomFormFields,
   DatePicker,
+  Department,
   Employee,
   Hidden,
   Input,
@@ -51,6 +52,7 @@ const PersonJob = ({ initialValues }: PersonJobProps) => {
               label={t`Shift`}
             />
             <Employee name="managerId" label={t`Manager`} />
+            <Department name="departmentId" label={t`Department`} />
             <Hidden name="intent" value="job" />
             <CustomFormFields table="employeeJob" />
           </div>

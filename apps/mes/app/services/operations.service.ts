@@ -1,4 +1,4 @@
-import type { Database } from "@carbon/database";
+import type { Database, Json } from "@carbon/database";
 import type { JSONContent } from "@carbon/react";
 import {
   type FlatTree,
@@ -903,28 +903,97 @@ export async function insertAttributeRecord(
   });
 }
 
-export async function insertReworkQuantity(
+// Production quantities roll up under a productionQuantityReport: the ERP
+// review/approval flow keys off `productionQuantity.reportId`. MES reports a
+// single line per submission, so we create the report wrapper here and attach
+// the line to it. Without this, MES-reported quantities are orphaned (no
+// report) and cannot be reviewed/approved on the ERP side.
+async function createReportAndQuantity(
   client: SupabaseClient<Database>,
-  data: z.infer<typeof nonScrapQuantityValidator> & {
+  args: {
+    type: "Production" | "Scrap" | "Rework";
     companyId: string;
+    jobOperationId: string;
+    employeeId: string;
     createdBy: string;
+    quantity: number;
+    notes?: string | null;
+    scrapReasonId?: string | null;
+    paymentYear?: number | null;
+    paymentMonth?: number | null;
   }
 ) {
-  const {
-    trackedEntityId: _trackedEntityId,
-    trackingType: _trackingType,
-    ...insert
-  } = data;
+  const { data: operation, error: operationError } = await client
+    .from("jobOperation")
+    .select("jobId")
+    .eq("id", args.jobOperationId)
+    .single();
+
+  if (operationError || !operation?.jobId) {
+    return {
+      data: null,
+      error:
+        operationError ??
+        new Error(`Could not resolve job for operation ${args.jobOperationId}`)
+    };
+  }
+
+  const { data: report, error: reportError } = await client
+    .from("productionQuantityReport")
+    .insert({
+      companyId: args.companyId,
+      jobId: operation.jobId,
+      jobOperationId: args.jobOperationId,
+      employeeId: args.employeeId,
+      originalQuantity: args.quantity,
+      notes: args.notes ?? null,
+      createdBy: args.createdBy
+    })
+    .select("id")
+    .single();
+
+  if (reportError || !report) {
+    return { data: null, error: reportError };
+  }
 
   return client
     .from("productionQuantity")
     .insert(
       sanitize({
-        ...insert,
-        type: "Rework"
+        companyId: args.companyId,
+        jobOperationId: args.jobOperationId,
+        reportId: report.id,
+        type: args.type,
+        quantity: args.quantity,
+        notes: args.notes ?? null,
+        scrapReasonId:
+          args.type === "Scrap" ? (args.scrapReasonId ?? null) : null,
+        employeeId: args.employeeId,
+        createdBy: args.createdBy,
+        paymentYear: args.paymentYear ?? null,
+        paymentMonth: args.paymentMonth ?? null
       })
     )
     .select("*");
+}
+
+export async function insertReworkQuantity(
+  client: SupabaseClient<Database>,
+  data: z.infer<typeof nonScrapQuantityValidator> & {
+    companyId: string;
+    createdBy: string;
+    employeeId: string;
+  }
+) {
+  return createReportAndQuantity(client, {
+    type: "Rework",
+    companyId: data.companyId,
+    jobOperationId: data.jobOperationId,
+    employeeId: data.employeeId,
+    createdBy: data.createdBy,
+    quantity: data.quantity,
+    notes: data.notes ?? null
+  });
 }
 
 export async function insertProductionQuantity(
@@ -932,17 +1001,22 @@ export async function insertProductionQuantity(
   data: z.infer<typeof nonScrapQuantityValidator> & {
     companyId: string;
     createdBy: string;
+    employeeId: string;
+    paymentYear?: number | null;
+    paymentMonth?: number | null;
   }
 ) {
-  return client
-    .from("productionQuantity")
-    .insert(
-      sanitize({
-        ...data,
-        type: "Production"
-      })
-    )
-    .select("*");
+  return createReportAndQuantity(client, {
+    type: "Production",
+    companyId: data.companyId,
+    jobOperationId: data.jobOperationId,
+    employeeId: data.employeeId,
+    createdBy: data.createdBy,
+    quantity: data.quantity,
+    notes: data.notes ?? null,
+    paymentYear: data.paymentYear,
+    paymentMonth: data.paymentMonth
+  });
 }
 
 export async function insertScrapQuantity(
@@ -950,17 +1024,70 @@ export async function insertScrapQuantity(
   data: z.infer<typeof scrapQuantityValidator> & {
     companyId: string;
     createdBy: string;
+    employeeId: string;
   }
 ) {
+  return createReportAndQuantity(client, {
+    type: "Scrap",
+    companyId: data.companyId,
+    jobOperationId: data.jobOperationId,
+    employeeId: data.employeeId,
+    createdBy: data.createdBy,
+    quantity: data.quantity,
+    notes: data.notes ?? null,
+    scrapReasonId: data.scrapReasonId
+  });
+}
+
+export async function getJobOperationPickups(
+  client: SupabaseClient<Database>,
+  jobOperationId: string
+) {
   return client
-    .from("productionQuantity")
-    .insert(
-      sanitize({
-        ...data,
-        type: "Scrap"
-      })
-    )
-    .select("*");
+    .from("jobOperationPickup")
+    .select("*, employee:employeeId(id, firstName, lastName, avatarUrl)")
+    .eq("jobOperationId", jobOperationId)
+    .order("createdAt", { ascending: false });
+}
+
+export async function upsertJobOperationPickup(
+  client: SupabaseClient<Database>,
+  pickup: {
+    jobOperationId: string;
+    employeeId: string;
+    quantity: number;
+    configuration?: unknown;
+    notes?: string;
+    companyId: string;
+    createdBy: string;
+  }
+) {
+  const { configuration: rawConfiguration, ...rest } = pickup;
+  let configuration: unknown;
+  if (rawConfiguration) {
+    try {
+      configuration =
+        typeof rawConfiguration === "string"
+          ? JSON.parse(rawConfiguration as string)
+          : rawConfiguration;
+    } catch {
+      configuration = undefined;
+    }
+  }
+  return client
+    .from("jobOperationPickup")
+    .insert([
+      sanitize({ ...rest, configuration: configuration as Json | null })
+    ])
+    .select("id")
+    .single();
+}
+
+export async function deleteJobOperationPickup(
+  client: SupabaseClient<Database>,
+  id: string
+) {
+  return client.from("jobOperationPickup").delete().eq("id", id);
 }
 
 export async function endProductionEvent(

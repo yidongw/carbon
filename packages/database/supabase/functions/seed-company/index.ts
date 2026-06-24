@@ -7,6 +7,7 @@ import {
   accounts,
   currencies,
   customerStatuses,
+  defaultApprovalRules,
   dimensions,
   failureModes,
   fiscalYearSettings,
@@ -198,6 +199,11 @@ serve(async (req: Request) => {
             active: true,
           },
         ])
+        .execute();
+
+      await trx
+        .insertInto("approvalRule")
+        .values(defaultApprovalRules(companyId, employeeTypeId, String(userId)))
         .execute();
 
       // customer status

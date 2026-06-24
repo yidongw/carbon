@@ -8,6 +8,7 @@ import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
 import { useUrlParams, useUser } from "~/hooks";
 import { insertJob, jobValidator } from "~/modules/production";
+import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
 import { JobForm } from "~/modules/production/ui/Jobs";
 import type { MethodItemType } from "~/modules/shared";
 import { setCustomFields } from "~/utils/form";
@@ -36,10 +37,14 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const { id: _id, configuration: configStr, ...data } = validation.data;
 
+  // Configuration drives the job quantity: sum of the config table totals.
   let configuration: Record<string, unknown> | undefined;
+  let quantity = data.quantity;
   if (configStr) {
     try {
-      configuration = JSON.parse(configStr);
+      const parsed = JSON.parse(configStr) as Record<string, unknown>;
+      configuration = parsed;
+      quantity = jobConfigurationUpdateFields(parsed).quantity;
     } catch {
       // invalid JSON — skip configuration
     }
@@ -48,6 +53,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const result = await insertJob(getCarbonServiceRole(), {
     ...data,
     jobId: data.jobId || undefined,
+    quantity,
     configuration,
     companyId,
     createdBy: userId,

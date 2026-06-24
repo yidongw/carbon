@@ -1,6 +1,6 @@
 "use client";
 import { useCarbon } from "@carbon/auth";
-import { Array as ArrayInput, Input, ValidatedForm } from "@carbon/form";
+import { Input, ValidatedForm } from "@carbon/form";
 import type { JSONContent } from "@carbon/react";
 import {
   Alert,
@@ -52,7 +52,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import {
   LuActivity,
-  LuChevronRight,
   LuCirclePlus,
   LuEllipsisVertical,
   LuGripVertical,
@@ -68,7 +67,7 @@ import {
   LuTriangleAlert,
   LuX
 } from "react-icons/lu";
-import { useFetcher, useFetchers, useParams } from "react-router";
+import { useFetcher, useFetchers, useSearchParams } from "react-router";
 import { z } from "zod";
 import {
   DirectionAwareTabs,
@@ -79,6 +78,7 @@ import {
 import { ConfigurationEditor } from "~/components/Configurator/ConfigurationEditor";
 import type { Configuration } from "~/components/Configurator/types";
 import {
+  Array as ArrayInput,
   Hidden,
   InputControlled,
   Number,
@@ -86,16 +86,13 @@ import {
   Process,
   Select,
   SelectControlled,
-  StandardFactor,
   Submit,
   SupplierProcess,
   Tags,
   Tool,
-  UnitHint,
   UnitOfMeasure,
   WorkCenter
 } from "~/components/Form";
-import Procedure from "~/components/Form/Procedure";
 import { SupplierProcessPreview } from "~/components/Form/SupplierProcess";
 import { getUnitHint } from "~/components/Form/UnitHint";
 import { useUnitOfMeasure } from "~/components/Form/UnitOfMeasure";
@@ -105,19 +102,29 @@ import type { Item, SortableItemRenderProps } from "~/components/SortableList";
 import { SortableList, SortableListItem } from "~/components/SortableList";
 import { useDateFormatter, usePermissions, useUser } from "~/hooks";
 import { useTags } from "~/hooks/useTags";
+import {
+  defaultOperationTypeFromProcess,
+  disablesOutsideBopDetailTabs,
+  isInsideOperationType,
+  isOutsideOperationType,
+  showsSupplierRoutingFields
+} from "~/modules/production/operationType";
+import { OutsideOperationBadge } from "~/modules/production/ui/OutsideOperationBadge";
+import {
+  MethodOperationInsideDetailTabs,
+  operationTypeConfigureListOptions,
+  useOperationTypeSelectOptions
+} from "~/modules/production/ui/operationBop";
 import type {
   OperationParameter,
   OperationStep,
   OperationTool
 } from "~/modules/shared";
 import {
-  methodOperationOrders,
   operationParameterValidator,
   operationStepValidator,
   operationToolValidator,
-  operationTypes,
-  procedureStepType,
-  standardFactorType
+  procedureStepType
 } from "~/modules/shared";
 import type { action as editMethodOperationParameterAction } from "~/routes/x+/items+/methods+/operation.parameter.$id";
 import type { action as newMethodOperationParameterAction } from "~/routes/x+/items+/methods+/operation.parameter.new";
@@ -125,8 +132,10 @@ import type { action as editMethodOperationStepAction } from "~/routes/x+/items+
 import type { action as editMethodOperationToolAction } from "~/routes/x+/items+/methods+/operation.tool.$id";
 import type { action as newMethodOperationToolAction } from "~/routes/x+/items+/methods+/operation.tool.new";
 import { useItems, useTools } from "~/stores";
-import { getPrivateUrl, path } from "~/utils/path";
+import { getPrivateUrl } from "~/utils/path";
+import type { ConfigurationRuleBindings } from "../../configurationRuleBindings";
 import { methodOperationValidator } from "../../items.models";
+import type { MethodBindings } from "../../methodBindings";
 import type {
   ConfigurationParameter,
   ConfigurationRule,
@@ -147,6 +156,7 @@ type MethodMaterialType = {
 };
 
 type BillOfProcessProps = {
+  methodBindings: MethodBindings;
   configurable?: boolean;
   configurationRules?: ConfigurationRule[];
   makeMethod: MakeMethod;
@@ -158,6 +168,7 @@ type BillOfProcessProps = {
   })[];
   parameters?: ConfigurationParameter[];
   tags: { name: string }[];
+  configurationRuleBindings: ConfigurationRuleBindings;
 };
 
 type PendingWorkInstructions = {
@@ -200,16 +211,20 @@ const initialOperation: Omit<
 };
 
 const BillOfProcess = ({
+  methodBindings,
   configurable = false,
   configurationRules,
   makeMethod,
   materials,
   operations: initialOperations,
   parameters,
-  tags
+  tags,
+  configurationRuleBindings
 }: BillOfProcessProps) => {
   const permissions = usePermissions();
   const { t } = useLingui();
+  const [searchParams] = useSearchParams();
+  const materialId = searchParams.get("materialId");
   const isReadOnly =
     permissions.can("update", "parts") === false ||
     makeMethod.status !== "Draft";
@@ -272,7 +287,7 @@ const BillOfProcess = ({
     operationsById.set(operation.id, operation);
   });
 
-  const pendingOperations = usePendingOperations();
+  const pendingOperations = usePendingOperations(methodBindings);
 
   // Replace existing operations with pending ones
   pendingOperations.forEach((pendingOperation) => {
@@ -395,7 +410,7 @@ const BillOfProcess = ({
       formData.append("updates", JSON.stringify(updates));
       sortOrderFetcher.submit(formData, {
         method: "post",
-        action: path.to.methodOperationsOrder
+        action: methodBindings.urls.methodOperationsOrder
       });
     },
     1000,
@@ -441,7 +456,7 @@ const BillOfProcess = ({
         { id },
         {
           method: "post",
-          action: path.to.methodOperationsDelete
+          action: methodBindings.urls.methodOperationsDelete
         }
       );
     }
@@ -495,6 +510,7 @@ const BillOfProcess = ({
               }}
             >
               <OperationForm
+                methodBindings={methodBindings}
                 isReadOnly={isReadOnly}
                 configurable={configurable}
                 item={item}
@@ -544,7 +560,7 @@ const BillOfProcess = ({
         disabled:
           item.id in temporaryItems ||
           hasProcedure ||
-          item.data.operationType === "Outside",
+          disablesOutsideBopDetailTabs(item.data.operationType),
         content: (
           <div className="flex flex-col">
             <div>
@@ -584,7 +600,7 @@ const BillOfProcess = ({
         disabled:
           item.id in temporaryItems ||
           hasProcedure ||
-          item.data.operationType === "Outside",
+          disablesOutsideBopDetailTabs(item.data.operationType),
         label: (
           <span className="flex items-center gap-2">
             <span>Parameters</span>
@@ -610,6 +626,7 @@ const BillOfProcess = ({
         content: (
           <div className="flex w-full flex-col py-4">
             <ParametersForm
+              methodBindings={methodBindings}
               parameters={parameters}
               operationId={item.id!}
               temporaryItems={temporaryItems}
@@ -630,7 +647,7 @@ const BillOfProcess = ({
         disabled:
           item.id in temporaryItems ||
           hasProcedure ||
-          item.data.operationType === "Outside",
+          disablesOutsideBopDetailTabs(item.data.operationType),
         label: (
           <span className="flex items-center gap-2">
             <span>Steps</span>
@@ -656,6 +673,7 @@ const BillOfProcess = ({
         content: (
           <div className="flex w-full flex-col py-4">
             <AttributesForm
+              methodBindings={methodBindings}
               steps={steps}
               operationId={item.id!}
               temporaryItems={temporaryItems}
@@ -675,7 +693,8 @@ const BillOfProcess = ({
       {
         id: 4,
         disabled:
-          item.id in temporaryItems || item.data.operationType === "Outside",
+          item.id in temporaryItems ||
+          disablesOutsideBopDetailTabs(item.data.operationType),
         label: (
           <span className="flex items-center gap-2">
             <span>Tools</span>
@@ -685,6 +704,7 @@ const BillOfProcess = ({
         content: (
           <div className="flex w-full flex-col py-4">
             <ToolsForm
+              methodBindings={methodBindings}
               tools={tools}
               operationId={item.id!}
               temporaryItems={temporaryItems}
@@ -809,8 +829,6 @@ const BillOfProcess = ({
     configuratorDisclosure.onOpen();
   };
 
-  const { materialId } = useParams();
-
   const rulesByField = new Map(
     configurationRules?.map((rule) => [rule.field, rule]) ?? []
   );
@@ -879,6 +897,7 @@ const BillOfProcess = ({
           // @ts-ignore
           parameters={parameters ?? []}
           onClose={configuratorDisclosure.onClose}
+          configurationRuleBindings={configurationRuleBindings}
         />
       )}
     </Card>
@@ -888,6 +907,7 @@ const BillOfProcess = ({
 export default BillOfProcess;
 
 type OperationFormProps = {
+  methodBindings: MethodBindings;
   configurable: boolean;
   isReadOnly: boolean;
   item: ItemWithData;
@@ -902,6 +922,7 @@ type OperationFormProps = {
 };
 
 function OperationForm({
+  methodBindings,
   isReadOnly,
   configurable,
   item,
@@ -915,6 +936,14 @@ function OperationForm({
   onSubmit
 }: OperationFormProps) {
   const { t } = useLingui();
+  const operationOrderOptions = useMemo(
+    () => [
+      { value: "After Previous", label: <Trans>After Previous</Trans> },
+      { value: "With Previous", label: <Trans>With Previous</Trans> }
+    ],
+    []
+  );
+  const operationTypeOptions = useOperationTypeSelectOptions();
   const methodOperationFetcher = useFetcher<{
     id: string;
     success: boolean;
@@ -941,11 +970,6 @@ function OperationForm({
     }
   }, [item.id, methodOperationFetcher.data, setTemporaryItems, onSubmit]);
 
-  const machineDisclosure = useDisclosure();
-  const laborDisclosure = useDisclosure();
-  const setupDisclosure = useDisclosure();
-  const procedureDisclosure = useDisclosure();
-
   const [processData, setProcessData] = useState<{
     description: string;
     laborTime: number;
@@ -965,6 +989,7 @@ function OperationForm({
     operationMinimumCost: number;
     operationLeadTime: number;
     operationUnitCost: number;
+    insideUnitCost: number;
   }>({
     description: item.data.description ?? "",
     laborTime: item.data.laborTime ?? 0,
@@ -983,7 +1008,8 @@ function OperationForm({
     setupUnitHint: getUnitHint(item.data.setupUnit),
     operationMinimumCost: item.data.operationMinimumCost ?? 0,
     operationLeadTime: item.data.operationLeadTime ?? 0,
-    operationUnitCost: item.data.operationUnitCost ?? 0
+    operationUnitCost: item.data.operationUnitCost ?? 0,
+    insideUnitCost: (item.data as any).insideUnitCost ?? 0
   });
 
   const onProcessChange = async (processId: string) => {
@@ -995,6 +1021,11 @@ function OperationForm({
 
     if (process.error) throw new Error(process.error.message);
 
+    const operationType = defaultOperationTypeFromProcess(
+      process.data?.processType
+    );
+    const useSupplierRouting = showsSupplierRoutingFields(operationType);
+
     setProcessData((p) => ({
       ...p,
       processId,
@@ -1004,17 +1035,27 @@ function OperationForm({
       laborUnitHint: getUnitHint(process.data?.defaultStandardFactor),
       machineUnit: process.data?.defaultStandardFactor ?? "Hours/Piece",
       machineUnitHint: getUnitHint(process.data?.defaultStandardFactor),
-      operationType:
-        process.data?.processType === "Outside" ? "Outside" : "Inside",
+      operationType,
       operationMinimumCost:
-        supplierProcesses.data && supplierProcesses.data.length > 0
+        useSupplierRouting &&
+        supplierProcesses.data &&
+        supplierProcesses.data.length > 0
           ? supplierProcesses.data.reduce((acc, sp) => {
               return (acc += sp.minimumCost ?? 0);
             }, 0) / supplierProcesses.data.length
           : p.operationMinimumCost,
-      operationUnitCost: item.data.operationUnitCost ?? 0,
+      operationUnitCost:
+        useSupplierRouting &&
+        supplierProcesses.data &&
+        supplierProcesses.data.length > 0
+          ? supplierProcesses.data.reduce((acc, sp) => {
+              return (acc += sp.unitCost ?? 0);
+            }, 0) / supplierProcesses.data.length
+          : p.operationUnitCost,
       operationLeadTime:
-        supplierProcesses.data && supplierProcesses.data.length > 0
+        useSupplierRouting &&
+        supplierProcesses.data &&
+        supplierProcesses.data.length > 0
           ? supplierProcesses.data.reduce((acc, sp) => {
               return (acc += sp.leadTime ?? 0);
             }, 0) / supplierProcesses.data.length
@@ -1048,8 +1089,8 @@ function OperationForm({
     <ValidatedForm
       action={
         temporaryItems[item.id]
-          ? path.to.newMethodOperation
-          : path.to.methodOperation(item.id!)
+          ? methodBindings.urls.newMethodOperation
+          : methodBindings.urls.methodOperation(item.id!)
       }
       method="post"
       defaultValues={item.data}
@@ -1094,10 +1135,7 @@ function OperationForm({
           name="operationOrder"
           label={t`Operation Order`}
           placeholder={t`Operation Order`}
-          options={methodOperationOrders.map((o) => ({
-            value: o,
-            label: o
-          }))}
+          options={operationOrderOptions}
           onChange={(value) => {
             setProcessData((d) => ({
               ...d,
@@ -1127,18 +1165,25 @@ function OperationForm({
           name="operationType"
           label={t`Operation Type`}
           placeholder={t`Operation Type`}
-          options={operationTypes.map((o) => ({
-            value: o,
-            label: o
-          }))}
+          options={operationTypeOptions}
           value={processData.operationType}
           onChange={(value) => {
+            const operationType = value?.value as string;
+            const useSupplierRouting =
+              showsSupplierRoutingFields(operationType);
             setProcessData((d) => ({
               ...d,
               setupUnit: "Total Minutes",
               laborUnit: "Minutes/Piece",
               machineUnit: "Minutes/Piece",
-              operationType: value?.value as string
+              operationType,
+              ...(useSupplierRouting
+                ? {}
+                : {
+                    operationMinimumCost: 0,
+                    operationUnitCost: 0,
+                    operationLeadTime: 0
+                  })
             }));
           }}
           isConfigured={rulesByField.has(key("operationType"))}
@@ -1152,7 +1197,7 @@ function OperationForm({
                     defaultValue: processData.operationType,
                     returnType: {
                       type: "enum",
-                      listOptions: ["Inside", "Outside"]
+                      listOptions: [...operationTypeConfigureListOptions]
                     }
                   });
                 }
@@ -1186,60 +1231,7 @@ function OperationForm({
           }
         />
 
-        {processData.operationType === "Outside" ? (
-          <>
-            <SupplierProcess
-              name="operationSupplierProcessId"
-              label={t`Supplier`}
-              processId={processData.processId}
-              isOptional
-            />
-            <NumberControlled
-              name="operationMinimumCost"
-              label={t`Minimum Cost`}
-              minValue={0}
-              value={processData.operationMinimumCost}
-              formatOptions={{
-                style: "currency",
-                currency: baseCurrency
-              }}
-              onChange={(newValue) =>
-                setProcessData((d) => ({
-                  ...d,
-                  operationMinimumCost: newValue
-                }))
-              }
-            />
-            <NumberControlled
-              name="operationUnitCost"
-              label={t`Unit Cost`}
-              minValue={0}
-              value={processData.operationUnitCost}
-              formatOptions={{
-                style: "currency",
-                currency: baseCurrency
-              }}
-              onChange={(newValue) =>
-                setProcessData((d) => ({
-                  ...d,
-                  operationUnitCost: newValue
-                }))
-              }
-            />
-            <NumberControlled
-              name="operationLeadTime"
-              label={t`Lead Time`}
-              minValue={0}
-              value={processData.operationLeadTime}
-              onChange={(newValue) =>
-                setProcessData((d) => ({
-                  ...d,
-                  operationLeadTime: newValue
-                }))
-              }
-            />
-          </>
-        ) : (
+        {isInsideOperationType(processData.operationType) ? (
           <>
             <WorkCenter
               name="workCenterId"
@@ -1270,432 +1262,117 @@ function OperationForm({
                 }
               }}
             />
+            <NumberControlled
+              name="insideUnitCost"
+              label={t`Unit rate`}
+              minValue={0}
+              value={processData.insideUnitCost}
+              formatOptions={{
+                style: "currency",
+                currency: baseCurrency
+              }}
+              onChange={(newValue) =>
+                setProcessData((d) => ({
+                  ...d,
+                  insideUnitCost: newValue ?? 0
+                }))
+              }
+              isConfigured={rulesByField.has(key("insideUnitCost"))}
+              onConfigure={
+                configurable && !temporaryItems[item.id]
+                  ? () => {
+                      onConfigure({
+                        label: t`Unit rate`,
+                        field: key("insideUnitCost"),
+                        code: rulesByField.get(key("insideUnitCost"))?.code,
+                        defaultValue: processData.insideUnitCost,
+                        returnType: {
+                          type: "numeric"
+                        }
+                      });
+                    }
+                  : undefined
+              }
+            />
+          </>
+        ) : null}
+        {showsSupplierRoutingFields(processData.operationType) ? (
+          <>
+            <SupplierProcess
+              name="operationSupplierProcessId"
+              label={t`Supplier`}
+              processId={processData.processId}
+              isOptional={false}
+            />
+            <NumberControlled
+              name="operationMinimumCost"
+              label={t`Minimum Cost`}
+              isOptional={false}
+              minValue={0}
+              value={processData.operationMinimumCost}
+              formatOptions={{
+                style: "currency",
+                currency: baseCurrency
+              }}
+              onChange={(newValue) =>
+                setProcessData((d) => ({
+                  ...d,
+                  operationMinimumCost: newValue
+                }))
+              }
+            />
+            <NumberControlled
+              name="operationUnitCost"
+              label={t`Unit Cost`}
+              isOptional={false}
+              minValue={0}
+              value={processData.operationUnitCost}
+              formatOptions={{
+                style: "currency",
+                currency: baseCurrency
+              }}
+              onChange={(newValue) =>
+                setProcessData((d) => ({
+                  ...d,
+                  operationUnitCost: newValue
+                }))
+              }
+            />
+            <NumberControlled
+              name="operationLeadTime"
+              label={t`Lead Time`}
+              isOptional={false}
+              minValue={0}
+              value={processData.operationLeadTime}
+              onChange={(newValue) =>
+                setProcessData((d) => ({
+                  ...d,
+                  operationLeadTime: newValue
+                }))
+              }
+            />
+          </>
+        ) : (
+          <>
+            <Hidden name="operationSupplierProcessId" value="" />
+            <Hidden name="operationMinimumCost" value={0} />
+            <Hidden name="operationUnitCost" value={0} />
+            <Hidden name="operationLeadTime" value={0} />
           </>
         )}
       </div>
 
-      {processData.operationType === "Inside" && (
-        <>
-          <div className="border border-border rounded-md shadow-sm p-4 flex flex-col gap-4">
-            <HStack
-              className="w-full justify-between cursor-pointer"
-              onClick={setupDisclosure.onToggle}
-            >
-              <HStack>
-                <TimeTypeIcon type="Setup" />
-                <Label>
-                  <Trans>Setup</Trans>
-                </Label>
-              </HStack>
-              <HStack>
-                {(processData.setupTime ?? 0) > 0 && (
-                  <Badge variant="secondary">
-                    <TimeTypeIcon type="Setup" className="h-3 w-3 mr-1" />
-                    {processData.setupTime} {processData.setupUnit}
-                  </Badge>
-                )}
-                <IconButton
-                  icon={<LuChevronRight />}
-                  aria-label={
-                    setupDisclosure.isOpen ? t`Collapse Setup` : t`Expand Setup`
-                  }
-                  variant="ghost"
-                  size="md"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setupDisclosure.onToggle();
-                  }}
-                  className={`transition-transform ${
-                    setupDisclosure.isOpen ? "rotate-90" : ""
-                  }`}
-                />
-              </HStack>
-            </HStack>
-            <div
-              className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
-                setupDisclosure.isOpen ? "" : "hidden"
-              }`}
-            >
-              <UnitHint
-                name="setupHint"
-                label={t`Setup`}
-                value={processData.setupUnitHint}
-                onChange={(hint) => {
-                  setProcessData((d) => ({
-                    ...d,
-                    setupUnitHint: hint,
-                    setupUnit:
-                      hint === "Fixed" ? "Total Minutes" : "Minutes/Piece"
-                  }));
-                }}
-              />
-              <NumberControlled
-                name="setupTime"
-                label={t`Setup Time`}
-                isOptional={false}
-                minValue={0}
-                value={processData.setupTime}
-                onChange={(newValue) =>
-                  setProcessData((d) => ({
-                    ...d,
-                    setupTime: newValue
-                  }))
-                }
-                isConfigured={rulesByField.has(key("setupTime"))}
-                onConfigure={
-                  configurable && !temporaryItems[item.id]
-                    ? () => {
-                        onConfigure({
-                          label: t`Setup Time`,
-                          field: key("setupTime"),
-                          code: rulesByField.get(key("setupTime"))?.code,
-                          defaultValue: processData.setupTime,
-                          returnType: {
-                            type: "numeric"
-                          }
-                        });
-                      }
-                    : undefined
-                }
-              />
-              <StandardFactor
-                name="setupUnit"
-                label={t`Setup Unit`}
-                isOptional={false}
-                hint={processData.setupUnitHint}
-                value={processData.setupUnit}
-                onChange={(newValue) => {
-                  setProcessData((d) => ({
-                    ...d,
-                    setupUnit: newValue?.value ?? "Total Minutes"
-                  }));
-                }}
-                isConfigured={rulesByField.has(key("setupUnit"))}
-                onConfigure={
-                  configurable && !temporaryItems[item.id]
-                    ? () => {
-                        onConfigure({
-                          label: t`Setup Unit`,
-                          field: key("setupUnit"),
-                          code: rulesByField.get(key("setupUnit"))?.code,
-                          defaultValue: processData.setupUnit,
-                          returnType: {
-                            type: "enum",
-                            listOptions: standardFactorType
-                          }
-                        });
-                      }
-                    : undefined
-                }
-              />
-            </div>
-          </div>
-
-          <div className="border border-border rounded-md shadow-sm p-4 flex flex-col gap-4">
-            <HStack
-              className="w-full justify-between cursor-pointer"
-              onClick={laborDisclosure.onToggle}
-            >
-              <HStack>
-                <TimeTypeIcon type="Labor" />
-                <Label>
-                  <Trans>Labor</Trans>
-                </Label>
-              </HStack>
-              <HStack>
-                {(processData.laborTime ?? 0) > 0 && (
-                  <Badge variant="secondary">
-                    <TimeTypeIcon type="Labor" className="h-3 w-3 mr-1" />
-                    {processData.laborTime} {processData.laborUnit}
-                  </Badge>
-                )}
-                <IconButton
-                  icon={<LuChevronRight />}
-                  aria-label={
-                    laborDisclosure.isOpen ? t`Collapse Labor` : t`Expand Labor`
-                  }
-                  variant="ghost"
-                  size="md"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    laborDisclosure.onToggle();
-                  }}
-                  className={`transition-transform ${
-                    laborDisclosure.isOpen ? "rotate-90" : ""
-                  }`}
-                />
-              </HStack>
-            </HStack>
-            <div
-              className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
-                laborDisclosure.isOpen ? "" : "hidden"
-              }`}
-            >
-              <UnitHint
-                name="laborHint"
-                label={t`Labor`}
-                value={processData.laborUnitHint}
-                onChange={(hint) => {
-                  setProcessData((d) => ({
-                    ...d,
-                    laborUnitHint: hint,
-                    laborUnit:
-                      hint === "Fixed" ? "Total Minutes" : "Minutes/Piece"
-                  }));
-                }}
-              />
-              <NumberControlled
-                name="laborTime"
-                label={t`Labor Time`}
-                isOptional={false}
-                minValue={0}
-                value={processData.laborTime}
-                onChange={(newValue) =>
-                  setProcessData((d) => ({
-                    ...d,
-                    laborTime: newValue
-                  }))
-                }
-                isConfigured={rulesByField.has(key("laborTime"))}
-                onConfigure={
-                  configurable && !temporaryItems[item.id]
-                    ? () => {
-                        onConfigure({
-                          label: t`Labor Time`,
-                          field: key("laborTime"),
-                          code: rulesByField.get(key("laborTime"))?.code,
-                          defaultValue: processData.laborTime,
-                          returnType: {
-                            type: "numeric"
-                          }
-                        });
-                      }
-                    : undefined
-                }
-              />
-              <StandardFactor
-                name="laborUnit"
-                label={t`Labor Unit`}
-                isOptional={false}
-                hint={processData.laborUnitHint}
-                value={processData.laborUnit}
-                onChange={(newValue) => {
-                  setProcessData((d) => ({
-                    ...d,
-                    laborUnit: newValue?.value ?? "Total Minutes"
-                  }));
-                }}
-                isConfigured={rulesByField.has(key("laborUnit"))}
-                onConfigure={
-                  configurable && !temporaryItems[item.id]
-                    ? () => {
-                        onConfigure({
-                          label: t`Labor Unit`,
-                          field: key("laborUnit"),
-                          code: rulesByField.get(key("laborUnit"))?.code,
-                          defaultValue: processData.laborUnit,
-                          returnType: {
-                            type: "enum",
-                            listOptions: standardFactorType
-                          }
-                        });
-                      }
-                    : undefined
-                }
-              />
-            </div>
-          </div>
-          <div className="border border-border rounded-md shadow-sm p-4 flex flex-col gap-4">
-            <HStack
-              className="w-full justify-between cursor-pointer"
-              onClick={machineDisclosure.onToggle}
-            >
-              <HStack>
-                <TimeTypeIcon type="Machine" />
-                <Label>
-                  <Trans>Machine</Trans>
-                </Label>
-              </HStack>
-              <HStack>
-                {(processData?.machineTime ?? 0) > 0 && (
-                  <Badge variant="secondary">
-                    <TimeTypeIcon type="Machine" className="h-3 w-3 mr-1" />
-                    {processData.machineTime} {processData.machineUnit}
-                  </Badge>
-                )}
-                <IconButton
-                  icon={<LuChevronRight />}
-                  aria-label={
-                    machineDisclosure.isOpen
-                      ? t`Collapse Machine`
-                      : t`Expand Machine`
-                  }
-                  variant="ghost"
-                  size="md"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    machineDisclosure.onToggle();
-                  }}
-                  className={`transition-transform ${
-                    machineDisclosure.isOpen ? "rotate-90" : ""
-                  }`}
-                />
-              </HStack>
-            </HStack>
-            <div
-              className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-3 pb-4 ${
-                machineDisclosure.isOpen ? "" : "hidden"
-              }`}
-            >
-              <UnitHint
-                name="machineHint"
-                label={t`Machine`}
-                value={processData.machineUnitHint}
-                onChange={(hint) => {
-                  setProcessData((d) => ({
-                    ...d,
-                    machineUnitHint: hint,
-                    machineUnit:
-                      hint === "Fixed" ? "Total Minutes" : "Minutes/Piece"
-                  }));
-                }}
-              />
-              <NumberControlled
-                name="machineTime"
-                label={t`Machine Time`}
-                isOptional={false}
-                minValue={0}
-                value={processData.machineTime}
-                onChange={(newValue) =>
-                  setProcessData((d) => ({
-                    ...d,
-                    machineTime: newValue
-                  }))
-                }
-                isConfigured={rulesByField.has(key("machineTime"))}
-                onConfigure={
-                  configurable && !temporaryItems[item.id]
-                    ? () => {
-                        onConfigure({
-                          label: t`Machine Time`,
-                          field: key("machineTime"),
-                          code: rulesByField.get(key("machineTime"))?.code,
-                          defaultValue: processData.machineTime,
-                          returnType: {
-                            type: "numeric"
-                          }
-                        });
-                      }
-                    : undefined
-                }
-              />
-              <StandardFactor
-                name="machineUnit"
-                label={t`Machine Unit`}
-                isOptional={false}
-                hint={processData.machineUnitHint}
-                value={processData.machineUnit}
-                onChange={(newValue) => {
-                  setProcessData((d) => ({
-                    ...d,
-                    machineUnit: newValue?.value ?? "Total Minutes"
-                  }));
-                }}
-                isConfigured={rulesByField.has(key("machineUnit"))}
-                onConfigure={
-                  configurable && !temporaryItems[item.id]
-                    ? () => {
-                        onConfigure({
-                          label: t`Machine Unit`,
-                          field: key("machineUnit"),
-                          code: rulesByField.get(key("machineUnit"))?.code,
-                          defaultValue: processData.machineUnit,
-                          returnType: {
-                            type: "enum",
-                            listOptions: standardFactorType
-                          }
-                        });
-                      }
-                    : undefined
-                }
-              />
-            </div>
-          </div>
-
-          <div className="border border-border rounded-md shadow-sm p-4 flex flex-col gap-4">
-            <HStack
-              className="w-full justify-between cursor-pointer"
-              onClick={procedureDisclosure.onToggle}
-            >
-              <HStack>
-                <LuListChecks />
-                <Label>Procedure</Label>
-              </HStack>
-              <HStack>
-                {processData.procedureId && (
-                  <Badge variant="secondary">
-                    <LuListChecks className="h-3 w-3 mr-1" />
-                    Procedure
-                  </Badge>
-                )}
-                <IconButton
-                  icon={<LuChevronRight />}
-                  aria-label={
-                    procedureDisclosure.isOpen
-                      ? "Collapse Procedure"
-                      : "Expand Procedure"
-                  }
-                  variant="ghost"
-                  size="md"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    procedureDisclosure.onToggle();
-                  }}
-                  className={`transition-transform ${
-                    procedureDisclosure.isOpen ? "rotate-90" : ""
-                  }`}
-                />
-              </HStack>
-            </HStack>
-            <div
-              className={`grid w-full gap-x-8 gap-y-4 grid-cols-1 lg:grid-cols-1 pb-4 ${
-                procedureDisclosure.isOpen ? "" : "hidden"
-              }`}
-            >
-              <Procedure
-                name="procedureId"
-                label={t`Procedure`}
-                processId={processData.processId}
-                value={processData.procedureId}
-                isConfigured={rulesByField.has(key("procedureId"))}
-                onConfigure={
-                  configurable && !temporaryItems[item.id]
-                    ? () => {
-                        onConfigure({
-                          label: t`Procedure`,
-                          field: key("procedureId"),
-                          code: rulesByField.get(key("procedureId"))?.code,
-                          defaultValue: processData.procedureId,
-                          returnType: {
-                            type: "text",
-                            helperText:
-                              "the unique identifier for the procedure. you can get this from the URL when editing a procedure"
-                          }
-                        });
-                      }
-                    : undefined
-                }
-                onChange={(value) => {
-                  setProcessData((d) => ({
-                    ...d,
-                    procedureId: value?.value as string
-                  }));
-                }}
-              />
-            </div>
-          </div>
-        </>
-      )}
+      {isInsideOperationType(processData.operationType) ? (
+        <MethodOperationInsideDetailTabs
+          processData={processData}
+          setProcessData={setProcessData}
+          fieldKey={key}
+          configurable={configurable}
+          isTemporary={Boolean(temporaryItems[item.id])}
+          rulesByField={rulesByField}
+          onConfigure={onConfigure}
+        />
+      ) : null}
       <motion.div
         className="flex w-full items-center justify-end p-2"
         initial={{ opacity: 0, filter: "blur(4px)" }}
@@ -1720,6 +1397,7 @@ function OperationForm({
 }
 
 function AttributesForm({
+  methodBindings,
   operationId,
   configurable,
   isDisabled,
@@ -1729,6 +1407,7 @@ function AttributesForm({
   onConfigure,
   itemMentions
 }: {
+  methodBindings: MethodBindings;
   operationId: string;
   configurable: boolean;
   isDisabled: boolean;
@@ -1779,7 +1458,7 @@ function AttributesForm({
       formData.append("updates", JSON.stringify(updates));
       sortOrderFetcher.submit(formData, {
         method: "post",
-        action: path.to.methodOperationStepOrder(operationId)
+        action: methodBindings.urls.methodOperationStepOrder(operationId)
       });
     },
     1000,
@@ -1845,7 +1524,7 @@ function AttributesForm({
       {!isDisabled && (
         <div className="p-6 border bg-card rounded-lg mb-6">
           <ValidatedForm
-            action={path.to.newMethodOperationStep}
+            action={methodBindings.urls.newMethodOperationStep}
             method="post"
             validator={operationStepValidator}
             fetcher={fetcher}
@@ -1983,6 +1662,7 @@ function AttributesForm({
                 >
                   {(dragControls) => (
                     <AttributesListItem
+                      methodBindings={methodBindings}
                       attribute={step}
                       operationId={operationId}
                       typeOptions={typeOptions}
@@ -2035,6 +1715,7 @@ function DraggableStepItem({
 }
 
 function AttributesListItem({
+  methodBindings,
   attribute,
   operationId,
   typeOptions,
@@ -2046,6 +1727,7 @@ function AttributesListItem({
   dragControls,
   itemMentions
 }: {
+  methodBindings: MethodBindings;
   attribute: OperationStep;
   operationId: string;
   typeOptions: { label: JSX.Element; value: string }[];
@@ -2142,7 +1824,7 @@ function AttributesListItem({
     <div className={cn("border-b p-6", className)}>
       {disclosure.isOpen ? (
         <ValidatedForm
-          action={path.to.methodOperationStep(id)}
+          action={methodBindings.urls.methodOperationStep(id)}
           method="post"
           validator={operationStepValidator}
           fetcher={fetcher}
@@ -2436,7 +2118,7 @@ function AttributesListItem({
       )}
       {deleteModalDisclosure.isOpen && (
         <ConfirmDelete
-          action={path.to.deleteMethodOperationStep(id)}
+          action={methodBindings.urls.deleteMethodOperationStep(id)}
           isOpen={deleteModalDisclosure.isOpen}
           name={name}
           text={`Are you sure you want to delete the ${name} attribute from this operation? This cannot be undone.`}
@@ -2453,6 +2135,7 @@ function AttributesListItem({
 }
 
 function ParametersForm({
+  methodBindings,
   operationId,
   configurable,
   isDisabled,
@@ -2461,6 +2144,7 @@ function ParametersForm({
   rulesByField,
   onConfigure
 }: {
+  methodBindings: MethodBindings;
   operationId: string;
   configurable: boolean;
   isDisabled: boolean;
@@ -2491,7 +2175,7 @@ function ParametersForm({
       {!isDisabled && (
         <div className="p-6 border rounded-lg bg-card">
           <ValidatedForm
-            action={path.to.newMethodOperationParameter}
+            action={methodBindings.urls.newMethodOperationParameter}
             method="post"
             validator={operationParameterValidator}
             fetcher={fetcher}
@@ -2535,6 +2219,7 @@ function ParametersForm({
             .map((p, index) => (
               <ParametersListItem
                 key={p.id}
+                methodBindings={methodBindings}
                 parameter={p}
                 operationId={operationId}
                 className={index === parameters.length - 1 ? "border-none" : ""}
@@ -2556,6 +2241,7 @@ function ParametersForm({
 }
 
 function ParametersListItem({
+  methodBindings,
   parameter: { key, value, id, updatedBy, updatedAt, createdBy, createdAt },
   operationId,
   className,
@@ -2564,6 +2250,7 @@ function ParametersListItem({
   onConfigure,
   isDisabled = false
 }: {
+  methodBindings: MethodBindings;
   parameter: OperationParameter;
   operationId: string;
   className?: string;
@@ -2601,7 +2288,7 @@ function ParametersListItem({
     <div className={cn("border-b p-6", className)}>
       {disclosure.isOpen ? (
         <ValidatedForm
-          action={path.to.methodOperationParameter(id)}
+          action={methodBindings.urls.methodOperationParameter(id)}
           method="post"
           validator={operationParameterValidator}
           fetcher={fetcher}
@@ -2732,7 +2419,7 @@ function ParametersListItem({
       )}
       {deleteModalDisclosure.isOpen && (
         <ConfirmDelete
-          action={path.to.deleteMethodOperationParameter(id)}
+          action={methodBindings.urls.deleteMethodOperationParameter(id)}
           isOpen={deleteModalDisclosure.isOpen}
           name={key}
           text={`Are you sure you want to delete the ${key} parameter from this operation? This cannot be undone.`}
@@ -2749,11 +2436,13 @@ function ParametersListItem({
 }
 
 function ToolsForm({
+  methodBindings,
   operationId,
   isDisabled,
   tools,
   temporaryItems
 }: {
+  methodBindings: MethodBindings;
   operationId: string;
   isDisabled: boolean;
   tools: OperationTool[];
@@ -2781,7 +2470,7 @@ function ToolsForm({
       {!isDisabled && (
         <div className="p-6 border rounded-lg bg-card">
           <ValidatedForm
-            action={path.to.newMethodOperationTool}
+            action={methodBindings.urls.newMethodOperationTool}
             method="post"
             validator={operationToolValidator}
             fetcher={fetcher}
@@ -2826,6 +2515,7 @@ function ToolsForm({
             .map((t, index) => (
               <ToolsListItem
                 key={t.id}
+                methodBindings={methodBindings}
                 tool={t}
                 operationId={operationId}
                 className={index === tools.length - 1 ? "border-none" : ""}
@@ -2844,11 +2534,13 @@ function ToolsForm({
 }
 
 function ToolsListItem({
+  methodBindings,
   tool: { toolId, quantity, id, updatedBy, updatedAt, createdBy, createdAt },
   operationId,
   className,
   isDisabled = false
 }: {
+  methodBindings: MethodBindings;
   tool: OperationTool;
   operationId: string;
   className?: string;
@@ -2881,7 +2573,7 @@ function ToolsListItem({
     <div className={cn("border-b p-6 bg-card", className)}>
       {disclosure.isOpen ? (
         <ValidatedForm
-          action={path.to.methodOperationTool(id)}
+          action={methodBindings.urls.methodOperationTool(id)}
           method="post"
           validator={operationToolValidator}
           fetcher={fetcher}
@@ -2970,7 +2662,7 @@ function ToolsListItem({
       )}
       {deleteModalDisclosure.isOpen && (
         <ConfirmDelete
-          action={path.to.deleteMethodOperationTool(id)}
+          action={methodBindings.urls.deleteMethodOperationTool(id)}
           isOpen={deleteModalDisclosure.isOpen}
           name={tool.readableIdWithRevision}
           text={`Are you sure you want to delete ${tool.readableIdWithRevision} from this operation? This cannot be undone.`}
@@ -3004,20 +2696,20 @@ function makeItem(
         <h3 className="font-semibold truncate cursor-pointer">
           {operation.description}
         </h3>
-        {operation.operationType === "Outside" && (
+        {isOutsideOperationType(operation.operationType) ? (
           <SupplierProcessPreview
             processId={operation.processId}
             supplierProcessId={operation.operationSupplierProcessId}
           />
-        )}
+        ) : null}
       </VStack>
     ),
     checked: false,
     order: operation.operationOrder,
     details: (
       <HStack spacing={1}>
-        {operation.operationType === "Outside" ? (
-          <Badge>Outside</Badge>
+        {isOutsideOperationType(operation.operationType) ? (
+          <OutsideOperationBadge />
         ) : (
           <>
             {(operation?.setupTime ?? 0) > 0 && (
@@ -3046,7 +2738,7 @@ function makeItem(
   };
 }
 
-function usePendingOperations() {
+function usePendingOperations(methodBindings: MethodBindings) {
   type PendingItem = ReturnType<typeof useFetchers>[number] & {
     formData: FormData;
   };
@@ -3054,8 +2746,8 @@ function usePendingOperations() {
   return useFetchers()
     .filter((fetcher): fetcher is PendingItem => {
       return (
-        (fetcher.formAction === path.to.newMethodOperation ||
-          fetcher.formAction?.includes("/items/methods/operation/")) ??
+        (fetcher.formAction === methodBindings.urls.newMethodOperation ||
+          fetcher.formAction?.includes("/methods/operation/")) ??
         false
       );
     })

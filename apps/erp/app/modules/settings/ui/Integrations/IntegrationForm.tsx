@@ -7,7 +7,6 @@ import type {
 import { integrations as availableIntegrations } from "@carbon/ee";
 import {
   ChoiceCardGroup,
-  Array as FormArray,
   Input,
   Number as NumberInput,
   Password,
@@ -35,7 +34,7 @@ import { SUPPORT_EMAIL } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router";
-import { Processes } from "~/components/Form";
+import { Array as FormArray, Processes } from "~/components/Form";
 import { MethodIcon, TrackingTypeIcon } from "~/components/Icons";
 import { usePermissions, useUser } from "~/hooks";
 import { path } from "~/utils/path";
