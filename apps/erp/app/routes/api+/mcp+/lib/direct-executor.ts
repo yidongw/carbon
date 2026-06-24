@@ -43,6 +43,7 @@ const functionRegistry = {
 export interface ExecutorContext {
   client: SupabaseClient<Database>;
   companyId: string;
+  companyGroupId: string;
   userId: string;
 }
 
@@ -69,6 +70,9 @@ function enrichWithAuthContext(
   }
   if (fields.includes("companyId")) {
     enriched.companyId = context.companyId;
+  }
+  if (fields.includes("companyGroupId")) {
+    enriched.companyGroupId = context.companyGroupId;
   }
 
   return enriched;

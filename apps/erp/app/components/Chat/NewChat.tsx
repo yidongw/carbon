@@ -2,12 +2,15 @@ import { Button } from "@carbon/react";
 import { generateId } from "ai";
 import { LuCirclePlus } from "react-icons/lu";
 import { useUrlParams } from "~/hooks";
+import { useChatActions } from "@ai-sdk-tools/store";
 
 export function NewChat() {
   const [, setParams] = useUrlParams();
+  const { reset } = useChatActions();
 
   const handleNewChat = () => {
-    setParams({ chatId: generateId() });
+    reset();
+    setParams({ c: generateId() });
   };
 
   return (

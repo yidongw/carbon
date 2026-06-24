@@ -9,6 +9,7 @@ import {
   ConversationScrollButton
 } from "../Conversation";
 import { Markdown } from "../Markdown/Markdown";
+import { ProposalCard, type ProposalToolOutput } from "../ProposalCard";
 import type { SupportedToolName } from "../ToolCallIndicator";
 import { ToolCallIndicator } from "../ToolCallIndicator";
 import { WebSearchSources } from "../WebSearch";
@@ -88,6 +89,24 @@ export function Messages() {
                       );
 
                     default: {
+                      if (part.type === "tool-propose_writes") {
+                        const output = (part as any)?.output as
+                          | ProposalToolOutput
+                          | undefined;
+                        if (
+                          output &&
+                          output.status === "awaiting_confirmation" &&
+                          Array.isArray(output.changes)
+                        ) {
+                          return (
+                            <Fragment key={`${message.id}-${i}`}>
+                              <ProposalCard output={output} />
+                            </Fragment>
+                          );
+                        }
+                        return null;
+                      }
+
                       if (part.type.startsWith("tool-")) {
                         return (
                           <Fragment key={`${message.id}-${i}`}>
