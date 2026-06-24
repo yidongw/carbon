@@ -28,7 +28,12 @@ import {
   SupplierAvatar
 } from "~/components";
 import { usePanels } from "~/components/Layout";
-import { usePermissions, useRealtime, useRouteData, useCurrencyFormatter } from "~/hooks";
+import {
+  useCurrencyFormatter,
+  usePermissions,
+  useRealtime,
+  useRouteData
+} from "~/hooks";
 import type { Job, JobPurchaseOrderLine } from "~/modules/production";
 import {
   getJob,
@@ -45,13 +50,13 @@ import {
   upsertJob
 } from "~/modules/production";
 import {
+  groupJobPurchaseOrderLines,
   JobBillOfMaterial,
   JobBillOfProcess,
   JobDocuments,
   JobEstimatesVsActuals,
   JobNotes,
   JobPurchaseOrderPriceBreakdown,
-  groupJobPurchaseOrderLines,
   JobRiskRegister
 } from "~/modules/production/ui/Jobs";
 import JobMakeMethodTools from "~/modules/production/ui/Jobs/JobMakeMethodTools";
@@ -243,7 +248,25 @@ export default function JobDetailsRoute() {
   return (
     <div className="h-[calc(100dvh-49px)] w-full items-start overflow-y-auto overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent">
       <VStack spacing={2} className="p-2">
-        <JobMakeMethodTools makeMethod={makeMethod ?? undefined} />
+        <div className="sticky top-0 z-40 -mx-2 bg-background/95 px-2 py-2 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+          <JobMakeMethodTools makeMethod={makeMethod ?? undefined} />
+        </div>
+
+        {methodId && (
+          <JobBillOfProcess
+            key={`bop:${methodId}`}
+            jobMakeMethodId={methodId}
+            // @ts-ignore
+            materials={materials}
+            // @ts-ignore
+            operations={operations}
+            locationId={jobData?.job?.locationId ?? ""}
+            tags={tags}
+            itemId={makeMethod.itemId}
+            salesOrderLineId={jobData?.job.salesOrderLineId ?? ""}
+            customerId={jobData?.job.customerId ?? ""}
+          />
+        )}
 
         <JobNotes
           id={jobId}
@@ -253,29 +276,14 @@ export default function JobDetailsRoute() {
         />
 
         {methodId && (
-          <>
-            <JobBillOfMaterial
-              key={`bom:${methodId}`}
-              jobMakeMethodId={methodId}
-              // @ts-ignore
-              materials={materials}
-              // @ts-ignore
-              operations={operations}
-            />
-            <JobBillOfProcess
-              key={`bop:${methodId}`}
-              jobMakeMethodId={methodId}
-              // @ts-ignore
-              materials={materials}
-              // @ts-ignore
-              operations={operations}
-              locationId={jobData?.job?.locationId ?? ""}
-              tags={tags}
-              itemId={makeMethod.itemId}
-              salesOrderLineId={jobData?.job.salesOrderLineId ?? ""}
-              customerId={jobData?.job.customerId ?? ""}
-            />
-          </>
+          <JobBillOfMaterial
+            key={`bom:${methodId}`}
+            jobMakeMethodId={methodId}
+            // @ts-ignore
+            materials={materials}
+            // @ts-ignore
+            operations={operations}
+          />
         )}
         <Suspense>
           <Await resolve={purchaseOrderLines}>

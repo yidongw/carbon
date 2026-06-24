@@ -4,10 +4,21 @@ import { Checkbox, cn, HStack } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import { LayoutGroup, motion, Reorder, useDragControls } from "framer-motion";
 import type { ReactNode } from "react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
-import { LuCircleCheckBig, LuCircleDashed, LuGripVertical, LuLoaderCircle, LuTable, LuTrash } from "react-icons/lu";
+import {
+  LuCircleCheckBig,
+  LuCircleDashed,
+  LuGripVertical,
+  LuLoaderCircle,
+  LuTable,
+  LuTrash
+} from "react-icons/lu";
 import Empty from "./Empty";
+import {
+  findScrollContainer,
+  getAutoScrollDirection
+} from "./sortableDragAutoScroll";
 
 export interface Item {
   checked: boolean;
@@ -68,10 +79,71 @@ function SortableListItem<T>({
   const [isDragging, setIsDragging] = useState(false);
   const dragControls = useDragControls();
   const itemRef = useRef<HTMLDivElement>(null);
+  const dragActiveRef = useRef(false);
+  const pointerYRef = useRef<number | null>(null);
+  const scrollContainerRef = useRef<HTMLElement | null>(null);
+  const autoScrollFrameRef = useRef<number | null>(null);
+
+  const handlePointerMove = useCallback((event: PointerEvent) => {
+    pointerYRef.current = event.clientY;
+  }, []);
+
+  const stopAutoScroll = useCallback(() => {
+    dragActiveRef.current = false;
+    pointerYRef.current = null;
+    scrollContainerRef.current = null;
+
+    if (autoScrollFrameRef.current !== null) {
+      cancelAnimationFrame(autoScrollFrameRef.current);
+      autoScrollFrameRef.current = null;
+    }
+
+    window.removeEventListener("pointermove", handlePointerMove);
+    window.removeEventListener("pointerup", stopAutoScroll);
+    window.removeEventListener("pointercancel", stopAutoScroll);
+  }, [handlePointerMove]);
+
+  const runAutoScroll = useCallback(() => {
+    if (!dragActiveRef.current) {
+      autoScrollFrameRef.current = null;
+      return;
+    }
+
+    const container =
+      scrollContainerRef.current ?? findScrollContainer(itemRef.current);
+    const pointerY = pointerYRef.current;
+
+    if (container && pointerY != null) {
+      const rect = container.getBoundingClientRect();
+      const direction = getAutoScrollDirection({
+        pointerY,
+        containerTop: rect.top,
+        containerBottom: rect.bottom,
+        threshold: 48
+      });
+
+      if (direction !== 0) {
+        container.scrollTop += direction * 18;
+      }
+    }
+
+    autoScrollFrameRef.current = window.requestAnimationFrame(runAutoScroll);
+  }, []);
 
   const handleDragStart = (event: any) => {
     if (isExpanded || isReadOnly) return;
     flushSync(() => setIsDragging(true));
+    dragActiveRef.current = true;
+    pointerYRef.current = event.clientY ?? null;
+    scrollContainerRef.current = findScrollContainer(itemRef.current);
+    window.addEventListener("pointermove", handlePointerMove, {
+      passive: true
+    });
+    window.addEventListener("pointerup", stopAutoScroll);
+    window.addEventListener("pointercancel", stopAutoScroll);
+    if (autoScrollFrameRef.current === null) {
+      autoScrollFrameRef.current = window.requestAnimationFrame(runAutoScroll);
+    }
     // snapToCursor jumps the card so its origin meets the pointer. That's fine
     // when the whole card is the drag surface, but with a corner grip handle it
     // yanks the card toward the handle on a plain click. Skip it for the handle.
@@ -81,7 +153,14 @@ function SortableListItem<T>({
 
   const handleDragEnd = () => {
     setIsDragging(false);
+    stopAutoScroll();
   };
+
+  useEffect(() => {
+    return () => {
+      stopAutoScroll();
+    };
+  }, [stopAutoScroll]);
 
   // Scroll into view when highlighted
   useEffect(() => {
@@ -357,7 +436,14 @@ function QuantityProgressStrip({
   progress: NonNullable<Item["quantityProgress"]>;
   t: ReturnType<typeof useLingui>["t"];
 }) {
-  const { complete, pickup, target, onAddQuantity, onAddPickup, onOpenConfigTable } = progress;
+  const {
+    complete,
+    pickup,
+    target,
+    onAddQuantity,
+    onAddPickup,
+    onOpenConfigTable
+  } = progress;
   const completePercent = getPercent(complete, target);
   const pickupPercent = Math.min(
     getPercent(pickup, target),
@@ -379,7 +465,10 @@ function QuantityProgressStrip({
             onAddQuantity();
           }}
         >
-          <LuCircleCheckBig className="h-4 w-4 sm:h-3.5 sm:w-3.5 shrink-0 text-emerald-600" strokeWidth={2.5} />
+          <LuCircleCheckBig
+            className="h-4 w-4 sm:h-3.5 sm:w-3.5 shrink-0 text-emerald-600"
+            strokeWidth={2.5}
+          />
           <span className="text-base sm:text-sm font-medium tabular-nums leading-none tracking-tight text-emerald-600">
             {formatQuantityValue(complete)}
           </span>
@@ -400,7 +489,10 @@ function QuantityProgressStrip({
             onAddPickup();
           }}
         >
-          <LuLoaderCircle className="h-4 w-4 sm:h-3.5 sm:w-3.5 shrink-0 text-blue-600" strokeWidth={2.5} />
+          <LuLoaderCircle
+            className="h-4 w-4 sm:h-3.5 sm:w-3.5 shrink-0 text-blue-600"
+            strokeWidth={2.5}
+          />
           <span className="text-base sm:text-sm font-medium tabular-nums leading-none tracking-tight text-blue-600">
             {formatQuantityValue(pickup)}
           </span>
@@ -412,7 +504,10 @@ function QuantityProgressStrip({
       )}
       {/* Unassigned */}
       <span className="flex items-center gap-1 sm:gap-0.5">
-        <LuCircleDashed className="h-4 w-4 sm:h-3.5 sm:w-3.5 shrink-0 text-muted-foreground" strokeWidth={2.5} />
+        <LuCircleDashed
+          className="h-4 w-4 sm:h-3.5 sm:w-3.5 shrink-0 text-muted-foreground"
+          strokeWidth={2.5}
+        />
         <span className="text-base sm:text-sm font-medium tabular-nums leading-none tracking-tight text-muted-foreground">
           {formatQuantityValue(unassigned)}
         </span>
@@ -428,7 +523,10 @@ function QuantityProgressStrip({
             onOpenConfigTable();
           }}
         >
-          <LuTable className="h-3.5 w-3.5 sm:h-3 sm:w-3 shrink-0 text-foreground/80" strokeWidth={2.5} />
+          <LuTable
+            className="h-3.5 w-3.5 sm:h-3 sm:w-3 shrink-0 text-foreground/80"
+            strokeWidth={2.5}
+          />
           <span className="text-base sm:text-sm font-medium tabular-nums leading-none tracking-tight text-foreground">
             {formatQuantityValue(target)}
           </span>
