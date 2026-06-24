@@ -75,14 +75,16 @@ export const overlay = {
     }): OverlayTarget {
       return {
         id: "editJobProductionQuantity",
-        url: `${path.to.jobProductionQuantity(jobId, quantityId)}?overlay=true`
+        url: `${path.to.jobProductionQuantity(jobId, quantityId)}?overlay=true`,
+        params: { jobId, quantityId }
       };
     },
 
     jobBillOfProcessPreview({ jobId }: { jobId: string }): OverlayTarget {
       return {
         id: "jobBillOfProcessPreview",
-        url: path.to.api.jobBillOfProcessPreview(jobId)
+        url: path.to.api.jobBillOfProcessPreview(jobId),
+        params: { jobId }
       };
     },
 
@@ -90,20 +92,34 @@ export const overlay = {
       return {
         id: "jobConfigTable",
         url: path.to.api.jobConfigTable(jobId),
-        // url-addressable: fully fetched by jobId, so deep-link restores it.
         params: { jobId }
       };
     },
 
-    // Fetch key is just `itemId` (the loader reads parameters by it). The
-    // in-memory `configuration` rides the props channel — never the URL.
+    // Read-only view of a reported row's saved config. In-app the
+    // `configuration` rides the props channel; `recordId`/`reportKind` are the
+    // fetch keys so a deep link can restore it server-side (route loader).
     itemConfigTable(
-      { itemId }: { itemId: string },
+      {
+        itemId,
+        recordId,
+        reportKind
+      }: {
+        itemId: string;
+        recordId?: string;
+        reportKind?: "pickup" | "productionQuantity";
+      },
       props?: { configuration?: unknown }
     ): OverlayTarget {
+      const base = path.to.api.itemConfigTable(itemId);
+      const query = new URLSearchParams();
+      if (recordId) query.set("recordId", recordId);
+      if (reportKind) query.set("reportKind", reportKind);
+      const qs = query.toString();
       return {
         id: "itemConfigTable",
-        url: path.to.api.itemConfigTable(itemId),
+        url: qs ? `${base}?${qs}` : base,
+        params: overlayParams({ itemId, recordId, reportKind }),
         props:
           props?.configuration !== undefined
             ? { configuration: props.configuration }
@@ -126,8 +142,8 @@ export const overlay = {
  * `: , =` stay un-escaped. The pathname is left untouched — opening pushes a
  * history entry, so Back (or closing) returns to the previous stack state.
  *
- * Only the overlays listed in `urlOverlays` participate; everything else stays
- * imperative-only (e.g. nested config modals shouldn't live in the URL).
+ * Every registered overlay participates (see `isUrlOverlay`); each restores
+ * from its token via its `overlay.to.*` builder + a server-fetched fallback.
  *
  * Note: overlay param values must not themselves contain `,` or `=` (job ids /
  * operation ids are url-safe, so this holds).
@@ -148,13 +164,15 @@ export function serializeSearch(params: URLSearchParams): string {
 }
 
 /**
- * Whether an overlay is mirrored in the page URL — driven by the registry's
- * `urlAddressable` flag (see `overlay.registry.tsx`). Overlays without it stay
- * imperative-only (e.g. config modals, whose params aren't URL-safe). Decode
- * rebuilds a target by running the id's canonical `overlay.to.*` builder.
+ * Whether an overlay is mirrored in the page URL — true for every registered
+ * overlay. Each overlay is fully restorable from its token: `overlay.to.*`
+ * builders carry their fetch keys as `params`, and any in-memory data passed via
+ * props has a server-fetched fallback keyed by those params (e.g.
+ * `itemConfigTable`). Decode rebuilds a target by running the id's canonical
+ * builder, so the only real guard here is that the token's id is registered.
  */
 export function isUrlOverlay(id: OverlayId): boolean {
-  return getOverlayRegistryEntry(id)?.urlAddressable === true;
+  return getOverlayRegistryEntry(id) != null;
 }
 
 /** Encode an overlay as a `id:key=val,key=val` URL token, or null if not URL-addressable. */
