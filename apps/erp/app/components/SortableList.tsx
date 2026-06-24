@@ -40,6 +40,8 @@ interface SortableListItemProps<T> {
   onToggleItem: (id: string) => void;
   onRemoveItem: (id: string) => void;
   renderExtra?: (item: SortableItem<T>) => React.ReactNode;
+  /** Pinned to the card header (top-right); does not move when expand content grows below. */
+  renderHeaderAction?: (item: SortableItem<T>) => React.ReactNode;
   isExpanded?: boolean;
   isHighlighted?: boolean;
   className?: string;
@@ -57,6 +59,7 @@ function SortableListItem<T>({
   onToggleItem,
   onRemoveItem,
   renderExtra,
+  renderHeaderAction,
   handleDrag,
   isExpanded,
   isHighlighted,
@@ -116,8 +119,6 @@ function SortableListItem<T>({
             isExpanded
               ? {
                   zIndex: 9999,
-                  marginTop: 10,
-                  marginBottom: 10,
                   position: "relative",
                   overflow: item.quantityProgress != null ? "visible" : "hidden"
                 }
@@ -134,13 +135,13 @@ function SortableListItem<T>({
               "relative z-20 flex w-full min-w-0 flex-col"
             )}
           >
-            <motion.div className="w-full px-3 pt-3" layout="position">
-              <div
-                className={cn(
-                  "items-center justify-between w-full gap-2",
-                  isExpanded && "flex flex-col flex-grow"
-                )}
-              >
+            <motion.div className="relative w-full px-3 pt-3" layout="position">
+              {renderHeaderAction ? (
+                <div className="absolute right-3 top-3 z-20">
+                  {renderHeaderAction(item)}
+                </div>
+              ) : null}
+              <div className="flex w-full items-center justify-between gap-2">
                 <div className="flex flex-col w-full">
                   <div className="flex w-full min-w-0 items-center gap-x-2 pl-3">
                     {/* List Remove Actions */}
@@ -366,14 +367,21 @@ function QuantityProgressStrip({
   const isOverTarget = target > 0 && complete > target;
   const unassigned = Math.max(0, target - complete - pickup);
 
+  const metricGroupClass =
+    "flex items-center gap-1 sm:gap-0.5 rounded transition-opacity duration-150";
+  const metricButtonClass = cn(
+    metricGroupClass,
+    "hover:opacity-70 active:scale-95 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+  );
+
   const indicator = (
     <div className="flex items-center gap-2.5 sm:gap-2 whitespace-nowrap rounded-full border border-border/40 bg-transparent px-3 py-1 shadow-none backdrop-blur-sm sm:px-2 sm:py-0.5">
       {/* Finished group */}
       {onAddQuantity ? (
         <button
           type="button"
-          className="flex items-center gap-1 sm:gap-0.5 rounded transition-opacity duration-150 hover:opacity-70 active:scale-95 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-          aria-label={t`Add production quantity`}
+          className={metricButtonClass}
+          aria-label={t`Add process completion`}
           onClick={(event) => {
             event.stopPropagation();
             onAddQuantity();
@@ -385,16 +393,19 @@ function QuantityProgressStrip({
           </span>
         </button>
       ) : (
-        <span className="text-base sm:text-sm font-medium tabular-nums leading-none tracking-tight text-emerald-600">
-          {formatQuantityValue(complete)}
+        <span className={cn(metricGroupClass, "text-emerald-600")}>
+          <LuCircleCheckBig className="h-4 w-4 sm:h-3.5 sm:w-3.5 shrink-0 text-emerald-600" strokeWidth={2.5} />
+          <span className="text-base sm:text-sm font-medium tabular-nums leading-none tracking-tight text-emerald-600">
+            {formatQuantityValue(complete)}
+          </span>
         </span>
       )}
       {/* Pickup group */}
       {onAddPickup ? (
         <button
           type="button"
-          className="flex items-center gap-1 sm:gap-0.5 rounded transition-opacity duration-150 hover:opacity-70 active:scale-95 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-          aria-label={t`Add pickup`}
+          className={metricButtonClass}
+          aria-label={t`Add process pickup`}
           onClick={(event) => {
             event.stopPropagation();
             onAddPickup();
@@ -406,8 +417,11 @@ function QuantityProgressStrip({
           </span>
         </button>
       ) : (
-        <span className="text-base sm:text-sm font-medium tabular-nums leading-none tracking-tight text-blue-600">
-          {formatQuantityValue(pickup)}
+        <span className={cn(metricGroupClass, "text-blue-600")}>
+          <LuLoaderCircle className="h-4 w-4 sm:h-3.5 sm:w-3.5 shrink-0 text-blue-600" strokeWidth={2.5} />
+          <span className="text-base sm:text-sm font-medium tabular-nums leading-none tracking-tight text-blue-600">
+            {formatQuantityValue(pickup)}
+          </span>
         </span>
       )}
       {/* Unassigned */}
@@ -463,7 +477,7 @@ function QuantityProgressStrip({
     <div
       className="w-full min-w-0 shrink-0"
       role="img"
-      aria-label={t`Finished ${complete} of ${target} units, ${pickup} in progress from pickups, ${unassigned} unassigned`}
+      aria-label={t`Finished ${complete} of ${target} units, ${pickup} in progress from process pickups, ${unassigned} unassigned`}
     >
       <div className="relative h-9 sm:h-7 w-full">
         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2">

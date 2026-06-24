@@ -251,13 +251,13 @@ export async function action({ request }: ActionFunctionArgs) {
   if (insert.error) {
     return data(
       validation.submittedData,
-      await flash(request, error(insert.error, "Failed to create pickup"))
+      await flash(request, error(insert.error, "Failed to create process pickup"))
     );
   }
 
   return redirect(
     path.to.pickups,
-    await flash(request, success("Pickup created"))
+    await flash(request, success("Process pickup created"))
   );
 }
 
