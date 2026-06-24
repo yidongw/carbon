@@ -10,7 +10,7 @@ import {
   useDisclosure
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   LuCheckCheck,
   LuCircleCheck,
@@ -51,32 +51,34 @@ export default function JobStatusMenu({ job }: { job: Job }) {
 
   const inFlight = fetcher.state !== "idle";
 
-  // Remember the status we asked for so the badge can show it the moment the
-  // server confirms the change, instead of waiting on the row read-back (which
-  // can lag several seconds).
-  const [target, setTarget] = useState<(typeof jobStatus)[number] | null>(null);
+  // The new status, captured ONLY when a submit actually completes (a non-idle
+  // -> idle transition that didn't fail). Shown until the row read-back catches
+  // up. Setting it strictly on completion means the badge never flips before the
+  // server confirms, and it doesn't wait on the laggy read-back either.
+  const [confirmed, setConfirmed] = useState<
+    (typeof jobStatus)[number] | null
+  >(null);
+  const targetRef = useRef<(typeof jobStatus)[number] | null>(null);
+  const prevState = useRef(fetcher.state);
   useEffect(() => {
-    if (submitting) setTarget(submitting);
-  }, [submitting]);
-
-  // Drop the optimistic target once the loader reflects it, or the change
-  // failed (the action returns { success: false } for inline calls).
-  useEffect(() => {
-    if (!target) return;
-    if (job.status === target) {
-      setTarget(null);
-    } else if (!inFlight && fetcher.data?.success === false) {
-      setTarget(null);
+    if (submitting) targetRef.current = submitting;
+    if (prevState.current !== "idle" && fetcher.state === "idle") {
+      if (fetcher.data?.success !== false && targetRef.current) {
+        setConfirmed(targetRef.current);
+      }
+      targetRef.current = null;
     }
-  }, [target, job.status, inFlight, fetcher.data]);
+    prevState.current = fetcher.state;
+  }, [fetcher.state, submitting, fetcher.data]);
 
-  // While the change is in flight show the prior status with a spinner (never
-  // flip early). Once the fetcher settles successfully, show the new status
-  // right away and hold it until the row read-back catches up — so there's no
-  // gap where the spinner is gone but the status hasn't updated yet.
-  const settledOk =
-    !inFlight && target !== null && fetcher.data?.success !== false;
-  const status = settledOk ? target : job.status;
+  // Drop the optimistic value once the loader reflects it.
+  useEffect(() => {
+    if (confirmed && job.status === confirmed) setConfirmed(null);
+  }, [confirmed, job.status]);
+
+  // Old status + spinner while in flight; the confirmed new status the instant
+  // it settles. No premature flip, no dead gap.
+  const status = confirmed ?? job.status;
   const busy = inFlight;
 
   const canUpdate = permissions.can("update", "production");
@@ -89,15 +91,13 @@ export default function JobStatusMenu({ job }: { job: Job }) {
   const isRunning = ["Ready", "In Progress"].includes(status ?? "");
   const isDone = ["Completed", "Cancelled"].includes(status ?? "");
 
-  const submitStatus = (next: (typeof jobStatus)[number]) => {
-    setTarget(next);
+  const submitStatus = (next: (typeof jobStatus)[number]) =>
     fetcher.submit(
       { status: next },
       // stay=1 keeps inline changes on the jobs list (e.g. "Mark as Planned"
       // would otherwise redirect to the job's materials page).
       { method: "post", action: `${path.to.jobStatus(job.id!)}?stay=1` }
     );
-  };
 
   return (
     <>
