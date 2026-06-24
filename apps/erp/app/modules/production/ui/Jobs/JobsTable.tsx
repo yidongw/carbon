@@ -84,6 +84,7 @@ import JobStatus, {
   STATUS_COLOR_MAP,
   useJobStatusDisplayText
 } from "./JobStatus";
+import JobStatusMenu from "./JobStatusMenu";
 import { useDeadlineTypeLabel } from "./jobLabels";
 
 type JobsTableProps = {
@@ -561,7 +562,7 @@ const JobsTable = memo(
             const dueDate = row.original.dueDate;
             return (
               <HStack spacing={1}>
-                <JobStatus status={status} />
+                <JobStatusMenu job={row.original} />
                 {[
                   "Draft",
                   "Planned",

@@ -739,7 +739,7 @@ export function JobStartModal({
   );
 }
 
-function JobCancelModal({
+export function JobCancelModal({
   job,
   onClose,
   fetcher
@@ -799,7 +799,7 @@ function JobCancelModal({
   );
 }
 
-function JobCompleteModal({
+export function JobCompleteModal({
   job,
   onClose,
   fetcher
