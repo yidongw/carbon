@@ -390,11 +390,14 @@ export default JobHeader;
 export function JobStartModal({
   job,
   onClose,
-  fetcher
+  fetcher,
+  stay
 }: {
   job?: Job;
   fetcher: FetcherWithComponents<{}>;
   onClose: () => void;
+  // Inline callers (jobs table) stay on the page instead of navigating.
+  stay?: boolean;
 }) {
   const { carbon } = useCarbon();
   const [loading, setLoading] = useState(true);
@@ -729,7 +732,9 @@ export function JobStartModal({
                   startSubmitted.current = true;
                 }}
                 method="post"
-                action={`${path.to.jobStatus(job.id!)}?schedule=1`}
+                action={`${path.to.jobStatus(job.id!)}?schedule=1${
+                  stay ? "&stay=1" : ""
+                }`}
               >
                 <input type="hidden" name="status" value="Ready" />
                 <input
@@ -830,11 +835,14 @@ export function JobCancelModal({
 export function JobCompleteModal({
   job,
   onClose,
-  fetcher
+  fetcher,
+  stay
 }: {
   job?: Job;
   fetcher: FetcherWithComponents<{}>;
   onClose: () => void;
+  // Inline callers (jobs table) stay on the page instead of navigating.
+  stay?: boolean;
 }) {
   const { carbon } = useCarbon();
   const [loading, setLoading] = useState(true);
@@ -942,7 +950,11 @@ export function JobCompleteModal({
         ) : (
           <ValidatedForm
             method="post"
-            action={path.to.jobComplete(job.id!)}
+            action={
+              stay
+                ? `${path.to.jobComplete(job.id!)}?stay=1`
+                : path.to.jobComplete(job.id!)
+            }
             validator={jobCompleteValidator}
             onSuccess={onClose}
             defaultValues={{

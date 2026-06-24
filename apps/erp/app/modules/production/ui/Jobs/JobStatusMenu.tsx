@@ -160,6 +160,7 @@ export default function JobStatusMenu({ job }: { job: Job }) {
           job={job}
           onClose={releaseModal.onClose}
           fetcher={fetcher}
+          stay
         />
       )}
       {cancelModal.isOpen && (
@@ -175,6 +176,7 @@ export default function JobStatusMenu({ job }: { job: Job }) {
           job={job}
           onClose={completeModal.onClose}
           fetcher={fetcher}
+          stay
         />
       )}
     </>

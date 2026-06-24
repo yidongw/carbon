@@ -156,14 +156,17 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
       await triggerJobRelease(id, companyId, userId);
 
+      const releasedMessage =
+        "Job released. Material requirements, MRP, and scheduling are updating in the background.";
+      if (stay) {
+        return data(
+          { success: true, status },
+          await flash(request, success(releasedMessage))
+        );
+      }
       throw redirect(
         requestReferrer(request) ?? path.to.job(id),
-        await flash(
-          request,
-          success(
-            "Job released. Material requirements, MRP, and scheduling are updating in the background."
-          )
-        )
+        await flash(request, success(releasedMessage))
       );
     } catch (err) {
       if (err instanceof Response) {

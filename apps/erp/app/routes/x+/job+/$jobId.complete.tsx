@@ -4,7 +4,7 @@ import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs } from "react-router";
-import { redirect } from "react-router";
+import { data, redirect } from "react-router";
 import { jobCompleteValidator } from "~/modules/production";
 import type { Handle } from "~/utils/handle";
 import { path, requestReferrer } from "~/utils/path";
@@ -125,6 +125,16 @@ export async function action({ request, params }: ActionFunctionArgs) {
         await flash(request, error(rpc.error, "Failed to complete job"))
       );
     }
+  }
+
+  // Inline callers (jobs table) get a data response instead of a redirect, so
+  // the change stays on the page (no navigation flash) and the keyed fetcher can
+  // show the new status immediately.
+  if (new URL(request.url).searchParams.get("stay") === "1") {
+    return data(
+      { success: true, status: "Completed" },
+      await flash(request, success("Job completed successfully"))
+    );
   }
 
   throw redirect(
