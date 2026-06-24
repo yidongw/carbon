@@ -301,14 +301,14 @@ export async function action({ request }: ActionFunctionArgs) {
       validation.submittedData,
       await flash(
         request,
-        error(result.error, "Failed to create process completion")
+        error(result.error, "Failed to create production quantity")
       )
     );
   }
 
   return redirect(
     path.to.productionQuantities,
-    await flash(request, success("Process completion created"))
+    await flash(request, success("Production quantity created"))
   );
 }
 

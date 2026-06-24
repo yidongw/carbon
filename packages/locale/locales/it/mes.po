@@ -609,7 +609,7 @@ msgid "Log In"
 msgstr "Accedi"
 
 msgid "Log Pickup"
-msgstr "Registra prelievo di processo"
+msgstr "Picking up log"
 
 msgid "Log Rework"
 msgstr "Registra Rilavorazione"
@@ -888,26 +888,13 @@ msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "Colonna {0} presa dalla posizione: {1} di {2}"
 
 msgid "pickup"
-msgstr "prelievo di processo"
-
-msgid "Process Pickup"
-msgstr "prelievo di processo"
-
-#. placeholder {0}: selectedPickup.employeeId
-msgid "Process Pickup by {0}"
-msgstr "Prelievo di processo da {0}"
-
-msgid "Process Pickups"
-msgstr "prelievi di processo"
-
-msgid "Total Process Pickups"
-msgstr "Prelievi di processo totali"
+msgstr "recupero"
 
 msgid "Pickup suggestions:"
-msgstr "Suggerimenti per il prelievo di processo:"
+msgstr "Suggerimenti di ritiro:"
 
 msgid "Pickups"
-msgstr "prelievi di processo"
+msgstr "Picking"
 
 msgid "Pin Out"
 msgstr "Disconnetti"
@@ -1008,7 +995,7 @@ msgid "Record {0}"
 msgstr "Registrazione {0}"
 
 msgid "Record Pickup"
-msgstr "Registra prelievo di processo"
+msgstr "Registra Ritiro"
 
 msgid "Record Quantity"
 msgstr "Quantità registrata"
@@ -1290,7 +1277,7 @@ msgid "Tools"
 msgstr "Utensili"
 
 msgid "Total Pickups"
-msgstr "Prelievi di processo totali"
+msgstr "Totale estrazioni"
 
 msgid "Total Production"
 msgstr "Produzione totale"

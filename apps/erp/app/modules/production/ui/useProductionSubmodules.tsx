@@ -48,13 +48,13 @@ export default function useProductionSubmodules() {
           role: "employee"
         },
         {
-          name: t`Process Pickups`,
+          name: t`Pickups`,
           to: path.to.pickups,
           icon: <LuPackage />,
           role: "employee"
         },
         {
-          name: t`Process Completions`,
+          name: t`Production Quantities`,
           to: `${path.to.productionQuantities}?filter=${encodeURIComponent("approvalStatus:eq:Pending")}`,
           icon: <LuPackageCheck />,
           role: "employee"

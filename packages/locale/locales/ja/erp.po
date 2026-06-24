@@ -11,7 +11,6 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
-"POT-Creation-Date: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " A supplier is a business or person who sells you parts or services."
@@ -468,9 +467,6 @@ msgstr "要件を追加"
 msgid "Add Risk"
 msgstr "リスクを追加"
 
-msgid "Add Row"
-msgstr "追加行"
-
 msgid "Add rule"
 msgstr "追加ルールを追加"
 
@@ -518,6 +514,9 @@ msgstr "住所2行目"
 
 msgid "Adjustment"
 msgstr "調整"
+
+msgid "Adjustment input mode"
+msgstr "調整入力モード"
 
 msgid "Adjustment Type"
 msgstr "調整タイプ"
@@ -949,7 +948,7 @@ msgid "Are you sure you want to delete this maintenance dispatch? This cannot be
 msgstr "このメンテナンスディスパッチを削除してもよろしいですか？この操作は取り消せません。"
 
 msgid "Are you sure you want to delete this pickup? This action cannot be undone."
-msgstr "この工程払い出しを削除してもよろしいですか？この操作は元に戻せません。"
+msgstr "はこの受取品を削除することを確認しますか。 このアクションは取り消すことができません。"
 
 msgid "Are you sure you want to delete this production quantity? This action cannot be undone."
 msgstr "あなたはこの生産量を削減することを確実にしたいですか？ このアクションは取り消すことができません。"
@@ -2653,7 +2652,7 @@ msgid "Delete Payment Term"
 msgstr "支払い条件を削除"
 
 msgid "Delete Pickup"
-msgstr "工程払い出しを削除"
+msgstr "削除受取"
 
 msgid "Delete Portal"
 msgstr "ポータルを削除"
@@ -2971,6 +2970,9 @@ msgstr "ドラッグアンドドロップするファイルをここにドラッ
 msgid "Drag handle"
 msgstr "ドラッグハンドル"
 
+msgid "Drag to reorder"
+msgstr "ドラッグして再配置します"
+
 msgid "Drop Shipment"
 msgstr "ドロップシップメント"
 
@@ -3180,7 +3182,7 @@ msgid "Edit Permissions"
 msgstr "編集権限"
 
 msgid "Edit Pickup"
-msgstr "工程払い出しを編集"
+msgstr "編集受取"
 
 msgid "Edit Portal"
 msgstr "ポータルを編集"
@@ -3419,8 +3421,8 @@ msgstr "エンジニアリング担当者"
 msgid "Enter a batch number before setting the expiration date"
 msgstr "有効期限を設定する前にバッチ番号を入力してください"
 
-msgid "Enter a positive number to add or a negative number to remove. The change is recorded in the history below."
-msgstr "正の数を入力すると追加、負の数を入力すると削除します。変更履歴は下に記録されます。"
+msgid "Enter a positive number to add or a negative number to subtract."
+msgstr "正の数を入力すると追加、負の数を入力すると減算します。"
 
 msgid "Enter an adjustment before saving."
 msgstr "保存する前に調整値を入力してください。"
@@ -3431,8 +3433,8 @@ msgstr "シリアル番号を入力またはスキャンしてください"
 msgid "Enter PO number"
 msgstr "PO番号を入力"
 
-msgid "Enter the target quantity for each size. The change from the current quantity is recorded in the history."
-msgstr "各サイズの対象数量を入力してください。現在数量との差分は履歴に記録されます。"
+msgid "Enter the target quantity for each size."
+msgstr "各サイズの目標数量を入力してください。"
 
 msgid "Enter your answer..."
 msgstr "あなたの回答を入力してください..."
@@ -4994,7 +4996,7 @@ msgid "Live reloading"
 msgstr "ライブリロード中"
 
 msgid "Load more pickups"
-msgstr "さらに工程払い出しを読み込む"
+msgstr "更多ピックアップをロード"
 
 msgid "Load more quantities"
 msgstr "更多数量を読み込む"
@@ -5671,7 +5673,7 @@ msgid "New Payment Term"
 msgstr "新しい支払い条件"
 
 msgid "New Pickup"
-msgstr "工程払い出しを新規作成"
+msgstr "新規ピックアップ"
 
 msgid "New PIN"
 msgstr "新しいPIN"
@@ -6612,30 +6614,17 @@ msgid "picked up {0} units"
 msgstr "{0}ユニットを取った"
 
 msgid "pickup"
-msgstr "工程払い出し"
-
-msgid "Process Pickup"
-msgstr "工程払い出し"
-
-#. placeholder {0}: selectedPickup.employeeId
-msgid "Process Pickup by {0}"
-msgstr "{0} の工程払い出し"
-
-msgid "Process Pickups"
-msgstr "工程払い出し"
-
-msgid "Total Process Pickups"
-msgstr "工程払い出し合計"
+msgstr "ピックアップ"
 
 msgid "Pickup"
-msgstr "工程払い出し"
+msgstr "おとり"
 
 #. placeholder {0}: selectedPickup.employeeId
 msgid "pickup by {0}"
-msgstr "{0} の工程払い出し"
+msgstr "{0}を取り上げます"
 
 msgid "Pickups"
-msgstr "工程払い出し"
+msgstr "Pickup"
 
 msgid "Pieces/Hour"
 msgstr "個/時間"
@@ -7300,17 +7289,11 @@ msgstr "レコード削除済み"
 msgid "Record payment"
 msgstr "えいさつせき"
 
-msgid "Add process pickup"
-msgstr "工程払い出しを追加"
-
-msgid "Add process completion"
-msgstr "工程完了を追加"
-
 msgid "Record pickup"
-msgstr "工程払い出しを記録"
+msgstr "レコーダップ"
 
 msgid "Record Pickup"
-msgstr "工程払い出しを記録"
+msgstr "レコードアップ"
 
 msgid "Record production quantity"
 msgstr "録造生産量"
@@ -9268,7 +9251,7 @@ msgid "Total paid"
 msgstr "合計支払い"
 
 msgid "Total Pickups"
-msgstr "工程払い出し合計"
+msgstr "総計ピックアップ"
 
 msgid "Total Price"
 msgstr "合計価格"

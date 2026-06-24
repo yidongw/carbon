@@ -1477,7 +1477,7 @@ export const JobOperation = ({
                 {/* Summary Badges */}
                 <HStack className="gap-2 flex-wrap">
                   <Badge variant="outline">
-                    <Trans>Total Process Pickups</Trans>: {pickups.reduce((sum, p) => sum + Number(p.quantity), 0)}
+                    <Trans>Total Pickups</Trans>: {pickups.reduce((sum, p) => sum + Number(p.quantity), 0)}
                   </Badge>
                   <Badge variant="outline">
                     <Trans>Total Production</Trans>: {quantities.filter(q => q.type === "Production").reduce((sum, q) => sum + Number(q.quantity), 0)}
@@ -1579,7 +1579,7 @@ export const JobOperation = ({
                                   </TooltipTrigger>
                                   <TooltipContent>
                                     <div className="text-xs">
-                                      <div><Trans>Process Pickups</Trans>: {totalPickups}</div>
+                                      <div><Trans>Pickups</Trans>: {totalPickups}</div>
                                       <div><Trans>Production</Trans>: {totalProduction}</div>
                                     </div>
                                   </TooltipContent>
@@ -1599,7 +1599,7 @@ export const JobOperation = ({
                                       <span className="font-medium">{pickup.quantity}</span> | {formatDate(pickup.createdAt)}
                                     </div>
                                     <div className="flex items-center gap-2">
-                                      <span className="text-xs"><Trans>process pickup</Trans></span>
+                                      <span className="text-xs"><Trans>pickup</Trans></span>
                                       <PickupDeleteButton pickupId={pickup.id} />
                                     </div>
                                   </div>
@@ -2696,7 +2696,7 @@ function PickupDeleteButton({ pickupId }: { pickupId: string }) {
   const fetcher = useFetcher();
   return (
     <IconButton
-      aria-label="Delete process pickup"
+      aria-label="Delete pickup"
       variant="ghost"
       icon={<FaTrash className="text-destructive" />}
       className="h-8 w-8"

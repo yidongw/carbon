@@ -224,7 +224,7 @@ const ProductionQuantitiesTable = memo(
             onClick={() => navigate(row.id)}
           >
             <MenuIcon icon={<LuPencil />} />
-            <Trans>Edit Process Completion</Trans>
+            <Trans>Edit Quantity</Trans>
           </MenuItem>
           <MenuItem
             destructive
@@ -232,7 +232,7 @@ const ProductionQuantitiesTable = memo(
             onClick={() => onDelete(row)}
           >
             <MenuIcon icon={<LuTrash />} />
-            <Trans>Delete Process Completion</Trans>
+            <Trans>Delete Quantity</Trans>
           </MenuItem>
         </>
       ),
@@ -250,13 +250,13 @@ const ProductionQuantitiesTable = memo(
           primaryAction={
             permissions.can("create", "production") && (
               <New
-                label={t`Process Completion`}
+                label={t`Production Quantity`}
                 to={`new?${params.toString()}`}
               />
             )
           }
           renderContextMenu={renderContextMenu}
-          title={t`Process Completions`}
+          title={t`Production Quantities`}
         />
         {deleteModal.isOpen && selectedEvent && (
           <ConfirmDelete
@@ -270,7 +270,7 @@ const ProductionQuantitiesTable = memo(
                     t`Unknown Employee`
                   }`
             }
-            text={t`Are you sure you want to delete this process completion? This action cannot be undone.`}
+            text={t`Are you sure you want to delete this production quantity? This action cannot be undone.`}
             onCancel={onDeleteCancel}
             onSubmit={onDeleteCancel}
           />

@@ -30,6 +30,7 @@ import {
 import ItemThumbnail from "./ItemThumbnail";
 import Location from "./Location";
 import New from "./New";
+import { PillSegmentedControl } from "./PillSegmentedControl";
 import RealtimeDataProvider from "./RealtimeDataProvider";
 import SearchFilter from "./SearchFilter";
 import { SearchLandingPage } from "./SearchLandingPage";
@@ -66,6 +67,7 @@ export {
   MethodItemTypeIcon,
   ModuleIcon,
   New,
+  PillSegmentedControl,
   OperationStatusIcon,
   RealtimeDataProvider,
   SearchFilter,
