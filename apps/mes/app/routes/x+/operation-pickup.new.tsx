@@ -42,12 +42,12 @@ export async function action({ request }: ActionFunctionArgs) {
   if (insert.error) {
     return data(
       {},
-      await flash(request, error(insert.error, "Failed to log process pickup"))
+      await flash(request, error(insert.error, "Failed to log pickup"))
     );
   }
 
   return data(
     insert.data,
-    await flash(request, success("Process pickup logged successfully"))
+    await flash(request, success("Pickup logged successfully"))
   );
 }

@@ -1,18 +1,9 @@
-import {
-  Combobox,
-  cn,
-  IconButton,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr
-} from "@carbon/react";
+import { Combobox, cn, IconButton } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import type { ReactElement } from "react";
 import { LuTrash2 } from "react-icons/lu";
 import { fillValueFromReference } from "~/modules/production/configParamsTableColumns";
+import { ResponsiveConfigTable } from "./ResponsiveConfigTable";
 
 export type Row = Record<string, string | number | boolean>;
 
@@ -250,6 +241,26 @@ export function getCellKey(rowIndex: number, columnKey: string): string {
   return `${rowIndex}:${columnKey}`;
 }
 
+/** Modal shell shared by config-table overlays and the local editor modal. */
+export const configParamsModalContentClassName = cn(
+  "flex max-h-[92vh] w-fit min-w-[20rem] max-w-[calc(100vw-1.5rem)] flex-col gap-0 overflow-hidden p-0 pt-0",
+  "sm:w-fit md:w-fit sm:max-w-[calc(100vw-1.5rem)]",
+  "[&>button]:z-20"
+);
+
+export const configParamsModalShellClassName =
+  "flex w-max max-w-[calc(100vw-1.5rem)] flex-col";
+
+export const configParamsModalBodyClassName =
+  "overflow-x-auto overflow-y-auto px-6 py-4";
+
+/** Job config overlay: keep a stable width while switching Delta/Total tabs. */
+export const jobConfigQuantitiesModalShellClassName =
+  "flex w-max min-w-full max-w-full flex-col";
+
+export const jobConfigQuantitiesModalBodyClassName =
+  "min-w-0 flex-1 overflow-x-auto overflow-y-auto px-6 py-4";
+
 export function validateCell(
   row: Row,
   column: Column,
@@ -311,65 +322,35 @@ export function ReadOnlyConfigTable({
   signed?: boolean;
   onQuantityClick?: (colKey: string, value: number) => void;
 }) {
-  if (rows.length === 0) return null;
   return (
-    <div className="max-w-full overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent">
-      <Table className="w-auto min-w-max table-fixed">
-        <Thead>
-          <Tr>
-            {columns.map((col) => (
-              <Th
-                key={col.key}
-                className={cn(
-                  "px-3 text-xs whitespace-nowrap",
-                  getColumnWidthClass(col, false)
-                )}
-              >
-                {col.label}
-              </Th>
-            ))}
-          </Tr>
-        </Thead>
-        <Tbody>
-          {rows.map((row, rowIndex) => (
-            <Tr key={rowIndex}>
-              {columns.map((col) => {
-                const raw = row[col.key];
-                const numeric = Number(raw) || 0;
-                const display =
-                  col.type === "quantity"
-                    ? signed
-                      ? formatSignedTotal(numeric)
-                      : String(numeric)
-                    : String(raw ?? "");
-                const clickable = col.type === "quantity" && !!onQuantityClick;
-                return (
-                  <Td
-                    key={col.key}
-                    className={cn(
-                      "px-3 py-1.5 text-sm tabular-nums",
-                      getColumnWidthClass(col, false)
-                    )}
-                  >
-                    {clickable ? (
-                      <button
-                        type="button"
-                        onClick={() => onQuantityClick?.(col.key, numeric)}
-                        className="rounded px-1.5 py-0.5 tabular-nums text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-                      >
-                        {display}
-                      </button>
-                    ) : (
-                      display
-                    )}
-                  </Td>
-                );
-              })}
-            </Tr>
-          ))}
-        </Tbody>
-      </Table>
-    </div>
+    <ResponsiveConfigTable
+      columns={columns}
+      rows={rows}
+      hasReferences={false}
+      hideZeroValuesInVertical
+      renderCell={(col, row) => {
+        const raw = row[col.key];
+        const numeric = Number(raw) || 0;
+        const display =
+          col.type === "quantity"
+            ? signed
+              ? formatSignedTotal(numeric)
+              : String(numeric)
+            : String(raw ?? "");
+        const clickable = col.type === "quantity" && !!onQuantityClick;
+        return clickable ? (
+          <button
+            type="button"
+            onClick={() => onQuantityClick?.(col.key, numeric)}
+            className="rounded px-1.5 py-0.5 text-sm tabular-nums text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+          >
+            {display}
+          </button>
+        ) : (
+          <span className="text-sm tabular-nums">{display}</span>
+        );
+      }}
+    />
   );
 }
 
@@ -387,7 +368,9 @@ export function EditableConfigGrid({
   baselineFor,
   materialOptions,
   updateCell,
-  deleteRow
+  deleteRow,
+  readOnly = false,
+  allowRowMutations = true
 }: {
   columns: Column[];
   rows: Row[];
@@ -404,216 +387,200 @@ export function EditableConfigGrid({
     value: string | number
   ) => void;
   deleteRow: (index: number) => void;
+  readOnly?: boolean;
+  allowRowMutations?: boolean;
 }) {
   const { t } = useLingui();
-  return (
-    <div className="max-w-full overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent">
-      <Table className="w-auto min-w-max table-fixed">
-        <Thead>
-          <Tr>
-            {columns.map((col) => (
-              <Th
-                key={col.key}
+
+  const renderCell = (col: Column, row: Row, rowIndex: number) => {
+    const cellValue = row[col.key];
+    const referenceValue =
+      col.type === "quantity"
+        ? referenceByRowIndex?.[rowIndex]?.[col.key]
+        : undefined;
+    const isInvalid = invalidCells.has(getCellKey(rowIndex, col.key));
+    const referenceMismatch =
+      referenceValue !== undefined &&
+      !quantityCellMatchesReference(cellValue, referenceValue);
+    const inputClassName = cn(
+      "w-full rounded border border-border bg-background px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-ring",
+      col.type === "quantity" && "border-sky-300 dark:border-sky-700",
+      col.type === "quantity" &&
+        !referenceMismatch &&
+        "bg-sky-50/30 dark:bg-sky-950/20",
+      col.type === "quantity" &&
+        referenceMismatch &&
+        "bg-yellow-100 dark:bg-yellow-950/40",
+      isInvalid && "border-destructive focus:ring-destructive dark:border-destructive"
+    );
+
+    const isTotalMode = mode === "total" && col.type === "quantity";
+    const baseline = isTotalMode ? baselineFor(row, col.key) : 0;
+
+    if (["quantity", "numeric"].includes(col.type)) {
+      if (col.type === "quantity" && referenceValue !== undefined) {
+        return (
+          <div className="flex min-w-0 items-center gap-1">
+            <input
+              type="number"
+              min={0}
+              disabled={readOnly}
+              value={
+                typeof cellValue === "boolean" ? "" : (cellValue ?? "")
+              }
+              onFocus={(e) => e.currentTarget.select()}
+              onChange={(e) =>
+                updateCell(
+                  rowIndex,
+                  col.key,
+                  normalizeNumberInputValue(e.target.value)
+                )
+              }
+              onBlur={(e) => {
+                if (e.currentTarget.value === "") {
+                  updateCell(rowIndex, col.key, 0);
+                }
+              }}
+              className={cn(inputClassName, "min-w-0 flex-1")}
+            />
+            {readOnly ? null : (
+              <button
+                type="button"
                 className={cn(
-                  "px-3 text-xs whitespace-nowrap",
-                  getColumnWidthClass(col, hasReferences)
+                  "shrink-0 rounded px-1 py-0.5 text-xs tabular-nums transition-colors hover:bg-muted",
+                  referenceValue < 0
+                    ? "text-destructive"
+                    : "text-muted-foreground hover:text-foreground"
                 )}
+                title={t`Fill cell`}
+                onClick={() =>
+                  updateCell(
+                    rowIndex,
+                    col.key,
+                    fillValueFromReference(referenceValue)
+                  )
+                }
               >
-                {col.label}
-              </Th>
-            ))}
-            <Th className="px-3 w-10 min-w-10 max-w-10" />
-          </Tr>
-        </Thead>
-        <Tbody>
-          {rows.map((row, rowIndex) => (
-            <Tr key={rowIndex}>
-              {columns.map((col) => {
-                const cellValue = row[col.key];
-                const referenceValue =
-                  col.type === "quantity"
-                    ? referenceByRowIndex?.[rowIndex]?.[col.key]
-                    : undefined;
-                const isInvalid = invalidCells.has(
-                  getCellKey(rowIndex, col.key)
-                );
-                const referenceMismatch =
-                  referenceValue !== undefined &&
-                  !quantityCellMatchesReference(cellValue, referenceValue);
-                const inputClassName = cn(
-                  "w-full rounded border border-border bg-background px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-ring",
-                  col.type === "quantity" &&
-                    "border-sky-300 dark:border-sky-700",
-                  col.type === "quantity" &&
-                    !referenceMismatch &&
-                    "bg-sky-50/30 dark:bg-sky-950/20",
-                  col.type === "quantity" &&
-                    referenceMismatch &&
-                    "bg-yellow-100 dark:bg-yellow-950/40",
-                  isInvalid &&
-                    "border-destructive focus:ring-destructive dark:border-destructive"
-                );
+                {formatReferenceValue(referenceValue)}
+              </button>
+            )}
+          </div>
+        );
+      }
 
-                // Total tab: show current + delta and convert input to a delta.
-                const isTotalMode = mode === "total" && col.type === "quantity";
-                const baseline = isTotalMode ? baselineFor(row, col.key) : 0;
+      return (
+        <input
+          type="number"
+          min={
+            col.type === "quantity" && (isTotalMode || !allowNegative)
+              ? 0
+              : undefined
+          }
+          disabled={readOnly}
+          value={
+            isTotalMode
+              ? cellValue === "" || cellValue === undefined
+                ? ""
+                : baseline + (Number(cellValue) || 0)
+              : typeof cellValue === "boolean"
+                ? ""
+                : (cellValue ?? "")
+          }
+          onFocus={(e) => e.currentTarget.select()}
+          onChange={(e) => {
+            const next = normalizeNumberInputValue(e.target.value);
+            updateCell(
+              rowIndex,
+              col.key,
+              isTotalMode && next !== "" ? next - baseline : next
+            );
+          }}
+          onBlur={(e) => {
+            if (e.currentTarget.value === "") {
+              updateCell(rowIndex, col.key, 0);
+            }
+          }}
+          className={cn(inputClassName, "w-full min-w-0 max-w-full tabular-nums")}
+        />
+      );
+    }
 
-                return (
-                  <Td
-                    key={col.key}
-                    className={cn(
-                      "px-3 py-1.5",
-                      getColumnWidthClass(col, hasReferences)
-                    )}
-                  >
-                    {["quantity", "numeric"].includes(col.type) ? (
-                      col.type === "quantity" &&
-                      referenceValue !== undefined ? (
-                        <div className="flex min-w-0 items-center gap-1">
-                          <input
-                            type="number"
-                            min={0}
-                            value={
-                              typeof cellValue === "boolean"
-                                ? ""
-                                : (cellValue ?? "")
-                            }
-                            onFocus={(e) => e.currentTarget.select()}
-                            onChange={(e) =>
-                              updateCell(
-                                rowIndex,
-                                col.key,
-                                normalizeNumberInputValue(e.target.value)
-                              )
-                            }
-                            onBlur={(e) => {
-                              if (e.currentTarget.value === "") {
-                                updateCell(rowIndex, col.key, 0);
-                              }
-                            }}
-                            className={cn(inputClassName, "min-w-0 flex-1")}
-                          />
-                          <button
-                            type="button"
-                            className={cn(
-                              "shrink-0 rounded px-1 py-0.5 text-xs tabular-nums transition-colors hover:bg-muted",
-                              referenceValue < 0
-                                ? "text-destructive"
-                                : "text-muted-foreground hover:text-foreground"
-                            )}
-                            title={t`Fill cell`}
-                            onClick={() =>
-                              updateCell(
-                                rowIndex,
-                                col.key,
-                                fillValueFromReference(referenceValue)
-                              )
-                            }
-                          >
-                            {formatReferenceValue(referenceValue)}
-                          </button>
-                        </div>
-                      ) : (
-                        <input
-                          type="number"
-                          min={
-                            col.type === "quantity" &&
-                            (isTotalMode || !allowNegative)
-                              ? 0
-                              : undefined
-                          }
-                          value={
-                            isTotalMode
-                              ? cellValue === "" || cellValue === undefined
-                                ? ""
-                                : baseline + (Number(cellValue) || 0)
-                              : typeof cellValue === "boolean"
-                                ? ""
-                                : (cellValue ?? "")
-                          }
-                          onFocus={(e) => e.currentTarget.select()}
-                          onChange={(e) => {
-                            const next = normalizeNumberInputValue(
-                              e.target.value
-                            );
-                            updateCell(
-                              rowIndex,
-                              col.key,
-                              isTotalMode && next !== ""
-                                ? next - baseline
-                                : next
-                            );
-                          }}
-                          onBlur={(e) => {
-                            if (e.currentTarget.value === "") {
-                              updateCell(rowIndex, col.key, 0);
-                            }
-                          }}
-                          className={cn(inputClassName, "min-w-[64px]")}
-                        />
-                      )
-                    ) : col.type === "list" ? (
-                      <select
-                        value={String(cellValue ?? "")}
-                        onChange={(e) =>
-                          updateCell(rowIndex, col.key, e.target.value)
-                        }
-                        className={cn(inputClassName, "min-w-[80px]")}
-                      >
-                        {col.options?.map((opt) => (
-                          <option key={opt} value={opt}>
-                            {opt}
-                          </option>
-                        ))}
-                      </select>
-                    ) : col.type === "boolean" ? (
-                      <select
-                        value={String(cellValue ?? "")}
-                        onChange={(e) =>
-                          updateCell(rowIndex, col.key, e.target.value)
-                        }
-                        className={cn(inputClassName, "min-w-[80px]")}
-                      >
-                        <option value="" />
-                        <option value="true">{t`True`}</option>
-                        <option value="false">{t`False`}</option>
-                      </select>
-                    ) : col.type === "material" ? (
-                      <Combobox
-                        value={String(cellValue ?? "")}
-                        options={materialOptions}
-                        isClearable
-                        onChange={(value) =>
-                          updateCell(rowIndex, col.key, value)
-                        }
-                        className={cn(inputClassName, "min-w-[80px]")}
-                      />
-                    ) : (
-                      <input
-                        type="text"
-                        value={String(cellValue ?? "")}
-                        onChange={(e) =>
-                          updateCell(rowIndex, col.key, e.target.value)
-                        }
-                        className={cn(inputClassName, "min-w-[80px]")}
-                      />
-                    )}
-                  </Td>
-                );
-              })}
-              <Td className="px-3 py-1.5 w-10 min-w-10 max-w-10">
-                <IconButton
-                  icon={<LuTrash2 />}
-                  aria-label={t`Delete row`}
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => deleteRow(rowIndex)}
-                />
-              </Td>
-            </Tr>
+    if (col.type === "list") {
+      return (
+        <select
+          value={String(cellValue ?? "")}
+          disabled={readOnly}
+          onChange={(e) => updateCell(rowIndex, col.key, e.target.value)}
+          className={cn(inputClassName, "min-w-[80px]")}
+        >
+          {col.options?.map((opt) => (
+            <option key={opt} value={opt}>
+              {opt}
+            </option>
           ))}
-        </Tbody>
-      </Table>
-    </div>
+        </select>
+      );
+    }
+
+    if (col.type === "boolean") {
+      return (
+        <select
+          value={String(cellValue ?? "")}
+          disabled={readOnly}
+          onChange={(e) => updateCell(rowIndex, col.key, e.target.value)}
+          className={cn(inputClassName, "min-w-[80px]")}
+        >
+          <option value="" />
+          <option value="true">{t`True`}</option>
+          <option value="false">{t`False`}</option>
+        </select>
+      );
+    }
+
+    if (col.type === "material") {
+      return (
+        <Combobox
+          value={String(cellValue ?? "")}
+          options={materialOptions}
+          isClearable
+          isReadOnly={readOnly}
+          onChange={(value) => updateCell(rowIndex, col.key, value)}
+          className={cn(inputClassName, "min-w-[80px]")}
+        />
+      );
+    }
+
+    return (
+      <input
+        type="text"
+        value={String(cellValue ?? "")}
+        disabled={readOnly}
+        onChange={(e) => updateCell(rowIndex, col.key, e.target.value)}
+        className={cn(inputClassName, "min-w-[80px]")}
+      />
+    );
+  };
+
+  return (
+    <ResponsiveConfigTable
+      columns={columns}
+      rows={rows}
+      hasReferences={hasReferences}
+      hideZeroValuesInVertical={readOnly}
+      renderCell={renderCell}
+      renderRowActions={
+        readOnly || !allowRowMutations
+          ? undefined
+          : (rowIndex) => (
+              <IconButton
+                icon={<LuTrash2 />}
+                aria-label={t`Delete row`}
+                variant="ghost"
+                size="sm"
+                onClick={() => deleteRow(rowIndex)}
+              />
+            )
+      }
+    />
   );
 }

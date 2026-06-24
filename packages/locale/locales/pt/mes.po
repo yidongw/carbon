@@ -609,7 +609,7 @@ msgid "Log In"
 msgstr "Acessar"
 
 msgid "Log Pickup"
-msgstr "Registrar saída para processo"
+msgstr "Pegamento de Log"
 
 msgid "Log Rework"
 msgstr "Registrar Retrabalho"
@@ -888,26 +888,13 @@ msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "Coluna {0} selecionada na posição: {1} de {2}"
 
 msgid "pickup"
-msgstr "saída para processo"
-
-msgid "Process Pickup"
-msgstr "saída para processo"
-
-#. placeholder {0}: selectedPickup.employeeId
-msgid "Process Pickup by {0}"
-msgstr "Saída para processo de {0}"
-
-msgid "Process Pickups"
-msgstr "saídas para processo"
-
-msgid "Total Process Pickups"
-msgstr "Total de saídas para processo"
+msgstr "retirada"
 
 msgid "Pickup suggestions:"
-msgstr "Sugestões de saída para processo:"
+msgstr "Sugestões de retirada:"
 
 msgid "Pickups"
-msgstr "saídas para processo"
+msgstr "Pegadas"
 
 msgid "Pin Out"
 msgstr "Desconectar"
@@ -1008,7 +995,7 @@ msgid "Record {0}"
 msgstr "Registro {0}"
 
 msgid "Record Pickup"
-msgstr "Registrar saída para processo"
+msgstr "Registo da Entrega"
 
 msgid "Record Quantity"
 msgstr "Quantidade Registada"
@@ -1290,7 +1277,7 @@ msgid "Tools"
 msgstr "Ferramentas"
 
 msgid "Total Pickups"
-msgstr "Total de saídas para processo"
+msgstr "Total Retiradas"
 
 msgid "Total Production"
 msgstr "Produção Total"
