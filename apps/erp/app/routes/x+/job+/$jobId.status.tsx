@@ -216,8 +216,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
   // place (a redirect makes the fetcher hand off to a navigation, so neither
   // happens).
   if (stay) {
+    // Echo the new status so the inline menu can show it immediately, without
+    // waiting on the (laggy) row read-back.
     return data(
-      { success: true },
+      { success: true, status },
       await flash(request, success("Updated job status"))
     );
   }
