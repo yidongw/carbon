@@ -853,6 +853,88 @@ export async function getJob(client: SupabaseClient<Database>, id: string) {
   return client.from("jobs").select("*").eq("id", id).limit(1).single();
 }
 
+export async function getJobConfigurationHistory(
+  client: SupabaseClient<Database>,
+  jobId: string,
+  companyId: string
+) {
+  return client
+    .from("jobConfigurationHistory")
+    .select(
+      `id, quantity, configuration, createdAt, createdBy,
+       createdByUser:user!jobConfigurationHistory_createdBy_fkey(id, fullName, avatarUrl)`
+    )
+    .eq("jobId", jobId)
+    .eq("companyId", companyId)
+    .order("createdAt", { ascending: false });
+}
+
+export async function getJobProductionQuantitySummary(
+  client: SupabaseClient<Database>,
+  jobId: string,
+  companyId: string
+) {
+  const operations = await client
+    .from("jobOperation")
+    .select("id, description, order")
+    .eq("jobId", jobId)
+    .eq("companyId", companyId);
+  if (operations.error) {
+    return { data: null, error: operations.error };
+  }
+
+  const operationList = operations.data ?? [];
+  if (operationList.length === 0) {
+    return { data: [], error: null };
+  }
+
+  const quantities = await client
+    .from("productionQuantity")
+    .select("jobOperationId, quantity, configuration")
+    .in(
+      "jobOperationId",
+      operationList.map((operation) => operation.id)
+    )
+    .eq("companyId", companyId)
+    .eq("type", "Production")
+    .is("invalidatedAt", null);
+  if (quantities.error) {
+    return { data: null, error: quantities.error };
+  }
+
+  const rowsByOperation = new Map<
+    string,
+    { quantity: number | null; configuration: Json | null }[]
+  >();
+  for (const row of quantities.data ?? []) {
+    if (!row.jobOperationId) continue;
+    const existing = rowsByOperation.get(row.jobOperationId);
+    if (existing) {
+      existing.push({
+        quantity: row.quantity,
+        configuration: row.configuration
+      });
+    } else {
+      rowsByOperation.set(row.jobOperationId, [
+        { quantity: row.quantity, configuration: row.configuration }
+      ]);
+    }
+  }
+
+  const summary = operationList
+    .filter((operation) => rowsByOperation.has(operation.id))
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+    .map((operation) => ({
+      operationId: operation.id,
+      label: operation.description ?? "",
+      configurations: (rowsByOperation.get(operation.id) ?? []).map(
+        (row) => row.configuration
+      )
+    }));
+
+  return { data: summary, error: null };
+}
+
 export async function getJobByOperationId(
   client: SupabaseClient<Database>,
   operationId: string

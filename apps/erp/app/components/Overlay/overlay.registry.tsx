@@ -321,10 +321,12 @@ export const overlayRegistry = {
         return {
           parameters: data.parameters,
           initialRows: data.initialRows,
-          jobDisplayId: data.jobDisplayId
+          jobDisplayId: data.jobDisplayId,
+          history: data.history,
+          processQuantities: data.processQuantities
         };
       },
-      () => import("~/modules/production/ui/Jobs/ConfigParamsTableModal")
+      () => import("~/modules/production/ui/Jobs/JobConfigQuantities")
     )
   },
   itemConfigTable: {
