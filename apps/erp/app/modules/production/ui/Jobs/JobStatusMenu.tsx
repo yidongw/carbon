@@ -10,6 +10,7 @@ import {
   useDisclosure
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
+import { useEffect, useRef, useState } from "react";
 import {
   LuCheckCheck,
   LuCircleCheck,
@@ -33,17 +34,34 @@ import JobStatus from "./JobStatus";
 export default function JobStatusMenu({ job }: { job: Job }) {
   const { t } = useLingui();
   const permissions = usePermissions();
-  const fetcher = useFetcher();
+  const fetcher = useFetcher<{ success?: boolean }>();
 
   const releaseModal = useDisclosure();
   const cancelModal = useDisclosure();
   const completeModal = useDisclosure();
 
-  // Dead simple: show a spinner while the change is saving (and while the table
-  // refreshes afterwards), and always show the real status — which updates when
-  // the row refreshes. No optimistic flipping, no edge cases.
-  const status = job.status;
-  const busy = fetcher.state !== "idle";
+  // A plain local "saving" flag drives the spinner — reliable, unlike
+  // fetcher.state which doesn't stay busy consistently here. And `shown` holds
+  // the new status optimistically once the server's success response lands, so
+  // the badge changes immediately instead of waiting on the slow row read-back.
+  const [saving, setSaving] = useState(false);
+  const [shown, setShown] = useState<(typeof jobStatus)[number] | null>(null);
+  const targetRef = useRef<(typeof jobStatus)[number] | null>(null);
+
+  // React only to a fresh response (this effect fires when fetcher.data changes).
+  useEffect(() => {
+    if (!fetcher.data) return;
+    if (fetcher.data.success === true) setShown(targetRef.current);
+    setSaving(false);
+  }, [fetcher.data]);
+
+  // Drop the optimistic value once the row read-back finally reflects it.
+  useEffect(() => {
+    if (shown && job.status === shown) setShown(null);
+  }, [shown, job.status]);
+
+  const status = shown ?? job.status;
+  const busy = saving;
 
   const canUpdate = permissions.can("update", "production");
   if (!job.id || !canUpdate) {
@@ -55,13 +73,16 @@ export default function JobStatusMenu({ job }: { job: Job }) {
   const isRunning = ["Ready", "In Progress"].includes(status ?? "");
   const isDone = ["Completed", "Cancelled"].includes(status ?? "");
 
-  const submitStatus = (next: (typeof jobStatus)[number]) =>
+  const submitStatus = (next: (typeof jobStatus)[number]) => {
+    targetRef.current = next;
+    setSaving(true);
     fetcher.submit(
       { status: next },
       // stay=1 keeps inline changes on the jobs list (e.g. "Mark as Planned"
       // would otherwise redirect to the job's materials page).
       { method: "post", action: `${path.to.jobStatus(job.id!)}?stay=1` }
     );
+  };
 
   return (
     <>
