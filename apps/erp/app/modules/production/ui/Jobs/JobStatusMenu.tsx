@@ -10,7 +10,6 @@ import {
   useDisclosure
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useEffect, useRef, useState } from "react";
 import {
   LuCheckCheck,
   LuCircleCheck,
@@ -34,50 +33,17 @@ import JobStatus from "./JobStatus";
 export default function JobStatusMenu({ job }: { job: Job }) {
   const { t } = useLingui();
   const permissions = usePermissions();
-  const fetcher = useFetcher<{ success?: boolean }>();
+  const fetcher = useFetcher();
 
   const releaseModal = useDisclosure();
   const cancelModal = useDisclosure();
   const completeModal = useDisclosure();
 
-  // The status currently being submitted — a direct click, the cancel/release
-  // modal forms (all send a `status` field), or the complete modal (posts to
-  // the dedicated complete route).
-  const submitting =
-    (fetcher.formData?.get("status") as
-      | (typeof jobStatus)[number]
-      | undefined) ??
-    (fetcher.formAction?.includes("/complete") ? "Completed" : undefined);
-
-  // Show the new status the instant the server's success response lands.
-  // fetcher.data is populated the moment the action returns — well before the
-  // fetcher re-reads the table (that read-back lags several seconds). Keying off
-  // the response (not the fetcher going idle, which waits on the read-back)
-  // makes the badge flip in ~300ms, while never flipping before the server
-  // actually confirms.
-  const [confirmed, setConfirmed] = useState<
-    (typeof jobStatus)[number] | null
-  >(null);
-  const targetRef = useRef<(typeof jobStatus)[number] | null>(null);
-  useEffect(() => {
-    if (submitting) targetRef.current = submitting;
-    if (fetcher.data?.success === true && targetRef.current) {
-      setConfirmed(targetRef.current);
-    } else if (fetcher.data?.success === false) {
-      targetRef.current = null;
-    }
-  }, [fetcher.data, submitting]);
-
-  // Drop the optimistic value once the row read-back finally reflects it.
-  useEffect(() => {
-    if (confirmed && job.status === confirmed) setConfirmed(null);
-  }, [confirmed, job.status]);
-
-  // Old status + spinner until the server confirms, then the new status. Stop
-  // the spinner as soon as we have the confirmed status (the fetcher may still
-  // be busy doing its slow background read-back).
-  const status = confirmed ?? job.status;
-  const busy = fetcher.state !== "idle" && !confirmed;
+  // Dead simple: show a spinner while the change is saving (and while the table
+  // refreshes afterwards), and always show the real status — which updates when
+  // the row refreshes. No optimistic flipping, no edge cases.
+  const status = job.status;
+  const busy = fetcher.state !== "idle";
 
   const canUpdate = permissions.can("update", "production");
   if (!job.id || !canUpdate) {
