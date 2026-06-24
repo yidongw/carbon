@@ -18,7 +18,7 @@ import {
   LuCirclePlay,
   LuCircleStop
 } from "react-icons/lu";
-import { useFetcher, useRevalidator } from "react-router";
+import { useFetcher } from "react-router";
 import { usePermissions } from "~/hooks";
 import { path } from "~/utils/path";
 import type { jobStatus } from "../../production.models";
@@ -35,7 +35,6 @@ export default function JobStatusMenu({ job }: { job: Job }) {
   const { t } = useLingui();
   const permissions = usePermissions();
   const fetcher = useFetcher<{}>();
-  const revalidator = useRevalidator();
 
   const releaseModal = useDisclosure();
   const cancelModal = useDisclosure();
@@ -65,11 +64,9 @@ export default function JobStatusMenu({ job }: { job: Job }) {
     if (prevState.current !== "idle" && fetcher.state === "idle") {
       if (submittingRef.current) setConfirmed(submittingRef.current);
       submittingRef.current = null;
-      // Also refresh the table so the rest of the row reflects any side effects.
-      revalidator.revalidate();
     }
     prevState.current = fetcher.state;
-  }, [fetcher.state, submitting, revalidator]);
+  }, [fetcher.state, submitting]);
 
   // Drop the optimistic value once the loader actually reflects it.
   useEffect(() => {

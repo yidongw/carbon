@@ -3,7 +3,7 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
 import type { ActionFunctionArgs } from "react-router";
-import { redirect } from "react-router";
+import { data, redirect } from "react-router";
 import {
   createPurchaseOrdersFromJob,
   jobStatus,
@@ -43,13 +43,19 @@ export async function action({ request, params }: ActionFunctionArgs) {
   }
 
   if (status === "Ready") {
-    const { data } = await client
+    const { data: jobData } = await client
       .from("job")
       .select("item(itemReplenishment(manufacturingBlocked))")
       .eq("id", id)
       .single();
 
-    if (data?.item?.itemReplenishment?.manufacturingBlocked) {
+    if (jobData?.item?.itemReplenishment?.manufacturingBlocked) {
+      if (stay) {
+        return data(
+          { success: false },
+          await flash(request, error(null, "Manufacturing is blocked"))
+        );
+      }
       throw redirect(
         requestReferrer(request) ?? path.to.job(id),
         await flash(request, error(null, "Manufacturing is blocked"))
@@ -178,6 +184,12 @@ export async function action({ request, params }: ActionFunctionArgs) {
     updatedBy: userId
   });
   if (update.error) {
+    if (stay) {
+      return data(
+        { success: false },
+        await flash(request, error(update.error, "Failed to update job status"))
+      );
+    }
     throw redirect(
       path.to.job(id),
       await flash(request, error(update.error, "Failed to update job status"))
@@ -195,6 +207,18 @@ export async function action({ request, params }: ActionFunctionArgs) {
     throw redirect(
       path.to.jobMaterials(id),
       await flash(request, success("Job marked as planned"))
+    );
+  }
+
+  // Inline callers (jobs table status menu) get a plain data response instead of
+  // a redirect, so the fetcher keeps a clean submitting→loading→idle lifecycle.
+  // That drives the inline spinner and lets React Router revalidate the row in
+  // place (a redirect makes the fetcher hand off to a navigation, so neither
+  // happens).
+  if (stay) {
+    return data(
+      { success: true },
+      await flash(request, success("Updated job status"))
     );
   }
 
