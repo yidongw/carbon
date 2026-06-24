@@ -3183,7 +3183,7 @@ msgid "Edit Permissions"
 msgstr "编辑权限"
 
 msgid "Edit Pickup"
-msgstr "编辑提货"
+msgstr "编辑工序领料"
 
 msgid "Edit Portal"
 msgstr "编辑门户"
@@ -5674,7 +5674,7 @@ msgid "New Payment Term"
 msgstr "新的付款条款"
 
 msgid "New Pickup"
-msgstr "新提货"
+msgstr "新建工序领料"
 
 msgid "New PIN"
 msgstr "新PIN"
@@ -6612,10 +6612,10 @@ msgstr "选择列表"
 
 #. placeholder {0}: pickup.quantity
 msgid "picked up {0} units"
-msgstr "拾取了 {0} 个单位"
+msgstr "已领料 {0} 个单位"
 
 msgid "pickup"
-msgstr "提货"
+msgstr "工序领料"
 
 msgid "Process Pickup"
 msgstr "工序领料"
@@ -7303,7 +7303,7 @@ msgid "Process Pickup"
 msgstr "工序领料"
 
 msgid "Record Pickup"
-msgstr "记录取货"
+msgstr "记录工序领料"
 
 msgid "Process Completion"
 msgstr "工序完成"
