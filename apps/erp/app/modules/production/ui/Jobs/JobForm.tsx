@@ -33,7 +33,10 @@ import {
   Submit
 } from "~/components/Form";
 import { overlay, useOverlay } from "~/components/Overlay";
-import { ConfigParamsTableLocalModal } from "./ConfigParamsTableModal";
+import {
+  toConfigTableValue,
+  useConfigTableModal
+} from "./ConfigParamsTableModal";
 import { usePermissions, useUser } from "~/hooks";
 import { isConfigTableOverlaySuccess } from "../../configTableOverlay";
 import type {
@@ -249,9 +252,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
     }
   };
 
-  const [configModal, setConfigModal] = useState<{
-    configuration: unknown;
-  } | null>(null);
+  const configModal = useConfigTableModal();
 
   const applyConfig = (data: unknown) => {
     if (!isConfigTableOverlaySuccess(data)) return;
@@ -277,11 +278,10 @@ const JobForm = ({ initialValues }: JobFormProps) => {
 
     // Creating: the config is an in-memory draft applied back to this form, so
     // use a local modal rather than the overlay system.
-    setConfigModal({
-      configuration:
-        configTableRows && configTablePrimaryKeys.length > 0
-          ? { configTable: configTableRows, configTablePrimaryKeys }
-          : undefined
+    configModal.open({
+      itemId: itemData.itemId,
+      configuration: toConfigTableValue(configTableRows, configTablePrimaryKeys),
+      onConfirm: applyConfig
     });
   };
 
@@ -609,18 +609,7 @@ const JobForm = ({ initialValues }: JobFormProps) => {
           )}
         </VStack>
       </Tabs>
-      {itemData.itemId && configModal ? (
-        <ConfigParamsTableLocalModal
-          open
-          onClose={() => setConfigModal(null)}
-          onConfirm={(data) => {
-            applyConfig(data);
-            setConfigModal(null);
-          }}
-          itemId={itemData.itemId}
-          configuration={configModal.configuration}
-        />
-      ) : null}
+      {configModal.node}
     </>
   );
 };

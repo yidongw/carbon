@@ -29,12 +29,14 @@ import { SupplierSubcontractPricingFields } from "./SupplierSubcontractPricingFi
 import type { productionActorKinds } from "../../production.models";
 import ScrapReason from "~/components/Form/ScrapReason";
 import { usePermissions } from "~/hooks";
-import { isConfigTableOverlaySuccess } from "../../configTableOverlay";
 import {
   buildProductionConfigTableReferenceContext,
   type ConfigReferenceSource
 } from "../../configParamsTableColumns";
-import { ConfigParamsTableLocalModal } from "./ConfigParamsTableModal";
+import {
+  toConfigTableValue,
+  useConfigTableModal
+} from "./ConfigParamsTableModal";
 import type { ProductionQuantityLineInput } from "~/modules/production/productionQuantityReport.models";
 import { preventDismissOnPortaledContent } from "~/utils/dom";
 import { path } from "~/utils/path";
@@ -322,38 +324,33 @@ const ProductionQuantityForm = ({
     }
   };
 
-  const [configModal, setConfigModal] = useState<{
-    configuration: unknown;
-    jobId?: string;
-    jobOperationId?: string;
-    employeeId?: string;
-  } | null>(null);
+  const configModal = useConfigTableModal();
 
   const openConfigTable = () => {
     if (!itemId) return;
-
-    const configuration =
-      configTableRows && configTablePrimaryKeys.length > 0
-        ? { configTable: configTableRows, configTablePrimaryKeys }
-        : (initialValues as z.infer<typeof productionQuantityValidator>)
-            .configuration;
-
-    setConfigModal({
-      configuration,
+    configModal.open({
+      itemId,
+      configuration: toConfigTableValue(
+        configTableRows,
+        configTablePrimaryKeys,
+        (initialValues as z.infer<typeof productionQuantityValidator>)
+          .configuration
+      ),
       jobId: jobId ?? undefined,
       jobOperationId: jobOperationIdState || undefined,
-      employeeId: actorKind === "employee" ? employeeId : undefined
+      reportKind: "productionQuantity",
+      buildReferenceContext: (source) =>
+        buildProductionConfigTableReferenceContext({
+          source: source ?? undefined,
+          employeeId: actorKind === "employee" ? employeeId : undefined
+        }),
+      onConfirm: (data) =>
+        handleConfigTableSubmit(
+          data.configuration.configTable,
+          data.total,
+          data.primaryKeys
+        )
     });
-  };
-
-  const handleConfigConfirm = (data: unknown) => {
-    if (!isConfigTableOverlaySuccess(data)) return;
-    handleConfigTableSubmit(
-      data.configuration.configTable,
-      data.total,
-      data.primaryKeys
-    );
-    setConfigModal(null);
   };
 
   const createDefaultValues = useMemo(() => {
@@ -711,31 +708,11 @@ const ProductionQuantityForm = ({
     </ValidatedForm>
   );
 
-  const configModalNode =
-    itemId && configModal ? (
-      <ConfigParamsTableLocalModal
-        open
-        onClose={() => setConfigModal(null)}
-        onConfirm={handleConfigConfirm}
-        itemId={itemId}
-        jobId={configModal.jobId}
-        jobOperationId={configModal.jobOperationId}
-        reportKind="productionQuantity"
-        configuration={configModal.configuration}
-        buildReferenceContext={(source) =>
-          buildProductionConfigTableReferenceContext({
-            source: source ?? undefined,
-            employeeId: configModal.employeeId
-          })
-        }
-      />
-    ) : null;
-
   if (isOverlay) {
     return (
       <>
         {form}
-        {configModalNode}
+        {configModal.node}
       </>
     );
   }
@@ -755,7 +732,7 @@ const ProductionQuantityForm = ({
           {form}
         </DrawerContent>
       </Drawer>
-      {configModalNode}
+      {configModal.node}
     </>
   );
 };

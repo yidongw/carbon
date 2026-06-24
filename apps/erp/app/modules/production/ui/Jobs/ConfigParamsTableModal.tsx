@@ -15,7 +15,7 @@ import {
   Tr
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useEffect, useRef, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { LuPlus, LuTrash2 } from "react-icons/lu";
 import { useFetcher } from "react-router";
 import { Enumerable } from "~/components/Enumerable";
@@ -28,7 +28,11 @@ import {
   type ConfigTableReferenceContext,
   fillValueFromReference
 } from "~/modules/production/configParamsTableColumns";
-import { buildConfigTableActionResponse } from "~/modules/production/configTableOverlay";
+import {
+  buildConfigTableActionResponse,
+  type ConfigTableOverlaySuccess,
+  isConfigTableOverlaySuccess
+} from "~/modules/production/configTableOverlay";
 import type { ItemConfigTableOverlayLoaderData } from "~/routes/api+/items.$itemId.config-table";
 import { path } from "~/utils/path";
 
@@ -796,6 +800,71 @@ export function ConfigParamsTableLocalModal({
       </ModalContent>
     </Modal>
   );
+}
+
+/**
+ * Build the editor's `configuration` input from the current table rows, falling
+ * back to a saved/initial configuration when nothing has been edited yet.
+ */
+export function toConfigTableValue(
+  rows: Row[] | null | undefined,
+  primaryKeys: string[],
+  fallback?: unknown
+): unknown {
+  return rows && primaryKeys.length > 0
+    ? { configTable: rows, configTablePrimaryKeys: primaryKeys }
+    : fallback;
+}
+
+type ConfigTableModalRequest = {
+  itemId: string;
+  configuration?: unknown;
+  jobId?: string;
+  jobOperationId?: string;
+  reportKind?: "pickup" | "productionQuantity";
+  buildReferenceContext?: (
+    source: ConfigReferenceSource | null
+  ) => ConfigTableReferenceContext | undefined;
+  jobDisplayId?: string | null;
+  /** Receives the validated edited config when the user confirms. */
+  onConfirm: (result: ConfigTableOverlaySuccess) => void;
+};
+
+/**
+ * Manage a single local config-table editor. Call `open(request)` to show it;
+ * render `node`. Handles open state, the success check, and closing — so callers
+ * just describe what to fetch/pass and what to do on confirm.
+ */
+export function useConfigTableModal(): {
+  open: (request: ConfigTableModalRequest) => void;
+  node: ReactNode;
+} {
+  const [request, setRequest] = useState<ConfigTableModalRequest | null>(null);
+  const open = useCallback(
+    (next: ConfigTableModalRequest) => setRequest(next),
+    []
+  );
+  const close = useCallback(() => setRequest(null), []);
+
+  const node = request ? (
+    <ConfigParamsTableLocalModal
+      open
+      onClose={close}
+      onConfirm={(data) => {
+        if (isConfigTableOverlaySuccess(data)) request.onConfirm(data);
+        close();
+      }}
+      itemId={request.itemId}
+      jobId={request.jobId}
+      jobOperationId={request.jobOperationId}
+      reportKind={request.reportKind}
+      configuration={request.configuration}
+      buildReferenceContext={request.buildReferenceContext}
+      jobDisplayId={request.jobDisplayId}
+    />
+  ) : null;
+
+  return { open, node };
 }
 
 export { ConfigParamsTableModal };

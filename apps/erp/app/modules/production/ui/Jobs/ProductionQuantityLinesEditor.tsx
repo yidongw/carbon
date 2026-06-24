@@ -11,7 +11,7 @@ import {
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { LuPlus, LuTrash2 } from "react-icons/lu";
 import { useScrapReasons } from "~/components/Form/ScrapReason";
 import {
@@ -19,10 +19,9 @@ import {
   type ConfigReferenceSource,
   type ConfigTableReferenceContext
 } from "~/modules/production/configParamsTableColumns";
-import { isConfigTableOverlaySuccess } from "~/modules/production/configTableOverlay";
 import { computeJobConfigTableTotal } from "~/modules/production/jobConfiguration";
 import type { ProductionQuantityLineInput } from "~/modules/production/productionQuantityReport.models";
-import { ConfigParamsTableLocalModal } from "./ConfigParamsTableModal";
+import { useConfigTableModal } from "./ConfigParamsTableModal";
 import { ItemConfigQuantityInput } from "./ItemConfigQuantityInput";
 
 type ConfigurationParameter = {
@@ -168,16 +167,7 @@ export function ProductionQuantityLinesEditor({
     [setLines]
   );
 
-  const [lineConfigModal, setLineConfigModal] = useState<{
-    lineKey: string;
-    lineQuantity: number;
-    configuration: unknown;
-    jobId?: string;
-    jobOperationId?: string;
-    buildReferenceContext: (
-      source: ConfigReferenceSource | null
-    ) => ConfigTableReferenceContext | undefined;
-  } | null>(null);
+  const lineConfigModal = useConfigTableModal();
 
   const openLineConfig = useCallback(
     (lineKey: string) => {
@@ -185,13 +175,12 @@ export function ProductionQuantityLinesEditor({
       const line = lines.find((l) => l.key === lineKey);
       if (!line) return;
 
-      const cfg = getConfigFromEditableLine(line);
-      setLineConfigModal({
-        lineKey,
-        lineQuantity: line.quantity,
-        configuration: cfg,
+      lineConfigModal.open({
+        itemId,
+        configuration: getConfigFromEditableLine(line),
         jobId,
         jobOperationId,
+        reportKind: "productionQuantity",
         // Built from the source the modal fetches for this operation (or the
         // in-memory original config for the "original" reference mode).
         buildReferenceContext: (source) =>
@@ -206,22 +195,24 @@ export function ProductionQuantityLinesEditor({
                 }
               : { configReferenceSource: source },
             employeeId
-          )
+          ),
+        onConfirm: (data) =>
+          updateLine(lineKey, {
+            configuration: data.configuration,
+            quantity: data.total > 0 ? data.total : line.quantity
+          })
       });
     },
-    [configReferenceContext, configReferenceSource, employeeId, itemId, jobId, jobOperationId, lines]
-  );
-
-  const handleLineConfigConfirm = useCallback(
-    (data: unknown) => {
-      if (!lineConfigModal || !isConfigTableOverlaySuccess(data)) return;
-      updateLine(lineConfigModal.lineKey, {
-        configuration: data.configuration,
-        quantity: data.total > 0 ? data.total : lineConfigModal.lineQuantity
-      });
-      setLineConfigModal(null);
-    },
-    [lineConfigModal, updateLine]
+    [
+      configReferenceContext,
+      employeeId,
+      itemId,
+      jobId,
+      jobOperationId,
+      lines,
+      lineConfigModal,
+      updateLine
+    ]
   );
 
   const addLine = () => {
@@ -386,19 +377,7 @@ export function ProductionQuantityLinesEditor({
           <Trans>Add line</Trans>
         </Button>
       ) : null}
-      {itemId && lineConfigModal ? (
-        <ConfigParamsTableLocalModal
-          open
-          onClose={() => setLineConfigModal(null)}
-          onConfirm={handleLineConfigConfirm}
-          itemId={itemId}
-          jobId={lineConfigModal.jobId}
-          jobOperationId={lineConfigModal.jobOperationId}
-          reportKind="productionQuantity"
-          configuration={lineConfigModal.configuration}
-          buildReferenceContext={lineConfigModal.buildReferenceContext}
-        />
-      ) : null}
+      {lineConfigModal.node}
     </VStack>
   );
 }
