@@ -15,15 +15,13 @@ import type { FetcherWithComponents } from "react-router";
 import { useFetcher, useRevalidator } from "react-router";
 import { New, Table } from "~/components";
 import SalaryPeriodPicker from "~/modules/people/ui/Salary/SalaryPeriodPicker";
-import {
-  formatDateTime,
-  getProcessName
-} from "~/modules/production/productionQuantityDisplay.utils";
+import { getProcessName } from "~/modules/production/productionQuantityDisplay.utils";
 import type {
   ProductionQuantityListRow,
   ProductionQuantityPayStatus
 } from "~/modules/production/productionQuantityList.models";
 import type { ProductionQuantityReportWithLines } from "~/modules/production/productionQuantityReport.service";
+import { EditableCreatedAtCell } from "~/modules/production/ui/EditableCreatedAtCell";
 import { ProductionQuantityDispositionDrawer } from "~/modules/production/ui/Jobs/ProductionQuantityDispositionDrawer";
 import { ProductionQuantityReportReporter } from "~/modules/production/ui/Jobs/ProductionQuantityReportReporter";
 import {
@@ -31,6 +29,7 @@ import {
   ProductionQuantityTableJobCell,
   ProductionQuantityTableQuantityCell
 } from "~/modules/production/ui/ProductionQuantityTableCells";
+import { useProductionQuantityReportCreatedAtSave } from "~/modules/production/ui/useEditableCreatedAt";
 import { path } from "~/utils/path";
 
 export type ProductionQuantityTableRow = ProductionQuantityListRow & {
@@ -194,6 +193,8 @@ const ProductionQuantitiesTable = memo(
       () => new Set(configurableItemIds),
       [configurableItemIds]
     );
+    const { saveCreatedAt, canEdit } =
+      useProductionQuantityReportCreatedAtSave();
     const fetcher = useFetcher<ProductionQuantityActionData>();
     const correctionFetcher = useFetcher<ProductionQuantityActionData>();
     const reportFetcher = useFetcher<ReportLoaderData>();
@@ -390,9 +391,12 @@ const ProductionQuantitiesTable = memo(
           accessorKey: "createdAt",
           header: t`Submitted`,
           cell: ({ row }) => (
-            <span className="text-sm text-muted-foreground whitespace-nowrap">
-              {formatDateTime(row.original.createdAt)}
-            </span>
+            <EditableCreatedAtCell
+              createdAt={row.original.createdAt}
+              row={row.original}
+              onSave={saveCreatedAt}
+              canEdit={canEdit}
+            />
           ),
           meta: { icon: <LuCalendar /> }
         },
@@ -466,12 +470,14 @@ const ProductionQuantitiesTable = memo(
 
       return cols;
     }, [
+      canEdit,
       configurableItemIdSet,
       employees,
       fetcher,
       items,
       jobs,
       openRejectCorrection,
+      saveCreatedAt,
       status,
       submitAction,
       t
