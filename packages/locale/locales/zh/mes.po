@@ -72,6 +72,12 @@ msgstr "添加备件"
 msgid "All"
 msgstr "全部"
 
+msgid "approved"
+msgstr "已批准"
+
+msgid "Approved"
+msgstr "已批准"
+
 msgid "Are you sure you want to delete this step?"
 msgstr "确定要删除此步骤吗？"
 
@@ -310,6 +316,9 @@ msgstr "重复的序列号"
 msgid "Duration"
 msgstr "时长"
 
+msgid "Earned"
+msgstr "已获得"
+
 msgid "Edit"
 msgstr "编辑"
 
@@ -399,6 +408,9 @@ msgstr "返回操作"
 
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "遇到技术问题？联系<0>Carbon 支持。</0>"
+
+msgid "History"
+msgstr "历史"
 
 msgid "How many were actually picked?"
 msgstr "实际上捡了多少个？"
@@ -572,6 +584,9 @@ msgstr "必须在 {minValue} 到 {maxValue} {unitOfMeasureCode} 之间"
 msgid "My Hours"
 msgstr "我的工时"
 
+msgid "My Salary"
+msgstr ""
+
 msgid "Name"
 msgstr "名称"
 
@@ -592,6 +607,9 @@ msgstr "无活跃的维护工单"
 
 msgid "No active operations"
 msgstr "无活跃工序"
+
+msgid "No approved completions this period"
+msgstr "本期无已批准的完工记录"
 
 msgid "No assigned operations"
 msgstr "无已分配工序"
@@ -720,6 +738,12 @@ msgstr "操作员执行"
 msgid "Optional"
 msgstr "可选"
 
+msgid "Owed"
+msgstr "欠款"
+
+msgid "Paid"
+msgstr "已支付"
+
 msgid "Parameters"
 msgstr "参数"
 
@@ -731,6 +755,15 @@ msgstr "检验通过"
 
 msgid "Pause"
 msgstr "暂停"
+
+msgid "Pending"
+msgstr "待审批"
+
+msgid "Pending Approval"
+msgstr "待批准"
+
+msgid "Period"
+msgstr "期间"
 
 msgid "Pick"
 msgstr "拣选"
@@ -797,6 +830,9 @@ msgstr "工艺"
 
 msgid "Progress"
 msgstr "进度"
+
+msgid "Qty"
+msgstr "数量"
 
 msgid "Quality Issue"
 msgstr "质量问题"
@@ -1040,6 +1076,9 @@ msgstr "物料清单中有序列号或批次追踪的物料尚未完全发放。
 msgid "This lot is expired and can't be picked."
 msgstr "此批次已过期，无法领取。"
 
+msgid "This Period"
+msgstr "本期"
+
 msgid "Thumbnail"
 msgstr "缩略图"
 
@@ -1075,6 +1114,9 @@ msgstr "输入消息..."
 
 msgid "Unissued serial/batch materials"
 msgstr "未发放的序列号/批次物料"
+
+msgid "unit"
+msgstr "单位"
 
 msgid "Unknown"
 msgstr "未知"

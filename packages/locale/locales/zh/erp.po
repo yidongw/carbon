@@ -25,6 +25,9 @@ msgstr "\"{storageUnitName}\"有{childCount}个直接嵌套的存储单元。删
 msgid "\"{storageUnitName}\" has 1 direct nested storage unit. Deleting it will also delete that unit and anything underneath it. This cannot be undone."
 msgstr "\"${storageUnitName}\"有1个直接嵌套的存储单元。删除它也会删除该单元及其下的所有内容。此操作无法撤销。"
 
+msgid "(all must match)"
+msgstr ""
+
 #. placeholder {0}: selectedEvent.jobOperation?.description ?? t`Operation`
 msgid "{0} (supplier)"
 msgstr ""
@@ -282,6 +285,12 @@ msgstr "活跃工作"
 
 #. placeholder {0}: report.originalQuantity
 msgid "Active line total ({lineTotal}) differs from originally reported ({0}). Saving anyway."
+msgstr ""
+
+msgid "Active Rules"
+msgstr ""
+
+msgid "Active Rules (in priority order)"
 msgstr ""
 
 msgid "Active Statuses"
@@ -617,8 +626,17 @@ msgstr "审批规则"
 msgid "Approve"
 msgstr "批准"
 
+msgid "Approve here or manage all pending items on the quantity review page."
+msgstr ""
+
 msgid "Approved By"
 msgstr "批准人"
+
+msgid "approved completion(s)"
+msgstr ""
+
+msgid "Approved completions"
+msgstr ""
 
 msgid "AQL"
 msgstr "AQL"
@@ -731,6 +749,10 @@ msgstr ""
 #. placeholder {0}: apiKey.name
 msgid "Are you sure you want to delete the API key: {0}? This cannot be undone."
 msgstr "您确定要删除 API 密钥：{0}？此操作无法撤销。"
+
+#. placeholder {0}: rule.name ?? ""
+msgid "Are you sure you want to delete the assignment rule: {0}? This cannot be undone."
+msgstr ""
 
 msgid "Are you sure you want to delete the contractor: {name}? This cannot be undone."
 msgstr "您确定要删除承包商：{name}？此操作无法撤销。"
@@ -1024,11 +1046,17 @@ msgstr ""
 msgid "Assign To"
 msgstr "分配给"
 
+msgid "Assign to Group"
+msgstr ""
+
 msgid "Assign to Groups"
 msgstr "分配给组"
 
 msgid "Assigned"
 msgstr "已分配"
+
+msgid "Assigned Group"
+msgstr ""
 
 msgid "Assigned to Me"
 msgstr "分配给我"
@@ -1038,6 +1066,12 @@ msgstr "被指派人"
 
 msgid "Assignment"
 msgstr "分配"
+
+msgid "Assignment Rule Simulation"
+msgstr ""
+
+msgid "Assignment Rules"
+msgstr ""
 
 msgid "Assignments"
 msgstr "分配"
@@ -1563,6 +1597,9 @@ msgstr ""
 msgid "Coming soon"
 msgstr "即将推出"
 
+msgid "comma separated IDs"
+msgstr ""
+
 msgid "comma-separated values"
 msgstr ""
 
@@ -1634,6 +1671,12 @@ msgstr "完成条码"
 
 msgid "Completion Time"
 msgstr "完成时间"
+
+msgid "condition"
+msgstr ""
+
+msgid "conditions"
+msgstr ""
 
 msgid "Conditions"
 msgstr ""
@@ -1935,6 +1978,9 @@ msgstr "正确答案"
 
 msgid "Correct Answers"
 msgstr "正确答案"
+
+msgid "Correct quantities"
+msgstr ""
 
 msgid "Corrective Action"
 msgstr "纠正措施"
@@ -2463,6 +2509,9 @@ msgstr "默认单位"
 
 msgid "Defaults"
 msgstr "默认值"
+
+msgid "Defaults to the full outstanding amount"
+msgstr ""
 
 msgid "Deferred Revenue"
 msgstr ""
@@ -3008,6 +3057,9 @@ msgstr "个"
 #. placeholder {0}: zeroQuantityLine.type
 msgid "Each line must have a quantity greater than zero ({0})"
 msgstr ""
+
+msgid "Earned"
+msgstr "已获得"
 
 msgid "Edit"
 msgstr "编辑"
@@ -4099,6 +4151,9 @@ msgstr "从位置"
 msgid "From Storage Unit"
 msgstr "从存储单位"
 
+msgid "Fully paid"
+msgstr "已全额付款"
+
 msgid "Fully trained for"
 msgstr "完全培训"
 
@@ -4657,6 +4712,9 @@ msgstr "工作ID"
 msgid "Job Location"
 msgstr "工作地点"
 
+msgid "Job Matching Results"
+msgstr ""
+
 msgid "Job Materials"
 msgstr "工作物料"
 
@@ -4671,6 +4729,9 @@ msgstr "工作"
 
 msgid "Jobs Assigned to Me"
 msgstr "分配给我的工作"
+
+msgid "Jobs Checked"
+msgstr ""
 
 msgid "Jobs in progress"
 msgstr "进行中的工作"
@@ -4963,6 +5024,9 @@ msgstr ""
 msgid "Lot Size:"
 msgstr "批量大小："
 
+msgid "Lower runs first"
+msgstr ""
+
 msgid "Machine"
 msgstr "机器"
 
@@ -5119,6 +5183,12 @@ msgid "Match any (OR)"
 msgstr ""
 
 msgid "Match none"
+msgstr ""
+
+msgid "Matched"
+msgstr ""
+
+msgid "Matched Rule"
 msgstr ""
 
 msgid "matches"
@@ -5435,6 +5505,9 @@ msgstr "新审批规则"
 msgid "New Assignment"
 msgstr "新建分配"
 
+msgid "New Assignment Rule"
+msgstr ""
+
 msgid "New Attribute"
 msgstr "新属性"
 
@@ -5706,6 +5779,9 @@ msgstr "无需操作"
 msgid "No active jobs found for this sales order. The order will be cancelled directly."
 msgstr ""
 
+msgid "No active jobs to simulate against"
+msgstr ""
+
 msgid "No active plan"
 msgstr "没有活跃的计划"
 
@@ -5714,6 +5790,9 @@ msgstr "没有活跃报价"
 
 msgid "No addresses found"
 msgstr "未找到地址"
+
+msgid "No approved completions this period"
+msgstr "本期无已批准的完工记录"
 
 #. placeholder {0}: auditConfig.retentionDays
 msgid "No archived logs yet. Logs older than {0} days will be automatically archived and available for download here."
@@ -5744,6 +5823,9 @@ msgid "No completed jobs within range"
 msgstr "范围内没有已完成的工作"
 
 msgid "No condition may match"
+msgstr ""
+
+msgid "No conditions — rule matches all jobs"
 msgstr ""
 
 msgid "No configuration quantities recorded yet."
@@ -5785,6 +5867,12 @@ msgstr "还未分配员工。添加组以查看状态。"
 msgid "No employees found"
 msgstr "未找到员工"
 
+msgid "No employees have an outstanding balance this period."
+msgstr ""
+
+msgid "No entries"
+msgstr ""
+
 msgid "No fields found."
 msgstr ""
 
@@ -5814,6 +5902,12 @@ msgstr ""
 
 msgid "No logo uploaded"
 msgstr "未上传徽标"
+
+msgid "No match"
+msgstr ""
+
+msgid "No Match"
+msgstr ""
 
 msgid "No matches"
 msgstr "无匹配项"
@@ -6130,6 +6224,9 @@ msgstr "可选"
 msgid "Optional context for this rule"
 msgstr ""
 
+msgid "Optional payment notes"
+msgstr ""
+
 msgid "Options"
 msgstr "选项"
 
@@ -6203,6 +6300,12 @@ msgstr "输出永远不会超过其原材料的保质期。当没有输入具有
 msgid "Outside"
 msgstr "外协"
 
+msgid "Outstanding"
+msgstr "未付金额"
+
+msgid "Outstanding balance"
+msgstr ""
+
 msgid "Overdue"
 msgstr "逾期"
 
@@ -6254,8 +6357,17 @@ msgstr "装箱单"
 msgid "Page {pdfViewPage} of {documentPageCount}"
 msgstr ""
 
+msgid "Paid"
+msgstr "已支付"
+
 msgid "Paid Amount:"
 msgstr "已支付金额："
+
+msgid "Paid at"
+msgstr ""
+
+msgid "Paid by"
+msgstr ""
 
 msgid "Paid Date"
 msgstr "支付日期"
@@ -6320,11 +6432,20 @@ msgstr "路径"
 msgid "Paused"
 msgstr "已暂停"
 
+msgid "Pay period"
+msgstr ""
+
 msgid "Payables"
 msgstr "应付账款"
 
 msgid "Payment"
 msgstr "付款"
+
+msgid "Payment date"
+msgstr ""
+
+msgid "Payment history"
+msgstr ""
 
 msgid "Payment Method"
 msgstr "支付方式"
@@ -6334,6 +6455,15 @@ msgstr "付款条款"
 
 msgid "Payment Terms"
 msgstr "付款条款"
+
+msgid "payment(s)"
+msgstr "笔付款"
+
+msgid "Payments"
+msgstr ""
+
+msgid "Payroll"
+msgstr ""
 
 msgid "PDF"
 msgstr "PDF"
@@ -6355,6 +6485,12 @@ msgstr ""
 
 msgid "Pending"
 msgstr "待处理"
+
+msgid "Pending approval"
+msgstr ""
+
+msgid "Pending payment"
+msgstr "待付款"
 
 msgid "Pension Obligations"
 msgstr ""
@@ -6732,6 +6868,9 @@ msgstr "生产数量"
 msgid "Production Quantities"
 msgstr "生产数量"
 
+msgid "Production quantities approved for this pay period."
+msgstr ""
+
 msgid "Production Quantity"
 msgstr "生产数量"
 
@@ -6866,7 +7005,7 @@ msgid "QR Code to start the next operation for this kanban"
 msgstr ""
 
 msgid "Qty"
-msgstr ""
+msgstr "数量"
 
 msgid "Qty to Order"
 msgstr "订购数量"
@@ -6932,6 +7071,12 @@ msgid "Quantity per Parent"
 msgstr "每个父项的数量"
 
 msgid "Quantity report updated"
+msgstr ""
+
+msgid "Quantity review"
+msgstr ""
+
+msgid "Quantity Review"
 msgstr ""
 
 msgid "Quantity Type"
@@ -7086,6 +7231,9 @@ msgstr ""
 
 msgid "Record deleted"
 msgstr "记录已删除"
+
+msgid "Record payment"
+msgstr ""
 
 msgid "Record pickup"
 msgstr ""
@@ -7305,6 +7453,9 @@ msgstr "根据金额阈值要求采购订单获得批准"
 msgid "Require approval for quality documents in your workflow"
 msgstr "在您的工作流程中需要质量文件的批准"
 
+msgid "Require approval for reported production quantities before salary periods are assigned"
+msgstr ""
+
 msgid "Required"
 msgstr "必需"
 
@@ -7403,6 +7554,9 @@ msgstr "应付反向计税税额"
 msgid "Reverse the related journal entries"
 msgstr "反转相关日记账分录"
 
+msgid "Review"
+msgstr ""
+
 msgid "Revision"
 msgstr "修订版"
 
@@ -7491,6 +7645,9 @@ msgstr "规则适用于每个客户。"
 msgid "Rule applies to every item."
 msgstr "规则适用于每个物品。"
 
+msgid "Rule Name"
+msgstr ""
+
 msgid "Rule Type"
 msgstr "规则类型"
 
@@ -7513,6 +7670,15 @@ msgid "Safety Stock:"
 msgstr "安全库存："
 
 msgid "Salaries - Administrative"
+msgstr ""
+
+msgid "Salary"
+msgstr ""
+
+msgid "Salary Detail"
+msgstr "工资明细"
+
+msgid "Salary for {periodLabel}"
 msgstr ""
 
 msgid "Sale Price"
@@ -7611,6 +7777,9 @@ msgstr ""
 
 msgid "Save View"
 msgstr "保存视图"
+
+msgid "Saved"
+msgstr ""
 
 msgid "Saving..."
 msgstr ""
@@ -7777,6 +7946,9 @@ msgstr ""
 
 msgid "Select an assignee"
 msgstr "选择受理人"
+
+msgid "Select an employee for {periodLabel}"
+msgstr ""
 
 msgid "Select an issue type"
 msgstr "选择问题类型"
@@ -8158,6 +8330,9 @@ msgstr "登出"
 msgid "Signed in as {name}"
 msgstr "以 {name} 身份登录"
 
+msgid "Simulate"
+msgstr ""
+
 msgid "Single Job"
 msgstr ""
 
@@ -8422,6 +8597,9 @@ msgstr "提交以供批准"
 
 msgid "Submit Inspection"
 msgstr "提交检验"
+
+msgid "Submitted"
+msgstr "提交时间"
 
 msgid "Submitted By"
 msgstr "提交者"
@@ -8967,6 +9145,9 @@ msgstr "工具"
 msgid "Total"
 msgstr "总计"
 
+msgid "Total earned"
+msgstr ""
+
 msgid "Total Hours"
 msgstr "总小时"
 
@@ -8975,6 +9156,9 @@ msgstr ""
 
 msgid "Total Minutes"
 msgstr "总分钟"
+
+msgid "Total paid"
+msgstr ""
 
 msgid "Total Price"
 msgstr "总价"
@@ -9156,6 +9340,9 @@ msgstr ""
 msgid "Unit Price"
 msgstr "单价"
 
+msgid "Unit rate"
+msgstr ""
+
 msgid "Unit Sale Price"
 msgstr "单位销售价格"
 
@@ -9212,6 +9399,9 @@ msgid "Update"
 msgstr "更新"
 
 msgid "Update costs on"
+msgstr ""
+
+msgid "Update failed"
 msgstr ""
 
 msgid "Update Inventory"
@@ -9387,6 +9577,9 @@ msgstr "有效期至"
 
 msgid "Validating job..."
 msgstr "正在验证工作..."
+
+msgid "value"
+msgstr ""
 
 msgid "Value"
 msgstr "值"
@@ -9747,6 +9940,12 @@ msgstr "工作流"
 
 msgid "Worst Performing Machines"
 msgstr "性能最差的机器"
+
+msgid "Would Assign To"
+msgstr ""
+
+msgid "Would Match"
+msgstr ""
 
 msgid "Yard"
 msgstr "码"

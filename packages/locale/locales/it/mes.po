@@ -72,6 +72,12 @@ msgstr "Aggiungi Ricambio"
 msgid "All"
 msgstr "Tutti"
 
+msgid "approved"
+msgstr ""
+
+msgid "Approved"
+msgstr ""
+
 msgid "Are you sure you want to delete this step?"
 msgstr "Sei sicuro di voler eliminare questa fase?"
 
@@ -310,6 +316,9 @@ msgstr "Numero di serie duplicato"
 msgid "Duration"
 msgstr "Durata"
 
+msgid "Earned"
+msgstr ""
+
 msgid "Edit"
 msgstr "Modifica"
 
@@ -399,6 +408,9 @@ msgstr "Torna all'operazione"
 
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "Hai un problema tecnico? Contatta il <0>Supporto Carbon.</0>"
+
+msgid "History"
+msgstr ""
 
 msgid "How many were actually picked?"
 msgstr "Quanti sono stati effettivamente prelevati?"
@@ -572,6 +584,9 @@ msgstr "Deve essere compreso tra {minValue} e {maxValue} {unitOfMeasureCode}"
 msgid "My Hours"
 msgstr "Le Mie Ore"
 
+msgid "My Salary"
+msgstr ""
+
 msgid "Name"
 msgstr "Nome"
 
@@ -592,6 +607,9 @@ msgstr "Nessun intervento di manutenzione attivo"
 
 msgid "No active operations"
 msgstr "Nessuna operazione attiva"
+
+msgid "No approved completions this period"
+msgstr ""
 
 msgid "No assigned operations"
 msgstr "Nessuna operazione assegnata"
@@ -720,6 +738,12 @@ msgstr "Eseguito dall'Operatore"
 msgid "Optional"
 msgstr "Facoltativo"
 
+msgid "Owed"
+msgstr ""
+
+msgid "Paid"
+msgstr ""
+
 msgid "Parameters"
 msgstr "Parametri"
 
@@ -731,6 +755,15 @@ msgstr "Ispezione Superata"
 
 msgid "Pause"
 msgstr "Pausa"
+
+msgid "Pending"
+msgstr ""
+
+msgid "Pending Approval"
+msgstr ""
+
+msgid "Period"
+msgstr ""
 
 msgid "Pick"
 msgstr "Preleva"
@@ -797,6 +830,9 @@ msgstr "Processi"
 
 msgid "Progress"
 msgstr "Avanzamento"
+
+msgid "Qty"
+msgstr ""
 
 msgid "Quality Issue"
 msgstr "Problema di qualità"
@@ -1040,6 +1076,9 @@ msgstr "Ci sono materiali tracciati per numero di serie o lotto nella distinta b
 msgid "This lot is expired and can't be picked."
 msgstr "Questo lotto è scaduto e non può essere prelevato."
 
+msgid "This Period"
+msgstr ""
+
 msgid "Thumbnail"
 msgstr "Miniatura"
 
@@ -1075,6 +1114,9 @@ msgstr "Scrivi un messaggio..."
 
 msgid "Unissued serial/batch materials"
 msgstr "Materiali seriali/lotto non prelevati"
+
+msgid "unit"
+msgstr ""
 
 msgid "Unknown"
 msgstr "Sconosciuto"

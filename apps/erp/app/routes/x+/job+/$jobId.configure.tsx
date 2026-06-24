@@ -6,6 +6,7 @@ import { trigger } from "@carbon/jobs";
 import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
 import { upsertJobMethod } from "~/modules/production";
+import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
 import { path, requestReferrer } from "~/utils/path";
 
 export async function action({ request, params }: ActionFunctionArgs) {
@@ -23,7 +24,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
       client
         .from("job")
         .update({
-          configuration,
+          ...jobConfigurationUpdateFields(configuration),
           updatedAt: new Date().toISOString(),
           updatedBy: userId
         })

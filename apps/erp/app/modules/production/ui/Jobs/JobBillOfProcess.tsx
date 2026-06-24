@@ -260,6 +260,7 @@ function makeItems(
   urlParams: { [key: string]: string },
   t: ReturnType<typeof useLingui>["t"],
   jobId: string,
+  jobQuantityTarget: number,
   job?: Job,
   onAddProductionQuantity?: (operationId: string) => void,
   onOpenConfigSummary?: (operationId: string) => void,
@@ -275,6 +276,7 @@ function makeItems(
       urlParams,
       t,
       jobId,
+      jobQuantityTarget,
       job,
       onAddProductionQuantity,
       onOpenConfigSummary,
@@ -292,6 +294,7 @@ function makeItem(
   urlParams: { [key: string]: string },
   t: ReturnType<typeof useLingui>["t"],
   jobId: string,
+  jobQuantityTarget: number,
   job?: Job,
   onAddProductionQuantity?: (operationId: string) => void,
   onOpenConfigSummary?: (operationId: string) => void,
@@ -346,7 +349,7 @@ function makeItem(
       : {
           complete: operation.quantityComplete ?? 0,
           pickup: pickupTotals?.get(operation.id!) ?? 0,
-          target: job?.quantity ?? 0,
+          target: jobQuantityTarget,
           onAddQuantity: onAddProductionQuantity
             ? () => onAddProductionQuantity(operation.id!)
             : undefined,
@@ -965,6 +968,8 @@ const JobBillOfProcess = ({
     ]
   );
 
+  const jobQuantityTarget = jobData?.job?.quantity ?? 0;
+
   const items = makeItems(
     operations,
     tags,
@@ -976,6 +981,7 @@ const JobBillOfProcess = ({
     },
     t,
     jobId,
+    jobQuantityTarget,
     jobData?.job,
     onAddProductionQuantity,
     hasConfigurationParameters ? openConfigSummary : undefined,
@@ -3200,6 +3206,7 @@ function OperationForm({
 
   const [processData, setProcessData] = useState<{
     description: string;
+    insideUnitCost: number;
     laborRate: number;
     laborTime: number;
     laborUnit: string;
@@ -3221,6 +3228,7 @@ function OperationForm({
     setupUnitHint: string;
   }>({
     description: item.data.description ?? "",
+    insideUnitCost: (item.data as any).insideUnitCost ?? 0,
     laborRate: item.data.laborRate ?? 0,
     laborTime: item.data.laborTime ?? 0,
     laborUnit: item.data.laborUnit ?? "Hours/Piece",
@@ -3553,6 +3561,22 @@ function OperationForm({
                 setProcessData((d) => ({
                   ...d,
                   overheadRate: newValue
+                }))
+              }
+            />
+            <NumberControlled
+              name="insideUnitCost"
+              label={t`Unit rate`}
+              minValue={0}
+              value={processData.insideUnitCost}
+              formatOptions={{
+                style: "currency",
+                currency: baseCurrency
+              }}
+              onChange={(newValue) =>
+                setProcessData((d) => ({
+                  ...d,
+                  insideUnitCost: newValue ?? 0
                 }))
               }
             />

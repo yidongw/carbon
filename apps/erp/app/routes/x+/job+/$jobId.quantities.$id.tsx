@@ -1,11 +1,13 @@
 import { assertIsPost, error, notFound, success } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
+import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data, redirect, useLoaderData } from "react-router";
 import { z } from "zod";
 import { getConfigurationParameters } from "~/modules/items";
+import { computeProductionQuantityReportEarnedAmount } from "~/modules/people";
 import {
   getJob,
   getJobOperationActorContext,
@@ -16,7 +18,9 @@ import {
   productionQuantityCreateFormValidator,
   productionQuantityValidator,
   replaceJobOperationSupplierQuantityReportLines,
-  replaceProductionQuantityReportLines
+  replaceProductionQuantityReportLines,
+  resolveProductionQuantityCanAutoApprove,
+  syncProductionQuantityReportApproval
 } from "~/modules/production";
 import {
   isProductionQuantityReportId,
@@ -176,6 +180,28 @@ export async function action({ request, params }: ActionFunctionArgs) {
     update: "production"
   });
 
+  const serviceRole = getCarbonServiceRole();
+  const resolveCanAutoApprove = async (reportId?: string | null) => {
+    const amount =
+      reportId != null
+        ? await computeProductionQuantityReportEarnedAmount(
+            serviceRole,
+            reportId,
+            companyId
+          )
+        : 0;
+    return resolveProductionQuantityCanAutoApprove(
+      serviceRole,
+      companyId,
+      userId,
+      amount
+    );
+  };
+
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth() + 1;
+
   const { jobId, id } = params;
   if (!jobId) throw notFound("jobId not found");
   if (!id) throw notFound("id not found");
@@ -226,6 +252,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
       scrapReasonId: line.type === "Scrap" ? line.scrapReasonId : undefined
     }));
 
+    const canAutoApprove = isProductionQuantityReportId(id)
+      ? await resolveCanAutoApprove(id)
+      : false;
+
     const update = isSupplierQuantityReportId(id)
       ? await replaceJobOperationSupplierQuantityReportLines(client, {
           reportId: id,
@@ -240,7 +270,9 @@ export async function action({ request, params }: ActionFunctionArgs) {
           userId,
           employeeId: validation.data.employeeId ?? userId,
           notes: notes?.trim() ? notes : null,
-          lines: mappedLines
+          lines: mappedLines,
+          paymentYear: canAutoApprove ? currentYear : null,
+          paymentMonth: canAutoApprove ? currentMonth : null
         });
 
     if (update.error) {
@@ -251,6 +283,17 @@ export async function action({ request, params }: ActionFunctionArgs) {
           error(update.error, "Failed to update production quantity")
         )
       );
+    }
+
+    if (!isSupplierQuantityReportId(id)) {
+      await syncProductionQuantityReportApproval(serviceRole, {
+        reportId: id,
+        companyId,
+        userId,
+        canAutoApprove,
+        paymentYear: canAutoApprove ? currentYear : null,
+        paymentMonth: canAutoApprove ? currentMonth : null
+      });
     }
 
     if (isOverlay) {
@@ -354,6 +397,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
         }
   );
 
+  const canAutoApprove = !isSupplierLine
+    ? await resolveCanAutoApprove(reportId)
+    : false;
+
   const update = isSupplierLine
     ? await replaceJobOperationSupplierQuantityReportLines(client, {
         reportId,
@@ -367,7 +414,9 @@ export async function action({ request, params }: ActionFunctionArgs) {
         companyId,
         userId,
         employeeId: employeeId ?? userId,
-        lines
+        lines,
+        paymentYear: canAutoApprove ? currentYear : null,
+        paymentMonth: canAutoApprove ? currentMonth : null
       });
 
   if (update.error) {
@@ -378,6 +427,17 @@ export async function action({ request, params }: ActionFunctionArgs) {
         error(update.error, "Failed to update production quantity")
       )
     );
+  }
+
+  if (!isSupplierLine) {
+    await syncProductionQuantityReportApproval(serviceRole, {
+      reportId,
+      companyId,
+      userId,
+      canAutoApprove,
+      paymentYear: canAutoApprove ? currentYear : null,
+      paymentMonth: canAutoApprove ? currentMonth : null
+    });
   }
 
   if (isOverlay) {
