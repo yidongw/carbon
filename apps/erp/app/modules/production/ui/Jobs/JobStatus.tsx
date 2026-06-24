@@ -1,5 +1,6 @@
 import { Status } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
+import { useCallback } from "react";
 import type { jobStatus } from "../../production.models";
 import { useJobStatusLabel } from "./jobLabels";
 
@@ -32,8 +33,13 @@ export function useJobStatusDisplayText() {
   const { t } = useLingui();
   const getJobStatusLabel = useJobStatusLabel();
 
-  return (status: (typeof jobStatus)[number]) =>
-    status === "Ready" ? t`Released` : getJobStatusLabel(status);
+  // Stable identity so table column builders that depend on it don't rebuild
+  // (and remount cells) every render.
+  return useCallback(
+    (status: (typeof jobStatus)[number]) =>
+      status === "Ready" ? t`Released` : getJobStatusLabel(status),
+    [t, getJobStatusLabel]
+  );
 }
 
 function JobStatus({ status, className, iconOnly }: JobStatusProps) {
