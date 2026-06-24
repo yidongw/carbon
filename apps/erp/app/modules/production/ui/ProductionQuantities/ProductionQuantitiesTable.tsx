@@ -20,13 +20,12 @@ import type {
   ProductionQuantityPayStatus
 } from "~/modules/production/productionQuantityList.models";
 import SalaryPeriodPicker from "~/modules/people/ui/Salary/SalaryPeriodPicker";
-import {
-  formatDateTime,
-  getProcessName
-} from "~/modules/production/productionQuantityDisplay.utils";
+import { getProcessName } from "~/modules/production/productionQuantityDisplay.utils";
 import type { ProductionQuantityReportWithLines } from "~/modules/production/productionQuantityReport.service";
 import { ProductionQuantityDispositionDrawer } from "~/modules/production/ui/Jobs/ProductionQuantityDispositionDrawer";
 import { ProductionQuantityReportReporter } from "~/modules/production/ui/Jobs/ProductionQuantityReportReporter";
+import { useProductionQuantityReportCreatedAtSave } from "~/modules/production/ui/useEditableCreatedAt";
+import { EditableCreatedAtCell } from "~/modules/production/ui/EditableCreatedAtCell";
 import {
   ProductionQuantityTableItemCell,
   ProductionQuantityTableJobCell,
@@ -192,6 +191,7 @@ const ProductionQuantitiesTable = memo(
       () => new Set(configurableItemIds),
       [configurableItemIds]
     );
+    const { saveCreatedAt, canEdit } = useProductionQuantityReportCreatedAtSave();
     const fetcher = useFetcher<ProductionQuantityActionData>();
     const correctionFetcher = useFetcher<ProductionQuantityActionData>();
     const reportFetcher = useFetcher<ReportLoaderData>();
@@ -382,9 +382,12 @@ const ProductionQuantitiesTable = memo(
           accessorKey: "createdAt",
           header: t`Submitted`,
           cell: ({ row }) => (
-            <span className="text-sm text-muted-foreground whitespace-nowrap">
-              {formatDateTime(row.original.createdAt)}
-            </span>
+            <EditableCreatedAtCell
+              createdAt={row.original.createdAt}
+              row={row.original}
+              onSave={saveCreatedAt}
+              canEdit={canEdit}
+            />
           ),
           meta: { icon: <LuCalendar /> }
         },
@@ -454,12 +457,14 @@ const ProductionQuantitiesTable = memo(
 
       return cols;
     }, [
+      canEdit,
       configurableItemIdSet,
       employees,
       fetcher,
       items,
       jobs,
       openRejectCorrection,
+      saveCreatedAt,
       status,
       submitAction,
       t

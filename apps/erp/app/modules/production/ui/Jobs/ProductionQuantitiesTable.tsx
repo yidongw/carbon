@@ -7,7 +7,9 @@ import { useNavigate, useParams } from "react-router";
 import { EmployeeAvatar, Hyperlink, New, SupplierAvatar, Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { ConfirmDelete } from "~/components/Modals";
-import { useDateFormatter, usePermissions, useUrlParams } from "~/hooks";
+import { usePermissions, useUrlParams } from "~/hooks";
+import { useProductionQuantityLineCreatedAtSave } from "~/modules/production/ui/useEditableCreatedAt";
+import { EditableCreatedAtCell } from "~/modules/production/ui/EditableCreatedAtCell";
 import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
 import type { ScrapReason } from "../../types";
@@ -35,8 +37,8 @@ const ProductionQuantitiesTable = memo(
     const { t } = useLingui();
     const typeLabel = useProductionQuantityTypeLabel();
     if (!jobId) throw new Error("Job ID is required");
-    const { formatDateTime } = useDateFormatter();
     const [people] = usePeople();
+    const { saveCreatedAt, canEdit } = useProductionQuantityLineCreatedAtSave();
 
     const columns = useMemo<ColumnDef<UnifiedProductionQuantityListItem>[]>(
       () => {
@@ -184,14 +186,18 @@ const ProductionQuantitiesTable = memo(
           accessorKey: "createdAt",
           header: t`Created At`,
           cell: ({ row }) => (
-            <span className="tabular-nums">
-              {formatDateTime(row.original.createdAt)}
-            </span>
+            <EditableCreatedAtCell
+              createdAt={row.original.createdAt}
+              row={row.original}
+              onSave={saveCreatedAt}
+              canEdit={canEdit}
+              className="tabular-nums"
+            />
           )
         }
       ];
       },
-      [operations, people, scrapReasons, t, typeLabel, formatDateTime]
+      [canEdit, operations, people, saveCreatedAt, scrapReasons, t, typeLabel]
     );
 
     const permissions = usePermissions();
