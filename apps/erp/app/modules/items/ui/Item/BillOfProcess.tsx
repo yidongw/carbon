@@ -733,72 +733,49 @@ const BillOfProcess = ({
         handleDrag={() => setSelectedItemId(null)}
         dragHandle
         className="my-2"
-        renderExtra={(item) => (
-          <div key={`${isOpen}`}>
-            <motion.button
-              layout
-              onClick={
-                isOpen
-                  ? () => {
-                      setSelectedItemId(null);
-                    }
-                  : () => {
-                      setSelectedItemId(item.id);
-                    }
-              }
-              key="collapse"
-              className={cn("absolute right-3 top-3 z-10")}
-            >
+        renderHeaderAction={() => (
+          <button
+            type="button"
+            aria-label={isOpen ? t`Close operation` : t`Edit operation`}
+            onClick={
+              isOpen
+                ? () => {
+                    setSelectedItemId(null);
+                  }
+                : () => {
+                    setSelectedItemId(item.id);
+                  }
+            }
+            className="flex items-center justify-center"
+          >
+            {isOpen ? (
+              <LuX className="h-5 w-5 text-foreground" />
+            ) : (
+              <LuSettings2 className="stroke-1 h-5 w-5 text-foreground/80 hover:stroke-primary/70" />
+            )}
+          </button>
+        )}
+        renderExtra={() => (
+          <LayoutGroup id={`${item.id}`}>
+            <AnimatePresence mode="popLayout">
               {isOpen ? (
-                <motion.span
-                  initial={{ opacity: 0, filter: "blur(4px)" }}
-                  animate={{ opacity: 1, filter: "blur(0px)" }}
-                  exit={{ opacity: 1, filter: "blur(0px)" }}
-                  transition={{
-                    type: "spring",
-                    duration: 1.95
-                  }}
-                >
-                  <LuX className="h-5 w-5 text-foreground" />
-                </motion.span>
-              ) : (
-                <motion.span
-                  initial={{ opacity: 0, filter: "blur(4px)" }}
-                  animate={{ opacity: 1, filter: "blur(0px)" }}
-                  exit={{ opacity: 1, filter: "blur(0px)" }}
-                  transition={{
-                    type: "spring",
-                    duration: 0.95
-                  }}
-                >
-                  <LuSettings2 className="stroke-1 h-5 w-5 text-foreground/80  hover:stroke-primary/70 " />
-                </motion.span>
-              )}
-            </motion.button>
-
-            <LayoutGroup id={`${item.id}`}>
-              <AnimatePresence mode="popLayout">
-                {isOpen ? (
-                  <motion.div className="flex w-full flex-col ">
-                    <div className=" w-full p-2">
-                      <motion.div
-                        initial={{
-                          y: 0,
-                          opacity: 0,
-                          filter: "blur(4px)"
-                        }}
-                        animate={{
-                          y: 0,
-                          opacity: 1,
-                          filter: "blur(0px)"
-                        }}
-                        transition={{
-                          type: "spring",
-                          duration: 0.15
-                        }}
-                        layout
-                        className="w-full "
-                      >
+                <motion.div className="flex w-full flex-col">
+                  <div className="w-full p-2">
+                    <motion.div
+                      initial={{
+                        opacity: 0,
+                        filter: "blur(4px)"
+                      }}
+                      animate={{
+                        opacity: 1,
+                        filter: "blur(0px)"
+                      }}
+                      transition={{
+                        type: "spring",
+                        duration: 0.15
+                      }}
+                      className="w-full"
+                    >
                         <DirectionAwareTabs
                           className="mr-auto"
                           tabs={tabs}
@@ -812,7 +789,6 @@ const BillOfProcess = ({
                 ) : null}
               </AnimatePresence>
             </LayoutGroup>
-          </div>
         )}
       />
     );
