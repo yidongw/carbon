@@ -244,7 +244,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
       {},
       await flash(
         request,
-        error(reportResult.error, "Failed to insert production quantity")
+        error(reportResult.error, "Failed to insert process completion")
       )
     );
   }
@@ -252,13 +252,13 @@ export async function action({ request, params }: ActionFunctionArgs) {
   if (isOverlay) {
     return data(
       { ok: true as const, jobId },
-      await flash(request, success("Production quantity created"))
+      await flash(request, success("Process completion created"))
     );
   }
 
   return redirect(
     `${path.to.jobProductionQuantities(jobId)}?${getParams(request)}`,
-    await flash(request, success("Production quantity created"))
+    await flash(request, success("Process completion created"))
   );
 }
 

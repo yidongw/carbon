@@ -279,7 +279,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
         {},
         await flash(
           request,
-          error(update.error, "Failed to update production quantity")
+          error(update.error, "Failed to update process completion")
         )
       );
     }
@@ -298,13 +298,13 @@ export async function action({ request, params }: ActionFunctionArgs) {
     if (isOverlay) {
       return data(
         { ok: true as const, jobId },
-        await flash(request, success("Updated production quantity"))
+        await flash(request, success("Updated process completion"))
       );
     }
 
     return redirect(
       `${path.to.jobProductionQuantities(jobId)}?${getParams(request)}`,
-      await flash(request, success("Updated production quantity"))
+      await flash(request, success("Updated process completion"))
     );
   }
 
@@ -424,7 +424,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
       {},
       await flash(
         request,
-        error(update.error, "Failed to update production quantity")
+        error(update.error, "Failed to update process completion")
       )
     );
   }
@@ -443,13 +443,13 @@ export async function action({ request, params }: ActionFunctionArgs) {
   if (isOverlay) {
     return data(
       { ok: true as const, jobId },
-      await flash(request, success("Updated production quantity"))
+      await flash(request, success("Updated process completion"))
     );
   }
 
   return redirect(
     `${path.to.jobProductionQuantities(jobId)}?${getParams(request)}`,
-    await flash(request, success("Updated production quantity"))
+    await flash(request, success("Updated process completion"))
   );
 }
 

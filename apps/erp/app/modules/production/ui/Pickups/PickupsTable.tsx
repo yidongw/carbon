@@ -119,8 +119,8 @@ export function PickupsTable({
       table="jobOperationPickup"
       withSearch
       withPagination
-      title={t`Pickups`}
-      primaryAction={<New label={t`New Pickup`} to={path.to.newPickup} />}
+      title={t`Process Pickups`}
+      primaryAction={<New label={t`Process Pickup`} to={path.to.newPickup} />}
     />
   );
 }

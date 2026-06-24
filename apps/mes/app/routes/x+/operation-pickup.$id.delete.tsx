@@ -17,9 +17,12 @@ export async function action({ request, params }: ActionFunctionArgs) {
   if (result.error) {
     return data(
       {},
-      await flash(request, error(result.error, "Failed to delete pickup"))
+      await flash(
+        request,
+        error(result.error, "Failed to delete process pickup")
+      )
     );
   }
 
-  return data({}, await flash(request, success("Pickup deleted")));
+  return data({}, await flash(request, success("Process pickup deleted")));
 }

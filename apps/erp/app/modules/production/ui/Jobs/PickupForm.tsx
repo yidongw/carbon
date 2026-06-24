@@ -242,9 +242,9 @@ const PickupForm = ({
       <DrawerHeader>
         <DrawerTitle>
           {isEditing ? (
-            <Trans>Edit Pickup</Trans>
+            <Trans>Edit Process Pickup</Trans>
           ) : (
-            <Trans>Record Pickup</Trans>
+            <Trans>Process Pickup</Trans>
           )}
         </DrawerTitle>
       </DrawerHeader>

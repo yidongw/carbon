@@ -1537,7 +1537,7 @@ export const JobOperation = ({
                 {/* Summary Badges */}
                 <HStack className="gap-2 flex-wrap">
                   <Badge variant="outline">
-                    <Trans>Total Pickups</Trans>:{" "}
+                    <Trans>Total Process Pickups</Trans>:{" "}
                     {pickups.reduce((sum, p) => sum + Number(p.quantity), 0)}
                   </Badge>
                   <Badge variant="outline">
@@ -1671,7 +1671,8 @@ export const JobOperation = ({
                                   <TooltipContent>
                                     <div className="text-xs">
                                       <div>
-                                        <Trans>Pickups</Trans>: {totalPickups}
+                                        <Trans>Process Pickups</Trans>:{" "}
+                                        {totalPickups}
                                       </div>
                                       <div>
                                         <Trans>Production</Trans>:{" "}
@@ -1710,7 +1711,7 @@ export const JobOperation = ({
                                     </div>
                                     <div className="flex items-center gap-2">
                                       <span className="text-xs">
-                                        <Trans>pickup</Trans>
+                                        <Trans>process pickup</Trans>
                                       </span>
                                       <PickupDeleteButton
                                         pickupId={pickup.id}
@@ -2944,7 +2945,7 @@ function PickupDeleteButton({ pickupId }: { pickupId: string }) {
   const fetcher = useFetcher();
   return (
     <IconButton
-      aria-label="Delete pickup"
+      aria-label="Delete process pickup"
       variant="ghost"
       icon={<FaTrash className="text-destructive" />}
       className="h-8 w-8"

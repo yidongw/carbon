@@ -489,7 +489,7 @@ const ProductionQuantitiesTable = memo(
               <HStack>
                 {showCreateAction ? (
                   <New
-                    label={t`New Production Quantity`}
+                    label={t`Process Completion`}
                     to={path.to.newProductionQuantity}
                   />
                 ) : null}
@@ -501,14 +501,14 @@ const ProductionQuantitiesTable = memo(
               </HStack>
             ) : showCreateAction ? (
               <New
-                label={t`New Production Quantity`}
+                label={t`Process Completion`}
                 to={path.to.newProductionQuantity}
               />
             ) : undefined
           }
           withSearch={!embedded}
           withPagination
-          title={embedded ? undefined : (title ?? t`Production Quantities`)}
+          title={embedded ? undefined : (title ?? t`Process Completions`)}
         />
         {rejectCorrection ? (
           <ProductionQuantityDispositionDrawer
