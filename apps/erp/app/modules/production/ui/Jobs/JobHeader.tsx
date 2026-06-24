@@ -763,11 +763,14 @@ export function JobStartModal({
 export function JobCancelModal({
   job,
   onClose,
-  fetcher
+  fetcher,
+  stay
 }: {
   job?: Job;
   fetcher: FetcherWithComponents<{}>;
   onClose: () => void;
+  // Inline callers (jobs table) stay on the page instead of navigating.
+  stay?: boolean;
 }) {
   const cancelSubmitted = useRef(false);
   useIsomorphicLayoutEffect(() => {
@@ -807,7 +810,11 @@ export function JobCancelModal({
               cancelSubmitted.current = true;
             }}
             method="post"
-            action={path.to.jobStatus(job.id!)}
+            action={
+              stay
+                ? `${path.to.jobStatus(job.id!)}?stay=1`
+                : path.to.jobStatus(job.id!)
+            }
           >
             <input type="hidden" name="status" value="Cancelled" />
             <Button variant="destructive" type="submit">

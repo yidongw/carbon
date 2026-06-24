@@ -167,6 +167,7 @@ export default function JobStatusMenu({ job }: { job: Job }) {
           job={job}
           onClose={cancelModal.onClose}
           fetcher={fetcher}
+          stay
         />
       )}
       {completeModal.isOpen && (
