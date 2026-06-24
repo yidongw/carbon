@@ -49,40 +49,35 @@ export default function JobStatusMenu({ job }: { job: Job }) {
       | undefined) ??
     (fetcher.formAction?.includes("/complete") ? "Completed" : undefined);
 
-  // Remember the requested status so the badge keeps a spinner from the
-  // click/confirm until the row actually reflects it. This avoids a premature
-  // flip (we never show the new status early) AND the gap where the spinner
-  // disappears a beat before the new status arrives.
-  const [pending, setPending] = useState<(typeof jobStatus)[number] | null>(
-    null
-  );
+  const inFlight = fetcher.state !== "idle";
+
+  // Remember the status we asked for so the badge can show it the moment the
+  // server confirms the change, instead of waiting on the row read-back (which
+  // can lag several seconds).
+  const [target, setTarget] = useState<(typeof jobStatus)[number] | null>(null);
   useEffect(() => {
-    if (submitting) setPending(submitting);
+    if (submitting) setTarget(submitting);
   }, [submitting]);
 
-  // Clear once the row reflects the target (success), or the request reported a
-  // failure, so the spinner never sticks.
+  // Drop the optimistic target once the loader reflects it, or the change
+  // failed (the action returns { success: false } for inline calls).
   useEffect(() => {
-    if (!pending) return;
-    if (job.status === pending) {
-      setPending(null);
-    } else if (fetcher.state === "idle" && fetcher.data?.success === false) {
-      setPending(null);
+    if (!target) return;
+    if (job.status === target) {
+      setTarget(null);
+    } else if (!inFlight && fetcher.data?.success === false) {
+      setTarget(null);
     }
-  }, [pending, job.status, fetcher.state, fetcher.data]);
+  }, [target, job.status, inFlight, fetcher.data]);
 
-  // Safety net: if the row never catches up (e.g. a modal flow failed without a
-  // success flag), stop the spinner after a grace period.
-  useEffect(() => {
-    if (!pending || fetcher.state !== "idle") return;
-    const timer = setTimeout(() => setPending(null), 10000);
-    return () => clearTimeout(timer);
-  }, [pending, fetcher.state, job.status]);
-
-  // Always show the real status; the spinner conveys the in-progress change,
-  // and the badge only changes once the row genuinely reflects it.
-  const status = job.status;
-  const busy = pending !== null && job.status !== pending;
+  // While the change is in flight show the prior status with a spinner (never
+  // flip early). Once the fetcher settles successfully, show the new status
+  // right away and hold it until the row read-back catches up — so there's no
+  // gap where the spinner is gone but the status hasn't updated yet.
+  const settledOk =
+    !inFlight && target !== null && fetcher.data?.success !== false;
+  const status = settledOk ? target : job.status;
+  const busy = inFlight;
 
   const canUpdate = permissions.can("update", "production");
   if (!job.id || !canUpdate) {
@@ -95,7 +90,7 @@ export default function JobStatusMenu({ job }: { job: Job }) {
   const isDone = ["Completed", "Cancelled"].includes(status ?? "");
 
   const submitStatus = (next: (typeof jobStatus)[number]) => {
-    setPending(next);
+    setTarget(next);
     fetcher.submit(
       { status: next },
       // stay=1 keeps inline changes on the jobs list (e.g. "Mark as Planned"
