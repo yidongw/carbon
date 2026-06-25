@@ -11,6 +11,7 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
+"POT-Creation-Date: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " Поставщик - это бизнес или лицо, которое продает вам части или услуги."
@@ -467,6 +468,9 @@ msgstr "Добавить требование"
 msgid "Add Risk"
 msgstr "Добавить риск"
 
+msgid "Add Row"
+msgstr "Добавить строку"
+
 msgid "Add rule"
 msgstr "Добавить правило"
 
@@ -514,9 +518,6 @@ msgstr "Адрес, строка 2"
 
 msgid "Adjustment"
 msgstr "Настройка"
-
-msgid "Adjustment input mode"
-msgstr "Режим ввода корректировки"
 
 msgid "Adjustment Type"
 msgstr "Тип корректировки"
@@ -948,7 +949,7 @@ msgid "Are you sure you want to delete this maintenance dispatch? This cannot be
 msgstr "Вы уверены, что хотите удалить эту заявку на техническое обслуживание? Это действие невозможно отменить."
 
 msgid "Are you sure you want to delete this pickup? This action cannot be undone."
-msgstr "Вы действительно хотите удалить этот приём? Этот действие не может быть отменено."
+msgstr "Вы действительно хотите удалить эту выдачу в процесс? Это действие нельзя отменить."
 
 msgid "Are you sure you want to delete this production quantity? This action cannot be undone."
 msgstr "Вы действительно хотите удалить это количество произведения? Этот действие не может быть отменено."
@@ -2652,7 +2653,7 @@ msgid "Delete Payment Term"
 msgstr "Удалить условие платежа"
 
 msgid "Delete Pickup"
-msgstr "Удалить взимание"
+msgstr "Удалить выдачу в процесс"
 
 msgid "Delete Portal"
 msgstr "Удалить портал"
@@ -2970,9 +2971,6 @@ msgstr "Загрузите и вставьте здесь, или нажмите
 msgid "Drag handle"
 msgstr "Ручка перетаскивания"
 
-msgid "Drag to reorder"
-msgstr "Перетащите для изменения порядка"
-
 msgid "Drop Shipment"
 msgstr "Прямая поставка"
 
@@ -3182,7 +3180,7 @@ msgid "Edit Permissions"
 msgstr "Разрешения на редактирование"
 
 msgid "Edit Pickup"
-msgstr "Редактировать взимание"
+msgstr "Редактировать выдачу в процесс"
 
 msgid "Edit Portal"
 msgstr "Редактировать портал"
@@ -3421,8 +3419,8 @@ msgstr "Контакт инженера"
 msgid "Enter a batch number before setting the expiration date"
 msgstr "Введите номер партии перед установкой даты истечения"
 
-msgid "Enter a positive number to add or a negative number to subtract."
-msgstr "Введите положительное число для добавления или отрицательное число для вычитания."
+msgid "Enter a positive number to add or a negative number to remove. The change is recorded in the history below."
+msgstr "Введите положительное число для добавления или отрицательное число для удаления. Изменение登记完毕，无需翻译。"
 
 msgid "Enter an adjustment before saving."
 msgstr "Введите корректировку перед сохранением."
@@ -3433,8 +3431,8 @@ msgstr "Введите или отсканируйте серийный номе
 msgid "Enter PO number"
 msgstr "Введите номер ПО"
 
-msgid "Enter the target quantity for each size."
-msgstr "Введите количество для каждой размерности."
+msgid "Enter the target quantity for each size. The change from the current quantity is recorded in the history."
+msgstr "Введите количество для каждой размерности. Изменение от текущего значения заносится в историю."
 
 msgid "Enter your answer..."
 msgstr "Введите ваш ответ..."
@@ -4996,7 +4994,7 @@ msgid "Live reloading"
 msgstr "Живая перезагрузка"
 
 msgid "Load more pickups"
-msgstr "Загрузить больше вывозов"
+msgstr "Загрузить еще выдачи в процесс"
 
 msgid "Load more quantities"
 msgstr "Загрузить больше количеств"
@@ -5673,7 +5671,7 @@ msgid "New Payment Term"
 msgstr "Новый платежный срок"
 
 msgid "New Pickup"
-msgstr "Новый забор"
+msgstr "Новая выдача в процесс"
 
 msgid "New PIN"
 msgstr "Новый PIN"
@@ -6614,17 +6612,30 @@ msgid "picked up {0} units"
 msgstr "принят {0} единиц"
 
 msgid "pickup"
-msgstr "выберите для получения"
+msgstr "выдача в процесс"
+
+msgid "Process Pickup"
+msgstr "выдача в процесс"
+
+#. placeholder {0}: selectedPickup.employeeId
+msgid "Process Pickup by {0}"
+msgstr "Выдача в процесс от {0}"
+
+msgid "Process Pickups"
+msgstr "выдачи в процесс"
+
+msgid "Total Process Pickups"
+msgstr "Всего выдач в процесс"
 
 msgid "Pickup"
-msgstr "Пicking"
+msgstr "выдача в процесс"
 
 #. placeholder {0}: selectedPickup.employeeId
 msgid "pickup by {0}"
-msgstr "взятый {0}"
+msgstr "выдача в процесс от {0}"
 
 msgid "Pickups"
-msgstr "Пicked Up"
+msgstr "выдачи в процесс"
 
 msgid "Pieces/Hour"
 msgstr "Штук/час"
@@ -7289,11 +7300,17 @@ msgstr "Запись удалена"
 msgid "Record payment"
 msgstr "Платеж по записи"
 
+msgid "Add process pickup"
+msgstr "Добавить выдачу в процесс"
+
+msgid "Add process completion"
+msgstr "Добавить завершение процесса"
+
 msgid "Record pickup"
-msgstr "Пicking up record"
+msgstr "Зарегистрировать выдачу в процесс"
 
 msgid "Record Pickup"
-msgstr "Пicking up records"
+msgstr "Зарегистрировать выдачу в процесс"
 
 msgid "Record production quantity"
 msgstr "Количество произведенных записей"
@@ -9251,7 +9268,7 @@ msgid "Total paid"
 msgstr "Общая оплата"
 
 msgid "Total Pickups"
-msgstr "Общее количество загрузок"
+msgstr "Всего выдач в процесс"
 
 msgid "Total Price"
 msgstr "Общая цена"

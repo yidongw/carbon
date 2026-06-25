@@ -609,7 +609,7 @@ msgid "Log In"
 msgstr "दाखिल होना"
 
 msgid "Log Pickup"
-msgstr "लॉग अप"
+msgstr "प्रक्रिया निकासी लॉग करें"
 
 msgid "Log Rework"
 msgstr "रीवर्क लॉग करें"
@@ -888,13 +888,26 @@ msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "कॉलम {0} को स्थिति {1} पर उठाया गया: {2} में से"
 
 msgid "pickup"
-msgstr "पीकअप"
+msgstr "प्रक्रिया निकासी"
+
+msgid "Process Pickup"
+msgstr "प्रक्रिया निकासी"
+
+#. placeholder {0}: selectedPickup.employeeId
+msgid "Process Pickup by {0}"
+msgstr "{0} की प्रक्रिया निकासी"
+
+msgid "Process Pickups"
+msgstr "प्रक्रिया निकासियाँ"
+
+msgid "Total Process Pickups"
+msgstr "कुल प्रक्रिया निकासियाँ"
 
 msgid "Pickup suggestions:"
-msgstr "पहचान सUGGESTIONS:"
+msgstr "प्रक्रिया निकासी सुझाव:"
 
 msgid "Pickups"
-msgstr "ग्रैब"
+msgstr "प्रक्रिया निकासियाँ"
 
 msgid "Pin Out"
 msgstr "पिन आउट"
@@ -995,7 +1008,7 @@ msgid "Record {0}"
 msgstr "रिकॉर्ड {0}"
 
 msgid "Record Pickup"
-msgstr "रिकॉर्ड पीकअप"
+msgstr "प्रक्रिया निकासी दर्ज करें"
 
 msgid "Record Quantity"
 msgstr "रिकॉर्ड गुणता"
@@ -1277,7 +1290,7 @@ msgid "Tools"
 msgstr "उपकरण"
 
 msgid "Total Pickups"
-msgstr "कुल पीकअप्स"
+msgstr "कुल प्रक्रिया निकासियाँ"
 
 msgid "Total Production"
 msgstr "कुल उत्पादन"

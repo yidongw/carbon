@@ -40,6 +40,8 @@ interface SortableListItemProps<T> {
   onToggleItem: (id: string) => void;
   onRemoveItem: (id: string) => void;
   renderExtra?: (item: SortableItem<T>) => React.ReactNode;
+  /** Pinned to the card header (top-right); does not move when expand content grows below. */
+  renderHeaderAction?: (item: SortableItem<T>) => React.ReactNode;
   isExpanded?: boolean;
   isHighlighted?: boolean;
   className?: string;
@@ -57,6 +59,7 @@ function SortableListItem<T>({
   onToggleItem,
   onRemoveItem,
   renderExtra,
+  renderHeaderAction,
   handleDrag,
   isExpanded,
   isHighlighted,
@@ -116,8 +119,6 @@ function SortableListItem<T>({
             isExpanded
               ? {
                   zIndex: 9999,
-                  marginTop: 10,
-                  marginBottom: 10,
                   position: "relative",
                   overflow: item.quantityProgress != null ? "visible" : "hidden"
                 }
@@ -134,13 +135,13 @@ function SortableListItem<T>({
               "relative z-20 flex w-full min-w-0 flex-col"
             )}
           >
-            <motion.div className="w-full px-3 pt-3" layout="position">
-              <div
-                className={cn(
-                  "items-center justify-between w-full gap-2",
-                  isExpanded && "flex flex-col flex-grow"
-                )}
-              >
+            <motion.div className="relative w-full px-3 pt-3" layout="position">
+              {renderHeaderAction ? (
+                <div className="absolute right-3 top-3 z-20">
+                  {renderHeaderAction(item)}
+                </div>
+              ) : null}
+              <div className="flex w-full items-center justify-between gap-2">
                 <div className="flex flex-col w-full">
                   <div className="flex w-full min-w-0 items-center gap-x-2 pl-3">
                     {/* List Remove Actions */}

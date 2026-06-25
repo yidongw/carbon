@@ -609,7 +609,7 @@ msgid "Log In"
 msgstr "登录"
 
 msgid "Log Pickup"
-msgstr "收货登记"
+msgstr "工序领料登记"
 
 msgid "Log Rework"
 msgstr "记录返工"
@@ -888,13 +888,15 @@ msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "已拾取列 {0}，位于第 {1} 个位置（共 {2} 个）"
 
 msgid "pickup"
-msgstr "提货"
+msgstr "工序领料"
 
 msgid "Pickup suggestions:"
-msgstr "提货建议："
+msgstr "工序领料建议："
+msgid "process pickup"
+msgstr "工序领料"
 
-msgid "Pickups"
-msgstr "拾取"
+msgid "Process Pickups"
+msgstr "工序领料"
 
 msgid "Pin Out"
 msgstr "退出登录"
@@ -995,7 +997,7 @@ msgid "Record {0}"
 msgstr "记录 {0}"
 
 msgid "Record Pickup"
-msgstr "记录取货"
+msgstr "记录工序领料"
 
 msgid "Record Quantity"
 msgstr "记录数量"
@@ -1277,7 +1279,9 @@ msgid "Tools"
 msgstr "工具"
 
 msgid "Total Pickups"
-msgstr "总提货次数"
+msgstr "工序领料合计"
+msgid "Total Process Pickups"
+msgstr "工序领料合计"
 
 msgid "Total Production"
 msgstr "总生产量"

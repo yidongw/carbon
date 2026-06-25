@@ -12,7 +12,7 @@ import { path } from "~/utils/path";
 import { getGenericQueryFilters } from "~/utils/query";
 
 export const handle: Handle = {
-  breadcrumb: msg`Pickups`,
+  breadcrumb: msg`Process Pickups`,
   to: path.to.pickups
 };
 
@@ -38,7 +38,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   });
 
   if (pickups.error) {
-    throw error(pickups.error, "Failed to fetch production pickups");
+    throw error(pickups.error, "Failed to fetch process pickups");
   }
 
   const pickupRows = pickups.data ?? [];

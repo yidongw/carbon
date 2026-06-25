@@ -11,6 +11,7 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
+"POT-Creation-Date: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " Un fournisseur est une entreprise ou un individu qui vous vend des pièces ou des services."
@@ -467,6 +468,9 @@ msgstr "Ajouter une exigence"
 msgid "Add Risk"
 msgstr "Ajouter un risque"
 
+msgid "Add Row"
+msgstr "Ajouter une ligne"
+
 msgid "Add rule"
 msgstr "Ajouter une règle"
 
@@ -514,9 +518,6 @@ msgstr "Ligne d'adresse 2"
 
 msgid "Adjustment"
 msgstr "Adjustement"
-
-msgid "Adjustment input mode"
-msgstr "Mode d'entrée de ajustement"
 
 msgid "Adjustment Type"
 msgstr "Type d'ajustement"
@@ -948,7 +949,7 @@ msgid "Are you sure you want to delete this maintenance dispatch? This cannot be
 msgstr "Êtes-vous sûr de vouloir supprimer cette demande de maintenance ? Cette action ne peut pas être annulée."
 
 msgid "Are you sure you want to delete this pickup? This action cannot be undone."
-msgstr "Voulez-vous supprimer cette prise ? Cette action ne peut pas être annulée."
+msgstr "Voulez-vous supprimer ce prélèvement de processus ? Cette action ne peut pas être annulée."
 
 msgid "Are you sure you want to delete this production quantity? This action cannot be undone."
 msgstr "Voulez-vous supprimer cette quantité de production ? Cette action ne peut pas être annulée."
@@ -2652,7 +2653,7 @@ msgid "Delete Payment Term"
 msgstr "Supprimer le délai de paiement"
 
 msgid "Delete Pickup"
-msgstr "Supprimer le retraitement"
+msgstr "Supprimer le prélèvement de processus"
 
 msgid "Delete Portal"
 msgstr "Supprimer le portail"
@@ -2970,9 +2971,6 @@ msgstr "Faites glisser et déposer des fichiers ici ou cliquez pour sélectionne
 msgid "Drag handle"
 msgstr "Poignée de déplacement"
 
-msgid "Drag to reorder"
-msgstr "Glissez pour réorganiser"
-
 msgid "Drop Shipment"
 msgstr "Expédition directe"
 
@@ -3182,7 +3180,7 @@ msgid "Edit Permissions"
 msgstr "Autorisations de modification"
 
 msgid "Edit Pickup"
-msgstr "Modifier le retraitement"
+msgstr "Modifier le prélèvement de processus"
 
 msgid "Edit Portal"
 msgstr "Modifier le portail"
@@ -3421,8 +3419,8 @@ msgstr "Contact Technique"
 msgid "Enter a batch number before setting the expiration date"
 msgstr "Entrez un numéro de lot avant de définir la date d'expiration"
 
-msgid "Enter a positive number to add or a negative number to subtract."
-msgstr "Entrez un nombre positif pour ajouter ou un nombre négatif pour soustraire."
+msgid "Enter a positive number to add or a negative number to remove. The change is recorded in the history below."
+msgstr "Entrez un nombre positif pour ajouter ou négatif pour supprimer. Le changement est enregistré dans l'historique ci-dessous."
 
 msgid "Enter an adjustment before saving."
 msgstr "Entrez une modification avant de sauvegarder."
@@ -3433,8 +3431,8 @@ msgstr "Entrez ou scannez le numéro de série"
 msgid "Enter PO number"
 msgstr "Entrez le numéro de bon de commande"
 
-msgid "Enter the target quantity for each size."
-msgstr "Entrez la quantité cible pour chaque taille."
+msgid "Enter the target quantity for each size. The change from the current quantity is recorded in the history."
+msgstr "Entrez la quantité cible pour chaque taille. Le changement par rapport à la quantité actuelle est enregistré dans l'historique."
 
 msgid "Enter your answer..."
 msgstr "Entrez votre réponse..."
@@ -4996,7 +4994,7 @@ msgid "Live reloading"
 msgstr "Rechargement en direct"
 
 msgid "Load more pickups"
-msgstr "charger plus de retraits"
+msgstr "Charger plus de prélèvements de processus"
 
 msgid "Load more quantities"
 msgstr "charger plus de quantités"
@@ -5673,7 +5671,7 @@ msgid "New Payment Term"
 msgstr "Nouveau Terme de Paiement"
 
 msgid "New Pickup"
-msgstr "Nouveau retrait"
+msgstr "Nouveau prélèvement de processus"
 
 msgid "New PIN"
 msgstr "Nouveau PIN"
@@ -6614,17 +6612,30 @@ msgid "picked up {0} units"
 msgstr "picks up {0} units"
 
 msgid "pickup"
-msgstr "retrait"
+msgstr "prélèvement de processus"
+
+msgid "Process Pickup"
+msgstr "prélèvement de processus"
+
+#. placeholder {0}: selectedPickup.employeeId
+msgid "Process Pickup by {0}"
+msgstr "Prélèvement de processus par {0}"
+
+msgid "Process Pickups"
+msgstr "prélèvements de processus"
+
+msgid "Total Process Pickups"
+msgstr "Total des prélèvements de processus"
 
 msgid "Pickup"
-msgstr "Picking up"
+msgstr "prélèvement de processus"
 
 #. placeholder {0}: selectedPickup.employeeId
 msgid "pickup by {0}"
-msgstr "picking up by {0}"
+msgstr "Prélèvement de processus par {0}"
 
 msgid "Pickups"
-msgstr "Picking"
+msgstr "prélèvements de processus"
 
 msgid "Pieces/Hour"
 msgstr "Pièces/Heure"
@@ -7289,11 +7300,17 @@ msgstr "Enregistrement supprimé"
 msgid "Record payment"
 msgstr "Paiement de la pièce"
 
+msgid "Add process pickup"
+msgstr "Ajouter un prélèvement de processus"
+
+msgid "Add process completion"
+msgstr "Ajouter un achèvement de processus"
+
 msgid "Record pickup"
-msgstr "Picking up de records"
+msgstr "Enregistrer le prélèvement de processus"
 
 msgid "Record Pickup"
-msgstr "Picking up un enregistrement"
+msgstr "Enregistrer le prélèvement de processus"
 
 msgid "Record production quantity"
 msgstr "Quantité de production du registre"
@@ -9251,7 +9268,7 @@ msgid "Total paid"
 msgstr "Paiement total"
 
 msgid "Total Pickups"
-msgstr "Total Pickups"
+msgstr "Total des prélèvements de processus"
 
 msgid "Total Price"
 msgstr "Prix Total"
