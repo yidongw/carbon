@@ -990,14 +990,14 @@ const EmployeeProductionLogsView = ({
       {pickupHasMore && (
         <div className="text-center">
           <Button variant="outline" size="sm" onClick={loadMorePickups}>
-            <Trans>Load more pickups</Trans>
+            <Trans>Load more process pickups</Trans>
           </Button>
         </div>
       )}
       {quantityHasMore && (
         <div className="text-center">
           <Button variant="outline" size="sm" onClick={loadMoreQuantityReports}>
-            <Trans>Load more quantities</Trans>
+            <Trans>Load more process completions</Trans>
           </Button>
         </div>
       )}
@@ -2182,7 +2182,7 @@ const JobBillOfProcess = ({
               {/* Summary Badges */}
               <HStack className="gap-2 flex-wrap">
                 <Badge variant="blue">
-                  <Trans>Total Pickups</Trans>: {pickupTotal}
+                  <Trans>Total Process Pickups</Trans>: {pickupTotal}
                 </Badge>
                 <Badge variant="green">
                   <Trans>Total Production</Trans>:{" "}
@@ -2214,7 +2214,7 @@ const JobBillOfProcess = ({
                     className="transition-transform active:scale-[0.96]"
                   >
                     <LuCirclePlus className="mr-1.5 h-4 w-4" />
-                    <Trans>Record pickup</Trans>
+                    <Trans>Process Pickup</Trans>
                   </Button>
                 )}
                 {canRecordQuantity && onAddProductionQuantity && (
@@ -2225,7 +2225,7 @@ const JobBillOfProcess = ({
                     onClick={() => onAddProductionQuantity(item.id)}
                   >
                     <LuCirclePlus className="mr-1.5 h-4 w-4" />
-                    <Trans>Record quantity</Trans>
+                    <Trans>Process Completion</Trans>
                   </Button>
                 )}
               </HStack>

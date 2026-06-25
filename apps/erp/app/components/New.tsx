@@ -20,9 +20,8 @@ type NewProps = {
 };
 
 const New = ({ label, to, variant = "primary" }: NewProps) => {
-  const { i18n, t } = useLingui();
+  const { t } = useLingui();
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const translatedLabel = label ? i18n._(label) : undefined;
   useKeyboardShortcuts({
     n: (event: KeyboardEvent) => {
       event.stopPropagation();
@@ -40,7 +39,7 @@ const New = ({ label, to, variant = "primary" }: NewProps) => {
           ref={buttonRef}
         >
           <Link to={to} prefetch="intent">
-            {translatedLabel ? `${t`Add`} ${translatedLabel}` : t`Add`}
+            {label ? `${t`Add`} ${label}` : t`Add`}
           </Link>
         </Button>
       </TooltipTrigger>
