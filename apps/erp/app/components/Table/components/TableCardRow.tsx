@@ -17,7 +17,7 @@ import {
   type MouseEvent,
   type ReactNode
 } from "react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { useSwipeReveal } from "~/hooks/useSwipeReveal";
 import { CardCellContext } from "./cardCell";
@@ -134,17 +134,30 @@ interface FieldChipProps {
 
 function FieldChip({ header, icon, children, variant }: FieldChipProps) {
   // Cells render inside the card; an actionable cell overlays a full-pill
-  // trigger (absolute inset-0), so the chip root is positioned relative.
+  // trigger (absolute inset-0, marked data-card-action), so the chip root is
+  // positioned relative and lifts on hover to read as clickable.
+  const ref = useRef<HTMLDivElement>(null);
+  const [actionable, setActionable] = useState(false);
+  useEffect(() => {
+    setActionable(!!ref.current?.querySelector("[data-card-action]"));
+  });
+
   const body = (
     <CardCellContext.Provider value={true}>{children}</CardCellContext.Provider>
   );
+  const lift =
+    actionable &&
+    "transition-[transform,box-shadow,border-color] duration-150 hover:-translate-y-0.5 hover:shadow-md";
 
   if (variant === "featured") {
     return (
       <div
+        ref={ref}
         className={cn(
           "relative flex min-w-0 flex-col gap-1.5 rounded-lg border border-primary/25",
-          "bg-white px-3 py-2.5 shadow-sm dark:border-primary/30 dark:bg-card"
+          "bg-white px-3 py-2.5 shadow-sm dark:border-primary/30 dark:bg-card",
+          lift,
+          actionable && "hover:border-primary/40"
         )}
       >
         <div className="flex items-center gap-1.5">
@@ -162,9 +175,12 @@ function FieldChip({ header, icon, children, variant }: FieldChipProps) {
 
   return (
     <div
+      ref={ref}
       className={cn(
         "relative inline-flex max-w-full items-center gap-1.5 rounded-lg",
-        "border border-border/50 bg-muted/30 px-2 py-1 text-xs leading-snug"
+        "border border-border/50 bg-muted/30 px-2 py-1 text-xs leading-snug",
+        lift,
+        actionable && "hover:border-border"
       )}
     >
       {icon && <FieldIcon>{icon}</FieldIcon>}
@@ -282,14 +298,11 @@ function TableCardRow<T extends object>({
       onClick={rowHref ? handleCardClick : undefined}
       onKeyDown={rowHref ? handleCardKeyDown : undefined}
       className={cn(
-        // Flat by default — the card is just a container; the pills inside are
-        // the interactive elements. A subtle background highlight on hover.
+        // Flat, static container — the pills inside are the interactive bits, so
+        // the card itself shows no pointer cursor or hover lift. (Tapping a
+        // non-pill area still navigates.)
         "w-full overflow-hidden border-0 shadow-none",
         "bg-muted/40 dark:bg-card",
-        "transition-colors duration-150 ease-out",
-        rowHref && "cursor-pointer",
-        "hover:bg-muted/70 dark:hover:bg-muted/40",
-        "active:bg-muted",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
       )}
     >

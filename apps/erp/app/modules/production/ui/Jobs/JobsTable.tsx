@@ -226,7 +226,8 @@ const RoutingProgressCell = memo(function RoutingProgressCell({
         <button
           type="button"
           aria-label={t`View bill of process`}
-          className="absolute inset-0 z-[1] cursor-pointer rounded-lg outline-none transition-colors hover:bg-foreground/[0.05] active:bg-foreground/[0.08] focus-visible:ring-2 focus-visible:ring-ring"
+          data-card-action
+          className="absolute inset-0 z-[1] cursor-pointer rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring"
           onClick={openBopPreview}
         />
       )}
@@ -317,7 +318,8 @@ const JobQuantityCell = memo(function JobQuantityCell({
           <button
             type="button"
             aria-label="Configure quantities"
-            className="absolute inset-0 z-[1] cursor-pointer rounded-lg outline-none transition-colors hover:bg-foreground/[0.05] active:bg-foreground/[0.08] focus-visible:ring-2 focus-visible:ring-ring"
+            data-card-action
+          className="absolute inset-0 z-[1] cursor-pointer rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring"
             onClick={(e) => onOpenConfigTable(e, job)}
           />
         )}
