@@ -10147,3 +10147,12 @@ msgstr "आपका {companyName} की जोड़ें की मांग
 
 msgid "yourself"
 msgstr "अपने आप"
+
+msgid "Adjustment input mode"
+msgstr "अनुसारण इनपुट मोड"
+
+msgid "Enter a positive number to add or a negative number to subtract."
+msgstr "प्लस का नंबर दें या माइनस का नंबर घटाने के लिए।"
+
+msgid "Enter the target quantity for each size."
+msgstr "प्रत्येक आकार के लिए उद्देश्य मात्रा दर्ज करें."

@@ -10147,3 +10147,12 @@ msgstr "La tua richiesta di iscrizione presso {companyName} è stata inviata. Un
 
 msgid "yourself"
 msgstr "te stesso"
+
+msgid "Adjustment input mode"
+msgstr "Modalità di ingresso dell'adattamento"
+
+msgid "Enter a positive number to add or a negative number to subtract."
+msgstr "Inserire un numero positivo per aggiungere o un numero negativo per sottrarre."
+
+msgid "Enter the target quantity for each size."
+msgstr "Inserire la quantità tariffe per ogni dimensione."

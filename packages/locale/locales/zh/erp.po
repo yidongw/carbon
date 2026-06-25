@@ -10140,3 +10140,12 @@ msgstr "您加入 {companyName} 的申请已提交。管理员将尽快审核您
 
 msgid "yourself"
 msgstr "你自己"
+
+msgid "Adjustment input mode"
+msgstr "调整输入模式"
+
+msgid "Enter a positive number to add or a negative number to subtract."
+msgstr "输入正数添加，输入负数减少。"
+
+msgid "Enter the target quantity for each size."
+msgstr "输入每个尺寸的目标数量。"

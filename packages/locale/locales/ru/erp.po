@@ -10147,3 +10147,12 @@ msgstr "Ваш запрос на вступление в {companyName} был о
 
 msgid "yourself"
 msgstr "себя"
+
+msgid "Adjustment input mode"
+msgstr "Режим ввода корректировки"
+
+msgid "Enter a positive number to add or a negative number to subtract."
+msgstr "Введите положительное число для добавления или отрицательное число для вычитания."
+
+msgid "Enter the target quantity for each size."
+msgstr "Введите количество для каждой размерности."

@@ -10139,3 +10139,12 @@ msgstr "Your request to join {companyName} has been submitted. An admin will rev
 
 msgid "yourself"
 msgstr "yourself"
+
+msgid "Adjustment input mode"
+msgstr "Adjustment input mode"
+
+msgid "Enter a positive number to add or a negative number to subtract."
+msgstr "Enter a positive number to add or a negative number to subtract."
+
+msgid "Enter the target quantity for each size."
+msgstr "Enter the target quantity for each size."
