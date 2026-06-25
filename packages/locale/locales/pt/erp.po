@@ -9747,6 +9747,9 @@ msgstr "Ver Atributos"
 msgid "View bill of process"
 msgstr "Visualizar fatura de processo"
 
+msgid "View job"
+msgstr "Ver tarefa"
+
 msgid "View configuration parameters"
 msgstr "Visualizar parâmetros de configuração"
 
