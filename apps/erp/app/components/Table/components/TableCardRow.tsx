@@ -8,6 +8,7 @@ import {
   Separator,
   VStack
 } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import type { Cell, Column, Row } from "@tanstack/react-table";
 import { flexRender } from "@tanstack/react-table";
 import {
@@ -20,6 +21,7 @@ import {
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router";
 import { useSwipeReveal } from "~/hooks/useSwipeReveal";
+import { CardCellContext, CARD_HAS_ACTION_CLASS } from "./cardCell";
 
 const SYSTEM_COLUMN_IDS = new Set(["Select", "Actions", "Expand"]);
 
@@ -103,6 +105,22 @@ function hasCellDisplayValue<T extends object>(
   return true;
 }
 
+function PinnedColumnChip({ children }: { children: ReactNode }) {
+  return (
+    <div
+      className={cn(
+        "relative min-w-0 w-full rounded-lg border border-transparent px-2.5 py-2",
+        "transition-[border-color] duration-150 ease-out",
+        "hover:border-border/70 dark:hover:border-border/60",
+        CARD_HAS_ACTION_CLASS,
+        "[&:has([data-card-action])]:hover:border-primary/40 dark:[&:has([data-card-action])]:hover:border-primary/35"
+      )}
+    >
+      <CardCellContext.Provider value={true}>{children}</CardCellContext.Provider>
+    </div>
+  );
+}
+
 function FieldIcon({
   children,
   size = "sm"
@@ -132,22 +150,28 @@ interface FieldChipProps {
 }
 
 function FieldChip({ header, icon, children, variant }: FieldChipProps) {
+  const body = (
+    <CardCellContext.Provider value={true}>{children}</CardCellContext.Provider>
+  );
+
   if (variant === "featured") {
     return (
       <div
         className={cn(
-          "flex min-w-0 flex-col gap-1.5 rounded-lg border border-primary/25",
-          "bg-white px-3 py-2.5 shadow-sm dark:border-primary/30 dark:bg-card"
+          "relative flex min-w-0 flex-col gap-1.5 rounded-lg border border-primary/25",
+          "bg-white px-3 py-2.5 shadow-sm dark:border-primary/30 dark:bg-card",
+          CARD_HAS_ACTION_CLASS,
+          "[&:has([data-card-action])]:hover:border-primary/40"
         )}
       >
         <div className="flex items-center gap-1.5">
           {icon && <FieldIcon size="md">{icon}</FieldIcon>}
-          <span className="text-sm font-medium text-foreground">
+          <span className="card-action-label text-sm font-medium text-foreground">
             {header}
           </span>
         </div>
         <div className="min-w-0 text-base font-medium leading-snug text-foreground [&_.tabular-nums]:tabular-nums">
-          {children}
+          {body}
         </div>
       </div>
     );
@@ -156,13 +180,15 @@ function FieldChip({ header, icon, children, variant }: FieldChipProps) {
   return (
     <div
       className={cn(
-        "inline-flex max-w-full items-center gap-1.5 rounded-lg",
-        "border border-border/50 bg-muted/30 px-2 py-1 text-xs leading-snug"
+        "relative inline-flex max-w-full items-center gap-1.5 rounded-lg",
+        "border border-border/50 bg-muted/30 px-2 py-1 text-xs leading-snug",
+        CARD_HAS_ACTION_CLASS,
+        "[&:has([data-card-action])]:hover:border-border"
       )}
     >
       {icon && <FieldIcon>{icon}</FieldIcon>}
-      <span className="text-muted-foreground">{header}</span>
-      <span className="min-w-0 font-medium text-foreground">{children}</span>
+      <span className="card-action-label text-muted-foreground">{header}</span>
+      <span className="min-w-0 font-medium text-foreground">{body}</span>
     </div>
   );
 }
@@ -202,6 +228,7 @@ function TableCardRow<T extends object>({
   getRowHref,
   renderContextMenu
 }: TableCardRowProps<T>) {
+  const { t } = useLingui();
   const navigate = useNavigate();
   const rowHref = getRowHref?.(row.original);
   const contextMenu = renderContextMenu?.(row.original);
@@ -275,27 +302,47 @@ function TableCardRow<T extends object>({
       onClick={rowHref ? handleCardClick : undefined}
       onKeyDown={rowHref ? handleCardKeyDown : undefined}
       className={cn(
-        "w-full overflow-hidden border-0",
-        "bg-primary/[0.04] dark:bg-primary/10",
-        "transition-[box-shadow,transform,background-color] duration-200 ease-out",
-        rowHref && "cursor-pointer",
-        "hover:-translate-y-0.5 hover:bg-primary/10 hover:shadow-lg",
-        "hover:ring-2 hover:ring-primary/25 dark:hover:bg-primary/15",
-        "active:translate-y-0 active:scale-[0.996]",
+        // Flat container — pills are the clickable bits; the card highlights on
+        // hover but keeps the default cursor. (Tapping a non-pill area still
+        // navigates.)
+        "w-full cursor-default overflow-hidden border-0 shadow-none",
+        "bg-muted/50 dark:bg-card",
+        "transition-colors duration-150 ease-out",
+        "hover:bg-muted dark:hover:bg-muted/70",
+        "active:bg-muted/90 dark:active:bg-muted/80",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
       )}
     >
       {hasPinned && (
         <div className="flex items-start justify-between gap-3 p-3.5">
           {cardLeft.length > 0 && (
-            <VStack spacing={1} className="min-w-0 flex-1">
+            <VStack spacing={1.5} className="min-w-0 flex-1">
               {cardLeft.map((column) => {
                 const cell = cellMap[column.id];
                 if (!cell) return null;
+                const isRowNav = Boolean(
+                  column.columnDef.meta?.cardRowNav && rowHref
+                );
+                const rowNavLabel =
+                  column.columnDef.meta?.cardRowNavLabel ?? t`Open`;
                 return (
-                  <div key={column.id} className="min-w-0 w-full">
-                    {flexRender(column.columnDef.cell, cell.getContext())}
-                  </div>
+                  <PinnedColumnChip key={column.id}>
+                    <div className="relative">
+                      {flexRender(column.columnDef.cell, cell.getContext())}
+                      {isRowNav && (
+                        <button
+                          type="button"
+                          aria-label={rowNavLabel}
+                          data-card-action
+                          className="absolute inset-0 z-[1] cursor-pointer rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            navigate(rowHref);
+                          }}
+                        />
+                      )}
+                    </div>
+                  </PinnedColumnChip>
                 );
               })}
             </VStack>
