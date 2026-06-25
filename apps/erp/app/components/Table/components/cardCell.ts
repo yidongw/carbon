@@ -23,31 +23,54 @@ const CARD_FIELD_CHIP_UNDERLINE_STYLES = [
   "underline-offset-2"
 ] as const;
 
-function chipTargetStyles(
-  selector: string,
-  styles: readonly string[]
-): string {
-  return styles.map((style) => `[${selector}]:${style}`).join(" ");
-}
-
 /** Apply directly on links and pinned values inside field chips. */
 export const CARD_FIELD_CHIP_UNDERLINE_CLASS =
   CARD_FIELD_CHIP_UNDERLINE_STYLES.join(" ");
 
 /**
  * Underline interactive field chip labels and values across pinned, inline,
- * and featured variants.
+ * and featured variants. Literal class strings so Tailwind emits the rules.
  */
 const CARD_FIELD_CHIP_INTERACTIVE_UNDERLINE_CLASS = [
-  chipTargetStyles("&:has([data-card-action])_.card-action-label", CARD_FIELD_CHIP_UNDERLINE_STYLES),
-  chipTargetStyles("&:has([data-card-action])_.card-action-value", CARD_FIELD_CHIP_UNDERLINE_STYLES),
-  chipTargetStyles("&:has([data-card-action])_.card-pinned-value", CARD_FIELD_CHIP_UNDERLINE_STYLES),
-  chipTargetStyles(
-    "&:has(:is(a,[data-card-action],button,[role='button']))_.card-action-label",
-    CARD_FIELD_CHIP_UNDERLINE_STYLES
-  ),
-  chipTargetStyles("&_.card-pinned-value_a", CARD_FIELD_CHIP_UNDERLINE_STYLES),
-  chipTargetStyles("&_.card-pinned-value_.card-action-value", CARD_FIELD_CHIP_UNDERLINE_STYLES)
+  // Row-nav / overlay action chips
+  "[&:has([data-card-action])_.card-action-label]:underline",
+  "[&:has([data-card-action])_.card-action-label]:decoration-dotted",
+  "[&:has([data-card-action])_.card-action-label]:decoration-[2.5px]",
+  "[&:has([data-card-action])_.card-action-label]:decoration-blue-600",
+  "dark:[&:has([data-card-action])_.card-action-label]:decoration-blue-400",
+  "[&:has([data-card-action])_.card-action-label]:underline-offset-2",
+  "[&:has([data-card-action])_.card-action-value]:underline",
+  "[&:has([data-card-action])_.card-action-value]:decoration-dotted",
+  "[&:has([data-card-action])_.card-action-value]:decoration-[2.5px]",
+  "[&:has([data-card-action])_.card-action-value]:decoration-blue-600",
+  "dark:[&:has([data-card-action])_.card-action-value]:decoration-blue-400",
+  "[&:has([data-card-action])_.card-action-value]:underline-offset-2",
+  "[&:has([data-card-action])_.card-pinned-value]:underline",
+  "[&:has([data-card-action])_.card-pinned-value]:decoration-dotted",
+  "[&:has([data-card-action])_.card-pinned-value]:decoration-[2.5px]",
+  "[&:has([data-card-action])_.card-pinned-value]:decoration-blue-600",
+  "dark:[&:has([data-card-action])_.card-pinned-value]:decoration-blue-400",
+  "[&:has([data-card-action])_.card-pinned-value]:underline-offset-2",
+  // Metadata / featured chips with links or buttons in the value
+  "[&:has(:is(a,[data-card-action],button,[role='button']))_.card-action-label]:underline",
+  "[&:has(:is(a,[data-card-action],button,[role='button']))_.card-action-label]:decoration-dotted",
+  "[&:has(:is(a,[data-card-action],button,[role='button']))_.card-action-label]:decoration-[2.5px]",
+  "[&:has(:is(a,[data-card-action],button,[role='button']))_.card-action-label]:decoration-blue-600",
+  "dark:[&:has(:is(a,[data-card-action],button,[role='button']))_.card-action-label]:decoration-blue-400",
+  "[&:has(:is(a,[data-card-action],button,[role='button']))_.card-action-label]:underline-offset-2",
+  // Pinned hyperlinks and explicit value markers
+  "[&_.card-pinned-value_a]:underline",
+  "[&_.card-pinned-value_a]:decoration-dotted",
+  "[&_.card-pinned-value_a]:decoration-[2.5px]",
+  "[&_.card-pinned-value_a]:decoration-blue-600",
+  "dark:[&_.card-pinned-value_a]:decoration-blue-400",
+  "[&_.card-pinned-value_a]:underline-offset-2",
+  "[&_.card-pinned-value_.card-action-value]:underline",
+  "[&_.card-pinned-value_.card-action-value]:decoration-dotted",
+  "[&_.card-pinned-value_.card-action-value]:decoration-[2.5px]",
+  "[&_.card-pinned-value_.card-action-value]:decoration-blue-600",
+  "dark:[&_.card-pinned-value_.card-action-value]:decoration-blue-400",
+  "[&_.card-pinned-value_.card-action-value]:underline-offset-2"
 ].join(" ");
 
 /**
