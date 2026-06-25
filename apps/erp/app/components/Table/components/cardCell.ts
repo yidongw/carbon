@@ -13,10 +13,11 @@ export const useIsCardCell = () => useContext(CardCellContext);
 /** Wrapper class for pinned-column cell content in mobile card rows. */
 export const CARD_PINNED_VALUE_CLASS = "card-pinned-value";
 
-const CARD_PINNED_ACCENT_UNDERLINE_STYLES = [
+/** Shared blue dotted underline for interactive mobile card field chips. */
+const CARD_FIELD_CHIP_UNDERLINE_STYLES = [
   "underline",
   "decoration-dotted",
-  "decoration-2",
+  "decoration-[2.5px]",
   "decoration-blue-600",
   "dark:decoration-blue-400",
   "underline-offset-2"
@@ -29,55 +30,34 @@ function chipTargetStyles(
   return styles.map((style) => `[${selector}]:${style}`).join(" ");
 }
 
-/** Pinned card link underline — blue accent contrasts with foreground text. */
-export const CARD_PINNED_LINK_UNDERLINE_CLASS =
-  CARD_PINNED_ACCENT_UNDERLINE_STYLES.join(" ");
-
-/** Dotted underline utilities applied directly to pinned values with row-nav. */
-export const CARD_PINNED_VALUE_NAV_UNDERLINE =
-  CARD_PINNED_ACCENT_UNDERLINE_STYLES.join(" ");
+/** Apply directly on links and pinned values inside field chips. */
+export const CARD_FIELD_CHIP_UNDERLINE_CLASS =
+  CARD_FIELD_CHIP_UNDERLINE_STYLES.join(" ");
 
 /**
- * Dotted underline for navigable pinned values. Covers:
- * - row-nav overlay (`[data-card-action]`)
- * - in-cell links (`a`) and explicit `.card-action-value` markers
+ * Underline interactive field chip labels and values across pinned, inline,
+ * and featured variants.
  */
-export const CARD_PINNED_NAV_UNDERLINE_CLASS = [
-  chipTargetStyles("&:has([data-card-action])_.card-pinned-value", CARD_PINNED_ACCENT_UNDERLINE_STYLES),
-  chipTargetStyles("&_.card-pinned-value_a", CARD_PINNED_ACCENT_UNDERLINE_STYLES),
-  chipTargetStyles("&_.card-pinned-value_.card-action-value", CARD_PINNED_ACCENT_UNDERLINE_STYLES)
-].join(" ");
-
-/**
- * Underline field chip headers when the value area is interactive.
- * Uses :is() so Tailwind emits a single valid :has() selector.
- */
-export const CARD_INTERACTIVE_LABEL_UNDERLINE_CLASS = [
-  "[&:has(:is(a,[data-card-action],button,[role='button']))_.card-action-label]:underline",
-  "[&:has(:is(a,[data-card-action],button,[role='button']))_.card-action-label]:decoration-dotted",
-  "[&:has(:is(a,[data-card-action],button,[role='button']))_.card-action-label]:decoration-foreground/65",
-  "[&:has(:is(a,[data-card-action],button,[role='button']))_.card-action-label]:underline-offset-2"
+const CARD_FIELD_CHIP_INTERACTIVE_UNDERLINE_CLASS = [
+  chipTargetStyles("&:has([data-card-action])_.card-action-label", CARD_FIELD_CHIP_UNDERLINE_STYLES),
+  chipTargetStyles("&:has([data-card-action])_.card-action-value", CARD_FIELD_CHIP_UNDERLINE_STYLES),
+  chipTargetStyles("&:has([data-card-action])_.card-pinned-value", CARD_FIELD_CHIP_UNDERLINE_STYLES),
+  chipTargetStyles(
+    "&:has(:is(a,[data-card-action],button,[role='button']))_.card-action-label",
+    CARD_FIELD_CHIP_UNDERLINE_STYLES
+  ),
+  chipTargetStyles("&_.card-pinned-value_a", CARD_FIELD_CHIP_UNDERLINE_STYLES),
+  chipTargetStyles("&_.card-pinned-value_.card-action-value", CARD_FIELD_CHIP_UNDERLINE_STYLES)
 ].join(" ");
 
 /**
  * Apply to field chip roots that may contain a `[data-card-action]` overlay.
- * Underlines `.card-action-label` (field headers) and `.card-action-value`
- * (explicit value markers) when an action overlay is present.
  */
 export const CARD_HAS_ACTION_CLASS = [
   "[&:has([data-card-action])]:cursor-pointer",
   "[&:has([data-card-action])]:transition-[transform,box-shadow,border-color]",
   "[&:has([data-card-action])]:hover:-translate-y-0.5",
-  "[&:has([data-card-action])]:hover:shadow-md",
-  "[&:has([data-card-action])_.card-action-label]:underline",
-  "[&:has([data-card-action])_.card-action-label]:decoration-dotted",
-  "[&:has([data-card-action])_.card-action-label]:decoration-foreground/65",
-  "[&:has([data-card-action])_.card-action-label]:underline-offset-2",
-  "[&:has([data-card-action])_.card-action-value]:underline",
-  "[&:has([data-card-action])_.card-action-value]:decoration-dotted",
-  "[&:has([data-card-action])_.card-action-value]:decoration-foreground/75",
-  "[&:has([data-card-action])_.card-action-value]:underline-offset-2",
-  CARD_INTERACTIVE_LABEL_UNDERLINE_CLASS
+  "[&:has([data-card-action])]:hover:shadow-md"
 ].join(" ");
 
 /** Shared mobile card field chip chrome — transparent fill, border on hover/action. */
@@ -86,15 +66,13 @@ export const CARD_CHIP_BASE_CLASS = [
   "transition-[border-color,transform,box-shadow] duration-150 ease-out",
   "hover:border-border/70 dark:hover:border-border/60",
   CARD_HAS_ACTION_CLASS,
+  CARD_FIELD_CHIP_INTERACTIVE_UNDERLINE_CLASS,
   "[&:has([data-card-action])]:hover:border-primary/40 dark:[&:has([data-card-action])]:hover:border-primary/35"
 ].join(" ");
 
 export const CARD_CHIP_VARIANT_CLASS = {
   /** Left pinned column — full-width stack. */
-  pinned: [
-    "min-w-0 w-full px-2.5 py-2",
-    CARD_PINNED_NAV_UNDERLINE_CLASS
-  ].join(" "),
+  pinned: "min-w-0 w-full px-2.5 py-2",
   /** Bottom metadata row — compact inline chip. */
   inline: "inline-flex max-w-full items-center gap-1.5 px-2 py-1 text-xs leading-snug",
   /** Right featured column — taller stack with label + value. */

@@ -22,7 +22,7 @@ import { useCallback, useState } from "react";
 import { useNavigate } from "react-router";
 import { useSwipeReveal } from "~/hooks/useSwipeReveal";
 import { CardFieldChip, CardFieldChipBody } from "./CardFieldChip";
-import { CARD_PINNED_VALUE_CLASS, CARD_PINNED_VALUE_NAV_UNDERLINE, resolveCardRowNav } from "./cardCell";
+import { CARD_FIELD_CHIP_UNDERLINE_CLASS, CARD_PINNED_VALUE_CLASS, resolveCardRowNav } from "./cardCell";
 
 const SYSTEM_COLUMN_IDS = new Set(["Select", "Actions", "Expand"]);
 
@@ -353,7 +353,7 @@ function TableCardRow<T extends object>({
                         className={cn(
                           CARD_PINNED_VALUE_CLASS,
                           "min-w-0 w-fit max-w-full",
-                          isRowNav && CARD_PINNED_VALUE_NAV_UNDERLINE
+                          isRowNav && CARD_FIELD_CHIP_UNDERLINE_CLASS
                         )}
                       >
                         {flexRender(column.columnDef.cell, cell.getContext())}
