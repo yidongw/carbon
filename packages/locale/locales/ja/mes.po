@@ -887,27 +887,8 @@ msgstr "かつ"
 msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "カラム {0} を位置 {1}/{2} で選択しました"
 
-msgid "pickup"
-msgstr "工程払い出し"
-
-msgid "Process Pickup"
-msgstr "工程払い出し"
-
-#. placeholder {0}: selectedPickup.employeeId
-msgid "Process Pickup by {0}"
-msgstr "{0} の工程払い出し"
-
-msgid "Process Pickups"
-msgstr "工程払い出し"
-
-msgid "Total Process Pickups"
-msgstr "工程払い出し合計"
-
 msgid "Pickup suggestions:"
 msgstr "工程払い出し候補:"
-
-msgid "Pickups"
-msgstr "工程払い出し"
 
 msgid "Pin Out"
 msgstr "ピンアウト"
@@ -962,6 +943,12 @@ msgstr "プロセス"
 
 msgid "Process Parameters"
 msgstr "プロセスパラメーター"
+
+msgid "process pickup"
+msgstr "プロセスピックアップ"
+
+msgid "Process Pickups"
+msgstr "工程払い出し"
 
 msgid "Processes"
 msgstr "プロセス一覧"
@@ -1289,7 +1276,7 @@ msgstr "サイドバーの表示切り替え"
 msgid "Tools"
 msgstr "工具"
 
-msgid "Total Pickups"
+msgid "Total Process Pickups"
 msgstr "工程払い出し合計"
 
 msgid "Total Production"

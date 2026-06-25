@@ -887,16 +887,8 @@ msgstr "期间"
 msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "已拾取列 {0}，位于第 {1} 个位置（共 {2} 个）"
 
-msgid "pickup"
-msgstr "工序领料"
-
 msgid "Pickup suggestions:"
 msgstr "工序领料建议："
-msgid "process pickup"
-msgstr "工序领料"
-
-msgid "Process Pickups"
-msgstr "工序领料"
 
 msgid "Pin Out"
 msgstr "退出登录"
@@ -951,6 +943,12 @@ msgstr "工序"
 
 msgid "Process Parameters"
 msgstr "工序参数"
+
+msgid "process pickup"
+msgstr "工序领料"
+
+msgid "Process Pickups"
+msgstr "工序领料"
 
 msgid "Processes"
 msgstr "工序"
@@ -1278,8 +1276,6 @@ msgstr "切换侧边栏"
 msgid "Tools"
 msgstr "工具"
 
-msgid "Total Pickups"
-msgstr "工序领料合计"
 msgid "Total Process Pickups"
 msgstr "工序领料合计"
 

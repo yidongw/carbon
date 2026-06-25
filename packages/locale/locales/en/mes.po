@@ -887,16 +887,8 @@ msgstr "Period"
 msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "Picked up Column {0} at position: {1} of {2}"
 
-msgid "process pickup"
-msgstr "process pickup"
-
 msgid "Pickup suggestions:"
 msgstr "Pickup suggestions:"
-
-msgid "Pickups"
-msgstr "Pickups"
-msgid "Process Pickups"
-msgstr "Process Pickups"
 
 msgid "Pin Out"
 msgstr "Pin Out"
@@ -951,6 +943,12 @@ msgstr "Process"
 
 msgid "Process Parameters"
 msgstr "Process Parameters"
+
+msgid "process pickup"
+msgstr "process pickup"
+
+msgid "Process Pickups"
+msgstr "Process Pickups"
 
 msgid "Processes"
 msgstr "Processes"

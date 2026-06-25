@@ -30,6 +30,15 @@ export function parseMentionsFromDocument(content: JSONContent): string[] {
   return Array.from(mentionIds);
 }
 
+export function normalizeTiptapContent(
+  content?: JSONContent | null
+): JSONContent | undefined {
+  if (!content || content.type !== "doc") {
+    return undefined;
+  }
+  return content;
+}
+
 export const textToTiptap = (text: string) => {
   const lines = text.split("\n");
   const content = lines.map((line) => ({

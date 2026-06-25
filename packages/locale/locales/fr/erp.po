@@ -11,7 +11,6 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
-"POT-Creation-Date: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " Un fournisseur est une entreprise ou un individu qui vous vend des pièces ou des services."
@@ -450,6 +449,12 @@ msgstr "Ajouter un partenaire"
 msgid "Add Permissions"
 msgstr "Ajouter des autorisations"
 
+msgid "Add process completion"
+msgstr "Ajouter un achèvement de processus"
+
+msgid "Add process pickup"
+msgstr "Ajouter un prélèvement de processus"
+
 msgid "Add Property"
 msgstr "Ajouter une propriété"
 
@@ -467,9 +472,6 @@ msgstr "Ajouter une exigence"
 
 msgid "Add Risk"
 msgstr "Ajouter un risque"
-
-msgid "Add Row"
-msgstr "Ajouter une ligne"
 
 msgid "Add rule"
 msgstr "Ajouter une règle"
@@ -518,6 +520,9 @@ msgstr "Ligne d'adresse 2"
 
 msgid "Adjustment"
 msgstr "Adjustement"
+
+msgid "Adjustment input mode"
+msgstr "Mode d'entrée de ajustement"
 
 msgid "Adjustment Type"
 msgstr "Type d'ajustement"
@@ -948,11 +953,11 @@ msgstr "Êtes-vous sûr de vouloir supprimer cette carte kanban ? Cette action n
 msgid "Are you sure you want to delete this maintenance dispatch? This cannot be undone."
 msgstr "Êtes-vous sûr de vouloir supprimer cette demande de maintenance ? Cette action ne peut pas être annulée."
 
-msgid "Are you sure you want to delete this pickup? This action cannot be undone."
-msgstr "Voulez-vous supprimer ce prélèvement de processus ? Cette action ne peut pas être annulée."
+msgid "Are you sure you want to delete this process completion? This action cannot be undone."
+msgstr "Êtes-vous sûr de vouloir supprimer cette validation de processus ? Cette action ne peut pas être annulée."
 
-msgid "Are you sure you want to delete this production quantity? This action cannot be undone."
-msgstr "Voulez-vous supprimer cette quantité de production ? Cette action ne peut pas être annulée."
+msgid "Are you sure you want to delete this process pickup? This action cannot be undone."
+msgstr "Êtes-vous sûr de vouloir supprimer ce pick-up de processus ? Cette action ne peut pas être annulée."
 
 msgid "Are you sure you want to delete this quality document?"
 msgstr "Êtes-vous sûr de vouloir supprimer ce document de qualité ?"
@@ -1526,6 +1531,9 @@ msgstr "Fermer"
 msgid "Close Date"
 msgstr "Date de fermeture"
 
+msgid "Close operation"
+msgstr "Fermer l'opération"
+
 msgid "Closed"
 msgstr "Fermé"
 
@@ -2093,8 +2101,8 @@ msgstr "Créer un opérateur"
 msgid "Create PO"
 msgstr "Créer PO"
 
-msgid "Create Production Quantity"
-msgstr "Créer une quantité de production"
+msgid "Create Process Completion"
+msgstr "Créer la fin du processus"
 
 msgid "Create Quote Revision"
 msgstr "Créer une révision de devis"
@@ -2652,9 +2660,6 @@ msgstr "Supprimer le partenaire"
 msgid "Delete Payment Term"
 msgstr "Supprimer le délai de paiement"
 
-msgid "Delete Pickup"
-msgstr "Supprimer le prélèvement de processus"
-
 msgid "Delete Portal"
 msgstr "Supprimer le portail"
 
@@ -2670,6 +2675,12 @@ msgstr "Supprimer la procédure"
 msgid "Delete Process"
 msgstr "Supprimer le processus"
 
+msgid "Delete Process Completion"
+msgstr "Supprimer la fin du processus"
+
+msgid "Delete Process Pickup"
+msgstr "Supprimer le retrait du processus"
+
 msgid "Delete Purchase Invoice"
 msgstr "Supprimer la facture d'achat"
 
@@ -2678,9 +2689,6 @@ msgstr "Supprimer la commande d'achat"
 
 msgid "Delete Purchase Orders"
 msgstr "Supprimer les commandes d'achat"
-
-msgid "Delete Quantity"
-msgstr "Supprimer Quantité"
 
 msgid "Delete Question"
 msgstr "Supprimer la question"
@@ -2971,6 +2979,9 @@ msgstr "Faites glisser et déposer des fichiers ici ou cliquez pour sélectionne
 msgid "Drag handle"
 msgstr "Poignée de déplacement"
 
+msgid "Drag to reorder"
+msgstr "Glisser pour réorganiser"
+
 msgid "Drop Shipment"
 msgstr "Expédition directe"
 
@@ -3167,6 +3178,9 @@ msgstr "Modifier le type de non-conformité"
 msgid "Edit Notes"
 msgstr "Modifier les notes"
 
+msgid "Edit operation"
+msgstr "Éditer l'opération"
+
 msgid "Edit Part"
 msgstr "Modifier la pièce"
 
@@ -3178,9 +3192,6 @@ msgstr "Modifier le délai de paiement"
 
 msgid "Edit Permissions"
 msgstr "Autorisations de modification"
-
-msgid "Edit Pickup"
-msgstr "Modifier le prélèvement de processus"
 
 msgid "Edit Portal"
 msgstr "Modifier le portail"
@@ -3197,14 +3208,14 @@ msgstr "Modifier la règle de tarification"
 msgid "Edit Process"
 msgstr "Modifier le processus"
 
-msgid "Edit Production Quantity"
-msgstr "Modifier la quantité de production"
+msgid "Edit Process Completion"
+msgstr "Éditer l'achèvement du processus"
+
+msgid "Edit Process Pickup"
+msgstr "Modifier le retrait du processus"
 
 msgid "Edit purchase order line type"
 msgstr "Modifier le type de ligne de commande d'achat"
-
-msgid "Edit Quantity"
-msgstr "Quantité à éditer"
 
 msgid "Edit Question"
 msgstr "Modifier la question"
@@ -3419,8 +3430,8 @@ msgstr "Contact Technique"
 msgid "Enter a batch number before setting the expiration date"
 msgstr "Entrez un numéro de lot avant de définir la date d'expiration"
 
-msgid "Enter a positive number to add or a negative number to remove. The change is recorded in the history below."
-msgstr "Entrez un nombre positif pour ajouter ou négatif pour supprimer. Le changement est enregistré dans l'historique ci-dessous."
+msgid "Enter a positive number to add or a negative number to subtract."
+msgstr "Entrez un nombre positif pour ajouter ou un nombre négatif pour soustraire."
 
 msgid "Enter an adjustment before saving."
 msgstr "Entrez une modification avant de sauvegarder."
@@ -3431,8 +3442,8 @@ msgstr "Entrez ou scannez le numéro de série"
 msgid "Enter PO number"
 msgstr "Entrez le numéro de bon de commande"
 
-msgid "Enter the target quantity for each size. The change from the current quantity is recorded in the history."
-msgstr "Entrez la quantité cible pour chaque taille. Le changement par rapport à la quantité actuelle est enregistré dans l'historique."
+msgid "Enter the target quantity for each size."
+msgstr "Entrez la quantité cible pour chaque taille."
 
 msgid "Enter your answer..."
 msgstr "Entrez votre réponse..."
@@ -3956,6 +3967,9 @@ msgstr "Échec de mise à jour du modèle"
 msgid "Failed to update thumbnail path"
 msgstr "Échec de la mise à jour du chemin de la miniature"
 
+msgid "Failed to update time"
+msgstr "Échec de la mise à jour du temps"
+
 msgid "Failed to upload CSV file."
 msgstr "Échec du téléchargement du fichier CSV."
 
@@ -4077,6 +4091,9 @@ msgstr "Finition"
 
 msgid "Finish To"
 msgstr "Terminer vers"
+
+msgid "Finished {complete} of {target} units, {pickup} in progress from process pickups, {unassigned} unassigned"
+msgstr "Terminé {complete} sur {target} unités, en cours de récupération {pickup}, {unassigned} non affectées"
 
 msgid "Finished Goods"
 msgstr "Nomenclature : Produits finis"
@@ -4993,11 +5010,11 @@ msgstr "Litre"
 msgid "Live reloading"
 msgstr "Rechargement en direct"
 
-msgid "Load more pickups"
-msgstr "Charger plus de prélèvements de processus"
+msgid "Load more process completions"
+msgstr "charger plus de complétions du processus"
 
-msgid "Load more quantities"
-msgstr "charger plus de quantités"
+msgid "Load more process pickups"
+msgstr "charger plus de retraits de processus"
 
 msgid "Load Templates"
 msgstr "Charger les modèles"
@@ -5670,9 +5687,6 @@ msgstr "Nouveau mot de passe"
 msgid "New Payment Term"
 msgstr "Nouveau Terme de Paiement"
 
-msgid "New Pickup"
-msgstr "Nouveau prélèvement de processus"
-
 msgid "New PIN"
 msgstr "Nouveau PIN"
 
@@ -5687,9 +5701,6 @@ msgstr "Nouvelle Règle de Tarification"
 
 msgid "New Process"
 msgstr "Nouveau Processus"
-
-msgid "New Production Quantity"
-msgstr "Nouvelle Quantité de Production"
 
 msgid "New Purchase Order Line"
 msgstr "Nouvelle ligne de bon de commande"
@@ -6611,32 +6622,6 @@ msgstr "Liste de prélèvement"
 msgid "picked up {0} units"
 msgstr "picks up {0} units"
 
-msgid "pickup"
-msgstr "prélèvement de processus"
-
-msgid "Process Pickup"
-msgstr "prélèvement de processus"
-
-#. placeholder {0}: selectedPickup.employeeId
-msgid "Process Pickup by {0}"
-msgstr "Prélèvement de processus par {0}"
-
-msgid "Process Pickups"
-msgstr "prélèvements de processus"
-
-msgid "Total Process Pickups"
-msgstr "Total des prélèvements de processus"
-
-msgid "Pickup"
-msgstr "prélèvement de processus"
-
-#. placeholder {0}: selectedPickup.employeeId
-msgid "pickup by {0}"
-msgstr "Prélèvement de processus par {0}"
-
-msgid "Pickups"
-msgstr "prélèvements de processus"
-
 msgid "Pieces/Hour"
 msgstr "Pièces/Heure"
 
@@ -6874,11 +6859,27 @@ msgstr "Procédures"
 msgid "Process"
 msgstr "Processus"
 
+msgid "Process Completion"
+msgstr "Tâche de processus terminée"
+
+msgid "Process Completions"
+msgstr "Completions du Processus"
+
 msgid "Process Deviation"
 msgstr "Déviation du processus"
 
 msgid "Process Name"
 msgstr "Nom du processus"
+
+msgid "Process Pickup"
+msgstr "prélèvement de processus"
+
+#. placeholder {0}: selectedPickup.employeeId
+msgid "Process Pickup by {0}"
+msgstr "Prélèvement de processus par {0}"
+
+msgid "Process Pickups"
+msgstr "prélèvements de processus"
 
 msgid "Process Type"
 msgstr "Type de processus"
@@ -6910,14 +6911,8 @@ msgstr "Logs de production"
 msgid "Production Qty"
 msgstr "Quantité de production"
 
-msgid "Production Quantities"
-msgstr "Quantités de production"
-
 msgid "Production quantities approved for this pay period."
 msgstr "Quantités de production approuvées pour cette période de paiement."
-
-msgid "Production Quantity"
-msgstr "Quantité de Production"
 
 msgid "Professional Fees"
 msgstr "Frais professionnels"
@@ -7299,24 +7294,6 @@ msgstr "Enregistrement supprimé"
 
 msgid "Record payment"
 msgstr "Paiement de la pièce"
-
-msgid "Add process pickup"
-msgstr "Ajouter un prélèvement de processus"
-
-msgid "Add process completion"
-msgstr "Ajouter un achèvement de processus"
-
-msgid "Record pickup"
-msgstr "Enregistrer le prélèvement de processus"
-
-msgid "Record Pickup"
-msgstr "Enregistrer le prélèvement de processus"
-
-msgid "Record production quantity"
-msgstr "Quantité de production du registre"
-
-msgid "Record quantity"
-msgstr "Quantité de registre"
 
 msgid "recorded {qty} units"
 msgstr "enregistré {qty} unités"
@@ -7703,6 +7680,9 @@ msgstr "Élément de droite"
 
 msgid "Risk"
 msgstr "Risque"
+
+msgid "Risk Register"
+msgstr "Registre des risques"
 
 msgid "Risks"
 msgstr "Risques"
@@ -9267,11 +9247,11 @@ msgstr "Minutes totales"
 msgid "Total paid"
 msgstr "Paiement total"
 
-msgid "Total Pickups"
-msgstr "Total des prélèvements de processus"
-
 msgid "Total Price"
 msgstr "Prix Total"
+
+msgid "Total Process Pickups"
+msgstr "Total des prélèvements de processus"
 
 msgid "Total Production"
 msgstr "Production totale"
@@ -9747,11 +9727,11 @@ msgstr "Afficher les attributs"
 msgid "View bill of process"
 msgstr "Voir le facture de procédé"
 
-msgid "View job"
-msgstr "Voir la tâche"
-
 msgid "View configuration parameters"
 msgstr "Visualiser les paramètres de configuration"
+
+msgid "View configuration quantities"
+msgstr "Visualiser les quantités de configuration"
 
 msgid "View Contact"
 msgstr "Afficher le contact"
@@ -9776,6 +9756,9 @@ msgstr "Afficher le problème"
 
 msgid "View Item Master"
 msgstr "Afficher la fiche article"
+
+msgid "View job"
+msgstr "Voir la tâche"
 
 msgid "View maintenance dispatch"
 msgstr "Afficher la dépêche de maintenance"
@@ -10150,12 +10133,3 @@ msgstr "Votre demande pour rejoindre {companyName} a été soumise. Un administr
 
 msgid "yourself"
 msgstr "vous-même"
-
-msgid "Adjustment input mode"
-msgstr "Mode d'entrée de ajustement"
-
-msgid "Enter a positive number to add or a negative number to subtract."
-msgstr "Entrez un nombre positif pour ajouter ou un nombre négatif pour soustraire."
-
-msgid "Enter the target quantity for each size."
-msgstr "Entrez la quantité cible pour chaque taille."

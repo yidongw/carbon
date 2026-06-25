@@ -1,6 +1,7 @@
 "use client";
 
 import type { JSONContent, MentionSuggestion } from "@carbon/tiptap";
+import { normalizeTiptapContent } from "@carbon/utils";
 import {
   Command,
   createImageUpload,
@@ -141,11 +142,13 @@ const Editor = ({
     [suggestionItems, mentionExtension, t]
   );
 
+  const initialContent = normalizeTiptapContent(initialValue);
+
   return (
     <EditorRoot>
       <EditorContent
         className={cn("[&_.is-empty]:text-muted-foreground", className)}
-        {...(initialValue && { initialContent: initialValue })}
+        {...(initialContent && { initialContent })}
         extensions={extensions}
         editorProps={{
           handleDOMEvents: {

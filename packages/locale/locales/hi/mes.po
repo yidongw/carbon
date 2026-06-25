@@ -887,27 +887,8 @@ msgstr "काल"
 msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "कॉलम {0} को स्थिति {1} पर उठाया गया: {2} में से"
 
-msgid "pickup"
-msgstr "प्रक्रिया निकासी"
-
-msgid "Process Pickup"
-msgstr "प्रक्रिया निकासी"
-
-#. placeholder {0}: selectedPickup.employeeId
-msgid "Process Pickup by {0}"
-msgstr "{0} की प्रक्रिया निकासी"
-
-msgid "Process Pickups"
-msgstr "प्रक्रिया निकासियाँ"
-
-msgid "Total Process Pickups"
-msgstr "कुल प्रक्रिया निकासियाँ"
-
 msgid "Pickup suggestions:"
 msgstr "प्रक्रिया निकासी सुझाव:"
-
-msgid "Pickups"
-msgstr "प्रक्रिया निकासियाँ"
 
 msgid "Pin Out"
 msgstr "पिन आउट"
@@ -962,6 +943,12 @@ msgstr "प्रक्रिया"
 
 msgid "Process Parameters"
 msgstr "प्रक्रिया पैरामीटर"
+
+msgid "process pickup"
+msgstr "प्रक्रिया पीकअप"
+
+msgid "Process Pickups"
+msgstr "प्रक्रिया निकासियाँ"
 
 msgid "Processes"
 msgstr "प्रक्रियाएं"
@@ -1289,7 +1276,7 @@ msgstr "पार्सिया बटन"
 msgid "Tools"
 msgstr "उपकरण"
 
-msgid "Total Pickups"
+msgid "Total Process Pickups"
 msgstr "कुल प्रक्रिया निकासियाँ"
 
 msgid "Total Production"
