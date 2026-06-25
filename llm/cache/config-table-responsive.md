@@ -4,7 +4,7 @@
 
 | Component | Path | Role |
 |---|---|---|
-| `ResponsiveConfigTable` | `apps/erp/app/modules/production/ui/Jobs/ResponsiveConfigTable.tsx` | Layout wrapper: horizontal table at `md+`, vertical label/value cards below `md` |
+| `ResponsiveConfigTable` | `apps/erp/app/modules/production/ui/Jobs/ResponsiveConfigTable.tsx` | Generic layout wrapper: horizontal table at `md+`, vertical transpose below `md`; accepts custom column/row types via `renderCell` |
 | `ReadOnlyConfigTable` | `configTableShared.tsx` | Read-only config snapshot; hides zero-value columns in vertical mobile view |
 | `EditableConfigGrid` | `configTableShared.tsx` | Editable grid with add/delete row; `readOnly` prop hides zero values in vertical view |
 | `ConfigParamsTableModal` | `ConfigParamsTableModal.tsx` | Item-level config modal; uses `EditableConfigGrid` |

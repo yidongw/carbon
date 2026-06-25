@@ -2,13 +2,7 @@ import {
   cn,
   Popover,
   PopoverContent,
-  PopoverTrigger,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr
+  PopoverTrigger
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useState, type ReactNode } from "react";
@@ -17,6 +11,7 @@ import {
   type ConfigColumn,
   type ReportedTargetRow
 } from "~/modules/production/configParamsTableColumns";
+import { ResponsiveConfigTable } from "./ResponsiveConfigTable";
 
 function getColumnWidthClass(column: ConfigColumn): string {
   switch (column.type) {
@@ -149,9 +144,6 @@ function QuantityTripletCell({
   );
 }
 
-const stickyLabelClass =
-  "sticky left-0 z-10 bg-background px-3 py-1.5 text-xs font-medium whitespace-nowrap border-r border-border shadow-[4px_0_8px_-4px_rgba(0,0,0,0.08)] dark:shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)]";
-
 function renderReportedTargetCell(col: ConfigColumn, row: ReportedTargetRow) {
   if (col.type === "quantity") {
     return (
@@ -186,66 +178,19 @@ export function ConfigParamsReportedTargetTable({
     );
   }
 
-  const cellClassName = (col: ConfigColumn) =>
-    cn(
-      "px-3 py-2 text-sm tabular-nums",
-      getColumnWidthClass(col),
-      col.type === "quantity" && "font-medium"
-    );
-
   return (
-    <>
-      <div className="hidden max-w-full overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent md:block">
-        <Table className="w-auto min-w-max table-fixed">
-          <Thead>
-            <Tr>
-              {columns.map((col) => (
-                <Th
-                  key={col.key}
-                  className={cn(
-                    "px-3 text-xs whitespace-nowrap",
-                    getColumnWidthClass(col)
-                  )}
-                >
-                  {col.label}
-                </Th>
-              ))}
-            </Tr>
-          </Thead>
-          <Tbody>
-            {rows.map((row, rowIndex) => (
-              <Tr key={rowIndex}>
-                {columns.map((col) => (
-                  <Td key={col.key} className={cellClassName(col)}>
-                    {renderReportedTargetCell(col, row)}
-                  </Td>
-                ))}
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </div>
-
-      <div className="max-w-full overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent md:hidden">
-        <Table className="w-auto min-w-max table-fixed">
-          <Tbody>
-            {columns.map((col) => (
-              <Tr key={col.key}>
-                <Th
-                  className={cn(stickyLabelClass, "min-w-[5rem] max-w-[8rem]")}
-                >
-                  {col.label}
-                </Th>
-                {rows.map((row, rowIndex) => (
-                  <Td key={rowIndex} className={cellClassName(col)}>
-                    {renderReportedTargetCell(col, row)}
-                  </Td>
-                ))}
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </div>
-    </>
+    <ResponsiveConfigTable
+      columns={columns}
+      rows={rows}
+      getColumnWidthClass={(col) => getColumnWidthClass(col)}
+      getCellClassName={(col) =>
+        cn(
+          "px-3 py-2 text-sm tabular-nums",
+          getColumnWidthClass(col),
+          col.type === "quantity" && "font-medium"
+        )
+      }
+      renderCell={(col, row) => renderReportedTargetCell(col, row)}
+    />
   );
 }
