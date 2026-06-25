@@ -5001,11 +5001,11 @@ msgstr "Litr"
 msgid "Live reloading"
 msgstr "Odświeżanie na żywo"
 
-msgid "Load more pickups"
-msgstr "Wczytaj więcej wydań do procesu"
+msgid "Load more process completions"
+msgstr "Carregar więcej zakończeń procesów"
 
-msgid "Load more quantities"
-msgstr "Carregar więcej ilości"
+msgid "Load more process pickups"
+msgstr "Caricznij więcej zlecen produkcji"
 
 msgid "Load Templates"
 msgstr "Załaduj szablony"
@@ -6613,9 +6613,6 @@ msgstr "Lista pobrania"
 msgid "picked up {0} units"
 msgstr "Zdobtyto {0} jednostek"
 
-msgid "pickup"
-msgstr "wydanie do procesu"
-
 msgid "Pieces/Hour"
 msgstr "Sztuk/Godzina"
 
@@ -7288,12 +7285,6 @@ msgstr "Rekord usunięty"
 
 msgid "Record payment"
 msgstr "Płatność rekordu"
-
-msgid "Record pickup"
-msgstr "Zarejestruj wydanie do procesu"
-
-msgid "Record quantity"
-msgstr "Ilość rekordu"
 
 msgid "recorded {qty} units"
 msgstr "zapisano {qty} jednostek"
@@ -9247,11 +9238,11 @@ msgstr "Łącznie minut"
 msgid "Total paid"
 msgstr "Ostatnie zapłaczone"
 
-msgid "Total Pickups"
-msgstr "Łącznie wydań do procesu"
-
 msgid "Total Price"
 msgstr "Cena całkowita"
+
+msgid "Total Process Pickups"
+msgstr "Łącznie wydań do procesu"
 
 msgid "Total Production"
 msgstr "Cała produkcja"

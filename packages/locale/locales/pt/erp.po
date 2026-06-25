@@ -5001,11 +5001,11 @@ msgstr "Litro"
 msgid "Live reloading"
 msgstr "Recarregamento ao vivo"
 
-msgid "Load more pickups"
-msgstr "Carregar mais saídas para processo"
+msgid "Load more process completions"
+msgstr "Carregar mais conclusões do processo"
 
-msgid "Load more quantities"
-msgstr "Carregar mais quantidades"
+msgid "Load more process pickups"
+msgstr "Carregar mais pegadas de processo"
 
 msgid "Load Templates"
 msgstr "Carregar Modelos"
@@ -6613,9 +6613,6 @@ msgstr "Lista de Coleta"
 msgid "picked up {0} units"
 msgstr "pickingado {0} unidades"
 
-msgid "pickup"
-msgstr "saída para processo"
-
 msgid "Pieces/Hour"
 msgstr "Peças/Hora"
 
@@ -7288,12 +7285,6 @@ msgstr "Registro eliminado"
 
 msgid "Record payment"
 msgstr "Registo de pagamento"
-
-msgid "Record pickup"
-msgstr "Registrar saída para processo"
-
-msgid "Record quantity"
-msgstr "Quantidade de registros"
 
 msgid "recorded {qty} units"
 msgstr "registrados {qty} unidades"
@@ -9247,11 +9238,11 @@ msgstr "Total de Minutos"
 msgid "Total paid"
 msgstr "Total pago"
 
-msgid "Total Pickups"
-msgstr "Total de saídas para processo"
-
 msgid "Total Price"
 msgstr "Preço Total"
+
+msgid "Total Process Pickups"
+msgstr "Total de saídas para processo"
 
 msgid "Total Production"
 msgstr "Produção Total"

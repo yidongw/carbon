@@ -5001,11 +5001,11 @@ msgstr "Litre"
 msgid "Live reloading"
 msgstr "Rechargement en direct"
 
-msgid "Load more pickups"
-msgstr "Charger plus de prélèvements de processus"
+msgid "Load more process completions"
+msgstr "charger plus de complétions du processus"
 
-msgid "Load more quantities"
-msgstr "charger plus de quantités"
+msgid "Load more process pickups"
+msgstr "charger plus de retraits de processus"
 
 msgid "Load Templates"
 msgstr "Charger les modèles"
@@ -6613,9 +6613,6 @@ msgstr "Liste de prélèvement"
 msgid "picked up {0} units"
 msgstr "picks up {0} units"
 
-msgid "pickup"
-msgstr "prélèvement de processus"
-
 msgid "Pieces/Hour"
 msgstr "Pièces/Heure"
 
@@ -7288,12 +7285,6 @@ msgstr "Enregistrement supprimé"
 
 msgid "Record payment"
 msgstr "Paiement de la pièce"
-
-msgid "Record pickup"
-msgstr "Enregistrer le prélèvement de processus"
-
-msgid "Record quantity"
-msgstr "Quantité de registre"
 
 msgid "recorded {qty} units"
 msgstr "enregistré {qty} unités"
@@ -9247,11 +9238,11 @@ msgstr "Minutes totales"
 msgid "Total paid"
 msgstr "Paiement total"
 
-msgid "Total Pickups"
-msgstr "Total des prélèvements de processus"
-
 msgid "Total Price"
 msgstr "Prix Total"
+
+msgid "Total Process Pickups"
+msgstr "Total des prélèvements de processus"
 
 msgid "Total Production"
 msgstr "Production totale"

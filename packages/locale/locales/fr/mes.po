@@ -105,8 +105,8 @@ msgid "Add Spare Part"
 msgstr "Ajouter une pièce de rechange"
 
 msgid "Add to Inventory"
-msgstr "Ajouter à l'inventaire"
-"Ajouter au库存已包含标点和格式错误，根据规则需要修正为：\n"
+msgstr ""
+"Ajouter à l'inventaireAjouter au库存已包含标点和格式错误，根据规则需要修正为：\n"
 "Ajouter au stock"
 
 msgid "Adjustment Type"

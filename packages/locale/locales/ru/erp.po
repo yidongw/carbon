@@ -5001,11 +5001,11 @@ msgstr "Литр"
 msgid "Live reloading"
 msgstr "Живая перезагрузка"
 
-msgid "Load more pickups"
-msgstr "Загрузить еще выдачи в процесс"
+msgid "Load more process completions"
+msgstr "Загрузить больше завершений процессов"
 
-msgid "Load more quantities"
-msgstr "Загрузить больше количеств"
+msgid "Load more process pickups"
+msgstr "Загрузить больше процессных приемов"
 
 msgid "Load Templates"
 msgstr "Загрузить шаблоны"
@@ -6613,9 +6613,6 @@ msgstr "Список подбора"
 msgid "picked up {0} units"
 msgstr "принят {0} единиц"
 
-msgid "pickup"
-msgstr "выдача в процесс"
-
 msgid "Pieces/Hour"
 msgstr "Штук/час"
 
@@ -7288,12 +7285,6 @@ msgstr "Запись удалена"
 
 msgid "Record payment"
 msgstr "Платеж по записи"
-
-msgid "Record pickup"
-msgstr "Зарегистрировать выдачу в процесс"
-
-msgid "Record quantity"
-msgstr "Количество записей"
 
 msgid "recorded {qty} units"
 msgstr "записано {qty} единиц"
@@ -9247,11 +9238,11 @@ msgstr "Всего минут"
 msgid "Total paid"
 msgstr "Общая оплата"
 
-msgid "Total Pickups"
-msgstr "Всего выдач в процесс"
-
 msgid "Total Price"
 msgstr "Общая цена"
+
+msgid "Total Process Pickups"
+msgstr "Всего выдач в процесс"
 
 msgid "Total Production"
 msgstr "Общее производство"

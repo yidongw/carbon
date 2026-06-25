@@ -5001,11 +5001,11 @@ msgstr "लीटर"
 msgid "Live reloading"
 msgstr "लाइव रीलोडिंग"
 
-msgid "Load more pickups"
-msgstr "और प्रक्रिया निकासियाँ लोड करें"
+msgid "Load more process completions"
+msgstr "लोड औरेडर प्रक्रियाएँ"
 
-msgid "Load more quantities"
-msgstr "लोड औरेडर की मात्रा"
+msgid "Load more process pickups"
+msgstr "लोड औरेड़र पीकअप्स"
 
 msgid "Load Templates"
 msgstr "टेम्पलेट लोड करें"
@@ -6613,9 +6613,6 @@ msgstr "पिक लिस्ट"
 msgid "picked up {0} units"
 msgstr "लिया गया है {0} इकाई"
 
-msgid "pickup"
-msgstr "प्रक्रिया निकासी"
-
 msgid "Pieces/Hour"
 msgstr "Pieces/Hour"
 
@@ -7288,12 +7285,6 @@ msgstr "रिकॉर्ड हटाया गया"
 
 msgid "Record payment"
 msgstr "रिकॉर्ड भुगतान"
-
-msgid "Record pickup"
-msgstr "प्रक्रिया निकासी दर्ज करें"
-
-msgid "Record quantity"
-msgstr "रिकॉर्ड मात्रा"
 
 msgid "recorded {qty} units"
 msgstr "रिकॉर्ड की गई {qty} इकाइयाँ"
@@ -9247,11 +9238,11 @@ msgstr "कुल मिनट"
 msgid "Total paid"
 msgstr "कुल भुगतान किया गया"
 
-msgid "Total Pickups"
-msgstr "कुल प्रक्रिया निकासियाँ"
-
 msgid "Total Price"
 msgstr "कुल मूल्य"
+
+msgid "Total Process Pickups"
+msgstr "कुल प्रक्रिया निकासियाँ"
 
 msgid "Total Production"
 msgstr "कुल उत्पादन"

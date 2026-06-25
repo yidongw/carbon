@@ -5001,11 +5001,11 @@ msgstr "リットル"
 msgid "Live reloading"
 msgstr "ライブリロード中"
 
-msgid "Load more pickups"
-msgstr "さらに工程払い出しを読み込む"
+msgid "Load more process completions"
+msgstr "更多的工程完成记录を読み込む"
 
-msgid "Load more quantities"
-msgstr "更多数量を読み込む"
+msgid "Load more process pickups"
+msgstr "更多的工序取込を読み込む"
 
 msgid "Load Templates"
 msgstr "テンプレートを読み込む"
@@ -6613,9 +6613,6 @@ msgstr "ピッキングリスト"
 msgid "picked up {0} units"
 msgstr "{0}ユニットを取った"
 
-msgid "pickup"
-msgstr "工程払い出し"
-
 msgid "Pieces/Hour"
 msgstr "個/時間"
 
@@ -7288,12 +7285,6 @@ msgstr "レコード削除済み"
 
 msgid "Record payment"
 msgstr "えいさつせき"
-
-msgid "Record pickup"
-msgstr "工程払い出しを記録"
-
-msgid "Record quantity"
-msgstr "録音数"
 
 msgid "recorded {qty} units"
 msgstr "recorded {qty} units"
@@ -9247,11 +9238,11 @@ msgstr "合計分"
 msgid "Total paid"
 msgstr "合計支払い"
 
-msgid "Total Pickups"
-msgstr "工程払い出し合計"
-
 msgid "Total Price"
 msgstr "合計価格"
+
+msgid "Total Process Pickups"
+msgstr "工程払い出し合計"
 
 msgid "Total Production"
 msgstr "総生産量"

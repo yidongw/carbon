@@ -374,7 +374,7 @@ function QuantityProgressStrip({
         <button
           type="button"
           className="flex items-center gap-1 sm:gap-0.5 rounded transition-opacity duration-150 hover:opacity-70 active:scale-95 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-          aria-label={t`Add production quantity`}
+          aria-label={t`Add process completion`}
           onClick={(event) => {
             event.stopPropagation();
             onAddQuantity();
@@ -395,7 +395,7 @@ function QuantityProgressStrip({
         <button
           type="button"
           className="flex items-center gap-1 sm:gap-0.5 rounded transition-opacity duration-150 hover:opacity-70 active:scale-95 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-          aria-label={t`Add pickup`}
+          aria-label={t`Add process pickup`}
           onClick={(event) => {
             event.stopPropagation();
             onAddPickup();
@@ -464,7 +464,7 @@ function QuantityProgressStrip({
     <div
       className="w-full min-w-0 shrink-0"
       role="img"
-      aria-label={t`Finished ${complete} of ${target} units, ${pickup} in progress from pickups, ${unassigned} unassigned`}
+      aria-label={t`Finished ${complete} of ${target} units, ${pickup} in progress from process pickups, ${unassigned} unassigned`}
     >
       <div className="relative h-9 sm:h-7 w-full">
         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2">

@@ -5001,11 +5001,11 @@ msgstr "Liter"
 msgid "Live reloading"
 msgstr "Live reloading"
 
-msgid "Load more pickups"
-msgstr "Load more pickups"
+msgid "Load more process completions"
+msgstr "Load more process completions"
 
-msgid "Load more quantities"
-msgstr "Load more quantities"
+msgid "Load more process pickups"
+msgstr "Load more process pickups"
 
 msgid "Load Templates"
 msgstr "Load Templates"
@@ -6613,9 +6613,6 @@ msgstr "Pick List"
 msgid "picked up {0} units"
 msgstr "picked up {0} units"
 
-msgid "pickup"
-msgstr "pickup"
-
 msgid "Pieces/Hour"
 msgstr "Pieces/Hour"
 
@@ -7288,12 +7285,6 @@ msgstr "Record deleted"
 
 msgid "Record payment"
 msgstr "Record payment"
-
-msgid "Record pickup"
-msgstr "Record pickup"
-
-msgid "Record quantity"
-msgstr "Record quantity"
 
 msgid "recorded {qty} units"
 msgstr "recorded {qty} units"
@@ -9247,11 +9238,11 @@ msgstr "Total Minutes"
 msgid "Total paid"
 msgstr "Total paid"
 
-msgid "Total Pickups"
-msgstr "Total Pickups"
-
 msgid "Total Price"
 msgstr "Total Price"
+
+msgid "Total Process Pickups"
+msgstr "Total Process Pickups"
 
 msgid "Total Production"
 msgstr "Total Production"
