@@ -945,7 +945,7 @@ msgid "Process Parameters"
 msgstr "Параметры процесса"
 
 msgid "process pickup"
-msgstr ""
+msgstr "получение процесса"
 
 msgid "Process Pickups"
 msgstr "выдачи в процесс"

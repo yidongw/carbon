@@ -948,10 +948,10 @@ msgid "Are you sure you want to delete this maintenance dispatch? This cannot be
 msgstr "Êtes-vous sûr de vouloir supprimer cette demande de maintenance ? Cette action ne peut pas être annulée."
 
 msgid "Are you sure you want to delete this process completion? This action cannot be undone."
-msgstr ""
+msgstr "Êtes-vous sûr de vouloir supprimer cette validation de processus ? Cette action ne peut pas être annulée."
 
 msgid "Are you sure you want to delete this process pickup? This action cannot be undone."
-msgstr ""
+msgstr "Êtes-vous sûr de vouloir supprimer ce pick-up de processus ? Cette action ne peut pas être annulée."
 
 msgid "Are you sure you want to delete this quality document?"
 msgstr "Êtes-vous sûr de vouloir supprimer ce document de qualité ?"
@@ -1526,7 +1526,7 @@ msgid "Close Date"
 msgstr "Date de fermeture"
 
 msgid "Close operation"
-msgstr ""
+msgstr "Fermer l'opération"
 
 msgid "Closed"
 msgstr "Fermé"
@@ -2096,7 +2096,7 @@ msgid "Create PO"
 msgstr "Créer PO"
 
 msgid "Create Process Completion"
-msgstr ""
+msgstr "Créer la fin du processus"
 
 msgid "Create Quote Revision"
 msgstr "Créer une révision de devis"
@@ -2670,10 +2670,10 @@ msgid "Delete Process"
 msgstr "Supprimer le processus"
 
 msgid "Delete Process Completion"
-msgstr ""
+msgstr "Supprimer la fin du processus"
 
 msgid "Delete Process Pickup"
-msgstr ""
+msgstr "Supprimer le retrait du processus"
 
 msgid "Delete Purchase Invoice"
 msgstr "Supprimer la facture d'achat"
@@ -2974,7 +2974,7 @@ msgid "Drag handle"
 msgstr "Poignée de déplacement"
 
 msgid "Drag to reorder"
-msgstr ""
+msgstr "Glisser pour réorganiser"
 
 msgid "Drop Shipment"
 msgstr "Expédition directe"
@@ -3173,7 +3173,7 @@ msgid "Edit Notes"
 msgstr "Modifier les notes"
 
 msgid "Edit operation"
-msgstr ""
+msgstr "Éditer l'opération"
 
 msgid "Edit Part"
 msgstr "Modifier la pièce"
@@ -3203,10 +3203,10 @@ msgid "Edit Process"
 msgstr "Modifier le processus"
 
 msgid "Edit Process Completion"
-msgstr ""
+msgstr "Éditer l'achèvement du processus"
 
 msgid "Edit Process Pickup"
-msgstr ""
+msgstr "Modifier le retrait du processus"
 
 msgid "Edit purchase order line type"
 msgstr "Modifier le type de ligne de commande d'achat"
@@ -3962,7 +3962,7 @@ msgid "Failed to update thumbnail path"
 msgstr "Échec de la mise à jour du chemin de la miniature"
 
 msgid "Failed to update time"
-msgstr ""
+msgstr "Échec de la mise à jour du temps"
 
 msgid "Failed to upload CSV file."
 msgstr "Échec du téléchargement du fichier CSV."
@@ -6854,10 +6854,10 @@ msgid "Process"
 msgstr "Processus"
 
 msgid "Process Completion"
-msgstr ""
+msgstr "Tâche de processus terminée"
 
 msgid "Process Completions"
-msgstr ""
+msgstr "Completions du Processus"
 
 msgid "Process Deviation"
 msgstr "Déviation du processus"
@@ -7682,7 +7682,7 @@ msgid "Risk"
 msgstr "Risque"
 
 msgid "Risk Register"
-msgstr ""
+msgstr "Registre des risques"
 
 msgid "Risks"
 msgstr "Risques"

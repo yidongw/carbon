@@ -948,10 +948,10 @@ msgid "Are you sure you want to delete this maintenance dispatch? This cannot be
 msgstr "Sind Sie sicher, dass Sie diesen Wartungseinsatz löschen möchten? Dies kann nicht rückgängig gemacht werden."
 
 msgid "Are you sure you want to delete this process completion? This action cannot be undone."
-msgstr ""
+msgstr "Sind Sie sicher, dass Sie diesen Prozessabschluss löschen wollen? Diese Aktion kann nicht rückgängig gemacht werden."
 
 msgid "Are you sure you want to delete this process pickup? This action cannot be undone."
-msgstr ""
+msgstr "Sind Sie sicher, dass Sie diesen Prozessauftrag löschen wollen? Diese Aktion kann nicht rückgängig gemacht werden."
 
 msgid "Are you sure you want to delete this quality document?"
 msgstr "Sind Sie sicher, dass Sie dieses Qualitätsdokument löschen möchten?"
@@ -1526,7 +1526,7 @@ msgid "Close Date"
 msgstr "Schließungsdatum"
 
 msgid "Close operation"
-msgstr ""
+msgstr "Schließen der Operation"
 
 msgid "Closed"
 msgstr "Schließen"
@@ -2096,7 +2096,7 @@ msgid "Create PO"
 msgstr "Erstellen Sie PO"
 
 msgid "Create Process Completion"
-msgstr ""
+msgstr "Erstellen Sie den Prozessabschluss"
 
 msgid "Create Quote Revision"
 msgstr "Angebotrevision erstellen"
@@ -2670,10 +2670,10 @@ msgid "Delete Process"
 msgstr "Prozess löschen"
 
 msgid "Delete Process Completion"
-msgstr ""
+msgstr "Löschen von Prozessabschluss"
 
 msgid "Delete Process Pickup"
-msgstr ""
+msgstr "Löschen von Prozessabholung"
 
 msgid "Delete Purchase Invoice"
 msgstr "Kaufrechnung löschen"
@@ -2974,7 +2974,7 @@ msgid "Drag handle"
 msgstr "Ziehgriff"
 
 msgid "Drag to reorder"
-msgstr ""
+msgstr "Ziehen Sie, um die Reihenfolge zu ändern"
 
 msgid "Drop Shipment"
 msgstr "Direktversand"
@@ -3173,7 +3173,7 @@ msgid "Edit Notes"
 msgstr "Bearbeiten Notizen"
 
 msgid "Edit operation"
-msgstr ""
+msgstr "Bearbeitenoperation"
 
 msgid "Edit Part"
 msgstr "Teil bearbeiten"
@@ -3203,10 +3203,10 @@ msgid "Edit Process"
 msgstr "Prozess bearbeiten"
 
 msgid "Edit Process Completion"
-msgstr ""
+msgstr "Bearbeiten Prozessabschluss"
 
 msgid "Edit Process Pickup"
-msgstr ""
+msgstr "Bearbeiten Prozessabholung"
 
 msgid "Edit purchase order line type"
 msgstr "Bestellpositionstyp bearbeiten"
@@ -3962,7 +3962,7 @@ msgid "Failed to update thumbnail path"
 msgstr "Fehler beim Aktualisieren des Miniaturbildpfads"
 
 msgid "Failed to update time"
-msgstr ""
+msgstr "Fehler beim Aktualisieren der Zeit"
 
 msgid "Failed to upload CSV file."
 msgstr "CSV-Datei konnte nicht hochgeladen werden."
@@ -6854,10 +6854,10 @@ msgid "Process"
 msgstr "Prozess"
 
 msgid "Process Completion"
-msgstr ""
+msgstr "Prozessabschluss"
 
 msgid "Process Completions"
-msgstr ""
+msgstr "Prozessabgeschlossen"
 
 msgid "Process Deviation"
 msgstr "Prozessabweichung"
@@ -7682,7 +7682,7 @@ msgid "Risk"
 msgstr "Risiko"
 
 msgid "Risk Register"
-msgstr ""
+msgstr "Risikoliste"
 
 msgid "Risks"
 msgstr "Risiken"

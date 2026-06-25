@@ -105,7 +105,7 @@ msgid "Add Spare Part"
 msgstr "Ajouter une pièce de rechange"
 
 msgid "Add to Inventory"
-msgstr ""
+msgstr "Ajouter à l'inventaire"
 "Ajouter au库存已包含标点和格式错误，根据规则需要修正为：\n"
 "Ajouter au stock"
 
@@ -947,7 +947,7 @@ msgid "Process Parameters"
 msgstr "Paramètres de processus"
 
 msgid "process pickup"
-msgstr ""
+msgstr "pickup de processus"
 
 msgid "Process Pickups"
 msgstr "prélèvements de processus"

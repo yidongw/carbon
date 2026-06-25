@@ -1526,7 +1526,7 @@ msgid "Close Date"
 msgstr "关闭日期"
 
 msgid "Close operation"
-msgstr ""
+msgstr "关闭操作"
 
 msgid "Closed"
 msgstr "关闭"
@@ -2974,7 +2974,7 @@ msgid "Drag handle"
 msgstr "拖动柄"
 
 msgid "Drag to reorder"
-msgstr ""
+msgstr "拖动以重新排序"
 
 msgid "Drop Shipment"
 msgstr "直运发货"
@@ -3173,7 +3173,7 @@ msgid "Edit Notes"
 msgstr "编辑备注"
 
 msgid "Edit operation"
-msgstr ""
+msgstr "编辑操作"
 
 msgid "Edit Part"
 msgstr "编辑产品"
@@ -3962,7 +3962,7 @@ msgid "Failed to update thumbnail path"
 msgstr "更新缩略图路径失败"
 
 msgid "Failed to update time"
-msgstr ""
+msgstr "更新时间失败"
 
 msgid "Failed to upload CSV file."
 msgstr "上传CSV文件失败。"
@@ -5002,10 +5002,10 @@ msgid "Live reloading"
 msgstr "实时预览"
 
 msgid "Load more pickups"
-msgstr ""
+msgstr "加载更多提货单"
 
 msgid "Load more quantities"
-msgstr ""
+msgstr "加载更多数量"
 
 msgid "Load Templates"
 msgstr "加载模板"
@@ -7290,7 +7290,7 @@ msgid "Record payment"
 msgstr "记录付款"
 
 msgid "Record pickup"
-msgstr ""
+msgstr "记录取货"
 
 msgid "Record quantity"
 msgstr "记录数量"
@@ -7682,7 +7682,7 @@ msgid "Risk"
 msgstr "风险"
 
 msgid "Risk Register"
-msgstr ""
+msgstr "风险登记册"
 
 msgid "Risks"
 msgstr "风险"
@@ -9248,7 +9248,7 @@ msgid "Total paid"
 msgstr "已付总额"
 
 msgid "Total Pickups"
-msgstr ""
+msgstr "总提货量"
 
 msgid "Total Price"
 msgstr "总计价格"

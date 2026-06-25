@@ -85,7 +85,7 @@ msgid "{0} uploaded successfully"
 msgstr "{0} caricato con successo"
 
 msgid "{days} days ({formatted})"
-msgstr ""
+msgstr "{days} giorni ({formatted})"
 
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB limite"
@@ -948,10 +948,10 @@ msgid "Are you sure you want to delete this maintenance dispatch? This cannot be
 msgstr "Sei sicuro di voler eliminare questo ordine di manutenzione? Questa azione non può essere annullata."
 
 msgid "Are you sure you want to delete this process completion? This action cannot be undone."
-msgstr ""
+msgstr "Sei sicuro di voler eliminare questa conclusione del processo? Questa azione non può essere annullata."
 
 msgid "Are you sure you want to delete this process pickup? This action cannot be undone."
-msgstr ""
+msgstr "Sei sicuro di voler eliminare questo processo di raccolta? Questa azione non può essere annullata."
 
 msgid "Are you sure you want to delete this quality document?"
 msgstr "Sei sicuro di voler eliminare questo documento di qualità?"
@@ -1526,7 +1526,7 @@ msgid "Close Date"
 msgstr "Data di chiusura"
 
 msgid "Close operation"
-msgstr ""
+msgstr "Chiudi operazione"
 
 msgid "Closed"
 msgstr "Chiuso"
@@ -2096,7 +2096,7 @@ msgid "Create PO"
 msgstr "Crea P.O."
 
 msgid "Create Process Completion"
-msgstr ""
+msgstr "Crea Completamento Processo"
 
 msgid "Create Quote Revision"
 msgstr "Crea Revisione Preventivo"
@@ -2670,10 +2670,10 @@ msgid "Delete Process"
 msgstr "Elimina Processo"
 
 msgid "Delete Process Completion"
-msgstr ""
+msgstr "Elimina completamento processo"
 
 msgid "Delete Process Pickup"
-msgstr ""
+msgstr "Elimina Processo Estrazione"
 
 msgid "Delete Purchase Invoice"
 msgstr "Elimina Fattura di Acquisto"
@@ -2974,7 +2974,7 @@ msgid "Drag handle"
 msgstr "Maniglia di trascinamento"
 
 msgid "Drag to reorder"
-msgstr ""
+msgstr "Trascina per riordinare"
 
 msgid "Drop Shipment"
 msgstr "Spedizione Diretta"
@@ -3173,7 +3173,7 @@ msgid "Edit Notes"
 msgstr "Modifica note"
 
 msgid "Edit operation"
-msgstr ""
+msgstr "Modifica operazione"
 
 msgid "Edit Part"
 msgstr "Modifica Parte"
@@ -3203,10 +3203,10 @@ msgid "Edit Process"
 msgstr "Modifica Processo"
 
 msgid "Edit Process Completion"
-msgstr ""
+msgstr "Modifica completamento processo"
 
 msgid "Edit Process Pickup"
-msgstr ""
+msgstr "Modifica Processo Raccolta"
 
 msgid "Edit purchase order line type"
 msgstr "Modifica tipo di riga ordine di acquisto"
@@ -3962,7 +3962,7 @@ msgid "Failed to update thumbnail path"
 msgstr "Impossibile aggiornare il percorso della miniatura"
 
 msgid "Failed to update time"
-msgstr ""
+msgstr "Fallito aggiornamento del tempo"
 
 msgid "Failed to upload CSV file."
 msgstr "Impossibile caricare il file CSV."
@@ -6854,10 +6854,10 @@ msgid "Process"
 msgstr "Processo"
 
 msgid "Process Completion"
-msgstr ""
+msgstr "Completamento processo"
 
 msgid "Process Completions"
-msgstr ""
+msgstr "Completamenti Processi"
 
 msgid "Process Deviation"
 msgstr "Deviazioni di processo"
@@ -7682,7 +7682,7 @@ msgid "Risk"
 msgstr "Rischio"
 
 msgid "Risk Register"
-msgstr ""
+msgstr "Registro dei rischi"
 
 msgid "Risks"
 msgstr "Rischi"

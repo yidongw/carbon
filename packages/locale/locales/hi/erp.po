@@ -85,7 +85,7 @@ msgid "{0} uploaded successfully"
 msgstr "{0} सफलतापूर्वक अपलोड हो गया"
 
 msgid "{days} days ({formatted})"
-msgstr ""
+msgstr "{days} दिन ({formatted})"
 
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB सीमा"
@@ -948,10 +948,10 @@ msgid "Are you sure you want to delete this maintenance dispatch? This cannot be
 msgstr "क्या आप सुनिश्चित हैं कि आप इस रखरखाव प्रेषण को हटाना चाहते हैं? यह पूर्ववत नहीं किया जा सकता।"
 
 msgid "Are you sure you want to delete this process completion? This action cannot be undone."
-msgstr ""
+msgstr "आपने यह प्रक्रिया पूरण को हटाने की इच्छा किया है? यह चलने में वापस नहीं आ सकता है।"
 
 msgid "Are you sure you want to delete this process pickup? This action cannot be undone."
-msgstr ""
+msgstr "आपने यह प्रक्रिया पाउंच को हटाने की रणनीति चुनी? यह क्रिया वापस नहीं की जा सकती।"
 
 msgid "Are you sure you want to delete this quality document?"
 msgstr "क्या आप सुनिश्चित हैं कि आप इस गुणवत्ता दस्तावेज़ को हटाना चाहते हैं?"
@@ -1526,7 +1526,7 @@ msgid "Close Date"
 msgstr "बंद करने की तारीख"
 
 msgid "Close operation"
-msgstr ""
+msgstr "बंद करें"
 
 msgid "Closed"
 msgstr "बंद"
@@ -2096,7 +2096,7 @@ msgid "Create PO"
 msgstr "निर्यात प्रारूप (Create PO)"
 
 msgid "Create Process Completion"
-msgstr ""
+msgstr "प्रक्रिया पूर्ण करें"
 
 msgid "Create Quote Revision"
 msgstr "उद्धरण संशोधन बनाएं"
@@ -2670,10 +2670,10 @@ msgid "Delete Process"
 msgstr "प्रक्रिया हटाएं"
 
 msgid "Delete Process Completion"
-msgstr ""
+msgstr "प्रोसेस पूर्णावतार हटाएँ"
 
 msgid "Delete Process Pickup"
-msgstr ""
+msgstr "प्रोसेस पीकअप हटाएं"
 
 msgid "Delete Purchase Invoice"
 msgstr "खरीद चालान हटाएं"
@@ -2974,7 +2974,7 @@ msgid "Drag handle"
 msgstr "ड्रैग हैंडल"
 
 msgid "Drag to reorder"
-msgstr ""
+msgstr "नियंत्रित रूप से पुनर्स्थापित करें"
 
 msgid "Drop Shipment"
 msgstr "ड्रॉप शिपमेंट"
@@ -3173,7 +3173,7 @@ msgid "Edit Notes"
 msgstr "साजिश सunting"
 
 msgid "Edit operation"
-msgstr ""
+msgstr "प्रक्रिया सunting"
 
 msgid "Edit Part"
 msgstr "भाग संपादित करें"
@@ -3203,10 +3203,10 @@ msgid "Edit Process"
 msgstr "प्रक्रिया संपादित करें"
 
 msgid "Edit Process Completion"
-msgstr ""
+msgstr "प्रोसेस पूर्णांक संपादन"
 
 msgid "Edit Process Pickup"
-msgstr ""
+msgstr "प्रोसेस कैप्चर संपादित करें"
 
 msgid "Edit purchase order line type"
 msgstr "क्रय आदेश लाइन प्रकार संपादित करें"
@@ -3962,7 +3962,7 @@ msgid "Failed to update thumbnail path"
 msgstr "थंबनेल पथ अपडेट करने में विफल"
 
 msgid "Failed to update time"
-msgstr ""
+msgstr "काला अपडेट होने में फाल्टी रही"
 
 msgid "Failed to upload CSV file."
 msgstr "CSV फ़ाइल अपलोड करने में विफल।"
@@ -6854,10 +6854,10 @@ msgid "Process"
 msgstr "प्रक्रिया"
 
 msgid "Process Completion"
-msgstr ""
+msgstr "प्रक्रिया पूर्ण होने की संधि"
 
 msgid "Process Completions"
-msgstr ""
+msgstr "प्रक्रिया पूर्णांकों"
 
 msgid "Process Deviation"
 msgstr "प्रक्रिया विचलन"
@@ -7682,7 +7682,7 @@ msgid "Risk"
 msgstr "जोखिम"
 
 msgid "Risk Register"
-msgstr ""
+msgstr "रिस्क जिस्टर"
 
 msgid "Risks"
 msgstr "जोखिमें"

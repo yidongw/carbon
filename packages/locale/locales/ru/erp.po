@@ -948,10 +948,10 @@ msgid "Are you sure you want to delete this maintenance dispatch? This cannot be
 msgstr "Вы уверены, что хотите удалить эту заявку на техническое обслуживание? Это действие невозможно отменить."
 
 msgid "Are you sure you want to delete this process completion? This action cannot be undone."
-msgstr ""
+msgstr "Вы действительно хотите удалить завершение процесса? Эта операция не может быть отменена."
 
 msgid "Are you sure you want to delete this process pickup? This action cannot be undone."
-msgstr ""
+msgstr "Вы действительно хотите удалить этот процессный приемку? Эта операция не может быть отменена."
 
 msgid "Are you sure you want to delete this quality document?"
 msgstr "Вы уверены, что хотите удалить этот документ качества?"
@@ -1526,7 +1526,7 @@ msgid "Close Date"
 msgstr "Дата закрытия"
 
 msgid "Close operation"
-msgstr ""
+msgstr "Закрыть операцию"
 
 msgid "Closed"
 msgstr "Закрыт"
@@ -2096,7 +2096,7 @@ msgid "Create PO"
 msgstr "Создать PO"
 
 msgid "Create Process Completion"
-msgstr ""
+msgstr "Создать завершение процесса"
 
 msgid "Create Quote Revision"
 msgstr "Создать редакцию предложения"
@@ -2670,10 +2670,10 @@ msgid "Delete Process"
 msgstr "Удалить процесс"
 
 msgid "Delete Process Completion"
-msgstr ""
+msgstr "Удалить завершение процесса"
 
 msgid "Delete Process Pickup"
-msgstr ""
+msgstr "Удалить процесс загрузки"
 
 msgid "Delete Purchase Invoice"
 msgstr "Удалить счет-фактуру покупателя"
@@ -2974,7 +2974,7 @@ msgid "Drag handle"
 msgstr "Ручка перетаскивания"
 
 msgid "Drag to reorder"
-msgstr ""
+msgstr "Перетяните для изменения порядка"
 
 msgid "Drop Shipment"
 msgstr "Прямая поставка"
@@ -3173,7 +3173,7 @@ msgid "Edit Notes"
 msgstr "Редактировать заметки"
 
 msgid "Edit operation"
-msgstr ""
+msgstr "Редактировать операцию"
 
 msgid "Edit Part"
 msgstr "Редактировать деталь"
@@ -3203,10 +3203,10 @@ msgid "Edit Process"
 msgstr "Редактировать процесс"
 
 msgid "Edit Process Completion"
-msgstr ""
+msgstr "Редактирование завершения процесса"
 
 msgid "Edit Process Pickup"
-msgstr ""
+msgstr "Изменить процесс загрузки"
 
 msgid "Edit purchase order line type"
 msgstr "Редактировать тип строки заказа покупателя"
@@ -3962,7 +3962,7 @@ msgid "Failed to update thumbnail path"
 msgstr "Не удалось обновить путь миниатюры"
 
 msgid "Failed to update time"
-msgstr ""
+msgstr "Не удалось обновить время"
 
 msgid "Failed to upload CSV file."
 msgstr "Не удалось загрузить CSV файл."
@@ -6854,10 +6854,10 @@ msgid "Process"
 msgstr "Процесс"
 
 msgid "Process Completion"
-msgstr ""
+msgstr "Завершение процесса"
 
 msgid "Process Completions"
-msgstr ""
+msgstr "Завершения процессов"
 
 msgid "Process Deviation"
 msgstr "Отклонение в технологическом процессе"
@@ -7682,7 +7682,7 @@ msgid "Risk"
 msgstr "Риск"
 
 msgid "Risk Register"
-msgstr ""
+msgstr "Регистр рисков"
 
 msgid "Risks"
 msgstr "Риски"
