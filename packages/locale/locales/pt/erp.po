@@ -11,7 +11,6 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
-"POT-Creation-Date: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " Um fornecedor é uma empresa ou pessoa que vende partes ou serviços para você."
@@ -468,9 +467,6 @@ msgstr "Adicionar Requisito"
 msgid "Add Risk"
 msgstr "Adicionar Risco"
 
-msgid "Add Row"
-msgstr "Adicionar Linha"
-
 msgid "Add rule"
 msgstr "Adicionar regra"
 
@@ -518,6 +514,9 @@ msgstr "Linha de Endereço 2"
 
 msgid "Adjustment"
 msgstr "Ajuste"
+
+msgid "Adjustment input mode"
+msgstr "Modo de entrada de ajuste"
 
 msgid "Adjustment Type"
 msgstr "Tipo de Ajuste"
@@ -948,11 +947,11 @@ msgstr "Tem a certeza de que deseja eliminar este cartão kanban? Esta ação n�
 msgid "Are you sure you want to delete this maintenance dispatch? This cannot be undone."
 msgstr "Tem a certeza de que deseja eliminar este despacho de manutenção? Esta ação não pode ser desfeita."
 
-msgid "Are you sure you want to delete this pickup? This action cannot be undone."
-msgstr "Tem certeza de que deseja excluir esta saída para processo? Esta ação não pode ser desfeita."
+msgid "Are you sure you want to delete this process completion? This action cannot be undone."
+msgstr ""
 
-msgid "Are you sure you want to delete this production quantity? This action cannot be undone."
-msgstr "Você está seguro de desejar excluir essa quantidade de produção? Esta ação não pode ser desfeita."
+msgid "Are you sure you want to delete this process pickup? This action cannot be undone."
+msgstr ""
 
 msgid "Are you sure you want to delete this quality document?"
 msgstr "Tem a certeza de que deseja eliminar este documento de qualidade?"
@@ -1526,6 +1525,9 @@ msgstr "Fechar"
 msgid "Close Date"
 msgstr "Data de Encerramento"
 
+msgid "Close operation"
+msgstr ""
+
 msgid "Closed"
 msgstr "Fechado"
 
@@ -2093,8 +2095,8 @@ msgstr "Criar Operador"
 msgid "Create PO"
 msgstr "Criar PO"
 
-msgid "Create Production Quantity"
-msgstr "Criar Quantidade de Produção"
+msgid "Create Process Completion"
+msgstr ""
 
 msgid "Create Quote Revision"
 msgstr "Criar Revisão de Cotação"
@@ -2652,9 +2654,6 @@ msgstr "Eliminar Parceiro"
 msgid "Delete Payment Term"
 msgstr "Eliminar Termo de Pagamento"
 
-msgid "Delete Pickup"
-msgstr "Excluir saída para processo"
-
 msgid "Delete Portal"
 msgstr "Eliminar Portal"
 
@@ -2670,6 +2669,12 @@ msgstr "Eliminar Procedimento"
 msgid "Delete Process"
 msgstr "Eliminar Processo"
 
+msgid "Delete Process Completion"
+msgstr ""
+
+msgid "Delete Process Pickup"
+msgstr ""
+
 msgid "Delete Purchase Invoice"
 msgstr "Eliminar Fatura de Compra"
 
@@ -2678,9 +2683,6 @@ msgstr "Eliminar Ordem de Compra"
 
 msgid "Delete Purchase Orders"
 msgstr "Eliminar Pedidos de Compra"
-
-msgid "Delete Quantity"
-msgstr "Quantidade de Excluir"
 
 msgid "Delete Question"
 msgstr "Eliminar Pergunta"
@@ -2971,6 +2973,9 @@ msgstr "Arraste e solte alguns arquivos aqui ou clique para selecionar arquivos"
 msgid "Drag handle"
 msgstr "Puxador de arrasto"
 
+msgid "Drag to reorder"
+msgstr ""
+
 msgid "Drop Shipment"
 msgstr "Envio Direto"
 
@@ -3167,6 +3172,9 @@ msgstr "Editar Tipo de Não Conformidade"
 msgid "Edit Notes"
 msgstr "Edite Notas"
 
+msgid "Edit operation"
+msgstr ""
+
 msgid "Edit Part"
 msgstr "Editar Peça"
 
@@ -3178,9 +3186,6 @@ msgstr "Editar Termo de Pagamento"
 
 msgid "Edit Permissions"
 msgstr "Permissões de Edição"
-
-msgid "Edit Pickup"
-msgstr "Editar saída para processo"
 
 msgid "Edit Portal"
 msgstr "Editar Portal"
@@ -3197,14 +3202,14 @@ msgstr "Editar Regra de Preço"
 msgid "Edit Process"
 msgstr "Editar Processo"
 
-msgid "Edit Production Quantity"
-msgstr "Edite a Quantidade de Produção"
+msgid "Edit Process Completion"
+msgstr ""
+
+msgid "Edit Process Pickup"
+msgstr ""
 
 msgid "Edit purchase order line type"
 msgstr "Editar tipo de linha de ordem de compra"
-
-msgid "Edit Quantity"
-msgstr "Edite Quantidade"
 
 msgid "Edit Question"
 msgstr "Editar Pergunta"
@@ -3419,8 +3424,8 @@ msgstr "Contacto de Engenharia"
 msgid "Enter a batch number before setting the expiration date"
 msgstr "Insira um número de lote antes de definir a data de expiração"
 
-msgid "Enter a positive number to add or a negative number to remove. The change is recorded in the history below."
-msgstr "Digite um número positivo para adicionar ou negativo para remover. O changes é registrado na história abaixo."
+msgid "Enter a positive number to add or a negative number to subtract."
+msgstr "Digite um número positivo para adicionar ou um número negativo para subtrair."
 
 msgid "Enter an adjustment before saving."
 msgstr "Digite uma ajuste antes de salvar."
@@ -3431,8 +3436,8 @@ msgstr "Insira ou digitalize o número de série"
 msgid "Enter PO number"
 msgstr "Insira o número da PO"
 
-msgid "Enter the target quantity for each size. The change from the current quantity is recorded in the history."
-msgstr "Digite a quantidade alvo para cada tamanho. A alteração em relação à quantidade atual é registrada na história."
+msgid "Enter the target quantity for each size."
+msgstr "Digite a quantidade alvo para cada tamanho."
 
 msgid "Enter your answer..."
 msgstr "Digite sua resposta..."
@@ -3955,6 +3960,9 @@ msgstr "Falhou atualizar modelo"
 
 msgid "Failed to update thumbnail path"
 msgstr "Falha ao atualizar caminho da miniatura"
+
+msgid "Failed to update time"
+msgstr ""
 
 msgid "Failed to upload CSV file."
 msgstr "Falha ao carregar arquivo CSV."
@@ -5670,9 +5678,6 @@ msgstr "Nova Senha"
 msgid "New Payment Term"
 msgstr "Novo Termo de Pagamento"
 
-msgid "New Pickup"
-msgstr "Nova saída para processo"
-
 msgid "New PIN"
 msgstr "Novo PIN"
 
@@ -5687,9 +5692,6 @@ msgstr "Nova Regra de Preço"
 
 msgid "New Process"
 msgstr "Novo Processo"
-
-msgid "New Production Quantity"
-msgstr "Nova Quantidade de Produção"
 
 msgid "New Purchase Order Line"
 msgstr "Nova Linha de Ordem de Compra"
@@ -6614,29 +6616,6 @@ msgstr "pickingado {0} unidades"
 msgid "pickup"
 msgstr "saída para processo"
 
-msgid "Process Pickup"
-msgstr "saída para processo"
-
-#. placeholder {0}: selectedPickup.employeeId
-msgid "Process Pickup by {0}"
-msgstr "Saída para processo de {0}"
-
-msgid "Process Pickups"
-msgstr "saídas para processo"
-
-msgid "Total Process Pickups"
-msgstr "Total de saídas para processo"
-
-msgid "Pickup"
-msgstr "saída para processo"
-
-#. placeholder {0}: selectedPickup.employeeId
-msgid "pickup by {0}"
-msgstr "Saída para processo de {0}"
-
-msgid "Pickups"
-msgstr "saídas para processo"
-
 msgid "Pieces/Hour"
 msgstr "Peças/Hora"
 
@@ -6874,11 +6853,27 @@ msgstr "Procedimentos"
 msgid "Process"
 msgstr "Processo"
 
+msgid "Process Completion"
+msgstr ""
+
+msgid "Process Completions"
+msgstr ""
+
 msgid "Process Deviation"
 msgstr "Desvio de Processo"
 
 msgid "Process Name"
 msgstr "Nome do Processo"
+
+msgid "Process Pickup"
+msgstr "saída para processo"
+
+#. placeholder {0}: selectedPickup.employeeId
+msgid "Process Pickup by {0}"
+msgstr "Saída para processo de {0}"
+
+msgid "Process Pickups"
+msgstr "saídas para processo"
 
 msgid "Process Type"
 msgstr "Tipo de Processo"
@@ -6910,14 +6905,8 @@ msgstr "Registros de Produção"
 msgid "Production Qty"
 msgstr "Qtd. Produção"
 
-msgid "Production Quantities"
-msgstr "Quantidades de Produção"
-
 msgid "Production quantities approved for this pay period."
 msgstr "Quantidades de produção aprovadas para este período de pagamento."
-
-msgid "Production Quantity"
-msgstr "Quantidade de Produção"
 
 msgid "Professional Fees"
 msgstr "Taxas Profissionais"
@@ -7300,20 +7289,8 @@ msgstr "Registro eliminado"
 msgid "Record payment"
 msgstr "Registo de pagamento"
 
-msgid "Add process pickup"
-msgstr "Adicionar saída para processo"
-
-msgid "Add process completion"
-msgstr "Adicionar conclusão do processo"
-
 msgid "Record pickup"
 msgstr "Registrar saída para processo"
-
-msgid "Record Pickup"
-msgstr "Registrar saída para processo"
-
-msgid "Record production quantity"
-msgstr "Quantidade de produção de registro"
 
 msgid "Record quantity"
 msgstr "Quantidade de registros"
@@ -7703,6 +7680,9 @@ msgstr "Item direito"
 
 msgid "Risk"
 msgstr "Risco"
+
+msgid "Risk Register"
+msgstr ""
 
 msgid "Risks"
 msgstr "Riscos"
@@ -9747,9 +9727,6 @@ msgstr "Ver Atributos"
 msgid "View bill of process"
 msgstr "Visualizar fatura de processo"
 
-msgid "View job"
-msgstr "Ver tarefa"
-
 msgid "View configuration parameters"
 msgstr "Visualizar parâmetros de configuração"
 
@@ -9776,6 +9753,9 @@ msgstr "Ver Problema"
 
 msgid "View Item Master"
 msgstr "Ver Mestre do Item"
+
+msgid "View job"
+msgstr "Ver tarefa"
 
 msgid "View maintenance dispatch"
 msgstr "Ver despacho de manutenção"
@@ -10150,12 +10130,3 @@ msgstr "Sua solicitação para se juntar à {companyName} foi enviada. Um admini
 
 msgid "yourself"
 msgstr "você mesmo"
-
-msgid "Adjustment input mode"
-msgstr "Modo de entrada de ajuste"
-
-msgid "Enter a positive number to add or a negative number to subtract."
-msgstr "Digite um número positivo para adicionar ou um número negativo para subtrair."
-
-msgid "Enter the target quantity for each size."
-msgstr "Digite a quantidade alvo para cada tamanho."

@@ -887,27 +887,8 @@ msgstr "Período"
 msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "Se tomó la columna {0} en la posición: {1} de {2}"
 
-msgid "pickup"
-msgstr "extracción de proceso"
-
-msgid "Process Pickup"
-msgstr "extracción de proceso"
-
-#. placeholder {0}: selectedPickup.employeeId
-msgid "Process Pickup by {0}"
-msgstr "Extracción de proceso por {0}"
-
-msgid "Process Pickups"
-msgstr "extracciones de proceso"
-
-msgid "Total Process Pickups"
-msgstr "Total de extracciones de proceso"
-
 msgid "Pickup suggestions:"
 msgstr "Sugerencias de extracción de proceso:"
-
-msgid "Pickups"
-msgstr "extracciones de proceso"
 
 msgid "Pin Out"
 msgstr "Cerrar sesión con PIN"
@@ -962,6 +943,12 @@ msgstr "Proceso"
 
 msgid "Process Parameters"
 msgstr "Parámetros del proceso"
+
+msgid "process pickup"
+msgstr ""
+
+msgid "Process Pickups"
+msgstr "extracciones de proceso"
 
 msgid "Processes"
 msgstr "Procesos"
@@ -1289,7 +1276,7 @@ msgstr "Cambiar el estado del panel lateral"
 msgid "Tools"
 msgstr "Herramientas"
 
-msgid "Total Pickups"
+msgid "Total Process Pickups"
 msgstr "Total de extracciones de proceso"
 
 msgid "Total Production"

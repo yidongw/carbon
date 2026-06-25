@@ -467,9 +467,6 @@ msgstr "Add Requirement"
 msgid "Add Risk"
 msgstr "Add Risk"
 
-msgid "Add Row"
-msgstr "Add Row"
-
 msgid "Add rule"
 msgstr "Add rule"
 
@@ -517,6 +514,9 @@ msgstr "Address Line 2"
 
 msgid "Adjustment"
 msgstr "Adjustment"
+
+msgid "Adjustment input mode"
+msgstr "Adjustment input mode"
 
 msgid "Adjustment Type"
 msgstr "Adjustment Type"
@@ -947,11 +947,11 @@ msgstr "Are you sure you want to delete this kanban card? This cannot be undone.
 msgid "Are you sure you want to delete this maintenance dispatch? This cannot be undone."
 msgstr "Are you sure you want to delete this maintenance dispatch? This cannot be undone."
 
-msgid "Are you sure you want to delete this process pickup? This action cannot be undone."
-msgstr "Are you sure you want to delete this process pickup? This action cannot be undone."
-
 msgid "Are you sure you want to delete this process completion? This action cannot be undone."
 msgstr "Are you sure you want to delete this process completion? This action cannot be undone."
+
+msgid "Are you sure you want to delete this process pickup? This action cannot be undone."
+msgstr "Are you sure you want to delete this process pickup? This action cannot be undone."
 
 msgid "Are you sure you want to delete this quality document?"
 msgstr "Are you sure you want to delete this quality document?"
@@ -1524,6 +1524,9 @@ msgstr "Close"
 
 msgid "Close Date"
 msgstr "Close Date"
+
+msgid "Close operation"
+msgstr "Close operation"
 
 msgid "Closed"
 msgstr "Closed"
@@ -2651,12 +2654,6 @@ msgstr "Delete Partner"
 msgid "Delete Payment Term"
 msgstr "Delete Payment Term"
 
-msgid "Delete Process Pickup"
-msgstr "Delete Process Pickup"
-
-msgid "Edit Process Pickup"
-msgstr "Edit Process Pickup"
-
 msgid "Delete Portal"
 msgstr "Delete Portal"
 
@@ -2672,6 +2669,12 @@ msgstr "Delete Procedure"
 msgid "Delete Process"
 msgstr "Delete Process"
 
+msgid "Delete Process Completion"
+msgstr "Delete Process Completion"
+
+msgid "Delete Process Pickup"
+msgstr "Delete Process Pickup"
+
 msgid "Delete Purchase Invoice"
 msgstr "Delete Purchase Invoice"
 
@@ -2680,9 +2683,6 @@ msgstr "Delete Purchase Order"
 
 msgid "Delete Purchase Orders"
 msgstr "Delete Purchase Orders"
-
-msgid "Delete Process Completion"
-msgstr "Delete Process Completion"
 
 msgid "Delete Question"
 msgstr "Delete Question"
@@ -2973,6 +2973,9 @@ msgstr "Drag and drop some files here, or click to select files"
 msgid "Drag handle"
 msgstr "Drag handle"
 
+msgid "Drag to reorder"
+msgstr "Drag to reorder"
+
 msgid "Drop Shipment"
 msgstr "Drop Shipment"
 
@@ -3169,6 +3172,9 @@ msgstr "Edit Non Conformance Type"
 msgid "Edit Notes"
 msgstr "Edit Notes"
 
+msgid "Edit operation"
+msgstr "Edit operation"
+
 msgid "Edit Part"
 msgstr "Edit Part"
 
@@ -3180,9 +3186,6 @@ msgstr "Edit Payment Term"
 
 msgid "Edit Permissions"
 msgstr "Edit Permissions"
-
-msgid "Edit Pickup"
-msgstr "Edit Pickup"
 
 msgid "Edit Portal"
 msgstr "Edit Portal"
@@ -3202,11 +3205,11 @@ msgstr "Edit Process"
 msgid "Edit Process Completion"
 msgstr "Edit Process Completion"
 
+msgid "Edit Process Pickup"
+msgstr "Edit Process Pickup"
+
 msgid "Edit purchase order line type"
 msgstr "Edit purchase order line type"
-
-msgid "Edit Quantity"
-msgstr "Edit Quantity"
 
 msgid "Edit Question"
 msgstr "Edit Question"
@@ -3421,8 +3424,8 @@ msgstr "Engineering Contact"
 msgid "Enter a batch number before setting the expiration date"
 msgstr "Enter a batch number before setting the expiration date"
 
-msgid "Enter a positive number to add or a negative number to remove. The change is recorded in the history below."
-msgstr "Enter a positive number to add or a negative number to remove. The change is recorded in the history below."
+msgid "Enter a positive number to add or a negative number to subtract."
+msgstr "Enter a positive number to add or a negative number to subtract."
 
 msgid "Enter an adjustment before saving."
 msgstr "Enter an adjustment before saving."
@@ -3433,8 +3436,8 @@ msgstr "Enter or scan serial number"
 msgid "Enter PO number"
 msgstr "Enter PO number"
 
-msgid "Enter the target quantity for each size. The change from the current quantity is recorded in the history."
-msgstr "Enter the target quantity for each size. The change from the current quantity is recorded in the history."
+msgid "Enter the target quantity for each size."
+msgstr "Enter the target quantity for each size."
 
 msgid "Enter your answer..."
 msgstr "Enter your answer..."
@@ -3957,6 +3960,9 @@ msgstr "Failed to update template"
 
 msgid "Failed to update thumbnail path"
 msgstr "Failed to update thumbnail path"
+
+msgid "Failed to update time"
+msgstr "Failed to update time"
 
 msgid "Failed to upload CSV file."
 msgstr "Failed to upload CSV file."
@@ -4995,11 +5001,11 @@ msgstr "Liter"
 msgid "Live reloading"
 msgstr "Live reloading"
 
-msgid "Load more process pickups"
-msgstr "Load more process pickups"
+msgid "Load more pickups"
+msgstr "Load more pickups"
 
-msgid "Load more process completions"
-msgstr "Load more process completions"
+msgid "Load more quantities"
+msgstr "Load more quantities"
 
 msgid "Load Templates"
 msgstr "Load Templates"
@@ -5672,9 +5678,6 @@ msgstr "New Password"
 msgid "New Payment Term"
 msgstr "New Payment Term"
 
-msgid "New Pickup"
-msgstr "New Pickup"
-
 msgid "New PIN"
 msgstr "New PIN"
 
@@ -5689,9 +5692,6 @@ msgstr "New Pricing Rule"
 
 msgid "New Process"
 msgstr "New Process"
-
-msgid "New Production Quantity"
-msgstr "New Production Quantity"
 
 msgid "New Purchase Order Line"
 msgstr "New Purchase Order Line"
@@ -6616,16 +6616,6 @@ msgstr "picked up {0} units"
 msgid "pickup"
 msgstr "pickup"
 
-msgid "Pickup"
-msgstr "Pickup"
-
-#. placeholder {0}: selectedPickup.employeeId
-msgid "Process Pickup by {0}"
-msgstr "Process Pickup by {0}"
-
-msgid "Process Pickups"
-msgstr "Process Pickups"
-
 msgid "Pieces/Hour"
 msgstr "Pieces/Hour"
 
@@ -6863,11 +6853,27 @@ msgstr "Procedures"
 msgid "Process"
 msgstr "Process"
 
+msgid "Process Completion"
+msgstr "Process Completion"
+
+msgid "Process Completions"
+msgstr "Process Completions"
+
 msgid "Process Deviation"
 msgstr "Process Deviation"
 
 msgid "Process Name"
 msgstr "Process Name"
+
+msgid "Process Pickup"
+msgstr "Process Pickup"
+
+#. placeholder {0}: selectedPickup.employeeId
+msgid "Process Pickup by {0}"
+msgstr "Process Pickup by {0}"
+
+msgid "Process Pickups"
+msgstr "Process Pickups"
 
 msgid "Process Type"
 msgstr "Process Type"
@@ -6899,14 +6905,8 @@ msgstr "Production Logs"
 msgid "Production Qty"
 msgstr "Production Qty"
 
-msgid "Process Completions"
-msgstr "Process Completions"
-
 msgid "Production quantities approved for this pay period."
 msgstr "Production quantities approved for this pay period."
-
-msgid "Process Completion"
-msgstr "Process Completion"
 
 msgid "Professional Fees"
 msgstr "Professional Fees"
@@ -7289,23 +7289,8 @@ msgstr "Record deleted"
 msgid "Record payment"
 msgstr "Record payment"
 
-msgid "Add process completion"
-msgstr "Add process completion"
-
-msgid "Add process pickup"
-msgstr "Add process pickup"
-
-msgid "Finished {complete} of {target} units, {pickup} in progress from process pickups, {unassigned} unassigned"
-msgstr "Finished {complete} of {target} units, {pickup} in progress from process pickups, {unassigned} unassigned"
-
-msgid "Process Pickup"
-msgstr "Process Pickup"
-
-msgid "Record Pickup"
-msgstr "Record Pickup"
-
-msgid "Process Completion"
-msgstr "Process Completion"
+msgid "Record pickup"
+msgstr "Record pickup"
 
 msgid "Record quantity"
 msgstr "Record quantity"
@@ -7695,6 +7680,9 @@ msgstr "Right item"
 
 msgid "Risk"
 msgstr "Risk"
+
+msgid "Risk Register"
+msgstr "Risk Register"
 
 msgid "Risks"
 msgstr "Risks"
@@ -9259,8 +9247,8 @@ msgstr "Total Minutes"
 msgid "Total paid"
 msgstr "Total paid"
 
-msgid "Total Process Pickups"
-msgstr "Total Process Pickups"
+msgid "Total Pickups"
+msgstr "Total Pickups"
 
 msgid "Total Price"
 msgstr "Total Price"
@@ -9739,9 +9727,6 @@ msgstr "View Attributes"
 msgid "View bill of process"
 msgstr "View bill of process"
 
-msgid "View job"
-msgstr "View job"
-
 msgid "View configuration parameters"
 msgstr "View configuration parameters"
 
@@ -9768,6 +9753,9 @@ msgstr "View Issue"
 
 msgid "View Item Master"
 msgstr "View Item Master"
+
+msgid "View job"
+msgstr "View job"
 
 msgid "View maintenance dispatch"
 msgstr "View maintenance dispatch"
@@ -10142,12 +10130,3 @@ msgstr "Your request to join {companyName} has been submitted. An admin will rev
 
 msgid "yourself"
 msgstr "yourself"
-
-msgid "Adjustment input mode"
-msgstr "Adjustment input mode"
-
-msgid "Enter a positive number to add or a negative number to subtract."
-msgstr "Enter a positive number to add or a negative number to subtract."
-
-msgid "Enter the target quantity for each size."
-msgstr "Enter the target quantity for each size."

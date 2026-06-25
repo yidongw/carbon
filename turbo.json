@@ -46,7 +46,7 @@
       "outputs": []
     },
     "dev": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "//#lingui:compile"],
       "cache": false,
       "persistent": true
     },
