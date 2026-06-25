@@ -13,13 +13,23 @@ export const useIsCardCell = () => useContext(CardCellContext);
 /** Wrapper class for pinned-column cell content in mobile card rows. */
 export const CARD_PINNED_VALUE_CLASS = "card-pinned-value";
 
-/** Dotted underline utilities applied directly to pinned values with row-nav. */
-export const CARD_PINNED_VALUE_NAV_UNDERLINE = [
+const CARD_PINNED_UNDERLINE_STYLES = [
   "underline",
   "decoration-dotted",
-  "decoration-foreground/75",
+  "decoration-2",
+  "decoration-foreground/90",
   "underline-offset-2"
-].join(" ");
+] as const;
+
+function chipTargetUnderline(selector: string): string {
+  return CARD_PINNED_UNDERLINE_STYLES.map((style) => `[${selector}]:${style}`).join(
+    " "
+  );
+}
+
+/** Dotted underline utilities applied directly to pinned values with row-nav. */
+export const CARD_PINNED_VALUE_NAV_UNDERLINE =
+  CARD_PINNED_UNDERLINE_STYLES.join(" ");
 
 /**
  * Dotted underline for navigable pinned values. Covers:
@@ -27,18 +37,9 @@ export const CARD_PINNED_VALUE_NAV_UNDERLINE = [
  * - in-cell links (`a`) and explicit `.card-action-value` markers
  */
 export const CARD_PINNED_NAV_UNDERLINE_CLASS = [
-  "[&:has([data-card-action])_.card-pinned-value]:underline",
-  "[&:has([data-card-action])_.card-pinned-value]:decoration-dotted",
-  "[&:has([data-card-action])_.card-pinned-value]:decoration-foreground/75",
-  "[&:has([data-card-action])_.card-pinned-value]:underline-offset-2",
-  "[&_.card-pinned-value_a]:underline",
-  "[&_.card-pinned-value_a]:decoration-dotted",
-  "[&_.card-pinned-value_a]:decoration-foreground/75",
-  "[&_.card-pinned-value_a]:underline-offset-2",
-  "[&_.card-pinned-value_.card-action-value]:underline",
-  "[&_.card-pinned-value_.card-action-value]:decoration-dotted",
-  "[&_.card-pinned-value_.card-action-value]:decoration-foreground/75",
-  "[&_.card-pinned-value_.card-action-value]:underline-offset-2"
+  chipTargetUnderline("&:has([data-card-action])_.card-pinned-value"),
+  chipTargetUnderline("&_.card-pinned-value_a"),
+  chipTargetUnderline("&_.card-pinned-value_.card-action-value")
 ].join(" ");
 
 /**
