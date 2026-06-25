@@ -28,3 +28,23 @@ export const CARD_HAS_ACTION_CLASS = [
   "[&:has([data-card-action])_.card-action-value]:decoration-foreground/75",
   "[&:has([data-card-action])_.card-action-value]:underline-offset-2"
 ].join(" ");
+
+/** Shared mobile card pill chrome — transparent fill, border on hover/action. */
+export const CARD_PILL_BASE_CLASS = [
+  "relative rounded-lg border border-transparent",
+  "transition-[border-color,transform,box-shadow] duration-150 ease-out",
+  "hover:border-border/70 dark:hover:border-border/60",
+  CARD_HAS_ACTION_CLASS,
+  "[&:has([data-card-action])]:hover:border-primary/40 dark:[&:has([data-card-action])]:hover:border-primary/35"
+].join(" ");
+
+export const CARD_PILL_VARIANT_CLASS = {
+  /** Left pinned column — full-width stack. */
+  pinned: "min-w-0 w-full px-2.5 py-2",
+  /** Bottom metadata row — compact inline chip. */
+  inline: "inline-flex max-w-full items-center gap-1.5 px-2 py-1 text-xs leading-snug",
+  /** Right featured column — taller stack with label + value. */
+  featured: "flex min-w-0 flex-col gap-1.5 px-3 py-2.5"
+} as const;
+
+export type CardPillVariant = keyof typeof CARD_PILL_VARIANT_CLASS;
