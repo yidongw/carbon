@@ -13,33 +13,43 @@ export const useIsCardCell = () => useContext(CardCellContext);
 /** Wrapper class for pinned-column cell content in mobile card rows. */
 export const CARD_PINNED_VALUE_CLASS = "card-pinned-value";
 
+/** Dotted underline utilities applied directly to pinned values with row-nav. */
+export const CARD_PINNED_VALUE_NAV_UNDERLINE = [
+  "underline",
+  "decoration-dotted",
+  "decoration-foreground/75",
+  "underline-offset-2"
+].join(" ");
+
 /**
- * Dotted underline for navigable pinned values. Works with:
- * - `.card-pinned-value` wrapper (auto-applied in TableCardRow)
- * - `.card-action-value` when a cell opts in explicitly
- * - `<a>` links rendered inside pinned cells
+ * Dotted underline for navigable pinned values. Covers:
+ * - row-nav overlay (`[data-card-action]`)
+ * - in-cell links (`a`) and explicit `.card-action-value` markers
  */
 export const CARD_PINNED_NAV_UNDERLINE_CLASS = [
   "[&:has([data-card-action])_.card-pinned-value]:underline",
   "[&:has([data-card-action])_.card-pinned-value]:decoration-dotted",
   "[&:has([data-card-action])_.card-pinned-value]:decoration-foreground/75",
   "[&:has([data-card-action])_.card-pinned-value]:underline-offset-2",
-  "[&:has([data-card-action])_.card-pinned-value_a]:underline",
-  "[&:has([data-card-action])_.card-pinned-value_a]:decoration-dotted",
-  "[&:has([data-card-action])_.card-pinned-value_a]:decoration-foreground/75",
-  "[&:has([data-card-action])_.card-pinned-value_a]:underline-offset-2"
+  "[&_.card-pinned-value_a]:underline",
+  "[&_.card-pinned-value_a]:decoration-dotted",
+  "[&_.card-pinned-value_a]:decoration-foreground/75",
+  "[&_.card-pinned-value_a]:underline-offset-2",
+  "[&_.card-pinned-value_.card-action-value]:underline",
+  "[&_.card-pinned-value_.card-action-value]:decoration-dotted",
+  "[&_.card-pinned-value_.card-action-value]:decoration-foreground/75",
+  "[&_.card-pinned-value_.card-action-value]:underline-offset-2"
 ].join(" ");
 
 /**
- * Underline field chip headers when the value area is interactive (links,
- * buttons, or a full-chip action overlay). Covers metadata/featured chips on
- * tables like production pickups without per-table cell changes.
+ * Underline field chip headers when the value area is interactive.
+ * Uses :is() so Tailwind emits a single valid :has() selector.
  */
 export const CARD_INTERACTIVE_LABEL_UNDERLINE_CLASS = [
-  "[&:has(a,[data-card-action],button,[role='button'])_.card-action-label]:underline",
-  "[&:has(a,[data-card-action],button,[role='button'])_.card-action-label]:decoration-dotted",
-  "[&:has(a,[data-card-action],button,[role='button'])_.card-action-label]:decoration-foreground/65",
-  "[&:has(a,[data-card-action],button,[role='button'])_.card-action-label]:underline-offset-2"
+  "[&:has(:is(a,[data-card-action],button,[role='button']))_.card-action-label]:underline",
+  "[&:has(:is(a,[data-card-action],button,[role='button']))_.card-action-label]:decoration-dotted",
+  "[&:has(:is(a,[data-card-action],button,[role='button']))_.card-action-label]:decoration-foreground/65",
+  "[&:has(:is(a,[data-card-action],button,[role='button']))_.card-action-label]:underline-offset-2"
 ].join(" ");
 
 /**

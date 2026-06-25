@@ -607,6 +607,7 @@ const PartsTable = memo(({ data, tags, count, itemPostingGroups: rawItemPostingG
         }
         renderActions={renderActions}
         renderContextMenu={renderContextMenu}
+        getRowHref={(row) => (row.id ? path.to.part(row.id) : undefined)}
         title={t`Parts`}
         table="part"
         withSavedView

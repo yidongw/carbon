@@ -3,6 +3,10 @@ import type { ComponentProps, PropsWithChildren } from "react";
 import { LuPanelRight } from "react-icons/lu";
 import type { LinkProps } from "react-router";
 import { Link } from "react-router";
+import {
+  CARD_PINNED_VALUE_NAV_UNDERLINE,
+  useIsCardCell
+} from "~/components/Table/components/cardCell";
 
 const Hyperlink = ({
   children,
@@ -11,11 +15,14 @@ const Hyperlink = ({
 }:
   | PropsWithChildren<LinkProps>
   | PropsWithChildren<ComponentProps<"span">>) => {
+  const isCardCell = useIsCardCell();
+
   return "to" in props && props.to ? (
     <Link
       prefetch="intent"
       className={cn(
         "group/hyperlink inline-flex items-center gap-1 text-foreground font-medium cursor-pointer",
+        isCardCell && CARD_PINNED_VALUE_NAV_UNDERLINE,
         className
       )}
       {...props}
