@@ -282,13 +282,14 @@ function TableCardRow<T extends object>({
       onClick={rowHref ? handleCardClick : undefined}
       onKeyDown={rowHref ? handleCardKeyDown : undefined}
       className={cn(
-        "w-full overflow-hidden border-0",
-        "bg-primary/[0.04] dark:bg-primary/10",
-        "transition-[box-shadow,transform,background-color] duration-200 ease-out",
+        // Flat by default — the card is just a container; the pills inside are
+        // the interactive elements. A subtle background highlight on hover.
+        "w-full overflow-hidden border-0 shadow-none",
+        "bg-muted/40 dark:bg-card",
+        "transition-colors duration-150 ease-out",
         rowHref && "cursor-pointer",
-        "hover:-translate-y-0.5 hover:bg-primary/10 hover:shadow-lg",
-        "hover:ring-2 hover:ring-primary/25 dark:hover:bg-primary/15",
-        "active:translate-y-0 active:scale-[0.996]",
+        "hover:bg-muted/70 dark:hover:bg-muted/40",
+        "active:bg-muted",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
       )}
     >
