@@ -9747,6 +9747,9 @@ msgstr "属性を表示"
 msgid "View bill of process"
 msgstr "見る請求書のプロセス"
 
+msgid "View job"
+msgstr "ジョブを表示"
+
 msgid "View configuration parameters"
 msgstr "設定パラメータを表示"
 

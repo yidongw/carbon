@@ -11,6 +11,7 @@ import {
   IconButton,
   MenuIcon,
   MenuItem,
+  Status,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -70,6 +71,7 @@ import { Enumerable } from "~/components/Enumerable";
 import { useLocations } from "~/components/Form/Location";
 import { ConfirmDelete } from "~/components/Modals";
 import { overlay, useOverlay } from "~/components/Overlay";
+import { useIsCardCell } from "~/components/Table/components/cardCell";
 import { useDateFormatter, usePermissions, useUrlParams } from "~/hooks";
 import { useCustomColumns } from "~/hooks/useCustomColumns";
 import type { action } from "~/routes/x+/job+/update";
@@ -79,7 +81,11 @@ import { deadlineTypes, isJobLocked, jobStatus } from "../../production.models";
 import type { JobCurrentProcessInfo } from "../../production.service";
 import type { Job } from "../../types";
 import { getDeadlineIcon } from "./Deadline";
-import JobStatus from "./JobStatus";
+import JobStatus, {
+  STATUS_COLOR_MAP,
+  useJobStatusDisplayText
+} from "./JobStatus";
+import JobStatusMenu from "./JobStatusMenu";
 import { useDeadlineTypeLabel } from "./jobLabels";
 
 type JobsTableProps = {
@@ -127,6 +133,26 @@ function useJobsTableSupplemental() {
   return useContext(JobsTableSupplementalContext);
 }
 
+const JobIdCell = memo(function JobIdCell({ job }: { job: Job }) {
+  const isCardCell = useIsCardCell();
+
+  return (
+    <HStack>
+      <ItemThumbnail
+        size="md"
+        thumbnailPath={job.thumbnailPath}
+        // @ts-ignore
+        type={job.itemType}
+      />
+      {isCardCell ? (
+        <span className="card-action-value font-medium">{job.jobId}</span>
+      ) : (
+        <Hyperlink to={path.to.job(job.id!)}>{job.jobId}</Hyperlink>
+      )}
+    </HStack>
+  );
+});
+
 const RoutingProgressCell = memo(function RoutingProgressCell({
   job,
   onOpenBillOfProcess
@@ -135,6 +161,7 @@ const RoutingProgressCell = memo(function RoutingProgressCell({
   onOpenBillOfProcess: (jobId: string) => void;
 }) {
   const { t } = useLingui();
+  const isCardCell = useIsCardCell();
   const completedOps = job.completedOperationCount ?? 0;
   const totalOps = job.operationCount ?? 0;
   const qtyThrough = job.quantityFullyComplete ?? 0;
@@ -154,11 +181,14 @@ const RoutingProgressCell = memo(function RoutingProgressCell({
   };
 
   return (
-    <HStack spacing={1} className="w-[10.5rem] min-w-[10.5rem]">
+    <HStack
+      spacing={1}
+      className="w-full md:w-[10.5rem] md:min-w-[10.5rem]"
+    >
       <Tooltip>
         <TooltipTrigger asChild>
           <div className="min-w-0 flex-1 cursor-help">
-            <div className="flex flex-row gap-2 md:flex-col md:gap-1 w-full">
+            <div className="flex flex-col gap-1 w-full">
               <div className="flex items-center gap-1.5 flex-1 min-w-0">
                 <LuWorkflow className="h-3 w-3 flex-shrink-0 text-muted-foreground" />
                 <BarProgress
@@ -212,6 +242,15 @@ const RoutingProgressCell = memo(function RoutingProgressCell({
           </TooltipContent>
         </Tooltip>
       </span>
+      {isCardCell && job.id && (
+        <button
+          type="button"
+          aria-label={t`View bill of process`}
+          data-card-action
+          className="absolute inset-0 z-[1] cursor-pointer rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          onClick={openBopPreview}
+        />
+      )}
     </HStack>
   );
 });
@@ -269,8 +308,10 @@ const JobQuantityCell = memo(function JobQuantityCell({
   job: Job;
   onOpenConfigTable: (e: MouseEvent, job: Job) => void;
 }) {
+  const { t } = useLingui();
   const { itemIdsWithConfigurationParameters } = useJobsTableSupplemental();
   const permissions = usePermissions();
+  const isCardCell = useIsCardCell();
   const quantity = job.quantity ?? 0;
   const quantityComplete = job.quantityComplete ?? 0;
   const showConfiguredQuantityUi =
@@ -280,12 +321,12 @@ const JobQuantityCell = memo(function JobQuantityCell({
     const canConfigure =
       permissions.can("update", "production") && !isJobLocked(job.status);
     return (
-      <HStack spacing={1} className="ml-auto justify-end">
+      <HStack spacing={1} className="relative">
         <span className="line-clamp-1 tabular-nums">{quantity}</span>
         <IconButton
           type="button"
           icon={<LuTable size="1em" strokeWidth={3} />}
-          aria-label="Configure quantities"
+          aria-label={t`Configure quantities`}
           size="sm"
           variant="secondary"
           className={cn(
@@ -294,6 +335,15 @@ const JobQuantityCell = memo(function JobQuantityCell({
           isDisabled={!canConfigure}
           onClick={(e) => onOpenConfigTable(e, job)}
         />
+        {isCardCell && canConfigure && (
+          <button
+            type="button"
+            aria-label={t`Configure quantities`}
+            data-card-action
+          className="absolute inset-0 z-[1] cursor-pointer rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            onClick={(e) => onOpenConfigTable(e, job)}
+          />
+        )}
       </HStack>
     );
   }
@@ -321,6 +371,7 @@ const JobsTable = memo(
     const navigate = useNavigate();
     const { t } = useLingui();
     const getDeadlineTypeLabel = useDeadlineTypeLabel();
+    const getJobStatusDisplayText = useJobStatusDisplayText();
     const { formatDate } = useDateFormatter();
     const [params] = useUrlParams();
     const parts = useParts();
@@ -399,21 +450,11 @@ const JobsTable = memo(
         {
           accessorKey: "jobId",
           header: t`Job ID`,
-          cell: ({ row }) => (
-            <HStack>
-              <ItemThumbnail
-                size="md"
-                thumbnailPath={row.original.thumbnailPath}
-                // @ts-ignore
-                type={row.original.itemType}
-              />
-              <Hyperlink to={path.to.job(row.original.id!)}>
-                {row.original?.jobId}
-              </Hyperlink>
-            </HStack>
-          ),
+          cell: ({ row }) => <JobIdCell job={row.original} />,
           meta: {
-            icon: <LuBookMarked />
+            icon: <LuBookMarked />,
+            cardRowNav: true,
+            cardRowNavLabel: t`View job`
           }
         },
         {
@@ -553,7 +594,7 @@ const JobsTable = memo(
             const dueDate = row.original.dueDate;
             return (
               <HStack spacing={1}>
-                <JobStatus status={status} />
+                <JobStatusMenu job={row.original} />
                 {[
                   "Draft",
                   "Planned",
@@ -578,7 +619,14 @@ const JobsTable = memo(
               type: "static",
               options: jobStatus.map((status) => ({
                 value: status,
-                label: <JobStatus status={status} />
+                // Render the translated text as children so the badge shows in
+                // the dropdown AND reactNodeToString extracts the translated
+                // label for the active-filter chip.
+                label: (
+                  <Status color={STATUS_COLOR_MAP[status]}>
+                    {getJobStatusDisplayText(status)}
+                  </Status>
+                )
               }))
             },
             pluralHeader: t`Statuses`,
@@ -832,6 +880,7 @@ const JobsTable = memo(
       people,
       tags,
       getDeadlineTypeLabel,
+      getJobStatusDisplayText,
       t,
       todaysDate
     ]);

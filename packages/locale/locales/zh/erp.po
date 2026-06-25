@@ -9740,6 +9740,9 @@ msgstr "查看属性"
 msgid "View bill of process"
 msgstr "查看工序清单"
 
+msgid "View job"
+msgstr "查看工作"
+
 msgid "View configuration parameters"
 msgstr "查看配置参数"
 

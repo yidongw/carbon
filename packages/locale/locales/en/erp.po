@@ -9739,6 +9739,9 @@ msgstr "View Attributes"
 msgid "View bill of process"
 msgstr "View bill of process"
 
+msgid "View job"
+msgstr "View job"
+
 msgid "View configuration parameters"
 msgstr "View configuration parameters"
 

@@ -31,7 +31,7 @@ const ActiveFilters = ({ filters }: ActiveFiltersProps) => {
   const { urlFiltersParams } = useFilters();
 
   return (
-    <HStack spacing={2}>
+    <HStack spacing={2} className="flex-nowrap">
       {urlFiltersParams.map((param) => {
         const parsed = parseFilterParam(param);
         if (!parsed) return null;
@@ -138,7 +138,7 @@ const ActiveFilter = ({ filter, operator, value }: ActiveFilterProps) => {
   };
 
   return (
-    <HStack spacing={0}>
+    <HStack spacing={0} className="shrink-0">
       <Button
         leftIcon={filter.icon ?? undefined}
         className="rounded-r-none"

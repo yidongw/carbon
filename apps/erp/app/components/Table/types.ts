@@ -20,6 +20,10 @@ declare module "@tanstack/react-table" {
     ) => string;
     /** When true, the mobile card row hides this column's pill. */
     isEmpty?: (row: TData) => boolean;
+    /** When true, the mobile card pill navigates to the row href. */
+    cardRowNav?: boolean;
+    /** Accessible label for the mobile card row-nav pill overlay. */
+    cardRowNavLabel?: string;
     /** Extra classes applied to the table cell (`Td`). */
     cellClassName?: string;
   }

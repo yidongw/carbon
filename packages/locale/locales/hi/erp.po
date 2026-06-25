@@ -9747,6 +9747,9 @@ msgstr "विशेषताएं देखें"
 msgid "View bill of process"
 msgstr "देखें बिल प्रक्रिया"
 
+msgid "View job"
+msgstr "जॉब देखें"
+
 msgid "View configuration parameters"
 msgstr "विन्यास पूरक पूरक वैॅपरीटर्स देखें"
 
