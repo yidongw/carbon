@@ -17,7 +17,7 @@ const CARD_PINNED_ACCENT_UNDERLINE_STYLES = [
   "underline",
   "decoration-dotted",
   "decoration-2",
-  "decoration-current",
+  "decoration-muted-foreground",
   "underline-offset-2"
 ] as const;
 
@@ -28,7 +28,7 @@ function chipTargetStyles(
   return styles.map((style) => `[${selector}]:${style}`).join(" ");
 }
 
-/** Pinned card link underline — follows hyperlink text color via decoration-current. */
+/** Pinned card link underline — muted color contrasts with foreground text. */
 export const CARD_PINNED_LINK_UNDERLINE_CLASS =
   CARD_PINNED_ACCENT_UNDERLINE_STYLES.join(" ");
 
