@@ -83,23 +83,36 @@ export const CARD_HAS_ACTION_CLASS = [
   "[&:has([data-card-action])]:hover:shadow-md"
 ].join(" ");
 
-/** Shared mobile card field chip chrome — transparent fill, border on hover/action. */
+/** Shared mobile card field chip chrome — interaction + underline affordances. */
 export const CARD_CHIP_BASE_CLASS = [
-  "relative rounded-lg border border-transparent",
+  "relative rounded-lg",
   "transition-[border-color,transform,box-shadow] duration-150 ease-out",
-  "hover:border-border/70 dark:hover:border-border/60",
   CARD_HAS_ACTION_CLASS,
-  CARD_FIELD_CHIP_INTERACTIVE_UNDERLINE_CLASS,
-  "[&:has([data-card-action])]:hover:border-primary/40 dark:[&:has([data-card-action])]:hover:border-primary/35"
+  CARD_FIELD_CHIP_INTERACTIVE_UNDERLINE_CLASS
 ].join(" ");
 
 export const CARD_CHIP_VARIANT_CLASS = {
-  /** Left pinned column — full-width stack. */
-  pinned: "min-w-0 w-full px-2.5 py-2",
-  /** Bottom metadata row — compact inline chip. */
-  inline: "inline-flex max-w-full items-center gap-1.5 px-2 py-1 text-xs leading-snug",
-  /** Right featured column — taller stack with label + value. */
-  featured: "flex min-w-0 flex-col gap-1.5 px-3 py-2.5"
+  /** Left pinned column — transparent fill, border on hover/action. */
+  pinned: [
+    "min-w-0 w-full px-2.5 py-2",
+    "border border-transparent",
+    "hover:border-border/70 dark:hover:border-border/60",
+    "[&:has([data-card-action])]:hover:border-primary/40 dark:[&:has([data-card-action])]:hover:border-primary/35"
+  ].join(" "),
+  /** Bottom metadata row — muted inline chip. */
+  inline: [
+    "inline-flex max-w-full items-center gap-1.5 px-2 py-1 text-xs leading-snug",
+    "border border-border/50 bg-muted/30",
+    "hover:border-border/70 dark:hover:border-border/60",
+    "[&:has([data-card-action])]:hover:border-border"
+  ].join(" "),
+  /** Right featured column — elevated card surface. */
+  featured: [
+    "flex min-w-0 flex-col gap-1.5 px-3 py-2.5",
+    "border border-primary/25 bg-white shadow-sm",
+    "dark:border-primary/30 dark:bg-card",
+    "[&:has([data-card-action])]:hover:border-primary/40 dark:[&:has([data-card-action])]:hover:border-primary/35"
+  ].join(" ")
 } as const;
 
 export type CardFieldChipVariant = keyof typeof CARD_CHIP_VARIANT_CLASS;
