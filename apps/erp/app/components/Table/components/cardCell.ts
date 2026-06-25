@@ -13,15 +13,7 @@ export const useIsCardCell = () => useContext(CardCellContext);
 /** Wrapper class for pinned-column cell content in mobile card rows. */
 export const CARD_PINNED_VALUE_CLASS = "card-pinned-value";
 
-const CARD_PINNED_UNDERLINE_STYLES = [
-  "underline",
-  "decoration-dotted",
-  "decoration-2",
-  "decoration-foreground/90",
-  "underline-offset-2"
-] as const;
-
-const CARD_PINNED_LINK_UNDERLINE_STYLES = [
+const CARD_PINNED_ACCENT_UNDERLINE_STYLES = [
   "underline",
   "decoration-dotted",
   "decoration-2",
@@ -36,16 +28,13 @@ function chipTargetStyles(
   return styles.map((style) => `[${selector}]:${style}`).join(" ");
 }
 
-/** Link styling for hyperlinks inside mobile card pinned cells. */
-export const CARD_PINNED_LINK_CLASS = [
-  "text-primary",
-  "hover:text-primary/90",
-  ...CARD_PINNED_LINK_UNDERLINE_STYLES
-].join(" ");
+/** Contrasting underline for pinned card links — text stays foreground. */
+export const CARD_PINNED_LINK_UNDERLINE_CLASS =
+  CARD_PINNED_ACCENT_UNDERLINE_STYLES.join(" ");
 
 /** Dotted underline utilities applied directly to pinned values with row-nav. */
 export const CARD_PINNED_VALUE_NAV_UNDERLINE =
-  CARD_PINNED_UNDERLINE_STYLES.join(" ");
+  CARD_PINNED_ACCENT_UNDERLINE_STYLES.join(" ");
 
 /**
  * Dotted underline for navigable pinned values. Covers:
@@ -53,11 +42,9 @@ export const CARD_PINNED_VALUE_NAV_UNDERLINE =
  * - in-cell links (`a`) and explicit `.card-action-value` markers
  */
 export const CARD_PINNED_NAV_UNDERLINE_CLASS = [
-  chipTargetStyles("&:has([data-card-action])_.card-pinned-value", CARD_PINNED_UNDERLINE_STYLES),
-  chipTargetStyles("&_.card-pinned-value_a", CARD_PINNED_LINK_UNDERLINE_STYLES),
-  "[&_.card-pinned-value_a]:text-primary",
-  "[&_.card-pinned-value_a]:hover:text-primary/90",
-  chipTargetStyles("&_.card-pinned-value_.card-action-value", CARD_PINNED_UNDERLINE_STYLES)
+  chipTargetStyles("&:has([data-card-action])_.card-pinned-value", CARD_PINNED_ACCENT_UNDERLINE_STYLES),
+  chipTargetStyles("&_.card-pinned-value_a", CARD_PINNED_ACCENT_UNDERLINE_STYLES),
+  chipTargetStyles("&_.card-pinned-value_.card-action-value", CARD_PINNED_ACCENT_UNDERLINE_STYLES)
 ].join(" ");
 
 /**

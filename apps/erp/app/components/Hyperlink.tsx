@@ -4,7 +4,7 @@ import { LuPanelRight } from "react-icons/lu";
 import type { LinkProps } from "react-router";
 import { Link } from "react-router";
 import {
-  CARD_PINNED_LINK_CLASS,
+  CARD_PINNED_LINK_UNDERLINE_CLASS,
   useIsCardCell
 } from "~/components/Table/components/cardCell";
 
@@ -22,7 +22,7 @@ const Hyperlink = ({
       prefetch="intent"
       className={cn(
         "group/hyperlink inline-flex items-center gap-1 text-foreground font-medium cursor-pointer",
-        isCardCell && CARD_PINNED_LINK_CLASS,
+        isCardCell && CARD_PINNED_LINK_UNDERLINE_CLASS,
         className
       )}
       {...props}
