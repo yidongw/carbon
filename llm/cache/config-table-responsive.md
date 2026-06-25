@@ -9,6 +9,7 @@
 | `EditableConfigGrid` | `configTableShared.tsx` | Editable grid with add/delete row; `readOnly` prop hides zero values in vertical view |
 | `ConfigParamsTableModal` | `ConfigParamsTableModal.tsx` | Item-level config modal; uses `EditableConfigGrid` |
 | `JobConfigQuantities` | `JobConfigQuantities.tsx` | Job-level config overlay; uses `ReadOnlyConfigTable` + `EditableConfigGrid` |
+| `ConfigParamsReportedTargetTable` | `ConfigParamsReportedTargetTable.tsx` | BOP grid-icon modal table (reported/pickup/target triplets); uses same responsive transpose as `ResponsiveConfigTable` |
 
 ## Responsive Behavior
 
