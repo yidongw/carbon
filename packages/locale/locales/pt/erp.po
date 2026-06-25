@@ -948,7 +948,7 @@ msgid "Are you sure you want to delete this maintenance dispatch? This cannot be
 msgstr "Tem a certeza de que deseja eliminar este despacho de manutenção? Esta ação não pode ser desfeita."
 
 msgid "Are you sure you want to delete this pickup? This action cannot be undone."
-msgstr "Você está seguro de desejar excluir este recolha? Esta ação não pode ser desfeita."
+msgstr "Tem certeza de que deseja excluir esta saída para processo? Esta ação não pode ser desfeita."
 
 msgid "Are you sure you want to delete this production quantity? This action cannot be undone."
 msgstr "Você está seguro de desejar excluir essa quantidade de produção? Esta ação não pode ser desfeita."
@@ -2652,7 +2652,7 @@ msgid "Delete Payment Term"
 msgstr "Eliminar Termo de Pagamento"
 
 msgid "Delete Pickup"
-msgstr "Excluir Picking"
+msgstr "Excluir saída para processo"
 
 msgid "Delete Portal"
 msgstr "Eliminar Portal"
@@ -3182,7 +3182,7 @@ msgid "Edit Permissions"
 msgstr "Permissões de Edição"
 
 msgid "Edit Pickup"
-msgstr "Editar Picking"
+msgstr "Editar saída para processo"
 
 msgid "Edit Portal"
 msgstr "Editar Portal"
@@ -4996,7 +4996,7 @@ msgid "Live reloading"
 msgstr "Recarregamento ao vivo"
 
 msgid "Load more pickups"
-msgstr "Carregar mais recolhimentos"
+msgstr "Carregar mais saídas para processo"
 
 msgid "Load more quantities"
 msgstr "Carregar mais quantidades"
@@ -5673,7 +5673,7 @@ msgid "New Payment Term"
 msgstr "Novo Termo de Pagamento"
 
 msgid "New Pickup"
-msgstr "Nova Entrega"
+msgstr "Nova saída para processo"
 
 msgid "New PIN"
 msgstr "Novo PIN"
@@ -6614,17 +6614,30 @@ msgid "picked up {0} units"
 msgstr "pickingado {0} unidades"
 
 msgid "pickup"
-msgstr "retirada"
+msgstr "saída para processo"
+
+msgid "Process Pickup"
+msgstr "saída para processo"
+
+#. placeholder {0}: selectedPickup.employeeId
+msgid "Process Pickup by {0}"
+msgstr "Saída para processo de {0}"
+
+msgid "Process Pickups"
+msgstr "saídas para processo"
+
+msgid "Total Process Pickups"
+msgstr "Total de saídas para processo"
 
 msgid "Pickup"
-msgstr "Pegar"
+msgstr "saída para processo"
 
 #. placeholder {0}: selectedPickup.employeeId
 msgid "pickup by {0}"
-msgstr "picking up by {0}"
+msgstr "Saída para processo de {0}"
 
 msgid "Pickups"
-msgstr "Pegadas"
+msgstr "saídas para processo"
 
 msgid "Pieces/Hour"
 msgstr "Peças/Hora"
@@ -7289,11 +7302,17 @@ msgstr "Registro eliminado"
 msgid "Record payment"
 msgstr "Registo de pagamento"
 
+msgid "Add process pickup"
+msgstr "Adicionar saída para processo"
+
+msgid "Add process completion"
+msgstr "Adicionar conclusão do processo"
+
 msgid "Record pickup"
-msgstr "Pegamento de registro"
+msgstr "Registrar saída para processo"
 
 msgid "Record Pickup"
-msgstr "Pegamento de Registo"
+msgstr "Registrar saída para processo"
 
 msgid "Record production quantity"
 msgstr "Quantidade de produção de registro"
@@ -9251,7 +9270,7 @@ msgid "Total paid"
 msgstr "Total pago"
 
 msgid "Total Pickups"
-msgstr "Total Retiradas"
+msgstr "Total de saídas para processo"
 
 msgid "Total Price"
 msgstr "Preço Total"

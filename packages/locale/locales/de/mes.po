@@ -609,7 +609,7 @@ msgid "Log In"
 msgstr "Anmelden"
 
 msgid "Log Pickup"
-msgstr "Log Abholung"
+msgstr "Prozessentnahme protokollieren"
 
 msgid "Log Rework"
 msgstr "Nacharbeit erfassen"
@@ -888,13 +888,26 @@ msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "Spalte {0} aufgenommen an Position: {1} von {2}"
 
 msgid "pickup"
-msgstr "Abholung"
+msgstr "Prozessentnahme"
+
+msgid "Process Pickup"
+msgstr "Prozessentnahme"
+
+#. placeholder {0}: selectedPickup.employeeId
+msgid "Process Pickup by {0}"
+msgstr "Prozessentnahme durch {0}"
+
+msgid "Process Pickups"
+msgstr "Prozessentnahmen"
+
+msgid "Total Process Pickups"
+msgstr "Prozessentnahmen gesamt"
 
 msgid "Pickup suggestions:"
-msgstr "Lieferhinweis-Vorschläge:"
+msgstr "Vorschläge für Prozessentnahme:"
 
 msgid "Pickups"
-msgstr "Pausen"
+msgstr "Prozessentnahmen"
 
 msgid "Pin Out"
 msgstr "Abmelden"
@@ -995,7 +1008,7 @@ msgid "Record {0}"
 msgstr "Datensatz {0}"
 
 msgid "Record Pickup"
-msgstr "Auftrag abholen"
+msgstr "Prozessentnahme erfassen"
 
 msgid "Record Quantity"
 msgstr "Anzahl der Einträge"
@@ -1277,7 +1290,7 @@ msgid "Tools"
 msgstr "Werkzeuge"
 
 msgid "Total Pickups"
-msgstr "Gesamte Abholungen"
+msgstr "Prozessentnahmen gesamt"
 
 msgid "Total Production"
 msgstr "Gesamtproduktion"

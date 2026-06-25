@@ -948,7 +948,7 @@ msgid "Are you sure you want to delete this maintenance dispatch? This cannot be
 msgstr "Sei sicuro di voler eliminare questo ordine di manutenzione? Questa azione non può essere annullata."
 
 msgid "Are you sure you want to delete this pickup? This action cannot be undone."
-msgstr "Sei sicuro di voler eliminare questo carico? Questa azione non può essere annullata."
+msgstr "Sei sicuro di voler eliminare questo prelievo di processo? Questa azione non può essere annullata."
 
 msgid "Are you sure you want to delete this production quantity? This action cannot be undone."
 msgstr "Sei sicuro di voler eliminare questa quantità di produzione? Questa azione non può essere annullata."
@@ -2652,7 +2652,7 @@ msgid "Delete Payment Term"
 msgstr "Elimina Termine di Pagamento"
 
 msgid "Delete Pickup"
-msgstr "Cancellare Picking"
+msgstr "Elimina prelievo di processo"
 
 msgid "Delete Portal"
 msgstr "Elimina Portale"
@@ -3182,7 +3182,7 @@ msgid "Edit Permissions"
 msgstr "Modifica Autorizzazioni"
 
 msgid "Edit Pickup"
-msgstr "Modifica Assegnazione"
+msgstr "Modifica prelievo di processo"
 
 msgid "Edit Portal"
 msgstr "Modifica Portale"
@@ -4996,7 +4996,7 @@ msgid "Live reloading"
 msgstr "Ricaricamento in tempo reale"
 
 msgid "Load more pickups"
-msgstr "Carica più consegne"
+msgstr "Carica altri prelievi di processo"
 
 msgid "Load more quantities"
 msgstr "Carica più quantità"
@@ -5673,7 +5673,7 @@ msgid "New Payment Term"
 msgstr "Nuovo Termine di Pagamento"
 
 msgid "New Pickup"
-msgstr "Nuovo Prenotazione"
+msgstr "Nuovo prelievo di processo"
 
 msgid "New PIN"
 msgstr "Nuovo PIN"
@@ -6614,17 +6614,30 @@ msgid "picked up {0} units"
 msgstr "Preseto {0} unità"
 
 msgid "pickup"
-msgstr "recupero"
+msgstr "prelievo di processo"
+
+msgid "Process Pickup"
+msgstr "prelievo di processo"
+
+#. placeholder {0}: selectedPickup.employeeId
+msgid "Process Pickup by {0}"
+msgstr "Prelievo di processo da {0}"
+
+msgid "Process Pickups"
+msgstr "prelievi di processo"
+
+msgid "Total Process Pickups"
+msgstr "Prelievi di processo totali"
 
 msgid "Pickup"
-msgstr "Picking up"
+msgstr "prelievo di processo"
 
 #. placeholder {0}: selectedPickup.employeeId
 msgid "pickup by {0}"
-msgstr "picking up da {0}"
+msgstr "Prelievo di processo da {0}"
 
 msgid "Pickups"
-msgstr "Picking"
+msgstr "prelievi di processo"
 
 msgid "Pieces/Hour"
 msgstr "Pezzi/Ora"
@@ -7289,11 +7302,17 @@ msgstr "Record eliminato"
 msgid "Record payment"
 msgstr "Pagamento del registro"
 
+msgid "Add process pickup"
+msgstr "Aggiungi prelievo di processo"
+
+msgid "Add process completion"
+msgstr "Aggiungi completamento di processo"
+
 msgid "Record pickup"
-msgstr "Picking up di registri"
+msgstr "Registra prelievo di processo"
 
 msgid "Record Pickup"
-msgstr "Picking up di registri"
+msgstr "Registra prelievo di processo"
 
 msgid "Record production quantity"
 msgstr "Quantità di produzione del registro"
@@ -9251,7 +9270,7 @@ msgid "Total paid"
 msgstr "Totale pagato"
 
 msgid "Total Pickups"
-msgstr "Totale estrazioni"
+msgstr "Prelievi di processo totali"
 
 msgid "Total Price"
 msgstr "Prezzo Totale"

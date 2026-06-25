@@ -887,14 +887,16 @@ msgstr "Period"
 msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "Picked up Column {0} at position: {1} of {2}"
 
-msgid "pickup"
-msgstr "pickup"
+msgid "process pickup"
+msgstr "process pickup"
 
 msgid "Pickup suggestions:"
 msgstr "Pickup suggestions:"
 
 msgid "Pickups"
 msgstr "Pickups"
+msgid "Process Pickups"
+msgstr "Process Pickups"
 
 msgid "Pin Out"
 msgstr "Pin Out"
@@ -1276,8 +1278,8 @@ msgstr "Toggle Sidebar"
 msgid "Tools"
 msgstr "Tools"
 
-msgid "Total Pickups"
-msgstr "Total Pickups"
+msgid "Total Process Pickups"
+msgstr "Total Process Pickups"
 
 msgid "Total Production"
 msgstr "Total Production"
