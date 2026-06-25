@@ -22,6 +22,7 @@ import { useCallback, useState } from "react";
 import { useNavigate } from "react-router";
 import { useSwipeReveal } from "~/hooks/useSwipeReveal";
 import { CardFieldChip, CardFieldChipBody } from "./CardFieldChip";
+import { CARD_PINNED_VALUE_CLASS, resolveCardRowNav } from "./cardCell";
 
 const SYSTEM_COLUMN_IDS = new Set(["Select", "Actions", "Expand"]);
 
@@ -198,7 +199,7 @@ function renderFieldColumn<T extends object>(
   const rendered = flexRender(column.columnDef.cell, cell.getContext());
   if (!hasCellDisplayValue(row, cell, rendered)) return null;
 
-  const isRowNav = Boolean(column.columnDef.meta?.cardRowNav && rowHref);
+  const isRowNav = Boolean(rowHref && column.columnDef.meta?.cardRowNav === true);
   const rowNavLabel =
     column.columnDef.meta?.cardRowNavLabel ?? defaultRowNavLabel;
 
@@ -253,6 +254,7 @@ function TableCardRow<T extends object>({
   );
 
   const cardLeft = pinnedColumns.filter((c) => !SYSTEM_COLUMN_IDS.has(c.id));
+  const pinnedColumnIds = cardLeft.map((column) => column.id);
   const cardRight = centerColumns.filter(
     (c) => !SYSTEM_COLUMN_IDS.has(c.id) && featuredColumns.has(c.id)
   );
@@ -331,8 +333,10 @@ function TableCardRow<T extends object>({
               {cardLeft.map((column) => {
                 const cell = cellMap[column.id];
                 if (!cell) return null;
-                const isRowNav = Boolean(
-                  column.columnDef.meta?.cardRowNav && rowHref
+                const isRowNav = resolveCardRowNav(
+                  column,
+                  rowHref,
+                  pinnedColumnIds
                 );
                 const rowNavLabel =
                   column.columnDef.meta?.cardRowNavLabel ?? defaultRowNavLabel;
@@ -345,7 +349,14 @@ function TableCardRow<T extends object>({
                         isRowNav && rowHref ? onRowNav(rowHref) : undefined
                       }
                     >
-                      {flexRender(column.columnDef.cell, cell.getContext())}
+                      <div
+                        className={cn(
+                          CARD_PINNED_VALUE_CLASS,
+                          "min-w-0 w-fit max-w-full"
+                        )}
+                      >
+                        {flexRender(column.columnDef.cell, cell.getContext())}
+                      </div>
                     </CardFieldChipBody>
                   </CardFieldChip>
                 );

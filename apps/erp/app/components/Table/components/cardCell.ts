@@ -1,4 +1,5 @@
 import { createContext, useContext } from "react";
+import type { Column } from "@tanstack/react-table";
 
 /**
  * True when a cell is being rendered inside the mobile card view (TableCardRow)
@@ -9,10 +10,30 @@ export const CardCellContext = createContext(false);
 
 export const useIsCardCell = () => useContext(CardCellContext);
 
+/** Wrapper class for pinned-column cell content in mobile card rows. */
+export const CARD_PINNED_VALUE_CLASS = "card-pinned-value";
+
+/**
+ * Dotted underline for navigable pinned values. Works with:
+ * - `.card-pinned-value` wrapper (auto-applied in TableCardRow)
+ * - `.card-action-value` when a cell opts in explicitly
+ * - `<a>` links rendered inside pinned cells
+ */
+export const CARD_PINNED_NAV_UNDERLINE_CLASS = [
+  "[&:has([data-card-action])_.card-pinned-value]:underline",
+  "[&:has([data-card-action])_.card-pinned-value]:decoration-dotted",
+  "[&:has([data-card-action])_.card-pinned-value]:decoration-foreground/75",
+  "[&:has([data-card-action])_.card-pinned-value]:underline-offset-2",
+  "[&:has([data-card-action])_.card-pinned-value_a]:underline",
+  "[&:has([data-card-action])_.card-pinned-value_a]:decoration-dotted",
+  "[&:has([data-card-action])_.card-pinned-value_a]:decoration-foreground/75",
+  "[&:has([data-card-action])_.card-pinned-value_a]:underline-offset-2"
+].join(" ");
+
 /**
  * Apply to field chip roots that may contain a `[data-card-action]` overlay.
  * Underlines `.card-action-label` (field headers) and `.card-action-value`
- * (pinned nav text) when an action overlay is present.
+ * (explicit value markers) when an action overlay is present.
  */
 export const CARD_HAS_ACTION_CLASS = [
   "[&:has([data-card-action])]:cursor-pointer",
@@ -40,7 +61,10 @@ export const CARD_CHIP_BASE_CLASS = [
 
 export const CARD_CHIP_VARIANT_CLASS = {
   /** Left pinned column — full-width stack. */
-  pinned: "min-w-0 w-full px-2.5 py-2",
+  pinned: [
+    "min-w-0 w-full px-2.5 py-2",
+    CARD_PINNED_NAV_UNDERLINE_CLASS
+  ].join(" "),
   /** Bottom metadata row — compact inline chip. */
   inline: "inline-flex max-w-full items-center gap-1.5 px-2 py-1 text-xs leading-snug",
   /** Right featured column — taller stack with label + value. */
@@ -48,3 +72,22 @@ export const CARD_CHIP_VARIANT_CLASS = {
 } as const;
 
 export type CardFieldChipVariant = keyof typeof CARD_CHIP_VARIANT_CLASS;
+
+/**
+ * Whether a mobile card field chip should navigate to the row href.
+ * Defaults to the first pinned column when the table supplies `getRowHref`.
+ */
+export function resolveCardRowNav<T extends object>(
+  column: Column<T, unknown>,
+  rowHref: string | undefined,
+  pinnedColumnIds: readonly string[]
+): boolean {
+  if (!rowHref) return false;
+
+  const cardRowNav = column.columnDef.meta?.cardRowNav;
+  if (cardRowNav === true) return true;
+  if (cardRowNav === false) return false;
+
+  const primaryPinnedId = pinnedColumnIds[0];
+  return primaryPinnedId != null && column.id === primaryPinnedId;
+}

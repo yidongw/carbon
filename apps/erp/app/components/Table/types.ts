@@ -20,7 +20,10 @@ declare module "@tanstack/react-table" {
     ) => string;
     /** When true, the mobile card row hides this column's field chip. */
     isEmpty?: (row: TData) => boolean;
-    /** When true, the mobile card field chip navigates to the row href. */
+    /**
+     * Mobile card row-nav for this column. `true` opts in, `false` opts out.
+     * When omitted, the first pinned column navigates if the table has `getRowHref`.
+     */
     cardRowNav?: boolean;
     /** Accessible label for the mobile card row-nav chip overlay. */
     cardRowNavLabel?: string;
