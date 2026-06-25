@@ -34,7 +34,7 @@ import {
   today
 } from "@internationalized/date";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useMemo, useRef, useState } from "react";
+import { type MutableRefObject, useMemo, useRef, useState } from "react";
 import { createPortal, flushSync } from "react-dom";
 import {
   LuCheckCheck,
@@ -176,7 +176,10 @@ function JobTopbarLeft({ jobId }: { jobId: string }) {
                   )
                 }
               >
-                <DropdownMenuIcon icon={<LuCheckCheck />} />
+                <DropdownMenuIcon
+                  className="text-yellow-500"
+                  icon={<LuCheckCheck />}
+                />
                 <Trans>Mark as Planned</Trans>
               </DropdownMenuItem>
             )}
@@ -190,7 +193,10 @@ function JobTopbarLeft({ jobId }: { jobId: string }) {
               }
               onClick={releaseModal.onOpen}
             >
-              <DropdownMenuIcon icon={<LuCirclePlay />} />
+              <DropdownMenuIcon
+                className="text-blue-600"
+                icon={<LuCirclePlay />}
+              />
               <Trans>Release</Trans>
             </DropdownMenuItem>
             {isPaused ? (
@@ -206,7 +212,10 @@ function JobTopbarLeft({ jobId }: { jobId: string }) {
                   )
                 }
               >
-                <DropdownMenuIcon icon={<LuCirclePlay />} />
+                <DropdownMenuIcon
+                  className="text-blue-600"
+                  icon={<LuCirclePlay />}
+                />
                 <Trans>Resume</Trans>
               </DropdownMenuItem>
             ) : (
@@ -223,7 +232,10 @@ function JobTopbarLeft({ jobId }: { jobId: string }) {
                   )
                 }
               >
-                <DropdownMenuIcon icon={<LuCirclePause />} />
+                <DropdownMenuIcon
+                  className="text-orange-500"
+                  icon={<LuCirclePause />}
+                />
                 <Trans>Pause</Trans>
               </DropdownMenuItem>
             )}
@@ -235,7 +247,10 @@ function JobTopbarLeft({ jobId }: { jobId: string }) {
               }
               onClick={completeModal.onOpen}
             >
-              <DropdownMenuIcon icon={<LuCircleCheck />} />
+              <DropdownMenuIcon
+                className="text-green-600"
+                icon={<LuCircleCheck />}
+              />
               <Trans>Complete</Trans>
             </DropdownMenuItem>
             <DropdownMenuItem
@@ -246,7 +261,10 @@ function JobTopbarLeft({ jobId }: { jobId: string }) {
               }
               onClick={cancelModal.onOpen}
             >
-              <DropdownMenuIcon icon={<LuCircleStop />} />
+              <DropdownMenuIcon
+                className="text-red-600"
+                icon={<LuCircleStop />}
+              />
               <Trans>Cancel</Trans>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -263,7 +281,10 @@ function JobTopbarLeft({ jobId }: { jobId: string }) {
                 )
               }
             >
-              <DropdownMenuIcon icon={<LuCirclePlay />} />
+              <DropdownMenuIcon
+                className="text-blue-600"
+                icon={<LuCirclePlay />}
+              />
               <Trans>Reopen</Trans>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -367,14 +388,38 @@ const JobHeader = () => {
 
 export default JobHeader;
 
+function useCloseInlineStatusModal(
+  fetcher: FetcherWithComponents<{ success?: boolean }>,
+  submitted: MutableRefObject<boolean>,
+  onClose: () => void
+) {
+  useIsomorphicLayoutEffect(() => {
+    if (!submitted.current) return;
+    if (fetcher.state === "loading") {
+      onClose();
+      submitted.current = false;
+      return;
+    }
+    if (fetcher.state === "idle") {
+      submitted.current = false;
+      if (fetcher.data?.success) {
+        onClose();
+      }
+    }
+  }, [fetcher.state, fetcher.data, onClose, fetcher]);
+}
+
 export function JobStartModal({
   job,
   onClose,
-  fetcher
+  fetcher,
+  stay
 }: {
   job?: Job;
   fetcher: FetcherWithComponents<{}>;
   onClose: () => void;
+  // Inline callers (jobs table) stay on the page instead of navigating.
+  stay?: boolean;
 }) {
   const { carbon } = useCarbon();
   const [loading, setLoading] = useState(true);
@@ -396,12 +441,7 @@ export function JobStartModal({
   ] = useState<Record<string, string>>({});
 
   const startSubmitted = useRef(false);
-  useIsomorphicLayoutEffect(() => {
-    if (fetcher.state === "loading" && startSubmitted.current) {
-      onClose();
-      startSubmitted.current = false;
-    }
-  }, [fetcher.state, onClose]);
+  useCloseInlineStatusModal(fetcher, startSubmitted, onClose);
 
   const validate = async () => {
     if (!carbon || !job) return;
@@ -709,7 +749,9 @@ export function JobStartModal({
                   startSubmitted.current = true;
                 }}
                 method="post"
-                action={`${path.to.jobStatus(job.id!)}?schedule=1`}
+                action={`${path.to.jobStatus(job.id!)}?schedule=1${
+                  stay ? "&stay=1" : ""
+                }`}
               >
                 <input type="hidden" name="status" value="Ready" />
                 <input
@@ -740,22 +782,20 @@ export function JobStartModal({
   );
 }
 
-function JobCancelModal({
+export function JobCancelModal({
   job,
   onClose,
-  fetcher
+  fetcher,
+  stay
 }: {
   job?: Job;
   fetcher: FetcherWithComponents<{}>;
   onClose: () => void;
+  // Inline callers (jobs table) stay on the page instead of navigating.
+  stay?: boolean;
 }) {
   const cancelSubmitted = useRef(false);
-  useIsomorphicLayoutEffect(() => {
-    if (fetcher.state === "loading" && cancelSubmitted.current) {
-      onClose();
-      cancelSubmitted.current = false;
-    }
-  }, [fetcher.state, onClose]);
+  useCloseInlineStatusModal(fetcher, cancelSubmitted, onClose);
 
   if (!job) return null;
 
@@ -787,7 +827,11 @@ function JobCancelModal({
               cancelSubmitted.current = true;
             }}
             method="post"
-            action={path.to.jobStatus(job.id!)}
+            action={
+              stay
+                ? `${path.to.jobStatus(job.id!)}?stay=1`
+                : path.to.jobStatus(job.id!)
+            }
           >
             <input type="hidden" name="status" value="Cancelled" />
             <Button variant="destructive" type="submit">
@@ -800,14 +844,17 @@ function JobCancelModal({
   );
 }
 
-function JobCompleteModal({
+export function JobCompleteModal({
   job,
   onClose,
-  fetcher
+  fetcher,
+  stay
 }: {
   job?: Job;
   fetcher: FetcherWithComponents<{}>;
   onClose: () => void;
+  // Inline callers (jobs table) stay on the page instead of navigating.
+  stay?: boolean;
 }) {
   const { carbon } = useCarbon();
   const [loading, setLoading] = useState(true);
@@ -915,7 +962,11 @@ function JobCompleteModal({
         ) : (
           <ValidatedForm
             method="post"
-            action={path.to.jobComplete(job.id!)}
+            action={
+              stay
+                ? `${path.to.jobComplete(job.id!)}?stay=1`
+                : path.to.jobComplete(job.id!)
+            }
             validator={jobCompleteValidator}
             onSuccess={onClose}
             defaultValues={{

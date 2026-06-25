@@ -1,4 +1,5 @@
 import { useLingui } from "@lingui/react/macro";
+import { useCallback } from "react";
 import type {
   deadlineTypes,
   jobOperationStatus,
@@ -16,32 +17,38 @@ import type {
 export function useJobStatusLabel() {
   const { t } = useLingui();
 
-  return (status: (typeof jobStatus)[number]) => {
-    switch (status) {
-      case "Draft":
-        return t`Draft`;
-      case "Planned":
-        return t`Planned`;
-      case "Ready":
-        return t`Ready`;
-      case "In Progress":
-        return t`In Progress`;
-      case "Paused":
-        return t`Paused`;
-      case "Completed":
-        return t`Completed`;
-      case "Closed":
-        return t`Closed`;
-      case "Cancelled":
-        return t`Cancelled`;
-      case "Overdue":
-        return t`Overdue`;
-      case "Due Today":
-        return t`Due Today`;
-      default:
-        return status;
-    }
-  };
+  // Memoized so the returned function has a stable identity across renders.
+  // Tables put these label helpers in their column-builder useMemo deps; an
+  // unstable function would rebuild the columns every render and remount cells.
+  return useCallback(
+    (status: (typeof jobStatus)[number]) => {
+      switch (status) {
+        case "Draft":
+          return t`Draft`;
+        case "Planned":
+          return t`Planned`;
+        case "Ready":
+          return t`Ready`;
+        case "In Progress":
+          return t`In Progress`;
+        case "Paused":
+          return t`Paused`;
+        case "Completed":
+          return t`Completed`;
+        case "Closed":
+          return t`Closed`;
+        case "Cancelled":
+          return t`Cancelled`;
+        case "Overdue":
+          return t`Overdue`;
+        case "Due Today":
+          return t`Due Today`;
+        default:
+          return status;
+      }
+    },
+    [t]
+  );
 }
 
 export function useJobOperationStatusLabel() {
@@ -72,20 +79,23 @@ export function useJobOperationStatusLabel() {
 export function useDeadlineTypeLabel() {
   const { t } = useLingui();
 
-  return (deadlineType: (typeof deadlineTypes)[number]) => {
-    switch (deadlineType) {
-      case "ASAP":
-        return t`ASAP`;
-      case "Hard Deadline":
-        return t`Hard Deadline`;
-      case "Soft Deadline":
-        return t`Soft Deadline`;
-      case "No Deadline":
-        return t`No Deadline`;
-      default:
-        return deadlineType;
-    }
-  };
+  return useCallback(
+    (deadlineType: (typeof deadlineTypes)[number]) => {
+      switch (deadlineType) {
+        case "ASAP":
+          return t`ASAP`;
+        case "Hard Deadline":
+          return t`Hard Deadline`;
+        case "Soft Deadline":
+          return t`Soft Deadline`;
+        case "No Deadline":
+          return t`No Deadline`;
+        default:
+          return deadlineType;
+      }
+    },
+    [t]
+  );
 }
 
 export function useProcedureStatusLabel() {
