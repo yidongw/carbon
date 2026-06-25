@@ -2,13 +2,7 @@ import {
   cn,
   Popover,
   PopoverContent,
-  PopoverTrigger,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr
+  PopoverTrigger
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useState, type ReactNode } from "react";
@@ -17,6 +11,7 @@ import {
   type ConfigColumn,
   type ReportedTargetRow
 } from "~/modules/production/configParamsTableColumns";
+import { ResponsiveConfigTable } from "./ResponsiveConfigTable";
 
 function getColumnWidthClass(column: ConfigColumn): string {
   switch (column.type) {
@@ -149,6 +144,20 @@ function QuantityTripletCell({
   );
 }
 
+function renderReportedTargetCell(col: ConfigColumn, row: ReportedTargetRow) {
+  if (col.type === "quantity") {
+    return (
+      <QuantityTripletCell
+        reported={row.cells[col.key]?.reported ?? 0}
+        pickup={row.cells[col.key]?.pickup ?? 0}
+        target={row.cells[col.key]?.target ?? 0}
+      />
+    );
+  }
+
+  return String(row[col.key] ?? "");
+}
+
 type ConfigParamsReportedTargetTableProps = {
   rows: ReportedTargetRow[];
   parameters: Parameters<typeof buildConfigColumns>[0];
@@ -161,62 +170,27 @@ export function ConfigParamsReportedTargetTable({
   const { t } = useLingui();
   const { columns } = buildConfigColumns(parameters, t`Quantities`);
 
+  if (rows.length === 0) {
+    return (
+      <p className="px-3 py-6 text-center text-sm text-muted-foreground">
+        <Trans>No configuration quantities recorded yet.</Trans>
+      </p>
+    );
+  }
+
   return (
-    <div className="max-w-full overflow-x-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent">
-      <Table className="w-auto min-w-max table-fixed">
-        <Thead>
-          <Tr>
-            {columns.map((col) => (
-              <Th
-                key={col.key}
-                className={cn(
-                  "px-3 text-xs whitespace-nowrap",
-                  getColumnWidthClass(col)
-                )}
-              >
-                {col.label}
-              </Th>
-            ))}
-          </Tr>
-        </Thead>
-        <Tbody>
-          {rows.length === 0 ? (
-            <Tr>
-              <Td
-                colSpan={columns.length}
-                className="px-3 py-6 text-center text-sm text-muted-foreground"
-              >
-                <Trans>No configuration quantities recorded yet.</Trans>
-              </Td>
-            </Tr>
-          ) : (
-            rows.map((row, rowIndex) => (
-              <Tr key={rowIndex}>
-                {columns.map((col) => (
-                  <Td
-                    key={col.key}
-                    className={cn(
-                      "px-3 py-2 text-sm tabular-nums",
-                      getColumnWidthClass(col),
-                      col.type === "quantity" && "font-medium"
-                    )}
-                  >
-                    {col.type === "quantity" ? (
-                      <QuantityTripletCell
-                        reported={row.cells[col.key]?.reported ?? 0}
-                        pickup={row.cells[col.key]?.pickup ?? 0}
-                        target={row.cells[col.key]?.target ?? 0}
-                      />
-                    ) : (
-                      String(row[col.key] ?? "")
-                    )}
-                  </Td>
-                ))}
-              </Tr>
-            ))
-          )}
-        </Tbody>
-      </Table>
-    </div>
+    <ResponsiveConfigTable
+      columns={columns}
+      rows={rows}
+      getColumnWidthClass={(col) => getColumnWidthClass(col)}
+      getCellClassName={(col) =>
+        cn(
+          "px-3 py-2 text-sm tabular-nums",
+          getColumnWidthClass(col),
+          col.type === "quantity" && "font-medium"
+        )
+      }
+      renderCell={(col, row) => renderReportedTargetCell(col, row)}
+    />
   );
 }
