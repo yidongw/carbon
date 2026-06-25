@@ -2,6 +2,7 @@ import type { Json } from "@carbon/database";
 import { Checkbox } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useMemo } from "react";
 import {
   LuCalendar,
   LuCaseSensitive,
@@ -26,12 +27,16 @@ export function useCustomColumns<T extends { customFields: Json }>(
   const customFieldsSchemas = useCustomFieldsSchema();
   const schema = customFieldsSchemas?.[table];
 
-  const customColumns: ColumnDef<T>[] = [];
   const [people] = usePeople();
   const [customers] = useCustomers();
   const [suppliers] = useSuppliers();
 
-  schema?.forEach((field) => {
+  // Memoized so the returned array has a stable identity across renders.
+  // Tables put this in their column-builder useMemo deps; a fresh array every
+  // render rebuilt the columns and remounted every cell (closing menus, etc.).
+  return useMemo<ColumnDef<T>[]>(() => {
+    const customColumns: ColumnDef<T>[] = [];
+    schema?.forEach((field) => {
     customColumns.push({
       accessorKey: `customFields->>${field.id}`,
       header: field.name,
@@ -161,9 +166,9 @@ export function useCustomColumns<T extends { customFields: Json }>(
         }
       }
     });
-  });
-
-  return customColumns as ColumnDef<T>[];
+    });
+    return customColumns;
+  }, [schema, t, people, customers, suppliers, table]);
 }
 
 function isObject(value: unknown): value is Record<string, unknown> {

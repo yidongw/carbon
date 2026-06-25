@@ -80,10 +80,13 @@ export default function JobStatusMenu({ job }: { job: Job }) {
 
   return (
     <>
-      <DropdownMenu>
+      {/* modal=false so opening from inside the touch-handling card doesn't
+          fight Radix's focus/scroll lock and immediately close. */}
+      <DropdownMenu modal={false}>
         {isCardCell ? (
           // In the mobile card the whole pill is the tap target: render the
-          // badge as visuals and overlay a full-cover trigger.
+          // badge as visuals and overlay a full-cover trigger. Stop the tap from
+          // bubbling to the card's row-nav / swipe handlers.
           <>
             <span
               className={cn(
@@ -99,6 +102,8 @@ export default function JobStatusMenu({ job }: { job: Job }) {
                 type="button"
                 aria-label={t`Change status`}
                 disabled={busy}
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={(e) => e.stopPropagation()}
                 className="absolute inset-0 z-[1] rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </DropdownMenuTrigger>
