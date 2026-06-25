@@ -10147,3 +10147,12 @@ msgstr "Twoja prośba o dołączenie do {companyName} została wysłana. Adminis
 
 msgid "yourself"
 msgstr "siebie"
+
+msgid "Adjustment input mode"
+msgstr "Tryb wprowadzania dostosowań"
+
+msgid "Enter a positive number to add or a negative number to subtract."
+msgstr "Wprowadź dodatnią liczbę, aby dodać, lub ujemną liczbę, aby odjąć."
+
+msgid "Enter the target quantity for each size."
+msgstr "Wprowadź ilość docelową dla każdego rozmiaru."

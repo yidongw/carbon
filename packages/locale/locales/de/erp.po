@@ -10147,3 +10147,12 @@ msgstr "Ihre Anfrage zur Beigabe zu {companyName} wurde eingereicht. Ein Admin w
 
 msgid "yourself"
 msgstr "dir selbst"
+
+msgid "Adjustment input mode"
+msgstr "Eingabe-Modus anpassen"
+
+msgid "Enter a positive number to add or a negative number to subtract."
+msgstr "Geben Sie eine positive Zahl ein, um hinzuzufügen, oder eine negative Zahl, um abzuziehen."
+
+msgid "Enter the target quantity for each size."
+msgstr "Geben Sie die Zielmenge für jede Größe an."

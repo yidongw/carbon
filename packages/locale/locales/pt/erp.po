@@ -10147,3 +10147,12 @@ msgstr "Sua solicitação para se juntar à {companyName} foi enviada. Um admini
 
 msgid "yourself"
 msgstr "você mesmo"
+
+msgid "Adjustment input mode"
+msgstr "Modo de entrada de ajuste"
+
+msgid "Enter a positive number to add or a negative number to subtract."
+msgstr "Digite um número positivo para adicionar ou um número negativo para subtrair."
+
+msgid "Enter the target quantity for each size."
+msgstr "Digite a quantidade alvo para cada tamanho."
