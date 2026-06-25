@@ -1,31 +1,35 @@
 import { cn } from "@carbon/react";
 import type { MouseEvent, ReactNode } from "react";
 import {
-  CARD_PILL_BASE_CLASS,
-  CARD_PILL_VARIANT_CLASS,
+  CARD_CHIP_BASE_CLASS,
+  CARD_CHIP_VARIANT_CLASS,
   CardCellContext,
-  type CardPillVariant
+  type CardFieldChipVariant
 } from "./cardCell";
 
-export function CardPill({
+export function CardFieldChip({
   variant,
   className,
   children
 }: {
-  variant: CardPillVariant;
+  variant: CardFieldChipVariant;
   className?: string;
   children: ReactNode;
 }) {
   return (
     <div
-      className={cn(CARD_PILL_BASE_CLASS, CARD_PILL_VARIANT_CLASS[variant], className)}
+      className={cn(
+        CARD_CHIP_BASE_CLASS,
+        CARD_CHIP_VARIANT_CLASS[variant],
+        className
+      )}
     >
       <CardCellContext.Provider value={true}>{children}</CardCellContext.Provider>
     </div>
   );
 }
 
-export function CardPillBody({
+export function CardFieldChipBody({
   children,
   rowNav,
   rowNavLabel,

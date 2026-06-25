@@ -21,7 +21,7 @@ import {
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router";
 import { useSwipeReveal } from "~/hooks/useSwipeReveal";
-import { CardPill, CardPillBody } from "./CardPill";
+import { CardFieldChip, CardFieldChipBody } from "./CardFieldChip";
 
 const SYSTEM_COLUMN_IDS = new Set(["Select", "Actions", "Expand"]);
 
@@ -148,8 +148,8 @@ function FieldChip({
 }) {
   if (variant === "featured") {
     return (
-      <CardPill variant="featured">
-        <CardPillBody rowNav={rowNav} rowNavLabel={rowNavLabel} onRowNav={onRowNav}>
+      <CardFieldChip variant="featured">
+        <CardFieldChipBody rowNav={rowNav} rowNavLabel={rowNavLabel} onRowNav={onRowNav}>
           <div className="flex items-center gap-1.5">
             {icon && <FieldIcon size="md">{icon}</FieldIcon>}
             <span className="card-action-label text-sm font-medium text-foreground">
@@ -159,19 +159,19 @@ function FieldChip({
           <div className="min-w-0 text-base font-medium leading-snug text-foreground [&_.tabular-nums]:tabular-nums">
             {children}
           </div>
-        </CardPillBody>
-      </CardPill>
+        </CardFieldChipBody>
+      </CardFieldChip>
     );
   }
 
   return (
-    <CardPill variant="inline">
-      <CardPillBody rowNav={rowNav} rowNavLabel={rowNavLabel} onRowNav={onRowNav}>
+    <CardFieldChip variant="inline">
+      <CardFieldChipBody rowNav={rowNav} rowNavLabel={rowNavLabel} onRowNav={onRowNav}>
         {icon && <FieldIcon>{icon}</FieldIcon>}
         <span className="card-action-label text-muted-foreground">{header}</span>
         <span className="min-w-0 font-medium text-foreground">{children}</span>
-      </CardPillBody>
-    </CardPill>
+      </CardFieldChipBody>
+    </CardFieldChip>
   );
 }
 
@@ -313,8 +313,8 @@ function TableCardRow<T extends object>({
       onClick={rowHref ? handleCardClick : undefined}
       onKeyDown={rowHref ? handleCardKeyDown : undefined}
       className={cn(
-        // Flat container — pills are the clickable bits; the card highlights on
-        // hover but keeps the default cursor. (Tapping a non-pill area still
+        // Flat container — field chips are the clickable bits; the card highlights on
+        // hover but keeps the default cursor. (Tapping a non-chip area still
         // navigates.)
         "w-full cursor-default overflow-hidden border-0 shadow-none",
         "bg-muted/50 dark:bg-card",
@@ -337,8 +337,8 @@ function TableCardRow<T extends object>({
                 const rowNavLabel =
                   column.columnDef.meta?.cardRowNavLabel ?? defaultRowNavLabel;
                 return (
-                  <CardPill key={column.id} variant="pinned">
-                    <CardPillBody
+                  <CardFieldChip key={column.id} variant="pinned">
+                    <CardFieldChipBody
                       rowNav={isRowNav}
                       rowNavLabel={rowNavLabel}
                       onRowNav={
@@ -346,8 +346,8 @@ function TableCardRow<T extends object>({
                       }
                     >
                       {flexRender(column.columnDef.cell, cell.getContext())}
-                    </CardPillBody>
-                  </CardPill>
+                    </CardFieldChipBody>
+                  </CardFieldChip>
                 );
               })}
             </VStack>
