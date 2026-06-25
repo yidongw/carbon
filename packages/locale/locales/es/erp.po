@@ -449,6 +449,12 @@ msgstr "Agregar Socio"
 msgid "Add Permissions"
 msgstr "Agregar Permisos"
 
+msgid "Add process completion"
+msgstr "Agregar finalización de proceso"
+
+msgid "Add process pickup"
+msgstr "Agregar extracción de proceso"
+
 msgid "Add Property"
 msgstr "Agregar propiedad"
 
@@ -4085,6 +4091,9 @@ msgstr "Acabado"
 
 msgid "Finish To"
 msgstr "Terminar En"
+
+msgid "Finished {complete} of {target} units, {pickup} in progress from process pickups, {unassigned} unassigned"
+msgstr "Finalizados {complete} de {target} unidades, {pickup} en progreso desde recogidas del proceso, {unassigned} no asignadas"
 
 msgid "Finished Goods"
 msgstr "Productos acabados"
@@ -9720,6 +9729,9 @@ msgstr "Ver folio de proceso"
 
 msgid "View configuration parameters"
 msgstr "Ver parámetros de configuración"
+
+msgid "View configuration quantities"
+msgstr "Ver configuración de cantidades"
 
 msgid "View Contact"
 msgstr "Ver Contacto"

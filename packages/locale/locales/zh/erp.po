@@ -449,6 +449,12 @@ msgstr "添加合作伙伴"
 msgid "Add Permissions"
 msgstr "添加权限"
 
+msgid "Add process completion"
+msgstr "添加工序完成"
+
+msgid "Add process pickup"
+msgstr "添加工序领料"
+
 msgid "Add Property"
 msgstr "添加属性"
 
@@ -4085,6 +4091,9 @@ msgstr "完成"
 
 msgid "Finish To"
 msgstr "完成"
+
+msgid "Finished {complete} of {target} units, {pickup} in progress from process pickups, {unassigned} unassigned"
+msgstr "已完成 {complete}/{target} 个单位，工序领料 {pickup}，未分配 {unassigned}"
 
 msgid "Finished Goods"
 msgstr "成品"
@@ -9720,6 +9729,9 @@ msgstr "查看工序清单"
 
 msgid "View configuration parameters"
 msgstr "查看配置参数"
+
+msgid "View configuration quantities"
+msgstr "查看配置数量"
 
 msgid "View Contact"
 msgstr "查看联系人"

@@ -449,6 +449,12 @@ msgstr "Add Partner"
 msgid "Add Permissions"
 msgstr "Add Permissions"
 
+msgid "Add process completion"
+msgstr "Add process completion"
+
+msgid "Add process pickup"
+msgstr "Add process pickup"
+
 msgid "Add Property"
 msgstr "Add Property"
 
@@ -4085,6 +4091,9 @@ msgstr "Finish"
 
 msgid "Finish To"
 msgstr "Finish To"
+
+msgid "Finished {complete} of {target} units, {pickup} in progress from process pickups, {unassigned} unassigned"
+msgstr "Finished {complete} of {target} units, {pickup} in progress from process pickups, {unassigned} unassigned"
 
 msgid "Finished Goods"
 msgstr "Finished Goods"
@@ -9720,6 +9729,9 @@ msgstr "View bill of process"
 
 msgid "View configuration parameters"
 msgstr "View configuration parameters"
+
+msgid "View configuration quantities"
+msgstr "View configuration quantities"
 
 msgid "View Contact"
 msgstr "View Contact"

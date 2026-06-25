@@ -449,6 +449,12 @@ msgstr "パートナーを追加"
 msgid "Add Permissions"
 msgstr "権限を追加"
 
+msgid "Add process completion"
+msgstr "工程完了を追加"
+
+msgid "Add process pickup"
+msgstr "工程払い出しを追加"
+
 msgid "Add Property"
 msgstr "プロパティを追加"
 
@@ -4085,6 +4091,9 @@ msgstr "仕上げ"
 
 msgid "Finish To"
 msgstr "完成先"
+
+msgid "Finished {complete} of {target} units, {pickup} in progress from process pickups, {unassigned} unassigned"
+msgstr "完成 {complete} 件中 {target} 件、{pickup} の取り込み中、{unassigned} 未割り当て"
 
 msgid "Finished Goods"
 msgstr "[製品]"
@@ -9720,6 +9729,9 @@ msgstr "見る請求書のプロセス"
 
 msgid "View configuration parameters"
 msgstr "設定パラメータを表示"
+
+msgid "View configuration quantities"
+msgstr "設定された数量を表示"
 
 msgid "View Contact"
 msgstr "連絡先を表示"

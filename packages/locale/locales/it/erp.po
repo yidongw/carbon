@@ -449,6 +449,12 @@ msgstr "Aggiungi Partner"
 msgid "Add Permissions"
 msgstr "Aggiungi Autorizzazioni"
 
+msgid "Add process completion"
+msgstr "Aggiungi completamento di processo"
+
+msgid "Add process pickup"
+msgstr "Aggiungi prelievo di processo"
+
 msgid "Add Property"
 msgstr "Aggiungi Proprietà"
 
@@ -4085,6 +4091,9 @@ msgstr "Finitura"
 
 msgid "Finish To"
 msgstr "Finisci a"
+
+msgid "Finished {complete} of {target} units, {pickup} in progress from process pickups, {unassigned} unassigned"
+msgstr "Pienamente {complete} di {target} unità, il prelievo {pickup} in corso dagli acquireimenti, {unassigned} non assegnati"
 
 msgid "Finished Goods"
 msgstr "Prodotti finiti"
@@ -9720,6 +9729,9 @@ msgstr "Visualizza fattura di processo"
 
 msgid "View configuration parameters"
 msgstr "Visualizza parametri di configurazione"
+
+msgid "View configuration quantities"
+msgstr "Visualizza configurazioni quantità"
 
 msgid "View Contact"
 msgstr "Visualizza Contatto"

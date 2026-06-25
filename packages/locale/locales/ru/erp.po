@@ -449,6 +449,12 @@ msgstr "Добавить партнера"
 msgid "Add Permissions"
 msgstr "Добавить разрешения"
 
+msgid "Add process completion"
+msgstr "Добавить завершение процесса"
+
+msgid "Add process pickup"
+msgstr "Добавить выдачу в процесс"
+
 msgid "Add Property"
 msgstr "Добавить свойство"
 
@@ -4085,6 +4091,9 @@ msgstr "Отделка"
 
 msgid "Finish To"
 msgstr "Завершить в"
+
+msgid "Finished {complete} of {target} units, {pickup} in progress from process pickups, {unassigned} unassigned"
+msgstr "Завершено {complete} из {target} единиц, {pickup} в процессе извлечения из пикапов, {unassigned} не присвоены"
 
 msgid "Finished Goods"
 msgstr "Готовая продукция"
@@ -9720,6 +9729,9 @@ msgstr "Просматривать билет по процессу"
 
 msgid "View configuration parameters"
 msgstr "Просмотр конфигурационных параметров"
+
+msgid "View configuration quantities"
+msgstr "Просмотр конфигурационных количеств"
 
 msgid "View Contact"
 msgstr "Просмотр контакта"

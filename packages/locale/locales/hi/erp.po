@@ -449,6 +449,12 @@ msgstr "पार्टनर जोड़ें"
 msgid "Add Permissions"
 msgstr "अनुमतियां जोड़ें"
 
+msgid "Add process completion"
+msgstr "प्रक्रिया पूर्णता जोड़ें"
+
+msgid "Add process pickup"
+msgstr "प्रक्रिया निकासी जोड़ें"
+
 msgid "Add Property"
 msgstr "प्रॉपर्टी जोड़ें"
 
@@ -4085,6 +4091,9 @@ msgstr "फिनिश"
 
 msgid "Finish To"
 msgstr "समाप्त करने के लिए"
+
+msgid "Finished {complete} of {target} units, {pickup} in progress from process pickups, {unassigned} unassigned"
+msgstr "पूरा दिया गया {complete} से {target} इकाइयों की पूरा दिया गया, {pickup} प्रक्रिया से लेन चल रहा है, {unassigned} अनिर्धारित"
 
 msgid "Finished Goods"
 msgstr "तैयार सामान"
@@ -9720,6 +9729,9 @@ msgstr "देखें बिल प्रक्रिया"
 
 msgid "View configuration parameters"
 msgstr "विन्यास पूरक पूरक वैॅपरीटर्स देखें"
+
+msgid "View configuration quantities"
+msgstr "विनिर्माण गुणतांत्रिकी देखें"
 
 msgid "View Contact"
 msgstr "संपर्क देखें"

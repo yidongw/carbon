@@ -215,7 +215,7 @@ function SortableListItem<T>({
               </div>
             </motion.div>
             {item.quantityProgress != null && (
-              <QuantityProgressStrip progress={item.quantityProgress} t={t} />
+              <QuantityProgressStrip progress={item.quantityProgress} />
             )}
             {renderExtra && (
               <motion.div
@@ -352,12 +352,11 @@ function getPercent(value: number, target: number) {
 }
 
 function QuantityProgressStrip({
-  progress,
-  t
+  progress
 }: {
   progress: NonNullable<Item["quantityProgress"]>;
-  t: ReturnType<typeof useLingui>["t"];
 }) {
+  const { t } = useLingui();
   const { complete, pickup, target, onAddQuantity, onAddPickup, onOpenConfigTable } = progress;
   const completePercent = getPercent(complete, target);
   const pickupPercent = Math.min(
