@@ -31,6 +31,18 @@ export const CARD_PINNED_NAV_UNDERLINE_CLASS = [
 ].join(" ");
 
 /**
+ * Underline field chip headers when the value area is interactive (links,
+ * buttons, or a full-chip action overlay). Covers metadata/featured chips on
+ * tables like production pickups without per-table cell changes.
+ */
+export const CARD_INTERACTIVE_LABEL_UNDERLINE_CLASS = [
+  "[&:has(a,[data-card-action],button,[role='button'])_.card-action-label]:underline",
+  "[&:has(a,[data-card-action],button,[role='button'])_.card-action-label]:decoration-dotted",
+  "[&:has(a,[data-card-action],button,[role='button'])_.card-action-label]:decoration-foreground/65",
+  "[&:has(a,[data-card-action],button,[role='button'])_.card-action-label]:underline-offset-2"
+].join(" ");
+
+/**
  * Apply to field chip roots that may contain a `[data-card-action]` overlay.
  * Underlines `.card-action-label` (field headers) and `.card-action-value`
  * (explicit value markers) when an action overlay is present.
@@ -47,7 +59,8 @@ export const CARD_HAS_ACTION_CLASS = [
   "[&:has([data-card-action])_.card-action-value]:underline",
   "[&:has([data-card-action])_.card-action-value]:decoration-dotted",
   "[&:has([data-card-action])_.card-action-value]:decoration-foreground/75",
-  "[&:has([data-card-action])_.card-action-value]:underline-offset-2"
+  "[&:has([data-card-action])_.card-action-value]:underline-offset-2",
+  CARD_INTERACTIVE_LABEL_UNDERLINE_CLASS
 ].join(" ");
 
 /** Shared mobile card field chip chrome — transparent fill, border on hover/action. */
