@@ -129,19 +129,17 @@ const PartsTable = memo(({ data, tags, count, itemPostingGroups: rawItemPostingG
               thumbnailPath={row.original.thumbnailPath}
               type="Part"
             />
-            <Hyperlink
-              to={path.to.partDetails(row.original.id!)}
-              className="min-w-0"
-            >
-              <VStack spacing={0} className="min-w-0">
-                <span className="w-full truncate">
-                  {row.original.readableIdWithRevision}
-                </span>
-                <div className="w-full truncate text-muted-foreground text-xs">
-                  {row.original.name}
-                </div>
-              </VStack>
-            </Hyperlink>
+            <VStack spacing={0} className="min-w-0">
+              <Hyperlink
+                to={path.to.partDetails(row.original.id!)}
+                className="min-w-0 block w-full truncate"
+              >
+                {row.original.readableIdWithRevision}
+              </Hyperlink>
+              <div className="w-full truncate text-muted-foreground text-xs">
+                {row.original.name}
+              </div>
+            </VStack>
           </HStack>
         ),
         meta: {

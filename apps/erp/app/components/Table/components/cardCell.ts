@@ -13,64 +13,27 @@ export const useIsCardCell = () => useContext(CardCellContext);
 /** Wrapper class for pinned-column cell content in mobile card rows. */
 export const CARD_PINNED_VALUE_CLASS = "card-pinned-value";
 
-/** Shared blue dotted underline for interactive mobile card field chips. */
-const CARD_FIELD_CHIP_UNDERLINE_STYLES = [
+/** Single underline style for all interactive mobile card field chips. */
+export const CARD_FIELD_CHIP_UNDERLINE_CLASS = [
   "underline",
   "decoration-dotted",
   "decoration-[2.5px]",
   "decoration-blue-600",
   "dark:decoration-blue-400",
   "underline-offset-2"
-] as const;
-
-/** Apply directly on links and pinned values inside field chips. */
-export const CARD_FIELD_CHIP_UNDERLINE_CLASS =
-  CARD_FIELD_CHIP_UNDERLINE_STYLES.join(" ");
+].join(" ");
 
 /**
- * Underline interactive field chip labels and values across pinned, inline,
- * and featured variants. Literal class strings so Tailwind emits the rules.
+ * Underline field chip labels when the value area is interactive.
+ * Values/links get CARD_FIELD_CHIP_UNDERLINE_CLASS directly on the element.
  */
-const CARD_FIELD_CHIP_INTERACTIVE_UNDERLINE_CLASS = [
-  // Row-nav / overlay action chips
-  "[&:has([data-card-action])_.card-action-label]:underline",
-  "[&:has([data-card-action])_.card-action-label]:decoration-dotted",
-  "[&:has([data-card-action])_.card-action-label]:decoration-[2.5px]",
-  "[&:has([data-card-action])_.card-action-label]:decoration-blue-600",
-  "dark:[&:has([data-card-action])_.card-action-label]:decoration-blue-400",
-  "[&:has([data-card-action])_.card-action-label]:underline-offset-2",
-  "[&:has([data-card-action])_.card-action-value]:underline",
-  "[&:has([data-card-action])_.card-action-value]:decoration-dotted",
-  "[&:has([data-card-action])_.card-action-value]:decoration-[2.5px]",
-  "[&:has([data-card-action])_.card-action-value]:decoration-blue-600",
-  "dark:[&:has([data-card-action])_.card-action-value]:decoration-blue-400",
-  "[&:has([data-card-action])_.card-action-value]:underline-offset-2",
-  "[&:has([data-card-action])_.card-pinned-value]:underline",
-  "[&:has([data-card-action])_.card-pinned-value]:decoration-dotted",
-  "[&:has([data-card-action])_.card-pinned-value]:decoration-[2.5px]",
-  "[&:has([data-card-action])_.card-pinned-value]:decoration-blue-600",
-  "dark:[&:has([data-card-action])_.card-pinned-value]:decoration-blue-400",
-  "[&:has([data-card-action])_.card-pinned-value]:underline-offset-2",
-  // Metadata / featured chips with links or buttons in the value
-  "[&:has(:is(a,[data-card-action],button,[role='button']))_.card-action-label]:underline",
-  "[&:has(:is(a,[data-card-action],button,[role='button']))_.card-action-label]:decoration-dotted",
-  "[&:has(:is(a,[data-card-action],button,[role='button']))_.card-action-label]:decoration-[2.5px]",
-  "[&:has(:is(a,[data-card-action],button,[role='button']))_.card-action-label]:decoration-blue-600",
-  "dark:[&:has(:is(a,[data-card-action],button,[role='button']))_.card-action-label]:decoration-blue-400",
-  "[&:has(:is(a,[data-card-action],button,[role='button']))_.card-action-label]:underline-offset-2",
-  // Pinned hyperlinks and explicit value markers
-  "[&_.card-pinned-value_a]:underline",
-  "[&_.card-pinned-value_a]:decoration-dotted",
-  "[&_.card-pinned-value_a]:decoration-[2.5px]",
-  "[&_.card-pinned-value_a]:decoration-blue-600",
-  "dark:[&_.card-pinned-value_a]:decoration-blue-400",
-  "[&_.card-pinned-value_a]:underline-offset-2",
-  "[&_.card-pinned-value_.card-action-value]:underline",
-  "[&_.card-pinned-value_.card-action-value]:decoration-dotted",
-  "[&_.card-pinned-value_.card-action-value]:decoration-[2.5px]",
-  "[&_.card-pinned-value_.card-action-value]:decoration-blue-600",
-  "dark:[&_.card-pinned-value_.card-action-value]:decoration-blue-400",
-  "[&_.card-pinned-value_.card-action-value]:underline-offset-2"
+const CARD_FIELD_CHIP_LABEL_UNDERLINE_CLASS = [
+  "[&:has(:is([data-card-action],a,button,[role='button']))_.card-action-label]:underline",
+  "[&:has(:is([data-card-action],a,button,[role='button']))_.card-action-label]:decoration-dotted",
+  "[&:has(:is([data-card-action],a,button,[role='button']))_.card-action-label]:decoration-[2.5px]",
+  "[&:has(:is([data-card-action],a,button,[role='button']))_.card-action-label]:decoration-blue-600",
+  "dark:[&:has(:is([data-card-action],a,button,[role='button']))_.card-action-label]:decoration-blue-400",
+  "[&:has(:is([data-card-action],a,button,[role='button']))_.card-action-label]:underline-offset-2"
 ].join(" ");
 
 /**
@@ -88,7 +51,7 @@ export const CARD_CHIP_BASE_CLASS = [
   "relative rounded-lg",
   "transition-[border-color,transform,box-shadow] duration-150 ease-out",
   CARD_HAS_ACTION_CLASS,
-  CARD_FIELD_CHIP_INTERACTIVE_UNDERLINE_CLASS
+  CARD_FIELD_CHIP_LABEL_UNDERLINE_CLASS
 ].join(" ");
 
 export const CARD_CHIP_VARIANT_CLASS = {

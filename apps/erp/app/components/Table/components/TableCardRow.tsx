@@ -153,7 +153,12 @@ function FieldChip({
         <CardFieldChipBody rowNav={rowNav} rowNavLabel={rowNavLabel} onRowNav={onRowNav}>
           <div className="flex items-center gap-1.5">
             {icon && <FieldIcon size="md">{icon}</FieldIcon>}
-            <span className="card-action-label text-sm font-medium text-foreground">
+            <span
+              className={cn(
+                "card-action-label text-sm font-medium text-foreground",
+                rowNav && CARD_FIELD_CHIP_UNDERLINE_CLASS
+              )}
+            >
               {header}
             </span>
           </div>
@@ -169,7 +174,14 @@ function FieldChip({
     <CardFieldChip variant="inline">
       <CardFieldChipBody rowNav={rowNav} rowNavLabel={rowNavLabel} onRowNav={onRowNav}>
         {icon && <FieldIcon>{icon}</FieldIcon>}
-        <span className="card-action-label text-muted-foreground">{header}</span>
+        <span
+          className={cn(
+            "card-action-label text-muted-foreground",
+            rowNav && CARD_FIELD_CHIP_UNDERLINE_CLASS
+          )}
+        >
+          {header}
+        </span>
         <span className="min-w-0 font-medium text-foreground">{children}</span>
       </CardFieldChipBody>
     </CardFieldChip>
@@ -352,8 +364,7 @@ function TableCardRow<T extends object>({
                       <div
                         className={cn(
                           CARD_PINNED_VALUE_CLASS,
-                          "min-w-0 w-fit max-w-full",
-                          isRowNav && CARD_FIELD_CHIP_UNDERLINE_CLASS
+                          "min-w-0 w-fit max-w-full"
                         )}
                       >
                         {flexRender(column.columnDef.cell, cell.getContext())}
