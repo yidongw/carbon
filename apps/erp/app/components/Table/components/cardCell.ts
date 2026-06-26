@@ -24,8 +24,8 @@ export const CARD_FIELD_CHIP_UNDERLINE_CLASS = [
 ].join(" ");
 
 /**
- * Underline field chip labels when the value area is interactive.
- * Values/links get CARD_FIELD_CHIP_UNDERLINE_CLASS directly on the element.
+ * Underline interactive field chip labels when the value area is interactive.
+ * Values/links use the matching rules below so every table/page stays consistent.
  */
 const CARD_FIELD_CHIP_LABEL_UNDERLINE_CLASS = [
   "[&:has(:is([data-card-action],a,button,[role='button']))_.card-action-label]:underline",
@@ -34,6 +34,22 @@ const CARD_FIELD_CHIP_LABEL_UNDERLINE_CLASS = [
   "[&:has(:is([data-card-action],a,button,[role='button']))_.card-action-label]:decoration-blue-600",
   "dark:[&:has(:is([data-card-action],a,button,[role='button']))_.card-action-label]:decoration-blue-400",
   "[&:has(:is([data-card-action],a,button,[role='button']))_.card-action-label]:underline-offset-4"
+].join(" ");
+
+/** Underline any navigable value inside a field chip (links + explicit markers). */
+const CARD_FIELD_CHIP_VALUE_UNDERLINE_CLASS = [
+  "[&_a]:underline",
+  "[&_a]:decoration-dotted",
+  "[&_a]:decoration-[2.5px]",
+  "[&_a]:decoration-blue-600",
+  "dark:[&_a]:decoration-blue-400",
+  "[&_a]:underline-offset-4",
+  "[&_.card-action-value]:underline",
+  "[&_.card-action-value]:decoration-dotted",
+  "[&_.card-action-value]:decoration-[2.5px]",
+  "[&_.card-action-value]:decoration-blue-600",
+  "dark:[&_.card-action-value]:decoration-blue-400",
+  "[&_.card-action-value]:underline-offset-4"
 ].join(" ");
 
 /**
@@ -51,7 +67,8 @@ export const CARD_CHIP_BASE_CLASS = [
   "relative rounded-lg",
   "transition-[border-color,transform,box-shadow] duration-150 ease-out",
   CARD_HAS_ACTION_CLASS,
-  CARD_FIELD_CHIP_LABEL_UNDERLINE_CLASS
+  CARD_FIELD_CHIP_LABEL_UNDERLINE_CLASS,
+  CARD_FIELD_CHIP_VALUE_UNDERLINE_CLASS
 ].join(" ");
 
 export const CARD_CHIP_VARIANT_CLASS = {
