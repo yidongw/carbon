@@ -20,7 +20,7 @@ export const CARD_FIELD_CHIP_UNDERLINE_CLASS = [
   "decoration-[2.5px]",
   "decoration-blue-600",
   "dark:decoration-blue-400",
-  "underline-offset-2"
+  "underline-offset-4"
 ].join(" ");
 
 /**
@@ -33,7 +33,7 @@ const CARD_FIELD_CHIP_LABEL_UNDERLINE_CLASS = [
   "[&:has(:is([data-card-action],a,button,[role='button']))_.card-action-label]:decoration-[2.5px]",
   "[&:has(:is([data-card-action],a,button,[role='button']))_.card-action-label]:decoration-blue-600",
   "dark:[&:has(:is([data-card-action],a,button,[role='button']))_.card-action-label]:decoration-blue-400",
-  "[&:has(:is([data-card-action],a,button,[role='button']))_.card-action-label]:underline-offset-2"
+  "[&:has(:is([data-card-action],a,button,[role='button']))_.card-action-label]:underline-offset-4"
 ].join(" ");
 
 /**
