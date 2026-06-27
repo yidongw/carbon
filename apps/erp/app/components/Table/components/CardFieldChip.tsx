@@ -1,11 +1,24 @@
 import { cn } from "@carbon/react";
-import type { MouseEvent, ReactNode } from "react";
+import type { ComponentProps, MouseEvent, ReactNode } from "react";
 import {
   CARD_CHIP_BASE_CLASS,
   CARD_CHIP_VARIANT_CLASS,
   CardCellContext,
   type CardFieldChipVariant
 } from "./cardCell";
+
+/** Marker for non-link interactive values inside mobile card field chips. */
+export const CARD_ACTION_VALUE_CLASS = "card-action-value";
+
+/** Wraps primary chip values that open drawers/modals instead of navigating via link. */
+export function CardActionValue({
+  className,
+  ...props
+}: ComponentProps<"span">) {
+  return (
+    <span className={cn(CARD_ACTION_VALUE_CLASS, className)} {...props} />
+  );
+}
 
 export function CardFieldChip({
   variant,
