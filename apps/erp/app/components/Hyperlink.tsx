@@ -3,7 +3,6 @@ import type { ComponentProps, PropsWithChildren } from "react";
 import { LuPanelRight } from "react-icons/lu";
 import type { LinkProps } from "react-router";
 import { Link } from "react-router";
-
 const Hyperlink = ({
   children,
   className,

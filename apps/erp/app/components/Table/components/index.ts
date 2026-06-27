@@ -1,3 +1,4 @@
+import { CardActionValue, CardFieldChip } from "./CardFieldChip";
 import Cell from "./Cell";
 import IndeterminateCheckbox from "./IndeterminateCheckbox";
 import { Pagination, usePagination } from "./Pagination";
@@ -9,6 +10,8 @@ import TableCardRow from "./TableCardRow";
 import TableHeader from "./TableHeader";
 
 export {
+  CardActionValue,
+  CardFieldChip,
   Cell,
   IndeterminateCheckbox,
   Pagination,
