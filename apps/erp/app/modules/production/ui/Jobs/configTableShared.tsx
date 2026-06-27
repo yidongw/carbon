@@ -249,14 +249,14 @@ export const configParamsModalContentClassName = cn(
 );
 
 export const configParamsModalShellClassName =
-  "flex w-max max-w-[calc(100vw-1.5rem)] flex-col";
+  "flex min-h-0 w-max min-w-full max-w-[calc(100vw-1.5rem)] flex-1 flex-col";
 
 export const configParamsModalBodyClassName =
-  "overflow-x-auto overflow-y-auto px-6 py-4";
+  "min-w-0 flex-1 overflow-x-auto overflow-y-auto px-6 py-4";
 
 /** Job config overlay: keep a stable width while switching Delta/Total tabs. */
 export const jobConfigQuantitiesModalShellClassName =
-  "flex w-max min-w-full max-w-full flex-col";
+  "flex min-h-0 w-max min-w-full max-w-full flex-1 flex-col";
 
 export const jobConfigQuantitiesModalBodyClassName =
   "min-w-0 flex-1 overflow-x-auto overflow-y-auto px-6 py-4";
@@ -320,7 +320,7 @@ export function ReadOnlyConfigTable({
   columns: Column[];
   rows: Row[];
   signed?: boolean;
-  onQuantityClick?: (colKey: string, value: number) => void;
+  onQuantityClick?: (row: Row, colKey: string, value: number) => void;
 }) {
   return (
     <ResponsiveConfigTable
@@ -341,7 +341,7 @@ export function ReadOnlyConfigTable({
         return clickable ? (
           <button
             type="button"
-            onClick={() => onQuantityClick?.(col.key, numeric)}
+            onClick={() => onQuantityClick?.(row, col.key, numeric)}
             className="rounded px-1.5 py-0.5 text-sm tabular-nums text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
           >
             {display}

@@ -14,7 +14,6 @@ import { flexRender } from "@tanstack/react-table";
 import {
   isValidElement,
   type JSX,
-  type KeyboardEvent,
   type MouseEvent,
   type ReactNode
 } from "react";
@@ -306,20 +305,9 @@ function TableCardRow<T extends object>({
     navigate(rowHref);
   };
 
-  const handleCardKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (!rowHref || shouldIgnoreRowNavigation(event.target)) return;
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      navigate(rowHref);
-    }
-  };
-
   const card = (
     <Card
-      role={rowHref ? "button" : undefined}
-      tabIndex={rowHref ? 0 : undefined}
       onClick={rowHref ? handleCardClick : undefined}
-      onKeyDown={rowHref ? handleCardKeyDown : undefined}
       className={cn(
         // Flat container — field chips are the clickable bits; the card highlights on
         // hover but keeps the default cursor. (Tapping a non-chip area still
@@ -328,8 +316,7 @@ function TableCardRow<T extends object>({
         "bg-muted/50 dark:bg-card",
         "transition-colors duration-150 ease-out",
         "hover:bg-muted dark:hover:bg-muted/70",
-        "active:bg-muted/90 dark:active:bg-muted/80",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+        "active:bg-muted/90 dark:active:bg-muted/80"
       )}
     >
       {hasPinned && (

@@ -130,7 +130,7 @@ function ProcessQuantitiesList({
 }: {
   processQuantities: ProcessQuantityEntry[];
   columns: Column[];
-  onApply: (colKey: string, value: number) => void;
+  onApply: (row: Row, colKey: string, value: number) => void;
 }) {
   const { t } = useLingui();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
@@ -284,14 +284,20 @@ function JobConfigQuantities({
     setValidationError("");
   };
 
-  // Clicking a process quantity targets that absolute value: the stored delta
-  // becomes (value - current baseline) so both Delta and Total views agree.
-  const applyProcessValue = (colKey: string, value: number) => {
+  // Clicking a process quantity targets that absolute value on the matching
+  // adjustment row (by descriptor merge key): stored delta becomes
+  // (value - current baseline) so both Delta and Total views agree.
+  const applyProcessValue = (sourceRow: Row, colKey: string, value: number) => {
     setRows((prev) => {
       if (prev.length === 0) return prev;
-      const baseline = baselineFor(prev[0], colKey);
+      const sourceKey = getMergeKey(sourceRow, columns);
+      const targetIndex = prev.findIndex(
+        (row) => getMergeKey(row, columns) === sourceKey
+      );
+      const index = targetIndex >= 0 ? targetIndex : 0;
+      const baseline = baselineFor(prev[index], colKey);
       return prev.map((row, i) =>
-        i === 0 ? { ...row, [colKey]: value - baseline } : row
+        i === index ? { ...row, [colKey]: value - baseline } : row
       );
     });
     setValidationError("");
