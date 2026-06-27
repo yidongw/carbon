@@ -3,7 +3,13 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { data, redirect, useLoaderData } from "react-router";
+import { data, redirect } from "react-router";
+import {
+  OVERLAY_PARAM,
+  overlay,
+  overlayToken,
+  serializeSearch
+} from "~/components/Overlay/overlay";
 import { getConfigurationParameters } from "~/modules/items";
 import {
   defaultActorKindFromOperationType,
@@ -18,17 +24,32 @@ import {
   validateActorMatchesOperationSupplierRouting
 } from "~/modules/production";
 import { getConfigReferenceSourceForOperation } from "~/modules/production/configTableOverlay.server";
-import { PickupForm } from "~/modules/production/ui/Pickups";
 import { path } from "~/utils/path";
 
 export async function loader({ request }: LoaderFunctionArgs) {
+  const url = new URL(request.url);
+  const isOverlay = url.searchParams.get("overlay") === "true";
+
+  if (!isOverlay) {
+    const jobId = url.searchParams.get("jobId") ?? "";
+    const jobOperationId = url.searchParams.get("jobOperationId") ?? "";
+    const target = overlay.to.newProductionPickup({
+      jobId: jobId || undefined,
+      jobOperationId: jobOperationId || undefined
+    });
+    const token = overlayToken(target);
+    const redirectParams = new URLSearchParams();
+    if (token) redirectParams.append(OVERLAY_PARAM, token);
+    const query = serializeSearch(redirectParams);
+    throw redirect(query ? `${path.to.pickups}?${query}` : path.to.pickups);
+  }
+
   const { client, companyId } = await requirePermissions(request, {
     view: "production",
     role: "employee",
     bypassRls: true
   });
 
-  const url = new URL(request.url);
   const jobId = url.searchParams.get("jobId") ?? "";
   const jobOperationId = url.searchParams.get("jobOperationId") ?? "";
 
@@ -86,6 +107,15 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
     jobOperations = operations.data ?? [];
     itemId = job.data?.itemId ?? null;
+
+    if (itemId) {
+      const params = await getConfigurationParameters(
+        client,
+        itemId,
+        companyId
+      );
+      configurationParameters = params.parameters;
+    }
   }
 
   // If jobOperationId is selected, load operation context
@@ -96,14 +126,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       companyId
     );
 
-    if (jobId && itemId) {
-      const params = await getConfigurationParameters(
-        client,
-        itemId,
-        companyId
-      );
-      configurationParameters = params.parameters;
-
+    if (jobId) {
       configReferenceSource = await getConfigReferenceSourceForOperation(
         client,
         {
@@ -174,6 +197,7 @@ export async function action({ request }: ActionFunctionArgs) {
   });
 
   const formData = await request.formData();
+  const isOverlay = new URL(request.url).searchParams.get("overlay") === "true";
   const validation = await validator(jobOperationPickupValidator).validate(
     formData
   );
@@ -255,6 +279,13 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
+  if (isOverlay) {
+    return data(
+      { ok: true as const },
+      await flash(request, success("Process pickup created"))
+    );
+  }
+
   return redirect(
     path.to.pickups,
     await flash(request, success("Process pickup created"))
@@ -262,37 +293,5 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function NewPickupRoute() {
-  const loaderData = useLoaderData<typeof loader>();
-
-  return (
-    <PickupForm
-      initialValues={{
-        jobId: loaderData.jobId,
-        jobOperationId: loaderData.jobOperationId,
-        actorKind: loaderData.defaultActorKind,
-        employeeId:
-          loaderData.seededActor?.kind === "employee"
-            ? loaderData.seededActor.employeeId
-            : undefined,
-        supplierProcessId:
-          loaderData.seededActor?.kind === "supplier"
-            ? loaderData.seededActor.supplierProcessId
-            : undefined,
-        quantity: 0,
-        configuration: undefined,
-        notes: undefined
-      }}
-      jobOptions={loaderData.jobOptions}
-      jobId={loaderData.jobId}
-      operationOptions={loaderData.operationOptions}
-      configurationParameters={loaderData.configurationParameters}
-      configReferenceSource={loaderData.configReferenceSource}
-      itemId={loaderData.itemId}
-      processId={loaderData.processId}
-      operationType={loaderData.operationType}
-      defaultActorKind={loaderData.defaultActorKind}
-      lockActorSelection={loaderData.lockActorSelection}
-      supplierId={loaderData.supplierId}
-    />
-  );
+  return null;
 }

@@ -4,8 +4,14 @@ import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { data, redirect, useLoaderData, useNavigate } from "react-router";
+import { data, redirect } from "react-router";
 import { z } from "zod";
+import {
+  OVERLAY_PARAM,
+  overlay,
+  overlayToken,
+  serializeSearch
+} from "~/components/Overlay/overlay";
 import { getConfigurationParameters } from "~/modules/items";
 import {
   createJobOperationSupplierQuantityReport,
@@ -22,17 +28,34 @@ import {
 } from "~/modules/production";
 import { getConfigReferenceSourceForOperation } from "~/modules/production/configTableOverlay.server";
 import { productionQuantityLineJsonValidator } from "~/modules/production/productionQuantityReport.models";
-import ProductionQuantityForm from "~/modules/production/ui/Jobs/ProductionQuantityForm";
 import { path } from "~/utils/path";
 
 export async function loader({ request }: LoaderFunctionArgs) {
+  const url = new URL(request.url);
+  const isOverlay = url.searchParams.get("overlay") === "true";
+
+  if (!isOverlay) {
+    const jobId = url.searchParams.get("jobId") ?? "";
+    const jobOperationId = url.searchParams.get("jobOperationId") ?? "";
+    const target = overlay.to.newProductionQuantity({
+      jobId: jobId || undefined,
+      jobOperationId: jobOperationId || undefined
+    });
+    const token = overlayToken(target);
+    const redirectParams = new URLSearchParams();
+    if (token) redirectParams.append(OVERLAY_PARAM, token);
+    const query = serializeSearch(redirectParams);
+    throw redirect(
+      query ? `${path.to.productionQuantities}?${query}` : path.to.productionQuantities
+    );
+  }
+
   const { client, companyId } = await requirePermissions(request, {
     view: "production",
     role: "employee",
     bypassRls: true
   });
 
-  const url = new URL(request.url);
   const jobId = url.searchParams.get("jobId") ?? "";
   const jobOperationId = url.searchParams.get("jobOperationId") ?? "";
 
@@ -88,6 +111,15 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
     jobOperations = operations.data ?? [];
     itemId = job.data?.itemId ?? null;
+
+    if (itemId) {
+      const params = await getConfigurationParameters(
+        client,
+        itemId,
+        companyId
+      );
+      configurationParameters = params.parameters;
+    }
   }
 
   if (jobOperationId) {
@@ -97,14 +129,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       companyId
     );
 
-    if (jobId && itemId) {
-      const params = await getConfigurationParameters(
-        client,
-        itemId,
-        companyId
-      );
-      configurationParameters = params.parameters;
-
+    if (jobId) {
       configReferenceSource = await getConfigReferenceSourceForOperation(
         client,
         {
@@ -187,6 +212,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const currentMonth = now.getMonth() + 1;
 
   const formData = await request.formData();
+  const isOverlay = new URL(request.url).searchParams.get("overlay") === "true";
   const validation = await validator(
     productionQuantityCreateFormValidator
   ).validate(formData);
@@ -306,6 +332,13 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
+  if (isOverlay) {
+    return data(
+      { ok: true as const },
+      await flash(request, success("Process completion created"))
+    );
+  }
+
   return redirect(
     path.to.productionQuantities,
     await flash(request, success("Process completion created"))
@@ -313,32 +346,5 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function NewProductionQuantityRoute() {
-  const loaderData = useLoaderData<typeof loader>();
-  const navigate = useNavigate();
-  const seededActor = loaderData.seededActor;
-
-  return (
-    <ProductionQuantityForm
-      jobOptions={loaderData.jobOptions}
-      jobId={loaderData.jobId}
-      initialValues={{
-        jobOperationId: loaderData.jobOperationId,
-        actorKind: seededActor?.actorKind ?? loaderData.defaultActorKind,
-        employeeId: seededActor?.employeeId,
-        supplierProcessId: seededActor?.supplierProcessId,
-        supplierId: seededActor?.supplierId,
-        notes: "",
-        lines: [{ type: "Production", quantity: 0 }]
-      }}
-      operationOptions={loaderData.operationOptions}
-      configurationParameters={loaderData.configurationParameters}
-      configReferenceSource={loaderData.configReferenceSource}
-      itemId={loaderData.itemId}
-      processId={loaderData.processId}
-      operationType={loaderData.operationType}
-      defaultActorKind={loaderData.defaultActorKind}
-      lockActorSelection={loaderData.lockActorSelection}
-      onDismiss={() => navigate(path.to.productionQuantities)}
-    />
-  );
+  return null;
 }

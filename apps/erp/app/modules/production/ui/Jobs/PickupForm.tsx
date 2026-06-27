@@ -1,9 +1,7 @@
 import { ValidatedForm } from "@carbon/form";
 import {
   Button,
-  Drawer,
   DrawerBody,
-  DrawerContent,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
@@ -11,11 +9,12 @@ import {
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useState } from "react";
-import { useNavigate, useParams, useSearchParams } from "react-router";
+import { useMemo, useState } from "react";
 import type { z } from "zod";
+import type { OverlayFormInjectedProps } from "~/components/Overlay/renderLazyOverlay";
 import { Hidden, Number, Select, Submit, TextArea } from "~/components/Form";
-import { ProductionActorFields, selectionFromInitialValues } from "./ProductionActorFields";
+import { ProductionActorFields } from "./ProductionActorFields";
+import type { productionActorKinds } from "../../production.models";
 import { usePermissions } from "~/hooks";
 import {
   buildJobRemainingReferenceContext,
@@ -29,6 +28,7 @@ import { jobOperationPickupValidator } from "~/modules/production/production.mod
 import { path } from "~/utils/path";
 import { computeJobConfigTableTotal } from "../../jobConfiguration";
 import { QuantityWithConfigTable } from "./QuantityWithConfigTable";
+import { useProductionJobPicker } from "./useProductionJobPicker";
 
 type ConfigurationParameter = {
   key: string;
@@ -83,11 +83,10 @@ export type PickupFormProps = {
   defaultActorKind?: "employee" | "supplier";
   lockJobSelection?: boolean;
   lockActorSelection?: boolean;
+  /** When true, operation is shown but not editable (e.g. BOP overlay with preset operation). */
+  lockOperationSelection?: boolean;
   supplierId?: string;
-  onDismiss?: () => void;
-  action?: string;
-  fetcher?: import("react-router").FetcherWithComponents<unknown>;
-};
+} & Pick<OverlayFormInjectedProps, "onDismiss" | "fetcher" | "action">;
 
 const PickupForm = ({
   initialValues,
@@ -102,31 +101,36 @@ const PickupForm = ({
   defaultActorKind,
   lockJobSelection: lockJobSelectionProp,
   lockActorSelection: lockActorSelectionProp,
+  lockOperationSelection: lockOperationSelectionProp = false,
   supplierId,
-  onDismiss: onDismissProp,
+  onDismiss,
   action: formAction,
   fetcher
 }: PickupFormProps) => {
   const permissions = usePermissions();
   const { t } = useLingui();
-  const navigate = useNavigate();
-  const { jobId: jobIdFromParams } = useParams();
-  const [searchParams] = useSearchParams();
   const hasJobPicker = Boolean(jobOptions?.length);
+
+  const jobPicker = useProductionJobPicker({
+    enabled: hasJobPicker,
+    loaderPath: path.to.newPickup,
+    jobIdProp,
+    initialJobId: initialValues.jobId,
+    operationOptions,
+    configurationParameters,
+    configReferenceSource,
+    itemId,
+    processId,
+    operationType,
+    defaultActorKind,
+    lockActorSelection: lockActorSelectionProp,
+    supplierId
+  });
+
   const selectedJobId = hasJobPicker
-    ? (searchParams.get("jobId") ?? jobIdProp?.trim() ?? "")
-    : jobIdProp ?? jobIdFromParams ?? "";
-  const jobId = selectedJobId || jobIdFromParams;
-  const isOverlay = fetcher != null;
-  const onDismiss =
-    onDismissProp ??
-    (() => {
-      if (jobId) {
-        navigate(path.to.jobPickups(jobId));
-        return;
-      }
-      navigate(-1);
-    });
+    ? jobPicker.selectedJobId
+    : jobIdProp?.trim() ?? "";
+  const jobId = selectedJobId || jobIdProp?.trim() || undefined;
 
   const initialConfig = getInitialConfigState(initialValues.configuration);
 
@@ -139,50 +143,63 @@ const PickupForm = ({
   >(initialConfig.primaryKeys);
   const [configTableTotal, setConfigTableTotal] = useState(initialConfig.total);
 
-  const hasConfigurationParameters = (configurationParameters?.length ?? 0) > 0;
+  const hasConfigurationParameters =
+    (jobPicker.configurationParameters?.length ?? 0) > 0;
 
-  const isEditing = initialValues.id !== undefined;
-  const presetJobOperationIdOnCreate =
-    !isEditing && Boolean(initialValues.jobOperationId);
-  const isDisabled = isEditing
-    ? !permissions.can("update", "production")
-    : !permissions.can("create", "production");
+  const isDisabled = !permissions.can("create", "production");
 
-  // Track operation selection for submit validation
   const [selectedOperation, setSelectedOperation] = useState(
     initialValues.jobOperationId || ""
   );
+  const [operationSelectKey, setOperationSelectKey] = useState(0);
+  const seededFormJobId = jobIdProp?.trim() || initialValues.jobId?.trim() || "";
 
-  const updateSearchParams = (updates: {
-    jobId?: string | null;
-    jobOperationId?: string | null;
-  }) => {
-    const newParams = new URLSearchParams(searchParams);
-    if (updates.jobId !== undefined) {
-      if (updates.jobId) {
-        newParams.set("jobId", updates.jobId);
-      } else {
-        newParams.delete("jobId");
-      }
-    }
-    if (updates.jobOperationId !== undefined) {
-      if (updates.jobOperationId) {
-        newParams.set("jobOperationId", updates.jobOperationId);
-      } else {
-        newParams.delete("jobOperationId");
-      }
-    }
-    navigate(
-      {
-        search: newParams.toString()
-      },
-      { replace: true }
+  const [actorKind, setActorKind] = useState<
+    (typeof productionActorKinds)[number]
+  >(
+    () =>
+      (initialValues.actorKind ??
+        defaultActorKind ??
+        "employee") as (typeof productionActorKinds)[number]
+  );
+  const [employeeId, setEmployeeId] = useState(
+    () => initialValues.employeeId ?? ""
+  );
+  const [supplierProcessId, setSupplierProcessId] = useState(
+    () => initialValues.supplierProcessId ?? ""
+  );
+
+  const resetActorEntry = () => {
+    if (lockActorSelectionProp) return;
+    setEmployeeId("");
+    setSupplierProcessId("");
+    setActorKind(
+      (defaultActorKind ?? "employee") as (typeof productionActorKinds)[number]
     );
   };
 
-  const handleJobChange = (value: string) => {
-    updateSearchParams({ jobId: value, jobOperationId: null });
+  const resetQuantityEntry = () => {
+    setQuantity(0);
+    setConfigTableRows(null);
+    setConfigTablePrimaryKeys([]);
+    setConfigTableTotal(0);
   };
+
+  const handleJobChange = (value: string) => {
+    queueMicrotask(() => {
+      jobPicker.setSelectedJobId(value);
+      setSelectedOperation("");
+      setOperationSelectKey((key) => key + 1);
+      resetQuantityEntry();
+      resetActorEntry();
+    });
+  };
+
+  const isOperationPresetAndLocked =
+    lockOperationSelectionProp && Boolean(initialValues.jobOperationId);
+  const effectiveOperationId = isOperationPresetAndLocked
+    ? initialValues.jobOperationId
+    : selectedOperation;
 
   const handleConfigTableSubmit = (
     rows: ConfigRow[],
@@ -200,25 +217,19 @@ const PickupForm = ({
   const configModal = useConfigTableModal();
 
   const openConfigTable = () => {
-    if (!itemId) return;
+    if (!jobPicker.itemId) return;
     configModal.open({
-      itemId,
+      itemId: jobPicker.itemId,
       configuration: toConfigTableValue(
         configTableRows,
         configTablePrimaryKeys,
         initialValues.configuration
       ),
       jobId: jobId ?? undefined,
-      jobOperationId: selectedOperation || undefined,
+      jobOperationId: effectiveOperationId || undefined,
       reportKind: "pickup",
       buildReferenceContext: (source) =>
-        source
-          ? buildJobRemainingReferenceContext(source, {
-              excludeConfigurations: isEditing
-                ? [initialValues.configuration]
-                : undefined
-            })
-          : undefined,
+        source ? buildJobRemainingReferenceContext(source) : undefined,
       onConfirm: (data) =>
         handleConfigTableSubmit(
           data.configuration.configTable,
@@ -228,139 +239,129 @@ const PickupForm = ({
     });
   };
 
-  const lockActorSelection = isEditing || Boolean(lockActorSelectionProp);
-
-  const form = (
-    <ValidatedForm
-      validator={jobOperationPickupValidator}
-      method="post"
-      defaultValues={initialValues}
-      className="flex flex-col h-full"
-      action={formAction}
-      fetcher={fetcher}
-    >
-      <DrawerHeader>
-        <DrawerTitle>
-          {isEditing ? (
-            <Trans>Edit Process Pickup</Trans>
-          ) : (
-            <Trans>Process Pickup</Trans>
-          )}
-        </DrawerTitle>
-      </DrawerHeader>
-      <DrawerBody>
-        <Hidden name="id" />
-        <VStack spacing={4}>
-          {jobOptions && !isEditing ? (
-            <Select
-              name="jobId"
-              label={t`Job`}
-              options={jobOptions}
-              isDisabled={lockJobSelectionProp}
-              onChange={(newValue) => {
-                if (newValue?.value) handleJobChange(newValue.value);
-              }}
-            />
-          ) : null}
-          {isEditing ? (
-            <Hidden name="jobOperationId" />
-          ) : (
-            <Select
-              key={hasJobPicker ? selectedJobId || "no-job" : "job-operation"}
-              name="jobOperationId"
-              label={t`Operation`}
-              options={operationOptions ?? []}
-              isDisabled={
-                presetJobOperationIdOnCreate ||
-                (hasJobPicker && !selectedJobId)
-              }
-              onChange={(newValue) => {
-                setSelectedOperation(newValue?.value ?? "");
-              }}
-            />
-          )}
-          <ProductionActorFields
-            processId={processId}
-            operationType={operationType}
-            defaultActorKind={defaultActorKind}
-            lockActorSelection={lockActorSelection}
-            employeeIdValue={initialValues.employeeId}
-            supplierProcessIdValue={initialValues.supplierProcessId}
-            supplierIdValue={supplierId}
-          />
-          {configTableRows && (
-            <Hidden
-              name="configuration"
-              value={JSON.stringify({
-                configTable: configTableRows,
-                configTablePrimaryKeys
-              })}
-            />
-          )}
-          {hasConfigurationParameters ? (
-            <QuantityWithConfigTable
-              name="quantity"
-              label={t`Quantity`}
-              value={quantity}
-              minValue={0}
-              isDisabled={isDisabled}
-              isReadOnly={configTableTotal > 0}
-              configTableTotal={configTableTotal}
-              hasConfigurationParameters
-              onOpenConfigTable={openConfigTable}
-              onChange={setQuantity}
-            />
-          ) : (
-            <Number
-              name="quantity"
-              label={t`Quantity`}
-              minValue={0}
-              onChange={(value) => setQuantity(value)}
-            />
-          )}
-          <TextArea name="notes" label={t`Notes`} />
-        </VStack>
-      </DrawerBody>
-      <DrawerFooter>
-        <HStack>
-          <Submit
-            isDisabled={isDisabled || quantity === 0 || !selectedOperation}
-            className="transition-transform active:scale-[0.96]"
-          >
-            <Trans>Save</Trans>
-          </Submit>
-          <Button
-            variant="solid"
-            type="button"
-            onClick={onDismiss}
-            className="transition-transform active:scale-[0.96]"
-          >
-            <Trans>Cancel</Trans>
-          </Button>
-        </HStack>
-      </DrawerFooter>
-    </ValidatedForm>
+  const lockActorSelection = Boolean(
+    jobPicker.lockActorSelection || lockActorSelectionProp
   );
 
-  if (isOverlay) {
-    return (
-      <>
-        {form}
-        {configModal.node}
-      </>
-    );
-  }
+  const formDefaultValues = useMemo(
+    () => ({
+      ...initialValues,
+      ...(seededFormJobId ? { jobId: seededFormJobId } : {}),
+      jobOperationId: effectiveOperationId || initialValues.jobOperationId || ""
+    }),
+    [initialValues, seededFormJobId, effectiveOperationId]
+  );
 
   return (
     <>
-      <Drawer
-        open
-        onOpenChange={(open) => {
-          if (!open) onDismiss();
-        }}
+      <ValidatedForm
+        validator={jobOperationPickupValidator}
+        method="post"
+        defaultValues={formDefaultValues}
+        className="flex flex-col h-full"
+        action={formAction}
+        fetcher={fetcher}
       >
-        <DrawerContent>{form}</DrawerContent>
-      </Drawer>
+        <DrawerHeader>
+          <DrawerTitle>
+            <Trans>Process Pickup</Trans>
+          </DrawerTitle>
+        </DrawerHeader>
+        <DrawerBody>
+          <VStack spacing={4}>
+            {jobOptions ? (
+              <Select
+                name="jobId"
+                label={t`Job`}
+                options={jobOptions}
+                isDisabled={lockJobSelectionProp}
+                onChange={(newValue) => {
+                  if (newValue?.value) handleJobChange(newValue.value);
+                }}
+              />
+            ) : null}
+            <Select
+              key={hasJobPicker ? `op-${operationSelectKey}` : "job-operation"}
+              name="jobOperationId"
+              label={t`Operation`}
+              options={jobPicker.operationOptions}
+              isDisabled={
+                lockOperationSelectionProp ||
+                (hasJobPicker && !selectedJobId) ||
+                jobPicker.isCascadeLoading
+              }
+              onChange={(newValue) => {
+                if (lockOperationSelectionProp) return;
+                setSelectedOperation(newValue?.value ?? "");
+                resetQuantityEntry();
+              }}
+            />
+            <ProductionActorFields
+              processId={jobPicker.processId}
+              operationType={jobPicker.operationType}
+              defaultActorKind={jobPicker.defaultActorKind}
+              lockActorSelection={lockActorSelection}
+              employeeIdValue={employeeId}
+              supplierProcessIdValue={supplierProcessId}
+              supplierIdValue={jobPicker.supplierId}
+              onActorKindChange={setActorKind}
+              onEmployeeChange={setEmployeeId}
+              onSupplierProcessChange={setSupplierProcessId}
+            />
+            {configTableRows && (
+              <Hidden
+                name="configuration"
+                value={JSON.stringify({
+                  configTable: configTableRows,
+                  configTablePrimaryKeys
+                })}
+              />
+            )}
+            {hasConfigurationParameters ? (
+              <QuantityWithConfigTable
+                name="quantity"
+                label={t`Quantity`}
+                value={quantity}
+                minValue={0}
+                isDisabled={isDisabled}
+                isReadOnly={configTableTotal > 0}
+                configTableTotal={configTableTotal}
+                hasConfigurationParameters
+                onOpenConfigTable={openConfigTable}
+                onChange={setQuantity}
+              />
+            ) : (
+              <Number
+                name="quantity"
+                label={t`Quantity`}
+                minValue={0}
+                onChange={(value) => setQuantity(value)}
+              />
+            )}
+            <TextArea name="notes" label={t`Notes`} />
+          </VStack>
+        </DrawerBody>
+        <DrawerFooter>
+          <HStack>
+            <Submit
+              isDisabled={
+                isDisabled || quantity === 0 || !effectiveOperationId
+              }
+              className="transition-transform active:scale-[0.96]"
+            >
+              <Trans>Save</Trans>
+            </Submit>
+            <Button
+              variant="solid"
+              type="button"
+              onClick={onDismiss}
+              className="transition-transform active:scale-[0.96]"
+            >
+              <Trans>Cancel</Trans>
+            </Button>
+          </HStack>
+        </DrawerFooter>
+      </ValidatedForm>
       {configModal.node}
     </>
   );

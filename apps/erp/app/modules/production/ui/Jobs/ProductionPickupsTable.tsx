@@ -1,13 +1,14 @@
-import { MenuIcon, MenuItem, useDisclosure } from "@carbon/react";
+import { Button, MenuIcon, MenuItem, useDisclosure } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useMemo, useState } from "react";
-import { LuTrash } from "react-icons/lu";
-import { useParams } from "react-router";
-import { EmployeeAvatar, Hyperlink, New, Table } from "~/components";
+import { LuPlus, LuTrash } from "react-icons/lu";
+import { useParams, useRevalidator } from "react-router";
+import { EmployeeAvatar, Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { ConfirmDelete } from "~/components/Modals";
-import { usePermissions, useUrlParams } from "~/hooks";
+import { overlay, useOverlay } from "~/components/Overlay";
+import { usePermissions } from "~/hooks";
 import { usePickupCreatedAtSave } from "~/modules/production/ui/useEditableCreatedAt";
 import { EditableCreatedAtCell } from "~/modules/production/ui/EditableCreatedAtCell";
 import { path } from "~/utils/path";
@@ -25,7 +26,15 @@ const ProductionPickupsTable = memo(
     const { t } = useLingui();
     if (!jobId) throw new Error("Job ID is required");
     const permissions = usePermissions();
+    const { openOverlay } = useOverlay();
+    const revalidator = useRevalidator();
     const { saveCreatedAt, canEdit } = usePickupCreatedAtSave();
+
+    const openNew = useCallback(() => {
+      openOverlay(overlay.to.newJobPickup({ jobId }), {
+        onCreated: () => revalidator.revalidate()
+      });
+    }, [jobId, openOverlay, revalidator]);
 
     const columns = useMemo<ColumnDef<JobPickup>[]>(() => {
       return [
@@ -102,8 +111,6 @@ const ProductionPickupsTable = memo(
       deleteModal.onClose();
     };
 
-    const [params] = useUrlParams();
-
     const renderContextMenu = useCallback<(row: JobPickup) => JSX.Element>(
       (row) => (
         <>
@@ -129,7 +136,14 @@ const ProductionPickupsTable = memo(
           data={data}
           primaryAction={
             permissions.can("create", "production") && (
-              <New label={t`Process Pickup`} to={`new?${params.toString()}`} />
+              <Button
+                type="button"
+                variant="primary"
+                leftIcon={<LuPlus />}
+                onClick={openNew}
+              >
+                <Trans>Process Pickup</Trans>
+              </Button>
             )
           }
           renderContextMenu={renderContextMenu}

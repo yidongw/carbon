@@ -4,7 +4,13 @@ import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { data, redirect, useLoaderData } from "react-router";
+import { data, redirect } from "react-router";
+import {
+  OVERLAY_PARAM,
+  overlay,
+  overlayToken,
+  serializeSearch
+} from "~/components/Overlay/overlay";
 import { z } from "zod";
 import { getConfigurationParameters } from "~/modules/items";
 import {
@@ -23,20 +29,37 @@ import {
 } from "~/modules/production";
 import { getConfigReferenceSourceForOperation } from "~/modules/production/configTableOverlay.server";
 import { productionQuantityLineJsonValidator } from "~/modules/production/productionQuantityReport.models";
-import ProductionQuantityForm from "~/modules/production/ui/Jobs/ProductionQuantityForm";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { getParams, path } from "~/utils/path";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
+  const url = new URL(request.url);
+  const isOverlay = url.searchParams.get("overlay") === "true";
+  const { jobId } = params;
+  if (!jobId) throw notFound("jobId not found");
+
+  if (!isOverlay) {
+    const jobOperationId = url.searchParams.get("jobOperationId") ?? "";
+    const target = overlay.to.newJobProductionQuantity({
+      jobId,
+      jobOperationId: jobOperationId || undefined
+    });
+    const token = overlayToken(target);
+    const redirectParams = new URLSearchParams();
+    if (token) redirectParams.append(OVERLAY_PARAM, token);
+    const query = serializeSearch(redirectParams);
+    throw redirect(
+      query
+        ? `${path.to.jobProductionQuantities(jobId)}?${query}`
+        : path.to.jobProductionQuantities(jobId)
+    );
+  }
+
   const { client, companyId } = await requirePermissions(request, {
     create: "production"
   });
 
-  const { jobId } = params;
-  if (!jobId) throw notFound("jobId not found");
-
-  const jobOperationId =
-    new URL(request.url).searchParams.get("jobOperationId") ?? "";
+  const jobOperationId = url.searchParams.get("jobOperationId") ?? "";
 
   const [job, jobOperations, opContext] = await Promise.all([
     getJob(client, jobId),
@@ -263,43 +286,5 @@ export async function action({ request, params }: ActionFunctionArgs) {
 }
 
 export default function NewProductionQuantityRoute() {
-  const {
-    jobId,
-    jobOption,
-    jobOperationId,
-    operationOptions,
-    configurationParameters,
-    configReferenceSource,
-    itemId,
-    processId,
-    operationType,
-    defaultActorKind,
-    seededActor
-  } = useLoaderData<typeof loader>();
-  const initialValues = {
-    jobOperationId,
-    notes: "",
-    employeeId: seededActor.employeeId,
-    actorKind: seededActor.actorKind,
-    supplierProcessId: seededActor.supplierProcessId,
-    supplierId: seededActor.supplierId,
-    lines: [{ type: "Production" as const, quantity: 0 }]
-  };
-
-  return (
-    <ProductionQuantityForm
-      initialValues={initialValues}
-      jobOptions={[jobOption]}
-      operationOptions={[...(operationOptions ?? [])]}
-      configurationParameters={configurationParameters}
-      configReferenceSource={configReferenceSource}
-      itemId={itemId}
-      jobId={jobId}
-      processId={processId}
-      operationType={operationType}
-      defaultActorKind={defaultActorKind}
-      lockJobSelection
-      lockActorSelection={seededActor.lockActorSelection}
-    />
-  );
+  return null;
 }

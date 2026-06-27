@@ -65,10 +65,140 @@ export const overlayRegistry = {
             seeded?.actorKind ?? data.defaultActorKind ?? "employee",
           lockJobSelection: Boolean(data.jobOption),
           lockActorSelection: seeded?.lockActorSelection ?? false,
+          lockOperationSelection: Boolean(data.jobOperationId),
           supplierId: seeded?.supplierId ?? ""
         };
       },
       () => import("~/modules/production/ui/Jobs/PickupForm")
+    )
+  },
+  newProductionPickup: {
+    type: "drawer",
+    render: renderLazyOverlay(
+      (ctx) => {
+        const data = ctx.loaderData as
+          | {
+              jobId: string;
+              jobOperationId: string;
+              jobOptions: { label: string; value: string }[];
+              operationOptions: { label: string; value: string }[];
+              configurationParameters?:
+                | {
+                    key: string;
+                    label: string;
+                    dataType: string;
+                    listOptions?: string[] | null;
+                  }[]
+                | null;
+              configReferenceSource?: {
+                jobConfiguration: unknown;
+                reportedConfigurations: unknown[];
+              } | null;
+              itemId?: string | null;
+              processId?: string | null;
+              operationType?: string | null;
+              defaultActorKind?: "employee" | "supplier";
+              lockActorSelection?: boolean;
+              supplierId?: string;
+              seededActor?: {
+                actorKind: "employee" | "supplier";
+                employeeId: string;
+                supplierProcessId: string;
+                supplierId: string;
+                lockActorSelection: boolean;
+              } | null;
+            }
+          | undefined;
+        if (!data) return null;
+        const seeded = data.seededActor;
+        return {
+          initialValues: {
+            jobId: data.jobId,
+            jobOperationId: data.jobOperationId,
+            actorKind: seeded?.actorKind ?? data.defaultActorKind ?? "employee",
+            employeeId: seeded?.employeeId || undefined,
+            supplierProcessId: seeded?.supplierProcessId || undefined,
+            quantity: 0,
+            configuration: undefined,
+            notes: undefined
+          },
+          jobOptions: data.jobOptions,
+          jobId: data.jobId,
+          operationOptions: data.operationOptions ?? [],
+          configurationParameters: data.configurationParameters ?? null,
+          configReferenceSource: data.configReferenceSource ?? null,
+          itemId: data.itemId ?? null,
+          processId: data.processId ?? null,
+          operationType: data.operationType ?? null,
+          defaultActorKind: data.defaultActorKind ?? "employee",
+          lockActorSelection: data.lockActorSelection ?? false,
+          supplierId: data.supplierId
+        };
+      },
+      () => import("~/modules/production/ui/Jobs/PickupForm")
+    )
+  },
+  newProductionQuantity: {
+    type: "drawer",
+    render: renderLazyOverlay(
+      (ctx) => {
+        const data = ctx.loaderData as
+          | {
+              jobId: string;
+              jobOperationId: string;
+              jobOptions: { label: string; value: string }[];
+              operationOptions: { label: string; value: string }[];
+              configurationParameters?:
+                | {
+                    key: string;
+                    label: string;
+                    dataType: string;
+                    listOptions?: string[] | null;
+                  }[]
+                | null;
+              configReferenceSource?: {
+                jobConfiguration: unknown;
+                reportedConfigurations: unknown[];
+              } | null;
+              itemId?: string | null;
+              processId?: string | null;
+              operationType?: string | null;
+              defaultActorKind?: "employee" | "supplier";
+              lockActorSelection?: boolean;
+              seededActor?: {
+                actorKind: "employee" | "supplier";
+                employeeId: string;
+                supplierProcessId: string;
+                supplierId: string;
+                lockActorSelection: boolean;
+              } | null;
+            }
+          | undefined;
+        if (!data) return null;
+        const seeded = data.seededActor;
+        return {
+          jobOptions: data.jobOptions,
+          jobId: data.jobId,
+          initialValues: {
+            jobOperationId: data.jobOperationId,
+            actorKind: seeded?.actorKind ?? data.defaultActorKind ?? "employee",
+            employeeId: seeded?.employeeId,
+            supplierProcessId: seeded?.supplierProcessId,
+            supplierId: seeded?.supplierId,
+            notes: "",
+            lines: [{ type: "Production" as const, quantity: 0 }]
+          },
+          operationOptions: data.operationOptions ?? [],
+          configurationParameters: data.configurationParameters ?? null,
+          configReferenceSource: data.configReferenceSource ?? null,
+          itemId: data.itemId ?? null,
+          processId: data.processId ?? null,
+          operationType: data.operationType ?? null,
+          defaultActorKind: data.defaultActorKind ?? "employee",
+          lockActorSelection: data.lockActorSelection ?? false
+        };
+      },
+      () => import("~/modules/production/ui/Jobs/ProductionQuantityForm")
     )
   },
   newJobProductionQuantity: {

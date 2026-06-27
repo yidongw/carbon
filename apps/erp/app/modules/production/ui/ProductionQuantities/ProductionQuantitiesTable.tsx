@@ -14,7 +14,8 @@ import {
 } from "react-icons/lu";
 import type { FetcherWithComponents } from "react-router";
 import { useFetcher, useRevalidator } from "react-router";
-import { New, Table } from "~/components";
+import { overlay, useOverlay } from "~/components/Overlay";
+import { Table } from "~/components";
 import type {
   ProductionQuantityListRow,
   ProductionQuantityPayStatus
@@ -187,6 +188,7 @@ const ProductionQuantitiesTable = memo(
     configurableItemIds = []
   }: ProductionQuantitiesTableProps) => {
     const { t } = useLingui();
+    const { openOverlay } = useOverlay();
     const configurableItemIdSet = useMemo(
       () => new Set(configurableItemIds),
       [configurableItemIds]
@@ -206,6 +208,12 @@ const ProductionQuantitiesTable = memo(
       pendingRejectTargetRef.current = null;
       setRejectCorrection(null);
     }, []);
+
+    const openNewQuantity = useCallback(() => {
+      openOverlay(overlay.to.newProductionQuantity(), {
+        onCreated: () => revalidator.revalidate()
+      });
+    }, [openOverlay, revalidator]);
 
     const openRejectCorrection = useCallback((target: RejectCorrectionTarget) => {
       pendingRejectTargetRef.current = target;
@@ -481,11 +489,14 @@ const ProductionQuantitiesTable = memo(
             !embedded && (status === "pending" || status === "all") ? (
               <HStack>
                 {showCreateAction ? (
-                  <New
-                    label={<Trans>Process Completion</Trans>}
-                    to={path.to.newProductionQuantity}
-                    icon={<IconButton icon={<LuPlus />} label="New" />}
-                  />
+                  <Button
+                    type="button"
+                    variant="primary"
+                    leftIcon={<LuPlus />}
+                    onClick={openNewQuantity}
+                  >
+                    <Trans>Process Completion</Trans>
+                  </Button>
                 ) : null}
                 <SalaryPeriodPicker
                   year={year}
@@ -494,11 +505,14 @@ const ProductionQuantitiesTable = memo(
                 />
               </HStack>
             ) : showCreateAction ? (
-              <New
-                label={<Trans>Process Completion</Trans>}
-                to={path.to.newProductionQuantity}
-                icon={<IconButton icon={<LuPlus />} label="New" />}
-              />
+              <Button
+                type="button"
+                variant="primary"
+                leftIcon={<LuPlus />}
+                onClick={openNewQuantity}
+              >
+                <Trans>Process Completion</Trans>
+              </Button>
             ) : undefined
           }
           withSearch={!embedded}
