@@ -60,6 +60,7 @@ import {
 } from "react-icons/lu";
 import { useFetcher, useNavigate, useRevalidator } from "react-router";
 import {
+  CardActionValue,
   CustomerAvatar,
   EmployeeAvatar,
   Hyperlink,
@@ -145,7 +146,7 @@ const JobIdCell = memo(function JobIdCell({ job }: { job: Job }) {
         type={job.itemType}
       />
       {isCardCell ? (
-        <span className="card-action-value font-medium">{job.jobId}</span>
+        <CardActionValue className="font-medium">{job.jobId}</CardActionValue>
       ) : (
         <Hyperlink to={path.to.job(job.id!)}>{job.jobId}</Hyperlink>
       )}

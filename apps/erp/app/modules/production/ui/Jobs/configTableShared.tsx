@@ -249,14 +249,14 @@ export const configParamsModalContentClassName = cn(
 );
 
 export const configParamsModalShellClassName =
-  "flex w-max max-w-[calc(100vw-1.5rem)] flex-col";
+  "flex min-h-0 w-max min-w-full max-w-[calc(100vw-1.5rem)] flex-1 flex-col";
 
 export const configParamsModalBodyClassName =
-  "overflow-x-auto overflow-y-auto px-6 py-4";
+  "min-w-0 flex-1 overflow-x-auto overflow-y-auto px-6 py-4";
 
 /** Job config overlay: keep a stable width while switching Delta/Total tabs. */
 export const jobConfigQuantitiesModalShellClassName =
-  "flex w-max min-w-full max-w-full flex-col";
+  "flex min-h-0 w-max min-w-full max-w-full flex-1 flex-col";
 
 export const jobConfigQuantitiesModalBodyClassName =
   "min-w-0 flex-1 overflow-x-auto overflow-y-auto px-6 py-4";
@@ -320,7 +320,7 @@ export function ReadOnlyConfigTable({
   columns: Column[];
   rows: Row[];
   signed?: boolean;
-  onQuantityClick?: (colKey: string, value: number) => void;
+  onQuantityClick?: (row: Row, colKey: string, value: number) => void;
 }) {
   return (
     <ResponsiveConfigTable
@@ -341,7 +341,7 @@ export function ReadOnlyConfigTable({
         return clickable ? (
           <button
             type="button"
-            onClick={() => onQuantityClick?.(col.key, numeric)}
+            onClick={() => onQuantityClick?.(row, col.key, numeric)}
             className="rounded px-1.5 py-0.5 text-sm tabular-nums text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
           >
             {display}
@@ -370,7 +370,8 @@ export function EditableConfigGrid({
   updateCell,
   deleteRow,
   readOnly = false,
-  allowRowMutations = true
+  allowRowMutations = true,
+  canDeleteRow
 }: {
   columns: Column[];
   rows: Row[];
@@ -389,6 +390,9 @@ export function EditableConfigGrid({
   deleteRow: (index: number) => void;
   readOnly?: boolean;
   allowRowMutations?: boolean;
+  /** When set, rows matching this predicate get a delete action even if
+   * `allowRowMutations` is false (e.g. process-click seeded rows). */
+  canDeleteRow?: (rowIndex: number) => boolean;
 }) {
   const { t } = useLingui();
 
@@ -423,7 +427,7 @@ export function EditableConfigGrid({
           <div className="flex min-w-0 items-center gap-1">
             <input
               type="number"
-              min={0}
+              min={allowNegative ? undefined : 0}
               disabled={readOnly}
               value={
                 typeof cellValue === "boolean" ? "" : (cellValue ?? "")
@@ -471,11 +475,7 @@ export function EditableConfigGrid({
       return (
         <input
           type="number"
-          min={
-            col.type === "quantity" && (isTotalMode || !allowNegative)
-              ? 0
-              : undefined
-          }
+          min={col.type === "quantity" && !allowNegative ? 0 : undefined}
           disabled={readOnly}
           value={
             isTotalMode
@@ -569,17 +569,22 @@ export function EditableConfigGrid({
       hideZeroValuesInVertical={readOnly}
       renderCell={renderCell}
       renderRowActions={
-        readOnly || !allowRowMutations
+        readOnly
           ? undefined
-          : (rowIndex) => (
-              <IconButton
-                icon={<LuTrash2 />}
-                aria-label={t`Delete row`}
-                variant="ghost"
-                size="sm"
-                onClick={() => deleteRow(rowIndex)}
-              />
-            )
+          : (rowIndex) => {
+              if (!allowRowMutations && !canDeleteRow?.(rowIndex)) {
+                return null;
+              }
+              return (
+                <IconButton
+                  icon={<LuTrash2 />}
+                  aria-label={t`Delete row`}
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => deleteRow(rowIndex)}
+                />
+              );
+            }
       }
     />
   );

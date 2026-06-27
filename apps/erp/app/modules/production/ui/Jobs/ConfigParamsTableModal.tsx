@@ -7,6 +7,7 @@ import {
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import { LuPlus } from "react-icons/lu";
 import { useFetcher } from "react-router";
 import { Enumerable } from "~/components/Enumerable";
 import { useShape } from "~/components/Form/Shape";
@@ -34,6 +35,7 @@ import {
   getCellKey,
   getInitialRows,
   hasValue,
+  makeDefaultRow,
   mergeRows,
   normalizeRow,
   type Row,
@@ -90,6 +92,8 @@ function ConfigParamsTableModal({
 
   const hasReferences = (referenceByRowIndex?.length ?? 0) > 0;
   const total = computeTotal(rows, primaryKeys);
+
+  const addRow = () => setRows((prev) => [...prev, makeDefaultRow(columns)]);
 
   const deleteRow = (index: number) =>
     setRows((prev) => prev.filter((_, i) => i !== index));
@@ -174,7 +178,20 @@ function ConfigParamsTableModal({
       {validationError && (
         <div className="text-sm text-destructive">{validationError}</div>
       )}
-      <HStack className="mt-4 justify-end">
+      <HStack className="mt-4 justify-between">
+        {!readOnly ? (
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            onClick={addRow}
+            leftIcon={<LuPlus />}
+          >
+            <Trans>Add Row</Trans>
+          </Button>
+        ) : (
+          <span />
+        )}
         <span className="text-sm text-muted-foreground">
           <Trans>Total</Trans>:{" "}
           <strong className="text-foreground">{total}</strong>
@@ -355,23 +372,21 @@ export function ConfigParamsTableLocalModal({
       }}
     >
       <ModalContent className={configParamsModalContentClassName}>
-        <div className="max-h-[calc(92vh-1rem)] overflow-y-auto overflow-x-hidden">
-          {data?.parameters?.length ? (
-            <ConfigParamsTableModal
-              parameters={data.parameters}
-              initialRows={initialRows}
-              referenceByRowIndex={referenceByRowIndex}
-              jobDisplayId={jobDisplayId ?? data.itemReadableId}
-              confirmMode="client"
-              onConfirmSuccess={onConfirm}
-              onDismiss={onClose}
-            />
-          ) : (
-            <div className="flex min-h-[200px] items-center justify-center p-6">
-              <Loading isLoading={isLoading} />
-            </div>
-          )}
-        </div>
+        {data?.parameters?.length ? (
+          <ConfigParamsTableModal
+            parameters={data.parameters}
+            initialRows={initialRows}
+            referenceByRowIndex={referenceByRowIndex}
+            jobDisplayId={jobDisplayId ?? data.itemReadableId}
+            confirmMode="client"
+            onConfirmSuccess={onConfirm}
+            onDismiss={onClose}
+          />
+        ) : (
+          <div className="flex min-h-[200px] items-center justify-center p-6">
+            <Loading isLoading={isLoading} />
+          </div>
+        )}
       </ModalContent>
     </Modal>
   );

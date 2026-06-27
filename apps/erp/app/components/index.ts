@@ -41,6 +41,7 @@ import SearchFilter from "./SearchFilter";
 import { SearchLandingPage } from "./SearchLandingPage";
 import Select from "./Select";
 import SupplierAvatar from "./SupplierAvatar";
+import { CardActionValue } from "./Table/components/CardFieldChip";
 import Table from "./Table";
 
 export {
@@ -51,6 +52,7 @@ export {
   BreadcrumbLink,
   Breadcrumbs,
   CadModel,
+  CardActionValue,
   Contact,
   CustomerAvatar,
   DateSelect,
