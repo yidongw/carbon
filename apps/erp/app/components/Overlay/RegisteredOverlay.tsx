@@ -97,9 +97,7 @@ export function RegisteredOverlay({
           stackZIndex={zIndex}
           className={overlayModalContentClassName}
         >
-          <div className="max-h-[calc(92vh-1rem)] overflow-y-auto overflow-x-hidden">
-            <Content {...contentProps} />
-          </div>
+          <Content {...contentProps} />
         </ModalContent>
       </Modal>
     );

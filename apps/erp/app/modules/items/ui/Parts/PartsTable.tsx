@@ -584,6 +584,9 @@ const PartsTable = memo(
           count={count}
           columns={columns}
           data={data}
+          getRowHref={(row) =>
+            row.id ? path.to.partDetails(row.id) : undefined
+          }
           defaultColumnPinning={{
             left: ["id"]
           }}

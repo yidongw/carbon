@@ -84,7 +84,7 @@ export default function JobStatusMenu({ job }: { job: Job }) {
           fight Radix's focus/scroll lock and immediately close. */}
       <DropdownMenu modal={false}>
         {isCardCell ? (
-          // In the mobile card the whole pill is the tap target: render the
+          // In the mobile card the whole chip is the tap target: render the
           // badge as visuals and overlay a full-cover trigger. Stop the tap from
           // bubbling to the card's row-nav / swipe handlers.
           <>

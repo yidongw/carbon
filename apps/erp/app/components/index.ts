@@ -44,6 +44,7 @@ import { SearchLandingPage } from "./SearchLandingPage";
 import Select from "./Select";
 import SupplierAvatar from "./SupplierAvatar";
 import Table from "./Table";
+import { CardActionValue } from "./Table/components/CardFieldChip";
 
 export {
   Assignee,
@@ -53,6 +54,7 @@ export {
   BreadcrumbLink,
   Breadcrumbs,
   CadModel,
+  CardActionValue,
   Contact,
   CustomerAvatar,
   DateSelect,

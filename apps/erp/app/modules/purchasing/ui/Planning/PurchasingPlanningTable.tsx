@@ -40,6 +40,7 @@ import {
 } from "react-icons/lu";
 import { Link, useFetcher } from "react-router";
 import {
+  CardActionValue,
   ItemThumbnail,
   MethodItemTypeIcon,
   SupplierAvatar,
@@ -362,7 +363,9 @@ const PlanningTable = memo(
               />
 
               <VStack spacing={0} className="font-medium">
-                {row.original.readableIdWithRevision}
+                <CardActionValue>
+                  {row.original.readableIdWithRevision}
+                </CardActionValue>
                 <div className="w-full truncate text-muted-foreground text-xs">
                   {row.original.name}
                 </div>
