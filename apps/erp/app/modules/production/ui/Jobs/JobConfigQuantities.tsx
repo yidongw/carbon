@@ -1,6 +1,6 @@
 import { Button, cn, HStack } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { LuChevronRight } from "react-icons/lu";
 import { PillSegmentedControl } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
@@ -21,6 +21,7 @@ import {
   getInitialRows,
   getMergeKey,
   hasValue,
+  makeDefaultRow,
   mergeRows,
   normalizeRow,
   ReadOnlyConfigTable,
@@ -130,7 +131,7 @@ function ProcessQuantitiesList({
 }: {
   processQuantities: ProcessQuantityEntry[];
   columns: Column[];
-  onApply: (colKey: string, value: number) => void;
+  onApply: (row: Row, colKey: string, value: number) => void;
 }) {
   const { t } = useLingui();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
@@ -230,6 +231,12 @@ function JobConfigQuantities({
       ? currentRows.map((row) => zeroQuantities(row, columns))
       : getInitialRows(parameters, primaryParam, columns)
   );
+  const initialRowKeysRef = useRef<Set<string> | null>(null);
+  if (initialRowKeysRef.current === null) {
+    initialRowKeysRef.current = new Set(
+      rows.map((row) => getMergeKey(row, columns))
+    );
+  }
   const [invalidCells, setInvalidCells] = useState<Set<string>>(new Set());
   const [validationError, setValidationError] = useState("");
   // Delta = enter the change (default); Total = enter the target quantity.
@@ -268,6 +275,11 @@ function JobConfigQuantities({
   const deleteRow = (index: number) =>
     setRows((prev) => prev.filter((_, i) => i !== index));
 
+  const canDeleteRow = (rowIndex: number) => {
+    const key = getMergeKey(rows[rowIndex], columns);
+    return !initialRowKeysRef.current?.has(key);
+  };
+
   const updateCell = (
     rowIndex: number,
     colKey: string,
@@ -284,15 +296,30 @@ function JobConfigQuantities({
     setValidationError("");
   };
 
-  // Clicking a process quantity targets that absolute value: the stored delta
-  // becomes (value - current baseline) so both Delta and Total views agree.
-  const applyProcessValue = (colKey: string, value: number) => {
+  // Clicking a process quantity targets that absolute value on the matching
+  // adjustment row (by descriptor merge key): stored delta becomes
+  // (value - current baseline) so both Delta and Total views agree.
+  const applyProcessValue = (sourceRow: Row, colKey: string, value: number) => {
     setRows((prev) => {
       if (prev.length === 0) return prev;
-      const baseline = baselineFor(prev[0], colKey);
-      return prev.map((row, i) =>
-        i === 0 ? { ...row, [colKey]: value - baseline } : row
+      const sourceKey = getMergeKey(sourceRow, columns);
+      const targetIndex = prev.findIndex(
+        (row) => getMergeKey(row, columns) === sourceKey
       );
+
+      if (targetIndex >= 0) {
+        const baseline = baselineFor(prev[targetIndex], colKey);
+        return prev.map((row, i) =>
+          i === targetIndex ? { ...row, [colKey]: value - baseline } : row
+        );
+      }
+
+      const seededRow = zeroQuantities(
+        normalizeRow({ ...makeDefaultRow(columns), ...sourceRow }, columns),
+        columns
+      );
+      const baseline = baselineFor(seededRow, colKey);
+      return [...prev, { ...seededRow, [colKey]: value - baseline }];
     });
     setValidationError("");
   };
@@ -418,6 +445,7 @@ function JobConfigQuantities({
               updateCell={updateCell}
               deleteRow={deleteRow}
               allowRowMutations={false}
+              canDeleteRow={canDeleteRow}
             />
             {validationError && (
               <div className="text-sm text-destructive">{validationError}</div>
