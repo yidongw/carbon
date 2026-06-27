@@ -3,7 +3,7 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { useMount, VStack } from "@carbon/react";
 import type { LoaderFunctionArgs } from "react-router";
-import { Outlet, redirect, useLoaderData } from "react-router";
+import { redirect, useLoaderData } from "react-router";
 import { usePanels } from "~/components/Layout";
 import {
   getJobOperationsList,
@@ -82,7 +82,6 @@ export default function JobPickupsRoute() {
           operations={operations}
         />
       </VStack>
-      <Outlet />
     </>
   );
 }

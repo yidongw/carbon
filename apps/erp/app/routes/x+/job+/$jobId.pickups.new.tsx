@@ -3,7 +3,13 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { data, redirect, useLoaderData } from "react-router";
+import { data, redirect } from "react-router";
+import {
+  OVERLAY_PARAM,
+  overlay,
+  overlayToken,
+  serializeSearch
+} from "~/components/Overlay/overlay";
 import { getConfigurationParameters } from "~/modules/items";
 import {
   defaultActorKindFromOperationType,
@@ -17,19 +23,34 @@ import {
   validateActorMatchesOperationSupplierRouting
 } from "~/modules/production";
 import { getConfigReferenceSourceForOperation } from "~/modules/production/configTableOverlay.server";
-import PickupForm from "~/modules/production/ui/Jobs/PickupForm";
 import { getParams, path } from "~/utils/path";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
+  const url = new URL(request.url);
+  const isOverlay = url.searchParams.get("overlay") === "true";
+  const { jobId } = params;
+  if (!jobId) throw notFound("jobId not found");
+
+  if (!isOverlay) {
+    const jobOperationId = url.searchParams.get("jobOperationId") ?? "";
+    const target = overlay.to.newJobPickup({
+      jobId,
+      jobOperationId: jobOperationId || undefined
+    });
+    const token = overlayToken(target);
+    const redirectParams = new URLSearchParams();
+    if (token) redirectParams.append(OVERLAY_PARAM, token);
+    const query = serializeSearch(redirectParams);
+    throw redirect(
+      query ? `${path.to.jobPickups(jobId)}?${query}` : path.to.jobPickups(jobId)
+    );
+  }
+
   const { client, companyId } = await requirePermissions(request, {
     view: "production"
   });
 
-  const { jobId } = params;
-  if (!jobId) throw notFound("jobId not found");
-
-  const jobOperationId =
-    new URL(request.url).searchParams.get("jobOperationId") ?? "";
+  const jobOperationId = url.searchParams.get("jobOperationId") ?? "";
 
   const [job, jobOperations, opContext] = await Promise.all([
     getJob(client, jobId),
@@ -188,44 +209,5 @@ export async function action({ request, params }: ActionFunctionArgs) {
 }
 
 export default function NewJobPickupRoute() {
-  const {
-    jobId,
-    jobOption,
-    jobOperationId,
-    operationOptions,
-    configurationParameters,
-    configReferenceSource,
-    itemId,
-    processId,
-    operationType,
-    defaultActorKind,
-    seededActor
-  } = useLoaderData<typeof loader>();
-  const initialValues = {
-    jobId,
-    jobOperationId,
-    quantity: 0,
-    notes: "",
-    employeeId: seededActor.employeeId,
-    actorKind: seededActor.actorKind,
-    supplierProcessId: seededActor.supplierProcessId
-  };
-
-  return (
-    <PickupForm
-      initialValues={initialValues}
-      jobOptions={[jobOption]}
-      jobId={jobId}
-      operationOptions={[...(operationOptions ?? [])]}
-      configurationParameters={configurationParameters}
-      configReferenceSource={configReferenceSource}
-      itemId={itemId}
-      processId={processId}
-      operationType={operationType}
-      defaultActorKind={defaultActorKind}
-      lockJobSelection
-      lockActorSelection={seededActor.lockActorSelection}
-      supplierId={seededActor.supplierId}
-    />
-  );
+  return null;
 }

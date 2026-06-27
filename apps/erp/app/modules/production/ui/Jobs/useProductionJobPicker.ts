@@ -21,17 +21,10 @@ export type ProductionJobPickerLoaderData = {
   defaultActorKind?: "employee" | "supplier";
   lockActorSelection?: boolean;
   supplierId?: string;
-  seededActor?: {
-    actorKind: "employee" | "supplier";
-    employeeId: string;
-    supplierProcessId: string;
-    supplierId: string;
-    lockActorSelection: boolean;
-  } | null;
 };
 
-type UseOverlayProductionJobPickerArgs = {
-  isOverlay: boolean;
+type UseProductionJobPickerArgs = {
+  enabled?: boolean;
   loaderPath: string;
   jobIdProp?: string | null;
   initialJobId?: string;
@@ -46,13 +39,11 @@ type UseOverlayProductionJobPickerArgs = {
   supplierId?: string;
 };
 
-/**
- * In overlay mode, job selection must stay local — navigating would revalidate the
- * list page and leave operation options stale. Refetch the create-route loader when
- * the user picks a different job.
- */
-export function useOverlayProductionJobPicker({
-  isOverlay,
+const noopSetJobId = (_nextJobId: string) => {};
+
+/** Refetch create-route loader data when the user picks a different job in an overlay form. */
+export function useProductionJobPicker({
+  enabled = true,
   loaderPath,
   jobIdProp,
   initialJobId,
@@ -65,38 +56,44 @@ export function useOverlayProductionJobPicker({
   defaultActorKind,
   lockActorSelection,
   supplierId
-}: UseOverlayProductionJobPickerArgs) {
+}: UseProductionJobPickerArgs) {
   const seededJobId = jobIdProp?.trim() || initialJobId?.trim() || "";
-  const [overlayJobId, setOverlayJobIdState] = useState(seededJobId);
+  const [selectedJobId, setSelectedJobIdState] = useState(seededJobId);
   const userChangedJob = useRef(false);
   const cascadeFetcher = useFetcher<ProductionJobPickerLoaderData>();
   const loadCascade = useRef(cascadeFetcher.load);
   loadCascade.current = cascadeFetcher.load;
 
   useEffect(() => {
-    if (!isOverlay || !overlayJobId) return;
-    if (!userChangedJob.current && overlayJobId === seededJobId) return;
+    if (!enabled) return;
+    if (!selectedJobId) return;
+    if (!userChangedJob.current && selectedJobId === seededJobId) return;
 
-    const params = new URLSearchParams({ overlay: "true", jobId: overlayJobId });
+    const params = new URLSearchParams({ overlay: "true", jobId: selectedJobId });
     void loadCascade.current(`${loaderPath}?${params.toString()}`);
-  }, [isOverlay, overlayJobId, seededJobId, loaderPath]);
+  }, [enabled, selectedJobId, seededJobId, loaderPath]);
 
-  const setOverlayJobId = (nextJobId: string) => {
-    userChangedJob.current = true;
-    setOverlayJobIdState(nextJobId);
-  };
+  const setSelectedJobId = enabled
+    ? (nextJobId: string) => {
+        userChangedJob.current = true;
+        setSelectedJobIdState(nextJobId);
+      }
+    : noopSetJobId;
 
+  const cascadeMatchesJob =
+    cascadeFetcher.data?.jobId === selectedJobId;
   const cascadeData =
-    isOverlay && userChangedJob.current ? cascadeFetcher.data : undefined;
+    enabled && userChangedJob.current && cascadeMatchesJob
+      ? cascadeFetcher.data
+      : undefined;
   const isCascadeLoading =
-    isOverlay &&
+    enabled &&
     userChangedJob.current &&
-    cascadeFetcher.state !== "idle" &&
-    !cascadeData;
+    (!cascadeMatchesJob || cascadeFetcher.state !== "idle");
 
   return {
-    overlayJobId,
-    setOverlayJobId,
+    selectedJobId: enabled ? selectedJobId : seededJobId,
+    setSelectedJobId,
     isCascadeLoading,
     operationOptions: cascadeData?.operationOptions ?? operationOptions,
     configurationParameters:
@@ -110,9 +107,6 @@ export function useOverlayProductionJobPicker({
     lockActorSelection:
       cascadeData?.lockActorSelection ?? lockActorSelection ?? false,
     supplierId:
-      cascadeData?.supplierId ??
-      cascadeData?.seededActor?.supplierId ??
-      supplierId,
-    seededActor: cascadeData?.seededActor
+      cascadeData?.supplierId ?? supplierId
   };
 }

@@ -4,7 +4,13 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { data, redirect, useLoaderData } from "react-router";
+import { data, redirect } from "react-router";
+import {
+  OVERLAY_PARAM,
+  overlay,
+  overlayToken,
+  serializeSearch
+} from "~/components/Overlay/overlay";
 import { z } from "zod";
 import { getConfigurationParameters } from "~/modules/items";
 import { computeProductionQuantityReportEarnedAmount } from "~/modules/production";
@@ -29,17 +35,31 @@ import {
   isSupplierQuantityReportId
 } from "~/modules/production/operationType";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
-import ProductionQuantityForm from "~/modules/production/ui/Jobs/ProductionQuantityForm";
 import { getParams, path } from "~/utils/path";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
-  const { client, companyId } = await requirePermissions(request, {
-    view: "production"
-  });
-
+  const url = new URL(request.url);
+  const isOverlay = url.searchParams.get("overlay") === "true";
   const { id, jobId } = params;
   if (!id) throw notFound("id not found");
   if (!jobId) throw notFound("jobId not found");
+
+  if (!isOverlay) {
+    const target = overlay.to.editJobProductionQuantity({ jobId, quantityId: id });
+    const token = overlayToken(target);
+    const redirectParams = new URLSearchParams();
+    if (token) redirectParams.append(OVERLAY_PARAM, token);
+    const query = serializeSearch(redirectParams);
+    throw redirect(
+      query
+        ? `${path.to.jobProductionQuantities(jobId)}?${query}`
+        : path.to.jobProductionQuantities(jobId)
+    );
+  }
+
+  const { client, companyId } = await requirePermissions(request, {
+    view: "production"
+  });
 
   const [job, jobOperations] = await Promise.all([
     getJob(client, jobId),
@@ -458,109 +478,5 @@ export async function action({ request, params }: ActionFunctionArgs) {
 }
 
 export default function EditProductionQuantityRoute() {
-  const loaderData = useLoaderData<typeof loader>();
-
-  if (loaderData.mode === "supplier-report" && loaderData.supplierReport) {
-    const report = loaderData.supplierReport;
-    return (
-      <ProductionQuantityForm
-        key={report.id}
-        initialValues={{
-          jobOperationId: report.jobOperationId,
-          actorKind: "supplier",
-          supplierProcessId: report.supplierProcessId,
-          supplierId: report.supplierProcess?.supplierId ?? "",
-          notes: report.notes ?? "",
-          lines: report.activeLines.map(
-            (line: (typeof report.activeLines)[number]) => ({
-              type: line.type,
-              quantity: line.quantity,
-              scrapReasonId: line.scrapReasonId ?? undefined,
-              notes: line.notes ?? undefined,
-              configuration: line.configuration ?? undefined
-            })
-          )
-        }}
-        operationOptions={loaderData.operationOptions ?? []}
-        configurationParameters={loaderData.configurationParameters}
-        itemId={loaderData.itemId}
-        processId={loaderData.processId}
-        operationType={loaderData.operationType}
-        defaultActorKind="supplier"
-      />
-    );
-  }
-
-  if (loaderData.mode === "employee-report" && loaderData.employeeReport) {
-    const report = loaderData.employeeReport;
-    return (
-      <ProductionQuantityForm
-        key={report.id}
-        initialValues={{
-          jobOperationId: report.jobOperationId,
-          actorKind: "employee",
-          employeeId: report.employeeId,
-          notes: report.notes ?? "",
-          lines: report.activeLines.map(
-            (line: (typeof report.activeLines)[number]) => ({
-              type: line.type,
-              quantity: line.quantity,
-              scrapReasonId: line.scrapReasonId ?? undefined,
-              notes: line.notes ?? undefined,
-              configuration: line.configuration ?? undefined
-            })
-          )
-        }}
-        operationOptions={loaderData.operationOptions ?? []}
-        configurationParameters={loaderData.configurationParameters}
-        itemId={loaderData.itemId}
-        processId={loaderData.processId}
-        operationType={loaderData.operationType}
-        defaultActorKind="employee"
-      />
-    );
-  }
-
-  const pq = loaderData.productionQuantity;
-  if (!pq) {
-    return null;
-  }
-
-  const isSupplierLine = loaderData.mode === "supplier-line";
-
-  const supplierProcess =
-    isSupplierLine && "supplierProcess" in pq
-      ? Array.isArray(pq.supplierProcess)
-        ? pq.supplierProcess[0]
-        : pq.supplierProcess
-      : undefined;
-
-  const initialValues = {
-    id: pq.id,
-    type: pq.type ?? ("Scrap" as "Scrap"),
-    jobOperationId: pq.jobOperationId ?? "",
-    quantity: pq.quantity ?? 0,
-    scrapReasonId: pq.scrapReasonId ?? "",
-    notes: pq.notes ?? "",
-    employeeId: isSupplierLine || !("employeeId" in pq) ? "" : (pq.employeeId ?? ""),
-    actorKind: isSupplierLine ? ("supplier" as const) : ("employee" as const),
-    supplierProcessId: isSupplierLine
-      ? ("supplierProcessId" in pq ? (pq.supplierProcessId ?? "") : "")
-      : "",
-    supplierId: isSupplierLine ? (supplierProcess?.supplierId ?? "") : "",
-    configuration: pq.configuration ?? undefined
-  };
-
-  return (
-    <ProductionQuantityForm
-      key={initialValues.id}
-      initialValues={initialValues}
-      operationOptions={loaderData.operationOptions ?? []}
-      configurationParameters={loaderData.configurationParameters}
-      itemId={loaderData.itemId}
-      processId={loaderData.processId}
-      operationType={loaderData.operationType}
-      defaultActorKind={isSupplierLine ? "supplier" : "employee"}
-    />
-  );
+  return null;
 }

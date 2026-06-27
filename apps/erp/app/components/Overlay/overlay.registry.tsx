@@ -65,6 +65,7 @@ export const overlayRegistry = {
             seeded?.actorKind ?? data.defaultActorKind ?? "employee",
           lockJobSelection: Boolean(data.jobOption),
           lockActorSelection: seeded?.lockActorSelection ?? false,
+          lockOperationSelection: Boolean(data.jobOperationId),
           supplierId: seeded?.supplierId ?? ""
         };
       },
