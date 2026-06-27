@@ -38,11 +38,22 @@ interface TableCardRowProps<T extends object> {
 const ROW_NAV_IGNORE_SELECTOR =
   "a, button, input, select, textarea, [role='button'], [data-prevent-row-nav]";
 
-function shouldIgnoreRowNavigation(target: EventTarget | null): boolean {
-  return (
-    target instanceof Element &&
-    Boolean(target.closest(ROW_NAV_IGNORE_SELECTOR))
-  );
+function shouldIgnoreRowNavigation(
+  target: EventTarget | null,
+  rowNavRoot?: EventTarget | null
+): boolean {
+  if (!(target instanceof Element)) return false;
+
+  const blocker = target.closest(ROW_NAV_IGNORE_SELECTOR);
+  if (!blocker) return false;
+
+  // The card row container is role="button" for a11y but must still navigate
+  // when the click/key target is empty padding or the focused card itself.
+  if (rowNavRoot instanceof Element && blocker === rowNavRoot) {
+    return false;
+  }
+
+  return true;
 }
 
 function isEmptyRawValue(value: unknown): boolean {
@@ -322,12 +333,14 @@ function TableCardRow<T extends object>({
       didSwipe.current = false;
       return;
     }
-    if (!rowHref || shouldIgnoreRowNavigation(event.target)) return;
+    if (!rowHref || shouldIgnoreRowNavigation(event.target, event.currentTarget))
+      return;
     navigate(rowHref);
   };
 
   const handleCardKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (!rowHref || shouldIgnoreRowNavigation(event.target)) return;
+    if (!rowHref || shouldIgnoreRowNavigation(event.target, event.currentTarget))
+      return;
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       navigate(rowHref);
