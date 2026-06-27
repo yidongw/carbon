@@ -336,6 +336,7 @@ function TableCardRow<T extends object>({
 
   const card = (
     <Card
+      role={rowHref ? "button" : undefined}
       tabIndex={rowHref ? 0 : undefined}
       aria-label={rowHref ? cardNavLabel : undefined}
       onClick={rowHref ? handleCardClick : undefined}
@@ -343,7 +344,7 @@ function TableCardRow<T extends object>({
       className={cn(
         // Flat container — field chips are the clickable bits; the card highlights on
         // hover but keeps the default cursor. (Tapping a non-chip area still
-        // navigates.) No role="button" — chip overlays are real buttons.
+        // navigates.) Chip row-nav overlays are aria-hidden and out of tab order.
         "w-full cursor-default overflow-hidden border-0 shadow-none",
         "bg-muted/50 dark:bg-card",
         "transition-colors duration-150 ease-out",

@@ -427,7 +427,7 @@ export function EditableConfigGrid({
           <div className="flex min-w-0 items-center gap-1">
             <input
               type="number"
-              min={0}
+              min={allowNegative ? undefined : 0}
               disabled={readOnly}
               value={
                 typeof cellValue === "boolean" ? "" : (cellValue ?? "")
@@ -475,11 +475,7 @@ export function EditableConfigGrid({
       return (
         <input
           type="number"
-          min={
-            col.type === "quantity" && (isTotalMode || !allowNegative)
-              ? 0
-              : undefined
-          }
+          min={col.type === "quantity" && !allowNegative ? 0 : undefined}
           disabled={readOnly}
           value={
             isTotalMode
