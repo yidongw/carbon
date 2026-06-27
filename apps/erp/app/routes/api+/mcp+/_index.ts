@@ -3,7 +3,7 @@ import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/
 import type { ActionFunctionArgs } from "react-router";
 import { createMcpServer } from "./lib/server";
 
-export async function action({ request }: ActionFunctionArgs) {
+async function handleMcpRequest(request: Request) {
   console.log("[MCP] Received request:", {
     method: request.method,
     url: request.url,
@@ -49,16 +49,10 @@ export async function action({ request }: ActionFunctionArgs) {
   return response;
 }
 
-export async function loader() {
-  return new Response(
-    JSON.stringify({
-      jsonrpc: "2.0",
-      error: { code: -32000, message: "Method not allowed. Use POST." },
-      id: null
-    }),
-    {
-      status: 405,
-      headers: { "Content-Type": "application/json" }
-    }
-  );
+export async function action({ request }: ActionFunctionArgs) {
+  return handleMcpRequest(request);
+}
+
+export async function loader({ request }: { request: Request }) {
+  return handleMcpRequest(request);
 }
