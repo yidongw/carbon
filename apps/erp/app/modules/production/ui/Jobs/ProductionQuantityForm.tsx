@@ -52,6 +52,7 @@ import {
   ProductionQuantityLinesEditor
 } from "./ProductionQuantityLinesEditor";
 import { getProductionFormCascadeState } from "./productionFormCascade";
+import { useOverlayProductionJobPicker } from "./useOverlayProductionJobPicker";
 
 type ConfigRow = Record<string, string | number | boolean>;
 
@@ -177,17 +178,51 @@ const ProductionQuantityForm = ({
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const { jobId: jobIdFromParams } = useParams();
+  const isOverlay = fetcher != null;
   const hasJobPicker = Boolean(jobOptions?.length);
-  const selectedJobId = hasJobPicker
-    ? (searchParams.get("jobId") ?? jobIdProp?.trim() ?? "")
-    : "";
+
+  const overlayJobPicker = useOverlayProductionJobPicker({
+    isOverlay,
+    loaderPath: path.to.newProductionQuantity,
+    jobIdProp,
+    operationOptions,
+    configurationParameters,
+    configReferenceSource,
+    itemId,
+    processId,
+    operationType,
+    defaultActorKind,
+    lockActorSelection: lockActorSelectionProp
+  });
+
+  const selectedJobId = isOverlay
+    ? overlayJobPicker.overlayJobId
+    : hasJobPicker
+      ? (searchParams.get("jobId") ?? jobIdProp?.trim() ?? "")
+      : "";
   const jobId = hasJobPicker
     ? selectedJobId || undefined
     : jobIdProp?.trim() ||
       parseJobIdFromQuantitiesUrl(formAction) ||
       jobIdFromParams?.trim() ||
       undefined;
-  const isOverlay = fetcher != null;
+  const resolvedOperationOptions = isOverlay
+    ? overlayJobPicker.operationOptions
+    : (operationOptions ?? []);
+  const resolvedConfigurationParameters = isOverlay
+    ? overlayJobPicker.configurationParameters
+    : configurationParameters;
+  const resolvedConfigReferenceSource = isOverlay
+    ? overlayJobPicker.configReferenceSource
+    : configReferenceSource;
+  const resolvedItemId = isOverlay ? overlayJobPicker.itemId : itemId;
+  const resolvedProcessId = isOverlay ? overlayJobPicker.processId : processId;
+  const resolvedOperationType = isOverlay
+    ? overlayJobPicker.operationType
+    : operationType;
+  const resolvedDefaultActorKind = isOverlay
+    ? overlayJobPicker.defaultActorKind
+    : defaultActorKind;
   const onDismiss =
     onDismissProp ??
     (() => {
@@ -248,7 +283,7 @@ const ProductionQuantityForm = ({
   });
 
   const hasConfigurationParameters =
-    (configurationParameters?.length ?? 0) > 0;
+    (resolvedConfigurationParameters?.length ?? 0) > 0;
 
   const hasZeroQuantityLine =
     isCreateMultiLine && lines.some((line) => line.quantity <= 0);
@@ -279,6 +314,22 @@ const ProductionQuantityForm = ({
     const fromUrl = searchParams.get("jobOperationId") ?? "";
     return fromUrl || initial;
   });
+  const [operationSelectKey, setOperationSelectKey] = useState(0);
+
+  const resetQuantityEntry = () => {
+    if (isCreateMultiLine) {
+      setLines(
+        normalizeUniqueLineTypes(
+          toEditableLines([{ type: "Production" as const, quantity: 0 }])
+        )
+      );
+      return;
+    }
+    setQuantity(0);
+    setConfigTableRows(null);
+    setConfigTablePrimaryKeys([]);
+    setConfigTableTotal(0);
+  };
 
   useEffect(() => {
     if (isEditing) return;
@@ -327,9 +378,9 @@ const ProductionQuantityForm = ({
   const configModal = useConfigTableModal();
 
   const openConfigTable = () => {
-    if (!itemId) return;
+    if (!resolvedItemId) return;
     configModal.open({
-      itemId,
+      itemId: resolvedItemId,
       configuration: toConfigTableValue(
         configTableRows,
         configTablePrimaryKeys,
@@ -456,6 +507,14 @@ const ProductionQuantityForm = ({
     [employeeId, supplierProcessId]
   );
 
+  useEffect(() => {
+    const seeded = overlayJobPicker.seededActor;
+    if (!isOverlay || !seeded) return;
+    setEmployeeId(seeded.employeeId ?? "");
+    setSupplierProcessId(seeded.supplierProcessId ?? "");
+    setActorKind(seeded.actorKind);
+  }, [isOverlay, overlayJobPicker.seededActor]);
+
   const updateSearchParams = (updates: {
     jobId?: string | null;
     jobOperationId?: string | null;
@@ -487,6 +546,16 @@ const ProductionQuantityForm = ({
   };
 
   const handleJobChange = (value: string) => {
+    if (isOverlay) {
+      queueMicrotask(() => {
+        overlayJobPicker.setOverlayJobId(value);
+        setJobOperationIdState("");
+        setOperationSelectKey((key) => key + 1);
+        resetQuantityEntry();
+      });
+      return;
+    }
+    resetQuantityEntry();
     updateSearchParams({ jobId: value, jobOperationId: null });
   };
 
@@ -515,17 +584,17 @@ const ProductionQuantityForm = ({
   });
   const canSubmitCreate = canSubmitDetails && !hasZeroQuantityLine;
 
-  const lockActorSelection =
-    lockActorSelectionProp ??
-    (isEditing ||
-      Boolean(
-        (actorFieldValues.employeeId ?? "").trim() ||
-          (actorFieldValues.supplierProcessId ?? "").trim()
-      ));
+  const lockActorSelection = isOverlay
+    ? overlayJobPicker.lockActorSelection
+    : (lockActorSelectionProp ??
+      (isEditing ||
+        Boolean(
+          (actorFieldValues.employeeId ?? "").trim() ||
+            (actorFieldValues.supplierProcessId ?? "").trim()
+        )));
 
   const form = (
     <ValidatedForm
-      key={hasJobPicker ? selectedJobId || "no-job" : undefined}
       validator={
         isCreateMultiLine
           ? productionQuantityCreateFormValidator
@@ -564,28 +633,26 @@ const ProductionQuantityForm = ({
             <Hidden name="jobOperationId" />
           ) : (
             <Select
-              key={hasJobPicker ? selectedJobId || "no-job" : "job-operation"}
+              key={hasJobPicker ? `op-${operationSelectKey}` : "job-operation"}
               name="jobOperationId"
               label={t`Operation`}
-              options={operationOptions ?? []}
+              options={resolvedOperationOptions}
               isDisabled={
                 lockOperationSelectionProp ||
-                (hasJobPicker && !hasJobSelected)
+                (hasJobPicker && !hasJobSelected) ||
+                overlayJobPicker.isCascadeLoading
               }
               onChange={(value) => {
                 if (lockOperationSelectionProp) return;
-                // Selecting an operation only updates local form state — it must
-                // not navigate. The value is submitted via the field; route mode
-                // doesn't need it in the URL and the overlay loads via its own
-                // fixed-URL fetcher. (PickupForm does the same.)
                 setJobOperationIdState(value?.value ?? "");
+                resetQuantityEntry();
               }}
             />
           )}
           <ProductionActorFields
-            processId={processId}
-            operationType={operationType}
-            defaultActorKind={defaultActorKind}
+            processId={resolvedProcessId}
+            operationType={resolvedOperationType}
+            defaultActorKind={resolvedDefaultActorKind}
             lockActorSelection={lockActorSelection}
             isDisabled={hasConfigurationParameters ? !hasOperationSelected : false}
             employeeIdValue={actorFieldValues.employeeId}
@@ -613,9 +680,9 @@ const ProductionQuantityForm = ({
               <ProductionQuantityLinesEditor
                 lines={lines}
                 setLines={setLines}
-                configurationParameters={configurationParameters}
-                configReferenceSource={configReferenceSource}
-                itemId={itemId}
+                configurationParameters={resolvedConfigurationParameters}
+                configReferenceSource={resolvedConfigReferenceSource}
+                itemId={resolvedItemId}
                 isDisabled={areDetailFieldsDisabled}
                 employeeId={actorKind === "employee" ? employeeId : undefined}
                 jobId={jobId ?? undefined}

@@ -1,10 +1,12 @@
-import { IconButton } from "@carbon/react";
+import { Button } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { AiOutlinePartition } from "react-icons/ai";
 import { LuCalendar, LuHash, LuPlus, LuUser } from "react-icons/lu";
-import { New, Table } from "~/components";
+import { useRevalidator } from "react-router";
+import { overlay, useOverlay } from "~/components/Overlay";
+import { Table } from "~/components";
 import { getProcessName } from "~/modules/production/productionQuantityDisplay.utils";
 import { ProductionQuantityReportReporter } from "~/modules/production/ui/Jobs/ProductionQuantityReportReporter";
 import {
@@ -15,7 +17,6 @@ import {
 } from "~/modules/production/ui/ProductionQuantityTableCells";
 import { usePickupCreatedAtSave } from "~/modules/production/ui/useEditableCreatedAt";
 import { EditableCreatedAtCell } from "~/modules/production/ui/EditableCreatedAtCell";
-import { path } from "~/utils/path";
 
 type JobOperationPickup = ProductionQuantityTableRowLike & {
   id: string;
@@ -39,6 +40,13 @@ export function PickupsTable({
   configurableItemIds = []
 }: PickupsTableProps) {
   const { t } = useLingui();
+  const { openOverlay } = useOverlay();
+  const revalidator = useRevalidator();
+  const openNewPickup = useCallback(() => {
+    openOverlay(overlay.to.newProductionPickup(), {
+      onCreated: () => revalidator.revalidate()
+    });
+  }, [openOverlay, revalidator]);
   const { saveCreatedAt, canEdit } = usePickupCreatedAtSave();
   const configurableItemIdSet = useMemo(
     () => new Set(configurableItemIds),
@@ -123,11 +131,14 @@ export function PickupsTable({
       withPagination
       title={t`Process Pickups`}
       primaryAction={
-        <New
-          label={<Trans>Process Pickup</Trans>}
-          to={path.to.newPickup}
-          icon={<IconButton icon={<LuPlus />} label="New" />}
-        />
+        <Button
+          type="button"
+          variant="primary"
+          leftIcon={<LuPlus />}
+          onClick={openNewPickup}
+        >
+          <Trans>Process Pickup</Trans>
+        </Button>
       }
     />
   );

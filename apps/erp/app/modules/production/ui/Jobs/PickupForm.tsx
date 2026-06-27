@@ -11,7 +11,7 @@ import {
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router";
 import type { z } from "zod";
 import { Hidden, Number, Select, Submit, TextArea } from "~/components/Form";
@@ -29,6 +29,7 @@ import { jobOperationPickupValidator } from "~/modules/production/production.mod
 import { path } from "~/utils/path";
 import { computeJobConfigTableTotal } from "../../jobConfiguration";
 import { QuantityWithConfigTable } from "./QuantityWithConfigTable";
+import { useOverlayProductionJobPicker } from "./useOverlayProductionJobPicker";
 
 type ConfigurationParameter = {
   key: string;
@@ -113,11 +114,47 @@ const PickupForm = ({
   const { jobId: jobIdFromParams } = useParams();
   const [searchParams] = useSearchParams();
   const hasJobPicker = Boolean(jobOptions?.length);
-  const selectedJobId = hasJobPicker
-    ? (searchParams.get("jobId") ?? jobIdProp?.trim() ?? "")
-    : jobIdProp ?? jobIdFromParams ?? "";
-  const jobId = selectedJobId || jobIdFromParams;
   const isOverlay = fetcher != null;
+
+  const overlayJobPicker = useOverlayProductionJobPicker({
+    isOverlay,
+    loaderPath: path.to.newPickup,
+    jobIdProp,
+    initialJobId: initialValues.jobId,
+    operationOptions,
+    configurationParameters,
+    configReferenceSource,
+    itemId,
+    processId,
+    operationType,
+    defaultActorKind,
+    lockActorSelection: lockActorSelectionProp,
+    supplierId
+  });
+
+  const selectedJobId = isOverlay
+    ? overlayJobPicker.overlayJobId
+    : hasJobPicker
+      ? (searchParams.get("jobId") ?? jobIdProp?.trim() ?? "")
+      : jobIdProp ?? jobIdFromParams ?? "";
+  const jobId = selectedJobId || jobIdFromParams;
+  const resolvedOperationOptions = isOverlay
+    ? overlayJobPicker.operationOptions
+    : (operationOptions ?? []);
+  const resolvedConfigurationParameters = isOverlay
+    ? overlayJobPicker.configurationParameters
+    : configurationParameters;
+  const resolvedItemId = isOverlay ? overlayJobPicker.itemId : itemId;
+  const resolvedProcessId = isOverlay ? overlayJobPicker.processId : processId;
+  const resolvedOperationType = isOverlay
+    ? overlayJobPicker.operationType
+    : operationType;
+  const resolvedDefaultActorKind = isOverlay
+    ? overlayJobPicker.defaultActorKind
+    : defaultActorKind;
+  const resolvedSupplierId = isOverlay
+    ? overlayJobPicker.supplierId
+    : supplierId;
   const onDismiss =
     onDismissProp ??
     (() => {
@@ -139,7 +176,8 @@ const PickupForm = ({
   >(initialConfig.primaryKeys);
   const [configTableTotal, setConfigTableTotal] = useState(initialConfig.total);
 
-  const hasConfigurationParameters = (configurationParameters?.length ?? 0) > 0;
+  const hasConfigurationParameters =
+    (resolvedConfigurationParameters?.length ?? 0) > 0;
 
   const isEditing = initialValues.id !== undefined;
   const presetJobOperationIdOnCreate =
@@ -152,6 +190,15 @@ const PickupForm = ({
   const [selectedOperation, setSelectedOperation] = useState(
     initialValues.jobOperationId || ""
   );
+  const [operationSelectKey, setOperationSelectKey] = useState(0);
+  const seededFormJobId = jobIdProp?.trim() || initialValues.jobId?.trim() || "";
+
+  const resetQuantityEntry = () => {
+    setQuantity(0);
+    setConfigTableRows(null);
+    setConfigTablePrimaryKeys([]);
+    setConfigTableTotal(0);
+  };
 
   const updateSearchParams = (updates: {
     jobId?: string | null;
@@ -181,6 +228,17 @@ const PickupForm = ({
   };
 
   const handleJobChange = (value: string) => {
+    if (isOverlay) {
+      // Let Radix close the job menu before remounting sibling fields.
+      queueMicrotask(() => {
+        overlayJobPicker.setOverlayJobId(value);
+        setSelectedOperation("");
+        setOperationSelectKey((key) => key + 1);
+        resetQuantityEntry();
+      });
+      return;
+    }
+    resetQuantityEntry();
     updateSearchParams({ jobId: value, jobOperationId: null });
   };
 
@@ -200,9 +258,9 @@ const PickupForm = ({
   const configModal = useConfigTableModal();
 
   const openConfigTable = () => {
-    if (!itemId) return;
+    if (!resolvedItemId) return;
     configModal.open({
-      itemId,
+      itemId: resolvedItemId,
       configuration: toConfigTableValue(
         configTableRows,
         configTablePrimaryKeys,
@@ -228,13 +286,26 @@ const PickupForm = ({
     });
   };
 
-  const lockActorSelection = isEditing || Boolean(lockActorSelectionProp);
+  const lockActorSelection =
+    isEditing ||
+    Boolean(
+      isOverlay ? overlayJobPicker.lockActorSelection : lockActorSelectionProp
+    );
+
+  const formDefaultValues = useMemo(
+    () => ({
+      ...initialValues,
+      ...(seededFormJobId ? { jobId: seededFormJobId } : {}),
+      jobOperationId: selectedOperation || initialValues.jobOperationId || ""
+    }),
+    [initialValues, seededFormJobId, selectedOperation]
+  );
 
   const form = (
     <ValidatedForm
       validator={jobOperationPickupValidator}
       method="post"
-      defaultValues={initialValues}
+      defaultValues={formDefaultValues}
       className="flex flex-col h-full"
       action={formAction}
       fetcher={fetcher}
@@ -266,27 +337,29 @@ const PickupForm = ({
             <Hidden name="jobOperationId" />
           ) : (
             <Select
-              key={hasJobPicker ? selectedJobId || "no-job" : "job-operation"}
+              key={hasJobPicker ? `op-${operationSelectKey}` : "job-operation"}
               name="jobOperationId"
               label={t`Operation`}
-              options={operationOptions ?? []}
+              options={resolvedOperationOptions}
               isDisabled={
                 presetJobOperationIdOnCreate ||
-                (hasJobPicker && !selectedJobId)
+                (hasJobPicker && !selectedJobId) ||
+                overlayJobPicker.isCascadeLoading
               }
               onChange={(newValue) => {
                 setSelectedOperation(newValue?.value ?? "");
+                resetQuantityEntry();
               }}
             />
           )}
           <ProductionActorFields
-            processId={processId}
-            operationType={operationType}
-            defaultActorKind={defaultActorKind}
+            processId={resolvedProcessId}
+            operationType={resolvedOperationType}
+            defaultActorKind={resolvedDefaultActorKind}
             lockActorSelection={lockActorSelection}
             employeeIdValue={initialValues.employeeId}
             supplierProcessIdValue={initialValues.supplierProcessId}
-            supplierIdValue={supplierId}
+            supplierIdValue={resolvedSupplierId}
           />
           {configTableRows && (
             <Hidden

@@ -7,7 +7,6 @@ import { NotificationEvent } from "@carbon/notifications";
 import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import {
-  Outlet,
   redirect,
   useLoaderData,
   useLocation,
@@ -400,7 +399,6 @@ export default function ProductionQuantitiesRoute() {
         showCreateAction
         configurableItemIds={configurableItemIds}
       />
-      <Outlet />
     </VStack>
   );
 }
