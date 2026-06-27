@@ -354,6 +354,7 @@ Users can belong to multiple companies with different roles:
 ### API Routes (ERP only)
 
 - `/api/wechat-qr-url` - Mints a parametric MP QR (scene stored in Redis) for desktop scan-login
+- `/api/mcp` - Streamable HTTP MCP endpoint; accepts `GET` and `POST`, and normalizes `Authorization: Bearer <apiKey>` into `carbon-key` before auth checks
 
 ### Protected Routes
 
