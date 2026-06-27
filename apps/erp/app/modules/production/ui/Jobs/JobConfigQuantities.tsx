@@ -21,6 +21,7 @@ import {
   getInitialRows,
   getMergeKey,
   hasValue,
+  makeDefaultRow,
   mergeRows,
   normalizeRow,
   ReadOnlyConfigTable,
@@ -294,11 +295,20 @@ function JobConfigQuantities({
       const targetIndex = prev.findIndex(
         (row) => getMergeKey(row, columns) === sourceKey
       );
-      const index = targetIndex >= 0 ? targetIndex : 0;
-      const baseline = baselineFor(prev[index], colKey);
-      return prev.map((row, i) =>
-        i === index ? { ...row, [colKey]: value - baseline } : row
+
+      if (targetIndex >= 0) {
+        const baseline = baselineFor(prev[targetIndex], colKey);
+        return prev.map((row, i) =>
+          i === targetIndex ? { ...row, [colKey]: value - baseline } : row
+        );
+      }
+
+      const seededRow = zeroQuantities(
+        normalizeRow({ ...makeDefaultRow(columns), ...sourceRow }, columns),
+        columns
       );
+      const baseline = baselineFor(seededRow, colKey);
+      return [...prev, { ...seededRow, [colKey]: value - baseline }];
     });
     setValidationError("");
   };
