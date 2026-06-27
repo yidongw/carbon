@@ -18,7 +18,7 @@ export const CARD_PINNED_VALUE_CLASS = "card-pinned-value";
  * Underline spec: `.card-field-chip-underline` in app/styles/tailwind.css
  */
 const CARD_FIELD_CHIP_LABEL_UNDERLINE_CLASS = [
-  "[&:has(:is([data-card-action],a,button,[role='button']))_.card-action-label]:card-field-chip-underline"
+  "[&:has(:is([data-card-action],a,button,[role='button'],.card-action-value))_.card-action-label]:card-field-chip-underline"
 ].join(" ");
 
 /** Underline navigable values inside a field chip (links + explicit markers). */

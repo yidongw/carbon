@@ -1,5 +1,5 @@
 import type { BadgeProps } from "@carbon/react";
-import { Badge, useMode } from "@carbon/react";
+import { Badge, cn, useMode } from "@carbon/react";
 import type { Color } from "@carbon/utils";
 import { getColor, getColorByValue } from "@carbon/utils";
 
@@ -8,13 +8,24 @@ type EnumerableProps = BadgeProps & {
   color?: Color;
 };
 
-const Enumerable = ({ value, color, ...props }: EnumerableProps) => {
+const Enumerable = ({
+  value,
+  color,
+  className,
+  onClick,
+  ...props
+}: EnumerableProps) => {
   const mode = useMode();
   if (!value) return null;
 
   const style = color ? getColor(color, mode) : getColorByValue(value, mode);
   return (
-    <Badge style={{ ...style, borderColor: `${style.color}33` }} {...props}>
+    <Badge
+      style={{ ...style, borderColor: `${style.color}33` }}
+      className={cn(onClick && "card-action-value", className)}
+      onClick={onClick}
+      {...props}
+    >
       {value}
     </Badge>
   );
