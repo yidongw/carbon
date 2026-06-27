@@ -141,6 +141,13 @@ html.mode-transitioning *::after {
   }
 }
 
+@layer components {
+  /* Mobile card field chip underline — single source of truth for thickness/color */
+  .card-field-chip-underline {
+    @apply underline decoration-dotted decoration-[2.5px] decoration-blue-600 dark:decoration-blue-400 underline-offset-4;
+  }
+}
+
 canvas#viewer {
   border-radius: var(--radius);
 }

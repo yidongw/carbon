@@ -22,7 +22,7 @@ import { useCallback, useState } from "react";
 import { useNavigate } from "react-router";
 import { useSwipeReveal } from "~/hooks/useSwipeReveal";
 import { CardFieldChip, CardFieldChipBody } from "./CardFieldChip";
-import { CARD_FIELD_CHIP_UNDERLINE_CLASS, CARD_PINNED_VALUE_CLASS, resolveCardRowNav } from "./cardCell";
+import { CARD_PINNED_VALUE_CLASS, resolveCardRowNav } from "./cardCell";
 
 const SYSTEM_COLUMN_IDS = new Set(["Select", "Actions", "Expand"]);
 
@@ -153,12 +153,7 @@ function FieldChip({
         <CardFieldChipBody rowNav={rowNav} rowNavLabel={rowNavLabel} onRowNav={onRowNav}>
           <div className="flex items-center gap-1.5">
             {icon && <FieldIcon size="md">{icon}</FieldIcon>}
-            <span
-              className={cn(
-                "card-action-label text-sm font-medium text-foreground",
-                rowNav && CARD_FIELD_CHIP_UNDERLINE_CLASS
-              )}
-            >
+            <span className="card-action-label text-sm font-medium text-foreground">
               {header}
             </span>
           </div>
@@ -174,12 +169,7 @@ function FieldChip({
     <CardFieldChip variant="inline">
       <CardFieldChipBody rowNav={rowNav} rowNavLabel={rowNavLabel} onRowNav={onRowNav}>
         {icon && <FieldIcon>{icon}</FieldIcon>}
-        <span
-          className={cn(
-            "card-action-label text-muted-foreground",
-            rowNav && CARD_FIELD_CHIP_UNDERLINE_CLASS
-          )}
-        >
+        <span className="card-action-label text-muted-foreground">
           {header}
         </span>
         <span className="min-w-0 font-medium text-foreground">{children}</span>

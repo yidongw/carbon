@@ -71,7 +71,7 @@ import { Enumerable } from "~/components/Enumerable";
 import { useLocations } from "~/components/Form/Location";
 import { ConfirmDelete } from "~/components/Modals";
 import { overlay, useOverlay } from "~/components/Overlay";
-import { useIsCardCell, CARD_FIELD_CHIP_UNDERLINE_CLASS } from "~/components/Table/components/cardCell";
+import { useIsCardCell } from "~/components/Table/components/cardCell";
 import { useDateFormatter, usePermissions, useUrlParams } from "~/hooks";
 import { useCustomColumns } from "~/hooks/useCustomColumns";
 import type { action } from "~/routes/x+/job+/update";
@@ -145,12 +145,7 @@ const JobIdCell = memo(function JobIdCell({ job }: { job: Job }) {
         type={job.itemType}
       />
       {isCardCell ? (
-        <span
-          className={cn(
-            "card-action-value font-medium",
-            CARD_FIELD_CHIP_UNDERLINE_CLASS
-          )}
-        >
+        <span className="card-action-value font-medium">
           {job.jobId}
         </span>
       ) : (

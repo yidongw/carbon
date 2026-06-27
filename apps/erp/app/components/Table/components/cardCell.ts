@@ -13,43 +13,18 @@ export const useIsCardCell = () => useContext(CardCellContext);
 /** Wrapper class for pinned-column cell content in mobile card rows. */
 export const CARD_PINNED_VALUE_CLASS = "card-pinned-value";
 
-/** Single underline style for all interactive mobile card field chips. */
-export const CARD_FIELD_CHIP_UNDERLINE_CLASS = [
-  "underline",
-  "decoration-dotted",
-  "decoration-[2.5px]",
-  "decoration-blue-600",
-  "dark:decoration-blue-400",
-  "underline-offset-4"
-].join(" ");
-
 /**
  * Underline interactive field chip labels when the value area is interactive.
- * Values/links use the matching rules below so every table/page stays consistent.
+ * Underline spec: `.card-field-chip-underline` in app/styles/tailwind.css
  */
 const CARD_FIELD_CHIP_LABEL_UNDERLINE_CLASS = [
-  "[&:has(:is([data-card-action],a,button,[role='button']))_.card-action-label]:underline",
-  "[&:has(:is([data-card-action],a,button,[role='button']))_.card-action-label]:decoration-dotted",
-  "[&:has(:is([data-card-action],a,button,[role='button']))_.card-action-label]:decoration-[2.5px]",
-  "[&:has(:is([data-card-action],a,button,[role='button']))_.card-action-label]:decoration-blue-600",
-  "dark:[&:has(:is([data-card-action],a,button,[role='button']))_.card-action-label]:decoration-blue-400",
-  "[&:has(:is([data-card-action],a,button,[role='button']))_.card-action-label]:underline-offset-4"
+  "[&:has(:is([data-card-action],a,button,[role='button']))_.card-action-label]:card-field-chip-underline"
 ].join(" ");
 
-/** Underline any navigable value inside a field chip (links + explicit markers). */
+/** Underline navigable values inside a field chip (links + explicit markers). */
 const CARD_FIELD_CHIP_VALUE_UNDERLINE_CLASS = [
-  "[&_a]:underline",
-  "[&_a]:decoration-dotted",
-  "[&_a]:decoration-[2.5px]",
-  "[&_a]:decoration-blue-600",
-  "dark:[&_a]:decoration-blue-400",
-  "[&_a]:underline-offset-4",
-  "[&_.card-action-value]:underline",
-  "[&_.card-action-value]:decoration-dotted",
-  "[&_.card-action-value]:decoration-[2.5px]",
-  "[&_.card-action-value]:decoration-blue-600",
-  "dark:[&_.card-action-value]:decoration-blue-400",
-  "[&_.card-action-value]:underline-offset-4"
+  "[&_a]:card-field-chip-underline",
+  "[&_.card-action-value]:card-field-chip-underline"
 ].join(" ");
 
 /**
