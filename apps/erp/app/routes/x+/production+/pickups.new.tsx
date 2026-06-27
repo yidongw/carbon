@@ -86,6 +86,15 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
     jobOperations = operations.data ?? [];
     itemId = job.data?.itemId ?? null;
+
+    if (itemId) {
+      const params = await getConfigurationParameters(
+        client,
+        itemId,
+        companyId
+      );
+      configurationParameters = params.parameters;
+    }
   }
 
   // If jobOperationId is selected, load operation context
@@ -96,14 +105,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       companyId
     );
 
-    if (jobId && itemId) {
-      const params = await getConfigurationParameters(
-        client,
-        itemId,
-        companyId
-      );
-      configurationParameters = params.parameters;
-
+    if (jobId) {
       configReferenceSource = await getConfigReferenceSourceForOperation(
         client,
         {
