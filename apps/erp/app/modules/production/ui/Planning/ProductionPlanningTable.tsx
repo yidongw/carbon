@@ -35,8 +35,7 @@ import {
   LuSquareChartGantt
 } from "react-icons/lu";
 import { useFetcher } from "react-router";
-import { ItemThumbnail, MethodItemTypeIcon, Table } from "~/components";
-import { CardActionValue } from "~/components/Table/components/CardFieldChip";
+import { ItemThumbnail, MethodItemTypeIcon, Table, CardActionValue } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { useLocations } from "~/components/Form/Location";
 import { useUnitOfMeasure } from "~/components/Form/UnitOfMeasure";

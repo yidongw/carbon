@@ -185,10 +185,12 @@ function renderFieldColumn<T extends object>(
   variant: "featured" | "metadata",
   {
     rowHref,
-    defaultRowNavLabel
+    defaultRowNavLabel,
+    pinnedColumnIds
   }: {
     rowHref?: string;
     defaultRowNavLabel: string;
+    pinnedColumnIds: readonly string[];
   },
   onRowNav: (href: string) => (event: MouseEvent<HTMLButtonElement>) => void
 ) {
@@ -201,7 +203,7 @@ function renderFieldColumn<T extends object>(
   const rendered = flexRender(column.columnDef.cell, cell.getContext());
   if (!hasCellDisplayValue(row, cell, rendered)) return null;
 
-  const isRowNav = Boolean(rowHref && column.columnDef.meta?.cardRowNav === true);
+  const isRowNav = resolveCardRowNav(column, rowHref, pinnedColumnIds);
   const rowNavLabel =
     column.columnDef.meta?.cardRowNavLabel ?? defaultRowNavLabel;
 
@@ -270,7 +272,8 @@ function TableCardRow<T extends object>({
       if (!cell) return null;
       return renderFieldColumn(row, column, cell, "featured", {
         rowHref,
-        defaultRowNavLabel
+        defaultRowNavLabel,
+        pinnedColumnIds
       }, onRowNav);
     })
     .filter(Boolean);
@@ -281,7 +284,8 @@ function TableCardRow<T extends object>({
       if (!cell) return null;
       return renderFieldColumn(row, column, cell, "metadata", {
         rowHref,
-        defaultRowNavLabel
+        defaultRowNavLabel,
+        pinnedColumnIds
       }, onRowNav);
     })
     .filter(Boolean);

@@ -43,9 +43,9 @@ import {
   ItemThumbnail,
   MethodItemTypeIcon,
   SupplierAvatar,
-  Table
+  Table,
+  CardActionValue
 } from "~/components";
-import { CardActionValue } from "~/components/Table/components/CardFieldChip";
 import { Enumerable } from "~/components/Enumerable";
 import { useLocations } from "~/components/Form/Location";
 import { useUnitOfMeasure } from "~/components/Form/UnitOfMeasure";

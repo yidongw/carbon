@@ -2,6 +2,7 @@ import type { BadgeProps } from "@carbon/react";
 import { Badge, cn, useMode } from "@carbon/react";
 import type { Color } from "@carbon/utils";
 import { getColor, getColorByValue } from "@carbon/utils";
+import { CARD_ACTION_VALUE_CLASS } from "~/components/Table/components/CardFieldChip";
 
 type EnumerableProps = BadgeProps & {
   value: string | null;
@@ -22,7 +23,7 @@ const Enumerable = ({
   return (
     <Badge
       style={{ ...style, borderColor: `${style.color}33` }}
-      className={cn(onClick && "card-action-value", className)}
+      className={cn(onClick && CARD_ACTION_VALUE_CLASS, className)}
       onClick={onClick}
       {...props}
     >

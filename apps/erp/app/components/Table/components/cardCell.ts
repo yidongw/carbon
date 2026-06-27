@@ -14,6 +14,13 @@ export const useIsCardCell = () => useContext(CardCellContext);
 export const CARD_PINNED_VALUE_CLASS = "card-pinned-value";
 
 /**
+ * Mobile card field chip interactive markers (underline spec: `.card-field-chip-underline`
+ * in app/styles/tailwind.css):
+ * - `<a>` / `Hyperlink` — auto-underlined via chip-root `[&_a]`
+ * - `card-action-value` / `<CardActionValue>` — drawer/modal triggers without links
+ * - `Enumerable` with `onClick` — auto-gets `card-action-value`
+ * - `card-action-label` — label underline when chip has any interactive child
+ */
  * Underline interactive field chip labels when the value area is interactive.
  * Underline spec: `.card-field-chip-underline` in app/styles/tailwind.css
  */
