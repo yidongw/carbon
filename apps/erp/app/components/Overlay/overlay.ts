@@ -66,6 +66,42 @@ export const overlay = {
       };
     },
 
+    newProductionPickup({
+      jobId,
+      jobOperationId
+    }: {
+      jobId?: string;
+      jobOperationId?: string;
+    } = {}): OverlayTarget {
+      const query = new URLSearchParams();
+      query.set("overlay", "true");
+      if (jobId) query.set("jobId", jobId);
+      if (jobOperationId) query.set("jobOperationId", jobOperationId);
+      return {
+        id: "newProductionPickup",
+        url: `${path.to.newPickup}?${query.toString()}`,
+        params: overlayParams({ jobId, jobOperationId })
+      };
+    },
+
+    newProductionQuantity({
+      jobId,
+      jobOperationId
+    }: {
+      jobId?: string;
+      jobOperationId?: string;
+    } = {}): OverlayTarget {
+      const query = new URLSearchParams();
+      query.set("overlay", "true");
+      if (jobId) query.set("jobId", jobId);
+      if (jobOperationId) query.set("jobOperationId", jobOperationId);
+      return {
+        id: "newProductionQuantity",
+        url: `${path.to.newProductionQuantity}?${query.toString()}`,
+        params: overlayParams({ jobId, jobOperationId })
+      };
+    },
+
     editJobProductionQuantity({
       jobId,
       quantityId

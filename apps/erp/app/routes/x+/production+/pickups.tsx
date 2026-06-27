@@ -3,7 +3,7 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
 import type { LoaderFunctionArgs } from "react-router";
-import { Outlet, useLoaderData } from "react-router";
+import { useLoaderData } from "react-router";
 import {
   getCompanyJobOperationPickups,
   getItemIdsWithConfigurationParameters
@@ -76,7 +76,6 @@ export default function PickupsRoute() {
         count={count}
         configurableItemIds={configurableItemIds}
       />
-      <Outlet />
     </VStack>
   );
 }

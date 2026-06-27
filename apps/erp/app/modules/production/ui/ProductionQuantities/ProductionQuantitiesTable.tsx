@@ -9,11 +9,13 @@ import {
   LuCircleCheck,
   LuCircleX,
   LuHash,
+  LuPlus,
   LuUser
 } from "react-icons/lu";
 import type { FetcherWithComponents } from "react-router";
 import { useFetcher, useRevalidator } from "react-router";
-import { New, Table } from "~/components";
+import { Table } from "~/components";
+import { overlay, useOverlay } from "~/components/Overlay";
 import SalaryPeriodPicker from "~/modules/people/ui/Salary/SalaryPeriodPicker";
 import { getProcessName } from "~/modules/production/productionQuantityDisplay.utils";
 import type {
@@ -189,6 +191,7 @@ const ProductionQuantitiesTable = memo(
     configurableItemIds = []
   }: ProductionQuantitiesTableProps) => {
     const { t } = useLingui();
+    const { openOverlay } = useOverlay();
     const configurableItemIdSet = useMemo(
       () => new Set(configurableItemIds),
       [configurableItemIds]
@@ -209,6 +212,12 @@ const ProductionQuantitiesTable = memo(
       pendingRejectTargetRef.current = null;
       setRejectCorrection(null);
     }, []);
+
+    const openNewQuantity = useCallback(() => {
+      openOverlay(overlay.to.newProductionQuantity(), {
+        onCreated: () => revalidator.revalidate()
+      });
+    }, [openOverlay, revalidator]);
 
     const openRejectCorrection = useCallback(
       (target: RejectCorrectionTarget) => {
@@ -494,10 +503,14 @@ const ProductionQuantitiesTable = memo(
             !embedded && (status === "pending" || status === "all") ? (
               <HStack>
                 {showCreateAction ? (
-                  <New
-                    label={t`Process Completion`}
-                    to={path.to.newProductionQuantity}
-                  />
+                  <Button
+                    type="button"
+                    variant="primary"
+                    leftIcon={<LuPlus />}
+                    onClick={openNewQuantity}
+                  >
+                    <Trans>Process Completion</Trans>
+                  </Button>
                 ) : null}
                 <SalaryPeriodPicker
                   year={year}
@@ -506,10 +519,14 @@ const ProductionQuantitiesTable = memo(
                 />
               </HStack>
             ) : showCreateAction ? (
-              <New
-                label={t`Process Completion`}
-                to={path.to.newProductionQuantity}
-              />
+              <Button
+                type="button"
+                variant="primary"
+                leftIcon={<LuPlus />}
+                onClick={openNewQuantity}
+              >
+                <Trans>Process Completion</Trans>
+              </Button>
             ) : undefined
           }
           withSearch={!embedded}

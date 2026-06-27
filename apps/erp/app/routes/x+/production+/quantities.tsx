@@ -8,7 +8,6 @@ import { msg } from "@lingui/core/macro";
 import { useCallback, useMemo } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import {
-  Outlet,
   redirect,
   useLoaderData,
   useLocation,
@@ -422,7 +421,6 @@ export default function ProductionQuantitiesRoute() {
         showCreateAction
         configurableItemIds={configurableItemIds}
       />
-      <Outlet />
     </VStack>
   );
 }

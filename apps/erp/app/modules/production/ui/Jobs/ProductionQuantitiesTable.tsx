@@ -1,5 +1,6 @@
 import {
   Badge,
+  Button,
   HStack,
   MenuIcon,
   MenuItem,
@@ -8,18 +9,13 @@ import {
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useMemo, useState } from "react";
-import { LuPencil, LuTrash } from "react-icons/lu";
-import { useNavigate, useParams } from "react-router";
-import {
-  EmployeeAvatar,
-  Hyperlink,
-  New,
-  SupplierAvatar,
-  Table
-} from "~/components";
+import { LuPencil, LuPlus, LuTrash } from "react-icons/lu";
+import { useParams, useRevalidator } from "react-router";
+import { EmployeeAvatar, SupplierAvatar, Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { ConfirmDelete } from "~/components/Modals";
-import { usePermissions, useUrlParams } from "~/hooks";
+import { overlay, useOverlay } from "~/components/Overlay";
+import { usePermissions } from "~/hooks";
 import { EditableCreatedAtCell } from "~/modules/production/ui/EditableCreatedAtCell";
 import { useProductionQuantityLineCreatedAtSave } from "~/modules/production/ui/useEditableCreatedAt";
 import { usePeople } from "~/stores";
@@ -49,8 +45,31 @@ const ProductionQuantitiesTable = memo(
     const { t } = useLingui();
     const typeLabel = useProductionQuantityTypeLabel();
     if (!jobId) throw new Error("Job ID is required");
+    const { openOverlay } = useOverlay();
+    const revalidator = useRevalidator();
+    const permissions = usePermissions();
+    const canUpdate = permissions.can("update", "production");
     const [people] = usePeople();
     const { saveCreatedAt, canEdit } = useProductionQuantityLineCreatedAtSave();
+
+    const openEdit = useCallback(
+      (quantityId: string) => {
+        if (!canUpdate) return;
+        openOverlay(
+          overlay.to.editJobProductionQuantity({ jobId, quantityId }),
+          {
+            onSuccess: () => revalidator.revalidate()
+          }
+        );
+      },
+      [canUpdate, jobId, openOverlay, revalidator]
+    );
+
+    const openNew = useCallback(() => {
+      openOverlay(overlay.to.newJobProductionQuantity({ jobId }), {
+        onCreated: () => revalidator.revalidate()
+      });
+    }, [jobId, openOverlay, revalidator]);
 
     const columns = useMemo<
       ColumnDef<UnifiedProductionQuantityListItem>[]
@@ -59,11 +78,18 @@ const ProductionQuantitiesTable = memo(
         {
           accessorKey: "jobOperationId",
           header: t`Operation`,
-          cell: ({ row }) => (
-            <Hyperlink to={row.original.id}>
-              {row.original.jobOperation?.description ?? null}
-            </Hyperlink>
-          ),
+          cell: ({ row }) =>
+            canUpdate ? (
+              <button
+                type="button"
+                className="text-left font-medium text-primary hover:underline"
+                onClick={() => openEdit(row.original.id)}
+              >
+                {row.original.jobOperation?.description ?? null}
+              </button>
+            ) : (
+              <span>{row.original.jobOperation?.description ?? null}</span>
+            ),
           meta: {
             filter: {
               type: "static",
@@ -217,6 +243,8 @@ const ProductionQuantitiesTable = memo(
       ];
     }, [
       canEdit,
+      canUpdate,
+      openEdit,
       operations,
       people,
       saveCreatedAt,
@@ -224,8 +252,6 @@ const ProductionQuantitiesTable = memo(
       t,
       typeLabel
     ]);
-
-    const permissions = usePermissions();
 
     const deleteModal = useDisclosure();
     const [selectedEvent, setSelectedEvent] =
@@ -241,10 +267,6 @@ const ProductionQuantitiesTable = memo(
       deleteModal.onClose();
     };
 
-    const navigate = useNavigate();
-    const [params] = useUrlParams();
-
-    // biome-ignore lint/correctness/useExhaustiveDependencies: suppressed due to migration
     const renderContextMenu = useCallback<
       (row: UnifiedProductionQuantityListItem) => JSX.Element
     >(
@@ -252,7 +274,7 @@ const ProductionQuantitiesTable = memo(
         <>
           <MenuItem
             disabled={!permissions.can("update", "production")}
-            onClick={() => navigate(row.id)}
+            onClick={() => openEdit(row.id)}
           >
             <MenuIcon icon={<LuPencil />} />
             <Trans>Edit Process Completion</Trans>
@@ -268,7 +290,7 @@ const ProductionQuantitiesTable = memo(
         </>
       ),
 
-      [permissions]
+      [openEdit, permissions]
     );
 
     return (
@@ -280,10 +302,14 @@ const ProductionQuantitiesTable = memo(
           data={data}
           primaryAction={
             permissions.can("create", "production") && (
-              <New
-                label={t`Process Completion`}
-                to={`new?${params.toString()}`}
-              />
+              <Button
+                type="button"
+                variant="primary"
+                leftIcon={<LuPlus />}
+                onClick={openNew}
+              >
+                <Trans>Process Completion</Trans>
+              </Button>
             )
           }
           renderContextMenu={renderContextMenu}
