@@ -46,23 +46,30 @@ export function CardFieldChipBody({
   children,
   rowNav,
   rowNavLabel,
-  onRowNav
+  onRowNav,
+  rowNavTabIndex = 0
 }: {
   children: ReactNode;
   rowNav?: boolean;
   rowNavLabel?: string;
   onRowNav?: (event: MouseEvent<HTMLButtonElement>) => void;
+  /** Set to -1 when a parent card already handles keyboard row navigation. */
+  rowNavTabIndex?: number;
 }) {
   if (!rowNav || !onRowNav) {
     return <>{children}</>;
   }
+
+  const excludeFromTabOrder = rowNavTabIndex < 0;
 
   return (
     <div className="relative min-w-0">
       {children}
       <button
         type="button"
-        aria-label={rowNavLabel}
+        aria-label={excludeFromTabOrder ? undefined : rowNavLabel}
+        aria-hidden={excludeFromTabOrder ? true : undefined}
+        tabIndex={rowNavTabIndex}
         data-card-action
         className="absolute inset-0 z-[1] cursor-pointer rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring"
         onClick={onRowNav}

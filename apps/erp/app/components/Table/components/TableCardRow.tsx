@@ -141,16 +141,23 @@ function FieldChip({
   variant,
   rowNav,
   rowNavLabel,
-  onRowNav
+  onRowNav,
+  rowNavTabIndex
 }: FieldChipProps & {
   rowNav?: boolean;
   rowNavLabel?: string;
   onRowNav?: (event: MouseEvent<HTMLButtonElement>) => void;
+  rowNavTabIndex?: number;
 }) {
   if (variant === "featured") {
     return (
       <CardFieldChip variant="featured">
-        <CardFieldChipBody rowNav={rowNav} rowNavLabel={rowNavLabel} onRowNav={onRowNav}>
+        <CardFieldChipBody
+          rowNav={rowNav}
+          rowNavLabel={rowNavLabel}
+          onRowNav={onRowNav}
+          rowNavTabIndex={rowNavTabIndex}
+        >
           <div className="flex items-center gap-1.5">
             {icon && <FieldIcon size="md">{icon}</FieldIcon>}
             <span className="card-action-label text-sm font-medium text-foreground">
@@ -167,7 +174,12 @@ function FieldChip({
 
   return (
     <CardFieldChip variant="inline">
-      <CardFieldChipBody rowNav={rowNav} rowNavLabel={rowNavLabel} onRowNav={onRowNav}>
+      <CardFieldChipBody
+        rowNav={rowNav}
+        rowNavLabel={rowNavLabel}
+        onRowNav={onRowNav}
+        rowNavTabIndex={rowNavTabIndex}
+      >
         {icon && <FieldIcon>{icon}</FieldIcon>}
         <span className="card-action-label text-muted-foreground">
           {header}
@@ -186,11 +198,13 @@ function renderFieldColumn<T extends object>(
   {
     rowHref,
     defaultRowNavLabel,
-    pinnedColumnIds
+    pinnedColumnIds,
+    rowNavTabIndex
   }: {
     rowHref?: string;
     defaultRowNavLabel: string;
     pinnedColumnIds: readonly string[];
+    rowNavTabIndex?: number;
   },
   onRowNav: (href: string) => (event: MouseEvent<HTMLButtonElement>) => void
 ) {
@@ -216,6 +230,7 @@ function renderFieldColumn<T extends object>(
       rowNav={isRowNav}
       rowNavLabel={rowNavLabel}
       onRowNav={isRowNav && rowHref ? onRowNav(rowHref) : undefined}
+      rowNavTabIndex={rowNavTabIndex}
     >
       {rendered}
     </FieldChip>
@@ -259,6 +274,9 @@ function TableCardRow<T extends object>({
 
   const cardLeft = pinnedColumns.filter((c) => !SYSTEM_COLUMN_IDS.has(c.id));
   const pinnedColumnIds = cardLeft.map((column) => column.id);
+  const rowNavTabIndex = rowHref ? -1 : undefined;
+  const cardNavLabel =
+    cardLeft[0]?.columnDef.meta?.cardRowNavLabel ?? defaultRowNavLabel;
   const cardRight = centerColumns.filter(
     (c) => !SYSTEM_COLUMN_IDS.has(c.id) && featuredColumns.has(c.id)
   );
@@ -273,7 +291,8 @@ function TableCardRow<T extends object>({
       return renderFieldColumn(row, column, cell, "featured", {
         rowHref,
         defaultRowNavLabel,
-        pinnedColumnIds
+        pinnedColumnIds,
+        rowNavTabIndex
       }, onRowNav);
     })
     .filter(Boolean);
@@ -285,7 +304,8 @@ function TableCardRow<T extends object>({
       return renderFieldColumn(row, column, cell, "metadata", {
         rowHref,
         defaultRowNavLabel,
-        pinnedColumnIds
+        pinnedColumnIds,
+        rowNavTabIndex
       }, onRowNav);
     })
     .filter(Boolean);
@@ -317,7 +337,7 @@ function TableCardRow<T extends object>({
   const card = (
     <Card
       tabIndex={rowHref ? 0 : undefined}
-      aria-label={rowHref ? defaultRowNavLabel : undefined}
+      aria-label={rowHref ? cardNavLabel : undefined}
       onClick={rowHref ? handleCardClick : undefined}
       onKeyDown={rowHref ? handleCardKeyDown : undefined}
       className={cn(
@@ -355,6 +375,7 @@ function TableCardRow<T extends object>({
                       onRowNav={
                         isRowNav && rowHref ? onRowNav(rowHref) : undefined
                       }
+                      rowNavTabIndex={rowNavTabIndex}
                     >
                       <div
                         className={cn(

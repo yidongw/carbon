@@ -370,7 +370,8 @@ export function EditableConfigGrid({
   updateCell,
   deleteRow,
   readOnly = false,
-  allowRowMutations = true
+  allowRowMutations = true,
+  canDeleteRow
 }: {
   columns: Column[];
   rows: Row[];
@@ -389,6 +390,9 @@ export function EditableConfigGrid({
   deleteRow: (index: number) => void;
   readOnly?: boolean;
   allowRowMutations?: boolean;
+  /** When set, rows matching this predicate get a delete action even if
+   * `allowRowMutations` is false (e.g. process-click seeded rows). */
+  canDeleteRow?: (rowIndex: number) => boolean;
 }) {
   const { t } = useLingui();
 
@@ -569,17 +573,22 @@ export function EditableConfigGrid({
       hideZeroValuesInVertical={readOnly}
       renderCell={renderCell}
       renderRowActions={
-        readOnly || !allowRowMutations
+        readOnly
           ? undefined
-          : (rowIndex) => (
-              <IconButton
-                icon={<LuTrash2 />}
-                aria-label={t`Delete row`}
-                variant="ghost"
-                size="sm"
-                onClick={() => deleteRow(rowIndex)}
-              />
-            )
+          : (rowIndex) => {
+              if (!allowRowMutations && !canDeleteRow?.(rowIndex)) {
+                return null;
+              }
+              return (
+                <IconButton
+                  icon={<LuTrash2 />}
+                  aria-label={t`Delete row`}
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => deleteRow(rowIndex)}
+                />
+              );
+            }
       }
     />
   );

@@ -1,6 +1,6 @@
 import { Button, cn, HStack } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { LuChevronRight } from "react-icons/lu";
 import { PillSegmentedControl } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
@@ -231,6 +231,12 @@ function JobConfigQuantities({
       ? currentRows.map((row) => zeroQuantities(row, columns))
       : getInitialRows(parameters, primaryParam, columns)
   );
+  const initialRowKeysRef = useRef<Set<string> | null>(null);
+  if (initialRowKeysRef.current === null) {
+    initialRowKeysRef.current = new Set(
+      rows.map((row) => getMergeKey(row, columns))
+    );
+  }
   const [invalidCells, setInvalidCells] = useState<Set<string>>(new Set());
   const [validationError, setValidationError] = useState("");
   // Delta = enter the change (default); Total = enter the target quantity.
@@ -268,6 +274,11 @@ function JobConfigQuantities({
 
   const deleteRow = (index: number) =>
     setRows((prev) => prev.filter((_, i) => i !== index));
+
+  const canDeleteRow = (rowIndex: number) => {
+    const key = getMergeKey(rows[rowIndex], columns);
+    return !initialRowKeysRef.current?.has(key);
+  };
 
   const updateCell = (
     rowIndex: number,
@@ -434,6 +445,7 @@ function JobConfigQuantities({
               updateCell={updateCell}
               deleteRow={deleteRow}
               allowRowMutations={false}
+              canDeleteRow={canDeleteRow}
             />
             {validationError && (
               <div className="text-sm text-destructive">{validationError}</div>
