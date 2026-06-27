@@ -21,9 +21,6 @@ export const CARD_PINNED_VALUE_CLASS = "card-pinned-value";
  * - `Enumerable` with `onClick` — auto-gets `card-action-value`
  * - `card-action-label` — label underline when chip has any interactive child
  */
- * Underline interactive field chip labels when the value area is interactive.
- * Underline spec: `.card-field-chip-underline` in app/styles/tailwind.css
- */
 const CARD_FIELD_CHIP_LABEL_UNDERLINE_CLASS = [
   "[&:has(:is([data-card-action],a,button,[role='button'],.card-action-value))_.card-action-label]:card-field-chip-underline"
 ].join(" ");
