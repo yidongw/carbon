@@ -35,7 +35,7 @@ import {
   LuSquareChartGantt
 } from "react-icons/lu";
 import { useFetcher } from "react-router";
-import { ItemThumbnail, MethodItemTypeIcon, Table } from "~/components";
+import { ItemThumbnail, MethodItemTypeIcon, Table, CardActionValue } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { useLocations } from "~/components/Form/Location";
 import { useUnitOfMeasure } from "~/components/Form/UnitOfMeasure";
@@ -266,7 +266,9 @@ const ProductionPlanningTable = ({
             />
 
             <VStack spacing={0} className="font-medium">
-              {row.original.readableIdWithRevision}
+              <CardActionValue>
+                {row.original.readableIdWithRevision}
+              </CardActionValue>
               <div className="w-full truncate text-muted-foreground text-xs">
                 {row.original.name}
               </div>

@@ -18,11 +18,14 @@ declare module "@tanstack/react-table" {
         | "-Infinity"
         | "+Infinity"
     ) => string;
-    /** When true, the mobile card row hides this column's pill. */
+    /** When true, the mobile card row hides this column's field chip. */
     isEmpty?: (row: TData) => boolean;
-    /** When true, the mobile card pill navigates to the row href. */
+    /**
+     * Mobile card row-nav for this column. `true` opts in, `false` opts out.
+     * When omitted, the first pinned column navigates if the table has `getRowHref`.
+     */
     cardRowNav?: boolean;
-    /** Accessible label for the mobile card row-nav pill overlay. */
+    /** Accessible label for the mobile card row-nav chip overlay. */
     cardRowNavLabel?: string;
     /** Extra classes applied to the table cell (`Td`). */
     cellClassName?: string;
