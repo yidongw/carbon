@@ -82,6 +82,10 @@ declare global {
       WECHAT_MP_APP_ID: string;
       WECHAT_MP_APP_SECRET: string;
       WECHAT_WEBHOOK_TOKEN: string;
+      ALIBABA_CLOUD_ACCESS_KEY_ID: string;
+      ALIBABA_CLOUD_ACCESS_KEY_SECRET: string;
+      ALIBABA_CLOUD_SMS_SIGN_NAME: string;
+      ALIBABA_CLOUD_SMS_TEMPLATE_CODE: string;
       XERO_CLIENT_SECRET: string;
       XERO_WEBHOOK_SECRET: string;
       DEFAULT_LANGUAGE: string;
@@ -353,6 +357,37 @@ export const WECHAT_WEBHOOK_TOKEN = getEnv("WECHAT_WEBHOOK_TOKEN", {
   isRequired: false,
   isSecret: true
 });
+
+// Aliyun 号码认证服务 (Dypnsapi) — SMS verification-code login. Add "phone" to
+// AUTH_PROVIDERS to surface the phone sign-in tab.
+export const ALIBABA_CLOUD_ACCESS_KEY_ID = getEnv(
+  "ALIBABA_CLOUD_ACCESS_KEY_ID",
+  {
+    isRequired: false,
+    isSecret: false
+  }
+);
+export const ALIBABA_CLOUD_ACCESS_KEY_SECRET = getEnv(
+  "ALIBABA_CLOUD_ACCESS_KEY_SECRET",
+  {
+    isRequired: false,
+    isSecret: true
+  }
+);
+export const ALIBABA_CLOUD_SMS_SIGN_NAME = getEnv(
+  "ALIBABA_CLOUD_SMS_SIGN_NAME",
+  {
+    isRequired: false,
+    isSecret: false
+  }
+);
+export const ALIBABA_CLOUD_SMS_TEMPLATE_CODE = getEnv(
+  "ALIBABA_CLOUD_SMS_TEMPLATE_CODE",
+  {
+    isRequired: false,
+    isSecret: false
+  }
+);
 
 export const JIRA_CLIENT_ID = getEnv("JIRA_CLIENT_ID", {
   isRequired: false

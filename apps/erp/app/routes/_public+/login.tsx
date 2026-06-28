@@ -10,6 +10,7 @@ import {
   isBypassEmail,
   LOGIN_METHOD,
   magicLinkValidator,
+  phoneLoginValidator,
   RATE_LIMIT,
   safeRedirect
 } from "@carbon/auth";
@@ -206,20 +207,22 @@ export default function LoginRoute() {
   const hasOutlookAuth = providers.includes("azure");
   const hasGoogleAuth = providers.includes("google");
   const hasWeChatAuth = providers.includes("wechat");
+  const hasPhoneAuth = providers.includes("phone");
 
   const showWeChatButton = isWeChatBrowser && hasWeChatAuth;
   const showWeChatQrTab = !isWeChatBrowser && hasWeChatAuth;
 
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
-  const [loginMethod, setLoginMethod] = useState<"email" | "wechat-qr">(
-    showWeChatQrTab ? "wechat-qr" : "email"
-  );
+  const [loginMethod, setLoginMethod] = useState<
+    "email" | "wechat-qr" | "phone"
+  >(showWeChatQrTab ? "wechat-qr" : hasPhoneAuth ? "phone" : "email");
   const [mode, setMode] = useState<"login" | "signup" | "verify">("login");
   const [signupEmail, setSignupEmail] = useState<string>("");
   const [turnstileToken, setTurnstileToken] = useState<string>("");
 
   const fetcher = useFetcher<Result & { mode?: string; email?: string }>();
+  const phoneFetcher = useFetcher<Result & { phone?: string }>();
   const wechatQrFetcher = useFetcher<{
     url: string | null;
     scene?: string | null;
@@ -251,6 +254,17 @@ export default function LoginRoute() {
       }
     }
   }, [fetcher.data, mode, redirectTo]);
+
+  // After the SMS code is sent, go to /verify-phone to enter it (mirrors the email
+  // flow's hop to /verify).
+  useEffect(() => {
+    if (phoneFetcher.data?.success && phoneFetcher.data.phone) {
+      const verifyUrl = `/verify-phone?phone=${encodeURIComponent(
+        phoneFetcher.data.phone
+      )}${redirectTo ? `&redirectTo=${encodeURIComponent(redirectTo)}` : ""}`;
+      window.location.href = verifyUrl;
+    }
+  }, [phoneFetcher.data, redirectTo]);
 
   // Poll the QR scene while the WeChat QR tab is open; when the user has scanned
   // and the webhook has resolved them, the status response sets the session
@@ -453,32 +467,41 @@ export default function LoginRoute() {
               </div>
             )}
 
-            {showWeChatQr && (
-              <div className="flex w-full items-center gap-1 rounded-xl bg-muted p-1">
-                <button
-                  type="button"
-                  className={`flex-1 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                    loginMethod === "wechat-qr"
-                      ? "bg-background text-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                  onClick={onSelectWeChatQrTab}
-                >
-                  <Trans>WeChat QR</Trans>
-                </button>
-                <button
-                  type="button"
-                  className={`flex-1 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                    loginMethod === "email"
-                      ? "bg-background text-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                  onClick={() => setLoginMethod("email")}
-                >
-                  <Trans>Email</Trans>
-                </button>
-              </div>
-            )}
+            {(() => {
+              const tabs: {
+                key: "wechat-qr" | "phone" | "email";
+                label: React.ReactNode;
+              }[] = [];
+              if (showWeChatQr)
+                tabs.push({ key: "wechat-qr", label: <Trans>WeChat QR</Trans> });
+              if (hasPhoneAuth)
+                tabs.push({ key: "phone", label: <Trans>Phone</Trans> });
+              tabs.push({ key: "email", label: <Trans>Email</Trans> });
+
+              if (tabs.length < 2) return null;
+              return (
+                <div className="flex w-full items-center gap-1 rounded-xl bg-muted p-1">
+                  {tabs.map((tab) => (
+                    <button
+                      key={tab.key}
+                      type="button"
+                      className={`flex-1 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                        loginMethod === tab.key
+                          ? "bg-background text-foreground shadow-sm"
+                          : "text-muted-foreground hover:text-foreground"
+                      }`}
+                      onClick={() =>
+                        tab.key === "wechat-qr"
+                          ? onSelectWeChatQrTab()
+                          : setLoginMethod(tab.key)
+                      }
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+              );
+            })()}
 
             {loginMethod === "wechat-qr" && showWeChatQr ? (
               <VStack spacing={4} className="items-center py-2">
@@ -516,6 +539,49 @@ export default function LoginRoute() {
                   </>
                 ) : null}
               </VStack>
+            ) : loginMethod === "phone" && hasPhoneAuth ? (
+              <ValidatedForm
+                fetcher={phoneFetcher}
+                validator={phoneLoginValidator}
+                defaultValues={{ redirectTo }}
+                method="post"
+                action="/api/send-phone-code"
+                className="w-full"
+              >
+                <Hidden name="redirectTo" value={redirectTo} type="hidden" />
+                <VStack spacing={2}>
+                  {phoneFetcher.data?.success === false &&
+                    phoneFetcher.data?.message && (
+                      <Alert variant="destructive">
+                        <LuCircleAlert className="w-4 h-4" />
+                        <AlertTitle>
+                          <Trans>Authentication Error</Trans>
+                        </AlertTitle>
+                        <AlertDescription>
+                          {phoneFetcher.data?.message &&
+                            formatError(phoneFetcher.data.message)}
+                        </AlertDescription>
+                      </Alert>
+                    )}
+
+                  <Input
+                    name="phone"
+                    label=""
+                    placeholder={t`Phone Number`}
+                  />
+
+                  <Submit
+                    isDisabled={phoneFetcher.state !== "idle"}
+                    isLoading={phoneFetcher.state === "submitting"}
+                    size="lg"
+                    className="w-full"
+                    withBlocker={false}
+                    variant="secondary"
+                  >
+                    <Trans>Sign in with Phone</Trans>
+                  </Submit>
+                </VStack>
+              </ValidatedForm>
             ) : (
               <ValidatedForm
                 fetcher={fetcher}

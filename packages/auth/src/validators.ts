@@ -33,6 +33,22 @@ export const magicLinkValidator = z.object({
   turnstileToken: zfd.text(z.string().optional())
 });
 
+// Phone (SMS OTP) login. Mainland-China mobile numbers only — Aliyun's
+// verification-code service is domestic (CountryCode 86) at present.
+export const phoneLoginValidator = z.object({
+  phone: z
+    .string()
+    .min(1, { message: "Phone number is required" })
+    .regex(/^1[3-9]\d{9}$/, "Must be a valid phone number"),
+  redirectTo: zfd.text(z.string().optional())
+});
+
+export const phoneVerifyValidator = z.object({
+  phone: z.string().regex(/^1[3-9]\d{9}$/, "Must be a valid phone number"),
+  code: z.string().min(4).max(8),
+  redirectTo: zfd.text(z.string().optional())
+});
+
 export const passwordLoginValidator = z.object({
   email: z
     .string()

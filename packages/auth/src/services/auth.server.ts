@@ -29,6 +29,7 @@ import {
   requireAuthSession
 } from "./session.server";
 import { getUserClaims } from "./users.server";
+import { syntheticPhoneEmail } from "./phone.server";
 
 export async function createEmailAuthAccount(
   email: string,
@@ -580,6 +581,17 @@ export async function signInWithEmailViaAdmin(
     match?.companyId ?? "",
     match?.companyGroupId ?? ""
   );
+}
+
+/**
+ * Mint a session for a phone user. The auth user carries a synthetic email
+ * (public user.email is null), so this is signInWithEmailViaAdmin keyed by that
+ * derived address. Identity is already proven by a checked SMS code.
+ */
+export async function signInWithPhoneViaAdmin(
+  phone: string
+): Promise<AuthSession | null> {
+  return signInWithEmailViaAdmin(syntheticPhoneEmail(phone));
 }
 
 export async function signInWithBypassEmail(
