@@ -1136,6 +1136,7 @@ export const path = {
     newCostCenter: `${x}/accounting/cost-centers/new`,
     newCompany: `${x}/settings/company/new`,
     newCompanyInGroup: `${x}/settings/companies/new`,
+    tryDemo: `${x}/settings/company/demo`,
     newConsumable: `${x}/consumable/new`,
     newConsumableSupplier: (id: string) =>
       generatePath(`${x}/consumable/${id}/purchasing/new`),

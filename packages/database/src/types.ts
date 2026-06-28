@@ -2257,10 +2257,12 @@ export type Database = {
           companyGroupId: string | null
           countryCode: string | null
           createdAt: string
+          demoExpiresAt: string | null
           email: string | null
           eori: string | null
           fax: string | null
           id: string
+          isDemo: boolean
           isEliminationEntity: boolean
           logoDark: string | null
           logoDarkIcon: string | null
@@ -2289,10 +2291,12 @@ export type Database = {
           companyGroupId?: string | null
           countryCode?: string | null
           createdAt?: string
+          demoExpiresAt?: string | null
           email?: string | null
           eori?: string | null
           fax?: string | null
           id?: string
+          isDemo?: boolean
           isEliminationEntity?: boolean
           logoDark?: string | null
           logoDarkIcon?: string | null
@@ -2321,10 +2325,12 @@ export type Database = {
           companyGroupId?: string | null
           countryCode?: string | null
           createdAt?: string
+          demoExpiresAt?: string | null
           email?: string | null
           eori?: string | null
           fax?: string | null
           id?: string
+          isDemo?: boolean
           isEliminationEntity?: boolean
           logoDark?: string | null
           logoDarkIcon?: string | null
