@@ -1,5 +1,6 @@
 import {
   assertIsPost,
+  CarbonEdition,
   error,
   phoneVerifyValidator,
   RATE_LIMIT,
@@ -8,7 +9,8 @@ import {
 import { signInWithPhoneViaAdmin } from "@carbon/auth/auth.server";
 import { checkSmsVerifyCode } from "@carbon/auth/aliyun-sms.server";
 import { setCompanyId } from "@carbon/auth/company.server";
-import { findOrCreatePhoneUser } from "@carbon/auth/phone.server";
+import { findOrCreatePhoneUser, findPhoneUser } from "@carbon/auth/phone.server";
+import { Edition } from "@carbon/utils";
 import {
   flash,
   getAuthSession,
@@ -93,11 +95,20 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
-  const user = await findOrCreatePhoneUser(phone);
+  // Enterprise deployments require provisioned accounts (no self-signup); other
+  // editions may self-create on first verified login. Mirrors the email flow.
+  const user =
+    CarbonEdition === Edition.Enterprise
+      ? await findPhoneUser(phone)
+      : await findOrCreatePhoneUser(phone);
   if (!user) {
+    const message =
+      CarbonEdition === Edition.Enterprise
+        ? "User record not found"
+        : "Failed to create user account";
     return data(
-      error(null, "Failed to create user account"),
-      await flash(request, error(null, "Failed to create user account"))
+      error(null, message),
+      await flash(request, error(null, message))
     );
   }
 

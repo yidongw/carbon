@@ -15,6 +15,26 @@ function toE164(phone: string): string {
 }
 
 /**
+ * Look up an existing Carbon user by phone (E.164), without creating one.
+ * Returns null when not found or on a lookup error. Used to gate Enterprise
+ * deployments, where accounts must be provisioned rather than self-created.
+ */
+export async function findPhoneUser(phone: string) {
+  const serviceRole = getCarbonServiceRole();
+  const { data, error } = await serviceRole
+    .from("user")
+    .select("*")
+    .eq("phone", toE164(phone))
+    .maybeSingle();
+
+  if (error) {
+    console.error("[phone find] lookup failed", error);
+    return null;
+  }
+  return data;
+}
+
+/**
  * Resolve the Carbon user for a phone number, creating one on first sign-in.
  * `phone` is the national number entered at login; it is stored as E.164.
  * Identity is assumed already proven by a checked SMS code (see checkSmsVerifyCode).

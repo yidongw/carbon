@@ -8,6 +8,7 @@ import {
   RATE_LIMIT
 } from "@carbon/auth";
 import { sendSmsVerifyCode } from "@carbon/auth/aliyun-sms.server";
+import { findPhoneUser } from "@carbon/auth/phone.server";
 import { validator } from "@carbon/form";
 import { Ratelimit, redis } from "@carbon/kv";
 import { Edition } from "@carbon/utils";
@@ -63,6 +64,13 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   const { phone } = validation.data;
+
+  // Enterprise deployments don't allow self-signup: only send a code to numbers
+  // that already belong to a provisioned user (mirrors the email login gate).
+  if (CarbonEdition === Edition.Enterprise && !(await findPhoneUser(phone))) {
+    return error(null, "User record not found");
+  }
+
   const sent = await sendSmsVerifyCode(phone);
   if (!sent) {
     return error(null, "Failed to send verification code");
