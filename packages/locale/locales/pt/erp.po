@@ -473,6 +473,9 @@ msgstr "Adicionar Requisito"
 msgid "Add Risk"
 msgstr "Adicionar Risco"
 
+msgid "Add Row"
+msgstr ""
+
 msgid "Add rule"
 msgstr "Adicionar regra"
 
@@ -3210,9 +3213,6 @@ msgstr "Editar Processo"
 
 msgid "Edit Process Completion"
 msgstr "Editar conclusão do processo"
-
-msgid "Edit Process Pickup"
-msgstr "Edite o Retirada do Processo"
 
 msgid "Edit purchase order line type"
 msgstr "Editar tipo de linha de ordem de compra"
@@ -8390,6 +8390,9 @@ msgstr "Entrar com Google"
 msgid "Sign in with Outlook"
 msgstr "Entrar com Outlook"
 
+msgid "Sign in with Phone"
+msgstr ""
+
 msgid "Sign in with WeChat"
 msgstr "Insira com WeChat"
 
@@ -9613,6 +9616,9 @@ msgstr "Use ... to get the next tool ID"
 msgid "Use a different email"
 msgstr "Usar um email diferente"
 
+msgid "Use a different phone number"
+msgstr ""
+
 msgid "Use metric system for default material dimensions."
 msgstr "Utilize o sistema métrico para dimensões padrão de materiais."
 
@@ -9690,6 +9696,9 @@ msgstr "Erro de Verificação"
 
 msgid "Verify your email"
 msgstr "Verifique seu email"
+
+msgid "Verify your phone"
+msgstr ""
 
 msgid "Version"
 msgstr "Versão"
@@ -9897,6 +9906,9 @@ msgstr "Mapeamos cada coluna para o que acreditamos estar correto, mas revise os
 
 msgid "We've sent a verification code to {email}"
 msgstr "Enviámos um código de verificação para {email}"
+
+msgid "We've sent a verification code to {phone}"
+msgstr ""
 
 msgid "We've sent a verification code to {signupEmail}"
 msgstr "Enviámos um código de verificação para {signupEmail}"

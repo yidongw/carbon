@@ -473,6 +473,9 @@ msgstr "添加需求"
 msgid "Add Risk"
 msgstr "添加风险"
 
+msgid "Add Row"
+msgstr ""
+
 msgid "Add rule"
 msgstr "添加规则"
 
@@ -3210,9 +3213,6 @@ msgstr "编辑工序"
 
 msgid "Edit Process Completion"
 msgstr "编辑工序完成"
-
-msgid "Edit Process Pickup"
-msgstr "编辑工序领料"
 
 msgid "Edit purchase order line type"
 msgstr "编辑采购订单行类型"
@@ -8390,6 +8390,9 @@ msgstr "使用Google登录"
 msgid "Sign in with Outlook"
 msgstr "使用Outlook登录"
 
+msgid "Sign in with Phone"
+msgstr "使用手机号登录"
+
 msgid "Sign in with WeChat"
 msgstr "使用微信登录"
 
@@ -9613,6 +9616,9 @@ msgstr "使用...获取下一个工具ID"
 msgid "Use a different email"
 msgstr "使用不同的电子邮件地址"
 
+msgid "Use a different phone number"
+msgstr "使用其他手机号"
+
 msgid "Use metric system for default material dimensions."
 msgstr "使用公制单位作为默认材料尺寸。"
 
@@ -9690,6 +9696,9 @@ msgstr "验证错误"
 
 msgid "Verify your email"
 msgstr "验证您的电子邮件"
+
+msgid "Verify your phone"
+msgstr "验证您的手机号"
 
 msgid "Version"
 msgstr "版本"
@@ -9897,6 +9906,9 @@ msgstr "我们已将每个列映射为我们认为正确的项，请确认数据
 
 msgid "We've sent a verification code to {email}"
 msgstr "我们已将验证码发送至{email}"
+
+msgid "We've sent a verification code to {phone}"
+msgstr "我们已向 {phone} 发送验证码"
 
 msgid "We've sent a verification code to {signupEmail}"
 msgstr "我们已将验证码发送至{signupEmail}"
