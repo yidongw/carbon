@@ -65,7 +65,8 @@ export async function action({ request }: ActionFunctionArgs) {
         name: "Demo Company",
         baseCurrencyCode: "USD",
         isDemo: true,
-        demoExpiresAt
+        demoExpiresAt,
+        demoSeedStatus: "pending"
       })
       .select("id")
       .single();
@@ -117,6 +118,10 @@ export async function action({ request }: ActionFunctionArgs) {
       .eq("id", companyId)
       .single();
     companyGroupId = companyRecord?.companyGroupId ?? "";
+
+    // Seeding is kicked off (and shown with a progress toast) the first time the user
+    // lands in the demo — see routes/x+/demo.seed.tsx. The company is marked
+    // demoSeedStatus='pending' above; we don't seed inline so "Try the demo" stays fast.
   }
 
   const sessionCookie = await updateCompanySession(

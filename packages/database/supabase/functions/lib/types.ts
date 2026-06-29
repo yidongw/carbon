@@ -2258,6 +2258,7 @@ export type Database = {
           countryCode: string | null
           createdAt: string
           demoExpiresAt: string | null
+          demoSeedStatus: string | null
           email: string | null
           eori: string | null
           fax: string | null
@@ -2292,6 +2293,7 @@ export type Database = {
           countryCode?: string | null
           createdAt?: string
           demoExpiresAt?: string | null
+          demoSeedStatus?: string | null
           email?: string | null
           eori?: string | null
           fax?: string | null
@@ -2326,6 +2328,7 @@ export type Database = {
           countryCode?: string | null
           createdAt?: string
           demoExpiresAt?: string | null
+          demoSeedStatus?: string | null
           email?: string | null
           eori?: string | null
           fax?: string | null

@@ -37,6 +37,7 @@ import {
 import { RealtimeDataProvider } from "~/components";
 import { FloatingChat } from "~/components/Chat";
 import { DemoBanner } from "~/components/DemoBanner";
+import { DemoSeedTrigger } from "~/components/DemoSeedTrigger";
 import { PrimaryNavigation, Topbar, TopbarProvider } from "~/components/Layout";
 import { TimeCardWarning } from "~/components/TimeCardWarning";
 import { OverlayHost, OverlayProvider } from "~/components/Overlay";
@@ -170,21 +171,40 @@ export async function loader({ request }: LoaderFunctionArgs) {
     .map((c) => c.id)
     .filter((id): id is string => Boolean(id));
 
-  let demo: { id: string; expiresAt: string | null; isCurrent: boolean } | null =
-    null;
+  let demo: {
+    id: string;
+    expiresAt: string | null;
+    isCurrent: boolean;
+    seedStatus: string | null;
+    needsSeed: boolean;
+  } | null = null;
   let realCompanyId: string | null = companyId;
   if (userCompanyIds.length) {
     const { data: demoRow } = await client
       .from("company")
-      .select("id, demoExpiresAt")
+      .select("id, demoExpiresAt, demoSeedStatus")
       .eq("isDemo", true)
       .in("id", userCompanyIds)
       .maybeSingle();
     if (demoRow) {
+      const isCurrent = demoRow.id === companyId;
+      // Decide "needs seeding" by DATA PRESENCE, not just the flag: a demo we're in
+      // that has no items yet (and isn't already mid-seed) gets seeded. This self-heals
+      // demos that were never seeded or whose flag drifted, instead of trusting a flag.
+      let needsSeed = false;
+      if (isCurrent && demoRow.demoSeedStatus !== "seeding") {
+        const { count } = await client
+          .from("item")
+          .select("id", { count: "exact", head: true })
+          .eq("companyId", demoRow.id);
+        needsSeed = (count ?? 0) === 0;
+      }
       demo = {
         id: demoRow.id,
         expiresAt: demoRow.demoExpiresAt,
-        isCurrent: demoRow.id === companyId
+        isCurrent,
+        seedStatus: demoRow.demoSeedStatus,
+        needsSeed
       };
       realCompanyId =
         userCompanyIds.find((id) => id !== demoRow.id) ?? null;
@@ -274,6 +294,12 @@ export default function AuthenticatedRoute() {
                 }}
               >
                 <DemoBanner demo={demo} realCompanyId={realCompanyId} />
+                {demo?.isCurrent && (
+                  <DemoSeedTrigger
+                    needsSeed={demo.needsSeed}
+                    status={demo.seedStatus}
+                  />
+                )}
                 <Topbar />
                 <div className="flex flex-1 min-h-0 relative">
                   <PrimaryNavigation />

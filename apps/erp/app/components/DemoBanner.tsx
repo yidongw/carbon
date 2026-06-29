@@ -1,6 +1,14 @@
 import type { ReactNode } from "react";
+import { LuBuilding2, LuFlaskConical } from "react-icons/lu";
 import { useFetcher } from "react-router";
 import { path } from "~/utils/path";
+
+const demoIcon = (
+  <LuFlaskConical className="mr-1 inline size-3.5 align-[-0.15em]" />
+);
+const companyIcon = (
+  <LuBuilding2 className="mr-1 inline size-3.5 align-[-0.15em]" />
+);
 
 export type DemoState = {
   id: string;
@@ -56,19 +64,20 @@ export function DemoBanner({ demo, realCompanyId }: DemoBannerProps) {
     content =
       days <= 0 ? (
         <>
-          Your demo has ended.{" "}
+          {demoIcon}You're in the demo company — it has ended.{" "}
           {realCompanyId && (
             <Action action={path.to.companySwitch(realCompanyId)}>
-              Switch to your company
+              {companyIcon}Switch to your company
             </Action>
           )}
         </>
       ) : (
         <>
-          You're exploring the demo — {days} {days === 1 ? "day" : "days"} left.{" "}
+          {demoIcon}You're in the demo company — {days}{" "}
+          {days === 1 ? "day" : "days"} left.{" "}
           {realCompanyId && (
             <Action action={path.to.companySwitch(realCompanyId)}>
-              Switch to your company
+              {companyIcon}Switch to your company
             </Action>
           )}
         </>
@@ -76,15 +85,17 @@ export function DemoBanner({ demo, realCompanyId }: DemoBannerProps) {
   } else if (demo) {
     content = (
       <>
-        Want to see every module with sample data?{" "}
-        <Action action={path.to.companySwitch(demo.id)}>Explore the demo</Action>
+        {companyIcon}You're in your company.{" "}
+        <Action action={path.to.companySwitch(demo.id)}>
+          {demoIcon}Explore the demo
+        </Action>
       </>
     );
   } else {
     content = (
       <>
-        Want to explore all the modules?{" "}
-        <Action action={path.to.tryDemo}>Try the demo</Action>
+        {companyIcon}You're in your company.{" "}
+        <Action action={path.to.tryDemo}>{demoIcon}Try the demo</Action>
       </>
     );
   }
