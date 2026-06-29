@@ -567,6 +567,7 @@ export default function LoginRoute() {
                   <Input
                     name="phone"
                     label=""
+                    prefix="+86"
                     placeholder={t`Phone Number`}
                   />
 
