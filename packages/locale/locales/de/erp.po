@@ -473,6 +473,9 @@ msgstr "Anforderung hinzufügen"
 msgid "Add Risk"
 msgstr "Risiko hinzufügen"
 
+msgid "Add Row"
+msgstr "Zeile hinzufügen"
+
 msgid "Add rule"
 msgstr "Hinzufügen einer Regel"
 
@@ -3210,9 +3213,6 @@ msgstr "Prozess bearbeiten"
 
 msgid "Edit Process Completion"
 msgstr "Bearbeiten Prozessabschluss"
-
-msgid "Edit Process Pickup"
-msgstr "Bearbeiten Prozessabholung"
 
 msgid "Edit purchase order line type"
 msgstr "Bestellpositionstyp bearbeiten"
@@ -8390,6 +8390,9 @@ msgstr "Mit Google anmelden"
 msgid "Sign in with Outlook"
 msgstr "Mit Outlook anmelden"
 
+msgid "Sign in with Phone"
+msgstr "Mit Telefonnummer anmelden"
+
 msgid "Sign in with WeChat"
 msgstr "Einloggen mit WeChat"
 
@@ -9613,6 +9616,9 @@ msgstr "Verwenden Sie ..., um die nächste Werkzeug-ID zu erhalten"
 msgid "Use a different email"
 msgstr "Verwenden Sie eine andere E-Mail"
 
+msgid "Use a different phone number"
+msgstr "Verwenden Sie eine andere Telefonnummer"
+
 msgid "Use metric system for default material dimensions."
 msgstr "Metrisches System für Standard-Materialdimensionen verwenden."
 
@@ -9690,6 +9696,9 @@ msgstr "Verifizierungsfehler"
 
 msgid "Verify your email"
 msgstr "Überprüfen Sie Ihre E-Mail"
+
+msgid "Verify your phone"
+msgstr "Überprüfen Sie Ihre Telefonnummer"
 
 msgid "Version"
 msgstr "Version"
@@ -9897,6 +9906,9 @@ msgstr "Wir haben jede Spalte dem zugeordnet, was wir für korrekt halten, aber 
 
 msgid "We've sent a verification code to {email}"
 msgstr "Wir haben einen Verifizierungscode an {email} gesendet"
+
+msgid "We've sent a verification code to {phone}"
+msgstr "Wir haben einen Verifizierungscode an {phone} gesendet"
 
 msgid "We've sent a verification code to {signupEmail}"
 msgstr "Wir haben einen Verifizierungscode an {signupEmail} gesendet"
