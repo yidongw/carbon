@@ -474,7 +474,7 @@ msgid "Add Risk"
 msgstr "リスクを追加"
 
 msgid "Add Row"
-msgstr ""
+msgstr "行を追加"
 
 msgid "Add rule"
 msgstr "追加ルールを追加"

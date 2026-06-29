@@ -474,7 +474,7 @@ msgid "Add Risk"
 msgstr "Ajouter un risque"
 
 msgid "Add Row"
-msgstr ""
+msgstr "Ajouter une ligne"
 
 msgid "Add rule"
 msgstr "Ajouter une règle"
