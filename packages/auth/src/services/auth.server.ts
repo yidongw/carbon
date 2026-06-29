@@ -24,6 +24,7 @@ import { getCarbonServiceRole } from "../lib/supabase/client.server";
 import type { AuthSession } from "../types";
 import { path } from "../utils/path";
 import { error } from "../utils/result";
+import { syntheticPhoneEmail } from "./phone.server";
 import {
   destroyAuthSession,
   flash,
@@ -613,6 +614,17 @@ export async function signInWithEmailViaAdmin(
     match?.companyId ?? "",
     match?.companyGroupId ?? ""
   );
+}
+
+/**
+ * Mint a session for a phone user. The auth user carries a synthetic email
+ * (public user.email is null), so this is signInWithEmailViaAdmin keyed by that
+ * derived address. Identity is already proven by a checked SMS code.
+ */
+export async function signInWithPhoneViaAdmin(
+  phone: string
+): Promise<AuthSession | null> {
+  return signInWithEmailViaAdmin(syntheticPhoneEmail(phone));
 }
 
 export async function signInWithBypassEmail(
