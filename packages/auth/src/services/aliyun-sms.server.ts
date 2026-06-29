@@ -77,11 +77,15 @@ async function callDypnsapi(
   }
 }
 
+// Code validity. The system templates (e.g. 100001 "您的验证码为${code}。…${min}分钟内
+// 有效") expect both a `code` and a `min` variable, so they must stay in sync.
+const CODE_VALID_MINUTES = 5;
+
 /**
  * Send an SMS verification code to a phone number. The `##code##` placeholder tells
  * Aliyun to generate (and later be able to validate) the code; passing a literal
- * code instead would make CheckSmsVerifyCode unusable. The template variable name
- * (`code`) must match the configured system template.
+ * code instead would make CheckSmsVerifyCode unusable. The template variables
+ * (`code`, `min`) must match the configured system template.
  */
 export async function sendSmsVerifyCode(phoneNumber: string): Promise<boolean> {
   if (!ALIBABA_CLOUD_SMS_SIGN_NAME || !ALIBABA_CLOUD_SMS_TEMPLATE_CODE) {
@@ -93,9 +97,12 @@ export async function sendSmsVerifyCode(phoneNumber: string): Promise<boolean> {
     PhoneNumber: phoneNumber,
     SignName: ALIBABA_CLOUD_SMS_SIGN_NAME,
     TemplateCode: ALIBABA_CLOUD_SMS_TEMPLATE_CODE,
-    TemplateParam: JSON.stringify({ code: "##code##" }),
+    TemplateParam: JSON.stringify({
+      code: "##code##",
+      min: String(CODE_VALID_MINUTES)
+    }),
     CodeLength: "6",
-    ValidTime: "300"
+    ValidTime: String(CODE_VALID_MINUTES * 60)
   });
 
   return !!data;
