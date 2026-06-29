@@ -24,26 +24,19 @@ export async function findOrCreatePhoneUser(phone: string) {
   const serviceRole = getCarbonServiceRole();
   const e164 = toE164(phone);
 
-  // Match the canonical E.164 form or any legacy bare-national row.
   const existing = await serviceRole
     .from("user")
     .select("*")
-    .in("phone", [e164, phone])
+    .eq("phone", e164)
     .maybeSingle();
 
-  if (existing.data) {
-    // Backfill legacy rows to E.164 so the country selector resolves.
-    if (existing.data.phone !== e164) {
-      const { data: normalized } = await serviceRole
-        .from("user")
-        .update({ phone: e164 })
-        .eq("id", existing.data.id)
-        .select("*")
-        .single();
-      return normalized ?? existing.data;
-    }
-    return existing.data;
+  // Don't misread a lookup failure as "no user" — that would wrongly fall through
+  // to createUser and conflict on the synthetic email, locking the user out.
+  if (existing.error) {
+    console.error("[phone findOrCreate] lookup failed", existing.error);
+    return null;
   }
+  if (existing.data) return existing.data;
 
   const { data: authUser, error: authError } =
     await serviceRole.auth.admin.createUser({

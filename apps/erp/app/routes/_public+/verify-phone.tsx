@@ -101,6 +101,15 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
+  // A valid SMS code shouldn't let a deactivated account back in (mirrors the
+  // email verify path, which only signs in active users).
+  if (!user.active) {
+    return data(
+      error(null, "Your account is not active"),
+      await flash(request, error(null, "Your account is not active"))
+    );
+  }
+
   const authSession = await signInWithPhoneViaAdmin(phone);
   if (!authSession) {
     return data(
@@ -112,7 +121,13 @@ export async function action({ request }: ActionFunctionArgs) {
   const sessionCookie = await setAuthSession(request, { authSession });
   const companyIdCookie = setCompanyId(authSession.companyId);
 
-  return redirect(safeRedirect(redirectTo, path.to.authenticatedRoot), {
+  // Users with no company yet go through onboarding (mirrors the email signup
+  // path) rather than landing on an empty authenticated screen.
+  const destination = authSession.companyId
+    ? safeRedirect(redirectTo, path.to.authenticatedRoot)
+    : path.to.onboarding.root;
+
+  return redirect(destination, {
     headers: [
       ["Set-Cookie", sessionCookie],
       ["Set-Cookie", companyIdCookie]

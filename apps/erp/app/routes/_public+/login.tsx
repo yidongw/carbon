@@ -549,6 +549,7 @@ export default function LoginRoute() {
                 className="w-full"
               >
                 <Hidden name="redirectTo" value={redirectTo} type="hidden" />
+                <Hidden name="turnstileToken" value={turnstileToken} />
                 <VStack spacing={2}>
                   {phoneFetcher.data?.success === false &&
                     phoneFetcher.data?.message && (
@@ -572,7 +573,10 @@ export default function LoginRoute() {
                   />
 
                   <Submit
-                    isDisabled={phoneFetcher.state !== "idle"}
+                    isDisabled={
+                      phoneFetcher.state !== "idle" ||
+                      (!!CLOUDFLARE_TURNSTILE_SITE_KEY && !turnstileToken)
+                    }
                     isLoading={phoneFetcher.state === "submitting"}
                     size="lg"
                     className="w-full"
@@ -581,6 +585,19 @@ export default function LoginRoute() {
                   >
                     <Trans>Sign in with Phone</Trans>
                   </Submit>
+                  {!!CLOUDFLARE_TURNSTILE_SITE_KEY && (
+                    <div className="w-full flex justify-center">
+                      <Turnstile
+                        siteKey={CLOUDFLARE_TURNSTILE_SITE_KEY}
+                        onSuccess={(token) => setTurnstileToken(token)}
+                        onError={() => setTurnstileToken("")}
+                        onExpire={() => setTurnstileToken("")}
+                        options={{
+                          theme: theme === "dark" ? "dark" : "light"
+                        }}
+                      />
+                    </div>
+                  )}
                 </VStack>
               </ValidatedForm>
             ) : (

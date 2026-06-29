@@ -40,7 +40,8 @@ export const phoneLoginValidator = z.object({
     .string()
     .min(1, { message: "Phone number is required" })
     .regex(/^1[3-9]\d{9}$/, "Must be a valid phone number"),
-  redirectTo: zfd.text(z.string().optional())
+  redirectTo: zfd.text(z.string().optional()),
+  turnstileToken: zfd.text(z.string().optional())
 });
 
 export const phoneVerifyValidator = z.object({
