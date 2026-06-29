@@ -8391,7 +8391,7 @@ msgid "Sign in with Outlook"
 msgstr "Войти через Outlook"
 
 msgid "Sign in with Phone"
-msgstr ""
+msgstr "Войти с помощью телефона"
 
 msgid "Sign in with WeChat"
 msgstr "Войти с ВКонтакте"
@@ -9617,7 +9617,7 @@ msgid "Use a different email"
 msgstr "Использовать другой адрес электронной почты"
 
 msgid "Use a different phone number"
-msgstr ""
+msgstr "Использовать другой номер телефона"
 
 msgid "Use metric system for default material dimensions."
 msgstr "Используйте метрическую систему для размеров материалов по умолчанию."
@@ -9698,7 +9698,7 @@ msgid "Verify your email"
 msgstr "Подтвердите вашу электронную почту"
 
 msgid "Verify your phone"
-msgstr ""
+msgstr "Подтвердите ваш телефон"
 
 msgid "Version"
 msgstr "Версия"
@@ -9908,7 +9908,7 @@ msgid "We've sent a verification code to {email}"
 msgstr "Мы отправили код подтверждения на {email}"
 
 msgid "We've sent a verification code to {phone}"
-msgstr ""
+msgstr "Мы отправили код подтверждения на {phone}"
 
 msgid "We've sent a verification code to {signupEmail}"
 msgstr "Мы отправили код подтверждения на {signupEmail}"

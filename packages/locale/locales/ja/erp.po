@@ -8391,7 +8391,7 @@ msgid "Sign in with Outlook"
 msgstr "Outlookでサインイン"
 
 msgid "Sign in with Phone"
-msgstr ""
+msgstr "電話番号でサインイン"
 
 msgid "Sign in with WeChat"
 msgstr "WeChatを使用してサインイン"
@@ -9617,7 +9617,7 @@ msgid "Use a different email"
 msgstr "別のメールアドレスを使用"
 
 msgid "Use a different phone number"
-msgstr ""
+msgstr "別の電話番号を使用"
 
 msgid "Use metric system for default material dimensions."
 msgstr "デフォルトの材料寸法にメートル法を使用します。"
@@ -9698,7 +9698,7 @@ msgid "Verify your email"
 msgstr "メールアドレスを確認"
 
 msgid "Verify your phone"
-msgstr ""
+msgstr "電話番号を確認"
 
 msgid "Version"
 msgstr "バージョン"
@@ -9908,7 +9908,7 @@ msgid "We've sent a verification code to {email}"
 msgstr "検証コードを {email} に送信しました"
 
 msgid "We've sent a verification code to {phone}"
-msgstr ""
+msgstr "検証コードを {phone} に送信しました"
 
 msgid "We've sent a verification code to {signupEmail}"
 msgstr "検証コードを {signupEmail} に送信しました"

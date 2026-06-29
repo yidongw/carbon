@@ -8391,7 +8391,7 @@ msgid "Sign in with Outlook"
 msgstr "Outlook के साथ साइन इन करें"
 
 msgid "Sign in with Phone"
-msgstr ""
+msgstr "फ़ोन से साइन इन करें"
 
 msgid "Sign in with WeChat"
 msgstr "लॉग इन व्हाट्सएप से"
@@ -9617,7 +9617,7 @@ msgid "Use a different email"
 msgstr "एक अलग ईमेल का उपयोग करें"
 
 msgid "Use a different phone number"
-msgstr ""
+msgstr "एक अलग फ़ोन नंबर का उपयोग करें"
 
 msgid "Use metric system for default material dimensions."
 msgstr "डिफ़ॉल्ट सामग्री आयामों के लिए मीट्रिक सिस्टम का उपयोग करें।"
@@ -9698,7 +9698,7 @@ msgid "Verify your email"
 msgstr "अपनी ईमेल सत्यापित करें"
 
 msgid "Verify your phone"
-msgstr ""
+msgstr "अपना फ़ोन सत्यापित करें"
 
 msgid "Version"
 msgstr "संस्करण"
@@ -9908,7 +9908,7 @@ msgid "We've sent a verification code to {email}"
 msgstr "हमने {email} को एक सत्यापन कोड भेजा है"
 
 msgid "We've sent a verification code to {phone}"
-msgstr ""
+msgstr "हमने {phone} को एक सत्यापन कोड भेजा है"
 
 msgid "We've sent a verification code to {signupEmail}"
 msgstr "हमने {signupEmail} को एक सत्यापन कोड भेजा है"
