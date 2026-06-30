@@ -22,6 +22,10 @@ import { LuCloudUpload } from "react-icons/lu";
 import { useFetcher } from "react-router";
 import { useUser } from "~/hooks";
 import { getPrivateUrl, path } from "~/utils/path";
+import {
+  createUploadToast,
+  uploadToStorageWithProgress
+} from "~/utils/upload";
 
 const SIZE_LIMIT = getFileSizeLimit("CAD_MODEL_UPLOAD");
 
@@ -67,21 +71,28 @@ const CadModel = ({
       if (!carbon) {
         toast.error("Failed to initialize carbon client");
         return;
-      } else {
-        toast.info(`Uploading ${file.name}`);
       }
       const fileExtension = file.name.split(".").pop();
       const fileName = `${companyId}/models/${modelId}.${fileExtension}`;
 
-      const modelUpload = await carbon.storage
-        .from("private")
-        .upload(fileName, file, {
-          upsert: true
-        });
+      const uploadToast = createUploadToast({
+        id: `model-${modelId}-${file.name}`,
+        label: (pct) => `Uploading ${file.name} (${pct}%)`
+      });
 
-      if (modelUpload.error) {
-        toast.error("Failed to upload file to storage");
+      const modelUpload = await uploadToStorageWithProgress(carbon, {
+        bucket: "private",
+        path: fileName,
+        file,
+        upsert: true,
+        onProgress: uploadToast.onProgress
+      });
+
+      if (modelUpload.error || !modelUpload.data?.path) {
+        uploadToast.error("Failed to upload file to storage");
+        return;
       }
+      uploadToast.dismiss();
 
       const formData = new FormData();
       formData.append("name", file.name);

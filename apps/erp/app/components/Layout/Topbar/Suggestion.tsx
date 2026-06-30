@@ -30,6 +30,10 @@ import { useUser } from "~/hooks";
 import { suggestionValidator } from "~/modules/shared";
 import type { action } from "~/routes/x+/resources+/suggestions.new";
 import { path } from "~/utils/path";
+import {
+  createUploadToast,
+  uploadToStorageWithProgress
+} from "~/utils/upload";
 
 const Picker = React.lazy(() => import("@emoji-mart/react"));
 
@@ -77,8 +81,6 @@ const Suggestion = () => {
   const uploadImage = async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && carbon) {
       const file = e.target.files[0];
-      const fileName = file.name;
-      toast.info(t`Uploading ${fileName}`);
       const fileExtension = file.name.substring(file.name.lastIndexOf(".") + 1);
 
       if (file.size > MAX_FILE_SIZE) {
@@ -87,17 +89,26 @@ const Suggestion = () => {
       }
 
       const storagePath = `${companyId}/suggestions/${nanoid()}.${fileExtension}`;
-      const imageUpload = await carbon.storage
-        .from("private")
-        .upload(storagePath, file, {
-          cacheControl: `${12 * 60 * 60}`,
-          upsert: true
-        });
+      const uploadToast = createUploadToast({
+        id: `suggestion-${storagePath}-${file.name}`,
+        label: (pct) => `${t`Uploading ${file.name}`} (${pct}%)`
+      });
+      const imageUpload = await uploadToStorageWithProgress(carbon, {
+        bucket: "private",
+        path: storagePath,
+        file,
+        upsert: true,
+        cacheControl: `${12 * 60 * 60}`,
+        onProgress: uploadToast.onProgress
+      });
 
       if (imageUpload.error) {
         console.error(imageUpload.error);
-        toast.error(t`Failed to upload image`);
+        uploadToast.error(t`Failed to upload image`);
+        return;
       }
+
+      uploadToast.dismiss();
 
       if (imageUpload.data?.path) {
         setAttachment({

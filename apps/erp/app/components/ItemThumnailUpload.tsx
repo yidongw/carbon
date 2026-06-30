@@ -1,4 +1,4 @@
-import { SUPABASE_URL, useCarbon } from "@carbon/auth";
+import { useCarbon } from "@carbon/auth";
 import { Button, File as FileUpload, HStack, toast } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { nanoid } from "nanoid";
@@ -6,6 +6,7 @@ import type { ChangeEvent } from "react";
 import { useCallback, useEffect, useState } from "react";
 import { useUser } from "~/hooks";
 import { getPrivateUrl } from "~/utils/path";
+import { createUploadToast, resizeImageWithProgress } from "~/utils/upload";
 export function ItemThumbnailUpload({
   path,
   itemId,
@@ -75,37 +76,35 @@ export function ItemThumbnailUpload({
       }
       const file = e.target.files?.[0];
       if (file) {
-        toast.info(t`Uploading ${file.name}`);
-        const formData = new FormData();
-        formData.append("file", file);
+        const uploadToast = createUploadToast({
+          id: `thumbnail-upload-${itemId}`,
+          label: (pct) => `${t`Uploading ${file.name}`} (${pct}%)`
+        });
 
         try {
-          const response = await fetch(
-            `${SUPABASE_URL}/functions/v1/image-resizer`,
-            {
-              method: "POST",
-              body: formData
-            }
+          const { status, blob, contentType } = await resizeImageWithProgress(
+            file,
+            {},
+            uploadToast.onProgress
           );
 
-          if (!response.ok) {
-            const errorText = await response
-              .text()
-              .catch(() => response.statusText);
-            throw new Error(
-              `Image resize failed: ${response.status} ${errorText || "Unknown error"}`
-            );
+          if (status < 200 || status >= 300) {
+            let errorMessage = "Failed to resize image";
+            if (contentType?.includes("application/json")) {
+              try {
+                const errorData = JSON.parse(await blob.text());
+                if (errorData.error) errorMessage = errorData.error;
+              } catch {
+                // keep the generic message
+              }
+            }
+            throw new Error(errorMessage);
           }
 
-          // Get content type from response to determine if it's JPG or PNG
-          const contentType =
-            response.headers.get("Content-Type") || "image/png";
-          const isJpg = contentType.includes("image/jpeg");
-          const fileExtension = isJpg ? "jpg" : "png";
-
-          const blob = new Blob([await response.arrayBuffer()], {
-            type: contentType
-          });
+          const resolvedType = contentType || "image/png";
+          const fileExtension = resolvedType.includes("image/jpeg")
+            ? "jpg"
+            : "png";
 
           const reader = new FileReader();
           reader.onload = (event) => {
@@ -118,7 +117,7 @@ export function ItemThumbnailUpload({
 
           const fileName = `${nanoid()}.${fileExtension}`;
           const thumbnailFile = new File([blob], fileName, {
-            type: contentType
+            type: resolvedType
           });
 
           const { data, error } = await carbon.storage
@@ -133,7 +132,7 @@ export function ItemThumbnailUpload({
 
           if (error) {
             console.error("Failed to upload thumbnail to storage:", error);
-            toast.error(t`Failed to upload thumbnail`);
+            uploadToast.error(t`Failed to upload thumbnail`);
             return;
           }
 
@@ -145,7 +144,7 @@ export function ItemThumbnailUpload({
             .eq("id", itemId);
 
           if (result.error) {
-            toast.error(t`Failed to update thumbnail path`);
+            uploadToast.error(t`Failed to update thumbnail path`);
             return;
           }
 
@@ -167,11 +166,13 @@ export function ItemThumbnailUpload({
 
           if (data) {
             setThumbnailPath(getPrivateUrl(data.path));
-            toast.success(t`Thumbnail uploaded`);
           }
+          uploadToast.dismiss();
         } catch (error) {
+          const errorMessage =
+            error instanceof Error ? error.message : "Unknown error";
           console.error("Image processing error:", error);
-          toast.error(t`Failed to resize image`);
+          uploadToast.error(t`Failed to resize image: ${errorMessage}`);
         }
       }
     },

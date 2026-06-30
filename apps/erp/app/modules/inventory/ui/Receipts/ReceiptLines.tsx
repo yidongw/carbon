@@ -78,6 +78,10 @@ import { getDocumentType } from "~/modules/shared/shared.service";
 import { useItems } from "~/stores";
 import type { StorageItem } from "~/types";
 import { path } from "~/utils/path";
+import {
+  createUploadToast,
+  uploadToStorageWithProgress
+} from "~/utils/upload";
 import { stripSpecialCharacters } from "~/utils/string";
 import BatchPropertiesConfig from "../Batches/BatchPropertiesConfig";
 import { BatchPropertiesFields } from "../Batches/BatchPropertiesFields";
@@ -1220,20 +1224,25 @@ function useReceiptFiles(receiptId: string) {
         return;
       }
 
-      for (const file of files) {
+      for (const [index, file] of files.entries()) {
+        const uploadToast = createUploadToast({
+          id: `receipt-doc-${lineId}-${index}-${file.name}`,
+          label: (pct) => `${t`Uploading ${file.name}`} (${pct}%)`
+        });
         const fileName = getPath({ name: file.name }, lineId);
-        toast.info(`Uploading ${file.name}`);
-        const fileUpload = await carbon.storage
-          .from("private")
-          .upload(fileName, file, {
-            cacheControl: `${12 * 60 * 60}`,
-            upsert: true
-          });
+        const fileUpload = await uploadToStorageWithProgress(carbon, {
+          bucket: "private",
+          path: fileName,
+          file,
+          cacheControl: `${12 * 60 * 60}`,
+          upsert: true,
+          onProgress: uploadToast.onProgress
+        });
 
         if (fileUpload.error) {
-          toast.error(`Failed to upload file: ${file.name}`);
+          uploadToast.error(t`Failed to upload file: ${file.name}`);
         } else if (fileUpload.data?.path) {
-          toast.success(`Uploaded: ${file.name}`);
+          uploadToast.dismiss();
           const formData = new FormData();
           formData.append("path", fileUpload.data.path);
           formData.append("name", file.name);

@@ -1,4 +1,4 @@
-import { SUPABASE_URL, useCarbon } from "@carbon/auth";
+import { useCarbon } from "@carbon/auth";
 import {
   Badge,
   Button,
@@ -11,6 +11,7 @@ import type { ChangeEvent } from "react";
 import { useSubmit } from "react-router";
 import { Avatar } from "~/components";
 import { path } from "~/utils/path";
+import { createUploadToast, resizeImageWithProgress } from "~/utils/upload";
 import type { Account } from "../../types";
 
 const maxSizeMB = 10;
@@ -27,30 +28,46 @@ const ProfilePhotoForm = ({ user }: ProfilePhotoFormProps) => {
   const uploadImage = async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && carbon) {
       let avatarFile = e.target.files[0];
-      toast.info(t`Uploading ${avatarFile.name}`);
+
+      // Fail fast before hitting the resizer, which rejects files over 10MB.
+      if (avatarFile.size > maxSizeMB * 1024 * 1024) {
+        toast.error(
+          t`File size exceeds ${maxSizeMB}MB limit. Current size: ${(
+            avatarFile.size /
+            1024 /
+            1024
+          ).toFixed(2)}MB`
+        );
+        return;
+      }
+
+      // One toast updated in place: a 0–100% progress bar that disappears when
+      // the upload finishes. Percentage is appended outside the translated
+      // string so it reuses the existing "Uploading {0}" translation.
+      const fileName = avatarFile.name;
+      const uploadToast = createUploadToast({
+        id: `avatar-upload-${user.id}`,
+        label: (pct) => `${t`Uploading ${fileName}`} (${pct}%)`
+      });
+
       const fileExtension = avatarFile.name.substring(
         avatarFile.name.lastIndexOf(".") + 1
       );
-      const formData = new FormData();
-      formData.append("file", avatarFile);
 
       try {
-        const response = await fetch(
-          `${SUPABASE_URL}/functions/v1/image-resizer`,
-          {
-            method: "POST",
-            body: formData
-          }
+        const { status, blob, contentType } = await resizeImageWithProgress(
+          avatarFile,
+          {},
+          uploadToast.onProgress
         );
 
-        if (!response.ok) {
+        if (status < 200 || status >= 300) {
           let errorMessage = "Failed to resize image";
-          const contentType = response.headers.get("Content-Type");
 
           // Try to parse error response if it's JSON
           if (contentType?.includes("application/json")) {
             try {
-              const errorData = await response.json();
+              const errorData = JSON.parse(await blob.text());
               if (errorData.error) {
                 errorMessage = errorData.error;
               }
@@ -62,22 +79,20 @@ const ProfilePhotoForm = ({ user }: ProfilePhotoFormProps) => {
           throw new Error(errorMessage);
         }
 
-        // Get content type from response to determine if it's JPG or PNG
-        const contentType = response.headers.get("Content-Type") || "image/png";
-        const isJpg = contentType.includes("image/jpeg");
-        const outputExtension = isJpg ? "jpg" : "png";
+        // Use the response content type to determine if it's JPG or PNG
+        const resolvedType = contentType || "image/png";
+        const outputExtension = resolvedType.includes("image/jpeg")
+          ? "jpg"
+          : "png";
 
-        const blob = await response.blob();
-        const resizedFile = new File([blob], `${user.id}.${outputExtension}`, {
-          type: contentType
+        avatarFile = new File([blob], `${user.id}.${outputExtension}`, {
+          type: resolvedType
         });
-
-        avatarFile = resizedFile;
       } catch (error) {
         console.error(error);
         const errorMessage =
           error instanceof Error ? error.message : "Failed to resize image";
-        toast.error(errorMessage);
+        uploadToast.error(errorMessage);
         return;
       }
 
@@ -92,15 +107,15 @@ const ProfilePhotoForm = ({ user }: ProfilePhotoFormProps) => {
         console.error(imageUpload.error);
         const errorMessage =
           imageUpload.error.message || "Failed to upload image to storage";
-        toast.error(errorMessage);
+        uploadToast.error(errorMessage);
         return;
       }
 
       if (imageUpload.data?.path) {
-        toast.success(t`Photo uploaded successfully`);
+        uploadToast.dismiss();
         submitAvatarUrl(imageUpload.data.path);
       } else {
-        toast.error(t`Upload completed but no file path returned`);
+        uploadToast.error(t`Upload completed but no file path returned`);
       }
     }
   };

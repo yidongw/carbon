@@ -1,5 +1,5 @@
 import { useCarbon } from "@carbon/auth";
-import { File, toast } from "@carbon/react";
+import { File } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { nanoid } from "nanoid";
 import type { ChangeEvent } from "react";
@@ -7,6 +7,10 @@ import { LuUpload } from "react-icons/lu";
 import { useSubmit } from "react-router";
 import { useUser } from "~/hooks";
 import { path } from "~/utils/path";
+import {
+  createUploadToast,
+  uploadToStorageWithProgress
+} from "~/utils/upload";
 
 const DocumentCreateForm = () => {
   const { t } = useLingui();
@@ -19,21 +23,29 @@ const DocumentCreateForm = () => {
   const uploadFile = async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && carbon) {
       const file = e.target.files[0];
-      toast.info(t`Uploading ${file.name}`);
       const fileExtension = file.name.substring(file.name.lastIndexOf(".") + 1);
       const fileName = `${companyId}/${nanoid()}.${fileExtension}`;
 
-      const fileUpload = await carbon.storage
-        .from("private")
-        .upload(fileName, file, {
-          cacheControl: `${12 * 60 * 60}`,
-          upsert: true
-        });
+      const uploadToast = createUploadToast({
+        id: `document-${fileName}-${file.name}`,
+        label: (pct) => `${t`Uploading ${file.name}`} (${pct}%)`
+      });
+      const fileUpload = await uploadToStorageWithProgress(carbon, {
+        bucket: "private",
+        path: fileName,
+        file,
+        upsert: true,
+        cacheControl: `${12 * 60 * 60}`,
+        onProgress: uploadToast.onProgress
+      });
 
       if (fileUpload.error) {
         console.error(fileUpload.error);
-        toast.error(t`Failed to upload file`);
+        uploadToast.error(t`Failed to upload file`);
+        return;
       }
+
+      uploadToast.dismiss();
 
       if (fileUpload.data?.path) {
         submitFileData({
