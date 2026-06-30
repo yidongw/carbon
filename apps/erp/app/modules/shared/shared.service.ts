@@ -1068,6 +1068,43 @@ export async function getTagsList(
   return query.order("name");
 }
 
+export async function getTags(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  args?: GenericQueryFilters & { search: string | null }
+) {
+  let query = client
+    .from("tag")
+    .select("name, table, createdAt", { count: "exact" })
+    .eq("companyId", companyId);
+
+  if (args?.search) {
+    query = query.ilike("name", `%${args.search}%`);
+  }
+
+  if (args) {
+    query = setGenericQueryFilters(query, args, [
+      { column: "name", ascending: true }
+    ]);
+  }
+
+  return query;
+}
+
+export async function deleteTag(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  table: string,
+  name: string
+) {
+  return client
+    .from("tag")
+    .delete()
+    .eq("companyId", companyId)
+    .eq("table", table)
+    .eq("name", name);
+}
+
 export async function hasPendingApproval(
   client: SupabaseClient<Database>,
   documentType: (typeof approvalDocumentType)[number],

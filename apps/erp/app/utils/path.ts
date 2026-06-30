@@ -1818,6 +1818,10 @@ export const path = {
     tableSequence: (id: string) =>
       generatePath(`${x}/settings/sequences/${id}`),
     tags: `${x}/settings/tags`,
+    deleteTag: (table: string, name: string) =>
+      `${x}/settings/tags/delete?table=${encodeURIComponent(
+        table
+      )}&name=${encodeURIComponent(name)}`,
     theme: `${x}/account/theme`,
     timecards: `${x}/timecards`,
     tool: (id: string) => generatePath(`${x}/tool/${id}`),

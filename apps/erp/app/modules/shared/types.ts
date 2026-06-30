@@ -17,8 +17,13 @@ import type {
 import type {
   getApprovalRequestsByDocument,
   getApprovalRuleByAmount,
-  getNotes
+  getNotes,
+  getTags
 } from "./shared.service";
+
+export type Tag = NonNullable<
+  Awaited<ReturnType<typeof getTags>>["data"]
+>[number];
 
 export type ApprovalFilters = {
   documentType?: ApprovalDocumentType | null;
