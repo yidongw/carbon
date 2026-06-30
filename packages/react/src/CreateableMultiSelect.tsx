@@ -90,8 +90,6 @@ const CreatableMultiSelect = forwardRef<
     const hasSelections = value.length > 0;
     const isInlinePreview = !!inline;
     const dropdownContentWidthCh = useMemo(() => {
-      if (options.length === 0) return undefined;
-
       const maxOptionChars = options.reduce((longest, option) => {
         const combined = [option.label, option.helper]
           .filter(Boolean)
@@ -100,6 +98,9 @@ const CreatableMultiSelect = forwardRef<
         return Math.max(longest, combined.length);
       }, 0);
 
+      // Always keep a usable floor (even with no options) so the popover never
+      // collapses to the trigger width — the inline variant's trigger is a tiny
+      // icon button, which otherwise renders the dropdown as a narrow sliver.
       return Math.min(72, Math.max(36, maxOptionChars + 8));
     }, [options]);
 
@@ -187,9 +188,7 @@ const CreatableMultiSelect = forwardRef<
             align="end"
             className="min-w-[--radix-popover-trigger-width] max-w-[min(560px,calc(100vw-2rem))] p-1"
             style={{
-              width: dropdownContentWidthCh
-                ? `min(560px, max(var(--radix-popover-trigger-width), ${dropdownContentWidthCh}ch))`
-                : "var(--radix-popover-trigger-width)"
+              width: `min(560px, max(var(--radix-popover-trigger-width), ${dropdownContentWidthCh}ch))`
             }}
           >
             <VirtualizedCommand
@@ -328,7 +327,7 @@ function VirtualizedCommand({
                 }
                 onSelect={() => {
                   if (isCreateOption) {
-                    onCreateOption?.(search);
+                    onCreateOption?.(search.trim());
                     setSearch("");
                   } else {
                     onChange(
