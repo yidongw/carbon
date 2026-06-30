@@ -30,8 +30,8 @@ export async function runDemoSeed(opts: {
     client.release();
     await pool.end();
     await admin
-      .from("company")
-      .update({ demoSeedStatus: "seeded" })
+      .from("demoCompany")
+      .update({ seedStatus: "seeded" })
       .eq("id", opts.companyId);
   }
 }

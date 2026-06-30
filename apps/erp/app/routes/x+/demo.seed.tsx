@@ -41,17 +41,17 @@ async function getProgressCounts(
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const { client, companyId } = await requirePermissions(request, {});
-  const { data: company } = await client
-    .from("company")
-    .select("id, isDemo, demoSeedStatus")
+  const { data: demoRow } = await client
+    .from("demoCompany")
+    .select("id, seedStatus")
     .eq("id", companyId)
     .maybeSingle();
 
-  if (!company?.isDemo) {
+  if (!demoRow) {
     return { status: "none" as const, counts: null };
   }
   return {
-    status: (company.demoSeedStatus ?? "pending") as string,
+    status: (demoRow.seedStatus ?? "pending") as string,
     counts: await getProgressCounts(client, companyId)
   };
 }
@@ -69,9 +69,8 @@ export async function action({ request }: ActionFunctionArgs) {
   if (!companyIds.length) return { status: "none" };
 
   const { data: demo } = await admin
-    .from("company")
-    .select("id, demoSeedStatus")
-    .eq("isDemo", true)
+    .from("demoCompany")
+    .select("id, seedStatus")
     .in("id", companyIds)
     .maybeSingle();
   if (!demo) return { status: "none" };
@@ -82,10 +81,10 @@ export async function action({ request }: ActionFunctionArgs) {
     .select("id", { count: "exact", head: true })
     .eq("companyId", demo.id);
   if ((itemCount ?? 0) > 0) {
-    if (demo.demoSeedStatus !== "seeded") {
+    if (demo.seedStatus !== "seeded") {
       await admin
-        .from("company")
-        .update({ demoSeedStatus: "seeded" })
+        .from("demoCompany")
+        .update({ seedStatus: "seeded" })
         .eq("id", demo.id);
     }
     return { status: "seeded" };
@@ -94,10 +93,10 @@ export async function action({ request }: ActionFunctionArgs) {
   // Atomic claim: flip to "seeding" unless a seed is already running, so a stray
   // double-trigger (double mount, revalidation) can't run the seed twice.
   const { data: claimed } = await admin
-    .from("company")
-    .update({ demoSeedStatus: "seeding" })
+    .from("demoCompany")
+    .update({ seedStatus: "seeding" })
     .eq("id", demo.id)
-    .neq("demoSeedStatus", "seeding")
+    .neq("seedStatus", "seeding")
     .select("id")
     .maybeSingle();
   if (!claimed) {

@@ -165,8 +165,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
   }
 
   // Demo-company state for the banner: whether this user has a demo company, when it expires,
-  // and whether it's the one they're currently in. The `companies` view doesn't expose the
-  // demo columns, so query the company table directly (RLS limits it to the user's companies).
+  // and whether it's the one they're currently in. Demo metadata lives in `demoCompany`
+  // (one row per demo; RLS limits it to the user's companies).
   const userCompanyIds = (companies.data ?? [])
     .map((c) => c.id)
     .filter((id): id is string => Boolean(id));
@@ -181,9 +181,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
   let realCompanyId: string | null = companyId;
   if (userCompanyIds.length) {
     const { data: demoRow } = await client
-      .from("company")
-      .select("id, demoExpiresAt, demoSeedStatus")
-      .eq("isDemo", true)
+      .from("demoCompany")
+      .select("id, expiresAt, seedStatus")
       .in("id", userCompanyIds)
       .maybeSingle();
     if (demoRow) {
@@ -192,7 +191,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       // that has no items yet (and isn't already mid-seed) gets seeded. This self-heals
       // demos that were never seeded or whose flag drifted, instead of trusting a flag.
       let needsSeed = false;
-      if (isCurrent && demoRow.demoSeedStatus !== "seeding") {
+      if (isCurrent && demoRow.seedStatus !== "seeding") {
         const { count } = await client
           .from("item")
           .select("id", { count: "exact", head: true })
@@ -201,9 +200,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
       }
       demo = {
         id: demoRow.id,
-        expiresAt: demoRow.demoExpiresAt,
+        expiresAt: demoRow.expiresAt,
         isCurrent,
-        seedStatus: demoRow.demoSeedStatus,
+        seedStatus: demoRow.seedStatus,
         needsSeed
       };
       realCompanyId =

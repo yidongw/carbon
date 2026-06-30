@@ -64,9 +64,7 @@ export async function action({ request }: ActionFunctionArgs) {
       .insert({
         name: "Demo Company",
         baseCurrencyCode: "USD",
-        isDemo: true,
-        demoExpiresAt,
-        demoSeedStatus: "pending"
+        isDemo: true
       })
       .select("id")
       .single();
@@ -75,6 +73,15 @@ export async function action({ request }: ActionFunctionArgs) {
       throw new Error("Fatal: failed to insert demo company");
     }
     companyId = companyInsert.data.id;
+
+    // Demo metadata lives in its own 1:1 table (like companyPlan/companySettings).
+    const demoRow = await client
+      .from("demoCompany")
+      .insert({ id: companyId, expiresAt: demoExpiresAt, seedStatus: "pending" });
+    if (demoRow.error) {
+      console.error(demoRow.error);
+      throw new Error("Fatal: failed to insert demo metadata");
+    }
 
     const seed = await seedCompany(client, companyId, userId);
     if (seed.error) {
@@ -120,8 +127,8 @@ export async function action({ request }: ActionFunctionArgs) {
     companyGroupId = companyRecord?.companyGroupId ?? "";
 
     // Seeding is kicked off (and shown with a progress toast) the first time the user
-    // lands in the demo — see routes/x+/demo.seed.tsx. The company is marked
-    // demoSeedStatus='pending' above; we don't seed inline so "Try the demo" stays fast.
+    // lands in the demo — see routes/x+/demo.seed.tsx. The demoCompany row is created
+    // with seedStatus='pending' above; we don't seed inline so "Try the demo" stays fast.
   }
 
   const sessionCookie = await updateCompanySession(
