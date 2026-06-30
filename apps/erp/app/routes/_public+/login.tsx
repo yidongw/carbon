@@ -46,8 +46,8 @@ import {
 import { Edition } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { Turnstile } from "@marsidev/react-turnstile";
-import { useEffect, useState } from "react";
-import { LuCircleAlert } from "react-icons/lu";
+import { useCallback, useEffect, useState } from "react";
+import { LuCircleAlert, LuQrCode, LuRefreshCw } from "react-icons/lu";
 import { SiWechat } from "react-icons/si";
 import type {
   ActionFunctionArgs,
@@ -68,6 +68,10 @@ import { useFormatValidationError } from "~/utils/formatValidationError";
 export const meta: MetaFunction = () => {
   return [{ title: "Carbon | Login" }];
 };
+
+// Shared sizing for the WeChat-QR area across its loading/ready/error states.
+const QR_BOX_CLASS =
+  "flex h-[204px] w-[204px] items-center justify-center rounded-xl bg-muted";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
@@ -209,31 +213,59 @@ export default function LoginRoute() {
   const hasWeChatAuth = providers.includes("wechat");
   const hasPhoneAuth = providers.includes("phone");
 
-  const showWeChatButton = isWeChatBrowser && hasWeChatAuth;
-  const showWeChatQrTab = !isWeChatBrowser && hasWeChatAuth;
+  // Always offer the WeChat button when the provider is on. In the WeChat
+  // in-app browser it redirects (OAuth); elsewhere it reveals a QR to scan.
+  const showWeChatButton = hasWeChatAuth;
+  const canShowWeChatQr = !isWeChatBrowser && hasWeChatAuth;
 
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
+  // Build the optional `redirectTo` query fragment; `sep` is "?" when starting
+  // a query string and "&" when appending to one.
+  const redirectQuery = useCallback(
+    (sep: "?" | "&") =>
+      redirectTo ? `${sep}redirectTo=${encodeURIComponent(redirectTo)}` : "",
+    [redirectTo]
+  );
   const [loginMethod, setLoginMethod] = useState<
     "email" | "wechat-qr" | "phone"
-  >(showWeChatQrTab ? "wechat-qr" : hasPhoneAuth ? "phone" : "email");
+  >(hasPhoneAuth ? "phone" : "email");
   const [mode, setMode] = useState<"login" | "signup" | "verify">("login");
   const [signupEmail, setSignupEmail] = useState<string>("");
   const [turnstileToken, setTurnstileToken] = useState<string>("");
 
   const fetcher = useFetcher<Result & { mode?: string; email?: string }>();
   const phoneFetcher = useFetcher<Result & { phone?: string }>();
-  const wechatQrFetcher = useFetcher<{
-    url: string | null;
-    scene?: string | null;
-  }>();
   const theme = useMode();
 
-  // Hide the WeChat-QR option entirely if the QR can't be minted (mint returned
-  // no URL) rather than showing an "unavailable" message; fall back to email.
-  const wechatQrUnavailable =
-    !!wechatQrFetcher.data && !wechatQrFetcher.data.url;
-  const showWeChatQr = showWeChatQrTab && !wechatQrUnavailable;
+  // Mint the QR with a plain fetch (not useFetcher().load) so EVERY failure —
+  // a non-OK response (bad creds, WeChat API down) or a network-level rejection
+  // (offline, connection reset) — is caught here and degraded to email, rather
+  // than escalating to the route error boundary ("Something went wrong").
+  const [qr, setQr] = useState<{
+    status: "idle" | "loading" | "ready" | "error";
+    url: string | null;
+    scene: string | null;
+  }>({ status: "idle", url: null, scene: null });
+
+  const loadWeChatQr = useCallback(async () => {
+    setQr({ status: "loading", url: null, scene: null });
+    try {
+      const res = await fetch(`/api/wechat-qr-url${redirectQuery("?")}`);
+      if (!res.ok) throw new Error("WeChat QR mint failed");
+      const json = (await res.json()) as {
+        url: string | null;
+        scene: string | null;
+      };
+      setQr(
+        json.url
+          ? { status: "ready", url: json.url, scene: json.scene ?? null }
+          : { status: "error", url: null, scene: null }
+      );
+    } catch {
+      setQr({ status: "error", url: null, scene: null });
+    }
+  }, [redirectQuery]);
 
   useEffect(() => {
     if (fetcher.data?.success && fetcher.data.mode) {
@@ -246,14 +278,12 @@ export default function LoginRoute() {
           setSignupEmail(fetcher.data.email);
           const verifyUrl = `/verify?email=${encodeURIComponent(
             fetcher.data.email
-          )}${
-            redirectTo ? `&redirectTo=${encodeURIComponent(redirectTo)}` : ""
-          }`;
+          )}${redirectQuery("&")}`;
           window.location.href = verifyUrl;
         }
       }
     }
-  }, [fetcher.data, mode, redirectTo]);
+  }, [fetcher.data, mode, redirectQuery]);
 
   // After the SMS code is sent, go to /verify-phone to enter it (mirrors the email
   // flow's hop to /verify).
@@ -261,24 +291,24 @@ export default function LoginRoute() {
     if (phoneFetcher.data?.success && phoneFetcher.data.phone) {
       const verifyUrl = `/verify-phone?phone=${encodeURIComponent(
         phoneFetcher.data.phone
-      )}${redirectTo ? `&redirectTo=${encodeURIComponent(redirectTo)}` : ""}`;
+      )}${redirectQuery("&")}`;
       window.location.href = verifyUrl;
     }
-  }, [phoneFetcher.data, redirectTo]);
+  }, [phoneFetcher.data, redirectQuery]);
 
   // Poll the QR scene while the WeChat QR tab is open; when the user has scanned
   // and the webhook has resolved them, the status response sets the session
   // cookie and we navigate to the authenticated app.
-  const wechatScene = wechatQrFetcher.data?.scene ?? null;
+  const wechatScene = qr.scene;
   useEffect(() => {
     if (loginMethod !== "wechat-qr" || !wechatScene) return;
     let active = true;
     const poll = async () => {
       try {
         const res = await fetch(
-          `/api/wechat-qr-status?scene=${encodeURIComponent(wechatScene)}${
-            redirectTo ? `&redirectTo=${encodeURIComponent(redirectTo)}` : ""
-          }`
+          `/api/wechat-qr-status?scene=${encodeURIComponent(
+            wechatScene
+          )}${redirectQuery("&")}`
         );
         if (!res.ok) return;
         const json = (await res.json()) as {
@@ -298,34 +328,16 @@ export default function LoginRoute() {
       active = false;
       clearInterval(id);
     };
-  }, [loginMethod, wechatScene, redirectTo]);
+  }, [loginMethod, wechatScene, redirectQuery]);
 
-  // Auto-load the QR as soon as the WeChat-QR method is active (including as the
-  // default tab) so the code + polling start without needing a tab click.
+  // Auto-load the QR as soon as the WeChat-QR method is active so the code +
+  // polling start without needing a second click. On failure we stay put and
+  // show a retry button (status "error" is not "idle", so this won't loop).
   useEffect(() => {
-    if (
-      loginMethod === "wechat-qr" &&
-      showWeChatQrTab &&
-      wechatQrFetcher.state === "idle" &&
-      !wechatQrFetcher.data
-    ) {
-      wechatQrFetcher.load(
-        `/api/wechat-qr-url${redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ""}`
-      );
+    if (loginMethod === "wechat-qr" && canShowWeChatQr && qr.status === "idle") {
+      loadWeChatQr();
     }
-  }, [
-    loginMethod,
-    showWeChatQrTab,
-    wechatQrFetcher.state,
-    wechatQrFetcher.data
-  ]);
-
-  // If the QR turned out unavailable, fall back to the email tab.
-  useEffect(() => {
-    if (wechatQrUnavailable && loginMethod === "wechat-qr") {
-      setLoginMethod("email");
-    }
-  }, [wechatQrUnavailable, loginMethod]);
+  }, [loginMethod, canShowWeChatQr, qr.status, loadWeChatQr]);
 
   const onSignInWithGoogle = async () => {
     const { error } = await carbonClient.auth.signInWithOAuth({
@@ -359,17 +371,17 @@ export default function LoginRoute() {
   };
 
   const onSignInWithWeChat = () => {
-    window.location.href = `/auth/wechat${
-      redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ""
-    }`;
+    window.location.href = `/auth/wechat${redirectQuery("?")}`;
   };
 
-  const onSelectWeChatQrTab = () => {
+  const onSelectWeChatQr = () => {
     setLoginMethod("wechat-qr");
-    wechatQrFetcher.load(
-      `/api/wechat-qr-url${redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ""}`
-    );
+    loadWeChatQr();
   };
+
+  // The WeChat button redirects inside the WeChat browser (OAuth) but reveals
+  // the scannable QR everywhere else.
+  const onClickWeChat = isWeChatBrowser ? onSignInWithWeChat : onSelectWeChatQr;
 
   return (
     <>
@@ -425,7 +437,7 @@ export default function LoginRoute() {
                 type="button"
                 size="lg"
                 className="w-full"
-                onClick={onSignInWithWeChat}
+                onClick={onClickWeChat}
                 variant="secondary"
                 leftIcon={
                   <SiWechat className="w-4 h-4" style={{ color: "#07C160" }} />
@@ -467,59 +479,67 @@ export default function LoginRoute() {
               </div>
             )}
 
-            {(() => {
-              const tabs: {
-                key: "wechat-qr" | "phone" | "email";
-                label: React.ReactNode;
-              }[] = [];
-              if (showWeChatQr)
-                tabs.push({ key: "wechat-qr", label: <Trans>WeChat QR</Trans> });
-              if (hasPhoneAuth)
-                tabs.push({ key: "phone", label: <Trans>Phone</Trans> });
-              tabs.push({ key: "email", label: <Trans>Email</Trans> });
+            {loginMethod !== "wechat-qr" &&
+              (() => {
+                const tabs: {
+                  key: "phone" | "email";
+                  label: React.ReactNode;
+                }[] = [];
+                if (hasPhoneAuth)
+                  tabs.push({ key: "phone", label: <Trans>Phone</Trans> });
+                tabs.push({ key: "email", label: <Trans>Email</Trans> });
 
-              if (tabs.length < 2) return null;
-              return (
-                <div className="flex w-full items-center gap-1 rounded-xl bg-muted p-1">
-                  {tabs.map((tab) => (
-                    <button
-                      key={tab.key}
-                      type="button"
-                      className={`flex-1 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                        loginMethod === tab.key
-                          ? "bg-background text-foreground shadow-sm"
-                          : "text-muted-foreground hover:text-foreground"
-                      }`}
-                      onClick={() =>
-                        tab.key === "wechat-qr"
-                          ? onSelectWeChatQrTab()
-                          : setLoginMethod(tab.key)
-                      }
-                    >
-                      {tab.label}
-                    </button>
-                  ))}
-                </div>
-              );
-            })()}
-
-            {loginMethod === "wechat-qr" && showWeChatQr ? (
-              <VStack spacing={4} className="items-center py-2">
-                {wechatQrFetcher.state === "loading" ||
-                !wechatQrFetcher.data ? (
-                  <div className="flex h-[204px] w-[204px] items-center justify-center rounded-xl bg-muted">
-                    <p className="text-sm text-muted-foreground">
-                      <Trans>Loading…</Trans>
-                    </p>
+                if (tabs.length < 2) return null;
+                return (
+                  <div className="flex w-full items-center gap-1 rounded-xl bg-muted p-1">
+                    {tabs.map((tab) => (
+                      <button
+                        key={tab.key}
+                        type="button"
+                        className={`flex-1 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                          loginMethod === tab.key
+                            ? "bg-background text-foreground shadow-sm"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
+                        onClick={() => setLoginMethod(tab.key)}
+                      >
+                        {tab.label}
+                      </button>
+                    ))}
                   </div>
-                ) : wechatQrFetcher.data?.url ? (
+                );
+              })()}
+
+            {/* The QR view stays mounted through loading/ready/error so a
+                failed mint shows a retry state in place. */}
+            {loginMethod === "wechat-qr" && canShowWeChatQr ? (
+              <VStack spacing={4} className="items-center py-2">
+                {qr.status === "error" ? (
+                  <>
+                    {/* Placeholder where the QR would be, with the refetch
+                        button centered directly on it so a failed mint is
+                        recoverable in place. */}
+                    <div className={`relative ${QR_BOX_CLASS}`}>
+                      <LuQrCode className="h-20 w-20 text-muted-foreground/25" />
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        leftIcon={<LuRefreshCw className="h-4 w-4" />}
+                        onClick={loadWeChatQr}
+                        className="absolute shadow-sm"
+                      >
+                        <Trans>Refresh QR code</Trans>
+                      </Button>
+                    </div>
+                    <p className="text-center text-xs text-destructive text-balance">
+                      <Trans>Couldn't load the WeChat QR code</Trans>
+                    </p>
+                  </>
+                ) : qr.status === "ready" && qr.url ? (
                   <>
                     <div className="rounded-xl bg-white p-3 shadow-sm outline outline-1 -outline-offset-1 outline-black/10">
-                      <QRCodeSVG
-                        value={wechatQrFetcher.data.url}
-                        size={180}
-                        className="block"
-                      />
+                      <QRCodeSVG value={qr.url} size={180} className="block" />
                     </div>
                     <p className="text-center text-xs text-muted-foreground text-balance">
                       <Trans>Scan with WeChat to sign in</Trans>
@@ -528,16 +548,30 @@ export default function LoginRoute() {
                       type="button"
                       variant="ghost"
                       size="sm"
-                      onClick={() =>
-                        wechatQrFetcher.load(
-                          `/api/wechat-qr-url${redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ""}`
-                        )
-                      }
+                      onClick={loadWeChatQr}
                     >
                       <Trans>Refresh QR code</Trans>
                     </Button>
                   </>
-                ) : null}
+                ) : (
+                  <div className={QR_BOX_CLASS}>
+                    <p className="text-sm text-muted-foreground">
+                      <Trans>Loading…</Trans>
+                    </p>
+                  </div>
+                )}
+                {/* Always offer a way back: the tabs are hidden while the QR is
+                    shown, so this is the only route back to email/phone. */}
+                <Button
+                  type="button"
+                  variant="link"
+                  size="sm"
+                  onClick={() =>
+                    setLoginMethod(hasPhoneAuth ? "phone" : "email")
+                  }
+                >
+                  <Trans>Use another sign-in method</Trans>
+                </Button>
               </VStack>
             ) : loginMethod === "phone" && hasPhoneAuth ? (
               <ValidatedForm

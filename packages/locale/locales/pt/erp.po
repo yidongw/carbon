@@ -10154,3 +10154,9 @@ msgstr "Sua solicitação para se juntar à {companyName} foi enviada. Um admini
 
 msgid "yourself"
 msgstr "você mesmo"
+
+msgid "Use another sign-in method"
+msgstr "Usar outro método de login"
+
+msgid "Couldn't load the WeChat QR code"
+msgstr "Não foi possível carregar o código QR do WeChat"

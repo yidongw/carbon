@@ -10154,3 +10154,9 @@ msgstr "आपका {companyName} की जोड़ें की मांग
 
 msgid "yourself"
 msgstr "अपने आप"
+
+msgid "Use another sign-in method"
+msgstr "साइन इन करने का दूसरा तरीका चुनें"
+
+msgid "Couldn't load the WeChat QR code"
+msgstr "WeChat QR कोड लोड नहीं हो सका"

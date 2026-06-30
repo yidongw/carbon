@@ -10154,3 +10154,9 @@ msgstr "Ваш запрос на вступление в {companyName} был о
 
 msgid "yourself"
 msgstr "себя"
+
+msgid "Use another sign-in method"
+msgstr "Использовать другой способ входа"
+
+msgid "Couldn't load the WeChat QR code"
+msgstr "Не удалось загрузить QR-код WeChat"
