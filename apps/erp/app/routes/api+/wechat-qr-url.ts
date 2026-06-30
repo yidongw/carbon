@@ -14,14 +14,17 @@ const SCENE_TTL = 600; // seconds
  */
 export async function loader({ request }: LoaderFunctionArgs) {
   const providers = AUTH_PROVIDERS.split(",");
+  // Return 200 with a null url (not an error status) so the login page's
+  // fetcher reads it as data and falls back to email, rather than tripping the
+  // route error boundary on a 4xx/5xx response.
   if (!providers.includes("wechat")) {
-    return data({ url: null, scene: null }, { status: 404 });
+    return data({ url: null, scene: null });
   }
 
   const scene = crypto.randomUUID().replace(/-/g, "");
   const qr = await createWeChatQrTicket(scene, SCENE_TTL);
   if (!qr) {
-    return data({ url: null, scene: null }, { status: 502 });
+    return data({ url: null, scene: null });
   }
 
   await redis.set(
