@@ -1,4 +1,5 @@
 import { toast } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import { useEffect, useRef } from "react";
 import { useFetcher, useRevalidator } from "react-router";
 import { path } from "~/utils/path";
@@ -27,6 +28,7 @@ export function DemoSeedTrigger({
   needsSeed: boolean;
   status: string | null;
 }) {
+  const { t } = useLingui();
   const trigger = useFetcher();
   const poll = useFetcher<SeedStatus>();
   const revalidator = useRevalidator();
@@ -45,7 +47,7 @@ export function DemoSeedTrigger({
     if (needsSeed) {
       trigger.submit(null, { method: "post", action: path.to.demoSeed });
     }
-    toast.loading("Setting up your demo data…", {
+    toast.loading(t`Setting up your demo data…`, {
       id: TOAST_ID,
       duration: Number.POSITIVE_INFINITY
     });
@@ -80,7 +82,7 @@ export function DemoSeedTrigger({
         intervalRef.current = null;
       }
       if (items > 0) {
-        toast.success("Your demo is ready — explore every module!", {
+        toast.success(t`Your demo is ready — explore every module!`, {
           id: TOAST_ID,
           duration: 5000
         });
@@ -93,15 +95,15 @@ export function DemoSeedTrigger({
 
     const c = data.counts;
     const parts: string[] = [];
-    if (c?.items) parts.push(`${c.items} products`);
-    if (c?.customers) parts.push(`${c.customers} customers`);
-    if (c?.suppliers) parts.push(`${c.suppliers} suppliers`);
-    if (c?.salesOrders) parts.push(`${c.salesOrders} orders`);
-    if (c?.jobs) parts.push(`${c.jobs} job${c.jobs === 1 ? "" : "s"}`);
+    if (c?.items) parts.push(t`${c.items} products`);
+    if (c?.customers) parts.push(t`${c.customers} customers`);
+    if (c?.suppliers) parts.push(t`${c.suppliers} suppliers`);
+    if (c?.salesOrders) parts.push(t`${c.salesOrders} orders`);
+    if (c?.jobs) parts.push(t`${c.jobs} jobs`);
     toast.loading(
       parts.length
-        ? `Building your demo — ${parts.join(", ")} so far…`
-        : "Setting up your demo data…",
+        ? t`Building your demo — ${parts.join(", ")} so far…`
+        : t`Setting up your demo data…`,
       { id: TOAST_ID, duration: Number.POSITIVE_INFINITY }
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps

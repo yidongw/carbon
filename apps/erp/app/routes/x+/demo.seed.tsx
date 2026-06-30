@@ -8,9 +8,9 @@ import { runDemoSeed } from "~/services/demoSeed.server";
  *
  * Why a detached server run (not Inngest): the foxhole previews and Community
  * self-hosted deployments serve Inngest functions but aren't registered with
- * Inngest Cloud, so `inngest.send` never gets executed there. A long-running
+ * Inngest Cloud, so an inngest event never gets executed there. A long-running
  * Node server keeps a non-awaited promise alive, so we run the seed inline-detached.
- * (On serverless/Cloud, switch this to the `carbon/demo.seed` Inngest job instead.)
+ * (For serverless/Cloud this would need an Inngest job or platform waitUntil.)
  *
  * GET  → { status, counts } for the progress toast to poll.
  * POST → atomically claims a `pending` demo and kicks off the detached seed.
@@ -103,23 +103,28 @@ export async function action({ request }: ActionFunctionArgs) {
     return { status: "seeding" };
   }
 
-  const [{ data: user }, { data: location }] = await Promise.all([
-    admin.from("user").select("email, firstName").eq("id", userId).single(),
-    admin
-      .from("location")
-      .select("id")
-      .eq("companyId", demo.id)
-      .eq("name", "Headquarters")
-      .maybeSingle()
-  ]);
+  const { data: location } = await admin
+    .from("location")
+    .select("id")
+    .eq("companyId", demo.id)
+    .eq("name", "Headquarters")
+    .maybeSingle();
+
+  // Bail if the company setup didn't produce a Headquarters — the seed needs a
+  // valid locationId and would fail entirely, leaving the status stuck at 'seeding'.
+  if (!location?.id) {
+    await admin
+      .from("demoCompany")
+      .update({ seedStatus: "failed" })
+      .eq("id", demo.id);
+    return { status: "failed" };
+  }
 
   // Detached: don't await — the server keeps it running after the response.
   void runDemoSeed({
     companyId: demo.id,
     userId,
-    locationId: location?.id ?? "",
-    email: user?.email ?? "demo@example.com",
-    firstName: user?.firstName ?? "Demo"
+    locationId: location.id
   });
 
   return { status: "seeding" };

@@ -37,6 +37,10 @@ msgstr "{0} (supplier)"
 msgid "{0} by {1}"
 msgstr "{0} by {1}"
 
+#. placeholder {0}: c.customers
+msgid "{0} customers"
+msgstr "{0} customers"
+
 #. placeholder {0}: rule.escalationDays
 msgid "{0} days"
 msgstr "{0} days"
@@ -51,11 +55,16 @@ msgstr "{0} deleted successfully"
 msgid "{0} invited you to join as {1}."
 msgstr "{0} invited you to join as {1}."
 
+#. placeholder {0}: c.jobs
+msgid "{0} jobs"
+msgstr "{0} jobs"
+
 #. placeholder {0}: actionData.correctAnswers
 #. placeholder {1}: actionData.totalQuestions
 msgid "{0} of {1} correct"
 msgstr "{0} of {1} correct"
 
+#. placeholder {0}: c.salesOrders
 #. placeholder {0}: history.length
 msgid "{0} orders"
 msgstr "{0} orders"
@@ -68,9 +77,17 @@ msgstr "{0} over goal"
 msgid "{0} Processes"
 msgstr "{0} Processes"
 
+#. placeholder {0}: c.items
+msgid "{0} products"
+msgstr "{0} products"
+
 #. placeholder {0}: fmt(Math.abs(diff))
 msgid "{0} short of goal"
 msgstr "{0} short of goal"
+
+#. placeholder {0}: c.suppliers
+msgid "{0} suppliers"
+msgstr "{0} suppliers"
 
 #. placeholder {0}: percentFormatter.format(line.taxPercent ?? 0)
 msgid "{0} Tax"
@@ -79,10 +96,6 @@ msgstr "{0} Tax"
 #. placeholder {0}: lotEntities.length - inspected
 msgid "{0} un-sampled entities will be released to Available. Sampled passes stay Available and sampled failures stay Rejected."
 msgstr "{0} un-sampled entities will be released to Available. Sampled passes stay Available and sampled failures stay Rejected."
-
-#. placeholder {0}: file.name
-msgid "{0} uploaded successfully"
-msgstr "{0} uploaded successfully"
 
 msgid "{days} days ({formatted})"
 msgstr "{days} days ({formatted})"
@@ -1308,6 +1321,10 @@ msgstr "Browse library"
 msgid "Bucket"
 msgstr "Bucket"
 
+#. placeholder {0}: parts.join(", ")
+msgid "Building your demo — {0} so far…"
+msgstr "Building your demo — {0} so far…"
+
 msgid "Buildings & Leasehold Improvements"
 msgstr "Buildings & Leasehold Improvements"
 
@@ -2043,6 +2060,9 @@ msgstr "Costing Method"
 
 msgid "Couldn't load documents"
 msgstr "Couldn't load documents"
+
+msgid "Couldn't load the WeChat QR code"
+msgstr "Couldn't load the WeChat QR code"
 
 msgid "Country"
 msgstr "Country"
@@ -3680,6 +3700,9 @@ msgstr "Expiry begins when the selected process starts."
 msgid "Expiry trace"
 msgstr "Expiry trace"
 
+msgid "Explore the demo"
+msgstr "Explore the demo"
+
 msgid "Export"
 msgstr "Export"
 
@@ -3925,9 +3948,6 @@ msgstr "Failed to remove purchase order"
 msgid "Failed to remove thumbnail"
 msgstr "Failed to remove thumbnail"
 
-msgid "Failed to resize image"
-msgstr "Failed to resize image"
-
 msgid "Failed to resize image: {errorMessage}"
 msgstr "Failed to resize image: {errorMessage}"
 
@@ -4053,6 +4073,7 @@ msgstr "File Extension"
 msgid "File is already in the selected bucket"
 msgstr "File is already in the selected bucket"
 
+#. placeholder {0}: ( avatarFile.size / 1024 / 1024 ).toFixed(2)
 #. placeholder {0}: ( logo.size / 1024 / 1024 ).toFixed(2)
 msgid "File size exceeds {maxSizeMB}MB limit. Current size: {0}MB"
 msgstr "File size exceeds {maxSizeMB}MB limit. Current size: {0}MB"
@@ -6612,9 +6633,6 @@ msgstr "Phone Number"
 msgid "Photo removed successfully"
 msgstr "Photo removed successfully"
 
-msgid "Photo uploaded successfully"
-msgstr "Photo uploaded successfully"
-
 msgid "Pick"
 msgstr "Pick"
 
@@ -8234,6 +8252,9 @@ msgstr "Set Version {0} as Active Version?"
 msgid "Set your default location in profile settings to pick a storage unit."
 msgstr "Set your default location in profile settings to pick a storage unit."
 
+msgid "Setting up your demo data…"
+msgstr "Setting up your demo data…"
+
 msgid "Settings"
 msgstr "Settings"
 
@@ -8856,6 +8877,9 @@ msgstr "Suspected Failure Mode"
 msgid "Switch"
 msgstr "Switch"
 
+msgid "Switch to your company"
+msgstr "Switch to your company"
+
 msgid "Sync"
 msgstr "Sync"
 
@@ -9138,9 +9162,6 @@ msgstr "Thumbnail"
 msgid "Thumbnail removed"
 msgstr "Thumbnail removed"
 
-msgid "Thumbnail uploaded"
-msgstr "Thumbnail uploaded"
-
 msgid "Thumbnails are included"
 msgstr "Thumbnails are included"
 
@@ -9397,6 +9418,9 @@ msgstr "Trial Balance"
 msgid "True"
 msgstr "True"
 
+msgid "Try the demo"
+msgstr "Try the demo"
+
 msgid "Tuesday"
 msgstr "Tuesday"
 
@@ -9597,13 +9621,12 @@ msgid "Uploaded model"
 msgstr "Uploaded model"
 
 #. placeholder {0}: file.name
-#. placeholder {0}: fileUpload.name
 msgid "Uploaded: {0}"
 msgstr "Uploaded: {0}"
 
-#. placeholder {0}: avatarFile.name
 #. placeholder {0}: file.name
 #. placeholder {0}: fileUpload.name
+#. placeholder {0}: logo.name
 msgid "Uploading {0}"
 msgstr "Uploading {0}"
 
@@ -9636,6 +9659,9 @@ msgstr "Use a different email"
 
 msgid "Use a different phone number"
 msgstr "Use a different phone number"
+
+msgid "Use another sign-in method"
+msgstr "Use another sign-in method"
 
 msgid "Use metric system for default material dimensions."
 msgstr "Use metric system for default material dimensions."
@@ -9970,9 +9996,6 @@ msgstr "Website"
 msgid "WeChat"
 msgstr "WeChat"
 
-msgid "WeChat QR"
-msgstr "WeChat QR"
-
 msgid "WeChat sign-in"
 msgstr "WeChat sign-in"
 
@@ -10145,6 +10168,18 @@ msgstr "You received this item"
 msgid "You received this lot"
 msgstr "You received this lot"
 
+msgid "You're in the demo company — {days} days left."
+msgstr "You're in the demo company — {days} days left."
+
+msgid "You're in the demo company — 1 day left."
+msgstr "You're in the demo company — 1 day left."
+
+msgid "You're in the demo company — it has ended."
+msgstr "You're in the demo company — it has ended."
+
+msgid "You're in your company."
+msgstr "You're in your company."
+
 msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 
@@ -10153,6 +10188,9 @@ msgstr "Your answer:"
 
 msgid "Your Console PIN"
 msgstr "Your Console PIN"
+
+msgid "Your demo is ready — explore every module!"
+msgstr "Your demo is ready — explore every module!"
 
 msgid "Your Email"
 msgstr "Your Email"

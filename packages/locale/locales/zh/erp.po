@@ -37,6 +37,10 @@ msgstr "{0} (供应商)"
 msgid "{0} by {1}"
 msgstr "{0}，由{1}"
 
+#. placeholder {0}: c.customers
+msgid "{0} customers"
+msgstr "{0} 位客户"
+
 #. placeholder {0}: rule.escalationDays
 msgid "{0} days"
 msgstr "{0} 天"
@@ -51,11 +55,16 @@ msgstr "{0} 已成功删除"
 msgid "{0} invited you to join as {1}."
 msgstr "{0} 邀请您以 {1} 身份加入。"
 
+#. placeholder {0}: c.jobs
+msgid "{0} jobs"
+msgstr "{0} 个任务"
+
 #. placeholder {0}: actionData.correctAnswers
 #. placeholder {1}: actionData.totalQuestions
 msgid "{0} of {1} correct"
 msgstr "{0}/{1}正确"
 
+#. placeholder {0}: c.salesOrders
 #. placeholder {0}: history.length
 msgid "{0} orders"
 msgstr "{0} 个订单"
@@ -68,9 +77,17 @@ msgstr "多了 {0}"
 msgid "{0} Processes"
 msgstr "{0} 工序"
 
+#. placeholder {0}: c.items
+msgid "{0} products"
+msgstr "{0} 产品"
+
 #. placeholder {0}: fmt(Math.abs(diff))
 msgid "{0} short of goal"
 msgstr "少了 {0}"
+
+#. placeholder {0}: c.suppliers
+msgid "{0} suppliers"
+msgstr "{0} 供应商"
 
 #. placeholder {0}: percentFormatter.format(line.taxPercent ?? 0)
 msgid "{0} Tax"
@@ -79,10 +96,6 @@ msgstr "{0} 税"
 #. placeholder {0}: lotEntities.length - inspected
 msgid "{0} un-sampled entities will be released to Available. Sampled passes stay Available and sampled failures stay Rejected."
 msgstr "{0}个未检测的实体将被释放到可用状态。已检测通过的保持可用状态，已检测失败的保持拒收状态。"
-
-#. placeholder {0}: file.name
-msgid "{0} uploaded successfully"
-msgstr "{0} 上传成功"
 
 msgid "{days} days ({formatted})"
 msgstr "{days} 天（{formatted}）"
@@ -1308,6 +1321,10 @@ msgstr "浏览库"
 msgid "Bucket"
 msgstr "桶"
 
+#. placeholder {0}: parts.join(", ")
+msgid "Building your demo — {0} so far…"
+msgstr "正在构建您的演示——已完成 {0}…"
+
 msgid "Buildings & Leasehold Improvements"
 msgstr "建筑物与租赁改造"
 
@@ -2043,6 +2060,9 @@ msgstr "成本计算方法"
 
 msgid "Couldn't load documents"
 msgstr "无法加载文档"
+
+msgid "Couldn't load the WeChat QR code"
+msgstr "无法加载微信二维码"
 
 msgid "Country"
 msgstr "国家"
@@ -3680,6 +3700,9 @@ msgstr "选择的工序开始时计时。"
 msgid "Expiry trace"
 msgstr "过期追踪"
 
+msgid "Explore the demo"
+msgstr "探索演示版"
+
 msgid "Export"
 msgstr "导出"
 
@@ -3925,9 +3948,6 @@ msgstr "删除采购订单失败"
 msgid "Failed to remove thumbnail"
 msgstr "删除缩略图失败"
 
-msgid "Failed to resize image"
-msgstr "图片调整大小失败"
-
 msgid "Failed to resize image: {errorMessage}"
 msgstr "缩放图片失败：{errorMessage}"
 
@@ -4053,6 +4073,7 @@ msgstr "文件扩展名"
 msgid "File is already in the selected bucket"
 msgstr "文件已在所选桶内"
 
+#. placeholder {0}: ( avatarFile.size / 1024 / 1024 ).toFixed(2)
 #. placeholder {0}: ( logo.size / 1024 / 1024 ).toFixed(2)
 msgid "File size exceeds {maxSizeMB}MB limit. Current size: {0}MB"
 msgstr "文件大小超过{maxSizeMB}MB限制。当前大小：{0}MB"
@@ -6612,9 +6633,6 @@ msgstr "电话号码"
 msgid "Photo removed successfully"
 msgstr "照片已成功删除"
 
-msgid "Photo uploaded successfully"
-msgstr "照片上传成功"
-
 msgid "Pick"
 msgstr "选择"
 
@@ -8234,6 +8252,9 @@ msgstr "将版本 {0} 设置为激活版本？"
 msgid "Set your default location in profile settings to pick a storage unit."
 msgstr "在资料设置中选择默认位置以选取存储单元。"
 
+msgid "Setting up your demo data…"
+msgstr "设置您的演示数据…"
+
 msgid "Settings"
 msgstr "设置"
 
@@ -8856,6 +8877,9 @@ msgstr "疑似故障模式"
 msgid "Switch"
 msgstr "切换"
 
+msgid "Switch to your company"
+msgstr "切换到您的公司"
+
 msgid "Sync"
 msgstr "同步"
 
@@ -9138,9 +9162,6 @@ msgstr "缩略图"
 msgid "Thumbnail removed"
 msgstr "缩略图已删除"
 
-msgid "Thumbnail uploaded"
-msgstr "缩略图已上传"
-
 msgid "Thumbnails are included"
 msgstr "缩略图已包含"
 
@@ -9397,6 +9418,9 @@ msgstr "试算平衡表"
 msgid "True"
 msgstr "真"
 
+msgid "Try the demo"
+msgstr "试用演示"
+
 msgid "Tuesday"
 msgstr "周二"
 
@@ -9597,13 +9621,12 @@ msgid "Uploaded model"
 msgstr "上传模型"
 
 #. placeholder {0}: file.name
-#. placeholder {0}: fileUpload.name
 msgid "Uploaded: {0}"
 msgstr "上传:{0}"
 
-#. placeholder {0}: avatarFile.name
 #. placeholder {0}: file.name
 #. placeholder {0}: fileUpload.name
+#. placeholder {0}: logo.name
 msgid "Uploading {0}"
 msgstr "上传{0}"
 
@@ -9636,6 +9659,9 @@ msgstr "使用不同的电子邮件地址"
 
 msgid "Use a different phone number"
 msgstr "使用其他手机号"
+
+msgid "Use another sign-in method"
+msgstr "使用其他方式登录"
 
 msgid "Use metric system for default material dimensions."
 msgstr "使用公制单位作为默认材料尺寸。"
@@ -9970,9 +9996,6 @@ msgstr "网站"
 msgid "WeChat"
 msgstr "微信"
 
-msgid "WeChat QR"
-msgstr "微信二维码"
-
 msgid "WeChat sign-in"
 msgstr "微信登录"
 
@@ -10145,6 +10168,18 @@ msgstr "您收到了该物品"
 msgid "You received this lot"
 msgstr "您收到了此批次"
 
+msgid "You're in the demo company — {days} days left."
+msgstr "您在演示公司——{days}天后结束。"
+
+msgid "You're in the demo company — 1 day left."
+msgstr "您在演示公司——还剩1天。"
+
+msgid "You're in the demo company — it has ended."
+msgstr "您在演示公司——演示已结束。"
+
+msgid "You're in your company."
+msgstr "您在您的公司。"
+
 msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "您已签到工作了{hoursElapsed}小时。忘记签退了吗？"
 
@@ -10153,6 +10188,9 @@ msgstr "您的回答："
 
 msgid "Your Console PIN"
 msgstr "您的控制台PIN"
+
+msgid "Your demo is ready — explore every module!"
+msgstr "您的演示已准备好——探索每个模块！"
 
 msgid "Your Email"
 msgstr "你的电子邮件"

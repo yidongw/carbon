@@ -1,4 +1,3 @@
-export { demoSeedFunction } from "./demo-seed";
 export { modelThumbnailFunction } from "./model-thumbnail";
 export { onboardFunction } from "./onboard";
 export { postTransactionFunction } from "./post-transaction";

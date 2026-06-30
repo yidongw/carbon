@@ -17,7 +17,6 @@ const taskToEvent = {
   "release-job": "carbon/release-job",
   "post-transactions": "carbon/post-transaction",
   onboard: "carbon/onboard",
-  "demo-seed": "carbon/demo.seed",
   "accounting-backfill": "carbon/accounting-backfill",
   "sync-external-accounting": "carbon/sync-external-accounting",
   "sync-issue-from-jira": "carbon/jira-sync",

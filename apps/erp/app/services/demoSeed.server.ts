@@ -14,8 +14,6 @@ export async function runDemoSeed(opts: {
   companyId: string;
   userId: string;
   locationId: string;
-  email: string;
-  firstName: string;
 }) {
   const admin = getCarbonServiceRole();
   const pool = getPostgresConnectionPool(1);
@@ -23,15 +21,20 @@ export async function runDemoSeed(opts: {
   try {
     await seedDemoData(client, opts);
   } catch (error) {
-    // Best-effort: steps auto-commit, so partial data is kept. Mark seeded anyway so
-    // the user gets the populated demo and we don't re-trigger on every load.
     console.error(`Demo seed for ${opts.companyId} stopped early:`, error);
   } finally {
     client.release();
     await pool.end();
+    // Only mark 'seeded' if data was actually created. A zero-item outcome means
+    // the seed failed entirely; marking it 'failed' lets the loader's data-presence
+    // check retry on the next visit rather than silently looping forever.
+    const { count } = await admin
+      .from("item")
+      .select("id", { count: "exact", head: true })
+      .eq("companyId", opts.companyId);
     await admin
       .from("demoCompany")
-      .update({ seedStatus: "seeded" })
+      .update({ seedStatus: (count ?? 0) > 0 ? "seeded" : "failed" })
       .eq("id", opts.companyId);
   }
 }

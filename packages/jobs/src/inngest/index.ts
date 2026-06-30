@@ -34,7 +34,6 @@ import {
   weeklyFunction
 } from "./functions/scheduled";
 import {
-  demoSeedFunction,
   modelThumbnailFunction,
   onboardFunction,
   postTransactionFunction,
@@ -67,7 +66,6 @@ export const functions = [
   postTransactionFunction,
   rescheduleJobFunction,
   onboardFunction,
-  demoSeedFunction,
   // Scheduled
   cleanupFunction,
   demoCleanupFunction,

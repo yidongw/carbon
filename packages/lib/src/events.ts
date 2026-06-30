@@ -176,15 +176,6 @@ export type Events = {
     };
   };
 
-  // Seeds realistic sample data into a freshly-created demo company.
-  "carbon/demo.seed": {
-    data: {
-      companyId: string;
-      userId: string;
-      locationId: string;
-    };
-  };
-
   // Event queue processing (PGMQ consumer)
   "carbon/event-queue.process": {
     data: Record<string, never>;

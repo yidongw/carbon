@@ -203,8 +203,6 @@ async function seed() {
       companyId,
       userId,
       locationId,
-      email,
-      firstName,
     });
 
     console.log(`

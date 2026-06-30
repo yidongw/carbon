@@ -1,7 +1,25 @@
+import { useLingui } from "@lingui/react/macro";
 import type { ReactNode } from "react";
 import { LuBuilding2, LuFlaskConical } from "react-icons/lu";
 import { useFetcher } from "react-router";
 import { path } from "~/utils/path";
+
+// Defined outside DemoBanner so React doesn't remount the form/button subtree on
+// every render (a component defined inside a render body gets a new reference each
+// time, which forces React to unmount + remount it).
+function Action({ action, children }: { action: string; children: ReactNode }) {
+  const fetcher = useFetcher();
+  return (
+    <fetcher.Form method="post" action={action} className="inline">
+      <button
+        type="submit"
+        className="underline underline-offset-2 font-medium hover:opacity-80"
+      >
+        {children}
+      </button>
+    </fetcher.Form>
+  );
+}
 
 const demoIcon = (
   <LuFlaskConical className="mr-1 inline size-3.5 align-[-0.15em]" />
@@ -38,24 +56,7 @@ function daysLeft(expiresAt: string | null): number {
  *  - not in demo, no demo  → try the demo
  */
 export function DemoBanner({ demo, realCompanyId }: DemoBannerProps) {
-  const fetcher = useFetcher();
-
-  const Action = ({
-    action,
-    children
-  }: {
-    action: string;
-    children: ReactNode;
-  }) => (
-    <fetcher.Form method="post" action={action} className="inline">
-      <button
-        type="submit"
-        className="underline underline-offset-2 font-medium hover:opacity-80"
-      >
-        {children}
-      </button>
-    </fetcher.Form>
-  );
+  const { t } = useLingui();
 
   let content: ReactNode;
 
@@ -64,20 +65,25 @@ export function DemoBanner({ demo, realCompanyId }: DemoBannerProps) {
     content =
       days <= 0 ? (
         <>
-          {demoIcon}You're in the demo company — it has ended.{" "}
+          {demoIcon}
+          {t`You're in the demo company — it has ended.`}{" "}
           {realCompanyId && (
             <Action action={path.to.companySwitch(realCompanyId)}>
-              {companyIcon}Switch to your company
+              {companyIcon}
+              {t`Switch to your company`}
             </Action>
           )}
         </>
       ) : (
         <>
-          {demoIcon}You're in the demo company — {days}{" "}
-          {days === 1 ? "day" : "days"} left.{" "}
+          {demoIcon}
+          {days === 1
+            ? t`You're in the demo company — 1 day left.`
+            : t`You're in the demo company — ${days} days left.`}{" "}
           {realCompanyId && (
             <Action action={path.to.companySwitch(realCompanyId)}>
-              {companyIcon}Switch to your company
+              {companyIcon}
+              {t`Switch to your company`}
             </Action>
           )}
         </>
@@ -85,17 +91,23 @@ export function DemoBanner({ demo, realCompanyId }: DemoBannerProps) {
   } else if (demo) {
     content = (
       <>
-        {companyIcon}You're in your company.{" "}
+        {companyIcon}
+        {t`You're in your company.`}{" "}
         <Action action={path.to.companySwitch(demo.id)}>
-          {demoIcon}Explore the demo
+          {demoIcon}
+          {t`Explore the demo`}
         </Action>
       </>
     );
   } else {
     content = (
       <>
-        {companyIcon}You're in your company.{" "}
-        <Action action={path.to.tryDemo}>{demoIcon}Try the demo</Action>
+        {companyIcon}
+        {t`You're in your company.`}{" "}
+        <Action action={path.to.tryDemo}>
+          {demoIcon}
+          {t`Try the demo`}
+        </Action>
       </>
     );
   }

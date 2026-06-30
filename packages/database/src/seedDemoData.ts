@@ -9,23 +9,16 @@
  */
 import type { PoolClient } from "pg";
 
-const DEV_PASSWORD = "password";
-const DEV_COMPANY_NAME = "Carbon Development";
-
 export async function seedDemoData(
   client: PoolClient,
   {
     companyId,
     userId,
     locationId,
-    email,
-    firstName,
   }: {
     companyId: string;
     userId: string;
     locationId: string;
-    email: string;
-    firstName: string;
   }
 ) {
     // ─── Helpers ───────────────────────────────────────────────────────────────

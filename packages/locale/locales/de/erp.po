@@ -37,6 +37,10 @@ msgstr "{0} (Lieferant)"
 msgid "{0} by {1}"
 msgstr "{0} von {1}"
 
+#. placeholder {0}: c.customers
+msgid "{0} customers"
+msgstr "{0} Kunden"
+
 #. placeholder {0}: rule.escalationDays
 msgid "{0} days"
 msgstr "{0} Tage"
@@ -51,11 +55,16 @@ msgstr "{0} erfolgreich gelöscht"
 msgid "{0} invited you to join as {1}."
 msgstr "{0} hat Sie eingeladen, als {1} beizutreten."
 
+#. placeholder {0}: c.jobs
+msgid "{0} jobs"
+msgstr "{0} Jobs"
+
 #. placeholder {0}: actionData.correctAnswers
 #. placeholder {1}: actionData.totalQuestions
 msgid "{0} of {1} correct"
 msgstr "{0} von {1} korrekt"
 
+#. placeholder {0}: c.salesOrders
 #. placeholder {0}: history.length
 msgid "{0} orders"
 msgstr "{0} Bestellungen"
@@ -68,9 +77,17 @@ msgstr "{0} über Zielìnhalt"
 msgid "{0} Processes"
 msgstr "{0} Prozesse"
 
+#. placeholder {0}: c.items
+msgid "{0} products"
+msgstr "{0} Produkte"
+
 #. placeholder {0}: fmt(Math.abs(diff))
 msgid "{0} short of goal"
 msgstr "{0} kurz vor Ziel"
+
+#. placeholder {0}: c.suppliers
+msgid "{0} suppliers"
+msgstr "{0} Lieferanten"
 
 #. placeholder {0}: percentFormatter.format(line.taxPercent ?? 0)
 msgid "{0} Tax"
@@ -79,10 +96,6 @@ msgstr "{0} Steuer"
 #. placeholder {0}: lotEntities.length - inspected
 msgid "{0} un-sampled entities will be released to Available. Sampled passes stay Available and sampled failures stay Rejected."
 msgstr "{0} nicht beprobte Entitäten werden freigegeben. Beprobte Annahmen bleiben verfügbar und beprobte Fehler bleiben abgelehnt."
-
-#. placeholder {0}: file.name
-msgid "{0} uploaded successfully"
-msgstr "{0} erfolgreich hochgeladen"
 
 msgid "{days} days ({formatted})"
 msgstr "{days} Tage ({formatted})"
@@ -1308,6 +1321,10 @@ msgstr "Bibliothek durchsuchen"
 msgid "Bucket"
 msgstr "Bucket"
 
+#. placeholder {0}: parts.join(", ")
+msgid "Building your demo — {0} so far…"
+msgstr "Ihre Demo wird erstellt – bisher {0}…"
+
 msgid "Buildings & Leasehold Improvements"
 msgstr "Bauten & Mietgüter"
 
@@ -2043,6 +2060,9 @@ msgstr "Kostenmethode"
 
 msgid "Couldn't load documents"
 msgstr "Dokumente konnten nicht geladen werden"
+
+msgid "Couldn't load the WeChat QR code"
+msgstr "WeChat-QR-Code konnte nicht geladen werden"
 
 msgid "Country"
 msgstr "Land"
@@ -3680,6 +3700,9 @@ msgstr "Ablauf beginnt, wenn der ausgewählte Prozess startet."
 msgid "Expiry trace"
 msgstr "Verfallsdatum-Nachverfolgung"
 
+msgid "Explore the demo"
+msgstr "Erkunde die Demo"
+
 msgid "Export"
 msgstr "Exportieren"
 
@@ -3925,9 +3948,6 @@ msgstr "Fehler beim Entfernen der Bestellung"
 msgid "Failed to remove thumbnail"
 msgstr "Fehler beim Entfernen des Vorschaubildes"
 
-msgid "Failed to resize image"
-msgstr "Fehler beim Ändern der Bildgröße"
-
 msgid "Failed to resize image: {errorMessage}"
 msgstr "Fehler beim Ändern der Bildgröße: {errorMessage}"
 
@@ -4053,6 +4073,7 @@ msgstr "Dateiendung"
 msgid "File is already in the selected bucket"
 msgstr "Datei befindet sich bereits im ausgewählten Bucket"
 
+#. placeholder {0}: ( avatarFile.size / 1024 / 1024 ).toFixed(2)
 #. placeholder {0}: ( logo.size / 1024 / 1024 ).toFixed(2)
 msgid "File size exceeds {maxSizeMB}MB limit. Current size: {0}MB"
 msgstr "Dateigröße überschreitet {maxSizeMB}MB-Limit. Aktuelle Größe: {0}MB"
@@ -6612,9 +6633,6 @@ msgstr "Telefonnummer"
 msgid "Photo removed successfully"
 msgstr "Foto erfolgreich entfernt"
 
-msgid "Photo uploaded successfully"
-msgstr "Foto erfolgreich hochgeladen"
-
 msgid "Pick"
 msgstr "Auswählen"
 
@@ -8234,6 +8252,9 @@ msgstr "Version {0} als aktive Version festlegen?"
 msgid "Set your default location in profile settings to pick a storage unit."
 msgstr "Legen Sie Ihren Standardort in den Profileinstellungen fest, um eine Lagereinheit auszuwählen."
 
+msgid "Setting up your demo data…"
+msgstr "Konfigurieren Sie Ihre Demo-Daten…."
+
 msgid "Settings"
 msgstr "Einstellungen"
 
@@ -8856,6 +8877,9 @@ msgstr "Vermuteter Fehlermodus"
 msgid "Switch"
 msgstr "Wechseln"
 
+msgid "Switch to your company"
+msgstr "Wechseln Sie zu Ihrer Firma"
+
 msgid "Sync"
 msgstr "Synchronisieren"
 
@@ -9138,9 +9162,6 @@ msgstr "Miniaturansicht"
 msgid "Thumbnail removed"
 msgstr "Vorschaubild entfernt"
 
-msgid "Thumbnail uploaded"
-msgstr "Miniaturansicht hochgeladen"
-
 msgid "Thumbnails are included"
 msgstr "Miniaturansichten sind enthalten"
 
@@ -9397,6 +9418,9 @@ msgstr "Rechnungsbuch"
 msgid "True"
 msgstr "Ja"
 
+msgid "Try the demo"
+msgstr "Probieren Sie die Demo aus"
+
 msgid "Tuesday"
 msgstr "Dienstag"
 
@@ -9597,13 +9621,12 @@ msgid "Uploaded model"
 msgstr "Modell hochgeladen"
 
 #. placeholder {0}: file.name
-#. placeholder {0}: fileUpload.name
 msgid "Uploaded: {0}"
 msgstr "Hochgeladen: {0}"
 
-#. placeholder {0}: avatarFile.name
 #. placeholder {0}: file.name
 #. placeholder {0}: fileUpload.name
+#. placeholder {0}: logo.name
 msgid "Uploading {0}"
 msgstr "Wird hochgeladen {0}"
 
@@ -9636,6 +9659,9 @@ msgstr "Verwenden Sie eine andere E-Mail"
 
 msgid "Use a different phone number"
 msgstr "Verwenden Sie eine andere Telefonnummer"
+
+msgid "Use another sign-in method"
+msgstr "Andere Anmeldemethode verwenden"
 
 msgid "Use metric system for default material dimensions."
 msgstr "Metrisches System für Standard-Materialdimensionen verwenden."
@@ -9970,9 +9996,6 @@ msgstr "Website"
 msgid "WeChat"
 msgstr "WeChat"
 
-msgid "WeChat QR"
-msgstr "WeChat QR Code"
-
 msgid "WeChat sign-in"
 msgstr "Anmeldung mit WeChat"
 
@@ -10145,6 +10168,18 @@ msgstr "Sie haben diesen Artikel erhalten"
 msgid "You received this lot"
 msgstr "Sie haben dieses Los erhalten"
 
+msgid "You're in the demo company — {days} days left."
+msgstr "Sie sind im Demo-Unternehmen – noch {days} Tage."
+
+msgid "You're in the demo company — 1 day left."
+msgstr "Sie sind im Demounternehmen – 1 Tag übrig."
+
+msgid "You're in the demo company — it has ended."
+msgstr "Sie sind im Demo-Unternehmen – es ist abgelaufen."
+
+msgid "You're in your company."
+msgstr "Sie sind in Ihrer Firma."
+
 msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "Du bist seit {hoursElapsed} Stunden angemeldet. Hast du vergessen, dich abzumelden?"
 
@@ -10153,6 +10188,9 @@ msgstr "Ihre Antwort:"
 
 msgid "Your Console PIN"
 msgstr "Ihre Konsolen-PIN"
+
+msgid "Your demo is ready — explore every module!"
+msgstr "Ihr Demo ist bereit — entdecken Sie jeden Modul!"
 
 msgid "Your Email"
 msgstr "Ihre E-Mail"
