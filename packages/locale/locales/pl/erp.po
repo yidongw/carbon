@@ -494,6 +494,9 @@ msgstr "Dodaj krok"
 msgid "Add Supplier"
 msgstr "Dodaj dostawcę"
 
+msgid "Add Tag"
+msgstr "Dodaj tag"
+
 msgid "Add Timecard"
 msgstr "Dodaj kartę czasu pracy"
 
@@ -925,6 +928,9 @@ msgstr "Czy na pewno chcesz usunąć jednostkę magazynową: {0}? Tej operacji n
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "Czy na pewno chcesz usunąć typ dostawcy: {0}? Tej czynności nie można cofnąć."
+
+msgid "Are you sure you want to delete the tag: {name}? This cannot be undone."
+msgstr "Czy na pewno chcesz usunąć etykietę: {name}? Nie można tego cofnąć."
 
 #. placeholder {0}: unitOfMeasure.name
 msgid "Are you sure you want to delete the unit of measure: {0}? This cannot be undone."
@@ -5767,6 +5773,9 @@ msgstr "Nowy Dostawca"
 
 msgid "New Supplier Part"
 msgstr "Nowa część dostawcy"
+
+msgid "New Tag"
+msgstr "Nowy tag"
 
 msgid "New Template"
 msgstr "Nowy szablon"

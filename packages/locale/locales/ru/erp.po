@@ -494,6 +494,9 @@ msgstr "Добавить шаг"
 msgid "Add Supplier"
 msgstr "Добавить поставщика"
 
+msgid "Add Tag"
+msgstr "Добавить метку"
+
 msgid "Add Timecard"
 msgstr "Добавить табель учета рабочего времени"
 
@@ -925,6 +928,9 @@ msgstr "Вы уверены, что хотите удалить хранилищ
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "Вы уверены, что хотите удалить тип поставщика: {0}? Это действие невозможно отменить."
+
+msgid "Are you sure you want to delete the tag: {name}? This cannot be undone."
+msgstr "Вы действительно хотите удалить метку: {name}? Это нельзя отменить."
 
 #. placeholder {0}: unitOfMeasure.name
 msgid "Are you sure you want to delete the unit of measure: {0}? This cannot be undone."
@@ -5767,6 +5773,9 @@ msgstr "Новый поставщик"
 
 msgid "New Supplier Part"
 msgstr "Новая деталь поставщика"
+
+msgid "New Tag"
+msgstr "Новый тег"
 
 msgid "New Template"
 msgstr "Новый шаблон"

@@ -494,6 +494,9 @@ msgstr "स्टेप जोड़ें"
 msgid "Add Supplier"
 msgstr "आपूर्तिकर्ता जोड़ें"
 
+msgid "Add Tag"
+msgstr "टैग जोड़ें"
+
 msgid "Add Timecard"
 msgstr "टाइमकार्ड जोड़ें"
 
@@ -925,6 +928,9 @@ msgstr "क्या आप सुनिश्चित हैं कि आप 
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "क्या आप सुनिश्चित हैं कि आप आपूर्तिकर्ता प्रकार को हटाना चाहते हैं: {0}? यह पूर्ववत नहीं किया जा सकता।"
+
+msgid "Are you sure you want to delete the tag: {name}? This cannot be undone."
+msgstr "क्या आप वाकई टैग: {name} को हटाना चाहते हैं? इसे पूर्ववत नहीं किया जा सकता।"
 
 #. placeholder {0}: unitOfMeasure.name
 msgid "Are you sure you want to delete the unit of measure: {0}? This cannot be undone."
@@ -5767,6 +5773,9 @@ msgstr "नया स्वीपर"
 
 msgid "New Supplier Part"
 msgstr "नया आपूर्तिकर्ता भाग"
+
+msgid "New Tag"
+msgstr "नया टैग"
 
 msgid "New Template"
 msgstr "नया टेम्पलेट"
