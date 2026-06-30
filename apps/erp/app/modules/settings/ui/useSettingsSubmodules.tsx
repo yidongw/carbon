@@ -18,6 +18,7 @@ import {
   LuSheet,
   LuShoppingCart,
   LuSquareStack,
+  LuTags,
   LuUsers,
   LuWebhook,
   LuWorkflow,
@@ -180,6 +181,12 @@ export default function useSettingsSubmodules() {
             to: path.to.sequences,
             role: "employee",
             icon: <LuSheet />
+          },
+          {
+            name: t`Tags`,
+            to: path.to.tags,
+            role: "employee",
+            icon: <LuTags />
           },
           {
             name: t`Webhooks`,

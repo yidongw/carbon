@@ -430,6 +430,26 @@ export const overlayRegistry = {
       () => import("~/modules/production/ui/Jobs/ProductionQuantityForm")
     )
   },
+  newTag: {
+    type: "drawer",
+    render: renderLazyOverlay(
+      (ctx) => {
+        const data = ctx.loaderData as
+          | { table?: string; lockTable?: boolean }
+          | undefined;
+        if (!data) return null;
+        const { name } = ctx.props as { name?: string };
+        return {
+          initialValues: {
+            name: name ?? "",
+            table: data.table ?? ""
+          },
+          lockTable: data.lockTable ?? false
+        };
+      },
+      () => import("~/modules/settings/ui/Tags/TagForm")
+    )
+  },
   jobBillOfProcessPreview: {
     type: "modal",
     render: renderLazyOverlay(

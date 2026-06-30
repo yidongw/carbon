@@ -116,6 +116,24 @@ export const overlay = {
       };
     },
 
+    // `table` rides the URL (restorable on deep link); `name` is a seed for the
+    // form's input and rides the in-memory props channel (tag names may contain
+    // `,`/`=`, which the URL token codec can't carry).
+    newTag(
+      { table }: { table?: string } = {},
+      props?: { name?: string }
+    ): OverlayTarget {
+      const query = new URLSearchParams();
+      query.set("overlay", "true");
+      if (table) query.set("table", table);
+      return {
+        id: "newTag",
+        url: `${path.to.newTag}?${query.toString()}`,
+        params: overlayParams({ table }),
+        props: props?.name ? { name: props.name } : undefined
+      };
+    },
+
     jobBillOfProcessPreview({ jobId }: { jobId: string }): OverlayTarget {
       return {
         id: "jobBillOfProcessPreview",
