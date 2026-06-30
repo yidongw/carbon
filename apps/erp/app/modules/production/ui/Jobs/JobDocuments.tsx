@@ -50,6 +50,7 @@ import { getDocumentType } from "~/modules/shared";
 import type { ModelUpload } from "~/types";
 import { path } from "~/utils/path";
 import { stripSpecialCharacters } from "~/utils/string";
+import { createUploadToast, uploadToStorageWithProgress } from "~/utils/upload";
 
 const useJobDocuments = ({
   jobId,
@@ -216,19 +217,26 @@ const useJobDocuments = ({
         return;
       }
 
-      for (const file of files) {
+      for (const [index, file] of files.entries()) {
+        const uploadToast = createUploadToast({
+          id: `job-doc-${jobId}-${index}-${file.name}`,
+          label: (pct) => `${t`Uploading ${file.name}`} (${pct}%)`
+        });
         const fileName = getPath(file, bucket);
 
-        const fileUpload = await carbon.storage
-          .from("private")
-          .upload(fileName, file, {
-            cacheControl: `${12 * 60 * 60}`,
-            upsert: true
-          });
+        const fileUpload = await uploadToStorageWithProgress(carbon, {
+          bucket: "private",
+          path: fileName,
+          file,
+          cacheControl: `${12 * 60 * 60}`,
+          upsert: true,
+          onProgress: uploadToast.onProgress
+        });
 
         if (fileUpload.error) {
-          toast.error(t`Failed to upload file: ${file.name}`);
+          uploadToast.error(t`Failed to upload file: ${file.name}`);
         } else if (fileUpload.data?.path) {
+          uploadToast.dismiss();
           createDocumentRecord({
             path: fileUpload.data.path,
             name: file.name,
@@ -239,7 +247,7 @@ const useJobDocuments = ({
       }
       revalidator.revalidate();
     },
-    [getPath, createDocumentRecord, carbon, revalidator, itemId, t]
+    [getPath, createDocumentRecord, carbon, revalidator, itemId, jobId, t]
   );
 
   const moveFile = useCallback(

@@ -14,6 +14,11 @@ import type { ChangeEvent } from "react";
 import { useSubmit } from "react-router";
 import type { Company } from "~/modules/settings";
 import { path } from "~/utils/path";
+import {
+  createUploadToast,
+  resizeImageWithProgress,
+  uploadToStorageWithProgress
+} from "~/utils/upload";
 
 const STORAGE_URL_PREFIX = `${SUPABASE_URL}/storage/v1/object/public/public/`;
 
@@ -58,6 +63,7 @@ const CompanyLogoForm = ({ company, target }: CompanyLogoFormProps) => {
   // which is the only raster format @react-pdf/renderer can decode (a raw
   // webp/gif upload renders blank in the PDF).
   const resizeHeight = target === "logoWatermark" ? 512 : 128;
+  const shouldResize = true;
 
   const getLogoPath = (file: File) => {
     return `${company.id}/logos/${ROLE_BY_TARGET[target]}/${nanoid()}/${
@@ -94,43 +100,42 @@ const CompanyLogoForm = ({ company, target }: CompanyLogoFormProps) => {
         return;
       }
 
-      {
-        const formData = new FormData();
-        formData.append("file", logo);
-        formData.append("height", String(resizeHeight));
-        formData.append("contained", "true");
+      const uploadToast = createUploadToast({
+        id: `logo-${target}-${logo.name}`,
+        label: (pct) => `${t`Uploading ${logo.name}`} (${pct}%)`
+      });
 
+      if (shouldResize) {
         try {
-          const response = await fetch(
-            `${SUPABASE_URL}/functions/v1/image-resizer`,
-            {
-              method: "POST",
-              body: formData
-            }
+          const { status, blob, contentType } = await resizeImageWithProgress(
+            logo,
+            { height: String(resizeHeight), contained: true },
+            uploadToast.onProgress
           );
 
-          if (!response.ok) {
-            const errorText = await response
-              .text()
-              .catch(() => response.statusText);
-            throw new Error(
-              `Image resize failed: ${response.status} ${
-                errorText || "Unknown error"
-              }`
-            );
+          if (status < 200 || status >= 300) {
+            let errorText = "Unknown error";
+            if (contentType?.includes("application/json")) {
+              try {
+                const parsed = JSON.parse(await blob.text());
+                if (parsed?.error) errorText = parsed.error;
+              } catch {
+                // keep the generic message
+              }
+            } else {
+              errorText =
+                (await blob.text().catch(() => "")) || "Unknown error";
+            }
+            throw new Error(`Image resize failed: ${status} ${errorText}`);
           }
 
-          const blob = await response.blob();
-          const resizedFile = new File([blob], "logo.png", {
-            type: "image/png"
-          });
-
-          logo = resizedFile;
+          const resolvedType = contentType || "image/png";
+          logo = new File([blob], "logo.png", { type: resolvedType });
         } catch (error) {
           const errorMessage =
             error instanceof Error ? error.message : "Unknown error";
           console.error("Image resize error:", error);
-          toast.error(t`Failed to resize image: ${errorMessage}`);
+          uploadToast.error(t`Failed to resize image: ${errorMessage}`);
           return;
         }
       }
@@ -138,17 +143,19 @@ const CompanyLogoForm = ({ company, target }: CompanyLogoFormProps) => {
       const previousStoragePath = toStoragePath(currentLogoPath);
       const logoPath = getLogoPath(logo);
 
-      const imageUpload = await carbon.storage
-        .from("public")
-        .upload(logoPath, logo, {
-          cacheControl: "0",
-          upsert: true
-        });
+      const imageUpload = await uploadToStorageWithProgress(carbon, {
+        bucket: "public",
+        path: logoPath,
+        file: logo,
+        cacheControl: "0",
+        upsert: true,
+        onProgress: uploadToast.onProgress
+      });
 
       if (imageUpload.error) {
         const errorMessage = imageUpload.error.message || "Unknown error";
         console.error("Upload error:", imageUpload.error);
-        toast.error(t`Failed to upload logo: ${errorMessage}`);
+        uploadToast.error(t`Failed to upload logo: ${errorMessage}`);
         return;
       }
 
@@ -164,6 +171,7 @@ const CompanyLogoForm = ({ company, target }: CompanyLogoFormProps) => {
               console.warn("Old logo cleanup failed:", cleanupError);
             });
         }
+        uploadToast.dismiss();
         toast.success(t`Logo uploaded successfully`);
         submitLogoUrl(imageUpload.data.path);
       }

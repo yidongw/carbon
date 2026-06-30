@@ -40,6 +40,7 @@ import { useDateFormatter, usePermissions, useUser } from "~/hooks";
 import { getDocumentType } from "~/modules/shared";
 import { path } from "~/utils/path";
 import { stripSpecialCharacters } from "~/utils/string";
+import { createUploadToast, uploadToStorageWithProgress } from "~/utils/upload";
 
 type SupplierInteractionDocumentsProps = {
   attachments: FileObject[];
@@ -335,21 +336,26 @@ export const useSupplierInteractionDocuments = ({
         return;
       }
 
-      for (const file of files) {
+      for (const [index, file] of files.entries()) {
+        const uploadToast = createUploadToast({
+          id: `interaction-doc-${interactionId}-${index}-${file.name}`,
+          label: (pct) => `${t`Uploading ${file.name}`} (${pct}%)`
+        });
         const fileName = getPath(file);
-        toast.info(`Uploading ${file.name}`);
 
-        const fileUpload = await carbon.storage
-          .from("private")
-          .upload(fileName, file, {
-            cacheControl: `${12 * 60 * 60}`,
-            upsert: true
-          });
+        const fileUpload = await uploadToStorageWithProgress(carbon, {
+          bucket: "private",
+          path: fileName,
+          file,
+          cacheControl: `${12 * 60 * 60}`,
+          upsert: true,
+          onProgress: uploadToast.onProgress
+        });
 
         if (fileUpload.error) {
-          toast.error(`Failed to upload file: ${file.name}`);
+          uploadToast.error(t`Failed to upload file: ${file.name}`);
         } else if (fileUpload.data?.path) {
-          toast.success(`Uploaded: ${file.name}`);
+          uploadToast.dismiss();
           createDocumentRecord({
             path: fileUpload.data.path,
             name: file.name,
@@ -359,7 +365,7 @@ export const useSupplierInteractionDocuments = ({
       }
       revalidator.revalidate();
     },
-    [getPath, createDocumentRecord, carbon, revalidator, t]
+    [getPath, createDocumentRecord, carbon, revalidator, interactionId, t]
   );
 
   return {

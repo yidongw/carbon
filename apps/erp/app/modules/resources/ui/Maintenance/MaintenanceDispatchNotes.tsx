@@ -47,6 +47,7 @@ import { getDocumentType } from "~/modules/shared";
 import type { StorageItem } from "~/types";
 import { getPrivateUrl, path } from "~/utils/path";
 import { stripSpecialCharacters } from "~/utils/string";
+import { createUploadToast, uploadToStorageWithProgress } from "~/utils/upload";
 
 export function MaintenanceDispatchNotes({
   id,
@@ -220,25 +221,31 @@ function MaintenanceFilesContent({
         return;
       }
 
-      for (const file of filesToUpload) {
+      for (const [index, file] of filesToUpload.entries()) {
+        const uploadToast = createUploadToast({
+          id: `maintenance-doc-${dispatchId}-${index}-${file.name}`,
+          label: (pct) => `${t`Uploading ${file.name}`} (${pct}%)`
+        });
         const filePath = getFilePath(file.name);
 
-        const result = await carbon.storage
-          .from("private")
-          .upload(filePath, file, {
-            cacheControl: `${12 * 60 * 60}`,
-            upsert: true
-          });
+        const result = await uploadToStorageWithProgress(carbon, {
+          bucket: "private",
+          path: filePath,
+          file,
+          cacheControl: `${12 * 60 * 60}`,
+          upsert: true,
+          onProgress: uploadToast.onProgress
+        });
 
         if (result.error) {
-          toast.error(t`Failed to upload file: ${file.name}`);
+          uploadToast.error(t`Failed to upload file: ${file.name}`);
         } else {
-          toast.success(t`${file.name} uploaded successfully`);
+          uploadToast.dismiss();
         }
       }
       revalidator.revalidate();
     },
-    [carbon, getFilePath, revalidator, t]
+    [carbon, dispatchId, getFilePath, revalidator, t]
   );
 
   const download = useCallback(

@@ -6,6 +6,7 @@ import {
   MagickColor,
   MagickFormat,
   MagickGeometry,
+  MagickReadSettings,
 } from "npm:@imagemagick/magick-wasm@0.0.30";
 
 const wasmBytes = await Deno.readFile(
@@ -18,10 +19,10 @@ await initializeImageMagick(wasmBytes);
 
 import { corsHeaders } from "../lib/headers.ts";
 
-// Maximum dimensions to process without aggressive downscaling
+// Target maximum dimension for processing. Large JPEGs are decoded at or below
+// this size via shrink-on-load; larger non-JPEG images are downscaled to it
+// after decode. The 10MB file-size gate bounds the rest.
 const MAX_SAFE_DIMENSION = 2000;
-// Maximum dimensions to attempt processing at all
-const MAX_ALLOWED_DIMENSION = 5000;
 
 serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
@@ -73,64 +74,48 @@ serve(async (req: Request) => {
     let result: Uint8Array;
     let outputFormat: MagickFormat = MagickFormat.Png;
 
+    // Decode large JPEGs at reduced resolution (shrink-on-load) so a
+    // multi-megapixel photo never expands to its full raw size in WASM memory —
+    // that previously exhausted the function (WORKER_RESOURCE_LIMIT). This is
+    // libjpeg DCT downscaling (`-define jpeg:size=NxN`): the decode lands in
+    // [N, 2N) px on the constrained side, so even a 24MP photo decodes to
+    // ~1.5MP — far more than enough for the <=300px thumbnails we output.
+    // Shared by the primary and fallback read paths.
+    const DECODE_HINT = 1000;
+    const readSettings = new MagickReadSettings();
+    readSettings.setDefine(
+      MagickFormat.Jpeg,
+      "size",
+      `${DECODE_HINT}x${DECODE_HINT}`
+    );
+
     try {
-      // First just read the image dimensions without full processing
-      const dimensions = await new Promise<{ width: number; height: number }>(
-        (resolve, reject) => {
-          try {
-            ImageMagick.read(bytes, (img) => {
-              resolve({ width: img.width, height: img.height });
-            });
-          } catch (err) {
-            reject(err);
-          }
-        }
-      );
-
-      // Reject extremely large images that would cause CPU timeouts
-      if (
-        dimensions.width > MAX_ALLOWED_DIMENSION ||
-        dimensions.height > MAX_ALLOWED_DIMENSION
-      ) {
-        throw new Error(
-          `Image dimensions are ${dimensions.width}x${dimensions.height}, but maximum allowed is ${MAX_ALLOWED_DIMENSION}x${MAX_ALLOWED_DIMENSION}`
-        );
-      }
-
-      // Calculate initial scale factor for large images
-      let initialScaleFactor = 1.0;
-      const maxDimension = Math.max(dimensions.width, dimensions.height);
-
-      if (maxDimension > MAX_SAFE_DIMENSION) {
-        initialScaleFactor = MAX_SAFE_DIMENSION / maxDimension;
-        console.log(
-          `Large image detected. Initial scale factor: ${initialScaleFactor.toFixed(
-            2
-          )}`
-        );
-      }
-
       result = await new Promise<Uint8Array>((resolve, reject) => {
         try {
-          const data = ImageMagick.read(bytes, (img) => {
+          const data = ImageMagick.read(bytes, readSettings, (img) => {
             console.log({
               originalFormat: img.format,
-              originalWidth: img.width,
-              originalHeight: img.height,
+              loadedWidth: img.width,
+              loadedHeight: img.height,
               originalDepth: img.depth,
               originalColorSpace: img.colorSpace,
               isJpgFile,
             });
 
-            // Apply initial scaling for large images
-            if (initialScaleFactor < 1.0) {
-              const newWidth = Math.floor(img.width * initialScaleFactor);
-              const newHeight = Math.floor(img.height * initialScaleFactor);
-              console.log(
-                `Pre-scaling large image to ${newWidth}x${newHeight}`
-              );
+            // Bake the EXIF orientation into the pixels before we strip metadata
+            // below — otherwise a portrait phone photo (stored landscape + an
+            // orientation flag) uploads sideways once the flag is discarded.
+            img.autoOrient();
 
-              // Use faster resize for initial downscaling
+            // Shrink-on-load only applies to JPEG; clamp anything still larger
+            // than MAX_SAFE_DIMENSION (e.g. a PNG decoded at full size) down so
+            // downstream processing stays cheap.
+            const loadedMax = Math.max(img.width, img.height);
+            if (loadedMax > MAX_SAFE_DIMENSION) {
+              const scale = MAX_SAFE_DIMENSION / loadedMax;
+              const newWidth = Math.floor(img.width * scale);
+              const newHeight = Math.floor(img.height * scale);
+              console.log(`Pre-scaling loaded image to ${newWidth}x${newHeight}`);
               img.resize(newWidth, newHeight);
             }
 
@@ -282,8 +267,11 @@ serve(async (req: Request) => {
       // Enhanced fallback for problematic images, especially JPGs
       result = await new Promise<Uint8Array>((resolve, reject) => {
         try {
-          const data = ImageMagick.read(bytes, (img) => {
+          const data = ImageMagick.read(bytes, readSettings, (img) => {
             console.log("Using enhanced fallback processing method");
+
+            // Honor EXIF orientation before stripping metadata (see primary path)
+            img.autoOrient();
 
             // Special handling for JPG files in fallback
             if (isJpgFile) {
