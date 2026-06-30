@@ -45,6 +45,10 @@ import { ReplenishmentSystemIcon, TrackingTypeIcon } from "~/components/Icons";
 import { useNextItemId, usePermissions, useUser } from "~/hooks";
 import { path } from "~/utils/path";
 import {
+  createUploadToast,
+  uploadToStorageWithProgress
+} from "~/utils/upload";
+import {
   itemReplenishmentSystems,
   itemTrackingTypes,
   toolValidator
@@ -88,8 +92,18 @@ const ToolForm = ({ initialValues, type = "card", onClose }: ToolFormProps) => {
     const fileExtension = file.name.split(".").pop();
     const fileName = `${companyId}/models/${modelId}.${fileExtension}`;
 
+    const uploadToast = createUploadToast({
+      id: `model-${modelId}-${file.name}`,
+      label: (pct) => `${t`Uploading ${file.name}`} (${pct}%)`
+    });
+
     const [fileUpload, recordInsert] = await Promise.all([
-      carbon.storage.from("private").upload(fileName, file),
+      uploadToStorageWithProgress(carbon, {
+        bucket: "private",
+        path: fileName,
+        file,
+        onProgress: uploadToast.onProgress
+      }),
       carbon.from("modelUpload").insert({
         id: modelId,
         modelPath: fileName,
@@ -101,8 +115,9 @@ const ToolForm = ({ initialValues, type = "card", onClose }: ToolFormProps) => {
     ]);
 
     if (fileUpload.error || recordInsert.error) {
-      toast.error(t`Failed to upload model`);
+      uploadToast.error(t`Failed to upload model`);
     } else {
+      uploadToast.dismiss();
       setModelUploadId(modelId);
       setModelFile(file);
       toast.success(t`Uploaded model`);

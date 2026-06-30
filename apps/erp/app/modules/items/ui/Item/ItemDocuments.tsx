@@ -43,6 +43,7 @@ import { getDocumentType } from "~/modules/shared";
 import type { ModelUpload } from "~/types";
 import { path } from "~/utils/path";
 import { stripSpecialCharacters } from "~/utils/string";
+import { createUploadToast, uploadToStorageWithProgress } from "~/utils/upload";
 import type { ItemFile } from "../../types";
 
 type ItemDocumentsProps = {
@@ -480,21 +481,26 @@ export const useItemDocuments = ({ itemId, type }: Props) => {
         return;
       }
 
-      for (const file of files) {
-        toast.info(t`Uploading ${file.name}`);
+      for (const [index, file] of files.entries()) {
+        const uploadToast = createUploadToast({
+          id: `item-doc-${itemId}-${index}-${file.name}`,
+          label: (pct) => `${t`Uploading ${file.name}`} (${pct}%)`
+        });
         const fileName = getPath(file);
 
-        const fileUpload = await carbon.storage
-          .from("private")
-          .upload(fileName, file, {
-            cacheControl: `${12 * 60 * 60}`,
-            upsert: true
-          });
+        const fileUpload = await uploadToStorageWithProgress(carbon, {
+          bucket: "private",
+          path: fileName,
+          file,
+          cacheControl: `${12 * 60 * 60}`,
+          upsert: true,
+          onProgress: uploadToast.onProgress
+        });
 
         if (fileUpload.error) {
-          toast.error(t`Failed to upload file: ${file.name}`);
+          uploadToast.error(t`Failed to upload file: ${file.name}`);
         } else if (fileUpload.data?.path) {
-          toast.success(t`Uploaded: ${file.name}`);
+          uploadToast.dismiss();
           const formData = new FormData();
           formData.append("path", fileUpload.data.path);
           formData.append("name", file.name);

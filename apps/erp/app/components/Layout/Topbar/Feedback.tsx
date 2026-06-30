@@ -27,6 +27,10 @@ import { useFetcher, useLocation } from "react-router";
 import { feedbackValidator } from "~/modules/shared";
 import type { action } from "~/routes/x+/feedback";
 import { path } from "~/utils/path";
+import {
+  createUploadToast,
+  uploadToStorageWithProgress
+} from "~/utils/upload";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB in bytes
 const Feedback = () => {
@@ -53,7 +57,6 @@ const Feedback = () => {
   const uploadImage = async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && carbon) {
       const file = e.target.files[0];
-      toast.info(`Uploading ${file.name}`);
       const fileExtension = file.name.substring(file.name.lastIndexOf(".") + 1);
 
       if (file.size > MAX_FILE_SIZE) {
@@ -61,17 +64,27 @@ const Feedback = () => {
         return;
       }
 
-      const imageUpload = await carbon.storage
-        .from("feedback")
-        .upload(`${nanoid()}.${fileExtension}`, file, {
-          cacheControl: `${12 * 60 * 60}`,
-          upsert: true
-        });
+      const feedbackPath = `${nanoid()}.${fileExtension}`;
+      const uploadToast = createUploadToast({
+        id: `feedback-${feedbackPath}-${file.name}`,
+        label: (pct) => `${t`Uploading ${file.name}`} (${pct}%)`
+      });
+      const imageUpload = await uploadToStorageWithProgress(carbon, {
+        bucket: "feedback",
+        path: feedbackPath,
+        file,
+        upsert: true,
+        cacheControl: `${12 * 60 * 60}`,
+        onProgress: uploadToast.onProgress
+      });
 
       if (imageUpload.error) {
         console.error(imageUpload.error);
-        toast.error(t`Failed to upload image`);
+        uploadToast.error(t`Failed to upload image`);
+        return;
       }
+
+      uploadToast.dismiss();
 
       if (imageUpload.data?.path) {
         setAttachment({

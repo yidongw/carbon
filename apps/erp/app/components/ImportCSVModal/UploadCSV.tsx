@@ -16,6 +16,10 @@ import { flushSync } from "react-dom";
 import { useDropzone } from "react-dropzone";
 import { useUser } from "~/hooks/useUser";
 import type { importSchemas } from "~/modules/shared";
+import {
+  createUploadToast,
+  uploadToStorageWithProgress
+} from "~/utils/upload";
 import { useCsvContext } from "./useCsvContext";
 
 export const UploadCSV = ({ table }: { table: keyof typeof importSchemas }) => {
@@ -74,7 +78,6 @@ export const UploadCSV = ({ table }: { table: keyof typeof importSchemas }) => {
   };
 
   const uploadFile = async (file: File) => {
-    toast.info(t`Uploading ${file.name}`);
     const fileName = `${company.id}/imports/${nanoid()}.csv`;
 
     if (!carbon) {
@@ -85,11 +88,20 @@ export const UploadCSV = ({ table }: { table: keyof typeof importSchemas }) => {
       return;
     }
 
-    const { data, error } = await carbon.storage
-      .from("private")
-      .upload(fileName, file);
+    const uploadToast = createUploadToast({
+      id: `csv-${fileName}-${file.name}`,
+      label: (pct) => `${t`Uploading ${file.name}`} (${pct}%)`
+    });
 
-    if (error) {
+    const { data, error } = await uploadToStorageWithProgress(carbon, {
+      bucket: "private",
+      path: fileName,
+      file,
+      onProgress: uploadToast.onProgress
+    });
+
+    if (error || !data) {
+      uploadToast.error(t`Failed to upload CSV file.`);
       setError(t`Failed to upload CSV file.`);
       setFileColumns(null);
       setFirstRows(null);
@@ -97,6 +109,7 @@ export const UploadCSV = ({ table }: { table: keyof typeof importSchemas }) => {
       return;
     }
 
+    uploadToast.dismiss();
     setFilePath(data.path);
   };
 

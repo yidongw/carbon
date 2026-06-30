@@ -7,8 +7,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-  HStack,
-  toast
+  HStack
 } from "@carbon/react";
 import { isEoriCountry } from "@carbon/utils";
 import { nanoid } from "nanoid";
@@ -19,6 +18,10 @@ import { FileDropzone } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { Boolean, Hidden, Input, Select, Submit } from "~/components/Form";
 import { usePermissions, useUser } from "~/hooks";
+import {
+  createUploadToast,
+  uploadToStorageWithProgress
+} from "~/utils/upload";
 import { customerTaxValidator, taxExemptionReasons } from "../../sales.models";
 
 type CustomerTaxFormProps = {
@@ -51,15 +54,22 @@ const CustomerTaxForm = ({ initialValues }: CustomerTaxFormProps) => {
       const fileExtension = file.name.split(".").pop();
       const fileName = `${companyId}/tax-certificates/${nanoid()}.${fileExtension}`;
 
-      const result = await carbon.storage
-        .from("private")
-        .upload(fileName, file);
+      const uploadToast = createUploadToast({
+        id: `customer-tax-${fileName}-${file.name}`,
+        label: (pct) => `Uploading ${file.name} (${pct}%)`
+      });
+      const result = await uploadToStorageWithProgress(carbon, {
+        bucket: "private",
+        path: fileName,
+        file,
+        onProgress: uploadToast.onProgress
+      });
 
       if (result.error) {
-        toast.error("Failed to upload certificate");
+        uploadToast.error("Failed to upload certificate");
       } else {
+        uploadToast.dismiss();
         setCertificatePath(result.data.path);
-        toast.success("Certificate uploaded");
       }
     },
     [carbon, companyId]

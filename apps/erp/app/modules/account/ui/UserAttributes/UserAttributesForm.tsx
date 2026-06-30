@@ -4,7 +4,6 @@ import {
   Button,
   HStack,
   Switch,
-  toast,
   useDisclosure,
   VStack
 } from "@carbon/react";
@@ -34,6 +33,10 @@ import SupplierAvatar from "~/components/SupplierAvatar";
 import { usePermissions, useUser } from "~/hooks";
 import { DataType } from "~/modules/shared";
 import { getPrivateUrl, path } from "~/utils/path";
+import {
+  createUploadToast,
+  uploadToStorageWithProgress
+} from "~/utils/upload";
 import {
   attributeBooleanValidator,
   attributeCustomerValidator,
@@ -757,21 +760,26 @@ function FileAttributeForm({
     const fileUpload = acceptedFiles[0];
 
     setFile(fileUpload);
-    toast.info(t`Uploading ${fileUpload.name}`);
 
     const fileName = `${company.id}/person/${userId}/${fileUpload.name}`;
 
-    const upload = await carbon?.storage
-      .from("private")
-      .upload(fileName, fileUpload, {
-        cacheControl: `${12 * 60 * 60}`,
-        upsert: true
-      });
+    const uploadToast = createUploadToast({
+      id: `user-attribute-${fileName}-${fileUpload.name}`,
+      label: (pct) => `${t`Uploading ${fileUpload.name}`} (${pct}%)`
+    });
+    const upload = await uploadToStorageWithProgress(carbon, {
+      bucket: "private",
+      path: fileName,
+      file: fileUpload,
+      upsert: true,
+      cacheControl: `${12 * 60 * 60}`,
+      onProgress: uploadToast.onProgress
+    });
 
     if (upload.error) {
-      toast.error(t`Failed to upload file: ${fileUpload.name}`);
+      uploadToast.error(t`Failed to upload file: ${fileUpload.name}`);
     } else if (upload.data?.path) {
-      toast.success(t`Uploaded: ${fileUpload.name}`);
+      uploadToast.dismiss();
       setFilePath(upload.data.path);
     }
   };
