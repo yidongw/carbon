@@ -64,6 +64,23 @@
 
 ## Architecture Patterns
 
+### Overlays, not pages (MANDATORY)
+
+**Any transient UI surface — a modal, drawer, popup, or any panel — must be a URL-addressable overlay, NOT a standalone full-page route.** This applies to everything that is either **read-only** or does a **server submit** (create/edit forms, previews, detail panels). A `.../new` or `.../$id` URL must never render as its own page; it renders as an overlay layered on top of its parent list/detail page, with the page URL carrying an `?overlay=...` token.
+
+**Exception:** simple delete confirmations may keep using the shared `ConfirmDelete` modal rendered through the parent list's `<Outlet/>` (e.g. `tags.delete.tsx`) — it's already a modal (not a full page) and is the app-wide convention. Don't build a registry overlay just for a delete confirm.
+
+**The convention maps to `confirmMode`:** `"server"` (the primary button POSTs) or `"none"` (read-only — the only button dismisses). Set it in the registry entry.
+
+**How to build one (mirror the production quantity/pickup overlays from PRs #131 / #144):**
+1. **Registry** — add an entry to `apps/erp/app/components/Overlay/overlay.registry.tsx` with `type: "drawer" | "modal"`, optional `confirmMode`, and a `renderLazyOverlay(selectProps, () => import("...Form"))` that maps loader data → component props.
+2. **Builder** — add an `overlay.to.<id>()` builder in `apps/erp/app/components/Overlay/overlay.ts` returning `{ id, url: \`${path.to.new...}?overlay=true\`, params? }`. `params` are mirrored into the page URL so the overlay is restorable from a deep link; the builder must accept those same params back.
+3. **Form = content component** — the form renders the drawer/modal *body only* (`DrawerHeader/Body/Footer`), never its own `Drawer`/`Modal` wrapper (the host provides it). Its props are the `selectProps` output plus `Pick<OverlayFormInjectedProps, "onDismiss" | "fetcher" | "action">`; wire `<ValidatedForm action={action} fetcher={fetcher} method="post">`, a `<Submit>`, and a Cancel button calling `onDismiss`.
+4. **Route = overlay-only** — the `.new`/`.$id` route loader redirects bare URLs (`overlay !== "true"`) to the list with the overlay token, and returns minimal loader data when `overlay === "true"`; its default component returns `null`. The action returns `data({ ok: true }, flash(success))` when `isOverlay` (the host closes + revalidates on `ok: true`), otherwise `redirect(...)`.
+5. **Open it** — from a table/list, open via `const { openOverlay } = useOverlay(); openOverlay(overlay.to.<id>(), { onCreated: () => revalidator.revalidate() })`. Do not link to the `/new` page with `<New to=... />`.
+
+The older "relative route + `<Outlet/>` + `<ModalDrawer>` self-wrapper" pattern (e.g. item posting groups) is legacy — do not copy it for new work; use the registry overlay above.
+
 ### Overlay vs Route Data Flow
 
 **Critical:** Overlays and routes have different data flow patterns. Understanding this prevents state initialization bugs.
