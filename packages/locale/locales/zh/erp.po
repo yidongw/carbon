@@ -494,6 +494,9 @@ msgstr "添加步骤"
 msgid "Add Supplier"
 msgstr "添加供应商"
 
+msgid "Add Tag"
+msgstr "添加标签"
+
 msgid "Add Timecard"
 msgstr "添加考勤卡"
 
@@ -925,6 +928,9 @@ msgstr "您确定要删除存储单元：{0}？此操作无法撤销。"
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "您确定要删除供应商类型：{0}？此操作无法撤销。"
+
+msgid "Are you sure you want to delete the tag: {name}? This cannot be undone."
+msgstr "您确定要删除标签：{name} 吗？此操作无法撤销。"
 
 #. placeholder {0}: unitOfMeasure.name
 msgid "Are you sure you want to delete the unit of measure: {0}? This cannot be undone."
@@ -5767,6 +5773,9 @@ msgstr "新供应商"
 
 msgid "New Supplier Part"
 msgstr "新供应商产品"
+
+msgid "New Tag"
+msgstr "新标签"
 
 msgid "New Template"
 msgstr "新模板"

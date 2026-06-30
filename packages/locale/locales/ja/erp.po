@@ -494,6 +494,9 @@ msgstr "ステップを追加"
 msgid "Add Supplier"
 msgstr "サプライヤーを追加"
 
+msgid "Add Tag"
+msgstr "タグを追加"
+
 msgid "Add Timecard"
 msgstr "タイムカードを追加"
 
@@ -925,6 +928,9 @@ msgstr "本当に保存ユニット: {0} を削除してもよろしいですか
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "サプライヤータイプ: {0} を削除してもよろしいですか？この操作は取り消せません。"
+
+msgid "Are you sure you want to delete the tag: {name}? This cannot be undone."
+msgstr "タグ「{name}」を削除してもよろしいですか？この操作は取り消せません。"
 
 #. placeholder {0}: unitOfMeasure.name
 msgid "Are you sure you want to delete the unit of measure: {0}? This cannot be undone."
@@ -5767,6 +5773,9 @@ msgstr "新サプライヤー"
 
 msgid "New Supplier Part"
 msgstr "新しいサプライヤー部品"
+
+msgid "New Tag"
+msgstr "新規タグ"
 
 msgid "New Template"
 msgstr "新テンプレート"

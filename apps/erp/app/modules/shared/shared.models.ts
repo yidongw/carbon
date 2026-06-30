@@ -218,6 +218,37 @@ export const suggestionValidator = z.object({
   userId: zfd.text(z.string().optional())
 });
 
+// A tag is scoped to a table (any taggable table — part, job, customer, …);
+// the `tag` table is generic, so `table` is just a string here.
+export const tagValidator = z.object({
+  name: z.string().min(1, { message: "Name is required" }).max(255),
+  table: z.string().min(1, { message: "Table is required" })
+});
+
+// The tables that actually expose a Tags field in the UI, with friendly labels.
+// This is the set offered when creating a tag from the Tags settings page, and
+// the source for labeling a tag's `table` in lists. (Tags can technically exist
+// for any table, but these are the surfaces where they're used.)
+export const tagTables = [
+  { table: "part", label: "Part" },
+  { table: "material", label: "Material" },
+  { table: "tool", label: "Tool" },
+  { table: "consumable", label: "Consumable" },
+  { table: "operation", label: "Operation" },
+  { table: "job", label: "Job" },
+  { table: "procedure", label: "Procedure" },
+  { table: "supplier", label: "Supplier" },
+  { table: "customer", label: "Customer" },
+  { table: "nonConformance", label: "Issue" },
+  { table: "qualityDocument", label: "Quality Document" },
+  { table: "suggestion", label: "Suggestion" },
+  { table: "training", label: "Training" }
+] as const;
+
+export const tagTableLabels: Record<string, string> = Object.fromEntries(
+  tagTables.map((t) => [t.table, t.label])
+);
+
 export const oAuthCallbackSchema = z.object({
   code: z.string(),
   state: z.string()

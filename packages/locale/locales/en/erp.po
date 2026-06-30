@@ -494,6 +494,9 @@ msgstr "Add Step"
 msgid "Add Supplier"
 msgstr "Add Supplier"
 
+msgid "Add Tag"
+msgstr "Add Tag"
+
 msgid "Add Timecard"
 msgstr "Add Timecard"
 
@@ -925,6 +928,9 @@ msgstr "Are you sure you want to delete the storage unit: {0}? This cannot be un
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
+
+msgid "Are you sure you want to delete the tag: {name}? This cannot be undone."
+msgstr "Are you sure you want to delete the tag: {name}? This cannot be undone."
 
 #. placeholder {0}: unitOfMeasure.name
 msgid "Are you sure you want to delete the unit of measure: {0}? This cannot be undone."
@@ -5767,6 +5773,9 @@ msgstr "New Supplier"
 
 msgid "New Supplier Part"
 msgstr "New Supplier Part"
+
+msgid "New Tag"
+msgstr "New Tag"
 
 msgid "New Template"
 msgstr "New Template"

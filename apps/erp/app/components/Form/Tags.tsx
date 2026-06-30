@@ -1,11 +1,10 @@
 import type { CreatableMultiSelectProps } from "@carbon/form";
-import { CreatableMultiSelect } from "@carbon/form";
+import { CreatableMultiSelect, useControlField } from "@carbon/form";
 import { Badge, HStack } from "@carbon/react";
 import { useMemo } from "react";
 import { LuTags } from "react-icons/lu";
-import { useFetcher } from "react-router";
-import type { action } from "~/routes/x+/settings+/tags.new";
-import { path } from "~/utils/path";
+import { useRevalidator } from "react-router";
+import { overlay, useOverlay } from "~/components/Overlay";
 
 type TagsSelectProps = Omit<
   CreatableMultiSelectProps,
@@ -46,7 +45,9 @@ const TagsPreview = (
 };
 
 const Tags = ({ table, availableTags, ...props }: TagsSelectProps) => {
-  const newTagFetcher = useFetcher<typeof action>();
+  const { openOverlay } = useOverlay();
+  const revalidator = useRevalidator();
+  const [value, setValue] = useControlField<string[] | undefined>(props.name);
 
   const options = useMemo(
     () =>
@@ -62,19 +63,30 @@ const Tags = ({ table, availableTags, ...props }: TagsSelectProps) => {
       label={props?.label ?? "Tag"}
       options={options}
       {...props}
-      showCreateOptionOnEmpty={false}
       inline={props.inline ? TagsPreview : undefined}
       inlineIcon={<LuTags />}
       onCreateOption={(option) => {
-        if (!option) return;
-
-        const formData = new FormData();
-        formData.append("name", option);
-        formData.append("table", table ?? "");
-        newTagFetcher.submit(formData, {
-          method: "post",
-          action: path.to.newTag
-        });
+        // Open the create-tag overlay, seeding the item type from this field
+        // and the name from anything already typed.
+        const name = option.trim();
+        openOverlay(
+          overlay.to.newTag({ table }, name ? { name } : undefined),
+          {
+            // Once created, select the new tag onto this record (updates the
+            // field and persists via onChange) and revalidate so the option
+            // list picks it up.
+            onSuccess: (data) => {
+              const created = (data as { name?: string } | null)?.name;
+              if (!created) return;
+              const current = value ?? [];
+              if (current.includes(created)) return;
+              const next = [...current, created];
+              setValue(next);
+              props.onChange?.(next);
+            },
+            onCreated: () => revalidator.revalidate()
+          }
+        );
       }}
     />
   );

@@ -494,6 +494,9 @@ msgstr "Ajouter une étape"
 msgid "Add Supplier"
 msgstr "Ajouter un fournisseur"
 
+msgid "Add Tag"
+msgstr "Ajouter une étiquette"
+
 msgid "Add Timecard"
 msgstr "Ajouter une feuille de temps"
 
@@ -925,6 +928,9 @@ msgstr "Êtes-vous sûr de vouloir supprimer l'unité de stockage : {0} ? Cette 
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "Êtes-vous sûr de vouloir supprimer le type de fournisseur : {0} ? Cette action ne peut pas être annulée."
+
+msgid "Are you sure you want to delete the tag: {name}? This cannot be undone."
+msgstr "Êtes-vous sûr de vouloir supprimer l'étiquette : {name} ? Cette action ne peut pas être annulée."
 
 #. placeholder {0}: unitOfMeasure.name
 msgid "Are you sure you want to delete the unit of measure: {0}? This cannot be undone."
@@ -5767,6 +5773,9 @@ msgstr "Nouveau Fournisseur"
 
 msgid "New Supplier Part"
 msgstr "Nouvelle pièce fournisseur"
+
+msgid "New Tag"
+msgstr "Nouvelle étiquette"
 
 msgid "New Template"
 msgstr "Nouvelle template"
