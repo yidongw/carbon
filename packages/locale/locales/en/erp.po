@@ -10145,3 +10145,9 @@ msgstr "Your request to join {companyName} has been submitted. An admin will rev
 
 msgid "yourself"
 msgstr "yourself"
+
+msgid "Use another sign-in method"
+msgstr "Use another sign-in method"
+
+msgid "Couldn't load the WeChat QR code"
+msgstr "Couldn't load the WeChat QR code"

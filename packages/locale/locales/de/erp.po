@@ -10145,3 +10145,9 @@ msgstr "Ihre Anfrage zur Beigabe zu {companyName} wurde eingereicht. Ein Admin w
 
 msgid "yourself"
 msgstr "dir selbst"
+
+msgid "Use another sign-in method"
+msgstr "Andere Anmeldemethode verwenden"
+
+msgid "Couldn't load the WeChat QR code"
+msgstr "WeChat-QR-Code konnte nicht geladen werden"
