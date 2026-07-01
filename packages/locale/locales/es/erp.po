@@ -3882,6 +3882,9 @@ msgstr "Error al insertar línea de cotización"
 msgid "Failed to insert supplier quote line"
 msgstr "Error al insertar línea de cotización de proveedor"
 
+msgid "Failed to link WeChat"
+msgstr "No se pudo vincular WeChat"
+
 msgid "Failed to load configuration parameters"
 msgstr "Error al cargar los parámetros de configuración"
 
@@ -7906,6 +7909,9 @@ msgstr "Escanea o selecciona una entidad rastreada de este lote y registra el re
 msgid "Scan the tracking ID for this line"
 msgstr "Escanea el ID de seguimiento para esta línea"
 
+msgid "Scan with WeChat to connect"
+msgstr "Escanea con WeChat para conectar"
+
 msgid "Scan with WeChat to sign in"
 msgstr "Escanea con WeChat para iniciar sesión"
 
@@ -8993,6 +8999,9 @@ msgstr "Fallo de prueba"
 msgid "Text"
 msgstr "Texto"
 
+msgid "That WeChat is already linked to another account"
+msgstr "Ese WeChat ya está vinculado a otra cuenta"
+
 msgid "The amount of days after the calculation method that the cash discount is available"
 msgstr "La cantidad de días después del método de cálculo en que el descuento en efectivo está disponible"
 
@@ -9996,6 +10005,12 @@ msgstr "Sitio web"
 msgid "WeChat"
 msgstr "WeChat"
 
+msgid "WeChat is unavailable right now"
+msgstr "WeChat no está disponible en este momento"
+
+msgid "WeChat linked"
+msgstr "WeChat vinculado"
+
 msgid "WeChat sign-in"
 msgstr "Inicio de sesión con WeChat"
 
@@ -10213,21 +10228,3 @@ msgstr "Tu solicitud para unirte a {companyName} ha sido enviada. Un administrad
 
 msgid "yourself"
 msgstr "ti mismo"
-
-msgid "Use another sign-in method"
-msgstr "Usar otro método de inicio de sesión"
-
-msgid "Couldn't load the WeChat QR code"
-msgstr "No se pudo cargar el código QR de WeChat"
-
-msgid "Scan with WeChat to connect"
-msgstr "Escanea con WeChat para conectar"
-
-msgid "WeChat is unavailable right now"
-msgstr "WeChat no está disponible en este momento"
-
-msgid "That WeChat is already linked to another account"
-msgstr "Ese WeChat ya está vinculado a otra cuenta"
-
-msgid "Failed to link WeChat"
-msgstr "No se pudo vincular WeChat"

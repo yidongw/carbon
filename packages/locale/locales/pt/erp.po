@@ -3882,6 +3882,9 @@ msgstr "Falha ao inserir linha de cotação"
 msgid "Failed to insert supplier quote line"
 msgstr "Falha ao inserir linha de cotação do fornecedor"
 
+msgid "Failed to link WeChat"
+msgstr "Falha ao vincular o WeChat"
+
 msgid "Failed to load configuration parameters"
 msgstr "Falha ao carregar parâmetros de configuração"
 
@@ -7906,6 +7909,9 @@ msgstr "Digitalize ou selecione uma entidade rastreada deste lote e registre o r
 msgid "Scan the tracking ID for this line"
 msgstr "Digitalize o ID de rastreamento para esta linha"
 
+msgid "Scan with WeChat to connect"
+msgstr "Digitalize com WeChat para conectar"
+
 msgid "Scan with WeChat to sign in"
 msgstr "Inscreva-se com o WeChat para entrar"
 
@@ -8993,6 +8999,9 @@ msgstr "Falha no teste"
 msgid "Text"
 msgstr "Texto"
 
+msgid "That WeChat is already linked to another account"
+msgstr "Esse WeChat já está vinculado a outra conta"
+
 msgid "The amount of days after the calculation method that the cash discount is available"
 msgstr "A quantidade de dias após o método de cálculo em que o desconto à vista está disponível"
 
@@ -9996,6 +10005,12 @@ msgstr "Website"
 msgid "WeChat"
 msgstr "WeChat"
 
+msgid "WeChat is unavailable right now"
+msgstr "O WeChat está indisponível no momento"
+
+msgid "WeChat linked"
+msgstr "WeChat vinculado"
+
 msgid "WeChat sign-in"
 msgstr "Entrada com WeChat"
 
@@ -10213,21 +10228,3 @@ msgstr "Sua solicitação para se juntar à {companyName} foi enviada. Um admini
 
 msgid "yourself"
 msgstr "você mesmo"
-
-msgid "Use another sign-in method"
-msgstr "Usar outro método de login"
-
-msgid "Couldn't load the WeChat QR code"
-msgstr "Não foi possível carregar o código QR do WeChat"
-
-msgid "Scan with WeChat to connect"
-msgstr "Digitalize com WeChat para conectar"
-
-msgid "WeChat is unavailable right now"
-msgstr "O WeChat está indisponível no momento"
-
-msgid "That WeChat is already linked to another account"
-msgstr "Esse WeChat já está vinculado a outra conta"
-
-msgid "Failed to link WeChat"
-msgstr "Falha ao vincular o WeChat"

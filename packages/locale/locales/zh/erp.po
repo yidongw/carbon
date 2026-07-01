@@ -3882,6 +3882,9 @@ msgstr "插入报价行失败"
 msgid "Failed to insert supplier quote line"
 msgstr "插入供应商报价行失败"
 
+msgid "Failed to link WeChat"
+msgstr "绑定微信失败"
+
 msgid "Failed to load configuration parameters"
 msgstr "加载配置参数失败"
 
@@ -7906,6 +7909,9 @@ msgstr "扫描或从这批物料中选择一个追踪实体并记录检验结果
 msgid "Scan the tracking ID for this line"
 msgstr "扫描此行的追踪ID"
 
+msgid "Scan with WeChat to connect"
+msgstr "使用微信扫码绑定"
+
 msgid "Scan with WeChat to sign in"
 msgstr "使用微信扫码登录"
 
@@ -8993,6 +8999,9 @@ msgstr "测试失败"
 msgid "Text"
 msgstr "文本"
 
+msgid "That WeChat is already linked to another account"
+msgstr "该微信已绑定到其他账号"
+
 msgid "The amount of days after the calculation method that the cash discount is available"
 msgstr "现金折扣可用的计算方法后的天数"
 
@@ -9996,6 +10005,12 @@ msgstr "网站"
 msgid "WeChat"
 msgstr "微信"
 
+msgid "WeChat is unavailable right now"
+msgstr "微信暂时不可用"
+
+msgid "WeChat linked"
+msgstr "微信已关联"
+
 msgid "WeChat sign-in"
 msgstr "微信登录"
 
@@ -10213,21 +10228,3 @@ msgstr "您加入 {companyName} 的申请已提交。管理员将尽快审核您
 
 msgid "yourself"
 msgstr "你自己"
-
-msgid "Use another sign-in method"
-msgstr "使用其他方式登录"
-
-msgid "Couldn't load the WeChat QR code"
-msgstr "无法加载微信二维码"
-
-msgid "Scan with WeChat to connect"
-msgstr "使用微信扫码绑定"
-
-msgid "WeChat is unavailable right now"
-msgstr "微信暂时不可用"
-
-msgid "That WeChat is already linked to another account"
-msgstr "该微信已绑定到其他账号"
-
-msgid "Failed to link WeChat"
-msgstr "绑定微信失败"

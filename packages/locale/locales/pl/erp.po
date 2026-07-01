@@ -3882,6 +3882,9 @@ msgstr "Nie udało się wstawić linii oferty"
 msgid "Failed to insert supplier quote line"
 msgstr "Nie udało się wstawić linii oferty dostawcy"
 
+msgid "Failed to link WeChat"
+msgstr "Nie udało się połączyć WeChat"
+
 msgid "Failed to load configuration parameters"
 msgstr "Nie udało się załadować parametrów konfiguracji"
 
@@ -7906,6 +7909,9 @@ msgstr "Skanuj lub wybierz śledzony element z tej partii i zapisz wynik inspekc
 msgid "Scan the tracking ID for this line"
 msgstr "Skanuj identyfikator śledzenia dla tej linii"
 
+msgid "Scan with WeChat to connect"
+msgstr "Zeskanuj za pomocą WeChat, aby połączyć"
+
 msgid "Scan with WeChat to sign in"
 msgstr "Skanuj z WeChacie, aby się zarejestrować"
 
@@ -8993,6 +8999,9 @@ msgstr "Niepowodzenie testu"
 msgid "Text"
 msgstr "Tekst"
 
+msgid "That WeChat is already linked to another account"
+msgstr "Ten WeChat jest już połączony z innym kontem"
+
 msgid "The amount of days after the calculation method that the cash discount is available"
 msgstr "Liczba dni po metodzie obliczeniowej, w której dostępna jest rabat gotówkowy"
 
@@ -9996,6 +10005,12 @@ msgstr "Strona internetowa"
 msgid "WeChat"
 msgstr "WeChat"
 
+msgid "WeChat is unavailable right now"
+msgstr "WeChat jest obecnie niedostępny"
+
+msgid "WeChat linked"
+msgstr "Powiązano z WeChat"
+
 msgid "WeChat sign-in"
 msgstr "Logowanie przez WeChat"
 
@@ -10213,21 +10228,3 @@ msgstr "Twoja prośba o dołączenie do {companyName} została wysłana. Adminis
 
 msgid "yourself"
 msgstr "siebie"
-
-msgid "Use another sign-in method"
-msgstr "Użyj innej metody logowania"
-
-msgid "Couldn't load the WeChat QR code"
-msgstr "Nie udało się załadować kodu QR WeChat"
-
-msgid "Scan with WeChat to connect"
-msgstr "Zeskanuj za pomocą WeChat, aby połączyć"
-
-msgid "WeChat is unavailable right now"
-msgstr "WeChat jest obecnie niedostępny"
-
-msgid "That WeChat is already linked to another account"
-msgstr "Ten WeChat jest już połączony z innym kontem"
-
-msgid "Failed to link WeChat"
-msgstr "Nie udało się połączyć WeChat"
