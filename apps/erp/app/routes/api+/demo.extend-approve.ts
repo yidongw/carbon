@@ -1,61 +1,40 @@
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
-import { createHmac, timingSafeEqual } from "node:crypto";
 import type { LoaderFunctionArgs } from "react-router";
-import { data } from "react-router";
-
-function verifyToken(token: string): { companyId: string } | null {
-  const secret = process.env.DEMO_APPROVE_SECRET ?? "";
-  const dot = token.lastIndexOf(".");
-  if (dot === -1) return null;
-  const payload = token.slice(0, dot);
-  const sig = token.slice(dot + 1);
-  const expected = createHmac("sha256", secret).update(payload).digest("base64url");
-  // Constant-time comparison to prevent timing attacks.
-  const a = Buffer.from(expected);
-  const b = Buffer.from(sig);
-  if (a.length !== b.length || !timingSafeEqual(a, b)) return null;
-  try {
-    const parsed = JSON.parse(Buffer.from(payload, "base64url").toString());
-    if (typeof parsed.companyId !== "string") return null;
-    if (parsed.exp < Date.now()) return null;
-    return { companyId: parsed.companyId };
-  } catch {
-    return null;
-  }
-}
 
 /**
- * GET /api/demo/extend-approve?token=<signed>
+ * GET /api/demo/extend-approve?token=<random-hex>
  *
- * One-click approval link sent in the extension request email. No login needed —
- * the HMAC token proves intent and has a 7-day TTL.
+ * One-click approval link from the extension request email. No login needed.
+ * The token is a 32-byte random hex string stored on demoCompany with a 7-day
+ * TTL; it's cleared on first use so the link works exactly once.
  */
 export async function loader({ request }: LoaderFunctionArgs) {
-  const url = new URL(request.url);
-  const token = url.searchParams.get("token") ?? "";
+  const token = new URL(request.url).searchParams.get("token") ?? "";
 
-  const verified = verifyToken(token);
-  if (!verified) {
-    return data(
-      { html: page("Invalid or expired link", "This approval link is invalid or has expired. Please ask the user to request a new extension.", false) },
-      { headers: { "Content-Type": "text/html" } }
-    );
+  if (!token) {
+    return html(page("Invalid link", "No token provided.", false));
   }
 
-  const { companyId } = verified;
   const admin = getCarbonServiceRole();
 
+  // Look up the demo company by token and check expiry in one query.
   const { data: demo } = await admin
     .from("demoCompany")
-    .select("expiresAt, id")
-    .eq("id", companyId)
+    .select("id, expiresAt, extensionTokenExpiresAt")
+    .eq("extensionToken", token)
     .maybeSingle();
 
   if (!demo) {
-    return data(
-      { html: page("Demo not found", `No demo company found for id ${companyId}.`, false) },
-      { headers: { "Content-Type": "text/html" } }
+    return html(
+      page("Invalid or expired link", "This link is invalid or has already been used.", false)
     );
+  }
+
+  if (
+    demo.extensionTokenExpiresAt &&
+    new Date(demo.extensionTokenExpiresAt) < new Date()
+  ) {
+    return html(page("Link expired", "This approval link has expired. Ask the user to request a new extension.", false));
   }
 
   // Extend 30 days from today or from current expiry, whichever is later.
@@ -65,31 +44,41 @@ export async function loader({ request }: LoaderFunctionArgs) {
   );
   const newExpiry = new Date(base + 30 * 24 * 60 * 60 * 1000);
 
+  // Clear the token (one-time use) and extend expiry atomically.
   await admin
     .from("demoCompany")
-    .update({ expiresAt: newExpiry.toISOString() })
-    .eq("id", companyId);
+    .update({
+      expiresAt: newExpiry.toISOString(),
+      extensionToken: null,
+      extensionTokenExpiresAt: null
+    })
+    .eq("id", demo.id);
 
   const { data: company } = await admin
     .from("company")
     .select("name")
-    .eq("id", companyId)
+    .eq("id", demo.id)
     .maybeSingle();
 
   const formatted = newExpiry.toLocaleDateString("en-US", {
-    year: "numeric", month: "long", day: "numeric"
+    year: "numeric",
+    month: "long",
+    day: "numeric"
   });
 
-  console.log(`Demo extended for company ${companyId} (${company?.name}) → ${newExpiry.toISOString()}`);
+  console.log(`Demo extended: company=${demo.id} (${company?.name}) newExpiry=${newExpiry.toISOString()}`);
 
-  return new Response(
+  return html(
     page(
       "Extension approved",
-      `Demo for <strong>${company?.name ?? companyId}</strong> has been extended to <strong>${formatted}</strong>.`,
+      `Demo for <strong>${company?.name ?? demo.id}</strong> extended to <strong>${formatted}</strong>.`,
       true
-    ),
-    { headers: { "Content-Type": "text/html" } }
+    )
   );
+}
+
+function html(body: string) {
+  return new Response(body, { headers: { "Content-Type": "text/html" } });
 }
 
 function page(title: string, body: string, success: boolean): string {
