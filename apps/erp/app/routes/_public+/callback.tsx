@@ -158,6 +158,10 @@ export async function action({ request }: ActionFunctionArgs) {
   if (userEmail && !isSyntheticEmail) {
     await linkIdentity(userId, "email", userEmail);
   }
+  // When a phone/WeChat-only user links an OAuth provider, promote the OAuth
+  // email to their canonical email identity the first time so the Email row
+  // shows up and email-OTP login works with the same address.
+  let syntheticEmailPromoted = false;
   for (const identity of userData.user.identities ?? []) {
     if (identity.provider === "google" || identity.provider === "azure") {
       const identityEmail =
@@ -184,6 +188,21 @@ export async function action({ request }: ActionFunctionArgs) {
           continue;
         }
         await linkIdentity(userId, identity.provider, emailToUse);
+
+        if (isSyntheticEmail && !syntheticEmailPromoted) {
+          syntheticEmailPromoted = true;
+          await linkIdentity(userId, "email", emailToUse);
+          const { error: emailErr } =
+            await serviceRole.auth.admin.updateUserById(userId, {
+              email: emailToUse,
+              email_confirm: true
+            });
+          if (emailErr) {
+            console.error("[callback] failed to promote OAuth email on auth user", emailErr);
+          } else {
+            await serviceRole.from("user").update({ email: emailToUse }).eq("id", userId);
+          }
+        }
       }
     }
   }
