@@ -3715,6 +3715,9 @@ msgstr "导出行数据至CSV"
 msgid "Extended Price"
 msgstr "扩展价格"
 
+msgid "Extension requested"
+msgstr "延长已请求"
+
 msgid "External"
 msgstr "外部"
 
@@ -7524,6 +7527,9 @@ msgstr "报表"
 
 msgid "Request Approval"
 msgstr "请求批准"
+
+msgid "Request extension"
+msgstr "请求延期"
 
 msgid "Request Submitted"
 msgstr "申请已提交"
