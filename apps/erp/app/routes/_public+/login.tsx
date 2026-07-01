@@ -267,6 +267,16 @@ export default function LoginRoute() {
     }
   }, [redirectQuery]);
 
+  // When Supabase OAuth falls back to the site URL instead of /callback (e.g.
+  // due to redirect URL allow-list wildcard mismatch), the hash tokens land
+  // here. Forward to /callback so the token handler there can process them.
+  useEffect(() => {
+    if (window.location.hash.includes("access_token=")) {
+      const qs = redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : "";
+      window.location.replace(`/callback${qs}${window.location.hash}`);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     if (fetcher.data?.success && fetcher.data.mode) {
       if (
