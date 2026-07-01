@@ -19,11 +19,10 @@ import {
   verifyEmailCode
 } from "@carbon/auth/verification.server";
 import { validationError, validator } from "@carbon/form";
-import { toast, VStack } from "@carbon/react";
+import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
-import { useEffect } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { data, redirect, useLoaderData, useNavigate, useSearchParams } from "react-router";
+import { data, redirect, useLoaderData } from "react-router";
 import {
   accountProfileValidator,
   getAccount,
@@ -42,6 +41,13 @@ export const handle: Handle = {
 };
 
 export async function loader({ request }: LoaderFunctionArgs) {
+  // Convert ?linkError= from the OAuth callback into a flash toast and redirect
+  // to the clean URL — the flashClientMiddleware shows it on the next render.
+  const linkError = new URL(request.url).searchParams.get("linkError");
+  if (linkError) {
+    throw redirect(path.to.profile, await flash(request, error(null, linkError)));
+  }
+
   const { client, userId } = await requirePermissions(request, {});
 
   const [user, identities] = await Promise.all([
@@ -261,21 +267,6 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function AccountProfile() {
   const { user, identities, enabledMethods } = useLoaderData<typeof loader>();
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const linkError = searchParams.get("linkError");
-    if (!linkError) return;
-    toast.error(linkError);
-    // Remove the error param so it doesn't persist on refresh.
-    const next = new URLSearchParams(searchParams);
-    next.delete("linkError");
-    navigate(
-      { search: next.toString() ? `?${next}` : "" },
-      { replace: true }
-    );
-  }, [searchParams, navigate]);
 
   return (
     <VStack spacing={4}>
