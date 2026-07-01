@@ -1,5 +1,4 @@
 import {
-  CarbonEdition,
   CarbonProvider,
   CONTROLLED_ENVIRONMENT,
   getCarbon,
@@ -22,7 +21,7 @@ import {
   useMount
 } from "@carbon/react";
 import { getStripeCustomerByCompanyId } from "@carbon/stripe/stripe.server";
-import { Edition, formatPersonName } from "@carbon/utils";
+import { formatPersonName } from "@carbon/utils";
 import posthog from "posthog-js";
 import { Suspense } from "react";
 import type {
@@ -43,6 +42,7 @@ import { DemoBanner } from "~/components/DemoBanner";
 import { DemoSeedTrigger } from "~/components/DemoSeedTrigger";
 import { PrimaryNavigation, Topbar, TopbarProvider } from "~/components/Layout";
 import { OverlayHost, OverlayProvider } from "~/components/Overlay";
+import { PlanRenewalBanner } from "~/components/PlanRenewalBanner";
 import { TimeCardWarning } from "~/components/TimeCardWarning";
 import TrainingPanel from "~/components/TrainingPanel";
 import { useTrainingPanel } from "~/hooks/useTrainingPanel";
@@ -194,8 +194,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
     });
   }
 
-  const requiresOnboarding =
-    !company?.name || (CarbonEdition === Edition.Cloud && !stripeCustomer);
+  // Onboarding no longer requires a paid plan — cloud companies enter on the
+  // free tier and can purchase later in Billing settings. Only a company name
+  // (basic setup) is required.
+  const requiresOnboarding = !company?.name;
   if (requiresOnboarding) {
     throw redirect(path.to.onboarding.root);
   }
@@ -252,9 +254,26 @@ export async function loader({ request }: LoaderFunctionArgs) {
     }
   }
 
+  // One-time annual plan renewal banner data (rendered only near/after expiry).
+  let annualPlan: { termEndsAt: string | null; status: string } | null = null;
+  {
+    const { data: cp } = await client
+      .from("companyPlan")
+      .select("paymentMode, termEndsAt, stripeSubscriptionStatus")
+      .eq("id", companyId)
+      .maybeSingle();
+    if (cp?.paymentMode === "one_time") {
+      annualPlan = {
+        termEndsAt: cp.termEndsAt,
+        status: cp.stripeSubscriptionStatus
+      };
+    }
+  }
+
   return data({
     demo,
     realCompanyId,
+    annualPlan,
     session: {
       accessToken,
       expiresIn,
@@ -290,7 +309,8 @@ export default function AuthenticatedRoute() {
     openClockEntry,
     printerRoutes,
     demo,
-    realCompanyId
+    realCompanyId,
+    annualPlan
   } = useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const { training, dismiss } = useTrainingPanel();
@@ -355,6 +375,7 @@ export default function AuthenticatedRoute() {
                       }}
                     >
                       <DemoBanner demo={demo} realCompanyId={realCompanyId} />
+                      <PlanRenewalBanner annualPlan={annualPlan} />
                       {demo?.isCurrent && (
                         <DemoSeedTrigger
                           needsSeed={demo.needsSeed}

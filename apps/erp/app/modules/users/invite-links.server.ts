@@ -6,6 +6,7 @@ import { updateSubscriptionQuantityForCompany } from "@carbon/stripe/stripe.serv
 import { Edition } from "@carbon/utils";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { nanoid } from "nanoid";
+import { checkSeatAvailability } from "~/modules/settings";
 import {
   getPendingApplicationForUser,
   isInviteLinkExpired
@@ -270,6 +271,12 @@ export async function approveMembershipApplication(
 
   if (application.data.status !== "pending") {
     return { success: false, message: "Application has already been reviewed" };
+  }
+
+  // One-time annual plans have a hard seat cap — block approvals beyond it.
+  const seat = await checkSeatAvailability(client, companyId, 1);
+  if (!seat.ok) {
+    return { success: false, message: seat.message };
   }
 
   const serviceRole = getCarbonServiceRole();

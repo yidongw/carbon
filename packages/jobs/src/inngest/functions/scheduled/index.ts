@@ -2,6 +2,7 @@ export { auditArchiveFunction } from "./audit-archive";
 export { cleanupFunction } from "./cleanup";
 export { demoCleanupFunction } from "./demo-cleanup";
 export { dispatchFunction } from "./dispatch";
+export { expireAnnualPlansFunction } from "./expire-annual-plans";
 export { mrpFunction } from "./mrp";
 export { notificationDigestFunction } from "./notification-digest";
 export { notificationPurgeFunction } from "./notification-purge";
