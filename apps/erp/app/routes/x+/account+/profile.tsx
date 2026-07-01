@@ -19,16 +19,9 @@ import {
   verifyEmailCode
 } from "@carbon/auth/verification.server";
 import { validationError, validator } from "@carbon/form";
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-  IconButton,
-  VStack
-} from "@carbon/react";
+import { toast, VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
-import { useEffect, useState } from "react";
-import { LuTriangleAlert, LuX } from "react-icons/lu";
+import { useEffect } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data, redirect, useLoaderData } from "react-router";
 import {
@@ -276,41 +269,29 @@ export default function AccountProfile() {
     useLoaderData<typeof loader>();
 
   // The OAuth callback redirects a failed identity link back here with the
-  // reason in ?linkError=. It's rendered inline below (from loader data, so
-  // it's in the initial HTML and can't be missed). Dismissible; we also strip
-  // the param from the URL on mount so a refresh doesn't resurface it.
-  const [showLinkError, setShowLinkError] = useState(true);
-
+  // reason in ?linkError= (loader data). Show it as a toast, deferred one tick:
+  // on a hard document load this component's mount effect runs BEFORE the root
+  // <Toaster> subscribes, and Sonner drops toasts fired before it subscribes.
+  // A macrotask lets the Toaster subscribe first. Strip the param so a refresh
+  // doesn't resurface it.
   useEffect(() => {
     if (!linkError) return;
+    const id = setTimeout(() => toast.error(linkError), 0);
     const params = new URLSearchParams(window.location.search);
-    if (!params.has("linkError")) return;
-    params.delete("linkError");
-    const qs = params.toString();
-    window.history.replaceState(
-      null,
-      "",
-      window.location.pathname + (qs ? `?${qs}` : "")
-    );
+    if (params.has("linkError")) {
+      params.delete("linkError");
+      const qs = params.toString();
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname + (qs ? `?${qs}` : "")
+      );
+    }
+    return () => clearTimeout(id);
   }, [linkError]);
 
   return (
     <VStack spacing={4}>
-      {linkError && showLinkError && (
-        <Alert variant="destructive" className="relative">
-          <LuTriangleAlert className="h-4 w-4" />
-          <AlertTitle>Couldn't link account</AlertTitle>
-          <AlertDescription>{linkError}</AlertDescription>
-          <IconButton
-            aria-label="Dismiss"
-            variant="ghost"
-            size="sm"
-            icon={<LuX />}
-            className="absolute right-2 top-2"
-            onClick={() => setShowLinkError(false)}
-          />
-        </Alert>
-      )}
       <LoginMethodsForm
         identities={identities}
         enabledMethods={enabledMethods}
