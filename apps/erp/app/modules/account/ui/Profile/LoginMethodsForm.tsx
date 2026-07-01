@@ -79,7 +79,15 @@ export default function LoginMethodsForm({
   const [draft, setDraft] = useState<Draft | null>(null);
 
   const byType = new Map(identities.map((i) => [i.type, i]));
-  const canRemove = identities.length > 1;
+  // Email, Google, and Outlook all share the same underlying email address, so
+  // they count as a single independent method. Only allow removal when there is
+  // more than one independent method — otherwise the user would lose all access.
+  const independentMethods = new Set(
+    identities.map((i) =>
+      EMAIL_FAMILY.has(i.type as Method) ? "email_family" : i.type
+    )
+  );
+  const canRemove = independentMethods.size > 1;
   const hasEmailFamily = identities.some((i) =>
     EMAIL_FAMILY.has(i.type as Method)
   );
