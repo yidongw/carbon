@@ -177,12 +177,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
     isCurrent: boolean;
     seedStatus: string | null;
     needsSeed: boolean;
+    extensionRequested: boolean;
   } | null = null;
   let realCompanyId: string | null = companyId;
   if (userCompanyIds.length) {
     const { data: demoRow } = await client
       .from("demoCompany")
-      .select("id, expiresAt, seedStatus")
+      .select("id, expiresAt, seedStatus, extensionTokenExpiresAt")
       .in("id", userCompanyIds)
       .maybeSingle();
     if (demoRow) {
@@ -198,12 +199,18 @@ export async function loader({ request }: LoaderFunctionArgs) {
           .eq("companyId", demoRow.id);
         needsSeed = (count ?? 0) === 0;
       }
+      // A request was made < 24 h ago if the token (7-day TTL) expires more than 6 days from now.
+      const extensionRequested = demoRow.extensionTokenExpiresAt
+        ? new Date(demoRow.extensionTokenExpiresAt).getTime() >
+          Date.now() + 6 * 24 * 60 * 60 * 1000
+        : false;
       demo = {
         id: demoRow.id,
         expiresAt: demoRow.expiresAt,
         isCurrent,
         seedStatus: demoRow.seedStatus,
-        needsSeed
+        needsSeed,
+        extensionRequested
       };
       realCompanyId =
         userCompanyIds.find((id) => id !== demoRow.id) ?? null;

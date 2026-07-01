@@ -3715,6 +3715,9 @@ msgstr "Exportar Linhas para CSV"
 msgid "Extended Price"
 msgstr "Preço Estendido"
 
+msgid "Extension requested"
+msgstr "Extensão solicitada"
+
 msgid "External"
 msgstr "Externo"
 
@@ -7524,6 +7527,9 @@ msgstr "Relatórios"
 
 msgid "Request Approval"
 msgstr "Solicitar Aprovação"
+
+msgid "Request extension"
+msgstr "Solicitar prorrogação"
 
 msgid "Request Submitted"
 msgstr "Requisito Submetido"

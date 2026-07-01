@@ -3715,6 +3715,9 @@ msgstr "Zeilen als CSV exportieren"
 msgid "Extended Price"
 msgstr "Erweiterte Preis"
 
+msgid "Extension requested"
+msgstr "Erweiterung angefordert"
+
 msgid "External"
 msgstr "Extern"
 
@@ -7524,6 +7527,9 @@ msgstr "Berichte"
 
 msgid "Request Approval"
 msgstr "Genehmigung anfordern"
+
+msgid "Request extension"
+msgstr "Anfrage um Verlängerung"
 
 msgid "Request Submitted"
 msgstr "Anfrage gesendet"

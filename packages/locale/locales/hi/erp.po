@@ -3715,6 +3715,9 @@ msgstr "CSV में लाइनें निर्यात करें"
 msgid "Extended Price"
 msgstr "विस्तारित मूल्य"
 
+msgid "Extension requested"
+msgstr "विस्तार का अनुरोध किया गया"
+
 msgid "External"
 msgstr "बाहरी"
 
@@ -7524,6 +7527,9 @@ msgstr "रिपोर्ट"
 
 msgid "Request Approval"
 msgstr "अनुमोदन का अनुरोध करें"
+
+msgid "Request extension"
+msgstr "अवधि विस्तार की मांग"
 
 msgid "Request Submitted"
 msgstr "अनुरोध भेजा गया है"

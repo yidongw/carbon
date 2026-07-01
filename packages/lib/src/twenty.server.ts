@@ -103,6 +103,7 @@ class TwentyClient {
     );
     return response.data.createOpportunity.id;
   }
+
 }
 
 export const getTwentyClient = () => {
