@@ -8,7 +8,7 @@ import {
 } from "@carbon/auth";
 import { exchangePkceCode, makeAuthSessionFromTokens } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
-import { linkIdentity } from "@carbon/auth/identity.server";
+import { findUserIdByIdentity, linkIdentity } from "@carbon/auth/identity.server";
 import { getCompanyId, setCompanyId } from "@carbon/auth/company.server";
 import {
   destroyAuthSession,
@@ -166,6 +166,23 @@ export async function action({ request }: ActionFunctionArgs) {
           | undefined;
       const emailToUse = identityEmail ?? (!isSyntheticEmail ? userEmail : undefined);
       if (emailToUse) {
+        // Block linking if this OAuth email is already someone else's OTP
+        // email identity in Carbon. Same-type conflicts are caught inside
+        // linkIdentity; this catches the cross-type case (email vs google).
+        const emailOwner = await findUserIdByIdentity("email", emailToUse);
+        if (emailOwner && emailOwner !== userId) {
+          if (redirectTo?.startsWith("/x/")) {
+            // Link flow: user was already logged in — redirect back with error.
+            const sep = redirectTo.includes("?") ? "&" : "?";
+            return redirect(
+              `${redirectTo}${sep}linkError=${encodeURIComponent(
+                `${emailToUse} is already registered as a login method on another account`
+              )}`
+            );
+          }
+          // Login flow: skip this identity link but still allow login.
+          continue;
+        }
         await linkIdentity(userId, identity.provider, emailToUse);
       }
     }
