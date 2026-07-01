@@ -1,3 +1,4 @@
+import { linkIdentity } from "@carbon/auth/identity.server";
 import {
   buildWeChatTextReply,
   findOrCreateWeChatUser,
@@ -60,9 +61,45 @@ export async function action({ request }: ActionFunctionArgs) {
     const pending = scene ? await redis.get(key) : null;
 
     if (pending && openid) {
+      const parsed = JSON.parse(pending as string) as {
+        status: string;
+        linkUserId?: string;
+      };
+
+      // Resolve the cross-app stable unionid from the MP-scoped openid. Falls
+      // back to openid for MPs not registered under an Open Platform (same
+      // behaviour as the OAuth callback's `unionid ?? openid` fallback).
       const profile = await getWeChatMpUserInfo(openid);
+      const unionid = profile?.unionid ?? openid;
+
+      // Link mode: a signed-in user is connecting WeChat — attach the scanned
+      // unionid to their account rather than signing in.
+      if (parsed.linkUserId) {
+        const result = await linkIdentity(parsed.linkUserId, "wechat", unionid);
+        await redis.set(
+          key,
+          JSON.stringify(
+            result.success
+              ? { status: "linked" }
+              : { status: "link_failed", reason: result.reason }
+          ),
+          "EX",
+          120
+        );
+        return new Response(
+          buildWeChatTextReply(
+            openid,
+            msg.ToUserName ?? "",
+            result.success
+              ? "✅ 已绑定"
+              : "绑定失败：该微信可能已绑定到其他账号"
+          ),
+          { headers: { "Content-Type": "text/xml; charset=utf-8" } }
+        );
+      }
+
       const user = await findOrCreateWeChatUser(
-        openid,
+        unionid,
         profile?.nickname ?? "",
         profile?.headimgurl ?? ""
       );

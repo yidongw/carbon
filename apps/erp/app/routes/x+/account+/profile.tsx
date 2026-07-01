@@ -1,12 +1,29 @@
 import {
+  AUTH_PROVIDERS,
   assertIsPost,
   error,
   isAuthProviderEnabled,
   success
 } from "@carbon/auth";
+import {
+  checkSmsVerifyCode,
+  sendSmsVerifyCode
+} from "@carbon/auth/aliyun-sms.server";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
+import {
+  findUserIdByIdentity,
+  getUserIdentities,
+  type LoginMethod,
+  linkIdentity,
+  unlinkIdentity
+} from "@carbon/auth/identity.server";
+import { toE164Phone } from "@carbon/auth/phone.server";
 import { flash } from "@carbon/auth/session.server";
+import {
+  sendVerificationCode,
+  verifyEmailCode
+} from "@carbon/auth/verification.server";
 import { validationError, validator } from "@carbon/form";
 import {
   Button,
@@ -45,9 +62,11 @@ import {
   updateAvatar,
   updatePublicAccount
 } from "~/modules/account";
-import { ProfileForm } from "~/modules/account/ui/Profile";
+import { LoginMethodsForm, ProfileForm } from "~/modules/account/ui/Profile";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
+
+const KNOWN_METHODS = ["email", "google", "azure", "phone", "wechat"] as const;
 
 export const handle: Handle = {
   breadcrumb: msg`Profile`,
@@ -65,13 +84,14 @@ type Passkey = {
 export async function loader({ request }: LoaderFunctionArgs) {
   const { client, userId } = await requirePermissions(request, {});
   const serviceRole = getCarbonServiceRole();
-  const [user, passkeysResult] = await Promise.all([
+  const [user, passkeysResult, identities] = await Promise.all([
     getAccount(client, userId),
     (serviceRole as any)
       .from("passkeyCredential")
       .select("id, credentialName, createdAt, lastUsedAt, backedUp")
       .eq("userId", userId)
-      .order("createdAt", { ascending: false })
+      .order("createdAt", { ascending: false }),
+    getUserIdentities(userId)
   ]);
 
   if (user.error || !user.data) {
@@ -81,9 +101,15 @@ export async function loader({ request }: LoaderFunctionArgs) {
     );
   }
 
+  // Login methods enabled in this deployment (shown in the card).
+  const enabled = AUTH_PROVIDERS.split(",");
+  const enabledMethods = KNOWN_METHODS.filter((m) => enabled.includes(m));
+
   return {
     user: user.data,
-    passkeys: (passkeysResult.data ?? []) as Passkey[]
+    passkeys: (passkeysResult.data ?? []) as Passkey[],
+    identities,
+    enabledMethods
   };
 }
 
@@ -204,11 +230,152 @@ export async function action({ request }: ActionFunctionArgs) {
     return data(success("Passkey renamed"));
   }
 
+  const intent = formData.get("intent");
+
+  if (intent === "removeIdentity") {
+    const type = formData.get("type") as LoginMethod;
+    const value = formData.get("value") as string;
+    const result = await unlinkIdentity(userId, type, value);
+    if (!result.success) {
+      return data(
+        {},
+        await flash(
+          request,
+          error(
+            null,
+            result.reason === "last_method"
+              ? "You can't remove your only login method"
+              : "Failed to remove login method"
+          )
+        )
+      );
+    }
+    return data({}, await flash(request, success("Removed login method")));
+  }
+
+  // Add phone: send an SMS code, then verify + link to this account.
+  if (intent === "addPhoneSend") {
+    const phone = formData.get("phone") as string;
+    if (!/^1[3-9]\d{9}$/.test(phone ?? "")) {
+      return data({ success: false, message: "Invalid phone number" });
+    }
+    // Don't spend an SMS if the number can't be linked anyway.
+    const owner = await findUserIdByIdentity("phone", toE164Phone(phone));
+    if (owner) {
+      return data({
+        success: false,
+        message:
+          owner === userId
+            ? "This phone is already linked to your account"
+            : "That phone is already linked to another account"
+      });
+    }
+    const sent = await sendSmsVerifyCode(phone);
+    return sent
+      ? data({ success: true, step: "addPhoneSent", phone })
+      : data({ success: false, message: "Failed to send verification code" });
+  }
+
+  if (intent === "addPhoneVerify") {
+    const phone = formData.get("phone") as string;
+    const code = formData.get("code") as string;
+    if (!(await checkSmsVerifyCode(phone, code))) {
+      return data({ success: false, message: "Invalid or expired code" });
+    }
+    const link = await linkIdentity(userId, "phone", toE164Phone(phone));
+    if (!link.success) {
+      return data(
+        {},
+        await flash(
+          request,
+          error(
+            null,
+            link.reason === "conflict"
+              ? "That phone is already linked to another account"
+              : "Failed to link phone"
+          )
+        )
+      );
+    }
+    return data(
+      { linked: true },
+      await flash(request, success("Linked phone"))
+    );
+  }
+
+  // Add email: send a code, then verify + link. On success the email becomes the
+  // canonical auth email (replacing any synthetic placeholder).
+  if (intent === "addEmailSend") {
+    const email = formData.get("email") as string;
+    if (!email || !email.includes("@")) {
+      return data({ success: false, message: "Invalid email address" });
+    }
+    const owner = await findUserIdByIdentity("email", email);
+    if (owner) {
+      return data({
+        success: false,
+        message:
+          owner === userId
+            ? "This email is already linked to your account"
+            : "That email is already linked to another account"
+      });
+    }
+    const sent = await sendVerificationCode(email);
+    return sent
+      ? data({ success: true, step: "addEmailSent", email })
+      : data({ success: false, message: "Failed to send verification code" });
+  }
+
+  if (intent === "addEmailVerify") {
+    const email = formData.get("email") as string;
+    const code = formData.get("code") as string;
+    if (!(await verifyEmailCode(email, code))) {
+      return data({ success: false, message: "Invalid or expired code" });
+    }
+    const link = await linkIdentity(userId, "email", email);
+    if (!link.success) {
+      return data(
+        {},
+        await flash(
+          request,
+          error(
+            null,
+            link.reason === "conflict"
+              ? "That email is already linked to another account"
+              : "Failed to link email"
+          )
+        )
+      );
+    }
+    const serviceRole = getCarbonServiceRole();
+    const { error: authError } = await serviceRole.auth.admin.updateUserById(
+      userId,
+      { email, email_confirm: true }
+    );
+    if (authError) {
+      console.error(
+        "[addEmailVerify] updateUserById failed, rolling back",
+        authError
+      );
+      await unlinkIdentity(userId, "email", email);
+      return data(
+        {},
+        await flash(request, error(null, "Failed to link email"))
+      );
+    }
+    await serviceRole.from("user").update({ email }).eq("id", userId);
+    return data(
+      { linked: true },
+      await flash(request, success("Linked email"))
+    );
+  }
+
   return null;
 }
 
 export default function AccountProfile() {
-  const { user, passkeys } = useLoaderData<typeof loader>();
+  const { user, passkeys, identities, enabledMethods } =
+    useLoaderData<typeof loader>();
   const deleteFetcher = useFetcher();
   const renameFetcher = useFetcher();
   const { revalidate } = useRevalidator();
@@ -292,6 +459,10 @@ export default function AccountProfile() {
 
   return (
     <VStack spacing={4} className="pb-6">
+      <LoginMethodsForm
+        identities={identities}
+        enabledMethods={enabledMethods}
+      />
       <ProfileForm user={user} />
 
       {passkeysEnabled && (

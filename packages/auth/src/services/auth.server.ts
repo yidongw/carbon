@@ -24,7 +24,7 @@ import { getCarbonServiceRole } from "../lib/supabase/client.server";
 import type { AuthSession } from "../types";
 import { path } from "../utils/path";
 import { error } from "../utils/result";
-import { syntheticPhoneEmail } from "./phone.server";
+import { getCanonicalAuthEmail } from "./identity.server";
 import {
   destroyAuthSession,
   flash,
@@ -617,14 +617,16 @@ export async function signInWithEmailViaAdmin(
 }
 
 /**
- * Mint a session for a phone user. The auth user carries a synthetic email
- * (public user.email is null), so this is signInWithEmailViaAdmin keyed by that
- * derived address. Identity is already proven by a checked SMS code.
+ * Mint a session for a user by id, regardless of which method they used to log
+ * in (phone, wechat, …). Resolves the auth user's current email — which a linked
+ * real email replaces over the synthetic one — and signs in via that.
  */
-export async function signInWithPhoneViaAdmin(
-  phone: string
+export async function signInWithUserIdViaAdmin(
+  userId: string
 ): Promise<AuthSession | null> {
-  return signInWithEmailViaAdmin(syntheticPhoneEmail(phone));
+  const email = await getCanonicalAuthEmail(userId);
+  if (!email) return null;
+  return signInWithEmailViaAdmin(email);
 }
 
 export async function signInWithBypassEmail(
