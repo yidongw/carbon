@@ -21,10 +21,10 @@ function Action({ action, children }: { action: string; children: ReactNode }) {
   );
 }
 
-function RequestExtensionAction() {
+function RequestExtensionAction({ alreadyRequested }: { alreadyRequested: boolean }) {
   const { t } = useLingui();
   const fetcher = useFetcher<{ ok: boolean }>();
-  const done = fetcher.data?.ok === true;
+  const done = alreadyRequested || fetcher.data?.ok === true;
   const busy = fetcher.state !== "idle";
   return (
     <fetcher.Form
@@ -58,6 +58,7 @@ export type DemoState = {
   id: string;
   expiresAt: string | null;
   isCurrent: boolean;
+  extensionRequested: boolean;
 } | null;
 
 type DemoBannerProps = {
@@ -93,7 +94,7 @@ export function DemoBanner({ demo, realCompanyId }: DemoBannerProps) {
         <>
           {demoIcon}
           {t`You're in the demo company — it has ended.`}{" "}
-          <RequestExtensionAction />{" "}
+          <RequestExtensionAction alreadyRequested={demo.extensionRequested} />{" "}
           {realCompanyId && (
             <Action action={path.to.companySwitch(realCompanyId)}>
               {companyIcon}
@@ -107,7 +108,7 @@ export function DemoBanner({ demo, realCompanyId }: DemoBannerProps) {
           {days === 1
             ? t`You're in the demo company — 1 day left.`
             : t`You're in the demo company — ${days} days left.`}{" "}
-          {days <= 7 && <><RequestExtensionAction />{" "}</>}
+          {days <= 7 && <><RequestExtensionAction alreadyRequested={demo.extensionRequested} />{" "}</>}
           {realCompanyId && (
             <Action action={path.to.companySwitch(realCompanyId)}>
               {companyIcon}

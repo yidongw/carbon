@@ -33,7 +33,7 @@ export async function action({ request }: ActionFunctionArgs) {
         .single(),
       admin
         .from("demoCompany")
-        .select("id, expiresAt, seedStatus, createdAt")
+        .select("id, expiresAt, seedStatus, createdAt, extensionTokenExpiresAt")
         .eq("id", companyId)
         .maybeSingle(),
       admin
@@ -56,7 +56,6 @@ export async function action({ request }: ActionFunctionArgs) {
   const companyName =
     realCompany?.name ?? demoCompanyRow?.name ?? companyId;
 
-  // Derive login methods from the userIdentity table (canonical app-layer store)
   const providerLabels: Record<string, string> = {
     email: "Email",
     google: "Google",
@@ -64,9 +63,15 @@ export async function action({ request }: ActionFunctionArgs) {
     wechat: "WeChat",
     phone: "Phone (SMS)"
   };
-  const loginMethods = (identities ?? []).map(
-    (i) => providerLabels[i.type] ?? (i.type.charAt(0).toUpperCase() + i.type.slice(1))
-  );
+
+  // If a request was made within the last 24 h (token expires > 6 days from now),
+  // silently succeed — don't spam the admin or reset the token.
+  if (
+    demo?.extensionTokenExpiresAt &&
+    new Date(demo.extensionTokenExpiresAt).getTime() > Date.now() + 6 * 24 * 60 * 60 * 1000
+  ) {
+    return { ok: true };
+  }
 
   // Generate a random one-time token and store it on the demoCompany row
   // (7-day TTL). No shared signing secret needed.
@@ -127,7 +132,7 @@ export async function action({ request }: ActionFunctionArgs) {
   <table style="width:100%;border-collapse:collapse;margin-bottom:24px">
     <tr>
       <td colspan="2" style="background:#f4f4f5;padding:8px 12px;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#555">
-        Contact
+        Profile
       </td>
     </tr>
     <tr>
@@ -136,11 +141,19 @@ export async function action({ request }: ActionFunctionArgs) {
     </tr>
     <tr style="background:#fafafa">
       <td style="padding:8px 12px;color:#555">Email</td>
-      <td style="padding:8px 12px"><a href="mailto:${user?.email}">${user?.email ?? "—"}</a></td>
+      <td style="padding:8px 12px">${user?.email ? `<a href="mailto:${user.email}">${user.email}</a>` : "—"}</td>
     </tr>
     <tr>
       <td style="padding:8px 12px;color:#555">Phone</td>
       <td style="padding:8px 12px">${user?.phone ?? "—"}</td>
+    </tr>
+    <tr style="background:#fafafa">
+      <td style="padding:8px 12px;color:#555">About</td>
+      <td style="padding:8px 12px">${user?.about ? `<em>${user.about}</em>` : "—"}</td>
+    </tr>
+    <tr>
+      <td style="padding:8px 12px;color:#555">Member since</td>
+      <td style="padding:8px 12px">${fmt(user?.createdAt)}</td>
     </tr>
 
     <tr>
@@ -148,24 +161,17 @@ export async function action({ request }: ActionFunctionArgs) {
         Login Methods
       </td>
     </tr>
-    <tr>
-      <td style="padding:8px 12px;color:#555">Providers</td>
-      <td style="padding:8px 12px">${loginMethods.length ? loginMethods.join(", ") : "—"}</td>
-    </tr>
-    <tr style="background:#fafafa">
-      <td style="padding:8px 12px;color:#555">Member since</td>
-      <td style="padding:8px 12px">${fmt(user?.createdAt)}</td>
-    </tr>
-
-    <tr>
-      <td colspan="2" style="background:#f4f4f5;padding:8px 12px;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#555">
-        Profile
-      </td>
-    </tr>
-    <tr>
-      <td style="padding:8px 12px;color:#555">About</td>
-      <td style="padding:8px 12px">${user?.about ? `<em>${user.about}</em>` : "—"}</td>
-    </tr>
+    ${(identities ?? []).length === 0
+      ? `<tr><td colspan="2" style="padding:8px 12px;color:#555">—</td></tr>`
+      : (identities ?? []).map((identity, idx) => {
+          const label = providerLabels[identity.type] ?? (identity.type.charAt(0).toUpperCase() + identity.type.slice(1));
+          const bg = idx % 2 === 1 ? ' style="background:#fafafa"' : '';
+          return `<tr${bg}>
+      <td style="padding:8px 12px;color:#555">${label}</td>
+      <td style="padding:8px 12px">${identity.value ?? "—"}</td>
+    </tr>`;
+        }).join("\n    ")
+    }
 
     <tr>
       <td colspan="2" style="background:#f4f4f5;padding:8px 12px;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#555">
