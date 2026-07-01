@@ -3224,6 +3224,8 @@ export type Database = {
         Row: {
           createdAt: string
           expiresAt: string | null
+          extensionToken: string | null
+          extensionTokenExpiresAt: string | null
           id: string
           seedStatus: string | null
           updatedAt: string
@@ -3231,6 +3233,8 @@ export type Database = {
         Insert: {
           createdAt?: string
           expiresAt?: string | null
+          extensionToken?: string | null
+          extensionTokenExpiresAt?: string | null
           id: string
           seedStatus?: string | null
           updatedAt?: string
@@ -3238,6 +3242,8 @@ export type Database = {
         Update: {
           createdAt?: string
           expiresAt?: string | null
+          extensionToken?: string | null
+          extensionTokenExpiresAt?: string | null
           id?: string
           seedStatus?: string | null
           updatedAt?: string
