@@ -46,10 +46,10 @@ const OAUTH_METHODS = new Set<Method>(["google", "azure"]);
 // linked the others can't be added (you can only have one email address).
 const EMAIL_FAMILY = new Set<Method>(["email", "google", "azure"]);
 
-// This is the user's own account page, so show the real value. The WeChat value
-// is an opaque unionid, so we omit it (the label alone is enough).
-function displayValue(type: string, value: string) {
-  return type === "wechat" ? "" : value;
+// This is the user's own account page, so show the real value. WeChat's identity
+// value is an opaque unionid, so we show the user's profile name instead.
+function displayValue(type: string, value: string, wechatName?: string) {
+  return type === "wechat" ? (wechatName ?? "") : value;
 }
 
 type FetcherData = {
@@ -68,10 +68,12 @@ type Draft = {
 
 export default function LoginMethodsForm({
   identities,
-  enabledMethods
+  enabledMethods,
+  wechatName
 }: {
   identities: Identity[];
   enabledMethods: Method[];
+  wechatName?: string;
 }) {
   const { t } = useLingui();
   const addFetcher = useFetcher<FetcherData>();
@@ -203,9 +205,9 @@ export default function LoginMethodsForm({
                   <HStack spacing={2}>
                     {meta.icon}
                     <span className="text-sm font-medium">{meta.label}</span>
-                    {identity && displayValue(method, identity.value) && (
+                    {identity && displayValue(method, identity.value, wechatName) && (
                       <span className="text-sm text-muted-foreground">
-                        {displayValue(method, identity.value)}
+                        {displayValue(method, identity.value, wechatName)}
                       </span>
                     )}
                   </HStack>
