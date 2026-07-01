@@ -41,10 +41,20 @@ export async function loader({ request }: LoaderFunctionArgs) {
     redirect: "manual"
   });
 
-  const location = response.headers.get("Location");
+  // Log what GoTrue actually returned so we can debug failures
+  const location = response.headers.get("Location") ?? response.headers.get("location");
+  console.log("[link-provider] GoTrue response", {
+    status: response.status,
+    type: response.type,
+    location,
+    headers: Object.fromEntries(response.headers.entries())
+  });
+
   if (!location) {
+    const body = await response.text().catch(() => "(unreadable)");
+    console.log("[link-provider] GoTrue body:", body);
     return redirect(
-      `${path.to.profile}?error=${encodeURIComponent("Failed to initiate OAuth link")}`
+      `${path.to.profile}?error=${encodeURIComponent(`GoTrue ${response.status}: ${body.slice(0, 100)}`)}`
     );
   }
 
