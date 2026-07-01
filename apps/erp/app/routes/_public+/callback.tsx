@@ -186,9 +186,18 @@ export default function AuthCallback() {
     const hashParams = new URLSearchParams(hash.slice(1));
     const errorDescription = hashParams.get("error_description");
     if (errorDescription) {
-      setError(decodeURIComponent(errorDescription.replace(/\+/g, " ")));
+      const decoded = decodeURIComponent(errorDescription.replace(/\+/g, " "));
+      // When this callback was initiated from a link flow (redirectTo is set),
+      // send the user back to that page with the error rather than leaving
+      // them stranded here.
+      if (redirectTo) {
+        const sep = redirectTo.includes("?") ? "&" : "?";
+        window.location.replace(`${redirectTo}${sep}linkError=${encodeURIComponent(decoded)}`);
+      } else {
+        setError(decoded);
+      }
     }
-  }, [hash]);
+  }, [hash, redirectTo]);
 
   // Handle OAuth (Google/Azure) tokens delivered in the hash via implicit flow.
   useEffect(() => {

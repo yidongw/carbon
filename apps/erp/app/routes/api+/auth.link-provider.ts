@@ -26,8 +26,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
   }
 
   // Build the full callback URL so GoTrue redirects back here after OAuth.
-  const appOrigin = new URL(request.url).origin;
-  const callbackUrl = `${appOrigin}/callback?redirectTo=${encodeURIComponent(redirectTo)}`;
+  // Prefer the client-provided callbackOrigin: the server sits behind a reverse
+  // proxy and sees the internal hostname, not the real public URL — so
+  // request.url.origin would be rejected by GoTrue's redirect allow list.
+  const callbackOriginParam = url.searchParams.get("callbackOrigin");
+  const callbackOrigin = callbackOriginParam
+    ? new URL(callbackOriginParam).origin
+    : new URL(request.url).origin;
+  const callbackUrl = `${callbackOrigin}/callback?redirectTo=${encodeURIComponent(redirectTo)}`;
 
   const goTrueUrl = new URL(`${SUPABASE_URL}/auth/v1/user/identities/authorize`);
   goTrueUrl.searchParams.set("provider", provider);

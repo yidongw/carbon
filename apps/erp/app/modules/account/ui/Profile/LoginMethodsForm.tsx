@@ -119,7 +119,14 @@ export default function LoginMethodsForm({
     // carbonClient has persistSession: false — no client-side session to send
     // with linkIdentity(). Use the server-side proxy route instead so GoTrue
     // receives the real user token (read from the session cookie).
-    const params = new URLSearchParams({ provider, redirectTo: path.to.profile });
+    // Pass callbackOrigin from the client: the server sits behind a reverse proxy
+    // and sees the internal hostname, not the public browser URL. GoTrue
+    // validates redirect_to against the allow list, so it must be the real origin.
+    const params = new URLSearchParams({
+      provider,
+      redirectTo: path.to.profile,
+      callbackOrigin: window.location.origin
+    });
     window.location.href = `/api/auth/link-provider?${params}`;
   };
 
