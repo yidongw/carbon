@@ -36,7 +36,7 @@ import {
   browserSupportsWebAuthn,
   startAuthentication
 } from "@simplewebauthn/browser";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LuCircleAlert, LuFingerprint } from "react-icons/lu";
 import { SiWechat } from "react-icons/si";
 import type {
@@ -155,6 +155,15 @@ export default function LoginRoute() {
 
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
+
+  useEffect(() => {
+    if (window.location.hash.includes("access_token=")) {
+      const qs = redirectTo
+        ? `?redirectTo=${encodeURIComponent(redirectTo)}`
+        : "";
+      window.location.replace(`/callback${qs}${window.location.hash}`);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetcher = useFetcher<
     { success: true } | { success: false; message: string }

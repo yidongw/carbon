@@ -22,6 +22,7 @@ import {
   toast,
   VStack
 } from "@carbon/react";
+import { useEffect } from "react";
 import { LuCircleAlert } from "react-icons/lu";
 import type {
   ActionFunctionArgs,
@@ -105,6 +106,15 @@ export default function LoginRoute() {
   const { hasOutlookAuth, hasGoogleAuth } = useLoaderData<typeof loader>();
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
+
+  useEffect(() => {
+    if (window.location.hash.includes("access_token=")) {
+      const qs = redirectTo
+        ? `?redirectTo=${encodeURIComponent(redirectTo)}`
+        : "";
+      window.location.replace(`/callback${qs}${window.location.hash}`);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetcher = useFetcher<
     { success: true } | { success: false; message: string }
