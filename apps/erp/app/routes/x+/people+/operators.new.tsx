@@ -24,6 +24,7 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { redirect, useFetcher, useNavigate } from "react-router";
 import { Input, Location, Submit } from "~/components/Form";
 import { useUser } from "~/hooks";
+import { checkSeatAvailability } from "~/modules/settings";
 import { createOperatorValidator } from "~/modules/users/users.models";
 import { createConsoleOperator } from "~/modules/users/users.server";
 
@@ -74,6 +75,15 @@ export async function action({ request }: ActionFunctionArgs) {
           "Console Operator employee type not found. Run the migration."
         )
       )
+    );
+  }
+
+  // One-time annual plans have a hard seat cap — block adds beyond it.
+  const seat = await checkSeatAvailability(client, companyId, 1);
+  if (!seat.ok) {
+    throw redirect(
+      path.to.operators,
+      await flash(request, error(null, seat.message))
     );
   }
 
