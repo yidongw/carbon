@@ -41,6 +41,7 @@ import type {
   LoaderFunctionArgs,
   MetaFunction
 } from "react-router";
+import { useEffect } from "react";
 import {
   data,
   redirect,
@@ -133,6 +134,13 @@ export default function LoginRoute() {
 
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
+
+  useEffect(() => {
+    if (window.location.hash.includes("access_token=")) {
+      const qs = redirectTo ? `?redirectTo=${encodeURIComponent(redirectTo)}` : "";
+      window.location.replace(`/callback${qs}${window.location.hash}`);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetcher = useFetcher<
     { success: true } | { success: false; message: string }
