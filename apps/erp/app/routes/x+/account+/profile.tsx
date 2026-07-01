@@ -204,7 +204,13 @@ export async function action({ request }: ActionFunctionArgs) {
     if (!email || !email.includes("@")) {
       return data({ success: false, message: "Invalid email address" });
     }
-    const owner = await findUserIdByIdentity("email", email);
+    // Check all email-family types: Google/Outlook share the same address, so
+    // an address linked via Google must also block re-adding it as Email.
+    let owner: string | null = null;
+    for (const t of ["email", "google", "azure"] as const) {
+      owner = await findUserIdByIdentity(t, email);
+      if (owner) break;
+    }
     if (owner) {
       return data({
         success: false,
@@ -225,6 +231,19 @@ export async function action({ request }: ActionFunctionArgs) {
     const code = formData.get("code") as string;
     if (!(await verifyEmailCode(email, code))) {
       return data({ success: false, message: "Invalid or expired code" });
+    }
+    // Re-check across all email-family types in case state changed since send.
+    let emailOwner: string | null = null;
+    for (const t of ["email", "google", "azure"] as const) {
+      emailOwner = await findUserIdByIdentity(t, email);
+      if (emailOwner) break;
+    }
+    if (emailOwner && emailOwner !== userId) {
+      return data({ success: false, message: "That email is already linked to another account" });
+    }
+    if (emailOwner === userId) {
+      // Already linked (e.g. via Google) — treat as success, no-op.
+      return data({ linked: true }, await flash(request, success("Linked email")));
     }
     const link = await linkIdentity(userId, "email", email);
     if (!link.success) {
