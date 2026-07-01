@@ -156,6 +156,7 @@ export default function LoginMethodsForm({
         const json = (await res.json()) as { status: string; reason?: string };
         if (json.status === "linked") {
           setWechatOpen(false);
+          toast.success(t`WeChat linked`);
           revalidator.revalidate();
         } else if (json.status === "link_failed") {
           setWechatOpen(false);
