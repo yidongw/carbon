@@ -1760,6 +1760,9 @@ msgstr "Potwierdź hasło"
 msgid "Congratulations! You have successfully completed this training. Your completion has been recorded."
 msgstr "Gratulacje! Udzieliłeś się tym treningiem. Twoje ukończenie zostało zapisane."
 
+msgid "Connect"
+msgstr "Połącz"
+
 msgid "Connect Carbon to your accounting, project, and CAD tools and much more."
 msgstr "Połącz Carbon z systemem rachunkowy, projektowym i CAD oraz wiele innych funkcji."
 
@@ -5055,6 +5058,9 @@ msgstr "Zablokuj"
 msgid "Log In"
 msgstr "Zaloguj się"
 
+msgid "Login methods"
+msgstr "Metody logowania"
+
 msgid "Login or create a new account"
 msgstr "Zaloguj się lub utwórz nowe konto"
 
@@ -8149,6 +8155,9 @@ msgstr "Samodzielne wdrażanie z Carbon Academy"
 msgid "Send"
 msgstr "Wyslij"
 
+msgid "Send code"
+msgstr "Wyślij kod"
+
 msgid "Send Invite"
 msgstr "Wysłuj Invitację"
 
@@ -9694,6 +9703,9 @@ msgstr "Numer VAT"
 msgid "Verification"
 msgstr "Weryfikacja"
 
+msgid "Verification code"
+msgstr "Kod weryfikacyjny"
+
 msgid "Verification code is required"
 msgstr "Kod potwierdzenia jest wymagany"
 
@@ -9702,6 +9714,9 @@ msgstr "Kod sprawdzający musi składać się z 6 znaków"
 
 msgid "Verification Error"
 msgstr "Błąd weryfikacji"
+
+msgid "Verify & link"
+msgstr "Zweryfikuj i połącz"
 
 msgid "Verify your email"
 msgstr "Zweryfikuj swój email"
@@ -9910,8 +9925,14 @@ msgstr "Uwagi"
 msgid "Watch full video"
 msgstr "Obejrzyj pełne wideo"
 
+msgid "Ways you can sign in. Only you can change these."
+msgstr "Sposoby logowania. Tylko Ty możesz je zmienić."
+
 msgid "We've mapped each column to what we believe is correct, but please review the data below to confirm it's accurate."
 msgstr "Zmapowaliśmy każdą kolumnę na to, co uważamy za prawidłowe, ale prosimy przejrzeć poniższe dane, aby potwierdzić, że są dokładne."
+
+msgid "We've sent a code to {sentTo}"
+msgstr "Wysłaliśmy kod do {sentTo}"
 
 msgid "We've sent a verification code to {email}"
 msgstr "Wysłaliśmy kod weryfikacyjny na adres {email}"

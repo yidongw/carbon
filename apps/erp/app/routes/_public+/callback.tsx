@@ -131,14 +131,17 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
-  // Auto-link on OAuth login: filling the email links the email identity, and
-  // the provider used (Google/Azure) links itself. Idempotent on repeat logins;
-  // a no-op when the credential already belongs to another account.
+  // Auto-link on OAuth login/link: filling the email links the email identity,
+  // and each connected provider (Google/Azure) links itself. We iterate
+  // user.identities (not just app_metadata.provider) so linking a second
+  // provider is captured too. Idempotent; a no-op if a credential is already on
+  // another account.
   if (userData.user.email) {
     await linkIdentity(userId, "email", userData.user.email);
-    const provider = userData.user.app_metadata?.provider;
-    if (provider === "google" || provider === "azure") {
-      await linkIdentity(userId, provider, userData.user.email);
+    for (const identity of userData.user.identities ?? []) {
+      if (identity.provider === "google" || identity.provider === "azure") {
+        await linkIdentity(userId, identity.provider, userData.user.email);
+      }
     }
   }
 

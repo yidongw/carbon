@@ -1760,6 +1760,9 @@ msgstr "Passwort bestätigen"
 msgid "Congratulations! You have successfully completed this training. Your completion has been recorded."
 msgstr "Glückwunsch! Sie haben diese Ausbildung erfolgreich abschließen können. Ihre Abschlussdaten wurden protokolliert."
 
+msgid "Connect"
+msgstr "Verbinden"
+
 msgid "Connect Carbon to your accounting, project, and CAD tools and much more."
 msgstr "Verbinden Sie Kohlenstoff mit Ihren Buchhaltungs-, Projekt- und CAD-Tools und noch viel mehr."
 
@@ -5055,6 +5058,9 @@ msgstr "Sperren"
 msgid "Log In"
 msgstr "Anmelden"
 
+msgid "Login methods"
+msgstr "Anmeldemethoden"
+
 msgid "Login or create a new account"
 msgstr "Anmelden oder neues Konto erstellen"
 
@@ -8149,6 +8155,9 @@ msgstr "Selbstständiges Onboarding mit Carbon Academy"
 msgid "Send"
 msgstr "Senden"
 
+msgid "Send code"
+msgstr "Code senden"
+
 msgid "Send Invite"
 msgstr "Einladen senden"
 
@@ -9694,6 +9703,9 @@ msgstr "Umsatzsteuer-Identifikationsnummer"
 msgid "Verification"
 msgstr "Überprüfung"
 
+msgid "Verification code"
+msgstr "Bestätigungscode"
+
 msgid "Verification code is required"
 msgstr "Bestätigungscode ist erforderlich"
 
@@ -9702,6 +9714,9 @@ msgstr "Bestätigungscode muss 6 Zeichen enthalten"
 
 msgid "Verification Error"
 msgstr "Verifizierungsfehler"
+
+msgid "Verify & link"
+msgstr "Bestätigen & verknüpfen"
 
 msgid "Verify your email"
 msgstr "Überprüfen Sie Ihre E-Mail"
@@ -9910,8 +9925,14 @@ msgstr "Warner"
 msgid "Watch full video"
 msgstr "Video vollständig ansehen"
 
+msgid "Ways you can sign in. Only you can change these."
+msgstr "Möglichkeiten zur Anmeldung. Nur Sie können diese ändern."
+
 msgid "We've mapped each column to what we believe is correct, but please review the data below to confirm it's accurate."
 msgstr "Wir haben jede Spalte dem zugeordnet, was wir für korrekt halten, aber bitte überprüfen Sie die Daten unten, um zu bestätigen, dass sie genau sind."
+
+msgid "We've sent a code to {sentTo}"
+msgstr "Wir haben einen Code an {sentTo} gesendet"
 
 msgid "We've sent a verification code to {email}"
 msgstr "Wir haben einen Verifizierungscode an {email} gesendet"

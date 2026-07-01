@@ -1760,6 +1760,9 @@ msgstr "Confirm Password"
 msgid "Congratulations! You have successfully completed this training. Your completion has been recorded."
 msgstr "Congratulations! You have successfully completed this training. Your completion has been recorded."
 
+msgid "Connect"
+msgstr "Connect"
+
 msgid "Connect Carbon to your accounting, project, and CAD tools and much more."
 msgstr "Connect Carbon to your accounting, project, and CAD tools and much more."
 
@@ -5055,6 +5058,9 @@ msgstr "Lock"
 msgid "Log In"
 msgstr "Log In"
 
+msgid "Login methods"
+msgstr "Login methods"
+
 msgid "Login or create a new account"
 msgstr "Login or create a new account"
 
@@ -8149,6 +8155,9 @@ msgstr "Self-Onboarding with Carbon Academy"
 msgid "Send"
 msgstr "Send"
 
+msgid "Send code"
+msgstr "Send code"
+
 msgid "Send Invite"
 msgstr "Send Invite"
 
@@ -9694,6 +9703,9 @@ msgstr "VAT Number"
 msgid "Verification"
 msgstr "Verification"
 
+msgid "Verification code"
+msgstr "Verification code"
+
 msgid "Verification code is required"
 msgstr "Verification code is required"
 
@@ -9702,6 +9714,9 @@ msgstr "Verification code must be 6 characters"
 
 msgid "Verification Error"
 msgstr "Verification Error"
+
+msgid "Verify & link"
+msgstr "Verify & link"
 
 msgid "Verify your email"
 msgstr "Verify your email"
@@ -9910,8 +9925,14 @@ msgstr "Warnings"
 msgid "Watch full video"
 msgstr "Watch full video"
 
+msgid "Ways you can sign in. Only you can change these."
+msgstr "Ways you can sign in. Only you can change these."
+
 msgid "We've mapped each column to what we believe is correct, but please review the data below to confirm it's accurate."
 msgstr "We've mapped each column to what we believe is correct, but please review the data below to confirm it's accurate."
+
+msgid "We've sent a code to {sentTo}"
+msgstr "We've sent a code to {sentTo}"
 
 msgid "We've sent a verification code to {email}"
 msgstr "We've sent a verification code to {email}"
