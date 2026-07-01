@@ -27,6 +27,7 @@ import { notifyFunction, sendEmailFunction } from "./functions/notifications";
 import {
   auditArchiveFunction,
   cleanupFunction,
+  demoCleanupFunction,
   dispatchFunction,
   mrpFunction,
   updateExchangeRatesFunction,
@@ -67,6 +68,7 @@ export const functions = [
   onboardFunction,
   // Scheduled
   cleanupFunction,
+  demoCleanupFunction,
   dispatchFunction,
   auditArchiveFunction,
   mrpFunction,
