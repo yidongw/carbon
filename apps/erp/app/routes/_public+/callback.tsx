@@ -29,7 +29,6 @@ import {
   redirect,
   useFetcher,
   useLoaderData,
-  useLocation,
   useSearchParams
 } from "react-router";
 import { path } from "~/utils/path";
@@ -240,29 +239,40 @@ export default function AuthCallback() {
   const [error, setError] = useState<string | null>(loaderError ?? null);
   const formatError = useFormatValidationError();
 
-  const { hash } = useLocation();
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
 
+  // Capture any GoTrue error from the URL hash SYNCHRONOUSLY on first render,
+  // before the Supabase SDK or a competing navigation can strip it. GoTrue
+  // delivers link errors (e.g. identity_already_exists) in the hash fragment,
+  // which the server never sees.
+  const [hashError] = useState<string | null>(() => {
+    if (typeof window === "undefined") return null;
+    const hp = new URLSearchParams(window.location.hash.slice(1));
+    const desc = hp.get("error_description") ?? hp.get("error");
+    return desc ? decodeURIComponent(desc.replace(/\+/g, " ")) : null;
+  });
+
+  // On a hash error, send the user back to where they came from with the error
+  // in the query string (?linkError=), which that page surfaces as a toast.
   useEffect(() => {
-    const hashParams = new URLSearchParams(hash.slice(1));
-    const errorDescription = hashParams.get("error_description");
-    if (errorDescription) {
-      const decoded = decodeURIComponent(errorDescription.replace(/\+/g, " "));
-      // When this callback was initiated from a link flow (redirectTo is set),
-      // send the user back to that page with the error rather than leaving
-      // them stranded here.
-      if (redirectTo) {
-        const sep = redirectTo.includes("?") ? "&" : "?";
-        window.location.replace(`${redirectTo}${sep}linkError=${encodeURIComponent(decoded)}`);
-      } else {
-        setError(decoded);
-      }
+    if (!hashError) return;
+    if (redirectTo) {
+      const sep = redirectTo.includes("?") ? "&" : "?";
+      window.location.replace(
+        `${redirectTo}${sep}linkError=${encodeURIComponent(hashError)}`
+      );
+    } else {
+      setError(hashError);
     }
-  }, [hash, redirectTo]);
+  }, [hashError, redirectTo]);
 
   // Handle OAuth (Google/Azure) tokens delivered in the hash via implicit flow.
+  // Skip entirely when there's a hash error — otherwise INITIAL_SESSION fires
+  // with the user's EXISTING session and we'd submit the form (landing on the
+  // target page without the error), racing the redirect above.
   useEffect(() => {
+    if (hashError) return;
     const {
       data: { subscription }
     } = carbonClient.auth.onAuthStateChange((event, session) => {
@@ -270,11 +280,6 @@ export default function AuthCallback() {
         ["SIGNED_IN", "INITIAL_SESSION"].includes(event) &&
         !isAuthenticating.current
       ) {
-        // If the hash contains a GoTrue error (e.g. identity_already_exists),
-        // the hash useEffect already handles the redirect — don't submit here.
-        const hp = new URLSearchParams(window.location.hash.slice(1));
-        if (hp.get("error") || hp.get("error_description")) return;
-
         isAuthenticating.current = true;
 
         const accessToken = session?.access_token;
@@ -296,7 +301,7 @@ export default function AuthCallback() {
     return () => {
       subscription.unsubscribe();
     };
-  }, [fetcher, redirectTo]);
+  }, [fetcher, redirectTo, hashError]);
 
   return (
     <div className="flex flex-col items-center justify-center">

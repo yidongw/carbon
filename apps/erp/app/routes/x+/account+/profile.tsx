@@ -42,13 +42,6 @@ export const handle: Handle = {
 };
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  // Convert ?linkError= from the OAuth callback into a flash toast and redirect
-  // to the clean URL — the flashClientMiddleware shows it on the next render.
-  const linkError = new URL(request.url).searchParams.get("linkError");
-  if (linkError) {
-    throw redirect(path.to.profile, await flash(request, error(null, linkError)));
-  }
-
   const { client, userId } = await requirePermissions(request, {});
 
   const [user, identities] = await Promise.all([
@@ -269,20 +262,22 @@ export async function action({ request }: ActionFunctionArgs) {
 export default function AccountProfile() {
   const { user, identities, enabledMethods } = useLoaderData<typeof loader>();
 
-  // GoTrue delivers OAuth link errors (e.g. identity_already_exists) in the URL
-  // hash fragment. The fragment is never sent to the server but the browser
-  // preserves it across the redirect chain back to this page, so read it here
-  // and surface it as a toast. (The ?linkError= flash path in the loader can be
-  // missed on a hard document load, so this is the reliable signal.)
+  // The OAuth callback redirects failed identity links back here with the error
+  // in ?linkError=. Surface it as a toast on mount and strip it from the URL so
+  // it doesn't re-fire on refresh. (Read client-side rather than via a loader
+  // flash because this arrives on a hard document load.)
   useEffect(() => {
-    const hash = window.location.hash.slice(1);
-    if (!hash) return;
-    const params = new URLSearchParams(hash);
-    const desc = params.get("error_description") ?? params.get("error");
-    if (!desc) return;
-    toast.error(decodeURIComponent(desc.replace(/\+/g, " ")));
-    // Clear the fragment so it doesn't re-fire on refresh.
-    window.history.replaceState(null, "", window.location.pathname + window.location.search);
+    const params = new URLSearchParams(window.location.search);
+    const linkError = params.get("linkError");
+    if (!linkError) return;
+    toast.error(linkError);
+    params.delete("linkError");
+    const qs = params.toString();
+    window.history.replaceState(
+      null,
+      "",
+      window.location.pathname + (qs ? `?${qs}` : "")
+    );
   }, []);
 
   return (
