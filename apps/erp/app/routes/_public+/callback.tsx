@@ -270,6 +270,11 @@ export default function AuthCallback() {
         ["SIGNED_IN", "INITIAL_SESSION"].includes(event) &&
         !isAuthenticating.current
       ) {
+        // If the hash contains a GoTrue error (e.g. identity_already_exists),
+        // the hash useEffect already handles the redirect — don't submit here.
+        const hp = new URLSearchParams(window.location.hash.slice(1));
+        if (hp.get("error") || hp.get("error_description")) return;
+
         isAuthenticating.current = true;
 
         const accessToken = session?.access_token;
