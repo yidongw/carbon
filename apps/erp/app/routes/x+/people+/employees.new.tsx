@@ -18,6 +18,7 @@ import type {
   LoaderFunctionArgs
 } from "react-router";
 import { data, redirect, useLoaderData } from "react-router";
+import { checkSeatAvailability } from "~/modules/settings";
 import {
   CreateEmployeeModal,
   createEmployeeValidator,
@@ -65,6 +66,21 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const { email, firstName, lastName, locationId, employeeType, number } =
     validation.data;
+
+  // One-time annual plans have a hard seat cap — block adds beyond it.
+  const seat = await checkSeatAvailability(client, companyId, 1);
+  if (!seat.ok) {
+    if (modal) {
+      return data(
+        { success: false as const, message: seat.message },
+        await flash(request, error(null, seat.message))
+      );
+    }
+    throw redirect(
+      path.to.employeeAccounts,
+      await flash(request, error(null, seat.message))
+    );
+  }
 
   const result = await createEmployeeAccount(client, {
     email: email.toLowerCase(),

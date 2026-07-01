@@ -29,6 +29,7 @@ import {
   cleanupFunction,
   demoCleanupFunction,
   dispatchFunction,
+  expireAnnualPlansFunction,
   mrpFunction,
   updateExchangeRatesFunction,
   weeklyFunction
@@ -70,6 +71,7 @@ export const functions = [
   cleanupFunction,
   demoCleanupFunction,
   dispatchFunction,
+  expireAnnualPlansFunction,
   auditArchiveFunction,
   mrpFunction,
   weeklyFunction,

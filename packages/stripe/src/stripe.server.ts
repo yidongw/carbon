@@ -288,9 +288,50 @@ export async function getCheckoutUrl({
     }
 
     const seats = Math.max(1, Math.floor(quantity));
+
+    // Full annual term by default (new purchase or renewal). For a mid-term
+    // "add seats" top-up, charge a prorated amount for only the days remaining
+    // on the current term, so the new seats expire alongside the existing ones.
+    let lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [
+      { price: annualPriceId, quantity: seats }
+    ];
+
+    if (purpose === "add_seats") {
+      const price = await stripe!.prices.retrieve(annualPriceId);
+      const annualUnit = price.unit_amount ?? 0;
+
+      const { data: cp } = await serviceRole
+        .from("companyPlan")
+        .select("termEndsAt")
+        .eq("id", companyId)
+        .maybeSingle();
+
+      const msLeft = cp?.termEndsAt
+        ? new Date(cp.termEndsAt).getTime() - Date.now()
+        : 0;
+      const daysLeft = Math.max(0, Math.ceil(msLeft / (24 * 60 * 60 * 1000)));
+      const proratedUnit = Math.max(
+        1,
+        Math.round((annualUnit * Math.min(daysLeft, 365)) / 365)
+      );
+
+      lineItems = [
+        {
+          quantity: seats,
+          price_data: {
+            currency: price.currency,
+            product_data: {
+              name: `${plan.data?.name ?? "Plan"} — additional seats (prorated)`
+            },
+            unit_amount: proratedUnit
+          }
+        }
+      ];
+    }
+
     const oneTimeSession = await stripe!.checkout.sessions.create({
       customer: stripeCustomerId,
-      line_items: [{ price: annualPriceId, quantity: seats }],
+      line_items: lineItems,
       mode: "payment",
       success_url: `${getAppUrl()}/api/webhook/stripe`,
       cancel_url: `${getAppUrl()}/api/webhook/stripe`,
