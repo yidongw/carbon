@@ -19,9 +19,16 @@ import {
   verifyEmailCode
 } from "@carbon/auth/verification.server";
 import { validationError, validator } from "@carbon/form";
-import { toast, VStack } from "@carbon/react";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+  IconButton,
+  VStack
+} from "@carbon/react";
 import { msg } from "@lingui/core/macro";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { LuTriangleAlert, LuX } from "react-icons/lu";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data, redirect, useLoaderData } from "react-router";
 import {
@@ -44,6 +51,11 @@ export const handle: Handle = {
 export async function loader({ request }: LoaderFunctionArgs) {
   const { client, userId } = await requirePermissions(request, {});
 
+  // The OAuth callback redirects a failed identity link back here with the
+  // reason in ?linkError=. Read it server-side and render it inline (below) so
+  // it's in the initial HTML — guaranteed visible, no toast/hydration timing.
+  const linkError = new URL(request.url).searchParams.get("linkError");
+
   const [user, identities] = await Promise.all([
     getAccount(client, userId),
     getUserIdentities(userId)
@@ -60,7 +72,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const enabled = AUTH_PROVIDERS.split(",");
   const enabledMethods = KNOWN_METHODS.filter((m) => enabled.includes(m));
 
-  return { user: user.data, identities, enabledMethods };
+  return { user: user.data, identities, enabledMethods, linkError };
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -260,17 +272,19 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function AccountProfile() {
-  const { user, identities, enabledMethods } = useLoaderData<typeof loader>();
+  const { user, identities, enabledMethods, linkError } =
+    useLoaderData<typeof loader>();
 
-  // The OAuth callback redirects failed identity links back here with the error
-  // in ?linkError=. Surface it as a toast on mount and strip it from the URL so
-  // it doesn't re-fire on refresh. (Read client-side rather than via a loader
-  // flash because this arrives on a hard document load.)
+  // The OAuth callback redirects a failed identity link back here with the
+  // reason in ?linkError=. It's rendered inline below (from loader data, so
+  // it's in the initial HTML and can't be missed). Dismissible; we also strip
+  // the param from the URL on mount so a refresh doesn't resurface it.
+  const [showLinkError, setShowLinkError] = useState(true);
+
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const linkError = params.get("linkError");
     if (!linkError) return;
-    toast.error(linkError);
+    const params = new URLSearchParams(window.location.search);
+    if (!params.has("linkError")) return;
     params.delete("linkError");
     const qs = params.toString();
     window.history.replaceState(
@@ -278,10 +292,25 @@ export default function AccountProfile() {
       "",
       window.location.pathname + (qs ? `?${qs}` : "")
     );
-  }, []);
+  }, [linkError]);
 
   return (
     <VStack spacing={4}>
+      {linkError && showLinkError && (
+        <Alert variant="destructive" className="relative">
+          <LuTriangleAlert className="h-4 w-4" />
+          <AlertTitle>Couldn't link account</AlertTitle>
+          <AlertDescription>{linkError}</AlertDescription>
+          <IconButton
+            aria-label="Dismiss"
+            variant="ghost"
+            size="sm"
+            icon={<LuX />}
+            className="absolute right-2 top-2"
+            onClick={() => setShowLinkError(false)}
+          />
+        </Alert>
+      )}
       <LoginMethodsForm
         identities={identities}
         enabledMethods={enabledMethods}
