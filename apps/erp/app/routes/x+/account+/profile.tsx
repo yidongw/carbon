@@ -462,6 +462,7 @@ export default function AccountProfile() {
       <LoginMethodsForm
         identities={identities}
         enabledMethods={enabledMethods}
+        wechatName={[user.firstName, user.lastName].filter(Boolean).join(" ")}
       />
       <ProfileForm user={user} />
 
