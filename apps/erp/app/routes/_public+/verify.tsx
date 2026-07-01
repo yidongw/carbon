@@ -6,6 +6,7 @@ import {
   signInWithEmailViaAdmin
 } from "@carbon/auth/auth.server";
 import { getUserByEmail } from "@carbon/auth/users.server";
+import { linkIdentity } from "@carbon/auth/identity.server";
 import {
   flash,
   getAuthSession,
@@ -116,6 +117,8 @@ export async function action({ request }: ActionFunctionArgs) {
       );
     }
 
+    await linkIdentity(authSession.userId, "email", email);
+
     const sessionCookie = await setAuthSession(request, { authSession });
 
     return redirect(safeRedirect(redirectTo, path.to.authenticatedRoot), {
@@ -144,6 +147,8 @@ export async function action({ request }: ActionFunctionArgs) {
       await flash(request, error(null, "Failed to sign in user"))
     );
   }
+
+  await linkIdentity(authSession.userId, "email", email);
 
   const sessionCookie = await setAuthSession(request, {
     authSession

@@ -8,6 +8,7 @@ import {
 } from "@carbon/auth";
 import { exchangePkceCode, makeAuthSessionFromTokens } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
+import { linkIdentity } from "@carbon/auth/identity.server";
 import { getCompanyId, setCompanyId } from "@carbon/auth/company.server";
 import {
   destroyAuthSession,
@@ -128,6 +129,17 @@ export async function action({ request }: ActionFunctionArgs) {
       path.to.root,
       await flash(request, error(companies.error, "Failed to load company"))
     );
+  }
+
+  // Auto-link on OAuth login: filling the email links the email identity, and
+  // the provider used (Google/Azure) links itself. Idempotent on repeat logins;
+  // a no-op when the credential already belongs to another account.
+  if (userData.user.email) {
+    await linkIdentity(userId, "email", userData.user.email);
+    const provider = userData.user.app_metadata?.provider;
+    if (provider === "google" || provider === "azure") {
+      await linkIdentity(userId, provider, userData.user.email);
+    }
   }
 
   const cookieCompanyId = getCompanyId(request);

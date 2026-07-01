@@ -1,15 +1,13 @@
 import { error, safeRedirect } from "@carbon/auth";
-import { refreshAccessToken } from "@carbon/auth/auth.server";
-import { flash, setAuthSession } from "@carbon/auth/session.server";
-import { setCompanyId } from "@carbon/auth/company.server";
+import { flash } from "@carbon/auth/session.server";
 import {
   exchangeWeChatCode,
   findOrCreateWeChatUser,
   getWeChatUserInfo
 } from "@carbon/auth/wechat.server";
-import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { redirect } from "react-router";
 import type { LoaderFunctionArgs } from "react-router";
+import { createWeChatAuthSession } from "~/services/wechat-session.server";
 import { wechatStateStorage } from "~/services/wechat-state.server";
 import { path } from "~/utils/path";
 
@@ -78,70 +76,19 @@ export async function loader({ request }: LoaderFunctionArgs) {
     );
   }
 
-  // Get companies for user and build auth session
-  const serviceRole = getCarbonServiceRole();
-  const companies = await serviceRole
-    .from("userToCompany")
-    .select("companyId, ...company(companyGroupId)")
-    .eq("userId", user.id);
-
-  const firstCompany = companies.data?.[0] as
-    | { companyId: string; companyGroupId: string | null }
-    | undefined;
-  console.log("[wechat callback] company", firstCompany ?? "none");
-
-  // Generate a sign-in session via magic link for the user
-  const { data: linkData, error: linkError } = await serviceRole.auth.admin.generateLink({
-    type: "magiclink",
-    // Re-derive the auth user's synthetic email (public user.email is null).
-    email: `wechat+${userInfo.unionid.toLowerCase()}@carbon.internal`
-  });
-  console.log("[wechat callback] generateLink", linkData?.properties?.hashed_token ? "ok" : `FAILED: ${JSON.stringify(linkError)}`);
-
-  if (!linkData?.properties?.hashed_token) {
-    return redirect(
-      path.to.root,
-      await flash(request, error(null, "Failed to create WeChat session"))
-    );
-  }
-
-  const { data: sessionData, error: otpError } = await serviceRole.auth.verifyOtp({
-    token_hash: linkData.properties.hashed_token,
-    type: "magiclink"
-  });
-  console.log("[wechat callback] verifyOtp", sessionData?.session ? "ok" : `FAILED: ${JSON.stringify(otpError)}`);
-
-  if (!sessionData?.session) {
-    return redirect(
-      path.to.root,
-      await flash(request, error(null, "Failed to verify WeChat session"))
-    );
-  }
-
-  const authSession = await refreshAccessToken(
-    sessionData.session.refresh_token,
-    firstCompany?.companyId ?? "",
-    firstCompany?.companyGroupId ?? ""
-  );
-  console.log("[wechat callback] authSession", authSession ? "ok" : "FAILED");
-
-  if (!authSession) {
+  // Mint the session (resolves the user's canonical auth email under the hood).
+  const headers = await createWeChatAuthSession(request, { id: user.id });
+  if (!headers) {
     return redirect(
       path.to.root,
       await flash(request, error(null, "Failed to create auth session"))
     );
   }
 
-  const sessionCookie = await setAuthSession(request, { authSession });
-  const companyIdCookie = setCompanyId(authSession.companyId);
   const clearStateCookie = await wechatStateStorage.destroySession(stateSession);
 
   return redirect(safeRedirect(redirectTo, path.to.authenticatedRoot), {
-    headers: [
-      ["Set-Cookie", sessionCookie],
-      ["Set-Cookie", companyIdCookie],
-      ["Set-Cookie", clearStateCookie]
-    ]
+    headers: [...headers, ["Set-Cookie", clearStateCookie]]
   });
 }
 
