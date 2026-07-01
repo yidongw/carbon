@@ -1,4 +1,4 @@
-import { assertIsPost, error, success } from "@carbon/auth";
+import { assertIsPost, error, getUser, success } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import {
@@ -17,13 +17,20 @@ import {
   CardHeader,
   CardTitle,
   Heading,
+  HStack,
+  Label,
+  NumberField,
+  NumberInput,
   ScrollArea,
   Status,
   useEdition,
   VStack
 } from "@carbon/react";
-import { getBillingPortalRedirectUrl } from "@carbon/stripe/stripe.server";
-import { Edition } from "@carbon/utils";
+import {
+  getBillingPortalRedirectUrl,
+  getCheckoutUrl
+} from "@carbon/stripe/stripe.server";
+import { Edition, formatDate } from "@carbon/utils";
 import { msg } from "@lingui/core/macro";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useState } from "react";
@@ -31,6 +38,7 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data, Form, redirect, useLoaderData } from "react-router";
 import { z } from "zod";
 import { usePermissions, useUser } from "~/hooks";
+import { getCompany, getCompanyPlan } from "~/modules/settings";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 
@@ -105,15 +113,50 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export async function action({ request }: ActionFunctionArgs) {
   assertIsPost(request);
-  const { client, companyId, companyGroupId } = await requirePermissions(
-    request,
-    {
+  const { client, companyId, companyGroupId, userId } =
+    await requirePermissions(request, {
       update: "settings"
-    }
-  );
+    });
 
   const formData = await request.formData();
   const intent = formData.get("intent");
+
+  // One-time annual: renew for another year (re-picks seats) or buy more seats
+  // mid-term (prorated). Both open a Stripe one-time checkout (WeChat/Alipay/card).
+  if (intent === "renew-annual" || intent === "buy-seats") {
+    const quantity = Math.max(
+      1,
+      parseInt(String(formData.get("quantity") ?? "1"), 10) || 1
+    );
+
+    const companyPlan = await getCompanyPlan(client, companyId);
+    const planId = companyPlan.data?.planId;
+    if (!planId) {
+      return data({}, await flash(request, error(null, "No active plan")));
+    }
+
+    const [user, company] = await Promise.all([
+      getUser(client, userId),
+      getCompany(client, companyId)
+    ]);
+
+    try {
+      const url = await getCheckoutUrl({
+        planId,
+        userId,
+        companyId,
+        email: user.data?.email ?? "",
+        name: company.data?.name,
+        mode: "one_time",
+        quantity,
+        purpose: intent === "buy-seats" ? "add_seats" : "purchase"
+      });
+      return redirect(url);
+    } catch (err) {
+      console.error("Failed to start one-time checkout:", err);
+      return data({}, await flash(request, error(null, "Failed to start checkout")));
+    }
+  }
 
   if (intent === "billing-portal") {
     try {
@@ -180,6 +223,7 @@ export async function action({ request }: ActionFunctionArgs) {
 // This route now only handles actions - UI is in the company route
 export default function PaymentSettings() {
   const { plan, usage, employees } = useLoaderData<typeof loader>();
+  const isOneTime = plan?.paymentMode === "one_time";
   const { isOwner } = usePermissions();
   const { id: userId } = useUser();
   const edition = useEdition();
@@ -197,7 +241,10 @@ export default function PaymentSettings() {
         </Heading>
         {edition === Edition.Cloud && isOwner() && (
           <>
-            <Card>
+            {isOneTime ? (
+              <OneTimePlanCard plan={plan} usage={usage} />
+            ) : (
+              <Card>
               <CardHeader>
                 <CardTitle>
                   <Trans>Manage Subscription</Trans>
@@ -270,7 +317,8 @@ export default function PaymentSettings() {
                   </Button>
                 </Form>
               </CardFooter>
-            </Card>
+              </Card>
+            )}
 
             <ValidatedForm validator={transferOwnershipValidator} method="post">
               <Card>
@@ -339,6 +387,139 @@ export default function PaymentSettings() {
         )}
       </VStack>
     </ScrollArea>
+  );
+}
+
+function OneTimePlanCard({
+  plan,
+  usage
+}: {
+  plan: Awaited<ReturnType<typeof loader>>["plan"];
+  usage: Awaited<ReturnType<typeof loader>>["usage"];
+}) {
+  const { t } = useLingui();
+  const termEndsAt = plan?.termEndsAt ?? null;
+  const daysLeft = termEndsAt
+    ? Math.max(
+        0,
+        Math.ceil((new Date(termEndsAt).getTime() - Date.now()) / 86400000)
+      )
+    : 0;
+  const usersLimit = plan?.usersLimit ?? 0;
+  const [renewSeats, setRenewSeats] = useState(usersLimit || 1);
+  const [addSeats, setAddSeats] = useState(1);
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>
+          <Trans>Annual License</Trans>
+        </CardTitle>
+        <CardDescription>
+          <Trans>
+            One-time annual plan, paid with WeChat Pay, Alipay, or card.
+          </Trans>
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <VStack spacing={4}>
+          <div className="grid grid-cols-2 gap-4 w-full">
+            <div>
+              <h4 className="font-medium">
+                <Trans>Plan</Trans>
+              </h4>
+              <Status color="blue">
+                {plan?.plan?.name || t`No active plan`}
+              </Status>
+            </div>
+            <div>
+              <h4 className="font-medium">
+                <Trans>Status</Trans>
+              </h4>
+              <SubscriptionStatus
+                status={plan?.stripeSubscriptionStatus || "Unknown"}
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4 w-full pt-4 border-t">
+            <div>
+              <h4 className="font-medium">
+                <Trans>Term ends</Trans>
+              </h4>
+              <p className="text-sm text-muted-foreground">
+                {termEndsAt
+                  ? `${formatDate(termEndsAt)} · ${daysLeft} ${t`days left`}`
+                  : "—"}
+              </p>
+            </div>
+            <div>
+              <h4 className="font-medium">
+                <Trans>Seats</Trans>
+              </h4>
+              <p className="text-sm text-muted-foreground">
+                {usage?.users ?? 0} / {usersLimit || "∞"}
+              </p>
+            </div>
+          </div>
+        </VStack>
+      </CardContent>
+      <CardFooter>
+        <VStack spacing={4} className="w-full">
+          <Form method="post" action={path.to.billing} className="w-full">
+            <input type="hidden" name="intent" value="renew-annual" />
+            <input type="hidden" name="quantity" value={renewSeats} />
+            <HStack spacing={2} className="items-end">
+              <div className="w-28">
+                <Label htmlFor="renewSeats">
+                  <Trans>Seats</Trans>
+                </Label>
+                <NumberField
+                  value={renewSeats}
+                  minValue={1}
+                  onChange={(v) => {
+                    if (Number.isFinite(v)) setRenewSeats(v);
+                  }}
+                >
+                  <NumberInput id="renewSeats" />
+                </NumberField>
+              </div>
+              <Button type="submit">
+                <Trans>Renew 1 year</Trans>
+              </Button>
+            </HStack>
+          </Form>
+
+          <div className="w-full">
+            <Form method="post" action={path.to.billing} className="w-full">
+              <input type="hidden" name="intent" value="buy-seats" />
+              <input type="hidden" name="quantity" value={addSeats} />
+              <HStack spacing={2} className="items-end">
+                <div className="w-28">
+                  <Label htmlFor="addSeats">
+                    <Trans>Add seats</Trans>
+                  </Label>
+                  <NumberField
+                    value={addSeats}
+                    minValue={1}
+                    onChange={(v) => {
+                      if (Number.isFinite(v)) setAddSeats(v);
+                    }}
+                  >
+                    <NumberInput id="addSeats" />
+                  </NumberField>
+                </div>
+                <Button variant="secondary" type="submit">
+                  <Trans>Buy seats</Trans>
+                </Button>
+              </HStack>
+            </Form>
+            <p className="text-xs text-muted-foreground mt-1">
+              <Trans>Charged prorated for the days left in your term.</Trans>
+            </p>
+          </div>
+        </VStack>
+      </CardFooter>
+    </Card>
   );
 }
 

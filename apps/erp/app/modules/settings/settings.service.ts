@@ -212,6 +212,41 @@ export async function getCompanyPlan(
   return client.from("companyPlan").select("*").eq("id", companyId).single();
 }
 
+// Count real seats in use (excludes internal @carbon.ms accounts), mirroring the
+// count Stripe subscription quantity uses.
+export async function getActiveUserCount(
+  client: SupabaseClient,
+  companyId: string
+) {
+  const { data } = await client
+    .from("userToCompany")
+    .select("userId, ...user(email)")
+    .eq("companyId", companyId);
+  return ((data ?? []) as Array<{ email?: string }>).filter(
+    (u) => !(u?.email ?? "").includes("@carbon.ms")
+  ).length;
+}
+
+// One-time annual plans have a hard seat cap (unlike Stripe subscriptions, which
+// auto-scale). Returns ok:false with a message when adding `adding` seats would
+// exceed usersLimit. Subscription/other plans always return ok.
+export async function checkSeatAvailability(
+  client: SupabaseClient,
+  companyId: string,
+  adding = 1
+): Promise<{ ok: true } | { ok: false; message: string }> {
+  const plan = await getCompanyPlan(client, companyId);
+  if (plan.data?.paymentMode !== "one_time") return { ok: true };
+  const count = await getActiveUserCount(client, companyId);
+  if (count + adding > (plan.data.usersLimit ?? 0)) {
+    return {
+      ok: false,
+      message: `Seat limit reached (${plan.data.usersLimit}). Renew or buy more seats in Billing settings to add users.`
+    };
+  }
+  return { ok: true };
+}
+
 export async function getCompanySettings(
   client: SupabaseClient<Database>,
   companyId: string

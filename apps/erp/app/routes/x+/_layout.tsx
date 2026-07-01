@@ -37,6 +37,7 @@ import {
 import { RealtimeDataProvider } from "~/components";
 import { FloatingChat } from "~/components/Chat";
 import { DemoBanner } from "~/components/DemoBanner";
+import { PlanRenewalBanner } from "~/components/PlanRenewalBanner";
 import { DemoSeedTrigger } from "~/components/DemoSeedTrigger";
 import { PrimaryNavigation, Topbar, TopbarProvider } from "~/components/Layout";
 import { TimeCardWarning } from "~/components/TimeCardWarning";
@@ -217,9 +218,26 @@ export async function loader({ request }: LoaderFunctionArgs) {
     }
   }
 
+  // One-time annual plan renewal banner data (rendered only near/after expiry).
+  let annualPlan: { termEndsAt: string | null; status: string } | null = null;
+  {
+    const { data: cp } = await client
+      .from("companyPlan")
+      .select("paymentMode, termEndsAt, stripeSubscriptionStatus")
+      .eq("id", companyId)
+      .maybeSingle();
+    if (cp?.paymentMode === "one_time") {
+      annualPlan = {
+        termEndsAt: cp.termEndsAt,
+        status: cp.stripeSubscriptionStatus
+      };
+    }
+  }
+
   return data({
     demo,
     realCompanyId,
+    annualPlan,
     session: {
       accessToken,
       expiresIn,
@@ -246,8 +264,15 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export default function AuthenticatedRoute() {
-  const { session, user, companySettings, openClockEntry, demo, realCompanyId } =
-    useLoaderData<typeof loader>();
+  const {
+    session,
+    user,
+    companySettings,
+    openClockEntry,
+    demo,
+    realCompanyId,
+    annualPlan
+  } = useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const { training, dismiss } = useTrainingPanel();
 
@@ -300,6 +325,7 @@ export default function AuthenticatedRoute() {
                 }}
               >
                 <DemoBanner demo={demo} realCompanyId={realCompanyId} />
+                <PlanRenewalBanner annualPlan={annualPlan} />
                 {demo?.isCurrent && (
                   <DemoSeedTrigger
                     needsSeed={demo.needsSeed}
