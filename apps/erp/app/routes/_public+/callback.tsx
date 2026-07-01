@@ -8,7 +8,11 @@ import {
 } from "@carbon/auth";
 import { exchangePkceCode, makeAuthSessionFromTokens } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
-import { findUserIdByIdentity, linkIdentity } from "@carbon/auth/identity.server";
+import {
+  findUserIdByIdentity,
+  getUserIdentities,
+  linkIdentity
+} from "@carbon/auth/identity.server";
 import { getCompanyId, setCompanyId } from "@carbon/auth/company.server";
 import {
   destroyAuthSession,
@@ -142,67 +146,60 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
-  // Auto-link on OAuth login/link: filling the email links the email identity,
-  // and each connected provider (Google/Azure) links itself. We iterate
-  // user.identities (not just app_metadata.provider) so linking a second
-  // provider is captured too. Idempotent; a no-op if a credential is already on
-  // another account.
+  // Link each connected OAuth provider (Google/Azure) to this account, using
+  // the provider's OWN email (identity_data.email), and — only if the user has
+  // no email-OTP login yet — adopt the first linked OAuth email as their email
+  // identity + canonical address so it shows on the profile and email login
+  // works too.
   //
-  // phone-only users have a synthetic freed-*@carbon.internal primary email;
-  // skip the email identity for those, and use each OAuth identity's own email
-  // (from identity_data) rather than the user's primary email.
-  const userEmail = userData.user.email;
-  const isSyntheticEmail = userEmail?.endsWith("@carbon.internal") ?? false;
+  // We deliberately do NOT re-link the auth user's canonical email
+  // (userData.user.email) as an "email" identity: that value lingers after an
+  // email is removed (a shared OAuth identity keeps it set), which would
+  // resurrect a removed email or attach a stale address that mismatches the
+  // provider just linked.
+  const existingIdentities = await getUserIdentities(userId);
+  const hasEmailIdentity = existingIdentities.some((i) => i.type === "email");
 
-  if (userEmail && !isSyntheticEmail) {
-    await linkIdentity(userId, "email", userEmail);
-  }
-  // When a phone/WeChat-only user links an OAuth provider, promote the OAuth
-  // email to their canonical email identity the first time so the Email row
-  // shows up and email-OTP login works with the same address.
-  let syntheticEmailPromoted = false;
+  let adoptEmail: string | undefined;
   for (const identity of userData.user.identities ?? []) {
     if (identity.provider === "google" || identity.provider === "azure") {
-      const identityEmail =
-        (identity.identity_data as Record<string, unknown>)?.email as
-          | string
-          | undefined;
-      const emailToUse = identityEmail ?? (!isSyntheticEmail ? userEmail : undefined);
-      if (emailToUse) {
-        // Block linking if this OAuth email is already someone else's OTP
-        // email identity in Carbon. Same-type conflicts are caught inside
-        // linkIdentity; this catches the cross-type case (email vs google).
-        const emailOwner = await findUserIdByIdentity("email", emailToUse);
-        if (emailOwner && emailOwner !== userId) {
-          if (redirectTo?.startsWith("/x/")) {
-            // Link flow: user was already logged in — redirect back with error.
-            const sep = redirectTo.includes("?") ? "&" : "?";
-            return redirect(
-              `${redirectTo}${sep}linkError=${encodeURIComponent(
-                `${emailToUse} is already registered as a login method on another account`
-              )}`
-            );
-          }
-          // Login flow: skip this identity link but still allow login.
-          continue;
-        }
-        await linkIdentity(userId, identity.provider, emailToUse);
+      const identityEmail = (identity.identity_data as Record<string, unknown>)
+        ?.email as string | undefined;
+      if (!identityEmail) continue;
 
-        if (isSyntheticEmail && !syntheticEmailPromoted) {
-          syntheticEmailPromoted = true;
-          await linkIdentity(userId, "email", emailToUse);
-          const { error: emailErr } =
-            await serviceRole.auth.admin.updateUserById(userId, {
-              email: emailToUse,
-              email_confirm: true
-            });
-          if (emailErr) {
-            console.error("[callback] failed to promote OAuth email on auth user", emailErr);
-          } else {
-            await serviceRole.from("user").update({ email: emailToUse }).eq("id", userId);
-          }
+      // Block linking if this OAuth email is already someone else's OTP email
+      // identity in Carbon. Same-type conflicts are caught inside linkIdentity;
+      // this catches the cross-type case (email vs google).
+      const emailOwner = await findUserIdByIdentity("email", identityEmail);
+      if (emailOwner && emailOwner !== userId) {
+        if (redirectTo?.startsWith("/x/")) {
+          // Link flow: user was already logged in — redirect back with error.
+          const sep = redirectTo.includes("?") ? "&" : "?";
+          return redirect(
+            `${redirectTo}${sep}linkError=${encodeURIComponent(
+              `${identityEmail} is already registered as a login method on another account`
+            )}`
+          );
         }
+        // Login flow: skip this identity link but still allow login.
+        continue;
       }
+
+      await linkIdentity(userId, identity.provider, identityEmail);
+      if (!adoptEmail) adoptEmail = identityEmail;
+    }
+  }
+
+  if (!hasEmailIdentity && adoptEmail) {
+    await linkIdentity(userId, "email", adoptEmail);
+    const { error: emailErr } = await serviceRole.auth.admin.updateUserById(
+      userId,
+      { email: adoptEmail, email_confirm: true }
+    );
+    if (emailErr) {
+      console.error("[callback] failed to adopt OAuth email on auth user", emailErr);
+    } else {
+      await serviceRole.from("user").update({ email: adoptEmail }).eq("id", userId);
     }
   }
 
