@@ -46,10 +46,10 @@ const OAUTH_METHODS = new Set<Method>(["google", "azure"]);
 // linked the others can't be added (you can only have one email address).
 const EMAIL_FAMILY = new Set<Method>(["email", "google", "azure"]);
 
-// This is the user's own account page, so show the real value. The WeChat value
-// is an opaque unionid, so we omit it (the label alone is enough).
-function displayValue(type: string, value: string) {
-  return type === "wechat" ? "" : value;
+// This is the user's own account page, so show the real value. WeChat's identity
+// value is an opaque unionid, so we show the user's profile name instead.
+function displayValue(type: string, value: string, wechatName?: string) {
+  return type === "wechat" ? (wechatName ?? "") : value;
 }
 
 type FetcherData = {
@@ -68,10 +68,12 @@ type Draft = {
 
 export default function LoginMethodsForm({
   identities,
-  enabledMethods
+  enabledMethods,
+  wechatName
 }: {
   identities: Identity[];
   enabledMethods: Method[];
+  wechatName?: string;
 }) {
   const { t } = useLingui();
   const addFetcher = useFetcher<FetcherData>();
@@ -79,7 +81,15 @@ export default function LoginMethodsForm({
   const [draft, setDraft] = useState<Draft | null>(null);
 
   const byType = new Map(identities.map((i) => [i.type, i]));
-  const canRemove = identities.length > 1;
+  // Email, Google, and Outlook all share the same underlying email address, so
+  // they count as a single independent method. Only allow removal when there is
+  // more than one independent method — otherwise the user would lose all access.
+  const independentMethods = new Set(
+    identities.map((i) =>
+      EMAIL_FAMILY.has(i.type as Method) ? "email_family" : i.type
+    )
+  );
+  const canRemove = independentMethods.size > 1;
   const hasEmailFamily = identities.some((i) =>
     EMAIL_FAMILY.has(i.type as Method)
   );
@@ -146,6 +156,7 @@ export default function LoginMethodsForm({
         const json = (await res.json()) as { status: string; reason?: string };
         if (json.status === "linked") {
           setWechatOpen(false);
+          toast.success(t`WeChat linked`);
           revalidator.revalidate();
         } else if (json.status === "link_failed") {
           setWechatOpen(false);
@@ -195,9 +206,9 @@ export default function LoginMethodsForm({
                   <HStack spacing={2}>
                     {meta.icon}
                     <span className="text-sm font-medium">{meta.label}</span>
-                    {identity && displayValue(method, identity.value) && (
+                    {identity && displayValue(method, identity.value, wechatName) && (
                       <span className="text-sm text-muted-foreground">
-                        {displayValue(method, identity.value)}
+                        {displayValue(method, identity.value, wechatName)}
                       </span>
                     )}
                   </HStack>

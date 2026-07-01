@@ -3882,6 +3882,9 @@ msgstr "Impossibile inserire la riga di preventivo"
 msgid "Failed to insert supplier quote line"
 msgstr "Impossibile inserire la riga di preventivo fornitore"
 
+msgid "Failed to link WeChat"
+msgstr "Impossibile collegare WeChat"
+
 msgid "Failed to load configuration parameters"
 msgstr "Impossibile caricare i parametri di configurazione"
 
@@ -7906,6 +7909,9 @@ msgstr "Scansiona o seleziona un'entità tracciata da questo lotto e registra il
 msgid "Scan the tracking ID for this line"
 msgstr "Scansiona l'ID di tracciamento per questa riga"
 
+msgid "Scan with WeChat to connect"
+msgstr "Scansiona con WeChat per collegare"
+
 msgid "Scan with WeChat to sign in"
 msgstr "Scansare con WeChat per accedere"
 
@@ -8993,6 +8999,9 @@ msgstr "Test fallito"
 msgid "Text"
 msgstr "Testo"
 
+msgid "That WeChat is already linked to another account"
+msgstr "Quel WeChat è già collegato a un altro account"
+
 msgid "The amount of days after the calculation method that the cash discount is available"
 msgstr "L'importo dei giorni dopo il metodo di calcolo in cui lo sconto in contanti è disponibile"
 
@@ -9996,6 +10005,12 @@ msgstr "Sito web"
 msgid "WeChat"
 msgstr "WeChat"
 
+msgid "WeChat is unavailable right now"
+msgstr "WeChat non è disponibile al momento"
+
+msgid "WeChat linked"
+msgstr "WeChat collegato"
+
 msgid "WeChat sign-in"
 msgstr "Accesso con WeChat"
 
@@ -10213,21 +10228,3 @@ msgstr "La tua richiesta di iscrizione presso {companyName} è stata inviata. Un
 
 msgid "yourself"
 msgstr "te stesso"
-
-msgid "Use another sign-in method"
-msgstr "Usa un altro metodo di accesso"
-
-msgid "Couldn't load the WeChat QR code"
-msgstr "Impossibile caricare il codice QR di WeChat"
-
-msgid "Scan with WeChat to connect"
-msgstr "Scansiona con WeChat per collegare"
-
-msgid "WeChat is unavailable right now"
-msgstr "WeChat non è disponibile al momento"
-
-msgid "That WeChat is already linked to another account"
-msgstr "Quel WeChat è già collegato a un altro account"
-
-msgid "Failed to link WeChat"
-msgstr "Impossibile collegare WeChat"

@@ -3882,6 +3882,9 @@ msgstr "Failed to insert quote line"
 msgid "Failed to insert supplier quote line"
 msgstr "Failed to insert supplier quote line"
 
+msgid "Failed to link WeChat"
+msgstr "Failed to link WeChat"
+
 msgid "Failed to load configuration parameters"
 msgstr "Failed to load configuration parameters"
 
@@ -7906,6 +7909,9 @@ msgstr "Scan or select a tracked entity from this lot and record the inspection 
 msgid "Scan the tracking ID for this line"
 msgstr "Scan the tracking ID for this line"
 
+msgid "Scan with WeChat to connect"
+msgstr "Scan with WeChat to connect"
+
 msgid "Scan with WeChat to sign in"
 msgstr "Scan with WeChat to sign in"
 
@@ -8993,6 +8999,9 @@ msgstr "Testing Failure"
 msgid "Text"
 msgstr "Text"
 
+msgid "That WeChat is already linked to another account"
+msgstr "That WeChat is already linked to another account"
+
 msgid "The amount of days after the calculation method that the cash discount is available"
 msgstr "The amount of days after the calculation method that the cash discount is available"
 
@@ -9996,6 +10005,12 @@ msgstr "Website"
 msgid "WeChat"
 msgstr "WeChat"
 
+msgid "WeChat is unavailable right now"
+msgstr "WeChat is unavailable right now"
+
+msgid "WeChat linked"
+msgstr "WeChat linked"
+
 msgid "WeChat sign-in"
 msgstr "WeChat sign-in"
 
@@ -10213,21 +10228,3 @@ msgstr "Your request to join {companyName} has been submitted. An admin will rev
 
 msgid "yourself"
 msgstr "yourself"
-
-msgid "Use another sign-in method"
-msgstr "Use another sign-in method"
-
-msgid "Couldn't load the WeChat QR code"
-msgstr "Couldn't load the WeChat QR code"
-
-msgid "Scan with WeChat to connect"
-msgstr "Scan with WeChat to connect"
-
-msgid "WeChat is unavailable right now"
-msgstr "WeChat is unavailable right now"
-
-msgid "That WeChat is already linked to another account"
-msgstr "That WeChat is already linked to another account"
-
-msgid "Failed to link WeChat"
-msgstr "Failed to link WeChat"
