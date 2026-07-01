@@ -94,6 +94,11 @@ export default function LoginMethodsForm({
     EMAIL_FAMILY.has(i.type as Method)
   );
   const busy = addFetcher.state !== "idle";
+  // Track which specific method is being removed so only that button spins.
+  const removingType =
+    removeFetcher.state !== "idle"
+      ? (removeFetcher.formData?.get("type") as string | null)
+      : null;
   const sentTo = draft?.contact ?? "";
 
   // React to each add-fetcher response exactly once. Keying on a ref (not on
@@ -128,6 +133,7 @@ export default function LoginMethodsForm({
   const wechatFetcher = useFetcher<{ url: string | null; scene?: string | null }>();
   const [wechatOpen, setWechatOpen] = useState(false);
   const wechatScene = wechatFetcher.data?.scene ?? null;
+
 
   // In the WeChat in-app browser, connecting is an OAuth redirect; on desktop we
   // show a QR to scan (mirrors WeChat login).
@@ -202,71 +208,99 @@ export default function LoginMethodsForm({
 
             return (
               <div key={method} className="w-full rounded-lg border border-border">
-                <HStack className="w-full justify-between p-3">
-                  <HStack spacing={2}>
-                    {meta.icon}
-                    <span className="text-sm font-medium">{meta.label}</span>
-                    {identity && displayValue(method, identity.value, wechatName) && (
-                      <span className="text-sm text-muted-foreground">
-                        {displayValue(method, identity.value, wechatName)}
-                      </span>
-                    )}
-                  </HStack>
-
-                  {identity ? (
-                    <removeFetcher.Form method="post" action={path.to.profile}>
-                      <input type="hidden" name="intent" value="removeIdentity" />
-                      <input type="hidden" name="type" value={identity.type} />
-                      <input type="hidden" name="value" value={identity.value} />
-                      <Button
-                        type="submit"
-                        variant="ghost"
-                        size="sm"
-                        isDisabled={!canRemove}
-                        leftIcon={<LuTrash2 className="size-4" />}
-                      >
-                        <Trans>Remove</Trans>
-                      </Button>
-                    </removeFetcher.Form>
-                  ) : OTP_METHODS.has(method) ? (
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      size="sm"
-                      isDisabled={blockedByEmail}
-                      onClick={() => {
-                        setWechatOpen(false);
-                        setDraft({
-                          method: method as "email" | "phone",
-                          step: "enter",
-                          contact: "",
-                          code: ""
-                        });
-                      }}
-                    >
-                      <Trans>Connect</Trans>
-                    </Button>
-                  ) : OAUTH_METHODS.has(method) ? (
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      size="sm"
-                      isDisabled={blockedByEmail}
-                      onClick={() => onLinkOAuth(method as "google" | "azure")}
-                    >
-                      <Trans>Connect</Trans>
-                    </Button>
+                <div className="w-full p-3">
+                  {identity && displayValue(method, identity.value, wechatName) ? (
+                    // Two-line layout: label row + value + remove row
+                    <>
+                      <HStack spacing={2}>
+                        {meta.icon}
+                        <span className="text-sm font-medium">{meta.label}</span>
+                      </HStack>
+                      <HStack className="w-full justify-between mt-1">
+                        <span className="text-sm text-muted-foreground break-all">
+                          {displayValue(method, identity.value, wechatName)}
+                        </span>
+                        <removeFetcher.Form method="post" action={path.to.profile}>
+                          <input type="hidden" name="intent" value="removeIdentity" />
+                          <input type="hidden" name="type" value={identity.type} />
+                          <input type="hidden" name="value" value={identity.value} />
+                          <Button
+                            type="submit"
+                            variant="ghost"
+                            size="sm"
+                            isLoading={removingType === identity.type}
+                            isDisabled={!canRemove || removingType !== null}
+                            leftIcon={<LuTrash2 className="size-4" />}
+                          >
+                            <Trans>Remove</Trans>
+                          </Button>
+                        </removeFetcher.Form>
+                      </HStack>
+                    </>
                   ) : (
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      size="sm"
-                      onClick={onConnectWeChat}
-                    >
-                      <Trans>Connect</Trans>
-                    </Button>
+                    // Single-line layout: no value to show (unlinked, or WeChat with no name)
+                    <HStack className="w-full justify-between">
+                      <HStack spacing={2}>
+                        {meta.icon}
+                        <span className="text-sm font-medium">{meta.label}</span>
+                      </HStack>
+                      {identity ? (
+                        <removeFetcher.Form method="post" action={path.to.profile}>
+                          <input type="hidden" name="intent" value="removeIdentity" />
+                          <input type="hidden" name="type" value={identity.type} />
+                          <input type="hidden" name="value" value={identity.value} />
+                          <Button
+                            type="submit"
+                            variant="ghost"
+                            size="sm"
+                            isLoading={removingType === identity.type}
+                            isDisabled={!canRemove || removingType !== null}
+                            leftIcon={<LuTrash2 className="size-4" />}
+                          >
+                            <Trans>Remove</Trans>
+                          </Button>
+                        </removeFetcher.Form>
+                      ) : OTP_METHODS.has(method) ? (
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="sm"
+                          isDisabled={blockedByEmail}
+                          onClick={() => {
+                            setWechatOpen(false);
+                            setDraft({
+                              method: method as "email" | "phone",
+                              step: "enter",
+                              contact: "",
+                              code: ""
+                            });
+                          }}
+                        >
+                          <Trans>Connect</Trans>
+                        </Button>
+                      ) : OAUTH_METHODS.has(method) ? (
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="sm"
+                          isDisabled={blockedByEmail}
+                          onClick={() => onLinkOAuth(method as "google" | "azure")}
+                        >
+                          <Trans>Connect</Trans>
+                        </Button>
+                      ) : (
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="sm"
+                          onClick={onConnectWeChat}
+                        >
+                          <Trans>Connect</Trans>
+                        </Button>
+                      )}
+                    </HStack>
                   )}
-                </HStack>
+                </div>
 
                 {draftOpen && draft && (
                   <addFetcher.Form
@@ -289,6 +323,7 @@ export default function LoginMethodsForm({
                           />
                           <Input
                             name={method === "phone" ? "phone" : "email"}
+                            prefix={method === "phone" ? "+86" : undefined}
                             placeholder={
                               method === "phone"
                                 ? t`Phone Number`

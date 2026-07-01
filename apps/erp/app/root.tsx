@@ -12,6 +12,7 @@ import {
   getPreferenceHeaders,
   Heading,
   OperatingSystemContextProvider,
+  toast,
   Toaster,
   TooltipProvider,
   useMode,
@@ -239,6 +240,16 @@ export default function App() {
   const mode = useMode();
 
   useMount(() => {
+    // Flash toasts from full-page redirects (e.g. OAuth callbacks) don't fire
+    // the clientMiddleware (which only runs on client-side navigations), so we
+    // fire them here on initial mount instead.
+    const result = loaderData?.result;
+    if (result?.success === true) {
+      toast.success(result.message);
+    } else if (result?.success === false && result?.message) {
+      toast.error(result.message);
+    }
+
     if (!window.clientCache) {
       window.clientCache = new QueryClient({
         defaultOptions: {
