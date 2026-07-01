@@ -31,6 +31,7 @@ import {
 import {
   auditArchiveFunction,
   cleanupFunction,
+  demoCleanupFunction,
   dispatchFunction,
   mrpFunction,
   notificationDigestFunction,
@@ -78,6 +79,7 @@ export const functions = [
   printJobDeliverFunction,
   // Scheduled
   cleanupFunction,
+  demoCleanupFunction,
   dispatchFunction,
   auditArchiveFunction,
   mrpFunction,

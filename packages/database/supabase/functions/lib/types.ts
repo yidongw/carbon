@@ -3055,6 +3055,7 @@ export type Database = {
           eori: string | null
           fax: string | null
           id: string
+          isDemo: boolean
           isEliminationEntity: boolean
           logoDark: string | null
           logoDarkIcon: string | null
@@ -3087,6 +3088,7 @@ export type Database = {
           eori?: string | null
           fax?: string | null
           id?: string
+          isDemo?: boolean
           isEliminationEntity?: boolean
           logoDark?: string | null
           logoDarkIcon?: string | null
@@ -3119,6 +3121,7 @@ export type Database = {
           eori?: string | null
           fax?: string | null
           id?: string
+          isDemo?: boolean
           isEliminationEntity?: boolean
           logoDark?: string | null
           logoDarkIcon?: string | null
@@ -3214,6 +3217,38 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "integrations"
             referencedColumns: ["companyId"]
+          },
+        ]
+      }
+      demoCompany: {
+        Row: {
+          createdAt: string
+          expiresAt: string | null
+          id: string
+          seedStatus: string | null
+          updatedAt: string
+        }
+        Insert: {
+          createdAt?: string
+          expiresAt?: string | null
+          id: string
+          seedStatus?: string | null
+          updatedAt?: string
+        }
+        Update: {
+          createdAt?: string
+          expiresAt?: string | null
+          id?: string
+          seedStatus?: string | null
+          updatedAt?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_demoCompany_company"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "company"
+            referencedColumns: ["id"]
           },
         ]
       }

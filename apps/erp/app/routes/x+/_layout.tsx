@@ -39,6 +39,8 @@ import {
 } from "react-router";
 import { RealtimeDataProvider } from "~/components";
 import { FloatingChat } from "~/components/Chat";
+import { DemoBanner } from "~/components/DemoBanner";
+import { DemoSeedTrigger } from "~/components/DemoSeedTrigger";
 import { PrimaryNavigation, Topbar, TopbarProvider } from "~/components/Layout";
 import { OverlayHost, OverlayProvider } from "~/components/Overlay";
 import { TimeCardWarning } from "~/components/TimeCardWarning";
@@ -198,7 +200,54 @@ export async function loader({ request }: LoaderFunctionArgs) {
     throw redirect(path.to.onboarding.root);
   }
 
+  // Demo-company state for the banner: whether this user has a demo company, when it expires,
+  // and whether it's the one they're currently in. Demo metadata lives in `demoCompany`
+  // (one row per demo; RLS limits it to the user's companies).
+  const userCompanyIds = (companies.data ?? [])
+    .map((c) => c.id)
+    .filter((id): id is string => Boolean(id));
+
+  let demo: {
+    id: string;
+    expiresAt: string | null;
+    isCurrent: boolean;
+    seedStatus: string | null;
+    needsSeed: boolean;
+  } | null = null;
+  let realCompanyId: string | null = companyId;
+  if (userCompanyIds.length) {
+    const { data: demoRow } = await client
+      .from("demoCompany")
+      .select("id, expiresAt, seedStatus")
+      .in("id", userCompanyIds)
+      .maybeSingle();
+    if (demoRow) {
+      const isCurrent = demoRow.id === companyId;
+      // Decide "needs seeding" by DATA PRESENCE, not just the flag: a demo we're in
+      // that has no items yet (and isn't already mid-seed) gets seeded. This self-heals
+      // demos that were never seeded or whose flag drifted, instead of trusting a flag.
+      let needsSeed = false;
+      if (isCurrent && demoRow.seedStatus !== "seeding") {
+        const { count } = await client
+          .from("item")
+          .select("id", { count: "exact", head: true })
+          .eq("companyId", demoRow.id);
+        needsSeed = (count ?? 0) === 0;
+      }
+      demo = {
+        id: demoRow.id,
+        expiresAt: demoRow.expiresAt,
+        isCurrent,
+        seedStatus: demoRow.seedStatus,
+        needsSeed
+      };
+      realCompanyId = userCompanyIds.find((id) => id !== demoRow.id) ?? null;
+    }
+  }
+
   return data({
+    demo,
+    realCompanyId,
     session: {
       accessToken,
       expiresIn,
@@ -227,8 +276,15 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export default function AuthenticatedRoute() {
-  const { session, user, companySettings, openClockEntry, printerRoutes } =
-    useLoaderData<typeof loader>();
+  const {
+    session,
+    user,
+    companySettings,
+    openClockEntry,
+    printerRoutes,
+    demo,
+    realCompanyId
+  } = useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const { training, dismiss } = useTrainingPanel();
 
@@ -291,6 +347,13 @@ export default function AuthenticatedRoute() {
                           "padding-left 0.35s ease-out, padding-right 0.35s ease-out"
                       }}
                     >
+                      <DemoBanner demo={demo} realCompanyId={realCompanyId} />
+                      {demo?.isCurrent && (
+                        <DemoSeedTrigger
+                          needsSeed={demo.needsSeed}
+                          status={demo.seedStatus}
+                        />
+                      )}
                       <Topbar />
                       <div className="flex flex-1 h-[calc(100vh-49px)] relative">
                         <PrimaryNavigation />
