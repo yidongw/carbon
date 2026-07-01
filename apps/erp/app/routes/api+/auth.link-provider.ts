@@ -1,4 +1,4 @@
-import { SUPABASE_ANON_KEY, SUPABASE_URL } from "@carbon/env";
+import { SUPABASE_ANON_KEY, SUPABASE_URL } from "@carbon/auth";
 import { getAuthSession } from "@carbon/auth/session.server";
 import type { LoaderFunctionArgs } from "react-router";
 import { redirect } from "react-router";
