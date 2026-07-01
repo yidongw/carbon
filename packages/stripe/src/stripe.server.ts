@@ -242,13 +242,21 @@ export async function getCheckoutUrl({
   userId,
   companyId,
   email,
-  name
+  name,
+  mode = "subscription",
+  quantity = 1,
+  purpose = "purchase"
 }: {
   planId: string;
   userId: string;
   companyId: string;
   email: string;
   name?: string | null;
+  mode?: "subscription" | "one_time";
+  quantity?: number;
+  // "purchase" = new term or renewal (sets seats, extends term by 1yr);
+  // "add_seats" = mid-term top-up (adds seats, keeps existing term).
+  purpose?: "purchase" | "add_seats";
 }) {
   if (CarbonEdition !== Edition.Cloud) {
     return "";
@@ -270,6 +278,44 @@ export async function getCheckoutUrl({
 
   const serviceRole = getCarbonServiceRole();
   const plan = await getPlanById(serviceRole, planId);
+
+  // One-time annual purchase (payable via WeChat Pay / Alipay, which Stripe
+  // cannot charge recurringly). Sells a fixed one-year term for `quantity` seats.
+  if (mode === "one_time") {
+    const annualPriceId = plan.data?.stripeAnnualPriceId;
+    if (!annualPriceId) {
+      throw new Error("Plan does not have a one-time annual price configured");
+    }
+
+    const seats = Math.max(1, Math.floor(quantity));
+    const oneTimeSession = await stripe!.checkout.sessions.create({
+      customer: stripeCustomerId,
+      line_items: [{ price: annualPriceId, quantity: seats }],
+      mode: "payment",
+      success_url: `${getAppUrl()}/api/webhook/stripe`,
+      cancel_url: `${getAppUrl()}/api/webhook/stripe`,
+      payment_method_types: ["card", "wechat_pay", "alipay"],
+      payment_method_options: { wechat_pay: { client: "web" } },
+      billing_address_collection: "required",
+      invoice_creation: { enabled: true },
+      customer_update: { name: "auto", address: "auto" },
+      metadata: {
+        userId,
+        companyId,
+        planId,
+        mode: "one_time",
+        purpose,
+        quantity: String(seats)
+      }
+    });
+
+    if (!oneTimeSession.url) {
+      throw new Error("Failed to create checkout session");
+    }
+
+    return oneTimeSession.url;
+  }
+
   const checkoutSession = await stripe!.checkout.sessions.create({
     customer: stripeCustomerId,
     line_items: [
@@ -380,7 +426,10 @@ export async function processStripeEvent({
 
   const eventType = event.type;
 
-  if (eventType === "checkout.session.completed") {
+  if (
+    eventType === "checkout.session.completed" ||
+    eventType === "checkout.session.async_payment_succeeded"
+  ) {
     const data = event.data.object as Stripe.Checkout.Session;
     const { customer } = data;
 
@@ -397,6 +446,34 @@ export async function processStripeEvent({
 
     if (typeof customer !== "string") {
       throw new Error("Stripe webhook handler failed");
+    }
+
+    // One-time annual purchases (WeChat Pay / Alipay / card). These have no Stripe
+    // subscription to sync; instead we record a fixed one-year term ourselves.
+    // WeChat/Alipay settle asynchronously, so only record once actually paid.
+    if (data.metadata?.mode === "one_time") {
+      if (data.payment_status === "paid") {
+        try {
+          await recordOneTimePurchase({
+            companyId,
+            customerId: customer,
+            planId: data.metadata?.planId ?? "",
+            quantity: Number(data.metadata?.quantity ?? "1"),
+            purpose:
+              data.metadata?.purpose === "add_seats" ? "add_seats" : "purchase"
+          });
+        } catch (error) {
+          console.error("Error recording one-time purchase:", error);
+          throw new Error("Stripe webhook handler failed");
+        }
+      }
+      return;
+    }
+
+    // Subscription onboarding runs only on the initial completed event, as before
+    // (async_payment_succeeded is handled above solely for one-time purchases).
+    if (eventType !== "checkout.session.completed") {
+      return;
     }
 
     const collectedTaxId = data.customer_details?.tax_ids?.[0]?.value;
@@ -466,6 +543,80 @@ export async function processStripeEvent({
     forwardToGtm(eventType, { invoice: event.data.object }).catch((err) => {
       console.error("[gtm-events] forward failed:", err);
     });
+  }
+}
+
+async function recordOneTimePurchase({
+  companyId,
+  customerId,
+  planId,
+  quantity,
+  purpose
+}: {
+  companyId: string;
+  customerId: string;
+  planId: string;
+  quantity: number;
+  purpose: "purchase" | "add_seats";
+}) {
+  const serviceRole = getCarbonServiceRole();
+  const seats = Math.max(1, Math.floor(quantity || 1));
+  const now = new Date();
+
+  const existing = await serviceRole
+    .from("companyPlan")
+    .select("usersLimit, termEndsAt")
+    .eq("id", companyId)
+    .maybeSingle();
+
+  // Mid-term seat top-up: add seats, keep the existing term untouched.
+  if (purpose === "add_seats") {
+    const currentSeats = existing.data?.usersLimit ?? 0;
+    const { error } = await serviceRole
+      .from("companyPlan")
+      .update({
+        usersLimit: currentSeats + seats,
+        stripeCustomerId: customerId,
+        stripeSubscriptionStatus: "Active",
+        paymentMode: "one_time"
+      })
+      .eq("id", companyId);
+
+    if (error) {
+      console.error("Failed to add seats to company plan:", error);
+      throw new Error("Failed to add seats to company plan");
+    }
+    return;
+  }
+
+  // New purchase or renewal: set the seat count and extend the term by one year
+  // from the later of now or the current term end (so early renewals stack).
+  const plan = await getPlanById(serviceRole, planId);
+  const base =
+    existing.data?.termEndsAt && new Date(existing.data.termEndsAt) > now
+      ? new Date(existing.data.termEndsAt)
+      : now;
+  const termEndsAt = new Date(base);
+  termEndsAt.setFullYear(termEndsAt.getFullYear() + 1);
+
+  const companyPlanData: Database["public"]["Tables"]["companyPlan"]["Insert"] =
+    {
+      id: companyId,
+      planId: plan.data?.id ?? planId,
+      tasksLimit: plan.data?.tasksLimit ?? 10000,
+      aiTokensLimit: plan.data?.aiTokensLimit ?? 1000000,
+      usersLimit: seats,
+      paymentMode: "one_time",
+      termEndsAt: termEndsAt.toISOString(),
+      subscriptionStartDate: now.toISOString(),
+      stripeCustomerId: customerId,
+      stripeSubscriptionStatus: "Active"
+    };
+
+  const { error } = await upsertCompanyPlan(serviceRole, companyPlanData);
+  if (error) {
+    console.error("Failed to upsert one-time company plan:", error);
+    throw new Error("Failed to upsert one-time company plan");
   }
 }
 
