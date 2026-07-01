@@ -19,8 +19,9 @@ import {
   verifyEmailCode
 } from "@carbon/auth/verification.server";
 import { validationError, validator } from "@carbon/form";
-import { VStack } from "@carbon/react";
+import { toast, VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
+import { useEffect } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data, redirect, useLoaderData } from "react-router";
 import {
@@ -43,6 +44,11 @@ export const handle: Handle = {
 export async function loader({ request }: LoaderFunctionArgs) {
   const { client, userId } = await requirePermissions(request, {});
 
+  // The OAuth callback redirects a failed identity link back here with the
+  // reason in ?linkError=. Read it server-side and render it inline (below) so
+  // it's in the initial HTML — guaranteed visible, no toast/hydration timing.
+  const linkError = new URL(request.url).searchParams.get("linkError");
+
   const [user, identities] = await Promise.all([
     getAccount(client, userId),
     getUserIdentities(userId)
@@ -59,7 +65,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const enabled = AUTH_PROVIDERS.split(",");
   const enabledMethods = KNOWN_METHODS.filter((m) => enabled.includes(m));
 
-  return { user: user.data, identities, enabledMethods };
+  return { user: user.data, identities, enabledMethods, linkError };
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -278,7 +284,30 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function AccountProfile() {
-  const { user, identities, enabledMethods } = useLoaderData<typeof loader>();
+  const { user, identities, enabledMethods, linkError } =
+    useLoaderData<typeof loader>();
+
+  // The OAuth callback redirects a failed identity link back here with the
+  // reason in ?linkError= (loader data). Show it as a toast, deferred one tick:
+  // on a hard document load this component's mount effect runs BEFORE the root
+  // <Toaster> subscribes, and Sonner drops toasts fired before it subscribes.
+  // A macrotask lets the Toaster subscribe first. Strip the param so a refresh
+  // doesn't resurface it.
+  useEffect(() => {
+    if (!linkError) return;
+    const id = setTimeout(() => toast.error(linkError), 0);
+    const params = new URLSearchParams(window.location.search);
+    if (params.has("linkError")) {
+      params.delete("linkError");
+      const qs = params.toString();
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname + (qs ? `?${qs}` : "")
+      );
+    }
+    return () => clearTimeout(id);
+  }, [linkError]);
 
   return (
     <VStack spacing={4}>

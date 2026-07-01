@@ -1,4 +1,3 @@
-import { carbonClient } from "@carbon/auth";
 import {
   Button,
   Card,
@@ -121,12 +120,19 @@ export default function LoginMethodsForm({
     }
   }, [addFetcher.state, addFetcher.data]);
 
-  const onLinkOAuth = async (provider: "google" | "azure") => {
-    const { error } = await carbonClient.auth.linkIdentity({
+  const onLinkOAuth = (provider: "google" | "azure") => {
+    // carbonClient has persistSession: false — no client-side session to send
+    // with linkIdentity(). Use the server-side proxy route instead so GoTrue
+    // receives the real user token (read from the session cookie).
+    // Pass callbackOrigin from the client: the server sits behind a reverse proxy
+    // and sees the internal hostname, not the public browser URL. GoTrue
+    // validates redirect_to against the allow list, so it must be the real origin.
+    const params = new URLSearchParams({
       provider,
-      options: { redirectTo: `${window.location.origin}/callback` }
+      redirectTo: path.to.profile,
+      callbackOrigin: window.location.origin
     });
-    if (error) toast.error(error.message);
+    window.location.href = `/api/auth/link-provider?${params}`;
   };
 
   const revalidator = useRevalidator();
