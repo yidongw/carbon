@@ -1760,6 +1760,9 @@ msgstr "Conferma Password"
 msgid "Congratulations! You have successfully completed this training. Your completion has been recorded."
 msgstr "Complimenti! Hai completato con successo questa formazione. La tua conclusione è stata registrata."
 
+msgid "Connect"
+msgstr "Collega"
+
 msgid "Connect Carbon to your accounting, project, and CAD tools and much more."
 msgstr "Connetti il carbonio alle tue strumenti contabili, progettuali e CAD e molto altro ancora."
 
@@ -5055,6 +5058,9 @@ msgstr "Blocca"
 msgid "Log In"
 msgstr "Accedi"
 
+msgid "Login methods"
+msgstr "Metodi di accesso"
+
 msgid "Login or create a new account"
 msgstr "Accedi o crea un nuovo account"
 
@@ -8149,6 +8155,9 @@ msgstr "Onboarding autonomo con Carbon Academy"
 msgid "Send"
 msgstr "Invia"
 
+msgid "Send code"
+msgstr "Invia codice"
+
 msgid "Send Invite"
 msgstr "Invita"
 
@@ -9694,6 +9703,9 @@ msgstr "Numero IVA"
 msgid "Verification"
 msgstr "Verifica"
 
+msgid "Verification code"
+msgstr "Codice di verifica"
+
 msgid "Verification code is required"
 msgstr "Codice di verifica richiesto"
 
@@ -9702,6 +9714,9 @@ msgstr "Codice di verifica deve essere composto da 6 caratteri"
 
 msgid "Verification Error"
 msgstr "Errore di verifica"
+
+msgid "Verify & link"
+msgstr "Verifica e collega"
 
 msgid "Verify your email"
 msgstr "Verifica la tua email"
@@ -9910,8 +9925,14 @@ msgstr "Avvertenze"
 msgid "Watch full video"
 msgstr "Guarda il video completo"
 
+msgid "Ways you can sign in. Only you can change these."
+msgstr "Modi per accedere. Solo tu puoi modificarli."
+
 msgid "We've mapped each column to what we believe is correct, but please review the data below to confirm it's accurate."
 msgstr "Abbiamo mappato ogni colonna a quello che riteniamo sia corretto, ma ti preghiamo di rivedere i dati sottostanti per confermare che sia accurato."
+
+msgid "We've sent a code to {sentTo}"
+msgstr "Abbiamo inviato un codice a {sentTo}"
 
 msgid "We've sent a verification code to {email}"
 msgstr "Abbiamo inviato un codice di verifica a {email}"
@@ -10160,3 +10181,15 @@ msgstr "Usa un altro metodo di accesso"
 
 msgid "Couldn't load the WeChat QR code"
 msgstr "Impossibile caricare il codice QR di WeChat"
+
+msgid "Scan with WeChat to connect"
+msgstr "Scansiona con WeChat per collegare"
+
+msgid "WeChat is unavailable right now"
+msgstr "WeChat non è disponibile al momento"
+
+msgid "That WeChat is already linked to another account"
+msgstr "Quel WeChat è già collegato a un altro account"
+
+msgid "Failed to link WeChat"
+msgstr "Impossibile collegare WeChat"

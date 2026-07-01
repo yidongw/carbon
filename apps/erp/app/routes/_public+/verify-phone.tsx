@@ -6,7 +6,7 @@ import {
   RATE_LIMIT,
   safeRedirect
 } from "@carbon/auth";
-import { signInWithPhoneViaAdmin } from "@carbon/auth/auth.server";
+import { signInWithUserIdViaAdmin } from "@carbon/auth/auth.server";
 import { checkSmsVerifyCode } from "@carbon/auth/aliyun-sms.server";
 import { setCompanyId } from "@carbon/auth/company.server";
 import { findOrCreatePhoneUser, findPhoneUser } from "@carbon/auth/phone.server";
@@ -121,7 +121,7 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
-  const authSession = await signInWithPhoneViaAdmin(phone);
+  const authSession = await signInWithUserIdViaAdmin(user.id);
   if (!authSession) {
     return data(
       error(null, "Failed to sign in user"),

@@ -47535,6 +47535,41 @@ export type Database = {
         }
         Relationships: []
       }
+      userIdentity: {
+        Row: {
+          createdAt: string
+          id: string
+          type: string
+          userId: string
+          value: string
+          verifiedAt: string | null
+        }
+        Insert: {
+          createdAt?: string
+          id?: string
+          type: string
+          userId: string
+          value: string
+          verifiedAt?: string | null
+        }
+        Update: {
+          createdAt?: string
+          id?: string
+          type?: string
+          userId?: string
+          value?: string
+          verifiedAt?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "userIdentity_userId_fkey"
+            columns: ["userId"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       userAttribute: {
         Row: {
           active: boolean | null

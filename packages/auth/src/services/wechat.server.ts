@@ -6,6 +6,7 @@ import {
 import { redis } from "@carbon/kv";
 import { createHash } from "node:crypto";
 import { getCarbonServiceRole } from "../lib/supabase/client.server";
+import { findUserIdByIdentity, linkIdentity } from "./identity.server";
 
 // OAuth callback for the in-app flow. The host varies per environment (and per
 // tunnel restart), so the caller passes the current request origin and we build
@@ -89,14 +90,15 @@ export async function findOrCreateWeChatUser(
 ) {
   const serviceRole = getCarbonServiceRole();
 
-  const existing = await serviceRole
-    .from("user")
-    .select("*")
-    .eq("wechat_unionid", unionid)
-    .maybeSingle();
-  console.log("[wechat findOrCreate] existing lookup", existing.error ? `ERROR: ${JSON.stringify(existing.error)}` : existing.data ? "found" : "not found");
+  const existingId = await findUserIdByIdentity("wechat", unionid);
+  if (existingId) {
+    const { data: existingUser } = await serviceRole
+      .from("user")
+      .select("*")
+      .eq("id", existingId)
+      .maybeSingle();
+    if (!existingUser) return null;
 
-  if (existing.data) {
     const { firstName, lastName } = splitWeChatNickname(nickname);
     const updates: {
       avatarUrl?: string;
@@ -104,26 +106,26 @@ export async function findOrCreateWeChatUser(
       lastName?: string;
     } = {};
 
-    if (avatarUrl && avatarUrl !== existing.data.avatarUrl) {
+    if (avatarUrl && avatarUrl !== existingUser.avatarUrl) {
       updates.avatarUrl = avatarUrl;
     }
 
-    if (firstName && !existing.data.firstName?.trim()) {
+    if (firstName && !existingUser.firstName?.trim()) {
       updates.firstName = firstName;
       updates.lastName = lastName;
     }
 
     if (Object.keys(updates).length === 0) {
-      return existing.data;
+      return existingUser;
     }
 
     const { data: refreshed } = await serviceRole
       .from("user")
       .update(updates)
-      .eq("id", existing.data.id)
+      .eq("id", existingUser.id)
       .select("*")
       .single();
-    return refreshed ?? existing.data;
+    return refreshed ?? existingUser;
   }
 
   // The synthetic email lives ONLY on the auth user: generateLink (our magic-link
@@ -162,6 +164,11 @@ export async function findOrCreateWeChatUser(
     .eq("id", authUser.user.id)
     .select("*")
     .single();
+
+  const link = await linkIdentity(authUser.user.id, "wechat", unionid);
+  if (!link.success) {
+    console.error("[wechat findOrCreate] identity link failed", link);
+  }
 
   return updatedUser;
 }
@@ -240,10 +247,10 @@ export async function createWeChatQrTicket(
   return { url: data.url, ticket: data.ticket };
 }
 
-/** Follower profile (nickname/avatar) for a given openid; null if not retrievable. */
+/** Follower profile (nickname/avatar/unionid) for a given openid; null if not retrievable. */
 export async function getWeChatMpUserInfo(
   openid: string
-): Promise<{ nickname: string; headimgurl: string } | null> {
+): Promise<{ nickname: string; headimgurl: string; unionid: string } | null> {
   const token = await getWeChatAccessToken();
   if (!token) return null;
 
@@ -253,10 +260,15 @@ export async function getWeChatMpUserInfo(
   const data = (await resp.json()) as {
     nickname?: string;
     headimgurl?: string;
+    unionid?: string;
     errcode?: number;
   };
   if (data.errcode) return null;
-  return { nickname: data.nickname ?? "", headimgurl: data.headimgurl ?? "" };
+  return {
+    nickname: data.nickname ?? "",
+    headimgurl: data.headimgurl ?? "",
+    unionid: data.unionid ?? openid
+  };
 }
 
 /** Verify the signature WeChat attaches to webhook GET (verify) and POST (events). */

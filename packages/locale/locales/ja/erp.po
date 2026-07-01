@@ -1760,6 +1760,9 @@ msgstr "パスワードを確認"
 msgid "Congratulations! You have successfully completed this training. Your completion has been recorded."
 msgstr "Congratulations! このトレーニングを成功裏に終了しました。完了が記録されました。"
 
+msgid "Connect"
+msgstr "連携"
+
 msgid "Connect Carbon to your accounting, project, and CAD tools and much more."
 msgstr "接続カーボンをアカウント、プロジェクト、およびCADツールに接続し、さらに多くの機能を活用できます。"
 
@@ -5055,6 +5058,9 @@ msgstr "ロック"
 msgid "Log In"
 msgstr "ログイン"
 
+msgid "Login methods"
+msgstr "ログイン方法"
+
 msgid "Login or create a new account"
 msgstr "ログインするか新しいアカウントを作成してください"
 
@@ -8149,6 +8155,9 @@ msgstr "Carbon Academyによるセルフオンボーディング"
 msgid "Send"
 msgstr "送信"
 
+msgid "Send code"
+msgstr "コードを送信"
+
 msgid "Send Invite"
 msgstr "送り入力"
 
@@ -9694,6 +9703,9 @@ msgstr "VAT番号"
 msgid "Verification"
 msgstr "検証"
 
+msgid "Verification code"
+msgstr "確認コード"
+
 msgid "Verification code is required"
 msgstr "検証コードが必要です"
 
@@ -9702,6 +9714,9 @@ msgstr "検証コードは6文字で入力してください"
 
 msgid "Verification Error"
 msgstr "認証エラー"
+
+msgid "Verify & link"
+msgstr "確認してリンク"
 
 msgid "Verify your email"
 msgstr "メールアドレスを確認"
@@ -9910,8 +9925,14 @@ msgstr "警告"
 msgid "Watch full video"
 msgstr "フル動画を視聴"
 
+msgid "Ways you can sign in. Only you can change these."
+msgstr "サインインの方法。変更できるのはあなただけです。"
+
 msgid "We've mapped each column to what we believe is correct, but please review the data below to confirm it's accurate."
 msgstr "各列を正しいと思われるものにマッピングしましたが、以下のデータを確認して、正確であることを確認してください。"
+
+msgid "We've sent a code to {sentTo}"
+msgstr "{sentTo} にコードを送信しました"
 
 msgid "We've sent a verification code to {email}"
 msgstr "検証コードを {email} に送信しました"
@@ -10160,3 +10181,15 @@ msgstr "別のサインイン方法を使用する"
 
 msgid "Couldn't load the WeChat QR code"
 msgstr "WeChatのQRコードを読み込めませんでした"
+
+msgid "Scan with WeChat to connect"
+msgstr "WeChatでスキャンして連携"
+
+msgid "WeChat is unavailable right now"
+msgstr "WeChatは現在利用できません"
+
+msgid "That WeChat is already linked to another account"
+msgstr "そのWeChatは既に別のアカウントに連携されています"
+
+msgid "Failed to link WeChat"
+msgstr "WeChatの連携に失敗しました"

@@ -18,6 +18,7 @@
     "./users.server": "./src/services/users.server.ts",
     "./verification.server": "./src/services/verification.server.ts",
     "./aliyun-sms.server": "./src/services/aliyun-sms.server.ts",
+    "./identity.server": "./src/services/identity.server.ts",
     "./phone.server": "./src/services/phone.server.ts",
     "./middleware/flash.server": "./src/middleware/flash.server.ts",
     "./middleware/flash.client": "./src/middleware/flash.client.ts",

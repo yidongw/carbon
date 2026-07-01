@@ -29,9 +29,21 @@ export async function loader({ request }: LoaderFunctionArgs) {
   if (!raw) return data({ status: "expired" as const });
 
   const parsed = JSON.parse(raw as string) as {
-    status: "pending" | "authed";
+    status: "pending" | "authed" | "linked" | "link_failed";
     userId?: string;
+    reason?: string;
   };
+
+  // Link mode (a signed-in user connecting WeChat): the webhook already linked
+  // the identity, so just report the outcome — no session to mint.
+  if (parsed.status === "linked") {
+    await redis.del(key);
+    return data({ status: "linked" as const });
+  }
+  if (parsed.status === "link_failed") {
+    await redis.del(key);
+    return data({ status: "link_failed" as const, reason: parsed.reason });
+  }
 
   if (parsed.status !== "authed" || !parsed.userId) {
     return data({ status: "pending" as const });
