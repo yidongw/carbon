@@ -3623,12 +3623,14 @@ export type Database = {
           aiTokensLimit: number
           createdAt: string
           id: string
+          paymentMode: string
           planId: string
           stripeCustomerId: string | null
           stripeSubscriptionId: string | null
           stripeSubscriptionStatus: string
           subscriptionStartDate: string
           tasksLimit: number
+          termEndsAt: string | null
           trialPeriodEndsAt: string | null
           updatedAt: string
           usersLimit: number
@@ -3637,12 +3639,14 @@ export type Database = {
           aiTokensLimit?: number
           createdAt?: string
           id?: string
+          paymentMode?: string
           planId: string
           stripeCustomerId?: string | null
           stripeSubscriptionId?: string | null
           stripeSubscriptionStatus?: string
           subscriptionStartDate: string
           tasksLimit?: number
+          termEndsAt?: string | null
           trialPeriodEndsAt?: string | null
           updatedAt?: string
           usersLimit?: number
@@ -3651,12 +3655,14 @@ export type Database = {
           aiTokensLimit?: number
           createdAt?: string
           id?: string
+          paymentMode?: string
           planId?: string
           stripeCustomerId?: string | null
           stripeSubscriptionId?: string | null
           stripeSubscriptionStatus?: string
           subscriptionStartDate?: string
           tasksLimit?: number
+          termEndsAt?: string | null
           trialPeriodEndsAt?: string | null
           updatedAt?: string
           usersLimit?: number
@@ -29265,6 +29271,7 @@ export type Database = {
           id: string
           name: string
           public: boolean
+          stripeAnnualPriceId: string | null
           stripePriceId: string
           stripeTrialPeriodDays: number
           tasksLimit: number
@@ -29277,6 +29284,7 @@ export type Database = {
           id?: string
           name: string
           public?: boolean
+          stripeAnnualPriceId?: string | null
           stripePriceId: string
           stripeTrialPeriodDays?: number
           tasksLimit?: number
@@ -29289,6 +29297,7 @@ export type Database = {
           id?: string
           name?: string
           public?: boolean
+          stripeAnnualPriceId?: string | null
           stripePriceId?: string
           stripeTrialPeriodDays?: number
           tasksLimit?: number
