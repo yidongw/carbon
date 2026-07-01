@@ -10181,3 +10181,15 @@ msgstr "Usar outro método de login"
 
 msgid "Couldn't load the WeChat QR code"
 msgstr "Não foi possível carregar o código QR do WeChat"
+
+msgid "Scan with WeChat to connect"
+msgstr "Digitalize com WeChat para conectar"
+
+msgid "WeChat is unavailable right now"
+msgstr "O WeChat está indisponível no momento"
+
+msgid "That WeChat is already linked to another account"
+msgstr "Esse WeChat já está vinculado a outra conta"
+
+msgid "Failed to link WeChat"
+msgstr "Falha ao vincular o WeChat"

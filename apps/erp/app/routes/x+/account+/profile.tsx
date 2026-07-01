@@ -242,10 +242,15 @@ export async function action({ request }: ActionFunctionArgs) {
       );
     }
     const serviceRole = getCarbonServiceRole();
-    await serviceRole.auth.admin.updateUserById(userId, {
-      email,
-      email_confirm: true
-    });
+    const { error: authError } = await serviceRole.auth.admin.updateUserById(
+      userId,
+      { email, email_confirm: true }
+    );
+    if (authError) {
+      console.error("[addEmailVerify] updateUserById failed, rolling back", authError);
+      await unlinkIdentity(userId, "email", email);
+      return data({}, await flash(request, error(null, "Failed to link email")));
+    }
     await serviceRole.from("user").update({ email }).eq("id", userId);
     return data({ linked: true }, await flash(request, success("Linked email")));
   }

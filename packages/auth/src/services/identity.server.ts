@@ -108,6 +108,50 @@ export async function unlinkIdentity(
     console.error("[identity] unlink failed", error);
     return { success: false, reason: "error" };
   }
+
+  // Free whatever the removed identity occupies on the auth user, so the
+  // identifier can be registered again:
+  // - email/google/azure: the auth email IS the real address — free it once no
+  //   email-family method remains.
+  // - phone/wechat: for accounts that originated from that method, the auth email
+  //   is its synthetic (phone+…/wechat+…) — free it when the auth email still
+  //   matches (i.e. it wasn't already replaced by a linked real email).
+  // The account stays reachable via its remaining methods, which mint sessions
+  // against this (now placeholder) canonical email.
+  const isEmailFamily =
+    type === "email" || type === "google" || type === "azure";
+
+  let shouldFree = false;
+  if (isEmailFamily) {
+    shouldFree = !identities.some(
+      (i) =>
+        !(i.type === type && i.value === value) &&
+        (i.type === "email" || i.type === "google" || i.type === "azure")
+    );
+  } else {
+    const synthetic =
+      type === "phone"
+        ? `phone+${value.replace(/\D/g, "")}@carbon.internal`
+        : type === "wechat"
+          ? `wechat+${value.toLowerCase()}@carbon.internal`
+          : null;
+    const currentEmail = (await getCanonicalAuthEmail(userId))?.toLowerCase();
+    shouldFree = !!synthetic && currentEmail === synthetic.toLowerCase();
+  }
+
+  if (shouldFree) {
+    const { error: resetError } = await serviceRole.auth.admin.updateUserById(
+      userId,
+      { email: `freed-${userId}@carbon.internal`, email_confirm: true }
+    );
+    if (resetError) {
+      console.error("[identity] freeing auth email failed", resetError);
+    }
+    // Clear the public email too — it has a partial-unique index, so a leftover
+    // value would block re-registering it (no-op when already null).
+    await serviceRole.from("user").update({ email: null }).eq("id", userId);
+  }
+
   return { success: true };
 }
 

@@ -12,6 +12,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   const url = new URL(request.url);
   const redirectTo = url.searchParams.get("redirectTo") ?? "";
+  // link=1 means a logged-in user is connecting WeChat to their account (link),
+  // rather than signing in. The callback reads this from the state cookie.
+  const link = url.searchParams.get("link") === "1";
   const state = crypto.randomUUID();
   // Behind the tunnel the local server sees http; trust the forwarded proto so the
   // redirect_uri is the public https URL WeChat will accept.
@@ -23,6 +26,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const session = await wechatStateStorage.getSession();
   session.set("state", state);
   session.set("redirectTo", redirectTo);
+  if (link) session.set("link", "1");
 
   return redirect(authUrl, {
     headers: {

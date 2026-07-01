@@ -1,5 +1,6 @@
-import { error, safeRedirect } from "@carbon/auth";
-import { flash } from "@carbon/auth/session.server";
+import { error, safeRedirect, success } from "@carbon/auth";
+import { flash, getAuthSession } from "@carbon/auth/session.server";
+import { linkIdentity } from "@carbon/auth/identity.server";
 import {
   exchangeWeChatCode,
   findOrCreateWeChatUser,
@@ -59,6 +60,41 @@ export async function loader({ request }: LoaderFunctionArgs) {
       path.to.root,
       await flash(request, error(null, "Failed to get WeChat user info"))
     );
+  }
+
+  // Link mode: a logged-in user is connecting WeChat to their account — attach
+  // the identity instead of signing in / creating a separate WeChat user.
+  if (stateSession.get("link") === "1") {
+    const authSession = await getAuthSession(request);
+    if (!authSession?.userId) {
+      return redirect(
+        path.to.login,
+        await flash(request, error(null, "Please sign in before linking WeChat"))
+      );
+    }
+    const result = await linkIdentity(
+      authSession.userId,
+      "wechat",
+      userInfo.unionid
+    );
+    const clearStateCookie = await wechatStateStorage.destroySession(stateSession);
+    const flashResult = await flash(
+      request,
+      result.success
+        ? success("Linked WeChat")
+        : error(
+            null,
+            result.reason === "conflict"
+              ? "That WeChat is already linked to another account"
+              : "Failed to link WeChat"
+          )
+    );
+    return redirect(safeRedirect(redirectTo, path.to.profile), {
+      headers: [
+        ["Set-Cookie", flashResult.headers["Set-Cookie"]],
+        ["Set-Cookie", clearStateCookie]
+      ]
+    });
   }
 
   // Find or create user

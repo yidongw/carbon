@@ -247,10 +247,10 @@ export async function createWeChatQrTicket(
   return { url: data.url, ticket: data.ticket };
 }
 
-/** Follower profile (nickname/avatar) for a given openid; null if not retrievable. */
+/** Follower profile (nickname/avatar/unionid) for a given openid; null if not retrievable. */
 export async function getWeChatMpUserInfo(
   openid: string
-): Promise<{ nickname: string; headimgurl: string } | null> {
+): Promise<{ nickname: string; headimgurl: string; unionid: string } | null> {
   const token = await getWeChatAccessToken();
   if (!token) return null;
 
@@ -260,10 +260,15 @@ export async function getWeChatMpUserInfo(
   const data = (await resp.json()) as {
     nickname?: string;
     headimgurl?: string;
+    unionid?: string;
     errcode?: number;
   };
   if (data.errcode) return null;
-  return { nickname: data.nickname ?? "", headimgurl: data.headimgurl ?? "" };
+  return {
+    nickname: data.nickname ?? "",
+    headimgurl: data.headimgurl ?? "",
+    unionid: data.unionid ?? openid
+  };
 }
 
 /** Verify the signature WeChat attaches to webhook GET (verify) and POST (events). */

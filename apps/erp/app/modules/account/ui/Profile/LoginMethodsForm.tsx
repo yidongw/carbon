@@ -12,10 +12,11 @@ import {
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useEffect, useState } from "react";
+import { QRCodeSVG } from "qrcode.react";
+import { useEffect, useRef, useState } from "react";
 import { LuMail, LuPhone, LuTrash2 } from "react-icons/lu";
 import { SiGoogle, SiWechat } from "react-icons/si";
-import { useFetcher } from "react-router";
+import { useFetcher, useRevalidator } from "react-router";
 import { path } from "~/utils/path";
 
 type Method = "email" | "google" | "azure" | "phone" | "wechat";
@@ -85,18 +86,25 @@ export default function LoginMethodsForm({
   const busy = addFetcher.state !== "idle";
   const sentTo = draft?.contact ?? "";
 
-  // Advance to the code step once a code is sent; close the form once linked.
+  // React to each add-fetcher response exactly once. Keying on a ref (not on
+  // draft) avoids acting on stale data — e.g. a previous link left
+  // `{ linked: true }` on the fetcher, which would otherwise close a freshly
+  // opened draft the moment you click Connect again.
+  const handledAddData = useRef<unknown>(null);
   useEffect(() => {
     if (addFetcher.state !== "idle" || !addFetcher.data) return;
+    if (handledAddData.current === addFetcher.data) return;
+    handledAddData.current = addFetcher.data;
+
     if (
-      (addFetcher.data.step === "addPhoneSent" ||
-        addFetcher.data.step === "addEmailSent") &&
-      draft?.step === "enter"
+      addFetcher.data.step === "addPhoneSent" ||
+      addFetcher.data.step === "addEmailSent"
     ) {
-      setDraft((d) => (d ? { ...d, step: "code" } : d));
+      setDraft((d) => (d && d.step === "enter" ? { ...d, step: "code" } : d));
+    } else if (addFetcher.data.linked) {
+      setDraft(null);
     }
-    if (addFetcher.data.linked) setDraft(null);
-  }, [addFetcher.state, addFetcher.data, draft?.step]);
+  }, [addFetcher.state, addFetcher.data]);
 
   const onLinkOAuth = async (provider: "google" | "azure") => {
     const { error } = await carbonClient.auth.linkIdentity({
@@ -105,6 +113,61 @@ export default function LoginMethodsForm({
     });
     if (error) toast.error(error.message);
   };
+
+  const revalidator = useRevalidator();
+  const wechatFetcher = useFetcher<{ url: string | null; scene?: string | null }>();
+  const [wechatOpen, setWechatOpen] = useState(false);
+  const wechatScene = wechatFetcher.data?.scene ?? null;
+
+  // In the WeChat in-app browser, connecting is an OAuth redirect; on desktop we
+  // show a QR to scan (mirrors WeChat login).
+  const onConnectWeChat = () => {
+    setDraft(null);
+    if (/MicroMessenger/i.test(navigator.userAgent)) {
+      window.location.href = `/auth/wechat?link=1&redirectTo=${encodeURIComponent(
+        path.to.profile
+      )}`;
+      return;
+    }
+    setWechatOpen(true);
+    wechatFetcher.load("/api/wechat-qr-url?link=1");
+  };
+
+  // While the QR is shown, poll the scene; the webhook links it once scanned.
+  useEffect(() => {
+    if (!wechatOpen || !wechatScene) return;
+    let active = true;
+    const poll = async () => {
+      try {
+        const res = await fetch(
+          `/api/wechat-qr-status?scene=${encodeURIComponent(wechatScene)}`
+        );
+        if (!res.ok || !active) return;
+        const json = (await res.json()) as { status: string; reason?: string };
+        if (json.status === "linked") {
+          setWechatOpen(false);
+          revalidator.revalidate();
+        } else if (json.status === "link_failed") {
+          setWechatOpen(false);
+          toast.error(
+            json.reason === "conflict"
+              ? t`That WeChat is already linked to another account`
+              : t`Failed to link WeChat`
+          );
+        } else if (json.status === "expired") {
+          setWechatOpen(false);
+        }
+      } catch {
+        // transient — keep polling
+      }
+    };
+    const id = setInterval(poll, 2000);
+    poll();
+    return () => {
+      active = false;
+      clearInterval(id);
+    };
+  }, [wechatOpen, wechatScene, revalidator, t]);
 
   return (
     <Card>
@@ -122,12 +185,13 @@ export default function LoginMethodsForm({
             const identity = byType.get(method);
             const meta = META[method];
             const draftOpen = draft?.method === method;
+            const wechatPanelOpen = method === "wechat" && wechatOpen;
             // Can't add a second email-family method once one is linked.
             const blockedByEmail = EMAIL_FAMILY.has(method) && hasEmailFamily;
 
             return (
-              <VStack key={method} spacing={2} className="w-full">
-                <HStack className="w-full justify-between rounded-lg border border-border p-3">
+              <div key={method} className="w-full rounded-lg border border-border">
+                <HStack className="w-full justify-between p-3">
                   <HStack spacing={2}>
                     {meta.icon}
                     <span className="text-sm font-medium">{meta.label}</span>
@@ -159,14 +223,15 @@ export default function LoginMethodsForm({
                       variant="secondary"
                       size="sm"
                       isDisabled={blockedByEmail}
-                      onClick={() =>
+                      onClick={() => {
+                        setWechatOpen(false);
                         setDraft({
                           method: method as "email" | "phone",
                           step: "enter",
                           contact: "",
                           code: ""
-                        })
-                      }
+                        });
+                      }}
                     >
                       <Trans>Connect</Trans>
                     </Button>
@@ -181,7 +246,12 @@ export default function LoginMethodsForm({
                       <Trans>Connect</Trans>
                     </Button>
                   ) : (
-                    <Button type="button" variant="secondary" size="sm" isDisabled>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      onClick={onConnectWeChat}
+                    >
                       <Trans>Connect</Trans>
                     </Button>
                   )}
@@ -195,7 +265,7 @@ export default function LoginMethodsForm({
                   >
                     <VStack
                       spacing={2}
-                      className="rounded-lg border border-border p-3"
+                      className="border-t border-border p-3"
                     >
                       {draft.step === "enter" ? (
                         <>
@@ -285,7 +355,46 @@ export default function LoginMethodsForm({
                     </VStack>
                   </addFetcher.Form>
                 )}
-              </VStack>
+
+                {wechatPanelOpen && (
+                  <VStack
+                    spacing={2}
+                    className="items-center border-t border-border p-3"
+                  >
+                    {wechatFetcher.state === "loading" ||
+                    !wechatFetcher.data ? (
+                      <p className="text-sm text-muted-foreground">
+                        <Trans>Loading…</Trans>
+                      </p>
+                    ) : wechatFetcher.data.url ? (
+                      <>
+                        <div className="rounded-xl bg-white p-3">
+                          <QRCodeSVG
+                            value={wechatFetcher.data.url}
+                            size={160}
+                            className="block"
+                          />
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          <Trans>Scan with WeChat to connect</Trans>
+                        </p>
+                      </>
+                    ) : (
+                      <p className="text-sm text-red-500">
+                        <Trans>WeChat is unavailable right now</Trans>
+                      </p>
+                    )}
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setWechatOpen(false)}
+                    >
+                      <Trans>Cancel</Trans>
+                    </Button>
+                  </VStack>
+                )}
+              </div>
             );
           })}
         </VStack>
