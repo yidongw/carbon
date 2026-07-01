@@ -76,6 +76,18 @@ export async function loader({ request }: LoaderFunctionArgs) {
     });
   }
 
+  // GoTrue error redirect: errors appear in both the query string and hash
+  // fragment (since GoTrue v2.x). Handle server-side so we can preserve the
+  // session and redirect the user back to where they came from cleanly.
+  const errorCode = url.searchParams.get("error_code");
+  const errorDescription = url.searchParams.get("error_description");
+  if (errorCode || errorDescription) {
+    const msg = (errorDescription ?? errorCode ?? "Authentication error").replace(/\+/g, " ");
+    const redirectTo = url.searchParams.get("redirectTo") ?? path.to.authenticatedRoot;
+    const sep = redirectTo.includes("?") ? "&" : "?";
+    return redirect(`${redirectTo}${sep}linkError=${encodeURIComponent(msg)}`);
+  }
+
   // OAuth (Google/Azure) implicit flow — tokens arrive in the URL hash, which
   // the server never sees. The client component handles those below.
   const authSession = await getAuthSession(request);
@@ -136,11 +148,25 @@ export async function action({ request }: ActionFunctionArgs) {
   // user.identities (not just app_metadata.provider) so linking a second
   // provider is captured too. Idempotent; a no-op if a credential is already on
   // another account.
-  if (userData.user.email) {
-    await linkIdentity(userId, "email", userData.user.email);
-    for (const identity of userData.user.identities ?? []) {
-      if (identity.provider === "google" || identity.provider === "azure") {
-        await linkIdentity(userId, identity.provider, userData.user.email);
+  //
+  // phone-only users have a synthetic freed-*@carbon.internal primary email;
+  // skip the email identity for those, and use each OAuth identity's own email
+  // (from identity_data) rather than the user's primary email.
+  const userEmail = userData.user.email;
+  const isSyntheticEmail = userEmail?.endsWith("@carbon.internal") ?? false;
+
+  if (userEmail && !isSyntheticEmail) {
+    await linkIdentity(userId, "email", userEmail);
+  }
+  for (const identity of userData.user.identities ?? []) {
+    if (identity.provider === "google" || identity.provider === "azure") {
+      const identityEmail =
+        (identity.identity_data as Record<string, unknown>)?.email as
+          | string
+          | undefined;
+      const emailToUse = identityEmail ?? (!isSyntheticEmail ? userEmail : undefined);
+      if (emailToUse) {
+        await linkIdentity(userId, identity.provider, emailToUse);
       }
     }
   }
