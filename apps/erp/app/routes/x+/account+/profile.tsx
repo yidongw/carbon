@@ -19,8 +19,9 @@ import {
   verifyEmailCode
 } from "@carbon/auth/verification.server";
 import { validationError, validator } from "@carbon/form";
-import { VStack } from "@carbon/react";
+import { toast, VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
+import { useEffect } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data, redirect, useLoaderData } from "react-router";
 import {
@@ -267,6 +268,22 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function AccountProfile() {
   const { user, identities, enabledMethods } = useLoaderData<typeof loader>();
+
+  // GoTrue delivers OAuth link errors (e.g. identity_already_exists) in the URL
+  // hash fragment. The fragment is never sent to the server but the browser
+  // preserves it across the redirect chain back to this page, so read it here
+  // and surface it as a toast. (The ?linkError= flash path in the loader can be
+  // missed on a hard document load, so this is the reliable signal.)
+  useEffect(() => {
+    const hash = window.location.hash.slice(1);
+    if (!hash) return;
+    const params = new URLSearchParams(hash);
+    const desc = params.get("error_description") ?? params.get("error");
+    if (!desc) return;
+    toast.error(decodeURIComponent(desc.replace(/\+/g, " ")));
+    // Clear the fragment so it doesn't re-fire on refresh.
+    window.history.replaceState(null, "", window.location.pathname + window.location.search);
+  }, []);
 
   return (
     <VStack spacing={4}>
