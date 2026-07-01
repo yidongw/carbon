@@ -778,7 +778,11 @@ export async function syncStripeDataToKV(
         stripeSubscriptionId: subData.subscriptionId,
         subscriptionStartDate: new Date(
           subData.currentPeriodStart * 1000
-        ).toISOString()
+        ).toISOString(),
+        // This is a recurring subscription — reset any prior one-time state so
+        // the hard seat cap no longer applies (subscriptions auto-scale seats).
+        paymentMode: "subscription",
+        termEndsAt: null
       };
 
     const [, companyPlan] = await Promise.all([
