@@ -10,9 +10,9 @@ import { path } from "~/utils/path";
 // and linkIdentity() sends the anon JWT (no sub claim) instead of the user
 // token → GoTrue rejects with "invalid claim: missing sub claim".
 //
-// This loader reads the access token from the server-side session cookie,
-// calls GoTrue with proper authentication, and redirects the browser to
-// the OAuth provider URL. GoTrue eventually redirects back to our /callback.
+// This loader reads the access token from the session cookie, calls GoTrue
+// with skip_http_redirect=true (which makes GoTrue return the OAuth provider
+// URL as JSON instead of doing a 302), then redirects the browser there.
 export async function loader({ request }: LoaderFunctionArgs) {
   const authSession = await getAuthSession(request);
   if (!authSession) return redirect(path.to.login);
@@ -32,31 +32,31 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const goTrueUrl = new URL(`${SUPABASE_URL}/auth/v1/user/identities/authorize`);
   goTrueUrl.searchParams.set("provider", provider);
   goTrueUrl.searchParams.set("redirect_to", callbackUrl);
+  // skip_http_redirect=true makes GoTrue return JSON { url: "https://..." }
+  // instead of a 302 redirect — this is how auth-js calls this endpoint.
+  goTrueUrl.searchParams.set("skip_http_redirect", "true");
 
   const response = await fetch(goTrueUrl.toString(), {
     headers: {
       Authorization: `Bearer ${authSession.accessToken}`,
       apikey: SUPABASE_ANON_KEY!
-    },
-    redirect: "manual"
+    }
   });
 
-  // Log what GoTrue actually returned so we can debug failures
-  const location = response.headers.get("Location") ?? response.headers.get("location");
-  console.log("[link-provider] GoTrue response", {
-    status: response.status,
-    type: response.type,
-    location,
-    headers: Object.fromEntries(response.headers.entries())
-  });
-
-  if (!location) {
+  if (!response.ok) {
     const body = await response.text().catch(() => "(unreadable)");
-    console.log("[link-provider] GoTrue body:", body);
+    console.error("[link-provider] GoTrue error", response.status, body);
     return redirect(
-      `${path.to.profile}?error=${encodeURIComponent(`GoTrue ${response.status}: ${body.slice(0, 100)}`)}`
+      `${path.to.profile}?error=${encodeURIComponent(`Failed to link account (${response.status})`)}`
     );
   }
 
-  return redirect(location);
+  const { url: oauthUrl } = (await response.json()) as { url?: string };
+  if (!oauthUrl) {
+    return redirect(
+      `${path.to.profile}?error=${encodeURIComponent("Failed to initiate OAuth link")}`
+    );
+  }
+
+  return redirect(oauthUrl);
 }
