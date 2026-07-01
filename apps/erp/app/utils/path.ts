@@ -1138,6 +1138,7 @@ export const path = {
     newCompanyInGroup: `${x}/settings/companies/new`,
     tryDemo: `${x}/settings/company/demo`,
     demoSeed: `${x}/demo/seed`,
+    demoExtendRequest: `${x}/demo/extend-request`,
     newConsumable: `${x}/consumable/new`,
     newConsumableSupplier: (id: string) =>
       generatePath(`${x}/consumable/${id}/purchasing/new`),

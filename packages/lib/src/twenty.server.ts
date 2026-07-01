@@ -38,6 +38,10 @@ type TwentyOpportunityResponse = {
   data: { createOpportunity: { id: string } };
 };
 
+type TwentyNoteResponse = {
+  data: { createNote: { id: string } };
+};
+
 class TwentyClient {
   private apiKey: string;
   private baseUrl = "https://api.twenty.com/rest";
@@ -102,6 +106,22 @@ class TwentyClient {
       data
     );
     return response.data.createOpportunity.id;
+  }
+
+  // Creates a plain-text note and attaches it to an opportunity.
+  async createNoteOnOpportunity(
+    opportunityId: string,
+    body: string,
+    title?: string
+  ): Promise<string> {
+    const noteRes = await this.request<TwentyNoteResponse>("/notes", "POST", {
+      title: title ?? "",
+      body
+    });
+    const noteId = noteRes.data.createNote.id;
+    // Link the note to the opportunity via the noteTargets join table.
+    await this.request("/noteTargets", "POST", { noteId, opportunityId });
+    return noteId;
   }
 }
 

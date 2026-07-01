@@ -1,6 +1,6 @@
 import { useLingui } from "@lingui/react/macro";
 import type { ReactNode } from "react";
-import { LuBuilding2, LuFlaskConical } from "react-icons/lu";
+import { LuBuilding2, LuCalendarPlus, LuFlaskConical } from "react-icons/lu";
 import { useFetcher } from "react-router";
 import { path } from "~/utils/path";
 
@@ -26,6 +26,9 @@ const demoIcon = (
 );
 const companyIcon = (
   <LuBuilding2 className="mr-1 inline size-3.5 align-[-0.15em]" />
+);
+const extendIcon = (
+  <LuCalendarPlus className="mr-1 inline size-3.5 align-[-0.15em]" />
 );
 
 export type DemoState = {
@@ -62,11 +65,18 @@ export function DemoBanner({ demo, realCompanyId }: DemoBannerProps) {
 
   if (demo?.isCurrent) {
     const days = daysLeft(demo.expiresAt);
+    const extendLink = (
+      <Action action={path.to.demoExtendRequest}>
+        {extendIcon}
+        {t`Request extension`}
+      </Action>
+    );
     content =
       days <= 0 ? (
         <>
           {demoIcon}
           {t`You're in the demo company — it has ended.`}{" "}
+          {extendLink}{" "}
           {realCompanyId && (
             <Action action={path.to.companySwitch(realCompanyId)}>
               {companyIcon}
@@ -80,6 +90,7 @@ export function DemoBanner({ demo, realCompanyId }: DemoBannerProps) {
           {days === 1
             ? t`You're in the demo company — 1 day left.`
             : t`You're in the demo company — ${days} days left.`}{" "}
+          {days <= 7 && <>{extendLink}{" "}</>}
           {realCompanyId && (
             <Action action={path.to.companySwitch(realCompanyId)}>
               {companyIcon}
