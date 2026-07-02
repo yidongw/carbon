@@ -4961,7 +4961,7 @@ msgid "Loading..."
 msgstr "Cargando..."
 
 msgid "Loading…"
-msgstr ""
+msgstr "Cargando…"
 
 msgid "Location"
 msgstr "Ubicación"
@@ -7275,7 +7275,7 @@ msgid "Refresh exchange rate"
 msgstr "Actualizar tipo de cambio"
 
 msgid "Refresh QR code"
-msgstr ""
+msgstr "Refrescar código QR"
 
 msgid "Reject"
 msgstr "Rechazar"
@@ -7809,7 +7809,7 @@ msgid "Scan the tracking ID for this line"
 msgstr "Escanea el ID de seguimiento para esta línea"
 
 msgid "Scan with WeChat to sign in"
-msgstr ""
+msgstr "Escanea con WeChat para iniciar sesión"
 
 msgid "SCAR"
 msgstr "SCAR"
@@ -8331,7 +8331,7 @@ msgid "Sign in with Passkey"
 msgstr ""
 
 msgid "Sign in with WeChat"
-msgstr ""
+msgstr "Iniciar sesión con WeChat"
 
 msgid "Sign Out"
 msgstr "Cerrar sesión"
@@ -9840,7 +9840,7 @@ msgid "Website"
 msgstr "Sitio web"
 
 msgid "WeChat QR"
-msgstr ""
+msgstr "QR de WeChat"
 
 msgid "Wednesday"
 msgstr "Miércoles"
