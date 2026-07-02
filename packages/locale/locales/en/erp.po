@@ -82,6 +82,9 @@ msgstr "{scopeCount} permissions"
 msgid "/month/user"
 msgstr "/month/user"
 
+msgid "%"
+msgstr "%"
+
 #. placeholder {0}: allItems.length - 3
 msgid "+{0} more"
 msgstr "+{0} more"
@@ -3602,6 +3605,9 @@ msgstr "Escalation"
 msgid "Est. Duration"
 msgstr "Est. Duration"
 
+msgid "Estimated"
+msgstr "Estimated"
+
 msgid "Estimated Duration"
 msgstr "Estimated Duration"
 
@@ -5228,6 +5234,9 @@ msgstr "Machine Unit"
 msgid "Machinery & Equipment"
 msgstr "Machinery & Equipment"
 
+msgid "Magic link expired or already used. Please request a new one."
+msgstr "Magic link expired or already used. Please request a new one."
+
 msgid "Maintenance"
 msgstr "Maintenance"
 
@@ -6643,6 +6652,9 @@ msgstr "Password is too short"
 msgid "Path"
 msgstr "Path"
 
+msgid "Pause"
+msgstr "Pause"
+
 msgid "Paused"
 msgstr "Paused"
 
@@ -6853,7 +6865,10 @@ msgid "Please enter your name"
 msgstr "Please enter your name"
 
 msgid "Please fill out all required fields"
-msgstr "Please fill out all required fields"
+msgstr "Please fill out all required fields<<<<<<< HEAD======="
+
+msgid "Please open this link in the same browser where you requested sign-in."
+msgstr "Please open this link in the same browser where you requested sign-in.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
 
 msgid "Please save the operation before adding parameters."
 msgstr "Please save the operation before adding parameters."
@@ -7756,6 +7771,9 @@ msgstr "Results"
 msgid "Results per page"
 msgstr "Results per page"
 
+msgid "Resume"
+msgstr "Resume"
+
 msgid "Retained Earnings"
 msgstr "Retained Earnings"
 
@@ -7795,6 +7813,9 @@ msgstr "Revision"
 #. placeholder {0}: revision.revision
 msgid "Revision {0}"
 msgstr "Revision {0}"
+
+msgid "Revisions"
+msgstr "Revisions"
 
 msgid "Revoke"
 msgstr "Revoke"

@@ -82,6 +82,9 @@ msgstr "{scopeCount} permissões"
 msgid "/month/user"
 msgstr "/mês/utilizador"
 
+msgid "%"
+msgstr "{%)"
+
 #. placeholder {0}: allItems.length - 3
 msgid "+{0} more"
 msgstr "+{0} mais"
@@ -3602,6 +3605,9 @@ msgstr "Escalação"
 msgid "Est. Duration"
 msgstr "Duração Est."
 
+msgid "Estimated"
+msgstr "Estimado"
+
 msgid "Estimated Duration"
 msgstr "Duração Estimada"
 
@@ -3918,10 +3924,10 @@ msgid "Failed to load inspections."
 msgstr ""
 
 msgid "Failed to load inventory."
-msgstr ""
+msgstr "Falhou ao carregar o inventário."
 
 msgid "Failed to load issues."
-msgstr ""
+msgstr "Falha ao carregar problemas.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
 
 msgid "Failed to load item data"
 msgstr "Falha ao carregar dados do item"
@@ -3939,16 +3945,16 @@ msgid "Failed to load jobs."
 msgstr ""
 
 msgid "Failed to load materials."
-msgstr ""
+msgstr "Falhou ao carregar os materiais."
 
 msgid "Failed to load parts."
-msgstr ""
+msgstr "Falhou ao carregar os componentes."
 
 msgid "Failed to load people."
-msgstr ""
+msgstr "Falhou ao carregar pessoas."
 
 msgid "Failed to load purchase invoices."
-msgstr ""
+msgstr "Falhou ao carregar as faturas de compra.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
 
 msgid "Failed to load purchase order lines"
 msgstr "Falha ao carregar linhas de ordem de compra"
@@ -3960,7 +3966,7 @@ msgid "Failed to load purchase orders."
 msgstr ""
 
 msgid "Failed to load quotes."
-msgstr ""
+msgstr "Falha ao carregar cotações.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
 
 msgid "Failed to load receipt lines"
 msgstr "Falha ao carregar linhas de recebimento"
@@ -3972,10 +3978,10 @@ msgid "Failed to load receipts."
 msgstr ""
 
 msgid "Failed to load RFQs."
-msgstr ""
+msgstr "Falhou ao carregar as OFs."
 
 msgid "Failed to load sales invoices."
-msgstr ""
+msgstr "Falhou ao carregar as faturas de vendas.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
 
 msgid "Failed to load sales order lines"
 msgstr "Falha ao carregar linhas de pedido de venda"
@@ -3996,7 +4002,7 @@ msgid "Failed to load shipments."
 msgstr ""
 
 msgid "Failed to load suggestions."
-msgstr ""
+msgstr "Falha ao carregar sugestões.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
 
 msgid "Failed to load supplier part details"
 msgstr "Falha ao carregar detalhes da peça do fornecedor"
@@ -4005,7 +4011,7 @@ msgid "Failed to load suppliers."
 msgstr ""
 
 msgid "Failed to load tools."
-msgstr ""
+msgstr "Falhou ao carregar ferramentas.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
 
 msgid "Failed to load tracked entities"
 msgstr "Falha ao carregar entidades rastreadas"
@@ -5227,6 +5233,9 @@ msgstr "Unidade de Máquina"
 
 msgid "Machinery & Equipment"
 msgstr "Máquina e Equipamentos"
+
+msgid "Magic link expired or already used. Please request a new one."
+msgstr "Hyperlink expirado ou já utilizado. Por favor, solicite um novo."
 
 msgid "Maintenance"
 msgstr "Manutenção"
@@ -6643,6 +6652,9 @@ msgstr "A senha é muito curta"
 msgid "Path"
 msgstr "Caminho"
 
+msgid "Pause"
+msgstr "Pausar"
+
 msgid "Paused"
 msgstr "Pausado"
 
@@ -6853,7 +6865,10 @@ msgid "Please enter your name"
 msgstr "Por favor, insira seu nome"
 
 msgid "Please fill out all required fields"
-msgstr "Por favor, preencha todos os campos obrigatórios"
+msgstr "Por favor, preencha todos os campos obrigatórios<<<<<<< HEAD======="
+
+msgid "Please open this link in the same browser where you requested sign-in."
+msgstr "Por favor, abra este link no mesmo navegador onde solicitou o login.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
 
 msgid "Please save the operation before adding parameters."
 msgstr "Por favor, salve a operação antes de adicionar parâmetros."
@@ -7756,6 +7771,9 @@ msgstr "Resultados"
 msgid "Results per page"
 msgstr "Resultados por página"
 
+msgid "Resume"
+msgstr "Resumo"
+
 msgid "Retained Earnings"
 msgstr "Lucros Acumulados"
 
@@ -7795,6 +7813,9 @@ msgstr "Revisão"
 #. placeholder {0}: revision.revision
 msgid "Revision {0}"
 msgstr "Revisão {0}"
+
+msgid "Revisions"
+msgstr "Revisões"
 
 msgid "Revoke"
 msgstr "Revogar"

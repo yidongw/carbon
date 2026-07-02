@@ -394,13 +394,13 @@ export default function PartRoute() {
                             const tree: UsedInNode[] = [
                               {
                                 key: "issues",
-                                name: "Issues",
+                                name: t`Issues`,
                                 module: "quality",
                                 children: issues
                               },
                               {
                                 key: "jobs",
-                                name: "Jobs",
+                                name: t`Jobs`,
                                 module: "production",
                                 children: jobs.map((job) => ({
                                   ...job,
@@ -409,26 +409,26 @@ export default function PartRoute() {
                               },
                               {
                                 key: "jobMaterials",
-                                name: "Job Materials",
+                                name: t`Job Materials`,
                                 module: "production",
                                 children: jobMaterials
                               },
                               {
                                 key: "maintenanceDispatchItems",
-                                name: "Maintenance",
+                                name: t`Maintenance`,
                                 module: "resources",
                                 children: maintenanceDispatchItems
                               },
                               {
                                 key: "methodMaterials",
-                                name: "Method Materials",
+                                name: t`Method Materials`,
                                 module: "parts",
                                 // @ts-expect-error
                                 children: methodMaterials
                               },
                               {
                                 key: "purchaseOrderLines",
-                                name: "Purchase Orders",
+                                name: t`Purchase Orders`,
                                 module: "purchasing",
                                 children: purchaseOrderLines.map((po) => ({
                                   ...po,
@@ -437,7 +437,7 @@ export default function PartRoute() {
                               },
                               {
                                 key: "receiptLines",
-                                name: "Receipts",
+                                name: t`Receipts`,
                                 module: "inventory",
                                 children: receiptLines.map((receipt) => ({
                                   ...receipt,
@@ -446,13 +446,13 @@ export default function PartRoute() {
                               },
                               {
                                 key: "quoteLines",
-                                name: "Quotes",
+                                name: t`Quotes`,
                                 module: "sales",
                                 children: quoteLines
                               },
                               {
                                 key: "quoteMaterials",
-                                name: "Quote Materials",
+                                name: t`Quote Materials`,
                                 module: "sales",
                                 children: quoteMaterials?.map((qm) => ({
                                   ...qm,
@@ -462,13 +462,13 @@ export default function PartRoute() {
                               },
                               {
                                 key: "salesOrderLines",
-                                name: "Sales Orders",
+                                name: t`Sales Orders`,
                                 module: "sales",
                                 children: salesOrderLines
                               },
                               {
                                 key: "shipmentLines",
-                                name: "Shipments",
+                                name: t`Shipments`,
                                 module: "inventory",
                                 children: shipmentLines.map((shipment) => ({
                                   ...shipment,
@@ -477,7 +477,7 @@ export default function PartRoute() {
                               },
                               {
                                 key: "supplierQuotes",
-                                name: "Supplier Quotes",
+                                name: t`Supplier Quotes`,
                                 module: "purchasing",
                                 children: supplierQuotes
                               }

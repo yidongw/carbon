@@ -82,6 +82,9 @@ msgstr "{scopeCount} autorizzazioni"
 msgid "/month/user"
 msgstr "/mese/utente"
 
+msgid "%"
+msgstr "%"
+
 #. placeholder {0}: allItems.length - 3
 msgid "+{0} more"
 msgstr "+{0} altri"
@@ -3602,6 +3605,9 @@ msgstr "Escalation"
 msgid "Est. Duration"
 msgstr "Durata stimata"
 
+msgid "Estimated"
+msgstr "Stimato"
+
 msgid "Estimated Duration"
 msgstr "Durata Stimata"
 
@@ -3918,10 +3924,10 @@ msgid "Failed to load inspections."
 msgstr ""
 
 msgid "Failed to load inventory."
-msgstr ""
+msgstr "Fallito caricamento inventario."
 
 msgid "Failed to load issues."
-msgstr ""
+msgstr "Caricamento degli errori fallito.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
 
 msgid "Failed to load item data"
 msgstr "Impossibile caricare i dati dell'elemento"
@@ -3939,16 +3945,16 @@ msgid "Failed to load jobs."
 msgstr ""
 
 msgid "Failed to load materials."
-msgstr ""
+msgstr "Caricamento materiali fallito."
 
 msgid "Failed to load parts."
-msgstr ""
+msgstr "Caricamento dei pezzi fallito."
 
 msgid "Failed to load people."
-msgstr ""
+msgstr "Caricamento persone fallito."
 
 msgid "Failed to load purchase invoices."
-msgstr ""
+msgstr "Caricamento delle fatture di acquisto fallito.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
 
 msgid "Failed to load purchase order lines"
 msgstr "Impossibile caricare le righe dell'ordine di acquisto"
@@ -3960,7 +3966,7 @@ msgid "Failed to load purchase orders."
 msgstr ""
 
 msgid "Failed to load quotes."
-msgstr ""
+msgstr "Caricamento delle offerte fallito.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
 
 msgid "Failed to load receipt lines"
 msgstr "Impossibile caricare le righe di ricezione"
@@ -3972,10 +3978,10 @@ msgid "Failed to load receipts."
 msgstr ""
 
 msgid "Failed to load RFQs."
-msgstr ""
+msgstr "Fallito caricamento RFQs."
 
 msgid "Failed to load sales invoices."
-msgstr ""
+msgstr "Caricamento delle fatture di vendita fallito.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
 
 msgid "Failed to load sales order lines"
 msgstr "Impossibile caricare le righe dell'ordine di vendita"
@@ -3996,7 +4002,7 @@ msgid "Failed to load shipments."
 msgstr ""
 
 msgid "Failed to load suggestions."
-msgstr ""
+msgstr "Caricamento suggerimenti fallito.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
 
 msgid "Failed to load supplier part details"
 msgstr "Impossibile caricare i dettagli della parte fornitore"
@@ -4005,7 +4011,7 @@ msgid "Failed to load suppliers."
 msgstr ""
 
 msgid "Failed to load tools."
-msgstr ""
+msgstr "Fallito caricamento strumenti.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
 
 msgid "Failed to load tracked entities"
 msgstr "Impossibile caricare le entità tracciate"
@@ -5227,6 +5233,9 @@ msgstr "Unità Macchina"
 
 msgid "Machinery & Equipment"
 msgstr "Eserciziatura e Strumenti"
+
+msgid "Magic link expired or already used. Please request a new one."
+msgstr "Collegamento magico scaduto o già utilizzato. Per favore richiedene uno nuovo."
 
 msgid "Maintenance"
 msgstr "Manutenzione"
@@ -6643,6 +6652,9 @@ msgstr "La password è troppo corta"
 msgid "Path"
 msgstr "Percorso"
 
+msgid "Pause"
+msgstr "Pausa"
+
 msgid "Paused"
 msgstr "Sospeso"
 
@@ -6853,7 +6865,10 @@ msgid "Please enter your name"
 msgstr "Per favore, inserisci il tuo nome"
 
 msgid "Please fill out all required fields"
-msgstr "Compila tutti i campi obbligatori"
+msgstr "Compila tutti i campi obbligatori<<<<<<< HEAD======="
+
+msgid "Please open this link in the same browser where you requested sign-in."
+msgstr "Si prega di aprire questo collegamento nello stesso browser in cui hai richiesto il login.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
 
 msgid "Please save the operation before adding parameters."
 msgstr "Si prega di salvare l'operazione prima di aggiungere parametri."
@@ -7756,6 +7771,9 @@ msgstr "Risultati"
 msgid "Results per page"
 msgstr "Risultati per pagina"
 
+msgid "Resume"
+msgstr "Riprendi"
+
 msgid "Retained Earnings"
 msgstr "Utili non distribuiti"
 
@@ -7795,6 +7813,9 @@ msgstr "Revisione"
 #. placeholder {0}: revision.revision
 msgid "Revision {0}"
 msgstr "Revisione {0}"
+
+msgid "Revisions"
+msgstr "Righe di revisione"
 
 msgid "Revoke"
 msgstr "Revoca"

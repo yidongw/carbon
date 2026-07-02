@@ -40,6 +40,7 @@ import {
   useSearchParams
 } from "react-router";
 import { getCompanies, getEmployeeCompanies } from "~/modules/settings";
+import { useFormatValidationError } from "~/utils/formatValidationError";
 import { path } from "~/utils/path";
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -183,6 +184,7 @@ export default function AuthCallback() {
   const fetcher = useFetcher<{}>();
   const isAuthenticating = useRef(false);
   const [error, setError] = useState<string | null>(loaderError ?? null);
+  const formatError = useFormatValidationError();
 
   const { hash } = useLocation();
   const [searchParams] = useSearchParams();
@@ -238,7 +240,7 @@ export default function AuthCallback() {
               <AlertTitle>
                 <Trans>Error</Trans>
               </AlertTitle>
-              <AlertDescription>{error}</AlertDescription>
+              <AlertDescription>{formatError(error)}</AlertDescription>
             </Alert>
             {error.includes("expired") && (
               <>
