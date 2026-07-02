@@ -38,7 +38,8 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data, Form, redirect, useLoaderData } from "react-router";
 import { z } from "zod";
 import { usePermissions, useUser } from "~/hooks";
-import { getCompany, getCompanyPlan } from "~/modules/settings";
+import { PlanSelector } from "~/components/PlanSelector";
+import { getCompany, getCompanyPlan, getPlans } from "~/modules/settings";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 
@@ -72,7 +73,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     `
     )
     .eq("id", companyId)
-    .single();
+    .maybeSingle();
 
   const companyUsage = await client
     .from("companyUsage")
@@ -104,10 +105,22 @@ export async function loader({ request }: LoaderFunctionArgs) {
           .in("id", userIds)
       : { data: [], error: null };
 
+  // Plans available to purchase/upgrade to (free-tier companies see the picker).
+  const allPlans = await getPlans(client);
+  const SELLABLE_PLAN_IDS = ["STARTER", "BUSINESS"];
+  const ipCountry =
+    request.headers.get("x-vercel-ip-country") ??
+    request.headers.get("cf-ipcountry") ??
+    null;
+
   return {
     plan: companyPlan.data,
     usage: companyUsage.data,
-    employees: employees.data || []
+    employees: employees.data || [],
+    plans: (allPlans.data ?? []).filter(
+      (p) => p.public && SELLABLE_PLAN_IDS.includes(p.id)
+    ),
+    ipCountry
   };
 }
 
@@ -155,6 +168,48 @@ export async function action({ request }: ActionFunctionArgs) {
     } catch (err) {
       console.error("Failed to start one-time checkout:", err);
       return data({}, await flash(request, error(null, "Failed to start checkout")));
+    }
+  }
+
+  // Free-tier company picking a plan to purchase (from the Billing plan picker).
+  if (intent === "choose-plan") {
+    const planId = String(formData.get("planId"));
+    const mode =
+      String(formData.get("mode") ?? "subscription") === "one_time"
+        ? "one_time"
+        : "subscription";
+    const quantity = Math.max(
+      1,
+      parseInt(String(formData.get("quantity") ?? "1"), 10) || 1
+    );
+
+    if (!["STARTER", "BUSINESS"].includes(planId)) {
+      return data({}, await flash(request, error(null, "Invalid plan")));
+    }
+
+    const [user, company] = await Promise.all([
+      getUser(client, userId),
+      getCompany(client, companyId)
+    ]);
+
+    try {
+      const url = await getCheckoutUrl({
+        planId,
+        userId,
+        companyId,
+        email: user.data?.email ?? "",
+        name: company.data?.name,
+        mode,
+        quantity,
+        purpose: "purchase"
+      });
+      return redirect(url);
+    } catch (err) {
+      console.error("Failed to start checkout:", err);
+      return data(
+        {},
+        await flash(request, error(null, "Failed to start checkout"))
+      );
     }
   }
 
@@ -222,8 +277,15 @@ export async function action({ request }: ActionFunctionArgs) {
 
 // This route now only handles actions - UI is in the company route
 export default function PaymentSettings() {
-  const { plan, usage, employees } = useLoaderData<typeof loader>();
+  const { plan, usage, employees, plans, ipCountry } =
+    useLoaderData<typeof loader>();
   const isOneTime = plan?.paymentMode === "one_time";
+  // A company has an active paid plan if it has a subscription or a purchased
+  // one-time term; otherwise it's on the free tier and sees the plan picker.
+  const hasPlan = Boolean(
+    plan?.stripeSubscriptionId ||
+      (plan?.paymentMode === "one_time" && plan?.termEndsAt)
+  );
   const { isOwner } = usePermissions();
   const { id: userId } = useUser();
   const edition = useEdition();
@@ -241,7 +303,28 @@ export default function PaymentSettings() {
         </Heading>
         {edition === Edition.Cloud && isOwner() && (
           <>
-            {isOneTime ? (
+            {!hasPlan ? (
+              <Card>
+                <CardHeader>
+                  <CardTitle>
+                    <Trans>Choose a plan</Trans>
+                  </CardTitle>
+                  <CardDescription>
+                    <Trans>
+                      You're on the free plan. Upgrade to unlock more seats and
+                      features.
+                    </Trans>
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <PlanSelector
+                    plans={plans}
+                    ipCountry={ipCountry}
+                    intent="choose-plan"
+                  />
+                </CardContent>
+              </Card>
+            ) : isOneTime ? (
               <OneTimePlanCard plan={plan} usage={usage} />
             ) : (
               <Card>
