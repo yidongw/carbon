@@ -373,12 +373,7 @@ export async function getCheckoutUrl({
     automatic_tax: { enabled: true },
     tax_id_collection: { enabled: true, required: "never" },
     customer_update: { name: "auto", address: "auto" },
-    ...(plan.data?.stripeTrialPeriodDays &&
-      plan.data.stripeTrialPeriodDays > 0 && {
-        subscription_data: {
-          trial_period_days: plan.data?.stripeTrialPeriodDays ?? 0
-        }
-      }),
+    // No trial — the subscription is charged immediately.
     metadata: {
       userId,
       companyId

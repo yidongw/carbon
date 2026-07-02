@@ -18,7 +18,6 @@ import {
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useLocale } from "@react-aria/i18n";
 import { useMemo, useState } from "react";
-import { LuGraduationCap, LuPhoneCall } from "react-icons/lu";
 import { useFetcher } from "react-router";
 
 export type PlanItem = {
@@ -41,7 +40,6 @@ function usePlans() {
       monthly: { usd: 40, cny: 288 },
       annualMonthly: { usd: 30, cny: 200 },
       userMinimum: 0,
-      talkToSales: false,
       description: t`Perfect for low-cost evaluation`,
       features: [
         t`ERP, MES, QMS`,
@@ -53,7 +51,6 @@ function usePlans() {
       monthly: { usd: 100, cny: 720 },
       annualMonthly: { usd: 75, cny: 500 },
       userMinimum: 5,
-      talkToSales: true,
       description: t`For growing businesses that need support`,
       features: [
         t`5 User Minimum`,
@@ -121,9 +118,7 @@ export function PlanSelector({
       <CardDescription className="mb-3">
         {billingMode === "one_time"
           ? t`Pay for one year up front with WeChat Pay, Alipay, or card. Renew before it expires.`
-          : t`Pay monthly by card. You won't be charged for the first ${
-              plans[0]?.stripeTrialPeriodDays ?? 0
-            } days. Switch or cancel anytime.`}
+          : t`Pay monthly by card, charged immediately. Switch or cancel anytime.`}
       </CardDescription>
       <Tabs
         value={billingMode}
@@ -274,35 +269,9 @@ function PlanCard({
                 ? oneTimeAvailable
                   ? t`Pay 1 Year`
                   : t`Not available`
-                : plan.stripeTrialPeriodDays > 0
-                  ? t`Start ${plan.stripeTrialPeriodDays} Day Free Trial`
-                  : t`Start Now`}
+                : t`Start Now`}
             </Button>
           </fetcher.Form>
-
-          {planDetails?.talkToSales ? (
-            <Button
-              leftIcon={<LuPhoneCall />}
-              className="w-full"
-              variant="secondary"
-              asChild
-            >
-              <a href="https://carbon.ms/sales" target="_blank" rel="noreferrer">
-                <Trans>Talk to Sales</Trans>
-              </a>
-            </Button>
-          ) : (
-            <Button
-              leftIcon={<LuGraduationCap />}
-              className="w-full"
-              variant="secondary"
-              asChild
-            >
-              <a href="https://learn.carbon.ms" target="_blank" rel="noreferrer">
-                <Trans>Start Learning</Trans>
-              </a>
-            </Button>
-          )}
         </VStack>
       </CardFooter>
     </Card>
