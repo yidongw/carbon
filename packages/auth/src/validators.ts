@@ -48,6 +48,7 @@ export const resetPasswordValidator = z.object({
 });
 
 export const callbackValidator = z.object({
+  accessToken: z.string(),
   refreshToken: z.string(),
   userId: z.string(),
   redirectTo: zfd.text(z.string().optional())
