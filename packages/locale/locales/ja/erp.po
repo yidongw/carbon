@@ -54,6 +54,10 @@ msgstr "{0}件の注文"
 msgid "{0} Processes"
 msgstr "{0}個のプロセス"
 
+#. placeholder {0}: percentFormatter.format(line.taxPercent ?? 0)
+msgid "{0} Tax"
+msgstr "{0}税"
+
 #. placeholder {0}: lotEntities.length - inspected
 msgid "{0} un-sampled entities will be released to Available. Sampled passes stay Available and sampled failures stay Rejected."
 msgstr "{0}個の未サンプリングエンティティが利用可能にリリースされます。サンプリング済みの合格品は利用可能なままで、サンプリング済みの不合格品は却下されたままです。"
@@ -253,6 +257,9 @@ msgstr "蓄積期間:"
 msgid "Action Items"
 msgstr "アクション項目"
 
+msgid "Action Menu"
+msgstr "アクションメニュー"
+
 msgid "Action Status"
 msgstr "アクション状態"
 
@@ -355,6 +362,9 @@ msgstr "会社を追加"
 
 msgid "Add condition"
 msgstr "追加条件"
+
+msgid "Add Console Operator"
+msgstr "コンソールオペレータ追加"
 
 msgid "Add Contractor"
 msgstr "契約業者を追加"
@@ -466,6 +476,9 @@ msgstr "アドオンコスト"
 
 msgid "Adding..."
 msgstr "追加中..."
+
+msgid "Additional Charges"
+msgstr "追加料金"
 
 msgid "Address"
 msgstr "住所"
@@ -1275,6 +1288,9 @@ msgstr "かつ"
 msgid "BOP"
 msgstr "BOP"
 
+msgid "Bot verification failed. Please try again."
+msgstr "ボット認証に失敗しました。もう一度試してください。"
+
 msgid "Box"
 msgstr "ボックス"
 
@@ -1409,6 +1425,9 @@ msgstr ""
 
 msgid "Cannot upload to parts bucket without item ID"
 msgstr "アイテムIDなしでパーツバケットにアップロードできません"
+
+msgid "Canvas showing the model in the 3D Viewer"
+msgstr "3Dビューワで表示されるモデルのキャンバス"
 
 msgid "Carbon client is not available"
 msgstr "Carbonクライアントは利用できません"
@@ -1569,6 +1588,9 @@ msgstr "代金引換"
 
 msgid "Code"
 msgstr "コード"
+
+msgid "Collapse"
+msgstr "折りたたむ"
 
 msgid "Collapse all"
 msgstr "すべて折りたたむ"
@@ -1832,17 +1854,31 @@ msgstr "変換:"
 msgid "Convert"
 msgstr "変換"
 
+msgid "Convert & Send Invite"
+msgstr "コンバート&招待送信"
+
+#. placeholder {0}: operator.firstName
+#. placeholder {1}: operator.lastName
+msgid "Convert <0>{0} {1}</0> from a console operator to a full user. They will receive an email invitation and be able to log in independently."
+msgstr "コンソールオペレータからフルユーザーに変更します。<0>{0} {1}</0>はメール招待を受け取り、独立してログインできるようになります。"
+
 msgid "Convert Line to Job"
 msgstr "ラインをジョブに変換"
 
 msgid "Convert Lines to Jobs"
 msgstr "ラインをジョブに変換"
 
+msgid "Convert to Full User"
+msgstr "フルユーザーに変更します"
+
 msgid "Convert to Quote"
 msgstr "見積に変換"
 
 msgid "Copied link to clipboard"
 msgstr "クリップボードにリンクをコピーしました"
+
+msgid "Copied!"
+msgstr "コピーしました!"
 
 msgid "Copy"
 msgstr "コピー"
@@ -1960,6 +1996,9 @@ msgstr "このリンクをコピーして、顧客と見積書を共有してく
 
 msgid "Copy this link to share the quote with a supplier"
 msgstr "このリンクをコピーして、サプライヤーと見積もりを共有してください"
+
+msgid "Copy to clipboard"
+msgstr "クリップボードにコピー"
 
 msgid "Copy tool number"
 msgstr "ツール番号をコピー"
@@ -2079,6 +2118,9 @@ msgstr "カンバンを作成"
 
 msgid "Create new rule"
 msgstr "新規ルールを作成"
+
+msgid "Create Operator"
+msgstr "作業者を作成"
 
 msgid "Create PO"
 msgstr "作成PO"
@@ -2876,6 +2918,10 @@ msgstr "破棄"
 msgid "Discount"
 msgstr "割引"
 
+#. placeholder {0}: percentFormatter.format(selectedLine.discountPercent)
+msgid "Discount ({0})"
+msgstr "割引 ({0})"
+
 msgid "Discount Days after {selectedCalculationMethod}"
 msgstr "{selectedCalculationMethod}後の割引日数"
 
@@ -2884,6 +2930,9 @@ msgstr "割引率"
 
 msgid "Discount Percentage"
 msgstr "割引率"
+
+msgid "Discount:"
+msgstr "割引："
 
 msgid "Dismiss"
 msgstr "閉じる"
@@ -3005,6 +3054,8 @@ msgstr "ドラム"
 msgid "Due"
 msgstr ""
 
+#. placeholder {0}: formatDate(routeData?.purchaseInvoice.dateDue)
+#. placeholder {0}: formatDate(routeData?.salesInvoice.dateDue)
 #. placeholder {0}: formatRelativeTime( convertDateStringToIsoString(dueDate) )
 msgid "Due {0}"
 msgstr "期限 {0}"
@@ -3343,6 +3394,12 @@ msgstr "メール"
 msgid "Email Address"
 msgstr "メールアドレス"
 
+msgid "Email is required"
+msgstr "メールが必要です"
+
+msgid "Email link is invalid or has expired"
+msgstr "メールリンクが無効または期限切れです"
+
 msgid "Email notifications not configured"
 msgstr "メール通知が設定されていません"
 
@@ -3584,6 +3641,11 @@ msgstr "為替レート"
 msgid "Exchange Rates"
 msgstr "Exchange Rates"
 
+#. placeholder {0}: routeData?.invoiceSummary?.currencyMismatchCount
+#. placeholder {1}: (routeData?.invoiceSummary?.currencyMismatchCount ?? 0) > 1 ? "s" : ""
+msgid "Excludes {0} invoice{1} in a different currency."
+msgstr "異なる通貨の{0}発票{1}を除外します。"
+
 msgid "Expand"
 msgstr "展開"
 
@@ -3629,6 +3691,10 @@ msgstr "期限切れバッチ"
 
 msgid "Expires"
 msgstr "有効期限"
+
+#. placeholder {0}: formatDate(routeData?.quote.expirationDate)
+msgid "Expires {0}"
+msgstr "有効期限は{0}"
 
 msgid "Expires {date}"
 msgstr ""
@@ -3788,6 +3854,9 @@ msgstr "{0}"
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create tool: {0}"
 msgstr "ツール作成に失敗しました: {0}"
+
+msgid "Failed to create user account"
+msgstr "ユーザー アカウントの作成に失敗しました"
 
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create webhook: {0}"
@@ -3971,6 +4040,18 @@ msgstr "設定ルールの保存に失敗しました"
 msgid "Failed to save diagram"
 msgstr ""
 
+msgid "Failed to send magic link"
+msgstr "魔法リンクの送信に失敗しました"
+
+msgid "Failed to send verification code"
+msgstr "認証コードの送信に失敗しました"
+
+msgid "Failed to sign in"
+msgstr "サインインに失敗しました"
+
+msgid "Failed to sign in user"
+msgstr "サインインに失敗しました"
+
 msgid "Failed to update batch property"
 msgstr "バッチプロパティの更新に失敗しました"
 
@@ -4095,6 +4176,9 @@ msgstr "ファイルサイズが{maxSizeMB}MB制限を超えています。現�
 msgid "File size exceeds 10MB limit"
 msgstr "ファイルサイズが10MBの制限を超えています"
 
+msgid "File size too big (max 20MB)."
+msgstr "ファイルサイズが大きすぎます（最大20MB）。"
+
 #. placeholder {0}: SIZE_LIMIT.format()
 msgid "File size too big (max. {0})"
 msgstr "ファイルサイズが大きすぎます (最大 {0})"
@@ -4104,6 +4188,9 @@ msgstr "ファイル形式がサポートされていません"
 
 msgid "File type not supported. Please use JPG, PNG, WebP, or GIF."
 msgstr "ファイル形式がサポートされていません。JPG、PNG、WebP、またはGIFを使用してください。"
+
+msgid "File upload is not supported for external scars"
+msgstr "外部傷にはファイルアップロードがサポートされていません"
 
 msgid "Files"
 msgstr "ファイル"
@@ -4140,6 +4227,9 @@ msgstr "仕上げ"
 
 msgid "First Name"
 msgstr "名"
+
+msgid "First name is required"
+msgstr "最初の名前は必須です"
 
 msgid "First Operation"
 msgstr "最初の操作"
@@ -4256,6 +4346,9 @@ msgstr "総勘定元帳"
 msgid "Generate a new 4-digit PIN. Share it with the operator so they can pin in at MES terminals."
 msgstr "新しい4桁のPINを生成します。オペレーターと共有して、MES端末にピンインできるようにしてください。"
 
+msgid "Generate Eliminations"
+msgstr "削除を生成する"
+
 msgid "Generate material IDs and descriptions based on the properties of the material."
 msgstr "材料のプロパティに基づいて材料IDと説明を生成します。"
 
@@ -4325,6 +4418,9 @@ msgstr "本部"
 msgid "Help"
 msgstr "ヘルプ"
 
+msgid "Helper information"
+msgstr "ヘルパー情報"
+
 msgid "Hide, pin and reorder columns"
 msgstr "列を非表示、ピン留め、並び替え"
 
@@ -4375,6 +4471,9 @@ msgstr "湿度"
 
 msgid "I'm Still Working"
 msgstr "まだ働いています"
+
+msgid "IC Transaction"
+msgstr "IC取引"
 
 msgid "ID"
 msgstr "ID"
@@ -4478,6 +4577,9 @@ msgstr "インコタームズの場所"
 msgid "Indirect"
 msgstr "indirect"
 
+msgid "Indirect Expense"
+msgstr "間接費"
+
 msgid "Indirect Materials & Services"
 msgstr "不直接材料・サービス"
 
@@ -4574,8 +4676,17 @@ msgstr "内部メモ"
 msgid "inv"
 msgstr ""
 
+msgid "Invalid email address"
+msgstr "無効なメールアドレス"
+
 msgid "Invalid Invite"
 msgstr "無効な招待"
+
+msgid "Invalid or expired verification code"
+msgstr "無効或者過期的驗證碼"
+
+msgid "Invalid verification code"
+msgstr "不正しい検証コード"
 
 msgid "Inventory"
 msgstr "在庫"
@@ -4891,6 +5002,9 @@ msgstr "最後のキャリブレーション日"
 msgid "Last Name"
 msgstr "姓"
 
+msgid "Last name is required"
+msgstr "最終名は必須です"
+
 #. placeholder {0}: formatDateTime(lastSyncedAt)
 msgid "Last synced: {0}"
 msgstr "最後に同期: {0}"
@@ -5004,6 +5118,9 @@ msgstr "リストオプションは必要です。"
 
 msgid "List Parameters"
 msgstr "リストパラメータ"
+
+msgid "List View"
+msgstr "一覧表示"
 
 msgid "Liter"
 msgstr "リットル"
@@ -5514,6 +5631,9 @@ msgstr "{0}を{1}バケットに移動しました"
 msgid "MRP runs automatically every 3 hours, but you can run it manually here."
 msgstr "MRPは3時間ごとに自動的に実行されますが、ここで手動で実行することもできます。"
 
+msgid "Must be a valid email"
+msgstr "有効なメールアドレスを入力してください"
+
 msgid "Must be in the same location"
 msgstr "同じ場所にある必要があります"
 
@@ -5820,11 +5940,17 @@ msgstr "次の日付"
 msgid "Next Due"
 msgstr "次回期限"
 
+msgid "Next Month"
+msgstr "来月"
+
 msgid "Next page"
 msgstr ""
 
 msgid "Next Sequence"
 msgstr "次のシーケンス"
+
+msgid "Next Year"
+msgstr "来年度"
 
 msgid "No"
 msgstr "いいえ"
@@ -6107,6 +6233,9 @@ msgstr "非在庫追跡"
 msgid "Non-Taxable Add-On Cost"
 msgstr "非課税アドオンコスト"
 
+msgid "Non-Taxable Charges"
+msgstr "非課税料金"
+
 msgid "None"
 msgstr "なし"
 
@@ -6194,6 +6323,9 @@ msgstr "申し訳ございません。アクセスしようとしているリン
 msgid "Oops! The link you're trying to access is not valid."
 msgstr "申し訳ございません。アクセスしようとしているリンクは無効です。"
 
+msgid "Oops. You shouldn't see this page. Eventually it will be a landing page."
+msgstr "Oops. このページは見ないでください。最終的には着陸ページになります。"
+
 msgid "Open"
 msgstr "開く"
 
@@ -6208,6 +6340,12 @@ msgstr ""
 
 msgid "Open Date"
 msgstr "開始日"
+
+msgid "Open date picker"
+msgstr "日付選択を開く"
+
+msgid "Open date time picker"
+msgstr "日時選択器を開く"
 
 msgid "Open Dispatches"
 msgstr "オープンディスパッチ"
@@ -6275,6 +6413,9 @@ msgstr "オペレーターに警告が表示されます。在庫はそのまま
 msgid "Operator must pick a different batch/serial."
 msgstr "オペレーターは別のバッチ/シリアルを選択する必要があります。"
 
+msgid "operator@company.com"
+msgstr "operator@会社名.com"
+
 msgid "Operators"
 msgstr "オペレーター"
 
@@ -6322,6 +6463,10 @@ msgstr "注文合計"
 
 msgid "Ordered"
 msgstr "注文済み"
+
+#. placeholder {0}: formatDate(routeData?.purchaseOrder.orderDate)
+msgid "Ordered {0}"
+msgstr "注文済み {0}"
 
 msgid "Ordering"
 msgstr "注文"
@@ -6492,6 +6637,9 @@ msgstr "部品"
 msgid "Pass"
 msgstr "合格"
 
+msgid "Password is too short"
+msgstr "パスワードは短すぎます"
+
 msgid "Path"
 msgstr "パス"
 
@@ -6656,6 +6804,9 @@ msgstr "個/時間"
 msgid "Pieces/Minute"
 msgstr "個/分"
 
+msgid "PIN"
+msgstr "PIN"
+
 msgid "Pin column"
 msgstr "柱"
 
@@ -6815,8 +6966,14 @@ msgstr "前へ"
 msgid "Previous Date"
 msgstr "前の日付"
 
+msgid "Previous Month"
+msgstr "前月"
+
 msgid "Previous page"
 msgstr ""
+
+msgid "Previous Year"
+msgstr "前年"
 
 msgid "Price break actions"
 msgstr "価格ブレークアクション"
@@ -7206,6 +7363,9 @@ msgstr "R&D費用"
 msgid "Rate Limit"
 msgstr "レート制限"
 
+msgid "Rate limit exceeded"
+msgstr "レート制限が超過しました"
+
 msgid "Reactivate"
 msgstr "再度有効化"
 
@@ -7569,6 +7729,9 @@ msgstr "{0} {1}のPINをリセット"
 msgid "Reset View"
 msgstr ""
 
+msgid "Reset zoom"
+msgstr "ズームをリセット"
+
 msgid "Resolve these before completing the NCR: every row must have a non-Pending disposition, and its linked entity quantities must match the row quantity."
 msgstr "NCRを完了する前にこれらを解決してください。すべての行は保留中以外の処分を持つ必要があり、リンクされたエンティティの数量は行の数量と一致する必要があります。"
 
@@ -7722,6 +7885,9 @@ msgstr "ルールタイプ"
 
 msgid "Rules"
 msgstr "かん律"
+
+msgid "Run Matching"
+msgstr "マッチング実行"
 
 msgid "Run Test"
 msgstr "テストを実行"
@@ -8245,6 +8411,9 @@ msgstr "リンクを共有"
 
 msgid "Share Quote"
 msgstr "見積もりを共有"
+
+msgid "Share this PIN with the operator so they can pin in at MES terminals."
+msgstr "MES-terminalにピンインするため、このPINを操作者と共有してください。"
 
 msgid "Shared Sections"
 msgstr ""
@@ -8899,6 +9068,11 @@ msgstr "タスク"
 msgid "Tax"
 msgstr "税"
 
+#. placeholder {0}: percentFormatter.format(line.taxPercent ?? 0)
+#. placeholder {0}: percentFormatter.format(selectedLine.taxPercent)
+msgid "Tax ({0})"
+msgstr "税({0})"
+
 msgid "Tax & Additional Costs"
 msgstr "税金と追加費用"
 
@@ -9187,6 +9361,9 @@ msgstr "レベルを切り替え"
 msgid "Toggle Properties"
 msgstr "プロパティを切り替え"
 
+msgid "Toggle Sidebar"
+msgstr "サイドバーを切り替える"
+
 msgid "Toggle views"
 msgstr "ビューを切り替える"
 
@@ -9339,6 +9516,9 @@ msgstr "ゴミ箱"
 
 msgid "Travel & Entertainment"
 msgstr "旅行＆娯楽"
+
+msgid "Tree View"
+msgstr "ツリー表示"
 
 msgid "Trial Balance"
 msgstr "バランス試算"
@@ -9629,6 +9809,9 @@ msgstr "レポートと分析のためにアイテムを分類するために使
 msgid "User"
 msgstr "ユーザー"
 
+msgid "User record not found"
+msgstr "ユーザー記録が見つかりません"
+
 msgid "Users"
 msgstr "ユーザー"
 
@@ -9673,6 +9856,12 @@ msgstr ""
 
 msgid "Verification"
 msgstr "検証"
+
+msgid "Verification code is required"
+msgstr "検証コードが必要です"
+
+msgid "Verification code must be 6 characters"
+msgstr "検証コードは6文字で入力してください"
 
 msgid "Verification Error"
 msgstr "認証エラー"

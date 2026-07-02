@@ -48,6 +48,9 @@ msgstr "О системе"
 msgid "Account Settings"
 msgstr "Настройки аккаунта"
 
+msgid "Action Menu"
+msgstr "Меню действий"
+
 msgid "Active"
 msgstr "Активные"
 
@@ -143,6 +146,9 @@ msgstr "Отмена"
 msgid "Cancelled"
 msgstr ""
 
+msgid "Canvas showing the model in the 3D Viewer"
+msgstr "Канvaн, отображающий модель в 3D-&viewере"
+
 msgid "Carbon Logo"
 msgstr "Логотип Carbon"
 
@@ -173,6 +179,9 @@ msgstr "Отметить уход"
 #. placeholder {0}: formatTime(openEntry.clockIn, locale)
 msgid "Clocked in since {0}"
 msgstr "На смене с {0}"
+
+msgid "Collapse"
+msgstr "Свернуть"
 
 #. placeholder {0}: active.data.current.column.title
 #. placeholder {1}: overColumnPosition + 1
@@ -217,6 +226,15 @@ msgstr "Потреблено истекшее"
 
 msgid "Continue with WeChat"
 msgstr "Продолжить с ВКонтакте"
+
+msgid "Copied!"
+msgstr "Копировано!"
+
+msgid "Copy"
+msgstr "Копировать"
+
+msgid "Copy to clipboard"
+msgstr "Копировать в буфер обмена"
 
 msgid "Create"
 msgstr "Создать"
@@ -344,11 +362,17 @@ msgstr "Введите PIN для {0}"
 msgid "Error"
 msgstr "Ошибка"
 
+msgid "Error downloading file"
+msgstr "Ошибка загрузки файла"
+
 msgid "Estimated"
 msgstr "План"
 
+msgid "Expand"
+msgstr "Расширить"
+
 msgid "Expired"
-msgstr ""
+msgstr "Истёк"
 
 msgid "Expired {date}"
 msgstr ""
@@ -411,6 +435,9 @@ msgstr ""
 
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "Возникла техническая проблема? Обратитесь в <0>службу поддержки Carbon.</0>"
+
+msgid "Helper information"
+msgstr "Информация о помощи"
 
 msgid "History"
 msgstr "Истории"
@@ -568,6 +595,9 @@ msgstr ""
 msgid "Model"
 msgstr "Модель"
 
+msgid "Model data is missing"
+msgstr "Данных модели нет"
+
 msgid "More Actions"
 msgstr ""
 
@@ -607,6 +637,12 @@ msgstr ""
 
 msgid "Next"
 msgstr "Далее"
+
+msgid "Next Month"
+msgstr "Следующий месяц"
+
+msgid "Next Year"
+msgstr "Следующий год"
 
 msgid "No active maintenance dispatches"
 msgstr "Нет активных нарядов на обслуживание"
@@ -729,6 +765,12 @@ msgstr "Ой. Вы не должны видеть эту страницу. Со 
 msgid "Open"
 msgstr "Открытые"
 
+msgid "Open date picker"
+msgstr "Открыть календарь"
+
+msgid "Open date time picker"
+msgstr "Открыть выбор даты и времени"
+
 msgid "Open Jobs"
 msgstr ""
 
@@ -813,6 +855,15 @@ msgstr "Назад"
 msgid "Preventive"
 msgstr "Профилактическое"
 
+msgid "Previous"
+msgstr "Предыдущий"
+
+msgid "Previous Month"
+msgstr "Предыдущий месяц"
+
+msgid "Previous Year"
+msgstr "Предыдущий год"
+
 msgid "Print"
 msgstr ""
 
@@ -877,6 +928,9 @@ msgstr "Списать запас"
 msgid "Remove part"
 msgstr "Удалить деталь"
 
+msgid "Reset zoom"
+msgstr "Сбросить масштаб"
+
 msgid "Rework"
 msgstr ""
 
@@ -905,7 +959,7 @@ msgid "Schedule"
 msgstr "Расписание"
 
 msgid "Scrap"
-msgstr ""
+msgstr "Отходы"
 
 msgid "Scrap Reason"
 msgstr "Причина брака"
@@ -1082,6 +1136,9 @@ msgstr "В спецификации есть материалы с серийн�
 msgid "This lot is expired and can't be picked."
 msgstr ""
 
+msgid "This operation has been deleted"
+msgstr "Эта операция была удалена"
+
 msgid "This Period"
 msgstr "Эта период"
 
@@ -1097,6 +1154,12 @@ msgstr "Отработанное время: {0}"
 
 msgid "Today"
 msgstr "Сегодня"
+
+msgid "Toggle"
+msgstr "Переключить"
+
+msgid "Toggle Sidebar"
+msgstr "Переключить панель侧边栏"
 
 msgid "Tools"
 msgstr "Инструменты"

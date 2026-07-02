@@ -48,6 +48,9 @@ msgstr "Über"
 msgid "Account Settings"
 msgstr "Kontoeinstellungen"
 
+msgid "Action Menu"
+msgstr "Aktionen-Menü"
+
 msgid "Active"
 msgstr "Aktiv"
 
@@ -143,6 +146,9 @@ msgstr "Abbrechen"
 msgid "Cancelled"
 msgstr ""
 
+msgid "Canvas showing the model in the 3D Viewer"
+msgstr "Bildschirm anzeigen des Modells im 3D-Viewer"
+
 msgid "Carbon Logo"
 msgstr "Carbon Logo"
 
@@ -173,6 +179,9 @@ msgstr "Ausstempeln"
 #. placeholder {0}: formatTime(openEntry.clockIn, locale)
 msgid "Clocked in since {0}"
 msgstr "Eingestempelt seit {0}"
+
+msgid "Collapse"
+msgstr "Zusammenfassen"
 
 #. placeholder {0}: active.data.current.column.title
 #. placeholder {1}: overColumnPosition + 1
@@ -217,6 +226,15 @@ msgstr "Verbrauchte abgelaufen"
 
 msgid "Continue with WeChat"
 msgstr "Fortfahren mit WeChat"
+
+msgid "Copied!"
+msgstr "kopiert!"
+
+msgid "Copy"
+msgstr "kopieren"
+
+msgid "Copy to clipboard"
+msgstr "Kopieren inClipboard"
 
 msgid "Create"
 msgstr "Erstellen"
@@ -344,11 +362,17 @@ msgstr "PIN für {0} eingeben"
 msgid "Error"
 msgstr "Fehler"
 
+msgid "Error downloading file"
+msgstr "Fehler throughout Datei herunterladen"
+
 msgid "Estimated"
 msgstr "Soll"
 
+msgid "Expand"
+msgstr "Erweitern"
+
 msgid "Expired"
-msgstr ""
+msgstr "Verfallen"
 
 msgid "Expired {date}"
 msgstr ""
@@ -411,6 +435,9 @@ msgstr ""
 
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "Haben Sie ein technisches Problem? Kontaktieren Sie den <0>Carbon Support.</0>"
+
+msgid "Helper information"
+msgstr "Hilfsvorinformation"
 
 msgid "History"
 msgstr "Geschichte"
@@ -568,6 +595,9 @@ msgstr ""
 msgid "Model"
 msgstr "Modell"
 
+msgid "Model data is missing"
+msgstr "Modelldaten fehlen"
+
 msgid "More Actions"
 msgstr ""
 
@@ -607,6 +637,12 @@ msgstr ""
 
 msgid "Next"
 msgstr "Weiter"
+
+msgid "Next Month"
+msgstr "Nächster Monat"
+
+msgid "Next Year"
+msgstr "Nächstes Jahr"
 
 msgid "No active maintenance dispatches"
 msgstr "Keine aktiven Instandhaltungseinsätze"
@@ -729,6 +765,12 @@ msgstr "Hoppla. Diese Seite sollten Sie nicht sehen. Sie wird künftig eine Star
 msgid "Open"
 msgstr "Offen"
 
+msgid "Open date picker"
+msgstr "Öffne Datumsauswahler"
+
+msgid "Open date time picker"
+msgstr "Öffne Datums- und Uhrzeitwähler"
+
 msgid "Open Jobs"
 msgstr ""
 
@@ -813,6 +855,15 @@ msgstr "Zurück"
 msgid "Preventive"
 msgstr "Vorbeugend"
 
+msgid "Previous"
+msgstr "Vorheriges"
+
+msgid "Previous Month"
+msgstr "Vorheriger Monat"
+
+msgid "Previous Year"
+msgstr "Vorheriges Jahr"
+
 msgid "Print"
 msgstr ""
 
@@ -877,6 +928,9 @@ msgstr "Bestand entfernen"
 msgid "Remove part"
 msgstr "Teil entfernen"
 
+msgid "Reset zoom"
+msgstr "Zum.Resetarten"
+
 msgid "Rework"
 msgstr ""
 
@@ -905,7 +959,7 @@ msgid "Schedule"
 msgstr "Zeitplan"
 
 msgid "Scrap"
-msgstr ""
+msgstr "Abfall"
 
 msgid "Scrap Reason"
 msgstr "Ausschussgrund"
@@ -1082,6 +1136,9 @@ msgstr "Es gibt serien- oder chargenverfolgte Materialien in der Stückliste, di
 msgid "This lot is expired and can't be picked."
 msgstr ""
 
+msgid "This operation has been deleted"
+msgstr "Diese Operation wurde gelöscht"
+
 msgid "This Period"
 msgstr "Dieser Zeitraum"
 
@@ -1097,6 +1154,12 @@ msgstr "Arbeitszeit: {0}"
 
 msgid "Today"
 msgstr "Heute"
+
+msgid "Toggle"
+msgstr "Schalte um"
+
+msgid "Toggle Sidebar"
+msgstr "Wechsle Seitenleiste"
 
 msgid "Tools"
 msgstr "Werkzeuge"

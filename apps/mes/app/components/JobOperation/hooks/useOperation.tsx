@@ -12,6 +12,7 @@ import {
   parseAbsolute,
   toZoned
 } from "@internationalized/date";
+import { useLingui } from "@lingui/react/macro";
 import type { RealtimeChannel } from "@supabase/supabase-js";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useRevalidator } from "react-router";
@@ -42,6 +43,7 @@ export function useOperation({
     parameters: JobOperationParameter[];
   }>;
 }) {
+  const { t } = useLingui();
   const [params] = useUrlParams();
   const trackedEntityParam = params.get("trackedEntityId");
   // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
@@ -178,7 +180,7 @@ export function useOperation({
                 operationStatus: updated.status ?? prev.operationStatus
               }));
             } else if (payload.eventType === "DELETE") {
-              toast.error("This operation has been deleted");
+              toast.error(t`This operation has been deleted`);
               window.location.href = path.to.operations;
             }
           }

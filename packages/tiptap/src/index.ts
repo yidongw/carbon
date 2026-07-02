@@ -30,6 +30,7 @@ export {
   CustomKeymap,
   createMentionExtension,
   createMentionSuggestion,
+  createPlaceholder,
   createSuggestionItems,
   GlobalDragHandle,
   HighlightExtension,

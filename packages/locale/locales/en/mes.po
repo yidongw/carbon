@@ -48,6 +48,9 @@ msgstr "About"
 msgid "Account Settings"
 msgstr "Account Settings"
 
+msgid "Action Menu"
+msgstr "Action Menu"
+
 msgid "Active"
 msgstr "Active"
 
@@ -143,6 +146,9 @@ msgstr "Cancel"
 msgid "Cancelled"
 msgstr "Cancelled"
 
+msgid "Canvas showing the model in the 3D Viewer"
+msgstr "Canvas showing the model in the 3D Viewer"
+
 msgid "Carbon Logo"
 msgstr "Carbon Logo"
 
@@ -173,6 +179,9 @@ msgstr "Clock Out"
 #. placeholder {0}: formatTime(openEntry.clockIn, locale)
 msgid "Clocked in since {0}"
 msgstr "Clocked in since {0}"
+
+msgid "Collapse"
+msgstr "Collapse"
 
 #. placeholder {0}: active.data.current.column.title
 #. placeholder {1}: overColumnPosition + 1
@@ -217,6 +226,15 @@ msgstr "Consumed expired"
 
 msgid "Continue with WeChat"
 msgstr "Continue with WeChat"
+
+msgid "Copied!"
+msgstr "Copied!"
+
+msgid "Copy"
+msgstr "Copy"
+
+msgid "Copy to clipboard"
+msgstr "Copy to clipboard"
 
 msgid "Create"
 msgstr "Create"
@@ -344,8 +362,14 @@ msgstr "Enter PIN for {0}"
 msgid "Error"
 msgstr "Error"
 
+msgid "Error downloading file"
+msgstr "Error downloading file"
+
 msgid "Estimated"
 msgstr "Estimated"
+
+msgid "Expand"
+msgstr "Expand"
 
 msgid "Expired"
 msgstr "Expired"
@@ -411,6 +435,9 @@ msgstr "Go back to operation"
 
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "Have a technical issue? Contact <0>Carbon Support.</0>"
+
+msgid "Helper information"
+msgstr "Helper information"
 
 msgid "History"
 msgstr "History"
@@ -568,6 +595,9 @@ msgstr "Metric"
 msgid "Model"
 msgstr "Model"
 
+msgid "Model data is missing"
+msgstr "Model data is missing"
+
 msgid "More Actions"
 msgstr "More Actions"
 
@@ -607,6 +637,12 @@ msgstr "Newest first"
 
 msgid "Next"
 msgstr "Next"
+
+msgid "Next Month"
+msgstr "Next Month"
+
+msgid "Next Year"
+msgstr "Next Year"
 
 msgid "No active maintenance dispatches"
 msgstr "No active maintenance dispatches"
@@ -729,6 +765,12 @@ msgstr "Oops. You shouldn't see this page. Eventually it will be a landing page.
 msgid "Open"
 msgstr "Open"
 
+msgid "Open date picker"
+msgstr "Open date picker"
+
+msgid "Open date time picker"
+msgstr "Open date time picker"
+
 msgid "Open Jobs"
 msgstr "Open Jobs"
 
@@ -813,6 +855,15 @@ msgstr "Prev"
 msgid "Preventive"
 msgstr "Preventive"
 
+msgid "Previous"
+msgstr "Previous"
+
+msgid "Previous Month"
+msgstr "Previous Month"
+
+msgid "Previous Year"
+msgstr "Previous Year"
+
 msgid "Print"
 msgstr "Print"
 
@@ -876,6 +927,9 @@ msgstr "Remove Inventory"
 
 msgid "Remove part"
 msgstr "Remove part"
+
+msgid "Reset zoom"
+msgstr "Reset zoom"
 
 msgid "Rework"
 msgstr "Rework"
@@ -1082,6 +1136,9 @@ msgstr "There are serial or batch tracked materials on the bill of material that
 msgid "This lot is expired and can't be picked."
 msgstr "This lot is expired and can't be picked."
 
+msgid "This operation has been deleted"
+msgstr "This operation has been deleted"
+
 msgid "This Period"
 msgstr "This Period"
 
@@ -1097,6 +1154,12 @@ msgstr "Time Worked: {0}"
 
 msgid "Today"
 msgstr "Today"
+
+msgid "Toggle"
+msgstr "Toggle"
+
+msgid "Toggle Sidebar"
+msgstr "Toggle Sidebar"
 
 msgid "Tools"
 msgstr "Tools"

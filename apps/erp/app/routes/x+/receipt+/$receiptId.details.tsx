@@ -4,6 +4,7 @@ import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import type { JSONContent } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import type { ActionFunctionArgs } from "react-router";
 import { data, redirect, useParams } from "react-router";
 import { useRouteData } from "~/hooks";
@@ -131,6 +132,7 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function ReceiptDetailsRoute() {
+  const { t } = useLingui();
   const { receiptId } = useParams();
   if (!receiptId) throw new Error("Could not find receiptId");
 
@@ -172,7 +174,7 @@ export default function ReceiptDetailsRoute() {
       <SupplierInteractionNotes
         key={`notes-${initialValues.id}`}
         id={receiptId}
-        title="Notes"
+        title={t`Notes`}
         table="receipt"
         internalNotes={routeData.receipt.internalNotes as JSONContent}
       />

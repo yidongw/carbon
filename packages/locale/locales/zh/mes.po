@@ -48,6 +48,9 @@ msgstr "关于"
 msgid "Account Settings"
 msgstr "账户设置"
 
+msgid "Action Menu"
+msgstr "操作菜单"
+
 msgid "Active"
 msgstr "活跃"
 
@@ -143,6 +146,9 @@ msgstr "取消"
 msgid "Cancelled"
 msgstr ""
 
+msgid "Canvas showing the model in the 3D Viewer"
+msgstr "在3D查看器中显示的模型画布"
+
 msgid "Carbon Logo"
 msgstr "Carbon 标志"
 
@@ -173,6 +179,9 @@ msgstr "下班打卡"
 #. placeholder {0}: formatTime(openEntry.clockIn, locale)
 msgid "Clocked in since {0}"
 msgstr "自 {0} 起已打卡上班"
+
+msgid "Collapse"
+msgstr "折叠"
 
 #. placeholder {0}: active.data.current.column.title
 #. placeholder {1}: overColumnPosition + 1
@@ -217,6 +226,15 @@ msgstr "已消耗过期"
 
 msgid "Continue with WeChat"
 msgstr "使用微信继续"
+
+msgid "Copied!"
+msgstr "已复制！"
+
+msgid "Copy"
+msgstr "复制"
+
+msgid "Copy to clipboard"
+msgstr "复制到剪贴板"
 
 msgid "Create"
 msgstr "创建"
@@ -344,11 +362,17 @@ msgstr "输入 {0} 的 PIN 码"
 msgid "Error"
 msgstr "错误"
 
+msgid "Error downloading file"
+msgstr "文件下载错误"
+
 msgid "Estimated"
 msgstr "估计"
 
+msgid "Expand"
+msgstr "展开"
+
 msgid "Expired"
-msgstr ""
+msgstr "过期"
 
 msgid "Expired {date}"
 msgstr ""
@@ -411,6 +435,9 @@ msgstr ""
 
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "遇到技术问题？联系<0>Carbon 支持。</0>"
+
+msgid "Helper information"
+msgstr "帮助信息"
 
 msgid "History"
 msgstr "历史"
@@ -568,6 +595,9 @@ msgstr ""
 msgid "Model"
 msgstr "模型"
 
+msgid "Model data is missing"
+msgstr "模型数据缺失"
+
 msgid "More Actions"
 msgstr ""
 
@@ -607,6 +637,12 @@ msgstr ""
 
 msgid "Next"
 msgstr "下一个"
+
+msgid "Next Month"
+msgstr "下个月"
+
+msgid "Next Year"
+msgstr "明年"
 
 msgid "No active maintenance dispatches"
 msgstr "无活跃的维护工单"
@@ -729,6 +765,12 @@ msgstr "抱歉，您不应该看到此页面。此页面最终将成为首页。
 msgid "Open"
 msgstr "打开"
 
+msgid "Open date picker"
+msgstr "打开日期选择器"
+
+msgid "Open date time picker"
+msgstr "打开日期时间选择器"
+
 msgid "Open Jobs"
 msgstr ""
 
@@ -813,6 +855,15 @@ msgstr "上一个"
 msgid "Preventive"
 msgstr "预防性"
 
+msgid "Previous"
+msgstr "上一页"
+
+msgid "Previous Month"
+msgstr "上个月"
+
+msgid "Previous Year"
+msgstr "上一年度"
+
 msgid "Print"
 msgstr ""
 
@@ -877,6 +928,9 @@ msgstr "移除库存"
 msgid "Remove part"
 msgstr "移除产品"
 
+msgid "Reset zoom"
+msgstr "重置缩放"
+
 msgid "Rework"
 msgstr ""
 
@@ -905,7 +959,7 @@ msgid "Schedule"
 msgstr "排程"
 
 msgid "Scrap"
-msgstr ""
+msgstr "废料"
 
 msgid "Scrap Reason"
 msgstr "报废原因"
@@ -1082,6 +1136,9 @@ msgstr "物料清单中有序列号或批次追踪的材料尚未完全发放。
 msgid "This lot is expired and can't be picked."
 msgstr ""
 
+msgid "This operation has been deleted"
+msgstr "此操作已被删除"
+
 msgid "This Period"
 msgstr "本期"
 
@@ -1097,6 +1154,12 @@ msgstr "工作时间：{0}"
 
 msgid "Today"
 msgstr "今天"
+
+msgid "Toggle"
+msgstr "切换"
+
+msgid "Toggle Sidebar"
+msgstr "切换侧边栏"
 
 msgid "Tools"
 msgstr "工具"

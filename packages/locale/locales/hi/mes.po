@@ -48,6 +48,9 @@ msgstr "के बारे में"
 msgid "Account Settings"
 msgstr "खाता सेटिंग्स"
 
+msgid "Action Menu"
+msgstr "अनुप्रयोग सूची"
+
 msgid "Active"
 msgstr "सक्रिय"
 
@@ -143,6 +146,9 @@ msgstr "रद्द करें"
 msgid "Cancelled"
 msgstr ""
 
+msgid "Canvas showing the model in the 3D Viewer"
+msgstr "3D व्यूर्डर में मॉडल का कंवास"
+
 msgid "Carbon Logo"
 msgstr "कार्बन लोगो"
 
@@ -173,6 +179,9 @@ msgstr "घड़ी बंद करें"
 #. placeholder {0}: formatTime(openEntry.clockIn, locale)
 msgid "Clocked in since {0}"
 msgstr "Clocked in since {0}"
+
+msgid "Collapse"
+msgstr "रोशनी घुमाwebkit.Millisecond"
 
 #. placeholder {0}: active.data.current.column.title
 #. placeholder {1}: overColumnPosition + 1
@@ -217,6 +226,15 @@ msgstr "खपत की गई समाप्त"
 
 msgid "Continue with WeChat"
 msgstr "जारी रखें व्हाट्सएप"
+
+msgid "Copied!"
+msgstr "कopiय!"
+
+msgid "Copy"
+msgstr "कopi करें"
+
+msgid "Copy to clipboard"
+msgstr "क्लिपबोर्ड के बाहर कopi करें"
 
 msgid "Create"
 msgstr "बनाएं"
@@ -344,11 +362,17 @@ msgstr "{0} के लिए PIN दर्ज करें"
 msgid "Error"
 msgstr "त्रुटि"
 
+msgid "Error downloading file"
+msgstr "फाइल डाउनलोड करते समय त्रुटि"
+
 msgid "Estimated"
 msgstr "अनुमानित"
 
+msgid "Expand"
+msgstr "रोस्टर बढ़ावा दें"
+
 msgid "Expired"
-msgstr ""
+msgstr "अवैध"
 
 msgid "Expired {date}"
 msgstr ""
@@ -411,6 +435,9 @@ msgstr ""
 
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "क्या आपको कोई तकनीकी समस्या है? <0>Carbon Support</0> से संपर्क करें।"
+
+msgid "Helper information"
+msgstr "सहायक जानकारी"
 
 msgid "History"
 msgstr "इतिहास"
@@ -568,6 +595,9 @@ msgstr ""
 msgid "Model"
 msgstr "मॉडल"
 
+msgid "Model data is missing"
+msgstr "मॉडल डेटा लाम्बी है"
+
 msgid "More Actions"
 msgstr ""
 
@@ -607,6 +637,12 @@ msgstr ""
 
 msgid "Next"
 msgstr "अगला"
+
+msgid "Next Month"
+msgstr "अगला महीना"
+
+msgid "Next Year"
+msgstr "अगला वर्ष"
 
 msgid "No active maintenance dispatches"
 msgstr "कोई सक्रिय रखरखाव प्रेषण नहीं"
@@ -729,6 +765,12 @@ msgstr "अरे। आपको यह पृष्ठ नहीं देख�
 msgid "Open"
 msgstr "खुला"
 
+msgid "Open date picker"
+msgstr "पिकर खोलें"
+
+msgid "Open date time picker"
+msgstr "प्रकाशित दृश्य समय चुनाव संचालक"
+
 msgid "Open Jobs"
 msgstr ""
 
@@ -813,6 +855,15 @@ msgstr "पिछला"
 msgid "Preventive"
 msgstr "निवारक"
 
+msgid "Previous"
+msgstr "पिछला"
+
+msgid "Previous Month"
+msgstr "पिछला महीना"
+
+msgid "Previous Year"
+msgstr "पिछला वर्ष"
+
 msgid "Print"
 msgstr ""
 
@@ -877,6 +928,9 @@ msgstr "इन्वेंटरी हटाएं"
 msgid "Remove part"
 msgstr "भाग हटाएं"
 
+msgid "Reset zoom"
+msgstr "रीसेट फोकस"
+
 msgid "Rework"
 msgstr ""
 
@@ -905,7 +959,7 @@ msgid "Schedule"
 msgstr "शेड्यूल"
 
 msgid "Scrap"
-msgstr ""
+msgstr "स्क्रॅप"
 
 msgid "Scrap Reason"
 msgstr "स्क्रैप कारण"
@@ -1082,6 +1136,9 @@ msgstr "बिल ऑफ मेटेरियल पर सीरियल य�
 msgid "This lot is expired and can't be picked."
 msgstr ""
 
+msgid "This operation has been deleted"
+msgstr "इस ऑपरेशन को हटाया गया है"
+
 msgid "This Period"
 msgstr "यह अवधि"
 
@@ -1097,6 +1154,12 @@ msgstr "समय काम किया: {0}"
 
 msgid "Today"
 msgstr "आज"
+
+msgid "Toggle"
+msgstr "बदलें"
+
+msgid "Toggle Sidebar"
+msgstr "पार्सिया बटन"
 
 msgid "Tools"
 msgstr "उपकरण"

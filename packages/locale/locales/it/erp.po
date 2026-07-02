@@ -54,6 +54,10 @@ msgstr "{0} ordini"
 msgid "{0} Processes"
 msgstr "{0} Processi"
 
+#. placeholder {0}: percentFormatter.format(line.taxPercent ?? 0)
+msgid "{0} Tax"
+msgstr "Imposta {0}"
+
 #. placeholder {0}: lotEntities.length - inspected
 msgid "{0} un-sampled entities will be released to Available. Sampled passes stay Available and sampled failures stay Rejected."
 msgstr "{0} entità non campionate verranno rilasciate a Disponibile. I campioni approvati rimangono Disponibili e i campioni rifiutati rimangono Rifiutati."
@@ -253,6 +257,9 @@ msgstr "Periodo di Accumulo:"
 msgid "Action Items"
 msgstr "Elementi di azione"
 
+msgid "Action Menu"
+msgstr "Menu Azioni"
+
 msgid "Action Status"
 msgstr "Stato Azione"
 
@@ -355,6 +362,9 @@ msgstr "Aggiungi Azienda"
 
 msgid "Add condition"
 msgstr "Aggiungi condizione"
+
+msgid "Add Console Operator"
+msgstr "Aggiungi Operatore Console"
 
 msgid "Add Contractor"
 msgstr "Aggiungi Appaltatore"
@@ -466,6 +476,9 @@ msgstr "Costo Aggiuntivo"
 
 msgid "Adding..."
 msgstr "Aggiunta in corso..."
+
+msgid "Additional Charges"
+msgstr "Spese aggiuntive"
 
 msgid "Address"
 msgstr "Indirizzo"
@@ -1275,6 +1288,9 @@ msgstr "Verbo"
 msgid "BOP"
 msgstr "BOP"
 
+msgid "Bot verification failed. Please try again."
+msgstr "Verifica del bot fallita. Riprova, per favore."
+
 msgid "Box"
 msgstr "Box"
 
@@ -1409,6 +1425,9 @@ msgstr ""
 
 msgid "Cannot upload to parts bucket without item ID"
 msgstr "Impossibile caricare nel bucket delle parti senza ID elemento"
+
+msgid "Canvas showing the model in the 3D Viewer"
+msgstr "Canvas che visualizza il modello nel Visualizzatore 3D"
 
 msgid "Carbon client is not available"
 msgstr "Il client Carbon non è disponibile"
@@ -1569,6 +1588,9 @@ msgstr "MERLUZZO"
 
 msgid "Code"
 msgstr "Codice"
+
+msgid "Collapse"
+msgstr "Collapsa"
 
 msgid "Collapse all"
 msgstr "Comprimi tutto"
@@ -1832,17 +1854,31 @@ msgstr "Conversione:"
 msgid "Convert"
 msgstr "Converti"
 
+msgid "Convert & Send Invite"
+msgstr "Converte e Invia Invito"
+
+#. placeholder {0}: operator.firstName
+#. placeholder {1}: operator.lastName
+msgid "Convert <0>{0} {1}</0> from a console operator to a full user. They will receive an email invitation and be able to log in independently."
+msgstr "Converti <0>{0} {1}</0> da un operatore della console a un completo utente. Riceveranno un invito via email e potranno accedere autonomamente."
+
 msgid "Convert Line to Job"
 msgstr "Converti Riga in Commessa"
 
 msgid "Convert Lines to Jobs"
 msgstr "Converti Righe in Lavori"
 
+msgid "Convert to Full User"
+msgstr "Converti in Utente Completo"
+
 msgid "Convert to Quote"
 msgstr "Converti in Preventivo"
 
 msgid "Copied link to clipboard"
 msgstr "Collegamento copiato negli appunti"
+
+msgid "Copied!"
+msgstr "Copiato!"
 
 msgid "Copy"
 msgstr "Copia"
@@ -1960,6 +1996,9 @@ msgstr "Copia questo link per condividere l'offerta con un cliente"
 
 msgid "Copy this link to share the quote with a supplier"
 msgstr "Copia questo link per condividere l'offerta con un fornitore"
+
+msgid "Copy to clipboard"
+msgstr "Copia nel clipboard"
 
 msgid "Copy tool number"
 msgstr "Copia numero strumento"
@@ -2079,6 +2118,9 @@ msgstr "Crea Kanban"
 
 msgid "Create new rule"
 msgstr "Crea nuova regola"
+
+msgid "Create Operator"
+msgstr "Crea Operatore"
 
 msgid "Create PO"
 msgstr "Crea P.O."
@@ -2876,6 +2918,10 @@ msgstr "Scarta"
 msgid "Discount"
 msgstr "Sconto"
 
+#. placeholder {0}: percentFormatter.format(selectedLine.discountPercent)
+msgid "Discount ({0})"
+msgstr "Sconto ({0})"
+
 msgid "Discount Days after {selectedCalculationMethod}"
 msgstr "Giorni di sconto dopo {selectedCalculationMethod}"
 
@@ -2884,6 +2930,9 @@ msgstr "Percentuale di Sconto"
 
 msgid "Discount Percentage"
 msgstr "Percentuale di Sconto"
+
+msgid "Discount:"
+msgstr "Sconto:"
 
 msgid "Dismiss"
 msgstr "Ignora"
@@ -3005,6 +3054,8 @@ msgstr "Fusto"
 msgid "Due"
 msgstr ""
 
+#. placeholder {0}: formatDate(routeData?.purchaseInvoice.dateDue)
+#. placeholder {0}: formatDate(routeData?.salesInvoice.dateDue)
 #. placeholder {0}: formatRelativeTime( convertDateStringToIsoString(dueDate) )
 msgid "Due {0}"
 msgstr "Scadenza {0}"
@@ -3343,6 +3394,12 @@ msgstr "Email"
 msgid "Email Address"
 msgstr "Indirizzo Email"
 
+msgid "Email is required"
+msgstr "Indirizzo email richiesto"
+
+msgid "Email link is invalid or has expired"
+msgstr "Il collegamento email è invalido o scaduto"
+
 msgid "Email notifications not configured"
 msgstr "Notifiche email non configurate"
 
@@ -3584,6 +3641,11 @@ msgstr "Tasso di Cambio"
 msgid "Exchange Rates"
 msgstr "Tassi di cambio"
 
+#. placeholder {0}: routeData?.invoiceSummary?.currencyMismatchCount
+#. placeholder {1}: (routeData?.invoiceSummary?.currencyMismatchCount ?? 0) > 1 ? "s" : ""
+msgid "Excludes {0} invoice{1} in a different currency."
+msgstr "Esclude l'invoice{1} in una valuta diversa.{0}"
+
 msgid "Expand"
 msgstr "Espandi"
 
@@ -3629,6 +3691,10 @@ msgstr "Lotti Scaduti"
 
 msgid "Expires"
 msgstr "Scade"
+
+#. placeholder {0}: formatDate(routeData?.quote.expirationDate)
+msgid "Expires {0}"
+msgstr "Scade {0}"
 
 msgid "Expires {date}"
 msgstr ""
@@ -3788,6 +3854,9 @@ msgstr "Non è stato possibile creare il fornitore: {0}"
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create tool: {0}"
 msgstr "Impossibile creare lo strumento: {0}"
+
+msgid "Failed to create user account"
+msgstr "Impossibile creare il账户创建失败"
 
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create webhook: {0}"
@@ -3971,6 +4040,18 @@ msgstr "Impossibile salvare la regola di configurazione"
 msgid "Failed to save diagram"
 msgstr ""
 
+msgid "Failed to send magic link"
+msgstr "Fallito invio del collegamento magico"
+
+msgid "Failed to send verification code"
+msgstr "Fallito invio del codice di verifica"
+
+msgid "Failed to sign in"
+msgstr "Fallito il login"
+
+msgid "Failed to sign in user"
+msgstr "Fallito il login utente"
+
 msgid "Failed to update batch property"
 msgstr "Impossibile aggiornare la proprietà batch"
 
@@ -4095,6 +4176,9 @@ msgstr "La dimensione del file supera il limite di {maxSizeMB}MB. Dimensione att
 msgid "File size exceeds 10MB limit"
 msgstr "La dimensione del file supera il limite di 10MB"
 
+msgid "File size too big (max 20MB)."
+msgstr "Dimensione del file troppo grande (massimo 20MB)."
+
 #. placeholder {0}: SIZE_LIMIT.format()
 msgid "File size too big (max. {0})"
 msgstr "Dimensione file troppo grande (max. {0})"
@@ -4104,6 +4188,9 @@ msgstr "Tipo di file non supportato"
 
 msgid "File type not supported. Please use JPG, PNG, WebP, or GIF."
 msgstr "Tipo di file non supportato. Utilizza JPG, PNG, WebP o GIF."
+
+msgid "File upload is not supported for external scars"
+msgstr "Caricamento file non supportato per le scarse esterne"
 
 msgid "Files"
 msgstr "File"
@@ -4140,6 +4227,9 @@ msgstr "Finiture"
 
 msgid "First Name"
 msgstr "Nome"
+
+msgid "First name is required"
+msgstr "Nome richiesto"
 
 msgid "First Operation"
 msgstr "Prima Operazione"
@@ -4256,6 +4346,9 @@ msgstr "Libro Mastro"
 msgid "Generate a new 4-digit PIN. Share it with the operator so they can pin in at MES terminals."
 msgstr "Genera un nuovo PIN a 4 cifre. Condividilo con l'operatore in modo che possa accedere ai terminali MES."
 
+msgid "Generate Eliminations"
+msgstr "Genera Eliminazioni"
+
 msgid "Generate material IDs and descriptions based on the properties of the material."
 msgstr "Genera ID materiali e descrizioni in base alle proprietà del materiale."
 
@@ -4325,6 +4418,9 @@ msgstr "Quartier Generale"
 msgid "Help"
 msgstr "Aiuto"
 
+msgid "Helper information"
+msgstr "Informazioni di aiuto"
+
 msgid "Hide, pin and reorder columns"
 msgstr "Nascondi, fissa e riordina le colonne"
 
@@ -4375,6 +4471,9 @@ msgstr "Umidità"
 
 msgid "I'm Still Working"
 msgstr "Sto ancora lavorando"
+
+msgid "IC Transaction"
+msgstr "Transazione IC"
 
 msgid "ID"
 msgstr "ID"
@@ -4478,6 +4577,9 @@ msgstr "Luogo Incoterm"
 msgid "Indirect"
 msgstr "Indiretto"
 
+msgid "Indirect Expense"
+msgstr "Spese indirette"
+
 msgid "Indirect Materials & Services"
 msgstr "Materiali Indiretti & Servizi"
 
@@ -4574,8 +4676,17 @@ msgstr "Note Interne"
 msgid "inv"
 msgstr ""
 
+msgid "Invalid email address"
+msgstr "Indirizzo email non valido"
+
 msgid "Invalid Invite"
 msgstr "Invito Non Valido"
+
+msgid "Invalid or expired verification code"
+msgstr "Codice di verifica invalido o scaduto"
+
+msgid "Invalid verification code"
+msgstr "Codice di verifica invalido"
 
 msgid "Inventory"
 msgstr "Inventario"
@@ -4891,6 +5002,9 @@ msgstr "Data dell'ultima calibrazione"
 msgid "Last Name"
 msgstr "Cognome"
 
+msgid "Last name is required"
+msgstr "Cognome è richiesto"
+
 #. placeholder {0}: formatDateTime(lastSyncedAt)
 msgid "Last synced: {0}"
 msgstr "Ultimo sincronizzato: {0}"
@@ -5004,6 +5118,9 @@ msgstr "Scegliere opzioni è obbligatorio"
 
 msgid "List Parameters"
 msgstr "Parametri Elenco"
+
+msgid "List View"
+msgstr "Vista elenco"
 
 msgid "Liter"
 msgstr "Litri"
@@ -5514,6 +5631,9 @@ msgstr "Spostato {0} nel bucket {1}"
 msgid "MRP runs automatically every 3 hours, but you can run it manually here."
 msgstr "MRP viene eseguito automaticamente ogni 3 ore, ma puoi eseguirlo manualmente qui."
 
+msgid "Must be a valid email"
+msgstr "Deve essere un'email valida"
+
 msgid "Must be in the same location"
 msgstr "Deve essere nella stessa posizione"
 
@@ -5820,11 +5940,17 @@ msgstr "Data successiva"
 msgid "Next Due"
 msgstr "Prossima Scadenza"
 
+msgid "Next Month"
+msgstr "Mese successivo"
+
 msgid "Next page"
 msgstr ""
 
 msgid "Next Sequence"
 msgstr "Sequenza Successiva"
+
+msgid "Next Year"
+msgstr "Prossimo Anno"
 
 msgid "No"
 msgstr "No"
@@ -6107,6 +6233,9 @@ msgstr "Tracciamento Non-Inventario"
 msgid "Non-Taxable Add-On Cost"
 msgstr "Costo Add-On Non Tassabile"
 
+msgid "Non-Taxable Charges"
+msgstr "Spese non imponibili"
+
 msgid "None"
 msgstr "Nessuno"
 
@@ -6194,6 +6323,9 @@ msgstr "Oops! Il link che stai cercando di accedere è scaduto o non è più val
 msgid "Oops! The link you're trying to access is not valid."
 msgstr "Oops! Il link che stai cercando di accedere non è valido."
 
+msgid "Oops. You shouldn't see this page. Eventually it will be a landing page."
+msgstr "Ops. Non dovresti vedere questa pagina. In futuro sarà una pagina di atterraggio."
+
 msgid "Open"
 msgstr "Apri"
 
@@ -6208,6 +6340,12 @@ msgstr ""
 
 msgid "Open Date"
 msgstr "Data di apertura"
+
+msgid "Open date picker"
+msgstr "Apri calendario date"
+
+msgid "Open date time picker"
+msgstr "Apri selezione data e ora"
 
 msgid "Open Dispatches"
 msgstr "Spedizioni Aperte"
@@ -6275,6 +6413,9 @@ msgstr "L'operatore riceve un avviso. Le scorte passano comunque."
 msgid "Operator must pick a different batch/serial."
 msgstr "L'operatore deve scegliere un lotto/seriale diverso."
 
+msgid "operator@company.com"
+msgstr "operator@azienda.com"
+
 msgid "Operators"
 msgstr "Operatori"
 
@@ -6322,6 +6463,10 @@ msgstr "Totale Ordine"
 
 msgid "Ordered"
 msgstr "Ordinato"
+
+#. placeholder {0}: formatDate(routeData?.purchaseOrder.orderDate)
+msgid "Ordered {0}"
+msgstr "Ordinati {0}"
 
 msgid "Ordering"
 msgstr "Ordinazione"
@@ -6492,6 +6637,9 @@ msgstr "Parti"
 msgid "Pass"
 msgstr "Passa"
 
+msgid "Password is too short"
+msgstr "La password è troppo corta"
+
 msgid "Path"
 msgstr "Percorso"
 
@@ -6656,6 +6804,9 @@ msgstr "Pezzi/Ora"
 msgid "Pieces/Minute"
 msgstr "Pezzi/Minuto"
 
+msgid "PIN"
+msgstr "PIN"
+
 msgid "Pin column"
 msgstr "Colonna di pin"
 
@@ -6815,8 +6966,14 @@ msgstr "Precedente"
 msgid "Previous Date"
 msgstr "Data precedente"
 
+msgid "Previous Month"
+msgstr "Mese precedente"
+
 msgid "Previous page"
 msgstr ""
+
+msgid "Previous Year"
+msgstr "Anno precedente"
 
 msgid "Price break actions"
 msgstr "Azioni di scaglione di prezzo"
@@ -7206,6 +7363,9 @@ msgstr "Spese per Ricerca e Sviluppo"
 msgid "Rate Limit"
 msgstr "Limite di Velocità"
 
+msgid "Rate limit exceeded"
+msgstr "Limite di velocità superato"
+
 msgid "Reactivate"
 msgstr "Riattiva"
 
@@ -7569,6 +7729,9 @@ msgstr "Reimposta PIN per {0} {1}"
 msgid "Reset View"
 msgstr ""
 
+msgid "Reset zoom"
+msgstr "Ripeti lo zoom"
+
 msgid "Resolve these before completing the NCR: every row must have a non-Pending disposition, and its linked entity quantities must match the row quantity."
 msgstr "Risolvi questi prima di completare l'NCR: ogni riga deve avere una disposizione non in sospeso e le quantità delle entità collegate devono corrispondere alla quantità della riga."
 
@@ -7722,6 +7885,9 @@ msgstr "Tipo di Regola"
 
 msgid "Rules"
 msgstr "Regole"
+
+msgid "Run Matching"
+msgstr "Esegui matching"
 
 msgid "Run Test"
 msgstr "Esegui Test"
@@ -8245,6 +8411,9 @@ msgstr "Condividi Link"
 
 msgid "Share Quote"
 msgstr "Condividi Preventivo"
+
+msgid "Share this PIN with the operator so they can pin in at MES terminals."
+msgstr "Condividi questo PIN con l'operatore affinché possa effettuare il pinch-in ai terminali MES."
 
 msgid "Shared Sections"
 msgstr ""
@@ -8899,6 +9068,11 @@ msgstr "Attività"
 msgid "Tax"
 msgstr "Imposta"
 
+#. placeholder {0}: percentFormatter.format(line.taxPercent ?? 0)
+#. placeholder {0}: percentFormatter.format(selectedLine.taxPercent)
+msgid "Tax ({0})"
+msgstr "Imposta ({0})"
+
 msgid "Tax & Additional Costs"
 msgstr "Tasse e costi aggiuntivi"
 
@@ -9187,6 +9361,9 @@ msgstr "Attiva/disattiva livello"
 msgid "Toggle Properties"
 msgstr "Attiva/Disattiva Proprietà"
 
+msgid "Toggle Sidebar"
+msgstr "Attiva/Sblocca Barra Laterale"
+
 msgid "Toggle views"
 msgstr "Attiva/disattiva visualizzazioni"
 
@@ -9339,6 +9516,9 @@ msgstr "Cestino"
 
 msgid "Travel & Entertainment"
 msgstr "Viaggi e intrattenimento"
+
+msgid "Tree View"
+msgstr "Vista albero"
 
 msgid "Trial Balance"
 msgstr "Equilibrio di prova"
@@ -9629,6 +9809,9 @@ msgstr "Utilizzato per categorizzare gli articoli per la reportistica e l'analis
 msgid "User"
 msgstr "Utente"
 
+msgid "User record not found"
+msgstr "Record utente non trovato"
+
 msgid "Users"
 msgstr "Utenti"
 
@@ -9673,6 +9856,12 @@ msgstr ""
 
 msgid "Verification"
 msgstr "Verifica"
+
+msgid "Verification code is required"
+msgstr "Codice di verifica richiesto"
+
+msgid "Verification code must be 6 characters"
+msgstr "Codice di verifica deve essere composto da 6 caratteri"
 
 msgid "Verification Error"
 msgstr "Errore di verifica"

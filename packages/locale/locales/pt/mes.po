@@ -48,6 +48,9 @@ msgstr "Sobre"
 msgid "Account Settings"
 msgstr "Configurações da Conta"
 
+msgid "Action Menu"
+msgstr "Menu de Ação"
+
 msgid "Active"
 msgstr "Ativo"
 
@@ -143,6 +146,9 @@ msgstr "Cancelar"
 msgid "Cancelled"
 msgstr ""
 
+msgid "Canvas showing the model in the 3D Viewer"
+msgstr "Tela exibindo o modelo no Visualizador 3D"
+
 msgid "Carbon Logo"
 msgstr "Logo Carbon"
 
@@ -173,6 +179,9 @@ msgstr "Registrar Saída"
 #. placeholder {0}: formatTime(openEntry.clockIn, locale)
 msgid "Clocked in since {0}"
 msgstr "Registrado desde {0}"
+
+msgid "Collapse"
+msgstr "Colapsar"
 
 #. placeholder {0}: active.data.current.column.title
 #. placeholder {1}: overColumnPosition + 1
@@ -217,6 +226,15 @@ msgstr "Consumido expirado"
 
 msgid "Continue with WeChat"
 msgstr "Continuar com WeChat"
+
+msgid "Copied!"
+msgstr "Copiado!"
+
+msgid "Copy"
+msgstr "Copiar"
+
+msgid "Copy to clipboard"
+msgstr "Copiar para área de transferência"
 
 msgid "Create"
 msgstr "Criar"
@@ -344,11 +362,17 @@ msgstr "Insira o PIN de {0}"
 msgid "Error"
 msgstr "Erro"
 
+msgid "Error downloading file"
+msgstr "Erro ao baixar arquivo"
+
 msgid "Estimated"
 msgstr "Estimado"
 
+msgid "Expand"
+msgstr "Expandir"
+
 msgid "Expired"
-msgstr ""
+msgstr "Vencido"
 
 msgid "Expired {date}"
 msgstr ""
@@ -411,6 +435,9 @@ msgstr ""
 
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "Tem um problema técnico? Entre em contato com o <0>Suporte Carbon.</0>"
+
+msgid "Helper information"
+msgstr "Informação auxiliar"
 
 msgid "History"
 msgstr "Histórico"
@@ -568,6 +595,9 @@ msgstr ""
 msgid "Model"
 msgstr "Modelo"
 
+msgid "Model data is missing"
+msgstr "Dados do modelo estão faltando"
+
 msgid "More Actions"
 msgstr ""
 
@@ -607,6 +637,12 @@ msgstr ""
 
 msgid "Next"
 msgstr "Próximo"
+
+msgid "Next Month"
+msgstr "Próximo Mês"
+
+msgid "Next Year"
+msgstr "Próximo Ano"
 
 msgid "No active maintenance dispatches"
 msgstr "Nenhum despacho de manutenção ativo"
@@ -729,6 +765,12 @@ msgstr "Ops. Você não deveria ver esta página. Eventualmente será uma págin
 msgid "Open"
 msgstr "Aberto"
 
+msgid "Open date picker"
+msgstr "Abrir calendário"
+
+msgid "Open date time picker"
+msgstr "Abrir seleção de data e hora"
+
 msgid "Open Jobs"
 msgstr ""
 
@@ -813,6 +855,15 @@ msgstr "Anterior"
 msgid "Preventive"
 msgstr "Preventiva"
 
+msgid "Previous"
+msgstr "Anterior"
+
+msgid "Previous Month"
+msgstr "Mês anterior"
+
+msgid "Previous Year"
+msgstr "Ano anterior"
+
 msgid "Print"
 msgstr ""
 
@@ -877,6 +928,9 @@ msgstr "Remover Estoque"
 msgid "Remove part"
 msgstr "Remover peça"
 
+msgid "Reset zoom"
+msgstr "Resetar zoom"
+
 msgid "Rework"
 msgstr ""
 
@@ -905,7 +959,7 @@ msgid "Schedule"
 msgstr "Cronograma"
 
 msgid "Scrap"
-msgstr ""
+msgstr "Resíduo"
 
 msgid "Scrap Reason"
 msgstr "Motivo do Refugo"
@@ -1082,6 +1136,9 @@ msgstr "Existem materiais rastreados por série ou lote na lista de materiais qu
 msgid "This lot is expired and can't be picked."
 msgstr ""
 
+msgid "This operation has been deleted"
+msgstr "Esta operação foi deletada"
+
 msgid "This Period"
 msgstr "Pérdida Este Período"
 
@@ -1097,6 +1154,12 @@ msgstr "Tempo Trabalhado: {0}"
 
 msgid "Today"
 msgstr "Hoje"
+
+msgid "Toggle"
+msgstr "Alternar"
+
+msgid "Toggle Sidebar"
+msgstr "Alternar Barra Lateral"
 
 msgid "Tools"
 msgstr "Ferramentas"

@@ -35,8 +35,8 @@ import {
   useSearchParams
 } from "react-router";
 import { z } from "zod";
-
 import type { Result } from "~/types";
+import { useFormatValidationError } from "~/utils/formatValidationError";
 import { path } from "~/utils/path";
 
 export const meta: MetaFunction = () => {
@@ -133,6 +133,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function VerifyRoute() {
   const { t } = useLingui();
+  const formatError = useFormatValidationError();
   const [searchParams] = useSearchParams();
   const email = searchParams.get("email") ?? "";
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
@@ -176,7 +177,9 @@ export default function VerifyRoute() {
                 <AlertTitle>
                   <Trans>Verification Error</Trans>
                 </AlertTitle>
-                <AlertDescription>{fetcher.data?.message}</AlertDescription>
+                <AlertDescription>
+                  {fetcher.data?.message && formatError(fetcher.data.message)}
+                </AlertDescription>
               </Alert>
             )}
 

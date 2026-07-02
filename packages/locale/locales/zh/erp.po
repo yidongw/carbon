@@ -54,6 +54,10 @@ msgstr "{0} 个订单"
 msgid "{0} Processes"
 msgstr "{0} 工序"
 
+#. placeholder {0}: percentFormatter.format(line.taxPercent ?? 0)
+msgid "{0} Tax"
+msgstr "{0} 税"
+
 #. placeholder {0}: lotEntities.length - inspected
 msgid "{0} un-sampled entities will be released to Available. Sampled passes stay Available and sampled failures stay Rejected."
 msgstr "{0}个未检测的实体将被释放到可用状态。已检测通过的保持可用状态，已检测失败的保持拒收状态。"
@@ -253,6 +257,9 @@ msgstr "累计周期:"
 msgid "Action Items"
 msgstr "待处理事项"
 
+msgid "Action Menu"
+msgstr "操作菜单"
+
 msgid "Action Status"
 msgstr "操作状态"
 
@@ -355,6 +362,9 @@ msgstr "添加公司"
 
 msgid "Add condition"
 msgstr "添加条件"
+
+msgid "Add Console Operator"
+msgstr "添加控制台操作员"
 
 msgid "Add Contractor"
 msgstr "添加承包商"
@@ -466,6 +476,9 @@ msgstr "附加成本"
 
 msgid "Adding..."
 msgstr "添加中..."
+
+msgid "Additional Charges"
+msgstr "额外费用"
 
 msgid "Address"
 msgstr "地址"
@@ -1275,6 +1288,9 @@ msgstr "布尔值"
 msgid "BOP"
 msgstr "BOP"
 
+msgid "Bot verification failed. Please try again."
+msgstr "机器人验证失败，请重试。"
+
 msgid "Box"
 msgstr "箱子"
 
@@ -1409,6 +1425,9 @@ msgstr ""
 
 msgid "Cannot upload to parts bucket without item ID"
 msgstr "没有物品ID无法上传到产品桶中"
+
+msgid "Canvas showing the model in the 3D Viewer"
+msgstr "在3D查看器中显示的模型画布"
 
 msgid "Carbon client is not available"
 msgstr "Carbon 客户端不可用"
@@ -1569,6 +1588,9 @@ msgstr "货到付款"
 
 msgid "Code"
 msgstr "代码"
+
+msgid "Collapse"
+msgstr "折叠"
 
 msgid "Collapse all"
 msgstr "全部折叠"
@@ -1832,17 +1854,31 @@ msgstr "转换:"
 msgid "Convert"
 msgstr "转换"
 
+msgid "Convert & Send Invite"
+msgstr "转换并发送邀请"
+
+#. placeholder {0}: operator.firstName
+#. placeholder {1}: operator.lastName
+msgid "Convert <0>{0} {1}</0> from a console operator to a full user. They will receive an email invitation and be able to log in independently."
+msgstr "转换<0>{0} {1}</0>从控制台操作员为完整用户。他们将收到邮件邀请并能够独立登录。"
+
 msgid "Convert Line to Job"
 msgstr "将行转换为工作"
 
 msgid "Convert Lines to Jobs"
 msgstr "将多行转换为工作"
 
+msgid "Convert to Full User"
+msgstr "转换为全名用户"
+
 msgid "Convert to Quote"
 msgstr "转换为报价"
 
 msgid "Copied link to clipboard"
 msgstr "已复制链接到剪贴板"
+
+msgid "Copied!"
+msgstr "已复制！"
 
 msgid "Copy"
 msgstr "复制"
@@ -1960,6 +1996,9 @@ msgstr "复制此链接以与客户分享报价"
 
 msgid "Copy this link to share the quote with a supplier"
 msgstr "复制链接以与供应商分享此报价"
+
+msgid "Copy to clipboard"
+msgstr "复制到剪贴板"
 
 msgid "Copy tool number"
 msgstr "复制工具编号"
@@ -2079,6 +2118,9 @@ msgstr "创建看板"
 
 msgid "Create new rule"
 msgstr "创建新规则"
+
+msgid "Create Operator"
+msgstr "创建操作员"
 
 msgid "Create PO"
 msgstr "创建采购订单"
@@ -2876,6 +2918,10 @@ msgstr "废弃"
 msgid "Discount"
 msgstr "折扣"
 
+#. placeholder {0}: percentFormatter.format(selectedLine.discountPercent)
+msgid "Discount ({0})"
+msgstr "折扣 ({0})"
+
 msgid "Discount Days after {selectedCalculationMethod}"
 msgstr "折扣天数后{selectedCalculationMethod}"
 
@@ -2884,6 +2930,9 @@ msgstr "折扣百分比"
 
 msgid "Discount Percentage"
 msgstr "折扣百分比"
+
+msgid "Discount:"
+msgstr "折扣："
 
 msgid "Dismiss"
 msgstr "忽略"
@@ -3005,6 +3054,8 @@ msgstr "大桶"
 msgid "Due"
 msgstr ""
 
+#. placeholder {0}: formatDate(routeData?.purchaseInvoice.dateDue)
+#. placeholder {0}: formatDate(routeData?.salesInvoice.dateDue)
 #. placeholder {0}: formatRelativeTime( convertDateStringToIsoString(dueDate) )
 msgid "Due {0}"
 msgstr "到期 {0}"
@@ -3343,6 +3394,12 @@ msgstr "电子邮件"
 msgid "Email Address"
 msgstr "电子邮件地址"
 
+msgid "Email is required"
+msgstr "邮箱是必填项"
+
+msgid "Email link is invalid or has expired"
+msgstr "邮件链接无效或已过期"
+
 msgid "Email notifications not configured"
 msgstr "电子邮件通知未配置"
 
@@ -3584,6 +3641,11 @@ msgstr "汇率"
 msgid "Exchange Rates"
 msgstr "汇率"
 
+#. placeholder {0}: routeData?.invoiceSummary?.currencyMismatchCount
+#. placeholder {1}: (routeData?.invoiceSummary?.currencyMismatchCount ?? 0) > 1 ? "s" : ""
+msgid "Excludes {0} invoice{1} in a different currency."
+msgstr "排除了使用不同货币的 {0} 份发票{1}。"
+
 msgid "Expand"
 msgstr "展开"
 
@@ -3629,6 +3691,10 @@ msgstr "过期批次"
 
 msgid "Expires"
 msgstr "过期"
+
+#. placeholder {0}: formatDate(routeData?.quote.expirationDate)
+msgid "Expires {0}"
+msgstr "过期于 {0}"
 
 msgid "Expires {date}"
 msgstr ""
@@ -3788,6 +3854,9 @@ msgstr "创建供应商失败：{0}"
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create tool: {0}"
 msgstr "创建刀具失败：{0}"
+
+msgid "Failed to create user account"
+msgstr "创建用户账户失败"
 
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create webhook: {0}"
@@ -3971,6 +4040,18 @@ msgstr "保存配置规则失败"
 msgid "Failed to save diagram"
 msgstr ""
 
+msgid "Failed to send magic link"
+msgstr "发送魔力链接失败"
+
+msgid "Failed to send verification code"
+msgstr "发送验证码失败"
+
+msgid "Failed to sign in"
+msgstr "登录失败"
+
+msgid "Failed to sign in user"
+msgstr "登录用户失败"
+
 msgid "Failed to update batch property"
 msgstr "更新批次属性失败"
 
@@ -4095,6 +4176,9 @@ msgstr "文件大小超过{maxSizeMB}MB限制。当前大小：{0}MB"
 msgid "File size exceeds 10MB limit"
 msgstr "文件大小超过10MB限制"
 
+msgid "File size too big (max 20MB)."
+msgstr "文件大小超出限制（最大20MB）。"
+
 #. placeholder {0}: SIZE_LIMIT.format()
 msgid "File size too big (max. {0})"
 msgstr "文件大小太大（最大值为 {0}）"
@@ -4104,6 +4188,9 @@ msgstr "不支持的文件类型"
 
 msgid "File type not supported. Please use JPG, PNG, WebP, or GIF."
 msgstr "不支持的文件类型。请使用JPG、PNG、WebP或GIF。"
+
+msgid "File upload is not supported for external scars"
+msgstr "外部划伤不支持文件上传"
 
 msgid "Files"
 msgstr "文件"
@@ -4140,6 +4227,9 @@ msgstr "表面处理"
 
 msgid "First Name"
 msgstr "名"
+
+msgid "First name is required"
+msgstr "姓名是必填项"
 
 msgid "First Operation"
 msgstr "首工序"
@@ -4256,6 +4346,9 @@ msgstr "总账"
 msgid "Generate a new 4-digit PIN. Share it with the operator so they can pin in at MES terminals."
 msgstr "生成新的4位PIN。将其分享给操作员，以便他们在MES终端处输入。"
 
+msgid "Generate Eliminations"
+msgstr "生成剔除项"
+
 msgid "Generate material IDs and descriptions based on the properties of the material."
 msgstr "根据材料属性生成物料ID和描述。"
 
@@ -4325,6 +4418,9 @@ msgstr "总部"
 msgid "Help"
 msgstr "帮助"
 
+msgid "Helper information"
+msgstr "帮助信息"
+
 msgid "Hide, pin and reorder columns"
 msgstr "隐藏、固定和重新排序列"
 
@@ -4375,6 +4471,9 @@ msgstr "湿度"
 
 msgid "I'm Still Working"
 msgstr "我还在工作中"
+
+msgid "IC Transaction"
+msgstr "IC交易"
 
 msgid "ID"
 msgstr "ID"
@@ -4478,6 +4577,9 @@ msgstr "Incoterm 交货地点"
 msgid "Indirect"
 msgstr "间接"
 
+msgid "Indirect Expense"
+msgstr "间接费用"
+
 msgid "Indirect Materials & Services"
 msgstr "间接材料及服务"
 
@@ -4574,8 +4676,17 @@ msgstr "内部备注"
 msgid "inv"
 msgstr ""
 
+msgid "Invalid email address"
+msgstr "无效的电子邮件地址"
+
 msgid "Invalid Invite"
 msgstr "无效邀请"
+
+msgid "Invalid or expired verification code"
+msgstr "无效或过期的验证码"
+
+msgid "Invalid verification code"
+msgstr "无效的验证码"
 
 msgid "Inventory"
 msgstr "库存"
@@ -4891,6 +5002,9 @@ msgstr "最后一次校准日期"
 msgid "Last Name"
 msgstr "姓"
 
+msgid "Last name is required"
+msgstr "姓氏是必填项"
+
 #. placeholder {0}: formatDateTime(lastSyncedAt)
 msgid "Last synced: {0}"
 msgstr "最后同步:{0}"
@@ -5004,6 +5118,9 @@ msgstr "列表选项是必需的"
 
 msgid "List Parameters"
 msgstr "参数列表"
+
+msgid "List View"
+msgstr "列表视图"
 
 msgid "Liter"
 msgstr "升"
@@ -5514,6 +5631,9 @@ msgstr "移到{1}桶中{0}"
 msgid "MRP runs automatically every 3 hours, but you can run it manually here."
 msgstr "MRP 每 3 小时自动运行，但您也可以在此处手动运行。"
 
+msgid "Must be a valid email"
+msgstr "必须是有效的电子邮件地址"
+
 msgid "Must be in the same location"
 msgstr "必须在同一位置"
 
@@ -5820,11 +5940,17 @@ msgstr "下一个日期"
 msgid "Next Due"
 msgstr "下一个到期日期"
 
+msgid "Next Month"
+msgstr "下个月"
+
 msgid "Next page"
 msgstr ""
 
 msgid "Next Sequence"
 msgstr "下一个序列"
+
+msgid "Next Year"
+msgstr "明年"
 
 msgid "No"
 msgstr "没有"
@@ -6107,6 +6233,9 @@ msgstr "非库存追踪"
 msgid "Non-Taxable Add-On Cost"
 msgstr "非免税附加成本"
 
+msgid "Non-Taxable Charges"
+msgstr "非税费用"
+
 msgid "None"
 msgstr "无"
 
@@ -6194,6 +6323,9 @@ msgstr "Oops！您尝试访问的链接已过期或无效。"
 msgid "Oops! The link you're trying to access is not valid."
 msgstr "Oops！您尝试访问的链接无效。"
 
+msgid "Oops. You shouldn't see this page. Eventually it will be a landing page."
+msgstr "Oops。你本不应该看到这个页面。最终它会是一个跳转页。"
+
 msgid "Open"
 msgstr "打开"
 
@@ -6208,6 +6340,12 @@ msgstr ""
 
 msgid "Open Date"
 msgstr "打开日期"
+
+msgid "Open date picker"
+msgstr "打开日期选择器"
+
+msgid "Open date time picker"
+msgstr "打开日期时间选择器"
 
 msgid "Open Dispatches"
 msgstr "打开调度单"
@@ -6275,6 +6413,9 @@ msgstr "操作员收到警告。库存仍然通过。"
 msgid "Operator must pick a different batch/serial."
 msgstr "操作员必须选择不同的批次/序列。"
 
+msgid "operator@company.com"
+msgstr "操作员@公司.com"
+
 msgid "Operators"
 msgstr "操作员"
 
@@ -6322,6 +6463,10 @@ msgstr "订单总额"
 
 msgid "Ordered"
 msgstr "已订购"
+
+#. placeholder {0}: formatDate(routeData?.purchaseOrder.orderDate)
+msgid "Ordered {0}"
+msgstr "已订购{0}"
 
 msgid "Ordering"
 msgstr "订购"
@@ -6492,6 +6637,9 @@ msgstr "产品"
 msgid "Pass"
 msgstr "通过"
 
+msgid "Password is too short"
+msgstr "密码太短"
+
 msgid "Path"
 msgstr "路径"
 
@@ -6656,6 +6804,9 @@ msgstr "件/小时"
 msgid "Pieces/Minute"
 msgstr "件/分钟"
 
+msgid "PIN"
+msgstr "pin码"
+
 msgid "Pin column"
 msgstr "固定列"
 
@@ -6815,8 +6966,14 @@ msgstr "上一步"
 msgid "Previous Date"
 msgstr "上一个日期"
 
+msgid "Previous Month"
+msgstr "上个月"
+
 msgid "Previous page"
 msgstr ""
+
+msgid "Previous Year"
+msgstr "上一年度"
 
 msgid "Price break actions"
 msgstr "价格阶梯操作"
@@ -7206,6 +7363,9 @@ msgstr "研发费用"
 msgid "Rate Limit"
 msgstr "速率限制"
 
+msgid "Rate limit exceeded"
+msgstr "速率限制已超出"
+
 msgid "Reactivate"
 msgstr "重新激活"
 
@@ -7569,6 +7729,9 @@ msgstr "重置{0} {1}的PIN码"
 msgid "Reset View"
 msgstr ""
 
+msgid "Reset zoom"
+msgstr "重置缩放"
+
 msgid "Resolve these before completing the NCR: every row must have a non-Pending disposition, and its linked entity quantities must match the row quantity."
 msgstr "在完成NCR之前，请先解决以下问题：每行必须有非挂起的状态，且关联实体的数量须与行数量一致。"
 
@@ -7722,6 +7885,9 @@ msgstr "规则类型"
 
 msgid "Rules"
 msgstr "规则"
+
+msgid "Run Matching"
+msgstr "运行匹配"
 
 msgid "Run Test"
 msgstr "运行测试"
@@ -8245,6 +8411,9 @@ msgstr "分享链接"
 
 msgid "Share Quote"
 msgstr "分享报价"
+
+msgid "Share this PIN with the operator so they can pin in at MES terminals."
+msgstr "将此PIN提供给操作员，以便他们在MES终端进行签到。"
 
 msgid "Shared Sections"
 msgstr ""
@@ -8899,6 +9068,11 @@ msgstr "任务"
 msgid "Tax"
 msgstr "税"
 
+#. placeholder {0}: percentFormatter.format(line.taxPercent ?? 0)
+#. placeholder {0}: percentFormatter.format(selectedLine.taxPercent)
+msgid "Tax ({0})"
+msgstr "税 ({0})"
+
 msgid "Tax & Additional Costs"
 msgstr "税及附加费用"
 
@@ -9187,6 +9361,9 @@ msgstr "切换层级"
 msgid "Toggle Properties"
 msgstr "切换属性"
 
+msgid "Toggle Sidebar"
+msgstr "切换侧边栏"
+
 msgid "Toggle views"
 msgstr "切换视图"
 
@@ -9339,6 +9516,9 @@ msgstr "回收站"
 
 msgid "Travel & Entertainment"
 msgstr "差旅及娱乐"
+
+msgid "Tree View"
+msgstr "树视图"
 
 msgid "Trial Balance"
 msgstr "试算平衡表"
@@ -9629,6 +9809,9 @@ msgstr "用于分类物品以便报告和分析"
 msgid "User"
 msgstr "用户"
 
+msgid "User record not found"
+msgstr "用户记录未找到"
+
 msgid "Users"
 msgstr "用户"
 
@@ -9673,6 +9856,12 @@ msgstr ""
 
 msgid "Verification"
 msgstr "验证"
+
+msgid "Verification code is required"
+msgstr "验证码是必需的"
+
+msgid "Verification code must be 6 characters"
+msgstr "验证码必须为6个字符"
 
 msgid "Verification Error"
 msgstr "验证错误"

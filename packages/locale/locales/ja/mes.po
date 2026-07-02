@@ -48,6 +48,9 @@ msgstr "バージョン情報"
 msgid "Account Settings"
 msgstr "アカウント設定"
 
+msgid "Action Menu"
+msgstr "アクションメニュー"
+
 msgid "Active"
 msgstr "アクティブ"
 
@@ -143,6 +146,9 @@ msgstr "キャンセル"
 msgid "Cancelled"
 msgstr ""
 
+msgid "Canvas showing the model in the 3D Viewer"
+msgstr "3Dビューワで表示されるモデルのキャンバス"
+
 msgid "Carbon Logo"
 msgstr "Carbonロゴ"
 
@@ -173,6 +179,9 @@ msgstr "退勤打刻"
 #. placeholder {0}: formatTime(openEntry.clockIn, locale)
 msgid "Clocked in since {0}"
 msgstr "{0} から出勤中"
+
+msgid "Collapse"
+msgstr "折りたたむ"
 
 #. placeholder {0}: active.data.current.column.title
 #. placeholder {1}: overColumnPosition + 1
@@ -217,6 +226,15 @@ msgstr "消費期限切れ"
 
 msgid "Continue with WeChat"
 msgstr "WeChatを続ける"
+
+msgid "Copied!"
+msgstr "コピーしました！"
+
+msgid "Copy"
+msgstr "コピー"
+
+msgid "Copy to clipboard"
+msgstr "クリップボードにコピー"
 
 msgid "Create"
 msgstr "創成"
@@ -344,11 +362,17 @@ msgstr "{0} のPINを入力"
 msgid "Error"
 msgstr "エラー"
 
+msgid "Error downloading file"
+msgstr "ファイルのダウンロードにエラーが発生しました"
+
 msgid "Estimated"
 msgstr "見積"
 
+msgid "Expand"
+msgstr "展開"
+
 msgid "Expired"
-msgstr ""
+msgstr "期限切れ"
 
 msgid "Expired {date}"
 msgstr ""
@@ -411,6 +435,9 @@ msgstr ""
 
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "技術的な問題がありますか？<0>Carbonサポート</0>にお問い合わせください。"
+
+msgid "Helper information"
+msgstr "ヘルパー情報"
 
 msgid "History"
 msgstr "歴史"
@@ -568,6 +595,9 @@ msgstr ""
 msgid "Model"
 msgstr "モデル"
 
+msgid "Model data is missing"
+msgstr "モデルデータが欠けています"
+
 msgid "More Actions"
 msgstr ""
 
@@ -607,6 +637,12 @@ msgstr ""
 
 msgid "Next"
 msgstr "次へ"
+
+msgid "Next Month"
+msgstr "来月"
+
+msgid "Next Year"
+msgstr "来年度"
 
 msgid "No active maintenance dispatches"
 msgstr "アクティブなメンテナンスディスパッチはありません"
@@ -729,6 +765,12 @@ msgstr "このページは表示されないはずです。最終的にはラン
 msgid "Open"
 msgstr "未対応"
 
+msgid "Open date picker"
+msgstr "日付選択を開く"
+
+msgid "Open date time picker"
+msgstr "開く日時ピッカー"
+
 msgid "Open Jobs"
 msgstr ""
 
@@ -813,6 +855,15 @@ msgstr "前へ"
 msgid "Preventive"
 msgstr "予防保全"
 
+msgid "Previous"
+msgstr "前へ"
+
+msgid "Previous Month"
+msgstr "前月"
+
+msgid "Previous Year"
+msgstr "前年"
+
 msgid "Print"
 msgstr ""
 
@@ -877,6 +928,9 @@ msgstr "在庫削除"
 msgid "Remove part"
 msgstr "パーツを削除"
 
+msgid "Reset zoom"
+msgstr "ズームをリセット"
+
 msgid "Rework"
 msgstr ""
 
@@ -905,7 +959,7 @@ msgid "Schedule"
 msgstr "スケジュール"
 
 msgid "Scrap"
-msgstr ""
+msgstr "廃棄物"
 
 msgid "Scrap Reason"
 msgstr "スクラップ理由"
@@ -1082,6 +1136,9 @@ msgstr "部品表にシリアルまたはバッチ追跡対象の材料が完全
 msgid "This lot is expired and can't be picked."
 msgstr ""
 
+msgid "This operation has been deleted"
+msgstr "この操作は削除されました"
+
 msgid "This Period"
 msgstr "この期間"
 
@@ -1097,6 +1154,12 @@ msgstr "作業時間: {0}"
 
 msgid "Today"
 msgstr "今日"
+
+msgid "Toggle"
+msgstr "切り替え"
+
+msgid "Toggle Sidebar"
+msgstr "サイドバーの表示切り替え"
 
 msgid "Tools"
 msgstr "工具"
