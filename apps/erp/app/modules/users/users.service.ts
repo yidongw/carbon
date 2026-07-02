@@ -330,15 +330,53 @@ export async function getUserEmails(
     .filter((email): email is string => !!email);
 }
 
+// Fixed permission set for MES-only employee types.
+// Mirrors the Console Operator seeding — only modules the MES app actually uses.
+// These are written to employeeTypePermission whenever a MES-only type is saved,
+// regardless of what the admin submitted, so ERP modules can never be granted.
+export const MES_PERMISSIONS: {
+  name: string;
+  permission: CompanyPermission;
+}[] = [
+  {
+    name: "production",
+    permission: { view: true, create: true, update: true, delete: false }
+  },
+  {
+    name: "inventory",
+    permission: { view: true, create: true, update: true, delete: false }
+  },
+  {
+    name: "quality",
+    permission: { view: true, create: true, update: true, delete: false }
+  },
+  {
+    name: "items",
+    permission: { view: true, create: false, update: false, delete: false }
+  },
+  {
+    name: "resources",
+    permission: { view: true, create: false, update: false, delete: false }
+  },
+  {
+    name: "people",
+    permission: { view: true, create: false, update: false, delete: false }
+  },
+  {
+    name: "documents",
+    permission: { view: true, create: false, update: false, delete: false }
+  }
+];
+
 export async function insertEmployeeType(
   client: SupabaseClient<Database>,
-  employeeType: { name: string; companyId: string }
+  employeeType: { name: string; mesOnly?: boolean; companyId: string }
 ) {
-  return client
-    .from("employeeType")
-    .insert([employeeType])
-    .select("id")
-    .single();
+  // Only include mesOnly when true — DB DEFAULT false covers the common case,
+  // and PostgREST rejects unknown columns if the migration hasn't run yet.
+  const { mesOnly, ...base } = employeeType;
+  const row = mesOnly ? { ...base, mesOnly } : base;
+  return client.from("employeeType").insert([row]).select("id").single();
 }
 
 export async function insertGroup(
@@ -351,22 +389,22 @@ export async function insertGroup(
 export async function upsertEmployeeType(
   client: SupabaseClient<Database>,
   employeeType:
-    | { name: string; companyId: string }
-    | { id: string; name: string }
+    | { name: string; mesOnly?: boolean; companyId: string }
+    | { id: string; name: string; mesOnly?: boolean }
 ) {
   if ("id" in employeeType) {
+    const { mesOnly, ...base } = employeeType;
+    const row = mesOnly !== undefined ? { ...base, mesOnly } : base;
     return client
       .from("employeeType")
-      .update(sanitize(employeeType))
+      .update(sanitize(row))
       .eq("id", employeeType.id)
       .select("id")
       .single();
   }
-  return client
-    .from("employeeType")
-    .insert([employeeType])
-    .select("id")
-    .single();
+  const { mesOnly, ...base } = employeeType;
+  const row = mesOnly ? { ...base, mesOnly } : base;
+  return client.from("employeeType").insert([row]).select("id").single();
 }
 
 export async function upsertEmployeeTypePermissions(

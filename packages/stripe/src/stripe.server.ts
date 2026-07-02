@@ -654,11 +654,22 @@ export async function updateSubscriptionQuantityForCompany(companyId: string) {
       return;
     }
 
-    // Count active users
-    const activeUsersResult = await serviceRole
-      .from("userToCompany")
-      .select("userId, ...user(email)")
-      .eq("companyId", companyId);
+    // Count billable seats.
+    //
+    // A person counts as a paid seat only if they can access the ERP (office).
+    // Members whose employee type is "MES only" (shop-floor workers, console
+    // operators) are blocked from the ERP and therefore do NOT count.
+    const [activeUsersResult, mesOnlyEmployeesResult] = await Promise.all([
+      serviceRole
+        .from("userToCompany")
+        .select("userId, ...user(email)")
+        .eq("companyId", companyId),
+      serviceRole
+        .from("employee")
+        .select("id, employeeType!inner(mesOnly)")
+        .eq("companyId", companyId)
+        .eq("employeeType.mesOnly", true)
+    ]);
 
     if (activeUsersResult.error) {
       console.error(
@@ -668,9 +679,23 @@ export async function updateSubscriptionQuantityForCompany(companyId: string) {
       return;
     }
 
+    if (mesOnlyEmployeesResult.error) {
+      console.error(
+        `Failed to load MES-only employees for company ${companyId}:`,
+        mesOnlyEmployeesResult.error
+      );
+      return;
+    }
+
+    const mesOnlyUserIds = new Set(
+      mesOnlyEmployeesResult.data?.map((employee) => employee.id) ?? []
+    );
+
     const activeUserCount =
       activeUsersResult.data?.filter(
-        (user) => !(user?.email ?? "").includes("@carbon.ms")
+        (user) =>
+          !(user?.email ?? "").includes("@carbon.ms") &&
+          !mesOnlyUserIds.has(user.userId)
       ).length || 1;
 
     // Get the subscription from Stripe to find the subscription item

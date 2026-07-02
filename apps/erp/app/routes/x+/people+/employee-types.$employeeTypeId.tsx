@@ -10,6 +10,7 @@ import {
   employeeTypeValidator,
   getEmployeeType,
   getPermissionsByEmployeeType,
+  MES_PERMISSIONS,
   upsertEmployeeType,
   upsertEmployeeTypePermissions
 } from "~/modules/users";
@@ -53,7 +54,7 @@ export async function action({ request }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
-  const { id, name, data: permissionData } = validation.data;
+  const { id, name, mesOnly, data: permissionData } = validation.data;
   if (!id) throw notFound("id not found");
 
   const permissions = JSON.parse(permissionData);
@@ -71,7 +72,8 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const updateEmployeeType = await upsertEmployeeType(client, {
     id,
-    name
+    name,
+    mesOnly
   });
 
   if (updateEmployeeType.error) {
@@ -88,7 +90,7 @@ export async function action({ request }: ActionFunctionArgs) {
     client,
     id,
     companyId,
-    permissions
+    mesOnly ? MES_PERMISSIONS : permissions
   );
 
   if (updateEmployeeTypePermissions.error) {
@@ -117,6 +119,7 @@ export default function EditEmployeeTypesRoute() {
   const initialValues = {
     id: employeeType?.id ?? "",
     name: employeeType?.name ?? "",
+    mesOnly: employeeType?.mesOnly ?? false,
     permissions: employeeTypePermissions
   };
 

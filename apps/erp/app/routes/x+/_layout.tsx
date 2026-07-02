@@ -63,7 +63,8 @@ import {
   getUser,
   getUserClaims,
   getUserDefaults,
-  getUserGroups
+  getUserGroups,
+  isMesOnlyEmployee
 } from "~/modules/users/users.server";
 import { ERP_URL, MES_URL, path } from "~/utils/path";
 
@@ -128,7 +129,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
     auditLogEnabled,
     modulePreferences,
     printerRoutes,
-    supplierApprovalRequired
+    supplierApprovalRequired,
+    mesOnly
   ] = await Promise.all([
     getCompanies(client, userId),
     getEmployeeCompanies(client, userId),
@@ -144,8 +146,15 @@ export async function loader({ request }: LoaderFunctionArgs) {
     isAuditLogEnabled(client, companyId),
     getModulePreferences(client, userId, companyId),
     getPrinterRoutes(client, companyId),
-    isApprovalRequired(client, "supplier", companyId)
+    isApprovalRequired(client, "supplier", companyId),
+    isMesOnlyEmployee(userId, companyId)
   ]);
+
+  // Block ERP access for MES-only workers (shop-floor employee types). They can
+  // use the MES but not the office app, and are not billed as a seat.
+  if (mesOnly) {
+    throw redirect(getMESUrl());
+  }
 
   if (!claims || user.error || !user.data || !groups.data) {
     throw await destroyAuthSession(request);

@@ -9711,6 +9711,7 @@ export type Database = {
           companyId: string
           createdAt: string
           id: string
+          mesOnly: boolean
           name: string
           protected: boolean
           systemType:
@@ -9722,6 +9723,7 @@ export type Database = {
           companyId: string
           createdAt?: string
           id?: string
+          mesOnly?: boolean
           name: string
           protected?: boolean
           systemType?:
@@ -9733,6 +9735,7 @@ export type Database = {
           companyId?: string
           createdAt?: string
           id?: string
+          mesOnly?: boolean
           name?: string
           protected?: boolean
           systemType?:

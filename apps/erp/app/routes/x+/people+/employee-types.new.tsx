@@ -11,6 +11,7 @@ import {
   employeeTypeValidator,
   getModules,
   insertEmployeeType,
+  MES_PERMISSIONS,
   upsertEmployeeTypePermissions
 } from "~/modules/users";
 import { makeEmptyPermissionsFromModules } from "~/modules/users/users.server";
@@ -48,7 +49,7 @@ export async function action({ request }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
-  const { name, data: permissionData } = validation.data;
+  const { name, mesOnly, data: permissionData } = validation.data;
 
   const permissions = JSON.parse(permissionData) as {
     name: string;
@@ -68,6 +69,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const createEmployeeType = await insertEmployeeType(client, {
     name,
+    mesOnly,
     companyId
   });
   if (createEmployeeType.error) {
@@ -94,7 +96,7 @@ export async function action({ request }: ActionFunctionArgs) {
     client,
     employeeTypeId,
     companyId,
-    permissions
+    mesOnly ? MES_PERMISSIONS : permissions
   );
 
   if (insertEmployeeTypePermissions.error) {
@@ -121,6 +123,7 @@ export default function NewEmployeeTypesRoute() {
 
   const initialValues = {
     name: "",
+    mesOnly: false,
     data: "",
     permissions
   };

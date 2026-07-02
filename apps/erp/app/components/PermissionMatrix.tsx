@@ -8,9 +8,15 @@ type PermissionMatrixProps = {
   matrix: UsePermissionMatrixReturn;
   /** Optional section label (default: "Permissions") */
   label?: string;
+  /** When true, renders checkboxes as read-only (no interaction) */
+  isDisabled?: boolean;
 };
 
-const PermissionMatrix = ({ matrix, label }: PermissionMatrixProps) => {
+const PermissionMatrix = ({
+  matrix,
+  label,
+  isDisabled
+}: PermissionMatrixProps) => {
   const { t } = useLingui();
   const resolvedLabel = label ?? t`Permissions`;
   const {
@@ -28,7 +34,9 @@ const PermissionMatrix = ({ matrix, label }: PermissionMatrixProps) => {
   } = matrix;
 
   return (
-    <div className="w-full">
+    <div
+      className={`w-full${isDisabled ? " opacity-50 pointer-events-none select-none" : ""}`}
+    >
       {resolvedLabel && (
         <label className="block text-sm font-medium leading-none mb-2">
           {resolvedLabel}
