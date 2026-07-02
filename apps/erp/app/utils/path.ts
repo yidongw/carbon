@@ -2047,8 +2047,7 @@ export const path = {
 
 export const onboardingSequence = [
   path.to.onboarding.user,
-  path.to.onboarding.company,
-  path.to.onboarding.plan
+  path.to.onboarding.company
 ] as const;
 
 export const getStoragePath = (bucket: string, path: string) => {
