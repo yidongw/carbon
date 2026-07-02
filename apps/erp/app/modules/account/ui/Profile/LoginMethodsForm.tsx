@@ -1,4 +1,3 @@
-import { carbonClient } from "@carbon/auth";
 import {
   Button,
   Card,
@@ -121,19 +120,28 @@ export default function LoginMethodsForm({
     }
   }, [addFetcher.state, addFetcher.data]);
 
-  const onLinkOAuth = async (provider: "google" | "azure") => {
-    const { error } = await carbonClient.auth.linkIdentity({
+  const onLinkOAuth = (provider: "google" | "azure") => {
+    // carbonClient has persistSession: false — no client-side session to send
+    // with linkIdentity(). Use the server-side proxy route instead so GoTrue
+    // receives the real user token (read from the session cookie).
+    // Pass callbackOrigin from the client: the server sits behind a reverse proxy
+    // and sees the internal hostname, not the public browser URL. GoTrue
+    // validates redirect_to against the allow list, so it must be the real origin.
+    const params = new URLSearchParams({
       provider,
-      options: { redirectTo: `${window.location.origin}/callback` }
+      redirectTo: path.to.profile,
+      callbackOrigin: window.location.origin
     });
-    if (error) toast.error(error.message);
+    window.location.href = `/api/auth/link-provider?${params}`;
   };
 
   const revalidator = useRevalidator();
-  const wechatFetcher = useFetcher<{ url: string | null; scene?: string | null }>();
+  const wechatFetcher = useFetcher<{
+    url: string | null;
+    scene?: string | null;
+  }>();
   const [wechatOpen, setWechatOpen] = useState(false);
   const wechatScene = wechatFetcher.data?.scene ?? null;
-
 
   // In the WeChat in-app browser, connecting is an OAuth redirect; on desktop we
   // show a QR to scan (mirrors WeChat login).
@@ -207,23 +215,44 @@ export default function LoginMethodsForm({
             const blockedByEmail = EMAIL_FAMILY.has(method) && hasEmailFamily;
 
             return (
-              <div key={method} className="w-full rounded-lg border border-border">
+              <div
+                key={method}
+                className="w-full rounded-lg border border-border"
+              >
                 <div className="w-full p-3">
-                  {identity && displayValue(method, identity.value, wechatName) ? (
+                  {identity &&
+                  displayValue(method, identity.value, wechatName) ? (
                     // Two-line layout: label row + value + remove row
                     <>
                       <HStack spacing={2}>
                         {meta.icon}
-                        <span className="text-sm font-medium">{meta.label}</span>
+                        <span className="text-sm font-medium">
+                          {meta.label}
+                        </span>
                       </HStack>
                       <HStack className="w-full justify-between mt-1">
                         <span className="text-sm text-muted-foreground break-all">
                           {displayValue(method, identity.value, wechatName)}
                         </span>
-                        <removeFetcher.Form method="post" action={path.to.profile}>
-                          <input type="hidden" name="intent" value="removeIdentity" />
-                          <input type="hidden" name="type" value={identity.type} />
-                          <input type="hidden" name="value" value={identity.value} />
+                        <removeFetcher.Form
+                          method="post"
+                          action={path.to.profile}
+                        >
+                          <input
+                            type="hidden"
+                            name="intent"
+                            value="removeIdentity"
+                          />
+                          <input
+                            type="hidden"
+                            name="type"
+                            value={identity.type}
+                          />
+                          <input
+                            type="hidden"
+                            name="value"
+                            value={identity.value}
+                          />
                           <Button
                             type="submit"
                             variant="ghost"
@@ -242,13 +271,30 @@ export default function LoginMethodsForm({
                     <HStack className="w-full justify-between">
                       <HStack spacing={2}>
                         {meta.icon}
-                        <span className="text-sm font-medium">{meta.label}</span>
+                        <span className="text-sm font-medium">
+                          {meta.label}
+                        </span>
                       </HStack>
                       {identity ? (
-                        <removeFetcher.Form method="post" action={path.to.profile}>
-                          <input type="hidden" name="intent" value="removeIdentity" />
-                          <input type="hidden" name="type" value={identity.type} />
-                          <input type="hidden" name="value" value={identity.value} />
+                        <removeFetcher.Form
+                          method="post"
+                          action={path.to.profile}
+                        >
+                          <input
+                            type="hidden"
+                            name="intent"
+                            value="removeIdentity"
+                          />
+                          <input
+                            type="hidden"
+                            name="type"
+                            value={identity.type}
+                          />
+                          <input
+                            type="hidden"
+                            name="value"
+                            value={identity.value}
+                          />
                           <Button
                             type="submit"
                             variant="ghost"
@@ -284,7 +330,9 @@ export default function LoginMethodsForm({
                           variant="secondary"
                           size="sm"
                           isDisabled={blockedByEmail}
-                          onClick={() => onLinkOAuth(method as "google" | "azure")}
+                          onClick={() =>
+                            onLinkOAuth(method as "google" | "azure")
+                          }
                         >
                           <Trans>Connect</Trans>
                         </Button>
@@ -308,17 +356,16 @@ export default function LoginMethodsForm({
                     action={path.to.profile}
                     className="w-full"
                   >
-                    <VStack
-                      spacing={2}
-                      className="border-t border-border p-3"
-                    >
+                    <VStack spacing={2} className="border-t border-border p-3">
                       {draft.step === "enter" ? (
                         <>
                           <input
                             type="hidden"
                             name="intent"
                             value={
-                              method === "phone" ? "addPhoneSend" : "addEmailSend"
+                              method === "phone"
+                                ? "addPhoneSend"
+                                : "addEmailSend"
                             }
                           />
                           <Input
