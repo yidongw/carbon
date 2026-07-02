@@ -1,5 +1,6 @@
 import {
   assertIsPost,
+  CONTROLLED_ENVIRONMENT,
   callbackValidator,
   carbonClient,
   error,
@@ -11,7 +12,11 @@ import {
 } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { getCompanyId, setCompanyId } from "@carbon/auth/company.server";
-import { linkIdentity } from "@carbon/auth/identity.server";
+import {
+  findUserIdByIdentity,
+  linkIdentity,
+  userHasEmailIdentity
+} from "@carbon/auth/identity.server";
 import {
   destroyAuthSession,
   destroyPkceCookie,
@@ -20,15 +25,8 @@ import {
   getPkceCookie,
   setAuthSession
 } from "@carbon/auth/session.server";
-import { getUserById } from "@carbon/auth/users.server";
 import { validator } from "@carbon/form";
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-  LoadingBars,
-  VStack
-} from "@carbon/react";
+import { Alert, AlertDescription, AlertTitle, cn, VStack } from "@carbon/react";
 import { Trans } from "@lingui/react/macro";
 import { useEffect, useRef, useState } from "react";
 import { LuTriangleAlert } from "react-icons/lu";
@@ -38,10 +36,8 @@ import {
   redirect,
   useFetcher,
   useLoaderData,
-  useLocation,
   useSearchParams
 } from "react-router";
-import { getCompanies, getEmployeeCompanies } from "~/modules/settings";
 import { useFormatValidationError } from "~/utils/formatValidationError";
 import { path } from "~/utils/path";
 
@@ -90,6 +86,33 @@ export async function loader({ request }: LoaderFunctionArgs) {
     });
   }
 
+  // GoTrue error redirect: errors appear in the query string (and hash) since
+  // GoTrue v2.x. Handle server-side and route the message to a page that will
+  // actually show it.
+  const errorCode = url.searchParams.get("error_code");
+  const errorDescription = url.searchParams.get("error_description");
+  if (errorCode || errorDescription) {
+    const msg = (
+      errorDescription ??
+      errorCode ??
+      "Authentication error"
+    ).replace(/\+/g, " ");
+    const redirectTo = url.searchParams.get("redirectTo");
+    const session = await getAuthSession(request);
+    // Link flow: the user is already signed in and came from an in-app page —
+    // return them there with ?linkError, which that page surfaces as a toast.
+    if (session && redirectTo?.startsWith("/x/")) {
+      const sep = redirectTo.includes("?") ? "&" : "?";
+      return redirect(
+        `${redirectTo}${sep}linkError=${encodeURIComponent(msg)}`
+      );
+    }
+    // Login flow: there's no session, so a redirect to /x is bounced to /login
+    // and any query param is dropped. Surface the error via flash instead —
+    // root's useMount shows flash toasts on full-page loads.
+    return redirect(path.to.login, await flash(request, error(null, msg)));
+  }
+
   // OAuth (Google/Azure) implicit flow — tokens arrive in the URL hash, which
   // the server never sees. The client component handles those below.
   const authSession = await getAuthSession(request);
@@ -114,14 +137,14 @@ export async function action({ request }: ActionFunctionArgs) {
   const { accessToken, refreshToken, userId, redirectTo } = validation.data;
   const serviceRole = getCarbonServiceRole();
 
-  // Parallelize token verification with the (pre-session) employee membership
-  // lookup — independent, hot login path. getUser only verifies the JWT (no
-  // token rotation / DB writes); the session is built from the raw tokens below.
-  const [employeeCompaniesResult, { data: userData, error: userError }] =
-    await Promise.all([
-      getEmployeeCompanies(serviceRole, userId),
-      serviceRole.auth.getUser(accessToken)
-    ]);
+  const [companies, { data: userData, error: userError }] = await Promise.all([
+    serviceRole
+      .from("userToCompany")
+      .select("companyId, ...company(companyGroupId)")
+      .eq("userId", userId)
+      .limit(50),
+    serviceRole.auth.getUser(accessToken)
+  ]);
 
   if (!userData?.user || userError) {
     return redirect(
@@ -137,30 +160,84 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
-  // Prefer an employee company as the active one; fall back to any membership
-  // so auth/RLS can deny a pure portal user later.
-  const employeeCompanies = employeeCompaniesResult.data ?? [];
-  const pickable = employeeCompanies.length
-    ? employeeCompanies
-    : ((await getCompanies(serviceRole, userId)).data ?? []);
+  if (companies.error) {
+    return redirect(
+      path.to.root,
+      await flash(request, error(companies.error, "Failed to load company"))
+    );
+  }
 
-  // Auto-link on OAuth login/link: filling the email links the email identity,
-  // and each connected provider (Google/Azure) links itself. We iterate
-  // user.identities (not just app_metadata.provider) so linking a second
-  // provider is captured too. Idempotent; a no-op if a credential is already on
-  // another account.
-  if (userData.user.email) {
-    await linkIdentity(userId, "email", userData.user.email);
-    for (const identity of userData.user.identities ?? []) {
-      if (identity.provider === "google" || identity.provider === "azure") {
-        await linkIdentity(userId, identity.provider, userData.user.email);
+  // Link each connected OAuth provider (Google/Azure) to this account, using
+  // the provider's OWN email (identity_data.email), and — only if the user has
+  // no email-OTP login yet — adopt the first linked OAuth email as their email
+  // identity + canonical address so it shows on the profile and email login
+  // works too.
+  //
+  // We deliberately do NOT re-link the auth user's canonical email
+  // (userData.user.email) as an "email" identity: that value lingers after an
+  // email is removed (a shared OAuth identity keeps it set), which would
+  // resurrect a removed email or attach a stale address that mismatches the
+  // provider just linked.
+  const hasEmailIdentity = await userHasEmailIdentity(userId);
+
+  let adoptEmail: string | undefined;
+  for (const identity of userData.user.identities ?? []) {
+    if (identity.provider === "google" || identity.provider === "azure") {
+      const identityEmail = (identity.identity_data as Record<string, unknown>)
+        ?.email as string | undefined;
+      if (!identityEmail) continue;
+
+      // Block linking if this OAuth email is already someone else's OTP email
+      // identity in Carbon. Same-type conflicts are caught inside linkIdentity;
+      // this catches the cross-type case (email vs google).
+      const emailOwner = await findUserIdByIdentity("email", identityEmail);
+      if (emailOwner && emailOwner !== userId) {
+        if (redirectTo?.startsWith("/x/")) {
+          // Link flow: user was already logged in — redirect back with error.
+          const sep = redirectTo.includes("?") ? "&" : "?";
+          return redirect(
+            `${redirectTo}${sep}linkError=${encodeURIComponent(
+              `${identityEmail} is already registered as a login method on another account`
+            )}`
+          );
+        }
+        // Login flow: skip this identity link but still allow login.
+        continue;
       }
+
+      await linkIdentity(userId, identity.provider, identityEmail);
+      if (!adoptEmail) adoptEmail = identityEmail;
+    }
+  }
+
+  if (!hasEmailIdentity && adoptEmail) {
+    // Set the canonical auth email FIRST. Only if that succeeds do we record the
+    // "email" login identity + public email — otherwise we'd advertise an email
+    // login whose address never became the canonical one, so email-OTP to it
+    // wouldn't actually work (mirrors addEmailVerify's rollback in profile.tsx).
+    const { error: emailErr } = await serviceRole.auth.admin.updateUserById(
+      userId,
+      { email: adoptEmail, email_confirm: true }
+    );
+    if (emailErr) {
+      console.error(
+        "[callback] failed to adopt OAuth email on auth user",
+        emailErr
+      );
+    } else {
+      await linkIdentity(userId, "email", adoptEmail);
+      await serviceRole
+        .from("user")
+        .update({ email: adoptEmail })
+        .eq("id", userId);
     }
   }
 
   const cookieCompanyId = getCompanyId(request);
-  const match =
-    pickable.find((c) => c.companyId === cookieCompanyId) ?? pickable[0];
+  const match = (companies.data?.find((c) => c.companyId === cookieCompanyId) ??
+    companies.data?.[0]) as
+    | { companyId: string; companyGroupId: string | null }
+    | undefined;
 
   const authSession = makeAuthSessionFromTokens(
     accessToken,
@@ -170,32 +247,16 @@ export async function action({ request }: ActionFunctionArgs) {
     match?.companyGroupId ?? ""
   );
 
-  const user = await getUserById(authSession.userId);
-
-  if (user?.data) {
-    const sessionCookie = await setAuthSession(request, {
-      authSession
-    });
-    const headers: [string, string][] = [["Set-Cookie", sessionCookie]];
-
-    // Only finalize the active company for single-company (and portal-only)
-    // users. Multi-company users must actively choose: we leave the companyId
-    // cookie unset and let x+/_layout bounce them to the picker — its presence
-    // is the "has chosen this session" marker. This keeps all picker/enforcement
-    // logic in one place instead of duplicating the redirect here.
-    if (employeeCompanies.length <= 1) {
-      headers.push(["Set-Cookie", setCompanyId(authSession.companyId)]);
-    }
-
-    return redirect(safeRedirect(redirectTo, path.to.authenticatedRoot), {
-      headers
-    });
-  } else {
-    return redirect(
-      path.to.root,
-      await flash(request, error(user.error, "User not found"))
-    );
-  }
+  const sessionCookie = await setAuthSession(request, {
+    authSession
+  });
+  const companyIdCookie = setCompanyId(authSession.companyId);
+  return redirect(safeRedirect(redirectTo, path.to.authenticatedRoot), {
+    headers: [
+      ["Set-Cookie", sessionCookie],
+      ["Set-Cookie", companyIdCookie]
+    ]
+  });
 }
 
 export default function AuthCallback() {
@@ -205,20 +266,40 @@ export default function AuthCallback() {
   const [error, setError] = useState<string | null>(loaderError ?? null);
   const formatError = useFormatValidationError();
 
-  const { hash } = useLocation();
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
 
+  // Capture any GoTrue error from the URL hash SYNCHRONOUSLY on first render,
+  // before the Supabase SDK or a competing navigation can strip it. GoTrue
+  // delivers link errors (e.g. identity_already_exists) in the hash fragment,
+  // which the server never sees.
+  const [hashError] = useState<string | null>(() => {
+    if (typeof window === "undefined") return null;
+    const hp = new URLSearchParams(window.location.hash.slice(1));
+    const desc = hp.get("error_description") ?? hp.get("error");
+    return desc ? decodeURIComponent(desc.replace(/\+/g, " ")) : null;
+  });
+
+  // On a hash error, send the user back to where they came from with the error
+  // in the query string (?linkError=), which that page surfaces as a toast.
   useEffect(() => {
-    const hashParams = new URLSearchParams(hash.slice(1));
-    const errorDescription = hashParams.get("error_description");
-    if (errorDescription) {
-      setError(decodeURIComponent(errorDescription.replace(/\+/g, " ")));
+    if (!hashError) return;
+    if (redirectTo) {
+      const sep = redirectTo.includes("?") ? "&" : "?";
+      window.location.replace(
+        `${redirectTo}${sep}linkError=${encodeURIComponent(hashError)}`
+      );
+    } else {
+      setError(hashError);
     }
-  }, [hash]);
+  }, [hashError, redirectTo]);
 
   // Handle OAuth (Google/Azure) tokens delivered in the hash via implicit flow.
+  // Skip entirely when there's a hash error — otherwise INITIAL_SESSION fires
+  // with the user's EXISTING session and we'd submit the form (landing on the
+  // target page without the error), racing the redirect above.
   useEffect(() => {
+    if (hashError) return;
     const {
       data: { subscription }
     } = carbonClient.auth.onAuthStateChange((event, session) => {
@@ -247,7 +328,7 @@ export default function AuthCallback() {
     return () => {
       subscription.unsubscribe();
     };
-  }, [fetcher, redirectTo]);
+  }, [fetcher, redirectTo, hashError]);
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -271,7 +352,18 @@ export default function AuthCallback() {
           </VStack>
         </div>
       ) : (
-        <LoadingBars />
+        <div
+          className={cn(
+            "hexagon-loader-container",
+            CONTROLLED_ENVIRONMENT && "grayscale"
+          )}
+        >
+          <div className="hexagon-loader">
+            <div className="hexagon" />
+            <div className="hexagon" />
+            <div className="hexagon" />
+          </div>
+        </div>
       )}
     </div>
   );

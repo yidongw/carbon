@@ -46,7 +46,7 @@ import {
 } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
 import { startRegistration } from "@simplewebauthn/browser";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LuFingerprint, LuTrash2 } from "react-icons/lu";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import {
@@ -84,6 +84,11 @@ type Passkey = {
 export async function loader({ request }: LoaderFunctionArgs) {
   const { client, userId } = await requirePermissions(request, {});
   const serviceRole = getCarbonServiceRole();
+
+  // OAuth callback redirects a failed identity link back here with the reason
+  // in ?linkError=; read it server-side and surface it in the component.
+  const linkError = new URL(request.url).searchParams.get("linkError");
+
   const [user, passkeysResult, identities] = await Promise.all([
     getAccount(client, userId),
     (serviceRole as any)
@@ -109,7 +114,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
     user: user.data,
     passkeys: (passkeysResult.data ?? []) as Passkey[],
     identities,
-    enabledMethods
+    enabledMethods,
+    linkError
   };
 }
 
@@ -399,12 +405,30 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function AccountProfile() {
-  const { user, passkeys, identities, enabledMethods } =
+  const { user, passkeys, identities, enabledMethods, linkError } =
     useLoaderData<typeof loader>();
   const deleteFetcher = useFetcher();
   const renameFetcher = useFetcher();
   const { revalidate } = useRevalidator();
   const passkeysEnabled = isAuthProviderEnabled("passkey");
+
+  // OAuth link failures redirect back with ?linkError=; toast it (deferred one
+  // tick so the Toaster subscribes first) and strip the param.
+  useEffect(() => {
+    if (!linkError) return;
+    const id = setTimeout(() => toast.error(linkError), 0);
+    const params = new URLSearchParams(window.location.search);
+    if (params.has("linkError")) {
+      params.delete("linkError");
+      const qs = params.toString();
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname + (qs ? `?${qs}` : "")
+      );
+    }
+    return () => clearTimeout(id);
+  }, [linkError]);
   const [registering, setRegistering] = useState(false);
   const [selectedPasskey, setSelectedPasskey] = useState<Passkey | null>(null);
   const [editedName, setEditedName] = useState("");

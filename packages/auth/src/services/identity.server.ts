@@ -25,6 +25,28 @@ export async function getUserIdentities(userId: string) {
   return data ?? [];
 }
 
+/**
+ * Whether the user already has an email-OTP login method. Used to decide
+ * whether to ADOPT an OAuth email as the account's canonical address. On lookup
+ * error this returns `true` (fail-safe): adopting on a false "no email" would
+ * resurrect a previously-removed email or overwrite the canonical address, so
+ * when we can't confirm the absence we skip adoption rather than risk it.
+ */
+export async function userHasEmailIdentity(userId: string): Promise<boolean> {
+  const serviceRole = getCarbonServiceRole();
+  const { count, error } = await serviceRole
+    .from("userIdentity")
+    .select("id", { count: "exact", head: true })
+    .eq("userId", userId)
+    .eq("type", "email");
+
+  if (error) {
+    console.error("[identity] email-identity check failed", error);
+    return true;
+  }
+  return (count ?? 0) > 0;
+}
+
 /** Resolve which user owns a given identity (the heart of login resolution). */
 export async function findUserIdByIdentity(
   type: LoginMethod,
@@ -107,6 +129,24 @@ export async function unlinkIdentity(
   if (error) {
     console.error("[identity] unlink failed", error);
     return { success: false, reason: "error" };
+  }
+
+  // Google/Azure keep a separate identity row in GoTrue (auth.identities).
+  // Deleting only the app row above leaves the OAuth account still linked in
+  // GoTrue, so re-linking it later fails with identity_already_exists. Drop the
+  // GoTrue identity too (SECURITY DEFINER helper) so unlink is clean.
+  if (type === "google" || type === "azure") {
+    const { error: rpcError } = await serviceRole.rpc("delete_oauth_identity", {
+      p_user_id: userId,
+      p_provider: type,
+      p_email: value
+    });
+    if (rpcError) {
+      console.error(
+        "[identity] failed to remove GoTrue OAuth identity",
+        rpcError
+      );
+    }
   }
 
   // Free whatever the removed identity occupies on the auth user, so the

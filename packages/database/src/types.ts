@@ -68666,6 +68666,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      delete_oauth_identity: {
+        Args: { p_email: string; p_provider: string; p_user_id: string }
+        Returns: number
+      }
       delete_old_audit_logs: {
         Args: { p_company_id: string; p_cutoff_date: string }
         Returns: number
