@@ -5,7 +5,7 @@ import {
   error,
   safeRedirect
 } from "@carbon/auth";
-import { refreshAccessToken } from "@carbon/auth/auth.server";
+import { makeAuthSession } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { getCompanyId, setCompanyId } from "@carbon/auth/company.server";
 import {
@@ -61,11 +61,31 @@ export async function action({ request }: ActionFunctionArgs) {
   const { refreshToken, userId, redirectTo } = validation.data;
   const serviceRole = getCarbonServiceRole();
 
-  // Pre-session: no user-authed client yet, so query memberships with the
-  // service role. Prefer an employee company as the active one; fall back to
-  // any membership so auth/RLS can deny a pure portal user later.
-  const employeeCompanies =
-    (await getEmployeeCompanies(serviceRole, userId)).data ?? [];
+  // Parallelize the slow session refresh with the (pre-session) employee
+  // membership lookup — they're independent and this is the hot login path.
+  const [employeeCompaniesResult, { data: sessionData, error: sessionError }] =
+    await Promise.all([
+      getEmployeeCompanies(serviceRole, userId),
+      serviceRole.auth.refreshSession({ refresh_token: refreshToken })
+    ]);
+
+  if (!sessionData?.session || sessionError) {
+    return redirect(
+      path.to.root,
+      await flash(request, error(sessionError, "Invalid refresh token"))
+    );
+  }
+
+  if (sessionData.session.user.id !== userId) {
+    return redirect(
+      path.to.root,
+      await flash(request, error(null, "Session mismatch"))
+    );
+  }
+
+  // Prefer an employee company as the active one; fall back to any membership
+  // so auth/RLS can deny a pure portal user later.
+  const employeeCompanies = employeeCompaniesResult.data ?? [];
   const pickable = employeeCompanies.length
     ? employeeCompanies
     : ((await getCompanies(serviceRole, userId)).data ?? []);
@@ -73,19 +93,17 @@ export async function action({ request }: ActionFunctionArgs) {
   const cookieCompanyId = getCompanyId(request);
   const match =
     pickable.find((c) => c.companyId === cookieCompanyId) ?? pickable[0];
-  const companyId = match?.companyId ?? undefined;
-  const companyGroupId = match?.companyGroupId ?? "";
 
-  const authSession = await refreshAccessToken(
-    refreshToken,
-    companyId,
-    companyGroupId
+  const authSession = makeAuthSession(
+    sessionData.session,
+    match?.companyId ?? "",
+    match?.companyGroupId ?? ""
   );
 
   if (!authSession) {
     return redirect(
       path.to.root,
-      await flash(request, error(authSession, "Invalid refresh token"))
+      await flash(request, error(null, "Invalid session"))
     );
   }
 
