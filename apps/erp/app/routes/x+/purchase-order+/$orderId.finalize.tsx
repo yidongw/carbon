@@ -324,7 +324,7 @@ export async function action(args: ActionFunctionArgs) {
             lastName: supplier.data.contact.lastName ?? undefined
           },
           sender: {
-            email: buyer.data.email,
+            email: buyer.data.email ?? "",
             firstName: buyer.data.firstName,
             lastName: buyer.data.lastName
           },
@@ -393,9 +393,9 @@ export async function action(args: ActionFunctionArgs) {
         }
 
         await trigger("send-email", {
-          to: [buyer.data.email, supplier.data.contact.email],
+          to: [buyer.data.email ?? "", supplier.data.contact.email],
           cc: ccSelections?.length ? ccSelections : undefined,
-          from: buyer.data.email,
+          from: buyer.data.email ?? "",
           subject: `Purchase Order ${purchaseOrder.data.purchaseOrderId} from ${company.data.name}`,
           html,
           text,

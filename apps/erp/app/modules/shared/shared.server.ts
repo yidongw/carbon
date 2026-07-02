@@ -260,7 +260,7 @@ export async function sendSalesOrderEmail(args: {
       lastName: customer.data.contact.lastName ?? undefined
     },
     sender: {
-      email: seller.data.email,
+      email: seller.data.email ?? "",
       firstName: seller.data.firstName,
       lastName: seller.data.lastName
     },
@@ -274,9 +274,9 @@ export async function sendSalesOrderEmail(args: {
     .createSignedUrl(documentFilePath, 3600);
 
   await trigger("send-email", {
-    to: [seller.data.email, customer.data.contact.email!],
+    to: [seller.data.email ?? "", customer.data.contact.email!],
     cc: ccSelections?.length ? ccSelections : undefined,
-    from: seller.data.email,
+    from: seller.data.email ?? "",
     subject: `Order ${salesOrder.data.salesOrderId} from ${company.data.name}`,
     html,
     text,

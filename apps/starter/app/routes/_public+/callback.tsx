@@ -76,7 +76,7 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
-  const user = await getUserByEmail(authSession.email);
+  const user = await getUserByEmail(authSession.email ?? "");
 
   if (user?.data) {
     const sessionCookie = await setAuthSession(request, {

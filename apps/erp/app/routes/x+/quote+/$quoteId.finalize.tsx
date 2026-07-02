@@ -181,7 +181,7 @@ export async function action(args: ActionFunctionArgs) {
             lastName: customerContact.data.contact!.lastName!
           },
           sender: {
-            email: user.data.email,
+            email: user.data.email ?? "",
             firstName: user.data.firstName,
             lastName: user.data.lastName
           }
@@ -194,9 +194,9 @@ export async function action(args: ActionFunctionArgs) {
           .createSignedUrl(documentFilePath, 3600);
 
         await trigger("send-email", {
-          to: [user.data.email, customerContact.data.contact!.email!],
+          to: [user.data.email ?? "", customerContact.data.contact!.email!],
           cc: ccSelections?.length ? ccSelections : undefined,
-          from: user.data.email,
+          from: user.data.email ?? "",
           subject: `Quote ${quote.data.quoteId}`,
           html,
           text,

@@ -48,7 +48,7 @@ export async function action({ request }: ActionFunctionArgs) {
     const existingInvite = await serviceRole
       .from("invite")
       .select("createdBy")
-      .eq("email", user.data.email)
+      .eq("email", user.data.email ?? "")
       .eq("companyId", companyId)
       .maybeSingle();
 
@@ -66,7 +66,7 @@ export async function action({ request }: ActionFunctionArgs) {
     const refreshed = await serviceRole
       .from("invite")
       .update({ code: newCode, acceptedAt: null, revokedAt: null })
-      .eq("email", user.data.email)
+      .eq("email", user.data.email ?? "")
       .eq("companyId", companyId)
       .select("code")
       .single();
@@ -86,16 +86,16 @@ export async function action({ request }: ActionFunctionArgs) {
 
     await sendEmail({
       from: `Carbon <no-reply@${RESEND_DOMAIN}>`,
-      to: user.data.email,
+      to: user.data.email ?? "",
       subject: `You have been invited to join ${company.data?.name} on Carbon`,
       headers: {
         "X-Entity-Ref-ID": nanoid()
       },
       html: await render(
         InviteEmail({
-          invitedByEmail: inviter.data?.email ?? user.data.email,
+          invitedByEmail: inviter.data?.email ?? user.data.email ?? "",
           invitedByName: inviter.data?.fullName ?? "",
-          email: user.data.email,
+          email: user.data.email ?? "",
           name: user.data.fullName ?? "",
           companyName: company.data.name,
           inviteLink: `${getAppUrl()}/invite/${refreshed.data.code}`,

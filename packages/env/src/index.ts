@@ -74,6 +74,9 @@ declare global {
       VERCEL_ENV: string;
       INNGEST_SIGNING_KEY: string;
       INNGEST_EVENT_KEY: string;
+      WECHAT_MP_APP_ID: string;
+      WECHAT_MP_APP_SECRET: string;
+      WECHAT_WEBHOOK_TOKEN: string;
       XERO_CLIENT_SECRET: string;
       XERO_WEBHOOK_SECRET: string;
       DEFAULT_LANGUAGE: string;
@@ -107,7 +110,7 @@ export function getEnv(
  * Server env
  */
 
-export type AuthProvider = "email" | "google" | "azure" | "passkey";
+export type AuthProvider = "email" | "google" | "azure" | "passkey" | "wechat";
 
 export const AUTH_PROVIDERS =
   getEnv("AUTH_PROVIDERS", {
@@ -310,6 +313,19 @@ export const XERO_CLIENT_SECRET = getEnv("XERO_CLIENT_SECRET", {
   isSecret: true
 });
 export const XERO_WEBHOOK_SECRET = getEnv("XERO_WEBHOOK_SECRET", {
+  isRequired: false,
+  isSecret: true
+});
+
+export const WECHAT_MP_APP_ID = getEnv("WECHAT_MP_APP_ID", {
+  isRequired: false,
+  isSecret: false
+});
+export const WECHAT_MP_APP_SECRET = getEnv("WECHAT_MP_APP_SECRET", {
+  isRequired: false,
+  isSecret: true
+});
+export const WECHAT_WEBHOOK_TOKEN = getEnv("WECHAT_WEBHOOK_TOKEN", {
   isRequired: false,
   isSecret: true
 });

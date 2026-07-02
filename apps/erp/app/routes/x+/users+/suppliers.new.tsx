@@ -79,7 +79,7 @@ export async function action({ request }: ActionFunctionArgs) {
     },
     html: await render(
       InviteEmail({
-        invitedByEmail: user.data.email,
+        invitedByEmail: user.data.email ?? "",
         invitedByName: user.data.fullName ?? "",
         email: result.email,
         name: invitee.data?.fullName ?? "",
