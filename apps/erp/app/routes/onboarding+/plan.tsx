@@ -29,11 +29,15 @@ import { Form, redirect, useFetcher, useLoaderData } from "react-router";
 import { getCompany, getPlans } from "~/modules/settings";
 import { path } from "~/utils/path";
 
+// Per-seat prices per user per month. Recurring (monthly) and one-time annual
+// differ; annual is the discounted, prepaid rate. Annual total = monthly x 12.
+// USD is shown everywhere except China (see currency selection in the loader).
 function usePlans() {
   const { t } = useLingui();
   return {
     STARTER: {
-      price: 40,
+      monthly: { usd: 40, cny: 288 },
+      annualMonthly: { usd: 30, cny: 200 },
       userMinimum: 0,
       talkToSales: false,
       description: t`Perfect for low-cost evaluation`,
@@ -44,7 +48,8 @@ function usePlans() {
       ]
     },
     BUSINESS: {
-      price: 100,
+      monthly: { usd: 100, cny: 720 },
+      annualMonthly: { usd: 75, cny: 500 },
       userMinimum: 5,
       talkToSales: true,
       description: t`For growing businesses that need support`,
@@ -55,23 +60,11 @@ function usePlans() {
         t`Implementation Support`,
         t`Unlimited Functional Support`
       ]
-    },
-    GOVCLOUD: {
-      price: 100,
-      userMinimum: 5,
-      talkToSales: true,
-      description: t`For US companies handling ITAR data`,
-      features: [
-        t`5 User Minimum`,
-        t`ERP, MES, QMS`,
-        t`Cloud-Hosted`,
-        t`API and Webhooks`,
-        t`Implementation Support`,
-        t`Unlimited Functional Support`
-      ]
     }
   };
 }
+
+type Currency = "usd" | "cny";
 
 export async function loader({ request }: ActionFunctionArgs) {
   const { client, companyId } = await requirePermissions(request, {});
@@ -89,7 +82,24 @@ export async function loader({ request }: ActionFunctionArgs) {
     throw new Error("Failed to load plans");
   }
 
-  return { plans: plans.data?.filter((p) => p.public), companyId };
+  // We only sell Starter and Business — never surface partner/dev/other rows
+  // that may exist in the DB.
+  const SELLABLE_PLAN_IDS = ["STARTER", "BUSINESS"];
+
+  // Visitor country (Vercel or Cloudflare geo header) drives the display currency
+  // together with the browser/account language — either signal for China ⇒ CNY.
+  const ipCountry =
+    request.headers.get("x-vercel-ip-country") ??
+    request.headers.get("cf-ipcountry") ??
+    null;
+
+  return {
+    plans: plans.data?.filter(
+      (p) => p.public && SELLABLE_PLAN_IDS.includes(p.id)
+    ),
+    companyId,
+    ipCountry
+  };
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -109,8 +119,8 @@ export async function action({ request }: ActionFunctionArgs) {
     throw new Error("Plan ID is required");
   }
 
-  const validPlanIds = ["STARTER", "BUSINESS", "GOVCLOUD"];
-  if (!validPlanIds.includes(planId) || planId.startsWith("PARTNER")) {
+  const validPlanIds = ["STARTER", "BUSINESS"];
+  if (!validPlanIds.includes(planId)) {
     throw new Error("Invalid plan ID");
   }
 
@@ -145,17 +155,22 @@ type BillingMode = "one_time" | "subscription";
 export default function OnboardingPlan() {
   const { t } = useLingui();
   const PLANS = usePlans();
-  const { plans } = useLoaderData<typeof loader>();
+  const { plans, ipCountry } = useLoaderData<typeof loader>();
   const { locale } = useLocale();
+
+  // Either signal — Chinese language OR a China IP — shows CNY; otherwise USD.
+  const currency: Currency =
+    locale.toLowerCase().startsWith("zh") || ipCountry === "CN" ? "cny" : "usd";
+
   const formatter = useMemo(
     () =>
       new Intl.NumberFormat(locale, {
         style: "currency",
-        currency: "USD",
+        currency: currency.toUpperCase(),
         minimumFractionDigits: 0,
         maximumFractionDigits: 0
       }),
-    [locale]
+    [locale, currency]
   );
 
   // One-time annual is the default (WeChat Pay / Alipay only work one-time).
@@ -164,8 +179,8 @@ export default function OnboardingPlan() {
   const sortedPlans = useMemo(
     () =>
       [...plans].sort((a, b) => {
-        const priceA = PLANS[a.id as keyof typeof PLANS]?.price || 0;
-        const priceB = PLANS[b.id as keyof typeof PLANS]?.price || 0;
+        const priceA = PLANS[a.id as keyof typeof PLANS]?.monthly.usd || 0;
+        const priceB = PLANS[b.id as keyof typeof PLANS]?.monthly.usd || 0;
         return priceA - priceB;
       }),
     [plans, PLANS]
@@ -217,6 +232,7 @@ export default function OnboardingPlan() {
                 plan={plan}
                 planDetails={PLANS[plan.id as keyof typeof PLANS]}
                 formatter={formatter}
+                currency={currency}
                 billingMode={billingMode}
               />
             ))}
@@ -246,6 +262,7 @@ function PlanCard({
   plan,
   planDetails,
   formatter,
+  currency,
   billingMode
 }: {
   plan: {
@@ -256,6 +273,7 @@ function PlanCard({
   };
   planDetails?: PlanDetails;
   formatter: Intl.NumberFormat;
+  currency: Currency;
   billingMode: BillingMode;
 }) {
   const { t } = useLingui();
@@ -277,6 +295,21 @@ function PlanCard({
         {isOneTime ? (
           <VStack spacing={4} className="w-full">
             <div className="w-full">
+              <div className="flex items-baseline">
+                <span className="text-5xl font-bold tracking-tighter">
+                  {formatter.format(planDetails?.annualMonthly[currency] ?? 0)}
+                </span>
+                <span className="ml-1 text-sm text-muted-foreground tracking-tighter">
+                  <Trans>/user/mo</Trans>
+                </span>
+              </div>
+              <p className="text-sm text-muted-foreground mt-1">
+                {t`Billed annually · ${formatter.format(
+                  (planDetails?.annualMonthly[currency] ?? 0) * 12
+                )}/user/yr`}
+              </p>
+            </div>
+            <div className="w-full">
               <Label htmlFor={`seats-${plan.id}`}>
                 <Trans>Seats</Trans>
               </Label>
@@ -296,15 +329,13 @@ function PlanCard({
               )}
             </div>
             <p className="text-sm text-muted-foreground">
-              <Trans>
-                Billed for 12 months up front. Total shown at checkout.
-              </Trans>
+              <Trans>Total shown at checkout.</Trans>
             </p>
           </VStack>
         ) : (
           <div className="flex items-baseline">
             <span className="text-5xl font-bold tracking-tighter">
-              {formatter.format(planDetails?.price ?? 0)}
+              {formatter.format(planDetails?.monthly[currency] ?? 0)}
             </span>
             <span className="ml-1 text-sm text-muted-foreground tracking-tighter">
               <Trans>/month/user</Trans>
