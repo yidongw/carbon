@@ -1,10 +1,11 @@
-import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
-import { flash } from "@carbon/auth/session.server";
 import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
+import { Suspense } from "react";
 import type { LoaderFunctionArgs } from "react-router";
-import { Outlet, redirect, useLoaderData } from "react-router";
+import { Await, Outlet, useLoaderData } from "react-router";
+import { TableSkeleton } from "~/components/Skeletons";
 import { getTools } from "~/modules/items";
 import { ToolsTable } from "~/modules/items/ui/Tools";
 import { getTagsList } from "~/modules/shared";
@@ -31,38 +32,49 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const { limit, offset, sorts, filters } =
     getGenericQueryFilters(searchParams);
 
-  const [tools, tags] = await Promise.all([
-    getTools(client, companyId, {
-      search,
-      supplierId,
-      limit,
-      offset,
-      sorts,
-      filters
-    }),
-    getTagsList(client, companyId, "tool")
-  ]);
+  // Tags are small/cheap — keep them blocking so filters render immediately.
+  const tags = await getTagsList(client, companyId, "tool");
 
-  if (tools.error) {
-    redirect(
-      path.to.authenticatedRoot,
-      await flash(request, error(tools.error, "Failed to fetch tools"))
-    );
-  }
+  // Defer the heavy tools query: the page navigates instantly and renders a
+  // table skeleton while the rows stream in.
+  const tools = getTools(client, companyId, {
+    search,
+    supplierId,
+    limit,
+    offset,
+    sorts,
+    filters
+  });
 
   return {
-    count: tools.count ?? 0,
-    tools: tools.data ?? [],
+    tools,
     tags: tags.data ?? []
   };
 }
 
 export default function ToolsSearchRoute() {
-  const { count, tools, tags } = useLoaderData<typeof loader>();
+  const { tools, tags } = useLoaderData<typeof loader>();
 
   return (
     <VStack spacing={0} className="h-full">
-      <ToolsTable data={tools} count={count} tags={tags} />
+      <Suspense fallback={<TableSkeleton />}>
+        <Await
+          resolve={tools}
+          errorElement={
+            <div className="p-4 text-sm text-red-500">
+              <Trans>Failed to load tools.</Trans>
+            </div>
+          }
+        >
+          {(tools) => (
+            <ToolsTable
+              data={tools.data ?? []}
+              count={tools.count ?? 0}
+              tags={tags}
+            />
+          )}
+        </Await>
+      </Suspense>
       <Outlet />
     </VStack>
   );

@@ -3827,14 +3827,32 @@ msgstr "サプライヤー見積行の挿入に失敗しました"
 msgid "Failed to load configuration parameters"
 msgstr "設定パラメータの読み込みに失敗しました"
 
+msgid "Failed to load consumables."
+msgstr ""
+
 msgid "Failed to load customer part details"
 msgstr "顧客部品の詳細の読み込みに失敗しました"
+
+msgid "Failed to load customers."
+msgstr ""
 
 msgid "Failed to load data"
 msgstr "データの読み込みに失敗しました"
 
+msgid "Failed to load documents."
+msgstr ""
+
 msgid "Failed to load inbound inspections"
 msgstr "受信検査の読み込みに失敗しました"
+
+msgid "Failed to load inspections."
+msgstr ""
+
+msgid "Failed to load inventory."
+msgstr ""
+
+msgid "Failed to load issues."
+msgstr ""
 
 msgid "Failed to load item data"
 msgstr "アイテムデータの読み込みに失敗しました"
@@ -3848,11 +3866,32 @@ msgstr "ジョブ操作の読み込みに失敗しました"
 msgid "Failed to load jobs"
 msgstr "ジョブの読み込みに失敗しました"
 
+msgid "Failed to load jobs."
+msgstr ""
+
+msgid "Failed to load materials."
+msgstr ""
+
+msgid "Failed to load parts."
+msgstr ""
+
+msgid "Failed to load people."
+msgstr ""
+
+msgid "Failed to load purchase invoices."
+msgstr ""
+
 msgid "Failed to load purchase order lines"
 msgstr "購買注文行の読み込みに失敗しました"
 
 msgid "Failed to load purchase orders"
 msgstr "購買注文の読み込みに失敗しました"
+
+msgid "Failed to load purchase orders."
+msgstr ""
+
+msgid "Failed to load quotes."
+msgstr ""
 
 msgid "Failed to load receipt lines"
 msgstr "領収書行の読み込みに失敗しました"
@@ -3860,11 +3899,23 @@ msgstr "領収書行の読み込みに失敗しました"
 msgid "Failed to load receipts"
 msgstr "領収書の読み込みに失敗しました"
 
+msgid "Failed to load receipts."
+msgstr ""
+
+msgid "Failed to load RFQs."
+msgstr ""
+
+msgid "Failed to load sales invoices."
+msgstr ""
+
 msgid "Failed to load sales order lines"
 msgstr "販売注文行の読み込みに失敗しました"
 
 msgid "Failed to load sales orders"
 msgstr "販売注文の読み込みに失敗しました"
+
+msgid "Failed to load sales orders."
+msgstr ""
 
 msgid "Failed to load shipment lines"
 msgstr "配送ラインの読み込みに失敗しました"
@@ -3872,11 +3923,26 @@ msgstr "配送ラインの読み込みに失敗しました"
 msgid "Failed to load shipments"
 msgstr "出荷の読み込みに失敗しました"
 
+msgid "Failed to load shipments."
+msgstr ""
+
+msgid "Failed to load suggestions."
+msgstr ""
+
 msgid "Failed to load supplier part details"
 msgstr "サプライヤー部品の詳細の読み込みに失敗しました"
 
+msgid "Failed to load suppliers."
+msgstr ""
+
+msgid "Failed to load tools."
+msgstr ""
+
 msgid "Failed to load tracked entities"
 msgstr "追跡対象エンティティの読み込みに失敗しました"
+
+msgid "Failed to load warehouse transfers."
+msgstr ""
 
 msgid "Failed to remove image: {errorMessage}"
 msgstr "画像の削除に失敗しました: {errorMessage}"

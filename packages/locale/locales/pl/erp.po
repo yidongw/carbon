@@ -3827,14 +3827,32 @@ msgstr "Nie udało się wstawić linii oferty dostawcy"
 msgid "Failed to load configuration parameters"
 msgstr "Nie udało się załadować parametrów konfiguracji"
 
+msgid "Failed to load consumables."
+msgstr ""
+
 msgid "Failed to load customer part details"
 msgstr "Nie udało się załadować szczegółów części klienta"
+
+msgid "Failed to load customers."
+msgstr ""
 
 msgid "Failed to load data"
 msgstr "Nie udało się załadować danych"
 
+msgid "Failed to load documents."
+msgstr ""
+
 msgid "Failed to load inbound inspections"
 msgstr "Nie udało się załadować inspekcji przychodzących"
+
+msgid "Failed to load inspections."
+msgstr ""
+
+msgid "Failed to load inventory."
+msgstr ""
+
+msgid "Failed to load issues."
+msgstr ""
 
 msgid "Failed to load item data"
 msgstr "Nie udało się załadować danych elementu"
@@ -3848,11 +3866,32 @@ msgstr "Nie udało się załadować operacji zadania"
 msgid "Failed to load jobs"
 msgstr "Nie udało się załadować zadań"
 
+msgid "Failed to load jobs."
+msgstr ""
+
+msgid "Failed to load materials."
+msgstr ""
+
+msgid "Failed to load parts."
+msgstr ""
+
+msgid "Failed to load people."
+msgstr ""
+
+msgid "Failed to load purchase invoices."
+msgstr ""
+
 msgid "Failed to load purchase order lines"
 msgstr "Nie udało się załadować linii zamówienia zakupu"
 
 msgid "Failed to load purchase orders"
 msgstr "Nie udało się załadować zamówień zakupu"
+
+msgid "Failed to load purchase orders."
+msgstr ""
+
+msgid "Failed to load quotes."
+msgstr ""
 
 msgid "Failed to load receipt lines"
 msgstr "Nie udało się załadować linii przyjęcia"
@@ -3860,11 +3899,23 @@ msgstr "Nie udało się załadować linii przyjęcia"
 msgid "Failed to load receipts"
 msgstr "Nie udało się załadować paragonów"
 
+msgid "Failed to load receipts."
+msgstr ""
+
+msgid "Failed to load RFQs."
+msgstr ""
+
+msgid "Failed to load sales invoices."
+msgstr ""
+
 msgid "Failed to load sales order lines"
 msgstr "Nie udało się załadować linii zamówienia sprzedaży"
 
 msgid "Failed to load sales orders"
 msgstr "Nie udało się załadować zamówień sprzedaży"
+
+msgid "Failed to load sales orders."
+msgstr ""
 
 msgid "Failed to load shipment lines"
 msgstr "Nie udało się załadować linii wysyłki"
@@ -3872,11 +3923,26 @@ msgstr "Nie udało się załadować linii wysyłki"
 msgid "Failed to load shipments"
 msgstr "Nie udało się załadować przesyłek"
 
+msgid "Failed to load shipments."
+msgstr ""
+
+msgid "Failed to load suggestions."
+msgstr ""
+
 msgid "Failed to load supplier part details"
 msgstr "Nie udało się załadować szczegółów części dostawcy"
 
+msgid "Failed to load suppliers."
+msgstr ""
+
+msgid "Failed to load tools."
+msgstr ""
+
 msgid "Failed to load tracked entities"
 msgstr "Nie udało się załadować śledzonych jednostek"
+
+msgid "Failed to load warehouse transfers."
+msgstr ""
 
 msgid "Failed to remove image: {errorMessage}"
 msgstr "Nie udało się usunąć obrazu: {errorMessage}"

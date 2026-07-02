@@ -3827,14 +3827,32 @@ msgstr "插入供应商报价行失败"
 msgid "Failed to load configuration parameters"
 msgstr "加载配置参数失败"
 
+msgid "Failed to load consumables."
+msgstr ""
+
 msgid "Failed to load customer part details"
 msgstr "加载客户产品详情失败"
+
+msgid "Failed to load customers."
+msgstr ""
 
 msgid "Failed to load data"
 msgstr "加载数据失败"
 
+msgid "Failed to load documents."
+msgstr ""
+
 msgid "Failed to load inbound inspections"
 msgstr "加载入站检验失败"
+
+msgid "Failed to load inspections."
+msgstr ""
+
+msgid "Failed to load inventory."
+msgstr ""
+
+msgid "Failed to load issues."
+msgstr ""
 
 msgid "Failed to load item data"
 msgstr "加载物品数据失败"
@@ -3848,11 +3866,32 @@ msgstr "加载工作操作失败"
 msgid "Failed to load jobs"
 msgstr "加载工作失败"
 
+msgid "Failed to load jobs."
+msgstr ""
+
+msgid "Failed to load materials."
+msgstr ""
+
+msgid "Failed to load parts."
+msgstr ""
+
+msgid "Failed to load people."
+msgstr ""
+
+msgid "Failed to load purchase invoices."
+msgstr ""
+
 msgid "Failed to load purchase order lines"
 msgstr "加载采购订单行失败"
 
 msgid "Failed to load purchase orders"
 msgstr "加载采购订单失败"
+
+msgid "Failed to load purchase orders."
+msgstr ""
+
+msgid "Failed to load quotes."
+msgstr ""
 
 msgid "Failed to load receipt lines"
 msgstr "加载收货行项目失败"
@@ -3860,11 +3899,23 @@ msgstr "加载收货行项目失败"
 msgid "Failed to load receipts"
 msgstr "加载收据失败"
 
+msgid "Failed to load receipts."
+msgstr ""
+
+msgid "Failed to load RFQs."
+msgstr ""
+
+msgid "Failed to load sales invoices."
+msgstr ""
+
 msgid "Failed to load sales order lines"
 msgstr "加载销售订单行失败"
 
 msgid "Failed to load sales orders"
 msgstr "加载销售订单失败"
+
+msgid "Failed to load sales orders."
+msgstr ""
 
 msgid "Failed to load shipment lines"
 msgstr "加载运单行失败"
@@ -3872,11 +3923,26 @@ msgstr "加载运单行失败"
 msgid "Failed to load shipments"
 msgstr "加载运单失败"
 
+msgid "Failed to load shipments."
+msgstr ""
+
+msgid "Failed to load suggestions."
+msgstr ""
+
 msgid "Failed to load supplier part details"
 msgstr "加载供应商产品详情失败"
 
+msgid "Failed to load suppliers."
+msgstr ""
+
+msgid "Failed to load tools."
+msgstr ""
+
 msgid "Failed to load tracked entities"
 msgstr "加载追踪实体失败"
+
+msgid "Failed to load warehouse transfers."
+msgstr ""
 
 msgid "Failed to remove image: {errorMessage}"
 msgstr "删除图片失败：{errorMessage}"

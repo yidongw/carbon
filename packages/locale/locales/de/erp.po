@@ -3827,14 +3827,32 @@ msgstr "Fehler beim Einfügen der Lieferantenangebotszeile"
 msgid "Failed to load configuration parameters"
 msgstr "Fehler beim Laden der Konfigurationsparameter"
 
+msgid "Failed to load consumables."
+msgstr ""
+
 msgid "Failed to load customer part details"
 msgstr "Fehler beim Laden der Kundenteiledetails"
+
+msgid "Failed to load customers."
+msgstr ""
 
 msgid "Failed to load data"
 msgstr "Fehler beim Laden von Daten"
 
+msgid "Failed to load documents."
+msgstr ""
+
 msgid "Failed to load inbound inspections"
 msgstr "Fehler beim Laden von Eingangsprüfungen"
+
+msgid "Failed to load inspections."
+msgstr ""
+
+msgid "Failed to load inventory."
+msgstr ""
+
+msgid "Failed to load issues."
+msgstr ""
 
 msgid "Failed to load item data"
 msgstr "Fehler beim Laden der Elementdaten"
@@ -3848,11 +3866,32 @@ msgstr "Fehler beim Laden von Arbeitsvorgängen"
 msgid "Failed to load jobs"
 msgstr "Fehler beim Laden von Aufträgen"
 
+msgid "Failed to load jobs."
+msgstr ""
+
+msgid "Failed to load materials."
+msgstr ""
+
+msgid "Failed to load parts."
+msgstr ""
+
+msgid "Failed to load people."
+msgstr ""
+
+msgid "Failed to load purchase invoices."
+msgstr ""
+
 msgid "Failed to load purchase order lines"
 msgstr "Fehler beim Laden von Bestellpositionen"
 
 msgid "Failed to load purchase orders"
 msgstr "Fehler beim Laden von Bestellungen"
+
+msgid "Failed to load purchase orders."
+msgstr ""
+
+msgid "Failed to load quotes."
+msgstr ""
 
 msgid "Failed to load receipt lines"
 msgstr "Fehler beim Laden von Belegzeilen"
@@ -3860,11 +3899,23 @@ msgstr "Fehler beim Laden von Belegzeilen"
 msgid "Failed to load receipts"
 msgstr "Fehler beim Laden von Quittungen"
 
+msgid "Failed to load receipts."
+msgstr ""
+
+msgid "Failed to load RFQs."
+msgstr ""
+
+msgid "Failed to load sales invoices."
+msgstr ""
+
 msgid "Failed to load sales order lines"
 msgstr "Fehler beim Laden von Verkaufsauftragszeilen"
 
 msgid "Failed to load sales orders"
 msgstr "Verkaufsaufträge konnten nicht geladen werden"
+
+msgid "Failed to load sales orders."
+msgstr ""
 
 msgid "Failed to load shipment lines"
 msgstr "Fehler beim Laden von Versandpositionen"
@@ -3872,11 +3923,26 @@ msgstr "Fehler beim Laden von Versandpositionen"
 msgid "Failed to load shipments"
 msgstr "Fehler beim Laden von Lieferungen"
 
+msgid "Failed to load shipments."
+msgstr ""
+
+msgid "Failed to load suggestions."
+msgstr ""
+
 msgid "Failed to load supplier part details"
 msgstr "Fehler beim Laden der Lieferantenteildetails"
 
+msgid "Failed to load suppliers."
+msgstr ""
+
+msgid "Failed to load tools."
+msgstr ""
+
 msgid "Failed to load tracked entities"
 msgstr "Fehler beim Laden von verfolgten Entitäten"
+
+msgid "Failed to load warehouse transfers."
+msgstr ""
 
 msgid "Failed to remove image: {errorMessage}"
 msgstr "Fehler beim Entfernen des Bildes: {errorMessage}"

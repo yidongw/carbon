@@ -3827,14 +3827,32 @@ msgstr "Ошибка при добавлении строки предложен
 msgid "Failed to load configuration parameters"
 msgstr "Не удалось загрузить параметры конфигурации"
 
+msgid "Failed to load consumables."
+msgstr ""
+
 msgid "Failed to load customer part details"
 msgstr "Не удалось загрузить детали детали клиента"
+
+msgid "Failed to load customers."
+msgstr ""
 
 msgid "Failed to load data"
 msgstr "Не удалось загрузить данные"
 
+msgid "Failed to load documents."
+msgstr ""
+
 msgid "Failed to load inbound inspections"
 msgstr "Не удалось загрузить входящие проверки"
+
+msgid "Failed to load inspections."
+msgstr ""
+
+msgid "Failed to load inventory."
+msgstr ""
+
+msgid "Failed to load issues."
+msgstr ""
 
 msgid "Failed to load item data"
 msgstr "Не удалось загрузить данные элемента"
@@ -3848,11 +3866,32 @@ msgstr "Не удалось загрузить операции задания"
 msgid "Failed to load jobs"
 msgstr "Не удалось загрузить задания"
 
+msgid "Failed to load jobs."
+msgstr ""
+
+msgid "Failed to load materials."
+msgstr ""
+
+msgid "Failed to load parts."
+msgstr ""
+
+msgid "Failed to load people."
+msgstr ""
+
+msgid "Failed to load purchase invoices."
+msgstr ""
+
 msgid "Failed to load purchase order lines"
 msgstr "Не удалось загрузить строки заказа на покупку"
 
 msgid "Failed to load purchase orders"
 msgstr "Не удалось загрузить заказы на покупку"
+
+msgid "Failed to load purchase orders."
+msgstr ""
+
+msgid "Failed to load quotes."
+msgstr ""
 
 msgid "Failed to load receipt lines"
 msgstr "Не удалось загрузить строки квитанции"
@@ -3860,11 +3899,23 @@ msgstr "Не удалось загрузить строки квитанции"
 msgid "Failed to load receipts"
 msgstr "Не удалось загрузить квитанции"
 
+msgid "Failed to load receipts."
+msgstr ""
+
+msgid "Failed to load RFQs."
+msgstr ""
+
+msgid "Failed to load sales invoices."
+msgstr ""
+
 msgid "Failed to load sales order lines"
 msgstr "Не удалось загрузить строки заказа продажи"
 
 msgid "Failed to load sales orders"
 msgstr "Не удалось загрузить заказы на продажу"
+
+msgid "Failed to load sales orders."
+msgstr ""
 
 msgid "Failed to load shipment lines"
 msgstr "Не удалось загрузить строки отправки"
@@ -3872,11 +3923,26 @@ msgstr "Не удалось загрузить строки отправки"
 msgid "Failed to load shipments"
 msgstr "Не удалось загрузить отправки"
 
+msgid "Failed to load shipments."
+msgstr ""
+
+msgid "Failed to load suggestions."
+msgstr ""
+
 msgid "Failed to load supplier part details"
 msgstr "Не удалось загрузить детали поставщика"
 
+msgid "Failed to load suppliers."
+msgstr ""
+
+msgid "Failed to load tools."
+msgstr ""
+
 msgid "Failed to load tracked entities"
 msgstr "Не удалось загрузить отслеживаемые сущности"
+
+msgid "Failed to load warehouse transfers."
+msgstr ""
 
 msgid "Failed to remove image: {errorMessage}"
 msgstr "Не удалось удалить изображение: {errorMessage}"

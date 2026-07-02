@@ -3830,14 +3830,32 @@ msgstr "आपूर्तिकर्ता उद्धरण लाइन स
 msgid "Failed to load configuration parameters"
 msgstr "कॉन्फ़िगरेशन पैरामीटर लोड करने में विफल"
 
+msgid "Failed to load consumables."
+msgstr ""
+
 msgid "Failed to load customer part details"
 msgstr "ग्राहक भाग विवरण लोड करने में विफल"
+
+msgid "Failed to load customers."
+msgstr ""
 
 msgid "Failed to load data"
 msgstr "डेटा लोड करने में विफल"
 
+msgid "Failed to load documents."
+msgstr ""
+
 msgid "Failed to load inbound inspections"
 msgstr "इनबाउंड निरीक्षण लोड करने में विफल"
+
+msgid "Failed to load inspections."
+msgstr ""
+
+msgid "Failed to load inventory."
+msgstr ""
+
+msgid "Failed to load issues."
+msgstr ""
 
 msgid "Failed to load item data"
 msgstr "आइटम डेटा लोड करने में विफल"
@@ -3851,11 +3869,32 @@ msgstr "जॉब ऑपरेशन लोड करने में विफ�
 msgid "Failed to load jobs"
 msgstr "नौकरियां लोड करने में विफल"
 
+msgid "Failed to load jobs."
+msgstr ""
+
+msgid "Failed to load materials."
+msgstr ""
+
+msgid "Failed to load parts."
+msgstr ""
+
+msgid "Failed to load people."
+msgstr ""
+
+msgid "Failed to load purchase invoices."
+msgstr ""
+
 msgid "Failed to load purchase order lines"
 msgstr "क्रय आदेश लाइनें लोड करने में विफल"
 
 msgid "Failed to load purchase orders"
 msgstr "खरीद आदेश लोड करने में विफल"
+
+msgid "Failed to load purchase orders."
+msgstr ""
+
+msgid "Failed to load quotes."
+msgstr ""
 
 msgid "Failed to load receipt lines"
 msgstr "रसीद लाइनें लोड करने में विफल"
@@ -3863,11 +3902,23 @@ msgstr "रसीद लाइनें लोड करने में वि�
 msgid "Failed to load receipts"
 msgstr "रसीदें लोड करने में विफल"
 
+msgid "Failed to load receipts."
+msgstr ""
+
+msgid "Failed to load RFQs."
+msgstr ""
+
+msgid "Failed to load sales invoices."
+msgstr ""
+
 msgid "Failed to load sales order lines"
 msgstr "बिक्रय आदेश लाइनें लोड करने में विफल"
 
 msgid "Failed to load sales orders"
 msgstr "बिक्रय आदेश लोड करने में विफल"
+
+msgid "Failed to load sales orders."
+msgstr ""
 
 msgid "Failed to load shipment lines"
 msgstr "शिपमेंट लाइनें लोड करने में विफल"
@@ -3875,11 +3926,26 @@ msgstr "शिपमेंट लाइनें लोड करने मे�
 msgid "Failed to load shipments"
 msgstr "शिपमेंट लोड करने में विफल"
 
+msgid "Failed to load shipments."
+msgstr ""
+
+msgid "Failed to load suggestions."
+msgstr ""
+
 msgid "Failed to load supplier part details"
 msgstr "आपूर्तिकर्ता भाग विवरण लोड करने में विफल"
 
+msgid "Failed to load suppliers."
+msgstr ""
+
+msgid "Failed to load tools."
+msgstr ""
+
 msgid "Failed to load tracked entities"
 msgstr "ट्रैक किए गए इकाइयों को लोड करने में विफल"
+
+msgid "Failed to load warehouse transfers."
+msgstr ""
 
 msgid "Failed to remove image: {errorMessage}"
 msgstr "छवि हटाने में विफल: {errorMessage}"

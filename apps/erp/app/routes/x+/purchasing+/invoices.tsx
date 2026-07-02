@@ -1,10 +1,11 @@
-import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
-import { flash } from "@carbon/auth/session.server";
 import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
+import { Trans } from "@lingui/react/macro";
+import { Suspense } from "react";
 import type { LoaderFunctionArgs } from "react-router";
-import { Outlet, redirect, useLoaderData } from "react-router";
+import { Await, Outlet, useLoaderData } from "react-router";
+import { TableSkeleton } from "~/components/Skeletons";
 import {
   getPurchaseInvoices,
   PurchaseInvoicesTable
@@ -31,7 +32,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const { limit, offset, sorts, filters } =
     getGenericQueryFilters(searchParams);
 
-  const purchaseInvoices = await getPurchaseInvoices(client, companyId, {
+  const purchaseInvoices = getPurchaseInvoices(client, companyId, {
     search,
     supplierId,
     limit,
@@ -40,28 +41,33 @@ export async function loader({ request }: LoaderFunctionArgs) {
     filters
   });
 
-  if (purchaseInvoices.error) {
-    redirect(
-      path.to.invoicing,
-      await flash(
-        request,
-        error(purchaseInvoices.error, "Failed to fetch purchase invoices")
-      )
-    );
-  }
-
   return {
-    count: purchaseInvoices.count ?? 0,
-    purchaseInvoices: purchaseInvoices.data ?? []
+    purchaseInvoices
   };
 }
 
 export default function PurchaseInvoicesSearchRoute() {
-  const { count, purchaseInvoices } = useLoaderData<typeof loader>();
+  const { purchaseInvoices } = useLoaderData<typeof loader>();
 
   return (
     <VStack spacing={0} className="h-full">
-      <PurchaseInvoicesTable data={purchaseInvoices} count={count} />
+      <Suspense fallback={<TableSkeleton />}>
+        <Await
+          resolve={purchaseInvoices}
+          errorElement={
+            <div className="p-4 text-sm text-red-500">
+              <Trans>Failed to load purchase invoices.</Trans>
+            </div>
+          }
+        >
+          {(purchaseInvoices) => (
+            <PurchaseInvoicesTable
+              data={purchaseInvoices.data ?? []}
+              count={purchaseInvoices.count ?? 0}
+            />
+          )}
+        </Await>
+      </Suspense>
       <Outlet />
     </VStack>
   );

@@ -3827,14 +3827,32 @@ msgstr "Error al insertar línea de cotización de proveedor"
 msgid "Failed to load configuration parameters"
 msgstr "Error al cargar los parámetros de configuración"
 
+msgid "Failed to load consumables."
+msgstr ""
+
 msgid "Failed to load customer part details"
 msgstr "Error al cargar los detalles de la parte del cliente"
+
+msgid "Failed to load customers."
+msgstr ""
 
 msgid "Failed to load data"
 msgstr "Error al cargar datos"
 
+msgid "Failed to load documents."
+msgstr ""
+
 msgid "Failed to load inbound inspections"
 msgstr "Error al cargar inspecciones de entrada"
+
+msgid "Failed to load inspections."
+msgstr ""
+
+msgid "Failed to load inventory."
+msgstr ""
+
+msgid "Failed to load issues."
+msgstr ""
 
 msgid "Failed to load item data"
 msgstr "Error al cargar los datos del artículo"
@@ -3848,11 +3866,32 @@ msgstr "Error al cargar las operaciones de trabajo"
 msgid "Failed to load jobs"
 msgstr "Error al cargar los trabajos"
 
+msgid "Failed to load jobs."
+msgstr ""
+
+msgid "Failed to load materials."
+msgstr ""
+
+msgid "Failed to load parts."
+msgstr ""
+
+msgid "Failed to load people."
+msgstr ""
+
+msgid "Failed to load purchase invoices."
+msgstr ""
+
 msgid "Failed to load purchase order lines"
 msgstr "Error al cargar las líneas de orden de compra"
 
 msgid "Failed to load purchase orders"
 msgstr "Error al cargar órdenes de compra"
+
+msgid "Failed to load purchase orders."
+msgstr ""
+
+msgid "Failed to load quotes."
+msgstr ""
 
 msgid "Failed to load receipt lines"
 msgstr "Error al cargar las líneas de recepción"
@@ -3860,11 +3899,23 @@ msgstr "Error al cargar las líneas de recepción"
 msgid "Failed to load receipts"
 msgstr "Error al cargar los recibos"
 
+msgid "Failed to load receipts."
+msgstr ""
+
+msgid "Failed to load RFQs."
+msgstr ""
+
+msgid "Failed to load sales invoices."
+msgstr ""
+
 msgid "Failed to load sales order lines"
 msgstr "Error al cargar las líneas de pedido de venta"
 
 msgid "Failed to load sales orders"
 msgstr "Error al cargar órdenes de venta"
+
+msgid "Failed to load sales orders."
+msgstr ""
 
 msgid "Failed to load shipment lines"
 msgstr "Error al cargar las líneas de envío"
@@ -3872,11 +3923,26 @@ msgstr "Error al cargar las líneas de envío"
 msgid "Failed to load shipments"
 msgstr "No se pudieron cargar los envíos"
 
+msgid "Failed to load shipments."
+msgstr ""
+
+msgid "Failed to load suggestions."
+msgstr ""
+
 msgid "Failed to load supplier part details"
 msgstr "Error al cargar los detalles de la pieza del proveedor"
 
+msgid "Failed to load suppliers."
+msgstr ""
+
+msgid "Failed to load tools."
+msgstr ""
+
 msgid "Failed to load tracked entities"
 msgstr "No se pudieron cargar las entidades rastreadas"
+
+msgid "Failed to load warehouse transfers."
+msgstr ""
 
 msgid "Failed to remove image: {errorMessage}"
 msgstr "Error al eliminar la imagen: {errorMessage}"
