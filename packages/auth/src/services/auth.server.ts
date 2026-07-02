@@ -10,6 +10,7 @@ import { createHash } from "crypto";
 import { redirect } from "react-router";
 import {
   CarbonEdition,
+  getAppUrl,
   REFRESH_ACCESS_TOKEN_THRESHOLD,
   STRIPE_BYPASS_COMPANY_IDS,
   SUPABASE_ANON_KEY,
@@ -465,9 +466,10 @@ export async function sendMagicLink(
     }
   );
 
+  const appUrl = getAppUrl();
   const callbackUrl = redirectTo
-    ? `${VERCEL_URL}/callback?redirectTo=${encodeURIComponent(redirectTo)}`
-    : `${VERCEL_URL}/callback`;
+    ? `${appUrl}/callback?redirectTo=${encodeURIComponent(redirectTo)}`
+    : `${appUrl}/callback`;
 
   const { error: otpError } = await client.auth.signInWithOtp({
     email,
