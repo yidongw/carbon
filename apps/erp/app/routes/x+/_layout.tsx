@@ -38,6 +38,7 @@ import {
   useNavigate
 } from "react-router";
 import { RealtimeDataProvider } from "~/components";
+import { FloatingChat } from "~/components/Chat";
 import { PrimaryNavigation, Topbar, TopbarProvider } from "~/components/Layout";
 import { OverlayHost, OverlayProvider } from "~/components/Overlay";
 import { TimeCardWarning } from "~/components/TimeCardWarning";
@@ -276,7 +277,15 @@ export default function AuthenticatedRoute() {
               <TopbarProvider>
                 <OverlayProvider>
                   <TooltipProvider>
-                    <div className="flex flex-col h-screen">
+                    <div
+                      className="flex flex-col h-screen"
+                      style={{
+                        paddingLeft: "var(--chat-panel-left, 0px)",
+                        paddingRight: "var(--chat-panel-right, 0px)",
+                        transition:
+                          "padding-left 0.35s ease-out, padding-right 0.35s ease-out"
+                      }}
+                    >
                       <Topbar />
                       <div className="flex flex-1 h-[calc(100vh-49px)] relative">
                         <PrimaryNavigation />
@@ -309,6 +318,7 @@ export default function AuthenticatedRoute() {
                       </Suspense>
                     )}
                     <OverlayHost />
+                    <FloatingChat />
                   </TooltipProvider>
                 </OverlayProvider>
               </TopbarProvider>
