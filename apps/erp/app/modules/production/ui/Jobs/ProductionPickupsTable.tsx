@@ -4,12 +4,13 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useMemo, useState } from "react";
 import { LuPlus, LuTrash } from "react-icons/lu";
 import { useParams, useRevalidator } from "react-router";
-import { EmployeeAvatar, Table } from "~/components";
+import { Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { ConfirmDelete } from "~/components/Modals";
 import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions } from "~/hooks";
 import { EditableCreatedAtCell } from "~/modules/production/ui/EditableCreatedAtCell";
+import { ProductionQuantityReportReporter } from "~/modules/production/ui/Jobs/ProductionQuantityReportReporter";
 import { usePickupCreatedAtSave } from "~/modules/production/ui/useEditableCreatedAt";
 import { path } from "~/utils/path";
 import type { JobPickup } from "../../types";
@@ -63,7 +64,10 @@ const ProductionPickupsTable = memo(
           accessorKey: "employeeId",
           header: t`Employee`,
           cell: ({ row }) => (
-            <EmployeeAvatar employeeId={row.original.employeeId} />
+            <ProductionQuantityReportReporter
+              employeeId={row.original.employeeId}
+              createdBy={row.original.createdBy}
+            />
           )
         },
         {

@@ -7,14 +7,14 @@ import type { getProductionQuantities } from "~/modules/production/production.se
 import type { ProductionQuantityReportWithLines } from "~/modules/production/productionQuantityReport.service";
 import type { Filter, Sort } from "~/utils/query";
 
-/** Actor column filters by employee id; supplier lines use user id in createdBy. */
+/** Actor column filters by employeeId; supplier lines have no employeeId. */
 export function partitionQuantityListFilters(
   filters: Filter[] | undefined,
   actor: "employee" | "supplier"
 ) {
   const list = filters ?? [];
   if (actor === "supplier") {
-    return list.filter((filter) => filter.column !== "createdBy");
+    return list.filter((filter) => filter.column !== "employeeId");
   }
   return list;
 }
