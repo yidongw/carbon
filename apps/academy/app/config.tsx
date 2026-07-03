@@ -493,8 +493,7 @@ export const modules: Config = [
             challenge: [
               {
                 id: "q1",
-                question:
-                  "What is the primary purpose of procedures in Jilio?",
+                question: "What is the primary purpose of procedures in Jilio?",
                 options: [
                   "To track customer preferences",
                   "To standardize the manufacturing process",
