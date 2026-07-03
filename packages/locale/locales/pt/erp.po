@@ -3005,6 +3005,12 @@ msgstr "Arraste e solte um arquivo aqui ou clique para selecionar um arquivo"
 msgid "Drag and drop a Purchase Order PDF here, or click to select a file"
 msgstr "Arraste e solte um PDF de Ordem de Compra aqui, ou clique para selecionar um arquivo"
 
+msgid "Drag and drop an image here, or click to select"
+msgstr "Arraste e solte uma imagem aqui, ou clique para selecionar"
+
+msgid "Drag and drop or click to upload"
+msgstr "Arraste e solte ou clique para enviar"
+
 msgid "Drag and drop some files here, or click to select files"
 msgstr "Arraste e solte alguns arquivos aqui ou clique para selecionar arquivos"
 
@@ -3013,6 +3019,9 @@ msgstr "Puxador de arrasto"
 
 msgid "Drag to reorder"
 msgstr "Arraste para reordenar"
+
+msgid "Drop image to upload"
+msgstr "Solte a imagem para enviar"
 
 msgid "Drop Shipment"
 msgstr "Envio Direto"
@@ -4030,6 +4039,9 @@ msgstr "Falha ao carregar modelo"
 
 msgid "Failed to upload thumbnail"
 msgstr "Falha ao carregar miniatura"
+
+msgid "Failed to upload thumbnail: {message}"
+msgstr "Falha ao carregar miniatura: {message}"
 
 msgid "Failure Mode"
 msgstr "Modo de Falha"
@@ -6000,9 +6012,6 @@ msgstr "Nenhum Medidor Selecionado"
 
 msgid "No groups assigned"
 msgstr "Nenhum grupo atribuído"
-
-msgid "No image"
-msgstr "Sem imagem"
 
 msgid "No Impact"
 msgstr "Sem impacto"
@@ -9647,6 +9656,9 @@ msgstr "Enviando {0}"
 
 msgid "Uploading {fileName}"
 msgstr "Carregando {fileName}"
+
+msgid "Uploading…"
+msgstr "Enviando…"
 
 msgid "Upon clicking Convert, parts will be created with the following internal part numbers:"
 msgstr "Ao clicar em Converter, as peças serão criadas com os seguintes números de peça internos:"

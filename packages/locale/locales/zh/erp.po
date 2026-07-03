@@ -3005,6 +3005,12 @@ msgstr "拖拽文件到这里，或点击选择文件"
 msgid "Drag and drop a Purchase Order PDF here, or click to select a file"
 msgstr "拖拽一个采购订单PDF到这里，或者点击选择文件"
 
+msgid "Drag and drop an image here, or click to select"
+msgstr "将图片拖放到此处，或点击选择"
+
+msgid "Drag and drop or click to upload"
+msgstr "拖放或点击上传"
+
 msgid "Drag and drop some files here, or click to select files"
 msgstr "拖拽文件到这里，或点击选择文件"
 
@@ -3013,6 +3019,9 @@ msgstr "拖动柄"
 
 msgid "Drag to reorder"
 msgstr "拖动以重新排序"
+
+msgid "Drop image to upload"
+msgstr "拖放图片以上传"
 
 msgid "Drop Shipment"
 msgstr "直运发货"
@@ -4030,6 +4039,9 @@ msgstr "上传模型失败"
 
 msgid "Failed to upload thumbnail"
 msgstr "上传缩略图失败"
+
+msgid "Failed to upload thumbnail: {message}"
+msgstr "上传缩略图失败：{message}"
 
 msgid "Failure Mode"
 msgstr "故障模式"
@@ -6000,9 +6012,6 @@ msgstr "未选择量具"
 
 msgid "No groups assigned"
 msgstr "未分配组别"
-
-msgid "No image"
-msgstr "没有图片"
 
 msgid "No Impact"
 msgstr "无影响"
@@ -9647,6 +9656,9 @@ msgstr "上传{0}"
 
 msgid "Uploading {fileName}"
 msgstr "上传{fileName}"
+
+msgid "Uploading…"
+msgstr "上传中…"
 
 msgid "Upon clicking Convert, parts will be created with the following internal part numbers:"
 msgstr "点击转换后，将会生成以下内部产品编号："

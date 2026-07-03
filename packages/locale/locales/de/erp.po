@@ -3005,6 +3005,12 @@ msgstr "Drage und drücke ein Datei hier oder klicke auf eine Datei auswählen"
 msgid "Drag and drop a Purchase Order PDF here, or click to select a file"
 msgstr "Ziehen Sie eine Bestellungs-PDF hierher, oder klicken Sie, um eine Datei auszuwählen"
 
+msgid "Drag and drop an image here, or click to select"
+msgstr "Ziehen Sie ein Bild hierher oder klicken Sie zum Auswählen"
+
+msgid "Drag and drop or click to upload"
+msgstr "Ziehen und ablegen oder zum Hochladen klicken"
+
 msgid "Drag and drop some files here, or click to select files"
 msgstr "Drage und drücke einige Dateien hierher oder klicke zum Auswahl von Dateien"
 
@@ -3013,6 +3019,9 @@ msgstr "Ziehgriff"
 
 msgid "Drag to reorder"
 msgstr "Ziehen Sie, um die Reihenfolge zu ändern"
+
+msgid "Drop image to upload"
+msgstr "Bild zum Hochladen ablegen"
 
 msgid "Drop Shipment"
 msgstr "Direktversand"
@@ -4030,6 +4039,9 @@ msgstr "Fehler beim Hochladen des Modells"
 
 msgid "Failed to upload thumbnail"
 msgstr "Fehler beim Hochladen des Vorschaubildes"
+
+msgid "Failed to upload thumbnail: {message}"
+msgstr "Fehler beim Hochladen des Vorschaubildes: {message}"
 
 msgid "Failure Mode"
 msgstr "Fehlermodus"
@@ -6000,9 +6012,6 @@ msgstr "Keine Messuhr ausgewählt"
 
 msgid "No groups assigned"
 msgstr "Keine Gruppen zugewiesen"
-
-msgid "No image"
-msgstr "Kein Bild"
 
 msgid "No Impact"
 msgstr "Keine Auswirkung"
@@ -9647,6 +9656,9 @@ msgstr "Wird hochgeladen {0}"
 
 msgid "Uploading {fileName}"
 msgstr "Wird hochgeladen {fileName}"
+
+msgid "Uploading…"
+msgstr "Wird hochgeladen…"
 
 msgid "Upon clicking Convert, parts will be created with the following internal part numbers:"
 msgstr "Beim Klicken auf „Konvertieren\" werden Teile mit den folgenden internen Teilenummern erstellt:"
