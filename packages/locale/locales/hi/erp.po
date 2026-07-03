@@ -6917,6 +6917,9 @@ msgstr "प्रक्रिया निकासी"
 msgid "Process Pickup by {0}"
 msgstr "{0} की प्रक्रिया निकासी"
 
+msgid "Process pickup updated"
+msgstr "प्रोसेस पिकअप अपडेट किया गया है"
+
 msgid "Process Pickups"
 msgstr "प्रक्रिया निकासियाँ"
 
@@ -7139,6 +7142,9 @@ msgstr "मात्रा MES में पूर्ण सीरीज़/ब�
 
 msgid "Quantity must be greater than 0"
 msgstr "मात्रा 0 से अधिक होनी चाहिए"
+
+msgid "Quantity must be greater than zero"
+msgstr "संख्या शून्य से बड़ी होनी चाहिए"
 
 msgid "Quantity on Hand"
 msgstr "हाथ में मात्रा"
@@ -9133,6 +9139,9 @@ msgstr "यह नौकरी अब शॉप फ्लोर पर उपल
 
 msgid "This permanently deletes the quantity report and its entire history. This action cannot be undone."
 msgstr "इससे मात्रा रिपोर्ट और उसका पूरा इतिहास स्थायी रूप से हट जाएगा। यह क्रिया पूर्ववत नहीं की जा सकती।"
+
+msgid "this process pickup"
+msgstr "इस प्रोसेस का उठाव"
 
 msgid "this quantity report"
 msgstr "इस मात्रा रिपोर्ट"

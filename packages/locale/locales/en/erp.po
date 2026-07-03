@@ -6917,6 +6917,9 @@ msgstr "Process Pickup"
 msgid "Process Pickup by {0}"
 msgstr "Process Pickup by {0}"
 
+msgid "Process pickup updated"
+msgstr "Process pickup updated"
+
 msgid "Process Pickups"
 msgstr "Process Pickups"
 
@@ -7139,6 +7142,9 @@ msgstr "Quantity is derived from completed serials/batches in MES and cannot be 
 
 msgid "Quantity must be greater than 0"
 msgstr "Quantity must be greater than 0"
+
+msgid "Quantity must be greater than zero"
+msgstr "Quantity must be greater than zero"
 
 msgid "Quantity on Hand"
 msgstr "Quantity on Hand"
@@ -9133,6 +9139,9 @@ msgstr "This job will no longer be available on the shop floor."
 
 msgid "This permanently deletes the quantity report and its entire history. This action cannot be undone."
 msgstr "This permanently deletes the quantity report and its entire history. This action cannot be undone."
+
+msgid "this process pickup"
+msgstr "this process pickup"
 
 msgid "this quantity report"
 msgstr "this quantity report"

@@ -160,6 +160,7 @@ import {
   type JobOperationSupplierQuantityReportWithLines,
   listJobOperationSupplierQuantityReportsForOperation
 } from "../../jobOperationSupplierQuantityReport.service";
+import { fetchInProgressQuantitiesByOperation } from "../../operationInProgressQuantity";
 import {
   defaultOperationTypeFromProcess,
   disablesOutsideBopDetailTabs,
@@ -185,13 +186,11 @@ import {
   type ProductionQuantityReportLine,
   type ProductionQuantityReportWithLines
 } from "../../productionQuantityReport.service";
-import {
-  fetchInProgressQuantitiesByOperation
-} from "../../operationInProgressQuantity";
 import type { Job, JobOperation } from "../../types";
 import { OutsideOperationBadge } from "../OutsideOperationBadge";
 import {
   formatOperationTabSummary,
+  OperationDetailTabs,
   operationDetailHintFieldClass,
   operationDetailMetricFieldClass,
   operationFormContainerClass,
@@ -200,7 +199,6 @@ import {
   operationFormPairFieldClass,
   operationFormTypeFieldClass,
   operationFormWorkCenterFieldClass,
-  OperationDetailTabs,
   useOperationTypeSelectOptions
 } from "../operationBop";
 import { ConfigParamsReportedTargetTable } from "./ConfigParamsReportedTargetTable";
@@ -208,6 +206,7 @@ import { ConfigQuantityBreakdown } from "./ConfigQuantityBreakdown";
 import { JobOperationStatus, JobOperationTags } from "./JobOperationStatus";
 import { OperationDueDatePicker } from "./OperationDueDatePicker";
 import { OperationQuantitySummaryView } from "./OperationQuantitySummary";
+import { ProcessPickupDispositionDrawer } from "./ProcessPickupDispositionDrawer";
 import { ProductionQuantityDispositionDrawer } from "./ProductionQuantityDispositionDrawer";
 import { ProductionQuantityReportCard } from "./ProductionQuantityReportCard";
 import { ProductionQuantityReportHistoryDrawer } from "./ProductionQuantityReportHistoryDrawer";
@@ -511,11 +510,13 @@ const EmployeeProductionLogsView = ({
   loadMorePickups,
   loadMoreQuantityReports,
   canEditQuantityReport,
+  canEditPickup,
   onEditReport,
   onHistoryReport,
   onEditSupplierReport,
   onHistorySupplierReport,
   onCreateSupplierPo,
+  onEditPickup,
   creatingPoReportId,
   canCreatePo
 }: {
@@ -526,6 +527,7 @@ const EmployeeProductionLogsView = ({
   loadMorePickups: () => Promise<void>;
   loadMoreQuantityReports: () => Promise<void>;
   canEditQuantityReport: boolean;
+  canEditPickup: boolean;
   onEditReport: (report: ProductionQuantityReportWithLines) => void;
   onHistoryReport: (report: ProductionQuantityReportWithLines) => void;
   onEditSupplierReport: (
@@ -537,6 +539,7 @@ const EmployeeProductionLogsView = ({
   onCreateSupplierPo: (
     report: JobOperationSupplierQuantityReportWithLines
   ) => void;
+  onEditPickup: (pickup: OperationPickup) => void;
   creatingPoReportId: string | null;
   canCreatePo: boolean;
 }) => {
@@ -566,7 +569,10 @@ const EmployeeProductionLogsView = ({
       createdBy: string;
       createdAt: string;
       hasHistory: boolean;
-      lines: (ProductionQuantityReportLine | JobOperationSupplierQuantityLine)[];
+      lines: (
+        | ProductionQuantityReportLine
+        | JobOperationSupplierQuantityLine
+      )[];
       employeeReport?: ProductionQuantityReportWithLines;
       supplierReport?: JobOperationSupplierQuantityReportWithLines;
     };
@@ -592,7 +598,8 @@ const EmployeeProductionLogsView = ({
         ensureGroup("employee", pickup.pickup.employeeId).pickups.push(pickup);
       } else {
         const supplierId = pickup.pickup.supplierProcess?.supplierId;
-        if (supplierId) ensureGroup("supplier", supplierId).pickups.push(pickup);
+        if (supplierId)
+          ensureGroup("supplier", supplierId).pickups.push(pickup);
       }
     });
 
@@ -640,29 +647,32 @@ const EmployeeProductionLogsView = ({
         // param; negatives are clamped away (never shown).
         const pickupByConfig = new Map<string, number>();
         group.pickups.forEach((p) => {
-          (p.pickup.configuration as { configTable?: Record<string, number>[] } | null)
-            ?.configTable?.forEach((cfg) => {
-              Object.entries(cfg).forEach(([k, v]) => {
-                if (v > 0)
-                  pickupByConfig.set(k, (pickupByConfig.get(k) ?? 0) + v);
-              });
+          (
+            p.pickup.configuration as {
+              configTable?: Record<string, number>[];
+            } | null
+          )?.configTable?.forEach((cfg) => {
+            Object.entries(cfg).forEach(([k, v]) => {
+              if (v > 0)
+                pickupByConfig.set(k, (pickupByConfig.get(k) ?? 0) + v);
             });
+          });
         });
         const producedByConfig = new Map<string, number>();
         group.quantityEntries.forEach((entry) => {
           entry.lines
             .filter((l) => l.type === "Production")
             .forEach((line) => {
-              (line.configuration as { configTable?: Record<string, number>[] } | null)
-                ?.configTable?.forEach((cfg) => {
-                  Object.entries(cfg).forEach(([k, v]) => {
-                    if (v > 0)
-                      producedByConfig.set(
-                        k,
-                        (producedByConfig.get(k) ?? 0) + v
-                      );
-                  });
+              (
+                line.configuration as {
+                  configTable?: Record<string, number>[];
+                } | null
+              )?.configTable?.forEach((cfg) => {
+                Object.entries(cfg).forEach(([k, v]) => {
+                  if (v > 0)
+                    producedByConfig.set(k, (producedByConfig.get(k) ?? 0) + v);
                 });
+              });
             });
         });
         const remainingByConfig = Array.from(pickupByConfig.entries())
@@ -708,10 +718,7 @@ const EmployeeProductionLogsView = ({
                   <div className="text-xs space-y-0.5 min-w-[80px]">
                     {remainingByConfig.length > 0 ? (
                       remainingByConfig.map(([k, rem]) => (
-                        <div
-                          key={k}
-                          className="flex justify-between gap-3"
-                        >
+                        <div key={k} className="flex justify-between gap-3">
                           <span>{k}</span>
                           <span className="font-medium">{rem}</span>
                         </div>
@@ -731,50 +738,86 @@ const EmployeeProductionLogsView = ({
                   return (
                     <VStack key={pickup.id} spacing={1} className="w-full">
                       {/* White row: total badge, time, reporter (icon only) at the end */}
-                      <HStack spacing={0} className="w-full items-center text-sm px-1 gap-x-2 gap-y-1 flex-wrap">
-                        <Badge variant="outline" className="text-xs font-medium">
-                          <Trans>Total</Trans>: {pickup.pickup.quantity}
-                        </Badge>
-                        <span className="text-muted-foreground">
-                          {formatDateTime(pickup.createdAt)}
-                        </span>
-                        <HStack spacing={0} className="items-center gap-1.5">
+                      <HStack
+                        spacing={0}
+                        className="w-full justify-between items-center text-sm px-1 gap-x-2 gap-y-1 flex-wrap"
+                      >
+                        <HStack
+                          spacing={0}
+                          className="items-center gap-x-2 gap-y-1 flex-wrap"
+                        >
+                          <Badge
+                            variant="outline"
+                            className="text-xs font-medium"
+                          >
+                            <Trans>Total</Trans>: {pickup.pickup.quantity}
+                          </Badge>
                           <span className="text-muted-foreground">
-                            <Trans>Reporter</Trans>
+                            {formatDateTime(pickup.createdAt)}
                           </span>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <span className="cursor-help">
-                                <EmployeeAvatar
-                                  employeeId={pickup.pickup.createdBy}
-                                  size="xs"
-                                  withName={false}
-                                />
-                              </span>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              {reporterName(pickup.pickup.createdBy)}
-                            </TooltipContent>
-                          </Tooltip>
+                          <HStack spacing={0} className="items-center gap-1.5">
+                            <span className="text-muted-foreground">
+                              <Trans>Reporter</Trans>
+                            </span>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="cursor-help">
+                                  <EmployeeAvatar
+                                    employeeId={pickup.pickup.createdBy}
+                                    size="xs"
+                                    withName={false}
+                                  />
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                {reporterName(pickup.pickup.createdBy)}
+                              </TooltipContent>
+                            </Tooltip>
+                          </HStack>
                         </HStack>
+                        {canEditPickup && pickup.kind === "employee" && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            aria-label="Edit pickup"
+                            onClick={() => onEditPickup(pickup.pickup)}
+                            className="h-7 w-7 p-0 transition-transform active:scale-[0.96]"
+                          >
+                            <LuPencil className="h-4 w-4" />
+                          </Button>
+                        )}
                       </HStack>
                       {/* Grey box: configs (left) + pickup | total (right) */}
                       <HStack className="w-full justify-between items-center bg-muted px-3 py-2.5 rounded-lg gap-2">
                         <HStack className="flex-wrap gap-x-3 gap-y-1">
-                          {pickup.pickup.configuration?.configTable?.map((config: Record<string, number>, idx: number) =>
-                            Object.entries(config).filter(([_, value]) => value > 0).map(([key, value]) => (
-                              <HStack key={`${idx}-${key}`} spacing={1}>
-                                <span className="text-sm font-medium">{key}</span>
-                                <Badge variant="outline" className="text-xs bg-background">{value}</Badge>
-                              </HStack>
-                            ))
+                          {pickup.pickup.configuration?.configTable?.map(
+                            (config: Record<string, number>, idx: number) =>
+                              Object.entries(config)
+                                .filter(([_, value]) => value > 0)
+                                .map(([key, value]) => (
+                                  <HStack key={`${idx}-${key}`} spacing={1}>
+                                    <span className="text-sm font-medium">
+                                      {key}
+                                    </span>
+                                    <Badge
+                                      variant="outline"
+                                      className="text-xs bg-background"
+                                    >
+                                      {value}
+                                    </Badge>
+                                  </HStack>
+                                ))
                           )}
                         </HStack>
                         <HStack className="gap-2 shrink-0">
                           <Badge variant="blue" className="text-xs uppercase">
                             <Trans>Process Pickup</Trans>
                           </Badge>
-                          <Badge variant="outline" className="text-xs font-medium bg-background">
+                          <Badge
+                            variant="outline"
+                            className="text-xs font-medium bg-background"
+                          >
                             <Trans>Total</Trans> {pickup.pickup.quantity}
                           </Badge>
                         </HStack>
@@ -794,9 +837,18 @@ const EmployeeProductionLogsView = ({
                   return (
                     <VStack key={entry.key} spacing={1} className="w-full">
                       {/* White row: total badge, time, reporter (icon only) at the end */}
-                      <HStack spacing={0} className="w-full justify-between items-center text-sm px-1 gap-2">
-                        <HStack spacing={0} className="items-center gap-x-2 gap-y-1 flex-wrap">
-                          <Badge variant="outline" className="text-xs font-medium">
+                      <HStack
+                        spacing={0}
+                        className="w-full justify-between items-center text-sm px-1 gap-2"
+                      >
+                        <HStack
+                          spacing={0}
+                          className="items-center gap-x-2 gap-y-1 flex-wrap"
+                        >
+                          <Badge
+                            variant="outline"
+                            className="text-xs font-medium"
+                          >
                             <Trans>Total</Trans>: {reportTotal}
                           </Badge>
                           <span className="text-muted-foreground">
@@ -823,58 +875,58 @@ const EmployeeProductionLogsView = ({
                           </HStack>
                         </HStack>
                         <HStack spacing={0} className="items-center shrink-0">
-                            {entry.hasHistory && (
+                          {entry.hasHistory && (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              aria-label="View history"
+                              onClick={() =>
+                                group.kind === "employee"
+                                  ? onHistoryReport(entry.employeeReport!)
+                                  : onHistorySupplierReport(
+                                      entry.supplierReport!
+                                    )
+                              }
+                              className="h-7 w-7 p-0 transition-transform active:scale-[0.96]"
+                            >
+                              <LuHistory className="h-4 w-4" />
+                            </Button>
+                          )}
+                          {canEditQuantityReport && (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              aria-label="Edit report"
+                              onClick={() =>
+                                group.kind === "employee"
+                                  ? onEditReport(entry.employeeReport!)
+                                  : onEditSupplierReport(entry.supplierReport!)
+                              }
+                              className="h-7 w-7 p-0 transition-transform active:scale-[0.96]"
+                            >
+                              <LuPencil className="h-4 w-4" />
+                            </Button>
+                          )}
+                          {group.kind === "supplier" &&
+                            canCreatePo &&
+                            !entry.supplierReport!.purchaseOrderLineId && (
                               <Button
                                 type="button"
-                                variant="ghost"
+                                variant="secondary"
                                 size="sm"
-                                aria-label="View history"
+                                isLoading={creatingPoReportId === entry.key}
                                 onClick={() =>
-                                  group.kind === "employee"
-                                    ? onHistoryReport(entry.employeeReport!)
-                                    : onHistorySupplierReport(
-                                        entry.supplierReport!
-                                      )
+                                  onCreateSupplierPo(entry.supplierReport!)
                                 }
-                                className="h-7 w-7 p-0 transition-transform active:scale-[0.96]"
+                                className="ml-1 transition-transform active:scale-[0.96]"
                               >
-                                <LuHistory className="h-4 w-4" />
+                                <Trans>Create PO</Trans>
                               </Button>
                             )}
-                            {canEditQuantityReport && (
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                aria-label="Edit report"
-                                onClick={() =>
-                                  group.kind === "employee"
-                                    ? onEditReport(entry.employeeReport!)
-                                    : onEditSupplierReport(entry.supplierReport!)
-                                }
-                                className="h-7 w-7 p-0 transition-transform active:scale-[0.96]"
-                              >
-                                <LuPencil className="h-4 w-4" />
-                              </Button>
-                            )}
-                            {group.kind === "supplier" &&
-                              canCreatePo &&
-                              !entry.supplierReport!.purchaseOrderLineId && (
-                                <Button
-                                  type="button"
-                                  variant="secondary"
-                                  size="sm"
-                                  isLoading={creatingPoReportId === entry.key}
-                                  onClick={() =>
-                                    onCreateSupplierPo(entry.supplierReport!)
-                                  }
-                                  className="ml-1 transition-transform active:scale-[0.96]"
-                                >
-                                  <Trans>Create PO</Trans>
-                                </Button>
-                              )}
-                          </HStack>
                         </HStack>
+                      </HStack>
                       {/* One grey box per quantity line */}
                       {lines.map((qty, idx) => (
                         <HStack
@@ -882,13 +934,26 @@ const EmployeeProductionLogsView = ({
                           className="w-full justify-between items-center bg-muted px-3 py-2.5 rounded-lg gap-2"
                         >
                           <HStack className="flex-wrap gap-x-3 gap-y-1">
-                            {(qty.configuration as { configTable?: Record<string, number>[] } | null)?.configTable?.map((config, cidx: number) =>
-                              Object.entries(config).filter(([_, value]) => value > 0).map(([key, value]) => (
-                                <HStack key={`${cidx}-${key}`} spacing={1}>
-                                  <span className="text-sm font-medium">{key}</span>
-                                  <Badge variant="outline" className="text-xs bg-background">{value}</Badge>
-                                </HStack>
-                              ))
+                            {(
+                              qty.configuration as {
+                                configTable?: Record<string, number>[];
+                              } | null
+                            )?.configTable?.map((config, cidx: number) =>
+                              Object.entries(config)
+                                .filter(([_, value]) => value > 0)
+                                .map(([key, value]) => (
+                                  <HStack key={`${cidx}-${key}`} spacing={1}>
+                                    <span className="text-sm font-medium">
+                                      {key}
+                                    </span>
+                                    <Badge
+                                      variant="outline"
+                                      className="text-xs bg-background"
+                                    >
+                                      {value}
+                                    </Badge>
+                                  </HStack>
+                                ))
                             )}
                           </HStack>
                           <HStack className="gap-2 shrink-0">
@@ -897,14 +962,17 @@ const EmployeeProductionLogsView = ({
                                 qty.type === "Production"
                                   ? "green"
                                   : qty.type === "Rework"
-                                  ? "orange"
-                                  : "red"
+                                    ? "orange"
+                                    : "red"
                               }
                               className="text-xs uppercase"
                             >
                               {qty.type}
                             </Badge>
-                            <Badge variant="outline" className="text-xs font-medium bg-background">
+                            <Badge
+                              variant="outline"
+                              className="text-xs font-medium bg-background"
+                            >
                               <Trans>Total</Trans> {qty.quantity}
                             </Badge>
                           </HStack>
@@ -1210,6 +1278,8 @@ const JobBillOfProcess = ({
   const [operationQuantitySummary, setOperationQuantitySummary] =
     useState<OperationQuantitySummaryData | null>(null);
   const [quantityReportCount, setQuantityReportCount] = useState<number>(0);
+  const [dispositionPickup, setDispositionPickup] =
+    useState<OperationPickup | null>(null);
   const [dispositionReport, setDispositionReport] =
     useState<ProductionQuantityReportWithLines | null>(null);
   const [supplierDispositionReport, setSupplierDispositionReport] =
@@ -1685,7 +1755,13 @@ const JobBillOfProcess = ({
       Boolean(employeeReports.hasMore || supplierReports.hasMore)
     );
     await refreshInProgressTotals([selectedItemId]);
-  }, [carbon, companyId, refreshInProgressTotals, selectedItemId, temporaryItems]);
+  }, [
+    carbon,
+    companyId,
+    refreshInProgressTotals,
+    selectedItemId,
+    temporaryItems
+  ]);
 
   refreshQuantityDataRef.current = refreshQuantityData;
 
@@ -1863,10 +1939,21 @@ const JobBillOfProcess = ({
 
   // Auto-load pickups when operation is selected
   useEffect(() => {
-    if (selectedItemId && pickups.length === 0 && !pickupIsLoading && pickupHasMore) {
+    if (
+      selectedItemId &&
+      pickups.length === 0 &&
+      !pickupIsLoading &&
+      pickupHasMore
+    ) {
       void loadMorePickups();
     }
-  }, [selectedItemId, pickups.length, pickupIsLoading, pickupHasMore, loadMorePickups]);
+  }, [
+    selectedItemId,
+    pickups.length,
+    pickupIsLoading,
+    pickupHasMore,
+    loadMorePickups
+  ]);
 
   const [tabChangeRerender, setTabChangeRerender] = useState<number>(1);
 
@@ -2128,7 +2215,7 @@ const JobBillOfProcess = ({
             <span>
               <Trans>Production Logs</Trans>
             </span>
-            {(currentPickupCount + quantityCount) > 0 && (
+            {currentPickupCount + quantityCount > 0 && (
               <Count count={currentPickupCount + quantityCount} />
             )}
           </span>
@@ -2153,25 +2240,22 @@ const JobBillOfProcess = ({
                   <Trans>Total Process Pickups</Trans>: {pickupTotal}
                 </Badge>
                 <Badge variant="green">
-                  <Trans>Total Production</Trans>: {
-                    item.id === selectedItemId
-                      ? (operationQuantitySummary?.production ?? 0)
-                      : 0
-                  }
+                  <Trans>Total Production</Trans>:{" "}
+                  {item.id === selectedItemId
+                    ? (operationQuantitySummary?.production ?? 0)
+                    : 0}
                 </Badge>
                 <Badge variant="orange">
-                  <Trans>Total Rework</Trans>: {
-                    item.id === selectedItemId
-                      ? (operationQuantitySummary?.rework ?? 0)
-                      : 0
-                  }
+                  <Trans>Total Rework</Trans>:{" "}
+                  {item.id === selectedItemId
+                    ? (operationQuantitySummary?.rework ?? 0)
+                    : 0}
                 </Badge>
                 <Badge variant="red">
-                  <Trans>Total Scrap</Trans>: {
-                    item.id === selectedItemId
-                      ? (operationQuantitySummary?.scrap ?? 0)
-                      : 0
-                  }
+                  <Trans>Total Scrap</Trans>:{" "}
+                  {item.id === selectedItemId
+                    ? (operationQuantitySummary?.scrap ?? 0)
+                    : 0}
                 </Badge>
               </HStack>
 
@@ -2205,12 +2289,15 @@ const JobBillOfProcess = ({
             {/* Employee-Grouped Production Logs */}
             <EmployeeProductionLogsView
               pickups={pickups}
-              quantityReports={item.id === selectedItemId ? quantityReports : []}
+              quantityReports={
+                item.id === selectedItemId ? quantityReports : []
+              }
               pickupHasMore={pickupHasMore}
               quantityHasMore={quantityHasMore}
               loadMorePickups={loadMorePickups}
               loadMoreQuantityReports={loadMoreQuantityReports}
               canEditQuantityReport={canEditQuantityReport}
+              canEditPickup={canEditQuantityReport}
               onEditReport={(report) => setDispositionReport(report)}
               onHistoryReport={(report) => setHistoryReport(report)}
               onEditSupplierReport={(report) =>
@@ -2219,6 +2306,7 @@ const JobBillOfProcess = ({
               onHistorySupplierReport={(report) =>
                 setSupplierHistoryReport(report)
               }
+              onEditPickup={(pickup) => setDispositionPickup(pickup)}
               creatingPoReportId={creatingPoReportId}
               canCreatePo={permissions.can("create", "purchasing")}
               onCreateSupplierPo={async (report) => {
@@ -2414,6 +2502,34 @@ const JobBillOfProcess = ({
 
   const quantityDrawerElements = (
     <>
+      {dispositionPickup ? (
+        <ProcessPickupDispositionDrawer
+          pickup={dispositionPickup}
+          open
+          onClose={() => setDispositionPickup(null)}
+          onSaved={(newQuantity, newNotes) => {
+            setPickups((prev) =>
+              prev.map((p) =>
+                p.id === dispositionPickup.id && p.kind === "employee"
+                  ? {
+                      ...p,
+                      pickup: { ...p.pickup, quantity: newQuantity, notes: newNotes }
+                    }
+                  : p
+              )
+            );
+            setDispositionPickup(null);
+          }}
+          onDeleted={() => {
+            setPickups((prev) =>
+              prev.filter((p) => p.id !== dispositionPickup.id)
+            );
+            setPickupCount((count) => Math.max(0, count - 1));
+            setDispositionPickup(null);
+          }}
+          canDelete={!isDisabled && permissions.can("delete", "production")}
+        />
+      ) : null}
       {dispositionReport ? (
         <ProductionQuantityDispositionDrawer
           report={dispositionReport}
@@ -3836,539 +3952,545 @@ function OperationForm({
   return (
     <div className={operationFormContainerClass}>
       <ValidatedForm
-      action={
-        temporaryItems[item.id]
-          ? path.to.newJobOperation(jobId)
-          : path.to.jobOperation(jobId, item.id!)
-      }
-      method="post"
-      defaultValues={item.data}
-      validator={
-        ["Draft", "Planned"].includes(job?.status ?? "")
-          ? jobOperationValidator
-          : jobOperationValidatorForReleasedJob
-      }
-      className="flex w-full min-w-0 flex-col gap-y-4"
-      fetcher={fetcher}
-    >
-      <div>
-        <Hidden name="id" />
-        <Hidden name="jobMakeMethodId" />
-        <Hidden name="order" />
-      </div>
-      <div className={operationFormGridClass}>
-        <div className={operationFormPairFieldClass}>
-        <Process
-          name="processId"
-          label={t`Process`}
-          onChange={(value) => {
-            onProcessChange(value?.value as string);
-          }}
-        />
-        </div>
-        <div className={operationFormPairFieldClass}>
-        <Select
-          name="operationOrder"
-          label={t`Operation Order`}
-          placeholder={t`Operation Order`}
-          options={operationOrderOptions}
-        />
-        </div>
-        <div className={operationFormTypeFieldClass}>
-        <SelectControlled
-          name="operationType"
-          label={t`Operation Type`}
-          placeholder={t`Operation Type`}
-          options={operationTypeOptions}
-          value={processData.operationType}
-          onChange={(value) => {
-            const operationType = value?.value as OperationType;
-            const useSupplierRouting =
-              showsSupplierRoutingFields(operationType);
-
-            setProcessData((d) => ({
-              ...d,
-              setupUnit: "Total Minutes",
-              laborUnit: "Minutes/Piece",
-              machineUnit: "Minutes/Piece",
-              operationType,
-              ...(useSupplierRouting
-                ? {}
-                : {
-                    operationSupplierProcessId: "",
-                    operationMinimumCost: 0,
-                    operationUnitCost: 0,
-                    operationLeadTime: 0
-                  })
-            }));
-          }}
-        />
-        </div>
-
-        <div className={operationFormDescriptionFieldClass}>
-        <InputControlled
-          name="description"
-          label={t`Description`}
-          value={processData.description}
-          onChange={(newValue) => {
-            setProcessData((d) => ({ ...d, description: newValue }));
-          }}
-        />
-        </div>
-
-        {isInsideOperationType(processData.operationType) ? (
-          <>
-            <div className={operationFormWorkCenterFieldClass}>
-            <WorkCenter
-              name="workCenterId"
-              label={t`Work Center`}
-              autoSelectSingleOption={Boolean(processData.processId)}
-              locationId={locationId}
-              isOptional={["Draft", "Planned"].includes(job?.status ?? "")}
-              processId={processData.processId}
-              onChange={(value) => {
-                if (value) {
-                  onWorkCenterChange(value?.value as string);
-                }
-              }}
-            />
-            </div>
-            <div className={operationFormPairFieldClass}>
-            <NumberControlled
-              name="laborRate"
-              label={t`Labor Rate`}
-              minValue={0}
-              value={processData.laborRate}
-              formatOptions={{
-                style: "currency",
-                currency: baseCurrency
-              }}
-              onChange={(newValue) =>
-                setProcessData((d) => ({
-                  ...d,
-                  laborRate: newValue
-                }))
-              }
-            />
-            </div>
-            <div className={operationFormPairFieldClass}>
-            <NumberControlled
-              name="machineRate"
-              label={t`Machine Rate`}
-              minValue={0}
-              value={processData.machineRate}
-              formatOptions={{
-                style: "currency",
-                currency: baseCurrency
-              }}
-              onChange={(newValue) =>
-                setProcessData((d) => ({
-                  ...d,
-                  machineRate: newValue
-                }))
-              }
-            />
-            </div>
-            <div className={operationFormPairFieldClass}>
-            <NumberControlled
-              name="overheadRate"
-              label={t`Overhead Rate`}
-              minValue={0}
-              value={processData.overheadRate}
-              formatOptions={{
-                style: "currency",
-                currency: baseCurrency
-              }}
-              onChange={(newValue) =>
-                setProcessData((d) => ({
-                  ...d,
-                  overheadRate: newValue
-                }))
-              }
-            />
-            </div>
-            <div className={operationFormPairFieldClass}>
-            <NumberControlled
-              name="insideUnitCost"
-              label={t`Unit rate`}
-              minValue={0}
-              value={processData.insideUnitCost}
-              formatOptions={{
-                style: "currency",
-                currency: baseCurrency
-              }}
-              onChange={(newValue) =>
-                setProcessData((d) => ({
-                  ...d,
-                  insideUnitCost: newValue ?? 0
-                }))
-              }
-            />
-            </div>
-          </>
-        ) : null}
-        {showsSupplierRoutingFields(processData.operationType) ? (
-          <>
-            <div className={operationFormWorkCenterFieldClass}>
-            <SupplierProcess
-              name="operationSupplierProcessId"
-              label={t`Supplier`}
-              processId={processData.processId}
-              isOptional={false}
-              onChange={(value) => {
-                if (value) {
-                  onSupplierProcessChange(value?.value as string);
-                } else {
-                  setProcessData((d) => ({
-                    ...d,
-                    operationSupplierProcessId: ""
-                  }));
-                }
-              }}
-            />
-            </div>
-            <div className={operationFormPairFieldClass}>
-            <NumberControlled
-              name="operationMinimumCost"
-              label={t`Minimum Cost`}
-              isOptional={false}
-              minValue={0}
-              value={processData.operationMinimumCost}
-              formatOptions={{
-                style: "currency",
-                currency: baseCurrency
-              }}
-              onChange={(newValue) =>
-                setProcessData((d) => ({
-                  ...d,
-                  operationMinimumCost: newValue
-                }))
-              }
-            />
-            </div>
-            <div className={operationFormPairFieldClass}>
-            <NumberControlled
-              name="operationUnitCost"
-              label={t`Unit Cost`}
-              isOptional={false}
-              minValue={0}
-              value={processData.operationUnitCost}
-              formatOptions={{
-                style: "currency",
-                currency: baseCurrency
-              }}
-              onChange={(newValue) =>
-                setProcessData((d) => ({
-                  ...d,
-                  operationUnitCost: newValue
-                }))
-              }
-            />
-            </div>
-            <div className={operationFormPairFieldClass}>
-            <NumberControlled
-              name="operationLeadTime"
-              label={t`Lead Time`}
-              isOptional={false}
-              minValue={0}
-              value={processData.operationLeadTime}
-              onChange={(newValue) =>
-                setProcessData((d) => ({
-                  ...d,
-                  operationLeadTime: newValue
-                }))
-              }
-            />
-            </div>
-          </>
-        ) : (
-          <>
-            <Hidden name="operationSupplierProcessId" value="" />
-            <Hidden name="operationMinimumCost" value={0} />
-            <Hidden name="operationUnitCost" value={0} />
-            <Hidden name="operationLeadTime" value={0} />
-          </>
-        )}
-      </div>
-
-      {isInsideOperationType(processData.operationType) && (
-        <OperationDetailTabs
-          sections={[
-            {
-              id: "setup",
-              label: <Trans>Setup</Trans>,
-              accessibilityLabel: t`Setup`,
-              icon: <TimeTypeIcon type="Setup" />,
-              summary:
-                (processData.setupTime ?? 0) > 0
-                  ? formatOperationTabSummary(
-                      processData.setupTime,
-                      processData.setupUnit
-                    )
-                  : undefined,
-              summaryTitle:
-                (processData.setupTime ?? 0) > 0
-                  ? `${processData.setupTime} ${processData.setupUnit}`
-                  : undefined,
-              content: (
-                <>
-                  <div className={operationDetailHintFieldClass}>
-                  <UnitHint
-                    name="setupHint"
-                    label={t`Setup`}
-                    value={processData.setupUnitHint}
-                    onChange={(hint) => {
-                      setProcessData((d) => ({
-                        ...d,
-                        setupUnitHint: hint,
-                        setupUnit:
-                          hint === "Fixed" ? "Total Minutes" : "Minutes/Piece"
-                      }));
-                    }}
-                  />
-                  </div>
-                  <div className={operationDetailMetricFieldClass}>
-                  <NumberControlled
-                    name="setupTime"
-                    label={t`Setup Time`}
-                    isOptional={false}
-                    minValue={0}
-                    value={processData.setupTime}
-                    onChange={(newValue) =>
-                      setProcessData((d) => ({
-                        ...d,
-                        setupTime: newValue
-                      }))
-                    }
-                  />
-                  </div>
-                  <div className={operationDetailMetricFieldClass}>
-                  <StandardFactor
-                    name="setupUnit"
-                    label={t`Setup Unit`}
-                    isOptional={false}
-                    hint={processData.setupUnitHint}
-                    value={processData.setupUnit}
-                    onChange={(newValue) => {
-                      setProcessData((d) => ({
-                        ...d,
-                        setupUnit: newValue?.value ?? "Total Minutes"
-                      }));
-                    }}
-                  />
-                  </div>
-                </>
-              )
-            },
-            {
-              id: "labor",
-              label: <Trans>Labor</Trans>,
-              accessibilityLabel: t`Labor`,
-              icon: <TimeTypeIcon type="Labor" />,
-              summary:
-                (processData.laborTime ?? 0) > 0
-                  ? formatOperationTabSummary(
-                      processData.laborTime,
-                      processData.laborUnit
-                    )
-                  : undefined,
-              summaryTitle:
-                (processData.laborTime ?? 0) > 0
-                  ? `${processData.laborTime} ${processData.laborUnit}`
-                  : undefined,
-              content: (
-                <>
-                  <div className={operationDetailHintFieldClass}>
-                  <UnitHint
-                    name="laborHint"
-                    label={t`Labor`}
-                    value={processData.laborUnitHint}
-                    onChange={(hint) => {
-                      setProcessData((d) => ({
-                        ...d,
-                        laborUnitHint: hint,
-                        laborUnit:
-                          hint === "Fixed" ? "Total Minutes" : "Minutes/Piece"
-                      }));
-                    }}
-                  />
-                  </div>
-                  <div className={operationDetailMetricFieldClass}>
-                  <NumberControlled
-                    name="laborTime"
-                    label={t`Labor Time`}
-                    isOptional={false}
-                    minValue={0}
-                    value={processData.laborTime}
-                    onChange={(newValue) =>
-                      setProcessData((d) => ({
-                        ...d,
-                        laborTime: newValue
-                      }))
-                    }
-                  />
-                  </div>
-                  <div className={operationDetailMetricFieldClass}>
-                  <StandardFactor
-                    name="laborUnit"
-                    label={t`Labor Unit`}
-                    isOptional={false}
-                    hint={processData.laborUnitHint}
-                    value={processData.laborUnit}
-                    onChange={(newValue) => {
-                      setProcessData((d) => ({
-                        ...d,
-                        laborUnit: newValue?.value ?? "Total Minutes"
-                      }));
-                    }}
-                  />
-                  </div>
-                </>
-              )
-            },
-            {
-              id: "machine",
-              label: <Trans>Machine</Trans>,
-              accessibilityLabel: t`Machine`,
-              icon: <TimeTypeIcon type="Machine" />,
-              summary:
-                (processData.machineTime ?? 0) > 0
-                  ? formatOperationTabSummary(
-                      processData.machineTime,
-                      processData.machineUnit
-                    )
-                  : undefined,
-              summaryTitle:
-                (processData.machineTime ?? 0) > 0
-                  ? `${processData.machineTime} ${processData.machineUnit}`
-                  : undefined,
-              content: (
-                <>
-                  <div className={operationDetailHintFieldClass}>
-                  <UnitHint
-                    name="machineHint"
-                    label={t`Machine`}
-                    value={processData.machineUnitHint}
-                    onChange={(hint) => {
-                      setProcessData((d) => ({
-                        ...d,
-                        machineUnitHint: hint,
-                        machineUnit:
-                          hint === "Fixed" ? "Total Minutes" : "Minutes/Piece"
-                      }));
-                    }}
-                  />
-                  </div>
-                  <div className={operationDetailMetricFieldClass}>
-                  <NumberControlled
-                    name="machineTime"
-                    label={t`Machine Time`}
-                    isOptional={false}
-                    minValue={0}
-                    value={processData.machineTime}
-                    onChange={(newValue) =>
-                      setProcessData((d) => ({
-                        ...d,
-                        machineTime: newValue
-                      }))
-                    }
-                  />
-                  </div>
-                  <div className={operationDetailMetricFieldClass}>
-                  <StandardFactor
-                    name="machineUnit"
-                    label={t`Machine Unit`}
-                    isOptional={false}
-                    hint={processData.machineUnitHint}
-                    value={processData.machineUnit}
-                    onChange={(newValue) => {
-                      setProcessData((d) => ({
-                        ...d,
-                        machineUnit: newValue?.value ?? "Total Minutes"
-                      }));
-                    }}
-                  />
-                  </div>
-                </>
-              )
-            },
-            {
-              id: "procedure",
-              label: <Trans>Procedure</Trans>,
-              accessibilityLabel: t`Procedure`,
-              icon: <LuListChecks />,
-              summary: procedureTabSummary,
-              summaryTitle: procedureTabSummaryTitle,
-              contentClassName:
-                "flex w-full min-w-0 flex-col gap-4 px-4 pb-4 pt-4",
-              content: (
-                <>
-                  <Procedure
-                    name="procedureId"
-                    label={t`Procedure`}
-                    processId={processData.processId}
-                    value={processData.procedureId}
-                    onChange={(value) => {
-                      if (value && value.value !== item.data.procedureId) {
-                        setProcedureWasChanged(true);
-                      }
-                      setProcessData((d) => ({
-                        ...d,
-                        procedureId: value?.value as string
-                      }));
-                    }}
-                  />
-                  {!temporaryItems[item.id] && processData.procedureId && (
-                    <div className="flex flex-col gap-2 w-auto">
-                      {procedureWasChanged && (
-                        <span className="text-sm text-muted-foreground">
-                          <Trans>
-                            The procedure was changed, but not synced to the
-                            operation.
-                          </Trans>
-                        </span>
-                      )}
-                      <div>
-                        <Button
-                          variant="secondary"
-                          rightIcon={<LuRefreshCcw />}
-                          onClick={procedureSyncDisclosure.onOpen}
-                        >
-                          <Trans>Sync Procedure</Trans>
-                        </Button>
-                        {procedureSyncDisclosure.isOpen && (
-                          <ProcedureSyncModal
-                            operationId={item.id}
-                            procedureId={processData.procedureId}
-                            onClose={procedureSyncDisclosure.onClose}
-                          />
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </>
-              )
-            }
-          ]}
-        />
-      )}
-      <motion.div
-        className="flex w-full items-center justify-end p-2"
-        initial={{ opacity: 0, filter: "blur(4px)" }}
-        animate={{ opacity: 1, filter: "blur(0px)" }}
-        transition={{
-          type: "spring",
-          bounce: 0,
-          duration: 0.55
-        }}
+        action={
+          temporaryItems[item.id]
+            ? path.to.newJobOperation(jobId)
+            : path.to.jobOperation(jobId, item.id!)
+        }
+        method="post"
+        defaultValues={item.data}
+        validator={
+          ["Draft", "Planned"].includes(job?.status ?? "")
+            ? jobOperationValidator
+            : jobOperationValidatorForReleasedJob
+        }
+        className="flex w-full min-w-0 flex-col gap-y-4"
+        fetcher={fetcher}
       >
-        <motion.div layout className="ml-auto mr-1 pt-2">
-          <Submit isDisabled={isDisabled}>
-            <Trans>Save</Trans>
-          </Submit>
+        <div>
+          <Hidden name="id" />
+          <Hidden name="jobMakeMethodId" />
+          <Hidden name="order" />
+        </div>
+        <div className={operationFormGridClass}>
+          <div className={operationFormPairFieldClass}>
+            <Process
+              name="processId"
+              label={t`Process`}
+              onChange={(value) => {
+                onProcessChange(value?.value as string);
+              }}
+            />
+          </div>
+          <div className={operationFormPairFieldClass}>
+            <Select
+              name="operationOrder"
+              label={t`Operation Order`}
+              placeholder={t`Operation Order`}
+              options={operationOrderOptions}
+            />
+          </div>
+          <div className={operationFormTypeFieldClass}>
+            <SelectControlled
+              name="operationType"
+              label={t`Operation Type`}
+              placeholder={t`Operation Type`}
+              options={operationTypeOptions}
+              value={processData.operationType}
+              onChange={(value) => {
+                const operationType = value?.value as OperationType;
+                const useSupplierRouting =
+                  showsSupplierRoutingFields(operationType);
+
+                setProcessData((d) => ({
+                  ...d,
+                  setupUnit: "Total Minutes",
+                  laborUnit: "Minutes/Piece",
+                  machineUnit: "Minutes/Piece",
+                  operationType,
+                  ...(useSupplierRouting
+                    ? {}
+                    : {
+                        operationSupplierProcessId: "",
+                        operationMinimumCost: 0,
+                        operationUnitCost: 0,
+                        operationLeadTime: 0
+                      })
+                }));
+              }}
+            />
+          </div>
+
+          <div className={operationFormDescriptionFieldClass}>
+            <InputControlled
+              name="description"
+              label={t`Description`}
+              value={processData.description}
+              onChange={(newValue) => {
+                setProcessData((d) => ({ ...d, description: newValue }));
+              }}
+            />
+          </div>
+
+          {isInsideOperationType(processData.operationType) ? (
+            <>
+              <div className={operationFormWorkCenterFieldClass}>
+                <WorkCenter
+                  name="workCenterId"
+                  label={t`Work Center`}
+                  autoSelectSingleOption={Boolean(processData.processId)}
+                  locationId={locationId}
+                  isOptional={["Draft", "Planned"].includes(job?.status ?? "")}
+                  processId={processData.processId}
+                  onChange={(value) => {
+                    if (value) {
+                      onWorkCenterChange(value?.value as string);
+                    }
+                  }}
+                />
+              </div>
+              <div className={operationFormPairFieldClass}>
+                <NumberControlled
+                  name="laborRate"
+                  label={t`Labor Rate`}
+                  minValue={0}
+                  value={processData.laborRate}
+                  formatOptions={{
+                    style: "currency",
+                    currency: baseCurrency
+                  }}
+                  onChange={(newValue) =>
+                    setProcessData((d) => ({
+                      ...d,
+                      laborRate: newValue
+                    }))
+                  }
+                />
+              </div>
+              <div className={operationFormPairFieldClass}>
+                <NumberControlled
+                  name="machineRate"
+                  label={t`Machine Rate`}
+                  minValue={0}
+                  value={processData.machineRate}
+                  formatOptions={{
+                    style: "currency",
+                    currency: baseCurrency
+                  }}
+                  onChange={(newValue) =>
+                    setProcessData((d) => ({
+                      ...d,
+                      machineRate: newValue
+                    }))
+                  }
+                />
+              </div>
+              <div className={operationFormPairFieldClass}>
+                <NumberControlled
+                  name="overheadRate"
+                  label={t`Overhead Rate`}
+                  minValue={0}
+                  value={processData.overheadRate}
+                  formatOptions={{
+                    style: "currency",
+                    currency: baseCurrency
+                  }}
+                  onChange={(newValue) =>
+                    setProcessData((d) => ({
+                      ...d,
+                      overheadRate: newValue
+                    }))
+                  }
+                />
+              </div>
+              <div className={operationFormPairFieldClass}>
+                <NumberControlled
+                  name="insideUnitCost"
+                  label={t`Unit rate`}
+                  minValue={0}
+                  value={processData.insideUnitCost}
+                  formatOptions={{
+                    style: "currency",
+                    currency: baseCurrency
+                  }}
+                  onChange={(newValue) =>
+                    setProcessData((d) => ({
+                      ...d,
+                      insideUnitCost: newValue ?? 0
+                    }))
+                  }
+                />
+              </div>
+            </>
+          ) : null}
+          {showsSupplierRoutingFields(processData.operationType) ? (
+            <>
+              <div className={operationFormWorkCenterFieldClass}>
+                <SupplierProcess
+                  name="operationSupplierProcessId"
+                  label={t`Supplier`}
+                  processId={processData.processId}
+                  isOptional={false}
+                  onChange={(value) => {
+                    if (value) {
+                      onSupplierProcessChange(value?.value as string);
+                    } else {
+                      setProcessData((d) => ({
+                        ...d,
+                        operationSupplierProcessId: ""
+                      }));
+                    }
+                  }}
+                />
+              </div>
+              <div className={operationFormPairFieldClass}>
+                <NumberControlled
+                  name="operationMinimumCost"
+                  label={t`Minimum Cost`}
+                  isOptional={false}
+                  minValue={0}
+                  value={processData.operationMinimumCost}
+                  formatOptions={{
+                    style: "currency",
+                    currency: baseCurrency
+                  }}
+                  onChange={(newValue) =>
+                    setProcessData((d) => ({
+                      ...d,
+                      operationMinimumCost: newValue
+                    }))
+                  }
+                />
+              </div>
+              <div className={operationFormPairFieldClass}>
+                <NumberControlled
+                  name="operationUnitCost"
+                  label={t`Unit Cost`}
+                  isOptional={false}
+                  minValue={0}
+                  value={processData.operationUnitCost}
+                  formatOptions={{
+                    style: "currency",
+                    currency: baseCurrency
+                  }}
+                  onChange={(newValue) =>
+                    setProcessData((d) => ({
+                      ...d,
+                      operationUnitCost: newValue
+                    }))
+                  }
+                />
+              </div>
+              <div className={operationFormPairFieldClass}>
+                <NumberControlled
+                  name="operationLeadTime"
+                  label={t`Lead Time`}
+                  isOptional={false}
+                  minValue={0}
+                  value={processData.operationLeadTime}
+                  onChange={(newValue) =>
+                    setProcessData((d) => ({
+                      ...d,
+                      operationLeadTime: newValue
+                    }))
+                  }
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <Hidden name="operationSupplierProcessId" value="" />
+              <Hidden name="operationMinimumCost" value={0} />
+              <Hidden name="operationUnitCost" value={0} />
+              <Hidden name="operationLeadTime" value={0} />
+            </>
+          )}
+        </div>
+
+        {isInsideOperationType(processData.operationType) && (
+          <OperationDetailTabs
+            sections={[
+              {
+                id: "setup",
+                label: <Trans>Setup</Trans>,
+                accessibilityLabel: t`Setup`,
+                icon: <TimeTypeIcon type="Setup" />,
+                summary:
+                  (processData.setupTime ?? 0) > 0
+                    ? formatOperationTabSummary(
+                        processData.setupTime,
+                        processData.setupUnit
+                      )
+                    : undefined,
+                summaryTitle:
+                  (processData.setupTime ?? 0) > 0
+                    ? `${processData.setupTime} ${processData.setupUnit}`
+                    : undefined,
+                content: (
+                  <>
+                    <div className={operationDetailHintFieldClass}>
+                      <UnitHint
+                        name="setupHint"
+                        label={t`Setup`}
+                        value={processData.setupUnitHint}
+                        onChange={(hint) => {
+                          setProcessData((d) => ({
+                            ...d,
+                            setupUnitHint: hint,
+                            setupUnit:
+                              hint === "Fixed"
+                                ? "Total Minutes"
+                                : "Minutes/Piece"
+                          }));
+                        }}
+                      />
+                    </div>
+                    <div className={operationDetailMetricFieldClass}>
+                      <NumberControlled
+                        name="setupTime"
+                        label={t`Setup Time`}
+                        isOptional={false}
+                        minValue={0}
+                        value={processData.setupTime}
+                        onChange={(newValue) =>
+                          setProcessData((d) => ({
+                            ...d,
+                            setupTime: newValue
+                          }))
+                        }
+                      />
+                    </div>
+                    <div className={operationDetailMetricFieldClass}>
+                      <StandardFactor
+                        name="setupUnit"
+                        label={t`Setup Unit`}
+                        isOptional={false}
+                        hint={processData.setupUnitHint}
+                        value={processData.setupUnit}
+                        onChange={(newValue) => {
+                          setProcessData((d) => ({
+                            ...d,
+                            setupUnit: newValue?.value ?? "Total Minutes"
+                          }));
+                        }}
+                      />
+                    </div>
+                  </>
+                )
+              },
+              {
+                id: "labor",
+                label: <Trans>Labor</Trans>,
+                accessibilityLabel: t`Labor`,
+                icon: <TimeTypeIcon type="Labor" />,
+                summary:
+                  (processData.laborTime ?? 0) > 0
+                    ? formatOperationTabSummary(
+                        processData.laborTime,
+                        processData.laborUnit
+                      )
+                    : undefined,
+                summaryTitle:
+                  (processData.laborTime ?? 0) > 0
+                    ? `${processData.laborTime} ${processData.laborUnit}`
+                    : undefined,
+                content: (
+                  <>
+                    <div className={operationDetailHintFieldClass}>
+                      <UnitHint
+                        name="laborHint"
+                        label={t`Labor`}
+                        value={processData.laborUnitHint}
+                        onChange={(hint) => {
+                          setProcessData((d) => ({
+                            ...d,
+                            laborUnitHint: hint,
+                            laborUnit:
+                              hint === "Fixed"
+                                ? "Total Minutes"
+                                : "Minutes/Piece"
+                          }));
+                        }}
+                      />
+                    </div>
+                    <div className={operationDetailMetricFieldClass}>
+                      <NumberControlled
+                        name="laborTime"
+                        label={t`Labor Time`}
+                        isOptional={false}
+                        minValue={0}
+                        value={processData.laborTime}
+                        onChange={(newValue) =>
+                          setProcessData((d) => ({
+                            ...d,
+                            laborTime: newValue
+                          }))
+                        }
+                      />
+                    </div>
+                    <div className={operationDetailMetricFieldClass}>
+                      <StandardFactor
+                        name="laborUnit"
+                        label={t`Labor Unit`}
+                        isOptional={false}
+                        hint={processData.laborUnitHint}
+                        value={processData.laborUnit}
+                        onChange={(newValue) => {
+                          setProcessData((d) => ({
+                            ...d,
+                            laborUnit: newValue?.value ?? "Total Minutes"
+                          }));
+                        }}
+                      />
+                    </div>
+                  </>
+                )
+              },
+              {
+                id: "machine",
+                label: <Trans>Machine</Trans>,
+                accessibilityLabel: t`Machine`,
+                icon: <TimeTypeIcon type="Machine" />,
+                summary:
+                  (processData.machineTime ?? 0) > 0
+                    ? formatOperationTabSummary(
+                        processData.machineTime,
+                        processData.machineUnit
+                      )
+                    : undefined,
+                summaryTitle:
+                  (processData.machineTime ?? 0) > 0
+                    ? `${processData.machineTime} ${processData.machineUnit}`
+                    : undefined,
+                content: (
+                  <>
+                    <div className={operationDetailHintFieldClass}>
+                      <UnitHint
+                        name="machineHint"
+                        label={t`Machine`}
+                        value={processData.machineUnitHint}
+                        onChange={(hint) => {
+                          setProcessData((d) => ({
+                            ...d,
+                            machineUnitHint: hint,
+                            machineUnit:
+                              hint === "Fixed"
+                                ? "Total Minutes"
+                                : "Minutes/Piece"
+                          }));
+                        }}
+                      />
+                    </div>
+                    <div className={operationDetailMetricFieldClass}>
+                      <NumberControlled
+                        name="machineTime"
+                        label={t`Machine Time`}
+                        isOptional={false}
+                        minValue={0}
+                        value={processData.machineTime}
+                        onChange={(newValue) =>
+                          setProcessData((d) => ({
+                            ...d,
+                            machineTime: newValue
+                          }))
+                        }
+                      />
+                    </div>
+                    <div className={operationDetailMetricFieldClass}>
+                      <StandardFactor
+                        name="machineUnit"
+                        label={t`Machine Unit`}
+                        isOptional={false}
+                        hint={processData.machineUnitHint}
+                        value={processData.machineUnit}
+                        onChange={(newValue) => {
+                          setProcessData((d) => ({
+                            ...d,
+                            machineUnit: newValue?.value ?? "Total Minutes"
+                          }));
+                        }}
+                      />
+                    </div>
+                  </>
+                )
+              },
+              {
+                id: "procedure",
+                label: <Trans>Procedure</Trans>,
+                accessibilityLabel: t`Procedure`,
+                icon: <LuListChecks />,
+                summary: procedureTabSummary,
+                summaryTitle: procedureTabSummaryTitle,
+                contentClassName:
+                  "flex w-full min-w-0 flex-col gap-4 px-4 pb-4 pt-4",
+                content: (
+                  <>
+                    <Procedure
+                      name="procedureId"
+                      label={t`Procedure`}
+                      processId={processData.processId}
+                      value={processData.procedureId}
+                      onChange={(value) => {
+                        if (value && value.value !== item.data.procedureId) {
+                          setProcedureWasChanged(true);
+                        }
+                        setProcessData((d) => ({
+                          ...d,
+                          procedureId: value?.value as string
+                        }));
+                      }}
+                    />
+                    {!temporaryItems[item.id] && processData.procedureId && (
+                      <div className="flex flex-col gap-2 w-auto">
+                        {procedureWasChanged && (
+                          <span className="text-sm text-muted-foreground">
+                            <Trans>
+                              The procedure was changed, but not synced to the
+                              operation.
+                            </Trans>
+                          </span>
+                        )}
+                        <div>
+                          <Button
+                            variant="secondary"
+                            rightIcon={<LuRefreshCcw />}
+                            onClick={procedureSyncDisclosure.onOpen}
+                          >
+                            <Trans>Sync Procedure</Trans>
+                          </Button>
+                          {procedureSyncDisclosure.isOpen && (
+                            <ProcedureSyncModal
+                              operationId={item.id}
+                              procedureId={processData.procedureId}
+                              onClose={procedureSyncDisclosure.onClose}
+                            />
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )
+              }
+            ]}
+          />
+        )}
+        <motion.div
+          className="flex w-full items-center justify-end p-2"
+          initial={{ opacity: 0, filter: "blur(4px)" }}
+          animate={{ opacity: 1, filter: "blur(0px)" }}
+          transition={{
+            type: "spring",
+            bounce: 0,
+            duration: 0.55
+          }}
+        >
+          <motion.div layout className="ml-auto mr-1 pt-2">
+            <Submit isDisabled={isDisabled}>
+              <Trans>Save</Trans>
+            </Submit>
+          </motion.div>
         </motion.div>
-      </motion.div>
-    </ValidatedForm>
+      </ValidatedForm>
     </div>
   );
 }

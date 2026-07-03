@@ -6917,6 +6917,9 @@ msgstr "saída para processo"
 msgid "Process Pickup by {0}"
 msgstr "Saída para processo de {0}"
 
+msgid "Process pickup updated"
+msgstr "Processo de recolha atualizado"
+
 msgid "Process Pickups"
 msgstr "saídas para processo"
 
@@ -7139,6 +7142,9 @@ msgstr "A quantidade é derivada de seriais/lotes concluídos no MES e não pode
 
 msgid "Quantity must be greater than 0"
 msgstr "A quantidade deve ser maior que 0"
+
+msgid "Quantity must be greater than zero"
+msgstr "A quantidade deve ser maior que zero"
 
 msgid "Quantity on Hand"
 msgstr "Quantidade em Mão"
@@ -9133,6 +9139,9 @@ msgstr "Este trabalho não estará mais disponível no chão de fábrica."
 
 msgid "This permanently deletes the quantity report and its entire history. This action cannot be undone."
 msgstr "Isto elimina permanentemente o relatório de quantidade e todo o seu histórico. Esta ação não pode ser anulada."
+
+msgid "this process pickup"
+msgstr "esse processo de recuperação"
 
 msgid "this quantity report"
 msgstr "este relatório de quantidade"

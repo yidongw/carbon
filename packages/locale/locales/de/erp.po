@@ -6917,6 +6917,9 @@ msgstr "Prozessentnahme"
 msgid "Process Pickup by {0}"
 msgstr "Prozessentnahme durch {0}"
 
+msgid "Process pickup updated"
+msgstr "Prozessabholung aktualisiert"
+
 msgid "Process Pickups"
 msgstr "Prozessentnahmen"
 
@@ -7139,6 +7142,9 @@ msgstr "Die Menge wird aus abgeschlossenen Seriennummern/Chargen in MES abgeleit
 
 msgid "Quantity must be greater than 0"
 msgstr "Menge muss größer als 0 sein"
+
+msgid "Quantity must be greater than zero"
+msgstr "Menge muss größer null sein"
 
 msgid "Quantity on Hand"
 msgstr "Menge im Bestand"
@@ -9133,6 +9139,9 @@ msgstr "Dieser Auftrag ist auf der Werkstatt nicht mehr verfügbar."
 
 msgid "This permanently deletes the quantity report and its entire history. This action cannot be undone."
 msgstr "Dadurch werden der Mengenbericht und sein gesamter Verlauf dauerhaft gelöscht. Diese Aktion kann nicht rückgängig gemacht werden."
+
+msgid "this process pickup"
+msgstr "Dieser Prozessauftrag"
 
 msgid "this quantity report"
 msgstr "diesen Mengenbericht"
