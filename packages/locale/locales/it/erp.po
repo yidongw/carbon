@@ -3005,6 +3005,12 @@ msgstr "Sdraighi e trascina un file qui, o clicca per selezionare un file"
 msgid "Drag and drop a Purchase Order PDF here, or click to select a file"
 msgstr "Trascina e rilascia un PDF di ordine di acquisto qui, oppure fai clic per selezionare un file"
 
+msgid "Drag and drop an image here, or click to select"
+msgstr "Trascina un'immagine qui o fai clic per selezionarla"
+
+msgid "Drag and drop or click to upload"
+msgstr "Trascina e rilascia o fai clic per caricare"
+
 msgid "Drag and drop some files here, or click to select files"
 msgstr "Sdraighi e trascina alcuni file qui, o clicca per selezionare i file"
 
@@ -3013,6 +3019,9 @@ msgstr "Maniglia di trascinamento"
 
 msgid "Drag to reorder"
 msgstr "Trascina per riordinare"
+
+msgid "Drop image to upload"
+msgstr "Rilascia l'immagine per caricarla"
 
 msgid "Drop Shipment"
 msgstr "Spedizione Diretta"
@@ -4030,6 +4039,9 @@ msgstr "Caricamento del modello non riuscito"
 
 msgid "Failed to upload thumbnail"
 msgstr "Impossibile caricare la miniatura"
+
+msgid "Failed to upload thumbnail: {message}"
+msgstr "Impossibile caricare la miniatura: {message}"
 
 msgid "Failure Mode"
 msgstr "Modalità di guasto"
@@ -6000,9 +6012,6 @@ msgstr "Nessun Calibro Selezionato"
 
 msgid "No groups assigned"
 msgstr "Nessun gruppo assegnato"
-
-msgid "No image"
-msgstr "Nessuna immagine"
 
 msgid "No Impact"
 msgstr "Nessun impatto"
@@ -9656,6 +9665,9 @@ msgstr "Caricamento {0}"
 
 msgid "Uploading {fileName}"
 msgstr "Caricamento in corso {fileName}"
+
+msgid "Uploading…"
+msgstr "Caricamento…"
 
 msgid "Upon clicking Convert, parts will be created with the following internal part numbers:"
 msgstr "Facendo clic su Converti, le parti verranno create con i seguenti numeri di parte interni:"

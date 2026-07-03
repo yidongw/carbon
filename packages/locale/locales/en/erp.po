@@ -3005,6 +3005,12 @@ msgstr "Drag and drop a file here, or click to select a file"
 msgid "Drag and drop a Purchase Order PDF here, or click to select a file"
 msgstr "Drag and drop a Purchase Order PDF here, or click to select a file"
 
+msgid "Drag and drop an image here, or click to select"
+msgstr "Drag and drop an image here, or click to select"
+
+msgid "Drag and drop or click to upload"
+msgstr "Drag and drop or click to upload"
+
 msgid "Drag and drop some files here, or click to select files"
 msgstr "Drag and drop some files here, or click to select files"
 
@@ -3013,6 +3019,9 @@ msgstr "Drag handle"
 
 msgid "Drag to reorder"
 msgstr "Drag to reorder"
+
+msgid "Drop image to upload"
+msgstr "Drop image to upload"
 
 msgid "Drop Shipment"
 msgstr "Drop Shipment"
@@ -4030,6 +4039,9 @@ msgstr "Failed to upload model"
 
 msgid "Failed to upload thumbnail"
 msgstr "Failed to upload thumbnail"
+
+msgid "Failed to upload thumbnail: {message}"
+msgstr "Failed to upload thumbnail: {message}"
 
 msgid "Failure Mode"
 msgstr "Failure Mode"
@@ -6000,9 +6012,6 @@ msgstr "No Gauge Selected"
 
 msgid "No groups assigned"
 msgstr "No groups assigned"
-
-msgid "No image"
-msgstr "No image"
 
 msgid "No Impact"
 msgstr "No Impact"
@@ -9656,6 +9665,9 @@ msgstr "Uploading {0}"
 
 msgid "Uploading {fileName}"
 msgstr "Uploading {fileName}"
+
+msgid "Uploading…"
+msgstr "Uploading…"
 
 msgid "Upon clicking Convert, parts will be created with the following internal part numbers:"
 msgstr "Upon clicking Convert, parts will be created with the following internal part numbers:"

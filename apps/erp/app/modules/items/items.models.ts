@@ -325,6 +325,7 @@ export const consumableValidator = applyStorageAndShelfLifeRefines(
   itemValidator.merge(
     z.object({
       id: z.string().min(1, { message: "Consumable ID is required" }).max(255),
+      thumbnailPath: zfd.text(z.string().optional()),
       unitOfMeasureCode: z
         .string()
         .min(1, { message: "Unit of Measure is required" })
@@ -361,6 +362,7 @@ export const materialValidator = applyStorageAndShelfLifeRefines(
   itemValidator.merge(
     z.object({
       id: z.string().min(1, { message: "Material ID is required" }).max(255),
+      thumbnailPath: zfd.text(z.string().optional()),
       materialSubstanceId: zfd.text(z.string().optional()),
       materialFormId: zfd.text(z.string().optional()),
       materialTypeId: zfd.text(z.string().optional()),
@@ -678,6 +680,7 @@ export const partValidator = applyStorageAndShelfLifeRefines(
       id: z.string().min(1, { message: "Part ID is required" }).max(255),
       revision: z.string().min(1, { message: "Revision is required" }),
       modelUploadId: zfd.text(z.string().optional()),
+      thumbnailPath: zfd.text(z.string().optional()),
       lotSize: zfd.numeric(z.number().min(0).optional()),
       templateId: zfd.text(z.string().optional())
     })
@@ -801,6 +804,7 @@ export const toolValidator = applyStorageAndShelfLifeRefines(
       id: z.string().min(1, { message: "Tool ID is required" }).max(255),
       revision: z.string().min(1, { message: "Revision is required" }),
       modelUploadId: zfd.text(z.string().optional()),
+      thumbnailPath: zfd.text(z.string().optional()),
       unitOfMeasureCode: z
         .string()
         .min(1, { message: "Unit of Measure is required" }),

@@ -53,6 +53,25 @@ export async function action({ request }: ActionFunctionArgs) {
   const itemId = createTool.data?.id;
   if (!itemId) throw new Error("Tool ID not found");
 
+  // The thumbnail is uploaded to a staging path before the item exists. Now
+  // that we have the item's id, re-key the object under the item's own folder
+  // to match the convention used everywhere else. If the move fails we keep the
+  // staging path, which still resolves.
+  const stagingThumbnailPath = validation.data.thumbnailPath;
+  if (stagingThumbnailPath?.includes("/thumbnails/staging/")) {
+    const fileName = stagingThumbnailPath.split("/").pop();
+    const finalThumbnailPath = `${companyId}/thumbnails/${itemId}/${fileName}`;
+    const move = await client.storage
+      .from("private")
+      .move(stagingThumbnailPath, finalThumbnailPath);
+    if (!move.error) {
+      await client
+        .from("item")
+        .update({ thumbnailPath: finalThumbnailPath })
+        .eq("id", itemId);
+    }
+  }
+
   return modal
     ? data(createTool, { status: 201 })
     : redirect(path.to.tool(itemId));

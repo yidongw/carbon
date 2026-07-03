@@ -3005,6 +3005,12 @@ msgstr "Arrastrar y soltar un archivo aquí, o hacer clic para seleccionar un ar
 msgid "Drag and drop a Purchase Order PDF here, or click to select a file"
 msgstr "Arrastra y suelta un PDF de Orden de Compra aquí, o haz clic para seleccionar un archivo"
 
+msgid "Drag and drop an image here, or click to select"
+msgstr "Arrastra y suelta una imagen aquí, o haz clic para seleccionar"
+
+msgid "Drag and drop or click to upload"
+msgstr "Arrastra y suelta o haz clic para cargar"
+
 msgid "Drag and drop some files here, or click to select files"
 msgstr "Arrastra y arrastrar algunos archivos aquí, o haz clic para seleccionar archivos"
 
@@ -3013,6 +3019,9 @@ msgstr "Controlador de arrastre"
 
 msgid "Drag to reorder"
 msgstr "Arrastre para reordenar"
+
+msgid "Drop image to upload"
+msgstr "Suelta la imagen para cargarla"
 
 msgid "Drop Shipment"
 msgstr "Envío Directo"
@@ -4030,6 +4039,9 @@ msgstr "Error al cargar el modelo"
 
 msgid "Failed to upload thumbnail"
 msgstr "Error al cargar la miniatura"
+
+msgid "Failed to upload thumbnail: {message}"
+msgstr "Error al cargar la miniatura: {message}"
 
 msgid "Failure Mode"
 msgstr "Modo de Fallo"
@@ -6000,9 +6012,6 @@ msgstr "Sin calibrador seleccionado"
 
 msgid "No groups assigned"
 msgstr "No hay grupos asignados"
-
-msgid "No image"
-msgstr "Sin imagen"
 
 msgid "No Impact"
 msgstr "Sin impacto"
@@ -9656,6 +9665,9 @@ msgstr "Cargando {0}"
 
 msgid "Uploading {fileName}"
 msgstr "Cargando {fileName}"
+
+msgid "Uploading…"
+msgstr "Cargando…"
 
 msgid "Upon clicking Convert, parts will be created with the following internal part numbers:"
 msgstr "Al hacer clic en Convertir, se crearán piezas con los siguientes números de pieza internos:"

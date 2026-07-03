@@ -3005,6 +3005,12 @@ msgstr "ड्रैग एंड ड्रॉप एक फ़ाइल यह�
 msgid "Drag and drop a Purchase Order PDF here, or click to select a file"
 msgstr "यहाँ एक खरीद आदेश PDF को ड्रैग और ड्रॉप करें, या एक फ़ाइल चुनने के लिए क्लिक करें"
 
+msgid "Drag and drop an image here, or click to select"
+msgstr "यहाँ एक छवि खींचें और छोड़ें, या चुनने के लिए क्लिक करें"
+
+msgid "Drag and drop or click to upload"
+msgstr "अपलोड करने के लिए खींचें और छोड़ें या क्लिक करें"
+
 msgid "Drag and drop some files here, or click to select files"
 msgstr "ड्रैग एंड ड्रॉप कुछ फ़ाइलें यहाँ डालें, या क्लिक करके फ़ाइलों को चुनें"
 
@@ -3013,6 +3019,9 @@ msgstr "ड्रैग हैंडल"
 
 msgid "Drag to reorder"
 msgstr "नियंत्रित रूप से पुनर्स्थापित करें"
+
+msgid "Drop image to upload"
+msgstr "अपलोड करने के लिए छवि छोड़ें"
 
 msgid "Drop Shipment"
 msgstr "ड्रॉप शिपमेंट"
@@ -4030,6 +4039,9 @@ msgstr "मॉडल अपलोड करने में विफल"
 
 msgid "Failed to upload thumbnail"
 msgstr "थंबनेल अपलोड करने में विफल"
+
+msgid "Failed to upload thumbnail: {message}"
+msgstr "थंबनेल अपलोड करने में विफल: {message}"
 
 msgid "Failure Mode"
 msgstr "विफलता मोड"
@@ -6000,9 +6012,6 @@ msgstr "कोई गेज चयनित नहीं"
 
 msgid "No groups assigned"
 msgstr "कोई समूह असाइन नहीं किया गया"
-
-msgid "No image"
-msgstr "कोई छवि नहीं"
 
 msgid "No Impact"
 msgstr "कोई प्रभाव नहीं"
@@ -9656,6 +9665,9 @@ msgstr "अपलोड किया जा रहा है {0}"
 
 msgid "Uploading {fileName}"
 msgstr "अपलोड किया जा रहा है {fileName}"
+
+msgid "Uploading…"
+msgstr "अपलोड हो रहा है…"
 
 msgid "Upon clicking Convert, parts will be created with the following internal part numbers:"
 msgstr "Convert पर क्लिक करने पर, निम्नलिखित आंतरिक भाग संख्याओं के साथ भाग बनाए जाएंगे:"

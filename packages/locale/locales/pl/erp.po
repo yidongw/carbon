@@ -3005,6 +3005,12 @@ msgstr "Przeznacz na przeniesienie pliku tutaj lub naciśnij przycisk aby wybrac
 msgid "Drag and drop a Purchase Order PDF here, or click to select a file"
 msgstr "Przeciągnij i upuść plik PDF zamówienia zakupu tutaj lub kliknij, aby wybrać plik"
 
+msgid "Drag and drop an image here, or click to select"
+msgstr "Przeciągnij i upuść obraz tutaj lub kliknij, aby wybrać"
+
+msgid "Drag and drop or click to upload"
+msgstr "Przeciągnij i upuść lub kliknij, aby przesłać"
+
 msgid "Drag and drop some files here, or click to select files"
 msgstr "Pobierz i wklej tutaj lub kliknij aby wybrać pliki"
 
@@ -3013,6 +3019,9 @@ msgstr "Uchwyt do przeciągania"
 
 msgid "Drag to reorder"
 msgstr "Przeciągnij, aby zmienić kolejność"
+
+msgid "Drop image to upload"
+msgstr "Upuść obraz, aby przesłać"
 
 msgid "Drop Shipment"
 msgstr "Wysyłka bezpośrednia"
@@ -4030,6 +4039,9 @@ msgstr "Nie udało się przesłać modelu"
 
 msgid "Failed to upload thumbnail"
 msgstr "Nie udało się przesłać miniatury"
+
+msgid "Failed to upload thumbnail: {message}"
+msgstr "Nie udało się przesłać miniatury: {message}"
 
 msgid "Failure Mode"
 msgstr "Tryb Awarii"
@@ -6000,9 +6012,6 @@ msgstr "Nie wybrano miernika"
 
 msgid "No groups assigned"
 msgstr "Brak przypisanych grup"
-
-msgid "No image"
-msgstr "Brak obrazu"
 
 msgid "No Impact"
 msgstr "Brak wpływu"
@@ -9656,6 +9665,9 @@ msgstr "Przesyłanie {0}"
 
 msgid "Uploading {fileName}"
 msgstr "Przesylanie {fileName}"
+
+msgid "Uploading…"
+msgstr "Przesyłanie…"
 
 msgid "Upon clicking Convert, parts will be created with the following internal part numbers:"
 msgstr "Po kliknięciu przycisku Konwertuj, części zostaną utworzone z następującymi numerami części wewnętrznych:"

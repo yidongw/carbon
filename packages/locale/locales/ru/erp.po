@@ -3005,6 +3005,12 @@ msgstr "Загрузите файл здесь или нажмите для вы
 msgid "Drag and drop a Purchase Order PDF here, or click to select a file"
 msgstr "Перетащите PDF-файл заказа на покупку сюда или нажмите, чтобы выбрать файл"
 
+msgid "Drag and drop an image here, or click to select"
+msgstr "Перетащите изображение сюда или нажмите, чтобы выбрать"
+
+msgid "Drag and drop or click to upload"
+msgstr "Перетащите или нажмите для загрузки"
+
 msgid "Drag and drop some files here, or click to select files"
 msgstr "Загрузите и вставьте здесь, или нажмите для выбора файлов"
 
@@ -3013,6 +3019,9 @@ msgstr "Ручка перетаскивания"
 
 msgid "Drag to reorder"
 msgstr "Перетяните для изменения порядка"
+
+msgid "Drop image to upload"
+msgstr "Отпустите изображение для загрузки"
 
 msgid "Drop Shipment"
 msgstr "Прямая поставка"
@@ -4030,6 +4039,9 @@ msgstr "Ошибка загрузки модели"
 
 msgid "Failed to upload thumbnail"
 msgstr "Не удалось загрузить миниатюру"
+
+msgid "Failed to upload thumbnail: {message}"
+msgstr "Не удалось загрузить миниатюру: {message}"
 
 msgid "Failure Mode"
 msgstr "Режим отказа"
@@ -6000,9 +6012,6 @@ msgstr "Датчик не выбран"
 
 msgid "No groups assigned"
 msgstr "Нет назначенных групп"
-
-msgid "No image"
-msgstr "Нет изображения"
 
 msgid "No Impact"
 msgstr "Без влияния"
@@ -9656,6 +9665,9 @@ msgstr "Загрузка {0}"
 
 msgid "Uploading {fileName}"
 msgstr "Загрузка {fileName}"
+
+msgid "Uploading…"
+msgstr "Загрузка…"
 
 msgid "Upon clicking Convert, parts will be created with the following internal part numbers:"
 msgstr "При нажатии кнопки «Преобразовать» будут созданы детали со следующими внутренними номерами деталей:"
