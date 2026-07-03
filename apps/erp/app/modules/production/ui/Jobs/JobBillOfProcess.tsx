@@ -1605,7 +1605,7 @@ const JobBillOfProcess = ({
                 };
                 setPickups((prev) => {
                   if (prev.some((p) => p.id === inserted.id)) return prev;
-                  return [item, ...prev];
+                  return [...prev, item];
                 });
                 setPickupCount((count) => count + 1);
                 void refreshInProgressTotals([inserted.jobOperationId]);

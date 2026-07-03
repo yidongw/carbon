@@ -280,7 +280,7 @@ export async function listProductionQuantityReportsForOperation(
     .select("*", { count: "exact" })
     .eq("jobOperationId", args.jobOperationId)
     .eq("companyId", args.companyId)
-    .order("createdAt", { ascending: false })
+    .order("createdAt", { ascending: true })
     .range(offset, offset + pageSize - 1);
 
   if (error) {
