@@ -1232,3 +1232,324 @@ msgstr "您于 {0} 打卡上班。您可以在下方编辑下班时间，或确�
 
 msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "您已打卡上班 {hoursElapsed} 小时。您是否忘记打卡下班了？"
+
+msgid " Enter a reason below to record the override."
+msgstr " 输入 Override 的原因。"
+
+msgid " The issue will go through with a warning."
+msgstr " 该问题将带有警告处理。"
+
+msgid "{0} - {1} Available"
+msgstr "{0} - {1} 可用"
+
+msgid "{0} - {1} Available of Batch {2}"
+msgstr "{0} - {1} 批次 {2} 可用"
+
+msgid "{0} available"
+msgstr "{0} 可用"
+
+msgid "{0} of Batch {1}"
+msgstr "批次{1}中的{0}"
+
+msgid "A new batch entity was created from a split:"
+msgstr "从拆分生成了一个新的批次实体："
+
+msgid "Actual Failure Mode"
+msgstr "实际失效模式"
+
+msgid "Add Batch"
+msgstr "添加批次"
+
+msgid "Add to Inventory"
+msgstr "添加到库存"
+
+msgid "Adjustment Type"
+msgstr "调整类型"
+
+msgid "are past their expiration date."
+msgstr "超过有效期。"
+
+msgid ""
+"Are you sure you want to close out this operation? This will end all active "
+"production events for this operation."
+msgstr "确定要结束此工序吗？这将终止此工序的所有活跃生产事件。"
+
+msgid "Are you sure you want to scrap this batch?"
+msgstr "您确定要报废此批次吗？"
+
+msgid "Batch {0} ({1} available)"
+msgstr "批次 {0}（{1} 可用）"
+
+msgid "Batch number is {0}"
+msgstr "批号是{0}"
+
+msgid "Batch number is not available"
+msgstr "批号不可用"
+
+msgid "Batch Split Occurred"
+msgstr "批次拆分发生"
+
+msgid "batches"
+msgstr "批次"
+
+msgid "Big section heading."
+msgstr "大标题"
+
+msgid "Bullet List"
+msgstr "项目列表"
+
+msgid "Close"
+msgstr "关闭"
+
+msgid "Close Anyways"
+msgstr "仍然关闭"
+
+msgid "Close Out"
+msgstr "结束"
+
+msgid "Close out {0}"
+msgstr "结束 {0}"
+
+msgid "Convert"
+msgstr "转换"
+
+msgid "Convert this tracked entity into a quantity of 1 of a new size."
+msgstr "将此跟踪实体转换为新尺寸的1个数量。"
+
+msgid "Convert to New {0}"
+msgstr "转换为新{0}"
+
+msgid "Create a list with numbering."
+msgstr "创建带编号的列表。"
+
+msgid "Create a simple bullet list."
+msgstr "创建简单项目符号列表。"
+
+msgid "Create Dispatch"
+msgstr "创建发货"
+
+msgid "End Time"
+msgstr "结束时间"
+
+msgid "Entity converted successfully"
+msgstr "实体转换成功"
+
+msgid "EXPIRED {0}"
+msgstr "过期 {0}"
+
+msgid "Expired stock selected"
+msgstr "过期库存已选"
+
+msgid "Expires"
+msgstr "过期"
+
+msgid "Expires {0}"
+msgstr "过期于 {0}"
+
+msgid "Failed to convert entity"
+msgstr "转换实体失败"
+
+msgid "File size too big (max 20MB)."
+msgstr "文件大小超出限制（最大20MB）。"
+
+msgid "File type {0} not supported."
+msgstr "文件类型{0}不支持。"
+
+msgid "File upload is not supported for external scars"
+msgstr "外部划伤不支持文件上传"
+
+msgid "Heading 1"
+msgstr "一级标题"
+
+msgid "Heading 2"
+msgstr "二级标题"
+
+msgid "Heading 3"
+msgstr "标题3"
+
+msgid "Image"
+msgstr "图片"
+
+msgid "Just start typing with plain text."
+msgstr "直接输入纯文本。"
+
+msgid "Maintenance Dispatch"
+msgstr "维护调度"
+
+msgid "Maintenance dispatch created"
+msgstr "维护调度创建"
+
+msgid "Maintenance for {0}"
+msgstr "维护{0}"
+
+msgid "Material"
+msgstr "材料"
+
+msgid "Material and parent ID are required to unconsume"
+msgstr "物料和父项ID必填才能反消费"
+
+msgid "Medium section heading."
+msgstr "中级标题。"
+
+msgid "New {0}"
+msgstr "新{0}"
+
+msgid "No consumed materials"
+msgstr "未消耗材料"
+
+msgid "No production logs"
+msgstr "无生产日志"
+
+msgid "Numbered List"
+msgstr "编号列表"
+
+msgid "of the selected"
+msgstr "所选的"
+
+msgid "Override required"
+msgstr "强制覆盖"
+
+msgid "Parent tracking ID is required for batch tracked items."
+msgstr "批跟踪ID对于批次跟踪项是必需的。"
+
+msgid "Parent tracking ID is required for serial tracked items."
+msgstr "父级跟踪ID对于序列追踪项是必需的。"
+
+msgid "Pickup suggestions:"
+msgstr "工序领料建议："
+
+msgid "Please select a batch to unconsume"
+msgstr "请选择一个批次进行反消费"
+
+msgid "Please select an item to issue."
+msgstr "请选择要发放的物品。"
+
+msgid "Please select at least one item to unconsume"
+msgstr "请选择至少一个项目进行反消费"
+
+msgid "Press '/' for commands"
+msgstr "按 '/' 查看命令"
+
+msgid "Print Label"
+msgstr "打印标签"
+
+msgid "process pickup"
+msgstr "工序领料"
+
+msgid "Process Pickups"
+msgstr "工序领料"
+
+msgid "production"
+msgstr "生产"
+
+msgid "Production"
+msgstr "生产"
+
+msgid "Production Logs"
+msgstr "生产日志"
+
+msgid "Pull from Inventory"
+msgstr "从库存中拉取"
+
+msgid "Quantity cannot exceed available quantity ({0})"
+msgstr "数量不得超过可用数量({0})"
+
+msgid "Reason for issuing expired stock"
+msgstr "发出过期库存的原因"
+
+msgid "Record Pickup"
+msgstr "记录工序领料"
+
+msgid "Record Quantity"
+msgstr "记录数量"
+
+msgid "remaining"
+msgstr "剩余"
+
+msgid "Remove Batch Number"
+msgstr "删除批次号"
+
+msgid "Remove Serial Number"
+msgstr "移除序列号"
+
+msgid "rework"
+msgstr "返工"
+
+msgid "Scan batch number"
+msgstr "扫描批次号"
+
+msgid "scrap"
+msgstr "废料"
+
+msgid "Select batch number"
+msgstr "选择批号"
+
+msgid "Select batch to unconsume"
+msgstr "选择批次进行反消费"
+
+msgid "Select Serial Number {0}"
+msgstr "选择序列号 {0}"
+
+msgid "Serial {0}"
+msgstr "序列号 {0}"
+
+msgid "Serial number is {0}"
+msgstr "序列号是{0}"
+
+msgid "Serial: {0}"
+msgstr "序号: {0}"
+
+msgid "serials"
+msgstr "序列号"
+
+msgid "Severity"
+msgstr "严重程度"
+
+msgid "Small section heading."
+msgstr "小标题"
+
+msgid "Start Time"
+msgstr "开始时间"
+
+msgid "Suspected Failure Mode"
+msgstr "疑似故障模式"
+
+msgid "Text"
+msgstr "文本"
+
+msgid ""
+"The remaining quantity will be removed from inventory and issued to the job"
+msgstr "剩余数量将从库存中移除并下发到工序"
+
+msgid "There are no consumed materials to unconsume."
+msgstr "没有可恢复的原材料。"
+
+msgid "To-do List"
+msgstr "待办事项列表"
+
+msgid "Total Process Pickups"
+msgstr "工序领料合计"
+
+msgid "Total Production"
+msgstr "总生产量"
+
+msgid "Total Rework"
+msgstr "总返工"
+
+msgid "Total Scrap"
+msgstr "总废料"
+
+msgid "Track tasks with a to-do list."
+msgstr "使用待办事项列表跟踪任务。"
+
+msgid "Tracking Labels"
+msgstr "追踪标签"
+
+msgid "Unconsume"
+msgstr "未消耗"
+
+msgid "Upload an image from your computer."
+msgstr "从计算机上传一张图片。"
+
+msgid "View Active Maintenance"
+msgstr "查看活跃维护"

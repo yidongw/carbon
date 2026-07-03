@@ -3051,7 +3051,7 @@ msgid "Drag to place on drawing"
 msgstr ""
 
 msgid "Drag to reorder"
-msgstr ""
+msgstr "拖动以重新排序"
 
 msgid "Drag to resize diagram and features"
 msgstr ""
@@ -4760,7 +4760,7 @@ msgid "Invite"
 msgstr "邀请"
 
 msgid "Invited"
-msgstr ""
+msgstr "已邀请"
 
 msgid "Invoice"
 msgstr "发票"
@@ -9824,7 +9824,7 @@ msgid "Uploading {fileName}"
 msgstr "上传{fileName}"
 
 msgid "Uploading…"
-msgstr ""
+msgstr "上传中…"
 
 msgid "Upon clicking Convert, parts will be created with the following internal part numbers:"
 msgstr "点击转换后，将会生成以下内部产品编号："
@@ -10369,3 +10369,909 @@ msgstr ""
 
 msgid "ZPL Label Preview"
 msgstr ""
+
+msgid "(Passing score: {0}%)"
+msgstr "(通过分数: {0}%))"
+
+msgid "{0} customers"
+msgstr "{0} 位客户"
+
+msgid "{0} invited you to join as {1}."
+msgstr "{0} 邀请您以 {1} 身份加入。"
+
+msgid "{0} jobs"
+msgstr "{0} 个任务"
+
+msgid "{0} of {1} correct"
+msgstr "{0}/{1}正确"
+
+msgid "{0} products"
+msgstr "{0} 产品"
+
+msgid "{0} suppliers"
+msgstr "{0} 供应商"
+
+msgid "{days} days ({formatted})"
+msgstr "{days} 天（{formatted}）"
+
+msgid "Accounts Payable Billing Address"
+msgstr "应付账款账单地址"
+
+msgid "Accounts Receivable Billing Address"
+msgstr "应收账款账单地址"
+
+msgid "Acknowledge & continue"
+msgstr "确认并继续"
+
+msgid "Add attachments"
+msgstr "添加附件"
+
+msgid "Add Notes"
+msgstr "添加备注"
+
+msgid "Add or edit notes for this line item"
+msgstr "为该行项添加或编辑备注"
+
+msgid "Add or remove quantity"
+msgstr "增加或减少数量"
+
+msgid "Add process completion"
+msgstr "添加工序完成"
+
+msgid "Add process pickup"
+msgstr "添加工序领料"
+
+msgid "Adjustment"
+msgstr "调整"
+
+msgid "Adjustment input mode"
+msgstr "调整输入模式"
+
+msgid "Already a Member"
+msgstr "您已是成员"
+
+msgid "Annual"
+msgstr "每年"
+
+msgid "Applicant"
+msgstr "申请人"
+
+msgid "Applications"
+msgstr "申请"
+
+msgid "Approved"
+msgstr "已批准"
+
+msgid "Are you sure you want to decline this quote?"
+msgstr "您确定要拒绝此报价吗？"
+
+msgid "Are you sure you want to delete {readableId}? This cannot be undone."
+msgstr "您确定要删除{readableId}吗？此操作无法撤销。"
+
+msgid ""
+"Are you sure you want to delete this process completion? This action cannot "
+"be undone."
+msgstr "您确定要删除这条工序完成记录吗？此操作无法撤销。"
+
+msgid ""
+"Are you sure you want to delete this process pickup? This action cannot be "
+"undone."
+msgstr "您确定要删除这条工序领料吗？此操作无法撤销。"
+
+msgid "Are you sure you want to submit the updated pricing?"
+msgstr "您确定要提交更新后的价格吗？"
+
+msgid "Ask anything"
+msgstr "问任何问题"
+
+msgid "Authorize"
+msgstr "授权"
+
+msgid "Authorize Application"
+msgstr "授权应用程序"
+
+msgid "Back to home"
+msgstr "返回首页"
+
+msgid "Big section heading."
+msgstr "大标题"
+
+msgid "Building your demo — {0} so far…"
+msgstr "正在构建您的演示——已完成 {0}…"
+
+msgid "Bullet List"
+msgstr "项目列表"
+
+msgid ""
+"By requesting access, you agree to the <0>Terms of Service</0> and "
+"<1>Privacy Policy</1>."
+msgstr "申请访问即表示您同意<0>服务条款</0>和<1>隐私政策</1>。"
+
+msgid "Close operation"
+msgstr "关闭操作"
+
+msgid "Collapse row"
+msgstr "折叠行"
+
+msgid "Complete Training"
+msgstr "完成培训"
+
+msgid "Configure Materials"
+msgstr "配置材料"
+
+msgid "Configure the content displayed on job traveler PDFs."
+msgstr "配置工单流转卡PDF上显示的内容。"
+
+msgid ""
+"Configure when purchased item prices should be updated from supplier "
+"transactions."
+msgstr "配置何时应根据供应商交易更新采购物品的价格。"
+
+msgid ""
+"Congratulations! You have successfully completed this training. Your "
+"completion has been recorded."
+msgstr "恭喜！您已成功完成此培训。已完成记录。"
+
+msgid "Connect"
+msgstr "绑定"
+
+msgid ""
+"Connect Carbon to your accounting, project, and CAD tools and much more."
+msgstr "将 Carbon 连接到您的会计、项目和 CAD 工具等更多功能。"
+
+msgid "Copy Link"
+msgstr "复制链接"
+
+msgid "Copy response"
+msgstr "复制回复"
+
+msgid "Correct answer:"
+msgstr "正确答案："
+
+msgid "Couldn't load the WeChat QR code"
+msgstr "无法加载微信二维码"
+
+msgid "Create a list with numbering."
+msgstr "创建带编号的列表。"
+
+msgid "Create a simple bullet list."
+msgstr "创建简单项目符号列表。"
+
+msgid "Create Invite Link"
+msgstr "创建邀请链接"
+
+msgid "Create Link"
+msgstr "创建链接"
+
+msgid "Create Process Completion"
+msgstr "新建工序完成"
+
+msgid "Critical"
+msgstr "严重"
+
+msgid "Daily"
+msgstr "每日"
+
+msgid "Decline Quote"
+msgstr "拒绝报价"
+
+msgid "Default Location"
+msgstr "默认位置"
+
+msgid ""
+"Define the default size of the product label. Used for tracking items in "
+"inventory."
+msgstr "定义产品的标签默认尺寸。用于库存中的物品追踪。"
+
+msgid "Define the terms and conditions for purchase orders"
+msgstr "定义采购订单的条款和条件"
+
+msgid "Define the terms and conditions for quotes and sales orders"
+msgstr "定义报价和销售订单的条款与条件"
+
+msgid "Delete chat"
+msgstr "删除聊天"
+
+msgid "Delete Process Completion"
+msgstr "删除工序完成"
+
+msgid "Delete Process Pickup"
+msgstr "删除工序领料"
+
+msgid "Delete Template"
+msgstr "删除模板"
+
+msgid "Delta"
+msgstr "增减"
+
+msgid "Do you want to authorize this application?"
+msgstr "您确定要授权此应用程序吗？"
+
+msgid "Down"
+msgstr "停机"
+
+msgid "Drag and drop an image here, or click to select"
+msgstr "将图片拖放到此处，或点击选择"
+
+msgid "Drag and drop or click to upload"
+msgstr "拖放或点击上传"
+
+msgid "Drop image to upload"
+msgstr "拖放图片以上传"
+
+msgid "Edit Notes"
+msgstr "编辑备注"
+
+msgid "Edit operation"
+msgstr "编辑操作"
+
+msgid "Edit Process Completion"
+msgstr "编辑工序完成"
+
+msgid "Employed"
+msgstr "在职"
+
+msgid "Enable to display names with the family name first."
+msgstr "启用后，姓名将以姓氏在前的格式显示。"
+
+msgid "Enable to include work instructions on job traveler PDFs."
+msgstr "启用后在工单流转卡PDF中包含工作指令。"
+
+msgid "Enable to show part thumbnails on purchase order PDFs."
+msgstr "启用在采购订单PDF中显示产品缩略图。"
+
+msgid "Enable to show part thumbnails on sales PDFs."
+msgstr "启用在销售PDF中显示产品缩略图。"
+
+msgid ""
+"Enforce constraints on receipts, shipments, transfers and job operations for"
+" this item."
+msgstr "对此物品的收货、发货、转移和工作工序强制执行约束。"
+
+msgid ""
+"Enforce per-item validation across receipts, shipments, transfers and "
+"adjustments."
+msgstr "在收货、发货、转移和调整中强制执行每个物品的验证。"
+
+msgid "Enter a positive number to add or a negative number to subtract."
+msgstr "输入正数添加，输入负数减少。"
+
+msgid "Enter an adjustment before saving."
+msgstr "保存前请输入调整值。"
+
+msgid "Enter the target quantity for each size."
+msgstr "输入每个尺寸的目标数量。"
+
+msgid "Enter your answer..."
+msgstr "输入您的答案..."
+
+msgid "Enter your email"
+msgstr "输入您的电子邮件"
+
+msgid "Enter your name"
+msgstr "输入您的姓名"
+
+msgid "Errors"
+msgstr "错误"
+
+msgid "Estimated duration: {0}"
+msgstr "预计时长：{0}"
+
+msgid "Expand row"
+msgstr "展开行"
+
+msgid "Expiration"
+msgstr "过期时间"
+
+msgid "Explore the demo"
+msgstr "探索演示版"
+
+msgid "Extension requested"
+msgstr "延长已请求"
+
+msgid "Failed"
+msgstr "失败"
+
+msgid "Failed to link WeChat"
+msgstr "绑定微信失败"
+
+msgid "Failed to update time"
+msgstr "更新时间失败"
+
+msgid "Failed to upload thumbnail: {message}"
+msgstr "上传缩略图失败：{message}"
+
+msgid "Family name is shown first"
+msgstr "姓氏在前显示"
+
+msgid "File type {0} not supported."
+msgstr "文件类型{0}不支持。"
+
+msgid ""
+"Finished {complete} of {target} units, {pickup} in progress from process "
+"pickups, {unassigned} unassigned"
+msgstr "已完成 {complete}/{target} 个单位，工序领料 {pickup}，未分配 {unassigned}"
+
+msgid "Given name is shown first"
+msgstr "名字在前显示"
+
+msgid "Go to App"
+msgstr "进入应用"
+
+msgid "Heading 1"
+msgstr "一级标题"
+
+msgid "Heading 2"
+msgstr "二级标题"
+
+msgid "Heading 3"
+msgstr "标题3"
+
+msgid "High"
+msgstr "高"
+
+msgid "Icons"
+msgstr "图标"
+
+msgid "ID Number"
+msgstr "编号"
+
+msgid "Image"
+msgstr "图片"
+
+msgid "Impact"
+msgstr "有影响"
+
+msgid "Inspections"
+msgstr "检验"
+
+msgid "Invalid Invite Link"
+msgstr "无效的邀请链接"
+
+msgid "Invite Link"
+msgstr "邀请链接"
+
+msgid "Invite Link Expired"
+msgstr "邀请链接已过期"
+
+msgid "Invite Links"
+msgstr "邀请链接"
+
+msgid "Invited By"
+msgstr "邀请人"
+
+msgid "Inviter"
+msgstr "邀请者"
+
+msgid "Issue scoped API keys for programmatic access to your Carbon data."
+msgstr "签发范围受限的 API 密钥，用于以编程方式访问您的 Carbon 数据。"
+
+msgid "Item Rules"
+msgstr "物品规则"
+
+msgid "Job Traveler"
+msgstr "工单流转卡"
+
+msgid "Job traveler PDFs include work instructions."
+msgstr "工单流转卡PDF包含工作指导书。"
+
+msgid "Just start typing with plain text."
+msgstr "直接输入纯文本。"
+
+msgid "Label (optional)"
+msgstr "标签（可选）"
+
+msgid "Lead Time Updates"
+msgstr "交货期更新"
+
+msgid "Load more process completions"
+msgstr "加载更多工序完成"
+
+msgid "Load more process pickups"
+msgstr "加载更多工序领料"
+
+msgid "Loader"
+msgstr "载货台"
+
+msgid "Login methods"
+msgstr "登录方式"
+
+msgid "Low"
+msgstr "低"
+
+msgid "Medium"
+msgstr "中"
+
+msgid "Medium section heading."
+msgstr "中级标题。"
+
+msgid "Monthly"
+msgstr "每月"
+
+msgid "Name Display"
+msgstr "姓名显示"
+
+msgid "Names appear as family name followed by given name across the app."
+msgstr "应用中的人员姓名将按“姓 名”格式显示。"
+
+msgid "Negative feedback"
+msgstr "负面反馈"
+
+msgid "New chat"
+msgstr "新消息"
+
+msgid "New total"
+msgstr "新总数"
+
+msgid "Next Question"
+msgstr "下一个问题"
+
+msgid "No changes yet."
+msgstr "暂无更改。"
+
+msgid "No chat history"
+msgstr "没有聊天记录"
+
+msgid "No chats found"
+msgstr "未找到聊天记录"
+
+msgid "No expiration"
+msgstr "永不过期"
+
+msgid "No Impact"
+msgstr "无影响"
+
+msgid "No production logs"
+msgstr "无生产日志"
+
+msgid "No production reported yet."
+msgstr "尚未报告生产情况。"
+
+msgid "No quantity recorded yet."
+msgstr "尚未记录数量。"
+
+msgid "No training content available. Please proceed to the questions."
+msgstr "暂无培训内容，请继续答题。"
+
+msgid "Non-Conformance"
+msgstr "不合格"
+
+msgid "Numbered List"
+msgstr "编号列表"
+
+msgid "OEM Required"
+msgstr "需要原厂支持"
+
+msgid "Open chat history"
+msgstr "打开聊天历史记录"
+
+msgid "Operator Performed"
+msgstr "操作员执行"
+
+msgid "Part thumbnails are shown on purchase order PDFs."
+msgstr "采购订单PDF中显示产品缩略图。"
+
+msgid "Part thumbnails are shown on sales PDFs."
+msgstr "产品缩略图显示在销售PDF中。"
+
+msgid "Passed"
+msgstr "通过"
+
+msgid "PDFs"
+msgstr "PDF文件"
+
+msgid ""
+"Pick an existing rule from the library or create a new one to start "
+"enforcing constraints on this item."
+msgstr "从库中选择现有规则，或创建新规则，以开始对该物品施加约束。"
+
+msgid "Please fill the columns marked with the <0/> icon to provide pricing"
+msgstr "请填写带有<0/>图标标记的列以提供报价"
+
+msgid "Positive feedback"
+msgstr "正面反馈"
+
+msgid "Press '/' for commands"
+msgstr "按 '/' 查看命令"
+
+msgid "Preventive"
+msgstr "预防性"
+
+msgid "Preview PDF"
+msgstr "预览 PDF"
+
+msgid "Process Completion"
+msgstr "工序完成"
+
+msgid "Process Completions"
+msgstr "工序完成"
+
+msgid "Process Pickup"
+msgstr "工序领料"
+
+msgid "Process Pickup by {0}"
+msgstr "工序领料：{0}"
+
+msgid "Process pickup updated"
+msgstr "工艺取料更新"
+
+msgid "Process Pickups"
+msgstr "工序领料"
+
+msgid "Product Label Size"
+msgstr "产品标签尺寸"
+
+msgid ""
+"Production already reported per operation. Click a number to pull it into "
+"the editor above."
+msgstr "工序已上报生产数量。点击数字将其传入上方编辑器。"
+
+msgid "Production Logs"
+msgstr "生产日志"
+
+msgid "Purchase Price Updates"
+msgstr "采购价格更新"
+
+msgid "Purchasing Terms & Conditions"
+msgstr "采购条款与条件"
+
+msgid "Quantity must be greater than zero"
+msgstr "数量必须大于零"
+
+msgid "Quarterly"
+msgstr "每季度"
+
+msgid "Question {0} of {1}"
+msgstr "第{0}题/项共{1}题/项"
+
+msgid "Question {0} of {totalQuestions}"
+msgstr "第{0}题/共{totalQuestions}题"
+
+msgid "Question Review"
+msgstr "问题审核"
+
+msgid "Reactive"
+msgstr "响应性"
+
+msgid "remaining"
+msgstr "剩余"
+
+msgid "Remove attachment"
+msgstr "移除附件"
+
+msgid "Remove negative feedback"
+msgstr "移除负面反馈"
+
+msgid "Remove positive feedback"
+msgstr "移除正面反馈"
+
+msgid "Reported by process"
+msgstr "由工序上报"
+
+msgid "Reporter"
+msgstr "报告人"
+
+msgid "Request extension"
+msgstr "请求延期"
+
+msgid "Request Submitted"
+msgstr "申请已提交"
+
+msgid "Request to Join"
+msgstr "申请加入"
+
+msgid "Retry response"
+msgstr "重试响应"
+
+msgid "Retry Training"
+msgstr "重试培训"
+
+msgid "Revoke Link"
+msgstr "撤销链接"
+
+msgid "Revoked"
+msgstr "已撤销"
+
+msgid "Risk Register"
+msgstr "风险登记册"
+
+msgid "Rule Violation"
+msgstr "规则违规"
+
+msgid "Sales Terms & Conditions"
+msgstr "销售条款与条件"
+
+msgid "Save Notes"
+msgstr "保存备注"
+
+msgid "Scan a label or search by ID, serial number, or batch number."
+msgstr "扫描标签或按ID、序列号或批号搜索。"
+
+msgid "Scan with WeChat to connect"
+msgstr "使用微信扫码绑定"
+
+msgid "Scheduled"
+msgstr "计划"
+
+msgid "Search history"
+msgstr "搜索历史"
+
+msgid "Search the web"
+msgstr "搜索网络"
+
+msgid "Select a match..."
+msgstr "选择一个匹配项..."
+
+msgid "Select date *"
+msgstr "选择日期 *"
+
+msgid "Select to provide pricing"
+msgstr "选择以提供报价"
+
+msgid "Send code"
+msgstr "发送验证码"
+
+msgid "Set Expiration"
+msgstr "设置过期时间"
+
+msgid "Setting up your demo data…"
+msgstr "设置您的演示数据…"
+
+msgid ""
+"Show family name before given name, as used in Chinese and other East Asian "
+"locales."
+msgstr "将姓氏显示在名字之前，适用于中文等东亚语言习惯。"
+
+msgid "Show part thumbnails on purchase orders."
+msgstr "在采购订单中显示产品缩略图。"
+
+msgid ""
+"Show part thumbnails on quotes, sales orders, sales invoices, and shipments."
+msgstr "在报价、销售订单、销售发票和发货中显示产品缩略图。"
+
+msgid "Sign In to Request Access"
+msgstr "登录以申请访问"
+
+msgid "Sign in with Phone"
+msgstr "使用手机号登录"
+
+msgid "Small section heading."
+msgstr "小节标题"
+
+msgid "Sources"
+msgstr "来源"
+
+msgid "Start Questions"
+msgstr "开始提问"
+
+msgid ""
+"Statistical acceptance failed, so the entire lot is considered non-"
+"conforming (ISO 9001:2015 §8.7). All {0} entities — {passes} sampled "
+"pass(es), {fails} failure(s), and {1} un-inspected — will be marked "
+"Rejected. An NCR will be opened automatically for MRB disposition."
+msgstr ""
+"统计验收失败，因此整个批次被视为不合格（ISO 9001:2015 "
+"§8.7）。所有{0}个实体——{passes}个抽检通过，{fails}个失败，以及{1}个未检验——将被标记为拒收。将自动打开一份NCR进行MRB处理。"
+
+msgid "Submit"
+msgstr "提交"
+
+msgid "Submit Quote"
+msgstr "提交报价"
+
+msgid "Submit Training"
+msgstr "提交培训"
+
+msgid "Successfully invited employee"
+msgstr "已成功邀请员工"
+
+msgid "Suggested Actions"
+msgstr "建议行动"
+
+msgid "Support Required"
+msgstr "需要支持"
+
+msgid "Switch to your company"
+msgstr "切换到您的公司"
+
+msgid "That WeChat is already linked to another account"
+msgstr "该微信已绑定到其他账号"
+
+msgid ""
+"The billing address used on purchase orders and other purchasing documents."
+msgstr "用于采购订单和其他采购文件的发票地址。"
+
+msgid ""
+"The billing address used on quotes, sales orders, invoices, and other sales "
+"documents."
+msgstr "用于报价、销售订单、发票及其他销售文件的账单地址。"
+
+msgid "The invite link will expire on the selected date"
+msgstr "邀请链接将在所选日期过期"
+
+msgid ""
+"The lot will still be rejected, but an NCR cannot be auto-created until at "
+"least one Issue Type is configured."
+msgstr "该批料仍会被拒收，但在配置至少一种问题类型之前，无法自动创建NCR。"
+
+msgid "This adjustment would take a quantity below zero."
+msgstr "此调整将涉及一个负数量。"
+
+msgid ""
+"This invite link is invalid or has expired. Please contact the person who "
+"shared it with you."
+msgstr "此邀请链接无效或已过期。请联系分享此链接的人员。"
+
+msgid "This invite link is no longer accepting new requests."
+msgstr "此邀请链接已不再接受新的申请。"
+
+msgid ""
+"This permanently deletes the quantity report and its entire history. This "
+"action cannot be undone."
+msgstr "这将永久删除该数量报告及其全部历史记录。此操作无法撤销。"
+
+msgid "this process pickup"
+msgstr "此工序拾取"
+
+msgid "this quantity report"
+msgstr "此数量报告"
+
+msgid "This training has been marked as completed for your records."
+msgstr "此培训已标记为已完成。"
+
+msgid "Thumbnails are included"
+msgstr "缩略图已包含"
+
+msgid "Thumbnails are not included"
+msgstr "缩略图未包含"
+
+msgid "To-do List"
+msgstr "待办事项列表"
+
+msgid "Todo"
+msgstr "待办"
+
+msgid "Tolerance: +/- {0}"
+msgstr "公差：±{0}"
+
+msgid "Total Process Pickups"
+msgstr "工序领料合计"
+
+msgid "Total Production"
+msgstr "总生产量"
+
+msgid "Total Rework"
+msgstr "总返工量"
+
+msgid "Total Scrap"
+msgstr "总报废量"
+
+msgid "Track tasks with a to-do list."
+msgstr "使用待办事项列表跟踪任务。"
+
+msgid "Tracking Labels"
+msgstr "追踪标签"
+
+msgid "Training Complete"
+msgstr "培训完成"
+
+msgid "Try the demo"
+msgstr "试用演示"
+
+msgid ""
+"Unfortunately, you did not pass this training. You need at least {0}% to "
+"pass. Please review the material and try again."
+msgstr "不幸的是，您没有通过这次培训。您需要至少{0}%才能通过。请复习材料后再试一次。"
+
+msgid "Unknown question type"
+msgstr "未知问题类型"
+
+msgid "Update Expiration"
+msgstr "更新过期时间"
+
+msgid "Update prices on"
+msgstr "更新价格于"
+
+msgid "Upgrade to unlock item rules"
+msgstr "升级以解锁物品规则"
+
+msgid "Upload an image from your computer."
+msgstr "从计算机上传一张图片。"
+
+msgid "Use a different phone number"
+msgstr "使用其他手机号"
+
+msgid "Use another sign-in method"
+msgstr "使用其他方式登录"
+
+msgid "Verification code"
+msgstr "验证码"
+
+msgid "Verify & link"
+msgstr "验证并绑定"
+
+msgid "Verify your phone"
+msgstr "验证您的手机号"
+
+msgid "View configuration parameters"
+msgstr "查看配置参数"
+
+msgid "View configuration quantities"
+msgstr "查看配置数量"
+
+msgid "View job"
+msgstr "查看工作"
+
+msgid "Voice"
+msgstr "语音"
+
+msgid "Waiting"
+msgstr "等待中"
+
+msgid "Warnings"
+msgstr "警告"
+
+msgid "Ways you can sign in. Only you can change these."
+msgstr "您的登录方式。只有您本人可以更改。"
+
+msgid "We've sent a code to {sentTo}"
+msgstr "我们已向 {sentTo} 发送验证码"
+
+msgid "We've sent a verification code to {phone}"
+msgstr "我们已向 {phone} 发送验证码"
+
+msgid "Web Search"
+msgstr "网络搜索"
+
+msgid "WeChat is unavailable right now"
+msgstr "微信暂时不可用"
+
+msgid "WeChat linked"
+msgstr "微信已关联"
+
+msgid "Weekly"
+msgstr "每周"
+
+msgid "Work instructions are included"
+msgstr "工作指导包括"
+
+msgid "Work instructions are not included"
+msgstr "工作指示未包含"
+
+msgid "You already have access to {0}."
+msgstr "您已拥有 {0} 的访问权限。"
+
+msgid ""
+"You completed {leftoverQuantity} more {0} than the ordered quantity of {1}. "
+"What would you like to do with the extra parts?"
+msgstr "您完成的数量比订单数量{1}多出{leftoverQuantity}个{0}。您想如何处理多余的产品？"
+
+msgid "You're in the demo company — {days} days left."
+msgstr "您在演示公司——{days}天后结束。"
+
+msgid "You're in the demo company — 1 day left."
+msgstr "您在演示公司——还剩1天。"
+
+msgid "You're in the demo company — it has ended."
+msgstr "您在演示公司——演示已结束。"
+
+msgid "You're in your company."
+msgstr "您在您的公司。"
+
+msgid "Your answer:"
+msgstr "您的回答："
+
+msgid "Your demo is ready — explore every module!"
+msgstr "您的演示已准备好——探索每个模块！"
+
+msgid "Your request has been submitted."
+msgstr "您的申请已提交。"
+
+msgid ""
+"Your request to join {0} has already been submitted and is pending review."
+msgstr "您加入 {0} 的申请已提交，正在等待审核。"
+
+msgid ""
+"Your request to join {companyName} has been submitted. An admin will review "
+"your application soon."
+msgstr "您加入 {companyName} 的申请已提交。管理员将尽快审核您的申请。"

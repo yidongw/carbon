@@ -3051,7 +3051,7 @@ msgid "Drag to place on drawing"
 msgstr ""
 
 msgid "Drag to reorder"
-msgstr ""
+msgstr "Перетяните для изменения порядка"
 
 msgid "Drag to resize diagram and features"
 msgstr ""
@@ -4760,7 +4760,7 @@ msgid "Invite"
 msgstr "Пригласить"
 
 msgid "Invited"
-msgstr ""
+msgstr "Приглашён"
 
 msgid "Invoice"
 msgstr "Счет"
@@ -9824,7 +9824,7 @@ msgid "Uploading {fileName}"
 msgstr "Загрузка {fileName}"
 
 msgid "Uploading…"
-msgstr ""
+msgstr "Загрузка…"
 
 msgid "Upon clicking Convert, parts will be created with the following internal part numbers:"
 msgstr "При нажатии кнопки «Преобразовать» будут созданы детали со следующими внутренними номерами деталей:"
@@ -10369,3 +10369,971 @@ msgstr ""
 
 msgid "ZPL Label Preview"
 msgstr ""
+
+msgid "(Passing score: {0}%)"
+msgstr "(Процент зачтения: {0}%))"
+
+msgid "{0} customers"
+msgstr "{0} клиентов"
+
+msgid "{0} invited you to join as {1}."
+msgstr "{0} пригласил вас присоединиться как {1}."
+
+msgid "{0} jobs"
+msgstr "{0} работы"
+
+msgid "{0} of {1} correct"
+msgstr "{0} из {1} верных"
+
+msgid "{0} products"
+msgstr "{0} товаров"
+
+msgid "{0} suppliers"
+msgstr "{0} поставщика"
+
+msgid "{days} days ({formatted})"
+msgstr "{days} дней ({formatted})"
+
+msgid "Accounts Payable Billing Address"
+msgstr "Адрес выставления счетов кредиторской задолженности"
+
+msgid "Accounts Receivable Billing Address"
+msgstr "Адрес выставления счетов дебиторской задолженности"
+
+msgid "Acknowledge & continue"
+msgstr "Поняли и продолжить"
+
+msgid "Add attachments"
+msgstr "Добавить вложения"
+
+msgid "Add Notes"
+msgstr "Добавить заметки"
+
+msgid "Add or edit notes for this line item"
+msgstr "Добавить или отредактировать заметки для этой позиции"
+
+msgid "Add or remove quantity"
+msgstr "Добавить или удалить количество"
+
+msgid "Add process completion"
+msgstr "Добавить завершение процесса"
+
+msgid "Add process pickup"
+msgstr "Добавить выдачу в процесс"
+
+msgid "Adjustment"
+msgstr "Настройка"
+
+msgid "Adjustment input mode"
+msgstr "Режим ввода корректировки"
+
+msgid "Already a Member"
+msgstr "Уже есть аккаунт"
+
+msgid "Annual"
+msgstr "Ежегодно"
+
+msgid "Applicant"
+msgstr "Абитуриент"
+
+msgid "Applications"
+msgstr "Приложения"
+
+msgid "Approved"
+msgstr "Утвержден"
+
+msgid "Are you sure you want to decline this quote?"
+msgstr "Вы уверены, что хотите отклонить это предложение?"
+
+msgid "Are you sure you want to delete {readableId}? This cannot be undone."
+msgstr ""
+"Вы уверены, что хотите удалить {readableId}? Это действие невозможно "
+"отменить."
+
+msgid ""
+"Are you sure you want to delete this process completion? This action cannot "
+"be undone."
+msgstr ""
+"Вы действительно хотите удалить завершение процесса? Эта операция не может "
+"быть отменена."
+
+msgid ""
+"Are you sure you want to delete this process pickup? This action cannot be "
+"undone."
+msgstr ""
+"Вы действительно хотите удалить этот процессный приемку? Эта операция не "
+"может быть отменена."
+
+msgid "Are you sure you want to submit the updated pricing?"
+msgstr "Вы уверены, что хотите отправить обновленные цены?"
+
+msgid "Ask anything"
+msgstr "Спросите что угодно"
+
+msgid "Authorize"
+msgstr "Авторизоваться"
+
+msgid "Authorize Application"
+msgstr "Авторизовать приложение"
+
+msgid "Back to home"
+msgstr "Вернуться на главную"
+
+msgid "Big section heading."
+msgstr "Большой разделовой заголовок"
+
+msgid "Building your demo — {0} so far…"
+msgstr "Создание вашей демонстрации — {0} уже выполнено…"
+
+msgid "Bullet List"
+msgstr "Список пули"
+
+msgid ""
+"By requesting access, you agree to the <0>Terms of Service</0> and "
+"<1>Privacy Policy</1>."
+msgstr ""
+"По запросу доступа вы соглашаетесь с <0>Условиями использования</0> и "
+"<1>Политикой конфиденциальности</1>."
+
+msgid "Close operation"
+msgstr "Закрыть операцию"
+
+msgid "Collapse row"
+msgstr "Свернуть строку"
+
+msgid "Complete Training"
+msgstr "Завершить обучение"
+
+msgid "Configure Materials"
+msgstr "Настройка материалов"
+
+msgid "Configure the content displayed on job traveler PDFs."
+msgstr ""
+"Настройте содержимое, отображаемое в PDF-файлах путевого листа работы."
+
+msgid ""
+"Configure when purchased item prices should be updated from supplier "
+"transactions."
+msgstr ""
+"Настройте, когда цены приобретаемых товаров должны обновляться на основе "
+"транзакций поставщика."
+
+msgid ""
+"Congratulations! You have successfully completed this training. Your "
+"completion has been recorded."
+msgstr ""
+"Поздравляем! Вы успешно завершили эту тренинговую программу. Ваше завершение"
+" было зарегистрировано."
+
+msgid "Connect"
+msgstr "Подключить"
+
+msgid ""
+"Connect Carbon to your accounting, project, and CAD tools and much more."
+msgstr ""
+"Соедините углерод с вашими учетными записями, проектами и программами CAD и "
+"многое другое."
+
+msgid "Copy Link"
+msgstr "Копировать ссылку"
+
+msgid "Copy response"
+msgstr "Копировать ответ"
+
+msgid "Correct answer:"
+msgstr "Правильный ответ:"
+
+msgid "Couldn't load the WeChat QR code"
+msgstr "Не удалось загрузить QR-код WeChat"
+
+msgid "Create a list with numbering."
+msgstr "Создать список с нумерацией."
+
+msgid "Create a simple bullet list."
+msgstr "Создать простой список маркерами"
+
+msgid "Create Invite Link"
+msgstr "Создать ссылку на приглашение"
+
+msgid "Create Link"
+msgstr "Создать ссылку"
+
+msgid "Create Process Completion"
+msgstr "Создать завершение процесса"
+
+msgid "Critical"
+msgstr "Критический"
+
+msgid "Daily"
+msgstr "Ежедневно"
+
+msgid "Decline Quote"
+msgstr "Отказаться от предложения"
+
+msgid "Default Location"
+msgstr "Стандартное местоположение"
+
+msgid ""
+"Define the default size of the product label. Used for tracking items in "
+"inventory."
+msgstr ""
+"Определите размер этикетки продукта по умолчанию. Используется для "
+"отслеживания товаров в инвентаре."
+
+msgid "Define the terms and conditions for purchase orders"
+msgstr "Определите условия и положения для заказов на покупку"
+
+msgid "Define the terms and conditions for quotes and sales orders"
+msgstr "Определите условия и положения для предложений и заказов на продажу"
+
+msgid "Delete chat"
+msgstr "Удалить чат"
+
+msgid "Delete Process Completion"
+msgstr "Удалить завершение процесса"
+
+msgid "Delete Process Pickup"
+msgstr "Удалить процесс загрузки"
+
+msgid "Delete Template"
+msgstr "Удалить шаблон"
+
+msgid "Delta"
+msgstr "Дельта"
+
+msgid "Do you want to authorize this application?"
+msgstr "Вы хотите авторизовать эту программу?"
+
+msgid "Down"
+msgstr "Простой"
+
+msgid "Drag and drop an image here, or click to select"
+msgstr "Перетащите изображение сюда или нажмите, чтобы выбрать"
+
+msgid "Drag and drop or click to upload"
+msgstr "Перетащите или нажмите для загрузки"
+
+msgid "Drop image to upload"
+msgstr "Отпустите изображение для загрузки"
+
+msgid "Edit Notes"
+msgstr "Редактировать заметки"
+
+msgid "Edit operation"
+msgstr "Редактировать операцию"
+
+msgid "Edit Process Completion"
+msgstr "Редактирование завершения процесса"
+
+msgid "Employed"
+msgstr "Работает"
+
+msgid "Enable to display names with the family name first."
+msgstr "Включить отображение имён с фамилии в начале."
+
+msgid "Enable to include work instructions on job traveler PDFs."
+msgstr ""
+"Включите, чтобы добавить рабочие инструкции в PDF-файлы маршрутных листов."
+
+msgid "Enable to show part thumbnails on purchase order PDFs."
+msgstr ""
+"Включите, чтобы показывать миниатюры деталей в PDF-файлах заказов на "
+"покупку."
+
+msgid "Enable to show part thumbnails on sales PDFs."
+msgstr "Включите, чтобы показывать миниатюры деталей в PDF-файлах продаж."
+
+msgid ""
+"Enforce constraints on receipts, shipments, transfers and job operations for"
+" this item."
+msgstr ""
+"Установите ограничения на приёмы, отправления, передачи и операции по работе"
+" для этого предмета."
+
+msgid ""
+"Enforce per-item validation across receipts, shipments, transfers and "
+"adjustments."
+msgstr ""
+"Давайте проверяем каждый предмет по отдельности во всех приёмах, отправках, "
+"передачах и ajustациях."
+
+msgid "Enter a positive number to add or a negative number to subtract."
+msgstr ""
+"Введите положительное число для добавления или отрицательное число для "
+"вычитания."
+
+msgid "Enter an adjustment before saving."
+msgstr "Введите корректировку перед сохранением."
+
+msgid "Enter the target quantity for each size."
+msgstr "Введите количество для каждой размерности."
+
+msgid "Enter your answer..."
+msgstr "Введите ваш ответ..."
+
+msgid "Enter your email"
+msgstr "Введите ваш e-mail"
+
+msgid "Enter your name"
+msgstr "Введите ваше имя"
+
+msgid "Errors"
+msgstr "Ошибки"
+
+msgid "Estimated duration: {0}"
+msgstr "Ожидаемое время: {0}"
+
+msgid "Expand row"
+msgstr "Развернуть строку"
+
+msgid "Expiration"
+msgstr "Срок годности"
+
+msgid "Explore the demo"
+msgstr "Обзор демонстрационной версии"
+
+msgid "Extension requested"
+msgstr "Запрошенное расширение"
+
+msgid "Failed"
+msgstr "Не удалось"
+
+msgid "Failed to link WeChat"
+msgstr "Не удалось привязать WeChat"
+
+msgid "Failed to update time"
+msgstr "Не удалось обновить время"
+
+msgid "Failed to upload thumbnail: {message}"
+msgstr "Не удалось загрузить миниатюру: {message}"
+
+msgid "Family name is shown first"
+msgstr "Фамилия отображается первым"
+
+msgid "File type {0} not supported."
+msgstr "Тип файла {0} не поддерживается."
+
+msgid ""
+"Finished {complete} of {target} units, {pickup} in progress from process "
+"pickups, {unassigned} unassigned"
+msgstr ""
+"Завершено {complete} из {target} единиц, {pickup} в процессе извлечения из "
+"пикапов, {unassigned} не присвоены"
+
+msgid "Given name is shown first"
+msgstr "Имя отображается первым"
+
+msgid "Go to App"
+msgstr "Перейти к приложению"
+
+msgid "Heading 1"
+msgstr "Заголовок 1"
+
+msgid "Heading 2"
+msgstr "Заголовок 2"
+
+msgid "Heading 3"
+msgstr "Заголовок 3"
+
+msgid "High"
+msgstr "Высокий"
+
+msgid "Icons"
+msgstr "Иконки"
+
+msgid "ID Number"
+msgstr "Номер ID"
+
+msgid "Image"
+msgstr "Изображение"
+
+msgid "Impact"
+msgstr "Влияние"
+
+msgid "Inspections"
+msgstr "Проверки"
+
+msgid "Invalid Invite Link"
+msgstr "Недействительная приглашения ссылка"
+
+msgid "Invite Link"
+msgstr "Ссылка для приглашения"
+
+msgid "Invite Link Expired"
+msgstr "Ссылка на приглашение истекла"
+
+msgid "Invite Links"
+msgstr "Ссылки для приглашения"
+
+msgid "Invited By"
+msgstr "Приглашенный bởi"
+
+msgid "Inviter"
+msgstr "Приглашать"
+
+msgid "Issue scoped API keys for programmatic access to your Carbon data."
+msgstr ""
+"Использовать API ключи на уровне проблемы для программного доступа к данным "
+"Карбона."
+
+msgid "Item Rules"
+msgstr "Рулы предмета"
+
+msgid "Job Traveler"
+msgstr "Путевой лист работы"
+
+msgid "Job traveler PDFs include work instructions."
+msgstr "PDF-документы маршрутного листа включают рабочие инструкции."
+
+msgid "Just start typing with plain text."
+msgstr "Просто начните печатать обычным текстом."
+
+msgid "Label (optional)"
+msgstr "Опционально: Название<label>"
+
+msgid "Lead Time Updates"
+msgstr "Обновления сроков поставки"
+
+msgid "Load more process completions"
+msgstr "Загрузить больше завершений процессов"
+
+msgid "Load more process pickups"
+msgstr "Загрузить больше процессных приемов"
+
+msgid "Loader"
+msgstr "Загрузчик"
+
+msgid "Login methods"
+msgstr "Способы входа"
+
+msgid "Low"
+msgstr "Низкий"
+
+msgid "Medium"
+msgstr "Средний"
+
+msgid "Medium section heading."
+msgstr "Средний заголовок раздела"
+
+msgid "Monthly"
+msgstr "Ежемесячно"
+
+msgid "Name Display"
+msgstr "Наименование отображения"
+
+msgid "Names appear as family name followed by given name across the app."
+msgstr ""
+"Имена отображаются как фамилия за пределами инициалов вThroughout the "
+"application."
+
+msgid "Negative feedback"
+msgstr "Отрицательный отзыв"
+
+msgid "New chat"
+msgstr "Новый чат"
+
+msgid "New total"
+msgstr "Новый общий баланс"
+
+msgid "Next Question"
+msgstr "Следующий вопрос"
+
+msgid "No changes yet."
+msgstr "Нет изменений еще."
+
+msgid "No chat history"
+msgstr "Нет истории чатов"
+
+msgid "No chats found"
+msgstr "Чаты не найдены"
+
+msgid "No expiration"
+msgstr "Без срока годности"
+
+msgid "No Impact"
+msgstr "Без влияния"
+
+msgid "No production logs"
+msgstr "Нет производственных логов"
+
+msgid "No production reported yet."
+msgstr "Нет отчетов о производстве еще."
+
+msgid "No quantity recorded yet."
+msgstr "Нет еще зарегистрированной количественной информации."
+
+msgid "No training content available. Please proceed to the questions."
+msgstr ""
+"Нет доступного тренингового контента. Пожалуйста, перейдите к вопросам."
+
+msgid "Non-Conformance"
+msgstr "Несоответствие"
+
+msgid "Numbered List"
+msgstr "Список с порядковыми номерами"
+
+msgid "OEM Required"
+msgstr "Требуется OEM"
+
+msgid "Open chat history"
+msgstr "Открыть историю чатов"
+
+msgid "Operator Performed"
+msgstr "Выполнено оператором"
+
+msgid "Part thumbnails are shown on purchase order PDFs."
+msgstr "Миниатюры деталей отображаются в PDF-файлах заказов на покупку."
+
+msgid "Part thumbnails are shown on sales PDFs."
+msgstr "Миниатюры деталей отображаются в PDF-файлах продаж."
+
+msgid "Passed"
+msgstr "Пройден"
+
+msgid "PDFs"
+msgstr "PDF-файлы"
+
+msgid ""
+"Pick an existing rule from the library or create a new one to start "
+"enforcing constraints on this item."
+msgstr ""
+"Выберите существующий шаблон из библиотеки или создайте новый, чтобы начать "
+"enforced ограничения на этот элемент."
+
+msgid "Please fill the columns marked with the <0/> icon to provide pricing"
+msgstr ""
+"Пожалуйста, заполните столбцы, отмеченные значком <0/>, для указания цен"
+
+msgid "Positive feedback"
+msgstr "Положительный отзыв"
+
+msgid "Press '/' for commands"
+msgstr "Нажмите '/' для команд"
+
+msgid "Preventive"
+msgstr "Профилактический"
+
+msgid "Preview PDF"
+msgstr "Предпросмотр PDF"
+
+msgid "Process Completion"
+msgstr "Завершение процесса"
+
+msgid "Process Completions"
+msgstr "Завершения процессов"
+
+msgid "Process Pickup"
+msgstr "выдача в процесс"
+
+msgid "Process Pickup by {0}"
+msgstr "Выдача в процесс от {0}"
+
+msgid "Process pickup updated"
+msgstr "Обновлено получение процесса"
+
+msgid "Process Pickups"
+msgstr "выдачи в процесс"
+
+msgid "Product Label Size"
+msgstr "Размер этикетки продукта"
+
+msgid ""
+"Production already reported per operation. Click a number to pull it into "
+"the editor above."
+msgstr ""
+"Производство уже отчетливо указано по операции. Нажмите на число, чтобы "
+"перенести его в редактор выше."
+
+msgid "Production Logs"
+msgstr "Логи производства"
+
+msgid "Purchase Price Updates"
+msgstr "Обновления цены покупки"
+
+msgid "Purchasing Terms & Conditions"
+msgstr "Условия закупки"
+
+msgid "Quantity must be greater than zero"
+msgstr "Количество должно быть больше нуля"
+
+msgid "Quarterly"
+msgstr "Ежеквартально"
+
+msgid "Question {0} of {1}"
+msgstr "Вопрос {0} из {1}"
+
+msgid "Question {0} of {totalQuestions}"
+msgstr "Вопрос {0} из {totalQuestions}"
+
+msgid "Question Review"
+msgstr "Обзор вопросов"
+
+msgid "Reactive"
+msgstr "Реактивный"
+
+msgid "remaining"
+msgstr "оставшееся"
+
+msgid "Remove attachment"
+msgstr "Удалить вложение"
+
+msgid "Remove negative feedback"
+msgstr "Удалить отрицательный отзыв"
+
+msgid "Remove positive feedback"
+msgstr "Удалить положительный отзыв"
+
+msgid "Reported by process"
+msgstr "Отчет от процесса"
+
+msgid "Reporter"
+msgstr "Отчетчик"
+
+msgid "Request extension"
+msgstr "Запросить продление"
+
+msgid "Request Submitted"
+msgstr "Запрос отправлен"
+
+msgid "Request to Join"
+msgstr "Запрос на участие"
+
+msgid "Retry response"
+msgstr "Повторить ответ"
+
+msgid "Retry Training"
+msgstr "Повторить обучение"
+
+msgid "Revoke Link"
+msgstr "Отменить ссылку"
+
+msgid "Revoked"
+msgstr "Отозван"
+
+msgid "Risk Register"
+msgstr "Регистр рисков"
+
+msgid "Rule Violation"
+msgstr "Повреждение правила"
+
+msgid "Sales Terms & Conditions"
+msgstr "Условия продажи"
+
+msgid "Save Notes"
+msgstr "Сохранить заметки"
+
+msgid "Scan a label or search by ID, serial number, or batch number."
+msgstr ""
+"Отсканируйте этикетку или выполните поиск по идентификатору, серийному "
+"номеру или номеру партии."
+
+msgid "Scan with WeChat to connect"
+msgstr "Отсканируйте через WeChat для подключения"
+
+msgid "Scheduled"
+msgstr "Плановый"
+
+msgid "Search history"
+msgstr "Поиск в истории"
+
+msgid "Search the web"
+msgstr "Поиск в интернете"
+
+msgid "Select a match..."
+msgstr "Выберите соответствующий вариант..."
+
+msgid "Select date *"
+msgstr "Выберите дату *"
+
+msgid "Select to provide pricing"
+msgstr "Выбрать для предоставления цены"
+
+msgid "Send code"
+msgstr "Отправить код"
+
+msgid "Set Expiration"
+msgstr "Установить срок истечения"
+
+msgid "Setting up your demo data…"
+msgstr "Настройка демонстрационных данных…"
+
+msgid ""
+"Show family name before given name, as used in Chinese and other East Asian "
+"locales."
+msgstr "Показывать фамилию перед именем, как это используется в Китае和其他东亚地区。"
+
+msgid "Show part thumbnails on purchase orders."
+msgstr "Показывать миниатюры деталей в заказах на покупку."
+
+msgid ""
+"Show part thumbnails on quotes, sales orders, sales invoices, and shipments."
+msgstr ""
+"Показывать миниатюры деталей на предложениях, заказах на продажу, счетах-"
+"фактурах продаж и отправках."
+
+msgid "Sign In to Request Access"
+msgstr "Войдите, чтобы запросить доступ"
+
+msgid "Sign in with Phone"
+msgstr "Войти с помощью телефона"
+
+msgid "Small section heading."
+msgstr "Малый заголовок раздела"
+
+msgid "Sources"
+msgstr "Источники"
+
+msgid "Start Questions"
+msgstr "Начать вопросы"
+
+msgid ""
+"Statistical acceptance failed, so the entire lot is considered non-"
+"conforming (ISO 9001:2015 §8.7). All {0} entities — {passes} sampled "
+"pass(es), {fails} failure(s), and {1} un-inspected — will be marked "
+"Rejected. An NCR will be opened automatically for MRB disposition."
+msgstr ""
+"Статистическая приемка не прошла, поэтому вся партия считается "
+"несоответствующей (ISO 9001:2015 §8.7). Все {0} единиц — {passes} "
+"проверенных прошедших, {fails} отказов и {1} непроверенных — будут отмечены "
+"как Отклонено. NCR будет открыт автоматически для диспозиции MRB."
+
+msgid "Submit"
+msgstr "Отправить"
+
+msgid "Submit Quote"
+msgstr "Отправить цитату"
+
+msgid "Submit Training"
+msgstr "Отправить обучение"
+
+msgid "Successfully invited employee"
+msgstr "Успешно пригласили сотрудника"
+
+msgid "Suggested Actions"
+msgstr "Предлагаемые действия"
+
+msgid "Support Required"
+msgstr "Требуется поддержка"
+
+msgid "Switch to your company"
+msgstr "Перейти к вашей компании"
+
+msgid "That WeChat is already linked to another account"
+msgstr "Этот WeChat уже привязан к другому аккаунту"
+
+msgid ""
+"The billing address used on purchase orders and other purchasing documents."
+msgstr ""
+"Адрес выставления счета, используемый в заказах на покупку и других "
+"документах закупок."
+
+msgid ""
+"The billing address used on quotes, sales orders, invoices, and other sales "
+"documents."
+msgstr ""
+"Адрес выставления счета, используемый в предложениях, заказах на продажу, "
+"счетах-фактурах и других документах продаж."
+
+msgid "The invite link will expire on the selected date"
+msgstr "Ссылка на приглашение истечет в选定日期将会过期"
+
+msgid ""
+"The lot will still be rejected, but an NCR cannot be auto-created until at "
+"least one Issue Type is configured."
+msgstr ""
+"Партия все еще будет отклонена, но NCR не может быть автоматически создана "
+"до тех пор, пока не будет настроен хотя бы один тип проблемы."
+
+msgid "This adjustment would take a quantity below zero."
+msgstr "Эта корректировка установит количество ниже нуля."
+
+msgid ""
+"This invite link is invalid or has expired. Please contact the person who "
+"shared it with you."
+msgstr ""
+"Этот ссылочный код приглашения недействителен или истек. Пожалуйста, "
+"свяжитесь с тем человеком, который его с вами поделился."
+
+msgid "This invite link is no longer accepting new requests."
+msgstr "Этот ссылочный код больше не принимает новые запросы."
+
+msgid ""
+"This permanently deletes the quantity report and its entire history. This "
+"action cannot be undone."
+msgstr ""
+"Это действие безвозвратно удалит отчёт о количестве и всю его историю. Это "
+"действие нельзя отменить."
+
+msgid "this process pickup"
+msgstr "этот процесс загрузки"
+
+msgid "this quantity report"
+msgstr "этот отчёт о количестве"
+
+msgid "This training has been marked as completed for your records."
+msgstr "Этот тренинг отмечен как завершенный для ваших записей."
+
+msgid "Thumbnails are included"
+msgstr "Миниатюры включены"
+
+msgid "Thumbnails are not included"
+msgstr "Миниатюры не включены"
+
+msgid "To-do List"
+msgstr "Список задач"
+
+msgid "Todo"
+msgstr "К выполнению"
+
+msgid "Tolerance: +/- {0}"
+msgstr "Толерантность: ±{0}"
+
+msgid "Total Process Pickups"
+msgstr "Всего выдач в процесс"
+
+msgid "Total Production"
+msgstr "Общее производство"
+
+msgid "Total Rework"
+msgstr "Общая переработка"
+
+msgid "Total Scrap"
+msgstr "Общий брак"
+
+msgid "Track tasks with a to-do list."
+msgstr "Отслеживайте задачи с списком дел."
+
+msgid "Tracking Labels"
+msgstr "Этикетки отслеживания"
+
+msgid "Training Complete"
+msgstr "Обучение завершено"
+
+msgid "Try the demo"
+msgstr "Попробуйте демонстрационную версию"
+
+msgid ""
+"Unfortunately, you did not pass this training. You need at least {0}% to "
+"pass. Please review the material and try again."
+msgstr ""
+"К сожалению, вы не прошли эту тренинговую программу. Вам нужно минимум {0}% "
+"для успешного завершения. Просмотрите материал и попробуйте снова."
+
+msgid "Unknown question type"
+msgstr "Неизвестный тип вопроса"
+
+msgid "Update Expiration"
+msgstr "Обновление истечения сроков"
+
+msgid "Update prices on"
+msgstr "Обновлять цены на"
+
+msgid "Upgrade to unlock item rules"
+msgstr "Обновитесь, чтобы разблокировать правила элементов"
+
+msgid "Upload an image from your computer."
+msgstr "Загрузите изображение с вашего компьютера."
+
+msgid "Use a different phone number"
+msgstr "Использовать другой номер телефона"
+
+msgid "Use another sign-in method"
+msgstr "Использовать другой способ входа"
+
+msgid "Verification code"
+msgstr "Код подтверждения"
+
+msgid "Verify & link"
+msgstr "Подтвердить и связать"
+
+msgid "Verify your phone"
+msgstr "Подтвердите ваш телефон"
+
+msgid "View configuration parameters"
+msgstr "Просмотр конфигурационных параметров"
+
+msgid "View configuration quantities"
+msgstr "Просмотр конфигурационных количеств"
+
+msgid "View job"
+msgstr "Просмотр задания"
+
+msgid "Voice"
+msgstr "Голос"
+
+msgid "Waiting"
+msgstr "Ожидание"
+
+msgid "Warnings"
+msgstr "Предупреждения"
+
+msgid "Ways you can sign in. Only you can change these."
+msgstr "Способы входа в систему. Только вы можете их изменить."
+
+msgid "We've sent a code to {sentTo}"
+msgstr "Мы отправили код на {sentTo}"
+
+msgid "We've sent a verification code to {phone}"
+msgstr "Мы отправили код подтверждения на {phone}"
+
+msgid "Web Search"
+msgstr "Веб-поиск"
+
+msgid "WeChat is unavailable right now"
+msgstr "WeChat сейчас недоступен"
+
+msgid "WeChat linked"
+msgstr "WeChat привязан"
+
+msgid "Weekly"
+msgstr "Еженедельно"
+
+msgid "Work instructions are included"
+msgstr "Рабочие инструкции включены"
+
+msgid "Work instructions are not included"
+msgstr "Рабочие инструкции не включены"
+
+msgid "You already have access to {0}."
+msgstr "У вас уже есть доступ к {0}."
+
+msgid ""
+"You completed {leftoverQuantity} more {0} than the ordered quantity of {1}. "
+"What would you like to do with the extra parts?"
+msgstr ""
+"Вы завершили на {leftoverQuantity} {0} больше, чем заказанное количество "
+"{1}. Что вы хотите сделать с лишними деталями?"
+
+msgid "You're in the demo company — {days} days left."
+msgstr "Вы в демонстрационной компании — {days} дней осталось."
+
+msgid "You're in the demo company — 1 day left."
+msgstr "Вы в демонстрационной компании — 1 день осталось."
+
+msgid "You're in the demo company — it has ended."
+msgstr "Вы находитесь в демонстрационной компании — она завершилась."
+
+msgid "You're in your company."
+msgstr "Вы находитесь в своей компании."
+
+msgid "Your answer:"
+msgstr "Ваш ответ:"
+
+msgid "Your demo is ready — explore every module!"
+msgstr "Ваша демонстрация готова — изучите каждый модуль!"
+
+msgid "Your request has been submitted."
+msgstr "Ваш запрос был отправлен."
+
+msgid ""
+"Your request to join {0} has already been submitted and is pending review."
+msgstr ""
+"Ваш запрос на присоединение к {0} уже был отправлен и находится в процессе "
+"рассмотрения."
+
+msgid ""
+"Your request to join {companyName} has been submitted. An admin will review "
+"your application soon."
+msgstr ""
+"Ваш запрос на вступление в {companyName} был отправлен. Администратор "
+"проверит вашу заявку в ближайшее время."

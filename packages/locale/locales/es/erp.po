@@ -3051,7 +3051,7 @@ msgid "Drag to place on drawing"
 msgstr ""
 
 msgid "Drag to reorder"
-msgstr ""
+msgstr "Arrastre para reordenar"
 
 msgid "Drag to resize diagram and features"
 msgstr ""
@@ -4760,7 +4760,7 @@ msgid "Invite"
 msgstr "Invitar"
 
 msgid "Invited"
-msgstr ""
+msgstr "Invitado"
 
 msgid "Invoice"
 msgstr "Factura"
@@ -9824,7 +9824,7 @@ msgid "Uploading {fileName}"
 msgstr "Cargando {fileName}"
 
 msgid "Uploading…"
-msgstr ""
+msgstr "Cargando…"
 
 msgid "Upon clicking Convert, parts will be created with the following internal part numbers:"
 msgstr "Al hacer clic en Convertir, se crearán piezas con los siguientes números de pieza internos:"
@@ -10369,3 +10369,971 @@ msgstr ""
 
 msgid "ZPL Label Preview"
 msgstr ""
+
+msgid "(Passing score: {0}%)"
+msgstr "(Puntuación mínima: {0}%.ImageAlign"
+
+msgid "{0} customers"
+msgstr "{0} clientes"
+
+msgid "{0} invited you to join as {1}."
+msgstr "{0} te ha invitado a unirte como {1}."
+
+msgid "{0} jobs"
+msgstr "{0} trabajos"
+
+msgid "{0} of {1} correct"
+msgstr "{0} de {1} correctos"
+
+msgid "{0} products"
+msgstr "{0} productos"
+
+msgid "{0} suppliers"
+msgstr "{0} proveedores"
+
+msgid "{days} days ({formatted})"
+msgstr "{days} días ({formatted})"
+
+msgid "Accounts Payable Billing Address"
+msgstr "Dirección de Facturación de Cuentas por Pagar"
+
+msgid "Accounts Receivable Billing Address"
+msgstr "Dirección de Facturación de Cuentas por Cobrar"
+
+msgid "Acknowledge & continue"
+msgstr "Acepta y continúa"
+
+msgid "Add attachments"
+msgstr "Agregar archivos adjuntos"
+
+msgid "Add Notes"
+msgstr "Agregar Notas"
+
+msgid "Add or edit notes for this line item"
+msgstr "Agregar o editar notas para este ítem"
+
+msgid "Add or remove quantity"
+msgstr "Agregar o eliminar cantidad"
+
+msgid "Add process completion"
+msgstr "Agregar finalización de proceso"
+
+msgid "Add process pickup"
+msgstr "Agregar extracción de proceso"
+
+msgid "Adjustment"
+msgstr "Ajuste"
+
+msgid "Adjustment input mode"
+msgstr "Modo de entrada de ajuste"
+
+msgid "Already a Member"
+msgstr "Miembro existente"
+
+msgid "Annual"
+msgstr "Anual"
+
+msgid "Applicant"
+msgstr "Solicitante"
+
+msgid "Applications"
+msgstr "Aplicaciones"
+
+msgid "Approved"
+msgstr "Aprobado"
+
+msgid "Are you sure you want to decline this quote?"
+msgstr "¿Estás seguro de que quieres rechazar esta oferta?"
+
+msgid "Are you sure you want to delete {readableId}? This cannot be undone."
+msgstr ""
+"¿Estás seguro de que deseas eliminar {readableId}? Esto no se puede "
+"deshacer."
+
+msgid ""
+"Are you sure you want to delete this process completion? This action cannot "
+"be undone."
+msgstr ""
+"¿Estás seguro de que quieres eliminar este proceso de finalización? Esta "
+"acción no se puede deshacer."
+
+msgid ""
+"Are you sure you want to delete this process pickup? This action cannot be "
+"undone."
+msgstr ""
+"¿Estás seguro de que quieres eliminar este proceso de recogida? Esta acción "
+"no se puede deshacer."
+
+msgid "Are you sure you want to submit the updated pricing?"
+msgstr "¿Estás seguro de que quieres enviar el precio actualizado?"
+
+msgid "Ask anything"
+msgstr "Pregunta cualquier cosa"
+
+msgid "Authorize"
+msgstr "Autorizar"
+
+msgid "Authorize Application"
+msgstr "Autorizar aplicación"
+
+msgid "Back to home"
+msgstr "Volver al inicio"
+
+msgid "Big section heading."
+msgstr "Encabezado de sección grande."
+
+msgid "Building your demo — {0} so far…"
+msgstr "Construyendo tu demo — {0} hasta ahora…"
+
+msgid "Bullet List"
+msgstr "Lista de Bullet"
+
+msgid ""
+"By requesting access, you agree to the <0>Terms of Service</0> and "
+"<1>Privacy Policy</1>."
+msgstr ""
+"Al solicitar acceso, aceptas los <0>Términos de Servicio</0> y la "
+"<1>Política de Privacidad</1>."
+
+msgid "Close operation"
+msgstr "Cerrar operación"
+
+msgid "Collapse row"
+msgstr "Contraer fila"
+
+msgid "Complete Training"
+msgstr "Completa el entrenamiento"
+
+msgid "Configure Materials"
+msgstr "Configurar Materiales"
+
+msgid "Configure the content displayed on job traveler PDFs."
+msgstr "Configura el contenido mostrado en los PDF del viajero de trabajo."
+
+msgid ""
+"Configure when purchased item prices should be updated from supplier "
+"transactions."
+msgstr ""
+"Configura cuándo deben actualizarse los precios de los artículos comprados a"
+" partir de las transacciones de proveedores."
+
+msgid ""
+"Congratulations! You have successfully completed this training. Your "
+"completion has been recorded."
+msgstr ""
+"Felicidades! Has completado con éxito este entrenamiento. Tu completación ha"
+" sido registrada."
+
+msgid "Connect"
+msgstr "Conectar"
+
+msgid ""
+"Connect Carbon to your accounting, project, and CAD tools and much more."
+msgstr ""
+"Conecta el carbono a tus herramientas de contabilidad, proyectos y diseño "
+"CAD y mucho más."
+
+msgid "Copy Link"
+msgstr "Copiar Enlace"
+
+msgid "Copy response"
+msgstr "Copiar respuesta"
+
+msgid "Correct answer:"
+msgstr "Respuesta correcta:"
+
+msgid "Couldn't load the WeChat QR code"
+msgstr "No se pudo cargar el código QR de WeChat"
+
+msgid "Create a list with numbering."
+msgstr "Crea una lista con numeración."
+
+msgid "Create a simple bullet list."
+msgstr "Crear una lista no ordenada básica."
+
+msgid "Create Invite Link"
+msgstr "Crear enlace de invitación"
+
+msgid "Create Link"
+msgstr "Crear Enlace"
+
+msgid "Create Process Completion"
+msgstr "Crear la finalización del proceso"
+
+msgid "Critical"
+msgstr "Crítico"
+
+msgid "Daily"
+msgstr "Diario"
+
+msgid "Decline Quote"
+msgstr "Rechazar cotización"
+
+msgid "Default Location"
+msgstr "Ubicación predeterminada"
+
+msgid ""
+"Define the default size of the product label. Used for tracking items in "
+"inventory."
+msgstr ""
+"Define el tamaño predeterminado de la etiqueta del producto. Se utiliza para"
+" rastrear artículos en el inventario."
+
+msgid "Define the terms and conditions for purchase orders"
+msgstr "Define los términos y condiciones para órdenes de compra"
+
+msgid "Define the terms and conditions for quotes and sales orders"
+msgstr ""
+"Define los términos y condiciones para cotizaciones y órdenes de venta"
+
+msgid "Delete chat"
+msgstr "Eliminar chat"
+
+msgid "Delete Process Completion"
+msgstr "Eliminar la finalización del proceso"
+
+msgid "Delete Process Pickup"
+msgstr "Eliminar recogida de proceso"
+
+msgid "Delete Template"
+msgstr "Eliminar plantilla"
+
+msgid "Delta"
+msgstr "Delta"
+
+msgid "Do you want to authorize this application?"
+msgstr "¿Desea autorizar esta aplicación?"
+
+msgid "Down"
+msgstr "Detenido"
+
+msgid "Drag and drop an image here, or click to select"
+msgstr "Arrastra y suelta una imagen aquí, o haz clic para seleccionar"
+
+msgid "Drag and drop or click to upload"
+msgstr "Arrastra y suelta o haz clic para cargar"
+
+msgid "Drop image to upload"
+msgstr "Suelta la imagen para cargarla"
+
+msgid "Edit Notes"
+msgstr "Editar Notas"
+
+msgid "Edit operation"
+msgstr "Editar operación"
+
+msgid "Edit Process Completion"
+msgstr "Editar la Completitud del Proceso"
+
+msgid "Employed"
+msgstr "Empleado"
+
+msgid "Enable to display names with the family name first."
+msgstr "Habilitar para mostrar los nombres con el apellido primero."
+
+msgid "Enable to include work instructions on job traveler PDFs."
+msgstr ""
+"Habilitar para incluir instrucciones de trabajo en los PDF del viajero de "
+"trabajo."
+
+msgid "Enable to show part thumbnails on purchase order PDFs."
+msgstr ""
+"Habilitar para mostrar miniaturas de piezas en los PDF de órdenes de compra."
+
+msgid "Enable to show part thumbnails on sales PDFs."
+msgstr "Habilitar para mostrar miniaturas de piezas en PDF de ventas."
+
+msgid ""
+"Enforce constraints on receipts, shipments, transfers and job operations for"
+" this item."
+msgstr ""
+"Imponer restricciones en recibos, envíos, transferencias y operaciones de "
+"trabajo para este artículo."
+
+msgid ""
+"Enforce per-item validation across receipts, shipments, transfers and "
+"adjustments."
+msgstr "Validación por item en cada recibo, envío, transferencia y ajuste."
+
+msgid "Enter a positive number to add or a negative number to subtract."
+msgstr "Ingrese un número positivo para añadir o uno negativo para restar."
+
+msgid "Enter an adjustment before saving."
+msgstr "Ingrese una ajuste antes de guardar."
+
+msgid "Enter the target quantity for each size."
+msgstr "Ingrese la cantidad objetivo para cada tamaño."
+
+msgid "Enter your answer..."
+msgstr "Ingrese su respuesta..."
+
+msgid "Enter your email"
+msgstr "Ingrese su correo electrónico"
+
+msgid "Enter your name"
+msgstr "Ingrese su nombre"
+
+msgid "Errors"
+msgstr "Errores"
+
+msgid "Estimated duration: {0}"
+msgstr "Duración estimada: {0}"
+
+msgid "Expand row"
+msgstr "Expandir fila"
+
+msgid "Expiration"
+msgstr "Vencimiento"
+
+msgid "Explore the demo"
+msgstr "Explora el demo"
+
+msgid "Extension requested"
+msgstr "Solicitud de extensión"
+
+msgid "Failed"
+msgstr "Fallido"
+
+msgid "Failed to link WeChat"
+msgstr "No se pudo vincular WeChat"
+
+msgid "Failed to update time"
+msgstr "Falló al actualizar el tiempo"
+
+msgid "Failed to upload thumbnail: {message}"
+msgstr "Error al cargar la miniatura: {message}"
+
+msgid "Family name is shown first"
+msgstr "El nombre familiar se muestra primero"
+
+msgid "File type {0} not supported."
+msgstr "Tipo de archivo {0} no soportado."
+
+msgid ""
+"Finished {complete} of {target} units, {pickup} in progress from process "
+"pickups, {unassigned} unassigned"
+msgstr ""
+"Finalizados {complete} de {target} unidades, {pickup} en progreso desde "
+"recogidas del proceso, {unassigned} no asignadas"
+
+msgid "Given name is shown first"
+msgstr "Se muestra el nombre primero"
+
+msgid "Go to App"
+msgstr "Ir a la App"
+
+msgid "Heading 1"
+msgstr "Título 1"
+
+msgid "Heading 2"
+msgstr "Encabezado 2"
+
+msgid "Heading 3"
+msgstr "Título 3"
+
+msgid "High"
+msgstr "Alto"
+
+msgid "Icons"
+msgstr "Iconos"
+
+msgid "ID Number"
+msgstr "Número de ID"
+
+msgid "Image"
+msgstr "Imagen"
+
+msgid "Impact"
+msgstr "Impacto"
+
+msgid "Inspections"
+msgstr "Inspecciones"
+
+msgid "Invalid Invite Link"
+msgstr "Enlace de invitación inválido"
+
+msgid "Invite Link"
+msgstr "Enlace de Invitación"
+
+msgid "Invite Link Expired"
+msgstr "Enlace de Invitación Vencido"
+
+msgid "Invite Links"
+msgstr "Enlaces de Invitación"
+
+msgid "Invited By"
+msgstr "Invitado por"
+
+msgid "Inviter"
+msgstr "Invitar"
+
+msgid "Issue scoped API keys for programmatic access to your Carbon data."
+msgstr ""
+"Claves de API escopadas por problema para acceso programático a tus datos de"
+" Carbon."
+
+msgid "Item Rules"
+msgstr "Reglas de Artículo"
+
+msgid "Job Traveler"
+msgstr "Viajero de Trabajo"
+
+msgid "Job traveler PDFs include work instructions."
+msgstr "Los PDF del viajero de trabajo incluyen instrucciones de trabajo."
+
+msgid "Just start typing with plain text."
+msgstr "Solo empieza a escribir con texto en blanco."
+
+msgid "Label (optional)"
+msgstr "Etiqueta (opcional)"
+
+msgid "Lead Time Updates"
+msgstr "Actualizaciones de Tiempo de Entrega"
+
+msgid "Load more process completions"
+msgstr "Cargar más completaciones del proceso"
+
+msgid "Load more process pickups"
+msgstr "Cargar más recogidas de procesos"
+
+msgid "Loader"
+msgstr "Cargador"
+
+msgid "Login methods"
+msgstr "Métodos de inicio de sesión"
+
+msgid "Low"
+msgstr "Bajo"
+
+msgid "Medium"
+msgstr "Medio"
+
+msgid "Medium section heading."
+msgstr "Encabezado de sección medio"
+
+msgid "Monthly"
+msgstr "Mensual"
+
+msgid "Name Display"
+msgstr "Nombre de visualización"
+
+msgid "Names appear as family name followed by given name across the app."
+msgstr ""
+"Los nombres aparecen como apellido seguido del nombre en todo el aplicativo."
+
+msgid "Negative feedback"
+msgstr "Comentarios negativos"
+
+msgid "New chat"
+msgstr "Nuevo chat"
+
+msgid "New total"
+msgstr "Nuevo total"
+
+msgid "Next Question"
+msgstr "Siguiente Pregunta"
+
+msgid "No changes yet."
+msgstr "Aún no hay cambios."
+
+msgid "No chat history"
+msgstr "Sin historial de chat"
+
+msgid "No chats found"
+msgstr "No se encontraron chats"
+
+msgid "No expiration"
+msgstr "Sin fecha de caducidad"
+
+msgid "No Impact"
+msgstr "Sin impacto"
+
+msgid "No production logs"
+msgstr "Sin registros de producción"
+
+msgid "No production reported yet."
+msgstr "Aún no se ha reportado producción."
+
+msgid "No quantity recorded yet."
+msgstr "Aún no se ha registrado ninguna cantidad."
+
+msgid "No training content available. Please proceed to the questions."
+msgstr ""
+"Sin contenido de capacitación disponible. Por favor progrese a las "
+"preguntas."
+
+msgid "Non-Conformance"
+msgstr "No conformidad"
+
+msgid "Numbered List"
+msgstr "Lista Numérica"
+
+msgid "OEM Required"
+msgstr "OEM requerido"
+
+msgid "Open chat history"
+msgstr "Abrir historial de chat"
+
+msgid "Operator Performed"
+msgstr "Realizado por operador"
+
+msgid "Part thumbnails are shown on purchase order PDFs."
+msgstr "Las miniaturas de piezas se muestran en los PDF de órdenes de compra."
+
+msgid "Part thumbnails are shown on sales PDFs."
+msgstr "Las miniaturas de piezas se muestran en los PDF de ventas."
+
+msgid "Passed"
+msgstr "Aprobado"
+
+msgid "PDFs"
+msgstr "PDFs"
+
+msgid ""
+"Pick an existing rule from the library or create a new one to start "
+"enforcing constraints on this item."
+msgstr ""
+"Elegir una regla existente del catálogo o crear una nueva para comenzar a "
+"aplicar restricciones en este artículo."
+
+msgid "Please fill the columns marked with the <0/> icon to provide pricing"
+msgstr ""
+"Por favor, complete los campos marcados con el ícono <0/> para proporcionar "
+"precios"
+
+msgid "Positive feedback"
+msgstr "Comentarios positivos"
+
+msgid "Press '/' for commands"
+msgstr "Presiona '/' para comandos"
+
+msgid "Preventive"
+msgstr "Preventivo"
+
+msgid "Preview PDF"
+msgstr "Vista previa del PDF"
+
+msgid "Process Completion"
+msgstr "Completitud del Proceso"
+
+msgid "Process Completions"
+msgstr "Completados del Proceso"
+
+msgid "Process Pickup"
+msgstr "extracción de proceso"
+
+msgid "Process Pickup by {0}"
+msgstr "Extracción de proceso por {0}"
+
+msgid "Process pickup updated"
+msgstr "Proceso de recogida actualizado"
+
+msgid "Process Pickups"
+msgstr "extracciones de proceso"
+
+msgid "Product Label Size"
+msgstr "Tamaño de Etiqueta de Producto"
+
+msgid ""
+"Production already reported per operation. Click a number to pull it into "
+"the editor above."
+msgstr ""
+"Producción ya reportada por operación. Haz clic en un número para "
+"incorporarlo al editor上方。"
+
+msgid "Production Logs"
+msgstr "Registros de Producción"
+
+msgid "Purchase Price Updates"
+msgstr "Actualizaciones de Precio de Compra"
+
+msgid "Purchasing Terms & Conditions"
+msgstr "Términos y Condiciones de Compra"
+
+msgid "Quantity must be greater than zero"
+msgstr "La cantidad debe ser mayor que cero"
+
+msgid "Quarterly"
+msgstr "Trimestral"
+
+msgid "Question {0} of {1}"
+msgstr "Pregunta {0} de {1}"
+
+msgid "Question {0} of {totalQuestions}"
+msgstr "Pregunta {0} de {totalQuestions}"
+
+msgid "Question Review"
+msgstr "Revisión de Pregunta"
+
+msgid "Reactive"
+msgstr "Reactivo"
+
+msgid "remaining"
+msgstr "restante"
+
+msgid "Remove attachment"
+msgstr "Eliminar adjunto"
+
+msgid "Remove negative feedback"
+msgstr "Eliminar comentarios negativos"
+
+msgid "Remove positive feedback"
+msgstr "Eliminar comentarios positivos"
+
+msgid "Reported by process"
+msgstr "Reportado por proceso"
+
+msgid "Reporter"
+msgstr "Reportero"
+
+msgid "Request extension"
+msgstr "Solicitar extensión"
+
+msgid "Request Submitted"
+msgstr "Solicitud enviada"
+
+msgid "Request to Join"
+msgstr "Solicitud para unirse"
+
+msgid "Retry response"
+msgstr "Reintentar respuesta"
+
+msgid "Retry Training"
+msgstr "Reintentar entrenamiento"
+
+msgid "Revoke Link"
+msgstr "Deshacer Enlace"
+
+msgid "Revoked"
+msgstr "Deshabilitado"
+
+msgid "Risk Register"
+msgstr "Registro de Riesgos"
+
+msgid "Rule Violation"
+msgstr "Violación de la regla"
+
+msgid "Sales Terms & Conditions"
+msgstr "Términos y Condiciones de Ventas"
+
+msgid "Save Notes"
+msgstr "Guardar Notas"
+
+msgid "Scan a label or search by ID, serial number, or batch number."
+msgstr ""
+"Escanee una etiqueta o busque por ID, número de serie o número de lote."
+
+msgid "Scan with WeChat to connect"
+msgstr "Escanea con WeChat para conectar"
+
+msgid "Scheduled"
+msgstr "Programado"
+
+msgid "Search history"
+msgstr "Buscar historial"
+
+msgid "Search the web"
+msgstr "Buscar en la web"
+
+msgid "Select a match..."
+msgstr "Selecciona una coincidencia..."
+
+msgid "Select date *"
+msgstr "Seleccionar fecha *"
+
+msgid "Select to provide pricing"
+msgstr "Seleccionar para proporcionar precios"
+
+msgid "Send code"
+msgstr "Enviar código"
+
+msgid "Set Expiration"
+msgstr "Establecer Fecha de Vencimiento"
+
+msgid "Setting up your demo data…"
+msgstr "Configurando sus datos de prueba…"
+
+msgid ""
+"Show family name before given name, as used in Chinese and other East Asian "
+"locales."
+msgstr ""
+"Mostrar el nombre familiar antes del nombre propio, como se usa en chino y "
+"otros lugares orientales."
+
+msgid "Show part thumbnails on purchase orders."
+msgstr "Mostrar miniaturas de piezas en órdenes de compra."
+
+msgid ""
+"Show part thumbnails on quotes, sales orders, sales invoices, and shipments."
+msgstr ""
+"Mostrar miniaturas de piezas en cotizaciones, órdenes de venta, facturas de "
+"venta y envíos."
+
+msgid "Sign In to Request Access"
+msgstr "Iniciar sesión para solicitar acceso"
+
+msgid "Sign in with Phone"
+msgstr "Iniciar sesión con teléfono"
+
+msgid "Small section heading."
+msgstr "Encabezado pequeño"
+
+msgid "Sources"
+msgstr "Fuentes"
+
+msgid "Start Questions"
+msgstr "Iniciar Preguntas"
+
+msgid ""
+"Statistical acceptance failed, so the entire lot is considered non-"
+"conforming (ISO 9001:2015 §8.7). All {0} entities — {passes} sampled "
+"pass(es), {fails} failure(s), and {1} un-inspected — will be marked "
+"Rejected. An NCR will be opened automatically for MRB disposition."
+msgstr ""
+"La aceptación estadística falló, por lo que el lote completo se considera no"
+" conforme (ISO 9001:2015 §8.7). Todas las {0} entidades — {passes} "
+"muestra(s) aprobada(s), {fails} falla(s) y {1} sin inspeccionar — se "
+"marcarán como Rechazadas. Un NCR se abrirá automáticamente para disposición "
+"de MRB."
+
+msgid "Submit"
+msgstr "Enviar"
+
+msgid "Submit Quote"
+msgstr "Enviar Cita"
+
+msgid "Submit Training"
+msgstr "Enviar entrenamiento"
+
+msgid "Successfully invited employee"
+msgstr "Invitación exitosa al empleado"
+
+msgid "Suggested Actions"
+msgstr "Acciones sugeridas"
+
+msgid "Support Required"
+msgstr "Soporte requerido"
+
+msgid "Switch to your company"
+msgstr "Cambia a tu empresa"
+
+msgid "That WeChat is already linked to another account"
+msgstr "Ese WeChat ya está vinculado a otra cuenta"
+
+msgid ""
+"The billing address used on purchase orders and other purchasing documents."
+msgstr ""
+"La dirección de facturación utilizada en órdenes de compra y otros "
+"documentos de compra."
+
+msgid ""
+"The billing address used on quotes, sales orders, invoices, and other sales "
+"documents."
+msgstr ""
+"La dirección de facturación utilizada en cotizaciones, órdenes de venta, "
+"facturas y otros documentos de ventas."
+
+msgid "The invite link will expire on the selected date"
+msgstr "El enlace de invitación expirará el día seleccionado"
+
+msgid ""
+"The lot will still be rejected, but an NCR cannot be auto-created until at "
+"least one Issue Type is configured."
+msgstr ""
+"El lote seguirá siendo rechazado, pero no se puede crear automáticamente un "
+"NCR hasta que se configure al menos un tipo de problema."
+
+msgid "This adjustment would take a quantity below zero."
+msgstr "Esta ajuste tomaría una cantidad por debajo de cero."
+
+msgid ""
+"This invite link is invalid or has expired. Please contact the person who "
+"shared it with you."
+msgstr ""
+"Este enlace de invitación es inválido o ha expirado. Por favor, contácte al "
+"persona que se lo compartió."
+
+msgid "This invite link is no longer accepting new requests."
+msgstr "Este enlace de invitación ya no acepta nuevas solicitudes."
+
+msgid ""
+"This permanently deletes the quantity report and its entire history. This "
+"action cannot be undone."
+msgstr ""
+"Esto elimina permanentemente el informe de cantidad y todo su historial. "
+"Esta acción no se puede deshacer."
+
+msgid "this process pickup"
+msgstr "este proceso de recogida"
+
+msgid "this quantity report"
+msgstr "este informe de cantidad"
+
+msgid "This training has been marked as completed for your records."
+msgstr ""
+"Este entrenamiento ha sido marcado como completado para sus registros."
+
+msgid "Thumbnails are included"
+msgstr "Las miniaturas están incluidas"
+
+msgid "Thumbnails are not included"
+msgstr "Las miniaturas no están incluidas"
+
+msgid "To-do List"
+msgstr "Lista de tareas"
+
+msgid "Todo"
+msgstr "Pendiente"
+
+msgid "Tolerance: +/- {0}"
+msgstr "Tolerancia: ±{0}"
+
+msgid "Total Process Pickups"
+msgstr "Total de extracciones de proceso"
+
+msgid "Total Production"
+msgstr "Producción Total"
+
+msgid "Total Rework"
+msgstr "Total Rehacer"
+
+msgid "Total Scrap"
+msgstr "Total Residuo"
+
+msgid "Track tasks with a to-do list."
+msgstr "Monitorea las tareas con una lista de tareas."
+
+msgid "Tracking Labels"
+msgstr "Etiquetas de Seguimiento"
+
+msgid "Training Complete"
+msgstr "Entrenamiento Completo"
+
+msgid "Try the demo"
+msgstr "Prueba la demostración"
+
+msgid ""
+"Unfortunately, you did not pass this training. You need at least {0}% to "
+"pass. Please review the material and try again."
+msgstr ""
+"Lamentablemente, no pasaste esta capacitación. Necesitas al menos un {0}%. "
+"Por favor, revisa el material e intenta de nuevo."
+
+msgid "Unknown question type"
+msgstr "Tipo de pregunta desconocido"
+
+msgid "Update Expiration"
+msgstr "Actualizar expiración"
+
+msgid "Update prices on"
+msgstr "Actualizar precios en"
+
+msgid "Upgrade to unlock item rules"
+msgstr "Actualizar para desbloquear reglas de artículos"
+
+msgid "Upload an image from your computer."
+msgstr "Sube una imagen desde tu computadora."
+
+msgid "Use a different phone number"
+msgstr "Usar un número de teléfono diferente"
+
+msgid "Use another sign-in method"
+msgstr "Usar otro método de inicio de sesión"
+
+msgid "Verification code"
+msgstr "Código de verificación"
+
+msgid "Verify & link"
+msgstr "Verificar y vincular"
+
+msgid "Verify your phone"
+msgstr "Verifica tu teléfono"
+
+msgid "View configuration parameters"
+msgstr "Ver parámetros de configuración"
+
+msgid "View configuration quantities"
+msgstr "Ver configuración de cantidades"
+
+msgid "View job"
+msgstr "Ver trabajo"
+
+msgid "Voice"
+msgstr "Voz"
+
+msgid "Waiting"
+msgstr "En espera"
+
+msgid "Warnings"
+msgstr "Advertencias"
+
+msgid "Ways you can sign in. Only you can change these."
+msgstr "Formas de iniciar sesión. Solo tú puedes cambiarlas."
+
+msgid "We've sent a code to {sentTo}"
+msgstr "Hemos enviado un código a {sentTo}"
+
+msgid "We've sent a verification code to {phone}"
+msgstr "Hemos enviado un código de verificación a {phone}"
+
+msgid "Web Search"
+msgstr "Búsqueda web"
+
+msgid "WeChat is unavailable right now"
+msgstr "WeChat no está disponible en este momento"
+
+msgid "WeChat linked"
+msgstr "WeChat vinculado"
+
+msgid "Weekly"
+msgstr "Semanal"
+
+msgid "Work instructions are included"
+msgstr "Las instrucciones de trabajo están incluidas"
+
+msgid "Work instructions are not included"
+msgstr "Las instrucciones de trabajo no están incluidas"
+
+msgid "You already have access to {0}."
+msgstr "Ya tienes acceso a {0}."
+
+msgid ""
+"You completed {leftoverQuantity} more {0} than the ordered quantity of {1}. "
+"What would you like to do with the extra parts?"
+msgstr ""
+"Completó {leftoverQuantity} {0} más que la cantidad pedida de {1}. ¿Qué "
+"desea hacer con las piezas adicionales?"
+
+msgid "You're in the demo company — {days} days left."
+msgstr "Estás en la compañía de demostración — {days} días restantes."
+
+msgid "You're in the demo company — 1 day left."
+msgstr "Estás en la compañía de demostración — 1 día restante."
+
+msgid "You're in the demo company — it has ended."
+msgstr "Estás en la compañía de demostración — ha terminado."
+
+msgid "You're in your company."
+msgstr "Estás en tu empresa."
+
+msgid "Your answer:"
+msgstr "Su respuesta:"
+
+msgid "Your demo is ready — explore every module!"
+msgstr "Tu demo está lista — explora cada módulo!"
+
+msgid "Your request has been submitted."
+msgstr "Tu solicitud ha sido enviada."
+
+msgid ""
+"Your request to join {0} has already been submitted and is pending review."
+msgstr ""
+"Tu solicitud para unirte a {0} ya ha sido enviada y está pendiente de "
+"revisión."
+
+msgid ""
+"Your request to join {companyName} has been submitted. An admin will review "
+"your application soon."
+msgstr ""
+"Tu solicitud para unirte a {companyName} ha sido enviada. Un administrador "
+"revisará tu aplicación pronto."

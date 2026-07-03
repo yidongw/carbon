@@ -3051,7 +3051,7 @@ msgid "Drag to place on drawing"
 msgstr ""
 
 msgid "Drag to reorder"
-msgstr ""
+msgstr "ドラッグして再配置します"
 
 msgid "Drag to resize diagram and features"
 msgstr ""
@@ -4760,7 +4760,7 @@ msgid "Invite"
 msgstr "招待"
 
 msgid "Invited"
-msgstr ""
+msgstr "招待済み"
 
 msgid "Invoice"
 msgstr "請求書"
@@ -9824,7 +9824,7 @@ msgid "Uploading {fileName}"
 msgstr "アップロード中 {fileName}"
 
 msgid "Uploading…"
-msgstr ""
+msgstr "アップロード中…"
 
 msgid "Upon clicking Convert, parts will be created with the following internal part numbers:"
 msgstr "変換をクリックすると、以下の内部部品番号で部品が作成されます:"
@@ -10369,3 +10369,910 @@ msgstr ""
 
 msgid "ZPL Label Preview"
 msgstr ""
+
+msgid "(Passing score: {0}%)"
+msgstr "(合格点数: {0}%))"
+
+msgid "{0} customers"
+msgstr "{0}お客様"
+
+msgid "{0} invited you to join as {1}."
+msgstr "{0} は{1}としてあなたを招待しました。"
+
+msgid "{0} jobs"
+msgstr "{0}ジョブ"
+
+msgid "{0} of {1} correct"
+msgstr "{0} 件中 {1} 件正解"
+
+msgid "{0} products"
+msgstr "{0}個の製品"
+
+msgid "{0} suppliers"
+msgstr "{0} 供給者"
+
+msgid "{days} days ({formatted})"
+msgstr "{days}日（{formatted}）"
+
+msgid "Accounts Payable Billing Address"
+msgstr "買掛金請求先住所"
+
+msgid "Accounts Receivable Billing Address"
+msgstr "売掛金請求先住所"
+
+msgid "Acknowledge & continue"
+msgstr "承認して続ける"
+
+msgid "Add attachments"
+msgstr "添付ファイルを追加"
+
+msgid "Add Notes"
+msgstr "追加する注記"
+
+msgid "Add or edit notes for this line item"
+msgstr "この行項目のメモを追加または編集します"
+
+msgid "Add or remove quantity"
+msgstr "数量を追加または削除"
+
+msgid "Add process completion"
+msgstr "工程完了を追加"
+
+msgid "Add process pickup"
+msgstr "工程払い出しを追加"
+
+msgid "Adjustment"
+msgstr "調整"
+
+msgid "Adjustment input mode"
+msgstr "調整入力モード"
+
+msgid "Already a Member"
+msgstr "既に会員です"
+
+msgid "Annual"
+msgstr "年次"
+
+msgid "Applicant"
+msgstr "申請者"
+
+msgid "Applications"
+msgstr "アプリケーション"
+
+msgid "Approved"
+msgstr "承認済み"
+
+msgid "Are you sure you want to decline this quote?"
+msgstr "この見積を拒否してもよろしいですか？"
+
+msgid "Are you sure you want to delete {readableId}? This cannot be undone."
+msgstr "本当に{readableId}を削除してもよろしいですか？この操作は取り消せません。"
+
+msgid ""
+"Are you sure you want to delete this process completion? This action cannot "
+"be undone."
+msgstr "この工程完了を削除 REALLY WANT TO KNOW IF YOU ARE SURE という行動は取り消せません"
+
+msgid ""
+"Are you sure you want to delete this process pickup? This action cannot be "
+"undone."
+msgstr "このプロセスピックアップを削除してもよろしいですか？ この操作は取り消せません。"
+
+msgid "Are you sure you want to submit the updated pricing?"
+msgstr "更新した価格を提出しますか？"
+
+msgid "Ask anything"
+msgstr "何でも聞いてください"
+
+msgid "Authorize"
+msgstr "承認"
+
+msgid "Authorize Application"
+msgstr "アプリケーションを承認する"
+
+msgid "Back to home"
+msgstr "ホームに戻る"
+
+msgid "Big section heading."
+msgstr "大きなセクションヘッダー"
+
+msgid "Building your demo — {0} so far…"
+msgstr "デモの作成中 — {0} まで…"
+
+msgid "Bullet List"
+msgstr "バッファリスト"
+
+msgid ""
+"By requesting access, you agree to the <0>Terms of Service</0> and "
+"<1>Privacy Policy</1>."
+msgstr "アクセスを要求することにより、<0>利用規約</0>および<1>プライバシーポリシー</1>に同意します。"
+
+msgid "Close operation"
+msgstr "操作を閉じる"
+
+msgid "Collapse row"
+msgstr "行を折りたたむ"
+
+msgid "Complete Training"
+msgstr "トレーニング完了"
+
+msgid "Configure Materials"
+msgstr "材料を構成"
+
+msgid "Configure the content displayed on job traveler PDFs."
+msgstr "ジョブトラベラーPDFに表示されるコンテンツを設定します。"
+
+msgid ""
+"Configure when purchased item prices should be updated from supplier "
+"transactions."
+msgstr "仕入先取引から購入品目の価格をいつ更新するかを設定します。"
+
+msgid ""
+"Congratulations! You have successfully completed this training. Your "
+"completion has been recorded."
+msgstr "Congratulations! このトレーニングを成功裏に終了しました。完了が記録されました。"
+
+msgid "Connect"
+msgstr "連携"
+
+msgid ""
+"Connect Carbon to your accounting, project, and CAD tools and much more."
+msgstr "接続カーボンをアカウント、プロジェクト、およびCADツールに接続し、さらに多くの機能を活用できます。"
+
+msgid "Copy Link"
+msgstr "コピーリンク"
+
+msgid "Copy response"
+msgstr "レスポンスをコピー"
+
+msgid "Correct answer:"
+msgstr "正解"
+
+msgid "Couldn't load the WeChat QR code"
+msgstr "WeChatのQRコードを読み込めませんでした"
+
+msgid "Create a list with numbering."
+msgstr "番号を付けてリストを作成します。"
+
+msgid "Create a simple bullet list."
+msgstr "単純な bullet リストを作成します。"
+
+msgid "Create Invite Link"
+msgstr "招待リンクを作成する"
+
+msgid "Create Link"
+msgstr "作成リンク"
+
+msgid "Create Process Completion"
+msgstr "プロセス完了を作成"
+
+msgid "Critical"
+msgstr "重大"
+
+msgid "Daily"
+msgstr "毎日"
+
+msgid "Decline Quote"
+msgstr "見積を拒否する"
+
+msgid "Default Location"
+msgstr "デフォルト場所"
+
+msgid ""
+"Define the default size of the product label. Used for tracking items in "
+"inventory."
+msgstr "製品ラベルのデフォルトサイズを定義します。在庫内のアイテムを追跡するために使用されます。"
+
+msgid "Define the terms and conditions for purchase orders"
+msgstr "購買注文の利用規約と条件を定義します"
+
+msgid "Define the terms and conditions for quotes and sales orders"
+msgstr "見積書と販売注文の利用規約と条件を定義します"
+
+msgid "Delete chat"
+msgstr "チャットを削除"
+
+msgid "Delete Process Completion"
+msgstr "プロセス完了の削除"
+
+msgid "Delete Process Pickup"
+msgstr "プロセスピックアップを削除"
+
+msgid "Delete Template"
+msgstr "テンプレートを削除"
+
+msgid "Delta"
+msgstr "デルタ"
+
+msgid "Do you want to authorize this application?"
+msgstr "このアプリケーションを認証しますか？"
+
+msgid "Down"
+msgstr "停止"
+
+msgid "Drag and drop an image here, or click to select"
+msgstr "画像をここにドラッグ＆ドロップするか、クリックして選択してください"
+
+msgid "Drag and drop or click to upload"
+msgstr "ドラッグ＆ドロップまたはクリックしてアップロード"
+
+msgid "Drop image to upload"
+msgstr "画像をドロップしてアップロード"
+
+msgid "Edit Notes"
+msgstr "編集 NOTES"
+
+msgid "Edit operation"
+msgstr "作業編集"
+
+msgid "Edit Process Completion"
+msgstr "工程完了編集"
+
+msgid "Employed"
+msgstr "在職"
+
+msgid "Enable to display names with the family name first."
+msgstr "FAMILY_NAME_first で名前を表示する機能を有効にします。"
+
+msgid "Enable to include work instructions on job traveler PDFs."
+msgstr "ジョブトラベラーPDFに作業指示を含めるには有効にしてください。"
+
+msgid "Enable to show part thumbnails on purchase order PDFs."
+msgstr "購買注文PDFに部品サムネイルを表示するには有効にしてください。"
+
+msgid "Enable to show part thumbnails on sales PDFs."
+msgstr "販売PDFに部品サムネイルを表示するには有効にしてください。"
+
+msgid ""
+"Enforce constraints on receipts, shipments, transfers and job operations for"
+" this item."
+msgstr "制限受領品、出荷品、移送品および作業の制約を強制する必要があります。"
+
+msgid ""
+"Enforce per-item validation across receipts, shipments, transfers and "
+"adjustments."
+msgstr "制限 per-item 検証を受荷、出荷、移入、調整のすべてで強化する。"
+
+msgid "Enter a positive number to add or a negative number to subtract."
+msgstr "正の数を入力すると追加、負の数を入力すると減算します。"
+
+msgid "Enter an adjustment before saving."
+msgstr "保存する前に調整値を入力してください。"
+
+msgid "Enter the target quantity for each size."
+msgstr "各サイズの目標数量を入力してください。"
+
+msgid "Enter your answer..."
+msgstr "あなたの回答を入力してください..."
+
+msgid "Enter your email"
+msgstr "メールアドレスを入力してください"
+
+msgid "Enter your name"
+msgstr "あなたの名前を入力してください"
+
+msgid "Errors"
+msgstr "えラー"
+
+msgid "Estimated duration: {0}"
+msgstr "推定時間：{0}"
+
+msgid "Expand row"
+msgstr "行を展開"
+
+msgid "Expiration"
+msgstr "期限"
+
+msgid "Explore the demo"
+msgstr "デモを探索する"
+
+msgid "Extension requested"
+msgstr "拡張要求"
+
+msgid "Failed"
+msgstr "失敗しました"
+
+msgid "Failed to link WeChat"
+msgstr "WeChatの連携に失敗しました"
+
+msgid "Failed to update time"
+msgstr "時間の更新に失敗しました"
+
+msgid "Failed to upload thumbnail: {message}"
+msgstr "サムネイルのアップロードに失敗しました: {message}"
+
+msgid "Family name is shown first"
+msgstr "FAMILY NAME IS SHOWN FIRST"
+
+msgid "File type {0} not supported."
+msgstr "ファイルタイプ{0}はサポートしていません。"
+
+msgid ""
+"Finished {complete} of {target} units, {pickup} in progress from process "
+"pickups, {unassigned} unassigned"
+msgstr "完成 {complete} 件中 {target} 件、{pickup} の取り込み中、{unassigned} 未割り当て"
+
+msgid "Given name is shown first"
+msgstr "名前は姓が先に表示されます"
+
+msgid "Go to App"
+msgstr "アプリへ-go"
+
+msgid "Heading 1"
+msgstr "ヘッding 1"
+
+msgid "Heading 2"
+msgstr "ヘADING 2"
+
+msgid "Heading 3"
+msgstr "ヘADING 3"
+
+msgid "High"
+msgstr "高"
+
+msgid "Icons"
+msgstr "アイコン"
+
+msgid "ID Number"
+msgstr "ID番号"
+
+msgid "Image"
+msgstr "画像"
+
+msgid "Impact"
+msgstr "影響あり"
+
+msgid "Inspections"
+msgstr "検査"
+
+msgid "Invalid Invite Link"
+msgstr "無効な招待リンク"
+
+msgid "Invite Link"
+msgstr "招待リンク"
+
+msgid "Invite Link Expired"
+msgstr "招待リンクが有効ではありません"
+
+msgid "Invite Links"
+msgstr "招待リンク"
+
+msgid "Invited By"
+msgstr "招待された/by"
+
+msgid "Inviter"
+msgstr "招待者"
+
+msgid "Issue scoped API keys for programmatic access to your Carbon data."
+msgstr "問題でスコープされたAPIキーを、Carbonデータへのプログラミックアクセスに使用する"
+
+msgid "Item Rules"
+msgstr "アイテムルール"
+
+msgid "Job Traveler"
+msgstr "ジョブトラベラー"
+
+msgid "Job traveler PDFs include work instructions."
+msgstr "ジョブトラベラーPDFに作業指示が含まれています。"
+
+msgid "Just start typing with plain text."
+msgstr "Plain textを入力してください。"
+
+msgid "Label (optional)"
+msgstr "オプションラベル"
+
+msgid "Lead Time Updates"
+msgstr "リードタイム更新"
+
+msgid "Load more process completions"
+msgstr "更多的工程完成记录を読み込む"
+
+msgid "Load more process pickups"
+msgstr "更多的工序取込を読み込む"
+
+msgid "Loader"
+msgstr "ローダー"
+
+msgid "Login methods"
+msgstr "ログイン方法"
+
+msgid "Low"
+msgstr "低"
+
+msgid "Medium"
+msgstr "中"
+
+msgid "Medium section heading."
+msgstr "中級セクションヘッダー"
+
+msgid "Monthly"
+msgstr "毎月"
+
+msgid "Name Display"
+msgstr "名前表示"
+
+msgid "Names appear as family name followed by given name across the app."
+msgstr "アプリケーション全体で、名前は-family name に-given name が付く順番で表示されます。"
+
+msgid "Negative feedback"
+msgstr "ネガティブフィードバック"
+
+msgid "New chat"
+msgstr "新しいチャット"
+
+msgid "New total"
+msgstr "新規合計"
+
+msgid "Next Question"
+msgstr "次の質問"
+
+msgid "No changes yet."
+msgstr "まだ変更はありません。"
+
+msgid "No chat history"
+msgstr "チャット履歴がありません"
+
+msgid "No chats found"
+msgstr "チャットが見つかりません"
+
+msgid "No expiration"
+msgstr "無効期限なし"
+
+msgid "No Impact"
+msgstr "影響なし"
+
+msgid "No production logs"
+msgstr "生産ログがありません"
+
+msgid "No production reported yet."
+msgstr "生産情報がまだ報告されていません。"
+
+msgid "No quantity recorded yet."
+msgstr "まだ数量が記録されていません。"
+
+msgid "No training content available. Please proceed to the questions."
+msgstr "トレーニングコンテンツがありません。質問に進んでください。"
+
+msgid "Non-Conformance"
+msgstr "不適合"
+
+msgid "Numbered List"
+msgstr "番号付けリスト"
+
+msgid "OEM Required"
+msgstr "OEM対応が必要"
+
+msgid "Open chat history"
+msgstr "チャット履歴を開く"
+
+msgid "Operator Performed"
+msgstr "オペレーター実施"
+
+msgid "Part thumbnails are shown on purchase order PDFs."
+msgstr "部品のサムネイルが発注書PDFに表示されます。"
+
+msgid "Part thumbnails are shown on sales PDFs."
+msgstr "部品のサムネイルが販売PDFに表示されます。"
+
+msgid "Passed"
+msgstr "通過しました"
+
+msgid "PDFs"
+msgstr "PDF"
+
+msgid ""
+"Pick an existing rule from the library or create a new one to start "
+"enforcing constraints on this item."
+msgstr "選択してください。既存のルールを使用するか、新しいルールを作成して、このアイテムに制約を適用するように設定します。"
+
+msgid "Please fill the columns marked with the <0/> icon to provide pricing"
+msgstr "<0/>アイコンでマークされた列に価格を入力してください"
+
+msgid "Positive feedback"
+msgstr "ポジティブなフィードバック"
+
+msgid "Press '/' for commands"
+msgstr "コマンドは「/」で呼び出します"
+
+msgid "Preventive"
+msgstr "予防保全"
+
+msgid "Preview PDF"
+msgstr "PDFプレビュー"
+
+msgid "Process Completion"
+msgstr "工程完了"
+
+msgid "Process Completions"
+msgstr "プロセス完了"
+
+msgid "Process Pickup"
+msgstr "工程払い出し"
+
+msgid "Process Pickup by {0}"
+msgstr "{0} の工程払い出し"
+
+msgid "Process pickup updated"
+msgstr "プロセスピックアップが更新されました"
+
+msgid "Process Pickups"
+msgstr "工程払い出し"
+
+msgid "Product Label Size"
+msgstr "製品ラベルサイズ"
+
+msgid ""
+"Production already reported per operation. Click a number to pull it into "
+"the editor above."
+msgstr "生産は既に各工程で報告されています。上のエディターに取り込むために数字をクリックしてください。"
+
+msgid "Production Logs"
+msgstr "生産ログ"
+
+msgid "Purchase Price Updates"
+msgstr "購買価格の更新"
+
+msgid "Purchasing Terms & Conditions"
+msgstr "購買条件"
+
+msgid "Quantity must be greater than zero"
+msgstr "数量はゼロ以上でなければなりません"
+
+msgid "Quarterly"
+msgstr "四半期"
+
+msgid "Question {0} of {1}"
+msgstr "質問 {0} of {1}"
+
+msgid "Question {0} of {totalQuestions}"
+msgstr "質問 {0} of {totalQuestions}"
+
+msgid "Question Review"
+msgstr "質問確認"
+
+msgid "Reactive"
+msgstr "事後対応"
+
+msgid "remaining"
+msgstr "残り"
+
+msgid "Remove attachment"
+msgstr "添付ファイルを削除"
+
+msgid "Remove negative feedback"
+msgstr "ネガティブフィードバックを削除"
+
+msgid "Remove positive feedback"
+msgstr "ポジティブフィードバックを削除"
+
+msgid "Reported by process"
+msgstr "プロセスによって報告"
+
+msgid "Reporter"
+msgstr "レポートラー"
+
+msgid "Request extension"
+msgstr "延長を申請"
+
+msgid "Request Submitted"
+msgstr "リクエストが提出されました"
+
+msgid "Request to Join"
+msgstr "参加依頼"
+
+msgid "Retry response"
+msgstr "再度応答を試みる"
+
+msgid "Retry Training"
+msgstr "再訓練を試みる"
+
+msgid "Revoke Link"
+msgstr "取り消しリンク"
+
+msgid "Revoked"
+msgstr "撤回"
+
+msgid "Risk Register"
+msgstr "リスク登録"
+
+msgid "Rule Violation"
+msgstr "規制違反"
+
+msgid "Sales Terms & Conditions"
+msgstr "営業条件"
+
+msgid "Save Notes"
+msgstr "保存する注記"
+
+msgid "Scan a label or search by ID, serial number, or batch number."
+msgstr "ラベルをスキャンするか、ID、シリアル番号、またはバッチ番号で検索します。"
+
+msgid "Scan with WeChat to connect"
+msgstr "WeChatでスキャンして連携"
+
+msgid "Scheduled"
+msgstr "計画"
+
+msgid "Search history"
+msgstr "履歴を検索"
+
+msgid "Search the web"
+msgstr "ウェブを検索"
+
+msgid "Select a match..."
+msgstr "マッチを選択してください..."
+
+msgid "Select date *"
+msgstr "選択日付 *"
+
+msgid "Select to provide pricing"
+msgstr "価格を提供するには選択してください"
+
+msgid "Send code"
+msgstr "コードを送信"
+
+msgid "Set Expiration"
+msgstr "期限設定"
+
+msgid "Setting up your demo data…"
+msgstr "デモデータの設定中…"
+
+msgid ""
+"Show family name before given name, as used in Chinese and other East Asian "
+"locales."
+msgstr "中国語や東南アジアの地域で使用されるように、-family名を-given名前に表示します。"
+
+msgid "Show part thumbnails on purchase orders."
+msgstr "購買注文に部品のサムネイルを表示します。"
+
+msgid ""
+"Show part thumbnails on quotes, sales orders, sales invoices, and shipments."
+msgstr "見積書、販売注文、販売請求書、および出荷に部品のサムネイルを表示します。"
+
+msgid "Sign In to Request Access"
+msgstr "サインインしてアクセスを要求してください"
+
+msgid "Sign in with Phone"
+msgstr "電話番号でサインイン"
+
+msgid "Small section heading."
+msgstr "小見出し"
+
+msgid "Sources"
+msgstr "ソース"
+
+msgid "Start Questions"
+msgstr "開始質問"
+
+msgid ""
+"Statistical acceptance failed, so the entire lot is considered non-"
+"conforming (ISO 9001:2015 §8.7). All {0} entities — {passes} sampled "
+"pass(es), {fails} failure(s), and {1} un-inspected — will be marked "
+"Rejected. An NCR will be opened automatically for MRB disposition."
+msgstr ""
+"統計的受け入れに失敗したため、ロット全体が不適合と見なされます（ISO 9001:2015 §8.7）。すべての{0}個のエンティティ — "
+"{passes}個のサンプル合格品、{fails}個の不良品、および{1}個の未検査品 — "
+"は「却下」とマークされます。NCRは自動的にMRB処置のために開かれます。"
+
+msgid "Submit"
+msgstr "送信"
+
+msgid "Submit Quote"
+msgstr "申込む"
+
+msgid "Submit Training"
+msgstr "トレーニングの提出"
+
+msgid "Successfully invited employee"
+msgstr "成功して社員を招待しました"
+
+msgid "Suggested Actions"
+msgstr "提案されたアクション"
+
+msgid "Support Required"
+msgstr "サポート要"
+
+msgid "Switch to your company"
+msgstr "あなたの会社に切り替える"
+
+msgid "That WeChat is already linked to another account"
+msgstr "そのWeChatは既に別のアカウントに連携されています"
+
+msgid ""
+"The billing address used on purchase orders and other purchasing documents."
+msgstr "購買注文およびその他の購買文書で使用される請求先住所。"
+
+msgid ""
+"The billing address used on quotes, sales orders, invoices, and other sales "
+"documents."
+msgstr "見積書、販売注文書、請求書、およびその他の販売文書で使用される請求先住所。"
+
+msgid "The invite link will expire on the selected date"
+msgstr "選択した日付で招待リンクは有効期限が切れます"
+
+msgid ""
+"The lot will still be rejected, but an NCR cannot be auto-created until at "
+"least one Issue Type is configured."
+msgstr "ロットは引き続き却下されますが、少なくとも1つの問題タイプが設定されるまでNCRは自動作成できません。"
+
+msgid "This adjustment would take a quantity below zero."
+msgstr "この調整はゼロ未満の数量を設定します。"
+
+msgid ""
+"This invite link is invalid or has expired. Please contact the person who "
+"shared it with you."
+msgstr "この招待リンクは無効或者期切れです。共有した人にお問い合わせください。"
+
+msgid "This invite link is no longer accepting new requests."
+msgstr "この招待リンクは新しいリクエストを受け付けていません。"
+
+msgid ""
+"This permanently deletes the quantity report and its entire history. This "
+"action cannot be undone."
+msgstr "これにより、数量レポートとその全履歴が完全に削除されます。この操作は元に戻せません。"
+
+msgid "this process pickup"
+msgstr "このプロセスの拾い上げ"
+
+msgid "this quantity report"
+msgstr "この数量レポート"
+
+msgid "This training has been marked as completed for your records."
+msgstr "このトレーニングは記録として完了とマークされました。"
+
+msgid "Thumbnails are included"
+msgstr "サムネイルが含まれています"
+
+msgid "Thumbnails are not included"
+msgstr "サムネイルは含まれていません"
+
+msgid "To-do List"
+msgstr "ToDoリスト"
+
+msgid "Todo"
+msgstr "未着手"
+
+msgid "Tolerance: +/- {0}"
+msgstr "許容誤差：±{0}"
+
+msgid "Total Process Pickups"
+msgstr "工程払い出し合計"
+
+msgid "Total Production"
+msgstr "総生産量"
+
+msgid "Total Rework"
+msgstr "総計リワーク"
+
+msgid "Total Scrap"
+msgstr "総合不良"
+
+msgid "Track tasks with a to-do list."
+msgstr "ToDoリストでタスクを追跡します。"
+
+msgid "Tracking Labels"
+msgstr "トラッキングラベル"
+
+msgid "Training Complete"
+msgstr "トレーニング完了"
+
+msgid "Try the demo"
+msgstr "デモを試す"
+
+msgid ""
+"Unfortunately, you did not pass this training. You need at least {0}% to "
+"pass. Please review the material and try again."
+msgstr "不幸なことに、このトレーニングには合格していません。最低でも{0}%が必要です。資料を再度確認し、もう一度試してください。"
+
+msgid "Unknown question type"
+msgstr "不明な質問タイプ"
+
+msgid "Update Expiration"
+msgstr "更新期限"
+
+msgid "Update prices on"
+msgstr "価格を更新"
+
+msgid "Upgrade to unlock item rules"
+msgstr "アイテムルールのロックを解除するにはアップグレードしてください"
+
+msgid "Upload an image from your computer."
+msgstr "コンピュータから画像をアップロードしてください。"
+
+msgid "Use a different phone number"
+msgstr "別の電話番号を使用"
+
+msgid "Use another sign-in method"
+msgstr "別のサインイン方法を使用する"
+
+msgid "Verification code"
+msgstr "確認コード"
+
+msgid "Verify & link"
+msgstr "確認してリンク"
+
+msgid "Verify your phone"
+msgstr "電話番号を確認"
+
+msgid "View configuration parameters"
+msgstr "設定パラメータを表示"
+
+msgid "View configuration quantities"
+msgstr "設定された数量を表示"
+
+msgid "View job"
+msgstr "ジョブを表示"
+
+msgid "Voice"
+msgstr "音声"
+
+msgid "Waiting"
+msgstr "待機中"
+
+msgid "Warnings"
+msgstr "警告"
+
+msgid "Ways you can sign in. Only you can change these."
+msgstr "サインインの方法。変更できるのはあなただけです。"
+
+msgid "We've sent a code to {sentTo}"
+msgstr "{sentTo} にコードを送信しました"
+
+msgid "We've sent a verification code to {phone}"
+msgstr "検証コードを {phone} に送信しました"
+
+msgid "Web Search"
+msgstr "ウェブ検索"
+
+msgid "WeChat is unavailable right now"
+msgstr "WeChatは現在利用できません"
+
+msgid "WeChat linked"
+msgstr "WeChatを連携しました"
+
+msgid "Weekly"
+msgstr "毎週"
+
+msgid "Work instructions are included"
+msgstr "作業指示が含まれています"
+
+msgid "Work instructions are not included"
+msgstr "作業指示は含まれていません"
+
+msgid "You already have access to {0}."
+msgstr "{0}へのアクセスは既にあります。"
+
+msgid ""
+"You completed {leftoverQuantity} more {0} than the ordered quantity of {1}. "
+"What would you like to do with the extra parts?"
+msgstr "発注数量{1}より{leftoverQuantity}{0}多く完了しました。余剰品をどうしますか？"
+
+msgid "You're in the demo company — {days} days left."
+msgstr "デモ会社にいます — あと {days} 日です。"
+
+msgid "You're in the demo company — 1 day left."
+msgstr "デモ会社にいます — あと1日です。"
+
+msgid "You're in the demo company — it has ended."
+msgstr "デモ会社にいます — デモは終了しました。"
+
+msgid "You're in your company."
+msgstr "あなたの会社内です。"
+
+msgid "Your answer:"
+msgstr "あなたの回答："
+
+msgid "Your demo is ready — explore every module!"
+msgstr "デモは準備完了です — エンティティをすべて探索してください！"
+
+msgid "Your request has been submitted."
+msgstr "ご要求が提出されました。"
+
+msgid ""
+"Your request to join {0} has already been submitted and is pending review."
+msgstr "あなたの{0}への参加リクエストは既に提出されており、審査中です。"
+
+msgid ""
+"Your request to join {companyName} has been submitted. An admin will review "
+"your application soon."
+msgstr "あなたの{companyName}への入社申請が提出されました。管理者が申請を審査しますのでお待ちください。"
