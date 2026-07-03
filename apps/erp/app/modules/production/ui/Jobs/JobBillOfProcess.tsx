@@ -2476,7 +2476,7 @@ const JobBillOfProcess = ({
           pickup={dispositionPickup}
           open
           onClose={() => setDispositionPickup(null)}
-          onSaved={(newQuantity, newNotes) => {
+          onSaved={(newQuantity, newNotes, newConfiguration) => {
             setPickups((prev) =>
               prev.map((p) =>
                 p.id === dispositionPickup.id && p.kind === "employee"
@@ -2485,7 +2485,10 @@ const JobBillOfProcess = ({
                       pickup: {
                         ...p.pickup,
                         quantity: newQuantity,
-                        notes: newNotes
+                        notes: newNotes,
+                        ...(newConfiguration !== undefined
+                          ? { configuration: newConfiguration }
+                          : {})
                       }
                     }
                   : p
@@ -2501,6 +2504,9 @@ const JobBillOfProcess = ({
             setDispositionPickup(null);
           }}
           canDelete={!isDisabled && permissions.can("delete", "production")}
+          configurationParameters={configurationParameters}
+          itemId={itemId}
+          jobId={jobId}
         />
       ) : null}
       {dispositionReport ? (
