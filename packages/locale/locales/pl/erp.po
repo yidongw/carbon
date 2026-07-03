@@ -33,7 +33,7 @@ msgid "{0} (supplier)"
 msgstr "{0} (dystrybutor)"
 
 #. placeholder {0}: selectedEvent.jobOperation?.description ?? t`Operation`
-#. placeholder {1}: people.find((p) => p.id === selectedEvent.createdBy)?.name ?? t`Unknown Employee`
+#. placeholder {1}: people.find((p) => p.id === selectedEvent.employeeId)?.name ?? t`Unknown Employee`
 msgid "{0} by {1}"
 msgstr "{0} przez {1}"
 
