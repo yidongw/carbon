@@ -4,7 +4,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useMemo, useState } from "react";
 import { LuPencil, LuPlus, LuTrash } from "react-icons/lu";
 import { useParams, useRevalidator } from "react-router";
-import { EmployeeAvatar, SupplierAvatar, Table } from "~/components";
+import { SupplierAvatar, Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { ConfirmDelete } from "~/components/Modals";
 import { overlay, useOverlay } from "~/components/Overlay";
@@ -13,6 +13,7 @@ import { useProductionQuantityLineCreatedAtSave } from "~/modules/production/ui/
 import { EditableCreatedAtCell } from "~/modules/production/ui/EditableCreatedAtCell";
 import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
+import { ProductionQuantityReportReporter } from "./ProductionQuantityReportReporter";
 import type { ScrapReason } from "../../types";
 import {
   PRODUCTION_QUANTITY_TYPES,
@@ -98,15 +99,14 @@ const ProductionQuantitiesTable = memo(
           }
         },
         {
-          accessorKey: "createdBy",
-          header: t`Name`,
+          // Display column keyed by id so the Table filters on "employeeId"
+          // (falls back to column.id). Left non-sortable on purpose: the
+          // supplier feed has no employeeId column and would 400 on .order().
+          id: "employeeId",
+          header: t`Employee`,
           cell: ({ row }) => {
-            const isSupplier = row.original.actorKind === "supplier";
-            if (isSupplier) {
-              const supplierId =
-                row.original.actorKind === "supplier"
-                  ? row.original.supplierProcess?.supplierId
-                  : undefined;
+            if (row.original.actorKind === "supplier") {
+              const supplierId = row.original.supplierProcess?.supplierId;
               return (
                 <HStack spacing={2} className="min-w-0 items-center">
                   <Badge variant="outline" className="shrink-0 text-xs font-normal">
@@ -119,12 +119,10 @@ const ProductionQuantitiesTable = memo(
               );
             }
             return (
-              <HStack spacing={2} className="min-w-0 items-center">
-                <Badge variant="outline" className="shrink-0 text-xs font-normal">
-                  <Trans>Employee</Trans>
-                </Badge>
-                <EmployeeAvatar employeeId={row.original.createdBy} />
-              </HStack>
+              <ProductionQuantityReportReporter
+                employeeId={row.original.employeeId}
+                createdBy={row.original.createdBy}
+              />
             );
           },
           meta: {
@@ -298,7 +296,7 @@ const ProductionQuantitiesTable = memo(
               selectedEvent.actorKind === "supplier"
                 ? t`${selectedEvent.jobOperation?.description ?? t`Operation`} (supplier)`
                 : t`${selectedEvent.jobOperation?.description ?? t`Operation`} by ${
-                    people.find((p) => p.id === selectedEvent.createdBy)?.name ??
+                    people.find((p) => p.id === selectedEvent.employeeId)?.name ??
                     t`Unknown Employee`
                   }`
             }
