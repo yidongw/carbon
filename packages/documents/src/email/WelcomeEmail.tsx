@@ -6,8 +6,8 @@ export const WelcomeEmail = () => {
       <Preview>Hey- I saw you just signed up for Jilio.</Preview>
       <Body>
         <Text>
-          Hey- I saw you just signed up for Jilio. Appreciate it! Let me know
-          if you want to meet or talk about anything.
+          Hey- I saw you just signed up for Jilio. Appreciate it! Let me know if
+          you want to meet or talk about anything.
         </Text>
         <Text>
           This is an automated email, but I'll respond to anything you send me.

@@ -142,13 +142,19 @@ export async function action({ request }: ActionFunctionArgs) {
   // so we must create the public.user and userPermission rows manually.
   const serviceRole = getCarbonServiceRole();
   await serviceRole.from("user").upsert(
-    { id: user.id, email: email.toLowerCase(), active: true, firstName: "", lastName: "", about: "" },
+    {
+      id: user.id,
+      email: email.toLowerCase(),
+      active: true,
+      firstName: "",
+      lastName: "",
+      about: ""
+    },
     { onConflict: "id" }
   );
-  await serviceRole.from("userPermission").upsert(
-    { id: user.id },
-    { onConflict: "id" }
-  );
+  await serviceRole
+    .from("userPermission")
+    .upsert({ id: user.id }, { onConflict: "id" });
 
   // Sign in the user to create an authentication session
   const authSession = await signInWithEmail(email, temporaryPassword);
@@ -186,11 +192,7 @@ export default function VerifyRoute() {
   return (
     <>
       <div className="flex justify-center mb-8">
-        <img
-          src="/carbon-logo-mark.svg"
-          alt={t`Jilio Logo`}
-          className="w-36"
-        />
+        <img src="/carbon-logo-mark.svg" alt={t`Jilio Logo`} className="w-36" />
       </div>
       <div className="rounded-lg md:bg-card md:border md:border-border md:shadow-lg p-8 w-[380px]">
         <ValidatedForm
