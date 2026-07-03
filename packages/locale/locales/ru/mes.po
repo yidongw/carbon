@@ -209,6 +209,9 @@ msgstr "Компания"
 msgid "Complete"
 msgstr "Завершить"
 
+msgid "Complete All"
+msgstr ""
+
 msgid "Completed"
 msgstr "Завершено"
 
@@ -343,13 +346,16 @@ msgstr "Редактировать"
 msgid "Email Address"
 msgstr "Электронная почта"
 
+msgid "Employee"
+msgstr "Сотрудник"
+
 msgid "Empty work centers"
 msgstr "Пустые рабочие центры"
 
 msgid "End Operations"
 msgstr "Завершить операции"
 
-#. placeholder {0}: getPersonName(selectedPerson)
+#. placeholder {0}: selectedPerson.name
 msgid "Enter PIN for {0}"
 msgstr "Введите PIN для {0}"
 
@@ -689,11 +695,11 @@ msgstr "Варианты не найдены."
 msgid "No picking lists assigned"
 msgstr ""
 
+msgid "No pickups logged"
+msgstr "Ни один пикап не зарегистрирован"
+
 msgid "No printer configured"
 msgstr ""
-
-msgid "No production logs"
-msgstr "Нет производственных логов"
 
 msgid "No recent operations"
 msgstr "Нет недавних операций"
@@ -828,8 +834,8 @@ msgstr "Столбец {0} взят с позиции: {1} из {2}"
 msgid "Picking"
 msgstr ""
 
-msgid "Pickup suggestions:"
-msgstr "Подсказки по выдаче в процесс:"
+msgid "Pickups"
+msgstr "Пicked Up"
 
 msgid "Pin Out"
 msgstr "Выход по PIN"
@@ -876,23 +882,8 @@ msgstr "Процесс"
 msgid "Process Parameters"
 msgstr "Параметры процесса"
 
-msgid "process pickup"
-msgstr "получение процесса"
-
-msgid "Process Pickups"
-msgstr "выдачи в процесс"
-
 msgid "Processes"
 msgstr "Процессы"
-
-msgid "production"
-msgstr "производство"
-
-msgid "Production"
-msgstr "Производство"
-
-msgid "Production Logs"
-msgstr "Логи производства"
 
 msgid "Progress"
 msgstr "Прогресс"
@@ -925,15 +916,6 @@ msgstr "Записать"
 msgid "Record {0}"
 msgstr "Запись {0}"
 
-msgid "Record Pickup"
-msgstr "Зарегистрировать выдачу в процесс"
-
-msgid "Record Quantity"
-msgstr "Записать количество"
-
-msgid "remaining"
-msgstr "оставшееся"
-
 msgid "Remove"
 msgstr "Удалить"
 
@@ -948,9 +930,6 @@ msgstr "Удалить деталь"
 
 msgid "Reset zoom"
 msgstr "Сбросить масштаб"
-
-msgid "rework"
-msgstr "переработка"
 
 msgid "Rework"
 msgstr ""
@@ -978,9 +957,6 @@ msgstr ""
 
 msgid "Schedule"
 msgstr "Расписание"
-
-msgid "scrap"
-msgstr "отходы"
 
 msgid "Scrap"
 msgstr "Отходы"
@@ -1188,20 +1164,8 @@ msgstr "Переключить панель侧边栏"
 msgid "Tools"
 msgstr "Инструменты"
 
-msgid "Total Process Pickups"
-msgstr "Всего выдач в процесс"
-
-msgid "Total Production"
-msgstr "Общее производство"
-
 msgid "Total Quantity"
 msgstr "Общее количество"
-
-msgid "Total Rework"
-msgstr "Общая переработка"
-
-msgid "Total Scrap"
-msgstr "Общий брак"
 
 #. placeholder {0}: formatDuration(totalDuration)
 msgid "Total time: {0}"
@@ -1268,3 +1232,329 @@ msgstr "Вы отметили приход в {0}. Вы можете измен�
 
 msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "Вы на смене уже {hoursElapsed} часов. Вы забыли отметить уход?"
+
+msgid " Enter a reason below to record the override."
+msgstr " Введите причину для записи перекрытия."
+
+msgid " The issue will go through with a warning."
+msgstr " Возможность будет сохранена с предупреждением."
+
+msgid "{0} - {1} Available"
+msgstr "{0} - {1} доступно"
+
+msgid "{0} - {1} Available of Batch {2}"
+msgstr "{0} - {1} доступно из лота {2}"
+
+msgid "{0} available"
+msgstr "{0} доступно"
+
+msgid "{0} of Batch {1}"
+msgstr "{0} из лота {1}"
+
+msgid "A new batch entity was created from a split:"
+msgstr "Новый лот был создан из разделения:"
+
+msgid "Actual Failure Mode"
+msgstr "Фактическая причина отказа"
+
+msgid "Add Batch"
+msgstr "Добавить партию"
+
+msgid "Add to Inventory"
+msgstr "Добавить в инвентарь"
+
+msgid "Adjustment Type"
+msgstr "Тип корректировки"
+
+msgid "are past their expiration date."
+msgstr "вы просрочены."
+
+msgid ""
+"Are you sure you want to close out this operation? This will end all active "
+"production events for this operation."
+msgstr ""
+"Вы уверены, что хотите завершить эту операцию? Это прекратит все активные "
+"производственные события для данной операции."
+
+msgid "Are you sure you want to scrap this batch?"
+msgstr "Вы действительно хотите списать этот лот?"
+
+msgid "Batch {0} ({1} available)"
+msgstr "Партия {0} ({1} доступно)"
+
+msgid "Batch number is {0}"
+msgstr "Номер лота {0}"
+
+msgid "Batch number is not available"
+msgstr "Номер лота недоступен"
+
+msgid "Batch Split Occurred"
+msgstr "Пакет разделился"
+
+msgid "batches"
+msgstr "лоты"
+
+msgid "Big section heading."
+msgstr "Большой разделовой заголовок"
+
+msgid "Bullet List"
+msgstr "Список пули"
+
+msgid "Close"
+msgstr "Закрыть"
+
+msgid "Close Anyways"
+msgstr "Всё равно закрыть"
+
+msgid "Close Out"
+msgstr "Завершить"
+
+msgid "Close out {0}"
+msgstr "Завершить {0}"
+
+msgid "Convert"
+msgstr "Перевести"
+
+msgid "Convert this tracked entity into a quantity of 1 of a new size."
+msgstr "Переведите этот отслеживаемый объект в количество 1 нового размера."
+
+msgid "Convert to New {0}"
+msgstr "Перевести в Новый {0}"
+
+msgid "Create a list with numbering."
+msgstr "Создать список с нумерацией."
+
+msgid "Create a simple bullet list."
+msgstr "Создать простой список маркерами"
+
+msgid "Create Dispatch"
+msgstr "Создать отгрузку"
+
+msgid "End Time"
+msgstr "Время окончания"
+
+msgid "Entity converted successfully"
+msgstr "Сущность успешно конвертирована"
+
+msgid "EXPIRED {0}"
+msgstr "ИСКУПЛЕНО {0}"
+
+msgid "Expired stock selected"
+msgstr "Выбрано истекшее количество"
+
+msgid "Expires"
+msgstr "Истекает"
+
+msgid "Expires {0}"
+msgstr "Истекает {0}"
+
+msgid "Failed to convert entity"
+msgstr "Не удалось преобразовать сущность"
+
+msgid "File size too big (max 20MB)."
+msgstr "Размер файла слишком большой (максимум 20MB)."
+
+msgid "File type {0} not supported."
+msgstr "Тип файла {0} не поддерживается."
+
+msgid "File upload is not supported for external scars"
+msgstr "Загрузка файла не поддерживается для внешних царапин"
+
+msgid "Heading 1"
+msgstr "Заголовок 1"
+
+msgid "Heading 2"
+msgstr "Заголовок 2"
+
+msgid "Heading 3"
+msgstr "Заголовок 3"
+
+msgid "Image"
+msgstr "Изображение"
+
+msgid "Just start typing with plain text."
+msgstr "Просто начните печатать обычным текстом."
+
+msgid "Maintenance Dispatch"
+msgstr "Расписание обслуживания"
+
+msgid "Maintenance dispatch created"
+msgstr "Расписание технического обслуживания создано"
+
+msgid "Maintenance for {0}"
+msgstr "Поддержка для {0}"
+
+msgid "Material"
+msgstr "Материал"
+
+msgid "Material and parent ID are required to unconsume"
+msgstr "Необходимо указать материал и родительский ID для десSom.consumption"
+
+msgid "Medium section heading."
+msgstr "Средний заголовок раздела"
+
+msgid "New {0}"
+msgstr "Новая {0}"
+
+msgid "No consumed materials"
+msgstr "Нет используемых материалов"
+
+msgid "No production logs"
+msgstr "Нет производственных логов"
+
+msgid "Numbered List"
+msgstr "Список с порядковыми номерами"
+
+msgid "of the selected"
+msgstr "из выбранного"
+
+msgid "Override required"
+msgstr "Переопределить требуемое"
+
+msgid "Parent tracking ID is required for batch tracked items."
+msgstr ""
+"ID отслеживания родителя необходим для пакетно отслеживаемых элементов."
+
+msgid "Parent tracking ID is required for serial tracked items."
+msgstr ""
+"ID отслеживания родителя необходим для последовательно отслеживаемых "
+"элементов."
+
+msgid "Pickup suggestions:"
+msgstr "Подсказки по выдаче в процесс:"
+
+msgid "Please select a batch to unconsume"
+msgstr "Пожалуйста, выберите лот для отозвала"
+
+msgid "Please select an item to issue."
+msgstr "Пожалуйста, выберите элемент для выдачи."
+
+msgid "Please select at least one item to unconsume"
+msgstr "Пожалуйста, выберите хотя бы один элемент для отвозва"
+
+msgid "Press '/' for commands"
+msgstr "Нажмите '/' для команд"
+
+msgid "Print Label"
+msgstr "Печать этикетки"
+
+msgid "process pickup"
+msgstr "получение процесса"
+
+msgid "Process Pickups"
+msgstr "выдачи в процесс"
+
+msgid "production"
+msgstr "производство"
+
+msgid "Production"
+msgstr "Производство"
+
+msgid "Production Logs"
+msgstr "Логи производства"
+
+msgid "Pull from Inventory"
+msgstr "Забрать из склада"
+
+msgid "Quantity cannot exceed available quantity ({0})"
+msgstr "Количество не может превышать доступное количество ({0})"
+
+msgid "Reason for issuing expired stock"
+msgstr "Причина выпуска истекшего товара"
+
+msgid "Record Pickup"
+msgstr "Зарегистрировать выдачу в процесс"
+
+msgid "Record Quantity"
+msgstr "Записать количество"
+
+msgid "remaining"
+msgstr "оставшееся"
+
+msgid "Remove Batch Number"
+msgstr "Удалить номер лота"
+
+msgid "Remove Serial Number"
+msgstr "Удалить серийный номер"
+
+msgid "rework"
+msgstr "переработка"
+
+msgid "Scan batch number"
+msgstr "Сканирование номера лота"
+
+msgid "scrap"
+msgstr "отходы"
+
+msgid "Select batch number"
+msgstr "Выберите номер лота"
+
+msgid "Select batch to unconsume"
+msgstr "Выберите лот для снятия с учета"
+
+msgid "Select Serial Number {0}"
+msgstr "Выберите серийный номер {0}"
+
+msgid "Serial {0}"
+msgstr "Серийный {0}"
+
+msgid "Serial number is {0}"
+msgstr "Серийный номер составляет {0}"
+
+msgid "Serial: {0}"
+msgstr "Серийный номер: {0}"
+
+msgid "serials"
+msgstr "серии"
+
+msgid "Severity"
+msgstr "Сeverity"
+
+msgid "Small section heading."
+msgstr "Малый заголовок раздела"
+
+msgid "Start Time"
+msgstr "Время начала"
+
+msgid "Suspected Failure Mode"
+msgstr "Предполагаемый режим отказа"
+
+msgid "Text"
+msgstr "Текст"
+
+msgid ""
+"The remaining quantity will be removed from inventory and issued to the job"
+msgstr "Оставшееся количество будет удалено из инвентаря и выдано для работы"
+
+msgid "There are no consumed materials to unconsume."
+msgstr "Нет используемых материалов для восстановления."
+
+msgid "To-do List"
+msgstr "Список задач"
+
+msgid "Total Process Pickups"
+msgstr "Всего выдач в процесс"
+
+msgid "Total Production"
+msgstr "Общее производство"
+
+msgid "Total Rework"
+msgstr "Общая переработка"
+
+msgid "Total Scrap"
+msgstr "Общий брак"
+
+msgid "Track tasks with a to-do list."
+msgstr "Отслеживайте задачи с списком дел."
+
+msgid "Tracking Labels"
+msgstr "Этикетки отслеживания"
+
+msgid "Unconsume"
+msgstr "Отменить неиспользование"
+
+msgid "Upload an image from your computer."
+msgstr "Загрузите изображение с вашего компьютера."
+
+msgid "View Active Maintenance"
+msgstr "Просмотр активного обслуживания"

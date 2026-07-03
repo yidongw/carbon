@@ -209,6 +209,9 @@ msgstr "Entreprise"
 msgid "Complete"
 msgstr "Terminé"
 
+msgid "Complete All"
+msgstr ""
+
 msgid "Completed"
 msgstr "Terminé"
 
@@ -343,13 +346,16 @@ msgstr "Modifier"
 msgid "Email Address"
 msgstr "Adresse e-mail"
 
+msgid "Employee"
+msgstr "Employé"
+
 msgid "Empty work centers"
 msgstr "Centres de travail vides"
 
 msgid "End Operations"
 msgstr "Arrêter les opérations"
 
-#. placeholder {0}: getPersonName(selectedPerson)
+#. placeholder {0}: selectedPerson.name
 msgid "Enter PIN for {0}"
 msgstr "Saisir le NIP pour {0}"
 
@@ -689,11 +695,11 @@ msgstr "Aucune option trouvée."
 msgid "No picking lists assigned"
 msgstr ""
 
+msgid "No pickups logged"
+msgstr "Aucune prise de charge enregistrée"
+
 msgid "No printer configured"
 msgstr ""
-
-msgid "No production logs"
-msgstr "Aucun journal de production"
 
 msgid "No recent operations"
 msgstr "Aucune opération récente"
@@ -828,8 +834,8 @@ msgstr "Colonne {0} saisie à la position : {1} sur {2}"
 msgid "Picking"
 msgstr ""
 
-msgid "Pickup suggestions:"
-msgstr "Suggestions de prélèvement de processus :"
+msgid "Pickups"
+msgstr "Picking"
 
 msgid "Pin Out"
 msgstr "Déconnecter"
@@ -876,23 +882,8 @@ msgstr "Processus"
 msgid "Process Parameters"
 msgstr "Paramètres de processus"
 
-msgid "process pickup"
-msgstr "pickup de processus"
-
-msgid "Process Pickups"
-msgstr "prélèvements de processus"
-
 msgid "Processes"
 msgstr "Processus"
-
-msgid "production"
-msgstr "production"
-
-msgid "Production"
-msgstr "Production"
-
-msgid "Production Logs"
-msgstr "Logs de production"
 
 msgid "Progress"
 msgstr "Progression"
@@ -925,15 +916,6 @@ msgstr "Enregistrer"
 msgid "Record {0}"
 msgstr "Enregistrement {0}"
 
-msgid "Record Pickup"
-msgstr "Enregistrer le prélèvement de processus"
-
-msgid "Record Quantity"
-msgstr "Quantité enregistrée"
-
-msgid "remaining"
-msgstr "restant"
-
 msgid "Remove"
 msgstr "Retirer"
 
@@ -948,9 +930,6 @@ msgstr "Retirer la pièce"
 
 msgid "Reset zoom"
 msgstr "Reinitialiser le zoom"
-
-msgid "rework"
-msgstr "retour à la fabrication"
 
 msgid "Rework"
 msgstr ""
@@ -978,9 +957,6 @@ msgstr ""
 
 msgid "Schedule"
 msgstr "Planification"
-
-msgid "scrap"
-msgstr "défaut"
 
 msgid "Scrap"
 msgstr "Défaut"
@@ -1188,20 +1164,8 @@ msgstr "Basculer la barre latérale"
 msgid "Tools"
 msgstr "Outils"
 
-msgid "Total Process Pickups"
-msgstr "Total des prélèvements de processus"
-
-msgid "Total Production"
-msgstr "Production totale"
-
 msgid "Total Quantity"
 msgstr "Quantité totale"
-
-msgid "Total Rework"
-msgstr "Total Réwork"
-
-msgid "Total Scrap"
-msgstr "Scrap total"
 
 #. placeholder {0}: formatDuration(totalDuration)
 msgid "Total time: {0}"
@@ -1268,3 +1232,335 @@ msgstr "Vous avez pointé votre entrée à {0}. Vous pouvez modifier votre heure
 
 msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "Vous êtes pointé depuis {hoursElapsed} heures. Avez-vous oublié de pointer la sortie ?"
+
+msgid " Enter a reason below to record the override."
+msgstr " Entrez une raison ci-dessous pour enregistrer l'override."
+
+msgid " The issue will go through with a warning."
+msgstr " Le problème sera traité avec un avertissement."
+
+msgid "{0} - {1} Available"
+msgstr "{0} - {1} disponibles"
+
+msgid "{0} - {1} Available of Batch {2}"
+msgstr "{0} - {1} disponibles de l' batching {2}"
+
+msgid "{0} available"
+msgstr "{0} disponible(s)"
+
+msgid "{0} of Batch {1}"
+msgstr "{0} sur le lot {1}"
+
+msgid "A new batch entity was created from a split:"
+msgstr "Une nouvelle entité de lot a été créée à partir d'un partage :"
+
+msgid "Actual Failure Mode"
+msgstr "Mode de faillite réel"
+
+msgid "Add Batch"
+msgstr "Ajouter un lot"
+
+msgid "Add to Inventory"
+msgstr ""
+"Ajouter à l'inventaireAjouter au库存已包含标点和格式错误，根据规则需要修正为：\n"
+"Ajouter au stock"
+
+msgid "Adjustment Type"
+msgstr "Type d'ajustement"
+
+msgid "are past their expiration date."
+msgstr "ont dépassé leur date de péremption."
+
+msgid ""
+"Are you sure you want to close out this operation? This will end all active "
+"production events for this operation."
+msgstr ""
+"Êtes-vous sûr de vouloir clôturer cette opération ? Cela mettra fin à tous "
+"les événements de production actifs pour cette opération."
+
+msgid "Are you sure you want to scrap this batch?"
+msgstr "Voulez-vous vraiment détruire cette lot ?"
+
+msgid "Batch {0} ({1} available)"
+msgstr "Lot {0} ({1} disponible(s))"
+
+msgid "Batch number is {0}"
+msgstr "Numéro de lot est {0}"
+
+msgid "Batch number is not available"
+msgstr "Le numéro de lot n'est pas disponible"
+
+msgid "Batch Split Occurred"
+msgstr "Split de l' batching est survenu"
+
+msgid "batches"
+msgstr "lots"
+
+msgid "Big section heading."
+msgstr "Grand titre de section."
+
+msgid "Bullet List"
+msgstr "Liste à balles"
+
+msgid "Close"
+msgstr "Fermer"
+
+msgid "Close Anyways"
+msgstr "Fermer quand même"
+
+msgid "Close Out"
+msgstr "Clôturer"
+
+msgid "Close out {0}"
+msgstr "Clôturer {0}"
+
+msgid "Convert"
+msgstr "Converter"
+
+msgid "Convert this tracked entity into a quantity of 1 of a new size."
+msgstr ""
+"Convertez cet élément suivi en une quantité de 1 d'une nouvelle taille."
+
+msgid "Convert to New {0}"
+msgstr "Convertir vers Nouveau {0}"
+
+msgid "Create a list with numbering."
+msgstr "Créer une liste avec numérotation."
+
+msgid "Create a simple bullet list."
+msgstr "Créer une liste à puces simple."
+
+msgid "Create Dispatch"
+msgstr "Créer une expédition"
+
+msgid "End Time"
+msgstr "Heure de fin"
+
+msgid "Entity converted successfully"
+msgstr "Entité convertie avec succès"
+
+msgid "EXPIRED {0}"
+msgstr "EXPIRÉ {0}"
+
+msgid "Expired stock selected"
+msgstr "Produit périmé sélectionné"
+
+msgid "Expires"
+msgstr "Expire"
+
+msgid "Expires {0}"
+msgstr "Expire le {0}"
+
+msgid "Failed to convert entity"
+msgstr "Échec de la conversion de l'entité"
+
+msgid "File size too big (max 20MB)."
+msgstr "Taille de fichier trop grande (max 20MB)."
+
+msgid "File type {0} not supported."
+msgstr "Type de fichier {0} non supporté."
+
+msgid "File upload is not supported for external scars"
+msgstr ""
+"Le téléchargement de fichiers n'est pas supporté pour les marques externes"
+
+msgid "Heading 1"
+msgstr "Titre 1"
+
+msgid "Heading 2"
+msgstr "Titre 2"
+
+msgid "Heading 3"
+msgstr "Titre 3"
+
+msgid "Image"
+msgstr "Image"
+
+msgid "Just start typing with plain text."
+msgstr "Commencez simplement à taper du texte brut."
+
+msgid "Maintenance Dispatch"
+msgstr "Dispatch Maintenance"
+
+msgid "Maintenance dispatch created"
+msgstr "Planification de maintenance créée"
+
+msgid "Maintenance for {0}"
+msgstr "Entretien pour {0}"
+
+msgid "Material"
+msgstr "Matériau"
+
+msgid "Material and parent ID are required to unconsume"
+msgstr "Le matériau et l'ID parent sont requis pour déconsommer"
+
+msgid "Medium section heading."
+msgstr "Titre de section moyenne."
+
+msgid "New {0}"
+msgstr "Nouveau {0}"
+
+msgid "No consumed materials"
+msgstr "Aucun matériau consommé"
+
+msgid "No production logs"
+msgstr "Aucun journal de production"
+
+msgid "Numbered List"
+msgstr "Liste numérotée"
+
+msgid "of the selected"
+msgstr "de celles-selectionnées"
+
+msgid "Override required"
+msgstr "Surcharger requis"
+
+msgid "Parent tracking ID is required for batch tracked items."
+msgstr ""
+"Un identifiant de traçabilité parent est requis pour les lots traçables."
+
+msgid "Parent tracking ID is required for serial tracked items."
+msgstr ""
+"Un identifiant de traçabilité parent est requis pour les articles suivis par"
+" numéro de série."
+
+msgid "Pickup suggestions:"
+msgstr "Suggestions de prélèvement de processus :"
+
+msgid "Please select a batch to unconsume"
+msgstr "Veuillez sélectionner un lot pour le désconsommation"
+
+msgid "Please select an item to issue."
+msgstr "Veuillez sélectionner un article à émettre."
+
+msgid "Please select at least one item to unconsume"
+msgstr ""
+"Veuillez sélectionner au moins un élément pour annuler la consommation"
+
+msgid "Press '/' for commands"
+msgstr "Appuyez sur '/' pour les commandes"
+
+msgid "Print Label"
+msgstr "Imprimer étiquette"
+
+msgid "process pickup"
+msgstr "pickup de processus"
+
+msgid "Process Pickups"
+msgstr "prélèvements de processus"
+
+msgid "production"
+msgstr "production"
+
+msgid "Production"
+msgstr "Production"
+
+msgid "Production Logs"
+msgstr "Logs de production"
+
+msgid "Pull from Inventory"
+msgstr "Extraire de l'inventaire"
+
+msgid "Quantity cannot exceed available quantity ({0})"
+msgstr "La quantité ne peut pas excéder la quantité disponible ({0})"
+
+msgid "Reason for issuing expired stock"
+msgstr "Raison d'émission du stock périmé"
+
+msgid "Record Pickup"
+msgstr "Enregistrer le prélèvement de processus"
+
+msgid "Record Quantity"
+msgstr "Quantité enregistrée"
+
+msgid "remaining"
+msgstr "restant"
+
+msgid "Remove Batch Number"
+msgstr "Supprimer le numéro de lot"
+
+msgid "Remove Serial Number"
+msgstr "Supprimer le numéro de série"
+
+msgid "rework"
+msgstr "retour à la fabrication"
+
+msgid "Scan batch number"
+msgstr "Numéro de lots scannez"
+
+msgid "scrap"
+msgstr "défaut"
+
+msgid "Select batch number"
+msgstr "Sélectionnez le numéro de lot"
+
+msgid "Select batch to unconsume"
+msgstr "Sélectionnez le lot à déconsommer"
+
+msgid "Select Serial Number {0}"
+msgstr "Sélectionnez le Numéro Série {0}"
+
+msgid "Serial {0}"
+msgstr "Série {0}"
+
+msgid "Serial number is {0}"
+msgstr "Numéro de série est {0}"
+
+msgid "Serial: {0}"
+msgstr "Série : {0}"
+
+msgid "serials"
+msgstr "seriales"
+
+msgid "Severity"
+msgstr "Severity"
+
+msgid "Small section heading."
+msgstr "Petit titre de section."
+
+msgid "Start Time"
+msgstr "Heure de début"
+
+msgid "Suspected Failure Mode"
+msgstr "Mode de faillite suspectée"
+
+msgid "Text"
+msgstr "Texte"
+
+msgid ""
+"The remaining quantity will be removed from inventory and issued to the job"
+msgstr ""
+"La quantité restante sera retirée de l'inventaire et attribuée à la tâche"
+
+msgid "There are no consumed materials to unconsume."
+msgstr "Il n'y a pas de matières consommées à déconsommer."
+
+msgid "To-do List"
+msgstr "Liste de tâches"
+
+msgid "Total Process Pickups"
+msgstr "Total des prélèvements de processus"
+
+msgid "Total Production"
+msgstr "Production totale"
+
+msgid "Total Rework"
+msgstr "Total Réwork"
+
+msgid "Total Scrap"
+msgstr "Scrap total"
+
+msgid "Track tasks with a to-do list."
+msgstr "Suivez les tâches avec une liste de choses à faire."
+
+msgid "Tracking Labels"
+msgstr "Étiquettes de suivi"
+
+msgid "Unconsume"
+msgstr "Désconsommer"
+
+msgid "Upload an image from your computer."
+msgstr "Téléchargez une image depuis votre ordinateur."
+
+msgid "View Active Maintenance"
+msgstr "Vue des maintenances actives"

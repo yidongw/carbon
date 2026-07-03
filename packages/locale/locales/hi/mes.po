@@ -209,6 +209,9 @@ msgstr "कंपनी"
 msgid "Complete"
 msgstr "पूर्ण करें"
 
+msgid "Complete All"
+msgstr ""
+
 msgid "Completed"
 msgstr "पूर्ण"
 
@@ -343,13 +346,16 @@ msgstr "संपादित करें"
 msgid "Email Address"
 msgstr "ईमेल पता"
 
+msgid "Employee"
+msgstr "कर्मचारी"
+
 msgid "Empty work centers"
 msgstr "खाली कार्य केंद्र"
 
 msgid "End Operations"
 msgstr "संचालन समाप्त करें"
 
-#. placeholder {0}: getPersonName(selectedPerson)
+#. placeholder {0}: selectedPerson.name
 msgid "Enter PIN for {0}"
 msgstr "{0} के लिए PIN दर्ज करें"
 
@@ -689,11 +695,11 @@ msgstr "कोई विकल्प नहीं मिला।"
 msgid "No picking lists assigned"
 msgstr ""
 
+msgid "No pickups logged"
+msgstr "कोई लोड नहीं लॉग किया गया"
+
 msgid "No printer configured"
 msgstr ""
-
-msgid "No production logs"
-msgstr "कोई उत्पादन लॉग नहीं"
 
 msgid "No recent operations"
 msgstr "कोई हाल के संचालन नहीं"
@@ -828,8 +834,8 @@ msgstr "कॉलम {0} को स्थिति {1} पर उठाया �
 msgid "Picking"
 msgstr ""
 
-msgid "Pickup suggestions:"
-msgstr "प्रक्रिया निकासी सुझाव:"
+msgid "Pickups"
+msgstr "ग्रैब"
 
 msgid "Pin Out"
 msgstr "पिन आउट"
@@ -876,23 +882,8 @@ msgstr "प्रक्रिया"
 msgid "Process Parameters"
 msgstr "प्रक्रिया पैरामीटर"
 
-msgid "process pickup"
-msgstr "प्रक्रिया पीकअप"
-
-msgid "Process Pickups"
-msgstr "प्रक्रिया निकासियाँ"
-
 msgid "Processes"
 msgstr "प्रक्रियाएं"
-
-msgid "production"
-msgstr "उत्पादन"
-
-msgid "Production"
-msgstr "उत्पादन"
-
-msgid "Production Logs"
-msgstr "उत्पादन लॉग्स"
 
 msgid "Progress"
 msgstr "प्रगति"
@@ -925,15 +916,6 @@ msgstr "रिकॉर्ड"
 msgid "Record {0}"
 msgstr "रिकॉर्ड {0}"
 
-msgid "Record Pickup"
-msgstr "प्रक्रिया निकासी दर्ज करें"
-
-msgid "Record Quantity"
-msgstr "रिकॉर्ड गुणता"
-
-msgid "remaining"
-msgstr "शेष"
-
 msgid "Remove"
 msgstr "हटाएं"
 
@@ -948,9 +930,6 @@ msgstr "भाग हटाएं"
 
 msgid "Reset zoom"
 msgstr "रीसेट फोकस"
-
-msgid "rework"
-msgstr "रिउपर्कार"
 
 msgid "Rework"
 msgstr ""
@@ -978,9 +957,6 @@ msgstr ""
 
 msgid "Schedule"
 msgstr "शेड्यूल"
-
-msgid "scrap"
-msgstr "बाजारी निषेध"
 
 msgid "Scrap"
 msgstr "स्क्रॅप"
@@ -1188,20 +1164,8 @@ msgstr "पार्सिया बटन"
 msgid "Tools"
 msgstr "उपकरण"
 
-msgid "Total Process Pickups"
-msgstr "कुल प्रक्रिया निकासियाँ"
-
-msgid "Total Production"
-msgstr "कुल उत्पादन"
-
 msgid "Total Quantity"
 msgstr "कुल मात्रा"
-
-msgid "Total Rework"
-msgstr "कुल रियोकॉम्बीनेशन"
-
-msgid "Total Scrap"
-msgstr "कुल डॅपर्ट"
 
 #. placeholder {0}: formatDuration(totalDuration)
 msgid "Total time: {0}"
@@ -1268,3 +1232,328 @@ msgstr "आप {0} पर क्लॉक इन हुए हैं। आप �
 
 msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "आप {hoursElapsed} घंटे के लिए क्लॉक इन हैं। क्या आप क्लॉक आउट करना भूल गए?"
+
+msgid " Enter a reason below to record the override."
+msgstr " अपने अतिरिक्त कारण यहाँ दर्ज करें।"
+
+msgid " The issue will go through with a warning."
+msgstr " विषय साहसिक रूप से प्रगत होंगे।"
+
+msgid "{0} - {1} Available"
+msgstr "{0} - {1} उपलब्ध"
+
+msgid "{0} - {1} Available of Batch {2}"
+msgstr "{0} - {1} बैच {2} में उपलब्ध"
+
+msgid "{0} available"
+msgstr "{0} उपलब्ध"
+
+msgid "{0} of Batch {1}"
+msgstr "{0} के बॅच {1} में"
+
+msgid "A new batch entity was created from a split:"
+msgstr "एक नया बच्चे प्रतिबिम्ब स्पाइट से तैयार किया गया है:"
+
+msgid "Actual Failure Mode"
+msgstr "वास्तविक विफलता कॉमन"
+
+msgid "Add Batch"
+msgstr "बैच जोड़ें"
+
+msgid "Add to Inventory"
+msgstr "स्टॉक में जोड़ें"
+
+msgid "Adjustment Type"
+msgstr "अनुस्सारण प्रकार"
+
+msgid "are past their expiration date."
+msgstr "की अवधि पार हो गई है।"
+
+msgid ""
+"Are you sure you want to close out this operation? This will end all active "
+"production events for this operation."
+msgstr ""
+"क्या आप सुनिश्चित हैं कि आप इस ऑपरेशन को बंद करना चाहते हैं? यह इस ऑपरेशन के"
+" लिए सभी सक्रिय उत्पादन इवेंट को समाप्त कर देगा।"
+
+msgid "Are you sure you want to scrap this batch?"
+msgstr "आप इस बैच को ड्राप करना चाहते हैं?"
+
+msgid "Batch {0} ({1} available)"
+msgstr "बैच {0} ({1} उपलब्ध)"
+
+msgid "Batch number is {0}"
+msgstr "बैच नंबर {0}"
+
+msgid "Batch number is not available"
+msgstr "बैच नंबर उपलब्ध नहीं है"
+
+msgid "Batch Split Occurred"
+msgstr "बैच विभाजन हुआ"
+
+msgid "batches"
+msgstr "बचत्सेजों"
+
+msgid "Big section heading."
+msgstr "बड़ा खंड उपाधि"
+
+msgid "Bullet List"
+msgstr "बॉलेट लिस्ट"
+
+msgid "Close"
+msgstr "बंद करें"
+
+msgid "Close Anyways"
+msgstr "वैसे भी बंद करें"
+
+msgid "Close Out"
+msgstr "बंद करें"
+
+msgid "Close out {0}"
+msgstr "{0} को बंद करें"
+
+msgid "Convert"
+msgstr "अपनाएं"
+
+msgid "Convert this tracked entity into a quantity of 1 of a new size."
+msgstr "इस ट्रैक्ड एंटिटी को नए परिमाप के 1 मात्रमेंत में बदलें"
+
+msgid "Convert to New {0}"
+msgstr "नई {0} में बदले"
+
+msgid "Create a list with numbering."
+msgstr "नम्बरित सूची बनाएं"
+
+msgid "Create a simple bullet list."
+msgstr "सरल बुलेट सूची बनाएं।"
+
+msgid "Create Dispatch"
+msgstr "डिशपाइश तैयार करें"
+
+msgid "End Time"
+msgstr "अंतिम समय"
+
+msgid "Entity converted successfully"
+msgstr "संरचना सफलतापूर्वक बदली गई"
+
+msgid "EXPIRED {0}"
+msgstr "अवैध {0}"
+
+msgid "Expired stock selected"
+msgstr "दействित हो गया स्टॉक चुना गया है"
+
+msgid "Expires"
+msgstr "दूर हो जाएगा"
+
+msgid "Expires {0}"
+msgstr "अवैध हो जाएगा {0}"
+
+msgid "Failed to convert entity"
+msgstr "संगत ऑब्जेक्ट को बदलने में फाल्टी"
+
+msgid "File size too big (max 20MB)."
+msgstr "फाइल का आकार बहुत बड़ा है (मaks 20MB)."
+
+msgid "File type {0} not supported."
+msgstr "फाइल प्रकार {0} समर्थित नहीं है।"
+
+msgid "File upload is not supported for external scars"
+msgstr "फाइल अपलोड बाहरी स्कार के लिए समर्थित नहीं है"
+
+msgid "Heading 1"
+msgstr "प्राथमिक वर्गीकरण"
+
+msgid "Heading 2"
+msgstr "दिशा निर्देश 2"
+
+msgid "Heading 3"
+msgstr "तीसरा उपशीर्षक"
+
+msgid "Image"
+msgstr "आइमेज"
+
+msgid "Just start typing with plain text."
+msgstr "सिर्फ़ टाइप करें एक सामने वाली ताकत का उपयोग करके।"
+
+msgid "Maintenance Dispatch"
+msgstr "संरक्षण डिपाच"
+
+msgid "Maintenance dispatch created"
+msgstr "मैनटेन्स डिपाच बनाया गया है"
+
+msgid "Maintenance for {0}"
+msgstr "संरक्षण और सुधार {0}"
+
+msgid "Material"
+msgstr "सामग्री"
+
+msgid "Material and parent ID are required to unconsume"
+msgstr "मटेरियल और पूर्वज ID को अन-कन्स्मेट करने के लिए आवश्यक हैं"
+
+msgid "Medium section heading."
+msgstr "मध्य खंड उपशीर्षक"
+
+msgid "New {0}"
+msgstr "नई {0}"
+
+msgid "No consumed materials"
+msgstr "कीमतिये लागतीं को नहीं"
+
+msgid "No production logs"
+msgstr "कोई उत्पादन लॉग नहीं"
+
+msgid "Numbered List"
+msgstr "सूचीबद्ध सूचिखोज"
+
+msgid "of the selected"
+msgstr "के चयनित में"
+
+msgid "Override required"
+msgstr "अतिरिक्त अनुमान आवश्यक"
+
+msgid "Parent tracking ID is required for batch tracked items."
+msgstr "बच्चे ट्रैक किए गए आइ템ों के लिए पैरेंट ट्रैकिंग इड आवश्यक है।"
+
+msgid "Parent tracking ID is required for serial tracked items."
+msgstr "सीरियल ट्रैक्ड आइtems के लिए पैंटन ट्रैक्टिंग आईडी आवश्यक है।"
+
+msgid "Pickup suggestions:"
+msgstr "प्रक्रिया निकासी सुझाव:"
+
+msgid "Please select a batch to unconsume"
+msgstr "कृपया एक बच्चे का चयन करें जो अन-संक्रमित हो रहा है"
+
+msgid "Please select an item to issue."
+msgstr "कृपया जाली चुनें।"
+
+msgid "Please select at least one item to unconsume"
+msgstr "कृपया उन से कम से कम एक आइटम का चयन करें जिसे अत्याधारणीय बनाना है"
+
+msgid "Press '/' for commands"
+msgstr "प्रश्न चिह्न (/) के लिए कमांडें"
+
+msgid "Print Label"
+msgstr "लेबल प्रिंट करें"
+
+msgid "process pickup"
+msgstr "प्रक्रिया पीकअप"
+
+msgid "Process Pickups"
+msgstr "प्रक्रिया निकासियाँ"
+
+msgid "production"
+msgstr "उत्पादन"
+
+msgid "Production"
+msgstr "उत्पादन"
+
+msgid "Production Logs"
+msgstr "उत्पादन लॉग्स"
+
+msgid "Pull from Inventory"
+msgstr "इन्वेंटरी से निकाल"
+
+msgid "Quantity cannot exceed available quantity ({0})"
+msgstr "संपत्ति नहीं प्रारूपित कर सकता है {0} से अधिक मात्रा"
+
+msgid "Reason for issuing expired stock"
+msgstr "समाप्त हो गया स्टॉक के लिए कारण"
+
+msgid "Record Pickup"
+msgstr "प्रक्रिया निकासी दर्ज करें"
+
+msgid "Record Quantity"
+msgstr "रिकॉर्ड गुणता"
+
+msgid "remaining"
+msgstr "शेष"
+
+msgid "Remove Batch Number"
+msgstr "रिमॉव बच्चन संख्या"
+
+msgid "Remove Serial Number"
+msgstr "रिमॉव सीरियल नंबर"
+
+msgid "rework"
+msgstr "रिउपर्कार"
+
+msgid "Scan batch number"
+msgstr "बच्चे क्रम संख्या अस्पर्श करें"
+
+msgid "scrap"
+msgstr "बाजारी निषेध"
+
+msgid "Select batch number"
+msgstr "बैच संख्या चुनें"
+
+msgid "Select batch to unconsume"
+msgstr "बचत का चयन करें जो अपकार्य है"
+
+msgid "Select Serial Number {0}"
+msgstr "चयन करें सीरियल नंबर {0}"
+
+msgid "Serial {0}"
+msgstr "सीरियल {0}"
+
+msgid "Serial number is {0}"
+msgstr "सीरियल नंबर {0}"
+
+msgid "Serial: {0}"
+msgstr "सीरियल: {0}"
+
+msgid "serials"
+msgstr "सीरियल्स"
+
+msgid "Severity"
+msgstr "संकल्पना"
+
+msgid "Small section heading."
+msgstr "छोटा खंड उपशीर्षक"
+
+msgid "Start Time"
+msgstr "शुरू वेळा"
+
+msgid "Suspected Failure Mode"
+msgstr "संदिग्ध विफलता प्रकार"
+
+msgid "Text"
+msgstr "पाठ"
+
+msgid ""
+"The remaining quantity will be removed from inventory and issued to the job"
+msgstr ""
+"रहने वाली कॉम्पोज़ की मात्रा संग्रह से हटाई जाएगी और कार्य में प्रदान की "
+"जाएगी"
+
+msgid "There are no consumed materials to unconsume."
+msgstr "किसी भी खपतित सामग्री को वापस नहीं किया जा सकता है।"
+
+msgid "To-do List"
+msgstr "काम लिस्ट"
+
+msgid "Total Process Pickups"
+msgstr "कुल प्रक्रिया निकासियाँ"
+
+msgid "Total Production"
+msgstr "कुल उत्पादन"
+
+msgid "Total Rework"
+msgstr "कुल रियोकॉम्बीनेशन"
+
+msgid "Total Scrap"
+msgstr "कुल डॅपर्ट"
+
+msgid "Track tasks with a to-do list."
+msgstr "टॉ-डो लिस्ट का उपयोग करके संचार की कार्यक्रम पन्ने अनुसरण करें।"
+
+msgid "Tracking Labels"
+msgstr "ट्रैकिंग लेबल"
+
+msgid "Unconsume"
+msgstr "अनुपयोग करें"
+
+msgid "Upload an image from your computer."
+msgstr "पक्ष से एक छवि अपलोड करें."
+
+msgid "View Active Maintenance"
+msgstr "दाखिल रहने वाली सुरक्षा प्रबंधन देखें"
