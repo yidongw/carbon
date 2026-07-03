@@ -15,7 +15,11 @@ export async function action({ request, params }: ActionFunctionArgs) {
   if (!pickupId) return data({ error: "pickupId not found" }, { status: 400 });
 
   const body = await request.json();
-  const { quantity, notes } = body as { quantity: unknown; notes: unknown };
+  const { quantity, notes, configuration } = body as {
+    quantity: unknown;
+    notes: unknown;
+    configuration: unknown;
+  };
 
   if (typeof quantity !== "number" || quantity <= 0) {
     return data(
@@ -29,6 +33,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     .update({
       quantity,
       notes: typeof notes === "string" ? notes || null : null,
+      ...(configuration !== undefined ? { configuration } : {}),
       updatedBy: userId,
       updatedAt: new Date().toISOString()
     })
