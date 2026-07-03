@@ -64,6 +64,26 @@ export async function action({ request }: ActionFunctionArgs) {
   const itemId = createPart.data?.id;
   if (!itemId) throw new Error("Part ID not found");
 
+  // The thumbnail is uploaded before the item exists, so it lands in a
+  // staging path. Now that we have the item's id, re-key the object under the
+  // item's own folder to match the convention used everywhere else
+  // (thumbnails/<itemId>/...). If the move fails we keep the staging path,
+  // which still resolves fine.
+  const stagingThumbnailPath = validation.data.thumbnailPath;
+  if (stagingThumbnailPath?.includes("/thumbnails/staging/")) {
+    const fileName = stagingThumbnailPath.split("/").pop();
+    const finalThumbnailPath = `${companyId}/thumbnails/${itemId}/${fileName}`;
+    const move = await client.storage
+      .from("private")
+      .move(stagingThumbnailPath, finalThumbnailPath);
+    if (!move.error) {
+      await client
+        .from("item")
+        .update({ thumbnailPath: finalThumbnailPath })
+        .eq("id", itemId);
+    }
+  }
+
   if (templateId) {
     await applyTemplateToItem(client, {
       templateId,
