@@ -346,7 +346,7 @@ export default function AuthenticatedRoute() {
                 <OverlayProvider>
                   <TooltipProvider>
                     <div
-                      className="flex flex-col h-screen"
+                      className="flex flex-col h-full min-h-0"
                       style={{
                         paddingLeft: "var(--chat-panel-left, 0px)",
                         paddingRight: "var(--chat-panel-right, 0px)",

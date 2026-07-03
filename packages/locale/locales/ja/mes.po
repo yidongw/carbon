@@ -209,9 +209,6 @@ msgstr "会社"
 msgid "Complete"
 msgstr "完了"
 
-msgid "Complete All"
-msgstr ""
-
 msgid "Completed"
 msgstr "完了済み"
 
@@ -346,16 +343,13 @@ msgstr "編集"
 msgid "Email Address"
 msgstr "メールアドレス"
 
-msgid "Employee"
-msgstr "従業員"
-
 msgid "Empty work centers"
 msgstr "空の作業センター"
 
 msgid "End Operations"
 msgstr "工程を終了"
 
-#. placeholder {0}: selectedPerson.name
+#. placeholder {0}: getPersonName(selectedPerson)
 msgid "Enter PIN for {0}"
 msgstr "{0} のPINを入力"
 
@@ -695,11 +689,11 @@ msgstr "オプションが見つかりません。"
 msgid "No picking lists assigned"
 msgstr ""
 
-msgid "No pickups logged"
-msgstr "No pickups logged"
-
 msgid "No printer configured"
 msgstr ""
+
+msgid "No production logs"
+msgstr "生産ログがありません"
 
 msgid "No recent operations"
 msgstr "最近の工程はありません"
@@ -834,8 +828,8 @@ msgstr "カラム {0} を位置 {1}/{2} で選択しました"
 msgid "Picking"
 msgstr ""
 
-msgid "Pickups"
-msgstr "Pickup"
+msgid "Pickup suggestions:"
+msgstr "工程払い出し候補:"
 
 msgid "Pin Out"
 msgstr "ピンアウト"
@@ -882,8 +876,23 @@ msgstr "プロセス"
 msgid "Process Parameters"
 msgstr "プロセスパラメーター"
 
+msgid "process pickup"
+msgstr "プロセスピックアップ"
+
+msgid "Process Pickups"
+msgstr "工程払い出し"
+
 msgid "Processes"
 msgstr "プロセス一覧"
+
+msgid "production"
+msgstr "生産"
+
+msgid "Production"
+msgstr "生産"
+
+msgid "Production Logs"
+msgstr "生産ログ"
 
 msgid "Progress"
 msgstr "進捗"
@@ -916,6 +925,15 @@ msgstr "記録"
 msgid "Record {0}"
 msgstr "レコード {0}"
 
+msgid "Record Pickup"
+msgstr "工程払い出しを記録"
+
+msgid "Record Quantity"
+msgstr "レコード数量"
+
+msgid "remaining"
+msgstr "残り"
+
 msgid "Remove"
 msgstr "削除"
 
@@ -930,6 +948,9 @@ msgstr "パーツを削除"
 
 msgid "Reset zoom"
 msgstr "ズームをリセット"
+
+msgid "rework"
+msgstr "再加工"
 
 msgid "Rework"
 msgstr ""
@@ -957,6 +978,9 @@ msgstr ""
 
 msgid "Schedule"
 msgstr "スケジュール"
+
+msgid "scrap"
+msgstr "廃棄物"
 
 msgid "Scrap"
 msgstr "廃棄物"
@@ -1164,8 +1188,20 @@ msgstr "サイドバーの表示切り替え"
 msgid "Tools"
 msgstr "工具"
 
+msgid "Total Process Pickups"
+msgstr "工程払い出し合計"
+
+msgid "Total Production"
+msgstr "総生産量"
+
 msgid "Total Quantity"
 msgstr "合計数量"
+
+msgid "Total Rework"
+msgstr "総計リワーク"
+
+msgid "Total Scrap"
+msgstr "総合不良"
 
 #. placeholder {0}: formatDuration(totalDuration)
 msgid "Total time: {0}"
@@ -1232,324 +1268,3 @@ msgstr "{0} に出勤打刻しました。下記で退勤時間を編集する�
 
 msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "{hoursElapsed} 時間出勤中です。退勤打刻を忘れていませんか？"
-
-msgid " Enter a reason below to record the override."
-msgstr " 上記に理由を入力してoverrideを記録してください。"
-
-msgid " The issue will go through with a warning."
-msgstr " 警告ありで ISSUE が進行します。"
-
-msgid "{0} - {1} Available"
-msgstr "{0} - {1} が利用可能です"
-
-msgid "{0} - {1} Available of Batch {2}"
-msgstr "{0} - {1} バッチ{2}可用"
-
-msgid "{0} available"
-msgstr "{0} 利用可能"
-
-msgid "{0} of Batch {1}"
-msgstr "バッチ{1}の{0}"
-
-msgid "A new batch entity was created from a split:"
-msgstr "分割から新しいバッチが作成されました："
-
-msgid "Actual Failure Mode"
-msgstr "実際の不良模式"
-
-msgid "Add Batch"
-msgstr "バッチを追加"
-
-msgid "Add to Inventory"
-msgstr "在庫に追加"
-
-msgid "Adjustment Type"
-msgstr "調整タイプ"
-
-msgid "are past their expiration date."
-msgstr "期限が过了しています。"
-
-msgid ""
-"Are you sure you want to close out this operation? This will end all active "
-"production events for this operation."
-msgstr "この工程をクローズしてもよろしいですか？この工程のすべてのアクティブな生産イベントが終了します。"
-
-msgid "Are you sure you want to scrap this batch?"
-msgstr "このバッチを廃棄してもよろしいですか？"
-
-msgid "Batch {0} ({1} available)"
-msgstr "バッチ {0}（{1} 利用可能）"
-
-msgid "Batch number is {0}"
-msgstr "バッチ番号は{0}"
-
-msgid "Batch number is not available"
-msgstr "バッチ番号が利用できません"
-
-msgid "Batch Split Occurred"
-msgstr "バッチ分割が発生しました"
-
-msgid "batches"
-msgstr "バッチ"
-
-msgid "Big section heading."
-msgstr "大きなセクションヘッダー"
-
-msgid "Bullet List"
-msgstr "バッファリスト"
-
-msgid "Close"
-msgstr "閉じる"
-
-msgid "Close Anyways"
-msgstr "強制的に閉じる"
-
-msgid "Close Out"
-msgstr "クローズ"
-
-msgid "Close out {0}"
-msgstr "{0} をクローズ"
-
-msgid "Convert"
-msgstr "変換"
-
-msgid "Convert this tracked entity into a quantity of 1 of a new size."
-msgstr "この追跡エンティティを新しいサイズの数量1に変換します。"
-
-msgid "Convert to New {0}"
-msgstr "新規{0}に変換"
-
-msgid "Create a list with numbering."
-msgstr "番号を付けてリストを作成します。"
-
-msgid "Create a simple bullet list."
-msgstr "単純な bullet リストを作成します。"
-
-msgid "Create Dispatch"
-msgstr "出荷を作成"
-
-msgid "End Time"
-msgstr "終了時間"
-
-msgid "Entity converted successfully"
-msgstr "エンティ티が成功して変換されました"
-
-msgid "EXPIRED {0}"
-msgstr "過期しました {0}"
-
-msgid "Expired stock selected"
-msgstr "過期した在庫が選択されました"
-
-msgid "Expires"
-msgstr "有効期限"
-
-msgid "Expires {0}"
-msgstr "有効期限は{0}"
-
-msgid "Failed to convert entity"
-msgstr "エンティ티の変換に失敗しました"
-
-msgid "File size too big (max 20MB)."
-msgstr "ファイルサイズが大きすぎます（最大20MB）。"
-
-msgid "File type {0} not supported."
-msgstr "ファイル形式{0}はサポートしていません。"
-
-msgid "File upload is not supported for external scars"
-msgstr "外部傷にはファイルアップロードがサポートされていません"
-
-msgid "Heading 1"
-msgstr "ヘッding 1"
-
-msgid "Heading 2"
-msgstr "ヘADING 2"
-
-msgid "Heading 3"
-msgstr "ヘADING 3"
-
-msgid "Image"
-msgstr "画像"
-
-msgid "Just start typing with plain text."
-msgstr "plain textを入力してください。"
-
-msgid "Maintenance Dispatch"
-msgstr "メンテナンス派遣"
-
-msgid "Maintenance dispatch created"
-msgstr "メンテナンス指派が作成されました"
-
-msgid "Maintenance for {0}"
-msgstr "{0}のメンテナンス"
-
-msgid "Material"
-msgstr "素材"
-
-msgid "Material and parent ID are required to unconsume"
-msgstr "材料と親IDは必須です"
-
-msgid "Medium section heading."
-msgstr "中級セクションヘッダー"
-
-msgid "New {0}"
-msgstr "新規{0}"
-
-msgid "No consumed materials"
-msgstr "消費された原材料なし"
-
-msgid "No production logs"
-msgstr "生産ログがありません"
-
-msgid "Numbered List"
-msgstr "番号付けリスト"
-
-msgid "of the selected"
-msgstr "選択した中の"
-
-msgid "Override required"
-msgstr "オーバライドが必要"
-
-msgid "Parent tracking ID is required for batch tracked items."
-msgstr "バッチ追跡項目には親追跡IDが必要です。"
-
-msgid "Parent tracking ID is required for serial tracked items."
-msgstr "シリアルトラッキングのためには親追跡IDが必要です。"
-
-msgid "Pickup suggestions:"
-msgstr "工程払い出し候補:"
-
-msgid "Please select a batch to unconsume"
-msgstr "バッチを選択してください"
-
-msgid "Please select an item to issue."
-msgstr "発行する項目を選択してください。"
-
-msgid "Please select at least one item to unconsume"
-msgstr "1個以上を選択してください取消を解きます"
-
-msgid "Press '/' for commands"
-msgstr "コマンドは「/」で呼び出します"
-
-msgid "Print Label"
-msgstr "ラベルを印刷"
-
-msgid "process pickup"
-msgstr "プロセスピックアップ"
-
-msgid "Process Pickups"
-msgstr "工程払い出し"
-
-msgid "production"
-msgstr "生産"
-
-msgid "Production"
-msgstr "生産"
-
-msgid "Production Logs"
-msgstr "生産ログ"
-
-msgid "Pull from Inventory"
-msgstr "在庫からpullする"
-
-msgid "Quantity cannot exceed available quantity ({0})"
-msgstr "数量は可用数量({0})を超えてはいけません"
-
-msgid "Reason for issuing expired stock"
-msgstr "有効期限切れの在庫発出理由"
-
-msgid "Record Pickup"
-msgstr "工程払い出しを記録"
-
-msgid "Record Quantity"
-msgstr "レコード数量"
-
-msgid "remaining"
-msgstr "残り"
-
-msgid "Remove Batch Number"
-msgstr "バッチ番号を削除"
-
-msgid "Remove Serial Number"
-msgstr "シリアル番号を削除"
-
-msgid "rework"
-msgstr "再加工"
-
-msgid "Scan batch number"
-msgstr "バッチ番号をスキャンします"
-
-msgid "scrap"
-msgstr "廃棄物"
-
-msgid "Select batch number"
-msgstr "バッチ番号を選択してください"
-
-msgid "Select batch to unconsume"
-msgstr "バッチを選択して取り消しを解除します"
-
-msgid "Select Serial Number {0}"
-msgstr "シリアルナンバー{0}を選択"
-
-msgid "Serial {0}"
-msgstr "シリアル {0}"
-
-msgid "Serial number is {0}"
-msgstr "シリアル番号は{0}"
-
-msgid "Serial: {0}"
-msgstr "シリアル：{0}"
-
-msgid "serials"
-msgstr "シリアル番号"
-
-msgid "Severity"
-msgstr "Severity"
-
-msgid "Small section heading."
-msgstr "小見出し"
-
-msgid "Start Time"
-msgstr "開始時間"
-
-msgid "Suspected Failure Mode"
-msgstr "疑いworthy失敗モード"
-
-msgid "Text"
-msgstr "テキスト"
-
-msgid ""
-"The remaining quantity will be removed from inventory and issued to the job"
-msgstr "残量は在庫から削除され、作業に発行されます"
-
-msgid "There are no consumed materials to unconsume."
-msgstr "未消費する材料はありません。"
-
-msgid "To-do List"
-msgstr "ToDoリスト"
-
-msgid "Total Process Pickups"
-msgstr "工程払い出し合計"
-
-msgid "Total Production"
-msgstr "総生産量"
-
-msgid "Total Rework"
-msgstr "総計リワーク"
-
-msgid "Total Scrap"
-msgstr "総合不良"
-
-msgid "Track tasks with a to-do list."
-msgstr "ToDoリストでタスクを追跡します。"
-
-msgid "Tracking Labels"
-msgstr "追跡ラベル"
-
-msgid "Unconsume"
-msgstr "未消費"
-
-msgid "Upload an image from your computer."
-msgstr "コンピュータから画像をアップロードしてください。"
-
-msgid "View Active Maintenance"
-msgstr "アクティブな保守を表示"
