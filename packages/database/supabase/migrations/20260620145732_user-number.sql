@@ -1,9 +1,9 @@
 -- Add optional number field to user table
 ALTER TABLE "public"."user"
-ADD COLUMN "number" TEXT;
+ADD COLUMN IF NOT EXISTS "number" TEXT;
 
 -- Create index for number field for faster lookups
-CREATE INDEX "idx_user_number" ON "public"."user" ("number");
+CREATE INDEX IF NOT EXISTS "idx_user_number" ON "public"."user" ("number");
 
 -- Add comment
 COMMENT ON COLUMN "public"."user"."number" IS 'Optional human-readable number for the user, can be auto-generated or custom';
