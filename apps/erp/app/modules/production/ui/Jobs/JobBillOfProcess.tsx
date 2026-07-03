@@ -203,6 +203,7 @@ import {
 import { ConfigParamsReportedTargetTable } from "./ConfigParamsReportedTargetTable";
 import { JobOperationStatus, JobOperationTags } from "./JobOperationStatus";
 import { OperationDueDatePicker } from "./OperationDueDatePicker";
+import { ProcessPickupDispositionDrawer } from "./ProcessPickupDispositionDrawer";
 import { ProductionQuantityDispositionDrawer } from "./ProductionQuantityDispositionDrawer";
 import { ProductionQuantityReportHistoryDrawer } from "./ProductionQuantityReportHistoryDrawer";
 import {
@@ -528,11 +529,13 @@ const EmployeeProductionLogsView = ({
   loadMorePickups,
   loadMoreQuantityReports,
   canEditQuantityReport,
+  canEditPickup,
   onEditReport,
   onHistoryReport,
   onEditSupplierReport,
   onHistorySupplierReport,
   onCreateSupplierPo,
+  onEditPickup,
   creatingPoReportId,
   canCreatePo
 }: {
@@ -543,6 +546,7 @@ const EmployeeProductionLogsView = ({
   loadMorePickups: () => Promise<void>;
   loadMoreQuantityReports: () => Promise<void>;
   canEditQuantityReport: boolean;
+  canEditPickup: boolean;
   onEditReport: (report: ProductionQuantityReportWithLines) => void;
   onHistoryReport: (report: ProductionQuantityReportWithLines) => void;
   onEditSupplierReport: (
@@ -554,6 +558,7 @@ const EmployeeProductionLogsView = ({
   onCreateSupplierPo: (
     report: JobOperationSupplierQuantityReportWithLines
   ) => void;
+  onEditPickup: (pickup: OperationPickup) => void;
   creatingPoReportId: string | null;
   canCreatePo: boolean;
 }) => {
@@ -754,36 +759,53 @@ const EmployeeProductionLogsView = ({
                       {/* White row: total badge, time, reporter (icon only) at the end */}
                       <HStack
                         spacing={0}
-                        className="w-full items-center text-sm px-1 gap-x-2 gap-y-1 flex-wrap"
+                        className="w-full justify-between items-center text-sm px-1 gap-x-2 gap-y-1 flex-wrap"
                       >
-                        <Badge
-                          variant="outline"
-                          className="text-xs font-medium"
+                        <HStack
+                          spacing={0}
+                          className="items-center gap-x-2 gap-y-1 flex-wrap"
                         >
-                          <Trans>Total</Trans>: {pickup.pickup.quantity}
-                        </Badge>
-                        <span className="text-muted-foreground">
-                          {formatDateTime(pickup.createdAt)}
-                        </span>
-                        <HStack spacing={0} className="items-center gap-1.5">
+                          <Badge
+                            variant="outline"
+                            className="text-xs font-medium"
+                          >
+                            <Trans>Total</Trans>: {pickup.pickup.quantity}
+                          </Badge>
                           <span className="text-muted-foreground">
-                            <Trans>Reporter</Trans>
+                            {formatDateTime(pickup.createdAt)}
                           </span>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <span className="cursor-help">
-                                <EmployeeAvatar
-                                  employeeId={pickup.pickup.createdBy}
-                                  size="xs"
-                                  withName={false}
-                                />
-                              </span>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              {reporterName(pickup.pickup.createdBy)}
-                            </TooltipContent>
-                          </Tooltip>
+                          <HStack spacing={0} className="items-center gap-1.5">
+                            <span className="text-muted-foreground">
+                              <Trans>Reporter</Trans>
+                            </span>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="cursor-help">
+                                  <EmployeeAvatar
+                                    employeeId={pickup.pickup.createdBy}
+                                    size="xs"
+                                    withName={false}
+                                  />
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                {reporterName(pickup.pickup.createdBy)}
+                              </TooltipContent>
+                            </Tooltip>
+                          </HStack>
                         </HStack>
+                        {canEditPickup && pickup.kind === "employee" && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            aria-label="Edit pickup"
+                            onClick={() => onEditPickup(pickup.pickup)}
+                            className="h-7 w-7 p-0 transition-transform active:scale-[0.96]"
+                          >
+                            <LuPencil className="h-4 w-4" />
+                          </Button>
+                        )}
                       </HStack>
                       {/* Grey box: configs (left) + pickup | total (right) */}
                       <HStack className="w-full justify-between items-center bg-muted px-3 py-2.5 rounded-lg gap-2">
@@ -1278,6 +1300,8 @@ const JobBillOfProcess = ({
   const [operationQuantitySummary, setOperationQuantitySummary] =
     useState<OperationQuantitySummaryData | null>(null);
   const [quantityReportCount, setQuantityReportCount] = useState<number>(0);
+  const [dispositionPickup, setDispositionPickup] =
+    useState<OperationPickup | null>(null);
   const [dispositionReport, setDispositionReport] =
     useState<ProductionQuantityReportWithLines | null>(null);
   const [supplierDispositionReport, setSupplierDispositionReport] =
@@ -2242,6 +2266,7 @@ const JobBillOfProcess = ({
               loadMorePickups={loadMorePickups}
               loadMoreQuantityReports={loadMoreQuantityReports}
               canEditQuantityReport={canEditQuantityReport}
+              canEditPickup={canEditQuantityReport}
               onEditReport={(report) => setDispositionReport(report)}
               onHistoryReport={(report) => setHistoryReport(report)}
               onEditSupplierReport={(report) =>
@@ -2250,6 +2275,7 @@ const JobBillOfProcess = ({
               onHistorySupplierReport={(report) =>
                 setSupplierHistoryReport(report)
               }
+              onEditPickup={(pickup) => setDispositionPickup(pickup)}
               creatingPoReportId={creatingPoReportId}
               canCreatePo={permissions.can("create", "purchasing")}
               onCreateSupplierPo={async (report) => {
@@ -2445,6 +2471,38 @@ const JobBillOfProcess = ({
 
   const quantityDrawerElements = (
     <>
+      {dispositionPickup ? (
+        <ProcessPickupDispositionDrawer
+          pickup={dispositionPickup}
+          open
+          onClose={() => setDispositionPickup(null)}
+          onSaved={(newQuantity, newNotes) => {
+            setPickups((prev) =>
+              prev.map((p) =>
+                p.id === dispositionPickup.id && p.kind === "employee"
+                  ? {
+                      ...p,
+                      pickup: {
+                        ...p.pickup,
+                        quantity: newQuantity,
+                        notes: newNotes
+                      }
+                    }
+                  : p
+              )
+            );
+            setDispositionPickup(null);
+          }}
+          onDeleted={() => {
+            setPickups((prev) =>
+              prev.filter((p) => p.id !== dispositionPickup.id)
+            );
+            setPickupCount((count) => Math.max(0, count - 1));
+            setDispositionPickup(null);
+          }}
+          canDelete={!isDisabled && permissions.can("delete", "production")}
+        />
+      ) : null}
       {dispositionReport ? (
         <ProductionQuantityDispositionDrawer
           report={dispositionReport}
