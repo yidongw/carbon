@@ -23,7 +23,7 @@ import {
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { PostgrestResponse } from "@supabase/supabase-js";
 import { nanoid } from "nanoid";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { useDropzone } from "react-dropzone";
 import { LuCloudUpload } from "react-icons/lu";
@@ -54,6 +54,7 @@ import {
   partValidator
 } from "../../items.models";
 import ItemStorageFields from "../Item/ItemStorageFields";
+import ItemThumbnailField from "../Item/ItemThumbnailField";
 
 type PartFormProps = {
   initialValues: z.infer<typeof partValidator> & { tags?: string[] };
@@ -77,6 +78,7 @@ const PartForm = ({ initialValues, type = "card", onClose }: PartFormProps) => {
   const [modelUploadId, setModelUploadId] = useState<string | null>(null);
   const [modelIsUploading, setModelIsUploading] = useState(false);
   const [modelFile, setModelFile] = useState<File | null>(null);
+
   const { carbon } = useCarbon();
   const {
     company: { id: companyId }
@@ -180,6 +182,17 @@ const PartForm = ({ initialValues, type = "card", onClose }: PartFormProps) => {
   const permissions = usePermissions();
   const isEditing = !!initialValues.id;
 
+  // Keep the latest id readable inside async callbacks without re-creating them.
+  const idRef = useRef(id);
+  idRef.current = id;
+
+  // The uploaded image name becomes the default Part ID when one isn't set yet.
+  const applyIdFromThumbnail = (fileName: string) => {
+    if (idRef.current) return;
+    const baseName = fileName.replace(/\.[^/.]+$/, "").trim();
+    if (baseName) onIdChange(baseName.toUpperCase());
+  };
+
   const translateItemTrackingType = (v: string) =>
     v === "Inventory"
       ? t`Inventory`
@@ -251,6 +264,9 @@ const PartForm = ({ initialValues, type = "card", onClose }: PartFormProps) => {
             <ModalCardBody>
               <Hidden name="type" value={type} />
               <Hidden name="modelUploadId" value={modelUploadId ?? ""} />
+              {!isEditing && (
+                <ItemThumbnailField onUpload={applyIdFromThumbnail} />
+              )}
               {!isEditing && replenishmentSystem === "Make" && (
                 <Hidden name="unitCost" value={initialValues.unitCost} />
               )}

@@ -46,6 +46,7 @@ import {
   materialValidatorWithGeneratedIds
 } from "../../items.models";
 import ItemStorageFields from "../Item/ItemStorageFields";
+import ItemThumbnailField from "../Item/ItemThumbnailField";
 
 type MaterialFormProps = {
   initialValues: z.infer<typeof materialValidator> & { tags?: string[] };
@@ -176,6 +177,7 @@ const MaterialForm = ({
                   <Hidden name="name" value={generatedName} />
                 </>
               )}
+              <ItemThumbnailField />
               <div
                 className={cn(
                   "grid w-full gap-x-8 gap-y-4 items-start",

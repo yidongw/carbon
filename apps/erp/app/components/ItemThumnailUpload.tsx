@@ -1,9 +1,11 @@
 import { useCarbon } from "@carbon/auth";
-import { Button, File as FileUpload, HStack, toast } from "@carbon/react";
+import { Button, cn, File as FileUpload, HStack, toast } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { nanoid } from "nanoid";
 import type { ChangeEvent } from "react";
 import { useCallback, useEffect, useState } from "react";
+import { useDropzone } from "react-dropzone";
+import { LuCloudUpload } from "react-icons/lu";
 import { useUser } from "~/hooks";
 import { getPrivateUrl } from "~/utils/path";
 import { createUploadToast, resizeImageWithProgress } from "~/utils/upload";
@@ -68,153 +70,191 @@ export function ItemThumbnailUpload({
     toast.success(t`Thumbnail removed`);
   }, [carbon, itemId, modelId, t]);
 
-  const onFileChange = useCallback(
-    async (e: ChangeEvent<HTMLInputElement>) => {
+  const processFile = useCallback(
+    async (file: File) => {
       if (!carbon) {
         toast.error(t`Carbon client not found`);
         return;
       }
-      const file = e.target.files?.[0];
-      if (file) {
-        const uploadToast = createUploadToast({
-          id: `thumbnail-upload-${itemId}`,
-          label: (pct) => `${t`Uploading ${file.name}`} (${pct}%)`
+
+      const uploadToast = createUploadToast({
+        id: `thumbnail-upload-${itemId}`,
+        label: (pct) => `${t`Uploading ${file.name}`} (${pct}%)`
+      });
+
+      try {
+        const { status, blob, contentType } = await resizeImageWithProgress(
+          file,
+          {},
+          uploadToast.onProgress
+        );
+
+        if (status < 200 || status >= 300) {
+          let errorMessage = "Failed to resize image";
+          if (contentType?.includes("application/json")) {
+            try {
+              const errorData = JSON.parse(await blob.text());
+              if (errorData.error) errorMessage = errorData.error;
+            } catch {
+              // keep the generic message
+            }
+          }
+          throw new Error(errorMessage);
+        }
+
+        const resolvedType = contentType || "image/png";
+        const fileExtension = resolvedType.includes("image/jpeg")
+          ? "jpg"
+          : "png";
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          if (event.target?.result) {
+            const base64String = event.target.result as string;
+            setThumbnailPath(base64String);
+          }
+        };
+        reader.readAsDataURL(blob);
+
+        const fileName = `${nanoid()}.${fileExtension}`;
+        const thumbnailFile = new File([blob], fileName, {
+          type: resolvedType
         });
 
-        try {
-          const { status, blob, contentType } = await resizeImageWithProgress(
-            file,
-            {},
-            uploadToast.onProgress
+        const { data, error } = await carbon.storage
+          .from("private")
+          .upload(
+            `${company.id}/thumbnails/${itemId}/${fileName}`,
+            thumbnailFile,
+            {
+              upsert: true
+            }
           );
 
-          if (status < 200 || status >= 300) {
-            let errorMessage = "Failed to resize image";
-            if (contentType?.includes("application/json")) {
-              try {
-                const errorData = JSON.parse(await blob.text());
-                if (errorData.error) errorMessage = errorData.error;
-              } catch {
-                // keep the generic message
-              }
-            }
-            throw new Error(errorMessage);
-          }
+        if (error) {
+          console.error("Failed to upload thumbnail to storage:", error);
+          uploadToast.error(t`Failed to upload thumbnail`);
+          return;
+        }
 
-          const resolvedType = contentType || "image/png";
-          const fileExtension = resolvedType.includes("image/jpeg")
-            ? "jpg"
-            : "png";
+        const result = await carbon
+          .from("item")
+          .update({
+            thumbnailPath: data?.path
+          })
+          .eq("id", itemId);
 
-          const reader = new FileReader();
-          reader.onload = (event) => {
-            if (event.target?.result) {
-              const base64String = event.target.result as string;
-              setThumbnailPath(base64String);
-            }
-          };
-          reader.readAsDataURL(blob);
+        if (result.error) {
+          uploadToast.error(t`Failed to update thumbnail path`);
+          return;
+        }
 
-          const fileName = `${nanoid()}.${fileExtension}`;
-          const thumbnailFile = new File([blob], fileName, {
-            type: resolvedType
-          });
-
-          const { data, error } = await carbon.storage
-            .from("private")
-            .upload(
-              `${company.id}/thumbnails/${itemId}/${fileName}`,
-              thumbnailFile,
-              {
-                upsert: true
-              }
-            );
-
-          if (error) {
-            console.error("Failed to upload thumbnail to storage:", error);
-            uploadToast.error(t`Failed to upload thumbnail`);
-            return;
-          }
-
-          const result = await carbon
-            .from("item")
+        if (modelId) {
+          const modelResult = await carbon
+            .from("modelUpload")
             .update({
               thumbnailPath: data?.path
             })
-            .eq("id", itemId);
+            .eq("id", modelId);
 
-          if (result.error) {
-            uploadToast.error(t`Failed to update thumbnail path`);
-            return;
+          if (modelResult.error) {
+            console.error(
+              "Failed to update model thumbnail path:",
+              modelResult.error
+            );
           }
-
-          if (modelId) {
-            const modelResult = await carbon
-              .from("modelUpload")
-              .update({
-                thumbnailPath: data?.path
-              })
-              .eq("id", modelId);
-
-            if (modelResult.error) {
-              console.error(
-                "Failed to update model thumbnail path:",
-                modelResult.error
-              );
-            }
-          }
-
-          if (data) {
-            setThumbnailPath(getPrivateUrl(data.path));
-          }
-          uploadToast.dismiss();
-        } catch (error) {
-          const errorMessage =
-            error instanceof Error ? error.message : "Unknown error";
-          console.error("Image processing error:", error);
-          uploadToast.error(t`Failed to resize image: ${errorMessage}`);
         }
+
+        if (data) {
+          setThumbnailPath(getPrivateUrl(data.path));
+        }
+        uploadToast.dismiss();
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : "Unknown error";
+        console.error("Image processing error:", error);
+        uploadToast.error(t`Failed to resize image: ${errorMessage}`);
       }
     },
     [carbon, company.id, itemId, modelId, t]
   );
 
+  const onFileChange = useCallback(
+    async (e: ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) processFile(file);
+    },
+    [processFile]
+  );
+
+  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
+    multiple: false,
+    noClick: true,
+    noKeyboard: true,
+    accept: { "image/*": [] },
+    onDropAccepted: (acceptedFiles) => {
+      if (acceptedFiles[0]) processFile(acceptedFiles[0]);
+    },
+    onDropRejected: () => {
+      toast.error(t`File type not supported`);
+    }
+  });
+
   return (
-    <div className="relative w-full aspect-square">
+    <div
+      {...getRootProps()}
+      className="relative w-full aspect-square rounded-lg"
+    >
+      <input {...getInputProps()} />
       {thumbnailPath ? (
-        <img
-          alt="thumbnail"
-          src={thumbnailPath}
-          className="w-full h-full object-cover bg-gradient-to-bl from-muted to-muted/40 rounded-lg border border-border"
-        />
+        <>
+          <img
+            alt="thumbnail"
+            src={thumbnailPath}
+            className="w-full h-full object-cover bg-gradient-to-bl from-muted to-muted/40 rounded-lg border border-border"
+          />
+          {isDragActive && (
+            <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-background/70 border-2 border-dashed border-primary">
+              <span className="text-sm font-medium text-primary">
+                <Trans>Drop image to upload</Trans>
+              </span>
+            </div>
+          )}
+          <HStack className="absolute bottom-2 right-2">
+            <Button
+              variant="secondary"
+              className="bg-card opacity-100"
+              size="sm"
+              onClick={onFileRemove}
+            >
+              <Trans>Remove</Trans>
+            </Button>
+            <FileUpload
+              accept="image/*"
+              variant="secondary"
+              size="sm"
+              className="bg-card opacity-100"
+              onChange={onFileChange}
+            >
+              <Trans>Upload</Trans>
+            </FileUpload>
+          </HStack>
+        </>
       ) : (
-        <div className="w-full h-full bg-gradient-to-bl from-muted to-muted/40 rounded-lg border border-border flex items-center justify-center">
-          <span className="text-muted-foreground">
-            <Trans>No image</Trans>
-          </span>
-        </div>
-      )}
-      <HStack className="absolute bottom-2 right-2">
-        {thumbnailPath && (
-          <Button
-            variant="secondary"
-            className="bg-card opacity-100"
-            size="sm"
-            onClick={onFileRemove}
-          >
-            <Trans>Remove</Trans>
-          </Button>
-        )}
-        <FileUpload
-          accept="image/*"
-          variant="secondary"
-          size="sm"
-          className="bg-card opacity-100"
-          onChange={onFileChange}
+        <button
+          type="button"
+          onClick={open}
+          className={cn(
+            "w-full h-full flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed p-6 text-center hover:border-primary hover:bg-primary/10",
+            isDragActive ? "border-primary bg-primary/10" : "border-card"
+          )}
         >
-          <Trans>Upload</Trans>
-        </FileUpload>
-      </HStack>
+          <LuCloudUpload className="h-12 w-12 text-muted-foreground" />
+          <p className="text-sm text-muted-foreground">
+            <Trans>Drag and drop an image here, or click to select</Trans>
+          </p>
+        </button>
+      )}
     </div>
   );
 }

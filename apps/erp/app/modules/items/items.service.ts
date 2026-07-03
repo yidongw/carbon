@@ -2891,6 +2891,7 @@ export async function upsertConsumable(
         itemTrackingType: consumable.itemTrackingType,
         unitOfMeasureCode: consumable.unitOfMeasureCode,
         active: true,
+        thumbnailPath: consumable.thumbnailPath,
         companyId: consumable.companyId,
         createdBy: consumable.createdBy
       })
@@ -3034,6 +3035,7 @@ export async function upsertPart(
         unitOfMeasureCode: part.unitOfMeasureCode,
         active: true,
         modelUploadId: part.modelUploadId,
+        thumbnailPath: part.thumbnailPath,
         companyId: part.companyId,
         createdBy: part.createdBy
       })
@@ -3682,6 +3684,7 @@ export async function upsertMaterial(
               itemTrackingType: material.itemTrackingType,
               unitOfMeasureCode: material.unitOfMeasureCode,
               active: true,
+              thumbnailPath: material.thumbnailPath,
               revision: size,
               companyId: material.companyId,
               createdBy: material.createdBy
@@ -3728,6 +3731,7 @@ export async function upsertMaterial(
           itemTrackingType: material.itemTrackingType,
           unitOfMeasureCode: material.unitOfMeasureCode,
           active: true,
+          thumbnailPath: material.thumbnailPath,
           companyId: material.companyId,
           createdBy: material.createdBy
         })
@@ -4250,6 +4254,7 @@ export async function upsertTool(
         unitOfMeasureCode: tool.unitOfMeasureCode,
         active: true,
         modelUploadId: tool.modelUploadId,
+        thumbnailPath: tool.thumbnailPath,
         companyId: tool.companyId,
         createdBy: tool.createdBy
       })

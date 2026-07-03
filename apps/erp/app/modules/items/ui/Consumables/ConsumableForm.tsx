@@ -13,7 +13,7 @@ import {
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { PostgrestResponse } from "@supabase/supabase-js";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFetcher } from "react-router";
 import type { z } from "zod";
 import {
@@ -34,6 +34,7 @@ import { useNextItemId, usePermissions, useUser } from "~/hooks";
 import { path } from "~/utils/path";
 import { consumableValidator, itemTrackingTypes } from "../../items.models";
 import ItemStorageFields from "../Item/ItemStorageFields";
+import ItemThumbnailField from "../Item/ItemThumbnailField";
 
 type ConsumableFormProps = {
   initialValues: z.infer<typeof consumableValidator> & { tags: string[] };
@@ -72,6 +73,17 @@ const ConsumableForm = ({
   const { id, onIdChange, loading } = useNextItemId("Consumable");
   const permissions = usePermissions();
   const isEditing = !!initialValues.id;
+
+  // Keep the latest id readable inside async callbacks without re-creating them.
+  const idRef = useRef(id);
+  idRef.current = id;
+
+  // The uploaded image name becomes the default Consumable ID when unset.
+  const applyIdFromThumbnail = (fileName: string) => {
+    if (idRef.current) return;
+    const baseName = fileName.replace(/\.[^/.]+$/, "").trim();
+    if (baseName) onIdChange(baseName.toUpperCase());
+  };
 
   const [defaultMethodType, setDefaultMethodType] = useState<string>(
     initialValues.defaultMethodType ?? "Purchase to Order"
@@ -120,6 +132,9 @@ const ConsumableForm = ({
             <ModalCardBody>
               <Hidden name="type" value={type} />
               <Hidden name="replenishmentSystem" value="Buy" />
+              {!isEditing && (
+                <ItemThumbnailField onUpload={applyIdFromThumbnail} />
+              )}
               <div
                 className={cn(
                   "grid w-full gap-x-8 gap-y-4",
