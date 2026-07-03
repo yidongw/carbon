@@ -453,7 +453,7 @@ msgid "Add Risk"
 msgstr "Agregar Riesgo"
 
 msgid "Add Row"
-msgstr "Añar Fila"
+msgstr "Agregar Fila"
 
 msgid "Add rule"
 msgstr "Añar regla"
@@ -1480,7 +1480,7 @@ msgid "Carrier Account"
 msgstr "Cuenta de Transportista"
 
 msgid "Case"
-msgstr "Caso"
+msgstr "Cajón"
 
 msgid "Cash & Bank"
 msgstr "Caja y Banco"
@@ -3947,7 +3947,7 @@ msgid "Failed to load inventory."
 msgstr "Falló al cargar el inventario."
 
 msgid "Failed to load issues."
-msgstr "Falló al cargar los problemas.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Falló al cargar los problemas."
 
 msgid "Failed to load item data"
 msgstr "Error al cargar los datos del artículo"
@@ -3974,7 +3974,7 @@ msgid "Failed to load people."
 msgstr "Falló al cargar personas."
 
 msgid "Failed to load purchase invoices."
-msgstr "Falló al cargar las facturas de compra.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Falló al cargar las facturas de compra."
 
 msgid "Failed to load purchase order lines"
 msgstr "Error al cargar las líneas de orden de compra"
@@ -3986,7 +3986,7 @@ msgid "Failed to load purchase orders."
 msgstr ""
 
 msgid "Failed to load quotes."
-msgstr "Falló al cargar las cotizaciones.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Falló al cargar las cotizaciones."
 
 msgid "Failed to load receipt lines"
 msgstr "Error al cargar las líneas de recepción"
@@ -4001,7 +4001,7 @@ msgid "Failed to load RFQs."
 msgstr "Falló al cargar las OFP."
 
 msgid "Failed to load sales invoices."
-msgstr "Falló al cargar las facturas de ventas.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Falló al cargar las facturas de ventas."
 
 msgid "Failed to load sales order lines"
 msgstr "Error al cargar las líneas de pedido de venta"
@@ -4022,7 +4022,7 @@ msgid "Failed to load shipments."
 msgstr ""
 
 msgid "Failed to load suggestions."
-msgstr "Falló al cargar sugerencias.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Falló al cargar sugerencias."
 
 msgid "Failed to load supplier part details"
 msgstr "Error al cargar los detalles de la pieza del proveedor"
@@ -4031,7 +4031,7 @@ msgid "Failed to load suppliers."
 msgstr ""
 
 msgid "Failed to load tools."
-msgstr "Falló al cargar las herramientas.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Falló al cargar las herramientas."
 
 msgid "Failed to load tracked entities"
 msgstr "No se pudieron cargar las entidades rastreadas"
@@ -5521,7 +5521,7 @@ msgid "Message"
 msgstr "Mensaje"
 
 msgid "Meter"
-msgstr "Medidor"
+msgstr "Metro"
 
 msgid "Method"
 msgstr "Método"
@@ -6900,10 +6900,10 @@ msgid "Please enter your name"
 msgstr "Por favor, ingrese su nombre"
 
 msgid "Please fill out all required fields"
-msgstr "Por favor, completa todos los campos obligatorios<<<<<<< HEAD======="
+msgstr "Por favor, completa todos los campos obligatorios"
 
 msgid "Please open this link in the same browser where you requested sign-in."
-msgstr "Por favor, abre este enlace en el mismo navegador donde solicitaste iniciar sesión.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Por favor, abre este enlace en el mismo navegador donde solicitaste iniciar sesión."
 
 msgid "Please save the operation before adding parameters."
 msgstr "Por favor, guarde la operación antes de agregar parámetros."
@@ -9445,7 +9445,7 @@ msgid "Tolerance (+/-)"
 msgstr "Tolerancia (+/-)"
 
 msgid "Ton"
-msgstr "Ton"
+msgstr "Tonelada"
 
 msgid "Tool"
 msgstr "Herramienta"
@@ -10286,7 +10286,7 @@ msgid "Would Match"
 msgstr "Coincide"
 
 msgid "Yard"
-msgstr "Trabajador/a no especializado/a"
+msgstr "Yarda"
 
 msgid "Year"
 msgstr "Año"

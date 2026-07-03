@@ -543,7 +543,7 @@ msgid "Log In"
 msgstr "登录"
 
 msgid "Log Pickup"
-msgstr "收货登记"
+msgstr "工序领料登记"
 
 msgid "Log Rework"
 msgstr "记录返工"

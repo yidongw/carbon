@@ -543,7 +543,7 @@ msgid "Log In"
 msgstr "Zaloguj się"
 
 msgid "Log Pickup"
-msgstr "Odbiór paczki"
+msgstr "Zarejestruj wydanie do procesu"
 
 msgid "Log Rework"
 msgstr "Rejestruj poprawki"

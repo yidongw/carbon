@@ -1315,7 +1315,7 @@ msgid "Bot verification failed. Please try again."
 msgstr "Vérification du bot échouée. Veuillez essayer à nouveau."
 
 msgid "Box"
-msgstr "Femelle"
+msgstr "Boîte"
 
 msgid "Breadcrumb"
 msgstr "Fil d'Ariane"
@@ -1480,7 +1480,7 @@ msgid "Carrier Account"
 msgstr "Compte de transporteur"
 
 msgid "Case"
-msgstr "Affaire"
+msgstr "Caisse"
 
 msgid "Cash & Bank"
 msgstr "Caissière et Banque"
@@ -3075,7 +3075,7 @@ msgid "Drop your file here, or click to browse."
 msgstr "Déposez votre fichier ici, ou cliquez pour parcourir."
 
 msgid "Drum"
-msgstr "Tambour"
+msgstr "Fût"
 
 msgid "Due"
 msgstr ""
@@ -3129,7 +3129,7 @@ msgid "e.g. Zebra 2x1"
 msgstr ""
 
 msgid "Each"
-msgstr "Pour chaque"
+msgstr "Pièce"
 
 #. placeholder {0}: zeroQuantityLine.type
 msgid "Each line must have a quantity greater than zero ({0})"
@@ -3947,7 +3947,7 @@ msgid "Failed to load inventory."
 msgstr "Échec du chargement des stocks."
 
 msgid "Failed to load issues."
-msgstr "Échec du chargement des problèmes.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Échec du chargement des problèmes."
 
 msgid "Failed to load item data"
 msgstr "Impossible de charger les données de l'article"
@@ -3974,7 +3974,7 @@ msgid "Failed to load people."
 msgstr "Échec du chargement des personnes."
 
 msgid "Failed to load purchase invoices."
-msgstr "Échec du chargement des factures d'achat.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Échec du chargement des factures d'achat."
 
 msgid "Failed to load purchase order lines"
 msgstr "Impossible de charger les lignes de commande d'achat"
@@ -3986,7 +3986,7 @@ msgid "Failed to load purchase orders."
 msgstr ""
 
 msgid "Failed to load quotes."
-msgstr "Échec du chargement des devis.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Échec du chargement des devis."
 
 msgid "Failed to load receipt lines"
 msgstr "Échec du chargement des lignes de réception"
@@ -4001,7 +4001,7 @@ msgid "Failed to load RFQs."
 msgstr "Échec du chargement des offres de prix."
 
 msgid "Failed to load sales invoices."
-msgstr "Échec du chargement des factures de vente.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Échec du chargement des factures de vente."
 
 msgid "Failed to load sales order lines"
 msgstr "Impossible de charger les lignes de commande client"
@@ -4022,7 +4022,7 @@ msgid "Failed to load shipments."
 msgstr ""
 
 msgid "Failed to load suggestions."
-msgstr "Échec du chargement des suggestions.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Échec du chargement des suggestions."
 
 msgid "Failed to load supplier part details"
 msgstr "Impossible de charger les détails de la pièce fournisseur"
@@ -4031,7 +4031,7 @@ msgid "Failed to load suppliers."
 msgstr ""
 
 msgid "Failed to load tools."
-msgstr "Échec du chargement des outils.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Échec du chargement des outils."
 
 msgid "Failed to load tracked entities"
 msgstr "Impossible de charger les entités suivies"
@@ -4343,7 +4343,7 @@ msgid "Gains and Losses on Disposal"
 msgstr "Profits/pertes sur les cessions"
 
 msgid "Gallon"
-msgstr "Bidon"
+msgstr "Gallon"
 
 msgid "Gauge"
 msgstr "Jauge"
@@ -5521,7 +5521,7 @@ msgid "Message"
 msgstr "Message"
 
 msgid "Meter"
-msgstr "Compteur"
+msgstr "Mètre"
 
 msgid "Method"
 msgstr "Méthode"
@@ -6541,7 +6541,7 @@ msgid "Other Type"
 msgstr "Autre Type"
 
 msgid "Ounce"
-msgstr "Une fois"
+msgstr "Once"
 
 msgid "Outgoing"
 msgstr "Sortant"
@@ -6900,10 +6900,10 @@ msgid "Please enter your name"
 msgstr "Veuillez entrer votre nom"
 
 msgid "Please fill out all required fields"
-msgstr "Veuillez remplir tous les champs obligatoires<<<<<<< HEAD======="
+msgstr "Veuillez remplir tous les champs obligatoires"
 
 msgid "Please open this link in the same browser where you requested sign-in."
-msgstr "Veuillez ouvrir ce lien dans le même navigateur où vous avez demandé la connexion.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Veuillez ouvrir ce lien dans le même navigateur où vous avez demandé la connexion."
 
 msgid "Please save the operation before adding parameters."
 msgstr "Veuillez enregistrer l'opération avant d'ajouter des paramètres."
@@ -10286,7 +10286,7 @@ msgid "Would Match"
 msgstr "Matchrait"
 
 msgid "Yard"
-msgstr "Yard"
+msgstr "Verge"
 
 msgid "Year"
 msgstr "Année"

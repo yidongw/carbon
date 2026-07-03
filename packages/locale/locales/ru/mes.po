@@ -543,7 +543,7 @@ msgid "Log In"
 msgstr "Войти"
 
 msgid "Log Pickup"
-msgstr "Пicking up log"
+msgstr "Зарегистрировать выдачу в процесс"
 
 msgid "Log Rework"
 msgstr "Записать доработку"

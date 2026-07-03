@@ -543,7 +543,7 @@ msgid "Log In"
 msgstr "दाखिल होना"
 
 msgid "Log Pickup"
-msgstr "लॉग अप"
+msgstr "प्रक्रिया निकासी लॉग करें"
 
 msgid "Log Rework"
 msgstr "रीवर्क लॉग करें"

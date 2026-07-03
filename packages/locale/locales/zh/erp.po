@@ -299,7 +299,7 @@ msgid "Activate Work Center"
 msgstr "激活工作中心"
 
 msgid "Active"
-msgstr "激活"
+msgstr "活跃"
 
 msgid "Active Jobs"
 msgstr "活跃工作"
@@ -1315,7 +1315,7 @@ msgid "Bot verification failed. Please try again."
 msgstr "机器人验证失败，请重试。"
 
 msgid "Box"
-msgstr "箱子"
+msgstr "箱"
 
 msgid "Breadcrumb"
 msgstr "导航"
@@ -1480,7 +1480,7 @@ msgid "Carrier Account"
 msgstr "承运商账户"
 
 msgid "Case"
-msgstr "案例"
+msgstr "盒"
 
 msgid "Cash & Bank"
 msgstr "现金及银行"
@@ -3075,7 +3075,7 @@ msgid "Drop your file here, or click to browse."
 msgstr "拖文件到这里，或点击浏览。"
 
 msgid "Drum"
-msgstr "大桶"
+msgstr "桶"
 
 msgid "Due"
 msgstr ""
@@ -3129,7 +3129,7 @@ msgid "e.g. Zebra 2x1"
 msgstr ""
 
 msgid "Each"
-msgstr "个"
+msgstr "件"
 
 #. placeholder {0}: zeroQuantityLine.type
 msgid "Each line must have a quantity greater than zero ({0})"
@@ -3947,7 +3947,7 @@ msgid "Failed to load inventory."
 msgstr "加载库存失败。"
 
 msgid "Failed to load issues."
-msgstr "加载问题失败。>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "加载问题失败。"
 
 msgid "Failed to load item data"
 msgstr "加载物品数据失败"
@@ -3974,7 +3974,7 @@ msgid "Failed to load people."
 msgstr "加载人员失败。"
 
 msgid "Failed to load purchase invoices."
-msgstr "加载采购发票失败。>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "加载采购发票失败。"
 
 msgid "Failed to load purchase order lines"
 msgstr "加载采购订单行失败"
@@ -3986,7 +3986,7 @@ msgid "Failed to load purchase orders."
 msgstr ""
 
 msgid "Failed to load quotes."
-msgstr "加载报价失败。>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "加载报价失败。"
 
 msgid "Failed to load receipt lines"
 msgstr "加载收货行项目失败"
@@ -4001,7 +4001,7 @@ msgid "Failed to load RFQs."
 msgstr "未能加载询价单。"
 
 msgid "Failed to load sales invoices."
-msgstr "加载销售发票失败。>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "加载销售发票失败。"
 
 msgid "Failed to load sales order lines"
 msgstr "加载销售订单行失败"
@@ -4022,7 +4022,7 @@ msgid "Failed to load shipments."
 msgstr ""
 
 msgid "Failed to load suggestions."
-msgstr "加载建议失败。>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "加载建议失败。"
 
 msgid "Failed to load supplier part details"
 msgstr "加载供应商产品详情失败"
@@ -4031,7 +4031,7 @@ msgid "Failed to load suppliers."
 msgstr ""
 
 msgid "Failed to load tools."
-msgstr "加载工具失败。>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "加载工具失败。"
 
 msgid "Failed to load tracked entities"
 msgstr "加载追踪实体失败"
@@ -4291,7 +4291,7 @@ msgid "Fixed Shelf Life"
 msgstr "固定保质期"
 
 msgid "Foot"
-msgstr "脚"
+msgstr "英尺"
 
 msgid "For growing businesses that need support"
 msgstr "对于成长型企业所需的支援"
@@ -4553,7 +4553,7 @@ msgid "in selected period"
 msgstr "在选定期间"
 
 msgid "Inactive"
-msgstr "无效"
+msgstr "停用"
 
 msgid "Inactive actions will not appear in selection lists"
 msgstr "不活动的动作不会出现在选择列表中"
@@ -6604,7 +6604,7 @@ msgid "Overwrite the target manufacturing method with the quote method"
 msgstr "覆盖目标制造方法为报价制造方法"
 
 msgid "Pack"
-msgstr "包装"
+msgstr "包"
 
 msgid "Packing Slip"
 msgstr "包装单"
@@ -6818,7 +6818,7 @@ msgstr ""
 
 #. placeholder {0}: pickup.quantity
 msgid "picked up {0} units"
-msgstr "拾取了 {0} 个单位"
+msgstr "已领料 {0} 个单位"
 
 msgid "Picking Lines"
 msgstr ""
@@ -6900,10 +6900,10 @@ msgid "Please enter your name"
 msgstr "请输入您的姓名"
 
 msgid "Please fill out all required fields"
-msgstr "请填写所有必填项<<<<<<< HEAD======="
+msgstr "请填写所有必填项"
 
 msgid "Please open this link in the same browser where you requested sign-in."
-msgstr "请在您请求登录的同一浏览器中打开此链接。>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "请在您请求登录的同一浏览器中打开此链接。"
 
 msgid "Please save the operation before adding parameters."
 msgstr "请保存操作再添加参数。"

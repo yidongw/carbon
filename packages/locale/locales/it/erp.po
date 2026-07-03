@@ -453,7 +453,7 @@ msgid "Add Risk"
 msgstr "Aggiungi Rischio"
 
 msgid "Add Row"
-msgstr "Aggiungi riga"
+msgstr "Aggiungi Riga"
 
 msgid "Add rule"
 msgstr "Aggiungi regola"
@@ -1315,7 +1315,7 @@ msgid "Bot verification failed. Please try again."
 msgstr "Verifica del bot fallita. Riprova, per favore."
 
 msgid "Box"
-msgstr "Box"
+msgstr "Scatola"
 
 msgid "Breadcrumb"
 msgstr "Breadcrumb"
@@ -1480,7 +1480,7 @@ msgid "Carrier Account"
 msgstr "Conto Vettore"
 
 msgid "Case"
-msgstr "Caso"
+msgstr "Cassa"
 
 msgid "Cash & Bank"
 msgstr "Denaro e Banca"
@@ -3129,7 +3129,7 @@ msgid "e.g. Zebra 2x1"
 msgstr ""
 
 msgid "Each"
-msgstr "Ciascuno"
+msgstr "Pezzo"
 
 #. placeholder {0}: zeroQuantityLine.type
 msgid "Each line must have a quantity greater than zero ({0})"
@@ -3947,7 +3947,7 @@ msgid "Failed to load inventory."
 msgstr "Fallito caricamento inventario."
 
 msgid "Failed to load issues."
-msgstr "Caricamento degli errori fallito.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Caricamento degli errori fallito."
 
 msgid "Failed to load item data"
 msgstr "Impossibile caricare i dati dell'elemento"
@@ -3974,7 +3974,7 @@ msgid "Failed to load people."
 msgstr "Caricamento persone fallito."
 
 msgid "Failed to load purchase invoices."
-msgstr "Caricamento delle fatture di acquisto fallito.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Caricamento delle fatture di acquisto fallito."
 
 msgid "Failed to load purchase order lines"
 msgstr "Impossibile caricare le righe dell'ordine di acquisto"
@@ -3986,7 +3986,7 @@ msgid "Failed to load purchase orders."
 msgstr ""
 
 msgid "Failed to load quotes."
-msgstr "Caricamento delle offerte fallito.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Caricamento delle offerte fallito."
 
 msgid "Failed to load receipt lines"
 msgstr "Impossibile caricare le righe di ricezione"
@@ -4001,7 +4001,7 @@ msgid "Failed to load RFQs."
 msgstr "Fallito caricamento RFQs."
 
 msgid "Failed to load sales invoices."
-msgstr "Caricamento delle fatture di vendita fallito.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Caricamento delle fatture di vendita fallito."
 
 msgid "Failed to load sales order lines"
 msgstr "Impossibile caricare le righe dell'ordine di vendita"
@@ -4022,7 +4022,7 @@ msgid "Failed to load shipments."
 msgstr ""
 
 msgid "Failed to load suggestions."
-msgstr "Caricamento suggerimenti fallito.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Caricamento suggerimenti fallito."
 
 msgid "Failed to load supplier part details"
 msgstr "Impossibile caricare i dettagli della parte fornitore"
@@ -4031,7 +4031,7 @@ msgid "Failed to load suppliers."
 msgstr ""
 
 msgid "Failed to load tools."
-msgstr "Fallito caricamento strumenti.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Fallito caricamento strumenti."
 
 msgid "Failed to load tracked entities"
 msgstr "Impossibile caricare le entità tracciate"
@@ -4343,7 +4343,7 @@ msgid "Gains and Losses on Disposal"
 msgstr "/minusvalenze da cessione"
 
 msgid "Gallon"
-msgstr "Galloni"
+msgstr "Gallone"
 
 msgid "Gauge"
 msgstr "Calibro"
@@ -4571,7 +4571,7 @@ msgid "Inbox"
 msgstr "Posta in arrivo"
 
 msgid "Inch"
-msgstr "Inch"
+msgstr "Pollice"
 
 msgid "Include extra parts in shipment"
 msgstr "Includi parti extra nella spedizione"
@@ -5152,7 +5152,7 @@ msgid "List View"
 msgstr "Vista elenco"
 
 msgid "Liter"
-msgstr "Litri"
+msgstr "Litro"
 
 msgid "Live reloading"
 msgstr "Ricaricamento in tempo reale"
@@ -5521,7 +5521,7 @@ msgid "Message"
 msgstr "Messaggio"
 
 msgid "Meter"
-msgstr "Metri"
+msgstr "Metro"
 
 msgid "Method"
 msgstr "Metodo"
@@ -6541,7 +6541,7 @@ msgid "Other Type"
 msgstr "Altro Tipo"
 
 msgid "Ounce"
-msgstr "oncia"
+msgstr "Oncia"
 
 msgid "Outgoing"
 msgstr "In uscita"
@@ -6604,7 +6604,7 @@ msgid "Overwrite the target manufacturing method with the quote method"
 msgstr "Sovrascrivi il metodo di produzione target con il metodo di quotazione"
 
 msgid "Pack"
-msgstr "Conf."
+msgstr "Confezione"
 
 msgid "Packing Slip"
 msgstr "Documento di trasporto"
@@ -6900,10 +6900,10 @@ msgid "Please enter your name"
 msgstr "Per favore, inserisci il tuo nome"
 
 msgid "Please fill out all required fields"
-msgstr "Compila tutti i campi obbligatori<<<<<<< HEAD======="
+msgstr "Compila tutti i campi obbligatori"
 
 msgid "Please open this link in the same browser where you requested sign-in."
-msgstr "Si prega di aprire questo collegamento nello stesso browser in cui hai richiesto il login.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Si prega di aprire questo collegamento nello stesso browser in cui hai richiesto il login."
 
 msgid "Please save the operation before adding parameters."
 msgstr "Si prega di salvare l'operazione prima di aggiungere parametri."
@@ -9445,7 +9445,7 @@ msgid "Tolerance (+/-)"
 msgstr "Tolleranza (+/-)"
 
 msgid "Ton"
-msgstr "[ton]"
+msgstr "Tonnellata"
 
 msgid "Tool"
 msgstr "Attrezzo"
@@ -10286,7 +10286,7 @@ msgid "Would Match"
 msgstr "Si corrisponde"
 
 msgid "Yard"
-msgstr "Yard"
+msgstr "Iarda"
 
 msgid "Year"
 msgstr "Anno"

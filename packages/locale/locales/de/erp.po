@@ -453,7 +453,7 @@ msgid "Add Risk"
 msgstr "Risiko hinzufügen"
 
 msgid "Add Row"
-msgstr "Fügen Sie Zeile hinzu"
+msgstr "Zeile hinzufügen"
 
 msgid "Add rule"
 msgstr "Hinzufügen einer Regel"
@@ -1209,7 +1209,7 @@ msgid "Bad Debts Expense"
 msgstr "Fehldebtoren Ausgaben"
 
 msgid "Bag"
-msgstr "Tasche"
+msgstr "Beutel"
 
 msgid "Balance Sheet"
 msgstr "Bilanz"
@@ -1315,7 +1315,7 @@ msgid "Bot verification failed. Please try again."
 msgstr "Bot-Verifikation fehlgeschlagen. Bitte versuchen Sie es erneut."
 
 msgid "Box"
-msgstr "Kasten"
+msgstr "Karton"
 
 msgid "Breadcrumb"
 msgstr "Breadcrumb-Navigation"
@@ -1480,7 +1480,7 @@ msgid "Carrier Account"
 msgstr "Spediteurkonto"
 
 msgid "Case"
-msgstr "Fall"
+msgstr "Kiste"
 
 msgid "Cash & Bank"
 msgstr "Kasse und Bank"
@@ -3129,7 +3129,7 @@ msgid "e.g. Zebra 2x1"
 msgstr ""
 
 msgid "Each"
-msgstr "Jede"
+msgstr "Stück"
 
 #. placeholder {0}: zeroQuantityLine.type
 msgid "Each line must have a quantity greater than zero ({0})"
@@ -3947,7 +3947,7 @@ msgid "Failed to load inventory."
 msgstr "Fehler beim Laden des Inventars."
 
 msgid "Failed to load issues."
-msgstr "Fehler beim Laden der Probleme.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Fehler beim Laden der Probleme."
 
 msgid "Failed to load item data"
 msgstr "Fehler beim Laden der Elementdaten"
@@ -3974,7 +3974,7 @@ msgid "Failed to load people."
 msgstr "Fehler beim Laden der Personen."
 
 msgid "Failed to load purchase invoices."
-msgstr "Fehler beim Laden der Lieferantenrechnungen.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Fehler beim Laden der Lieferantenrechnungen."
 
 msgid "Failed to load purchase order lines"
 msgstr "Fehler beim Laden von Bestellpositionen"
@@ -3986,7 +3986,7 @@ msgid "Failed to load purchase orders."
 msgstr ""
 
 msgid "Failed to load quotes."
-msgstr "Fehler beim Laden der Anfragen.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Fehler beim Laden der Anfragen."
 
 msgid "Failed to load receipt lines"
 msgstr "Fehler beim Laden von Belegzeilen"
@@ -4001,7 +4001,7 @@ msgid "Failed to load RFQs."
 msgstr "Fehler beim Laden der RFQs."
 
 msgid "Failed to load sales invoices."
-msgstr "Fehler beim Laden der Verkaufsrechnungen.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Fehler beim Laden der Verkaufsrechnungen."
 
 msgid "Failed to load sales order lines"
 msgstr "Fehler beim Laden von Verkaufsauftragszeilen"
@@ -4022,7 +4022,7 @@ msgid "Failed to load shipments."
 msgstr ""
 
 msgid "Failed to load suggestions."
-msgstr "Fehler beim Laden der Vorschläge.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Fehler beim Laden der Vorschläge."
 
 msgid "Failed to load supplier part details"
 msgstr "Fehler beim Laden der Lieferantenteildetails"
@@ -4031,7 +4031,7 @@ msgid "Failed to load suppliers."
 msgstr ""
 
 msgid "Failed to load tools."
-msgstr "Fehler beim Laden der Werkzeuge.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Fehler beim Laden der Werkzeuge."
 
 msgid "Failed to load tracked entities"
 msgstr "Fehler beim Laden von verfolgten Entitäten"
@@ -6900,10 +6900,10 @@ msgid "Please enter your name"
 msgstr "Bitte geben Sie Ihren Namen ein"
 
 msgid "Please fill out all required fields"
-msgstr "Bitte füllen Sie alle erforderlichen Felder aus<<<<<<< HEAD======="
+msgstr "Bitte füllen Sie alle erforderlichen Felder aus"
 
 msgid "Please open this link in the same browser where you requested sign-in."
-msgstr "Bitte öffnen Sie diesen Link im gleichen Browser, in dem Sie die Anmeldeanfrage gestellt haben.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Bitte öffnen Sie diesen Link im gleichen Browser, in dem Sie die Anmeldeanfrage gestellt haben."
 
 msgid "Please save the operation before adding parameters."
 msgstr "Bitte speichern Sie den Vorgang, bevor Sie Parameter hinzufügen."
@@ -7913,7 +7913,7 @@ msgid "Role:"
 msgstr "Rolle:"
 
 msgid "Roll"
-msgstr "Rollen"
+msgstr "Rolle"
 
 msgid "Root Cause Analysis"
 msgstr "Ursachenanalyse"
@@ -10286,7 +10286,7 @@ msgid "Would Match"
 msgstr "Macht Pass"
 
 msgid "Yard"
-msgstr "Hof"
+msgstr "Yard"
 
 msgid "Year"
 msgstr "Jahr"

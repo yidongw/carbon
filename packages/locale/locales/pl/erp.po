@@ -1480,7 +1480,7 @@ msgid "Carrier Account"
 msgstr "Konto przewoźnika"
 
 msgid "Case"
-msgstr "Obudowa"
+msgstr "Skrzynia"
 
 msgid "Cash & Bank"
 msgstr "Dokładki i Bank"
@@ -3075,7 +3075,7 @@ msgid "Drop your file here, or click to browse."
 msgstr "Upuść plik tutaj lub kliknij, aby przeglądać."
 
 msgid "Drum"
-msgstr "Misa"
+msgstr "Beczka"
 
 msgid "Due"
 msgstr ""
@@ -3129,7 +3129,7 @@ msgid "e.g. Zebra 2x1"
 msgstr ""
 
 msgid "Each"
-msgstr "Każda"
+msgstr "szt."
 
 #. placeholder {0}: zeroQuantityLine.type
 msgid "Each line must have a quantity greater than zero ({0})"
@@ -3947,7 +3947,7 @@ msgid "Failed to load inventory."
 msgstr "Nie można załadować stanu magazynowego."
 
 msgid "Failed to load issues."
-msgstr "Niedostępne są problemy.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Niedostępne są problemy."
 
 msgid "Failed to load item data"
 msgstr "Nie udało się załadować danych elementu"
@@ -3974,7 +3974,7 @@ msgid "Failed to load people."
 msgstr "Nie można załadować osób."
 
 msgid "Failed to load purchase invoices."
-msgstr "Nie można załadować faktur zakupowych.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Nie można załadować faktur zakupowych."
 
 msgid "Failed to load purchase order lines"
 msgstr "Nie udało się załadować linii zamówienia zakupu"
@@ -3986,7 +3986,7 @@ msgid "Failed to load purchase orders."
 msgstr ""
 
 msgid "Failed to load quotes."
-msgstr "Nie można załadować zaproponowanych cen.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Nie można załadować zaproponowanych cen."
 
 msgid "Failed to load receipt lines"
 msgstr "Nie udało się załadować linii przyjęcia"
@@ -4001,7 +4001,7 @@ msgid "Failed to load RFQs."
 msgstr "Nie można załadować ofert cenowych."
 
 msgid "Failed to load sales invoices."
-msgstr "Nie można załadować faktur sprzedaży.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Nie można załadować faktur sprzedaży."
 
 msgid "Failed to load sales order lines"
 msgstr "Nie udało się załadować linii zamówienia sprzedaży"
@@ -4022,7 +4022,7 @@ msgid "Failed to load shipments."
 msgstr ""
 
 msgid "Failed to load suggestions."
-msgstr "Nie można załadować sugerowanych elementów.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Nie można załadować sugerowanych elementów."
 
 msgid "Failed to load supplier part details"
 msgstr "Nie udało się załadować szczegółów części dostawcy"
@@ -4031,7 +4031,7 @@ msgid "Failed to load suppliers."
 msgstr ""
 
 msgid "Failed to load tools."
-msgstr "Nie udało się załadować narzędzi.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Nie udało się załadować narzędzi."
 
 msgid "Failed to load tracked entities"
 msgstr "Nie udało się załadować śledzonych jednostek"
@@ -4291,7 +4291,7 @@ msgid "Fixed Shelf Life"
 msgstr "Stały okres przydatności"
 
 msgid "Foot"
-msgstr "Stopka"
+msgstr "stopa"
 
 msgid "For growing businesses that need support"
 msgstr "Dla rozwijających się firm, które potrzebują wsparcia"
@@ -5521,7 +5521,7 @@ msgid "Message"
 msgstr "Meska"
 
 msgid "Meter"
-msgstr "Miernik"
+msgstr "Metr"
 
 msgid "Method"
 msgstr "Metoda"
@@ -6900,10 +6900,10 @@ msgid "Please enter your name"
 msgstr "Proszę wpisać swoje imię"
 
 msgid "Please fill out all required fields"
-msgstr "Proszę wypełnić wszystkie wymagane pola<<<<<<< HEAD======="
+msgstr "Proszę wypełnić wszystkie wymagane pola"
 
 msgid "Please open this link in the same browser where you requested sign-in."
-msgstr "Proszę otworzyć ten link w tym samym przeglądarce, w której\"text\" zalogowałeś się.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Proszę otworzyć ten link w tym samym przeglądarce, w której\"text\" zalogowałeś się."
 
 msgid "Please save the operation before adding parameters."
 msgstr "Proszę zapisać operację przed dodaniem parametrów."
@@ -9445,7 +9445,7 @@ msgid "Tolerance (+/-)"
 msgstr "Tolerancja (+/-)"
 
 msgid "Ton"
-msgstr "I to bardzo."
+msgstr "Tona"
 
 msgid "Tool"
 msgstr "Narzędzie"
@@ -10286,7 +10286,7 @@ msgid "Would Match"
 msgstr "Byłoby w zgodzie"
 
 msgid "Yard"
-msgstr "Plac (Yard)"
+msgstr "Jard"
 
 msgid "Year"
 msgstr "Rok"

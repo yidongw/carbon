@@ -543,7 +543,7 @@ msgid "Log In"
 msgstr "Iniciar sesión"
 
 msgid "Log Pickup"
-msgstr "Recoger en el almacén"
+msgstr "Registrar extracción de proceso"
 
 msgid "Log Rework"
 msgstr "Registrar retrabajo"

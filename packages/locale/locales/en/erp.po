@@ -6894,10 +6894,10 @@ msgid "Please enter your name"
 msgstr "Please enter your name"
 
 msgid "Please fill out all required fields"
-msgstr "Please fill out all required fields<<<<<<< HEAD======="
+msgstr "Please fill out all required fields"
 
 msgid "Please open this link in the same browser where you requested sign-in."
-msgstr "Please open this link in the same browser where you requested sign-in.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Please open this link in the same browser where you requested sign-in."
 
 msgid "Please save the operation before adding parameters."
 msgstr "Please save the operation before adding parameters."

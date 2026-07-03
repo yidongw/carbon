@@ -1315,7 +1315,7 @@ msgid "Bot verification failed. Please try again."
 msgstr "Проверка бота не прошла. Попробуйте снова."
 
 msgid "Box"
-msgstr "Блок"
+msgstr "Коробка"
 
 msgid "Breadcrumb"
 msgstr "Навигационная цепочка"
@@ -1480,7 +1480,7 @@ msgid "Carrier Account"
 msgstr "Счет перевозчика"
 
 msgid "Case"
-msgstr "Дело"
+msgstr "Ящик"
 
 msgid "Cash & Bank"
 msgstr "Деньги и Банки"
@@ -3947,7 +3947,7 @@ msgid "Failed to load inventory."
 msgstr "Не удалось загрузить складские запасы."
 
 msgid "Failed to load issues."
-msgstr "Не удалось загрузить проблемы.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Не удалось загрузить проблемы."
 
 msgid "Failed to load item data"
 msgstr "Не удалось загрузить данные элемента"
@@ -3974,7 +3974,7 @@ msgid "Failed to load people."
 msgstr "Не удалось загрузить людей."
 
 msgid "Failed to load purchase invoices."
-msgstr "Не удалось загрузить покупочные накладные.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Не удалось загрузить покупочные накладные."
 
 msgid "Failed to load purchase order lines"
 msgstr "Не удалось загрузить строки заказа на покупку"
@@ -3986,7 +3986,7 @@ msgid "Failed to load purchase orders."
 msgstr ""
 
 msgid "Failed to load quotes."
-msgstr "Не удалось загрузить заявки.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Не удалось загрузить заявки."
 
 msgid "Failed to load receipt lines"
 msgstr "Не удалось загрузить строки квитанции"
@@ -4001,7 +4001,7 @@ msgid "Failed to load RFQs."
 msgstr "Не удалось загрузить заявки на цену."
 
 msgid "Failed to load sales invoices."
-msgstr "Не удалось загрузить продажные накладные.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Не удалось загрузить продажные накладные."
 
 msgid "Failed to load sales order lines"
 msgstr "Не удалось загрузить строки заказа продажи"
@@ -4022,7 +4022,7 @@ msgid "Failed to load shipments."
 msgstr ""
 
 msgid "Failed to load suggestions."
-msgstr "Не удалось загрузить рекомендации.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Не удалось загрузить рекомендации."
 
 msgid "Failed to load supplier part details"
 msgstr "Не удалось загрузить детали поставщика"
@@ -4031,7 +4031,7 @@ msgid "Failed to load suppliers."
 msgstr ""
 
 msgid "Failed to load tools."
-msgstr "Не удалось загрузить инструменты.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Не удалось загрузить инструменты."
 
 msgid "Failed to load tracked entities"
 msgstr "Не удалось загрузить отслеживаемые сущности"
@@ -4291,7 +4291,7 @@ msgid "Fixed Shelf Life"
 msgstr "Фиксированный срок годности"
 
 msgid "Foot"
-msgstr "Опорная ножка"
+msgstr "Фут"
 
 msgid "For growing businesses that need support"
 msgstr "Для растущих компаний, нуждающихся в поддержке"
@@ -5152,7 +5152,7 @@ msgid "List View"
 msgstr "Списковой вид"
 
 msgid "Liter"
-msgstr "Литер"
+msgstr "Литр"
 
 msgid "Live reloading"
 msgstr "Живая перезагрузка"
@@ -6900,10 +6900,10 @@ msgid "Please enter your name"
 msgstr "Пожалуйста, введите ваше имя"
 
 msgid "Please fill out all required fields"
-msgstr "Пожалуйста, заполните все обязательные поля<<<<<<< HEAD======="
+msgstr "Пожалуйста, заполните все обязательные поля"
 
 msgid "Please open this link in the same browser where you requested sign-in."
-msgstr "Пожалуйста, откройте этот ссылку в том же браузере, где вы запрашивали вход.>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "Пожалуйста, откройте этот ссылку в том же браузере, где вы запрашивали вход."
 
 msgid "Please save the operation before adding parameters."
 msgstr "Пожалуйста, сохраните операцию перед добавлением параметров."
@@ -7913,7 +7913,7 @@ msgid "Role:"
 msgstr "Роль:"
 
 msgid "Roll"
-msgstr "колледжа"
+msgstr "Рулон"
 
 msgid "Root Cause Analysis"
 msgstr "Анализ первопричин"
@@ -9445,7 +9445,7 @@ msgid "Tolerance (+/-)"
 msgstr "Допуск (+/-)"
 
 msgid "Ton"
-msgstr "т"
+msgstr "Тонна"
 
 msgid "Tool"
 msgstr "Инструмент"
@@ -10286,7 +10286,7 @@ msgid "Would Match"
 msgstr "Было бы совпадение"
 
 msgid "Yard"
-msgstr "Двор"
+msgstr "Ярд"
 
 msgid "Year"
 msgstr "Год"

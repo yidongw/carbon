@@ -453,7 +453,7 @@ msgid "Add Risk"
 msgstr "リスクを追加"
 
 msgid "Add Row"
-msgstr "追加行"
+msgstr "行を追加"
 
 msgid "Add rule"
 msgstr "追加ルールを追加"
@@ -1209,7 +1209,7 @@ msgid "Bad Debts Expense"
 msgstr "Bad Debts負債費"
 
 msgid "Bag"
-msgstr "虫"
+msgstr "袋"
 
 msgid "Balance Sheet"
 msgstr "貸借対照表"
@@ -1480,7 +1480,7 @@ msgid "Carrier Account"
 msgstr "キャリアアカウント"
 
 msgid "Case"
-msgstr "症例"
+msgstr "ケース"
 
 msgid "Cash & Bank"
 msgstr "キャッシュと銀行"
@@ -3075,7 +3075,7 @@ msgid "Drop your file here, or click to browse."
 msgstr "ファイルをここにドラッグするか、クリックして参照してください。"
 
 msgid "Drum"
-msgstr "ドラム"
+msgstr "ドラム缶"
 
 msgid "Due"
 msgstr ""
@@ -3129,7 +3129,7 @@ msgid "e.g. Zebra 2x1"
 msgstr ""
 
 msgid "Each"
-msgstr "各"
+msgstr "個"
 
 #. placeholder {0}: zeroQuantityLine.type
 msgid "Each line must have a quantity greater than zero ({0})"
@@ -3947,7 +3947,7 @@ msgid "Failed to load inventory."
 msgstr "在庫の読み込みに失敗しました。"
 
 msgid "Failed to load issues."
-msgstr "問題の読み込みに失敗しました。>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "問題の読み込みに失敗しました。"
 
 msgid "Failed to load item data"
 msgstr "アイテムデータの読み込みに失敗しました"
@@ -3974,7 +3974,7 @@ msgid "Failed to load people."
 msgstr "PEOPLE の読み込みに失敗しました。"
 
 msgid "Failed to load purchase invoices."
-msgstr "購入発行票の読み込みに失敗しました。>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "購入発行票の読み込みに失敗しました。"
 
 msgid "Failed to load purchase order lines"
 msgstr "購買注文行の読み込みに失敗しました"
@@ -3986,7 +3986,7 @@ msgid "Failed to load purchase orders."
 msgstr ""
 
 msgid "Failed to load quotes."
-msgstr "注文情報の読み込みに失敗しました。>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "注文情報の読み込みに失敗しました。"
 
 msgid "Failed to load receipt lines"
 msgstr "領収書行の読み込みに失敗しました"
@@ -4001,7 +4001,7 @@ msgid "Failed to load RFQs."
 msgstr "RFQの読み込みに失敗しました。"
 
 msgid "Failed to load sales invoices."
-msgstr "売上発行が読み込めませんでした。>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "売上発行が読み込めませんでした。"
 
 msgid "Failed to load sales order lines"
 msgstr "販売注文行の読み込みに失敗しました"
@@ -4022,7 +4022,7 @@ msgid "Failed to load shipments."
 msgstr ""
 
 msgid "Failed to load suggestions."
-msgstr "提案が読み込めませんでした。>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "提案が読み込めませんでした。"
 
 msgid "Failed to load supplier part details"
 msgstr "サプライヤー部品の詳細の読み込みに失敗しました"
@@ -4031,7 +4031,7 @@ msgid "Failed to load suppliers."
 msgstr ""
 
 msgid "Failed to load tools."
-msgstr "ツールの読み込みに失敗しました。>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "ツールの読み込みに失敗しました。"
 
 msgid "Failed to load tracked entities"
 msgstr "追跡対象エンティティの読み込みに失敗しました"
@@ -4291,7 +4291,7 @@ msgid "Fixed Shelf Life"
 msgstr "固定棚卸し期間"
 
 msgid "Foot"
-msgstr "足"
+msgstr "フィート"
 
 msgid "For growing businesses that need support"
 msgstr "成長中のビジネスをサポートするために"
@@ -6900,10 +6900,10 @@ msgid "Please enter your name"
 msgstr "お名前を入力してください"
 
 msgid "Please fill out all required fields"
-msgstr "すべての必須フィールドに入力してください<<<<<<< HEAD======="
+msgstr "すべての必須フィールドに入力してください"
 
 msgid "Please open this link in the same browser where you requested sign-in."
-msgstr "同じブラウザでサインインの要求をしたところにこのリンクを開いてください。>>>>>>> 436eccaff (fix(i18n): translate remaining untranslated UI strings)"
+msgstr "同じブラウザでサインインの要求をしたところにこのリンクを開いてください。"
 
 msgid "Please save the operation before adding parameters."
 msgstr "操作を保存してからパラメータを追加してください。"

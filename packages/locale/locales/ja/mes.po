@@ -543,7 +543,7 @@ msgid "Log In"
 msgstr "ログイン"
 
 msgid "Log Pickup"
-msgstr "ログアップルッド"
+msgstr "工程払い出しを記録"
 
 msgid "Log Rework"
 msgstr "手直しを記録"
