@@ -18,6 +18,54 @@ import { LuTrash2 } from "react-icons/lu";
 import { useFetcher } from "react-router";
 import { ConfirmDelete } from "~/components/Modals";
 import { path } from "~/utils/path";
+import {
+  buildJobRemainingReferenceContext,
+  type ConfigReferenceSource
+} from "../../configParamsTableColumns";
+import { computeJobConfigTableTotal } from "../../jobConfiguration";
+import {
+  toConfigTableValue,
+  useConfigTableModal
+} from "./ConfigParamsTableModal";
+import { ItemConfigQuantityInput } from "./ItemConfigQuantityInput";
+
+type ConfigurationParameter = {
+  key: string;
+  label: string;
+  dataType: string;
+  listOptions?: string[] | null;
+};
+
+type ConfigRow = Record<string, string | number | boolean>;
+
+function getInitialConfigState(configuration: unknown) {
+  if (
+    configuration === null ||
+    configuration === undefined ||
+    typeof configuration !== "object" ||
+    Array.isArray(configuration)
+  ) {
+    return {
+      rows: null as ConfigRow[] | null,
+      primaryKeys: [] as string[],
+      total: 0
+    };
+  }
+  const cfg = configuration as Record<string, unknown>;
+  const rows = Array.isArray(cfg.configTable)
+    ? (cfg.configTable as ConfigRow[])
+    : null;
+  const primaryKeys = Array.isArray(cfg.configTablePrimaryKeys)
+    ? cfg.configTablePrimaryKeys.filter(
+        (k): k is string => typeof k === "string"
+      )
+    : [];
+  return {
+    rows,
+    primaryKeys,
+    total: computeJobConfigTableTotal(cfg)
+  };
+}
 
 type EmployeePickup =
   Database["public"]["Tables"]["jobOperationPickup"]["Row"] & {
@@ -35,14 +83,24 @@ export function ProcessPickupDispositionDrawer({
   onClose,
   onSaved,
   onDeleted,
-  canDelete
+  canDelete,
+  configurationParameters,
+  itemId,
+  jobId
 }: {
   pickup: EmployeePickup;
   open: boolean;
   onClose: () => void;
-  onSaved: (quantity: number, notes: string | null) => void;
+  onSaved: (
+    quantity: number,
+    notes: string | null,
+    configuration?: unknown
+  ) => void;
   onDeleted?: () => void;
   canDelete?: boolean;
+  configurationParameters?: ConfigurationParameter[] | null;
+  itemId?: string | null;
+  jobId?: string;
 }) {
   const { t } = useLingui();
   const deleteModal = useDisclosure();
@@ -50,10 +108,27 @@ export function ProcessPickupDispositionDrawer({
   const [quantity, setQuantity] = useState(Number(pickup.quantity));
   const [notes, setNotes] = useState(pickup.notes ?? "");
 
+  const initialConfig = getInitialConfigState(pickup.configuration);
+  const [configTableRows, setConfigTableRows] = useState<ConfigRow[] | null>(
+    initialConfig.rows
+  );
+  const [configTablePrimaryKeys, setConfigTablePrimaryKeys] = useState<
+    string[]
+  >(initialConfig.primaryKeys);
+  const [configTableTotal, setConfigTableTotal] = useState(initialConfig.total);
+
+  const hasConfigurationParameters = (configurationParameters?.length ?? 0) > 0;
+
+  const configModal = useConfigTableModal();
+
   useEffect(() => {
     if (!open) return;
     setQuantity(Number(pickup.quantity));
     setNotes(pickup.notes ?? "");
+    const cfg = getInitialConfigState(pickup.configuration);
+    setConfigTableRows(cfg.rows);
+    setConfigTablePrimaryKeys(cfg.primaryKeys);
+    setConfigTableTotal(cfg.total);
   }, [open, pickup]);
 
   useEffect(() => {
@@ -64,10 +139,59 @@ export function ProcessPickupDispositionDrawer({
     }
     if (fetcher.data.ok) {
       toast.success(t`Process pickup updated`);
-      onSaved(quantity, notes || null);
+      const configuration = configTableRows
+        ? { configTable: configTableRows, configTablePrimaryKeys }
+        : undefined;
+      onSaved(quantity, notes || null, configuration);
       onClose();
     }
-  }, [fetcher.state, fetcher.data, onSaved, onClose, t]);
+  }, [
+    fetcher.state,
+    fetcher.data,
+    onSaved,
+    onClose,
+    t,
+    quantity,
+    notes,
+    configTableRows,
+    configTablePrimaryKeys
+  ]);
+
+  const handleConfigTableSubmit = (
+    rows: ConfigRow[],
+    total: number,
+    primaryKeys: string[]
+  ) => {
+    setConfigTableRows(rows);
+    setConfigTablePrimaryKeys(primaryKeys);
+    setConfigTableTotal(total);
+    if (total > 0) {
+      setQuantity(total);
+    }
+  };
+
+  const openConfigTable = () => {
+    if (!itemId) return;
+    configModal.open({
+      itemId,
+      configuration: toConfigTableValue(
+        configTableRows,
+        configTablePrimaryKeys,
+        pickup.configuration
+      ),
+      jobId,
+      jobOperationId: pickup.jobOperationId,
+      reportKind: "pickup",
+      buildReferenceContext: (source: ConfigReferenceSource | null) =>
+        source ? buildJobRemainingReferenceContext(source) : undefined,
+      onConfirm: (data) =>
+        handleConfigTableSubmit(
+          data.configuration.configTable,
+          data.total,
+          data.primaryKeys
+        )
+    });
+  };
 
   const save = () => {
     if (quantity <= 0) {
@@ -75,11 +199,22 @@ export function ProcessPickupDispositionDrawer({
       return;
     }
 
-    fetcher.submit(JSON.stringify({ quantity, notes: notes || undefined }), {
-      method: "PATCH",
-      action: path.to.api.pickupUpdate(pickup.id),
-      encType: "application/json"
-    });
+    const configuration = configTableRows
+      ? { configTable: configTableRows, configTablePrimaryKeys }
+      : undefined;
+
+    fetcher.submit(
+      JSON.stringify({
+        quantity,
+        notes: notes || undefined,
+        ...(configuration ? { configuration } : {})
+      }),
+      {
+        method: "PATCH",
+        action: path.to.api.pickupUpdate(pickup.id),
+        encType: "application/json"
+      }
+    );
   };
 
   const isSaving = fetcher.state !== "idle";
@@ -101,12 +236,17 @@ export function ProcessPickupDispositionDrawer({
           <DrawerBody className="flex w-full min-w-0 flex-col items-stretch gap-4">
             <VStack className="w-full gap-1">
               <Label>{t`Quantity`}</Label>
-              <input
-                type="number"
-                min={1}
-                className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+              <ItemConfigQuantityInput
+                id="edit-pickup-quantity"
                 value={quantity}
-                onChange={(e) => setQuantity(Number(e.target.value))}
+                onChange={setQuantity}
+                minValue={1}
+                hasConfigurationParameters={hasConfigurationParameters}
+                onOpenConfigTable={
+                  hasConfigurationParameters ? openConfigTable : undefined
+                }
+                configTableTotal={configTableTotal}
+                isReadOnly={configTableTotal > 0}
               />
             </VStack>
             <VStack className="w-full gap-1">
@@ -145,6 +285,7 @@ export function ProcessPickupDispositionDrawer({
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
+      {configModal.node}
       {canDelete && deleteModal.isOpen ? (
         <ConfirmDelete
           action={path.to.deleteJobPickup(pickup.id)}
