@@ -107,6 +107,8 @@ export const path = {
         generatePath(
           `${api}/production/supplier-quantity-reports/${reportId}/create-po`
         ),
+      pickupUpdate: (pickupId: string) =>
+        generatePath(`${api}/production/pickups/${pickupId}`),
       itemConfigTable: (itemId: string) =>
         generatePath(`${api}/items/${itemId}/config-table`),
       jobs: `${api}/production/jobs`,

@@ -6917,6 +6917,9 @@ msgstr "工序领料"
 msgid "Process Pickup by {0}"
 msgstr "工序领料：{0}"
 
+msgid "Process pickup updated"
+msgstr "工艺取料更新"
+
 msgid "Process Pickups"
 msgstr "工序领料"
 
@@ -7139,6 +7142,9 @@ msgstr "数量由MES中已完成的批次/序列号推导得出，无法编辑�
 
 msgid "Quantity must be greater than 0"
 msgstr "数量必须大于0"
+
+msgid "Quantity must be greater than zero"
+msgstr "数量必须大于零"
 
 msgid "Quantity on Hand"
 msgstr "库存数量"
@@ -9133,6 +9139,9 @@ msgstr "此工作将不再在车间可用。"
 
 msgid "This permanently deletes the quantity report and its entire history. This action cannot be undone."
 msgstr "这将永久删除该数量报告及其全部历史记录。此操作无法撤销。"
+
+msgid "this process pickup"
+msgstr "此工序拾取"
 
 msgid "this quantity report"
 msgstr "此数量报告"

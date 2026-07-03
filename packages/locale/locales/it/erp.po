@@ -6917,6 +6917,9 @@ msgstr "prelievo di processo"
 msgid "Process Pickup by {0}"
 msgstr "Prelievo di processo da {0}"
 
+msgid "Process pickup updated"
+msgstr "Processo di raccolta aggiornato"
+
 msgid "Process Pickups"
 msgstr "prelievi di processo"
 
@@ -7139,6 +7142,9 @@ msgstr "La quantità è derivata dai seriali/lotti completati in MES e non può 
 
 msgid "Quantity must be greater than 0"
 msgstr "La quantità deve essere maggiore di 0"
+
+msgid "Quantity must be greater than zero"
+msgstr "Quantità deve essere maggiore di零"
 
 msgid "Quantity on Hand"
 msgstr "Quantità in magazzino"
@@ -9133,6 +9139,9 @@ msgstr "Questo lavoro non sarà più disponibile in officina."
 
 msgid "This permanently deletes the quantity report and its entire history. This action cannot be undone."
 msgstr "Questa operazione elimina definitivamente il rapporto di quantità e tutta la sua cronologia. Questa azione non può essere annullata."
+
+msgid "this process pickup"
+msgstr "questo processo di recupero"
 
 msgid "this quantity report"
 msgstr "questo rapporto di quantità"

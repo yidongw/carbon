@@ -6917,6 +6917,9 @@ msgstr "выдача в процесс"
 msgid "Process Pickup by {0}"
 msgstr "Выдача в процесс от {0}"
 
+msgid "Process pickup updated"
+msgstr "Обновлено получение процесса"
+
 msgid "Process Pickups"
 msgstr "выдачи в процесс"
 
@@ -7139,6 +7142,9 @@ msgstr "Количество определяется на основе заве
 
 msgid "Quantity must be greater than 0"
 msgstr "Количество должно быть больше 0"
+
+msgid "Quantity must be greater than zero"
+msgstr "Количество должно быть больше нуля"
 
 msgid "Quantity on Hand"
 msgstr "Количество в наличии"
@@ -9133,6 +9139,9 @@ msgstr "Эта работа больше не будет доступна на �
 
 msgid "This permanently deletes the quantity report and its entire history. This action cannot be undone."
 msgstr "Это действие безвозвратно удалит отчёт о количестве и всю его историю. Это действие нельзя отменить."
+
+msgid "this process pickup"
+msgstr "этот процесс загрузки"
 
 msgid "this quantity report"
 msgstr "этот отчёт о количестве"

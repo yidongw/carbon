@@ -6917,6 +6917,9 @@ msgstr "工程払い出し"
 msgid "Process Pickup by {0}"
 msgstr "{0} の工程払い出し"
 
+msgid "Process pickup updated"
+msgstr "プロセスピックアップが更新されました"
+
 msgid "Process Pickups"
 msgstr "工程払い出し"
 
@@ -7139,6 +7142,9 @@ msgstr "数量はMESで完了したシリアル/バッチから導出されて�
 
 msgid "Quantity must be greater than 0"
 msgstr "数量は0より大きい必要があります"
+
+msgid "Quantity must be greater than zero"
+msgstr "数量はゼロ以上でなければなりません"
 
 msgid "Quantity on Hand"
 msgstr "手持在庫数量"
@@ -9133,6 +9139,9 @@ msgstr "このジョブはショップフロアで利用できなくなります
 
 msgid "This permanently deletes the quantity report and its entire history. This action cannot be undone."
 msgstr "これにより、数量レポートとその全履歴が完全に削除されます。この操作は元に戻せません。"
+
+msgid "this process pickup"
+msgstr "このプロセスの拾い上げ"
 
 msgid "this quantity report"
 msgstr "この数量レポート"
