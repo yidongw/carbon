@@ -487,16 +487,21 @@ export async function getConfigurationParametersByQuoteLineId(
   }
 
   const [parameters, groups] = await Promise.all([
+    // Order by sortOrder so the derived "primary" parameter is deterministic
+    // and follows the user-defined order (mirrors getConfigurationParameters).
     client
       .from("configurationParameter")
       .select("*")
       .eq("itemId", quoteLine.data.itemId)
-      .eq("companyId", companyId),
+      .eq("companyId", companyId)
+      .order("sortOrder", { ascending: true })
+      .order("createdAt", { ascending: true }),
     client
       .from("configurationParameterGroup")
       .select("*")
       .eq("itemId", quoteLine.data.itemId)
       .eq("companyId", companyId)
+      .order("sortOrder", { ascending: true })
   ]);
 
   if (parameters.error) {

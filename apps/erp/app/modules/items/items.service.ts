@@ -355,16 +355,23 @@ export async function getConfigurationParameters(
   companyId: string
 ) {
   const [parameters, groups] = await Promise.all([
+    // Order by sortOrder so the derived "primary" parameter (the first
+    // list-typed param, used to build job/quote quantity columns) is
+    // deterministic and follows the user-defined order rather than the
+    // arbitrary order PostgREST returns without an explicit sort.
     client
       .from("configurationParameter")
       .select("*")
       .eq("itemId", itemId)
-      .eq("companyId", companyId),
+      .eq("companyId", companyId)
+      .order("sortOrder", { ascending: true })
+      .order("createdAt", { ascending: true }),
     client
       .from("configurationParameterGroup")
       .select("*")
       .eq("itemId", itemId)
       .eq("companyId", companyId)
+      .order("sortOrder", { ascending: true })
   ]);
 
   if (parameters.error) {
