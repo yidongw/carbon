@@ -2863,7 +2863,7 @@ export async function getJobPickupsPage(
     )
     .eq("jobOperationId", jobOperationId)
     .eq("companyId", companyId)
-    .order("createdAt", { ascending: false })
+    .order("createdAt", { ascending: true })
     .range(offset, offset + pageSize - 1);
 
   if (error) return { error };
@@ -2950,7 +2950,7 @@ export async function getJobSupplierPickupsPage(
     .select("*, supplierProcess(id, supplierId, processId)", { count: "exact" })
     .eq("jobOperationId", jobOperationId)
     .eq("companyId", companyId)
-    .order("createdAt", { ascending: false })
+    .order("createdAt", { ascending: true })
     .range(offset, offset + pageSize - 1);
 
   if (error) return { error };
