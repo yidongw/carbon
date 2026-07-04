@@ -95,57 +95,43 @@ export async function destroyAuthSession(request: Request) {
   });
 }
 
-// Marker cookie set once a browser has been migrated onto the domain-scoped
-// session cookie, so the migration below runs at most once per browser.
-const COOKIE_DOMAIN_MIGRATED = "cdm";
-
 /**
- * Seamless, one-time migration of the session cookie across a DOMAIN change.
+ * Keep the session cookie single-valued across a DOMAIN change.
  *
- * When DOMAIN was previously unset, the "carbon" cookie was written host-only.
- * After DOMAIN is set it is written domain-scoped (+ secure). A browser still
- * holding the old host-only cookie stays logged in but can never be logged out,
- * because destroySession()'s delete carries the Domain attribute and so doesn't
- * match the host-only cookie. On the first authenticated GET after the change,
- * this re-issues the session on the domain-scoped cookie, deletes the host-only
- * variant, and drops a marker so it runs once per browser — no re-login or
- * manual cookie clearing needed.
+ * When DOMAIN is newly set, new sessions get a domain-scoped "carbon" cookie
+ * while browsers may still hold the pre-transition host-only "carbon". The two
+ * variants coexist, and the browser sends the older host-only one first — so
+ * the server reads the stale cookie: a freshly logged-in user bounces back to
+ * /login, and a host-only cookie can't be cleared by a domain-scoped logout.
  *
- * No-op when DOMAIN is unset (cookies are already host-only), on non-GET
- * requests (notably the logout POST, whose request still carries a valid
- * session — re-issuing would cancel the logout), and once the marker is set.
+ * So whenever a response sets or clears the domain-scoped "carbon" cookie
+ * (login sets it, logout clears it), also emit a host-only expiry for "carbon".
+ * The stale variant is removed in the same response, leaving only the
+ * domain-scoped cookie — no re-login or manual cookie clearing needed. No-op
+ * when DOMAIN is unset (cookies are already host-only) or when the response
+ * doesn't touch the session cookie.
  */
 export const cookieDomainMigrationMiddleware: MiddlewareFunction<
   Response
-> = async ({ request }, next) => {
+> = async (_args, next) => {
   const response = await next();
+  if (!cookieDomain) return response;
 
-  if (!cookieDomain || !isGet(request)) return response;
-  if (
-    (request.headers.get("Cookie") ?? "").includes(
-      `${COOKIE_DOMAIN_MIGRATED}=1`
-    )
-  )
-    return response;
-
-  const authSession = await getAuthSession(request);
-  if (!authSession) return response;
-
-  // Re-issue the session on the domain-scoped cookie (preserves the session).
-  response.headers.append(
-    "Set-Cookie",
-    await setAuthSession(request, { authSession })
+  const setCookies =
+    typeof response.headers.getSetCookie === "function"
+      ? response.headers.getSetCookie()
+      : [];
+  const touchesSessionCookie = setCookies.some(
+    (c) => c.startsWith("carbon=") && /;\s*Domain=/i.test(c)
   );
-  // Delete the pre-migration host-only "carbon" (no Domain → host-only match).
-  response.headers.append(
-    "Set-Cookie",
-    "carbon=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax"
-  );
-  // Mark this browser as migrated so we don't re-run.
-  response.headers.append(
-    "Set-Cookie",
-    `${COOKIE_DOMAIN_MIGRATED}=1; Path=/; Domain=${cookieDomain}; Max-Age=31536000; HttpOnly; SameSite=Lax; Secure`
-  );
+  if (touchesSessionCookie) {
+    // Expire any pre-transition host-only "carbon" (no Domain attribute → it
+    // matches the host-only cookie) so it can't shadow the domain-scoped one.
+    response.headers.append(
+      "Set-Cookie",
+      "carbon=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax"
+    );
+  }
   return response;
 };
 
