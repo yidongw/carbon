@@ -1,6 +1,6 @@
 "use client";
 import { useCarbon } from "@carbon/auth";
-import type { Database } from "@carbon/database";
+import type { Database, Json } from "@carbon/database";
 import { Input, ValidatedForm } from "@carbon/form";
 import type { JSONContent } from "@carbon/react";
 import {
@@ -2487,7 +2487,7 @@ const JobBillOfProcess = ({
                         quantity: newQuantity,
                         notes: newNotes,
                         ...(newConfiguration !== undefined
-                          ? { configuration: newConfiguration }
+                          ? { configuration: newConfiguration as Json }
                           : {})
                       }
                     }

@@ -1,4 +1,5 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
+import type { Json } from "@carbon/database";
 import type { ActionFunctionArgs } from "react-router";
 import { data } from "react-router";
 
@@ -33,7 +34,9 @@ export async function action({ request, params }: ActionFunctionArgs) {
     .update({
       quantity,
       notes: typeof notes === "string" ? notes || null : null,
-      ...(configuration !== undefined ? { configuration } : {}),
+      ...(configuration !== undefined
+        ? { configuration: configuration as Json }
+        : {}),
       updatedBy: userId,
       updatedAt: new Date().toISOString()
     })
