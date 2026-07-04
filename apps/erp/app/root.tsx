@@ -5,6 +5,7 @@ import {
   flashMiddleware,
   flashResultContext
 } from "@carbon/auth/middleware/flash.server";
+import { cookieDomainMigrationMiddleware } from "@carbon/auth/session.server";
 import { validator } from "@carbon/form";
 import { LocaleProvider, resolveLanguage } from "@carbon/locale";
 import {
@@ -50,7 +51,7 @@ import type { Route } from "./+types/root";
 import "./polyfill";
 import { getTheme } from "./services/theme.server";
 
-export const middleware = [flashMiddleware];
+export const middleware = [flashMiddleware, cookieDomainMigrationMiddleware];
 export const clientMiddleware = [flashClientMiddleware];
 
 // Prevent stale-asset 404s after a redeploy by never caching the HTML document.
