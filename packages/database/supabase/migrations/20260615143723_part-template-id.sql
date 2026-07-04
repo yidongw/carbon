@@ -1,7 +1,19 @@
 -- Add templateId to part table so we can track which template was applied
-ALTER TABLE "part"
-  ADD COLUMN IF NOT EXISTS "templateId" TEXT,
-  ADD CONSTRAINT "part_templateId_fkey" FOREIGN KEY ("templateId") REFERENCES "template"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "part" ADD COLUMN IF NOT EXISTS "templateId" TEXT;
+
+-- Guard the FK add: on diverged fork DBs (staging/prod) this constraint already
+-- exists (created under a different migration version), so only add it if missing.
+-- On a clean/in-order DB it is created here as before.
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'part_templateId_fkey' AND conrelid = '"part"'::regclass
+  ) THEN
+    ALTER TABLE "part"
+      ADD CONSTRAINT "part_templateId_fkey" FOREIGN KEY ("templateId") REFERENCES "template"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+  END IF;
+END $$;
 
 -- Recreate get_part_details to include templateId and templateName.
 -- Based on the latest definition (item-sourcing-type migration, which exposes
