@@ -1732,7 +1732,7 @@ export async function getProductionQuantities(
   let query = client
     .from("productionQuantity")
     .select(
-      "*, jobOperation(description, jobMakeMethod(parentMaterialId, item(readableIdWithRevision)))",
+      "*, productionQuantityReport:reportId(id, createdAt), jobOperation(description, jobMakeMethod(parentMaterialId, item(readableIdWithRevision)))",
       {
         count: "exact"
       }

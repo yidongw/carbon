@@ -224,10 +224,15 @@ const ProductionQuantitiesTable = memo(
         },
         {
           accessorKey: "createdAt",
-          header: t`Created At`,
+          header: t`Reported`,
           cell: ({ row }) => (
             <EditableCreatedAtCell
-              createdAt={row.original.createdAt}
+              createdAt={
+                row.original.actorKind === "employee"
+                  ? (row.original.productionQuantityReport?.createdAt ??
+                    row.original.createdAt)
+                  : row.original.createdAt
+              }
               row={row.original}
               onSave={saveCreatedAt}
               canEdit={canEdit}

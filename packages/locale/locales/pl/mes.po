@@ -1003,6 +1003,9 @@ msgstr "Liczba rekordów"
 msgid "Record step"
 msgstr "Zapisz krok"
 
+msgid "Redirecting to verification page..."
+msgstr "Przekierowanie do strony weryfikacji..."
+
 msgid "remaining"
 msgstr "pozostałe"
 
@@ -1362,11 +1365,26 @@ msgstr "Przesłano: {0}"
 msgid "Uploading {0}"
 msgstr "Przesyłanie {0}"
 
+msgid "Use a different email"
+msgstr "Użyj innego adresu e-mail"
+
+msgid "Verification Error"
+msgstr "Błąd weryfikacji"
+
+msgid "Verify your email"
+msgstr "Zweryfikuj swój adres e-mail"
+
 msgid "View maintenance dispatch"
 msgstr "Wyświetl zlecenie utrzymania ruchu"
 
 msgid "Volume:"
 msgstr "Objętość:"
+
+msgid "We've sent a verification code to {email}"
+msgstr "Wysłaliśmy kod weryfikacyjny na adres {email}"
+
+msgid "We've sent a verification code to {verifyEmail}"
+msgstr "Wysłaliśmy kod weryfikacyjny na adres {verifyEmail}"
 
 msgid "We've sent you a magic link to sign in to your account."
 msgstr "Wysłaliśmy Ci link do logowania na Twoje konto."

@@ -1003,6 +1003,9 @@ msgstr "记录数量"
 msgid "Record step"
 msgstr "记录步骤"
 
+msgid "Redirecting to verification page..."
+msgstr "正在跳转到验证页面..."
+
 msgid "remaining"
 msgstr "剩余"
 
@@ -1362,11 +1365,26 @@ msgstr "已上传：{0}"
 msgid "Uploading {0}"
 msgstr "正在上传 {0}"
 
+msgid "Use a different email"
+msgstr "使用其他邮箱"
+
+msgid "Verification Error"
+msgstr "验证错误"
+
+msgid "Verify your email"
+msgstr "验证您的邮箱"
+
 msgid "View maintenance dispatch"
 msgstr "查看维护工单"
 
 msgid "Volume:"
 msgstr "体积："
+
+msgid "We've sent a verification code to {email}"
+msgstr "我们已向 {email} 发送了验证码"
+
+msgid "We've sent a verification code to {verifyEmail}"
+msgstr "我们已向 {verifyEmail} 发送了验证码"
 
 msgid "We've sent you a magic link to sign in to your account."
 msgstr "我们已向您发送了登录链接，请查收。"

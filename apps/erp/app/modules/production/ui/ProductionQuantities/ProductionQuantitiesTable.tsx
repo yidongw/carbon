@@ -398,7 +398,7 @@ const ProductionQuantitiesTable = memo(
         },
         {
           accessorKey: "createdAt",
-          header: t`Submitted`,
+          header: t`Reported`,
           cell: ({ row }) => (
             <EditableCreatedAtCell
               createdAt={row.original.createdAt}

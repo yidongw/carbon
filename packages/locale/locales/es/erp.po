@@ -11,7 +11,6 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
-"POT-Creation-Date: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " Un proveedor es una empresa o persona que te vende partes o servicios."
@@ -1922,14 +1921,14 @@ msgstr "Confirmar Contraseña"
 msgid "Connect"
 msgstr "Conectar"
 
-msgid "Connect to your accounting, project management, and CAD tools and much more."
-msgstr "Conecte con sus herramientas de contabilidad, gestión de proyectos y CAD entre otras."
-
 msgid "Connect Jira issue"
 msgstr "Conectar problema de Jira"
 
 msgid "Connect Linear issue"
 msgstr "Conectar problema de Linear"
+
+msgid "Connect to your accounting, project management, and CAD tools and much more."
+msgstr "Conecte con sus herramientas de contabilidad, gestión de proyectos y CAD entre otras."
 
 msgid "Connected to"
 msgstr "Conectado a"
@@ -7955,6 +7954,9 @@ msgstr "Pago de registro"
 msgid "Record the inspection result for this sample."
 msgstr "Registre el resultado de la inspección para este muestra."
 
+msgid "Recorded"
+msgstr "Registrado"
+
 msgid "recorded {qty} units"
 msgstr "registrados {qty} unidades"
 
@@ -8159,6 +8161,9 @@ msgstr "Historial de informes"
 
 msgid "reported"
 msgstr "informado"
+
+msgid "Reported"
+msgstr "Reportado"
 
 msgid "Reported {totalQuantity} units"
 msgstr "Reportados {totalQuantity} unidades"

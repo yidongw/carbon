@@ -11,7 +11,6 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
-"POT-Creation-Date: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " A supplier is a business or person who sells you parts or services."
@@ -1922,14 +1921,14 @@ msgstr "パスワードを確認"
 msgid "Connect"
 msgstr "連携"
 
-msgid "Connect to your accounting, project management, and CAD tools and much more."
-msgstr "あなたの会計、プロジェクト管理、CADツールと更多を接続してください。"
-
 msgid "Connect Jira issue"
 msgstr "Jira課題に接続"
 
 msgid "Connect Linear issue"
 msgstr "Linear イシューを接続"
+
+msgid "Connect to your accounting, project management, and CAD tools and much more."
+msgstr "あなたの会計、プロジェクト管理、CADツールと更多を接続してください。"
 
 msgid "Connected to"
 msgstr "接続先"
@@ -7955,6 +7954,9 @@ msgstr "えいさつせき"
 msgid "Record the inspection result for this sample."
 msgstr "このサンプルの検査結果を記録してください。"
 
+msgid "Recorded"
+msgstr "記録済み"
+
 msgid "recorded {qty} units"
 msgstr "recorded {qty} units"
 
@@ -8159,6 +8161,9 @@ msgstr "報告履歴"
 
 msgid "reported"
 msgstr "報告"
+
+msgid "Reported"
+msgstr "報告済み"
 
 msgid "Reported {totalQuantity} units"
 msgstr "報告済み{totalQuantity}個"

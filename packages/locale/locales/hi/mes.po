@@ -1003,6 +1003,9 @@ msgstr "रिकॉर्ड गुणता"
 msgid "Record step"
 msgstr "रिकॉर्ड चरण"
 
+msgid "Redirecting to verification page..."
+msgstr "सत्यापन पृष्ठ पर पुनर्निर्देशित हो रहा है..."
+
 msgid "remaining"
 msgstr "शेष"
 
@@ -1362,11 +1365,26 @@ msgstr "अपलोड किया गया: {0}"
 msgid "Uploading {0}"
 msgstr "अपलोड किया जा रहा है {0}"
 
+msgid "Use a different email"
+msgstr "एक अलग ईमेल का उपयोग करें"
+
+msgid "Verification Error"
+msgstr "सत्यापन त्रुटि"
+
+msgid "Verify your email"
+msgstr "अपना ईमेल सत्यापित करें"
+
 msgid "View maintenance dispatch"
 msgstr "रखरखाव डिस्पैच देखें"
 
 msgid "Volume:"
 msgstr "आयतन:"
+
+msgid "We've sent a verification code to {email}"
+msgstr "हमने {email} पर एक सत्यापन कोड भेजा है"
+
+msgid "We've sent a verification code to {verifyEmail}"
+msgstr "हमने {verifyEmail} पर एक सत्यापन कोड भेजा है"
 
 msgid "We've sent you a magic link to sign in to your account."
 msgstr "हमने आपके खाते में साइन इन करने के लिए आपको एक जादुई लिंक भेजा है।"

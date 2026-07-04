@@ -11,7 +11,6 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
-"POT-Creation-Date: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " Поставщик - это бизнес или лицо, которое продает вам части или услуги."
@@ -1922,14 +1921,14 @@ msgstr "Подтвердить пароль"
 msgid "Connect"
 msgstr "Подключить"
 
-msgid "Connect to your accounting, project management, and CAD tools and much more."
-msgstr "Подключитесь к вашим системам бухгалтерского учета, управления проектами и CAD-инструментам и многому другому."
-
 msgid "Connect Jira issue"
 msgstr "Подключить проблему Jira"
 
 msgid "Connect Linear issue"
 msgstr "Подключить Linear issue"
+
+msgid "Connect to your accounting, project management, and CAD tools and much more."
+msgstr "Подключитесь к вашим системам бухгалтерского учета, управления проектами и CAD-инструментам и многому другому."
 
 msgid "Connected to"
 msgstr "Подключено к"
@@ -7955,6 +7954,9 @@ msgstr "Платеж по записи"
 msgid "Record the inspection result for this sample."
 msgstr "Запишите результат проверки для этого образца."
 
+msgid "Recorded"
+msgstr "Зафиксировано"
+
 msgid "recorded {qty} units"
 msgstr "записано {qty} единиц"
 
@@ -8159,6 +8161,9 @@ msgstr "Отчётная история"
 
 msgid "reported"
 msgstr "отчёт"
+
+msgid "Reported"
+msgstr "Отчитано"
 
 msgid "Reported {totalQuantity} units"
 msgstr "Отчет {totalQuantity} единиц"

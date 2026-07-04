@@ -1921,14 +1921,14 @@ msgstr "Confirm Password"
 msgid "Connect"
 msgstr "Connect"
 
-msgid "Connect Carbon to your accounting, project management, and CAD tools and much more."
-msgstr "Connect Carbon to your accounting, project management, and CAD tools and much more."
-
 msgid "Connect Jira issue"
 msgstr "Connect Jira issue"
 
 msgid "Connect Linear issue"
 msgstr "Connect Linear issue"
+
+msgid "Connect to your accounting, project management, and CAD tools and much more."
+msgstr "Connect to your accounting, project management, and CAD tools and much more."
 
 msgid "Connected to"
 msgstr "Connected to"
@@ -7954,6 +7954,9 @@ msgstr "Record payment"
 msgid "Record the inspection result for this sample."
 msgstr "Record the inspection result for this sample."
 
+msgid "Recorded"
+msgstr "Recorded"
+
 msgid "recorded {qty} units"
 msgstr "recorded {qty} units"
 
@@ -8158,6 +8161,9 @@ msgstr "Report history"
 
 msgid "reported"
 msgstr "reported"
+
+msgid "Reported"
+msgstr "Reported"
 
 msgid "Reported {totalQuantity} units"
 msgstr "Reported {totalQuantity} units"
