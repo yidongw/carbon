@@ -4,18 +4,27 @@ import {
   CONTROLLED_ENVIRONMENT,
   carbonClient,
   error,
+  isBypassEmail,
   isAuthProviderEnabled,
+  LOGIN_METHOD,
   magicLinkValidator,
-  RATE_LIMIT
+  RATE_LIMIT,
+  safeRedirect
 } from "@carbon/auth";
-import { sendMagicLink, verifyAuthSession } from "@carbon/auth/auth.server";
+import {
+  sendMagicLink,
+  signInWithBypassEmail,
+  verifyAuthSession
+} from "@carbon/auth/auth.server";
 import {
   clearAuthCookies,
   flash,
   getAuthSession,
+  setAuthSession,
   setPkceCookie
 } from "@carbon/auth/session.server";
 import { getUserByEmail } from "@carbon/auth/users.server";
+import { sendVerificationCode } from "@carbon/auth/verification.server";
 import { Hidden, Input, Submit, ValidatedForm, validator } from "@carbon/form";
 import { Ratelimit, redis } from "@carbon/kv";
 import {
@@ -121,18 +130,40 @@ export async function action({ request }: ActionFunctionArgs) {
   const { email, redirectTo } = validation.data;
   const user = await getUserByEmail(email);
 
-  if (user.data && user.data.active) {
-    const magicLink = await sendMagicLink(email, redirectTo);
+  if (isBypassEmail(email) && user.data?.active) {
+    const authSession = await signInWithBypassEmail(email);
+    if (authSession) {
+      const sessionCookie = await setAuthSession(request, { authSession });
+      return redirect(safeRedirect(redirectTo, path.to.authenticatedRoot), {
+        headers: [["Set-Cookie", sessionCookie]]
+      });
+    }
+  }
 
-    if (magicLink.error) {
+  if (user.data && user.data.active) {
+    if (LOGIN_METHOD === "magic-link") {
+      const magicLink = await sendMagicLink(email, redirectTo);
+
+      if (magicLink.error) {
+        return data(
+          error(null, "Failed to send magic link"),
+          await flash(request, error(null, "Failed to send magic link"))
+        );
+      }
+
+      const pkceHeader = await setPkceCookie(magicLink.pkceEntry);
       return data(
-        error(null, "Failed to send magic link"),
-        await flash(request, error(null, "Failed to send magic link"))
+        { success: true, mode: "login" },
+        { headers: [["Set-Cookie", pkceHeader]] }
       );
     }
 
-    const pkceHeader = await setPkceCookie(magicLink.pkceEntry);
-    return data({ success: true }, { headers: [["Set-Cookie", pkceHeader]] });
+    const verificationSent = await sendVerificationCode(email);
+    if (!verificationSent) {
+      return error(null, "Failed to send verification code");
+    }
+
+    return { success: true, mode: "verify", email };
   } else {
     return data(
       { success: false, message: "Invalid email/password combination" },
@@ -155,6 +186,8 @@ export default function LoginRoute() {
 
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
+  const [mode, setMode] = useState<"login" | "verify">("login");
+  const [verifyEmail, setVerifyEmail] = useState("");
 
   useEffect(() => {
     if (window.location.hash.includes("access_token=")) {
@@ -166,8 +199,23 @@ export default function LoginRoute() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetcher = useFetcher<
-    { success: true } | { success: false; message: string }
+    | { success: true; mode?: string; email?: string }
+    | { success: false; message: string }
   >();
+
+  useEffect(() => {
+    if (fetcher.data?.success && fetcher.data.mode === "verify") {
+      const email = fetcher.data.email;
+      if (email) {
+        setMode("verify");
+        setVerifyEmail(email);
+        const qs = redirectTo
+          ? `&redirectTo=${encodeURIComponent(redirectTo)}`
+          : "";
+        window.location.href = `/verify?email=${encodeURIComponent(email)}${qs}`;
+      }
+    }
+  }, [fetcher.data, redirectTo]);
 
   const [passkeySupported, setPasskeySupported] = useState(false);
   const [passkeyLoading, setPasskeyLoading] = useState(false);
@@ -324,7 +372,7 @@ export default function LoginRoute() {
         />
       </div>
       <div className="rounded-lg md:bg-card md:border md:border-border md:shadow-lg p-8 w-[380px]">
-        {fetcher.data?.success === true ? (
+        {fetcher.data?.success === true && fetcher.data?.mode === "login" ? (
           <>
             <VStack spacing={4} className="items-center justify-center">
               <Heading size="h3">
@@ -337,6 +385,18 @@ export default function LoginRoute() {
               </p>
             </VStack>
           </>
+        ) : mode === "verify" ? (
+          <VStack spacing={4} className="items-center">
+            <Heading size="h3">
+              <Trans>Verify your email</Trans>
+            </Heading>
+            <p className="text-muted-foreground tracking-tight text-sm text-center">
+              <Trans>We've sent a verification code to {verifyEmail}</Trans>
+            </p>
+            <p className="text-muted-foreground tracking-tight text-xs text-center">
+              <Trans>Redirecting to verification page...</Trans>
+            </p>
+          </VStack>
         ) : (
           <VStack spacing={2}>
             {showWeChatButton && (
