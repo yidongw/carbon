@@ -104,5 +104,5 @@ jobs:
           retry curl -sf -X POST "http://localhost:3002/preview-ready" \
             -H "Authorization: Bearer ${PREVIEW_READY_SECRET}" \
             -H "Content-Type: application/json" \
-            -d "{\"repo\":\"yidongw/carbon\",\"prNumber\":${PR_NUMBER},\"previewUrl\":\"${ERP_URL}\"}" \
+            -d "{\"repo\":\"yidongw/carbon\",\"prNumber\":${PR_NUMBER},\"previewUrl\":\"${ERP_URL}\",\"mesUrl\":\"${MES_URL}\"}" \
             || true
