@@ -124,6 +124,7 @@ export const path = {
     manualPrint: `${x}/print`,
     login: "/login",
     logout: "/logout",
+    verify: "/verify",
     maintenance: `${x}/maintenance`,
     maintenanceDetail: (id: string) => generatePath(`${x}/dispatch/${id}`),
     maintenanceDispatchItem: (id: string) =>
