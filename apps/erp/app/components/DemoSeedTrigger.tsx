@@ -6,14 +6,10 @@ import { path } from "~/utils/path";
 
 const TOAST_ID = "demo-seed";
 
-type Counts = {
-  items: number;
-  customers: number;
-  suppliers: number;
-  salesOrders: number;
-  jobs: number;
+type SeedStatus = {
+  status: string;
+  counts: { items: number; total: number } | null;
 };
-type SeedStatus = { status: string; counts: Counts | null };
 
 /**
  * Rendered only while in a demo company. The first time the demo is unseeded it
@@ -69,12 +65,13 @@ export function DemoSeedTrigger({
     pollCountRef.current += 1;
 
     const items = data.counts?.items ?? 0;
+    const total = data.counts?.total ?? 0;
     // Done when the seed has actually produced data (not just a stale `seeded` flag),
-    // when there's no demo to seed, or after a safety cap (~2 min).
+    // when there's no demo to seed, or after a safety cap (~5 min).
     const finished =
       (data.status === "seeded" && items > 0) ||
       data.status === "none" ||
-      pollCountRef.current > 40;
+      pollCountRef.current > 100;
     if (finished) {
       doneRef.current = true;
       if (intervalRef.current) {
@@ -93,17 +90,10 @@ export function DemoSeedTrigger({
       return;
     }
 
-    const c = data.counts;
-    const parts: string[] = [];
-    if (c?.items) parts.push(t`${c.items} products`);
-    if (c?.customers) parts.push(t`${c.customers} customers`);
-    if (c?.suppliers) parts.push(t`${c.suppliers} suppliers`);
-    if (c?.salesOrders) parts.push(t`${c.salesOrders} orders`);
-    if (c?.jobs) parts.push(t`${c.jobs} jobs`);
     toast.loading(
-      parts.length
-        ? t`Building your demo — ${parts.join(", ")} so far…`
-        : t`Setting up your demo data…`,
+      total > 0
+        ? `${t`Getting your demo workspace ready`} — ${total} records so far…`
+        : t`Getting your demo workspace ready…`,
       { id: TOAST_ID, duration: Number.POSITIVE_INFINITY }
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps

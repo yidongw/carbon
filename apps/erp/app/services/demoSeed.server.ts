@@ -14,6 +14,7 @@ export async function runDemoSeed(opts: {
   companyId: string;
   userId: string;
   locationId: string;
+  language?: string;
 }) {
   const admin = getCarbonServiceRole();
   const pool = getPostgresConnectionPool(1);
