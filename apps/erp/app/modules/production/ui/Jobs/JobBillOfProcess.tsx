@@ -562,6 +562,7 @@ const EmployeeProductionLogsView = ({
   creatingPoReportId: string | null;
   canCreatePo: boolean;
 }) => {
+  const { t } = useLingui();
   const { formatDateTime } = useDateFormatter();
   const formatPersonName = useFormatPersonName();
   const [people] = usePeople();
@@ -799,7 +800,7 @@ const EmployeeProductionLogsView = ({
                             type="button"
                             variant="ghost"
                             size="sm"
-                            aria-label="Edit pickup"
+                            aria-label={t`Edit pickup`}
                             onClick={() => onEditPickup(pickup.pickup)}
                             className="h-7 w-7 p-0 transition-transform active:scale-[0.96]"
                           >
@@ -901,7 +902,7 @@ const EmployeeProductionLogsView = ({
                               type="button"
                               variant="ghost"
                               size="sm"
-                              aria-label="View history"
+                              aria-label={t`View history`}
                               onClick={() =>
                                 group.kind === "employee"
                                   ? onHistoryReport(entry.employeeReport!)
@@ -919,7 +920,7 @@ const EmployeeProductionLogsView = ({
                               type="button"
                               variant="ghost"
                               size="sm"
-                              aria-label="Edit report"
+                              aria-label={t`Edit report`}
                               onClick={() =>
                                 group.kind === "employee"
                                   ? onEditReport(entry.employeeReport!)

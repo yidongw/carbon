@@ -11,6 +11,7 @@ import {
   PopoverTrigger
 } from "@carbon/react";
 import { parseDate } from "@internationalized/date";
+import { useLingui } from "@lingui/react/macro";
 import { LuCalendarDays, LuLanguages, LuSearch, LuX } from "react-icons/lu";
 import { useUrlParams } from "~/hooks";
 import CompanySelector from "./CompanySelector";
@@ -39,6 +40,7 @@ const ReportFilters = ({
   search,
   onSearchChange
 }: ReportFiltersProps) => {
+  const { t } = useLingui();
   const [params, setParams] = useUrlParams();
 
   const startDate = params.get("startDate");
@@ -53,7 +55,7 @@ const ReportFilters = ({
             <LuSearch className="h-4 w-4 text-muted-foreground" />
           </InputLeftElement>
           <Input
-            placeholder="Search accounts..."
+            placeholder={t`Search accounts...`}
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
           />

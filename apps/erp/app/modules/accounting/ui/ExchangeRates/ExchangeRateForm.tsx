@@ -36,6 +36,7 @@ import {
   ChartTooltipContent
 } from "@carbon/react/Chart";
 import { json2csv } from "json-2-csv";
+import { useLingui } from "@lingui/react/macro";
 import { useCallback, useMemo, useState } from "react";
 import { LuDownload } from "react-icons/lu";
 import { useNavigate } from "react-router";
@@ -73,6 +74,7 @@ const CurrencyForm = ({
   initialValues,
   exchangeRateHistory = []
 }: CurrencyFormProps) => {
+  const { t } = useLingui();
   const permissions = usePermissions();
   const navigate = useNavigate();
   const onClose = () => navigate(-1);
@@ -192,7 +194,7 @@ const CurrencyForm = ({
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <IconButton
-                              aria-label="Download CSV"
+                              aria-label={t`Download CSV`}
                               title="Download CSV"
                               variant="ghost"
                               icon={<LuDownload />}

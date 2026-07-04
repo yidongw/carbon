@@ -1,4 +1,5 @@
 import { useEditor } from "@carbon/tiptap";
+import { useLingui } from "@lingui/react/macro";
 import { useEffect, useRef } from "react";
 import { LuCheck, LuLink, LuTrash } from "react-icons/lu";
 import { IconButton } from "../../IconButton";
@@ -30,6 +31,7 @@ interface LinkSelectorProps {
 }
 
 export const LinkSelector = ({ open, onOpenChange }: LinkSelectorProps) => {
+  const { t } = useLingui();
   const inputRef = useRef<HTMLInputElement>(null);
   const { editor } = useEditor();
 
@@ -42,7 +44,7 @@ export const LinkSelector = ({ open, onOpenChange }: LinkSelectorProps) => {
   return (
     <Popover modal={true} open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
-        <IconButton aria-label="Link" icon={<LuLink />} variant="ghost" />
+        <IconButton aria-label={t`Link`} icon={<LuLink />} variant="ghost" />
       </PopoverTrigger>
       <PopoverContent align="start" className="w-60 p-0" sideOffset={10}>
         <form
@@ -58,13 +60,13 @@ export const LinkSelector = ({ open, onOpenChange }: LinkSelectorProps) => {
           <input
             ref={inputRef}
             type="text"
-            placeholder="Paste a link"
+            placeholder={t`Paste a link`}
             className="flex-1 bg-background p-1 text-sm outline-none"
             defaultValue={editor.getAttributes("link").href || ""}
           />
           {editor.getAttributes("link").href ? (
             <IconButton
-              aria-label="Remove link"
+              aria-label={t`Remove link`}
               icon={<LuTrash className="h-4 w-4" />}
               variant="secondary"
               type="button"
@@ -75,7 +77,7 @@ export const LinkSelector = ({ open, onOpenChange }: LinkSelectorProps) => {
             />
           ) : (
             <span className="h-8">
-              <IconButton icon={<LuCheck />} aria-label="Linked" />
+              <IconButton icon={<LuCheck />} aria-label={t`Linked`} />
             </span>
           )}
         </form>

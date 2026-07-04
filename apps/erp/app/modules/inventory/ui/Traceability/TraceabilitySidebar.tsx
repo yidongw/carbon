@@ -62,7 +62,7 @@ export function TraceabilitySidebar({
     ? entityHeadline(entity)
     : activity
       ? (activity.type ?? activity.id)
-      : "No selection";
+      : t`No selection`;
 
   const sourceDoc = entity?.sourceDocument ?? activity?.sourceDocument;
   const sourceDocId = entity?.sourceDocumentId ?? activity?.sourceDocumentId;
@@ -153,7 +153,7 @@ export function TraceabilitySidebar({
               variant="secondary"
               className="uppercase tracking-wide text-[10px]"
             >
-              {selectedIds.length} selected
+              {t`${selectedIds.length} selected`}
             </Badge>
             <span className="text-[11px] text-muted-foreground tabular-nums">
               {(focusedIndex ?? 0) + 1} / {selectedIds.length}
@@ -163,7 +163,7 @@ export function TraceabilitySidebar({
             <Button
               variant="ghost"
               size="sm"
-              aria-label="Previous selected"
+              aria-label={t`Previous selected`}
               className="p-1 h-6 w-6"
               onClick={() => {
                 const i = focusedIndex ?? 0;
@@ -176,7 +176,7 @@ export function TraceabilitySidebar({
             <Button
               variant="ghost"
               size="sm"
-              aria-label="Next selected"
+              aria-label={t`Next selected`}
               className="p-1 h-6 w-6"
               onClick={() => {
                 const i = focusedIndex ?? 0;
@@ -198,7 +198,7 @@ export function TraceabilitySidebar({
                 variant="secondary"
                 className="uppercase tracking-wide text-[10px] shrink-0"
               >
-                Entity
+                {t`Entity`}
               </Badge>
             ) : activity ? (
               <>
@@ -206,7 +206,7 @@ export function TraceabilitySidebar({
                   variant="outline"
                   className="uppercase tracking-wide text-[10px] shrink-0"
                 >
-                  Activity
+                  {t`Activity`}
                 </Badge>
                 <ActivityTypeChip type={activity.type} />
               </>
@@ -225,7 +225,7 @@ export function TraceabilitySidebar({
                   <LuLink className="w-3.5 h-3.5" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Copy link</TooltipContent>
+              <TooltipContent>{t`Copy link`}</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -240,7 +240,7 @@ export function TraceabilitySidebar({
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                Copy {capitalize(selectedNodeType)} ID
+                {t`Copy ${capitalize(selectedNodeType)} ID`}
               </TooltipContent>
             </Tooltip>
           </div>
@@ -259,16 +259,16 @@ export function TraceabilitySidebar({
             <dl className="divide-y divide-border/30">
               {selectedNodeType === "entity" && (
                 <>
-                  <PropRow label="Status">
+                  <PropRow label={t`Status`}>
                     <TrackedEntityStatus status={entity?.status} />
                   </PropRow>
-                  <PropRow label="Quantity">
+                  <PropRow label={t`Quantity`}>
                     <span className="text-sm font-medium tabular-nums">
                       {entity?.quantity}
                     </span>
                   </PropRow>
                   {entity?.readableId && (
-                    <PropRow label="Serial / Batch">
+                    <PropRow label={t`Serial / Batch`}>
                       <span className="text-sm font-mono">
                         {entity.readableId}
                       </span>
@@ -290,7 +290,7 @@ export function TraceabilitySidebar({
         )}
 
         {producedBy.length > 0 && (
-          <Section title="Produced by" count={producedBy.length}>
+          <Section title={t`Produced by`} count={producedBy.length}>
             <ul className="divide-y divide-border/30">
               {producedBy.map((item) => (
                 <RelatedActivityRow
@@ -303,7 +303,7 @@ export function TraceabilitySidebar({
           </Section>
         )}
         {consumedBy.length > 0 && (
-          <Section title="Consumed by" count={consumedBy.length}>
+          <Section title={t`Consumed by`} count={consumedBy.length}>
             <ul className="divide-y divide-border/30">
               {consumedBy.map((item) => (
                 <RelatedActivityRow
@@ -316,7 +316,7 @@ export function TraceabilitySidebar({
           </Section>
         )}
         {inputs.length > 0 && (
-          <Section title="Inputs" count={inputs.length}>
+          <Section title={t`Inputs`} count={inputs.length}>
             <ul className="divide-y divide-border/30">
               {inputs.map((item) => (
                 <RelatedEntityRow
@@ -329,7 +329,7 @@ export function TraceabilitySidebar({
           </Section>
         )}
         {outputs.length > 0 && (
-          <Section title="Outputs" count={outputs.length}>
+          <Section title={t`Outputs`} count={outputs.length}>
             <ul className="divide-y divide-border/30">
               {outputs.map((item) => (
                 <RelatedEntityRow
@@ -343,7 +343,7 @@ export function TraceabilitySidebar({
         )}
 
         {containmentsForEntity.length > 0 && (
-          <Section title="Containments" count={containmentsForEntity.length}>
+          <Section title={t`Containments`} count={containmentsForEntity.length}>
             <ContainmentList items={containmentsForEntity} />
           </Section>
         )}
@@ -351,11 +351,11 @@ export function TraceabilitySidebar({
         {activity &&
           (stepRecordsFetcher.state === "loading" &&
           stepRecordsFetcher.data === undefined ? (
-            <Section title="Step records">
+            <Section title={t`Step records`}>
               <StepRecordsSkeleton />
             </Section>
           ) : stepRecordsForActivity.length > 0 ? (
-            <Section title="Step records" count={stepRecordsForActivity.length}>
+            <Section title={t`Step records`} count={stepRecordsForActivity.length}>
               <StepRecordsList
                 records={stepRecordsForActivity}
                 jobId={
@@ -367,7 +367,7 @@ export function TraceabilitySidebar({
           ) : null)}
 
         {hasRenderedAttributes(selectedNodeAttributes) && (
-          <Section title="Attributes">
+          <Section title={t`Attributes`}>
             <AttributeList attrs={selectedNodeAttributes} />
           </Section>
         )}

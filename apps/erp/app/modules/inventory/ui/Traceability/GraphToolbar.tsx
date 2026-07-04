@@ -10,6 +10,7 @@ import {
   VStack
 } from "@carbon/react";
 import { useReactFlow } from "@xyflow/react";
+import { useLingui } from "@lingui/react/macro";
 import {
   LuFocus,
   LuMaximize,
@@ -137,6 +138,7 @@ function GraphControlsChip({
   onSpacingChange?: (next: number) => void;
   showGraphOnly: boolean;
 }) {
+  const { t } = useLingui();
   const { fitView } = useReactFlow();
 
   return (
@@ -156,7 +158,7 @@ function GraphControlsChip({
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   "text-muted-foreground hover:text-foreground hover:bg-accent/60"
                 )}
-                aria-label="Search nodes"
+                aria-label={t`Search nodes`}
               >
                 <LuSearch className="w-3.5 h-3.5" />
                 <kbd className="text-[10px] text-muted-foreground bg-muted/50 px-1 rounded">
@@ -182,7 +184,7 @@ function GraphControlsChip({
               type="button"
               onClick={() => depth > 1 && onDepthChange(depth - 1)}
               aria-disabled={depth <= 1}
-              aria-label="Decrease hops"
+              aria-label={t`Decrease hops`}
               className={cn(
                 "h-6 w-6 rounded flex items-center justify-center transition-colors",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
@@ -203,7 +205,7 @@ function GraphControlsChip({
               type="button"
               onClick={() => depth < 5 && onDepthChange(depth + 1)}
               aria-disabled={depth >= 5}
-              aria-label="Increase hops"
+              aria-label={t`Increase hops`}
               className={cn(
                 "h-6 w-6 rounded flex items-center justify-center transition-colors",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
@@ -242,7 +244,7 @@ function GraphControlsChip({
                       : "text-muted-foreground hover:text-foreground"
                   )}
                   aria-pressed={direction === "TB"}
-                  aria-label="Top-down layout"
+                  aria-label={t`Top-down layout`}
                 >
                   <LuMoveDown className="w-3.5 h-3.5" />
                 </button>
@@ -263,7 +265,7 @@ function GraphControlsChip({
                       : "text-muted-foreground hover:text-foreground"
                   )}
                   aria-pressed={direction === "LR"}
-                  aria-label="Left-right layout"
+                  aria-label={t`Left-right layout`}
                 >
                   <LuMoveRight className="w-3.5 h-3.5" />
                 </button>
@@ -297,7 +299,7 @@ function GraphControlsChip({
                     "bg-foreground/10 text-foreground ring-1 ring-foreground/20"
                 )}
                 aria-pressed={isolate}
-                aria-label="Isolate lineage"
+                aria-label={t`Isolate lineage`}
               >
                 <LuFocus className="w-3.5 h-3.5" />
               </button>
@@ -320,7 +322,7 @@ function GraphControlsChip({
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   "text-muted-foreground hover:text-foreground hover:bg-accent/60"
                 )}
-                aria-label="Fit to view"
+                aria-label={t`Fit to view`}
               >
                 <LuMaximize className="w-3.5 h-3.5" />
               </button>
@@ -344,7 +346,7 @@ function GraphControlsChip({
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   "text-muted-foreground hover:text-foreground hover:bg-accent/60"
                 )}
-                aria-label="Re-layout graph"
+                aria-label={t`Re-layout graph`}
               >
                 <LuMove className="w-3.5 h-3.5" />
               </button>
@@ -374,6 +376,7 @@ function SpacingSlider({
   value: number;
   onChange?: (next: number) => void;
 }) {
+  const { t } = useLingui();
   return (
     <Popover>
       <HoverCard openDelay={150} closeDelay={50}>
@@ -381,7 +384,7 @@ function SpacingSlider({
           <PopoverTrigger asChild>
             <button
               type="button"
-              aria-label="Layout spacing"
+              aria-label={t`Layout spacing`}
               className={cn(
                 "h-7 px-2 rounded-md flex items-center gap-1 transition-colors",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
@@ -427,7 +430,7 @@ function SpacingSlider({
               step={1}
               value={value}
               onChange={(e) => onChange?.(Number(e.target.value))}
-              aria-label="Layout spacing"
+              aria-label={t`Layout spacing`}
               className="absolute h-32 w-32 -rotate-90 cursor-pointer accent-foreground"
               style={{ accentColor: "hsl(var(--foreground))" }}
             />

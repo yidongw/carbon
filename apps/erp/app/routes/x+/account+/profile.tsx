@@ -45,6 +45,7 @@ import {
   VStack
 } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
+import { useLingui } from "@lingui/react/macro";
 import { startRegistration } from "@simplewebauthn/browser";
 import { useEffect, useState } from "react";
 import { LuFingerprint, LuTrash2 } from "react-icons/lu";
@@ -405,6 +406,7 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function AccountProfile() {
+  const { t } = useLingui();
   const { user, passkeys, identities, enabledMethods, linkError } =
     useLoaderData<typeof loader>();
   const deleteFetcher = useFetcher();
@@ -590,7 +592,7 @@ export default function AccountProfile() {
                         e.stopPropagation();
                         setConfirmDeleteId(pk.id);
                       }}
-                      aria-label="Delete passkey"
+                      aria-label={t`Delete passkey`}
                       type="button"
                       variant="ghost"
                       icon={<LuTrash2 />}
@@ -621,7 +623,7 @@ export default function AccountProfile() {
                 <Input
                   value={editedName}
                   onChange={(e) => setEditedName(e.target.value)}
-                  placeholder="Passkey name"
+                  placeholder={t`Passkey name`}
                 />
               </VStack>
               {selectedPasskey && (

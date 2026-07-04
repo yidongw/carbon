@@ -6,6 +6,7 @@ import {
   DropdownMenuTrigger,
   IconButton
 } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import {
   LuBuilding2,
   LuChevronRight,
@@ -35,6 +36,7 @@ function CompaniesRow({
   onDelete: (id: string) => void;
   onAddChild: (parentId: string) => void;
 }) {
+  const { t } = useLingui();
   const children = companies.filter((s) => s.parentCompanyId === company.id);
   const isElimination = company.isEliminationEntity;
   const canAddChild = !isElimination;
@@ -84,7 +86,7 @@ function CompaniesRow({
                 <IconButton
                   variant="ghost"
                   size="sm"
-                  aria-label="Actions"
+                  aria-label={t`Actions`}
                   icon={<LuEllipsisVertical />}
                 />
               </DropdownMenuTrigger>

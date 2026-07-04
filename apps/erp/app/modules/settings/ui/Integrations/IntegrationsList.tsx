@@ -92,7 +92,7 @@ const IntegrationsList = ({
             }
           >
             <SelectTrigger size="sm">
-              <SelectValue placeholder="Select a category" />
+              <SelectValue placeholder={t`Select a category`} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All</SelectItem>

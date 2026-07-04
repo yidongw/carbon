@@ -5,6 +5,7 @@ import {
   DropdownMenuTrigger,
   IconButton
 } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import {
   LuChevronRight,
   LuCircleDollarSign,
@@ -37,6 +38,7 @@ function CostCentersRow({
   onDelete: (id: string) => void;
   onAddChild: (parentId: string) => void;
 }) {
+  const { t } = useLingui();
   const children = costCenters.filter(
     (c) => c.parentCostCenterId === costCenter.id
   );
@@ -74,7 +76,7 @@ function CostCentersRow({
               <IconButton
                 variant="ghost"
                 size="sm"
-                aria-label="Actions"
+                aria-label={t`Actions`}
                 icon={<LuEllipsisVertical />}
               />
             </DropdownMenuTrigger>

@@ -1,7 +1,10 @@
+import { useLingui } from "@lingui/react/macro";
+
 export function LowPriorityIcon({ className }: { className?: string }) {
+  const { t } = useLingui();
   return (
     <svg
-      aria-label="Low Priority"
+      aria-label={t`Low Priority`}
       className={className}
       width="16"
       height="16"

@@ -6,11 +6,13 @@ import {
   ModalTitle,
   ModalTrigger
 } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import { LuExpand, LuX } from "react-icons/lu";
 
 // The source screenshots are ~3400px wide — far more detail than the
 // quickstart column can show — so the thumbnail opens a full-size lightbox.
 export function Screenshot({ src, alt }: { src: string; alt: string }) {
+  const { t } = useLingui();
   return (
     <Modal>
       <ModalTrigger asChild>
@@ -41,7 +43,7 @@ export function Screenshot({ src, alt }: { src: string; alt: string }) {
             over these mostly-dark screenshots. */}
         <ModalClose asChild>
           <IconButton
-            aria-label="Close"
+            aria-label={t`Close`}
             icon={<LuX />}
             variant="secondary"
             className="absolute top-2 right-2"

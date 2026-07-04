@@ -5,6 +5,7 @@ import {
   Hidden,
   ValidatedForm
 } from "@carbon/form";
+import { useLingui } from "@lingui/react/macro";
 import {
   Alert,
   AlertDescription,
@@ -104,6 +105,7 @@ export function IssueMaterialModal({
   trackedInputs?: TrackedInput[];
   onClose: () => void;
 }) {
+  const { t } = useLingui();
   const { carbon } = useCarbon();
   const [items] = useItems();
   const numberFormatter = useNumberFormatter({ maximumFractionDigits: 4 });
@@ -968,7 +970,7 @@ export function IssueMaterialModal({
                         Item
                       </label>
                       <ComboboxBase
-                        placeholder="Select an item..."
+                        placeholder={t`Select an item...`}
                         value={selectedItemId}
                         onChange={(value) => {
                           handleItemChange(value);
@@ -1066,7 +1068,7 @@ export function IssueMaterialModal({
                         Item
                       </label>
                       <ComboboxBase
-                        placeholder="Select an item..."
+                        placeholder={t`Select an item...`}
                         value={selectedItemId}
                         onChange={handleItemChange}
                         options={itemOptions}
@@ -1115,7 +1117,7 @@ export function IssueMaterialModal({
                                 <div className="flex-1">
                                   <InputGroup>
                                     <Input
-                                      placeholder={`Serial Number ${index + 1}`}
+                                      placeholder={t`Serial Number ${index + 1}`}
                                       value={sn.id}
                                       onChange={(e) => {
                                         const newValue = e.target.value;
@@ -1179,7 +1181,7 @@ export function IssueMaterialModal({
                                 </div>
                                 {index > 0 && (
                                   <IconButton
-                                    aria-label="Remove Serial Number"
+                                    aria-label={t`Remove Serial Number`}
                                     icon={<LuX />}
                                     variant="ghost"
                                     onClick={() => removeSerialNumber(index)}
@@ -1217,7 +1219,7 @@ export function IssueMaterialModal({
                               <div className="flex items-center gap-2">
                                 <div className="flex-1">
                                   <ComboboxBase
-                                    placeholder={`Select Serial Number ${index + 1}`}
+                                    placeholder={t`Select Serial Number ${index + 1}`}
                                     value={sn.id}
                                     onChange={(value) => {
                                       const newSerialNumbers = [
@@ -1249,7 +1251,7 @@ export function IssueMaterialModal({
                                 </div>
                                 {index > 0 && (
                                   <IconButton
-                                    aria-label="Remove Serial Number"
+                                    aria-label={t`Remove Serial Number`}
                                     icon={<LuX />}
                                     variant="ghost"
                                     onClick={() => removeSerialNumber(index)}
@@ -1369,7 +1371,7 @@ export function IssueMaterialModal({
                                           index
                                         );
                                       }}
-                                      placeholder="Scan batch number"
+                                      placeholder={t`Scan batch number`}
                                     />
                                     <InputRightElement className="pl-2">
                                       {!batchErrors[index] && batch.id ? (
@@ -1418,7 +1420,7 @@ export function IssueMaterialModal({
                                 </div>
                                 {index > 0 && (
                                   <IconButton
-                                    aria-label="Remove Batch Number"
+                                    aria-label={t`Remove Batch Number`}
                                     icon={<LuX />}
                                     variant="ghost"
                                     onClick={() => removeBatchNumber(index)}
@@ -1461,7 +1463,7 @@ export function IssueMaterialModal({
                                       validateBatchInput(value, index);
                                     }}
                                     options={batchOptions}
-                                    placeholder="Select batch number"
+                                    placeholder={t`Select batch number`}
                                   />
                                 </div>
                                 <div className="w-24">
@@ -1501,7 +1503,7 @@ export function IssueMaterialModal({
                                 </div>
                                 {index > 0 && (
                                   <IconButton
-                                    aria-label="Remove Batch Number"
+                                    aria-label={t`Remove Batch Number`}
                                     icon={<LuX />}
                                     variant="ghost"
                                     onClick={() => removeBatchNumber(index)}
@@ -1537,7 +1539,7 @@ export function IssueMaterialModal({
                                   value={unconsumedBatch}
                                   onChange={setUnconsumedBatch}
                                   options={unconsumeOptions}
-                                  placeholder="Select batch to unconsume"
+                                  placeholder={t`Select batch to unconsume`}
                                 />
                               </div>
                               {unconsumedBatch && (
@@ -1589,7 +1591,7 @@ export function IssueMaterialModal({
                           {expiredEntityPolicy === "BlockWithOverride" && (
                             <textarea
                               className="border rounded-md p-2 text-sm bg-background"
-                              placeholder="Reason for issuing expired stock"
+                              placeholder={t`Reason for issuing expired stock`}
                               value={expiryOverrideReason}
                               onChange={(e) =>
                                 setExpiryOverrideReason(e.target.value)

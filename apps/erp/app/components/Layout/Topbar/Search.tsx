@@ -439,6 +439,7 @@ function ResultIcon({ entityType }: { entityType: string }) {
 }
 
 const SearchButton = () => {
+  const { t } = useLingui();
   const { openSearchModal } = useUIStore();
 
   useShortcutKeys({
@@ -449,7 +450,7 @@ const SearchButton = () => {
   return (
     <div>
       <IconButton
-        aria-label="Search"
+        aria-label={t`Search`}
         icon={<LuSearch />}
         variant="ghost"
         className="xl:hidden"

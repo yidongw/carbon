@@ -1,4 +1,5 @@
 import { cn } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import {
   Background,
   BackgroundVariant,
@@ -93,6 +94,7 @@ function TraceabilityGraphInner({
   width,
   height
 }: Props) {
+  const { t } = useLingui();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { fitView } = useReactFlow();
@@ -702,7 +704,7 @@ function TraceabilityGraphInner({
                   type="button"
                   onClick={clearAll}
                   className="ml-1 flex items-center justify-center w-5 h-5 rounded-full text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-                  aria-label="Clear trace"
+                  aria-label={t`Clear trace`}
                   title="Clear trace"
                 >
                   <LuX className="w-3 h-3" />

@@ -29,6 +29,7 @@ import {
   verticalListSortingStrategy
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { useLingui } from "@lingui/react/macro";
 import { Fragment, type ReactNode } from "react";
 import {
   LuEye,
@@ -177,6 +178,7 @@ export function BlockList() {
  * editor can pin it below the list.
  */
 export function AddBlockMenu() {
+  const { t } = useLingui();
   const {
     documentType,
     addBlock,
@@ -193,7 +195,7 @@ export function AddBlockMenu() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <IconButton
-          aria-label="Add block"
+          aria-label={t`Add block`}
           variant="ghost"
           size="sm"
           icon={<LuPlus />}
@@ -309,6 +311,7 @@ function AddMenuItem({
 }
 
 function BlockRow({ id }: { id: string }) {
+  const { t } = useLingui();
   const { blocks, sections, selectedId, select, toggleVisible, removeBlock } =
     useDocumentTemplate();
   const block = blocks.find((b) => b.id === id);
@@ -356,7 +359,7 @@ function BlockRow({ id }: { id: string }) {
     >
       <button
         type="button"
-        aria-label="Drag to reorder"
+        aria-label={t`Drag to reorder`}
         onClick={(e) => e.stopPropagation()}
         className="relative cursor-grab text-muted-foreground/60 active:cursor-grabbing"
         {...attributes}
@@ -387,7 +390,7 @@ function BlockRow({ id }: { id: string }) {
       {meta.removable && (
         <button
           type="button"
-          aria-label="Remove block"
+          aria-label={t`Remove block`}
           onClick={(e) => {
             e.stopPropagation();
             removeBlock(id);
@@ -438,6 +441,7 @@ function BlockRow({ id }: { id: string }) {
  * behavior as `BlockRow`, just without the drag handle.
  */
 function NestedBlockRow({ id }: { id: string }) {
+  const { t } = useLingui();
   const { blocks, sections, selectedId, select, toggleVisible, removeBlock } =
     useDocumentTemplate();
   const block = blocks.find((b) => b.id === id);
@@ -475,7 +479,7 @@ function NestedBlockRow({ id }: { id: string }) {
         {meta.removable && (
           <button
             type="button"
-            aria-label="Remove block"
+            aria-label={t`Remove block`}
             onClick={(e) => {
               e.stopPropagation();
               removeBlock(id);

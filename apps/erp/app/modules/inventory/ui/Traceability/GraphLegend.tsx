@@ -6,6 +6,7 @@ import {
   PopoverTrigger,
   VStack
 } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import type { IconType } from "react-icons";
 import { LuInfo } from "react-icons/lu";
 import {
@@ -53,13 +54,14 @@ const ACTIVITY_ENTRIES: Entry[] = (
 });
 
 export function GraphLegend() {
+  const { t } = useLingui();
   return (
     <div className="absolute bottom-3 left-3 z-20">
       <Popover>
         <PopoverTrigger asChild>
           <button
             type="button"
-            aria-label="Show legend"
+            aria-label={t`Show legend`}
             className={cn(
               "h-8 w-8 rounded-md flex items-center justify-center transition-colors",
               "border border-border bg-card/90 backdrop-blur shadow-sm",
@@ -76,34 +78,34 @@ export function GraphLegend() {
           className="w-[420px] p-0 border-border"
         >
           <HStack spacing={0} className="items-stretch divide-x divide-border">
-            <Section title="Entities" entries={ENTITY_ENTRIES} />
-            <Section title="Activities" entries={ACTIVITY_ENTRIES} />
+            <Section title={t`Entities`} entries={ENTITY_ENTRIES} />
+            <Section title={t`Activities`} entries={ACTIVITY_ENTRIES} />
           </HStack>
           <div className="border-t border-border p-4">
             <span className="block text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-2">
-              Lines
+              {t`Lines`}
             </span>
             <VStack spacing={2}>
               <LineRow
-                label="Normal flow"
+                label={t`Normal flow`}
                 color="hsl(0 0% 55%)"
                 width={1.2}
                 opacity={0.6}
               />
               <LineRow
-                label="Selection path"
+                label={t`Selection path`}
                 color="hsl(0 0% 92%)"
                 width={2.5}
                 opacity={1}
               />
               <LineRow
-                label="Reject branch"
+                label={t`Reject branch`}
                 color="hsl(0 72% 55%)"
                 width={1.5}
                 opacity={0.9}
               />
               <LineRow
-                label="Cycle back-edge"
+                label={t`Cycle back-edge`}
                 color="hsl(0 0% 55%)"
                 width={1.2}
                 opacity={0.3}

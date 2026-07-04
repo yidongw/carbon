@@ -504,14 +504,14 @@ export default function SalesSettingsRoute() {
                 <div className="flex flex-col gap-2">
                   <Boolean
                     name="digitalQuoteEnabled"
-                    description="Digital Quotes Enabled"
+                    description={t`Digital Quotes Enabled`}
                     onChange={(value) => {
                       setDigitalQuoteEnabled(value);
                     }}
                   />
                   <Boolean
                     name="digitalQuoteIncludesPurchaseOrders"
-                    description="Include Purchase Orders"
+                    description={t`Include Purchase Orders`}
                     isDisabled={!digitalQuoteEnabled}
                   />
                 </div>

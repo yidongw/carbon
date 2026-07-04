@@ -67,6 +67,7 @@ const OpportunityDocuments = ({
   type,
   isReadOnly: isReadOnlyProp
 }: OpportunityDocumentsProps) => {
+  const { t } = useLingui();
   const { formatDate } = useDateFormatter();
   const { canDelete, download, deleteAttachment, getPath, upload } =
     useOpportunityDocuments({
@@ -191,7 +192,7 @@ const OpportunityDocuments = ({
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <IconButton
-                                aria-label="More"
+                                aria-label={t`More`}
                                 icon={<LuEllipsisVertical />}
                                 variant="secondary"
                               />

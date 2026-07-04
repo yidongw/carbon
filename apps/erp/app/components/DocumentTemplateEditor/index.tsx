@@ -25,6 +25,7 @@ import {
   TabsTrigger
 } from "@carbon/react";
 import { labelSizes } from "@carbon/utils";
+import { useLingui } from "@lingui/react/macro";
 import { type ReactNode, useState } from "react";
 import { LuArrowLeft, LuPalette, LuRefreshCw, LuType } from "react-icons/lu";
 import { Link } from "react-router";
@@ -285,6 +286,7 @@ function EditorToolbar({
   title: string;
   canEdit: boolean;
 }) {
+  const { t } = useLingui();
   const {
     isDirty,
     isSaving,
@@ -301,7 +303,7 @@ function EditorToolbar({
       <div className="flex items-center gap-3">
         <Link
           to={path.to.documentTemplates}
-          aria-label="Back to documents"
+          aria-label={t`Back to documents`}
           className="flex size-8 items-center justify-center rounded-md border text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
         >
           <LuArrowLeft className="size-4" />
@@ -321,7 +323,7 @@ function EditorToolbar({
             }
           >
             <SelectTrigger size="sm" className="w-full">
-              <SelectValue placeholder="Sample data" />
+              <SelectValue placeholder={t`Sample data`} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={SAMPLE_DATA_VALUE}>Sample data</SelectItem>
@@ -339,7 +341,7 @@ function EditorToolbar({
         {canEdit && (
           <>
             <IconButton
-              aria-label="Refresh preview"
+              aria-label={t`Refresh preview`}
               variant="secondary"
               icon={<LuRefreshCw />}
               onClick={refreshPreview}
@@ -367,6 +369,7 @@ function EditorToolbar({
  * seeded from the company's configured label size.
  */
 function LabelSizePicker() {
+  const { t } = useLingui();
   const documentType = useEditorStore((s) => s.documentType);
   const labelSizeId = useEditorStore((s) => s.labelSizeId);
   const setLabelSizeId = useEditorStore((s) => s.setLabelSizeId);
@@ -377,7 +380,7 @@ function LabelSizePicker() {
       <span className={PICKER_LABEL}>Preview size</span>
       <Select value={labelSizeId} onValueChange={setLabelSizeId}>
         <SelectTrigger size="sm" className="w-[160px]">
-          <SelectValue placeholder="Label size" />
+          <SelectValue placeholder={t`Label size`} />
         </SelectTrigger>
         <SelectContent>
           {labelSizes.map((s) => (

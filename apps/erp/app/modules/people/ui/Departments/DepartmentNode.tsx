@@ -6,6 +6,7 @@ import {
 } from "@carbon/react";
 import { Handle, type NodeProps, Position } from "@xyflow/react";
 import { memo } from "react";
+import { useLingui } from "@lingui/react/macro";
 import {
   LuBuilding,
   LuEllipsisVertical,
@@ -25,6 +26,7 @@ interface DepartmentNodeData extends Record<string, unknown> {
 function DepartmentNodeComponent({
   data
 }: NodeProps & { data: DepartmentNodeData }) {
+  const { t } = useLingui();
   const { department, onEdit, onDelete, onAddChild } = data;
 
   return (
@@ -53,7 +55,7 @@ function DepartmentNodeComponent({
           <DropdownMenuTrigger asChild>
             <button
               className="ml-auto shrink-0 rounded-md p-1 opacity-0 transition-opacity hover:bg-accent group-hover:opacity-100 focus:opacity-100"
-              aria-label="Actions"
+              aria-label={t`Actions`}
             >
               <LuEllipsisVertical className="size-3.5 text-muted-foreground" />
             </button>

@@ -19,7 +19,7 @@ import {
   VStack
 } from "@carbon/react";
 import { useDroppable } from "@dnd-kit/core";
-import { Trans } from "@lingui/react/macro";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { useRef, useState } from "react";
 import {
   LuCirclePlus,
@@ -47,6 +47,7 @@ import SalesRFQLineForm from "./SalesRFQLineForm";
 import { useOptimisticDocumentDrag } from "./useOptimiticDocumentDrag";
 
 export default function SalesRFQExplorer() {
+  const { t } = useLingui();
   const prettifyShortcut = usePrettifyShortcut();
   const { rfqId } = useParams();
   if (!rfqId) throw new Error("Could not find rfqId");
@@ -224,7 +225,7 @@ export default function SalesRFQExplorer() {
               </Tooltip>
               {canReorder && realLines.length > 0 && (
                 <IconButton
-                  aria-label="Reorder lines"
+                  aria-label={t`Reorder lines`}
                   icon={<LuSettings2 />}
                   variant="ghost"
                   className="text-muted-foreground"
@@ -354,6 +355,7 @@ function SalesRFQLineItem({
   isDisabled,
   onDelete
 }: SalesRFQLineItemProps) {
+  const { t } = useLingui();
   const { rfqId, lineId } = useParams();
   if (!rfqId) throw new Error("Could not find rfqId");
   const permissions = usePermissions();
@@ -393,7 +395,7 @@ function SalesRFQLineItem({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <IconButton
-                  aria-label="More"
+                  aria-label={t`More`}
                   className="opacity-0 group-hover:opacity-100 group-active:opacity-100 data-[state=open]:opacity-100"
                   icon={<LuEllipsisVertical />}
                   variant="solid"

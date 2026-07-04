@@ -125,6 +125,7 @@ function getRelatedItems(
 }
 
 export default function SalesOrderExplorer() {
+  const { t } = useLingui();
   const prettifyShortcut = usePrettifyShortcut();
   const { defaults } = useUser();
   const { orderId } = useParams();
@@ -275,7 +276,7 @@ export default function SalesOrderExplorer() {
               </Tooltip>
               {canReorder && lines.length > 0 && (
                 <IconButton
-                  aria-label="Reorder lines"
+                  aria-label={t`Reorder lines`}
                   icon={<LuSettings2 />}
                   variant="ghost"
                   className="text-muted-foreground"
@@ -338,6 +339,7 @@ function SalesOrderLineItem({
   isDisabled,
   onDelete
 }: SalesOrderLineItemProps) {
+  const { t } = useLingui();
   const { orderId, lineId } = useParams();
   if (!orderId) throw new Error("Could not find orderId");
 
@@ -410,7 +412,7 @@ function SalesOrderLineItem({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <IconButton
-                  aria-label="More"
+                  aria-label={t`More`}
                   className="opacity-0 group-hover:opacity-100 group-active:opacity-100 data-[state=open]:opacity-100"
                   icon={<LuEllipsisVertical />}
                   size="md"

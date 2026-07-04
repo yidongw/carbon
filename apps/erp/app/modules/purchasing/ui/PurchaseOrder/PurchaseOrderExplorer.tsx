@@ -53,6 +53,7 @@ import DeletePurchaseOrderLine from "./DeletePurchaseOrderLine";
 import PurchaseOrderLineForm from "./PurchaseOrderLineForm";
 
 export default function PurchaseOrderExplorer() {
+  const { t } = useLingui();
   const prettifyShortcut = usePrettifyShortcut();
   const { defaults } = useUser();
   const { orderId } = useParams();
@@ -200,7 +201,7 @@ export default function PurchaseOrderExplorer() {
               </Tooltip>
               {canReorder && lines.length > 0 && (
                 <IconButton
-                  aria-label="Reorder lines"
+                  aria-label={t`Reorder lines`}
                   icon={<LuSettings2 />}
                   variant="ghost"
                   className="text-muted-foreground"

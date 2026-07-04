@@ -13,7 +13,7 @@ import {
   TooltipTrigger,
   Tr
 } from "@carbon/react";
-import { Trans } from "@lingui/react/macro";
+import { Trans, useLingui } from "@lingui/react/macro";
 import type { ComponentProps, ReactNode } from "react";
 import { LuCalculator, LuExternalLink } from "react-icons/lu";
 import { Link } from "react-router";
@@ -48,6 +48,7 @@ export function PriceTracePopover({
   currencyCode,
   children
 }: PriceTracePopoverProps) {
+  const { t } = useLingui();
   const currencyFormatter = useCurrencyFormatter({ currency: currencyCode });
   const format = (value: number) => currencyFormatter.format(value);
 
@@ -66,7 +67,7 @@ export function PriceTracePopover({
   ) : (
     <button
       type="button"
-      aria-label="How this price was calculated"
+      aria-label={t`How this price was calculated`}
       className="text-xxs text-muted-foreground hover:text-foreground inline-flex items-center gap-0.5"
     >
       <LuCalculator className="size-3" />

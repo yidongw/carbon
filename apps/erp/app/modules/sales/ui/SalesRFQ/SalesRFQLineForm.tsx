@@ -235,7 +235,7 @@ const SalesRFQLineForm = ({
                         <DropdownMenuTrigger asChild>
                           <IconButton
                             icon={<BsThreeDotsVertical />}
-                            aria-label="More"
+                            aria-label={t`More`}
                             variant="ghost"
                           />
                         </DropdownMenuTrigger>

@@ -1,4 +1,5 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
+import { useLingui } from "@lingui/react/macro";
 import type { JSONContent } from "@carbon/react";
 import {
   Alert,
@@ -522,6 +523,7 @@ function QuestionStep({
     value: string | string[] | number | boolean | Record<string, string>
   ) => void;
 }) {
+  const { t } = useLingui();
   const renderQuestionInput = () => {
     switch (question.type) {
       case "MultipleChoice":
@@ -620,7 +622,7 @@ function QuestionStep({
                     }}
                   >
                     <SelectTrigger className="flex-1">
-                      <SelectValue placeholder="Select a match..." />
+                      <SelectValue placeholder={t`Select a match...`} />
                     </SelectTrigger>
                     <SelectContent>
                       {rightOptions.map((option: string, optIndex: number) => (
@@ -650,7 +652,7 @@ function QuestionStep({
               }
               className="max-w-xs"
             >
-              <NumberInput placeholder="Enter your answer..." />
+              <NumberInput placeholder={t`Enter your answer...`} />
             </NumberField>
             {(question.tolerance ?? 0) > 0 && (
               <p className="text-sm text-muted-foreground">

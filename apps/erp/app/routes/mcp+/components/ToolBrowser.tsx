@@ -1,3 +1,4 @@
+import { useLingui } from "@lingui/react/macro";
 import { useMemo, useState } from "react";
 import { LuChevronDown } from "react-icons/lu";
 import type { CatalogModule, CatalogTool } from "../catalog";
@@ -15,6 +16,7 @@ export function ToolBrowser({
   tools: CatalogTool[];
   modules: CatalogModule[];
 }) {
+  const { t } = useLingui();
   const [q, setQ] = useState("");
   const [module, setModule] = useState("");
   const [classification, setClassification] = useState("");
@@ -51,7 +53,7 @@ export function ToolBrowser({
           />
           <FilterSelect
             value={classification}
-            placeholder="All types"
+            placeholder={t`All types`}
             options={[
               { value: "READ", label: "READ" },
               { value: "WRITE", label: "WRITE" },

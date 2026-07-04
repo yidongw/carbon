@@ -1,4 +1,5 @@
 import { MenuIcon, MenuItem, useDisclosure } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { ReactNode } from "react";
 import { memo, useCallback, useMemo, useState } from "react";
@@ -34,6 +35,7 @@ type FixedAssetsTableProps = {
 
 const FixedAssetsTable = memo(
   ({ data, count, assetClasses, primaryAction }: FixedAssetsTableProps) => {
+    const { t } = useLingui();
     const navigate = useNavigate();
     const permissions = usePermissions();
     const { company } = useUser();
@@ -201,7 +203,7 @@ const FixedAssetsTable = memo(
           count={count}
           primaryAction={primaryAction}
           renderContextMenu={renderContextMenu}
-          title="Fixed Assets"
+          title={t`Fixed Assets`}
         />
         {selectedAsset && (
           <ConfirmDelete

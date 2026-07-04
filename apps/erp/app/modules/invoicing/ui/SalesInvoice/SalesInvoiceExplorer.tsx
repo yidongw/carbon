@@ -53,6 +53,7 @@ import DeleteSalesInvoiceLine from "./DeleteSalesInvoiceLine";
 import SalesInvoiceLineForm from "./SalesInvoiceLineForm";
 
 export default function SalesInvoiceExplorer() {
+  const { t } = useLingui();
   const prettifyShortcut = usePrettifyShortcut();
   const { defaults } = useUser();
   const { invoiceId } = useParams();
@@ -197,7 +198,7 @@ export default function SalesInvoiceExplorer() {
               </Tooltip>
               {canReorder && lines.length > 0 && (
                 <IconButton
-                  aria-label="Reorder lines"
+                  aria-label={t`Reorder lines`}
                   icon={<LuSettings2 />}
                   variant="ghost"
                   className="text-muted-foreground"

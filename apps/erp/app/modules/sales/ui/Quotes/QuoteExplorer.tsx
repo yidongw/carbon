@@ -25,7 +25,7 @@ import {
   VStack
 } from "@carbon/react";
 import { useDroppable } from "@dnd-kit/core";
-import { Trans } from "@lingui/react/macro";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { useMemo, useRef, useState } from "react";
 import {
   LuBraces,
@@ -77,6 +77,7 @@ type QuoteExplorerProps = {
 };
 
 export default function QuoteExplorer({ methods }: QuoteExplorerProps) {
+  const { t } = useLingui();
   const prettifyShortcut = usePrettifyShortcut();
   const { defaults } = useUser();
   const { quoteId } = useParams();
@@ -260,7 +261,7 @@ export default function QuoteExplorer({ methods }: QuoteExplorerProps) {
               </Tooltip>
               {canReorder && realQuoteLines.length > 0 && (
                 <IconButton
-                  aria-label="Reorder lines"
+                  aria-label={t`Reorder lines`}
                   icon={<LuSettings2 />}
                   variant="ghost"
                   className="text-muted-foreground"
@@ -432,6 +433,7 @@ function QuoteLineItem({
   onDelete,
   methods
 }: QuoteLineItemProps) {
+  const { t } = useLingui();
   const { quoteId, lineId } = useParams();
   if (!quoteId) throw new Error("Could not find quoteId");
   const permissions = usePermissions();
@@ -520,7 +522,7 @@ function QuoteLineItem({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <IconButton
-                  aria-label="More"
+                  aria-label={t`More`}
                   className="opacity-0 group-hover:opacity-100 group-active:opacity-100 data-[state=open]:opacity-100"
                   icon={<LuEllipsisVertical />}
                   size="md"

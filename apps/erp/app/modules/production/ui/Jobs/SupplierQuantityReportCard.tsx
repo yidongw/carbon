@@ -1,5 +1,5 @@
 import { Button, HStack } from "@carbon/react";
-import { Trans } from "@lingui/react/macro";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { LuExternalLink, LuHistory, LuPencil } from "react-icons/lu";
 import { Link } from "react-router";
 import { useDateFormatter, usePermissions } from "~/hooks";
@@ -26,6 +26,7 @@ export function SupplierQuantityReportCard({
   onCreatePo: () => void;
   isCreatingPo?: boolean;
 }) {
+  const { t } = useLingui();
   const { formatDateTime } = useDateFormatter();
   const permissions = usePermissions();
   const supplierId = report.supplierProcess?.supplierId;
@@ -42,7 +43,7 @@ export function SupplierQuantityReportCard({
           type="button"
           variant="ghost"
           size="sm"
-          aria-label="View history"
+          aria-label={t`View history`}
           onClick={onHistory}
           className="transition-transform active:scale-[0.96]"
         >
@@ -54,7 +55,7 @@ export function SupplierQuantityReportCard({
           type="button"
           variant="ghost"
           size="sm"
-          aria-label="Edit report"
+          aria-label={t`Edit report`}
           onClick={onEdit}
           className="transition-transform active:scale-[0.96]"
         >

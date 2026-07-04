@@ -13,6 +13,7 @@ import {
   VStack
 } from "@carbon/react";
 import type { PostgrestResponse } from "@supabase/supabase-js";
+import { useLingui } from "@lingui/react/macro";
 import { useEffect, useState } from "react";
 import { useFetcher } from "react-router";
 import type { z } from "zod";
@@ -46,6 +47,7 @@ const AssetClassForm = ({
   type = "drawer",
   onClose
 }: AssetClassFormProps) => {
+  const { t } = useLingui();
   const permissions = usePermissions();
   const fetcher = useFetcher<PostgrestResponse<{ id: string }>>();
 
@@ -163,7 +165,7 @@ const AssetClassForm = ({
                     <Select
                       name="taxDepreciationMethod"
                       label="Tax Method"
-                      placeholder="Same as Book"
+                      placeholder={t`Same as Book`}
                       isOptional
                       options={taxDepreciationMethods.map((m) => ({
                         label: m,

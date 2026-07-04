@@ -217,7 +217,7 @@ export function OperationChat({
           />
           <Button
             className="h-10"
-            aria-label="Send"
+            aria-label={t`Send`}
             type="submit"
             leftIcon={<LuArrowUp />}
           >

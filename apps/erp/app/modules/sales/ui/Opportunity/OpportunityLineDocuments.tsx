@@ -407,6 +407,7 @@ const OpportunityLineDocuments = ({
   type,
   isReadOnly: isReadOnlyProp
 }: OpportunityLineDocumentsProps) => {
+  const { t } = useLingui();
   const { formatDate } = useDateFormatter();
   const {
     canDelete: canDeleteBase,
@@ -584,7 +585,7 @@ const OpportunityLineDocuments = ({
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <IconButton
-                              aria-label="More"
+                              aria-label={t`More`}
                               icon={<LuEllipsisVertical />}
                               variant="secondary"
                             />
@@ -684,7 +685,7 @@ const OpportunityLineDocuments = ({
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <IconButton
-                                aria-label="More"
+                                aria-label={t`More`}
                                 icon={<LuEllipsisVertical />}
                                 variant="secondary"
                               />

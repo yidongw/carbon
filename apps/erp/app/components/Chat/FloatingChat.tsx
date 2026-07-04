@@ -1,5 +1,6 @@
 import { Provider as ChatStoreProvider } from "@ai-sdk-tools/store";
 import { cn } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import {
   AnimatePresence,
   animate as fmAnimate,
@@ -379,6 +380,7 @@ function PanelHeader({
   viewportW,
   isShort
 }: PanelHeaderProps) {
+  const { t } = useLingui();
   const PositionIcon = {
     "left-outside": LuPanelLeft,
     "right-outside": LuPanelRight,
@@ -404,7 +406,7 @@ function PanelHeader({
             <button
               type="button"
               onClick={onTogglePositionMenu}
-              title="Change panel position"
+              title={t`Change panel position`}
               className={cn(
                 "inline-flex items-center gap-1.5 h-7 px-2 rounded-md text-xs",
                 "transition-colors duration-100",
@@ -433,7 +435,7 @@ function PanelHeader({
           <button
             type="button"
             onClick={onClose}
-            title="Close chat"
+            title={t`Close chat`}
             className="inline-flex items-center justify-center h-7 w-7 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors duration-100"
           >
             <LuX className="size-3.5" />
@@ -458,6 +460,7 @@ function PanelHeader({
 // ── Main component ────────────────────────────────────────────────────────────
 
 export function FloatingChat() {
+  const { t } = useLingui();
   const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useStored("carbon-chat-open", false);
   const [position, setPosition] = useStored<ChatPosition>(
@@ -874,7 +877,7 @@ export function FloatingChat() {
             onPointerMove={onBtnPointerMove}
             onPointerUp={onBtnPointerUp}
             onPointerCancel={onBtnPointerCancel}
-            title="Open AI Assistant (drag to reposition)"
+            title={t`Open AI Assistant (drag to reposition)`}
           >
             <LuBotMessageSquare className="size-[22px]" />
           </motion.button>

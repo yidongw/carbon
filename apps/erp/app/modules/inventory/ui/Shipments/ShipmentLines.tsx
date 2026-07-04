@@ -339,6 +339,7 @@ function ShipmentFixedAssetLineItem({
   isReadOnly: boolean;
   className?: string;
 }) {
+  const { t } = useLingui();
   const fetcher = useFetcher();
   const [serialNumber, setSerialNumber] = useState(line.serialNumber ?? "");
 
@@ -373,7 +374,7 @@ function ShipmentFixedAssetLineItem({
         )}
       </VStack>
       <Input
-        placeholder="Serial Number"
+        placeholder={t`Serial Number`}
         value={serialNumber}
         isDisabled={isReadOnly}
         className="w-48"
@@ -510,7 +511,7 @@ function ShipmentLineItem({
           <HStack spacing={4}>
             <VStack spacing={1}>
               <div className="flex items-center justify-between gap-1 w-full">
-                <label className="text-xs text-muted-foreground">Shipped</label>
+                <label className="text-xs text-muted-foreground">{t`Shipped`}</label>
                 {isJobOverShipped && (
                   <Tooltip>
                     <TooltipTrigger>
@@ -565,13 +566,13 @@ function ShipmentLineItem({
               </NumberField>
             </VStack>
             <VStack spacing={1} className="text-center items-center">
-              <label className="text-xs text-muted-foreground">Ordered</label>
+              <label className="text-xs text-muted-foreground">{t`Ordered`}</label>
               <span className="text-sm py-1.5">{line.orderQuantity || 0}</span>
             </VStack>
 
             <VStack spacing={1} className="text-center items-center">
               <label className="text-xs text-muted-foreground">
-                Outstanding
+                {t`Outstanding`}
               </label>
               <HStack className="justify-center">
                 <span className="text-sm py-1.5">
@@ -870,7 +871,7 @@ function BatchForm({
   return (
     <div className="flex flex-col gap-6 w-full p-6 border rounded-lg">
       <div className="flex justify-between items-center gap-4">
-        <Heading size="h4">Tracking Number</Heading>
+        <Heading size="h4">{t`Tracking Number`}</Heading>
         {hasTrackingLabel && (
           <PrintButton
             sourceDocument="Shipment"
@@ -895,7 +896,7 @@ function BatchForm({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 ">
         <div className="flex flex-col gap-2 w-full">
           <label className="text-xs text-muted-foreground flex items-center gap-2">
-            <LuGroup /> Batch Number
+            <LuGroup /> {t`Batch Number`}
           </label>
 
           <div className="flex flex-col gap-1">
@@ -967,6 +968,7 @@ function SerialForm({
     serialNumbers: { index: number; id: string }[]
   ) => void;
 }) {
+  const { t } = useLingui();
   const [errors, setErrors] = useState<Record<number, string>>({});
   const { data: serialNumbersData } = useSerialNumbers(
     line.itemId!,
@@ -1122,7 +1124,7 @@ function SerialForm({
   return (
     <div className="flex flex-col gap-6 p-6 border rounded-lg">
       <div className="flex justify-between items-center gap-4">
-        <Heading size="h4">Tracking Numbers</Heading>
+        <Heading size="h4">{t`Tracking Numbers`}</Heading>
         {hasTrackingLabel && (
           <PrintButton
             sourceDocument="Shipment"
@@ -1164,7 +1166,7 @@ function SerialForm({
             >
               <InputGroup isDisabled={isReadOnly}>
                 <Input
-                  placeholder={`Tracking Number ${index + 1}`}
+                  placeholder={t`Tracking Number ${index + 1}`}
                   value={serialNumber.id}
                   onChange={(e) => {
                     const newValue = e.target.value;
@@ -1252,9 +1254,9 @@ function SplitShipmentLineModal({
           fetcher={fetcher}
         >
           <ModalHeader>
-            <ModalTitle>Split Shipment Line</ModalTitle>
+            <ModalTitle>{t`Split Shipment Line`}</ModalTitle>
             <ModalDescription>
-              Select the quantity that you'd like to split into a new line.
+              {t`Select the quantity that you'd like to split into a new line.`}
             </ModalDescription>
           </ModalHeader>
 
@@ -1270,9 +1272,9 @@ function SplitShipmentLineModal({
           </ModalBody>
           <ModalFooter>
             <Button variant="secondary" onClick={onClose}>
-              Cancel
+              {t`Cancel`}
             </Button>
-            <Submit>Split Line</Submit>
+            <Submit>{t`Split Line`}</Submit>
           </ModalFooter>
         </ValidatedForm>
       </ModalContent>
