@@ -17,7 +17,7 @@ msgstr " Un proveedor es una empresa o persona que te vende partes o servicios."
 
 #. placeholder {0}: fieldDef?.label ?? condition.field
 msgid "\"{0}\" isn't available on the selected surface(s). Pick another field."
-msgstr ""
+msgstr "\"{0}\" no está disponible en la superficie seleccionada. Elija otro campo."
 
 msgid "\"{storageUnitName}\" has {childCount} direct nested storage units. Deleting it will also delete them and anything underneath them. This cannot be undone."
 msgstr "\"{storageUnitName}\" tiene {childCount} unidades de almacenamiento anidadas directas. Eliminarla también eliminará estas unidades y todo lo que hay debajo de ellas. Esto no se puede deshacer."
@@ -76,6 +76,10 @@ msgstr "{0} Procesos"
 msgid "{0} products"
 msgstr "{0} productos"
 
+#. placeholder {0}: selectedIds.length
+msgid "{0} selected"
+msgstr "{0} seleccionado"
+
 #. placeholder {0}: fmt(Math.abs(diff))
 msgid "{0} short of goal"
 msgstr "falta {0} para el objetivo"
@@ -94,7 +98,7 @@ msgstr "{0} entidades no muestreadas serán liberadas a Disponible. Los pases mu
 
 #. placeholder {0}: unmatchedValues.length
 msgid "{0} values missing"
-msgstr ""
+msgstr "valores de {0} faltantes"
 
 msgid "{days} days ({formatted})"
 msgstr "{days} días ({formatted})"
@@ -103,7 +107,7 @@ msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB límite"
 
 msgid "{name} deleted"
-msgstr ""
+msgstr "{name} eliminado"
 
 msgid "{scopeCount} permissions"
 msgstr "{scopeCount} permisos"
@@ -119,7 +123,7 @@ msgid "+{0} more"
 msgstr "+{0} más"
 
 msgid "<0>Add a supplier part</0> for this item to set a preferred supplier."
-msgstr ""
+msgstr "Añadir una parte suministradora <0></0> para establecer un proveedor preferente."
 
 msgid "<0>delete</0> lets you delete rows. <1>delete</1> will match all rows by default, so remember to specify your filters!"
 msgstr "<0>delete</0> te permite eliminar filas. <1>delete</1> coincidirá con todas las filas de forma predeterminada, ¡así que recuerda especificar tus filtros!"
@@ -341,6 +345,17 @@ msgstr "Estados Activos"
 msgid "Active Supplier Quotes"
 msgstr "Cotizaciones de Proveedores Activas"
 
+msgid "Activities"
+msgstr "Actividades"
+
+#. placeholder {0}: activities.length
+msgid "Activities ({0})"
+msgstr "Actividades ({0})"
+
+#. placeholder {0}: activities.length
+msgid "Activities in graph ({0})"
+msgstr "Actividades en gráfico ({0})"
+
 msgid "Activity"
 msgstr "Actividad"
 
@@ -372,7 +387,7 @@ msgid "Add a comment..."
 msgstr "Añade un comentario..."
 
 msgid "Add a printer in the printing settings to print labels directly."
-msgstr ""
+msgstr "Añade una impresora en las configuraciones de impresión para imprimir etiquetas directamente."
 
 msgid "Add Actions"
 msgstr "Agregar Acciones"
@@ -388,6 +403,9 @@ msgstr "Añade al menos una línea con cantidad mayor que cero"
 
 msgid "Add attachments"
 msgstr "Agregar archivos adjuntos"
+
+msgid "Add block"
+msgstr "Agregar bloque"
 
 msgid "Add Calibration Record"
 msgstr "Agregar Registro de Calibración"
@@ -411,7 +429,7 @@ msgid "Add Entry"
 msgstr "Agregar entrada"
 
 msgid "Add Feature"
-msgstr ""
+msgstr "Agregar Característica"
 
 msgid "Add from library…"
 msgstr "Agregar desde biblioteca…"
@@ -459,7 +477,7 @@ msgid "Add Permissions"
 msgstr "Agregar Permisos"
 
 msgid "Add Printer"
-msgstr ""
+msgstr "Agregar Impresora"
 
 msgid "Add process completion"
 msgstr "Agregar finalización de proceso"
@@ -492,7 +510,7 @@ msgid "Add rule"
 msgstr "Añar regla"
 
 msgid "Add Selector"
-msgstr ""
+msgstr "Agregar Selector"
 
 msgid "Add Shipment"
 msgstr "Agregar Envío"
@@ -593,6 +611,9 @@ msgstr "Todos los miembros de los grupos seleccionados e individuos seleccionado
 msgid "All Suppliers"
 msgstr "Todos los proveedores"
 
+msgid "All types"
+msgstr "Todos los tipos"
+
 msgid "All Types"
 msgstr "Todos los tipos"
 
@@ -621,34 +642,34 @@ msgid "An item cannot be added to itself."
 msgstr "Un elemento no puede agregarse a sí mismo."
 
 msgid "AND"
-msgstr ""
+msgstr "Y"
 
 msgid "and {remaining} more"
 msgstr "y {remaining} más"
 
 msgid "Annotation added"
-msgstr ""
+msgstr "Anotación añadida"
 
 msgid "Annotation deleted"
-msgstr ""
+msgstr "Anotación eliminada"
 
 msgid "Annotation text"
-msgstr ""
+msgstr "Texto de anotación"
 
 msgid "Annotation text is required"
-msgstr ""
+msgstr "Se requiere texto de anotación"
 
 msgid "Annotation updated"
-msgstr ""
+msgstr "Anotación actualizada"
 
 msgid "Annual"
 msgstr "Anual"
 
 msgid "Any item group"
-msgstr ""
+msgstr "Cualquier grupo de artículos"
 
 msgid "Any item type"
-msgstr ""
+msgstr "Cualquier tipo de artículo"
 
 msgid "API and Webhooks"
 msgstr "API y Webhooks"
@@ -666,7 +687,7 @@ msgid "API Keys"
 msgstr "Claves API"
 
 msgid "API keys for programmatic access to your Carbon data."
-msgstr ""
+msgstr "Claves API para el acceso programático a sus datos de Carbon."
 
 msgid "Applicant"
 msgstr "Solicitante"
@@ -678,10 +699,10 @@ msgid "Applies to"
 msgstr "Aplica a"
 
 msgid "Applies to all"
-msgstr ""
+msgstr "Se aplica a todos"
 
 msgid "Applies to all work centers"
-msgstr ""
+msgstr "Se aplica a todos los centros de trabajo"
 
 msgid "Apply pricing rules"
 msgstr "Aplicar reglas de precios"
@@ -690,13 +711,13 @@ msgid "Apply To"
 msgstr "Aplicar a"
 
 msgid "Approaching {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB cap."
-msgstr ""
+msgstr "Aproximándose al límite de {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB"
 
 msgid "Approval Date"
 msgstr "Fecha de Aprobación"
 
 msgid "Approval is required at or above this amount, up to the next rule's minimum"
-msgstr ""
+msgstr "Se requiere aprobación hasta este monto, hasta el mínimo de la siguiente regla"
 
 msgid "Approval Requirements"
 msgstr "Requisitos de Aprobación"
@@ -944,7 +965,7 @@ msgstr "¿Estás seguro de que deseas eliminar la regla de precios: {0}? Esto no
 
 #. placeholder {0}: printerToDelete.name
 msgid "Are you sure you want to delete the printer \"{0}\"? Any assignments referencing this printer will be cleared. This cannot be undone."
-msgstr ""
+msgstr "¿Estás seguro de que quieres eliminar el impresor \"{0}\"? Cualquier asignación que se refiera a este impresor será eliminada. Esto no puede deshacerse."
 
 #. placeholder {0}: purchaseInvoiceLine.quantity ?? 0
 #. placeholder {1}: purchaseInvoiceLine.description ?? ""
@@ -1006,7 +1027,7 @@ msgid "Are you sure you want to delete this gauge?"
 msgstr "¿Estás seguro de que deseas eliminar este calibrador?"
 
 msgid "Are you sure you want to delete this inspection document?"
-msgstr ""
+msgstr "¿Estás seguro de que quieres eliminar este documento de inspección?"
 
 msgid "Are you sure you want to delete this issue workflow?"
 msgstr "¿Estás seguro de que deseas eliminar este flujo de trabajo de problemas?"
@@ -1054,7 +1075,7 @@ msgid "Are you sure you want to finalize the supplier quote?"
 msgstr "¿Está seguro de que desea finalizar la cotización del proveedor?"
 
 msgid "Are you sure you want to leave this page?"
-msgstr ""
+msgstr "¿Estás seguro de que quieres salir de esta página?"
 
 #. placeholder {0}: selectedPurchaseInvoice.invoiceId!
 #. placeholder {0}: selectedSalesInvoice.invoiceId!
@@ -1117,25 +1138,25 @@ msgstr "Ascendente"
 
 #. js-lingui-explicit-id
 msgid "Ask anything"
-msgstr ""
+msgstr "Pregúntanosanything"
 
 msgid "Assembly:"
 msgstr "Ensamblaje:"
 
 msgid "Asset"
-msgstr ""
+msgstr "Activo"
 
 msgid "Asset Class"
-msgstr ""
+msgstr "Clase de activo"
 
 msgid "Asset Classes"
-msgstr ""
+msgstr "Clases de activos"
 
 msgid "Assets"
 msgstr "Activos"
 
 msgid "Assign printers to locations. Shipping, receiving, and work centers inherit the location default unless overridden."
-msgstr ""
+msgstr "Asignar impresoras a ubicaciones. Las áreas de envío, recepción y centros de trabajo heredan la configuración por defecto de la ubicación a menos que se sobrescriba."
 
 msgid "Assign To"
 msgstr "Asignar a"
@@ -1174,7 +1195,7 @@ msgid "Assignments"
 msgstr "Asignaciones"
 
 msgid "Assigns this storage unit to a work center (lineside)"
-msgstr ""
+msgstr "Asigna este centro de almacenamiento a un centro de trabajo (lado de la línea)"
 
 msgid "At least one condition must match"
 msgstr "Al menos una condición debe coincidir"
@@ -1186,7 +1207,7 @@ msgid "Attachment"
 msgstr "Adjunto"
 
 msgid "Attachments"
-msgstr ""
+msgstr "Adjuntos"
 
 msgid "Attribute"
 msgstr "Atributo"
@@ -1234,13 +1255,13 @@ msgid "Auto-generated QR Code"
 msgstr "Código QR generado automáticamente"
 
 msgid "Automatic Cost Updates"
-msgstr ""
+msgstr "Actualización Automática de Costos"
 
 msgid "Automatic Lead Time Updates"
-msgstr ""
+msgstr "Actualizaciones automáticas del tiempo de entrega"
 
 msgid "Automatic Updates"
-msgstr ""
+msgstr "Actualizaciones automáticas"
 
 msgid "Automatically release the job when the kanban is scanned"
 msgstr "Liberar automáticamente el trabajo cuando se escanea el kanban"
@@ -1249,7 +1270,7 @@ msgid "Automatically start the job when the kanban is scanned"
 msgstr "Iniciar automáticamente el trabajo cuando se escanea el kanban"
 
 msgid "available"
-msgstr ""
+msgstr "disponible"
 
 msgid "Available"
 msgstr "Disponible"
@@ -1260,8 +1281,14 @@ msgstr "Días promedio para cerrar"
 msgid "Back"
 msgstr "Atrás"
 
+msgid "Back to documents"
+msgstr "Volver a documentos"
+
 msgid "Back to home"
 msgstr "Volver al inicio"
+
+msgid "Back to templates"
+msgstr "Volver a plantillas"
 
 msgid "Back to traceability"
 msgstr "Volver a trazabilidad"
@@ -1279,7 +1306,7 @@ msgid "Balance Sheet"
 msgstr "Balance financiero"
 
 msgid "Balloon"
-msgstr ""
+msgstr "Bolbote"
 
 msgid "Bank - Cash"
 msgstr "Banco / Efectivo"
@@ -1395,7 +1422,7 @@ msgid "Building your demo — {0} so far…"
 msgstr "Construyendo tu demo — {0} hasta ahora…"
 
 msgid "Buildings"
-msgstr ""
+msgstr "Edificios"
 
 msgid "Buildings & Leasehold Improvements"
 msgstr "Edificios y Mejoras de Tiempo de Uso"
@@ -1467,22 +1494,22 @@ msgid "Cancel Job"
 msgstr "Cancelar Trabajo"
 
 msgid "Cancel Sales Order"
-msgstr ""
+msgstr "Cancelar Pedido de Venta"
 
 msgid "Cancel SO"
-msgstr ""
+msgstr "Cancelar SO"
 
 #. placeholder {0}: selectedIds.length
 #. placeholder {1}: selectedIds.length === 1 ? "" : "s"
 msgid "Cancel SO + {0} job{1}"
-msgstr ""
+msgstr "Cancelar SO + {0} trabajo{1}"
 
 #. placeholder {0}: selectedIds.length
 msgid "Cancel SO + {0} selected"
-msgstr ""
+msgstr "Cancelar SO + {0} seleccionados"
 
 msgid "Cancel SO only"
-msgstr ""
+msgstr "Cancelar SO solo"
 
 msgid "Canceled"
 msgstr "Cancelado"
@@ -1515,7 +1542,7 @@ msgid "Cannot send RFQ"
 msgstr "No se puede enviar RFQ"
 
 msgid "Cannot upload — supplier interaction not yet created"
-msgstr ""
+msgstr "No se puede subir — interacción con proveedor aún no creada"
 
 msgid "Cannot upload to parts bucket without item ID"
 msgstr "No se puede cargar en el depósito de piezas sin ID de artículo"
@@ -1542,7 +1569,7 @@ msgid "Carbon Value"
 msgstr "Valor de Carbon"
 
 msgid "Cards"
-msgstr ""
+msgstr "Tarjetas"
 
 msgid "Carrier"
 msgstr "Transportista"
@@ -1566,10 +1593,13 @@ msgid "CC"
 msgstr "CC"
 
 msgid "Centralized Billing Address"
-msgstr ""
+msgstr "Dirección centralizada de facturación"
 
 msgid "Change"
 msgstr "Cambiar"
+
+msgid "Change panel position"
+msgstr "Cambiar posición del panel"
 
 msgid "Change status"
 msgstr "Cambiar estado"
@@ -1602,13 +1632,13 @@ msgid "Check your email"
 msgstr "Revisa tu correo electrónico"
 
 msgid "Choose a batch number"
-msgstr ""
+msgstr "Elija un número de lote"
 
 msgid "Choose a company"
-msgstr ""
+msgstr "Elige una empresa"
 
 msgid "Choose a serial number"
-msgstr ""
+msgstr "Elija un número de serie"
 
 msgid "Choose another file"
 msgstr "Elegir otro archivo"
@@ -1646,8 +1676,17 @@ msgstr "Limpiar búsqueda"
 msgid "Clear search query"
 msgstr "Borrar consulta de búsqueda"
 
+msgid "Clear trace"
+msgstr "Borrar traza"
+
+msgid "Click to interact"
+msgstr "Haz clic para interactuar"
+
+msgid "Click to interact with 3D model"
+msgstr "Haz clic para interactuar con el modelo 3D"
+
 msgid "Click to upload a PDF drawing"
-msgstr ""
+msgstr "Haz clic para subir un dibujo en formato PDF"
 
 msgid "Clock In"
 msgstr "Entrada"
@@ -1661,6 +1700,9 @@ msgstr "Registrado desde {0}"
 
 msgid "Close"
 msgstr "Cerrar"
+
+msgid "Close chat"
+msgstr "Cerrar chat"
 
 msgid "Close Date"
 msgstr "Fecha de Cierre"
@@ -1696,7 +1738,7 @@ msgid "Collapse Costs"
 msgstr "Contraer Costos"
 
 msgid "Collapse features table"
-msgstr ""
+msgstr "Collapse tabla de características"
 
 msgid "Collapse subtree"
 msgstr "Contraer subárbol"
@@ -1711,7 +1753,7 @@ msgid "Columns"
 msgstr "Columnas"
 
 msgid "Combine filters"
-msgstr ""
+msgstr "Combinar filtros"
 
 msgid "Coming soon"
 msgstr "Próximamente"
@@ -1852,7 +1894,7 @@ msgid "Configure the start months for your fiscal and tax years"
 msgstr "Configura los meses de inicio para tus años fiscales y tributarios"
 
 msgid "Configure when purchased item costs should be updated from supplier transactions."
-msgstr ""
+msgstr "Configurar cuando los costos de los artículos comprados deben actualizarse desde las transacciones del proveedor."
 
 msgid "Configure who should receive notifications when a supplier submits a quote."
 msgstr "Configura quién debe recibir notificaciones cuando un proveedor envía una cotización."
@@ -1879,14 +1921,14 @@ msgstr "Confirmar Contraseña"
 msgid "Connect"
 msgstr "Conectar"
 
-msgid "Connect Carbon to your accounting, project management, and CAD tools and much more."
-msgstr ""
-
 msgid "Connect Jira issue"
 msgstr "Conectar problema de Jira"
 
 msgid "Connect Linear issue"
 msgstr "Conectar problema de Linear"
+
+msgid "Connect to your accounting, project management, and CAD tools and much more."
+msgstr "Conecte con sus herramientas de contabilidad, gestión de proyectos y CAD entre otras."
 
 msgid "Connected to"
 msgstr "Conectado a"
@@ -1921,6 +1963,9 @@ msgstr "Consumibles"
 msgid "Consumed"
 msgstr "Consumido"
 
+msgid "Consumed by"
+msgstr "Consumido por"
+
 msgid "Contact"
 msgstr "Contacto"
 
@@ -1938,6 +1983,9 @@ msgstr "Contención"
 
 msgid "Containment Action"
 msgstr "Acción de contención"
+
+msgid "Containments"
+msgstr "Contenedores"
 
 msgid "Contractor"
 msgstr "Contratista"
@@ -1986,6 +2034,10 @@ msgstr "¡Copiado!"
 msgid "Copy"
 msgstr "Copiar"
 
+#. placeholder {0}: capitalize(selectedNodeType)
+msgid "Copy {0} ID"
+msgstr "Copiar ID de {0}"
+
 msgid "Copy all items and pricing to another customer or type."
 msgstr "Copiar todos los artículos y precios a otro cliente o tipo."
 
@@ -1993,7 +2045,7 @@ msgid "Copy API Key"
 msgstr "Copiar clave API"
 
 msgid "Copy company unique identifier"
-msgstr ""
+msgstr "Copiar identificador único de la compañía"
 
 msgid "Copy consumable number"
 msgstr "Copiar número de consumible"
@@ -2158,17 +2210,17 @@ msgid "Costing Method"
 msgstr "Método de costo"
 
 msgid "Could not analyze cropped region"
-msgstr ""
+msgstr "No se pudo analizar la región recortada"
 
 #. placeholder {0}: payload.message ?? analyzeRes.statusText
 msgid "Could not analyze region: {0}"
-msgstr ""
+msgstr "No se pudo analizar la región: {0}"
 
 msgid "Could not build PDF. Try again."
-msgstr ""
+msgstr "No se pudo construir el PDF. Intente de nuevo."
 
 msgid "Could not prepare region image for analysis"
-msgstr ""
+msgstr "No se pudo preparar la imagen de la región para el análisis"
 
 msgid "Couldn't load documents"
 msgstr "No se pudieron cargar los documentos"
@@ -2190,7 +2242,7 @@ msgstr "Crear {0}"
 
 #. placeholder {0}: unmatchedValues.length
 msgid "Create {0} values"
-msgstr ""
+msgstr "Crea {0} valores"
 
 msgid "Create a new kanban card for scan-based replenishment."
 msgstr "Crea una nueva tarjeta kanban para reabastecimiento basado en escaneo."
@@ -2393,8 +2445,15 @@ msgstr "Centro de trabajo creado"
 msgid "Creating part..."
 msgstr "Creando parte..."
 
+msgid "Credit"
+msgstr "Crédito"
+
+#. placeholder {0}: parentCurrency ?? "Translated"
+msgid "Credit ({0})"
+msgstr "Crédito ({0})"
+
 msgid "Credits"
-msgstr ""
+msgstr "Créditos"
 
 msgid "Critical"
 msgstr "Crítico"
@@ -2432,6 +2491,9 @@ msgstr "Personalizado"
 msgid "Custom {label}"
 msgstr "Personalizado {label}"
 
+msgid "Custom %"
+msgstr "Personalizado %"
+
 msgid "Custom Field"
 msgstr "Campo Personalizado"
 
@@ -2460,7 +2522,7 @@ msgid "Customer ID"
 msgstr "ID de Cliente"
 
 msgid "Customer ID cannot be changed after creation"
-msgstr ""
+msgstr "ID del cliente no puede ser cambiado después de la creación"
 
 msgid "Customer Invoice Number"
 msgstr "Número de Factura del Cliente"
@@ -2529,7 +2591,10 @@ msgid "Customers"
 msgstr "Clientes"
 
 msgid "Customize the layout of your PDF documents — reorder sections, hide what you don't need, and add your own blocks."
-msgstr ""
+msgstr "Personalice el diseño de sus documentos PDF — reordene las secciones, oculte lo que no necesite y agregue sus propios bloques."
+
+msgid "Cycle back-edge"
+msgstr "Borde de ciclo retroceso"
 
 msgid "Daily"
 msgstr "Diario"
@@ -2628,14 +2693,24 @@ msgstr "Desactivar Centro de Trabajo"
 msgid "Deadline Type"
 msgstr "Tipo de Plazo"
 
+msgid "Debit"
+msgstr "Débito"
+
+#. placeholder {0}: parentCurrency ?? "Translated"
+msgid "Debit ({0})"
+msgstr "Débito ({0})"
+
 msgid "Debits"
-msgstr ""
+msgstr "Débitos"
 
 msgid "Decide what an operator sees if they try to issue a batch or serial that's already expired."
 msgstr "Decide qué ve un operador si intenta emitir un lote o número de serie que ya ha expirado."
 
+msgid "Decrease hops"
+msgstr "Disminuir saltos"
+
 msgid "Default"
-msgstr ""
+msgstr "Predeterminado"
 
 msgid "Default Accounts"
 msgstr "Cuentas Predeterminadas"
@@ -2644,7 +2719,7 @@ msgid "Default Approver"
 msgstr "Aprobador Predeterminado"
 
 msgid "Default Attachments"
-msgstr ""
+msgstr "Ejemplares predeterminados"
 
 msgid "Default CC Recipients"
 msgstr "Destinatarios CC predeterminados"
@@ -2689,7 +2764,7 @@ msgid "Deferred Tax Assets"
 msgstr "Activos Impuestos Postergados"
 
 msgid "Deferred Tax Expense"
-msgstr ""
+msgstr "Gasto por Impuesto Deferido"
 
 msgid "Deferred Tax Liabilities"
 msgstr "Deudas Impagas por Impuestos"
@@ -2778,6 +2853,9 @@ msgstr "Eliminar Tarea"
 msgid "Delete Jobs"
 msgstr "Eliminar Tareas"
 
+msgid "Delete line"
+msgstr "Eliminar línea"
+
 msgid "Delete Line"
 msgstr "Eliminar Línea"
 
@@ -2808,11 +2886,14 @@ msgstr "Eliminar Parte"
 msgid "Delete Partner"
 msgstr "Eliminar Socio"
 
+msgid "Delete passkey"
+msgstr "Eliminar Passkey"
+
 msgid "Delete Payment Term"
 msgstr "Eliminar Término de Pago"
 
 msgid "Delete Picking List"
-msgstr ""
+msgstr "Eliminar Lista de Retiro"
 
 msgid "Delete Portal"
 msgstr "Eliminar Portal"
@@ -2882,6 +2963,9 @@ msgstr "Eliminar Orden de Venta"
 
 msgid "Delete Schedule"
 msgstr "Eliminar Programa"
+
+msgid "Delete section"
+msgstr "Eliminar sección"
 
 msgid "Delete Shift"
 msgstr "Eliminar Turno"
@@ -2965,10 +3049,10 @@ msgid "Demand Forecast"
 msgstr "Pronóstico de Demanda"
 
 msgid "Demand Forecast — Driven by"
-msgstr ""
+msgstr "Predicción de Demanda — Impulsada por"
 
 msgid "Demand forecast = BOM-exploded demand from open sales orders, active jobs, and production projections."
-msgstr ""
+msgstr "Predicción de demanda = Demanda desglosada del BOM desde pedidos de ventas abiertos, trabajos activos y proyecciones de producción."
 
 msgid "Demand Projections"
 msgstr "Proyecciones de Demanda"
@@ -2986,7 +3070,7 @@ msgid "Departments"
 msgstr "Departamentos"
 
 msgid "Depreciation"
-msgstr ""
+msgstr "depreciación"
 
 msgid "Depreciation & Amortization"
 msgstr "Depresión y amortización"
@@ -2995,7 +3079,7 @@ msgid "Depreciation Expense"
 msgstr "Gastos por depreciación"
 
 msgid "Depreciation Run"
-msgstr ""
+msgstr "corrida de depreciación"
 
 msgid "Description"
 msgstr "Descripción"
@@ -3016,7 +3100,7 @@ msgid "Details"
 msgstr "Detalles"
 
 msgid "Diagram saved"
-msgstr ""
+msgstr "DIAGRAMA GUARDADO"
 
 #. placeholder {0}: formatDurationMilliseconds(item.duration * 1000)
 msgid "did {0} of labor"
@@ -3035,6 +3119,9 @@ msgstr "Cotización Digital"
 
 msgid "Digital Quotes"
 msgstr "Cotizaciones Digitales"
+
+msgid "Digital Quotes Enabled"
+msgstr "Citas Digitales Habilitadas"
 
 msgid "Dimension"
 msgstr "Dimensión"
@@ -3104,7 +3191,7 @@ msgid "Document Control"
 msgstr "Control de Documentos"
 
 msgid "Document Templates"
-msgstr ""
+msgstr "Plantillas de Documentos"
 
 msgid "Document:"
 msgstr "Documento:"
@@ -3134,19 +3221,19 @@ msgid "Download CSV"
 msgstr "Descargar CSV"
 
 msgid "Download Labels"
-msgstr ""
+msgstr "Descargar Etiquetas"
 
 msgid "Download PDF"
-msgstr ""
+msgstr "Descargar PDF"
 
 msgid "Download template"
-msgstr ""
+msgstr "Descargar plantilla"
 
 msgid "Draft"
 msgstr "Borrador"
 
 msgid "Drag & drop files, or click to browse"
-msgstr ""
+msgstr "Arrastra y suelta archivos, o haz clic para navegar"
 
 msgid "Drag and drop a file here, or click to select a file"
 msgstr "Arrastrar y soltar un archivo aquí, o hacer clic para seleccionar un archivo"
@@ -3167,22 +3254,22 @@ msgid "Drag handle"
 msgstr "Controlador de arrastre"
 
 msgid "Drag to place on drawing"
-msgstr ""
+msgstr "Arrastre para colocar en el dibujo"
 
 msgid "Drag to reorder"
 msgstr "Arrastre para reordenar"
 
 msgid "Drag to resize diagram and features"
-msgstr ""
+msgstr "Arrastre para ajustar el tamaño del diagrama y las características"
 
 msgid "Drag to zoom"
-msgstr ""
+msgstr "Arrastre para acercar"
 
 msgid "Drawing Number"
-msgstr ""
+msgstr "Número de Dibujo"
 
 msgid "Drawing replaced. Balloon placements were removed; feature rows are unchanged."
-msgstr ""
+msgstr "Dibujo reemplazado. Se eliminaron las ubicaciones de los burbujones; las filas de características permanecen sin cambios."
 
 msgid "Drop image to upload"
 msgstr "Suelta la imagen para cargarla"
@@ -3200,7 +3287,7 @@ msgid "Drum"
 msgstr "Tambor"
 
 msgid "Due"
-msgstr ""
+msgstr "Deuda"
 
 #. placeholder {0}: formatDate(routeData?.purchaseInvoice.dateDue)
 #. placeholder {0}: formatDate(routeData?.salesInvoice.dateDue)
@@ -3245,10 +3332,10 @@ msgid "Duration"
 msgstr "Duración"
 
 msgid "e.g. DWG-1234"
-msgstr ""
+msgstr "e.g. DWG-1234"
 
 msgid "e.g. Zebra 2x1"
-msgstr ""
+msgstr "e.g. Zebra 2x1"
 
 msgid "Each"
 msgstr "Cada"
@@ -3348,7 +3435,7 @@ msgid "Edit Holiday"
 msgstr "Editar Festivo"
 
 msgid "Edit Inspection Document"
-msgstr ""
+msgstr "Editar documento de inspección"
 
 msgid "Edit Item Group"
 msgstr "Editar Grupo de Artículos"
@@ -3408,7 +3495,10 @@ msgid "Edit Permissions"
 msgstr "Permisos de edición"
 
 msgid "Edit Picking List"
-msgstr ""
+msgstr "Editar Lista de Retiro"
+
+msgid "Edit pickup"
+msgstr "Editar recogida"
 
 msgid "Edit Portal"
 msgstr "Editar Portal"
@@ -3428,6 +3518,9 @@ msgstr "Editar Proceso"
 msgid "Edit Process Completion"
 msgstr "Editar la Completitud del Proceso"
 
+msgid "Edit Properties"
+msgstr "Editar Propiedades"
+
 msgid "Edit purchase order line type"
 msgstr "Editar tipo de línea de orden de compra"
 
@@ -3439,6 +3532,9 @@ msgstr "Editar Razón"
 
 msgid "Edit Receipt"
 msgstr "Editar Recepción"
+
+msgid "Edit report"
+msgstr "Editar informe"
 
 msgid "Edit Revision"
 msgstr "Editar Revisión"
@@ -3454,6 +3550,9 @@ msgstr "Editar Cronograma"
 
 msgid "Edit Scheduled Maintenance"
 msgstr "Editar Mantenimiento Programado"
+
+msgid "Edit section"
+msgstr "Sección de edición"
 
 msgid "Edit Sequence"
 msgstr "Editar Secuencia"
@@ -3504,7 +3603,7 @@ msgid "Edit Supplier Type"
 msgstr "Editar Tipo de Proveedor"
 
 msgid "Edit the rule to remove the \"Applies to all\" flag"
-msgstr ""
+msgstr "Edit la regla para eliminar la bandera \"Aplica a todo\""
 
 msgid "Edit Timecard"
 msgstr "Editar Tarjeta de Tiempo"
@@ -3567,10 +3666,10 @@ msgid "Employees"
 msgstr "Empleados"
 
 msgid "Empty = match every item"
-msgstr ""
+msgstr "Vacio = coincide con todos los elementos"
 
 msgid "Empty work centers"
-msgstr ""
+msgstr "Centros de trabajo vacíos"
 
 msgid "Enable audit logging in settings to start tracking changes to your data."
 msgstr "Habilita el registro de auditoría en la configuración para comenzar a rastrear cambios en tus datos."
@@ -3603,7 +3702,7 @@ msgid "Enable to automatically post transactions to the general ledger."
 msgstr "Habilitar para publicar automáticamente transacciones en el libro mayor."
 
 msgid "Enable to configure tax-specific depreciation methods on asset classes (e.g., MACRS, accelerated)."
-msgstr ""
+msgstr "Habilitar para configurar métodos de depreciación específicos fiscales por clases de activo (e.g., MACRS, acelerada)."
 
 msgid "Enable to display names with the family name first."
 msgstr "Habilitar para mostrar los nombres con el apellido primero."
@@ -3653,6 +3752,15 @@ msgstr "Ingrese el número de PO"
 msgid "Enter the target quantity for each size."
 msgstr "Ingrese la cantidad objetivo para cada tamaño."
 
+msgid "Enter your answer..."
+msgstr "Ingrese su respuesta..."
+
+msgid "Enter your email"
+msgstr "Ingrese su correo electrónico"
+
+msgid "Enter your name"
+msgstr "Ingrese su nombre"
+
 msgid "Entered At Receipt"
 msgstr "Ingresado en la Recepción"
 
@@ -3665,6 +3773,14 @@ msgstr "Entrado por Sistema"
 
 msgid "Entities"
 msgstr "Entidades"
+
+#. placeholder {0}: entities.length
+msgid "Entities ({0})"
+msgstr "Entidades ({0})"
+
+#. placeholder {0}: entities.length
+msgid "Entities in graph ({0})"
+msgstr "Entidades en gráfico ({0})"
 
 msgid "Entities to move"
 msgstr "Entidades a mover"
@@ -3724,7 +3840,7 @@ msgid "Error moving file"
 msgstr "Error al mover archivo"
 
 msgid "Error removing file"
-msgstr ""
+msgstr "Error eliminando archivo"
 
 msgid "Error removing model from {sourceDocument}"
 msgstr "Error al eliminar el modelo de {sourceDocument}"
@@ -3790,7 +3906,7 @@ msgid "Everything from Starter"
 msgstr "Todo de Starter"
 
 msgid "Exceeds {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB total — remove some attachments to send."
-msgstr ""
+msgstr "超 pasa los {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB totales — elimine algunas anexos para enviar."
 
 msgid "Exchange Rate"
 msgstr "Tipo de Cambio"
@@ -3817,7 +3933,7 @@ msgid "Expand Costs"
 msgstr "Expandir Costos"
 
 msgid "Expand features table"
-msgstr ""
+msgstr "Expande la tabla de características"
 
 msgid "Expand subtree"
 msgstr "Expandir subárbol"
@@ -3841,7 +3957,7 @@ msgid "Expired"
 msgstr "Expirado"
 
 msgid "Expired {date}"
-msgstr ""
+msgstr "Vencido {date}"
 
 msgid "Expired batch"
 msgstr "Lote expirado"
@@ -3857,13 +3973,13 @@ msgid "Expires {0}"
 msgstr "Expira {0}"
 
 msgid "Expires {date}"
-msgstr ""
+msgstr "Vence el {date}"
 
 msgid "Expires At (optional)"
 msgstr "Expira en (opcional)"
 
 msgid "Expiring first"
-msgstr ""
+msgstr "Venciendo primero"
 
 msgid "Expiry"
 msgstr "Vencimiento"
@@ -4138,7 +4254,7 @@ msgid "Failed to save configuration rule"
 msgstr "Error al guardar la regla de configuración"
 
 msgid "Failed to save diagram"
-msgstr ""
+msgstr "Falló al guardar el diagrama"
 
 msgid "Failed to send magic link"
 msgstr "Falló al enviar enlace mágico"
@@ -4184,7 +4300,7 @@ msgstr "Falló al actualizar el tiempo"
 
 #. placeholder {0}: file.name
 msgid "Failed to upload {0}"
-msgstr ""
+msgstr "Falló al subir {0}"
 
 msgid "Failed to upload CSV file."
 msgstr "Error al cargar el archivo CSV."
@@ -4210,7 +4326,7 @@ msgid "Failed to upload model"
 msgstr "Error al cargar el modelo"
 
 msgid "Failed to upload PDF"
-msgstr ""
+msgstr "Falló el上传过程中出现错误，请重试。"
 
 msgid "Failed to upload thumbnail"
 msgstr "Error al cargar la miniatura"
@@ -4240,13 +4356,13 @@ msgid "Fax Number"
 msgstr "Número de Fax"
 
 msgid "Feature"
-msgstr ""
+msgstr "Función"
 
 msgid "Feature values suggested from drawing"
-msgstr ""
+msgstr "Valores de característica sugeridos del dibujo"
 
 msgid "Features"
-msgstr ""
+msgstr "Características"
 
 msgid "Feedback"
 msgstr "Comentarios"
@@ -4261,7 +4377,7 @@ msgid "Field"
 msgstr "Campo"
 
 msgid "Field info"
-msgstr ""
+msgstr "Información del campo"
 
 msgid "Field Mapping"
 msgstr "Mapeo de campos"
@@ -4306,10 +4422,10 @@ msgid "Files"
 msgstr "Archivos"
 
 msgid "Files attached here ride along on every purchase order email by default. Suppliers will receive them alongside the PO PDF."
-msgstr ""
+msgstr "Los archivos adjuntos viajan por defecto en cada correo de orden de compra; los proveedores los recibirán junto al PDF de la orden de compra."
 
 msgid "Files attached here ride along on every purchase order email sent to this supplier (in addition to company-wide defaults)."
-msgstr ""
+msgstr "Los archivos adjuntos aquí viajan en cada correo de pedido de compra enviado a este proveedor (además de los predeterminados empresa)."
 
 msgid "Fill cell"
 msgstr "Rellena celda"
@@ -4338,6 +4454,9 @@ msgstr "Productos acabados"
 msgid "Finishes"
 msgstr "Acabados"
 
+msgid "Fire on receipts, shipments, transfers, inventory adjustments and bin moves (place/pick)."
+msgstr "Encender en recibos, envíos, transferencias, ajustes de inventario y movimientos de cajas (ubicar/seleccionar)."
+
 msgid "First Name"
 msgstr "Nombre"
 
@@ -4356,11 +4475,14 @@ msgstr "Configuración del Año Fiscal"
 msgid "Fiscal Years"
 msgstr "Años Fiscales"
 
+msgid "Fit to view"
+msgstr "Ajustar a la vista"
+
 msgid "Fixed"
 msgstr "Fijo"
 
 msgid "Fixed Asset"
-msgstr ""
+msgstr "Activo Fijo"
 
 msgid "Fixed Asset Acquisition Cost"
 msgstr "Coste de adquisición de activos fijos"
@@ -4369,7 +4491,7 @@ msgid "Fixed Asset Acquisition Cost on Disposal"
 msgstr "Coste de adquisición de activos fijos en el momento de la enajenación"
 
 msgid "Fixed Assets"
-msgstr ""
+msgstr "Activos Fijos"
 
 msgid "Fixed Reorder"
 msgstr "Reorden Fijo"
@@ -4388,7 +4510,7 @@ msgstr "Para empresas estadounidenses que manejan datos ITAR"
 
 #. placeholder {0}: forecastMethod ?? "unknown"
 msgid "Forecast method: <0>{0}</0>. This row was not derived from active jobs, so no parent sources are available."
-msgstr ""
+msgstr "Método de pronóstico: <0>{0}</0>. Esta fila no se derivó de trabajos activos, por lo que no hay fuentes padres disponibles."
 
 msgid "Foreign Exchange Gains"
 msgstr "Beneficios de Cambio Exterior"
@@ -4469,7 +4591,7 @@ msgid "Generate new PIN"
 msgstr "Generar nuevo PIN"
 
 msgid "Generate Picking List"
-msgstr ""
+msgstr "Generar Lista de Retiro"
 
 msgid "Generated IDs are disabled"
 msgstr "Los IDs generados están deshabilitados"
@@ -4549,11 +4671,14 @@ msgstr "Ocultar, anclar y reordenar columnas"
 msgid "High"
 msgstr "Alto"
 
+msgid "High Priority"
+msgstr "Prioridad Alta"
+
 msgid "Higher priority wins ties and applies first for markups"
 msgstr "Mayor prioridad gana empates y se aplica primero para márgenes"
 
 msgid "Hints in the first row"
-msgstr ""
+msgstr "Consejos en la primera fila"
 
 msgid "History"
 msgstr "Historial"
@@ -4583,13 +4708,13 @@ msgid "Hours/Piece"
 msgstr "Horas/Pieza"
 
 msgid "How many were actually picked?"
-msgstr ""
+msgstr "¿Cuántos se seleccionaron en realidad?"
 
 msgid "How the resolved price was calculated."
 msgstr "Cómo se calculó el precio resuelto."
 
 msgid "How this price was calculated"
-msgstr ""
+msgstr "Cómo se calculó este precio"
 
 msgid "Humidity"
 msgstr "Humedad"
@@ -4599,6 +4724,9 @@ msgstr "Todavía estoy trabajando"
 
 msgid "IC Transaction"
 msgstr "Transacción IC"
+
+msgid "Icon view"
+msgstr "Vista de íconos"
 
 msgid "Icons"
 msgstr "Iconos"
@@ -4628,7 +4756,7 @@ msgid "Impact"
 msgstr "Impacto"
 
 msgid "Imperial"
-msgstr ""
+msgstr "Inglés"
 
 msgid "Implementation Support"
 msgstr "Soporte de Implementación"
@@ -4684,6 +4812,9 @@ msgstr "Incluir piezas adicionales en el envío"
 msgid "Include Inactive"
 msgstr "Incluir Inactivos"
 
+msgid "Include Purchase Orders"
+msgstr "Incluir Pedidos de Compra"
+
 msgid "Includes tax and shipping costs"
 msgstr "Incluye impuestos y costos de envío"
 
@@ -4708,6 +4839,9 @@ msgstr "Incoterm"
 msgid "Incoterm Location"
 msgstr "Ubicación del Incoterm"
 
+msgid "Increase hops"
+msgstr "Incrementar saltos"
+
 msgid "Indirect"
 msgstr "Indirecto"
 
@@ -4717,6 +4851,9 @@ msgstr "Gasto indirecto"
 msgid "Indirect Materials & Services"
 msgstr "Materiales e Servicios Indiretos"
 
+msgid "info"
+msgstr "información"
+
 msgid "Infrastructure"
 msgstr "Infraestructura"
 
@@ -4724,7 +4861,10 @@ msgid "Inherit From Materials"
 msgstr "Heredar de Materiales"
 
 msgid "Inherited from parent"
-msgstr ""
+msgstr "Herencia desde el padre"
+
+msgid "Inputs"
+msgstr "Entradas"
 
 msgid "Insert rows"
 msgstr "Insertar filas"
@@ -4751,10 +4891,10 @@ msgid "Inspection"
 msgstr "Inspección"
 
 msgid "Inspection Document"
-msgstr ""
+msgstr "Documento de Inspección"
 
 msgid "Inspection Documents"
-msgstr ""
+msgstr "Documentos de Inspección"
 
 msgid "Inspection Level"
 msgstr "Nivel de Inspección"
@@ -4808,7 +4948,7 @@ msgid "Internal Notes"
 msgstr "Notas Internas"
 
 msgid "inv"
-msgstr ""
+msgstr "inventarios"
 
 msgid "Invalid email address"
 msgstr "Dirección de correo electrónico inválida"
@@ -4832,7 +4972,7 @@ msgid "Inventory & Stock"
 msgstr "Inventario y Almacén"
 
 msgid "Inventory actions"
-msgstr ""
+msgstr "Acciones de inventario"
 
 msgid "Inventory Adjustment"
 msgstr "Ajuste de Inventario"
@@ -4841,7 +4981,7 @@ msgid "Inventory Adjustments"
 msgstr "Ajustes de inventario"
 
 msgid "Inventory History"
-msgstr ""
+msgstr "Historial de Inventario"
 
 msgid "Inventory Job Notifications"
 msgstr "Notificaciones de Trabajos de Inventario"
@@ -4939,6 +5079,9 @@ msgstr "es"
 msgid "is any of"
 msgstr "es cualquiera de"
 
+msgid "Isolate lineage"
+msgstr "Aíslar linaje"
+
 msgid "Issue"
 msgstr "Problema"
 
@@ -4988,13 +5131,13 @@ msgid "Item {scannedItem} is not the same as the item {expectedItem}"
 msgstr "El artículo {scannedItem} no es el mismo que el artículo {expectedItem}"
 
 msgid "Item filters"
-msgstr ""
+msgstr "Filtros de artículo"
 
 msgid "Item Group"
 msgstr "Grupo de Artículos"
 
 msgid "Item groups"
-msgstr ""
+msgstr "Grupos de artículos"
 
 msgid "Item Groups"
 msgstr "Grupos de Artículos"
@@ -5006,10 +5149,10 @@ msgid "Item Master"
 msgstr "Maestro de Artículos"
 
 msgid "Item must match a selected type AND a selected group"
-msgstr ""
+msgstr "El ítem debe coincidir con un tipo seleccionado Y un grupo seleccionado"
 
 msgid "Item must match a selected type OR a selected group"
-msgstr ""
+msgstr "El ítem debe coincidir con un tipo seleccionado O un grupo seleccionado"
 
 msgid "Item Posting Group"
 msgstr "Grupo de Item"
@@ -5021,7 +5164,7 @@ msgid "Item Type"
 msgstr "Tipo de Artículo"
 
 msgid "Item types"
-msgstr ""
+msgstr "Tipos de artículos"
 
 msgid "items"
 msgstr "artículos"
@@ -5115,6 +5258,9 @@ msgstr "Etiqueta (opcional)"
 msgid "Label is required"
 msgstr "Etiqueta es requerida"
 
+msgid "Label size"
+msgstr "Tamaño"
+
 msgid "Label to complete the current operation for this kanban"
 msgstr "Etiqueta para completar la operación actual para esta pista de kanban"
 
@@ -5171,11 +5317,14 @@ msgstr "Última sincronización: {0}"
 msgid "Last updated: {formattedDate}"
 msgstr "Última actualización: {formattedDate}"
 
+msgid "Layout spacing"
+msgstr "Espaciado del diseño"
+
 msgid "Lead Time"
 msgstr "Tiempo de Entrega"
 
 msgid "Lead time (days)"
-msgstr ""
+msgstr "Tiempo de lead (días)"
 
 msgid "Lead Time (Days)"
 msgstr "Tiempo de Entrega (Días)"
@@ -5190,16 +5339,19 @@ msgid "Leave any related receipts untouched"
 msgstr "Dejar los recibos relacionados sin tocar"
 
 msgid "Leave blank for built-in"
-msgstr ""
+msgstr "Dejar en blanco para el incorporado"
 
 msgid "Leave empty for exact match"
 msgstr "Dejar vacío para coincidencia exacta"
 
 msgid "Leave this page"
-msgstr ""
+msgstr "Salir de esta página"
 
 msgid "Left item"
 msgstr "Elemento izquierdo"
+
+msgid "Left-right layout"
+msgstr "disposición de izquierda-derecha"
 
 msgid "Leftover Parts Detected"
 msgstr "Piezas Sobrantes Detectadas"
@@ -5231,6 +5383,9 @@ msgstr "Probabilidad"
 msgid "Line"
 msgstr "Línea"
 
+msgid "Line description (optional)"
+msgstr "Descripción de línea (opcional)"
+
 msgid "Line Item Comparison"
 msgstr "Comparación de Artículos de Línea"
 
@@ -5242,6 +5397,9 @@ msgstr "Estado de la Línea"
 
 msgid "Linear Team"
 msgstr "Equipo de Linear"
+
+msgid "Lines"
+msgstr "Líneas"
 
 msgid "Lines need internal part numbers"
 msgstr "Las líneas necesitan números de parte internos"
@@ -5258,13 +5416,16 @@ msgstr "Vincular problema de Jira"
 msgid "Link Linear Issue"
 msgstr "Vincular problema de Linear"
 
+msgid "Linked"
+msgstr "Enlazado"
+
 #. placeholder {0}: r.linkedSum
 #. placeholder {1}: r.quantity
 msgid "Linked entity quantity ({0}) does not match row quantity ({1})."
 msgstr "La cantidad de entidad vinculada ({0}) no coincide con la cantidad de fila ({1})."
 
 msgid "Linked PO"
-msgstr ""
+msgstr "PO vinculada"
 
 msgid "List"
 msgstr "Lista"
@@ -5277,6 +5438,9 @@ msgstr "Lista de opciones es requerida"
 
 msgid "List Parameters"
 msgstr "Parámetros de Lista"
+
+msgid "List view"
+msgstr "Vista de lista"
 
 msgid "List View"
 msgstr "Vista de lista"
@@ -5300,7 +5464,7 @@ msgid "Loader"
 msgstr "Cargador"
 
 msgid "Loading associated jobs..."
-msgstr ""
+msgstr "Cargando trabajos asociados..."
 
 msgid "Loading item details..."
 msgstr "Cargando detalles del artículo..."
@@ -5367,7 +5531,7 @@ msgid "Lot"
 msgstr "Lote"
 
 msgid "Lot size"
-msgstr ""
+msgstr "Tamaño de lote"
 
 msgid "Lot Size"
 msgstr "Tamaño de Lote"
@@ -5380,6 +5544,9 @@ msgstr "Tamaño de lote:"
 
 msgid "Low"
 msgstr "Bajo"
+
+msgid "Low Priority"
+msgstr "Prioridad baja"
 
 msgid "Lower runs first"
 msgstr "Baja primero"
@@ -5516,7 +5683,7 @@ msgid "Mark Partial"
 msgstr "Marcar como Parcial"
 
 msgid "Mark Short"
-msgstr ""
+msgstr "Marcar como faltante"
 
 msgid "Mark to delete"
 msgstr "Marcar para eliminar"
@@ -5528,13 +5695,13 @@ msgid "Match all"
 msgstr "Todas las coincidencias"
 
 msgid "Match all (AND)"
-msgstr ""
+msgstr "Coincidencia total (Y)"
 
 msgid "Match any"
 msgstr "Coincidir cualquier"
 
 msgid "Match any (OR)"
-msgstr ""
+msgstr "Coincidencia alguna (OＲ)"
 
 msgid "Match none"
 msgstr "No hay coincidencias"
@@ -5588,7 +5755,7 @@ msgid "Material Issue"
 msgstr "Cuestión material"
 
 msgid "Material Properties"
-msgstr ""
+msgstr "Propiedades del material"
 
 msgid "Material Shape"
 msgstr "Forma de Material"
@@ -5648,22 +5815,25 @@ msgid "Measurement Standard"
 msgstr "Estándar de Medición"
 
 msgid "Media Size"
-msgstr ""
+msgstr "Tamaño medio"
 
 msgid "Medium"
 msgstr "Medio"
+
+msgid "Medium Priority"
+msgstr "Prioridad Media"
 
 msgid "Members"
 msgstr "Miembros"
 
 msgid "MES"
-msgstr ""
+msgstr "MES"
 
 msgid "MES only"
-msgstr ""
+msgstr "Solo MES"
 
 msgid "MES workers get standard shop-floor access: Production, Inventory, and Quality (full); Resources, People, and Documents (view only). ERP modules are not accessible."
-msgstr ""
+msgstr "Los trabajadores de MES obtienen acceso estándar al piso de trabajo: Producción, Inventario y Calidad (total); Recursos, Personas y Documentos (solo vista previa). Los módulos ERP no son accesibles."
 
 msgid "Message"
 msgstr "Mensaje"
@@ -5842,10 +6012,10 @@ msgid "NCRs by Type"
 msgstr "NCR por Tipo"
 
 msgid "Need by"
-msgstr ""
+msgstr "Necesidad por"
 
 msgid "Need the right columns?"
-msgstr ""
+msgstr "¿Necesitas las columnas correctas?"
 
 msgid "Negative Adjustment"
 msgstr "Ajuste Negativo"
@@ -5861,6 +6031,9 @@ msgstr "Neto 30"
 
 msgid "Net 60"
 msgstr "Neto 60"
+
+msgid "Net Change"
+msgstr "Cambio Neto"
 
 msgid "Net EOM 10th"
 msgstr "Net EOM 10th"
@@ -5938,7 +6111,7 @@ msgid "New Holiday"
 msgstr "Nuevo Día Festivo"
 
 msgid "New Inspection Document"
-msgstr ""
+msgstr "Nuevo documento de inspección"
 
 msgid "New Invoice"
 msgstr "Factura Nueva"
@@ -6004,7 +6177,7 @@ msgid "New Payment Term"
 msgstr "Nuevo Término de Pago"
 
 msgid "New Picking List"
-msgstr ""
+msgstr "Nueva Lista de Retiro"
 
 msgid "New PIN"
 msgstr "Nuevo PIN"
@@ -6127,7 +6300,7 @@ msgid "New Work Center"
 msgstr "Nuevo Centro de Trabajo"
 
 msgid "Newest first"
-msgstr ""
+msgstr "Últimas primero"
 
 msgid "Next"
 msgstr "Siguiente"
@@ -6144,14 +6317,23 @@ msgstr "Siguiente fecha"
 msgid "Next Due"
 msgstr "Próximo Vencimiento"
 
+msgid "Next month"
+msgstr "Próximo mes"
+
 msgid "Next Month"
 msgstr "Próximo Mes"
 
 msgid "Next page"
-msgstr ""
+msgstr "Página siguiente"
+
+msgid "Next selected"
+msgstr "Siguiente seleccionado"
 
 msgid "Next Sequence"
 msgstr "Siguiente Secuencia"
+
+msgid "Next slide"
+msgstr "Siguiente diapositiva"
 
 msgid "Next Year"
 msgstr "Próximo Año"
@@ -6173,7 +6355,7 @@ msgid "No action needed"
 msgstr "Sin acción necesaria"
 
 msgid "No active jobs found for this sales order. The order will be cancelled directly."
-msgstr ""
+msgstr "No se encontraron trabajos activos para este pedido de venta. Se cancelará directamente el pedido."
 
 msgid "No active jobs to simulate against"
 msgstr "No trabajos activos para simular"
@@ -6195,13 +6377,13 @@ msgid "No archived logs yet. Logs older than {0} days will be automatically arch
 msgstr "No hay registros archivados aún. Los registros más antiguos de {0} días se archivarán automáticamente y estarán disponibles para descargar aquí."
 
 msgid "No attachments."
-msgstr ""
+msgstr "Sin adjuntos."
 
 msgid "No available filters"
 msgstr "No hay filtros disponibles"
 
 msgid "No available tracked entities found"
-msgstr ""
+msgstr "No se encontraron entidades rastreadas disponibles"
 
 msgid "No BOM input has a shelf-life policy"
 msgstr "Ninguna entrada de BOM tiene una política de vida útil"
@@ -6255,7 +6437,7 @@ msgid "No Deadline"
 msgstr "Sin plazo"
 
 msgid "No default attachments yet."
-msgstr ""
+msgstr "Aún no hay adjuntos por defecto."
 
 msgid "No description"
 msgstr "Sin descripción"
@@ -6294,7 +6476,7 @@ msgid "No Gauge Selected"
 msgstr "Sin calibrador seleccionado"
 
 msgid "No grouped notifications"
-msgstr ""
+msgstr "SinNotificaciones Agrupadas"
 
 msgid "No groups assigned"
 msgstr "No hay grupos asignados"
@@ -6306,7 +6488,7 @@ msgid "No issue types configured"
 msgstr "No hay tipos de problemas configurados"
 
 msgid "No locations found."
-msgstr ""
+msgstr "No se encontraron ubicaciones."
 
 msgid "No logo uploaded"
 msgstr "Sin logo cargado"
@@ -6330,7 +6512,7 @@ msgid "No notes"
 msgstr "Sin notas"
 
 msgid "No operations require picking at this location"
-msgstr ""
+msgstr "No operaciones requieren recoger artículos en esta ubicación"
 
 msgid "No operators."
 msgstr "No operadores."
@@ -6351,7 +6533,7 @@ msgid "No overtime scheduled"
 msgstr "Sin horas extra programadas"
 
 msgid "No parent sources recorded yet. Click Recalculate on the planning page to refresh attribution."
-msgstr ""
+msgstr "Aún no se han registrado fuentes padres. Haga clic en Recalcular en la página de planificación para refrescar la atribución."
 
 msgid "No part ID"
 msgstr "Sin ID de pieza"
@@ -6372,10 +6554,10 @@ msgid "No pricing options found"
 msgstr "No se encontraron opciones de precios"
 
 msgid "No printer configured"
-msgstr ""
+msgstr "Sin impresora configurada"
 
 msgid "No printers configured. Click \"Add Printer\" to create one."
-msgstr ""
+msgstr "No se han configurado impresoras. Haz clic en \"Agregar Impresora\"."
 
 msgid "No production logs"
 msgstr "Sin registros de producción"
@@ -6413,14 +6595,17 @@ msgstr "No reglas asignadas"
 msgid "No samples inspected yet."
 msgstr "No hay muestras inspeccionadas aún."
 
+msgid "No selection"
+msgstr "Sin selección"
+
 msgid "No sorts applied to this view"
 msgstr "No hay ordenamientos aplicados a esta vista"
 
 msgid "No stock"
-msgstr ""
+msgstr "Sin stock"
 
 msgid "No suppliers yet"
-msgstr ""
+msgstr "Aún no hay proveedores"
 
 msgid "No time entries for this week"
 msgstr "No hay entradas de tiempo para esta semana"
@@ -6432,7 +6617,7 @@ msgid "No values available"
 msgstr "No valores disponibles"
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
-msgstr ""
+msgstr "No se registra ningún inventario para este artículo. Aún puedes seleccionarlo — el inventario disponible pasará a negativo hasta que se reconcilie la cuenta."
 
 msgid "No work center utilization data within range"
 msgstr "No hay datos de utilización del centro de trabajo dentro del rango"
@@ -6441,7 +6626,7 @@ msgid "No work centers exist"
 msgstr "No existen centros de trabajo"
 
 msgid "Nom"
-msgstr ""
+msgstr "Nombre"
 
 msgid "Nominal Cost"
 msgstr "Costo Nominal"
@@ -6467,6 +6652,9 @@ msgstr "Gastos No Gravados"
 msgid "None"
 msgstr "Ninguno"
 
+msgid "Normal flow"
+msgstr "Flujo normal"
+
 msgid "Not enough jobs to cover quantity"
 msgstr "No hay suficientes trabajos para cubrir la cantidad"
 
@@ -6480,7 +6668,7 @@ msgid "Not started training for"
 msgstr "Sin comenzar el entrenamiento para"
 
 msgid "Not you?"
-msgstr ""
+msgstr "No tú?"
 
 msgid "Note"
 msgstr "Nota"
@@ -6525,7 +6713,7 @@ msgid "OK"
 msgstr "Aceptar"
 
 msgid "Oldest first"
-msgstr ""
+msgstr "Primero los más antiguos"
 
 msgid "On Hand"
 msgstr "En Stock"
@@ -6566,11 +6754,14 @@ msgstr "Abrir"
 msgid "Open Actions"
 msgstr "Acciones Abiertas"
 
+msgid "Open AI Assistant (drag to reposition)"
+msgstr "Asistente de AI (arrastre para reubicar)"
+
 msgid "Open an NCR for MRB disposition"
-msgstr ""
+msgstr "Abrir un NCR para disposición MRB"
 
 msgid "Open Audit Log"
-msgstr ""
+msgstr "Abrir Registro de Auditoría"
 
 msgid "Open chat history"
 msgstr "Abrir historial de chat"
@@ -6588,7 +6779,7 @@ msgid "Open Dispatches"
 msgstr "Despachos Abiertos"
 
 msgid "Open in MES"
-msgstr ""
+msgstr "Abrir en MES"
 
 msgid "Open Issues"
 msgstr "Problemas Abiertos"
@@ -6616,6 +6807,9 @@ msgstr "Órdenes de Venta Abiertas"
 
 msgid "Open Scheduled"
 msgstr "Programado Abierto"
+
+msgid "Open source document"
+msgstr "Abrir documento de origen"
 
 msgid "Open task details"
 msgstr "Abrir detalles de la tarea"
@@ -6678,13 +6872,13 @@ msgid "Options"
 msgstr "Opciones"
 
 msgid "OR"
-msgstr ""
+msgstr "ÓR"
 
 msgid "Order"
 msgstr "Pedido"
 
 msgid "Order by"
-msgstr ""
+msgstr "Ordenar por"
 
 msgid "Order Date"
 msgstr "Fecha de Pedido"
@@ -6718,7 +6912,7 @@ msgid "Orders submitted"
 msgstr "Pedidos enviados"
 
 msgid "Origin"
-msgstr ""
+msgstr "Origen"
 
 #. placeholder {0}: report.originalQuantity
 msgid "Originally reported <0>{0}</0> units"
@@ -6747,6 +6941,9 @@ msgstr "Salida"
 
 msgid "Output never outlasts its raw materials. Falls back to the fixed duration when no input has an expiry date."
 msgstr "El producto nunca durará más que sus materias primas. Vuelve a la duración fija cuando ninguna entrada tiene una fecha de vencimiento."
+
+msgid "Outputs"
+msgstr "Salidas"
 
 msgid "Outside"
 msgstr "Afuera"
@@ -6806,7 +7003,7 @@ msgid "Packing Slip"
 msgstr "Albarán de Empaque"
 
 msgid "Page {pdfViewPage} of {documentPageCount}"
-msgstr ""
+msgstr "Página {pdfViewPage} de {documentPageCount}"
 
 msgid "Paid"
 msgstr "Pagado"
@@ -6842,7 +7039,7 @@ msgid "Parent Group"
 msgstr "Grupo de Padre"
 
 msgid "Parent Item"
-msgstr ""
+msgstr "Artículo Padre"
 
 msgid "Parent Storage Unit"
 msgstr "Unidad de Almacenamiento Principal"
@@ -6877,8 +7074,14 @@ msgstr "Piezas"
 msgid "Pass"
 msgstr "Aprobar"
 
+msgid "Passkey name"
+msgstr "Nombre del Passkey"
+
 msgid "Password is too short"
 msgstr "La contraseña es demasiado corta"
+
+msgid "Paste a link"
+msgstr "Pega un enlace"
 
 msgid "Path"
 msgstr "Ruta"
@@ -6926,16 +7129,16 @@ msgid "PDF"
 msgstr "PDF"
 
 msgid "PDF (Document)"
-msgstr ""
+msgstr "PDF (Documento)"
 
 msgid "PDF downloaded"
-msgstr ""
+msgstr "PDF descargado"
 
 msgid "PDF pages"
-msgstr ""
+msgstr "Páginas PDF"
 
 msgid "PDF Preview"
-msgstr ""
+msgstr "Vista previa PDF"
 
 msgid "PDF Watermark"
 msgstr "Añadir marca de agua al documento PDF"
@@ -6983,7 +7186,7 @@ msgid "Photo removed successfully"
 msgstr "Foto eliminada correctamente"
 
 msgid "Physical printers available for assignment."
-msgstr ""
+msgstr "Impresoras físicas disponibles para asignar."
 
 msgid "Pick"
 msgstr "Seleccionar"
@@ -7001,28 +7204,28 @@ msgid "Pick List"
 msgstr "Lista de Picking"
 
 msgid "Pick Order"
-msgstr ""
+msgstr "Seleccionar pedido"
 
 msgid "Pick tracked item"
-msgstr ""
+msgstr "Elija artículo rastreado"
 
 msgid "Picked quantity"
-msgstr ""
+msgstr "Cantidad seleccionada"
 
 msgid "Picking Lines"
-msgstr ""
+msgstr "Líneas de selección"
 
 msgid "Picking List"
-msgstr ""
+msgstr "Lista de Selección"
 
 msgid "Picking List ID"
-msgstr ""
+msgstr "ID de Lista de Selección"
 
 msgid "Picking List Notes"
-msgstr ""
+msgstr "Notas de la Lista de Selección"
 
 msgid "Picking Lists"
-msgstr ""
+msgstr "Listas de Selección"
 
 msgid "Pieces/Hour"
 msgstr "Piezas/Hora"
@@ -7055,10 +7258,10 @@ msgid "Planned End Time"
 msgstr "Hora de finalización planeada"
 
 msgid "Planned Order"
-msgstr ""
+msgstr "Orden Planificada"
 
 msgid "Planned order = MRP suggestion to cover projected demand based on the item's reorder policy (or manually added)."
-msgstr ""
+msgstr "Orden planificada = sugerencia MRP para cubrir la demanda proyectada basada en la política de reordenamiento del artículo (o añadida manualmente)."
 
 msgid "Planned Start"
 msgstr "Inicio Planificado"
@@ -7106,13 +7309,13 @@ msgid "PO Number"
 msgstr "Número de OC"
 
 msgid "PO PDF"
-msgstr ""
+msgstr "PDF PO"
 
 msgid "PO pricing: min <0>{minCost}</0>, unit <1>{unitPrice}</1> (snapshotted)"
 msgstr "Precio PO: mínimo <0>{minCost}</0>, unidad <1>{unitPrice}</1> (capturado en tiempo real)"
 
 msgid "Policy"
-msgstr ""
+msgstr "Política"
 
 msgid "Policy & Procedure"
 msgstr "Política y Procedimiento"
@@ -7168,6 +7371,9 @@ msgstr "Libra"
 msgid "Pre-filled for a new item when expiry is Fixed Duration."
 msgstr "Rellenado previamente para un nuevo artículo cuando la caducidad es Duración Fija."
 
+msgid "Predicate-driven guards that fire on inventory transactions. Block with errors or warn with acknowledge-to-continue."
+msgstr "Guards impulsados por predicado que se disparan en transacciones de inventario. Bloquear con errores o advertir con aceptar-para-continuar."
+
 msgid "Preferred Supplier"
 msgstr "Proveedor Preferido"
 
@@ -7190,7 +7396,7 @@ msgid "Preview"
 msgstr "Vista previa"
 
 msgid "Preview failed: {error}"
-msgstr ""
+msgstr "Prevención fallida: {error}"
 
 msgid "Preview PDF"
 msgstr "Vista previa del PDF"
@@ -7204,11 +7410,20 @@ msgstr "Anterior"
 msgid "Previous Date"
 msgstr "Fecha Anterior"
 
+msgid "Previous month"
+msgstr "Mes anterior"
+
 msgid "Previous Month"
 msgstr "Mes anterior"
 
 msgid "Previous page"
-msgstr ""
+msgstr "Página anterior"
+
+msgid "Previous selected"
+msgstr "Selección anterior"
+
+msgid "Previous slide"
+msgstr "Slide anterior"
 
 msgid "Previous Year"
 msgstr "Año anterior"
@@ -7250,33 +7465,33 @@ msgid "Pricing Trace"
 msgstr "Seguimiento de Precios"
 
 msgid "Print"
-msgstr ""
+msgstr "Imprimir"
 
 #. placeholder {0}: selectedIds.size
 msgid "Print {0} Labels"
-msgstr ""
+msgstr "Imprimir {0} Etiquetas"
 
 msgid "Print Jobs"
-msgstr ""
+msgstr "Tareas de impresión"
 
 msgid "Print Label"
 msgstr "Imprimir Etiqueta"
 
 #. placeholder {0}: viewContent.contentType?.toUpperCase()
 msgid "Print Output ({0})"
-msgstr ""
+msgstr "Imprimir Salida ({0})"
 
 msgid "Printer Settings"
-msgstr ""
+msgstr "Configuración del Impresor"
 
 msgid "Printer URL"
-msgstr ""
+msgstr "URL de la impresora"
 
 msgid "Printers"
-msgstr ""
+msgstr "Impresoras"
 
 msgid "Printing"
-msgstr ""
+msgstr "Imprimiendo"
 
 msgid "Priorities"
 msgstr "Prioridades"
@@ -7333,6 +7548,9 @@ msgstr "Procesos"
 msgid "Processes ({completedOps}/{totalOps}): operations marked Done."
 msgstr "Procesos ({completedOps}/{totalOps}): operaciones marcadas como Hecho."
 
+msgid "Produced by"
+msgstr "Producido por"
+
 msgid "Production"
 msgstr "Producción"
 
@@ -7367,10 +7585,10 @@ msgid "Project"
 msgstr "Proyecto"
 
 msgid "Projected stock"
-msgstr ""
+msgstr "Stock proyectado"
 
 msgid "Projection"
-msgstr ""
+msgstr "Proyección"
 
 msgid "Projections"
 msgstr "Proyecciones"
@@ -7576,7 +7794,7 @@ msgstr "Cantidades actualizadas"
 
 #. placeholder {0}: numberFormatter.format(forecastQuantity)
 msgid "Quantity: {0}"
-msgstr ""
+msgstr "Cantidad: {0}"
 
 msgid "Quarterly"
 msgstr "Trimestral"
@@ -7624,7 +7842,7 @@ msgid "Quotes"
 msgstr "Cotizaciones"
 
 msgid "Quoting"
-msgstr ""
+msgstr "Citas"
 
 msgid "R&D Expenses"
 msgstr "Gastos de Investigación y Desarrollo"
@@ -7634,6 +7852,9 @@ msgstr "Límite de Velocidad"
 
 msgid "Rate limit exceeded"
 msgstr "Se ha superado el límite de tasa"
+
+msgid "Re-layout graph"
+msgstr "Re-diseñar gráfico"
 
 msgid "Reactivate"
 msgstr "Reactivar"
@@ -7702,6 +7923,9 @@ msgstr "Recibir {0} al Inventario"
 msgid "Receive to Inventory"
 msgstr "Recibir al Inventario"
 
+msgid "Received"
+msgstr "Recibido"
+
 msgid "Received At"
 msgstr "Recibido en"
 
@@ -7734,7 +7958,10 @@ msgid "Record payment"
 msgstr "Pago de registro"
 
 msgid "Record the inspection result for this sample."
-msgstr ""
+msgstr "Registre el resultado de la inspección para este muestra."
+
+msgid "Recorded"
+msgstr "Registrado"
 
 msgid "recorded {qty} units"
 msgstr "registrados {qty} unidades"
@@ -7760,11 +7987,17 @@ msgstr "Actualizar"
 msgid "Refresh exchange rate"
 msgstr "Actualizar tipo de cambio"
 
+msgid "Refresh preview"
+msgstr "Actualizar vista previa"
+
 msgid "Refresh QR code"
 msgstr "Refrescar código QR"
 
 msgid "Reject"
 msgstr "Rechazar"
+
+msgid "Reject branch"
+msgstr "Rechazar rama"
 
 msgid "Reject Lot"
 msgstr "Rechazar Lote"
@@ -7809,11 +8042,14 @@ msgstr "Eliminar {0}"
 msgid "Remove attachment"
 msgstr "Eliminar adjunto"
 
+msgid "Remove block"
+msgstr "Quitar bloque"
+
 msgid "Remove condition"
 msgstr "Eliminar condición"
 
 msgid "Remove feature"
-msgstr ""
+msgstr "Eliminar característica"
 
 msgid "Remove filter"
 msgstr "Eliminar filtro"
@@ -7833,6 +8069,9 @@ msgstr "Eliminar artículo"
 msgid "Remove line"
 msgstr "Eliminar línea"
 
+msgid "Remove link"
+msgstr "Quitar enlace"
+
 msgid "Remove negative feedback"
 msgstr "Eliminar comentarios negativos"
 
@@ -7848,6 +8087,9 @@ msgstr "Eliminar par"
 msgid "Remove positive feedback"
 msgstr "Eliminar comentarios positivos"
 
+msgid "Remove row"
+msgstr "Eliminar fila"
+
 msgid "Remove sort by column"
 msgstr "Eliminar ordenamiento por columna"
 
@@ -7858,7 +8100,7 @@ msgid "Remove Transfer"
 msgstr "Eliminar transferencia"
 
 msgid "Rendering label preview..."
-msgstr ""
+msgstr "Visualizando previa de etiquetas..."
 
 msgid "Rent & Utilities (Non-Factory)"
 msgstr "Alquileres y Servicios (No Fábrica)"
@@ -7871,6 +8113,9 @@ msgstr "Reordenar"
 
 msgid "Reorder Group"
 msgstr "Reordenar Grupo"
+
+msgid "Reorder lines"
+msgstr "Líneas de reordenar"
 
 msgid "Reorder Point"
 msgstr "Punto de Reorden"
@@ -7897,16 +8142,16 @@ msgid "Reordering Policy"
 msgstr "Política de Reorden"
 
 msgid "Replace drawing?"
-msgstr ""
+msgstr "¿Reemplazar dibujo?"
 
 msgid "Replace existing pricing with source values"
 msgstr "Reemplazar precios existentes con valores de origen"
 
 msgid "Replace PDF"
-msgstr ""
+msgstr "Reemplace PDF"
 
 msgid "Replacing the PDF removes all balloon placements on this document. Feature rows and their values stay; you can place balloons again on the new drawing."
-msgstr ""
+msgstr "Sustituir el PDF elimina todos los lugares de las burbujas en este documento. Las filas de características y sus valores permanecen; puede colocar nuevamente burbujas en el nuevo dibujo."
 
 msgid "Replenishment"
 msgstr "Reabastecimiento"
@@ -7922,6 +8167,9 @@ msgstr "Historial de informes"
 
 msgid "reported"
 msgstr "informado"
+
+msgid "Reported"
+msgstr "Reportado"
 
 msgid "Reported {totalQuantity} units"
 msgstr "Reportados {totalQuantity} unidades"
@@ -7943,7 +8191,7 @@ msgid "Reports"
 msgstr "Informes"
 
 msgid "Reprint"
-msgstr ""
+msgstr "Reimprimir"
 
 msgid "Request Approval"
 msgstr "Solicitar Aprobación"
@@ -8014,7 +8262,7 @@ msgid "Reset PIN for {0} {1}"
 msgstr "Restablecer PIN para {0} {1}"
 
 msgid "Reset View"
-msgstr ""
+msgstr "Restablecer vista"
 
 msgid "Reset zoom"
 msgstr "Restablecer el acercado"
@@ -8165,10 +8413,10 @@ msgid "Rounding Account"
 msgstr "Cuenta de ajuste"
 
 msgid "Route all AP invoices to one address (e.g. corporate headquarters) instead of individual purchasers."
-msgstr ""
+msgstr "Ruta todas las facturas AP a una sola dirección (por ejemplo, sede corporativa) en lugar de a compradores individuales."
 
 msgid "Route all AR invoices to one address (e.g. corporate headquarters) instead of individual locations."
-msgstr ""
+msgstr "Ruta todas las facturas AR a una sola dirección (por ejemplo, sede corporativa) en lugar de a ubicaciones individuales."
 
 msgid "rows"
 msgstr "filas"
@@ -8201,7 +8449,7 @@ msgid "Running Total"
 msgstr "Total Acumulado"
 
 msgid "Safety stock"
-msgstr ""
+msgstr "Stock seguro"
 
 msgid "Safety Stock"
 msgstr "Stock de Seguridad"
@@ -8278,12 +8526,18 @@ msgstr "Ingresos de Ventas"
 msgid "Sales Tax Payable"
 msgstr "Impuesto sobre Ventas por Pagar"
 
+msgid "Same as Book"
+msgstr "Igual que Reservar"
+
 msgid "Sample"
 msgstr "Muestra"
 
 #. placeholder {0}: idx + 1
 msgid "Sample {0}"
-msgstr ""
+msgstr "Muestra {0}"
+
+msgid "Sample data"
+msgstr "Datos de muestra"
 
 msgid "Sample Size"
 msgstr "Tamaño de Muestra"
@@ -8322,19 +8576,19 @@ msgid "Saved"
 msgstr "Guardado"
 
 msgid "Saving..."
-msgstr ""
+msgstr "Guardando..."
 
 msgid "Scan"
 msgstr "Escanear"
 
 msgid "Scan a label or search by item ID or tracking ID."
-msgstr ""
+msgstr "Escanea una etiqueta o busca por ID de artículo o ID de seguimiento."
 
 msgid "Scan or enter tracked entity ID, serial, or batch"
 msgstr "Escanear o ingresar ID de entidad rastreada, serie o lote"
 
 msgid "Scan or enter tracking number"
-msgstr ""
+msgstr "Escanear o ingresar número de跟踪 (不适用，保持原文)"
 
 msgid "Scan or search..."
 msgstr "Escanear o buscar"
@@ -8409,7 +8663,7 @@ msgid "Search"
 msgstr "Buscar"
 
 msgid "Search accounts..."
-msgstr ""
+msgstr "Buscar cuentas..."
 
 msgid "Search across your workspace..."
 msgstr "Buscar en tu espacio de trabajo..."
@@ -8429,6 +8683,9 @@ msgstr "Buscar clientes o tipos..."
 msgid "Search employees..."
 msgstr "Buscar empleados..."
 
+msgid "Search entities, activities, status, source doc, tracking ID..."
+msgstr "Buscar entidades, actividades, estado, documento fuente, ID de seguimiento..."
+
 msgid "Search fields..."
 msgstr "Campañas de búsqueda..."
 
@@ -8441,6 +8698,9 @@ msgstr "Buscar historial"
 msgid "Search Job"
 msgstr "Buscar trabajo"
 
+msgid "Search nodes"
+msgstr "Buscar nodos"
+
 msgid "Search operators..."
 msgstr "Operadores de búsqueda..."
 
@@ -8450,15 +8710,21 @@ msgstr "Buscar procesos..."
 msgid "Search related items..."
 msgstr "Buscar elementos relacionados..."
 
+msgid "Search storage units…"
+msgstr "Buscar unidades de almacenamiento…"
+
 msgid "Search suppliers..."
 msgstr "Buscar proveedores..."
 
 #. js-lingui-explicit-id
 msgid "Search the web"
-msgstr ""
+msgstr "Buscar en la web"
 
 msgid "Search..."
 msgstr "Buscar..."
+
+msgid "Searching..."
+msgstr "Buscando..."
 
 msgid "Seconds/Piece"
 msgstr "Segundos/Pieza"
@@ -8469,8 +8735,14 @@ msgstr "Seleccionar"
 msgid "Select a assignee"
 msgstr "Seleccionar un asignado"
 
+msgid "Select a category"
+msgstr "Selecciona una categoría"
+
 msgid "Select a default approver"
 msgstr "Selecciona un aprobador predeterminado"
+
+msgid "Select a match..."
+msgstr "Selecciona una coincidencia..."
 
 msgid "Select a new owner"
 msgstr "Selecciona un nuevo propietario"
@@ -8494,11 +8766,17 @@ msgstr "Seleccionar una línea de cotización"
 msgid "Select a reason for why the quote was not created."
 msgstr "Selecciona una razón por la que la cotización no fue creada."
 
+msgid "Select a table"
+msgstr "Selecciona una tabla"
+
 msgid "Select a team"
 msgstr "Selecciona un equipo"
 
+msgid "Select account"
+msgstr "Seleccionar cuenta"
+
 msgid "Select all"
-msgstr ""
+msgstr "Seleccionar todo"
 
 msgid "Select an assignee"
 msgstr "Seleccionar un asignado"
@@ -8567,10 +8845,13 @@ msgid "Select name"
 msgstr "Selecciona nombre"
 
 msgid "Select Printer"
-msgstr ""
+msgstr "Seleccionar Impresora"
 
 msgid "Select Quantities"
 msgstr "Seleccionar Cantidades"
+
+msgid "Select Reason"
+msgstr "Seleccione Razón"
 
 msgid "Select Row"
 msgstr "Seleccionar fila"
@@ -8593,6 +8874,9 @@ msgstr "Selecciona superficies"
 msgid "Select the groups that should complete this training"
 msgstr "Selecciona los grupos que deben completar esta capacitación"
 
+msgid "Select the quantity that you'd like to split into a new line."
+msgstr "Selecciona la cantidad que deseas dividir en una nueva línea."
+
 msgid "Select value"
 msgstr "Selecciona un valor"
 
@@ -8608,6 +8892,9 @@ msgstr "Operación Seleccionada"
 #. placeholder {0}: target.maxQuantity - selectedSum
 msgid "Selected: {selectedSum} / remaining after split: {0}"
 msgstr "Seleccionado: {selectedSum} / restante después de dividir: {0}"
+
+msgid "Selection path"
+msgstr "Ruta de selección"
 
 msgid "Self Managed"
 msgstr "Autogestionado"
@@ -8639,6 +8926,11 @@ msgstr "Secuencias"
 msgid "Serial"
 msgstr "Serial"
 
+#. placeholder {0}: index + 1
+#. placeholder {0}: index + 2
+msgid "Serial {0}"
+msgstr "Serie {0}"
+
 msgid "Serial / Batch"
 msgstr "Serie / Lote"
 
@@ -8653,6 +8945,9 @@ msgstr "Número de serie no encontrado"
 
 msgid "Serial Number:"
 msgstr "Número de Serie:"
+
+msgid "Serial Numbers"
+msgstr "Números de serie"
 
 msgid "Serial or Batch Tracking Required"
 msgstr "Seguimiento Serial o por Lote Requerido"
@@ -8731,7 +9026,7 @@ msgid "Share"
 msgstr "Compartir"
 
 msgid "Share a branded portal link so customers can track their orders and documents."
-msgstr ""
+msgstr "Compartir enlace de un portal personalizado para que los clientes puedan rastrear sus pedidos y documentos."
 
 msgid "Share Link"
 msgstr "Enlace compartido"
@@ -8743,7 +9038,7 @@ msgid "Share this PIN with the operator so they can pin in at MES terminals."
 msgstr "Comparte este PIN con el operario para que pueda registrarse en los terminales de MES."
 
 msgid "Shared Sections"
-msgstr ""
+msgstr "Secciones compartidas"
 
 msgid "Shelf life"
 msgstr "Vida útil"
@@ -8758,7 +9053,7 @@ msgid "Shelf-Life"
 msgstr "Vida útil"
 
 msgid "Shelf-Life History"
-msgstr ""
+msgstr "Historial de Vida Utile"
 
 msgid "Shift"
 msgstr "Turno"
@@ -8799,6 +9094,9 @@ msgstr "Ubicación de envío"
 msgid "Shipments"
 msgstr "Envíos"
 
+msgid "Shipped"
+msgstr "Envío realizado"
+
 msgid "Shipped Qty"
 msgstr "Cantidad Enviada"
 
@@ -8836,16 +9134,16 @@ msgid "Shop Floor"
 msgstr "Planta de Producción"
 
 msgid "Shop-floor workers who can access the MES but not the ERP. They do not count as a billable seat."
-msgstr ""
+msgstr "Trabajadores de planta que pueden acceder al MES pero no al ERP. No cuentan como un asiento facturable."
 
 msgid "Short"
-msgstr ""
+msgstr "Corto"
 
 msgid "Short Description"
 msgstr "Descripción Corta"
 
 msgid "Short pick {itemName}"
-msgstr ""
+msgstr "Selección corta {itemName}"
 
 msgid "Short-Term Loans"
 msgstr "Préstamos Cortos Plazo"
@@ -8854,19 +9152,22 @@ msgid "Shortcuts"
 msgstr "Atajos"
 
 msgid "Show a readable Customer ID column on the customer list, customer forms, and dropdowns. Customers are still identified internally either way."
-msgstr ""
+msgstr "Mostrar una columna con el ID del cliente legible en la lista de clientes, formularios de cliente y menús desplegables. De cualquier manera, los clientes siguen identificándose internamente."
 
 msgid "Show a readable Supplier ID column on the supplier list, supplier forms, and dropdowns. Suppliers are still identified internally either way."
-msgstr ""
+msgstr "Mostrar una columna con el ID del Proveedor legible en la lista de proveedores, formularios de proveedor y menús desplegables. De cualquier manera, los proveedores siguen identificándose internamente."
 
 msgid "Show Customer IDs"
-msgstr ""
+msgstr "Mostrar IDs de Cliente"
 
 msgid "Show Durations"
 msgstr "Mostrar duraciones"
 
 msgid "Show family name before given name, as used in Chinese and other East Asian locales."
 msgstr "Mostrar el nombre familiar antes del nombre propio, como se usa en chino y otros lugares orientales."
+
+msgid "Show legend"
+msgstr "Mostrar leyenda"
 
 msgid "Show on card right"
 msgstr "Muestra en la tarjeta derecha"
@@ -8875,7 +9176,7 @@ msgid "Show parent items"
 msgstr "Mostrar elementos principales"
 
 msgid "Show Supplier IDs"
-msgstr ""
+msgstr "Mostrar IDs de Proveedores"
 
 msgid "Show sync options"
 msgstr "Mostrar opciones de sincronización"
@@ -8899,7 +9200,7 @@ msgid "Sign in with Outlook"
 msgstr "Iniciar sesión con Outlook"
 
 msgid "Sign in with Passkey"
-msgstr ""
+msgstr "Inicie sesión con Passkey"
 
 msgid "Sign in with Phone"
 msgstr "Iniciar sesión con teléfono"
@@ -8950,7 +9251,7 @@ msgid "Something went wrong. Please try again."
 msgstr "Algo salió mal. Por favor, inténtalo de nuevo."
 
 msgid "Soon"
-msgstr ""
+msgstr "Pronto"
 
 msgid "Soonest expiry across every material sets the finished good."
 msgstr "La fecha de vencimiento más próxima entre todos los materiales establece el producto terminado."
@@ -8966,6 +9267,12 @@ msgstr "Ordenar por"
 
 msgid "Sort Descending"
 msgstr "Ordenar descendente"
+
+msgid "sorted ascending"
+msgstr "ordenado ascendentemente"
+
+msgid "sorted descending"
+msgstr "ordenado de forma descendente"
 
 msgid "Source"
 msgstr "Origen"
@@ -8992,7 +9299,7 @@ msgid "Sources"
 msgstr "Fuentes"
 
 msgid "Sourcing"
-msgstr ""
+msgstr "Procuring"
 
 msgid "Sourcing Type"
 msgstr "Tipo de Abastecimiento"
@@ -9018,14 +9325,23 @@ msgstr "Dividir"
 msgid "Split line"
 msgstr "Dividir línea"
 
+msgid "Split Line"
+msgstr "Dividir Línea"
+
 msgid "Split off quantity"
 msgstr "Cantidad a dividir"
 
 msgid "Split receipt line"
 msgstr "Dividir línea de recepción"
 
+msgid "Split Receipt Line"
+msgstr "Dividir línea de recibo"
+
 msgid "Split shipment line"
 msgstr "Dividir línea de envío"
+
+msgid "Split Shipment Line"
+msgstr "Dividir Línea de Envío"
 
 msgid "Standard"
 msgstr "Estándar"
@@ -9088,11 +9404,11 @@ msgstr "Estado / Provincia"
 #. placeholder {0}: lotEntities.length
 #. placeholder {1}: Math.max(0, lotEntities.length - inspected)
 msgid "Statistical acceptance failed, so the entire lot is considered non-conforming (ISO 9001:2015 §8.7). All {0} entities — {passes} sampled pass(es), {fails} failure(s), and {1} un-inspected — will be marked Rejected."
-msgstr ""
+msgstr "La aceptación estadística falló, por lo que todo lote se considera no conforme (ISO 9001:2015 §8.7). Todas las {0} entidades — {passes} muestrado(s) aprobaron(n), {fails} fallo(s), y {1} sin inspección — serán marcadas Rechazadas."
 
 #. placeholder {0}: inspection.lotSize
 msgid "Statistical acceptance failed, so the entire lot of {0} is considered non-conforming (ISO 9001:2015 §8.7) — {passes} sampled pass(es) and {fails} failure(s)."
-msgstr ""
+msgstr "La aceptación estadística falló, por lo que el lote completo de {0} se considera no conforme (ISO 9001:2015 §8.7) — {passes} muestra(s) aprobada(s) y {fails} rechazada(s)."
 
 msgid "Status"
 msgstr "Estado"
@@ -9104,10 +9420,13 @@ msgid "Statuses"
 msgstr "Estados"
 
 msgid "Stay on this page"
-msgstr ""
+msgstr "Queda en esta página"
 
 msgid "Step"
 msgstr "Paso"
+
+msgid "Step records"
+msgstr "Registros de paso"
 
 msgid "Step Records"
 msgstr "Registros de Pasos"
@@ -9134,10 +9453,16 @@ msgid "Stock Transfers"
 msgstr "Transferencias de Inventario"
 
 msgid "Storage client not available"
-msgstr ""
+msgstr "Cliente de almacenamiento no disponible"
+
+msgid "Storage Rule"
+msgstr "Regla de Almacén"
+
+msgid "Storage rules"
+msgstr "Reglas de almacenamiento"
 
 msgid "Storage Rules"
-msgstr ""
+msgstr "Reglas de Almacén"
 
 msgid "Storage Type"
 msgstr "Tipo de Almacenamiento"
@@ -9260,7 +9585,7 @@ msgid "Supplier ID"
 msgstr "ID de Proveedor"
 
 msgid "Supplier ID cannot be changed after creation"
-msgstr ""
+msgstr "ID del proveedor no puede ser cambiado después de la creación"
 
 msgid "Supplier Invoice Number"
 msgstr "Número de Factura del Proveedor"
@@ -9350,6 +9675,9 @@ msgstr "Soporte requerido"
 msgid "Supports {0} files"
 msgstr "Admite archivos {0}"
 
+msgid "Surface Area:"
+msgstr "Superficie:"
+
 msgid "Surfaces"
 msgstr "Superficies"
 
@@ -9437,7 +9765,7 @@ msgid "Tax & Additional Costs"
 msgstr "Impuestos y Costos Adicionales"
 
 msgid "Tax & Shipping"
-msgstr ""
+msgstr "Impuestos y Envío"
 
 msgid "Tax Amount"
 msgstr "Monto de Impuesto"
@@ -9454,6 +9782,9 @@ msgstr "Porcentaje de Impuesto"
 msgid "Tax:"
 msgstr "Impuesto:"
 
+msgid "Taxes"
+msgstr "Impuestos"
+
 msgid "Temperature"
 msgstr "Temperatura"
 
@@ -9461,7 +9792,7 @@ msgid "Template"
 msgstr "Plantilla"
 
 msgid "Template ID"
-msgstr ""
+msgstr "ID de plantilla"
 
 msgid "Templates"
 msgstr "Plantillas"
@@ -9473,7 +9804,7 @@ msgid "Terms of Service"
 msgstr "Términos de Servicio"
 
 msgid "Test"
-msgstr ""
+msgstr "Prueba"
 
 msgid "Test Value"
 msgstr "Valor de Prueba"
@@ -9485,7 +9816,7 @@ msgid "Text"
 msgstr "Texto"
 
 msgid "Text size"
-msgstr ""
+msgstr "Tamaño del texto"
 
 msgid "That WeChat is already linked to another account"
 msgstr "Ese WeChat ya está vinculado a otra cuenta"
@@ -9503,7 +9834,7 @@ msgid "The date the customer expects to receive the goods"
 msgstr "La fecha en que el cliente espera recibir los bienes"
 
 msgid "The date the item is required on-site to cover the period's projected demand."
-msgstr ""
+msgstr "La fecha en que el artículo se requiere en el sitio para cubrir la demanda proyectada del período."
 
 msgid "The endpoint that receives a POST request with the updated data when the table is updated"
 msgstr "El endpoint que recibe una solicitud POST con los datos actualizados cuando la tabla se actualiza"
@@ -9518,16 +9849,16 @@ msgid "The invite link will expire on the selected date"
 msgstr "El enlace de invitación expirará el día seleccionado"
 
 msgid "The latest date to place this PO so it arrives by the need-by date, given the supplier's lead time."
-msgstr ""
+msgstr "La fecha más tardía para emitir esta PO para que llegue a tiempo según la fecha de caducidad del proveedor."
 
 msgid "The lot stays open so you can keep inspecting and disposition later. Sampled outcomes are preserved."
-msgstr ""
+msgstr "El lote permanece abierto para que puedas seguir inspeccionándolo y dispoñerlo más tarde. Se preservan los resultados de muestreo."
 
 msgid "The lot will be marked Passed. {fails} sampled failure(s) are recorded for your records."
-msgstr ""
+msgstr "El lote será marcado como Aprobado. {fails} fallo(s) de muestreo se han registrado para su referencia."
 
 msgid "The lot will still be rejected, but an NCR cannot be created until at least one Issue Type is configured."
-msgstr ""
+msgstr "El lote仍将被拒收，但在创建NCR之前至少需要配置一种问题类型。"
 
 msgid "The new version number of the method"
 msgstr "El nuevo número de versión del método"
@@ -9620,7 +9951,7 @@ msgid "This job will no longer be available on the shop floor."
 msgstr "Este trabajo ya no estará disponible en el piso de producción."
 
 msgid "This lot is expired and can't be picked."
-msgstr ""
+msgstr "Este lote ha expirado y no puede ser seleccionado."
 
 msgid "This permanently deletes the quantity report and its entire history. This action cannot be undone."
 msgstr "Esto elimina permanentemente el informe de cantidad y todo su historial. Esta acción no se puede deshacer."
@@ -9632,7 +9963,7 @@ msgid "this quantity report"
 msgstr "este informe de cantidad"
 
 msgid "This sales order has associated jobs. Choose what to do with them."
-msgstr ""
+msgstr "Este pedido de ventas tiene trabajos asociados. Elige qué hacer con ellos."
 
 msgid "This sales order has lines that require jobs to be created"
 msgstr "Esta orden de venta tiene líneas que requieren que se creen trabajos"
@@ -9662,7 +9993,7 @@ msgstr "Esto recalculará el costo unitario del método de fabricación activo b
 #. placeholder {0}: routeData?.job?.jobId
 #. placeholder {1}: routeData?.job?.salesOrderReadableId
 msgid "This will remove {0}'s link to {1}. The job will no longer appear under the sales order and shipments won't find it."
-msgstr ""
+msgstr "Se eliminará el vínculo de {0} con {1}. El trabajo ya no aparecerá bajo la orden de venta y las entregas no lo encontrarán."
 
 msgid "This will replace all method materials of other revisions with this revision."
 msgstr "Esto reemplazará todos los materiales de método de otras revisiones con esta revisión."
@@ -9755,10 +10086,10 @@ msgid "Toggle visibility"
 msgstr "Poner en visible"
 
 msgid "Tol-"
-msgstr ""
+msgstr "Tol-"
 
 msgid "Tol+"
-msgstr ""
+msgstr "Tol+"
 
 msgid "Tolerance (+/-)"
 msgstr "Tolerancia (+/-)"
@@ -9777,6 +10108,9 @@ msgstr "ID de herramienta"
 
 msgid "Tools"
 msgstr "Herramientas"
+
+msgid "Top-down layout"
+msgstr "Diseño superior-abajo"
 
 msgid "Total"
 msgstr "Total"
@@ -9830,10 +10164,10 @@ msgid "Track every change to your orders, invoices, customers, suppliers, and mo
 msgstr "Realiza un seguimiento de cada cambio en tus pedidos, facturas, clientes, proveedores y más."
 
 msgid "Track tax depreciation separately"
-msgstr ""
+msgstr "Seguimiento del depreciación fiscal por separado"
 
 msgid "Track tax depreciation separately from book depreciation and automatically post deferred tax liability entries."
-msgstr ""
+msgstr "Rastrear la depreciación fiscal por separado de la depreciación contable y registrar automáticamente entradas relacionadas con la obligación de impuestos diferidos."
 
 msgid "Track when batches or serials of this item expire."
 msgstr "Realiza un seguimiento de cuándo vencen los lotes o números de serie de este artículo."
@@ -9859,6 +10193,13 @@ msgstr "ID de Seguimiento"
 msgid "Tracking Number"
 msgstr "Número de Seguimiento"
 
+#. placeholder {0}: index + 1
+msgid "Tracking Number {0}"
+msgstr "Número de seguimiento {0}"
+
+msgid "Tracking Numbers"
+msgstr "Números de seguimiento"
+
 msgid "Tracking Type"
 msgstr "Tipo de Seguimiento"
 
@@ -9876,6 +10217,9 @@ msgstr "Problema de formación"
 
 msgid "Trainings"
 msgstr "Capacitaciones"
+
+msgid "Transaction surfaces"
+msgstr "Superficies de transacción"
 
 msgid "Transactions will create journal entries and update the general ledger."
 msgstr "Las transacciones crearán asientos de diario y actualizarán el libro mayor."
@@ -9920,7 +10264,7 @@ msgid "Trial Balance"
 msgstr "Equilibrio de Prueba"
 
 msgid "Triggers"
-msgstr ""
+msgstr "Triggeces"
 
 msgid "True"
 msgstr "Verdadero"
@@ -9938,7 +10282,7 @@ msgid "Type a message..."
 msgstr "Escribe un mensaje..."
 
 msgid "Type an email and press Enter to add an external recipient"
-msgstr ""
+msgstr "Escribe un correo electrónico y presiona Entrar para agregar un destinatario externo"
 
 msgid "Type of Permission Update"
 msgstr "Tipo de Actualización de Permisos"
@@ -9965,7 +10309,7 @@ msgid "Unassigned"
 msgstr "Sin asignar"
 
 msgid "Unballoon"
-msgstr ""
+msgstr "Desinflar"
 
 msgid "Ungrouped"
 msgstr "Desgrupado"
@@ -9989,7 +10333,7 @@ msgid "Unit of Measures"
 msgstr "Unidades de Medida"
 
 msgid "Unit price"
-msgstr ""
+msgstr "Precio unitario"
 
 msgid "Unit Price"
 msgstr "Precio Unitario"
@@ -10022,26 +10366,26 @@ msgid "Unlink"
 msgstr "Desenlazar"
 
 msgid "Unlink job from sales order?"
-msgstr ""
+msgstr "¿Desvincular trabajo de la orden de venta?"
 
 msgid "Unpick"
-msgstr ""
+msgstr "Deshacer"
 
 #. placeholder {0}: pickedLots[0].trackedEntity.readableId
 msgid "Unpick {0}"
-msgstr ""
+msgstr "Deshacer {0}"
 
 msgid "Unpin column"
 msgstr "Pinar columna"
 
 msgid "Unsaved changes"
-msgstr ""
+msgstr "Cambios no guardados"
 
 msgid "Unsupported source document type: {sourceDocument}"
 msgstr "Tipo de documento de origen no compatible: {sourceDocument}"
 
 msgid "Untitled Diagram"
-msgstr ""
+msgstr "Diagrama sin título"
 
 msgid "Untitled operation"
 msgstr "Operación sin título"
@@ -10053,7 +10397,7 @@ msgid "Update"
 msgstr "Actualizar"
 
 msgid "Update costs on"
-msgstr ""
+msgstr "Actualizar costos de"
 
 msgid "Update Expiration"
 msgstr "Actualizar expiración"
@@ -10126,7 +10470,7 @@ msgstr "Actualizar a Business"
 
 #. placeholder {0}: targetCopy.noun
 msgid "Upgrade to unlock {0} rules"
-msgstr ""
+msgstr "Upgrade para desbloquear {0} reglas"
 
 msgid "Upgrade to unlock audit history"
 msgstr "Actualizar para desbloquear el historial de auditoría"
@@ -10135,7 +10479,7 @@ msgid "Upload"
 msgstr "Cargar"
 
 msgid "Upload a PDF first"
-msgstr ""
+msgstr "Carga un PDF primero"
 
 msgid "Upload completed but no file path returned"
 msgstr "Carga completada pero no se devolvió la ruta del archivo"
@@ -10250,7 +10594,7 @@ msgid "Value"
 msgstr "Valor"
 
 msgid "Value source by surface"
-msgstr ""
+msgstr "Fuente de valor por superficie"
 
 msgid "Variances"
 msgstr "Diferencias"
@@ -10259,7 +10603,7 @@ msgid "VAT Number"
 msgstr "Número de IVA"
 
 msgid "Vehicles"
-msgstr ""
+msgstr "Vehículos"
 
 msgid "Verification"
 msgstr "Verificación"
@@ -10339,6 +10683,9 @@ msgstr "Ver Clientes"
 msgid "View Employees"
 msgstr "Ver Empleados"
 
+msgid "View history"
+msgstr "Ver historial"
+
 msgid "View History"
 msgstr "Ver Historial"
 
@@ -10355,13 +10702,13 @@ msgid "View job"
 msgstr "Ver trabajo"
 
 msgid "View Lists"
-msgstr ""
+msgstr "Ver Listas"
 
 msgid "View maintenance dispatch"
 msgstr "Ver despacho de mantenimiento"
 
 msgid "View missing values"
-msgstr ""
+msgstr "Ver valores faltantes"
 
 msgid "View Open"
 msgstr "Ver Abiertos"
@@ -10385,10 +10732,10 @@ msgid "View Permissions"
 msgstr "Permisos de visualización"
 
 msgid "View Picking List"
-msgstr ""
+msgstr "Ver Lista de Retiro"
 
 msgid "View Prints"
-msgstr ""
+msgstr "Ver Impresiones"
 
 msgid "View Production Events"
 msgstr "Ver Eventos de Producción"
@@ -10467,6 +10814,9 @@ msgstr "Anular este recibo hará lo siguiente:"
 
 msgid "Voiding this shipment will:"
 msgstr "Anular este envío hará lo siguiente:"
+
+msgid "Volume:"
+msgstr "Volumen:"
 
 msgid "Waiting"
 msgstr "En espera"
@@ -10577,7 +10927,7 @@ msgid "When expired stock is used"
 msgstr "Cuando se utiliza stock vencido"
 
 msgid "When on, this rule fires for every target of its type. Assignment rows are ignored but preserved."
-msgstr ""
+msgstr "Cuando activada, esta regla se dispara para cada objetivo de su tipo. Se ignoran pero se preservan las filas de asignación."
 
 msgid "Who Can Approve"
 msgstr "Quién Puede Aprobar"
@@ -10619,7 +10969,7 @@ msgid "Why is the expiration being changed?"
 msgstr "¿Por qué se está cambiando la fecha de vencimiento?"
 
 msgid "Why is this included?"
-msgstr ""
+msgstr "¿Por qué se incluye esto?"
 
 msgid "WIP"
 msgstr "WIP"
@@ -10695,7 +11045,7 @@ msgid "You already have access to {0}."
 msgstr "Ya tienes acceso a {0}."
 
 msgid "You belong to more than one company. Pick where to work."
-msgstr ""
+msgstr "Perteneces a más de una empresa. Elige donde trabajar."
 
 msgid "You can change the UI style any time through the theme setting"
 msgstr "Puedes cambiar el estilo de la interfaz en cualquier momento a través la configuración de tema"
@@ -10765,16 +11115,16 @@ msgid "yourself"
 msgstr "ti mismo"
 
 msgid "Zoom Box"
-msgstr ""
+msgstr "Caja de Zoom"
 
 msgid "Zoom in"
-msgstr ""
+msgstr "Acercar"
 
 msgid "Zoom out"
-msgstr ""
+msgstr "Alejar"
 
 msgid "ZPL (Thermal Label)"
-msgstr ""
+msgstr "ZPL (Etiqueta térmica)"
 
 msgid "ZPL Label Preview"
-msgstr ""
+msgstr "Vista previa de etiqueta ZPL"

@@ -42,6 +42,12 @@ msgstr "{0} of {1} completed"
 msgid "{0} Scrapped"
 msgstr "{0} Scrapped"
 
+msgid "+{inProgressQuantity} picked up, not yet produced"
+msgstr "+{inProgressQuantity} picked up, not yet produced"
+
+msgid "A consumed batch or serial is now past its expiry date."
+msgstr "A consumed batch or serial is now past its expiry date."
+
 msgid "About"
 msgstr "About"
 
@@ -68,6 +74,9 @@ msgstr "Add a printer in the printing settings to print labels directly."
 
 msgid "Add Inventory"
 msgstr "Add Inventory"
+
+msgid "Add new record set"
+msgstr "Add new record set"
 
 msgid "Add Spare Part"
 msgstr "Add Spare Part"
@@ -170,6 +179,12 @@ msgstr "Clear Filters"
 msgid "Clear Search"
 msgstr "Clear Search"
 
+msgid "Click to interact"
+msgstr "Click to interact"
+
+msgid "Click to interact with 3D model"
+msgstr "Click to interact with 3D model"
+
 msgid "Clock In"
 msgstr "Clock In"
 
@@ -211,6 +226,9 @@ msgstr "Complete"
 
 msgid "Completed"
 msgstr "Completed"
+
+msgid "Configure"
+msgstr "Configure"
 
 msgid "Console"
 msgstr "Console"
@@ -272,6 +290,12 @@ msgstr "Default Storage Unit"
 msgid "Delete"
 msgstr "Delete"
 
+msgid "Delete process pickup"
+msgstr "Delete process pickup"
+
+msgid "Delete step"
+msgstr "Delete step"
+
 msgid "Delete Step"
 msgstr "Delete Step"
 
@@ -290,6 +314,9 @@ msgstr "Description"
 
 msgid "Details"
 msgstr "Details"
+
+msgid "Dimensions"
+msgstr "Dimensions"
 
 msgid "Dispatch not found"
 msgstr "Dispatch not found"
@@ -433,6 +460,9 @@ msgstr "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgid "Helper information"
 msgstr "Helper information"
 
+msgid "High Priority"
+msgstr "High Priority"
+
 msgid "History"
 msgstr "History"
 
@@ -517,6 +547,12 @@ msgstr "Let's build something"
 msgid "lines"
 msgstr "lines"
 
+msgid "Link"
+msgstr "Link"
+
+msgid "Linked"
+msgstr "Linked"
+
 msgid "Loading item details..."
 msgstr "Loading item details..."
 
@@ -556,6 +592,9 @@ msgstr "Log scrap for {0}"
 msgid "Login"
 msgstr "Login"
 
+msgid "Low Priority"
+msgstr "Low Priority"
+
 msgid "Machine"
 msgstr "Machine"
 
@@ -583,6 +622,9 @@ msgstr "Materials"
 msgid "Maximum number of records reached"
 msgstr "Maximum number of records reached"
 
+msgid "Medium Priority"
+msgstr "Medium Priority"
+
 msgid "Metric"
 msgstr "Metric"
 
@@ -591,6 +633,9 @@ msgstr "Model"
 
 msgid "Model data is missing"
 msgstr "Model data is missing"
+
+msgid "More"
+msgstr "More"
 
 msgid "More Actions"
 msgstr "More Actions"
@@ -634,6 +679,12 @@ msgstr "Next"
 
 msgid "Next Month"
 msgstr "Next Month"
+
+msgid "Next record set"
+msgstr "Next record set"
+
+msgid "Next slide"
+msgstr "Next slide"
 
 msgid "Next Year"
 msgstr "Next Year"
@@ -795,6 +846,9 @@ msgstr "Part"
 msgid "Passed Inspection"
 msgstr "Passed Inspection"
 
+msgid "Paste a link"
+msgstr "Paste a link"
+
 msgid "Pause"
 msgstr "Pause"
 
@@ -855,6 +909,12 @@ msgstr "Previous"
 msgid "Previous Month"
 msgstr "Previous Month"
 
+msgid "Previous record set"
+msgstr "Previous record set"
+
+msgid "Previous slide"
+msgstr "Previous slide"
+
 msgid "Previous Year"
 msgstr "Previous Year"
 
@@ -897,6 +957,9 @@ msgstr "Production Logs"
 msgid "Progress"
 msgstr "Progress"
 
+msgid "Properties"
+msgstr "Properties"
+
 msgid "Qty"
 msgstr "Qty"
 
@@ -911,6 +974,12 @@ msgstr "Quantity"
 
 msgid "Quantity must be greater than 0"
 msgstr "Quantity must be greater than 0"
+
+msgid "Quantity picked to lineside"
+msgstr "Quantity picked to lineside"
+
+msgid "Reason for issuing expired stock"
+msgstr "Reason for issuing expired stock"
 
 msgid "Reason for rework"
 msgstr "Reason for rework"
@@ -931,11 +1000,20 @@ msgstr "Record Pickup"
 msgid "Record Quantity"
 msgstr "Record Quantity"
 
+msgid "Record step"
+msgstr "Record step"
+
+msgid "Redirecting to verification page..."
+msgstr "Redirecting to verification page..."
+
 msgid "remaining"
 msgstr "remaining"
 
 msgid "Remove"
 msgstr "Remove"
+
+msgid "Remove Batch Number"
+msgstr "Remove Batch Number"
 
 msgid "Remove filter"
 msgstr "Remove filter"
@@ -943,8 +1021,14 @@ msgstr "Remove filter"
 msgid "Remove Inventory"
 msgstr "Remove Inventory"
 
+msgid "Remove link"
+msgstr "Remove link"
+
 msgid "Remove part"
 msgstr "Remove part"
+
+msgid "Remove Serial Number"
+msgstr "Remove Serial Number"
 
 msgid "Reset zoom"
 msgstr "Reset zoom"
@@ -966,6 +1050,9 @@ msgstr "Save"
 
 msgid "Scan"
 msgstr "Scan"
+
+msgid "Scan batch number"
+msgstr "Scan batch number"
 
 msgid "Scan or enter serial number"
 msgstr "Scan or enter serial number"
@@ -1028,6 +1115,12 @@ msgstr "Select an item..."
 msgid "Select Batch {0}"
 msgstr "Select Batch {0}"
 
+msgid "Select batch number"
+msgstr "Select batch number"
+
+msgid "Select batch to unconsume"
+msgstr "Select batch to unconsume"
+
 msgid "Select Printer"
 msgstr "Select Printer"
 
@@ -1037,6 +1130,10 @@ msgstr "Select Serial {0}"
 
 msgid "Select Serial Number"
 msgstr "Select Serial Number"
+
+#. placeholder {0}: index + 1
+msgid "Select Serial Number {0}"
+msgstr "Select Serial Number {0}"
 
 msgid "Select the operation to go back to. All operations from that point to the current operation will be redone."
 msgstr "Select the operation to go back to. All operations from that point to the current operation will be redone."
@@ -1077,6 +1174,9 @@ msgstr "Short"
 
 msgid "Short pick {itemName}"
 msgstr "Short pick {itemName}"
+
+msgid "Show legend"
+msgstr "Show legend"
 
 msgid "Sign in with Email"
 msgstr "Sign in with Email"
@@ -1144,6 +1244,9 @@ msgstr "Suggestion"
 msgid "Support Required"
 msgstr "Support Required"
 
+msgid "Surface Area:"
+msgstr "Surface Area:"
+
 msgid "Switch Operator"
 msgstr "Switch Operator"
 
@@ -1181,6 +1284,15 @@ msgstr "Today"
 
 msgid "Toggle"
 msgstr "Toggle"
+
+msgid "Toggle labor"
+msgstr "Toggle labor"
+
+msgid "Toggle machine"
+msgstr "Toggle machine"
+
+msgid "Toggle setup"
+msgstr "Toggle setup"
 
 msgid "Toggle Sidebar"
 msgstr "Toggle Sidebar"
@@ -1239,6 +1351,9 @@ msgstr "Unsaved changes"
 msgid "Update"
 msgstr "Update"
 
+msgid "Update step"
+msgstr "Update step"
+
 msgid "Updated successfully"
 msgstr "Updated successfully"
 
@@ -1250,8 +1365,26 @@ msgstr "Uploaded: {0}"
 msgid "Uploading {0}"
 msgstr "Uploading {0}"
 
+msgid "Use a different email"
+msgstr "Use a different email"
+
+msgid "Verification Error"
+msgstr "Verification Error"
+
+msgid "Verify your email"
+msgstr "Verify your email"
+
 msgid "View maintenance dispatch"
 msgstr "View maintenance dispatch"
+
+msgid "Volume:"
+msgstr "Volume:"
+
+msgid "We've sent a verification code to {email}"
+msgstr "We've sent a verification code to {email}"
+
+msgid "We've sent a verification code to {verifyEmail}"
+msgstr "We've sent a verification code to {verifyEmail}"
 
 msgid "We've sent you a magic link to sign in to your account."
 msgstr "We've sent you a magic link to sign in to your account."

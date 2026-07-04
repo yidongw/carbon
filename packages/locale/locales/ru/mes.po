@@ -42,6 +42,12 @@ msgstr "{0} из {1} завершено"
 msgid "{0} Scrapped"
 msgstr "{0} Списано"
 
+msgid "+{inProgressQuantity} picked up, not yet produced"
+msgstr "+{inProgressQuantity} взято, не еще произведено"
+
+msgid "A consumed batch or serial is now past its expiry date."
+msgstr "Затраченная партия или серия теперь вышла за дату истечения срока годности."
+
 msgid "About"
 msgstr "О системе"
 
@@ -64,10 +70,13 @@ msgid "Add & Issue"
 msgstr "Добавить и выдать"
 
 msgid "Add a printer in the printing settings to print labels directly."
-msgstr ""
+msgstr "Добавьте принтер в настройки печати для прямой печати этикеток."
 
 msgid "Add Inventory"
 msgstr "Добавить запас"
+
+msgid "Add new record set"
+msgstr "Добавить новую запись"
 
 msgid "Add Spare Part"
 msgstr "Добавить запасную часть"
@@ -91,10 +100,10 @@ msgid "Are you sure you want to end all production events? This will end all act
 msgstr "Вы уверены, что хотите завершить все производственные события? Это прекратит все активные операции без их завершения."
 
 msgid "Are you sure you want to finish this operation? This will end all active production events for this operation."
-msgstr ""
+msgstr "Вы действительно хотите завершить эту операцию? Это закончит все активные производственные события для этой операции."
 
 msgid "Are you sure you want to leave this page?"
-msgstr ""
+msgstr "Вы действительно хотите покинуть эту страницу?"
 
 msgid "Assigned"
 msgstr "Назначенные"
@@ -112,10 +121,10 @@ msgid "Authentication Error"
 msgstr "Ошибка аутентификации"
 
 msgid "available"
-msgstr ""
+msgstr "доступно"
 
 msgid "Batch"
-msgstr ""
+msgstr "Лот"
 
 msgid "Batch is not available"
 msgstr "Партия недоступна"
@@ -144,7 +153,7 @@ msgid "Cancel"
 msgstr "Отмена"
 
 msgid "Cancelled"
-msgstr ""
+msgstr "Отменено"
 
 msgid "Canvas showing the model in the 3D Viewer"
 msgstr "Канvaн, отображающий модель в 3D-&viewере"
@@ -169,6 +178,12 @@ msgstr "Сбросить фильтры"
 
 msgid "Clear Search"
 msgstr "Очистить поиск"
+
+msgid "Click to interact"
+msgstr "Нажмите, чтобы взаимодействовать"
+
+msgid "Click to interact with 3D model"
+msgstr "Нажмите, чтобы взаимодействовать с 3D-моделью"
 
 msgid "Clock In"
 msgstr "Отметить приход"
@@ -212,6 +227,9 @@ msgstr "Завершить"
 msgid "Completed"
 msgstr "Завершено"
 
+msgid "Configure"
+msgstr "Настройки"
+
 msgid "Console"
 msgstr "Консоль"
 
@@ -243,13 +261,13 @@ msgid "Create {0}"
 msgstr "Создать {0}"
 
 msgid "Create Issue"
-msgstr ""
+msgstr "Создать проблему"
 
 msgid "Create Quality Issue"
-msgstr ""
+msgstr "Создать质量问题"
 
 msgid "Create Rework"
-msgstr ""
+msgstr "Создать повторную обработку"
 
 msgid "Customer"
 msgstr "Заказчик"
@@ -264,13 +282,19 @@ msgid "Deadline"
 msgstr "Срок"
 
 msgid "Default"
-msgstr ""
+msgstr "По умолчанию"
 
 msgid "Default Storage Unit"
 msgstr "Хранилище по умолчанию"
 
 msgid "Delete"
 msgstr "Удалить"
+
+msgid "Delete process pickup"
+msgstr "Удалить выдачу в процесс"
+
+msgid "Delete step"
+msgstr "Удалить шаг"
 
 msgid "Delete Step"
 msgstr "Удалить шаг"
@@ -280,16 +304,19 @@ msgid "Delete Timecard ({0})"
 msgstr "Удалить табель ({0})"
 
 msgid "Describe the problem..."
-msgstr ""
+msgstr "Опишите проблему..."
 
 msgid "Describe what needs to be reworked..."
-msgstr ""
+msgstr "Опишите, что требуется переработать...."
 
 msgid "Description"
 msgstr "Описание"
 
 msgid "Details"
 msgstr "Детали"
+
+msgid "Dimensions"
+msgstr "Размеры"
 
 msgid "Dispatch not found"
 msgstr "Наряд не найден"
@@ -304,10 +331,10 @@ msgid "Download"
 msgstr "Скачать"
 
 msgid "Download Labels"
-msgstr ""
+msgstr "Скачать этикетки"
 
 msgid "Draft"
-msgstr ""
+msgstr "Черновик"
 
 msgid "Drag and drop a file here, or click to select a file"
 msgstr "Перетащите файл сюда или нажмите для выбора файла"
@@ -369,13 +396,13 @@ msgid "Expired"
 msgstr "Истёк"
 
 msgid "Expired {date}"
-msgstr ""
+msgstr "Истёк {date}"
 
 msgid "Expires {date}"
-msgstr ""
+msgstr "Истекает {date}"
 
 msgid "Expiring first"
-msgstr ""
+msgstr "Истекающий первый"
 
 msgid "Failed to complete inventory adjustment"
 msgstr "Не удалось выполнить корректировку запасов"
@@ -412,20 +439,20 @@ msgid "Filter"
 msgstr "Фильтр"
 
 msgid "Finish"
-msgstr ""
+msgstr "Завершить"
 
 #. placeholder {0}: operation.itemReadableId
 msgid "Finish {0}"
-msgstr ""
+msgstr "Завершить {0}"
 
 msgid "Finish Anyways"
-msgstr ""
+msgstr "Завершить всё равно"
 
 msgid "Forgot to Clock Out?"
 msgstr "Забыли отметить уход?"
 
 msgid "Go back to operation"
-msgstr ""
+msgstr "Вернуться к операции"
 
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "Возникла техническая проблема? Обратитесь в <0>службу поддержки Carbon.</0>"
@@ -433,11 +460,14 @@ msgstr "Возникла техническая проблема? Обратит
 msgid "Helper information"
 msgstr "Информация о помощи"
 
+msgid "High Priority"
+msgstr "Высший приоритет"
+
 msgid "History"
 msgstr "Истории"
 
 msgid "How many were actually picked?"
-msgstr ""
+msgstr "Сколько было фактическиpicked?"
 
 msgid "I understand and want to complete without issuing"
 msgstr "Я понимаю и хочу завершить без выдачи"
@@ -455,7 +485,7 @@ msgid "Impact"
 msgstr "Влияние"
 
 msgid "Imperial"
-msgstr ""
+msgstr "Имперская"
 
 msgid "In Progress"
 msgstr "В работе"
@@ -482,7 +512,7 @@ msgid "Issue Material"
 msgstr "Выдать материал"
 
 msgid "Issue Type"
-msgstr ""
+msgstr "Тип проблемы"
 
 msgid "Item"
 msgstr "Номенклатура"
@@ -500,7 +530,7 @@ msgid "Job Traveler"
 msgstr "Маршрутный лист"
 
 msgid "Jobs"
-msgstr ""
+msgstr "Задания"
 
 msgid "Kit"
 msgstr "Комплект"
@@ -509,13 +539,19 @@ msgid "Labor"
 msgstr "Трудозатраты"
 
 msgid "Leave this page"
-msgstr ""
+msgstr "Оставить эту страницу"
 
 msgid "Let's build something"
 msgstr "Давайте создадим что-то"
 
 msgid "lines"
-msgstr ""
+msgstr "строки"
+
+msgid "Link"
+msgstr "Ссылка"
+
+msgid "Linked"
+msgstr "Связано"
 
 msgid "Loading item details..."
 msgstr "Загрузка данных номенклатуры..."
@@ -556,6 +592,9 @@ msgstr "Записать брак для {0}"
 msgid "Login"
 msgstr "Вход"
 
+msgid "Low Priority"
+msgstr "Низкий приоритет"
+
 msgid "Machine"
 msgstr "Станок"
 
@@ -572,7 +611,7 @@ msgid "Manually remove items from inventory"
 msgstr "Списать номенклатуру со склада вручную"
 
 msgid "Mark Short"
-msgstr ""
+msgstr "Отметить нехватку"
 
 msgid "matches"
 msgstr "соответствует"
@@ -583,8 +622,11 @@ msgstr "Материалы"
 msgid "Maximum number of records reached"
 msgstr "Достигнуто максимальное количество записей"
 
+msgid "Medium Priority"
+msgstr "Средний приоритет"
+
 msgid "Metric"
-msgstr ""
+msgstr "Метрическая"
 
 msgid "Model"
 msgstr "Модель"
@@ -592,8 +634,11 @@ msgstr "Модель"
 msgid "Model data is missing"
 msgstr "Данных модели нет"
 
+msgid "More"
+msgstr "Больше"
+
 msgid "More Actions"
-msgstr ""
+msgstr "Дополнительные действия"
 
 msgid "More options"
 msgstr "Дополнительные действия"
@@ -627,13 +672,19 @@ msgid "New Record"
 msgstr "Новая запись"
 
 msgid "Newest first"
-msgstr ""
+msgstr "Новейшие сначала"
 
 msgid "Next"
 msgstr "Далее"
 
 msgid "Next Month"
 msgstr "Следующий месяц"
+
+msgid "Next record set"
+msgstr "Следующая запись"
+
+msgid "Next slide"
+msgstr "Следующий слайд"
 
 msgid "Next Year"
 msgstr "Следующий год"
@@ -657,7 +708,7 @@ msgid "No available serial numbers found"
 msgstr "Доступные серийные номера не найдены"
 
 msgid "No available tracked entities found"
-msgstr ""
+msgstr "Найдено нетracked объектов"
 
 msgid "No dispatches assigned to you"
 msgstr "Нет нарядов, назначенных вам"
@@ -675,7 +726,7 @@ msgid "No materials"
 msgstr "Нет материалов"
 
 msgid "No open jobs"
-msgstr ""
+msgstr "Нет открытых задач"
 
 msgid "No operators"
 msgstr "Нет операторов"
@@ -687,10 +738,10 @@ msgid "No options found."
 msgstr "Варианты не найдены."
 
 msgid "No picking lists assigned"
-msgstr ""
+msgstr "Нет присвоенных списков отбора"
 
 msgid "No printer configured"
-msgstr ""
+msgstr "Нет настроенной принтера"
 
 msgid "No production logs"
 msgstr "Нет производственных логов"
@@ -717,19 +768,19 @@ msgid "No serial numbers"
 msgstr "Нет серийных номеров"
 
 msgid "No serial numbers found"
-msgstr ""
+msgstr "Нет найденных серийных номеров"
 
 msgid "No spare parts added yet"
 msgstr "Запасные части ещё не добавлены"
 
 msgid "No stock"
-msgstr ""
+msgstr "Нет запасов"
 
 msgid "No time entries for this week"
 msgstr "Нет записей учёта времени за эту неделю"
 
 msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
-msgstr ""
+msgstr "На складе нет записи о запасах этого товара. Вы все равно можете взять его — текущий баланс станет отрицательным до тех пор, пока счет не будет согласован."
 
 msgid "No work centers are blocked"
 msgstr "Нет заблокированных рабочих центров"
@@ -747,7 +798,7 @@ msgid "OEM Required"
 msgstr "Требуется OEM"
 
 msgid "Oldest first"
-msgstr ""
+msgstr "Самые старые первыми"
 
 #. placeholder {0}: batch.quantity
 msgid "Only {0} available"
@@ -766,7 +817,7 @@ msgid "Open date time picker"
 msgstr "Открыть выбор даты и времени"
 
 msgid "Open Jobs"
-msgstr ""
+msgstr "Открытые задачи"
 
 msgid "Operations"
 msgstr "Операции"
@@ -795,6 +846,9 @@ msgstr "Деталь"
 msgid "Passed Inspection"
 msgstr "Контроль пройден"
 
+msgid "Paste a link"
+msgstr "Вставьте ссылку"
+
 msgid "Pause"
 msgstr "Пауза"
 
@@ -808,16 +862,16 @@ msgid "Period"
 msgstr "Период"
 
 msgid "Pick"
-msgstr ""
+msgstr "Выбрать"
 
 msgid "Pick tracked item"
-msgstr ""
+msgstr "Выберите отслеживаемый элемент"
 
 msgid "Picked"
-msgstr ""
+msgstr "Выбрано"
 
 msgid "Picked quantity"
-msgstr ""
+msgstr "Выбранная量"
 
 #. placeholder {0}: startColumn?.title
 #. placeholder {1}: startIndex + 1
@@ -826,7 +880,7 @@ msgid "Picked up Column {0} at position: {1} of {2}"
 msgstr "Столбец {0} взят с позиции: {1} из {2}"
 
 msgid "Picking"
-msgstr ""
+msgstr "Выборка"
 
 msgid "Pickup suggestions:"
 msgstr "Подсказки по выдаче в процесс:"
@@ -855,14 +909,20 @@ msgstr "Предыдущий"
 msgid "Previous Month"
 msgstr "Предыдущий месяц"
 
+msgid "Previous record set"
+msgstr "Предыдущая запись"
+
+msgid "Previous slide"
+msgstr "Предыдущий слайд"
+
 msgid "Previous Year"
 msgstr "Предыдущий год"
 
 msgid "Print"
-msgstr ""
+msgstr "Печать"
 
 msgid "Printer Settings"
-msgstr ""
+msgstr "Настройки принтера"
 
 msgid "Priority"
 msgstr "Приоритет"
@@ -877,7 +937,7 @@ msgid "Process Parameters"
 msgstr "Параметры процесса"
 
 msgid "process pickup"
-msgstr "получение процесса"
+msgstr "выдача в процесс"
 
 msgid "Process Pickups"
 msgstr "выдачи в процесс"
@@ -897,14 +957,17 @@ msgstr "Логи производства"
 msgid "Progress"
 msgstr "Прогресс"
 
+msgid "Properties"
+msgstr "Свойства"
+
 msgid "Qty"
 msgstr "Количество"
 
 msgid "Quality Issue"
-msgstr ""
+msgstr "Качественная проблема"
 
 msgid "Quality issue created"
-msgstr ""
+msgstr "Качественная проблема создана"
 
 msgid "Quantity"
 msgstr "Количество"
@@ -912,8 +975,14 @@ msgstr "Количество"
 msgid "Quantity must be greater than 0"
 msgstr "Количество должно быть больше 0"
 
+msgid "Quantity picked to lineside"
+msgstr "Количество взято на линию"
+
+msgid "Reason for issuing expired stock"
+msgstr "Причина выпуска истекшего товара"
+
 msgid "Reason for rework"
-msgstr ""
+msgstr "Причина возврата"
 
 msgid "Recent"
 msgstr "Недавние"
@@ -931,11 +1000,20 @@ msgstr "Зарегистрировать выдачу в процесс"
 msgid "Record Quantity"
 msgstr "Записать количество"
 
+msgid "Record step"
+msgstr "Записать шаг"
+
+msgid "Redirecting to verification page..."
+msgstr "Перенаправление на страницу верификации..."
+
 msgid "remaining"
 msgstr "оставшееся"
 
 msgid "Remove"
 msgstr "Удалить"
+
+msgid "Remove Batch Number"
+msgstr "Удалить номер лота"
 
 msgid "Remove filter"
 msgstr "Удалить фильтр"
@@ -943,8 +1021,14 @@ msgstr "Удалить фильтр"
 msgid "Remove Inventory"
 msgstr "Списать запас"
 
+msgid "Remove link"
+msgstr "Удалить ссылку"
+
 msgid "Remove part"
 msgstr "Удалить деталь"
+
+msgid "Remove Serial Number"
+msgstr "Удалить серийный номер"
 
 msgid "Reset zoom"
 msgstr "Сбросить масштаб"
@@ -953,10 +1037,10 @@ msgid "rework"
 msgstr "переработка"
 
 msgid "Rework"
-msgstr ""
+msgstr "Переработка"
 
 msgid "Rework created successfully"
-msgstr ""
+msgstr "Доработка успешно создана"
 
 msgid "Sales Order"
 msgstr "Заказ на продажу"
@@ -967,14 +1051,17 @@ msgstr "Сохранить"
 msgid "Scan"
 msgstr "Сканировать"
 
+msgid "Scan batch number"
+msgstr "Сканирование номера лота"
+
 msgid "Scan or enter serial number"
 msgstr "Сканируйте или введите серийный номер"
 
 msgid "Scan or enter tracking number"
-msgstr ""
+msgstr "Сканирование или ввод трекингового номера"
 
 msgid "Scan or search serial number..."
-msgstr ""
+msgstr "Сканируйте или выполните поиск по серийному номеру..."
 
 msgid "Schedule"
 msgstr "Расписание"
@@ -995,7 +1082,7 @@ msgid "Search"
 msgstr "Поиск"
 
 msgid "Search by job or item ID"
-msgstr ""
+msgstr "Поиск по номеру работы или статье"
 
 msgid "Search operators..."
 msgstr "Поиск операторов..."
@@ -1028,8 +1115,14 @@ msgstr "Выберите номенклатуру..."
 msgid "Select Batch {0}"
 msgstr "Выберите партию {0}"
 
+msgid "Select batch number"
+msgstr "Выберите номер лота"
+
+msgid "Select batch to unconsume"
+msgstr "Выберите лот для снятия с учета"
+
 msgid "Select Printer"
-msgstr ""
+msgstr "Выберите принтер"
 
 #. placeholder {0}: index + 1
 msgid "Select Serial {0}"
@@ -1038,8 +1131,12 @@ msgstr "Выберите серийный номер {0}"
 msgid "Select Serial Number"
 msgstr "Выберите серийный номер"
 
+#. placeholder {0}: index + 1
+msgid "Select Serial Number {0}"
+msgstr "Выберите серийный номер {0}"
+
 msgid "Select the operation to go back to. All operations from that point to the current operation will be redone."
-msgstr ""
+msgstr "Выберите операцию для возврата. С этого момента до текущей операции будут выполнены заново."
 
 msgid "Send"
 msgstr "Отправить"
@@ -1058,7 +1155,7 @@ msgid "Serial number is required"
 msgstr "Серийный номер обязателен"
 
 msgid "Serial numbers"
-msgstr ""
+msgstr "Серийные номера"
 
 msgid "Serial Numbers"
 msgstr "Серийные номера"
@@ -1073,10 +1170,13 @@ msgid "Setup"
 msgstr "Наладка"
 
 msgid "Short"
-msgstr ""
+msgstr "Короткий"
 
 msgid "Short pick {itemName}"
-msgstr ""
+msgstr "Короткий выбор {itemName}"
+
+msgid "Show legend"
+msgstr "Показать легенду"
 
 msgid "Sign in with Email"
 msgstr "Войти по электронной почте"
@@ -1088,7 +1188,7 @@ msgid "Sign in with Outlook"
 msgstr "Войти через Outlook"
 
 msgid "Sign in with Passkey"
-msgstr ""
+msgstr "Войти с помощью Passkey"
 
 msgid "Sign Out"
 msgstr "Выйти"
@@ -1124,7 +1224,7 @@ msgid "Statuses"
 msgstr "Статусы"
 
 msgid "Stay on this page"
-msgstr ""
+msgstr "Остаться на этой странице"
 
 msgid "Steps"
 msgstr "Шаги"
@@ -1144,6 +1244,9 @@ msgstr "Предложение"
 msgid "Support Required"
 msgstr "Требуется поддержка"
 
+msgid "Surface Area:"
+msgstr "Поверхностная площадь:"
+
 msgid "Switch Operator"
 msgstr "Сменить оператора"
 
@@ -1158,7 +1261,7 @@ msgid "There are serial or batch tracked materials on the bill of material that 
 msgstr "В спецификации есть материалы с серийным или партионным учётом, которые не были полностью выданы. Завершение без выдачи может привести к некорректным записям прослеживаемости."
 
 msgid "This lot is expired and can't be picked."
-msgstr ""
+msgstr "Эта партия истекла и не может быть выбрана."
 
 msgid "This operation has been deleted"
 msgstr "Эта операция была удалена"
@@ -1181,6 +1284,15 @@ msgstr "Сегодня"
 
 msgid "Toggle"
 msgstr "Переключить"
+
+msgid "Toggle labor"
+msgstr "Переключить рабочее время"
+
+msgid "Toggle machine"
+msgstr "Переключить машину"
+
+msgid "Toggle setup"
+msgstr "Переключить настройку"
 
 msgid "Toggle Sidebar"
 msgstr "Переключить панель侧边栏"
@@ -1212,7 +1324,7 @@ msgid "Total: {0}"
 msgstr "Итого: {0}"
 
 msgid "Tracking"
-msgstr ""
+msgstr "Отслеживание"
 
 msgid "Type a message..."
 msgstr "Введите сообщение..."
@@ -1227,17 +1339,20 @@ msgid "Unknown"
 msgstr "Неизвестно"
 
 msgid "Unpick"
-msgstr ""
+msgstr "Разобрать"
 
 #. placeholder {0}: pickedLots[0].trackedEntity.readableId
 msgid "Unpick {0}"
-msgstr ""
+msgstr "Развернуть {0}"
 
 msgid "Unsaved changes"
-msgstr ""
+msgstr "Не сохраненные изменения"
 
 msgid "Update"
 msgstr "Обновить"
+
+msgid "Update step"
+msgstr "Обновить шаг"
 
 msgid "Updated successfully"
 msgstr "Успешно обновлено"
@@ -1250,8 +1365,26 @@ msgstr "Загружено: {0}"
 msgid "Uploading {0}"
 msgstr "Загрузка {0}"
 
+msgid "Use a different email"
+msgstr "Использовать другой email"
+
+msgid "Verification Error"
+msgstr "Ошибка верификации"
+
+msgid "Verify your email"
+msgstr "Подтвердите свой email"
+
 msgid "View maintenance dispatch"
 msgstr "Просмотреть наряд на обслуживание"
+
+msgid "Volume:"
+msgstr "Объем:"
+
+msgid "We've sent a verification code to {email}"
+msgstr "Мы отправили код подтверждения на {email}"
+
+msgid "We've sent a verification code to {verifyEmail}"
+msgstr "Мы отправили код подтверждения на {verifyEmail}"
 
 msgid "We've sent you a magic link to sign in to your account."
 msgstr "Мы отправили вам ссылку для входа в ваш аккаунт."
