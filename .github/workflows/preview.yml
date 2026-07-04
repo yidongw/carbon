@@ -45,7 +45,7 @@ jobs:
           if [ -n "$PREV_ID" ]; then
             retry gh api -X DELETE "repos/yidongw/carbon/issues/comments/${PREV_ID}" 2>/dev/null || true
           fi
-          BODY=$(printf '### Preview Deployment\n\n**ERP:** deploying...\n\nBuilt from `%s` @ `%s`\nRunning in dev mode — stack traces enabled.' \
+          BODY=$(printf '### Preview Deployment\n\n**ERP:** deploying...\n**MES:** deploying...\n\nBuilt from `%s` @ `%s`\nRunning in dev mode — stack traces enabled.' \
             "$BRANCH" "$SHA")
           retry gh pr comment "$PR_NUMBER" --repo yidongw/carbon --body "$BODY"
 
@@ -90,9 +90,10 @@ jobs:
             return 1
           }
 
-          PR_URL="https://erp-pr-${PR_NUMBER}.foxhole.bot"
-          BODY=$(printf '### Preview Deployment\n\n**ERP:** %s\n\nBuilt from `%s` @ `%s`\nRunning in dev mode — stack traces enabled.' \
-            "$PR_URL" "$BRANCH" "$SHA")
+          ERP_URL="https://erp-pr-${PR_NUMBER}.foxhole.bot"
+          MES_URL="https://mes-pr-${PR_NUMBER}.foxhole.bot"
+          BODY=$(printf '### Preview Deployment\n\n**ERP:** %s\n**MES:** %s\n\nBuilt from `%s` @ `%s`\nRunning in dev mode — stack traces enabled.' \
+            "$ERP_URL" "$MES_URL" "$BRANCH" "$SHA")
           # Edit the "deploying..." comment in place (already notified above)
           retry gh pr comment "$PR_NUMBER" \
             --repo yidongw/carbon \
@@ -103,5 +104,5 @@ jobs:
           retry curl -sf -X POST "http://localhost:3002/preview-ready" \
             -H "Authorization: Bearer ${PREVIEW_READY_SECRET}" \
             -H "Content-Type: application/json" \
-            -d "{\"repo\":\"yidongw/carbon\",\"prNumber\":${PR_NUMBER},\"previewUrl\":\"${PR_URL}\"}" \
+            -d "{\"repo\":\"yidongw/carbon\",\"prNumber\":${PR_NUMBER},\"previewUrl\":\"${ERP_URL}\"}" \
             || true
