@@ -37,5 +37,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Fail the deploy BEFORE touching any environment if migrations collide
+      # (duplicate versions, or a newly-added round HHMMSS that will collide).
+      - name: Check migration timestamps
+        run: node scripts/check-migration-timestamps.mjs --base ${{ github.event.before }}
+
       - name: Run migrations
         run: pnpm --filter ci ci:migrations

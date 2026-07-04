@@ -8,6 +8,12 @@ if [ ! -f "$(dirname "$0")/_/husky.sh" ]; then
 fi
 . "$(dirname "$0")/_/husky.sh"
 
+# Guard against migration-timestamp collisions (duplicate versions, or a round
+# HHMMSS like ...120000 that every branch hand-picks and then collides on).
+if git diff --cached --name-only | grep -qE '^packages/database/supabase/migrations/.*\.sql$'; then
+    node scripts/check-migration-timestamps.mjs || exit 1
+fi
+
 npx lint-staged
 
 # Compile lingui translations if any relevant files were modified

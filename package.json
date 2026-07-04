@@ -42,6 +42,7 @@
     "db:function:new": "pnpm --filter @carbon/database db:function:new",
     "db:migrate": "crbn migrate",
     "db:migrate:new": "pnpm --filter @carbon/database db:migrate:new",
+    "db:migrate:check": "node scripts/check-migration-timestamps.mjs",
     "db:seed": "turbo run db:seed --no-cache",
     "db:seed:dev": "pnpm --filter @carbon/database db:seed:dev --",
     "db:types": "tsx scripts/generate-db-types.ts",

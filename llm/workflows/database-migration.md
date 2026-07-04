@@ -21,7 +21,9 @@ npm run db:migrate <name-of-migration>
 
 This will create a new migration file in `packages/database/supabase/migrations/` with the timestamp prefix.
 
-> **WARNING:** Never use `000000` as the HHMMSS portion of a migration filename (e.g. `20260512000000_foo.sql`). The timestamp is the primary key for migrations and other branches may pick the same date. Always use randomized digits for the HHMMSS portion (e.g. `20260512041739_foo.sql`) to avoid cross-branch collisions.
+> **WARNING:** Never use a round HHMMSS like `120000`/`000000` in a migration filename (e.g. `20260512000000_foo.sql`). The timestamp is the primary key for migrations, and every branch hand-picks the same round times, so they collide across branches — Supabase then silently skips the second migration (it thinks the version is already applied). Always use a randomized HHMMSS (e.g. `20260512041739_foo.sql`); `pnpm db:migrate:new` does this for you.
+>
+> **This is now enforced.** `pnpm db:migrate:check` (run automatically by the pre-commit hook when you stage a migration, and by the `Deploy Migrations` CI workflow) fails on any duplicate timestamp and on any newly-added round-`0000` timestamp. If you hit a real cross-branch collision after a sync, rename the *incoming* migration to a nearby free timestamp rather than reusing the taken one.
 
 ### 2. Analyze the Migration Requirements
 
