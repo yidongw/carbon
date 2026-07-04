@@ -8,7 +8,6 @@ import {
   LuFolderCheck,
   LuLandmark,
   LuSettings,
-  LuShield,
   LuShoppingCart,
   LuSquareStack,
   LuTvMinimalPlay,
@@ -128,13 +127,6 @@ function useModuleDefinitions(): ModuleDefinition[] {
       to: path.to.external.mes,
       icon: LuTvMinimalPlay,
       role: "employee"
-    },
-    {
-      key: "users",
-      permission: "users",
-      name: t`Users`,
-      to: path.to.employeeAccounts,
-      icon: LuShield
     }
   ];
 }
