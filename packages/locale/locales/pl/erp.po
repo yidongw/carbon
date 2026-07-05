@@ -7104,6 +7104,9 @@ msgstr "Księga zapłat"
 msgid "Payment Method"
 msgstr "Metoda Płatności"
 
+msgid "Payment successful! Your plan is now active."
+msgstr ""
+
 msgid "Payment Term"
 msgstr "Warunki Płatności"
 

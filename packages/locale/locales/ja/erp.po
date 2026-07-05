@@ -7104,6 +7104,9 @@ msgstr "払い出金史"
 msgid "Payment Method"
 msgstr "支払い方法"
 
+msgid "Payment successful! Your plan is now active."
+msgstr ""
+
 msgid "Payment Term"
 msgstr "支払条件"
 

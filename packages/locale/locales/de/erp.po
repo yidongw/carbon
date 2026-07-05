@@ -7104,6 +7104,9 @@ msgstr "Zahlungsgeschichte"
 msgid "Payment Method"
 msgstr "Zahlungsmethode"
 
+msgid "Payment successful! Your plan is now active."
+msgstr ""
+
 msgid "Payment Term"
 msgstr "Zahlungsbedingung"
 

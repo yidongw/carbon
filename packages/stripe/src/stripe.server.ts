@@ -279,6 +279,13 @@ export async function getCheckoutUrl({
   const serviceRole = getCarbonServiceRole();
   const plan = await getPlanById(serviceRole, planId);
 
+  // Ensure the customer has a name so WeChat Pay / Alipay don't ask for one at
+  // checkout (Stripe requires billing name; if the customer record lacks it,
+  // the checkout form shows a Name field).
+  if (name) {
+    await stripe!.customers.update(stripeCustomerId, { name });
+  }
+
   // One-time annual purchase (payable via WeChat Pay / Alipay, which Stripe
   // cannot charge recurringly). Sells a fixed one-year term for `quantity` seats.
   if (mode === "one_time") {
@@ -337,9 +344,11 @@ export async function getCheckoutUrl({
       cancel_url: `${getAppUrl()}/api/webhook/stripe`,
       payment_method_types: ["card", "wechat_pay", "alipay"],
       payment_method_options: { wechat_pay: { client: "web" } },
-      billing_address_collection: "required",
+      // "auto" only collects billing address when required (e.g. card fraud rules).
+      // WeChat Pay and Alipay don't need it, avoiding friction for Chinese users.
+      billing_address_collection: "auto",
       invoice_creation: { enabled: true },
-      customer_update: { name: "auto", address: "auto" },
+      customer_update: { address: "auto" },
       metadata: {
         userId,
         companyId,

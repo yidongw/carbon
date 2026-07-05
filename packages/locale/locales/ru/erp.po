@@ -7104,6 +7104,9 @@ msgstr "Платежная история"
 msgid "Payment Method"
 msgstr "Способ оплаты"
 
+msgid "Payment successful! Your plan is now active."
+msgstr ""
+
 msgid "Payment Term"
 msgstr "Условие платежа"
 

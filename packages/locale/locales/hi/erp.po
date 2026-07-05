@@ -7104,6 +7104,9 @@ msgstr "भुगतान इतिहास"
 msgid "Payment Method"
 msgstr "भुगतान विधि"
 
+msgid "Payment successful! Your plan is now active."
+msgstr ""
+
 msgid "Payment Term"
 msgstr "भुगतान अवधि"
 
