@@ -37,10 +37,6 @@ msgstr "{0} (Lieferant)"
 msgid "{0} by {1}"
 msgstr "{0} von {1}"
 
-#. placeholder {0}: c.customers
-msgid "{0} customers"
-msgstr "{0} Kunden"
-
 #. placeholder {0}: rule.escalationDays
 msgid "{0} days"
 msgstr "{0} Tage"
@@ -55,11 +51,6 @@ msgstr "{0} erfolgreich gelöscht"
 msgid "{0} invited you to join as {1}."
 msgstr "{0} hat Sie eingeladen, als {1} beizutreten."
 
-#. placeholder {0}: c.jobs
-msgid "{0} jobs"
-msgstr "{0} Jobs"
-
-#. placeholder {0}: c.salesOrders
 #. placeholder {0}: history.length
 msgid "{0} orders"
 msgstr "{0} Bestellungen"
@@ -72,10 +63,6 @@ msgstr "{0} über Zielìnhalt"
 msgid "{0} Processes"
 msgstr "{0} Prozesse"
 
-#. placeholder {0}: c.items
-msgid "{0} products"
-msgstr "{0} Produkte"
-
 #. placeholder {0}: selectedIds.length
 msgid "{0} selected"
 msgstr "{0} ausgewählt"
@@ -83,10 +70,6 @@ msgstr "{0} ausgewählt"
 #. placeholder {0}: fmt(Math.abs(diff))
 msgid "{0} short of goal"
 msgstr "{0} kurz vor Ziel"
-
-#. placeholder {0}: c.suppliers
-msgid "{0} suppliers"
-msgstr "{0} Lieferanten"
 
 #. placeholder {0}: percentFormatter.format(line.taxPercent ?? 0)
 msgid "{0} Tax"
@@ -1422,10 +1405,6 @@ msgstr "Bibliothek durchsuchen"
 
 msgid "Bucket"
 msgstr "Bucket"
-
-#. placeholder {0}: parts.join(", ")
-msgid "Building your demo — {0} so far…"
-msgstr "Ihre Demo wird erstellt – bisher {0}…"
 
 msgid "Buildings"
 msgstr "Bauwerke"
@@ -4613,6 +4592,12 @@ msgstr "Generierte IDs sind aktiviert"
 
 msgid "Get Method"
 msgstr "Methode abrufen"
+
+msgid "Getting your demo workspace ready"
+msgstr "Ihr Demo-Arbeitsbereich wird vorbereitet"
+
+msgid "Getting your demo workspace ready…"
+msgstr "Ihr Demo-Arbeitsbereich wird vorbereitet…"
 
 msgid "Given name is shown first"
 msgstr "Vorname wird vor dem Nachnamen angezeigt"

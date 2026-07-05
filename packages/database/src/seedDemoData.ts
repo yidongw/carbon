@@ -8,19 +8,23 @@
  * membership, location, and base reference data (seed_company()).
  */
 import type { PoolClient } from "pg";
+import { getSeedLocale } from "./seedDemoData.strings";
 
 export async function seedDemoData(
   client: PoolClient,
   {
     companyId,
     userId,
-    locationId
+    locationId,
+    language
   }: {
     companyId: string;
     userId: string;
     locationId: string;
+    language?: string;
   }
 ) {
+  const L = getSeedLocale(language);
   // ─── Helpers ───────────────────────────────────────────────────────────────
   async function nextSeq(table: string): Promise<string> {
     const r = await client.query<{ id: string }>(
@@ -91,59 +95,7 @@ export async function seedDemoData(
   // ─── Step 5: Suppliers ────────────────────────────────────────────────────
   console.log("5. Seeding suppliers...");
 
-  const suppliersData = [
-    {
-      name: "Acme Steel Supply",
-      readableId: "ACME-STEEL",
-      typeKey: "Raw Material",
-      contact: {
-        firstName: "Michael",
-        lastName: "Torres",
-        email: "mtorres@acmesteel.com",
-        workPhone: "+1-312-555-0101"
-      },
-      address: {
-        addressLine1: "4500 Industrial Blvd",
-        city: "Chicago",
-        state: "IL",
-        postalCode: "60632"
-      }
-    },
-    {
-      name: "Pacific Electronics",
-      readableId: "PACIFIC-ELEC",
-      typeKey: "Electronics",
-      contact: {
-        firstName: "Sarah",
-        lastName: "Chen",
-        email: "schen@pacificelectronics.com",
-        workPhone: "+1-408-555-0202"
-      },
-      address: {
-        addressLine1: "1200 Technology Drive",
-        city: "San Jose",
-        state: "CA",
-        postalCode: "95110"
-      }
-    },
-    {
-      name: "FastCNC Services",
-      readableId: "FASTCNC",
-      typeKey: "Contract Manufacturing",
-      contact: {
-        firstName: "David",
-        lastName: "Kim",
-        email: "dkim@fastcnc.com",
-        workPhone: "+1-469-555-0303"
-      },
-      address: {
-        addressLine1: "890 Precision Way",
-        city: "Dallas",
-        state: "TX",
-        postalCode: "75201"
-      }
-    }
-  ];
+  const suppliersData = L.suppliers;
 
   const supplierIds: Record<string, string> = {};
   for (const s of suppliersData) {
@@ -152,7 +104,7 @@ export async function seedDemoData(
       [s.name, companyId]
     );
     if (existingSupplier.rows.length > 0) {
-      supplierIds[s.name] = existingSupplier.rows[0]!.id;
+      supplierIds[s.key] = existingSupplier.rows[0]!.id;
       console.log(`   Supplier "${s.name}" already exists, skipping.`);
       continue;
     }
@@ -163,7 +115,7 @@ export async function seedDemoData(
       [s.name, s.readableId, supplierTypeIds[s.typeKey], companyId, userId]
     );
     const supplierId = supplierRow.rows[0]!.id;
-    supplierIds[s.name] = supplierId;
+    supplierIds[s.key] = supplierId;
 
     const addrRow = await client.query<{ id: string }>(
       `INSERT INTO address ("addressLine1", city, "stateProvince", "postalCode", "companyId")
@@ -213,59 +165,7 @@ export async function seedDemoData(
   );
   const activeCustomerStatusId = activeCustomerStatusRow.rows[0]?.id;
 
-  const customersData = [
-    {
-      name: "Precision Motors LLC",
-      readableId: "PRECISION-MOTORS",
-      typeKey: "OEM",
-      contact: {
-        firstName: "Jennifer",
-        lastName: "Walsh",
-        email: "jwalsh@precisionmotors.com",
-        workPhone: "+1-614-555-0401"
-      },
-      address: {
-        addressLine1: "750 Motor Drive",
-        city: "Columbus",
-        state: "OH",
-        postalCode: "43215"
-      }
-    },
-    {
-      name: "West Coast Robotics",
-      readableId: "WESTCOAST-ROBOTICS",
-      typeKey: "Distributor",
-      contact: {
-        firstName: "Alex",
-        lastName: "Nguyen",
-        email: "anguyen@wcrobotics.com",
-        workPhone: "+1-206-555-0502"
-      },
-      address: {
-        addressLine1: "3200 Innovation Pkwy",
-        city: "Seattle",
-        state: "WA",
-        postalCode: "98101"
-      }
-    },
-    {
-      name: "Northern Aerospace",
-      readableId: "NORTHERN-AERO",
-      typeKey: "OEM",
-      contact: {
-        firstName: "Robert",
-        lastName: "Patel",
-        email: "rpatel@northernaerospace.com",
-        workPhone: "+1-617-555-0603"
-      },
-      address: {
-        addressLine1: "1 Aerospace Blvd",
-        city: "Boston",
-        state: "MA",
-        postalCode: "02108"
-      }
-    }
-  ];
+  const customersData = L.customers;
 
   const customerIds: Record<string, string> = {};
   for (const c of customersData) {
@@ -274,7 +174,7 @@ export async function seedDemoData(
       [c.name, companyId]
     );
     if (existingCustomer.rows.length > 0) {
-      customerIds[c.name] = existingCustomer.rows[0]!.id;
+      customerIds[c.key] = existingCustomer.rows[0]!.id;
       console.log(`   Customer "${c.name}" already exists, skipping.`);
       continue;
     }
@@ -292,7 +192,7 @@ export async function seedDemoData(
       ]
     );
     const customerId = customerRow.rows[0]!.id;
-    customerIds[c.name] = customerId;
+    customerIds[c.key] = customerId;
 
     const addrRow = await client.query<{ id: string }>(
       `INSERT INTO address ("addressLine1", city, "stateProvince", "postalCode", "companyId")
@@ -390,11 +290,7 @@ export async function seedDemoData(
 
   // ─── Step 10: Shipping methods ────────────────────────────────────────────
   console.log("10. Seeding shipping methods...");
-  const shippingMethods = [
-    { name: "UPS Ground", carrier: "UPS" },
-    { name: "FedEx 2-Day", carrier: "FedEx" },
-    { name: "USPS Priority Mail", carrier: "USPS" }
-  ];
+  const shippingMethods = L.shippingMethods;
   for (const sm of shippingMethods) {
     if (!(await rowExists("shippingMethod", "name", sm.name))) {
       await client.query(
@@ -421,12 +317,7 @@ export async function seedDemoData(
 
   // ─── Step 12: Processes ───────────────────────────────────────────────────
   console.log("12. Seeding processes...");
-  const processesData = [
-    { name: "CNC Machining", factor: "Minutes/Piece", type: "Inside" },
-    { name: "Assembly", factor: "Hours/Piece", type: "Inside" },
-    { name: "Quality Inspection", factor: "Minutes/Piece", type: "Inside" },
-    { name: "Welding", factor: "Minutes/Piece", type: "Inside" }
-  ];
+  const processesData = L.processes;
   const processIds: Record<string, string> = {};
   for (const p of processesData) {
     const existing = await client.query<{ id: string }>(
@@ -434,43 +325,21 @@ export async function seedDemoData(
       [p.name, companyId]
     );
     if (existing.rows.length > 0) {
-      processIds[p.name] = existing.rows[0]!.id;
+      processIds[p.key] = existing.rows[0]!.id;
     } else {
       const r = await client.query<{ id: string }>(
         `INSERT INTO process (name, "defaultStandardFactor", "processType", "companyId", "createdBy")
            VALUES ($1, $2::factor, $3::"processType", $4, $5) RETURNING id`,
         [p.name, p.factor, p.type, companyId, userId]
       );
-      processIds[p.name] = r.rows[0]!.id;
+      processIds[p.key] = r.rows[0]!.id;
       console.log(`   Created process "${p.name}"`);
     }
   }
 
   // ─── Step 13: Work centers ────────────────────────────────────────────────
   console.log("13. Seeding work centers...");
-  const workCentersData = [
-    {
-      name: "CNC Mill #1",
-      description: "3-axis CNC milling center",
-      laborRate: 50,
-      machineRate: 100,
-      processes: ["CNC Machining", "Quality Inspection"]
-    },
-    {
-      name: "Assembly Station 1",
-      description: "General assembly bench",
-      laborRate: 40,
-      machineRate: 0,
-      processes: ["Assembly"]
-    },
-    {
-      name: "Welding Cell A",
-      description: "MIG/TIG welding station",
-      laborRate: 55,
-      machineRate: 65,
-      processes: ["Welding"]
-    }
-  ];
+  const workCentersData = L.workCenters;
   const workCenterIds: Record<string, string> = {};
   for (const wc of workCentersData) {
     const existing = await client.query<{ id: string }>(
@@ -478,7 +347,7 @@ export async function seedDemoData(
       [wc.name, companyId]
     );
     if (existing.rows.length > 0) {
-      workCenterIds[wc.name] = existing.rows[0]!.id;
+      workCenterIds[wc.key] = existing.rows[0]!.id;
     } else {
       const r = await client.query<{ id: string }>(
         `INSERT INTO "workCenter" (name, description, "laborRate", "machineRate", "locationId", "companyId", "createdBy")
@@ -493,14 +362,14 @@ export async function seedDemoData(
           userId
         ]
       );
-      workCenterIds[wc.name] = r.rows[0]!.id;
+      workCenterIds[wc.key] = r.rows[0]!.id;
       console.log(`   Created work center "${wc.name}"`);
     }
 
     for (const procName of wc.processes) {
       const procId = processIds[procName];
       if (!procId) continue;
-      const wcId = workCenterIds[wc.name]!;
+      const wcId = workCenterIds[wc.key]!;
       const existsLink = await client.query(
         `SELECT 1 FROM "workCenterProcess" WHERE "workCenterId" = $1 AND "processId" = $2 LIMIT 1`,
         [wcId, procId]
@@ -516,62 +385,7 @@ export async function seedDemoData(
 
   // ─── Step 14: Items ───────────────────────────────────────────────────────
   console.log("14. Seeding items...");
-  const itemsData = [
-    {
-      readableId: "STEEL-ROD-01",
-      name: "1020 Steel Rod 1 inch",
-      description: 'Cold-rolled 1020 steel rod, 1" diameter',
-      type: "Material",
-      replenishmentSystem: "Buy",
-      itemTrackingType: "Inventory",
-      uom: "EA"
-    },
-    {
-      readableId: "BEARING-6205",
-      name: "6205 Deep Groove Bearing",
-      description: "SKF 6205-2RS deep groove ball bearing",
-      type: "Part",
-      replenishmentSystem: "Buy",
-      itemTrackingType: "Inventory",
-      uom: "EA"
-    },
-    {
-      readableId: "BRACKET-001",
-      name: "Mounting Bracket A",
-      description: "Machined aluminum mounting bracket, Type A",
-      type: "Part",
-      replenishmentSystem: "Make",
-      itemTrackingType: "Inventory",
-      uom: "EA"
-    },
-    {
-      readableId: "SHAFT-ASM-001",
-      name: "Drive Shaft Assembly",
-      description: "Precision-machined drive shaft assembly",
-      type: "Part",
-      replenishmentSystem: "Make",
-      itemTrackingType: "Inventory",
-      uom: "EA"
-    },
-    {
-      readableId: "CTRL-PCB-001",
-      name: "Control PCB Rev2",
-      description: "Motor control printed circuit board, revision 2",
-      type: "Part",
-      replenishmentSystem: "Buy",
-      itemTrackingType: "Inventory",
-      uom: "EA"
-    },
-    {
-      readableId: "FASTENER-KIT-01",
-      name: "M6 Fastener Kit",
-      description: "M6 bolts, nuts, and washers kit (50 pcs)",
-      type: "Consumable",
-      replenishmentSystem: "Buy",
-      itemTrackingType: "Inventory",
-      uom: "EA"
-    }
-  ];
+  const itemsData = L.items;
   const itemIds: Record<string, string> = {};
   for (const item of itemsData) {
     const existing = await client.query<{ id: string }>(
@@ -606,12 +420,7 @@ export async function seedDemoData(
 
   // ─── Step 15: Item posting groups ─────────────────────────────────────────
   console.log("15. Seeding item posting groups...");
-  const postingGroups = [
-    { name: "Finished Goods", description: "Manufactured finished products" },
-    { name: "Raw Materials", description: "Raw material inputs" },
-    { name: "Purchased Parts", description: "Bought-in components" },
-    { name: "Consumables", description: "Low-value consumable items" }
-  ];
+  const postingGroups = L.postingGroups;
   for (const pg of postingGroups) {
     if (!(await rowExists("itemPostingGroup", "name", pg.name))) {
       await client.query(
@@ -625,14 +434,7 @@ export async function seedDemoData(
 
   // ─── Step 16: Abilities ───────────────────────────────────────────────────
   console.log("16. Seeding abilities...");
-  const abilities = [
-    "CNC Machining",
-    "TIG Welding",
-    "MIG Welding",
-    "Assembly",
-    "Quality Inspection",
-    "Forklift Operation"
-  ];
+  const abilities = L.abilities;
   for (const abilityName of abilities) {
     const existing = await client.query(
       `SELECT 1 FROM ability WHERE name = $1 AND "companyId" = $2 LIMIT 1`,
@@ -828,13 +630,13 @@ export async function seedDemoData(
       const rootMakeMethodId = rootMakeMethod.rows[0]?.id ?? null;
 
       const existingOp = await client.query(
-        `SELECT 1 FROM "jobOperation" WHERE "jobId" = $1 AND description = 'CNC mill bracket profile' LIMIT 1`,
+        `SELECT 1 FROM "jobOperation" WHERE "jobId" = $1 AND description = 'Milling' LIMIT 1`,
         [jobRowId]
       );
       if ((existingOp.rowCount ?? 0) === 0) {
         const opRow = await client.query<{ id: string }>(
           `INSERT INTO "jobOperation" ("jobId", "jobMakeMethodId", "order", "processId", "workCenterId", description, "laborTime", "laborUnit", "companyId", "createdBy")
-             VALUES ($1, $2, 1, $3, $4, 'CNC mill bracket profile', 30, 'Minutes/Piece'::factor, $5, $6)
+             VALUES ($1, $2, 1, $3, $4, 'Milling', 30, 'Minutes/Piece'::factor, $5, $6)
              RETURNING id`,
           [
             jobRowId,
@@ -929,28 +731,7 @@ export async function seedDemoData(
 
   // ─── Step 22: shift + employeeShift ──────────────────────────────────────
   console.log("22. Seeding shifts...");
-  const shiftsData = [
-    {
-      name: "Day Shift",
-      start: "07:00:00",
-      end: "15:00:00",
-      mon: true,
-      tue: true,
-      wed: true,
-      thu: true,
-      fri: true
-    },
-    {
-      name: "Night Shift",
-      start: "15:00:00",
-      end: "23:00:00",
-      mon: true,
-      tue: true,
-      wed: true,
-      thu: true,
-      fri: true
-    }
-  ];
+  const shiftsData = L.shifts;
   const shiftIds: Record<string, string> = {};
   for (const sh of shiftsData) {
     const existing = await client.query<{ id: string }>(
@@ -958,7 +739,7 @@ export async function seedDemoData(
       [sh.name, companyId]
     );
     if (existing.rows.length > 0) {
-      shiftIds[sh.name] = existing.rows[0]!.id;
+      shiftIds[sh.key] = existing.rows[0]!.id;
     } else {
       const r = await client.query<{ id: string }>(
         `INSERT INTO shift (name, "startTime", "endTime", "locationId", monday, tuesday, wednesday, thursday, friday, "companyId", "createdBy")
@@ -977,7 +758,7 @@ export async function seedDemoData(
           userId
         ]
       );
-      shiftIds[sh.name] = r.rows[0]!.id;
+      shiftIds[sh.key] = r.rows[0]!.id;
       console.log(`   Created shift "${sh.name}"`);
     }
   }
@@ -1145,7 +926,10 @@ export async function seedDemoData(
     "BEARING-6205",
     "BRACKET-001",
     "SHAFT-ASM-001",
-    "CTRL-PCB-001"
+    "CTRL-PCB-001",
+    "TSHIRT-001",
+    "JACKET-001",
+    "FABRIC-CTN-01"
   ]) {
     await client.query(
       `INSERT INTO part (id, "companyId", "createdBy")
@@ -1633,6 +1417,19 @@ export async function seedDemoData(
     console.log(`   Created non-conformance workflow`);
   }
 
+  // Ensure at least one nonConformanceType exists (required FK for nonConformance)
+  for (const typeName of ["Dimensional", "Visual", "Functional"]) {
+    const ex = await client.query(
+      `SELECT 1 FROM "nonConformanceType" WHERE name = $1 AND "companyId" = $2 LIMIT 1`,
+      [typeName, companyId]
+    );
+    if ((ex.rowCount ?? 0) === 0) {
+      await client.query(
+        `INSERT INTO "nonConformanceType" (name, "companyId", "createdBy") VALUES ($1, $2, $3)`,
+        [typeName, companyId, userId]
+      );
+    }
+  }
   const ncTypeRow = await client.query<{ id: string }>(
     `SELECT id FROM "nonConformanceType" WHERE "companyId" = $1 LIMIT 1`,
     [companyId]
@@ -1763,6 +1560,19 @@ export async function seedDemoData(
 
   // ─── Step 33: gauge + gaugeCalibrationRecord ──────────────────────────────
   console.log("33. Seeding gauges...");
+  // Ensure at least one gaugeType exists (required FK for gauge)
+  for (const typeName of ["Caliper", "Micrometer", "Gauge Block"]) {
+    const ex = await client.query(
+      `SELECT 1 FROM "gaugeType" WHERE name = $1 AND "companyId" = $2 LIMIT 1`,
+      [typeName, companyId]
+    );
+    if ((ex.rowCount ?? 0) === 0) {
+      await client.query(
+        `INSERT INTO "gaugeType" (name, "companyId", "createdBy") VALUES ($1, $2, $3)`,
+        [typeName, companyId, userId]
+      );
+    }
+  }
   const gaugeTypeRow = await client.query<{ id: string }>(
     `SELECT id FROM "gaugeType" WHERE "companyId" = $1 LIMIT 1`,
     [companyId]
@@ -2122,12 +1932,7 @@ export async function seedDemoData(
     [companyId]
   );
   if ((existingHoliday.rowCount ?? 0) === 0) {
-    const holidays = [
-      { name: "New Year's Day", date: "2026-01-01" },
-      { name: "Independence Day", date: "2026-07-04" },
-      { name: "Thanksgiving", date: "2026-11-26" },
-      { name: "Christmas Day", date: "2026-12-25" }
-    ];
+    const holidays = L.holidays;
     for (const h of holidays) {
       await client.query(
         `INSERT INTO holiday (name, date, "companyId", "createdBy") VALUES ($1, $2, $3, $4)`,
@@ -2187,13 +1992,13 @@ export async function seedDemoData(
 
   // itemRule + itemRuleAssignment
   const existingIR = await client.query(
-    `SELECT 1 FROM "itemRule" WHERE "companyId" = $1 LIMIT 1`,
+    `SELECT 1 FROM "storageRule" WHERE "companyId" = $1 LIMIT 1`,
     [companyId]
   );
   let itemRuleId: string | null = null;
   if ((existingIR.rowCount ?? 0) === 0) {
     const r = await client.query<{ id: string }>(
-      `INSERT INTO "itemRule" (name, message, severity, "conditionAst", "companyId", "createdBy")
+      `INSERT INTO "storageRule" (name, message, severity, "conditionAst", "companyId", "createdBy")
          VALUES ('Low Stock Warning', 'Item quantity below safety stock', 'warn', '[]'::jsonb, $1, $2) RETURNING id`,
       [companyId, userId]
     );
@@ -2202,7 +2007,7 @@ export async function seedDemoData(
   } else {
     itemRuleId = (
       await client.query<{ id: string }>(
-        `SELECT id FROM "itemRule" WHERE "companyId" = $1 LIMIT 1`,
+        `SELECT id FROM "storageRule" WHERE "companyId" = $1 LIMIT 1`,
         [companyId]
       )
     ).rows[0]!.id;
@@ -2210,12 +2015,12 @@ export async function seedDemoData(
 
   if (itemRuleId && steelItemId4) {
     const existingIRA = await client.query(
-      `SELECT 1 FROM "itemRuleAssignment" WHERE "itemId" = $1 AND "ruleId" = $2 LIMIT 1`,
+      `SELECT 1 FROM "storageRuleItemAssignment" WHERE "itemId" = $1 AND "ruleId" = $2 LIMIT 1`,
       [steelItemId4, itemRuleId]
     );
     if ((existingIRA.rowCount ?? 0) === 0) {
       await client.query(
-        `INSERT INTO "itemRuleAssignment" ("itemId", "ruleId", "companyId", "createdBy") VALUES ($1, $2, $3, $4)`,
+        `INSERT INTO "storageRuleItemAssignment" ("itemId", "ruleId", "companyId", "createdBy") VALUES ($1, $2, $3, $4)`,
         [steelItemId4, itemRuleId, companyId, userId]
       );
       console.log(`   Created item rule assignment`);
@@ -2331,10 +2136,13 @@ export async function seedDemoData(
   );
   let salaryRecordId: string | null = null;
   if (existingESR.rows.length === 0) {
+    const now = new Date();
+    const curYear = now.getFullYear();
+    const curMonth = now.getMonth() + 1;
     const r = await client.query<{ id: string }>(
       `INSERT INTO "employeeSalaryRecord" ("employeeId", year, month, "totalEarned", "totalPaid", status, "companyId", "createdBy")
-         VALUES ($1, 2026, 5, 7500.00, 7500.00, 'Paid'::"salaryRecordStatus", $2, $3) RETURNING id`,
-      [employeeId, companyId, userId]
+         VALUES ($1, $2, $3, 7500.00, 7500.00, 'Paid'::"salaryRecordStatus", $4, $5) RETURNING id`,
+      [employeeId, curYear, curMonth, companyId, userId]
     );
     salaryRecordId = r.rows[0]!.id;
     console.log(`   Created salary record`);
@@ -2404,8 +2212,14 @@ export async function seedDemoData(
   }
 
   // jobOperationStep + jobOperationParameter + jobOperationTool
+  // Exclude configurable items (TSHIRT-001, JACKET-001) so generic steps never touch them.
   const jobOpRow = await client.query<{ id: string }>(
-    `SELECT id FROM "jobOperation" WHERE "companyId" = $1 LIMIT 1`,
+    `SELECT jo.id FROM "jobOperation" jo
+       JOIN job j ON j.id = jo."jobId"
+       JOIN item i ON i.id = j."itemId"
+       WHERE jo."companyId" = $1
+         AND i."readableId" NOT IN ('TSHIRT-001','JACKET-001')
+       LIMIT 1`,
     [companyId]
   );
   const jobOpId = jobOpRow.rows[0]?.id;
@@ -2460,68 +2274,96 @@ export async function seedDemoData(
 
   // ─── Step 48: purchasingRfq + lines + suppliers ───────────────────────────
   console.log("48. Seeding purchasing RFQs...");
-  const existingPRFQ = await client.query(
-    `SELECT 1 FROM "purchasingRfq" WHERE "companyId" = $1 LIMIT 1`,
-    [companyId]
-  );
   let purchasingRfqId: string | null = null;
-  if ((existingPRFQ.rowCount ?? 0) === 0) {
-    const rfqReadableId = await nextSeq("purchasingRfq");
-    const rfqRow = await client.query<{ id: string }>(
-      `INSERT INTO "purchasingRfq" ("rfqId", "rfqDate", status, "locationId", "companyId", "createdBy")
-         VALUES ($1, CURRENT_DATE, 'Draft'::"purchasingRfqStatus", $2, $3, $4) RETURNING id`,
-      [rfqReadableId, locationId, companyId, userId]
+  {
+    const existingPRFQ = await client.query<{ id: string }>(
+      `SELECT id FROM "purchasingRfq" WHERE "companyId" = $1 LIMIT 1`,
+      [companyId]
     );
-    purchasingRfqId = rfqRow.rows[0]!.id;
-    console.log(`   Created purchasing RFQ "${rfqReadableId}"`);
-
-    const pcbItemId = itemIds["CTRL-PCB-001"];
-    if (pcbItemId) {
-      await client.query(
-        `INSERT INTO "purchasingRfqLine" ("purchasingRfqId", "itemId", "purchaseUnitOfMeasureCode", "inventoryUnitOfMeasureCode", "companyId", "createdBy")
-           VALUES ($1, $2, 'EA', 'EA', $3, $4)`,
-        [purchasingRfqId, pcbItemId, companyId, userId]
+    if ((existingPRFQ.rowCount ?? 0) === 0) {
+      const rfqReadableId = await nextSeq("purchasingRfq");
+      const rfqRow = await client.query<{ id: string }>(
+        `INSERT INTO "purchasingRfq" ("rfqId", "rfqDate", status, "locationId", "companyId", "createdBy")
+           VALUES ($1, CURRENT_DATE, 'Draft'::"purchasingRfqStatus", $2, $3, $4) RETURNING id`,
+        [rfqReadableId, locationId, companyId, userId]
       );
-      console.log(`   Created purchasing RFQ line`);
+      purchasingRfqId = rfqRow.rows[0]!.id;
+      console.log(`   Created purchasing RFQ "${rfqReadableId}"`);
+    } else {
+      purchasingRfqId = existingPRFQ.rows[0]!.id;
     }
 
-    if (pacificSupplierId) {
-      await client.query(
-        `INSERT INTO "purchasingRfqSupplier" ("purchasingRfqId", "supplierId", "companyId")
-           VALUES ($1, $2, $3)`,
-        [purchasingRfqId, pacificSupplierId, companyId]
+    if (purchasingRfqId) {
+      const existingLine = await client.query(
+        `SELECT 1 FROM "purchasingRfqLine" WHERE "purchasingRfqId" = $1 LIMIT 1`,
+        [purchasingRfqId]
       );
-      console.log(`   Created purchasing RFQ supplier`);
+      if ((existingLine.rowCount ?? 0) === 0) {
+        const pcbItemId = itemIds["CTRL-PCB-001"];
+        if (pcbItemId) {
+          await client.query(
+            `INSERT INTO "purchasingRfqLine" ("purchasingRfqId", "itemId", "purchaseUnitOfMeasureCode", "inventoryUnitOfMeasureCode", "companyId", "createdBy")
+               VALUES ($1, $2, 'EA', 'EA', $3, $4)`,
+            [purchasingRfqId, pcbItemId, companyId, userId]
+          );
+          console.log(`   Created purchasing RFQ line`);
+        }
+      }
+
+      const existingSupplier = await client.query(
+        `SELECT 1 FROM "purchasingRfqSupplier" WHERE "purchasingRfqId" = $1 LIMIT 1`,
+        [purchasingRfqId]
+      );
+      if ((existingSupplier.rowCount ?? 0) === 0 && pacificSupplierId) {
+        await client.query(
+          `INSERT INTO "purchasingRfqSupplier" ("purchasingRfqId", "supplierId", "companyId")
+             VALUES ($1, $2, $3)`,
+          [purchasingRfqId, pacificSupplierId, companyId]
+        );
+        console.log(`   Created purchasing RFQ supplier`);
+      }
     }
   }
 
   // ─── Step 49: supplierQuote + lines ──────────────────────────────────────
   console.log("49. Seeding supplier quotes...");
-  const existingSQ = await client.query(
-    `SELECT 1 FROM "supplierQuote" WHERE "companyId" = $1 LIMIT 1`,
-    [companyId]
-  );
   let supplierQuoteId: string | null = null;
-  if ((existingSQ.rowCount ?? 0) === 0 && pacificSupplierId) {
-    const sqReadableId = await nextSeq("supplierQuote");
-    const sqInteractionId =
-      await getOrCreateSupplierInteraction(pacificSupplierId);
-    const sqRow = await client.query<{ id: string }>(
-      `INSERT INTO "supplierQuote" ("supplierQuoteId", "supplierId", "supplierInteractionId", "companyId", "createdBy")
-         VALUES ($1, $2, $3, $4, $5) RETURNING id`,
-      [sqReadableId, pacificSupplierId, sqInteractionId, companyId, userId]
+  {
+    const existingSQ = await client.query<{ id: string }>(
+      `SELECT id FROM "supplierQuote" WHERE "companyId" = $1 LIMIT 1`,
+      [companyId]
     );
-    supplierQuoteId = sqRow.rows[0]!.id;
-    console.log(`   Created supplier quote "${sqReadableId}"`);
-
-    const pcbItemId = itemIds["CTRL-PCB-001"];
-    if (pcbItemId) {
-      await client.query(
-        `INSERT INTO "supplierQuoteLine" ("supplierQuoteId", "itemId", description, "companyId", "createdBy")
-           VALUES ($1, $2, 'Control PCB Rev2', $3, $4)`,
-        [supplierQuoteId, pcbItemId, companyId, userId]
+    if ((existingSQ.rowCount ?? 0) === 0 && pacificSupplierId) {
+      const sqReadableId = await nextSeq("supplierQuote");
+      const sqInteractionId =
+        await getOrCreateSupplierInteraction(pacificSupplierId);
+      const sqRow = await client.query<{ id: string }>(
+        `INSERT INTO "supplierQuote" ("supplierQuoteId", "supplierId", "supplierInteractionId", "companyId", "createdBy")
+           VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+        [sqReadableId, pacificSupplierId, sqInteractionId, companyId, userId]
       );
-      console.log(`   Created supplier quote line`);
+      supplierQuoteId = sqRow.rows[0]!.id;
+      console.log(`   Created supplier quote "${sqReadableId}"`);
+    } else {
+      supplierQuoteId = existingSQ.rows[0]?.id ?? null;
+    }
+
+    if (supplierQuoteId) {
+      const existingLine = await client.query(
+        `SELECT 1 FROM "supplierQuoteLine" WHERE "supplierQuoteId" = $1 LIMIT 1`,
+        [supplierQuoteId]
+      );
+      if ((existingLine.rowCount ?? 0) === 0) {
+        const pcbItemId = itemIds["CTRL-PCB-001"];
+        if (pcbItemId) {
+          await client.query(
+            `INSERT INTO "supplierQuoteLine" ("supplierQuoteId", "itemId", description, "companyId", "createdBy")
+               VALUES ($1, $2, 'Control PCB Rev2', $3, $4)`,
+            [supplierQuoteId, pcbItemId, companyId, userId]
+          );
+          console.log(`   Created supplier quote line`);
+        }
+      }
     }
   }
 
@@ -2556,74 +2398,107 @@ export async function seedDemoData(
 
   // ─── Step 51: quote + quoteLine + quoteMakeMethod + quoteOperation + quoteMaterial
   console.log("51. Seeding quotes...");
-  const existingQuote = await client.query(
-    `SELECT 1 FROM quote WHERE "companyId" = $1 LIMIT 1`,
-    [companyId]
-  );
   let quoteId: string | null = null;
   let quoteLineId: string | null = null;
   let quoteMakeMethodId: string | null = null;
-  if ((existingQuote.rowCount ?? 0) === 0 && precisionCustomerId) {
-    const qReadableId = await nextSeq("quote");
-    const qRow = await client.query<{ id: string }>(
-      `INSERT INTO quote ("quoteId", "customerId", status, "locationId", "companyId", "createdBy")
-         VALUES ($1, $2, 'Draft'::"quoteStatus", $3, $4, $5) RETURNING id`,
-      [qReadableId, precisionCustomerId, locationId, companyId, userId]
+  {
+    const existingQuote = await client.query<{ id: string }>(
+      `SELECT id FROM quote WHERE "companyId" = $1 LIMIT 1`,
+      [companyId]
     );
-    quoteId = qRow.rows[0]!.id;
-    console.log(`   Created quote "${qReadableId}"`);
+    if ((existingQuote.rowCount ?? 0) === 0 && precisionCustomerId) {
+      const qReadableId = await nextSeq("quote");
+      const qRow = await client.query<{ id: string }>(
+        `INSERT INTO quote ("quoteId", "customerId", status, "locationId", "companyId", "createdBy")
+           VALUES ($1, $2, 'Draft'::"quoteStatus", $3, $4, $5) RETURNING id`,
+        [qReadableId, precisionCustomerId, locationId, companyId, userId]
+      );
+      quoteId = qRow.rows[0]!.id;
+      console.log(`   Created quote "${qReadableId}"`);
+    } else {
+      quoteId = existingQuote.rows[0]?.id ?? null;
+    }
 
     const bracketItemId5 = itemIds["BRACKET-001"];
     if (bracketItemId5 && quoteId) {
-      const qlRow = await client.query<{ id: string }>(
-        `INSERT INTO "quoteLine" ("quoteId", "itemId", "itemType", description, "companyId", "createdBy")
-           VALUES ($1, $2, 'Part', 'Mounting Bracket A', $3, $4) RETURNING id`,
-        [quoteId, bracketItemId5, companyId, userId]
+      // quoteLine
+      const existingQL = await client.query<{ id: string }>(
+        `SELECT id FROM "quoteLine" WHERE "quoteId" = $1 LIMIT 1`,
+        [quoteId]
       );
-      quoteLineId = qlRow.rows[0]!.id;
-      console.log(`   Created quote line`);
+      if ((existingQL.rowCount ?? 0) === 0) {
+        const qlRow = await client.query<{ id: string }>(
+          `INSERT INTO "quoteLine" ("quoteId", "itemId", "itemType", description, "companyId", "createdBy")
+             VALUES ($1, $2, 'Part', 'Mounting Bracket A', $3, $4) RETURNING id`,
+          [quoteId, bracketItemId5, companyId, userId]
+        );
+        quoteLineId = qlRow.rows[0]!.id;
+        console.log(`   Created quote line`);
+      } else {
+        quoteLineId = existingQL.rows[0]!.id;
+      }
 
       // quoteMakeMethod
-      const qmmRow = await client.query<{ id: string }>(
-        `INSERT INTO "quoteMakeMethod" ("quoteId", "quoteLineId", "itemId", "companyId", "createdBy")
-           VALUES ($1, $2, $3, $4, $5) RETURNING id`,
-        [quoteId, quoteLineId, bracketItemId5, companyId, userId]
+      const existingQMM = await client.query<{ id: string }>(
+        `SELECT id FROM "quoteMakeMethod" WHERE "quoteLineId" = $1 AND "parentMaterialId" IS NULL LIMIT 1`,
+        [quoteLineId]
       );
-      quoteMakeMethodId = qmmRow.rows[0]!.id;
-      console.log(`   Created quote make method`);
+      if ((existingQMM.rowCount ?? 0) === 0) {
+        const qmmRow = await client.query<{ id: string }>(
+          `INSERT INTO "quoteMakeMethod" ("quoteId", "quoteLineId", "itemId", "companyId", "createdBy")
+             VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+          [quoteId, quoteLineId, bracketItemId5, companyId, userId]
+        );
+        quoteMakeMethodId = qmmRow.rows[0]!.id;
+        console.log(`   Created quote make method`);
+      } else {
+        quoteMakeMethodId = existingQMM.rows[0]!.id;
+      }
 
       // quoteOperation
       if (cncProcId) {
-        const _qoRow = await client.query<{ id: string }>(
-          `INSERT INTO "quoteOperation" ("quoteId", "quoteLineId", "quoteMakeMethodId", "processId", "laborTime", "laborUnit", "companyId", "createdBy")
-             VALUES ($1, $2, $3, $4, 30, 'Minutes/Piece'::factor, $5, $6) RETURNING id`,
-          [
-            quoteId,
-            quoteLineId,
-            quoteMakeMethodId,
-            cncProcId,
-            companyId,
-            userId
-          ]
+        const existingQO = await client.query(
+          `SELECT 1 FROM "quoteOperation" WHERE "quoteMakeMethodId" = $1 LIMIT 1`,
+          [quoteMakeMethodId]
         );
-        console.log(`   Created quote operation`);
-
-        // quoteMaterial - use methodType='Buy' to avoid 'Make to Order' trigger
-        const steelItemId5 = itemIds["STEEL-ROD-01"];
-        if (steelItemId5) {
-          await client.query(
-            `INSERT INTO "quoteMaterial" ("quoteId", "quoteLineId", "quoteMakeMethodId", "itemId", "itemType", "methodType", "order", description, quantity, "unitOfMeasureCode", "unitCost", "companyId", "createdBy")
-               VALUES ($1, $2, $3, $4, 'Part', 'Buy'::"methodType", 1, '1020 Steel Rod', 1.2, 'EA', 5.50, $5, $6)`,
+        if ((existingQO.rowCount ?? 0) === 0) {
+          const _qoRow = await client.query<{ id: string }>(
+            `INSERT INTO "quoteOperation" ("quoteId", "quoteLineId", "quoteMakeMethodId", "processId", "laborTime", "laborUnit", "companyId", "createdBy")
+               VALUES ($1, $2, $3, $4, 30, 'Minutes/Piece'::factor, $5, $6) RETURNING id`,
             [
               quoteId,
               quoteLineId,
               quoteMakeMethodId,
-              steelItemId5,
+              cncProcId,
               companyId,
               userId
             ]
           );
-          console.log(`   Created quote material`);
+          console.log(`   Created quote operation`);
+        }
+
+        // quoteMaterial
+        const steelItemId5 = itemIds["STEEL-ROD-01"];
+        if (steelItemId5) {
+          const existingQMat = await client.query(
+            `SELECT 1 FROM "quoteMaterial" WHERE "quoteId" = $1 AND "itemId" = $2 LIMIT 1`,
+            [quoteId, steelItemId5]
+          );
+          if ((existingQMat.rowCount ?? 0) === 0) {
+            await client.query(
+              `INSERT INTO "quoteMaterial" ("quoteId", "quoteLineId", "quoteMakeMethodId", "itemId", "itemType", "methodType", "order", description, quantity, "unitOfMeasureCode", "unitCost", "companyId", "createdBy")
+                 VALUES ($1, $2, $3, $4, 'Part', 'Purchase to Order'::"methodType", 1, '1020 Steel Rod', 1.2, 'EA', 5.50, $5, $6)`,
+              [
+                quoteId,
+                quoteLineId,
+                quoteMakeMethodId,
+                steelItemId5,
+                companyId,
+                userId
+              ]
+            );
+            console.log(`   Created quote material`);
+          }
         }
       }
 
@@ -3971,56 +3846,463 @@ export async function seedDemoData(
     console.log(`   Created procedure parameter`);
   }
 
-  // ─── Step 87: configurationParameterGroup, configurationParameter, configurationRule ─
+  // ─── Step 87: configurationParameterGroup + configurationParameter ───────
+  // TSHIRT-001 (Size + Color) and JACKET-001 (Size) are configurable; others are not.
   console.log("87. Seeding configuration parameters...");
   {
-    const itemRow = await client.query<{ id: string }>(
-      `SELECT id FROM item WHERE "companyId"=$1 LIMIT 1`,
-      [companyId]
-    );
-    const itemId = itemRow.rows[0]?.id;
-    if (itemId) {
-      // configurationParameterGroup
-      const existsCPG = await client.query(
+    type CPDataType = "text" | "numeric" | "boolean" | "list";
+    type CPDef = {
+      paramLabel: string;
+      paramKey: string;
+      dataType: CPDataType;
+      listOptions: string[] | null;
+      sortOrder: number;
+    };
+    const itemConfigs: Array<{
+      itemKey: string;
+      groupName: string;
+      params: CPDef[];
+    }> = [
+      {
+        itemKey: "TSHIRT-001",
+        groupName: `${L.configParams.sizeLabel} & ${L.configParams.colorLabel}`,
+        params: [
+          {
+            paramLabel: L.configParams.sizeLabel,
+            paramKey: "size",
+            dataType: "list",
+            listOptions: L.configParams.sizeOptions,
+            sortOrder: 1
+          },
+          {
+            paramLabel: L.configParams.colorLabel,
+            paramKey: "color",
+            dataType: "list",
+            listOptions: L.configParams.colorOptions,
+            sortOrder: 2
+          }
+        ]
+      },
+      {
+        itemKey: "JACKET-001",
+        groupName: L.configParams.sizeLabel,
+        params: [
+          {
+            paramLabel: L.configParams.sizeLabel,
+            paramKey: "size",
+            dataType: "list",
+            listOptions: L.configParams.sizeOptions,
+            sortOrder: 1
+          }
+        ]
+      }
+    ];
+
+    for (const cfg of itemConfigs) {
+      const targetItemId = itemIds[cfg.itemKey];
+      if (!targetItemId) continue;
+
+      const existsCPG = await client.query<{ id: string }>(
         `SELECT id FROM "configurationParameterGroup" WHERE "itemId"=$1 AND "companyId"=$2 LIMIT 1`,
-        [itemId, companyId]
+        [targetItemId, companyId]
       );
       let cpgId: string;
       if ((existsCPG.rowCount ?? 0) === 0) {
         const r = await client.query<{ id: string }>(
           `INSERT INTO "configurationParameterGroup" ("itemId", name, "sortOrder", "companyId") VALUES ($1, $2, $3, $4) RETURNING id`,
-          [itemId, "Dimensions", 1, companyId]
+          [targetItemId, cfg.groupName, 1, companyId]
         );
         cpgId = r.rows[0]!.id;
       } else {
         cpgId = existsCPG.rows[0]!.id;
       }
 
-      // configurationParameter
-      const existsCP = await client.query(
-        `SELECT id FROM "configurationParameter" WHERE "itemId"=$1 AND key=$2 AND "companyId"=$3 LIMIT 1`,
-        [itemId, "width", companyId]
+      for (const p of cfg.params) {
+        const existsCP = await client.query(
+          `SELECT id FROM "configurationParameter" WHERE "itemId"=$1 AND key=$2 AND "companyId"=$3 LIMIT 1`,
+          [targetItemId, p.paramKey, companyId]
+        );
+        if ((existsCP.rowCount ?? 0) === 0) {
+          await client.query(
+            `INSERT INTO "configurationParameter" ("itemId", label, key, "dataType", "listOptions", "configurationParameterGroupId", "sortOrder", "companyId", "createdBy")
+               VALUES ($1, $2, $3, $4::"configurationParameterDataType", $5, $6, $7, $8, $9) ON CONFLICT DO NOTHING`,
+            [
+              targetItemId,
+              p.paramLabel,
+              p.paramKey,
+              p.dataType,
+              p.listOptions,
+              cpgId,
+              p.sortOrder,
+              companyId,
+              userId
+            ]
+          );
+        }
+      }
+    }
+    console.log(
+      `   Created configuration parameters for TSHIRT-001 (Size, Color) and JACKET-001 (Size)`
+    );
+  }
+
+  // ─── Step 87b: Clothing manufacturing jobs with configuration instances ───
+  // configTable format mirrors real prod data: size labels ARE the keys, values are per-size quantities.
+  // e.g. {"configTable":[{"S":5,"M":10,"L":12,"XL":8,"XXL":5,"color":"Black"}],"configTablePrimaryKeys":["S","M","L","XL","XXL"]}
+  console.log("87b. Seeding clothing manufacturing jobs...");
+  {
+    const tshirtId = itemIds["TSHIRT-001"];
+    const jacketId = itemIds["JACKET-001"];
+    const cuttingProcId = processIds["Cutting"] ?? null;
+    const sewingProcId = processIds["Sewing"] ?? null;
+    const finishingProcId = processIds["Finishing"] ?? null;
+    const qiProcId2 = processIds["Quality Inspection"] ?? null;
+    const cuttingWCId = workCenterIds["Cutting Table 1"] ?? null;
+    const sewingWCId = workCenterIds["Sewing Line A"] ?? null;
+
+    const getOrCreateGarmentJob = async (
+      itemId: string,
+      status: string,
+      qty: number
+    ): Promise<{ jobId: string; mmId: string | null }> => {
+      const ex = await client.query<{ id: string }>(
+        `SELECT id FROM job WHERE "itemId"=$1 AND "companyId"=$2 LIMIT 1`,
+        [itemId, companyId]
       );
-      if ((existsCP.rowCount ?? 0) === 0) {
+      let jobId: string;
+      if (ex.rows.length > 0) {
+        jobId = ex.rows[0]!.id;
+      } else {
+        const jrid = await nextSeq("job");
+        const r = await client.query<{ id: string }>(
+          `INSERT INTO job ("jobId","itemId","unitOfMeasureCode","locationId",status,quantity,"companyId","createdBy")
+             VALUES ($1,$2,'EA',$3,$4::"jobStatus",$5,$6,$7) RETURNING id`,
+          [jrid, itemId, locationId, status, qty, companyId, userId]
+        );
+        jobId = r.rows[0]!.id;
+      }
+      const mmRow = await client.query<{ id: string }>(
+        `SELECT id FROM "jobMakeMethod" WHERE "jobId"=$1 AND "parentMaterialId" IS NULL LIMIT 1`,
+        [jobId]
+      );
+      return { jobId, mmId: mmRow.rows[0]?.id ?? null };
+    };
+
+    const getOrCreateGarmentOp = async (
+      jobId: string,
+      mmId: string | null,
+      order: number,
+      procId: string | null,
+      wcId: string | null,
+      description: string,
+      laborTime: number,
+      status: string
+    ): Promise<string> => {
+      const ex = await client.query<{ id: string }>(
+        `SELECT id FROM "jobOperation" WHERE "jobId"=$1 AND description=$2 AND "companyId"=$3 LIMIT 1`,
+        [jobId, description, companyId]
+      );
+      if (ex.rows.length > 0) return ex.rows[0]!.id;
+      const r = await client.query<{ id: string }>(
+        `INSERT INTO "jobOperation" ("jobId","jobMakeMethodId","order","processId","workCenterId",description,"laborTime","laborUnit",status,"companyId","createdBy")
+           VALUES ($1,$2,$3,$4,$5,$6,$7,'Minutes/Piece'::factor,$8::"jobOperationStatus",$9,$10) RETURNING id`,
+        [
+          jobId,
+          mmId,
+          order,
+          procId,
+          wcId,
+          description,
+          laborTime,
+          status,
+          companyId,
+          userId
+        ]
+      );
+      return r.rows[0]!.id;
+    };
+
+    const seedGarmentProdRecord = async (
+      jobId: string,
+      opId: string,
+      wcId: string | null,
+      qty: number,
+      startHoursAgo: number,
+      endHoursAgo: number,
+      configJson: string
+    ) => {
+      const exPE = await client.query<{ id: string }>(
+        `SELECT id FROM "productionEvent" WHERE "jobOperationId"=$1 LIMIT 1`,
+        [opId]
+      );
+      let peId: string;
+      if (exPE.rows.length > 0) {
+        peId = exPE.rows[0]!.id;
+      } else {
+        const r = await client.query<{ id: string }>(
+          `INSERT INTO "productionEvent" ("jobOperationId",type,"startTime","endTime","employeeId","workCenterId","companyId","createdBy")
+             VALUES ($1,'Labor'::"productionEventType",NOW()-($2*interval'1 hour'),NOW()-($3*interval'1 hour'),$4,$5,$6,$7) RETURNING id`,
+          [
+            opId,
+            startHoursAgo,
+            endHoursAgo,
+            employeeId,
+            wcId,
+            companyId,
+            userId
+          ]
+        );
+        peId = r.rows[0]!.id;
+      }
+      const exPQR = await client.query<{ id: string }>(
+        `SELECT id FROM "productionQuantityReport" WHERE "jobOperationId"=$1 LIMIT 1`,
+        [opId]
+      );
+      let pqrId: string;
+      if (exPQR.rows.length > 0) {
+        pqrId = exPQR.rows[0]!.id;
+      } else {
+        const r = await client.query<{ id: string }>(
+          `INSERT INTO "productionQuantityReport" ("jobId","jobOperationId","employeeId","originalQuantity","companyId","createdBy")
+             VALUES ($1,$2,$3,$4,$5,$6) RETURNING id`,
+          [jobId, opId, employeeId, qty, companyId, userId]
+        );
+        pqrId = r.rows[0]!.id;
+      }
+      const exPQ = await client.query(
+        `SELECT 1 FROM "productionQuantity" WHERE "jobOperationId"=$1 LIMIT 1`,
+        [opId]
+      );
+      if ((exPQ.rowCount ?? 0) === 0) {
         await client.query(
-          `INSERT INTO "configurationParameter" ("itemId", label, key, "dataType", "configurationParameterGroupId", "sortOrder", "companyId", "createdBy") VALUES ($1, $2, $3, $4::\"configurationParameterDataType\", $5, $6, $7, $8) ON CONFLICT DO NOTHING`,
-          [itemId, "Width", "width", "text", cpgId, 1, companyId, userId]
+          `INSERT INTO "productionQuantity" ("reportId","jobOperationId",type,quantity,"laborProductionEventId","employeeId",configuration,"companyId","createdBy")
+             VALUES ($1,$2,'Production'::"productionQuantityType",$3,$4,$5,$6::jsonb,$7,$8)`,
+          [pqrId, opId, qty, peId, employeeId, configJson, companyId, userId]
+        );
+      } else {
+        // Ensure configuration is set on any existing record
+        await client.query(
+          `UPDATE "productionQuantity" SET configuration=$1::jsonb WHERE "jobOperationId"=$2 AND configuration IS NULL`,
+          [configJson, opId]
         );
       }
-
-      // configurationRule
-      const existsCR = await client.query(
-        `SELECT 1 FROM "configurationRule" WHERE "itemId"=$1 AND field=$2 AND "companyId"=$3 LIMIT 1`,
-        [itemId, "width", companyId]
+      const exJOP = await client.query(
+        `SELECT 1 FROM "jobOperationPickup" WHERE "jobOperationId"=$1 AND configuration IS NOT NULL LIMIT 1`,
+        [opId]
       );
-      if ((existsCR.rowCount ?? 0) === 0) {
+      if ((exJOP.rowCount ?? 0) === 0) {
+        // Insert new pickup with config, or update existing null-config pickups
         await client.query(
-          `INSERT INTO "configurationRule" ("itemId", field, code, "companyId") VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING`,
-          [itemId, "width", "width > 0", companyId]
+          `UPDATE "jobOperationPickup" SET configuration=$1::jsonb WHERE "jobOperationId"=$2 AND configuration IS NULL`,
+          [configJson, opId]
+        );
+        const stillMissing = await client.query(
+          `SELECT 1 FROM "jobOperationPickup" WHERE "jobOperationId"=$1 LIMIT 1`,
+          [opId]
+        );
+        if ((stillMissing.rowCount ?? 0) === 0) {
+          await client.query(
+            `INSERT INTO "jobOperationPickup" ("jobOperationId","employeeId",quantity,configuration,"companyId","createdBy")
+               VALUES ($1,$2,$3,$4::jsonb,$5,$6)`,
+            [opId, employeeId, qty, configJson, companyId, userId]
+          );
+        }
+      }
+    };
+
+    // ── TSHIRT-001: In Progress ──────────────────────────────────────────
+    if (tshirtId) {
+      const tshirt = await getOrCreateGarmentJob(tshirtId, "In Progress", 40);
+
+      const cutOpId = await getOrCreateGarmentOp(
+        tshirt.jobId,
+        tshirt.mmId,
+        1,
+        cuttingProcId,
+        cuttingWCId,
+        L.garmentOps.tshirtCutDesc,
+        15,
+        "Done"
+      );
+      const sewOpId = await getOrCreateGarmentOp(
+        tshirt.jobId,
+        tshirt.mmId,
+        2,
+        sewingProcId,
+        sewingWCId,
+        L.garmentOps.tshirtSewDesc,
+        25,
+        "In Progress"
+      );
+      await getOrCreateGarmentOp(
+        tshirt.jobId,
+        tshirt.mmId,
+        3,
+        finishingProcId,
+        sewingWCId,
+        L.garmentOps.tshirtPressDesc,
+        10,
+        "Todo"
+      );
+      await getOrCreateGarmentOp(
+        tshirt.jobId,
+        tshirt.mmId,
+        4,
+        qiProcId2,
+        cuttingWCId,
+        L.garmentOps.tshirtQiDesc,
+        8,
+        "Todo"
+      );
+
+      // Cutting op complete — all 40 pieces cut, full production + pickup with Black/dark config
+      const blackColor = L.configParams.colorOptions[0]!;
+      const navyColor = L.configParams.colorOptions[2]!;
+      const tshirtBlackConfig = JSON.stringify({
+        configTable: [{ S: 5, M: 10, L: 12, XL: 8, XXL: 5, color: blackColor }],
+        configTablePrimaryKeys: L.configParams.sizeOptions
+      });
+      await seedGarmentProdRecord(
+        tshirt.jobId,
+        cutOpId,
+        cuttingWCId,
+        40,
+        48,
+        46,
+        tshirtBlackConfig
+      );
+
+      // Sewing op in progress:
+      //   - 30 pieces picked up to sewing station (partial batch, Navy colorway)
+      //   - 20 of those already sewn (partial production)
+      //   Worker still has 10 more pieces in hand.
+      // Pickup: 30 pieces (S:5+M:7+L:10+XL:5+XXL:3=30). Production: 20 sewn (S:2+M:4+L:8+XL:4+XXL:2=20).
+      // Remaining 10 still in worker's hands — pickup always ≥ production per size.
+      const tshirtNavyConfig = JSON.stringify({
+        configTable: [{ S: 5, M: 7, L: 10, XL: 5, XXL: 3, color: navyColor }],
+        configTablePrimaryKeys: L.configParams.sizeOptions
+      });
+      const tshirtNavyProdConfig = JSON.stringify({
+        configTable: [{ S: 2, M: 4, L: 8, XL: 4, XXL: 2, color: navyColor }],
+        configTablePrimaryKeys: L.configParams.sizeOptions
+      });
+
+      // Pickup: 30 pieces taken to sewing station.
+      // DELETE all existing pickups first so re-runs always produce exactly one record.
+      await client.query(
+        `DELETE FROM "jobOperationPickup" WHERE "jobOperationId"=$1`,
+        [sewOpId]
+      );
+      await client.query(
+        `INSERT INTO "jobOperationPickup" ("jobOperationId","employeeId",quantity,configuration,"companyId","createdBy")
+           VALUES ($1,$2,30,$3::jsonb,$4,$5)`,
+        [sewOpId, employeeId, tshirtNavyConfig, companyId, userId]
+      );
+
+      // Production: 20 pieces sewn so far (partial completion)
+      const exSewPE = await client.query<{ id: string }>(
+        `SELECT id FROM "productionEvent" WHERE "jobOperationId"=$1 LIMIT 1`,
+        [sewOpId]
+      );
+      let sewPeId: string;
+      if (exSewPE.rows.length > 0) {
+        sewPeId = exSewPE.rows[0]!.id;
+      } else {
+        const r = await client.query<{ id: string }>(
+          `INSERT INTO "productionEvent" ("jobOperationId",type,"startTime","employeeId","workCenterId","companyId","createdBy")
+             VALUES ($1,'Labor'::"productionEventType",NOW()-interval'4 hours',$2,$3,$4,$5) RETURNING id`,
+          [sewOpId, employeeId, sewingWCId, companyId, userId]
+        );
+        sewPeId = r.rows[0]!.id;
+      }
+      const exSewPQR = await client.query<{ id: string }>(
+        `SELECT id FROM "productionQuantityReport" WHERE "jobOperationId"=$1 LIMIT 1`,
+        [sewOpId]
+      );
+      let sewPqrId: string;
+      if (exSewPQR.rows.length > 0) {
+        sewPqrId = exSewPQR.rows[0]!.id;
+      } else {
+        const r = await client.query<{ id: string }>(
+          `INSERT INTO "productionQuantityReport" ("jobId","jobOperationId","employeeId","originalQuantity","companyId","createdBy")
+             VALUES ($1,$2,$3,20,$4,$5) RETURNING id`,
+          [tshirt.jobId, sewOpId, employeeId, companyId, userId]
+        );
+        sewPqrId = r.rows[0]!.id;
+      }
+      const exSewPQ = await client.query(
+        `SELECT 1 FROM "productionQuantity" WHERE "jobOperationId"=$1 LIMIT 1`,
+        [sewOpId]
+      );
+      if ((exSewPQ.rowCount ?? 0) === 0) {
+        await client.query(
+          `INSERT INTO "productionQuantity" ("reportId","jobOperationId",type,quantity,"laborProductionEventId","employeeId",configuration,"companyId","createdBy")
+             VALUES ($1,$2,'Production'::"productionQuantityType",20,$3,$4,$5::jsonb,$6,$7)`,
+          [
+            sewPqrId,
+            sewOpId,
+            sewPeId,
+            employeeId,
+            tshirtNavyProdConfig,
+            companyId,
+            userId
+          ]
+        );
+      } else {
+        await client.query(
+          `UPDATE "productionQuantity" SET configuration=$1::jsonb WHERE "jobOperationId"=$2 AND configuration IS NULL`,
+          [tshirtNavyProdConfig, sewOpId]
         );
       }
     }
-    console.log(`   Created configuration parameters and rules`);
+
+    // ── JACKET-001: Ready ────────────────────────────────────────────────
+    if (jacketId) {
+      const jacket = await getOrCreateGarmentJob(jacketId, "Ready", 20);
+
+      await getOrCreateGarmentOp(
+        jacket.jobId,
+        jacket.mmId,
+        1,
+        cuttingProcId,
+        cuttingWCId,
+        L.garmentOps.jacketCutDesc,
+        20,
+        "Todo"
+      );
+      await getOrCreateGarmentOp(
+        jacket.jobId,
+        jacket.mmId,
+        2,
+        sewingProcId,
+        sewingWCId,
+        L.garmentOps.jacketSewDesc,
+        40,
+        "Todo"
+      );
+      await getOrCreateGarmentOp(
+        jacket.jobId,
+        jacket.mmId,
+        3,
+        sewingProcId,
+        sewingWCId,
+        L.garmentOps.jacketHardwareDesc,
+        20,
+        "Todo"
+      );
+      await getOrCreateGarmentOp(
+        jacket.jobId,
+        jacket.mmId,
+        4,
+        qiProcId2,
+        cuttingWCId,
+        L.garmentOps.jacketQiDesc,
+        10,
+        "Todo"
+      );
+    }
+
+    console.log(`   Created clothing jobs for TSHIRT-001 and JACKET-001`);
   }
 
   // ─── Step 88: qualityDocumentStep ─────────────────────────────────────────
@@ -4505,16 +4787,29 @@ export async function seedDemoData(
   // ─── Step 93: job sub-records ─────────────────────────────────────────────
   console.log("93. Seeding job sub-records...");
   {
+    // Exclude configurable clothing items so their operations never get null-config records.
     const jopRows = await client.query<{ id: string; jobId: string }>(
-      `SELECT id, "jobId" FROM "jobOperation" WHERE "companyId"=$1 LIMIT 2`,
+      `SELECT jo.id, jo."jobId" FROM "jobOperation" jo
+         JOIN job j ON j.id = jo."jobId"
+         JOIN item i ON i.id = j."itemId"
+         WHERE jo."companyId"=$1
+           AND i."readableId" NOT IN ('TSHIRT-001','JACKET-001')
+         LIMIT 2`,
       [companyId]
     );
     const jmmRow = await client.query<{ id: string; jobId: string }>(
-      `SELECT id, "jobId" FROM "jobMakeMethod" WHERE "companyId"=$1 LIMIT 1`,
+      `SELECT jmm.id, jmm."jobId" FROM "jobMakeMethod" jmm
+         JOIN job j ON j.id = jmm."jobId"
+         JOIN item i ON i.id = j."itemId"
+         WHERE jmm."companyId"=$1
+           AND i."readableId" NOT IN ('TSHIRT-001','JACKET-001')
+         LIMIT 1`,
       [companyId]
     );
     const itemRow = await client.query<{ id: string }>(
-      `SELECT id FROM item WHERE "companyId"=$1 LIMIT 1`,
+      `SELECT id FROM item WHERE "companyId"=$1
+         AND "readableId" NOT IN ('TSHIRT-001','JACKET-001','FABRIC-CTN-01','THREAD-PLY-01')
+         LIMIT 1`,
       [companyId]
     );
     const jopStepRow = await client.query<{ id: string }>(
@@ -4631,12 +4926,18 @@ export async function seedDemoData(
         `INSERT INTO "jobOperationNote" ("jobOperationId", note, "companyId", "createdBy") VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING`,
         [jop1.id, "Dev note for job operation", companyId, userId]
       );
-      // jobOperationPickup
+      // jobOperationPickup — only insert if none exists (table has no unique constraint)
       if (empId) {
-        await client.query(
-          `INSERT INTO "jobOperationPickup" ("jobOperationId", "employeeId", quantity, "companyId", "createdBy") VALUES ($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING`,
-          [jop1.id, empId, 1, companyId, userId]
+        const existsJOP = await client.query(
+          `SELECT 1 FROM "jobOperationPickup" WHERE "jobOperationId"=$1 LIMIT 1`,
+          [jop1.id]
         );
+        if ((existsJOP.rowCount ?? 0) === 0) {
+          await client.query(
+            `INSERT INTO "jobOperationPickup" ("jobOperationId", "employeeId", quantity, "companyId", "createdBy") VALUES ($1, $2, $3, $4, $5)`,
+            [jop1.id, empId, 1, companyId, userId]
+          );
+        }
       }
     }
 
@@ -4821,13 +5122,20 @@ export async function seedDemoData(
   // ─── Step 98: demandForecast + demandProjection (Planning / Projections pages)
   console.log("98. Seeding demand forecast and projections...");
   {
-    // get_production_planning and get_production_projections both require rows in
-    // demandForecast/demandProjection for 'Make' items with current period IDs.
+    // get_production_planning/projections require 'Make' items; get_purchasing_planning requires 'Buy' items.
     const makeItemRows = await client.query<{ id: string }>(
       `SELECT id FROM item WHERE "companyId"=$1 AND "replenishmentSystem"='Make' AND active=true`,
       [companyId]
     );
+    const buyItemRows = await client.query<{ id: string }>(
+      `SELECT id FROM item WHERE "companyId"=$1 AND "replenishmentSystem"='Buy' AND "itemTrackingType"!='Non-Inventory' AND active=true`,
+      [companyId]
+    );
     const makeItemIdsSeed = makeItemRows.rows.map((r) => r.id);
+    const allItemIdsSeed = [
+      ...makeItemIdsSeed,
+      ...buyItemRows.rows.map((r) => r.id)
+    ];
 
     // Get 12 upcoming week periods (distinct by start date)
     const periodRows2 = await client.query<{ id: string }>(
@@ -4839,7 +5147,8 @@ export async function seedDemoData(
 
     let dfInserted = 0;
     let dpInserted = 0;
-    for (const itemId of makeItemIdsSeed) {
+    for (const itemId of allItemIdsSeed) {
+      const isMakeItem = makeItemIdsSeed.includes(itemId);
       for (const periodId of periodIdsSeed) {
         const qty = Math.floor(Math.random() * 20) + 5;
         const dfCheck = await client.query(
@@ -4854,17 +5163,19 @@ export async function seedDemoData(
           );
           dfInserted++;
         }
-        const dpCheck = await client.query(
-          `SELECT 1 FROM "demandProjection" WHERE "itemId"=$1 AND "locationId"=$2 AND "periodId"=$3 LIMIT 1`,
-          [itemId, locationId, periodId]
-        );
-        if ((dpCheck.rowCount ?? 0) === 0) {
-          await client.query(
-            `INSERT INTO "demandProjection" ("itemId","locationId","periodId","forecastQuantity","forecastMethod","companyId","createdBy","updatedBy")
-               VALUES ($1,$2,$3,$4,'Manual',$5,$6,$6)`,
-            [itemId, locationId, periodId, qty, companyId, userId]
+        if (isMakeItem) {
+          const dpCheck = await client.query(
+            `SELECT 1 FROM "demandProjection" WHERE "itemId"=$1 AND "locationId"=$2 AND "periodId"=$3 LIMIT 1`,
+            [itemId, locationId, periodId]
           );
-          dpInserted++;
+          if ((dpCheck.rowCount ?? 0) === 0) {
+            await client.query(
+              `INSERT INTO "demandProjection" ("itemId","locationId","periodId","forecastQuantity","forecastMethod","companyId","createdBy","updatedBy")
+                 VALUES ($1,$2,$3,$4,'Manual',$5,$6,$6)`,
+              [itemId, locationId, periodId, qty, companyId, userId]
+            );
+            dpInserted++;
+          }
         }
       }
     }
@@ -4896,6 +5207,939 @@ export async function seedDemoData(
       }
     }
   }
+
+  // ─── Step 100: Additional MES jobs and production floor data ────────────
+  console.log("100. Seeding additional MES jobs and production floor data...");
+  {
+    // ── New Make items for additional jobs ──────────────────────────────
+    const mesItemDefs = L.mesItems;
+    const mesItemIds: Record<string, string> = {};
+    for (const itm of mesItemDefs) {
+      const ex = await client.query<{ id: string }>(
+        `SELECT id FROM item WHERE "readableId" = $1 AND "companyId" = $2 LIMIT 1`,
+        [itm.readableId, companyId]
+      );
+      if (ex.rows.length > 0) {
+        mesItemIds[itm.readableId] = ex.rows[0]!.id;
+      } else {
+        const r = await client.query<{ id: string }>(
+          `INSERT INTO item ("readableId", name, description, type, "replenishmentSystem", "itemTrackingType", "unitOfMeasureCode", active, "companyId", "createdBy")
+             VALUES ($1, $2, $3, 'Part'::"itemType", 'Make'::"itemReplenishmentSystem", 'Inventory'::"itemTrackingType", 'EA', true, $4, $5)
+             RETURNING id`,
+          [itm.readableId, itm.name, itm.description, companyId, userId]
+        );
+        mesItemIds[itm.readableId] = r.rows[0]!.id;
+      }
+      // Each MES item is type 'Part' — ensure a part record exists
+      await client.query(
+        `INSERT INTO part (id, "companyId", "createdBy")
+           VALUES ($1, $2, $3)
+           ON CONFLICT (id, "companyId") DO NOTHING`,
+        [itm.readableId, companyId, userId]
+      );
+    }
+
+    // ── Inspection Station 1 (dedicated QC work center) ─────────────────
+    let inspWCId: string | null = null;
+    {
+      const ex = await client.query<{ id: string }>(
+        `SELECT id FROM "workCenter" WHERE name = 'Inspection Station 1' AND "companyId" = $1 LIMIT 1`,
+        [companyId]
+      );
+      if (ex.rows.length > 0) {
+        inspWCId = ex.rows[0]!.id;
+      } else {
+        const r = await client.query<{ id: string }>(
+          `INSERT INTO "workCenter" (name, description, "laborRate", "machineRate", "locationId", "companyId", "createdBy")
+             VALUES ('Inspection Station 1', 'Dimensional and quality inspection station', 35, 0, $1, $2, $3) RETURNING id`,
+          [locationId, companyId, userId]
+        );
+        inspWCId = r.rows[0]!.id;
+        const qiProcId = processIds["Quality Inspection"];
+        if (qiProcId) {
+          await client.query(
+            `INSERT INTO "workCenterProcess" ("workCenterId", "processId", "companyId", "createdBy")
+               VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING`,
+            [inspWCId, qiProcId, companyId, userId]
+          );
+        }
+      }
+    }
+
+    const cncWC = workCenterIds["CNC Mill #1"] ?? null;
+    const asmWC = workCenterIds["Assembly Station 1"] ?? null;
+    const wldWC = workCenterIds["Welding Cell A"] ?? null;
+    const cncProc = processIds["CNC Machining"] ?? null;
+    const asmProc = processIds["Assembly"] ?? null;
+    const wldProc = processIds["Welding"] ?? null;
+    const qiProc = processIds["Quality Inspection"] ?? null;
+
+    // ── Helpers ──────────────────────────────────────────────────────────
+
+    const getOrCreateJob = async (
+      itemId: string | null,
+      status: string,
+      qty: number
+    ): Promise<{ jobId: string; mmId: string | null } | null> => {
+      if (!itemId) return null;
+      const exJob = await client.query<{ id: string }>(
+        `SELECT id FROM job WHERE "itemId" = $1 AND "companyId" = $2 LIMIT 1`,
+        [itemId, companyId]
+      );
+      let jobId: string;
+      if (exJob.rows.length > 0) {
+        jobId = exJob.rows[0]!.id;
+      } else {
+        const jrid = await nextSeq("job");
+        const r = await client.query<{ id: string }>(
+          `INSERT INTO job ("jobId", "itemId", "unitOfMeasureCode", "locationId", status, quantity, "companyId", "createdBy")
+             VALUES ($1, $2, 'EA', $3, $4::"jobStatus", $5, $6, $7) RETURNING id`,
+          [jrid, itemId, locationId, status, qty, companyId, userId]
+        );
+        jobId = r.rows[0]!.id;
+      }
+      const mmRow = await client.query<{ id: string }>(
+        `SELECT id FROM "jobMakeMethod" WHERE "jobId" = $1 AND "parentMaterialId" IS NULL LIMIT 1`,
+        [jobId]
+      );
+      return { jobId, mmId: mmRow.rows[0]?.id ?? null };
+    };
+
+    // Creates an operation + step + optional production event + quantity
+    const addOp = async (params: {
+      jobId: string;
+      mmId: string | null;
+      order: number;
+      procId: string | null;
+      wcId: string | null;
+      description: string;
+      laborTime: number;
+      opStatus: string;
+      stepName: string;
+      stepType: string;
+      prod?: {
+        startHoursAgo: number;
+        endHoursAgo?: number; // omit = still active
+        qty?: number; // omit = no quantity record
+      };
+    }) => {
+      const exOp = await client.query<{ id: string }>(
+        `SELECT id FROM "jobOperation" WHERE "jobId" = $1 AND description = $2 AND "companyId" = $3 LIMIT 1`,
+        [params.jobId, params.description, companyId]
+      );
+      let opId: string;
+      if (exOp.rows.length > 0) {
+        opId = exOp.rows[0]!.id;
+      } else {
+        const r = await client.query<{ id: string }>(
+          `INSERT INTO "jobOperation" ("jobId", "jobMakeMethodId", "order", "processId", "workCenterId", description, "laborTime", "laborUnit", status, "companyId", "createdBy")
+             VALUES ($1, $2, $3, $4, $5, $6, $7, 'Minutes/Piece'::factor, $8::"jobOperationStatus", $9, $10) RETURNING id`,
+          [
+            params.jobId,
+            params.mmId,
+            params.order,
+            params.procId,
+            params.wcId,
+            params.description,
+            params.laborTime,
+            params.opStatus,
+            companyId,
+            userId
+          ]
+        );
+        opId = r.rows[0]!.id;
+      }
+
+      const exStep = await client.query(
+        `SELECT 1 FROM "jobOperationStep" WHERE "operationId" = $1 LIMIT 1`,
+        [opId]
+      );
+      if ((exStep.rowCount ?? 0) === 0) {
+        await client.query(
+          `INSERT INTO "jobOperationStep" (name, "operationId", type, required, "sortOrder", "companyId", "createdBy")
+             VALUES ($1, $2, $3::"procedureStepType", true, 1, $4, $5)`,
+          [params.stepName, opId, params.stepType, companyId, userId]
+        );
+      }
+
+      if (!params.prod) return opId;
+
+      const exPE = await client.query<{ id: string }>(
+        `SELECT id FROM "productionEvent" WHERE "jobOperationId" = $1 LIMIT 1`,
+        [opId]
+      );
+      let peId: string;
+      if (exPE.rows.length > 0) {
+        peId = exPE.rows[0]!.id;
+      } else if (params.prod.endHoursAgo !== undefined) {
+        const r = await client.query<{ id: string }>(
+          `INSERT INTO "productionEvent" ("jobOperationId", type, "startTime", "endTime", "employeeId", "workCenterId", "companyId", "createdBy")
+             VALUES ($1, 'Labor'::"productionEventType",
+               NOW() - ($2 * interval '1 hour'),
+               NOW() - ($3 * interval '1 hour'),
+               $4, $5, $6, $7) RETURNING id`,
+          [
+            opId,
+            params.prod.startHoursAgo,
+            params.prod.endHoursAgo,
+            employeeId,
+            params.wcId,
+            companyId,
+            userId
+          ]
+        );
+        peId = r.rows[0]!.id;
+      } else {
+        const r = await client.query<{ id: string }>(
+          `INSERT INTO "productionEvent" ("jobOperationId", type, "startTime", "employeeId", "workCenterId", "companyId", "createdBy")
+             VALUES ($1, 'Labor'::"productionEventType",
+               NOW() - ($2 * interval '1 hour'),
+               $3, $4, $5, $6) RETURNING id`,
+          [
+            opId,
+            params.prod.startHoursAgo,
+            employeeId,
+            params.wcId,
+            companyId,
+            userId
+          ]
+        );
+        peId = r.rows[0]!.id;
+      }
+
+      if (
+        params.prod.qty !== undefined &&
+        params.prod.endHoursAgo !== undefined
+      ) {
+        const exPQR = await client.query<{ id: string }>(
+          `SELECT id FROM "productionQuantityReport" WHERE "jobOperationId" = $1 LIMIT 1`,
+          [opId]
+        );
+        let pqrId: string;
+        if (exPQR.rows.length > 0) {
+          pqrId = exPQR.rows[0]!.id;
+        } else {
+          const r = await client.query<{ id: string }>(
+            `INSERT INTO "productionQuantityReport" ("jobId", "jobOperationId", "employeeId", "originalQuantity", "companyId", "createdBy")
+               VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
+            [params.jobId, opId, employeeId, params.prod.qty, companyId, userId]
+          );
+          pqrId = r.rows[0]!.id;
+        }
+        const exPQ = await client.query(
+          `SELECT 1 FROM "productionQuantity" WHERE "jobOperationId" = $1 LIMIT 1`,
+          [opId]
+        );
+        if ((exPQ.rowCount ?? 0) === 0) {
+          await client.query(
+            `INSERT INTO "productionQuantity" ("reportId", "jobOperationId", type, quantity, "laborProductionEventId", "employeeId", "companyId", "createdBy")
+               VALUES ($1, $2, 'Production'::"productionQuantityType", $3, $4, $5, $6, $7)`,
+            [pqrId, opId, params.prod.qty, peId, employeeId, companyId, userId]
+          );
+        }
+      }
+
+      return opId;
+    };
+
+    // ── Job A: SHAFT-ASM-001 – In Progress ───────────────────────────────
+    const jobA = await getOrCreateJob(
+      itemIds["SHAFT-ASM-001"] ?? null,
+      "In Progress",
+      10
+    );
+    if (jobA) {
+      await addOp({
+        jobId: jobA.jobId,
+        mmId: jobA.mmId,
+        order: 1,
+        procId: cncProc,
+        wcId: cncWC,
+        description: "Turning",
+        laborTime: 20,
+        opStatus: "Done",
+        stepName: "Check diameter to spec",
+        stepType: "Measurement",
+        prod: { startHoursAgo: 4, endHoursAgo: 2, qty: 10 }
+      });
+      await addOp({
+        jobId: jobA.jobId,
+        mmId: jobA.mmId,
+        order: 2,
+        procId: asmProc,
+        wcId: asmWC,
+        description: "Assembly",
+        laborTime: 45,
+        opStatus: "In Progress",
+        stepName: "Torque bearing retainer bolts",
+        stepType: "Checkbox",
+        prod: { startHoursAgo: 1 }
+      });
+      await addOp({
+        jobId: jobA.jobId,
+        mmId: jobA.mmId,
+        order: 3,
+        procId: qiProc,
+        wcId: inspWCId,
+        description: "Inspection",
+        laborTime: 15,
+        opStatus: "Todo",
+        stepName: "Pass/fail dimensional check",
+        stepType: "Checkbox"
+      });
+    }
+
+    // ── Job B: VALVE-BODY-001 – Completed ────────────────────────────────
+    const jobB = await getOrCreateJob(
+      mesItemIds["VALVE-BODY-001"] ?? null,
+      "Completed",
+      50
+    );
+    if (jobB) {
+      await addOp({
+        jobId: jobB.jobId,
+        mmId: jobB.mmId,
+        order: 1,
+        procId: cncProc,
+        wcId: cncWC,
+        description: "Machining",
+        laborTime: 35,
+        opStatus: "Done",
+        stepName: "Verify port dimensions",
+        stepType: "Measurement",
+        prod: { startHoursAgo: 72, endHoursAgo: 70, qty: 50 }
+      });
+      await addOp({
+        jobId: jobB.jobId,
+        mmId: jobB.mmId,
+        order: 2,
+        procId: qiProc,
+        wcId: inspWCId,
+        description: "Pressure Test",
+        laborTime: 20,
+        opStatus: "Done",
+        stepName: "Record test pressure reading",
+        stepType: "Value",
+        prod: { startHoursAgo: 70, endHoursAgo: 69, qty: 50 }
+      });
+    }
+
+    // ── Job C: GEAR-A-001 – Paused ───────────────────────────────────────
+    const jobC = await getOrCreateJob(
+      mesItemIds["GEAR-A-001"] ?? null,
+      "Paused",
+      15
+    );
+    if (jobC) {
+      await addOp({
+        jobId: jobC.jobId,
+        mmId: jobC.mmId,
+        order: 1,
+        procId: cncProc,
+        wcId: cncWC,
+        description: "Gear Cutting",
+        laborTime: 60,
+        opStatus: "Paused",
+        stepName: "Verify gear tooth profile",
+        stepType: "Measurement"
+      });
+      await addOp({
+        jobId: jobC.jobId,
+        mmId: jobC.mmId,
+        order: 2,
+        procId: qiProc,
+        wcId: inspWCId,
+        description: "Inspection",
+        laborTime: 20,
+        opStatus: "Todo",
+        stepName: "Measure runout within tolerance",
+        stepType: "Measurement"
+      });
+    }
+
+    // ── Job D: FRAME-001 – In Progress ───────────────────────────────────
+    const jobD = await getOrCreateJob(
+      mesItemIds["FRAME-001"] ?? null,
+      "In Progress",
+      8
+    );
+    if (jobD) {
+      await addOp({
+        jobId: jobD.jobId,
+        mmId: jobD.mmId,
+        order: 1,
+        procId: cncProc,
+        wcId: cncWC,
+        description: "Cutting",
+        laborTime: 30,
+        opStatus: "Done",
+        stepName: "Check cut lengths to drawing",
+        stepType: "Measurement",
+        prod: { startHoursAgo: 24, endHoursAgo: 22, qty: 8 }
+      });
+      await addOp({
+        jobId: jobD.jobId,
+        mmId: jobD.mmId,
+        order: 2,
+        procId: wldProc,
+        wcId: wldWC,
+        description: "Welding",
+        laborTime: 90,
+        opStatus: "In Progress",
+        stepName: "Inspect weld bead quality",
+        stepType: "Checkbox",
+        prod: { startHoursAgo: 2 }
+      });
+      await addOp({
+        jobId: jobD.jobId,
+        mmId: jobD.mmId,
+        order: 3,
+        procId: asmProc,
+        wcId: asmWC,
+        description: "Grinding",
+        laborTime: 30,
+        opStatus: "Todo",
+        stepName: "Surface finish within spec",
+        stepType: "Checkbox"
+      });
+    }
+
+    // ── Job E: HOUSING-001 – Completed ───────────────────────────────────
+    const jobE = await getOrCreateJob(
+      mesItemIds["HOUSING-001"] ?? null,
+      "Completed",
+      20
+    );
+    if (jobE) {
+      await addOp({
+        jobId: jobE.jobId,
+        mmId: jobE.mmId,
+        order: 1,
+        procId: cncProc,
+        wcId: cncWC,
+        description: "Boring",
+        laborTime: 25,
+        opStatus: "Done",
+        stepName: "Verify bore diameter",
+        stepType: "Measurement",
+        prod: { startHoursAgo: 120, endHoursAgo: 118, qty: 20 }
+      });
+      await addOp({
+        jobId: jobE.jobId,
+        mmId: jobE.mmId,
+        order: 2,
+        procId: wldProc,
+        wcId: wldWC,
+        description: "Welding",
+        laborTime: 40,
+        opStatus: "Done",
+        stepName: "Inspect weld integrity",
+        stepType: "Checkbox",
+        prod: { startHoursAgo: 118, endHoursAgo: 116, qty: 20 }
+      });
+      await addOp({
+        jobId: jobE.jobId,
+        mmId: jobE.mmId,
+        order: 3,
+        procId: asmProc,
+        wcId: asmWC,
+        description: "Press Fit",
+        laborTime: 15,
+        opStatus: "Done",
+        stepName: "Check bearing seating force",
+        stepType: "Value",
+        prod: { startHoursAgo: 116, endHoursAgo: 115, qty: 20 }
+      });
+      await addOp({
+        jobId: jobE.jobId,
+        mmId: jobE.mmId,
+        order: 4,
+        procId: qiProc,
+        wcId: inspWCId,
+        description: "QC",
+        laborTime: 10,
+        opStatus: "Done",
+        stepName: "Sign off final inspection",
+        stepType: "Checkbox",
+        prod: { startHoursAgo: 115, endHoursAgo: 114, qty: 20 }
+      });
+    }
+
+    console.log("   Created additional MES jobs and production floor data");
+  }
+
+  // ─── Step 101: Remaining MES tables ──────────────────────────────────────
+  console.log("101. Seeding remaining MES tables...");
+  {
+    // ── nonConformanceRequiredAction ─────────────────────────────────────
+    for (const name of ["Scrap", "Rework", "Use As-Is", "Return to Supplier"]) {
+      const ex = await client.query(
+        `SELECT 1 FROM "nonConformanceRequiredAction" WHERE name = $1 AND "companyId" = $2 LIMIT 1`,
+        [name, companyId]
+      );
+      if ((ex.rowCount ?? 0) === 0) {
+        await client.query(
+          `INSERT INTO "nonConformanceRequiredAction" (name, "companyId", "createdBy") VALUES ($1, $2, $3)`,
+          [name, companyId, userId]
+        );
+      }
+    }
+
+    // ── scrapReason ─────────────────────────────────────────────────────
+    for (const name of ["Defective", "Damaged", "Quality"]) {
+      await client.query(
+        `INSERT INTO "scrapReason" ("companyId", name, "createdBy")
+           VALUES ($1, $2, $3) ON CONFLICT ON CONSTRAINT "scrapReason_name_unique" DO NOTHING`,
+        [companyId, name, userId]
+      );
+    }
+
+    // ── maintenanceFailureMode ────────────────────────────────────────
+    for (const name of [
+      "Worn Components",
+      "Electrical Fault",
+      "Operator Error"
+    ]) {
+      const ex = await client.query(
+        `SELECT 1 FROM "maintenanceFailureMode" WHERE name = $1 AND "companyId" = $2 LIMIT 1`,
+        [name, companyId]
+      );
+      if ((ex.rowCount ?? 0) === 0) {
+        await client.query(
+          `INSERT INTO "maintenanceFailureMode" (name, "companyId", "createdBy") VALUES ($1, $2, $3)`,
+          [name, companyId, userId]
+        );
+      }
+    }
+
+    // ── kanban cards for Buy items ─────────────────────────────────────
+    const kanbanItems = ["STEEL-ROD-01", "BEARING-6205", "FASTENER-KIT-01"];
+    for (const readableId of kanbanItems) {
+      const itmRow = await client.query<{ id: string }>(
+        `SELECT id FROM item WHERE "readableId" = $1 AND "companyId" = $2 LIMIT 1`,
+        [readableId, companyId]
+      );
+      if (!itmRow.rows[0]) continue;
+      const itmId = itmRow.rows[0].id;
+      const supplierRow = await client.query<{ id: string }>(
+        `SELECT id FROM supplier WHERE "companyId" = $1 LIMIT 1`,
+        [companyId]
+      );
+      const supplierId = supplierRow.rows[0]?.id ?? null;
+      const exKb = await client.query(
+        `SELECT 1 FROM kanban WHERE "itemId" = $1 AND "companyId" = $2 LIMIT 1`,
+        [itmId, companyId]
+      );
+      if ((exKb.rowCount ?? 0) === 0) {
+        await client.query(
+          `INSERT INTO kanban ("itemId", "replenishmentSystem", quantity, "locationId", "supplierId", "companyId", "createdBy")
+             VALUES ($1, 'Buy'::"itemReplenishmentSystem", 50, $2, $3, $4, $5)`,
+          [itmId, locationId, supplierId, companyId, userId]
+        );
+      }
+    }
+
+    // ── jobMaterial for the drive shaft job ───────────────────────────
+    const shaftJobRow = await client.query<{
+      id: string;
+      jobMakeMethodId: string;
+    }>(
+      `SELECT j.id, jop."jobMakeMethodId"
+         FROM job j
+         JOIN "jobOperation" jop ON jop."jobId" = j.id
+         JOIN item i ON j."itemId" = i.id
+         WHERE i."readableId" = 'SHAFT-ASM-001' AND j."companyId" = $1 LIMIT 1`,
+      [companyId]
+    );
+    const shaftJob = shaftJobRow.rows[0];
+
+    const steelRodRow = await client.query<{ id: string }>(
+      `SELECT id FROM item WHERE "readableId" = 'STEEL-ROD-01' AND "companyId" = $1 LIMIT 1`,
+      [companyId]
+    );
+    const steelRodId = steelRodRow.rows[0]?.id;
+
+    let shaftJobMaterialId: string | null = null;
+    if (shaftJob && steelRodId) {
+      const exJM = await client.query<{ id: string }>(
+        `SELECT id FROM "jobMaterial" WHERE "jobId" = $1 AND "itemId" = $2 AND "companyId" = $3 LIMIT 1`,
+        [shaftJob.id, steelRodId, companyId]
+      );
+      if (exJM.rows.length > 0) {
+        shaftJobMaterialId = exJM.rows[0]!.id;
+      } else {
+        const r = await client.query<{ id: string }>(
+          `INSERT INTO "jobMaterial" ("jobId", "itemId", "itemType", "methodType", "order", description, quantity, "unitOfMeasureCode", "unitCost", "companyId", "createdBy", "jobMakeMethodId")
+             VALUES ($1, $2, 'Material', 'Pull from Inventory'::"methodType", 1, '1020 Steel Rod stock', 2, 'EA', 4.50, $3, $4, $5)
+             RETURNING id`,
+          [
+            shaftJob.id,
+            steelRodId,
+            companyId,
+            userId,
+            shaftJob.jobMakeMethodId ?? null
+          ]
+        );
+        shaftJobMaterialId = r.rows[0]!.id;
+      }
+    }
+
+    // ── pickingList + pickingListLine ─────────────────────────────────
+    if (shaftJob && shaftJobMaterialId) {
+      const exPL = await client.query(
+        `SELECT 1 FROM "pickingList" WHERE "companyId" = $1 LIMIT 1`,
+        [companyId]
+      );
+      if ((exPL.rowCount ?? 0) === 0) {
+        const plReadableId = await nextSeq("pickingList");
+        const plRow = await client.query<{ id: string }>(
+          `INSERT INTO "pickingList" ("pickingListId", status, "locationId", "assignee", "companyId", "createdBy")
+             VALUES ($1, 'Draft'::"pickingListStatus", $2, $3, $4, $5) RETURNING id`,
+          [plReadableId, locationId, userId, companyId, userId]
+        );
+        const plId = plRow.rows[0]!.id;
+
+        const shaftOpRow = await client.query<{ id: string }>(
+          `SELECT id FROM "jobOperation" WHERE "jobId" = $1 AND "companyId" = $2 ORDER BY "order" LIMIT 1`,
+          [shaftJob.id, companyId]
+        );
+        await client.query(
+          `INSERT INTO "pickingListLine" ("pickingListId", "jobId", "jobMaterialId", "jobOperationId", "itemId", "quantityToPick", status, "companyId", "createdBy")
+             VALUES ($1, $2, $3, $4, $5, 2, 'Pending'::"pickingListLineStatus", $6, $7)`,
+          [
+            plId,
+            shaftJob.id,
+            shaftJobMaterialId,
+            shaftOpRow.rows[0]?.id ?? null,
+            steelRodId,
+            companyId,
+            userId
+          ]
+        );
+      }
+    }
+
+    // ── rework record (Housing job: QC triggered rework on press-fit) ─
+    const housingJobRow = await client.query<{ id: string }>(
+      `SELECT j.id FROM job j
+         JOIN item i ON j."itemId" = i.id
+         WHERE i."readableId" = 'HOUSING-001' AND j."companyId" = $1 LIMIT 1`,
+      [companyId]
+    );
+    if (housingJobRow.rows[0]) {
+      const housingJobId = housingJobRow.rows[0].id;
+      const exRW = await client.query(
+        `SELECT 1 FROM rework WHERE "jobId" = $1 AND "companyId" = $2 LIMIT 1`,
+        [housingJobId, companyId]
+      );
+      if ((exRW.rowCount ?? 0) === 0) {
+        // triggered at QC (order 4), target = press fit (order 3)
+        const opsRow = await client.query<{ id: string; order: number }>(
+          `SELECT id, "order" FROM "jobOperation"
+             WHERE "jobId" = $1 AND "companyId" = $2 AND "order" IN (3, 4)
+             ORDER BY "order"`,
+          [housingJobId, companyId]
+        );
+        const pressOp = opsRow.rows.find((r) => r.order === 3);
+        const qcOp = opsRow.rows.find((r) => r.order === 4);
+        if (pressOp && qcOp) {
+          await client.query(
+            `INSERT INTO rework ("jobId", "triggeredAtJobOperationId", "targetJobOperationId", reason, quantity, "requestedById", "completedAt", "companyId")
+               VALUES ($1, $2, $3, 'Bearing not seated to correct depth during press-fit', 3, $4, NOW() - INTERVAL '110 hours', $5)`,
+            [housingJobId, qcOp.id, pressOp.id, userId, companyId]
+          );
+        }
+      }
+    }
+
+    console.log(
+      "   Seeded scrapReason, failureMode, kanban, pickingList, rework"
+    );
+  }
+
+  // ─── Step 102: fixedAssetClass, fixedAsset, depreciationRun, trackedEntity, inspectionDocument ──
+  console.log(
+    "102. Seeding fixed assets, tracked entities, inspection documents..."
+  );
+  {
+    // Resolve account IDs by number from the company's companyGroupId
+    const cgRow = await client.query<{ companyGroupId: string }>(
+      `SELECT "companyGroupId" FROM company WHERE id = $1`,
+      [companyId]
+    );
+    const cgId = cgRow.rows[0]?.companyGroupId;
+
+    if (cgId) {
+      const acctRow = await client.query<{ number: string; id: string }>(
+        `SELECT number, id FROM account WHERE "companyGroupId" = $1 AND "isGroup" = false AND number IN ('1310','1330','1350','1320','6310','6320')`,
+        [cgId]
+      );
+      const acctMap: Record<string, string> = {};
+      for (const r of acctRow.rows) acctMap[r.number] = r.id;
+
+      const assetAcctId = acctMap["1350"];
+      const accumDeprAcctId = acctMap["1330"];
+      const deprExpAcctId = acctMap["6310"];
+      const disposalAcctId = acctMap["1320"];
+      const writeOffAcctId = acctMap["6320"];
+
+      if (
+        assetAcctId &&
+        accumDeprAcctId &&
+        deprExpAcctId &&
+        disposalAcctId &&
+        writeOffAcctId
+      ) {
+        // fixedAssetClass
+        const exFac = await client.query(
+          `SELECT 1 FROM "fixedAssetClass" WHERE name = 'Machinery & Equipment' AND "companyId" = $1 LIMIT 1`,
+          [companyId]
+        );
+        let facId: string | undefined;
+        if ((exFac.rowCount ?? 0) === 0) {
+          const facRow = await client.query<{ id: string }>(
+            `INSERT INTO "fixedAssetClass" (name, "depreciationMethod", "usefulLifeMonths", "residualValuePercent",
+               "assetAccountId", "accumulatedDepreciationAccountId", "depreciationExpenseAccountId",
+               "writeOffAccountId", "writeDownAccountId", "disposalAccountId", "companyId", "createdBy")
+             VALUES ('Machinery & Equipment', 'Straight Line', 84, 10,
+               $1, $2, $3, $4, $4, $5, $6, $7) RETURNING id`,
+            [
+              assetAcctId,
+              accumDeprAcctId,
+              deprExpAcctId,
+              writeOffAcctId,
+              disposalAcctId,
+              companyId,
+              userId
+            ]
+          );
+          facId = facRow.rows[0]?.id;
+        } else {
+          const existing = await client.query<{ id: string }>(
+            `SELECT id FROM "fixedAssetClass" WHERE name = 'Machinery & Equipment' AND "companyId" = $1 LIMIT 1`,
+            [companyId]
+          );
+          facId = existing.rows[0]?.id;
+        }
+
+        if (facId) {
+          // fixedAsset (2 records)
+          const locationRow = await client.query<{ id: string }>(
+            `SELECT id FROM location WHERE "companyId" = $1 LIMIT 1`,
+            [companyId]
+          );
+          const locationId = locationRow.rows[0]?.id;
+
+          const assets = [
+            {
+              faId: "FA-001",
+              name: "CNC Lathe Machine",
+              serial: "CNC-2022-001",
+              cost: 85000,
+              acquiredDate: "2022-03-15"
+            },
+            {
+              faId: "FA-002",
+              name: "Conveyor Belt Assembly",
+              serial: "CVB-2023-007",
+              cost: 24500,
+              acquiredDate: "2023-06-01"
+            }
+          ];
+          for (const a of assets) {
+            const exFa = await client.query(
+              `SELECT 1 FROM "fixedAsset" WHERE "fixedAssetId" = $1 AND "companyId" = $2 LIMIT 1`,
+              [a.faId, companyId]
+            );
+            if ((exFa.rowCount ?? 0) === 0) {
+              await client.query(
+                `INSERT INTO "fixedAsset" ("fixedAssetId", "fixedAssetClassId", name, description, "serialNumber",
+                   status, "depreciationMethod", "usefulLifeMonths", "residualValuePercent",
+                   "acquisitionCost", "acquisitionDate", "depreciationStartDate",
+                   "accumulatedDepreciation", "locationId", "companyId", "createdBy")
+                 VALUES ($1, $2, $3, $4, $5,
+                   'Active', 'Straight Line', 84, 10,
+                   $6, $7, $7,
+                   0, $8, $9, $10)`,
+                [
+                  a.faId,
+                  facId,
+                  a.name,
+                  a.name,
+                  a.serial,
+                  a.cost,
+                  a.acquiredDate,
+                  locationId ?? null,
+                  companyId,
+                  userId
+                ]
+              );
+            }
+          }
+
+          // depreciationRun
+          const exDr = await client.query(
+            `SELECT 1 FROM "depreciationRun" WHERE "depreciationRunId" = 'DR-2025-12' AND "companyId" = $1 LIMIT 1`,
+            [companyId]
+          );
+          if ((exDr.rowCount ?? 0) === 0) {
+            await client.query(
+              `INSERT INTO "depreciationRun" ("depreciationRunId", "periodEnd", status, "companyId", "createdBy")
+               VALUES ('DR-2025-12', '2025-12-31', 'Draft', $1, $2)`,
+              [companyId, userId]
+            );
+          }
+        }
+      }
+    }
+
+    // trackedEntity — lot-tracked items from the seeded receipt
+    const receiptRow = await client.query<{ id: string; readableId: string }>(
+      `SELECT id, "receiptId" AS "readableId" FROM receipt WHERE "companyId" = $1 LIMIT 1`,
+      [companyId]
+    );
+    const receipt = receiptRow.rows[0];
+    if (receipt) {
+      const trackedItems = [
+        { itemKey: "STEEL-ROD-01", lotId: "LOT-SR-001", qty: 50 },
+        { itemKey: "CTRL-PCB-001", lotId: "LOT-PCB-001", qty: 25 }
+      ];
+      for (const t of trackedItems) {
+        const exTe = await client.query(
+          `SELECT 1 FROM "trackedEntity" WHERE "readableId" = $1 AND "companyId" = $2 LIMIT 1`,
+          [t.lotId, companyId]
+        );
+        if ((exTe.rowCount ?? 0) === 0) {
+          const itemRow = await client.query<{ id: string }>(
+            `SELECT id FROM item WHERE "readableId" = $1 AND "companyId" = $2 LIMIT 1`,
+            [t.itemKey, companyId]
+          );
+          const itemId = itemRow.rows[0]?.id;
+          await client.query(
+            `INSERT INTO "trackedEntity" (quantity, status, "sourceDocument", "sourceDocumentId", "sourceDocumentReadableId",
+               attributes, "readableId", "itemId", "companyId", "createdBy")
+             VALUES ($1, 'Available', 'Receipt', $2, $3,
+               '{}', $4, $5, $6, $7)`,
+            [
+              t.qty,
+              receipt.id,
+              receipt.readableId,
+              t.lotId,
+              itemId ?? null,
+              companyId,
+              userId
+            ]
+          );
+        }
+      }
+    }
+
+    // inspectionDocument — drawing for BRACKET-001
+    const bracketRow = await client.query<{ id: string }>(
+      `SELECT id FROM item WHERE "readableId" = 'BRACKET-001' AND "companyId" = $1 LIMIT 1`,
+      [companyId]
+    );
+    const bracketId = bracketRow.rows[0]?.id;
+    if (bracketId) {
+      const exId = await client.query(
+        `SELECT 1 FROM "inspectionDocument" WHERE "partId" = $1 AND "companyId" = $2 LIMIT 1`,
+        [bracketId, companyId]
+      );
+      if ((exId.rowCount ?? 0) === 0) {
+        await client.query(
+          `INSERT INTO "inspectionDocument" ("companyId", "partId", "drawingNumber", version, "uploadedBy", "createdBy")
+           VALUES ($1, $2, 'DRW-BRACKET-001', 2, $3, $3)`,
+          [companyId, bracketId, userId]
+        );
+      }
+    }
+
+    console.log(
+      "   Seeded fixedAssetClass, fixedAsset, depreciationRun, trackedEntity, inspectionDocument"
+    );
+  }
+
+  // ─── Pickup gap fill: ensure every op with production has pickup >= production ─
+  // Two cases:
+  //   1. No pickup at all → insert one with qty = total production qty.
+  //   2. Pickup exists but total pickup qty < total production qty → insert a
+  //      top-up record to close the gap.
+  // Configurable items (TSHIRT-001, JACKET-001) are excluded — their pickups
+  // are seeded explicitly with correct per-config-param quantities.
+  await client.query(
+    `
+    INSERT INTO "jobOperationPickup" ("jobOperationId", "employeeId", quantity, "companyId", "createdBy")
+    SELECT
+      agg."jobOperationId",
+      agg."employeeId",
+      agg."prodTotal" - COALESCE(agg."pickupTotal", 0),
+      agg."companyId",
+      agg."createdBy"
+    FROM (
+      SELECT
+        pq."jobOperationId",
+        MAX(pq."employeeId")      AS "employeeId",
+        SUM(pq.quantity)          AS "prodTotal",
+        MAX(pq."companyId")       AS "companyId",
+        MAX(pq."createdBy")       AS "createdBy",
+        (
+          SELECT COALESCE(SUM(jop.quantity), 0)
+          FROM "jobOperationPickup" jop
+          WHERE jop."jobOperationId" = pq."jobOperationId"
+        )                         AS "pickupTotal"
+      FROM "productionQuantity" pq
+      JOIN "jobOperation" jo ON jo.id = pq."jobOperationId"
+      JOIN job j ON j.id = jo."jobId"
+      JOIN item i ON i.id = j."itemId"
+      WHERE pq."companyId" = $1
+        AND i."readableId" NOT IN ('TSHIRT-001', 'JACKET-001')
+      GROUP BY pq."jobOperationId"
+    ) agg
+    WHERE agg."prodTotal" > COALESCE(agg."pickupTotal", 0)
+    `,
+    [companyId]
+  );
+  console.log("   Pickup gap fill: added missing pickup records.");
+
+  // ─── Final cleanup: remove any null-config records on configurable items ───
+  // Generic seeding steps use LIMIT N queries that can accidentally pick up
+  // clothing operations and create records without configuration JSON.
+  // This sweep ensures every productionQuantity and jobOperationPickup for
+  // configurable items (TSHIRT-001, JACKET-001) has a configuration value.
+  console.log(
+    "Final cleanup: removing null-config records for configurable items..."
+  );
+  await client.query(
+    `
+    DELETE FROM "productionQuantity"
+    WHERE id IN (
+      SELECT pq.id FROM "productionQuantity" pq
+      JOIN "jobOperation" jo ON jo.id = pq."jobOperationId"
+      JOIN job j ON j.id = jo."jobId"
+      JOIN item i ON i.id = j."itemId"
+      WHERE i."readableId" IN ('TSHIRT-001','JACKET-001')
+        AND pq.configuration IS NULL
+        AND pq."companyId" = $1
+    )
+  `,
+    [companyId]
+  );
+  await client.query(
+    `
+    DELETE FROM "jobOperationPickup"
+    WHERE id IN (
+      SELECT jop.id FROM "jobOperationPickup" jop
+      JOIN "jobOperation" jo ON jo.id = jop."jobOperationId"
+      JOIN job j ON j.id = jo."jobId"
+      JOIN item i ON i.id = j."itemId"
+      WHERE i."readableId" IN ('TSHIRT-001','JACKET-001')
+        AND jop.configuration IS NULL
+        AND jop."companyId" = $1
+    )
+  `,
+    [companyId]
+  );
+  console.log("   Null-config cleanup complete.");
 
   // ─── Done ─────────────────────────────────────────────────────────────────
 }

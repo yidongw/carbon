@@ -37,10 +37,6 @@ msgstr "{0} (fornitore)"
 msgid "{0} by {1}"
 msgstr "{0} di {1}"
 
-#. placeholder {0}: c.customers
-msgid "{0} customers"
-msgstr "{0} clienti"
-
 #. placeholder {0}: rule.escalationDays
 msgid "{0} days"
 msgstr "{0} giorni"
@@ -55,11 +51,6 @@ msgstr "{0} eliminato con successo"
 msgid "{0} invited you to join as {1}."
 msgstr "{0} ti ha invitato/a a unirti come {1}."
 
-#. placeholder {0}: c.jobs
-msgid "{0} jobs"
-msgstr "{0} lavori"
-
-#. placeholder {0}: c.salesOrders
 #. placeholder {0}: history.length
 msgid "{0} orders"
 msgstr "{0} ordini"
@@ -72,10 +63,6 @@ msgstr "{0} superiore al traguardo"
 msgid "{0} Processes"
 msgstr "{0} Processi"
 
-#. placeholder {0}: c.items
-msgid "{0} products"
-msgstr "{0} prodotti"
-
 #. placeholder {0}: selectedIds.length
 msgid "{0} selected"
 msgstr "{0} selezionato"
@@ -83,10 +70,6 @@ msgstr "{0} selezionato"
 #. placeholder {0}: fmt(Math.abs(diff))
 msgid "{0} short of goal"
 msgstr "a corto di {0}"
-
-#. placeholder {0}: c.suppliers
-msgid "{0} suppliers"
-msgstr "{0} fornitori"
 
 #. placeholder {0}: percentFormatter.format(line.taxPercent ?? 0)
 msgid "{0} Tax"
@@ -1422,10 +1405,6 @@ msgstr "Cerca biblioteca"
 
 msgid "Bucket"
 msgstr "Bucket"
-
-#. placeholder {0}: parts.join(", ")
-msgid "Building your demo — {0} so far…"
-msgstr "Costruisci la tua demo — {0} finora…"
 
 msgid "Buildings"
 msgstr "Edifici"
@@ -4613,6 +4592,12 @@ msgstr "Gli ID generati sono abilitati"
 
 msgid "Get Method"
 msgstr "Ottieni Metodo"
+
+msgid "Getting your demo workspace ready"
+msgstr "Preparazione del workspace demo in corso"
+
+msgid "Getting your demo workspace ready…"
+msgstr "Preparazione del workspace demo in corso…"
 
 msgid "Given name is shown first"
 msgstr "Il nome viene mostrato prima"

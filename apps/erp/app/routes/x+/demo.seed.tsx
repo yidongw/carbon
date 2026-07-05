@@ -1,5 +1,7 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
+import { resolveLanguage } from "@carbon/locale";
+import { getPreferenceHeaders } from "@carbon/utils";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { runDemoSeed } from "~/services/demoSeed.server";
 
@@ -21,7 +23,22 @@ async function getProgressCounts(
   companyId: string
 ) {
   const count = async (
-    table: "item" | "customer" | "supplier" | "salesOrder" | "job"
+    table:
+      | "item"
+      | "customer"
+      | "supplier"
+      | "salesOrder"
+      | "job"
+      | "jobOperation"
+      | "productionEvent"
+      | "nonConformance"
+      | "gauge"
+      | "procedure"
+      | "quote"
+      | "purchaseOrder"
+      | "maintenanceSchedule"
+      | "riskRegister"
+      | "training"
   ) => {
     const { count: n } = await client
       .from(table)
@@ -29,14 +46,26 @@ async function getProgressCounts(
       .eq("companyId", companyId);
     return n ?? 0;
   };
-  const [items, customers, suppliers, salesOrders, jobs] = await Promise.all([
+  const counts = await Promise.all([
     count("item"),
     count("customer"),
     count("supplier"),
     count("salesOrder"),
-    count("job")
+    count("job"),
+    count("jobOperation"),
+    count("productionEvent"),
+    count("nonConformance"),
+    count("gauge"),
+    count("procedure"),
+    count("quote"),
+    count("purchaseOrder"),
+    count("maintenanceSchedule"),
+    count("riskRegister"),
+    count("training")
   ]);
-  return { items, customers, suppliers, salesOrders, jobs };
+  const items = counts[0];
+  const total = counts.reduce((sum, n) => sum + n, 0);
+  return { items, total };
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -120,11 +149,14 @@ export async function action({ request }: ActionFunctionArgs) {
     return { status: "failed" };
   }
 
+  const language = resolveLanguage(getPreferenceHeaders(request).locale);
+
   // Detached: don't await — the server keeps it running after the response.
   void runDemoSeed({
     companyId: demo.id,
     userId,
-    locationId: location.id
+    locationId: location.id,
+    language
   });
 
   return { status: "seeding" };
