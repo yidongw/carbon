@@ -4594,7 +4594,7 @@ msgid "Get Method"
 msgstr "获取方法"
 
 msgid "Getting your demo workspace ready — {total} records so far…"
-msgstr ""
+msgstr "正在准备您的演示工作区 — 目前已有 {total} 条记录……"
 
 msgid "Getting your demo workspace ready…"
 msgstr "正在准备您的演示工作区……"
