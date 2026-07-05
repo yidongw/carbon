@@ -57543,6 +57543,7 @@ export type Database = {
           jobId: string | null
           jobMakeMethodId: string | null
           locationId: string | null
+          locationName: string | null
           modelId: string | null
           modelName: string | null
           modelPath: string | null
@@ -58625,10 +58626,13 @@ export type Database = {
           customFields: Json | null
           defaultMethodType: Database["public"]["Enums"]["methodType"] | null
           description: string | null
+          dimensionId: string | null
           dimensions: string | null
           externalId: Json | null
           finish: string | null
+          finishId: string | null
           grade: string | null
+          gradeId: string | null
           id: string | null
           itemPostingGroupId: string | null
           itemTrackingType:
@@ -58639,6 +58643,7 @@ export type Database = {
           materialSubstance: string | null
           materialSubstanceId: string | null
           materialType: string | null
+          materialTypeId: string | null
           modelName: string | null
           modelPath: string | null
           modelSize: number | null
@@ -60517,6 +60522,7 @@ export type Database = {
           invoiceSupplierLocationId: string | null
           itemType: Database["public"]["Enums"]["itemType"] | null
           locationId: string | null
+          locationName: string | null
           orderTotal: number | null
           paymentTermId: string | null
           paymentTermName: string | null
@@ -61220,9 +61226,11 @@ export type Database = {
           jobId: string | null
           jobReadableId: string | null
           locationId: string | null
+          locationName: string | null
           orderDate: string | null
           orderTotal: number | null
           paymentTermId: string | null
+          paymentTermName: string | null
           purchaseOrderId: string | null
           purchaseOrderType:
             | Database["public"]["Enums"]["purchaseOrderType"]
@@ -61231,6 +61239,7 @@ export type Database = {
           receiptRequestedDate: string | null
           revisionId: number | null
           shippingMethodId: string | null
+          shippingMethodName: string | null
           shippingTermId: string | null
           status: Database["public"]["Enums"]["purchaseOrderStatus"] | null
           supplierContactId: string | null
@@ -64655,8 +64664,10 @@ export type Database = {
           itemType: Database["public"]["Enums"]["itemType"] | null
           lines: Json[] | null
           locationId: string | null
+          locationName: string | null
           opportunityId: string | null
           paymentTermId: string | null
+          paymentTermName: string | null
           postingDate: string | null
           shipmentId: string | null
           status: Database["public"]["Enums"]["salesInvoiceStatus"] | null
@@ -65232,10 +65243,12 @@ export type Database = {
           jobs: Json[] | null
           lines: Json[] | null
           locationId: string | null
+          locationName: string | null
           opportunityId: string | null
           orderDate: string | null
           orderTotal: number | null
           paymentTermId: string | null
+          paymentTermName: string | null
           receiptPromisedDate: string | null
           receiptRequestedDate: string | null
           revisionId: number | null
@@ -65244,6 +65257,7 @@ export type Database = {
           sentCompleteDate: string | null
           shippingCost: number | null
           shippingMethodId: string | null
+          shippingMethodName: string | null
           shippingTermName: string | null
           status: Database["public"]["Enums"]["salesOrderStatus"] | null
           thumbnailPath: string | null
