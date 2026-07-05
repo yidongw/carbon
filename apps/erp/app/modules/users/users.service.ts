@@ -112,8 +112,11 @@ export async function getEmployees(
   // Default to Active + Invited so pending invites surface alongside live
   // users. Previously-deactivated users stay hidden. The explicit status
   // filter (Active / Invited / Inactive) overrides this default when the
-  // user picks a value from the dropdown.
-  const hasStatusFilter = args.filters?.some((f) => f.column === "status");
+  // user picks a value from the dropdown. Also treat an `active` column
+  // filter (e.g. active:eq:true from saved views) as an explicit override.
+  const hasStatusFilter = args.filters?.some(
+    (f) => f.column === "status" || f.column === "active"
+  );
   if (!hasStatusFilter) {
     query = query.in("status", ["Active", "Invited"]);
   }
