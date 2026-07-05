@@ -1,6 +1,6 @@
-import { cn } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import { Link } from "react-router";
+import { AppBanner } from "~/components/AppBanner";
 import { path } from "~/utils/path";
 
 function daysLeft(termEndsAt: string | null): number {
@@ -23,18 +23,12 @@ export function PlanRenewalBanner({
   if (!expired && left > 30) return null;
 
   return (
-    <Link
-      to={path.to.billing}
-      className={cn(
-        "block px-4 py-1.5 text-center text-sm font-medium hover:underline",
-        expired
-          ? "bg-destructive text-destructive-foreground"
-          : "bg-yellow-400 text-yellow-950"
-      )}
-    >
-      {expired
-        ? t`Your annual license has expired. Renew now to restore access.`
-        : t`Your annual license expires in ${left} days. Renew now.`}
-    </Link>
+    <AppBanner variant={expired ? "destructive" : "warning"}>
+      <Link to={path.to.billing} className="font-medium hover:underline">
+        {expired
+          ? t`Your annual license has expired. Renew now to restore access.`
+          : t`Your annual license expires in ${left} days. Renew now.`}
+      </Link>
+    </AppBanner>
   );
 }

@@ -2,6 +2,7 @@ import { useLingui } from "@lingui/react/macro";
 import type { ReactNode } from "react";
 import { LuBuilding2, LuCalendarPlus, LuFlaskConical } from "react-icons/lu";
 import { useFetcher } from "react-router";
+import { AppBanner } from "~/components/AppBanner";
 import { path } from "~/utils/path";
 
 // Defined outside DemoBanner so React doesn't remount the form/button subtree on
@@ -151,9 +152,5 @@ export function DemoBanner({ demo, realCompanyId }: DemoBannerProps) {
     );
   }
 
-  return (
-    <div className="w-full shrink-0 bg-yellow-100 text-yellow-900 px-4 py-1.5 text-center text-sm">
-      {content}
-    </div>
-  );
+  return <AppBanner>{content}</AppBanner>;
 }
