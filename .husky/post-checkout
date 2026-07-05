@@ -1,0 +1,20 @@
+#!/usr/bin/env sh
+. "$(dirname "$0")/_/husky.sh"
+
+# $3 is 1 for branch checkout (including `git worktree add`), 0 for file checkout.
+[ "$3" = "1" ] || exit 0
+
+# If node_modules already exists (real install or prior symlink), nothing to do.
+[ -e "node_modules" ] && exit 0
+
+# Find the primary worktree (first entry in `git worktree list`).
+main=$(git worktree list --porcelain | awk '/^worktree /{print $2; exit}')
+
+# Ensure the primary worktree has node_modules, running pnpm install if needed.
+if [ ! -d "$main/node_modules" ]; then
+  echo "→ node_modules missing in $main — running pnpm install..."
+  (cd "$main" && pnpm install --frozen-lockfile)
+fi
+
+ln -s "$main/node_modules" node_modules
+echo "→ symlinked node_modules from $main"

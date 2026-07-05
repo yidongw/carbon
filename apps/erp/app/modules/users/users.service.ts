@@ -109,13 +109,15 @@ export async function getEmployees(
     query = query.ilike("name", `%${args.search}%`);
   }
 
-  // Default to Active + Invited so pending invites surface alongside live
-  // users. Previously-deactivated users stay hidden. The explicit status
-  // filter (Active / Invited / Inactive) overrides this default when the
-  // user picks a value from the dropdown.
-  const hasStatusFilter = args.filters?.some((f) => f.column === "status");
+  // Default to active employees when the user hasn't explicitly filtered on
+  // active status. The status/active dropdown still works because picking
+  // a value puts an `active:eq:...` or `status:eq:...` filter in the URL,
+  // which overrides this default.
+  const hasStatusFilter = args.filters?.some(
+    (f) => f.column === "status" || f.column === "active"
+  );
   if (!hasStatusFilter) {
-    query = query.in("status", ["Active", "Invited"]);
+    query = query.eq("active", true);
   }
 
   query = setGenericQueryFilters(query, args, [
