@@ -89,6 +89,9 @@ msgstr "{days} Tage ({formatted})"
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB-Limit"
 
+msgid "{minSeats} user minimum"
+msgstr "{minSeats} Nutzer Minimum"
+
 msgid "{name} deleted"
 msgstr "{name} gelöscht"
 
@@ -97,6 +100,9 @@ msgstr "{scopeCount} Berechtigungen"
 
 msgid "/month/user"
 msgstr "/Monat/Benutzer"
+
+msgid "/user/mo"
+msgstr "/Nutzer/Monat"
 
 msgid "%"
 msgstr "%"
@@ -492,6 +498,9 @@ msgstr "Zeile hinzufügen"
 msgid "Add rule"
 msgstr "Hinzufügen einer Regel"
 
+msgid "Add seats"
+msgstr "Plätze hinzufügen"
+
 msgid "Add Selector"
 msgstr "Füge Selektor hinzu"
 
@@ -647,6 +656,9 @@ msgstr "Annotierung aktualisiert"
 
 msgid "Annual"
 msgstr "Jährlich"
+
+msgid "Annual License"
+msgstr "Jahreslizenz"
 
 msgid "Any item group"
 msgstr "Jede Artengruppe"
@@ -1354,6 +1366,10 @@ msgstr "Fertigungsprozess"
 msgid "Bill To"
 msgstr "Rechnung an"
 
+#. placeholder {0}: formatter.format( (planDetails?.annualMonthly[currency] ?? 0) * 12 )
+msgid "Billed annually · {0}/user/yr"
+msgstr "Jährlich abgerechnet · {0}/Nutzer/Jahr"
+
 msgid "Billing"
 msgstr "Abrechnung"
 
@@ -1423,6 +1439,9 @@ msgstr "Kaufen"
 
 msgid "Buy and Make"
 msgstr "Kaufen und Herstellen"
+
+msgid "Buy seats"
+msgstr "Plätze kaufen"
 
 msgid "Buyer"
 msgstr "Käufer"
@@ -1607,6 +1626,9 @@ msgstr "Dies wird die vorhandene Methode überschreiben"
 msgid "Changing this will update the part ID"
 msgstr "Das Ändern aktualisiert die Teile-ID"
 
+msgid "Charged prorated for the days left in your term."
+msgstr "Anteilig für die verbleibenden Tage Ihrer Laufzeit berechnet."
+
 msgid "Chart of Accounts"
 msgstr "Kontenplan"
 
@@ -1621,6 +1643,9 @@ msgstr "Wählen Sie eine Batchnummer"
 
 msgid "Choose a company"
 msgstr "Wählen Sie eine Firma"
+
+msgid "Choose a plan"
+msgstr "Plan wählen"
 
 msgid "Choose a serial number"
 msgstr "Wählen Sie eine Seriennummer"
@@ -2640,6 +2665,9 @@ msgstr "Fälligkeitstage"
 
 msgid "Days in advance to generate dispatches"
 msgstr "Tage im Voraus zum Generieren von Einsätzen"
+
+msgid "days left"
+msgstr "Tage verbleibend"
 
 msgid "Days Off"
 msgstr "Tage frei"
@@ -4492,9 +4520,6 @@ msgstr "Fuß"
 
 msgid "For growing businesses that need support"
 msgstr "Für wachsende Unternehmen, die Unterstützung benötigen"
-
-msgid "For US companies handling ITAR data"
-msgstr "Für US-Unternehmen, die ITAR-Daten verarbeiten"
 
 #. placeholder {0}: forecastMethod ?? "unknown"
 msgid "Forecast method: <0>{0}</0>. This row was not derived from active jobs, so no parent sources are available."
@@ -6649,6 +6674,9 @@ msgstr "Keine"
 msgid "Normal flow"
 msgstr "Normales Verfahren"
 
+msgid "Not available"
+msgstr "Nicht verfügbar"
+
 msgid "Not enough jobs to cover quantity"
 msgstr "Nicht genug Aufträge zur Deckung der Menge"
 
@@ -6729,6 +6757,12 @@ msgstr "Auf Lagereinheit"
 
 msgid "On target"
 msgstr "Auf Zielposition"
+
+msgid "One-time (annual)"
+msgstr "Einmalig (jährlich)"
+
+msgid "One-time annual plan, paid with WeChat Pay, Alipay, or card."
+msgstr "Einmaliger Jahresplan, zahlbar mit WeChat Pay, Alipay oder Karte."
 
 msgid "Onshape Status"
 msgstr "Onshape-Status"
@@ -7086,6 +7120,15 @@ msgstr "Pausieren"
 msgid "Paused"
 msgstr "Gefroren"
 
+msgid "Pay 1 Year"
+msgstr "1 Jahr bezahlen"
+
+msgid "Pay for one year up front with WeChat Pay, Alipay, or card. Renew before it expires."
+msgstr "Zahlen Sie ein Jahr im Voraus mit WeChat Pay, Alipay oder Karte. Verlängern Sie vor Ablauf."
+
+msgid "Pay monthly by card, charged immediately. Switch or cancel anytime."
+msgstr "Monatlich per Karte, sofort abgerechnet. Jederzeit wechseln oder kündigen."
+
 msgid "Pay period"
 msgstr "Zahlungsperiode"
 
@@ -7103,6 +7146,9 @@ msgstr "Zahlungsgeschichte"
 
 msgid "Payment Method"
 msgstr "Zahlungsmethode"
+
+msgid "Payment successful! Your plan is now active."
+msgstr "Zahlung erfolgreich! Ihr Plan ist jetzt aktiv."
 
 msgid "Payment Term"
 msgstr "Zahlungsbedingung"
@@ -7969,6 +8015,9 @@ msgstr "Aufgenommen am"
 msgid "Records"
 msgstr "Aufzeichnungen"
 
+msgid "Recurring (monthly)"
+msgstr "Wiederkehrend (monatlich)"
+
 msgid "Redirecting to verification page..."
 msgstr "Wird zur Verifizierungsseite weitergeleitet..."
 
@@ -8095,6 +8144,9 @@ msgstr "Transfer entfernen"
 
 msgid "Rendering label preview..."
 msgstr "Vorschau des Bezeichnungs-Vorschaufsatzes..."
+
+msgid "Renew 1 year"
+msgstr "1 Jahr verlängern"
 
 msgid "Rent & Utilities (Non-Factory)"
 msgstr "Miete und Nebenkosten (Nicht-Werkstatt)"
@@ -8720,6 +8772,9 @@ msgstr "Suchen..."
 msgid "Searching..."
 msgstr "Suche..."
 
+msgid "Seats"
+msgstr "Plätze"
+
 msgid "Seconds/Piece"
 msgstr "Sekunden/Stück"
 
@@ -8743,10 +8798,6 @@ msgstr "Wählen Sie einen neuen Eigentümer"
 
 msgid "Select a plan"
 msgstr "Wählen Sie einen Plan"
-
-#. placeholder {0}: plans[0].stripeTrialPeriodDays
-msgid "Select a plan to get started. You won't be charged for the first {0} days. Switch or cancel anytime."
-msgstr "Wählen Sie einen Plan, um zu beginnen. Sie werden in den ersten {0} Tagen nicht belastet. Wechseln oder kündigen Sie jederzeit."
 
 msgid "Select a project"
 msgstr "Projekt auswählen"
@@ -9346,10 +9397,6 @@ msgstr "Standardisierte Lieferzeit"
 msgid "Start"
 msgstr "Starten"
 
-#. placeholder {0}: plan.stripeTrialPeriodDays
-msgid "Start {0} Day Free Trial"
-msgstr "Starten Sie die {0}-tägige kostenlose Testversion"
-
 msgid "Start adding parts to your stock transfer"
 msgstr "Beginnen Sie, Teile zu Ihrer Bestandsübertragung hinzuzufügen"
 
@@ -9364,9 +9411,6 @@ msgstr "Ablauf am Prozessende starten"
 
 msgid "Start expiration on process start"
 msgstr "Ablauf des Verfallsdatums beim Prozessstart"
-
-msgid "Start Learning"
-msgstr "Lerne jetzt"
 
 msgid "Start Now"
 msgstr "Jetzt starten"
@@ -9708,9 +9752,6 @@ msgstr "Tags"
 msgid "Take the shortest remaining shelf life across the materials consumed to make this item. Use when the product's expiry depends on its ingredients."
 msgstr "Nehmen Sie die kürzeste verbleibende Haltbarkeitsdauer der Materialien, die zur Herstellung dieses Artikels verbraucht werden. Verwenden Sie dies, wenn die Haltbarkeit des Produkts von seinen Inhaltsstoffen abhängt."
 
-msgid "Talk to Sales"
-msgstr "Mit dem Vertrieb sprechen"
-
 msgid "Target"
 msgstr "Ziel"
 
@@ -9790,6 +9831,9 @@ msgstr "Vorlagen-ID"
 
 msgid "Templates"
 msgstr "Templaten"
+
+msgid "Term ends"
+msgstr "Laufzeit endet"
 
 msgid "Terms and Privacy"
 msgstr "Bedingungen und Datenschutz"
@@ -10141,6 +10185,9 @@ msgstr "Gesamt-Rework"
 
 msgid "Total Scrap"
 msgstr "Gesamt Abfall"
+
+msgid "Total shown at checkout."
+msgstr "Gesamtbetrag wird an der Kasse angezeigt."
 
 msgid "Total:"
 msgstr "Gesamt:"
@@ -11080,8 +11127,17 @@ msgstr "Sie sind im Demo-Unternehmen – es ist abgelaufen."
 msgid "You're in your company."
 msgstr "Sie sind in Ihrer Firma."
 
+msgid "You're on the free plan. Upgrade to unlock more seats and features."
+msgstr "Sie sind im kostenlosen Plan. Upgraden Sie für mehr Plätze und Funktionen."
+
 msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "Du bist seit {hoursElapsed} Stunden angemeldet. Hast du vergessen, dich abzumelden?"
+
+msgid "Your annual license expires in {left} days. Renew now."
+msgstr "Ihre Jahreslizenz läuft in {left} Tagen ab. Jetzt verlängern."
+
+msgid "Your annual license has expired. Renew now to restore access."
+msgstr "Ihre Jahreslizenz ist abgelaufen. Jetzt verlängern, um den Zugang wiederherzustellen."
 
 msgid "Your Console PIN"
 msgstr "Ihre Konsolen-PIN"

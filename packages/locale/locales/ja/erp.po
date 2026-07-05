@@ -89,6 +89,9 @@ msgstr "{days}日（{formatted}）"
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB制限"
 
+msgid "{minSeats} user minimum"
+msgstr "{minSeats}ユーザー以上"
+
 msgid "{name} deleted"
 msgstr "{name} を削除しました"
 
@@ -97,6 +100,9 @@ msgstr "{scopeCount} 個の権限"
 
 msgid "/month/user"
 msgstr "/月/ユーザー"
+
+msgid "/user/mo"
+msgstr "/ユーザー/月"
 
 msgid "%"
 msgstr "％"
@@ -492,6 +498,9 @@ msgstr "行を追加"
 msgid "Add rule"
 msgstr "追加ルールを追加"
 
+msgid "Add seats"
+msgstr "シートを追加"
+
 msgid "Add Selector"
 msgstr "選択子を追加"
 
@@ -647,6 +656,9 @@ msgstr "注記が更新されました"
 
 msgid "Annual"
 msgstr "年次"
+
+msgid "Annual License"
+msgstr "年間ライセンス"
 
 msgid "Any item group"
 msgstr "任意の項目グループ"
@@ -1354,6 +1366,10 @@ msgstr "プロセスの部品表"
 msgid "Bill To"
 msgstr "請求先"
 
+#. placeholder {0}: formatter.format( (planDetails?.annualMonthly[currency] ?? 0) * 12 )
+msgid "Billed annually · {0}/user/yr"
+msgstr "年間請求 · {0}/ユーザー/年"
+
 msgid "Billing"
 msgstr "請求"
 
@@ -1423,6 +1439,9 @@ msgstr "購入"
 
 msgid "Buy and Make"
 msgstr "購入と製造"
+
+msgid "Buy seats"
+msgstr "シートを購入"
 
 msgid "Buyer"
 msgstr "購入者"
@@ -1607,6 +1626,9 @@ msgstr "これを変更すると、既存のメソッドが上書きされます
 msgid "Changing this will update the part ID"
 msgstr "これを変更するとパーツIDが更新されます"
 
+msgid "Charged prorated for the days left in your term."
+msgstr "残りの期間の日数に応じて按分請求されます。"
+
 msgid "Chart of Accounts"
 msgstr "勘定科目表"
 
@@ -1621,6 +1643,9 @@ msgstr "バッチ番号を選択してください"
 
 msgid "Choose a company"
 msgstr "会社を選択してください"
+
+msgid "Choose a plan"
+msgstr "プランを選択"
 
 msgid "Choose a serial number"
 msgstr "シリアル番号を選択してください"
@@ -2640,6 +2665,9 @@ msgstr "支払期日"
 
 msgid "Days in advance to generate dispatches"
 msgstr "事前に生成するディスパッチの日数"
+
+msgid "days left"
+msgstr "日残り"
 
 msgid "Days Off"
 msgstr "休日"
@@ -4492,9 +4520,6 @@ msgstr "フィート"
 
 msgid "For growing businesses that need support"
 msgstr "成長中のビジネスをサポートするために"
-
-msgid "For US companies handling ITAR data"
-msgstr "ITAR データを扱う米国企業向け"
 
 #. placeholder {0}: forecastMethod ?? "unknown"
 msgid "Forecast method: <0>{0}</0>. This row was not derived from active jobs, so no parent sources are available."
@@ -6649,6 +6674,9 @@ msgstr "なし"
 msgid "Normal flow"
 msgstr "正常な流れ"
 
+msgid "Not available"
+msgstr "利用不可"
+
 msgid "Not enough jobs to cover quantity"
 msgstr "数量をカバーするのに十分なジョブがありません"
 
@@ -6729,6 +6757,12 @@ msgstr "保管ユニット上"
 
 msgid "On target"
 msgstr "目標に 맞る"
+
+msgid "One-time (annual)"
+msgstr "一括払い（年間）"
+
+msgid "One-time annual plan, paid with WeChat Pay, Alipay, or card."
+msgstr "年間一括払いプラン、WeChat Pay、Alipay、またはカードでお支払い。"
 
 msgid "Onshape Status"
 msgstr "Onshape ステータス"
@@ -7086,6 +7120,15 @@ msgstr "一時停止"
 msgid "Paused"
 msgstr "（一時停止）"
 
+msgid "Pay 1 Year"
+msgstr "1年分支払う"
+
+msgid "Pay for one year up front with WeChat Pay, Alipay, or card. Renew before it expires."
+msgstr "WeChat Pay、Alipay、またはカードで1年分を前払いします。期限前に更新してください。"
+
+msgid "Pay monthly by card, charged immediately. Switch or cancel anytime."
+msgstr "カードで毎月支払い、即時請求。いつでも変更またはキャンセル可能。"
+
 msgid "Pay period"
 msgstr "Gengo kan (gengo kan)"
 
@@ -7103,6 +7146,9 @@ msgstr "払い出金史"
 
 msgid "Payment Method"
 msgstr "支払い方法"
+
+msgid "Payment successful! Your plan is now active."
+msgstr "支払い成功！プランが有効になりました。"
 
 msgid "Payment Term"
 msgstr "支払条件"
@@ -7969,6 +8015,9 @@ msgstr "録音済み"
 msgid "Records"
 msgstr "記録"
 
+msgid "Recurring (monthly)"
+msgstr "定期（毎月）"
+
 msgid "Redirecting to verification page..."
 msgstr "検証ページにリダイレクト中..."
 
@@ -8095,6 +8144,9 @@ msgstr "転送を削除"
 
 msgid "Rendering label preview..."
 msgstr "レンダリング中：ラベルプレビュー..."
+
+msgid "Renew 1 year"
+msgstr "1年更新"
 
 msgid "Rent & Utilities (Non-Factory)"
 msgstr "レンタル＆ユニティ（非工場）"
@@ -8720,6 +8772,9 @@ msgstr "検索..."
 msgid "Searching..."
 msgstr "検索中..."
 
+msgid "Seats"
+msgstr "シート"
+
 msgid "Seconds/Piece"
 msgstr "秒/個"
 
@@ -8743,10 +8798,6 @@ msgstr "新しい所有者を選択"
 
 msgid "Select a plan"
 msgstr "プランを選択"
-
-#. placeholder {0}: plans[0].stripeTrialPeriodDays
-msgid "Select a plan to get started. You won't be charged for the first {0} days. Switch or cancel anytime."
-msgstr "プランを選択して開始します。最初の{0}日間は料金がかかりません。いつでも切り替えまたはキャンセルできます。"
 
 msgid "Select a project"
 msgstr "プロジェクトを選択"
@@ -9346,10 +9397,6 @@ msgstr "標準リードタイム"
 msgid "Start"
 msgstr "開始"
 
-#. placeholder {0}: plan.stripeTrialPeriodDays
-msgid "Start {0} Day Free Trial"
-msgstr "{0}日間の無料トライアルを開始"
-
 msgid "Start adding parts to your stock transfer"
 msgstr "在库存转移中开始添加零件"
 
@@ -9364,9 +9411,6 @@ msgstr "プロセス終了時に有効期限を開始"
 
 msgid "Start expiration on process start"
 msgstr "プロセス開始時に有効期限を開始"
-
-msgid "Start Learning"
-msgstr "学習を開始"
 
 msgid "Start Now"
 msgstr "今すぐ開始"
@@ -9708,9 +9752,6 @@ msgstr "タグ"
 msgid "Take the shortest remaining shelf life across the materials consumed to make this item. Use when the product's expiry depends on its ingredients."
 msgstr "このアイテムを製造するために消費される材料全体で、最も短い残りの賞味期限を取得します。製品の有効期限がその成分に依存する場合に使用します。"
 
-msgid "Talk to Sales"
-msgstr "営業に相談"
-
 msgid "Target"
 msgstr "対象"
 
@@ -9790,6 +9831,9 @@ msgstr "テンプレートID"
 
 msgid "Templates"
 msgstr "テンプレート"
+
+msgid "Term ends"
+msgstr "期限終了"
 
 msgid "Terms and Privacy"
 msgstr "利用規約とプライバシー"
@@ -10141,6 +10185,9 @@ msgstr "総計リワーク"
 
 msgid "Total Scrap"
 msgstr "総合不良"
+
+msgid "Total shown at checkout."
+msgstr "合計はチェックアウト時に表示されます。"
 
 msgid "Total:"
 msgstr "合計:"
@@ -11080,8 +11127,17 @@ msgstr "デモ会社にいます — デモは終了しました。"
 msgid "You're in your company."
 msgstr "あなたの会社内です。"
 
+msgid "You're on the free plan. Upgrade to unlock more seats and features."
+msgstr "無料プランをご利用中です。より多くのシートと機能を解放するにはアップグレードしてください。"
+
 msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "あなたは{hoursElapsed}時間クロックインしています。クロックアウトするのを忘れましたか？"
+
+msgid "Your annual license expires in {left} days. Renew now."
+msgstr "年間ライセンスは{left}日後に期限切れになります。今すぐ更新してください。"
+
+msgid "Your annual license has expired. Renew now to restore access."
+msgstr "年間ライセンスが期限切れです。アクセスを復元するには今すぐ更新してください。"
 
 msgid "Your Console PIN"
 msgstr "あなたのコンソールPIN"

@@ -89,6 +89,9 @@ msgstr "{days} 天（{formatted}）"
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB限制"
 
+msgid "{minSeats} user minimum"
+msgstr "{minSeats} 位用户起"
+
 msgid "{name} deleted"
 msgstr "{name} 已删除"
 
@@ -97,6 +100,9 @@ msgstr "{scopeCount} 个权限"
 
 msgid "/month/user"
 msgstr "/月/用户"
+
+msgid "/user/mo"
+msgstr "/用户/月"
 
 msgid "%"
 msgstr "%"
@@ -492,6 +498,9 @@ msgstr "添加行"
 msgid "Add rule"
 msgstr "添加规则"
 
+msgid "Add seats"
+msgstr "增加席位"
+
 msgid "Add Selector"
 msgstr "添加选择器"
 
@@ -647,6 +656,9 @@ msgstr "注释已更新"
 
 msgid "Annual"
 msgstr "每年"
+
+msgid "Annual License"
+msgstr "年度许可证"
 
 msgid "Any item group"
 msgstr "任意项组"
@@ -1354,6 +1366,10 @@ msgstr "工序流程"
 msgid "Bill To"
 msgstr "账单收款人"
 
+#. placeholder {0}: formatter.format( (planDetails?.annualMonthly[currency] ?? 0) * 12 )
+msgid "Billed annually · {0}/user/yr"
+msgstr "按年计费 · {0}/用户/年"
+
 msgid "Billing"
 msgstr "账单"
 
@@ -1423,6 +1439,9 @@ msgstr "购买"
 
 msgid "Buy and Make"
 msgstr "购买和制造"
+
+msgid "Buy seats"
+msgstr "购买席位"
 
 msgid "Buyer"
 msgstr "采购员"
@@ -1607,6 +1626,9 @@ msgstr "更改此设置将覆盖现有方法"
 msgid "Changing this will update the part ID"
 msgstr "更改此内容将更新产品ID"
 
+msgid "Charged prorated for the days left in your term."
+msgstr "按当前许可证剩余天数比例收费。"
+
 msgid "Chart of Accounts"
 msgstr "会计科目表"
 
@@ -1621,6 +1643,9 @@ msgstr "选择批号"
 
 msgid "Choose a company"
 msgstr "选择公司"
+
+msgid "Choose a plan"
+msgstr "选择方案"
 
 msgid "Choose a serial number"
 msgstr "选择序列号"
@@ -2640,6 +2665,9 @@ msgstr "到期天数"
 
 msgid "Days in advance to generate dispatches"
 msgstr "提前多少天生成调度"
+
+msgid "days left"
+msgstr "天后到期"
 
 msgid "Days Off"
 msgstr "休息日"
@@ -4492,9 +4520,6 @@ msgstr "英尺"
 
 msgid "For growing businesses that need support"
 msgstr "对于成长型企业所需的支援"
-
-msgid "For US companies handling ITAR data"
-msgstr "适用于处理ITAR数据的美国公司"
 
 #. placeholder {0}: forecastMethod ?? "unknown"
 msgid "Forecast method: <0>{0}</0>. This row was not derived from active jobs, so no parent sources are available."
@@ -6649,6 +6674,9 @@ msgstr "无"
 msgid "Normal flow"
 msgstr "正常流程"
 
+msgid "Not available"
+msgstr "暂不可用"
+
 msgid "Not enough jobs to cover quantity"
 msgstr "工作不足以覆盖数量"
 
@@ -6729,6 +6757,12 @@ msgstr "在存储单元上"
 
 msgid "On target"
 msgstr "已达到目标"
+
+msgid "One-time (annual)"
+msgstr "一次性（年付）"
+
+msgid "One-time annual plan, paid with WeChat Pay, Alipay, or card."
+msgstr "一次性年付方案，支持微信支付、支付宝或银行卡。"
 
 msgid "Onshape Status"
 msgstr "Onshape状态"
@@ -7086,6 +7120,15 @@ msgstr "暂停"
 msgid "Paused"
 msgstr "暂停"
 
+msgid "Pay 1 Year"
+msgstr "支付一年"
+
+msgid "Pay for one year up front with WeChat Pay, Alipay, or card. Renew before it expires."
+msgstr "使用微信支付、支付宝或银行卡预付一年费用，到期前续费。"
+
+msgid "Pay monthly by card, charged immediately. Switch or cancel anytime."
+msgstr "按月银行卡支付，立即收费，随时切换或取消。"
+
 msgid "Pay period"
 msgstr "支付期间"
 
@@ -7103,6 +7146,9 @@ msgstr "付款历史"
 
 msgid "Payment Method"
 msgstr "支付方式"
+
+msgid "Payment successful! Your plan is now active."
+msgstr "付款成功！您的计划现已激活。"
 
 msgid "Payment Term"
 msgstr "付款条款"
@@ -7969,6 +8015,9 @@ msgstr "记录时间"
 msgid "Records"
 msgstr "记录"
 
+msgid "Recurring (monthly)"
+msgstr "按月订阅"
+
 msgid "Redirecting to verification page..."
 msgstr "正在转向验证页面..."
 
@@ -8095,6 +8144,9 @@ msgstr "移除转移"
 
 msgid "Rendering label preview..."
 msgstr "渲染标签预览..."
+
+msgid "Renew 1 year"
+msgstr "续费一年"
 
 msgid "Rent & Utilities (Non-Factory)"
 msgstr "租金及公用事业（非工厂）"
@@ -8720,6 +8772,9 @@ msgstr "搜索..."
 msgid "Searching..."
 msgstr "搜索中..."
 
+msgid "Seats"
+msgstr "席位"
+
 msgid "Seconds/Piece"
 msgstr "秒/件"
 
@@ -8743,10 +8798,6 @@ msgstr "选择新的所有者"
 
 msgid "Select a plan"
 msgstr "选择一个计划"
-
-#. placeholder {0}: plans[0].stripeTrialPeriodDays
-msgid "Select a plan to get started. You won't be charged for the first {0} days. Switch or cancel anytime."
-msgstr "选择一个计划开始使用。前{0}天不会收费。随时切换或取消。"
 
 msgid "Select a project"
 msgstr "选择一个项目"
@@ -9346,10 +9397,6 @@ msgstr "标准交货期"
 msgid "Start"
 msgstr "开始"
 
-#. placeholder {0}: plan.stripeTrialPeriodDays
-msgid "Start {0} Day Free Trial"
-msgstr "开始第{0}天免费试用"
-
 msgid "Start adding parts to your stock transfer"
 msgstr "开始添加库存转移产品"
 
@@ -9364,9 +9411,6 @@ msgstr "在工序结束时开始失效日期"
 
 msgid "Start expiration on process start"
 msgstr "在工序开始时开始失效"
-
-msgid "Start Learning"
-msgstr "开始学习"
 
 msgid "Start Now"
 msgstr "立即开始"
@@ -9708,9 +9752,6 @@ msgstr "标签"
 msgid "Take the shortest remaining shelf life across the materials consumed to make this item. Use when the product's expiry depends on its ingredients."
 msgstr "取所用材料剩余保质期最短的。用于产品有效期取决于其成分的情况。"
 
-msgid "Talk to Sales"
-msgstr "联系销售"
-
 msgid "Target"
 msgstr "目标"
 
@@ -9790,6 +9831,9 @@ msgstr "模板ID"
 
 msgid "Templates"
 msgstr "模板"
+
+msgid "Term ends"
+msgstr "到期日"
 
 msgid "Terms and Privacy"
 msgstr "条款与隐私政策"
@@ -10141,6 +10185,9 @@ msgstr "总返工量"
 
 msgid "Total Scrap"
 msgstr "总报废量"
+
+msgid "Total shown at checkout."
+msgstr "结账时显示总价。"
 
 msgid "Total:"
 msgstr "总计:"
@@ -11080,8 +11127,17 @@ msgstr "您在演示公司——演示已结束。"
 msgid "You're in your company."
 msgstr "您在您的公司。"
 
+msgid "You're on the free plan. Upgrade to unlock more seats and features."
+msgstr "您正在使用免费方案，升级以解锁更多席位和功能。"
+
 msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "您已签到工作了{hoursElapsed}小时。忘记签退了吗？"
+
+msgid "Your annual license expires in {left} days. Renew now."
+msgstr "您的年度许可证将在 {left} 天后到期，请立即续费。"
+
+msgid "Your annual license has expired. Renew now to restore access."
+msgstr "您的年度许可证已到期，请立即续费以恢复访问。"
 
 msgid "Your Console PIN"
 msgstr "您的控制台PIN"
