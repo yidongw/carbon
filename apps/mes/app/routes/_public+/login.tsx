@@ -405,6 +405,7 @@ export default function LoginRoute() {
                 size="lg"
                 className="w-full"
                 onClick={onSignInWithWeChat}
+                isDisabled={fetcher.state !== "idle" || passkeyLoading}
                 variant="secondary"
                 leftIcon={
                   <SiWechat className="w-4 h-4" style={{ color: "#07C160" }} />

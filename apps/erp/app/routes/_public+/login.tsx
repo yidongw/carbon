@@ -585,6 +585,11 @@ export default function LoginRoute() {
                 size="lg"
                 className="w-full"
                 onClick={onClickWeChat}
+                isDisabled={
+                  fetcher.state !== "idle" ||
+                  phoneFetcher.state !== "idle" ||
+                  passkeyLoading
+                }
                 variant="secondary"
                 leftIcon={
                   <SiWechat className="w-4 h-4" style={{ color: "#07C160" }} />
@@ -661,7 +666,12 @@ export default function LoginRoute() {
                       <button
                         key={tab.key}
                         type="button"
-                        className={`flex-1 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                        disabled={
+                          fetcher.state !== "idle" ||
+                          phoneFetcher.state !== "idle" ||
+                          passkeyLoading
+                        }
+                        className={`flex-1 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                           loginMethod === tab.key
                             ? "bg-background text-foreground shadow-sm"
                             : "text-muted-foreground hover:text-foreground"
