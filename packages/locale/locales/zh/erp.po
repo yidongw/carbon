@@ -11,7 +11,6 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
-"POT-Creation-Date: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " 供应商是向您出售产品或服务的商家或个人。"
@@ -1922,14 +1921,14 @@ msgstr "确认密码"
 msgid "Connect"
 msgstr "绑定"
 
-msgid "Connect to your accounting, project management, and CAD tools and much more."
-msgstr "连接到您的会计、项目管理以及CAD工具等更多功能。"
-
 msgid "Connect Jira issue"
 msgstr "连接Jira问题"
 
 msgid "Connect Linear issue"
 msgstr "连接 Linear 问题"
+
+msgid "Connect to your accounting, project management, and CAD tools and much more."
+msgstr "连接到您的会计、项目管理以及CAD工具等更多功能。"
 
 msgid "Connected to"
 msgstr "已连接到"
@@ -7955,6 +7954,9 @@ msgstr "记录付款"
 msgid "Record the inspection result for this sample."
 msgstr "记录该样品的检验结果。"
 
+msgid "Recorded"
+msgstr "已记录"
+
 msgid "recorded {qty} units"
 msgstr "记录了 {qty} 个单位"
 
@@ -8159,6 +8161,9 @@ msgstr "报告历史"
 
 msgid "reported"
 msgstr "上报了"
+
+msgid "Reported"
+msgstr "已报告"
 
 msgid "Reported {totalQuantity} units"
 msgstr "报告了 {totalQuantity} 件"

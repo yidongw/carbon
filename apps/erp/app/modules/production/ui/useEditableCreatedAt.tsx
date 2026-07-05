@@ -7,6 +7,7 @@ type CreatedAtRow = { id: string };
 
 type ProductionQuantityLineRow = CreatedAtRow & {
   actorKind?: "employee" | "supplier";
+  reportId?: string | null;
 };
 
 type ProductionQuantityReportRow = CreatedAtRow & {
@@ -65,6 +66,32 @@ export function useProductionQuantityLineCreatedAtSave() {
           .from("jobOperationSupplierQuantity")
           .update({ createdAt: newValue })
           .eq("id", row.id)
+          .eq("companyId", companyId);
+      }
+
+      // When the line belongs to a report, write to the report (canonical date)
+      // and sync all linked lines together.
+      if (row.reportId) {
+        const reportUpdate = await carbon
+          .from("productionQuantityReport")
+          .update({
+            createdAt: newValue,
+            updatedBy: userId,
+            updatedAt: new Date().toISOString()
+          })
+          .eq("id", row.reportId)
+          .eq("companyId", companyId);
+
+        if (reportUpdate.error) return reportUpdate;
+
+        return carbon
+          .from("productionQuantity")
+          .update({
+            createdAt: newValue,
+            updatedBy: userId,
+            updatedAt: new Date().toISOString()
+          })
+          .eq("reportId", row.reportId)
           .eq("companyId", companyId);
       }
 

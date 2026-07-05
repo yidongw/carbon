@@ -11,7 +11,6 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
-"POT-Creation-Date: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " स्वीकारकर्ता एक व्यवसाय या व्यक्ति है जो आपको भागों या सेवाओं की बिक्री करता है।"
@@ -1922,14 +1921,14 @@ msgstr "पासवर्ड की पुष्टि करें"
 msgid "Connect"
 msgstr "कनेक्ट करें"
 
-msgid "Connect to your accounting, project management, and CAD tools and much more."
-msgstr "आपकी खातेमेंट, पروजेक्ट मैनेजमेंट और CAD उपकरणों को संबधित करें और अधिक।"
-
 msgid "Connect Jira issue"
 msgstr "Jira समस्या से कनेक्ट करें"
 
 msgid "Connect Linear issue"
 msgstr "Linear समस्या से कनेक्ट करें"
+
+msgid "Connect to your accounting, project management, and CAD tools and much more."
+msgstr "आपकी खातेमेंट, पروजेक्ट मैनेजमेंट और CAD उपकरणों को संबधित करें और अधिक।"
 
 msgid "Connected to"
 msgstr "को जोड़ा गया"
@@ -7955,6 +7954,9 @@ msgstr "रिकॉर्ड भुगतान"
 msgid "Record the inspection result for this sample."
 msgstr "इस सैंपल के विशेषण पर अपना तथ्य रिकॉर्ड करें."
 
+msgid "Recorded"
+msgstr "दर्ज"
+
 msgid "recorded {qty} units"
 msgstr "रिकॉर्ड की गई {qty} इकाइयाँ"
 
@@ -8159,6 +8161,9 @@ msgstr "निष्कर्ष रिपोर्ट"
 
 msgid "reported"
 msgstr "रिपोर्टेड"
+
+msgid "Reported"
+msgstr "रिपोर्ट किया गया"
 
 msgid "Reported {totalQuantity} units"
 msgstr "प्राप्त {totalQuantity} इकाइयाँ"

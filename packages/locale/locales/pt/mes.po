@@ -1003,6 +1003,9 @@ msgstr "Quantidade Registada"
 msgid "Record step"
 msgstr "Registre o passo"
 
+msgid "Redirecting to verification page..."
+msgstr "Redirecionando para a página de verificação..."
+
 msgid "remaining"
 msgstr "restante"
 
@@ -1362,11 +1365,26 @@ msgstr "Enviado: {0}"
 msgid "Uploading {0}"
 msgstr "Enviando {0}"
 
+msgid "Use a different email"
+msgstr "Usar um e-mail diferente"
+
+msgid "Verification Error"
+msgstr "Erro de verificação"
+
+msgid "Verify your email"
+msgstr "Verifique o seu e-mail"
+
 msgid "View maintenance dispatch"
 msgstr "Ver despacho de manutenção"
 
 msgid "Volume:"
 msgstr "Volume:"
+
+msgid "We've sent a verification code to {email}"
+msgstr "Enviamos um código de verificação para {email}"
+
+msgid "We've sent a verification code to {verifyEmail}"
+msgstr "Enviamos um código de verificação para {verifyEmail}"
 
 msgid "We've sent you a magic link to sign in to your account."
 msgstr "Enviamos um link mágico para você entrar na sua conta."

@@ -108,7 +108,7 @@ export function PickupsTable({
       },
       {
         accessorKey: "createdAt",
-        header: t`Submitted`,
+        header: t`Recorded`,
         cell: ({ row }) => (
           <EditableCreatedAtCell
             createdAt={row.original.createdAt}

@@ -1003,6 +1003,9 @@ msgstr "レコード数量"
 msgid "Record step"
 msgstr "レコードステップ"
 
+msgid "Redirecting to verification page..."
+msgstr "確認ページにリダイレクト中..."
+
 msgid "remaining"
 msgstr "残り"
 
@@ -1362,11 +1365,26 @@ msgstr "アップロード完了: {0}"
 msgid "Uploading {0}"
 msgstr "{0} をアップロード中"
 
+msgid "Use a different email"
+msgstr "別のメールを使用する"
+
+msgid "Verification Error"
+msgstr "確認エラー"
+
+msgid "Verify your email"
+msgstr "メールアドレスを確認する"
+
 msgid "View maintenance dispatch"
 msgstr "メンテナンスディスパッチを表示"
 
 msgid "Volume:"
 msgstr "ボリューム："
+
+msgid "We've sent a verification code to {email}"
+msgstr "{email} に確認コードを送信しました"
+
+msgid "We've sent a verification code to {verifyEmail}"
+msgstr "{verifyEmail} に確認コードを送信しました"
 
 msgid "We've sent you a magic link to sign in to your account."
 msgstr "アカウントにサインインするためのマジックリンクをお送りしました。"

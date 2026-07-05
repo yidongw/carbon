@@ -1,6 +1,6 @@
 {
-  "generated": "2026-06-23T09:46:03.442Z",
-  "totalTools": 1210,
+  "generated": "2026-07-05T01:09:46.737Z",
+  "totalTools": 1245,
   "modules": 15,
   "tools": [
     {
@@ -203,7 +203,7 @@
       "module": "account",
       "classification": "WRITE",
       "description": "update public account",
-      "paramCount": 5,
+      "paramCount": 6,
       "serviceParams": [
         "client",
         "account"
@@ -228,6 +228,9 @@
             "type": "string"
           },
           "phone": {
+            "type": "string"
+          },
+          "number": {
             "type": "string"
           }
         },
@@ -13818,6 +13821,337 @@
       }
     },
     {
+      "name": "people_getEmployeeSalaryList",
+      "module": "people",
+      "classification": "READ",
+      "description": "get employee salary list",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "year",
+        "month",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "number"
+          },
+          "month": {
+            "type": "number"
+          },
+          "args": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "default": 100
+              },
+              "offset": {
+                "type": "integer",
+                "default": 0
+              },
+              "search": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        },
+        "required": [
+          "year",
+          "month"
+        ]
+      }
+    },
+    {
+      "name": "people_getEmployeeSalaryRecord",
+      "module": "people",
+      "classification": "READ",
+      "description": "get employee salary record",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "employeeId",
+        "companyId",
+        "year",
+        "month"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "employeeId": {
+            "type": "string"
+          },
+          "year": {
+            "type": "number"
+          },
+          "month": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "employeeId",
+          "year",
+          "month"
+        ]
+      }
+    },
+    {
+      "name": "people_getSalaryRecordBalances",
+      "module": "people",
+      "classification": "READ",
+      "description": "get salary record balances",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "salaryRecordId",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "salaryRecordId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "salaryRecordId"
+        ]
+      }
+    },
+    {
+      "name": "people_getAmountOwed",
+      "module": "people",
+      "classification": "READ",
+      "description": "get amount owed",
+      "paramCount": 2,
+      "serviceParams": [
+        "record"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "totalEarned": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "totalPaid": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "people_getEmployeeSalaryPayments",
+      "module": "people",
+      "classification": "READ",
+      "description": "get employee salary payments",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "salaryRecordId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "salaryRecordId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "salaryRecordId"
+        ]
+      }
+    },
+    {
+      "name": "people_getCompanySalaryPayments",
+      "module": "people",
+      "classification": "READ",
+      "description": "get company salary payments",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "year",
+        "month",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "number"
+          },
+          "month": {
+            "type": "number"
+          },
+          "args": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "default": 100
+              },
+              "offset": {
+                "type": "integer",
+                "default": 0
+              },
+              "search": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        },
+        "required": [
+          "year",
+          "month"
+        ]
+      }
+    },
+    {
+      "name": "people_getSalaryReadyToPay",
+      "module": "people",
+      "classification": "READ",
+      "description": "get salary ready to pay",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "year",
+        "month",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "number"
+          },
+          "month": {
+            "type": "number"
+          },
+          "args": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "default": 100
+              },
+              "offset": {
+                "type": "integer",
+                "default": 0
+              },
+              "search": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        },
+        "required": [
+          "year",
+          "month"
+        ]
+      }
+    },
+    {
+      "name": "people_recordSalaryPayment",
+      "module": "people",
+      "classification": "WRITE",
+      "description": "record salary payment",
+      "paramCount": 4,
+      "serviceParams": [
+        "client",
+        "data"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "salaryRecordId": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "paidAt": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "salaryRecordId",
+          "paidAt"
+        ]
+      }
+    },
+    {
+      "name": "people_getEmployeeSalaryHistory",
+      "module": "people",
+      "classification": "READ",
+      "description": "get employee salary history",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "employeeId",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "employeeId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "employeeId"
+        ]
+      }
+    },
+    {
       "name": "production_convertSalesOrderLinesToJobs",
       "module": "production",
       "classification": "WRITE",
@@ -14211,10 +14545,11 @@
       "module": "production",
       "classification": "DESTRUCTIVE",
       "description": "delete production quantity",
-      "paramCount": 1,
+      "paramCount": 2,
       "serviceParams": [
         "client",
-        "productionQuantityId"
+        "productionQuantityId",
+        "args"
       ],
       "injectAuth": [
         "companyId"
@@ -14224,10 +14559,46 @@
         "properties": {
           "productionQuantityId": {
             "type": "string"
+          },
+          "args": {
+            "type": "object",
+            "properties": {}
           }
         },
         "required": [
-          "productionQuantityId"
+          "productionQuantityId",
+          "args"
+        ]
+      }
+    },
+    {
+      "name": "production_deleteJobOperationSupplierQuantity",
+      "module": "production",
+      "classification": "DESTRUCTIVE",
+      "description": "delete job operation supplier quantity",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "supplierQuantityId",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "supplierQuantityId": {
+            "type": "string"
+          },
+          "args": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        "required": [
+          "supplierQuantityId",
+          "args"
         ]
       }
     },
@@ -14765,6 +15136,58 @@
       }
     },
     {
+      "name": "production_getJobConfigurationHistory",
+      "module": "production",
+      "classification": "READ",
+      "description": "get job configuration history",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "jobId",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "jobId"
+        ]
+      }
+    },
+    {
+      "name": "production_getJobProductionQuantitySummary",
+      "module": "production",
+      "classification": "READ",
+      "description": "get job production quantity summary",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "jobId",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "jobId"
+        ]
+      }
+    },
+    {
       "name": "production_getJobByOperationId",
       "module": "production",
       "classification": "READ",
@@ -15107,6 +15530,113 @@
       "serviceParams": [
         "client",
         "jobOperationId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobOperationId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "jobOperationId"
+        ]
+      }
+    },
+    {
+      "name": "production_getJobOperationActorContext",
+      "module": "production",
+      "classification": "READ",
+      "description": "get job operation actor context",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "jobOperationId",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobOperationId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "jobOperationId"
+        ]
+      }
+    },
+    {
+      "name": "production_validateActorMatchesOperationSupplierRouting",
+      "module": "production",
+      "classification": "WRITE",
+      "description": "validate actor matches operation supplier routing",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "jobOperationId",
+        "companyId",
+        "actor"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobOperationId": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "object",
+            "properties": {
+              "actorKind": {
+                "type": "string",
+                "enum": [
+                  "employee",
+                  "supplier"
+                ]
+              },
+              "employeeId": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "supplierProcessId": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "actorKind"
+            ]
+          }
+        },
+        "required": [
+          "jobOperationId",
+          "actor"
+        ]
+      }
+    },
+    {
+      "name": "production_assertSupplierQuantityAllowedForOperation",
+      "module": "production",
+      "classification": "WRITE",
+      "description": "assert supplier quantity allowed for operation",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "jobOperationId",
+        "companyId"
       ],
       "injectAuth": [
         "companyId"
@@ -15634,6 +16164,32 @@
           "jobOperationId",
           "sortDescending",
           "page"
+        ]
+      }
+    },
+    {
+      "name": "production_getProductionQuantitiesByOperation",
+      "module": "production",
+      "classification": "READ",
+      "description": "get production quantities by operation",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "jobOperationId",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobOperationId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "jobOperationId"
         ]
       }
     },
@@ -16356,6 +16912,90 @@
       }
     },
     {
+      "name": "production_getTrackedEntitiesByJobMakeMethodIds",
+      "module": "production",
+      "classification": "READ",
+      "description": "get tracked entities by job make method ids",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "jobMakeMethodIds"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobMakeMethodIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "jobMakeMethodIds"
+        ]
+      }
+    },
+    {
+      "name": "production_getItemIdsWithConfigurationParameters",
+      "module": "production",
+      "classification": "READ",
+      "description": "get item ids with configuration parameters",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "itemIds"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "itemIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "itemIds"
+        ]
+      }
+    },
+    {
+      "name": "production_getCurrentProcessByJobIds",
+      "module": "production",
+      "classification": "READ",
+      "description": "get current process by job ids",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "jobs"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobs": {
+            "type": "array",
+            "items": {}
+          }
+        },
+        "required": [
+          "jobs"
+        ]
+      }
+    },
+    {
       "name": "production_getTrackedEntitiesByJobId",
       "module": "production",
       "classification": "READ",
@@ -16906,7 +17546,7 @@
       "module": "production",
       "classification": "WRITE",
       "description": "upsert production quantity",
-      "paramCount": 3,
+      "paramCount": 1,
       "serviceParams": [
         "client",
         "productionQuantity"
@@ -16919,18 +17559,10 @@
       "schema": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string"
-          },
-          "jobOperationId": {
-            "type": "string"
-          },
-          "type": {
-            "type": "number"
-          }
+          "productionQuantity": {}
         },
         "required": [
-          "jobOperationId"
+          "productionQuantity"
         ]
       }
     },
@@ -17156,6 +17788,289 @@
         },
         "required": [
           "id"
+        ]
+      }
+    },
+    {
+      "name": "production_getJobOperationPickups",
+      "module": "production",
+      "classification": "READ",
+      "description": "get job operation pickups",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "jobOperationId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobOperationId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "jobOperationId"
+        ]
+      }
+    },
+    {
+      "name": "production_getJobOperationPickup",
+      "module": "production",
+      "classification": "READ",
+      "description": "get job operation pickup",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "id"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "production_upsertJobOperationPickup",
+      "module": "production",
+      "classification": "WRITE",
+      "description": "upsert job operation pickup",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "pickup"
+      ],
+      "injectAuth": [
+        "companyId",
+        "createdBy",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "pickup": {}
+        },
+        "required": [
+          "pickup"
+        ]
+      }
+    },
+    {
+      "name": "production_deleteJobOperationPickup",
+      "module": "production",
+      "classification": "DESTRUCTIVE",
+      "description": "delete job operation pickup",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "id"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "production_getJobPickupsByOperations",
+      "module": "production",
+      "classification": "READ",
+      "description": "get job pickups by operations",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "jobOperationIds",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobOperationIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "args": {
+            "type": "object",
+            "properties": {
+              "search": {
+                "type": "object",
+                "properties": {
+                  "limit": {
+                    "type": "integer",
+                    "default": 100
+                  },
+                  "offset": {
+                    "type": "integer",
+                    "default": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "jobOperationIds"
+        ]
+      }
+    },
+    {
+      "name": "production_getCompanyJobOperationPickups",
+      "module": "production",
+      "classification": "READ",
+      "description": "get company job operation pickups",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "default": 100
+              },
+              "offset": {
+                "type": "integer",
+                "default": 0
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "production_getJobPickupsPage",
+      "module": "production",
+      "classification": "READ",
+      "description": "get job pickups page",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "jobOperationId",
+        "companyId",
+        "page = 1"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobOperationId": {
+            "type": "string"
+          },
+          "page = 1": {}
+        },
+        "required": [
+          "jobOperationId",
+          "page = 1"
+        ]
+      }
+    },
+    {
+      "name": "production_upsertJobOperationSupplierPickup",
+      "module": "production",
+      "classification": "WRITE",
+      "description": "upsert job operation supplier pickup",
+      "paramCount": 6,
+      "serviceParams": [
+        "client",
+        "pickup"
+      ],
+      "injectAuth": [
+        "companyId",
+        "createdBy",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobOperationId": {
+            "type": "string"
+          },
+          "supplierProcessId": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "configuration": {},
+          "notes": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "jobOperationId",
+          "supplierProcessId",
+          "quantity"
+        ]
+      }
+    },
+    {
+      "name": "production_getJobSupplierPickupsPage",
+      "module": "production",
+      "classification": "READ",
+      "description": "get job supplier pickups page",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "jobOperationId",
+        "companyId",
+        "page = 1"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "jobOperationId": {
+            "type": "string"
+          },
+          "page = 1": {}
+        },
+        "required": [
+          "jobOperationId",
+          "page = 1"
         ]
       }
     },
@@ -20455,7 +21370,7 @@
       "module": "purchasing",
       "classification": "WRITE",
       "description": "upsert supplier process",
-      "paramCount": 5,
+      "paramCount": 6,
       "serviceParams": [
         "client",
         "supplierProcess"
@@ -20478,6 +21393,9 @@
             "type": "string"
           },
           "minimumCost": {
+            "type": "number"
+          },
+          "unitCost": {
             "type": "number"
           },
           "leadTime": {
@@ -28767,6 +29685,93 @@
       }
     },
     {
+      "name": "sales_getOrCreateOpportunityForRecord",
+      "module": "sales",
+      "classification": "READ",
+      "description": "get or create opportunity for record",
+      "paramCount": 4,
+      "serviceParams": [
+        "client",
+        "record"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "customerId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "opportunityId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "table": {
+            "type": "string",
+            "enum": [
+              "salesOrder",
+              "salesRfq",
+              "quote"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "customerId",
+          "opportunityId",
+          "table"
+        ]
+      }
+    },
+    {
+      "name": "sales_getOrCreateOpportunityForSalesOrder",
+      "module": "sales",
+      "classification": "READ",
+      "description": "get or create opportunity for sales order",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "salesOrder"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "customerId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "opportunityId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "customerId",
+          "opportunityId"
+        ]
+      }
+    },
+    {
       "name": "sales_getOpportunityDocuments",
       "module": "sales",
       "classification": "READ",
@@ -34550,6 +35555,33 @@
       }
     },
     {
+      "name": "settings_updateLastNameFirstSetting",
+      "module": "settings",
+      "classification": "WRITE",
+      "description": "update last name first setting",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "lastNameFirst"
+      ],
+      "injectAuth": [
+        "companyId",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "lastNameFirst": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "lastNameFirst"
+        ]
+      }
+    },
+    {
       "name": "settings_updateKanbanOutputSetting",
       "module": "settings",
       "classification": "WRITE",
@@ -35329,16 +36361,51 @@
       }
     },
     {
+      "name": "shared_cancelApprovalRequestsForDocument",
+      "module": "shared",
+      "classification": "WRITE",
+      "description": "cancel approval requests for document",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "documentType",
+        "documentId",
+        "userId",
+        "decisionNotes"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "documentType": {
+            "type": "string"
+          },
+          "documentId": {
+            "type": "string"
+          },
+          "decisionNotes": {}
+        },
+        "required": [
+          "documentType",
+          "documentId",
+          "decisionNotes"
+        ]
+      }
+    },
+    {
       "name": "shared_approveRequest",
       "module": "shared",
       "classification": "WRITE",
       "description": "approve request",
-      "paramCount": 2,
+      "paramCount": 3,
       "serviceParams": [
         "db",
         "id",
         "userId",
-        "notes"
+        "notes",
+        "options"
       ],
       "injectAuth": [
         "companyId",
@@ -35352,7 +36419,8 @@
           },
           "notes": {
             "type": "string"
-          }
+          },
+          "options": {}
         },
         "required": [
           "id"
@@ -36089,6 +37157,76 @@
       }
     },
     {
+      "name": "shared_getTags",
+      "module": "shared",
+      "classification": "READ",
+      "description": "get tags",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "args": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "default": 100
+              },
+              "offset": {
+                "type": "integer",
+                "default": 0
+              },
+              "search": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "shared_deleteTag",
+      "module": "shared",
+      "classification": "DESTRUCTIVE",
+      "description": "delete tag",
+      "paramCount": 2,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "table",
+        "name"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "table": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "table",
+          "name"
+        ]
+      }
+    },
+    {
       "name": "shared_hasPendingApproval",
       "module": "shared",
       "classification": "READ",
@@ -36467,12 +37605,13 @@
       "module": "shared",
       "classification": "WRITE",
       "description": "reject request",
-      "paramCount": 2,
+      "paramCount": 3,
       "serviceParams": [
         "db",
         "id",
         "userId",
-        "notes"
+        "notes",
+        "options"
       ],
       "injectAuth": [
         "companyId",
@@ -36486,7 +37625,8 @@
           },
           "notes": {
             "type": "string"
-          }
+          },
+          "options": {}
         },
         "required": [
           "id"
@@ -36722,6 +37862,41 @@
           "quantity",
           "fallbackUnitPrice",
           "exchangeRate"
+        ]
+      }
+    },
+    {
+      "name": "shared_requestProductionPayApproval",
+      "module": "shared",
+      "classification": "WRITE",
+      "description": "request production pay approval",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "reportId": {
+            "type": "string"
+          },
+          "requestedBy": {
+            "type": "string"
+          },
+          "amount": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "reportId",
+          "requestedBy"
         ]
       }
     },

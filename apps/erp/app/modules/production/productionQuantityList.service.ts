@@ -1069,8 +1069,7 @@ export async function getProductionQuantityReportPayRows(
       requestedBy: approval?.requestedBy ?? null,
       id: approval?.id ?? report.id,
       quantity: totalQty,
-      createdAt:
-        approval?.requestedAt ?? primary?.createdAt ?? report.createdAt ?? null,
+      createdAt: report.createdAt,
       employeeId: primary?.employeeId ?? report.employeeId ?? null,
       createdBy: primary?.createdBy ?? report.createdBy ?? null,
       jobId: getJobIdFromJobOperation(jobOperation),

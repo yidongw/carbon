@@ -1003,6 +1003,9 @@ msgstr "Record Quantity"
 msgid "Record step"
 msgstr "Record step"
 
+msgid "Redirecting to verification page..."
+msgstr "Redirecting to verification page..."
+
 msgid "remaining"
 msgstr "remaining"
 
@@ -1362,11 +1365,26 @@ msgstr "Uploaded: {0}"
 msgid "Uploading {0}"
 msgstr "Uploading {0}"
 
+msgid "Use a different email"
+msgstr "Use a different email"
+
+msgid "Verification Error"
+msgstr "Verification Error"
+
+msgid "Verify your email"
+msgstr "Verify your email"
+
 msgid "View maintenance dispatch"
 msgstr "View maintenance dispatch"
 
 msgid "Volume:"
 msgstr "Volume:"
+
+msgid "We've sent a verification code to {email}"
+msgstr "We've sent a verification code to {email}"
+
+msgid "We've sent a verification code to {verifyEmail}"
+msgstr "We've sent a verification code to {verifyEmail}"
 
 msgid "We've sent you a magic link to sign in to your account."
 msgstr "We've sent you a magic link to sign in to your account."

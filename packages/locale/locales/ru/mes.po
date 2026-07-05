@@ -1003,6 +1003,9 @@ msgstr "Записать количество"
 msgid "Record step"
 msgstr "Записать шаг"
 
+msgid "Redirecting to verification page..."
+msgstr "Перенаправление на страницу верификации..."
+
 msgid "remaining"
 msgstr "оставшееся"
 
@@ -1362,11 +1365,26 @@ msgstr "Загружено: {0}"
 msgid "Uploading {0}"
 msgstr "Загрузка {0}"
 
+msgid "Use a different email"
+msgstr "Использовать другой email"
+
+msgid "Verification Error"
+msgstr "Ошибка верификации"
+
+msgid "Verify your email"
+msgstr "Подтвердите свой email"
+
 msgid "View maintenance dispatch"
 msgstr "Просмотреть наряд на обслуживание"
 
 msgid "Volume:"
 msgstr "Объем:"
+
+msgid "We've sent a verification code to {email}"
+msgstr "Мы отправили код подтверждения на {email}"
+
+msgid "We've sent a verification code to {verifyEmail}"
+msgstr "Мы отправили код подтверждения на {verifyEmail}"
 
 msgid "We've sent you a magic link to sign in to your account."
 msgstr "Мы отправили вам ссылку для входа в ваш аккаунт."
