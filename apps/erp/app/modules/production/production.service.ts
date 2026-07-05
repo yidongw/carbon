@@ -3103,6 +3103,80 @@ export async function getJobPickupsByOperations(
   return query;
 }
 
+export async function getPickupFilterOptions(
+  client: SupabaseClient<Database>,
+  companyId: string
+) {
+  const [{ data: employeeData }, { data: joinData }] = await Promise.all([
+    client
+      .from("employeeSummary")
+      .select("id, name, avatarUrl")
+      .eq("companyId", companyId)
+      .order("name", { ascending: true }),
+    client
+      .from("jobOperationPickup")
+      .select(
+        "jobOperation!inner(jobId, processId, job:jobId(id, jobId), process:processId(id, name))"
+      )
+      .eq("companyId", companyId)
+  ]);
+
+  const jobsMap = new Map<string, { id: string; label: string }>();
+  const itemsMap = new Map<string, { id: string; label: string }>();
+  const processesMap = new Map<string, { id: string; label: string }>();
+
+  for (const row of joinData ?? []) {
+    const op = Array.isArray(row.jobOperation)
+      ? row.jobOperation[0]
+      : row.jobOperation;
+    if (!op) continue;
+
+    const job = Array.isArray(op.job) ? op.job[0] : op.job;
+    if (job?.id && job.jobId) {
+      jobsMap.set(job.id, { id: job.id, label: job.jobId });
+    }
+
+    const process = Array.isArray(op.process) ? op.process[0] : op.process;
+    if (process?.id && process.name) {
+      processesMap.set(process.id, { id: process.id, label: process.name });
+    }
+  }
+
+  const sortByLabel = (
+    a: { label: string },
+    b: { label: string }
+  ) => a.label.localeCompare(b.label);
+
+  return {
+    employees: (employeeData ?? []).filter(
+      (e): e is typeof e & { id: string } => e.id != null
+    ),
+    jobs: [...jobsMap.values()].sort(sortByLabel),
+    items: [...itemsMap.values()].sort(sortByLabel),
+    processes: [...processesMap.values()].sort(sortByLabel)
+  };
+}
+
+function extractFilterValues(
+  filters: GenericQueryFilters["filters"],
+  column: string
+): string[] | null {
+  if (!filters?.length) return null;
+  const ids = new Set<string>();
+  for (const f of filters) {
+    if (f.column !== column || !f.value) continue;
+    if (f.operator === "eq") {
+      ids.add(f.value);
+    } else if (f.operator === "in" || f.operator === "contains") {
+      for (const id of f.value.split(",")) {
+        const trimmed = id.trim();
+        if (trimmed) ids.add(trimmed);
+      }
+    }
+  }
+  return ids.size > 0 ? [...ids] : null;
+}
+
 export async function getCompanyJobOperationPickups(
   client: SupabaseClient<Database>,
   companyId: string,
@@ -3125,6 +3199,83 @@ export async function getCompanyJobOperationPickups(
     query = query.or(
       `notes.ilike.%${args.search}%,jobOperation.description.ilike.%${args.search}%`
     );
+  }
+
+  if (args?.filters?.length) {
+    const employeeIds = extractFilterValues(args.filters, "employeeId");
+    if (employeeIds) {
+      query = query.in("employeeId", employeeIds);
+    }
+
+    const jobIds = extractFilterValues(args.filters, "jobId");
+    const itemIds = extractFilterValues(args.filters, "itemId");
+    const processIds = extractFilterValues(args.filters, "processId");
+
+    let resolvedOpIds: string[] | null = null;
+
+    if (itemIds) {
+      const { data: itemJobs } = await client
+        .from("job")
+        .select("id")
+        .eq("companyId", companyId)
+        .in("itemId", itemIds);
+      const itemJobIds = itemJobs?.map((j) => j.id) ?? [];
+      const effectiveJobIds = jobIds
+        ? jobIds.filter((id) => itemJobIds.includes(id))
+        : itemJobIds;
+      if (effectiveJobIds.length === 0) return await query.in("jobOperationId", []);
+      const { data: ops } = await client
+        .from("jobOperation")
+        .select("id")
+        .eq("companyId", companyId)
+        .in("jobId", effectiveJobIds);
+      resolvedOpIds = ops?.map((op) => op.id) ?? [];
+    } else if (jobIds) {
+      const { data: ops } = await client
+        .from("jobOperation")
+        .select("id")
+        .eq("companyId", companyId)
+        .in("jobId", jobIds);
+      resolvedOpIds = ops?.map((op) => op.id) ?? [];
+    }
+
+    if (processIds) {
+      const { data: processOps } = await client
+        .from("jobOperation")
+        .select("id")
+        .eq("companyId", companyId)
+        .in("processId", processIds);
+      const processOpIds = processOps?.map((op) => op.id) ?? [];
+      resolvedOpIds = resolvedOpIds
+        ? resolvedOpIds.filter((id) => processOpIds.includes(id))
+        : processOpIds;
+    }
+
+    if (resolvedOpIds !== null) {
+      if (resolvedOpIds.length === 0) return await query.in("jobOperationId", []);
+      query = query.in("jobOperationId", resolvedOpIds);
+    }
+
+    const dateFilter = args.filters.find(
+      (f) => f.column === "createdAt" && f.value?.includes("~")
+    );
+    if (dateFilter?.value) {
+      const [startDate, endDate] = dateFilter.value.split("~");
+      if (startDate) query = query.gte("createdAt", startDate);
+      if (endDate) query = query.lte("createdAt", `${endDate}T23:59:59.999Z`);
+    }
+
+    const handledColumns = new Set([
+      "employeeId",
+      "jobId",
+      "itemId",
+      "processId",
+      "createdAt"
+    ]);
+    const remainingFilters = args.filters.filter(
+      (f) => !handledColumns.has(f.column)
+    );
+    args = { ...args, filters: remainingFilters };
   }
 
   if (args) {

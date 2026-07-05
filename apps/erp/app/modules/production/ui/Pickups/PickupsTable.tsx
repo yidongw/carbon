@@ -3,7 +3,14 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useCallback, useMemo } from "react";
 import { AiOutlinePartition } from "react-icons/ai";
-import { LuCalendar, LuHash, LuPlus, LuUser } from "react-icons/lu";
+import {
+  LuBriefcase,
+  LuCalendar,
+  LuHash,
+  LuPlus,
+  LuSettings2,
+  LuUser
+} from "react-icons/lu";
 import { useRevalidator } from "react-router";
 import { Table } from "~/components";
 import { overlay, useOverlay } from "~/components/Overlay";
@@ -17,6 +24,7 @@ import {
   type ProductionQuantityTableRowLike
 } from "~/modules/production/ui/ProductionQuantityTableCells";
 import { usePickupCreatedAtSave } from "~/modules/production/ui/useEditableCreatedAt";
+import { CreatedAtFilter } from "./CreatedAtFilter";
 
 type JobOperationPickup = ProductionQuantityTableRowLike & {
   id: string;
@@ -28,16 +36,31 @@ type JobOperationPickup = ProductionQuantityTableRowLike & {
   createdAt: string;
 };
 
+type FilterOption = { id: string; label: string };
+type EmployeeOption = {
+  id: string;
+  name: string | null;
+  avatarUrl?: string | null;
+};
+
 type PickupsTableProps = {
   data: JobOperationPickup[];
   count: number;
   configurableItemIds?: string[];
+  employees?: EmployeeOption[];
+  jobs?: FilterOption[];
+  items?: FilterOption[];
+  processes?: FilterOption[];
 };
 
 export function PickupsTable({
   data,
   count,
-  configurableItemIds = []
+  configurableItemIds = [],
+  employees = [],
+  jobs = [],
+  items = [],
+  processes = []
 }: PickupsTableProps) {
   const { t } = useLingui();
   const { openOverlay } = useOverlay();
@@ -64,27 +87,77 @@ export function PickupsTable({
             createdBy={row.original.createdBy}
           />
         ),
-        meta: { icon: <LuUser /> }
+        meta: {
+          icon: <LuUser />,
+          pluralHeader: t`Employees`,
+          filter: employees.length
+            ? {
+                type: "static" as const,
+                options: employees.map((e) => ({
+                  value: e.id,
+                  label: e.name?.trim() || e.id
+                })),
+                isArray: false
+              }
+            : undefined
+        }
       },
       {
-        id: "job",
+        accessorKey: "jobId",
         header: t`Job`,
-        cell: ({ row }) => <ProductionQuantityTableJobCell row={row.original} />
+        cell: ({ row }) => (
+          <ProductionQuantityTableJobCell row={row.original} />
+        ),
+        meta: {
+          icon: <LuBriefcase />,
+          pluralHeader: t`Jobs`,
+          filter: jobs.length
+            ? {
+                type: "static" as const,
+                options: jobs.map((j) => ({ value: j.id, label: j.label })),
+                isArray: false
+              }
+            : undefined
+        }
       },
       {
-        id: "item",
+        accessorKey: "itemId",
         header: t`Item`,
         cell: ({ row }) => (
           <ProductionQuantityTableItemCell row={row.original} />
         ),
-        meta: { icon: <AiOutlinePartition /> }
+        meta: {
+          icon: <AiOutlinePartition />,
+          pluralHeader: t`Items`,
+          filter: items.length
+            ? {
+                type: "static" as const,
+                options: items.map((i) => ({ value: i.id, label: i.label })),
+                isArray: false
+              }
+            : undefined
+        }
       },
       {
-        id: "operation",
+        accessorKey: "processId",
         header: t`Operation`,
         cell: ({ row }) => (
           <div className="text-sm">{getProcessName(row.original) ?? "—"}</div>
-        )
+        ),
+        meta: {
+          icon: <LuSettings2 />,
+          pluralHeader: t`Operations`,
+          filter: processes.length
+            ? {
+                type: "static" as const,
+                options: processes.map((p) => ({
+                  value: p.id,
+                  label: p.label
+                })),
+                isArray: false
+              }
+            : undefined
+        }
       },
       {
         accessorKey: "quantity",
@@ -117,10 +190,32 @@ export function PickupsTable({
             canEdit={canEdit}
           />
         ),
-        meta: { icon: <LuCalendar /> }
+        meta: {
+          icon: <LuCalendar />,
+          filter: {
+            type: "custom" as const,
+            render: (ctx) => <CreatedAtFilter {...ctx} />,
+            getLabel: (value) => {
+              const [start, end] = value.split("~");
+              if (start && end) return `${start} – ${end}`;
+              if (start) return `≥ ${start}`;
+              if (end) return `≤ ${end}`;
+              return value;
+            }
+          }
+        }
       }
     ],
-    [canEdit, configurableItemIdSet, saveCreatedAt, t]
+    [
+      canEdit,
+      configurableItemIdSet,
+      employees,
+      jobs,
+      items,
+      processes,
+      saveCreatedAt,
+      t
+    ]
   );
 
   return (

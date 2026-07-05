@@ -6,7 +6,8 @@ import type { LoaderFunctionArgs } from "react-router";
 import { useLoaderData } from "react-router";
 import {
   getCompanyJobOperationPickups,
-  getItemIdsWithConfigurationParameters
+  getItemIdsWithConfigurationParameters,
+  getPickupFilterOptions
 } from "~/modules/production";
 import { getItemInternalId } from "~/modules/production/productionQuantityDisplay.utils";
 import { PickupsTable } from "~/modules/production/ui/Pickups";
@@ -32,13 +33,16 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const { limit, offset, sorts, filters } =
     getGenericQueryFilters(searchParams);
 
-  const pickups = await getCompanyJobOperationPickups(client, companyId, {
-    search,
-    limit,
-    offset,
-    sorts,
-    filters
-  });
+  const [pickups, filterOptions] = await Promise.all([
+    getCompanyJobOperationPickups(client, companyId, {
+      search,
+      limit,
+      offset,
+      sorts,
+      filters
+    }),
+    getPickupFilterOptions(client, companyId)
+  ]);
 
   if (pickups.error) {
     throw error(pickups.error, "Failed to fetch process pickups");
@@ -61,13 +65,24 @@ export async function loader({ request }: LoaderFunctionArgs) {
   return {
     count: pickups.count ?? 0,
     pickups: pickupRows,
-    configurableItemIds
+    configurableItemIds,
+    employees: filterOptions.employees,
+    jobs: filterOptions.jobs,
+    items: filterOptions.items,
+    processes: filterOptions.processes
   };
 }
 
 export default function PickupsRoute() {
-  const { count, pickups, configurableItemIds } =
-    useLoaderData<typeof loader>();
+  const {
+    count,
+    pickups,
+    configurableItemIds,
+    employees,
+    jobs,
+    items,
+    processes
+  } = useLoaderData<typeof loader>();
 
   return (
     <VStack spacing={0} className="h-full">
@@ -75,6 +90,10 @@ export default function PickupsRoute() {
         data={pickups}
         count={count}
         configurableItemIds={configurableItemIds}
+        employees={employees}
+        jobs={jobs}
+        items={items}
+        processes={processes}
       />
     </VStack>
   );
