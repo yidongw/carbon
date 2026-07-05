@@ -8,6 +8,8 @@ export type EditableTableCellComponentProps<T> = {
   accessorKey: string;
   onUpdate: (updates: Record<string, unknown>) => void;
   onError: () => void;
+  /** Leave edit mode (e.g. when a dropdown closes). Optional for legacy cells. */
+  onFinishEditing?: () => void;
 };
 
 export type Position = null | { row: number; column: number };

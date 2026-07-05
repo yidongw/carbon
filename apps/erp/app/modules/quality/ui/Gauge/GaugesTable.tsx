@@ -30,6 +30,7 @@ import {
 } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { useLocations } from "~/components/Form/Location";
+import { editableCell } from "~/components/InlineEditor";
 import { Confirm, ConfirmDelete } from "~/components/Modals";
 import { useDateFormatter, usePermissions, useUrlParams } from "~/hooks";
 import { useCustomColumns } from "~/hooks/useCustomColumns";
@@ -44,6 +45,12 @@ import {
 } from "../../quality.models";
 import type { Gauge } from "../../types";
 import { GaugeCalibrationStatus, GaugeRole, GaugeStatus } from "./GaugeStatus";
+
+// Gauge inline edits go through the shared gauge bulk-update action.
+const GAUGE_UPDATE = {
+  action: path.to.bulkUpdateGauge,
+  idKey: "ids" as const
+};
 
 type GaugesTableProps = {
   data: Gauge[];
@@ -102,9 +109,16 @@ const GaugesTable = memo(({ data, types, count }: GaugesTableProps) => {
       {
         id: "supplierId",
         header: t`Manufacturer`,
-        cell: ({ row }) => {
-          return <SupplierAvatar supplierId={row.original.supplierId} />;
-        },
+        cell: editableCell<Gauge>({
+          kind: "picker",
+          field: "supplierId",
+          update: GAUGE_UPDATE,
+          value: (r) => r.supplierId,
+          clearable: true,
+          options:
+            suppliers?.map((s) => ({ value: s.id, label: s.name })) ?? [],
+          renderInline: (v) => <SupplierAvatar supplierId={v} />
+        }),
         meta: {
           filter: {
             type: "static",
@@ -120,14 +134,21 @@ const GaugesTable = memo(({ data, types, count }: GaugesTableProps) => {
       {
         accessorKey: "gaugeTypeId",
         header: t`Type`,
-        cell: ({ row }) => (
-          <Enumerable
-            value={
-              types.find((type) => type.id === row.original.gaugeTypeId)
-                ?.name ?? null
-            }
-          />
-        ),
+        cell: editableCell<Gauge>({
+          kind: "picker",
+          field: "gaugeTypeId",
+          update: GAUGE_UPDATE,
+          value: (r) => r.gaugeTypeId,
+          options: types.map((type) => ({
+            value: type.id,
+            label: <Enumerable value={type.name} />
+          })),
+          renderInline: (v) => (
+            <Enumerable
+              value={types.find((type) => type.id === v)?.name ?? null}
+            />
+          )
+        }),
         meta: {
           icon: <LuShapes />,
           filter: {
@@ -161,7 +182,12 @@ const GaugesTable = memo(({ data, types, count }: GaugesTableProps) => {
       {
         accessorKey: "modelNumber",
         header: t`Model Number`,
-        cell: ({ row }) => row.original.modelNumber,
+        cell: editableCell<Gauge>({
+          kind: "text",
+          field: "modelNumber",
+          update: GAUGE_UPDATE,
+          value: (r) => r.modelNumber
+        }),
         meta: {
           icon: <LuHash />
         }
@@ -169,7 +195,12 @@ const GaugesTable = memo(({ data, types, count }: GaugesTableProps) => {
       {
         accessorKey: "serialNumber",
         header: t`Serial Number`,
-        cell: ({ row }) => row.original.serialNumber,
+        cell: editableCell<Gauge>({
+          kind: "text",
+          field: "serialNumber",
+          update: GAUGE_UPDATE,
+          value: (r) => r.serialNumber
+        }),
         meta: {
           icon: <LuHash />
         }
@@ -177,7 +208,19 @@ const GaugesTable = memo(({ data, types, count }: GaugesTableProps) => {
       {
         accessorKey: "gaugeRole",
         header: t`Role`,
-        cell: ({ row }) => <GaugeRole role={row.original.gaugeRole} />,
+        cell: editableCell<Gauge>({
+          kind: "enum",
+          field: "gaugeRole",
+          update: GAUGE_UPDATE,
+          value: (r) => r.gaugeRole,
+          options: gaugeRole.map((role) => ({
+            value: role,
+            label: <GaugeRole role={role} />
+          })),
+          renderInline: (v) => (
+            <GaugeRole role={v as (typeof gaugeRole)[number]} />
+          )
+        }),
         meta: {
           icon: <LuShield />,
           filter: {
@@ -224,15 +267,19 @@ const GaugesTable = memo(({ data, types, count }: GaugesTableProps) => {
       {
         accessorKey: "locationId",
         header: t`Location`,
-        cell: ({ row }) => (
-          <Enumerable
-            value={
-              locations.find(
-                (location) => location.value === row.original.locationId
-              )?.label ?? null
-            }
-          />
-        ),
+        cell: editableCell<Gauge>({
+          kind: "picker",
+          field: "locationId",
+          update: GAUGE_UPDATE,
+          value: (r) => r.locationId,
+          clearable: true,
+          options: locations,
+          renderInline: (v) => (
+            <Enumerable
+              value={locations.find((l) => l.value === v)?.label ?? null}
+            />
+          )
+        }),
         meta: {
           icon: <LuMap />,
           filter: {

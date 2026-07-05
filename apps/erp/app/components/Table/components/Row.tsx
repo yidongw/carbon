@@ -9,6 +9,10 @@ import type {
 import Cell from "./Cell";
 
 type RowProps<T> = ComponentProps<typeof Tr> & {
+  // The table's columns reference, captured at render time. When the columns
+  // useMemo rebuilds (e.g. async option lists loaded), this ref changes so the
+  // memoized row re-renders and its cells pick up the new renderers.
+  columns?: unknown;
   editableComponents?: Record<string, EditableTableCellComponent<T> | object>;
   editedCells?: string[];
   isEditing: boolean;
@@ -22,9 +26,11 @@ type RowProps<T> = ComponentProps<typeof Tr> & {
   getPinnedStyles: (column: Column<any, unknown>) => CSSProperties;
   onCellClick: (row: number, column: number) => void;
   onCellUpdate: (row: number) => (updates: Record<string, unknown>) => void;
+  onFinishEditing?: () => void;
 };
 
 const Row = <T extends object>({
+  columns: _columns,
   editableComponents,
   editedCells,
   isEditing,
@@ -38,6 +44,7 @@ const Row = <T extends object>({
   getPinnedStyles,
   onCellClick,
   onCellUpdate,
+  onFinishEditing,
   className,
   ...props
 }: RowProps<T>) => {
@@ -62,6 +69,7 @@ const Row = <T extends object>({
           <Cell<T>
             key={cell.id}
             cell={cell}
+            cellRenderer={cell.column.columnDef.cell}
             columnIndex={columnIndex}
             // @ts-ignore
             editableComponents={editableComponents}
@@ -78,6 +86,7 @@ const Row = <T extends object>({
                 : undefined
             }
             onUpdate={onUpdate}
+            onFinishEditing={onFinishEditing}
           />
         );
       })}
@@ -101,7 +110,10 @@ const MemoizedRow = memo(
     // (it's a useCallback keyed on them). Without this, rows keep the styles
     // from the first render — when columnSizeMap was still empty — so pinned
     // body cells stick at left:0 and cover the checkbox column.
-    prev.getPinnedStyles === next.getPinnedStyles
+    prev.getPinnedStyles === next.getPinnedStyles &&
+    // Re-render when the columns rebuild (e.g. async option lists loaded) so
+    // cells pick up their new renderers.
+    prev.columns === next.columns
 ) as typeof Row;
 
 export default MemoizedRow;

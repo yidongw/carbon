@@ -43,6 +43,7 @@ import {
   LuUser
 } from "react-icons/lu";
 import {
+  Assignee,
   CustomerAvatar,
   EmployeeAvatar,
   Hyperlink,
@@ -54,6 +55,7 @@ import { Enumerable } from "~/components/Enumerable";
 import { useLocations } from "~/components/Form/Location";
 import { usePaymentTerm } from "~/components/Form/PaymentTerm";
 import { useShippingMethod } from "~/components/Form/ShippingMethod";
+import { editableCell } from "~/components/InlineEditor";
 import { ConfirmDelete } from "~/components/Modals";
 import {
   useCurrencyFormatter,
@@ -69,6 +71,12 @@ import { salesOrderStatusType } from "../../sales.models";
 import type { SalesOrder, SalesOrderJob } from "../../types";
 import SalesStatus from "./SalesStatus";
 import { useSalesOrder } from "./useSalesOrder";
+
+// Sales-order inline edits go through the shared sales-order bulk-update action.
+const SALES_ORDER_UPDATE = {
+  action: path.to.bulkUpdateSalesOrder,
+  idKey: "ids" as const
+};
 
 type SalesOrdersTableProps = {
   data: SalesOrder[];
@@ -105,9 +113,9 @@ const SalesOrdersTable = memo(({ data, count }: SalesOrdersTableProps) => {
 
   const [people] = usePeople();
   const [customers] = useCustomers();
+  const locations = useLocations();
   const shippingMethods = useShippingMethod();
   const paymentTerms = usePaymentTerm();
-  const locations = useLocations();
   const todaysDate = useMemo(() => today(getLocalTimeZone()), []);
 
   const { edit } = useSalesOrder();
@@ -139,9 +147,15 @@ const SalesOrdersTable = memo(({ data, count }: SalesOrdersTableProps) => {
       {
         id: "customerId",
         header: t`Customer`,
-        cell: ({ row }) => {
-          return <CustomerAvatar customerId={row.original.customerId} />;
-        },
+        cell: editableCell<SalesOrder>({
+          kind: "picker",
+          field: "customerId",
+          update: SALES_ORDER_UPDATE,
+          value: (r) => r.customerId,
+          options:
+            customers?.map((c) => ({ value: c.id, label: c.name })) ?? [],
+          renderInline: (v) => <CustomerAvatar customerId={v} />
+        }),
         meta: {
           filter: {
             type: "static",
@@ -326,7 +340,12 @@ const SalesOrdersTable = memo(({ data, count }: SalesOrdersTableProps) => {
       {
         accessorKey: "customerReference",
         header: t`Customer PO`,
-        cell: (item) => item.getValue(),
+        cell: editableCell<SalesOrder>({
+          kind: "text",
+          field: "customerReference",
+          update: SALES_ORDER_UPDATE,
+          value: (r) => r.customerReference
+        }),
         meta: {
           icon: <LuQrCode />
         }
@@ -334,7 +353,13 @@ const SalesOrdersTable = memo(({ data, count }: SalesOrdersTableProps) => {
       {
         accessorKey: "orderDate",
         header: t`Order Date`,
-        cell: (item) => formatDate(item.getValue<string>()),
+        cell: editableCell<SalesOrder>({
+          kind: "date",
+          field: "orderDate",
+          update: SALES_ORDER_UPDATE,
+          value: (r) => r.orderDate,
+          renderInline: (v) => formatDate(v)
+        }),
         meta: {
           icon: <LuCalendar />
         }
@@ -354,7 +379,13 @@ const SalesOrdersTable = memo(({ data, count }: SalesOrdersTableProps) => {
         id: "assignee",
         header: t`Assignee`,
         cell: ({ row }) => (
-          <EmployeeAvatar employeeId={row.original.assignee} />
+          <Assignee
+            id={row.original.id ?? ""}
+            table="salesOrder"
+            value={row.original.assignee ?? ""}
+            variant="button"
+            size="sm"
+          />
         ),
         meta: {
           filter: {
@@ -370,7 +401,13 @@ const SalesOrdersTable = memo(({ data, count }: SalesOrdersTableProps) => {
       {
         accessorKey: "receiptPromisedDate",
         header: t`Promised Date`,
-        cell: (item) => formatDate(item.getValue<string>()),
+        cell: editableCell<SalesOrder>({
+          kind: "date",
+          field: "receiptPromisedDate",
+          update: SALES_ORDER_UPDATE,
+          value: (r) => r.receiptPromisedDate,
+          renderInline: (v) => formatDate(v)
+        }),
         meta: {
           icon: <LuCalendar />
         }
@@ -378,14 +415,14 @@ const SalesOrdersTable = memo(({ data, count }: SalesOrdersTableProps) => {
       {
         accessorKey: "shippingMethodId",
         header: t`Shipping Method`,
-        cell: (item) => (
-          <Enumerable
-            value={
-              shippingMethods.find((sm) => sm.value === item.getValue<string>())
-                ?.label ?? null
-            }
-          />
-        ),
+        cell: editableCell<SalesOrder>({
+          kind: "picker",
+          field: "shippingMethodId",
+          update: SALES_ORDER_UPDATE,
+          value: (r) => r.shippingMethodId,
+          options: shippingMethods,
+          fallbackLabel: (r) => r.shippingMethodName
+        }),
         meta: {
           icon: <LuTruck />
         }
@@ -393,14 +430,14 @@ const SalesOrdersTable = memo(({ data, count }: SalesOrdersTableProps) => {
       {
         accessorKey: "locationId",
         header: t`Location`,
-        cell: ({ row }) => (
-          <Enumerable
-            value={
-              locations.find((l) => l.value === row.original.locationId)
-                ?.label ?? null
-            }
-          />
-        ),
+        cell: editableCell<SalesOrder>({
+          kind: "picker",
+          field: "locationId",
+          update: SALES_ORDER_UPDATE,
+          value: (r) => r.locationId,
+          options: locations,
+          fallbackLabel: (r) => r.locationName
+        }),
         meta: {
           icon: <LuMapPin />,
           filter: {
@@ -415,14 +452,14 @@ const SalesOrdersTable = memo(({ data, count }: SalesOrdersTableProps) => {
       {
         accessorKey: "paymentTermId",
         header: t`Payment Method`,
-        cell: (item) => (
-          <Enumerable
-            value={
-              paymentTerms.find((pt) => pt.value === item.getValue<string>())
-                ?.label ?? null
-            }
-          />
-        ),
+        cell: editableCell<SalesOrder>({
+          kind: "picker",
+          field: "paymentTermId",
+          update: SALES_ORDER_UPDATE,
+          value: (r) => r.paymentTermId,
+          options: paymentTerms,
+          fallbackLabel: (r) => r.paymentTermName
+        }),
         meta: {
           icon: <LuCreditCard />
         }
@@ -506,11 +543,11 @@ const SalesOrdersTable = memo(({ data, count }: SalesOrdersTableProps) => {
     customers,
     people,
     locations,
+    shippingMethods,
+    paymentTerms,
     customColumns,
     todaysDate,
     currencyFormatter,
-    shippingMethods,
-    paymentTerms,
     t,
     formatDate
   ]);

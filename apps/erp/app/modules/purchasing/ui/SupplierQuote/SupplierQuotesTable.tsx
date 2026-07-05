@@ -14,6 +14,7 @@ import {
 } from "react-icons/lu";
 import { useNavigate } from "react-router";
 import {
+  Assignee,
   EmployeeAvatar,
   Hyperlink,
   ItemThumbnail,
@@ -21,6 +22,7 @@ import {
   SupplierAvatar,
   Table
 } from "~/components";
+import { editableCell } from "~/components/InlineEditor";
 import { ConfirmDelete } from "~/components/Modals";
 import { useDateFormatter, usePermissions } from "~/hooks";
 import { useCustomColumns } from "~/hooks/useCustomColumns";
@@ -28,6 +30,13 @@ import { usePeople, useSuppliers } from "~/stores";
 import { path } from "~/utils/path";
 import { supplierQuoteStatusType } from "../../purchasing.models";
 import type { SupplierQuote } from "../../types";
+
+// Supplier quote inline edits go through the shared bulk-update action.
+const SUPPLIER_QUOTE_UPDATE = {
+  action: path.to.bulkUpdateSupplierQuote,
+  idKey: "ids" as const
+};
+
 import {
   default as QuoteStatus,
   default as SupplierQuoteStatus
@@ -85,9 +94,15 @@ const SupplierQuotesTable = memo(
         {
           id: "supplierId",
           header: t`Supplier`,
-          cell: ({ row }) => (
-            <SupplierAvatar supplierId={row.original.supplierId} />
-          ),
+          cell: editableCell<SupplierQuote>({
+            kind: "picker",
+            field: "supplierId",
+            update: SUPPLIER_QUOTE_UPDATE,
+            value: (r) => r.supplierId,
+            options:
+              suppliers?.map((s) => ({ value: s.id, label: s.name })) ?? [],
+            renderInline: (v) => <SupplierAvatar supplierId={v} />
+          }),
           meta: {
             filter: {
               type: "static",
@@ -121,7 +136,12 @@ const SupplierQuotesTable = memo(
         {
           accessorKey: "supplierReference",
           header: t`Supplier Reference`,
-          cell: (item) => item.getValue(),
+          cell: editableCell<SupplierQuote>({
+            kind: "text",
+            field: "supplierReference",
+            update: SUPPLIER_QUOTE_UPDATE,
+            value: (r) => r.supplierReference
+          }),
           meta: {
             icon: <LuQrCode />
           }
@@ -131,7 +151,13 @@ const SupplierQuotesTable = memo(
           id: "assignee",
           header: t`Assignee`,
           cell: ({ row }) => (
-            <EmployeeAvatar employeeId={row.original.assignee} />
+            <Assignee
+              id={row.original.id ?? ""}
+              table="supplierQuote"
+              value={row.original.assignee ?? ""}
+              variant="button"
+              size="sm"
+            />
           ),
           meta: {
             filter: {
@@ -144,7 +170,13 @@ const SupplierQuotesTable = memo(
         {
           accessorKey: "quotedDate",
           header: t`Quoted Date`,
-          cell: (item) => formatDate(item.getValue<string>()),
+          cell: editableCell<SupplierQuote>({
+            kind: "date",
+            field: "quotedDate",
+            update: SUPPLIER_QUOTE_UPDATE,
+            value: (r) => r.quotedDate,
+            renderInline: (v) => formatDate(v)
+          }),
           meta: {
             icon: <LuCalendar />
           }
@@ -152,7 +184,13 @@ const SupplierQuotesTable = memo(
         {
           accessorKey: "expirationDate",
           header: t`Expiration Date`,
-          cell: (item) => formatDate(item.getValue<string>()),
+          cell: editableCell<SupplierQuote>({
+            kind: "date",
+            field: "expirationDate",
+            update: SUPPLIER_QUOTE_UPDATE,
+            value: (r) => r.expirationDate,
+            renderInline: (v) => formatDate(v)
+          }),
           meta: {
             icon: <LuCalendar />
           }

@@ -8,6 +8,7 @@ import {
   LuContainer,
   LuCreditCard,
   LuDollarSign,
+  LuMapPin,
   LuPencil,
   LuQrCode,
   LuStar,
@@ -16,6 +17,7 @@ import {
 } from "react-icons/lu";
 import { useNavigate } from "react-router";
 import {
+  Assignee,
   EmployeeAvatar,
   Hyperlink,
   ItemThumbnail,
@@ -23,7 +25,9 @@ import {
   SupplierAvatar,
   Table
 } from "~/components";
-import { Enumerable } from "~/components/Enumerable";
+import { useLocations } from "~/components/Form/Location";
+import { usePaymentTerm } from "~/components/Form/PaymentTerm";
+import { editableCell } from "~/components/InlineEditor";
 import { ConfirmDelete } from "~/components/Modals";
 import {
   useCurrencyFormatter,
@@ -39,6 +43,12 @@ import {
 } from "~/modules/invoicing";
 import { usePeople, useSuppliers } from "~/stores";
 import { path } from "~/utils/path";
+
+// Purchase invoice inline edits go through the shared bulk-update action.
+const PURCHASE_INVOICE_UPDATE = {
+  action: path.to.bulkUpdatePurchaseInvoice,
+  idKey: "ids" as const
+};
 
 type PurchaseInvoicesTableProps = {
   data: PurchaseInvoice[];
@@ -64,6 +74,8 @@ const PurchaseInvoicesTable = memo(
 
     const [people] = usePeople();
     const [suppliers] = useSuppliers();
+    const locations = useLocations();
+    const paymentTerms = usePaymentTerm();
     const customColumns = useCustomColumns<PurchaseInvoice>("purchaseInvoice");
 
     const columns = useMemo<ColumnDef<PurchaseInvoice>[]>(() => {
@@ -91,9 +103,15 @@ const PurchaseInvoicesTable = memo(
         {
           id: "supplierId",
           header: t`Supplier`,
-          cell: ({ row }) => (
-            <SupplierAvatar supplierId={row.original.supplierId} />
-          ),
+          cell: editableCell<PurchaseInvoice>({
+            kind: "picker",
+            field: "supplierId",
+            update: PURCHASE_INVOICE_UPDATE,
+            value: (r) => r.supplierId,
+            options:
+              suppliers?.map((s) => ({ value: s.id, label: s.name })) ?? [],
+            renderInline: (v) => <SupplierAvatar supplierId={v} />
+          }),
           meta: {
             filter: {
               type: "static",
@@ -125,7 +143,12 @@ const PurchaseInvoicesTable = memo(
         {
           accessorKey: "supplierReference",
           header: t`Supplier Ref.`,
-          cell: (item) => item.getValue(),
+          cell: editableCell<PurchaseInvoice>({
+            kind: "text",
+            field: "supplierReference",
+            update: PURCHASE_INVOICE_UPDATE,
+            value: (r) => r.supplierReference
+          }),
           meta: {
             icon: <LuQrCode />
           }
@@ -164,7 +187,13 @@ const PurchaseInvoicesTable = memo(
           id: "assignee",
           header: t`Assignee`,
           cell: ({ row }) => (
-            <EmployeeAvatar employeeId={row.original.assignee} />
+            <Assignee
+              id={row.original.id ?? ""}
+              table="purchaseInvoice"
+              value={row.original.assignee ?? ""}
+              variant="button"
+              size="sm"
+            />
           ),
           meta: {
             filter: {
@@ -180,7 +209,13 @@ const PurchaseInvoicesTable = memo(
         {
           accessorKey: "dateIssued",
           header: t`Issued Date`,
-          cell: (item) => formatDate(item.getValue<string>()),
+          cell: editableCell<PurchaseInvoice>({
+            kind: "date",
+            field: "dateIssued",
+            update: PURCHASE_INVOICE_UPDATE,
+            value: (r) => r.dateIssued,
+            renderInline: (v) => formatDate(v)
+          }),
           meta: {
             icon: <LuCalendar />
           }
@@ -188,7 +223,13 @@ const PurchaseInvoicesTable = memo(
         {
           accessorKey: "dateDue",
           header: t`Due Date`,
-          cell: (item) => formatDate(item.getValue<string>()),
+          cell: editableCell<PurchaseInvoice>({
+            kind: "date",
+            field: "dateDue",
+            update: PURCHASE_INVOICE_UPDATE,
+            value: (r) => r.dateDue,
+            renderInline: (v) => formatDate(v)
+          }),
           meta: {
             icon: <LuCalendar />
           }
@@ -196,7 +237,13 @@ const PurchaseInvoicesTable = memo(
         {
           accessorKey: "datePaid",
           header: t`Paid Date`,
-          cell: (item) => formatDate(item.getValue<string>()),
+          cell: editableCell<PurchaseInvoice>({
+            kind: "date",
+            field: "datePaid",
+            update: PURCHASE_INVOICE_UPDATE,
+            value: (r) => r.datePaid,
+            renderInline: (v) => formatDate(v)
+          }),
           meta: {
             icon: <LuCalendar />
           }
@@ -212,9 +259,31 @@ const PurchaseInvoicesTable = memo(
         {
           accessorKey: "paymentTermName",
           header: t`Payment Method`,
-          cell: (item) => <Enumerable value={item.getValue<string>()} />,
+          cell: editableCell<PurchaseInvoice>({
+            kind: "picker",
+            field: "paymentTermId",
+            update: PURCHASE_INVOICE_UPDATE,
+            value: (r) => r.paymentTermId,
+            options: paymentTerms,
+            fallbackLabel: (r) => r.paymentTermName
+          }),
           meta: {
             icon: <LuCreditCard />
+          }
+        },
+        {
+          accessorKey: "locationName",
+          header: t`Location`,
+          cell: editableCell<PurchaseInvoice>({
+            kind: "picker",
+            field: "locationId",
+            update: PURCHASE_INVOICE_UPDATE,
+            value: (r) => r.locationId,
+            options: locations,
+            fallbackLabel: (r) => r.locationName
+          }),
+          meta: {
+            icon: <LuMapPin />
           }
         },
         {
@@ -311,6 +380,7 @@ const PurchaseInvoicesTable = memo(
           defaultColumnVisibility={{
             invoiceSupplierId: false,
             paymentTermName: false,
+            locationName: false,
             dateIssued: false,
             datePaid: false,
             postingDate: false,

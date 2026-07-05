@@ -20,6 +20,8 @@ export const CARD_PINNED_VALUE_CLASS = "card-pinned-value";
  * - `card-action-value` / `<CardActionValue>` — drawer/modal triggers without links
  * - `Enumerable` with `onClick` — auto-gets `card-action-value`
  * - `card-action-label` — label underline when chip has any interactive child
+ *   (applied to featured chips only; unpinned/unfeatured inline chips keep a
+ *   plain label even when they contain an interactive editor).
  */
 const CARD_FIELD_CHIP_LABEL_UNDERLINE_CLASS = [
   "[&:has(:is([data-card-action],a,button,[role='button'],.card-action-value))_.card-action-label]:card-field-chip-underline"
@@ -46,7 +48,6 @@ export const CARD_CHIP_BASE_CLASS = [
   "relative rounded-lg",
   "transition-[border-color,transform,box-shadow] duration-150 ease-out",
   CARD_HAS_ACTION_CLASS,
-  CARD_FIELD_CHIP_LABEL_UNDERLINE_CLASS,
   CARD_FIELD_CHIP_VALUE_UNDERLINE_CLASS
 ].join(" ");
 
@@ -70,7 +71,8 @@ export const CARD_CHIP_VARIANT_CLASS = {
     "flex min-w-0 flex-col gap-1.5 px-3 py-2.5",
     "border border-primary/25 bg-white shadow-sm",
     "dark:border-primary/30 dark:bg-card",
-    "[&:has([data-card-action])]:hover:border-primary/40 dark:[&:has([data-card-action])]:hover:border-primary/35"
+    "[&:has([data-card-action])]:hover:border-primary/40 dark:[&:has([data-card-action])]:hover:border-primary/35",
+    CARD_FIELD_CHIP_LABEL_UNDERLINE_CLASS
   ].join(" ")
 } as const;
 

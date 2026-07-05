@@ -60,6 +60,7 @@ import {
 } from "react-icons/lu";
 import { useFetcher, useNavigate, useRevalidator } from "react-router";
 import {
+  Assignee,
   CardActionValue,
   CustomerAvatar,
   EmployeeAvatar,
@@ -70,6 +71,7 @@ import {
 } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { useLocations } from "~/components/Form/Location";
+import { editableCell, TagsCell } from "~/components/InlineEditor";
 import { ConfirmDelete } from "~/components/Modals";
 import { overlay, useOverlay } from "~/components/Overlay";
 import { useIsCardCell } from "~/components/Table/components/cardCell";
@@ -88,6 +90,12 @@ import JobStatus, {
 } from "./JobStatus";
 import JobStatusMenu from "./JobStatusMenu";
 import { useDeadlineTypeLabel } from "./jobLabels";
+
+// Job inline edits go through the shared job bulk-update action.
+const JOB_UPDATE = {
+  action: path.to.bulkUpdateJob,
+  idKey: "ids" as const
+};
 
 type JobsTableProps = {
   data: Job[];
@@ -539,9 +547,15 @@ const JobsTable = memo(
         {
           id: "customerId",
           header: t`Customer`,
-          cell: ({ row }) => (
-            <CustomerAvatar customerId={row.original.customerId} />
-          ),
+          cell: editableCell<Job>({
+            kind: "picker",
+            field: "customerId",
+            update: JOB_UPDATE,
+            value: (r) => r.customerId,
+            options:
+              customers?.map((c) => ({ value: c.id, label: c.name })) ?? [],
+            renderInline: (v) => <CustomerAvatar customerId={v} />
+          }),
           meta: {
             filter: {
               type: "static",
@@ -635,7 +649,13 @@ const JobsTable = memo(
           id: "assignee",
           header: t`Assignee`,
           cell: ({ row }) => (
-            <EmployeeAvatar employeeId={row.original.assignee} />
+            <Assignee
+              id={row.original.id ?? ""}
+              table="job"
+              value={row.original.assignee ?? ""}
+              variant="button"
+              size="sm"
+            />
           ),
           meta: {
             filter: {
@@ -652,7 +672,13 @@ const JobsTable = memo(
         {
           accessorKey: "startDate",
           header: t`Start Date`,
-          cell: (item) => formatDate(item.getValue<string>()),
+          cell: editableCell<Job>({
+            kind: "date",
+            field: "startDate",
+            update: JOB_UPDATE,
+            value: (r) => r.startDate,
+            renderInline: (v) => formatDate(v)
+          }),
           meta: {
             icon: <LuCalendar />,
             isEmpty: (row) => !row.startDate
@@ -661,7 +687,13 @@ const JobsTable = memo(
         {
           accessorKey: "dueDate",
           header: t`Due Date`,
-          cell: (item) => formatDate(item.getValue<string>()),
+          cell: editableCell<Job>({
+            kind: "date",
+            field: "dueDate",
+            update: JOB_UPDATE,
+            value: (r) => r.dueDate,
+            renderInline: (v) => formatDate(v)
+          }),
           meta: {
             icon: <LuCalendar />,
             isEmpty: (row) => !row.dueDate
@@ -670,25 +702,24 @@ const JobsTable = memo(
         {
           accessorKey: "deadlineType",
           header: t`Deadline Type`,
-          cell: ({ row }) => {
-            const dueDate = row.original.dueDate!;
-            const deadlineType = row.original.deadlineType!;
-
-            if (!dueDate)
-              return (
-                <div className="flex gap-1 items-center">
-                  {getDeadlineIcon(deadlineType)}
-                  <span>{getDeadlineTypeLabel(deadlineType)}</span>
-                </div>
-              );
-
-            return (
+          cell: editableCell<Job>({
+            kind: "enum",
+            field: "deadlineType",
+            update: JOB_UPDATE,
+            value: (r) => r.deadlineType,
+            options: deadlineTypes.map((value) => ({
+              value,
+              label: getDeadlineTypeLabel(value)
+            })),
+            renderInline: (v) => (
               <div className="flex items-center gap-1">
-                {getDeadlineIcon(deadlineType)}
-                <span>{getDeadlineTypeLabel(deadlineType)}</span>
+                {getDeadlineIcon(v as (typeof deadlineTypes)[number])}
+                <span>
+                  {getDeadlineTypeLabel(v as (typeof deadlineTypes)[number])}
+                </span>
               </div>
-            );
-          },
+            )
+          }),
           meta: {
             filter: {
               type: "static",
@@ -709,13 +740,7 @@ const JobsTable = memo(
           accessorKey: "tags",
           header: t`Tags`,
           cell: ({ row }) => (
-            <HStack spacing={0} className="gap-1">
-              {row.original.tags?.map((tag) => (
-                <Badge key={tag} variant="secondary">
-                  {tag}
-                </Badge>
-              ))}
-            </HStack>
+            <TagsCell row={row.original} table="job" availableTags={tags} />
           ),
           meta: {
             filter: {
@@ -796,14 +821,14 @@ const JobsTable = memo(
         {
           accessorKey: "locationId",
           header: t`Location`,
-          cell: ({ row }) => (
-            <Enumerable
-              value={
-                locations.find((l) => l.value === row.original.locationId)
-                  ?.label ?? null
-              }
-            />
-          ),
+          cell: editableCell<Job>({
+            kind: "picker",
+            field: "locationId",
+            update: JOB_UPDATE,
+            value: (r) => r.locationId,
+            options: locations,
+            fallbackLabel: (r) => r.locationName
+          }),
           meta: {
             icon: <LuMapPin />,
             filter: {

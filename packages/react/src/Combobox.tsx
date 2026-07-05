@@ -36,6 +36,10 @@ export type ComboboxProps = Omit<
   isLoading?: boolean;
   isReadOnly?: boolean;
   placeholder?: string;
+  /** Open the dropdown as soon as it mounts (e.g. inline table editing). */
+  defaultOpen?: boolean;
+  /** Fired whenever the dropdown closes (selection, escape, or outside click). */
+  onClose?: () => void;
   onChange?: (selected: string) => void;
   inline?: (
     value: string,
@@ -55,6 +59,8 @@ const Combobox = forwardRef<HTMLButtonElement, ComboboxProps>(
       isLoading,
       isReadOnly,
       placeholder,
+      defaultOpen,
+      onClose,
       onChange,
       inline,
       itemHeight = 40,
@@ -63,7 +69,13 @@ const Combobox = forwardRef<HTMLButtonElement, ComboboxProps>(
     ref
   ) => {
     const { t } = useLingui();
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(defaultOpen ?? false);
+    // Route every open-state change through here so `onClose` fires on
+    // selection, escape, and outside-click alike.
+    const setOpenAndNotify = (next: boolean) => {
+      setOpen(next);
+      if (!next) onClose?.();
+    };
     const isInlinePreview = !!inline;
     const selectedOption = useMemo(
       () => options.find((option) => option.value === value),
@@ -107,7 +119,7 @@ const Combobox = forwardRef<HTMLButtonElement, ComboboxProps>(
           </span>
         )}
 
-        <Popover open={open} onOpenChange={setOpen}>
+        <Popover open={open} onOpenChange={setOpenAndNotify}>
           <PopoverTrigger disabled={isReadOnly} asChild>
             {inline ? (
               <IconButton
@@ -119,7 +131,7 @@ const Combobox = forwardRef<HTMLButtonElement, ComboboxProps>(
                 disabled={isReadOnly}
                 ref={ref}
                 onClick={() => {
-                  if (!isReadOnly) setOpen(true);
+                  if (!isReadOnly) setOpenAndNotify(true);
                 }}
               />
             ) : (
@@ -135,7 +147,7 @@ const Combobox = forwardRef<HTMLButtonElement, ComboboxProps>(
                 ref={ref}
                 {...props}
                 disabled={isReadOnly}
-                onClick={() => setOpen(true)}
+                onClick={() => setOpenAndNotify(true)}
               >
                 {value ? (
                   <TruncatedTooltipText
@@ -166,7 +178,7 @@ const Combobox = forwardRef<HTMLButtonElement, ComboboxProps>(
               value={value}
               onChange={onChange}
               itemHeight={itemHeight}
-              setOpen={setOpen}
+              setOpen={setOpenAndNotify}
             />
           </PopoverContent>
         </Popover>

@@ -21,6 +21,7 @@ import {
 } from "react-icons/lu";
 import { useNavigate } from "react-router";
 import {
+  Assignee,
   CustomerAvatar,
   EmployeeAvatar,
   Hyperlink,
@@ -29,6 +30,8 @@ import {
   Table
 } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
+import { useLocations } from "~/components/Form/Location";
+import { editableCell } from "~/components/InlineEditor";
 import { ConfirmDelete } from "~/components/Modals";
 import { useDateFormatter, usePermissions } from "~/hooks";
 import { useCustomColumns } from "~/hooks/useCustomColumns";
@@ -36,6 +39,13 @@ import { useCustomers, usePeople } from "~/stores";
 import { path } from "~/utils/path";
 import { quoteStatusType } from "../../sales.models";
 import type { Quotation } from "../../types";
+
+// Quote inline edits go through the shared quote bulk-update action.
+const QUOTE_UPDATE = {
+  action: path.to.bulkUpdateQuote,
+  idKey: "ids" as const
+};
+
 import QuoteStatus from "./QuoteStatus";
 
 type QuotesTableProps = {
@@ -56,6 +66,7 @@ const QuotesTable = memo(({ data, count }: QuotesTableProps) => {
 
   const [customers] = useCustomers();
   const [people] = usePeople();
+  const locations = useLocations();
 
   const customColumns = useCustomColumns<Quotation>("quote");
   const columns = useMemo<ColumnDef<Quotation>[]>(() => {
@@ -95,9 +106,15 @@ const QuotesTable = memo(({ data, count }: QuotesTableProps) => {
       {
         id: "customerId",
         header: t`Customer`,
-        cell: ({ row }) => (
-          <CustomerAvatar customerId={row.original.customerId} />
-        ),
+        cell: editableCell<Quotation>({
+          kind: "picker",
+          field: "customerId",
+          update: QUOTE_UPDATE,
+          value: (r) => r.customerId,
+          options:
+            customers?.map((c) => ({ value: c.id, label: c.name })) ?? [],
+          renderInline: (v) => <CustomerAvatar customerId={v} />
+        }),
         meta: {
           filter: {
             type: "static",
@@ -141,7 +158,12 @@ const QuotesTable = memo(({ data, count }: QuotesTableProps) => {
       {
         accessorKey: "customerReference",
         header: t`Customer RFQ`,
-        cell: (item) => item.getValue(),
+        cell: editableCell<Quotation>({
+          kind: "text",
+          field: "customerReference",
+          update: QUOTE_UPDATE,
+          value: (r) => r.customerReference
+        }),
         meta: {
           icon: <LuQrCode />
         }
@@ -149,9 +171,15 @@ const QuotesTable = memo(({ data, count }: QuotesTableProps) => {
       {
         accessorKey: "salesPersonId",
         header: t`Sales Person`,
-        cell: ({ row }) => (
-          <EmployeeAvatar employeeId={row.original.salesPersonId} />
-        ),
+        cell: editableCell<Quotation>({
+          kind: "picker",
+          field: "salesPersonId",
+          update: QUOTE_UPDATE,
+          value: (r) => r.salesPersonId,
+          clearable: true,
+          options: employeeOptions,
+          renderInline: (v) => <EmployeeAvatar employeeId={v} />
+        }),
         meta: {
           filter: {
             type: "static",
@@ -163,9 +191,15 @@ const QuotesTable = memo(({ data, count }: QuotesTableProps) => {
       {
         accessorKey: "estimatorId",
         header: t`Estimator`,
-        cell: ({ row }) => (
-          <EmployeeAvatar employeeId={row.original.estimatorId} />
-        ),
+        cell: editableCell<Quotation>({
+          kind: "picker",
+          field: "estimatorId",
+          update: QUOTE_UPDATE,
+          value: (r) => r.estimatorId,
+          clearable: true,
+          options: employeeOptions,
+          renderInline: (v) => <EmployeeAvatar employeeId={v} />
+        }),
         meta: {
           filter: {
             type: "static",
@@ -178,7 +212,13 @@ const QuotesTable = memo(({ data, count }: QuotesTableProps) => {
         id: "assignee",
         header: t`Assignee`,
         cell: ({ row }) => (
-          <EmployeeAvatar employeeId={row.original.assignee} />
+          <Assignee
+            id={row.original.id ?? ""}
+            table="quote"
+            value={row.original.assignee ?? ""}
+            variant="button"
+            size="sm"
+          />
         ),
         meta: {
           filter: {
@@ -191,7 +231,13 @@ const QuotesTable = memo(({ data, count }: QuotesTableProps) => {
       {
         accessorKey: "dueDate",
         header: t`Due Date`,
-        cell: (item) => formatDate(item.getValue<string>()),
+        cell: editableCell<Quotation>({
+          kind: "date",
+          field: "dueDate",
+          update: QUOTE_UPDATE,
+          value: (r) => r.dueDate,
+          renderInline: (v) => formatDate(v)
+        }),
         meta: {
           icon: <LuCalendar />
         }
@@ -199,7 +245,13 @@ const QuotesTable = memo(({ data, count }: QuotesTableProps) => {
       {
         accessorKey: "expirationDate",
         header: t`Expiration Date`,
-        cell: (item) => formatDate(item.getValue<string>()),
+        cell: editableCell<Quotation>({
+          kind: "date",
+          field: "expirationDate",
+          update: QUOTE_UPDATE,
+          value: (r) => r.expirationDate,
+          renderInline: (v) => formatDate(v)
+        }),
         meta: {
           icon: <LuCalendar />
         }
@@ -207,7 +259,14 @@ const QuotesTable = memo(({ data, count }: QuotesTableProps) => {
       {
         accessorKey: "locationName",
         header: t`Location`,
-        cell: (item) => <Enumerable value={item.getValue<string>()} />,
+        cell: editableCell<Quotation>({
+          kind: "picker",
+          field: "locationId",
+          update: QUOTE_UPDATE,
+          value: (r) => r.locationId,
+          options: locations,
+          fallbackLabel: (r) => r.locationName
+        }),
         meta: {
           filter: {
             type: "fetcher",

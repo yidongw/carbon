@@ -15,6 +15,7 @@ import {
 } from "react-icons/lu";
 import { useNavigate } from "react-router";
 import {
+  Assignee,
   CustomerAvatar,
   EmployeeAvatar,
   Hyperlink,
@@ -22,6 +23,8 @@ import {
   Table
 } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
+import { useLocations } from "~/components/Form/Location";
+import { editableCell } from "~/components/InlineEditor";
 import { ConfirmDelete } from "~/components/Modals";
 import { useDateFormatter, usePermissions } from "~/hooks";
 import { useCustomColumns } from "~/hooks/useCustomColumns";
@@ -30,6 +33,12 @@ import { path } from "~/utils/path";
 import { salesRFQStatusType } from "../../sales.models";
 import type { SalesRFQ } from "../../types";
 import { SalesRFQStatus } from ".";
+
+// Sales RFQ inline edits go through the shared sales RFQ bulk-update action.
+const SALES_RFQ_UPDATE = {
+  action: path.to.bulkUpdateSalesRfq,
+  idKey: "ids" as const
+};
 
 type SalesRFQsTableProps = {
   data: SalesRFQ[];
@@ -49,6 +58,7 @@ const SalesRFQsTable = memo(({ data, count }: SalesRFQsTableProps) => {
 
   const [customers] = useCustomers();
   const [people] = usePeople();
+  const locations = useLocations();
 
   const customColumns = useCustomColumns<SalesRFQ>("salesRFQ");
   const columns = useMemo<ColumnDef<SalesRFQ>[]>(() => {
@@ -71,9 +81,15 @@ const SalesRFQsTable = memo(({ data, count }: SalesRFQsTableProps) => {
       {
         id: "customerId",
         header: t`Customer`,
-        cell: ({ row }) => (
-          <CustomerAvatar customerId={row.original.customerId} />
-        ),
+        cell: editableCell<SalesRFQ>({
+          kind: "picker",
+          field: "customerId",
+          update: SALES_RFQ_UPDATE,
+          value: (r) => r.customerId,
+          options:
+            customers?.map((c) => ({ value: c.id, label: c.name })) ?? [],
+          renderInline: (v) => <CustomerAvatar customerId={v} />
+        }),
         meta: {
           filter: {
             type: "static",
@@ -107,7 +123,12 @@ const SalesRFQsTable = memo(({ data, count }: SalesRFQsTableProps) => {
       {
         accessorKey: "customerReference",
         header: t`Customer RFQ`,
-        cell: (item) => item.getValue(),
+        cell: editableCell<SalesRFQ>({
+          kind: "text",
+          field: "customerReference",
+          update: SALES_RFQ_UPDATE,
+          value: (r) => r.customerReference
+        }),
         meta: {
           icon: <LuQrCode />
         }
@@ -115,7 +136,13 @@ const SalesRFQsTable = memo(({ data, count }: SalesRFQsTableProps) => {
       {
         accessorKey: "rfqDate",
         header: t`RFQ Date`,
-        cell: (item) => formatDate(item.getValue<string>()),
+        cell: editableCell<SalesRFQ>({
+          kind: "date",
+          field: "rfqDate",
+          update: SALES_RFQ_UPDATE,
+          value: (r) => r.rfqDate,
+          renderInline: (v) => formatDate(v)
+        }),
         meta: {
           icon: <LuCalendar />
         }
@@ -123,7 +150,13 @@ const SalesRFQsTable = memo(({ data, count }: SalesRFQsTableProps) => {
       {
         accessorKey: "expirationDate",
         header: t`Due Date`,
-        cell: (item) => formatDate(item.getValue<string>()),
+        cell: editableCell<SalesRFQ>({
+          kind: "date",
+          field: "expirationDate",
+          update: SALES_RFQ_UPDATE,
+          value: (r) => r.expirationDate,
+          renderInline: (v) => formatDate(v)
+        }),
         meta: {
           icon: <LuCalendar />
         }
@@ -133,7 +166,13 @@ const SalesRFQsTable = memo(({ data, count }: SalesRFQsTableProps) => {
         id: "assignee",
         header: t`Assignee`,
         cell: ({ row }) => (
-          <EmployeeAvatar employeeId={row.original.assignee} />
+          <Assignee
+            id={row.original.id ?? ""}
+            table="salesRfq"
+            value={row.original.assignee ?? ""}
+            variant="button"
+            size="sm"
+          />
         ),
         meta: {
           filter: {
@@ -166,7 +205,14 @@ const SalesRFQsTable = memo(({ data, count }: SalesRFQsTableProps) => {
       {
         accessorKey: "locationName",
         header: t`Location`,
-        cell: (item) => <Enumerable value={item.getValue<string>()} />,
+        cell: editableCell<SalesRFQ>({
+          kind: "picker",
+          field: "locationId",
+          update: SALES_RFQ_UPDATE,
+          value: (r) => r.locationId,
+          options: locations,
+          fallbackLabel: (r) => r.locationName
+        }),
         meta: {
           filter: {
             type: "fetcher",

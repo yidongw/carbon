@@ -1,7 +1,6 @@
 import {
   Badge,
   Button,
-  HStack,
   MenuIcon,
   MenuItem,
   useDisclosure
@@ -34,12 +33,19 @@ import {
 } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { useCustomerTypes } from "~/components/Form/CustomerType";
+import { editableCell, TagsCell } from "~/components/InlineEditor";
 import { ConfirmDelete } from "~/components/Modals";
 import { useCompanySettings, useDateFormatter, usePermissions } from "~/hooks";
 import { useCustomColumns } from "~/hooks/useCustomColumns";
 import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
 import type { Customer, CustomerStatus } from "../../types";
+
+// Customer inline edits go through the shared customer bulk-update action.
+const CUSTOMER_UPDATE = {
+  action: path.to.bulkUpdateCustomer,
+  idKey: "ids" as const
+};
 
 type CustomersTableProps = {
   data: Customer[];
@@ -103,9 +109,26 @@ const CustomersTable = memo(
         {
           accessorKey: "status",
           header: t`Status`,
-          cell: (item) => (
-            <Enumerable value={translateStatus(item.getValue<string>())} />
-          ),
+          cell: editableCell<Customer>({
+            kind: "picker",
+            field: "customerStatusId",
+            update: CUSTOMER_UPDATE,
+            value: (r) => r.customerStatusId,
+            clearable: true,
+            options: customerStatuses.map((status) => ({
+              value: status.id,
+              label: <Enumerable value={translateStatus(status.name ?? "")} />
+            })),
+            renderInline: (v, _opts, r) => (
+              <Enumerable
+                value={translateStatus(
+                  customerStatuses.find((s) => s.id === v)?.name ??
+                    r.status ??
+                    ""
+                )}
+              />
+            )
+          }),
           meta: {
             filter: {
               type: "static",
@@ -121,13 +144,17 @@ const CustomersTable = memo(
         {
           accessorKey: "customerTypeId",
           header: t`Type`,
-          cell: (item) => {
-            if (!item.getValue<string>()) return null;
-            const customerType = customerTypes?.find(
-              (type) => type.value === item.getValue<string>()
-            )?.label;
-            return <Enumerable value={customerType ?? ""} />;
-          },
+          cell: editableCell<Customer>({
+            kind: "picker",
+            field: "customerTypeId",
+            update: CUSTOMER_UPDATE,
+            value: (r) => r.customerTypeId,
+            clearable: true,
+            options: customerTypes ?? [],
+            renderInline: (v) => (
+              <>{customerTypes?.find((ct) => ct.value === v)?.label}</>
+            )
+          }),
           meta: {
             icon: <LuShapes />,
             filter: {
@@ -142,9 +169,18 @@ const CustomersTable = memo(
         {
           id: "accountManagerId",
           header: t`Account Manager`,
-          cell: ({ row }) => (
-            <EmployeeAvatar employeeId={row.original.accountManagerId} />
-          ),
+          cell: editableCell<Customer>({
+            kind: "picker",
+            field: "accountManagerId",
+            update: CUSTOMER_UPDATE,
+            value: (r) => r.accountManagerId,
+            clearable: true,
+            options: people.map((employee) => ({
+              value: employee.id,
+              label: employee.name
+            })),
+            renderInline: (v) => <EmployeeAvatar employeeId={v} />
+          }),
           meta: {
             filter: {
               type: "static",
@@ -160,13 +196,11 @@ const CustomersTable = memo(
           accessorKey: "tags",
           header: t`Tags`,
           cell: ({ row }) => (
-            <HStack spacing={0} className="gap-1">
-              {row.original.tags?.map((tag) => (
-                <Badge key={tag} variant="secondary">
-                  {tag}
-                </Badge>
-              ))}
-            </HStack>
+            <TagsCell
+              row={row.original}
+              table="customer"
+              availableTags={tags}
+            />
           ),
           meta: {
             filter: {
@@ -191,7 +225,12 @@ const CustomersTable = memo(
         {
           accessorKey: "phone",
           header: t`Phone`,
-          cell: (item) => item.getValue(),
+          cell: editableCell<Customer>({
+            kind: "text",
+            field: "phone",
+            update: CUSTOMER_UPDATE,
+            value: (r) => r.phone
+          }),
           meta: {
             icon: <LuPhone />
           }
@@ -199,7 +238,12 @@ const CustomersTable = memo(
         {
           accessorKey: "fax",
           header: t`Fax`,
-          cell: (item) => item.getValue(),
+          cell: editableCell<Customer>({
+            kind: "text",
+            field: "fax",
+            update: CUSTOMER_UPDATE,
+            value: (r) => r.fax
+          }),
           meta: {
             icon: <LuPrinter />
           }
@@ -207,7 +251,12 @@ const CustomersTable = memo(
         {
           accessorKey: "website",
           header: t`Website`,
-          cell: (item) => item.getValue(),
+          cell: editableCell<Customer>({
+            kind: "text",
+            field: "website",
+            update: CUSTOMER_UPDATE,
+            value: (r) => r.website
+          }),
           meta: {
             icon: <LuGlobe />
           }

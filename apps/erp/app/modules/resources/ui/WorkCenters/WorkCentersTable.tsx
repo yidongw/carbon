@@ -38,6 +38,7 @@ import { useFetcher, useNavigate } from "react-router";
 import { EmployeeAvatar, Hyperlink, New, Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { useProcesses } from "~/components/Form/Process";
+import { editableCell } from "~/components/InlineEditor";
 import { Confirm } from "~/components/Modals";
 import {
   useCurrencyFormatter,
@@ -50,6 +51,12 @@ import type { WorkCenter } from "~/modules/resources";
 import { usePeople } from "~/stores";
 import type { ListItem } from "~/types";
 import { path } from "~/utils/path";
+
+// Work-center inline edits go through the shared work-center bulk-update action.
+const WORK_CENTER_UPDATE = {
+  action: path.to.bulkUpdateWorkCenter,
+  idKey: "ids" as const
+};
 
 type WorkCentersTableProps = {
   data: WorkCenter[];
@@ -161,7 +168,21 @@ const WorkCentersTable = memo(
         {
           accessorKey: "locationName",
           header: t`Location`,
-          cell: (item) => <Enumerable value={item.getValue<string>()} />,
+          cell: editableCell<WorkCenter>({
+            kind: "picker",
+            field: "locationId",
+            update: WORK_CENTER_UPDATE,
+            value: (r) => r.locationId,
+            options: locations.map((l) => ({
+              value: l.id,
+              label: <Enumerable value={l.name} />
+            })),
+            renderInline: (v) => (
+              <Enumerable
+                value={locations.find((l) => l.id === v)?.name ?? null}
+              />
+            )
+          }),
           meta: {
             icon: <LuBuilding2 />,
             filter: {
@@ -176,7 +197,22 @@ const WorkCentersTable = memo(
         {
           accessorKey: "departmentName",
           header: t`Department`,
-          cell: (item) => <Enumerable value={item.getValue<string>()} />,
+          cell: editableCell<WorkCenter>({
+            kind: "picker",
+            field: "departmentId",
+            update: WORK_CENTER_UPDATE,
+            value: (r) => r.departmentId,
+            clearable: true,
+            options: departments.map((d) => ({
+              value: d.id,
+              label: <Enumerable value={d.name} />
+            })),
+            renderInline: (v) => (
+              <Enumerable
+                value={departments.find((d) => d.id === v)?.name ?? null}
+              />
+            )
+          }),
           meta: {
             icon: <LuBuilding2 />,
             filter: {
@@ -207,11 +243,12 @@ const WorkCentersTable = memo(
         {
           accessorKey: "description",
           header: t`Description`,
-          cell: ({ row }) => (
-            <span className="max-w-[300px] line-clamp-1">
-              {row.original.description}
-            </span>
-          ),
+          cell: editableCell<WorkCenter>({
+            kind: "text",
+            field: "description",
+            update: WORK_CENTER_UPDATE,
+            value: (r) => r.description
+          }),
           meta: {
             icon: <LuAlignLeft />
           }

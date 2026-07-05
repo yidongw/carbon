@@ -16,7 +16,8 @@ const EditableList =
     row,
     accessorKey,
     onError,
-    onUpdate
+    onUpdate,
+    onFinishEditing
   }: EditableTableCellComponentProps<T>) => {
     const onChange = async (newValue: string) => {
       // this is the optimistic update on the FE
@@ -39,6 +40,10 @@ const EditableList =
     return (
       <Combobox
         autoFocus
+        // Open on mount so a single click on the cell shows the dropdown, and
+        // exit edit mode when it closes (selection, escape, or click away).
+        defaultOpen
+        onClose={onFinishEditing}
         className="rounded-none"
         value={options.find((option) => option.value === value)?.value}
         options={options}
