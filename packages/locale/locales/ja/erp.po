@@ -5829,6 +5829,12 @@ msgstr "メンバー"
 msgid "MES"
 msgstr "MES"
 
+msgid "MES only"
+msgstr "MESのみ"
+
+msgid "MES workers get standard shop-floor access: Production, Inventory, and Quality (full); Resources, People, and Documents (view only). ERP modules are not accessible."
+msgstr "MESの作業者が標準的な工場フロアアクセスを得ます：生産、在庫、品質（完全アクセス）；リソース、人材、ドキュメント（表示のみ）。ERPモジュールは利用できません。"
+
 msgid "Message"
 msgstr "メッセージ"
 
@@ -9126,6 +9132,9 @@ msgstr "配送:"
 
 msgid "Shop Floor"
 msgstr "ショップフロア"
+
+msgid "Shop-floor workers who can access the MES but not the ERP. They do not count as a billable seat."
+msgstr "MESにアクセスできるがERPにはアクセスできない現場作業者。請求対象のシートとしてカウントされません。"
 
 msgid "Short"
 msgstr "短い"

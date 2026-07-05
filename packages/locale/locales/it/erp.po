@@ -5829,6 +5829,12 @@ msgstr "Membri"
 msgid "MES"
 msgstr "MES"
 
+msgid "MES only"
+msgstr "Solo MES"
+
+msgid "MES workers get standard shop-floor access: Production, Inventory, and Quality (full); Resources, People, and Documents (view only). ERP modules are not accessible."
+msgstr "Istruttori MES ottengono l'accesso standard al piano di fabbrica: Produzione, Magazzino e Qualità (completo); Risorse, Persone e Documenti (solo visualizzazione). I moduli ERP non sono accessibili."
+
 msgid "Message"
 msgstr "Messaggio"
 
@@ -9126,6 +9132,9 @@ msgstr "Spedizione:"
 
 msgid "Shop Floor"
 msgstr "Reparto Produzione"
+
+msgid "Shop-floor workers who can access the MES but not the ERP. They do not count as a billable seat."
+msgstr "Operai di fabbrica che possono accedere al MES ma non all'ERP. Non contano come una postazione fatturabile."
 
 msgid "Short"
 msgstr "Breve"

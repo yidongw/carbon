@@ -1257,7 +1257,9 @@ export async function updateConsoleSetting(
           name: "Console Operator",
           companyId,
           protected: true,
-          systemType: "Console Operator"
+          systemType: "Console Operator",
+          // Console operators use the MES only and are not billed as a seat.
+          mesOnly: true
         })
         .select("id")
         .single();

@@ -5829,6 +5829,12 @@ msgstr "सदस्य"
 msgid "MES"
 msgstr "MES"
 
+msgid "MES only"
+msgstr "केवल MES"
+
+msgid "MES workers get standard shop-floor access: Production, Inventory, and Quality (full); Resources, People, and Documents (view only). ERP modules are not accessible."
+msgstr "MES कर्मचारियों को मानक फॉर्ड-फ़्लो पहुंच मिलती है: उत्पादन, समग्र तथा गुणवत्ता (पूरी जानकारी); संसाधन, व्यक्ति और प्रतिबिम्ब ( csakनल केवल देखें)। ERP मॉड्यूल अवलोकनीय हैं।"
+
 msgid "Message"
 msgstr "संदेश"
 
@@ -9126,6 +9132,9 @@ msgstr "शिपिंग:"
 
 msgid "Shop Floor"
 msgstr "शॉप फ्लोर"
+
+msgid "Shop-floor workers who can access the MES but not the ERP. They do not count as a billable seat."
+msgstr "कार्यस्थल कर्मचारी जो MES तक पहुँच सकते हैं लेकिन ERP तक नहीं। वे बिल योग्य सीट के रूप में नहीं गिने जाते।"
 
 msgid "Short"
 msgstr "किछु लंबाई का"

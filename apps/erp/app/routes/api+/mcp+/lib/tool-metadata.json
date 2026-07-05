@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-05T01:09:46.737Z",
+  "generated": "2026-07-04T13:32:31.702Z",
   "totalTools": 1245,
   "modules": 15,
   "tools": [
@@ -38465,7 +38465,7 @@
       "module": "users",
       "classification": "WRITE",
       "description": "insert employee type",
-      "paramCount": 1,
+      "paramCount": 2,
       "serviceParams": [
         "client",
         "employeeType"
@@ -38480,6 +38480,9 @@
         "properties": {
           "name": {
             "type": "string"
+          },
+          "mesOnly": {
+            "type": "boolean"
           }
         },
         "required": [
