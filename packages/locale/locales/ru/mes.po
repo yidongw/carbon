@@ -291,7 +291,7 @@ msgid "Delete"
 msgstr "Удалить"
 
 msgid "Delete process pickup"
-msgstr "Удалить процесс загрузки"
+msgstr "Удалить выдачу в процесс"
 
 msgid "Delete step"
 msgstr "Удалить шаг"
@@ -611,7 +611,7 @@ msgid "Manually remove items from inventory"
 msgstr "Списать номенклатуру со склада вручную"
 
 msgid "Mark Short"
-msgstr "Отметить кратко"
+msgstr "Отметить нехватку"
 
 msgid "matches"
 msgstr "соответствует"
@@ -937,7 +937,7 @@ msgid "Process Parameters"
 msgstr "Параметры процесса"
 
 msgid "process pickup"
-msgstr "получение процесса"
+msgstr "выдача в процесс"
 
 msgid "Process Pickups"
 msgstr "выдачи в процесс"
@@ -1037,7 +1037,7 @@ msgid "Rework"
 msgstr "Переработка"
 
 msgid "Rework created successfully"
-msgstr "Реконфигурация создана успешно"
+msgstr "Доработка успешно создана"
 
 msgid "Sales Order"
 msgstr "Заказ на продажу"

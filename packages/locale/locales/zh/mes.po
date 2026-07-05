@@ -267,7 +267,7 @@ msgid "Create Quality Issue"
 msgstr "创建质量issue"
 
 msgid "Create Rework"
-msgstr "创建重工"
+msgstr "创建返工"
 
 msgid "Customer"
 msgstr "客户"
@@ -291,7 +291,7 @@ msgid "Delete"
 msgstr "删除"
 
 msgid "Delete process pickup"
-msgstr "删除工序拣选"
+msgstr "删除工序领料"
 
 msgid "Delete step"
 msgstr "删除步骤"
@@ -467,7 +467,7 @@ msgid "History"
 msgstr "历史"
 
 msgid "How many were actually picked?"
-msgstr "实际捡了几个？"
+msgstr "实际拣了几个？"
 
 msgid "I understand and want to complete without issuing"
 msgstr "我理解并希望在不发放材料的情况下完成"
@@ -611,7 +611,7 @@ msgid "Manually remove items from inventory"
 msgstr "手动从库存中移除物品"
 
 msgid "Mark Short"
-msgstr "标记短"
+msgstr "标记短缺"
 
 msgid "matches"
 msgstr "匹配"
@@ -1037,7 +1037,7 @@ msgid "Rework"
 msgstr "返工"
 
 msgid "Rework created successfully"
-msgstr "重新加工创建成功"
+msgstr "返工创建成功"
 
 msgid "Sales Order"
 msgstr "销售订单"
@@ -1170,7 +1170,7 @@ msgid "Short"
 msgstr "短"
 
 msgid "Short pick {itemName}"
-msgstr "短拣{itemName}"
+msgstr "{itemName}短缺领料"
 
 msgid "Show legend"
 msgstr "显示图例"
@@ -1185,7 +1185,7 @@ msgid "Sign in with Outlook"
 msgstr "使用 Outlook 登录"
 
 msgid "Sign in with Passkey"
-msgstr "使用密码键登录"
+msgstr "使用 Passkey 登录"
 
 msgid "Sign Out"
 msgstr "退出登录"

@@ -291,7 +291,7 @@ msgid "Delete"
 msgstr "Löschen"
 
 msgid "Delete process pickup"
-msgstr "Löschen des Prozessabmelches"
+msgstr "Löschen von Prozessabholung"
 
 msgid "Delete step"
 msgstr "Lösche Schritt"
@@ -611,7 +611,7 @@ msgid "Manually remove items from inventory"
 msgstr "Artikel manuell aus dem Bestand entfernen"
 
 msgid "Mark Short"
-msgstr "Markieren Sie kurz"
+msgstr "Fehlbestand markieren"
 
 msgid "matches"
 msgstr "entspricht"
@@ -937,10 +937,10 @@ msgid "Process Parameters"
 msgstr "Prozessparameter"
 
 msgid "process pickup"
-msgstr "Prozess Abholung"
+msgstr "Prozessabholung"
 
 msgid "Process Pickups"
-msgstr "Prozessentnahmen"
+msgstr "Prozessabholungen"
 
 msgid "Processes"
 msgstr "Prozesse"
@@ -982,7 +982,7 @@ msgid "Reason for issuing expired stock"
 msgstr "Grund für das Ausstellen verfallener Ware"
 
 msgid "Reason for rework"
-msgstr "Grund für die Wiederherstellung"
+msgstr "Grund für die Nacharbeit"
 
 msgid "Recent"
 msgstr "Zuletzt"
@@ -1185,7 +1185,7 @@ msgid "Sign in with Outlook"
 msgstr "Mit Outlook anmelden"
 
 msgid "Sign in with Passkey"
-msgstr "Anmelden mit Passwortkarte"
+msgstr "Anmelden mit Passkey"
 
 msgid "Sign Out"
 msgstr "Abmelden"
@@ -1298,7 +1298,7 @@ msgid "Tools"
 msgstr "Werkzeuge"
 
 msgid "Total Process Pickups"
-msgstr "Prozessentnahmen gesamt"
+msgstr "Prozessabholungen gesamt"
 
 msgid "Total Production"
 msgstr "Gesamtproduktion"

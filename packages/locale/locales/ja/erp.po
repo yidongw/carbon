@@ -11,6 +11,7 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
+"POT-Creation-Date: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " A supplier is a business or person who sells you parts or services."
@@ -1921,8 +1922,8 @@ msgstr "パスワードを確認"
 msgid "Connect"
 msgstr "連携"
 
-msgid "Connect Carbon to your accounting, project management, and CAD tools and much more."
-msgstr "Carbonを会計、プロジェクト管理、CADツールなどと接続できます。"
+msgid "Connect to your accounting, project management, and CAD tools and much more."
+msgstr "あなたの会計、プロジェクト管理、CADツールと更多を接続してください。"
 
 msgid "Connect Jira issue"
 msgstr "Jira課題に接続"
@@ -2887,7 +2888,7 @@ msgid "Delete Partner"
 msgstr "パートナーを削除"
 
 msgid "Delete passkey"
-msgstr "パスキーを削除"
+msgstr "Passkeyを削除"
 
 msgid "Delete Payment Term"
 msgstr "支払い条件を削除"
@@ -5683,7 +5684,7 @@ msgid "Mark Partial"
 msgstr "部分的にマーク"
 
 msgid "Mark Short"
-msgstr "短時間マーク"
+msgstr "不足としてマーク"
 
 msgid "Mark to delete"
 msgstr "削除対象にマーク"
@@ -7069,7 +7070,7 @@ msgid "Pass"
 msgstr "合格"
 
 msgid "Passkey name"
-msgstr "パスキー名稱"
+msgstr "Passkey名"
 
 msgid "Password is too short"
 msgstr "パスワードは短すぎます"
@@ -7709,7 +7710,7 @@ msgid "Qty. per Parent"
 msgstr "親あたりの数量"
 
 msgid "Qty. Reworked"
-msgstr "数量。再加工"
+msgstr "再加工数量"
 
 msgid "Qty. Scrapped"
 msgstr "数量。スクラップ"
@@ -8344,7 +8345,7 @@ msgid "Revoked"
 msgstr "撤回"
 
 msgid "Rework"
-msgstr "再作成"
+msgstr "再加工"
 
 msgid "RFQ"
 msgstr "RFQ"
@@ -9185,7 +9186,7 @@ msgid "Sign in with Outlook"
 msgstr "Outlookでサインイン"
 
 msgid "Sign in with Passkey"
-msgstr "パスキーでログイン"
+msgstr "Passkeyでログイン"
 
 msgid "Sign in with Phone"
 msgstr "電話番号でサインイン"

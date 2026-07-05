@@ -11,6 +11,7 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
+"POT-Creation-Date: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " Un proveedor es una empresa o persona que te vende partes o servicios."
@@ -1258,7 +1259,7 @@ msgid "Automatic Cost Updates"
 msgstr "Actualización Automática de Costos"
 
 msgid "Automatic Lead Time Updates"
-msgstr "Actualizaciones automáticas de tiempo de lead"
+msgstr "Actualizaciones automáticas del tiempo de entrega"
 
 msgid "Automatic Updates"
 msgstr "Actualizaciones automáticas"
@@ -1921,8 +1922,8 @@ msgstr "Confirmar Contraseña"
 msgid "Connect"
 msgstr "Conectar"
 
-msgid "Connect Carbon to your accounting, project management, and CAD tools and much more."
-msgstr "Conecta Carbon con tus herramientas de contabilidad, gestión de proyectos y CAD entre otras."
+msgid "Connect to your accounting, project management, and CAD tools and much more."
+msgstr "Conecte con sus herramientas de contabilidad, gestión de proyectos y CAD entre otras."
 
 msgid "Connect Jira issue"
 msgstr "Conectar problema de Jira"
@@ -2887,7 +2888,7 @@ msgid "Delete Partner"
 msgstr "Eliminar Socio"
 
 msgid "Delete passkey"
-msgstr "Eliminar clave de acceso"
+msgstr "Eliminar Passkey"
 
 msgid "Delete Payment Term"
 msgstr "Eliminar Término de Pago"
@@ -4422,7 +4423,7 @@ msgid "Files"
 msgstr "Archivos"
 
 msgid "Files attached here ride along on every purchase order email by default. Suppliers will receive them alongside the PO PDF."
-msgstr "Los archivos adjuntos viajan por defecto en cada correo de orden de compra; los proveedores los recibirán junto al PDF de la PO."
+msgstr "Los archivos adjuntos viajan por defecto en cada correo de orden de compra; los proveedores los recibirán junto al PDF de la orden de compra."
 
 msgid "Files attached here ride along on every purchase order email sent to this supplier (in addition to company-wide defaults)."
 msgstr "Los archivos adjuntos aquí viajan en cada correo de pedido de compra enviado a este proveedor (además de los predeterminados empresa)."
@@ -5683,7 +5684,7 @@ msgid "Mark Partial"
 msgstr "Marcar como Parcial"
 
 msgid "Mark Short"
-msgstr "Marcar corto"
+msgstr "Marcar como faltante"
 
 msgid "Mark to delete"
 msgstr "Marcar para eliminar"
@@ -7069,7 +7070,7 @@ msgid "Pass"
 msgstr "Aprobar"
 
 msgid "Passkey name"
-msgstr "Nombre de la contraseña"
+msgstr "Nombre del Passkey"
 
 msgid "Password is too short"
 msgstr "La contraseña es demasiado corta"
@@ -9185,7 +9186,7 @@ msgid "Sign in with Outlook"
 msgstr "Iniciar sesión con Outlook"
 
 msgid "Sign in with Passkey"
-msgstr "Inicie sesión con la llave de acceso"
+msgstr "Inicie sesión con Passkey"
 
 msgid "Sign in with Phone"
 msgstr "Iniciar sesión con teléfono"
@@ -11106,7 +11107,7 @@ msgid "Zoom in"
 msgstr "Acercar"
 
 msgid "Zoom out"
-msgstr "Acercar menos"
+msgstr "Alejar"
 
 msgid "ZPL (Thermal Label)"
 msgstr "ZPL (Etiqueta térmica)"

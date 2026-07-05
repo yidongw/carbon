@@ -11,6 +11,7 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
+"POT-Creation-Date: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " स्वीकारकर्ता एक व्यवसाय या व्यक्ति है जो आपको भागों या सेवाओं की बिक्री करता है।"
@@ -1255,10 +1256,10 @@ msgid "Auto-generated QR Code"
 msgstr "स्वचालित रूप से उत्पन्न QR कोड"
 
 msgid "Automatic Cost Updates"
-msgstr "अट्यूडिट कोस्ट अपडेट्स"
+msgstr "स्वचालित लागत अपडेट"
 
 msgid "Automatic Lead Time Updates"
-msgstr "अट्यूडिट लीड टाइम अपडेट्स"
+msgstr "स्वचालित लीड टाइम अपडेट"
 
 msgid "Automatic Updates"
 msgstr "अटूमेटिक अपडेट्स"
@@ -1921,8 +1922,8 @@ msgstr "पासवर्ड की पुष्टि करें"
 msgid "Connect"
 msgstr "कनेक्ट करें"
 
-msgid "Connect Carbon to your accounting, project management, and CAD tools and much more."
-msgstr "कार्बन को अपनी खातेवहिति, पروजेक्ट मैनेजमेंट और CAD उपकरणों से जोड़ें और अधिक।"
+msgid "Connect to your accounting, project management, and CAD tools and much more."
+msgstr "आपकी खातेमेंट, पروजेक्ट मैनेजमेंट और CAD उपकरणों को संबधित करें और अधिक।"
 
 msgid "Connect Jira issue"
 msgstr "Jira समस्या से कनेक्ट करें"
@@ -2887,7 +2888,7 @@ msgid "Delete Partner"
 msgstr "पार्टनर हटाएं"
 
 msgid "Delete passkey"
-msgstr "पासकीय को डिलेट करें"
+msgstr "Passkey हटाएं"
 
 msgid "Delete Payment Term"
 msgstr "भुगतान अवधि हटाएं"
@@ -4422,7 +4423,7 @@ msgid "Files"
 msgstr "फ़ाइलें"
 
 msgid "Files attached here ride along on every purchase order email by default. Suppliers will receive them alongside the PO PDF."
-msgstr "दिए गए हैलॉक्स में अनex-चयन से जोड़े गए फाइलें प्रत्येक कप्चर ऑर्डर इमेल के साथ भेजी जाती हैं। विर्टुअल प्रवासकर्ता को पो PDF के साथ उन्हें मिलेगा।"
+msgstr "यहाँ अटैच की गई फ़ाइलें डिफ़ॉल्ट रूप से हर खरीद ऑर्डर ईमेल के साथ भेजी जाती हैं। सप्लायर्स को ये खरीद ऑर्डर PDF के साथ मिलेंगी।"
 
 msgid "Files attached here ride along on every purchase order email sent to this supplier (in addition to company-wide defaults)."
 msgstr "इस विक्रेता को भेजे गए हर प्रचारण संग्रह में यह लिखे गए फाइलों की ओर चलती है (कंपनी-व्यापक मानकों के अलावा)."
@@ -5683,7 +5684,7 @@ msgid "Mark Partial"
 msgstr "आंशिक रूप से चिह्नित करें"
 
 msgid "Mark Short"
-msgstr "मार्क शॉर्ट"
+msgstr "कमी चिह्नित करें"
 
 msgid "Mark to delete"
 msgstr "हटाने के लिए चिह्नित करें"
@@ -7069,7 +7070,7 @@ msgid "Pass"
 msgstr "पास"
 
 msgid "Passkey name"
-msgstr "पासकीया नाम"
+msgstr "Passkey का नाम"
 
 msgid "Password is too short"
 msgstr "पासवर्ड बहुत किलो है"
@@ -9185,7 +9186,7 @@ msgid "Sign in with Outlook"
 msgstr "Outlook के साथ साइन इन करें"
 
 msgid "Sign in with Passkey"
-msgstr "पासकीय से लॉग इन करें"
+msgstr "Passkey से लॉग इन करें"
 
 msgid "Sign in with Phone"
 msgstr "फ़ोन से साइन इन करें"
@@ -11103,10 +11104,10 @@ msgid "Zoom Box"
 msgstr "जॉम बॉक्स"
 
 msgid "Zoom in"
-msgstr "फोकस बढ़ावा"
+msgstr "ज़ूम इन"
 
 msgid "Zoom out"
-msgstr "फोकस बाहर निकलें"
+msgstr "ज़ूम आउट"
 
 msgid "ZPL (Thermal Label)"
 msgstr "ZPL (तापमान लेबल)"

@@ -11,6 +11,7 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
+"POT-Creation-Date: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " Dostawca jest firmą lub osobą, która sprzedaje ci części lub usługi."
@@ -1258,7 +1259,7 @@ msgid "Automatic Cost Updates"
 msgstr "Automatyczne Aktualizacje Kosztów"
 
 msgid "Automatic Lead Time Updates"
-msgstr "Automatyczne Aktualizacje Czasu Trwania"
+msgstr "Automatyczne aktualizacje czasu dostawy"
 
 msgid "Automatic Updates"
 msgstr "Automatyczne aktualizacje"
@@ -1921,8 +1922,8 @@ msgstr "Potwierdź hasło"
 msgid "Connect"
 msgstr "Połącz"
 
-msgid "Connect Carbon to your accounting, project management, and CAD tools and much more."
-msgstr "Połącz Carbon z Twoimi narzędziami kontekstowymi, zarządzaniem projektami i CAD oraz wiele innych."
+msgid "Connect to your accounting, project management, and CAD tools and much more."
+msgstr "Połącz się ze swoimi narzędziami kontekstowych księgowości, zarządzania projektami i CAD oraz wiele innych."
 
 msgid "Connect Jira issue"
 msgstr "Połącz problem Jiry"
@@ -2887,7 +2888,7 @@ msgid "Delete Partner"
 msgstr "Usuń partnera"
 
 msgid "Delete passkey"
-msgstr "Usun klucz dostępu"
+msgstr "Usuń Passkey"
 
 msgid "Delete Payment Term"
 msgstr "Usuń Warunki Płatności"
@@ -5683,7 +5684,7 @@ msgid "Mark Partial"
 msgstr "Oznacz jako częściowe"
 
 msgid "Mark Short"
-msgstr "Oznacz Krótki"
+msgstr "Oznacz niedobór"
 
 msgid "Mark to delete"
 msgstr "Oznacz do usunięcia"
@@ -7069,7 +7070,7 @@ msgid "Pass"
 msgstr "Zatwierdź"
 
 msgid "Passkey name"
-msgstr "Nazwa przepustnika"
+msgstr "Nazwa Passkey"
 
 msgid "Password is too short"
 msgstr "Hasło jest zbyt krótkie"
@@ -8344,7 +8345,7 @@ msgid "Revoked"
 msgstr "Zwolniono"
 
 msgid "Rework"
-msgstr "Przebudowa"
+msgstr "Poprawka"
 
 msgid "RFQ"
 msgstr "RFQ"
@@ -9128,7 +9129,7 @@ msgid "Short Description"
 msgstr "Krótki opis"
 
 msgid "Short pick {itemName}"
-msgstr "Krótkie zrzucenie {itemName}"
+msgstr "Krótkie pobranie {itemName}"
 
 msgid "Short-Term Loans"
 msgstr "Kredyty krótkoterminowe"
@@ -10125,7 +10126,7 @@ msgid "Total Production"
 msgstr "Cała produkcja"
 
 msgid "Total Rework"
-msgstr "Całkowitay Rewoqk"
+msgstr "Łącznie poprawki"
 
 msgid "Total Scrap"
 msgstr "Cała odpadłość"
@@ -11100,13 +11101,13 @@ msgid "yourself"
 msgstr "siebie"
 
 msgid "Zoom Box"
-msgstr "Zoomowanie Obstawki"
+msgstr "Ramka powiększenia"
 
 msgid "Zoom in"
-msgstr "Zoomowanie w dół"
+msgstr "Powiększ"
 
 msgid "Zoom out"
-msgstr "Wyciągnij aktywność"
+msgstr "Pomniejsz"
 
 msgid "ZPL (Thermal Label)"
 msgstr "ZPL (Etykietka termiczna)"

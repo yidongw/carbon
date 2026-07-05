@@ -11,6 +11,7 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
+"POT-Creation-Date: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " Um fornecedor é uma empresa ou pessoa que vende partes ou serviços para você."
@@ -1258,7 +1259,7 @@ msgid "Automatic Cost Updates"
 msgstr "Atualizações Automáticas de Custos"
 
 msgid "Automatic Lead Time Updates"
-msgstr "Atualizações Automáticas do Tempo de Mão"
+msgstr "Atualizações automáticas do tempo de entrega"
 
 msgid "Automatic Updates"
 msgstr "Atualizações Automáticas"
@@ -1921,8 +1922,8 @@ msgstr "Confirmar Senha"
 msgid "Connect"
 msgstr "Conectar"
 
-msgid "Connect Carbon to your accounting, project management, and CAD tools and much more."
-msgstr "Conecte o Carbon aos seus sistemas de contabilidade, gerenciamento de projetos e CAD, entre outros."
+msgid "Connect to your accounting, project management, and CAD tools and much more."
+msgstr "Conecte-se aos seus sistemas de contabilidade, gerenciamento de projetos e CAD entre outros."
 
 msgid "Connect Jira issue"
 msgstr "Conectar problema do Jira"
@@ -4422,7 +4423,7 @@ msgid "Files"
 msgstr "Ficheiros"
 
 msgid "Files attached here ride along on every purchase order email by default. Suppliers will receive them alongside the PO PDF."
-msgstr "Os arquivos anexados aqui acompanham por padrão todos os e-mails de ordem de compra. Os fornecedores receberão eles ao lado do PDF da PO."
+msgstr "Os arquivos anexados aqui acompanham por padrão todos os e-mails de ordem de compra. Os fornecedores receberão eles ao lado do PDF da ordem de compra."
 
 msgid "Files attached here ride along on every purchase order email sent to this supplier (in addition to company-wide defaults)."
 msgstr "Os arquivos anexados aqui acompanham todos os pedidos de compra enviados a este fornecedor (adicionando-se aos padrões corporativos por definição)."
@@ -5324,7 +5325,7 @@ msgid "Lead Time"
 msgstr "Tempo de Entrega"
 
 msgid "Lead time (days)"
-msgstr "Tempo de lead (dias)"
+msgstr "Tempo de entrega (dias)"
 
 msgid "Lead Time (Days)"
 msgstr "Tempo de Entrega (Dias)"
@@ -5683,7 +5684,7 @@ msgid "Mark Partial"
 msgstr "Marcar como Parcial"
 
 msgid "Mark Short"
-msgstr "Marcar Curto"
+msgstr "Marcar como falta"
 
 msgid "Mark to delete"
 msgstr "Marcar para eliminar"
@@ -7069,7 +7070,7 @@ msgid "Pass"
 msgstr "Passar"
 
 msgid "Passkey name"
-msgstr "Nome da chave de acesso"
+msgstr "Nome do Passkey"
 
 msgid "Password is too short"
 msgstr "A senha é muito curta"
@@ -8344,7 +8345,7 @@ msgid "Revoked"
 msgstr "Revogado"
 
 msgid "Rework"
-msgstr "Refaitar"
+msgstr "Retrabalho"
 
 msgid "RFQ"
 msgstr "RFQ"
@@ -9185,7 +9186,7 @@ msgid "Sign in with Outlook"
 msgstr "Entrar com Outlook"
 
 msgid "Sign in with Passkey"
-msgstr "Entrar com Acessos Rápidos"
+msgstr "Entrar com Passkey"
 
 msgid "Sign in with Phone"
 msgstr "Entrar com Telefone"
@@ -10125,7 +10126,7 @@ msgid "Total Production"
 msgstr "Produção Total"
 
 msgid "Total Rework"
-msgstr "Total Rejeição"
+msgstr "Total Retrabalho"
 
 msgid "Total Scrap"
 msgstr "Scrap Total"

@@ -11,6 +11,7 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
+"POT-Creation-Date: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " Un fornitore è una società o persona che vi vende parti o servizi."
@@ -1258,7 +1259,7 @@ msgid "Automatic Cost Updates"
 msgstr "Aggiornamenti automatici dei costi"
 
 msgid "Automatic Lead Time Updates"
-msgstr "Aggiornamenti automatici del tempo di lead"
+msgstr "Aggiornamenti automatici del tempo di consegna"
 
 msgid "Automatic Updates"
 msgstr "Aggiornamenti automatici"
@@ -1921,8 +1922,8 @@ msgstr "Conferma Password"
 msgid "Connect"
 msgstr "Collega"
 
-msgid "Connect Carbon to your accounting, project management, and CAD tools and much more."
-msgstr "Connetti Carbon alle tue applicazioni di contabilità, gestione progetti e CAD e molto altro."
+msgid "Connect to your accounting, project management, and CAD tools and much more."
+msgstr "Connetti ai tuoi strumenti di contabilità, gestione progetti e CAD e molto altro."
 
 msgid "Connect Jira issue"
 msgstr "Connetti problema Jira"
@@ -5324,7 +5325,7 @@ msgid "Lead Time"
 msgstr "Tempo di consegna"
 
 msgid "Lead time (days)"
-msgstr "Tempo di lead (giorni)"
+msgstr "Tempo di consegna (giorni)"
 
 msgid "Lead Time (Days)"
 msgstr "Tempo di consegna (Giorni)"
@@ -5683,7 +5684,7 @@ msgid "Mark Partial"
 msgstr "Contrassegna come parziale"
 
 msgid "Mark Short"
-msgstr "Segna Breve"
+msgstr "Segna come mancante"
 
 msgid "Mark to delete"
 msgstr "Segna per eliminare"
@@ -8344,7 +8345,7 @@ msgid "Revoked"
 msgstr "Annullato"
 
 msgid "Rework"
-msgstr "Riprogettazione"
+msgstr "Rilavorazione"
 
 msgid "RFQ"
 msgstr "RFQ"
@@ -11106,7 +11107,7 @@ msgid "Zoom in"
 msgstr "Ingrandisci"
 
 msgid "Zoom out"
-msgstr "Indietro la zoom"
+msgstr "Riduci zoom"
 
 msgid "ZPL (Thermal Label)"
 msgstr "ZPL (Etichetta termica)"

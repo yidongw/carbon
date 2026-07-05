@@ -11,6 +11,7 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
+"POT-Creation-Date: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " Поставщик - это бизнес или лицо, которое продает вам части или услуги."
@@ -1258,7 +1259,7 @@ msgid "Automatic Cost Updates"
 msgstr "Автоматическое обновление затрат"
 
 msgid "Automatic Lead Time Updates"
-msgstr "Автоматическое обновление времени загрузки"
+msgstr "Автоматическое обновление времени поставки"
 
 msgid "Automatic Updates"
 msgstr "Автоматические обновления"
@@ -1921,8 +1922,8 @@ msgstr "Подтвердить пароль"
 msgid "Connect"
 msgstr "Подключить"
 
-msgid "Connect Carbon to your accounting, project management, and CAD tools and much more."
-msgstr "ПодключитеCarbon к вашим системам бухгалтерского учета, управления проектами и программам CAD и многому другому."
+msgid "Connect to your accounting, project management, and CAD tools and much more."
+msgstr "Подключитесь к вашим системам бухгалтерского учета, управления проектами и CAD-инструментам и многому другому."
 
 msgid "Connect Jira issue"
 msgstr "Подключить проблему Jira"
@@ -2887,7 +2888,7 @@ msgid "Delete Partner"
 msgstr "Удалить партнера"
 
 msgid "Delete passkey"
-msgstr "Удалить пароль"
+msgstr "Удалить Passkey"
 
 msgid "Delete Payment Term"
 msgstr "Удалить условие платежа"
@@ -5683,7 +5684,7 @@ msgid "Mark Partial"
 msgstr "Отметить как частичное"
 
 msgid "Mark Short"
-msgstr "Зачеркнуть кратко"
+msgstr "Отметить нехватку"
 
 msgid "Mark to delete"
 msgstr "Отметить для удаления"
@@ -7069,7 +7070,7 @@ msgid "Pass"
 msgstr "Пройти"
 
 msgid "Passkey name"
-msgstr "Название парольного ключа"
+msgstr "Название Passkey"
 
 msgid "Password is too short"
 msgstr "Пароль слишком короткий"
@@ -8344,7 +8345,7 @@ msgid "Revoked"
 msgstr "Отозван"
 
 msgid "Rework"
-msgstr "Ремонт"
+msgstr "Доработка"
 
 msgid "RFQ"
 msgstr "РФП"
@@ -11100,13 +11101,13 @@ msgid "yourself"
 msgstr "себя"
 
 msgid "Zoom Box"
-msgstr "Зoom Box"
+msgstr "Увеличение области"
 
 msgid "Zoom in"
 msgstr "Приближение"
 
 msgid "Zoom out"
-msgstr "От缩放"
+msgstr "Отдаление"
 
 msgid "ZPL (Thermal Label)"
 msgstr "ZPL (Тепловая этикетка)"

@@ -307,7 +307,7 @@ msgid "Describe the problem..."
 msgstr "Describa el problema..."
 
 msgid "Describe what needs to be reworked..."
-msgstr "Describa lo que necesita ser reworks..."
+msgstr "Describa lo que necesita ser retrabajado..."
 
 msgid "Description"
 msgstr "Descripción"
@@ -611,7 +611,7 @@ msgid "Manually remove items from inventory"
 msgstr "Eliminar artículos del inventario manualmente"
 
 msgid "Mark Short"
-msgstr "Marcar corto"
+msgstr "Marcar como faltante"
 
 msgid "matches"
 msgstr "coincide con"
@@ -937,7 +937,7 @@ msgid "Process Parameters"
 msgstr "Parámetros del proceso"
 
 msgid "process pickup"
-msgstr "pickup de proceso"
+msgstr "recogida de proceso"
 
 msgid "Process Pickups"
 msgstr "extracciones de proceso"
@@ -982,7 +982,7 @@ msgid "Reason for issuing expired stock"
 msgstr "Razón para emitir mercancía vencida"
 
 msgid "Reason for rework"
-msgstr "Razón para la rehacer"
+msgstr "Razón para el retrabajo"
 
 msgid "Recent"
 msgstr "Recientes"
@@ -1037,7 +1037,7 @@ msgid "Rework"
 msgstr "Rehacer"
 
 msgid "Rework created successfully"
-msgstr "Revisión creada con éxito"
+msgstr "Retrabajo creado con éxito"
 
 msgid "Sales Order"
 msgstr "Orden de venta"
@@ -1170,7 +1170,7 @@ msgid "Short"
 msgstr "Corto"
 
 msgid "Short pick {itemName}"
-msgstr "Corta de forma breve {itemName}"
+msgstr "Selección corta {itemName}"
 
 msgid "Show legend"
 msgstr "Mostrar leyenda"
@@ -1185,7 +1185,7 @@ msgid "Sign in with Outlook"
 msgstr "Iniciar sesión con Outlook"
 
 msgid "Sign in with Passkey"
-msgstr "Inicie sesión con la llave de acceso"
+msgstr "Inicie sesión con Passkey"
 
 msgid "Sign Out"
 msgstr "Cerrar sesión"

@@ -291,7 +291,7 @@ msgid "Delete"
 msgstr "हटाएं"
 
 msgid "Delete process pickup"
-msgstr "प्रोसेस पिकअप हटाएं"
+msgstr "प्रक्रिया निकासी हटाएं"
 
 msgid "Delete step"
 msgstr "पास्टे हटाएँ"
@@ -611,7 +611,7 @@ msgid "Manually remove items from inventory"
 msgstr "इन्वेंटरी से आइटम को मैन्युअली हटाएं"
 
 msgid "Mark Short"
-msgstr "मार्क शॉर्ट"
+msgstr "कमी चिह्नित करें"
 
 msgid "matches"
 msgstr "मेल खाता है"
@@ -937,7 +937,7 @@ msgid "Process Parameters"
 msgstr "प्रक्रिया पैरामीटर"
 
 msgid "process pickup"
-msgstr "प्रक्रिया पीकअप"
+msgstr "प्रक्रिया निकासी"
 
 msgid "Process Pickups"
 msgstr "प्रक्रिया निकासियाँ"
@@ -1185,7 +1185,7 @@ msgid "Sign in with Outlook"
 msgstr "Outlook के साथ साइन इन करें"
 
 msgid "Sign in with Passkey"
-msgstr "पासकीय से लॉग इन करें"
+msgstr "Passkey से लॉग इन करें"
 
 msgid "Sign Out"
 msgstr "साइन आउट"

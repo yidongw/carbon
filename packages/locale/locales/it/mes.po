@@ -291,7 +291,7 @@ msgid "Delete"
 msgstr "Elimina"
 
 msgid "Delete process pickup"
-msgstr "Elimina processo di raccolta"
+msgstr "Elimina prelievo di processo"
 
 msgid "Delete step"
 msgstr "Elimina passo"
@@ -611,7 +611,7 @@ msgid "Manually remove items from inventory"
 msgstr "Rimuovi manualmente articoli dall'inventario"
 
 msgid "Mark Short"
-msgstr "Marca Breve"
+msgstr "Segna come mancante"
 
 msgid "matches"
 msgstr "corrisponde a"
@@ -937,7 +937,7 @@ msgid "Process Parameters"
 msgstr "Parametri di Processo"
 
 msgid "process pickup"
-msgstr "prelevamento processo"
+msgstr "prelievo di processo"
 
 msgid "Process Pickups"
 msgstr "prelievi di processo"
@@ -982,7 +982,7 @@ msgid "Reason for issuing expired stock"
 msgstr "Motivo emissione magazzino scaduto"
 
 msgid "Reason for rework"
-msgstr "Motivo del ricalcolo"
+msgstr "Motivo della rilavorazione"
 
 msgid "Recent"
 msgstr "Recenti"
@@ -1031,13 +1031,13 @@ msgid "Reset zoom"
 msgstr "Ripeti lo zoom"
 
 msgid "rework"
-msgstr "riqualifica"
+msgstr "rilavorazione"
 
 msgid "Rework"
 msgstr "Rework"
 
 msgid "Rework created successfully"
-msgstr "Ricostruzione creata con successo"
+msgstr "Rilavorazione creata con successo"
 
 msgid "Sales Order"
 msgstr "Ordine di Vendita"

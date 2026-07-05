@@ -291,7 +291,7 @@ msgid "Delete"
 msgstr "Usuń"
 
 msgid "Delete process pickup"
-msgstr "Usun proces odbioru"
+msgstr "Usuń odbiór procesu"
 
 msgid "Delete step"
 msgstr "Usun krok"
@@ -611,7 +611,7 @@ msgid "Manually remove items from inventory"
 msgstr "Ręcznie usuń pozycje z zapasów"
 
 msgid "Mark Short"
-msgstr "Oznacz Krótki"
+msgstr "Oznacz niedobór"
 
 msgid "matches"
 msgstr "pasuje do"
@@ -937,7 +937,7 @@ msgid "Process Parameters"
 msgstr "Parametry procesu"
 
 msgid "process pickup"
-msgstr "wybierz proces"
+msgstr "wydanie do procesu"
 
 msgid "Process Pickups"
 msgstr "wydania do procesu"
@@ -1031,10 +1031,10 @@ msgid "Reset zoom"
 msgstr "Zresetuj powięzkę"
 
 msgid "rework"
-msgstr "rewykładka"
+msgstr "poprawka"
 
 msgid "Rework"
-msgstr "Reworkowaacja"
+msgstr "Poprawka"
 
 msgid "Rework created successfully"
 msgstr "Rozpoczęto ponowne wykonanie pomyślnie"
@@ -1170,7 +1170,7 @@ msgid "Short"
 msgstr "Krótki"
 
 msgid "Short pick {itemName}"
-msgstr "Krótkie zrzucenie {itemName}"
+msgstr "Krótkie pobranie {itemName}"
 
 msgid "Show legend"
 msgstr "Pokaż legende"
@@ -1307,7 +1307,7 @@ msgid "Total Quantity"
 msgstr "Ilość całkowita"
 
 msgid "Total Rework"
-msgstr "Całkowitay Rewoqk"
+msgstr "Łącznie poprawki"
 
 msgid "Total Scrap"
 msgstr "Całkowity odpad"

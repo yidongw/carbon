@@ -307,7 +307,7 @@ msgid "Describe the problem..."
 msgstr "問題を説明してください..."
 
 msgid "Describe what needs to be reworked..."
-msgstr "再works需要修正的内容..."
+msgstr "再加工が必要な内容を記述してください..."
 
 msgid "Description"
 msgstr "説明"
@@ -611,7 +611,7 @@ msgid "Manually remove items from inventory"
 msgstr "手動で在庫から品目を削除"
 
 msgid "Mark Short"
-msgstr "短いマーク"
+msgstr "不足としてマーク"
 
 msgid "matches"
 msgstr "が一致"
@@ -1037,7 +1037,7 @@ msgid "Rework"
 msgstr "再作業"
 
 msgid "Rework created successfully"
-msgstr "リwork作成成功"
+msgstr "再加工が正常に作成されました"
 
 msgid "Sales Order"
 msgstr "受注"
@@ -1185,7 +1185,7 @@ msgid "Sign in with Outlook"
 msgstr "Outlookでサインイン"
 
 msgid "Sign in with Passkey"
-msgstr "パスキーでログイン"
+msgstr "Passkeyでログイン"
 
 msgid "Sign Out"
 msgstr "サインアウト"

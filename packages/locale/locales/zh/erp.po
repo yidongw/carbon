@@ -11,6 +11,7 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
+"POT-Creation-Date: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " 供应商是向您出售产品或服务的商家或个人。"
@@ -1258,7 +1259,7 @@ msgid "Automatic Cost Updates"
 msgstr "自动成本更新"
 
 msgid "Automatic Lead Time Updates"
-msgstr "自动更新lead时间"
+msgstr "自动交货期更新"
 
 msgid "Automatic Updates"
 msgstr "自动更新"
@@ -1921,8 +1922,8 @@ msgstr "确认密码"
 msgid "Connect"
 msgstr "绑定"
 
-msgid "Connect Carbon to your accounting, project management, and CAD tools and much more."
-msgstr "将碳连接到您的会计、项目管理以及CAD工具等更多功能。"
+msgid "Connect to your accounting, project management, and CAD tools and much more."
+msgstr "连接到您的会计、项目管理以及CAD工具等更多功能。"
 
 msgid "Connect Jira issue"
 msgstr "连接Jira问题"
@@ -2887,7 +2888,7 @@ msgid "Delete Partner"
 msgstr "删除合作伙伴"
 
 msgid "Delete passkey"
-msgstr "删除密码钥"
+msgstr "删除 Passkey"
 
 msgid "Delete Payment Term"
 msgstr "删除支付条款"
@@ -4422,7 +4423,7 @@ msgid "Files"
 msgstr "文件"
 
 msgid "Files attached here ride along on every purchase order email by default. Suppliers will receive them alongside the PO PDF."
-msgstr "在这里附件将默认随每个采购订单邮件发送。供应商会与PO PDF一起收到它们。"
+msgstr "在这里附件将默认随每个采购订单邮件发送。供应商会与采购订单PDF一起收到它们。"
 
 msgid "Files attached here ride along on every purchase order email sent to this supplier (in addition to company-wide defaults)."
 msgstr "在此向该供应商发送的每份采购订单电子邮件中，将附带此处上传的文件（此外还包括公司默认设置）。"
@@ -4708,7 +4709,7 @@ msgid "Hours/Piece"
 msgstr "小时/件"
 
 msgid "How many were actually picked?"
-msgstr "实际捡了几个？"
+msgstr "实际拣了几个？"
 
 msgid "How the resolved price was calculated."
 msgstr "已解决的价格是如何计算的。"
@@ -5683,7 +5684,7 @@ msgid "Mark Partial"
 msgstr "标记部分完成"
 
 msgid "Mark Short"
-msgstr "标记短条"
+msgstr "标记短缺"
 
 msgid "Mark to delete"
 msgstr "标记删除"
@@ -7069,7 +7070,7 @@ msgid "Pass"
 msgstr "通过"
 
 msgid "Passkey name"
-msgstr "密码名称"
+msgstr "Passkey 名称"
 
 msgid "Password is too short"
 msgstr "密码太短"
@@ -9128,7 +9129,7 @@ msgid "Short Description"
 msgstr "简短描述"
 
 msgid "Short pick {itemName}"
-msgstr "短拣{itemName}"
+msgstr "{itemName}短缺领料"
 
 msgid "Short-Term Loans"
 msgstr "短期贷款"
@@ -9185,7 +9186,7 @@ msgid "Sign in with Outlook"
 msgstr "使用Outlook登录"
 
 msgid "Sign in with Passkey"
-msgstr "使用密码键登录"
+msgstr "使用 Passkey 登录"
 
 msgid "Sign in with Phone"
 msgstr "使用手机号登录"
@@ -11106,7 +11107,7 @@ msgid "Zoom in"
 msgstr "放大"
 
 msgid "Zoom out"
-msgstr "缩放出去"
+msgstr "缩小"
 
 msgid "ZPL (Thermal Label)"
 msgstr "ZPL（热敏标签）"

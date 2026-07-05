@@ -11,6 +11,7 @@ msgstr ""
 "Last-Translator: \n"
 "Language-Team: \n"
 "Plural-Forms: \n"
+"POT-Creation-Date: \n"
 
 msgid " A supplier is a business or person who sells you parts or services."
 msgstr " Un fournisseur est une entreprise ou un individu qui vous vend des pièces ou des services."
@@ -1258,7 +1259,7 @@ msgid "Automatic Cost Updates"
 msgstr "Mises à jour automatiques des coûts"
 
 msgid "Automatic Lead Time Updates"
-msgstr "Mises à jour automatiques du temps de mise en route"
+msgstr "Mises à jour automatiques des délais de livraison"
 
 msgid "Automatic Updates"
 msgstr "Mises à jour automatiques"
@@ -1921,8 +1922,8 @@ msgstr "Confirmer le mot de passe"
 msgid "Connect"
 msgstr "Connecter"
 
-msgid "Connect Carbon to your accounting, project management, and CAD tools and much more."
-msgstr "Connectez Carbon à vos outils de comptabilité, gestion de projets et de conception assistée par ordinateur et bien d'autres encore."
+msgid "Connect to your accounting, project management, and CAD tools and much more."
+msgstr "Connectez-vous à vos outils de comptabilité, gestion de projets et CAD ainsi que bien d'autres."
 
 msgid "Connect Jira issue"
 msgstr "Connecter un problème Jira"
@@ -2887,7 +2888,7 @@ msgid "Delete Partner"
 msgstr "Supprimer le partenaire"
 
 msgid "Delete passkey"
-msgstr "Supprimer le code d'accès"
+msgstr "Supprimer le Passkey"
 
 msgid "Delete Payment Term"
 msgstr "Supprimer le délai de paiement"
@@ -4422,7 +4423,7 @@ msgid "Files"
 msgstr "Fichiers"
 
 msgid "Files attached here ride along on every purchase order email by default. Suppliers will receive them alongside the PO PDF."
-msgstr "Les fichiers joints ici accompagnent par défaut chaque email de commande. Les fournisseurs les recevront à côté du PDF de la PO."
+msgstr "Les fichiers joints ici accompagnent par défaut chaque email de commande. Les fournisseurs les recevront avec le PDF de la commande."
 
 msgid "Files attached here ride along on every purchase order email sent to this supplier (in addition to company-wide defaults)."
 msgstr "Les fichiers joints ici accompagnent chaque email de commande envoyé à ce fournisseur (en plus des paramètres par défaut d'entreprise)."
@@ -5683,7 +5684,7 @@ msgid "Mark Partial"
 msgstr "Marquer comme partiel"
 
 msgid "Mark Short"
-msgstr "Marquer court"
+msgstr "Signaler une rupture"
 
 msgid "Mark to delete"
 msgstr "Marquer pour supprimer"
@@ -7069,7 +7070,7 @@ msgid "Pass"
 msgstr "Réussir"
 
 msgid "Passkey name"
-msgstr "Nom de la passe-partout"
+msgstr "Nom du Passkey"
 
 msgid "Password is too short"
 msgstr "Le mot de passe est trop court"
@@ -9185,7 +9186,7 @@ msgid "Sign in with Outlook"
 msgstr "Se connecter avec Outlook"
 
 msgid "Sign in with Passkey"
-msgstr "Se connecter avec le passe-partout"
+msgstr "Se connecter avec Passkey"
 
 msgid "Sign in with Phone"
 msgstr "Se connecter avec Téléphone"
@@ -11103,7 +11104,7 @@ msgid "Zoom Box"
 msgstr "Zoom Boîte"
 
 msgid "Zoom in"
-msgstr "Zoomer家喻"
+msgstr "Zoomer"
 
 msgid "Zoom out"
 msgstr "Dézoomer"
