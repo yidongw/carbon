@@ -152,7 +152,7 @@ export function DemoBanner({ demo, realCompanyId }: DemoBannerProps) {
   }
 
   return (
-    <div className="w-full shrink-0 bg-primary px-4 py-1.5 text-center text-sm text-primary-foreground">
+    <div className="w-full shrink-0 bg-yellow-100 text-yellow-900 px-4 py-1.5 text-center text-sm">
       {content}
     </div>
   );
