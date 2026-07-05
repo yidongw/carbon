@@ -3116,7 +3116,7 @@ export async function getPickupFilterOptions(
     client
       .from("jobOperationPickup")
       .select(
-        "jobOperation!inner(jobId, processId, job:jobId(id, jobId), process:processId(id, name))"
+        "jobOperation!inner(jobId, processId, job:jobId(id, jobId, item:itemId(id, readableIdWithRevision, name)), process:processId(id, name))"
       )
       .eq("companyId", companyId)
   ]);
@@ -3134,6 +3134,17 @@ export async function getPickupFilterOptions(
     const job = Array.isArray(op.job) ? op.job[0] : op.job;
     if (job?.id && job.jobId) {
       jobsMap.set(job.id, { id: job.id, label: job.jobId });
+    }
+
+    const item = job?.item
+      ? Array.isArray(job.item)
+        ? job.item[0]
+        : job.item
+      : null;
+    if (item?.id) {
+      const label =
+        item.readableIdWithRevision?.trim() || item.name?.trim() || item.id;
+      itemsMap.set(item.id, { id: item.id, label });
     }
 
     const process = Array.isArray(op.process) ? op.process[0] : op.process;
