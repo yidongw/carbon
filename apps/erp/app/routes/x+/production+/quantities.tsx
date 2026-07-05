@@ -5,18 +5,11 @@ import { trigger } from "@carbon/jobs";
 import { NotificationEvent } from "@carbon/notifications";
 import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import {
-  redirect,
-  useLoaderData,
-  useLocation,
-  useNavigate,
-  useSearchParams
-} from "react-router";
+import { useLoaderData, useLocation } from "react-router";
 import {
   computeProductionQuantityReportEarnedAmount,
-  ensureProductionQuantityApprovalRequest,
   getItemIdsWithConfigurationParameters,
   getProductionQuantityReportFilterOptions,
   getProductionQuantityReportPayRows,
@@ -35,11 +28,9 @@ import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 import { getGenericQueryFilters } from "~/utils/query";
 
-const defaultPendingFilter = "approvalStatus:eq:Pending";
-
 export const handle: Handle = {
   breadcrumb: msg`Process Completions`,
-  to: `${path.to.productionQuantities}?filter=${encodeURIComponent(defaultPendingFilter)}`,
+  to: path.to.productionQuantities,
   module: "production"
 };
 
@@ -52,23 +43,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.search);
-  const filterParams = searchParams.getAll("filter");
-  const isQuantitiesIndex = url.pathname === path.to.productionQuantities;
-
-  // Default to pending on first landing only; allow clearing filters to show all rows.
-  if (
-    isQuantitiesIndex &&
-    filterParams.length === 0 &&
-    searchParams.toString() === ""
-  ) {
-    throw redirect(
-      `${path.to.productionQuantities}?filter=${encodeURIComponent(defaultPendingFilter)}`
-    );
-  }
-
-  const now = new Date();
-  const year = Number(searchParams.get("year") ?? now.getFullYear());
-  const month = Number(searchParams.get("month") ?? now.getMonth() + 1);
 
   const { limit, offset, sorts, filters } =
     getGenericQueryFilters(searchParams);
@@ -87,6 +61,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const {
     jobs: jobOptions,
     items: itemOptions,
+    operations: operationOptions,
     error: filterOptionsError
   } = await getProductionQuantityReportFilterOptions(
     client,
@@ -108,13 +83,37 @@ export async function loader({ request }: LoaderFunctionArgs) {
     );
   }
 
-  const result = await getProductionQuantityReportPayRows(
-    client,
-    companyId,
-    scope,
-    { search, limit, offset, sorts, filters },
+  // Pending count = distinct reports with at least one unpaid, non-invalidated line.
+  // productionQuantity is the source of truth; no approvalRequest involvement.
+  const [result, pendingLineData] = await Promise.all([
+    getProductionQuantityReportPayRows(
+      client,
+      companyId,
+      scope,
+      { search, limit, offset, sorts, filters },
+      serviceRole
+    ),
     serviceRole
-  );
+      .from("productionQuantity")
+      .select("reportId")
+      .eq("companyId", companyId)
+      .eq("type", "Production")
+      .is("paymentYear", null)
+      .is("invalidatedAt", null)
+      .not("reportId", "is", null)
+  ]);
+
+  const pendingCountResult = {
+    count: new Set(
+      (pendingLineData.data ?? [])
+        .map((l) => l.reportId)
+        .filter((id): id is string => Boolean(id))
+    ).size
+  };
+
+  if (pendingLineData.error) {
+    console.error("Failed to load pending count", pendingLineData.error);
+  }
 
   if (result.error) {
     console.error("Failed to load production quantity rows", result.error);
@@ -122,24 +121,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const baseRows = result.data ?? [];
   const rows = await Promise.all(
     baseRows.map(async (row) => {
-      let approvalRequestId = row.approvalRequestId;
+      const approvalRequestId = row.approvalRequestId;
       const isPending =
         row.approvalStatus === "Pending" && row.paymentYear == null;
 
-      if (!approvalRequestId && isPending && row.reportId) {
-        const ensured = await ensureProductionQuantityApprovalRequest(
-          serviceRole,
-          {
-            reportId: row.reportId,
-            companyId,
-            requestedBy: row.createdBy ?? row.requestedBy ?? userId
-          }
-        );
-        if (ensured.data?.id) {
-          approvalRequestId = ensured.data.id;
-        }
-      }
-
+      // Only show approve/reject for rows that already have an approval request.
+      // Production quantities are not auto-submitted into the approval flow.
       const canApproveRow =
         approvalRequestId && isPending
           ? await canApproveRequest(
@@ -152,7 +139,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
               userId
             )
           : false;
-      return { ...row, approvalRequestId, canApprove: canApproveRow };
+      return { ...row, canApprove: canApproveRow };
     })
   );
 
@@ -173,13 +160,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
     rows,
     count: result.count ?? 0,
     status,
-    year,
-    month,
+    pendingCount: pendingCountResult.count ?? 0,
     employees: (employeeOptions ?? []).filter(
       (e): e is typeof e & { id: string } => e.id != null
     ),
     jobs: jobOptions,
     items: itemOptions,
+    operations: operationOptions,
     configurableItemIds
   };
 }
@@ -376,34 +363,20 @@ export default function ProductionQuantitiesRoute() {
     rows,
     count,
     status,
-    year,
-    month,
+    pendingCount,
     employees,
     jobs,
     items,
+    operations,
     configurableItemIds
   } = useLoaderData<typeof loader>();
-  const navigate = useNavigate();
   const location = useLocation();
-  const [searchParams] = useSearchParams();
 
   const submitAction = useMemo(() => {
-    const params = new URLSearchParams(location.search);
-    if (!params.has("year")) params.set("year", String(year));
-    if (!params.has("month")) params.set("month", String(month));
-    const query = params.toString();
-    return query ? `${location.pathname}?${query}` : location.pathname;
-  }, [location.pathname, location.search, year, month]);
-
-  const onPeriodChange = useCallback(
-    (y: number, m: number) => {
-      const next = new URLSearchParams(searchParams);
-      next.set("year", String(y));
-      next.set("month", String(m));
-      navigate(`${path.to.productionQuantities}?${next.toString()}`);
-    },
-    [navigate, searchParams]
-  );
+    return location.search
+      ? `${location.pathname}${location.search}`
+      : location.pathname;
+  }, [location.pathname, location.search]);
 
   return (
     <VStack spacing={0} className="h-full">
@@ -411,12 +384,11 @@ export default function ProductionQuantitiesRoute() {
         data={rows}
         count={count}
         status={status}
-        year={year}
-        month={month}
+        pendingCount={pendingCount}
         employees={employees}
         jobs={jobs}
         items={items}
-        onPeriodChange={onPeriodChange}
+        operations={operations}
         submitAction={submitAction}
         showCreateAction
         configurableItemIds={configurableItemIds}

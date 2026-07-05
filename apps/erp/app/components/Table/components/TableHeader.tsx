@@ -88,6 +88,7 @@ type HeaderProps<T> = {
   withSearch: boolean;
   withSelectableRows: boolean;
   sort?: ReactNode;
+  filterActions?: ReactNode;
 };
 
 const TableHeader = <T extends object>({
@@ -117,7 +118,8 @@ const TableHeader = <T extends object>({
   withSavedView,
   withSearch,
   withSelectableRows,
-  sort
+  sort,
+  filterActions
 }: HeaderProps<T>) => {
   const { t, i18n } = useLingui();
   const [params, setParams] = useUrlParams();
@@ -307,6 +309,7 @@ const TableHeader = <T extends object>({
             <SearchFilter param="search" size="sm" placeholder={t`Search`} />
           )}
           {!!filters?.length && <Filter filters={filters} />}
+          {filterActions}
         </HStack>
         <HStack className="shrink-0">
           {sort === undefined ? (

@@ -55,7 +55,7 @@ export default function useProductionSubmodules() {
         },
         {
           name: t`Process Completions`,
-          to: `${path.to.productionQuantities}?filter=${encodeURIComponent("approvalStatus:eq:Pending")}`,
+          to: path.to.productionQuantities,
           icon: <LuPackageCheck />,
           role: "employee"
         }

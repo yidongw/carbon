@@ -1,4 +1,16 @@
-import { Badge, Button, HStack, toast } from "@carbon/react";
+import {
+  Badge,
+  Button,
+  HStack,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalTitle,
+  toast,
+  VStack
+} from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -8,15 +20,20 @@ import {
   LuCalendar,
   LuCircleCheck,
   LuCircleX,
+  LuCog,
   LuHash,
   LuPlus,
   LuUser
 } from "react-icons/lu";
 import type { FetcherWithComponents } from "react-router";
-import { useFetcher, useRevalidator } from "react-router";
+import {
+  useFetcher,
+  useNavigate,
+  useRevalidator,
+  useSearchParams
+} from "react-router";
 import { Table } from "~/components";
 import { overlay, useOverlay } from "~/components/Overlay";
-import SalaryPeriodPicker from "~/modules/people/ui/Salary/SalaryPeriodPicker";
 import { getProcessName } from "~/modules/production/productionQuantityDisplay.utils";
 import type {
   ProductionQuantityListRow,
@@ -53,15 +70,15 @@ export type ProductionQuantitiesTableProps = {
   data: ProductionQuantityTableRow[];
   count: number;
   status: ProductionQuantityPayStatus | "all";
-  year: number;
-  month: number;
   employees: ProductionQuantityEmployeeFilter[];
   jobs?: ProductionQuantityFilterOption[];
   items?: ProductionQuantityFilterOption[];
-  onPeriodChange: (year: number, month: number) => void;
-  /** POST target for approve/reject (current route URL with pay-period query params). */
+  operations?: ProductionQuantityFilterOption[];
+  /** POST target for approve/reject (current route URL). */
   submitAction: string;
-  /** When true, show the new production quantity action beside the pay period picker. */
+  /** Count of pending-approval records (no payment month). Used for badge on the filter shortcut. */
+  pendingCount?: number;
+  /** When true, show the new production quantity action. */
   showCreateAction?: boolean;
   /** Table title override. */
   title?: string;
@@ -100,17 +117,19 @@ type ReportLoaderData = {
   error?: string;
 };
 
+type ApproveTarget = { requestId: string; reportId: string };
+
 function ProductionQuantityApprovalActions({
   requestId,
   reportId,
-  submitAction,
   fetcher,
+  onApprove,
   onReject
 }: {
   requestId: string;
   reportId: string;
-  submitAction: string;
   fetcher: FetcherWithComponents<ProductionQuantityActionData>;
+  onApprove: (target: ApproveTarget) => void;
   onReject: (target: RejectCorrectionTarget) => void;
 }) {
   const pendingId = fetcher.formData?.get("approvalRequestId");
@@ -126,20 +145,17 @@ function ProductionQuantityApprovalActions({
       onClick={(event) => event.stopPropagation()}
       onPointerDown={(event) => event.stopPropagation()}
     >
-      <fetcher.Form method="post" action={submitAction}>
-        <input type="hidden" name="intent" value="approve" />
-        <input type="hidden" name="approvalRequestId" value={requestId} />
-        <Button
-          type="submit"
-          size="sm"
-          variant="primary"
-          leftIcon={<LuCircleCheck />}
-          isDisabled={isBusy}
-          isLoading={isThisRow && pendingIntent === "approve"}
-        >
-          <Trans>Approve</Trans>
-        </Button>
-      </fetcher.Form>
+      <Button
+        type="button"
+        size="sm"
+        variant="primary"
+        leftIcon={<LuCircleCheck />}
+        isDisabled={isBusy}
+        isLoading={isThisRow && pendingIntent === "approve"}
+        onClick={() => onApprove({ requestId, reportId })}
+      >
+        <Trans>Approve</Trans>
+      </Button>
       <Button
         type="button"
         size="sm"
@@ -173,18 +189,87 @@ function rowStatus(
   return "Pending";
 }
 
+const PENDING_FILTER = "approvalStatus:eq:Pending";
+
+function DateRangeFilter({
+  searchParams,
+  navigate,
+  close
+}: {
+  searchParams: URLSearchParams;
+  navigate: (to: string) => void;
+  close: () => void;
+}) {
+  const { t } = useLingui();
+  const betweenParam = searchParams
+    .getAll("filter")
+    .find((f) => f.startsWith("createdAt:between:"));
+  const parts = betweenParam
+    ? betweenParam.slice("createdAt:between:".length).split("|")
+    : [];
+  const [from, setFrom] = useState(parts[0] ?? "");
+  const [to, setTo] = useState(parts[1] ?? "");
+
+  const buildParams = (addFilter: boolean) => {
+    const next = new URLSearchParams(searchParams);
+    const rest = next
+      .getAll("filter")
+      .filter((f) => !f.startsWith("createdAt:between:"));
+    next.delete("filter");
+    for (const f of rest) next.append("filter", f);
+    if (addFilter && (from || to))
+      next.append("filter", `createdAt:between:${from}|${to}`);
+    next.delete("offset");
+    navigate(`?${next.toString()}`);
+    close();
+  };
+
+  const apply = () => buildParams(true);
+  const clear = () => buildParams(false);
+
+  return (
+    <VStack spacing={2} className="p-2 min-w-[200px]">
+      <div className="space-y-1">
+        <p className="text-xs text-muted-foreground">{t`From`}</p>
+        <input
+          type="date"
+          value={from}
+          onChange={(e) => setFrom(e.target.value)}
+          className="w-full rounded-md border border-input bg-background px-2 py-1 text-sm"
+        />
+      </div>
+      <div className="space-y-1">
+        <p className="text-xs text-muted-foreground">{t`To`}</p>
+        <input
+          type="date"
+          value={to}
+          onChange={(e) => setTo(e.target.value)}
+          className="w-full rounded-md border border-input bg-background px-2 py-1 text-sm"
+        />
+      </div>
+      <HStack spacing={1}>
+        <Button size="sm" variant="primary" onClick={apply}>
+          <Trans>Apply</Trans>
+        </Button>
+        <Button size="sm" variant="ghost" onClick={clear}>
+          <Trans>Clear</Trans>
+        </Button>
+      </HStack>
+    </VStack>
+  );
+}
+
 const ProductionQuantitiesTable = memo(
   ({
     data,
     count,
     status,
-    year,
-    month,
-    onPeriodChange,
     employees,
     jobs = [],
     items = [],
+    operations = [],
     submitAction,
+    pendingCount,
     showCreateAction = false,
     title,
     embedded = false,
@@ -192,6 +277,8 @@ const ProductionQuantitiesTable = memo(
   }: ProductionQuantitiesTableProps) => {
     const { t } = useLingui();
     const { openOverlay } = useOverlay();
+    const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
     const configurableItemIdSet = useMemo(
       () => new Set(configurableItemIds),
       [configurableItemIds]
@@ -207,6 +294,9 @@ const ProductionQuantitiesTable = memo(
     const pendingRejectTargetRef = useRef<RejectCorrectionTarget | null>(null);
     const [rejectCorrection, setRejectCorrection] =
       useState<RejectCorrectionContext | null>(null);
+    const [pendingApprove, setPendingApprove] = useState<ApproveTarget | null>(
+      null
+    );
 
     const closeRejectCorrection = useCallback(() => {
       pendingRejectTargetRef.current = null;
@@ -229,6 +319,35 @@ const ProductionQuantitiesTable = memo(
       },
       [reportFetcher]
     );
+
+    const openApprove = useCallback((target: ApproveTarget) => {
+      setPendingApprove(target);
+    }, []);
+
+    const confirmApprove = useCallback(() => {
+      if (!pendingApprove) return;
+      const formData = new FormData();
+      formData.set("intent", "approve");
+      formData.set("approvalRequestId", pendingApprove.requestId);
+      fetcher.submit(formData, { method: "post", action: submitAction });
+      setPendingApprove(null);
+    }, [fetcher, pendingApprove, submitAction]);
+
+    const isPendingFilterActive = searchParams
+      .getAll("filter")
+      .includes(PENDING_FILTER);
+
+    const togglePendingFilter = useCallback(() => {
+      const next = new URLSearchParams(searchParams);
+      const existing = next
+        .getAll("filter")
+        .filter((f) => f !== PENDING_FILTER);
+      if (!isPendingFilterActive) existing.push(PENDING_FILTER);
+      next.delete("filter");
+      for (const f of existing) next.append("filter", f);
+      next.delete("offset");
+      navigate(`?${next.toString()}`);
+    }, [isPendingFilterActive, navigate, searchParams]);
 
     useEffect(() => {
       if (reportFetcher.state !== "idle") return;
@@ -376,10 +495,25 @@ const ProductionQuantitiesTable = memo(
         },
         {
           id: "operation",
+          accessorKey: "processId",
           header: t`Operation`,
           cell: ({ row }) => (
             <div className="text-sm">{getProcessName(row.original) ?? "—"}</div>
-          )
+          ),
+          meta: {
+            icon: <LuCog />,
+            pluralHeader: t`Operations`,
+            filter: operations.length
+              ? {
+                  type: "static" as const,
+                  options: operations.map((op) => ({
+                    value: op.id,
+                    label: op.label
+                  })),
+                  isArray: false
+                }
+              : undefined
+          }
         },
         {
           accessorKey: "quantity",
@@ -407,7 +541,23 @@ const ProductionQuantitiesTable = memo(
               canEdit={canEdit}
             />
           ),
-          meta: { icon: <LuCalendar /> }
+          meta: {
+            icon: <LuCalendar />,
+            filter: {
+              type: "custom" as const,
+              render: ({ close }) => (
+                <DateRangeFilter
+                  searchParams={searchParams}
+                  navigate={navigate}
+                  close={close}
+                />
+              ),
+              getLabel: (value) => {
+                const [from, to] = value.split("|");
+                return [from, to].filter(Boolean).join(" – ");
+              }
+            }
+          }
         },
         {
           id: "approvalStatus",
@@ -425,6 +575,7 @@ const ProductionQuantitiesTable = memo(
             return <Badge variant={variant}>{s}</Badge>;
           },
           meta: {
+            icon: <LuCircleCheck />,
             filter: {
               type: "static" as const,
               options: [
@@ -465,8 +616,8 @@ const ProductionQuantitiesTable = memo(
               <ProductionQuantityApprovalActions
                 requestId={requestId}
                 reportId={reportId}
-                submitAction={submitAction}
                 fetcher={fetcher}
+                onApprove={openApprove}
                 onReject={openRejectCorrection}
               />
             );
@@ -485,10 +636,13 @@ const ProductionQuantitiesTable = memo(
       fetcher,
       items,
       jobs,
+      navigate,
+      openApprove,
       openRejectCorrection,
+      operations,
       saveCreatedAt,
+      searchParams,
       status,
-      submitAction,
       t
     ]);
 
@@ -500,25 +654,7 @@ const ProductionQuantitiesTable = memo(
           columns={columns}
           table="productionPayApproval"
           primaryAction={
-            !embedded && (status === "pending" || status === "all") ? (
-              <HStack>
-                {showCreateAction ? (
-                  <Button
-                    type="button"
-                    variant="primary"
-                    leftIcon={<LuPlus />}
-                    onClick={openNewQuantity}
-                  >
-                    <Trans>Process Completion</Trans>
-                  </Button>
-                ) : null}
-                <SalaryPeriodPicker
-                  year={year}
-                  month={month}
-                  onChange={onPeriodChange}
-                />
-              </HStack>
-            ) : showCreateAction ? (
+            !embedded && showCreateAction ? (
               <Button
                 type="button"
                 variant="primary"
@@ -529,10 +665,62 @@ const ProductionQuantitiesTable = memo(
               </Button>
             ) : undefined
           }
+          filterActions={
+            !embedded ? (
+              <Button
+                type="button"
+                variant={isPendingFilterActive ? "primary" : "secondary"}
+                onClick={togglePendingFilter}
+              >
+                <Trans>Pending</Trans>
+                {pendingCount != null && pendingCount > 0 && (
+                  <span className="ml-1.5 inline-flex items-center justify-center rounded-full bg-destructive text-destructive-foreground text-[10px] font-semibold leading-none min-w-[1.25rem] h-5 px-1 pointer-events-none">
+                    {pendingCount}
+                  </span>
+                )}
+              </Button>
+            ) : undefined
+          }
           withSearch={!embedded}
           withPagination
           title={embedded ? undefined : (title ?? t`Process Completions`)}
         />
+        <Modal
+          open={pendingApprove != null}
+          onOpenChange={(open) => {
+            if (!open) setPendingApprove(null);
+          }}
+        >
+          <ModalContent>
+            <ModalHeader>
+              <ModalTitle>
+                <Trans>Confirm Approval</Trans>
+              </ModalTitle>
+            </ModalHeader>
+            <ModalBody>
+              <p className="text-sm text-muted-foreground">
+                <Trans>
+                  Are you sure you want to approve this production completion?
+                </Trans>
+              </p>
+            </ModalBody>
+            <ModalFooter>
+              <Button
+                variant="secondary"
+                onClick={() => setPendingApprove(null)}
+              >
+                <Trans>Cancel</Trans>
+              </Button>
+              <Button
+                variant="primary"
+                leftIcon={<LuCircleCheck />}
+                onClick={confirmApprove}
+              >
+                <Trans>Approve</Trans>
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
         {rejectCorrection ? (
           <ProductionQuantityDispositionDrawer
             report={rejectCorrection.report}

@@ -389,7 +389,7 @@ export async function getProductionQuantityReportFilterOptions(
   const { data, error } = await client
     .from("productionQuantityReport")
     .select(
-      `jobId, job:jobId(id, jobId, item:itemId(id, readableIdWithRevision, name))`
+      `jobId, job:jobId(id, jobId, item:itemId(id, readableIdWithRevision, name)), jobOperation!inner(id, process:processId(id, name))`
     )
     .eq("companyId", companyId)
     .in("id", [...activeReportIds]);
@@ -398,12 +398,14 @@ export async function getProductionQuantityReportFilterOptions(
     return {
       jobs: [] as ProductionQuantityReportFilterOption[],
       items: [] as ProductionQuantityReportFilterOption[],
+      operations: [] as ProductionQuantityReportFilterOption[],
       error
     };
   }
 
   const jobsMap = new Map<string, ProductionQuantityReportFilterOption>();
   const itemsMap = new Map<string, ProductionQuantityReportFilterOption>();
+  const operationsMap = new Map<string, ProductionQuantityReportFilterOption>();
 
   for (const row of data ?? []) {
     const job = Array.isArray(row.job) ? row.job[0] : row.job;
@@ -419,6 +421,15 @@ export async function getProductionQuantityReportFilterOptions(
         itemRow.id;
       itemsMap.set(itemRow.id, { id: itemRow.id, label });
     }
+    type JoRow = { process: { id: string; name: string } | Array<{ id: string; name: string }> | null } | null;
+    const joRaw = (row as Record<string, unknown>).jobOperation;
+    const jo: JoRow = (Array.isArray(joRaw) ? (joRaw[0] ?? null) : joRaw) as JoRow;
+    if (jo) {
+      const proc = Array.isArray(jo.process) ? jo.process[0] : jo.process;
+      if (proc?.id && proc.name) {
+        operationsMap.set(proc.id, { id: proc.id, label: proc.name });
+      }
+    }
   }
 
   const sortByLabel = (
@@ -429,6 +440,7 @@ export async function getProductionQuantityReportFilterOptions(
   return {
     jobs: [...jobsMap.values()].sort(sortByLabel),
     items: [...itemsMap.values()].sort(sortByLabel),
+    operations: [...operationsMap.values()].sort(sortByLabel),
     error: null
   };
 }
@@ -910,6 +922,27 @@ export async function getProductionQuantityReportPayRows(
     query = query.in("jobId", resolvedJobIds);
   }
 
+  const filterProcessIds = getFilterValuesFromFilters(
+    args?.filters,
+    "processId"
+  );
+  if (filterProcessIds) {
+    if (filterProcessIds.length === 1) {
+      query = query.eq("jobOperation.processId", filterProcessIds[0]);
+    } else {
+      query = query.in("jobOperation.processId", filterProcessIds);
+    }
+  }
+
+  const createdAtBetween = args?.filters?.find(
+    (f) => f.column === "createdAt" && f.operator === "between"
+  );
+  if (createdAtBetween?.value) {
+    const [from, to] = createdAtBetween.value.split("|");
+    if (from) query = query.gte("createdAt", `${from}T00:00:00.000Z`);
+    if (to) query = query.lte("createdAt", `${to}T23:59:59.999Z`);
+  }
+
   if (args?.search) {
     const term = args.search.trim();
     if (term) {
@@ -947,7 +980,9 @@ export async function getProductionQuantityReportPayRows(
       f.column !== "approvalStatus" &&
       f.column !== "employeeId" &&
       f.column !== "jobId" &&
-      f.column !== "itemId"
+      f.column !== "itemId" &&
+      f.column !== "processId" &&
+      !(f.column === "createdAt" && f.operator === "between")
   );
   if (args) {
     query = setGenericQueryFilters(query, { ...args, filters: dbFilters }, [
