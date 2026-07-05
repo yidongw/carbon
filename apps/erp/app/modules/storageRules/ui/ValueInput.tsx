@@ -203,6 +203,7 @@ function StorageUnitValuePickerImpl({
   value: string | undefined;
   onChange: (next: unknown) => void;
 }) {
+  const { t } = useLingui();
   const locations = useLocations() as LocationOption[];
 
   const [locationId, setLocationId] = useState<string | null>(null);
@@ -331,7 +332,7 @@ function StorageUnitValuePickerImpl({
               <span
                 role="button"
                 tabIndex={-1}
-                aria-label="Clear"
+                aria-label={t`Clear`}
                 onClick={(e) => {
                   e.stopPropagation();
                   onChange(undefined);
@@ -440,7 +441,7 @@ function StorageUnitValuePickerImpl({
           autoFocus
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search storage units…"
+          placeholder={t`Search storage units…`}
           className="h-9 rounded-none border-none border-b border-border bg-transparent px-3 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
         />
 

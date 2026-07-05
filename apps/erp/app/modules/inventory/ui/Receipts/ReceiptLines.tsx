@@ -340,6 +340,7 @@ function ReceiptFixedAssetLineItem({
   isReadOnly: boolean;
   className?: string;
 }) {
+  const { t } = useLingui();
   const fetcher = useFetcher();
   const [serialNumber, setSerialNumber] = useState(line.serialNumber ?? "");
 
@@ -374,7 +375,7 @@ function ReceiptFixedAssetLineItem({
         )}
       </VStack>
       <Input
-        placeholder="Serial Number"
+        placeholder={t`Serial Number`}
         value={serialNumber}
         isDisabled={isReadOnly}
         className="w-48"
@@ -501,7 +502,7 @@ function ReceiptLineItem({
               </div>
             </VStack>
             <VStack spacing={1}>
-              <label className="text-xs text-muted-foreground">Received</label>
+              <label className="text-xs text-muted-foreground">{t`Received`}</label>
 
               <NumberField
                 value={line.receivedQuantity ?? 0}
@@ -543,13 +544,13 @@ function ReceiptLineItem({
         <div className="flex flex-grow items-center justify-between gap-2 pl-4">
           <HStack spacing={4}>
             <VStack spacing={1} className="text-center items-center">
-              <label className="text-xs text-muted-foreground">Ordered</label>
+              <label className="text-xs text-muted-foreground">{t`Ordered`}</label>
               <span className="text-sm py-1.5">{line.orderQuantity ?? 0}</span>
             </VStack>
 
             <VStack spacing={1} className="text-center items-center">
               <label className="text-xs text-muted-foreground">
-                Outstanding
+                {t`Outstanding`}
               </label>
               <HStack className="justify-center">
                 <span className="text-sm py-1.5">
@@ -574,7 +575,7 @@ function ReceiptLineItem({
 
           <div className="flex flex-col items-start gap-1 min-w-[140px] text-sm">
             <label className="text-xs text-muted-foreground">
-              Storage Unit
+              {t`Storage Unit`}
             </label>
             <StorageUnit
               locationId={line.locationId}
@@ -830,7 +831,7 @@ function BatchForm({
   return (
     <div className="flex flex-col gap-6 w-full p-6 border rounded-lg">
       <div className="flex justify-between items-center gap-4">
-        <Heading size="h4">Batch Properties</Heading>
+        <Heading size="h4">{t`Batch Properties`}</Heading>
         <div className="flex items-center gap-2">
           {values.number.trim() !== "" && (
             <PrintButton
@@ -858,7 +859,7 @@ function BatchForm({
             size="md"
             onClick={propertiesDisclosure.onOpen}
           >
-            Edit Properties
+            {t`Edit Properties`}
           </Button>
         </div>
       </div>
@@ -872,7 +873,7 @@ function BatchForm({
           </label>
 
           <Input
-            placeholder={`Batch number`}
+            placeholder={t`Batch number`}
             isDisabled={isReadOnly}
             value={values.number}
             onChange={(e) => {
@@ -980,6 +981,7 @@ function SerialForm({
   ) => void;
   tracking: ItemTracking | undefined;
 }) {
+  const { t } = useLingui();
   const shelfLife = itemShelfLife?.data?.find(
     (sl) => sl.itemId === line.itemId
   );
@@ -1069,7 +1071,7 @@ function SerialForm({
   return (
     <div className="flex flex-col gap-6 p-6 border rounded-lg">
       <div className="flex justify-between items-center gap-6">
-        <Heading size="h4">Serial Numbers</Heading>
+        <Heading size="h4">{t`Serial Numbers`}</Heading>
         <div className="flex items-center gap-2">
           <PrintButton
             sourceDocument="Receipt"
@@ -1113,7 +1115,7 @@ function SerialForm({
             className="flex flex-col gap-1"
           >
             <Input
-              placeholder={`Serial ${index + 1}`}
+              placeholder={t`Serial ${index + 1}`}
               isDisabled={isReadOnly}
               value={serialNumber.number}
               onChange={(e) => {
@@ -1150,7 +1152,7 @@ function SerialForm({
                   }
                   const nextInput = e.currentTarget
                     .closest("div")
-                    ?.querySelector(`input[placeholder="Serial ${index + 2}"]`);
+                    ?.querySelector(`input[placeholder="${t`Serial ${index + 2}`}"]`);
                   if (nextInput) {
                     (nextInput as HTMLElement).focus();
                   }
@@ -1209,9 +1211,9 @@ function SplitReceiptLineModal({
           fetcher={fetcher}
         >
           <ModalHeader>
-            <ModalTitle>Split Receipt Line</ModalTitle>
+            <ModalTitle>{t`Split Receipt Line`}</ModalTitle>
             <ModalDescription>
-              Select the quantity that you'd like to split into a new line.
+              {t`Select the quantity that you'd like to split into a new line.`}
             </ModalDescription>
           </ModalHeader>
 
@@ -1236,9 +1238,9 @@ function SplitReceiptLineModal({
           </ModalBody>
           <ModalFooter>
             <Button variant="secondary" onClick={onClose}>
-              Cancel
+              {t`Cancel`}
             </Button>
-            <Submit>Split Line</Submit>
+            <Submit>{t`Split Line`}</Submit>
           </ModalFooter>
         </ValidatedForm>
       </ModalContent>

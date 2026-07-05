@@ -1,5 +1,5 @@
 import { Button, HStack } from "@carbon/react";
-import { Trans } from "@lingui/react/macro";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { LuHistory, LuPencil } from "react-icons/lu";
 import { useDateFormatter } from "~/hooks";
 import type { ConfigurationParameter } from "~/modules/items/types";
@@ -20,6 +20,7 @@ export function ProductionQuantityReportCard({
   onEdit: () => void;
   onHistory: () => void;
 }) {
+  const { t } = useLingui();
   const { formatDateTime } = useDateFormatter();
 
   const headerActions = (
@@ -29,7 +30,7 @@ export function ProductionQuantityReportCard({
           type="button"
           variant="ghost"
           size="sm"
-          aria-label="View history"
+          aria-label={t`View history`}
           onClick={onHistory}
           className="transition-transform active:scale-[0.96]"
         >
@@ -41,7 +42,7 @@ export function ProductionQuantityReportCard({
           type="button"
           variant="ghost"
           size="sm"
-          aria-label="Edit report"
+          aria-label={t`Edit report`}
           onClick={onEdit}
           className="transition-transform active:scale-[0.96]"
         >

@@ -52,6 +52,7 @@ import DeletePurchaseInvoiceLine from "./DeletePurchaseInvoiceLine";
 import PurchaseInvoiceLineForm from "./PurchaseInvoiceLineForm";
 
 export default function PurchaseInvoiceExplorer() {
+  const { t } = useLingui();
   const prettifyShortcut = usePrettifyShortcut();
   const { defaults } = useUser();
   const { invoiceId } = useParams();
@@ -196,7 +197,7 @@ export default function PurchaseInvoiceExplorer() {
               </Tooltip>
               {canReorder && lines.length > 0 && (
                 <IconButton
-                  aria-label="Reorder lines"
+                  aria-label={t`Reorder lines`}
                   icon={<LuSettings2 />}
                   variant="ghost"
                   className="text-muted-foreground"

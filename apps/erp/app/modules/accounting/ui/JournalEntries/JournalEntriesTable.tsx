@@ -257,7 +257,7 @@ const JournalEntriesTable = memo(
           defaultColumnVisibility={defaultColumnVisibility}
           primaryAction={primaryAction}
           renderContextMenu={renderContextMenu}
-          title="Journal Entries"
+          title={t`Journal Entries`}
         />
         {selectedEntry && selectedEntry.id && (
           <ConfirmDelete

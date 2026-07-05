@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/react/macro";
+import { Trans, useLingui } from "@lingui/react/macro";
 import type { ComponentPropsWithoutRef, ElementRef } from "react";
 import { forwardRef } from "react";
 import { LuSquareFunction } from "react-icons/lu";
@@ -22,6 +22,7 @@ export const FormLabel = forwardRef<
     ...rest
   } = props;
 
+  const { t } = useLingui();
   const field = useFormControlContext();
   const labelProps = field?.getLabelProps(rest, ref) ?? { ref, ...rest };
 
@@ -46,7 +47,7 @@ export const FormLabel = forwardRef<
           )}
           {onConfigure && (
             <LuSquareFunction
-              aria-label="Configure"
+              aria-label={t`Configure`}
               role="button"
               onClick={onConfigure}
               className={cn(

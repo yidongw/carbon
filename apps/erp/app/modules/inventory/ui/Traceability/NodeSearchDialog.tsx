@@ -7,6 +7,7 @@ import {
   CommandList,
   HStack
 } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import { useReactFlow } from "@xyflow/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useFetcher, useNavigate } from "react-router";
@@ -37,6 +38,7 @@ export function NodeSearchDialog({
   payload,
   onSelect
 }: Props) {
+  const { t } = useLingui();
   const { getNode, setCenter } = useReactFlow();
   const navigate = useNavigate();
   const fetcher = useFetcher<SearchResult>();
@@ -103,7 +105,7 @@ export function NodeSearchDialog({
   return (
     <CommandDialog open={open} onOpenChange={onOpenChange}>
       <CommandInput
-        placeholder="Search entities, activities, status, source doc, tracking ID..."
+        placeholder={t`Search entities, activities, status, source doc, tracking ID...`}
         value={query}
         onValueChange={setQuery}
       />
@@ -113,11 +115,11 @@ export function NodeSearchDialog({
         entities.length === 0 &&
         activities.length === 0 ? (
           <div className="py-6 text-center text-sm text-muted-foreground">
-            Searching...
+            {t`Searching...`}
           </div>
         ) : (
           <CommandEmpty className="py-6 text-center text-sm text-muted-foreground">
-            No matches
+            {t`No matches`}
           </CommandEmpty>
         )}
 
@@ -125,8 +127,8 @@ export function NodeSearchDialog({
           <CommandGroup
             heading={
               showLocal
-                ? `Entities in graph (${entities.length})`
-                : `Entities (${entities.length})`
+                ? t`Entities in graph (${entities.length})`
+                : t`Entities (${entities.length})`
             }
           >
             {entities.map((entity) => {
@@ -172,8 +174,8 @@ export function NodeSearchDialog({
           <CommandGroup
             heading={
               showLocal
-                ? `Activities in graph (${activities.length})`
-                : `Activities (${activities.length})`
+                ? t`Activities in graph (${activities.length})`
+                : t`Activities (${activities.length})`
             }
           >
             {activities.map((activity) => {
@@ -230,9 +232,10 @@ function StatusPill({ status }: { status: string | null | undefined }) {
 }
 
 function OpenBadge() {
+  const { t } = useLingui();
   return (
     <span className="text-[9px] uppercase tracking-wider font-medium text-muted-foreground border border-border rounded px-1 py-0.5 leading-none">
-      Open
+      {t`Open`}
     </span>
   );
 }

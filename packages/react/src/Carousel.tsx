@@ -3,6 +3,7 @@
 import useEmblaCarousel, {
   type UseEmblaCarouselType
 } from "embla-carousel-react";
+import { useLingui } from "@lingui/react/macro";
 
 import type { ComponentProps, HTMLAttributes, KeyboardEvent } from "react";
 import {
@@ -205,6 +206,7 @@ const CarouselPrevious = forwardRef<
   HTMLButtonElement,
   Omit<ComponentProps<typeof IconButton>, "aria-label" | "icon">
 >(({ className, variant = "secondary", size = "md", ...props }, ref) => {
+  const { t } = useLingui();
   const { scrollPrev, canScrollPrev } = useCarousel();
 
   return (
@@ -215,7 +217,7 @@ const CarouselPrevious = forwardRef<
       className={cn("h-8 w-8 rounded-full before:rounded-full", className)}
       disabled={!canScrollPrev}
       onClick={scrollPrev}
-      aria-label="Previous slide"
+      aria-label={t`Previous slide`}
       icon={<LuArrowLeft />}
       {...props}
     />
@@ -227,6 +229,7 @@ const CarouselNext = forwardRef<
   HTMLButtonElement,
   Omit<ComponentProps<typeof IconButton>, "aria-label" | "icon">
 >(({ className, variant = "secondary", size = "md", ...props }, ref) => {
+  const { t } = useLingui();
   const { scrollNext, canScrollNext } = useCarousel();
 
   return (
@@ -237,7 +240,7 @@ const CarouselNext = forwardRef<
       className={cn("h-8 w-8 rounded-full before:rounded-full", className)}
       disabled={!canScrollNext}
       onClick={scrollNext}
-      aria-label="Next slide"
+      aria-label={t`Next slide`}
       icon={<LuArrowRight />}
       {...props}
     />

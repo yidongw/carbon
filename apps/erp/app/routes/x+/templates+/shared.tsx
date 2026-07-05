@@ -17,6 +17,7 @@ import {
   useDisclosure,
   VStack
 } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import { LuArrowLeft, LuPencil, LuPlus, LuTrash2 } from "react-icons/lu";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
@@ -116,6 +117,7 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function SharedSectionsRoute() {
+  const { t } = useLingui();
   const { sections } = useLoaderData<typeof loader>();
   const permissions = usePermissions();
   const canEdit = permissions.can("update", "settings");
@@ -143,7 +145,7 @@ export default function SharedSectionsRoute() {
           <div className="flex items-center gap-3">
             <Link
               to={path.to.documentTemplates}
-              aria-label="Back to templates"
+              aria-label={t`Back to templates`}
               className="flex size-8 items-center justify-center rounded-md border text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             >
               <LuArrowLeft className="size-4" />
@@ -186,7 +188,7 @@ export default function SharedSectionsRoute() {
                   <IconButton
                     size="sm"
                     variant="ghost"
-                    aria-label="Edit section"
+                    aria-label={t`Edit section`}
                     icon={<LuPencil />}
                     onClick={() => openEdit(section)}
                   />
@@ -198,7 +200,7 @@ export default function SharedSectionsRoute() {
                         size="sm"
                         variant="ghost"
                         type="submit"
-                        aria-label="Delete section"
+                        aria-label={t`Delete section`}
                         icon={<LuTrash2 />}
                       />
                     </deleteFetcher.Form>

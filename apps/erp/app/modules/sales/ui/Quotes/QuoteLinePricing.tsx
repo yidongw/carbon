@@ -627,7 +627,7 @@ const QuoteLinePricing = ({
                     >
                       <NumberInput
                         size="sm"
-                        placeholder="Custom %"
+                        placeholder={t`Custom %`}
                         className="w-32 h-7"
                       />
                     </NumberField>

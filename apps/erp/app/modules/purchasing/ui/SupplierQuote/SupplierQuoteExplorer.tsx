@@ -48,6 +48,7 @@ import DeleteSupplierQuoteLine from "./DeleteSupplierQuoteLine";
 import SupplierQuoteLineForm from "./SupplierQuoteLineForm";
 
 export default function SupplierQuoteExplorer() {
+  const { t } = useLingui();
   const prettifyShortcut = usePrettifyShortcut();
   const { id } = useParams();
   if (!id) throw new Error("Could not find id");
@@ -185,7 +186,7 @@ export default function SupplierQuoteExplorer() {
               </Tooltip>
               {canReorder && lines.length > 0 && (
                 <IconButton
-                  aria-label="Reorder lines"
+                  aria-label={t`Reorder lines`}
                   icon={<LuSettings2 />}
                   variant="ghost"
                   className="text-muted-foreground"

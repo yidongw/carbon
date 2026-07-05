@@ -1,5 +1,5 @@
 import { ToggleGroup, ToggleGroupItem, useLocalStorage } from "@carbon/react";
-import { Trans } from "@lingui/react/macro";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { useCallback } from "react";
 import { LuLayoutGrid, LuList } from "react-icons/lu";
 
@@ -37,6 +37,7 @@ type FilesViewModeToggleProps = {
 };
 
 const FilesViewModeToggle = ({ value, onChange }: FilesViewModeToggleProps) => {
+  const { t } = useLingui();
   return (
     <ToggleGroup
       type="single"
@@ -48,13 +49,13 @@ const FilesViewModeToggle = ({ value, onChange }: FilesViewModeToggleProps) => {
       }}
       size="sm"
     >
-      <ToggleGroupItem value="list" aria-label="List view">
+      <ToggleGroupItem value="list" aria-label={t`List view`}>
         <LuList className="h-4 w-4" />
         <span className="sr-only">
           <Trans>List</Trans>
         </span>
       </ToggleGroupItem>
-      <ToggleGroupItem value="icons" aria-label="Icon view">
+      <ToggleGroupItem value="icons" aria-label={t`Icon view`}>
         <LuLayoutGrid className="h-4 w-4" />
         <span className="sr-only">
           <Trans>Icons</Trans>

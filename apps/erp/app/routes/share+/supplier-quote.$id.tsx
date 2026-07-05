@@ -979,12 +979,12 @@ const Quote = ({
                   <Input
                     name="digitalSupplierQuoteSubmittedBy"
                     label={t`Your Name`}
-                    placeholder="Enter your name"
+                    placeholder={t`Enter your name`}
                   />
                   <Input
                     name="digitalSupplierQuoteSubmittedByEmail"
                     label={t`Your Email`}
-                    placeholder="Enter your email"
+                    placeholder={t`Enter your email`}
                   />
                 </div>
               </ModalBody>
@@ -1039,12 +1039,12 @@ const Quote = ({
                   <Input
                     name="digitalSupplierQuoteSubmittedBy"
                     label={t`Your Name`}
-                    placeholder="Enter your name"
+                    placeholder={t`Enter your name`}
                   />
                   <Input
                     name="digitalSupplierQuoteSubmittedByEmail"
                     label={t`Your Email`}
-                    placeholder="Enter your email"
+                    placeholder={t`Enter your email`}
                   />
                 </div>
               </ModalBody>

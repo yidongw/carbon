@@ -345,11 +345,11 @@ export function ModelViewer({
               <button
                 type="button"
                 onClick={() => setIsActive(true)}
-                aria-label="Click to interact with 3D model"
+                aria-label={t`Click to interact with 3D model`}
                 className="absolute inset-0 flex items-end justify-center pb-4 cursor-pointer focus:outline-none group"
               >
                 <span className="text-xs text-muted-foreground bg-background/80 backdrop-blur-sm px-3 py-1 rounded-full border border-border shadow-sm transition-opacity opacity-70 group-hover:opacity-100">
-                  Click to interact
+                  {t`Click to interact`}
                 </span>
               </button>
             )}
@@ -387,23 +387,23 @@ export function ModelViewer({
                   <Tabs defaultValue="dimensions" className="w-full gap-0">
                     <TabsList className="grid w-full grid-cols-2 mb-1">
                       <TabsTrigger className="text-xs" value="dimensions">
-                        Dimensions
+                        {t`Dimensions`}
                       </TabsTrigger>
                       <TabsTrigger className="text-xs" value="properties">
-                        Properties
+                        {t`Properties`}
                       </TabsTrigger>
                     </TabsList>
                     <TabsContent value="properties">
                       <div className="flex flex-col gap-1 pt-1 p-2 items-start justify-start font-mono">
                         <div>
-                          Surface Area:{" "}
+                          {t`Surface Area:`}{" "}
                           {formatter.format(
                             getDisplayValue(modelInfo.surfaceArea, "area")
                           )}{" "}
                           {getUnit("area")}
                         </div>
                         <div>
-                          Volume:{" "}
+                          {t`Volume:`}{" "}
                           {formatter.format(
                             getDisplayValue(modelInfo.volume, "volume")
                           )}{" "}

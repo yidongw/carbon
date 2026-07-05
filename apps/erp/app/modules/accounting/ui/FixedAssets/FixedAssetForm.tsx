@@ -11,6 +11,7 @@ import {
   ModalDrawerTitle,
   VStack
 } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import { useFetcher } from "react-router";
 import type { z } from "zod";
@@ -40,6 +41,7 @@ type FixedAssetFormProps = {
 };
 
 const FixedAssetForm = ({ initialValues, onClose }: FixedAssetFormProps) => {
+  const { t } = useLingui();
   const permissions = usePermissions();
   const settings = useSettings();
   const taxDepreciationEnabled =
@@ -191,7 +193,7 @@ const FixedAssetForm = ({ initialValues, onClose }: FixedAssetFormProps) => {
                     <SelectControlled
                       name="taxDepreciationMethod"
                       label="Tax Depreciation Method"
-                      placeholder="None"
+                      placeholder={t`None`}
                       options={taxDepreciationMethods.map((m) => ({
                         label: m,
                         value: m

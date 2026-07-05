@@ -92,7 +92,7 @@ const IntegrationsList = ({
             }
           >
             <SelectTrigger size="sm">
-              <SelectValue placeholder="Select a category" />
+              <SelectValue placeholder={t`Select a category`} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All</SelectItem>
@@ -137,8 +137,8 @@ const IntegrationsList = ({
               </UpgradeOverlayTitle>
               <UpgradeOverlayDescription>
                 <Trans>
-                  Connect Carbon to your accounting, project management, and CAD
-                  tools and much more.
+                  Connect to your accounting, project management, and CAD tools
+                  and much more.
                 </Trans>
               </UpgradeOverlayDescription>
             </UpgradeOverlayContent>

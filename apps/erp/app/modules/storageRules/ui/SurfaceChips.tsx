@@ -5,6 +5,7 @@ import {
   TRANSACTION_SURFACES,
   type TransactionSurface
 } from "@carbon/utils";
+import { useLingui } from "@lingui/react/macro";
 import {
   LuArrowRightLeft,
   LuPackage,
@@ -68,6 +69,7 @@ export default function SurfaceChips({
   targetType,
   className
 }: SurfaceChipsProps) {
+  const { t } = useLingui();
   // Scope rendered set to the targetType's valid surfaces; fall back to all
   // when no targetType is supplied (callers that haven't been updated yet).
   const universe = targetType
@@ -80,7 +82,7 @@ export default function SurfaceChips({
     <div
       className={cn("flex items-center gap-1 text-muted-foreground", className)}
       role="group"
-      aria-label="Transaction surfaces"
+      aria-label={t`Transaction surfaces`}
     >
       {universe.map((s) => {
         const meta = SURFACE_VISUALS[s];

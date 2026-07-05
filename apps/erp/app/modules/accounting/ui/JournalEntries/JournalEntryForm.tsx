@@ -18,6 +18,7 @@ import {
   useDisclosure,
   VStack
 } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import { useCallback, useMemo, useState } from "react";
 import {
   LuCheckCheck,
@@ -93,6 +94,7 @@ const JournalEntryForm = ({
   lineDimensions,
   isDisabled = false
 }: JournalEntryFormProps) => {
+  const { t } = useLingui();
   const permissions = usePermissions();
   const navigate = useNavigate();
   const deleteModal = useDisclosure();
@@ -187,7 +189,7 @@ const JournalEntryForm = ({
                   <DropdownMenuTrigger asChild>
                     <IconButton
                       type="button"
-                      aria-label="More options"
+                      aria-label={t`More options`}
                       icon={<LuEllipsisVertical />}
                       variant="secondary"
                       size="sm"

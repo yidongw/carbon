@@ -455,7 +455,7 @@ function KanbanSchedule() {
       <HStack className="px-4 py-2 justify-between bg-card border-b border-border">
         <HStack>
           <ScheduleNavigation />
-          <SearchFilter param="search" size="sm" placeholder="Search" />
+          <SearchFilter param="search" size="sm" placeholder={t`Search`} />
           <Filter filters={filters} />
         </HStack>
 

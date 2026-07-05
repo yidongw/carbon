@@ -18,6 +18,7 @@ import {
   useDisclosure
 } from "@carbon/react";
 import { formatDate } from "@carbon/utils";
+import { useLingui } from "@lingui/react/macro";
 import { LuEllipsisVertical, LuRepeat, LuTrash } from "react-icons/lu";
 import type { LoaderFunctionArgs } from "react-router";
 import {
@@ -72,6 +73,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 }
 
 export default function DepreciationRunDetailRoute() {
+  const { t } = useLingui();
   const { depreciationRunId } = useParams();
   const { run, lines } = useLoaderData<typeof loader>();
   const settings = useSettings();
@@ -114,7 +116,7 @@ export default function DepreciationRunDetailRoute() {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <IconButton
-                      aria-label="More options"
+                      aria-label={t`More options`}
                       icon={<LuEllipsisVertical />}
                       variant="secondary"
                       size="sm"

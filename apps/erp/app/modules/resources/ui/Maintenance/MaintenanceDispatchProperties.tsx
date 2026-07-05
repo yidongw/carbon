@@ -133,7 +133,7 @@ const MaintenanceDispatchProperties = () => {
               <TooltipTrigger asChild>
                 <Button
                   variant="ghost"
-                  aria-label="Link"
+                  aria-label={t`Link`}
                   size="sm"
                   className="p-1"
                   onClick={() =>
@@ -156,7 +156,7 @@ const MaintenanceDispatchProperties = () => {
               <TooltipTrigger asChild>
                 <Button
                   variant="ghost"
-                  aria-label="Copy ID"
+                  aria-label={t`Copy ID`}
                   size="sm"
                   className="p-1"
                   onClick={() => copyToClipboard(routeData?.dispatch?.id ?? "")}
@@ -174,7 +174,7 @@ const MaintenanceDispatchProperties = () => {
               <TooltipTrigger asChild>
                 <Button
                   variant="ghost"
-                  aria-label="Copy"
+                  aria-label={t`Copy`}
                   size="sm"
                   className="p-1"
                   onClick={() =>

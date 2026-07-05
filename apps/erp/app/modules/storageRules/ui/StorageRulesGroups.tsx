@@ -24,6 +24,7 @@ import {
   VStack
 } from "@carbon/react";
 import type { TargetType, TransactionSurface } from "@carbon/utils";
+import { useLingui } from "@lingui/react/macro";
 import { memo, useCallback, useMemo } from "react";
 import {
   LuEllipsisVertical,
@@ -145,6 +146,7 @@ const RuleSectionCard = memo(
 RuleSectionCard.displayName = "RuleSectionCard";
 
 const StorageRulesGroups = memo(({ rules }: StorageRulesGroupsProps) => {
+  const { t } = useLingui();
   const permissions = usePermissions();
   const canCreate = permissions.can("create", "inventory");
 
@@ -163,20 +165,19 @@ const StorageRulesGroups = memo(({ rules }: StorageRulesGroupsProps) => {
       >
         <div className="flex flex-col gap-1 w-full">
           <Heading size="h3" className="tracking-tight text-balance">
-            Storage Rules
+            {t`Storage Rules`}
           </Heading>
           <p className="max-w-[72ch] text-sm text-muted-foreground text-pretty">
-            Predicate-driven guards that fire on inventory transactions. Block
-            with errors or warn with acknowledge-to-continue.
+            {t`Predicate-driven guards that fire on inventory transactions. Block with errors or warn with acknowledge-to-continue.`}
           </p>
         </div>
 
         <RuleSectionCard
-          title="Storage rules"
-          description="Fire on receipts, shipments, transfers, inventory adjustments and bin moves (place/pick)."
+          title={t`Storage rules`}
+          description={t`Fire on receipts, shipments, transfers, inventory adjustments and bin moves (place/pick).`}
           icon={<LuPackage className="size-4 text-muted-foreground" />}
           newRuleHref={`${path.to.newStorageRule}?targetType=item`}
-          newRuleLabel="Storage Rule"
+          newRuleLabel={t`Storage Rule`}
           canCreate={canCreate}
           rules={itemRules}
         />
@@ -189,6 +190,7 @@ StorageRulesGroups.displayName = "StorageRulesGroups";
 export default StorageRulesGroups;
 
 const StorageRuleCard = memo(({ rule }: { rule: RuleListItem }) => {
+  const { t } = useLingui();
   const [params] = useUrlParams();
   const navigate = useNavigate();
   const permissions = usePermissions();
@@ -238,7 +240,7 @@ const StorageRuleCard = memo(({ rule }: { rule: RuleListItem }) => {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <IconButton
-                      aria-label="More options"
+                      aria-label={t`More options`}
                       icon={<LuEllipsisVertical />}
                       variant="ghost"
                       onClick={(e) => e.stopPropagation()}

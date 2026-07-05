@@ -10,6 +10,7 @@ import {
   HStack
 } from "@carbon/react";
 import { isEoriCountry } from "@carbon/utils";
+import { useLingui } from "@lingui/react/macro";
 import { nanoid } from "nanoid";
 import { useCallback, useState } from "react";
 import { LuPaperclip } from "react-icons/lu";
@@ -28,6 +29,7 @@ type CustomerTaxFormProps = {
 };
 
 const CustomerTaxForm = ({ initialValues }: CustomerTaxFormProps) => {
+  const { t } = useLingui();
   const taxExemptionReasonOptions = taxExemptionReasons.map((reason) => ({
     label: <Enumerable value={reason} />,
     value: reason
@@ -110,7 +112,7 @@ const CustomerTaxForm = ({ initialValues }: CustomerTaxFormProps) => {
                   name="taxExemptionReason"
                   label="Exemption Reason"
                   options={taxExemptionReasonOptions}
-                  placeholder="Select Reason"
+                  placeholder={t`Select Reason`}
                 />
                 <Input
                   name="taxExemptionCertificateNumber"

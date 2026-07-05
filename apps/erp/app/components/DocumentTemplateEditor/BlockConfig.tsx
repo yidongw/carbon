@@ -31,6 +31,7 @@ import {
   SelectValue
 } from "@carbon/react";
 import { Editor } from "@carbon/react/Editor";
+import { useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import {
   LuExternalLink,
@@ -365,6 +366,7 @@ function CustomFieldConfig({ block }: { block: CustomFieldBlock }) {
 }
 
 function SummaryConfig({ block }: { block: SummaryBlock }) {
+  const { t } = useLingui();
   const { updateBlock } = useDocumentTemplate();
   const opts = { ...DEFAULT_SUMMARY_OPTIONS, ...block.options };
 
@@ -374,7 +376,7 @@ function SummaryConfig({ block }: { block: SummaryBlock }) {
       <Input
         id="tax-label"
         value={opts.taxLabel}
-        placeholder="Taxes"
+        placeholder={t`Taxes`}
         onChange={(e) =>
           updateBlock(block.id, {
             options: { ...opts, taxLabel: e.target.value }
@@ -578,6 +580,7 @@ function TermsConfig({ block }: { block: TermsBlock }) {
 }
 
 function KeyValueConfig({ block }: { block: KeyValueBlock }) {
+  const { t } = useLingui();
   const { updateBlock } = useDocumentTemplate();
   const rows = block.rows ?? [];
 
@@ -599,7 +602,7 @@ function KeyValueConfig({ block }: { block: KeyValueBlock }) {
         {rows.map((row, index) => (
           <div key={index} className="flex items-center gap-2">
             <Input
-              placeholder="Label"
+              placeholder={t`Label`}
               value={row.label}
               onChange={(e) =>
                 setRows(
@@ -610,7 +613,7 @@ function KeyValueConfig({ block }: { block: KeyValueBlock }) {
               }
             />
             <Input
-              placeholder="Value"
+              placeholder={t`Value`}
               value={row.value}
               onChange={(e) =>
                 setRows(
@@ -633,7 +636,7 @@ function KeyValueConfig({ block }: { block: KeyValueBlock }) {
             <IconButton
               size="sm"
               variant="ghost"
-              aria-label="Remove row"
+              aria-label={t`Remove row`}
               icon={<LuTrash2 />}
               onClick={() => setRows(rows.filter((_, i) => i !== index))}
             />

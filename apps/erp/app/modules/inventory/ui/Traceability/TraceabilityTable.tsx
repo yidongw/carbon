@@ -1,4 +1,5 @@
 import { Badge, cn, HStack } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { LuChevronDown, LuChevronRight, LuExternalLink } from "react-icons/lu";
 import { Link } from "react-router";
@@ -229,6 +230,7 @@ function TreeRow({
   onSelect: () => void;
   registerRef?: (el: HTMLButtonElement | null) => void;
 }) {
+  const { t } = useLingui();
   if (row.kind === "entity") {
     if (!entity) return null;
     const headline = entityHeadline(entity, 12);
@@ -280,7 +282,7 @@ function TreeRow({
             to={href}
             onClick={(e) => e.stopPropagation()}
             className="text-muted-foreground hover:text-foreground shrink-0"
-            aria-label="Open source document"
+            aria-label={t`Open source document`}
           >
             <LuExternalLink className="w-3.5 h-3.5" />
           </Link>
@@ -351,7 +353,7 @@ function TreeRow({
           to={href}
           onClick={(e) => e.stopPropagation()}
           className="text-muted-foreground hover:text-foreground shrink-0"
-          aria-label="Open source document"
+          aria-label={t`Open source document`}
         >
           <LuExternalLink className="w-3.5 h-3.5" />
         </Link>

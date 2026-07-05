@@ -6,6 +6,7 @@ import {
   PopoverTrigger,
   VStack
 } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import Dagre from "@dagrejs/dagre";
 import {
   Background,
@@ -223,6 +224,7 @@ export function JobDag(props: Props) {
 }
 
 function DagLegend() {
+  const { t } = useLingui();
   const entries = [
     { label: "Done", className: "border-green-500 bg-green-500" },
     { label: "In Progress", className: "border-blue-500 bg-blue-500" },
@@ -239,7 +241,7 @@ function DagLegend() {
         <PopoverTrigger asChild>
           <button
             type="button"
-            aria-label="Show legend"
+            aria-label={t`Show legend`}
             className={cn(
               "h-8 w-8 rounded-md flex items-center justify-center transition-colors",
               "border border-border bg-card/90 backdrop-blur shadow-sm",

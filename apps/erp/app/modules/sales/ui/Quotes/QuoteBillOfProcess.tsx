@@ -1718,7 +1718,7 @@ function ParametersListItem({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <IconButton
-                  aria-label="Open menu"
+                  aria-label={t`Open menu`}
                   icon={<LuEllipsisVertical />}
                   variant="ghost"
                 />
@@ -2326,7 +2326,7 @@ function ToolsListItem({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <IconButton
-                  aria-label="Open menu"
+                  aria-label={t`Open menu`}
                   icon={<LuEllipsisVertical />}
                   variant="ghost"
                 />

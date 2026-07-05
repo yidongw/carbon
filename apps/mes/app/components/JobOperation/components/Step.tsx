@@ -129,7 +129,7 @@ export function StepsListItem({
               {type !== "Task" &&
                 (compact ? (
                   <IconButton
-                    aria-label="Update step"
+                    aria-label={t`Update step`}
                     variant="secondary"
                     size="lg"
                     icon={<LuCircleCheck />}
@@ -158,7 +158,7 @@ export function StepsListItem({
                   </Button>
                 ))}
               <IconButton
-                aria-label="Delete step"
+                aria-label={t`Delete step`}
                 variant="secondary"
                 size="lg"
                 icon={<LuTrash />}
@@ -174,7 +174,7 @@ export function StepsListItem({
               <input type="hidden" name="booleanValue" value="true" />
               {compact ? (
                 <IconButton
-                  aria-label="Record step"
+                  aria-label={t`Record step`}
                   variant="secondary"
                   size="lg"
                   icon={<LuCircleCheck />}
@@ -197,7 +197,7 @@ export function StepsListItem({
             </fetcher.Form>
           ) : compact ? (
             <IconButton
-              aria-label="Record step"
+              aria-label={t`Record step`}
               variant="secondary"
               size="lg"
               icon={<LuCircleCheck />}

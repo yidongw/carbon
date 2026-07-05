@@ -129,6 +129,7 @@ export function WorkTypeToggle({
   onChange: (type: string) => void;
   className?: string;
 }) {
+  const { t } = useLingui();
   const count = useMemo(() => {
     let count = 0;
     if (operation.setupDuration > 0) {
@@ -166,7 +167,7 @@ export function WorkTypeToggle({
           className="flex flex-col items-center relative justify-center text-center h-14 w-full"
           value="Setup"
           size="lg"
-          aria-label="Toggle setup"
+          aria-label={t`Toggle setup`}
         >
           <LuTimer className="size-6 pt-1" />
           <span className="text-xxs">
@@ -182,7 +183,7 @@ export function WorkTypeToggle({
           className="flex flex-col items-center relative justify-center text-center h-14 w-full"
           value="Labor"
           size="lg"
-          aria-label="Toggle labor"
+          aria-label={t`Toggle labor`}
         >
           <LuHardHat className="size-6 pt-1" />
           <span className="text-xxs">
@@ -198,7 +199,7 @@ export function WorkTypeToggle({
           className="flex flex-col items-center relative justify-center text-center h-14 w-full"
           value="Machine"
           size="lg"
-          aria-label="Toggle machine"
+          aria-label={t`Toggle machine`}
         >
           <LuHammer className="size-6 pt-1" />
           <span className="text-xxs">

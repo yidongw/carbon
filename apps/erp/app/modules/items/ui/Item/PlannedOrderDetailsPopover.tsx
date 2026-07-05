@@ -6,7 +6,7 @@ import {
   TooltipContent,
   TooltipTrigger
 } from "@carbon/react";
-import { Trans } from "@lingui/react/macro";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { useNumberFormatter } from "@react-aria/i18n";
 import type { ReactNode } from "react";
 import { LuInfo } from "react-icons/lu";
@@ -28,6 +28,7 @@ export function PlannedOrderDetailsPopover({
   conversionFactor,
   children
 }: Props) {
+  const { t } = useLingui();
   const numberFormatter = useNumberFormatter();
   const { formatDate } = useDateFormatter();
   const currencyFormatter = useCurrencyFormatter();
@@ -91,7 +92,7 @@ export function PlannedOrderDetailsPopover({
                       <TooltipTrigger tabIndex={-1}>
                         <LuInfo
                           className="size-3 cursor-help"
-                          aria-label="info"
+                          aria-label={t`info`}
                         />
                       </TooltipTrigger>
                       <TooltipContent className="max-w-xs">
@@ -114,7 +115,7 @@ export function PlannedOrderDetailsPopover({
                       <TooltipTrigger tabIndex={-1}>
                         <LuInfo
                           className="size-3 cursor-help"
-                          aria-label="info"
+                          aria-label={t`info`}
                         />
                       </TooltipTrigger>
                       <TooltipContent className="max-w-xs">

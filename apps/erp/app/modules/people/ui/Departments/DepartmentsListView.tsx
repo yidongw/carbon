@@ -5,6 +5,7 @@ import {
   DropdownMenuTrigger,
   IconButton
 } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import {
   LuBuilding,
   LuChevronRight,
@@ -37,6 +38,7 @@ function DepartmentsRow({
   onDelete: (id: string) => void;
   onAddChild: (parentId: string) => void;
 }) {
+  const { t } = useLingui();
   const children = departments.filter(
     (d) => d.parentDepartmentId === department.id
   );
@@ -69,7 +71,7 @@ function DepartmentsRow({
               <IconButton
                 variant="ghost"
                 size="sm"
-                aria-label="Actions"
+                aria-label={t`Actions`}
                 icon={<LuEllipsisVertical />}
               />
             </DropdownMenuTrigger>

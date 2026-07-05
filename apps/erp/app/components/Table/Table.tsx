@@ -252,7 +252,7 @@ const Table = <T extends object>({
   renderExpandedRow,
   getRowHref
 }: TableProps<T>) => {
-  const { i18n } = useLingui();
+  const { i18n, t } = useLingui();
   const tableContainerRef = useRef<HTMLDivElement>(null);
 
   const translateLabel = useCallback((value: string) => i18n._(value), [i18n]);
@@ -1123,12 +1123,12 @@ const Table = <T extends object>({
                                       {sorted ? (
                                         sorted === -1 ? (
                                           <LuArrowDown
-                                            aria-label="sorted descending"
+                                            aria-label={t`sorted descending`}
                                             className="text-primary"
                                           />
                                         ) : (
                                           <LuArrowUp
-                                            aria-label="sorted ascending"
+                                            aria-label={t`sorted ascending`}
                                             className="text-primary"
                                           />
                                         )

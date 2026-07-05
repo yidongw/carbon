@@ -203,6 +203,7 @@ function PickedBadge({
   quantityPicked?: number | null;
   quantityToPick?: number | null;
 }) {
+  const { t } = useLingui();
   const picked = Number(quantityPicked ?? 0);
   if (picked <= 0) return null;
   const toPick = Number(quantityToPick ?? 0);
@@ -211,7 +212,7 @@ function PickedBadge({
     <Badge
       variant={isFullyPicked ? "green" : "orange"}
       className="gap-1 shrink-0"
-      title="Quantity picked to lineside"
+      title={t`Quantity picked to lineside`}
     >
       <LuPackageCheck className="size-3" />
       {isFullyPicked ? <Trans>Picked</Trans> : `${picked}/${toPick}`}
@@ -542,7 +543,7 @@ export const JobOperation = ({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <IconButton
-                  aria-label="More options"
+                  aria-label={t`More options`}
                   variant="ghost"
                   icon={<LuEllipsisVertical />}
                 />
@@ -848,7 +849,7 @@ export const JobOperation = ({
                                               !parentIsSerial && (
                                                 <>
                                                   <IconButton
-                                                    aria-label="Previous record set"
+                                                    aria-label={t`Previous record set`}
                                                     variant="secondary"
                                                     icon={<LuChevronLeft />}
                                                     onClick={() => {
@@ -866,7 +867,7 @@ export const JobOperation = ({
                                                     </Trans>
                                                   </span>
                                                   <IconButton
-                                                    aria-label="Next record set"
+                                                    aria-label={t`Next record set`}
                                                     variant="secondary"
                                                     icon={<LuChevronRight />}
                                                     onClick={() => {
@@ -883,7 +884,7 @@ export const JobOperation = ({
                                             {canCreateNewRecord &&
                                               !showNavigation && (
                                                 <Button
-                                                  aria-label="Add new record set"
+                                                  aria-label={t`Add new record set`}
                                                   variant="secondary"
                                                   leftIcon={<LuCirclePlus />}
                                                   onClick={() => {
@@ -1021,7 +1022,7 @@ export const JobOperation = ({
                     <Trans>Materials</Trans>
                   </Heading>
                   <Button
-                    aria-label="Issue Material"
+                    aria-label={t`Issue Material`}
                     leftIcon={<LuGitBranchPlus />}
                     variant="secondary"
                     size="lg"
@@ -1158,7 +1159,7 @@ export const JobOperation = ({
                                               <Badge
                                                 variant="red"
                                                 className="gap-1 shrink-0"
-                                                title="A consumed batch or serial is now past its expiry date."
+                                                title={t`A consumed batch or serial is now past its expiry date.`}
                                               >
                                                 <LuTriangleAlert className="size-3" />
                                                 <Trans>Consumed expired</Trans>
@@ -1262,7 +1263,7 @@ export const JobOperation = ({
                                             material.requiresSerialTracking ===
                                               false && (
                                               <IconButton
-                                                aria-label="Issue Material"
+                                                aria-label={t`Issue Material`}
                                                 variant="ghost"
                                                 icon={<LuGitBranchPlus />}
                                                 className="h-8 w-8"
@@ -1438,7 +1439,7 @@ export const JobOperation = ({
                                                   kittedChild.requiresSerialTracking ===
                                                     false && (
                                                     <IconButton
-                                                      aria-label="Issue Material"
+                                                      aria-label={t`Issue Material`}
                                                       variant="ghost"
                                                       icon={<LuGitBranchPlus />}
                                                       className="h-8 w-8"
@@ -1455,7 +1456,7 @@ export const JobOperation = ({
                                                 {(kittedChild.requiresBatchTracking ||
                                                   kittedChild.requiresSerialTracking) && (
                                                   <IconButton
-                                                    aria-label="Issue Material"
+                                                    aria-label={t`Issue Material`}
                                                     variant="secondary"
                                                     icon={<LuQrCode />}
                                                     className="h-8 w-8"
@@ -1516,7 +1517,7 @@ export const JobOperation = ({
                   </Heading>
                   <HStack>
                     <Button
-                      aria-label="Record Pickup"
+                      aria-label={t`Record Pickup`}
                       leftIcon={<LuHardHat />}
                       variant="secondary"
                       onClick={pickupModal.onOpen}
@@ -1524,7 +1525,7 @@ export const JobOperation = ({
                       <Trans>Record Pickup</Trans>
                     </Button>
                     <Button
-                      aria-label="Record Quantity"
+                      aria-label={t`Record Quantity`}
                       leftIcon={<LuCirclePlus />}
                       variant="secondary"
                       onClick={completeModal.onOpen}
@@ -1923,7 +1924,7 @@ export const JobOperation = ({
                                       <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
                                           <IconButton
-                                            aria-label="More"
+                                            aria-label={t`More`}
                                             icon={<LuEllipsisVertical />}
                                             variant="secondary"
                                           />
@@ -1999,7 +2000,7 @@ export const JobOperation = ({
                                         <DropdownMenu>
                                           <DropdownMenuTrigger asChild>
                                             <IconButton
-                                              aria-label="More"
+                                              aria-label={t`More`}
                                               icon={<LuEllipsisVertical />}
                                               variant="secondary"
                                             />
@@ -2011,7 +2012,7 @@ export const JobOperation = ({
                                               <DropdownMenuIcon
                                                 icon={<LuDownload />}
                                               />
-                                              Download
+                                              <Trans>Download</Trans>
                                             </DropdownMenuItem>
                                           </DropdownMenuContent>
                                         </DropdownMenu>
@@ -2227,7 +2228,7 @@ export const JobOperation = ({
                                       {showNavigation && !parentIsSerial && (
                                         <>
                                           <IconButton
-                                            aria-label="Previous record set"
+                                            aria-label={t`Previous record set`}
                                             variant="secondary"
                                             icon={<LuChevronLeft />}
                                             onClick={() => {
@@ -2241,7 +2242,7 @@ export const JobOperation = ({
                                             </Trans>
                                           </span>
                                           <IconButton
-                                            aria-label="Next record set"
+                                            aria-label={t`Next record set`}
                                             variant="secondary"
                                             icon={<LuChevronRight />}
                                             onClick={() => {
@@ -2254,7 +2255,7 @@ export const JobOperation = ({
                                       {canCreateNewRecord &&
                                         !showNavigation && (
                                           <Button
-                                            aria-label="Add new record set"
+                                            aria-label={t`Add new record set`}
                                             variant="secondary"
                                             leftIcon={<LuCirclePlus />}
                                             onClick={() => {
@@ -2684,7 +2685,7 @@ export const JobOperation = ({
                     </span>
                     {inProgressQuantity > 0 && (
                       <span className="text-xxs text-yellow-600">
-                        +{inProgressQuantity} picked up, not yet produced
+                        {t`+${inProgressQuantity} picked up, not yet produced`}
                       </span>
                     )}
                     <BarProgress
@@ -2942,10 +2943,11 @@ export const JobOperation = ({
 };
 
 function PickupDeleteButton({ pickupId }: { pickupId: string }) {
+  const { t } = useLingui();
   const fetcher = useFetcher();
   return (
     <IconButton
-      aria-label="Delete process pickup"
+      aria-label={t`Delete process pickup`}
       variant="ghost"
       icon={<FaTrash className="text-destructive" />}
       className="h-8 w-8"

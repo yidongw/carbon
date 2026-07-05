@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue
 } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import { MONTH_NAMES } from "./salaryDetail.utils";
 
@@ -21,6 +22,7 @@ export default function SalaryPeriodPicker({
   month,
   onChange
 }: SalaryPeriodPickerProps) {
+  const { t } = useLingui();
   const prevMonth = () =>
     month === 1 ? onChange(year - 1, 12) : onChange(year, month - 1);
   const nextMonth = () =>
@@ -35,7 +37,7 @@ export default function SalaryPeriodPicker({
         size="sm"
         variant="ghost"
         onClick={prevMonth}
-        aria-label="Previous month"
+        aria-label={t`Previous month`}
       >
         <LuChevronLeft className="size-4" />
       </Button>
@@ -73,7 +75,7 @@ export default function SalaryPeriodPicker({
         size="sm"
         variant="ghost"
         onClick={nextMonth}
-        aria-label="Next month"
+        aria-label={t`Next month`}
       >
         <LuChevronRight className="size-4" />
       </Button>

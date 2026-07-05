@@ -8,6 +8,7 @@ import {
   HStack,
   IconButton
 } from "@carbon/react";
+import { useLingui } from "@lingui/react/macro";
 import type { ReactNode } from "react";
 import { LuEllipsisVertical } from "react-icons/lu";
 
@@ -26,6 +27,7 @@ const DocumentHeader = ({
   menuItems,
   actions
 }: DocumentHeaderProps) => {
+  const { t } = useLingui();
   return (
     <CardHeader className="flex-row items-center justify-between">
       <div>
@@ -38,7 +40,7 @@ const DocumentHeader = ({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <IconButton
-                  aria-label="More options"
+                  aria-label={t`More options`}
                   icon={<LuEllipsisVertical />}
                   variant="secondary"
                   size="sm"
