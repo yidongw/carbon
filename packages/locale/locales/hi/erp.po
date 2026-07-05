@@ -704,6 +704,9 @@ msgstr "सभी के लिए मालूम पड़ता है"
 msgid "Applies to all work centers"
 msgstr "सभी कार्य संकेतनों पर लागू होता है"
 
+msgid "Apply"
+msgstr "लागू करें"
+
 msgid "Apply pricing rules"
 msgstr "मूल्य निर्धारण नियम लागू करें"
 
@@ -4535,6 +4538,9 @@ msgstr "आवृत्ति"
 
 msgid "Friday"
 msgstr "शुक्रवार"
+
+msgid "From"
+msgstr "से"
 
 msgid "From Location"
 msgstr "स्थान से"
@@ -10027,6 +10033,9 @@ msgstr "समय क्षेत्र"
 
 msgid "Title"
 msgstr "शीर्षक"
+
+msgid "To"
+msgstr "तक"
 
 msgid "To Location"
 msgstr "स्थान को"

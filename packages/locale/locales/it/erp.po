@@ -704,6 +704,9 @@ msgstr "Si applica a tutti"
 msgid "Applies to all work centers"
 msgstr "Si applica a tutti i centri di lavoro"
 
+msgid "Apply"
+msgstr "Applica"
+
 msgid "Apply pricing rules"
 msgstr "Applica regole di prezzo"
 
@@ -4535,6 +4538,9 @@ msgstr "Frequenza"
 
 msgid "Friday"
 msgstr "Venerdì"
+
+msgid "From"
+msgstr "Da"
 
 msgid "From Location"
 msgstr "Da Ubicazione"
@@ -10027,6 +10033,9 @@ msgstr "Fuso orario"
 
 msgid "Title"
 msgstr "Titolo"
+
+msgid "To"
+msgstr "A"
 
 msgid "To Location"
 msgstr "Ubicazione di destinazione"

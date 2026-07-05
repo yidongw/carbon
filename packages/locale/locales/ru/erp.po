@@ -704,6 +704,9 @@ msgstr "Применяется к的一切内容保持不变"
 msgid "Applies to all work centers"
 msgstr "Применяется ко всем центрам обработки"
 
+msgid "Apply"
+msgstr "Применить"
+
 msgid "Apply pricing rules"
 msgstr "Применять правила ценообразования"
 
@@ -4535,6 +4538,9 @@ msgstr "Частота"
 
 msgid "Friday"
 msgstr "Пятница"
+
+msgid "From"
+msgstr "От"
 
 msgid "From Location"
 msgstr "Из местоположения"
@@ -10027,6 +10033,9 @@ msgstr "Часовой пояс"
 
 msgid "Title"
 msgstr "Название"
+
+msgid "To"
+msgstr "До"
 
 msgid "To Location"
 msgstr "На локацию"
