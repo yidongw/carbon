@@ -772,6 +772,9 @@ msgstr "您确定要激活工序：{name}？它将会再次出现在下拉菜单
 msgid "Are you sure you want to activate this gauge?."
 msgstr "您确定要激活此量具吗？"
 
+msgid "Are you sure you want to approve this production completion?"
+msgstr "您确定要批准此生产完成吗？"
+
 #. placeholder {0}: routeData?.rfqSummary ?.rfqId!
 msgid "Are you sure you want to cancel {0}? This will also cancel all related supplier quotes."
 msgstr "您确定要取消{0}吗？这也会取消所有相关的供应商报价。"
@@ -1911,6 +1914,9 @@ msgstr "确认"
 #. placeholder {0}: salesOrder?.salesOrderId
 msgid "Confirm {0}"
 msgstr "确认{0}"
+
+msgid "Confirm Approval"
+msgstr "确认批准"
 
 msgid "Confirm ID Change"
 msgstr "确认ID变更"
@@ -5837,9 +5843,6 @@ msgstr "MES"
 
 msgid "MES only"
 msgstr "仅MES"
-
-msgid "MES workers get standard shop-floor access: Production, Inventory, and Quality (full); Resources, People, and Documents (view only). ERP modules are not accessible."
-msgstr "MES工人获得标准车间访问权限：生产、库存和质量（全权访问）；资源、人员和文档（仅查看）。ERP模块不可访问。"
 
 msgid "Message"
 msgstr "消息"

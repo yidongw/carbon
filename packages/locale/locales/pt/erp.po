@@ -772,6 +772,9 @@ msgstr "Tem a certeza de que deseja ativar o processo: {name}? Ele aparecerá no
 msgid "Are you sure you want to activate this gauge?."
 msgstr "Tem certeza de que deseja ativar este medidor?."
 
+msgid "Are you sure you want to approve this production completion?"
+msgstr "Tem certeza que deseja aprovar esta conclusão de produção?"
+
 #. placeholder {0}: routeData?.rfqSummary ?.rfqId!
 msgid "Are you sure you want to cancel {0}? This will also cancel all related supplier quotes."
 msgstr "Tem a certeza de que deseja cancelar {0}? Isto também cancelará todas as cotações de fornecedores relacionadas."
@@ -1911,6 +1914,9 @@ msgstr "Confirmar"
 #. placeholder {0}: salesOrder?.salesOrderId
 msgid "Confirm {0}"
 msgstr "Confirmar {0}"
+
+msgid "Confirm Approval"
+msgstr "Confirme Aprovação"
 
 msgid "Confirm ID Change"
 msgstr "Confirmar Alteração de ID"
@@ -5837,9 +5843,6 @@ msgstr "MES"
 
 msgid "MES only"
 msgstr "Somente MES"
-
-msgid "MES workers get standard shop-floor access: Production, Inventory, and Quality (full); Resources, People, and Documents (view only). ERP modules are not accessible."
-msgstr "Os trabalhadores do MES recebem acesso padrão ao chão de fábrica: Produção, Estoque e Qualidade (completo); Recursos, Pessoas e Documentos (apenas visualização). Os módulos ERP não são acessíveis."
 
 msgid "Message"
 msgstr "Mensagem"

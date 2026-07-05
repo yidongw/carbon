@@ -93,6 +93,7 @@ interface TableProps<T extends object> {
     label: string;
   }[];
   primaryAction?: ReactNode;
+  filterActions?: ReactNode;
   table?: string;
   title?: string;
   withInlineEditing?: boolean;
@@ -234,6 +235,7 @@ const Table = <T extends object>({
   editableComponents,
   importCSV,
   primaryAction,
+  filterActions,
   table: tableName,
   title,
   withInlineEditing = false,
@@ -952,6 +954,7 @@ const Table = <T extends object>({
         withSearch={withSearch}
         withSelectableRows={withSelectableRows}
         sort={sort}
+        filterActions={filterActions}
       />
 
       {/* Mobile card view */}
