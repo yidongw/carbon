@@ -25,8 +25,8 @@ import NumberControlled from "./NumberControlled";
 import Password from "./Password";
 import PhoneInput from "./PhoneInput";
 import Radios from "./Radios";
-import type { SelectProps } from "./Select";
-import Select from "./Select";
+import type { SelectBaseProps, SelectProps } from "./Select";
+import Select, { SelectBase } from "./Select";
 import SelectControlled from "./SelectControlled";
 import Submit, { DefaultDisabledSubmit } from "./Submit";
 import TextArea from "./Textarea";
@@ -58,6 +58,7 @@ export {
   PhoneInput,
   Radios,
   Select,
+  SelectBase,
   SelectControlled,
   Submit,
   TextArea,
@@ -73,5 +74,6 @@ export type {
   CreatableMultiSelectProps,
   GroupedCreatableComboboxProps,
   MultiSelectProps,
+  SelectBaseProps,
   SelectProps
 };

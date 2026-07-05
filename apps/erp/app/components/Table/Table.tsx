@@ -564,8 +564,11 @@ const Table = <T extends object>({
         ...table.getCenterVisibleLeafColumns()
       ];
 
-      const column =
-        tableColumns[withSelectableRows ? selectedColumn + 1 : selectedColumn];
+      // `selectedColumn` is the index into the row's visible cells, which already
+      // includes the (left-pinned) Select checkbox column. `tableColumns` is built
+      // the same way (left-pinned first), so the two indices line up directly — no
+      // offset for withSelectableRows.
+      const column = tableColumns[selectedColumn];
       if (!column) return false;
 
       const accessorKey = getAccessorKey(column.columnDef);
@@ -573,12 +576,13 @@ const Table = <T extends object>({
         accessorKey && editableComponents && accessorKey in editableComponents
       );
     },
-    [table, editableComponents, withInlineEditing, withSelectableRows]
+    [table, editableComponents, withInlineEditing]
   );
 
   const onCellClick = useCallback(
     (row: number, column: number) => {
       // ignore row select checkbox column
+      if (column === -1) return;
       if (
         selectedCell?.row === row &&
         selectedCell?.column === column &&
@@ -587,13 +591,13 @@ const Table = <T extends object>({
         setIsEditing(true);
         return;
       }
-      // ignore row select checkbox column
-      if (column === -1) return;
       setIsEditing(false);
       onSelectedCellChange({ row, column });
     },
     [selectedCell, isColumnEditable, onSelectedCellChange]
   );
+
+  const finishEditing = useCallback(() => setIsEditing(false), []);
 
   const onCellUpdate = useCallback(
     (rowIndex: number) => (updates: Record<string, unknown>) =>
@@ -1201,6 +1205,7 @@ const Table = <T extends object>({
                   const rowContent = (
                     <Row
                       key={row.id}
+                      columns={columns}
                       editableComponents={editableComponents}
                       isEditing={isEditing}
                       isEditMode={editMode}
@@ -1214,6 +1219,7 @@ const Table = <T extends object>({
                       getPinnedStyles={getPinnedStyles}
                       onCellClick={onCellClick}
                       onCellUpdate={onCellUpdate}
+                      onFinishEditing={finishEditing}
                       onClick={handleRowClick}
                       className={
                         renderExpandedRow ? "cursor-pointer" : undefined

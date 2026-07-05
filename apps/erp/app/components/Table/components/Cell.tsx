@@ -10,6 +10,10 @@ import { getAccessorKey } from "../utils";
 type CellProps<T> = {
   cell: CellType<T, unknown>;
   columnIndex: number;
+  // The column's cell renderer, captured at render time. TanStack reuses the
+  // `cell` object across renders, so reading columnDef.cell off it can't detect a
+  // renderer change; comparing this captured prop can.
+  cellRenderer?: unknown;
   editableComponents?: Record<string, EditableTableCellComponent<T>>;
   editedCells?: string[];
   isEditing: boolean;
@@ -20,6 +24,7 @@ type CellProps<T> = {
   getPinnedStyles: (column: Column<any, unknown>) => CSSProperties;
   onClick?: () => void;
   onUpdate?: (updates: Record<string, unknown>) => void;
+  onFinishEditing?: () => void;
   table: any;
 };
 
@@ -34,6 +39,7 @@ const Cell = <T extends object>({
   getPinnedStyles,
   onClick,
   onUpdate,
+  onFinishEditing,
   table
 }: CellProps<T>) => {
   const { ref, tabIndex, onFocus } = useMovingCellRef(isSelected);
@@ -99,7 +105,8 @@ const Cell = <T extends object>({
                   : () => console.error("No update function provided"),
                 onError: () => {
                   setHasError(true);
-                }
+                },
+                onFinishEditing
               })
             : null}
         </div>
@@ -127,6 +134,10 @@ const MemoizedCell = memo(
     next.isEditMode === prev.isEditMode &&
     next.cell.getValue() === prev.cell.getValue() &&
     prev.cell.row.original === next.cell.row.original &&
+    // Re-render when the column's cell renderer changes. Renderers built in a
+    // columns useMemo capture async data (e.g. option lists loaded after mount);
+    // without this the cell keeps its first render and shows stale/empty options.
+    prev.cellRenderer === next.cellRenderer &&
     next.pinnedColumns === prev.pinnedColumns &&
     next.columnIndex === prev.columnIndex &&
     // getPinnedStyles is applied to the Td below; its identity changes when
