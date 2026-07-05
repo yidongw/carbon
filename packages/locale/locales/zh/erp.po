@@ -704,6 +704,9 @@ msgstr "适用于所有"
 msgid "Applies to all work centers"
 msgstr "适用于所有工作中心"
 
+msgid "Apply"
+msgstr "应用"
+
 msgid "Apply pricing rules"
 msgstr "应用定价规则"
 
@@ -4535,6 +4538,9 @@ msgstr "频率"
 
 msgid "Friday"
 msgstr "星期五"
+
+msgid "From"
+msgstr "从"
 
 msgid "From Location"
 msgstr "起始位置"
@@ -10027,6 +10033,9 @@ msgstr "时区"
 
 msgid "Title"
 msgstr "标题"
+
+msgid "To"
+msgstr "至"
 
 msgid "To Location"
 msgstr "目标位置"

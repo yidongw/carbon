@@ -704,6 +704,9 @@ msgstr "すべてに適用"
 msgid "Applies to all work centers"
 msgstr "すべての作業センタに適用"
 
+msgid "Apply"
+msgstr "適用"
+
 msgid "Apply pricing rules"
 msgstr "価格設定ルールを適用"
 
@@ -4535,6 +4538,9 @@ msgstr "頻度"
 
 msgid "Friday"
 msgstr "金曜日"
+
+msgid "From"
+msgstr "から"
 
 msgid "From Location"
 msgstr "出発地"
@@ -10027,6 +10033,9 @@ msgstr "タイムゾーン"
 
 msgid "Title"
 msgstr "タイトル"
+
+msgid "To"
+msgstr "まで"
 
 msgid "To Location"
 msgstr "到着地"
