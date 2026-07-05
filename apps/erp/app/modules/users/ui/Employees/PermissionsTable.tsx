@@ -36,7 +36,7 @@ import {
 import type { ListItem } from "~/types";
 import { path } from "~/utils/path";
 
-type EmployeesTableProps = {
+type PermissionsTableProps = {
   data: Employee[];
   count: number;
   employeeTypes: ListItem[];
@@ -48,13 +48,13 @@ const defaultColumnVisibility = {
   user_lastName: false
 };
 
-const EmployeesTable = memo(
+const PermissionsTable = memo(
   ({
     data,
     count,
     employeeTypes,
     unrevokedInviteEmails
-  }: EmployeesTableProps) => {
+  }: PermissionsTableProps) => {
     const { t } = useLingui();
     const navigate = useNavigate();
     const permissions = usePermissions();
@@ -431,6 +431,6 @@ const EmployeesTable = memo(
   }
 );
 
-EmployeesTable.displayName = "EmployeeTable";
+PermissionsTable.displayName = "PermissionsTable";
 
-export default EmployeesTable;
+export default PermissionsTable;

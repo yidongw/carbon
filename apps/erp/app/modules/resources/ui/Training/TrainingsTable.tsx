@@ -1,10 +1,4 @@
-import {
-  Badge,
-  HStack,
-  MenuIcon,
-  MenuItem,
-  useDisclosure
-} from "@carbon/react";
+import { Badge, MenuIcon, MenuItem, useDisclosure } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useMemo, useState } from "react";
@@ -21,12 +15,24 @@ import {
   LuUser
 } from "react-icons/lu";
 import { useNavigate } from "react-router";
-import { EmployeeAvatar, Hyperlink, New, Table } from "~/components";
+import { Assignee, Hyperlink, New, Table } from "~/components";
+import { editableCell, TagsCell } from "~/components/InlineEditor";
 import { ConfirmDelete } from "~/components/Modals";
 import { usePermissions } from "~/hooks";
 import type { TrainingListItem } from "~/modules/resources";
+import {
+  trainingFrequency,
+  trainingStatus,
+  trainingType
+} from "~/modules/resources/resources.models";
 import { path } from "~/utils/path";
 import TrainingStatus from "./TrainingStatus";
+
+// Training inline edits go through the shared training bulk-update action.
+const TRAINING_UPDATE = {
+  action: path.to.bulkUpdateTraining,
+  idKey: "ids" as const
+};
 
 type TrainingsTableProps = {
   data: TrainingListItem[];
@@ -60,7 +66,19 @@ const TrainingsTable = memo(({ data, count, tags }: TrainingsTableProps) => {
       {
         accessorKey: "status",
         header: t`Status`,
-        cell: ({ row }) => <TrainingStatus status={row.original.status} />,
+        cell: editableCell<TrainingListItem>({
+          kind: "enum",
+          field: "status",
+          update: TRAINING_UPDATE,
+          value: (r) => r.status,
+          options: trainingStatus.map((v) => ({
+            value: v,
+            label: <TrainingStatus status={v} />
+          })),
+          renderInline: (v) => (
+            <TrainingStatus status={v as (typeof trainingStatus)[number]} />
+          )
+        }),
         meta: {
           filter: {
             type: "static",
@@ -79,15 +97,25 @@ const TrainingsTable = memo(({ data, count, tags }: TrainingsTableProps) => {
       {
         accessorKey: "type",
         header: t`Type`,
-        cell: ({ row }) => (
-          <Badge
-            variant={
-              row.original.type === "Mandatory" ? "default" : "secondary"
-            }
-          >
-            {row.original.type}
-          </Badge>
-        ),
+        cell: editableCell<TrainingListItem>({
+          kind: "enum",
+          field: "type",
+          update: TRAINING_UPDATE,
+          value: (r) => r.type,
+          options: trainingType.map((v) => ({
+            value: v,
+            label: (
+              <Badge variant={v === "Mandatory" ? "default" : "secondary"}>
+                {v}
+              </Badge>
+            )
+          })),
+          renderInline: (v) => (
+            <Badge variant={v === "Mandatory" ? "default" : "secondary"}>
+              {v}
+            </Badge>
+          )
+        }),
         meta: {
           filter: {
             type: "static",
@@ -102,9 +130,17 @@ const TrainingsTable = memo(({ data, count, tags }: TrainingsTableProps) => {
       {
         accessorKey: "frequency",
         header: t`Frequency`,
-        cell: ({ row }) => (
-          <Badge variant="secondary">{row.original.frequency}</Badge>
-        ),
+        cell: editableCell<TrainingListItem>({
+          kind: "enum",
+          field: "frequency",
+          update: TRAINING_UPDATE,
+          value: (r) => r.frequency,
+          options: trainingFrequency.map((v) => ({
+            value: v,
+            label: <Badge variant="secondary">{v}</Badge>
+          })),
+          renderInline: (v) => <Badge variant="secondary">{v}</Badge>
+        }),
         meta: {
           icon: <LuRepeat />,
           filter: {
@@ -120,26 +156,28 @@ const TrainingsTable = memo(({ data, count, tags }: TrainingsTableProps) => {
       {
         accessorKey: "estimatedDuration",
         header: t`Duration`,
-        cell: ({ row }) =>
-          row.original.estimatedDuration ? (
-            <div className="flex items-center gap-1">
-              <LuClock />{" "}
-              <span className="text-xs text-muted-foreground">
-                {row.original.estimatedDuration}
-              </span>
-            </div>
-          ) : (
-            "-"
-          ),
+        cell: editableCell<TrainingListItem>({
+          kind: "text",
+          field: "estimatedDuration",
+          update: TRAINING_UPDATE,
+          value: (r) =>
+            r.estimatedDuration != null ? String(r.estimatedDuration) : ""
+        }),
         meta: {
           icon: <LuClock />
         }
       },
       {
-        accessorKey: "assignee",
+        id: "assignee",
         header: t`Assignee`,
         cell: ({ row }) => (
-          <EmployeeAvatar employeeId={row.original.assignee} />
+          <Assignee
+            id={row.original.id ?? ""}
+            table="training"
+            value={row.original.assignee ?? ""}
+            variant="button"
+            size="sm"
+          />
         ),
         meta: {
           icon: <LuUser />
@@ -149,13 +187,7 @@ const TrainingsTable = memo(({ data, count, tags }: TrainingsTableProps) => {
         accessorKey: "tags",
         header: t`Tags`,
         cell: ({ row }) => (
-          <HStack spacing={0} className="gap-1">
-            {row.original.tags?.map((tag) => (
-              <Badge key={tag} variant="secondary">
-                {tag}
-              </Badge>
-            ))}
-          </HStack>
+          <TagsCell row={row.original} table="training" availableTags={tags} />
         ),
         meta: {
           filter: {

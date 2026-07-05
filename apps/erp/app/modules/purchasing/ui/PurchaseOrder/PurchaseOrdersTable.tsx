@@ -11,7 +11,6 @@ import {
   toast,
   useDisclosure
 } from "@carbon/react";
-import { getLocalTimeZone, today } from "@internationalized/date";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
@@ -32,6 +31,7 @@ import {
 } from "react-icons/lu";
 import { useFetcher } from "react-router";
 import {
+  Assignee,
   EmployeeAvatar,
   Hyperlink,
   ItemThumbnail,
@@ -39,9 +39,9 @@ import {
   SupplierAvatar,
   Table
 } from "~/components";
-import { Enumerable } from "~/components/Enumerable";
 import { usePaymentTerm } from "~/components/Form/PaymentTerm";
 import { useShippingMethod } from "~/components/Form/ShippingMethod";
+import { editableCell } from "~/components/InlineEditor";
 import { ConfirmDelete } from "~/components/Modals";
 import {
   useCurrencyFormatter,
@@ -57,6 +57,12 @@ import { usePeople, useSuppliers } from "~/stores";
 import { path } from "~/utils/path";
 import PurchasingStatus from "./PurchasingStatus";
 import { usePurchaseOrder } from "./usePurchaseOrder";
+
+// Purchase order inline edits go through the shared PO bulk-update action.
+const PO_UPDATE = {
+  action: path.to.bulkUpdatePurchaseOrder,
+  idKey: "ids" as const
+};
 
 type PurchaseOrdersTableProps = {
   data: PurchaseOrder[];
@@ -111,9 +117,15 @@ const PurchaseOrdersTable = memo(
         {
           id: "supplierId",
           header: t`Supplier`,
-          cell: ({ row }) => {
-            return <SupplierAvatar supplierId={row.original.supplierId} />;
-          },
+          cell: editableCell<PurchaseOrder>({
+            kind: "picker",
+            field: "supplierId",
+            update: PO_UPDATE,
+            value: (r) => r.supplierId,
+            options:
+              suppliers?.map((s) => ({ value: s.id, label: s.name })) ?? [],
+            renderInline: (v) => <SupplierAvatar supplierId={v} />
+          }),
           meta: {
             filter: {
               type: "static",
@@ -148,7 +160,12 @@ const PurchaseOrdersTable = memo(
         {
           accessorKey: "supplierReference",
           header: t`Supplier Ref.`,
-          cell: (item) => item.getValue(),
+          cell: editableCell<PurchaseOrder>({
+            kind: "text",
+            field: "supplierReference",
+            update: PO_UPDATE,
+            value: (r) => r.supplierReference
+          }),
           meta: {
             icon: <LuQrCode />
           }
@@ -156,7 +173,13 @@ const PurchaseOrdersTable = memo(
         {
           accessorKey: "orderDate",
           header: t`Order Date`,
-          cell: (item) => formatDate(item.getValue<string>()),
+          cell: editableCell<PurchaseOrder>({
+            kind: "date",
+            field: "orderDate",
+            update: PO_UPDATE,
+            value: (r) => r.orderDate,
+            renderInline: (v) => formatDate(v)
+          }),
           meta: {
             icon: <LuCalendar />
           }
@@ -164,7 +187,13 @@ const PurchaseOrdersTable = memo(
         {
           accessorKey: "receiptRequestedDate",
           header: t`Requested Date`,
-          cell: (item) => formatDate(item.getValue<string>()),
+          cell: editableCell<PurchaseOrder>({
+            kind: "date",
+            field: "receiptRequestedDate",
+            update: PO_UPDATE,
+            value: (r) => r.receiptRequestedDate,
+            renderInline: (v) => formatDate(v)
+          }),
           meta: {
             icon: <LuCalendar />
           }
@@ -172,32 +201,13 @@ const PurchaseOrdersTable = memo(
         {
           accessorKey: "receiptPromisedDate",
           header: t`Promised Date`,
-          cell: ({ row }) => {
-            const isReceivedOnTime =
-              row.original.deliveryDate &&
-              row.original.receiptPromisedDate &&
-              row.original.deliveryDate <= row.original.receiptPromisedDate;
-
-            const isOverdue =
-              ["Cancelled", "Draft"].includes(row.original.status ?? "") &&
-              row.original.receiptPromisedDate &&
-              row.original.receiptPromisedDate <
-                today(getLocalTimeZone()).toString();
-
-            return (
-              <span
-                className={
-                  isReceivedOnTime
-                    ? "text-emerald-500"
-                    : isOverdue
-                      ? "text-red-500"
-                      : ""
-                }
-              >
-                {formatDate(row.original.receiptPromisedDate)}
-              </span>
-            );
-          },
+          cell: editableCell<PurchaseOrder>({
+            kind: "date",
+            field: "receiptPromisedDate",
+            update: PO_UPDATE,
+            value: (r) => r.receiptPromisedDate,
+            renderInline: (v) => formatDate(v)
+          }),
           meta: {
             icon: <LuCalendar />
           }
@@ -216,7 +226,13 @@ const PurchaseOrdersTable = memo(
           id: "assignee",
           header: t`Assignee`,
           cell: ({ row }) => (
-            <EmployeeAvatar employeeId={row.original.assignee} />
+            <Assignee
+              id={row.original.id ?? ""}
+              table="purchaseOrder"
+              value={row.original.assignee ?? ""}
+              variant="button"
+              size="sm"
+            />
           ),
           meta: {
             filter: {
@@ -233,15 +249,14 @@ const PurchaseOrdersTable = memo(
         {
           accessorKey: "shippingMethodId",
           header: t`Shipping Method`,
-          cell: (item) => (
-            <Enumerable
-              value={
-                shippingMethods.find(
-                  (sm) => sm.value === item.getValue<string>()
-                )?.label ?? null
-              }
-            />
-          ),
+          cell: editableCell<PurchaseOrder>({
+            kind: "picker",
+            field: "shippingMethodId",
+            update: PO_UPDATE,
+            value: (r) => r.shippingMethodId,
+            options: shippingMethods,
+            fallbackLabel: (r) => r.shippingMethodName
+          }),
           meta: {
             icon: <LuTruck />
           }
@@ -249,14 +264,14 @@ const PurchaseOrdersTable = memo(
         {
           accessorKey: "paymentTermId",
           header: t`Payment Method`,
-          cell: (item) => (
-            <Enumerable
-              value={
-                paymentTerms.find((pt) => pt.value === item.getValue<string>())
-                  ?.label ?? null
-              }
-            />
-          ),
+          cell: editableCell<PurchaseOrder>({
+            kind: "picker",
+            field: "paymentTermId",
+            update: PO_UPDATE,
+            value: (r) => r.paymentTermId,
+            options: paymentTerms,
+            fallbackLabel: (r) => r.paymentTermName
+          }),
           meta: {
             icon: <LuCreditCard />
           }

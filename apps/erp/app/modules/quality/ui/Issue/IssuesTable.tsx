@@ -18,9 +18,10 @@ import {
   LuUser
 } from "react-icons/lu";
 import { useNavigate } from "react-router";
-import { EmployeeAvatar, Hyperlink, New, Table } from "~/components";
+import { Assignee, EmployeeAvatar, Hyperlink, New, Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { useLocations } from "~/components/Form/Location";
+import { editableCell } from "~/components/InlineEditor";
 import { ConfirmDelete } from "~/components/Modals";
 import { useDateFormatter, usePermissions } from "~/hooks";
 import { useCustomColumns } from "~/hooks/useCustomColumns";
@@ -36,6 +37,12 @@ import {
 import type { Issue } from "../../types";
 import { getPriorityIcon, getSourceIcon } from "./IssueIcons";
 import IssueStatus from "./IssueStatus";
+
+// Issue inline edits go through the shared issue bulk-update action.
+const ISSUE_UPDATE = {
+  action: path.to.bulkUpdateIssue,
+  idKey: "ids" as const
+};
 
 type IssuesTableProps = {
   data: Issue[];
@@ -120,12 +127,30 @@ const IssuesTable = memo(({ data, types, count }: IssuesTableProps) => {
       {
         accessorKey: "priority",
         header: t`Priority`,
-        cell: ({ row }) => (
-          <div className="flex gap-2 items-center">
-            {getPriorityIcon(row.original.priority ?? "Low", false)}
-            {row.original.priority}
-          </div>
-        ),
+        cell: editableCell<Issue>({
+          kind: "enum",
+          field: "priority",
+          update: ISSUE_UPDATE,
+          value: (r) => r.priority,
+          options: nonConformancePriority.map((priority) => ({
+            value: priority,
+            label: (
+              <span className="flex gap-2 items-center">
+                {getPriorityIcon(priority, false)}
+                {priority}
+              </span>
+            )
+          })),
+          renderInline: (v) => (
+            <span className="flex gap-2 items-center">
+              {getPriorityIcon(
+                (v as (typeof nonConformancePriority)[number]) ?? "Low",
+                false
+              )}
+              {v}
+            </span>
+          )
+        }),
         meta: {
           icon: <LuChartNoAxesColumnIncreasing />,
           filter: {
@@ -140,12 +165,30 @@ const IssuesTable = memo(({ data, types, count }: IssuesTableProps) => {
       {
         accessorKey: "source",
         header: t`Source`,
-        cell: ({ row }) => (
-          <div className="flex gap-2 items-center">
-            {getSourceIcon(row.original.source ?? "Internal", false)}
-            {row.original.source}
-          </div>
-        ),
+        cell: editableCell<Issue>({
+          kind: "enum",
+          field: "source",
+          update: ISSUE_UPDATE,
+          value: (r) => r.source,
+          options: nonConformanceSource.map((source) => ({
+            value: source,
+            label: (
+              <span className="flex gap-2 items-center">
+                {getSourceIcon(source, false)}
+                {source}
+              </span>
+            )
+          })),
+          renderInline: (v) => (
+            <span className="flex gap-2 items-center">
+              {getSourceIcon(
+                (v as (typeof nonConformanceSource)[number]) ?? "Internal",
+                false
+              )}
+              {v}
+            </span>
+          )
+        }),
         meta: {
           icon: <LuDna />,
           filter: {
@@ -206,7 +249,13 @@ const IssuesTable = memo(({ data, types, count }: IssuesTableProps) => {
         accessorKey: "assignee",
         header: t`Assignee`,
         cell: ({ row }) => (
-          <EmployeeAvatar employeeId={row.original.assignee} />
+          <Assignee
+            id={row.original.id ?? ""}
+            table="nonConformance"
+            value={row.original.assignee ?? ""}
+            variant="button"
+            size="sm"
+          />
         ),
         meta: {
           filter: {
@@ -253,7 +302,13 @@ const IssuesTable = memo(({ data, types, count }: IssuesTableProps) => {
       {
         accessorKey: "openDate",
         header: t`Open Date`,
-        cell: ({ row }) => formatDate(row.original.openDate),
+        cell: editableCell<Issue>({
+          kind: "date",
+          field: "openDate",
+          update: ISSUE_UPDATE,
+          value: (r) => r.openDate,
+          renderInline: (v) => formatDate(v)
+        }),
         meta: {
           icon: <LuCalendar />
         }
@@ -261,7 +316,13 @@ const IssuesTable = memo(({ data, types, count }: IssuesTableProps) => {
       {
         accessorKey: "closeDate",
         header: t`Closed Date`,
-        cell: ({ row }) => formatDate(row.original.closeDate),
+        cell: editableCell<Issue>({
+          kind: "date",
+          field: "closeDate",
+          update: ISSUE_UPDATE,
+          value: (r) => r.closeDate,
+          renderInline: (v) => formatDate(v)
+        }),
         meta: {
           icon: <LuCalendar />
         }

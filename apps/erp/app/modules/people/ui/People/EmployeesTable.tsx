@@ -16,21 +16,35 @@ import { useNavigate } from "react-router";
 import { Avatar, EmployeeAvatar, Hyperlink, New, Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { useLocations } from "~/components/Form/Location";
+import { editableCell } from "~/components/InlineEditor";
 import { useFormatPersonName, usePermissions, useUrlParams } from "~/hooks";
 import { DataType } from "~/modules/shared";
 import type { EmployeeType } from "~/modules/users";
 import { path } from "~/utils/path";
 import type { AttributeCategory, Person } from "../../types";
 
-type PeopleTableProps = {
+// People inline edits fan out (firstName/lastName -> user, employeeType ->
+// employee, location -> employeeJob), keyed by user id — same as the employees
+// permissions table, so they share the employees bulk-update action.
+const PEOPLE_UPDATE = {
+  action: path.to.bulkUpdateEmployee,
+  idKey: "ids" as const
+};
+
+type EmployeesTableProps = {
   attributeCategories: AttributeCategory[];
   data: Person[];
   count: number;
   employeeTypes: Partial<EmployeeType>[];
 };
 
-const PeopleTable = memo(
-  ({ attributeCategories, data, count, employeeTypes }: PeopleTableProps) => {
+const EmployeesTable = memo(
+  ({
+    attributeCategories,
+    data,
+    count,
+    employeeTypes
+  }: EmployeesTableProps) => {
     const { t } = useLingui();
     const { locale } = useLocale();
     const formatPersonName = useFormatPersonName();
@@ -125,7 +139,12 @@ const PeopleTable = memo(
         {
           accessorKey: "firstName",
           header: t`First Name`,
-          cell: (item) => item.getValue(),
+          cell: editableCell<Person>({
+            kind: "text",
+            field: "firstName",
+            update: PEOPLE_UPDATE,
+            value: (r) => r.firstName
+          }),
           meta: {
             icon: <LuUser />
           }
@@ -133,7 +152,12 @@ const PeopleTable = memo(
         {
           accessorKey: "lastName",
           header: t`Last Name`,
-          cell: (item) => item.getValue(),
+          cell: editableCell<Person>({
+            kind: "text",
+            field: "lastName",
+            update: PEOPLE_UPDATE,
+            value: (r) => r.lastName
+          }),
           meta: {
             icon: <LuUser />
           }
@@ -149,14 +173,19 @@ const PeopleTable = memo(
         {
           id: "employeeTypeId",
           header: t`Employee Type`,
-          cell: ({ row }) => (
-            <Enumerable
-              value={
-                employeeTypesById[row.original.employeeTypeId ?? ""]
-                  ?.name as string
-              }
-            />
-          ),
+          cell: editableCell<Person>({
+            kind: "picker",
+            field: "employeeTypeId",
+            update: PEOPLE_UPDATE,
+            value: (r) => r.employeeTypeId,
+            options: employeeTypes.map((type) => ({
+              value: type.id!,
+              label: <Enumerable value={type.name!} />
+            })),
+            renderInline: (v) => (
+              <Enumerable value={employeeTypesById[v]?.name as string} />
+            )
+          }),
           meta: {
             filter: {
               type: "static",
@@ -171,7 +200,15 @@ const PeopleTable = memo(
         {
           id: "locationId",
           header: t`Location`,
-          cell: ({ row }) => <Enumerable value={row.original.locationName} />,
+          cell: editableCell<Person>({
+            kind: "picker",
+            field: "locationId",
+            update: PEOPLE_UPDATE,
+            value: (r) => r.locationId,
+            clearable: true,
+            options: locations,
+            fallbackLabel: (r) => r.locationName
+          }),
           meta: {
             filter: {
               type: "static",
@@ -293,6 +330,6 @@ const PeopleTable = memo(
   }
 );
 
-PeopleTable.displayName = "EmployeeTable";
+EmployeesTable.displayName = "EmployeesTable";
 
-export default PeopleTable;
+export default EmployeesTable;

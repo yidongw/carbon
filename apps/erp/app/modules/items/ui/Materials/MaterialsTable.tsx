@@ -1,7 +1,6 @@
 import {
   Badge,
   Button,
-  Checkbox,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuIcon,
@@ -60,6 +59,7 @@ import {
 import { Enumerable } from "~/components/Enumerable";
 import { useItemPostingGroups } from "~/components/Form/ItemPostingGroup";
 import { useUnitOfMeasure } from "~/components/Form/UnitOfMeasure";
+import { editableCell, TagsCell } from "~/components/InlineEditor";
 import { ConfirmDelete } from "~/components/Modals";
 import { useFilters } from "~/components/Table/components/Filter/useFilters";
 import { useDateFormatter, usePermissions } from "~/hooks";
@@ -70,6 +70,12 @@ import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
 import { itemTrackingTypes } from "../../items.models";
 import type { Material } from "../../types";
+
+// All Materials inline edits go through the shared items bulk-update action.
+const ITEM_UPDATE = {
+  action: path.to.bulkUpdateItems,
+  idKey: "items" as const
+};
 
 type MaterialsTableProps = {
   data: Material[];
@@ -263,13 +269,14 @@ const MaterialsTable = memo(({ data, tags, count }: MaterialsTableProps) => {
       {
         accessorKey: "itemPostingGroupId",
         header: t`Item Group`,
-        cell: (item) => {
-          const itemPostingGroupId = item.row.original.itemPostingGroupId;
-          const itemPostingGroup = itemPostingGroups.find(
-            (group) => group.value === itemPostingGroupId
-          );
-          return <Enumerable value={itemPostingGroup?.label ?? null} />;
-        },
+        cell: editableCell<Material>({
+          kind: "enum",
+          field: "itemPostingGroupId",
+          update: ITEM_UPDATE,
+          value: (r) => r.itemPostingGroupId,
+          clearable: true,
+          options: itemPostingGroups
+        }),
         meta: {
           filter: {
             type: "static",
@@ -284,12 +291,27 @@ const MaterialsTable = memo(({ data, tags, count }: MaterialsTableProps) => {
       {
         accessorKey: "itemTrackingType",
         header: t`Tracking`,
-        cell: (item) => (
-          <Badge variant="secondary">
-            <TrackingTypeIcon type={item.getValue<string>()} className="mr-2" />
-            <span>{translateTrackingType(item.getValue<string>())}</span>
-          </Badge>
-        ),
+        cell: editableCell<Material>({
+          kind: "enum",
+          field: "itemTrackingType",
+          update: ITEM_UPDATE,
+          value: (r) => r.itemTrackingType,
+          options: itemTrackingTypes.map((v) => ({
+            value: v,
+            label: (
+              <span className="flex items-center gap-2">
+                <TrackingTypeIcon type={v} className="mr-2" />
+                {translateTrackingType(v)}
+              </span>
+            )
+          })),
+          renderInline: (v) => (
+            <Badge variant="secondary">
+              <TrackingTypeIcon type={v} className="mr-2" />
+              <span>{translateTrackingType(v)}</span>
+            </Badge>
+          )
+        }),
         meta: {
           filter: {
             type: "static",
@@ -309,7 +331,17 @@ const MaterialsTable = memo(({ data, tags, count }: MaterialsTableProps) => {
       {
         accessorKey: "unitOfMeasureCode",
         header: t`Unit of Measure`,
-        cell: ({ row }) => <Enumerable value={row.original.unitOfMeasure} />,
+        cell: editableCell<Material>({
+          kind: "picker",
+          field: "unitOfMeasureCode",
+          update: ITEM_UPDATE,
+          value: (r) => r.unitOfMeasureCode,
+          options: unitsOfMeasure.map((u) => ({
+            value: u.value,
+            label: u.label
+          })),
+          fallbackLabel: (r) => r.unitOfMeasure
+        }),
         meta: {
           filter: {
             type: "static",
@@ -324,12 +356,30 @@ const MaterialsTable = memo(({ data, tags, count }: MaterialsTableProps) => {
       {
         accessorKey: "defaultMethodType",
         header: t`Default Method`,
-        cell: (item) => (
-          <Badge variant="secondary">
-            <MethodIcon type={item.getValue<string>()} className="mr-2" />
-            <span>{translateMethodType(item.getValue<string>())}</span>
-          </Badge>
-        ),
+        cell: editableCell<Material>({
+          kind: "enum",
+          field: "defaultMethodType",
+          update: ITEM_UPDATE,
+          value: (r) => r.defaultMethodType,
+          // Materials are bought, not made — offer only the non-Make methods.
+          options: methodType
+            .filter((type) => type !== "Make to Order")
+            .map((type) => ({
+              value: type,
+              label: (
+                <span className="flex items-center gap-2">
+                  <MethodIcon type={type} />
+                  {translateMethodType(type)}
+                </span>
+              )
+            })),
+          renderInline: (v) => (
+            <Badge variant="secondary">
+              <MethodIcon type={v} className="mr-2" />
+              <span>{translateMethodType(v)}</span>
+            </Badge>
+          )
+        }),
         meta: {
           filter: {
             type: "static",
@@ -350,13 +400,7 @@ const MaterialsTable = memo(({ data, tags, count }: MaterialsTableProps) => {
         accessorKey: "tags",
         header: t`Tags`,
         cell: ({ row }) => (
-          <HStack spacing={0} className="gap-1">
-            {(row.original.tags || []).map((tag) => (
-              <Badge key={tag} variant="secondary">
-                {tag}
-              </Badge>
-            ))}
-          </HStack>
+          <TagsCell row={row.original} table="material" availableTags={tags} />
         ),
         meta: {
           filter: {
@@ -373,7 +417,12 @@ const MaterialsTable = memo(({ data, tags, count }: MaterialsTableProps) => {
       {
         accessorKey: "active",
         header: t`Active`,
-        cell: (item) => <Checkbox isChecked={item.getValue<boolean>()} />,
+        cell: editableCell<Material>({
+          kind: "boolean",
+          field: "active",
+          update: ITEM_UPDATE,
+          value: (r) => r.active
+        }),
         meta: {
           filter: {
             type: "static",

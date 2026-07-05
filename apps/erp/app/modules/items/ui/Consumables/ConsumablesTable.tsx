@@ -1,7 +1,6 @@
 import {
   Badge,
   Button,
-  Checkbox,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuIcon,
@@ -48,6 +47,7 @@ import {
 } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { useItemPostingGroups } from "~/components/Form/ItemPostingGroup";
+import { editableCell, TagsCell } from "~/components/InlineEditor";
 import { ConfirmDelete } from "~/components/Modals";
 import { useDateFormatter, usePermissions } from "~/hooks";
 import { useCustomColumns } from "~/hooks/useCustomColumns";
@@ -57,6 +57,12 @@ import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
 import { itemTrackingTypes } from "../../items.models";
 import type { Consumable } from "../../types";
+
+// All Consumables inline edits go through the shared items bulk-update action.
+const ITEM_UPDATE = {
+  action: path.to.bulkUpdateItems,
+  idKey: "items" as const
+};
 
 type ConsumablesTableProps = {
   data: Consumable[];
@@ -138,13 +144,14 @@ const ConsumablesTable = memo(
         {
           accessorKey: "itemPostingGroupId",
           header: t`Item Group`,
-          cell: (item) => {
-            const itemPostingGroupId = item.getValue<string>();
-            const itemPostingGroup = itemPostingGroups.find(
-              (group) => group.value === itemPostingGroupId
-            );
-            return <Enumerable value={itemPostingGroup?.label ?? null} />;
-          },
+          cell: editableCell<Consumable>({
+            kind: "enum",
+            field: "itemPostingGroupId",
+            update: ITEM_UPDATE,
+            value: (r) => r.itemPostingGroupId,
+            clearable: true,
+            options: itemPostingGroups
+          }),
           meta: {
             filter: {
               type: "static",
@@ -159,12 +166,30 @@ const ConsumablesTable = memo(
         {
           accessorKey: "defaultMethodType",
           header: t`Default Method`,
-          cell: (item) => (
-            <Badge variant="secondary">
-              <MethodIcon type={item.getValue<string>()} className="mr-2" />
-              <span>{translateMethodType(item.getValue<string>())}</span>
-            </Badge>
-          ),
+          cell: editableCell<Consumable>({
+            kind: "enum",
+            field: "defaultMethodType",
+            update: ITEM_UPDATE,
+            value: (r) => r.defaultMethodType,
+            // Consumables are never made — offer only the non-Make methods.
+            options: methodType
+              .filter((type) => type !== "Make to Order")
+              .map((type) => ({
+                value: type,
+                label: (
+                  <span className="flex items-center gap-2">
+                    <MethodIcon type={type} />
+                    {translateMethodType(type)}
+                  </span>
+                )
+              })),
+            renderInline: (v) => (
+              <Badge variant="secondary">
+                <MethodIcon type={v} className="mr-2" />
+                <span>{translateMethodType(v)}</span>
+              </Badge>
+            )
+          }),
           meta: {
             filter: {
               type: "static",
@@ -184,15 +209,27 @@ const ConsumablesTable = memo(
         {
           accessorKey: "itemTrackingType",
           header: t`Tracking`,
-          cell: (item) => (
-            <Badge variant="secondary">
-              <TrackingTypeIcon
-                type={item.getValue<string>()}
-                className="mr-2"
-              />
-              <span>{translateTrackingType(item.getValue<string>())}</span>
-            </Badge>
-          ),
+          cell: editableCell<Consumable>({
+            kind: "enum",
+            field: "itemTrackingType",
+            update: ITEM_UPDATE,
+            value: (r) => r.itemTrackingType,
+            options: itemTrackingTypes.map((v) => ({
+              value: v,
+              label: (
+                <span className="flex items-center gap-2">
+                  <TrackingTypeIcon type={v} className="mr-2" />
+                  {translateTrackingType(v)}
+                </span>
+              )
+            })),
+            renderInline: (v) => (
+              <Badge variant="secondary">
+                <TrackingTypeIcon type={v} className="mr-2" />
+                <span>{translateTrackingType(v)}</span>
+              </Badge>
+            )
+          }),
           meta: {
             filter: {
               type: "static",
@@ -213,13 +250,11 @@ const ConsumablesTable = memo(
           accessorKey: "tags",
           header: t`Tags`,
           cell: ({ row }) => (
-            <HStack spacing={0} className="gap-1">
-              {row.original.tags?.map((tag) => (
-                <Badge key={tag} variant="secondary">
-                  {tag}
-                </Badge>
-              ))}
-            </HStack>
+            <TagsCell
+              row={row.original}
+              table="consumable"
+              availableTags={tags}
+            />
           ),
           meta: {
             filter: {
@@ -236,7 +271,12 @@ const ConsumablesTable = memo(
         {
           accessorKey: "active",
           header: t`Active`,
-          cell: (item) => <Checkbox isChecked={item.getValue<boolean>()} />,
+          cell: editableCell<Consumable>({
+            kind: "boolean",
+            field: "active",
+            update: ITEM_UPDATE,
+            value: (r) => r.active
+          }),
           meta: {
             filter: {
               type: "static",

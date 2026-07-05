@@ -13,6 +13,7 @@ import {
 } from "react-icons/lu";
 import { useNavigate } from "react-router";
 import { Hyperlink, Table } from "~/components";
+import { TagsCell } from "~/components/InlineEditor";
 import { useDateFormatter, usePermissions, useUrlParams } from "~/hooks";
 import type { SuggestionListItem } from "~/modules/resources";
 import { usePeople } from "~/stores";
@@ -85,13 +86,11 @@ const SuggestionsTable = memo(
           accessorKey: "tags",
           header: t`Tags`,
           cell: ({ row }) => (
-            <HStack spacing={0} className="gap-1">
-              {row.original.tags?.map((tag) => (
-                <Badge key={tag} variant="secondary">
-                  {tag}
-                </Badge>
-              ))}
-            </HStack>
+            <TagsCell
+              row={row.original}
+              table="suggestion"
+              availableTags={tags}
+            />
           ),
           meta: {
             filter: {

@@ -8,6 +8,7 @@ import {
   LuContainer,
   LuCreditCard,
   LuDollarSign,
+  LuMapPin,
   LuPencil,
   LuQrCode,
   LuStar,
@@ -16,6 +17,7 @@ import {
 } from "react-icons/lu";
 import { useNavigate } from "react-router";
 import {
+  Assignee,
   CustomerAvatar,
   EmployeeAvatar,
   Hyperlink,
@@ -23,7 +25,9 @@ import {
   New,
   Table
 } from "~/components";
-import { Enumerable } from "~/components/Enumerable";
+import { useLocations } from "~/components/Form/Location";
+import { usePaymentTerm } from "~/components/Form/PaymentTerm";
+import { editableCell } from "~/components/InlineEditor";
 import { ConfirmDelete } from "~/components/Modals";
 import {
   useCurrencyFormatter,
@@ -37,6 +41,12 @@ import { salesInvoiceStatusType } from "~/modules/invoicing";
 import { useCustomers, usePeople } from "~/stores";
 import { path } from "~/utils/path";
 import SalesInvoiceStatus from "./SalesInvoiceStatus";
+
+// Sales invoice inline edits go through the shared sales invoice bulk-update action.
+const SALES_INVOICE_UPDATE = {
+  action: path.to.bulkUpdateSalesInvoice,
+  idKey: "ids" as const
+};
 
 type SalesInvoicesTableProps = {
   data: SalesInvoice[];
@@ -58,6 +68,8 @@ const SalesInvoicesTable = memo(({ data, count }: SalesInvoicesTableProps) => {
 
   const [people] = usePeople();
   const [customers] = useCustomers();
+  const locations = useLocations();
+  const paymentTerms = usePaymentTerm();
   const customColumns = useCustomColumns<SalesInvoice>("salesInvoice");
 
   const columns = useMemo<ColumnDef<SalesInvoice>[]>(() => {
@@ -85,9 +97,15 @@ const SalesInvoicesTable = memo(({ data, count }: SalesInvoicesTableProps) => {
       {
         id: "customerId",
         header: t`Customer`,
-        cell: ({ row }) => (
-          <CustomerAvatar customerId={row.original.customerId} />
-        ),
+        cell: editableCell<SalesInvoice>({
+          kind: "picker",
+          field: "customerId",
+          update: SALES_INVOICE_UPDATE,
+          value: (r) => r.customerId,
+          options:
+            customers?.map((c) => ({ value: c.id, label: c.name })) ?? [],
+          renderInline: (v) => <CustomerAvatar customerId={v} />
+        }),
         meta: {
           filter: {
             type: "static",
@@ -119,7 +137,12 @@ const SalesInvoicesTable = memo(({ data, count }: SalesInvoicesTableProps) => {
       {
         accessorKey: "customerReference",
         header: t`Customer PO`,
-        cell: (item) => item.getValue(),
+        cell: editableCell<SalesInvoice>({
+          kind: "text",
+          field: "customerReference",
+          update: SALES_INVOICE_UPDATE,
+          value: (r) => r.customerReference
+        }),
         meta: {
           icon: <LuQrCode />
         }
@@ -158,7 +181,13 @@ const SalesInvoicesTable = memo(({ data, count }: SalesInvoicesTableProps) => {
         id: "assignee",
         header: t`Assignee`,
         cell: ({ row }) => (
-          <EmployeeAvatar employeeId={row.original.assignee} />
+          <Assignee
+            id={row.original.id ?? ""}
+            table="salesInvoice"
+            value={row.original.assignee ?? ""}
+            variant="button"
+            size="sm"
+          />
         ),
         meta: {
           filter: {
@@ -174,7 +203,13 @@ const SalesInvoicesTable = memo(({ data, count }: SalesInvoicesTableProps) => {
       {
         accessorKey: "dateIssued",
         header: t`Issued Date`,
-        cell: (item) => formatDate(item.getValue<string>()),
+        cell: editableCell<SalesInvoice>({
+          kind: "date",
+          field: "dateIssued",
+          update: SALES_INVOICE_UPDATE,
+          value: (r) => r.dateIssued,
+          renderInline: (v) => formatDate(v)
+        }),
         meta: {
           icon: <LuCalendar />
         }
@@ -182,7 +217,13 @@ const SalesInvoicesTable = memo(({ data, count }: SalesInvoicesTableProps) => {
       {
         accessorKey: "dateDue",
         header: t`Due Date`,
-        cell: (item) => formatDate(item.getValue<string>()),
+        cell: editableCell<SalesInvoice>({
+          kind: "date",
+          field: "dateDue",
+          update: SALES_INVOICE_UPDATE,
+          value: (r) => r.dateDue,
+          renderInline: (v) => formatDate(v)
+        }),
         meta: {
           icon: <LuCalendar />
         }
@@ -190,7 +231,13 @@ const SalesInvoicesTable = memo(({ data, count }: SalesInvoicesTableProps) => {
       {
         accessorKey: "datePaid",
         header: t`Paid Date`,
-        cell: (item) => formatDate(item.getValue<string>()),
+        cell: editableCell<SalesInvoice>({
+          kind: "date",
+          field: "datePaid",
+          update: SALES_INVOICE_UPDATE,
+          value: (r) => r.datePaid,
+          renderInline: (v) => formatDate(v)
+        }),
         meta: {
           icon: <LuCalendar />
         }
@@ -206,9 +253,31 @@ const SalesInvoicesTable = memo(({ data, count }: SalesInvoicesTableProps) => {
       {
         accessorKey: "paymentTermName",
         header: t`Payment Method`,
-        cell: (item) => <Enumerable value={item.getValue<string>()} />,
+        cell: editableCell<SalesInvoice>({
+          kind: "picker",
+          field: "paymentTermId",
+          update: SALES_INVOICE_UPDATE,
+          value: (r) => r.paymentTermId,
+          options: paymentTerms,
+          fallbackLabel: (r) => r.paymentTermName
+        }),
         meta: {
           icon: <LuCreditCard />
+        }
+      },
+      {
+        accessorKey: "locationName",
+        header: t`Location`,
+        cell: editableCell<SalesInvoice>({
+          kind: "picker",
+          field: "locationId",
+          update: SALES_INVOICE_UPDATE,
+          value: (r) => r.locationId,
+          options: locations,
+          fallbackLabel: (r) => r.locationName
+        }),
+        meta: {
+          icon: <LuMapPin />
         }
       },
       {
@@ -305,6 +374,7 @@ const SalesInvoicesTable = memo(({ data, count }: SalesInvoicesTableProps) => {
         defaultColumnVisibility={{
           invoiceCustomerId: false,
           paymentTermName: false,
+          locationName: false,
           dateIssued: false,
           datePaid: false,
           postingDate: false,

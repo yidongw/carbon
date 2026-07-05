@@ -1,11 +1,11 @@
 import BulkEditPermissionsForm from "./BulkEditPermissionsForm";
 import CreateEmployeeModal from "./CreateEmployeeModal";
 import EmployeePermissionsForm from "./EmployeePermissionsForm";
-import EmployeesTable from "./EmployeesTable";
+import PermissionsTable from "./PermissionsTable";
 
 export {
   BulkEditPermissionsForm,
   CreateEmployeeModal,
   EmployeePermissionsForm,
-  EmployeesTable
+  PermissionsTable
 };

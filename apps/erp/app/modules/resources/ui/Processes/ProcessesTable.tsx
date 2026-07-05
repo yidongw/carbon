@@ -30,12 +30,19 @@ import { useNavigate } from "react-router";
 import { EmployeeAvatar, Hyperlink, New, Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { useWorkCenters } from "~/components/Form/WorkCenter";
+import { editableCell } from "~/components/InlineEditor";
 import { usePermissions, useUrlParams } from "~/hooks";
 import { useCustomColumns } from "~/hooks/useCustomColumns";
 import type { Process } from "~/modules/resources";
-import { standardFactorType } from "~/modules/shared";
+import { processTypes, standardFactorType } from "~/modules/shared";
 import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
+
+// Process inline edits go through the shared process bulk-update action.
+const PROCESS_UPDATE = {
+  action: path.to.bulkUpdateProcess,
+  idKey: "ids" as const
+};
 
 type ProcessesTableProps = {
   data: Process[];
@@ -87,12 +94,27 @@ const ProcessesTable = memo(({ data, count }: ProcessesTableProps) => {
       {
         accessorKey: "processType",
         header: t`Process Type`,
-        cell: (item) =>
-          item.getValue() === "Outside" ? (
-            <Badge>Outside</Badge>
-          ) : (
-            <Badge variant="secondary">{item.getValue<string>()}</Badge>
-          ),
+        cell: editableCell<Process>({
+          kind: "enum",
+          field: "processType",
+          update: PROCESS_UPDATE,
+          value: (r) => r.processType,
+          options: processTypes.map((type) => ({
+            value: type,
+            label:
+              type === "Outside" ? (
+                <Badge>Outside</Badge>
+              ) : (
+                <Badge variant="secondary">{type}</Badge>
+              )
+          })),
+          renderInline: (v) =>
+            v === "Outside" ? (
+              <Badge>Outside</Badge>
+            ) : (
+              <Badge variant="secondary">{v}</Badge>
+            )
+        }),
         meta: {
           icon: <LuFactory />
         }
@@ -132,7 +154,17 @@ const ProcessesTable = memo(({ data, count }: ProcessesTableProps) => {
       {
         accessorKey: "defaultStandardFactor",
         header: t`Default Unit`,
-        cell: (item) => item.getValue(),
+        cell: editableCell<Process>({
+          kind: "enum",
+          field: "defaultStandardFactor",
+          update: PROCESS_UPDATE,
+          value: (r) => r.defaultStandardFactor,
+          options: standardFactorType.map((type) => ({
+            value: type,
+            label: type
+          })),
+          renderInline: (v) => <span>{v}</span>
+        }),
         meta: {
           icon: <LuRuler />,
           filter: {
@@ -166,11 +198,12 @@ const ProcessesTable = memo(({ data, count }: ProcessesTableProps) => {
       {
         accessorKey: "completeAllOnScan",
         header: t`Complete All`,
-        cell: ({ row }) => (
-          <div className="flex w-full items-center justify-center">
-            <Checkbox isChecked={row.original.completeAllOnScan ?? false} />
-          </div>
-        ),
+        cell: editableCell<Process>({
+          kind: "boolean",
+          field: "completeAllOnScan",
+          update: PROCESS_UPDATE,
+          value: (r) => r.completeAllOnScan
+        }),
         meta: {
           icon: <LuQrCode />,
           filter: {

@@ -1,3 +1,3 @@
-import PeopleTable from "./PeopleTable";
+import EmployeesTable from "./EmployeesTable";
 
-export { PeopleTable };
+export { EmployeesTable };

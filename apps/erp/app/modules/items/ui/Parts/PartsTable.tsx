@@ -1,7 +1,6 @@
 import {
   Badge,
   Button,
-  Checkbox,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuIcon,
@@ -20,6 +19,7 @@ import {
   MenuSubTrigger,
   toast,
   useDisclosure,
+  useMount,
   VStack
 } from "@carbon/react";
 
@@ -53,10 +53,12 @@ import {
   TrackingTypeIcon
 } from "~/components";
 import { ReplenishmentSystemIcon } from "~/components/Icons";
+import { editableCell, TagsCell } from "~/components/InlineEditor";
 import { ConfirmDelete } from "~/components/Modals";
 import { useDateFormatter, usePermissions } from "~/hooks";
 import { useCustomColumns } from "~/hooks/useCustomColumns";
 import type { ItemPostingGroupListItem } from "~/modules/items";
+import type { getTemplatesList } from "~/modules/items/template.service";
 import { methodType } from "~/modules/shared";
 import type { action } from "~/routes/x+/items+/update";
 import { usePeople } from "~/stores";
@@ -66,6 +68,12 @@ import {
   itemTrackingTypes
 } from "../../items.models";
 import type { Part } from "../../types";
+
+// All Parts inline edits go through the shared items bulk-update action.
+const ITEM_UPDATE = {
+  action: path.to.bulkUpdateItems,
+  idKey: "items" as const
+};
 
 type PartsTableProps = {
   data: Part[];
@@ -120,6 +128,24 @@ const PartsTable = memo(
       () => rawItemPostingGroups.map((g) => ({ value: g.id, label: g.name })),
       [rawItemPostingGroups]
     );
+
+    // Load the template list once for the whole table (the inline template editors
+    // share these options instead of each fetching on mount).
+    const templateFetcher =
+      useFetcher<Awaited<ReturnType<typeof getTemplatesList>>>();
+    useMount(() => {
+      templateFetcher.load(path.to.api.templates);
+    });
+    const templateOptions = useMemo(
+      () =>
+        (templateFetcher.data?.data ?? []).map((template) => ({
+          value: template.id,
+          label: template.name,
+          helper: template.description ?? ""
+        })),
+      [templateFetcher.data?.data]
+    );
+
     const customColumns = useCustomColumns<Part>("part");
 
     const columns = useMemo<ColumnDef<Part>[]>(() => {
@@ -156,10 +182,15 @@ const PartsTable = memo(
         {
           accessorKey: "templateName",
           header: t`Template`,
-          cell: (item) => {
-            const name = item.getValue<string | null>();
-            return name ? <Badge variant="secondary">{name}</Badge> : null;
-          },
+          cell: editableCell<Part>({
+            kind: "picker",
+            field: "templateId",
+            update: ITEM_UPDATE,
+            value: (r) => r.templateId,
+            clearable: true,
+            options: templateOptions,
+            fallbackLabel: (r) => r.templateName
+          }),
           meta: {
             icon: <LuLayoutTemplate />
           }
@@ -179,15 +210,27 @@ const PartsTable = memo(
         {
           accessorKey: "replenishmentSystem",
           header: t`Replenishment`,
-          cell: (item) => (
-            <Badge variant="secondary">
-              <ReplenishmentSystemIcon
-                type={item.getValue<string>()}
-                className="mr-2"
-              />
-              <span>{translateReplenishment(item.getValue<string>())}</span>
-            </Badge>
-          ),
+          cell: editableCell<Part>({
+            kind: "enum",
+            field: "replenishmentSystem",
+            update: ITEM_UPDATE,
+            value: (r) => r.replenishmentSystem,
+            options: itemReplenishmentSystems.map((v) => ({
+              value: v,
+              label: (
+                <span className="flex items-center gap-2">
+                  <ReplenishmentSystemIcon type={v} />
+                  {translateReplenishment(v)}
+                </span>
+              )
+            })),
+            renderInline: (v) => (
+              <Badge variant="secondary">
+                <ReplenishmentSystemIcon type={v} className="mr-2" />
+                <span>{translateReplenishment(v)}</span>
+              </Badge>
+            )
+          }),
           meta: {
             filter: {
               type: "static",
@@ -207,12 +250,36 @@ const PartsTable = memo(
         {
           accessorKey: "defaultMethodType",
           header: t`Default Method`,
-          cell: (item) => (
-            <Badge variant="secondary">
-              <MethodIcon type={item.getValue<string>()} className="mr-2" />
-              <span>{translateMethodType(item.getValue<string>())}</span>
-            </Badge>
-          ),
+          cell: editableCell<Part>({
+            kind: "enum",
+            field: "defaultMethodType",
+            update: ITEM_UPDATE,
+            value: (r) => r.defaultMethodType,
+            // Hide the method type that conflicts with the current replenishment.
+            options: (row) =>
+              methodType
+                .filter((type) => {
+                  const r = row.replenishmentSystem;
+                  if (r === "Buy") return type !== "Make to Order";
+                  if (r === "Make") return type !== "Purchase to Order";
+                  return true;
+                })
+                .map((type) => ({
+                  value: type,
+                  label: (
+                    <span className="flex items-center gap-2">
+                      <MethodIcon type={type} />
+                      {translateMethodType(type)}
+                    </span>
+                  )
+                })),
+            renderInline: (v) => (
+              <Badge variant="secondary">
+                <MethodIcon type={v} className="mr-2" />
+                <span>{translateMethodType(v)}</span>
+              </Badge>
+            )
+          }),
           meta: {
             filter: {
               type: "static",
@@ -232,15 +299,27 @@ const PartsTable = memo(
         {
           accessorKey: "itemTrackingType",
           header: t`Tracking`,
-          cell: (item) => (
-            <Badge variant="secondary">
-              <TrackingTypeIcon
-                type={item.getValue<string>()}
-                className="mr-2"
-              />
-              <span>{translateTrackingType(item.getValue<string>())}</span>
-            </Badge>
-          ),
+          cell: editableCell<Part>({
+            kind: "enum",
+            field: "itemTrackingType",
+            update: ITEM_UPDATE,
+            value: (r) => r.itemTrackingType,
+            options: itemTrackingTypes.map((v) => ({
+              value: v,
+              label: (
+                <span className="flex items-center gap-2">
+                  <TrackingTypeIcon type={v} />
+                  {translateTrackingType(v)}
+                </span>
+              )
+            })),
+            renderInline: (v) => (
+              <Badge variant="secondary">
+                <TrackingTypeIcon type={v} className="mr-2" />
+                <span>{translateTrackingType(v)}</span>
+              </Badge>
+            )
+          }),
           meta: {
             filter: {
               type: "static",
@@ -261,14 +340,14 @@ const PartsTable = memo(
         {
           accessorKey: "itemPostingGroupId",
           header: t`Item Group`,
-          cell: (item) => {
-            const itemPostingGroupId = item.getValue<string>();
-            const itemPostingGroup = itemPostingGroups.find(
-              (group) => group.value === itemPostingGroupId
-            );
-            const label = itemPostingGroup?.label;
-            return label ? <Badge variant="secondary">{label}</Badge> : null;
-          },
+          cell: editableCell<Part>({
+            kind: "enum",
+            field: "itemPostingGroupId",
+            update: ITEM_UPDATE,
+            value: (r) => r.itemPostingGroupId,
+            clearable: true,
+            options: itemPostingGroups
+          }),
           meta: {
             filter: {
               type: "static",
@@ -284,13 +363,7 @@ const PartsTable = memo(
           accessorKey: "tags",
           header: t`Tags`,
           cell: ({ row }) => (
-            <HStack spacing={0} className="gap-1">
-              {row.original.tags?.map((tag) => (
-                <Badge key={tag} variant="secondary">
-                  {tag}
-                </Badge>
-              ))}
-            </HStack>
+            <TagsCell row={row.original} table="part" availableTags={tags} />
           ),
           meta: {
             filter: {
@@ -307,7 +380,12 @@ const PartsTable = memo(
         {
           accessorKey: "active",
           header: t`Active`,
-          cell: (item) => <Checkbox isChecked={item.getValue<boolean>()} />,
+          cell: editableCell<Part>({
+            kind: "boolean",
+            field: "active",
+            update: ITEM_UPDATE,
+            value: (r) => r.active
+          }),
           meta: {
             filter: {
               type: "static",
@@ -377,6 +455,7 @@ const PartsTable = memo(
       people,
       customColumns,
       itemPostingGroups,
+      templateOptions,
       t,
       translateMethodType,
       translateReplenishment,
@@ -584,9 +663,6 @@ const PartsTable = memo(
           count={count}
           columns={columns}
           data={data}
-          getRowHref={(row) =>
-            row.id ? path.to.partDetails(row.id) : undefined
-          }
           defaultColumnPinning={{
             left: ["id"]
           }}
@@ -618,6 +694,9 @@ const PartsTable = memo(
           }
           renderActions={renderActions}
           renderContextMenu={renderContextMenu}
+          getRowHref={(row) =>
+            row.id ? path.to.partDetails(row.id) : undefined
+          }
           title={t`Parts`}
           table="part"
           withSavedView
