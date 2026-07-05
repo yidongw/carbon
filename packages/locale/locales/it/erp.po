@@ -4593,8 +4593,8 @@ msgstr "Gli ID generati sono abilitati"
 msgid "Get Method"
 msgstr "Ottieni Metodo"
 
-msgid "Getting your demo workspace ready"
-msgstr "Preparazione del workspace demo in corso"
+msgid "Getting your demo workspace ready — {total} records so far…"
+msgstr "Preparazione del workspace demo in corso — {total} record finora…"
 
 msgid "Getting your demo workspace ready…"
 msgstr "Preparazione del workspace demo in corso…"

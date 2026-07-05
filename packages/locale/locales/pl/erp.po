@@ -4593,8 +4593,8 @@ msgstr "Wygenerowane identyfikatory są włączone"
 msgid "Get Method"
 msgstr "Pobierz metodę"
 
-msgid "Getting your demo workspace ready"
-msgstr "Przygotowywanie obszaru roboczego demo"
+msgid "Getting your demo workspace ready — {total} records so far…"
+msgstr "Przygotowywanie obszaru roboczego demo — {total} rekordów do tej pory…"
 
 msgid "Getting your demo workspace ready…"
 msgstr "Przygotowywanie obszaru roboczego demo…"

@@ -4593,8 +4593,8 @@ msgstr "जेनरेट की गई आईडी सक्षम हैं"
 msgid "Get Method"
 msgstr "विधि प्राप्त करें"
 
-msgid "Getting your demo workspace ready"
-msgstr "आपका डेमो वर्कस्पेस तैयार हो रहा है"
+msgid "Getting your demo workspace ready — {total} records so far…"
+msgstr "आपका डेमो वर्कस्पेस तैयार हो रहा है — अब तक {total} रिकॉर्ड…"
 
 msgid "Getting your demo workspace ready…"
 msgstr "आपका डेमो वर्कस्पेस तैयार हो रहा है…"

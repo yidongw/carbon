@@ -92,7 +92,7 @@ export function DemoSeedTrigger({
 
     toast.loading(
       total > 0
-        ? `${t`Getting your demo workspace ready`} — ${total} records so far…`
+        ? t`Getting your demo workspace ready — ${total} records so far…`
         : t`Getting your demo workspace ready…`,
       { id: TOAST_ID, duration: Number.POSITIVE_INFINITY }
     );
