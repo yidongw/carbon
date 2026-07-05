@@ -7,14 +7,13 @@ import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useLoaderData, useLocation } from "react-router";
 import { getAttributeCategories, getPeople } from "~/modules/people";
 import { EmployeesTable } from "~/modules/people/ui/People";
-import { getEmployeeTypes } from "~/modules/users";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 import { getGenericQueryFilters } from "~/utils/query";
 
 export const handle: Handle = {
   breadcrumb: msg`Employees`,
-  to: path.to.people
+  to: `${path.to.people}?filter=${encodeURIComponent("status:eq:Active")}`
 };
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -33,15 +32,27 @@ export async function loader({ request }: LoaderFunctionArgs) {
   }
 
   const searchParams = new URLSearchParams(url.search);
+
+  // Default to active on first visit only. Once filters are cleared or removed,
+  // keep showing all employees instead of re-applying the default.
+  if (isEmployeesIndex && searchParams.toString() === "") {
+    throw redirect(
+      `${path.to.people}?filter=${encodeURIComponent("status:eq:Active")}`
+    );
+  }
+
   const search = searchParams.get("name");
 
   const { limit, offset, sorts, filters } =
     getGenericQueryFilters(searchParams);
 
-  const [attributeCategories, people, employeeTypes] = await Promise.all([
+  const [attributeCategories, people, departments] = await Promise.all([
     getAttributeCategories(client, companyId),
     getPeople(client, companyId, { search, limit, offset, sorts, filters }),
-    getEmployeeTypes(client, companyId)
+    client
+      .from("employeeSummary")
+      .select("id, departmentName")
+      .eq("companyId", companyId)
   ]);
 
   if (attributeCategories.error) {
@@ -60,12 +71,16 @@ export async function loader({ request }: LoaderFunctionArgs) {
     );
   }
 
+  const departmentByEmployeeId = Object.fromEntries(
+    (departments.data ?? []).map((d) => [d.id, d.departmentName])
+  );
+
   return {
     isEmployeesIndex: true as const,
     attributeCategories: attributeCategories.data,
-    employeeTypes: employeeTypes.data ?? [],
     people: people.data ?? [],
-    count: people.count ?? 0
+    count: people.count ?? 0,
+    departmentByEmployeeId
   };
 }
 
@@ -81,7 +96,7 @@ export default function PeopleEmployeesRoute() {
           attributeCategories={data.attributeCategories}
           data={data.people ?? []}
           count={data.count ?? 0}
-          employeeTypes={data.employeeTypes}
+          departmentByEmployeeId={data.departmentByEmployeeId}
         />
       )}
       <Outlet />

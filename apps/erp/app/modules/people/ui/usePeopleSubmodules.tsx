@@ -27,7 +27,7 @@ export default function usePeopleSubmodules() {
       routes: [
         {
           name: t`Employees`,
-          to: `${path.to.people}?filter=active:eq:true`,
+          to: path.to.people,
           icon: <LuUsers />,
           table: "employee"
         },
@@ -43,7 +43,7 @@ export default function usePeopleSubmodules() {
         },
         {
           name: t`Applications`,
-          to: `${path.to.peopleApplications}?filter=${encodeURIComponent("status:eq:pending")}`,
+          to: path.to.peopleApplications,
           icon: <LuUserCheck />
         },
         {

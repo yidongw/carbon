@@ -1,17 +1,19 @@
 #!/bin/sh
-# Fresh git worktrees / clones lack .husky/_/ until `pnpm install` runs its
-# prepare script. Without this guard the hook crashes with a cryptic
-# ".husky/_/husky.sh: No such file or directory". Skip hooks gracefully instead.
-if [ ! -f "$(dirname "$0")/_/husky.sh" ]; then
-  echo "⚠ husky not initialized — run 'pnpm install'. Skipping git hooks."
-  exit 0
-fi
 . "$(dirname "$0")/_/husky.sh"
 
 # Guard against migration-timestamp collisions (duplicate versions, or a round
 # HHMMSS like ...120000 that every branch hand-picks and then collides on).
+# Uses only built-in Node.js modules — works even without node_modules installed.
 if git diff --cached --name-only | grep -qE '^packages/database/supabase/migrations/.*\.sql$'; then
     node scripts/check-migration-timestamps.mjs || exit 1
+fi
+
+# The remaining steps require node_modules (lint-staged, pnpm lingui, tsx).
+# post-checkout symlinks node_modules from the main worktree automatically;
+# this guard is a fallback for clones that haven't run pnpm install yet.
+if [ ! -d "node_modules" ] && [ ! -L "node_modules" ]; then
+  echo "⚠ node_modules not found — skipping lint-staged and lingui checks. Run 'pnpm install'."
+  exit 0
 fi
 
 npx lint-staged
@@ -20,13 +22,13 @@ npx lint-staged
 if git diff --cached --name-only | grep -qE '\.(tsx?|jsx?)$|\.po$'; then
     echo "Compiling translations..."
     pnpm lingui:check
-    
+
     # Strip `#:` origin refs before committing — they shift on any upstream
     # code edit and are the biggest PR-conflict source. They're kept in the
     # working dir during the translate flow (linguito needs them for LLM
     # context) and only stripped right before commit.
     pnpm lingui:clean
-    
+
     # Add compiled locale files to the commit
     git add packages/locale/locales/**/*.po
     git add apps/erp/app/utils/seedDataDisplayName.ts
