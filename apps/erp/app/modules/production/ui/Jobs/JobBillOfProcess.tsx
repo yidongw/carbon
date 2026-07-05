@@ -53,7 +53,6 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { useLocale, useNumberFormatter } from "@react-aria/i18n";
 import type { DragControls } from "framer-motion";
 import {
-  AnimatePresence,
   LayoutGroup,
   motion,
   Reorder,
@@ -2373,46 +2372,44 @@ const JobBillOfProcess = ({
             )}
           </button>
         )}
-        renderExtra={() => (
-          <LayoutGroup id={`${item.id}`}>
-            <AnimatePresence mode="popLayout">
-              {isOpen ? (
-                <motion.div className="flex w-full flex-col">
-                  <div className="w-full p-2">
-                    <motion.div
-                      initial={{
-                        opacity: 0,
-                        filter: "blur(4px)"
-                      }}
-                      animate={{
-                        opacity: 1,
-                        filter: "blur(0px)"
-                      }}
-                      transition={{
-                        type: "spring",
-                        duration: 0.15
-                      }}
-                      className="w-full"
-                    >
-                      {isNewOperation ? (
-                        operationFormContent
-                      ) : (
-                        <DirectionAwareTabs
-                          className="mr-auto"
-                          initialTabId={5}
-                          tabs={tabs}
-                          onChange={() =>
-                            setTabChangeRerender(tabChangeRerender + 1)
-                          }
-                        />
-                      )}
-                    </motion.div>
-                  </div>
-                </motion.div>
-              ) : null}
-            </AnimatePresence>
-          </LayoutGroup>
-        )}
+        renderExtra={() =>
+          isOpen ? (
+            <LayoutGroup id={`${item.id}`}>
+              <div className="flex w-full flex-col">
+                <div className="w-full p-2">
+                  <motion.div
+                    initial={{
+                      opacity: 0,
+                      filter: "blur(4px)"
+                    }}
+                    animate={{
+                      opacity: 1,
+                      filter: "blur(0px)"
+                    }}
+                    transition={{
+                      type: "spring",
+                      duration: 0.15
+                    }}
+                    className="w-full"
+                  >
+                    {isNewOperation ? (
+                      operationFormContent
+                    ) : (
+                      <DirectionAwareTabs
+                        className="mr-auto"
+                        initialTabId={5}
+                        tabs={tabs}
+                        onChange={() =>
+                          setTabChangeRerender(tabChangeRerender + 1)
+                        }
+                      />
+                    )}
+                  </motion.div>
+                </div>
+              </div>
+            </LayoutGroup>
+          ) : null
+        }
       />
     );
   };
