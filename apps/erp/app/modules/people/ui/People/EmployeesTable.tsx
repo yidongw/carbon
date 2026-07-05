@@ -4,9 +4,9 @@ import { useLocale } from "@react-aria/i18n";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useMemo } from "react";
 import {
-  LuBriefcase,
   LuMail,
   LuMapPin,
+  LuNetwork,
   LuPencil,
   LuToggleRight,
   LuUser,
@@ -19,13 +19,12 @@ import { useLocations } from "~/components/Form/Location";
 import { editableCell } from "~/components/InlineEditor";
 import { useFormatPersonName, usePermissions, useUrlParams } from "~/hooks";
 import { DataType } from "~/modules/shared";
-import type { EmployeeType } from "~/modules/users";
 import { path } from "~/utils/path";
 import type { AttributeCategory, Person } from "../../types";
 
-// People inline edits fan out (firstName/lastName -> user, employeeType ->
-// employee, location -> employeeJob), keyed by user id — same as the employees
-// permissions table, so they share the employees bulk-update action.
+// People inline edits fan out (firstName/lastName -> user, location ->
+// employeeJob), keyed by user id — same as the employees permissions table,
+// so they share the employees bulk-update action.
 const PEOPLE_UPDATE = {
   action: path.to.bulkUpdateEmployee,
   idKey: "ids" as const
@@ -35,7 +34,7 @@ type EmployeesTableProps = {
   attributeCategories: AttributeCategory[];
   data: Person[];
   count: number;
-  employeeTypes: Partial<EmployeeType>[];
+  departmentByEmployeeId: Record<string, string | null>;
 };
 
 const EmployeesTable = memo(
@@ -43,7 +42,7 @@ const EmployeesTable = memo(
     attributeCategories,
     data,
     count,
-    employeeTypes
+    departmentByEmployeeId
   }: EmployeesTableProps) => {
     const { t } = useLingui();
     const { locale } = useLocale();
@@ -52,18 +51,6 @@ const EmployeesTable = memo(
     const permissions = usePermissions();
     const locations = useLocations();
     const [params] = useUrlParams();
-
-    const employeeTypesById = useMemo(
-      () =>
-        employeeTypes.reduce<Record<string, Partial<EmployeeType>>>(
-          (acc, type) => {
-            if (type.id) acc[type.id] = type;
-            return acc;
-          },
-          {}
-        ),
-      [employeeTypes]
-    );
 
     const renderGenericAttribute = useCallback(
       (
@@ -171,30 +158,11 @@ const EmployeesTable = memo(
           }
         },
         {
-          id: "employeeTypeId",
-          header: t`Employee Type`,
-          cell: editableCell<Person>({
-            kind: "picker",
-            field: "employeeTypeId",
-            update: PEOPLE_UPDATE,
-            value: (r) => r.employeeTypeId,
-            options: employeeTypes.map((type) => ({
-              value: type.id!,
-              label: <Enumerable value={type.name!} />
-            })),
-            renderInline: (v) => (
-              <Enumerable value={employeeTypesById[v]?.name as string} />
-            )
-          }),
+          id: "department",
+          header: t`Department`,
+          cell: ({ row }) => departmentByEmployeeId[row.original.id!] ?? null,
           meta: {
-            filter: {
-              type: "static",
-              options: employeeTypes.map((type) => ({
-                value: type.id!,
-                label: <Enumerable value={type.name!} />
-              }))
-            },
-            icon: <LuBriefcase />
+            icon: <LuNetwork />
           }
         },
         {
@@ -277,8 +245,7 @@ const EmployeesTable = memo(
       return [...defaultColumns, ...additionalColumns];
     }, [
       attributeCategories,
-      employeeTypes,
-      employeeTypesById,
+      departmentByEmployeeId,
       locations,
       renderGenericAttribute,
       t

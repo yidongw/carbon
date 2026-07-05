@@ -7,7 +7,6 @@ import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useLoaderData, useLocation } from "react-router";
 import { getAttributeCategories, getPeople } from "~/modules/people";
 import { EmployeesTable } from "~/modules/people/ui/People";
-import { getEmployeeTypes } from "~/modules/users";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 import { getGenericQueryFilters } from "~/utils/query";
@@ -38,10 +37,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const { limit, offset, sorts, filters } =
     getGenericQueryFilters(searchParams);
 
-  const [attributeCategories, people, employeeTypes] = await Promise.all([
+  const [attributeCategories, people, departments] = await Promise.all([
     getAttributeCategories(client, companyId),
     getPeople(client, companyId, { search, limit, offset, sorts, filters }),
-    getEmployeeTypes(client, companyId)
+    client
+      .from("employeeSummary")
+      .select("id, departmentName")
+      .eq("companyId", companyId)
   ]);
 
   if (attributeCategories.error) {
@@ -60,12 +62,16 @@ export async function loader({ request }: LoaderFunctionArgs) {
     );
   }
 
+  const departmentByEmployeeId = Object.fromEntries(
+    (departments.data ?? []).map((d) => [d.id, d.departmentName])
+  );
+
   return {
     isEmployeesIndex: true as const,
     attributeCategories: attributeCategories.data,
-    employeeTypes: employeeTypes.data ?? [],
     people: people.data ?? [],
-    count: people.count ?? 0
+    count: people.count ?? 0,
+    departmentByEmployeeId
   };
 }
 
@@ -81,7 +87,7 @@ export default function PeopleEmployeesRoute() {
           attributeCategories={data.attributeCategories}
           data={data.people ?? []}
           count={data.count ?? 0}
-          employeeTypes={data.employeeTypes}
+          departmentByEmployeeId={data.departmentByEmployeeId}
         />
       )}
       <Outlet />
