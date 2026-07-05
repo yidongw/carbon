@@ -9,8 +9,9 @@ if git diff --cached --name-only | grep -qE '^packages/database/supabase/migrati
 fi
 
 # The remaining steps require node_modules (lint-staged, pnpm lingui, tsx).
-# Skip gracefully in fresh worktrees where pnpm install hasn't been run yet.
-if [ ! -d "node_modules" ]; then
+# post-checkout symlinks node_modules from the main worktree automatically;
+# this guard is a fallback for clones that haven't run pnpm install yet.
+if [ ! -d "node_modules" ] && [ ! -L "node_modules" ]; then
   echo "⚠ node_modules not found — skipping lint-staged and lingui checks. Run 'pnpm install'."
   exit 0
 fi
