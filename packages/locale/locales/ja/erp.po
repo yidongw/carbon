@@ -772,6 +772,9 @@ msgstr "プロセス「{name}」を有効化してもよろしいですか？ド
 msgid "Are you sure you want to activate this gauge?."
 msgstr "このゲージを有効化してもよろしいですか？"
 
+msgid "Are you sure you want to approve this production completion?"
+msgstr "この生産完了を承認してもよろしいでしょうか？"
+
 #. placeholder {0}: routeData?.rfqSummary ?.rfqId!
 msgid "Are you sure you want to cancel {0}? This will also cancel all related supplier quotes."
 msgstr "{0}をキャンセルしてもよろしいですか？これにより、関連するすべてのサプライヤー見積もりもキャンセルされます。"
@@ -1911,6 +1914,9 @@ msgstr "確認"
 #. placeholder {0}: salesOrder?.salesOrderId
 msgid "Confirm {0}"
 msgstr "{0}を確認"
+
+msgid "Confirm Approval"
+msgstr "承認を確認"
 
 msgid "Confirm ID Change"
 msgstr "IDの変更を確認"
@@ -5837,9 +5843,6 @@ msgstr "MES"
 
 msgid "MES only"
 msgstr "MESのみ"
-
-msgid "MES workers get standard shop-floor access: Production, Inventory, and Quality (full); Resources, People, and Documents (view only). ERP modules are not accessible."
-msgstr "MESの作業者が標準的な工場フロアアクセスを得ます：生産、在庫、品質（完全アクセス）；リソース、人材、ドキュメント（表示のみ）。ERPモジュールは利用できません。"
 
 msgid "Message"
 msgstr "メッセージ"
