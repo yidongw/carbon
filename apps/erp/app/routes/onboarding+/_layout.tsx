@@ -1,8 +1,5 @@
-import { CarbonEdition } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { TooltipProvider, useMode } from "@carbon/react";
-import { getStripeCustomerByCompanyId } from "@carbon/stripe/stripe.server";
-import { Edition } from "@carbon/utils";
 import { MeshGradient } from "@paper-design/shaders-react";
 import { useEffect, useState } from "react";
 import type {
@@ -18,33 +15,22 @@ import { onboardingSequence, path } from "~/utils/path";
 export const shouldRevalidate: ShouldRevalidateFunction = () => true;
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const { client, companyId, userId } = await requirePermissions(request, {});
+  const { client, companyId } = await requirePermissions(request, {});
 
-  const [company, stripeCustomer, locations] = await Promise.all([
+  const [company, locations] = await Promise.all([
     getCompany(client, companyId),
-    getStripeCustomerByCompanyId(companyId, userId),
     getLocationsList(client, companyId)
   ]);
 
   const pathname = new URL(request.url).pathname;
 
+  // Onboarding is complete once the company has a name and a location. Plan
+  // selection has moved to Billing settings, so we no longer force it here.
   if (company.data?.name && locations.data?.length) {
-    if (CarbonEdition !== Edition.Cloud || stripeCustomer) {
-      throw redirect(path.to.authenticatedRoot);
-    }
-
-    if (
-      CarbonEdition === Edition.Cloud &&
-      pathname !== path.to.onboarding.plan
-    ) {
-      throw redirect(path.to.onboarding.plan);
-    }
+    throw redirect(path.to.authenticatedRoot);
   }
 
-  const onboardingSteps =
-    CarbonEdition === Edition.Cloud
-      ? onboardingSequence
-      : onboardingSequence.filter((p) => p !== path.to.onboarding.plan);
+  const onboardingSteps = onboardingSequence;
 
   const pathIndex = onboardingSteps.findIndex((p) => p === pathname);
 

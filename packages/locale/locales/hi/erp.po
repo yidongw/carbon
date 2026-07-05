@@ -89,6 +89,9 @@ msgstr "{days} दिन ({formatted})"
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB सीमा"
 
+msgid "{minSeats} user minimum"
+msgstr "{minSeats} उपयोगकर्ता न्यूनतम"
+
 msgid "{name} deleted"
 msgstr "{name} की हटाई गई है"
 
@@ -97,6 +100,9 @@ msgstr "{scopeCount} अनुमतियाँ"
 
 msgid "/month/user"
 msgstr "/माह/उपयोगकर्ता"
+
+msgid "/user/mo"
+msgstr "/उपयोगकर्ता/माह"
 
 msgid "%"
 msgstr "%"
@@ -492,6 +498,9 @@ msgstr "पंक्ति जोड़ें"
 msgid "Add rule"
 msgstr "नियम जोड़ें"
 
+msgid "Add seats"
+msgstr "सीटें जोड़ें"
+
 msgid "Add Selector"
 msgstr "चयन जोड़ें"
 
@@ -647,6 +656,9 @@ msgstr "अनोटेशन अपडेट किया गया है"
 
 msgid "Annual"
 msgstr "वार्षिक"
+
+msgid "Annual License"
+msgstr "वार्षिक लाइसेंस"
 
 msgid "Any item group"
 msgstr "किसी भी आइटम का समूह"
@@ -1354,6 +1366,10 @@ msgstr "प्रक्रिया का विधेयक"
 msgid "Bill To"
 msgstr "बिल प्राप्तकर्ता"
 
+#. placeholder {0}: formatter.format( (planDetails?.annualMonthly[currency] ?? 0) * 12 )
+msgid "Billed annually · {0}/user/yr"
+msgstr "वार्षिक बिल · {0}/उपयोगकर्ता/वर्ष"
+
 msgid "Billing"
 msgstr "बिलिंग"
 
@@ -1423,6 +1439,9 @@ msgstr "खरीदें"
 
 msgid "Buy and Make"
 msgstr "खरीदें और बनाएं"
+
+msgid "Buy seats"
+msgstr "सीटें खरीदें"
 
 msgid "Buyer"
 msgstr "क्रेता"
@@ -1607,6 +1626,9 @@ msgstr "इसे बदलने से मौजूदा विधि अध�
 msgid "Changing this will update the part ID"
 msgstr "इसे बदलने से पार्ट ID अपडेट हो जाएगा"
 
+msgid "Charged prorated for the days left in your term."
+msgstr "आपकी अवधि के शेष दिनों के लिए आनुपातिक रूप से चार्ज किया गया।"
+
 msgid "Chart of Accounts"
 msgstr "खातों की सूची"
 
@@ -1621,6 +1643,9 @@ msgstr "बच्चा संख्या चुनें"
 
 msgid "Choose a company"
 msgstr "कंपनी चुनें"
+
+msgid "Choose a plan"
+msgstr "एक प्लान चुनें"
 
 msgid "Choose a serial number"
 msgstr "चयन करें एक सीरियल नंबर"
@@ -2640,6 +2665,9 @@ msgstr "देय दिन"
 
 msgid "Days in advance to generate dispatches"
 msgstr "डिस्पैच जेनरेट करने के लिए दिनों में अग्रिम"
+
+msgid "days left"
+msgstr "दिन शेष"
 
 msgid "Days Off"
 msgstr "दिन बंद"
@@ -4492,9 +4520,6 @@ msgstr "फुट"
 
 msgid "For growing businesses that need support"
 msgstr "बढ़ते हुए व्यवसायों के लिए जिन्हें समर्थन की आवश्यकता है"
-
-msgid "For US companies handling ITAR data"
-msgstr "ITAR डेटा संभालने वाली US कंपनियों के लिए"
 
 #. placeholder {0}: forecastMethod ?? "unknown"
 msgid "Forecast method: <0>{0}</0>. This row was not derived from active jobs, so no parent sources are available."
@@ -6649,6 +6674,9 @@ msgstr "कोई नहीं"
 msgid "Normal flow"
 msgstr "नॉर्मल फ्लो"
 
+msgid "Not available"
+msgstr "उपलब्ध नहीं"
+
 msgid "Not enough jobs to cover quantity"
 msgstr "पर्याप्त नौकरियां नहीं हैं मात्रा को कवर करने के लिए"
 
@@ -6729,6 +6757,12 @@ msgstr "स्टोरेज यूनिट पर"
 
 msgid "On target"
 msgstr "अनुरूप रहें"
+
+msgid "One-time (annual)"
+msgstr "एकमुश्त (वार्षिक)"
+
+msgid "One-time annual plan, paid with WeChat Pay, Alipay, or card."
+msgstr "एकमुश्त वार्षिक प्लान, WeChat Pay, Alipay या कार्ड से भुगतान।"
 
 msgid "Onshape Status"
 msgstr "Onshape स्थिति"
@@ -7086,6 +7120,15 @@ msgstr "पेज्यू लॉज करें"
 msgid "Paused"
 msgstr "रुका हुआ"
 
+msgid "Pay 1 Year"
+msgstr "1 वर्ष भुगतान करें"
+
+msgid "Pay for one year up front with WeChat Pay, Alipay, or card. Renew before it expires."
+msgstr "WeChat Pay, Alipay या कार्ड से एक वर्ष का अग्रिम भुगतान करें। समाप्ति से पहले नवीनीकरण करें।"
+
+msgid "Pay monthly by card, charged immediately. Switch or cancel anytime."
+msgstr "कार्ड द्वारा मासिक भुगतान, तुरंत चार्ज। कभी भी स्विच या रद्द करें।"
+
 msgid "Pay period"
 msgstr "मासिक भुगतान"
 
@@ -7103,6 +7146,9 @@ msgstr "भुगतान इतिहास"
 
 msgid "Payment Method"
 msgstr "भुगतान विधि"
+
+msgid "Payment successful! Your plan is now active."
+msgstr "भुगतान सफल! आपका प्लान अब सक्रिय है।"
 
 msgid "Payment Term"
 msgstr "भुगतान अवधि"
@@ -7969,6 +8015,9 @@ msgstr "रिकॉर्ड किया गया था"
 msgid "Records"
 msgstr "रिकॉर्ड"
 
+msgid "Recurring (monthly)"
+msgstr "आवर्ती (मासिक)"
+
 msgid "Redirecting to verification page..."
 msgstr "सत्यापन पृष्ठ पर पुनः निर्देशित किया जा रहा है..."
 
@@ -8095,6 +8144,9 @@ msgstr "ट्रांसफर हटाएं"
 
 msgid "Rendering label preview..."
 msgstr "रिलीव्यू प्रतीक्षा देखने की ओर..."
+
+msgid "Renew 1 year"
+msgstr "1 वर्ष नवीनीकरण करें"
 
 msgid "Rent & Utilities (Non-Factory)"
 msgstr "किराया और सुविधाएं (नॉन-फैक्ट्री)"
@@ -8720,6 +8772,9 @@ msgstr "खोजें..."
 msgid "Searching..."
 msgstr "खोजता हैं..."
 
+msgid "Seats"
+msgstr "सीटें"
+
 msgid "Seconds/Piece"
 msgstr "सेकंड/पीस"
 
@@ -8743,10 +8798,6 @@ msgstr "एक नया मालिक चुनें"
 
 msgid "Select a plan"
 msgstr "एक योजना चुनें"
-
-#. placeholder {0}: plans[0].stripeTrialPeriodDays
-msgid "Select a plan to get started. You won't be charged for the first {0} days. Switch or cancel anytime."
-msgstr "एक योजना चुनें शुरुआत करने के लिए। आपको पहले {0} दिनों के लिए चार्ज नहीं किया जाएगा। किसी भी समय स्विच या रद्द करें।"
 
 msgid "Select a project"
 msgstr "एक प्रोजेक्ट चुनें"
@@ -9346,10 +9397,6 @@ msgstr "मानक लीड समय"
 msgid "Start"
 msgstr "शुरू करें"
 
-#. placeholder {0}: plan.stripeTrialPeriodDays
-msgid "Start {0} Day Free Trial"
-msgstr "{0} दिन की निःशुल्क परीक्षण शुरू करें"
-
 msgid "Start adding parts to your stock transfer"
 msgstr "अपने स्टॉक ट्रांसफर में पार्ट्स जोड़ना शुरू करें"
 
@@ -9364,9 +9411,6 @@ msgstr "प्रक्रिया समाप्त होने पर स�
 
 msgid "Start expiration on process start"
 msgstr "प्रक्रिया शुरुआत पर समाप्ति शुरू करें"
-
-msgid "Start Learning"
-msgstr "सीखना शुरू करें"
 
 msgid "Start Now"
 msgstr "अभी शुरू करें"
@@ -9708,9 +9752,6 @@ msgstr "टैग"
 msgid "Take the shortest remaining shelf life across the materials consumed to make this item. Use when the product's expiry depends on its ingredients."
 msgstr "इस आइटम को बनाने के लिए उपयोग की गई सामग्रियों में सबसे कम शेष शेल्फ लाइफ लें। जब उत्पाद की समाप्ति तारीख इसकी सामग्री पर निर्भर करती है तो उपयोग करें।"
 
-msgid "Talk to Sales"
-msgstr "बिक्रय टीम से बात करें"
-
 msgid "Target"
 msgstr "लक्ष्य"
 
@@ -9790,6 +9831,9 @@ msgstr "टेम्पलेट आईडी"
 
 msgid "Templates"
 msgstr "मॉडल"
+
+msgid "Term ends"
+msgstr "अवधि समाप्त होती है"
 
 msgid "Terms and Privacy"
 msgstr "शर्तें और गोपनीयता"
@@ -10141,6 +10185,9 @@ msgstr "कुल रियोकॉम्बीनेशन"
 
 msgid "Total Scrap"
 msgstr "कुल डॅपर्ट"
+
+msgid "Total shown at checkout."
+msgstr "कुल चेकआउट पर दिखाया जाएगा।"
 
 msgid "Total:"
 msgstr "कुल:"
@@ -11080,8 +11127,17 @@ msgstr "आप डीमो कंपनी में हैं — यह स�
 msgid "You're in your company."
 msgstr "आपका कंपनी में है।"
 
+msgid "You're on the free plan. Upgrade to unlock more seats and features."
+msgstr "आप निःशुल्क प्लान पर हैं। अधिक सीटें और सुविधाएं अनलॉक करने के लिए अपग्रेड करें।"
+
 msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "आप {hoursElapsed} घंटे के लिए क्लॉक इन हैं। क्या आप क्लॉक आउट करना भूल गए?"
+
+msgid "Your annual license expires in {left} days. Renew now."
+msgstr "आपका वार्षिक लाइसेंस {left} दिनों में समाप्त होगा। अभी नवीनीकरण करें।"
+
+msgid "Your annual license has expired. Renew now to restore access."
+msgstr "आपका वार्षिक लाइसेंस समाप्त हो गया है। पहुंच बहाल करने के लिए अभी नवीनीकरण करें।"
 
 msgid "Your Console PIN"
 msgstr "आपका कंसोल PIN"
