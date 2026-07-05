@@ -89,6 +89,9 @@ msgstr "{days} дней ({formatted})"
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}МБ максимум"
 
+msgid "{minSeats} user minimum"
+msgstr "Минимум {minSeats} пользователей"
+
 msgid "{name} deleted"
 msgstr "{name} удалён"
 
@@ -97,6 +100,9 @@ msgstr "{scopeCount} разрешений"
 
 msgid "/month/user"
 msgstr "/месяц/пользователь"
+
+msgid "/user/mo"
+msgstr "/пользователь/мес."
 
 msgid "%"
 msgstr "%"
@@ -492,6 +498,9 @@ msgstr "Добавить строку"
 msgid "Add rule"
 msgstr "Добавить правило"
 
+msgid "Add seats"
+msgstr "Добавить места"
+
 msgid "Add Selector"
 msgstr "Добавить селектор"
 
@@ -647,6 +656,9 @@ msgstr "Аннотация обновлена"
 
 msgid "Annual"
 msgstr "Ежегодно"
+
+msgid "Annual License"
+msgstr "Годовая лицензия"
 
 msgid "Any item group"
 msgstr "Люкая группа элементов"
@@ -1354,6 +1366,10 @@ msgstr "Спецификация процесса"
 msgid "Bill To"
 msgstr "Счет для"
 
+#. placeholder {0}: formatter.format( (planDetails?.annualMonthly[currency] ?? 0) * 12 )
+msgid "Billed annually · {0}/user/yr"
+msgstr "Ежегодная оплата · {0}/пользователь/год"
+
 msgid "Billing"
 msgstr "Выставление счетов"
 
@@ -1423,6 +1439,9 @@ msgstr "Покупка"
 
 msgid "Buy and Make"
 msgstr "Покупать и производить"
+
+msgid "Buy seats"
+msgstr "Купить места"
 
 msgid "Buyer"
 msgstr "Покупатель"
@@ -1607,6 +1626,9 @@ msgstr "Это изменение перезапишет существующи�
 msgid "Changing this will update the part ID"
 msgstr "Изменение этого обновит ID детали"
 
+msgid "Charged prorated for the days left in your term."
+msgstr "Начисляется пропорционально за оставшиеся дни вашего срока."
+
 msgid "Chart of Accounts"
 msgstr "План счетов"
 
@@ -1621,6 +1643,9 @@ msgstr "Выберите номер лота"
 
 msgid "Choose a company"
 msgstr "Выберите компанию"
+
+msgid "Choose a plan"
+msgstr "Выберите план"
 
 msgid "Choose a serial number"
 msgstr "Выберите серийный номер"
@@ -2640,6 +2665,9 @@ msgstr "Дни до оплаты"
 
 msgid "Days in advance to generate dispatches"
 msgstr "Дни заранее для создания заявок"
+
+msgid "days left"
+msgstr "дней осталось"
 
 msgid "Days Off"
 msgstr "Выходные дни"
@@ -4492,9 +4520,6 @@ msgstr "Фут"
 
 msgid "For growing businesses that need support"
 msgstr "Для растущих компаний, нуждающихся в поддержке"
-
-msgid "For US companies handling ITAR data"
-msgstr "Для компаний США, работающих с данными ITAR"
 
 #. placeholder {0}: forecastMethod ?? "unknown"
 msgid "Forecast method: <0>{0}</0>. This row was not derived from active jobs, so no parent sources are available."
@@ -6649,6 +6674,9 @@ msgstr "Нет"
 msgid "Normal flow"
 msgstr "Нормальный поток"
 
+msgid "Not available"
+msgstr "Недоступно"
+
 msgid "Not enough jobs to cover quantity"
 msgstr "Недостаточно заданий для покрытия количества"
 
@@ -6729,6 +6757,12 @@ msgstr "На складском отделении"
 
 msgid "On target"
 msgstr "На целевую"
+
+msgid "One-time (annual)"
+msgstr "Единовременно (ежегодно)"
+
+msgid "One-time annual plan, paid with WeChat Pay, Alipay, or card."
+msgstr "Единовременный годовой план, оплата через WeChat Pay, Alipay или картой."
 
 msgid "Onshape Status"
 msgstr "Статус Onshape"
@@ -7086,6 +7120,15 @@ msgstr "Приостановить"
 msgid "Paused"
 msgstr "Остановлен"
 
+msgid "Pay 1 Year"
+msgstr "Оплатить 1 год"
+
+msgid "Pay for one year up front with WeChat Pay, Alipay, or card. Renew before it expires."
+msgstr "Оплатите год вперёд через WeChat Pay, Alipay или картой. Продлите до истечения срока."
+
+msgid "Pay monthly by card, charged immediately. Switch or cancel anytime."
+msgstr "Ежемесячная оплата картой, взимается немедленно. Смените или отмените в любое время."
+
 msgid "Pay period"
 msgstr "Период оплаты"
 
@@ -7105,7 +7148,7 @@ msgid "Payment Method"
 msgstr "Способ оплаты"
 
 msgid "Payment successful! Your plan is now active."
-msgstr ""
+msgstr "Платёж прошёл успешно! Ваш план теперь активен."
 
 msgid "Payment Term"
 msgstr "Условие платежа"
@@ -7972,6 +8015,9 @@ msgstr "Написано"
 msgid "Records"
 msgstr "Записи"
 
+msgid "Recurring (monthly)"
+msgstr "Регулярно (ежемесячно)"
+
 msgid "Redirecting to verification page..."
 msgstr "Перенаправление на страницу проверки..."
 
@@ -8098,6 +8144,9 @@ msgstr "Удалить передачу"
 
 msgid "Rendering label preview..."
 msgstr "Предварительный просмотр метки..."
+
+msgid "Renew 1 year"
+msgstr "Продлить на 1 год"
 
 msgid "Rent & Utilities (Non-Factory)"
 msgstr "Сдача и услуги (Нерабочая фабрика)"
@@ -8723,6 +8772,9 @@ msgstr "Поиск..."
 msgid "Searching..."
 msgstr "Поиск..."
 
+msgid "Seats"
+msgstr "Места"
+
 msgid "Seconds/Piece"
 msgstr "Секунды/Деталь"
 
@@ -8746,10 +8798,6 @@ msgstr "Выберите нового владельца"
 
 msgid "Select a plan"
 msgstr "Выберите план"
-
-#. placeholder {0}: plans[0].stripeTrialPeriodDays
-msgid "Select a plan to get started. You won't be charged for the first {0} days. Switch or cancel anytime."
-msgstr "Выберите план для начала работы. Вам не будет выставлен счет за первые {0} дней. Переключайтесь или отменяйте в любое время."
 
 msgid "Select a project"
 msgstr "Выберите проект"
@@ -9349,10 +9397,6 @@ msgstr "Стандартное время доставки"
 msgid "Start"
 msgstr "Начать"
 
-#. placeholder {0}: plan.stripeTrialPeriodDays
-msgid "Start {0} Day Free Trial"
-msgstr "Начать {0}-дневный бесплатный пробный период"
-
 msgid "Start adding parts to your stock transfer"
 msgstr "Начните добавлять детали в ваш трансфер запасов"
 
@@ -9367,9 +9411,6 @@ msgstr "Начать истечение в конце процесса"
 
 msgid "Start expiration on process start"
 msgstr "Начать истечение срока действия при запуске процесса"
-
-msgid "Start Learning"
-msgstr "Начать обучение"
 
 msgid "Start Now"
 msgstr "Начать сейчас"
@@ -9711,9 +9752,6 @@ msgstr "Теги"
 msgid "Take the shortest remaining shelf life across the materials consumed to make this item. Use when the product's expiry depends on its ingredients."
 msgstr "Возьмите самый короткий оставшийся срок годности среди материалов, использованных для изготовления этого товара. Используйте, когда срок годности продукта зависит от его ингредиентов."
 
-msgid "Talk to Sales"
-msgstr "Поговорить с отделом продаж"
-
 msgid "Target"
 msgstr "Цель"
 
@@ -9793,6 +9831,9 @@ msgstr "ID шаблона"
 
 msgid "Templates"
 msgstr "Шаблоны"
+
+msgid "Term ends"
+msgstr "Окончание срока"
 
 msgid "Terms and Privacy"
 msgstr "Условия и конфиденциальность"
@@ -10144,6 +10185,9 @@ msgstr "Общая переработка"
 
 msgid "Total Scrap"
 msgstr "Общий брак"
+
+msgid "Total shown at checkout."
+msgstr "Итого будет показано при оформлении."
 
 msgid "Total:"
 msgstr "Итого:"
@@ -11083,8 +11127,17 @@ msgstr "Вы находитесь в демонстрационной компа
 msgid "You're in your company."
 msgstr "Вы находитесь в своей компании."
 
+msgid "You're on the free plan. Upgrade to unlock more seats and features."
+msgstr "Вы используете бесплатный план. Перейдите на платный, чтобы разблокировать больше мест и функций."
+
 msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
 msgstr "Вы отметились на работу {hoursElapsed} часов назад. Вы забыли отметиться на выход?"
+
+msgid "Your annual license expires in {left} days. Renew now."
+msgstr "Ваша годовая лицензия истекает через {left} дней. Продлите сейчас."
+
+msgid "Your annual license has expired. Renew now to restore access."
+msgstr "Ваша годовая лицензия истекла. Продлите сейчас, чтобы восстановить доступ."
 
 msgid "Your Console PIN"
 msgstr "Ваш PIN консоли"
