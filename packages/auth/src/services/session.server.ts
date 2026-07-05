@@ -98,24 +98,31 @@ export async function destroyAuthSession(request: Request) {
 /**
  * Keep the session cookie single-valued across a DOMAIN change.
  *
- * When DOMAIN is newly set, new sessions get a domain-scoped "carbon" cookie
- * while browsers may still hold the pre-transition host-only "carbon". The two
- * variants coexist, and the browser sends the older host-only one first — so
- * the server reads the stale cookie: a freshly logged-in user bounces back to
- * /login, and a host-only cookie can't be cleared by a domain-scoped logout.
+ * When DOMAIN changes, new sessions get a "carbon" cookie scoped to the new
+ * cookieDomain while browsers may still hold "carbon" under an earlier scope —
+ * host-only (DOMAIN was unset) or a narrower subdomain (a prior DOMAIN like
+ * "app.jilio.xyz" before it became "jilio.xyz"). All of these are sent together;
+ * the browser orders the older ones first, so the server reads a stale variant
+ * and the user bounces to /login — repeatedly, which surfaces as
+ * ERR_TOO_MANY_REDIRECTS ("delete your cookies").
  *
- * So whenever a response sets or clears the domain-scoped "carbon" cookie
- * (login sets it, logout clears it), also emit a host-only expiry for "carbon".
- * The stale variant is removed in the same response, leaving only the
- * domain-scoped cookie — no re-login or manual cookie clearing needed. No-op
- * when DOMAIN is unset (cookies are already host-only) or when the response
- * doesn't touch the session cookie.
+ * Fix: whenever the browser sends more than one "carbon" (stale variants
+ * present) OR a response sets/clears the domain-scoped "carbon" (login/logout),
+ * expire every variant that is NOT the current cookieDomain scope — the
+ * host-only cookie and each subdomain level between the request host and
+ * cookieDomain. Only the cookieDomain-scoped cookie survives, so the browser
+ * stops shadowing it. Self-limiting (once deduped there's a single cookie) and a
+ * no-op when DOMAIN is unset or there's nothing to reconcile.
  */
 export const cookieDomainMigrationMiddleware: MiddlewareFunction<
   Response
-> = async (_args, next) => {
+> = async ({ request }, next) => {
   const response = await next();
   if (!cookieDomain) return response;
+
+  const rawCookie = request.headers.get("Cookie") ?? "";
+  const hasStaleVariants =
+    (rawCookie.match(/(?:^|;\s*)carbon=/g)?.length ?? 0) > 1;
 
   const setCookies =
     typeof response.headers.getSetCookie === "function"
@@ -124,13 +131,26 @@ export const cookieDomainMigrationMiddleware: MiddlewareFunction<
   const touchesSessionCookie = setCookies.some(
     (c) => c.startsWith("carbon=") && /;\s*Domain=/i.test(c)
   );
-  if (touchesSessionCookie) {
-    // Expire any pre-transition host-only "carbon" (no Domain attribute → it
-    // matches the host-only cookie) so it can't shadow the domain-scoped one.
+
+  if (!hasStaleVariants && !touchesSessionCookie) return response;
+
+  // Expire the host-only variant (no Domain attribute) ...
+  response.headers.append(
+    "Set-Cookie",
+    "carbon=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax"
+  );
+  // ... and every subdomain scope between the request host and cookieDomain
+  // (e.g. "app.jilio.xyz" while cookieDomain is "jilio.xyz"), leaving only the
+  // cookieDomain-scoped cookie that the app currently writes.
+  let host = (
+    (request.headers.get("host") ?? "").split(":")[0] ?? ""
+  ).toLowerCase();
+  while (host && host !== cookieDomain && host.includes(".")) {
     response.headers.append(
       "Set-Cookie",
-      "carbon=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax"
+      `carbon=; Domain=${host}; Path=/; Max-Age=0; HttpOnly; SameSite=Lax`
     );
+    host = host.slice(host.indexOf(".") + 1);
   }
   return response;
 };
