@@ -369,7 +369,7 @@ export async function seedDemoData(
     for (const procName of wc.processes) {
       const procId = processIds[procName];
       if (!procId) continue;
-      const wcId = workCenterIds[wc.name]!;
+      const wcId = workCenterIds[wc.key]!;
       const existsLink = await client.query(
         `SELECT 1 FROM "workCenterProcess" WHERE "workCenterId" = $1 AND "processId" = $2 LIMIT 1`,
         [wcId, procId]
@@ -630,13 +630,13 @@ export async function seedDemoData(
       const rootMakeMethodId = rootMakeMethod.rows[0]?.id ?? null;
 
       const existingOp = await client.query(
-        `SELECT 1 FROM "jobOperation" WHERE "jobId" = $1 AND description = 'CNC mill bracket profile' LIMIT 1`,
+        `SELECT 1 FROM "jobOperation" WHERE "jobId" = $1 AND description = 'Milling' LIMIT 1`,
         [jobRowId]
       );
       if ((existingOp.rowCount ?? 0) === 0) {
         const opRow = await client.query<{ id: string }>(
           `INSERT INTO "jobOperation" ("jobId", "jobMakeMethodId", "order", "processId", "workCenterId", description, "laborTime", "laborUnit", "companyId", "createdBy")
-             VALUES ($1, $2, 1, $3, $4, 'CNC mill bracket profile', 30, 'Minutes/Piece'::factor, $5, $6)
+             VALUES ($1, $2, 1, $3, $4, 'Milling', 30, 'Minutes/Piece'::factor, $5, $6)
              RETURNING id`,
           [
             jobRowId,
@@ -926,7 +926,10 @@ export async function seedDemoData(
     "BEARING-6205",
     "BRACKET-001",
     "SHAFT-ASM-001",
-    "CTRL-PCB-001"
+    "CTRL-PCB-001",
+    "TSHIRT-001",
+    "JACKET-001",
+    "FABRIC-CTN-01"
   ]) {
     await client.query(
       `INSERT INTO part (id, "companyId", "createdBy")
@@ -4173,8 +4176,10 @@ export async function seedDemoData(
       //   - 30 pieces picked up to sewing station (partial batch, Navy colorway)
       //   - 20 of those already sewn (partial production)
       //   Worker still has 10 more pieces in hand.
+      // Pickup: 30 pieces (S:5+M:7+L:10+XL:5+XXL:3=30). Production: 20 sewn (S:2+M:4+L:8+XL:4+XXL:2=20).
+      // Remaining 10 still in worker's hands — pickup always ≥ production per size.
       const tshirtNavyConfig = JSON.stringify({
-        configTable: [{ S: 3, M: 6, L: 8, XL: 2, XXL: 1, color: navyColor }],
+        configTable: [{ S: 5, M: 7, L: 10, XL: 5, XXL: 3, color: navyColor }],
         configTablePrimaryKeys: L.configParams.sizeOptions
       });
       const tshirtNavyProdConfig = JSON.stringify({
@@ -5225,6 +5230,13 @@ export async function seedDemoData(
         );
         mesItemIds[itm.readableId] = r.rows[0]!.id;
       }
+      // Each MES item is type 'Part' — ensure a part record exists
+      await client.query(
+        `INSERT INTO part (id, "companyId", "createdBy")
+           VALUES ($1, $2, $3)
+           ON CONFLICT (id, "companyId") DO NOTHING`,
+        [itm.readableId, companyId, userId]
+      );
     }
 
     // ── Inspection Station 1 (dedicated QC work center) ─────────────────
@@ -5443,7 +5455,7 @@ export async function seedDemoData(
         order: 1,
         procId: cncProc,
         wcId: cncWC,
-        description: "Turn shaft to diameter",
+        description: "Turning",
         laborTime: 20,
         opStatus: "Done",
         stepName: "Check diameter to spec",
@@ -5456,7 +5468,7 @@ export async function seedDemoData(
         order: 2,
         procId: asmProc,
         wcId: asmWC,
-        description: "Assemble bearing races",
+        description: "Assembly",
         laborTime: 45,
         opStatus: "In Progress",
         stepName: "Torque bearing retainer bolts",
@@ -5469,7 +5481,7 @@ export async function seedDemoData(
         order: 3,
         procId: qiProc,
         wcId: inspWCId,
-        description: "Final inspection",
+        description: "Inspection",
         laborTime: 15,
         opStatus: "Todo",
         stepName: "Pass/fail dimensional check",
@@ -5490,7 +5502,7 @@ export async function seedDemoData(
         order: 1,
         procId: cncProc,
         wcId: cncWC,
-        description: "Machine valve ports and seats",
+        description: "Machining",
         laborTime: 35,
         opStatus: "Done",
         stepName: "Verify port dimensions",
@@ -5503,7 +5515,7 @@ export async function seedDemoData(
         order: 2,
         procId: qiProc,
         wcId: inspWCId,
-        description: "Pressure test all ports",
+        description: "Pressure Test",
         laborTime: 20,
         opStatus: "Done",
         stepName: "Record test pressure reading",
@@ -5525,7 +5537,7 @@ export async function seedDemoData(
         order: 1,
         procId: cncProc,
         wcId: cncWC,
-        description: "Hobbing and gear cutting",
+        description: "Gear Cutting",
         laborTime: 60,
         opStatus: "Paused",
         stepName: "Verify gear tooth profile",
@@ -5537,7 +5549,7 @@ export async function seedDemoData(
         order: 2,
         procId: qiProc,
         wcId: inspWCId,
-        description: "Gear runout inspection",
+        description: "Inspection",
         laborTime: 20,
         opStatus: "Todo",
         stepName: "Measure runout within tolerance",
@@ -5558,7 +5570,7 @@ export async function seedDemoData(
         order: 1,
         procId: cncProc,
         wcId: cncWC,
-        description: "Cut and prep frame members",
+        description: "Cutting",
         laborTime: 30,
         opStatus: "Done",
         stepName: "Check cut lengths to drawing",
@@ -5571,7 +5583,7 @@ export async function seedDemoData(
         order: 2,
         procId: wldProc,
         wcId: wldWC,
-        description: "Weld frame structure",
+        description: "Welding",
         laborTime: 90,
         opStatus: "In Progress",
         stepName: "Inspect weld bead quality",
@@ -5584,7 +5596,7 @@ export async function seedDemoData(
         order: 3,
         procId: asmProc,
         wcId: asmWC,
-        description: "Grind and clean welds",
+        description: "Grinding",
         laborTime: 30,
         opStatus: "Todo",
         stepName: "Surface finish within spec",
@@ -5605,7 +5617,7 @@ export async function seedDemoData(
         order: 1,
         procId: cncProc,
         wcId: cncWC,
-        description: "Machine housing bore",
+        description: "Boring",
         laborTime: 25,
         opStatus: "Done",
         stepName: "Verify bore diameter",
@@ -5618,7 +5630,7 @@ export async function seedDemoData(
         order: 2,
         procId: wldProc,
         wcId: wldWC,
-        description: "Weld mounting flanges",
+        description: "Welding",
         laborTime: 40,
         opStatus: "Done",
         stepName: "Inspect weld integrity",
@@ -5631,7 +5643,7 @@ export async function seedDemoData(
         order: 3,
         procId: asmProc,
         wcId: asmWC,
-        description: "Press fit bearing and seal",
+        description: "Press Fit",
         laborTime: 15,
         opStatus: "Done",
         stepName: "Check bearing seating force",
@@ -5644,7 +5656,7 @@ export async function seedDemoData(
         order: 4,
         procId: qiProc,
         wcId: inspWCId,
-        description: "Final QC inspection",
+        description: "QC",
         laborTime: 10,
         opStatus: "Done",
         stepName: "Sign off final inspection",
@@ -6046,6 +6058,35 @@ export async function seedDemoData(
       "   Seeded fixedAssetClass, fixedAsset, depreciationRun, trackedEntity, inspectionDocument"
     );
   }
+
+  // ─── Pickup gap fill: ensure every op with production has a pickup ──────────
+  // Any operation that recorded production without a matching pickup is filled
+  // here. Non-configurable items get qty = production qty (no config JSON).
+  // Configurable items (TSHIRT-001, JACKET-001) are excluded — their pickups
+  // are seeded explicitly with correct configuration.
+  await client.query(
+    `
+    INSERT INTO "jobOperationPickup" ("jobOperationId", "employeeId", quantity, "companyId", "createdBy")
+    SELECT DISTINCT ON (pq."jobOperationId")
+      pq."jobOperationId",
+      pq."employeeId",
+      pq.quantity,
+      pq."companyId",
+      pq."createdBy"
+    FROM "productionQuantity" pq
+    JOIN "jobOperation" jo ON jo.id = pq."jobOperationId"
+    JOIN job j ON j.id = jo."jobId"
+    JOIN item i ON i.id = j."itemId"
+    WHERE pq."companyId" = $1
+      AND i."readableId" NOT IN ('TSHIRT-001', 'JACKET-001')
+      AND NOT EXISTS (
+        SELECT 1 FROM "jobOperationPickup" jop
+        WHERE jop."jobOperationId" = pq."jobOperationId"
+      )
+    `,
+    [companyId]
+  );
+  console.log("   Pickup gap fill: added missing pickup records.");
 
   // ─── Final cleanup: remove any null-config records on configurable items ───
   // Generic seeding steps use LIMIT N queries that can accidentally pick up

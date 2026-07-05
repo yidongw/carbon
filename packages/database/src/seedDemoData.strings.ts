@@ -467,14 +467,14 @@ const en: SeedLocale = {
   },
 
   garmentOps: {
-    tshirtCutDesc: "Cut and mark fabric pieces",
-    tshirtSewDesc: "Sew panels and attach collar",
-    tshirtPressDesc: "Press and fold finished garment",
-    tshirtQiDesc: "Final quality inspection",
-    jacketCutDesc: "Cut denim panels and pockets",
-    jacketSewDesc: "Sew jacket body and attach sleeves",
-    jacketHardwareDesc: "Attach hardware and finish seams",
-    jacketQiDesc: "Final quality inspection"
+    tshirtCutDesc: "Cutting",
+    tshirtSewDesc: "Sewing",
+    tshirtPressDesc: "Pressing",
+    tshirtQiDesc: "QC",
+    jacketCutDesc: "Cutting",
+    jacketSewDesc: "Sewing",
+    jacketHardwareDesc: "Hardware",
+    jacketQiDesc: "QC"
   },
 
   mesItems: [
@@ -827,14 +827,14 @@ const zh: SeedLocale = {
   },
 
   garmentOps: {
-    tshirtCutDesc: "裁剪并标记面料",
-    tshirtSewDesc: "缝合衣片并缝接领口",
-    tshirtPressDesc: "熨烫折叠成品服装",
-    tshirtQiDesc: "最终质量检验",
-    jacketCutDesc: "裁剪牛仔布面片及口袋",
-    jacketSewDesc: "缝合夹克主体及接袖",
-    jacketHardwareDesc: "安装五金件并收口",
-    jacketQiDesc: "最终质量检验"
+    tshirtCutDesc: "裁剪",
+    tshirtSewDesc: "缝制",
+    tshirtPressDesc: "熨烫",
+    tshirtQiDesc: "质检",
+    jacketCutDesc: "裁剪",
+    jacketSewDesc: "缝制",
+    jacketHardwareDesc: "五金",
+    jacketQiDesc: "质检"
   },
 
   mesItems: [

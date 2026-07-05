@@ -37,10 +37,6 @@ msgstr "{0} (सुप्लायर)"
 msgid "{0} by {1}"
 msgstr "{0} द्वारा {1}"
 
-#. placeholder {0}: c.customers
-msgid "{0} customers"
-msgstr "{0} कार्यालयों"
-
 #. placeholder {0}: rule.escalationDays
 msgid "{0} days"
 msgstr "{0} दिन"
@@ -55,11 +51,6 @@ msgstr "{0} सफलतापूर्वक हटाया गया"
 msgid "{0} invited you to join as {1}."
 msgstr "{0} आपको {1} के साथ जुड़ने में इवाई किया है।"
 
-#. placeholder {0}: c.jobs
-msgid "{0} jobs"
-msgstr "{0} कार्य"
-
-#. placeholder {0}: c.salesOrders
 #. placeholder {0}: history.length
 msgid "{0} orders"
 msgstr "{0} ऑर्डर"
@@ -72,10 +63,6 @@ msgstr "{0} गोल्ड से अधिक"
 msgid "{0} Processes"
 msgstr "{0} प्रक्रियाएं"
 
-#. placeholder {0}: c.items
-msgid "{0} products"
-msgstr "{0} उत्पाद"
-
 #. placeholder {0}: selectedIds.length
 msgid "{0} selected"
 msgstr "{0} चुना गया"
@@ -83,10 +70,6 @@ msgstr "{0} चुना गया"
 #. placeholder {0}: fmt(Math.abs(diff))
 msgid "{0} short of goal"
 msgstr "{0} लाम्बे हैंgoals"
-
-#. placeholder {0}: c.suppliers
-msgid "{0} suppliers"
-msgstr "{0} विक्रेता"
 
 #. placeholder {0}: percentFormatter.format(line.taxPercent ?? 0)
 msgid "{0} Tax"
@@ -1422,10 +1405,6 @@ msgstr "खोज़ किताब"
 
 msgid "Bucket"
 msgstr "बकेट"
-
-#. placeholder {0}: parts.join(", ")
-msgid "Building your demo — {0} so far…"
-msgstr "आपका डेमो बन रहा है — अब तक {0}…"
 
 msgid "Buildings"
 msgstr "बिल्डिंगस्"
@@ -4613,6 +4592,12 @@ msgstr "जेनरेट की गई आईडी सक्षम हैं"
 
 msgid "Get Method"
 msgstr "विधि प्राप्त करें"
+
+msgid "Getting your demo workspace ready"
+msgstr "आपका डेमो वर्कस्पेस तैयार हो रहा है"
+
+msgid "Getting your demo workspace ready…"
+msgstr "आपका डेमो वर्कस्पेस तैयार हो रहा है…"
 
 msgid "Given name is shown first"
 msgstr "दी गई नाम पहले दिखाई जाता है"
