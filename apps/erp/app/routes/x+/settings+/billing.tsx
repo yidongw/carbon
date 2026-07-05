@@ -113,6 +113,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
     request.headers.get("cf-ipcountry") ??
     null;
 
+  const url = new URL(request.url);
+  const paymentSuccess = url.searchParams.get("payment") === "success";
+
   return {
     plan: companyPlan.data,
     usage: companyUsage.data,
@@ -120,7 +123,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
     plans: (allPlans.data ?? []).filter(
       (p) => p.public && SELLABLE_PLAN_IDS.includes(p.id)
     ),
-    ipCountry
+    ipCountry,
+    paymentSuccess
   };
 }
 
@@ -277,7 +281,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
 // This route now only handles actions - UI is in the company route
 export default function PaymentSettings() {
-  const { plan, usage, employees, plans, ipCountry } =
+  const { plan, usage, employees, plans, ipCountry, paymentSuccess } =
     useLoaderData<typeof loader>();
   const isOneTime = plan?.paymentMode === "one_time";
   // A company has an active paid plan if it has a subscription or a purchased
@@ -301,6 +305,11 @@ export default function PaymentSettings() {
         <Heading size="h3">
           <Trans>Billing</Trans>
         </Heading>
+        {paymentSuccess && (
+          <div className="w-full rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+            <Trans>Payment successful! Your plan is now active.</Trans>
+          </div>
+        )}
         {edition === Edition.Cloud && isOwner() && (
           <>
             {!hasPlan ? (
@@ -547,11 +556,11 @@ function OneTimePlanCard({
         </VStack>
       </CardContent>
       <CardFooter>
-        <VStack spacing={4} className="w-full">
-          <Form method="post" action={path.to.billing} className="w-full">
+        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Form method="post" action={path.to.billing}>
             <input type="hidden" name="intent" value="renew-annual" />
             <input type="hidden" name="quantity" value={renewSeats} />
-            <HStack spacing={2} className="items-end">
+            <div className="flex items-end gap-2">
               <div className="w-28">
                 <Label htmlFor="renewSeats">
                   <Trans>Seats</Trans>
@@ -569,14 +578,14 @@ function OneTimePlanCard({
               <Button type="submit">
                 <Trans>Renew 1 year</Trans>
               </Button>
-            </HStack>
+            </div>
           </Form>
 
-          <div className="w-full">
-            <Form method="post" action={path.to.billing} className="w-full">
+          <div>
+            <Form method="post" action={path.to.billing}>
               <input type="hidden" name="intent" value="buy-seats" />
               <input type="hidden" name="quantity" value={addSeats} />
-              <HStack spacing={2} className="items-end">
+              <div className="flex items-end gap-2">
                 <div className="w-28">
                   <Label htmlFor="addSeats">
                     <Trans>Add seats</Trans>
@@ -594,13 +603,13 @@ function OneTimePlanCard({
                 <Button variant="secondary" type="submit">
                   <Trans>Buy seats</Trans>
                 </Button>
-              </HStack>
+              </div>
             </Form>
             <p className="text-xs text-muted-foreground mt-1">
               <Trans>Charged prorated for the days left in your term.</Trans>
             </p>
           </div>
-        </VStack>
+        </div>
       </CardFooter>
     </Card>
   );

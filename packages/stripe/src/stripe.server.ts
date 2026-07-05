@@ -340,8 +340,8 @@ export async function getCheckoutUrl({
       customer: stripeCustomerId,
       line_items: lineItems,
       mode: "payment",
-      success_url: `${getAppUrl()}/api/webhook/stripe`,
-      cancel_url: `${getAppUrl()}/api/webhook/stripe`,
+      success_url: `${getAppUrl()}/x/settings/billing?payment=success`,
+      cancel_url: `${getAppUrl()}/x/settings/billing`,
       payment_method_types: ["card", "wechat_pay", "alipay"],
       payment_method_options: { wechat_pay: { client: "web" } },
       // "auto" only collects billing address when required (e.g. card fraud rules).
@@ -375,8 +375,8 @@ export async function getCheckoutUrl({
       }
     ],
     mode: "subscription",
-    success_url: `${getAppUrl()}/api/webhook/stripe`,
-    cancel_url: `${getAppUrl()}/api/webhook/stripe`,
+    success_url: `${getAppUrl()}/x/settings/billing?payment=success`,
+    cancel_url: `${getAppUrl()}/x/settings/billing`,
     payment_method_types: ["card", "us_bank_account", "cashapp"],
     billing_address_collection: "required",
     automatic_tax: { enabled: true },
