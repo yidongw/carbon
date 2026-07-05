@@ -6059,30 +6059,43 @@ export async function seedDemoData(
     );
   }
 
-  // ─── Pickup gap fill: ensure every op with production has a pickup ──────────
-  // Any operation that recorded production without a matching pickup is filled
-  // here. Non-configurable items get qty = production qty (no config JSON).
+  // ─── Pickup gap fill: ensure every op with production has pickup >= production ─
+  // Two cases:
+  //   1. No pickup at all → insert one with qty = total production qty.
+  //   2. Pickup exists but total pickup qty < total production qty → insert a
+  //      top-up record to close the gap.
   // Configurable items (TSHIRT-001, JACKET-001) are excluded — their pickups
-  // are seeded explicitly with correct configuration.
+  // are seeded explicitly with correct per-config-param quantities.
   await client.query(
     `
     INSERT INTO "jobOperationPickup" ("jobOperationId", "employeeId", quantity, "companyId", "createdBy")
-    SELECT DISTINCT ON (pq."jobOperationId")
-      pq."jobOperationId",
-      pq."employeeId",
-      pq.quantity,
-      pq."companyId",
-      pq."createdBy"
-    FROM "productionQuantity" pq
-    JOIN "jobOperation" jo ON jo.id = pq."jobOperationId"
-    JOIN job j ON j.id = jo."jobId"
-    JOIN item i ON i.id = j."itemId"
-    WHERE pq."companyId" = $1
-      AND i."readableId" NOT IN ('TSHIRT-001', 'JACKET-001')
-      AND NOT EXISTS (
-        SELECT 1 FROM "jobOperationPickup" jop
-        WHERE jop."jobOperationId" = pq."jobOperationId"
-      )
+    SELECT
+      agg."jobOperationId",
+      agg."employeeId",
+      agg."prodTotal" - COALESCE(agg."pickupTotal", 0),
+      agg."companyId",
+      agg."createdBy"
+    FROM (
+      SELECT
+        pq."jobOperationId",
+        MAX(pq."employeeId")      AS "employeeId",
+        SUM(pq.quantity)          AS "prodTotal",
+        MAX(pq."companyId")       AS "companyId",
+        MAX(pq."createdBy")       AS "createdBy",
+        (
+          SELECT COALESCE(SUM(jop.quantity), 0)
+          FROM "jobOperationPickup" jop
+          WHERE jop."jobOperationId" = pq."jobOperationId"
+        )                         AS "pickupTotal"
+      FROM "productionQuantity" pq
+      JOIN "jobOperation" jo ON jo.id = pq."jobOperationId"
+      JOIN job j ON j.id = jo."jobId"
+      JOIN item i ON i.id = j."itemId"
+      WHERE pq."companyId" = $1
+        AND i."readableId" NOT IN ('TSHIRT-001', 'JACKET-001')
+      GROUP BY pq."jobOperationId"
+    ) agg
+    WHERE agg."prodTotal" > COALESCE(agg."pickupTotal", 0)
     `,
     [companyId]
   );
