@@ -5,11 +5,16 @@ import type { ComponentProps } from "react";
 import { useMemo } from "react";
 import { Link } from "react-router";
 import { Greeting } from "~/components/Greeting";
-import { useModules } from "~/hooks";
+import { useModules, useSettingsModule } from "~/hooks";
 import type { Authenticated, NavItem } from "~/types";
 
 export default function AppIndexRoute() {
   const modules = useModules();
+  const settingsModule = useSettingsModule();
+  const allModules = useMemo(
+    () => (settingsModule ? [...modules, settingsModule] : modules),
+    [modules, settingsModule]
+  );
   const { locale } = useLocale();
   const date = new Date();
 
@@ -27,7 +32,7 @@ export default function AppIndexRoute() {
       <Subheading>{formatter.format(date)}</Subheading>
       <Hr />
       <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,300px),1fr))] gap-6 mb-8">
-        {modules.map((module) => (
+        {allModules.map((module) => (
           <ModuleCard key={module.key} module={module} />
         ))}
       </div>
