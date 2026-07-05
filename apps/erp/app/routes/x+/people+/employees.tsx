@@ -6,7 +6,7 @@ import { msg } from "@lingui/core/macro";
 import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useLoaderData, useLocation } from "react-router";
 import { getAttributeCategories, getPeople } from "~/modules/people";
-import { PeopleTable } from "~/modules/people/ui/People";
+import { EmployeesTable } from "~/modules/people/ui/People";
 import { getEmployeeTypes } from "~/modules/users";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
@@ -77,7 +77,7 @@ export default function PeopleEmployeesRoute() {
   return (
     <VStack spacing={0} className="h-full">
       {isEmployeesIndex && data.isEmployeesIndex && (
-        <PeopleTable
+        <EmployeesTable
           attributeCategories={data.attributeCategories}
           data={data.people ?? []}
           count={data.count ?? 0}

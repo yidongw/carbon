@@ -110,10 +110,22 @@ export async function action({ request }: ActionFunctionArgs) {
           updatedAt: new Date().toISOString()
         })
         .in("id", ids as string[]);
+    // shippingMethodId lives on salesOrderShipment (joined ss.id = salesOrder.id)
+    case "shippingMethodId":
     case "receiptPromisedDate":
     case "receiptRequestedDate":
       return await client
         .from("salesOrderShipment")
+        .update({
+          [field]: value ? value : null,
+          updatedBy: userId,
+          updatedAt: new Date().toISOString()
+        })
+        .in("id", ids as string[]);
+    // paymentTermId lives on salesOrderPayment (joined sp.id = salesOrder.id)
+    case "paymentTermId":
+      return await client
+        .from("salesOrderPayment")
         .update({
           [field]: value ? value : null,
           updatedBy: userId,

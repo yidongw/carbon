@@ -13,11 +13,18 @@ import {
 import { useNavigate } from "react-router";
 import { Hyperlink, New, Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
+import { editableCell } from "~/components/InlineEditor";
 import { usePermissions, useUrlParams } from "~/hooks";
 import { useCustomColumns } from "~/hooks/useCustomColumns";
 import { path } from "~/utils/path";
 import { paymentTermsCalculationMethod } from "../../accounting.models";
 import type { PaymentTerm } from "../../types";
+
+// Payment-term inline edits go through the shared bulk-update action.
+const PAYMENT_TERM_UPDATE = {
+  action: path.to.bulkUpdatePaymentTerm,
+  idKey: "ids" as const
+};
 
 type PaymentTermsTableProps = {
   data: PaymentTerm[];
@@ -48,7 +55,12 @@ const PaymentTermsTable = memo(({ data, count }: PaymentTermsTableProps) => {
       {
         accessorKey: "daysDue",
         header: t`Days Due`,
-        cell: (item) => item.getValue(),
+        cell: editableCell<PaymentTerm>({
+          kind: "text",
+          field: "daysDue",
+          update: PAYMENT_TERM_UPDATE,
+          value: (r) => (r.daysDue != null ? String(r.daysDue) : "")
+        }),
         meta: {
           icon: <LuCalendar />
         }
@@ -56,7 +68,12 @@ const PaymentTermsTable = memo(({ data, count }: PaymentTermsTableProps) => {
       {
         accessorKey: "daysDiscount",
         header: t`Days Discount`,
-        cell: (item) => item.getValue(),
+        cell: editableCell<PaymentTerm>({
+          kind: "text",
+          field: "daysDiscount",
+          update: PAYMENT_TERM_UPDATE,
+          value: (r) => (r.daysDiscount != null ? String(r.daysDiscount) : "")
+        }),
         meta: {
           icon: <LuCalendar />
         }
@@ -64,7 +81,13 @@ const PaymentTermsTable = memo(({ data, count }: PaymentTermsTableProps) => {
       {
         accessorKey: "discountPercentage",
         header: t`Discount Percentage`,
-        cell: (item) => item.getValue(),
+        cell: editableCell<PaymentTerm>({
+          kind: "text",
+          field: "discountPercentage",
+          update: PAYMENT_TERM_UPDATE,
+          value: (r) =>
+            r.discountPercentage != null ? String(r.discountPercentage) : ""
+        }),
         meta: {
           icon: <LuPercent />
         }
@@ -72,7 +95,17 @@ const PaymentTermsTable = memo(({ data, count }: PaymentTermsTableProps) => {
       {
         accessorKey: "calculationMethod",
         header: t`Calculation Method`,
-        cell: (item) => <Enumerable value={item.getValue<string>()} />,
+        cell: editableCell<PaymentTerm>({
+          kind: "enum",
+          field: "calculationMethod",
+          update: PAYMENT_TERM_UPDATE,
+          value: (r) => r.calculationMethod,
+          options: paymentTermsCalculationMethod.map((v) => ({
+            value: v,
+            label: <Enumerable value={v} />
+          })),
+          renderInline: (v) => <Enumerable value={v} />
+        }),
         meta: {
           filter: {
             type: "static",

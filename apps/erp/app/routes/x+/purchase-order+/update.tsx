@@ -83,13 +83,25 @@ export async function action({ request }: ActionFunctionArgs) {
           updatedAt: new Date().toISOString()
         })
         .in("id", ids as string[]);
+    // locationId / shippingMethodId live on purchaseOrderDelivery (pd.id = po.id)
     case "receiptRequestedDate":
     case "locationId":
+    case "shippingMethodId":
     case "deliveryDate":
       return await client
         .from("purchaseOrderDelivery")
         .update({
-          [field]: value ?? undefined,
+          [field]: value ? value : null,
+          updatedBy: userId,
+          updatedAt: new Date().toISOString()
+        })
+        .in("id", ids as string[]);
+    // paymentTermId lives on purchaseOrderPayment (pp.id = po.id)
+    case "paymentTermId":
+      return await client
+        .from("purchaseOrderPayment")
+        .update({
+          [field]: value ? value : null,
           updatedBy: userId,
           updatedAt: new Date().toISOString()
         })

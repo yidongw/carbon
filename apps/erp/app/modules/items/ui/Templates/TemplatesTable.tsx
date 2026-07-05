@@ -5,8 +5,15 @@ import { memo, useCallback, useMemo } from "react";
 import { LuPencil } from "react-icons/lu";
 import { useNavigate } from "react-router";
 import { Hyperlink, New, Table } from "~/components";
+import { editableCell } from "~/components/InlineEditor";
 import { usePermissions, useUrlParams } from "~/hooks";
 import { path } from "~/utils/path";
+
+// Templates are items; description inline edits go through the items action.
+const ITEM_UPDATE = {
+  action: path.to.bulkUpdateItems,
+  idKey: "items" as const
+};
 
 type TemplateRow = {
   id: string;
@@ -61,7 +68,12 @@ const TemplatesTable = memo(({ data, count }: TemplatesTableProps) => {
       {
         accessorKey: "description",
         header: t`Description`,
-        cell: (item) => item.getValue()
+        cell: editableCell<TemplateRow>({
+          kind: "text",
+          field: "description",
+          update: ITEM_UPDATE,
+          value: (r) => r.description
+        })
       }
     ];
   }, [params, t]);

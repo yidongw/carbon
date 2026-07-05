@@ -1,4 +1,4 @@
-import { Combobox, HStack, MenuIcon, MenuItem } from "@carbon/react";
+import { Combobox, MenuIcon, MenuItem } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useMemo } from "react";
@@ -15,9 +15,10 @@ import {
   LuUser
 } from "react-icons/lu";
 import { useNavigate } from "react-router";
-import { EmployeeAvatar, Hyperlink, New, Table } from "~/components";
+import { Assignee, EmployeeAvatar, Hyperlink, New, Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { useWorkCenters } from "~/components/Form/WorkCenters";
+import { editableCell } from "~/components/InlineEditor";
 import { useDateFormatter, usePermissions, useUrlParams } from "~/hooks";
 import { usePeople } from "~/stores";
 import type { ListItem } from "~/types";
@@ -33,6 +34,12 @@ import MaintenanceOeeImpact from "./MaintenanceOeeImpact";
 import MaintenancePriority from "./MaintenancePriority";
 import MaintenanceSource from "./MaintenanceSource";
 import MaintenanceStatus from "./MaintenanceStatus";
+
+// Maintenance dispatch inline edits go through the shared update action.
+const MAINTENANCE_UPDATE = {
+  action: path.to.maintenanceDispatchUpdate,
+  idKey: "ids" as const
+};
 
 type MaintenanceDispatchesTableProps = {
   data: MaintenanceDispatch[];
@@ -88,23 +95,22 @@ const MaintenanceDispatchesTable = memo(
         {
           accessorKey: "workCenterId",
           header: t`Work Center`,
-          cell: ({ row }) => {
-            const workCenterId = row.original.workCenterId;
-            if (!workCenterId) {
-              return <span className="text-muted-foreground">Unassigned</span>;
-            }
-            const workCenter = workCenters.find(
-              (wc) => wc.value === workCenterId
-            );
-            if (!workCenter) {
-              return <span className="text-muted-foreground">Unknown</span>;
-            }
-            return (
-              <Hyperlink to={path.to.workCenter(workCenterId)}>
-                <Enumerable value={workCenter.label} />
-              </Hyperlink>
-            );
-          },
+          cell: editableCell<MaintenanceDispatch>({
+            kind: "picker",
+            field: "workCenterId",
+            update: MAINTENANCE_UPDATE,
+            value: (r) => r.workCenterId,
+            clearable: true,
+            options: workCenters.map((wc) => ({
+              value: wc.value,
+              label: <Enumerable value={wc.label} />
+            })),
+            renderInline: (v) => (
+              <Enumerable
+                value={workCenters.find((wc) => wc.value === v)?.label ?? null}
+              />
+            )
+          }),
           meta: {
             icon: <LuBuilding />,
             filter: {
@@ -119,10 +125,21 @@ const MaintenanceDispatchesTable = memo(
         {
           accessorKey: "source",
           header: t`Source`,
-          cell: (item) => {
-            const source = item.getValue<(typeof maintenanceSource)[number]>();
-            return <MaintenanceSource source={source} />;
-          },
+          cell: editableCell<MaintenanceDispatch>({
+            kind: "enum",
+            field: "source",
+            update: MAINTENANCE_UPDATE,
+            value: (r) => r.source,
+            options: maintenanceSource.map((source) => ({
+              value: source,
+              label: <MaintenanceSource source={source} />
+            })),
+            renderInline: (v) => (
+              <MaintenanceSource
+                source={v as (typeof maintenanceSource)[number]}
+              />
+            )
+          }),
           meta: {
             icon: <LuDna />,
             filter: {
@@ -137,11 +154,21 @@ const MaintenanceDispatchesTable = memo(
         {
           accessorKey: "status",
           header: t`Status`,
-          cell: (item) => {
-            const status =
-              item.getValue<(typeof maintenanceDispatchStatus)[number]>();
-            return <MaintenanceStatus status={status} />;
-          },
+          cell: editableCell<MaintenanceDispatch>({
+            kind: "enum",
+            field: "status",
+            update: MAINTENANCE_UPDATE,
+            value: (r) => r.status,
+            options: maintenanceDispatchStatus.map((status) => ({
+              value: status,
+              label: <MaintenanceStatus status={status} />
+            })),
+            renderInline: (v) => (
+              <MaintenanceStatus
+                status={v as (typeof maintenanceDispatchStatus)[number]}
+              />
+            )
+          }),
           meta: {
             icon: <LuStar />,
             filter: {
@@ -157,11 +184,21 @@ const MaintenanceDispatchesTable = memo(
         {
           accessorKey: "priority",
           header: t`Priority`,
-          cell: (item) => {
-            const priority =
-              item.getValue<(typeof maintenanceDispatchPriority)[number]>();
-            return <MaintenancePriority priority={priority} />;
-          },
+          cell: editableCell<MaintenanceDispatch>({
+            kind: "enum",
+            field: "priority",
+            update: MAINTENANCE_UPDATE,
+            value: (r) => r.priority,
+            options: maintenanceDispatchPriority.map((priority) => ({
+              value: priority,
+              label: <MaintenancePriority priority={priority} />
+            })),
+            renderInline: (v) => (
+              <MaintenancePriority
+                priority={v as (typeof maintenanceDispatchPriority)[number]}
+              />
+            )
+          }),
           meta: {
             icon: <LuChartNoAxesColumnIncreasing />,
             filter: {
@@ -177,10 +214,21 @@ const MaintenanceDispatchesTable = memo(
         {
           accessorKey: "oeeImpact",
           header: t`OEE Impact`,
-          cell: (item) => {
-            const impact = item.getValue<(typeof oeeImpact)[number]>();
-            return <MaintenanceOeeImpact oeeImpact={impact} />;
-          },
+          cell: editableCell<MaintenanceDispatch>({
+            kind: "enum",
+            field: "oeeImpact",
+            update: MAINTENANCE_UPDATE,
+            value: (r) => r.oeeImpact,
+            options: oeeImpact.map((impact) => ({
+              value: impact,
+              label: <MaintenanceOeeImpact oeeImpact={impact} />
+            })),
+            renderInline: (v) => (
+              <MaintenanceOeeImpact
+                oeeImpact={v as (typeof oeeImpact)[number]}
+              />
+            )
+          }),
           meta: {
             icon: <LuChartNoAxesColumnIncreasing />,
             filter: {
@@ -195,10 +243,14 @@ const MaintenanceDispatchesTable = memo(
         {
           accessorKey: "plannedStartTime",
           header: t`Planned Start`,
-          cell: ({ row }) => {
-            const date = row.original.plannedStartTime;
-            return date ? formatDate(date) : "-";
-          },
+          cell: editableCell<MaintenanceDispatch>({
+            kind: "date",
+            field: "plannedStartTime",
+            update: MAINTENANCE_UPDATE,
+            value: (r) => r.plannedStartTime,
+            withTime: true,
+            renderInline: (v) => formatDate(v)
+          }),
           meta: {
             icon: <LuCalendar />
           }
@@ -206,17 +258,15 @@ const MaintenanceDispatchesTable = memo(
         {
           accessorKey: "assignee",
           header: t`Assignee`,
-          cell: ({ row }) => {
-            const assignee = row.original.assignee;
-            if (!assignee) {
-              return <span className="text-muted-foreground">Unassigned</span>;
-            }
-            return (
-              <HStack>
-                <EmployeeAvatar employeeId={assignee} size="xs" />
-              </HStack>
-            );
-          },
+          cell: ({ row }) => (
+            <Assignee
+              id={row.original.id ?? ""}
+              table="maintenanceDispatch"
+              value={row.original.assignee ?? ""}
+              variant="button"
+              size="sm"
+            />
+          ),
           meta: {
             icon: <LuUser />
           }
@@ -224,16 +274,22 @@ const MaintenanceDispatchesTable = memo(
         {
           accessorKey: "actualFailureModeId",
           header: t`Actual Failure Mode`,
-          cell: ({ row }) => {
-            const actualFailureModeId = row.original.actualFailureModeId;
-            const failureMode = failureModes.find(
-              (mode) => mode.id === actualFailureModeId
-            );
-            if (!actualFailureModeId) {
-              return null;
-            }
-            return <Enumerable value={failureMode?.name ?? null} />;
-          },
+          cell: editableCell<MaintenanceDispatch>({
+            kind: "picker",
+            field: "actualFailureModeId",
+            update: MAINTENANCE_UPDATE,
+            value: (r) => r.actualFailureModeId,
+            clearable: true,
+            options: failureModes.map((mode) => ({
+              value: mode.id,
+              label: <Enumerable value={mode.name} />
+            })),
+            renderInline: (v) => (
+              <Enumerable
+                value={failureModes.find((m) => m.id === v)?.name ?? null}
+              />
+            )
+          }),
           meta: {
             icon: <LuCircleAlert />,
             filter: {
@@ -248,16 +304,22 @@ const MaintenanceDispatchesTable = memo(
         {
           accessorKey: "suspectedFailureModeId",
           header: t`Suspected Failure Mode`,
-          cell: ({ row }) => {
-            const suspectedFailureModeId = row.original.suspectedFailureModeId;
-            const failureMode = failureModes.find(
-              (mode) => mode.id === suspectedFailureModeId
-            );
-            if (!suspectedFailureModeId) {
-              return null;
-            }
-            return <Enumerable value={failureMode?.name ?? null} />;
-          },
+          cell: editableCell<MaintenanceDispatch>({
+            kind: "picker",
+            field: "suspectedFailureModeId",
+            update: MAINTENANCE_UPDATE,
+            value: (r) => r.suspectedFailureModeId,
+            clearable: true,
+            options: failureModes.map((mode) => ({
+              value: mode.id,
+              label: <Enumerable value={mode.name} />
+            })),
+            renderInline: (v) => (
+              <Enumerable
+                value={failureModes.find((m) => m.id === v)?.name ?? null}
+              />
+            )
+          }),
           meta: {
             icon: <LuCircleAlert />,
             filter: {

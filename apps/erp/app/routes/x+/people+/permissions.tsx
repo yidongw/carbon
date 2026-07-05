@@ -6,10 +6,10 @@ import { msg } from "@lingui/core/macro";
 import type { LoaderFunctionArgs } from "react-router";
 import { redirect, useLoaderData } from "react-router";
 import {
-  EmployeesTable,
   getEmployees,
   getEmployeeTypes,
-  getUnrevokedInviteEmails
+  getUnrevokedInviteEmails,
+  PermissionsTable
 } from "~/modules/users";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
@@ -87,7 +87,7 @@ export default function PeoplePermissionsRoute() {
 
   return (
     <VStack spacing={0} className="h-full">
-      <EmployeesTable
+      <PermissionsTable
         data={employees}
         count={count}
         employeeTypes={employeeTypes}

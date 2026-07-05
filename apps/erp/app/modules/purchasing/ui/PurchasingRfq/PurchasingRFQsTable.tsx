@@ -13,8 +13,10 @@ import {
   LuUser
 } from "react-icons/lu";
 import { useNavigate } from "react-router";
-import { EmployeeAvatar, Hyperlink, New, Table } from "~/components";
+import { Assignee, EmployeeAvatar, Hyperlink, New, Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
+import { useLocations } from "~/components/Form/Location";
+import { editableCell } from "~/components/InlineEditor";
 import { ConfirmDelete } from "~/components/Modals";
 import { useDateFormatter, usePermissions } from "~/hooks";
 import { useCustomColumns } from "~/hooks/useCustomColumns";
@@ -23,6 +25,12 @@ import { path } from "~/utils/path";
 import { purchasingRfqStatusType } from "../../purchasing.models";
 import type { PurchasingRFQ } from "../../types";
 import { PurchasingRFQStatus } from ".";
+
+// Purchasing RFQ inline edits go through the shared bulk-update action.
+const PURCHASING_RFQ_UPDATE = {
+  action: path.to.bulkUpdatePurchasingRfq,
+  idKey: "ids" as const
+};
 
 type PurchasingRFQsTableProps = {
   data: PurchasingRFQ[];
@@ -43,6 +51,7 @@ const PurchasingRFQsTable = memo(
 
     // const [suppliers] = useSuppliers();
     const [people] = usePeople();
+    const locations = useLocations();
 
     const customColumns = useCustomColumns<PurchasingRFQ>("purchasingRfq");
     const columns = useMemo<ColumnDef<PurchasingRFQ>[]>(() => {
@@ -120,7 +129,13 @@ const PurchasingRFQsTable = memo(
         {
           accessorKey: "rfqDate",
           header: t`RFQ Date`,
-          cell: (item) => formatDate(item.getValue<string>()),
+          cell: editableCell<PurchasingRFQ>({
+            kind: "date",
+            field: "rfqDate",
+            update: PURCHASING_RFQ_UPDATE,
+            value: (r) => r.rfqDate,
+            renderInline: (v) => formatDate(v)
+          }),
           meta: {
             icon: <LuCalendar />
           }
@@ -128,7 +143,13 @@ const PurchasingRFQsTable = memo(
         {
           accessorKey: "expirationDate",
           header: t`Due Date`,
-          cell: (item) => formatDate(item.getValue<string>()),
+          cell: editableCell<PurchasingRFQ>({
+            kind: "date",
+            field: "expirationDate",
+            update: PURCHASING_RFQ_UPDATE,
+            value: (r) => r.expirationDate,
+            renderInline: (v) => formatDate(v)
+          }),
           meta: {
             icon: <LuCalendar />
           }
@@ -137,7 +158,13 @@ const PurchasingRFQsTable = memo(
           id: "assignee",
           header: t`Assignee`,
           cell: ({ row }) => (
-            <EmployeeAvatar employeeId={row.original.assignee} />
+            <Assignee
+              id={row.original.id ?? ""}
+              table="purchasingRfq"
+              value={row.original.assignee ?? ""}
+              variant="button"
+              size="sm"
+            />
           ),
           meta: {
             filter: {
@@ -170,7 +197,14 @@ const PurchasingRFQsTable = memo(
         {
           accessorKey: "locationName",
           header: t`Location`,
-          cell: (item) => <Enumerable value={item.getValue<string>()} />,
+          cell: editableCell<PurchasingRFQ>({
+            kind: "picker",
+            field: "locationId",
+            update: PURCHASING_RFQ_UPDATE,
+            value: (r) => r.locationId,
+            options: locations,
+            fallbackLabel: (r) => r.locationName
+          }),
           meta: {
             filter: {
               type: "fetcher",
@@ -220,7 +254,15 @@ const PurchasingRFQsTable = memo(
       ];
 
       return [...defaultColumns, ...customColumns];
-    }, [people, customColumns, suppliers.find, suppliers.map, t, formatDate]);
+    }, [
+      people,
+      locations,
+      customColumns,
+      suppliers.find,
+      suppliers.map,
+      t,
+      formatDate
+    ]);
 
     const renderContextMenu = useMemo(() => {
       return (row: PurchasingRFQ) => (

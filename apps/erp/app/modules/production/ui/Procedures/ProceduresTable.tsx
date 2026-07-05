@@ -3,7 +3,6 @@ import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-  HStack,
   MenuIcon,
   MenuItem,
   useDisclosure
@@ -24,14 +23,22 @@ import {
 } from "react-icons/lu";
 import { TbRoute } from "react-icons/tb";
 import { useNavigate } from "react-router";
-import { EmployeeAvatar, Hyperlink, New, Table } from "~/components";
+import { Assignee, Hyperlink, New, Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { useProcesses } from "~/components/Form/Process";
+import { editableCell, TagsCell } from "~/components/InlineEditor";
 import { ConfirmDelete } from "~/components/Modals";
 import { usePermissions } from "~/hooks";
 import { path } from "~/utils/path";
+import { procedureStatus } from "../../production.models";
 import type { Procedures } from "../../types";
 import ProcedureStatus from "./ProcedureStatus";
+
+// Procedure inline edits go through the shared procedure bulk-update action.
+const PROCEDURE_UPDATE = {
+  action: path.to.bulkUpdateProcedure,
+  idKey: "ids" as const
+};
 
 type ProceduresTableProps = {
   data: Procedures[];
@@ -90,7 +97,19 @@ const ProceduresTable = memo(({ data, tags, count }: ProceduresTableProps) => {
       {
         accessorKey: "status",
         header: t`Status`,
-        cell: ({ row }) => <ProcedureStatus status={row.original.status} />,
+        cell: editableCell<Procedures>({
+          kind: "enum",
+          field: "status",
+          update: PROCEDURE_UPDATE,
+          value: (r) => r.status,
+          options: procedureStatus.map((status) => ({
+            value: status,
+            label: <ProcedureStatus status={status} />
+          })),
+          renderInline: (v) => (
+            <ProcedureStatus status={v as (typeof procedureStatus)[number]} />
+          )
+        }),
         meta: {
           icon: <LuCalendar />
         }
@@ -99,7 +118,13 @@ const ProceduresTable = memo(({ data, tags, count }: ProceduresTableProps) => {
         accessorKey: "assignee",
         header: t`Assignee`,
         cell: ({ row }) => (
-          <EmployeeAvatar employeeId={row.original.assignee} />
+          <Assignee
+            id={row.original.id ?? ""}
+            table="procedure"
+            value={row.original.assignee ?? ""}
+            variant="button"
+            size="sm"
+          />
         ),
         meta: {
           icon: <LuUser />
@@ -109,13 +134,7 @@ const ProceduresTable = memo(({ data, tags, count }: ProceduresTableProps) => {
         accessorKey: "tags",
         header: t`Tags`,
         cell: ({ row }) => (
-          <HStack spacing={0} className="gap-1">
-            {row.original.tags?.map((tag) => (
-              <Badge key={tag} variant="secondary">
-                {tag}
-              </Badge>
-            ))}
-          </HStack>
+          <TagsCell row={row.original} table="procedure" availableTags={tags} />
         ),
         meta: {
           filter: {

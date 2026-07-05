@@ -1,7 +1,6 @@
 import {
   Badge,
   Button,
-  Checkbox,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuIcon,
@@ -53,6 +52,7 @@ import {
 } from "~/components";
 import { useItemPostingGroups } from "~/components/Form/ItemPostingGroup";
 import { ReplenishmentSystemIcon } from "~/components/Icons";
+import { editableCell, TagsCell } from "~/components/InlineEditor";
 import { ConfirmDelete } from "~/components/Modals";
 import { useDateFormatter, usePermissions } from "~/hooks";
 import { useCustomColumns } from "~/hooks/useCustomColumns";
@@ -65,6 +65,12 @@ import {
   itemTrackingTypes
 } from "../../items.models";
 import type { Tool } from "../../types";
+
+// All Tools inline edits go through the shared items bulk-update action.
+const ITEM_UPDATE = {
+  action: path.to.bulkUpdateItems,
+  idKey: "items" as const
+};
 
 type ToolsTableProps = {
   data: Tool[];
@@ -152,14 +158,14 @@ const ToolsTable = memo(({ data, tags, count }: ToolsTableProps) => {
       {
         accessorKey: "itemPostingGroupId",
         header: t`Item Group`,
-        cell: (item) => {
-          const itemPostingGroupId = item.getValue<string>();
-          const itemPostingGroup = itemPostingGroups.find(
-            (group) => group.value === itemPostingGroupId
-          );
-          const label = itemPostingGroup?.label;
-          return label ? <Badge variant="secondary">{label}</Badge> : null;
-        },
+        cell: editableCell<Tool>({
+          kind: "enum",
+          field: "itemPostingGroupId",
+          update: ITEM_UPDATE,
+          value: (r) => r.itemPostingGroupId,
+          clearable: true,
+          options: itemPostingGroups
+        }),
         meta: {
           filter: {
             type: "static",
@@ -175,15 +181,27 @@ const ToolsTable = memo(({ data, tags, count }: ToolsTableProps) => {
       {
         accessorKey: "replenishmentSystem",
         header: t`Replenishment`,
-        cell: (item) => (
-          <Badge variant="secondary">
-            <ReplenishmentSystemIcon
-              type={item.getValue<string>()}
-              className="mr-2"
-            />
-            <span>{translateReplenishment(item.getValue<string>())}</span>
-          </Badge>
-        ),
+        cell: editableCell<Tool>({
+          kind: "enum",
+          field: "replenishmentSystem",
+          update: ITEM_UPDATE,
+          value: (r) => r.replenishmentSystem,
+          options: itemReplenishmentSystems.map((v) => ({
+            value: v,
+            label: (
+              <span className="flex items-center gap-2">
+                <ReplenishmentSystemIcon type={v} />
+                {translateReplenishment(v)}
+              </span>
+            )
+          })),
+          renderInline: (v) => (
+            <Badge variant="secondary">
+              <ReplenishmentSystemIcon type={v} className="mr-2" />
+              <span>{translateReplenishment(v)}</span>
+            </Badge>
+          )
+        }),
         meta: {
           filter: {
             type: "static",
@@ -203,12 +221,35 @@ const ToolsTable = memo(({ data, tags, count }: ToolsTableProps) => {
       {
         accessorKey: "defaultMethodType",
         header: t`Default Method`,
-        cell: (item) => (
-          <Badge variant="secondary">
-            <MethodIcon type={item.getValue<string>()} className="mr-2" />
-            <span>{translateMethodType(item.getValue<string>())}</span>
-          </Badge>
-        ),
+        cell: editableCell<Tool>({
+          kind: "enum",
+          field: "defaultMethodType",
+          update: ITEM_UPDATE,
+          value: (r) => r.defaultMethodType,
+          options: (row) =>
+            methodType
+              .filter((type) => {
+                const r = row.replenishmentSystem;
+                if (r === "Buy") return type !== "Make to Order";
+                if (r === "Make") return type !== "Purchase to Order";
+                return true;
+              })
+              .map((type) => ({
+                value: type,
+                label: (
+                  <span className="flex items-center gap-2">
+                    <MethodIcon type={type} />
+                    {translateMethodType(type)}
+                  </span>
+                )
+              })),
+          renderInline: (v) => (
+            <Badge variant="secondary">
+              <MethodIcon type={v} className="mr-2" />
+              <span>{translateMethodType(v)}</span>
+            </Badge>
+          )
+        }),
         meta: {
           filter: {
             type: "static",
@@ -228,12 +269,27 @@ const ToolsTable = memo(({ data, tags, count }: ToolsTableProps) => {
       {
         accessorKey: "itemTrackingType",
         header: t`Tracking`,
-        cell: (item) => (
-          <Badge variant="secondary">
-            <TrackingTypeIcon type={item.getValue<string>()} className="mr-2" />
-            <span>{translateTrackingType(item.getValue<string>())}</span>
-          </Badge>
-        ),
+        cell: editableCell<Tool>({
+          kind: "enum",
+          field: "itemTrackingType",
+          update: ITEM_UPDATE,
+          value: (r) => r.itemTrackingType,
+          options: itemTrackingTypes.map((v) => ({
+            value: v,
+            label: (
+              <span className="flex items-center gap-2">
+                <TrackingTypeIcon type={v} />
+                {translateTrackingType(v)}
+              </span>
+            )
+          })),
+          renderInline: (v) => (
+            <Badge variant="secondary">
+              <TrackingTypeIcon type={v} className="mr-2" />
+              <span>{translateTrackingType(v)}</span>
+            </Badge>
+          )
+        }),
         meta: {
           filter: {
             type: "static",
@@ -254,13 +310,7 @@ const ToolsTable = memo(({ data, tags, count }: ToolsTableProps) => {
         accessorKey: "tags",
         header: t`Tags`,
         cell: ({ row }) => (
-          <HStack spacing={0} className="gap-1">
-            {row.original.tags?.map((tag) => (
-              <Badge key={tag} variant="secondary">
-                {tag}
-              </Badge>
-            ))}
-          </HStack>
+          <TagsCell row={row.original} table="tool" availableTags={tags} />
         ),
         meta: {
           filter: {
@@ -277,7 +327,12 @@ const ToolsTable = memo(({ data, tags, count }: ToolsTableProps) => {
       {
         accessorKey: "active",
         header: t`Active`,
-        cell: (item) => <Checkbox isChecked={item.getValue<boolean>()} />,
+        cell: editableCell<Tool>({
+          kind: "boolean",
+          field: "active",
+          update: ITEM_UPDATE,
+          value: (r) => r.active
+        }),
         meta: {
           filter: {
             type: "static",

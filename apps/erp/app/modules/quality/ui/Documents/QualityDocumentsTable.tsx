@@ -4,7 +4,6 @@ import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-  HStack,
   MenuIcon,
   MenuItem,
   toast,
@@ -26,12 +25,20 @@ import {
   LuUser
 } from "react-icons/lu";
 import { useFetcher, useNavigate } from "react-router";
-import { EmployeeAvatar, Hyperlink, New, Table } from "~/components";
+import { Assignee, Hyperlink, New, Table } from "~/components";
+import { editableCell, TagsCell } from "~/components/InlineEditor";
 import { ConfirmDelete } from "~/components/Modals";
 import { usePermissions } from "~/hooks";
 import { path } from "~/utils/path";
+import { qualityDocumentStatus } from "../../quality.models";
 import type { QualityDocuments } from "../../types";
 import QualityDocumentStatus from "./QualityDocumentStatus";
+
+// Quality document inline edits go through the shared bulk-update action.
+const QUALITY_DOCUMENT_UPDATE = {
+  action: path.to.bulkUpdateQualityDocument,
+  idKey: "ids" as const
+};
 
 type QualityDocumentsTableProps = {
   data: QualityDocuments[];
@@ -82,9 +89,21 @@ const QualityDocumentsTable = memo(
         {
           accessorKey: "status",
           header: t`Status`,
-          cell: ({ row }) => (
-            <QualityDocumentStatus status={row.original.status} />
-          ),
+          cell: editableCell<QualityDocuments>({
+            kind: "enum",
+            field: "status",
+            update: QUALITY_DOCUMENT_UPDATE,
+            value: (r) => r.status,
+            options: qualityDocumentStatus.map((v) => ({
+              value: v,
+              label: <QualityDocumentStatus status={v} />
+            })),
+            renderInline: (v) => (
+              <QualityDocumentStatus
+                status={v as (typeof qualityDocumentStatus)[number]}
+              />
+            )
+          }),
           meta: {
             icon: <LuCalendar />
           }
@@ -93,7 +112,13 @@ const QualityDocumentsTable = memo(
           accessorKey: "assignee",
           header: t`Assignee`,
           cell: ({ row }) => (
-            <EmployeeAvatar employeeId={row.original.assignee} />
+            <Assignee
+              id={row.original.id ?? ""}
+              table="qualityDocument"
+              value={row.original.assignee ?? ""}
+              variant="button"
+              size="sm"
+            />
           ),
           meta: {
             icon: <LuUser />
@@ -103,13 +128,11 @@ const QualityDocumentsTable = memo(
           accessorKey: "tags",
           header: t`Tags`,
           cell: ({ row }) => (
-            <HStack spacing={0} className="gap-1">
-              {row.original.tags?.map((tag) => (
-                <Badge key={tag} variant="secondary">
-                  {tag}
-                </Badge>
-              ))}
-            </HStack>
+            <TagsCell
+              row={row.original}
+              table="qualityDocument"
+              availableTags={tags}
+            />
           ),
           meta: {
             filter: {

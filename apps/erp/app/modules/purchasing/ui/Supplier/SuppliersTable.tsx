@@ -1,7 +1,6 @@
 import {
   Badge,
   Button,
-  HStack,
   MenuIcon,
   MenuItem,
   useDisclosure
@@ -34,6 +33,7 @@ import {
 } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { useSupplierTypes } from "~/components/Form/SupplierType";
+import { editableCell, TagsCell } from "~/components/InlineEditor";
 import { ConfirmDelete } from "~/components/Modals";
 import { useCompanySettings, useDateFormatter, usePermissions } from "~/hooks";
 import { useCustomColumns } from "~/hooks/useCustomColumns";
@@ -42,6 +42,12 @@ import { supplierStatusType } from "~/modules/purchasing";
 import { SupplierStatusIndicator } from "~/modules/purchasing/ui/Supplier/SupplierStatusIndicator";
 import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
+
+// Supplier inline edits go through the shared supplier bulk-update action.
+const SUPPLIER_UPDATE = {
+  action: path.to.bulkUpdateSupplier,
+  idKey: "ids" as const
+};
 
 type SuppliersTableProps = {
   data: Supplier[];
@@ -97,10 +103,21 @@ const SuppliersTable = memo(({ data, count, tags }: SuppliersTableProps) => {
       {
         accessorKey: "status",
         header: t`Supplier Status`,
-        cell: (item) => (
-          // @ts-expect-error TS2322 - TODO: fix type
-          <SupplierStatusIndicator status={item.getValue<string>()} />
-        ),
+        cell: editableCell<Supplier>({
+          kind: "enum",
+          field: "supplierStatus",
+          update: SUPPLIER_UPDATE,
+          value: (r) => r.status,
+          options: supplierStatusType.map((status) => ({
+            value: status,
+            label: <SupplierStatusIndicator status={status} />
+          })),
+          renderInline: (v) => (
+            <SupplierStatusIndicator
+              status={v as (typeof supplierStatusType)[number]}
+            />
+          )
+        }),
         meta: {
           filter: {
             type: "static",
@@ -115,13 +132,17 @@ const SuppliersTable = memo(({ data, count, tags }: SuppliersTableProps) => {
       {
         accessorKey: "supplierTypeId",
         header: t`Type`,
-        cell: (item) => {
-          if (!item.getValue<string>()) return null;
-          const supplierType = supplierTypes?.find(
-            (type) => type.value === item.getValue<string>()
-          )?.label;
-          return <Enumerable value={supplierType ?? ""} />;
-        },
+        cell: editableCell<Supplier>({
+          kind: "picker",
+          field: "supplierTypeId",
+          update: SUPPLIER_UPDATE,
+          value: (r) => r.supplierTypeId,
+          clearable: true,
+          options: supplierTypes ?? [],
+          renderInline: (v) => (
+            <>{supplierTypes?.find((st) => st.value === v)?.label}</>
+          )
+        }),
         meta: {
           icon: <LuShapes />,
           filter: {
@@ -136,9 +157,18 @@ const SuppliersTable = memo(({ data, count, tags }: SuppliersTableProps) => {
       {
         id: "accountManagerId",
         header: t`Account Manager`,
-        cell: ({ row }) => (
-          <EmployeeAvatar employeeId={row.original.accountManagerId} />
-        ),
+        cell: editableCell<Supplier>({
+          kind: "picker",
+          field: "accountManagerId",
+          update: SUPPLIER_UPDATE,
+          value: (r) => r.accountManagerId,
+          clearable: true,
+          options: people.map((employee) => ({
+            value: employee.id,
+            label: employee.name
+          })),
+          renderInline: (v) => <EmployeeAvatar employeeId={v} />
+        }),
         meta: {
           filter: {
             type: "static",
@@ -154,13 +184,7 @@ const SuppliersTable = memo(({ data, count, tags }: SuppliersTableProps) => {
         accessorKey: "tags",
         header: t`Tags`,
         cell: ({ row }) => (
-          <HStack spacing={0} className="gap-1">
-            {row.original.tags?.map((tag) => (
-              <Badge key={tag} variant="secondary">
-                {tag}
-              </Badge>
-            ))}
-          </HStack>
+          <TagsCell row={row.original} table="supplier" availableTags={tags} />
         ),
         meta: {
           filter: {
@@ -185,7 +209,12 @@ const SuppliersTable = memo(({ data, count, tags }: SuppliersTableProps) => {
       {
         accessorKey: "phone",
         header: t`Phone`,
-        cell: (item) => item.getValue(),
+        cell: editableCell<Supplier>({
+          kind: "text",
+          field: "phone",
+          update: SUPPLIER_UPDATE,
+          value: (r) => r.phone
+        }),
         meta: {
           icon: <LuPhone />
         }
@@ -193,7 +222,12 @@ const SuppliersTable = memo(({ data, count, tags }: SuppliersTableProps) => {
       {
         accessorKey: "fax",
         header: t`Fax`,
-        cell: (item) => item.getValue(),
+        cell: editableCell<Supplier>({
+          kind: "text",
+          field: "fax",
+          update: SUPPLIER_UPDATE,
+          value: (r) => r.fax
+        }),
         meta: {
           icon: <LuPrinter />
         }
@@ -201,7 +235,12 @@ const SuppliersTable = memo(({ data, count, tags }: SuppliersTableProps) => {
       {
         accessorKey: "website",
         header: t`Website`,
-        cell: (item) => item.getValue(),
+        cell: editableCell<Supplier>({
+          kind: "text",
+          field: "website",
+          update: SUPPLIER_UPDATE,
+          value: (r) => r.website
+        }),
         meta: {
           icon: <LuGlobe />
         }
