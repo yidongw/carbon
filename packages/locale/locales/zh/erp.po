@@ -4593,8 +4593,8 @@ msgstr "生成的ID已启用"
 msgid "Get Method"
 msgstr "获取方法"
 
-msgid "Getting your demo workspace ready"
-msgstr "正在准备您的演示工作区"
+msgid "Getting your demo workspace ready — {total} records so far…"
+msgstr ""
 
 msgid "Getting your demo workspace ready…"
 msgstr "正在准备您的演示工作区……"
