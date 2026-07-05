@@ -10,9 +10,11 @@
 # Find the primary worktree (first entry in `git worktree list`).
 main=$(git worktree list --porcelain | awk '/^worktree /{print $2; exit}')
 
-if [ -d "$main/node_modules" ]; then
-  ln -s "$main/node_modules" node_modules
-  echo "→ symlinked node_modules from $main"
-else
-  echo "⚠ No node_modules found in $main — run 'pnpm install' there first."
+# Ensure the primary worktree has node_modules, running pnpm install if needed.
+if [ ! -d "$main/node_modules" ]; then
+  echo "→ node_modules missing in $main — running pnpm install..."
+  (cd "$main" && pnpm install --frozen-lockfile)
 fi
+
+ln -s "$main/node_modules" node_modules
+echo "→ symlinked node_modules from $main"
