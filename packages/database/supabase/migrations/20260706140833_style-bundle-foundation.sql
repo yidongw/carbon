@@ -3,6 +3,11 @@ ALTER TYPE "payableLineType" ADD VALUE IF NOT EXISTS 'Style';
 ALTER TYPE "purchaseOrderLineType" ADD VALUE IF NOT EXISTS 'Style';
 ALTER TYPE "salesInvoiceLineType" ADD VALUE IF NOT EXISTS 'Style';
 
+-- Postgres will not let the rest of this migration reference newly-added enum
+-- values until the current transaction commits.
+COMMIT;
+BEGIN;
+
 ALTER TABLE "purchaseInvoiceLine" DROP CONSTRAINT IF EXISTS "purchaseInvoiceLines_lineType_check";
 ALTER TABLE "purchaseInvoiceLine"
 ADD CONSTRAINT "purchaseInvoiceLines_lineType_check"

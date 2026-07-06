@@ -241,3 +241,14 @@ Patterns learned from corrections. Review at the start of each session.
   user and their clients to validate.
 - Rule: once the domain terminology is established by the user, normalize all planning/spec language to that
   vocabulary and sweep older docs for stale wording before continuing implementation.
+
+## Postgres enum migrations: commit before using new values
+
+- If a migration does `ALTER TYPE ... ADD VALUE` and then immediately uses that new enum value in constraints,
+  views, inserts, or functions in the same migration, Postgres can reject it because the new enum value is not
+  safe to use until the transaction commits.
+- Real failure here: the `Style` migration added `'Style'` to several enums and then immediately referenced
+  `'Style'` in invoice/purchase checks and the new `styles` view. The app code deployed, but preview DB never
+  got `public.style` / `public.styles` because the migration failed before those objects were created.
+- Rule: either split enum additions into an earlier migration or insert an explicit `COMMIT; BEGIN;` boundary
+  before the first use of the new enum values.
