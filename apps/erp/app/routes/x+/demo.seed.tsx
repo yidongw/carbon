@@ -2,21 +2,29 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { resolveLanguage } from "@carbon/locale";
 import { getPreferenceHeaders } from "@carbon/utils";
+import { waitUntil } from "@vercel/functions";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { runDemoSeed } from "~/services/demoSeed.server";
 
 /**
  * Seeds the current user's demo company with sample data, and reports progress.
  *
- * Why a detached server run (not Inngest): the foxhole previews and Community
- * self-hosted deployments serve Inngest functions but aren't registered with
- * Inngest Cloud, so an inngest event never gets executed there. A long-running
- * Node server keeps a non-awaited promise alive, so we run the seed inline-detached.
- * (For serverless/Cloud this would need an Inngest job or platform waitUntil.)
+ * The seed runs via `waitUntil` from `@vercel/functions`, which on Vercel keeps
+ * the serverless function alive after the response is sent (up to `maxDuration`).
+ * On long-running Node servers (foxhole, self-hosted) `waitUntil` is a no-op
+ * that falls back to background execution, matching the prior `void` behaviour.
+ *
+ * `maxDuration: 300` tells Vercel to allow up to 5 minutes for this route's
+ * function — enough headroom for the ~3-minute seed.
  *
  * GET  → { status, counts } for the progress toast to poll.
  * POST → atomically claims a `pending` demo and kicks off the detached seed.
  */
+
+// Vercel route config: isolate this route into its own server bundle with a
+// 5-minute execution limit so the background seed isn't cut off by the default
+// 60-second serverless timeout.
+export const config = { maxDuration: 300 };
 
 async function getProgressCounts(
   client: ReturnType<typeof getCarbonServiceRole>,
@@ -68,17 +76,47 @@ async function getProgressCounts(
   return { items, total };
 }
 
+// A seed that has been "seeding" for longer than this is assumed to have been
+// killed by the runtime (e.g. Vercel cold-killing a timed-out function before
+// waitUntil / maxDuration was in place). The loader auto-repairs so the
+// progress toast doesn't loop forever.
+const SEED_STALE_MS = 15 * 60 * 1000; // 15 minutes
+
 export async function loader({ request }: LoaderFunctionArgs) {
   const { client, companyId } = await requirePermissions(request, {});
   const { data: demoRow } = await client
     .from("demoCompany")
-    .select("id, seedStatus")
+    .select("id, seedStatus, updatedAt")
     .eq("id", companyId)
     .maybeSingle();
 
   if (!demoRow) {
     return { status: "none" as const, counts: null };
   }
+
+  // Auto-repair: if a seed has been stuck in "seeding" for longer than
+  // SEED_STALE_MS the background task was almost certainly killed. Heal the
+  // status so the UI can recover without requiring a user page reload.
+  if (demoRow.seedStatus === "seeding") {
+    const age = Date.now() - new Date(demoRow.updatedAt).getTime();
+    if (age > SEED_STALE_MS) {
+      const admin = getCarbonServiceRole();
+      const { count: itemCount } = await admin
+        .from("item")
+        .select("id", { count: "exact", head: true })
+        .eq("companyId", companyId);
+      const repairedStatus = (itemCount ?? 0) > 0 ? "seeded" : "pending";
+      await admin
+        .from("demoCompany")
+        .update({ seedStatus: repairedStatus })
+        .eq("id", companyId);
+      return {
+        status: repairedStatus,
+        counts: await getProgressCounts(client, companyId)
+      };
+    }
+  }
+
   return {
     status: (demoRow.seedStatus ?? "pending") as string,
     counts: await getProgressCounts(client, companyId)
@@ -151,13 +189,16 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const language = resolveLanguage(getPreferenceHeaders(request).locale);
 
-  // Detached: don't await — the server keeps it running after the response.
-  void runDemoSeed({
-    companyId: demo.id,
-    userId,
-    locationId: location.id,
-    language
-  });
+  // waitUntil: on Vercel keeps the serverless function alive after the response;
+  // on long-running Node servers behaves like `void` (background execution).
+  waitUntil(
+    runDemoSeed({
+      companyId: demo.id,
+      userId,
+      locationId: location.id,
+      language
+    })
+  );
 
   return { status: "seeding" };
 }
