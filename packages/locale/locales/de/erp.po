@@ -207,6 +207,9 @@ msgstr "Eine Auftragszeile enthält Bestelldetails für einen bestimmten Artikel
 msgid "A sales request for quote (RFQ) is a customer inquiry for pricing on a set of parts and quantities. It may result in a quote."
 msgstr "Eine Verkaufsanfrage (RFQ) ist eine Kundenanfrage zur Preisgestaltung für eine Reihe von Teilen und Mengen. Sie kann zu einem Angebot führen."
 
+msgid "A style contains the information about a garment or footwear item that is cut, bundled, and produced downstream."
+msgstr ""
+
 msgid "A tool is a physical item used to make a part that can be used across multiple jobs"
 msgstr "Ein Werkzeug ist ein physischer Gegenstand, der zur Herstellung eines Teils verwendet wird und über mehrere Aufträge hinweg eingesetzt werden kann"
 
@@ -1434,6 +1437,9 @@ msgstr "Massenimport"
 msgid "Bulk Jobs"
 msgstr "Massenaufträge"
 
+msgid "Bundle Quantities"
+msgstr ""
+
 msgid "Buy"
 msgstr "Kaufen"
 
@@ -1753,6 +1759,15 @@ msgstr "Zusammenfassung der Funktions-tabelle"
 msgid "Collapse subtree"
 msgstr "Teilbaum einklappen"
 
+msgid "Color"
+msgstr ""
+
+msgid "Color Code"
+msgstr ""
+
+msgid "Color Name"
+msgstr ""
+
 msgid "Column"
 msgstr "Spalte"
 
@@ -1930,6 +1945,12 @@ msgstr "Import bestätigen"
 
 msgid "Confirm Password"
 msgstr "Passwort bestätigen"
+
+msgid "Confirm Split"
+msgstr ""
+
+msgid "Confirm Split Batch"
+msgstr ""
 
 msgid "Connect"
 msgstr "Verbinden"
@@ -2435,6 +2456,9 @@ msgstr "Bestandsübergabezeile erstellt"
 
 msgid "Created storage type"
 msgstr "Speichertyp erstellt"
+
+msgid "Created style"
+msgstr ""
 
 msgid "Created supplier process"
 msgstr "Erstellter Lieferantenprozess"
@@ -4141,6 +4165,10 @@ msgstr "Fehler beim Erstellen der Bestandstransferposition: {0}"
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create storage type: {0}"
 msgstr "Fehler beim Erstellen des Speichertyps: {0}"
+
+#. placeholder {0}: fetcher.data.error.message
+msgid "Failed to create style: {0}"
+msgstr ""
 
 msgid "Failed to create supplier process"
 msgstr "Fehler beim Erstellen des Lieferprozesses"
@@ -6273,6 +6301,9 @@ msgstr "Neuer Speichertyp"
 msgid "New Storage Unit"
 msgstr "Neue Lagereinheit"
 
+msgid "New Style"
+msgstr ""
+
 msgid "New Supplier"
 msgstr "Neuer Lieferant"
 
@@ -7072,6 +7103,9 @@ msgstr "Elternartikel"
 msgid "Parent Storage Unit"
 msgstr "Übergeordnete Lagereinheit"
 
+msgid "Parent Style job is now cutting-only"
+msgstr ""
+
 msgid "Pareto by Type"
 msgstr "Pareto nach Typ"
 
@@ -7191,6 +7225,9 @@ msgstr "Warten auf Genehmigung"
 
 msgid "Pending payment"
 msgstr "Kassendefizit"
+
+msgid "Pending Quantity"
+msgstr ""
 
 msgid "Pension Obligations"
 msgstr "Rentenpflichten"
@@ -9061,6 +9098,9 @@ msgstr "Schweregrade"
 msgid "Severity"
 msgstr "Schweregrad"
 
+msgid "Shade Lot"
+msgstr ""
+
 msgid "Shape"
 msgstr "Form"
 
@@ -9367,6 +9407,9 @@ msgstr "Spezifische Artikel"
 msgid "Split"
 msgstr "Teilen"
 
+msgid "Split Bundles"
+msgstr ""
+
 msgid "Split line"
 msgstr "Zeile teilen"
 
@@ -9523,8 +9566,20 @@ msgstr "Speichern Sie eine feste Anzahl von Tagen für diesen Artikel. Das Ablau
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "Speichern Sie eine feste Anzahl von Tagen für diesen Artikel. Das Ablaufdatum wird für jede Charge oder Seriennummer bei Erhalt festgelegt."
 
+msgid "Style"
+msgstr ""
+
+msgid "Style Details"
+msgstr ""
+
+msgid "Style ID"
+msgstr ""
+
 msgid "Style of kanban output to show in the Kanban table"
 msgstr "Stil der Kanban-Ausgabe, die in der Kanban-Tabelle angezeigt werden soll"
+
+msgid "Styles"
+msgstr ""
 
 msgid "Sub-assembly expiries only"
 msgstr "Nur Ablauf von Baugruppen"
@@ -10009,6 +10064,9 @@ msgstr "Diese Bestellung hat Positionen, für die Aufträge erstellt werden müs
 #. placeholder {0}: usageCount === 1 ? "" : "s"
 msgid "This storage type is currently used by {usageCount} storage unit{0}."
 msgstr "Dieser Speichertyp wird derzeit von {usageCount} Speichereinheit{0} verwendet."
+
+msgid "This Style job has already been split into bundles. Downstream completions belong on the bundle jobs listed below. Only cutting can still be reported on the parent job."
+msgstr ""
 
 msgid "This updates the theme for all users of the application"
 msgstr "Dies aktualisiert das Design für alle Benutzer der Anwendung"
@@ -10567,6 +10625,9 @@ msgstr "Verwenden Sie ..., um die nächste Material-ID zu erhalten"
 
 msgid "Use ... to get the next part ID"
 msgstr "Verwenden Sie ..., um die nächste Teile-ID zu erhalten"
+
+msgid "Use ... to get the next style ID"
+msgstr ""
 
 msgid "Use ... to get the next tool ID"
 msgstr "Verwenden Sie ..., um die nächste Werkzeug-ID zu erhalten"

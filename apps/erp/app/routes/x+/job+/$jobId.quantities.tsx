@@ -8,8 +8,10 @@ import { usePanels } from "~/components/Layout";
 import {
   getJobOperationSupplierQuantities,
   getJobOperationsList,
+  getPendingSplitGroupsForJob,
   getProductionQuantities,
-  getScrapReasons
+  getScrapReasons,
+  getStyleBundleExecutionState
 } from "~/modules/production";
 import { ProductionQuantitiesTable } from "~/modules/production/ui/Jobs";
 import {
@@ -56,18 +58,25 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const operationIds = operations.data?.map((o) => o.id) ?? [];
   const listQueryArgs = { search, sorts, filters };
 
-  const [employeeQuantities, supplierQuantities, scrapReasons] =
-    await Promise.all([
-      getProductionQuantities(client, operationIds, {
-        ...listQueryArgs,
-        filters: partitionQuantityListFilters(filters, "employee")
-      }),
-      getJobOperationSupplierQuantities(client, operationIds, companyId, {
-        ...listQueryArgs,
-        filters: partitionQuantityListFilters(filters, "supplier")
-      }),
-      getScrapReasons(client, companyId)
-    ]);
+  const [
+    employeeQuantities,
+    supplierQuantities,
+    scrapReasons,
+    pendingGroups,
+    styleBundleExecution
+  ] = await Promise.all([
+    getProductionQuantities(client, operationIds, {
+      ...listQueryArgs,
+      filters: partitionQuantityListFilters(filters, "employee")
+    }),
+    getJobOperationSupplierQuantities(client, operationIds, companyId, {
+      ...listQueryArgs,
+      filters: partitionQuantityListFilters(filters, "supplier")
+    }),
+    getScrapReasons(client, companyId),
+    getPendingSplitGroupsForJob(client, { companyId, jobId }),
+    getStyleBundleExecutionState(client, { companyId, jobId })
+  ]);
 
   if (employeeQuantities.error) {
     throw redirect(
@@ -89,6 +98,29 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     );
   }
 
+  if (pendingGroups.error) {
+    throw redirect(
+      path.to.productionDashboard,
+      await flash(
+        request,
+        error(pendingGroups.error, "Failed to fetch pending split groups")
+      )
+    );
+  }
+
+  if (styleBundleExecution.error) {
+    throw redirect(
+      path.to.productionDashboard,
+      await flash(
+        request,
+        error(
+          styleBundleExecution.error,
+          "Failed to fetch bundle execution state"
+        )
+      )
+    );
+  }
+
   // Pagination is applied client-side after merging both sources: each query
   // returns all matching rows so the merged order is stable across pages.
   // OK at typical job-sized event counts (low hundreds); revisit if jobs
@@ -103,13 +135,26 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     count: (employeeQuantities.count ?? 0) + (supplierQuantities.count ?? 0),
     events: merged.slice(offset, offset + limit),
     operations: operations.data ?? [],
-    scrapReasons: scrapReasons.data ?? []
+    scrapReasons: scrapReasons.data ?? [],
+    showSplitAction: (pendingGroups.data?.length ?? 0) > 0,
+    canCreateQuantities: true,
+    bundleJobs: styleBundleExecution.data?.bundleJobs ?? [],
+    styleSplitLocked:
+      styleBundleExecution.data?.restrictParentToCuttingReporting ?? false
   };
 }
 
 export default function ProductionQuantitiesRoute() {
-  const { count, events, operations, scrapReasons } =
-    useLoaderData<typeof loader>();
+  const {
+    count,
+    events,
+    operations,
+    scrapReasons,
+    showSplitAction,
+    canCreateQuantities,
+    bundleJobs,
+    styleSplitLocked
+  } = useLoaderData<typeof loader>();
 
   const { setIsExplorerCollapsed } = usePanels();
 
@@ -125,6 +170,10 @@ export default function ProductionQuantitiesRoute() {
           count={count}
           operations={operations}
           scrapReasons={scrapReasons}
+          showSplitAction={showSplitAction}
+          canCreateQuantities={canCreateQuantities}
+          bundleJobs={bundleJobs}
+          styleSplitLocked={styleSplitLocked}
         />
       </VStack>
     </>

@@ -207,6 +207,9 @@ msgstr "एक बिक्रय आदेश पंक्ति किसी �
 msgid "A sales request for quote (RFQ) is a customer inquiry for pricing on a set of parts and quantities. It may result in a quote."
 msgstr "एक बिक्रय उद्धरण अनुरोध (RFQ) भागों और मात्राओं के एक सेट पर मूल्य निर्धारण के लिए एक ग्राहक पूछताछ है। इसके परिणामस्वरूप एक उद्धरण हो सकता है।"
 
+msgid "A style contains the information about a garment or footwear item that is cut, bundled, and produced downstream."
+msgstr ""
+
 msgid "A tool is a physical item used to make a part that can be used across multiple jobs"
 msgstr "एक उपकरण एक भौतिक वस्तु है जिसका उपयोग एक भाग बनाने के लिए किया जाता है जिसे कई कार्यों में उपयोग किया जा सकता है"
 
@@ -1434,6 +1437,9 @@ msgstr "बल्क आयात"
 msgid "Bulk Jobs"
 msgstr "बल्क जॉब्स"
 
+msgid "Bundle Quantities"
+msgstr ""
+
 msgid "Buy"
 msgstr "खरीदें"
 
@@ -1753,6 +1759,15 @@ msgstr "फीचर्स टेबल को पिटाएं"
 msgid "Collapse subtree"
 msgstr "सबट्री को संक्षिप्त करें"
 
+msgid "Color"
+msgstr ""
+
+msgid "Color Code"
+msgstr ""
+
+msgid "Color Name"
+msgstr ""
+
 msgid "Column"
 msgstr "कॉलम"
 
@@ -1930,6 +1945,12 @@ msgstr "आयात की पुष्टि करें"
 
 msgid "Confirm Password"
 msgstr "पासवर्ड की पुष्टि करें"
+
+msgid "Confirm Split"
+msgstr ""
+
+msgid "Confirm Split Batch"
+msgstr ""
 
 msgid "Connect"
 msgstr "कनेक्ट करें"
@@ -2435,6 +2456,9 @@ msgstr "स्टॉक ट्रांसफर लाइन बनाई ग�
 
 msgid "Created storage type"
 msgstr "भंडारण प्रकार बनाया गया"
+
+msgid "Created style"
+msgstr ""
 
 msgid "Created supplier process"
 msgstr "संचालित स्वीपर प्रक्रिया बनाया"
@@ -4141,6 +4165,10 @@ msgstr "स्टॉक ट्रांसफर लाइन बनाने �
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create storage type: {0}"
 msgstr "भंडारण प्रकार बनाने में विफल: {0}"
+
+#. placeholder {0}: fetcher.data.error.message
+msgid "Failed to create style: {0}"
+msgstr ""
 
 msgid "Failed to create supplier process"
 msgstr "सupplier प्रक्रिया बनाने में विफल हो गया"
@@ -6273,6 +6301,9 @@ msgstr "नया स्टोरेज प्रकार"
 msgid "New Storage Unit"
 msgstr "नया स्टोरेज यूनिट"
 
+msgid "New Style"
+msgstr ""
+
 msgid "New Supplier"
 msgstr "नया स्वीपर"
 
@@ -7072,6 +7103,9 @@ msgstr "पैरेंट आइ템"
 msgid "Parent Storage Unit"
 msgstr "पैरेंट स्टोरेज यूनिट"
 
+msgid "Parent Style job is now cutting-only"
+msgstr ""
+
 msgid "Pareto by Type"
 msgstr "प्रकार के अनुसार पेरेटो"
 
@@ -7191,6 +7225,9 @@ msgstr "अनुमोदन की प्रतीक्षा में ह�
 
 msgid "Pending payment"
 msgstr "अपूर्त पेमेंट"
+
+msgid "Pending Quantity"
+msgstr ""
 
 msgid "Pension Obligations"
 msgstr "निर्वेतन कर दायित्व"
@@ -9061,6 +9098,9 @@ msgstr "गंभीरताएं"
 msgid "Severity"
 msgstr "गंभीरता"
 
+msgid "Shade Lot"
+msgstr ""
+
 msgid "Shape"
 msgstr "आकार"
 
@@ -9367,6 +9407,9 @@ msgstr "विशिष्ट आइटम"
 msgid "Split"
 msgstr "विभाजित करें"
 
+msgid "Split Bundles"
+msgstr ""
+
 msgid "Split line"
 msgstr "लाइन को विभाजित करें"
 
@@ -9523,8 +9566,20 @@ msgstr "इस आइटम पर दिनों की एक निश्च
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "इस आइटम पर दिनों की एक निश्चित संख्या स्टोर करें। प्रत्येक बैच या सीरीज़ के लिए समाप्ति प्रारंभ तारीख प्राप्त होने पर सेट की जाती है।"
 
+msgid "Style"
+msgstr ""
+
+msgid "Style Details"
+msgstr ""
+
+msgid "Style ID"
+msgstr ""
+
 msgid "Style of kanban output to show in the Kanban table"
 msgstr "Kanban तालिका में दिखाने के लिए kanban आउटपुट की शैली"
+
+msgid "Styles"
+msgstr ""
 
 msgid "Sub-assembly expiries only"
 msgstr "उप-विधानसभा समाप्ति केवल"
@@ -10009,6 +10064,9 @@ msgstr "इस बिक्रय आदेश में ऐसी पंक्�
 #. placeholder {0}: usageCount === 1 ? "" : "s"
 msgid "This storage type is currently used by {usageCount} storage unit{0}."
 msgstr "यह स्टोरेज प्रकार वर्तमान में {usageCount} स्टोरेज यूनिट{0} द्वारा उपयोग किया जा रहा है।"
+
+msgid "This Style job has already been split into bundles. Downstream completions belong on the bundle jobs listed below. Only cutting can still be reported on the parent job."
+msgstr ""
 
 msgid "This updates the theme for all users of the application"
 msgstr "यह एप्लिकेशन के सभी उपयोगकर्ताओं के लिए थीम को अपडेट करता है"
@@ -10567,6 +10625,9 @@ msgstr "अगली सामग्री ID प्राप्त करने
 
 msgid "Use ... to get the next part ID"
 msgstr "अगला पार्ट आईडी प्राप्त करने के लिए ... का उपयोग करें"
+
+msgid "Use ... to get the next style ID"
+msgstr ""
 
 msgid "Use ... to get the next tool ID"
 msgstr "अगली टूल ID प्राप्त करने के लिए ... का उपयोग करें"

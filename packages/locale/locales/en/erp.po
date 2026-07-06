@@ -207,6 +207,9 @@ msgstr "A sales order line contains order details for a particular item"
 msgid "A sales request for quote (RFQ) is a customer inquiry for pricing on a set of parts and quantities. It may result in a quote."
 msgstr "A sales request for quote (RFQ) is a customer inquiry for pricing on a set of parts and quantities. It may result in a quote."
 
+msgid "A style contains the information about a garment or footwear item that is cut, bundled, and produced downstream."
+msgstr "A style contains the information about a garment or footwear item that is cut, bundled, and produced downstream."
+
 msgid "A tool is a physical item used to make a part that can be used across multiple jobs"
 msgstr "A tool is a physical item used to make a part that can be used across multiple jobs"
 
@@ -1434,6 +1437,9 @@ msgstr "Bulk Import"
 msgid "Bulk Jobs"
 msgstr "Bulk Jobs"
 
+msgid "Bundle Quantities"
+msgstr "Bundle Quantities"
+
 msgid "Buy"
 msgstr "Buy"
 
@@ -1753,6 +1759,15 @@ msgstr "Collapse features table"
 msgid "Collapse subtree"
 msgstr "Collapse subtree"
 
+msgid "Color"
+msgstr "Color"
+
+msgid "Color Code"
+msgstr "Color Code"
+
+msgid "Color Name"
+msgstr "Color Name"
+
 msgid "Column"
 msgstr "Column"
 
@@ -1930,6 +1945,12 @@ msgstr "Confirm Import"
 
 msgid "Confirm Password"
 msgstr "Confirm Password"
+
+msgid "Confirm Split"
+msgstr "Confirm Split"
+
+msgid "Confirm Split Batch"
+msgstr "Confirm Split Batch"
 
 msgid "Connect"
 msgstr "Connect"
@@ -2435,6 +2456,9 @@ msgstr "Created stock transfer line"
 
 msgid "Created storage type"
 msgstr "Created storage type"
+
+msgid "Created style"
+msgstr "Created style"
 
 msgid "Created supplier process"
 msgstr "Created supplier process"
@@ -4141,6 +4165,10 @@ msgstr "Failed to create stock transfer line: {0}"
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create storage type: {0}"
 msgstr "Failed to create storage type: {0}"
+
+#. placeholder {0}: fetcher.data.error.message
+msgid "Failed to create style: {0}"
+msgstr "Failed to create style: {0}"
 
 msgid "Failed to create supplier process"
 msgstr "Failed to create supplier process"
@@ -6273,6 +6301,9 @@ msgstr "New Storage Type"
 msgid "New Storage Unit"
 msgstr "New Storage Unit"
 
+msgid "New Style"
+msgstr "New Style"
+
 msgid "New Supplier"
 msgstr "New Supplier"
 
@@ -7072,6 +7103,9 @@ msgstr "Parent Item"
 msgid "Parent Storage Unit"
 msgstr "Parent Storage Unit"
 
+msgid "Parent Style job is now cutting-only"
+msgstr "Parent Style job is now cutting-only"
+
 msgid "Pareto by Type"
 msgstr "Pareto by Type"
 
@@ -7191,6 +7225,9 @@ msgstr "Pending approval"
 
 msgid "Pending payment"
 msgstr "Pending payment"
+
+msgid "Pending Quantity"
+msgstr "Pending Quantity"
 
 msgid "Pension Obligations"
 msgstr "Pension Obligations"
@@ -9061,6 +9098,9 @@ msgstr "Severities"
 msgid "Severity"
 msgstr "Severity"
 
+msgid "Shade Lot"
+msgstr "Shade Lot"
+
 msgid "Shape"
 msgstr "Shape"
 
@@ -9367,6 +9407,9 @@ msgstr "Specific Items"
 msgid "Split"
 msgstr "Split"
 
+msgid "Split Bundles"
+msgstr "Split Bundles"
+
 msgid "Split line"
 msgstr "Split line"
 
@@ -9523,8 +9566,20 @@ msgstr "Store a fixed number of days on this item. Expiry start date is set on e
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 
+msgid "Style"
+msgstr "Style"
+
+msgid "Style Details"
+msgstr "Style Details"
+
+msgid "Style ID"
+msgstr "Style ID"
+
 msgid "Style of kanban output to show in the Kanban table"
 msgstr "Style of kanban output to show in the Kanban table"
+
+msgid "Styles"
+msgstr "Styles"
 
 msgid "Sub-assembly expiries only"
 msgstr "Sub-assembly expiries only"
@@ -10009,6 +10064,9 @@ msgstr "This sales order has lines that require jobs to be created"
 #. placeholder {0}: usageCount === 1 ? "" : "s"
 msgid "This storage type is currently used by {usageCount} storage unit{0}."
 msgstr "This storage type is currently used by {usageCount} storage unit{0}."
+
+msgid "This Style job has already been split into bundles. Downstream completions belong on the bundle jobs listed below. Only cutting can still be reported on the parent job."
+msgstr "This Style job has already been split into bundles. Downstream completions belong on the bundle jobs listed below. Only cutting can still be reported on the parent job."
 
 msgid "This updates the theme for all users of the application"
 msgstr "This updates the theme for all users of the application"
@@ -10567,6 +10625,9 @@ msgstr "Use ... to get the next material ID"
 
 msgid "Use ... to get the next part ID"
 msgstr "Use ... to get the next part ID"
+
+msgid "Use ... to get the next style ID"
+msgstr "Use ... to get the next style ID"
 
 msgid "Use ... to get the next tool ID"
 msgstr "Use ... to get the next tool ID"

@@ -1134,6 +1134,26 @@ export const path = {
       if (!opId) return base;
       return `${base}?${new URLSearchParams({ jobOperationId: opId }).toString()}`;
     },
+    newJobSplitBatch: (
+      jobId: string,
+      opts?: {
+        colorCode?: string;
+        sizeCode?: string;
+        shadeLot?: string;
+        configurationKey?: string;
+      }
+    ) => {
+      const base = generatePath(`${x}/job/${jobId}/splits/new`);
+      const params = new URLSearchParams();
+      if (opts?.colorCode) params.set("colorCode", opts.colorCode);
+      if (opts?.sizeCode) params.set("sizeCode", opts.sizeCode);
+      if (opts?.shadeLot) params.set("shadeLot", opts.shadeLot);
+      if (opts?.configurationKey) {
+        params.set("configurationKey", opts.configurationKey);
+      }
+      const query = params.toString();
+      return query ? `${base}?${query}` : base;
+    },
     jobs: `${x}/production/jobs`,
     jobRecalculate: (id: string) => generatePath(`${x}/job/${id}/recalculate`),
     jobRelease: (id: string) => generatePath(`${x}/job/${id}/release`),
@@ -1389,6 +1409,7 @@ export const path = {
     newJobRule: `${x}/production/job-rules/new`,
     newShippingMethod: `${x}/inventory/shipping-methods/new`,
     newService: `${x}/service/new`,
+    newStyle: `${x}/style/new`,
     newServiceSupplier: (id: string) =>
       generatePath(`${x}/service/${id}/purchasing/new`),
     newSupplier: `${x}/supplier/new`,
@@ -1422,6 +1443,7 @@ export const path = {
       generatePath(`${x}/sales/no-quote-reasons/${id}`),
     notificationSettings: `${x}/account/notifications`,
     part: (id: string) => generatePath(`${x}/part/${id}`),
+    style: (id: string) => generatePath(`${x}/style/${id}`),
     itemProperties: (id: string) => generatePath(`${x}/items/${id}/properties`),
     partCosting: (id: string) => generatePath(`${x}/part/${id}/costing`),
     partDetails: (id: string) => generatePath(`${x}/part/${id}/details`),

@@ -21,6 +21,21 @@ import type {
 } from "./models";
 import type { BaseOperationWithDetails, Job, StorageItem } from "./types";
 
+function isStyleCuttingOperation(operation: {
+  tags?: string[] | null;
+  customFields?: Json | null;
+}) {
+  const tags = operation.tags ?? [];
+  if (tags.includes("style:cutting-operation")) return true;
+  if (!operation.customFields || typeof operation.customFields !== "object") {
+    return false;
+  }
+
+  return (
+    (operation.customFields as Record<string, unknown>).styleStage === "cutting"
+  );
+}
+
 export async function getOpenJobs(
   client: SupabaseClient<Database>,
   args: { companyId: string; locationId: string }
@@ -927,9 +942,11 @@ async function createReportAndQuantity(
     paymentMonth?: number | null;
   }
 ) {
-  const { data: operation, error: operationError } = await client
+  const mesClient = client as SupabaseClient<any>;
+
+  const { data: operation, error: operationError } = await mesClient
     .from("jobOperation")
-    .select("jobId")
+    .select("jobId, ...job(itemId, parentJobId, itemType:type)")
     .eq("id", args.jobOperationId)
     .single();
 
@@ -940,6 +957,45 @@ async function createReportAndQuantity(
         operationError ??
         new Error(`Could not resolve job for operation ${args.jobOperationId}`)
     };
+  }
+
+  if (operation?.itemType === "Style" && !operation.parentJobId) {
+    const [splitBatches, jobOperations] = await Promise.all([
+      mesClient
+        .from("splitBatch")
+        .select("id")
+        .eq("companyId", args.companyId)
+        .eq("jobId", operation.jobId)
+        .eq("status", "Confirmed"),
+      mesClient
+        .from("jobOperation")
+        .select("id, tags, customFields")
+        .eq("companyId", args.companyId)
+        .eq("jobId", operation.jobId)
+    ]);
+
+    if (splitBatches.error) {
+      return { data: null, error: splitBatches.error };
+    }
+    if (jobOperations.error) {
+      return { data: null, error: jobOperations.error };
+    }
+
+    const hasSplit = (splitBatches.data?.length ?? 0) > 0;
+    if (hasSplit) {
+      const cuttingOperationIds = (jobOperations.data ?? [])
+        .filter((jobOperation) => isStyleCuttingOperation(jobOperation))
+        .map((jobOperation) => jobOperation.id);
+
+      if (!cuttingOperationIds.includes(args.jobOperationId)) {
+        return {
+          data: null,
+          error: new Error(
+            "This Style job has already been split into bundles. Only cutting can still be reported on the parent job."
+          )
+        };
+      }
+    }
   }
 
   const { data: report, error: reportError } = await client

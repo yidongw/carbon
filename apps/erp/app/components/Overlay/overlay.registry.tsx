@@ -267,6 +267,45 @@ export const overlayRegistry = {
       () => import("~/modules/production/ui/Jobs/ProductionQuantityForm")
     )
   },
+  newJobSplitBatch: {
+    type: "drawer",
+    render: renderLazyOverlay(
+      (ctx) => {
+        const data = ctx.loaderData as
+          | {
+              jobId: string;
+              styleId: string;
+              styleCode: string;
+              colorCode: string;
+              colorName: string;
+              sizeCode: string | null;
+              shadeLot: string | null;
+              configurationKey: string;
+              pendingQuantity: number;
+              bundleDefaults: number[];
+            }
+          | undefined;
+        if (!data) return null;
+
+        return {
+          initialValues: {
+            jobId: data.jobId,
+            itemId: data.styleId,
+            styleCode: data.styleCode,
+            colorCode: data.colorCode,
+            colorName: data.colorName,
+            sizeCode: data.sizeCode,
+            shadeLot: data.shadeLot,
+            configurationKey: data.configurationKey,
+            notes: "",
+            bundleQuantities: data.bundleDefaults
+          },
+          pendingQuantity: data.pendingQuantity
+        };
+      },
+      () => import("~/modules/production/ui/Jobs/SplitBatchForm")
+    )
+  },
   editJobProductionQuantity: {
     type: "drawer",
     render: renderLazyOverlay(

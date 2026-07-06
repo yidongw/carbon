@@ -3,5 +3,7 @@ export * from "./configurationRuleBindings";
 export * from "./items.models";
 export * from "./items.service";
 export * from "./methodBindings";
+export * from "./style.models";
+export * from "./styleMethod.service";
 export * from "./template.service";
 export * from "./types";

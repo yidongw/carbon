@@ -70751,6 +70751,7 @@ export type Database = {
         | "Shipment"
       itemTrackingType: "Inventory" | "Non-Inventory" | "Serial" | "Batch"
       itemType:
+        | "Style"
         | "Part"
         | "Material"
         | "Tool"
@@ -70891,6 +70892,7 @@ export type Database = {
         | "Comment"
         | "G/L Account"
         | "Fixed Asset"
+        | "Style"
         | "Part"
         | "Material"
         | "Tool"
@@ -70932,6 +70934,7 @@ export type Database = {
         | "Comment"
         | "G/L Account"
         | "Fixed Asset"
+        | "Style"
         | "Part"
         | "Material"
         | "Tool"
@@ -70996,6 +70999,7 @@ export type Database = {
       role: "customer" | "employee" | "supplier"
       salesInvoiceLineType:
         | "Comment"
+        | "Style"
         | "Part"
         | "Material"
         | "Tool"
@@ -72204,6 +72208,7 @@ export const Constants = {
         "Comment",
         "G/L Account",
         "Fixed Asset",
+        "Style",
         "Part",
         "Material",
         "Tool",
@@ -72248,6 +72253,7 @@ export const Constants = {
         "Comment",
         "G/L Account",
         "Fixed Asset",
+        "Style",
         "Part",
         "Material",
         "Tool",
@@ -72319,6 +72325,7 @@ export const Constants = {
       role: ["customer", "employee", "supplier"],
       salesInvoiceLineType: [
         "Comment",
+        "Style",
         "Part",
         "Material",
         "Tool",
@@ -72470,4 +72477,3 @@ export const Constants = {
     },
   },
 } as const
-

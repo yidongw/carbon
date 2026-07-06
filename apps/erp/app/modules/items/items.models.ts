@@ -145,7 +145,7 @@ export const itemValidator = z.object({
 // Common storage / shelf-life refines. Shared across all item-type
 // validators. Default Storage Unit is optional for every type - users can
 // set it later via the pickMethod UI once they know where the item lives.
-const applyStorageAndShelfLifeRefines = <T extends z.AnyZodObject>(
+export const applyStorageAndShelfLifeRefines = <T extends z.AnyZodObject>(
   schema: T
 ) => {
   const refined: z.ZodEffects<z.ZodTypeAny, z.infer<T>, z.input<T>> = schema

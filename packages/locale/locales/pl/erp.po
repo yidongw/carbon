@@ -207,6 +207,9 @@ msgstr "Linia zamówienia sprzedaży zawiera szczegóły zamówienia dla konkret
 msgid "A sales request for quote (RFQ) is a customer inquiry for pricing on a set of parts and quantities. It may result in a quote."
 msgstr "Zapytanie ofertowe (RFQ) to zapytanie klienta dotyczące wyceny zestawu części i ilości. Może to skutkować złożeniem oferty."
 
+msgid "A style contains the information about a garment or footwear item that is cut, bundled, and produced downstream."
+msgstr ""
+
 msgid "A tool is a physical item used to make a part that can be used across multiple jobs"
 msgstr "Narzędzie to element fizyczny używany do wykonania części, którą można wykorzystać w wielu zadaniach"
 
@@ -1434,6 +1437,9 @@ msgstr "Import zbiorczy"
 msgid "Bulk Jobs"
 msgstr "Zadania zbiorcze"
 
+msgid "Bundle Quantities"
+msgstr ""
+
 msgid "Buy"
 msgstr "Kup"
 
@@ -1753,6 +1759,15 @@ msgstr "Zwiń tabelę funkcji"
 msgid "Collapse subtree"
 msgstr "Zwiń poddrzewo"
 
+msgid "Color"
+msgstr ""
+
+msgid "Color Code"
+msgstr ""
+
+msgid "Color Name"
+msgstr ""
+
 msgid "Column"
 msgstr "Kolumna"
 
@@ -1930,6 +1945,12 @@ msgstr "Potwierdź import"
 
 msgid "Confirm Password"
 msgstr "Potwierdź hasło"
+
+msgid "Confirm Split"
+msgstr ""
+
+msgid "Confirm Split Batch"
+msgstr ""
 
 msgid "Connect"
 msgstr "Połącz"
@@ -2435,6 +2456,9 @@ msgstr "Utworzono linię transferu zapasów"
 
 msgid "Created storage type"
 msgstr "Utworzony typ magazynu"
+
+msgid "Created style"
+msgstr ""
 
 msgid "Created supplier process"
 msgstr "Tworzenie procesu dostawcy"
@@ -4141,6 +4165,10 @@ msgstr "Nie udało się utworzyć linii transferu zapasów: {0}"
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create storage type: {0}"
 msgstr "Nie udało się utworzyć typu magazynu: {0}"
+
+#. placeholder {0}: fetcher.data.error.message
+msgid "Failed to create style: {0}"
+msgstr ""
 
 msgid "Failed to create supplier process"
 msgstr "Niestety nie udało się utworzyć procesu dostawcy"
@@ -6273,6 +6301,9 @@ msgstr "Nowy typ magazynu"
 msgid "New Storage Unit"
 msgstr "Nowa jednostka magazynowa"
 
+msgid "New Style"
+msgstr ""
+
 msgid "New Supplier"
 msgstr "Nowy Dostawca"
 
@@ -7072,6 +7103,9 @@ msgstr "Element macierzysty"
 msgid "Parent Storage Unit"
 msgstr "Nadrzędna jednostka magazynowa"
 
+msgid "Parent Style job is now cutting-only"
+msgstr ""
+
 msgid "Pareto by Type"
 msgstr "Pareto wg typu"
 
@@ -7191,6 +7225,9 @@ msgstr "Oczekiwana weryfikacja"
 
 msgid "Pending payment"
 msgstr "Oczekiwana opłata"
+
+msgid "Pending Quantity"
+msgstr ""
 
 msgid "Pension Obligations"
 msgstr "Zobowiązania emerytalne"
@@ -9061,6 +9098,9 @@ msgstr "Ważności"
 msgid "Severity"
 msgstr "Ważność"
 
+msgid "Shade Lot"
+msgstr ""
+
 msgid "Shape"
 msgstr "Kształt"
 
@@ -9367,6 +9407,9 @@ msgstr "Określone artykuły"
 msgid "Split"
 msgstr "Podziel"
 
+msgid "Split Bundles"
+msgstr ""
+
 msgid "Split line"
 msgstr "Podziel wiersz"
 
@@ -9523,8 +9566,20 @@ msgstr "Przechowuj stałą liczbę dni dla tego artykułu. Data rozpoczęcia wyg
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "Przechowuj stałą liczbę dni dla tego artykułu. Data rozpoczęcia wygaśnięcia jest ustawiana dla każdej partii lub numeru seryjnego po otrzymaniu."
 
+msgid "Style"
+msgstr ""
+
+msgid "Style Details"
+msgstr ""
+
+msgid "Style ID"
+msgstr ""
+
 msgid "Style of kanban output to show in the Kanban table"
 msgstr "Styl wyjścia kanban do wyświetlenia w tabeli Kanban"
+
+msgid "Styles"
+msgstr ""
 
 msgid "Sub-assembly expiries only"
 msgstr "Tylko wygaśnięcia podzespołów"
@@ -10009,6 +10064,9 @@ msgstr "To zamówienie sprzedaży zawiera linie, które wymagają utworzenia zad
 #. placeholder {0}: usageCount === 1 ? "" : "s"
 msgid "This storage type is currently used by {usageCount} storage unit{0}."
 msgstr "Ten typ magazynu jest obecnie używany przez {usageCount} jednostkę magazynową{0}."
+
+msgid "This Style job has already been split into bundles. Downstream completions belong on the bundle jobs listed below. Only cutting can still be reported on the parent job."
+msgstr ""
 
 msgid "This updates the theme for all users of the application"
 msgstr "To aktualizuje motyw dla wszystkich użytkowników aplikacji"
@@ -10567,6 +10625,9 @@ msgstr "Użyj ... aby uzyskać następny identyfikator materiału"
 
 msgid "Use ... to get the next part ID"
 msgstr "Użyj ... aby uzyskać następny identyfikator części"
+
+msgid "Use ... to get the next style ID"
+msgstr ""
 
 msgid "Use ... to get the next tool ID"
 msgstr "Użyj ... aby uzyskać następny identyfikator narzędzia"

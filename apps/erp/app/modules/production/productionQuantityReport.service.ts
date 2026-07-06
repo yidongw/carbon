@@ -8,6 +8,8 @@ import {
 import { computeJobConfigTableTotal } from "./jobConfiguration";
 import { computeProductionQuantityReportEarnedAmount } from "./productionQuantityList.service";
 import type { ProductionQuantityLineInput } from "./productionQuantityReport.models";
+import { assertStyleJobCanRecordQuantities } from "./styleBundleExecution.service";
+import { buildProductionQuantitySplitRowRecords } from "./styleSplitRow.service";
 
 export type ProductionQuantityReportLine =
   Database["public"]["Tables"]["productionQuantity"]["Row"] & {
@@ -31,6 +33,115 @@ export type OperationQuantitySummary = {
 
 function sumLineQuantity(lines: ProductionQuantityLineInput[]) {
   return lines.reduce((sum, line) => sum + line.quantity, 0);
+}
+
+async function resolveStyleSplitContext(
+  client: SupabaseClient<Database>,
+  args: {
+    companyId: string;
+    jobId: string;
+  }
+) {
+  const styleClient = client as SupabaseClient<any>;
+
+  const { data: job, error: jobError } = await client
+    .from("job")
+    .select("itemId, ...item(itemType:type)")
+    .eq("id", args.jobId)
+    .eq("companyId", args.companyId)
+    .single();
+
+  if (jobError) {
+    return { data: null, error: jobError };
+  }
+
+  if (!job?.itemId || job.itemType !== "Style") {
+    return { data: null, error: null };
+  }
+
+  const { data: style, error: styleError } = await styleClient
+    .from("style")
+    .select("itemId, colorCode")
+    .eq("itemId", job.itemId)
+    .eq("companyId", args.companyId)
+    .single();
+
+  if (styleError || !style?.colorCode) {
+    return { data: null, error: styleError };
+  }
+
+  return {
+    data: {
+      itemId: job.itemId as string,
+      colorCode: style.colorCode as string
+    },
+    error: null
+  };
+}
+
+async function syncStyleSplitRowsForReport(
+  client: SupabaseClient<Database>,
+  args: {
+    companyId: string;
+    jobId: string;
+    jobOperationId: string;
+    reportId: string;
+    userId: string;
+    activeLines: Array<
+      Pick<
+        Database["public"]["Tables"]["productionQuantity"]["Row"],
+        "id" | "reportId" | "type" | "quantity" | "configuration"
+      >
+    >;
+  }
+) {
+  const styleClient = client as SupabaseClient<any>;
+  const styleContext = await resolveStyleSplitContext(client, {
+    companyId: args.companyId,
+    jobId: args.jobId
+  });
+
+  if (styleContext.error) {
+    return { data: null, error: styleContext.error };
+  }
+
+  if (!styleContext.data) {
+    return { data: null, error: null };
+  }
+
+  const { error: deleteError } = await styleClient
+    .from("productionQuantitySplitRow")
+    .delete()
+    .eq("reportId", args.reportId)
+    .eq("companyId", args.companyId);
+
+  if (deleteError) {
+    return { data: null, error: deleteError };
+  }
+
+  const splitRows = buildProductionQuantitySplitRowRecords({
+    companyId: args.companyId,
+    jobId: args.jobId,
+    jobOperationId: args.jobOperationId,
+    itemId: styleContext.data.itemId,
+    createdBy: args.userId,
+    fallbackColorCode: styleContext.data.colorCode,
+    lines: args.activeLines
+  });
+
+  if (splitRows.length === 0) {
+    return { data: [], error: null };
+  }
+
+  const { error: insertError } = await styleClient
+    .from("productionQuantitySplitRow")
+    .insert(splitRows);
+
+  if (insertError) {
+    return { data: null, error: insertError };
+  }
+
+  return { data: splitRows, error: null };
 }
 
 export function validateProductionQuantityLines(
@@ -84,6 +195,15 @@ export async function createProductionQuantityReport(
     paymentMonth?: number | null;
   }
 ) {
+  const styleExecution = await assertStyleJobCanRecordQuantities(client, {
+    companyId: args.companyId,
+    jobId: args.jobId,
+    jobOperationId: args.jobOperationId
+  });
+  if (styleExecution.error) {
+    return { data: null, error: styleExecution.error };
+  }
+
   const lineValidation = validateProductionQuantityLines(args.lines);
   if (lineValidation.error) {
     return { data: null, error: lineValidation.error };
@@ -134,6 +254,25 @@ export async function createProductionQuantityReport(
 
   if (linesError) {
     return { data: null, error: linesError };
+  }
+
+  const splitRowSync = await syncStyleSplitRowsForReport(client, {
+    companyId: args.companyId,
+    jobId: args.jobId,
+    jobOperationId: args.jobOperationId,
+    reportId: report.id,
+    userId: args.userId,
+    activeLines: (lines ?? []).map((line) => ({
+      id: line.id,
+      reportId: line.reportId,
+      type: line.type,
+      quantity: line.quantity,
+      configuration: line.configuration
+    }))
+  });
+
+  if (splitRowSync.error) {
+    return { data: null, error: splitRowSync.error };
   }
 
   return {
@@ -240,6 +379,25 @@ export async function replaceProductionQuantityReportLines(
 
   if (insertError) {
     return { data: null, error: insertError };
+  }
+
+  const splitRowSync = await syncStyleSplitRowsForReport(client, {
+    companyId: args.companyId,
+    jobId: report.data.jobId,
+    jobOperationId: report.data.jobOperationId,
+    reportId: args.reportId,
+    userId: args.userId,
+    activeLines: (newLines ?? []).map((line) => ({
+      id: line.id,
+      reportId: line.reportId,
+      type: line.type,
+      quantity: line.quantity,
+      configuration: line.configuration
+    }))
+  });
+
+  if (splitRowSync.error) {
+    return { data: null, error: splitRowSync.error };
   }
 
   const { count: historyCount } = await client
@@ -554,7 +712,7 @@ export async function invalidateProductionQuantity(
   }
 ) {
   const now = new Date().toISOString();
-  return client
+  const invalidation = await client
     .from("productionQuantity")
     .update({
       invalidatedAt: now,
@@ -565,6 +723,23 @@ export async function invalidateProductionQuantity(
     .eq("id", args.productionQuantityId)
     .eq("companyId", args.companyId)
     .is("invalidatedAt", null);
+
+  if (invalidation.error) {
+    return invalidation;
+  }
+
+  const styleClient = client as SupabaseClient<any>;
+  const { error: splitRowDeleteError } = await styleClient
+    .from("productionQuantitySplitRow")
+    .delete()
+    .eq("productionQuantityId", args.productionQuantityId)
+    .eq("companyId", args.companyId);
+
+  if (splitRowDeleteError) {
+    return { data: null, error: splitRowDeleteError };
+  }
+
+  return invalidation;
 }
 
 /** After create or revise: auto-approve clears requests; otherwise supersede + request when rules require. */

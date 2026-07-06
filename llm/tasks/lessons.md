@@ -231,3 +231,13 @@ Patterns learned from corrections. Review at the start of each session.
 - The index builds at module load from `source.getPages()`; after renaming a content dir (`content/guide` →
   `content/guides`) or changing `defineDocs({ dir })`, run `pnpm exec fumadocs-mdx` to regenerate `.source`, and
   the search index only reflects it after the dev server rebuilds the route.
+
+## Garment workflows need garment terms, not generic configuration language
+
+- When the user is describing apparel/footwear production, prefer the factory's own terms in docs and plans:
+  `Style`, `bundle`, `split batch`, `cutting quantity rows`, `color`, `size`, `shade lot`, `ratio`, and similar.
+- Do not default to generic software/manufacturing phrases like `config params`, `configuration slice`, or
+  `package` when the business meaning is really garment-specific. Those words make the model harder for the
+  user and their clients to validate.
+- Rule: once the domain terminology is established by the user, normalize all planning/spec language to that
+  vocabulary and sweep older docs for stale wording before continuing implementation.

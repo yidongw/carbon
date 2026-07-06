@@ -157,6 +157,7 @@ function PurchaseInvoiceTopbarLeft({ invoiceId }: { invoiceId: string }) {
       .select("itemId, description, quantity, conversionFactor")
       .eq("invoiceId", invoiceId)
       .in("invoiceLineType", [
+        "Style",
         "Part",
         "Material",
         "Tool",

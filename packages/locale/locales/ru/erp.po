@@ -207,6 +207,9 @@ msgstr "Строка заказа на продажу содержит дета�
 msgid "A sales request for quote (RFQ) is a customer inquiry for pricing on a set of parts and quantities. It may result in a quote."
 msgstr "Запрос коммерческого предложения (RFQ) — это запрос клиента на получение цены за набор деталей и количества. Это может привести к получению коммерческого предложения."
 
+msgid "A style contains the information about a garment or footwear item that is cut, bundled, and produced downstream."
+msgstr ""
+
 msgid "A tool is a physical item used to make a part that can be used across multiple jobs"
 msgstr "Инструмент — это физический предмет, используемый для изготовления детали, которая может использоваться в нескольких заданиях"
 
@@ -1434,6 +1437,9 @@ msgstr "Массовый импорт"
 msgid "Bulk Jobs"
 msgstr "Массовые задания"
 
+msgid "Bundle Quantities"
+msgstr ""
+
 msgid "Buy"
 msgstr "Покупка"
 
@@ -1753,6 +1759,15 @@ msgstr "Свернуть таблицу функций"
 msgid "Collapse subtree"
 msgstr "Свернуть поддерево"
 
+msgid "Color"
+msgstr ""
+
+msgid "Color Code"
+msgstr ""
+
+msgid "Color Name"
+msgstr ""
+
 msgid "Column"
 msgstr "Столбец"
 
@@ -1930,6 +1945,12 @@ msgstr "Подтвердить импорт"
 
 msgid "Confirm Password"
 msgstr "Подтвердить пароль"
+
+msgid "Confirm Split"
+msgstr ""
+
+msgid "Confirm Split Batch"
+msgstr ""
 
 msgid "Connect"
 msgstr "Подключить"
@@ -2435,6 +2456,9 @@ msgstr "Создана строка передачи запасов"
 
 msgid "Created storage type"
 msgstr "Тип хранилища создан"
+
+msgid "Created style"
+msgstr ""
 
 msgid "Created supplier process"
 msgstr "Создан процесс поставщика"
@@ -4141,6 +4165,10 @@ msgstr "Не удалось создать строку передачи зап�
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create storage type: {0}"
 msgstr "Ошибка при создании типа хранилища: {0}"
+
+#. placeholder {0}: fetcher.data.error.message
+msgid "Failed to create style: {0}"
+msgstr ""
 
 msgid "Failed to create supplier process"
 msgstr "Невозможно создать процесс поставщика"
@@ -6273,6 +6301,9 @@ msgstr "Новый тип хранилища"
 msgid "New Storage Unit"
 msgstr "Новое хранилище"
 
+msgid "New Style"
+msgstr ""
+
 msgid "New Supplier"
 msgstr "Новый поставщик"
 
@@ -7072,6 +7103,9 @@ msgstr "Родительский элемент"
 msgid "Parent Storage Unit"
 msgstr "Родительское хранилище"
 
+msgid "Parent Style job is now cutting-only"
+msgstr ""
+
 msgid "Pareto by Type"
 msgstr "Парето по типам"
 
@@ -7191,6 +7225,9 @@ msgstr "Ожидание рассмотрения"
 
 msgid "Pending payment"
 msgstr "Оставшаяся сумма"
+
+msgid "Pending Quantity"
+msgstr ""
 
 msgid "Pension Obligations"
 msgstr "Пенсионные обязательства"
@@ -9061,6 +9098,9 @@ msgstr "Серьезности"
 msgid "Severity"
 msgstr "Серьезность"
 
+msgid "Shade Lot"
+msgstr ""
+
 msgid "Shape"
 msgstr "Форма"
 
@@ -9367,6 +9407,9 @@ msgstr "Конкретные товары"
 msgid "Split"
 msgstr "Разделить"
 
+msgid "Split Bundles"
+msgstr ""
+
 msgid "Split line"
 msgstr "Разделить строку"
 
@@ -9523,8 +9566,20 @@ msgstr "Сохраняйте фиксированное количество д�
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "Сохраняйте фиксированное количество дней для этого товара. Дата начала срока действия устанавливается для каждой партии или серийного номера при получении."
 
+msgid "Style"
+msgstr ""
+
+msgid "Style Details"
+msgstr ""
+
+msgid "Style ID"
+msgstr ""
+
 msgid "Style of kanban output to show in the Kanban table"
 msgstr "Стиль вывода канбана для отображения в таблице Канбана"
+
+msgid "Styles"
+msgstr ""
 
 msgid "Sub-assembly expiries only"
 msgstr "Только сроки действия подсборок"
@@ -10009,6 +10064,9 @@ msgstr "Этот заказ на продажу содержит строки, �
 #. placeholder {0}: usageCount === 1 ? "" : "s"
 msgid "This storage type is currently used by {usageCount} storage unit{0}."
 msgstr "Этот тип хранилища в настоящее время используется {usageCount} хранилищем{0}."
+
+msgid "This Style job has already been split into bundles. Downstream completions belong on the bundle jobs listed below. Only cutting can still be reported on the parent job."
+msgstr ""
 
 msgid "This updates the theme for all users of the application"
 msgstr "Это обновляет тему для всех пользователей приложения"
@@ -10567,6 +10625,9 @@ msgstr "Используйте ... для получения следующег�
 
 msgid "Use ... to get the next part ID"
 msgstr "Используйте ... для получения следующего ID детали"
+
+msgid "Use ... to get the next style ID"
+msgstr ""
 
 msgid "Use ... to get the next tool ID"
 msgstr "Используйте ... для получения следующего ID инструмента"

@@ -62,6 +62,11 @@ import {
   type toolValidator,
   type unitOfMeasureValidator
 } from "./items.models";
+import type { styleValidator } from "./style.models";
+import {
+  ensureStyleMethodScaffold,
+  isStyleSystemOwnedOperation
+} from "./styleMethod.service";
 import type { InventoryItemType } from "./types";
 
 export async function activateMethodVersion(
@@ -318,6 +323,23 @@ export async function deleteMethodOperation(
   client: SupabaseClient<Database>,
   methodOperationId: string
 ) {
+  const operation = await client
+    .from("methodOperation")
+    .select("id, tags, customFields")
+    .eq("id", methodOperationId)
+    .single();
+
+  if (operation.error) return operation;
+  if (isStyleSystemOwnedOperation(operation.data)) {
+    return {
+      data: null,
+      error: {
+        message:
+          "System-owned Style cutting operations cannot be deleted from the bill of process."
+      }
+    };
+  }
+
   return client.from("methodOperation").delete().eq("id", methodOperationId);
 }
 
@@ -1537,6 +1559,21 @@ export async function getPart(
     .single();
 }
 
+export async function getStyle(
+  client: SupabaseClient<Database>,
+  itemId: string,
+  companyId: string
+) {
+  const styleClient = client as SupabaseClient<any>;
+
+  return styleClient
+    .from("styles")
+    .select("*")
+    .eq("id", itemId)
+    .eq("companyId", companyId)
+    .single();
+}
+
 export async function getParts(
   client: SupabaseClient<Database>,
   companyId: string,
@@ -1568,6 +1605,32 @@ export async function getParts(
   return query;
 }
 
+export async function getStyles(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  args: GenericQueryFilters & {
+    search: string | null;
+  }
+) {
+  const styleClient = client as SupabaseClient<any>;
+  let query = styleClient
+    .from("styles")
+    .select("*", {
+      count: "exact"
+    })
+    .eq("companyId", companyId);
+
+  if (args.search) {
+    query = query.or(
+      `readableIdWithRevision.ilike.%${args.search}%,name.ilike.%${args.search}%,description.ilike.%${args.search}%,colorCode.ilike.%${args.search}%,colorName.ilike.%${args.search}%`
+    );
+  }
+
+  return setGenericQueryFilters(query, args, [
+    { column: "readableIdWithRevision", ascending: true }
+  ]);
+}
+
 export async function getPartsList(
   client: SupabaseClient<Database>,
   companyId: string
@@ -1579,6 +1642,23 @@ export async function getPartsList(
   }>(client, "item", "id, name, readableIdWithRevision", (query) =>
     query
       .eq("type", "Part")
+      .eq("companyId", companyId)
+      .eq("active", true)
+      .order("name")
+  );
+}
+
+export async function getStylesList(
+  client: SupabaseClient<Database>,
+  companyId: string
+) {
+  return fetchAllFromTable<{
+    id: string;
+    name: string;
+    readableIdWithRevision: string;
+  }>(client, "item", "id, name, readableIdWithRevision", (query) =>
+    query
+      .eq("type", "Style")
       .eq("companyId", companyId)
       .eq("active", true)
       .order("name")
@@ -3163,6 +3243,219 @@ export async function upsertPart(
   return updatePart;
 }
 
+export async function upsertStyle(
+  client: SupabaseClient<Database>,
+  style:
+    | (z.infer<typeof styleValidator> & {
+        companyId: string;
+        createdBy: string;
+        customFields?: Json;
+      })
+    | (z.infer<typeof styleValidator> & {
+        updatedBy: string;
+        customFields?: Json;
+      })
+) {
+  const styleClient = client as SupabaseClient<any>;
+
+  if ("createdBy" in style) {
+    const itemInsert = await client
+      .from("item")
+      .insert({
+        readableId: style.id,
+        revision: style.revision ?? "0",
+        name: style.name,
+        description: style.description,
+        type: "Style",
+        replenishmentSystem: style.replenishmentSystem,
+        defaultMethodType: style.defaultMethodType,
+        itemTrackingType: style.itemTrackingType,
+        unitOfMeasureCode: style.unitOfMeasureCode,
+        active: true,
+        modelUploadId: style.modelUploadId,
+        thumbnailPath: style.thumbnailPath,
+        companyId: style.companyId,
+        createdBy: style.createdBy
+      })
+      .select("id")
+      .single();
+
+    if (itemInsert.error) return itemInsert;
+    const itemId = itemInsert.data?.id;
+
+    const [styleInsert, itemCostUpdate] = await Promise.all([
+      styleClient.from("style").upsert({
+        id: style.id,
+        itemId,
+        colorName: style.colorName,
+        colorCode: style.colorCode,
+        companyId: style.companyId,
+        createdBy: style.createdBy,
+        customFields: style.customFields
+      }),
+      client
+        .from("itemCost")
+        .update(
+          sanitize({
+            itemPostingGroupId: style.postingGroupId,
+            unitCost:
+              style.replenishmentSystem !== "Make" ? style.unitCost : undefined
+          })
+        )
+        .eq("itemId", itemId)
+    ]);
+
+    if (styleInsert.error) return styleInsert;
+    if (itemCostUpdate.error) {
+      console.error(itemCostUpdate.error);
+    }
+
+    if (style.replenishmentSystem !== "Buy") {
+      const itemReplenishmentInsert = await client
+        .from("itemReplenishment")
+        .update({ lotSize: style.lotSize })
+        .eq("itemId", itemId);
+
+      if (itemReplenishmentInsert.error) return itemReplenishmentInsert;
+    }
+
+    if (itemId) {
+      const pickMethod = await upsertItemDefaultPickMethod(client, {
+        itemId,
+        userId: style.createdBy,
+        storageUnitId: style.defaultStorageUnitId
+      });
+      if (pickMethod.error) return pickMethod;
+
+      const shelfLife = await upsertItemShelfLife(client, {
+        itemId,
+        userId: style.createdBy,
+        companyId: style.companyId,
+        mode: style.shelfLifeMode,
+        days: style.shelfLifeDays,
+        triggerProcessId: style.shelfLifeTriggerProcessId,
+        triggerTiming: style.shelfLifeTriggerTiming,
+        calculateFromBom: style.shelfLifeCalculateFromBom
+      });
+      if (shelfLife.error) return shelfLife;
+
+      const styleMethod = await ensureStyleMethodScaffold(client, {
+        itemId,
+        companyId: style.companyId,
+        userId: style.createdBy
+      });
+      if (styleMethod.error) return styleMethod;
+    }
+
+    const newStyle = await styleClient
+      .from("styles")
+      .select("id")
+      .eq("readableId", style.id)
+      .eq("companyId", style.companyId)
+      .single();
+
+    return newStyle;
+  }
+
+  const itemUpdate = {
+    id: style.id,
+    name: style.name,
+    description: style.description,
+    replenishmentSystem: style.replenishmentSystem,
+    defaultMethodType: style.defaultMethodType,
+    itemTrackingType: style.itemTrackingType,
+    unitOfMeasureCode: style.unitOfMeasureCode,
+    active: true,
+    modelUploadId: style.modelUploadId,
+    thumbnailPath: style.thumbnailPath
+  };
+
+  const styleUpdate = {
+    colorName: style.colorName,
+    colorCode: style.colorCode,
+    customFields: style.customFields
+  };
+
+  const [updateItem, updateStyle] = await Promise.all([
+    client
+      .from("item")
+      .update({
+        ...sanitize(itemUpdate),
+        updatedAt: today(getLocalTimeZone()).toString()
+      })
+      .eq("id", style.id),
+    styleClient
+      .from("style")
+      .update({
+        ...sanitize(styleUpdate),
+        updatedAt: today(getLocalTimeZone()).toString()
+      })
+      .eq("id", style.id)
+  ]);
+
+  if (updateItem.error) return updateItem;
+
+  const [pickMethod, shelfLife] = await Promise.all([
+    upsertItemDefaultPickMethod(client, {
+      itemId: style.id,
+      userId: style.updatedBy,
+      storageUnitId: style.defaultStorageUnitId
+    }),
+    upsertItemShelfLife(client, {
+      itemId: style.id,
+      userId: style.updatedBy,
+      mode: style.shelfLifeMode,
+      days: style.shelfLifeDays,
+      triggerProcessId: style.shelfLifeTriggerProcessId,
+      triggerTiming: style.shelfLifeTriggerTiming,
+      calculateFromBom: style.shelfLifeCalculateFromBom
+    })
+  ]);
+
+  if (pickMethod.error) return pickMethod;
+  if (shelfLife.error) return shelfLife;
+
+  const styleCompany = await styleClient
+    .from("item")
+    .select("companyId")
+    .eq("id", style.id)
+    .single();
+  if (styleCompany.error) return styleCompany;
+
+  const styleMethod = await ensureStyleMethodScaffold(client, {
+    itemId: style.id,
+    companyId: styleCompany.data.companyId,
+    userId: style.updatedBy
+  });
+  if (styleMethod.error) return styleMethod;
+
+  if (style.replenishmentSystem !== "Buy") {
+    const itemReplenishmentUpdate = await client
+      .from("itemReplenishment")
+      .update({ lotSize: style.lotSize })
+      .eq("itemId", style.id);
+
+    if (itemReplenishmentUpdate.error) return itemReplenishmentUpdate;
+  }
+
+  const itemCostUpdate = await client
+    .from("itemCost")
+    .update(
+      sanitize({
+        itemPostingGroupId: style.postingGroupId,
+        unitCost:
+          style.replenishmentSystem !== "Make" ? style.unitCost : undefined
+      })
+    )
+    .eq("itemId", style.id);
+
+  if (itemCostUpdate.error) {
+    console.error(itemCostUpdate.error);
+  }
+
+  return updateStyle;
+}
+
 export async function updateItem(
   client: SupabaseClient<Database>,
   item: z.infer<typeof itemValidator> & {
@@ -3550,6 +3843,24 @@ export async function upsertMethodOperation(
       .select("id")
       .single();
   }
+
+  const currentOperation = await client
+    .from("methodOperation")
+    .select("id, tags, customFields")
+    .eq("id", methodOperation.id)
+    .single();
+
+  if (currentOperation.error) return currentOperation;
+  if (isStyleSystemOwnedOperation(currentOperation.data)) {
+    return {
+      data: null,
+      error: {
+        message:
+          "System-owned Style cutting operations cannot be edited from the bill of process."
+      }
+    };
+  }
+
   return client
     .from("methodOperation")
     .update(sanitize(methodOperation))

@@ -207,6 +207,9 @@ msgstr "販売注文行には、特定の品目の注文詳細が含まれてい
 msgid "A sales request for quote (RFQ) is a customer inquiry for pricing on a set of parts and quantities. It may result in a quote."
 msgstr "営業見積依頼（RFQ）は、一連の部品と数量の価格設定に関する顧客からの問い合わせです。見積書につながる可能性があります。"
 
+msgid "A style contains the information about a garment or footwear item that is cut, bundled, and produced downstream."
+msgstr ""
+
 msgid "A tool is a physical item used to make a part that can be used across multiple jobs"
 msgstr "ツールは、複数のジョブで使用できるパーツを作成するために使用される物理的なアイテムです"
 
@@ -1434,6 +1437,9 @@ msgstr "一括インポート"
 msgid "Bulk Jobs"
 msgstr "一括ジョブ"
 
+msgid "Bundle Quantities"
+msgstr ""
+
 msgid "Buy"
 msgstr "購入"
 
@@ -1753,6 +1759,15 @@ msgstr "FEATURES を折りたたむ"
 msgid "Collapse subtree"
 msgstr "サブツリーを折りたたむ"
 
+msgid "Color"
+msgstr ""
+
+msgid "Color Code"
+msgstr ""
+
+msgid "Color Name"
+msgstr ""
+
 msgid "Column"
 msgstr "カラム"
 
@@ -1930,6 +1945,12 @@ msgstr "インポートを確認"
 
 msgid "Confirm Password"
 msgstr "パスワードを確認"
+
+msgid "Confirm Split"
+msgstr ""
+
+msgid "Confirm Split Batch"
+msgstr ""
 
 msgid "Connect"
 msgstr "連携"
@@ -2435,6 +2456,9 @@ msgstr "在庫移動行を作成しました"
 
 msgid "Created storage type"
 msgstr "ストレージタイプを作成しました"
+
+msgid "Created style"
+msgstr ""
 
 msgid "Created supplier process"
 msgstr "created supplier process"
@@ -4141,6 +4165,10 @@ msgstr "在庫移動行の作成に失敗しました: {0}"
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create storage type: {0}"
 msgstr "ストレージタイプの作成に失敗しました: {0}"
+
+#. placeholder {0}: fetcher.data.error.message
+msgid "Failed to create style: {0}"
+msgstr ""
 
 msgid "Failed to create supplier process"
 msgstr "failed to create supplier process"
@@ -6273,6 +6301,9 @@ msgstr "新しい保管タイプ"
 msgid "New Storage Unit"
 msgstr "新しい保管ユニット"
 
+msgid "New Style"
+msgstr ""
+
 msgid "New Supplier"
 msgstr "新サプライヤー"
 
@@ -7072,6 +7103,9 @@ msgstr "親アイテム"
 msgid "Parent Storage Unit"
 msgstr "親保管ユニット"
 
+msgid "Parent Style job is now cutting-only"
+msgstr ""
+
 msgid "Pareto by Type"
 msgstr "タイプ別パレート"
 
@@ -7191,6 +7225,9 @@ msgstr "(待り approvals )"
 
 msgid "Pending payment"
 msgstr "未払い"
+
+msgid "Pending Quantity"
+msgstr ""
 
 msgid "Pension Obligations"
 msgstr "Pension Gakushin"
@@ -9061,6 +9098,9 @@ msgstr "重大度"
 msgid "Severity"
 msgstr "重大度"
 
+msgid "Shade Lot"
+msgstr ""
+
 msgid "Shape"
 msgstr "形状"
 
@@ -9367,6 +9407,9 @@ msgstr "特定の品目"
 msgid "Split"
 msgstr "分割"
 
+msgid "Split Bundles"
+msgstr ""
+
 msgid "Split line"
 msgstr "ラインを分割"
 
@@ -9523,8 +9566,20 @@ msgstr "このアイテムに固定日数を保存します。有効期限の開
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "このアイテムの固定日数を保存します。有効期限の開始日は、各バッチまたはシリアルが受け取られたときに設定されます。"
 
+msgid "Style"
+msgstr ""
+
+msgid "Style Details"
+msgstr ""
+
+msgid "Style ID"
+msgstr ""
+
 msgid "Style of kanban output to show in the Kanban table"
 msgstr "Kanbanテーブルに表示するカンバン出力のスタイル"
+
+msgid "Styles"
+msgstr ""
 
 msgid "Sub-assembly expiries only"
 msgstr "サブアセンブリの有効期限のみ"
@@ -10009,6 +10064,9 @@ msgstr "この販売注文には、ジョブを作成する必要があるライ
 #. placeholder {0}: usageCount === 1 ? "" : "s"
 msgid "This storage type is currently used by {usageCount} storage unit{0}."
 msgstr "このストレージタイプは現在{usageCount}個のストレージユニット{0}で使用されています。"
+
+msgid "This Style job has already been split into bundles. Downstream completions belong on the bundle jobs listed below. Only cutting can still be reported on the parent job."
+msgstr ""
 
 msgid "This updates the theme for all users of the application"
 msgstr "これはアプリケーションのすべてのユーザーのテーマを更新します"
@@ -10567,6 +10625,9 @@ msgstr "「...」を使用して次の材料IDを取得します"
 
 msgid "Use ... to get the next part ID"
 msgstr "「...」を使用して次のパートIDを取得します"
+
+msgid "Use ... to get the next style ID"
+msgstr ""
 
 msgid "Use ... to get the next tool ID"
 msgstr "「...」を使用して次のツールIDを取得します"

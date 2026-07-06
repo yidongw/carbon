@@ -21,6 +21,7 @@ import {
   getJob,
   getJobOperationActorContext,
   getJobOperations,
+  getStyleBundleExecutionState,
   isJobLocked,
   productionQuantityCreateFormValidator,
   resolveProductionQuantityCanAutoApprove,
@@ -61,19 +62,28 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const jobOperationId = url.searchParams.get("jobOperationId") ?? "";
 
-  const [job, jobOperations, opContext] = await Promise.all([
+  const [job, jobOperations] = await Promise.all([
     getJob(client, jobId),
-    getJobOperations(client, jobId),
-    getJobOperationActorContext(client, jobOperationId, companyId)
+    getJobOperations(client, jobId)
   ]);
-  const actorContext = {
-    ...opContext,
-    defaultActorKind: defaultActorKindFromOperationType(
-      opContext.operationType
-    ),
-    seededActor: seededActorFromOperationContext(opContext)
-  };
 
+  const styleExecution = await getStyleBundleExecutionState(client, {
+    companyId,
+    jobId
+  });
+  if (styleExecution.error) {
+    throw redirect(
+      path.to.jobProductionQuantities(jobId),
+      await flash(
+        request,
+        error(styleExecution.error, "Failed to load Style bundle state")
+      )
+    );
+  }
+  const allowedOperationIds = styleExecution.data
+    ?.restrictParentToCuttingReporting
+    ? styleExecution.data.cuttingOperationIds
+    : null;
   const configurationParameters = job.data?.itemId
     ? (await getConfigurationParameters(client, job.data.itemId, companyId))
         .parameters
@@ -85,26 +95,49 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     value: jobId
   };
 
+  const operationOptions =
+    (jobOperations?.data ?? [])
+      .filter((operation) =>
+        allowedOperationIds ? allowedOperationIds.includes(operation.id!) : true
+      )
+      .map((operation) => ({
+        label: operation.description ?? "",
+        value: operation.id!
+      })) ?? [];
+
+  const effectiveJobOperationId =
+    jobOperationId ||
+    (allowedOperationIds && allowedOperationIds.length > 0
+      ? allowedOperationIds[0]
+      : "");
+
   const configReferenceSource = await getConfigReferenceSourceForOperation(
     client,
     {
       jobId,
-      jobOperationId: jobOperationId || undefined,
+      jobOperationId: effectiveJobOperationId || undefined,
       companyId,
       reportKind: "productionQuantity"
     }
   );
 
-  const operationOptions =
-    jobOperations?.data?.map((operation) => ({
-      label: operation.description ?? "",
-      value: operation.id!
-    })) ?? [];
+  const opContext = await getJobOperationActorContext(
+    client,
+    effectiveJobOperationId,
+    companyId
+  );
+  const actorContext = {
+    ...opContext,
+    defaultActorKind: defaultActorKindFromOperationType(
+      opContext.operationType
+    ),
+    seededActor: seededActorFromOperationContext(opContext)
+  };
 
   return {
     jobId,
     jobOption,
-    jobOperationId,
+    jobOperationId: effectiveJobOperationId,
     operationOptions,
     configurationParameters:
       configurationParameters.length > 0 ? configurationParameters : null,
@@ -148,6 +181,19 @@ export async function action({ request, params }: ActionFunctionArgs) {
     message: "Cannot modify a locked job. Reopen it first."
   });
 
+  const styleExecution = await getStyleBundleExecutionState(client, {
+    companyId,
+    jobId
+  });
+  if (styleExecution.error) {
+    return data(
+      {},
+      await flash(
+        request,
+        error(styleExecution.error, "Failed to load Style bundle state")
+      )
+    );
+  }
   const isOverlay = new URL(request.url).searchParams.get("overlay") === "true";
   const formData = await request.formData();
 

@@ -66,6 +66,39 @@ export const overlay = {
       };
     },
 
+    newJobSplitBatch({
+      jobId,
+      colorCode,
+      sizeCode,
+      shadeLot,
+      configurationKey
+    }: {
+      jobId: string;
+      colorCode?: string;
+      sizeCode?: string;
+      shadeLot?: string;
+      configurationKey?: string;
+    }): OverlayTarget {
+      const base = path.to.newJobSplitBatch(jobId, {
+        colorCode,
+        sizeCode,
+        shadeLot,
+        configurationKey
+      });
+      const sep = base.includes("?") ? "&" : "?";
+      return {
+        id: "newJobSplitBatch",
+        url: `${base}${sep}overlay=true`,
+        params: overlayParams({
+          jobId,
+          colorCode,
+          sizeCode,
+          shadeLot,
+          configurationKey
+        })
+      };
+    },
+
     newProductionPickup({
       jobId,
       jobOperationId

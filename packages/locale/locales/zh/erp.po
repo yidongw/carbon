@@ -207,6 +207,9 @@ msgstr "销售订单行包含特定物品的订单详情"
 msgid "A sales request for quote (RFQ) is a customer inquiry for pricing on a set of parts and quantities. It may result in a quote."
 msgstr "销售询价单（RFQ）是客户对一组产品和数量的价格咨询，可能会生成报价。"
 
+msgid "A style contains the information about a garment or footwear item that is cut, bundled, and produced downstream."
+msgstr ""
+
 msgid "A tool is a physical item used to make a part that can be used across multiple jobs"
 msgstr "工具是用于制造产品的实物物品，可以在多个工作中使用"
 
@@ -1434,6 +1437,9 @@ msgstr "批量导入"
 msgid "Bulk Jobs"
 msgstr "批量工作"
 
+msgid "Bundle Quantities"
+msgstr ""
+
 msgid "Buy"
 msgstr "购买"
 
@@ -1753,6 +1759,15 @@ msgstr "折叠功能表"
 msgid "Collapse subtree"
 msgstr "折叠子树"
 
+msgid "Color"
+msgstr ""
+
+msgid "Color Code"
+msgstr ""
+
+msgid "Color Name"
+msgstr ""
+
 msgid "Column"
 msgstr "列"
 
@@ -1930,6 +1945,12 @@ msgstr "确认导入"
 
 msgid "Confirm Password"
 msgstr "确认密码"
+
+msgid "Confirm Split"
+msgstr ""
+
+msgid "Confirm Split Batch"
+msgstr ""
 
 msgid "Connect"
 msgstr "绑定"
@@ -2435,6 +2456,9 @@ msgstr "已创建库存转移行"
 
 msgid "Created storage type"
 msgstr "已创建存储类型"
+
+msgid "Created style"
+msgstr ""
 
 msgid "Created supplier process"
 msgstr "创建供应商流程"
@@ -4141,6 +4165,10 @@ msgstr "创建库存转移行失败：{0}"
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create storage type: {0}"
 msgstr "创建存储类型失败：{0}"
+
+#. placeholder {0}: fetcher.data.error.message
+msgid "Failed to create style: {0}"
+msgstr ""
 
 msgid "Failed to create supplier process"
 msgstr "创建供应商工序失败"
@@ -6273,6 +6301,9 @@ msgstr "新建存储类型"
 msgid "New Storage Unit"
 msgstr "新建存储单元"
 
+msgid "New Style"
+msgstr ""
+
 msgid "New Supplier"
 msgstr "新供应商"
 
@@ -7072,6 +7103,9 @@ msgstr "父项"
 msgid "Parent Storage Unit"
 msgstr "父存储单元"
 
+msgid "Parent Style job is now cutting-only"
+msgstr ""
+
 msgid "Pareto by Type"
 msgstr "按类型柏拉图"
 
@@ -7191,6 +7225,9 @@ msgstr "待批准"
 
 msgid "Pending payment"
 msgstr "待付款"
+
+msgid "Pending Quantity"
+msgstr ""
 
 msgid "Pension Obligations"
 msgstr "养老金义务"
@@ -9061,6 +9098,9 @@ msgstr "严重性"
 msgid "Severity"
 msgstr "严重程度"
 
+msgid "Shade Lot"
+msgstr ""
+
 msgid "Shape"
 msgstr "形状"
 
@@ -9367,6 +9407,9 @@ msgstr "特定物品"
 msgid "Split"
 msgstr "拆分"
 
+msgid "Split Bundles"
+msgstr ""
+
 msgid "Split line"
 msgstr "拆分行"
 
@@ -9523,8 +9566,20 @@ msgstr "存储固定天数。有效期起始日期在接收或创建批次或序
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "在该物品上存储固定的天数。有效期起始日期在收到批次或序列号时设置。"
 
+msgid "Style"
+msgstr ""
+
+msgid "Style Details"
+msgstr ""
+
+msgid "Style ID"
+msgstr ""
+
 msgid "Style of kanban output to show in the Kanban table"
 msgstr "看板输出样式在看板表格中显示"
+
+msgid "Styles"
+msgstr ""
 
 msgid "Sub-assembly expiries only"
 msgstr "子装产品有效期"
@@ -10009,6 +10064,9 @@ msgstr "此销售订单包含需要创建工作的行项"
 #. placeholder {0}: usageCount === 1 ? "" : "s"
 msgid "This storage type is currently used by {usageCount} storage unit{0}."
 msgstr "此存储类型当前被{usageCount}个存储单元{0}使用。"
+
+msgid "This Style job has already been split into bundles. Downstream completions belong on the bundle jobs listed below. Only cutting can still be reported on the parent job."
+msgstr ""
 
 msgid "This updates the theme for all users of the application"
 msgstr "这将为所有应用用户更新主题"
@@ -10567,6 +10625,9 @@ msgstr "使用...获取下一个物料ID"
 
 msgid "Use ... to get the next part ID"
 msgstr "使用...获取下一个产品号"
+
+msgid "Use ... to get the next style ID"
+msgstr ""
 
 msgid "Use ... to get the next tool ID"
 msgstr "使用...获取下一个工具ID"

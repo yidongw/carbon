@@ -131,7 +131,10 @@ export default function EditSalesInvoiceLineRoute() {
   const initialValues = {
     id: salesInvoiceLine?.id ?? undefined,
     invoiceId: salesInvoiceLine?.invoiceId ?? "",
-    invoiceLineType: (salesInvoiceLine?.invoiceLineType ?? "Part") as "Part",
+    invoiceLineType:
+      salesInvoiceLine?.invoiceLineType === "Comment"
+        ? "Part"
+        : (salesInvoiceLine?.invoiceLineType ?? "Part"),
     methodType: (salesInvoiceLine?.methodType ??
       "Pull from Inventory") as "Pull from Inventory",
     itemId: salesInvoiceLine?.itemId ?? "",

@@ -1,5 +1,6 @@
 /** Valid `purchaseOrderLineType` values when `itemId` is set (matches ERP methodItemType). */
 export const purchaseOrderItemLineTypes = [
+  "Style",
   "Part",
   "Material",
   "Tool",

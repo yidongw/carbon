@@ -11,6 +11,7 @@ import {
 import { assertSupplierQuantityAllowedForOperation } from "./production.service";
 import type { ProductionQuantityLineInput } from "./productionQuantityReport.models";
 import { validateProductionQuantityLines } from "./productionQuantityReport.service";
+import { assertStyleJobCanRecordQuantities } from "./styleBundleExecution.service";
 
 export type JobOperationSupplierQuantityLine =
   Database["public"]["Tables"]["jobOperationSupplierQuantity"]["Row"] & {
@@ -337,6 +338,15 @@ export async function createJobOperationSupplierQuantityReport(
     snapshotPricingEdited?: boolean;
   }
 ) {
+  const styleExecution = await assertStyleJobCanRecordQuantities(client, {
+    companyId: args.companyId,
+    jobId: args.jobId,
+    jobOperationId: args.jobOperationId
+  });
+  if (styleExecution.error) {
+    return { data: null, error: styleExecution.error };
+  }
+
   const lineValidation = validateProductionQuantityLines(args.lines);
   if (lineValidation.error) {
     return { data: null, error: lineValidation.error };

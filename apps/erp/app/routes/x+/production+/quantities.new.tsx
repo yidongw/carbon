@@ -21,6 +21,7 @@ import {
   getJobOperationActorContext,
   getJobOperations,
   getJobs,
+  getStyleBundleExecutionState,
   productionQuantityCreateFormValidator,
   resolveProductionQuantityCanAutoApprove,
   seededActorFromOperationContext,
@@ -113,6 +114,23 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
     jobOperations = operations.data ?? [];
     itemId = job.data?.itemId ?? null;
+
+    const styleExecution = await getStyleBundleExecutionState(client, {
+      companyId,
+      jobId
+    });
+    if (styleExecution.error) {
+      throw error(styleExecution.error, "Failed to fetch Style bundle state");
+    }
+    const allowedOperationIds = styleExecution.data
+      ?.restrictParentToCuttingReporting
+      ? styleExecution.data.cuttingOperationIds
+      : null;
+    if (allowedOperationIds) {
+      jobOperations = (jobOperations ?? []).filter((operation) =>
+        allowedOperationIds.includes(operation.id!)
+      );
+    }
 
     if (itemId) {
       const params = await getConfigurationParameters(

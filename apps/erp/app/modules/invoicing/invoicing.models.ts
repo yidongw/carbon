@@ -3,6 +3,7 @@ import { zfd } from "zod-form-data";
 import { incoterms, methodItemType, methodType } from "../shared";
 
 export const purchaseInvoiceLineType = [
+  "Style",
   "Part",
   // "Service",
   "Material",
@@ -37,6 +38,7 @@ export function isPurchaseInvoiceLocked(
 }
 
 export const salesInvoiceLineType = [
+  "Style",
   "Part",
   // "Service",
   "Material",
@@ -131,7 +133,7 @@ export const purchaseInvoiceLineValidator = z
   })
   .refine(
     (data) =>
-      ["Part", "Service", "Material", "Tool", "Consumable"].includes(
+      ["Style", "Part", "Service", "Material", "Tool", "Consumable"].includes(
         data.invoiceLineType
       )
         ? data.itemId
@@ -143,7 +145,9 @@ export const purchaseInvoiceLineValidator = z
   )
   .refine(
     (data) =>
-      ["Part", "Material", "Tool", "Consumable"].includes(data.invoiceLineType)
+      ["Style", "Part", "Material", "Tool", "Consumable"].includes(
+        data.invoiceLineType
+      )
         ? data.locationId
         : true,
     {
@@ -258,7 +262,7 @@ export const salesInvoiceLineValidator = z
   })
   .refine(
     (data) =>
-      ["Part", "Service", "Material", "Tool", "Consumable"].includes(
+      ["Style", "Part", "Service", "Material", "Tool", "Consumable"].includes(
         data.invoiceLineType
       )
         ? data.itemId
@@ -270,7 +274,9 @@ export const salesInvoiceLineValidator = z
   )
   .refine(
     (data) =>
-      ["Part", "Material", "Tool", "Consumable"].includes(data.invoiceLineType)
+      ["Style", "Part", "Material", "Tool", "Consumable"].includes(
+        data.invoiceLineType
+      )
         ? data.locationId
         : true,
     {

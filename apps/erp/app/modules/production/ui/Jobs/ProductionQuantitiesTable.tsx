@@ -1,17 +1,21 @@
 import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
   Badge,
   Button,
   HStack,
   MenuIcon,
   MenuItem,
-  useDisclosure
+  useDisclosure,
+  VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useMemo, useState } from "react";
-import { LuPencil, LuPlus, LuTrash } from "react-icons/lu";
+import { LuPencil, LuPlus, LuSplit, LuTrash } from "react-icons/lu";
 import { useParams, useRevalidator } from "react-router";
-import { SupplierAvatar, Table } from "~/components";
+import { Hyperlink, SupplierAvatar, Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { ConfirmDelete } from "~/components/Modals";
 import { overlay, useOverlay } from "~/components/Overlay";
@@ -33,6 +37,20 @@ type ProductionQuantitiesTableProps = {
   count: number;
   operations: { id: string; description: string | null }[];
   scrapReasons: ScrapReason[];
+  showSplitAction?: boolean;
+  canCreateQuantities?: boolean;
+  styleSplitLocked?: boolean;
+  bundleJobs?: Array<{
+    bundleId: string;
+    bundleNumber: string;
+    bundleStatus: string;
+    jobId: string | null;
+    quantity: number;
+    colorCode: string;
+    colorName: string;
+    sizeCode: string | null;
+    shadeLot: string | null;
+  }>;
 };
 
 const ProductionQuantitiesTable = memo(
@@ -40,7 +58,11 @@ const ProductionQuantitiesTable = memo(
     data,
     count,
     operations,
-    scrapReasons
+    scrapReasons,
+    showSplitAction = false,
+    canCreateQuantities = true,
+    styleSplitLocked = false,
+    bundleJobs = []
   }: ProductionQuantitiesTableProps) => {
     const { jobId } = useParams();
     const { t } = useLingui();
@@ -69,6 +91,13 @@ const ProductionQuantitiesTable = memo(
     const openNew = useCallback(() => {
       openOverlay(overlay.to.newJobProductionQuantity({ jobId }), {
         onCreated: () => revalidator.revalidate()
+      });
+    }, [jobId, openOverlay, revalidator]);
+
+    const openSplit = useCallback(() => {
+      openOverlay(overlay.to.newJobSplitBatch({ jobId }), {
+        onCreated: () => revalidator.revalidate(),
+        onSuccess: () => revalidator.revalidate()
       });
     }, [jobId, openOverlay, revalidator]);
 
@@ -290,7 +319,7 @@ const ProductionQuantitiesTable = memo(
         </>
       ),
 
-      [openEdit, permissions]
+      [onDelete, openEdit, permissions]
     );
 
     return (
@@ -301,20 +330,75 @@ const ProductionQuantitiesTable = memo(
           columns={columns}
           data={data}
           primaryAction={
-            permissions.can("create", "production") && (
-              <Button
-                type="button"
-                variant="primary"
-                leftIcon={<LuPlus />}
-                onClick={openNew}
-              >
-                <Trans>Process Completion</Trans>
-              </Button>
+            permissions.can("create", "production") &&
+            canCreateQuantities && (
+              <HStack spacing={2}>
+                {showSplitAction ? (
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    leftIcon={<LuSplit />}
+                    onClick={openSplit}
+                  >
+                    <Trans>Split Bundles</Trans>
+                  </Button>
+                ) : null}
+                <Button
+                  type="button"
+                  variant="primary"
+                  leftIcon={<LuPlus />}
+                  onClick={openNew}
+                >
+                  <Trans>Process Completion</Trans>
+                </Button>
+              </HStack>
             )
           }
           renderContextMenu={renderContextMenu}
           title={t`Process Completions`}
         />
+        {styleSplitLocked ? (
+          <VStack spacing={3} className="px-4 pb-4">
+            <Alert variant="warning">
+              <AlertTitle>
+                <Trans>Parent Style job is now cutting-only</Trans>
+              </AlertTitle>
+              <AlertDescription>
+                <Trans>
+                  This Style job has already been split into bundles. Downstream
+                  completions belong on the bundle jobs listed below. Only
+                  cutting can still be reported on the parent job.
+                </Trans>
+              </AlertDescription>
+            </Alert>
+            {bundleJobs.length > 0 ? (
+              <VStack spacing={2} className="items-start">
+                {bundleJobs.map((bundle) => (
+                  <HStack
+                    key={bundle.bundleId}
+                    spacing={3}
+                    className="flex-wrap items-center"
+                  >
+                    {bundle.jobId ? (
+                      <Hyperlink to={path.to.job(bundle.jobId)}>
+                        {bundle.bundleNumber}
+                      </Hyperlink>
+                    ) : (
+                      <span className="font-medium">{bundle.bundleNumber}</span>
+                    )}
+                    <Badge variant="outline">{bundle.bundleStatus}</Badge>
+                    <span className="text-muted-foreground">
+                      {bundle.colorCode}
+                      {bundle.sizeCode ? ` / ${bundle.sizeCode}` : ""}
+                      {bundle.shadeLot ? ` / ${bundle.shadeLot}` : ""}
+                      {` / ${bundle.quantity}`}
+                    </span>
+                  </HStack>
+                ))}
+              </VStack>
+            ) : null}
+          </VStack>
+        ) : null}
         {deleteModal.isOpen && selectedEvent && (
           <ConfirmDelete
             action={path.to.deleteProductionQuantity(selectedEvent.id)}
