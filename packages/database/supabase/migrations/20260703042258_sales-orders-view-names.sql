@@ -33,8 +33,6 @@ CREATE OR REPLACE VIEW "salesOrders" WITH (security_invoker = true) AS
     s."opportunityId",
     s."completedDate",
     s."customerEngineeringContactId",
-    s."deletedAt",
-    s."deletedBy",
         CASE
             WHEN (s.status <> ALL (ARRAY['Closed'::"salesOrderStatus", 'Cancelled'::"salesOrderStatus"])) AND (EXISTS ( SELECT 1
                FROM "salesOrderLine" sol

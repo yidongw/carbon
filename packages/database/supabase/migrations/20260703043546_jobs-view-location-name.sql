@@ -65,8 +65,6 @@ CREATE OR REPLACE VIEW "jobs" WITH (SECURITY_INVOKER=true) AS
     j."startDate",
     j."storageUnitId",
     j.priority,
-    j."deletedAt",
-    j."deletedBy",
     jmm.id AS "jobMakeMethodId",
     i.name,
     i."readableIdWithRevision" AS "itemReadableIdWithRevision",
@@ -74,7 +72,6 @@ CREATE OR REPLACE VIEW "jobs" WITH (SECURITY_INVOKER=true) AS
     i.name AS description,
     i."itemTrackingType",
     i.active,
-    i."deletedAt" AS "itemDeletedAt",
     i."replenishmentSystem",
     mu.id AS "modelId",
     mu."autodeskUrn",
@@ -100,5 +97,4 @@ CREATE OR REPLACE VIEW "jobs" WITH (SECURITY_INVOKER=true) AS
      LEFT JOIN quote qo ON j."quoteId" = qo.id AND j."companyId" = qo."companyId"
      LEFT JOIN root_operation_stats os ON os."jobId" = j.id
      LEFT JOIN root_routing_min_complete rrc ON rrc."jobId" = j.id
-     LEFT JOIN "location" loc ON loc.id = j."locationId"
-  WHERE j."deletedAt" IS NULL;
+     LEFT JOIN "location" loc ON loc.id = j."locationId";

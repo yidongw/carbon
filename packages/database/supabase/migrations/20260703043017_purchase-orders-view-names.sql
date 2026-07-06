@@ -35,8 +35,6 @@ CREATE OR REPLACE VIEW "purchaseOrders" WITH (SECURITY_INVOKER=true) AS
     p."purchaseOrderType",
     p."jobId",
     p."jobReadableId",
-    p."deletedAt",
-    p."deletedBy",
     pl."thumbnailPath",
     pl."itemType",
     pl."orderTotal" + pd."supplierShippingCost" * p."exchangeRate" AS "orderTotal",
