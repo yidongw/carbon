@@ -458,6 +458,8 @@ export async function upsertStyle(
         customFields: style.customFields
       });
     } catch (error) {
+      // Roll back the orphaned item so retries don't hit duplicate-key errors
+      await client.from("item").delete().eq("id", itemId);
       return {
         data: null,
         error: toError(error, "Failed to insert style")
