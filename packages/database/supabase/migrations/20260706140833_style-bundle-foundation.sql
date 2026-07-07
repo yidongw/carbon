@@ -15,14 +15,14 @@ CHECK (
   (
     "invoiceLineType" = 'Comment' AND
     "itemId" IS NULL AND
-    "accountNumber" IS NULL AND
+    "accountId" IS NULL AND
     "assetId" IS NULL AND
     "description" IS NOT NULL
   )
   OR (
     "invoiceLineType" = 'G/L Account' AND
     "itemId" IS NULL AND
-    "accountNumber" IS NOT NULL AND
+    "accountId" IS NOT NULL AND
     "assetId" IS NULL
   )
   OR (
@@ -36,13 +36,13 @@ CHECK (
       "invoiceLineType" = 'Service'
     ) AND
     "itemId" IS NOT NULL AND
-    "accountNumber" IS NULL AND
+    "accountId" IS NULL AND
     "assetId" IS NULL
   )
   OR (
     "invoiceLineType" = 'Fixed Asset' AND
     "itemId" IS NULL AND
-    "accountNumber" IS NULL AND
+    "accountId" IS NULL AND
     "assetId" IS NOT NULL
   )
 );
