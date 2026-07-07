@@ -171,73 +171,6 @@ FOR DELETE USING (
   )
 );
 
-CREATE VIEW "styles" WITH (SECURITY_INVOKER=true) AS
-WITH latest_items AS (
-  SELECT DISTINCT ON (i."readableId", i."companyId")
-    i.*
-  FROM "item" i
-  WHERE i."type" = 'Style'
-  ORDER BY i."readableId", i."companyId",
-    CASE WHEN i."revision" = '0' OR i."revision" = '' OR i."revision" IS NULL THEN 0 ELSE 1 END DESC,
-    i."createdAt" DESC NULLS LAST
-),
-item_revisions AS (
-  SELECT
-    i."readableId",
-    i."companyId",
-    json_agg(
-      json_build_object(
-        'id', i.id,
-        'revision', i."revision",
-        'name', i."name",
-        'description', i."description",
-        'active', i."active",
-        'createdAt', i."createdAt"
-      ) ORDER BY
-        CASE WHEN i."revision" = '0' OR i."revision" = '' OR i."revision" IS NULL THEN 0 ELSE 1 END,
-        i."createdAt"
-      ) AS "revisions"
-  FROM "item" i
-  WHERE i."type" = 'Style'
-  GROUP BY i."readableId", i."companyId"
-)
-SELECT
-  li."active",
-  li."assignee",
-  li."defaultMethodType",
-  li."sourcingType",
-  li."description",
-  li."itemTrackingType",
-  li."name",
-  li."replenishmentSystem",
-  li."unitOfMeasureCode",
-  li."notes",
-  li."revision",
-  li."readableId",
-  li."readableIdWithRevision",
-  li."id",
-  li."companyId",
-  li."thumbnailPath",
-  (
-    SELECT json_agg(json_build_object('id', sc."id", 'colorCode', sc."colorCode", 'colorName', sc."colorName") ORDER BY sc."colorCode")
-    FROM "styleColorAssignment" sca
-    JOIN "styleColor" sc ON sc."id" = sca."styleColorId"
-    WHERE sca."styleId" = s."id"
-      AND sca."companyId" = s."companyId"
-  ) AS colors,
-  ir."revisions",
-  s."customFields",
-  s."tags",
-  ic."itemPostingGroupId",
-  li."createdBy",
-  li."createdAt",
-  li."updatedBy",
-  li."updatedAt"
-FROM "style" s
-INNER JOIN latest_items li ON li."id" = s."itemId"
-LEFT JOIN item_revisions ir ON ir."readableId" = li."readableId" AND ir."companyId" = li."companyId"
-LEFT JOIN "itemCost" ic ON ic."itemId" = li.id;
-
 CREATE TYPE "splitBatchStatus" AS ENUM (
   'Draft',
   'Confirmed',
@@ -606,6 +539,73 @@ FOR DELETE USING (
     (SELECT get_companies_with_employee_permission('parts_delete'))::text[]
   )
 );
+
+CREATE VIEW "styles" WITH (SECURITY_INVOKER=true) AS
+WITH latest_items AS (
+  SELECT DISTINCT ON (i."readableId", i."companyId")
+    i.*
+  FROM "item" i
+  WHERE i."type" = 'Style'
+  ORDER BY i."readableId", i."companyId",
+    CASE WHEN i."revision" = '0' OR i."revision" = '' OR i."revision" IS NULL THEN 0 ELSE 1 END DESC,
+    i."createdAt" DESC NULLS LAST
+),
+item_revisions AS (
+  SELECT
+    i."readableId",
+    i."companyId",
+    json_agg(
+      json_build_object(
+        'id', i.id,
+        'revision', i."revision",
+        'name', i."name",
+        'description', i."description",
+        'active', i."active",
+        'createdAt', i."createdAt"
+      ) ORDER BY
+        CASE WHEN i."revision" = '0' OR i."revision" = '' OR i."revision" IS NULL THEN 0 ELSE 1 END,
+        i."createdAt"
+      ) AS "revisions"
+  FROM "item" i
+  WHERE i."type" = 'Style'
+  GROUP BY i."readableId", i."companyId"
+)
+SELECT
+  li."active",
+  li."assignee",
+  li."defaultMethodType",
+  li."sourcingType",
+  li."description",
+  li."itemTrackingType",
+  li."name",
+  li."replenishmentSystem",
+  li."unitOfMeasureCode",
+  li."notes",
+  li."revision",
+  li."readableId",
+  li."readableIdWithRevision",
+  li."id",
+  li."companyId",
+  li."thumbnailPath",
+  (
+    SELECT json_agg(json_build_object('id', sc."id", 'colorCode', sc."colorCode", 'colorName', sc."colorName") ORDER BY sc."colorCode")
+    FROM "styleColorAssignment" sca
+    JOIN "styleColor" sc ON sc."id" = sca."styleColorId"
+    WHERE sca."styleId" = s."id"
+      AND sca."companyId" = s."companyId"
+  ) AS colors,
+  ir."revisions",
+  s."customFields",
+  s."tags",
+  ic."itemPostingGroupId",
+  li."createdBy",
+  li."createdAt",
+  li."updatedBy",
+  li."updatedAt"
+FROM "style" s
+INNER JOIN latest_items li ON li."id" = s."itemId"
+LEFT JOIN item_revisions ir ON ir."readableId" = li."readableId" AND ir."companyId" = li."companyId"
+LEFT JOIN "itemCost" ic ON ic."itemId" = li.id;
 
 CREATE OR REPLACE FUNCTION sync_create_make_method_related_records(
   p_table TEXT,
