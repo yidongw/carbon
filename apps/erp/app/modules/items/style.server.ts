@@ -21,10 +21,12 @@ type StylePayload =
       companyId: string;
       createdBy: string;
       customFields?: Json;
+      styleColorIds: string[];
     })
   | (z.infer<typeof styleValidator> & {
       updatedBy: string;
       customFields?: Json;
+      styleColorIds: string[];
     });
 
 type StyleSummary = {
@@ -44,8 +46,7 @@ type StyleSummary = {
   id: string;
   companyId: string;
   thumbnailPath: string | null;
-  colorName: string;
-  colorCode: string;
+  colors: Array<{id: string; colorCode: string; colorName: string}> | null;
   revisions: unknown;
   customFields: Json | null;
   tags: string[] | null;
@@ -105,10 +106,13 @@ export async function getStyleColorContext(
   try {
     const db = getDatabaseClient();
     const result = await sql<{ itemId: string; colorCode: string }>`
-      select "itemId", "colorCode"
-      from "style"
-      where "itemId" = ${itemId}
-        and "companyId" = ${companyId}
+      select s."id" as "itemId", sc."colorCode"
+      from "style" s
+      join "styleColorAssignment" sca on sca."styleId" = s."id" and sca."companyId" = s."companyId"
+      join "styleColor" sc on sc."id" = sca."styleColorId"
+      where s."itemId" = ${itemId}
+        and s."companyId" = ${companyId}
+      order by sc."colorCode"
       limit 1
     `.execute(db);
 
@@ -369,8 +373,6 @@ async function insertStyleRecord(
   args: {
     readableId: string;
     itemId: string;
-    colorName: string;
-    colorCode: string;
     companyId: string;
     userId: string;
     customFields?: Json;
@@ -380,8 +382,6 @@ async function insertStyleRecord(
   const result = await styleClient.from("style").insert({
     id: args.readableId,
     itemId: args.itemId,
-    colorName: args.colorName,
-    colorCode: args.colorCode,
     companyId: args.companyId,
     createdBy: args.userId,
     customFields: args.customFields ?? null
@@ -390,12 +390,31 @@ async function insertStyleRecord(
   if (result.error) throw result.error;
 }
 
+async function insertStyleColorAssignments(
+  client: Parameters<typeof upsertItemDefaultPickMethod>[0],
+  args: {
+    styleId: string;
+    companyId: string;
+    userId: string;
+    styleColorIds: string[];
+  }
+) {
+  const styleClient = client as any;
+  if (args.styleColorIds.length === 0) return;
+  const rows = args.styleColorIds.map((styleColorId) => ({
+    styleId: args.styleId,
+    styleColorId,
+    companyId: args.companyId,
+    createdBy: args.userId
+  }));
+  const result = await styleClient.from("styleColorAssignment").insert(rows);
+  if (result.error) throw result.error;
+}
+
 async function updateStyleRecord(
   client: Parameters<typeof upsertItemDefaultPickMethod>[0],
   args: {
     itemId: string;
-    colorName: string;
-    colorCode: string;
     companyId: string;
     userId: string;
     customFields?: Json;
@@ -406,8 +425,6 @@ async function updateStyleRecord(
   const result = await styleClient
     .from("style")
     .update({
-      colorName: args.colorName,
-      colorCode: args.colorCode,
       customFields: args.customFields ?? null,
       updatedBy: args.userId,
       updatedAt
@@ -451,11 +468,15 @@ export async function upsertStyle(
       await insertStyleRecord(client, {
         readableId: style.id,
         itemId,
-        colorName: style.colorName,
-        colorCode: style.colorCode,
         companyId: style.companyId,
         userId: style.createdBy,
         customFields: style.customFields
+      });
+      await insertStyleColorAssignments(client, {
+        styleId: style.id,
+        companyId: style.companyId,
+        userId: style.createdBy,
+        styleColorIds: style.styleColorIds
       });
     } catch (error) {
       // Roll back the orphaned item so retries don't hit duplicate-key errors
@@ -582,12 +603,24 @@ export async function upsertStyle(
   try {
     await updateStyleRecord(client, {
       itemId: style.id,
-      colorName: style.colorName,
-      colorCode: style.colorCode,
       companyId,
       userId: style.updatedBy,
       customFields: style.customFields
     });
+    // Replace color assignments
+    const styleClient = client as any;
+    await styleClient.from("styleColorAssignment")
+      .delete()
+      .eq("styleId", style.id)
+      .eq("companyId", companyId);
+    if (style.styleColorIds.length > 0) {
+      await insertStyleColorAssignments(client, {
+        styleId: style.id,
+        companyId,
+        userId: style.updatedBy,
+        styleColorIds: style.styleColorIds
+      });
+    }
   } catch (error) {
     return {
       data: null,

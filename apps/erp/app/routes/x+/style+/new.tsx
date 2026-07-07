@@ -35,10 +35,15 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   const { templateId, ...styleData } = validation.data;
+  const styleColorIds = Array.from(formData.entries())
+    .filter(([key]) => key.startsWith("styleColorIds["))
+    .map(([, value]) => value as string)
+    .filter(Boolean);
   const { upsertStyle } = await import("~/modules/items/style.server");
 
   const createStyle = await upsertStyle(client, {
     ...styleData,
+    styleColorIds,
     companyId,
     customFields: setCustomFields(formData),
     createdBy: userId
@@ -123,8 +128,6 @@ export default function StylesNewRoute() {
     unitOfMeasureCode: "EA",
     unitCost: 0,
     lotSize: 0,
-    colorCode: "",
-    colorName: "",
     active: true,
     shelfLifeCalculateFromBom: false
   };

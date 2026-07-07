@@ -10,12 +10,7 @@ export const styleValidator = applyStorageAndShelfLifeRefines(
       modelUploadId: zfd.text(z.string().optional()),
       thumbnailPath: zfd.text(z.string().optional()),
       lotSize: zfd.numeric(z.number().min(0).optional()),
-      templateId: zfd.text(z.string().optional()),
-      colorName: z.string().min(1, { message: "Color name is required" }),
-      colorCode: z
-        .string()
-        .min(1, { message: "Color code is required" })
-        .max(32)
+      templateId: zfd.text(z.string().optional())
     })
   )
 );

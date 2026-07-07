@@ -44,6 +44,7 @@ import {
   TextArea,
   UnitOfMeasure
 } from "~/components/Form";
+import StyleColors from "~/components/Form/StyleColors";
 import { ReplenishmentSystemIcon } from "~/components/Icons";
 import { useNextItemId, usePermissions, useUser } from "~/hooks";
 import { path } from "~/utils/path";
@@ -312,8 +313,7 @@ const StyleForm = ({
                   label={t`Short Description`}
                   characterLimit={40}
                 />
-                <Input name="colorCode" label={t`Color Code`} />
-                <Input name="colorName" label={t`Color Name`} />
+                <StyleColors name="styleColorIds" label={t`Colors`} />
                 <Select
                   name="replenishmentSystem"
                   label={t`Replenishment System`}

@@ -46,10 +46,15 @@ export async function action({ request, params }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
+  const styleColorIds = Array.from(formData.entries())
+    .filter(([key]) => key.startsWith("styleColorIds["))
+    .map(([, value]) => value as string)
+    .filter(Boolean);
   const { upsertStyle } = await import("~/modules/items/style.server");
   const updateStyle = await upsertStyle(client, {
     ...validation.data,
     id: itemId,
+    styleColorIds,
     customFields: setCustomFields(formData),
     updatedBy: userId
   });
@@ -99,8 +104,7 @@ export default function StyleRoute() {
     unitOfMeasureCode: styleSummary.unitOfMeasureCode ?? "EA",
     unitCost: 0,
     lotSize: 0,
-    colorCode: styleSummary.colorCode ?? "",
-    colorName: styleSummary.colorName ?? "",
+    styleColorIds: (styleSummary.colors ?? []).map((c) => c.id),
     thumbnailPath: styleSummary.thumbnailPath ?? "",
     shelfLifeCalculateFromBom: false,
     tags: styleSummary.tags ?? [],
