@@ -44,20 +44,17 @@ export async function action({ request }: ActionFunctionArgs) {
     createdBy: userId
   });
   if (createStyle.error) {
+    const message = createStyle.error?.message
+      ? `Failed to insert style: ${createStyle.error.message}`
+      : "Failed to insert style";
     return modal
       ? data(
           createStyle,
-          await flash(
-            request,
-            error(createStyle.error, "Failed to insert style")
-          )
+          await flash(request, error(createStyle.error, message))
         )
       : redirect(
           path.to.items,
-          await flash(
-            request,
-            error(createStyle.error, "Failed to insert style")
-          )
+          await flash(request, error(createStyle.error, message))
         );
   }
 
