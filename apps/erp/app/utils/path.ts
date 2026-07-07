@@ -810,6 +810,8 @@ export const path = {
       generatePath(`${x}/items/dimensions/delete/${id}`),
     deleteMaterialFinish: (id: string) =>
       generatePath(`${x}/items/finishes/delete/${id}`),
+    deleteStyleColor: (id: string) =>
+      generatePath(`${x}/items/colors/delete/${id}`),
     deleteMaterialForm: (id: string) =>
       generatePath(`${x}/items/forms/delete/${id}`),
     deleteMaterialGrade: (id: string) =>
@@ -1214,6 +1216,8 @@ export const path = {
     materialDimensions: `${x}/items/dimensions`,
     materialFinish: (id: string) => generatePath(`${x}/items/finishes/${id}`),
     materialFinishes: `${x}/items/finishes`,
+    styleColor: (id: string) => generatePath(`${x}/items/colors/${id}`),
+    styleColors: `${x}/items/colors`,
     materialForm: (id: string) => generatePath(`${x}/items/forms/${id}`),
     materialForms: `${x}/items/forms`,
     materialGrade: (id: string) => generatePath(`${x}/items/grades/${id}`),
@@ -1343,6 +1347,7 @@ export const path = {
     newMethodOperationParameter: `${x}/items/methods/operation/parameter/new`,
     newMaterialDimension: `${x}/items/dimensions/new`,
     newMaterialFinish: `${x}/items/finishes/new`,
+    newStyleColor: `${x}/items/colors/new`,
     newMaterialForm: `${x}/items/forms/new`,
     newMaterialGrade: `${x}/items/grades/new`,
     newMaterialSubstance: `${x}/items/substances/new`,

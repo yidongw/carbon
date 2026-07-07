@@ -65,6 +65,17 @@ export default function useItemsSubmodules() {
       ]
     },
     {
+      name: t`Style Properties`,
+      routes: [
+        {
+          name: t`Colors`,
+          to: path.to.styleColors,
+          icon: <LuPalette />,
+          role: "employee"
+        }
+      ]
+    },
+    {
       name: t`Material Properties`,
       routes: [
         {

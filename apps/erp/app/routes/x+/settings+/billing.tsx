@@ -230,7 +230,7 @@ export async function action({ request }: ActionFunctionArgs) {
         companyId,
         priceIds
       });
-      return redirect(billingPortalUrl, 301);
+      return redirect(billingPortalUrl);
     } catch (err) {
       console.error("Failed to get billing portal URL:", err);
       return data(
