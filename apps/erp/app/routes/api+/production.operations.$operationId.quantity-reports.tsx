@@ -4,7 +4,6 @@ import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data } from "react-router";
 import {
-  createProductionQuantityReport,
   createProductionQuantityReportValidator,
   getOperationQuantitySummary,
   isJobLocked,
@@ -12,6 +11,7 @@ import {
   resolveProductionQuantityCanAutoApprove,
   syncProductionQuantityReportApproval
 } from "~/modules/production";
+import { createProductionQuantityReport } from "~/modules/production/productionQuantityReport.service.server";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {

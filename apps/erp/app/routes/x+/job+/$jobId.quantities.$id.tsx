@@ -24,7 +24,6 @@ import {
   productionQuantityCreateFormValidator,
   productionQuantityValidator,
   replaceJobOperationSupplierQuantityReportLines,
-  replaceProductionQuantityReportLines,
   resolveProductionQuantityCanAutoApprove,
   syncProductionQuantityReportApproval
 } from "~/modules/production";
@@ -279,6 +278,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
       ? await resolveCanAutoApprove(id)
       : false;
 
+    const { replaceProductionQuantityReportLines } = await import(
+      "~/modules/production/productionQuantityReport.service.server"
+    );
+
     const update = isSupplierQuantityReportId(id)
       ? await replaceJobOperationSupplierQuantityReportLines(client, {
           reportId: id,
@@ -425,6 +428,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
     ? await resolveCanAutoApprove(reportId)
     : false;
 
+  const { replaceProductionQuantityReportLines: replaceLines } = await import(
+    "~/modules/production/productionQuantityReport.service.server"
+  );
+
   const update = isSupplierLine
     ? await replaceJobOperationSupplierQuantityReportLines(client, {
         reportId,
@@ -433,7 +440,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
         notes: null,
         lines
       })
-    : await replaceProductionQuantityReportLines(client, {
+    : await replaceLines(client, {
         reportId,
         companyId,
         userId,

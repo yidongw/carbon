@@ -9,7 +9,12 @@ import {
   upsertItemShelfLife
 } from "./items.service";
 import type { styleValidator } from "./style.models";
-import { ensureStyleMethodScaffoldWithDb } from "./styleMethod.service";
+import {
+  buildStyleCuttingMethodOperation,
+  STYLE_CUTTING_OPERATION_TAG,
+  STYLE_CUTTING_PROCESS_TAG,
+  STYLE_SYSTEM_OPERATION_TAG
+} from "./styleMethod.service";
 
 type StylePayload =
   | (z.infer<typeof styleValidator> & {
@@ -115,6 +120,246 @@ export async function getStyleColorContext(
     return {
       data: null,
       error: toError(error, "Failed to load style color context")
+    };
+  }
+}
+
+export async function ensureStyleMethodScaffoldWithDb(args: {
+  itemId: string;
+  companyId: string;
+  userId: string;
+}) {
+  const db = getDatabaseClient();
+
+  try {
+    const existingMakeMethod = await sql<{ id: string }>`
+      select "id"
+      from "makeMethod"
+      where "itemId" = ${args.itemId}
+        and "companyId" = ${args.companyId}
+      order by "createdAt" asc
+      limit 1
+    `.execute(db);
+
+    let makeMethodId = existingMakeMethod.rows[0]?.id ?? null;
+    if (!makeMethodId) {
+      const makeMethodResult = await sql<{ id: string }>`
+        insert into "makeMethod" ("itemId", "companyId", "createdBy")
+        values (${args.itemId}, ${args.companyId}, ${args.userId})
+        returning "id"
+      `.execute(db);
+      makeMethodId = makeMethodResult.rows[0]?.id ?? null;
+    }
+
+    if (!makeMethodId) {
+      return {
+        data: null,
+        error: new Error("Failed to create style make method")
+      };
+    }
+
+    const existingCuttingProcess = await sql<{ id: string; name: string }>`
+      select "id", "name"
+      from "process"
+      where "companyId" = ${args.companyId}
+        and ${STYLE_CUTTING_PROCESS_TAG} = any(coalesce("tags", '{}'::text[]))
+      order by "createdAt" asc
+      limit 1
+    `.execute(db);
+
+    let cuttingProcessId = existingCuttingProcess.rows[0]?.id ?? null;
+
+    if (!cuttingProcessId) {
+      const namedCuttingProcess = await sql<{ id: string; name: string }>`
+        select "id", "name"
+        from "process"
+        where "companyId" = ${args.companyId}
+          and "name" in ('Cutting', '裁剪')
+        order by "createdAt" asc
+        limit 1
+      `.execute(db);
+
+      const namedCuttingProcessId = namedCuttingProcess.rows[0]?.id ?? null;
+      if (namedCuttingProcessId) {
+        await sql`
+          update "process"
+          set
+            "tags" = array(
+              select distinct tag
+              from unnest(array_append(coalesce("tags", '{}'::text[]), ${STYLE_CUTTING_PROCESS_TAG})) as tag
+            ),
+            "updatedBy" = ${args.userId}
+          where "id" = ${namedCuttingProcessId}
+        `.execute(db);
+        cuttingProcessId = namedCuttingProcessId;
+      } else {
+        const insertedCuttingProcess = await sql<{ id: string }>`
+          insert into "process" (
+            "name",
+            "processType",
+            "defaultStandardFactor",
+            "completeAllOnScan",
+            "tags",
+            "companyId",
+            "createdBy"
+          ) values (
+            'Cutting',
+            'Inside',
+            'Minutes/Piece',
+            false,
+            array[${STYLE_CUTTING_PROCESS_TAG}]::text[],
+            ${args.companyId},
+            ${args.userId}
+          )
+          returning "id"
+        `.execute(db);
+
+        cuttingProcessId = insertedCuttingProcess.rows[0]?.id ?? null;
+      }
+    }
+
+    if (!cuttingProcessId) {
+      return {
+        data: null,
+        error: new Error("Failed to resolve style cutting process")
+      };
+    }
+
+    const existingCuttingOperation = await sql<{ id: string }>`
+      select "id"
+      from "methodOperation"
+      where "makeMethodId" = ${makeMethodId}
+        and (
+          ${STYLE_CUTTING_OPERATION_TAG} = any(coalesce("tags", '{}'::text[]))
+          or "customFields" ->> 'styleStage' = 'cutting'
+        )
+      order by "order" asc
+      limit 1
+    `.execute(db);
+
+    if (existingCuttingOperation.rows[0]?.id) {
+      return {
+        data: {
+          makeMethodId,
+          cuttingOperationId: existingCuttingOperation.rows[0].id
+        },
+        error: null
+      };
+    }
+
+    const firstOperation = await sql<{
+      id: string;
+      processId: string | null;
+      order: number | null;
+    }>`
+      select "id", "processId", "order"
+      from "methodOperation"
+      where "makeMethodId" = ${makeMethodId}
+      order by "order" asc
+      limit 1
+    `.execute(db);
+
+    const first = firstOperation.rows[0];
+    if (first?.id && first.processId === cuttingProcessId) {
+      await sql`
+        update "methodOperation"
+        set
+          "tags" = array(
+            select distinct tag
+            from unnest(
+              array_append(
+                array_append(coalesce("tags", '{}'::text[]), ${STYLE_CUTTING_OPERATION_TAG}),
+                ${STYLE_SYSTEM_OPERATION_TAG}
+              )
+            ) as tag
+          ),
+          "customFields" = coalesce("customFields", '{}'::jsonb) || ${JSON.stringify(
+            {
+              styleStage: "cutting",
+              styleSystemOwned: true
+            }
+          )}::jsonb,
+          "updatedBy" = ${args.userId}
+        where "id" = ${first.id}
+      `.execute(db);
+
+      return {
+        data: {
+          makeMethodId,
+          cuttingOperationId: first.id
+        },
+        error: null
+      };
+    }
+
+    const seededCuttingOperation = buildStyleCuttingMethodOperation({
+      makeMethodId,
+      processId: cuttingProcessId,
+      companyId: args.companyId,
+      createdBy: args.userId,
+      order: first && typeof first.order === "number" ? first.order - 1 : 0
+    });
+
+    const insertedOperation = await sql<{ id: string }>`
+      insert into "methodOperation" (
+        "makeMethodId",
+        "processId",
+        "companyId",
+        "createdBy",
+        "order",
+        "operationOrder",
+        "operationType",
+        "description",
+        "setupUnit",
+        "setupTime",
+        "laborUnit",
+        "laborTime",
+        "machineUnit",
+        "machineTime",
+        "insideUnitCost",
+        "tags",
+        "customFields"
+      ) values (
+        ${seededCuttingOperation.makeMethodId},
+        ${seededCuttingOperation.processId},
+        ${seededCuttingOperation.companyId},
+        ${seededCuttingOperation.createdBy},
+        ${seededCuttingOperation.order},
+        ${seededCuttingOperation.operationOrder},
+        ${seededCuttingOperation.operationType},
+        ${seededCuttingOperation.description},
+        ${seededCuttingOperation.setupUnit},
+        ${seededCuttingOperation.setupTime},
+        ${seededCuttingOperation.laborUnit},
+        ${seededCuttingOperation.laborTime},
+        ${seededCuttingOperation.machineUnit},
+        ${seededCuttingOperation.machineTime},
+        ${seededCuttingOperation.insideUnitCost},
+        array[${STYLE_CUTTING_OPERATION_TAG}, ${STYLE_SYSTEM_OPERATION_TAG}]::text[],
+        ${JSON.stringify(seededCuttingOperation.customFields)}::jsonb
+      )
+      returning "id"
+    `.execute(db);
+
+    const cuttingOperationId = insertedOperation.rows[0]?.id ?? null;
+    if (!cuttingOperationId) {
+      return {
+        data: null,
+        error: new Error("Failed to create style cutting operation")
+      };
+    }
+
+    return {
+      data: {
+        makeMethodId,
+        cuttingOperationId
+      },
+      error: null
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: toError(error, "Failed to scaffold style make method")
     };
   }
 }
@@ -408,19 +653,25 @@ export async function upsertStyle(
     }
   }
 
-  const itemCostUpdate = await client
-    .from("itemCost")
-    .update(
-      sanitize({
-        itemPostingGroupId: style.postingGroupId,
-        unitCost:
-          style.replenishmentSystem !== "Make" ? style.unitCost : undefined
-      })
-    )
-    .eq("itemId", style.id);
+  // Only update fields that were explicitly submitted — undefined means the
+  // edit form doesn't include that control, and sanitize() would turn it to
+  // null, wiping the stored value.
+  const costUpdate: Record<string, unknown> = {};
+  if (style.postingGroupId !== undefined) {
+    costUpdate.itemPostingGroupId = style.postingGroupId;
+  }
+  if (style.replenishmentSystem !== "Make" && style.unitCost !== undefined) {
+    costUpdate.unitCost = style.unitCost;
+  }
+  if (Object.keys(costUpdate).length > 0) {
+    const itemCostUpdate = await client
+      .from("itemCost")
+      .update(costUpdate)
+      .eq("itemId", style.id);
 
-  if (itemCostUpdate.error) {
-    console.error(itemCostUpdate.error);
+    if (itemCostUpdate.error) {
+      console.error(itemCostUpdate.error);
+    }
   }
 
   return { data: { id: style.id }, error: null };

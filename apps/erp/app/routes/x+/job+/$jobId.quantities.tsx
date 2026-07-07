@@ -8,10 +8,8 @@ import { usePanels } from "~/components/Layout";
 import {
   getJobOperationSupplierQuantities,
   getJobOperationsList,
-  getPendingSplitGroupsForJob,
   getProductionQuantities,
-  getScrapReasons,
-  getStyleBundleExecutionState
+  getScrapReasons
 } from "~/modules/production";
 import { ProductionQuantitiesTable } from "~/modules/production/ui/Jobs";
 import {
@@ -57,6 +55,14 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const operationIds = operations.data?.map((o) => o.id) ?? [];
   const listQueryArgs = { search, sorts, filters };
+
+  const [
+    { getPendingSplitGroupsForJob },
+    { getStyleBundleExecutionState }
+  ] = await Promise.all([
+    import("~/modules/production/splitBatch.service.server"),
+    import("~/modules/production/styleBundleExecution.service.server")
+  ]);
 
   const [
     employeeQuantities,

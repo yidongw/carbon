@@ -16,12 +16,10 @@ import { getConfigurationParameters } from "~/modules/items";
 import {
   assertSupplierQuantityAllowedForOperation,
   createJobOperationSupplierQuantityReport,
-  createProductionQuantityReport,
   defaultActorKindFromOperationType,
   getJob,
   getJobOperationActorContext,
   getJobOperations,
-  getStyleBundleExecutionState,
   isJobLocked,
   productionQuantityCreateFormValidator,
   resolveProductionQuantityCanAutoApprove,
@@ -67,6 +65,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     getJobOperations(client, jobId)
   ]);
 
+  const { getStyleBundleExecutionState } = await import(
+    "~/modules/production/styleBundleExecution.service.server"
+  );
   const styleExecution = await getStyleBundleExecutionState(client, {
     companyId,
     jobId
@@ -181,7 +182,12 @@ export async function action({ request, params }: ActionFunctionArgs) {
     message: "Cannot modify a locked job. Reopen it first."
   });
 
-  const styleExecution = await getStyleBundleExecutionState(client, {
+  const [{ getStyleBundleExecutionState: execState }, { createProductionQuantityReport }] =
+    await Promise.all([
+      import("~/modules/production/styleBundleExecution.service.server"),
+      import("~/modules/production/productionQuantityReport.service.server")
+    ]);
+  const styleExecution = await execState(client, {
     companyId,
     jobId
   });

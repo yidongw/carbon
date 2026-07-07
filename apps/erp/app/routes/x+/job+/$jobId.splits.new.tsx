@@ -10,9 +10,7 @@ import {
   serializeSearch
 } from "~/components/Overlay/overlay";
 import {
-  createConfirmedSplitBatchForGroup,
   getJob,
-  getPendingSplitGroupsForJob,
   isJobLocked,
   splitBatchConfirmValidator
 } from "~/modules/production";
@@ -50,6 +48,10 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { client, companyId } = await requirePermissions(request, {
     create: "production"
   });
+
+  const { getPendingSplitGroupsForJob } = await import(
+    "~/modules/production/splitBatch.service.server"
+  );
 
   const [job, pendingGroups] = await Promise.all([
     getJob(client, jobId),
@@ -132,6 +134,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
     redirectTo: path.to.job(jobId),
     message: "Cannot modify a locked job. Reopen it first."
   });
+
+  const { createConfirmedSplitBatchForGroup } = await import(
+    "~/modules/production/splitBatch.service.server"
+  );
 
   const formData = await request.formData();
   const isOverlay = new URL(request.url).searchParams.get("overlay") === "true";
