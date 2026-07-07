@@ -122,8 +122,6 @@ CHECK (
 CREATE TABLE "style" (
   "id" TEXT NOT NULL,
   "itemId" TEXT NOT NULL,
-  "colorName" TEXT NOT NULL,
-  "colorCode" TEXT NOT NULL,
   "companyId" TEXT NOT NULL,
   "createdBy" TEXT NOT NULL REFERENCES "user"("id"),
   "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
@@ -137,13 +135,11 @@ CREATE TABLE "style" (
     FOREIGN KEY ("itemId") REFERENCES "item"("id") ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT "style_companyId_fkey"
     FOREIGN KEY ("companyId") REFERENCES "company"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT "style_itemId_key" UNIQUE ("itemId"),
-  CONSTRAINT "style_colorCode_key" UNIQUE ("id", "colorCode", "companyId")
+  CONSTRAINT "style_itemId_key" UNIQUE ("itemId")
 );
 
 CREATE INDEX "style_itemId_idx" ON "style" ("itemId");
 CREATE INDEX "style_companyId_idx" ON "style" ("companyId");
-CREATE INDEX "style_colorCode_idx" ON "style" ("colorCode", "companyId");
 
 ALTER TABLE "style" ENABLE ROW LEVEL SECURITY;
 
@@ -222,8 +218,13 @@ SELECT
   li."id",
   li."companyId",
   li."thumbnailPath",
-  s."colorName",
-  s."colorCode",
+  (
+    SELECT json_agg(json_build_object('id', sc."id", 'colorCode', sc."colorCode", 'colorName', sc."colorName") ORDER BY sc."colorCode")
+    FROM "styleColorAssignment" sca
+    JOIN "styleColor" sc ON sc."id" = sca."styleColorId"
+    WHERE sca."styleId" = s."id"
+      AND sca."companyId" = s."companyId"
+  ) AS colors,
   ir."revisions",
   s."customFields",
   s."tags",
@@ -551,6 +552,55 @@ FOR UPDATE USING (
 );
 
 CREATE POLICY "DELETE" ON "public"."styleColor"
+FOR DELETE USING (
+  "companyId" = ANY (
+    (SELECT get_companies_with_employee_permission('parts_delete'))::text[]
+  )
+);
+
+CREATE TABLE "styleColorAssignment" (
+  "styleId" TEXT NOT NULL,
+  "styleColorId" TEXT NOT NULL,
+  "companyId" TEXT NOT NULL,
+  "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+  "createdBy" TEXT NOT NULL REFERENCES "user"("id"),
+
+  CONSTRAINT "styleColorAssignment_pkey" PRIMARY KEY ("styleId", "styleColorId", "companyId"),
+  CONSTRAINT "styleColorAssignment_styleId_companyId_fkey"
+    FOREIGN KEY ("styleId", "companyId") REFERENCES "style"("id", "companyId") ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT "styleColorAssignment_styleColorId_fkey"
+    FOREIGN KEY ("styleColorId") REFERENCES "styleColor"("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT "styleColorAssignment_companyId_fkey"
+    FOREIGN KEY ("companyId") REFERENCES "company"("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE INDEX "styleColorAssignment_styleId_idx" ON "styleColorAssignment" ("styleId", "companyId");
+CREATE INDEX "styleColorAssignment_styleColorId_idx" ON "styleColorAssignment" ("styleColorId");
+
+ALTER TABLE "styleColorAssignment" ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "SELECT" ON "public"."styleColorAssignment"
+FOR SELECT USING (
+  "companyId" = ANY (
+    (SELECT get_companies_with_employee_role())::text[]
+  )
+);
+
+CREATE POLICY "INSERT" ON "public"."styleColorAssignment"
+FOR INSERT WITH CHECK (
+  "companyId" = ANY (
+    (SELECT get_companies_with_employee_permission('parts_create'))::text[]
+  )
+);
+
+CREATE POLICY "UPDATE" ON "public"."styleColorAssignment"
+FOR UPDATE USING (
+  "companyId" = ANY (
+    (SELECT get_companies_with_employee_permission('parts_update'))::text[]
+  )
+);
+
+CREATE POLICY "DELETE" ON "public"."styleColorAssignment"
 FOR DELETE USING (
   "companyId" = ANY (
     (SELECT get_companies_with_employee_permission('parts_delete'))::text[]

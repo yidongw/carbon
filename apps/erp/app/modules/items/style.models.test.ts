@@ -9,31 +9,29 @@ const validStyle = {
   replenishmentSystem: "Make" as const,
   defaultMethodType: "Make to Order" as const,
   itemTrackingType: "Inventory" as const,
-  unitOfMeasureCode: "EA",
-  colorName: "Black",
-  colorCode: "BLK"
+  unitOfMeasureCode: "EA"
 };
 
 describe("styleValidator", () => {
-  it("accepts a style with required color fields", () => {
+  it("accepts a valid style", () => {
     const result = styleValidator.safeParse(validStyle);
 
     expect(result.success).toBe(true);
   });
 
-  it("requires a color name", () => {
+  it("requires an id", () => {
     const result = styleValidator.safeParse({
       ...validStyle,
-      colorName: ""
+      id: ""
     });
 
     expect(result.success).toBe(false);
   });
 
-  it("requires a color code", () => {
+  it("requires a revision", () => {
     const result = styleValidator.safeParse({
       ...validStyle,
-      colorCode: ""
+      revision: ""
     });
 
     expect(result.success).toBe(false);

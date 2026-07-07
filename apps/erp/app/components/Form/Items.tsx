@@ -165,8 +165,6 @@ const Items = (props: ItemsSelectProps) => {
             defaultMethodType: "Make to Order",
             unitCost: 0,
             lotSize: 0,
-            colorCode: "",
-            colorName: "",
             shelfLifeCalculateFromBom: false,
             tags: []
           }}
