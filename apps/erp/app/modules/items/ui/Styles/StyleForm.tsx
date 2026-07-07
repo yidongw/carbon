@@ -1,9 +1,6 @@
-import { useCarbon } from "@carbon/auth";
 import { ValidatedForm } from "@carbon/form";
 import {
-  Button,
   cn,
-  Loading,
   ModalCard,
   ModalCardBody,
   ModalCardContent,
@@ -12,21 +9,11 @@ import {
   ModalCardHeader,
   ModalCardProvider,
   ModalCardTitle,
-  toast,
-  VStack
+  toast
 } from "@carbon/react";
-import {
-  convertKbToString,
-  getFileSizeLimit,
-  supportedModelTypes
-} from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { PostgrestResponse } from "@supabase/supabase-js";
-import { nanoid } from "nanoid";
 import { useEffect, useRef, useState } from "react";
-import { flushSync } from "react-dom";
-import { useDropzone } from "react-dropzone";
-import { LuCloudUpload } from "react-icons/lu";
 import { useFetcher } from "react-router";
 import type { z } from "zod";
 import { TrackingTypeIcon } from "~/components";
@@ -48,7 +35,6 @@ import StyleColors from "~/components/Form/StyleColors";
 import { ReplenishmentSystemIcon } from "~/components/Icons";
 import { useNextItemId, usePermissions, useUser } from "~/hooks";
 import { path } from "~/utils/path";
-import { createUploadToast, uploadToStorageWithProgress } from "~/utils/upload";
 import {
   itemReplenishmentSystems,
   itemTrackingTypes
@@ -62,8 +48,6 @@ type StyleFormProps = {
   type?: "card" | "modal";
   onClose?: () => void;
 };
-
-const SIZE_LIMIT = getFileSizeLimit("CAD_MODEL_UPLOAD");
 
 function startsWithLetter(value: string) {
   return /^[A-Za-z]/.test(value);
@@ -79,99 +63,6 @@ const StyleForm = ({
   const baseCurrency = company?.baseCurrencyCode ?? "USD";
 
   const fetcher = useFetcher<PostgrestResponse<{ id: string }>>();
-
-  const [modelUploadId, setModelUploadId] = useState<string | null>(
-    initialValues.modelUploadId ?? null
-  );
-  const [modelIsUploading, setModelIsUploading] = useState(false);
-  const [modelFile, setModelFile] = useState<File | null>(null);
-
-  const { carbon } = useCarbon();
-  const {
-    company: { id: companyId }
-  } = useUser();
-
-  const modelUpload = async (file: File) => {
-    if (!carbon) return;
-    flushSync(() => {
-      setModelIsUploading(true);
-    });
-
-    const modelId = nanoid();
-    const fileExtension = file.name.split(".").pop();
-    const fileName = `${companyId}/models/${modelId}.${fileExtension}`;
-
-    const uploadToast = createUploadToast({
-      id: `model-${modelId}-${file.name}`,
-      label: (pct) => `${t`Uploading ${file.name}`} (${pct}%)`
-    });
-
-    const [fileUpload, recordInsert] = await Promise.all([
-      uploadToStorageWithProgress(carbon, {
-        bucket: "private",
-        path: fileName,
-        file,
-        onProgress: uploadToast.onProgress
-      }),
-      carbon.from("modelUpload").insert({
-        id: modelId,
-        modelPath: fileName,
-        size: file.size,
-        name: file.name,
-        companyId: companyId,
-        createdBy: "system"
-      })
-    ]);
-
-    if (fileUpload.error || recordInsert.error) {
-      uploadToast.error(t`Failed to upload model`);
-    } else {
-      uploadToast.dismiss();
-      setModelUploadId(modelId);
-      setModelFile(file);
-      toast.success(t`Uploaded model`);
-    }
-
-    setModelIsUploading(false);
-  };
-
-  const removeModel = () => {
-    setModelUploadId(null);
-    setModelFile(null);
-  };
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    multiple: false,
-    maxSize: SIZE_LIMIT.bytes,
-    onDropAccepted: async (acceptedFiles) => {
-      const file = acceptedFiles[0];
-
-      const fileExtension = file.name.split(".").pop()?.toLowerCase();
-      if (!fileExtension || !supportedModelTypes.includes(fileExtension)) {
-        toast.error(t`File type not supported`);
-        return;
-      }
-
-      if (file.size > SIZE_LIMIT.bytes) {
-        toast.error(t`File size too big (max. ${SIZE_LIMIT.format()})`);
-        return;
-      }
-
-      await modelUpload(file);
-    },
-    onDropRejected: (fileRejections) => {
-      const { errors } = fileRejections[0];
-      let message;
-      if (errors[0].code === "file-too-large") {
-        message = t`File size too big (max. ${SIZE_LIMIT.format()})`;
-      } else if (errors[0].code === "file-invalid-type") {
-        message = t`File type not supported`;
-      } else {
-        message = errors[0].message;
-      }
-      toast.error(message);
-    }
-  });
 
   useEffect(() => {
     if (type !== "modal") return;
@@ -268,7 +159,6 @@ const StyleForm = ({
             </ModalCardHeader>
             <ModalCardBody>
               <Hidden name="type" value={type} />
-              <Hidden name="modelUploadId" value={modelUploadId ?? ""} />
               {!isEditing && (
                 <ItemThumbnailField onUpload={applyIdFromThumbnail} />
               )}
@@ -313,7 +203,7 @@ const StyleForm = ({
                   label={t`Short Description`}
                   characterLimit={40}
                 />
-                <StyleColors name="styleColorIds" label={t`Colors`} />
+                <StyleColors name="styleColorIds" label={t`Colors`} maxPreview={3} />
                 <Select
                   name="replenishmentSystem"
                   label={t`Replenishment System`}
@@ -377,49 +267,6 @@ const StyleForm = ({
               <div className="mt-4 w-full">
                 <TextArea name="description" label={t`Long Description`} />
               </div>
-              <VStack spacing={2} className="mt-4 w-full">
-                <label
-                  htmlFor="model-upload"
-                  className="text-xs font-medium text-muted-foreground"
-                >
-                  <Trans>CAD Model</Trans>
-                </label>
-                <div
-                  {...getRootProps()}
-                  className={`w-full border-2 border-dashed rounded-md p-6 text-center hover:border-primary hover:bg-primary/10 cursor-pointer ${
-                    isDragActive
-                      ? "border-primary bg-primary/10"
-                      : "border-muted"
-                  }`}
-                >
-                  <input id="model-upload" {...getInputProps()} />
-                  {modelFile ? (
-                    <>
-                      <p className="text-sm font-semibold text-card-foreground">
-                        {modelFile.name}
-                      </p>
-                      <p className="text-xs text-muted-foreground group-hover:text-foreground">
-                        {convertKbToString(Math.ceil(modelFile.size / 1024))}
-                      </p>
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        className="mt-2"
-                        onClick={removeModel}
-                      >
-                        <Trans>Remove</Trans>
-                      </Button>
-                    </>
-                  ) : (
-                    <Loading isLoading={modelIsUploading}>
-                      <LuCloudUpload className="mx-auto h-12 w-12 text-muted-foreground group-hover:text-primary-foreground" />
-                      <p className="text-xs text-muted-foreground group-hover:text-foreground">
-                        {t`Supports ${supportedModelTypes.join(", ")} files`}
-                      </p>
-                    </Loading>
-                  )}
-                </div>
-              </VStack>
             </ModalCardBody>
             <ModalCardFooter>
               <Submit
