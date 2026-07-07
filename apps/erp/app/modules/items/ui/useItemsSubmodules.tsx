@@ -9,6 +9,7 @@ import {
   LuGroup,
   LuHammer,
   LuLayoutTemplate,
+  LuPalette,
   LuPizza,
   LuPuzzle,
   LuRuler,
@@ -55,6 +56,11 @@ export default function useItemsSubmodules() {
           name: t`Templates`,
           to: path.to.templates,
           icon: <LuLayoutTemplate />
+        },
+        {
+          name: t`Styles`,
+          to: path.to.styles,
+          icon: <LuPalette />
         }
       ]
     },

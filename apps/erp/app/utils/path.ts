@@ -1594,6 +1594,7 @@ export const path = {
     templateDeleteMethodOperationTool: (id: string) =>
       generatePath(`${x}/template/methods/operation/tool/delete/${id}`),
     templates: `${x}/items/templates`,
+    styles: `${x}/items/styles`,
     procedure: (id: string) => generatePath(`${x}/procedure/${id}`),
     procedureStep: (id: string, attributeId: string) =>
       generatePath(`${x}/procedure/${id}/steps/${attributeId}`),
