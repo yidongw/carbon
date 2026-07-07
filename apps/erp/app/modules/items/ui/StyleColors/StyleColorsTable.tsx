@@ -1,10 +1,9 @@
-import { Badge, Copy, MenuIcon, MenuItem } from "@carbon/react";
+import { Badge, MenuIcon, MenuItem } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useMemo } from "react";
 import {
   LuCircleCheck,
-  LuKeySquare,
   LuPalette,
   LuPencil,
   LuTag,
@@ -54,19 +53,6 @@ const StyleColorsTable = memo(({ data, count }: StyleColorsTableProps) => {
         cell: ({ row }) => row.original.colorName,
         meta: {
           icon: <LuPalette />
-        }
-      },
-      {
-        accessorKey: "id",
-        header: t`ID`,
-        cell: ({ row }) => (
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-xs">{row.original.id}</span>
-            <Copy text={row.original.id!} />
-          </div>
-        ),
-        meta: {
-          icon: <LuKeySquare />
         }
       },
       {
