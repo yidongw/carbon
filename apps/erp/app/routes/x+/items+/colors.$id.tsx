@@ -40,7 +40,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
 export async function action({ request, params }: ActionFunctionArgs) {
   assertIsPost(request);
-  const { client } = await requirePermissions(request, {
+  const { client, userId } = await requirePermissions(request, {
     update: "parts"
   });
 
@@ -56,7 +56,8 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   const updateStyleColor = await upsertStyleColor(client, {
     id: id,
-    ...validation.data
+    ...validation.data,
+    updatedBy: userId
   });
 
   if (updateStyleColor.error) {
