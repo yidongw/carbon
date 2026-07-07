@@ -44,9 +44,23 @@ export async function action({ request }: ActionFunctionArgs) {
     createdBy: userId
   });
   if (createStyle.error) {
-    const message = createStyle.error?.message
-      ? `Failed to insert style: ${createStyle.error.message}`
-      : "Failed to insert style";
+    const diagnostics =
+      createStyle.error && typeof createStyle.error === "object"
+        ? JSON.stringify({
+            type:
+              createStyle.error.constructor?.name ?? typeof createStyle.error,
+            keys: Object.keys(createStyle.error),
+            message:
+              "message" in createStyle.error
+                ? createStyle.error.message
+                : undefined,
+            detail:
+              "detail" in createStyle.error
+                ? createStyle.error.detail
+                : undefined
+          })
+        : String(createStyle.error);
+    const message = `Failed to insert style: ${diagnostics}`;
     return modal
       ? data(
           createStyle,
