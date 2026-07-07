@@ -18,7 +18,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export async function action({ request }: ActionFunctionArgs) {
   assertIsPost(request);
-  const { client, companyId } = await requirePermissions(request, {
+  const { client, companyId, userId } = await requirePermissions(request, {
     create: "parts"
   });
 
@@ -35,7 +35,8 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const insertStyleColor = await upsertStyleColor(client, {
     ...rest,
-    companyId
+    companyId,
+    createdBy: userId
   });
   if (insertStyleColor.error) {
     return data(

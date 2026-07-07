@@ -4292,16 +4292,18 @@ export async function upsertStyleColor(
   styleColor:
     | (Omit<z.infer<typeof styleColorValidator>, "id"> & {
         companyId: string;
+        createdBy: string;
       })
     | (Omit<z.infer<typeof styleColorValidator>, "id"> & {
         id: string;
+        updatedBy: string;
       })
 ) {
   const styleClient = client as SupabaseClient<any>;
   if ("id" in styleColor) {
     return styleClient
       .from("styleColor")
-      .update(sanitize(styleColor))
+      .update(sanitize({ ...styleColor, updatedAt: new Date().toISOString() }))
       .eq("id", styleColor.id)
       .select("id")
       .single();
