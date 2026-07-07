@@ -9,7 +9,6 @@ import {
   overlayToken,
   serializeSearch
 } from "~/components/Overlay/overlay";
-import { getStyle } from "~/modules/items/style.server";
 import {
   createConfirmedSplitBatchForGroup,
   getJob,
@@ -69,6 +68,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     throw error(new Error("Job has no style item"), "Job has no style item");
   }
 
+  const { getStyle } = await import("~/modules/items/style.server");
   const style = await getStyle(job.data.itemId, companyId);
   if (style.error || !style.data) {
     throw error(style.error, "Failed to load style");

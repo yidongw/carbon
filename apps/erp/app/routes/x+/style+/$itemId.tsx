@@ -5,7 +5,6 @@ import { validationError, validator } from "@carbon/form";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { redirect, useLoaderData, useParams } from "react-router";
 import { styleValidator } from "~/modules/items";
-import { getStyle, upsertStyle } from "~/modules/items/style.server";
 import { StyleForm } from "~/modules/items/ui/Styles";
 import { getCustomFields, setCustomFields } from "~/utils/form";
 import { path } from "~/utils/path";
@@ -19,6 +18,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { itemId } = params;
   if (!itemId) throw new Error("Could not find itemId");
 
+  const { getStyle } = await import("~/modules/items/style.server");
   const styleSummary = await getStyle(itemId, companyId);
   if (styleSummary.error || !styleSummary.data) {
     throw redirect(
@@ -46,6 +46,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
+  const { upsertStyle } = await import("~/modules/items/style.server");
   const updateStyle = await upsertStyle(client, {
     ...validation.data,
     id: itemId,

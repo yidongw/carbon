@@ -7,7 +7,6 @@ import { msg } from "@lingui/core/macro";
 import type { ActionFunctionArgs } from "react-router";
 import { data, redirect } from "react-router";
 import { styleValidator } from "~/modules/items";
-import { upsertStyle } from "~/modules/items/style.server";
 import { applyTemplateToItem } from "~/modules/items/template.service";
 import { StyleForm } from "~/modules/items/ui/Styles";
 import { setCustomFields } from "~/utils/form";
@@ -36,6 +35,7 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   const { templateId, ...styleData } = validation.data;
+  const { upsertStyle } = await import("~/modules/items/style.server");
 
   const createStyle = await upsertStyle(client, {
     ...styleData,
