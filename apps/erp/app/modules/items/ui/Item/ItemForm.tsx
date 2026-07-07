@@ -204,6 +204,8 @@ export function getLinkToItemDetails(type: MethodItemType, id: string) {
   switch (type) {
     case "Part":
       return path.to.partDetails(id);
+    case "Style":
+      return path.to.style(id);
     case "Material":
       return path.to.materialDetails(id);
     case "Tool":

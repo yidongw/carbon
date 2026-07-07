@@ -1,16 +1,50 @@
-import { assertIsPost, error, success } from "@carbon/auth";
+import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
-import { validationError, validator } from "@carbon/form";
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { redirect, useLoaderData, useParams } from "react-router";
-import { styleValidator } from "~/modules/items";
-import { StyleForm } from "~/modules/items/ui/Styles";
-import { getCustomFields, setCustomFields } from "~/utils/form";
+import type { JSONContent } from "@carbon/react";
+import { Menubar, VStack } from "@carbon/react";
+import { msg } from "@lingui/core/macro";
+import { Suspense } from "react";
+import type { LoaderFunctionArgs } from "react-router";
+import { Await, redirect, useLoaderData, useParams } from "react-router";
+import { PanelProvider, ResizablePanels } from "~/components/Layout";
+import type { ItemFile } from "~/modules/items";
+import {
+  getItemFiles,
+  getMakeMethodById,
+  getMakeMethods,
+  getMethodMaterialsByMakeMethod,
+  getMethodOperationsByMakeMethodId
+} from "~/modules/items";
+import { methodBindings } from "~/modules/items/methodBindings";
+import { getStyle } from "~/modules/items/style.server";
+import {
+  BillOfMaterial,
+  BillOfProcess,
+  ItemDocuments,
+  ItemNotes,
+  ItemRiskRegister,
+  MakeMethodTools
+} from "~/modules/items/ui/Item";
+import { StyleHeader, StyleProperties } from "~/modules/items/ui/Styles";
+import type { MethodItemType, MethodType } from "~/modules/shared";
+import { getTagsList } from "~/modules/shared";
+import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 
+export const handle: Handle = {
+  breadcrumb: msg`Styles`,
+  to: path.to.styles,
+  module: "items"
+};
+
+const emptyConfigurationRuleBindings = {
+  save: "#",
+  delete: (_field: string) => "#"
+};
+
 export async function loader({ request, params }: LoaderFunctionArgs) {
-  const { companyId } = await requirePermissions(request, {
+  const { client, companyId } = await requirePermissions(request, {
     view: "parts",
     bypassRls: true
   });
@@ -18,102 +52,177 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { itemId } = params;
   if (!itemId) throw new Error("Could not find itemId");
 
-  const { getStyle } = await import("~/modules/items/style.server");
-  const styleSummary = await getStyle(itemId, companyId);
+  const [styleSummary, makeMethods, tags] = await Promise.all([
+    getStyle(itemId, companyId),
+    getMakeMethods(client, itemId, companyId),
+    getTagsList(client, companyId, "style")
+  ]);
+
   if (styleSummary.error || !styleSummary.data) {
     throw redirect(
       path.to.items,
-      await flash(request, error(styleSummary.error, "Failed to load style"))
+      await flash(
+        request,
+        error(styleSummary.error, "Failed to load style summary")
+      )
     );
   }
 
-  return { styleSummary: styleSummary.data };
-}
+  const url = new URL(request.url);
+  const requestedMethodId = url.searchParams.get("methodId");
+  const activeMakeMethod = requestedMethodId
+    ? (makeMethods.data?.find((m) => m.id === requestedMethodId) ??
+      makeMethods.data?.find((m) => m.status === "Active") ??
+      makeMethods.data?.[0])
+    : (makeMethods.data?.find((m) => m.status === "Active") ??
+      makeMethods.data?.[0]);
 
-export async function action({ request, params }: ActionFunctionArgs) {
-  assertIsPost(request);
-  const { client, userId } = await requirePermissions(request, {
-    update: "parts"
-  });
+  const methodData = activeMakeMethod
+    ? await (async () => {
+        const fullMethod = await getMakeMethodById(
+          client,
+          activeMakeMethod.id,
+          companyId
+        );
+        if (fullMethod.error || !fullMethod.data) return null;
 
-  const { itemId } = params;
-  if (!itemId) throw new Error("Could not find itemId");
+        const [methodMaterials, methodOperations] = await Promise.all([
+          getMethodMaterialsByMakeMethod(client, fullMethod.data.id),
+          getMethodOperationsByMakeMethodId(client, fullMethod.data.id)
+        ]);
 
-  const formData = await request.formData();
-  const validation = await validator(styleValidator).validate(formData);
+        return {
+          makeMethod: fullMethod.data,
+          methodMaterials:
+            methodMaterials.data?.map((m) => ({
+              ...m,
+              description: m.item?.name ?? "",
+              methodType: m.methodType as MethodType,
+              itemType: m.itemType as MethodItemType
+            })) ?? [],
+          methodOperations:
+            methodOperations.data?.map((operation) => ({
+              ...operation,
+              workCenterId: operation.workCenterId ?? undefined,
+              operationSupplierProcessId:
+                operation.operationSupplierProcessId ?? undefined,
+              workInstruction: operation.workInstruction as JSONContent | null
+            })) ?? []
+        };
+      })()
+    : null;
 
-  if (validation.error) {
-    return validationError(validation.error);
-  }
-
-  const styleColorIds = Array.from(formData.entries())
-    .filter(([key]) => key.startsWith("styleColorIds["))
-    .map(([, value]) => value as string)
-    .filter(Boolean);
-  const { upsertStyle } = await import("~/modules/items/style.server");
-  const updateStyle = await upsertStyle(client, {
-    ...validation.data,
-    id: itemId,
-    styleColorIds,
-    customFields: setCustomFields(formData),
-    updatedBy: userId
-  });
-  if (updateStyle.error) {
-    throw redirect(
-      path.to.style(itemId),
-      await flash(request, error(updateStyle.error, "Failed to update style"))
-    );
-  }
-
-  throw redirect(
-    path.to.style(itemId),
-    await flash(request, success("Updated style"))
-  );
+  return {
+    styleSummary: {
+      ...styleSummary.data,
+      styleColorBadges: styleSummary.data.colors ?? []
+    },
+    files: getItemFiles(client, itemId, companyId),
+    makeMethods: Promise.resolve(makeMethods),
+    tags: tags.data ?? [],
+    methodData
+  };
 }
 
 export default function StyleRoute() {
   const { itemId } = useParams();
   if (!itemId) throw new Error("Could not find itemId");
 
-  const { styleSummary } = useLoaderData<typeof loader>();
+  const { files, makeMethods, methodData, styleSummary, tags } =
+    useLoaderData<typeof loader>();
 
-  const initialValues = {
-    id: styleSummary.readableId ?? "",
-    revision: styleSummary.revision ?? "0",
-    name: styleSummary.name ?? "",
-    description: styleSummary.description ?? "",
-    itemTrackingType:
-      (styleSummary.itemTrackingType as
-        | "Batch"
-        | "Inventory"
-        | "Non-Inventory"
-        | "Serial"
-        | null) ?? "Inventory",
-    replenishmentSystem:
-      (styleSummary.replenishmentSystem as
-        | "Buy"
-        | "Buy and Make"
-        | "Make"
-        | null) ?? "Buy",
-    defaultMethodType:
-      (styleSummary.defaultMethodType as
-        | "Make to Order"
-        | "Pull from Inventory"
-        | "Purchase to Order"
-        | null) ?? "Pull from Inventory",
-    unitOfMeasureCode: styleSummary.unitOfMeasureCode ?? "EA",
-    unitCost: 0,
-    lotSize: 0,
-    styleColorIds: (styleSummary.colors ?? []).map((c) => c.id),
-    thumbnailPath: styleSummary.thumbnailPath ?? "",
-    shelfLifeCalculateFromBom: false,
-    tags: styleSummary.tags ?? [],
-    ...getCustomFields(styleSummary.customFields)
-  };
+  const isManufactured = styleSummary.replenishmentSystem !== "Buy";
 
   return (
-    <div className="max-w-4xl w-full p-2 sm:p-0 mx-auto mt-0 md:mt-8">
-      <StyleForm initialValues={initialValues} />
-    </div>
+    <PanelProvider>
+      <div className="flex flex-col h-[calc(100dvh-49px)] overflow-hidden w-full">
+        <StyleHeader />
+        <div className="flex h-[calc(100dvh-99px)] overflow-hidden w-full">
+          <div className="flex flex-1 min-h-0 h-full overflow-hidden">
+            <ResizablePanels
+              content={
+                <div className="h-full min-h-0 overflow-y-auto overscroll-contain scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent w-full">
+                  <VStack spacing={2} className="p-2">
+                    {methodData && (
+                      <>
+                        <Suspense fallback={<Menubar />}>
+                          <Await resolve={makeMethods}>
+                            {(resolvedMakeMethods) => (
+                              <MakeMethodTools
+                                itemId={methodData.makeMethod.itemId}
+                                makeMethods={resolvedMakeMethods.data ?? []}
+                                type="Style"
+                                currentMethodId={methodData.makeMethod.id}
+                              />
+                            )}
+                          </Await>
+                        </Suspense>
+                        <ItemNotes
+                          id={styleSummary.id}
+                          title={styleSummary.name ?? ""}
+                          subTitle={styleSummary.readableIdWithRevision ?? ""}
+                          notes={styleSummary.notes as unknown as JSONContent}
+                        />
+                        {isManufactured && (
+                          <>
+                            <BillOfMaterial
+                              key={`bom:${itemId}`}
+                              methodBindings={methodBindings(itemId)}
+                              configurationRuleBindings={
+                                emptyConfigurationRuleBindings
+                              }
+                              makeMethod={methodData.makeMethod}
+                              // @ts-ignore
+                              materials={methodData.methodMaterials}
+                              // @ts-ignore
+                              operations={methodData.methodOperations}
+                              configurable={false}
+                              configurationRules={[]}
+                              parameters={[]}
+                              replenishmentSystem={
+                                styleSummary.replenishmentSystem ?? undefined
+                              }
+                            />
+                            <BillOfProcess
+                              key={`bop:${itemId}`}
+                              methodBindings={methodBindings(itemId)}
+                              configurationRuleBindings={
+                                emptyConfigurationRuleBindings
+                              }
+                              makeMethod={methodData.makeMethod}
+                              // @ts-ignore
+                              operations={methodData.methodOperations}
+                              // @ts-ignore
+                              materials={methodData.methodMaterials}
+                              configurable={false}
+                              configurationRules={[]}
+                              parameters={[]}
+                              tags={tags}
+                            />
+                          </>
+                        )}
+                      </>
+                    )}
+                    <Suspense fallback={null}>
+                      <Await resolve={files}>
+                        {(resolvedFiles: ItemFile[]) => (
+                          <ItemDocuments
+                            files={resolvedFiles}
+                            itemId={itemId}
+                            type="Style"
+                          />
+                        )}
+                      </Await>
+                    </Suspense>
+                    <ItemRiskRegister itemId={itemId} />
+                  </VStack>
+                </div>
+              }
+              properties={<StyleProperties key={itemId} />}
+            />
+          </div>
+        </div>
+      </div>
+    </PanelProvider>
   );
 }

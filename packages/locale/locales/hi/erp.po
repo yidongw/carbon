@@ -1005,6 +1005,10 @@ msgstr "क्या आप सुनिश्चित हैं कि आप 
 msgid "Are you sure you want to delete the storage unit: {0}? This cannot be undone."
 msgstr "क्या आप सुनिश्चित हैं कि आप स्टोरेज यूनिट को हटाना चाहते हैं: {0}? यह पूर्ववत नहीं किया जा सकता।"
 
+#. placeholder {0}: styleColor.colorCode
+msgid "Are you sure you want to delete the style color {0}? This cannot be undone."
+msgstr ""
+
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "क्या आप सुनिश्चित हैं कि आप आपूर्तिकर्ता प्रकार को हटाना चाहते हैं: {0}? यह पूर्ववत नहीं किया जा सकता।"
@@ -1768,6 +1772,9 @@ msgstr ""
 msgid "Color Name"
 msgstr ""
 
+msgid "Colors"
+msgstr ""
+
 msgid "Column"
 msgstr "कॉलम"
 
@@ -2138,6 +2145,9 @@ msgstr "भाग के लिए लिंक कॉपी करें"
 msgid "Copy link to procedure"
 msgstr "प्रक्रिया के लिए लिंक कॉपी करें"
 
+msgid "Copy link to style"
+msgstr ""
+
 msgid "Copy link to tool"
 msgstr "टूल के लिए लिंक कॉपी करें"
 
@@ -2182,6 +2192,12 @@ msgstr "उद्धरण संख्या कॉपी करें"
 
 msgid "Copy response"
 msgstr "प्रतिक्रिया कॉपी करें"
+
+msgid "Copy style number"
+msgstr ""
+
+msgid "Copy style unique identifier"
+msgstr ""
 
 msgid "Copy this item's pricing to another scope."
 msgstr "इस आइटम की मूल्य निर्धारण को दूसरे स्कोप में कॉपी करें।"
@@ -3031,6 +3047,12 @@ msgstr "स्टोरेज प्रकार हटाएं"
 msgid "Delete Storage Unit"
 msgstr "स्टोरेज यूनिट हटाएं"
 
+msgid "Delete Style"
+msgstr ""
+
+msgid "Delete Style Color"
+msgstr ""
+
 msgid "Delete Substance"
 msgstr "पदार्थ हटाएं"
 
@@ -3623,6 +3645,12 @@ msgstr "स्टोरेज प्रकार संपादित करे
 
 msgid "Edit Storage Unit"
 msgstr "स्टोरेज यूनिट संपादित करें"
+
+msgid "Edit Style"
+msgstr ""
+
+msgid "Edit Style Color"
+msgstr ""
 
 msgid "Edit Substance"
 msgstr "पदार्थ संपादित करें"
@@ -6304,6 +6332,9 @@ msgstr "नया स्टोरेज यूनिट"
 msgid "New Style"
 msgstr ""
 
+msgid "New Style Color"
+msgstr ""
+
 msgid "New Supplier"
 msgstr "नया स्वीपर"
 
@@ -6452,6 +6483,9 @@ msgstr "कोई चैट इतिहास नहीं"
 
 msgid "No chats found"
 msgstr "कोई चैट नहीं मिला"
+
+msgid "No colors assigned"
+msgstr ""
 
 msgid "No comments yet. Be the first to add a comment."
 msgstr "अभी तक कोई टिप्पणी नहीं है। टिप्पणी जोड़ने वाले पहले व्यक्ति बनें।"
@@ -9569,6 +9603,12 @@ msgstr "इस आइटम पर दिनों की एक निश्च
 msgid "Style"
 msgstr ""
 
+msgid "Style Color"
+msgstr ""
+
+msgid "Style Colors"
+msgstr ""
+
 msgid "Style Details"
 msgstr ""
 
@@ -9577,6 +9617,9 @@ msgstr ""
 
 msgid "Style of kanban output to show in the Kanban table"
 msgstr "Kanban तालिका में दिखाने के लिए kanban आउटपुट की शैली"
+
+msgid "Style Properties"
+msgstr ""
 
 msgid "Styles"
 msgstr ""

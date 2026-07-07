@@ -1005,6 +1005,10 @@ msgstr "Êtes-vous sûr de vouloir supprimer le type de stockage : {0}? Cette ac
 msgid "Are you sure you want to delete the storage unit: {0}? This cannot be undone."
 msgstr "Êtes-vous sûr de vouloir supprimer l'unité de stockage : {0} ? Cette action ne peut pas être annulée."
 
+#. placeholder {0}: styleColor.colorCode
+msgid "Are you sure you want to delete the style color {0}? This cannot be undone."
+msgstr ""
+
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "Êtes-vous sûr de vouloir supprimer le type de fournisseur : {0} ? Cette action ne peut pas être annulée."
@@ -1768,6 +1772,9 @@ msgstr ""
 msgid "Color Name"
 msgstr ""
 
+msgid "Colors"
+msgstr ""
+
 msgid "Column"
 msgstr "Colonne"
 
@@ -2138,6 +2145,9 @@ msgstr "Copier le lien vers la pièce"
 msgid "Copy link to procedure"
 msgstr "Copier le lien vers la procédure"
 
+msgid "Copy link to style"
+msgstr ""
+
 msgid "Copy link to tool"
 msgstr "Copier le lien de l'outil"
 
@@ -2182,6 +2192,12 @@ msgstr "Copier le numéro de devis"
 
 msgid "Copy response"
 msgstr "Copier la réponse"
+
+msgid "Copy style number"
+msgstr ""
+
+msgid "Copy style unique identifier"
+msgstr ""
 
 msgid "Copy this item's pricing to another scope."
 msgstr "Copiez la tarification de cet article vers une autre portée."
@@ -3031,6 +3047,12 @@ msgstr "Supprimer le type de stockage"
 msgid "Delete Storage Unit"
 msgstr "Supprimer l'unité de stockage"
 
+msgid "Delete Style"
+msgstr ""
+
+msgid "Delete Style Color"
+msgstr ""
+
 msgid "Delete Substance"
 msgstr "Supprimer la substance"
 
@@ -3623,6 +3645,12 @@ msgstr "Modifier le type de stockage"
 
 msgid "Edit Storage Unit"
 msgstr "Modifier l'unité de stockage"
+
+msgid "Edit Style"
+msgstr ""
+
+msgid "Edit Style Color"
+msgstr ""
 
 msgid "Edit Substance"
 msgstr "Modifier la substance"
@@ -6304,6 +6332,9 @@ msgstr "Nouvelle Unité de Stockage"
 msgid "New Style"
 msgstr ""
 
+msgid "New Style Color"
+msgstr ""
+
 msgid "New Supplier"
 msgstr "Nouveau Fournisseur"
 
@@ -6452,6 +6483,9 @@ msgstr "Aucun historique de chat"
 
 msgid "No chats found"
 msgstr "Aucun chat trouvé"
+
+msgid "No colors assigned"
+msgstr ""
 
 msgid "No comments yet. Be the first to add a comment."
 msgstr "Aucun commentaire pour le moment. Soyez le premier à ajouter un commentaire."
@@ -9569,6 +9603,12 @@ msgstr "Stockez un nombre fixe de jours sur cet article. La date de début d'exp
 msgid "Style"
 msgstr ""
 
+msgid "Style Color"
+msgstr ""
+
+msgid "Style Colors"
+msgstr ""
+
 msgid "Style Details"
 msgstr ""
 
@@ -9577,6 +9617,9 @@ msgstr ""
 
 msgid "Style of kanban output to show in the Kanban table"
 msgstr "Style de sortie kanban à afficher dans le tableau Kanban"
+
+msgid "Style Properties"
+msgstr ""
 
 msgid "Styles"
 msgstr ""

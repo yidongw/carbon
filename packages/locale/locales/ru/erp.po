@@ -1005,6 +1005,10 @@ msgstr "Вы уверены, что хотите удалить тип хран�
 msgid "Are you sure you want to delete the storage unit: {0}? This cannot be undone."
 msgstr "Вы уверены, что хотите удалить хранилище: {0}? Это действие невозможно отменить."
 
+#. placeholder {0}: styleColor.colorCode
+msgid "Are you sure you want to delete the style color {0}? This cannot be undone."
+msgstr ""
+
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "Вы уверены, что хотите удалить тип поставщика: {0}? Это действие невозможно отменить."
@@ -1768,6 +1772,9 @@ msgstr ""
 msgid "Color Name"
 msgstr ""
 
+msgid "Colors"
+msgstr ""
+
 msgid "Column"
 msgstr "Столбец"
 
@@ -2138,6 +2145,9 @@ msgstr "Скопировать ссылку на деталь"
 msgid "Copy link to procedure"
 msgstr "Скопировать ссылку на процедуру"
 
+msgid "Copy link to style"
+msgstr ""
+
 msgid "Copy link to tool"
 msgstr "Скопировать ссылку на инструмент"
 
@@ -2182,6 +2192,12 @@ msgstr "Копировать номер предложения"
 
 msgid "Copy response"
 msgstr "Копировать ответ"
+
+msgid "Copy style number"
+msgstr ""
+
+msgid "Copy style unique identifier"
+msgstr ""
 
 msgid "Copy this item's pricing to another scope."
 msgstr "Скопируйте цены этого товара в другую область."
@@ -3031,6 +3047,12 @@ msgstr "Удалить тип хранилища"
 msgid "Delete Storage Unit"
 msgstr "Удалить хранилище"
 
+msgid "Delete Style"
+msgstr ""
+
+msgid "Delete Style Color"
+msgstr ""
+
 msgid "Delete Substance"
 msgstr "Удалить вещество"
 
@@ -3623,6 +3645,12 @@ msgstr "Редактировать тип хранилища"
 
 msgid "Edit Storage Unit"
 msgstr "Редактировать хранилище"
+
+msgid "Edit Style"
+msgstr ""
+
+msgid "Edit Style Color"
+msgstr ""
 
 msgid "Edit Substance"
 msgstr "Редактировать вещество"
@@ -6304,6 +6332,9 @@ msgstr "Новое хранилище"
 msgid "New Style"
 msgstr ""
 
+msgid "New Style Color"
+msgstr ""
+
 msgid "New Supplier"
 msgstr "Новый поставщик"
 
@@ -6452,6 +6483,9 @@ msgstr "Нет истории чатов"
 
 msgid "No chats found"
 msgstr "Чаты не найдены"
+
+msgid "No colors assigned"
+msgstr ""
 
 msgid "No comments yet. Be the first to add a comment."
 msgstr "Нет комментариев. Будьте первым, кто добавит комментарий."
@@ -9569,6 +9603,12 @@ msgstr "Сохраняйте фиксированное количество д�
 msgid "Style"
 msgstr ""
 
+msgid "Style Color"
+msgstr ""
+
+msgid "Style Colors"
+msgstr ""
+
 msgid "Style Details"
 msgstr ""
 
@@ -9577,6 +9617,9 @@ msgstr ""
 
 msgid "Style of kanban output to show in the Kanban table"
 msgstr "Стиль вывода канбана для отображения в таблице Канбана"
+
+msgid "Style Properties"
+msgstr ""
 
 msgid "Styles"
 msgstr ""
