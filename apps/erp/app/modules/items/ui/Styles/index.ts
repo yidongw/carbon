@@ -1,3 +1,4 @@
 import StyleForm from "./StyleForm";
+import StylesTable from "./StylesTable";
 
-export { StyleForm };
+export { StyleForm, StylesTable };
