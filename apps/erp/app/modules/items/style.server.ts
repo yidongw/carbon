@@ -9,7 +9,7 @@ import {
   upsertItemShelfLife
 } from "./items.service";
 import type { styleValidator } from "./style.models";
-import { ensureStyleMethodScaffold } from "./styleMethod.service";
+import { ensureStyleMethodScaffoldWithDb } from "./styleMethod.service";
 
 type StylePayload =
   | (z.infer<typeof styleValidator> & {
@@ -231,7 +231,14 @@ export async function upsertStyle(
         .update({ lotSize: style.lotSize })
         .eq("itemId", itemId);
 
-      if (itemReplenishmentInsert.error) return itemReplenishmentInsert;
+      if (itemReplenishmentInsert.error) {
+        return {
+          data: null,
+          error: new Error(
+            `Style replenishment update failed: ${itemReplenishmentInsert.error.message}`
+          )
+        };
+      }
     }
 
     const pickMethod = await upsertItemDefaultPickMethod(client, {
@@ -239,7 +246,14 @@ export async function upsertStyle(
       userId: style.createdBy,
       storageUnitId: style.defaultStorageUnitId
     });
-    if (pickMethod.error) return pickMethod;
+    if (pickMethod.error) {
+      return {
+        data: null,
+        error: new Error(
+          `Style pick method failed: ${pickMethod.error.message}`
+        )
+      };
+    }
 
     const shelfLife = await upsertItemShelfLife(client, {
       itemId,
@@ -251,14 +265,26 @@ export async function upsertStyle(
       triggerTiming: style.shelfLifeTriggerTiming,
       calculateFromBom: style.shelfLifeCalculateFromBom
     });
-    if (shelfLife.error) return shelfLife;
+    if (shelfLife.error) {
+      return {
+        data: null,
+        error: new Error(`Style shelf life failed: ${shelfLife.error.message}`)
+      };
+    }
 
-    const styleMethod = await ensureStyleMethodScaffold(client, {
+    const styleMethod = await ensureStyleMethodScaffoldWithDb({
       itemId,
       companyId: style.companyId,
       userId: style.createdBy
     });
-    if (styleMethod.error) return styleMethod;
+    if (styleMethod.error) {
+      return {
+        data: null,
+        error: new Error(
+          `Style method scaffold failed: ${styleMethod.error.message}`
+        )
+      };
+    }
 
     return { data: { id: itemId }, error: null };
   }
@@ -331,15 +357,32 @@ export async function upsertStyle(
     })
   ]);
 
-  if (pickMethod.error) return pickMethod;
-  if (shelfLife.error) return shelfLife;
+  if (pickMethod.error) {
+    return {
+      data: null,
+      error: new Error(`Style pick method failed: ${pickMethod.error.message}`)
+    };
+  }
+  if (shelfLife.error) {
+    return {
+      data: null,
+      error: new Error(`Style shelf life failed: ${shelfLife.error.message}`)
+    };
+  }
 
-  const styleMethod = await ensureStyleMethodScaffold(client, {
+  const styleMethod = await ensureStyleMethodScaffoldWithDb({
     itemId: style.id,
     companyId,
     userId: style.updatedBy
   });
-  if (styleMethod.error) return styleMethod;
+  if (styleMethod.error) {
+    return {
+      data: null,
+      error: new Error(
+        `Style method scaffold failed: ${styleMethod.error.message}`
+      )
+    };
+  }
 
   if (style.replenishmentSystem !== "Buy") {
     const itemReplenishmentUpdate = await client
@@ -347,7 +390,14 @@ export async function upsertStyle(
       .update({ lotSize: style.lotSize })
       .eq("itemId", style.id);
 
-    if (itemReplenishmentUpdate.error) return itemReplenishmentUpdate;
+    if (itemReplenishmentUpdate.error) {
+      return {
+        data: null,
+        error: new Error(
+          `Style replenishment update failed: ${itemReplenishmentUpdate.error.message}`
+        )
+      };
+    }
   }
 
   const itemCostUpdate = await client
