@@ -42,8 +42,6 @@ async function resolveStyleSplitContext(
     jobId: string;
   }
 ) {
-  const styleClient = client as SupabaseClient<any>;
-
   const { data: job, error: jobError } = await client
     .from("job")
     .select("itemId, ...item(itemType:type)")
@@ -59,12 +57,11 @@ async function resolveStyleSplitContext(
     return { data: null, error: null };
   }
 
-  const { data: style, error: styleError } = await styleClient
-    .from("style")
-    .select("itemId, colorCode")
-    .eq("itemId", job.itemId)
-    .eq("companyId", args.companyId)
-    .single();
+  const { getStyleColorContext } = await import("../items/style.server");
+  const { data: style, error: styleError } = await getStyleColorContext(
+    job.itemId,
+    args.companyId
+  );
 
   if (styleError || !style?.colorCode) {
     return { data: null, error: styleError };
@@ -95,7 +92,6 @@ async function syncStyleSplitRowsForReport(
     >;
   }
 ) {
-  const styleClient = client as SupabaseClient<any>;
   const styleContext = await resolveStyleSplitContext(client, {
     companyId: args.companyId,
     jobId: args.jobId
@@ -109,11 +105,16 @@ async function syncStyleSplitRowsForReport(
     return { data: null, error: null };
   }
 
-  const { error: deleteError } = await styleClient
-    .from("productionQuantitySplitRow")
-    .delete()
-    .eq("reportId", args.reportId)
-    .eq("companyId", args.companyId);
+  const {
+    deleteProductionQuantitySplitRowsForReport,
+    insertProductionQuantitySplitRows
+  } = await import("./styleBundlePersistence.server");
+
+  const { error: deleteError } =
+    await deleteProductionQuantitySplitRowsForReport({
+      reportId: args.reportId,
+      companyId: args.companyId
+    });
 
   if (deleteError) {
     return { data: null, error: deleteError };
@@ -133,9 +134,8 @@ async function syncStyleSplitRowsForReport(
     return { data: [], error: null };
   }
 
-  const { error: insertError } = await styleClient
-    .from("productionQuantitySplitRow")
-    .insert(splitRows);
+  const { error: insertError } =
+    await insertProductionQuantitySplitRows(splitRows);
 
   if (insertError) {
     return { data: null, error: insertError };
@@ -728,12 +728,13 @@ export async function invalidateProductionQuantity(
     return invalidation;
   }
 
-  const styleClient = client as SupabaseClient<any>;
-  const { error: splitRowDeleteError } = await styleClient
-    .from("productionQuantitySplitRow")
-    .delete()
-    .eq("productionQuantityId", args.productionQuantityId)
-    .eq("companyId", args.companyId);
+  const { deleteProductionQuantitySplitRowsForProductionQuantity } =
+    await import("./styleBundlePersistence.server");
+  const { error: splitRowDeleteError } =
+    await deleteProductionQuantitySplitRowsForProductionQuantity({
+      productionQuantityId: args.productionQuantityId,
+      companyId: args.companyId
+    });
 
   if (splitRowDeleteError) {
     return { data: null, error: splitRowDeleteError };

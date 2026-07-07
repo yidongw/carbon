@@ -4,13 +4,14 @@ import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { redirect, useLoaderData, useParams } from "react-router";
-import { getStyle, styleValidator, upsertStyle } from "~/modules/items";
+import { styleValidator } from "~/modules/items";
+import { getStyle, upsertStyle } from "~/modules/items/style.server";
 import { StyleForm } from "~/modules/items/ui/Styles";
 import { getCustomFields, setCustomFields } from "~/utils/form";
 import { path } from "~/utils/path";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
-  const { client, companyId } = await requirePermissions(request, {
+  const { companyId } = await requirePermissions(request, {
     view: "parts",
     bypassRls: true
   });
@@ -18,7 +19,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const { itemId } = params;
   if (!itemId) throw new Error("Could not find itemId");
 
-  const styleSummary = await getStyle(client, itemId, companyId);
+  const styleSummary = await getStyle(itemId, companyId);
   if (styleSummary.error || !styleSummary.data) {
     throw redirect(
       path.to.items,
@@ -71,13 +72,29 @@ export default function StyleRoute() {
   const { styleSummary } = useLoaderData<typeof loader>();
 
   const initialValues = {
-    id: styleSummary.id ?? "",
+    id: styleSummary.readableId ?? "",
     revision: styleSummary.revision ?? "0",
     name: styleSummary.name ?? "",
     description: styleSummary.description ?? "",
-    itemTrackingType: styleSummary.itemTrackingType ?? "Inventory",
-    replenishmentSystem: styleSummary.replenishmentSystem ?? "Buy",
-    defaultMethodType: styleSummary.defaultMethodType ?? "Pull from Inventory",
+    itemTrackingType:
+      (styleSummary.itemTrackingType as
+        | "Batch"
+        | "Inventory"
+        | "Non-Inventory"
+        | "Serial"
+        | null) ?? "Inventory",
+    replenishmentSystem:
+      (styleSummary.replenishmentSystem as
+        | "Buy"
+        | "Buy and Make"
+        | "Make"
+        | null) ?? "Buy",
+    defaultMethodType:
+      (styleSummary.defaultMethodType as
+        | "Make to Order"
+        | "Pull from Inventory"
+        | "Purchase to Order"
+        | null) ?? "Pull from Inventory",
     unitOfMeasureCode: styleSummary.unitOfMeasureCode ?? "EA",
     unitCost: 0,
     lotSize: 0,

@@ -60,52 +60,17 @@ export async function getPendingSplitSourceRows(
     jobId: string;
   }
 ) {
-  const splitRowClient = client as SupabaseClient<any>;
-  const { data, error } = await splitRowClient
-    .from("productionQuantitySplitRow")
-    .select(
-      `
-        id,
-        productionQuantityId,
-        reportId,
-        itemId,
-        rowKey,
-        colorCode,
-        sizeCode,
-        shadeLot,
-        configurationKey,
-        quantity,
-        bundleAllocation(quantity)
-      `
-    )
-    .eq("companyId", args.companyId)
-    .eq("jobId", args.jobId)
-    .order("createdAt", { ascending: true });
+  const { getPersistedSplitRowsForJob } = await import(
+    "./styleBundlePersistence.server"
+  );
+  const { data, error } = await getPersistedSplitRowsForJob(args);
 
   if (error) {
     return { data: null, error };
   }
 
-  const persistedRows = (data ?? []).map((row: any) => ({
-    id: row.id as string,
-    productionQuantityId: row.productionQuantityId as string,
-    reportId: row.reportId as string,
-    styleId: row.itemId as string,
-    rowKey: row.rowKey as string,
-    colorCode: row.colorCode as string,
-    sizeCode: (row.sizeCode as string | null) ?? null,
-    shadeLot: (row.shadeLot as string | null) ?? null,
-    configurationKey: row.configurationKey as string,
-    quantity: Number(row.quantity) || 0,
-    allocatedQuantity: (row.bundleAllocation ?? []).reduce(
-      (sum: number, allocation: { quantity?: number | null }) =>
-        sum + (Number(allocation.quantity) || 0),
-      0
-    )
-  })) satisfies PersistedSplitRow[];
-
   return {
-    data: hydratePendingSplitRows(persistedRows),
+    data: hydratePendingSplitRows(data ?? []),
     error: null
   };
 }

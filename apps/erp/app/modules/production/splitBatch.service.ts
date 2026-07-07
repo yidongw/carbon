@@ -117,52 +117,45 @@ export async function createConfirmedSplitBatch(
     bundleQuantities: number[];
   }
 ) {
-  const splitClient = client as SupabaseClient<any>;
   const draft = buildConfirmedSplitBatch(args);
 
   if (draft.error) {
     return { data: null, error: draft.error };
   }
 
-  const { data: splitBatch, error: splitBatchError } = await splitClient
-    .from("splitBatch")
-    .insert({
-      jobId: args.jobId,
-      jobOperationId: args.jobOperationId ?? null,
-      itemId: args.itemId,
-      status: "Confirmed",
-      notes: args.notes ?? null,
-      companyId: args.companyId,
-      createdBy: args.userId
-    })
-    .select("id")
-    .single();
+  const { insertSplitBatch, insertBundles, insertBundleAllocations } =
+    await import("./styleBundlePersistence.server");
+
+  const { data: splitBatch, error: splitBatchError } = await insertSplitBatch({
+    jobId: args.jobId,
+    jobOperationId: args.jobOperationId ?? null,
+    itemId: args.itemId,
+    status: "Confirmed",
+    notes: args.notes ?? null,
+    companyId: args.companyId,
+    createdBy: args.userId
+  });
 
   if (splitBatchError || !splitBatch?.id) {
     return { data: null, error: splitBatchError };
   }
 
-  const { data: bundles, error: bundlesError } = await splitClient
-    .from("bundle")
-    .insert(
-      draft.bundles.map((bundle) => ({
-        splitBatchId: splitBatch.id,
-        itemId: args.itemId,
-        bundleNumber: bundle.bundleNumber,
-        sequence: bundle.sequence,
-        colorCode: bundle.colorCode,
-        colorName: bundle.colorName,
-        sizeCode: bundle.sizeCode,
-        shadeLot: bundle.shadeLot,
-        quantity: bundle.quantity,
-        status: "Released",
-        companyId: args.companyId,
-        createdBy: args.userId
-      }))
-    )
-    .select(
-      "id, sequence, bundleNumber, quantity, colorCode, colorName, sizeCode, shadeLot"
-    );
+  const { data: bundles, error: bundlesError } = await insertBundles(
+    draft.bundles.map((bundle) => ({
+      splitBatchId: splitBatch.id,
+      itemId: args.itemId,
+      bundleNumber: bundle.bundleNumber,
+      sequence: bundle.sequence,
+      colorCode: bundle.colorCode,
+      colorName: bundle.colorName,
+      sizeCode: bundle.sizeCode,
+      shadeLot: bundle.shadeLot,
+      quantity: bundle.quantity,
+      status: "Released",
+      companyId: args.companyId,
+      createdBy: args.userId
+    }))
+  );
 
   if (bundlesError) {
     return { data: null, error: bundlesError };
@@ -175,17 +168,15 @@ export async function createConfirmedSplitBatch(
     ])
   );
 
-  const { error: allocationError } = await splitClient
-    .from("bundleAllocation")
-    .insert(
-      draft.allocations.map((allocation) => ({
-        bundleId: bundleIdsBySequence.get(String(allocation.bundleSequence)),
-        productionQuantitySplitRowId: allocation.sourceId,
-        quantity: allocation.quantity,
-        companyId: args.companyId,
-        createdBy: args.userId
-      }))
-    );
+  const { error: allocationError } = await insertBundleAllocations(
+    draft.allocations.map((allocation) => ({
+      bundleId: bundleIdsBySequence.get(String(allocation.bundleSequence))!,
+      productionQuantitySplitRowId: allocation.sourceId,
+      quantity: allocation.quantity,
+      companyId: args.companyId,
+      createdBy: args.userId
+    }))
+  );
 
   if (allocationError) {
     return { data: null, error: allocationError };
@@ -344,7 +335,6 @@ async function createBundleJobsForBundles(
     return { data: null, error: cuttingProcess.error };
   }
 
-  const splitClient = client as SupabaseClient<any>;
   const createdJobs: Array<{
     bundleId: string;
     jobId: string;
@@ -410,14 +400,15 @@ async function createBundleJobsForBundles(
       return { data: null, error: pruned.error };
     }
 
-    const bundleUpdate = await splitClient
-      .from("bundle")
-      .update({
-        jobId: createdJob.data.id,
-        updatedBy: args.userId
-      })
-      .eq("id", bundle.id)
-      .eq("companyId", args.companyId);
+    const { updateBundleJobLink } = await import(
+      "./styleBundlePersistence.server"
+    );
+    const bundleUpdate = await updateBundleJobLink({
+      bundleId: bundle.id,
+      companyId: args.companyId,
+      jobId: createdJob.data.id,
+      userId: args.userId
+    });
 
     if (bundleUpdate.error) {
       return { data: null, error: bundleUpdate.error };
@@ -460,37 +451,36 @@ export async function getNextBundleSequenceForJob(
     jobId: string;
   }
 ) {
-  const splitClient = client as SupabaseClient<any>;
-  const { data: splitBatches, error: splitBatchError } = await splitClient
-    .from("splitBatch")
-    .select("id")
-    .eq("companyId", args.companyId)
-    .eq("jobId", args.jobId);
+  const { getAllSplitBatchIdsForJob, getBundlesForSplitBatchIds } =
+    await import("./styleBundlePersistence.server");
+  const { data: splitBatchIds, error: splitBatchError } =
+    await getAllSplitBatchIdsForJob({
+      companyId: args.companyId,
+      jobId: args.jobId
+    });
 
   if (splitBatchError) {
     return { data: null, error: splitBatchError };
   }
 
-  const splitBatchIds = (splitBatches ?? []).map(
-    (row: { id: string }) => row.id
-  );
-  if (splitBatchIds.length === 0) {
+  if (!splitBatchIds || splitBatchIds.length === 0) {
     return { data: 1, error: null };
   }
 
-  const { data: bundles, error: bundleError } = await splitClient
-    .from("bundle")
-    .select("sequence")
-    .eq("companyId", args.companyId)
-    .in("splitBatchId", splitBatchIds)
-    .order("sequence", { ascending: false })
-    .limit(1);
+  const { data: bundles, error: bundleError } =
+    await getBundlesForSplitBatchIds({
+      companyId: args.companyId,
+      splitBatchIds
+    });
 
   if (bundleError) {
     return { data: null, error: bundleError };
   }
 
-  const maxSequence = Number(bundles?.[0]?.sequence) || 0;
+  const maxSequence = Math.max(
+    0,
+    ...(bundles ?? []).map((bundle) => Number(bundle.sequence) || 0)
+  );
   return { data: maxSequence + 1, error: null };
 }
 

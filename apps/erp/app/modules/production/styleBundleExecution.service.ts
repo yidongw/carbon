@@ -74,21 +74,19 @@ export async function getStyleBundleExecutionState(
     };
   }
 
-  const { data: splitBatches, error: splitBatchError } = await splitClient
-    .from("splitBatch")
-    .select("id, status")
-    .eq("companyId", args.companyId)
-    .eq("jobId", args.jobId)
-    .eq("status", "Confirmed");
+  const { getConfirmedSplitBatchIdsForJob, getBundlesForSplitBatchIds } =
+    await import("./styleBundlePersistence.server");
+  const { data: splitBatchIds, error: splitBatchError } =
+    await getConfirmedSplitBatchIdsForJob({
+      companyId: args.companyId,
+      jobId: args.jobId
+    });
 
   if (splitBatchError) {
     return { data: null, error: splitBatchError };
   }
 
-  const splitBatchIds = (splitBatches ?? []).map(
-    (row: { id: string }) => row.id
-  );
-  if (splitBatchIds.length === 0) {
+  if (!splitBatchIds || splitBatchIds.length === 0) {
     return {
       data: deriveStyleBundleExecutionState({
         itemType: job.itemType,
@@ -116,14 +114,11 @@ export async function getStyleBundleExecutionState(
     .filter((operation: any) => isStyleCuttingOperation(operation))
     .map((operation: any) => operation.id as string);
 
-  const { data: bundles, error: bundleError } = await splitClient
-    .from("bundle")
-    .select(
-      "id, bundleNumber, status, jobId, quantity, colorCode, colorName, sizeCode, shadeLot"
-    )
-    .eq("companyId", args.companyId)
-    .in("splitBatchId", splitBatchIds)
-    .order("sequence", { ascending: true });
+  const { data: bundles, error: bundleError } =
+    await getBundlesForSplitBatchIds({
+      companyId: args.companyId,
+      splitBatchIds
+    });
 
   if (bundleError) {
     return { data: null, error: bundleError };
