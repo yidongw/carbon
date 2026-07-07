@@ -1487,6 +1487,16 @@ export const path = {
         `${x}/resources/work-centers/rules/unassign/${id}/${ruleId}`
       ),
     partSales: (id: string) => generatePath(`${x}/part/${id}/sales`),
+    styleCosting: (id: string) => generatePath(`${x}/style/${id}/costing`),
+    styleDetails: (id: string) => generatePath(`${x}/style/${id}/details`),
+    styleInventory: (id: string) => generatePath(`${x}/style/${id}/inventory`),
+    styleInventoryLocation: (id: string, locationId: string) =>
+      generatePath(`${x}/style/${id}/inventory?location=${locationId}`),
+    stylePlanning: (id: string) => generatePath(`${x}/style/${id}/planning`),
+    stylePlanningLocation: (id: string, locationId: string) =>
+      generatePath(`${x}/style/${id}/planning?location=${locationId}`),
+    styleRoot: `${x}/style`,
+    styleSales: (id: string) => generatePath(`${x}/style/${id}/sales`),
     partSupplier: (itemId: string, id: string) =>
       generatePath(`${x}/part/${itemId}/purchasing/${id}`),
     parts: `${x}/items/parts`,

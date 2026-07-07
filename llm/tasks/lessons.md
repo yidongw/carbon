@@ -2,6 +2,10 @@
 
 Patterns learned from corrections. Review at the start of each session.
 
+## "Be like parts" means compare the actual route shell, not just nearby data tables
+- When the user says a style/tool/material surface should "be like parts", do not stop at the nearest similar component if the correction includes a screenshot of a different page shell. I had already expanded the styles list table, but the screenshot was showing the part detail route chrome (`Details`, `Accounting`, `Planning`, `Inventory`, `Sales`, plus `Manufacturing` / `Used In`), so the real gap was routed detail-shell parity, not another table field.
+- Rule: if the user references "those as well" with a screenshot, identify the exact UI surface in the image first, then compare the concrete route structure and tabs against the part implementation before editing.
+
 ## A "word"/wordmark logo SVG may be a full lockup (mark + text), not text-only
 - Don't infer an SVG's composition by diffing path `d=` strings. An embedded mark inside a lockup has **different coordinates** than the standalone mark file, so a substring match returns "no mark" even when the mark IS present. Hit this with `apps/docs/public/carbon-word-light.svg`: its first path is the hexagon mark (at different coords than `carbon-mark-light.svg`), followed by 6 letter paths for "carbon". I concluded "text-only", paired it with a separate mark `<img>`, and produced a **double mark** in the header.
 - Verify what an SVG actually renders by **viewing/rendering it**, not by reasoning over path data.

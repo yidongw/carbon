@@ -31,7 +31,7 @@ import { ItemReorderPolicy } from "./ItemReorderPolicy";
 type ItemPlanningFormProps = {
   initialValues: z.infer<typeof itemPlanningValidator>;
   locations: ListItem[];
-  type: "Part" | "Material" | "Tool" | "Consumable";
+  type: "Part" | "Material" | "Tool" | "Consumable" | "Style";
 };
 
 const ItemPlanningForm = ({
@@ -176,18 +176,19 @@ export default ItemPlanningForm;
 function getLocationPath(
   itemId: string,
   locationId: string,
-  type: "Part" | "Material" | "Tool" | "Consumable"
+  type: "Part" | "Material" | "Tool" | "Consumable" | "Style"
 ) {
   switch (type) {
     case "Part":
       return `${path.to.partPlanning(itemId)}?location=${locationId}`;
     case "Material":
       return `${path.to.materialPlanning(itemId)}?location=${locationId}`;
-
     case "Tool":
       return `${path.to.toolPlanning(itemId)}?location=${locationId}`;
     case "Consumable":
       return `${path.to.consumablePlanning(itemId)}?location=${locationId}`;
+    case "Style":
+      return `${path.to.stylePlanning(itemId)}?location=${locationId}`;
     default:
       throw new Error(`Invalid item type: ${type}`);
   }
