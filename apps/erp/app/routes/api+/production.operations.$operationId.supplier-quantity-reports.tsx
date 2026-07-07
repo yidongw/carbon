@@ -2,8 +2,8 @@ import { assertIsPost, notFound } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data } from "react-router";
+import { createJobOperationSupplierQuantityReport } from "~/modules/production/jobOperationSupplierQuantityReport.service.server";
 import {
-  createJobOperationSupplierQuantityReport,
   createJobOperationSupplierQuantityReportValidator,
   getOperationQuantitySummary,
   isJobLocked,

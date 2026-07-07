@@ -13,8 +13,8 @@ import {
   serializeSearch
 } from "~/components/Overlay/overlay";
 import { getConfigurationParameters } from "~/modules/items";
+import { createJobOperationSupplierQuantityReport } from "~/modules/production/jobOperationSupplierQuantityReport.service.server";
 import {
-  createJobOperationSupplierQuantityReport,
   defaultActorKindFromOperationType,
   getJob,
   getJobOperationActorContext,

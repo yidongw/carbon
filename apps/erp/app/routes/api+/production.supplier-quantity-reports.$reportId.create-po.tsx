@@ -2,10 +2,8 @@ import { assertIsPost, notFound } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import type { ActionFunctionArgs } from "react-router";
 import { data } from "react-router";
-import {
-  createOutsideProcessingPoFromSupplierReport,
-  isJobLocked
-} from "~/modules/production";
+import { createOutsideProcessingPoFromSupplierReport } from "~/modules/production/jobOperationSupplierQuantityReport.service.server";
+import { isJobLocked } from "~/modules/production";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 
 export async function action({ request, params }: ActionFunctionArgs) {
