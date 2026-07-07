@@ -5,11 +5,13 @@ import { VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
 import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useLoaderData } from "react-router";
-import { getStyles } from "~/modules/items";
+import { getItemPostingGroupsList, getStyles } from "~/modules/items";
 import { StylesTable } from "~/modules/items/ui/Styles";
+import { getTagsList } from "~/modules/shared";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 import { getGenericQueryFilters } from "~/utils/query";
+import { useRealtime } from "../../../hooks";
 
 export const handle: Handle = {
   breadcrumb: msg`Styles`,
@@ -29,13 +31,17 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const { limit, offset, sorts, filters } =
     getGenericQueryFilters(searchParams);
 
-  const styles = await getStyles(client, companyId, {
-    search,
-    limit,
-    offset,
-    sorts,
-    filters
-  });
+  const [styles, tags, itemPostingGroups] = await Promise.all([
+    getStyles(client, companyId, {
+      search,
+      limit,
+      offset,
+      sorts,
+      filters
+    }),
+    getTagsList(client, companyId, "style"),
+    getItemPostingGroupsList(client, companyId)
+  ]);
 
   if (styles.error) {
     redirect(
@@ -46,16 +52,26 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   return {
     count: styles.count ?? 0,
-    styles: styles.data ?? []
+    styles: styles.data ?? [],
+    tags: tags.data ?? [],
+    itemPostingGroups: itemPostingGroups.data ?? []
   };
 }
 
 export default function StylesSearchRoute() {
-  const { count, styles } = useLoaderData<typeof loader>();
+  const { count, styles, tags, itemPostingGroups } =
+    useLoaderData<typeof loader>();
+
+  useRealtime("style");
 
   return (
     <VStack spacing={0} className="h-full">
-      <StylesTable data={styles} count={count} />
+      <StylesTable
+        data={styles}
+        count={count}
+        tags={tags}
+        itemPostingGroups={itemPostingGroups}
+      />
       <Outlet />
     </VStack>
   );
