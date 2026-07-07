@@ -119,58 +119,58 @@ export async function getStyleColorContext(
   }
 }
 
-async function insertStyleRecord(args: {
-  readableId: string;
-  itemId: string;
-  colorName: string;
-  colorCode: string;
-  companyId: string;
-  userId: string;
-  customFields?: Json;
-}) {
-  const db = getDatabaseClient();
-  await sql`
-    insert into "style" (
-      "id",
-      "itemId",
-      "colorName",
-      "colorCode",
-      "companyId",
-      "createdBy",
-      "customFields"
-    ) values (
-      ${args.readableId},
-      ${args.itemId},
-      ${args.colorName},
-      ${args.colorCode},
-      ${args.companyId},
-      ${args.userId},
-      ${args.customFields ?? null}
-    )
-  `.execute(db);
+async function insertStyleRecord(
+  client: Parameters<typeof upsertItemDefaultPickMethod>[0],
+  args: {
+    readableId: string;
+    itemId: string;
+    colorName: string;
+    colorCode: string;
+    companyId: string;
+    userId: string;
+    customFields?: Json;
+  }
+) {
+  const styleClient = client as any;
+  const result = await styleClient.from("style").insert({
+    id: args.readableId,
+    itemId: args.itemId,
+    colorName: args.colorName,
+    colorCode: args.colorCode,
+    companyId: args.companyId,
+    createdBy: args.userId,
+    customFields: args.customFields ?? null
+  });
+
+  if (result.error) throw result.error;
 }
 
-async function updateStyleRecord(args: {
-  itemId: string;
-  colorName: string;
-  colorCode: string;
-  companyId: string;
-  userId: string;
-  customFields?: Json;
-}) {
-  const db = getDatabaseClient();
+async function updateStyleRecord(
+  client: Parameters<typeof upsertItemDefaultPickMethod>[0],
+  args: {
+    itemId: string;
+    colorName: string;
+    colorCode: string;
+    companyId: string;
+    userId: string;
+    customFields?: Json;
+  }
+) {
   const updatedAt = today(getLocalTimeZone()).toString();
-  await sql`
-    update "style"
-    set
-      "colorName" = ${args.colorName},
-      "colorCode" = ${args.colorCode},
-      "customFields" = ${args.customFields ?? null},
-      "updatedBy" = ${args.userId},
-      "updatedAt" = ${updatedAt}
-    where "itemId" = ${args.itemId}
-      and "companyId" = ${args.companyId}
-  `.execute(db);
+  const styleClient = client as any;
+  const result = await styleClient
+    .from("style")
+    .update({
+      colorName: args.colorName,
+      colorCode: args.colorCode,
+      customFields: args.customFields ?? null,
+      updatedBy: args.userId,
+      updatedAt
+    })
+    .eq("itemId", args.itemId)
+    .eq("companyId", args.companyId);
+
+  if (result.error) throw result.error;
 }
 
 export async function upsertStyle(
@@ -203,7 +203,7 @@ export async function upsertStyle(
     const itemId = itemInsert.data.id;
 
     try {
-      await insertStyleRecord({
+      await insertStyleRecord(client, {
         readableId: style.id,
         itemId,
         colorName: style.colorName,
@@ -333,7 +333,7 @@ export async function upsertStyle(
   }
 
   try {
-    await updateStyleRecord({
+    await updateStyleRecord(client, {
       itemId: style.id,
       colorName: style.colorName,
       colorCode: style.colorCode,
