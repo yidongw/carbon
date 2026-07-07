@@ -1,5 +1,4 @@
 import type { Database } from "@carbon/database";
-import type { SupabaseClient } from "@supabase/supabase-js";
 import {
   buildPendingSplitSourceRows,
   type PendingSplitSourceRow
@@ -51,28 +50,6 @@ export function hydratePendingSplitRows(
     reportedQuantity: row.quantity,
     allocatedQuantity: row.allocatedQuantity
   }));
-}
-
-export async function getPendingSplitSourceRows(
-  client: SupabaseClient<Database>,
-  args: {
-    companyId: string;
-    jobId: string;
-  }
-) {
-  const { getPersistedSplitRowsForJob } = await import(
-    "./styleBundlePersistence.server"
-  );
-  const { data, error } = await getPersistedSplitRowsForJob(args);
-
-  if (error) {
-    return { data: null, error };
-  }
-
-  return {
-    data: hydratePendingSplitRows(data ?? []),
-    error: null
-  };
 }
 
 export function buildProductionQuantitySplitRowRecords(args: {

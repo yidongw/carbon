@@ -13,7 +13,6 @@ import {
   getItemIdsWithConfigurationParameters,
   getProductionQuantityReportFilterOptions,
   getProductionQuantityReportPayRows,
-  replaceProductionQuantityReportLines,
   replaceProductionQuantityReportLinesValidator,
   resolveProductionQuantityCanAutoApprove,
   resolveProductionQuantityPayScope,
@@ -278,6 +277,10 @@ export async function action({ request }: ActionFunctionArgs) {
 
     const paymentYear = canAutoApprove ? year : null;
     const paymentMonth = canAutoApprove ? month : null;
+
+    const { replaceProductionQuantityReportLines } = await import(
+      "~/modules/production/productionQuantityReport.service.server"
+    );
 
     const update = await replaceProductionQuantityReportLines(serviceRole, {
       reportId,

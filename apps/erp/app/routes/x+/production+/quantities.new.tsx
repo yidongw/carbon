@@ -15,13 +15,11 @@ import {
 import { getConfigurationParameters } from "~/modules/items";
 import {
   createJobOperationSupplierQuantityReport,
-  createProductionQuantityReport,
   defaultActorKindFromOperationType,
   getJob,
   getJobOperationActorContext,
   getJobOperations,
   getJobs,
-  getStyleBundleExecutionState,
   productionQuantityCreateFormValidator,
   resolveProductionQuantityCanAutoApprove,
   seededActorFromOperationContext,
@@ -115,6 +113,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
     jobOperations = operations.data ?? [];
     itemId = job.data?.itemId ?? null;
 
+    const { getStyleBundleExecutionState } = await import(
+      "~/modules/production/styleBundleExecution.service.server"
+    );
     const styleExecution = await getStyleBundleExecutionState(client, {
       companyId,
       jobId
@@ -309,6 +310,10 @@ export async function action({ request }: ActionFunctionArgs) {
       await flash(request, error(operationError, "Job operation not found"))
     );
   }
+
+  const { createProductionQuantityReport } = await import(
+    "~/modules/production/productionQuantityReport.service.server"
+  );
 
   const result =
     actorKind === "supplier"

@@ -7,11 +7,11 @@ import {
   computeProductionQuantityReportEarnedAmount,
   isJobLocked,
   listProductionQuantityReportLines,
-  replaceProductionQuantityReportLines,
   replaceProductionQuantityReportLinesValidator,
   resolveProductionQuantityCanAutoApprove,
   syncProductionQuantityReportApproval
 } from "~/modules/production";
+import { replaceProductionQuantityReportLines } from "~/modules/production/productionQuantityReport.service.server";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
