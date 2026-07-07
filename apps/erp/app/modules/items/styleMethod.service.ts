@@ -14,6 +14,19 @@ type StyleOperationLike = {
   customFields?: Json | null;
 };
 
+function toError(error: unknown, fallback: string) {
+  if (error instanceof Error) return error;
+  if (error && typeof error === "object") {
+    const maybeMessage = "message" in error ? error.message : undefined;
+    const maybeDetail = "detail" in error ? error.detail : undefined;
+    const parts = [maybeMessage, maybeDetail].filter(
+      (value): value is string => typeof value === "string" && value.length > 0
+    );
+    if (parts.length > 0) return new Error(parts.join(" | "));
+  }
+  return new Error(fallback);
+}
+
 function getStyleStage(customFields: Json | null | undefined) {
   if (!customFields || typeof customFields !== "object") return null;
   const styleStage = (customFields as Record<string, unknown>).styleStage;
@@ -540,10 +553,7 @@ export async function ensureStyleMethodScaffoldWithDb(args: {
   } catch (error) {
     return {
       data: null,
-      error:
-        error instanceof Error
-          ? error
-          : new Error("Failed to scaffold style make method")
+      error: toError(error, "Failed to scaffold style make method")
     };
   }
 }

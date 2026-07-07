@@ -51,6 +51,19 @@ type StyleSummary = {
   updatedAt: string | null;
 };
 
+function toError(error: unknown, fallback: string) {
+  if (error instanceof Error) return error;
+  if (error && typeof error === "object") {
+    const maybeMessage = "message" in error ? error.message : undefined;
+    const maybeDetail = "detail" in error ? error.detail : undefined;
+    const parts = [maybeMessage, maybeDetail].filter(
+      (value): value is string => typeof value === "string" && value.length > 0
+    );
+    if (parts.length > 0) return new Error(parts.join(" | "));
+  }
+  return new Error(fallback);
+}
+
 export async function getStyle(
   itemId: string,
   companyId: string
@@ -72,7 +85,7 @@ export async function getStyle(
   } catch (error) {
     return {
       data: null,
-      error: error instanceof Error ? error : new Error("Failed to load style")
+      error: toError(error, "Failed to load style")
     };
   }
 }
@@ -101,10 +114,7 @@ export async function getStyleColorContext(
   } catch (error) {
     return {
       data: null,
-      error:
-        error instanceof Error
-          ? error
-          : new Error("Failed to load style color context")
+      error: toError(error, "Failed to load style color context")
     };
   }
 }
@@ -205,8 +215,7 @@ export async function upsertStyle(
     } catch (error) {
       return {
         data: null,
-        error:
-          error instanceof Error ? error : new Error("Failed to insert style")
+        error: toError(error, "Failed to insert style")
       };
     }
 
@@ -335,8 +344,7 @@ export async function upsertStyle(
   } catch (error) {
     return {
       data: null,
-      error:
-        error instanceof Error ? error : new Error("Failed to update style")
+      error: toError(error, "Failed to update style")
     };
   }
 
