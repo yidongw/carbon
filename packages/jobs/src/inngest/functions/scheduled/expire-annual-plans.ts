@@ -22,10 +22,9 @@ export const expireAnnualPlansFunction = inngest.createFunction(
         .lt("termEndsAt", now);
 
       if (expired.error) {
-        console.error(
+        throw new Error(
           `Error fetching expired annual plans: ${JSON.stringify(expired.error)}`
         );
-        return;
       }
 
       if (!expired.data?.length) {
@@ -40,10 +39,9 @@ export const expireAnnualPlansFunction = inngest.createFunction(
         .in("id", ids);
 
       if (error) {
-        console.error(
+        throw new Error(
           `Failed to deactivate expired annual plans: ${JSON.stringify(error)}`
         );
-        return;
       }
 
       console.log(`Deactivated ${ids.length} expired annual plan(s)`);

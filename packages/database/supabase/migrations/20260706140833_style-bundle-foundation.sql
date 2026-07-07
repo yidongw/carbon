@@ -234,7 +234,7 @@ SELECT
   li."updatedAt"
 FROM "style" s
 INNER JOIN latest_items li ON li."id" = s."itemId"
-LEFT JOIN item_revisions ir ON ir."readableId" = s."id" AND ir."companyId" = s."companyId"
+LEFT JOIN item_revisions ir ON ir."readableId" = li."readableId" AND ir."companyId" = li."companyId"
 LEFT JOIN "itemCost" ic ON ic."itemId" = li.id;
 
 CREATE TYPE "splitBatchStatus" AS ENUM (
@@ -504,6 +504,56 @@ CREATE POLICY "DELETE" ON "public"."bundleAllocation"
 FOR DELETE USING (
   "companyId" = ANY (
     (SELECT get_companies_with_employee_permission('production_delete'))::text[]
+  )
+);
+
+CREATE TABLE "styleColor" (
+  "id" TEXT NOT NULL DEFAULT id('sco'),
+  "colorCode" TEXT NOT NULL,
+  "colorName" TEXT NOT NULL,
+  "companyId" TEXT,
+  "createdBy" TEXT NOT NULL REFERENCES "user"("id"),
+  "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+  "updatedBy" TEXT REFERENCES "user"("id"),
+  "updatedAt" TIMESTAMP WITH TIME ZONE,
+
+  CONSTRAINT "styleColor_pkey" PRIMARY KEY ("id"),
+  CONSTRAINT "styleColor_companyId_fkey"
+    FOREIGN KEY ("companyId") REFERENCES "company"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT "styleColor_colorCode_companyId_key" UNIQUE ("colorCode", "companyId")
+);
+
+CREATE INDEX "styleColor_companyId_idx" ON "styleColor" ("companyId");
+CREATE INDEX "styleColor_colorCode_idx" ON "styleColor" ("colorCode");
+
+ALTER TABLE "styleColor" ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "SELECT" ON "public"."styleColor"
+FOR SELECT USING (
+  "companyId" IS NULL OR
+  "companyId" = ANY (
+    (SELECT get_companies_with_employee_role())::text[]
+  )
+);
+
+CREATE POLICY "INSERT" ON "public"."styleColor"
+FOR INSERT WITH CHECK (
+  "companyId" = ANY (
+    (SELECT get_companies_with_employee_permission('parts_create'))::text[]
+  )
+);
+
+CREATE POLICY "UPDATE" ON "public"."styleColor"
+FOR UPDATE USING (
+  "companyId" = ANY (
+    (SELECT get_companies_with_employee_permission('parts_update'))::text[]
+  )
+);
+
+CREATE POLICY "DELETE" ON "public"."styleColor"
+FOR DELETE USING (
+  "companyId" = ANY (
+    (SELECT get_companies_with_employee_permission('parts_delete'))::text[]
   )
 );
 

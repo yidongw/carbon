@@ -673,6 +673,12 @@ export const materialTypeValidator = z.object({
   code: z.string().min(1, { message: "Code is required" }).max(10)
 });
 
+export const styleColorValidator = z.object({
+  id: zfd.text(z.string().optional()),
+  colorCode: z.string().min(1, { message: "Color code is required" }).max(50),
+  colorName: z.string().min(1, { message: "Color name is required" }).max(255)
+});
+
 export const partValidator = applyStorageAndShelfLifeRefines(
   itemValidator.merge(
     z.object({
