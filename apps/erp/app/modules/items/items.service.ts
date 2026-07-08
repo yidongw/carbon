@@ -46,7 +46,6 @@ import {
   type materialDimensionValidator,
   type materialFinishValidator,
   type materialFormValidator,
-  type styleColorValidator,
   type materialGradeValidator,
   type materialSubstanceValidator,
   type materialTypeValidator,
@@ -59,6 +58,7 @@ import {
   type serviceValidator,
   type shelfLifeModes,
   type shelfLifeTriggerTimings,
+  type styleColorValidator,
   type supplierPartValidator,
   type toolValidator,
   type unitOfMeasureValidator
@@ -66,6 +66,7 @@ import {
 import type { styleValidator } from "./style.models";
 import {
   ensureStyleMethodScaffold,
+  isStyleCuttingOperationFirst,
   isStyleSystemOwnedOperation
 } from "./styleMethod.service";
 import type { InventoryItemType } from "./types";
@@ -2185,6 +2186,79 @@ export async function updateOperationOrder(
     updatedBy: string;
   }[]
 ) {
+  if (updates.length === 0) return [];
+
+  const operationClient = client as SupabaseClient<any>;
+  const updatedOperations = await operationClient
+    .from("methodOperation")
+    .select("id, makeMethodId, order, tags, customFields")
+    .in(
+      "id",
+      updates.map(({ id }) => id)
+    );
+
+  if (updatedOperations.error) return [updatedOperations];
+
+  const makeMethodIds = Array.from(
+    new Set(
+      (updatedOperations.data ?? [])
+        .map(
+          (operation: { makeMethodId?: string | null }) =>
+            operation.makeMethodId
+        )
+        .filter(Boolean)
+    )
+  );
+
+  if (makeMethodIds.length > 0) {
+    const methodOperations = await operationClient
+      .from("methodOperation")
+      .select("id, makeMethodId, order, tags, customFields")
+      .in("makeMethodId", makeMethodIds);
+
+    if (methodOperations.error) return [methodOperations];
+
+    const updatesById = new Map(
+      updates.map((update) => [update.id, update.order] as const)
+    );
+    const operationsByMethod = new Map<string, any[]>();
+
+    for (const operation of methodOperations.data ?? []) {
+      const makeMethodId = operation.makeMethodId;
+      if (!makeMethodId) continue;
+
+      const nextOperation = updatesById.has(operation.id)
+        ? {
+            ...operation,
+            order: updatesById.get(operation.id) ?? operation.order
+          }
+        : operation;
+
+      const operations = operationsByMethod.get(makeMethodId) ?? [];
+      operations.push(nextOperation);
+      operationsByMethod.set(makeMethodId, operations);
+    }
+
+    const violatesStyleCuttingOrder = Array.from(
+      operationsByMethod.values()
+    ).some((operations) => !isStyleCuttingOperationFirst(operations));
+
+    if (violatesStyleCuttingOrder) {
+      return [
+        {
+          data: null,
+          error: {
+            message:
+              "System-owned Style cutting operations must remain the first process in the bill of process."
+          },
+          count: null,
+          status: 400,
+          statusText: "Bad Request"
+        }
+      ];
+    }
+  }
+
   const updatePromises = updates.map(({ id, order, updatedBy }) =>
     client.from("methodOperation").update({ order, updatedBy }).eq("id", id)
   );

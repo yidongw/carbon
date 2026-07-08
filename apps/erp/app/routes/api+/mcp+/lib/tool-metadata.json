@@ -1,6 +1,6 @@
 {
-  "generated": "2026-07-07T04:12:57.975Z",
-  "totalTools": 1252,
+  "generated": "2026-07-08T09:00:43.132Z",
+  "totalTools": 1257,
   "modules": 15,
   "tools": [
     {
@@ -8489,6 +8489,31 @@
       }
     },
     {
+      "name": "items_deleteStyleColor",
+      "module": "items",
+      "classification": "DESTRUCTIVE",
+      "description": "delete style color",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "id"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
       "name": "items_deleteMaterialSubstance",
       "module": "items",
       "classification": "DESTRUCTIVE",
@@ -10435,6 +10460,88 @@
       }
     },
     {
+      "name": "items_getStyleColor",
+      "module": "items",
+      "classification": "READ",
+      "description": "get style color",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "id"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "items_getStyleColors",
+      "module": "items",
+      "classification": "READ",
+      "description": "get style colors",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "args": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "default": 100
+              },
+              "offset": {
+                "type": "integer",
+                "default": 0
+              },
+              "search": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "items_getStyleColorList",
+      "module": "items",
+      "classification": "READ",
+      "description": "get style color list",
+      "paramCount": 0,
+      "serviceParams": [
+        "client",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
       "name": "items_getPartsList",
       "module": "items",
       "classification": "READ",
@@ -12107,6 +12214,40 @@
         "required": [
           "materialSubstanceId",
           "name"
+        ]
+      }
+    },
+    {
+      "name": "items_upsertStyleColor",
+      "module": "items",
+      "classification": "WRITE",
+      "description": "upsert style color",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "styleColor"
+      ],
+      "injectAuth": [
+        "companyId",
+        "createdBy",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "colorCode": {
+            "type": "string"
+          },
+          "colorName": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "colorCode",
+          "colorName"
         ]
       }
     },

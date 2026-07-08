@@ -3,6 +3,7 @@ import {
   buildStyleCuttingMethodOperation,
   getBundleJobCuttingOperationIdsToDelete,
   isStyleCuttingOperation,
+  isStyleCuttingOperationFirst,
   isStyleSystemOwnedOperation,
   STYLE_CUTTING_OPERATION_TAG,
   STYLE_CUTTING_PROCESS_TAG,
@@ -69,6 +70,46 @@ describe("buildStyleCuttingMethodOperation", () => {
         })
       })
     );
+  });
+});
+
+describe("isStyleCuttingOperationFirst", () => {
+  it("accepts methods where cutting is already the earliest operation", () => {
+    expect(
+      isStyleCuttingOperationFirst([
+        {
+          id: "op-cut",
+          order: 5,
+          tags: [STYLE_CUTTING_OPERATION_TAG],
+          customFields: null
+        },
+        {
+          id: "op-sew",
+          order: 10,
+          tags: ["sewing"],
+          customFields: null
+        }
+      ])
+    ).toBe(true);
+  });
+
+  it("rejects methods where a downstream operation moves ahead of cutting", () => {
+    expect(
+      isStyleCuttingOperationFirst([
+        {
+          id: "op-cut",
+          order: 10,
+          tags: [STYLE_CUTTING_OPERATION_TAG],
+          customFields: null
+        },
+        {
+          id: "op-sew",
+          order: 5,
+          tags: ["sewing"],
+          customFields: null
+        }
+      ])
+    ).toBe(false);
   });
 });
 

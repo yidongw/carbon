@@ -13,7 +13,6 @@ type StyleOperationLike = {
   customFields?: Json | null;
 };
 
-
 function getStyleStage(customFields: Json | null | undefined) {
   if (!customFields || typeof customFields !== "object") return null;
   const styleStage = (customFields as Record<string, unknown>).styleStage;
@@ -39,6 +38,23 @@ export function isStyleSystemOwnedOperation(operation: StyleOperationLike) {
     (operation.customFields as Record<string, unknown>).styleSystemOwned ===
     true
   );
+}
+
+export function isStyleCuttingOperationFirst(operations: StyleOperationLike[]) {
+  if (operations.length === 0) return true;
+
+  const cuttingOperation = operations.find((operation) =>
+    isStyleCuttingOperation(operation)
+  );
+  if (!cuttingOperation) return true;
+
+  const cuttingOrder = cuttingOperation.order ?? 0;
+  const firstOrder = operations.reduce(
+    (lowest, operation) => Math.min(lowest, operation.order ?? 0),
+    Number.POSITIVE_INFINITY
+  );
+
+  return cuttingOrder <= firstOrder;
 }
 
 export function buildStyleCuttingMethodOperation(args: {
@@ -305,4 +321,3 @@ export async function ensureStyleMethodScaffold(
     error: null
   };
 }
-
