@@ -15,11 +15,13 @@ import {
 import { getConfigurationParameters } from "~/modules/items";
 import {
   computeProductionQuantityReportEarnedAmount,
+  filterOperationsByIds,
   getJob,
   getJobOperationActorContext,
   getJobOperationSupplierQuantityReport,
   getJobOperations,
   getProductionQuantity,
+  getVisibleJobOperationIds,
   isJobLocked,
   productionQuantityCreateFormValidator,
   productionQuantityValidator,
@@ -67,9 +69,25 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     getJob(client, jobId),
     getJobOperations(client, jobId)
   ]);
+  const visibleOperationIds = await getVisibleJobOperationIds(client, {
+    companyId,
+    jobId
+  });
+  if (visibleOperationIds.error) {
+    throw redirect(
+      path.to.jobProductionQuantities(jobId),
+      await flash(
+        request,
+        error(visibleOperationIds.error, "Failed to load visible operations")
+      )
+    );
+  }
 
   const operationOptions =
-    jobOperations.data?.map((operation) => ({
+    filterOperationsByIds(
+      jobOperations.data ?? [],
+      visibleOperationIds.data
+    ).map((operation) => ({
       label: operation.description ?? "",
       value: operation.id
     })) ?? [];

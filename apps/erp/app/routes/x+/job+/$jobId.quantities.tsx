@@ -6,10 +6,12 @@ import type { LoaderFunctionArgs } from "react-router";
 import { redirect, useLoaderData } from "react-router";
 import { usePanels } from "~/components/Layout";
 import {
+  filterOperationsByIds,
   getJobOperationSupplierQuantities,
   getJobOperationsList,
   getProductionQuantities,
-  getScrapReasons
+  getScrapReasons,
+  getVisibleJobOperationIds
 } from "~/modules/production";
 import { ProductionQuantitiesTable } from "~/modules/production/ui/Jobs";
 import {
@@ -44,7 +46,26 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     );
   }
 
-  if (operations.data?.length === 0) {
+  const visibleOperationIds = await getVisibleJobOperationIds(client, {
+    companyId,
+    jobId
+  });
+  if (visibleOperationIds.error) {
+    throw redirect(
+      requestReferrer(request) ?? path.to.job(jobId),
+      await flash(
+        request,
+        error(visibleOperationIds.error, "Failed to fetch visible operations")
+      )
+    );
+  }
+
+  const filteredOperations = filterOperationsByIds(
+    operations.data ?? [],
+    visibleOperationIds.data
+  );
+
+  if (filteredOperations.length === 0) {
     return {
       count: 0,
       events: [],
@@ -53,16 +74,14 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     };
   }
 
-  const operationIds = operations.data?.map((o) => o.id) ?? [];
+  const operationIds = filteredOperations.map((o) => o.id!);
   const listQueryArgs = { search, sorts, filters };
 
-  const [
-    { getPendingSplitGroupsForJob },
-    { getStyleBundleExecutionState }
-  ] = await Promise.all([
-    import("~/modules/production/splitBatch.service.server"),
-    import("~/modules/production/styleBundleExecution.service.server")
-  ]);
+  const [{ getPendingSplitGroupsForJob }, { getStyleBundleExecutionState }] =
+    await Promise.all([
+      import("~/modules/production/splitBatch.service.server"),
+      import("~/modules/production/styleBundleExecution.service.server")
+    ]);
 
   const [
     employeeQuantities,
@@ -140,7 +159,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   return {
     count: (employeeQuantities.count ?? 0) + (supplierQuantities.count ?? 0),
     events: merged.slice(offset, offset + limit),
-    operations: operations.data ?? [],
+    operations: filteredOperations,
     scrapReasons: scrapReasons.data ?? [],
     showSplitAction: (pendingGroups.data?.length ?? 0) > 0,
     canCreateQuantities: true,

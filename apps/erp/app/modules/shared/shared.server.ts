@@ -30,12 +30,20 @@ export async function assign(
   }
 ) {
   const { id, table, assignee } = args;
+  const assignedAt = assignee ? new Date().toISOString() : null;
 
   return (
     client
       // @ts-ignore
       .from(table)
-      .update({ assignee: assignee ? assignee : null })
+      .update(
+        table === "jobOperation"
+          ? {
+              assignee: assignee ? assignee : null,
+              assignedAt
+            }
+          : { assignee: assignee ? assignee : null }
+      )
       .eq("id", id)
   );
 }

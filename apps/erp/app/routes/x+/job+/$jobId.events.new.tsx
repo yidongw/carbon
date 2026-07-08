@@ -6,8 +6,10 @@ import { validationError, validator } from "@carbon/form";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data, redirect, useLoaderData } from "react-router";
 import {
+  filterOperationsByIds,
   getJob,
   getJobOperations,
+  getVisibleJobOperationIds,
   isJobLocked,
   productionEventValidator,
   upsertProductionEvent
@@ -17,7 +19,7 @@ import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { getParams, path } from "~/utils/path";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
-  const { client } = await requirePermissions(request, {
+  const { client, companyId } = await requirePermissions(request, {
     create: "production"
   });
 
@@ -25,9 +27,27 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   if (!jobId) throw notFound("jobId not found");
 
   const jobOperations = await getJobOperations(client, jobId);
+  const visibleOperationIds = await getVisibleJobOperationIds(client, {
+    companyId,
+    jobId
+  });
+  if (visibleOperationIds.error) {
+    throw redirect(
+      path.to.jobProductionEvents(jobId),
+      await flash(
+        request,
+        error(visibleOperationIds.error, "Failed to load visible operations")
+      )
+    );
+  }
+
+  const filteredOperations = filterOperationsByIds(
+    jobOperations.data ?? [],
+    visibleOperationIds.data
+  );
 
   const operationOptions =
-    jobOperations.data?.map((operation) => ({
+    filteredOperations.map((operation) => ({
       label: operation.description ?? "",
       value: operation.id
     })) ?? [];
@@ -70,6 +90,27 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   // biome-ignore lint/correctness/noUnusedVariables: suppressed due to migration
   const { id, ...d } = validation.data;
+
+  const visibleOperationIds = await getVisibleJobOperationIds(client, {
+    companyId,
+    jobId
+  });
+  if (
+    visibleOperationIds.data &&
+    visibleOperationIds.data.length > 0 &&
+    !visibleOperationIds.data.includes(d.jobOperationId)
+  ) {
+    return data(
+      {},
+      await flash(
+        request,
+        error(
+          null,
+          "This operation is not available on the current garment work order."
+        )
+      )
+    );
+  }
 
   const insert = await upsertProductionEvent(client, {
     ...d,

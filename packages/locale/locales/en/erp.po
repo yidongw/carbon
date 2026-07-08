@@ -1049,11 +1049,11 @@ msgstr "Are you sure you want to delete this kanban card? This cannot be undone.
 msgid "Are you sure you want to delete this maintenance dispatch? This cannot be undone."
 msgstr "Are you sure you want to delete this maintenance dispatch? This cannot be undone."
 
-msgid "Are you sure you want to delete this process completion? This action cannot be undone."
-msgstr "Are you sure you want to delete this process completion? This action cannot be undone."
-
 msgid "Are you sure you want to delete this process pickup? This action cannot be undone."
 msgstr "Are you sure you want to delete this process pickup? This action cannot be undone."
+
+msgid "Are you sure you want to delete this process report? This action cannot be undone."
+msgstr "Are you sure you want to delete this process report? This action cannot be undone."
 
 msgid "Are you sure you want to delete this quality document?"
 msgstr "Are you sure you want to delete this quality document?"
@@ -1443,6 +1443,9 @@ msgstr "Bulk Jobs"
 
 msgid "Bundle Quantities"
 msgstr "Bundle Quantities"
+
+msgid "Bundle Work Order"
+msgstr "Bundle Work Order"
 
 msgid "Buy"
 msgstr "Buy"
@@ -2345,8 +2348,8 @@ msgstr "Create Operator"
 msgid "Create PO"
 msgstr "Create PO"
 
-msgid "Create Process Completion"
-msgstr "Create Process Completion"
+msgid "Create Process Report"
+msgstr "Create Process Report"
 
 msgid "Create Quote Revision"
 msgstr "Create Quote Revision"
@@ -2966,11 +2969,11 @@ msgstr "Delete Procedure"
 msgid "Delete Process"
 msgstr "Delete Process"
 
-msgid "Delete Process Completion"
-msgstr "Delete Process Completion"
-
 msgid "Delete Process Pickup"
 msgstr "Delete Process Pickup"
+
+msgid "Delete Process Report"
+msgstr "Delete Process Report"
 
 msgid "Delete Purchase Invoice"
 msgstr "Delete Purchase Invoice"
@@ -3577,8 +3580,8 @@ msgstr "Edit Pricing Rule"
 msgid "Edit Process"
 msgstr "Edit Process"
 
-msgid "Edit Process Completion"
-msgstr "Edit Process Completion"
+msgid "Edit Process Report"
+msgstr "Edit Process Report"
 
 msgid "Edit Properties"
 msgstr "Edit Properties"
@@ -5766,6 +5769,9 @@ msgstr "Mark Short"
 msgid "Mark to delete"
 msgstr "Mark to delete"
 
+msgid "Master Work Order"
+msgstr "Master Work Order"
+
 msgid "Match"
 msgstr "Match"
 
@@ -7649,6 +7655,12 @@ msgstr "Process pickup updated"
 
 msgid "Process Pickups"
 msgstr "Process Pickups"
+
+msgid "Process Report"
+msgstr "Process Report"
+
+msgid "Process Reports"
+msgstr "Process Reports"
 
 msgid "Process Type"
 msgstr "Process Type"
@@ -10108,8 +10120,8 @@ msgstr "This sales order has lines that require jobs to be created"
 msgid "This storage type is currently used by {usageCount} storage unit{0}."
 msgstr "This storage type is currently used by {usageCount} storage unit{0}."
 
-msgid "This Style job has already been split into bundles. Downstream completions belong on the bundle jobs listed below. Only cutting can still be reported on the parent job."
-msgstr "This Style job has already been split into bundles. Downstream completions belong on the bundle jobs listed below. Only cutting can still be reported on the parent job."
+msgid "This Style job has already been split into bundles. Downstream reports belong on the bundle jobs listed below. Only cutting can still be reported on the parent job."
+msgstr "This Style job has already been split into bundles. Downstream reports belong on the bundle jobs listed below. Only cutting can still be reported on the parent job."
 
 msgid "This updates the theme for all users of the application"
 msgstr "This updates the theme for all users of the application"

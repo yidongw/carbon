@@ -113,6 +113,32 @@ export function getBundleJobCuttingOperationIdsToDelete(args: {
   return firstOperation ? [firstOperation.id] : [];
 }
 
+export function getParentJobNonCuttingOperationIdsToDelete(args: {
+  operations: Array<
+    Required<Pick<StyleOperationLike, "id">> & StyleOperationLike
+  >;
+}) {
+  const cuttingIds = args.operations
+    .filter((operation) => isStyleCuttingOperation(operation))
+    .map((operation) => operation.id);
+
+  if (cuttingIds.length > 0) {
+    return args.operations
+      .map((operation) => operation.id)
+      .filter((id) => !cuttingIds.includes(id));
+  }
+
+  const firstOperation = [...args.operations]
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+    .find(Boolean);
+
+  if (!firstOperation) return [];
+
+  return args.operations
+    .map((operation) => operation.id)
+    .filter((id) => id !== firstOperation.id);
+}
+
 export async function ensureStyleRootMakeMethod(
   client: SupabaseClient<Database>,
   args: {

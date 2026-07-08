@@ -4,6 +4,7 @@ import {
   Alert,
   AlertDescription,
   AlertTitle,
+  Badge,
   Button,
   Copy,
   DropdownMenu,
@@ -93,6 +94,11 @@ function JobTopbarLeft({ jobId }: { jobId: string }) {
   });
 
   const routeData = useRouteData<{ job: Job }>(path.to.job(jobId));
+  const garmentWorkOrder = useRouteData<{
+    garmentWorkOrder?: {
+      kind: "master" | "bundle" | null;
+    };
+  }>(path.to.job(jobId))?.garmentWorkOrder;
   const statusFetcher = useFetcher<{}>();
   const status = routeData?.job?.status;
 
@@ -110,6 +116,15 @@ function JobTopbarLeft({ jobId }: { jobId: string }) {
           {routeData?.job?.jobId ?? jobId}
         </DetailTopbarId>
         <Copy text={routeData?.job?.jobId ?? ""} />
+        {garmentWorkOrder?.kind === "master" ? (
+          <Badge variant="outline">
+            <Trans>Master Work Order</Trans>
+          </Badge>
+        ) : garmentWorkOrder?.kind === "bundle" ? (
+          <Badge variant="outline">
+            <Trans>Bundle Work Order</Trans>
+          </Badge>
+        ) : null}
         <JobStatus iconOnly status={status} />
         {["Draft", "Planned", "In Progress", "Ready", "Paused"].includes(
           status ?? ""
@@ -353,7 +368,7 @@ const JobHeader = () => {
     { name: t`Operations`, to: path.to.jobOperations(jobId) },
     { name: t`Events`, to: path.to.jobProductionEvents(jobId) },
     {
-      name: t`Process Completions`,
+      name: t`Process Reports`,
       to: path.to.jobProductionQuantities(jobId)
     },
     { name: t`Process Pickups`, to: path.to.jobPickups(jobId) },

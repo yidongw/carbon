@@ -286,10 +286,13 @@ const ProductionQuantitiesTable = memo(
     const [selectedEvent, setSelectedEvent] =
       useState<UnifiedProductionQuantityListItem | null>(null);
 
-    const onDelete = (data: UnifiedProductionQuantityListItem) => {
-      setSelectedEvent(data);
-      deleteModal.onOpen();
-    };
+    const onDelete = useCallback(
+      (data: UnifiedProductionQuantityListItem) => {
+        setSelectedEvent(data);
+        deleteModal.onOpen();
+      },
+      [deleteModal]
+    );
 
     const onDeleteCancel = () => {
       setSelectedEvent(null);
@@ -306,7 +309,7 @@ const ProductionQuantitiesTable = memo(
             onClick={() => openEdit(row.id)}
           >
             <MenuIcon icon={<LuPencil />} />
-            <Trans>Edit Process Completion</Trans>
+            <Trans>Edit Process Report</Trans>
           </MenuItem>
           <MenuItem
             destructive
@@ -314,7 +317,7 @@ const ProductionQuantitiesTable = memo(
             onClick={() => onDelete(row)}
           >
             <MenuIcon icon={<LuTrash />} />
-            <Trans>Delete Process Completion</Trans>
+            <Trans>Delete Process Report</Trans>
           </MenuItem>
         </>
       ),
@@ -349,13 +352,13 @@ const ProductionQuantitiesTable = memo(
                   leftIcon={<LuPlus />}
                   onClick={openNew}
                 >
-                  <Trans>Process Completion</Trans>
+                  <Trans>Process Report</Trans>
                 </Button>
               </HStack>
             )
           }
           renderContextMenu={renderContextMenu}
-          title={t`Process Completions`}
+          title={t`Process Reports`}
         />
         {styleSplitLocked ? (
           <VStack spacing={3} className="px-4 pb-4">
@@ -366,8 +369,8 @@ const ProductionQuantitiesTable = memo(
               <AlertDescription>
                 <Trans>
                   This Style job has already been split into bundles. Downstream
-                  completions belong on the bundle jobs listed below. Only
-                  cutting can still be reported on the parent job.
+                  reports belong on the bundle jobs listed below. Only cutting
+                  can still be reported on the parent job.
                 </Trans>
               </AlertDescription>
             </Alert>
@@ -411,7 +414,7 @@ const ProductionQuantitiesTable = memo(
                       ?.name ?? t`Unknown Employee`
                   }`
             }
-            text={t`Are you sure you want to delete this process completion? This action cannot be undone.`}
+            text={t`Are you sure you want to delete this process report? This action cannot be undone.`}
             onCancel={onDeleteCancel}
             onSubmit={onDeleteCancel}
           />

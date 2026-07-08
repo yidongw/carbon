@@ -520,9 +520,9 @@ const ProductionQuantityForm = ({
         <DrawerHeader>
           <DrawerTitle>
             {isEditing ? (
-              <Trans>Edit Process Completion</Trans>
+              <Trans>Edit Process Report</Trans>
             ) : (
-              <Trans>Create Process Completion</Trans>
+              <Trans>Create Process Report</Trans>
             )}
           </DrawerTitle>
         </DrawerHeader>

@@ -1049,11 +1049,11 @@ msgstr "क्या आप सुनिश्चित हैं कि आप 
 msgid "Are you sure you want to delete this maintenance dispatch? This cannot be undone."
 msgstr "क्या आप सुनिश्चित हैं कि आप इस रखरखाव प्रेषण को हटाना चाहते हैं? यह पूर्ववत नहीं किया जा सकता।"
 
-msgid "Are you sure you want to delete this process completion? This action cannot be undone."
-msgstr "आपने यह प्रक्रिया पूरण को हटाने की इच्छा किया है? यह चलने में वापस नहीं आ सकता है।"
-
 msgid "Are you sure you want to delete this process pickup? This action cannot be undone."
 msgstr "आपने यह प्रक्रिया पाउंच को हटाने की रणनीति चुनी? यह क्रिया वापस नहीं की जा सकती।"
+
+msgid "Are you sure you want to delete this process report? This action cannot be undone."
+msgstr ""
 
 msgid "Are you sure you want to delete this quality document?"
 msgstr "क्या आप सुनिश्चित हैं कि आप इस गुणवत्ता दस्तावेज़ को हटाना चाहते हैं?"
@@ -1442,6 +1442,9 @@ msgid "Bulk Jobs"
 msgstr "बल्क जॉब्स"
 
 msgid "Bundle Quantities"
+msgstr ""
+
+msgid "Bundle Work Order"
 msgstr ""
 
 msgid "Buy"
@@ -2345,8 +2348,8 @@ msgstr "संचालक योजना करें"
 msgid "Create PO"
 msgstr "निर्यात प्रारूप (Create PO)"
 
-msgid "Create Process Completion"
-msgstr "प्रक्रिया पूर्ण करें"
+msgid "Create Process Report"
+msgstr ""
 
 msgid "Create Quote Revision"
 msgstr "उद्धरण संशोधन बनाएं"
@@ -2966,11 +2969,11 @@ msgstr "प्रक्रिया हटाएं"
 msgid "Delete Process"
 msgstr "प्रक्रिया हटाएं"
 
-msgid "Delete Process Completion"
-msgstr "प्रोसेस पूर्णावतार हटाएँ"
-
 msgid "Delete Process Pickup"
 msgstr "प्रोसेस पीकअप हटाएं"
+
+msgid "Delete Process Report"
+msgstr ""
 
 msgid "Delete Purchase Invoice"
 msgstr "खरीद चालान हटाएं"
@@ -3577,8 +3580,8 @@ msgstr "मूल्य निर्धारण नियम संपादि
 msgid "Edit Process"
 msgstr "प्रक्रिया संपादित करें"
 
-msgid "Edit Process Completion"
-msgstr "प्रोसेस पूर्णांक संपादन"
+msgid "Edit Process Report"
+msgstr ""
 
 msgid "Edit Properties"
 msgstr "संप्रबंध सunting"
@@ -5766,6 +5769,9 @@ msgstr "कमी चिह्नित करें"
 msgid "Mark to delete"
 msgstr "हटाने के लिए चिह्नित करें"
 
+msgid "Master Work Order"
+msgstr ""
+
 msgid "Match"
 msgstr "मैच"
 
@@ -7649,6 +7655,12 @@ msgstr "प्रोसेस पिकअप अपडेट किया ग�
 
 msgid "Process Pickups"
 msgstr "प्रक्रिया निकासियाँ"
+
+msgid "Process Report"
+msgstr ""
+
+msgid "Process Reports"
+msgstr ""
 
 msgid "Process Type"
 msgstr "प्रक्रिया प्रकार"
@@ -10108,7 +10120,7 @@ msgstr "इस बिक्रय आदेश में ऐसी पंक्�
 msgid "This storage type is currently used by {usageCount} storage unit{0}."
 msgstr "यह स्टोरेज प्रकार वर्तमान में {usageCount} स्टोरेज यूनिट{0} द्वारा उपयोग किया जा रहा है।"
 
-msgid "This Style job has already been split into bundles. Downstream completions belong on the bundle jobs listed below. Only cutting can still be reported on the parent job."
+msgid "This Style job has already been split into bundles. Downstream reports belong on the bundle jobs listed below. Only cutting can still be reported on the parent job."
 msgstr ""
 
 msgid "This updates the theme for all users of the application"

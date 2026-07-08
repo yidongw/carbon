@@ -15594,6 +15594,7 @@ export type Database = {
           locationId: string
           modelUploadId: string | null
           notes: Json | null
+          parentJobId: string | null
           priority: number
           productionQuantity: number | null
           quantity: number
@@ -15634,6 +15635,7 @@ export type Database = {
           locationId: string
           modelUploadId?: string | null
           notes?: Json | null
+          parentJobId?: string | null
           priority?: number
           productionQuantity?: number | null
           quantity?: number
@@ -15674,6 +15676,7 @@ export type Database = {
           locationId?: string
           modelUploadId?: string | null
           notes?: Json | null
+          parentJobId?: string | null
           priority?: number
           productionQuantity?: number | null
           quantity?: number
@@ -15865,6 +15868,20 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "job_parentJobId_fkey"
+            columns: ["parentJobId"]
+            isOneToOne: false
+            referencedRelation: "job"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "job_parentJobId_fkey"
+            columns: ["parentJobId"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "job_quoteId_fkey"
             columns: ["quoteId"]
             isOneToOne: false
@@ -15975,6 +15992,128 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "userDefaults"
             referencedColumns: ["userId"]
+          },
+        ]
+      }
+      masterWorkOrder: {
+        Row: {
+          colorSize: Json | null
+          companyId: string
+          id: string
+          jobId: string
+        }
+        Insert: {
+          colorSize?: Json | null
+          companyId: string
+          id?: string
+          jobId: string
+        }
+        Update: {
+          colorSize?: Json | null
+          companyId?: string
+          id?: string
+          jobId?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "masterWorkOrder_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "masterWorkOrder_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "masterWorkOrder_jobId_fkey"
+            columns: ["jobId"]
+            isOneToOne: true
+            referencedRelation: "job"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "masterWorkOrder_jobId_fkey"
+            columns: ["jobId"]
+            isOneToOne: true
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bundleWorkOrder: {
+        Row: {
+          bundleId: string | null
+          bundleNumber: string
+          bundleSequence: number
+          colorCode: string
+          companyId: string
+          id: string
+          jobId: string
+          masterWorkOrderId: string
+          sizeCode: string | null
+        }
+        Insert: {
+          bundleId?: string | null
+          bundleNumber: string
+          bundleSequence: number
+          colorCode: string
+          companyId: string
+          id?: string
+          jobId: string
+          masterWorkOrderId: string
+          sizeCode?: string | null
+        }
+        Update: {
+          bundleId?: string | null
+          bundleNumber?: string
+          bundleSequence?: number
+          colorCode?: string
+          companyId?: string
+          id?: string
+          jobId?: string
+          masterWorkOrderId?: string
+          sizeCode?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bundleWorkOrder_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bundleWorkOrder_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bundleWorkOrder_jobId_fkey"
+            columns: ["jobId"]
+            isOneToOne: true
+            referencedRelation: "job"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bundleWorkOrder_jobId_fkey"
+            columns: ["jobId"]
+            isOneToOne: true
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bundleWorkOrder_masterWorkOrderId_fkey"
+            columns: ["masterWorkOrderId"]
+            isOneToOne: false
+            referencedRelation: "masterWorkOrder"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -16671,6 +16810,7 @@ export type Database = {
         Row: {
           insideUnitCost: number
           assignee: string | null
+          assignedAt: string | null
           companyId: string
           conflictReason: string | null
           createdAt: string
@@ -16719,6 +16859,7 @@ export type Database = {
         Insert: {
           insideUnitCost?: number
           assignee?: string | null
+          assignedAt?: string | null
           companyId: string
           conflictReason?: string | null
           createdAt?: string
@@ -16767,6 +16908,7 @@ export type Database = {
         Update: {
           insideUnitCost?: number
           assignee?: string | null
+          assignedAt?: string | null
           companyId?: string
           conflictReason?: string | null
           createdAt?: string

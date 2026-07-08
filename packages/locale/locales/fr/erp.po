@@ -1049,11 +1049,11 @@ msgstr "Êtes-vous sûr de vouloir supprimer cette carte kanban ? Cette action n
 msgid "Are you sure you want to delete this maintenance dispatch? This cannot be undone."
 msgstr "Êtes-vous sûr de vouloir supprimer cette demande de maintenance ? Cette action ne peut pas être annulée."
 
-msgid "Are you sure you want to delete this process completion? This action cannot be undone."
-msgstr "Êtes-vous sûr de vouloir supprimer cette validation de processus ? Cette action ne peut pas être annulée."
-
 msgid "Are you sure you want to delete this process pickup? This action cannot be undone."
 msgstr "Êtes-vous sûr de vouloir supprimer ce pick-up de processus ? Cette action ne peut pas être annulée."
+
+msgid "Are you sure you want to delete this process report? This action cannot be undone."
+msgstr ""
 
 msgid "Are you sure you want to delete this quality document?"
 msgstr "Êtes-vous sûr de vouloir supprimer ce document de qualité ?"
@@ -1442,6 +1442,9 @@ msgid "Bulk Jobs"
 msgstr "Travaux en masse"
 
 msgid "Bundle Quantities"
+msgstr ""
+
+msgid "Bundle Work Order"
 msgstr ""
 
 msgid "Buy"
@@ -2345,8 +2348,8 @@ msgstr "Créer un opérateur"
 msgid "Create PO"
 msgstr "Créer PO"
 
-msgid "Create Process Completion"
-msgstr "Créer la fin du processus"
+msgid "Create Process Report"
+msgstr ""
 
 msgid "Create Quote Revision"
 msgstr "Créer une révision de devis"
@@ -2966,11 +2969,11 @@ msgstr "Supprimer la procédure"
 msgid "Delete Process"
 msgstr "Supprimer le processus"
 
-msgid "Delete Process Completion"
-msgstr "Supprimer la fin du processus"
-
 msgid "Delete Process Pickup"
 msgstr "Supprimer le retrait du processus"
+
+msgid "Delete Process Report"
+msgstr ""
 
 msgid "Delete Purchase Invoice"
 msgstr "Supprimer la facture d'achat"
@@ -3577,8 +3580,8 @@ msgstr "Modifier la règle de tarification"
 msgid "Edit Process"
 msgstr "Modifier le processus"
 
-msgid "Edit Process Completion"
-msgstr "Éditer l'achèvement du processus"
+msgid "Edit Process Report"
+msgstr ""
 
 msgid "Edit Properties"
 msgstr "Modifier les propriétés"
@@ -5766,6 +5769,9 @@ msgstr "Signaler une rupture"
 msgid "Mark to delete"
 msgstr "Marquer pour supprimer"
 
+msgid "Master Work Order"
+msgstr ""
+
 msgid "Match"
 msgstr "Match"
 
@@ -7649,6 +7655,12 @@ msgstr "Mise à jour du processus de retrait"
 
 msgid "Process Pickups"
 msgstr "prélèvements de processus"
+
+msgid "Process Report"
+msgstr ""
+
+msgid "Process Reports"
+msgstr ""
 
 msgid "Process Type"
 msgstr "Type de processus"
@@ -10108,7 +10120,7 @@ msgstr "Cette commande client contient des lignes qui nécessitent la création 
 msgid "This storage type is currently used by {usageCount} storage unit{0}."
 msgstr "Ce type de stockage est actuellement utilisé par {usageCount} unité de stockage{0}."
 
-msgid "This Style job has already been split into bundles. Downstream completions belong on the bundle jobs listed below. Only cutting can still be reported on the parent job."
+msgid "This Style job has already been split into bundles. Downstream reports belong on the bundle jobs listed below. Only cutting can still be reported on the parent job."
 msgstr ""
 
 msgid "This updates the theme for all users of the application"

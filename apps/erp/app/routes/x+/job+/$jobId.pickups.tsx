@@ -6,15 +6,17 @@ import type { LoaderFunctionArgs } from "react-router";
 import { redirect, useLoaderData } from "react-router";
 import { usePanels } from "~/components/Layout";
 import {
+  filterOperationsByIds,
   getJobOperationsList,
-  getJobPickupsByOperations
+  getJobPickupsByOperations,
+  getVisibleJobOperationIds
 } from "~/modules/production";
 import { ProductionPickupsTable } from "~/modules/production/ui/Jobs";
 import { path, requestReferrer } from "~/utils/path";
 import { getGenericQueryFilters } from "~/utils/query";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
-  const { client } = await requirePermissions(request, {
+  const { client, companyId } = await requirePermissions(request, {
     view: "production"
   });
 
@@ -38,13 +40,32 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     );
   }
 
-  if (operations.data?.length === 0) {
+  const visibleOperationIds = await getVisibleJobOperationIds(client, {
+    companyId,
+    jobId
+  });
+  if (visibleOperationIds.error) {
+    throw redirect(
+      requestReferrer(request) ?? path.to.job(jobId),
+      await flash(
+        request,
+        error(visibleOperationIds.error, "Failed to fetch visible operations")
+      )
+    );
+  }
+
+  const filteredOperations = filterOperationsByIds(
+    operations.data ?? [],
+    visibleOperationIds.data
+  );
+
+  if (filteredOperations.length === 0) {
     return { count: 0, pickups: [], operations: [] };
   }
 
   const pickupsResult = await getJobPickupsByOperations(
     client,
-    operations.data?.map((o) => o.id) ?? [],
+    filteredOperations.map((o) => o.id!),
     { search, limit, offset, sorts, filters }
   );
 
@@ -61,7 +82,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   return {
     count: pickupsResult.count ?? 0,
     pickups: pickupsResult.data ?? [],
-    operations: operations.data ?? []
+    operations: filteredOperations
   };
 }
 

@@ -17,6 +17,10 @@ import type {
   operationToolValidator
 } from "../shared";
 import {
+  ensureMasterWorkOrder,
+  pruneStyleParentJobToCuttingOnly
+} from "./garmentWorkOrder.service";
+import {
   allowsSupplierQuantityActor,
   locksActorToOperationSupplier
 } from "./operationType";
@@ -1365,7 +1369,7 @@ export async function getJobOperationsList(
 ) {
   return client
     .from("jobOperation")
-    .select("id, description, order")
+    .select("id, description, order, tags, customFields")
     .eq("jobId", jobId)
     .order("order", { ascending: true });
 }
@@ -2908,6 +2912,34 @@ export async function insertJob(
     });
   }
 
+  const item = await client
+    .from("item")
+    .select("type")
+    .eq("id", input.itemId)
+    .eq("companyId", input.companyId)
+    .maybeSingle();
+
+  if (item.data?.type === "Style" && !input.parentJobId) {
+    const master = await ensureMasterWorkOrder(client, {
+      companyId: input.companyId,
+      jobId: createdJobId
+    });
+
+    if (master.error) {
+      return { data: null, error: master.error };
+    }
+
+    const pruned = await pruneStyleParentJobToCuttingOnly(client, {
+      companyId: input.companyId,
+      userId: input.createdBy,
+      jobId: createdJobId
+    });
+
+    if (pruned.error) {
+      return { data: null, error: pruned.error };
+    }
+  }
+
   return { data: { id: createdJobId, jobId }, error: null };
 }
 
@@ -3153,10 +3185,8 @@ export async function getPickupFilterOptions(
     }
   }
 
-  const sortByLabel = (
-    a: { label: string },
-    b: { label: string }
-  ) => a.label.localeCompare(b.label);
+  const sortByLabel = (a: { label: string }, b: { label: string }) =>
+    a.label.localeCompare(b.label);
 
   return {
     employees: (employeeData ?? []).filter(
@@ -3234,7 +3264,8 @@ export async function getCompanyJobOperationPickups(
       const effectiveJobIds = jobIds
         ? jobIds.filter((id) => itemJobIds.includes(id))
         : itemJobIds;
-      if (effectiveJobIds.length === 0) return await query.in("jobOperationId", []);
+      if (effectiveJobIds.length === 0)
+        return await query.in("jobOperationId", []);
       const { data: ops } = await client
         .from("jobOperation")
         .select("id")
@@ -3263,7 +3294,8 @@ export async function getCompanyJobOperationPickups(
     }
 
     if (resolvedOpIds !== null) {
-      if (resolvedOpIds.length === 0) return await query.in("jobOperationId", []);
+      if (resolvedOpIds.length === 0)
+        return await query.in("jobOperationId", []);
       query = query.in("jobOperationId", resolvedOpIds);
     }
 

@@ -13,13 +13,13 @@ import {
   serializeSearch
 } from "~/components/Overlay/overlay";
 import { getConfigurationParameters } from "~/modules/items";
-import { createJobOperationSupplierQuantityReport } from "~/modules/production/jobOperationSupplierQuantityReport.service.server";
 import {
   assertSupplierQuantityAllowedForOperation,
   defaultActorKindFromOperationType,
   getJob,
   getJobOperationActorContext,
   getJobOperations,
+  getVisibleJobOperationIds,
   isJobLocked,
   productionQuantityCreateFormValidator,
   resolveProductionQuantityCanAutoApprove,
@@ -27,6 +27,7 @@ import {
   validateActorMatchesOperationSupplierRouting
 } from "~/modules/production";
 import { getConfigReferenceSourceForOperation } from "~/modules/production/configTableOverlay.server";
+import { createJobOperationSupplierQuantityReport } from "~/modules/production/jobOperationSupplierQuantityReport.service.server";
 import { productionQuantityLineJsonValidator } from "~/modules/production/productionQuantityReport.models";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { getParams, path } from "~/utils/path";
@@ -64,6 +65,19 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     getJob(client, jobId),
     getJobOperations(client, jobId)
   ]);
+  const visibleOperationIds = await getVisibleJobOperationIds(client, {
+    companyId,
+    jobId
+  });
+  if (visibleOperationIds.error) {
+    throw redirect(
+      path.to.jobProductionQuantities(jobId),
+      await flash(
+        request,
+        error(visibleOperationIds.error, "Failed to load visible operations")
+      )
+    );
+  }
 
   const { getStyleBundleExecutionState } = await import(
     "~/modules/production/styleBundleExecution.service.server"
@@ -85,6 +99,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     ?.restrictParentToCuttingReporting
     ? styleExecution.data.cuttingOperationIds
     : null;
+  const visibleOperationIdSet = new Set(visibleOperationIds.data ?? []);
   const configurationParameters = job.data?.itemId
     ? (await getConfigurationParameters(client, job.data.itemId, companyId))
         .parameters
@@ -98,8 +113,12 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const operationOptions =
     (jobOperations?.data ?? [])
-      .filter((operation) =>
-        allowedOperationIds ? allowedOperationIds.includes(operation.id!) : true
+      .filter(
+        (operation) =>
+          (!allowedOperationIds ||
+            allowedOperationIds.includes(operation.id!)) &&
+          (visibleOperationIdSet.size === 0 ||
+            visibleOperationIdSet.has(operation.id!))
       )
       .map((operation) => ({
         label: operation.description ?? "",
@@ -182,11 +201,13 @@ export async function action({ request, params }: ActionFunctionArgs) {
     message: "Cannot modify a locked job. Reopen it first."
   });
 
-  const [{ getStyleBundleExecutionState: execState }, { createProductionQuantityReport }] =
-    await Promise.all([
-      import("~/modules/production/styleBundleExecution.service.server"),
-      import("~/modules/production/productionQuantityReport.service.server")
-    ]);
+  const [
+    { getStyleBundleExecutionState: execState },
+    { createProductionQuantityReport }
+  ] = await Promise.all([
+    import("~/modules/production/styleBundleExecution.service.server"),
+    import("~/modules/production/productionQuantityReport.service.server")
+  ]);
   const styleExecution = await execState(client, {
     companyId,
     jobId
@@ -222,6 +243,36 @@ export async function action({ request, params }: ActionFunctionArgs) {
     lines: linesJson,
     jobOperationId
   } = validation.data;
+
+  const visibleOperationIds = await getVisibleJobOperationIds(client, {
+    companyId,
+    jobId
+  });
+  if (visibleOperationIds.error) {
+    return data(
+      {},
+      await flash(
+        request,
+        error(visibleOperationIds.error, "Failed to load visible operations")
+      )
+    );
+  }
+  if (
+    visibleOperationIds.data &&
+    visibleOperationIds.data.length > 0 &&
+    !visibleOperationIds.data.includes(validation.data.jobOperationId)
+  ) {
+    return data(
+      {},
+      await flash(
+        request,
+        error(
+          null,
+          "This operation is not available on the current garment work order."
+        )
+      )
+    );
+  }
 
   const routingValidation = await validateActorMatchesOperationSupplierRouting(
     client,

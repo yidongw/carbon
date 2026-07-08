@@ -40,6 +40,7 @@ import {
 } from "~/hooks";
 import type { Job, JobPurchaseOrderLine } from "~/modules/production";
 import {
+  filterOperationsByIds,
   getJob,
   getJobDocumentsWithItemId,
   getJobMakeMethodById,
@@ -48,6 +49,7 @@ import {
   getJobPurchaseOrderLines,
   getProductionDataByOperations,
   getRootMakeMethod,
+  getVisibleJobOperationIds,
   isJobLocked,
   jobValidator,
   recalculateJobRequirements,
@@ -109,12 +111,29 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const methodId = rootMethod.data.id;
 
-  const [materials, operations, tags, makeMethod] = await Promise.all([
-    getJobMaterialsByMethodId(client, methodId),
-    getJobOperationsByMethodId(client, methodId),
-    getTagsList(client, companyId, "operation"),
-    getJobMakeMethodById(client, methodId, companyId)
-  ]);
+  const [materials, operations, tags, makeMethod, visibleOperationIds] =
+    await Promise.all([
+      getJobMaterialsByMethodId(client, methodId),
+      getJobOperationsByMethodId(client, methodId),
+      getTagsList(client, companyId, "operation"),
+      getJobMakeMethodById(client, methodId, companyId),
+      getVisibleJobOperationIds(client, { companyId, jobId })
+    ]);
+
+  if (visibleOperationIds.error) {
+    throw redirect(
+      path.to.job(jobId),
+      await flash(
+        request,
+        error(visibleOperationIds.error, "Failed to load visible operations")
+      )
+    );
+  }
+
+  const filteredOperations = filterOperationsByIds(
+    operations.data ?? [],
+    visibleOperationIds.data
+  );
 
   return {
     notes: (job.data?.notes ?? {}) as JSONContent,
@@ -126,17 +145,16 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
         unitOfMeasureCode: m.unitOfMeasureCode ?? "",
         jobOperationId: m.jobOperationId ?? undefined
       })) ?? [],
-    operations:
-      operations.data?.map((o) => ({
-        ...o,
-        description: o.description ?? "",
-        workCenterId: o.workCenterId ?? undefined,
-        laborRate: o.laborRate ?? 0,
-        machineRate: o.machineRate ?? 0,
-        operationSupplierProcessId: o.operationSupplierProcessId ?? undefined,
-        jobMakeMethodId: o.jobMakeMethodId ?? methodId,
-        workInstruction: o.workInstruction as JSONContent
-      })) ?? [],
+    operations: filteredOperations.map((o) => ({
+      ...o,
+      description: o.description ?? "",
+      workCenterId: o.workCenterId ?? undefined,
+      laborRate: o.laborRate ?? 0,
+      machineRate: o.machineRate ?? 0,
+      operationSupplierProcessId: o.operationSupplierProcessId ?? undefined,
+      jobMakeMethodId: o.jobMakeMethodId ?? methodId,
+      workInstruction: o.workInstruction as JSONContent
+    })),
     makeMethod: makeMethod.data ?? null,
     files: getJobDocumentsWithItemId(
       client,
@@ -146,7 +164,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     ),
     productionData: getProductionDataByOperations(
       client,
-      operations?.data?.map((o) => o.id) ?? []
+      filteredOperations.map((o) => o.id) ?? []
     ),
     tags: tags.data ?? []
   };

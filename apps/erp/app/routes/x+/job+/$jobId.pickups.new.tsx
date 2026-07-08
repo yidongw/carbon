@@ -13,9 +13,11 @@ import {
 import { getConfigurationParameters } from "~/modules/items";
 import {
   defaultActorKindFromOperationType,
+  filterOperationsByIds,
   getJob,
   getJobOperationActorContext,
   getJobOperations,
+  getVisibleJobOperationIds,
   jobOperationPickupValidator,
   seededActorFromOperationContext,
   upsertJobOperationPickup,
@@ -59,6 +61,19 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     getJobOperations(client, jobId),
     getJobOperationActorContext(client, jobOperationId, companyId)
   ]);
+  const visibleOperationIds = await getVisibleJobOperationIds(client, {
+    companyId,
+    jobId
+  });
+  if (visibleOperationIds.error) {
+    throw redirect(
+      path.to.jobPickups(jobId),
+      await flash(
+        request,
+        error(visibleOperationIds.error, "Failed to load visible operations")
+      )
+    );
+  }
   const actorContext = {
     ...opContext,
     defaultActorKind: defaultActorKindFromOperationType(
@@ -84,7 +99,10 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   );
 
   const operationOptions =
-    jobOperations?.data?.map((operation) => ({
+    filterOperationsByIds(
+      jobOperations?.data ?? [],
+      visibleOperationIds.data
+    ).map((operation) => ({
       label: operation.description ?? "",
       value: operation.id!
     })) ?? [];
@@ -125,6 +143,27 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   if (validation.error) {
     return validationError(validation.error);
+  }
+
+  const visibleOperationIds = await getVisibleJobOperationIds(client, {
+    companyId,
+    jobId
+  });
+  if (
+    visibleOperationIds.data &&
+    visibleOperationIds.data.length > 0 &&
+    !visibleOperationIds.data.includes(validation.data.jobOperationId)
+  ) {
+    return data(
+      {},
+      await flash(
+        request,
+        error(
+          null,
+          "This operation is not available on the current garment work order."
+        )
+      )
+    );
   }
 
   const routingValidation = await validateActorMatchesOperationSupplierRouting(

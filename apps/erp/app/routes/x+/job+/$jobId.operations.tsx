@@ -5,7 +5,12 @@ import { useMount, VStack } from "@carbon/react";
 import type { LoaderFunctionArgs } from "react-router";
 import { redirect, useLoaderData } from "react-router";
 import { usePanels } from "~/components/Layout";
-import { getJob, getJobOperations } from "~/modules/production";
+import {
+  filterOperationsByIds,
+  getJob,
+  getJobOperations,
+  getVisibleJobOperationIds
+} from "~/modules/production";
 import { JobOperationsTable } from "~/modules/production/ui/Jobs";
 
 import { path } from "~/utils/path";
@@ -34,6 +39,20 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     );
   }
 
+  const visibleOperationIds = await getVisibleJobOperationIds(client, {
+    companyId: job.data.companyId,
+    jobId
+  });
+  if (visibleOperationIds.error) {
+    throw redirect(
+      path.to.jobs,
+      await flash(
+        request,
+        error(visibleOperationIds.error, "Failed to fetch visible operations")
+      )
+    );
+  }
+
   const operations = await getJobOperations(client, jobId, {
     search,
     limit,
@@ -52,9 +71,14 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     );
   }
 
+  const filteredOperations = filterOperationsByIds(
+    operations.data ?? [],
+    visibleOperationIds.data
+  );
+
   return {
-    count: operations.count ?? 0,
-    operations: operations.data ?? []
+    count: filteredOperations.length,
+    operations: filteredOperations
   };
 }
 

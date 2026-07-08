@@ -6,8 +6,10 @@ import type { LoaderFunctionArgs } from "react-router";
 import { Outlet, redirect, useLoaderData } from "react-router";
 import { usePanels } from "~/components/Layout";
 import {
+  filterOperationsByIds,
   getJobOperationsList,
-  getProductionEvents
+  getProductionEvents,
+  getVisibleJobOperationIds
 } from "~/modules/production";
 import { ProductionEventsTable } from "~/modules/production/ui/Jobs";
 import { getWorkCentersList } from "~/modules/resources";
@@ -39,7 +41,26 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     );
   }
 
-  if (operations.data?.length === 0) {
+  const visibleOperationIds = await getVisibleJobOperationIds(client, {
+    companyId,
+    jobId
+  });
+  if (visibleOperationIds.error) {
+    throw redirect(
+      requestReferrer(request) ?? path.to.job(jobId),
+      await flash(
+        request,
+        error(visibleOperationIds.error, "Failed to fetch visible operations")
+      )
+    );
+  }
+
+  const filteredOperations = filterOperationsByIds(
+    operations.data ?? [],
+    visibleOperationIds.data
+  );
+
+  if (filteredOperations.length === 0) {
     return {
       count: 0,
       events: [],
@@ -49,13 +70,17 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   }
 
   const [events, workCenters] = await Promise.all([
-    getProductionEvents(client, operations.data?.map((o) => o.id) ?? [], {
-      search,
-      limit,
-      offset,
-      sorts,
-      filters
-    }),
+    getProductionEvents(
+      client,
+      filteredOperations.map((o) => o.id!),
+      {
+        search,
+        limit,
+        offset,
+        sorts,
+        filters
+      }
+    ),
     getWorkCentersList(client, companyId)
   ]);
 
@@ -70,7 +95,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     count: events.count ?? 0,
     events: events.data ?? [],
     workCenters: workCenters.data ?? [],
-    operations: operations.data ?? []
+    operations: filteredOperations
   };
 }
 

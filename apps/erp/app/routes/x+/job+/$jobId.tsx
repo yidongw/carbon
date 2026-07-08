@@ -18,6 +18,7 @@ import { flattenTree } from "~/components/TreeView";
 import { getConfigurationParameters } from "~/modules/items";
 import type { JobMethodTreeItem } from "~/modules/production";
 import {
+  getGarmentWorkOrderContext,
   getJob,
   getJobDocuments,
   getJobMethodTree,
@@ -63,8 +64,20 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     );
   }
 
+  const garmentWorkOrder = await getGarmentWorkOrderContext(client, {
+    companyId,
+    jobId
+  });
+  if (garmentWorkOrder.error) {
+    throw redirect(
+      path.to.jobs,
+      await flash(request, error(garmentWorkOrder.error, "Failed to load job"))
+    );
+  }
+
   return {
     job: job.data,
+    garmentWorkOrder: garmentWorkOrder.data,
     tags: tags.data ?? [],
     files: getJobDocuments(client, companyId, job.data),
     trackedEntities: getTrackedEntitiesByJobId(client, jobId),

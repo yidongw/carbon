@@ -2,6 +2,16 @@ import type { Database, Json } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getBundleJobCuttingOperationIdsToDelete } from "../items/styleMethod.service";
 import {
+  ensureMasterWorkOrder,
+  pruneStyleParentJobToCuttingOnly,
+  upsertBundleWorkOrder
+} from "./garmentWorkOrder.service";
+import {
+  buildConfirmedSplitBatch,
+  type ConfirmedBundleAllocationDraft,
+  type ConfirmedBundleDraft
+} from "./splitBatch.service";
+import {
   getAllSplitBatchIdsForJob,
   getBundlesForSplitBatchIds,
   insertBundleAllocations,
@@ -15,11 +25,6 @@ import {
   validateSplitBatchBundles
 } from "./styleSplit.service";
 import { getPendingSplitSourceRows } from "./styleSplitRow.service.server";
-import {
-  buildConfirmedSplitBatch,
-  type ConfirmedBundleAllocationDraft,
-  type ConfirmedBundleDraft
-} from "./splitBatch.service";
 
 export type { ConfirmedBundleDraft, ConfirmedBundleAllocationDraft };
 
@@ -128,6 +133,7 @@ async function createBundleJobsForBundles(
   args: {
     companyId: string;
     splitBatchId: string;
+    masterWorkOrderId: string;
     parentJobId: string;
     parentJobOperationId?: string | null;
     itemId: string;
@@ -233,6 +239,21 @@ async function createBundleJobsForBundles(
       return { data: null, error: bundleUpdate.error };
     }
 
+    const bundleWorkOrder = await upsertBundleWorkOrder(client, {
+      companyId: args.companyId,
+      jobId: createdJob.data.id,
+      masterWorkOrderId: args.masterWorkOrderId,
+      bundleId: bundle.id,
+      bundleSequence: bundle.sequence,
+      bundleNumber: bundle.bundleNumber,
+      colorCode: bundle.colorCode,
+      sizeCode: bundle.sizeCode
+    });
+
+    if (bundleWorkOrder.error) {
+      return { data: null, error: bundleWorkOrder.error };
+    }
+
     createdJobs.push({
       bundleId: bundle.id,
       jobId: createdJob.data.id,
@@ -266,6 +287,25 @@ export async function createConfirmedSplitBatch(
 
   if (draft.error) {
     return { data: null, error: draft.error };
+  }
+
+  const masterWorkOrder = await ensureMasterWorkOrder(client, {
+    companyId: args.companyId,
+    jobId: args.jobId
+  });
+
+  if (masterWorkOrder.error || !masterWorkOrder.data?.id) {
+    return { data: null, error: masterWorkOrder.error };
+  }
+
+  const parentPrune = await pruneStyleParentJobToCuttingOnly(client, {
+    companyId: args.companyId,
+    userId: args.userId,
+    jobId: args.jobId
+  });
+
+  if (parentPrune.error) {
+    return { data: null, error: parentPrune.error };
   }
 
   const { data: splitBatch, error: splitBatchError } = await insertSplitBatch({
@@ -327,6 +367,7 @@ export async function createConfirmedSplitBatch(
   const bundleJobs = await createBundleJobsForBundles(client, {
     companyId: args.companyId,
     splitBatchId: splitBatch.id,
+    masterWorkOrderId: masterWorkOrder.data.id,
     parentJobId: args.jobId,
     parentJobOperationId: args.jobOperationId ?? null,
     itemId: args.itemId,

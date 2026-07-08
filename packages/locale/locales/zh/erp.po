@@ -1049,11 +1049,11 @@ msgstr "您确定要删除此看板卡片吗？此操作无法撤销。"
 msgid "Are you sure you want to delete this maintenance dispatch? This cannot be undone."
 msgstr "您确定要删除此维护调度吗？此操作无法撤销。"
 
-msgid "Are you sure you want to delete this process completion? This action cannot be undone."
-msgstr "您确定要删除这条工序完成记录吗？此操作无法撤销。"
-
 msgid "Are you sure you want to delete this process pickup? This action cannot be undone."
 msgstr "您确定要删除这条工序领料吗？此操作无法撤销。"
+
+msgid "Are you sure you want to delete this process report? This action cannot be undone."
+msgstr ""
 
 msgid "Are you sure you want to delete this quality document?"
 msgstr "您确定要删除此质量文件吗？"
@@ -1442,6 +1442,9 @@ msgid "Bulk Jobs"
 msgstr "批量工作"
 
 msgid "Bundle Quantities"
+msgstr ""
+
+msgid "Bundle Work Order"
 msgstr ""
 
 msgid "Buy"
@@ -2345,8 +2348,8 @@ msgstr "创建操作员"
 msgid "Create PO"
 msgstr "创建采购订单"
 
-msgid "Create Process Completion"
-msgstr "新建工序完成"
+msgid "Create Process Report"
+msgstr ""
 
 msgid "Create Quote Revision"
 msgstr "创建报价修订版"
@@ -2966,11 +2969,11 @@ msgstr "删除规程"
 msgid "Delete Process"
 msgstr "删除工序"
 
-msgid "Delete Process Completion"
-msgstr "删除工序完成"
-
 msgid "Delete Process Pickup"
 msgstr "删除工序领料"
+
+msgid "Delete Process Report"
+msgstr ""
 
 msgid "Delete Purchase Invoice"
 msgstr "删除采购发票"
@@ -3577,8 +3580,8 @@ msgstr "编辑定价规则"
 msgid "Edit Process"
 msgstr "编辑工序"
 
-msgid "Edit Process Completion"
-msgstr "编辑工序完成"
+msgid "Edit Process Report"
+msgstr ""
 
 msgid "Edit Properties"
 msgstr "编辑属性"
@@ -5766,6 +5769,9 @@ msgstr "标记短缺"
 msgid "Mark to delete"
 msgstr "标记删除"
 
+msgid "Master Work Order"
+msgstr ""
+
 msgid "Match"
 msgstr "匹配"
 
@@ -7649,6 +7655,12 @@ msgstr "工艺取料更新"
 
 msgid "Process Pickups"
 msgstr "工序领料"
+
+msgid "Process Report"
+msgstr ""
+
+msgid "Process Reports"
+msgstr ""
 
 msgid "Process Type"
 msgstr "工序类型"
@@ -10108,7 +10120,7 @@ msgstr "此销售订单包含需要创建工作的行项"
 msgid "This storage type is currently used by {usageCount} storage unit{0}."
 msgstr "此存储类型当前被{usageCount}个存储单元{0}使用。"
 
-msgid "This Style job has already been split into bundles. Downstream completions belong on the bundle jobs listed below. Only cutting can still be reported on the parent job."
+msgid "This Style job has already been split into bundles. Downstream reports belong on the bundle jobs listed below. Only cutting can still be reported on the parent job."
 msgstr ""
 
 msgid "This updates the theme for all users of the application"

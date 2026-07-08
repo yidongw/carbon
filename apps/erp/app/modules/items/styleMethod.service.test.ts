@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildStyleCuttingMethodOperation,
   getBundleJobCuttingOperationIdsToDelete,
+  getParentJobNonCuttingOperationIdsToDelete,
   isStyleCuttingOperation,
   isStyleCuttingOperationFirst,
   isStyleSystemOwnedOperation,
@@ -204,6 +205,62 @@ describe("getBundleJobCuttingOperationIdsToDelete", () => {
         ]
       })
     ).toEqual(["op-first"]);
+  });
+});
+
+describe("getParentJobNonCuttingOperationIdsToDelete", () => {
+  it("removes every non-cutting operation when a tagged cutting step exists", () => {
+    expect(
+      getParentJobNonCuttingOperationIdsToDelete({
+        operations: [
+          {
+            id: "op-cut",
+            order: 0,
+            tags: [STYLE_CUTTING_OPERATION_TAG],
+            customFields: null
+          },
+          {
+            id: "op-sew",
+            order: 1,
+            tags: [],
+            customFields: null
+          },
+          {
+            id: "op-pack",
+            order: 2,
+            tags: [],
+            customFields: null
+          }
+        ]
+      })
+    ).toEqual(["op-sew", "op-pack"]);
+  });
+
+  it("keeps the first operation when no cutting marker exists", () => {
+    expect(
+      getParentJobNonCuttingOperationIdsToDelete({
+        operations: [
+          {
+            id: "op-first",
+            order: 0,
+            tags: [],
+            customFields: null
+          },
+          {
+            id: "op-second",
+            order: 1,
+            tags: [],
+            customFields: null
+          },
+          {
+            id: "op-third",
+            order: 2,
+            tags: [],
+            customFields: null
+          }
+        ]
+      })
+    ).toEqual(["op-second", "op-third"]);
   });
 });
 
