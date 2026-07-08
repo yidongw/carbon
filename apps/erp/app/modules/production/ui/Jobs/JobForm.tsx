@@ -41,6 +41,7 @@ import type {
 import type { MethodItemType } from "~/modules/shared";
 import { path } from "~/utils/path";
 import { isConfigTableOverlaySuccess } from "../../configTableOverlay";
+import { jobSelectableItemTypes } from "../../jobSelectableItemTypes";
 import type { jobStatus } from "../../production.models";
 import {
   bulkJobValidator,
@@ -367,7 +368,9 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                         type={type}
                         value={itemData.itemId}
                         locationId={initialValues.locationId ?? undefined}
-                        validItemTypes={["Part", "Tool"]}
+                        validItemTypes={
+                          jobSelectableItemTypes as MethodItemType[]
+                        }
                         replenishmentSystem="Make"
                         onChange={(value) => {
                           onItemChange(value?.value as string);
@@ -515,7 +518,9 @@ const JobForm = ({ initialValues }: JobFormProps) => {
                           type={type}
                           value={itemData.itemId}
                           locationId={initialValues.locationId ?? undefined}
-                          validItemTypes={["Part", "Tool"]}
+                          validItemTypes={
+                            jobSelectableItemTypes as MethodItemType[]
+                          }
                           onChange={(value) => {
                             onItemChange(value?.value as string);
                           }}

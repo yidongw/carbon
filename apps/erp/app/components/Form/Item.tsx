@@ -239,15 +239,17 @@ const Item = ({
             label={
               label === "Item"
                 ? t`Item`
-                : label === "Part"
-                  ? t`Part`
-                  : label === "Material"
-                    ? t`Material`
-                    : label === "Tool"
-                      ? t`Tool`
-                      : label === "Consumable"
-                        ? t`Consumable`
-                        : undefined
+                : label === "Style"
+                  ? t`Style`
+                  : label === "Part"
+                    ? t`Part`
+                    : label === "Material"
+                      ? t`Material`
+                      : label === "Tool"
+                        ? t`Tool`
+                        : label === "Consumable"
+                          ? t`Consumable`
+                          : undefined
             }
             itemHeight={44}
             onCreateOption={(option) => {
@@ -433,8 +435,6 @@ const Item = ({
             defaultMethodType: "Make to Order",
             unitCost: 0,
             lotSize: 0,
-            colorCode: "",
-            colorName: "",
             shelfLifeCalculateFromBom: false,
             tags: []
           }}

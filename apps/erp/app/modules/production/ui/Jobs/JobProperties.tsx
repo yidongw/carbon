@@ -61,6 +61,7 @@ import type { MethodItemType } from "~/modules/shared";
 import type { action } from "~/routes/x+/items+/update";
 import { path } from "~/utils/path";
 import { copyToClipboard } from "~/utils/string";
+import { jobSelectableItemTypes } from "../../jobSelectableItemTypes";
 import { deadlineTypes, isJobLocked } from "../../production.models";
 import type { Job } from "../../types";
 import { getDeadlineIcon } from "./Deadline";
@@ -416,7 +417,7 @@ const JobProperties = () => {
           isReadOnly={isDisabled}
           type={type}
           locationId={routeData?.job?.locationId ?? undefined}
-          validItemTypes={["Part", "Tool"]}
+          validItemTypes={jobSelectableItemTypes as MethodItemType[]}
           onChange={(value) => {
             onUpdate("itemId", value?.value ?? null);
           }}

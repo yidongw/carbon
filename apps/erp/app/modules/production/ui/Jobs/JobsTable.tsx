@@ -78,8 +78,9 @@ import { useIsCardCell } from "~/components/Table/components/cardCell";
 import { useDateFormatter, usePermissions, useUrlParams } from "~/hooks";
 import { useCustomColumns } from "~/hooks/useCustomColumns";
 import type { action } from "~/routes/x+/job+/update";
-import { useCustomers, useParts, usePeople, useTools } from "~/stores";
+import { useCustomers, useItems, usePeople } from "~/stores";
 import { path } from "~/utils/path";
+import { getJobTableItemTypes } from "../../jobSelectableItemTypes";
 import { deadlineTypes, isJobLocked, jobStatus } from "../../production.models";
 import type { JobCurrentProcessInfo } from "../../production.service";
 import type { Job } from "../../types";
@@ -380,10 +381,11 @@ const JobsTable = memo(
     const getJobStatusDisplayText = useJobStatusDisplayText();
     const { formatDate } = useDateFormatter();
     const [params] = useUrlParams();
-    const parts = useParts();
-    const tools = useTools();
-
-    const items = useMemo(() => [...parts, ...tools], [parts, tools]);
+    const [allItems] = useItems();
+    const items = useMemo(
+      () => allItems.filter((item) => getJobTableItemTypes(item.type)),
+      [allItems]
+    );
 
     const [people] = usePeople();
     const [customers] = useCustomers();
