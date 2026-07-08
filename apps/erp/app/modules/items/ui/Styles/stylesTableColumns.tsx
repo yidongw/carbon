@@ -44,7 +44,6 @@ type TemplateOption = {
 };
 
 export type BuildStylesTableColumnsArgs = {
-  t: (strings: TemplateStringsArray, ...values: unknown[]) => string;
   people: { id: string; name: string }[];
   tags: { name: string }[];
   itemPostingGroups: ItemPostingGroupListItem[];
@@ -56,7 +55,6 @@ export type BuildStylesTableColumnsArgs = {
 };
 
 export function buildDefaultStylesTableColumns({
-  t,
   people,
   tags,
   itemPostingGroups,
@@ -74,7 +72,7 @@ export function buildDefaultStylesTableColumns({
   const columns: ColumnDef<Style>[] = [
     {
       accessorKey: "id",
-      header: t`Style ID`,
+      header: "Style ID",
       cell: ({ row }) => (
         <HStack className="py-1 w-full min-w-0 max-w-[200px]" spacing={2}>
           <ItemThumbnail
@@ -100,7 +98,7 @@ export function buildDefaultStylesTableColumns({
     },
     {
       accessorKey: "templateName",
-      header: t`Template`,
+      header: "Template",
       cell: editableCell<Style>({
         kind: "picker",
         field: "templateId",
@@ -116,7 +114,7 @@ export function buildDefaultStylesTableColumns({
     },
     {
       accessorKey: "description",
-      header: t`Description`,
+      header: "Description",
       cell: (item) => (
         <div className="max-w-[320px] truncate">{item.getValue<string>()}</div>
       ),
@@ -126,7 +124,7 @@ export function buildDefaultStylesTableColumns({
     },
     {
       accessorKey: "replenishmentSystem",
-      header: t`Replenishment`,
+      header: "Replenishment",
       cell: editableCell<Style>({
         kind: "enum",
         field: "replenishmentSystem",
@@ -166,7 +164,7 @@ export function buildDefaultStylesTableColumns({
     },
     {
       accessorKey: "defaultMethodType",
-      header: t`Default Method`,
+      header: "Default Method",
       cell: editableCell<Style>({
         kind: "enum",
         field: "defaultMethodType",
@@ -214,7 +212,7 @@ export function buildDefaultStylesTableColumns({
     },
     {
       accessorKey: "itemTrackingType",
-      header: t`Tracking`,
+      header: "Tracking",
       cell: editableCell<Style>({
         kind: "enum",
         field: "itemTrackingType",
@@ -254,7 +252,7 @@ export function buildDefaultStylesTableColumns({
     },
     {
       accessorKey: "itemPostingGroupId",
-      header: t`Item Group`,
+      header: "Item Group",
       cell: editableCell<Style>({
         kind: "enum",
         field: "itemPostingGroupId",
@@ -276,7 +274,7 @@ export function buildDefaultStylesTableColumns({
     },
     {
       accessorKey: "colorCode",
-      header: t`Color`,
+      header: "Color",
       cell: ({ row }) => (
         <HStack>
           {row.original.colorCode && (
@@ -295,7 +293,7 @@ export function buildDefaultStylesTableColumns({
     },
     {
       accessorKey: "tags",
-      header: t`Tags`,
+      header: "Tags",
       cell: ({ row }) => (
         <TagsCell row={row.original} table="style" availableTags={tags} />
       ),
@@ -313,7 +311,7 @@ export function buildDefaultStylesTableColumns({
     },
     {
       accessorKey: "active",
-      header: t`Active`,
+      header: "Active",
       cell: editableCell<Style>({
         kind: "boolean",
         field: "active",
@@ -324,17 +322,17 @@ export function buildDefaultStylesTableColumns({
         filter: {
           type: "static",
           options: [
-            { value: "true", label: t`Active` },
-            { value: "false", label: t`Inactive` }
+            { value: "true", label: "Active" },
+            { value: "false", label: "Inactive" }
           ]
         },
-        pluralHeader: t`Active Statuses`,
+        pluralHeader: "Active Statuses",
         icon: <LuCheck />
       }
     },
     {
       id: "createdBy",
-      header: t`Created By`,
+      header: "Created By",
       cell: ({ row }) => <EmployeeAvatar employeeId={row.original.createdBy} />,
       meta: {
         filter: {
@@ -349,7 +347,7 @@ export function buildDefaultStylesTableColumns({
     },
     {
       accessorKey: "createdAt",
-      header: t`Created At`,
+      header: "Created At",
       cell: (item) => formatDate(item.getValue<string>()),
       meta: {
         icon: <LuCalendar />
@@ -357,7 +355,7 @@ export function buildDefaultStylesTableColumns({
     },
     {
       id: "updatedBy",
-      header: t`Updated By`,
+      header: "Updated By",
       cell: ({ row }) => <EmployeeAvatar employeeId={row.original.updatedBy} />,
       meta: {
         filter: {
@@ -372,7 +370,7 @@ export function buildDefaultStylesTableColumns({
     },
     {
       accessorKey: "updatedAt",
-      header: t`Updated At`,
+      header: "Updated At",
       cell: (item) => formatDate(item.getValue<string>()),
       meta: {
         icon: <LuCalendar />

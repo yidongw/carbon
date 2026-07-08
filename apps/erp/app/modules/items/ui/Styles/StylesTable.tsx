@@ -102,7 +102,6 @@ const StylesTable = memo(
 
     const columns = useMemo<ColumnDef<Style>[]>(() => {
       const defaultColumns = buildDefaultStylesTableColumns({
-        t,
         people,
         tags,
         itemPostingGroups,
@@ -119,7 +118,6 @@ const StylesTable = memo(
       itemPostingGroups,
       templateOptions,
       customColumns,
-      t,
       formatDate,
       translateReplenishment,
       translateMethodType,
