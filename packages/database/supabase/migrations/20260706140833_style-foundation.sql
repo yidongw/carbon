@@ -1,0 +1,360 @@
+ALTER TYPE "itemType" ADD VALUE IF NOT EXISTS 'Style';
+ALTER TYPE "payableLineType" ADD VALUE IF NOT EXISTS 'Style';
+ALTER TYPE "purchaseOrderLineType" ADD VALUE IF NOT EXISTS 'Style';
+ALTER TYPE "salesInvoiceLineType" ADD VALUE IF NOT EXISTS 'Style';
+
+-- Postgres will not let the rest of this migration reference newly-added enum
+-- values until the current transaction commits.
+COMMIT;
+BEGIN;
+
+ALTER TABLE "purchaseInvoiceLine" DROP CONSTRAINT IF EXISTS "purchaseInvoiceLines_lineType_check";
+ALTER TABLE "purchaseInvoiceLine"
+ADD CONSTRAINT "purchaseInvoiceLines_lineType_check"
+CHECK (
+  (
+    "invoiceLineType" = 'Comment' AND
+    "itemId" IS NULL AND
+    "accountId" IS NULL AND
+    "assetId" IS NULL AND
+    "description" IS NOT NULL
+  )
+  OR (
+    "invoiceLineType" = 'G/L Account' AND
+    "itemId" IS NULL AND
+    "accountId" IS NOT NULL AND
+    "assetId" IS NULL
+  )
+  OR (
+    (
+      "invoiceLineType" = 'Style' OR
+      "invoiceLineType" = 'Part' OR
+      "invoiceLineType" = 'Material' OR
+      "invoiceLineType" = 'Tool' OR
+      "invoiceLineType" = 'Consumable' OR
+      "invoiceLineType" = 'Fixture' OR
+      "invoiceLineType" = 'Service'
+    ) AND
+    "itemId" IS NOT NULL AND
+    "accountId" IS NULL AND
+    "assetId" IS NULL
+  )
+  OR (
+    "invoiceLineType" = 'Fixed Asset' AND
+    "itemId" IS NULL AND
+    "accountId" IS NULL AND
+    "assetId" IS NOT NULL
+  )
+);
+
+ALTER TABLE "salesInvoiceLine" DROP CONSTRAINT IF EXISTS "salesInvoiceLineType_check";
+ALTER TABLE "salesInvoiceLine"
+ADD CONSTRAINT "salesInvoiceLineType_check"
+CHECK (
+  (
+    "invoiceLineType" = 'Comment' AND
+    "itemId" IS NULL AND
+    "accountId" IS NULL AND
+    "assetId" IS NULL AND
+    "description" IS NOT NULL
+  )
+  OR (
+    (
+      "invoiceLineType" = 'Style' OR
+      "invoiceLineType" = 'Part' OR
+      "invoiceLineType" = 'Material' OR
+      "invoiceLineType" = 'Tool' OR
+      "invoiceLineType" = 'Consumable' OR
+      "invoiceLineType" = 'Fixture' OR
+      "invoiceLineType" = 'Service'
+    ) AND
+    "itemId" IS NOT NULL AND
+    "accountId" IS NULL AND
+    "assetId" IS NULL
+  )
+  OR (
+    "invoiceLineType" = 'Fixed Asset' AND
+    "itemId" IS NULL AND
+    "accountId" IS NULL AND
+    "assetId" IS NOT NULL
+  )
+);
+
+ALTER TABLE "purchaseOrderLine" DROP CONSTRAINT IF EXISTS "purchaseOrderLineType_check";
+ALTER TABLE "purchaseOrderLine"
+ADD CONSTRAINT "purchaseOrderLineType_check"
+CHECK (
+  (
+    "purchaseOrderLineType" = 'Comment' AND
+    "itemId" IS NULL AND
+    "accountId" IS NULL AND
+    "assetId" IS NULL AND
+    "description" IS NOT NULL
+  )
+  OR (
+    "purchaseOrderLineType" = 'G/L Account' AND
+    "itemId" IS NULL AND
+    "accountId" IS NOT NULL AND
+    "assetId" IS NULL
+  )
+  OR (
+    (
+      "purchaseOrderLineType" = 'Style' OR
+      "purchaseOrderLineType" = 'Part' OR
+      "purchaseOrderLineType" = 'Material' OR
+      "purchaseOrderLineType" = 'Tool' OR
+      "purchaseOrderLineType" = 'Consumable' OR
+      "purchaseOrderLineType" = 'Fixture' OR
+      "purchaseOrderLineType" = 'Service'
+    ) AND
+    "itemId" IS NOT NULL AND
+    "accountId" IS NULL AND
+    "assetId" IS NULL
+  )
+  OR (
+    "purchaseOrderLineType" = 'Fixed Asset' AND
+    "itemId" IS NULL AND
+    "accountId" IS NULL AND
+    "assetId" IS NOT NULL
+  )
+);
+
+CREATE TABLE "style" (
+  "id" TEXT NOT NULL,
+  "itemId" TEXT NOT NULL,
+  "companyId" TEXT NOT NULL,
+  "createdBy" TEXT NOT NULL REFERENCES "user"("id"),
+  "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+  "updatedBy" TEXT REFERENCES "user"("id"),
+  "updatedAt" TIMESTAMP WITH TIME ZONE,
+  "customFields" JSONB,
+  "tags" TEXT[],
+
+  CONSTRAINT "style_pkey" PRIMARY KEY ("id", "companyId"),
+  CONSTRAINT "style_itemId_fkey"
+    FOREIGN KEY ("itemId") REFERENCES "item"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT "style_companyId_fkey"
+    FOREIGN KEY ("companyId") REFERENCES "company"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT "style_itemId_key" UNIQUE ("itemId")
+);
+
+CREATE INDEX "style_itemId_idx" ON "style" ("itemId");
+CREATE INDEX "style_companyId_idx" ON "style" ("companyId");
+
+ALTER TABLE "style" ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "SELECT" ON "public"."style"
+FOR SELECT USING (
+  "companyId" = ANY (
+    (SELECT get_companies_with_employee_role())::text[]
+  )
+);
+
+CREATE POLICY "INSERT" ON "public"."style"
+FOR INSERT WITH CHECK (
+  "companyId" = ANY (
+    (SELECT get_companies_with_employee_permission('parts_create'))::text[]
+  )
+);
+
+CREATE POLICY "UPDATE" ON "public"."style"
+FOR UPDATE USING (
+  "companyId" = ANY (
+    (SELECT get_companies_with_employee_permission('parts_update'))::text[]
+  )
+);
+
+CREATE POLICY "DELETE" ON "public"."style"
+FOR DELETE USING (
+  "companyId" = ANY (
+    (SELECT get_companies_with_employee_permission('parts_delete'))::text[]
+  )
+);
+
+CREATE TABLE "styleColor" (
+  "id" TEXT NOT NULL DEFAULT id('sco'),
+  "colorCode" TEXT NOT NULL,
+  "colorName" TEXT NOT NULL,
+  "companyId" TEXT,
+  "createdBy" TEXT NOT NULL REFERENCES "user"("id"),
+  "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+  "updatedBy" TEXT REFERENCES "user"("id"),
+  "updatedAt" TIMESTAMP WITH TIME ZONE,
+
+  CONSTRAINT "styleColor_pkey" PRIMARY KEY ("id"),
+  CONSTRAINT "styleColor_companyId_fkey"
+    FOREIGN KEY ("companyId") REFERENCES "company"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT "styleColor_colorCode_companyId_key" UNIQUE ("colorCode", "companyId")
+);
+
+CREATE INDEX "styleColor_companyId_idx" ON "styleColor" ("companyId");
+CREATE INDEX "styleColor_colorCode_idx" ON "styleColor" ("colorCode");
+
+ALTER TABLE "styleColor" ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "SELECT" ON "public"."styleColor"
+FOR SELECT USING (
+  "companyId" IS NULL OR
+  "companyId" = ANY (
+    (SELECT get_companies_with_employee_role())::text[]
+  )
+);
+
+CREATE POLICY "INSERT" ON "public"."styleColor"
+FOR INSERT WITH CHECK (
+  "companyId" = ANY (
+    (SELECT get_companies_with_employee_permission('parts_create'))::text[]
+  )
+);
+
+CREATE POLICY "UPDATE" ON "public"."styleColor"
+FOR UPDATE USING (
+  "companyId" = ANY (
+    (SELECT get_companies_with_employee_permission('parts_update'))::text[]
+  )
+);
+
+CREATE POLICY "DELETE" ON "public"."styleColor"
+FOR DELETE USING (
+  "companyId" = ANY (
+    (SELECT get_companies_with_employee_permission('parts_delete'))::text[]
+  )
+);
+
+CREATE TABLE "styleColorAssignment" (
+  "styleId" TEXT NOT NULL,
+  "styleColorId" TEXT NOT NULL,
+  "companyId" TEXT NOT NULL,
+  "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+  "createdBy" TEXT NOT NULL REFERENCES "user"("id"),
+
+  CONSTRAINT "styleColorAssignment_pkey" PRIMARY KEY ("styleId", "styleColorId", "companyId"),
+  CONSTRAINT "styleColorAssignment_styleId_companyId_fkey"
+    FOREIGN KEY ("styleId", "companyId") REFERENCES "style"("id", "companyId") ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT "styleColorAssignment_styleColorId_fkey"
+    FOREIGN KEY ("styleColorId") REFERENCES "styleColor"("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT "styleColorAssignment_companyId_fkey"
+    FOREIGN KEY ("companyId") REFERENCES "company"("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE INDEX "styleColorAssignment_styleId_idx" ON "styleColorAssignment" ("styleId", "companyId");
+CREATE INDEX "styleColorAssignment_styleColorId_idx" ON "styleColorAssignment" ("styleColorId");
+
+ALTER TABLE "styleColorAssignment" ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "SELECT" ON "public"."styleColorAssignment"
+FOR SELECT USING (
+  "companyId" = ANY (
+    (SELECT get_companies_with_employee_role())::text[]
+  )
+);
+
+CREATE POLICY "INSERT" ON "public"."styleColorAssignment"
+FOR INSERT WITH CHECK (
+  "companyId" = ANY (
+    (SELECT get_companies_with_employee_permission('parts_create'))::text[]
+  )
+);
+
+CREATE POLICY "UPDATE" ON "public"."styleColorAssignment"
+FOR UPDATE USING (
+  "companyId" = ANY (
+    (SELECT get_companies_with_employee_permission('parts_update'))::text[]
+  )
+);
+
+CREATE POLICY "DELETE" ON "public"."styleColorAssignment"
+FOR DELETE USING (
+  "companyId" = ANY (
+    (SELECT get_companies_with_employee_permission('parts_delete'))::text[]
+  )
+);
+
+CREATE VIEW "styles" WITH (SECURITY_INVOKER=true) AS
+WITH latest_items AS (
+  SELECT DISTINCT ON (i."readableId", i."companyId")
+    i.*
+  FROM "item" i
+  WHERE i."type" = 'Style'
+  ORDER BY i."readableId", i."companyId",
+    CASE WHEN i."revision" = '0' OR i."revision" = '' OR i."revision" IS NULL THEN 0 ELSE 1 END DESC,
+    i."createdAt" DESC NULLS LAST
+),
+item_revisions AS (
+  SELECT
+    i."readableId",
+    i."companyId",
+    json_agg(
+      json_build_object(
+        'id', i.id,
+        'revision', i."revision",
+        'name', i."name",
+        'description', i."description",
+        'active', i."active",
+        'createdAt', i."createdAt"
+      ) ORDER BY
+        CASE WHEN i."revision" = '0' OR i."revision" = '' OR i."revision" IS NULL THEN 0 ELSE 1 END,
+        i."createdAt"
+      ) AS "revisions"
+  FROM "item" i
+  WHERE i."type" = 'Style'
+  GROUP BY i."readableId", i."companyId"
+)
+SELECT
+  li."active",
+  li."assignee",
+  li."defaultMethodType",
+  li."sourcingType",
+  li."description",
+  li."itemTrackingType",
+  li."name",
+  li."replenishmentSystem",
+  li."unitOfMeasureCode",
+  li."notes",
+  li."revision",
+  li."readableId",
+  li."readableIdWithRevision",
+  li."id",
+  li."companyId",
+  li."thumbnailPath",
+  (
+    SELECT json_agg(json_build_object('id', sc."id", 'colorCode', sc."colorCode", 'colorName', sc."colorName") ORDER BY sc."colorCode")
+    FROM "styleColorAssignment" sca
+    JOIN "styleColor" sc ON sc."id" = sca."styleColorId"
+    WHERE sca."styleId" = s."id"
+      AND sca."companyId" = s."companyId"
+  ) AS colors,
+  ir."revisions",
+  s."customFields",
+  s."tags",
+  ic."itemPostingGroupId",
+  li."createdBy",
+  li."createdAt",
+  li."updatedBy",
+  li."updatedAt"
+FROM "style" s
+INNER JOIN latest_items li ON li."id" = s."itemId"
+LEFT JOIN item_revisions ir ON ir."readableId" = li."readableId" AND ir."companyId" = li."companyId"
+LEFT JOIN "itemCost" ic ON ic."itemId" = li.id;
+
+CREATE OR REPLACE FUNCTION sync_create_make_method_related_records(
+  p_table TEXT,
+  p_operation TEXT,
+  p_new JSONB,
+  p_old JSONB
+)
+RETURNS VOID
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+  IF p_operation != 'INSERT' THEN RETURN; END IF;
+
+  IF (p_new->>'type') IN ('Part', 'Tool', 'Style') THEN
+    INSERT INTO "makeMethod"("itemId", "createdBy", "companyId")
+    VALUES (p_new->>'id', p_new->>'createdBy', p_new->>'companyId');
+  END IF;
+END;
+$$;
+
+COMMIT;
