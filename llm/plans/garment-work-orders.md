@@ -107,14 +107,28 @@ typed only after regeneration (in progress against a local Supabase).
 **Known pre-existing (not caused by this work):** `x/job/$jobId.make.$methodId.tsx`
 has a `productionQuantityReport` typecheck error that is present on `dev` too.
 
-### ⬜ Phase 2 — Master Work Order: schema + creation (DRY)
-- New `masterWorkOrder` table (own migration), backed 1:1 by a Style parent job
-  internally, but a first-class object in its own right. Reuse `id('mwo')`, RLS
-  `production_*` pattern, audit columns — copy an existing table migration.
-- Create a master work order when an apparel/Style parent flow starts. Reuse the
-  existing job-creation service path rather than duplicating it.
-- Regenerate types (`pnpm db:build`).
-- **UI test target:** a master row exists in the DB after starting a Style flow.
+### 🔄 Phase 2 — Master Work Order: schema + creation service (backend committed)
+Committed (`Add Master Work Order schema and creation service`):
+- `masterWorkOrder` table (`id('mwo')`, `jobId` unique FK, `colorSize`, audit),
+  RLS `production_*` — mirrors the style table boilerplate.
+- `masterWorkOrders` list view = `masterWorkOrder` ⋈ `job` ⋈ `item`, so the list
+  UI reuses the same view + generic-query-filter pattern as `jobs`.
+- `masterWorkOrder.service.ts`: `insertMasterWorkOrder` (reuses `insertJob` to
+  create the backing job, then wraps it), `getMasterWorkOrders` / `getMasterWorkOrder`.
+
+**⚠️ Blocked on type regeneration.** `packages/database/src/types.ts` still needs
+`pnpm db:types` so `masterWorkOrder` / `masterWorkOrders` (and the Phase 1 style
+tables) are typed. **Local type-gen is not possible in this worktree** — the repo
+builds its DB via the `crbn` orchestrator (not installed here); a raw `supabase`
+stack fails applying the 2023 base migrations (storage-schema version drift, and
+the local `postgres` role is locked down). Regenerate via the normal dev flow
+(`crbn up` → `pnpm db:types`) or let CI do it, then typecheck.
+
+### ⬜ Phase 3 — Master Work Order: dedicated UI under Production
+- New routes nested under Production (e.g. `x+/production+/work-orders...`),
+  list + detail. Reuse the existing list/table and detail-shell components and
+  the `useProductionSubmodules` nav pattern (add a "Work Orders" entry).
+- Master detail shows cutting-oriented info + color/size summary; edits inline.
 
 ### ⬜ Phase 3 — Master Work Order: dedicated UI under Production
 - New routes nested under Production (e.g. `x+/production+/work-orders...`),
