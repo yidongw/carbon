@@ -63,7 +63,6 @@ export async function insertBundleWorkOrder(
   client: SupabaseClient<Database>,
   input: {
     masterWorkOrderId: string;
-    parentJobId: string;
     itemId: string;
     quantity: number;
     bundleNumber: string;
@@ -74,12 +73,14 @@ export async function insertBundleWorkOrder(
     createdBy: string;
   }
 ) {
+  // The child job is the bundle's execution backing; the bundle -> master link
+  // is carried by bundleWorkOrder.masterWorkOrderId (the job table has no
+  // parentJobId column), so we don't set one here.
   const job = await insertJob(client, {
     itemId: input.itemId,
     quantity: input.quantity,
     companyId: input.companyId,
-    createdBy: input.createdBy,
-    parentJobId: input.parentJobId
+    createdBy: input.createdBy
   });
 
   if (job.error || !job.data) {

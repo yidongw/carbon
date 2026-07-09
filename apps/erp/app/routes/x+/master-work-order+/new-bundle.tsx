@@ -68,7 +68,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const { masterWorkOrderId, colorCode, sizeCode, quantity } = validation.data;
 
   const master = await getMasterWorkOrder(client, masterWorkOrderId, companyId);
-  if (master.error || !master.data?.jobId || !master.data.itemId) {
+  if (master.error || !master.data?.itemId) {
     return data(
       { ok: false as const },
       await flash(
@@ -77,7 +77,6 @@ export async function action({ request }: ActionFunctionArgs) {
       )
     );
   }
-  const parentJobId = master.data.jobId;
   const itemId = master.data.itemId;
 
   const existing = await getBundleWorkOrders(
@@ -92,7 +91,6 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const insert = await insertBundleWorkOrder(client, {
     masterWorkOrderId,
-    parentJobId,
     itemId,
     quantity,
     bundleNumber,
