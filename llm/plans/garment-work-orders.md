@@ -129,19 +129,23 @@ narrowed to `never`). `pnpm typecheck` for erp is clean apart from **2 pre-exist
 dev errors** (`x/job/$jobId.details.tsx`, `make.$methodId.tsx` — byte-identical to
 `dev`).
 
-### ⬜ Phase 3 — Master Work Order: dedicated UI under Production
-- New routes nested under Production (e.g. `x+/production+/work-orders...`),
-  list + detail. Reuse the existing list/table and detail-shell components and
-  the `useProductionSubmodules` nav pattern (add a "Work Orders" entry).
-- Master detail shows cutting-oriented info + color/size summary; edits inline.
+### 🔄 Phase 3 — Master Work Order UI under Production (list + create done)
+Committed (`Add Master Work Order list + create UI under Production`), typecheck
+clean:
+- **Production ▸ Master Work Orders** list page (`x+/production+/master-work-orders.tsx`)
+  reading the `masterWorkOrders` view via the generic query filters + a
+  `MasterWorkOrdersTable` (Style, Name, Job, Quantity, Status).
+- **New Master Work Order** registry-drawer overlay
+  (`master-work-orders.new.tsx` + `MasterWorkOrderForm`): pick a Style item +
+  quantity → `insertMasterWorkOrder` (reuses `insertJob`). Follows the
+  tag/pickup overlay convention; the job page is untouched.
+- `path.to.masterWorkOrders/masterWorkOrder(id)/newMasterWorkOrder`, overlay
+  builder + registry entry, and the Production nav entry (LuShirt icon).
+- **UI test:** Production ▸ Master Work Orders → New → pick a Style + qty → Save →
+  the new row appears in the list.
 
-### ⬜ Phase 3 — Master Work Order: dedicated UI under Production
-- New routes nested under Production (e.g. `x+/production+/work-orders...`),
-  list + detail. Reuse the existing list/table and detail-shell components and
-  the `useProductionSubmodules` nav pattern (add a "Work Orders" entry).
-- Master detail shows cutting-oriented info + color/size summary; edits inline.
-- **UI test target:** Production ▸ Work Orders lists masters; a master opens its
-  own detail (not a job page).
+**Still to do (Phase 3b / 4):** the Master Work Order **detail** page (cutting +
+color/size summary, its bundle children), then Bundle Work Orders.
 
 ### ⬜ Phase 4 — Bundle Work Order: schema + generation (DRY)
 - New `bundleWorkOrder` table (own migration): `masterWorkOrderId`, bundle
