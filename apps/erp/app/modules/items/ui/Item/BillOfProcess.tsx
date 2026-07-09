@@ -232,7 +232,7 @@ const BillOfProcess = ({
   const makeMethodId = makeMethod.id;
 
   const { carbon } = useCarbon();
-  const sortOrderFetcher = useFetcher<{}>();
+  const sortOrderFetcher = useFetcher<{ success: boolean }>();
   const deleteOperationFetcher = useFetcher<{ success: boolean }>();
   const { id: userId } = useUser();
 
@@ -275,6 +275,22 @@ const BillOfProcess = ({
       return acc;
     }, {} as OrderState);
   });
+
+  // If the server rejects a reorder (e.g. a system-owned Style cutting operation
+  // must stay first), roll the optimistic order back to the persisted order.
+  useEffect(() => {
+    if (
+      sortOrderFetcher.state === "idle" &&
+      sortOrderFetcher.data?.success === false
+    ) {
+      setOrderState(
+        initialOperations.reduce((acc, op) => {
+          if (op.id) acc[op.id] = op.order;
+          return acc;
+        }, {} as OrderState)
+      );
+    }
+  }, [sortOrderFetcher.state, sortOrderFetcher.data, initialOperations]);
 
   const operationsById = new Map<
     string,
