@@ -1441,6 +1441,9 @@ msgstr "Massenimport"
 msgid "Bulk Jobs"
 msgstr "Massenaufträge"
 
+msgid "Bundle Work Orders"
+msgstr ""
+
 msgid "Buy"
 msgstr "Kaufen"
 
@@ -5754,6 +5757,9 @@ msgstr "Fehlbestand markieren"
 msgid "Mark to delete"
 msgstr "Zum Löschen markieren"
 
+msgid "Master Work Order"
+msgstr ""
+
 msgid "Master Work Orders"
 msgstr ""
 
@@ -6462,6 +6468,9 @@ msgstr "Keine verfolgbaren Objekte gefunden"
 
 msgid "No BOM input has a shelf-life policy"
 msgstr "Keine BOM-Eingabe hat eine Shelf-Life-Richtlinie"
+
+msgid "No bundle work orders yet. Bundles are generated when the master work order is split."
+msgstr ""
 
 msgid "No calibration records found"
 msgstr "Keine Kalibrierungsdatensätze gefunden"

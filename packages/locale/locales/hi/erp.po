@@ -1441,6 +1441,9 @@ msgstr "बल्क आयात"
 msgid "Bulk Jobs"
 msgstr "बल्क जॉब्स"
 
+msgid "Bundle Work Orders"
+msgstr ""
+
 msgid "Buy"
 msgstr "खरीदें"
 
@@ -5754,6 +5757,9 @@ msgstr "कमी चिह्नित करें"
 msgid "Mark to delete"
 msgstr "हटाने के लिए चिह्नित करें"
 
+msgid "Master Work Order"
+msgstr ""
+
 msgid "Master Work Orders"
 msgstr ""
 
@@ -6462,6 +6468,9 @@ msgstr "निकाल वस्तुओं में कोई उपलब�
 
 msgid "No BOM input has a shelf-life policy"
 msgstr "कोई BOM इनपुट शेल्फ-लाइफ नीति नहीं है"
+
+msgid "No bundle work orders yet. Bundles are generated when the master work order is split."
+msgstr ""
 
 msgid "No calibration records found"
 msgstr "कोई अंशांकन रिकॉर्ड नहीं मिला"

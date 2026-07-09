@@ -1441,6 +1441,9 @@ msgstr "Массовый импорт"
 msgid "Bulk Jobs"
 msgstr "Массовые задания"
 
+msgid "Bundle Work Orders"
+msgstr ""
+
 msgid "Buy"
 msgstr "Покупка"
 
@@ -5754,6 +5757,9 @@ msgstr "Отметить нехватку"
 msgid "Mark to delete"
 msgstr "Отметить для удаления"
 
+msgid "Master Work Order"
+msgstr ""
+
 msgid "Master Work Orders"
 msgstr ""
 
@@ -6462,6 +6468,9 @@ msgstr "Найдено нетracked объектов"
 
 msgid "No BOM input has a shelf-life policy"
 msgstr "Ни один вход BOM не имеет политики срока хранения"
+
+msgid "No bundle work orders yet. Bundles are generated when the master work order is split."
+msgstr ""
 
 msgid "No calibration records found"
 msgstr "Записи о калибровке не найдены"

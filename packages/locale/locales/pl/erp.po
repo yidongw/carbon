@@ -1441,6 +1441,9 @@ msgstr "Import zbiorczy"
 msgid "Bulk Jobs"
 msgstr "Zadania zbiorcze"
 
+msgid "Bundle Work Orders"
+msgstr ""
+
 msgid "Buy"
 msgstr "Kup"
 
@@ -5754,6 +5757,9 @@ msgstr "Oznacz niedobór"
 msgid "Mark to delete"
 msgstr "Oznacz do usunięcia"
 
+msgid "Master Work Order"
+msgstr ""
+
 msgid "Master Work Orders"
 msgstr ""
 
@@ -6462,6 +6468,9 @@ msgstr "Brak dostępnych śledzonych elementów"
 
 msgid "No BOM input has a shelf-life policy"
 msgstr "Żadne wejście BOM nie ma polityki przydatności do spożycia"
+
+msgid "No bundle work orders yet. Bundles are generated when the master work order is split."
+msgstr ""
 
 msgid "No calibration records found"
 msgstr "Nie znaleziono rekordów kalibracji"

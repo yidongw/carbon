@@ -8,6 +8,7 @@ import { Table } from "~/components";
 import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions } from "~/hooks";
 import type { MasterWorkOrder } from "~/modules/production";
+import { path } from "~/utils/path";
 
 type MasterWorkOrdersTableProps = {
   data: MasterWorkOrder[];
@@ -65,6 +66,9 @@ const MasterWorkOrdersTable = memo(
         data={data}
         columns={columns}
         count={count}
+        getRowHref={(row) =>
+          row.id ? path.to.masterWorkOrder(row.id) : undefined
+        }
         primaryAction={
           permissions.can("create", "production") && (
             <Button

@@ -1441,6 +1441,9 @@ msgstr "一括インポート"
 msgid "Bulk Jobs"
 msgstr "一括ジョブ"
 
+msgid "Bundle Work Orders"
+msgstr ""
+
 msgid "Buy"
 msgstr "購入"
 
@@ -5754,6 +5757,9 @@ msgstr "不足としてマーク"
 msgid "Mark to delete"
 msgstr "削除対象にマーク"
 
+msgid "Master Work Order"
+msgstr ""
+
 msgid "Master Work Orders"
 msgstr ""
 
@@ -6462,6 +6468,9 @@ msgstr "追跡可能なエンティティが見つかりません"
 
 msgid "No BOM input has a shelf-life policy"
 msgstr "BOMインプットに棚卸資産有効期限ポリシーがありません"
+
+msgid "No bundle work orders yet. Bundles are generated when the master work order is split."
+msgstr ""
 
 msgid "No calibration records found"
 msgstr "キャリブレーション記録が見つかりません"

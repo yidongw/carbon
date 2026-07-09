@@ -1140,7 +1140,7 @@ export const path = {
     jobs: `${x}/production/jobs`,
     masterWorkOrders: `${x}/production/master-work-orders`,
     masterWorkOrder: (id: string) =>
-      generatePath(`${x}/production/master-work-orders/${id}`),
+      generatePath(`${x}/master-work-order/${id}`),
     newMasterWorkOrder: `${x}/production/master-work-orders/new`,
     jobRecalculate: (id: string) => generatePath(`${x}/job/${id}/recalculate`),
     jobRelease: (id: string) => generatePath(`${x}/job/${id}/release`),

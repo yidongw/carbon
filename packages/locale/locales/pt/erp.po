@@ -1441,6 +1441,9 @@ msgstr "Importação em Massa"
 msgid "Bulk Jobs"
 msgstr "Trabalhos em Lote"
 
+msgid "Bundle Work Orders"
+msgstr ""
+
 msgid "Buy"
 msgstr "Comprar"
 
@@ -5754,6 +5757,9 @@ msgstr "Marcar como falta"
 msgid "Mark to delete"
 msgstr "Marcar para eliminar"
 
+msgid "Master Work Order"
+msgstr ""
+
 msgid "Master Work Orders"
 msgstr ""
 
@@ -6462,6 +6468,9 @@ msgstr "Nenhum entidade rastreada disponível encontrado"
 
 msgid "No BOM input has a shelf-life policy"
 msgstr "Nenhuma entrada de BOM tem uma política de vida útil"
+
+msgid "No bundle work orders yet. Bundles are generated when the master work order is split."
+msgstr ""
 
 msgid "No calibration records found"
 msgstr "Nenhum registro de calibração encontrado"

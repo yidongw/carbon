@@ -1441,6 +1441,9 @@ msgstr "Importazione in blocco"
 msgid "Bulk Jobs"
 msgstr "Lavori in Blocco"
 
+msgid "Bundle Work Orders"
+msgstr ""
+
 msgid "Buy"
 msgstr "Acquista"
 
@@ -5754,6 +5757,9 @@ msgstr "Segna come mancante"
 msgid "Mark to delete"
 msgstr "Segna per eliminare"
 
+msgid "Master Work Order"
+msgstr ""
+
 msgid "Master Work Orders"
 msgstr ""
 
@@ -6462,6 +6468,9 @@ msgstr "Nessun entità tracciata disponibile trovata"
 
 msgid "No BOM input has a shelf-life policy"
 msgstr "Nessun input della distinta base ha una politica di shelf-life"
+
+msgid "No bundle work orders yet. Bundles are generated when the master work order is split."
+msgstr ""
 
 msgid "No calibration records found"
 msgstr "Nessun record di calibrazione trovato"

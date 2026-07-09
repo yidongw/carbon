@@ -1441,6 +1441,9 @@ msgstr "批量导入"
 msgid "Bulk Jobs"
 msgstr "批量工作"
 
+msgid "Bundle Work Orders"
+msgstr ""
+
 msgid "Buy"
 msgstr "购买"
 
@@ -5754,6 +5757,9 @@ msgstr "标记短缺"
 msgid "Mark to delete"
 msgstr "标记删除"
 
+msgid "Master Work Order"
+msgstr ""
+
 msgid "Master Work Orders"
 msgstr ""
 
@@ -6462,6 +6468,9 @@ msgstr "未找到可追踪的实体"
 
 msgid "No BOM input has a shelf-life policy"
 msgstr "没有BOM输入有保质期政策"
+
+msgid "No bundle work orders yet. Bundles are generated when the master work order is split."
+msgstr ""
 
 msgid "No calibration records found"
 msgstr "未找到校准记录"

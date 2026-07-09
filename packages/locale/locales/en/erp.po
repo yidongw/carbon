@@ -1441,6 +1441,9 @@ msgstr "Bulk Import"
 msgid "Bulk Jobs"
 msgstr "Bulk Jobs"
 
+msgid "Bundle Work Orders"
+msgstr "Bundle Work Orders"
+
 msgid "Buy"
 msgstr "Buy"
 
@@ -5754,6 +5757,9 @@ msgstr "Mark Short"
 msgid "Mark to delete"
 msgstr "Mark to delete"
 
+msgid "Master Work Order"
+msgstr "Master Work Order"
+
 msgid "Master Work Orders"
 msgstr "Master Work Orders"
 
@@ -6462,6 +6468,9 @@ msgstr "No available tracked entities found"
 
 msgid "No BOM input has a shelf-life policy"
 msgstr "No BOM input has a shelf-life policy"
+
+msgid "No bundle work orders yet. Bundles are generated when the master work order is split."
+msgstr "No bundle work orders yet. Bundles are generated when the master work order is split."
 
 msgid "No calibration records found"
 msgstr "No calibration records found"
