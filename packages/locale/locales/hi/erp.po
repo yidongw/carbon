@@ -3288,9 +3288,6 @@ msgstr "डाउनलोड पीडीएफ"
 msgid "Download template"
 msgstr "डेटा शीट डाउनलोड करें"
 
-msgid "Downstream process reports (production, rework, scrap) will appear here."
-msgstr ""
-
 msgid "Draft"
 msgstr "ड्राफ्ट"
 
@@ -6660,6 +6657,9 @@ msgstr "निर्वहन डाटा संकल्पित नहीं
 
 msgid "No printers configured. Click \"Add Printer\" to create one."
 msgstr "निर्निर्मित प्रिंटर उपलब्ध नहीं है। \"प्रिटर जोड़ें\" के बाद से एक य॑जि।"
+
+msgid "No process reports yet. Report production, rework, or scrap against this bundle's operations."
+msgstr ""
 
 msgid "No production logs"
 msgstr "कोई उत्पादन लॉग नहीं"

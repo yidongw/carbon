@@ -34,6 +34,27 @@ export async function getBundleWorkOrder(
 }
 
 /**
+ * Process reports (Production / Rework / Scrap) filed against a bundle's backing
+ * job, across all of its operations. Reuses the existing `productionQuantity`
+ * data (a "process report" line), filtered by job via the operation join.
+ */
+export async function getBundleProcessReports(
+  client: SupabaseClient<Database>,
+  jobId: string,
+  companyId: string
+) {
+  return client
+    .from("productionQuantity")
+    .select(
+      "id, quantity, type, createdAt, jobOperation!inner(description, jobId), scrapReason(name)"
+    )
+    .eq("jobOperation.jobId", jobId)
+    .eq("companyId", companyId)
+    .is("invalidatedAt", null)
+    .order("createdAt", { ascending: false });
+}
+
+/**
  * Create a bundle work order under a master. A child job (parentJobId = the
  * master's backing job) is created through `insertJob` for downstream execution,
  * then wrapped by the bundle work order carrying the color/size identity.

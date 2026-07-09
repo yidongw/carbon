@@ -3288,9 +3288,6 @@ msgstr "下载PDF"
 msgid "Download template"
 msgstr "下载模板"
 
-msgid "Downstream process reports (production, rework, scrap) will appear here."
-msgstr ""
-
 msgid "Draft"
 msgstr "草稿"
 
@@ -6660,6 +6657,9 @@ msgstr "未配置打印机"
 
 msgid "No printers configured. Click \"Add Printer\" to create one."
 msgstr "未配置打印机。点击“添加打印机”进行创建。"
+
+msgid "No process reports yet. Report production, rework, or scrap against this bundle's operations."
+msgstr ""
 
 msgid "No production logs"
 msgstr "无生产日志"

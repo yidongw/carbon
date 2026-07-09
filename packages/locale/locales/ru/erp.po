@@ -3288,9 +3288,6 @@ msgstr "Скачать PDF"
 msgid "Download template"
 msgstr "Загрузить шаблон"
 
-msgid "Downstream process reports (production, rework, scrap) will appear here."
-msgstr ""
-
 msgid "Draft"
 msgstr "Черновик"
 
@@ -6660,6 +6657,9 @@ msgstr "Нет настроенной принтера"
 
 msgid "No printers configured. Click \"Add Printer\" to create one."
 msgstr "Нет принтеров настроенных. Нажмите \"Добавить принтер\", чтобы создать один."
+
+msgid "No process reports yet. Report production, rework, or scrap against this bundle's operations."
+msgstr ""
 
 msgid "No production logs"
 msgstr "Нет производственных логов"

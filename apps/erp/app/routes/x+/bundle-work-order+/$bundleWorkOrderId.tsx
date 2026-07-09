@@ -5,7 +5,10 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import type { ReactNode } from "react";
 import type { LoaderFunctionArgs } from "react-router";
 import { Link, redirect, useLoaderData } from "react-router";
-import { getBundleWorkOrder } from "~/modules/production";
+import {
+  getBundleProcessReports,
+  getBundleWorkOrder
+} from "~/modules/production";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 
@@ -33,7 +36,18 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     throw redirect(path.to.masterWorkOrders);
   }
 
-  return { bundleWorkOrder: bundleWorkOrder.data };
+  const reports = bundleWorkOrder.data.jobId
+    ? await getBundleProcessReports(
+        client,
+        bundleWorkOrder.data.jobId,
+        companyId
+      )
+    : null;
+
+  return {
+    bundleWorkOrder: bundleWorkOrder.data,
+    reports: reports?.data ?? []
+  };
 }
 
 function Field({ label, value }: { label: string; value: ReactNode }) {
@@ -45,8 +59,14 @@ function Field({ label, value }: { label: string; value: ReactNode }) {
   );
 }
 
+const reportTypeVariant: Record<string, "green" | "yellow" | "red"> = {
+  Production: "green",
+  Rework: "yellow",
+  Scrap: "red"
+};
+
 export default function BundleWorkOrderDetailRoute() {
-  const { bundleWorkOrder } = useLoaderData<typeof loader>();
+  const { bundleWorkOrder, reports } = useLoaderData<typeof loader>();
   const { t } = useLingui();
 
   return (
@@ -83,12 +103,33 @@ export default function BundleWorkOrderDetailRoute() {
           <Heading size="h4">
             <Trans>Process Reports</Trans>
           </Heading>
-          <div className="w-full rounded-lg border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
-            <Trans>
-              Downstream process reports (production, rework, scrap) will appear
-              here.
-            </Trans>
-          </div>
+          {reports.length === 0 ? (
+            <div className="w-full rounded-lg border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
+              <Trans>
+                No process reports yet. Report production, rework, or scrap
+                against this bundle's operations.
+              </Trans>
+            </div>
+          ) : (
+            <div className="w-full rounded-lg border border-border bg-card divide-y divide-border">
+              {reports.map((report) => (
+                <div
+                  key={report.id}
+                  className="flex items-center justify-between px-4 py-3"
+                >
+                  <HStack spacing={4}>
+                    <Badge variant={reportTypeVariant[report.type] ?? "gray"}>
+                      {report.type}
+                    </Badge>
+                    <span className="text-sm text-muted-foreground">
+                      {report.jobOperation?.description ?? "—"}
+                    </span>
+                  </HStack>
+                  <span className="text-sm font-medium">{report.quantity}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </VStack>
       </VStack>
     </div>

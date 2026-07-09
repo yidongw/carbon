@@ -3288,9 +3288,6 @@ msgstr "PDFをダウンロード"
 msgid "Download template"
 msgstr "テンプレートをダウンロード"
 
-msgid "Downstream process reports (production, rework, scrap) will appear here."
-msgstr ""
-
 msgid "Draft"
 msgstr "下書き"
 
@@ -6660,6 +6657,9 @@ msgstr "プリンターが設定されていません"
 
 msgid "No printers configured. Click \"Add Printer\" to create one."
 msgstr "プリンターが設定されていません。\"プリンター追加\" をクリックして設定してください。"
+
+msgid "No process reports yet. Report production, rework, or scrap against this bundle's operations."
+msgstr ""
 
 msgid "No production logs"
 msgstr "生産ログがありません"

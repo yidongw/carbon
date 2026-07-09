@@ -3288,9 +3288,6 @@ msgstr "Télécharger PDF"
 msgid "Download template"
 msgstr "Télécharger le modèle"
 
-msgid "Downstream process reports (production, rework, scrap) will appear here."
-msgstr ""
-
 msgid "Draft"
 msgstr "Brouillon"
 
@@ -6660,6 +6657,9 @@ msgstr "Aucun imprimant configuré"
 
 msgid "No printers configured. Click \"Add Printer\" to create one."
 msgstr "Aucun imprimant configuré. Cliquez sur \"Ajouter un imprimant\" pour en créer un."
+
+msgid "No process reports yet. Report production, rework, or scrap against this bundle's operations."
+msgstr ""
 
 msgid "No production logs"
 msgstr "Aucun journal de production"
