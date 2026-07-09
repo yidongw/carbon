@@ -3416,8 +3416,6 @@ export async function upsertStyle(
       styleClient.from("style").upsert({
         id: style.id,
         itemId,
-        colorName: style.colorName,
-        colorCode: style.colorCode,
         companyId: style.companyId,
         createdBy: style.createdBy,
         customFields: style.customFields
@@ -3500,8 +3498,6 @@ export async function upsertStyle(
   };
 
   const styleUpdate = {
-    colorName: style.colorName,
-    colorCode: style.colorCode,
     customFields: style.customFields
   };
 
