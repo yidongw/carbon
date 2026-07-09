@@ -7,6 +7,7 @@ import {
   LuPackage,
   LuPackageCheck,
   LuShieldCheck,
+  LuShirt,
   LuSquareChartGantt,
   LuSquareKanban,
   LuTrash
@@ -39,6 +40,12 @@ export default function useProductionSubmodules() {
           to: path.to.jobs,
           icon: <LuCirclePlay />,
           table: "job"
+        },
+        {
+          name: t`Master Work Orders`,
+          to: path.to.masterWorkOrders,
+          icon: <LuShirt />,
+          role: "employee"
         },
         {
           name: t`Procedures`,

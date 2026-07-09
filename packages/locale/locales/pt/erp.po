@@ -5754,6 +5754,9 @@ msgstr "Marcar como falta"
 msgid "Mark to delete"
 msgstr "Marcar para eliminar"
 
+msgid "Master Work Orders"
+msgstr ""
+
 msgid "Match"
 msgstr "Mata"
 
@@ -6199,6 +6202,9 @@ msgstr "Nova Localização"
 
 msgid "New Maintenance Dispatch"
 msgstr "Nova Ordem de Manutenção"
+
+msgid "New Master Work Order"
+msgstr ""
 
 msgid "New Material"
 msgstr "Novo Material"

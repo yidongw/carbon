@@ -5754,6 +5754,9 @@ msgstr "Marcar como faltante"
 msgid "Mark to delete"
 msgstr "Marcar para eliminar"
 
+msgid "Master Work Orders"
+msgstr ""
+
 msgid "Match"
 msgstr "Coincidencia"
 
@@ -6199,6 +6202,9 @@ msgstr "Nueva Ubicación"
 
 msgid "New Maintenance Dispatch"
 msgstr "Nueva Orden de Mantenimiento"
+
+msgid "New Master Work Order"
+msgstr ""
 
 msgid "New Material"
 msgstr "Nuevo Material"

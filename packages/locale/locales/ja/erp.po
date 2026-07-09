@@ -5754,6 +5754,9 @@ msgstr "不足としてマーク"
 msgid "Mark to delete"
 msgstr "削除対象にマーク"
 
+msgid "Master Work Orders"
+msgstr ""
+
 msgid "Match"
 msgstr "マッチ"
 
@@ -6199,6 +6202,9 @@ msgstr "新しい場所"
 
 msgid "New Maintenance Dispatch"
 msgstr "新しい保守ディスパッチ"
+
+msgid "New Master Work Order"
+msgstr ""
 
 msgid "New Material"
 msgstr "新しい材料"

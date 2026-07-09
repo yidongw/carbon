@@ -5754,6 +5754,9 @@ msgstr "标记短缺"
 msgid "Mark to delete"
 msgstr "标记删除"
 
+msgid "Master Work Orders"
+msgstr ""
+
 msgid "Match"
 msgstr "匹配"
 
@@ -6199,6 +6202,9 @@ msgstr "新位置"
 
 msgid "New Maintenance Dispatch"
 msgstr "新的维护调度"
+
+msgid "New Master Work Order"
+msgstr ""
 
 msgid "New Material"
 msgstr "新材料"

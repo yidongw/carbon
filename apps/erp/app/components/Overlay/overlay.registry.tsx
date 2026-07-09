@@ -138,6 +138,20 @@ export const overlayRegistry = {
       () => import("~/modules/production/ui/Jobs/PickupForm")
     )
   },
+  newMasterWorkOrder: {
+    type: "drawer",
+    render: renderLazyOverlay(
+      (ctx) => {
+        const data = ctx.loaderData as
+          | { initialValues: { itemId: string; quantity: number } }
+          | undefined;
+        if (!data) return null;
+        return { initialValues: data.initialValues };
+      },
+      () =>
+        import("~/modules/production/ui/MasterWorkOrders/MasterWorkOrderForm")
+    )
+  },
   newProductionQuantity: {
     type: "drawer",
     render: renderLazyOverlay(

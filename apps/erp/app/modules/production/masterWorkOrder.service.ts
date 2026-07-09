@@ -4,6 +4,10 @@ import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
 import { insertJob } from "./production.service";
 
+export type MasterWorkOrder = NonNullable<
+  Awaited<ReturnType<typeof getMasterWorkOrders>>["data"]
+>[number];
+
 /**
  * Paginated list of master work orders, joined to their backing job + style item
  * via the `masterWorkOrders` view. Mirrors the `getJobs` pattern so the list UI

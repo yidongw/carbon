@@ -5754,6 +5754,9 @@ msgstr "Signaler une rupture"
 msgid "Mark to delete"
 msgstr "Marquer pour supprimer"
 
+msgid "Master Work Orders"
+msgstr ""
+
 msgid "Match"
 msgstr "Match"
 
@@ -6199,6 +6202,9 @@ msgstr "Nouvelle localisation"
 
 msgid "New Maintenance Dispatch"
 msgstr "Nouvelle Demande de Maintenance"
+
+msgid "New Master Work Order"
+msgstr ""
 
 msgid "New Material"
 msgstr "Nouveau Matériau"

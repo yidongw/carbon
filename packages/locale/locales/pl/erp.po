@@ -5754,6 +5754,9 @@ msgstr "Oznacz niedobór"
 msgid "Mark to delete"
 msgstr "Oznacz do usunięcia"
 
+msgid "Master Work Orders"
+msgstr ""
+
 msgid "Match"
 msgstr "Mezcza"
 
@@ -6199,6 +6202,9 @@ msgstr "Nowa Lokalizacja"
 
 msgid "New Maintenance Dispatch"
 msgstr "Nowa Dyspozycja Konserwacji"
+
+msgid "New Master Work Order"
+msgstr ""
 
 msgid "New Material"
 msgstr "Nowy Materiał"

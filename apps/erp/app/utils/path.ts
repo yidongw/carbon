@@ -1138,6 +1138,10 @@ export const path = {
       return `${base}?${new URLSearchParams({ jobOperationId: opId }).toString()}`;
     },
     jobs: `${x}/production/jobs`,
+    masterWorkOrders: `${x}/production/master-work-orders`,
+    masterWorkOrder: (id: string) =>
+      generatePath(`${x}/production/master-work-orders/${id}`),
+    newMasterWorkOrder: `${x}/production/master-work-orders/new`,
     jobRecalculate: (id: string) => generatePath(`${x}/job/${id}/recalculate`),
     jobRelease: (id: string) => generatePath(`${x}/job/${id}/release`),
     jobStatus: (id: string) => generatePath(`${x}/job/${id}/status`),

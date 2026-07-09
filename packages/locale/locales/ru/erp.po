@@ -5754,6 +5754,9 @@ msgstr "Отметить нехватку"
 msgid "Mark to delete"
 msgstr "Отметить для удаления"
 
+msgid "Master Work Orders"
+msgstr ""
+
 msgid "Match"
 msgstr "Сопоставление"
 
@@ -6199,6 +6202,9 @@ msgstr "Новое местоположение"
 
 msgid "New Maintenance Dispatch"
 msgstr "Новая заявка на техническое обслуживание"
+
+msgid "New Master Work Order"
+msgstr ""
 
 msgid "New Material"
 msgstr "Новый материал"

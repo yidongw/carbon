@@ -5754,6 +5754,9 @@ msgstr "Mark Short"
 msgid "Mark to delete"
 msgstr "Mark to delete"
 
+msgid "Master Work Orders"
+msgstr "Master Work Orders"
+
 msgid "Match"
 msgstr "Match"
 
@@ -6199,6 +6202,9 @@ msgstr "New Location"
 
 msgid "New Maintenance Dispatch"
 msgstr "New Maintenance Dispatch"
+
+msgid "New Master Work Order"
+msgstr "New Master Work Order"
 
 msgid "New Material"
 msgstr "New Material"

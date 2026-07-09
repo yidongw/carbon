@@ -5754,6 +5754,9 @@ msgstr "कमी चिह्नित करें"
 msgid "Mark to delete"
 msgstr "हटाने के लिए चिह्नित करें"
 
+msgid "Master Work Orders"
+msgstr ""
+
 msgid "Match"
 msgstr "मैच"
 
@@ -6199,6 +6202,9 @@ msgstr "नया स्थान"
 
 msgid "New Maintenance Dispatch"
 msgstr "नया रखरखाव प्रेषण"
+
+msgid "New Master Work Order"
+msgstr ""
 
 msgid "New Material"
 msgstr "नई सामग्री"

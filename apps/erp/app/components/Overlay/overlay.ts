@@ -84,6 +84,14 @@ export const overlay = {
       };
     },
 
+    newMasterWorkOrder(): OverlayTarget {
+      return {
+        id: "newMasterWorkOrder",
+        url: `${path.to.newMasterWorkOrder}?overlay=true`,
+        params: {}
+      };
+    },
+
     newProductionQuantity({
       jobId,
       jobOperationId
