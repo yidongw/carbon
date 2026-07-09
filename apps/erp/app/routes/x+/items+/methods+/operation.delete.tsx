@@ -1,6 +1,7 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
 import type { ActionFunctionArgs } from "react-router";
 import { data } from "react-router";
+import { deleteMethodOperation } from "~/modules/items";
 
 export async function action({ request }: ActionFunctionArgs) {
   const { client } = await requirePermissions(request, {
@@ -19,7 +20,7 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
-  const { error } = await client.from("methodOperation").delete().eq("id", id);
+  const { error } = await deleteMethodOperation(client, id);
 
   if (error) {
     return data(

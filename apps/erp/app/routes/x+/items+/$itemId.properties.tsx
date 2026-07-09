@@ -21,7 +21,7 @@ import {
   getTool
 } from "~/modules/items";
 import { getLocationsList } from "~/modules/resources";
-import { getTagsList, methodItemType } from "~/modules/shared";
+import { getTagsList } from "~/modules/shared";
 import type { ListItem } from "~/types";
 
 type CommonFields = {
@@ -59,8 +59,16 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const url = new URL(request.url);
   const typeParam = url.searchParams.get("type");
-  const type = (methodItemType as readonly string[]).includes(typeParam ?? "")
-    ? (typeParam as (typeof methodItemType)[number])
+  const supportedItemTypes = [
+    "Part",
+    "Material",
+    "Tool",
+    "Consumable"
+  ] as const;
+  const type = (supportedItemTypes as readonly string[]).includes(
+    typeParam ?? ""
+  )
+    ? (typeParam as (typeof supportedItemTypes)[number])
     : "Part";
 
   const { tagTable, getSummary } = typeConfig[type];
