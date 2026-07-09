@@ -144,29 +144,37 @@ clean:
 - **UI test:** Production ▸ Master Work Orders → New → pick a Style + qty → Save →
   the new row appears in the list.
 
-**Still to do (Phase 3b / 4):** the Master Work Order **detail** page (cutting +
-color/size summary, its bundle children), then Bundle Work Orders.
+### ✅ Phase 3b — Master Work Order detail page
+Dedicated `/x/master-work-order/:id` surface (its own page, not the job page):
+style / quantity / status / due date + a Bundle Work Orders section. List rows
+link to it.
 
-### ⬜ Phase 4 — Bundle Work Order: schema + generation (DRY)
-- New `bundleWorkOrder` table (own migration): `masterWorkOrderId`, bundle
-  identity (color/size/number/sequence), 1:1 child job backing.
-- Generate bundle work orders when split/bundle generation happens. Reconsider
-  whether to revive any of the backed-up bundle/split logic or model it fresh.
-- **UI test target:** generating bundles yields bundle work orders under a master.
+### ✅ Phase 4 — Bundle Work Orders under a Master
+- `bundleWorkOrder` table + `bundleWorkOrders` view (child of a master, backed by
+  a child job with `parentJobId` = the master's job) + PostgREST reload.
+- `insertBundleWorkOrder` (reuses `insertJob`), `getBundleWorkOrders`/`getBundleWorkOrder`.
+- Master detail lists its bundles + a **New Bundle** overlay (color/size/quantity,
+  auto-numbered `<jobId>-NN`).
+- Dedicated `/x/bundle-work-order/:id` detail page (identity + Process Reports
+  placeholder).
+- Types regenerated + surgically merged; typecheck clean.
+- **UI test:** open a master → New Bundle → color/size/qty → Save → the bundle
+  appears under the master and opens on its own detail page.
 
-### ⬜ Phase 5 — Bundle Work Order: dedicated detail + process reporting (DRY)
-- Bundle detail route under Production; navigable from its master.
-- Downstream operations + **Process Reports** (Production/Rework/Scrap) rendered
-  and **filed inline** here, reusing `productionQuantityReport` infrastructure and
-  the existing report form/table components (renamed to apparel terminology on
-  these surfaces only — no relabeling of job pages).
-- **UI test target:** file a process report on a bundle op; it shows on the bundle
-  detail and rolls up correctly.
+**Deployed to preview:** migrations applied to the hosted preview DB + PostgREST
+reloaded — `masterWorkOrders`/`bundleWorkOrders` REST both return 200. (Previews
+don't auto-apply migrations — see the preview-DB note.)
+
+### ⬜ Phase 5 — Live Process Reports on the Bundle detail (next)
+Bundles are backed by real child jobs, so process reporting **already functions**
+through the existing production surfaces (`/x/production/quantities`, the job's
+operations). Remaining work is to **surface** those reports (Production / Rework /
+Scrap) inline on the bundle detail and allow filing them there, reusing
+`getProductionQuantitiesByOperation` / `productionQuantityReport` — apparel
+terminology on these surfaces only, no job-page relabeling.
 
 ### ⬜ Phase 6 — End-to-end verification
-- `pnpm db:build`, targeted service tests, `pnpm typecheck`.
-- Browser flow (`/login` + `/test`): open master → cutting → generate bundles →
-  open bundle work orders → report downstream processes.
+- Full browser flow: create master → add bundles → report downstream on a bundle.
 
 ---
 
