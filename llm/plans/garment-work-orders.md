@@ -116,13 +116,18 @@ Committed (`Add Master Work Order schema and creation service`):
 - `masterWorkOrder.service.ts`: `insertMasterWorkOrder` (reuses `insertJob` to
   create the backing job, then wraps it), `getMasterWorkOrders` / `getMasterWorkOrder`.
 
-**⚠️ Blocked on type regeneration.** `packages/database/src/types.ts` still needs
-`pnpm db:types` so `masterWorkOrder` / `masterWorkOrders` (and the Phase 1 style
-tables) are typed. **Local type-gen is not possible in this worktree** — the repo
-builds its DB via the `crbn` orchestrator (not installed here); a raw `supabase`
-stack fails applying the 2023 base migrations (storage-schema version drift, and
-the local `postgres` role is locked down). Regenerate via the normal dev flow
-(`crbn up` → `pnpm db:types`) or let CI do it, then typecheck.
+**✅ Types regenerated + typecheck clean.** Built the local DB and generated types
+without `crbn`: connected as the `supabase_admin` superuser to patch the stale
+`storage.buckets`/`storage.objects` columns, ran `supabase migration up` (all ~800
+migrations applied, validating both new migrations), generated types, and
+**surgically merged** the new `style`/`styleColor`/`styleColorAssignment`/
+`masterWorkOrder` tables + `styles`/`masterWorkOrders` views + `Style` enum values
+onto dev's committed `types.ts` (a full regen diverges ~5k lines and breaks
+unrelated dev code). Fixed two latent bugs the fresh types exposed (upsertStyle
+writing non-existent `style.colorName/colorCode`; a style-create diagnostic that
+narrowed to `never`). `pnpm typecheck` for erp is clean apart from **2 pre-existing
+dev errors** (`x/job/$jobId.details.tsx`, `make.$methodId.tsx` — byte-identical to
+`dev`).
 
 ### ⬜ Phase 3 — Master Work Order: dedicated UI under Production
 - New routes nested under Production (e.g. `x+/production+/work-orders...`),
