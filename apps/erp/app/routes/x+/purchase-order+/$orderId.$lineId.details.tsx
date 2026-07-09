@@ -152,7 +152,10 @@ export default function EditPurchaseOrderLineRoute() {
   const initialValues = {
     id: line?.id ?? undefined,
     purchaseOrderId: line?.purchaseOrderId ?? "",
-    purchaseOrderLineType: (line?.purchaseOrderLineType ?? "Part") as "Part",
+    purchaseOrderLineType:
+      line?.purchaseOrderLineType === "Comment"
+        ? "Part"
+        : (line?.purchaseOrderLineType ?? "Part"),
     itemId: line?.itemId ?? "",
     accountId: line?.accountId ?? "",
     assetId: line?.assetId ?? "",

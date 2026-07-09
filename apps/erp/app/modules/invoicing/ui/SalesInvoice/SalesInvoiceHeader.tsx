@@ -140,6 +140,7 @@ function SalesInvoiceTopbarLeft({ invoiceId }: { invoiceId: string }) {
       .select("itemId, description, quantity")
       .eq("invoiceId", invoiceId)
       .in("invoiceLineType", [
+        "Style",
         "Part",
         "Material",
         "Tool",

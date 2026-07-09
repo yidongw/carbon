@@ -207,6 +207,9 @@ msgstr "Una riga dell'ordine di vendita contiene i dettagli dell'ordine per un a
 msgid "A sales request for quote (RFQ) is a customer inquiry for pricing on a set of parts and quantities. It may result in a quote."
 msgstr "Una richiesta di preventivo (RFQ) è un'inchiesta del cliente per i prezzi su un insieme di parti e quantità. Potrebbe risultare in un preventivo."
 
+msgid "A style contains the information about a garment or footwear item that is cut, bundled, and produced downstream."
+msgstr ""
+
 msgid "A tool is a physical item used to make a part that can be used across multiple jobs"
 msgstr "Uno strumento è un articolo fisico utilizzato per realizzare una parte che può essere utilizzata in più lavori"
 
@@ -1002,6 +1005,10 @@ msgstr "Sei sicuro di voler eliminare il tipo di archiviazione: {0}? Questa azio
 msgid "Are you sure you want to delete the storage unit: {0}? This cannot be undone."
 msgstr "Sei sicuro di voler eliminare l'unità di archiviazione: {0}? Questa azione non può essere annullata."
 
+#. placeholder {0}: styleColor.colorCode
+msgid "Are you sure you want to delete the style color {0}? This cannot be undone."
+msgstr ""
+
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "Sei sicuro di voler eliminare il tipo di fornitore: {0}? Questa azione non può essere annullata."
@@ -1753,6 +1760,15 @@ msgstr "Collapse tabella caratteristiche"
 msgid "Collapse subtree"
 msgstr "Comprimi sottostruttura"
 
+msgid "Color Code"
+msgstr ""
+
+msgid "Color Name"
+msgstr ""
+
+msgid "Colors"
+msgstr ""
+
 msgid "Column"
 msgstr "Colonna"
 
@@ -2117,6 +2133,9 @@ msgstr "Copia il collegamento alla parte"
 msgid "Copy link to procedure"
 msgstr "Copia collegamento alla procedura"
 
+msgid "Copy link to style"
+msgstr ""
+
 msgid "Copy link to tool"
 msgstr "Copia il collegamento dello strumento"
 
@@ -2161,6 +2180,12 @@ msgstr "Copia numero preventivo"
 
 msgid "Copy response"
 msgstr "Copia risposta"
+
+msgid "Copy style number"
+msgstr ""
+
+msgid "Copy style unique identifier"
+msgstr ""
 
 msgid "Copy this item's pricing to another scope."
 msgstr "Copia il prezzo di questo articolo in un altro ambito."
@@ -2435,6 +2460,9 @@ msgstr "Linea di trasferimento stock creata"
 
 msgid "Created storage type"
 msgstr "Tipo di archiviazione creato"
+
+msgid "Created style"
+msgstr ""
 
 msgid "Created supplier process"
 msgstr "Progetto di fornitore creato"
@@ -3006,6 +3034,12 @@ msgstr "Elimina Tipo di Archiviazione"
 
 msgid "Delete Storage Unit"
 msgstr "Elimina Unità di Archiviazione"
+
+msgid "Delete Style"
+msgstr ""
+
+msgid "Delete Style Color"
+msgstr ""
 
 msgid "Delete Substance"
 msgstr "Elimina Sostanza"
@@ -3600,6 +3634,12 @@ msgstr "Modifica Tipo di Archiviazione"
 msgid "Edit Storage Unit"
 msgstr "Modifica Unità di Archiviazione"
 
+msgid "Edit Style"
+msgstr ""
+
+msgid "Edit Style Color"
+msgstr ""
+
 msgid "Edit Substance"
 msgstr "Modifica Sostanza"
 
@@ -4141,6 +4181,10 @@ msgstr "Impossibile creare la riga di trasferimento stock: {0}"
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create storage type: {0}"
 msgstr "Impossibile creare il tipo di archiviazione: {0}"
+
+#. placeholder {0}: fetcher.data.error.message
+msgid "Failed to create style: {0}"
+msgstr ""
 
 msgid "Failed to create supplier process"
 msgstr "Non è stato possibile creare il processo di fornitore"
@@ -6273,6 +6317,12 @@ msgstr "Nuovo Tipo di Archiviazione"
 msgid "New Storage Unit"
 msgstr "Nuova Unità di Stoccaggio"
 
+msgid "New Style"
+msgstr ""
+
+msgid "New Style Color"
+msgstr ""
+
 msgid "New Supplier"
 msgstr "Nuovo Fornitore"
 
@@ -6421,6 +6471,9 @@ msgstr "Nessuna cronologia chat"
 
 msgid "No chats found"
 msgstr "Nessuna chat trovata"
+
+msgid "No colors assigned"
+msgstr ""
 
 msgid "No comments yet. Be the first to add a comment."
 msgstr "Nessun commento ancora. Sii il primo ad aggiungere un commento."
@@ -9523,8 +9576,29 @@ msgstr "Memorizza un numero fisso di giorni su questo articolo. La data di inizi
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "Memorizza un numero fisso di giorni su questo articolo. La data di inizio della scadenza viene impostata su ogni lotto o seriale quando viene ricevuto."
 
+msgid "Style"
+msgstr ""
+
+msgid "Style Color"
+msgstr ""
+
+msgid "Style Colors"
+msgstr ""
+
+msgid "Style Details"
+msgstr ""
+
+msgid "Style ID"
+msgstr ""
+
 msgid "Style of kanban output to show in the Kanban table"
 msgstr "Stile dell'output kanban da mostrare nella tabella Kanban"
+
+msgid "Style Properties"
+msgstr ""
+
+msgid "Styles"
+msgstr ""
 
 msgid "Sub-assembly expiries only"
 msgstr "Solo scadenze dei sottoassiemi"
@@ -10567,6 +10641,9 @@ msgstr "Usa ... per ottenere il prossimo ID materiale"
 
 msgid "Use ... to get the next part ID"
 msgstr "Usa ... per ottenere l'ID parte successivo"
+
+msgid "Use ... to get the next style ID"
+msgstr ""
 
 msgid "Use ... to get the next tool ID"
 msgstr "Usa ... per ottenere il prossimo ID strumento"

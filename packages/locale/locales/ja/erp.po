@@ -207,6 +207,9 @@ msgstr "販売注文行には、特定の品目の注文詳細が含まれてい
 msgid "A sales request for quote (RFQ) is a customer inquiry for pricing on a set of parts and quantities. It may result in a quote."
 msgstr "営業見積依頼（RFQ）は、一連の部品と数量の価格設定に関する顧客からの問い合わせです。見積書につながる可能性があります。"
 
+msgid "A style contains the information about a garment or footwear item that is cut, bundled, and produced downstream."
+msgstr ""
+
 msgid "A tool is a physical item used to make a part that can be used across multiple jobs"
 msgstr "ツールは、複数のジョブで使用できるパーツを作成するために使用される物理的なアイテムです"
 
@@ -1002,6 +1005,10 @@ msgstr "ストレージタイプ: {0} を削除してもよろしいですか？
 msgid "Are you sure you want to delete the storage unit: {0}? This cannot be undone."
 msgstr "本当に保存ユニット: {0} を削除してもよろしいですか？この操作は取り消せません。"
 
+#. placeholder {0}: styleColor.colorCode
+msgid "Are you sure you want to delete the style color {0}? This cannot be undone."
+msgstr ""
+
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "サプライヤータイプ: {0} を削除してもよろしいですか？この操作は取り消せません。"
@@ -1753,6 +1760,15 @@ msgstr "FEATURES を折りたたむ"
 msgid "Collapse subtree"
 msgstr "サブツリーを折りたたむ"
 
+msgid "Color Code"
+msgstr ""
+
+msgid "Color Name"
+msgstr ""
+
+msgid "Colors"
+msgstr ""
+
 msgid "Column"
 msgstr "カラム"
 
@@ -2117,6 +2133,9 @@ msgstr "パーツへのリンクをコピー"
 msgid "Copy link to procedure"
 msgstr "プロシージャへのリンクをコピー"
 
+msgid "Copy link to style"
+msgstr ""
+
 msgid "Copy link to tool"
 msgstr "ツールへのリンクをコピー"
 
@@ -2161,6 +2180,12 @@ msgstr "見積番号をコピー"
 
 msgid "Copy response"
 msgstr "レスポンスをコピー"
+
+msgid "Copy style number"
+msgstr ""
+
+msgid "Copy style unique identifier"
+msgstr ""
 
 msgid "Copy this item's pricing to another scope."
 msgstr "このアイテムの価格設定を別のスコープにコピーします。"
@@ -2435,6 +2460,9 @@ msgstr "在庫移動行を作成しました"
 
 msgid "Created storage type"
 msgstr "ストレージタイプを作成しました"
+
+msgid "Created style"
+msgstr ""
 
 msgid "Created supplier process"
 msgstr "created supplier process"
@@ -3006,6 +3034,12 @@ msgstr "ストレージタイプを削除"
 
 msgid "Delete Storage Unit"
 msgstr "ストレージユニットを削除"
+
+msgid "Delete Style"
+msgstr ""
+
+msgid "Delete Style Color"
+msgstr ""
 
 msgid "Delete Substance"
 msgstr "物質を削除"
@@ -3600,6 +3634,12 @@ msgstr "ストレージタイプを編集"
 msgid "Edit Storage Unit"
 msgstr "ストレージユニットを編集"
 
+msgid "Edit Style"
+msgstr ""
+
+msgid "Edit Style Color"
+msgstr ""
+
 msgid "Edit Substance"
 msgstr "物質を編集"
 
@@ -4141,6 +4181,10 @@ msgstr "在庫移動行の作成に失敗しました: {0}"
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create storage type: {0}"
 msgstr "ストレージタイプの作成に失敗しました: {0}"
+
+#. placeholder {0}: fetcher.data.error.message
+msgid "Failed to create style: {0}"
+msgstr ""
 
 msgid "Failed to create supplier process"
 msgstr "failed to create supplier process"
@@ -6273,6 +6317,12 @@ msgstr "新しい保管タイプ"
 msgid "New Storage Unit"
 msgstr "新しい保管ユニット"
 
+msgid "New Style"
+msgstr ""
+
+msgid "New Style Color"
+msgstr ""
+
 msgid "New Supplier"
 msgstr "新サプライヤー"
 
@@ -6421,6 +6471,9 @@ msgstr "チャット履歴がありません"
 
 msgid "No chats found"
 msgstr "チャットが見つかりません"
+
+msgid "No colors assigned"
+msgstr ""
 
 msgid "No comments yet. Be the first to add a comment."
 msgstr "まだコメントがありません。最初のコメントを追加してください。"
@@ -9523,8 +9576,29 @@ msgstr "このアイテムに固定日数を保存します。有効期限の開
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "このアイテムの固定日数を保存します。有効期限の開始日は、各バッチまたはシリアルが受け取られたときに設定されます。"
 
+msgid "Style"
+msgstr ""
+
+msgid "Style Color"
+msgstr ""
+
+msgid "Style Colors"
+msgstr ""
+
+msgid "Style Details"
+msgstr ""
+
+msgid "Style ID"
+msgstr ""
+
 msgid "Style of kanban output to show in the Kanban table"
 msgstr "Kanbanテーブルに表示するカンバン出力のスタイル"
+
+msgid "Style Properties"
+msgstr ""
+
+msgid "Styles"
+msgstr ""
 
 msgid "Sub-assembly expiries only"
 msgstr "サブアセンブリの有効期限のみ"
@@ -10567,6 +10641,9 @@ msgstr "「...」を使用して次の材料IDを取得します"
 
 msgid "Use ... to get the next part ID"
 msgstr "「...」を使用して次のパートIDを取得します"
+
+msgid "Use ... to get the next style ID"
+msgstr ""
 
 msgid "Use ... to get the next tool ID"
 msgstr "「...」を使用して次のツールIDを取得します"

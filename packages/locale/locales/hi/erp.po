@@ -207,6 +207,9 @@ msgstr "एक बिक्रय आदेश पंक्ति किसी �
 msgid "A sales request for quote (RFQ) is a customer inquiry for pricing on a set of parts and quantities. It may result in a quote."
 msgstr "एक बिक्रय उद्धरण अनुरोध (RFQ) भागों और मात्राओं के एक सेट पर मूल्य निर्धारण के लिए एक ग्राहक पूछताछ है। इसके परिणामस्वरूप एक उद्धरण हो सकता है।"
 
+msgid "A style contains the information about a garment or footwear item that is cut, bundled, and produced downstream."
+msgstr ""
+
 msgid "A tool is a physical item used to make a part that can be used across multiple jobs"
 msgstr "एक उपकरण एक भौतिक वस्तु है जिसका उपयोग एक भाग बनाने के लिए किया जाता है जिसे कई कार्यों में उपयोग किया जा सकता है"
 
@@ -1002,6 +1005,10 @@ msgstr "क्या आप सुनिश्चित हैं कि आप 
 msgid "Are you sure you want to delete the storage unit: {0}? This cannot be undone."
 msgstr "क्या आप सुनिश्चित हैं कि आप स्टोरेज यूनिट को हटाना चाहते हैं: {0}? यह पूर्ववत नहीं किया जा सकता।"
 
+#. placeholder {0}: styleColor.colorCode
+msgid "Are you sure you want to delete the style color {0}? This cannot be undone."
+msgstr ""
+
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "क्या आप सुनिश्चित हैं कि आप आपूर्तिकर्ता प्रकार को हटाना चाहते हैं: {0}? यह पूर्ववत नहीं किया जा सकता।"
@@ -1753,6 +1760,15 @@ msgstr "फीचर्स टेबल को पिटाएं"
 msgid "Collapse subtree"
 msgstr "सबट्री को संक्षिप्त करें"
 
+msgid "Color Code"
+msgstr ""
+
+msgid "Color Name"
+msgstr ""
+
+msgid "Colors"
+msgstr ""
+
 msgid "Column"
 msgstr "कॉलम"
 
@@ -2117,6 +2133,9 @@ msgstr "भाग के लिए लिंक कॉपी करें"
 msgid "Copy link to procedure"
 msgstr "प्रक्रिया के लिए लिंक कॉपी करें"
 
+msgid "Copy link to style"
+msgstr ""
+
 msgid "Copy link to tool"
 msgstr "टूल के लिए लिंक कॉपी करें"
 
@@ -2161,6 +2180,12 @@ msgstr "उद्धरण संख्या कॉपी करें"
 
 msgid "Copy response"
 msgstr "प्रतिक्रिया कॉपी करें"
+
+msgid "Copy style number"
+msgstr ""
+
+msgid "Copy style unique identifier"
+msgstr ""
 
 msgid "Copy this item's pricing to another scope."
 msgstr "इस आइटम की मूल्य निर्धारण को दूसरे स्कोप में कॉपी करें।"
@@ -2435,6 +2460,9 @@ msgstr "स्टॉक ट्रांसफर लाइन बनाई ग�
 
 msgid "Created storage type"
 msgstr "भंडारण प्रकार बनाया गया"
+
+msgid "Created style"
+msgstr ""
 
 msgid "Created supplier process"
 msgstr "संचालित स्वीपर प्रक्रिया बनाया"
@@ -3006,6 +3034,12 @@ msgstr "स्टोरेज प्रकार हटाएं"
 
 msgid "Delete Storage Unit"
 msgstr "स्टोरेज यूनिट हटाएं"
+
+msgid "Delete Style"
+msgstr ""
+
+msgid "Delete Style Color"
+msgstr ""
 
 msgid "Delete Substance"
 msgstr "पदार्थ हटाएं"
@@ -3600,6 +3634,12 @@ msgstr "स्टोरेज प्रकार संपादित करे
 msgid "Edit Storage Unit"
 msgstr "स्टोरेज यूनिट संपादित करें"
 
+msgid "Edit Style"
+msgstr ""
+
+msgid "Edit Style Color"
+msgstr ""
+
 msgid "Edit Substance"
 msgstr "पदार्थ संपादित करें"
 
@@ -4141,6 +4181,10 @@ msgstr "स्टॉक ट्रांसफर लाइन बनाने �
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create storage type: {0}"
 msgstr "भंडारण प्रकार बनाने में विफल: {0}"
+
+#. placeholder {0}: fetcher.data.error.message
+msgid "Failed to create style: {0}"
+msgstr ""
 
 msgid "Failed to create supplier process"
 msgstr "सupplier प्रक्रिया बनाने में विफल हो गया"
@@ -6273,6 +6317,12 @@ msgstr "नया स्टोरेज प्रकार"
 msgid "New Storage Unit"
 msgstr "नया स्टोरेज यूनिट"
 
+msgid "New Style"
+msgstr ""
+
+msgid "New Style Color"
+msgstr ""
+
 msgid "New Supplier"
 msgstr "नया स्वीपर"
 
@@ -6421,6 +6471,9 @@ msgstr "कोई चैट इतिहास नहीं"
 
 msgid "No chats found"
 msgstr "कोई चैट नहीं मिला"
+
+msgid "No colors assigned"
+msgstr ""
 
 msgid "No comments yet. Be the first to add a comment."
 msgstr "अभी तक कोई टिप्पणी नहीं है। टिप्पणी जोड़ने वाले पहले व्यक्ति बनें।"
@@ -9523,8 +9576,29 @@ msgstr "इस आइटम पर दिनों की एक निश्च
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "इस आइटम पर दिनों की एक निश्चित संख्या स्टोर करें। प्रत्येक बैच या सीरीज़ के लिए समाप्ति प्रारंभ तारीख प्राप्त होने पर सेट की जाती है।"
 
+msgid "Style"
+msgstr ""
+
+msgid "Style Color"
+msgstr ""
+
+msgid "Style Colors"
+msgstr ""
+
+msgid "Style Details"
+msgstr ""
+
+msgid "Style ID"
+msgstr ""
+
 msgid "Style of kanban output to show in the Kanban table"
 msgstr "Kanban तालिका में दिखाने के लिए kanban आउटपुट की शैली"
+
+msgid "Style Properties"
+msgstr ""
+
+msgid "Styles"
+msgstr ""
 
 msgid "Sub-assembly expiries only"
 msgstr "उप-विधानसभा समाप्ति केवल"
@@ -10567,6 +10641,9 @@ msgstr "अगली सामग्री ID प्राप्त करने
 
 msgid "Use ... to get the next part ID"
 msgstr "अगला पार्ट आईडी प्राप्त करने के लिए ... का उपयोग करें"
+
+msgid "Use ... to get the next style ID"
+msgstr ""
 
 msgid "Use ... to get the next tool ID"
 msgstr "अगली टूल ID प्राप्त करने के लिए ... का उपयोग करें"

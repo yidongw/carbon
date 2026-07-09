@@ -144,7 +144,10 @@ export default function EditPurchaseInvoiceLineRoute() {
   const initialValues = {
     id: purchaseInvoiceLine?.id ?? undefined,
     invoiceId: purchaseInvoiceLine?.invoiceId ?? "",
-    invoiceLineType: (purchaseInvoiceLine?.invoiceLineType ?? "Part") as "Part",
+    invoiceLineType:
+      purchaseInvoiceLine?.invoiceLineType === "Comment"
+        ? "Part"
+        : (purchaseInvoiceLine?.invoiceLineType ?? "Part"),
     itemId: purchaseInvoiceLine?.itemId ?? "",
 
     accountId: purchaseInvoiceLine?.accountId ?? "",

@@ -15,6 +15,7 @@ import { useMemo, useRef, useState } from "react";
 import ConsumableForm from "~/modules/items/ui/Consumables/ConsumableForm";
 import MaterialForm from "~/modules/items/ui/Materials/MaterialForm";
 import PartForm from "~/modules/items/ui/Parts/PartForm";
+import StyleForm from "~/modules/items/ui/Styles/StyleForm";
 import ToolForm from "~/modules/items/ui/Tools/ToolForm";
 import type { MethodItemType } from "~/modules/shared";
 import { methodItemType } from "~/modules/shared";
@@ -27,6 +28,8 @@ const Items = (props: ItemsSelectProps) => {
   const { t } = useLingui();
   const translateType = (type: MethodItemType) => {
     switch (type) {
+      case "Style":
+        return t`Style`;
       case "Part":
         return t`Part`;
       case "Material":
@@ -139,6 +142,26 @@ const Items = (props: ItemsSelectProps) => {
             itemTrackingType: "Inventory",
             replenishmentSystem: "Make",
             unitOfMeasureCode: "EA",
+            defaultMethodType: "Make to Order",
+            unitCost: 0,
+            lotSize: 0,
+            shelfLifeCalculateFromBom: false,
+            tags: []
+          }}
+        />
+      )}
+      {type === "Style" && newItemsModal.isOpen && (
+        <StyleForm
+          type="modal"
+          onClose={handleCreateClose}
+          initialValues={{
+            id: "",
+            revision: "0",
+            name: created,
+            description: "",
+            itemTrackingType: "Inventory",
+            unitOfMeasureCode: "EA",
+            replenishmentSystem: "Make",
             defaultMethodType: "Make to Order",
             unitCost: 0,
             lotSize: 0,

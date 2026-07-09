@@ -207,6 +207,9 @@ msgstr "销售订单行包含特定物品的订单详情"
 msgid "A sales request for quote (RFQ) is a customer inquiry for pricing on a set of parts and quantities. It may result in a quote."
 msgstr "销售询价单（RFQ）是客户对一组产品和数量的价格咨询，可能会生成报价。"
 
+msgid "A style contains the information about a garment or footwear item that is cut, bundled, and produced downstream."
+msgstr ""
+
 msgid "A tool is a physical item used to make a part that can be used across multiple jobs"
 msgstr "工具是用于制造产品的实物物品，可以在多个工作中使用"
 
@@ -1002,6 +1005,10 @@ msgstr "您确定要删除存储类型：{0}？此操作无法撤销。"
 msgid "Are you sure you want to delete the storage unit: {0}? This cannot be undone."
 msgstr "您确定要删除存储单元：{0}？此操作无法撤销。"
 
+#. placeholder {0}: styleColor.colorCode
+msgid "Are you sure you want to delete the style color {0}? This cannot be undone."
+msgstr ""
+
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "您确定要删除供应商类型：{0}？此操作无法撤销。"
@@ -1753,6 +1760,15 @@ msgstr "折叠功能表"
 msgid "Collapse subtree"
 msgstr "折叠子树"
 
+msgid "Color Code"
+msgstr ""
+
+msgid "Color Name"
+msgstr ""
+
+msgid "Colors"
+msgstr ""
+
 msgid "Column"
 msgstr "列"
 
@@ -2117,6 +2133,9 @@ msgstr "复制产品链接"
 msgid "Copy link to procedure"
 msgstr "复制规程链接"
 
+msgid "Copy link to style"
+msgstr ""
+
 msgid "Copy link to tool"
 msgstr "复制工具链接"
 
@@ -2161,6 +2180,12 @@ msgstr "复制报价单编号"
 
 msgid "Copy response"
 msgstr "复制回复"
+
+msgid "Copy style number"
+msgstr ""
+
+msgid "Copy style unique identifier"
+msgstr ""
 
 msgid "Copy this item's pricing to another scope."
 msgstr "复制此物品的报价到另一个范围。"
@@ -2435,6 +2460,9 @@ msgstr "已创建库存转移行"
 
 msgid "Created storage type"
 msgstr "已创建存储类型"
+
+msgid "Created style"
+msgstr ""
 
 msgid "Created supplier process"
 msgstr "创建供应商流程"
@@ -3006,6 +3034,12 @@ msgstr "删除存储类型"
 
 msgid "Delete Storage Unit"
 msgstr "删除存储单元"
+
+msgid "Delete Style"
+msgstr ""
+
+msgid "Delete Style Color"
+msgstr ""
 
 msgid "Delete Substance"
 msgstr "删除物质"
@@ -3600,6 +3634,12 @@ msgstr "编辑存储类型"
 msgid "Edit Storage Unit"
 msgstr "编辑存储单元"
 
+msgid "Edit Style"
+msgstr ""
+
+msgid "Edit Style Color"
+msgstr ""
+
 msgid "Edit Substance"
 msgstr "编辑物质"
 
@@ -4141,6 +4181,10 @@ msgstr "创建库存转移行失败：{0}"
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create storage type: {0}"
 msgstr "创建存储类型失败：{0}"
+
+#. placeholder {0}: fetcher.data.error.message
+msgid "Failed to create style: {0}"
+msgstr ""
 
 msgid "Failed to create supplier process"
 msgstr "创建供应商工序失败"
@@ -6273,6 +6317,12 @@ msgstr "新建存储类型"
 msgid "New Storage Unit"
 msgstr "新建存储单元"
 
+msgid "New Style"
+msgstr ""
+
+msgid "New Style Color"
+msgstr ""
+
 msgid "New Supplier"
 msgstr "新供应商"
 
@@ -6421,6 +6471,9 @@ msgstr "没有聊天记录"
 
 msgid "No chats found"
 msgstr "未找到聊天记录"
+
+msgid "No colors assigned"
+msgstr ""
 
 msgid "No comments yet. Be the first to add a comment."
 msgstr "暂无评论。来添加第一条评论吧。"
@@ -9523,8 +9576,29 @@ msgstr "存储固定天数。有效期起始日期在接收或创建批次或序
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "在该物品上存储固定的天数。有效期起始日期在收到批次或序列号时设置。"
 
+msgid "Style"
+msgstr ""
+
+msgid "Style Color"
+msgstr ""
+
+msgid "Style Colors"
+msgstr ""
+
+msgid "Style Details"
+msgstr ""
+
+msgid "Style ID"
+msgstr ""
+
 msgid "Style of kanban output to show in the Kanban table"
 msgstr "看板输出样式在看板表格中显示"
+
+msgid "Style Properties"
+msgstr ""
+
+msgid "Styles"
+msgstr ""
 
 msgid "Sub-assembly expiries only"
 msgstr "子装产品有效期"
@@ -10567,6 +10641,9 @@ msgstr "使用...获取下一个物料ID"
 
 msgid "Use ... to get the next part ID"
 msgstr "使用...获取下一个产品号"
+
+msgid "Use ... to get the next style ID"
+msgstr ""
 
 msgid "Use ... to get the next tool ID"
 msgstr "使用...获取下一个工具ID"

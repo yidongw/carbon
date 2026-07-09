@@ -207,6 +207,9 @@ msgstr "Строка заказа на продажу содержит дета�
 msgid "A sales request for quote (RFQ) is a customer inquiry for pricing on a set of parts and quantities. It may result in a quote."
 msgstr "Запрос коммерческого предложения (RFQ) — это запрос клиента на получение цены за набор деталей и количества. Это может привести к получению коммерческого предложения."
 
+msgid "A style contains the information about a garment or footwear item that is cut, bundled, and produced downstream."
+msgstr ""
+
 msgid "A tool is a physical item used to make a part that can be used across multiple jobs"
 msgstr "Инструмент — это физический предмет, используемый для изготовления детали, которая может использоваться в нескольких заданиях"
 
@@ -1002,6 +1005,10 @@ msgstr "Вы уверены, что хотите удалить тип хран�
 msgid "Are you sure you want to delete the storage unit: {0}? This cannot be undone."
 msgstr "Вы уверены, что хотите удалить хранилище: {0}? Это действие невозможно отменить."
 
+#. placeholder {0}: styleColor.colorCode
+msgid "Are you sure you want to delete the style color {0}? This cannot be undone."
+msgstr ""
+
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "Вы уверены, что хотите удалить тип поставщика: {0}? Это действие невозможно отменить."
@@ -1753,6 +1760,15 @@ msgstr "Свернуть таблицу функций"
 msgid "Collapse subtree"
 msgstr "Свернуть поддерево"
 
+msgid "Color Code"
+msgstr ""
+
+msgid "Color Name"
+msgstr ""
+
+msgid "Colors"
+msgstr ""
+
 msgid "Column"
 msgstr "Столбец"
 
@@ -2117,6 +2133,9 @@ msgstr "Скопировать ссылку на деталь"
 msgid "Copy link to procedure"
 msgstr "Скопировать ссылку на процедуру"
 
+msgid "Copy link to style"
+msgstr ""
+
 msgid "Copy link to tool"
 msgstr "Скопировать ссылку на инструмент"
 
@@ -2161,6 +2180,12 @@ msgstr "Копировать номер предложения"
 
 msgid "Copy response"
 msgstr "Копировать ответ"
+
+msgid "Copy style number"
+msgstr ""
+
+msgid "Copy style unique identifier"
+msgstr ""
 
 msgid "Copy this item's pricing to another scope."
 msgstr "Скопируйте цены этого товара в другую область."
@@ -2435,6 +2460,9 @@ msgstr "Создана строка передачи запасов"
 
 msgid "Created storage type"
 msgstr "Тип хранилища создан"
+
+msgid "Created style"
+msgstr ""
 
 msgid "Created supplier process"
 msgstr "Создан процесс поставщика"
@@ -3006,6 +3034,12 @@ msgstr "Удалить тип хранилища"
 
 msgid "Delete Storage Unit"
 msgstr "Удалить хранилище"
+
+msgid "Delete Style"
+msgstr ""
+
+msgid "Delete Style Color"
+msgstr ""
 
 msgid "Delete Substance"
 msgstr "Удалить вещество"
@@ -3600,6 +3634,12 @@ msgstr "Редактировать тип хранилища"
 msgid "Edit Storage Unit"
 msgstr "Редактировать хранилище"
 
+msgid "Edit Style"
+msgstr ""
+
+msgid "Edit Style Color"
+msgstr ""
+
 msgid "Edit Substance"
 msgstr "Редактировать вещество"
 
@@ -4141,6 +4181,10 @@ msgstr "Не удалось создать строку передачи зап�
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create storage type: {0}"
 msgstr "Ошибка при создании типа хранилища: {0}"
+
+#. placeholder {0}: fetcher.data.error.message
+msgid "Failed to create style: {0}"
+msgstr ""
 
 msgid "Failed to create supplier process"
 msgstr "Невозможно создать процесс поставщика"
@@ -6273,6 +6317,12 @@ msgstr "Новый тип хранилища"
 msgid "New Storage Unit"
 msgstr "Новое хранилище"
 
+msgid "New Style"
+msgstr ""
+
+msgid "New Style Color"
+msgstr ""
+
 msgid "New Supplier"
 msgstr "Новый поставщик"
 
@@ -6421,6 +6471,9 @@ msgstr "Нет истории чатов"
 
 msgid "No chats found"
 msgstr "Чаты не найдены"
+
+msgid "No colors assigned"
+msgstr ""
 
 msgid "No comments yet. Be the first to add a comment."
 msgstr "Нет комментариев. Будьте первым, кто добавит комментарий."
@@ -9523,8 +9576,29 @@ msgstr "Сохраняйте фиксированное количество д�
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "Сохраняйте фиксированное количество дней для этого товара. Дата начала срока действия устанавливается для каждой партии или серийного номера при получении."
 
+msgid "Style"
+msgstr ""
+
+msgid "Style Color"
+msgstr ""
+
+msgid "Style Colors"
+msgstr ""
+
+msgid "Style Details"
+msgstr ""
+
+msgid "Style ID"
+msgstr ""
+
 msgid "Style of kanban output to show in the Kanban table"
 msgstr "Стиль вывода канбана для отображения в таблице Канбана"
+
+msgid "Style Properties"
+msgstr ""
+
+msgid "Styles"
+msgstr ""
 
 msgid "Sub-assembly expiries only"
 msgstr "Только сроки действия подсборок"
@@ -10567,6 +10641,9 @@ msgstr "Используйте ... для получения следующег�
 
 msgid "Use ... to get the next part ID"
 msgstr "Используйте ... для получения следующего ID детали"
+
+msgid "Use ... to get the next style ID"
+msgstr ""
 
 msgid "Use ... to get the next tool ID"
 msgstr "Используйте ... для получения следующего ID инструмента"
