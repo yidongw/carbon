@@ -8297,6 +8297,9 @@ msgstr "Informe"
 msgid "Report history"
 msgstr "Historial de informes"
 
+msgid "Report Process"
+msgstr ""
+
 msgid "reported"
 msgstr "informado"
 

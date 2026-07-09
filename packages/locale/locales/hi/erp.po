@@ -8297,6 +8297,9 @@ msgstr "रिपोर्ट"
 msgid "Report history"
 msgstr "निष्कर्ष रिपोर्ट"
 
+msgid "Report Process"
+msgstr ""
+
 msgid "reported"
 msgstr "रिपोर्टेड"
 

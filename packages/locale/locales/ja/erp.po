@@ -8297,6 +8297,9 @@ msgstr "レポート"
 msgid "Report history"
 msgstr "報告履歴"
 
+msgid "Report Process"
+msgstr ""
+
 msgid "reported"
 msgstr "報告"
 

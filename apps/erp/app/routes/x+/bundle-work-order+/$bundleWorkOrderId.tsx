@@ -1,10 +1,14 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
-import { Badge, Heading, HStack, VStack } from "@carbon/react";
+import { Badge, Button, Heading, HStack, VStack } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ReactNode } from "react";
+import { useCallback } from "react";
+import { LuCirclePlus } from "react-icons/lu";
 import type { LoaderFunctionArgs } from "react-router";
-import { Link, redirect, useLoaderData } from "react-router";
+import { Link, redirect, useLoaderData, useRevalidator } from "react-router";
+import { overlay, useOverlay } from "~/components/Overlay";
+import { usePermissions } from "~/hooks";
 import {
   getBundleProcessReports,
   getBundleWorkOrder
@@ -68,6 +72,17 @@ const reportTypeVariant: Record<string, "green" | "yellow" | "red"> = {
 export default function BundleWorkOrderDetailRoute() {
   const { bundleWorkOrder, reports } = useLoaderData<typeof loader>();
   const { t } = useLingui();
+  const permissions = usePermissions();
+  const { openOverlay } = useOverlay();
+  const revalidator = useRevalidator();
+
+  const jobId = bundleWorkOrder.jobId;
+  const openReport = useCallback(() => {
+    if (!jobId) return;
+    openOverlay(overlay.to.newProductionQuantity({ jobId }), {
+      onCreated: () => revalidator.revalidate()
+    });
+  }, [openOverlay, revalidator, jobId]);
 
   return (
     <div className="h-full min-h-0 overflow-y-auto w-full p-6">
@@ -100,9 +115,20 @@ export default function BundleWorkOrderDetailRoute() {
         </div>
 
         <VStack spacing={2} className="w-full">
-          <Heading size="h4">
-            <Trans>Process Reports</Trans>
-          </Heading>
+          <HStack className="justify-between w-full">
+            <Heading size="h4">
+              <Trans>Process Reports</Trans>
+            </Heading>
+            {jobId && permissions.can("create", "production") && (
+              <Button
+                variant="secondary"
+                leftIcon={<LuCirclePlus />}
+                onClick={openReport}
+              >
+                <Trans>Report Process</Trans>
+              </Button>
+            )}
+          </HStack>
           {reports.length === 0 ? (
             <div className="w-full rounded-lg border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
               <Trans>
