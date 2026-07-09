@@ -92,6 +92,21 @@ export const overlay = {
       };
     },
 
+    newBundleWorkOrder({
+      masterWorkOrderId
+    }: {
+      masterWorkOrderId: string;
+    }): OverlayTarget {
+      const query = new URLSearchParams();
+      query.set("overlay", "true");
+      query.set("masterWorkOrderId", masterWorkOrderId);
+      return {
+        id: "newBundleWorkOrder",
+        url: `${path.to.newBundleWorkOrder}?${query.toString()}`,
+        params: { masterWorkOrderId }
+      };
+    },
+
     newProductionQuantity({
       jobId,
       jobOperationId

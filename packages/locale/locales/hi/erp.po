@@ -1441,6 +1441,9 @@ msgstr "बल्क आयात"
 msgid "Bulk Jobs"
 msgstr "बल्क जॉब्स"
 
+msgid "Bundle Work Order"
+msgstr ""
+
 msgid "Bundle Work Orders"
 msgstr ""
 
@@ -1762,6 +1765,9 @@ msgstr "फीचर्स टेबल को पिटाएं"
 
 msgid "Collapse subtree"
 msgstr "सबट्री को संक्षिप्त करें"
+
+msgid "Color"
+msgstr ""
 
 msgid "Color Code"
 msgstr ""
@@ -3281,6 +3287,9 @@ msgstr "डाउनलोड पीडीएफ"
 
 msgid "Download template"
 msgstr "डेटा शीट डाउनलोड करें"
+
+msgid "Downstream process reports (production, rework, scrap) will appear here."
+msgstr ""
 
 msgid "Draft"
 msgstr "ड्राफ्ट"
@@ -6137,6 +6146,12 @@ msgstr "नई विशेषता"
 msgid "New Attribute Category"
 msgstr "नई विशेषता श्रेणी"
 
+msgid "New Bundle"
+msgstr ""
+
+msgid "New Bundle Work Order"
+msgstr ""
+
 msgid "New chat"
 msgstr "नई चैट"
 
@@ -6469,7 +6484,7 @@ msgstr "निकाल वस्तुओं में कोई उपलब�
 msgid "No BOM input has a shelf-life policy"
 msgstr "कोई BOM इनपुट शेल्फ-लाइफ नीति नहीं है"
 
-msgid "No bundle work orders yet. Bundles are generated when the master work order is split."
+msgid "No bundle work orders yet. Add bundles by color and size."
 msgstr ""
 
 msgid "No calibration records found"
@@ -7646,6 +7661,9 @@ msgstr "प्रोसेस पिकअप अपडेट किया ग�
 
 msgid "Process Pickups"
 msgstr "प्रक्रिया निकासियाँ"
+
+msgid "Process Reports"
+msgstr ""
 
 msgid "Process Type"
 msgstr "प्रक्रिया प्रकार"

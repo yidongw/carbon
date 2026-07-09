@@ -1441,6 +1441,9 @@ msgstr "Importation en masse"
 msgid "Bulk Jobs"
 msgstr "Travaux en masse"
 
+msgid "Bundle Work Order"
+msgstr ""
+
 msgid "Bundle Work Orders"
 msgstr ""
 
@@ -1762,6 +1765,9 @@ msgstr "Réduire le tableau de fonctionnalités"
 
 msgid "Collapse subtree"
 msgstr "Réduire le sous-arbre"
+
+msgid "Color"
+msgstr ""
 
 msgid "Color Code"
 msgstr ""
@@ -3281,6 +3287,9 @@ msgstr "Télécharger PDF"
 
 msgid "Download template"
 msgstr "Télécharger le modèle"
+
+msgid "Downstream process reports (production, rework, scrap) will appear here."
+msgstr ""
 
 msgid "Draft"
 msgstr "Brouillon"
@@ -6137,6 +6146,12 @@ msgstr "Nouvel Attribut"
 msgid "New Attribute Category"
 msgstr "Nouvelle Catégorie d'Attribut"
 
+msgid "New Bundle"
+msgstr ""
+
+msgid "New Bundle Work Order"
+msgstr ""
+
 msgid "New chat"
 msgstr "Nouveau chat"
 
@@ -6469,7 +6484,7 @@ msgstr "Aucune entité suivie disponible trouvée"
 msgid "No BOM input has a shelf-life policy"
 msgstr "Aucune entrée de nomenclature n'a de politique de durée de vie"
 
-msgid "No bundle work orders yet. Bundles are generated when the master work order is split."
+msgid "No bundle work orders yet. Add bundles by color and size."
 msgstr ""
 
 msgid "No calibration records found"
@@ -7646,6 +7661,9 @@ msgstr "Mise à jour du processus de retrait"
 
 msgid "Process Pickups"
 msgstr "prélèvements de processus"
+
+msgid "Process Reports"
+msgstr ""
 
 msgid "Process Type"
 msgstr "Type de processus"

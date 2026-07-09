@@ -1441,6 +1441,9 @@ msgstr "一括インポート"
 msgid "Bulk Jobs"
 msgstr "一括ジョブ"
 
+msgid "Bundle Work Order"
+msgstr ""
+
 msgid "Bundle Work Orders"
 msgstr ""
 
@@ -1762,6 +1765,9 @@ msgstr "FEATURES を折りたたむ"
 
 msgid "Collapse subtree"
 msgstr "サブツリーを折りたたむ"
+
+msgid "Color"
+msgstr ""
 
 msgid "Color Code"
 msgstr ""
@@ -3281,6 +3287,9 @@ msgstr "PDFをダウンロード"
 
 msgid "Download template"
 msgstr "テンプレートをダウンロード"
+
+msgid "Downstream process reports (production, rework, scrap) will appear here."
+msgstr ""
 
 msgid "Draft"
 msgstr "下書き"
@@ -6137,6 +6146,12 @@ msgstr "新しい属性"
 msgid "New Attribute Category"
 msgstr "新しい属性カテゴリ"
 
+msgid "New Bundle"
+msgstr ""
+
+msgid "New Bundle Work Order"
+msgstr ""
+
 msgid "New chat"
 msgstr "新しいチャット"
 
@@ -6469,7 +6484,7 @@ msgstr "追跡可能なエンティティが見つかりません"
 msgid "No BOM input has a shelf-life policy"
 msgstr "BOMインプットに棚卸資産有効期限ポリシーがありません"
 
-msgid "No bundle work orders yet. Bundles are generated when the master work order is split."
+msgid "No bundle work orders yet. Add bundles by color and size."
 msgstr ""
 
 msgid "No calibration records found"
@@ -7646,6 +7661,9 @@ msgstr "プロセスピックアップが更新されました"
 
 msgid "Process Pickups"
 msgstr "工程払い出し"
+
+msgid "Process Reports"
+msgstr ""
 
 msgid "Process Type"
 msgstr "プロセスタイプ"

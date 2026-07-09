@@ -152,6 +152,27 @@ export const overlayRegistry = {
         import("~/modules/production/ui/MasterWorkOrders/MasterWorkOrderForm")
     )
   },
+  newBundleWorkOrder: {
+    type: "drawer",
+    render: renderLazyOverlay(
+      (ctx) => {
+        const data = ctx.loaderData as
+          | {
+              initialValues: {
+                masterWorkOrderId: string;
+                colorCode: string;
+                sizeCode: string;
+                quantity: number;
+              };
+            }
+          | undefined;
+        if (!data) return null;
+        return { initialValues: data.initialValues };
+      },
+      () =>
+        import("~/modules/production/ui/MasterWorkOrders/BundleWorkOrderForm")
+    )
+  },
   newProductionQuantity: {
     type: "drawer",
     render: renderLazyOverlay(

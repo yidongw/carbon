@@ -1441,6 +1441,9 @@ msgstr "Bulk Import"
 msgid "Bulk Jobs"
 msgstr "Bulk Jobs"
 
+msgid "Bundle Work Order"
+msgstr "Bundle Work Order"
+
 msgid "Bundle Work Orders"
 msgstr "Bundle Work Orders"
 
@@ -1762,6 +1765,9 @@ msgstr "Collapse features table"
 
 msgid "Collapse subtree"
 msgstr "Collapse subtree"
+
+msgid "Color"
+msgstr "Color"
 
 msgid "Color Code"
 msgstr "Color Code"
@@ -3281,6 +3287,9 @@ msgstr "Download PDF"
 
 msgid "Download template"
 msgstr "Download template"
+
+msgid "Downstream process reports (production, rework, scrap) will appear here."
+msgstr "Downstream process reports (production, rework, scrap) will appear here."
 
 msgid "Draft"
 msgstr "Draft"
@@ -6137,6 +6146,12 @@ msgstr "New Attribute"
 msgid "New Attribute Category"
 msgstr "New Attribute Category"
 
+msgid "New Bundle"
+msgstr "New Bundle"
+
+msgid "New Bundle Work Order"
+msgstr "New Bundle Work Order"
+
 msgid "New chat"
 msgstr "New chat"
 
@@ -6469,8 +6484,8 @@ msgstr "No available tracked entities found"
 msgid "No BOM input has a shelf-life policy"
 msgstr "No BOM input has a shelf-life policy"
 
-msgid "No bundle work orders yet. Bundles are generated when the master work order is split."
-msgstr "No bundle work orders yet. Bundles are generated when the master work order is split."
+msgid "No bundle work orders yet. Add bundles by color and size."
+msgstr "No bundle work orders yet. Add bundles by color and size."
 
 msgid "No calibration records found"
 msgstr "No calibration records found"
@@ -7646,6 +7661,9 @@ msgstr "Process pickup updated"
 
 msgid "Process Pickups"
 msgstr "Process Pickups"
+
+msgid "Process Reports"
+msgstr "Process Reports"
 
 msgid "Process Type"
 msgstr "Process Type"
