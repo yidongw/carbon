@@ -1,5 +1,6 @@
 export * from "./jobOperationSupplierQuantityReport.models";
 export * from "./jobOperationSupplierQuantityReport.service";
+export * from "./masterWorkOrder.service";
 export * from "./operationType";
 export * from "./production.models";
 export * from "./production.service";
