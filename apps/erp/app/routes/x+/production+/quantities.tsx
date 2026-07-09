@@ -28,7 +28,7 @@ import { path } from "~/utils/path";
 import { getGenericQueryFilters } from "~/utils/query";
 
 export const handle: Handle = {
-  breadcrumb: msg`Process Completions`,
+  breadcrumb: msg`Process Reports`,
   to: path.to.productionQuantities,
   module: "production"
 };

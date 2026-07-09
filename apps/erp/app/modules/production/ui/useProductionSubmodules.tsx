@@ -54,7 +54,7 @@ export default function useProductionSubmodules() {
           role: "employee"
         },
         {
-          name: t`Process Completions`,
+          name: t`Process Reports`,
           to: path.to.productionQuantities,
           icon: <LuPackageCheck />,
           role: "employee"
