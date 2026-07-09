@@ -165,16 +165,28 @@ link to it.
 reloaded — `masterWorkOrders`/`bundleWorkOrders` REST both return 200. (Previews
 don't auto-apply migrations — see the preview-DB note.)
 
-### ⬜ Phase 5 — Live Process Reports on the Bundle detail (next)
-Bundles are backed by real child jobs, so process reporting **already functions**
-through the existing production surfaces (`/x/production/quantities`, the job's
-operations). Remaining work is to **surface** those reports (Production / Rework /
-Scrap) inline on the bundle detail and allow filing them there, reusing
-`getProductionQuantitiesByOperation` / `productionQuantityReport` — apparel
-terminology on these surfaces only, no job-page relabeling.
+### ✅ Phase 5 — Process Reports on the Bundle detail
+- `getBundleProcessReports` pulls the `productionQuantity` rows (Production /
+  Rework / Scrap) filed against the bundle's backing job (filtered by job via the
+  operation inner-join). The bundle detail renders them with type badges +
+  operation + quantity.
+- A **Report Process** button opens the existing production-quantity overlay
+  scoped to the bundle's job, so reports can be filed directly from the bundle
+  surface (reuses the overlay end-to-end; no job-page relabeling). Typecheck clean.
 
-### ⬜ Phase 6 — End-to-end verification
-- Full browser flow: create master → add bundles → report downstream on a bundle.
+### ⬜ Phase 6 — End-to-end browser verification (remaining)
+Verified so far: full typecheck clean (2 pre-existing dev errors only) and the
+`masterWorkOrders` / `bundleWorkOrders` REST endpoints return 200 on the preview.
+Remaining: click through the live preview flow (create master → add bundles →
+Report Process → see it listed).
+
+---
+
+## Feature status: functionally complete (Phases 1–5)
+
+Master + Bundle Work Orders exist as their own first-class objects with their own
+list/detail/creation/reporting surfaces under Production, never relabeling the job
+page. Backed internally by jobs (DRY) via `insertJob`. Deployed to the preview DB.
 
 ---
 
