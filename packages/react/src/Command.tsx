@@ -294,7 +294,7 @@ export const multiSelectTriggerVariants = cva(
         sm: "text-xs"
       },
       hasSelections: {
-        true: "h-full",
+        true: "h-auto",
         false: ""
       }
     },
@@ -302,7 +302,7 @@ export const multiSelectTriggerVariants = cva(
       {
         size: "lg",
         hasSelections: true,
-        class: "py-3 px-4"
+        class: "min-h-12 py-2 px-4"
       },
       {
         size: "lg",
@@ -312,7 +312,7 @@ export const multiSelectTriggerVariants = cva(
       {
         size: "md",
         hasSelections: true,
-        class: "py-2 px-3"
+        class: "min-h-10 py-1.5 px-3"
       },
       {
         size: "md",
@@ -322,7 +322,7 @@ export const multiSelectTriggerVariants = cva(
       {
         size: "sm",
         hasSelections: true,
-        class: "py-1 px-2"
+        class: "min-h-8 py-1 px-2"
       },
       {
         size: "sm",
