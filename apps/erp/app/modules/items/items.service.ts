@@ -2336,6 +2336,68 @@ export async function updateRevision(
     .eq("id", revision.id);
 }
 
+/**
+ * Keep a Style item's "Color" and "Size" list configuration parameters in sync
+ * with the colors/sizes assigned to the style. This turns a Style into a normal
+ * configured item so color/size flow through the existing config machinery
+ * (job-creation config modal, production-quantity config table).
+ */
+export async function syncStyleConfigurationParameters(
+  client: SupabaseClient<Database>,
+  args: {
+    itemId: string;
+    companyId: string;
+    userId: string;
+    styleColorIds: string[];
+    styleSizeIds: string[];
+  }
+) {
+  const [colors, sizes] = await Promise.all([
+    args.styleColorIds.length > 0
+      ? client
+          .from("styleColor")
+          .select("colorCode")
+          .in("id", args.styleColorIds)
+      : Promise.resolve({ data: [] as { colorCode: string }[], error: null }),
+    args.styleSizeIds.length > 0
+      ? client.from("styleSize").select("sizeCode").in("id", args.styleSizeIds)
+      : Promise.resolve({ data: [] as { sizeCode: string }[], error: null })
+  ]);
+
+  const colorCodes = (colors.data ?? [])
+    .map((c) => c.colorCode)
+    .filter(Boolean);
+  const sizeCodes = (sizes.data ?? []).map((s) => s.sizeCode).filter(Boolean);
+
+  const existing = await client
+    .from("configurationParameter")
+    .select("id, key")
+    .eq("itemId", args.itemId)
+    .eq("companyId", args.companyId)
+    .in("key", ["color", "size"]);
+
+  const paramByKey = new Map(
+    (existing.data ?? []).map((p) => [p.key, p.id] as const)
+  );
+
+  for (const [key, label, options] of [
+    ["color", "Color", colorCodes],
+    ["size", "Size", sizeCodes]
+  ] as const) {
+    if (options.length === 0) continue; // list params require options
+    await upsertConfigurationParameter(client, {
+      id: paramByKey.get(key),
+      itemId: args.itemId,
+      key,
+      label,
+      dataType: "list",
+      listOptions: options,
+      companyId: args.companyId,
+      userId: args.userId
+    });
+  }
+}
+
 export async function upsertConfigurationParameter(
   client: SupabaseClient<Database>,
   configurationParameter: z.infer<typeof configurationParameterValidator> & {

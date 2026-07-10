@@ -5,6 +5,7 @@ import type { z } from "zod";
 import { getDatabaseClient } from "~/services/database.server";
 import { sanitize } from "~/utils/supabase";
 import {
+  syncStyleConfigurationParameters,
   upsertItemDefaultPickMethod,
   upsertItemShelfLife
 } from "./items.service";
@@ -508,6 +509,13 @@ export async function upsertStyle(
         userId: style.createdBy,
         styleSizeIds: style.styleSizeIds
       });
+      await syncStyleConfigurationParameters(client, {
+        itemId,
+        companyId: style.companyId,
+        userId: style.createdBy,
+        styleColorIds: style.styleColorIds,
+        styleSizeIds: style.styleSizeIds
+      });
     } catch (error) {
       // Roll back the orphaned item so retries don't hit duplicate-key errors
       await client.from("item").delete().eq("id", itemId);
@@ -666,6 +674,13 @@ export async function upsertStyle(
         styleSizeIds: style.styleSizeIds
       });
     }
+    await syncStyleConfigurationParameters(client, {
+      itemId: style.id,
+      companyId,
+      userId: style.updatedBy,
+      styleColorIds: style.styleColorIds,
+      styleSizeIds: style.styleSizeIds
+    });
   } catch (error) {
     return {
       data: null,
