@@ -442,6 +442,7 @@ export type Database = {
           bundleNumber: string
           colorCode: string | null
           companyId: string
+          configuration: Json | null
           createdAt: string
           createdBy: string
           customFields: Json | null
@@ -458,6 +459,7 @@ export type Database = {
           bundleNumber: string
           colorCode?: string | null
           companyId: string
+          configuration?: Json | null
           createdAt?: string
           createdBy: string
           customFields?: Json | null
@@ -474,6 +476,7 @@ export type Database = {
           bundleNumber?: string
           colorCode?: string | null
           companyId?: string
+          configuration?: Json | null
           createdAt?: string
           createdBy?: string
           customFields?: Json | null

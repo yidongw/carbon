@@ -97,18 +97,21 @@ export async function insertBundleWorkOrder(
     sequence?: number;
     colorCode?: string | null;
     sizeCode?: string | null;
+    configuration?: Record<string, unknown> | null;
     companyId: string;
     createdBy: string;
   }
 ) {
   // The child job is the bundle's execution backing; the bundle -> master link
   // is carried by bundleWorkOrder.masterWorkOrderId (the job table has no
-  // parentJobId column), so we don't set one here.
+  // parentJobId column), so we don't set one here. The bundle's configuration
+  // (color/size cell) is carried onto the child job too.
   const job = await insertJob(client, {
     itemId: input.itemId,
     quantity: input.quantity,
     companyId: input.companyId,
-    createdBy: input.createdBy
+    createdBy: input.createdBy,
+    configuration: input.configuration ?? undefined
   });
 
   if (job.error || !job.data) {
@@ -124,6 +127,7 @@ export async function insertBundleWorkOrder(
       sequence: input.sequence ?? 1,
       colorCode: input.colorCode ?? null,
       sizeCode: input.sizeCode ?? null,
+      configuration: (input.configuration ?? null) as never,
       companyId: input.companyId,
       createdBy: input.createdBy
     })

@@ -2380,11 +2380,13 @@ export async function syncStyleConfigurationParameters(
     (existing.data ?? []).map((p) => [p.key, p.id] as const)
   );
 
+  let hasAnyParam = false;
   for (const [key, label, options] of [
     ["color", "Color", colorCodes],
     ["size", "Size", sizeCodes]
   ] as const) {
     if (options.length === 0) continue; // list params require options
+    hasAnyParam = true;
     await upsertConfigurationParameter(client, {
       id: paramByKey.get(key),
       itemId: args.itemId,
@@ -2395,6 +2397,16 @@ export async function syncStyleConfigurationParameters(
       companyId: args.companyId,
       userId: args.userId
     });
+  }
+
+  // Flip on `requiresConfiguration` so the standard config modal fires when a
+  // job / production quantity is created for this style.
+  if (hasAnyParam) {
+    await client
+      .from("itemReplenishment")
+      .update({ requiresConfiguration: true })
+      .eq("itemId", args.itemId)
+      .eq("companyId", args.companyId);
   }
 }
 
