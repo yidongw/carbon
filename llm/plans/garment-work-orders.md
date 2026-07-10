@@ -182,7 +182,23 @@ Report Process → see it listed).
 
 ---
 
-## Feature status: functionally complete (Phases 1–5)
+### ✅ Cutting → Split → Bundles (verified live on the preview)
+The real apparel flow, modeled cleanly on the WO tables (no revived
+splitBatch/bundle):
+- New `masterWorkOrderSplitRow` table (colorCode/sizeCode/quantity +
+  `bundleWorkOrderId` set once materialized).
+- Master detail **Report Cutting** → color/size/quantity rows grid, persisted as
+  pending split rows.
+- **Confirm Split** → the same rows, pre-filled + editable → generates one
+  `bundleWorkOrder` (child job) per row, auto-numbered, and links each row.
+- **Verified end-to-end on the live preview** (logged in): reported 2 cutting rows
+  (RED·M·30, BLUE·L·20) → Confirm Split → 2 bundles created (`J000046-02/03`),
+  rows linked, pending list cleared.
+- Bug caught + fixed during the browser test: `insertJob` was passing
+  `job.parentJobId`, a column that only existed in the dropped garment-WO
+  migration — removed it (bundle→master link is on `bundleWorkOrder.masterWorkOrderId`).
+
+## Feature status: functionally complete (Phases 1–5 + cutting split)
 
 Master + Bundle Work Orders exist as their own first-class objects with their own
 list/detail/creation/reporting surfaces under Production, never relabeling the job
