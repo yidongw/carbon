@@ -1009,6 +1009,10 @@ msgstr "Sei sicuro di voler eliminare l'unità di archiviazione: {0}? Questa azi
 msgid "Are you sure you want to delete the style color {0}? This cannot be undone."
 msgstr ""
 
+#. placeholder {0}: styleSize.sizeCode
+msgid "Are you sure you want to delete the style size {0}? This cannot be undone."
+msgstr ""
+
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "Sei sicuro di voler eliminare il tipo di fornitore: {0}? Questa azione non può essere annullata."
@@ -3059,6 +3063,9 @@ msgstr ""
 msgid "Delete Style Color"
 msgstr ""
 
+msgid "Delete Style Size"
+msgstr ""
+
 msgid "Delete Substance"
 msgstr "Elimina Sostanza"
 
@@ -3656,6 +3663,9 @@ msgid "Edit Style"
 msgstr ""
 
 msgid "Edit Style Color"
+msgstr ""
+
+msgid "Edit Style Size"
 msgstr ""
 
 msgid "Edit Substance"
@@ -6356,6 +6366,9 @@ msgstr ""
 msgid "New Style Color"
 msgstr ""
 
+msgid "New Style Size"
+msgstr ""
+
 msgid "New Supplier"
 msgstr "Nuovo Fornitore"
 
@@ -6711,6 +6724,9 @@ msgstr "Nessun campione ispezionato ancora."
 
 msgid "No selection"
 msgstr "Nessuna selezione"
+
+msgid "No sizes assigned"
+msgstr ""
 
 msgid "No sorts applied to this view"
 msgstr "Nessun ordinamento applicato a questa visualizzazione"
@@ -9375,6 +9391,12 @@ msgstr "Lavoro singolo"
 msgid "Size"
 msgstr "Dimensione"
 
+msgid "Size Code"
+msgstr ""
+
+msgid "Size Name"
+msgstr ""
+
 msgid "Sizes"
 msgstr "Dimensioni"
 
@@ -9649,6 +9671,12 @@ msgid "Style of kanban output to show in the Kanban table"
 msgstr "Stile dell'output kanban da mostrare nella tabella Kanban"
 
 msgid "Style Properties"
+msgstr ""
+
+msgid "Style Size"
+msgstr ""
+
+msgid "Style Sizes"
 msgstr ""
 
 msgid "Styles"

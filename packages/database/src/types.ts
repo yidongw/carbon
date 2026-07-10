@@ -34,6 +34,240 @@ export type Database = {
   }
   public: {
     Tables: {
+      styleSize: {
+        Row: {
+          companyId: string | null
+          createdAt: string
+          createdBy: string
+          id: string
+          sizeCode: string
+          sizeName: string
+          updatedAt: string | null
+          updatedBy: string | null
+        }
+        Insert: {
+          companyId?: string | null
+          createdAt?: string
+          createdBy: string
+          id?: string
+          sizeCode: string
+          sizeName: string
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Update: {
+          companyId?: string | null
+          createdAt?: string
+          createdBy?: string
+          id?: string
+          sizeCode?: string
+          sizeName?: string
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "styleSize_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "styleSize_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "styleSize_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "customFieldTables"
+            referencedColumns: ["companyId"]
+          },
+          {
+            foreignKeyName: "styleSize_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "integrations"
+            referencedColumns: ["companyId"]
+          },
+          {
+            foreignKeyName: "styleSize_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "styleSize_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "styleSize_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "styleSize_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "styleSize_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "styleSize_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "styleSize_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "styleSize_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "styleSize_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "styleSize_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+        ]
+      }
+      styleSizeAssignment: {
+        Row: {
+          companyId: string
+          createdAt: string
+          createdBy: string
+          styleId: string
+          styleSizeId: string
+        }
+        Insert: {
+          companyId: string
+          createdAt?: string
+          createdBy: string
+          styleId: string
+          styleSizeId: string
+        }
+        Update: {
+          companyId?: string
+          createdAt?: string
+          createdBy?: string
+          styleId?: string
+          styleSizeId?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "styleSizeAssignment_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "styleSizeAssignment_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "styleSizeAssignment_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "customFieldTables"
+            referencedColumns: ["companyId"]
+          },
+          {
+            foreignKeyName: "styleSizeAssignment_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "integrations"
+            referencedColumns: ["companyId"]
+          },
+          {
+            foreignKeyName: "styleSizeAssignment_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "styleSizeAssignment_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "styleSizeAssignment_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "styleSizeAssignment_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "styleSizeAssignment_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "styleSizeAssignment_styleId_companyId_fkey"
+            columns: ["styleId", "companyId"]
+            isOneToOne: false
+            referencedRelation: "style"
+            referencedColumns: ["id", "companyId"]
+          },
+          {
+            foreignKeyName: "styleSizeAssignment_styleSizeId_fkey"
+            columns: ["styleSizeId"]
+            isOneToOne: false
+            referencedRelation: "styleSize"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       masterWorkOrderSplitRow: {
         Row: {
           bundleWorkOrderId: string | null
@@ -54806,6 +55040,7 @@ export type Database = {
             | null
           revision: string | null
           revisions: Json | null
+          sizes: Json | null
           sourcingType: Database["public"]["Enums"]["sourcingType"] | null
           tags: string[] | null
           thumbnailPath: string | null

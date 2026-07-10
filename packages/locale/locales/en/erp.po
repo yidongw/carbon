@@ -1009,6 +1009,10 @@ msgstr "Are you sure you want to delete the storage unit: {0}? This cannot be un
 msgid "Are you sure you want to delete the style color {0}? This cannot be undone."
 msgstr "Are you sure you want to delete the style color {0}? This cannot be undone."
 
+#. placeholder {0}: styleSize.sizeCode
+msgid "Are you sure you want to delete the style size {0}? This cannot be undone."
+msgstr "Are you sure you want to delete the style size {0}? This cannot be undone."
+
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
@@ -3059,6 +3063,9 @@ msgstr "Delete Style"
 msgid "Delete Style Color"
 msgstr "Delete Style Color"
 
+msgid "Delete Style Size"
+msgstr "Delete Style Size"
+
 msgid "Delete Substance"
 msgstr "Delete Substance"
 
@@ -3657,6 +3664,9 @@ msgstr "Edit Style"
 
 msgid "Edit Style Color"
 msgstr "Edit Style Color"
+
+msgid "Edit Style Size"
+msgstr "Edit Style Size"
 
 msgid "Edit Substance"
 msgstr "Edit Substance"
@@ -6356,6 +6366,9 @@ msgstr "New Style"
 msgid "New Style Color"
 msgstr "New Style Color"
 
+msgid "New Style Size"
+msgstr "New Style Size"
+
 msgid "New Supplier"
 msgstr "New Supplier"
 
@@ -6711,6 +6724,9 @@ msgstr "No samples inspected yet."
 
 msgid "No selection"
 msgstr "No selection"
+
+msgid "No sizes assigned"
+msgstr "No sizes assigned"
 
 msgid "No sorts applied to this view"
 msgstr "No sorts applied to this view"
@@ -9375,6 +9391,12 @@ msgstr "Single Job"
 msgid "Size"
 msgstr "Size"
 
+msgid "Size Code"
+msgstr "Size Code"
+
+msgid "Size Name"
+msgstr "Size Name"
+
 msgid "Sizes"
 msgstr "Sizes"
 
@@ -9650,6 +9672,12 @@ msgstr "Style of kanban output to show in the Kanban table"
 
 msgid "Style Properties"
 msgstr "Style Properties"
+
+msgid "Style Size"
+msgstr "Style Size"
+
+msgid "Style Sizes"
+msgstr "Style Sizes"
 
 msgid "Styles"
 msgstr "Styles"

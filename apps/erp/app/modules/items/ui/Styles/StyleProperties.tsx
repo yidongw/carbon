@@ -57,6 +57,11 @@ type StyleRouteData = {
       colorCode: string;
       colorName: string;
     }>;
+    styleSizeBadges?: Array<{
+      id: string;
+      sizeCode: string;
+      sizeName: string;
+    }>;
     tags: string[] | null;
     thumbnailPath: string | null;
     unitOfMeasureCode: string | null;
@@ -285,6 +290,25 @@ const StyleProperties = () => {
           {(routeData.styleSummary.styleColorBadges ?? []).length === 0 && (
             <span className="text-xs text-muted-foreground">
               <Trans>No colors assigned</Trans>
+            </span>
+          )}
+        </div>
+      </VStack>
+
+      <VStack spacing={2}>
+        <h3 className="text-xs text-muted-foreground">
+          <Trans>Sizes</Trans>
+        </h3>
+        <div className="flex flex-wrap gap-2">
+          {(routeData.styleSummary.styleSizeBadges ?? []).map((size) => (
+            <Badge key={size.id} variant="secondary">
+              {size.sizeCode}
+              {size.sizeName ? ` - ${size.sizeName}` : ""}
+            </Badge>
+          ))}
+          {(routeData.styleSummary.styleSizeBadges ?? []).length === 0 && (
+            <span className="text-xs text-muted-foreground">
+              <Trans>No sizes assigned</Trans>
             </span>
           )}
         </div>

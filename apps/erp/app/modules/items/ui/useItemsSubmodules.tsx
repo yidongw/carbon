@@ -72,6 +72,12 @@ export default function useItemsSubmodules() {
           to: path.to.styleColors,
           icon: <LuPalette />,
           role: "employee"
+        },
+        {
+          name: t`Sizes`,
+          to: path.to.styleSizes,
+          icon: <LuRuler />,
+          role: "employee"
         }
       ]
     },

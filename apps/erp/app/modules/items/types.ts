@@ -30,6 +30,7 @@ import type {
   getServices,
   getStyle,
   getStyleColors,
+  getStyleSizes,
   getStyles,
   getSupplierParts,
   getTool,
@@ -180,6 +181,10 @@ export type Style = NonNullable<
 
 export type StyleColor = NonNullable<
   Awaited<ReturnType<typeof getStyleColors>>["data"]
+>[number];
+
+export type StyleSize = NonNullable<
+  Awaited<ReturnType<typeof getStyleSizes>>["data"]
 >[number];
 
 export type StyleSummary = NonNullable<

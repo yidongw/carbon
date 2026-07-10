@@ -14,3 +14,9 @@ export const styleValidator = applyStorageAndShelfLifeRefines(
     })
   )
 );
+
+export const styleSizeValidator = z.object({
+  id: zfd.text(z.string().optional()),
+  sizeCode: z.string().min(1, { message: "Size code is required" }).max(50),
+  sizeName: z.string().min(1, { message: "Size name is required" }).max(255)
+});

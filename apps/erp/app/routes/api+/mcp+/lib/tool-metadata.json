@@ -1,6 +1,6 @@
 {
-  "generated": "2026-07-10T03:03:11.339Z",
-  "totalTools": 1257,
+  "generated": "2026-07-10T03:25:32.874Z",
+  "totalTools": 1262,
   "modules": 15,
   "tools": [
     {
@@ -8514,6 +8514,31 @@
       }
     },
     {
+      "name": "items_deleteStyleSize",
+      "module": "items",
+      "classification": "DESTRUCTIVE",
+      "description": "delete style size",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "id"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
       "name": "items_deleteMaterialSubstance",
       "module": "items",
       "classification": "DESTRUCTIVE",
@@ -10542,6 +10567,88 @@
       }
     },
     {
+      "name": "items_getStyleSize",
+      "module": "items",
+      "classification": "READ",
+      "description": "get style size",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "id"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "items_getStyleSizes",
+      "module": "items",
+      "classification": "READ",
+      "description": "get style sizes",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "args": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "default": 100
+              },
+              "offset": {
+                "type": "integer",
+                "default": 0
+              },
+              "search": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "items_getStyleSizeList",
+      "module": "items",
+      "classification": "READ",
+      "description": "get style size list",
+      "paramCount": 0,
+      "serviceParams": [
+        "client",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
       "name": "items_getPartsList",
       "module": "items",
       "classification": "READ",
@@ -12248,6 +12355,31 @@
         "required": [
           "colorCode",
           "colorName"
+        ]
+      }
+    },
+    {
+      "name": "items_upsertStyleSize",
+      "module": "items",
+      "classification": "WRITE",
+      "description": "upsert style size",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "styleSize"
+      ],
+      "injectAuth": [
+        "companyId",
+        "createdBy",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "styleSize": {}
+        },
+        "required": [
+          "styleSize"
         ]
       }
     },

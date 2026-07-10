@@ -153,7 +153,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   return {
     styleSummary: {
       ...styleSummary.data,
-      styleColorBadges: styleSummary.data.colors ?? []
+      styleColorBadges: styleSummary.data.colors ?? [],
+      styleSizeBadges: styleSummary.data.sizes ?? []
     },
     files: getItemFiles(client, itemId, companyId),
     makeMethods: Promise.resolve(makeMethods),

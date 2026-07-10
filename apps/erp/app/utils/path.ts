@@ -154,6 +154,7 @@ export const path = {
         generatePath(`${api}/items/types/${substanceId}/${formId}`),
       materialSubstances: `${api}/items/substances`,
       styleColors: `${api}/items/style-colors`,
+      styleSizes: `${api}/items/style-sizes`,
       messagingNotify: `${api}/messaging/notify`,
       mrp: (locationId?: string) =>
         generatePath(
@@ -813,6 +814,8 @@ export const path = {
       generatePath(`${x}/items/finishes/delete/${id}`),
     deleteStyleColor: (id: string) =>
       generatePath(`${x}/items/colors/delete/${id}`),
+    deleteStyleSize: (id: string) =>
+      generatePath(`${x}/items/sizes/delete/${id}`),
     deleteMaterialForm: (id: string) =>
       generatePath(`${x}/items/forms/delete/${id}`),
     deleteMaterialGrade: (id: string) =>
@@ -1209,6 +1212,8 @@ export const path = {
     materialFinishes: `${x}/items/finishes`,
     styleColor: (id: string) => generatePath(`${x}/items/colors/${id}`),
     styleColors: `${x}/items/colors`,
+    styleSize: (id: string) => generatePath(`${x}/items/sizes/${id}`),
+    styleSizes: `${x}/items/sizes`,
     materialForm: (id: string) => generatePath(`${x}/items/forms/${id}`),
     materialForms: `${x}/items/forms`,
     materialGrade: (id: string) => generatePath(`${x}/items/grades/${id}`),
@@ -1339,6 +1344,7 @@ export const path = {
     newMaterialDimension: `${x}/items/dimensions/new`,
     newMaterialFinish: `${x}/items/finishes/new`,
     newStyleColor: `${x}/items/colors/new`,
+    newStyleSize: `${x}/items/sizes/new`,
     newMaterialForm: `${x}/items/forms/new`,
     newMaterialGrade: `${x}/items/grades/new`,
     newMaterialSubstance: `${x}/items/substances/new`,

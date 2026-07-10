@@ -1009,6 +1009,10 @@ msgstr "क्या आप सुनिश्चित हैं कि आप 
 msgid "Are you sure you want to delete the style color {0}? This cannot be undone."
 msgstr ""
 
+#. placeholder {0}: styleSize.sizeCode
+msgid "Are you sure you want to delete the style size {0}? This cannot be undone."
+msgstr ""
+
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "क्या आप सुनिश्चित हैं कि आप आपूर्तिकर्ता प्रकार को हटाना चाहते हैं: {0}? यह पूर्ववत नहीं किया जा सकता।"
@@ -3059,6 +3063,9 @@ msgstr ""
 msgid "Delete Style Color"
 msgstr ""
 
+msgid "Delete Style Size"
+msgstr ""
+
 msgid "Delete Substance"
 msgstr "पदार्थ हटाएं"
 
@@ -3656,6 +3663,9 @@ msgid "Edit Style"
 msgstr ""
 
 msgid "Edit Style Color"
+msgstr ""
+
+msgid "Edit Style Size"
 msgstr ""
 
 msgid "Edit Substance"
@@ -6356,6 +6366,9 @@ msgstr ""
 msgid "New Style Color"
 msgstr ""
 
+msgid "New Style Size"
+msgstr ""
+
 msgid "New Supplier"
 msgstr "नया स्वीपर"
 
@@ -6711,6 +6724,9 @@ msgstr "अभी तक कोई नमूना निरीक्षण न�
 
 msgid "No selection"
 msgstr "कोई चयन नहीं"
+
+msgid "No sizes assigned"
+msgstr ""
 
 msgid "No sorts applied to this view"
 msgstr "इस दृश्य पर कोई सॉर्ट लागू नहीं किया गया"
@@ -9375,6 +9391,12 @@ msgstr "एक नौकरी"
 msgid "Size"
 msgstr "आकार"
 
+msgid "Size Code"
+msgstr ""
+
+msgid "Size Name"
+msgstr ""
+
 msgid "Sizes"
 msgstr "आकार"
 
@@ -9649,6 +9671,12 @@ msgid "Style of kanban output to show in the Kanban table"
 msgstr "Kanban तालिका में दिखाने के लिए kanban आउटपुट की शैली"
 
 msgid "Style Properties"
+msgstr ""
+
+msgid "Style Size"
+msgstr ""
+
+msgid "Style Sizes"
 msgstr ""
 
 msgid "Styles"

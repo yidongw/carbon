@@ -9,6 +9,7 @@ import {
   LuLayoutTemplate,
   LuLoaderCircle,
   LuPalette,
+  LuRuler,
   LuTag,
   LuUser
 } from "react-icons/lu";
@@ -299,6 +300,35 @@ export function buildDefaultStylesTableColumns({
       },
       meta: {
         icon: <LuPalette />
+      }
+    },
+    {
+      accessorKey: "sizes",
+      header: "Size",
+      cell: ({ row }) => {
+        const sizes = (row.original.sizes ?? []) as Array<{
+          id: string;
+          sizeCode: string;
+          sizeName: string;
+        }>;
+        if (!Array.isArray(sizes) || sizes.length === 0) return null;
+        return (
+          <HStack spacing={1} className="flex-wrap">
+            {sizes.map((size) => (
+              <Badge
+                key={size.id}
+                variant="outline"
+                className="font-mono"
+                title={size.sizeName}
+              >
+                {size.sizeCode}
+              </Badge>
+            ))}
+          </HStack>
+        );
+      },
+      meta: {
+        icon: <LuRuler />
       }
     },
     {

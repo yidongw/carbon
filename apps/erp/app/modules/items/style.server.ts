@@ -22,11 +22,13 @@ type StylePayload =
       createdBy: string;
       customFields?: Json;
       styleColorIds: string[];
+      styleSizeIds: string[];
     })
   | (z.infer<typeof styleValidator> & {
       updatedBy: string;
       customFields?: Json;
       styleColorIds: string[];
+      styleSizeIds: string[];
     });
 
 type StyleSummary = {
@@ -47,6 +49,7 @@ type StyleSummary = {
   companyId: string;
   thumbnailPath: string | null;
   colors: Array<{ id: string; colorCode: string; colorName: string }> | null;
+  sizes: Array<{ id: string; sizeCode: string; sizeName: string }> | null;
   revisions: unknown;
   customFields: Json | null;
   tags: string[] | null;
@@ -411,6 +414,27 @@ async function insertStyleColorAssignments(
   if (result.error) throw result.error;
 }
 
+async function insertStyleSizeAssignments(
+  client: Parameters<typeof upsertItemDefaultPickMethod>[0],
+  args: {
+    styleId: string;
+    companyId: string;
+    userId: string;
+    styleSizeIds: string[];
+  }
+) {
+  const styleClient = client as any;
+  if (args.styleSizeIds.length === 0) return;
+  const rows = args.styleSizeIds.map((styleSizeId) => ({
+    styleId: args.styleId,
+    styleSizeId,
+    companyId: args.companyId,
+    createdBy: args.userId
+  }));
+  const result = await styleClient.from("styleSizeAssignment").insert(rows);
+  if (result.error) throw result.error;
+}
+
 async function updateStyleRecord(
   client: Parameters<typeof upsertItemDefaultPickMethod>[0],
   args: {
@@ -477,6 +501,12 @@ export async function upsertStyle(
         companyId: style.companyId,
         userId: style.createdBy,
         styleColorIds: style.styleColorIds
+      });
+      await insertStyleSizeAssignments(client, {
+        styleId: style.id,
+        companyId: style.companyId,
+        userId: style.createdBy,
+        styleSizeIds: style.styleSizeIds
       });
     } catch (error) {
       // Roll back the orphaned item so retries don't hit duplicate-key errors
@@ -620,6 +650,20 @@ export async function upsertStyle(
         companyId,
         userId: style.updatedBy,
         styleColorIds: style.styleColorIds
+      });
+    }
+    // Replace size assignments
+    await styleClient
+      .from("styleSizeAssignment")
+      .delete()
+      .eq("styleId", style.id)
+      .eq("companyId", companyId);
+    if (style.styleSizeIds.length > 0) {
+      await insertStyleSizeAssignments(client, {
+        styleId: style.id,
+        companyId,
+        userId: style.updatedBy,
+        styleSizeIds: style.styleSizeIds
       });
     }
   } catch (error) {

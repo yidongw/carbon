@@ -63,7 +63,7 @@ import {
   type toolValidator,
   type unitOfMeasureValidator
 } from "./items.models";
-import type { styleValidator } from "./style.models";
+import type { styleSizeValidator, styleValidator } from "./style.models";
 import {
   ensureStyleMethodScaffold,
   isStyleCuttingOperationFirst,
@@ -291,6 +291,14 @@ export async function deleteStyleColor(
 ) {
   const styleClient = client as SupabaseClient<any>;
   return styleClient.from("styleColor").delete().eq("id", id);
+}
+
+export async function deleteStyleSize(
+  client: SupabaseClient<Database>,
+  id: string
+) {
+  const styleClient = client as SupabaseClient<any>;
+  return styleClient.from("styleSize").delete().eq("id", id);
 }
 
 export async function deleteMaterialSubstance(
@@ -1685,6 +1693,52 @@ export async function getStyleColorList(
     .select("id, colorCode, colorName, companyId")
     .or(`companyId.eq.${companyId},companyId.is.null`)
     .order("colorCode");
+}
+
+export async function getStyleSize(
+  client: SupabaseClient<Database>,
+  id: string
+) {
+  const styleClient = client as SupabaseClient<any>;
+  return styleClient.from("styleSize").select("*").eq("id", id).single();
+}
+
+export async function getStyleSizes(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  args?: GenericQueryFilters & { search: string | null }
+) {
+  const styleClient = client as SupabaseClient<any>;
+  let query = styleClient
+    .from("styleSize")
+    .select("*", { count: "exact" })
+    .or(`companyId.eq.${companyId},companyId.is.null`);
+
+  if (args?.search) {
+    query = query.or(
+      `sizeCode.ilike.%${args.search}%,sizeName.ilike.%${args.search}%`
+    );
+  }
+
+  if (args) {
+    query = setGenericQueryFilters(query, args, [
+      { column: "sizeCode", ascending: true }
+    ]);
+  }
+
+  return query;
+}
+
+export async function getStyleSizeList(
+  client: SupabaseClient<Database>,
+  companyId: string
+) {
+  const styleClient = client as SupabaseClient<any>;
+  return styleClient
+    .from("styleSize")
+    .select("id, sizeCode, sizeName, companyId")
+    .or(`companyId.eq.${companyId},companyId.is.null`)
+    .order("sizeCode");
 }
 
 export async function getPartsList(
@@ -4383,6 +4437,30 @@ export async function upsertStyleColor(
     .insert([styleColor])
     .select("*")
     .single();
+}
+
+export async function upsertStyleSize(
+  client: SupabaseClient<Database>,
+  styleSize:
+    | (Omit<z.infer<typeof styleSizeValidator>, "id"> & {
+        companyId: string;
+        createdBy: string;
+      })
+    | (Omit<z.infer<typeof styleSizeValidator>, "id"> & {
+        id: string;
+        updatedBy: string;
+      })
+) {
+  const styleClient = client as SupabaseClient<any>;
+  if ("id" in styleSize) {
+    return styleClient
+      .from("styleSize")
+      .update(sanitize({ ...styleSize, updatedAt: new Date().toISOString() }))
+      .eq("id", styleSize.id)
+      .select("id")
+      .single();
+  }
+  return styleClient.from("styleSize").insert([styleSize]).select("*").single();
 }
 
 export async function upsertMaterialForm(

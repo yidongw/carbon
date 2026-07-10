@@ -39,11 +39,16 @@ export async function action({ request }: ActionFunctionArgs) {
     .filter(([key]) => key.startsWith("styleColorIds["))
     .map(([, value]) => value as string)
     .filter(Boolean);
+  const styleSizeIds = Array.from(formData.entries())
+    .filter(([key]) => key.startsWith("styleSizeIds["))
+    .map(([, value]) => value as string)
+    .filter(Boolean);
   const { upsertStyle } = await import("~/modules/items/style.server");
 
   const createStyle = await upsertStyle(client, {
     ...styleData,
     styleColorIds,
+    styleSizeIds,
     companyId,
     customFields: setCustomFields(formData),
     createdBy: userId
