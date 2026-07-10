@@ -273,20 +273,30 @@ export function buildDefaultStylesTableColumns({
       }
     },
     {
-      accessorKey: "colorCode",
+      accessorKey: "colors",
       header: "Color",
-      cell: ({ row }) => (
-        <HStack>
-          {row.original.colorCode && (
-            <span className="font-mono text-sm">{row.original.colorCode}</span>
-          )}
-          {row.original.colorName && (
-            <span className="text-muted-foreground">
-              {row.original.colorName}
-            </span>
-          )}
-        </HStack>
-      ),
+      cell: ({ row }) => {
+        const colors = (row.original.colors ?? []) as Array<{
+          id: string;
+          colorCode: string;
+          colorName: string;
+        }>;
+        if (!Array.isArray(colors) || colors.length === 0) return null;
+        return (
+          <HStack spacing={1} className="flex-wrap">
+            {colors.map((color) => (
+              <Badge
+                key={color.id}
+                variant="outline"
+                className="font-mono"
+                title={color.colorName}
+              >
+                {color.colorCode}
+              </Badge>
+            ))}
+          </HStack>
+        );
+      },
       meta: {
         icon: <LuPalette />
       }
