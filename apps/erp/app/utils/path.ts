@@ -1142,6 +1142,7 @@ export const path = {
     masterWorkOrder: (id: string) =>
       generatePath(`${x}/master-work-order/${id}`),
     newMasterWorkOrder: `${x}/production/master-work-orders/new`,
+    bundleWorkOrders: `${x}/production/bundle-work-orders`,
     bundleWorkOrder: (id: string) =>
       generatePath(`${x}/bundle-work-order/${id}`),
     newBundleWorkOrder: `${x}/master-work-order/new-bundle`,

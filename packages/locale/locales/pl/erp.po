@@ -1441,6 +1441,9 @@ msgstr "Import zbiorczy"
 msgid "Bulk Jobs"
 msgstr "Zadania zbiorcze"
 
+msgid "Bundle"
+msgstr ""
+
 msgid "Bundle Work Order"
 msgstr ""
 

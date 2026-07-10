@@ -1441,6 +1441,9 @@ msgstr "批量导入"
 msgid "Bulk Jobs"
 msgstr "批量工作"
 
+msgid "Bundle"
+msgstr ""
+
 msgid "Bundle Work Order"
 msgstr ""
 

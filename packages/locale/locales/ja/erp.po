@@ -1441,6 +1441,9 @@ msgstr "一括インポート"
 msgid "Bulk Jobs"
 msgstr "一括ジョブ"
 
+msgid "Bundle"
+msgstr ""
+
 msgid "Bundle Work Order"
 msgstr ""
 

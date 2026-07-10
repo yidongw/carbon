@@ -6,6 +6,7 @@ import {
   LuListChecks,
   LuPackage,
   LuPackageCheck,
+  LuPackageOpen,
   LuShieldCheck,
   LuShirt,
   LuSquareChartGantt,
@@ -45,6 +46,12 @@ export default function useProductionSubmodules() {
           name: t`Master Work Orders`,
           to: path.to.masterWorkOrders,
           icon: <LuShirt />,
+          role: "employee"
+        },
+        {
+          name: t`Bundle Work Orders`,
+          to: path.to.bundleWorkOrders,
+          icon: <LuPackageOpen />,
           role: "employee"
         },
         {

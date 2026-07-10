@@ -1,5 +1,7 @@
 import type { Database } from "@carbon/database";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import type { GenericQueryFilters } from "~/utils/query";
+import { setGenericQueryFilters } from "~/utils/query";
 import { insertJob } from "./production.service";
 
 export type BundleWorkOrder = NonNullable<
@@ -18,6 +20,32 @@ export async function getBundleWorkOrders(
     .eq("masterWorkOrderId", masterWorkOrderId)
     .eq("companyId", companyId)
     .order("sequence", { ascending: true });
+}
+
+/** Company-wide paginated list of bundle work orders (for the list page). */
+export async function getBundleWorkOrdersList(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  args?: { search: string | null } & GenericQueryFilters
+) {
+  let query = client
+    .from("bundleWorkOrders")
+    .select("*", { count: "exact" })
+    .eq("companyId", companyId);
+
+  if (args?.search) {
+    query = query.or(
+      `bundleNumber.ilike.%${args.search}%,itemName.ilike.%${args.search}%,colorCode.ilike.%${args.search}%,jobReadableId.ilike.%${args.search}%`
+    );
+  }
+
+  if (args) {
+    query = setGenericQueryFilters(query, args, [
+      { column: "createdAt", ascending: false }
+    ]);
+  }
+
+  return query;
 }
 
 export async function getBundleWorkOrder(

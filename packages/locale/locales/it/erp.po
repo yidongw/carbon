@@ -1441,6 +1441,9 @@ msgstr "Importazione in blocco"
 msgid "Bulk Jobs"
 msgstr "Lavori in Blocco"
 
+msgid "Bundle"
+msgstr ""
+
 msgid "Bundle Work Order"
 msgstr ""
 

@@ -1441,6 +1441,9 @@ msgstr "Importação em Massa"
 msgid "Bulk Jobs"
 msgstr "Trabalhos em Lote"
 
+msgid "Bundle"
+msgstr ""
+
 msgid "Bundle Work Order"
 msgstr ""
 

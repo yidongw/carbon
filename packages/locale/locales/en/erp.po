@@ -1441,6 +1441,9 @@ msgstr "Bulk Import"
 msgid "Bulk Jobs"
 msgstr "Bulk Jobs"
 
+msgid "Bundle"
+msgstr "Bundle"
+
 msgid "Bundle Work Order"
 msgstr "Bundle Work Order"
 
