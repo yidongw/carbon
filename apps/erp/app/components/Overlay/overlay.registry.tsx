@@ -173,6 +173,52 @@ export const overlayRegistry = {
         import("~/modules/production/ui/MasterWorkOrders/BundleWorkOrderForm")
     )
   },
+  reportMasterWorkOrderCutting: {
+    type: "drawer",
+    render: renderLazyOverlay(
+      (ctx) => {
+        const data = ctx.loaderData as
+          | {
+              initialValues: {
+                masterWorkOrderId: string;
+                rows: {
+                  id?: string;
+                  colorCode: string;
+                  sizeCode: string;
+                  quantity: number;
+                }[];
+              };
+            }
+          | undefined;
+        if (!data) return null;
+        return { initialValues: data.initialValues, mode: "cutting" as const };
+      },
+      () => import("~/modules/production/ui/MasterWorkOrders/SplitRowsForm")
+    )
+  },
+  confirmMasterWorkOrderSplit: {
+    type: "drawer",
+    render: renderLazyOverlay(
+      (ctx) => {
+        const data = ctx.loaderData as
+          | {
+              initialValues: {
+                masterWorkOrderId: string;
+                rows: {
+                  id?: string;
+                  colorCode: string;
+                  sizeCode: string;
+                  quantity: number;
+                }[];
+              };
+            }
+          | undefined;
+        if (!data) return null;
+        return { initialValues: data.initialValues, mode: "split" as const };
+      },
+      () => import("~/modules/production/ui/MasterWorkOrders/SplitRowsForm")
+    )
+  },
   newProductionQuantity: {
     type: "drawer",
     render: renderLazyOverlay(

@@ -4,12 +4,16 @@ import { msg } from "@lingui/core/macro";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ReactNode } from "react";
 import { useCallback } from "react";
-import { LuCirclePlus } from "react-icons/lu";
+import { LuCirclePlus, LuScissors } from "react-icons/lu";
 import type { LoaderFunctionArgs } from "react-router";
 import { Link, redirect, useLoaderData, useRevalidator } from "react-router";
 import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions } from "~/hooks";
-import { getBundleWorkOrders, getMasterWorkOrder } from "~/modules/production";
+import {
+  getBundleWorkOrders,
+  getMasterWorkOrder,
+  getMasterWorkOrderSplitRows
+} from "~/modules/production";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 
@@ -37,15 +41,15 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     throw redirect(path.to.masterWorkOrders);
   }
 
-  const bundles = await getBundleWorkOrders(
-    client,
-    masterWorkOrderId,
-    companyId
-  );
+  const [bundles, splitRows] = await Promise.all([
+    getBundleWorkOrders(client, masterWorkOrderId, companyId),
+    getMasterWorkOrderSplitRows(client, masterWorkOrderId, companyId)
+  ]);
 
   return {
     masterWorkOrder: masterWorkOrder.data,
-    bundles: bundles.data ?? []
+    bundles: bundles.data ?? [],
+    pendingSplitRows: (splitRows.data ?? []).filter((r) => !r.bundleWorkOrderId)
   };
 }
 
@@ -59,18 +63,37 @@ function Field({ label, value }: { label: string; value: ReactNode }) {
 }
 
 export default function MasterWorkOrderDetailRoute() {
-  const { masterWorkOrder, bundles } = useLoaderData<typeof loader>();
+  const { masterWorkOrder, bundles, pendingSplitRows } =
+    useLoaderData<typeof loader>();
   const { t } = useLingui();
   const permissions = usePermissions();
   const { openOverlay } = useOverlay();
   const revalidator = useRevalidator();
+  const canWrite = permissions.can("update", "production");
+  const masterId = masterWorkOrder.id!;
 
   const openNewBundle = useCallback(() => {
     openOverlay(
-      overlay.to.newBundleWorkOrder({ masterWorkOrderId: masterWorkOrder.id! }),
+      overlay.to.newBundleWorkOrder({ masterWorkOrderId: masterId }),
+      {
+        onCreated: () => revalidator.revalidate()
+      }
+    );
+  }, [openOverlay, revalidator, masterId]);
+
+  const openReportCutting = useCallback(() => {
+    openOverlay(
+      overlay.to.reportMasterWorkOrderCutting({ masterWorkOrderId: masterId }),
       { onCreated: () => revalidator.revalidate() }
     );
-  }, [openOverlay, revalidator, masterWorkOrder.id]);
+  }, [openOverlay, revalidator, masterId]);
+
+  const openConfirmSplit = useCallback(() => {
+    openOverlay(
+      overlay.to.confirmMasterWorkOrderSplit({ masterWorkOrderId: masterId }),
+      { onCreated: () => revalidator.revalidate() }
+    );
+  }, [openOverlay, revalidator, masterId]);
 
   return (
     <div className="h-full min-h-0 overflow-y-auto w-full p-6">
@@ -101,6 +124,54 @@ export default function MasterWorkOrderDetailRoute() {
           <Field label={t`Status`} value={masterWorkOrder.status} />
           <Field label={t`Due Date`} value={masterWorkOrder.dueDate} />
         </div>
+
+        <VStack spacing={2} className="w-full">
+          <HStack className="justify-between w-full">
+            <Heading size="h4">
+              <Trans>Cutting Split</Trans>
+            </Heading>
+            {canWrite && (
+              <HStack spacing={2}>
+                <Button
+                  variant="secondary"
+                  leftIcon={<LuScissors />}
+                  onClick={openReportCutting}
+                >
+                  <Trans>Report Cutting</Trans>
+                </Button>
+                {pendingSplitRows.length > 0 && (
+                  <Button variant="primary" onClick={openConfirmSplit}>
+                    <Trans>Confirm Split</Trans>
+                  </Button>
+                )}
+              </HStack>
+            )}
+          </HStack>
+          {pendingSplitRows.length === 0 ? (
+            <div className="w-full rounded-lg border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
+              <Trans>
+                No pending cutting rows. Report cutting to capture color/size
+                quantities, then confirm the split into bundles.
+              </Trans>
+            </div>
+          ) : (
+            <div className="w-full rounded-lg border border-border bg-card divide-y divide-border">
+              {pendingSplitRows.map((row) => (
+                <div
+                  key={row.id}
+                  className="flex items-center justify-between px-4 py-3"
+                >
+                  <span className="text-sm text-muted-foreground">
+                    {[row.colorCode, row.sizeCode]
+                      .filter(Boolean)
+                      .join(" · ") || "—"}
+                  </span>
+                  <span className="text-sm font-medium">{row.quantity}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </VStack>
 
         <VStack spacing={2} className="w-full">
           <HStack className="justify-between w-full">

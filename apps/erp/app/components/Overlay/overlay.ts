@@ -107,6 +107,36 @@ export const overlay = {
       };
     },
 
+    reportMasterWorkOrderCutting({
+      masterWorkOrderId
+    }: {
+      masterWorkOrderId: string;
+    }): OverlayTarget {
+      const query = new URLSearchParams();
+      query.set("overlay", "true");
+      query.set("masterWorkOrderId", masterWorkOrderId);
+      return {
+        id: "reportMasterWorkOrderCutting",
+        url: `${path.to.reportMasterWorkOrderCutting}?${query.toString()}`,
+        params: { masterWorkOrderId }
+      };
+    },
+
+    confirmMasterWorkOrderSplit({
+      masterWorkOrderId
+    }: {
+      masterWorkOrderId: string;
+    }): OverlayTarget {
+      const query = new URLSearchParams();
+      query.set("overlay", "true");
+      query.set("masterWorkOrderId", masterWorkOrderId);
+      return {
+        id: "confirmMasterWorkOrderSplit",
+        url: `${path.to.confirmMasterWorkOrderSplit}?${query.toString()}`,
+        params: { masterWorkOrderId }
+      };
+    },
+
     newProductionQuantity({
       jobId,
       jobOperationId

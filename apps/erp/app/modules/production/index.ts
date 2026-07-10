@@ -13,5 +13,7 @@ export * from "./productionQuantityList.service";
 export * from "./productionQuantityReport.models";
 export * from "./productionQuantityReport.service";
 export * from "./purchaseOrderFromJob.service";
+export * from "./splitRow.models";
+export * from "./splitRow.service";
 // @ts-ignore
 export * from "./types";

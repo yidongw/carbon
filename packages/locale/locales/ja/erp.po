@@ -1956,6 +1956,9 @@ msgstr "インポートを確認"
 msgid "Confirm Password"
 msgstr "パスワードを確認"
 
+msgid "Confirm Split"
+msgstr ""
+
 msgid "Connect"
 msgstr "連携"
 
@@ -2642,6 +2645,9 @@ msgstr "顧客"
 
 msgid "Customize the layout of your PDF documents — reorder sections, hide what you don't need, and add your own blocks."
 msgstr "PDFドキュメントのレイアウトをカスタマイズ——セクションを再並べ替え、不要な項目は隠し、独自のブロックも追加できます。"
+
+msgid "Cutting Split"
+msgstr ""
 
 msgid "Cycle back-edge"
 msgstr "サイクルバックエッジ"
@@ -6640,6 +6646,9 @@ msgstr "パーツIDなし"
 msgid "No parts added yet"
 msgstr "まだパーツが追加されていません"
 
+msgid "No pending cutting rows. Report cutting to capture color/size quantities, then confirm the split into bundles."
+msgstr ""
+
 msgid "No planning data"
 msgstr "計画データなし"
 
@@ -8294,6 +8303,9 @@ msgstr "補充システム"
 msgid "Report"
 msgstr "レポート"
 
+msgid "Report Cutting"
+msgstr ""
+
 msgid "Report history"
 msgstr "報告履歴"
 
@@ -8694,6 +8706,9 @@ msgstr "保存して閉じる"
 
 msgid "Save and Overwrite"
 msgstr "保存して上書き"
+
+msgid "Save Cutting Rows"
+msgstr ""
 
 msgid "Save Method"
 msgstr "メソッドを保存"

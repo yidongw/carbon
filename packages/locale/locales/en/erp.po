@@ -1956,6 +1956,9 @@ msgstr "Confirm Import"
 msgid "Confirm Password"
 msgstr "Confirm Password"
 
+msgid "Confirm Split"
+msgstr "Confirm Split"
+
 msgid "Connect"
 msgstr "Connect"
 
@@ -2642,6 +2645,9 @@ msgstr "Customers"
 
 msgid "Customize the layout of your PDF documents — reorder sections, hide what you don't need, and add your own blocks."
 msgstr "Customize the layout of your PDF documents — reorder sections, hide what you don't need, and add your own blocks."
+
+msgid "Cutting Split"
+msgstr "Cutting Split"
 
 msgid "Cycle back-edge"
 msgstr "Cycle back-edge"
@@ -6640,6 +6646,9 @@ msgstr "No part ID"
 msgid "No parts added yet"
 msgstr "No parts added yet"
 
+msgid "No pending cutting rows. Report cutting to capture color/size quantities, then confirm the split into bundles."
+msgstr "No pending cutting rows. Report cutting to capture color/size quantities, then confirm the split into bundles."
+
 msgid "No planning data"
 msgstr "No planning data"
 
@@ -8294,6 +8303,9 @@ msgstr "Replenishment System"
 msgid "Report"
 msgstr "Report"
 
+msgid "Report Cutting"
+msgstr "Report Cutting"
+
 msgid "Report history"
 msgstr "Report history"
 
@@ -8694,6 +8706,9 @@ msgstr "Save & Close"
 
 msgid "Save and Overwrite"
 msgstr "Save and Overwrite"
+
+msgid "Save Cutting Rows"
+msgstr "Save Cutting Rows"
 
 msgid "Save Method"
 msgstr "Save Method"

@@ -1956,6 +1956,9 @@ msgstr "Confirmer l'importation"
 msgid "Confirm Password"
 msgstr "Confirmer le mot de passe"
 
+msgid "Confirm Split"
+msgstr ""
+
 msgid "Connect"
 msgstr "Connecter"
 
@@ -2642,6 +2645,9 @@ msgstr "Clients"
 
 msgid "Customize the layout of your PDF documents — reorder sections, hide what you don't need, and add your own blocks."
 msgstr "Personnalisez l'佈局 của您的PDF文件——重新排列部分，隐藏不需要的内容，并添加您自己的区块。"
+
+msgid "Cutting Split"
+msgstr ""
 
 msgid "Cycle back-edge"
 msgstr "Retour cyclique arrière"
@@ -6640,6 +6646,9 @@ msgstr "Aucun ID de pièce"
 msgid "No parts added yet"
 msgstr "Aucune pièce ajoutée pour le moment"
 
+msgid "No pending cutting rows. Report cutting to capture color/size quantities, then confirm the split into bundles."
+msgstr ""
+
 msgid "No planning data"
 msgstr "Aucune donnée de planification"
 
@@ -8294,6 +8303,9 @@ msgstr "Système de réapprovisionnement"
 msgid "Report"
 msgstr "Rapport"
 
+msgid "Report Cutting"
+msgstr ""
+
 msgid "Report history"
 msgstr "Historique des rapports"
 
@@ -8694,6 +8706,9 @@ msgstr "Enregistrer et fermer"
 
 msgid "Save and Overwrite"
 msgstr "Enregistrer et remplacer"
+
+msgid "Save Cutting Rows"
+msgstr ""
 
 msgid "Save Method"
 msgstr "Enregistrer la méthode"

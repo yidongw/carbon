@@ -1956,6 +1956,9 @@ msgstr "आयात की पुष्टि करें"
 msgid "Confirm Password"
 msgstr "पासवर्ड की पुष्टि करें"
 
+msgid "Confirm Split"
+msgstr ""
+
 msgid "Connect"
 msgstr "कनेक्ट करें"
 
@@ -2642,6 +2645,9 @@ msgstr "ग्राहक"
 
 msgid "Customize the layout of your PDF documents — reorder sections, hide what you don't need, and add your own blocks."
 msgstr "पीडीएफ डॉक्युमेंट्स के परिवर्तनात्मक प्रणाली का परिचालन करें — सब्सेक्शन्स को रीऑर्डर करें, उपयुक्त नहीं होने वाले बातों को छुपा दें, और अपने खुद के टॉक्स जोड़ें।"
+
+msgid "Cutting Split"
+msgstr ""
 
 msgid "Cycle back-edge"
 msgstr "साइकल बैक-एज"
@@ -6640,6 +6646,9 @@ msgstr "कोई भाग ID नहीं"
 msgid "No parts added yet"
 msgstr "अभी तक कोई पार्ट जोड़ा नहीं गया"
 
+msgid "No pending cutting rows. Report cutting to capture color/size quantities, then confirm the split into bundles."
+msgstr ""
+
 msgid "No planning data"
 msgstr "कोई योजना डेटा नहीं"
 
@@ -8294,6 +8303,9 @@ msgstr "पुनःपूर्ति प्रणाली"
 msgid "Report"
 msgstr "रिपोर्ट"
 
+msgid "Report Cutting"
+msgstr ""
+
 msgid "Report history"
 msgstr "निष्कर्ष रिपोर्ट"
 
@@ -8694,6 +8706,9 @@ msgstr "सहेजें और बंद करें"
 
 msgid "Save and Overwrite"
 msgstr "सहेजें और अधिलेखित करें"
+
+msgid "Save Cutting Rows"
+msgstr ""
 
 msgid "Save Method"
 msgstr "विधि सहेजें"

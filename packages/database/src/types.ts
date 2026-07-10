@@ -34,6 +34,175 @@ export type Database = {
   }
   public: {
     Tables: {
+      masterWorkOrderSplitRow: {
+        Row: {
+          bundleWorkOrderId: string | null
+          colorCode: string | null
+          companyId: string
+          createdAt: string
+          createdBy: string
+          id: string
+          masterWorkOrderId: string
+          quantity: number
+          sizeCode: string | null
+          updatedAt: string | null
+          updatedBy: string | null
+        }
+        Insert: {
+          bundleWorkOrderId?: string | null
+          colorCode?: string | null
+          companyId: string
+          createdAt?: string
+          createdBy: string
+          id?: string
+          masterWorkOrderId: string
+          quantity?: number
+          sizeCode?: string | null
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Update: {
+          bundleWorkOrderId?: string | null
+          colorCode?: string | null
+          companyId?: string
+          createdAt?: string
+          createdBy?: string
+          id?: string
+          masterWorkOrderId?: string
+          quantity?: number
+          sizeCode?: string | null
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "masterWorkOrderSplitRow_bundleWorkOrderId_fkey"
+            columns: ["bundleWorkOrderId"]
+            isOneToOne: false
+            referencedRelation: "bundleWorkOrder"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "masterWorkOrderSplitRow_bundleWorkOrderId_fkey"
+            columns: ["bundleWorkOrderId"]
+            isOneToOne: false
+            referencedRelation: "bundleWorkOrders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "masterWorkOrderSplitRow_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "masterWorkOrderSplitRow_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "masterWorkOrderSplitRow_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "customFieldTables"
+            referencedColumns: ["companyId"]
+          },
+          {
+            foreignKeyName: "masterWorkOrderSplitRow_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "integrations"
+            referencedColumns: ["companyId"]
+          },
+          {
+            foreignKeyName: "masterWorkOrderSplitRow_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "masterWorkOrderSplitRow_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "masterWorkOrderSplitRow_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "masterWorkOrderSplitRow_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "masterWorkOrderSplitRow_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "masterWorkOrderSplitRow_masterWorkOrderId_fkey"
+            columns: ["masterWorkOrderId"]
+            isOneToOne: false
+            referencedRelation: "masterWorkOrder"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "masterWorkOrderSplitRow_masterWorkOrderId_fkey"
+            columns: ["masterWorkOrderId"]
+            isOneToOne: false
+            referencedRelation: "masterWorkOrders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "masterWorkOrderSplitRow_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "masterWorkOrderSplitRow_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "masterWorkOrderSplitRow_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "masterWorkOrderSplitRow_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "masterWorkOrderSplitRow_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+        ]
+      }
       bundleWorkOrder: {
         Row: {
           bundleNumber: string
