@@ -14,6 +14,7 @@ import {
   insertMasterWorkOrder,
   masterWorkOrderValidator
 } from "~/modules/production";
+import { jobConfigurationUpdateFields } from "~/modules/production/configTableOverlay.server";
 import { path } from "~/utils/path";
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -59,8 +60,29 @@ export async function action({ request }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
+  const {
+    configuration: configStr,
+    quantity: rawQuantity,
+    ...rest
+  } = validation.data;
+
+  // The config table (color/size plan) drives the quantity: its total.
+  let configuration: Record<string, unknown> | undefined;
+  let quantity = rawQuantity;
+  if (configStr) {
+    try {
+      const parsed = JSON.parse(configStr) as Record<string, unknown>;
+      configuration = parsed;
+      quantity = jobConfigurationUpdateFields(parsed).quantity;
+    } catch {
+      // invalid JSON — keep the typed quantity
+    }
+  }
+
   const insert = await insertMasterWorkOrder(client, {
-    ...validation.data,
+    ...rest,
+    quantity,
+    configuration,
     companyId,
     createdBy: userId
   });

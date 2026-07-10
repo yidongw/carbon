@@ -65,6 +65,7 @@ export async function insertMasterWorkOrder(
     createdBy: string;
     locationId?: string;
     dueDate?: string;
+    configuration?: Record<string, unknown>;
     colorSize?: Database["public"]["Tables"]["masterWorkOrder"]["Insert"]["colorSize"];
   }
 ) {
@@ -74,7 +75,8 @@ export async function insertMasterWorkOrder(
     companyId: input.companyId,
     createdBy: input.createdBy,
     locationId: input.locationId,
-    dueDate: input.dueDate
+    dueDate: input.dueDate,
+    configuration: input.configuration
   });
 
   if (job.error || !job.data) {
