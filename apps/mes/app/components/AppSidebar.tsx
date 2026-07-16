@@ -28,7 +28,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarRail,
   Switch,
   useDisclosure,
   useMode,
@@ -98,8 +97,17 @@ export function AppSidebar({
     data: { id: string; clockIn: string; [key: string]: unknown } | null;
   }> | null;
 }) {
+  // Match the ERP primary navigation: an icon rail that expands on hover and
+  // collapses on leave — no persistent toggle to pin it open.
+  const { setOpen } = useSidebar();
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar
+      collapsible="icon"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+      className="group-data-[state=expanded]:shadow-xl"
+      {...props}
+    >
       <SidebarHeader>
         <TeamSwitcher company={company} />
       </SidebarHeader>
@@ -141,7 +149,6 @@ export function AppSidebar({
           pinnedInUser={pinnedInUser}
         />
       </SidebarFooter>
-      <SidebarRail />
     </Sidebar>
   );
 }
