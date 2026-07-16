@@ -42,9 +42,6 @@ msgstr "{0} von {1} abgeschlossen"
 msgid "{0} Scrapped"
 msgstr "{0} Ausschuss"
 
-msgid "+{inProgressQuantity} picked up, not yet produced"
-msgstr "+{inProgressQuantity} abgeholt, noch nicht produziert"
-
 msgid "A consumed batch or serial is now past its expiry date."
 msgstr "Ein verbrauchtes Batch oder Seriennummer ist jetzt über seine Gültigkeitsdauer hinaus."
 
@@ -289,9 +286,6 @@ msgstr "Standardlagereinheit"
 
 msgid "Delete"
 msgstr "Löschen"
-
-msgid "Delete process pickup"
-msgstr "Löschen von Prozessabholung"
 
 msgid "Delete step"
 msgstr "Lösche Schritt"
@@ -574,9 +568,6 @@ msgstr "Fertigmeldung für {0}"
 
 msgid "Log In"
 msgstr "Anmelden"
-
-msgid "Log Pickup"
-msgstr "Prozessentnahme protokollieren"
 
 msgid "Log Rework"
 msgstr "Nacharbeit erfassen"
@@ -891,9 +882,6 @@ msgstr "Spalte {0} aufgenommen an Position: {1} von {2}"
 msgid "Picking"
 msgstr "Pickliste"
 
-msgid "Pickup suggestions:"
-msgstr "Vorschläge für Prozessentnahme:"
-
 msgid "Pin Out"
 msgstr "Abmelden"
 
@@ -945,19 +933,10 @@ msgstr "Prozess"
 msgid "Process Parameters"
 msgstr "Prozessparameter"
 
-msgid "process pickup"
-msgstr "Prozessabholung"
-
-msgid "Process Pickups"
-msgstr "Prozessabholungen"
-
 msgid "Processes"
 msgstr "Prozesse"
 
 msgid "production"
-msgstr "Produktion"
-
-msgid "Production"
 msgstr "Produktion"
 
 msgid "Production Logs"
@@ -1003,9 +982,6 @@ msgstr "Erfassen"
 msgid "Record {0}"
 msgstr "Datensatz {0}"
 
-msgid "Record Pickup"
-msgstr "Prozessentnahme erfassen"
-
 msgid "Record Quantity"
 msgstr "Anzahl der Einträge"
 
@@ -1014,9 +990,6 @@ msgstr "Schritt aufnehmen"
 
 msgid "Redirecting to verification page..."
 msgstr "Weiterleitung zur Verifizierungsseite..."
-
-msgid "remaining"
-msgstr "verbleibend"
 
 msgid "Remove"
 msgstr "Entfernen"
@@ -1311,9 +1284,6 @@ msgstr "Wechsle Seitenleiste"
 
 msgid "Tools"
 msgstr "Werkzeuge"
-
-msgid "Total Process Pickups"
-msgstr "Prozessabholungen gesamt"
 
 msgid "Total Production"
 msgstr "Gesamtproduktion"

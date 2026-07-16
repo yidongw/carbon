@@ -474,9 +474,6 @@ msgstr "अदाया प्रिंटर"
 msgid "Add process completion"
 msgstr "प्रक्रिया पूर्णता जोड़ें"
 
-msgid "Add process pickup"
-msgstr "प्रक्रिया निकासी जोड़ें"
-
 msgid "Add Property"
 msgstr "प्रॉपर्टी जोड़ें"
 
@@ -1055,9 +1052,6 @@ msgstr "क्या आप सुनिश्चित हैं कि आप 
 
 msgid "Are you sure you want to delete this process completion? This action cannot be undone."
 msgstr "आपने यह प्रक्रिया पूरण को हटाने की इच्छा किया है? यह चलने में वापस नहीं आ सकता है।"
-
-msgid "Are you sure you want to delete this process pickup? This action cannot be undone."
-msgstr "आपने यह प्रक्रिया पाउंच को हटाने की रणनीति चुनी? यह क्रिया वापस नहीं की जा सकती।"
 
 msgid "Are you sure you want to delete this quality document?"
 msgstr "क्या आप सुनिश्चित हैं कि आप इस गुणवत्ता दस्तावेज़ को हटाना चाहते हैं?"
@@ -2985,9 +2979,6 @@ msgstr "प्रक्रिया हटाएं"
 msgid "Delete Process Completion"
 msgstr "प्रोसेस पूर्णावतार हटाएँ"
 
-msgid "Delete Process Pickup"
-msgstr "प्रोसेस पीकअप हटाएं"
-
 msgid "Delete Purchase Invoice"
 msgstr "खरीद चालान हटाएं"
 
@@ -3577,9 +3568,6 @@ msgstr "अनुमतियों को संपादित करें"
 
 msgid "Edit Picking List"
 msgstr "पक्सिंग लिस्ट संपादन"
-
-msgid "Edit pickup"
-msgstr "पहलू सunting"
 
 msgid "Edit Portal"
 msgstr "पोर्टल संपादित करें"
@@ -4545,8 +4533,8 @@ msgstr "फिनिश"
 msgid "Finish To"
 msgstr "समाप्त करने के लिए"
 
-msgid "Finished {complete} of {target} units, {pickup} in progress from process pickups, {unassigned} unassigned"
-msgstr "पूरा दिया गया {complete} से {target} इकाइयों की पूरा दिया गया, {pickup} प्रक्रिया से लेन चल रहा है, {unassigned} अनिर्धारित"
+msgid "Finished {complete} of {target} units, {unassigned} unassigned"
+msgstr ""
 
 msgid "Finished Goods"
 msgstr "तैयार सामान"
@@ -5556,12 +5544,6 @@ msgstr "लीटर"
 
 msgid "Live reloading"
 msgstr "लाइव रीलोडिंग"
-
-msgid "Load more process completions"
-msgstr "लोड औरेडर प्रक्रियाएँ"
-
-msgid "Load more process pickups"
-msgstr "लोड औरेड़र पीकअप्स"
 
 msgid "Load Templates"
 msgstr "टेम्पलेट लोड करें"
@@ -6686,9 +6668,6 @@ msgstr "निर्वहन डाटा संकल्पित नहीं
 msgid "No printers configured. Click \"Add Printer\" to create one."
 msgstr "निर्निर्मित प्रिंटर उपलब्ध नहीं है। \"प्रिटर जोड़ें\" के बाद से एक य॑जि।"
 
-msgid "No production logs"
-msgstr "कोई उत्पादन लॉग नहीं"
-
 msgid "No quantity recorded yet."
 msgstr "अभिस्पर्श अभी तक रिकॉर्ड किया गया मात्रा नहीं है।"
 
@@ -7677,19 +7656,6 @@ msgstr "प्रक्रिया विचलन"
 msgid "Process Name"
 msgstr "प्रक्रिया नाम"
 
-msgid "Process Pickup"
-msgstr "प्रक्रिया निकासी"
-
-#. placeholder {0}: selectedPickup.employeeId
-msgid "Process Pickup by {0}"
-msgstr "{0} की प्रक्रिया निकासी"
-
-msgid "Process pickup updated"
-msgstr "प्रोसेस पिकअप अपडेट किया गया है"
-
-msgid "Process Pickups"
-msgstr "प्रक्रिया निकासियाँ"
-
 msgid "Process Type"
 msgstr "प्रक्रिया प्रकार"
 
@@ -7710,9 +7676,6 @@ msgstr "उत्पादन घटना"
 
 msgid "Production Events"
 msgstr "उत्पादन घटनाएं"
-
-msgid "Production Logs"
-msgstr "उत्पादन लॉग्स"
 
 msgid "Production Qty"
 msgstr "उत्पादन मात्रा"
@@ -7906,9 +7869,6 @@ msgstr "मात्रा MES में पूर्ण सीरीज़/ब�
 
 msgid "Quantity must be greater than 0"
 msgstr "मात्रा 0 से अधिक होनी चाहिए"
-
-msgid "Quantity must be greater than zero"
-msgstr "संख्या शून्य से बड़ी होनी चाहिए"
 
 msgid "Quantity on Hand"
 msgstr "हाथ में मात्रा"
@@ -8108,17 +8068,11 @@ msgstr "रिकॉर्ड भुगतान"
 msgid "Record the inspection result for this sample."
 msgstr "इस सैंपल के विशेषण पर अपना तथ्य रिकॉर्ड करें."
 
-msgid "Recorded"
-msgstr "दर्ज"
-
 msgid "recorded {qty} units"
 msgstr "रिकॉर्ड की गई {qty} इकाइयाँ"
 
 msgid "recorded {qty} units ({reason})"
 msgstr "रिकॉर्ड किया गया {qty} इकाइयाँ ({reason})"
-
-msgid "Recorded At"
-msgstr "रिकॉर्ड किया गया था"
 
 msgid "Records"
 msgstr "रिकॉर्ड"
@@ -8173,9 +8127,6 @@ msgstr "जॉब रिलीज़ करें"
 
 msgid "Released"
 msgstr "जारी किया गया"
-
-msgid "remaining"
-msgstr "शेष"
 
 msgid "Remaining"
 msgstr "शेष"
@@ -8343,9 +8294,6 @@ msgstr "प्रतिपादित <0> {totalQuantity} </0> इकाइय�
 
 msgid "Reported At"
 msgstr "रिपोर्ट किया गया"
-
-msgid "Reporter"
-msgstr "रिपोर्टर"
 
 msgid "Reports"
 msgstr "रिपोर्ट"
@@ -10147,9 +10095,6 @@ msgstr "इस लोट की उम्र है कि इसे चयन�
 msgid "This permanently deletes the quantity report and its entire history. This action cannot be undone."
 msgstr "इससे मात्रा रिपोर्ट और उसका पूरा इतिहास स्थायी रूप से हट जाएगा। यह क्रिया पूर्ववत नहीं की जा सकती।"
 
-msgid "this process pickup"
-msgstr "इस प्रोसेस का उठाव"
-
 msgid "this quantity report"
 msgstr "इस मात्रा रिपोर्ट"
 
@@ -10326,18 +10271,6 @@ msgstr "कुल भुगतान किया गया"
 
 msgid "Total Price"
 msgstr "कुल मूल्य"
-
-msgid "Total Process Pickups"
-msgstr "कुल प्रक्रिया निकासियाँ"
-
-msgid "Total Production"
-msgstr "कुल उत्पादन"
-
-msgid "Total Rework"
-msgstr "कुल रियोकॉम्बीनेशन"
-
-msgid "Total Scrap"
-msgstr "कुल डॅपर्ट"
 
 msgid "Total shown at checkout."
 msgstr "कुल चेकआउट पर दिखाया जाएगा।"

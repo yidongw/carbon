@@ -42,9 +42,6 @@ msgstr "{0} de {1} completados"
 msgid "{0} Scrapped"
 msgstr "{0} Descartados"
 
-msgid "+{inProgressQuantity} picked up, not yet produced"
-msgstr "+{inProgressQuantity} recogido, no aún producido"
-
 msgid "A consumed batch or serial is now past its expiry date."
 msgstr "Un lote o serie consumido ahora ha pasado su fecha de vencimiento."
 
@@ -289,9 +286,6 @@ msgstr "Unidad de Almacenamiento Predeterminada"
 
 msgid "Delete"
 msgstr "Eliminar"
-
-msgid "Delete process pickup"
-msgstr "Eliminar proceso de recogida"
 
 msgid "Delete step"
 msgstr "Eliminar paso"
@@ -574,9 +568,6 @@ msgstr "Registrar completados para {0}"
 
 msgid "Log In"
 msgstr "Iniciar sesión"
-
-msgid "Log Pickup"
-msgstr "Registrar extracción de proceso"
 
 msgid "Log Rework"
 msgstr "Registrar retrabajo"
@@ -891,9 +882,6 @@ msgstr "Se tomó la columna {0} en la posición: {1} de {2}"
 msgid "Picking"
 msgstr "Selección"
 
-msgid "Pickup suggestions:"
-msgstr "Sugerencias de extracción de proceso:"
-
 msgid "Pin Out"
 msgstr "Cerrar sesión con PIN"
 
@@ -945,20 +933,11 @@ msgstr "Proceso"
 msgid "Process Parameters"
 msgstr "Parámetros del proceso"
 
-msgid "process pickup"
-msgstr "recogida de proceso"
-
-msgid "Process Pickups"
-msgstr "extracciones de proceso"
-
 msgid "Processes"
 msgstr "Procesos"
 
 msgid "production"
 msgstr "producción"
-
-msgid "Production"
-msgstr "Producción"
 
 msgid "Production Logs"
 msgstr "Registros de Producción"
@@ -1003,9 +982,6 @@ msgstr "Registrar"
 msgid "Record {0}"
 msgstr "Registro {0}"
 
-msgid "Record Pickup"
-msgstr "Registrar extracción de proceso"
-
 msgid "Record Quantity"
 msgstr "Cantidad registrada"
 
@@ -1014,9 +990,6 @@ msgstr "Registrar paso"
 
 msgid "Redirecting to verification page..."
 msgstr "Redirigiendo a la página de verificación..."
-
-msgid "remaining"
-msgstr "restante"
 
 msgid "Remove"
 msgstr "Eliminar"
@@ -1311,9 +1284,6 @@ msgstr "Cambiar el estado del panel lateral"
 
 msgid "Tools"
 msgstr "Herramientas"
-
-msgid "Total Process Pickups"
-msgstr "Total de extracciones de proceso"
 
 msgid "Total Production"
 msgstr "Producción Total"

@@ -42,9 +42,6 @@ msgstr "{0} de {1} concluído(s)"
 msgid "{0} Scrapped"
 msgstr "{0} Refugado(s)"
 
-msgid "+{inProgressQuantity} picked up, not yet produced"
-msgstr "+{inProgressQuantity} recolhido, ainda não produzido"
-
 msgid "A consumed batch or serial is now past its expiry date."
 msgstr "Um lote ou série consumida está agora fora da data de validade."
 
@@ -289,9 +286,6 @@ msgstr "Unidade de Armazenamento Padrão"
 
 msgid "Delete"
 msgstr "Excluir"
-
-msgid "Delete process pickup"
-msgstr "Excluir saída de processo"
 
 msgid "Delete step"
 msgstr "Excluir etapa"
@@ -574,9 +568,6 @@ msgstr "Registrar concluído para {0}"
 
 msgid "Log In"
 msgstr "Acessar"
-
-msgid "Log Pickup"
-msgstr "Registrar saída para processo"
 
 msgid "Log Rework"
 msgstr "Registrar Retrabalho"
@@ -891,9 +882,6 @@ msgstr "Coluna {0} selecionada na posição: {1} de {2}"
 msgid "Picking"
 msgstr "Selecionando"
 
-msgid "Pickup suggestions:"
-msgstr "Sugestões de saída para processo:"
-
 msgid "Pin Out"
 msgstr "Desconectar"
 
@@ -945,20 +933,11 @@ msgstr "Processo"
 msgid "Process Parameters"
 msgstr "Parâmetros do Processo"
 
-msgid "process pickup"
-msgstr "retirada do processo"
-
-msgid "Process Pickups"
-msgstr "saídas para processo"
-
 msgid "Processes"
 msgstr "Processos"
 
 msgid "production"
 msgstr "produção"
-
-msgid "Production"
-msgstr "Produção"
 
 msgid "Production Logs"
 msgstr "Registros de Produção"
@@ -1003,9 +982,6 @@ msgstr "Registrar"
 msgid "Record {0}"
 msgstr "Registro {0}"
 
-msgid "Record Pickup"
-msgstr "Registrar saída para processo"
-
 msgid "Record Quantity"
 msgstr "Quantidade Registada"
 
@@ -1014,9 +990,6 @@ msgstr "Registre o passo"
 
 msgid "Redirecting to verification page..."
 msgstr "Redirecionando para a página de verificação..."
-
-msgid "remaining"
-msgstr "restante"
 
 msgid "Remove"
 msgstr "Remover"
@@ -1311,9 +1284,6 @@ msgstr "Alternar Barra Lateral"
 
 msgid "Tools"
 msgstr "Ferramentas"
-
-msgid "Total Process Pickups"
-msgstr "Total de saídas para processo"
 
 msgid "Total Production"
 msgstr "Produção Total"

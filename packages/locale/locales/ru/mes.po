@@ -42,9 +42,6 @@ msgstr "{0} из {1} завершено"
 msgid "{0} Scrapped"
 msgstr "{0} Списано"
 
-msgid "+{inProgressQuantity} picked up, not yet produced"
-msgstr "+{inProgressQuantity} взято, не еще произведено"
-
 msgid "A consumed batch or serial is now past its expiry date."
 msgstr "Затраченная партия или серия теперь вышла за дату истечения срока годности."
 
@@ -289,9 +286,6 @@ msgstr "Хранилище по умолчанию"
 
 msgid "Delete"
 msgstr "Удалить"
-
-msgid "Delete process pickup"
-msgstr "Удалить выдачу в процесс"
 
 msgid "Delete step"
 msgstr "Удалить шаг"
@@ -574,9 +568,6 @@ msgstr "Записать готовые для {0}"
 
 msgid "Log In"
 msgstr "Войти"
-
-msgid "Log Pickup"
-msgstr "Зарегистрировать выдачу в процесс"
 
 msgid "Log Rework"
 msgstr "Записать доработку"
@@ -891,9 +882,6 @@ msgstr "Столбец {0} взят с позиции: {1} из {2}"
 msgid "Picking"
 msgstr "Выборка"
 
-msgid "Pickup suggestions:"
-msgstr "Подсказки по выдаче в процесс:"
-
 msgid "Pin Out"
 msgstr "Выход по PIN"
 
@@ -945,20 +933,11 @@ msgstr "Процесс"
 msgid "Process Parameters"
 msgstr "Параметры процесса"
 
-msgid "process pickup"
-msgstr "выдача в процесс"
-
-msgid "Process Pickups"
-msgstr "выдачи в процесс"
-
 msgid "Processes"
 msgstr "Процессы"
 
 msgid "production"
 msgstr "производство"
-
-msgid "Production"
-msgstr "Производство"
 
 msgid "Production Logs"
 msgstr "Логи производства"
@@ -1003,9 +982,6 @@ msgstr "Записать"
 msgid "Record {0}"
 msgstr "Запись {0}"
 
-msgid "Record Pickup"
-msgstr "Зарегистрировать выдачу в процесс"
-
 msgid "Record Quantity"
 msgstr "Записать количество"
 
@@ -1014,9 +990,6 @@ msgstr "Записать шаг"
 
 msgid "Redirecting to verification page..."
 msgstr "Перенаправление на страницу верификации..."
-
-msgid "remaining"
-msgstr "оставшееся"
 
 msgid "Remove"
 msgstr "Удалить"
@@ -1311,9 +1284,6 @@ msgstr "Переключить панель侧边栏"
 
 msgid "Tools"
 msgstr "Инструменты"
-
-msgid "Total Process Pickups"
-msgstr "Всего выдач в процесс"
 
 msgid "Total Production"
 msgstr "Общее производство"

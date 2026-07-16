@@ -42,9 +42,6 @@ msgstr "{0} sur {1} terminé(s)"
 msgid "{0} Scrapped"
 msgstr "{0} Rebuté(s)"
 
-msgid "+{inProgressQuantity} picked up, not yet produced"
-msgstr "+{inProgressQuantity} pris, pas encore produit"
-
 msgid "A consumed batch or serial is now past its expiry date."
 msgstr "Un lot ou un numéro de série consommé est maintenant passé sa date d'expiration."
 
@@ -289,9 +286,6 @@ msgstr "Unité de stockage par défaut"
 
 msgid "Delete"
 msgstr "Supprimer"
-
-msgid "Delete process pickup"
-msgstr "Supprimer le prélèvement de processus"
 
 msgid "Delete step"
 msgstr "Supprimer l'étape"
@@ -574,9 +568,6 @@ msgstr "Enregistrer la production pour {0}"
 
 msgid "Log In"
 msgstr "Se connecter"
-
-msgid "Log Pickup"
-msgstr "Enregistrer le prélèvement de processus"
 
 msgid "Log Rework"
 msgstr "Enregistrer la reprise"
@@ -891,9 +882,6 @@ msgstr "Colonne {0} saisie à la position : {1} sur {2}"
 msgid "Picking"
 msgstr "Choix"
 
-msgid "Pickup suggestions:"
-msgstr "Suggestions de prélèvement de processus :"
-
 msgid "Pin Out"
 msgstr "Déconnecter"
 
@@ -945,20 +933,11 @@ msgstr "Processus"
 msgid "Process Parameters"
 msgstr "Paramètres de processus"
 
-msgid "process pickup"
-msgstr "prélèvement de processus"
-
-msgid "Process Pickups"
-msgstr "prélèvements de processus"
-
 msgid "Processes"
 msgstr "Processus"
 
 msgid "production"
 msgstr "production"
-
-msgid "Production"
-msgstr "Production"
 
 msgid "Production Logs"
 msgstr "Logs de production"
@@ -1003,9 +982,6 @@ msgstr "Enregistrer"
 msgid "Record {0}"
 msgstr "Enregistrement {0}"
 
-msgid "Record Pickup"
-msgstr "Enregistrer le prélèvement de processus"
-
 msgid "Record Quantity"
 msgstr "Quantité enregistrée"
 
@@ -1014,9 +990,6 @@ msgstr "Enregistrer l'étape"
 
 msgid "Redirecting to verification page..."
 msgstr "Redirection vers la page de vérification..."
-
-msgid "remaining"
-msgstr "restant"
 
 msgid "Remove"
 msgstr "Retirer"
@@ -1311,9 +1284,6 @@ msgstr "Basculer la barre latérale"
 
 msgid "Tools"
 msgstr "Outils"
-
-msgid "Total Process Pickups"
-msgstr "Total des prélèvements de processus"
 
 msgid "Total Production"
 msgstr "Production totale"

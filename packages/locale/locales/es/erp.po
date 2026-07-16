@@ -474,9 +474,6 @@ msgstr "Agregar Impresora"
 msgid "Add process completion"
 msgstr "Agregar finalización de proceso"
 
-msgid "Add process pickup"
-msgstr "Agregar extracción de proceso"
-
 msgid "Add Property"
 msgstr "Agregar propiedad"
 
@@ -1055,9 +1052,6 @@ msgstr "¿Estás seguro de que deseas eliminar este despacho de mantenimiento? E
 
 msgid "Are you sure you want to delete this process completion? This action cannot be undone."
 msgstr "¿Estás seguro de que quieres eliminar este proceso de finalización? Esta acción no se puede deshacer."
-
-msgid "Are you sure you want to delete this process pickup? This action cannot be undone."
-msgstr "¿Estás seguro de que quieres eliminar este proceso de recogida? Esta acción no se puede deshacer."
 
 msgid "Are you sure you want to delete this quality document?"
 msgstr "¿Estás seguro de que deseas eliminar este documento de calidad?"
@@ -2985,9 +2979,6 @@ msgstr "Eliminar Proceso"
 msgid "Delete Process Completion"
 msgstr "Eliminar la finalización del proceso"
 
-msgid "Delete Process Pickup"
-msgstr "Eliminar recogida de proceso"
-
 msgid "Delete Purchase Invoice"
 msgstr "Eliminar Factura de Compra"
 
@@ -3577,9 +3568,6 @@ msgstr "Permisos de edición"
 
 msgid "Edit Picking List"
 msgstr "Editar Lista de Retiro"
-
-msgid "Edit pickup"
-msgstr "Editar recogida"
 
 msgid "Edit Portal"
 msgstr "Editar Portal"
@@ -4545,8 +4533,8 @@ msgstr "Acabado"
 msgid "Finish To"
 msgstr "Terminar En"
 
-msgid "Finished {complete} of {target} units, {pickup} in progress from process pickups, {unassigned} unassigned"
-msgstr "Finalizados {complete} de {target} unidades, {pickup} en progreso desde recogidas del proceso, {unassigned} no asignadas"
+msgid "Finished {complete} of {target} units, {unassigned} unassigned"
+msgstr ""
 
 msgid "Finished Goods"
 msgstr "Productos acabados"
@@ -5556,12 +5544,6 @@ msgstr "Litro"
 
 msgid "Live reloading"
 msgstr "Recarga en vivo"
-
-msgid "Load more process completions"
-msgstr "Cargar más completaciones del proceso"
-
-msgid "Load more process pickups"
-msgstr "Cargar más recogidas de procesos"
 
 msgid "Load Templates"
 msgstr "Cargar Plantillas"
@@ -6686,9 +6668,6 @@ msgstr "Sin impresora configurada"
 msgid "No printers configured. Click \"Add Printer\" to create one."
 msgstr "No se han configurado impresoras. Haz clic en \"Agregar Impresora\"."
 
-msgid "No production logs"
-msgstr "Sin registros de producción"
-
 msgid "No quantity recorded yet."
 msgstr "Aún no se ha registrado ninguna cantidad."
 
@@ -7677,19 +7656,6 @@ msgstr "Desviación de proceso"
 msgid "Process Name"
 msgstr "Nombre del Proceso"
 
-msgid "Process Pickup"
-msgstr "extracción de proceso"
-
-#. placeholder {0}: selectedPickup.employeeId
-msgid "Process Pickup by {0}"
-msgstr "Extracción de proceso por {0}"
-
-msgid "Process pickup updated"
-msgstr "Proceso de recogida actualizado"
-
-msgid "Process Pickups"
-msgstr "extracciones de proceso"
-
 msgid "Process Type"
 msgstr "Tipo de Proceso"
 
@@ -7710,9 +7676,6 @@ msgstr "Evento de Producción"
 
 msgid "Production Events"
 msgstr "Eventos de Producción"
-
-msgid "Production Logs"
-msgstr "Registros de Producción"
 
 msgid "Production Qty"
 msgstr "Cantidad de Producción"
@@ -7906,9 +7869,6 @@ msgstr "La cantidad se deriva de seriales/lotes completados en MES y no se puede
 
 msgid "Quantity must be greater than 0"
 msgstr "La cantidad debe ser mayor que 0"
-
-msgid "Quantity must be greater than zero"
-msgstr "La cantidad debe ser mayor que cero"
 
 msgid "Quantity on Hand"
 msgstr "Cantidad disponible"
@@ -8108,17 +8068,11 @@ msgstr "Pago de registro"
 msgid "Record the inspection result for this sample."
 msgstr "Registre el resultado de la inspección para este muestra."
 
-msgid "Recorded"
-msgstr "Registrado"
-
 msgid "recorded {qty} units"
 msgstr "registrados {qty} unidades"
 
 msgid "recorded {qty} units ({reason})"
 msgstr "registrados {qty} unidades ({reason})"
-
-msgid "Recorded At"
-msgstr "Grabado en"
 
 msgid "Records"
 msgstr "Registros"
@@ -8173,9 +8127,6 @@ msgstr "Liberar Trabajo"
 
 msgid "Released"
 msgstr "Liberado"
-
-msgid "remaining"
-msgstr "restante"
 
 msgid "Remaining"
 msgstr "Restante"
@@ -8343,9 +8294,6 @@ msgstr "Reportados <0>{totalQuantity}</0> unidades"
 
 msgid "Reported At"
 msgstr "Informado el"
-
-msgid "Reporter"
-msgstr "Reportero"
 
 msgid "Reports"
 msgstr "Informes"
@@ -10147,9 +10095,6 @@ msgstr "Este lote ha expirado y no puede ser seleccionado."
 msgid "This permanently deletes the quantity report and its entire history. This action cannot be undone."
 msgstr "Esto elimina permanentemente el informe de cantidad y todo su historial. Esta acción no se puede deshacer."
 
-msgid "this process pickup"
-msgstr "este proceso de recogida"
-
 msgid "this quantity report"
 msgstr "este informe de cantidad"
 
@@ -10326,18 +10271,6 @@ msgstr "Pagado total"
 
 msgid "Total Price"
 msgstr "Precio Total"
-
-msgid "Total Process Pickups"
-msgstr "Total de extracciones de proceso"
-
-msgid "Total Production"
-msgstr "Producción Total"
-
-msgid "Total Rework"
-msgstr "Total Rehacer"
-
-msgid "Total Scrap"
-msgstr "Total Residuo"
 
 msgid "Total shown at checkout."
 msgstr "Total mostrado en el pago."

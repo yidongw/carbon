@@ -42,9 +42,6 @@ msgstr "{0} में से {1} पूर्ण"
 msgid "{0} Scrapped"
 msgstr "{0} स्क्रैप किया गया"
 
-msgid "+{inProgressQuantity} picked up, not yet produced"
-msgstr "+{inProgressQuantity} पकड़ा गया, अभी तक उत्पादित नहीं है"
-
 msgid "A consumed batch or serial is now past its expiry date."
 msgstr "एक खपत की बच्चा या सैरियल अब अपने समाप्ति तारीख से पास हो गया है।"
 
@@ -289,9 +286,6 @@ msgstr "डिफ़ॉल्ट स्टोरेज यूनिट"
 
 msgid "Delete"
 msgstr "हटाएं"
-
-msgid "Delete process pickup"
-msgstr "प्रक्रिया निकासी हटाएं"
 
 msgid "Delete step"
 msgstr "पास्टे हटाएँ"
@@ -574,9 +568,6 @@ msgstr "{0} के लिए पूर्ण लॉग करें"
 
 msgid "Log In"
 msgstr "दाखिल होना"
-
-msgid "Log Pickup"
-msgstr "प्रक्रिया निकासी लॉग करें"
 
 msgid "Log Rework"
 msgstr "रीवर्क लॉग करें"
@@ -891,9 +882,6 @@ msgstr "कॉलम {0} को स्थिति {1} पर उठाया �
 msgid "Picking"
 msgstr "पीकिंग"
 
-msgid "Pickup suggestions:"
-msgstr "प्रक्रिया निकासी सुझाव:"
-
 msgid "Pin Out"
 msgstr "पिन आउट"
 
@@ -945,19 +933,10 @@ msgstr "प्रक्रिया"
 msgid "Process Parameters"
 msgstr "प्रक्रिया पैरामीटर"
 
-msgid "process pickup"
-msgstr "प्रक्रिया निकासी"
-
-msgid "Process Pickups"
-msgstr "प्रक्रिया निकासियाँ"
-
 msgid "Processes"
 msgstr "प्रक्रियाएं"
 
 msgid "production"
-msgstr "उत्पादन"
-
-msgid "Production"
 msgstr "उत्पादन"
 
 msgid "Production Logs"
@@ -1003,9 +982,6 @@ msgstr "रिकॉर्ड"
 msgid "Record {0}"
 msgstr "रिकॉर्ड {0}"
 
-msgid "Record Pickup"
-msgstr "प्रक्रिया निकासी दर्ज करें"
-
 msgid "Record Quantity"
 msgstr "रिकॉर्ड गुणता"
 
@@ -1014,9 +990,6 @@ msgstr "रिकॉर्ड चरण"
 
 msgid "Redirecting to verification page..."
 msgstr "सत्यापन पृष्ठ पर पुनर्निर्देशित हो रहा है..."
-
-msgid "remaining"
-msgstr "शेष"
 
 msgid "Remove"
 msgstr "हटाएं"
@@ -1311,9 +1284,6 @@ msgstr "पार्सिया बटन"
 
 msgid "Tools"
 msgstr "उपकरण"
-
-msgid "Total Process Pickups"
-msgstr "कुल प्रक्रिया निकासियाँ"
 
 msgid "Total Production"
 msgstr "कुल उत्पादन"

@@ -13,7 +13,6 @@ import {
   getJobMaterialsByOperationId,
   getJobMethodBomIdMap,
   getJobOperationById,
-  getJobOperationPickups,
   getJobOperationProcedure,
   getKanbanByJobId,
   getNonConformanceActions,
@@ -41,13 +40,12 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const serviceRole = await getCarbonServiceRole();
 
-  const [events, quantities, pickups, job, operation] = await Promise.all([
+  const [events, quantities, job, operation] = await Promise.all([
     getProductionEventsForJobOperation(serviceRole, {
       operationId,
       userId
     }),
     getProductionQuantitiesForJobOperation(serviceRole, operationId),
-    getJobOperationPickups(serviceRole, operationId),
     getJobByOperationId(serviceRole, operationId),
     getJobOperationById(serviceRole, operationId)
   ]);
@@ -116,30 +114,10 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     throw redirect(`${redirectUrl.pathname}${redirectUrl.search}`);
   }
 
-  const allPickups = pickups.data ?? [];
-  const myPickups = allPickups.filter((p) => p.employeeId === userId);
-  const myQuantities = (quantities.data ?? []).filter(
-    (q: any) => q.employeeId === userId && q.type === "Production"
-  );
-
-  const myPickupTotal = myPickups.reduce(
-    (sum, p) => sum + Number(p.quantity),
-    0
-  );
-  const myReportedTotal = myQuantities.reduce(
-    (sum: number, q: any) => sum + Number(q.quantity),
-    0
-  );
-  const suggestedQuantity = Math.max(0, myPickupTotal - myReportedTotal);
-  const pickupConfiguration = myPickups[0]?.configuration ?? null;
-
   return {
     bomIdMap: Object.fromEntries(bomIdMap),
     events: events.data ?? [],
-    pickups: allPickups,
     productionQuantities: quantities.data ?? [],
-    suggestedQuantity,
-    pickupConfiguration,
     quantities: quantities.data ?? [],
     job: job.data,
     jobMakeMethod: jobMakeMethod.data,
@@ -189,10 +167,7 @@ export default function OperationRoute() {
     kanban,
     materials,
     operation,
-    pickups,
     productionQuantities,
-    suggestedQuantity,
-    pickupConfiguration,
     quantities,
     procedure,
     thumbnailPath,
@@ -210,10 +185,7 @@ export default function OperationRoute() {
       kanban={kanban}
       materials={materials}
       method={jobMakeMethod}
-      pickups={pickups}
       productionQuantities={productionQuantities}
-      suggestedQuantity={suggestedQuantity}
-      pickupConfiguration={pickupConfiguration}
       quantities={quantities}
       trackedEntities={trackedEntities}
       nonConformanceActions={nonConformanceActions}
