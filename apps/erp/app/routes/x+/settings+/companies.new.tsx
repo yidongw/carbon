@@ -3,6 +3,7 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
+import { resolveLanguage } from "@carbon/locale";
 import {
   Modal,
   ModalBody,
@@ -10,6 +11,7 @@ import {
   ModalHeader,
   ModalTitle
 } from "@carbon/react";
+import { getPreferenceHeaders } from "@carbon/utils";
 import { getLocalTimeZone } from "@internationalized/date";
 import type { ActionFunctionArgs } from "react-router";
 import { redirect, useNavigate } from "react-router";
@@ -68,7 +70,14 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
-  const seed = await seedCompany(client, companyId, userId, parentCompanyId);
+  const language = resolveLanguage(getPreferenceHeaders(request).locale);
+  const seed = await seedCompany(
+    client,
+    companyId,
+    userId,
+    parentCompanyId,
+    language
+  );
   if (seed.error) {
     throw redirect(
       path.to.companies,

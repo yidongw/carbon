@@ -21,7 +21,13 @@ import { useEffect } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { redirect, useFetcher, useLoaderData } from "react-router";
 import { Users } from "~/components/Form";
-import { getCompanySettings, jobCompletedValidator } from "~/modules/settings";
+import useProductionSubmodules from "~/modules/production/ui/useProductionSubmodules";
+import {
+  getCompanySettings,
+  jobCompletedValidator,
+  updateHiddenSubmodulesSetting
+} from "~/modules/settings";
+import { SubmoduleVisibility } from "~/modules/settings/ui/SubmoduleVisibility";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 
@@ -80,6 +86,24 @@ export async function action({ request }: ActionFunctionArgs) {
     return { success: true, message: "Job notification settings updated" };
   }
 
+  if (intent === "hiddenSubmodules") {
+    let hiddenSubmodules: string[] = [];
+    try {
+      hiddenSubmodules = JSON.parse(
+        String(formData.get("hiddenSubmodules") ?? "[]")
+      );
+    } catch {
+      // keep empty on parse failure
+    }
+    const update = await updateHiddenSubmodulesSetting(
+      client,
+      companyId,
+      hiddenSubmodules
+    );
+    if (update.error) return { success: false, message: update.error.message };
+    return { success: true, message: "Navigation updated" };
+  }
+
   return { success: false, message: "Unknown intent" };
 }
 
@@ -87,6 +111,7 @@ export default function ProductionSettingsRoute() {
   const { t } = useLingui();
   const { companySettings } = useLoaderData<typeof loader>();
   const fetcher = useFetcher<typeof action>();
+  const { groups } = useProductionSubmodules({ includeHidden: true });
 
   useEffect(() => {
     if (fetcher.data?.success === true && fetcher?.data?.message) {
@@ -165,6 +190,11 @@ export default function ProductionSettingsRoute() {
             </CardFooter>
           </ValidatedForm>
         </Card>
+
+        <SubmoduleVisibility
+          groups={groups}
+          hidden={companySettings.hiddenSubmodules ?? []}
+        />
       </VStack>
     </ScrollArea>
   );

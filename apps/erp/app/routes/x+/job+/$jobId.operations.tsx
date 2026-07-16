@@ -69,7 +69,7 @@ export default function JobOperationsRoute() {
 
   return (
     <VStack spacing={0} className="h-[calc(100dvh-99px)]">
-      <JobOperationsTable data={operations} count={count} />
+      <JobOperationsTable data={operations} count={count} showAssignee />
     </VStack>
   );
 }

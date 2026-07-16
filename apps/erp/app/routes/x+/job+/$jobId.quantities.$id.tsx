@@ -75,10 +75,21 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
       value: operation.id
     })) ?? [];
 
-  const configurationParameters = job.data?.itemId
-    ? (await getConfigurationParameters(client, job.data.itemId, companyId))
-        .parameters
-    : [];
+  // Show the config-params editor only when the job actually carries a
+  // configuration (a non-empty color/size breakdown). Bundle jobs carry none —
+  // they're a single fixed color/size — so they report a plain quantity.
+  const jobConfig = job.data?.configuration as
+    | { configTable?: unknown[] }
+    | null
+    | undefined;
+  const jobIsConfigured =
+    Array.isArray(jobConfig?.configTable) && jobConfig.configTable.length > 0;
+
+  const configurationParameters =
+    job.data?.itemId && jobIsConfigured
+      ? (await getConfigurationParameters(client, job.data.itemId, companyId))
+          .parameters
+      : [];
 
   const itemId = job.data?.itemId ?? null;
   const base = {

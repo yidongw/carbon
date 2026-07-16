@@ -5,25 +5,23 @@ import type { Json } from "@carbon/database";
 import { trigger } from "@carbon/jobs";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { data } from "react-router";
-import { getConfigurationParameters } from "~/modules/items";
+import {
+  getConfigurationParameters,
+  getStyleColorList
+} from "~/modules/items";
 import type { ConfigurationParameter } from "~/modules/items/types";
 import {
   getJob,
   getJobConfigurationHistory,
-  getJobProductionQuantitySummary,
   isJobLocked
 } from "~/modules/production";
-import { buildConfigColumns } from "~/modules/production/configParamsTableColumns";
 import {
   buildConfigTableActionResponse,
   jobConfigurationUpdateFields,
   parseConfigurationFormValue
 } from "~/modules/production/configTableOverlay.server";
 import type { ConfigRow } from "~/modules/production/jobConfiguration";
-import {
-  applyConfigAdjustment,
-  sumConfigTables
-} from "~/modules/production/jobConfiguration";
+import { applyConfigAdjustment } from "~/modules/production/jobConfiguration";
 import { requireUnlocked } from "~/utils/lockedGuard.server";
 import { path } from "~/utils/path";
 
@@ -35,19 +33,13 @@ export type JobConfigurationHistoryEntry = {
   createdByName: string | null;
 };
 
-export type JobProcessQuantityEntry = {
-  operationId: string;
-  label: string;
-  quantity: number;
-  configuration: { configTable: ConfigRow[]; configTablePrimaryKeys: string[] };
-};
-
 export type JobConfigTableOverlayLoaderData = {
   jobDisplayId: string | null;
   parameters: ConfigurationParameter[];
   initialRows?: ConfigRow[];
   history: JobConfigurationHistoryEntry[];
-  processQuantities: JobProcessQuantityEntry[];
+  /** Color code -> color name, so the config table shows names not codes. */
+  colorNames: Record<string, string>;
 };
 
 function normalizeConfigurationValue(value: unknown): {
@@ -120,30 +112,21 @@ export async function loader({
     };
   });
 
-  const { primaryKeys } = buildConfigColumns(parameters, "Quantities");
-  const summaryResult = await getJobProductionQuantitySummary(
-    client,
-    jobId,
-    companyId
-  );
-  const processQuantities: JobProcessQuantityEntry[] = (
-    summaryResult.data ?? []
-  ).map((entry) => {
-    const summed = sumConfigTables(entry.configurations, primaryKeys);
-    return {
-      operationId: entry.operationId,
-      label: entry.label,
-      quantity: summed.total,
-      configuration: summed.configuration
-    };
-  });
+  // Map color code -> name so the config table displays names, not codes.
+  const styleColors = await getStyleColorList(client, companyId);
+  const colorNames: Record<string, string> = {};
+  for (const color of styleColors.data ?? []) {
+    if (color.colorCode) {
+      colorNames[color.colorCode] = color.colorName ?? color.colorCode;
+    }
+  }
 
   return {
     jobDisplayId: job.data.jobId ?? null,
     parameters,
     initialRows,
     history,
-    processQuantities
+    colorNames
   };
 }
 

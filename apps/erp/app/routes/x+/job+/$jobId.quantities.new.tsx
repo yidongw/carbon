@@ -66,18 +66,31 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     getJobOperations(client, jobId),
     getJobOperationActorContext(client, jobOperationId, companyId)
   ]);
+  const seededActor = seededActorFromOperationContext(opContext);
   const actorContext = {
     ...opContext,
     defaultActorKind: defaultActorKindFromOperationType(
       opContext.operationType
     ),
-    seededActor: seededActorFromOperationContext(opContext)
+    seededActor,
+    lockActorSelection: seededActor.lockActorSelection
   };
 
-  const configurationParameters = job.data?.itemId
-    ? (await getConfigurationParameters(client, job.data.itemId, companyId))
-        .parameters
-    : [];
+  // Show the config-params editor only when the job actually carries a
+  // configuration (a non-empty color/size breakdown). Bundle jobs carry none —
+  // they're a single fixed color/size — so they report a plain quantity.
+  const jobConfig = job.data?.configuration as
+    | { configTable?: unknown[] }
+    | null
+    | undefined;
+  const jobIsConfigured =
+    Array.isArray(jobConfig?.configTable) && jobConfig.configTable.length > 0;
+
+  const configurationParameters =
+    job.data?.itemId && jobIsConfigured
+      ? (await getConfigurationParameters(client, job.data.itemId, companyId))
+          .parameters
+      : [];
 
   const itemId = job.data?.itemId ?? null;
   const jobOption = {
@@ -95,17 +108,32 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     }
   );
 
+  // A master work order carries only its cutting operation (sew/finish are
+  // reported on the bundles), so no operation filtering is needed here.
   const operationOptions =
     jobOperations?.data?.map((operation) => ({
       label: operation.description ?? "",
       value: operation.id!
     })) ?? [];
 
+  const remainingByOperationId: Record<string, number> = {};
+  for (const op of jobOperations?.data ?? []) {
+    if (!op.id) continue;
+    remainingByOperationId[op.id] = Math.max(
+      0,
+      (op.targetQuantity ?? op.operationQuantity ?? 0) -
+        (op.quantityComplete ?? 0) -
+        (op.quantityScrapped ?? 0) -
+        (op.quantityReworked ?? 0)
+    );
+  }
+
   return {
     jobId,
     jobOption,
     jobOperationId,
     operationOptions,
+    remainingByOperationId,
     configurationParameters:
       configurationParameters.length > 0 ? configurationParameters : null,
     configReferenceSource,
@@ -267,7 +295,10 @@ export async function action({ request, params }: ActionFunctionArgs) {
       {},
       await flash(
         request,
-        error(reportResult.error, "Failed to insert process completion")
+        error(
+          reportResult.error,
+          reportResult.error.message || "Failed to insert process completion"
+        )
       )
     );
   }
