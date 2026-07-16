@@ -958,35 +958,6 @@ export const productionQuantityCreateFormValidator = z
     }
   });
 
-export const jobOperationPickupValidator = z
-  .object({
-    id: zfd.text(z.string().optional()),
-    jobId: zfd.text(z.string().optional()),
-    jobOperationId: z.string().min(1, { message: "Operation is required" }),
-    actorKind: z.enum(productionActorKinds).default("employee"),
-    employeeId: zfd.text(z.string().optional()),
-    supplierProcessId: zfd.text(z.string().optional()),
-    quantity: zfd.numeric(z.number().min(0)),
-    configuration: z.any().optional(),
-    notes: zfd.text(z.string().optional())
-  })
-  .superRefine((data, ctx) => {
-    if (data.actorKind === "employee" && !data.employeeId) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Employee is required",
-        path: ["productionActorSelection"]
-      });
-    }
-    if (data.actorKind === "supplier" && !data.supplierProcessId) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Supplier process is required",
-        path: ["productionActorSelection"]
-      });
-    }
-  });
-
 export const scheduleOperationUpdateValidator = z.object({
   id: z.string().min(1, { message: "ID is required" }),
   columnId: z.string().min(1, { message: "Column is required" }),

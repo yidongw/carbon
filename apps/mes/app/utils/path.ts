@@ -117,9 +117,6 @@ export const path = {
     issue: `${x}/issue`,
     issueTrackedEntity: `${x}/issue-tracked-entity`,
     qualityIssueNew: `${x}/quality-issue/new`,
-    operationPickupNew: `${x}/operation-pickup/new`,
-    operationPickupDelete: (id: string) =>
-      generatePath(`${x}/operation-pickup/${id}/delete`),
     location: `${x}/location`,
     manualPrint: `${x}/print`,
     login: "/login",

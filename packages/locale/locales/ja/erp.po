@@ -474,9 +474,6 @@ msgstr "プリンター追加"
 msgid "Add process completion"
 msgstr "工程完了を追加"
 
-msgid "Add process pickup"
-msgstr "工程払い出しを追加"
-
 msgid "Add Property"
 msgstr "プロパティを追加"
 
@@ -1055,9 +1052,6 @@ msgstr "このメンテナンスディスパッチを削除してもよろしい
 
 msgid "Are you sure you want to delete this process completion? This action cannot be undone."
 msgstr "この工程完了を削除 REALLY WANT TO KNOW IF YOU ARE SURE という行動は取り消せません"
-
-msgid "Are you sure you want to delete this process pickup? This action cannot be undone."
-msgstr "このプロセスピックアップを削除してもよろしいですか？ この操作は取り消せません。"
 
 msgid "Are you sure you want to delete this quality document?"
 msgstr "このクオリティドキュメントを削除してもよろしいですか？"
@@ -2985,9 +2979,6 @@ msgstr "プロセスを削除"
 msgid "Delete Process Completion"
 msgstr "プロセス完了の削除"
 
-msgid "Delete Process Pickup"
-msgstr "プロセスピックアップを削除"
-
 msgid "Delete Purchase Invoice"
 msgstr "購入請求書を削除"
 
@@ -3577,9 +3568,6 @@ msgstr "編集権限"
 
 msgid "Edit Picking List"
 msgstr "ピッキングリスト編集"
-
-msgid "Edit pickup"
-msgstr "ピックアップ編集"
 
 msgid "Edit Portal"
 msgstr "ポータルを編集"
@@ -4545,8 +4533,8 @@ msgstr "仕上げ"
 msgid "Finish To"
 msgstr "完成先"
 
-msgid "Finished {complete} of {target} units, {pickup} in progress from process pickups, {unassigned} unassigned"
-msgstr "完成 {complete} 件中 {target} 件、{pickup} の取り込み中、{unassigned} 未割り当て"
+msgid "Finished {complete} of {target} units, {unassigned} unassigned"
+msgstr ""
 
 msgid "Finished Goods"
 msgstr "[製品]"
@@ -5556,12 +5544,6 @@ msgstr "リットル"
 
 msgid "Live reloading"
 msgstr "ライブリロード中"
-
-msgid "Load more process completions"
-msgstr "更多的工程完成记录を読み込む"
-
-msgid "Load more process pickups"
-msgstr "更多的工序取込を読み込む"
 
 msgid "Load Templates"
 msgstr "テンプレートを読み込む"
@@ -6686,9 +6668,6 @@ msgstr "プリンターが設定されていません"
 msgid "No printers configured. Click \"Add Printer\" to create one."
 msgstr "プリンターが設定されていません。\"プリンター追加\" をクリックして設定してください。"
 
-msgid "No production logs"
-msgstr "生産ログがありません"
-
 msgid "No quantity recorded yet."
 msgstr "まだ数量が記録されていません。"
 
@@ -7677,19 +7656,6 @@ msgstr "プロセス逸脱"
 msgid "Process Name"
 msgstr "プロセス名"
 
-msgid "Process Pickup"
-msgstr "工程払い出し"
-
-#. placeholder {0}: selectedPickup.employeeId
-msgid "Process Pickup by {0}"
-msgstr "{0} の工程払い出し"
-
-msgid "Process pickup updated"
-msgstr "プロセスピックアップが更新されました"
-
-msgid "Process Pickups"
-msgstr "工程払い出し"
-
 msgid "Process Type"
 msgstr "プロセスタイプ"
 
@@ -7710,9 +7676,6 @@ msgstr "生産イベント"
 
 msgid "Production Events"
 msgstr "本番イベント"
-
-msgid "Production Logs"
-msgstr "生産ログ"
 
 msgid "Production Qty"
 msgstr "生産数量"
@@ -7906,9 +7869,6 @@ msgstr "数量はMESで完了したシリアル/バッチから導出されて�
 
 msgid "Quantity must be greater than 0"
 msgstr "数量は0より大きい必要があります"
-
-msgid "Quantity must be greater than zero"
-msgstr "数量はゼロ以上でなければなりません"
 
 msgid "Quantity on Hand"
 msgstr "手持在庫数量"
@@ -8108,17 +8068,11 @@ msgstr "えいさつせき"
 msgid "Record the inspection result for this sample."
 msgstr "このサンプルの検査結果を記録してください。"
 
-msgid "Recorded"
-msgstr "記録済み"
-
 msgid "recorded {qty} units"
 msgstr "recorded {qty} units"
 
 msgid "recorded {qty} units ({reason})"
 msgstr "recorded {qty} units ({reason})"
-
-msgid "Recorded At"
-msgstr "録音済み"
 
 msgid "Records"
 msgstr "記録"
@@ -8173,9 +8127,6 @@ msgstr "ジョブをリリース"
 
 msgid "Released"
 msgstr "リリース済み"
-
-msgid "remaining"
-msgstr "残り"
 
 msgid "Remaining"
 msgstr "残り"
@@ -8343,9 +8294,6 @@ msgstr "報告済み<0>{totalQuantity}</0>個"
 
 msgid "Reported At"
 msgstr "報告日時"
-
-msgid "Reporter"
-msgstr "レポートラー"
 
 msgid "Reports"
 msgstr "レポート"
@@ -10147,9 +10095,6 @@ msgstr "このロットは期限が过了できClassNotFoundException被拣选�
 msgid "This permanently deletes the quantity report and its entire history. This action cannot be undone."
 msgstr "これにより、数量レポートとその全履歴が完全に削除されます。この操作は元に戻せません。"
 
-msgid "this process pickup"
-msgstr "このプロセスの拾い上げ"
-
 msgid "this quantity report"
 msgstr "この数量レポート"
 
@@ -10326,18 +10271,6 @@ msgstr "合計支払い"
 
 msgid "Total Price"
 msgstr "合計価格"
-
-msgid "Total Process Pickups"
-msgstr "工程払い出し合計"
-
-msgid "Total Production"
-msgstr "総生産量"
-
-msgid "Total Rework"
-msgstr "総計リワーク"
-
-msgid "Total Scrap"
-msgstr "総合不良"
 
 msgid "Total shown at checkout."
 msgstr "合計はチェックアウト時に表示されます。"

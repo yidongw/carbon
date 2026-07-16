@@ -1,4 +1,4 @@
-import type { Database, Json } from "@carbon/database";
+import type { Database } from "@carbon/database";
 import type { JSONContent } from "@carbon/react";
 import {
   type FlatTree,
@@ -1041,57 +1041,6 @@ export async function insertScrapQuantity(
     notes: data.notes ?? null,
     scrapReasonId: data.scrapReasonId
   });
-}
-
-export async function getJobOperationPickups(
-  client: SupabaseClient<Database>,
-  jobOperationId: string
-) {
-  return client
-    .from("jobOperationPickup")
-    .select("*, employee:employeeId(id, firstName, lastName, avatarUrl)")
-    .eq("jobOperationId", jobOperationId)
-    .order("createdAt", { ascending: false });
-}
-
-export async function upsertJobOperationPickup(
-  client: SupabaseClient<Database>,
-  pickup: {
-    jobOperationId: string;
-    employeeId: string;
-    quantity: number;
-    configuration?: unknown;
-    notes?: string;
-    companyId: string;
-    createdBy: string;
-  }
-) {
-  const { configuration: rawConfiguration, ...rest } = pickup;
-  let configuration: unknown;
-  if (rawConfiguration) {
-    try {
-      configuration =
-        typeof rawConfiguration === "string"
-          ? JSON.parse(rawConfiguration as string)
-          : rawConfiguration;
-    } catch {
-      configuration = undefined;
-    }
-  }
-  return client
-    .from("jobOperationPickup")
-    .insert([
-      sanitize({ ...rest, configuration: configuration as Json | null })
-    ])
-    .select("id")
-    .single();
-}
-
-export async function deleteJobOperationPickup(
-  client: SupabaseClient<Database>,
-  id: string
-) {
-  return client.from("jobOperationPickup").delete().eq("id", id);
 }
 
 export async function endProductionEvent(

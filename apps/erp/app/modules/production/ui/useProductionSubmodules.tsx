@@ -4,7 +4,6 @@ import {
   LuCirclePlay,
   LuLayoutDashboard,
   LuListChecks,
-  LuPackage,
   LuPackageCheck,
   LuPackageOpen,
   LuScissors,
@@ -63,12 +62,6 @@ export default function useProductionSubmodules(opts?: {
           to: path.to.procedures,
           icon: <LuListChecks />,
           table: "procedure",
-          role: "employee"
-        },
-        {
-          name: t`Process Pickups`,
-          to: path.to.pickups,
-          icon: <LuPackage />,
           role: "employee"
         },
         {

@@ -10,7 +10,6 @@ import {
   LuCircleCheckBig,
   LuCircleDashed,
   LuGripVertical,
-  LuLoaderCircle,
   LuTable,
   LuTrash
 } from "react-icons/lu";
@@ -27,10 +26,8 @@ export interface Item {
   /** Filled strip between the main block and footer (e.g. operation quantity progress). */
   quantityProgress?: {
     complete: number;
-    pickup: number;
     target: number;
     onAddQuantity?: () => void;
-    onAddPickup?: () => void;
     onOpenConfigTable?: () => void;
   } | null;
 }
@@ -364,21 +361,10 @@ function QuantityProgressStrip({
   progress: NonNullable<Item["quantityProgress"]>;
 }) {
   const { t } = useLingui();
-  const {
-    complete,
-    pickup,
-    target,
-    onAddQuantity,
-    onAddPickup,
-    onOpenConfigTable
-  } = progress;
+  const { complete, target, onAddQuantity, onOpenConfigTable } = progress;
   const completePercent = getPercent(complete, target);
-  const pickupPercent = Math.min(
-    getPercent(pickup, target),
-    100 - completePercent
-  );
   const isOverTarget = target > 0 && complete > target;
-  const unassigned = Math.max(0, target - complete - pickup);
+  const unassigned = Math.max(0, target - complete);
 
   const indicator = (
     <div className="flex items-center gap-2.5 sm:gap-2 whitespace-nowrap rounded-full border border-border/40 bg-transparent px-3 py-1 shadow-none backdrop-blur-sm sm:px-2 sm:py-0.5">
@@ -404,30 +390,6 @@ function QuantityProgressStrip({
       ) : (
         <span className="text-base sm:text-sm font-medium tabular-nums leading-none tracking-tight text-emerald-600">
           {formatQuantityValue(complete)}
-        </span>
-      )}
-      {/* Pickup group */}
-      {onAddPickup ? (
-        <button
-          type="button"
-          className="flex items-center gap-1 sm:gap-0.5 rounded transition-opacity duration-150 hover:opacity-70 active:scale-95 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-          aria-label={t`Add process pickup`}
-          onClick={(event) => {
-            event.stopPropagation();
-            onAddPickup();
-          }}
-        >
-          <LuLoaderCircle
-            className="h-4 w-4 sm:h-3.5 sm:w-3.5 shrink-0 text-blue-600"
-            strokeWidth={2.5}
-          />
-          <span className="text-base sm:text-sm font-medium tabular-nums leading-none tracking-tight text-blue-600">
-            {formatQuantityValue(pickup)}
-          </span>
-        </button>
-      ) : (
-        <span className="text-base sm:text-sm font-medium tabular-nums leading-none tracking-tight text-blue-600">
-          {formatQuantityValue(pickup)}
         </span>
       )}
       {/* Unassigned */}
@@ -476,12 +438,6 @@ function QuantityProgressStrip({
         )}
         style={{ width: `${completePercent}%` }}
       />
-      {pickupPercent > 0 && (
-        <div
-          className="absolute inset-y-0 bg-blue-600 transition-[width,left] duration-300 ease-out"
-          style={{ left: `${completePercent}%`, width: `${pickupPercent}%` }}
-        />
-      )}
     </div>
   );
 
@@ -489,7 +445,7 @@ function QuantityProgressStrip({
     <div
       className="w-full min-w-0 shrink-0"
       role="img"
-      aria-label={t`Finished ${complete} of ${target} units, ${pickup} in progress from process pickups, ${unassigned} unassigned`}
+      aria-label={t`Finished ${complete} of ${target} units, ${unassigned} unassigned`}
     >
       <div className="relative h-9 sm:h-7 w-full">
         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2">

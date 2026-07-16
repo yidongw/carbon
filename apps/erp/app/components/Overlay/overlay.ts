@@ -34,22 +34,6 @@ function overlayParams(
 
 export const overlay = {
   to: {
-    newJobPickup({
-      jobId,
-      jobOperationId
-    }: {
-      jobId: string;
-      jobOperationId?: string;
-    }): OverlayTarget {
-      const base = path.to.newJobPickup(jobId, { jobOperationId });
-      const sep = base.includes("?") ? "&" : "?";
-      return {
-        id: "newJobPickup",
-        url: `${base}${sep}overlay=true`,
-        params: overlayParams({ jobId, jobOperationId })
-      };
-    },
-
     newJobProductionQuantity({
       jobId,
       jobOperationId
@@ -66,24 +50,6 @@ export const overlay = {
       };
     },
 
-    newProductionPickup({
-      jobId,
-      jobOperationId
-    }: {
-      jobId?: string;
-      jobOperationId?: string;
-    } = {}): OverlayTarget {
-      const query = new URLSearchParams();
-      query.set("overlay", "true");
-      if (jobId) query.set("jobId", jobId);
-      if (jobOperationId) query.set("jobOperationId", jobOperationId);
-      return {
-        id: "newProductionPickup",
-        url: `${path.to.newPickup}?${query.toString()}`,
-        params: overlayParams({ jobId, jobOperationId })
-      };
-    },
-
     newMasterWorkOrder(): OverlayTarget {
       return {
         id: "newMasterWorkOrder",
@@ -91,7 +57,6 @@ export const overlay = {
         params: {}
       };
     },
-
 
     newProductionQuantity({
       jobId,

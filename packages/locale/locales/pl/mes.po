@@ -42,9 +42,6 @@ msgstr "{0} z {1} ukończonych"
 msgid "{0} Scrapped"
 msgstr "{0} Odrzuconych"
 
-msgid "+{inProgressQuantity} picked up, not yet produced"
-msgstr "+zyskano {inProgressQuantity}, nie nadal wyprodukowane"
-
 msgid "A consumed batch or serial is now past its expiry date."
 msgstr "Zapewniony lote lub szereg teraz przekroczył datę zakończenia ważności."
 
@@ -289,9 +286,6 @@ msgstr "Domyślna jednostka magazynowa"
 
 msgid "Delete"
 msgstr "Usuń"
-
-msgid "Delete process pickup"
-msgstr "Usuń odbiór procesu"
 
 msgid "Delete step"
 msgstr "Usun krok"
@@ -571,9 +565,6 @@ msgstr "Rejestruj ukończone dla {0}"
 
 msgid "Log In"
 msgstr "Zaloguj się"
-
-msgid "Log Pickup"
-msgstr "Zarejestruj wydanie do procesu"
 
 msgid "Log Rework"
 msgstr "Rejestruj poprawki"
@@ -882,9 +873,6 @@ msgstr "Podniesiono kolumnę {0} na pozycji: {1} z {2}"
 msgid "Picking"
 msgstr "Wybieranie"
 
-msgid "Pickup suggestions:"
-msgstr "Sugestie wydań do procesu:"
-
 msgid "Pin Out"
 msgstr "Wyloguj PIN"
 
@@ -936,20 +924,11 @@ msgstr "Proces"
 msgid "Process Parameters"
 msgstr "Parametry procesu"
 
-msgid "process pickup"
-msgstr "wydanie do procesu"
-
-msgid "Process Pickups"
-msgstr "wydania do procesu"
-
 msgid "Processes"
 msgstr "Procesy"
 
 msgid "production"
 msgstr "produkcja"
-
-msgid "Production"
-msgstr "Produkcja"
 
 msgid "Production Logs"
 msgstr "Zapisy Produkcji"
@@ -994,9 +973,6 @@ msgstr "Rejestruj"
 msgid "Record {0}"
 msgstr "Rekord {0}"
 
-msgid "Record Pickup"
-msgstr "Zarejestruj wydanie do procesu"
-
 msgid "Record Quantity"
 msgstr "Liczba rekordów"
 
@@ -1005,9 +981,6 @@ msgstr "Zapisz krok"
 
 msgid "Redirecting to verification page..."
 msgstr "Przekierowanie do strony weryfikacji..."
-
-msgid "remaining"
-msgstr "pozostałe"
 
 msgid "Remove"
 msgstr "Usuń"
@@ -1299,9 +1272,6 @@ msgstr "Przełącz bocznik"
 
 msgid "Tools"
 msgstr "Narzędzia"
-
-msgid "Total Process Pickups"
-msgstr "Łącznie wydań do procesu"
 
 msgid "Total Production"
 msgstr "Cała produkcja"

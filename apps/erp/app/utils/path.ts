@@ -138,8 +138,6 @@ export const path = {
         generatePath(
           `${api}/production/supplier-quantity-reports/${reportId}/create-po`
         ),
-      pickupUpdate: (pickupId: string) =>
-        generatePath(`${api}/production/pickups/${pickupId}`),
       itemConfigTable: (itemId: string) =>
         generatePath(`${api}/items/${itemId}/config-table`),
       jobs: `${api}/production/jobs`,
@@ -1134,15 +1132,6 @@ export const path = {
     jobProductionEvent: (jobId: string, eventId: string) =>
       generatePath(`${x}/job/${jobId}/events/${eventId}`),
     jobProductionEvents: (id: string) => generatePath(`${x}/job/${id}/events`),
-    jobPickups: (id: string) => generatePath(`${x}/job/${id}/pickups`),
-    newJobPickup: (jobId: string, opts?: { jobOperationId?: string }) => {
-      const base = generatePath(`${x}/job/${jobId}/pickups/new`);
-      const opId = opts?.jobOperationId;
-      if (!opId) return base;
-      return `${base}?${new URLSearchParams({ jobOperationId: opId }).toString()}`;
-    },
-    deleteJobPickup: (id: string) =>
-      generatePath(`${x}/job/methods/pickup/delete/${id}`),
     jobProductionQuantities: (id: string) =>
       generatePath(`${x}/job/${id}/quantities`),
     jobProductionQuantity: (jobId: string, quantityId: string) =>
@@ -1653,8 +1642,6 @@ export const path = {
     production: `${x}/production`,
     productionDashboard: `${x}/production/dashboard`,
     productionPlanning: `${x}/production/planning`,
-    pickups: `${x}/production/pickups`,
-    newPickup: `${x}/production/pickups/new`,
     productionQuantities: `${x}/production/quantities`,
     newProductionQuantity: `${x}/production/quantities/new`,
     jobRules: `${x}/production/job-rules`,

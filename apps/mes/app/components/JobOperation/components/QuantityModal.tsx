@@ -8,10 +8,8 @@ import {
   Alert,
   AlertDescription,
   AlertTitle,
-  Badge,
   Button,
   Checkbox,
-  HStack,
   Modal,
   ModalBody,
   ModalContent,
@@ -25,7 +23,6 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { LuTriangleAlert } from "react-icons/lu";
 import { useFetcher } from "react-router";
-import { useUser } from "~/hooks";
 import {
   finishValidator,
   nonScrapQuantityValidator,
@@ -33,7 +30,6 @@ import {
 } from "~/services/models";
 import type {
   JobMaterial,
-  JobOperationPickup,
   OperationWithDetails,
   ProductionEvent,
   ProductionQuantity
@@ -49,7 +45,6 @@ export function QuantityModal({
   operation,
   parentIsSerial = false,
   parentIsBatch = false,
-  pickups = [],
   productionQuantities = [],
   setupProductionEvent,
   suggestedQuantity,
@@ -64,7 +59,6 @@ export function QuantityModal({
   operation: OperationWithDetails;
   parentIsSerial?: boolean;
   parentIsBatch?: boolean;
-  pickups?: JobOperationPickup[];
   productionQuantities?: ProductionQuantity[];
   setupProductionEvent: ProductionEvent | undefined;
   suggestedQuantity?: number;
@@ -73,7 +67,6 @@ export function QuantityModal({
   onClose: () => void;
 }) {
   const { t } = useLingui();
-  const user = useUser();
   const fetcher = useFetcher<ProductionQuantity>();
   const [quantity, setQuantity] = useState(
     parentIsSerial ? 1 : (suggestedQuantity ?? 0)
@@ -145,59 +138,6 @@ export function QuantityModal({
     quantity,
     parentIsSerial
   ]);
-
-  // Calculate pickup hints: remaining quantity for current user's pickups
-  const pickupHints = useMemo(() => {
-    if (type === "finish" || !pickups.length) return [];
-
-    // Get pickups for current user
-    const userPickups = pickups.filter((p) => p.employeeId === user.id);
-    if (!userPickups.length) return [];
-
-    // Get production quantities for current user (Production type only, not Scrap/Rework)
-    const userProductions = productionQuantities.filter(
-      (q) => q.employeeId === user.id && q.type === "Production"
-    );
-
-    // Group pickups and productions by configuration
-    const pickupByConfig = new Map<string, number>();
-    const productionByConfig = new Map<string, number>();
-
-    // Aggregate pickups by configuration (null config is treated as empty string)
-    for (const pickup of userPickups) {
-      const configKey = pickup.configuration
-        ? JSON.stringify(pickup.configuration)
-        : "";
-      const current = pickupByConfig.get(configKey) ?? 0;
-      pickupByConfig.set(configKey, current + Number(pickup.quantity));
-    }
-
-    // Aggregate productions by configuration
-    for (const prod of userProductions) {
-      const configKey = prod.configuration
-        ? JSON.stringify(prod.configuration)
-        : "";
-      const current = productionByConfig.get(configKey) ?? 0;
-      productionByConfig.set(configKey, current + Number(prod.quantity));
-    }
-
-    // Calculate remaining for each configuration
-    const hints: Array<{
-      configKey: string;
-      configuration: unknown;
-      remaining: number;
-    }> = [];
-    for (const [configKey, pickupQty] of pickupByConfig.entries()) {
-      const productionQty = productionByConfig.get(configKey) ?? 0;
-      const remaining = pickupQty - productionQty;
-      if (remaining > 0) {
-        const config = configKey ? JSON.parse(configKey) : null;
-        hints.push({ configKey, configuration: config, remaining });
-      }
-    }
-
-    return hints;
-  }, [pickups, productionQuantities, user.id, type]);
 
   return (
     <Modal
@@ -314,27 +254,6 @@ export function QuantityModal({
                     isReadOnly={parentIsSerial}
                     minValue={0}
                   />
-                  {pickupHints.length > 0 && (
-                    <div className="flex flex-col gap-2">
-                      <span className="text-sm text-muted-foreground">
-                        <Trans>Pickup suggestions:</Trans>
-                      </span>
-                      <HStack spacing={2}>
-                        {pickupHints.map((hint) => (
-                          <Badge
-                            key={hint.configKey}
-                            variant="outline"
-                            className="cursor-pointer hover:bg-accent"
-                            onClick={() => setQuantity(hint.remaining)}
-                          >
-                            {hint.configuration
-                              ? `${JSON.stringify(hint.configuration)}: ${hint.remaining}`
-                              : `${hint.remaining}`}
-                          </Badge>
-                        ))}
-                      </HStack>
-                    </div>
-                  )}
                 </>
               )}
               {type === "scrap" ? (

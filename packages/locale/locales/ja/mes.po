@@ -42,9 +42,6 @@ msgstr "{0} / {1} 完了済み"
 msgid "{0} Scrapped"
 msgstr "{0} スクラップ"
 
-msgid "+{inProgressQuantity} picked up, not yet produced"
-msgstr "＋{inProgressQuantity}を拾いアップロードしましたが、まだ生産は開始されていません"
-
 msgid "A consumed batch or serial is now past its expiry date."
 msgstr "消費期限を過ぎたバッチまたはシリアルが使用されています。"
 
@@ -289,9 +286,6 @@ msgstr "デフォルト保管ユニット"
 
 msgid "Delete"
 msgstr "削除"
-
-msgid "Delete process pickup"
-msgstr "プロセスピックアップを削除"
 
 msgid "Delete step"
 msgstr "削除"
@@ -571,9 +565,6 @@ msgstr "{0} の完了を記録"
 
 msgid "Log In"
 msgstr "ログイン"
-
-msgid "Log Pickup"
-msgstr "工程払い出しを記録"
 
 msgid "Log Rework"
 msgstr "手直しを記録"
@@ -882,9 +873,6 @@ msgstr "カラム {0} を位置 {1}/{2} で選択しました"
 msgid "Picking"
 msgstr "ピッキング"
 
-msgid "Pickup suggestions:"
-msgstr "工程払い出し候補:"
-
 msgid "Pin Out"
 msgstr "ピンアウト"
 
@@ -936,19 +924,10 @@ msgstr "プロセス"
 msgid "Process Parameters"
 msgstr "プロセスパラメーター"
 
-msgid "process pickup"
-msgstr "プロセスピックアップ"
-
-msgid "Process Pickups"
-msgstr "工程払い出し"
-
 msgid "Processes"
 msgstr "プロセス一覧"
 
 msgid "production"
-msgstr "生産"
-
-msgid "Production"
 msgstr "生産"
 
 msgid "Production Logs"
@@ -994,9 +973,6 @@ msgstr "記録"
 msgid "Record {0}"
 msgstr "レコード {0}"
 
-msgid "Record Pickup"
-msgstr "工程払い出しを記録"
-
 msgid "Record Quantity"
 msgstr "レコード数量"
 
@@ -1005,9 +981,6 @@ msgstr "レコードステップ"
 
 msgid "Redirecting to verification page..."
 msgstr "確認ページにリダイレクト中..."
-
-msgid "remaining"
-msgstr "残り"
 
 msgid "Remove"
 msgstr "削除"
@@ -1299,9 +1272,6 @@ msgstr "サイドバーの表示切り替え"
 
 msgid "Tools"
 msgstr "工具"
-
-msgid "Total Process Pickups"
-msgstr "工程払い出し合計"
 
 msgid "Total Production"
 msgstr "総生産量"

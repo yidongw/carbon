@@ -42,9 +42,6 @@ msgstr "{0} di {1} completati"
 msgid "{0} Scrapped"
 msgstr "{0} Scartati"
 
-msgid "+{inProgressQuantity} picked up, not yet produced"
-msgstr "+{inProgressQuantity} preso in carico, non ancora prodotto"
-
 msgid "A consumed batch or serial is now past its expiry date."
 msgstr "Un lote o serie consumato è ora scaduto."
 
@@ -289,9 +286,6 @@ msgstr "Unità di Archiviazione Predefinita"
 
 msgid "Delete"
 msgstr "Elimina"
-
-msgid "Delete process pickup"
-msgstr "Elimina prelievo di processo"
 
 msgid "Delete step"
 msgstr "Elimina passo"
@@ -571,9 +565,6 @@ msgstr "Registra completati per {0}"
 
 msgid "Log In"
 msgstr "Accedi"
-
-msgid "Log Pickup"
-msgstr "Registra prelievo di processo"
 
 msgid "Log Rework"
 msgstr "Registra Rilavorazione"
@@ -882,9 +873,6 @@ msgstr "Colonna {0} presa dalla posizione: {1} di {2}"
 msgid "Picking"
 msgstr "Picking"
 
-msgid "Pickup suggestions:"
-msgstr "Suggerimenti per il prelievo di processo:"
-
 msgid "Pin Out"
 msgstr "Disconnetti"
 
@@ -936,20 +924,11 @@ msgstr "Processo"
 msgid "Process Parameters"
 msgstr "Parametri di Processo"
 
-msgid "process pickup"
-msgstr "prelievo di processo"
-
-msgid "Process Pickups"
-msgstr "prelievi di processo"
-
 msgid "Processes"
 msgstr "Processi"
 
 msgid "production"
 msgstr "produzione"
-
-msgid "Production"
-msgstr "Produzione"
 
 msgid "Production Logs"
 msgstr "Log di produzione"
@@ -994,9 +973,6 @@ msgstr "Registra"
 msgid "Record {0}"
 msgstr "Registrazione {0}"
 
-msgid "Record Pickup"
-msgstr "Registra prelievo di processo"
-
 msgid "Record Quantity"
 msgstr "Quantità registrata"
 
@@ -1005,9 +981,6 @@ msgstr "Registra passo"
 
 msgid "Redirecting to verification page..."
 msgstr "Reindirizzamento alla pagina di verifica..."
-
-msgid "remaining"
-msgstr "restanti"
 
 msgid "Remove"
 msgstr "Rimuovi"
@@ -1299,9 +1272,6 @@ msgstr "Attiva/Sblocca Barra Laterale"
 
 msgid "Tools"
 msgstr "Utensili"
-
-msgid "Total Process Pickups"
-msgstr "Prelievi di processo totali"
 
 msgid "Total Production"
 msgstr "Produzione totale"

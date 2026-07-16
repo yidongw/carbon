@@ -60,7 +60,6 @@ export function useOperation({
   const completeModal = useDisclosure();
   const finishModal = useDisclosure();
   const issueModal = useDisclosure();
-  const pickupModal = useDisclosure();
   const serialModal = useDisclosure();
 
   // we do this to avoid re-rendering when the modal is open
@@ -72,7 +71,6 @@ export function useOperation({
     completeModal.isOpen ||
     finishModal.isOpen ||
     issueModal.isOpen ||
-    pickupModal.isOpen ||
     serialModal.isOpen;
 
   const [selectedMaterial, setSelectedMaterial] = useState<JobMaterial | null>(
@@ -293,7 +291,6 @@ export function useOperation({
     completeModal,
     finishModal,
     issueModal,
-    pickupModal,
     serialModal,
     isOverdue: operation.operationDueDate
       ? new Date(operation.operationDueDate) < new Date()

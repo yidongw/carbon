@@ -1,8 +1,8 @@
 import { buildConfigEditorRows } from "~/modules/production/ui/Jobs/ConfigParamsTableModal";
 import type { ItemConfigTableOverlayLoaderData } from "~/routes/api+/items.$itemId.config-table";
+import type { BundleWorkOrderProcessesOverlayLoaderData } from "~/routes/api+/production.bundle-work-orders.$bundleWorkOrderId.processes";
 import type { JobBillOfProcessOverlayLoaderData } from "~/routes/api+/production.jobs.$jobId.bill-of-process";
 import type { JobConfigTableOverlayLoaderData } from "~/routes/api+/production.jobs.$jobId.config-table";
-import type { BundleWorkOrderProcessesOverlayLoaderData } from "~/routes/api+/production.bundle-work-orders.$bundleWorkOrderId.processes";
 import type { MasterWorkOrderBundlesOverlayLoaderData } from "~/routes/api+/production.master-work-orders.$masterWorkOrderId.bundles";
 import type { MasterWorkOrderProcessesOverlayLoaderData } from "~/routes/api+/production.master-work-orders.$masterWorkOrderId.processes";
 import type { MasterWorkOrderSplitBatchLoaderData } from "~/routes/api+/production.master-work-orders.$masterWorkOrderId.split-batch";
@@ -10,138 +10,6 @@ import { renderLazyOverlay } from "./renderLazyOverlay";
 import type { OverlayRegistryEntry } from "./types";
 
 export const overlayRegistry = {
-  newJobPickup: {
-    type: "drawer",
-    render: renderLazyOverlay(
-      (ctx) => {
-        const data = ctx.loaderData as
-          | {
-              jobId: string;
-              jobOption?: { label: string; value: string };
-              jobOperationId: string;
-              operationOptions: { label: string; value: string }[];
-              configurationParameters?:
-                | {
-                    key: string;
-                    label: string;
-                    dataType: string;
-                    listOptions?: string[] | null;
-                  }[]
-                | null;
-              configReferenceSource?: {
-                jobConfiguration: unknown;
-                reportedConfigurations: unknown[];
-              } | null;
-              itemId?: string | null;
-              processId?: string | null;
-              operationType?: string | null;
-              defaultActorKind?: "employee" | "supplier";
-              seededActor?: {
-                actorKind: "employee" | "supplier";
-                employeeId: string;
-                supplierProcessId: string;
-                supplierId: string;
-                lockActorSelection: boolean;
-              };
-            }
-          | undefined;
-        if (!data) return null;
-        const seeded = data.seededActor;
-        return {
-          jobId: data.jobId,
-          jobOptions: data.jobOption ? [data.jobOption] : undefined,
-          initialValues: {
-            jobId: data.jobId,
-            jobOperationId: data.jobOperationId,
-            quantity: 0,
-            notes: "",
-            employeeId: seeded?.employeeId ?? "",
-            actorKind: seeded?.actorKind ?? data.defaultActorKind ?? "employee",
-            supplierProcessId: seeded?.supplierProcessId ?? ""
-          },
-          operationOptions: data.operationOptions ?? [],
-          configurationParameters: data.configurationParameters ?? null,
-          configReferenceSource: data.configReferenceSource ?? null,
-          itemId: data.itemId ?? null,
-          processId: data.processId ?? null,
-          operationType: data.operationType ?? null,
-          defaultActorKind:
-            seeded?.actorKind ?? data.defaultActorKind ?? "employee",
-          lockJobSelection: Boolean(data.jobOption),
-          lockActorSelection: seeded?.lockActorSelection ?? false,
-          lockOperationSelection: Boolean(data.jobOperationId),
-          supplierId: seeded?.supplierId ?? ""
-        };
-      },
-      () => import("~/modules/production/ui/Jobs/PickupForm")
-    )
-  },
-  newProductionPickup: {
-    type: "drawer",
-    render: renderLazyOverlay(
-      (ctx) => {
-        const data = ctx.loaderData as
-          | {
-              jobId: string;
-              jobOperationId: string;
-              jobOptions: { label: string; value: string }[];
-              operationOptions: { label: string; value: string }[];
-              configurationParameters?:
-                | {
-                    key: string;
-                    label: string;
-                    dataType: string;
-                    listOptions?: string[] | null;
-                  }[]
-                | null;
-              configReferenceSource?: {
-                jobConfiguration: unknown;
-                reportedConfigurations: unknown[];
-              } | null;
-              itemId?: string | null;
-              processId?: string | null;
-              operationType?: string | null;
-              defaultActorKind?: "employee" | "supplier";
-              lockActorSelection?: boolean;
-              supplierId?: string;
-              seededActor?: {
-                actorKind: "employee" | "supplier";
-                employeeId: string;
-                supplierProcessId: string;
-                supplierId: string;
-                lockActorSelection: boolean;
-              } | null;
-            }
-          | undefined;
-        if (!data) return null;
-        const seeded = data.seededActor;
-        return {
-          initialValues: {
-            jobId: data.jobId,
-            jobOperationId: data.jobOperationId,
-            actorKind: seeded?.actorKind ?? data.defaultActorKind ?? "employee",
-            employeeId: seeded?.employeeId || undefined,
-            supplierProcessId: seeded?.supplierProcessId || undefined,
-            quantity: 0,
-            configuration: undefined,
-            notes: undefined
-          },
-          jobOptions: data.jobOptions,
-          jobId: data.jobId,
-          operationOptions: data.operationOptions ?? [],
-          configurationParameters: data.configurationParameters ?? null,
-          configReferenceSource: data.configReferenceSource ?? null,
-          itemId: data.itemId ?? null,
-          processId: data.processId ?? null,
-          operationType: data.operationType ?? null,
-          defaultActorKind: data.defaultActorKind ?? "employee",
-          lockActorSelection: data.lockActorSelection ?? false,
-          supplierId: data.supplierId
-        };
-      },
-      () => import("~/modules/production/ui/Jobs/PickupForm")
-    )
-  },
   newMasterWorkOrder: {
     type: "drawer",
     render: renderLazyOverlay(
@@ -153,7 +21,11 @@ export const overlayRegistry = {
                 quantity: number;
                 locationId: string;
                 dueDate: string;
-                deadlineType: "ASAP" | "Hard Deadline" | "Soft Deadline" | "No Deadline";
+                deadlineType:
+                  | "ASAP"
+                  | "Hard Deadline"
+                  | "Soft Deadline"
+                  | "No Deadline";
               };
             }
           | undefined;
@@ -648,10 +520,7 @@ export const overlayRegistry = {
           masterDisplayId: data.masterDisplayId
         };
       },
-      () =>
-        import(
-          "~/modules/production/ui/MasterWorkOrders/SplitBatchOverlay"
-        )
+      () => import("~/modules/production/ui/MasterWorkOrders/SplitBatchOverlay")
     )
   }
 } as const satisfies Record<string, OverlayRegistryEntry>;

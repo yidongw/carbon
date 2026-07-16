@@ -474,9 +474,6 @@ msgstr "添加打印机"
 msgid "Add process completion"
 msgstr "添加工序完成"
 
-msgid "Add process pickup"
-msgstr "添加工序领料"
-
 msgid "Add Property"
 msgstr "添加属性"
 
@@ -1055,9 +1052,6 @@ msgstr "您确定要删除此维护调度吗？此操作无法撤销。"
 
 msgid "Are you sure you want to delete this process completion? This action cannot be undone."
 msgstr "您确定要删除这条工序完成记录吗？此操作无法撤销。"
-
-msgid "Are you sure you want to delete this process pickup? This action cannot be undone."
-msgstr "您确定要删除这条工序领料吗？此操作无法撤销。"
 
 msgid "Are you sure you want to delete this quality document?"
 msgstr "您确定要删除此质量文件吗？"
@@ -2985,9 +2979,6 @@ msgstr "删除工序"
 msgid "Delete Process Completion"
 msgstr "删除工序完成"
 
-msgid "Delete Process Pickup"
-msgstr "删除工序领料"
-
 msgid "Delete Purchase Invoice"
 msgstr "删除采购发票"
 
@@ -3577,9 +3568,6 @@ msgstr "编辑权限"
 
 msgid "Edit Picking List"
 msgstr "编辑拣货清单"
-
-msgid "Edit pickup"
-msgstr "编辑提货"
 
 msgid "Edit Portal"
 msgstr "编辑门户"
@@ -4545,8 +4533,8 @@ msgstr "完成"
 msgid "Finish To"
 msgstr "完成"
 
-msgid "Finished {complete} of {target} units, {pickup} in progress from process pickups, {unassigned} unassigned"
-msgstr "已完成 {complete}/{target} 个单位，工序领料 {pickup}，未分配 {unassigned}"
+msgid "Finished {complete} of {target} units, {unassigned} unassigned"
+msgstr ""
 
 msgid "Finished Goods"
 msgstr "成品"
@@ -5556,12 +5544,6 @@ msgstr "升"
 
 msgid "Live reloading"
 msgstr "实时预览"
-
-msgid "Load more process completions"
-msgstr "加载更多工序完成"
-
-msgid "Load more process pickups"
-msgstr "加载更多工序领料"
 
 msgid "Load Templates"
 msgstr "加载模板"
@@ -6686,9 +6668,6 @@ msgstr "未配置打印机"
 msgid "No printers configured. Click \"Add Printer\" to create one."
 msgstr "未配置打印机。点击“添加打印机”进行创建。"
 
-msgid "No production logs"
-msgstr "无生产日志"
-
 msgid "No quantity recorded yet."
 msgstr "尚未记录数量。"
 
@@ -7677,19 +7656,6 @@ msgstr "工序偏差"
 msgid "Process Name"
 msgstr "工序名称"
 
-msgid "Process Pickup"
-msgstr "工序领料"
-
-#. placeholder {0}: selectedPickup.employeeId
-msgid "Process Pickup by {0}"
-msgstr "工序领料：{0}"
-
-msgid "Process pickup updated"
-msgstr "工艺取料更新"
-
-msgid "Process Pickups"
-msgstr "工序领料"
-
 msgid "Process Type"
 msgstr "工序类型"
 
@@ -7710,9 +7676,6 @@ msgstr "生产事件"
 
 msgid "Production Events"
 msgstr "生产事件"
-
-msgid "Production Logs"
-msgstr "生产日志"
 
 msgid "Production Qty"
 msgstr "生产数量"
@@ -7906,9 +7869,6 @@ msgstr "数量由MES中已完成的批次/序列号推导得出，无法编辑�
 
 msgid "Quantity must be greater than 0"
 msgstr "数量必须大于0"
-
-msgid "Quantity must be greater than zero"
-msgstr "数量必须大于零"
 
 msgid "Quantity on Hand"
 msgstr "库存数量"
@@ -8108,17 +8068,11 @@ msgstr "记录付款"
 msgid "Record the inspection result for this sample."
 msgstr "记录该样品的检验结果。"
 
-msgid "Recorded"
-msgstr "已记录"
-
 msgid "recorded {qty} units"
 msgstr "记录了 {qty} 个单位"
 
 msgid "recorded {qty} units ({reason})"
 msgstr "记录了 {qty} 个单位（原因：{reason}）"
-
-msgid "Recorded At"
-msgstr "记录时间"
 
 msgid "Records"
 msgstr "记录"
@@ -8173,9 +8127,6 @@ msgstr "发布工作"
 
 msgid "Released"
 msgstr "已发布"
-
-msgid "remaining"
-msgstr "剩余"
 
 msgid "Remaining"
 msgstr "剩余"
@@ -8343,9 +8294,6 @@ msgstr "报告了<0>{totalQuantity}</0>个单位"
 
 msgid "Reported At"
 msgstr "报告时间"
-
-msgid "Reporter"
-msgstr "报告人"
 
 msgid "Reports"
 msgstr "报表"
@@ -10147,9 +10095,6 @@ msgstr "此批号已过期，无法拣选。"
 msgid "This permanently deletes the quantity report and its entire history. This action cannot be undone."
 msgstr "这将永久删除该数量报告及其全部历史记录。此操作无法撤销。"
 
-msgid "this process pickup"
-msgstr "此工序拾取"
-
 msgid "this quantity report"
 msgstr "此数量报告"
 
@@ -10326,18 +10271,6 @@ msgstr "已付总额"
 
 msgid "Total Price"
 msgstr "总计价格"
-
-msgid "Total Process Pickups"
-msgstr "工序领料合计"
-
-msgid "Total Production"
-msgstr "总生产量"
-
-msgid "Total Rework"
-msgstr "总返工量"
-
-msgid "Total Scrap"
-msgstr "总报废量"
 
 msgid "Total shown at checkout."
 msgstr "结账时显示总价。"

@@ -474,9 +474,6 @@ msgstr "Add Printer"
 msgid "Add process completion"
 msgstr "Add process completion"
 
-msgid "Add process pickup"
-msgstr "Add process pickup"
-
 msgid "Add Property"
 msgstr "Add Property"
 
@@ -1055,9 +1052,6 @@ msgstr "Are you sure you want to delete this maintenance dispatch? This cannot b
 
 msgid "Are you sure you want to delete this process completion? This action cannot be undone."
 msgstr "Are you sure you want to delete this process completion? This action cannot be undone."
-
-msgid "Are you sure you want to delete this process pickup? This action cannot be undone."
-msgstr "Are you sure you want to delete this process pickup? This action cannot be undone."
 
 msgid "Are you sure you want to delete this quality document?"
 msgstr "Are you sure you want to delete this quality document?"
@@ -2985,9 +2979,6 @@ msgstr "Delete Process"
 msgid "Delete Process Completion"
 msgstr "Delete Process Completion"
 
-msgid "Delete Process Pickup"
-msgstr "Delete Process Pickup"
-
 msgid "Delete Purchase Invoice"
 msgstr "Delete Purchase Invoice"
 
@@ -3577,9 +3568,6 @@ msgstr "Edit Permissions"
 
 msgid "Edit Picking List"
 msgstr "Edit Picking List"
-
-msgid "Edit pickup"
-msgstr "Edit pickup"
 
 msgid "Edit Portal"
 msgstr "Edit Portal"
@@ -4545,8 +4533,8 @@ msgstr "Finish"
 msgid "Finish To"
 msgstr "Finish To"
 
-msgid "Finished {complete} of {target} units, {pickup} in progress from process pickups, {unassigned} unassigned"
-msgstr "Finished {complete} of {target} units, {pickup} in progress from process pickups, {unassigned} unassigned"
+msgid "Finished {complete} of {target} units, {unassigned} unassigned"
+msgstr "Finished {complete} of {target} units, {unassigned} unassigned"
 
 msgid "Finished Goods"
 msgstr "Finished Goods"
@@ -5556,12 +5544,6 @@ msgstr "Liter"
 
 msgid "Live reloading"
 msgstr "Live reloading"
-
-msgid "Load more process completions"
-msgstr "Load more process completions"
-
-msgid "Load more process pickups"
-msgstr "Load more process pickups"
 
 msgid "Load Templates"
 msgstr "Load Templates"
@@ -6686,9 +6668,6 @@ msgstr "No printer configured"
 msgid "No printers configured. Click \"Add Printer\" to create one."
 msgstr "No printers configured. Click \"Add Printer\" to create one."
 
-msgid "No production logs"
-msgstr "No production logs"
-
 msgid "No quantity recorded yet."
 msgstr "No quantity recorded yet."
 
@@ -7677,19 +7656,6 @@ msgstr "Process Deviation"
 msgid "Process Name"
 msgstr "Process Name"
 
-msgid "Process Pickup"
-msgstr "Process Pickup"
-
-#. placeholder {0}: selectedPickup.employeeId
-msgid "Process Pickup by {0}"
-msgstr "Process Pickup by {0}"
-
-msgid "Process pickup updated"
-msgstr "Process pickup updated"
-
-msgid "Process Pickups"
-msgstr "Process Pickups"
-
 msgid "Process Type"
 msgstr "Process Type"
 
@@ -7710,9 +7676,6 @@ msgstr "Production Event"
 
 msgid "Production Events"
 msgstr "Production Events"
-
-msgid "Production Logs"
-msgstr "Production Logs"
 
 msgid "Production Qty"
 msgstr "Production Qty"
@@ -7906,9 +7869,6 @@ msgstr "Quantity is derived from completed serials/batches in MES and cannot be 
 
 msgid "Quantity must be greater than 0"
 msgstr "Quantity must be greater than 0"
-
-msgid "Quantity must be greater than zero"
-msgstr "Quantity must be greater than zero"
 
 msgid "Quantity on Hand"
 msgstr "Quantity on Hand"
@@ -8108,17 +8068,11 @@ msgstr "Record payment"
 msgid "Record the inspection result for this sample."
 msgstr "Record the inspection result for this sample."
 
-msgid "Recorded"
-msgstr "Recorded"
-
 msgid "recorded {qty} units"
 msgstr "recorded {qty} units"
 
 msgid "recorded {qty} units ({reason})"
 msgstr "recorded {qty} units ({reason})"
-
-msgid "Recorded At"
-msgstr "Recorded At"
 
 msgid "Records"
 msgstr "Records"
@@ -8173,9 +8127,6 @@ msgstr "Release Job"
 
 msgid "Released"
 msgstr "Released"
-
-msgid "remaining"
-msgstr "remaining"
 
 msgid "Remaining"
 msgstr "Remaining"
@@ -8343,9 +8294,6 @@ msgstr "Reported <0>{totalQuantity}</0> units"
 
 msgid "Reported At"
 msgstr "Reported At"
-
-msgid "Reporter"
-msgstr "Reporter"
 
 msgid "Reports"
 msgstr "Reports"
@@ -10147,9 +10095,6 @@ msgstr "This lot is expired and can't be picked."
 msgid "This permanently deletes the quantity report and its entire history. This action cannot be undone."
 msgstr "This permanently deletes the quantity report and its entire history. This action cannot be undone."
 
-msgid "this process pickup"
-msgstr "this process pickup"
-
 msgid "this quantity report"
 msgstr "this quantity report"
 
@@ -10326,18 +10271,6 @@ msgstr "Total paid"
 
 msgid "Total Price"
 msgstr "Total Price"
-
-msgid "Total Process Pickups"
-msgstr "Total Process Pickups"
-
-msgid "Total Production"
-msgstr "Total Production"
-
-msgid "Total Rework"
-msgstr "Total Rework"
-
-msgid "Total Scrap"
-msgstr "Total Scrap"
 
 msgid "Total shown at checkout."
 msgstr "Total shown at checkout."

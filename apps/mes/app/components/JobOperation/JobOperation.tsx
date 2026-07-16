@@ -110,7 +110,6 @@ import type {
   JobMakeMethod,
   JobMaterial,
   JobOperationParameter,
-  JobOperationPickup,
   JobOperationStep,
   Kanban,
   OperationWithDetails,
@@ -134,7 +133,6 @@ import {
 import { IssueMaterialModal } from "./components/IssueMaterialModal";
 import { MaintenanceDispatch } from "./components/MaintenanceDispatch";
 import { ParametersListItem } from "./components/Parameter";
-import { PickupModal } from "./components/PickupModal";
 import { QualityIssueModal } from "./components/QualityIssueModal";
 import { QuantityModal } from "./components/QuantityModal";
 import { ReworkModal } from "./components/ReworkModal";
@@ -168,11 +166,8 @@ type JobOperationProps = {
     }[]
   >;
   operation: OperationWithDetails;
-  pickups: JobOperationPickup[];
   productionQuantities: ProductionQuantity[];
   quantities: ProductionQuantity[];
-  suggestedQuantity: number;
-  pickupConfiguration: unknown;
   procedure: Promise<{
     attributes: JobOperationStep[];
     parameters: JobOperationParameter[];
@@ -230,11 +225,8 @@ export const JobOperation = ({
   method,
   nonConformanceActions,
   operation: originalOperation,
-  pickups,
   productionQuantities,
   quantities,
-  suggestedQuantity,
-  pickupConfiguration,
   procedure,
   thumbnailPath,
   trackedEntities,
@@ -260,37 +252,6 @@ export const JobOperation = ({
     company: { id: companyId }
   } = useUser();
   const formatPersonName = useFormatPersonName();
-
-  // Calculate in-progress quantity: pickups minus productions, grouped by employee and configuration
-  const inProgressQuantity = useMemo(() => {
-    // Group pickups by employee and configuration
-    const pickupMap = new Map<string, number>();
-    for (const pickup of pickups) {
-      const key = `${pickup.employeeId}:${pickup.configuration ? JSON.stringify(pickup.configuration) : ""}`;
-      const current = pickupMap.get(key) ?? 0;
-      pickupMap.set(key, current + Number(pickup.quantity));
-    }
-
-    // Subtract productions (Production type only, not Scrap/Rework)
-    const productionsByKey = new Map<string, number>();
-    for (const prod of productionQuantities.filter(
-      (q) => q.type === "Production"
-    )) {
-      const key = `${prod.employeeId}:${prod.configuration ? JSON.stringify(prod.configuration) : ""}`;
-      const current = productionsByKey.get(key) ?? 0;
-      productionsByKey.set(key, current + Number(prod.quantity));
-    }
-
-    // Calculate total in progress
-    let total = 0;
-    for (const [key, pickupQty] of pickupMap.entries()) {
-      const productionQty = productionsByKey.get(key) ?? 0;
-      const inProgress = Math.max(0, pickupQty - productionQty);
-      total += inProgress;
-    }
-
-    return total;
-  }, [pickups, productionQuantities]);
 
   const [items] = useItems();
   const { downloadFile, downloadModel, getFilePath } = useFiles(job);
@@ -326,7 +287,6 @@ export const JobOperation = ({
     laborProductionEvent,
     machineProductionEvent,
     operation,
-    pickupModal,
     progress,
     reworkModal,
     scrapModal,
@@ -1517,14 +1477,6 @@ export const JobOperation = ({
                   </Heading>
                   <HStack>
                     <Button
-                      aria-label={t`Record Pickup`}
-                      leftIcon={<LuHardHat />}
-                      variant="secondary"
-                      onClick={pickupModal.onOpen}
-                    >
-                      <Trans>Record Pickup</Trans>
-                    </Button>
-                    <Button
                       aria-label={t`Record Quantity`}
                       leftIcon={<LuCirclePlus />}
                       variant="secondary"
@@ -1537,10 +1489,6 @@ export const JobOperation = ({
 
                 {/* Summary Badges */}
                 <HStack className="gap-2 flex-wrap">
-                  <Badge variant="outline">
-                    <Trans>Total Process Pickups</Trans>:{" "}
-                    {pickups.reduce((sum, p) => sum + Number(p.quantity), 0)}
-                  </Badge>
                   <Badge variant="outline">
                     <Trans>Total Production</Trans>:{" "}
                     {quantities
@@ -1570,36 +1518,11 @@ export const JobOperation = ({
                       {
                         employeeId: string;
                         employeeName: string;
-                        pickups: typeof pickups;
                         production: typeof quantities;
                         rework: typeof quantities;
                         scrap: typeof quantities;
                       }
                     >();
-
-                    // Add pickups
-                    pickups.forEach((pickup) => {
-                      const employeeName = pickup.employee
-                        ? formatPersonName(
-                            pickup.employee as unknown as {
-                              firstName: string;
-                              lastName: string;
-                            }
-                          )
-                        : pickup.employeeId;
-
-                      if (!employeeMap.has(pickup.employeeId)) {
-                        employeeMap.set(pickup.employeeId, {
-                          employeeId: pickup.employeeId,
-                          employeeName,
-                          pickups: [],
-                          production: [],
-                          rework: [],
-                          scrap: []
-                        });
-                      }
-                      employeeMap.get(pickup.employeeId)!.pickups.push(pickup);
-                    });
 
                     // Add quantities
                     quantities.forEach((quantity) => {
@@ -1616,7 +1539,6 @@ export const JobOperation = ({
                         employeeMap.set(quantity.employeeId, {
                           employeeId: quantity.employeeId,
                           employeeName,
-                          pickups: [],
                           production: [],
                           rework: [],
                           scrap: []
@@ -1644,88 +1566,16 @@ export const JobOperation = ({
                     }
 
                     return employees.map((emp) => {
-                      const totalPickups = emp.pickups.reduce(
-                        (sum, p) => sum + Number(p.quantity),
-                        0
-                      );
-                      const totalProduction = emp.production.reduce(
-                        (sum, q) => sum + Number(q.quantity),
-                        0
-                      );
-                      const remaining = totalPickups - totalProduction;
-
                       return (
                         <Card key={emp.employeeId} className="w-full">
                           <CardContent className="p-4">
                             <div className="flex flex-col gap-2">
-                              {/* Employee Header with Remaining */}
+                              {/* Employee Header */}
                               <div className="flex items-center justify-between">
                                 <div className="font-medium">
                                   {emp.employeeName}
                                 </div>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <div className="text-sm text-muted-foreground">
-                                      {remaining} <Trans>remaining</Trans>
-                                    </div>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <div className="text-xs">
-                                      <div>
-                                        <Trans>Process Pickups</Trans>:{" "}
-                                        {totalPickups}
-                                      </div>
-                                      <div>
-                                        <Trans>Production</Trans>:{" "}
-                                        {totalProduction}
-                                      </div>
-                                    </div>
-                                  </TooltipContent>
-                                </Tooltip>
                               </div>
-
-                              {/* Pickups */}
-                              {emp.pickups.map((pickup) => (
-                                <div
-                                  key={pickup.id}
-                                  className="flex flex-col gap-1"
-                                >
-                                  <div className="flex items-center justify-between bg-background">
-                                    <div className="text-sm">
-                                      {pickup.createdBy !== pickup.employeeId &&
-                                        pickup.employee && (
-                                          <span className="text-muted-foreground mr-2">
-                                            (
-                                            {formatPersonName(
-                                              pickup.employee as unknown as {
-                                                firstName: string;
-                                                lastName: string;
-                                              }
-                                            )}
-                                            )
-                                          </span>
-                                        )}
-                                      <span className="font-medium">
-                                        {pickup.quantity}
-                                      </span>{" "}
-                                      | {formatDate(pickup.createdAt)}
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-xs">
-                                        <Trans>process pickup</Trans>
-                                      </span>
-                                      <PickupDeleteButton
-                                        pickupId={pickup.id}
-                                      />
-                                    </div>
-                                  </div>
-                                  {pickup.configuration && (
-                                    <div className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
-                                      {JSON.stringify(pickup.configuration)}
-                                    </div>
-                                  )}
-                                </div>
-                              ))}
 
                               {/* Production Quantities */}
                               {emp.production.map((quantity) => (
@@ -1850,14 +1700,6 @@ export const JobOperation = ({
                     });
                   })()}
                 </div>
-
-                {pickupModal.isOpen && (
-                  <PickupModal
-                    jobOperationId={operation.id}
-                    configuration={pickupConfiguration}
-                    onClose={pickupModal.onClose}
-                  />
-                )}
               </div>
             </div>
 
@@ -2683,11 +2525,6 @@ export const JobOperation = ({
                     <span className="text-xs text-muted-foreground font-mono flex-shrink-0 flex-nowrap">
                       {operation.quantityComplete}/{operation.targetQuantity}
                     </span>
-                    {inProgressQuantity > 0 && (
-                      <span className="text-xxs text-yellow-600">
-                        {t`+${inProgressQuantity} picked up, not yet produced`}
-                      </span>
-                    )}
                     <BarProgress
                       activeClassName={
                         operation.operationStatus === "Paused" &&
@@ -2814,7 +2651,6 @@ export const JobOperation = ({
           operation={operation}
           parentIsSerial={parentIsSerial}
           parentIsBatch={parentIsBatch}
-          pickups={pickups}
           productionQuantities={productionQuantities}
           setupProductionEvent={setupProductionEvent}
           trackedEntityId={trackedEntityId}
@@ -2834,10 +2670,8 @@ export const JobOperation = ({
                   operation={operation}
                   parentIsSerial={parentIsSerial}
                   parentIsBatch={parentIsBatch}
-                  pickups={pickups}
                   productionQuantities={productionQuantities}
                   setupProductionEvent={setupProductionEvent}
-                  suggestedQuantity={suggestedQuantity}
                   trackedEntityId={trackedEntityId}
                   onClose={completeModal.onClose}
                 />
@@ -2862,7 +2696,6 @@ export const JobOperation = ({
                   laborProductionEvent={laborProductionEvent}
                   machineProductionEvent={machineProductionEvent}
                   operation={operation}
-                  pickups={pickups}
                   productionQuantities={productionQuantities}
                   setupProductionEvent={setupProductionEvent}
                   trackedEntityId={trackedEntityId}
@@ -2941,25 +2774,6 @@ export const JobOperation = ({
     </>
   );
 };
-
-function PickupDeleteButton({ pickupId }: { pickupId: string }) {
-  const { t } = useLingui();
-  const fetcher = useFetcher();
-  return (
-    <IconButton
-      aria-label={t`Delete process pickup`}
-      variant="ghost"
-      icon={<FaTrash className="text-destructive" />}
-      className="h-8 w-8"
-      onClick={() =>
-        fetcher.submit(
-          {},
-          { method: "post", action: path.to.operationPickupDelete(pickupId) }
-        )
-      }
-    />
-  );
-}
 
 function recordSetIsStarted(
   attributes: JobOperationStep[],

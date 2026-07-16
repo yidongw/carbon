@@ -42,9 +42,6 @@ msgstr "{0} of {1} completed"
 msgid "{0} Scrapped"
 msgstr "{0} Scrapped"
 
-msgid "+{inProgressQuantity} picked up, not yet produced"
-msgstr "+{inProgressQuantity} picked up, not yet produced"
-
 msgid "A consumed batch or serial is now past its expiry date."
 msgstr "A consumed batch or serial is now past its expiry date."
 
@@ -289,9 +286,6 @@ msgstr "Default Storage Unit"
 
 msgid "Delete"
 msgstr "Delete"
-
-msgid "Delete process pickup"
-msgstr "Delete process pickup"
 
 msgid "Delete step"
 msgstr "Delete step"
@@ -571,9 +565,6 @@ msgstr "Log completed for {0}"
 
 msgid "Log In"
 msgstr "Log In"
-
-msgid "Log Pickup"
-msgstr "Log Pickup"
 
 msgid "Log Rework"
 msgstr "Log Rework"
@@ -882,9 +873,6 @@ msgstr "Picked up Column {0} at position: {1} of {2}"
 msgid "Picking"
 msgstr "Picking"
 
-msgid "Pickup suggestions:"
-msgstr "Pickup suggestions:"
-
 msgid "Pin Out"
 msgstr "Pin Out"
 
@@ -936,20 +924,11 @@ msgstr "Process"
 msgid "Process Parameters"
 msgstr "Process Parameters"
 
-msgid "process pickup"
-msgstr "process pickup"
-
-msgid "Process Pickups"
-msgstr "Process Pickups"
-
 msgid "Processes"
 msgstr "Processes"
 
 msgid "production"
 msgstr "production"
-
-msgid "Production"
-msgstr "Production"
 
 msgid "Production Logs"
 msgstr "Production Logs"
@@ -994,9 +973,6 @@ msgstr "Record"
 msgid "Record {0}"
 msgstr "Record {0}"
 
-msgid "Record Pickup"
-msgstr "Record Pickup"
-
 msgid "Record Quantity"
 msgstr "Record Quantity"
 
@@ -1005,9 +981,6 @@ msgstr "Record step"
 
 msgid "Redirecting to verification page..."
 msgstr "Redirecting to verification page..."
-
-msgid "remaining"
-msgstr "remaining"
 
 msgid "Remove"
 msgstr "Remove"
@@ -1299,9 +1272,6 @@ msgstr "Toggle Sidebar"
 
 msgid "Tools"
 msgstr "Tools"
-
-msgid "Total Process Pickups"
-msgstr "Total Process Pickups"
 
 msgid "Total Production"
 msgstr "Total Production"
