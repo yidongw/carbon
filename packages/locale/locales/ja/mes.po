@@ -367,6 +367,9 @@ msgstr "有得"
 msgid "Edit"
 msgstr "編集"
 
+msgid "Email"
+msgstr "メール"
+
 msgid "Email Address"
 msgstr "メールアドレス"
 
@@ -861,6 +864,12 @@ msgstr "(待り approvals )"
 msgid "Period"
 msgstr "かつ"
 
+msgid "Phone"
+msgstr "電話"
+
+msgid "Phone Number"
+msgstr "電話番号"
+
 msgid "Pick"
 msgstr "選択"
 
@@ -1190,6 +1199,9 @@ msgstr "Outlookでサインイン"
 msgid "Sign in with Passkey"
 msgstr "Passkeyでログイン"
 
+msgid "Sign in with Phone"
+msgstr "電話でログイン"
+
 msgid "Sign Out"
 msgstr "サインアウト"
 
@@ -1368,11 +1380,17 @@ msgstr "{0} をアップロード中"
 msgid "Use a different email"
 msgstr "別のメールを使用する"
 
+msgid "Use a different phone number"
+msgstr "異なる電話番号を使用してください"
+
 msgid "Verification Error"
 msgstr "確認エラー"
 
 msgid "Verify your email"
 msgstr "メールアドレスを確認する"
+
+msgid "Verify your phone"
+msgstr "あなたの電話番号を確認してください"
 
 msgid "View maintenance dispatch"
 msgstr "メンテナンスディスパッチを表示"
@@ -1382,6 +1400,9 @@ msgstr "ボリューム："
 
 msgid "We've sent a verification code to {email}"
 msgstr "{email} に確認コードを送信しました"
+
+msgid "We've sent a verification code to {phone}"
+msgstr "電話番号{phone}に確認コードを送信しました"
 
 msgid "We've sent a verification code to {verifyEmail}"
 msgstr "{verifyEmail} に確認コードを送信しました"
