@@ -39,7 +39,7 @@ export default function JobDagRoute() {
     <div className="flex flex-col flex-1">
       <header className="sticky top-0 z-10 flex h-[var(--header-height)] shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 border-b bg-background">
         <div className="flex items-center gap-2 px-2">
-          <SidebarTrigger />
+          <SidebarTrigger className="md:hidden" />
           <Link
             to={path.to.jobs}
             className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors"

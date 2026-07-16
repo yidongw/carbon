@@ -276,7 +276,11 @@ export default function AuthenticatedRoute() {
             }}
           >
             <RealtimeDataProvider>
-              <SidebarProvider defaultOpen={false} touch>
+              <SidebarProvider
+                defaultOpen={false}
+                touch
+                className="mes-sidebar-overlay"
+              >
                 <TooltipProvider delayDuration={0}>
                   <AppSidebar
                     activeEvents={activeEvents}
