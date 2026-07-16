@@ -28,11 +28,11 @@ msgstr "«${storageUnitName}» имеет 1 прямую вложенную ед
 msgid "(all must match)"
 msgstr "всего"
 
-#. placeholder {0}: selectedEvent.jobOperation?.description ?? t`Operation`
+#. placeholder {0}: operationLabel(selectedEvent.jobOperationId, selectedEvent.jobOperation?.description) || t`Operation`
 msgid "{0} (supplier)"
 msgstr "{0} (поставщик)"
 
-#. placeholder {0}: selectedEvent.jobOperation?.description ?? t`Operation`
+#. placeholder {0}: operationLabel(selectedEvent.jobOperationId, selectedEvent.jobOperation?.description) || t`Operation`
 #. placeholder {1}: people.find((p) => p.id === selectedEvent.employeeId) ?.name ?? t`Unknown Employee`
 msgid "{0} by {1}"
 msgstr "{0} по {1}"
@@ -206,6 +206,9 @@ msgstr "Строка заказа на продажу содержит дета�
 
 msgid "A sales request for quote (RFQ) is a customer inquiry for pricing on a set of parts and quantities. It may result in a quote."
 msgstr "Запрос коммерческого предложения (RFQ) — это запрос клиента на получение цены за набор деталей и количества. Это может привести к получению коммерческого предложения."
+
+msgid "A style contains the information about a garment or footwear item that is cut, bundled, and produced downstream."
+msgstr "Модель содержит информацию об изделии одежды или обуви, которое раскраивается, комплектуется и производится далее."
 
 msgid "A tool is a physical item used to make a part that can be used across multiple jobs"
 msgstr "Инструмент — это физический предмет, используемый для изготовления детали, которая может использоваться в нескольких заданиях"
@@ -1002,6 +1005,14 @@ msgstr "Вы уверены, что хотите удалить тип хран�
 msgid "Are you sure you want to delete the storage unit: {0}? This cannot be undone."
 msgstr "Вы уверены, что хотите удалить хранилище: {0}? Это действие невозможно отменить."
 
+#. placeholder {0}: styleColor.colorCode
+msgid "Are you sure you want to delete the style color {0}? This cannot be undone."
+msgstr "Удалить цвет модели {0}? Это действие нельзя отменить."
+
+#. placeholder {0}: styleSize.sizeCode
+msgid "Are you sure you want to delete the style size {0}? This cannot be undone."
+msgstr "Удалить размер модели {0}? Это действие нельзя отменить."
+
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "Вы уверены, что хотите удалить тип поставщика: {0}? Это действие невозможно отменить."
@@ -1169,6 +1180,9 @@ msgid "Assign to Groups"
 msgstr "Назначить группам"
 
 msgid "Assigned"
+msgstr "Назначено"
+
+msgid "Assigned At"
 msgstr "Назначено"
 
 msgid "Assigned Group"
@@ -1351,6 +1365,9 @@ msgstr "Размер партии"
 msgid "Batch Tracking"
 msgstr "Отслеживание партий"
 
+msgid "Below reported"
+msgstr "Ниже отчет"
+
 msgid "Beta"
 msgstr "Бета"
 
@@ -1433,6 +1450,15 @@ msgstr "Массовый импорт"
 
 msgid "Bulk Jobs"
 msgstr "Массовые задания"
+
+msgid "Bundle"
+msgstr "Пачка"
+
+msgid "Bundle Work Orders"
+msgstr "Наряды на пачки"
+
+msgid "Bundles"
+msgstr "Пачки"
 
 msgid "Buy"
 msgstr "Покупка"
@@ -1752,6 +1778,21 @@ msgstr "Свернуть таблицу функций"
 
 msgid "Collapse subtree"
 msgstr "Свернуть поддерево"
+
+msgid "Color"
+msgstr "Цвет"
+
+msgid "Color / Size"
+msgstr "Цвет / Размер"
+
+msgid "Color Code"
+msgstr "Код цвета"
+
+msgid "Color Name"
+msgstr "Название цвета"
+
+msgid "Colors"
+msgstr "Цвета"
 
 msgid "Column"
 msgstr "Столбец"
@@ -2117,6 +2158,9 @@ msgstr "Скопировать ссылку на деталь"
 msgid "Copy link to procedure"
 msgstr "Скопировать ссылку на процедуру"
 
+msgid "Copy link to style"
+msgstr "Копировать ссылку на модель"
+
 msgid "Copy link to tool"
 msgstr "Скопировать ссылку на инструмент"
 
@@ -2161,6 +2205,12 @@ msgstr "Копировать номер предложения"
 
 msgid "Copy response"
 msgstr "Копировать ответ"
+
+msgid "Copy style number"
+msgstr "Копировать номер модели"
+
+msgid "Copy style unique identifier"
+msgstr "Копировать уникальный идентификатор модели"
 
 msgid "Copy this item's pricing to another scope."
 msgstr "Скопируйте цены этого товара в другую область."
@@ -2436,6 +2486,9 @@ msgstr "Создана строка передачи запасов"
 msgid "Created storage type"
 msgstr "Тип хранилища создан"
 
+msgid "Created style"
+msgstr "Модель создана"
+
 msgid "Created supplier process"
 msgstr "Создан процесс поставщика"
 
@@ -2605,6 +2658,9 @@ msgstr "Клиенты"
 
 msgid "Customize the layout of your PDF documents — reorder sections, hide what you don't need, and add your own blocks."
 msgstr "Пристройте элементы вашей документации в PDF-формате — изменяйте порядок разделов, скрывайте ненужные части и добавляйте свои блоки."
+
+msgid "Cutting"
+msgstr "Режим резки"
 
 msgid "Cycle back-edge"
 msgstr "Цикл обратного края"
@@ -3006,6 +3062,15 @@ msgstr "Удалить тип хранилища"
 
 msgid "Delete Storage Unit"
 msgstr "Удалить хранилище"
+
+msgid "Delete Style"
+msgstr "Удалить модель"
+
+msgid "Delete Style Color"
+msgstr "Удалить цвет модели"
+
+msgid "Delete Style Size"
+msgstr "Удалить размер модели"
 
 msgid "Delete Substance"
 msgstr "Удалить вещество"
@@ -3600,6 +3665,15 @@ msgstr "Редактировать тип хранилища"
 msgid "Edit Storage Unit"
 msgstr "Редактировать хранилище"
 
+msgid "Edit Style"
+msgstr "Изменить модель"
+
+msgid "Edit Style Color"
+msgstr "Изменить цвет модели"
+
+msgid "Edit Style Size"
+msgstr "Изменить размер модели"
+
 msgid "Edit Substance"
 msgstr "Редактировать вещество"
 
@@ -3924,6 +3998,12 @@ msgstr "Всё из Starter"
 msgid "Exceeds {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB total — remove some attachments to send."
 msgstr "Превышено ограничение в {PO_EMAIL_ATTACHMENT_LIMIT_MB} МБ — удалите некоторые приложения для отправки."
 
+msgid "Exceeds cut"
+msgstr "Превышает вырубку"
+
+msgid "Exceeds plan"
+msgstr "Превышает план"
+
 msgid "Exchange Rate"
 msgstr "Курс обмена"
 
@@ -4141,6 +4221,10 @@ msgstr "Не удалось создать строку передачи зап�
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create storage type: {0}"
 msgstr "Ошибка при создании типа хранилища: {0}"
+
+#. placeholder {0}: fetcher.data.error.message
+msgid "Failed to create style: {0}"
+msgstr "Не удалось создать модель: {0}"
 
 msgid "Failed to create supplier process"
 msgstr "Невозможно создать процесс поставщика"
@@ -5710,6 +5794,12 @@ msgstr "Отметить нехватку"
 msgid "Mark to delete"
 msgstr "Отметить для удаления"
 
+msgid "Master Work Order"
+msgstr "Основной наряд"
+
+msgid "Master Work Orders"
+msgstr "Основные наряды"
+
 msgid "Match"
 msgstr "Сопоставление"
 
@@ -6027,6 +6117,9 @@ msgstr "Имена отображаются как фамилия за пред�
 msgid "Navigate"
 msgstr "Навигация"
 
+msgid "Navigation"
+msgstr "Навигация"
+
 msgid "NCRs by Type"
 msgstr "NCRs по типам"
 
@@ -6156,6 +6249,9 @@ msgstr "Новое местоположение"
 msgid "New Maintenance Dispatch"
 msgstr "Новая заявка на техническое обслуживание"
 
+msgid "New Master Work Order"
+msgstr "Новый основной наряд"
+
 msgid "New Material"
 msgstr "Новый материал"
 
@@ -6272,6 +6368,15 @@ msgstr "Новый тип хранилища"
 
 msgid "New Storage Unit"
 msgstr "Новое хранилище"
+
+msgid "New Style"
+msgstr "Новая модель"
+
+msgid "New Style Color"
+msgstr "Новый цвет модели"
+
+msgid "New Style Size"
+msgstr "Новый размер модели"
 
 msgid "New Supplier"
 msgstr "Новый поставщик"
@@ -6421,6 +6526,9 @@ msgstr "Нет истории чатов"
 
 msgid "No chats found"
 msgstr "Чаты не найдены"
+
+msgid "No colors assigned"
+msgstr "Цвета не назначены"
 
 msgid "No comments yet. Be the first to add a comment."
 msgstr "Нет комментариев. Будьте первым, кто добавит комментарий."
@@ -6581,9 +6689,6 @@ msgstr "Нет принтеров настроенных. Нажмите \"До�
 msgid "No production logs"
 msgstr "Нет производственных логов"
 
-msgid "No production reported yet."
-msgstr "Нет отчетов о производстве еще."
-
 msgid "No quantity recorded yet."
 msgstr "Нет еще зарегистрированной количественной информации."
 
@@ -6616,6 +6721,9 @@ msgstr "Пока нет проверенных образцов."
 
 msgid "No selection"
 msgstr "Нет выбора"
+
+msgid "No sizes assigned"
+msgstr "Размеры не назначены"
 
 msgid "No sorts applied to this view"
 msgstr "Сортировка не применена к этому представлению"
@@ -6703,6 +6811,9 @@ msgstr "Примечания (опционально)"
 
 msgid "Nothing in the archive"
 msgstr "Ничего в архиве"
+
+msgid "Nothing left to split for this work order."
+msgstr "Для этого наряда больше нечего разделять."
 
 msgid "Notification"
 msgstr "Уведомление"
@@ -7594,9 +7705,6 @@ msgstr "Продукция"
 msgid "Production"
 msgstr "Производство"
 
-msgid "Production already reported per operation. Click a number to pull it into the editor above."
-msgstr "Производство уже отчетливо указано по операции. Нажмите на число, чтобы перенести его в редактор выше."
-
 msgid "Production Event"
 msgstr "Производственное событие"
 
@@ -8069,6 +8177,9 @@ msgstr "Выпущено"
 msgid "remaining"
 msgstr "оставшееся"
 
+msgid "Remaining"
+msgstr "Осталось"
+
 msgid "Remaining after split stays on the original row."
 msgstr "Остаток после разделения остается в исходной строке."
 
@@ -8208,6 +8319,9 @@ msgstr "Система пополнения"
 msgid "Report"
 msgstr "Отчет"
 
+msgid "Report Cutting"
+msgstr "Сообщить о раскрое"
+
 msgid "Report history"
 msgstr "Отчётная история"
 
@@ -8227,8 +8341,8 @@ msgstr "Отчётная <0>{0}</0> единица"
 msgid "Reported <0>{totalQuantity}</0> units"
 msgstr "Отчет <0>{totalQuantity}</0> единиц"
 
-msgid "Reported by process"
-msgstr "Отчет от процесса"
+msgid "Reported At"
+msgstr "Сообщено"
 
 msgid "Reporter"
 msgstr "Отчетчик"
@@ -9217,6 +9331,9 @@ msgstr "Показать легенду"
 msgid "Show on card right"
 msgstr "Показать справа на карте"
 
+msgid "Show or hide items in this module's sidebar."
+msgstr "Показать или скрыть элементы на боковой панели этого модуля."
+
 msgid "Show parent items"
 msgstr "Показать родительские элементы"
 
@@ -9267,6 +9384,12 @@ msgstr "Один_job"
 
 msgid "Size"
 msgstr "Размер"
+
+msgid "Size Code"
+msgstr "Код размера"
+
+msgid "Size Name"
+msgstr "Название размера"
 
 msgid "Sizes"
 msgstr "Размеры"
@@ -9366,6 +9489,9 @@ msgstr "Конкретные товары"
 
 msgid "Split"
 msgstr "Разделить"
+
+msgid "Split Batch"
+msgstr "Разделить партию"
 
 msgid "Split line"
 msgstr "Разделить строку"
@@ -9523,8 +9649,35 @@ msgstr "Сохраняйте фиксированное количество д�
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "Сохраняйте фиксированное количество дней для этого товара. Дата начала срока действия устанавливается для каждой партии или серийного номера при получении."
 
+msgid "Style"
+msgstr "Модель"
+
+msgid "Style Color"
+msgstr "Цвет модели"
+
+msgid "Style Colors"
+msgstr "Цвета модели"
+
+msgid "Style Details"
+msgstr "Сведения о модели"
+
+msgid "Style ID"
+msgstr "ID модели"
+
 msgid "Style of kanban output to show in the Kanban table"
 msgstr "Стиль вывода канбана для отображения в таблице Канбана"
+
+msgid "Style Properties"
+msgstr "Свойства модели"
+
+msgid "Style Size"
+msgstr "Размер модели"
+
+msgid "Style Sizes"
+msgstr "Размеры модели"
+
+msgid "Styles"
+msgstr "Модели"
 
 msgid "Sub-assembly expiries only"
 msgstr "Только сроки действия подсборок"
@@ -10568,6 +10721,9 @@ msgstr "Используйте ... для получения следующег�
 msgid "Use ... to get the next part ID"
 msgstr "Используйте ... для получения следующего ID детали"
 
+msgid "Use ... to get the next style ID"
+msgstr "Используйте ..., чтобы получить следующий ID модели"
+
 msgid "Use ... to get the next tool ID"
 msgstr "Используйте ... для получения следующего ID инструмента"
 
@@ -10709,6 +10865,9 @@ msgstr "Просмотр атрибутов"
 msgid "View bill of process"
 msgstr "Просматривать билет по процессу"
 
+msgid "View bundles"
+msgstr "Показать пачки"
+
 msgid "View configuration parameters"
 msgstr "Просмотр конфигурационных параметров"
 
@@ -10781,6 +10940,12 @@ msgstr "Просмотр списка отбора"
 msgid "View Prints"
 msgstr "Просмотр печатей"
 
+msgid "View process completions"
+msgstr "Показать выполнение процессов"
+
+msgid "View processes"
+msgstr "Показать процессы"
+
 msgid "View Production Events"
 msgstr "Просмотр событий производства"
 
@@ -10792,6 +10957,9 @@ msgstr "Просмотреть реактивные"
 
 msgid "View Receipt"
 msgstr "Просмотр квитанции"
+
+msgid "View remaining"
+msgstr "Показать остаток"
 
 msgid "View Scheduled"
 msgstr "Просмотреть запланированные"

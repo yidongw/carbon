@@ -28,11 +28,11 @@ msgstr "\"{storageUnitName}\"有1个直接嵌套的存储单元。删除它也�
 msgid "(all must match)"
 msgstr "（必须全部匹配）"
 
-#. placeholder {0}: selectedEvent.jobOperation?.description ?? t`Operation`
+#. placeholder {0}: operationLabel(selectedEvent.jobOperationId, selectedEvent.jobOperation?.description) || t`Operation`
 msgid "{0} (supplier)"
 msgstr "{0} (供应商)"
 
-#. placeholder {0}: selectedEvent.jobOperation?.description ?? t`Operation`
+#. placeholder {0}: operationLabel(selectedEvent.jobOperationId, selectedEvent.jobOperation?.description) || t`Operation`
 #. placeholder {1}: people.find((p) => p.id === selectedEvent.employeeId) ?.name ?? t`Unknown Employee`
 msgid "{0} by {1}"
 msgstr "{0}，由{1}"
@@ -206,6 +206,9 @@ msgstr "销售订单行包含特定物品的订单详情"
 
 msgid "A sales request for quote (RFQ) is a customer inquiry for pricing on a set of parts and quantities. It may result in a quote."
 msgstr "销售询价单（RFQ）是客户对一组产品和数量的价格咨询，可能会生成报价。"
+
+msgid "A style contains the information about a garment or footwear item that is cut, bundled, and produced downstream."
+msgstr "款式包含有关裁剪、分包并在下游生产的服装或鞋类物品的信息。"
 
 msgid "A tool is a physical item used to make a part that can be used across multiple jobs"
 msgstr "工具是用于制造产品的实物物品，可以在多个工作中使用"
@@ -1002,6 +1005,14 @@ msgstr "您确定要删除存储类型：{0}？此操作无法撤销。"
 msgid "Are you sure you want to delete the storage unit: {0}? This cannot be undone."
 msgstr "您确定要删除存储单元：{0}？此操作无法撤销。"
 
+#. placeholder {0}: styleColor.colorCode
+msgid "Are you sure you want to delete the style color {0}? This cannot be undone."
+msgstr "确定要删除款式颜色 {0} 吗？此操作无法撤销。"
+
+#. placeholder {0}: styleSize.sizeCode
+msgid "Are you sure you want to delete the style size {0}? This cannot be undone."
+msgstr "确定要删除款式尺码 {0} 吗？此操作无法撤销。"
+
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "您确定要删除供应商类型：{0}？此操作无法撤销。"
@@ -1170,6 +1181,9 @@ msgstr "分配到组别"
 
 msgid "Assigned"
 msgstr "指派"
+
+msgid "Assigned At"
+msgstr "指派时间"
 
 msgid "Assigned Group"
 msgstr "已分配的组"
@@ -1351,6 +1365,9 @@ msgstr "批次大小"
 msgid "Batch Tracking"
 msgstr "批次追踪"
 
+msgid "Below reported"
+msgstr "低于已上报量"
+
 msgid "Beta"
 msgstr "测试版"
 
@@ -1433,6 +1450,15 @@ msgstr "批量导入"
 
 msgid "Bulk Jobs"
 msgstr "批量工作"
+
+msgid "Bundle"
+msgstr "分包"
+
+msgid "Bundle Work Orders"
+msgstr "分包工单"
+
+msgid "Bundles"
+msgstr "分包"
 
 msgid "Buy"
 msgstr "购买"
@@ -1752,6 +1778,21 @@ msgstr "折叠功能表"
 
 msgid "Collapse subtree"
 msgstr "折叠子树"
+
+msgid "Color"
+msgstr "颜色"
+
+msgid "Color / Size"
+msgstr "颜色 / 尺码"
+
+msgid "Color Code"
+msgstr "颜色代码"
+
+msgid "Color Name"
+msgstr "颜色名称"
+
+msgid "Colors"
+msgstr "颜色"
 
 msgid "Column"
 msgstr "列"
@@ -2117,6 +2158,9 @@ msgstr "复制产品链接"
 msgid "Copy link to procedure"
 msgstr "复制规程链接"
 
+msgid "Copy link to style"
+msgstr "复制款式链接"
+
 msgid "Copy link to tool"
 msgstr "复制工具链接"
 
@@ -2161,6 +2205,12 @@ msgstr "复制报价单编号"
 
 msgid "Copy response"
 msgstr "复制回复"
+
+msgid "Copy style number"
+msgstr "复制款式编号"
+
+msgid "Copy style unique identifier"
+msgstr "复制款式唯一标识符"
 
 msgid "Copy this item's pricing to another scope."
 msgstr "复制此物品的报价到另一个范围。"
@@ -2436,6 +2486,9 @@ msgstr "已创建库存转移行"
 msgid "Created storage type"
 msgstr "已创建存储类型"
 
+msgid "Created style"
+msgstr "已创建款式"
+
 msgid "Created supplier process"
 msgstr "创建供应商流程"
 
@@ -2605,6 +2658,9 @@ msgstr "客户"
 
 msgid "Customize the layout of your PDF documents — reorder sections, hide what you don't need, and add your own blocks."
 msgstr "自定义您的PDF文档布局——重新排列部分、隐藏不需要的内容，并添加您自己的区块。"
+
+msgid "Cutting"
+msgstr "裁剪"
 
 msgid "Cycle back-edge"
 msgstr "回程后限位"
@@ -3006,6 +3062,15 @@ msgstr "删除存储类型"
 
 msgid "Delete Storage Unit"
 msgstr "删除存储单元"
+
+msgid "Delete Style"
+msgstr "删除款式"
+
+msgid "Delete Style Color"
+msgstr "删除款式颜色"
+
+msgid "Delete Style Size"
+msgstr "删除款式尺码"
 
 msgid "Delete Substance"
 msgstr "删除物质"
@@ -3600,6 +3665,15 @@ msgstr "编辑存储类型"
 msgid "Edit Storage Unit"
 msgstr "编辑存储单元"
 
+msgid "Edit Style"
+msgstr "编辑款式"
+
+msgid "Edit Style Color"
+msgstr "编辑款式颜色"
+
+msgid "Edit Style Size"
+msgstr "编辑款式尺码"
+
 msgid "Edit Substance"
 msgstr "编辑物质"
 
@@ -3924,6 +3998,12 @@ msgstr "Starter 中的所有功能"
 msgid "Exceeds {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB total — remove some attachments to send."
 msgstr "超过 {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB 总计 — 请先移除一些附件再发送。"
 
+msgid "Exceeds cut"
+msgstr "超出裁剪量"
+
+msgid "Exceeds plan"
+msgstr "超出计划"
+
 msgid "Exchange Rate"
 msgstr "汇率"
 
@@ -4141,6 +4221,10 @@ msgstr "创建库存转移行失败：{0}"
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create storage type: {0}"
 msgstr "创建存储类型失败：{0}"
+
+#. placeholder {0}: fetcher.data.error.message
+msgid "Failed to create style: {0}"
+msgstr "创建款式失败：{0}"
 
 msgid "Failed to create supplier process"
 msgstr "创建供应商工序失败"
@@ -5710,6 +5794,12 @@ msgstr "标记短缺"
 msgid "Mark to delete"
 msgstr "标记删除"
 
+msgid "Master Work Order"
+msgstr "主工单"
+
+msgid "Master Work Orders"
+msgstr "主工单"
+
 msgid "Match"
 msgstr "匹配"
 
@@ -6027,6 +6117,9 @@ msgstr "应用中的人员姓名将按“姓 名”格式显示。"
 msgid "Navigate"
 msgstr "导航"
 
+msgid "Navigation"
+msgstr "导航"
+
 msgid "NCRs by Type"
 msgstr "按类型查看NCR"
 
@@ -6156,6 +6249,9 @@ msgstr "新位置"
 msgid "New Maintenance Dispatch"
 msgstr "新的维护调度"
 
+msgid "New Master Work Order"
+msgstr "新建主工单"
+
 msgid "New Material"
 msgstr "新材料"
 
@@ -6272,6 +6368,15 @@ msgstr "新建存储类型"
 
 msgid "New Storage Unit"
 msgstr "新建存储单元"
+
+msgid "New Style"
+msgstr "新建款式"
+
+msgid "New Style Color"
+msgstr "新建款式颜色"
+
+msgid "New Style Size"
+msgstr "新建款式尺码"
 
 msgid "New Supplier"
 msgstr "新供应商"
@@ -6421,6 +6526,9 @@ msgstr "没有聊天记录"
 
 msgid "No chats found"
 msgstr "未找到聊天记录"
+
+msgid "No colors assigned"
+msgstr "未分配颜色"
 
 msgid "No comments yet. Be the first to add a comment."
 msgstr "暂无评论。来添加第一条评论吧。"
@@ -6581,9 +6689,6 @@ msgstr "未配置打印机。点击“添加打印机”进行创建。"
 msgid "No production logs"
 msgstr "无生产日志"
 
-msgid "No production reported yet."
-msgstr "尚未报告生产情况。"
-
 msgid "No quantity recorded yet."
 msgstr "尚未记录数量。"
 
@@ -6616,6 +6721,9 @@ msgstr "尚未检验任何样品。"
 
 msgid "No selection"
 msgstr "未选择"
+
+msgid "No sizes assigned"
+msgstr "未分配尺码"
 
 msgid "No sorts applied to this view"
 msgstr "此视图未应用任何排序"
@@ -6703,6 +6811,9 @@ msgstr "可选备注"
 
 msgid "Nothing in the archive"
 msgstr "档案中没有内容"
+
+msgid "Nothing left to split for this work order."
+msgstr "此工单没有可拆分的内容。"
 
 msgid "Notification"
 msgstr "通知"
@@ -7594,9 +7705,6 @@ msgstr "生产由"
 msgid "Production"
 msgstr "生产"
 
-msgid "Production already reported per operation. Click a number to pull it into the editor above."
-msgstr "工序已上报生产数量。点击数字将其传入上方编辑器。"
-
 msgid "Production Event"
 msgstr "生产事件"
 
@@ -8069,6 +8177,9 @@ msgstr "已发布"
 msgid "remaining"
 msgstr "剩余"
 
+msgid "Remaining"
+msgstr "剩余"
+
 msgid "Remaining after split stays on the original row."
 msgstr "分隔后剩余的留在原行。"
 
@@ -8208,6 +8319,9 @@ msgstr "补货系统"
 msgid "Report"
 msgstr "报告"
 
+msgid "Report Cutting"
+msgstr "上报裁剪"
+
 msgid "Report history"
 msgstr "报告历史"
 
@@ -8227,8 +8341,8 @@ msgstr "报告了<0>{0}</0>个单位"
 msgid "Reported <0>{totalQuantity}</0> units"
 msgstr "报告了<0>{totalQuantity}</0>个单位"
 
-msgid "Reported by process"
-msgstr "由工序上报"
+msgid "Reported At"
+msgstr "报告时间"
 
 msgid "Reporter"
 msgstr "报告人"
@@ -9217,6 +9331,9 @@ msgstr "显示图例"
 msgid "Show on card right"
 msgstr "在卡片右侧显示"
 
+msgid "Show or hide items in this module's sidebar."
+msgstr "显示或隐藏此模块侧边栏中的项目。"
+
 msgid "Show parent items"
 msgstr "显示父级物品"
 
@@ -9266,10 +9383,16 @@ msgid "Single Job"
 msgstr "单件生产"
 
 msgid "Size"
-msgstr "尺寸"
+msgstr "尺码"
+
+msgid "Size Code"
+msgstr "尺码代码"
+
+msgid "Size Name"
+msgstr "尺码名称"
 
 msgid "Sizes"
-msgstr "尺寸"
+msgstr "尺码"
 
 msgid "Skip Existing"
 msgstr "跳过现有项"
@@ -9366,6 +9489,9 @@ msgstr "特定物品"
 
 msgid "Split"
 msgstr "拆分"
+
+msgid "Split Batch"
+msgstr "拆分批次"
 
 msgid "Split line"
 msgstr "拆分行"
@@ -9523,8 +9649,35 @@ msgstr "存储固定天数。有效期起始日期在接收或创建批次或序
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "在该物品上存储固定的天数。有效期起始日期在收到批次或序列号时设置。"
 
+msgid "Style"
+msgstr "款式"
+
+msgid "Style Color"
+msgstr "款式颜色"
+
+msgid "Style Colors"
+msgstr "款式颜色"
+
+msgid "Style Details"
+msgstr "款式详情"
+
+msgid "Style ID"
+msgstr "款式编号"
+
 msgid "Style of kanban output to show in the Kanban table"
 msgstr "看板输出样式在看板表格中显示"
+
+msgid "Style Properties"
+msgstr "款式属性"
+
+msgid "Style Size"
+msgstr "款式尺码"
+
+msgid "Style Sizes"
+msgstr "款式尺码"
+
+msgid "Styles"
+msgstr "款式"
 
 msgid "Sub-assembly expiries only"
 msgstr "子装产品有效期"
@@ -10568,6 +10721,9 @@ msgstr "使用...获取下一个物料ID"
 msgid "Use ... to get the next part ID"
 msgstr "使用...获取下一个产品号"
 
+msgid "Use ... to get the next style ID"
+msgstr "使用 ... 获取下一个款式编号"
+
 msgid "Use ... to get the next tool ID"
 msgstr "使用...获取下一个工具ID"
 
@@ -10709,6 +10865,9 @@ msgstr "查看属性"
 msgid "View bill of process"
 msgstr "查看工序清单"
 
+msgid "View bundles"
+msgstr "查看分包"
+
 msgid "View configuration parameters"
 msgstr "查看配置参数"
 
@@ -10781,6 +10940,12 @@ msgstr "查看拣货清单"
 msgid "View Prints"
 msgstr "查看打印件"
 
+msgid "View process completions"
+msgstr "查看工序完成"
+
+msgid "View processes"
+msgstr "查看工序"
+
 msgid "View Production Events"
 msgstr "查看生产事件"
 
@@ -10792,6 +10957,9 @@ msgstr "查看被动维护"
 
 msgid "View Receipt"
 msgstr "查看收据"
+
+msgid "View remaining"
+msgstr "查看剩余"
 
 msgid "View Scheduled"
 msgstr "查看已排期"

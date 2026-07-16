@@ -28,11 +28,11 @@ msgstr "\"{storageUnitName}\" के पास 1 सीधी नेस्टे
 msgid "(all must match)"
 msgstr "सब कुछ"
 
-#. placeholder {0}: selectedEvent.jobOperation?.description ?? t`Operation`
+#. placeholder {0}: operationLabel(selectedEvent.jobOperationId, selectedEvent.jobOperation?.description) || t`Operation`
 msgid "{0} (supplier)"
 msgstr "{0} (सुप्लायर)"
 
-#. placeholder {0}: selectedEvent.jobOperation?.description ?? t`Operation`
+#. placeholder {0}: operationLabel(selectedEvent.jobOperationId, selectedEvent.jobOperation?.description) || t`Operation`
 #. placeholder {1}: people.find((p) => p.id === selectedEvent.employeeId) ?.name ?? t`Unknown Employee`
 msgid "{0} by {1}"
 msgstr "{0} द्वारा {1}"
@@ -206,6 +206,9 @@ msgstr "एक बिक्रय आदेश पंक्ति किसी �
 
 msgid "A sales request for quote (RFQ) is a customer inquiry for pricing on a set of parts and quantities. It may result in a quote."
 msgstr "एक बिक्रय उद्धरण अनुरोध (RFQ) भागों और मात्राओं के एक सेट पर मूल्य निर्धारण के लिए एक ग्राहक पूछताछ है। इसके परिणामस्वरूप एक उद्धरण हो सकता है।"
+
+msgid "A style contains the information about a garment or footwear item that is cut, bundled, and produced downstream."
+msgstr "एक शैली में उस परिधान या जूता वस्तु की जानकारी होती है जिसे काटा, बंडल किया और आगे उत्पादित किया जाता है।"
 
 msgid "A tool is a physical item used to make a part that can be used across multiple jobs"
 msgstr "एक उपकरण एक भौतिक वस्तु है जिसका उपयोग एक भाग बनाने के लिए किया जाता है जिसे कई कार्यों में उपयोग किया जा सकता है"
@@ -1002,6 +1005,14 @@ msgstr "क्या आप सुनिश्चित हैं कि आप 
 msgid "Are you sure you want to delete the storage unit: {0}? This cannot be undone."
 msgstr "क्या आप सुनिश्चित हैं कि आप स्टोरेज यूनिट को हटाना चाहते हैं: {0}? यह पूर्ववत नहीं किया जा सकता।"
 
+#. placeholder {0}: styleColor.colorCode
+msgid "Are you sure you want to delete the style color {0}? This cannot be undone."
+msgstr "क्या आप वाकई शैली रंग {0} हटाना चाहते हैं? इसे पूर्ववत नहीं किया जा सकता।"
+
+#. placeholder {0}: styleSize.sizeCode
+msgid "Are you sure you want to delete the style size {0}? This cannot be undone."
+msgstr "क्या आप वाकई शैली आकार {0} हटाना चाहते हैं? इसे पूर्ववत नहीं किया जा सकता।"
+
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "क्या आप सुनिश्चित हैं कि आप आपूर्तिकर्ता प्रकार को हटाना चाहते हैं: {0}? यह पूर्ववत नहीं किया जा सकता।"
@@ -1170,6 +1181,9 @@ msgstr "समूहों को असाइन करें"
 
 msgid "Assigned"
 msgstr "नियुक्त"
+
+msgid "Assigned At"
+msgstr "असाइन किया गया"
 
 msgid "Assigned Group"
 msgstr "नियुक्त समूह"
@@ -1351,6 +1365,9 @@ msgstr "बैच आकार"
 msgid "Batch Tracking"
 msgstr "बैच ट्रैकिंग"
 
+msgid "Below reported"
+msgstr "निरीक्षित नीचे"
+
 msgid "Beta"
 msgstr "बीटा"
 
@@ -1433,6 +1450,15 @@ msgstr "बल्क आयात"
 
 msgid "Bulk Jobs"
 msgstr "बल्क जॉब्स"
+
+msgid "Bundle"
+msgstr "बंडल"
+
+msgid "Bundle Work Orders"
+msgstr "बंडल कार्य आदेश"
+
+msgid "Bundles"
+msgstr "बंडल"
 
 msgid "Buy"
 msgstr "खरीदें"
@@ -1752,6 +1778,21 @@ msgstr "फीचर्स टेबल को पिटाएं"
 
 msgid "Collapse subtree"
 msgstr "सबट्री को संक्षिप्त करें"
+
+msgid "Color"
+msgstr "रंग"
+
+msgid "Color / Size"
+msgstr "रंग / आकार"
+
+msgid "Color Code"
+msgstr "रंग कोड"
+
+msgid "Color Name"
+msgstr "रंग नाम"
+
+msgid "Colors"
+msgstr "रंग"
 
 msgid "Column"
 msgstr "कॉलम"
@@ -2117,6 +2158,9 @@ msgstr "भाग के लिए लिंक कॉपी करें"
 msgid "Copy link to procedure"
 msgstr "प्रक्रिया के लिए लिंक कॉपी करें"
 
+msgid "Copy link to style"
+msgstr "शैली का लिंक कॉपी करें"
+
 msgid "Copy link to tool"
 msgstr "टूल के लिए लिंक कॉपी करें"
 
@@ -2161,6 +2205,12 @@ msgstr "उद्धरण संख्या कॉपी करें"
 
 msgid "Copy response"
 msgstr "प्रतिक्रिया कॉपी करें"
+
+msgid "Copy style number"
+msgstr "शैली संख्या कॉपी करें"
+
+msgid "Copy style unique identifier"
+msgstr "शैली का विशिष्ट पहचानकर्ता कॉपी करें"
 
 msgid "Copy this item's pricing to another scope."
 msgstr "इस आइटम की मूल्य निर्धारण को दूसरे स्कोप में कॉपी करें।"
@@ -2436,6 +2486,9 @@ msgstr "स्टॉक ट्रांसफर लाइन बनाई ग�
 msgid "Created storage type"
 msgstr "भंडारण प्रकार बनाया गया"
 
+msgid "Created style"
+msgstr "शैली बनाई गई"
+
 msgid "Created supplier process"
 msgstr "संचालित स्वीपर प्रक्रिया बनाया"
 
@@ -2605,6 +2658,9 @@ msgstr "ग्राहक"
 
 msgid "Customize the layout of your PDF documents — reorder sections, hide what you don't need, and add your own blocks."
 msgstr "पीडीएफ डॉक्युमेंट्स के परिवर्तनात्मक प्रणाली का परिचालन करें — सब्सेक्शन्स को रीऑर्डर करें, उपयुक्त नहीं होने वाले बातों को छुपा दें, और अपने खुद के टॉक्स जोड़ें।"
+
+msgid "Cutting"
+msgstr "काटना"
 
 msgid "Cycle back-edge"
 msgstr "साइकल बैक-एज"
@@ -3006,6 +3062,15 @@ msgstr "स्टोरेज प्रकार हटाएं"
 
 msgid "Delete Storage Unit"
 msgstr "स्टोरेज यूनिट हटाएं"
+
+msgid "Delete Style"
+msgstr "शैली हटाएँ"
+
+msgid "Delete Style Color"
+msgstr "शैली रंग हटाएँ"
+
+msgid "Delete Style Size"
+msgstr "शैली आकार हटाएँ"
 
 msgid "Delete Substance"
 msgstr "पदार्थ हटाएं"
@@ -3600,6 +3665,15 @@ msgstr "स्टोरेज प्रकार संपादित करे
 msgid "Edit Storage Unit"
 msgstr "स्टोरेज यूनिट संपादित करें"
 
+msgid "Edit Style"
+msgstr "शैली संपादित करें"
+
+msgid "Edit Style Color"
+msgstr "शैली रंग संपादित करें"
+
+msgid "Edit Style Size"
+msgstr "शैली आकार संपादित करें"
+
 msgid "Edit Substance"
 msgstr "पदार्थ संपादित करें"
 
@@ -3924,6 +3998,12 @@ msgstr "स्टार्टर से सब कुछ"
 msgid "Exceeds {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB total — remove some attachments to send."
 msgstr "प्रतिबंध छाँटा गया है {PO_EMAIL_ATTACHMENT_LIMIT_MB} म्ब की सीमा से — कुछ अनुसंधानों को हटाएँ और पहुंचाइए।"
 
+msgid "Exceeds cut"
+msgstr "काटने से बढ़ा है"
+
+msgid "Exceeds plan"
+msgstr "योजना से अधिक"
+
 msgid "Exchange Rate"
 msgstr "विनिमय दर"
 
@@ -4141,6 +4221,10 @@ msgstr "स्टॉक ट्रांसफर लाइन बनाने �
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create storage type: {0}"
 msgstr "भंडारण प्रकार बनाने में विफल: {0}"
+
+#. placeholder {0}: fetcher.data.error.message
+msgid "Failed to create style: {0}"
+msgstr "शैली बनाने में विफल: {0}"
 
 msgid "Failed to create supplier process"
 msgstr "सupplier प्रक्रिया बनाने में विफल हो गया"
@@ -5710,6 +5794,12 @@ msgstr "कमी चिह्नित करें"
 msgid "Mark to delete"
 msgstr "हटाने के लिए चिह्नित करें"
 
+msgid "Master Work Order"
+msgstr "मास्टर कार्य आदेश"
+
+msgid "Master Work Orders"
+msgstr "मास्टर कार्य आदेश"
+
 msgid "Match"
 msgstr "मैच"
 
@@ -6027,6 +6117,9 @@ msgstr "फैमिली नाम के बाद में दिए गए
 msgid "Navigate"
 msgstr "नेविगेट करें"
 
+msgid "Navigation"
+msgstr "नेविगेशन"
+
 msgid "NCRs by Type"
 msgstr "प्रकार के अनुसार NCR"
 
@@ -6156,6 +6249,9 @@ msgstr "नया स्थान"
 msgid "New Maintenance Dispatch"
 msgstr "नया रखरखाव प्रेषण"
 
+msgid "New Master Work Order"
+msgstr "नया मास्टर कार्य आदेश"
+
 msgid "New Material"
 msgstr "नई सामग्री"
 
@@ -6272,6 +6368,15 @@ msgstr "नया स्टोरेज प्रकार"
 
 msgid "New Storage Unit"
 msgstr "नया स्टोरेज यूनिट"
+
+msgid "New Style"
+msgstr "नई शैली"
+
+msgid "New Style Color"
+msgstr "नया शैली रंग"
+
+msgid "New Style Size"
+msgstr "नया शैली आकार"
 
 msgid "New Supplier"
 msgstr "नया स्वीपर"
@@ -6421,6 +6526,9 @@ msgstr "कोई चैट इतिहास नहीं"
 
 msgid "No chats found"
 msgstr "कोई चैट नहीं मिला"
+
+msgid "No colors assigned"
+msgstr "कोई रंग असाइन नहीं"
 
 msgid "No comments yet. Be the first to add a comment."
 msgstr "अभी तक कोई टिप्पणी नहीं है। टिप्पणी जोड़ने वाले पहले व्यक्ति बनें।"
@@ -6581,9 +6689,6 @@ msgstr "निर्निर्मित प्रिंटर उपलब्�
 msgid "No production logs"
 msgstr "कोई उत्पादन लॉग नहीं"
 
-msgid "No production reported yet."
-msgstr "अभियान्त्रिकी उत्पादन अभी तक रिपोर्ट की जाने लगी है।"
-
 msgid "No quantity recorded yet."
 msgstr "अभिस्पर्श अभी तक रिकॉर्ड किया गया मात्रा नहीं है।"
 
@@ -6616,6 +6721,9 @@ msgstr "अभी तक कोई नमूना निरीक्षण न�
 
 msgid "No selection"
 msgstr "कोई चयन नहीं"
+
+msgid "No sizes assigned"
+msgstr "कोई आकार असाइन नहीं"
 
 msgid "No sorts applied to this view"
 msgstr "इस दृश्य पर कोई सॉर्ट लागू नहीं किया गया"
@@ -6703,6 +6811,9 @@ msgstr "नोट्स (वैकल्पिक)"
 
 msgid "Nothing in the archive"
 msgstr "आर्काइव में कुछ नहीं है"
+
+msgid "Nothing left to split for this work order."
+msgstr "इस कार्य आदेश के लिए विभाजित करने के लिए कुछ नहीं बचा।"
 
 msgid "Notification"
 msgstr "सूचना"
@@ -7594,9 +7705,6 @@ msgstr "उत्पादित गया"
 msgid "Production"
 msgstr "उत्पादन"
 
-msgid "Production already reported per operation. Click a number to pull it into the editor above."
-msgstr "प्रोडक्शन जारी है प्रति संचालन। उपर के सं缉写入器已耗尽，请稍后重试~(1/4)editor में इसे भरने के लिए एक संख्या पर क्लिक करें।"
-
 msgid "Production Event"
 msgstr "उत्पादन घटना"
 
@@ -8069,6 +8177,9 @@ msgstr "जारी किया गया"
 msgid "remaining"
 msgstr "शेष"
 
+msgid "Remaining"
+msgstr "शेष"
+
 msgid "Remaining after split stays on the original row."
 msgstr "विभाजन के बाद शेष मूल पंक्ति पर रहता है।"
 
@@ -8208,6 +8319,9 @@ msgstr "पुनःपूर्ति प्रणाली"
 msgid "Report"
 msgstr "रिपोर्ट"
 
+msgid "Report Cutting"
+msgstr "कटिंग रिपोर्ट करें"
+
 msgid "Report history"
 msgstr "निष्कर्ष रिपोर्ट"
 
@@ -8227,8 +8341,8 @@ msgstr "प्रतिपादित <0>{0}</0> इकाइयाँ"
 msgid "Reported <0>{totalQuantity}</0> units"
 msgstr "प्रतिपादित <0> {totalQuantity} </0> इकाइयाँ"
 
-msgid "Reported by process"
-msgstr "प्रक्रिया द्वारा रिपोर्ट की"
+msgid "Reported At"
+msgstr "रिपोर्ट किया गया"
 
 msgid "Reporter"
 msgstr "रिपोर्टर"
@@ -9217,6 +9331,9 @@ msgstr "लेजेंड दिखाएं"
 msgid "Show on card right"
 msgstr "दाएं कार्ड पर दिखाएं"
 
+msgid "Show or hide items in this module's sidebar."
+msgstr "इस मॉड्यूल के साइडबार में आइटम दिखाएँ या छिपाएँ।"
+
 msgid "Show parent items"
 msgstr "माता-पिता की वस्तुओं को दिखाएं"
 
@@ -9267,6 +9384,12 @@ msgstr "एक नौकरी"
 
 msgid "Size"
 msgstr "आकार"
+
+msgid "Size Code"
+msgstr "आकार कोड"
+
+msgid "Size Name"
+msgstr "आकार नाम"
 
 msgid "Sizes"
 msgstr "आकार"
@@ -9366,6 +9489,9 @@ msgstr "विशिष्ट आइटम"
 
 msgid "Split"
 msgstr "विभाजित करें"
+
+msgid "Split Batch"
+msgstr "बैच विभाजित करें"
 
 msgid "Split line"
 msgstr "लाइन को विभाजित करें"
@@ -9523,8 +9649,35 @@ msgstr "इस आइटम पर दिनों की एक निश्च
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "इस आइटम पर दिनों की एक निश्चित संख्या स्टोर करें। प्रत्येक बैच या सीरीज़ के लिए समाप्ति प्रारंभ तारीख प्राप्त होने पर सेट की जाती है।"
 
+msgid "Style"
+msgstr "शैली"
+
+msgid "Style Color"
+msgstr "शैली रंग"
+
+msgid "Style Colors"
+msgstr "शैली रंग"
+
+msgid "Style Details"
+msgstr "शैली विवरण"
+
+msgid "Style ID"
+msgstr "शैली आईडी"
+
 msgid "Style of kanban output to show in the Kanban table"
 msgstr "Kanban तालिका में दिखाने के लिए kanban आउटपुट की शैली"
+
+msgid "Style Properties"
+msgstr "शैली गुण"
+
+msgid "Style Size"
+msgstr "शैली आकार"
+
+msgid "Style Sizes"
+msgstr "शैली आकार"
+
+msgid "Styles"
+msgstr "शैलियाँ"
 
 msgid "Sub-assembly expiries only"
 msgstr "उप-विधानसभा समाप्ति केवल"
@@ -10568,6 +10721,9 @@ msgstr "अगली सामग्री ID प्राप्त करने
 msgid "Use ... to get the next part ID"
 msgstr "अगला पार्ट आईडी प्राप्त करने के लिए ... का उपयोग करें"
 
+msgid "Use ... to get the next style ID"
+msgstr "अगली शैली आईडी पाने के लिए ... का उपयोग करें"
+
 msgid "Use ... to get the next tool ID"
 msgstr "अगली टूल ID प्राप्त करने के लिए ... का उपयोग करें"
 
@@ -10709,6 +10865,9 @@ msgstr "विशेषताएं देखें"
 msgid "View bill of process"
 msgstr "देखें बिल प्रक्रिया"
 
+msgid "View bundles"
+msgstr "बंडल देखें"
+
 msgid "View configuration parameters"
 msgstr "विन्यास पूरक पूरक वैॅपरीटर्स देखें"
 
@@ -10781,6 +10940,12 @@ msgstr "पीकिंग लिस्ट देखें"
 msgid "View Prints"
 msgstr "दिखाए गए प्रिंट्स"
 
+msgid "View process completions"
+msgstr "प्रक्रिया समापन देखें"
+
+msgid "View processes"
+msgstr "प्रक्रियाएँ देखें"
+
 msgid "View Production Events"
 msgstr "उत्पादन घटनाएं देखें"
 
@@ -10792,6 +10957,9 @@ msgstr "प्रतिक्रियाशील देखें"
 
 msgid "View Receipt"
 msgstr "रसीद देखें"
+
+msgid "View remaining"
+msgstr "शेष देखें"
 
 msgid "View Scheduled"
 msgstr "निर्धारित देखें"

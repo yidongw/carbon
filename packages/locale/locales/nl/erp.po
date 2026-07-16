@@ -8359,3 +8359,237 @@ msgstr ""
 
 msgid "yourself"
 msgstr ""
+
+msgid "Reported Quantity"
+msgstr "Gerapporteerde hoeveelheid"
+
+msgid "Remaining Quantity"
+msgstr "Resterende hoeveelheid"
+
+msgid "Last Reported At"
+msgstr "Laatst gerapporteerd op"
+
+msgid "Assigned At"
+msgstr "Toegewezen op"
+
+msgid "Bundles"
+msgstr "Bundels"
+
+msgid "Color / Size"
+msgstr "Kleur / Maat"
+
+msgid "Reported At"
+msgstr "Gerapporteerd op"
+
+msgid "Reported"
+msgstr ""
+
+msgid "Remaining"
+msgstr "Resterend"
+
+msgid "Navigation"
+msgstr "Navigatie"
+
+msgid "Show or hide items in this module's sidebar."
+msgstr "Items in de zijbalk van deze module tonen of verbergen."
+
+msgid "View bundles"
+msgstr "Bundels bekijken"
+
+msgid "View processes"
+msgstr "Processen bekijken"
+
+msgid "View process completions"
+msgstr "Procesvoltooiingen bekijken"
+
+msgid "Split Batch"
+msgstr "Batch splitsen"
+
+msgid "Create Bundles"
+msgstr "Bundels maken"
+
+msgid "Add Bundle"
+msgstr "Bundel toevoegen"
+
+msgid "Split bundle"
+msgstr "Bundel splitsen"
+
+msgid "Remove bundle"
+msgstr "Bundel verwijderen"
+
+msgid "All cut quantities have already been split."
+msgstr "Alle gesneden hoeveelheden zijn al gesplitst."
+
+msgid "Report cutting first, then split the batch into bundles."
+msgstr "Rapporteer eerst het snijden en splits de batch daarna in bundels."
+
+msgid "Existing bundles"
+msgstr "Bestaande bundels"
+
+msgid "New bundles"
+msgstr "Nieuwe bundels"
+
+msgid "View remaining"
+msgstr "Resterend bekijken"
+
+msgid "Nothing left to split for this work order."
+msgstr "Er valt niets meer te splitsen voor deze werkorder."
+
+msgid "Exceeds plan"
+msgstr "Overschrijdt plan"
+
+msgid "Style"
+msgstr "Stijl"
+
+msgid "Styles"
+msgstr "Stijlen"
+
+msgid "Style ID"
+msgstr "Stijl-ID"
+
+msgid "Style Details"
+msgstr "Stijldetails"
+
+msgid "Style Color"
+msgstr "Stijlkleur"
+
+msgid "Style Colors"
+msgstr "Stijlkleuren"
+
+msgid "Style Size"
+msgstr "Stijlmaat"
+
+msgid "Style Sizes"
+msgstr "Stijlmaten"
+
+msgid "Style Properties"
+msgstr "Stijleigenschappen"
+
+msgid "New Style"
+msgstr "Nieuwe stijl"
+
+msgid "Edit Style"
+msgstr "Stijl bewerken"
+
+msgid "Delete Style"
+msgstr "Stijl verwijderen"
+
+msgid "New Style Color"
+msgstr "Nieuwe stijlkleur"
+
+msgid "Edit Style Color"
+msgstr "Stijlkleur bewerken"
+
+msgid "Delete Style Color"
+msgstr "Stijlkleur verwijderen"
+
+msgid "New Style Size"
+msgstr "Nieuwe stijlmaat"
+
+msgid "Edit Style Size"
+msgstr "Stijlmaat bewerken"
+
+msgid "Delete Style Size"
+msgstr "Stijlmaat verwijderen"
+
+msgid "Color"
+msgstr "Kleur"
+
+msgid "Colors"
+msgstr "Kleuren"
+
+msgid "Color Code"
+msgstr "Kleurcode"
+
+msgid "Color Name"
+msgstr "Kleurnaam"
+
+msgid "Size Code"
+msgstr "Maatcode"
+
+msgid "Size Name"
+msgstr "Maatnaam"
+
+msgid "No colors assigned"
+msgstr "Geen kleuren toegewezen"
+
+msgid "No sizes assigned"
+msgstr "Geen maten toegewezen"
+
+msgid "Bundle"
+msgstr "Bundel"
+
+msgid "Bundle Work Order"
+msgstr "Bundelwerkorder"
+
+msgid "Bundle Work Orders"
+msgstr "Bundelwerkorders"
+
+msgid "New Bundle"
+msgstr "Nieuwe bundel"
+
+msgid "New Bundle Work Order"
+msgstr "Nieuwe bundelwerkorder"
+
+msgid "Master Work Order"
+msgstr "Hoofdwerkorder"
+
+msgid "Master Work Orders"
+msgstr "Hoofdwerkorders"
+
+msgid "New Master Work Order"
+msgstr "Nieuwe hoofdwerkorder"
+
+msgid "Cutting Split"
+msgstr "Snijverdeling"
+
+msgid "Confirm Split"
+msgstr "Splitsing bevestigen"
+
+msgid "No pending cutting rows. Report cutting to capture color/size quantities, then confirm the split into bundles."
+msgstr "Geen openstaande snijregels. Rapporteer het snijden om kleur-/maathoeveelheden vast te leggen en bevestig daarna de splitsing in bundels."
+
+msgid "No bundle work orders yet. Add bundles by color and size."
+msgstr "Nog geen bundelwerkorders. Voeg bundels toe op kleur en maat."
+
+msgid "No process reports yet. Report production, rework, or scrap against this bundle's operations."
+msgstr "Nog geen procesrapporten. Rapporteer productie, herbewerking of afkeur voor de bewerkingen van deze bundel."
+
+msgid "Process Reports"
+msgstr "Procesrapporten"
+
+msgid "Report Process"
+msgstr "Proces rapporteren"
+
+msgid "Report Cutting"
+msgstr "Snijden rapporteren"
+
+msgid "Save Cutting Rows"
+msgstr "Snijregels opslaan"
+
+msgid "Created style"
+msgstr "Stijl aangemaakt"
+
+msgid "Failed to create style: {0}"
+msgstr "Kan stijl niet aanmaken: {0}"
+
+msgid "Are you sure you want to delete the style color {0}? This cannot be undone."
+msgstr "Weet je zeker dat je stijlkleur {0} wilt verwijderen? Dit kan niet ongedaan worden gemaakt."
+
+msgid "Are you sure you want to delete the style size {0}? This cannot be undone."
+msgstr "Weet je zeker dat je stijlmaat {0} wilt verwijderen? Dit kan niet ongedaan worden gemaakt."
+
+msgid "A style contains the information about a garment or footwear item that is cut, bundled, and produced downstream."
+msgstr "Een stijl bevat de informatie over een kleding- of schoenartikel dat wordt gesneden, gebundeld en verder geproduceerd."
+
+msgid "Copy link to style"
+msgstr "Link naar stijl kopiëren"
+
+msgid "Copy style number"
+msgstr "Stijlnummer kopiëren"
+
+msgid "Copy style unique identifier"
+msgstr "Unieke stijl-ID kopiëren"
+
+msgid "Use ... to get the next style ID"
+msgstr "Gebruik ... voor de volgende stijl-ID"
