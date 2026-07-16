@@ -52,14 +52,10 @@ function LoginMethodsPicker({ available }: { available: string[] }) {
     <VStack spacing={2}>
       <input type="hidden" name="loginMethods" value={selected.join(",")} />
       <span className="text-sm font-medium">
-        <Trans>Required login methods</Trans>
+        {/* Reuses the existing "Login methods" catalog message. Empty = any
+            method; the numbered badges convey the required completion order. */}
+        <Trans>Login methods</Trans>
       </span>
-      <p className="text-xs text-muted-foreground">
-        <Trans>
-          Leave empty to allow any login method. Selected methods must all be
-          completed, in the order chosen.
-        </Trans>
-      </p>
       <div className="flex flex-col gap-2 w-full">
         {available.map((method) => {
           const meta = METHOD_META[method];

@@ -110,6 +110,25 @@ function MethodChecklist({
   );
 }
 
+// Reuse the login page's existing translated "Sign in with …" messages so the
+// public join flow needs no new catalog entries.
+function SignInWithLabel({ method }: { method: string }) {
+  switch (method) {
+    case "wechat":
+      return <Trans>Sign in with WeChat</Trans>;
+    case "phone":
+      return <Trans>Sign in with Phone</Trans>;
+    case "email":
+      return <Trans>Sign in with Email</Trans>;
+    case "google":
+      return <Trans>Sign in with Google</Trans>;
+    case "azure":
+      return <Trans>Sign in with Outlook</Trans>;
+    default:
+      return <Trans>Sign In to Request Access</Trans>;
+  }
+}
+
 export default function JoinRoute() {
   const { t } = useLingui();
   const { success, data, isAuthenticated } = useLoaderData<typeof loader>();
@@ -233,13 +252,6 @@ export default function JoinRoute() {
     createdAt: ""
   }));
 
-  // Precomputed labels keep the lingui <Trans> children simple (no expressions).
-  const firstMethodLabel = firstMethod
-    ? (METHOD_META[firstMethod]?.label ?? firstMethod)
-    : "";
-  const nextMethodLabel = nextMethod
-    ? (METHOD_META[nextMethod]?.label ?? nextMethod)
-    : "";
   const nextMethodList = (nextMethod ? [nextMethod] : []) as (
     | "email"
     | "google"
@@ -322,14 +334,11 @@ export default function JoinRoute() {
             ) : !isAuthenticated ? (
               <Button size="lg" asChild>
                 <Link to={loginUrl}>
-                  <Trans>Sign in with {firstMethodLabel}</Trans>
+                  <SignInWithLabel method={firstMethod} />
                 </Link>
               </Button>
             ) : (
               <VStack spacing={2} className="w-full">
-                <p className="text-sm text-muted-foreground">
-                  <Trans>Connect your {nextMethodLabel} to continue.</Trans>
-                </p>
                 <LoginMethodsForm
                   identities={identityStubs}
                   enabledMethods={nextMethodList}

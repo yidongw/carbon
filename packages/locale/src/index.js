@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.LocaleProvider = exports.supportedLanguages = exports.resolveLanguage = exports.localeCookieName = exports.languageNativeLabels = exports.getSortedLanguageSelectOptions = exports.defaultLanguage = void 0;
+var config_1 = require("./config");
+Object.defineProperty(exports, "defaultLanguage", { enumerable: true, get: function () { return config_1.defaultLanguage; } });
+Object.defineProperty(exports, "getSortedLanguageSelectOptions", { enumerable: true, get: function () { return config_1.getSortedLanguageSelectOptions; } });
+Object.defineProperty(exports, "languageNativeLabels", { enumerable: true, get: function () { return config_1.languageNativeLabels; } });
+Object.defineProperty(exports, "localeCookieName", { enumerable: true, get: function () { return config_1.localeCookieName; } });
+Object.defineProperty(exports, "resolveLanguage", { enumerable: true, get: function () { return config_1.resolveLanguage; } });
+Object.defineProperty(exports, "supportedLanguages", { enumerable: true, get: function () { return config_1.supportedLanguages; } });
+var i18n_1 = require("./i18n");
+Object.defineProperty(exports, "LocaleProvider", { enumerable: true, get: function () { return i18n_1.LocaleProvider; } });

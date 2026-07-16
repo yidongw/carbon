@@ -276,7 +276,7 @@ const InviteLinksTable = ({ data, count }: InviteLinksTableProps) => {
           row.loginMethods?.length
             ? row.loginMethods.map((m) => METHOD_LABELS[m] ?? m).join(" → ")
             : "—",
-        header: t`Login`,
+        header: t`Login methods`,
         cell: ({ getValue }) => (
           <span className="text-sm text-muted-foreground">
             {getValue<string>()}

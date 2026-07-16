@@ -1,0 +1,89 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.CARD_CHIP_VARIANT_CLASS = exports.CARD_CHIP_BASE_CLASS = exports.CARD_HAS_ACTION_CLASS = exports.CARD_PINNED_VALUE_CLASS = exports.useIsCardCell = exports.CardCellContext = void 0;
+exports.resolveCardRowNav = resolveCardRowNav;
+var react_1 = require("react");
+/**
+ * True when a cell is being rendered inside the mobile card view (TableCardRow)
+ * rather than the desktop table. Cells use this to make their primary action
+ * cover the whole field chip so the entire area is tappable on touch.
+ */
+exports.CardCellContext = (0, react_1.createContext)(false);
+var useIsCardCell = function () { return (0, react_1.useContext)(exports.CardCellContext); };
+exports.useIsCardCell = useIsCardCell;
+/** Wrapper class for pinned-column cell content in mobile card rows. */
+exports.CARD_PINNED_VALUE_CLASS = "card-pinned-value";
+/**
+ * Mobile card field chip interactive markers (underline spec: `.card-field-chip-underline`
+ * in app/styles/tailwind.css):
+ * - `<a>` / `Hyperlink` — auto-underlined via chip-root `[&_a]`
+ * - `card-action-value` / `<CardActionValue>` — drawer/modal triggers without links
+ * - `Enumerable` with `onClick` — auto-gets `card-action-value`
+ * - `card-action-label` — label underline when chip has any interactive child
+ *   (applied to featured chips only; unpinned/unfeatured inline chips keep a
+ *   plain label even when they contain an interactive editor).
+ */
+var CARD_FIELD_CHIP_LABEL_UNDERLINE_CLASS = [
+    "[&:has(:is([data-card-action],a,button,[role='button'],.card-action-value))_.card-action-label]:card-field-chip-underline"
+].join(" ");
+/** Underline navigable values inside a field chip (links + explicit markers). */
+var CARD_FIELD_CHIP_VALUE_UNDERLINE_CLASS = [
+    "[&_a]:card-field-chip-underline",
+    "[&_.card-action-value]:card-field-chip-underline"
+].join(" ");
+/**
+ * Apply to field chip roots that may contain a `[data-card-action]` overlay.
+ */
+exports.CARD_HAS_ACTION_CLASS = [
+    "[&:has([data-card-action])]:cursor-pointer",
+    "[&:has([data-card-action])]:transition-[transform,box-shadow,border-color]",
+    "[&:has([data-card-action])]:hover:-translate-y-0.5",
+    "[&:has([data-card-action])]:hover:shadow-md"
+].join(" ");
+/** Shared mobile card field chip chrome — interaction + underline affordances. */
+exports.CARD_CHIP_BASE_CLASS = [
+    "relative rounded-lg",
+    "transition-[border-color,transform,box-shadow] duration-150 ease-out",
+    exports.CARD_HAS_ACTION_CLASS,
+    CARD_FIELD_CHIP_VALUE_UNDERLINE_CLASS
+].join(" ");
+exports.CARD_CHIP_VARIANT_CLASS = {
+    /** Left pinned column — transparent fill, border on hover/action. */
+    pinned: [
+        "min-w-0 w-full px-2.5 py-2",
+        "border border-transparent",
+        "hover:border-border/70 dark:hover:border-border/60",
+        "[&:has([data-card-action])]:hover:border-primary/40 dark:[&:has([data-card-action])]:hover:border-primary/35"
+    ].join(" "),
+    /** Bottom metadata row — muted inline chip. */
+    inline: [
+        "inline-flex max-w-full items-center gap-1.5 px-2 py-1 text-xs leading-snug",
+        "border border-border/50 bg-muted/30",
+        "hover:border-border/70 dark:hover:border-border/60",
+        "[&:has([data-card-action])]:hover:border-border"
+    ].join(" "),
+    /** Right featured column — elevated card surface. */
+    featured: [
+        "flex min-w-0 flex-col gap-1.5 px-3 py-2.5",
+        "border border-primary/25 bg-white shadow-sm",
+        "dark:border-primary/30 dark:bg-card",
+        "[&:has([data-card-action])]:hover:border-primary/40 dark:[&:has([data-card-action])]:hover:border-primary/35",
+        CARD_FIELD_CHIP_LABEL_UNDERLINE_CLASS
+    ].join(" ")
+};
+/**
+ * Whether a mobile card field chip should navigate to the row href.
+ * Defaults to the first pinned column when the table supplies `getRowHref`.
+ */
+function resolveCardRowNav(column, rowHref, pinnedColumnIds) {
+    var _a;
+    if (!rowHref)
+        return false;
+    var cardRowNav = (_a = column.columnDef.meta) === null || _a === void 0 ? void 0 : _a.cardRowNav;
+    if (cardRowNav === true)
+        return true;
+    if (cardRowNav === false)
+        return false;
+    var primaryPinnedId = pinnedColumnIds[0];
+    return primaryPinnedId != null && column.id === primaryPinnedId;
+}
