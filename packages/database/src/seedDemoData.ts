@@ -9,6 +9,7 @@
  */
 import type { PoolClient } from "pg";
 import { getSeedLocale } from "./seedDemoData.strings";
+import { styleReferenceRows } from "./styleReference";
 
 export async function seedDemoData(
   client: PoolClient,
@@ -44,6 +45,30 @@ export async function seedDemoData(
       [name, companyId]
     );
     return (r.rowCount ?? 0) > 0;
+  }
+
+  // ─── Style colors + sizes ─────────────────────────────────────────────────
+  // Per-company apparel reference data (color names localized to the seed
+  // language; sizes are seeded by code).
+  console.log("Seeding style colors + sizes...");
+  {
+    const { colors, sizes } = styleReferenceRows(language);
+    for (const c of colors) {
+      await client.query(
+        `INSERT INTO "styleColor" ("colorCode", "colorName", "companyId", "createdBy")
+         VALUES ($1, $2, $3, $4)
+         ON CONFLICT ("colorCode", "companyId") DO NOTHING`,
+        [c.colorCode, c.colorName, companyId, userId]
+      );
+    }
+    for (const s of sizes) {
+      await client.query(
+        `INSERT INTO "styleSize" ("sizeCode", "sizeName", "companyId", "createdBy")
+         VALUES ($1, $2, $3, $4)
+         ON CONFLICT ("sizeCode", "companyId") DO NOTHING`,
+        [s.sizeCode, s.sizeName, companyId, userId]
+      );
+    }
   }
 
   // ─── Step 3: Supplier types ───────────────────────────────────────────────
@@ -3948,7 +3973,7 @@ export async function seedDemoData(
 
   // ─── Step 87b: Clothing manufacturing jobs with configuration instances ───
   // configTable format mirrors real prod data: size labels ARE the keys, values are per-size quantities.
-  // e.g. {"configTable":[{"S":5,"M":10,"L":12,"XL":8,"XXL":5,"color":"Black"}],"configTablePrimaryKeys":["S","M","L","XL","XXL"]}
+  // e.g. {"configTable":[{"S":5,"M":10,"L":12,"XL":8,"2XL":5,"color":"Black"}],"configTablePrimaryKeys":["S","M","L","XL","2XL"]}
   console.log("87b. Seeding clothing manufacturing jobs...");
   {
     const tshirtId = itemIds["TSHIRT-001"];
@@ -4159,7 +4184,7 @@ export async function seedDemoData(
       const blackColor = L.configParams.colorOptions[0]!;
       const navyColor = L.configParams.colorOptions[2]!;
       const tshirtBlackConfig = JSON.stringify({
-        configTable: [{ S: 5, M: 10, L: 12, XL: 8, XXL: 5, color: blackColor }],
+        configTable: [{ S: 5, M: 10, L: 12, XL: 8, "2XL": 5, color: blackColor }],
         configTablePrimaryKeys: L.configParams.sizeOptions
       });
       await seedGarmentProdRecord(
@@ -4176,14 +4201,14 @@ export async function seedDemoData(
       //   - 30 pieces picked up to sewing station (partial batch, Navy colorway)
       //   - 20 of those already sewn (partial production)
       //   Worker still has 10 more pieces in hand.
-      // Pickup: 30 pieces (S:5+M:7+L:10+XL:5+XXL:3=30). Production: 20 sewn (S:2+M:4+L:8+XL:4+XXL:2=20).
+      // Pickup: 30 pieces (S:5+M:7+L:10+XL:5+2XL:3=30). Production: 20 sewn (S:2+M:4+L:8+XL:4+2XL:2=20).
       // Remaining 10 still in worker's hands — pickup always ≥ production per size.
       const tshirtNavyConfig = JSON.stringify({
-        configTable: [{ S: 5, M: 7, L: 10, XL: 5, XXL: 3, color: navyColor }],
+        configTable: [{ S: 5, M: 7, L: 10, XL: 5, "2XL": 3, color: navyColor }],
         configTablePrimaryKeys: L.configParams.sizeOptions
       });
       const tshirtNavyProdConfig = JSON.stringify({
-        configTable: [{ S: 2, M: 4, L: 8, XL: 4, XXL: 2, color: navyColor }],
+        configTable: [{ S: 2, M: 4, L: 8, XL: 4, "2XL": 2, color: navyColor }],
         configTablePrimaryKeys: L.configParams.sizeOptions
       });
 
