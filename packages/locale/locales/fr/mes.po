@@ -367,6 +367,9 @@ msgstr "Perçu"
 msgid "Edit"
 msgstr "Modifier"
 
+msgid "Email"
+msgstr "Email"
+
 msgid "Email Address"
 msgstr "Adresse e-mail"
 
@@ -861,6 +864,12 @@ msgstr "Attente d'approbation"
 msgid "Period"
 msgstr "Période"
 
+msgid "Phone"
+msgstr "Téléphone"
+
+msgid "Phone Number"
+msgstr "Numéro de téléphone"
+
 msgid "Pick"
 msgstr "Sélectionnez"
 
@@ -1190,6 +1199,9 @@ msgstr "Se connecter avec Outlook"
 msgid "Sign in with Passkey"
 msgstr "Se connecter avec Passkey"
 
+msgid "Sign in with Phone"
+msgstr "Se connecter avec le téléphone"
+
 msgid "Sign Out"
 msgstr "Se déconnecter"
 
@@ -1368,11 +1380,17 @@ msgstr "Téléversement de {0}"
 msgid "Use a different email"
 msgstr "Utiliser une autre adresse e-mail"
 
+msgid "Use a different phone number"
+msgstr "Utilisez un numéro de téléphone différent"
+
 msgid "Verification Error"
 msgstr "Erreur de vérification"
 
 msgid "Verify your email"
 msgstr "Vérifiez votre adresse e-mail"
+
+msgid "Verify your phone"
+msgstr "Vérifiez votre téléphone"
 
 msgid "View maintenance dispatch"
 msgstr "Voir l'intervention de maintenance"
@@ -1382,6 +1400,9 @@ msgstr "Volume :"
 
 msgid "We've sent a verification code to {email}"
 msgstr "Nous avons envoyé un code de vérification à {email}"
+
+msgid "We've sent a verification code to {phone}"
+msgstr "Nous avons envoyé un code de vérification sur {phone}"
 
 msgid "We've sent a verification code to {verifyEmail}"
 msgstr "Nous avons envoyé un code de vérification à {verifyEmail}"

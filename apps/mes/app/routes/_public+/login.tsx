@@ -4,10 +4,11 @@ import {
   CONTROLLED_ENVIRONMENT,
   carbonClient,
   error,
-  isBypassEmail,
   isAuthProviderEnabled,
+  isBypassEmail,
   LOGIN_METHOD,
   magicLinkValidator,
+  phoneLoginValidator,
   RATE_LIMIT,
   safeRedirect
 } from "@carbon/auth";
@@ -71,6 +72,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const hasOutlookAuth = isAuthProviderEnabled("azure");
   const hasGoogleAuth = isAuthProviderEnabled("google");
   const hasPasskeyAuth = isAuthProviderEnabled("passkey");
+  const hasPhoneAuth = isAuthProviderEnabled("phone");
 
   const authSession = await getAuthSession(request);
   if (authSession) {
@@ -83,6 +85,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
         hasOutlookAuth,
         hasGoogleAuth,
         hasPasskeyAuth,
+        hasPhoneAuth,
         hasWeChatAuth: isAuthProviderEnabled("wechat"),
         isWeChatBrowser: isWeChatUA(request)
       },
@@ -94,6 +97,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     hasOutlookAuth,
     hasGoogleAuth,
     hasPasskeyAuth,
+    hasPhoneAuth,
     hasWeChatAuth: isAuthProviderEnabled("wechat"),
     isWeChatBrowser: isWeChatUA(request)
   };
@@ -178,6 +182,7 @@ export default function LoginRoute() {
     hasOutlookAuth,
     hasGoogleAuth,
     hasPasskeyAuth,
+    hasPhoneAuth,
     hasWeChatAuth,
     isWeChatBrowser
   } = useLoaderData<typeof loader>();
@@ -188,6 +193,9 @@ export default function LoginRoute() {
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
   const [mode, setMode] = useState<"login" | "verify">("login");
   const [verifyEmail, setVerifyEmail] = useState("");
+  const [loginMethod, setLoginMethod] = useState<"email" | "phone">(
+    hasPhoneAuth ? "phone" : "email"
+  );
 
   useEffect(() => {
     if (window.location.hash.includes("access_token=")) {
@@ -202,6 +210,22 @@ export default function LoginRoute() {
     | { success: true; mode?: string; email?: string }
     | { success: false; message: string }
   >();
+  const phoneFetcher = useFetcher<
+    { success: true; phone?: string } | { success: false; message: string }
+  >();
+
+  // After the SMS code is sent, go to /verify-phone to enter it (mirrors the
+  // email flow's hop to /verify).
+  useEffect(() => {
+    if (phoneFetcher.data?.success && phoneFetcher.data.phone) {
+      const qs = redirectTo
+        ? `&redirectTo=${encodeURIComponent(redirectTo)}`
+        : "";
+      window.location.href = `/verify-phone?phone=${encodeURIComponent(
+        phoneFetcher.data.phone
+      )}${qs}`;
+    }
+  }, [phoneFetcher.data, redirectTo]);
 
   useEffect(() => {
     if (fetcher.data?.success && fetcher.data.mode === "verify") {
@@ -465,43 +489,120 @@ export default function LoginRoute() {
               </div>
             )}
 
-            <ValidatedForm
-              fetcher={fetcher}
-              validator={magicLinkValidator}
-              defaultValues={{ redirectTo }}
-              method="post"
-            >
-              <Hidden name="redirectTo" value={redirectTo} type="hidden" />
-              <VStack spacing={2}>
-                {fetcher.data?.success === false && fetcher.data?.message && (
-                  <Alert variant="destructive">
-                    <LuCircleAlert className="w-4 h-4" />
-                    <AlertTitle>
-                      <Trans>Authentication Error</Trans>
-                    </AlertTitle>
-                    <AlertDescription>{fetcher.data?.message}</AlertDescription>
-                  </Alert>
-                )}
+            {hasPhoneAuth && (
+              <div className="flex w-full items-center gap-1 rounded-xl bg-muted p-1">
+                {(
+                  [
+                    { key: "phone", label: <Trans>Phone</Trans> },
+                    { key: "email", label: <Trans>Email</Trans> }
+                  ] as const
+                ).map((tab) => (
+                  <button
+                    key={tab.key}
+                    type="button"
+                    disabled={
+                      fetcher.state !== "idle" ||
+                      phoneFetcher.state !== "idle" ||
+                      passkeyLoading
+                    }
+                    className={`flex-1 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                      loginMethod === tab.key
+                        ? "bg-background text-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                    onClick={() => setLoginMethod(tab.key)}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+            )}
 
-                <Input
-                  name="email"
-                  label=""
-                  placeholder={t`Email Address`}
-                  autoComplete={hasPasskeyAuth ? "email webauthn" : "email"}
-                />
+            {loginMethod === "phone" && hasPhoneAuth ? (
+              <ValidatedForm
+                fetcher={phoneFetcher}
+                validator={phoneLoginValidator}
+                defaultValues={{ redirectTo }}
+                method="post"
+                action="/api/send-phone-code"
+                className="w-full"
+              >
+                <Hidden name="redirectTo" value={redirectTo} type="hidden" />
+                <VStack spacing={2}>
+                  {phoneFetcher.data?.success === false &&
+                    phoneFetcher.data?.message && (
+                      <Alert variant="destructive">
+                        <LuCircleAlert className="w-4 h-4" />
+                        <AlertTitle>
+                          <Trans>Authentication Error</Trans>
+                        </AlertTitle>
+                        <AlertDescription>
+                          {phoneFetcher.data.message}
+                        </AlertDescription>
+                      </Alert>
+                    )}
 
-                <Submit
-                  isDisabled={fetcher.state !== "idle"}
-                  isLoading={fetcher.state === "submitting"}
-                  size="lg"
-                  className="w-full"
-                  withBlocker={false}
-                  variant="secondary"
-                >
-                  <Trans>Sign in with Email</Trans>
-                </Submit>
-              </VStack>
-            </ValidatedForm>
+                  <Input
+                    name="phone"
+                    label=""
+                    prefix="+86"
+                    placeholder={t`Phone Number`}
+                  />
+
+                  <Submit
+                    isDisabled={phoneFetcher.state !== "idle"}
+                    isLoading={phoneFetcher.state === "submitting"}
+                    size="lg"
+                    className="w-full"
+                    withBlocker={false}
+                    variant="secondary"
+                  >
+                    <Trans>Sign in with Phone</Trans>
+                  </Submit>
+                </VStack>
+              </ValidatedForm>
+            ) : (
+              <ValidatedForm
+                fetcher={fetcher}
+                validator={magicLinkValidator}
+                defaultValues={{ redirectTo }}
+                method="post"
+                className="w-full"
+              >
+                <Hidden name="redirectTo" value={redirectTo} type="hidden" />
+                <VStack spacing={2}>
+                  {fetcher.data?.success === false && fetcher.data?.message && (
+                    <Alert variant="destructive">
+                      <LuCircleAlert className="w-4 h-4" />
+                      <AlertTitle>
+                        <Trans>Authentication Error</Trans>
+                      </AlertTitle>
+                      <AlertDescription>
+                        {fetcher.data?.message}
+                      </AlertDescription>
+                    </Alert>
+                  )}
+
+                  <Input
+                    name="email"
+                    label=""
+                    placeholder={t`Email Address`}
+                    autoComplete={hasPasskeyAuth ? "email webauthn" : "email"}
+                  />
+
+                  <Submit
+                    isDisabled={fetcher.state !== "idle"}
+                    isLoading={fetcher.state === "submitting"}
+                    size="lg"
+                    className="w-full"
+                    withBlocker={false}
+                    variant="secondary"
+                  >
+                    <Trans>Sign in with Email</Trans>
+                  </Submit>
+                </VStack>
+              </ValidatedForm>
+            )}
           </VStack>
         )}
       </div>

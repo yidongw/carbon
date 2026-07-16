@@ -367,6 +367,9 @@ msgstr "Earned"
 msgid "Edit"
 msgstr "Edit"
 
+msgid "Email"
+msgstr "Email"
+
 msgid "Email Address"
 msgstr "Email Address"
 
@@ -861,6 +864,12 @@ msgstr "Pending Approval"
 msgid "Period"
 msgstr "Period"
 
+msgid "Phone"
+msgstr "Phone"
+
+msgid "Phone Number"
+msgstr "Phone Number"
+
 msgid "Pick"
 msgstr "Pick"
 
@@ -1190,6 +1199,9 @@ msgstr "Sign in with Outlook"
 msgid "Sign in with Passkey"
 msgstr "Sign in with Passkey"
 
+msgid "Sign in with Phone"
+msgstr "Sign in with Phone"
+
 msgid "Sign Out"
 msgstr "Sign Out"
 
@@ -1368,11 +1380,17 @@ msgstr "Uploading {0}"
 msgid "Use a different email"
 msgstr "Use a different email"
 
+msgid "Use a different phone number"
+msgstr "Use a different phone number"
+
 msgid "Verification Error"
 msgstr "Verification Error"
 
 msgid "Verify your email"
 msgstr "Verify your email"
+
+msgid "Verify your phone"
+msgstr "Verify your phone"
 
 msgid "View maintenance dispatch"
 msgstr "View maintenance dispatch"
@@ -1382,6 +1400,9 @@ msgstr "Volume:"
 
 msgid "We've sent a verification code to {email}"
 msgstr "We've sent a verification code to {email}"
+
+msgid "We've sent a verification code to {phone}"
+msgstr "We've sent a verification code to {phone}"
 
 msgid "We've sent a verification code to {verifyEmail}"
 msgstr "We've sent a verification code to {verifyEmail}"

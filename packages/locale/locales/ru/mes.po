@@ -367,6 +367,9 @@ msgstr "Получено"
 msgid "Edit"
 msgstr "Редактировать"
 
+msgid "Email"
+msgstr "Электронная почта"
+
 msgid "Email Address"
 msgstr "Электронная почта"
 
@@ -861,6 +864,12 @@ msgstr "Отсроченная оценка"
 msgid "Period"
 msgstr "Период"
 
+msgid "Phone"
+msgstr "Телефон"
+
+msgid "Phone Number"
+msgstr "Номер телефона"
+
 msgid "Pick"
 msgstr "Выбрать"
 
@@ -1190,6 +1199,9 @@ msgstr "Войти через Outlook"
 msgid "Sign in with Passkey"
 msgstr "Войти с помощью Passkey"
 
+msgid "Sign in with Phone"
+msgstr "Войти с телефона"
+
 msgid "Sign Out"
 msgstr "Выйти"
 
@@ -1368,11 +1380,17 @@ msgstr "Загрузка {0}"
 msgid "Use a different email"
 msgstr "Использовать другой email"
 
+msgid "Use a different phone number"
+msgstr "Используйте другой номер телефона"
+
 msgid "Verification Error"
 msgstr "Ошибка верификации"
 
 msgid "Verify your email"
 msgstr "Подтвердите свой email"
+
+msgid "Verify your phone"
+msgstr "Проверьте свой телефон"
 
 msgid "View maintenance dispatch"
 msgstr "Просмотреть наряд на обслуживание"
@@ -1382,6 +1400,9 @@ msgstr "Объем:"
 
 msgid "We've sent a verification code to {email}"
 msgstr "Мы отправили код подтверждения на {email}"
+
+msgid "We've sent a verification code to {phone}"
+msgstr "Мы отправили код верификации на {phone}"
 
 msgid "We've sent a verification code to {verifyEmail}"
 msgstr "Мы отправили код подтверждения на {verifyEmail}"

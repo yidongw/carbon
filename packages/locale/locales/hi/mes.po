@@ -367,6 +367,9 @@ msgstr "कमाई"
 msgid "Edit"
 msgstr "संपादित करें"
 
+msgid "Email"
+msgstr "ईमेल"
+
 msgid "Email Address"
 msgstr "ईमेल पता"
 
@@ -861,6 +864,12 @@ msgstr "अनुमोदन की प्रतीक्षा में ह�
 msgid "Period"
 msgstr "काल"
 
+msgid "Phone"
+msgstr "फोन"
+
+msgid "Phone Number"
+msgstr "फोन नंबर"
+
 msgid "Pick"
 msgstr "पकड़ें"
 
@@ -1190,6 +1199,9 @@ msgstr "Outlook के साथ साइन इन करें"
 msgid "Sign in with Passkey"
 msgstr "Passkey से लॉग इन करें"
 
+msgid "Sign in with Phone"
+msgstr "फोन से प्रवेश करें"
+
 msgid "Sign Out"
 msgstr "साइन आउट"
 
@@ -1368,11 +1380,17 @@ msgstr "अपलोड किया जा रहा है {0}"
 msgid "Use a different email"
 msgstr "एक अलग ईमेल का उपयोग करें"
 
+msgid "Use a different phone number"
+msgstr "दूसरा फोन नंबर का उपयोग करें"
+
 msgid "Verification Error"
 msgstr "सत्यापन त्रुटि"
 
 msgid "Verify your email"
 msgstr "अपना ईमेल सत्यापित करें"
+
+msgid "Verify your phone"
+msgstr "पहचानें अपना मोबाइल फोन"
 
 msgid "View maintenance dispatch"
 msgstr "रखरखाव डिस्पैच देखें"
@@ -1382,6 +1400,9 @@ msgstr "आयतन:"
 
 msgid "We've sent a verification code to {email}"
 msgstr "हमने {email} पर एक सत्यापन कोड भेजा है"
+
+msgid "We've sent a verification code to {phone}"
+msgstr "हमने {phone} पर एक सत्यापन कोड भेजा है"
 
 msgid "We've sent a verification code to {verifyEmail}"
 msgstr "हमने {verifyEmail} पर एक सत्यापन कोड भेजा है"
