@@ -18,5 +18,6 @@ declare module "@tanstack/react-table" {
   interface TableMeta<TData> {
     editableComponents?: Record<string, EditableTableCellComponent<TData>>;
     updateData?: (rowIndex: number, updates: Record<string, unknown>) => void;
+    expandedRows?: Record<number, boolean>;
   }
 }

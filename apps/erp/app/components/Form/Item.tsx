@@ -33,6 +33,7 @@ import { useFetcher } from "react-router";
 import ConsumableForm from "~/modules/items/ui/Consumables/ConsumableForm";
 import MaterialForm from "~/modules/items/ui/Materials/MaterialForm";
 import PartForm from "~/modules/items/ui/Parts/PartForm";
+import StyleForm from "~/modules/items/ui/Styles/StyleForm";
 import ToolForm from "~/modules/items/ui/Tools/ToolForm";
 import type { MethodItemType } from "~/modules/shared";
 import { methodItemType } from "~/modules/shared";
@@ -71,6 +72,8 @@ const useTranslatedItemType = () => {
     switch (type) {
       case "Item":
         return t`Item`;
+      case "Style":
+        return t`Style`;
       case "Part":
         return t`Part`;
       case "Material":
@@ -187,6 +190,11 @@ const Item = ({
 
   const canSwitchItemType = typeof onTypeChange === "function";
   const submitRef = useRef<HTMLButtonElement>(null);
+  const handleCreateClose = () => {
+    setCreated("");
+    newItemsModal.onClose();
+    triggerRef.current?.click();
+  };
 
   return (
     <>
@@ -231,15 +239,17 @@ const Item = ({
             label={
               label === "Item"
                 ? t`Item`
-                : label === "Part"
-                  ? t`Part`
-                  : label === "Material"
-                    ? t`Material`
-                    : label === "Tool"
-                      ? t`Tool`
-                      : label === "Consumable"
-                        ? t`Consumable`
-                        : undefined
+                : label === "Style"
+                  ? t`Style`
+                  : label === "Part"
+                    ? t`Part`
+                    : label === "Material"
+                      ? t`Material`
+                      : label === "Tool"
+                        ? t`Tool`
+                        : label === "Consumable"
+                          ? t`Consumable`
+                          : undefined
             }
             itemHeight={44}
             onCreateOption={(option) => {
@@ -403,6 +413,26 @@ const Item = ({
               props?.replenishmentSystem === "Buy"
                 ? "Pull from Inventory"
                 : "Make to Order",
+            unitCost: 0,
+            lotSize: 0,
+            shelfLifeCalculateFromBom: false,
+            tags: []
+          }}
+        />
+      )}
+      {type === "Style" && newItemsModal.isOpen && (
+        <StyleForm
+          type="modal"
+          onClose={handleCreateClose}
+          initialValues={{
+            id: "",
+            revision: "0",
+            name: created,
+            description: "",
+            itemTrackingType: "Inventory",
+            replenishmentSystem: "Make",
+            unitOfMeasureCode: "EA",
+            defaultMethodType: "Make to Order",
             unitCost: 0,
             lotSize: 0,
             shelfLifeCalculateFromBom: false,

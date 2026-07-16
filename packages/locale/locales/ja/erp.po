@@ -28,11 +28,11 @@ msgstr "「${storageUnitName}」には1つの直接ネストされたストレ�
 msgid "(all must match)"
 msgstr "（すべて）"
 
-#. placeholder {0}: selectedEvent.jobOperation?.description ?? t`Operation`
+#. placeholder {0}: operationLabel(selectedEvent.jobOperationId, selectedEvent.jobOperation?.description) || t`Operation`
 msgid "{0} (supplier)"
 msgstr "{0} (, kūryūsha)"
 
-#. placeholder {0}: selectedEvent.jobOperation?.description ?? t`Operation`
+#. placeholder {0}: operationLabel(selectedEvent.jobOperationId, selectedEvent.jobOperation?.description) || t`Operation`
 #. placeholder {1}: people.find((p) => p.id === selectedEvent.employeeId) ?.name ?? t`Unknown Employee`
 msgid "{0} by {1}"
 msgstr "{0} by {1}"
@@ -206,6 +206,9 @@ msgstr "販売注文行には、特定の品目の注文詳細が含まれてい
 
 msgid "A sales request for quote (RFQ) is a customer inquiry for pricing on a set of parts and quantities. It may result in a quote."
 msgstr "営業見積依頼（RFQ）は、一連の部品と数量の価格設定に関する顧客からの問い合わせです。見積書につながる可能性があります。"
+
+msgid "A style contains the information about a garment or footwear item that is cut, bundled, and produced downstream."
+msgstr "スタイルには、裁断・バンドル化され、下流で生産される衣料品または履物品目の情報が含まれます。"
 
 msgid "A tool is a physical item used to make a part that can be used across multiple jobs"
 msgstr "ツールは、複数のジョブで使用できるパーツを作成するために使用される物理的なアイテムです"
@@ -1002,6 +1005,14 @@ msgstr "ストレージタイプ: {0} を削除してもよろしいですか？
 msgid "Are you sure you want to delete the storage unit: {0}? This cannot be undone."
 msgstr "本当に保存ユニット: {0} を削除してもよろしいですか？この操作は取り消せません。"
 
+#. placeholder {0}: styleColor.colorCode
+msgid "Are you sure you want to delete the style color {0}? This cannot be undone."
+msgstr "スタイルカラー {0} を削除してもよろしいですか？この操作は元に戻せません。"
+
+#. placeholder {0}: styleSize.sizeCode
+msgid "Are you sure you want to delete the style size {0}? This cannot be undone."
+msgstr "スタイルサイズ {0} を削除してもよろしいですか？この操作は元に戻せません。"
+
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "サプライヤータイプ: {0} を削除してもよろしいですか？この操作は取り消せません。"
@@ -1170,6 +1181,9 @@ msgstr "グループに割り当て"
 
 msgid "Assigned"
 msgstr "割り当て済み"
+
+msgid "Assigned At"
+msgstr "割り当て日時"
 
 msgid "Assigned Group"
 msgstr "割り当てグループ"
@@ -1351,6 +1365,9 @@ msgstr "バッチサイズ"
 msgid "Batch Tracking"
 msgstr "バッチ追跡"
 
+msgid "Below reported"
+msgstr "報告された以下"
+
 msgid "Beta"
 msgstr "ベータ"
 
@@ -1433,6 +1450,15 @@ msgstr "一括インポート"
 
 msgid "Bulk Jobs"
 msgstr "一括ジョブ"
+
+msgid "Bundle"
+msgstr "バンドル"
+
+msgid "Bundle Work Orders"
+msgstr "バンドル作業指示"
+
+msgid "Bundles"
+msgstr "バンドル"
 
 msgid "Buy"
 msgstr "購入"
@@ -1752,6 +1778,21 @@ msgstr "FEATURES を折りたたむ"
 
 msgid "Collapse subtree"
 msgstr "サブツリーを折りたたむ"
+
+msgid "Color"
+msgstr "カラー"
+
+msgid "Color / Size"
+msgstr "カラー / サイズ"
+
+msgid "Color Code"
+msgstr "カラーコード"
+
+msgid "Color Name"
+msgstr "カラー名"
+
+msgid "Colors"
+msgstr "カラー"
 
 msgid "Column"
 msgstr "カラム"
@@ -2117,6 +2158,9 @@ msgstr "パーツへのリンクをコピー"
 msgid "Copy link to procedure"
 msgstr "プロシージャへのリンクをコピー"
 
+msgid "Copy link to style"
+msgstr "スタイルへのリンクをコピー"
+
 msgid "Copy link to tool"
 msgstr "ツールへのリンクをコピー"
 
@@ -2161,6 +2205,12 @@ msgstr "見積番号をコピー"
 
 msgid "Copy response"
 msgstr "レスポンスをコピー"
+
+msgid "Copy style number"
+msgstr "スタイル番号をコピー"
+
+msgid "Copy style unique identifier"
+msgstr "スタイルの一意識別子をコピー"
 
 msgid "Copy this item's pricing to another scope."
 msgstr "このアイテムの価格設定を別のスコープにコピーします。"
@@ -2436,6 +2486,9 @@ msgstr "在庫移動行を作成しました"
 msgid "Created storage type"
 msgstr "ストレージタイプを作成しました"
 
+msgid "Created style"
+msgstr "スタイルを作成しました"
+
 msgid "Created supplier process"
 msgstr "created supplier process"
 
@@ -2605,6 +2658,9 @@ msgstr "顧客"
 
 msgid "Customize the layout of your PDF documents — reorder sections, hide what you don't need, and add your own blocks."
 msgstr "PDFドキュメントのレイアウトをカスタマイズ——セクションを再並べ替え、不要な項目は隠し、独自のブロックも追加できます。"
+
+msgid "Cutting"
+msgstr "切断"
 
 msgid "Cycle back-edge"
 msgstr "サイクルバックエッジ"
@@ -3006,6 +3062,15 @@ msgstr "ストレージタイプを削除"
 
 msgid "Delete Storage Unit"
 msgstr "ストレージユニットを削除"
+
+msgid "Delete Style"
+msgstr "スタイルを削除"
+
+msgid "Delete Style Color"
+msgstr "スタイルカラーを削除"
+
+msgid "Delete Style Size"
+msgstr "スタイルサイズを削除"
 
 msgid "Delete Substance"
 msgstr "物質を削除"
@@ -3600,6 +3665,15 @@ msgstr "ストレージタイプを編集"
 msgid "Edit Storage Unit"
 msgstr "ストレージユニットを編集"
 
+msgid "Edit Style"
+msgstr "スタイルを編集"
+
+msgid "Edit Style Color"
+msgstr "スタイルカラーを編集"
+
+msgid "Edit Style Size"
+msgstr "スタイルサイズを編集"
+
 msgid "Edit Substance"
 msgstr "物質を編集"
 
@@ -3924,6 +3998,12 @@ msgstr "スターターのすべての機能"
 msgid "Exceeds {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB total — remove some attachments to send."
 msgstr "総量が{PO_EMAIL_ATTACHMENT_LIMIT_MB}MBを超えています — 送信するためにはいくつかの添付ファイルを削除してください。"
 
+msgid "Exceeds cut"
+msgstr "切削超cede"
+
+msgid "Exceeds plan"
+msgstr "計画超過"
+
 msgid "Exchange Rate"
 msgstr "為替レート"
 
@@ -4141,6 +4221,10 @@ msgstr "在庫移動行の作成に失敗しました: {0}"
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create storage type: {0}"
 msgstr "ストレージタイプの作成に失敗しました: {0}"
+
+#. placeholder {0}: fetcher.data.error.message
+msgid "Failed to create style: {0}"
+msgstr "スタイルの作成に失敗しました: {0}"
 
 msgid "Failed to create supplier process"
 msgstr "failed to create supplier process"
@@ -5710,6 +5794,12 @@ msgstr "不足としてマーク"
 msgid "Mark to delete"
 msgstr "削除対象にマーク"
 
+msgid "Master Work Order"
+msgstr "マスター作業指示"
+
+msgid "Master Work Orders"
+msgstr "マスター作業指示"
+
 msgid "Match"
 msgstr "マッチ"
 
@@ -6027,6 +6117,9 @@ msgstr "アプリケーション全体で、名前は-family name に-given name
 msgid "Navigate"
 msgstr "ナビゲート"
 
+msgid "Navigation"
+msgstr "ナビゲーション"
+
 msgid "NCRs by Type"
 msgstr "タイプ別NCR"
 
@@ -6156,6 +6249,9 @@ msgstr "新しい場所"
 msgid "New Maintenance Dispatch"
 msgstr "新しい保守ディスパッチ"
 
+msgid "New Master Work Order"
+msgstr "新規マスター作業指示"
+
 msgid "New Material"
 msgstr "新しい材料"
 
@@ -6272,6 +6368,15 @@ msgstr "新しい保管タイプ"
 
 msgid "New Storage Unit"
 msgstr "新しい保管ユニット"
+
+msgid "New Style"
+msgstr "新規スタイル"
+
+msgid "New Style Color"
+msgstr "新規スタイルカラー"
+
+msgid "New Style Size"
+msgstr "新規スタイルサイズ"
 
 msgid "New Supplier"
 msgstr "新サプライヤー"
@@ -6421,6 +6526,9 @@ msgstr "チャット履歴がありません"
 
 msgid "No chats found"
 msgstr "チャットが見つかりません"
+
+msgid "No colors assigned"
+msgstr "カラーが割り当てられていません"
 
 msgid "No comments yet. Be the first to add a comment."
 msgstr "まだコメントがありません。最初のコメントを追加してください。"
@@ -6581,9 +6689,6 @@ msgstr "プリンターが設定されていません。\"プリンター追加\
 msgid "No production logs"
 msgstr "生産ログがありません"
 
-msgid "No production reported yet."
-msgstr "生産情報がまだ報告されていません。"
-
 msgid "No quantity recorded yet."
 msgstr "まだ数量が記録されていません。"
 
@@ -6616,6 +6721,9 @@ msgstr "まだサンプルが検査されていません。"
 
 msgid "No selection"
 msgstr "選択がありません"
+
+msgid "No sizes assigned"
+msgstr "サイズが割り当てられていません"
 
 msgid "No sorts applied to this view"
 msgstr "このビューに適用されたソートはありません"
@@ -6703,6 +6811,9 @@ msgstr "メモ（オプション）"
 
 msgid "Nothing in the archive"
 msgstr "アーカイブに何もありません"
+
+msgid "Nothing left to split for this work order."
+msgstr "この作業指示に分割するものはありません。"
 
 msgid "Notification"
 msgstr "通知"
@@ -7594,9 +7705,6 @@ msgstr "生産由来"
 msgid "Production"
 msgstr "生産"
 
-msgid "Production already reported per operation. Click a number to pull it into the editor above."
-msgstr "生産は既に各工程で報告されています。上のエディターに取り込むために数字をクリックしてください。"
-
 msgid "Production Event"
 msgstr "生産イベント"
 
@@ -8069,6 +8177,9 @@ msgstr "リリース済み"
 msgid "remaining"
 msgstr "残り"
 
+msgid "Remaining"
+msgstr "残り"
+
 msgid "Remaining after split stays on the original row."
 msgstr "分割後の残りは元の行に留まります。"
 
@@ -8208,6 +8319,9 @@ msgstr "補充システム"
 msgid "Report"
 msgstr "レポート"
 
+msgid "Report Cutting"
+msgstr "裁断を報告"
+
 msgid "Report history"
 msgstr "報告履歴"
 
@@ -8227,8 +8341,8 @@ msgstr "報告済み<0>{0}</0>単位"
 msgid "Reported <0>{totalQuantity}</0> units"
 msgstr "報告済み<0>{totalQuantity}</0>個"
 
-msgid "Reported by process"
-msgstr "プロセスによって報告"
+msgid "Reported At"
+msgstr "報告日時"
 
 msgid "Reporter"
 msgstr "レポートラー"
@@ -9217,6 +9331,9 @@ msgstr "Legends表示"
 msgid "Show on card right"
 msgstr "右上に表示"
 
+msgid "Show or hide items in this module's sidebar."
+msgstr "このモジュールのサイドバーの項目を表示または非表示にします。"
+
 msgid "Show parent items"
 msgstr "親アイテムを表示"
 
@@ -9267,6 +9384,12 @@ msgstr "一項"
 
 msgid "Size"
 msgstr "サイズ"
+
+msgid "Size Code"
+msgstr "サイズコード"
+
+msgid "Size Name"
+msgstr "サイズ名"
 
 msgid "Sizes"
 msgstr "サイズ"
@@ -9366,6 +9489,9 @@ msgstr "特定の品目"
 
 msgid "Split"
 msgstr "分割"
+
+msgid "Split Batch"
+msgstr "バッチを分割"
 
 msgid "Split line"
 msgstr "ラインを分割"
@@ -9523,8 +9649,35 @@ msgstr "このアイテムに固定日数を保存します。有効期限の開
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "このアイテムの固定日数を保存します。有効期限の開始日は、各バッチまたはシリアルが受け取られたときに設定されます。"
 
+msgid "Style"
+msgstr "スタイル"
+
+msgid "Style Color"
+msgstr "スタイルカラー"
+
+msgid "Style Colors"
+msgstr "スタイルカラー"
+
+msgid "Style Details"
+msgstr "スタイルの詳細"
+
+msgid "Style ID"
+msgstr "スタイルID"
+
 msgid "Style of kanban output to show in the Kanban table"
 msgstr "Kanbanテーブルに表示するカンバン出力のスタイル"
+
+msgid "Style Properties"
+msgstr "スタイルのプロパティ"
+
+msgid "Style Size"
+msgstr "スタイルサイズ"
+
+msgid "Style Sizes"
+msgstr "スタイルサイズ"
+
+msgid "Styles"
+msgstr "スタイル"
 
 msgid "Sub-assembly expiries only"
 msgstr "サブアセンブリの有効期限のみ"
@@ -10568,6 +10721,9 @@ msgstr "「...」を使用して次の材料IDを取得します"
 msgid "Use ... to get the next part ID"
 msgstr "「...」を使用して次のパートIDを取得します"
 
+msgid "Use ... to get the next style ID"
+msgstr "... を使用して次のスタイルIDを取得"
+
 msgid "Use ... to get the next tool ID"
 msgstr "「...」を使用して次のツールIDを取得します"
 
@@ -10709,6 +10865,9 @@ msgstr "属性を表示"
 msgid "View bill of process"
 msgstr "見る請求書のプロセス"
 
+msgid "View bundles"
+msgstr "バンドルを表示"
+
 msgid "View configuration parameters"
 msgstr "設定パラメータを表示"
 
@@ -10781,6 +10940,12 @@ msgstr "ピッキングリストを表示"
 msgid "View Prints"
 msgstr "プリントを表示する"
 
+msgid "View process completions"
+msgstr "工程完了を表示"
+
+msgid "View processes"
+msgstr "工程を表示"
+
 msgid "View Production Events"
 msgstr "生産イベントを表示"
 
@@ -10792,6 +10957,9 @@ msgstr "反応型を表示"
 
 msgid "View Receipt"
 msgstr "領収書を表示"
+
+msgid "View remaining"
+msgstr "残りを表示"
 
 msgid "View Scheduled"
 msgstr "スケジュール済みを表示"

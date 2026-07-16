@@ -145,7 +145,7 @@ export const itemValidator = z.object({
 // Common storage / shelf-life refines. Shared across all item-type
 // validators. Default Storage Unit is optional for every type - users can
 // set it later via the pickMethod UI once they know where the item lives.
-const applyStorageAndShelfLifeRefines = <T extends z.AnyZodObject>(
+export const applyStorageAndShelfLifeRefines = <T extends z.AnyZodObject>(
   schema: T
 ) => {
   const refined: z.ZodEffects<z.ZodTypeAny, z.infer<T>, z.input<T>> = schema
@@ -671,6 +671,12 @@ export const materialTypeValidator = z.object({
   materialFormId: z.string().min(1, { message: "Shape is required" }),
   name: z.string().min(1, { message: "Name is required" }).max(255),
   code: z.string().min(1, { message: "Code is required" }).max(10)
+});
+
+export const styleColorValidator = z.object({
+  id: zfd.text(z.string().optional()),
+  colorCode: z.string().min(1, { message: "Color code is required" }).max(50),
+  colorName: z.string().min(1, { message: "Color name is required" }).max(255)
 });
 
 export const partValidator = applyStorageAndShelfLifeRefines(

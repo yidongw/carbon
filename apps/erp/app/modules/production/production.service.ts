@@ -1174,19 +1174,21 @@ export async function getJobOperationActorContext(
   operationType: string | null;
   operationSupplierProcessId: string | null;
   supplierId: string | null;
+  assignee: string | null;
 }> {
   if (!jobOperationId) {
     return {
       processId: null,
       operationType: null,
       operationSupplierProcessId: null,
-      supplierId: null
+      supplierId: null,
+      assignee: null
     };
   }
 
   const { data: operation } = await client
     .from("jobOperation")
-    .select("processId, operationType, operationSupplierProcessId")
+    .select("processId, operationType, operationSupplierProcessId, assignee")
     .eq("id", jobOperationId)
     .eq("companyId", companyId)
     .single();
@@ -1205,7 +1207,8 @@ export async function getJobOperationActorContext(
     processId: operation?.processId ?? null,
     operationType: operation?.operationType ?? null,
     operationSupplierProcessId: operation?.operationSupplierProcessId ?? null,
-    supplierId
+    supplierId,
+    assignee: operation?.assignee ?? null
   };
 }
 
@@ -1275,7 +1278,7 @@ export async function assertSupplierQuantityAllowedForOperation(
 export async function getJobOperations(
   client: SupabaseClient<Database>,
   jobId: string,
-  args?: { search: string | null } & GenericQueryFilters
+  args?: { search: string | null } & Partial<GenericQueryFilters>
 ) {
   let query = client
     .from("jobOperation")
@@ -1732,7 +1735,7 @@ export async function getProductionQuantities(
   let query = client
     .from("productionQuantity")
     .select(
-      "*, productionQuantityReport:reportId(id, createdAt), jobOperation(description, jobMakeMethod(parentMaterialId, item(readableIdWithRevision)))",
+      "*, productionQuantityReport:reportId(id, createdAt), jobOperation(description, job(item(id, readableIdWithRevision)), jobMakeMethod(parentMaterialId, item(id, readableIdWithRevision)))",
       {
         count: "exact"
       }
@@ -1761,7 +1764,7 @@ export async function getProductionDataByOperations(
     client
       .from("productionQuantity")
       .select(
-        "*, jobOperation(description, jobMakeMethod(parentMaterialId, item(readableIdWithRevision)))"
+        "*, productionQuantityReport:reportId(id, createdAt), jobOperation(description, job(item(id, readableIdWithRevision)), jobMakeMethod(parentMaterialId, item(id, readableIdWithRevision)))"
       )
       .in("jobOperationId", jobOperationIds)
       .is("invalidatedAt", null),

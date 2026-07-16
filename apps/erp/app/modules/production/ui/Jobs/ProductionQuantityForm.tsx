@@ -1,6 +1,8 @@
 import { ValidatedForm } from "@carbon/form";
 import {
+  Badge,
   Button,
+  cn,
   DrawerBody,
   DrawerFooter,
   DrawerHeader,
@@ -106,6 +108,9 @@ export type ProductionQuantityFormProps = {
     helperText?: string;
   }[];
   jobOptions?: { label: string; value: string }[];
+  // Remaining quantity per operation — used to prefill the Production line when
+  // an operation is selected.
+  remainingByOperationId?: Record<string, number>;
   configurationParameters?: ConfigurationParameter[] | null;
   configReferenceSource?: ConfigReferenceSource | null;
   itemId?: string | null;
@@ -142,6 +147,7 @@ const ProductionQuantityForm = ({
   initialValues,
   operationOptions = [],
   jobOptions,
+  remainingByOperationId,
   configurationParameters,
   configReferenceSource,
   itemId,
@@ -262,16 +268,18 @@ const ProductionQuantityForm = ({
   });
   const [operationSelectKey, setOperationSelectKey] = useState(0);
 
-  const resetQuantityEntry = () => {
+  const resetQuantityEntry = (initialQuantity = 0) => {
     if (isCreateMultiLine) {
       setLines(
         normalizeUniqueLineTypes(
-          toEditableLines([{ type: "Production" as const, quantity: 0 }])
+          toEditableLines([
+            { type: "Production" as const, quantity: initialQuantity }
+          ])
         )
       );
       return;
     }
-    setQuantity(0);
+    setQuantity(initialQuantity);
     setConfigTableRows(null);
     setConfigTablePrimaryKeys([]);
     setConfigTableTotal(0);
@@ -329,6 +337,8 @@ const ProductionQuantityForm = ({
       jobId: jobId ?? undefined,
       jobOperationId: jobOperationIdState || undefined,
       reportKind: "productionQuantity",
+      splitMode: true,
+      isEditingReport: isEditing,
       buildReferenceContext: (source) =>
         buildProductionConfigTableReferenceContext({
           source: source ?? undefined,
@@ -480,7 +490,6 @@ const ProductionQuantityForm = ({
   const {
     hasJobSelected,
     hasOperationSelected,
-    hasActorSelected,
     areDetailFieldsDisabled,
     canSubmitDetails
   } = getProductionFormCascadeState({
@@ -492,6 +501,30 @@ const ProductionQuantityForm = ({
     permissionDisabled: isDisabled
   });
   const canSubmitCreate = canSubmitDetails && !hasZeroQuantityLine;
+
+  // Configured reports (e.g. master cutting) enter their quantity through the
+  // config-table modal, and opening it only needs the job/item + operation —
+  // not an actor. So surface the config quantity field + its modal trigger as
+  // soon as the operation is picked, instead of waiting for an employee to be
+  // selected (submitting still requires one). Plain-quantity reports keep the
+  // stricter `areDetailFieldsDisabled` gate.
+  const configFieldsDisabled = isDisabled || !hasJobSelected || !hasOperationSelected;
+
+  // Plain-quantity reports (bundles / non-configured items) show the operation's
+  // remaining (target − reported) and can't exceed it. Configured reports are
+  // handled per color/size by the config editor instead.
+  // NOTE: `Number` is shadowed by the imported `<Number>` form field, so we use
+  // globals here (`Infinity`, unary `+`) — calling `Number(...)` would hit the
+  // component and throw "Number is not a function".
+  const operationRemaining =
+    remainingByOperationId?.[effectiveJobOperationId] ?? Infinity;
+  const reportedTotal = isCreateMultiLine
+    ? lines.reduce((sum, line) => sum + (+line.quantity || 0), 0)
+    : +quantity || 0;
+  const showRemaining =
+    !isEditing && !hasConfigurationParameters && operationRemaining !== Infinity;
+  const remaining = operationRemaining - reportedTotal;
+  const exceedsRemaining = showRemaining && remaining < 0;
 
   const lockActorSelection =
     isEditing ||
@@ -557,8 +590,11 @@ const ProductionQuantityForm = ({
                 }
                 onChange={(value) => {
                   if (lockOperationSelectionProp) return;
-                  setJobOperationIdState(value?.value ?? "");
-                  resetQuantityEntry();
+                  const nextOperationId = value?.value ?? "";
+                  setJobOperationIdState(nextOperationId);
+                  resetQuantityEntry(
+                    remainingByOperationId?.[nextOperationId] ?? 0
+                  );
                 }}
               />
             )}
@@ -567,9 +603,7 @@ const ProductionQuantityForm = ({
               operationType={jobPicker.operationType}
               defaultActorKind={jobPicker.defaultActorKind}
               lockActorSelection={lockActorSelection}
-              isDisabled={
-                hasConfigurationParameters ? !hasOperationSelected : false
-              }
+              isDisabled={!hasOperationSelected}
               employeeIdValue={actorFieldValues.employeeId}
               supplierProcessIdValue={actorFieldValues.supplierProcessId}
               supplierIdValue={actorFieldValues.supplierId}
@@ -598,7 +632,15 @@ const ProductionQuantityForm = ({
                   configurationParameters={jobPicker.configurationParameters}
                   configReferenceSource={jobPicker.configReferenceSource}
                   itemId={jobPicker.itemId}
-                  isDisabled={areDetailFieldsDisabled}
+                  // Configured reports enter their quantity through the config
+                  // table, which only needs the job/item + operation — so let it
+                  // open before an actor is picked. Plain-quantity reports keep
+                  // the stricter gate (need an actor before entering anything).
+                  isDisabled={
+                    hasConfigurationParameters
+                      ? configFieldsDisabled
+                      : areDetailFieldsDisabled
+                  }
                   employeeId={actorKind === "employee" ? employeeId : undefined}
                   jobId={jobId ?? undefined}
                   jobOperationId={jobOperationIdState || undefined}
@@ -621,12 +663,12 @@ const ProductionQuantityForm = ({
                     label={t`Quantity`}
                     value={quantity}
                     minValue={0}
-                    isDisabled={areDetailFieldsDisabled}
+                    isDisabled={configFieldsDisabled}
                     isReadOnly={configTableTotal > 0}
                     configTableTotal={configTableTotal}
                     hasConfigurationParameters
                     onOpenConfigTable={
-                      hasActorSelected ? openConfigTable : undefined
+                      configFieldsDisabled ? undefined : openConfigTable
                     }
                     onChange={setQuantity}
                   />
@@ -665,28 +707,53 @@ const ProductionQuantityForm = ({
           </VStack>
         </DrawerBody>
         <DrawerFooter>
-          <HStack>
-            <Submit
-              isDisabled={
-                isDisabled ||
-                (isCreateMultiLine
-                  ? hasConfigurationParameters
-                    ? !canSubmitCreate
-                    : !hasOperationSelected || hasZeroQuantityLine
-                  : hasZeroQuantityLine)
-              }
-              className="transition-transform active:scale-[0.96]"
-            >
-              <Trans>Save</Trans>
-            </Submit>
-            <Button
-              variant="solid"
-              type="button"
-              onClick={onDismiss}
-              className="transition-transform active:scale-[0.96]"
-            >
-              <Trans>Cancel</Trans>
-            </Button>
+          <HStack className="w-full justify-between">
+            {showRemaining ? (
+              <HStack spacing={2}>
+                <span className="text-sm text-muted-foreground">
+                  <Trans>Remaining</Trans>:{" "}
+                  <strong
+                    className={cn(
+                      "tabular-nums",
+                      remaining < 0 ? "text-red-500" : "text-foreground"
+                    )}
+                  >
+                    {remaining}
+                  </strong>
+                </span>
+                {remaining < 0 ? (
+                  <Badge variant="red">
+                    <Trans>Exceeds plan</Trans>
+                  </Badge>
+                ) : null}
+              </HStack>
+            ) : (
+              <span />
+            )}
+            <HStack className="gap-2">
+              <Submit
+                isDisabled={
+                  isDisabled ||
+                  exceedsRemaining ||
+                  (isCreateMultiLine
+                    ? hasConfigurationParameters
+                      ? !canSubmitCreate
+                      : !hasOperationSelected || hasZeroQuantityLine
+                    : hasZeroQuantityLine)
+                }
+                className="transition-transform active:scale-[0.96]"
+              >
+                <Trans>Save</Trans>
+              </Submit>
+              <Button
+                variant="solid"
+                type="button"
+                onClick={onDismiss}
+                className="transition-transform active:scale-[0.96]"
+              >
+                <Trans>Cancel</Trans>
+              </Button>
+            </HStack>
           </HStack>
         </DrawerFooter>
       </ValidatedForm>

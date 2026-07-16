@@ -156,6 +156,69 @@ export function sumConfigTables(
 }
 
 /**
+ * The remaining config table: `planned - sum(reportedConfigs)` per cell, floored
+ * at 0. Returns an empty table when there's no plan structure.
+ */
+export function computeConfigRemaining(
+  planned: Json | Record<string, unknown> | null | undefined,
+  reportedConfigs: Array<Json | Record<string, unknown> | null | undefined>
+): ConfigTableData {
+  const primaryKeys = getPrimaryKeys(planned);
+  if (primaryKeys.length === 0 || getConfigTable(planned).length === 0) {
+    return { configTable: [], configTablePrimaryKeys: primaryKeys };
+  }
+
+  const reported = sumConfigTables(reportedConfigs, primaryKeys).configuration;
+  const negated: ConfigTableData = {
+    configTable: reported.configTable.map((row) => {
+      const clone: ConfigRow = { ...row };
+      for (const key of primaryKeys) clone[key] = -(Number(row[key]) || 0);
+      return clone;
+    }),
+    configTablePrimaryKeys: primaryKeys
+  };
+  const merged = applyConfigAdjustment(planned, negated).configuration;
+  return {
+    configTable: merged.configTable.map((row) => {
+      const clone: ConfigRow = { ...row };
+      for (const key of primaryKeys) {
+        clone[key] = Math.max(0, Number(row[key]) || 0);
+      }
+      return clone;
+    }),
+    configTablePrimaryKeys: primaryKeys
+  };
+}
+
+/**
+ * True when the summed `reportedConfigs` would exceed the `planned` config for
+ * any cell — i.e. `planned - sum(reported)` goes negative. No-op (returns false)
+ * when there's no plan structure or nothing reported, so non-config-param jobs
+ * are unaffected.
+ */
+export function reportsExceedConfigPlan(
+  planned: Json | Record<string, unknown> | null | undefined,
+  reportedConfigs: Array<Json | Record<string, unknown> | null | undefined>
+): boolean {
+  const primaryKeys = getPrimaryKeys(planned);
+  if (primaryKeys.length === 0) return false;
+  if (getConfigTable(planned).length === 0) return false;
+
+  const reported = sumConfigTables(reportedConfigs, primaryKeys).configuration;
+  if (reported.configTable.length === 0) return false;
+
+  const negated: ConfigTableData = {
+    configTable: reported.configTable.map((row) => {
+      const clone: ConfigRow = { ...row };
+      for (const key of primaryKeys) clone[key] = -(Number(row[key]) || 0);
+      return clone;
+    }),
+    configTablePrimaryKeys: primaryKeys
+  };
+  return applyConfigAdjustment(planned, negated).hasNegative;
+}
+
+/**
  * Sums quantity columns across `configuration.configTable` (same rules as the job sidebar).
  * Uses `configTablePrimaryKeys` when set; otherwise counts the single default `Quantities` column.
  */

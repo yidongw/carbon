@@ -1,6 +1,6 @@
 {
-  "generated": "2026-07-04T13:32:31.702Z",
-  "totalTools": 1245,
+  "generated": "2026-07-10T05:25:35.696Z",
+  "totalTools": 1263,
   "modules": 15,
   "tools": [
     {
@@ -8489,6 +8489,56 @@
       }
     },
     {
+      "name": "items_deleteStyleColor",
+      "module": "items",
+      "classification": "DESTRUCTIVE",
+      "description": "delete style color",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "id"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "items_deleteStyleSize",
+      "module": "items",
+      "classification": "DESTRUCTIVE",
+      "description": "delete style size",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "id"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
       "name": "items_deleteMaterialSubstance",
       "module": "items",
       "classification": "DESTRUCTIVE",
@@ -10325,6 +10375,32 @@
       }
     },
     {
+      "name": "items_getStyle",
+      "module": "items",
+      "classification": "READ",
+      "description": "get style",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "itemId",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "itemId"
+        ]
+      }
+    },
+    {
       "name": "items_getParts",
       "module": "items",
       "classification": "READ",
@@ -10370,10 +10446,231 @@
       }
     },
     {
+      "name": "items_getStyles",
+      "module": "items",
+      "classification": "READ",
+      "description": "get styles",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "args": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "default": 100
+              },
+              "offset": {
+                "type": "integer",
+                "default": 0
+              },
+              "search": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "items_getStyleColor",
+      "module": "items",
+      "classification": "READ",
+      "description": "get style color",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "id"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "items_getStyleColors",
+      "module": "items",
+      "classification": "READ",
+      "description": "get style colors",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "args": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "default": 100
+              },
+              "offset": {
+                "type": "integer",
+                "default": 0
+              },
+              "search": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "items_getStyleColorList",
+      "module": "items",
+      "classification": "READ",
+      "description": "get style color list",
+      "paramCount": 0,
+      "serviceParams": [
+        "client",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "items_getStyleSize",
+      "module": "items",
+      "classification": "READ",
+      "description": "get style size",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "id"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "items_getStyleSizes",
+      "module": "items",
+      "classification": "READ",
+      "description": "get style sizes",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "args": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "default": 100
+              },
+              "offset": {
+                "type": "integer",
+                "default": 0
+              },
+              "search": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "items_getStyleSizeList",
+      "module": "items",
+      "classification": "READ",
+      "description": "get style size list",
+      "paramCount": 0,
+      "serviceParams": [
+        "client",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
       "name": "items_getPartsList",
       "module": "items",
       "classification": "READ",
       "description": "get parts list",
+      "paramCount": 0,
+      "serviceParams": [
+        "client",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "items_getStylesList",
+      "module": "items",
+      "classification": "READ",
+      "description": "get styles list",
       "paramCount": 0,
       "serviceParams": [
         "client",
@@ -10986,6 +11283,46 @@
       }
     },
     {
+      "name": "items_syncStyleConfigurationParameters",
+      "module": "items",
+      "classification": "WRITE",
+      "description": "sync style configuration parameters",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "args"
+      ],
+      "injectAuth": [
+        "companyId",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string"
+          },
+          "styleColorIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "styleSizeIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "itemId",
+          "styleColorIds",
+          "styleSizeIds"
+        ]
+      }
+    },
+    {
       "name": "items_upsertConfigurationParameter",
       "module": "items",
       "classification": "WRITE",
@@ -11366,6 +11703,31 @@
         },
         "required": [
           "part"
+        ]
+      }
+    },
+    {
+      "name": "items_upsertStyle",
+      "module": "items",
+      "classification": "WRITE",
+      "description": "upsert style",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "style"
+      ],
+      "injectAuth": [
+        "companyId",
+        "createdBy",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "style": {}
+        },
+        "required": [
+          "style"
         ]
       }
     },
@@ -11999,6 +12361,65 @@
         "required": [
           "materialSubstanceId",
           "name"
+        ]
+      }
+    },
+    {
+      "name": "items_upsertStyleColor",
+      "module": "items",
+      "classification": "WRITE",
+      "description": "upsert style color",
+      "paramCount": 3,
+      "serviceParams": [
+        "client",
+        "styleColor"
+      ],
+      "injectAuth": [
+        "companyId",
+        "createdBy",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "colorCode": {
+            "type": "string"
+          },
+          "colorName": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "colorCode",
+          "colorName"
+        ]
+      }
+    },
+    {
+      "name": "items_upsertStyleSize",
+      "module": "items",
+      "classification": "WRITE",
+      "description": "upsert style size",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "styleSize"
+      ],
+      "injectAuth": [
+        "companyId",
+        "createdBy",
+        "updatedBy"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "styleSize": {}
+        },
+        "required": [
+          "styleSize"
         ]
       }
     },
@@ -17936,6 +18357,24 @@
         "required": [
           "jobOperationIds"
         ]
+      }
+    },
+    {
+      "name": "production_getPickupFilterOptions",
+      "module": "production",
+      "classification": "READ",
+      "description": "get pickup filter options",
+      "paramCount": 0,
+      "serviceParams": [
+        "client",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {}
       }
     },
     {
@@ -34404,6 +34843,48 @@
       "schema": {
         "type": "object",
         "properties": {}
+      }
+    },
+    {
+      "name": "settings_getActiveUserCount",
+      "module": "settings",
+      "classification": "READ",
+      "description": "get active user count",
+      "paramCount": 0,
+      "serviceParams": [
+        "client",
+        "companyId"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "settings_checkSeatAvailability",
+      "module": "settings",
+      "classification": "READ",
+      "description": "check seat availability",
+      "paramCount": 1,
+      "serviceParams": [
+        "client",
+        "companyId",
+        "adding = 1"
+      ],
+      "injectAuth": [
+        "companyId"
+      ],
+      "schema": {
+        "type": "object",
+        "properties": {
+          "adding = 1": {}
+        },
+        "required": [
+          "adding = 1"
+        ]
       }
     },
     {

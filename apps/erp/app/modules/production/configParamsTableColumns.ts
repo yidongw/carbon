@@ -343,12 +343,19 @@ export function buildConfigTableEditorState({
   parameters,
   defaultQuantityLabel,
   currentConfiguration,
-  referenceContext
+  referenceContext,
+  prefillFromReference = false
 }: {
   parameters: ConfigurationParameterColumnsInput[];
   defaultQuantityLabel: string;
   currentConfiguration: unknown;
   referenceContext?: ConfigTableReferenceContext | null;
+  /**
+   * Seed each editable quantity cell that has no current draft value with its
+   * reference (remaining) quantity, so e.g. reporting cutting starts pre-filled
+   * with what's still planned per color/size instead of all zeros.
+   */
+  prefillFromReference?: boolean;
 }): {
   rows: ConfigTableRow[];
   referenceByRowIndex: Array<Record<string, number>>;
@@ -442,9 +449,7 @@ export function buildConfigTableEditorState({
     const row: ConfigTableRow = { ...template };
 
     for (const col of columns) {
-      if (col.type === "quantity") {
-        row[col.key] = Number(current?.[col.key]) || 0;
-      } else if (current && current[col.key] !== undefined) {
+      if (col.type !== "quantity" && current && current[col.key] !== undefined) {
         row[col.key] = current[col.key] ?? row[col.key] ?? "";
       }
     }
@@ -475,6 +480,17 @@ export function buildConfigTableEditorState({
             ? originalQty
             : originalQty - otherQty;
       }
+    }
+
+    // Set editable quantity cells: keep any current draft value, otherwise fall
+    // back to the reference (remaining) when prefilling is requested, else 0.
+    for (const col of columns) {
+      if (col.type !== "quantity") continue;
+      const currentQty = Number(current?.[col.key]) || 0;
+      row[col.key] =
+        prefillFromReference && current === undefined
+          ? fillValueFromReference(refs[col.key] ?? 0)
+          : currentQty;
     }
 
     rows.push(row);

@@ -28,11 +28,11 @@ msgstr "„${storageUnitName}\" ma 1 bezpośrednią zagnieżdżoną jednostkę m
 msgid "(all must match)"
 msgstr "Wszystko"
 
-#. placeholder {0}: selectedEvent.jobOperation?.description ?? t`Operation`
+#. placeholder {0}: operationLabel(selectedEvent.jobOperationId, selectedEvent.jobOperation?.description) || t`Operation`
 msgid "{0} (supplier)"
 msgstr "{0} (dystrybutor)"
 
-#. placeholder {0}: selectedEvent.jobOperation?.description ?? t`Operation`
+#. placeholder {0}: operationLabel(selectedEvent.jobOperationId, selectedEvent.jobOperation?.description) || t`Operation`
 #. placeholder {1}: people.find((p) => p.id === selectedEvent.employeeId) ?.name ?? t`Unknown Employee`
 msgid "{0} by {1}"
 msgstr "{0} przez {1}"
@@ -206,6 +206,9 @@ msgstr "Linia zamówienia sprzedaży zawiera szczegóły zamówienia dla konkret
 
 msgid "A sales request for quote (RFQ) is a customer inquiry for pricing on a set of parts and quantities. It may result in a quote."
 msgstr "Zapytanie ofertowe (RFQ) to zapytanie klienta dotyczące wyceny zestawu części i ilości. Może to skutkować złożeniem oferty."
+
+msgid "A style contains the information about a garment or footwear item that is cut, bundled, and produced downstream."
+msgstr "Model zawiera informacje o odzieży lub obuwiu, które jest krojone, pakowane i produkowane na dalszych etapach."
 
 msgid "A tool is a physical item used to make a part that can be used across multiple jobs"
 msgstr "Narzędzie to element fizyczny używany do wykonania części, którą można wykorzystać w wielu zadaniach"
@@ -1002,6 +1005,14 @@ msgstr "Czy na pewno chcesz usunąć typ magazynu: {0}? Tej czynności nie możn
 msgid "Are you sure you want to delete the storage unit: {0}? This cannot be undone."
 msgstr "Czy na pewno chcesz usunąć jednostkę magazynową: {0}? Tej operacji nie można cofnąć."
 
+#. placeholder {0}: styleColor.colorCode
+msgid "Are you sure you want to delete the style color {0}? This cannot be undone."
+msgstr "Czy na pewno chcesz usunąć kolor modelu {0}? Tej operacji nie można cofnąć."
+
+#. placeholder {0}: styleSize.sizeCode
+msgid "Are you sure you want to delete the style size {0}? This cannot be undone."
+msgstr "Czy na pewno chcesz usunąć rozmiar modelu {0}? Tej operacji nie można cofnąć."
+
 #. placeholder {0}: supplierType.name
 msgid "Are you sure you want to delete the supplier type: {0}? This cannot be undone."
 msgstr "Czy na pewno chcesz usunąć typ dostawcy: {0}? Tej czynności nie można cofnąć."
@@ -1170,6 +1181,9 @@ msgstr "Przypisz do grup"
 
 msgid "Assigned"
 msgstr "Przydzielone"
+
+msgid "Assigned At"
+msgstr "Przypisano"
 
 msgid "Assigned Group"
 msgstr "Grupa przydzielona"
@@ -1351,6 +1365,9 @@ msgstr "Rozmiar partii"
 msgid "Batch Tracking"
 msgstr "Śledzenie partii"
 
+msgid "Below reported"
+msgstr "Poniżej zgłoszone"
+
 msgid "Beta"
 msgstr "Beta"
 
@@ -1433,6 +1450,15 @@ msgstr "Import zbiorczy"
 
 msgid "Bulk Jobs"
 msgstr "Zadania zbiorcze"
+
+msgid "Bundle"
+msgstr "Pakiet"
+
+msgid "Bundle Work Orders"
+msgstr "Zlecenia pakietów"
+
+msgid "Bundles"
+msgstr "Pakiety"
 
 msgid "Buy"
 msgstr "Kup"
@@ -1752,6 +1778,21 @@ msgstr "Zwiń tabelę funkcji"
 
 msgid "Collapse subtree"
 msgstr "Zwiń poddrzewo"
+
+msgid "Color"
+msgstr "Kolor"
+
+msgid "Color / Size"
+msgstr "Kolor / Rozmiar"
+
+msgid "Color Code"
+msgstr "Kod koloru"
+
+msgid "Color Name"
+msgstr "Nazwa koloru"
+
+msgid "Colors"
+msgstr "Kolory"
 
 msgid "Column"
 msgstr "Kolumna"
@@ -2117,6 +2158,9 @@ msgstr "Skopiuj link do części"
 msgid "Copy link to procedure"
 msgstr "Skopiuj link do procedury"
 
+msgid "Copy link to style"
+msgstr "Kopiuj link do modelu"
+
 msgid "Copy link to tool"
 msgstr "Skopiuj link do narzędzia"
 
@@ -2161,6 +2205,12 @@ msgstr "Skopiuj numer oferty"
 
 msgid "Copy response"
 msgstr "Skopiuj odpowiedź"
+
+msgid "Copy style number"
+msgstr "Kopiuj numer modelu"
+
+msgid "Copy style unique identifier"
+msgstr "Kopiuj unikatowy identyfikator modelu"
 
 msgid "Copy this item's pricing to another scope."
 msgstr "Skopiuj ceny tego artykułu do innego zakresu."
@@ -2436,6 +2486,9 @@ msgstr "Utworzono linię transferu zapasów"
 msgid "Created storage type"
 msgstr "Utworzony typ magazynu"
 
+msgid "Created style"
+msgstr "Utworzono model"
+
 msgid "Created supplier process"
 msgstr "Tworzenie procesu dostawcy"
 
@@ -2605,6 +2658,9 @@ msgstr "Klienci"
 
 msgid "Customize the layout of your PDF documents — reorder sections, hide what you don't need, and add your own blocks."
 msgstr "Adaptuj układ Twoich dokumentów PDF — zmieniaj kolejność sekcji, ukrywaj niepotrzebne elementy i dodawaj własne bloki."
+
+msgid "Cutting"
+msgstr "Rzeźba"
 
 msgid "Cycle back-edge"
 msgstr "Powrót do przedniej krawędzi cyklu"
@@ -3006,6 +3062,15 @@ msgstr "Usuń typ magazynu"
 
 msgid "Delete Storage Unit"
 msgstr "Usuń jednostkę magazynową"
+
+msgid "Delete Style"
+msgstr "Usuń model"
+
+msgid "Delete Style Color"
+msgstr "Usuń kolor modelu"
+
+msgid "Delete Style Size"
+msgstr "Usuń rozmiar modelu"
 
 msgid "Delete Substance"
 msgstr "Usuń substancję"
@@ -3600,6 +3665,15 @@ msgstr "Edytuj typ magazynu"
 msgid "Edit Storage Unit"
 msgstr "Edytuj jednostkę magazynową"
 
+msgid "Edit Style"
+msgstr "Edytuj model"
+
+msgid "Edit Style Color"
+msgstr "Edytuj kolor modelu"
+
+msgid "Edit Style Size"
+msgstr "Edytuj rozmiar modelu"
+
 msgid "Edit Substance"
 msgstr "Edytuj substancję"
 
@@ -3924,6 +3998,12 @@ msgstr "Wszystko z pakietu Starter"
 msgid "Exceeds {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB total — remove some attachments to send."
 msgstr "Przekracza {PO_EMAIL_ATTACHMENT_LIMIT_MB} MB całkowite — usuń niektóre załączniki, aby wysłać."
 
+msgid "Exceeds cut"
+msgstr "Przekracza krojną ilość"
+
+msgid "Exceeds plan"
+msgstr "Przekracza plan"
+
 msgid "Exchange Rate"
 msgstr "Kurs wymiany"
 
@@ -4141,6 +4221,10 @@ msgstr "Nie udało się utworzyć linii transferu zapasów: {0}"
 #. placeholder {0}: fetcher.data.error.message
 msgid "Failed to create storage type: {0}"
 msgstr "Nie udało się utworzyć typu magazynu: {0}"
+
+#. placeholder {0}: fetcher.data.error.message
+msgid "Failed to create style: {0}"
+msgstr "Nie udało się utworzyć modelu: {0}"
 
 msgid "Failed to create supplier process"
 msgstr "Niestety nie udało się utworzyć procesu dostawcy"
@@ -5710,6 +5794,12 @@ msgstr "Oznacz niedobór"
 msgid "Mark to delete"
 msgstr "Oznacz do usunięcia"
 
+msgid "Master Work Order"
+msgstr "Główne zlecenie"
+
+msgid "Master Work Orders"
+msgstr "Główne zlecenia"
+
 msgid "Match"
 msgstr "Mezcza"
 
@@ -6027,6 +6117,9 @@ msgstr "Imiona pojawiają się w aplikacji jako nazwisko, a następnie imię."
 msgid "Navigate"
 msgstr "Nawiguj"
 
+msgid "Navigation"
+msgstr "Nawigacja"
+
 msgid "NCRs by Type"
 msgstr "NCRy wg typu"
 
@@ -6156,6 +6249,9 @@ msgstr "Nowa Lokalizacja"
 msgid "New Maintenance Dispatch"
 msgstr "Nowa Dyspozycja Konserwacji"
 
+msgid "New Master Work Order"
+msgstr "Nowe główne zlecenie"
+
 msgid "New Material"
 msgstr "Nowy Materiał"
 
@@ -6272,6 +6368,15 @@ msgstr "Nowy typ magazynu"
 
 msgid "New Storage Unit"
 msgstr "Nowa jednostka magazynowa"
+
+msgid "New Style"
+msgstr "Nowy model"
+
+msgid "New Style Color"
+msgstr "Nowy kolor modelu"
+
+msgid "New Style Size"
+msgstr "Nowy rozmiar modelu"
 
 msgid "New Supplier"
 msgstr "Nowy Dostawca"
@@ -6421,6 +6526,9 @@ msgstr "Brak historii czatów"
 
 msgid "No chats found"
 msgstr "Nie znaleziono czatów"
+
+msgid "No colors assigned"
+msgstr "Nie przypisano kolorów"
 
 msgid "No comments yet. Be the first to add a comment."
 msgstr "Brak komentarzy. Bądź pierwszy i dodaj komentarz."
@@ -6581,9 +6689,6 @@ msgstr "Brak drukarek skonfigurowanych. Kliknij \"Dodaj drukarkę\", aby utworzy
 msgid "No production logs"
 msgstr "Brak dzienników produkcji"
 
-msgid "No production reported yet."
-msgstr "Brak zgłoszonej produkcji jeszcze."
-
 msgid "No quantity recorded yet."
 msgstr "Brak zarejestrowanej ilości jeszcze."
 
@@ -6616,6 +6721,9 @@ msgstr "Brak próbek do sprawdzenia."
 
 msgid "No selection"
 msgstr "Brak wyboru"
+
+msgid "No sizes assigned"
+msgstr "Nie przypisano rozmiarów"
 
 msgid "No sorts applied to this view"
 msgstr "Brak zastosowanych sortowań w tym widoku"
@@ -6703,6 +6811,9 @@ msgstr "Notatki (opcjonalnie)"
 
 msgid "Nothing in the archive"
 msgstr "Nic w archiwum"
+
+msgid "Nothing left to split for this work order."
+msgstr "Nie ma nic więcej do podziału dla tego zlecenia."
 
 msgid "Notification"
 msgstr "Powiadomienie"
@@ -7594,9 +7705,6 @@ msgstr "Produkowane przez"
 msgid "Production"
 msgstr "Produkcja"
 
-msgid "Production already reported per operation. Click a number to pull it into the editor above."
-msgstr "Produkcja już zgłoszona na operację. Kliknij liczbę, aby ją wstawić do edytora powyżej."
-
 msgid "Production Event"
 msgstr "Zdarzenie produkcyjne"
 
@@ -8069,6 +8177,9 @@ msgstr "Wydane"
 msgid "remaining"
 msgstr "pozostało"
 
+msgid "Remaining"
+msgstr "Pozostało"
+
 msgid "Remaining after split stays on the original row."
 msgstr "Pozostała ilość po podziale pozostaje w oryginalnym wierszu."
 
@@ -8208,6 +8319,9 @@ msgstr "System uzupełniania zapasów"
 msgid "Report"
 msgstr "Raport"
 
+msgid "Report Cutting"
+msgstr "Zgłoś krojenie"
+
 msgid "Report history"
 msgstr "Kontrola historii raportów"
 
@@ -8227,8 +8341,8 @@ msgstr "Pointrowany <0>{0}</0> jednostek"
 msgid "Reported <0>{totalQuantity}</0> units"
 msgstr "Pointrowany <0>{totalQuantity}</0> jednostek"
 
-msgid "Reported by process"
-msgstr "Zapotrzebowane przez proces"
+msgid "Reported At"
+msgstr "Zgłoszono"
 
 msgid "Reporter"
 msgstr "Reportery"
@@ -9217,6 +9331,9 @@ msgstr "Pokaż legende"
 msgid "Show on card right"
 msgstr "Pokaż na kartce prawo"
 
+msgid "Show or hide items in this module's sidebar."
+msgstr "Pokaż lub ukryj elementy na pasku bocznym tego modułu."
+
 msgid "Show parent items"
 msgstr "Pokaż elementy nadrzędne"
 
@@ -9267,6 +9384,12 @@ msgstr "Krok jednostkowy"
 
 msgid "Size"
 msgstr "Rozmiar"
+
+msgid "Size Code"
+msgstr "Kod rozmiaru"
+
+msgid "Size Name"
+msgstr "Nazwa rozmiaru"
 
 msgid "Sizes"
 msgstr "Rozmiary"
@@ -9366,6 +9489,9 @@ msgstr "Określone artykuły"
 
 msgid "Split"
 msgstr "Podziel"
+
+msgid "Split Batch"
+msgstr "Podziel partię"
 
 msgid "Split line"
 msgstr "Podziel wiersz"
@@ -9523,8 +9649,35 @@ msgstr "Przechowuj stałą liczbę dni dla tego artykułu. Data rozpoczęcia wyg
 msgid "Store a fixed number of days on this item. Expiry start date is set on each batch or serial when it's received."
 msgstr "Przechowuj stałą liczbę dni dla tego artykułu. Data rozpoczęcia wygaśnięcia jest ustawiana dla każdej partii lub numeru seryjnego po otrzymaniu."
 
+msgid "Style"
+msgstr "Model"
+
+msgid "Style Color"
+msgstr "Kolor modelu"
+
+msgid "Style Colors"
+msgstr "Kolory modelu"
+
+msgid "Style Details"
+msgstr "Szczegóły modelu"
+
+msgid "Style ID"
+msgstr "ID modelu"
+
 msgid "Style of kanban output to show in the Kanban table"
 msgstr "Styl wyjścia kanban do wyświetlenia w tabeli Kanban"
+
+msgid "Style Properties"
+msgstr "Właściwości modelu"
+
+msgid "Style Size"
+msgstr "Rozmiar modelu"
+
+msgid "Style Sizes"
+msgstr "Rozmiary modelu"
+
+msgid "Styles"
+msgstr "Modele"
 
 msgid "Sub-assembly expiries only"
 msgstr "Tylko wygaśnięcia podzespołów"
@@ -10568,6 +10721,9 @@ msgstr "Użyj ... aby uzyskać następny identyfikator materiału"
 msgid "Use ... to get the next part ID"
 msgstr "Użyj ... aby uzyskać następny identyfikator części"
 
+msgid "Use ... to get the next style ID"
+msgstr "Użyj ..., aby uzyskać następny ID modelu"
+
 msgid "Use ... to get the next tool ID"
 msgstr "Użyj ... aby uzyskać następny identyfikator narzędzia"
 
@@ -10709,6 +10865,9 @@ msgstr "Wyświetl atrybuty"
 msgid "View bill of process"
 msgstr "Pokaż fakturę procesu"
 
+msgid "View bundles"
+msgstr "Zobacz pakiety"
+
 msgid "View configuration parameters"
 msgstr "Zobacz parametry konfiguracji"
 
@@ -10781,6 +10940,12 @@ msgstr "Podgląd listy zbiornictwa"
 msgid "View Prints"
 msgstr "Podgląd Wydruków"
 
+msgid "View process completions"
+msgstr "Zobacz ukończenia procesu"
+
+msgid "View processes"
+msgstr "Zobacz procesy"
+
 msgid "View Production Events"
 msgstr "Wyświetl zdarzenia produkcji"
 
@@ -10792,6 +10957,9 @@ msgstr "Wyświetl Reaktywne"
 
 msgid "View Receipt"
 msgstr "Wyświetl Paragon"
+
+msgid "View remaining"
+msgstr "Zobacz pozostałe"
 
 msgid "View Scheduled"
 msgstr "Wyświetl zaplanowane"

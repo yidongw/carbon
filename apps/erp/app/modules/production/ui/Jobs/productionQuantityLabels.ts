@@ -1,5 +1,6 @@
 import { formatDurationMilliseconds } from "@carbon/utils";
 import { useLingui } from "@lingui/react/macro";
+import { useCallback } from "react";
 
 export const PRODUCTION_QUANTITY_TYPES = [
   "Production",
@@ -53,16 +54,22 @@ export function useProductionQuantityActivityMessage() {
 export function useOperationTypeLabel() {
   const { t } = useLingui();
 
-  return (type: string) => {
-    switch (type) {
-      case "Inside":
-        return t`Inside`;
-      case "Outside":
-        return t`Outside`;
-      default:
-        return type;
-    }
-  };
+  // Memoized for a stable identity — this feeds table column-builder useMemo
+  // deps, so an unstable function rebuilds columns every render (remounting
+  // cells and closing open dropdowns). See useJobOperationStatusLabel.
+  return useCallback(
+    (type: string) => {
+      switch (type) {
+        case "Inside":
+          return t`Inside`;
+        case "Outside":
+          return t`Outside`;
+        default:
+          return type;
+      }
+    },
+    [t]
+  );
 }
 
 export function useOperationOrderLabel() {

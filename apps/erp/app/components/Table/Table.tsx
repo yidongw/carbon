@@ -96,6 +96,9 @@ interface TableProps<T extends object> {
   filterActions?: ReactNode;
   table?: string;
   title?: string;
+  // Render the header row (title, primary action, search/filter/sort toolbar).
+  // Set false to embed a bare table (e.g. inside a modal that has its own header).
+  withHeader?: boolean;
   withInlineEditing?: boolean;
   withPagination?: boolean;
   withSavedView?: boolean;
@@ -110,6 +113,12 @@ interface TableProps<T extends object> {
   renderActions?: (selectedRows: T[]) => ReactNode;
   renderContextMenu?: (row: T) => JSX.Element | null;
   renderExpandedRow?: (row: T) => ReactNode;
+  /**
+   * Optional predicate deciding which rows are expandable. When omitted, every
+   * row is expandable (the default). Rows for which this returns false show no
+   * expand chevron and are not click-to-expand.
+   */
+  getRowCanExpand?: (row: T) => boolean;
   getRowHref?: (row: T) => string | undefined;
 }
 
@@ -238,6 +247,7 @@ const Table = <T extends object>({
   filterActions,
   table: tableName,
   title,
+  withHeader = true,
   withInlineEditing = false,
   withPagination = true,
   withSavedView = false,
@@ -252,6 +262,7 @@ const Table = <T extends object>({
   renderActions,
   renderContextMenu,
   renderExpandedRow,
+  getRowCanExpand,
   getRowHref
 }: TableProps<T>) => {
   const { i18n, t } = useLingui();
@@ -438,7 +449,12 @@ const Table = <T extends object>({
     let result: ColumnDef<T>[] = [];
     if (renderExpandedRow) {
       result.push(
-        ...getExpandColumn<T>(expandedRows, toggleRowExpanded, translateLabel)
+        ...getExpandColumn<T>(
+          expandedRows,
+          toggleRowExpanded,
+          translateLabel,
+          getRowCanExpand
+        )
       );
     }
     if (withSelectableRows) {
@@ -454,6 +470,7 @@ const Table = <T extends object>({
     renderContextMenu,
     withSelectableRows,
     renderExpandedRow,
+    getRowCanExpand,
     expandedRows,
     toggleRowExpanded,
     translateLabel
@@ -481,6 +498,7 @@ const Table = <T extends object>({
     getCoreRowModel: getCoreRowModel(),
     meta: {
       // These are not part of the standard API, but are accessible via table.options.meta
+      expandedRows,
       editableComponents,
       updateData: (rowIndex, updates) => {
         setInternalData((previousData) => {
@@ -930,6 +948,7 @@ const Table = <T extends object>({
         !compact && "flex flex-col w-full px-0 md:px-4 lg:px-6"
       )}
     >
+      {withHeader && (
       <TableHeader
         featuredColumns={featuredColumns}
         columnAccessors={columnAccessors}
@@ -960,6 +979,7 @@ const Table = <T extends object>({
         sort={sort}
         filterActions={filterActions}
       />
+      )}
 
       {/* Mobile card view */}
       <div className="md:hidden w-full flex-1 min-h-0 overflow-y-auto">
@@ -985,17 +1005,58 @@ const Table = <T extends object>({
           </div>
         ) : (
           <div className="flex flex-col gap-3 px-3 py-2">
-            {rows.map((row) => (
-              <TableCardRow
-                key={row.id}
-                row={row}
-                pinnedColumns={table.getLeftVisibleLeafColumns()}
-                centerColumns={table.getCenterVisibleLeafColumns()}
-                featuredColumns={featuredColumns}
-                getRowHref={getRowHref}
-                renderContextMenu={renderContextMenu}
-              />
-            ))}
+            {rows.map((row) => {
+              const card = (
+                <TableCardRow
+                  row={row}
+                  pinnedColumns={table.getLeftVisibleLeafColumns()}
+                  centerColumns={table.getCenterVisibleLeafColumns()}
+                  featuredColumns={featuredColumns}
+                  getRowHref={renderExpandedRow ? undefined : getRowHref}
+                  renderContextMenu={renderContextMenu}
+                />
+              );
+              const canExpandRow =
+                !getRowCanExpand || getRowCanExpand(row.original);
+              if (!renderExpandedRow || !canExpandRow) {
+                return <Fragment key={row.id}>{card}</Fragment>;
+              }
+              const isRowExpanded = expandedRows[row.index] ?? false;
+              return (
+                <div
+                  key={row.id}
+                  className="rounded-lg overflow-hidden border border-border"
+                >
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => toggleRowExpanded(row.index)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        toggleRowExpanded(row.index);
+                      }
+                    }}
+                    aria-expanded={isRowExpanded}
+                    className="w-full flex items-stretch text-left cursor-pointer"
+                  >
+                    <span className="flex items-center px-2 text-muted-foreground">
+                      {isRowExpanded ? (
+                        <LuChevronDown className="size-4" />
+                      ) : (
+                        <LuChevronRight className="size-4" />
+                      )}
+                    </span>
+                    <span className="flex-1 min-w-0">{card}</span>
+                  </div>
+                  {isRowExpanded && (
+                    <div className="border-t border-border bg-muted/20">
+                      {renderExpandedRow(row.original)}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
@@ -1197,9 +1258,12 @@ const Table = <T extends object>({
               </Thead>
               <Tbody>
                 {rows.map((row) => {
+                  const canExpandRow =
+                    !!renderExpandedRow &&
+                    (!getRowCanExpand || getRowCanExpand(row.original));
                   const isRowExpanded =
-                    renderExpandedRow && expandedRows[row.index];
-                  const handleRowClick = renderExpandedRow
+                    canExpandRow && expandedRows[row.index];
+                  const handleRowClick = canExpandRow
                     ? () => toggleRowExpanded(row.index)
                     : undefined;
                   // Desktop rows use the Actions column ActionMenu (dropdown) only.
@@ -1212,6 +1276,7 @@ const Table = <T extends object>({
                       editableComponents={editableComponents}
                       isEditing={isEditing}
                       isEditMode={editMode}
+                      isRowExpanded={!!isRowExpanded}
                       isRowSelected={
                         row.index in rowSelection && !!rowSelection[row.index]
                       }
@@ -1225,7 +1290,7 @@ const Table = <T extends object>({
                       onFinishEditing={finishEditing}
                       onClick={handleRowClick}
                       className={
-                        renderExpandedRow ? "cursor-pointer" : undefined
+                        canExpandRow ? "cursor-pointer" : undefined
                       }
                     />
                   );
@@ -1361,7 +1426,8 @@ function getActionColumn<T>(
 function getExpandColumn<T>(
   expandedRows: Record<number, boolean>,
   toggleRowExpanded: (rowIndex: number) => void,
-  translateLabel: (value: string) => string
+  translateLabel: (value: string) => string,
+  getRowCanExpand?: (row: T) => boolean
 ): ColumnDef<T>[] {
   return [
     {
@@ -1369,8 +1435,18 @@ function getExpandColumn<T>(
       size: 40,
       enablePinning: true,
       header: () => <span className="sr-only">{translateLabel("Expand")}</span>,
-      cell: ({ row }) => {
-        const isExpanded = expandedRows[row.index] ?? false;
+      cell: ({ row, table }) => {
+        // Rows the predicate rejects show no chevron and aren't expandable.
+        if (getRowCanExpand && !getRowCanExpand(row.original)) {
+          return null;
+        }
+        // Read the live expansion state from meta (refreshed each render) so the
+        // chevron reflects the current state even though react-table may serve a
+        // cached cell closure for the stable "Expand" column id.
+        const liveExpandedRows =
+          (table.options.meta as { expandedRows?: Record<number, boolean> })
+            ?.expandedRows ?? expandedRows;
+        const isExpanded = liveExpandedRows[row.index] ?? false;
         return (
           <button
             type="button"

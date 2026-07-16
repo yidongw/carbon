@@ -67,7 +67,7 @@ function SelectCell<TRow extends { id?: string | null }>({
 
   const commit = (next: string) => {
     setValue(next || undefined);
-    update(row.id!, config.field, next || null);
+    update((config.idAccessor?.(row) ?? row.id)!, config.field, next || null);
   };
 
   const renderInline = (v: string, opts: OptionItem[]): ReactElement => {
@@ -120,7 +120,7 @@ function BooleanCell<TRow extends { id?: string | null }>({
       checked={checked}
       onCheckedChange={(next) => {
         setChecked(next);
-        update(row.id!, config.field, serialize(next));
+        update((config.idAccessor?.(row) ?? row.id)!, config.field, serialize(next));
       }}
     />
   );
@@ -139,7 +139,7 @@ function TextCell<TRow extends { id?: string | null }>({
 
   const commit = (next: string) => {
     setEditing(false);
-    if (next !== server) update(row.id!, config.field, next || null);
+    if (next !== server) update((config.idAccessor?.(row) ?? row.id)!, config.field, next || null);
   };
 
   if (editing) {
@@ -214,7 +214,7 @@ function DateCell<TRow extends { id?: string | null }>({
   };
   const commit = (next: string | null) => {
     setValue(next ?? undefined);
-    update(row.id!, config.field, next);
+    update((config.idAccessor?.(row) ?? row.id)!, config.field, next);
     close();
   };
 

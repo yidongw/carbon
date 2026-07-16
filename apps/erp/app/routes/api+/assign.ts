@@ -36,6 +36,29 @@ export async function action({ request }: ActionFunctionArgs) {
       const makeMethodId = job.data?.jobMakeMethod?.id;
       const materialId = job.data?.jobMakeMethod?.parentMaterialId;
 
+      // If this operation belongs to a Bundle Work Order, mirror the assignee
+      // onto the bundle job so the Bundle Work Orders list reflects the
+      // last-assigned process.
+      if (jobId) {
+        const bundle = await client
+          .from("bundleWorkOrder")
+          .select("id")
+          .eq("jobId", jobId)
+          .eq("companyId", companyId)
+          .maybeSingle();
+        if (bundle.data) {
+          await client
+            .from("job")
+            .update({
+              assignee: assignee ? assignee : null,
+              assignedAt: assignee ? new Date().toISOString() : null,
+              updatedBy: userId
+            })
+            .eq("id", jobId)
+            .eq("companyId", companyId);
+        }
+      }
+
       id = `${jobId}:${id}:${makeMethodId}:${materialId ?? ""}`;
     }
 

@@ -5,6 +5,8 @@ import { setCompanyId } from "@carbon/auth/company.server";
 import { updateCompanySession } from "@carbon/auth/session.server";
 import { ValidatedForm, validationError, validator } from "@carbon/form";
 import { trigger } from "@carbon/jobs";
+import { resolveLanguage } from "@carbon/locale";
+import { getPreferenceHeaders } from "@carbon/utils";
 import {
   Button,
   Card,
@@ -112,7 +114,16 @@ export async function action({ request }: ActionFunctionArgs) {
       throw new Error("Fatal: failed to get company ID");
     }
 
-    const seed = await seedCompany(serviceRole, companyId, userId);
+    // Localize seeded reference data (apparel colors, etc.) to the user's
+    // language.
+    const language = resolveLanguage(getPreferenceHeaders(request).locale);
+    const seed = await seedCompany(
+      serviceRole,
+      companyId,
+      userId,
+      undefined,
+      language
+    );
     if (seed.error) {
       console.error(seed.error);
       throw new Error("Fatal: failed to seed company");

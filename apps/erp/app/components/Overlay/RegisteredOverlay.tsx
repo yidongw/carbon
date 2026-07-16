@@ -1,7 +1,7 @@
 import { Drawer, DrawerContent, Modal, ModalContent } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import { useCallback, useEffect, useRef } from "react";
-import { useFetcher } from "react-router";
+import { useFetcher, useFetchers } from "react-router";
 import { configParamsModalContentClassName } from "~/modules/production/ui/Jobs/configTableShared";
 import { completeOverlayConfirm } from "./completeOverlayConfirm";
 import { getOverlayRegistryEntry } from "./overlay.registry";
@@ -45,6 +45,26 @@ export function RegisteredOverlay({
   useEffect(() => {
     void loadOverlay.current(instance.url);
   }, [instance.url]);
+
+  // A read-only overlay's data is fetched once, so inline mutations inside it
+  // (e.g. changing an assignee) don't refresh it. Re-load the overlay whenever an
+  // outside mutation fetcher settles, so it reflects the change without reopening.
+  // Excludes this overlay's own submit (handled via confirm) and GET loads.
+  const fetchers = useFetchers();
+  const pendingMutations = fetchers.filter(
+    (f) =>
+      f.state !== "idle" &&
+      f.formMethod &&
+      f.formMethod.toUpperCase() !== "GET" &&
+      f.key !== `overlay-submit-${instance.id}`
+  ).length;
+  const prevPendingMutations = useRef(pendingMutations);
+  useEffect(() => {
+    if (prevPendingMutations.current > 0 && pendingMutations === 0) {
+      void loadOverlay.current(instance.url);
+    }
+    prevPendingMutations.current = pendingMutations;
+  }, [pendingMutations, instance.url]);
 
   useEffect(() => {
     if (confirmMode !== "server") return;

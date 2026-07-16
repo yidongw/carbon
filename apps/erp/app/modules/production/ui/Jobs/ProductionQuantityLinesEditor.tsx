@@ -181,6 +181,13 @@ export function ProductionQuantityLinesEditor({
         jobId,
         jobOperationId,
         reportKind: "productionQuantity",
+        // Report config uses the flat one-row-per-color/size editor (multiple
+        // rows per cell), which also captures the raw cut breakdown.
+        splitMode: true,
+        // Production reports what's planned/remaining per color/size, so seed the
+        // cells from the reference. Scrap/Rework start empty (you don't scrap the
+        // whole remaining by default).
+        prefillFromReference: line.type === "Production",
         // Built from the source the modal fetches for this operation (or the
         // in-memory original config for the "original" reference mode).
         buildReferenceContext: (source) =>

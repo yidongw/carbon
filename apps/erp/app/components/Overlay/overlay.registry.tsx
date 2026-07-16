@@ -2,6 +2,10 @@ import { buildConfigEditorRows } from "~/modules/production/ui/Jobs/ConfigParams
 import type { ItemConfigTableOverlayLoaderData } from "~/routes/api+/items.$itemId.config-table";
 import type { JobBillOfProcessOverlayLoaderData } from "~/routes/api+/production.jobs.$jobId.bill-of-process";
 import type { JobConfigTableOverlayLoaderData } from "~/routes/api+/production.jobs.$jobId.config-table";
+import type { BundleWorkOrderProcessesOverlayLoaderData } from "~/routes/api+/production.bundle-work-orders.$bundleWorkOrderId.processes";
+import type { MasterWorkOrderBundlesOverlayLoaderData } from "~/routes/api+/production.master-work-orders.$masterWorkOrderId.bundles";
+import type { MasterWorkOrderProcessesOverlayLoaderData } from "~/routes/api+/production.master-work-orders.$masterWorkOrderId.processes";
+import type { MasterWorkOrderSplitBatchLoaderData } from "~/routes/api+/production.master-work-orders.$masterWorkOrderId.split-batch";
 import { renderLazyOverlay } from "./renderLazyOverlay";
 import type { OverlayRegistryEntry } from "./types";
 
@@ -138,6 +142,28 @@ export const overlayRegistry = {
       () => import("~/modules/production/ui/Jobs/PickupForm")
     )
   },
+  newMasterWorkOrder: {
+    type: "drawer",
+    render: renderLazyOverlay(
+      (ctx) => {
+        const data = ctx.loaderData as
+          | {
+              initialValues: {
+                itemId: string;
+                quantity: number;
+                locationId: string;
+                dueDate: string;
+                deadlineType: "ASAP" | "Hard Deadline" | "Soft Deadline" | "No Deadline";
+              };
+            }
+          | undefined;
+        if (!data) return null;
+        return { initialValues: data.initialValues };
+      },
+      () =>
+        import("~/modules/production/ui/MasterWorkOrders/MasterWorkOrderForm")
+    )
+  },
   newProductionQuantity: {
     type: "drawer",
     render: renderLazyOverlay(
@@ -161,10 +187,13 @@ export const overlayRegistry = {
                 reportedConfigurations: unknown[];
               } | null;
               itemId?: string | null;
+              remainingByOperationId?: Record<string, number>;
               processId?: string | null;
               operationType?: string | null;
               defaultActorKind?: "employee" | "supplier";
               lockActorSelection?: boolean;
+              lockJobSelection?: boolean;
+              lockOperationSelection?: boolean;
               seededActor?: {
                 actorKind: "employee" | "supplier";
                 employeeId: string;
@@ -179,6 +208,8 @@ export const overlayRegistry = {
         return {
           jobOptions: data.jobOptions,
           jobId: data.jobId,
+          lockJobSelection: data.lockJobSelection ?? false,
+          lockOperationSelection: data.lockOperationSelection ?? false,
           initialValues: {
             jobOperationId: data.jobOperationId,
             actorKind: seeded?.actorKind ?? data.defaultActorKind ?? "employee",
@@ -186,8 +217,15 @@ export const overlayRegistry = {
             supplierProcessId: seeded?.supplierProcessId,
             supplierId: seeded?.supplierId,
             notes: "",
-            lines: [{ type: "Production" as const, quantity: 0 }]
+            lines: [
+              {
+                type: "Production" as const,
+                quantity:
+                  data.remainingByOperationId?.[data.jobOperationId] ?? 0
+              }
+            ]
           },
+          remainingByOperationId: data.remainingByOperationId ?? {},
           operationOptions: data.operationOptions ?? [],
           configurationParameters: data.configurationParameters ?? null,
           configReferenceSource: data.configReferenceSource ?? null,
@@ -224,6 +262,7 @@ export const overlayRegistry = {
                 reportedConfigurations: unknown[];
               } | null;
               itemId?: string | null;
+              remainingByOperationId?: Record<string, number>;
               processId?: string | null;
               operationType?: string | null;
               defaultActorKind?: "employee" | "supplier";
@@ -249,8 +288,15 @@ export const overlayRegistry = {
             actorKind: seeded?.actorKind ?? data.defaultActorKind ?? "employee",
             supplierProcessId: seeded?.supplierProcessId ?? "",
             supplierId: seeded?.supplierId ?? "",
-            lines: [{ type: "Production" as const, quantity: 0 }]
+            lines: [
+              {
+                type: "Production" as const,
+                quantity:
+                  data.remainingByOperationId?.[data.jobOperationId] ?? 0
+              }
+            ]
           },
+          remainingByOperationId: data.remainingByOperationId ?? {},
           operationOptions: data.operationOptions ?? [],
           configurationParameters: data.configurationParameters ?? null,
           configReferenceSource: data.configReferenceSource ?? null,
@@ -473,7 +519,7 @@ export const overlayRegistry = {
           initialRows: data.initialRows,
           jobDisplayId: data.jobDisplayId,
           history: data.history,
-          processQuantities: data.processQuantities
+          optionLabels: data.colorNames
         };
       },
       () => import("~/modules/production/ui/Jobs/JobConfigQuantities")
@@ -507,10 +553,105 @@ export const overlayRegistry = {
           parameters: data.parameters,
           initialRows,
           referenceByRowIndex,
-          jobDisplayId: data.itemReadableId
+          jobDisplayId: data.itemReadableId,
+          optionLabels: data.colorNames
         };
       },
       () => import("~/modules/production/ui/Jobs/ConfigParamsTableModal")
+    )
+  },
+  masterWorkOrderBundles: {
+    type: "modal",
+    // Read-only view of a master work order's bundles; its only button dismisses.
+    confirmMode: "none",
+    render: renderLazyOverlay(
+      (ctx) => {
+        const data = ctx.loaderData as
+          | MasterWorkOrderBundlesOverlayLoaderData
+          | null
+          | undefined;
+        if (!data) return null;
+        return {
+          bundleWorkOrders: data.bundleWorkOrders,
+          count: data.count,
+          masterDisplayId: data.masterDisplayId
+        };
+      },
+      () =>
+        import(
+          "~/modules/production/ui/MasterWorkOrders/MasterWorkOrderBundlesOverlay"
+        )
+    )
+  },
+  masterWorkOrderProcesses: {
+    type: "modal",
+    confirmMode: "none",
+    render: renderLazyOverlay(
+      (ctx) => {
+        const data = ctx.loaderData as
+          | MasterWorkOrderProcessesOverlayLoaderData
+          | null
+          | undefined;
+        if (!data) return null;
+        return {
+          processes: data.processes,
+          masterDisplayId: data.masterDisplayId
+        };
+      },
+      () =>
+        import(
+          "~/modules/production/ui/MasterWorkOrders/MasterWorkOrderProcessesOverlay"
+        )
+    )
+  },
+  bundleWorkOrderProcesses: {
+    type: "modal",
+    confirmMode: "none",
+    render: renderLazyOverlay(
+      (ctx) => {
+        const data = ctx.loaderData as
+          | BundleWorkOrderProcessesOverlayLoaderData
+          | null
+          | undefined;
+        if (!data) return null;
+        return {
+          operations: data.operations,
+          count: data.count,
+          jobId: data.jobId,
+          jobStatus: data.jobStatus,
+          bundleDisplayId: data.bundleDisplayId
+        };
+      },
+      () =>
+        import(
+          "~/modules/production/ui/MasterWorkOrders/BundleWorkOrderProcessesOverlay"
+        )
+    )
+  },
+  masterWorkOrderSplitBatch: {
+    type: "modal",
+    // The Confirm button POSTs the reviewed split to the route action.
+    confirmMode: "server",
+    render: renderLazyOverlay(
+      (ctx) => {
+        const data = ctx.loaderData as
+          | MasterWorkOrderSplitBatchLoaderData
+          | null
+          | undefined;
+        if (!data) return null;
+        return {
+          colorAxis: data.colorAxis,
+          sizeAxis: data.sizeAxis,
+          cells: data.cells,
+          existingBundles: data.existingBundles,
+          splitRows: data.splitRows,
+          masterDisplayId: data.masterDisplayId
+        };
+      },
+      () =>
+        import(
+          "~/modules/production/ui/MasterWorkOrders/SplitBatchOverlay"
+        )
     )
   }
 } as const satisfies Record<string, OverlayRegistryEntry>;

@@ -20,6 +20,7 @@
     ".": "./src/index.ts",
     "./seed": "./supabase/functions/lib/seed.data.ts",
     "./seed-demo": "./src/seedDemoData.ts",
+    "./style-reference": "./src/styleReference.ts",
     "./client": "./src/client.ts",
     "./event": "./src/event.ts",
     "./ratelimit": "./src/ratelimit.ts",

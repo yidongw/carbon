@@ -99,7 +99,7 @@ describe.skipIf(!configured)("seedDemoData integration", () => {
        WHERE j."companyId" = $1`,
       [COMPANY_ID]
     );
-    expect(Number(res.rows[0].count)).toBeGreaterThan(0);
+    expect(Number(res.rows[0]?.count)).toBeGreaterThan(0);
   });
 
   it("every operation with production has at least one pickup", async () => {
@@ -232,6 +232,6 @@ describe.skipIf(!configured)("seedDemoData integration", () => {
       `SELECT COUNT(*) FROM item WHERE "companyId" = $1`,
       [COMPANY_ID]
     );
-    expect(Number(after.rows[0].count)).toBe(Number(before.rows[0].count));
+    expect(Number(after.rows[0]?.count)).toBe(Number(before.rows[0]?.count));
   }, 120_000);
 });

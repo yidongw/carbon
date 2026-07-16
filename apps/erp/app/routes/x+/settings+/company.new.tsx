@@ -5,6 +5,8 @@ import { setCompanyId } from "@carbon/auth/company.server";
 import { updateCompanySession } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import { redis } from "@carbon/kv";
+import { resolveLanguage } from "@carbon/locale";
+import { getPreferenceHeaders } from "@carbon/utils";
 import { getLocalTimeZone } from "@internationalized/date";
 import type { ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
@@ -42,7 +44,8 @@ export async function action({ request }: ActionFunctionArgs) {
     throw new Error("Fatal: failed to get company ID");
   }
 
-  const seed = await seedCompany(client, companyId, userId);
+  const language = resolveLanguage(getPreferenceHeaders(request).locale);
+  const seed = await seedCompany(client, companyId, userId, undefined, language);
   if (seed.error) {
     console.error(seed.error);
     throw new Error("Fatal: failed to seed company");

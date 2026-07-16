@@ -1,6 +1,6 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
 import type { LoaderFunctionArgs } from "react-router";
-import { getConfigurationParameters } from "~/modules/items";
+import { getConfigurationParameters, getStyleColorList } from "~/modules/items";
 import type { ConfigurationParameter } from "~/modules/items/types";
 import type { ConfigReferenceSource } from "~/modules/production/configParamsTableColumns";
 import {
@@ -25,6 +25,8 @@ export type ItemConfigTableOverlayLoaderData = {
    * so this stays `null` for the common path.
    */
   configuration: unknown;
+  /** Color code -> color name, so the config table can show names not codes. */
+  colorNames: Record<string, string>;
 };
 
 export async function loader({
@@ -52,6 +54,15 @@ export async function loader({
     .eq("id", itemId)
     .eq("companyId", companyId)
     .maybeSingle();
+
+  // Map color code -> name so the config table displays names, not codes.
+  const styleColors = await getStyleColorList(client, companyId);
+  const colorNames: Record<string, string> = {};
+  for (const color of styleColors.data ?? []) {
+    if (color.colorCode) {
+      colorNames[color.colorCode] = color.colorName ?? color.colorCode;
+    }
+  }
 
   const url = new URL(request.url);
   const jobOperationId = url.searchParams.get("jobOperationId") ?? undefined;
@@ -94,6 +105,7 @@ export async function loader({
     parameters,
     itemReadableId: item.data?.readableIdWithRevision ?? null,
     referenceSource,
-    configuration
+    configuration,
+    colorNames
   };
 }

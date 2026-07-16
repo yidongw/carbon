@@ -1,5 +1,6 @@
 export {
   useDeadlineTypeLabel,
   useJobOperationStatusLabel,
-  useJobStatusLabel
+  useJobStatusLabel,
+  useStyleProcessLabel
 } from "../../productionLabels";

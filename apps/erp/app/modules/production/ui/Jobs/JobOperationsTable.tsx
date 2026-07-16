@@ -11,7 +11,9 @@ import {
   IconButton
 } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
+import { useDateFormatter } from "@react-aria/i18n";
 import type { ColumnDef } from "@tanstack/react-table";
+import type { ReactNode } from "react";
 import { memo, useCallback, useMemo } from "react";
 import { AiOutlinePartition } from "react-icons/ai";
 import {
@@ -19,18 +21,32 @@ import {
   LuClipboardList,
   LuHash,
   LuPlay,
+  LuArrowUpRight,
   LuRefreshCcwDot,
   LuRotateCcw,
   LuTriangleAlert,
+  LuClock,
+  LuUser,
   LuWrench
 } from "react-icons/lu";
-import { useFetcher, useFetchers, useParams, useSubmit } from "react-router";
-import { Hyperlink, Table } from "~/components";
+import {
+  useFetcher,
+  useFetchers,
+  useNavigate,
+  useParams,
+  useSubmit
+} from "react-router";
+import { Assignee, Hyperlink, Table } from "~/components";
 import { EditableNumber } from "~/components/Editable";
 import { OperationStatusIcon } from "~/components/Icons";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
-import { useJobOperationStatusLabel } from "~/modules/production/ui/Jobs/jobLabels";
+import { usePeople } from "~/stores";
+import {
+  useJobOperationStatusLabel,
+  useStyleProcessLabel
+} from "~/modules/production/ui/Jobs/jobLabels";
 import { useOperationTypeLabel } from "~/modules/production/ui/Jobs/productionQuantityLabels";
+import { isStyleCuttingOperation } from "~/modules/items/styleMethod.service";
 import { operationTypes } from "~/modules/shared";
 import { path } from "~/utils/path";
 import { jobOperationStatus } from "../../production.models";
@@ -39,21 +55,91 @@ import type { Job, JobOperation } from "../../types";
 type JobOperationsTableProps = {
   data: JobOperation[];
   count: number;
+  // Overrides so the table can be reused outside the job route (e.g. a Master
+  // Work Order's backing job). When omitted, falls back to the job route params
+  // + route data, preserving existing job-page behavior.
+  jobId?: string;
+  isPaused?: boolean;
+  title?: string;
+  // Suppress cell deep-links into the job pages (when embedded in another shell).
+  disableNavigation?: boolean;
+  // Override the table's primary action (defaults to Recalculate).
+  primaryAction?: ReactNode;
+  // Hide the MES "Open" column.
+  hideMes?: boolean;
+  // Show per-operation Assignee + Assigned At columns.
+  showAssignee?: boolean;
+  // Suppress the inline-editing "Edit" toggle (read-only quantities).
+  disableInlineEditing?: boolean;
+  // Base path to the Process Completions tab. When set, the completed/scrapped/
+  // reworked cells get a trigger that opens it filtered to that type + operation.
+  quantitiesPath?: string;
+  // Hide the table's header row (title + toolbar) — e.g. inside a modal.
+  withHeader?: boolean;
 };
 
-const JobOperationsTable = memo(({ data, count }: JobOperationsTableProps) => {
-  const { jobId } = useParams();
-  const { t } = useLingui();
-  const operationTypeLabel = useOperationTypeLabel();
-  const getJobOperationStatusLabel = useJobOperationStatusLabel();
-  if (!jobId) throw new Error("Job ID is required");
+const JobOperationsTable = memo(
+  ({
+    data,
+    count,
+    jobId: jobIdProp,
+    isPaused: isPausedProp,
+    title,
+    disableNavigation,
+    primaryAction,
+    hideMes,
+    showAssignee,
+    disableInlineEditing,
+    quantitiesPath,
+    withHeader = true
+  }: JobOperationsTableProps) => {
+    const params = useParams();
+    const navigate = useNavigate();
+    const jobId = jobIdProp ?? params.jobId;
+    const { t } = useLingui();
+    const [people] = usePeople();
+    const dateFormatter = useDateFormatter({
+      dateStyle: "medium",
+      timeStyle: "short"
+    });
+    const operationTypeLabel = useOperationTypeLabel();
+    const getJobOperationStatusLabel = useJobOperationStatusLabel();
+    const styleProcessLabel = useStyleProcessLabel();
+    if (!jobId) throw new Error("Job ID is required");
 
-  const routeData = useRouteData<{ job: Job }>(path.to.job(jobId));
-  const isPaused = routeData?.job?.status === "Paused";
+    const routeData = useRouteData<{ job: Job }>(path.to.job(jobId));
+    const isPaused = isPausedProp ?? routeData?.job?.status === "Paused";
 
   const fetcher = useFetcher<{}>();
   const submit = useSubmit();
   const permissions = usePermissions();
+
+  // Renders a quantity value with a trigger that jumps to the Process
+  // Completions tab, pre-filtered to the given type + this operation.
+  const renderQuantityCell = useCallback(
+    (value: number, type: string, operationId: string) => {
+      if (!quantitiesPath) return value;
+      return (
+        <HStack spacing={1}>
+          <span className="tabular-nums">{value}</span>
+          <IconButton
+            type="button"
+            size="sm"
+            variant="ghost"
+            aria-label={t`View process completions`}
+            icon={<LuArrowUpRight />}
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(
+                `${quantitiesPath}?filter=type:eq:${type}&filter=jobOperationId:eq:${operationId}`
+              );
+            }}
+          />
+        </HStack>
+      );
+    },
+    [navigate, quantitiesPath, t]
+  );
 
   const onOperationStatusChange = useCallback(
     (id: string, status: JobOperation["status"]) => {
@@ -74,7 +160,7 @@ const JobOperationsTable = memo(({ data, count }: JobOperationsTableProps) => {
   );
 
   const columns = useMemo<ColumnDef<JobOperation>[]>(() => {
-    return [
+    const cols: ColumnDef<JobOperation>[] = [
       {
         accessorKey: "description",
         header: t`Description`,
@@ -114,14 +200,32 @@ const JobOperationsTable = memo(({ data, count }: JobOperationsTableProps) => {
                 </DropdownMenuRadioGroup>
               </DropdownMenuContent>
             </DropdownMenu>
-            <Hyperlink
-              to={`${path.to.jobProductionEvents(
-                jobId
-              )}?filter=jobOperationId:eq:${row.original.id}`}
-              className="max-w-[260px] truncate"
-            >
-              {row.original.description}
-            </Hyperlink>
+            {disableNavigation ? (
+              <span className="max-w-[260px] truncate">
+                {styleProcessLabel(
+                  row.original.description,
+                  isStyleCuttingOperation({
+                    tags: row.original.tags,
+                    customFields: row.original.customFields
+                  })
+                )}
+              </span>
+            ) : (
+              <Hyperlink
+                to={`${path.to.jobProductionEvents(
+                  jobId
+                )}?filter=jobOperationId:eq:${row.original.id}`}
+                className="max-w-[260px] truncate"
+              >
+                {styleProcessLabel(
+                  row.original.description,
+                  isStyleCuttingOperation({
+                    tags: row.original.tags,
+                    customFields: row.original.customFields
+                  })
+                )}
+              </Hyperlink>
+            )}
           </HStack>
         ),
         meta: {
@@ -180,34 +284,97 @@ const JobOperationsTable = memo(({ data, count }: JobOperationsTableProps) => {
       {
         accessorKey: "quantityComplete",
         header: t`Qty. Complete`,
-        cell: (item) => item.getValue(),
+        cell: ({ row }) =>
+          renderQuantityCell(
+            row.original.quantityComplete ?? 0,
+            "Production",
+            row.original.id
+          ),
         meta: {
           icon: <LuCircleCheckBig />
         }
       },
       {
-        accessorKey: "quantityScrapped",
-        header: t`Qty. Scrapped`,
-        cell: (item) => item.getValue(),
+        accessorKey: "quantityReworked",
+        header: t`Qty. Reworked`,
+        cell: ({ row }) =>
+          renderQuantityCell(
+            row.original.quantityReworked ?? 0,
+            "Rework",
+            row.original.id
+          ),
         meta: {
-          icon: <LuTriangleAlert />
+          icon: <LuRotateCcw />
         }
       },
       {
-        accessorKey: "quantityReworked",
-        header: t`Qty. Reworked`,
-        cell: (item) => item.getValue(),
+        accessorKey: "quantityScrapped",
+        header: t`Qty. Scrapped`,
+        cell: ({ row }) =>
+          renderQuantityCell(
+            row.original.quantityScrapped ?? 0,
+            "Scrap",
+            row.original.id
+          ),
         meta: {
-          icon: <LuRotateCcw />
+          icon: <LuTriangleAlert />
+        }
+      }
+    ];
+
+    const withoutMes = hideMes ? cols.filter((c) => c.id !== "mes") : cols;
+    if (!showAssignee) return withoutMes;
+
+    return [
+      ...withoutMes,
+      {
+        id: "assignee",
+        header: t`Assignee`,
+        cell: ({ row }) => (
+          <Assignee
+            id={row.original.id ?? ""}
+            table="jobOperation"
+            value={row.original.assignee ?? ""}
+            variant="button"
+            size="sm"
+          />
+        ),
+        meta: {
+          icon: <LuUser />,
+          filter: {
+            type: "static",
+            options: people.map((employee) => ({
+              value: employee.id,
+              label: employee.name
+            }))
+          }
+        }
+      },
+      {
+        accessorKey: "assignedAt",
+        header: t`Assigned At`,
+        cell: ({ row }) =>
+          row.original.assignedAt
+            ? dateFormatter.format(new Date(row.original.assignedAt))
+            : "—",
+        meta: {
+          icon: <LuClock />
         }
       }
     ];
   }, [
+    dateFormatter,
+    disableNavigation,
     getJobOperationStatusLabel,
+    hideMes,
     isPaused,
     jobId,
     onOperationStatusChange,
     operationTypeLabel,
+    people,
+    renderQuantityCell,
+    showAssignee,
+    styleProcessLabel,
     t
   ]);
 
@@ -262,7 +429,8 @@ const JobOperationsTable = memo(({ data, count }: JobOperationsTableProps) => {
       columns={columns}
       data={optimisticData}
       primaryAction={
-        data.length > 0 && permissions.can("update", "production") ? (
+        primaryAction ??
+        (data.length > 0 && permissions.can("update", "production") ? (
           <fetcher.Form action={path.to.jobRecalculate(jobId)} method="post">
             <Button
               leftIcon={<LuRefreshCcwDot />}
@@ -274,14 +442,18 @@ const JobOperationsTable = memo(({ data, count }: JobOperationsTableProps) => {
               Recalculate
             </Button>
           </fetcher.Form>
-        ) : undefined
+        ) : undefined)
       }
       editableComponents={editableComponents}
-      title={t`Operations`}
-      withInlineEditing={permissions.can("update", "production")}
+      title={title ?? t`Operations`}
+      withHeader={withHeader}
+      withInlineEditing={
+        !disableInlineEditing && permissions.can("update", "production")
+      }
     />
   );
-});
+  }
+);
 
 JobOperationsTable.displayName = "JobOperationsTable";
 

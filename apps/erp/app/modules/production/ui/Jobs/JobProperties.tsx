@@ -29,6 +29,7 @@ import {
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { PostgrestResponse } from "@supabase/supabase-js";
+import type { ReactNode } from "react";
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { LuCopy, LuLink, LuTable, LuUnlink2 } from "react-icons/lu";
 import { RiProgress8Line } from "react-icons/ri";
@@ -66,17 +67,39 @@ import type { Job } from "../../types";
 import { getDeadlineIcon } from "./Deadline";
 import { useDeadlineTypeLabel } from "./jobLabels";
 
-const JobProperties = () => {
-  const { jobId } = useParams();
+type JobRouteData = {
+  job: Job;
+  tags: { name: string }[];
+  trackedEntities: Promise<PostgrestResponse<TrackedEntity>>;
+};
+
+const JobProperties = ({
+  jobId: jobIdProp,
+  routeData: routeDataProp,
+  validItemTypes = ["Part", "Tool"],
+  extraProperties,
+  readOnlyItem
+}: {
+  // Overrides so the panel can render outside the job route (e.g. a Master Work
+  // Order's backing job). When omitted, falls back to the job route params/data.
+  jobId?: string;
+  routeData?: JobRouteData;
+  // The item types the item picker allows/resolves — Style-backed work orders
+  // must include "Style" or the item value won't render.
+  validItemTypes?: MethodItemType[];
+  // Extra fields injected near the top (e.g. a bundle's Color / Size).
+  extraProperties?: ReactNode;
+  // Force the item (e.g. Style) to be non-editable regardless of lock state.
+  readOnlyItem?: boolean;
+} = {}) => {
+  const params = useParams();
+  const jobId = jobIdProp ?? params.jobId;
   const { t } = useLingui();
   const getDeadlineTypeLabel = useDeadlineTypeLabel();
   if (!jobId) throw new Error("jobId not found");
 
-  const routeData = useRouteData<{
-    job: Job;
-    tags: { name: string }[];
-    trackedEntities: Promise<PostgrestResponse<TrackedEntity>>;
-  }>(path.to.job(jobId));
+  const routeFromContext = useRouteData<JobRouteData>(path.to.job(jobId));
+  const routeData = routeDataProp ?? routeFromContext;
 
   const unlinkDisclosure = useDisclosure();
   const { carbon } = useCarbon();
@@ -231,6 +254,14 @@ const JobProperties = () => {
 
   const quantity = routeData?.job?.quantity ?? 0;
 
+  // Only offer the config-table quantity editor when the job actually carries a
+  // configuration (a non-empty color/size breakdown). Bundle jobs carry none —
+  // they're a single fixed color/size — so their quantity is a plain field.
+  const jobConfig = (routeData?.job as { configuration?: unknown })
+    ?.configuration as { configTable?: unknown[] } | null | undefined;
+  const jobIsConfigured =
+    Array.isArray(jobConfig?.configTable) && jobConfig.configTable.length > 0;
+
   return (
     <VStack
       spacing={4}
@@ -342,6 +373,8 @@ const JobProperties = () => {
         </Suspense>
       </VStack>
 
+      {extraProperties}
+
       {routeData?.job?.customerId &&
       routeData?.job?.salesOrderId &&
       routeData?.job?.salesOrderLineId ? (
@@ -413,10 +446,10 @@ const JobProperties = () => {
         <Item
           name="itemId"
           inline
-          isReadOnly={isDisabled}
+          isReadOnly={isDisabled || readOnlyItem}
           type={type}
           locationId={routeData?.job?.locationId ?? undefined}
-          validItemTypes={["Part", "Tool"]}
+          validItemTypes={validItemTypes}
           onChange={(value) => {
             onUpdate("itemId", value?.value ?? null);
           }}
@@ -425,7 +458,7 @@ const JobProperties = () => {
           }}
         />
       </ValidatedForm>
-      {configurationParameters ? (
+      {configurationParameters && jobIsConfigured ? (
         <VStack className="w-full">
           <span className="text-xs text-muted-foreground">{t`Quantity`}</span>
           <HStack spacing={0} className="w-full justify-between">

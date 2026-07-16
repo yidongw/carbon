@@ -9,19 +9,25 @@ import {
   LuGroup,
   LuHammer,
   LuLayoutTemplate,
+  LuPalette,
   LuPizza,
   LuPuzzle,
   LuRuler,
-  LuShapes
+  LuShapes,
+  LuShirt
 } from "react-icons/lu";
-import { usePermissions } from "~/hooks";
+import { useCompanySettings, usePermissions } from "~/hooks";
 import { useSavedViews } from "~/hooks/useSavedViews";
-import type { AuthenticatedRouteGroup } from "~/types";
+import type { AuthenticatedRouteGroup, Role } from "~/types";
 import { path } from "~/utils/path";
 
-export default function useItemsSubmodules() {
+export default function useItemsSubmodules(opts?: {
+  includeHidden?: boolean;
+}) {
   const { t } = useLingui();
   const permissions = usePermissions();
+  const companySettings = useCompanySettings();
+  const hidden = (companySettings?.hiddenSubmodules ?? []) as string[];
   const { addSavedViewsToRoutes } = useSavedViews();
   const itemsRoutes: AuthenticatedRouteGroup[] = [
     {
@@ -55,6 +61,28 @@ export default function useItemsSubmodules() {
           name: t`Templates`,
           to: path.to.templates,
           icon: <LuLayoutTemplate />
+        },
+        {
+          name: t`Styles`,
+          to: path.to.styles,
+          icon: <LuShirt />
+        }
+      ]
+    },
+    {
+      name: t`Style Properties`,
+      routes: [
+        {
+          name: t`Colors`,
+          to: path.to.styleColors,
+          icon: <LuPalette />,
+          role: "employee"
+        },
+        {
+          name: t`Sizes`,
+          to: path.to.styleSizes,
+          icon: <LuRuler />,
+          role: "employee"
         }
       ]
     },
@@ -118,30 +146,20 @@ export default function useItemsSubmodules() {
     }
   ];
 
+  const isVisible = (route: { role?: string; to?: string }) => {
+    if (route.role && !permissions.is(route.role as Role)) return false;
+    if (!opts?.includeHidden && route.to && hidden.includes(route.to)) {
+      return false;
+    }
+    return true;
+  };
+
   return {
     groups: itemsRoutes
-      .filter((group) => {
-        const filteredRoutes = group.routes.filter((route) => {
-          if (route.role) {
-            return permissions.is(route.role);
-          } else {
-            return true;
-          }
-        });
-
-        return filteredRoutes.length > 0;
-      })
       .map((group) => ({
         ...group,
-        routes: group.routes
-          .filter((route) => {
-            if (route.role) {
-              return permissions.is(route.role);
-            } else {
-              return true;
-            }
-          })
-          .map(addSavedViewsToRoutes)
+        routes: group.routes.filter(isVisible).map(addSavedViewsToRoutes)
       }))
+      .filter((group) => group.routes.length > 0)
   };
 }

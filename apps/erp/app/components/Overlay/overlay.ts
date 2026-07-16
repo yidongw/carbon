@@ -84,21 +84,39 @@ export const overlay = {
       };
     },
 
+    newMasterWorkOrder(): OverlayTarget {
+      return {
+        id: "newMasterWorkOrder",
+        url: `${path.to.newMasterWorkOrder}?overlay=true`,
+        params: {}
+      };
+    },
+
+
     newProductionQuantity({
       jobId,
-      jobOperationId
+      jobOperationId,
+      lockOperation
     }: {
       jobId?: string;
       jobOperationId?: string;
+      // Lock the job + operation selects to the seeded values (e.g. a Master
+      // Work Order can only report its cutting operation).
+      lockOperation?: boolean;
     } = {}): OverlayTarget {
       const query = new URLSearchParams();
       query.set("overlay", "true");
       if (jobId) query.set("jobId", jobId);
       if (jobOperationId) query.set("jobOperationId", jobOperationId);
+      if (lockOperation) query.set("lockOperation", "true");
       return {
         id: "newProductionQuantity",
         url: `${path.to.newProductionQuantity}?${query.toString()}`,
-        params: overlayParams({ jobId, jobOperationId })
+        params: overlayParams({
+          jobId,
+          jobOperationId,
+          lockOperation: lockOperation ? "true" : undefined
+        })
       };
     },
 
@@ -147,6 +165,54 @@ export const overlay = {
         id: "jobConfigTable",
         url: path.to.api.jobConfigTable(jobId),
         params: { jobId }
+      };
+    },
+
+    masterWorkOrderBundles({
+      masterWorkOrderId
+    }: {
+      masterWorkOrderId: string;
+    }): OverlayTarget {
+      return {
+        id: "masterWorkOrderBundles",
+        url: path.to.api.masterWorkOrderBundles(masterWorkOrderId),
+        params: { masterWorkOrderId }
+      };
+    },
+
+    masterWorkOrderProcesses({
+      masterWorkOrderId
+    }: {
+      masterWorkOrderId: string;
+    }): OverlayTarget {
+      return {
+        id: "masterWorkOrderProcesses",
+        url: path.to.api.masterWorkOrderProcesses(masterWorkOrderId),
+        params: { masterWorkOrderId }
+      };
+    },
+
+    bundleWorkOrderProcesses({
+      bundleWorkOrderId
+    }: {
+      bundleWorkOrderId: string;
+    }): OverlayTarget {
+      return {
+        id: "bundleWorkOrderProcesses",
+        url: path.to.api.bundleWorkOrderProcesses(bundleWorkOrderId),
+        params: { bundleWorkOrderId }
+      };
+    },
+
+    masterWorkOrderSplitBatch({
+      masterWorkOrderId
+    }: {
+      masterWorkOrderId: string;
+    }): OverlayTarget {
+      return {
+        id: "masterWorkOrderSplitBatch",
+        url: path.to.api.masterWorkOrderSplitBatch(masterWorkOrderId),
+        params: { masterWorkOrderId }
       };
     },
 

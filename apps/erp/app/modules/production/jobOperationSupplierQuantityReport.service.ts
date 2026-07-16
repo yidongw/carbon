@@ -10,7 +10,10 @@ import {
 } from "~/utils/query";
 import { assertSupplierQuantityAllowedForOperation } from "./production.service";
 import type { ProductionQuantityLineInput } from "./productionQuantityReport.models";
-import { validateProductionQuantityLines } from "./productionQuantityReport.service";
+import {
+  validateProductionQuantityLines,
+  validateProductionQuantityRemaining
+} from "./productionQuantityReport.service";
 
 export type JobOperationSupplierQuantityLine =
   Database["public"]["Tables"]["jobOperationSupplierQuantity"]["Row"] & {
@@ -340,6 +343,16 @@ export async function createJobOperationSupplierQuantityReport(
   const lineValidation = validateProductionQuantityLines(args.lines);
   if (lineValidation.error) {
     return { data: null, error: lineValidation.error };
+  }
+
+  const remainingCheck = await validateProductionQuantityRemaining(client, {
+    companyId: args.companyId,
+    jobId: args.jobId,
+    jobOperationId: args.jobOperationId,
+    lines: args.lines
+  });
+  if (remainingCheck.error) {
+    return { data: null, error: remainingCheck.error };
   }
 
   const operationValidation = await assertSupplierQuantityAllowedForOperation(

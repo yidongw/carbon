@@ -702,7 +702,7 @@ function AdvancedSection({
               htmlFor="billOfProcess"
               className="text-sm font-medium leading-none"
             >
-              Bill of Process
+              <Trans>Bill of Process</Trans>
             </label>
           </div>
           <VStack spacing={2} className="pl-6">

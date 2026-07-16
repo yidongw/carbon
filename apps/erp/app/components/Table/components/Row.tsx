@@ -18,6 +18,9 @@ type RowProps<T> = ComponentProps<typeof Tr> & {
   isEditing: boolean;
   isEditMode: boolean;
   isFrozenColumn?: boolean;
+  // Whether this row's expand panel is open — re-renders the row (and its expand
+  // chevron cell) when toggled.
+  isRowExpanded?: boolean;
   isRowSelected?: boolean;
   pinnedColumns: string;
   selectedCell: Position;
@@ -36,6 +39,7 @@ const Row = <T extends object>({
   isEditing,
   isEditMode,
   isFrozenColumn = false,
+  isRowExpanded: _isRowExpanded,
   isRowSelected = false,
   pinnedColumns,
   row,
@@ -103,6 +107,7 @@ const MemoizedRow = memo(
     prev.rowIsSelected === next.rowIsSelected &&
     prev.isEditing === next.isEditing &&
     prev.isEditMode === next.isEditMode &&
+    prev.isRowExpanded === next.isRowExpanded &&
     prev.selectedCell?.row === next.selectedCell?.row &&
     prev.selectedCell?.column === next.selectedCell?.column &&
     prev.pinnedColumns === next.pinnedColumns &&

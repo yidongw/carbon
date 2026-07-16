@@ -22,6 +22,7 @@ import {
   getJobOperations,
   getJobs,
   productionQuantityCreateFormValidator,
+  recordBundleProductionReport,
   resolveProductionQuantityCanAutoApprove,
   seededActorFromOperationContext,
   validateActorMatchesOperationSupplierRouting
@@ -60,6 +61,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   const jobId = url.searchParams.get("jobId") ?? "";
   const jobOperationId = url.searchParams.get("jobOperationId") ?? "";
+  const lockOperation = url.searchParams.get("lockOperation") === "true";
 
   const jobs = await getJobs(client, companyId, {
     search: null,
@@ -114,7 +116,15 @@ export async function loader({ request }: LoaderFunctionArgs) {
     jobOperations = operations.data ?? [];
     itemId = job.data?.itemId ?? null;
 
-    if (itemId) {
+    // A Bundle Work Order's job already has a fixed color/size, so reporting on
+    // it is a plain quantity — don't surface the style's color/size config table.
+    const bundle = await client
+      .from("bundleWorkOrder")
+      .select("id")
+      .eq("jobId", jobId)
+      .maybeSingle();
+
+    if (itemId && !bundle.data) {
       const params = await getConfigurationParameters(
         client,
         itemId,
@@ -144,13 +154,17 @@ export async function loader({ request }: LoaderFunctionArgs) {
     }
   }
 
+  const seededActor = opContext
+    ? seededActorFromOperationContext(opContext)
+    : null;
   const actorContext = opContext
     ? {
         ...opContext,
         defaultActorKind: defaultActorKindFromOperationType(
           opContext.operationType
         ),
-        seededActor: seededActorFromOperationContext(opContext)
+        seededActor,
+        lockActorSelection: seededActor?.lockActorSelection ?? false
       }
     : {
         defaultActorKind: "employee" as const,
@@ -180,12 +194,31 @@ export async function loader({ request }: LoaderFunctionArgs) {
       value: operation.id!
     })) ?? [];
 
+  // Remaining per operation (target − completed − scrapped − reworked, floored
+  // at 0) — used to prefill the Production quantity when an operation is chosen.
+  const remainingByOperationId: Record<string, number> = {};
+  for (const op of jobOperations ?? []) {
+    if (!op.id) continue;
+    remainingByOperationId[op.id] = Math.max(
+      0,
+      (op.targetQuantity ?? op.operationQuantity ?? 0) -
+        (op.quantityComplete ?? 0) -
+        (op.quantityScrapped ?? 0) -
+        (op.quantityReworked ?? 0)
+    );
+  }
+
   return {
     jobId,
     jobOperationId,
     jobOptions,
     operationOptions,
     itemId,
+    remainingByOperationId,
+    // Lock job + operation when the caller seeds a specific operation to report
+    // (e.g. a Master Work Order's cutting operation).
+    lockJobSelection: lockOperation && Boolean(jobId),
+    lockOperationSelection: lockOperation && Boolean(jobOperationId),
     configurationParameters:
       configurationParameters && configurationParameters.length > 0
         ? configurationParameters
@@ -328,9 +361,24 @@ export async function action({ request }: ActionFunctionArgs) {
       validation.submittedData,
       await flash(
         request,
-        error(result.error, "Failed to create process completion")
+        error(
+          result.error,
+          result.error.message || "Failed to create process completion"
+        )
       )
     );
+  }
+
+  // Cutting reports on a Master Work Order no longer auto-spawn bundles — the
+  // user reviews/edits the split via the "Split Batch" modal, which creates the
+  // bundles. Here we only cache a Bundle Work Order's own reported quantity.
+  if (actorKind !== "supplier") {
+    await recordBundleProductionReport(client, {
+      jobId: operation.jobId,
+      companyId,
+      createdBy: userId,
+      lines: mappedLines
+    });
   }
 
   if (isOverlay) {

@@ -19,11 +19,14 @@ import { Trans } from "@lingui/react/macro";
 import { useCallback, useEffect } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { redirect, useFetcher, useLoaderData } from "react-router";
+import useItemsSubmodules from "~/modules/items/ui/useItemsSubmodules";
 import {
   getCompanySettings,
+  updateHiddenSubmodulesSetting,
   updateMaterialGeneratedIdsSetting,
   updateMetricSettings
 } from "~/modules/settings";
+import { SubmoduleVisibility } from "~/modules/settings/ui/SubmoduleVisibility";
 
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
@@ -78,6 +81,25 @@ export async function action({ request }: ActionFunctionArgs) {
         return { success: false, message: result.error.message };
       return { success: true, message: "Material units setting updated" };
     }
+
+    case "hiddenSubmodules": {
+      let hiddenSubmodules: string[] = [];
+      try {
+        hiddenSubmodules = JSON.parse(
+          String(formData.get("hiddenSubmodules") ?? "[]")
+        );
+      } catch {
+        // keep empty on parse failure
+      }
+      const result = await updateHiddenSubmodulesSetting(
+        client,
+        companyId,
+        hiddenSubmodules
+      );
+      if (result.error)
+        return { success: false, message: result.error.message };
+      return { success: true, message: "Navigation updated" };
+    }
   }
 
   return { success: false, message: "Invalid form data" };
@@ -86,6 +108,7 @@ export async function action({ request }: ActionFunctionArgs) {
 export default function ItemsSettingsRoute() {
   const { companySettings } = useLoaderData<typeof loader>();
   const fetcher = useFetcher<typeof action>();
+  const { groups } = useItemsSubmodules({ includeHidden: true });
 
   const isToggling = fetcher.state !== "idle";
 
@@ -207,6 +230,11 @@ export default function ItemsSettingsRoute() {
             </HStack>
           </CardContent>
         </Card>
+
+        <SubmoduleVisibility
+          groups={groups}
+          hidden={companySettings.hiddenSubmodules ?? []}
+        />
       </VStack>
     </ScrollArea>
   );
