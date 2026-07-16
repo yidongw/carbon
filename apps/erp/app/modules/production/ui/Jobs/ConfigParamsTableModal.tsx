@@ -4,6 +4,7 @@ import {
   type ReactNode,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState
 } from "react";
@@ -27,6 +28,7 @@ import type { ItemConfigTableOverlayLoaderData } from "~/routes/api+/items.$item
 import { path } from "~/utils/path";
 import {
   buildColumns,
+  type Column,
   computeTotal,
   configParamsModalBodyClassName,
   configParamsModalContentClassName,
@@ -38,15 +40,104 @@ import {
   makeDefaultRow,
   mergeRows,
   normalizeRow,
+  type ConfigurationParameterInput,
   type Row,
   validateCell
 } from "./configTableShared";
+
+/** Flat editor columns: every list param as a descriptor + one Quantities cell. */
+function buildFlatColumns(
+  parameters: ConfigurationParameter[],
+  quantityLabel: string
+): Column[] {
+  const cols: Column[] = parameters
+    .filter((p) => p.dataType === "list")
+    .map((p) => ({
+      key: p.key,
+      label: p.label,
+      type: "list" as const,
+      options: p.listOptions ?? [],
+      // Fixed by the add button — not editable in the row.
+      readOnly: true
+    }));
+  cols.push({ key: "Quantities", label: quantityLabel, type: "quantity" });
+  return cols;
+}
+
+/** Explode merged/matrix rows into one flat row per non-zero color/size cell. */
+function matrixRowsToFlatRows(
+  rows: Row[],
+  primaryParam: ConfigurationParameterInput | null,
+  primaryKeys: string[],
+  parameters: ConfigurationParameter[]
+): Row[] {
+  const descriptorKeys = parameters
+    .filter((p) => p.dataType === "list" && p.key !== primaryParam?.key)
+    .map((p) => p.key);
+  const flat: Row[] = [];
+  for (const mr of rows) {
+    for (const pk of primaryKeys) {
+      const qty = Number(mr[pk]) || 0;
+      if (qty <= 0) continue;
+      const row: Row = { Quantities: qty };
+      if (primaryParam) row[primaryParam.key] = pk;
+      for (const dk of descriptorKeys) row[dk] = (mr[dk] as string) ?? "";
+      flat.push(row);
+    }
+  }
+  return flat;
+}
+
+/** Merge flat rows back into the standard (matrix) config table shape. */
+function flatRowsToMergedConfig(
+  flatRows: Row[],
+  parameters: ConfigurationParameter[],
+  primaryParam: ConfigurationParameterInput | null,
+  primaryKeys: string[],
+  columns: Column[]
+): { configTable: Row[]; configTablePrimaryKeys: string[] } {
+  if (!primaryParam) {
+    const total = flatRows.reduce((s, r) => s + (Number(r.Quantities) || 0), 0);
+    return {
+      configTable: [{ Quantities: total }],
+      configTablePrimaryKeys: ["Quantities"]
+    };
+  }
+  const descriptorKeys = parameters
+    .filter((p) => p.dataType === "list" && p.key !== primaryParam.key)
+    .map((p) => p.key);
+  const matrixRows: Row[] = [];
+  for (const fr of flatRows) {
+    const primaryValue = String(fr[primaryParam.key] ?? "");
+    if (!primaryKeys.includes(primaryValue)) continue;
+    const row: Row = Object.fromEntries(primaryKeys.map((k) => [k, 0]));
+    for (const dk of descriptorKeys) row[dk] = (fr[dk] as string) ?? "";
+    row[primaryValue] = Number(fr.Quantities) || 0;
+    matrixRows.push(row);
+  }
+  return {
+    configTable: mergeRows(matrixRows, columns),
+    configTablePrimaryKeys: primaryKeys
+  };
+}
 
 export type ConfigParamsTableModalProps = {
   parameters: ConfigurationParameter[];
   initialRows?: Row[];
   referenceByRowIndex?: Array<Record<string, number>>;
+  // Flat "one row per color/size" editor (multiple rows per cell) that also emits
+  // raw `splitRows` — used by production-quantity reporting.
+  splitMode?: boolean;
   jobDisplayId?: string | null;
+  /** Display label per list-option value (e.g. color code -> color name). */
+  optionLabels?: Record<string, string>;
+  /**
+   * Editing an existing report (not filing a new one). The plan "Remaining"
+   * indicator is meaningless here — the report's own quantity already counts
+   * against the plan — so the footer shows the change (delta) from the report's
+   * original total instead, and the plan cap doesn't block confirming.
+   */
+  isEditingReport?: boolean;
 } & Omit<OverlayFormInjectedProps, "fetcher" | "action" | "confirmMode"> & {
     // Optional so the same content can render as a plain local modal (client
     // confirm) without the overlay's submit fetcher.
@@ -61,7 +152,10 @@ function ConfigParamsTableModal({
   parameters,
   initialRows,
   referenceByRowIndex,
+  splitMode,
   jobDisplayId,
+  optionLabels,
+  isEditingReport,
   onDismiss,
   action: formAction,
   fetcher,
@@ -71,6 +165,7 @@ function ConfigParamsTableModal({
   const { t } = useLingui();
   // `"none"` is a read-only view: cells are disabled and the only button closes.
   const readOnly = confirmMode === "none";
+  const flat = Boolean(splitMode);
   const materialShapeOptions = useShape();
   const materialOptions = materialShapeOptions.map((shape) => ({
     label: <Enumerable value={shape.label} />,
@@ -80,8 +175,22 @@ function ConfigParamsTableModal({
     parameters,
     t`Quantities`
   );
+  // In flat mode the grid uses one row per color/size (multiple allowed) with a
+  // single Quantities column; the stored config is still merged on submit.
+  const flatColumns = buildFlatColumns(parameters, t`Quantities`);
+  const gridColumns = flat ? flatColumns : columns;
+  const gridPrimaryKeys = flat ? ["Quantities"] : primaryKeys;
 
   const [rows, setRows] = useState<Row[]>(() => {
+    if (flat) {
+      const seed =
+        initialRows && initialRows.length > 0
+          ? matrixRowsToFlatRows(initialRows, primaryParam, primaryKeys, parameters)
+          : [];
+      return seed.length > 0
+        ? seed.map((row) => normalizeRow(row, flatColumns))
+        : [makeDefaultRow(flatColumns)];
+    }
     if (initialRows && initialRows.length > 0) {
       return initialRows.map((row) => normalizeRow(row, columns));
     }
@@ -90,10 +199,22 @@ function ConfigParamsTableModal({
   const [invalidCells, setInvalidCells] = useState<Set<string>>(new Set());
   const [validationError, setValidationError] = useState("");
 
-  const hasReferences = (referenceByRowIndex?.length ?? 0) > 0;
-  const total = computeTotal(rows, primaryKeys);
+  const hasReferences = !flat && (referenceByRowIndex?.length ?? 0) > 0;
+  const total = computeTotal(rows, gridPrimaryKeys);
 
-  const addRow = () => setRows((prev) => [...prev, makeDefaultRow(columns)]);
+  // When editing an existing report, measure the change against the report's
+  // original total (its saved config = `initialRows`) rather than the plan.
+  const baselineTotal = useMemo(() => {
+    if (!isEditingReport) return 0;
+    let sum = 0;
+    for (const row of initialRows ?? []) {
+      for (const key of primaryKeys) sum += Number((row as Row)[key]) || 0;
+    }
+    return sum;
+  }, [isEditingReport, initialRows, primaryKeys]);
+  const delta = total - baselineTotal;
+
+  const addRow = () => setRows((prev) => [...prev, makeDefaultRow(gridColumns)]);
 
   const deleteRow = (index: number) =>
     setRows((prev) => prev.filter((_, i) => i !== index));
@@ -114,15 +235,99 @@ function ConfigParamsTableModal({
     setValidationError("");
   };
 
+  // Flat (report) mode: per-color/size plan caps from the config-param reference,
+  // so we can offer a button per plannable cell and warn if a cell's entered
+  // quantity exceeds its plan.
+  const colorKey = parameters.find((p) => p.key === "color")?.key ?? "color";
+  const sizeKey = parameters.find((p) => p.key === "size")?.key ?? "size";
+  const cellKeyOf = (color: unknown, size: unknown) =>
+    `${String(color ?? "")}|${String(size ?? "")}`;
+
+  const planCells: { colorCode: string; sizeCode: string; cap: number }[] = [];
+  if (flat) {
+    const descriptorKeys = parameters
+      .filter((p) => p.dataType === "list" && p.key !== primaryParam?.key)
+      .map((p) => p.key);
+    (initialRows ?? []).forEach((row, i) => {
+      const refs = referenceByRowIndex?.[i] ?? {};
+      for (const pk of primaryKeys) {
+        const cap = Number(refs[pk]) || 0;
+        if (cap <= 0) continue;
+        const cellRow: Row = {};
+        if (primaryParam) cellRow[primaryParam.key] = pk;
+        for (const dk of descriptorKeys) cellRow[dk] = (row[dk] as string) ?? "";
+        planCells.push({
+          colorCode: String(cellRow[colorKey] ?? ""),
+          sizeCode: String(cellRow[sizeKey] ?? ""),
+          cap
+        });
+      }
+    });
+  }
+  const enteredByCell = new Map<string, number>();
+  for (const r of rows) {
+    const k = cellKeyOf(r[colorKey], r[sizeKey]);
+    enteredByCell.set(k, (enteredByCell.get(k) ?? 0) + (Number(r.Quantities) || 0));
+  }
+  const capByCell = new Map(
+    planCells.map((c) => [cellKeyOf(c.colorCode, c.sizeCode), c.cap])
+  );
+  const remainingForCell = (c: { colorCode: string; sizeCode: string; cap: number }) =>
+    c.cap - (enteredByCell.get(cellKeyOf(c.colorCode, c.sizeCode)) ?? 0);
+  const addableCells = planCells.filter((c) => remainingForCell(c) > 0);
+  const totalPlan = planCells.reduce((s, c) => s + c.cap, 0);
+  const planRemaining = totalPlan - total;
+  let overPlan = false;
+  for (const [k, entered] of enteredByCell) {
+    const cap = capByCell.get(k);
+    if (cap !== undefined && entered > cap) overPlan = true;
+  }
+  // Over the plan either per-cell (a color/size exceeds its own cap) or in total
+  // (the grand total exceeds the plan — e.g. reporting more once every cell's
+  // remaining is already 0, so there are no positive per-cell caps to trip).
+  // Editing a report shouldn't be gated on the plan "remaining" — the report's
+  // own quantity already counts against it, so the calc is always "over".
+  const exceedsPlan = !isEditingReport && (overPlan || planRemaining < 0);
+  // Mark the quantity cell red for every row whose color/size aggregate exceeds
+  // its plan (same as Split Batch).
+  const overCellKeys = new Set<string>();
+  if (flat) {
+    rows.forEach((r, i) => {
+      const k = cellKeyOf(r[colorKey], r[sizeKey]);
+      const cap = capByCell.get(k);
+      if (cap !== undefined && (enteredByCell.get(k) ?? 0) > cap) {
+        overCellKeys.add(getCellKey(i, "Quantities"));
+      }
+    });
+  }
+  const gridInvalidCells =
+    overCellKeys.size > 0
+      ? new Set([...invalidCells, ...overCellKeys])
+      : invalidCells;
+  const addCellRow = (c: { colorCode: string; sizeCode: string; cap: number }) =>
+    setRows((prev) => [
+      ...prev,
+      normalizeRow(
+        {
+          [colorKey]: c.colorCode,
+          [sizeKey]: c.sizeCode,
+          Quantities: Math.max(0, remainingForCell(c))
+        },
+        gridColumns
+      )
+    ]);
+
   const handleSubmit = () => {
-    const normalizedRows = rows.map((row) => normalizeRow(row, columns));
+    // Can't confirm while the report exceeds its config-param plan.
+    if (flat && exceedsPlan) return;
+    const normalizedRows = rows.map((row) => normalizeRow(row, gridColumns));
     const populatedRows = normalizedRows
       .map((row, rowIndex) => ({ row, rowIndex }))
-      .filter(({ row }) => hasValue(row, columns));
+      .filter(({ row }) => hasValue(row, gridColumns));
     const nextInvalidCells = new Set<string>();
 
     for (const { row, rowIndex } of populatedRows) {
-      for (const column of columns) {
+      for (const column of gridColumns) {
         if (!validateCell(row, column, materialOptions, false)) {
           nextInvalidCells.add(getCellKey(rowIndex, column.key));
         }
@@ -140,12 +345,35 @@ function ConfigParamsTableModal({
     setInvalidCells(new Set());
     setValidationError("");
     const rowsToSave = populatedRows.map(({ row }) => row);
-    const mergedRows = mergeRows(rowsToSave, columns);
 
-    const configuration = {
-      configTable: mergedRows,
-      configTablePrimaryKeys: primaryKeys
-    };
+    let configuration: Record<string, unknown>;
+    if (flat) {
+      // Store the merged config (unchanged downstream) + the raw rows so a master
+      // WO cutting report can prefill one bundle per row in Split Batch.
+      const merged = flatRowsToMergedConfig(
+        rowsToSave,
+        parameters,
+        primaryParam,
+        primaryKeys,
+        columns
+      );
+      const colorKey =
+        parameters.find((p) => p.key === "color")?.key ?? "color";
+      const sizeKey = parameters.find((p) => p.key === "size")?.key ?? "size";
+      configuration = {
+        ...merged,
+        splitRows: rowsToSave.map((r) => ({
+          colorCode: String(r[colorKey] ?? "") || null,
+          sizeCode: String(r[sizeKey] ?? "") || null,
+          quantity: Number(r.Quantities) || 0
+        }))
+      };
+    } else {
+      configuration = {
+        configTable: mergeRows(rowsToSave, columns),
+        configTablePrimaryKeys: primaryKeys
+      };
+    }
 
     if (confirmMode === "client") {
       onConfirmSuccess(buildConfigTableActionResponse(configuration));
@@ -162,10 +390,10 @@ function ConfigParamsTableModal({
   const tableSection = (
     <>
       <EditableConfigGrid
-        columns={columns}
+        columns={gridColumns}
         rows={rows}
-        invalidCells={invalidCells}
-        referenceByRowIndex={referenceByRowIndex}
+        invalidCells={gridInvalidCells}
+        referenceByRowIndex={flat ? undefined : referenceByRowIndex}
         hasReferences={hasReferences}
         allowNegative={false}
         mode="delta"
@@ -173,13 +401,36 @@ function ConfigParamsTableModal({
         materialOptions={materialOptions}
         updateCell={updateCell}
         deleteRow={deleteRow}
+        optionLabels={optionLabels}
         readOnly={readOnly}
       />
       {validationError && (
         <div className="text-sm text-destructive">{validationError}</div>
       )}
-      <HStack className="mt-4 justify-between">
-        {!readOnly ? (
+      <HStack className="mt-4 items-start justify-between">
+        {readOnly ? (
+          <span />
+        ) : flat ? (
+          // Flat mode never offers a generic "add row" — you can only add a row
+          // for a specific plannable color/size (and nothing once every cell's
+          // remaining is used up).
+          <div className="flex flex-wrap gap-2">
+            {addableCells.map((c) => (
+              <Button
+                key={cellKeyOf(c.colorCode, c.sizeCode)}
+                type="button"
+                variant="secondary"
+                size="sm"
+                leftIcon={<LuPlus />}
+                onClick={() => addCellRow(c)}
+              >
+                {c.sizeCode || "—"} ·{" "}
+                {optionLabels?.[c.colorCode] || c.colorCode || "—"} ·{" "}
+                <span className="tabular-nums">{remainingForCell(c)}</span>
+              </Button>
+            ))}
+          </div>
+        ) : (
           <Button
             type="button"
             variant="secondary"
@@ -189,10 +440,8 @@ function ConfigParamsTableModal({
           >
             <Trans>Add Row</Trans>
           </Button>
-        ) : (
-          <span />
         )}
-        <span className="text-sm text-muted-foreground">
+        <span className="shrink-0 text-sm text-muted-foreground">
           <Trans>Total</Trans>:{" "}
           <strong className="text-foreground">{total}</strong>
         </span>
@@ -207,19 +456,62 @@ function ConfigParamsTableModal({
       </Button>
     </HStack>
   ) : (
-    <HStack className="justify-end gap-2">
-      <Button type="button" variant="ghost" onClick={onDismiss}>
-        <Trans>Cancel</Trans>
-      </Button>
-      <Button
-        type="button"
-        variant="primary"
-        isLoading={fetcher ? fetcher.state !== "idle" : false}
-        isDisabled={fetcher ? fetcher.state !== "idle" : false}
-        onClick={handleSubmit}
-      >
-        <Trans>Confirm</Trans>
-      </Button>
+    <HStack className="justify-between">
+      {flat && isEditingReport ? (
+        <HStack spacing={3} className="text-sm text-muted-foreground">
+          <span>
+            <Trans>Delta</Trans>:{" "}
+            <strong
+              className={
+                delta < 0
+                  ? "tabular-nums text-red-500"
+                  : "tabular-nums text-foreground"
+              }
+            >
+              {delta > 0 ? `+${delta}` : delta}
+            </strong>
+          </span>
+        </HStack>
+      ) : flat ? (
+        <HStack spacing={3} className="text-sm text-muted-foreground">
+          <span>
+            <Trans>Remaining</Trans>:{" "}
+            <strong
+              className={
+                planRemaining < 0
+                  ? "tabular-nums text-red-500"
+                  : "tabular-nums text-foreground"
+              }
+            >
+              {planRemaining}
+            </strong>
+          </span>
+          {exceedsPlan ? (
+            <span className="text-amber-600 dark:text-amber-500">
+              <Trans>Exceeds plan</Trans>
+            </span>
+          ) : null}
+        </HStack>
+      ) : (
+        <span />
+      )}
+      <HStack className="gap-2">
+        <Button type="button" variant="ghost" onClick={onDismiss}>
+          <Trans>Cancel</Trans>
+        </Button>
+        <Button
+          type="button"
+          variant="primary"
+          isLoading={fetcher ? fetcher.state !== "idle" : false}
+          isDisabled={
+            (fetcher ? fetcher.state !== "idle" : false) ||
+            (flat && exceedsPlan)
+          }
+          onClick={handleSubmit}
+        >
+          <Trans>Confirm</Trans>
+        </Button>
+      </HStack>
     </HStack>
   );
 
@@ -260,11 +552,13 @@ function extractConfigTable(configuration: unknown): Row[] | undefined {
 export function buildConfigEditorRows({
   parameters,
   configuration,
-  referenceContext
+  referenceContext,
+  prefillFromReference = false
 }: {
   parameters: ConfigurationParameter[];
   configuration?: unknown;
   referenceContext?: ConfigTableReferenceContext;
+  prefillFromReference?: boolean;
 }): {
   initialRows?: Row[];
   referenceByRowIndex?: Array<Record<string, number>>;
@@ -276,7 +570,8 @@ export function buildConfigEditorRows({
     defaultQuantityLabel: "Quantities",
     currentConfiguration:
       configTable !== undefined ? { configTable } : undefined,
-    referenceContext
+    referenceContext,
+    prefillFromReference
   });
   return {
     initialRows: editor.rows,
@@ -322,7 +617,10 @@ export function ConfigParamsTableLocalModal({
   reportKind,
   configuration,
   buildReferenceContext,
-  jobDisplayId
+  prefillFromReference = false,
+  splitMode = false,
+  jobDisplayId,
+  isEditingReport
 }: {
   open: boolean;
   onClose: () => void;
@@ -335,7 +633,10 @@ export function ConfigParamsTableLocalModal({
   buildReferenceContext?: (
     source: ConfigReferenceSource | null
   ) => ConfigTableReferenceContext | undefined;
+  prefillFromReference?: boolean;
+  splitMode?: boolean;
   jobDisplayId?: string | null;
+  isEditingReport?: boolean;
 }) {
   const fetcher = useFetcher<ItemConfigTableOverlayLoaderData | null>();
   const load = useRef(fetcher.load);
@@ -359,7 +660,8 @@ export function ConfigParamsTableLocalModal({
     ? buildConfigEditorRows({
         parameters: data.parameters,
         configuration,
-        referenceContext
+        referenceContext,
+        prefillFromReference
       })
     : {};
 
@@ -376,7 +678,9 @@ export function ConfigParamsTableLocalModal({
             parameters={data.parameters}
             initialRows={initialRows}
             referenceByRowIndex={referenceByRowIndex}
+            splitMode={splitMode}
             jobDisplayId={jobDisplayId ?? data.itemReadableId}
+            isEditingReport={isEditingReport}
             confirmMode="client"
             onConfirmSuccess={onConfirm}
             onDismiss={onClose}
@@ -414,7 +718,13 @@ type ConfigTableModalRequest = {
   buildReferenceContext?: (
     source: ConfigReferenceSource | null
   ) => ConfigTableReferenceContext | undefined;
+  /** Seed empty quantity cells with their remaining reference on first open. */
+  prefillFromReference?: boolean;
+  /** Flat one-row-per-color/size editor that also emits raw `splitRows`. */
+  splitMode?: boolean;
   jobDisplayId?: string | null;
+  /** Editing an existing report — footer shows the delta, not plan remaining. */
+  isEditingReport?: boolean;
   /** Receives the validated edited config when the user confirms. */
   onConfirm: (result: ConfigTableOverlaySuccess) => void;
 };
@@ -449,7 +759,10 @@ export function useConfigTableModal(): {
       reportKind={request.reportKind}
       configuration={request.configuration}
       buildReferenceContext={request.buildReferenceContext}
+      prefillFromReference={request.prefillFromReference}
+      splitMode={request.splitMode}
       jobDisplayId={request.jobDisplayId}
+      isEditingReport={request.isEditingReport}
     />
   ) : null;
 

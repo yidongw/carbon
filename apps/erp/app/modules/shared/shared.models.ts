@@ -121,6 +121,7 @@ export const tablesWithTags = [
 ];
 
 export const methodItemType = [
+  "Style",
   "Part",
   "Material",
   "Tool",

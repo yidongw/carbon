@@ -60,16 +60,31 @@ type JobMaterialsTableProps = {
   data: JobMaterial[];
   count: number;
   nearExpiryWarningDays?: number | null;
+  // Overrides so the table can be reused outside the job route (e.g. a Master
+  // Work Order's backing job). When omitted, falls back to the job route params
+  // + route data, preserving existing job-page behavior.
+  jobId?: string;
+  jobStatus?: string;
+  // Suppress cell deep-links into the job pages (when embedded in another shell).
+  disableNavigation?: boolean;
 };
 const JobMaterialsTable = memo(
-  ({ data, count, nearExpiryWarningDays }: JobMaterialsTableProps) => {
-    const { jobId } = useParams();
+  ({
+    data,
+    count,
+    nearExpiryWarningDays,
+    jobId: jobIdProp,
+    jobStatus,
+    disableNavigation
+  }: JobMaterialsTableProps) => {
+    const params = useParams();
+    const jobId = jobIdProp ?? params.jobId;
     const { t } = useLingui();
     if (!jobId) throw new Error("Job ID is required");
 
     const routeData = useRouteData<{ job: Job }>(path.to.job(jobId));
     const isRequired = ["Planned", "Ready", "In Progress", "Paused"].includes(
-      routeData?.job?.status ?? ""
+      jobStatus ?? routeData?.job?.status ?? ""
     );
 
     const fetcher = useFetcher<{}>();
@@ -186,18 +201,24 @@ const JobMaterialsTable = memo(
 
               <VStack spacing={0}>
                 <HStack spacing={2}>
-                  <Hyperlink
-                    to={path.to.jobMakeMethod(
-                      jobId,
-                      row.original.jobMakeMethodId
-                    )}
-                    onClick={() => {
-                      setSearchParams({ materialId: row.original.id ?? null });
-                    }}
-                    className="max-w-[260px] truncate"
-                  >
-                    {row.original.itemReadableId}
-                  </Hyperlink>
+                  {disableNavigation ? (
+                    <span className="max-w-[260px] truncate">
+                      {row.original.itemReadableId}
+                    </span>
+                  ) : (
+                    <Hyperlink
+                      to={path.to.jobMakeMethod(
+                        jobId,
+                        row.original.jobMakeMethodId
+                      )}
+                      onClick={() => {
+                        setSearchParams({ materialId: row.original.id ?? null });
+                      }}
+                      className="max-w-[260px] truncate"
+                    >
+                      {row.original.itemReadableId}
+                    </Hyperlink>
+                  )}
                   {nearExpiryWarningDays !== null &&
                     nearExpiryWarningDays !== undefined &&
                     row.original.hasExpiredBatch && (
@@ -442,7 +463,8 @@ const JobMaterialsTable = memo(
       setSearchParams,
       isRequired,
       formatter,
-      sessionItemsCount
+      sessionItemsCount,
+      disableNavigation
     ]);
 
     const renderContextMenu = useMemo(() => {

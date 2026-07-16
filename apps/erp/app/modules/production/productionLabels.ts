@@ -51,29 +51,50 @@ export function useJobStatusLabel() {
   );
 }
 
+// Cutting is a system-identified style stage (styleStage === "cutting" / the
+// cutting tag), so its process name can be shown translated. Other process
+// names are free-text user data and pass through unchanged. Memoized for a
+// stable identity (feeds table column-builder useMemo deps).
+export function useStyleProcessLabel() {
+  const { t } = useLingui();
+
+  return useCallback(
+    (description: string | null | undefined, isCutting: boolean) =>
+      isCutting ? t`Cutting` : (description ?? ""),
+    [t]
+  );
+}
+
 export function useJobOperationStatusLabel() {
   const { t } = useLingui();
 
-  return (status: (typeof jobOperationStatus)[number]) => {
-    switch (status) {
-      case "Todo":
-        return t`Todo`;
-      case "Ready":
-        return t`Ready`;
-      case "Waiting":
-        return t`Waiting`;
-      case "In Progress":
-        return t`In Progress`;
-      case "Paused":
-        return t`Paused`;
-      case "Done":
-        return t`Done`;
-      case "Canceled":
-        return t`Canceled`;
-      default:
-        return status;
-    }
-  };
+  // Memoized so the returned function has a stable identity across renders.
+  // Tables put this in their column-builder useMemo deps; an unstable function
+  // rebuilds the columns every render and remounts cells — which slams open
+  // dropdowns (the operation-status menu) shut the instant they open.
+  return useCallback(
+    (status: (typeof jobOperationStatus)[number]) => {
+      switch (status) {
+        case "Todo":
+          return t`Todo`;
+        case "Ready":
+          return t`Ready`;
+        case "Waiting":
+          return t`Waiting`;
+        case "In Progress":
+          return t`In Progress`;
+        case "Paused":
+          return t`Paused`;
+        case "Done":
+          return t`Done`;
+        case "Canceled":
+          return t`Canceled`;
+        default:
+          return status;
+      }
+    },
+    [t]
+  );
 }
 
 export function useDeadlineTypeLabel() {

@@ -104,6 +104,10 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
         (i) => i.overlayId !== target.id || i.url !== target.url
       );
       const nextInstances = [...withoutSame, instance];
+      // Keep the ref authoritative synchronously so an open immediately followed
+      // by a close in the same tick (e.g. chaining a second overlay from an
+      // onCreated callback) composes instead of overwriting each other.
+      instancesRef.current = nextInstances;
       setInstances(nextInstances);
 
       if (urlSynced) writeOverlayTokens(syncedTokens(nextInstances));
@@ -117,6 +121,7 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
     (id: string) => {
       const instance = instancesRef.current.find((i) => i.id === id);
       const nextInstances = instancesRef.current.filter((i) => i.id !== id);
+      instancesRef.current = nextInstances;
       setInstances(nextInstances);
 
       // Closing is the only thing that removes an overlay's URL token.
@@ -127,6 +132,7 @@ export function OverlayProvider({ children }: { children: ReactNode }) {
 
   const closeAll = useCallback(() => {
     const hadUrlSynced = instancesRef.current.some((i) => i.urlSynced);
+    instancesRef.current = [];
     setInstances([]);
     if (hadUrlSynced) writeOverlayTokens([]);
   }, []);

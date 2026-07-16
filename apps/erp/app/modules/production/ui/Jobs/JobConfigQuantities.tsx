@@ -37,27 +37,23 @@ type HistoryEntry = {
   createdByName: string | null;
 };
 
-type ProcessQuantityEntry = {
-  operationId: string;
-  label: string;
-  quantity: number;
-  configuration: { configTable: Row[]; configTablePrimaryKeys: string[] };
-};
-
 export type JobConfigQuantitiesProps = {
   parameters: ConfigurationParameter[];
   initialRows?: Row[];
   jobDisplayId?: string | null;
   history?: HistoryEntry[];
-  processQuantities?: ProcessQuantityEntry[];
+  /** Display label per list-option value (e.g. color code -> color name). */
+  optionLabels?: Record<string, string>;
 } & OverlayFormInjectedProps;
 
 function HistoryList({
   history,
-  columns
+  columns,
+  optionLabels
 }: {
   history: HistoryEntry[];
   columns: Column[];
+  optionLabels?: Record<string, string>;
 }) {
   const { formatDateTime } = useDateFormatter();
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
@@ -113,78 +109,8 @@ function HistoryList({
                 <ReadOnlyConfigTable
                   columns={columns}
                   rows={entry.configuration.configTable ?? []}
+                  optionLabels={optionLabels}
                   signed
-                />
-              </div>
-            ) : null}
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-function ProcessQuantitiesList({
-  processQuantities,
-  columns,
-  onApply
-}: {
-  processQuantities: ProcessQuantityEntry[];
-  columns: Column[];
-  onApply: (row: Row, colKey: string, value: number) => void;
-}) {
-  const { t } = useLingui();
-  const [expanded, setExpanded] = useState<Set<string>>(new Set());
-
-  const toggle = (id: string) =>
-    setExpanded((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-
-  if (processQuantities.length === 0) {
-    return (
-      <p className="text-sm text-muted-foreground">
-        <Trans>No production reported yet.</Trans>
-      </p>
-    );
-  }
-
-  return (
-    <div className="flex flex-col gap-1">
-      {processQuantities.map((entry) => {
-        const isExpanded = expanded.has(entry.operationId);
-        return (
-          <div
-            key={entry.operationId}
-            className="rounded border border-border bg-card"
-          >
-            <button
-              type="button"
-              onClick={() => toggle(entry.operationId)}
-              className="flex w-full items-center gap-2 px-3 py-2 text-left hover:bg-muted/50"
-            >
-              <LuChevronRight
-                className={cn(
-                  "shrink-0 text-muted-foreground transition-transform",
-                  isExpanded && "rotate-90"
-                )}
-              />
-              <span className="w-16 shrink-0 font-medium tabular-nums text-foreground">
-                {entry.quantity}
-              </span>
-              <span className="min-w-0 flex-1 truncate text-sm text-muted-foreground">
-                {entry.label || t`Operation`}
-              </span>
-            </button>
-            {isExpanded ? (
-              <div className="border-t border-border px-3 py-2">
-                <ReadOnlyConfigTable
-                  columns={columns}
-                  rows={entry.configuration.configTable ?? []}
-                  onQuantityClick={onApply}
                 />
               </div>
             ) : null}
@@ -200,7 +126,7 @@ function JobConfigQuantities({
   initialRows,
   jobDisplayId,
   history,
-  processQuantities,
+  optionLabels,
   onDismiss,
   action: formAction,
   fetcher
@@ -299,31 +225,6 @@ function JobConfigQuantities({
   // Clicking a process quantity targets that absolute value on the matching
   // adjustment row (by descriptor merge key): stored delta becomes
   // (value - current baseline) so both Delta and Total views agree.
-  const applyProcessValue = (sourceRow: Row, colKey: string, value: number) => {
-    setRows((prev) => {
-      if (prev.length === 0) return prev;
-      const sourceKey = getMergeKey(sourceRow, columns);
-      const targetIndex = prev.findIndex(
-        (row) => getMergeKey(row, columns) === sourceKey
-      );
-
-      if (targetIndex >= 0) {
-        const baseline = baselineFor(prev[targetIndex], colKey);
-        return prev.map((row, i) =>
-          i === targetIndex ? { ...row, [colKey]: value - baseline } : row
-        );
-      }
-
-      const seededRow = zeroQuantities(
-        normalizeRow({ ...makeDefaultRow(columns), ...sourceRow }, columns),
-        columns
-      );
-      const baseline = baselineFor(seededRow, colKey);
-      return [...prev, { ...seededRow, [colKey]: value - baseline }];
-    });
-    setValidationError("");
-  };
-
   const handleSubmit = () => {
     const normalizedRows = rows.map((row) => normalizeRow(row, columns));
     const populatedRows = normalizedRows
@@ -401,7 +302,11 @@ function JobConfigQuantities({
               </span>
             </div>
             {currentRows.length > 0 ? (
-              <ReadOnlyConfigTable columns={columns} rows={currentRows} />
+              <ReadOnlyConfigTable
+                columns={columns}
+                rows={currentRows}
+                optionLabels={optionLabels}
+              />
             ) : (
               <p className="text-sm text-muted-foreground">
                 <Trans>No quantity recorded yet.</Trans>
@@ -447,6 +352,7 @@ function JobConfigQuantities({
               deleteRow={deleteRow}
               allowRowMutations={false}
               canDeleteRow={canDeleteRow}
+              optionLabels={optionLabels}
             />
             {validationError && (
               <div className="text-sm text-destructive">{validationError}</div>
@@ -476,26 +382,13 @@ function JobConfigQuantities({
 
           <section className="flex flex-col gap-2">
             <h4 className="text-sm font-medium text-foreground">
-              <Trans>Reported by process</Trans>
-            </h4>
-            <p className="text-xs text-muted-foreground">
-              <Trans>
-                Production already reported per operation. Click a number to
-                pull it into the editor above.
-              </Trans>
-            </p>
-            <ProcessQuantitiesList
-              processQuantities={processQuantities ?? []}
-              columns={columns}
-              onApply={applyProcessValue}
-            />
-          </section>
-
-          <section className="flex flex-col gap-2">
-            <h4 className="text-sm font-medium text-foreground">
               <Trans>History</Trans>
             </h4>
-            <HistoryList history={history ?? []} columns={columns} />
+            <HistoryList
+              history={history ?? []}
+              columns={columns}
+              optionLabels={optionLabels}
+            />
           </section>
         </div>
       </div>

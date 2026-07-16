@@ -88,6 +88,22 @@ export const path = {
         generatePath(`${api}/production/jobs/${jobId}/bill-of-process`),
       jobConfigTable: (jobId: string) =>
         generatePath(`${api}/production/jobs/${jobId}/config-table`),
+      masterWorkOrderBundles: (masterWorkOrderId: string) =>
+        generatePath(
+          `${api}/production/master-work-orders/${masterWorkOrderId}/bundles`
+        ),
+      masterWorkOrderProcesses: (masterWorkOrderId: string) =>
+        generatePath(
+          `${api}/production/master-work-orders/${masterWorkOrderId}/processes`
+        ),
+      masterWorkOrderSplitBatch: (masterWorkOrderId: string) =>
+        generatePath(
+          `${api}/production/master-work-orders/${masterWorkOrderId}/split-batch`
+        ),
+      bundleWorkOrderProcesses: (bundleWorkOrderId: string) =>
+        generatePath(
+          `${api}/production/bundle-work-orders/${bundleWorkOrderId}/processes`
+        ),
       operationQuantityReports: (operationId: string) =>
         generatePath(
           `${api}/production/operations/${operationId}/quantity-reports`
@@ -153,6 +169,8 @@ export const path = {
       materialTypes: (substanceId: string, formId: string) =>
         generatePath(`${api}/items/types/${substanceId}/${formId}`),
       materialSubstances: `${api}/items/substances`,
+      styleColors: `${api}/items/style-colors`,
+      styleSizes: `${api}/items/style-sizes`,
       messagingNotify: `${api}/messaging/notify`,
       mrp: (locationId?: string) =>
         generatePath(
@@ -810,6 +828,10 @@ export const path = {
       generatePath(`${x}/items/dimensions/delete/${id}`),
     deleteMaterialFinish: (id: string) =>
       generatePath(`${x}/items/finishes/delete/${id}`),
+    deleteStyleColor: (id: string) =>
+      generatePath(`${x}/items/colors/delete/${id}`),
+    deleteStyleSize: (id: string) =>
+      generatePath(`${x}/items/sizes/delete/${id}`),
     deleteMaterialForm: (id: string) =>
       generatePath(`${x}/items/forms/delete/${id}`),
     deleteMaterialGrade: (id: string) =>
@@ -1135,6 +1157,25 @@ export const path = {
       return `${base}?${new URLSearchParams({ jobOperationId: opId }).toString()}`;
     },
     jobs: `${x}/production/jobs`,
+    masterWorkOrders: `${x}/production/master-work-orders`,
+    masterWorkOrder: (id: string) =>
+      generatePath(`${x}/master-work-order/${id}`),
+    masterWorkOrderProcesses: (id: string) =>
+      generatePath(`${x}/master-work-order/${id}/processes`),
+    masterWorkOrderQuantities: (id: string) =>
+      generatePath(`${x}/master-work-order/${id}/quantities`),
+    masterWorkOrderMaterials: (id: string) =>
+      generatePath(`${x}/master-work-order/${id}/materials`),
+    masterWorkOrderBundleWorkOrders: (id: string) =>
+      generatePath(`${x}/master-work-order/${id}/bundle-work-orders`),
+    newMasterWorkOrder: `${x}/production/master-work-orders/new`,
+    bundleWorkOrders: `${x}/production/bundle-work-orders`,
+    bundleWorkOrder: (id: string) =>
+      generatePath(`${x}/bundle-work-order/${id}`),
+    bundleWorkOrderProcesses: (id: string) =>
+      generatePath(`${x}/bundle-work-order/${id}/processes`),
+    bundleWorkOrderQuantities: (id: string) =>
+      generatePath(`${x}/bundle-work-order/${id}/quantities`),
     jobRecalculate: (id: string) => generatePath(`${x}/job/${id}/recalculate`),
     jobRelease: (id: string) => generatePath(`${x}/job/${id}/release`),
     jobStatus: (id: string) => generatePath(`${x}/job/${id}/status`),
@@ -1194,6 +1235,10 @@ export const path = {
     materialDimensions: `${x}/items/dimensions`,
     materialFinish: (id: string) => generatePath(`${x}/items/finishes/${id}`),
     materialFinishes: `${x}/items/finishes`,
+    styleColor: (id: string) => generatePath(`${x}/items/colors/${id}`),
+    styleColors: `${x}/items/colors`,
+    styleSize: (id: string) => generatePath(`${x}/items/sizes/${id}`),
+    styleSizes: `${x}/items/sizes`,
     materialForm: (id: string) => generatePath(`${x}/items/forms/${id}`),
     materialForms: `${x}/items/forms`,
     materialGrade: (id: string) => generatePath(`${x}/items/grades/${id}`),
@@ -1323,6 +1368,8 @@ export const path = {
     newMethodOperationParameter: `${x}/items/methods/operation/parameter/new`,
     newMaterialDimension: `${x}/items/dimensions/new`,
     newMaterialFinish: `${x}/items/finishes/new`,
+    newStyleColor: `${x}/items/colors/new`,
+    newStyleSize: `${x}/items/sizes/new`,
     newMaterialForm: `${x}/items/forms/new`,
     newMaterialGrade: `${x}/items/grades/new`,
     newMaterialSubstance: `${x}/items/substances/new`,
@@ -1389,6 +1436,7 @@ export const path = {
     newJobRule: `${x}/production/job-rules/new`,
     newShippingMethod: `${x}/inventory/shipping-methods/new`,
     newService: `${x}/service/new`,
+    newStyle: `${x}/style/new`,
     newServiceSupplier: (id: string) =>
       generatePath(`${x}/service/${id}/purchasing/new`),
     newSupplier: `${x}/supplier/new`,
@@ -1422,6 +1470,7 @@ export const path = {
       generatePath(`${x}/sales/no-quote-reasons/${id}`),
     notificationSettings: `${x}/account/notifications`,
     part: (id: string) => generatePath(`${x}/part/${id}`),
+    style: (id: string) => generatePath(`${x}/style/${id}`),
     itemProperties: (id: string) => generatePath(`${x}/items/${id}/properties`),
     partCosting: (id: string) => generatePath(`${x}/part/${id}/costing`),
     partDetails: (id: string) => generatePath(`${x}/part/${id}/details`),
@@ -1459,6 +1508,16 @@ export const path = {
         `${x}/resources/work-centers/rules/unassign/${id}/${ruleId}`
       ),
     partSales: (id: string) => generatePath(`${x}/part/${id}/sales`),
+    styleCosting: (id: string) => generatePath(`${x}/style/${id}/costing`),
+    styleDetails: (id: string) => generatePath(`${x}/style/${id}/details`),
+    styleInventory: (id: string) => generatePath(`${x}/style/${id}/inventory`),
+    styleInventoryLocation: (id: string, locationId: string) =>
+      generatePath(`${x}/style/${id}/inventory?location=${locationId}`),
+    stylePlanning: (id: string) => generatePath(`${x}/style/${id}/planning`),
+    stylePlanningLocation: (id: string, locationId: string) =>
+      generatePath(`${x}/style/${id}/planning?location=${locationId}`),
+    styleRoot: `${x}/style`,
+    styleSales: (id: string) => generatePath(`${x}/style/${id}/sales`),
     partSupplier: (itemId: string, id: string) =>
       generatePath(`${x}/part/${itemId}/purchasing/${id}`),
     parts: `${x}/items/parts`,
@@ -1572,6 +1631,7 @@ export const path = {
     templateDeleteMethodOperationTool: (id: string) =>
       generatePath(`${x}/template/methods/operation/tool/delete/${id}`),
     templates: `${x}/items/templates`,
+    styles: `${x}/items/styles`,
     procedure: (id: string) => generatePath(`${x}/procedure/${id}`),
     procedureStep: (id: string, attributeId: string) =>
       generatePath(`${x}/procedure/${id}/steps/${attributeId}`),

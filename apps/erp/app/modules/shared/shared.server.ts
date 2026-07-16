@@ -35,7 +35,14 @@ export async function assign(
     client
       // @ts-ignore
       .from(table)
-      .update({ assignee: assignee ? assignee : null })
+      .update({
+        assignee: assignee ? assignee : null,
+        // Stamp when a job / job operation's assignee changes so work orders can
+        // show "Assigned At".
+        ...(table === "job" || table === "jobOperation"
+          ? { assignedAt: assignee ? new Date().toISOString() : null }
+          : {})
+      })
       .eq("id", id)
   );
 }

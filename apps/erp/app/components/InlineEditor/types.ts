@@ -26,6 +26,9 @@ export type SelectCellConfig<TRow> = {
   /** Field name sent to the update action. */
   field: string;
   update: EntityUpdateConfig;
+  /** Resolve the entity id to update (defaults to row.id) — e.g. a view row
+   * that edits its backing job via `jobId`. */
+  idAccessor?: (row: TRow) => string | null | undefined;
   /** Reads the current value from the row (decoupled from `field`, e.g. templateId). */
   value: (row: TRow) => string | null | undefined;
   /** Static options, or options derived from the row (conditional dropdowns). */
@@ -47,6 +50,9 @@ export type BooleanCellConfig<TRow> = {
   kind: "boolean";
   field: string;
   update: EntityUpdateConfig;
+  /** Resolve the entity id to update (defaults to row.id) — e.g. a view row
+   * that edits its backing job via `jobId`. */
+  idAccessor?: (row: TRow) => string | null | undefined;
   value: (row: TRow) => boolean | null | undefined;
   /** Serialize the checked state for the action; defaults to "on"/"off". */
   serialize?: (checked: boolean) => string;
@@ -57,6 +63,9 @@ export type TextCellConfig<TRow> = {
   kind: "text";
   field: string;
   update: EntityUpdateConfig;
+  /** Resolve the entity id to update (defaults to row.id) — e.g. a view row
+   * that edits its backing job via `jobId`. */
+  idAccessor?: (row: TRow) => string | null | undefined;
   value: (row: TRow) => string | null | undefined;
   placeholder?: string;
 };
@@ -66,6 +75,9 @@ export type DateCellConfig<TRow> = {
   kind: "date";
   field: string;
   update: EntityUpdateConfig;
+  /** Resolve the entity id to update (defaults to row.id) — e.g. a view row
+   * that edits its backing job via `jobId`. */
+  idAccessor?: (row: TRow) => string | null | undefined;
   value: (row: TRow) => string | null | undefined;
   /** How to render the selected date inline; defaults to the raw value. */
   renderInline?: (value: string) => ReactNode;

@@ -1,5 +1,6 @@
 import type { Database, Json } from "@carbon/database";
 import { fetchAllFromTable } from "@carbon/database";
+import { styleReferenceRows } from "@carbon/database/style-reference";
 import type {
   ExpressionBuilder,
   Kysely,
@@ -58,10 +59,17 @@ import {
   type serviceValidator,
   type shelfLifeModes,
   type shelfLifeTriggerTimings,
+  type styleColorValidator,
   type supplierPartValidator,
   type toolValidator,
   type unitOfMeasureValidator
 } from "./items.models";
+import type { styleSizeValidator, styleValidator } from "./style.models";
+import {
+  ensureStyleMethodScaffold,
+  isStyleCuttingOperationFirst,
+  isStyleSystemOwnedOperation
+} from "./styleMethod.service";
 import type { InventoryItemType } from "./types";
 
 export async function activateMethodVersion(
@@ -278,6 +286,22 @@ export async function deleteMaterialGrade(
   return client.from("materialGrade").delete().eq("id", id);
 }
 
+export async function deleteStyleColor(
+  client: SupabaseClient<Database>,
+  id: string
+) {
+  const styleClient = client as SupabaseClient<any>;
+  return styleClient.from("styleColor").delete().eq("id", id);
+}
+
+export async function deleteStyleSize(
+  client: SupabaseClient<Database>,
+  id: string
+) {
+  const styleClient = client as SupabaseClient<any>;
+  return styleClient.from("styleSize").delete().eq("id", id);
+}
+
 export async function deleteMaterialSubstance(
   client: SupabaseClient<Database>,
   id: string
@@ -318,6 +342,23 @@ export async function deleteMethodOperation(
   client: SupabaseClient<Database>,
   methodOperationId: string
 ) {
+  const operation = await client
+    .from("methodOperation")
+    .select("id, tags, customFields")
+    .eq("id", methodOperationId)
+    .single();
+
+  if (operation.error) return operation;
+  if (isStyleSystemOwnedOperation(operation.data)) {
+    return {
+      data: null,
+      error: {
+        message:
+          "System-owned Style cutting operations cannot be deleted from the bill of process."
+      }
+    };
+  }
+
   return client.from("methodOperation").delete().eq("id", methodOperationId);
 }
 
@@ -1537,6 +1578,21 @@ export async function getPart(
     .single();
 }
 
+export async function getStyle(
+  client: SupabaseClient<Database>,
+  itemId: string,
+  companyId: string
+) {
+  const styleClient = client as SupabaseClient<any>;
+
+  return styleClient
+    .from("styles")
+    .select("*")
+    .eq("id", itemId)
+    .eq("companyId", companyId)
+    .single();
+}
+
 export async function getParts(
   client: SupabaseClient<Database>,
   companyId: string,
@@ -1568,6 +1624,149 @@ export async function getParts(
   return query;
 }
 
+export async function getStyles(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  args: GenericQueryFilters & {
+    search: string | null;
+  }
+) {
+  const styleClient = client as SupabaseClient<any>;
+  let query = styleClient
+    .from("styles")
+    .select("*", {
+      count: "exact"
+    })
+    .eq("companyId", companyId);
+
+  if (args.search) {
+    query = query.or(
+      `readableIdWithRevision.ilike.%${args.search}%,name.ilike.%${args.search}%,description.ilike.%${args.search}%,colorCode.ilike.%${args.search}%,colorName.ilike.%${args.search}%`
+    );
+  }
+
+  return setGenericQueryFilters(query, args, [
+    { column: "readableIdWithRevision", ascending: true }
+  ]);
+}
+
+export async function getStyleColor(
+  client: SupabaseClient<Database>,
+  id: string
+) {
+  const styleClient = client as SupabaseClient<any>;
+  return styleClient.from("styleColor").select("*").eq("id", id).single();
+}
+
+export async function getStyleColors(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  args?: GenericQueryFilters & { search: string | null }
+) {
+  const styleClient = client as SupabaseClient<any>;
+  let query = styleClient
+    .from("styleColor")
+    .select("*", { count: "exact" })
+    .eq("companyId", companyId);
+
+  if (args?.search) {
+    query = query.or(
+      `colorCode.ilike.%${args.search}%,colorName.ilike.%${args.search}%`
+    );
+  }
+
+  if (args) {
+    query = setGenericQueryFilters(query, args, [
+      { column: "colorCode", ascending: true }
+    ]);
+  }
+
+  return query;
+}
+
+export async function getStyleColorList(
+  client: SupabaseClient<Database>,
+  companyId: string
+) {
+  const styleClient = client as SupabaseClient<any>;
+  return styleClient
+    .from("styleColor")
+    .select("id, colorCode, colorName, companyId")
+    .eq("companyId", companyId)
+    .order("colorCode");
+}
+
+/**
+ * Seeds the standard apparel colors + sizes for a freshly created company, with
+ * names localized to the company's language. Idempotent — re-running skips rows
+ * whose (code, companyId) already exists. Called from company onboarding.
+ */
+export async function seedStyleReference(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  userId: string,
+  language?: string
+) {
+  const styleClient = client as SupabaseClient<any>;
+  const { colors, sizes } = styleReferenceRows(language);
+  return Promise.all([
+    styleClient.from("styleColor").upsert(
+      colors.map((c) => ({ ...c, companyId, createdBy: userId })),
+      { onConflict: "colorCode,companyId", ignoreDuplicates: true }
+    ),
+    styleClient.from("styleSize").upsert(
+      sizes.map((s) => ({ ...s, companyId, createdBy: userId })),
+      { onConflict: "sizeCode,companyId", ignoreDuplicates: true }
+    )
+  ]);
+}
+
+export async function getStyleSize(
+  client: SupabaseClient<Database>,
+  id: string
+) {
+  const styleClient = client as SupabaseClient<any>;
+  return styleClient.from("styleSize").select("*").eq("id", id).single();
+}
+
+export async function getStyleSizes(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  args?: GenericQueryFilters & { search: string | null }
+) {
+  const styleClient = client as SupabaseClient<any>;
+  let query = styleClient
+    .from("styleSize")
+    .select("*", { count: "exact" })
+    .eq("companyId", companyId);
+
+  if (args?.search) {
+    query = query.or(
+      `sizeCode.ilike.%${args.search}%,sizeName.ilike.%${args.search}%`
+    );
+  }
+
+  if (args) {
+    query = setGenericQueryFilters(query, args, [
+      { column: "sizeCode", ascending: true }
+    ]);
+  }
+
+  return query;
+}
+
+export async function getStyleSizeList(
+  client: SupabaseClient<Database>,
+  companyId: string
+) {
+  const styleClient = client as SupabaseClient<any>;
+  return styleClient
+    .from("styleSize")
+    .select("id, sizeCode, sizeName, companyId")
+    .eq("companyId", companyId)
+    .order("sizeCode");
+}
+
 export async function getPartsList(
   client: SupabaseClient<Database>,
   companyId: string
@@ -1579,6 +1778,23 @@ export async function getPartsList(
   }>(client, "item", "id, name, readableIdWithRevision", (query) =>
     query
       .eq("type", "Part")
+      .eq("companyId", companyId)
+      .eq("active", true)
+      .order("name")
+  );
+}
+
+export async function getStylesList(
+  client: SupabaseClient<Database>,
+  companyId: string
+) {
+  return fetchAllFromTable<{
+    id: string;
+    name: string;
+    readableIdWithRevision: string;
+  }>(client, "item", "id, name, readableIdWithRevision", (query) =>
+    query
+      .eq("type", "Style")
       .eq("companyId", companyId)
       .eq("active", true)
       .order("name")
@@ -2050,6 +2266,79 @@ export async function updateOperationOrder(
     updatedBy: string;
   }[]
 ) {
+  if (updates.length === 0) return [];
+
+  const operationClient = client as SupabaseClient<any>;
+  const updatedOperations = await operationClient
+    .from("methodOperation")
+    .select("id, makeMethodId, order, tags, customFields")
+    .in(
+      "id",
+      updates.map(({ id }) => id)
+    );
+
+  if (updatedOperations.error) return [updatedOperations];
+
+  const makeMethodIds = Array.from(
+    new Set(
+      (updatedOperations.data ?? [])
+        .map(
+          (operation: { makeMethodId?: string | null }) =>
+            operation.makeMethodId
+        )
+        .filter(Boolean)
+    )
+  );
+
+  if (makeMethodIds.length > 0) {
+    const methodOperations = await operationClient
+      .from("methodOperation")
+      .select("id, makeMethodId, order, tags, customFields")
+      .in("makeMethodId", makeMethodIds);
+
+    if (methodOperations.error) return [methodOperations];
+
+    const updatesById = new Map(
+      updates.map((update) => [update.id, update.order] as const)
+    );
+    const operationsByMethod = new Map<string, any[]>();
+
+    for (const operation of methodOperations.data ?? []) {
+      const makeMethodId = operation.makeMethodId;
+      if (!makeMethodId) continue;
+
+      const nextOperation = updatesById.has(operation.id)
+        ? {
+            ...operation,
+            order: updatesById.get(operation.id) ?? operation.order
+          }
+        : operation;
+
+      const operations = operationsByMethod.get(makeMethodId) ?? [];
+      operations.push(nextOperation);
+      operationsByMethod.set(makeMethodId, operations);
+    }
+
+    const violatesStyleCuttingOrder = Array.from(
+      operationsByMethod.values()
+    ).some((operations) => !isStyleCuttingOperationFirst(operations));
+
+    if (violatesStyleCuttingOrder) {
+      return [
+        {
+          data: null,
+          error: {
+            message:
+              "System-owned Style cutting operations must remain the first process in the bill of process."
+          },
+          count: null,
+          status: 400,
+          statusText: "Bad Request"
+        }
+      ];
+    }
+  }
+
   const updatePromises = updates.map(({ id, order, updatedBy }) =>
     client.from("methodOperation").update({ order, updatedBy }).eq("id", id)
   );
@@ -2071,6 +2360,96 @@ export async function updateRevision(
       updatedAt: today(getLocalTimeZone()).toString()
     })
     .eq("id", revision.id);
+}
+
+/**
+ * Keep a Style item's "Color" and "Size" list configuration parameters in sync
+ * with the colors/sizes assigned to the style. This turns a Style into a normal
+ * configured item so color/size flow through the existing config machinery
+ * (job-creation config modal, production-quantity config table).
+ */
+export async function syncStyleConfigurationParameters(
+  client: SupabaseClient<Database>,
+  args: {
+    itemId: string;
+    companyId: string;
+    userId: string;
+    styleColorIds: string[];
+    styleSizeIds: string[];
+  }
+) {
+  const [colors, sizes] = await Promise.all([
+    args.styleColorIds.length > 0
+      ? client
+          .from("styleColor")
+          .select("colorCode")
+          .in("id", args.styleColorIds)
+      : Promise.resolve({ data: [] as { colorCode: string }[], error: null }),
+    args.styleSizeIds.length > 0
+      ? client.from("styleSize").select("sizeCode").in("id", args.styleSizeIds)
+      : Promise.resolve({ data: [] as { sizeCode: string }[], error: null })
+  ]);
+
+  const colorCodes = (colors.data ?? [])
+    .map((c) => c.colorCode)
+    .filter(Boolean);
+  const sizeCodes = (sizes.data ?? []).map((s) => s.sizeCode).filter(Boolean);
+
+  const existing = await client
+    .from("configurationParameter")
+    .select("id, key")
+    .eq("itemId", args.itemId)
+    .eq("companyId", args.companyId)
+    .in("key", ["color", "size"]);
+
+  const paramByKey = new Map(
+    (existing.data ?? []).map((p) => [p.key, p.id] as const)
+  );
+
+  let hasAnyParam = false;
+  for (const [key, label, options] of [
+    ["color", "Color", colorCodes],
+    ["size", "Size", sizeCodes]
+  ] as const) {
+    if (options.length === 0) continue; // list params require options
+    hasAnyParam = true;
+    await upsertConfigurationParameter(client, {
+      id: paramByKey.get(key),
+      itemId: args.itemId,
+      key,
+      label,
+      dataType: "list",
+      listOptions: options,
+      companyId: args.companyId,
+      userId: args.userId
+    });
+  }
+
+  // Size is the primary dimension for garments: its options must become the
+  // config-table quantity columns (with Color as the row descriptor). "Primary"
+  // is derived as the first list param by sortOrder, so pin Size below Color.
+  await client
+    .from("configurationParameter")
+    .update({ sortOrder: 0 })
+    .eq("itemId", args.itemId)
+    .eq("companyId", args.companyId)
+    .eq("key", "size");
+  await client
+    .from("configurationParameter")
+    .update({ sortOrder: 1 })
+    .eq("itemId", args.itemId)
+    .eq("companyId", args.companyId)
+    .eq("key", "color");
+
+  // Flip on `requiresConfiguration` so the standard config modal fires when a
+  // job / production quantity is created for this style.
+  if (hasAnyParam) {
+    await client
+      .from("itemReplenishment")
+      .update({ requiresConfiguration: true })
+      .eq("itemId", args.itemId)
+      .eq("companyId", args.companyId);
+  }
 }
 
 export async function upsertConfigurationParameter(
@@ -3163,6 +3542,215 @@ export async function upsertPart(
   return updatePart;
 }
 
+export async function upsertStyle(
+  client: SupabaseClient<Database>,
+  style:
+    | (z.infer<typeof styleValidator> & {
+        companyId: string;
+        createdBy: string;
+        customFields?: Json;
+      })
+    | (z.infer<typeof styleValidator> & {
+        updatedBy: string;
+        customFields?: Json;
+      })
+) {
+  const styleClient = client as SupabaseClient<any>;
+
+  if ("createdBy" in style) {
+    const itemInsert = await client
+      .from("item")
+      .insert({
+        readableId: style.id,
+        revision: style.revision ?? "0",
+        name: style.name,
+        description: style.description,
+        type: "Style",
+        replenishmentSystem: style.replenishmentSystem,
+        defaultMethodType: style.defaultMethodType,
+        itemTrackingType: style.itemTrackingType,
+        unitOfMeasureCode: style.unitOfMeasureCode,
+        active: true,
+        modelUploadId: style.modelUploadId,
+        thumbnailPath: style.thumbnailPath,
+        companyId: style.companyId,
+        createdBy: style.createdBy
+      })
+      .select("id")
+      .single();
+
+    if (itemInsert.error) return itemInsert;
+    const itemId = itemInsert.data?.id;
+
+    const [styleInsert, itemCostUpdate] = await Promise.all([
+      styleClient.from("style").upsert({
+        id: style.id,
+        itemId,
+        companyId: style.companyId,
+        createdBy: style.createdBy,
+        customFields: style.customFields
+      }),
+      client
+        .from("itemCost")
+        .update(
+          sanitize({
+            itemPostingGroupId: style.postingGroupId,
+            unitCost:
+              style.replenishmentSystem !== "Make" ? style.unitCost : undefined
+          })
+        )
+        .eq("itemId", itemId)
+    ]);
+
+    if (styleInsert.error) return styleInsert;
+    if (itemCostUpdate.error) {
+      console.error(itemCostUpdate.error);
+    }
+
+    if (style.replenishmentSystem !== "Buy") {
+      const itemReplenishmentInsert = await client
+        .from("itemReplenishment")
+        .update({ lotSize: style.lotSize })
+        .eq("itemId", itemId);
+
+      if (itemReplenishmentInsert.error) return itemReplenishmentInsert;
+    }
+
+    if (itemId) {
+      const pickMethod = await upsertItemDefaultPickMethod(client, {
+        itemId,
+        userId: style.createdBy,
+        storageUnitId: style.defaultStorageUnitId
+      });
+      if (pickMethod.error) return pickMethod;
+
+      const shelfLife = await upsertItemShelfLife(client, {
+        itemId,
+        userId: style.createdBy,
+        companyId: style.companyId,
+        mode: style.shelfLifeMode,
+        days: style.shelfLifeDays,
+        triggerProcessId: style.shelfLifeTriggerProcessId,
+        triggerTiming: style.shelfLifeTriggerTiming,
+        calculateFromBom: style.shelfLifeCalculateFromBom
+      });
+      if (shelfLife.error) return shelfLife;
+
+      const styleMethod = await ensureStyleMethodScaffold(client, {
+        itemId,
+        companyId: style.companyId,
+        userId: style.createdBy
+      });
+      if (styleMethod.error) return styleMethod;
+    }
+
+    const newStyle = await styleClient
+      .from("styles")
+      .select("id")
+      .eq("readableId", style.id)
+      .eq("companyId", style.companyId)
+      .single();
+
+    return newStyle;
+  }
+
+  const itemUpdate = {
+    id: style.id,
+    name: style.name,
+    description: style.description,
+    replenishmentSystem: style.replenishmentSystem,
+    defaultMethodType: style.defaultMethodType,
+    itemTrackingType: style.itemTrackingType,
+    unitOfMeasureCode: style.unitOfMeasureCode,
+    active: true,
+    modelUploadId: style.modelUploadId,
+    thumbnailPath: style.thumbnailPath
+  };
+
+  const styleUpdate = {
+    customFields: style.customFields
+  };
+
+  const [updateItem, updateStyle] = await Promise.all([
+    client
+      .from("item")
+      .update({
+        ...sanitize(itemUpdate),
+        updatedAt: today(getLocalTimeZone()).toString()
+      })
+      .eq("id", style.id),
+    styleClient
+      .from("style")
+      .update({
+        ...sanitize(styleUpdate),
+        updatedAt: today(getLocalTimeZone()).toString()
+      })
+      .eq("id", style.id)
+  ]);
+
+  if (updateItem.error) return updateItem;
+
+  const [pickMethod, shelfLife] = await Promise.all([
+    upsertItemDefaultPickMethod(client, {
+      itemId: style.id,
+      userId: style.updatedBy,
+      storageUnitId: style.defaultStorageUnitId
+    }),
+    upsertItemShelfLife(client, {
+      itemId: style.id,
+      userId: style.updatedBy,
+      mode: style.shelfLifeMode,
+      days: style.shelfLifeDays,
+      triggerProcessId: style.shelfLifeTriggerProcessId,
+      triggerTiming: style.shelfLifeTriggerTiming,
+      calculateFromBom: style.shelfLifeCalculateFromBom
+    })
+  ]);
+
+  if (pickMethod.error) return pickMethod;
+  if (shelfLife.error) return shelfLife;
+
+  const styleCompany = await styleClient
+    .from("item")
+    .select("companyId")
+    .eq("id", style.id)
+    .single();
+  if (styleCompany.error) return styleCompany;
+
+  const styleMethod = await ensureStyleMethodScaffold(client, {
+    itemId: style.id,
+    companyId: styleCompany.data.companyId,
+    userId: style.updatedBy
+  });
+  if (styleMethod.error) return styleMethod;
+
+  if (style.replenishmentSystem !== "Buy") {
+    const itemReplenishmentUpdate = await client
+      .from("itemReplenishment")
+      .update({ lotSize: style.lotSize })
+      .eq("itemId", style.id);
+
+    if (itemReplenishmentUpdate.error) return itemReplenishmentUpdate;
+  }
+
+  const itemCostUpdate = await client
+    .from("itemCost")
+    .update(
+      sanitize({
+        itemPostingGroupId: style.postingGroupId,
+        unitCost:
+          style.replenishmentSystem !== "Make" ? style.unitCost : undefined
+      })
+    )
+    .eq("itemId", style.id);
+
+  if (itemCostUpdate.error) {
+    console.error(itemCostUpdate.error);
+  }
+
+  return updateStyle;
+}
+
 export async function updateItem(
   client: SupabaseClient<Database>,
   item: z.infer<typeof itemValidator> & {
@@ -3550,6 +4138,24 @@ export async function upsertMethodOperation(
       .select("id")
       .single();
   }
+
+  const currentOperation = await client
+    .from("methodOperation")
+    .select("id, tags, customFields")
+    .eq("id", methodOperation.id)
+    .single();
+
+  if (currentOperation.error) return currentOperation;
+  if (isStyleSystemOwnedOperation(currentOperation.data)) {
+    return {
+      data: null,
+      error: {
+        message:
+          "System-owned Style cutting operations cannot be edited from the bill of process."
+      }
+    };
+  }
+
   return client
     .from("methodOperation")
     .update(sanitize(methodOperation))
@@ -3919,6 +4525,58 @@ export async function upsertMaterialFinish(
     .insert([materialFinish])
     .select("*")
     .single();
+}
+
+export async function upsertStyleColor(
+  client: SupabaseClient<Database>,
+  styleColor:
+    | (Omit<z.infer<typeof styleColorValidator>, "id"> & {
+        companyId: string;
+        createdBy: string;
+      })
+    | (Omit<z.infer<typeof styleColorValidator>, "id"> & {
+        id: string;
+        updatedBy: string;
+      })
+) {
+  const styleClient = client as SupabaseClient<any>;
+  if ("id" in styleColor) {
+    return styleClient
+      .from("styleColor")
+      .update(sanitize({ ...styleColor, updatedAt: new Date().toISOString() }))
+      .eq("id", styleColor.id)
+      .select("id")
+      .single();
+  }
+  return styleClient
+    .from("styleColor")
+    .insert([styleColor])
+    .select("*")
+    .single();
+}
+
+export async function upsertStyleSize(
+  client: SupabaseClient<Database>,
+  styleSize:
+    | (Omit<z.infer<typeof styleSizeValidator>, "id"> & {
+        companyId: string;
+        createdBy: string;
+      })
+    | (Omit<z.infer<typeof styleSizeValidator>, "id"> & {
+        id: string;
+        updatedBy: string;
+      })
+) {
+  const styleClient = client as SupabaseClient<any>;
+  if ("id" in styleSize) {
+    return styleClient
+      .from("styleSize")
+      .update(sanitize({ ...styleSize, updatedAt: new Date().toISOString() }))
+      .eq("id", styleSize.id)
+      .select("id")
+      .single();
+  }
+  return styleClient.from("styleSize").insert([styleSize]).select("*").single();
 }
 
 export async function upsertMaterialForm(

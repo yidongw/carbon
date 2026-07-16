@@ -5,9 +5,83 @@ import {
   cancelApprovalRequestsForDocument,
   requestProductionPayApproval
 } from "~/modules/shared";
-import { computeJobConfigTableTotal } from "./jobConfiguration";
+import { replaceMasterCuttingSplitRows } from "./bundleWorkOrder.service";
+import {
+  computeJobConfigTableTotal,
+  reportsExceedConfigPlan
+} from "./jobConfiguration";
+import { getMasterCuttingOperationId } from "./masterWorkOrder.service";
 import { computeProductionQuantityReportEarnedAmount } from "./productionQuantityList.service";
 import type { ProductionQuantityLineInput } from "./productionQuantityReport.models";
+
+/**
+ * Split a line's `configuration` into the config to store (merged, unchanged
+ * downstream) and any raw cut rows the editor tucked under `splitRows` (kept
+ * only for a master WO cutting report → masterWorkOrderSplitRow).
+ */
+function splitConfigAndRows(configuration: unknown): {
+  config: unknown;
+  rows: { colorCode: string | null; sizeCode: string | null; quantity: number }[];
+} {
+  if (
+    !configuration ||
+    typeof configuration !== "object" ||
+    Array.isArray(configuration)
+  ) {
+    return { config: configuration ?? null, rows: [] };
+  }
+  const { splitRows, ...config } = configuration as Record<string, unknown> & {
+    splitRows?: unknown;
+  };
+  const rows = Array.isArray(splitRows)
+    ? splitRows.map((r) => {
+        const row = (r ?? {}) as Record<string, unknown>;
+        return {
+          colorCode: (row.colorCode ?? null) as string | null,
+          sizeCode: (row.sizeCode ?? null) as string | null,
+          quantity: Number(row.quantity) || 0
+        };
+      })
+    : [];
+  return { config, rows };
+}
+
+/**
+ * When a report is the master WO's cutting operation, persist the Production
+ * line's raw cut rows so Split Batch can prefill one bundle per row.
+ */
+async function storeMasterCuttingSplitRows(
+  client: SupabaseClient<Database>,
+  args: {
+    companyId: string;
+    jobId: string;
+    jobOperationId: string;
+    userId: string;
+    productionQuantityReportId: string;
+    rows: { colorCode: string | null; sizeCode: string | null; quantity: number }[];
+  }
+) {
+  const master = await client
+    .from("masterWorkOrder")
+    .select("id")
+    .eq("jobId", args.jobId)
+    .eq("companyId", args.companyId)
+    .maybeSingle();
+  if (!master.data?.id) return;
+  const cuttingOpId = await getMasterCuttingOperationId(
+    client,
+    args.jobId,
+    args.companyId
+  );
+  if (!cuttingOpId || cuttingOpId !== args.jobOperationId) return;
+  await replaceMasterCuttingSplitRows(client, {
+    masterWorkOrderId: master.data.id,
+    productionQuantityReportId: args.productionQuantityReportId,
+    companyId: args.companyId,
+    createdBy: args.userId,
+    rows: args.rows
+  });
+}
 
 export type ProductionQuantityReportLine =
   Database["public"]["Tables"]["productionQuantity"]["Row"] & {
@@ -70,6 +144,90 @@ export function validateProductionQuantityLines(
   return { error: null };
 }
 
+/**
+ * Guard a production report against over-reporting: (1) a config-param job's
+ * reported (produced) quantities can't exceed the planned quantity for any
+ * color/size cell, and (2) an operation's total reported quantity — completed +
+ * scrapped + reworked — can't exceed its target quantity. Both mean "remaining
+ * can't go negative".
+ */
+export async function validateProductionQuantityRemaining(
+  client: SupabaseClient<Database>,
+  args: {
+    companyId: string;
+    jobId: string;
+    jobOperationId: string;
+    lines: ProductionQuantityLineInput[];
+  }
+): Promise<{ error: Error | null }> {
+  if (args.lines.length === 0) return { error: null };
+  // Every line type consumes the operation's input, so cap the grand total.
+  const newTotal = args.lines.reduce(
+    (sum, l) => sum + (Number(l.quantity) || 0),
+    0
+  );
+  const newProductionLines = args.lines.filter((l) => l.type === "Production");
+
+  const [operation, existing, job] = await Promise.all([
+    client
+      .from("jobOperation")
+      .select("targetQuantity, operationQuantity")
+      .eq("id", args.jobOperationId)
+      .eq("companyId", args.companyId)
+      .single(),
+    client
+      .from("productionQuantity")
+      .select("quantity, type, configuration")
+      .eq("jobOperationId", args.jobOperationId)
+      .eq("companyId", args.companyId)
+      .is("invalidatedAt", null),
+    client
+      .from("job")
+      .select("configuration")
+      .eq("id", args.jobId)
+      .eq("companyId", args.companyId)
+      .single()
+  ]);
+
+  const existingRows = existing.data ?? [];
+
+  // (2) Operation target cap — completed + scrapped + reworked can't exceed it.
+  const target =
+    operation.data?.targetQuantity ?? operation.data?.operationQuantity ?? null;
+  if (target != null) {
+    const reportedSoFar = existingRows.reduce(
+      (sum, r) => sum + (Number(r.quantity) || 0),
+      0
+    );
+    if (reportedSoFar + newTotal > target + 0.0001) {
+      const remaining = Math.max(0, target - reportedSoFar);
+      return {
+        error: new Error(
+          `Reported quantity (completed + scrapped + reworked) exceeds the remaining ${remaining} for this operation.`
+        )
+      };
+    }
+  }
+
+  // (1) Config-param plan cap (per color/size cell, produced units only).
+  const planned = job.data?.configuration ?? null;
+  const reportedConfigs = [
+    ...existingRows
+      .filter((r) => r.type === "Production")
+      .map((r) => r.configuration),
+    ...newProductionLines.map((l) => l.configuration ?? null)
+  ];
+  if (reportsExceedConfigPlan(planned, reportedConfigs)) {
+    return {
+      error: new Error(
+        "Reported quantity exceeds the remaining planned quantity for one or more color/size cells."
+      )
+    };
+  }
+
+  return { error: null };
+}
+
 export async function createProductionQuantityReport(
   client: SupabaseClient<Database>,
   args: {
@@ -89,9 +247,23 @@ export async function createProductionQuantityReport(
     return { data: null, error: lineValidation.error };
   }
 
+  const remainingCheck = await validateProductionQuantityRemaining(client, {
+    companyId: args.companyId,
+    jobId: args.jobId,
+    jobOperationId: args.jobOperationId,
+    lines: args.lines
+  });
+  if (remainingCheck.error) {
+    return { data: null, error: remainingCheck.error };
+  }
+
   const originalQuantity = sumLineQuantity(args.lines);
-  const primaryLine = args.lines[0];
-  const originalConfiguration = primaryLine?.configuration ?? null;
+  // Peel raw cut rows out of each line's config (config stays merged/unchanged).
+  const prepared = args.lines.map((line) => ({
+    line,
+    ...splitConfigAndRows(line.configuration)
+  }));
+  const originalConfiguration = prepared[0]?.config ?? null;
 
   const { data: report, error: reportError } = await client
     .from("productionQuantityReport")
@@ -112,13 +284,13 @@ export async function createProductionQuantityReport(
     return { data: null, error: reportError };
   }
 
-  const lineRows = args.lines.map((line) => ({
+  const lineRows = prepared.map(({ line, config }) => ({
     companyId: args.companyId,
     jobOperationId: args.jobOperationId,
     reportId: report.id,
     type: line.type,
     quantity: line.quantity,
-    configuration: (line.configuration ?? null) as Json,
+    configuration: (config ?? null) as Json,
     scrapReasonId: line.type === "Scrap" ? (line.scrapReasonId ?? null) : null,
     notes: line.notes ?? null,
     createdBy: args.userId,
@@ -134,6 +306,45 @@ export async function createProductionQuantityReport(
 
   if (linesError) {
     return { data: null, error: linesError };
+  }
+
+  // Reporting production claims the work: assign the reported operation and its
+  // job to the reporting employee (applies to every job/operation).
+  if (args.employeeId) {
+    const assignedAt = new Date().toISOString();
+    await client
+      .from("jobOperation")
+      .update({
+        assignee: args.employeeId,
+        assignedAt,
+        updatedBy: args.userId,
+        updatedAt: assignedAt
+      })
+      .eq("id", args.jobOperationId)
+      .eq("companyId", args.companyId);
+    await client
+      .from("job")
+      .update({
+        assignee: args.employeeId,
+        assignedAt,
+        updatedBy: args.userId,
+        updatedAt: assignedAt
+      })
+      .eq("id", args.jobId)
+      .eq("companyId", args.companyId);
+  }
+
+  // Persist the Production line's raw cut rows (master WO cutting reports only).
+  const productionRows = prepared.find((p) => p.line.type === "Production")?.rows;
+  if (productionRows && productionRows.length > 0) {
+    await storeMasterCuttingSplitRows(client, {
+      companyId: args.companyId,
+      jobId: args.jobId,
+      jobOperationId: args.jobOperationId,
+      userId: args.userId,
+      productionQuantityReportId: report.id,
+      rows: productionRows
+    });
   }
 
   return {
@@ -216,13 +427,17 @@ export async function replaceProductionQuantityReportLines(
       .eq("id", args.reportId);
   }
 
-  const lineRows = args.lines.map((line) => ({
+  const prepared = args.lines.map((line) => ({
+    line,
+    ...splitConfigAndRows(line.configuration)
+  }));
+  const lineRows = prepared.map(({ line, config }) => ({
     companyId: args.companyId,
     jobOperationId: report.data.jobOperationId,
     reportId: args.reportId,
     type: line.type,
     quantity: line.quantity,
-    configuration: (line.configuration ?? null) as Json,
+    configuration: (config ?? null) as Json,
     scrapReasonId: line.type === "Scrap" ? (line.scrapReasonId ?? null) : null,
     notes: line.notes ?? null,
     createdBy: args.userId,
@@ -240,6 +455,19 @@ export async function replaceProductionQuantityReportLines(
 
   if (insertError) {
     return { data: null, error: insertError };
+  }
+
+  // Re-reporting replaces this report's still-pending cut rows (master cutting).
+  const productionRows = prepared.find((p) => p.line.type === "Production")?.rows;
+  if (productionRows) {
+    await storeMasterCuttingSplitRows(client, {
+      companyId: args.companyId,
+      jobId: report.data.jobId,
+      jobOperationId: report.data.jobOperationId,
+      userId: args.userId,
+      productionQuantityReportId: args.reportId,
+      rows: productionRows
+    });
   }
 
   const { count: historyCount } = await client

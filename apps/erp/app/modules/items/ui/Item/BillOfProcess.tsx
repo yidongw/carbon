@@ -38,9 +38,10 @@ import {
 import { Editor } from "@carbon/react/Editor";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { Trans, useLingui } from "@lingui/react/macro";
+import { isStyleCuttingOperation } from "~/modules/items/styleMethod.service";
+import { useStyleProcessLabel } from "~/modules/production/productionLabels";
 import type { DragControls } from "framer-motion";
 import {
-  AnimatePresence,
   LayoutGroup,
   motion,
   Reorder,
@@ -223,6 +224,7 @@ const BillOfProcess = ({
 }: BillOfProcessProps) => {
   const permissions = usePermissions();
   const { t } = useLingui();
+  const styleProcessLabel = useStyleProcessLabel();
   const [searchParams] = useSearchParams();
   const materialId = searchParams.get("materialId");
   const isReadOnly =
@@ -232,7 +234,7 @@ const BillOfProcess = ({
   const makeMethodId = makeMethod.id;
 
   const { carbon } = useCarbon();
-  const sortOrderFetcher = useFetcher<{}>();
+  const sortOrderFetcher = useFetcher<{ success: boolean }>();
   const deleteOperationFetcher = useFetcher<{ success: boolean }>();
   const { id: userId } = useUser();
 
@@ -275,6 +277,22 @@ const BillOfProcess = ({
       return acc;
     }, {} as OrderState);
   });
+
+  // If the server rejects a reorder (e.g. a system-owned Style cutting operation
+  // must stay first), roll the optimistic order back to the persisted order.
+  useEffect(() => {
+    if (
+      sortOrderFetcher.state === "idle" &&
+      sortOrderFetcher.data?.success === false
+    ) {
+      setOrderState(
+        initialOperations.reduce((acc, op) => {
+          if (op.id) acc[op.id] = op.order;
+          return acc;
+        }, {} as OrderState)
+      );
+    }
+  }, [sortOrderFetcher.state, sortOrderFetcher.data, initialOperations]);
 
   const operationsById = new Map<
     string,
@@ -328,7 +346,7 @@ const BillOfProcess = ({
     (a, b) => (orderState[a.id!] ?? a.order) - (orderState[b.id!] ?? b.order)
   );
 
-  const items = makeItems(operations, tags).map((item) => ({
+  const items = makeItems(operations, tags, styleProcessLabel).map((item) => ({
     ...item,
     checked: checkedState[item.id] ?? false
   }));
@@ -755,41 +773,39 @@ const BillOfProcess = ({
             )}
           </button>
         )}
-        renderExtra={() => (
-          <LayoutGroup id={`${item.id}`}>
-            <AnimatePresence mode="popLayout">
-              {isOpen ? (
-                <motion.div className="flex w-full flex-col">
-                  <div className="w-full p-2">
-                    <motion.div
-                      initial={{
-                        opacity: 0,
-                        filter: "blur(4px)"
-                      }}
-                      animate={{
-                        opacity: 1,
-                        filter: "blur(0px)"
-                      }}
-                      transition={{
-                        type: "spring",
-                        duration: 0.15
-                      }}
-                      className="w-full"
-                    >
-                      <DirectionAwareTabs
-                        className="mr-auto"
-                        tabs={tabs}
-                        onChange={() =>
-                          setTabChangeRerender(tabChangeRerender + 1)
-                        }
-                      />
-                    </motion.div>
-                  </div>
-                </motion.div>
-              ) : null}
-            </AnimatePresence>
-          </LayoutGroup>
-        )}
+        renderExtra={() =>
+          isOpen ? (
+            <LayoutGroup id={`${item.id}`}>
+              <div className="flex w-full flex-col">
+                <div className="w-full p-2">
+                  <motion.div
+                    initial={{
+                      opacity: 0,
+                      filter: "blur(4px)"
+                    }}
+                    animate={{
+                      opacity: 1,
+                      filter: "blur(0px)"
+                    }}
+                    transition={{
+                      type: "spring",
+                      duration: 0.15
+                    }}
+                    className="w-full"
+                  >
+                    <DirectionAwareTabs
+                      className="mr-auto"
+                      tabs={tabs}
+                      onChange={() =>
+                        setTabChangeRerender(tabChangeRerender + 1)
+                      }
+                    />
+                  </motion.div>
+                </div>
+              </div>
+            </LayoutGroup>
+          ) : null
+        }
       />
     );
   };
@@ -815,7 +831,7 @@ const BillOfProcess = ({
       <HStack className="justify-between">
         <CardHeader>
           <CardTitle className="flex flex-row items-center gap-2">
-            Bill of Process {isReadOnly && <LuLock />}
+            <Trans>Bill of Process</Trans> {isReadOnly && <LuLock />}
           </CardTitle>
         </CardHeader>
 
@@ -2657,21 +2673,34 @@ function ToolsListItem({
 
 function makeItems(
   operations: Operation[],
-  tags: { name: string }[]
+  tags: { name: string }[],
+  styleProcessLabel: (
+    description: string | null | undefined,
+    isCutting: boolean
+  ) => string
 ): ItemWithData[] {
-  return operations.map((operation) => makeItem(operation, tags));
+  return operations.map((operation) =>
+    makeItem(operation, tags, styleProcessLabel)
+  );
 }
 
 function makeItem(
   operation: Operation,
-  tags: { name: string }[]
+  tags: { name: string }[],
+  styleProcessLabel: (
+    description: string | null | undefined,
+    isCutting: boolean
+  ) => string
 ): ItemWithData {
   return {
     id: operation.id!,
     title: (
       <VStack spacing={0}>
         <h3 className="font-semibold truncate cursor-pointer">
-          {operation.description}
+          {styleProcessLabel(
+            operation.description,
+            isStyleCuttingOperation({ tags: operation.tags ?? [] })
+          )}
         </h3>
         {isOutsideOperationType(operation.operationType) ? (
           <SupplierProcessPreview

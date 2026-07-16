@@ -10,18 +10,20 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useMemo, useState } from "react";
 import { LuPencil, LuPlus, LuTrash } from "react-icons/lu";
-import { useParams, useRevalidator } from "react-router";
+import { useParams, useRevalidator, useSearchParams } from "react-router";
 import { SupplierAvatar, Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { ConfirmDelete } from "~/components/Modals";
 import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions } from "~/hooks";
 import { EditableCreatedAtCell } from "~/modules/production/ui/EditableCreatedAtCell";
+import { ProductionQuantityTableQuantityCell } from "~/modules/production/ui/ProductionQuantityTableCells";
 import { useProductionQuantityLineCreatedAtSave } from "~/modules/production/ui/useEditableCreatedAt";
 import { usePeople } from "~/stores";
 import { path } from "~/utils/path";
 import type { ScrapReason } from "../../types";
 import { ProductionQuantityReportReporter } from "./ProductionQuantityReportReporter";
+import { useStyleProcessLabel } from "./jobLabels";
 import {
   PRODUCTION_QUANTITY_TYPES,
   useProductionQuantityTypeLabel
@@ -31,8 +33,15 @@ import type { UnifiedProductionQuantityListItem } from "./unifiedQuantityFeeds";
 type ProductionQuantitiesTableProps = {
   data: UnifiedProductionQuantityListItem[];
   count: number;
-  operations: { id: string; description: string | null }[];
+  operations: {
+    id: string;
+    description: string | null;
+    isCutting?: boolean;
+  }[];
   scrapReasons: ScrapReason[];
+  // Override so the table can be reused outside the job route (e.g. a Bundle
+  // Work Order's backing job). Falls back to the job route param.
+  jobId?: string;
 };
 
 const ProductionQuantitiesTable = memo(
@@ -40,11 +49,29 @@ const ProductionQuantitiesTable = memo(
     data,
     count,
     operations,
-    scrapReasons
+    scrapReasons,
+    jobId: jobIdProp
   }: ProductionQuantitiesTableProps) => {
-    const { jobId } = useParams();
+    const params = useParams();
+    const jobId = jobIdProp ?? params.jobId;
     const { t } = useLingui();
     const typeLabel = useProductionQuantityTypeLabel();
+    const styleProcessLabel = useStyleProcessLabel();
+    // Look up whether an operation is the (style-identified) cutting op, so the
+    // list shows a translated "Cutting" label instead of the raw description.
+    const isCuttingById = useMemo(() => {
+      const map = new Map<string, boolean>();
+      for (const op of operations) map.set(op.id, Boolean(op.isCutting));
+      return map;
+    }, [operations]);
+    const operationLabel = useCallback(
+      (id: string | null | undefined, description: string | null | undefined) =>
+        styleProcessLabel(
+          description,
+          id ? (isCuttingById.get(id) ?? false) : false
+        ),
+      [styleProcessLabel, isCuttingById]
+    );
     if (!jobId) throw new Error("Job ID is required");
     const { openOverlay } = useOverlay();
     const revalidator = useRevalidator();
@@ -66,11 +93,34 @@ const ProductionQuantitiesTable = memo(
       [canUpdate, jobId, openOverlay, revalidator]
     );
 
+    // When the list is filtered to a single operation, seed the new-completion
+    // form with it (e.g. filtering to Assembly pre-selects Assembly).
+    const [searchParams] = useSearchParams();
+    const filteredOperationId = searchParams
+      .getAll("filter")
+      .find((f) => f.startsWith("jobOperationId:eq:"))
+      ?.split(":")
+      .slice(2)
+      .join(":");
+
     const openNew = useCallback(() => {
-      openOverlay(overlay.to.newJobProductionQuantity({ jobId }), {
-        onCreated: () => revalidator.revalidate()
-      });
-    }, [jobId, openOverlay, revalidator]);
+      // Preset the operation from the active filter, or when there's only one
+      // operation (e.g. a master work order's cutting), so the report opens with
+      // it selected — otherwise the quantity + config trigger stay disabled
+      // until an operation is picked.
+      const presetOperationId =
+        filteredOperationId ||
+        (operations.length === 1 ? operations[0].id : undefined);
+      openOverlay(
+        overlay.to.newJobProductionQuantity({
+          jobId,
+          jobOperationId: presetOperationId
+        }),
+        {
+          onCreated: () => revalidator.revalidate()
+        }
+      );
+    }, [jobId, filteredOperationId, operations, openOverlay, revalidator]);
 
     const columns = useMemo<
       ColumnDef<UnifiedProductionQuantityListItem>[]
@@ -86,17 +136,29 @@ const ProductionQuantitiesTable = memo(
                 className="text-left font-medium text-primary hover:underline"
                 onClick={() => openEdit(row.original.id)}
               >
-                {row.original.jobOperation?.description ?? null}
+                {operationLabel(
+                  row.original.jobOperationId,
+                  row.original.jobOperation?.description
+                )}
               </button>
             ) : (
-              <span>{row.original.jobOperation?.description ?? null}</span>
+              <span>
+                {operationLabel(
+                  row.original.jobOperationId,
+                  row.original.jobOperation?.description
+                )}
+              </span>
             ),
           meta: {
             filter: {
               type: "static",
               options: operations.map((operation) => ({
                 value: operation.id,
-                label: <Enumerable value={operation.description} />
+                label: (
+                  <Enumerable
+                    value={operationLabel(operation.id, operation.description)}
+                  />
+                )
               }))
             }
           }
@@ -191,7 +253,10 @@ const ProductionQuantitiesTable = memo(
           accessorKey: "quantity",
           header: t`Quantity`,
           cell: ({ row }) => (
-            <span className="tabular-nums">{row.original.quantity}</span>
+            <ProductionQuantityTableQuantityCell
+              row={row.original}
+              reportKind="productionQuantity"
+            />
           )
         },
         {
@@ -245,6 +310,7 @@ const ProductionQuantitiesTable = memo(
       canEdit,
       canUpdate,
       openEdit,
+      operationLabel,
       operations,
       people,
       saveCreatedAt,
@@ -321,8 +387,8 @@ const ProductionQuantitiesTable = memo(
             isOpen
             name={
               selectedEvent.actorKind === "supplier"
-                ? t`${selectedEvent.jobOperation?.description ?? t`Operation`} (supplier)`
-                : t`${selectedEvent.jobOperation?.description ?? t`Operation`} by ${
+                ? t`${operationLabel(selectedEvent.jobOperationId, selectedEvent.jobOperation?.description) || t`Operation`} (supplier)`
+                : t`${operationLabel(selectedEvent.jobOperationId, selectedEvent.jobOperation?.description) || t`Operation`} by ${
                     people.find((p) => p.id === selectedEvent.employeeId)
                       ?.name ?? t`Unknown Employee`
                   }`

@@ -21,6 +21,10 @@ const $partsStore = computed($itemsStore, (item) =>
   item.filter((i) => i.type === "Part")
 );
 
+const $stylesStore = computed($itemsStore, (item) =>
+  item.filter((i) => i.type === "Style")
+);
+
 const $toolsStore = computed($itemsStore, (item) =>
   item.filter((i) => i.type === "Tool")
 );
@@ -35,6 +39,7 @@ const $materialsStore = computed($itemsStore, (item) =>
 
 export const useItems = () => useNanoStore<Item[]>($itemsStore, "items");
 export const useParts = () => useValue($partsStore);
+export const useStyles = () => useValue($stylesStore);
 export const useTools = () => useValue($toolsStore);
 export const useServices = () => useValue($serivceStore);
 export const useMaterials = () => useValue($materialsStore);

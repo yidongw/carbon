@@ -19,6 +19,7 @@ import {
 import type { JSONContent } from "@carbon/react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { z } from "zod";
+import { seedStyleReference } from "~/modules/items";
 import type { GenericQueryFilters } from "~/utils/query";
 import { setGenericQueryFilters } from "~/utils/query";
 import { interpolateSequenceDate } from "~/utils/string";
@@ -783,18 +784,39 @@ export async function updateSubsidiary(
  * (it was invoked ~once per company, so nearly always cold) and the 95 sequential
  * round trips it took to insert the chart of accounts.
  */
+/**
+ * Provisions base reference data for a newly created company. Must be called
+ * with a service-role client — it seeds rows before the creator has RLS
+ * permissions on the new company.
+ */
 export async function seedCompany(
   client: SupabaseClient<Database>,
   companyId: string,
   userId: string,
-  parentCompanyId?: string
+  parentCompanyId?: string,
+  language?: string
 ) {
-  return client.rpc("seed_company", {
+  const result = await client.rpc("seed_company", {
     company_id: companyId,
     user_id: userId,
     parent_company_id: parentCompanyId,
     seed: companySeedData as unknown as Json
   });
+
+  // Seed the standard apparel colors + sizes (color names localized) for every
+  // company, regardless of which creation path ran. Non-fatal — the company is
+  // usable without them.
+  const [colorSeed, sizeSeed] = await seedStyleReference(
+    client,
+    companyId,
+    userId,
+    language
+  );
+  if (colorSeed.error || sizeSeed.error) {
+    console.error(colorSeed.error ?? sizeSeed.error);
+  }
+
+  return result;
 }
 
 export async function updateCompanyPlan(
@@ -1041,6 +1063,17 @@ export async function updateMaterialGeneratedIdsSetting(
   return client
     .from("companySettings")
     .update(sanitize({ materialGeneratedIds }))
+    .eq("id", companyId);
+}
+
+export async function updateHiddenSubmodulesSetting(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  hiddenSubmodules: string[]
+) {
+  return client
+    .from("companySettings")
+    .update(sanitize({ hiddenSubmodules }))
     .eq("id", companyId);
 }
 

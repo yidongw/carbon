@@ -2,8 +2,20 @@ import { getLocalTimeZone, today } from "@internationalized/date";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { address, contact } from "~/types/validators";
-import { taxExemptionReasons } from "../sales/sales.models";
 import { incoterms, methodItemType } from "../shared";
+
+const taxExemptionReasons = [
+  "Resale",
+  "Government",
+  "Nonprofit",
+  "Agriculture",
+  "Industrial",
+  "Export",
+  "Medical",
+  "Educational",
+  "Religious",
+  "Other"
+] as const;
 
 export const KPIs = [
   {
@@ -33,6 +45,7 @@ export const KPIs = [
 ] as const;
 
 export const purchaseOrderLineType = [
+  "Style",
   "Part",
   // "Service",
   "Material",
@@ -239,9 +252,15 @@ export const purchaseOrderLineValidator = z
   })
   .refine(
     (data) =>
-      ["Part", "Service", "Material", "Tool", "Fixture", "Consumable"].includes(
-        data.purchaseOrderLineType
-      )
+      [
+        "Style",
+        "Part",
+        "Service",
+        "Material",
+        "Tool",
+        "Fixture",
+        "Consumable"
+      ].includes(data.purchaseOrderLineType)
         ? data.itemId
         : true,
     {

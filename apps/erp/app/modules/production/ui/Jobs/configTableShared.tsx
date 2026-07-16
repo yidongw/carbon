@@ -20,6 +20,8 @@ export type Column = {
   label: string;
   type: ColumnType;
   options?: string[];
+  /** Render this column as read-only text (e.g. size/color in the split editor). */
+  readOnly?: boolean;
 };
 
 /** Delta = enter the change; Total = enter the target quantity. */
@@ -27,7 +29,7 @@ export type AdjustmentMode = "delta" | "total";
 
 export type MaterialOption = { label: string | ReactElement; value: string };
 
-type ConfigurationParameterInput = {
+export type ConfigurationParameterInput = {
   key: string;
   label: string;
   dataType: string;
@@ -315,12 +317,15 @@ export function ReadOnlyConfigTable({
   columns,
   rows,
   signed,
-  onQuantityClick
+  onQuantityClick,
+  optionLabels
 }: {
   columns: Column[];
   rows: Row[];
   signed?: boolean;
   onQuantityClick?: (row: Row, colKey: string, value: number) => void;
+  /** Display label per list-option value (e.g. color code -> color name). */
+  optionLabels?: Record<string, string>;
 }) {
   return (
     <ResponsiveConfigTable
@@ -331,12 +336,13 @@ export function ReadOnlyConfigTable({
       renderCell={(col, row) => {
         const raw = row[col.key];
         const numeric = Number(raw) || 0;
+        const label = String(raw ?? "");
         const display =
           col.type === "quantity"
             ? signed
               ? formatSignedTotal(numeric)
               : String(numeric)
-            : String(raw ?? "");
+            : (optionLabels?.[label] ?? label);
         const clickable = col.type === "quantity" && !!onQuantityClick;
         return clickable ? (
           <button
@@ -371,7 +377,8 @@ export function EditableConfigGrid({
   deleteRow,
   readOnly = false,
   allowRowMutations = true,
-  canDeleteRow
+  canDeleteRow,
+  optionLabels
 }: {
   columns: Column[];
   rows: Row[];
@@ -393,11 +400,24 @@ export function EditableConfigGrid({
   /** When set, rows matching this predicate get a delete action even if
    * `allowRowMutations` is false (e.g. process-click seeded rows). */
   canDeleteRow?: (rowIndex: number) => boolean;
+  /** Display label per list-option value (e.g. color code -> color name). The
+   * stored value stays the code; only the shown text changes. */
+  optionLabels?: Record<string, string>;
 }) {
   const { t } = useLingui();
 
   const renderCell = (col: Column, row: Row, rowIndex: number) => {
     const cellValue = row[col.key];
+    // Read-only descriptor columns (e.g. size/color in the split editor) render
+    // as plain text — the value is fixed by the add button.
+    if (col.readOnly && col.type !== "quantity") {
+      const raw = String(cellValue ?? "");
+      return (
+        <span className="px-1 text-sm font-medium">
+          {optionLabels?.[raw] || raw || "—"}
+        </span>
+      );
+    }
     const referenceValue =
       col.type === "quantity"
         ? referenceByRowIndex?.[rowIndex]?.[col.key]
@@ -517,7 +537,7 @@ export function EditableConfigGrid({
         >
           {col.options?.map((opt) => (
             <option key={opt} value={opt}>
-              {opt}
+              {optionLabels?.[opt] ?? opt}
             </option>
           ))}
         </select>

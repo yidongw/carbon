@@ -61,6 +61,7 @@ export function seededActorFromOperationContext(context: {
   operationType: OperationType | string | null | undefined;
   operationSupplierProcessId?: string | null;
   supplierId?: string | null;
+  assignee?: string | null;
 }) {
   if (
     locksActorToOperationSupplier(
@@ -77,8 +78,22 @@ export function seededActorFromOperationContext(context: {
     };
   }
 
+  const actorKind = defaultActorKindFromOperationType(context.operationType);
+
+  // An assigned employee operation seeds (and locks) the reporter to the
+  // assignee; unassigned operations stay selectable.
+  if (actorKind === "employee" && context.assignee?.trim()) {
+    return {
+      actorKind: "employee" as const,
+      employeeId: context.assignee.trim(),
+      supplierProcessId: "",
+      supplierId: "",
+      lockActorSelection: true
+    };
+  }
+
   return {
-    actorKind: defaultActorKindFromOperationType(context.operationType),
+    actorKind,
     employeeId: "",
     supplierProcessId: "",
     supplierId: "",

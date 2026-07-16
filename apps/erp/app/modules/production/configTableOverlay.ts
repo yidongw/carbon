@@ -5,6 +5,13 @@ export type ConfigTableOverlaySuccess = {
   configuration: {
     configTable: Record<string, string | number | boolean>[];
     configTablePrimaryKeys: string[];
+    // Flat cut breakdown (report split editor) — stripped server-side before the
+    // config is stored; persisted to masterWorkOrderSplitRow for cutting reports.
+    splitRows?: {
+      colorCode: string | null;
+      sizeCode: string | null;
+      quantity: number;
+    }[];
   };
   total: number;
   primaryKeys: string[];

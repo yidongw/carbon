@@ -7,6 +7,7 @@ import {
 describe("toPurchaseOrderItemLineType", () => {
   it("passes through valid item types", () => {
     expect(toPurchaseOrderItemLineType("Material")).toBe("Material");
+    expect(toPurchaseOrderItemLineType("Style")).toBe("Style");
   });
 
   it("falls back to Part for unsupported item types", () => {

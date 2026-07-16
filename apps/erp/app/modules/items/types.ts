@@ -28,6 +28,10 @@ import type {
   getParts,
   getPickMethods,
   getServices,
+  getStyle,
+  getStyleColors,
+  getStyleSizes,
+  getStyles,
   getSupplierParts,
   getTool,
   getTools,
@@ -170,6 +174,22 @@ export type PickMethod = NonNullable<
 export type Service = NonNullable<
   Awaited<ReturnType<typeof getServices>>["data"]
 >[number];
+
+export type Style = NonNullable<
+  Awaited<ReturnType<typeof getStyles>>["data"]
+>[number];
+
+export type StyleColor = NonNullable<
+  Awaited<ReturnType<typeof getStyleColors>>["data"]
+>[number];
+
+export type StyleSize = NonNullable<
+  Awaited<ReturnType<typeof getStyleSizes>>["data"]
+>[number];
+
+export type StyleSummary = NonNullable<
+  Awaited<ReturnType<typeof getStyle>>
+>["data"];
 
 export type ServiceType = Database["public"]["Enums"]["serviceType"];
 

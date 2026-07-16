@@ -50,6 +50,7 @@ import {
   LuPizza,
   LuQrCode,
   LuRotateCcw,
+  LuShirt,
   LuShoppingCart,
   LuSquare,
   LuTags,
@@ -91,6 +92,8 @@ export const MethodItemTypeIcon = ({
   className?: string;
 }) => {
   switch (type) {
+    case "Style":
+      return <LuShirt className={className} />;
     case "Part":
       return <AiOutlinePartition className={className} />;
     case "Material":

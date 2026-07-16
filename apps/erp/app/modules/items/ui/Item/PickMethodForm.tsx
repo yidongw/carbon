@@ -61,7 +61,7 @@ type ReplenishmentSystem = "Buy" | "Make" | "Buy and Make";
 type PickMethodFormProps = {
   initialValues: z.infer<typeof pickMethodWithShelfLifeValidator>;
   locations: ListItem[];
-  type: "Part" | "Material" | "Tool" | "Consumable";
+  type: "Part" | "Material" | "Tool" | "Consumable" | "Style";
   storageUnits: { value: string; label: string }[];
   /**
    * Used to decide whether to render the shelf-life controls. Shelf life
@@ -477,18 +477,19 @@ function ShelfLifeFields({
 function getLocationPath(
   itemId: string,
   locationId: string,
-  type: "Part" | "Material" | "Tool" | "Consumable"
+  type: "Part" | "Material" | "Tool" | "Consumable" | "Style"
 ) {
   switch (type) {
     case "Part":
       return `${path.to.partInventory(itemId)}?location=${locationId}`;
     case "Material":
       return `${path.to.materialInventory(itemId)}?location=${locationId}`;
-
     case "Tool":
       return `${path.to.toolInventory(itemId)}?location=${locationId}`;
     case "Consumable":
       return `${path.to.consumableInventory(itemId)}?location=${locationId}`;
+    case "Style":
+      return `${path.to.styleInventory(itemId)}?location=${locationId}`;
     default:
       throw new Error(`Invalid item type: ${type}`);
   }
