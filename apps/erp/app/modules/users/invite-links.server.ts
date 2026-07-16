@@ -1,5 +1,6 @@
 import { CarbonEdition, getPermissionCacheKey } from "@carbon/auth";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
+import { getUserIdentities } from "@carbon/auth/identity.server";
 import type { Database } from "@carbon/database";
 import { redis } from "@carbon/kv";
 import { updateSubscriptionQuantityForCompany } from "@carbon/stripe/stripe.server";
@@ -23,6 +24,10 @@ export type PublicInviteLinkDetails = {
   expired: boolean;
   alreadyApplied: boolean;
   alreadyMember: boolean;
+  // Ordered login methods the joiner must complete (empty = any method), and
+  // the subset of those they have already satisfied (linked userIdentity types).
+  loginMethods: string[];
+  satisfiedMethods: string[];
 };
 
 export async function getPublicInviteLinkByCode(
@@ -42,6 +47,7 @@ export async function getPublicInviteLinkByCode(
         label,
         expiresAt,
         revokedAt,
+        loginMethods,
         company:companyId(name),
         employeeType:employeeTypeId(name),
         inviter:createdBy(fullName)
@@ -67,11 +73,16 @@ export async function getPublicInviteLinkByCode(
 
   const expired = isInviteLinkExpired(inviteLink.data);
 
+  const loginMethods = (inviteLink.data.loginMethods ?? []).filter(
+    (m): m is string => typeof m === "string"
+  );
+
   let alreadyApplied = false;
   let alreadyMember = false;
+  let satisfiedMethods: string[] = [];
 
   if (userId) {
-    const [pendingApplication, employee] = await Promise.all([
+    const [pendingApplication, employee, identities] = await Promise.all([
       getPendingApplicationForUser(
         serviceRole,
         userId,
@@ -82,11 +93,13 @@ export async function getPublicInviteLinkByCode(
         .select("active")
         .eq("id", userId)
         .eq("companyId", inviteLink.data.companyId)
-        .maybeSingle()
+        .maybeSingle(),
+      getUserIdentities(userId)
     ]);
 
     alreadyApplied = !!pendingApplication.data;
     alreadyMember = employee.data?.active === true;
+    satisfiedMethods = Array.from(new Set(identities.map((i) => i.type)));
   }
 
   const company = inviteLink.data.company as { name: string } | null;
@@ -104,7 +117,9 @@ export async function getPublicInviteLinkByCode(
       label: inviteLink.data.label,
       expired,
       alreadyApplied,
-      alreadyMember
+      alreadyMember,
+      loginMethods,
+      satisfiedMethods
     }
   };
 }
@@ -117,7 +132,8 @@ export async function createInviteLink(
     employeeTypeId,
     locationId,
     label,
-    expiresAt
+    expiresAt,
+    loginMethods
   }: {
     companyId: string;
     createdBy: string;
@@ -125,6 +141,7 @@ export async function createInviteLink(
     locationId: string;
     label?: string | null;
     expiresAt?: string | null;
+    loginMethods?: string[] | null;
   }
 ) {
   return client
@@ -136,7 +153,8 @@ export async function createInviteLink(
       employeeTypeId,
       locationId,
       label: label || null,
-      expiresAt: expiresAt || null
+      expiresAt: expiresAt || null,
+      loginMethods: loginMethods && loginMethods.length ? loginMethods : null
     })
     .select("*")
     .single();
@@ -199,6 +217,23 @@ export async function submitMembershipApplication(
 
   if (isInviteLinkExpired(inviteLink.data)) {
     return { success: false, message: "This invite link is no longer valid" };
+  }
+
+  // Enforce required login methods server-side (the UI gates this too, but a
+  // direct POST must not be able to skip the requirement).
+  const requiredMethods = (inviteLink.data.loginMethods ?? []).filter(
+    (m): m is string => typeof m === "string"
+  );
+  if (requiredMethods.length) {
+    const identities = await getUserIdentities(userId);
+    const satisfied = new Set(identities.map((i) => i.type));
+    const missing = requiredMethods.filter((m) => !satisfied.has(m));
+    if (missing.length) {
+      return {
+        success: false,
+        message: "Please complete all required login methods before joining"
+      };
+    }
   }
 
   const existingEmployee = await serviceRole

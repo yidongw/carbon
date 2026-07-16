@@ -1178,6 +1178,7 @@ export const path = {
     locations: `${x}/resources/locations`,
     login: "/login",
     joinLink: (code: string) => generatePath(`/join/${code}`),
+    joinLinkLink: (code: string) => generatePath(`/join/${code}/link`),
     joinLinkApply: (code: string) => generatePath(`/join/${code}/apply`),
     joinLinkSubmitted: (code: string) =>
       generatePath(`/join/${code}/submitted`),

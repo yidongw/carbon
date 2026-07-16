@@ -28,10 +28,19 @@ export type InviteLinkRow = {
   createdAt: string;
   expiresAt: string | null;
   revokedAt: string | null;
+  loginMethods: string[] | null;
   employeeType: { name: string } | null;
   inviter: { fullName: string | null } | null;
   location: { name: string } | null;
   membershipApplication: { count: number }[] | null;
+};
+
+const METHOD_LABELS: Record<string, string> = {
+  wechat: "WeChat",
+  phone: "Phone",
+  email: "Email",
+  google: "Google",
+  azure: "Outlook"
 };
 
 type InviteLinksTableProps = {
@@ -260,6 +269,19 @@ const InviteLinksTable = ({ data, count }: InviteLinksTableProps) => {
         accessorFn: (row) => row.inviter?.fullName ?? "—",
         header: t`Inviter`,
         cell: ({ getValue }) => getValue<string>()
+      },
+      {
+        id: "loginMethods",
+        accessorFn: (row) =>
+          row.loginMethods?.length
+            ? row.loginMethods.map((m) => METHOD_LABELS[m] ?? m).join(" → ")
+            : "—",
+        header: t`Login`,
+        cell: ({ getValue }) => (
+          <span className="text-sm text-muted-foreground">
+            {getValue<string>()}
+          </span>
+        )
       },
       {
         id: "status",

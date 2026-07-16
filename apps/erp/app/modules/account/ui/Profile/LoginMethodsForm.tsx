@@ -68,11 +68,21 @@ type Draft = {
 export default function LoginMethodsForm({
   identities,
   enabledMethods,
-  wechatName
+  wechatName,
+  // Where the add/remove intent forms POST (default: the profile route). The
+  // join flow points these at its own link route.
+  action = path.to.profile,
+  // Where OAuth / in-WeChat-browser linking returns to (default: profile).
+  returnTo = path.to.profile,
+  // Render without the surrounding Card chrome (used inside the join flow).
+  bare = false
 }: {
   identities: Identity[];
   enabledMethods: Method[];
   wechatName?: string;
+  action?: string;
+  returnTo?: string;
+  bare?: boolean;
 }) {
   const { t } = useLingui();
   const addFetcher = useFetcher<FetcherData>();
@@ -129,7 +139,7 @@ export default function LoginMethodsForm({
     // validates redirect_to against the allow list, so it must be the real origin.
     const params = new URLSearchParams({
       provider,
-      redirectTo: path.to.profile,
+      redirectTo: returnTo,
       callbackOrigin: window.location.origin
     });
     window.location.href = `/api/auth/link-provider?${params}`;
@@ -149,7 +159,7 @@ export default function LoginMethodsForm({
     setDraft(null);
     if (/MicroMessenger/i.test(navigator.userAgent)) {
       window.location.href = `/auth/wechat?link=1&redirectTo=${encodeURIComponent(
-        path.to.profile
+        returnTo
       )}`;
       return;
     }
@@ -194,6 +204,266 @@ export default function LoginMethodsForm({
     };
   }, [wechatOpen, wechatScene, revalidator, t]);
 
+  const content = (
+    <VStack spacing={2}>
+      {enabledMethods.map((method) => {
+        const identity = byType.get(method);
+        const meta = META[method];
+        const draftOpen = draft?.method === method;
+        const wechatPanelOpen = method === "wechat" && wechatOpen;
+        // Can't add a second email-family method once one is linked.
+        const blockedByEmail = EMAIL_FAMILY.has(method) && hasEmailFamily;
+
+        return (
+          <div key={method} className="w-full rounded-lg border border-border">
+            <div className="w-full p-3">
+              {identity && displayValue(method, identity.value, wechatName) ? (
+                // Two-line layout: label row + value + remove row
+                <>
+                  <HStack spacing={2}>
+                    {meta.icon}
+                    <span className="text-sm font-medium">{meta.label}</span>
+                  </HStack>
+                  <HStack className="w-full justify-between mt-1">
+                    <span className="text-sm text-muted-foreground break-all">
+                      {displayValue(method, identity.value, wechatName)}
+                    </span>
+                    <removeFetcher.Form method="post" action={action}>
+                      <input
+                        type="hidden"
+                        name="intent"
+                        value="removeIdentity"
+                      />
+                      <input type="hidden" name="type" value={identity.type} />
+                      <input
+                        type="hidden"
+                        name="value"
+                        value={identity.value}
+                      />
+                      <Button
+                        type="submit"
+                        variant="ghost"
+                        size="sm"
+                        isLoading={removingType === identity.type}
+                        isDisabled={!canRemove || removingType !== null}
+                        leftIcon={<LuTrash2 className="size-4" />}
+                      >
+                        <Trans>Remove</Trans>
+                      </Button>
+                    </removeFetcher.Form>
+                  </HStack>
+                </>
+              ) : (
+                // Single-line layout: no value to show (unlinked, or WeChat with no name)
+                <HStack className="w-full justify-between">
+                  <HStack spacing={2}>
+                    {meta.icon}
+                    <span className="text-sm font-medium">{meta.label}</span>
+                  </HStack>
+                  {identity ? (
+                    <removeFetcher.Form method="post" action={action}>
+                      <input
+                        type="hidden"
+                        name="intent"
+                        value="removeIdentity"
+                      />
+                      <input type="hidden" name="type" value={identity.type} />
+                      <input
+                        type="hidden"
+                        name="value"
+                        value={identity.value}
+                      />
+                      <Button
+                        type="submit"
+                        variant="ghost"
+                        size="sm"
+                        isLoading={removingType === identity.type}
+                        isDisabled={!canRemove || removingType !== null}
+                        leftIcon={<LuTrash2 className="size-4" />}
+                      >
+                        <Trans>Remove</Trans>
+                      </Button>
+                    </removeFetcher.Form>
+                  ) : OTP_METHODS.has(method) ? (
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      isDisabled={blockedByEmail}
+                      onClick={() => {
+                        setWechatOpen(false);
+                        setDraft({
+                          method: method as "email" | "phone",
+                          step: "enter",
+                          contact: "",
+                          code: ""
+                        });
+                      }}
+                    >
+                      <Trans>Connect</Trans>
+                    </Button>
+                  ) : OAUTH_METHODS.has(method) ? (
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      isDisabled={blockedByEmail}
+                      onClick={() => onLinkOAuth(method as "google" | "azure")}
+                    >
+                      <Trans>Connect</Trans>
+                    </Button>
+                  ) : (
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      onClick={onConnectWeChat}
+                    >
+                      <Trans>Connect</Trans>
+                    </Button>
+                  )}
+                </HStack>
+              )}
+            </div>
+
+            {draftOpen && draft && (
+              <addFetcher.Form method="post" action={action} className="w-full">
+                <VStack spacing={2} className="border-t border-border p-3">
+                  {draft.step === "enter" ? (
+                    <>
+                      <input
+                        type="hidden"
+                        name="intent"
+                        value={
+                          method === "phone" ? "addPhoneSend" : "addEmailSend"
+                        }
+                      />
+                      <Input
+                        name={method === "phone" ? "phone" : "email"}
+                        prefix={method === "phone" ? "+86" : undefined}
+                        placeholder={
+                          method === "phone"
+                            ? t`Phone Number`
+                            : t`Email Address`
+                        }
+                        value={draft.contact}
+                        onChange={(e) =>
+                          setDraft((d) =>
+                            d ? { ...d, contact: e.target.value } : d
+                          )
+                        }
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <input
+                        type="hidden"
+                        name="intent"
+                        value={
+                          method === "phone"
+                            ? "addPhoneVerify"
+                            : "addEmailVerify"
+                        }
+                      />
+                      <input
+                        type="hidden"
+                        name={method === "phone" ? "phone" : "email"}
+                        value={draft.contact}
+                      />
+                      <p className="text-sm text-muted-foreground">
+                        <Trans>We've sent a code to {sentTo}</Trans>
+                      </p>
+                      <Input
+                        name="code"
+                        placeholder={t`Verification code`}
+                        value={draft.code}
+                        onChange={(e) =>
+                          setDraft((d) =>
+                            d ? { ...d, code: e.target.value } : d
+                          )
+                        }
+                      />
+                    </>
+                  )}
+
+                  {addFetcher.data?.success === false &&
+                    addFetcher.data.message && (
+                      <span className="text-sm text-red-500">
+                        {addFetcher.data.message}
+                      </span>
+                    )}
+
+                  <HStack spacing={2}>
+                    <Button
+                      type="submit"
+                      size="sm"
+                      isLoading={busy}
+                      isDisabled={busy}
+                    >
+                      {draft.step === "enter" ? (
+                        <Trans>Send code</Trans>
+                      ) : (
+                        <Trans>Verify & link</Trans>
+                      )}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setDraft(null)}
+                    >
+                      <Trans>Cancel</Trans>
+                    </Button>
+                  </HStack>
+                </VStack>
+              </addFetcher.Form>
+            )}
+
+            {wechatPanelOpen && (
+              <VStack
+                spacing={2}
+                className="items-center border-t border-border p-3"
+              >
+                {wechatFetcher.state === "loading" || !wechatFetcher.data ? (
+                  <p className="text-sm text-muted-foreground">
+                    <Trans>Loading…</Trans>
+                  </p>
+                ) : wechatFetcher.data.url ? (
+                  <>
+                    <div className="rounded-xl bg-white p-3">
+                      <QRCodeSVG
+                        value={wechatFetcher.data.url}
+                        size={160}
+                        className="block"
+                      />
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      <Trans>Scan with WeChat to connect</Trans>
+                    </p>
+                  </>
+                ) : (
+                  <p className="text-sm text-red-500">
+                    <Trans>WeChat is unavailable right now</Trans>
+                  </p>
+                )}
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setWechatOpen(false)}
+                >
+                  <Trans>Cancel</Trans>
+                </Button>
+              </VStack>
+            )}
+          </div>
+        );
+      })}
+    </VStack>
+  );
+
+  if (bare) return content;
+
   return (
     <Card>
       <CardHeader>
@@ -204,294 +474,7 @@ export default function LoginMethodsForm({
           <Trans>Ways you can sign in. Only you can change these.</Trans>
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <VStack spacing={2}>
-          {enabledMethods.map((method) => {
-            const identity = byType.get(method);
-            const meta = META[method];
-            const draftOpen = draft?.method === method;
-            const wechatPanelOpen = method === "wechat" && wechatOpen;
-            // Can't add a second email-family method once one is linked.
-            const blockedByEmail = EMAIL_FAMILY.has(method) && hasEmailFamily;
-
-            return (
-              <div
-                key={method}
-                className="w-full rounded-lg border border-border"
-              >
-                <div className="w-full p-3">
-                  {identity &&
-                  displayValue(method, identity.value, wechatName) ? (
-                    // Two-line layout: label row + value + remove row
-                    <>
-                      <HStack spacing={2}>
-                        {meta.icon}
-                        <span className="text-sm font-medium">
-                          {meta.label}
-                        </span>
-                      </HStack>
-                      <HStack className="w-full justify-between mt-1">
-                        <span className="text-sm text-muted-foreground break-all">
-                          {displayValue(method, identity.value, wechatName)}
-                        </span>
-                        <removeFetcher.Form
-                          method="post"
-                          action={path.to.profile}
-                        >
-                          <input
-                            type="hidden"
-                            name="intent"
-                            value="removeIdentity"
-                          />
-                          <input
-                            type="hidden"
-                            name="type"
-                            value={identity.type}
-                          />
-                          <input
-                            type="hidden"
-                            name="value"
-                            value={identity.value}
-                          />
-                          <Button
-                            type="submit"
-                            variant="ghost"
-                            size="sm"
-                            isLoading={removingType === identity.type}
-                            isDisabled={!canRemove || removingType !== null}
-                            leftIcon={<LuTrash2 className="size-4" />}
-                          >
-                            <Trans>Remove</Trans>
-                          </Button>
-                        </removeFetcher.Form>
-                      </HStack>
-                    </>
-                  ) : (
-                    // Single-line layout: no value to show (unlinked, or WeChat with no name)
-                    <HStack className="w-full justify-between">
-                      <HStack spacing={2}>
-                        {meta.icon}
-                        <span className="text-sm font-medium">
-                          {meta.label}
-                        </span>
-                      </HStack>
-                      {identity ? (
-                        <removeFetcher.Form
-                          method="post"
-                          action={path.to.profile}
-                        >
-                          <input
-                            type="hidden"
-                            name="intent"
-                            value="removeIdentity"
-                          />
-                          <input
-                            type="hidden"
-                            name="type"
-                            value={identity.type}
-                          />
-                          <input
-                            type="hidden"
-                            name="value"
-                            value={identity.value}
-                          />
-                          <Button
-                            type="submit"
-                            variant="ghost"
-                            size="sm"
-                            isLoading={removingType === identity.type}
-                            isDisabled={!canRemove || removingType !== null}
-                            leftIcon={<LuTrash2 className="size-4" />}
-                          >
-                            <Trans>Remove</Trans>
-                          </Button>
-                        </removeFetcher.Form>
-                      ) : OTP_METHODS.has(method) ? (
-                        <Button
-                          type="button"
-                          variant="secondary"
-                          size="sm"
-                          isDisabled={blockedByEmail}
-                          onClick={() => {
-                            setWechatOpen(false);
-                            setDraft({
-                              method: method as "email" | "phone",
-                              step: "enter",
-                              contact: "",
-                              code: ""
-                            });
-                          }}
-                        >
-                          <Trans>Connect</Trans>
-                        </Button>
-                      ) : OAUTH_METHODS.has(method) ? (
-                        <Button
-                          type="button"
-                          variant="secondary"
-                          size="sm"
-                          isDisabled={blockedByEmail}
-                          onClick={() =>
-                            onLinkOAuth(method as "google" | "azure")
-                          }
-                        >
-                          <Trans>Connect</Trans>
-                        </Button>
-                      ) : (
-                        <Button
-                          type="button"
-                          variant="secondary"
-                          size="sm"
-                          onClick={onConnectWeChat}
-                        >
-                          <Trans>Connect</Trans>
-                        </Button>
-                      )}
-                    </HStack>
-                  )}
-                </div>
-
-                {draftOpen && draft && (
-                  <addFetcher.Form
-                    method="post"
-                    action={path.to.profile}
-                    className="w-full"
-                  >
-                    <VStack spacing={2} className="border-t border-border p-3">
-                      {draft.step === "enter" ? (
-                        <>
-                          <input
-                            type="hidden"
-                            name="intent"
-                            value={
-                              method === "phone"
-                                ? "addPhoneSend"
-                                : "addEmailSend"
-                            }
-                          />
-                          <Input
-                            name={method === "phone" ? "phone" : "email"}
-                            prefix={method === "phone" ? "+86" : undefined}
-                            placeholder={
-                              method === "phone"
-                                ? t`Phone Number`
-                                : t`Email Address`
-                            }
-                            value={draft.contact}
-                            onChange={(e) =>
-                              setDraft((d) =>
-                                d ? { ...d, contact: e.target.value } : d
-                              )
-                            }
-                          />
-                        </>
-                      ) : (
-                        <>
-                          <input
-                            type="hidden"
-                            name="intent"
-                            value={
-                              method === "phone"
-                                ? "addPhoneVerify"
-                                : "addEmailVerify"
-                            }
-                          />
-                          <input
-                            type="hidden"
-                            name={method === "phone" ? "phone" : "email"}
-                            value={draft.contact}
-                          />
-                          <p className="text-sm text-muted-foreground">
-                            <Trans>We've sent a code to {sentTo}</Trans>
-                          </p>
-                          <Input
-                            name="code"
-                            placeholder={t`Verification code`}
-                            value={draft.code}
-                            onChange={(e) =>
-                              setDraft((d) =>
-                                d ? { ...d, code: e.target.value } : d
-                              )
-                            }
-                          />
-                        </>
-                      )}
-
-                      {addFetcher.data?.success === false &&
-                        addFetcher.data.message && (
-                          <span className="text-sm text-red-500">
-                            {addFetcher.data.message}
-                          </span>
-                        )}
-
-                      <HStack spacing={2}>
-                        <Button
-                          type="submit"
-                          size="sm"
-                          isLoading={busy}
-                          isDisabled={busy}
-                        >
-                          {draft.step === "enter" ? (
-                            <Trans>Send code</Trans>
-                          ) : (
-                            <Trans>Verify & link</Trans>
-                          )}
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setDraft(null)}
-                        >
-                          <Trans>Cancel</Trans>
-                        </Button>
-                      </HStack>
-                    </VStack>
-                  </addFetcher.Form>
-                )}
-
-                {wechatPanelOpen && (
-                  <VStack
-                    spacing={2}
-                    className="items-center border-t border-border p-3"
-                  >
-                    {wechatFetcher.state === "loading" ||
-                    !wechatFetcher.data ? (
-                      <p className="text-sm text-muted-foreground">
-                        <Trans>Loading…</Trans>
-                      </p>
-                    ) : wechatFetcher.data.url ? (
-                      <>
-                        <div className="rounded-xl bg-white p-3">
-                          <QRCodeSVG
-                            value={wechatFetcher.data.url}
-                            size={160}
-                            className="block"
-                          />
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          <Trans>Scan with WeChat to connect</Trans>
-                        </p>
-                      </>
-                    ) : (
-                      <p className="text-sm text-red-500">
-                        <Trans>WeChat is unavailable right now</Trans>
-                      </p>
-                    )}
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setWechatOpen(false)}
-                    >
-                      <Trans>Cancel</Trans>
-                    </Button>
-                  </VStack>
-                )}
-              </div>
-            );
-          })}
-        </VStack>
-      </CardContent>
+      <CardContent>{content}</CardContent>
     </Card>
   );
 }

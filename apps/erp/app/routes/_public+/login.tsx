@@ -229,22 +229,35 @@ export default function LoginRoute() {
   const { t } = useLingui();
   const formatError = useFormatValidationError();
   const {
-    hasOutlookAuth,
-    hasGoogleAuth,
-    hasPasskeyAuth,
+    hasOutlookAuth: hasOutlookAuthEnabled,
+    hasGoogleAuth: hasGoogleAuthEnabled,
+    hasPasskeyAuth: hasPasskeyAuthEnabled,
     providers,
     isWeChatBrowser
   } = useLoaderData<typeof loader>();
-  const hasWeChatAuth = providers.includes("wechat");
-  const hasPhoneAuth = providers.includes("phone");
+  const [searchParams] = useSearchParams();
+  const redirectTo = searchParams.get("redirectTo") ?? undefined;
+  // Invite links can restrict sign-in to a single method via ?only=<method>.
+  // The join flow drives the joiner through each required method in order.
+  const onlyRaw = searchParams.get("only");
+  const restrictTo =
+    onlyRaw &&
+    ["email", "phone", "wechat", "google", "azure", "passkey"].includes(onlyRaw)
+      ? onlyRaw
+      : null;
+  const allow = (method: string) => !restrictTo || restrictTo === method;
+
+  const hasWeChatAuth = providers.includes("wechat") && allow("wechat");
+  const hasPhoneAuth = providers.includes("phone") && allow("phone");
+  const hasGoogleAuth = hasGoogleAuthEnabled && allow("google");
+  const hasOutlookAuth = hasOutlookAuthEnabled && allow("azure");
+  const hasPasskeyAuth = hasPasskeyAuthEnabled && allow("passkey");
+  const showEmailForm = allow("email");
 
   // Always offer the WeChat button when the provider is on. In the WeChat
   // in-app browser it redirects (OAuth); elsewhere it reveals a QR to scan.
   const showWeChatButton = hasWeChatAuth;
   const canShowWeChatQr = !isWeChatBrowser && hasWeChatAuth;
-
-  const [searchParams] = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo") ?? undefined;
   // Build the optional `redirectTo` query fragment; `sep` is "?" when starting
   // a query string and "&" when appending to one.
   const redirectQuery = useCallback(
@@ -643,11 +656,12 @@ export default function LoginRoute() {
             {(hasGoogleAuth ||
               hasOutlookAuth ||
               showWeChatButton ||
-              (hasPasskeyAuth && passkeySupported)) && (
-              <div className="py-3 w-full">
-                <Separator />
-              </div>
-            )}
+              (hasPasskeyAuth && passkeySupported)) &&
+              (showEmailForm || hasPhoneAuth) && (
+                <div className="py-3 w-full">
+                  <Separator />
+                </div>
+              )}
 
             {loginMethod !== "wechat-qr" &&
               (() => {
@@ -657,7 +671,8 @@ export default function LoginRoute() {
                 }[] = [];
                 if (hasPhoneAuth)
                   tabs.push({ key: "phone", label: <Trans>Phone</Trans> });
-                tabs.push({ key: "email", label: <Trans>Email</Trans> });
+                if (showEmailForm)
+                  tabs.push({ key: "email", label: <Trans>Email</Trans> });
 
                 if (tabs.length < 2) return null;
                 return (
@@ -809,7 +824,7 @@ export default function LoginRoute() {
                   )}
                 </VStack>
               </ValidatedForm>
-            ) : (
+            ) : showEmailForm ? (
               <ValidatedForm
                 fetcher={fetcher}
                 validator={magicLinkValidator}
@@ -869,7 +884,7 @@ export default function LoginRoute() {
                   )}
                 </VStack>
               </ValidatedForm>
-            )}
+            ) : null}
           </VStack>
         )}
       </div>

@@ -14682,6 +14682,7 @@ export type Database = {
           id: string
           label: string | null
           locationId: string
+          loginMethods: string[] | null
           revokedAt: string | null
         }
         Insert: {
@@ -14694,6 +14695,7 @@ export type Database = {
           id?: string
           label?: string | null
           locationId: string
+          loginMethods?: string[] | null
           revokedAt?: string | null
         }
         Update: {
@@ -14706,6 +14708,7 @@ export type Database = {
           id?: string
           label?: string | null
           locationId?: string
+          loginMethods?: string[] | null
           revokedAt?: string | null
         }
         Relationships: [
