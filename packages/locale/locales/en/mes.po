@@ -81,6 +81,12 @@ msgstr "Add new record set"
 msgid "Add Spare Part"
 msgstr "Add Spare Part"
 
+msgid "Adjust stock down"
+msgstr "Adjust stock down"
+
+msgid "Adjust stock up"
+msgstr "Adjust stock up"
+
 msgid "All"
 msgstr "All"
 
@@ -151,6 +157,9 @@ msgstr "Blocked by {0}"
 
 msgid "Blocking"
 msgstr "Blocking"
+
+msgid "Browse released jobs on the floor"
+msgstr "Browse released jobs on the floor"
 
 msgid "But don't worry. You can use the forgot password flow to request a new magic link."
 msgstr "But don't worry. You can use the forgot password flow to request a new magic link."
@@ -637,6 +646,9 @@ msgstr "Maintenance"
 msgid "Maintenance Completed"
 msgstr "Maintenance Completed"
 
+msgid "Maintenance dispatches"
+msgstr "Maintenance dispatches"
+
 msgid "Manually add items to inventory"
 msgstr "Manually add items to inventory"
 
@@ -861,8 +873,14 @@ msgstr "Open Jobs"
 msgid "Operations"
 msgstr "Operations"
 
+msgid "Operations assigned to you"
+msgstr "Operations assigned to you"
+
 msgid "Operations ended"
 msgstr "Operations ended"
+
+msgid "Operations you are currently working on"
+msgstr "Operations you are currently working on"
 
 msgid "Operator Performed"
 msgstr "Operator Performed"
@@ -926,6 +944,9 @@ msgstr "Picked up Column {0} at position: {1} of {2}"
 
 msgid "Picking"
 msgstr "Picking"
+
+msgid "Picking lists to fulfill"
+msgstr "Picking lists to fulfill"
 
 msgid "Pin Out"
 msgstr "Pin Out"
@@ -1023,6 +1044,9 @@ msgstr "Reason for the remaining {shortfall}"
 msgid "Recent"
 msgstr "Recent"
 
+msgid "Recently completed work"
+msgstr "Recently completed work"
+
 msgid "Record"
 msgstr "Record"
 
@@ -1068,6 +1092,12 @@ msgstr "Reported"
 
 msgid "Reset zoom"
 msgstr "Reset zoom"
+
+msgid "Review and approve production reports"
+msgstr "Review and approve production reports"
+
+msgid "Review your earnings and payment history"
+msgstr "Review your earnings and payment history"
 
 msgid "rework"
 msgstr "rework"
@@ -1208,6 +1238,9 @@ msgstr "Set clock-out time"
 msgid "Setup"
 msgstr "Setup"
 
+msgid "Share an idea or report a problem"
+msgstr "Share an idea or report a problem"
+
 msgid "Short"
 msgstr "Short"
 
@@ -1273,6 +1306,9 @@ msgstr "Steps"
 
 msgid "Steps are missing"
 msgstr "Steps are missing"
+
+msgid "Stop all your active operations"
+msgstr "Stop all your active operations"
 
 msgid "Storage Unit"
 msgstr "Storage Unit"
@@ -1437,11 +1473,17 @@ msgstr "We've sent a verification code to {verifyEmail}"
 msgid "We've sent you a magic link to sign in to your account."
 msgstr "We've sent you a magic link to sign in to your account."
 
+msgid "Welcome"
+msgstr "Welcome"
+
 msgid "WIP"
 msgstr "WIP"
 
 msgid "Work Center"
 msgstr "Work Center"
+
+msgid "Work scheduled at your work centers"
+msgstr "Work scheduled at your work centers"
 
 #. placeholder {0}: new Date(openClockEntry.clockIn).toLocaleString(locale)
 msgid "You clocked in at {0}. You can edit your clock-out time below or acknowledge that you're still working."

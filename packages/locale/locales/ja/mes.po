@@ -81,6 +81,12 @@ msgstr "新規レコードセット追加"
 msgid "Add Spare Part"
 msgstr "スペアパーツを追加"
 
+msgid "Adjust stock down"
+msgstr "在庫を減らす"
+
+msgid "Adjust stock up"
+msgstr "在庫を増加させる"
+
 msgid "All"
 msgstr "すべて"
 
@@ -151,6 +157,9 @@ msgstr "{0} によりブロック中"
 
 msgid "Blocking"
 msgstr "ブロック中"
+
+msgid "Browse released jobs on the floor"
+msgstr "フロアでリリースされたジョブを閲覧"
 
 msgid "But don't worry. You can use the forgot password flow to request a new magic link."
 msgstr "ご心配なく。パスワード忘却フローを使用して新しいマジックリンクをリクエストできます。"
@@ -637,6 +646,9 @@ msgstr "メンテナンス"
 msgid "Maintenance Completed"
 msgstr "メンテナンス完了"
 
+msgid "Maintenance dispatches"
+msgstr "メンテナンス派遣"
+
 msgid "Manually add items to inventory"
 msgstr "手動で在庫に品目を追加"
 
@@ -861,8 +873,14 @@ msgstr "開いたジョブ"
 msgid "Operations"
 msgstr "工程"
 
+msgid "Operations assigned to you"
+msgstr "あなたに割り当てられた操作"
+
 msgid "Operations ended"
 msgstr "工程が終了しました"
+
+msgid "Operations you are currently working on"
+msgstr "現在作業中の方程式"
 
 msgid "Operator Performed"
 msgstr "オペレーター実施"
@@ -926,6 +944,9 @@ msgstr "カラム {0} を位置 {1}/{2} で選択しました"
 
 msgid "Picking"
 msgstr "ピッキング"
+
+msgid "Picking lists to fulfill"
+msgstr "注文先のリスト"
 
 msgid "Pin Out"
 msgstr "ピンアウト"
@@ -1023,6 +1044,9 @@ msgstr "残り {shortfall} 件の理由"
 msgid "Recent"
 msgstr "最近"
 
+msgid "Recently completed work"
+msgstr "最近の完了作業"
+
 msgid "Record"
 msgstr "記録"
 
@@ -1068,6 +1092,12 @@ msgstr "報告済み"
 
 msgid "Reset zoom"
 msgstr "ズームをリセット"
+
+msgid "Review and approve production reports"
+msgstr "生産報告を確認し承認します"
+
+msgid "Review your earnings and payment history"
+msgstr "収入と支払いの履歴を確認してください"
 
 msgid "rework"
 msgstr "再加工"
@@ -1208,6 +1238,9 @@ msgstr "退勤時間を設定"
 msgid "Setup"
 msgstr "段取り"
 
+msgid "Share an idea or report a problem"
+msgstr "アイデアを共有したり、問題を報告したり"
+
 msgid "Short"
 msgstr "短い"
 
@@ -1273,6 +1306,9 @@ msgstr "ステップ"
 
 msgid "Steps are missing"
 msgstr "ステップが未記録です"
+
+msgid "Stop all your active operations"
+msgstr "すべてのアクティブな操作を停止します"
 
 msgid "Storage Unit"
 msgstr "保管場所"
@@ -1437,11 +1473,17 @@ msgstr "{verifyEmail} に確認コードを送信しました"
 msgid "We've sent you a magic link to sign in to your account."
 msgstr "アカウントにサインインするためのマジックリンクをお送りしました。"
 
+msgid "Welcome"
+msgstr "ようこそ"
+
 msgid "WIP"
 msgstr "仕掛品"
 
 msgid "Work Center"
 msgstr "ワークセンター"
+
+msgid "Work scheduled at your work centers"
+msgstr "あなたの作業センタで予定された作業"
 
 #. placeholder {0}: new Date(openClockEntry.clockIn).toLocaleString(locale)
 msgid "You clocked in at {0}. You can edit your clock-out time below or acknowledge that you're still working."

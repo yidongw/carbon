@@ -8840,6 +8840,9 @@ msgstr "Места"
 msgid "Seconds/Piece"
 msgstr "Секунды/Деталь"
 
+msgid "Sections"
+msgstr "Секции"
+
 msgid "Select"
 msgstr "Выбрать"
 
@@ -9281,6 +9284,9 @@ msgstr "Показать справа на карте"
 
 msgid "Show or hide items in this module's sidebar."
 msgstr "Показать или скрыть элементы на боковой панели этого модуля."
+
+msgid "Show or hide sections on the MES home screen and sidebar."
+msgstr "Показывать или скрывать разделы на главном экране MES и в боковом меню."
 
 msgid "Show parent items"
 msgstr "Показать родительские элементы"

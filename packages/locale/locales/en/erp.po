@@ -8840,6 +8840,9 @@ msgstr "Seats"
 msgid "Seconds/Piece"
 msgstr "Seconds/Piece"
 
+msgid "Sections"
+msgstr "Sections"
+
 msgid "Select"
 msgstr "Select"
 
@@ -9281,6 +9284,9 @@ msgstr "Show on card right"
 
 msgid "Show or hide items in this module's sidebar."
 msgstr "Show or hide items in this module's sidebar."
+
+msgid "Show or hide sections on the MES home screen and sidebar."
+msgstr "Show or hide sections on the MES home screen and sidebar."
 
 msgid "Show parent items"
 msgstr "Show parent items"

@@ -81,6 +81,12 @@ msgstr "Добавить новую запись"
 msgid "Add Spare Part"
 msgstr "Добавить запасную часть"
 
+msgid "Adjust stock down"
+msgstr "Уменьшить запасы"
+
+msgid "Adjust stock up"
+msgstr "Изменить запасы вверх"
+
 msgid "All"
 msgstr "Все"
 
@@ -151,6 +157,9 @@ msgstr "Заблокировано {0}"
 
 msgid "Blocking"
 msgstr "Блокирующие"
+
+msgid "Browse released jobs on the floor"
+msgstr "Обзор выпущенных задач на производстве"
 
 msgid "But don't worry. You can use the forgot password flow to request a new magic link."
 msgstr "Но не волнуйтесь. Вы можете использовать функцию восстановления пароля, чтобы запросить новую волшебную ссылку."
@@ -637,6 +646,9 @@ msgstr "Обслуживание"
 msgid "Maintenance Completed"
 msgstr "Обслуживание завершено"
 
+msgid "Maintenance dispatches"
+msgstr "Распоряжения на обслуживание"
+
 msgid "Manually add items to inventory"
 msgstr "Добавить номенклатуру на склад вручную"
 
@@ -861,8 +873,14 @@ msgstr "Открытые задачи"
 msgid "Operations"
 msgstr "Операции"
 
+msgid "Operations assigned to you"
+msgstr "Операции назначены вам"
+
 msgid "Operations ended"
 msgstr "Операции завершены"
+
+msgid "Operations you are currently working on"
+msgstr "Операции, над которыми вы currently-working-on"
 
 msgid "Operator Performed"
 msgstr "Выполнено оператором"
@@ -926,6 +944,9 @@ msgstr "Столбец {0} взят с позиции: {1} из {2}"
 
 msgid "Picking"
 msgstr "Выборка"
+
+msgid "Picking lists to fulfill"
+msgstr "Списки выборки для выполнения"
 
 msgid "Pin Out"
 msgstr "Выход по PIN"
@@ -1023,6 +1044,9 @@ msgstr "Причина для оставшихся {shortfall}"
 msgid "Recent"
 msgstr "Недавние"
 
+msgid "Recently completed work"
+msgstr "Недавно завершенная работа"
+
 msgid "Record"
 msgstr "Записать"
 
@@ -1068,6 +1092,12 @@ msgstr "Отправлено"
 
 msgid "Reset zoom"
 msgstr "Сбросить масштаб"
+
+msgid "Review and approve production reports"
+msgstr "Обзор и одобрение производственных отчетов"
+
+msgid "Review your earnings and payment history"
+msgstr "Просмотрите вашу прибыль и историю платежей"
 
 msgid "rework"
 msgstr "переработка"
@@ -1208,6 +1238,9 @@ msgstr "Установить время ухода"
 msgid "Setup"
 msgstr "Наладка"
 
+msgid "Share an idea or report a problem"
+msgstr "Поделитесь идейей или сообщите о проблеме"
+
 msgid "Short"
 msgstr "Короткий"
 
@@ -1273,6 +1306,9 @@ msgstr "Шаги"
 
 msgid "Steps are missing"
 msgstr "Шаги не заполнены"
+
+msgid "Stop all your active operations"
+msgstr "Остановить все активные операции"
 
 msgid "Storage Unit"
 msgstr "Единица хранения"
@@ -1437,11 +1473,17 @@ msgstr "Мы отправили код подтверждения на {verifyEm
 msgid "We've sent you a magic link to sign in to your account."
 msgstr "Мы отправили вам ссылку для входа в ваш аккаунт."
 
+msgid "Welcome"
+msgstr "Добро пожаловать"
+
 msgid "WIP"
 msgstr "НЗП"
 
 msgid "Work Center"
 msgstr "Рабочий центр"
+
+msgid "Work scheduled at your work centers"
+msgstr "Запланировано для выполнения на ваших рабочих центрах"
 
 #. placeholder {0}: new Date(openClockEntry.clockIn).toLocaleString(locale)
 msgid "You clocked in at {0}. You can edit your clock-out time below or acknowledge that you're still working."

@@ -8840,6 +8840,9 @@ msgstr "Plätze"
 msgid "Seconds/Piece"
 msgstr "Sekunden/Stück"
 
+msgid "Sections"
+msgstr "Abschnitte"
+
 msgid "Select"
 msgstr "Auswählen"
 
@@ -9281,6 +9284,9 @@ msgstr "Rechts auf der Karte anzeigen"
 
 msgid "Show or hide items in this module's sidebar."
 msgstr "Elemente in der Seitenleiste dieses Moduls ein- oder ausblenden."
+
+msgid "Show or hide sections on the MES home screen and sidebar."
+msgstr "Zeigen oder Verstecken von Abschnitten auf dem MES-Homescreen und im Seitenleistenmenü."
 
 msgid "Show parent items"
 msgstr "Übergeordnete Elemente anzeigen"

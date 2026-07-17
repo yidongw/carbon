@@ -81,6 +81,12 @@ msgstr "新增记录集"
 msgid "Add Spare Part"
 msgstr "添加备件"
 
+msgid "Adjust stock down"
+msgstr "减少库存"
+
+msgid "Adjust stock up"
+msgstr "增加库存"
+
 msgid "All"
 msgstr "全部"
 
@@ -151,6 +157,9 @@ msgstr "被 {0} 阻塞"
 
 msgid "Blocking"
 msgstr "阻塞中"
+
+msgid "Browse released jobs on the floor"
+msgstr "查看车间已发布的工作订单"
 
 msgid "But don't worry. You can use the forgot password flow to request a new magic link."
 msgstr "但别担心。您可以使用忘记密码流程来请求新的魔法链接。"
@@ -637,6 +646,9 @@ msgstr "维护"
 msgid "Maintenance Completed"
 msgstr "维护已完成"
 
+msgid "Maintenance dispatches"
+msgstr "维护调度"
+
 msgid "Manually add items to inventory"
 msgstr "手动添加物品到库存"
 
@@ -861,8 +873,14 @@ msgstr "打开工单"
 msgid "Operations"
 msgstr "工序"
 
+msgid "Operations assigned to you"
+msgstr "分配给您的操作"
+
 msgid "Operations ended"
 msgstr "工序已结束"
+
+msgid "Operations you are currently working on"
+msgstr "您当前正在执行的操作"
 
 msgid "Operator Performed"
 msgstr "操作员执行"
@@ -926,6 +944,9 @@ msgstr "已拾取列 {0}，位于第 {1} 个位置（共 {2} 个）"
 
 msgid "Picking"
 msgstr "拣货"
+
+msgid "Picking lists to fulfill"
+msgstr "履行的拣货单"
 
 msgid "Pin Out"
 msgstr "退出登录"
@@ -1023,6 +1044,9 @@ msgstr "剩余 {shortfall} 件的原因"
 msgid "Recent"
 msgstr "最近"
 
+msgid "Recently completed work"
+msgstr "最近完成的工作"
+
 msgid "Record"
 msgstr "记录"
 
@@ -1068,6 +1092,12 @@ msgstr "报工时间"
 
 msgid "Reset zoom"
 msgstr "重置缩放"
+
+msgid "Review and approve production reports"
+msgstr "审核并批准生产报告"
+
+msgid "Review your earnings and payment history"
+msgstr "查看您的收益和支付历史记录"
 
 msgid "rework"
 msgstr "返工"
@@ -1208,6 +1238,9 @@ msgstr "设置下班打卡时间"
 msgid "Setup"
 msgstr "设置"
 
+msgid "Share an idea or report a problem"
+msgstr "分享想法或反馈问题"
+
 msgid "Short"
 msgstr "短"
 
@@ -1273,6 +1306,9 @@ msgstr "步骤"
 
 msgid "Steps are missing"
 msgstr "缺少步骤"
+
+msgid "Stop all your active operations"
+msgstr "停止您所有进行中的操作"
 
 msgid "Storage Unit"
 msgstr "存储单位"
@@ -1437,11 +1473,17 @@ msgstr "我们已向 {verifyEmail} 发送了验证码"
 msgid "We've sent you a magic link to sign in to your account."
 msgstr "我们已向您发送了登录链接，请查收。"
 
+msgid "Welcome"
+msgstr "欢迎"
+
 msgid "WIP"
 msgstr "在制品"
 
 msgid "Work Center"
 msgstr "工作中心"
+
+msgid "Work scheduled at your work centers"
+msgstr "您的工作中心已排程工作"
 
 #. placeholder {0}: new Date(openClockEntry.clockIn).toLocaleString(locale)
 msgid "You clocked in at {0}. You can edit your clock-out time below or acknowledge that you're still working."
