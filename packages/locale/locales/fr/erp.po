@@ -11282,3 +11282,24 @@ msgstr "ZPL (étiquette thermique)"
 
 msgid "ZPL Label Preview"
 msgstr "Prévisualisation étiquette ZPL"
+
+msgid "{credentialName} registered"
+msgstr "{credentialName} enregistré"
+
+msgid "Failed to get options"
+msgstr "Impossible d'obtenir les options"
+
+msgid "Failed to register passkey"
+msgstr "Échec de l'enregistrement de la clé d'accès"
+
+msgid "Google"
+msgstr "Google"
+
+msgid "Outlook"
+msgstr "Outlook"
+
+msgid "Passkey"
+msgstr "Clé d'accès"
+
+msgid "Passkeys are disabled"
+msgstr "Les clés d'accès sont désactivées"

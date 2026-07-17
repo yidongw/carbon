@@ -11282,3 +11282,24 @@ msgstr "ZPL (तापमान लेबल)"
 
 msgid "ZPL Label Preview"
 msgstr "ZPL लेबल प्रीवयज़न"
+
+msgid "{credentialName} registered"
+msgstr "{credentialName} पंजीकृत"
+
+msgid "Failed to get options"
+msgstr "विकल्प प्राप्त करने में विफल"
+
+msgid "Failed to register passkey"
+msgstr "पासकी पंजीकृत करने में विफल"
+
+msgid "Google"
+msgstr "Google"
+
+msgid "Outlook"
+msgstr "Outlook"
+
+msgid "Passkey"
+msgstr "पासकी"
+
+msgid "Passkeys are disabled"
+msgstr "पासकी अक्षम हैं"

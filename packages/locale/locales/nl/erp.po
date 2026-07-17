@@ -8593,3 +8593,18 @@ msgstr "Unieke stijl-ID kopiëren"
 
 msgid "Use ... to get the next style ID"
 msgstr "Gebruik ... voor de volgende stijl-ID"
+
+msgid "{credentialName} registered"
+msgstr "{credentialName} geregistreerd"
+
+msgid "Failed to get options"
+msgstr "Kan opties niet ophalen"
+
+msgid "Failed to register passkey"
+msgstr "Kan passkey niet registreren"
+
+msgid "Passkey"
+msgstr "Passkey"
+
+msgid "Passkeys are disabled"
+msgstr "Passkeys zijn uitgeschakeld"

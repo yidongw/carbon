@@ -11282,3 +11282,24 @@ msgstr "ZPL (Тепловая этикетка)"
 
 msgid "ZPL Label Preview"
 msgstr "Предварительный просмотр метки ZPL"
+
+msgid "{credentialName} registered"
+msgstr "{credentialName} зарегистрирован"
+
+msgid "Failed to get options"
+msgstr "Не удалось получить параметры"
+
+msgid "Failed to register passkey"
+msgstr "Не удалось зарегистрировать ключ доступа"
+
+msgid "Google"
+msgstr "Google"
+
+msgid "Outlook"
+msgstr "Outlook"
+
+msgid "Passkey"
+msgstr "Ключ доступа"
+
+msgid "Passkeys are disabled"
+msgstr "Ключи доступа отключены"
