@@ -682,6 +682,89 @@ export async function getProductionQuantitiesForJobOperation(
     .order("createdAt", { ascending: false });
 }
 
+/**
+ * Production quantities that have been reported but not yet approved for
+ * payroll (paymentYear/Month still null) and not invalidated. Managers approve
+ * or disapprove these from the MES Report Approvals page. Mirrors the ERP
+ * "pending" pay scope (type Production only).
+ */
+export async function getPendingProductionQuantities(
+  client: SupabaseClient<Database>,
+  companyId: string
+) {
+  return (client as any)
+    .from("productionQuantity")
+    .select(
+      `id, quantity, type, createdAt, employeeId, createdBy, notes, jobOperationId,
+       jobOperation!inner(id, description, jobId,
+         process:processId(name),
+         job:jobId(id, jobId, item:itemId(id, readableIdWithRevision, name))
+       )`
+    )
+    .eq("companyId", companyId)
+    .eq("type", "Production")
+    .is("paymentYear", null)
+    .is("invalidatedAt", null)
+    .order("createdAt", { ascending: false });
+}
+
+/**
+ * Approve a reported production quantity by stamping the payment period.
+ * Optionally correct the recorded quantity at the same time (the quantity
+ * trigger keeps the operation's completed total in sync).
+ */
+export async function approveProductionQuantity(
+  client: SupabaseClient<Database>,
+  args: {
+    id: string;
+    companyId: string;
+    year: number;
+    month: number;
+    userId: string;
+    quantity?: number;
+  }
+) {
+  const now = new Date().toISOString();
+  return client
+    .from("productionQuantity")
+    .update({
+      paymentYear: args.year,
+      paymentMonth: args.month,
+      ...(args.quantity !== undefined ? { quantity: args.quantity } : {}),
+      updatedBy: args.userId,
+      updatedAt: now
+    })
+    .eq("id", args.id)
+    .eq("companyId", args.companyId)
+    .is("paymentYear", null)
+    .is("invalidatedAt", null);
+}
+
+/**
+ * Disapprove (invalidate) a reported production quantity. The manager can
+ * correct the recorded quantity at the same time — the corrected figure is
+ * persisted on the row for the record before it is invalidated (the quantity
+ * trigger keeps the operation's completed total in sync).
+ */
+export async function invalidateProductionQuantity(
+  client: SupabaseClient<Database>,
+  args: { id: string; companyId: string; userId: string; quantity?: number }
+) {
+  const now = new Date().toISOString();
+  return client
+    .from("productionQuantity")
+    .update({
+      ...(args.quantity !== undefined ? { quantity: args.quantity } : {}),
+      invalidatedAt: now,
+      invalidatedBy: args.userId,
+      updatedBy: args.userId,
+      updatedAt: now
+    })
+    .eq("id", args.id)
+    .eq("companyId", args.companyId)
+    .is("invalidatedAt", null);
+}
+
 export async function getRecentJobOperationsByEmployee(
   client: SupabaseClient<Database>,
   args: {
@@ -1025,7 +1108,10 @@ export async function insertProductionQuantity(
 
 export async function insertScrapQuantity(
   client: SupabaseClient<Database>,
-  data: z.infer<typeof scrapQuantityValidator> & {
+  // scrapReasonId is optional: the shortfall reason split (rework/scrap) records
+  // scrap without a specific reason, same as the report-quantity modal.
+  data: Omit<z.infer<typeof scrapQuantityValidator>, "scrapReasonId"> & {
+    scrapReasonId?: string | null;
     companyId: string;
     createdBy: string;
     employeeId: string;
@@ -1039,7 +1125,7 @@ export async function insertScrapQuantity(
     createdBy: data.createdBy,
     quantity: data.quantity,
     notes: data.notes ?? null,
-    scrapReasonId: data.scrapReasonId
+    scrapReasonId: data.scrapReasonId ?? null
   });
 }
 
