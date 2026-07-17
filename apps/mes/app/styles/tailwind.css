@@ -22,16 +22,6 @@
     scrollbar-color: var(--border) transparent;
   }
 
-  /* MES sidebar expands on hover as an overlay (ERP-style): keep the layout
-     column pinned at icon width so page content never shifts when the rail
-     expands, and lift the fixed panel above the content while it's open. */
-  .mes-sidebar-overlay [data-variant="sidebar"][data-side="left"] > div:first-child {
-    width: var(--sidebar-width-icon);
-  }
-  .mes-sidebar-overlay [data-variant="sidebar"][data-side="left"] > div:nth-child(2) {
-    z-index: 50;
-  }
-
   :root {
     --header-height: 50px;
     --filters-height: 38px;

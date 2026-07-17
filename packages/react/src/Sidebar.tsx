@@ -185,6 +185,8 @@ const Sidebar = React.forwardRef<
     side?: "left" | "right";
     variant?: "sidebar" | "floating" | "inset";
     collapsible?: "offcanvas" | "icon" | "none";
+    /** When true, the expanded sidebar floats above content (ERP-style) instead of pushing it. */
+    overlay?: boolean;
   }
 >(
   (
@@ -192,6 +194,7 @@ const Sidebar = React.forwardRef<
       side = "left",
       variant = "sidebar",
       collapsible = "offcanvas",
+      overlay = false,
       className,
       children,
       ...props
@@ -247,18 +250,25 @@ const Sidebar = React.forwardRef<
         {/* ease-out-quint: fast start, smooth deceleration - feels snappy and responsive */}
         <div
           className={cn(
-            "relative h-svh w-[var(--sidebar-width)] bg-transparent transition-[width] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] motion-reduce:transition-none",
-            "group-data-[collapsible=offcanvas]:w-0",
-            "group-data-[side=right]:rotate-180",
-            variant === "floating" || variant === "inset"
-              ? "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)_+_theme(spacing.4))]"
-              : "group-data-[collapsible=icon]:w-[var(--sidebar-width-icon)]"
+            "relative h-svh bg-transparent group-data-[side=right]:rotate-180",
+            // overlay mode: spacer is always icon-width so content never shifts
+            overlay
+              ? "w-[var(--sidebar-width-icon)]"
+              : cn(
+                  "w-[var(--sidebar-width)] transition-[width] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] motion-reduce:transition-none",
+                  "group-data-[collapsible=offcanvas]:w-0",
+                  variant === "floating" || variant === "inset"
+                    ? "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)_+_theme(spacing.4))]"
+                    : "group-data-[collapsible=icon]:w-[var(--sidebar-width-icon)]"
+                )
           )}
         />
         <div
           className={cn(
             // ease-out-quint (0.23,1,0.32,1): strong deceleration curve for snappy, spring-like feel
-            "fixed inset-y-0 z-10 hidden h-svh w-[var(--sidebar-width)] transition-[left,right,width] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] motion-reduce:transition-none md:flex",
+            "fixed inset-y-0 hidden h-svh w-[var(--sidebar-width)] transition-[left,right,width] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] motion-reduce:transition-none md:flex",
+            // overlay mode: float above content at higher z-index
+            overlay ? "z-50" : "z-10",
             side === "left"
               ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
               : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",

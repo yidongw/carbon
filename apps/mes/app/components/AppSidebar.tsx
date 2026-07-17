@@ -104,6 +104,7 @@ export function AppSidebar({
   return (
     <Sidebar
       collapsible="icon"
+      overlay
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
       className="group-data-[state=expanded]:shadow-xl"
