@@ -63,10 +63,10 @@ export async function seedDemoData(
     }
     for (const s of sizes) {
       await client.query(
-        `INSERT INTO "styleSize" ("sizeCode", "sizeName", "companyId", "createdBy")
-         VALUES ($1, $2, $3, $4)
+        `INSERT INTO "styleSize" ("sizeCode", "sizeName", "sortOrder", "companyId", "createdBy")
+         VALUES ($1, $2, $3, $4, $5)
          ON CONFLICT ("sizeCode", "companyId") DO NOTHING`,
-        [s.sizeCode, s.sizeName, companyId, userId]
+        [s.sizeCode, s.sizeName, s.sortOrder, companyId, userId]
       );
     }
   }

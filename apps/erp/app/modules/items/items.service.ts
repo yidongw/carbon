@@ -1748,6 +1748,7 @@ export async function getStyleSizes(
 
   if (args) {
     query = setGenericQueryFilters(query, args, [
+      { column: "sortOrder", ascending: true },
       { column: "sizeCode", ascending: true }
     ]);
   }
@@ -1764,6 +1765,7 @@ export async function getStyleSizeList(
     .from("styleSize")
     .select("id, sizeCode, sizeName, companyId")
     .eq("companyId", companyId)
+    .order("sortOrder")
     .order("sizeCode");
 }
 
@@ -2386,7 +2388,12 @@ export async function syncStyleConfigurationParameters(
           .in("id", args.styleColorIds)
       : Promise.resolve({ data: [] as { colorCode: string }[], error: null }),
     args.styleSizeIds.length > 0
-      ? client.from("styleSize").select("sizeCode").in("id", args.styleSizeIds)
+      ? client
+          .from("styleSize")
+          .select("sizeCode")
+          .in("id", args.styleSizeIds)
+          .order("sortOrder")
+          .order("sizeCode")
       : Promise.resolve({ data: [] as { sizeCode: string }[], error: null })
   ]);
 
