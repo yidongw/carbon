@@ -41,7 +41,7 @@ export function Controls({
   return (
     <div
       className={cn(
-        "flex flex-col relative z-[40] md:absolute p-2 md:top-[calc(var(--header-height)*2-2px)] md:right-0 w-full md:w-[var(--controls-width)] md:min-h-[180px] bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:border-l border-y md:rounded-bl-lg",
+        "hidden md:flex md:flex-col z-[40] md:absolute p-2 md:top-[calc(var(--header-height)*2-2px)] md:right-0 md:w-[var(--controls-width)] md:min-h-[180px] bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:border-l md:border-y md:rounded-bl-lg",
         className
       )}
     >
@@ -61,7 +61,7 @@ export function Times({
     <TooltipProvider>
       <div
         className={cn(
-          "flex flex-col md:absolute p-2 bottom-2 md:left-1/2 md:transform md:-translate-x-1/2 w-full md:w-[calc(100%-2rem)] z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b md:border md:rounded-lg",
+          "hidden md:flex md:flex-col md:absolute p-2 bottom-2 md:left-1/2 md:transform md:-translate-x-1/2 md:w-[calc(100%-2rem)] z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:border md:rounded-lg",
           className
         )}
       >
@@ -91,12 +91,14 @@ export function IconButtonWithTooltip({
   tooltip,
   disabled,
   variant,
+  compact,
   ...props
 }: ComponentProps<"button"> & {
   icon: ReactNode;
   tooltip: string;
   variant?: "default" | "success" | "destructive";
   disabled?: boolean;
+  compact?: boolean;
 }) {
   return (
     <ButtonWithTooltip
@@ -104,7 +106,9 @@ export function IconButtonWithTooltip({
       tooltip={tooltip}
       disabled={disabled}
       className={cn(
-        "size-16 text-xl md:text-lg md:size-[8dvh] flex flex-row items-center gap-2 justify-center bg-accent rounded-full shadow-lg hover:cursor-pointer hover:shadow-xl hover:accent hover:scale-105 transition-all disabled:cursor-not-allowed disabled:bg-muted disabled:opacity-30 text-accent-foreground group-hover:text-accent-foreground/80",
+        compact
+          ? "size-10 text-base flex flex-row items-center gap-2 justify-center bg-accent rounded-full shadow hover:cursor-pointer hover:scale-105 transition-all disabled:cursor-not-allowed disabled:bg-muted disabled:opacity-30 text-accent-foreground"
+          : "size-16 text-xl md:text-lg md:size-[8dvh] flex flex-row items-center gap-2 justify-center bg-accent rounded-full shadow-lg hover:cursor-pointer hover:shadow-xl hover:accent hover:scale-105 transition-all disabled:cursor-not-allowed disabled:bg-muted disabled:opacity-30 text-accent-foreground group-hover:text-accent-foreground/80",
         variant === "success" &&
           "bg-emerald-500 !text-white hover:bg-emerald-600 hover:text-white",
         variant === "destructive" &&
@@ -225,6 +229,7 @@ export function StartStopButton({
   machineProductionEvent,
   isTrackedActivity,
   trackedEntityId,
+  compact,
   ...props
 }: ComponentProps<"button"> & {
   eventType: (typeof productionEventType)[number];
@@ -235,6 +240,7 @@ export function StartStopButton({
   machineProductionEvent: ProductionEvent | undefined;
   isTrackedActivity: boolean;
   trackedEntityId: string | undefined;
+  compact?: boolean;
 }) {
   const fetcher = useFetcher<ProductionEvent>();
 
@@ -311,34 +317,60 @@ export function StartStopButton({
       <Hidden name="type" value={eventType} />
       <Hidden name="workCenterId" value={operation.workCenterId ?? undefined} />
       {isActive ? (
-        <PauseButton disabled={fetcher.state !== "idle"} type="submit" />
+        <PauseButton
+          compact={compact}
+          disabled={fetcher.state !== "idle"}
+          type="submit"
+        />
       ) : (
-        <PlayButton disabled={fetcher.state !== "idle"} type="submit" />
+        <PlayButton
+          compact={compact}
+          disabled={fetcher.state !== "idle"}
+          type="submit"
+        />
       )}
     </ValidatedForm>
   );
 }
 
-export function PauseButton({ className, ...props }: ComponentProps<"button">) {
+export function PauseButton({
+  className,
+  compact,
+  ...props
+}: ComponentProps<"button"> & { compact?: boolean }) {
   const { t } = useLingui();
   return (
     <ButtonWithTooltip
       {...props}
       tooltip={t`Pause`}
-      className="group size-24 tall:size-32 flex flex-row items-center gap-2 justify-center bg-red-500 rounded-full shadow-lg hover:cursor-pointer hover:drop-shadow-xl hover:bg-red-600 hover:scale-105 transition-all text-accent disabled:bg-muted disabled:text-muted-foreground/80 text-4xl border-b-4 border-red-700 active:border-b-0 active:translate-y-1 disabled:bg-gray-500 disabled:hover:bg-gray-600 disabled:border-gray-700 disabled:text-white"
+      className={cn(
+        "group flex flex-row items-center gap-2 justify-center bg-red-500 rounded-full shadow-lg hover:cursor-pointer hover:drop-shadow-xl hover:bg-red-600 hover:scale-105 transition-all text-accent disabled:bg-muted disabled:text-muted-foreground/80 border-red-700 active:border-b-0 disabled:bg-gray-500 disabled:hover:bg-gray-600 disabled:border-gray-700 disabled:text-white",
+        compact
+          ? "size-10 text-base border-b-2 active:translate-y-0.5"
+          : "size-24 tall:size-32 text-4xl border-b-4 active:translate-y-1"
+      )}
     >
       <FaPause className="group-hover:scale-110" />
     </ButtonWithTooltip>
   );
 }
 
-export function PlayButton({ className, ...props }: ComponentProps<"button">) {
+export function PlayButton({
+  className,
+  compact,
+  ...props
+}: ComponentProps<"button"> & { compact?: boolean }) {
   const { t } = useLingui();
   return (
     <ButtonWithTooltip
       {...props}
       tooltip={t`Start`}
-      className="group size-24 tall:size-32 flex flex-row items-center gap-2 justify-center bg-emerald-500 rounded-full shadow-lg hover:cursor-pointer hover:drop-shadow-xl hover:bg-emerald-600 hover:scale-105 transition-all text-accent disabled:bg-muted disabled:text-muted-foreground/80 text-4xl border-b-4 border-emerald-700 active:border-b-0 active:translate-y-1 disabled:bg-gray-500 disabled:hover:bg-gray-600 disabled:border-gray-700 disabled:text-white"
+      className={cn(
+        "group flex flex-row items-center gap-2 justify-center bg-emerald-500 rounded-full shadow-lg hover:cursor-pointer hover:drop-shadow-xl hover:bg-emerald-600 hover:scale-105 transition-all text-accent disabled:bg-muted disabled:text-muted-foreground/80 border-emerald-700 active:border-b-0 disabled:bg-gray-500 disabled:hover:bg-gray-600 disabled:border-gray-700 disabled:text-white",
+        compact
+          ? "size-10 text-base border-b-2 active:translate-y-0.5"
+          : "size-24 tall:size-32 text-4xl border-b-4 active:translate-y-1"
+      )}
     >
       <FaPlay className="group-hover:scale-110" />
     </ButtonWithTooltip>
