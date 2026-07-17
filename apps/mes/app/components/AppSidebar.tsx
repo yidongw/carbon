@@ -42,12 +42,14 @@ import {
   LuActivity,
   LuBadgeCheck,
   LuBanknote,
+  LuBoxes,
   LuBuilding,
   LuCalendarDays,
   LuChevronDown,
   LuCirclePlay,
   LuClipboardList,
   LuHistory,
+  LuLayers,
   LuLogOut,
   LuMapPin,
   LuMonitor,
@@ -214,7 +216,19 @@ export function OperationsNav({
       to: path.to.jobs
     },
     {
-      key: "reportApprovals",
+      key: "masterWorkOrders",
+      title: t`Master Work Orders`,
+      icon: LuLayers,
+      to: path.to.masterWorkOrders
+    },
+    {
+      key: "bundleWorkOrders",
+      title: t`Bundle Work Orders`,
+      icon: LuBoxes,
+      to: path.to.bundleWorkOrders
+    },
+    {
+      key: "productionReports",
       title: t`Report Approvals`,
       icon: LuBadgeCheck,
       to: path.to.productionReports

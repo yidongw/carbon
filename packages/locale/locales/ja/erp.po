@@ -83,6 +83,9 @@ msgstr "{0}個の未サンプリングエンティティが利用可能にリリ
 msgid "{0} values missing"
 msgstr "{0} の値が欠けています"
 
+msgid "{credentialName} registered"
+msgstr "{credentialName} が登録されました"
+
 msgid "{days} days ({formatted})"
 msgstr "{days}日（{formatted}）"
 
@@ -4254,6 +4257,9 @@ msgstr "リスクの取得に失敗しました"
 msgid "Failed to fetch suggestions"
 msgstr "提案の取得に失敗しました"
 
+msgid "Failed to get options"
+msgstr "オプションの取得に失敗しました"
+
 msgid "Failed to initialize Carbon client"
 msgstr "Carbonクライアントの初期化に失敗しました"
 
@@ -4319,6 +4325,9 @@ msgstr "サプライヤー部品の詳細の読み込みに失敗しました"
 
 msgid "Failed to load tracked entities"
 msgstr "追跡対象エンティティの読み込みに失敗しました"
+
+msgid "Failed to register passkey"
+msgstr "パスキーの登録に失敗しました"
 
 msgid "Failed to remove image: {errorMessage}"
 msgstr "画像の削除に失敗しました: {errorMessage}"
@@ -4719,6 +4728,9 @@ msgstr "おやすみなさい、{0}"
 #. placeholder {0}: user.firstName
 msgid "Good morning, {0}"
 msgstr "おはようございます、{0}"
+
+msgid "Google"
+msgstr "Google"
 
 msgid "Google Places API key not configured"
 msgstr "Google Places APIキーが設定されていません"
@@ -7054,6 +7066,9 @@ msgstr "オンス"
 msgid "Outgoing"
 msgstr "発送"
 
+msgid "Outlook"
+msgstr "Outlook"
+
 msgid "Output"
 msgstr "出力"
 
@@ -7192,8 +7207,14 @@ msgstr "部品"
 msgid "Pass"
 msgstr "合格"
 
+msgid "Passkey"
+msgstr "パスキー"
+
 msgid "Passkey name"
 msgstr "Passkey名"
+
+msgid "Passkeys are disabled"
+msgstr "パスキーは無効になっています"
 
 msgid "Password is too short"
 msgstr "パスワードは短すぎます"
@@ -11288,24 +11309,3 @@ msgstr "ZPL（熱感ラベル）"
 
 msgid "ZPL Label Preview"
 msgstr "ZPLラベルプレビュー"
-
-msgid "{credentialName} registered"
-msgstr "{credentialName} が登録されました"
-
-msgid "Failed to get options"
-msgstr "オプションの取得に失敗しました"
-
-msgid "Failed to register passkey"
-msgstr "パスキーの登録に失敗しました"
-
-msgid "Google"
-msgstr "Google"
-
-msgid "Outlook"
-msgstr "Outlook"
-
-msgid "Passkey"
-msgstr "パスキー"
-
-msgid "Passkeys are disabled"
-msgstr "パスキーは無効になっています"

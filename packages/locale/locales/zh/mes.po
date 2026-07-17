@@ -158,8 +158,23 @@ msgstr "被 {0} 阻塞"
 msgid "Blocking"
 msgstr "阻塞中"
 
+msgid "Browse bundles and print bundle tickets"
+msgstr "浏览捆包并打印捆包标签"
+
+msgid "Browse cutting work orders and their bundles"
+msgstr "浏览切削工单及其分包"
+
 msgid "Browse released jobs on the floor"
 msgstr "查看车间已发布的工作订单"
+
+msgid "Bundle"
+msgstr "分包"
+
+msgid "Bundle Work Orders"
+msgstr "分包工单"
+
+msgid "Bundles"
+msgstr "分包"
 
 msgid "But don't worry. You can use the forgot password flow to request a new magic link."
 msgstr "但别担心。您可以使用忘记密码流程来请求新的魔法链接。"
@@ -197,6 +212,9 @@ msgstr "清除筛选"
 msgid "Clear Filters"
 msgstr "清除筛选"
 
+msgid "Clear master order filter"
+msgstr "清除主订单过滤条件"
+
 msgid "Clear Search"
 msgstr "清除搜索"
 
@@ -218,6 +236,9 @@ msgstr "自 {0} 起已打卡上班"
 
 msgid "Collapse"
 msgstr "折叠"
+
+msgid "Color"
+msgstr "颜色"
 
 #. placeholder {0}: active.data.current.column.title
 #. placeholder {1}: overColumnPosition + 1
@@ -658,6 +679,12 @@ msgstr "手动从库存中移除物品"
 msgid "Mark Short"
 msgstr "标记短缺"
 
+msgid "Master Order"
+msgstr "主工单"
+
+msgid "Master Work Orders"
+msgstr "主工单"
+
 msgid "matches"
 msgstr "匹配"
 
@@ -755,6 +782,9 @@ msgstr "未找到可用的序列号"
 msgid "No available tracked entities found"
 msgstr "未找到可跟踪的实体"
 
+msgid "No bundle work orders"
+msgstr "无分包工单"
+
 msgid "No dispatches assigned to you"
 msgstr "没有分配给您的工单"
 
@@ -766,6 +796,9 @@ msgstr "无影响"
 
 msgid "No maintenance scheduled for today"
 msgstr "今天没有计划的维护"
+
+msgid "No master work orders"
+msgstr "没有主工单"
 
 msgid "No materials"
 msgstr "无材料"
@@ -1063,6 +1096,9 @@ msgstr "记录步骤"
 msgid "Redirecting to verification page..."
 msgstr "正在跳转到验证页面..."
 
+msgid "Remaining"
+msgstr "剩余"
+
 msgid "Remove"
 msgstr "移除"
 
@@ -1093,8 +1129,8 @@ msgstr "报工时间"
 msgid "Reset zoom"
 msgstr "重置缩放"
 
-msgid "Review and approve production reports"
-msgstr "审核并批准生产报告"
+msgid "Review and approve reported production quantities"
+msgstr "审核并批准上报的生产数量"
 
 msgid "Review your earnings and payment history"
 msgstr "查看您的收益和支付历史记录"
@@ -1147,11 +1183,17 @@ msgstr "已报废"
 msgid "Search"
 msgstr "搜索"
 
+msgid "Search by bundle or style"
+msgstr "按分包或款式搜索"
+
 msgid "Search by employee or job"
 msgstr "按员工或工单搜索"
 
 msgid "Search by job or item ID"
 msgstr "按任务或项目ID搜索"
+
+msgid "Search by WO or style"
+msgstr "按工单或款式搜索"
 
 msgid "Search operators..."
 msgstr "搜索操作员..."
@@ -1312,6 +1354,9 @@ msgstr "停止您所有进行中的操作"
 
 msgid "Storage Unit"
 msgstr "存储单位"
+
+msgid "Style"
+msgstr "款式"
 
 msgid "Submit anonymously"
 msgstr "匿名提交"
@@ -1481,6 +1526,9 @@ msgstr "在制品"
 
 msgid "Work Center"
 msgstr "工作中心"
+
+msgid "Work Order"
+msgstr "工单"
 
 msgid "Work scheduled at your work centers"
 msgstr "您的工作中心已排程工作"

@@ -83,6 +83,9 @@ msgstr "{0} entità non campionate verranno rilasciate a Disponibile. I campioni
 msgid "{0} values missing"
 msgstr "Valori mancanti {0}"
 
+msgid "{credentialName} registered"
+msgstr "{credentialName} registrato"
+
 msgid "{days} days ({formatted})"
 msgstr "{days} giorni ({formatted})"
 
@@ -4254,6 +4257,9 @@ msgstr "Impossibile recuperare i rischi"
 msgid "Failed to fetch suggestions"
 msgstr "Impossibile recuperare i suggerimenti"
 
+msgid "Failed to get options"
+msgstr "Impossibile ottenere le opzioni"
+
 msgid "Failed to initialize Carbon client"
 msgstr "Impossibile inizializzare il client Carbon"
 
@@ -4319,6 +4325,9 @@ msgstr "Impossibile caricare i dettagli della parte fornitore"
 
 msgid "Failed to load tracked entities"
 msgstr "Impossibile caricare le entità tracciate"
+
+msgid "Failed to register passkey"
+msgstr "Impossibile registrare la passkey"
 
 msgid "Failed to remove image: {errorMessage}"
 msgstr "Impossibile rimuovere l'immagine: {errorMessage}"
@@ -4719,6 +4728,9 @@ msgstr "Buonasera, {0}"
 #. placeholder {0}: user.firstName
 msgid "Good morning, {0}"
 msgstr "Buongiorno, {0}"
+
+msgid "Google"
+msgstr "Google"
 
 msgid "Google Places API key not configured"
 msgstr "Chiave API di Google Places non configurata"
@@ -7054,6 +7066,9 @@ msgstr "Oncia"
 msgid "Outgoing"
 msgstr "In uscita"
 
+msgid "Outlook"
+msgstr "Outlook"
+
 msgid "Output"
 msgstr "Output"
 
@@ -7192,8 +7207,14 @@ msgstr "Parti"
 msgid "Pass"
 msgstr "Passa"
 
+msgid "Passkey"
+msgstr "Passkey"
+
 msgid "Passkey name"
 msgstr "Nome passkey"
+
+msgid "Passkeys are disabled"
+msgstr "Le passkey sono disabilitate"
 
 msgid "Password is too short"
 msgstr "La password è troppo corta"
@@ -11288,24 +11309,3 @@ msgstr "ZPL (Etichetta termica)"
 
 msgid "ZPL Label Preview"
 msgstr "Anteprima Etichetta ZPL"
-
-msgid "{credentialName} registered"
-msgstr "{credentialName} registrato"
-
-msgid "Failed to get options"
-msgstr "Impossibile ottenere le opzioni"
-
-msgid "Failed to register passkey"
-msgstr "Impossibile registrare la passkey"
-
-msgid "Google"
-msgstr "Google"
-
-msgid "Outlook"
-msgstr "Outlook"
-
-msgid "Passkey"
-msgstr "Passkey"
-
-msgid "Passkeys are disabled"
-msgstr "Le passkey sono disabilitate"

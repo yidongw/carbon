@@ -1066,17 +1066,6 @@ export async function updateMaterialGeneratedIdsSetting(
     .eq("id", companyId);
 }
 
-export async function updateHiddenSubmodulesSetting(
-  client: SupabaseClient<Database>,
-  companyId: string,
-  hiddenSubmodules: string[]
-) {
-  return client
-    .from("companySettings")
-    .update(sanitize({ hiddenSubmodules }))
-    .eq("id", companyId);
-}
-
 export async function updateHiddenMesSectionsSetting(
   client: SupabaseClient<Database>,
   companyId: string,
@@ -1085,6 +1074,17 @@ export async function updateHiddenMesSectionsSetting(
   return client
     .from("companySettings")
     .update(sanitize({ hiddenMesSections }))
+    .eq("id", companyId);
+}
+
+export async function updateHiddenSubmodulesSetting(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  hiddenSubmodules: string[]
+) {
+  return client
+    .from("companySettings")
+    .update(sanitize({ hiddenSubmodules }))
     .eq("id", companyId);
 }
 

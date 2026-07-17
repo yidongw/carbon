@@ -83,6 +83,9 @@ msgstr "{0}个未检测的实体将被释放到可用状态。已检测通过的
 msgid "{0} values missing"
 msgstr "缺少{0}值"
 
+msgid "{credentialName} registered"
+msgstr "{credentialName} 已注册"
+
 msgid "{days} days ({formatted})"
 msgstr "{days} 天（{formatted}）"
 
@@ -4254,6 +4257,9 @@ msgstr "获取风险失败"
 msgid "Failed to fetch suggestions"
 msgstr "获取建议失败"
 
+msgid "Failed to get options"
+msgstr "获取选项失败"
+
 msgid "Failed to initialize Carbon client"
 msgstr "初始化Carbon客户端失败"
 
@@ -4319,6 +4325,9 @@ msgstr "加载供应商产品详情失败"
 
 msgid "Failed to load tracked entities"
 msgstr "加载追踪实体失败"
+
+msgid "Failed to register passkey"
+msgstr "注册通行密钥失败"
 
 msgid "Failed to remove image: {errorMessage}"
 msgstr "删除图片失败：{errorMessage}"
@@ -4719,6 +4728,9 @@ msgstr "晚上好，{0}"
 #. placeholder {0}: user.firstName
 msgid "Good morning, {0}"
 msgstr "早上好，{0}"
+
+msgid "Google"
+msgstr "Google"
 
 msgid "Google Places API key not configured"
 msgstr "Google 地图 API 密钥未配置"
@@ -7054,6 +7066,9 @@ msgstr "盎司"
 msgid "Outgoing"
 msgstr "出库"
 
+msgid "Outlook"
+msgstr "Outlook"
+
 msgid "Output"
 msgstr "输出"
 
@@ -7192,8 +7207,14 @@ msgstr "产品"
 msgid "Pass"
 msgstr "通过"
 
+msgid "Passkey"
+msgstr "通行密钥"
+
 msgid "Passkey name"
 msgstr "Passkey 名称"
+
+msgid "Passkeys are disabled"
+msgstr "通行密钥已禁用"
 
 msgid "Password is too short"
 msgstr "密码太短"
@@ -11288,24 +11309,3 @@ msgstr "ZPL（热敏标签）"
 
 msgid "ZPL Label Preview"
 msgstr "ZPL标签预览"
-
-msgid "{credentialName} registered"
-msgstr "{credentialName} 已注册"
-
-msgid "Failed to get options"
-msgstr "获取选项失败"
-
-msgid "Failed to register passkey"
-msgstr "注册通行密钥失败"
-
-msgid "Google"
-msgstr "Google"
-
-msgid "Outlook"
-msgstr "Outlook"
-
-msgid "Passkey"
-msgstr "通行密钥"
-
-msgid "Passkeys are disabled"
-msgstr "通行密钥已禁用"

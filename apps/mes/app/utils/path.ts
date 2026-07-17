@@ -86,6 +86,10 @@ export const path = {
         if (queryString) url += `?${queryString}`;
 
         return generatePath(url);
+      },
+      bundleWorkOrderLabelsPdf: (ids: string | string[]) => {
+        const idString = Array.isArray(ids) ? ids.join(",") : ids;
+        return `${file}/bundle-work-order/labels.pdf?ids=${idString}`;
       }
     },
     accountSettings: `${ERP_URL}/x/account`,
@@ -112,8 +116,13 @@ export const path = {
     kanbanComplete: (id: string) => `${ERP_URL}/api/kanban/complete/${id}`,
     inspectionSteps: `${x}/steps/inspection`,
     inventoryAdjustment: `${x}/adjustment`,
+    bundle: (id: string) => generatePath(`${x}/job/${id}`),
     jobDag: (id: string) => generatePath(`${x}/job/${id}`),
     jobs: `${x}/jobs`,
+    masterWorkOrders: `${x}/master-work-orders`,
+    bundleWorkOrders: `${x}/bundle-work-orders`,
+    bundleWorkOrdersForMaster: (masterWorkOrderId: string) =>
+      `${x}/bundle-work-orders?masterWorkOrderId=${masterWorkOrderId}`,
     productionReports: `${x}/production-reports`,
     issue: `${x}/issue`,
     issueTrackedEntity: `${x}/issue-tracked-entity`,

@@ -2549,7 +2549,7 @@ export const JobOperation = ({
           </Times>
         )}
         {!["chat", "procedure"].includes(activeTab) && (
-          <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t">
+          <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t">
             <div className="flex flex-row max-[360px]:flex-col items-stretch">
               {(!operation.assignee || operation.assignee === userId) && (
                 <div className="flex flex-row items-center gap-2 px-3 py-2 shrink-0 border-r max-[360px]:border-r-0 max-[360px]:border-b">

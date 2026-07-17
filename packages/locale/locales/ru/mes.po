@@ -158,8 +158,23 @@ msgstr "Заблокировано {0}"
 msgid "Blocking"
 msgstr "Блокирующие"
 
+msgid "Browse bundles and print bundle tickets"
+msgstr "Обзор пакетов и печать чеков на пакеты"
+
+msgid "Browse cutting work orders and their bundles"
+msgstr "Обзор заказов на резку и их пакеты"
+
 msgid "Browse released jobs on the floor"
 msgstr "Обзор выпущенных задач на производстве"
+
+msgid "Bundle"
+msgstr "Пакет"
+
+msgid "Bundle Work Orders"
+msgstr "Сборка Заказов на Производство"
+
+msgid "Bundles"
+msgstr "Бандлы"
 
 msgid "But don't worry. You can use the forgot password flow to request a new magic link."
 msgstr "Но не волнуйтесь. Вы можете использовать функцию восстановления пароля, чтобы запросить новую волшебную ссылку."
@@ -197,6 +212,9 @@ msgstr "Очистить фильтры"
 msgid "Clear Filters"
 msgstr "Сбросить фильтры"
 
+msgid "Clear master order filter"
+msgstr "Очистить фильтр основного заказа"
+
 msgid "Clear Search"
 msgstr "Очистить поиск"
 
@@ -218,6 +236,9 @@ msgstr "На смене с {0}"
 
 msgid "Collapse"
 msgstr "Свернуть"
+
+msgid "Color"
+msgstr "Цвет"
 
 #. placeholder {0}: active.data.current.column.title
 #. placeholder {1}: overColumnPosition + 1
@@ -658,6 +679,12 @@ msgstr "Списать номенклатуру со склада вручную
 msgid "Mark Short"
 msgstr "Отметить нехватку"
 
+msgid "Master Order"
+msgstr "Основное производство"
+
+msgid "Master Work Orders"
+msgstr "Основные производственные заказы"
+
 msgid "matches"
 msgstr "соответствует"
 
@@ -755,6 +782,9 @@ msgstr "Доступные серийные номера не найдены"
 msgid "No available tracked entities found"
 msgstr "Найдено нетracked объектов"
 
+msgid "No bundle work orders"
+msgstr "Нет пакетных производственных заказов"
+
 msgid "No dispatches assigned to you"
 msgstr "Нет нарядов, назначенных вам"
 
@@ -766,6 +796,9 @@ msgstr "Без влияния"
 
 msgid "No maintenance scheduled for today"
 msgstr "На сегодня обслуживание не запланировано"
+
+msgid "No master work orders"
+msgstr "Нет основных производственных заказов"
 
 msgid "No materials"
 msgstr "Нет материалов"
@@ -1063,6 +1096,9 @@ msgstr "Записать шаг"
 msgid "Redirecting to verification page..."
 msgstr "Перенаправление на страницу верификации..."
 
+msgid "Remaining"
+msgstr "Оставшееся"
+
 msgid "Remove"
 msgstr "Удалить"
 
@@ -1093,8 +1129,8 @@ msgstr "Отправлено"
 msgid "Reset zoom"
 msgstr "Сбросить масштаб"
 
-msgid "Review and approve production reports"
-msgstr "Обзор и одобрение производственных отчетов"
+msgid "Review and approve reported production quantities"
+msgstr "Проверьте и одобрите отчетные производственные количества"
 
 msgid "Review your earnings and payment history"
 msgstr "Просмотрите вашу прибыль и историю платежей"
@@ -1147,11 +1183,17 @@ msgstr "Списано в брак"
 msgid "Search"
 msgstr "Поиск"
 
+msgid "Search by bundle or style"
+msgstr "Поиск по набору или стилю"
+
 msgid "Search by employee or job"
 msgstr "Поиск по сотруднику или работе"
 
 msgid "Search by job or item ID"
 msgstr "Поиск по номеру работы или статье"
+
+msgid "Search by WO or style"
+msgstr "Поиск по НО или стилю"
 
 msgid "Search operators..."
 msgstr "Поиск операторов..."
@@ -1312,6 +1354,9 @@ msgstr "Остановить все активные операции"
 
 msgid "Storage Unit"
 msgstr "Единица хранения"
+
+msgid "Style"
+msgstr "Стиль"
 
 msgid "Submit anonymously"
 msgstr "Отправить анонимно"
@@ -1481,6 +1526,9 @@ msgstr "НЗП"
 
 msgid "Work Center"
 msgstr "Рабочий центр"
+
+msgid "Work Order"
+msgstr "Заказ производства"
 
 msgid "Work scheduled at your work centers"
 msgstr "Запланировано для выполнения на ваших рабочих центрах"

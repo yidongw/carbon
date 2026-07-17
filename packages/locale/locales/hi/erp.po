@@ -83,6 +83,9 @@ msgstr "{0} नमूना न किए गए इकाइयों को �
 msgid "{0} values missing"
 msgstr "{0} मूल्य अनुपात में लापता हैं"
 
+msgid "{credentialName} registered"
+msgstr "{credentialName} पंजीकृत"
+
 msgid "{days} days ({formatted})"
 msgstr "{days} दिन ({formatted})"
 
@@ -4254,6 +4257,9 @@ msgstr "जोखिमों को प्राप्त करने मे�
 msgid "Failed to fetch suggestions"
 msgstr "सुझाव प्राप्त करने में विफल"
 
+msgid "Failed to get options"
+msgstr "विकल्प प्राप्त करने में विफल"
+
 msgid "Failed to initialize Carbon client"
 msgstr "Carbon क्लाइंट को इनिशियलाइज़ करने में विफल"
 
@@ -4319,6 +4325,9 @@ msgstr "आपूर्तिकर्ता भाग विवरण लोड
 
 msgid "Failed to load tracked entities"
 msgstr "ट्रैक किए गए इकाइयों को लोड करने में विफल"
+
+msgid "Failed to register passkey"
+msgstr "पासकी पंजीकृत करने में विफल"
 
 msgid "Failed to remove image: {errorMessage}"
 msgstr "छवि हटाने में विफल: {errorMessage}"
@@ -4719,6 +4728,9 @@ msgstr "शुभ संध्या, {0}"
 #. placeholder {0}: user.firstName
 msgid "Good morning, {0}"
 msgstr "शुभ प्रभात, {0}"
+
+msgid "Google"
+msgstr "Google"
 
 msgid "Google Places API key not configured"
 msgstr "Google Places API key कॉन्फ़िगर नहीं है"
@@ -7054,6 +7066,9 @@ msgstr "आउंस"
 msgid "Outgoing"
 msgstr "बाहर जाने वाला"
 
+msgid "Outlook"
+msgstr "Outlook"
+
 msgid "Output"
 msgstr "आउटपुट"
 
@@ -7192,8 +7207,14 @@ msgstr "पार्ट्स"
 msgid "Pass"
 msgstr "पास"
 
+msgid "Passkey"
+msgstr "पासकी"
+
 msgid "Passkey name"
 msgstr "Passkey का नाम"
+
+msgid "Passkeys are disabled"
+msgstr "पासकी अक्षम हैं"
 
 msgid "Password is too short"
 msgstr "पासवर्ड बहुत किलो है"
@@ -11288,24 +11309,3 @@ msgstr "ZPL (तापमान लेबल)"
 
 msgid "ZPL Label Preview"
 msgstr "ZPL लेबल प्रीवयज़न"
-
-msgid "{credentialName} registered"
-msgstr "{credentialName} पंजीकृत"
-
-msgid "Failed to get options"
-msgstr "विकल्प प्राप्त करने में विफल"
-
-msgid "Failed to register passkey"
-msgstr "पासकी पंजीकृत करने में विफल"
-
-msgid "Google"
-msgstr "Google"
-
-msgid "Outlook"
-msgstr "Outlook"
-
-msgid "Passkey"
-msgstr "पासकी"
-
-msgid "Passkeys are disabled"
-msgstr "पासकी अक्षम हैं"

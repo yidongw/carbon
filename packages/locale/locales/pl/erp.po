@@ -83,6 +83,9 @@ msgstr "{0} nieprzetestowane jednostki zostaną zwolnione do Dostępne. Przebada
 msgid "{0} values missing"
 msgstr "Brakujące wartości {0}"
 
+msgid "{credentialName} registered"
+msgstr "{credentialName} zarejestrowany"
+
 msgid "{days} days ({formatted})"
 msgstr "{days} dni ({formatted})"
 
@@ -4254,6 +4257,9 @@ msgstr "Nie udało się pobrać ryzyk"
 msgid "Failed to fetch suggestions"
 msgstr "Nie udało się pobrać sugestii"
 
+msgid "Failed to get options"
+msgstr "Nie udało się pobrać opcji"
+
 msgid "Failed to initialize Carbon client"
 msgstr "Nie udało się zainicjować klienta Carbon"
 
@@ -4319,6 +4325,9 @@ msgstr "Nie udało się załadować szczegółów części dostawcy"
 
 msgid "Failed to load tracked entities"
 msgstr "Nie udało się załadować śledzonych jednostek"
+
+msgid "Failed to register passkey"
+msgstr "Nie udało się zarejestrować klucza dostępu"
 
 msgid "Failed to remove image: {errorMessage}"
 msgstr "Nie udało się usunąć obrazu: {errorMessage}"
@@ -4719,6 +4728,9 @@ msgstr "Dobry wieczór, {0}"
 #. placeholder {0}: user.firstName
 msgid "Good morning, {0}"
 msgstr "Dzień dobry, {0}"
+
+msgid "Google"
+msgstr "Google"
 
 msgid "Google Places API key not configured"
 msgstr "Klucz API Google Places nie jest skonfigurowany"
@@ -7054,6 +7066,9 @@ msgstr "Uncja"
 msgid "Outgoing"
 msgstr "Wychodzące"
 
+msgid "Outlook"
+msgstr "Outlook"
+
 msgid "Output"
 msgstr "Wyjście"
 
@@ -7192,8 +7207,14 @@ msgstr "Części"
 msgid "Pass"
 msgstr "Zatwierdź"
 
+msgid "Passkey"
+msgstr "Klucz dostępu"
+
 msgid "Passkey name"
 msgstr "Nazwa Passkey"
+
+msgid "Passkeys are disabled"
+msgstr "Klucze dostępu są wyłączone"
 
 msgid "Password is too short"
 msgstr "Hasło jest zbyt krótkie"
@@ -11288,24 +11309,3 @@ msgstr "ZPL (Etykietka termiczna)"
 
 msgid "ZPL Label Preview"
 msgstr "Podgląd etykiety ZPL"
-
-msgid "{credentialName} registered"
-msgstr "{credentialName} zarejestrowany"
-
-msgid "Failed to get options"
-msgstr "Nie udało się pobrać opcji"
-
-msgid "Failed to register passkey"
-msgstr "Nie udało się zarejestrować klucza dostępu"
-
-msgid "Google"
-msgstr "Google"
-
-msgid "Outlook"
-msgstr "Outlook"
-
-msgid "Passkey"
-msgstr "Klucz dostępu"
-
-msgid "Passkeys are disabled"
-msgstr "Klucze dostępu są wyłączone"

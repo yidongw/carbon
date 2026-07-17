@@ -158,8 +158,23 @@ msgstr "Bloqueado por {0}"
 msgid "Blocking"
 msgstr "Bloqueando"
 
+msgid "Browse bundles and print bundle tickets"
+msgstr "Navegar paquetes e imprimir tickets de paquete"
+
+msgid "Browse cutting work orders and their bundles"
+msgstr "Navegar entre los pedidos de corte y sus paquetes"
+
 msgid "Browse released jobs on the floor"
 msgstr "Navegar entre las tareas liberadas en el piso de fabricación"
+
+msgid "Bundle"
+msgstr "Paquete"
+
+msgid "Bundle Work Orders"
+msgstr "Empaquetar órdenes de trabajo"
+
+msgid "Bundles"
+msgstr "Paquetes"
 
 msgid "But don't worry. You can use the forgot password flow to request a new magic link."
 msgstr "Pero no te preocupes. Puedes usar el flujo de contraseña olvidada para solicitar un nuevo enlace mágico."
@@ -197,6 +212,9 @@ msgstr "Limpiar filtros"
 msgid "Clear Filters"
 msgstr "Limpiar filtros"
 
+msgid "Clear master order filter"
+msgstr "Filtrar orden maestra"
+
 msgid "Clear Search"
 msgstr "Limpiar búsqueda"
 
@@ -218,6 +236,9 @@ msgstr "Registrado desde {0}"
 
 msgid "Collapse"
 msgstr "Colapsar"
+
+msgid "Color"
+msgstr "Color"
 
 #. placeholder {0}: active.data.current.column.title
 #. placeholder {1}: overColumnPosition + 1
@@ -658,6 +679,12 @@ msgstr "Eliminar artículos del inventario manualmente"
 msgid "Mark Short"
 msgstr "Marcar como faltante"
 
+msgid "Master Order"
+msgstr "Orden Maestra"
+
+msgid "Master Work Orders"
+msgstr "Ordenes Maestras de Trabajo"
+
 msgid "matches"
 msgstr "coincide con"
 
@@ -755,6 +782,9 @@ msgstr "No se encontraron números de serie disponibles"
 msgid "No available tracked entities found"
 msgstr "No se encontraron entidades rastreadas disponibles"
 
+msgid "No bundle work orders"
+msgstr "Sin ordens de trabajo agrupadas"
+
 msgid "No dispatches assigned to you"
 msgstr "No hay despachos asignados a usted"
 
@@ -766,6 +796,9 @@ msgstr "Sin impacto"
 
 msgid "No maintenance scheduled for today"
 msgstr "No hay mantenimiento programado para hoy"
+
+msgid "No master work orders"
+msgstr "Sin ordens maestras"
 
 msgid "No materials"
 msgstr "Sin materiales"
@@ -1063,6 +1096,9 @@ msgstr "Registrar paso"
 msgid "Redirecting to verification page..."
 msgstr "Redirigiendo a la página de verificación..."
 
+msgid "Remaining"
+msgstr "Restante"
+
 msgid "Remove"
 msgstr "Eliminar"
 
@@ -1093,8 +1129,8 @@ msgstr "Reportado"
 msgid "Reset zoom"
 msgstr "Restablecer el acercamiento"
 
-msgid "Review and approve production reports"
-msgstr "Revisar y aprobar informes de producción"
+msgid "Review and approve reported production quantities"
+msgstr "Revisar y aprobar las cantidades de producción reportadas"
 
 msgid "Review your earnings and payment history"
 msgstr "Revisar tus ingresos y historial de pagos"
@@ -1147,11 +1183,17 @@ msgstr "Descartado"
 msgid "Search"
 msgstr "Buscar"
 
+msgid "Search by bundle or style"
+msgstr "Buscar por paquete o estilo"
+
 msgid "Search by employee or job"
 msgstr "Buscar por empleado o trabajo"
 
 msgid "Search by job or item ID"
 msgstr "Buscar por número de trabajo u ID de artículo"
+
+msgid "Search by WO or style"
+msgstr "Buscar por OI o estilo"
 
 msgid "Search operators..."
 msgstr "Buscar operadores..."
@@ -1312,6 +1354,9 @@ msgstr "Detener todas tus operaciones activas"
 
 msgid "Storage Unit"
 msgstr "Unidad de Almacenamiento"
+
+msgid "Style"
+msgstr "Estilo"
 
 msgid "Submit anonymously"
 msgstr "Enviar de forma anónima"
@@ -1481,6 +1526,9 @@ msgstr "WIP"
 
 msgid "Work Center"
 msgstr "Centro de trabajo"
+
+msgid "Work Order"
+msgstr "Orden de trabajo"
 
 msgid "Work scheduled at your work centers"
 msgstr "Trabajo programado en sus centros de trabajo"
