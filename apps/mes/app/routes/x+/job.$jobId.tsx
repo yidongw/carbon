@@ -3,14 +3,13 @@ import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { Heading, SidebarTrigger } from "@carbon/react";
 import { LuArrowLeft } from "react-icons/lu";
 import type { LoaderFunctionArgs } from "react-router";
-import { Link, useLoaderData } from "react-router";
+import { useLoaderData, useNavigate } from "react-router";
 import { JobDag } from "~/components/JobDag";
 import { TopbarActions } from "~/components/TopbarActions";
 import {
   getJobOperationDependencies,
   getJobOperations
 } from "~/services/operations.service";
-import { path } from "~/utils/path";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
   await requirePermissions(request, {});
@@ -35,18 +34,20 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 export default function JobDagRoute() {
   const { readableId, operations, dependencies } =
     useLoaderData<typeof loader>();
+  const navigate = useNavigate();
 
   return (
     <div className="flex flex-col flex-1">
       <header className="sticky top-0 z-10 flex h-[var(--header-height)] shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 border-b bg-background">
         <div className="flex items-center gap-2 px-2">
           <SidebarTrigger className="md:hidden" />
-          <Link
-            to={path.to.jobs}
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
             className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
           >
             <LuArrowLeft className="w-4 h-4" />
-          </Link>
+          </button>
           <Heading size="h4">{readableId}</Heading>
         </div>
         <div className="ml-auto flex items-center px-2">

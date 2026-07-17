@@ -7,10 +7,12 @@ import {
   LuActivity,
   LuBadgeCheck,
   LuBanknote,
+  LuBoxes,
   LuCalendarDays,
   LuCirclePlay,
   LuClipboardList,
   LuHistory,
+  LuLayers,
   LuPackageCheck,
   LuWrench
 } from "react-icons/lu";
@@ -100,9 +102,23 @@ export default function MesIndexRoute() {
       icon: LuCirclePlay
     },
     {
-      key: "reportApprovals",
+      key: "masterWorkOrders",
+      title: t`Master Work Orders`,
+      description: t`Browse cutting work orders and their bundles`,
+      to: path.to.masterWorkOrders,
+      icon: LuLayers
+    },
+    {
+      key: "bundleWorkOrders",
+      title: t`Bundle Work Orders`,
+      description: t`Browse bundles and print bundle tickets`,
+      to: path.to.bundleWorkOrders,
+      icon: LuBoxes
+    },
+    {
+      key: "productionReports",
       title: t`Report Approvals`,
-      description: t`Review and approve production reports`,
+      description: t`Review and approve reported production quantities`,
       to: path.to.productionReports,
       icon: LuBadgeCheck
     },
@@ -132,7 +148,7 @@ export default function MesIndexRoute() {
   return (
     <div className="flex flex-1 flex-col min-h-0">
       <MesTopbar />
-      <div className="flex flex-1 flex-col p-6 overflow-y-auto bg-muted">
+      <div className="flex flex-1 flex-col p-6 md:p-8 overflow-y-auto bg-muted">
         <Heading size="h3">
           {t`Welcome`}
           {user?.firstName ? `, ${user.firstName}` : ""}
