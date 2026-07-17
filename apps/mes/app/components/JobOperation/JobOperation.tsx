@@ -468,10 +468,10 @@ export const JobOperation = ({
               <Button
                 variant="ghost"
                 leftIcon={<LuChevronLeft />}
-                onClick={() => navigate(path.to.operations)}
+                onClick={() => navigate(-1)}
                 className="pl-2"
               >
-                <Trans>Schedule</Trans>
+                <Trans>Back</Trans>
               </Button>
             </div>
             <div className="flex flex-shrink-0 items-center justify-end gap-2">
@@ -2711,7 +2711,7 @@ export const JobOperation = ({
         <SerialSelectorModal
           availableEntities={availableEntities}
           onClose={serialModal.onClose}
-          onCancel={() => navigate(path.to.operations)}
+          onCancel={() => navigate(-1)}
           onSelect={(entity) => {
             const entityIndex = availableEntities.findIndex(
               (e) => e.id === entity.id
