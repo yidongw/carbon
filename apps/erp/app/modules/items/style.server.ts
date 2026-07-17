@@ -12,8 +12,10 @@ import {
 import type { styleValidator } from "./style.models";
 import {
   buildStyleCuttingMethodOperation,
+  buildStyleDefaultMethodOperation,
   STYLE_CUTTING_OPERATION_TAG,
   STYLE_CUTTING_PROCESS_TAG,
+  STYLE_DEFAULT_PROCESSES,
   STYLE_SYSTEM_OPERATION_TAG
 } from "./styleMethod.service";
 
@@ -132,6 +134,124 @@ export async function getStyleColorContext(
   }
 }
 
+/**
+ * Seeds the default garment processes (缝制 / 后道 / 包装) onto a style's make
+ * method, ordered after the system-owned Cutting operation. Idempotent: only
+ * seeds when the method has no user-owned operations yet, so it never re-adds
+ * processes a user has intentionally removed. Runs in the raw-SQL scaffold path
+ * used by the style create/update route.
+ */
+async function seedStyleDefaultProcessOperationsWithDb(
+  db: ReturnType<typeof getDatabaseClient>,
+  args: {
+    makeMethodId: string;
+    companyId: string;
+    userId: string;
+  }
+) {
+  const summary = await sql<{ maxOrder: number; userOps: number }>`
+    select
+      coalesce(max("order"), 0)::int as "maxOrder",
+      count(*) filter (
+        where not (
+          ${STYLE_CUTTING_OPERATION_TAG} = any(coalesce("tags", '{}'::text[]))
+          or ${STYLE_SYSTEM_OPERATION_TAG} = any(coalesce("tags", '{}'::text[]))
+          or "customFields" ->> 'styleStage' = 'cutting'
+          or "customFields" ->> 'styleSystemOwned' = 'true'
+        )
+      )::int as "userOps"
+    from "methodOperation"
+    where "makeMethodId" = ${args.makeMethodId}
+  `.execute(db);
+
+  const row = summary.rows[0];
+  if (row && row.userOps > 0) return;
+
+  let order = row?.maxOrder ?? 0;
+
+  for (const process of STYLE_DEFAULT_PROCESSES) {
+    const existingProcess = await sql<{ id: string }>`
+      select "id"
+      from "process"
+      where "companyId" = ${args.companyId}
+        and "name" = any(${process.aliases}::text[])
+      order by "createdAt" asc
+      limit 1
+    `.execute(db);
+
+    let processId = existingProcess.rows[0]?.id ?? null;
+    if (!processId) {
+      const insertedProcess = await sql<{ id: string }>`
+        insert into "process" (
+          "name",
+          "processType",
+          "defaultStandardFactor",
+          "completeAllOnScan",
+          "companyId",
+          "createdBy"
+        ) values (
+          ${process.name},
+          'Inside',
+          'Minutes/Piece',
+          false,
+          ${args.companyId},
+          ${args.userId}
+        )
+        returning "id"
+      `.execute(db);
+      processId = insertedProcess.rows[0]?.id ?? null;
+    }
+
+    if (!processId) continue;
+
+    order += 1;
+    const operation = buildStyleDefaultMethodOperation({
+      makeMethodId: args.makeMethodId,
+      processId,
+      companyId: args.companyId,
+      createdBy: args.userId,
+      order,
+      description: process.name
+    });
+
+    await sql`
+      insert into "methodOperation" (
+        "makeMethodId",
+        "processId",
+        "companyId",
+        "createdBy",
+        "order",
+        "operationOrder",
+        "operationType",
+        "description",
+        "setupUnit",
+        "setupTime",
+        "laborUnit",
+        "laborTime",
+        "machineUnit",
+        "machineTime",
+        "insideUnitCost"
+      ) values (
+        ${operation.makeMethodId},
+        ${operation.processId},
+        ${operation.companyId},
+        ${operation.createdBy},
+        ${operation.order},
+        ${operation.operationOrder},
+        ${operation.operationType},
+        ${operation.description},
+        ${operation.setupUnit},
+        ${operation.setupTime},
+        ${operation.laborUnit},
+        ${operation.laborTime},
+        ${operation.machineUnit},
+        ${operation.machineTime},
+        ${operation.insideUnitCost}
+      )
+    `.execute(db);
+  }
+}
+
 export async function ensureStyleMethodScaffoldWithDb(args: {
   itemId: string;
   companyId: string;
@@ -245,117 +365,113 @@ export async function ensureStyleMethodScaffoldWithDb(args: {
       limit 1
     `.execute(db);
 
-    if (existingCuttingOperation.rows[0]?.id) {
-      return {
-        data: {
-          makeMethodId,
-          cuttingOperationId: existingCuttingOperation.rows[0].id
-        },
-        error: null
-      };
-    }
+    let cuttingOperationId: string | null =
+      existingCuttingOperation.rows[0]?.id ?? null;
 
-    const firstOperation = await sql<{
-      id: string;
-      processId: string | null;
-      order: number | null;
-    }>`
-      select "id", "processId", "order"
-      from "methodOperation"
-      where "makeMethodId" = ${makeMethodId}
-      order by "order" asc
-      limit 1
-    `.execute(db);
-
-    const first = firstOperation.rows[0];
-    if (first?.id && first.processId === cuttingProcessId) {
-      await sql`
-        update "methodOperation"
-        set
-          "tags" = array(
-            select distinct tag
-            from unnest(
-              array_append(
-                array_append(coalesce("tags", '{}'::text[]), ${STYLE_CUTTING_OPERATION_TAG}),
-                ${STYLE_SYSTEM_OPERATION_TAG}
-              )
-            ) as tag
-          ),
-          "customFields" = coalesce("customFields", '{}'::jsonb) || ${JSON.stringify(
-            {
-              styleStage: "cutting",
-              styleSystemOwned: true
-            }
-          )}::jsonb,
-          "updatedBy" = ${args.userId}
-        where "id" = ${first.id}
+    if (!cuttingOperationId) {
+      const firstOperation = await sql<{
+        id: string;
+        processId: string | null;
+        order: number | null;
+      }>`
+        select "id", "processId", "order"
+        from "methodOperation"
+        where "makeMethodId" = ${makeMethodId}
+        order by "order" asc
+        limit 1
       `.execute(db);
 
-      return {
-        data: {
+      const first = firstOperation.rows[0];
+      if (first?.id && first.processId === cuttingProcessId) {
+        await sql`
+          update "methodOperation"
+          set
+            "tags" = array(
+              select distinct tag
+              from unnest(
+                array_append(
+                  array_append(coalesce("tags", '{}'::text[]), ${STYLE_CUTTING_OPERATION_TAG}),
+                  ${STYLE_SYSTEM_OPERATION_TAG}
+                )
+              ) as tag
+            ),
+            "customFields" = coalesce("customFields", '{}'::jsonb) || ${JSON.stringify(
+              {
+                styleStage: "cutting",
+                styleSystemOwned: true
+              }
+            )}::jsonb,
+            "updatedBy" = ${args.userId}
+          where "id" = ${first.id}
+        `.execute(db);
+
+        cuttingOperationId = first.id;
+      } else {
+        const seededCuttingOperation = buildStyleCuttingMethodOperation({
           makeMethodId,
-          cuttingOperationId: first.id
-        },
-        error: null
-      };
+          processId: cuttingProcessId,
+          companyId: args.companyId,
+          createdBy: args.userId,
+          order: first && typeof first.order === "number" ? first.order - 1 : 0
+        });
+
+        const insertedOperation = await sql<{ id: string }>`
+          insert into "methodOperation" (
+            "makeMethodId",
+            "processId",
+            "companyId",
+            "createdBy",
+            "order",
+            "operationOrder",
+            "operationType",
+            "description",
+            "setupUnit",
+            "setupTime",
+            "laborUnit",
+            "laborTime",
+            "machineUnit",
+            "machineTime",
+            "insideUnitCost",
+            "tags",
+            "customFields"
+          ) values (
+            ${seededCuttingOperation.makeMethodId},
+            ${seededCuttingOperation.processId},
+            ${seededCuttingOperation.companyId},
+            ${seededCuttingOperation.createdBy},
+            ${seededCuttingOperation.order},
+            ${seededCuttingOperation.operationOrder},
+            ${seededCuttingOperation.operationType},
+            ${seededCuttingOperation.description},
+            ${seededCuttingOperation.setupUnit},
+            ${seededCuttingOperation.setupTime},
+            ${seededCuttingOperation.laborUnit},
+            ${seededCuttingOperation.laborTime},
+            ${seededCuttingOperation.machineUnit},
+            ${seededCuttingOperation.machineTime},
+            ${seededCuttingOperation.insideUnitCost},
+            array[${STYLE_CUTTING_OPERATION_TAG}, ${STYLE_SYSTEM_OPERATION_TAG}]::text[],
+            ${JSON.stringify(seededCuttingOperation.customFields)}::jsonb
+          )
+          returning "id"
+        `.execute(db);
+
+        cuttingOperationId = insertedOperation.rows[0]?.id ?? null;
+      }
     }
 
-    const seededCuttingOperation = buildStyleCuttingMethodOperation({
-      makeMethodId,
-      processId: cuttingProcessId,
-      companyId: args.companyId,
-      createdBy: args.userId,
-      order: first && typeof first.order === "number" ? first.order - 1 : 0
-    });
-
-    const insertedOperation = await sql<{ id: string }>`
-      insert into "methodOperation" (
-        "makeMethodId",
-        "processId",
-        "companyId",
-        "createdBy",
-        "order",
-        "operationOrder",
-        "operationType",
-        "description",
-        "setupUnit",
-        "setupTime",
-        "laborUnit",
-        "laborTime",
-        "machineUnit",
-        "machineTime",
-        "insideUnitCost",
-        "tags",
-        "customFields"
-      ) values (
-        ${seededCuttingOperation.makeMethodId},
-        ${seededCuttingOperation.processId},
-        ${seededCuttingOperation.companyId},
-        ${seededCuttingOperation.createdBy},
-        ${seededCuttingOperation.order},
-        ${seededCuttingOperation.operationOrder},
-        ${seededCuttingOperation.operationType},
-        ${seededCuttingOperation.description},
-        ${seededCuttingOperation.setupUnit},
-        ${seededCuttingOperation.setupTime},
-        ${seededCuttingOperation.laborUnit},
-        ${seededCuttingOperation.laborTime},
-        ${seededCuttingOperation.machineUnit},
-        ${seededCuttingOperation.machineTime},
-        ${seededCuttingOperation.insideUnitCost},
-        array[${STYLE_CUTTING_OPERATION_TAG}, ${STYLE_SYSTEM_OPERATION_TAG}]::text[],
-        ${JSON.stringify(seededCuttingOperation.customFields)}::jsonb
-      )
-      returning "id"
-    `.execute(db);
-
-    const cuttingOperationId = insertedOperation.rows[0]?.id ?? null;
     if (!cuttingOperationId) {
       return {
         data: null,
         error: new Error("Failed to create style cutting operation")
       };
     }
+
+    await seedStyleDefaultProcessOperationsWithDb(db, {
+      makeMethodId,
+      companyId: args.companyId,
+      userId: args.userId
+    });
 
     return {
       data: {

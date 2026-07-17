@@ -5,6 +5,25 @@ export const STYLE_CUTTING_PROCESS_TAG = "style:cutting-process";
 export const STYLE_CUTTING_OPERATION_TAG = "style:cutting-operation";
 export const STYLE_SYSTEM_OPERATION_TAG = "style:system-operation";
 
+/**
+ * Default garment processes seeded onto a new style's make method, in order,
+ * after the system-owned Cutting operation. These are normal, user-editable
+ * operations (unlike Cutting, which is system-owned). Each entry's `aliases`
+ * are matched against existing `process` rows so we reuse a process the company
+ * already has (e.g. from seed data) instead of creating a duplicate; `name` is
+ * used when creating a new one.
+ */
+export type StyleDefaultProcess = {
+  name: string;
+  aliases: string[];
+};
+
+export const STYLE_DEFAULT_PROCESSES: StyleDefaultProcess[] = [
+  { name: "缝制", aliases: ["缝制", "Sewing"] },
+  { name: "后道", aliases: ["后道", "Finishing", "整理"] },
+  { name: "包装", aliases: ["包装", "Packing", "Packaging"] }
+];
+
 type StyleOperationLike = {
   id?: string;
   processId?: string | null;
@@ -85,6 +104,33 @@ export function buildStyleCuttingMethodOperation(args: {
       styleStage: "cutting",
       styleSystemOwned: true
     }
+  };
+}
+
+export function buildStyleDefaultMethodOperation(args: {
+  makeMethodId: string;
+  processId: string;
+  companyId: string;
+  createdBy: string;
+  order: number;
+  description: string;
+}) {
+  return {
+    makeMethodId: args.makeMethodId,
+    processId: args.processId,
+    companyId: args.companyId,
+    createdBy: args.createdBy,
+    order: args.order,
+    operationOrder: "After Previous" as const,
+    operationType: "Inside" as const,
+    description: args.description,
+    setupUnit: "Minutes/Piece" as const,
+    setupTime: 0,
+    laborUnit: "Minutes/Piece" as const,
+    laborTime: 0,
+    machineUnit: "Minutes/Piece" as const,
+    machineTime: 0,
+    insideUnitCost: 0
   };
 }
 
@@ -321,6 +367,105 @@ export async function ensureStyleCuttingOperation(
   return insert;
 }
 
+async function ensureStyleProcessByAliases(
+  client: SupabaseClient<Database>,
+  args: {
+    process: StyleDefaultProcess;
+    companyId: string;
+    userId: string;
+  }
+) {
+  const processClient = client as SupabaseClient<any>;
+  const existing = await processClient
+    .from("process")
+    .select("id")
+    .eq("companyId", args.companyId)
+    .in("name", args.process.aliases)
+    .order("createdAt", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+
+  if (existing.error) return { data: null, error: existing.error };
+  if (existing.data?.id) {
+    return { data: { id: existing.data.id as string }, error: null };
+  }
+
+  return processClient
+    .from("process")
+    .insert({
+      name: args.process.name,
+      processType: "Inside",
+      defaultStandardFactor: "Minutes/Piece",
+      completeAllOnScan: false,
+      companyId: args.companyId,
+      createdBy: args.userId
+    })
+    .select("id")
+    .single();
+}
+
+export async function ensureStyleDefaultProcessOperations(
+  client: SupabaseClient<Database>,
+  args: {
+    makeMethodId: string;
+    companyId: string;
+    userId: string;
+  }
+) {
+  const operationClient = client as SupabaseClient<any>;
+  const operations = await operationClient
+    .from("methodOperation")
+    .select("id, processId, order, tags, customFields")
+    .eq("makeMethodId", args.makeMethodId)
+    .order("order", { ascending: true });
+
+  if (operations.error) return { data: null, error: operations.error };
+
+  const existing = operations.data ?? [];
+  // Only seed defaults when the method has no user-owned operations yet, so we
+  // never re-add processes a user has intentionally curated.
+  const hasUserOperation = existing.some(
+    (operation: any) =>
+      !isStyleSystemOwnedOperation(operation) &&
+      !isStyleCuttingOperation(operation)
+  );
+  if (hasUserOperation) return { data: { seeded: false }, error: null };
+
+  let order = existing.reduce(
+    (highest: number, operation: any) =>
+      Math.max(highest, operation.order ?? 0),
+    0
+  );
+
+  for (const process of STYLE_DEFAULT_PROCESSES) {
+    const resolved = await ensureStyleProcessByAliases(client, {
+      process,
+      companyId: args.companyId,
+      userId: args.userId
+    });
+    if (resolved.error || !resolved.data?.id) {
+      return { data: null, error: resolved.error };
+    }
+
+    order += 1;
+    const inserted = await operationClient
+      .from("methodOperation")
+      .insert(
+        buildStyleDefaultMethodOperation({
+          makeMethodId: args.makeMethodId,
+          processId: resolved.data.id,
+          companyId: args.companyId,
+          createdBy: args.userId,
+          order,
+          description: process.name
+        })
+      );
+    if (inserted.error) return { data: null, error: inserted.error };
+  }
+
+  return { data: { seeded: true }, error: null };
+}
+
 export async function ensureStyleMethodScaffold(
   client: SupabaseClient<Database>,
   args: {
@@ -338,6 +483,13 @@ export async function ensureStyleMethodScaffold(
     userId: args.userId
   });
   if (cutting.error) return { data: null, error: cutting.error };
+
+  const defaults = await ensureStyleDefaultProcessOperations(client, {
+    makeMethodId: makeMethod.data.id,
+    companyId: args.companyId,
+    userId: args.userId
+  });
+  if (defaults.error) return { data: null, error: defaults.error };
 
   return {
     data: {
