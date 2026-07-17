@@ -465,14 +465,12 @@ export const JobOperation = ({
             <div className="flex items-center gap-0">
               <SidebarTrigger className="md:hidden" />
 
-              <Button
-                variant="ghost"
-                leftIcon={<LuChevronLeft />}
-                onClick={() => navigate(path.to.operations)}
-                className="pl-2"
+              <button
+                onClick={() => navigate(-1)}
+                className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors p-1"
               >
-                <Trans>Schedule</Trans>
-              </Button>
+                <LuArrowLeft className="w-4 h-4" />
+              </button>
             </div>
             <div className="flex flex-shrink-0 items-center justify-end gap-2">
               <TabsList className="md:ml-auto">
@@ -2711,7 +2709,7 @@ export const JobOperation = ({
         <SerialSelectorModal
           availableEntities={availableEntities}
           onClose={serialModal.onClose}
-          onCancel={() => navigate(path.to.operations)}
+          onCancel={() => navigate(-1)}
           onSelect={(entity) => {
             const entityIndex = availableEntities.findIndex(
               (e) => e.id === entity.id
