@@ -13,6 +13,7 @@ import type { ImperativePanelHandle } from "react-resizable-panels";
 import type { LoaderFunctionArgs } from "react-router";
 import { useLoaderData, useParams } from "react-router";
 import { OperationsList } from "~/components";
+import { TopbarActions } from "~/components/TopbarActions";
 import { getActiveJobOperationsByEmployee } from "~/services/operations.service";
 import { makeDurations } from "~/utils/durations";
 
@@ -68,6 +69,9 @@ export default function ActiveRoute() {
           <Heading size="h4">
             <Trans>Active</Trans>
           </Heading>
+        </div>
+        <div className="ml-auto flex items-center px-2">
+          <TopbarActions />
         </div>
       </header>
 

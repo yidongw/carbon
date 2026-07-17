@@ -26,8 +26,13 @@ import type { action as endShiftAction } from "~/routes/x+/end-shift";
 import { getActiveJobOperationsByEmployee } from "~/services/operations.service";
 import type { Operation } from "~/services/types";
 import { path } from "~/utils/path";
+import { HomeCardBody, homeCardClass } from "./HomeCard";
 
-export function EndShift() {
+export function EndShift({
+  variant = "sidebar"
+}: {
+  variant?: "sidebar" | "card";
+}) {
   const { t } = useLingui();
   const confirmModal = useDisclosure();
   const fetcher = useFetcher<typeof endShiftAction>();
@@ -69,12 +74,22 @@ export function EndShift() {
 
   return (
     <>
-      <SidebarMenuButton tooltip={t`End Operations`} onClick={openModal}>
-        <LuCircleStop />
-        <span>
-          <Trans>End Operations</Trans>
-        </span>
-      </SidebarMenuButton>
+      {variant === "card" ? (
+        <button type="button" className={homeCardClass} onClick={openModal}>
+          <HomeCardBody
+            icon={LuCircleStop}
+            title={t`End Operations`}
+            description={t`Stop all your active operations`}
+          />
+        </button>
+      ) : (
+        <SidebarMenuButton tooltip={t`End Operations`} onClick={openModal}>
+          <LuCircleStop />
+          <span>
+            <Trans>End Operations</Trans>
+          </span>
+        </SidebarMenuButton>
+      )}
       {confirmModal.isOpen && (
         <Modal
           open={confirmModal.isOpen}

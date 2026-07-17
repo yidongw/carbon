@@ -27,8 +27,15 @@ import type { action as endShiftAction } from "~/routes/x+/end-shift";
 import { inventoryAdjustmentValidator } from "~/services/inventory.service";
 import { useItems } from "~/stores";
 import { path } from "~/utils/path";
+import { HomeCardBody, homeCardClass } from "./HomeCard";
 
-export function AdjustInventory({ add }: { add: boolean }) {
+export function AdjustInventory({
+  add,
+  variant = "sidebar"
+}: {
+  add: boolean;
+  variant?: "sidebar" | "card";
+}) {
   const { t } = useLingui();
   const modal = useDisclosure();
   const fetcher = useFetcher<typeof endShiftAction>();
@@ -110,15 +117,29 @@ export function AdjustInventory({ add }: { add: boolean }) {
 
   return (
     <>
-      <SidebarMenuButton
-        tooltip={add ? t`Add Inventory` : t`Remove Inventory`}
-        onClick={modal.onOpen}
-      >
-        {add ? <LuGitPullRequestCreateArrow /> : <LuGitBranchPlus />}
-        <span>
-          {add ? <Trans>Add Inventory</Trans> : <Trans>Remove Inventory</Trans>}
-        </span>
-      </SidebarMenuButton>
+      {variant === "card" ? (
+        <button type="button" className={homeCardClass} onClick={modal.onOpen}>
+          <HomeCardBody
+            icon={add ? LuGitPullRequestCreateArrow : LuGitBranchPlus}
+            title={add ? t`Add Inventory` : t`Remove Inventory`}
+            description={add ? t`Adjust stock up` : t`Adjust stock down`}
+          />
+        </button>
+      ) : (
+        <SidebarMenuButton
+          tooltip={add ? t`Add Inventory` : t`Remove Inventory`}
+          onClick={modal.onOpen}
+        >
+          {add ? <LuGitPullRequestCreateArrow /> : <LuGitBranchPlus />}
+          <span>
+            {add ? (
+              <Trans>Add Inventory</Trans>
+            ) : (
+              <Trans>Remove Inventory</Trans>
+            )}
+          </span>
+        </SidebarMenuButton>
+      )}
       {modal.isOpen && (
         <Modal
           open={modal.isOpen}

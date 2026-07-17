@@ -14,6 +14,7 @@ import { LuTriangleAlert } from "react-icons/lu";
 import type { LoaderFunctionArgs } from "react-router";
 import { Link, useLoaderData } from "react-router";
 import { PickingListStatus } from "~/components/PickingListStatus";
+import { TopbarActions } from "~/components/TopbarActions";
 import { userContext } from "~/context";
 import { getAssignedPickingLists } from "~/services/picking.service";
 import { path } from "~/utils/path";
@@ -40,6 +41,9 @@ export default function PickingIndexRoute() {
           <Heading size="h4">
             <Trans>Picking</Trans>
           </Heading>
+        </div>
+        <div className="ml-auto flex items-center px-2">
+          <TopbarActions />
         </div>
       </header>
 

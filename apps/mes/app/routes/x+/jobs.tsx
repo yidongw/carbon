@@ -20,6 +20,7 @@ import { LuSearch, LuTriangleAlert } from "react-icons/lu";
 import type { LoaderFunctionArgs } from "react-router";
 import { Link, useLoaderData } from "react-router";
 import EmployeeAvatar from "~/components/EmployeeAvatar";
+import { TopbarActions } from "~/components/TopbarActions";
 import { userContext } from "~/context";
 import {
   getOpenJobs,
@@ -125,6 +126,9 @@ export default function JobsRoute() {
           <Heading size="h4">
             <Trans>Open Jobs</Trans>
           </Heading>
+        </div>
+        <div className="ml-auto flex items-center px-2">
+          <TopbarActions />
         </div>
       </header>
 

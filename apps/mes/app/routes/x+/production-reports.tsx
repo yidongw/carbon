@@ -38,6 +38,7 @@ import EmployeeAvatar from "~/components/EmployeeAvatar";
 import type { ColumnFilter } from "~/components/Filter";
 import { ActiveFilters, Filter, useFilters } from "~/components/Filter";
 import SearchFilter from "~/components/SearchFilter";
+import { TopbarActions } from "~/components/TopbarActions";
 import { useUrlParams } from "~/hooks";
 import {
   approveProductionQuantity,
@@ -620,6 +621,9 @@ export default function ProductionReportsRoute() {
           <Heading size="h4">
             <Trans>Report Approvals</Trans>
           </Heading>
+        </div>
+        <div className="ml-auto flex items-center px-2">
+          <TopbarActions />
         </div>
       </header>
 

@@ -14,6 +14,7 @@ import type { ImperativePanelHandle } from "react-resizable-panels";
 import type { LoaderFunctionArgs } from "react-router";
 import { useLoaderData, useParams } from "react-router";
 import { OperationsList } from "~/components";
+import { TopbarActions } from "~/components/TopbarActions";
 import { userContext } from "~/context";
 import {
   getJobOperationsAssignedToEmployee,
@@ -88,6 +89,9 @@ export default function AssignedRoute() {
           <Heading size="h4">
             <Trans>Assigned to Me</Trans>
           </Heading>
+        </div>
+        <div className="ml-auto flex items-center px-2">
+          <TopbarActions />
         </div>
       </header>
 

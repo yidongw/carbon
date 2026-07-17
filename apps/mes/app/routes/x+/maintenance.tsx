@@ -29,6 +29,7 @@ import EmployeeAvatar from "~/components/EmployeeAvatar";
 import type { ColumnFilter } from "~/components/Filter";
 import { ActiveFilters, Filter, useFilters } from "~/components/Filter";
 import SearchFilter from "~/components/SearchFilter";
+import { TopbarActions } from "~/components/TopbarActions";
 import { userContext } from "~/context";
 import { useUrlParams } from "~/hooks";
 import {
@@ -403,6 +404,9 @@ export default function MaintenanceRoute() {
           <Heading size="h4">
             <Trans>Maintenance</Trans>
           </Heading>
+        </div>
+        <div className="ml-auto flex items-center px-2">
+          <TopbarActions />
         </div>
       </header>
 

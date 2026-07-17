@@ -1649,6 +1649,7 @@ export const path = {
     jobRulesSimulate: `${x}/production/job-rules/simulate`,
     productionPlanningItem: (itemId: string) =>
       generatePath(`${x}/production/planning/${itemId}`),
+    mesSettings: `${x}/settings/mes`,
     peopleSettings: `${x}/settings/people`,
     productionSettings: `${x}/settings/production`,
     profile: `${x}/account/profile`,

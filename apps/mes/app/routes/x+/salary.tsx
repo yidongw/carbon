@@ -27,6 +27,7 @@ import {
 } from "react-icons/lu";
 import type { LoaderFunctionArgs } from "react-router";
 import { useLoaderData, useNavigate } from "react-router";
+import { TopbarActions } from "~/components/TopbarActions";
 import {
   getMyCompletions,
   getMyPendingCompletions,
@@ -183,6 +184,9 @@ export default function MesSalaryRoute() {
           <Heading size="h4">
             <Trans>My Salary</Trans>
           </Heading>
+        </div>
+        <div className="ml-auto flex items-center px-2">
+          <TopbarActions />
         </div>
       </header>
 

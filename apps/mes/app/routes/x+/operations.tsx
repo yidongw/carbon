@@ -31,12 +31,12 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { LuSettings2, LuTriangleAlert } from "react-icons/lu";
 import type { LoaderFunctionArgs } from "react-router";
 import { data, redirect, useLoaderData } from "react-router";
-
 import type { ColumnFilter } from "~/components/Filter";
 import { ActiveFilters, Filter, useFilters } from "~/components/Filter";
 import type { Column, DisplaySettings, Item } from "~/components/Kanban";
 import { Kanban } from "~/components/Kanban";
 import SearchFilter from "~/components/SearchFilter";
+import { TopbarActions } from "~/components/TopbarActions";
 import { userContext } from "~/context";
 import { useUrlParams, useUser } from "~/hooks";
 import { getFilters, setFilters } from "~/services/operation.server";
@@ -424,6 +424,9 @@ function KanbanSchedule() {
           <Heading size="h4">
             <Trans>Schedule</Trans>
           </Heading>
+        </div>
+        <div className="ml-auto flex items-center px-2">
+          <TopbarActions />
         </div>
       </header>
       <div className="flex flex-col h-full max-h-full overflow-auto relative">

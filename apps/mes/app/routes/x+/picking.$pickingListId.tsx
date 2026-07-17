@@ -48,6 +48,7 @@ import { Enumerable } from "~/components/Enumerable";
 import ItemThumbnail from "~/components/ItemThumbnail";
 import { PickingListStatus } from "~/components/PickingListStatus";
 import { ShortPickModal } from "~/components/ShortPickModal";
+import { TopbarActions } from "~/components/TopbarActions";
 import type { PickingListRecommendation } from "~/services/inventory.service";
 import { getPickingListRecommendations } from "~/services/inventory.service";
 import { isPickingListLocked } from "~/services/models";
@@ -142,6 +143,7 @@ export default function PickingExecutionRoute() {
             pickingListId={pickingList.id}
             status={pickingList.status}
           />
+          <TopbarActions />
         </div>
       </header>
 
