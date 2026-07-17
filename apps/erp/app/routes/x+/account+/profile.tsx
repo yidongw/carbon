@@ -438,7 +438,7 @@ export default function AccountProfile() {
 
   const onAddPasskey = async () => {
     if (!passkeysEnabled) {
-      toast.error("Passkeys are disabled");
+      toast.error(t`Passkeys are disabled`);
       return;
     }
     setRegistering(true);
@@ -447,7 +447,7 @@ export default function AccountProfile() {
         method: "POST"
       });
 
-      if (!optRes.ok) throw new Error("Failed to get options");
+      if (!optRes.ok) throw new Error(t`Failed to get options`);
       const options = await optRes.json();
 
       const credential = await startRegistration({
@@ -466,11 +466,12 @@ export default function AccountProfile() {
       }
 
       const result = await verifyRes.json();
-      toast.success(`${result.credentialName ?? "Passkey"} registered`);
+      const credentialName = result.credentialName ?? t`Passkey`;
+      toast.success(t`${credentialName} registered`);
       revalidate();
     } catch (e: any) {
       if (e?.name !== "NotAllowedError" && e?.name !== "AbortError") {
-        toast.error(e.message ?? "Failed to register passkey");
+        toast.error(e.message ?? t`Failed to register passkey`);
       }
     } finally {
       setRegistering(false);
@@ -522,10 +523,14 @@ export default function AccountProfile() {
           <CardHeader>
             <HStack className="justify-between">
               <div>
-                <CardTitle>Passkeys</CardTitle>
+                <CardTitle>
+                  <Trans>Passkeys</Trans>
+                </CardTitle>
                 <CardDescription>
-                  Sign in with biometrics instead of a magic link. Passkeys are
-                  secured by Face ID, Touch ID, or your device PIN.
+                  <Trans>
+                    Sign in with biometrics instead of a magic link. Passkeys
+                    are secured by Face ID, Touch ID, or your device PIN.
+                  </Trans>
                 </CardDescription>
               </div>
               <Button
@@ -536,18 +541,35 @@ export default function AccountProfile() {
                 isLoading={registering}
                 leftIcon={<LuFingerprint className="size-4" />}
               >
-                Add Passkey
+                <Trans>Add Passkey</Trans>
               </Button>
             </HStack>
           </CardHeader>
           <CardContent>
             {passkeys.length === 0 ? (
               <p className="text-sm text-muted-foreground">
-                No passkeys registered yet.
+                <Trans>No passkeys registered yet.</Trans>
               </p>
             ) : (
               <HStack spacing={2}>
-                {passkeys.map((pk) => (
+                {passkeys.map((pk) => {
+                  const createdAt = new Date(pk.createdAt).toLocaleDateString(
+                    undefined,
+                    {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric"
+                    }
+                  );
+                  const lastUsedAt = pk.lastUsedAt
+                    ? new Date(pk.lastUsedAt).toLocaleDateString(undefined, {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric"
+                      })
+                    : null;
+
+                  return (
                   <HStack
                     key={pk.id}
                     className="justify-between p-3 rounded-md border border-border space-x-4 cursor-pointer hover:bg-muted/40 transition-colors"
@@ -560,29 +582,19 @@ export default function AccountProfile() {
                           {pk.credentialName}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          Added{" "}
-                          {new Date(pk.createdAt).toLocaleDateString(
-                            undefined,
-                            {
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric"
-                            }
-                          )}
+                          <Trans>Added {createdAt}</Trans>
                           {pk.lastUsedAt && (
                             <>
-                              {" · "}Last used{" "}
-                              {new Date(pk.lastUsedAt).toLocaleDateString(
-                                undefined,
-                                {
-                                  year: "numeric",
-                                  month: "short",
-                                  day: "numeric"
-                                }
-                              )}
+                              {" · "}
+                              <Trans>Last used {lastUsedAt}</Trans>
                             </>
                           )}
-                          {pk.backedUp && " · Synced"}
+                          {pk.backedUp && (
+                            <>
+                              {" · "}
+                              <Trans>Synced</Trans>
+                            </>
+                          )}
                         </p>
                       </VStack>
                     </HStack>
@@ -599,7 +611,8 @@ export default function AccountProfile() {
                       className="cursor-pointer"
                     />
                   </HStack>
-                ))}
+                  );
+                })}
               </HStack>
             )}
           </CardContent>
@@ -614,12 +627,16 @@ export default function AccountProfile() {
       >
         <ModalContent size="small">
           <ModalHeader>
-            <ModalTitle>Edit Passkey</ModalTitle>
+            <ModalTitle>
+              <Trans>Edit Passkey</Trans>
+            </ModalTitle>
           </ModalHeader>
           <ModalBody>
             <VStack spacing={4} className="w-full">
               <VStack className="w-full" spacing={0}>
-                <label className="text-sm font-medium mb-1 block">Name</label>
+                <label className="text-sm font-medium mb-1 block">
+                  <Trans>Name</Trans>
+                </label>
                 <Input
                   value={editedName}
                   onChange={(e) => setEditedName(e.target.value)}
@@ -629,23 +646,32 @@ export default function AccountProfile() {
               {selectedPasskey && (
                 <VStack spacing={1} className="w-full">
                   <p className="text-xs text-muted-foreground">
-                    Added{" "}
-                    {new Date(selectedPasskey.createdAt).toLocaleDateString(
-                      undefined,
-                      { year: "numeric", month: "long", day: "numeric" }
-                    )}
-                  </p>
-                  {selectedPasskey.lastUsedAt && (
-                    <p className="text-xs text-muted-foreground">
-                      Last used{" "}
-                      {new Date(selectedPasskey.lastUsedAt).toLocaleDateString(
+                    <Trans>
+                      Added{" "}
+                      {new Date(selectedPasskey.createdAt).toLocaleDateString(
                         undefined,
                         { year: "numeric", month: "long", day: "numeric" }
                       )}
+                    </Trans>
+                  </p>
+                  {selectedPasskey.lastUsedAt && (
+                    <p className="text-xs text-muted-foreground">
+                      <Trans>
+                        Last used{" "}
+                        {new Date(
+                          selectedPasskey.lastUsedAt
+                        ).toLocaleDateString(undefined, {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric"
+                        })}
+                      </Trans>
                     </p>
                   )}
                   {selectedPasskey.backedUp && (
-                    <p className="text-xs text-muted-foreground">Synced</p>
+                    <p className="text-xs text-muted-foreground">
+                      <Trans>Synced</Trans>
+                    </p>
                   )}
                 </VStack>
               )}
@@ -657,7 +683,7 @@ export default function AccountProfile() {
               variant="secondary"
               onClick={closePasskeyDrawer}
             >
-              Cancel
+              <Trans>Cancel</Trans>
             </Button>
             <Button
               type="button"
@@ -667,7 +693,7 @@ export default function AccountProfile() {
                 editedName === selectedPasskey?.credentialName
               }
             >
-              Save
+              <Trans>Save</Trans>
             </Button>
           </ModalFooter>
         </ModalContent>
@@ -681,11 +707,15 @@ export default function AccountProfile() {
       >
         <ModalContent size="small">
           <ModalHeader>
-            <ModalTitle>Delete Passkey</ModalTitle>
+            <ModalTitle>
+              <Trans>Delete Passkey</Trans>
+            </ModalTitle>
           </ModalHeader>
           <ModalBody>
-            Are you sure you want to delete this passkey? You won't be able to
-            use it to sign in anymore.
+            <Trans>
+              Are you sure you want to delete this passkey? You won't be able
+              to use it to sign in anymore.
+            </Trans>
           </ModalBody>
           <ModalFooter>
             <Button
@@ -693,7 +723,7 @@ export default function AccountProfile() {
               variant="secondary"
               onClick={() => setConfirmDeleteId(null)}
             >
-              Cancel
+              <Trans>Cancel</Trans>
             </Button>
             <Button
               type="button"
@@ -702,7 +732,7 @@ export default function AccountProfile() {
               isLoading={deleteFetcher.state !== "idle"}
               isDisabled={deleteFetcher.state !== "idle"}
             >
-              Delete
+              <Trans>Delete</Trans>
             </Button>
           </ModalFooter>
         </ModalContent>

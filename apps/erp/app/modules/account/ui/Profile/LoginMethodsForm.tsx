@@ -28,17 +28,6 @@ type Identity = {
   createdAt: string;
 };
 
-const META: Record<Method, { label: string; icon: React.ReactElement }> = {
-  email: { label: "Email", icon: <LuMail className="size-4" /> },
-  google: { label: "Google", icon: <SiGoogle className="size-4" /> },
-  azure: { label: "Outlook", icon: <LuMail className="size-4" /> },
-  phone: { label: "Phone", icon: <LuPhone className="size-4" /> },
-  wechat: {
-    label: "WeChat",
-    icon: <SiWechat className="size-4" style={{ color: "#07C160" }} />
-  }
-};
-
 const OTP_METHODS = new Set<Method>(["email", "phone"]);
 const OAUTH_METHODS = new Set<Method>(["google", "azure"]);
 // email / google / azure all resolve to the one account email, so once any is
@@ -78,6 +67,16 @@ export default function LoginMethodsForm({
   const addFetcher = useFetcher<FetcherData>();
   const removeFetcher = useFetcher();
   const [draft, setDraft] = useState<Draft | null>(null);
+  const meta: Record<Method, { label: string; icon: React.ReactElement }> = {
+    email: { label: t`Email`, icon: <LuMail className="size-4" /> },
+    google: { label: t`Google`, icon: <SiGoogle className="size-4" /> },
+    azure: { label: t`Outlook`, icon: <LuMail className="size-4" /> },
+    phone: { label: t`Phone`, icon: <LuPhone className="size-4" /> },
+    wechat: {
+      label: t`WeChat`,
+      icon: <SiWechat className="size-4" style={{ color: "#07C160" }} />
+    }
+  };
 
   const byType = new Map(identities.map((i) => [i.type, i]));
   // Email, Google, and Outlook all share the same underlying email address, so
@@ -208,7 +207,7 @@ export default function LoginMethodsForm({
         <VStack spacing={2}>
           {enabledMethods.map((method) => {
             const identity = byType.get(method);
-            const meta = META[method];
+            const methodMeta = meta[method];
             const draftOpen = draft?.method === method;
             const wechatPanelOpen = method === "wechat" && wechatOpen;
             // Can't add a second email-family method once one is linked.
@@ -225,9 +224,9 @@ export default function LoginMethodsForm({
                     // Two-line layout: label row + value + remove row
                     <>
                       <HStack spacing={2}>
-                        {meta.icon}
+                        {methodMeta.icon}
                         <span className="text-sm font-medium">
-                          {meta.label}
+                          {methodMeta.label}
                         </span>
                       </HStack>
                       <HStack className="w-full justify-between mt-1">
@@ -270,9 +269,9 @@ export default function LoginMethodsForm({
                     // Single-line layout: no value to show (unlinked, or WeChat with no name)
                     <HStack className="w-full justify-between">
                       <HStack spacing={2}>
-                        {meta.icon}
+                        {methodMeta.icon}
                         <span className="text-sm font-medium">
-                          {meta.label}
+                          {methodMeta.label}
                         </span>
                       </HStack>
                       {identity ? (
