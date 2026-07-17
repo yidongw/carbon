@@ -65,9 +65,12 @@ export function styleReferenceRows(language?: string) {
       colorCode: c.code,
       colorName: pickName(c.names, language)
     })),
-    sizes: STYLE_SIZE_CODES.map((code) => ({
+    // `index` is the canonical apparel order (XS→3XL, OS last) persisted as
+    // `sortOrder` so downstream reads don't fall back to alphabetical.
+    sizes: STYLE_SIZE_CODES.map((code, index) => ({
       sizeCode: code,
-      sizeName: code
+      sizeName: code,
+      sortOrder: index
     }))
   };
 }

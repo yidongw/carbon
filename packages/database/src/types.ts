@@ -42,6 +42,7 @@ export type Database = {
           id: string
           sizeCode: string
           sizeName: string
+          sortOrder: number
           updatedAt: string | null
           updatedBy: string | null
         }
@@ -52,6 +53,7 @@ export type Database = {
           id?: string
           sizeCode: string
           sizeName: string
+          sortOrder?: number
           updatedAt?: string | null
           updatedBy?: string | null
         }
@@ -62,6 +64,7 @@ export type Database = {
           id?: string
           sizeCode?: string
           sizeName?: string
+          sortOrder?: number
           updatedAt?: string | null
           updatedBy?: string | null
         }
