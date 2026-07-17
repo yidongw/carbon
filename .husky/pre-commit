@@ -1,6 +1,37 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
+main_worktree() {
+  git worktree list --porcelain | awk '/^worktree /{print $2; exit}'
+}
+
+has_required_bins() {
+  [ -x "$1/node_modules/.bin/lint-staged" ] &&
+    [ -x "$1/node_modules/.bin/tsx" ] &&
+    [ -x "$1/node_modules/.bin/lingui" ]
+}
+
+ensure_hook_dependencies() {
+  if has_required_bins "."; then
+    return 0
+  fi
+
+  main=$(main_worktree)
+
+  if ! has_required_bins "$main"; then
+    echo "⚠ hook dependencies missing in $main/node_modules — run 'pnpm install' in the primary worktree."
+    return 1
+  fi
+
+  if [ -e "node_modules" ] && [ ! -L "node_modules" ]; then
+    rm -rf node_modules
+  fi
+
+  [ -L "node_modules" ] && rm node_modules
+  ln -s "$main/node_modules" node_modules
+  echo "→ repaired node_modules symlink from $main"
+}
+
 # Guard against migration-timestamp collisions (duplicate versions, or a round
 # HHMMSS like ...120000 that every branch hand-picks and then collides on).
 # Uses only built-in Node.js modules — works even without node_modules installed.
@@ -11,12 +42,11 @@ fi
 # The remaining steps require node_modules (lint-staged, pnpm lingui, tsx).
 # post-checkout symlinks node_modules from the main worktree automatically;
 # this guard is a fallback for clones that haven't run pnpm install yet.
-if [ ! -d "node_modules" ] && [ ! -L "node_modules" ]; then
-  echo "⚠ node_modules not found — skipping lint-staged and lingui checks. Run 'pnpm install'."
+if ! ensure_hook_dependencies; then
   exit 0
 fi
 
-npx lint-staged
+pnpm exec lint-staged
 
 # Compile lingui translations if any relevant files were modified
 if git diff --cached --name-only | grep -qE '\.(tsx?|jsx?)$|\.po$'; then
