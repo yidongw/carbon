@@ -120,9 +120,6 @@ msgstr "认证错误"
 msgid "available"
 msgstr "可用的"
 
-msgid "Back"
-msgstr "返回"
-
 msgid "Batch"
 msgstr "批次"
 

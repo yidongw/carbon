@@ -120,9 +120,6 @@ msgstr "Błąd uwierzytelniania"
 msgid "available"
 msgstr "dostępne"
 
-msgid "Back"
-msgstr "Wstecz"
-
 msgid "Batch"
 msgstr "Lepszać"
 

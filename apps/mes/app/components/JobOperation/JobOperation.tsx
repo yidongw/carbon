@@ -465,14 +465,12 @@ export const JobOperation = ({
             <div className="flex items-center gap-0">
               <SidebarTrigger className="md:hidden" />
 
-              <Button
-                variant="ghost"
-                leftIcon={<LuChevronLeft />}
+              <button
                 onClick={() => navigate(-1)}
-                className="pl-2"
+                className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors p-1"
               >
-                <Trans>Back</Trans>
-              </Button>
+                <LuArrowLeft className="w-4 h-4" />
+              </button>
             </div>
             <div className="flex flex-shrink-0 items-center justify-end gap-2">
               <TabsList className="md:ml-auto">
