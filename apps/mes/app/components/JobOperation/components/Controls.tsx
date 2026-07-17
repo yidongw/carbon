@@ -61,7 +61,7 @@ export function Times({
     <TooltipProvider>
       <div
         className={cn(
-          "hidden md:flex md:flex-col md:absolute p-2 bottom-2 md:left-1/2 md:transform md:-translate-x-1/2 md:w-[calc(100%-2rem)] z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:border md:rounded-lg",
+          "hidden md:flex md:flex-col md:absolute p-2 bottom-2 md:left-1/2 md:transform md:-translate-x-1/2 md:w-[calc(100%-2rem)] z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:border md:rounded-lg",
           className
         )}
       >
