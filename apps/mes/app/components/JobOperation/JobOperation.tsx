@@ -97,6 +97,7 @@ import {
   MethodItemTypeIcon,
   TrackingTypeIcon
 } from "~/components/Icons";
+import { TopbarActions } from "~/components/TopbarActions";
 import {
   useDateFormatter,
   useFormatPersonName,
@@ -490,6 +491,7 @@ export const JobOperation = ({
                   <Trans>Chat</Trans>
                 </TabsTrigger>
               </TabsList>
+              <TopbarActions />
             </div>
           </HStack>
         </header>

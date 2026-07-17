@@ -4721,6 +4721,7 @@ export type Database = {
           digitalQuoteNotificationGroup: string[]
           enforceInspectionFourEyes: boolean
           gaugeCalibrationExpiredNotificationGroup: string[]
+          hiddenMesSections: string[]
           hiddenSubmodules: string[]
           id: string
           inventoryJobCompletedNotificationGroup: string[]
@@ -4766,6 +4767,7 @@ export type Database = {
           digitalQuoteNotificationGroup?: string[]
           enforceInspectionFourEyes?: boolean
           gaugeCalibrationExpiredNotificationGroup?: string[]
+          hiddenMesSections?: string[]
           hiddenSubmodules?: string[]
           id: string
           inventoryJobCompletedNotificationGroup?: string[]
@@ -4811,6 +4813,7 @@ export type Database = {
           digitalQuoteNotificationGroup?: string[]
           enforceInspectionFourEyes?: boolean
           gaugeCalibrationExpiredNotificationGroup?: string[]
+          hiddenMesSections?: string[]
           hiddenSubmodules?: string[]
           id?: string
           inventoryJobCompletedNotificationGroup?: string[]

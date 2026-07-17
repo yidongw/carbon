@@ -12,6 +12,7 @@ import {
   Checkbox,
   File,
   HStack,
+  IconButton,
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -32,6 +33,7 @@ import { useUser } from "~/hooks";
 import type { action } from "~/routes/x+/suggestion";
 import { suggestionValidator } from "~/services/models";
 import { path } from "~/utils/path";
+import { HomeCardBody, homeCardClass } from "./HomeCard";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB in bytes
 
@@ -41,7 +43,11 @@ type EmojiData = {
   name: string;
 };
 
-const Suggestion = () => {
+const Suggestion = ({
+  variant = "sidebar"
+}: {
+  variant?: "sidebar" | "card" | "topbar";
+}) => {
   const { t } = useLingui();
   const fetcher = useFetcher<typeof action>();
   const location = useLocation();
@@ -114,12 +120,28 @@ const Suggestion = () => {
   return (
     <Popover>
       <PopoverTrigger ref={popoverTriggerRef} asChild>
-        <SidebarMenuButton tooltip={t`Suggestion`}>
-          <LuMailbox />
-          <span>
-            <Trans>Suggestion</Trans>
-          </span>
-        </SidebarMenuButton>
+        {variant === "topbar" ? (
+          <IconButton
+            aria-label={t`Suggestion`}
+            icon={<LuMailbox />}
+            variant="ghost"
+          />
+        ) : variant === "card" ? (
+          <button type="button" className={homeCardClass}>
+            <HomeCardBody
+              icon={LuMailbox}
+              title={t`Suggestion`}
+              description={t`Share an idea or report a problem`}
+            />
+          </button>
+        ) : (
+          <SidebarMenuButton tooltip={t`Suggestion`}>
+            <LuMailbox />
+            <span>
+              <Trans>Suggestion</Trans>
+            </span>
+          </SidebarMenuButton>
+        )}
       </PopoverTrigger>
       <PopoverContent className="w-[380px] ">
         <ValidatedForm

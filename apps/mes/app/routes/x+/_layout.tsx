@@ -120,7 +120,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     client
       .from("companySettings")
       .select(
-        "timeCardEnabled, consoleEnabled, printing, useMetric, lastNameFirst"
+        "timeCardEnabled, consoleEnabled, printing, useMetric, lastNameFirst, hiddenMesSections"
       )
       .eq("id", companyId)
       .single(),
@@ -141,6 +141,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   const timeCardEnabled = companySettings.data?.timeCardEnabled ?? false;
   const consoleEnabled = companySettings.data?.consoleEnabled ?? false;
   const lastNameFirst = companySettings.data?.lastNameFirst ?? false;
+  const hiddenMesSections = companySettings.data?.hiddenMesSections ?? [];
 
   // Get active maintenance count after we have the location
   const activeMaintenanceCount = await getActiveMaintenanceEventsCount(
@@ -183,6 +184,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
       companies: companies.data ?? [],
       consoleEnabled,
       consoleMode: consoleEnabled && consoleMode,
+      hiddenMesSections,
       location: locationId,
       locationEmployeeIds,
       locations: locations.data ?? [],
@@ -210,12 +212,9 @@ export default function AuthenticatedRoute() {
     activeEvents,
     activeMaintenanceCount,
     company,
-    companies,
-    consoleEnabled,
     consoleMode,
-    location,
+    hiddenMesSections,
     locationEmployeeIds,
-    locations,
     openClockEntry,
     pinnedInUser,
     printing,
@@ -282,13 +281,8 @@ export default function AuthenticatedRoute() {
                     activeEvents={activeEvents}
                     activeMaintenanceCount={activeMaintenanceCount}
                     company={company}
-                    companies={companies}
-                    consoleEnabled={consoleEnabled}
-                    consoleMode={consoleMode}
-                    location={location}
-                    locations={locations}
+                    hiddenMesSections={hiddenMesSections}
                     openClockEntry={openClockEntry}
-                    pinnedInUser={pinnedInUser}
                     timeCardEnabled={timeCardEnabled}
                   />
                   <Outlet />

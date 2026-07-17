@@ -81,6 +81,12 @@ msgstr "नया रिकॉर्ड सेट जोड़ें"
 msgid "Add Spare Part"
 msgstr "स्पेयर पार्ट जोड़ें"
 
+msgid "Adjust stock down"
+msgstr "स्टॉक को निकालें"
+
+msgid "Adjust stock up"
+msgstr "स्टॉक को बढ़ावा दें"
+
 msgid "All"
 msgstr "सभी"
 
@@ -151,6 +157,9 @@ msgstr "{0} द्वारा अवरुद्ध"
 
 msgid "Blocking"
 msgstr "अवरुद्ध"
+
+msgid "Browse released jobs on the floor"
+msgstr "फर्से पर जारी जोब्स का खोजना"
 
 msgid "But don't worry. You can use the forgot password flow to request a new magic link."
 msgstr "लेकिन चिंता न करें। आप नया जादुई लिंक अनुरोध करने के लिए भूल गए पासवर्ड प्रवाह का उपयोग कर सकते हैं।"
@@ -637,6 +646,9 @@ msgstr "रखरखाव"
 msgid "Maintenance Completed"
 msgstr "रखरखाव पूर्ण"
 
+msgid "Maintenance dispatches"
+msgstr "संरक्षण डिपाचेस"
+
 msgid "Manually add items to inventory"
 msgstr "इन्वेंटरी में आइटम मैन्युअली जोड़ें"
 
@@ -861,8 +873,14 @@ msgstr "दीपक जोब्स"
 msgid "Operations"
 msgstr "संचालन"
 
+msgid "Operations assigned to you"
+msgstr "आपको दिए गए कार्यक्रम संबंधी कार्य सूची"
+
 msgid "Operations ended"
 msgstr "संचालन समाप्त"
+
+msgid "Operations you are currently working on"
+msgstr "आपके वर्तमान में कार्य कर रहे संचालनों"
 
 msgid "Operator Performed"
 msgstr "ऑपरेटर द्वारा निष्पादित"
@@ -926,6 +944,9 @@ msgstr "कॉलम {0} को स्थिति {1} पर उठाया �
 
 msgid "Picking"
 msgstr "पीकिंग"
+
+msgid "Picking lists to fulfill"
+msgstr "पूरा करने वाले पिकिंग लिस्ट"
 
 msgid "Pin Out"
 msgstr "पिन आउट"
@@ -1023,6 +1044,9 @@ msgstr "रहमाना की वजह से शेष {shortfall}"
 msgid "Recent"
 msgstr "हाल ही में"
 
+msgid "Recently completed work"
+msgstr "अनुप्रयोग किए गए कार्य"
+
 msgid "Record"
 msgstr "रिकॉर्ड"
 
@@ -1068,6 +1092,12 @@ msgstr "रिपोर्टेड"
 
 msgid "Reset zoom"
 msgstr "रीसेट फोकस"
+
+msgid "Review and approve production reports"
+msgstr "उत्पादन रिपोर्ट्स की समीक्षा और प्रतिष्ठान"
+
+msgid "Review your earnings and payment history"
+msgstr "आपकी कमाई और भुगतान का इतिहास पर संपर्क करें"
 
 msgid "rework"
 msgstr "रिउपर्कार"
@@ -1208,6 +1238,9 @@ msgstr "घड़ी बंद करने का समय सेट करे
 msgid "Setup"
 msgstr "सेटअप"
 
+msgid "Share an idea or report a problem"
+msgstr "एक विचार साझा करें या समस्या लॉग करें"
+
 msgid "Short"
 msgstr "किछु लंबाई का"
 
@@ -1273,6 +1306,9 @@ msgstr "चरण"
 
 msgid "Steps are missing"
 msgstr "चरण गायब हैं"
+
+msgid "Stop all your active operations"
+msgstr "सभी आधिकारिक ऑपरेशन्स को रटा समाप्त करे"
 
 msgid "Storage Unit"
 msgstr "भंडारण इकाई"
@@ -1437,11 +1473,17 @@ msgstr "हमने {verifyEmail} पर एक सत्यापन कोड
 msgid "We've sent you a magic link to sign in to your account."
 msgstr "हमने आपके खाते में साइन इन करने के लिए आपको एक जादुई लिंक भेजा है।"
 
+msgid "Welcome"
+msgstr "पाठ्यक्रम स्वागत करता है"
+
 msgid "WIP"
 msgstr "WIP"
 
 msgid "Work Center"
 msgstr "कार्य केंद्र"
+
+msgid "Work scheduled at your work centers"
+msgstr "आपके कार्य संस्थानों पर अनुमानित कार्य"
 
 #. placeholder {0}: new Date(openClockEntry.clockIn).toLocaleString(locale)
 msgid "You clocked in at {0}. You can edit your clock-out time below or acknowledge that you're still working."

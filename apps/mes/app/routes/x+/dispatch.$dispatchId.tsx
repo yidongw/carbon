@@ -33,6 +33,7 @@ import EmployeeAvatar from "~/components/EmployeeAvatar";
 import { MaintenanceAddPartModal } from "~/components/MaintenanceDispatch";
 import MaintenanceOeeImpact from "~/components/MaintenanceOeeImpact";
 import MaintenanceSeverity from "~/components/MaintenanceSeverity";
+import { TopbarActions } from "~/components/TopbarActions";
 import {
   getActiveMaintenanceEventByEmployee,
   getMaintenanceDispatch,
@@ -247,6 +248,7 @@ export default function MaintenanceDetailRoute() {
             {getPriorityIcon(
               dispatch.priority as (typeof maintenanceDispatchPriority)[number]
             )}
+            <TopbarActions />
           </HStack>
         </div>
       </header>

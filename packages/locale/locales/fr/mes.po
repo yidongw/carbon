@@ -81,6 +81,12 @@ msgstr "Ajouter un nouveau lot de records"
 msgid "Add Spare Part"
 msgstr "Ajouter une pièce de rechange"
 
+msgid "Adjust stock down"
+msgstr "Réajustez le stock en baisse"
+
+msgid "Adjust stock up"
+msgstr "Adjuster le stock en hausse"
+
 msgid "All"
 msgstr "Tout"
 
@@ -151,6 +157,9 @@ msgstr "Bloqué par {0}"
 
 msgid "Blocking"
 msgstr "Bloquant"
+
+msgid "Browse released jobs on the floor"
+msgstr "Parcourir les tâches libérées sur le sol de production"
 
 msgid "But don't worry. You can use the forgot password flow to request a new magic link."
 msgstr "Mais ne vous inquiétez pas. Vous pouvez utiliser la procédure de réinitialisation de mot de passe pour demander un nouveau lien magique."
@@ -637,6 +646,9 @@ msgstr "Maintenance"
 msgid "Maintenance Completed"
 msgstr "Maintenance terminée"
 
+msgid "Maintenance dispatches"
+msgstr "Dispatches de maintenance"
+
 msgid "Manually add items to inventory"
 msgstr "Ajouter manuellement des articles au stock"
 
@@ -861,8 +873,14 @@ msgstr "Emplois ouverts"
 msgid "Operations"
 msgstr "Opérations"
 
+msgid "Operations assigned to you"
+msgstr "Opérations assignées à vous"
+
 msgid "Operations ended"
 msgstr "Opérations terminées"
+
+msgid "Operations you are currently working on"
+msgstr "Opérations sur lesquelles vous travaillez actuellement"
 
 msgid "Operator Performed"
 msgstr "Effectué par l'opérateur"
@@ -926,6 +944,9 @@ msgstr "Colonne {0} saisie à la position : {1} sur {2}"
 
 msgid "Picking"
 msgstr "Choix"
+
+msgid "Picking lists to fulfill"
+msgstr "Listes de picking pour remplir"
 
 msgid "Pin Out"
 msgstr "Déconnecter"
@@ -1023,6 +1044,9 @@ msgstr "Raison des {shortfall} restants"
 msgid "Recent"
 msgstr "Récent"
 
+msgid "Recently completed work"
+msgstr "Travaux récemment terminés"
+
 msgid "Record"
 msgstr "Enregistrer"
 
@@ -1068,6 +1092,12 @@ msgstr "Signaler"
 
 msgid "Reset zoom"
 msgstr "Reinitialiser le zoom"
+
+msgid "Review and approve production reports"
+msgstr "Examiner et approuver les rapports de production"
+
+msgid "Review your earnings and payment history"
+msgstr "Revue de vos revenus et historique des paiements"
 
 msgid "rework"
 msgstr "retour à la fabrication"
@@ -1208,6 +1238,9 @@ msgstr "Définir l'heure de sortie"
 msgid "Setup"
 msgstr "Réglage"
 
+msgid "Share an idea or report a problem"
+msgstr "Partagez une idée ou signaler un problème"
+
 msgid "Short"
 msgstr "Courte"
 
@@ -1273,6 +1306,9 @@ msgstr "Étapes"
 
 msgid "Steps are missing"
 msgstr "Des étapes sont manquantes"
+
+msgid "Stop all your active operations"
+msgstr "Arrêtez toutes vos opérations en cours"
 
 msgid "Storage Unit"
 msgstr "Unité de stockage"
@@ -1437,11 +1473,17 @@ msgstr "Nous avons envoyé un code de vérification à {verifyEmail}"
 msgid "We've sent you a magic link to sign in to your account."
 msgstr "Nous vous avons envoyé un lien magique pour vous connecter à votre compte."
 
+msgid "Welcome"
+msgstr "Bienvenue"
+
 msgid "WIP"
 msgstr "En-cours"
 
 msgid "Work Center"
 msgstr "Poste de travail"
+
+msgid "Work scheduled at your work centers"
+msgstr "Planifié au sein de vos centres de travail"
 
 #. placeholder {0}: new Date(openClockEntry.clockIn).toLocaleString(locale)
 msgid "You clocked in at {0}. You can edit your clock-out time below or acknowledge that you're still working."

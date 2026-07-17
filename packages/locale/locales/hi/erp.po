@@ -8840,6 +8840,9 @@ msgstr "सीटें"
 msgid "Seconds/Piece"
 msgstr "सेकंड/पीस"
 
+msgid "Sections"
+msgstr "सेक्शन्स"
+
 msgid "Select"
 msgstr "चुनें"
 
@@ -9281,6 +9284,9 @@ msgstr "दाएं कार्ड पर दिखाएं"
 
 msgid "Show or hide items in this module's sidebar."
 msgstr "इस मॉड्यूल के साइडबार में आइटम दिखाएँ या छिपाएँ।"
+
+msgid "Show or hide sections on the MES home screen and sidebar."
+msgstr "MES होम सcreen और साइडबार पर खंडों को दिखाएँ या निकालें।"
 
 msgid "Show parent items"
 msgstr "माता-पिता की वस्तुओं को दिखाएं"

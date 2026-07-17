@@ -5,6 +5,7 @@ import { LuArrowLeft } from "react-icons/lu";
 import type { LoaderFunctionArgs } from "react-router";
 import { Link, useLoaderData } from "react-router";
 import { JobDag } from "~/components/JobDag";
+import { TopbarActions } from "~/components/TopbarActions";
 import {
   getJobOperationDependencies,
   getJobOperations
@@ -47,6 +48,9 @@ export default function JobDagRoute() {
             <LuArrowLeft className="w-4 h-4" />
           </Link>
           <Heading size="h4">{readableId}</Heading>
+        </div>
+        <div className="ml-auto flex items-center px-2">
+          <TopbarActions />
         </div>
       </header>
 

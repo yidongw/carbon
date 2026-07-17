@@ -8840,6 +8840,9 @@ msgstr "席位"
 msgid "Seconds/Piece"
 msgstr "秒/件"
 
+msgid "Sections"
+msgstr "板块"
+
 msgid "Select"
 msgstr "选择"
 
@@ -9281,6 +9284,9 @@ msgstr "在卡片右侧显示"
 
 msgid "Show or hide items in this module's sidebar."
 msgstr "显示或隐藏此模块侧边栏中的项目。"
+
+msgid "Show or hide sections on the MES home screen and sidebar."
+msgstr "在 MES 主屏幕和侧边栏中显示或隐藏板块。"
 
 msgid "Show parent items"
 msgstr "显示父级物品"

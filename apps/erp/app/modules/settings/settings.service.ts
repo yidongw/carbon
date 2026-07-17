@@ -1077,6 +1077,17 @@ export async function updateHiddenSubmodulesSetting(
     .eq("id", companyId);
 }
 
+export async function updateHiddenMesSectionsSetting(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  hiddenMesSections: string[]
+) {
+  return client
+    .from("companySettings")
+    .update(sanitize({ hiddenMesSections }))
+    .eq("id", companyId);
+}
+
 export async function updateMetricSettings(
   client: SupabaseClient<Database>,
   companyId: string,

@@ -8840,6 +8840,9 @@ msgstr "Plazas"
 msgid "Seconds/Piece"
 msgstr "Segundos/Pieza"
 
+msgid "Sections"
+msgstr "Secciones"
+
 msgid "Select"
 msgstr "Seleccionar"
 
@@ -9281,6 +9284,9 @@ msgstr "Muestra en la tarjeta derecha"
 
 msgid "Show or hide items in this module's sidebar."
 msgstr "Mostrar u ocultar elementos en la barra lateral de este módulo."
+
+msgid "Show or hide sections on the MES home screen and sidebar."
+msgstr "Mostrar u ocultar secciones en la pantalla principal de MES y el menú lateral."
 
 msgid "Show parent items"
 msgstr "Mostrar elementos principales"

@@ -13,6 +13,7 @@ import {
   LuKey,
   LuLandmark,
   LuLayoutDashboard,
+  LuMonitor,
   LuNetwork,
   LuPrinter,
   LuSheet,
@@ -122,6 +123,12 @@ export default function useSettingsSubmodules() {
             to: path.to.productionSettings,
             role: "employee",
             icon: <LuFactory />
+          },
+          {
+            name: t`MES`,
+            to: path.to.mesSettings,
+            role: "employee",
+            icon: <LuMonitor />
           },
           {
             name: t`Quality`,

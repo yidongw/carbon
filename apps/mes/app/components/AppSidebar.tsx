@@ -64,35 +64,24 @@ import { useFormatPersonName, useUser } from "~/hooks";
 import type { action } from "~/root";
 import type { Location } from "~/services/types";
 import type { PinnedInUser } from "~/types";
-import { ERP_URL, path } from "~/utils/path";
+import { path } from "~/utils/path";
 import { AdjustInventory } from "./AdjustInventory";
 import { EndShift } from "./EndShift";
-import Suggestion from "./Suggestion";
 import { TimeCardButton } from "./TimeCardButton";
 
 export function AppSidebar({
   activeEvents,
   activeMaintenanceCount,
   company,
-  companies,
-  consoleEnabled,
-  consoleMode,
-  location,
-  locations,
+  hiddenMesSections,
   openClockEntry,
-  pinnedInUser,
   timeCardEnabled,
   ...props
 }: ComponentProps<typeof Sidebar> & {
   activeEvents: number;
   activeMaintenanceCount: number;
   company: Company;
-  companies: Company[];
-  consoleEnabled?: boolean;
-  consoleMode: boolean;
-  location: string;
-  locations: Location[];
-  pinnedInUser: PinnedInUser | null;
+  hiddenMesSections?: string[];
   timeCardEnabled?: boolean;
   openClockEntry?: Promise<{
     data: { id: string; clockIn: string; [key: string]: unknown } | null;
@@ -117,8 +106,9 @@ export function AppSidebar({
         <OperationsNav
           activeEvents={activeEvents}
           activeMaintenanceCount={activeMaintenanceCount}
+          hiddenMesSections={hiddenMesSections}
         />
-        <ToolsNav />
+        <ToolsNav hiddenMesSections={hiddenMesSections} />
       </SidebarContent>
       <SidebarFooter>
         {timeCardEnabled && (
@@ -141,15 +131,6 @@ export function AppSidebar({
             </Suspense>
           </SidebarMenu>
         )}
-        <UserNav
-          company={company}
-          companies={companies}
-          consoleEnabled={consoleEnabled}
-          consoleMode={consoleMode}
-          location={location}
-          locations={locations}
-          pinnedInUser={pinnedInUser}
-        />
       </SidebarFooter>
     </Sidebar>
   );
@@ -168,7 +149,7 @@ export function TeamSwitcher({ company }: { company: Company }) {
           className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
           asChild
         >
-          <a href={ERP_URL}>
+          <Link to={path.to.authenticatedRoot}>
             <div className="flex aspect-square size-10 items-center justify-center rounded-lg text-foreground">
               {companyLogo ? (
                 <img
@@ -183,7 +164,7 @@ export function TeamSwitcher({ company }: { company: Company }) {
             <div className="grid flex-1 text-left text-sm leading-tight">
               <span className="truncate font-semibold">{company.name}</span>
             </div>
-          </a>
+          </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
     </SidebarMenu>
@@ -192,61 +173,72 @@ export function TeamSwitcher({ company }: { company: Company }) {
 
 export function OperationsNav({
   activeEvents,
-  activeMaintenanceCount
+  activeMaintenanceCount,
+  hiddenMesSections = []
 }: {
   activeEvents: number;
   activeMaintenanceCount: number;
+  hiddenMesSections?: string[];
 }) {
   const { t } = useLingui();
   const links = [
     {
+      key: "schedule",
       title: t`Schedule`,
       icon: LuCalendarDays,
       to: path.to.operations
     },
     {
+      key: "assigned",
       title: t`Assigned`,
       icon: LuClipboardList,
       to: path.to.assigned
     },
     {
+      key: "active",
       title: t`Active`,
       icon: LuActivity,
       label: (activeEvents ?? 0).toString(),
       to: path.to.active
     },
     {
+      key: "recent",
       title: t`Recent`,
       icon: LuHistory,
       to: path.to.recent
     },
     {
+      key: "jobs",
       title: t`Jobs`,
       icon: LuCirclePlay,
       to: path.to.jobs
     },
     {
+      key: "reportApprovals",
       title: t`Report Approvals`,
       icon: LuBadgeCheck,
       to: path.to.productionReports
     },
     {
+      key: "salary",
       title: t`My Salary`,
       icon: LuBanknote,
       to: path.to.salary
     },
     {
+      key: "maintenance",
       title: t`Maintenance`,
       icon: LuWrench,
       label: (activeMaintenanceCount ?? 0).toString(),
       to: path.to.maintenance
     },
     {
+      key: "picking",
       title: t`Picking`,
       icon: LuPackageCheck,
       to: path.to.picking
     }
-  ];
+  ].filter((item) => !hiddenMesSections.includes(item.key));
 
   const location = useLocation();
   const { pathname } = location;
@@ -296,36 +288,50 @@ export function OperationsNav({
   );
 }
 
-export function ToolsNav() {
+export function ToolsNav({
+  hiddenMesSections = []
+}: {
+  hiddenMesSections?: string[];
+}) {
+  const showAdd = !hiddenMesSections.includes("addInventory");
+  const showRemove = !hiddenMesSections.includes("removeInventory");
+  const showEnd = !hiddenMesSections.includes("endOperations");
+
   return (
     <>
-      <SidebarGroup>
-        <SidebarGroupLabel>
-          <Trans>Inventory Adjustments</Trans>
-        </SidebarGroupLabel>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <AdjustInventory add={true} />
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <AdjustInventory add={false} />
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarGroup>
-      <SidebarGroup>
-        <SidebarGroupLabel>
-          <Trans>Tools</Trans>
-        </SidebarGroupLabel>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <EndShift />
-          </SidebarMenuItem>
-
-          <SidebarMenuItem>
-            <Suggestion />
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarGroup>
+      {(showAdd || showRemove) && (
+        <SidebarGroup>
+          <SidebarGroupLabel>
+            <Trans>Inventory Adjustments</Trans>
+          </SidebarGroupLabel>
+          <SidebarMenu>
+            {showAdd && (
+              <SidebarMenuItem>
+                <AdjustInventory add={true} />
+              </SidebarMenuItem>
+            )}
+            {showRemove && (
+              <SidebarMenuItem>
+                <AdjustInventory add={false} />
+              </SidebarMenuItem>
+            )}
+          </SidebarMenu>
+        </SidebarGroup>
+      )}
+      {showEnd && (
+        <SidebarGroup>
+          <SidebarGroupLabel>
+            <Trans>Tools</Trans>
+          </SidebarGroupLabel>
+          <SidebarMenu>
+            {showEnd && (
+              <SidebarMenuItem>
+                <EndShift />
+              </SidebarMenuItem>
+            )}
+          </SidebarMenu>
+        </SidebarGroup>
+      )}
     </>
   );
 }
@@ -337,7 +343,8 @@ export function UserNav({
   consoleMode,
   location,
   locations,
-  pinnedInUser
+  pinnedInUser,
+  variant = "sidebar"
 }: {
   company: Company;
   companies: Company[];
@@ -346,6 +353,7 @@ export function UserNav({
   location: string;
   locations: Location[];
   pinnedInUser: PinnedInUser | null;
+  variant?: "sidebar" | "topbar";
 }) {
   const { t } = useLingui();
   const user = useUser();
@@ -391,227 +399,248 @@ export function UserNav({
     : user.avatarUrl;
   const displaySubtext = showingOperator ? t`Console` : user.email;
 
-  return (
-    <SidebarMenu>
-      <SidebarMenuItem>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
-              <Avatar
-                className="h-8 w-8 rounded-lg"
-                src={displayAvatar ?? undefined}
-                name={displayName}
-              />
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{displayName}</span>
-                <span className="truncate text-xs">{displaySubtext}</span>
-              </div>
-              <LuChevronDown className="ml-auto size-4" />
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-56 rounded-lg"
-            side={isMobile ? "bottom" : "right"}
-            align="end"
-            sideOffset={4}
+  const menu = (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        {variant === "topbar" ? (
+          <button
+            type="button"
+            aria-label={displayName}
+            className="rounded-full outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
-            {/* Console mode with pinned-in operator: simplified menu */}
-            {showingOperator ? (
-              <>
-                <DropdownMenuLabel>{pinnedInUser.name}</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onSelect={() => {
-                    fetcher.submit(null, {
-                      method: "POST",
-                      action: path.to.consolePinOut
-                    });
-                  }}
-                >
-                  <DropdownMenuIcon icon={<LuUsers />} />
-                  <Trans>Switch Operator</Trans>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
-                  <Trans>Station: {stationName}</Trans>
-                </DropdownMenuLabel>
-              </>
-            ) : (
-              <>
-                <DropdownMenuLabel>
-                  <Trans>Signed in as {stationName}</Trans>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link to={path.to.accountSettings}>
-                    <DropdownMenuIcon icon={<LuUser />} />
-                    <Trans>Account Settings</Trans>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
+            <Avatar
+              className="h-8 w-8 rounded-lg"
+              src={displayAvatar ?? undefined}
+              name={displayName}
+            />
+          </button>
+        ) : (
+          <SidebarMenuButton
+            size="lg"
+            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+          >
+            <Avatar
+              className="h-8 w-8 rounded-lg"
+              src={displayAvatar ?? undefined}
+              name={displayName}
+            />
+            <div className="grid flex-1 text-left text-sm leading-tight">
+              <span className="truncate font-semibold">{displayName}</span>
+              <span className="truncate text-xs">{displaySubtext}</span>
+            </div>
+            <LuChevronDown className="ml-auto size-4" />
+          </SidebarMenuButton>
+        )}
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-56 rounded-lg"
+        side={isMobile ? "bottom" : "right"}
+        align="end"
+        sideOffset={4}
+      >
+        {/* Console mode with pinned-in operator: simplified menu */}
+        {showingOperator ? (
+          <>
+            <DropdownMenuLabel>{pinnedInUser.name}</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onSelect={() => {
+                fetcher.submit(null, {
+                  method: "POST",
+                  action: path.to.consolePinOut
+                });
+              }}
+            >
+              <DropdownMenuIcon icon={<LuUsers />} />
+              <Trans>Switch Operator</Trans>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
+              <Trans>Station: {stationName}</Trans>
+            </DropdownMenuLabel>
+          </>
+        ) : (
+          <>
+            <DropdownMenuLabel>
+              <Trans>Signed in as {stationName}</Trans>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link to={path.to.accountSettings}>
+                <DropdownMenuIcon icon={<LuUser />} />
+                <Trans>Account Settings</Trans>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
 
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>
+                <DropdownMenuIcon icon={<LuBuilding />} />
+                <Trans>Company</Trans>
+              </DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                <DropdownMenuRadioGroup value={company.companyId!}>
+                  {companies.map((c) => {
+                    const logo =
+                      mode === "dark" ? c.logoDarkIcon : c.logoLightIcon;
+                    return (
+                      <DropdownMenuRadioItem
+                        key={c.companyId}
+                        value={c.companyId!}
+                        onSelect={() => {
+                          const form = new FormData();
+                          form.append("companyId", c.companyId!);
+                          fetcher.submit(form, {
+                            method: "post",
+                            action: path.to.switchCompany(c.companyId!)
+                          });
+                        }}
+                      >
+                        <HStack>
+                          <Avatar
+                            size="xs"
+                            name={c.name ?? undefined}
+                            src={logo ?? undefined}
+                          />
+                          <span>{c.name}</span>
+                        </HStack>
+                      </DropdownMenuRadioItem>
+                    );
+                  })}
+                </DropdownMenuRadioGroup>
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+            <DropdownMenuSeparator />
+            {locations.length > 1 ? (
+              <>
                 <DropdownMenuSub>
                   <DropdownMenuSubTrigger>
-                    <DropdownMenuIcon icon={<LuBuilding />} />
-                    <Trans>Company</Trans>
+                    <DropdownMenuIcon icon={<LuMapPin />} />
+                    <Trans>Location</Trans>
                   </DropdownMenuSubTrigger>
                   <DropdownMenuSubContent>
-                    <DropdownMenuRadioGroup value={company.companyId!}>
-                      {companies.map((c) => {
-                        const logo =
-                          mode === "dark" ? c.logoDarkIcon : c.logoLightIcon;
-                        return (
-                          <DropdownMenuRadioItem
-                            key={c.companyId}
-                            value={c.companyId!}
-                            onSelect={() => {
-                              const form = new FormData();
-                              form.append("companyId", c.companyId!);
-                              fetcher.submit(form, {
-                                method: "post",
-                                action: path.to.switchCompany(c.companyId!)
-                              });
-                            }}
-                          >
-                            <HStack>
-                              <Avatar
-                                size="xs"
-                                name={c.name ?? undefined}
-                                src={logo ?? undefined}
-                              />
-                              <span>{c.name}</span>
-                            </HStack>
-                          </DropdownMenuRadioItem>
-                        );
-                      })}
+                    <DropdownMenuRadioGroup value={optimisticLocation}>
+                      {locations.map((loc) => (
+                        <DropdownMenuRadioItem
+                          key={loc.id}
+                          value={loc.id}
+                          onSelect={() => {
+                            updateLocation(loc.id);
+                          }}
+                        >
+                          {loc.name}
+                        </DropdownMenuRadioItem>
+                      ))}
                     </DropdownMenuRadioGroup>
                   </DropdownMenuSubContent>
                 </DropdownMenuSub>
                 <DropdownMenuSeparator />
-                {locations.length > 1 ? (
-                  <>
-                    <DropdownMenuSub>
-                      <DropdownMenuSubTrigger>
-                        <DropdownMenuIcon icon={<LuMapPin />} />
-                        <Trans>Location</Trans>
-                      </DropdownMenuSubTrigger>
-                      <DropdownMenuSubContent>
-                        <DropdownMenuRadioGroup value={optimisticLocation}>
-                          {locations.map((loc) => (
-                            <DropdownMenuRadioItem
-                              key={loc.id}
-                              value={loc.id}
-                              onSelect={() => {
-                                updateLocation(loc.id);
-                              }}
-                            >
-                              {loc.name}
-                            </DropdownMenuRadioItem>
-                          ))}
-                        </DropdownMenuRadioGroup>
-                      </DropdownMenuSubContent>
-                    </DropdownMenuSub>
-                    <DropdownMenuSeparator />
-                  </>
-                ) : null}
               </>
+            ) : null}
+          </>
+        )}
+        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center justify-start">
+              <DropdownMenuIcon
+                icon={mode === "dark" ? <LuMoon /> : <LuSun />}
+              />
+              <Trans>Dark Mode</Trans>
+            </div>
+            <div>
+              <Switch
+                checked={mode === "dark"}
+                onCheckedChange={() => modeSubmitRef.current?.click()}
+              />
+              <fetcher.Form
+                action={path.to.root}
+                method="post"
+                onSubmit={() => {
+                  document.body.removeAttribute("style");
+                }}
+                className="sr-only"
+              >
+                <input
+                  type="hidden"
+                  name="mode"
+                  value={mode === "dark" ? "light" : "dark"}
+                />
+                <button ref={modeSubmitRef} className="sr-only" type="submit" />
+              </fetcher.Form>
+            </div>
+          </div>
+        </DropdownMenuItem>
+        {!isOperatorPinnedIn && (
+          <>
+            {consoleEnabled && (
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center justify-start">
+                    <DropdownMenuIcon icon={<LuMonitor />} />
+                    <Trans>Console Mode</Trans>
+                  </div>
+                  <div>
+                    <Switch
+                      checked={consoleMode}
+                      onCheckedChange={() => consoleSubmitRef.current?.click()}
+                    />
+                    <fetcher.Form
+                      action={path.to.consoleToggle}
+                      method="post"
+                      className="sr-only"
+                    >
+                      <input
+                        type="hidden"
+                        name="consoleMode"
+                        value={consoleMode ? "false" : "true"}
+                      />
+                      <button
+                        ref={consoleSubmitRef}
+                        className="sr-only"
+                        type="submit"
+                      />
+                    </fetcher.Form>
+                  </div>
+                </div>
+              </DropdownMenuItem>
+            )}
+            <DropdownMenuSeparator />
+            {CONTROLLED_ENVIRONMENT && (
+              <DropdownMenuItem onClick={itarDisclosure.onOpen}>
+                <DropdownMenuIcon icon={<LuShieldCheck />} />
+                <Trans>About</Trans>
+              </DropdownMenuItem>
             )}
             <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-              <div className="flex items-center justify-between w-full">
-                <div className="flex items-center justify-start">
-                  <DropdownMenuIcon
-                    icon={mode === "dark" ? <LuMoon /> : <LuSun />}
-                  />
-                  <Trans>Dark Mode</Trans>
-                </div>
-                <div>
-                  <Switch
-                    checked={mode === "dark"}
-                    onCheckedChange={() => modeSubmitRef.current?.click()}
-                  />
-                  <fetcher.Form
-                    action={path.to.root}
-                    method="post"
-                    onSubmit={() => {
-                      document.body.removeAttribute("style");
-                    }}
-                    className="sr-only"
-                  >
-                    <input
-                      type="hidden"
-                      name="mode"
-                      value={mode === "dark" ? "light" : "dark"}
-                    />
-                    <button
-                      ref={modeSubmitRef}
-                      className="sr-only"
-                      type="submit"
-                    />
-                  </fetcher.Form>
-                </div>
-              </div>
+              <Form method="post" action={path.to.logout}>
+                <button type="submit" className="w-full flex items-center">
+                  <DropdownMenuIcon icon={<LuLogOut />} />
+                  <span>
+                    <Trans>Sign Out</Trans>
+                  </span>
+                </button>
+              </Form>
             </DropdownMenuItem>
-            {!isOperatorPinnedIn && (
-              <>
-                {consoleEnabled && (
-                  <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                    <div className="flex items-center justify-between w-full">
-                      <div className="flex items-center justify-start">
-                        <DropdownMenuIcon icon={<LuMonitor />} />
-                        <Trans>Console Mode</Trans>
-                      </div>
-                      <div>
-                        <Switch
-                          checked={consoleMode}
-                          onCheckedChange={() =>
-                            consoleSubmitRef.current?.click()
-                          }
-                        />
-                        <fetcher.Form
-                          action={path.to.consoleToggle}
-                          method="post"
-                          className="sr-only"
-                        >
-                          <input
-                            type="hidden"
-                            name="consoleMode"
-                            value={consoleMode ? "false" : "true"}
-                          />
-                          <button
-                            ref={consoleSubmitRef}
-                            className="sr-only"
-                            type="submit"
-                          />
-                        </fetcher.Form>
-                      </div>
-                    </div>
-                  </DropdownMenuItem>
-                )}
-                <DropdownMenuSeparator />
-                {CONTROLLED_ENVIRONMENT && (
-                  <DropdownMenuItem onClick={itarDisclosure.onOpen}>
-                    <DropdownMenuIcon icon={<LuShieldCheck />} />
-                    <Trans>About</Trans>
-                  </DropdownMenuItem>
-                )}
-                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                  <Form method="post" action={path.to.logout}>
-                    <button type="submit" className="w-full flex items-center">
-                      <DropdownMenuIcon icon={<LuLogOut />} />
-                      <span>
-                        <Trans>Sign Out</Trans>
-                      </span>
-                    </button>
-                  </Form>
-                </DropdownMenuItem>
-              </>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </SidebarMenuItem>
+          </>
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+
+  if (variant === "topbar") {
+    return (
+      <>
+        {menu}
+        {CONTROLLED_ENVIRONMENT && (
+          <ItarDisclosure disclosure={itarDisclosure} />
+        )}
+      </>
+    );
+  }
+
+  return (
+    <SidebarMenu>
+      <SidebarMenuItem>{menu}</SidebarMenuItem>
       {CONTROLLED_ENVIRONMENT && <ItarDisclosure disclosure={itarDisclosure} />}
     </SidebarMenu>
   );

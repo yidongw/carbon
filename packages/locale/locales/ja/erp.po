@@ -8840,6 +8840,9 @@ msgstr "シート"
 msgid "Seconds/Piece"
 msgstr "秒/個"
 
+msgid "Sections"
+msgstr "セクション"
+
 msgid "Select"
 msgstr "選択"
 
@@ -9281,6 +9284,9 @@ msgstr "右上に表示"
 
 msgid "Show or hide items in this module's sidebar."
 msgstr "このモジュールのサイドバーの項目を表示または非表示にします。"
+
+msgid "Show or hide sections on the MES home screen and sidebar."
+msgstr "MESホーム画面やサイドバーのセクションを表示または非表示にします。"
 
 msgid "Show parent items"
 msgstr "親アイテムを表示"
