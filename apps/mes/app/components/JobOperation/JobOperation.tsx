@@ -39,6 +39,7 @@ import {
   Thead,
   Tooltip,
   TooltipContent,
+  TooltipProvider,
   TooltipTrigger,
   Tr,
   toast,
@@ -458,7 +459,10 @@ export const JobOperation = ({
         onValueChange={setActiveTab}
         className="w-full h-screen bg-card relative"
         style={
-          { "--controls-height": `${controlsHeight}px` } as React.CSSProperties
+          {
+            "--controls-height": `${controlsHeight}px`,
+            "--mobile-bar-height": "80px"
+          } as React.CSSProperties
         }
       >
         <header className="flex h-[var(--header-height)] shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 border-b px-2">
@@ -608,7 +612,7 @@ export const JobOperation = ({
         <Separator />
 
         <TabsContent value="details" className="flex flex-col">
-          <ScrollArea className="w-full md:pr-[calc(var(--controls-width))] h-[calc(100dvh-var(--header-height)*2-var(--controls-height)-2rem)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent">
+          <ScrollArea className="w-full md:pr-[calc(var(--controls-width))] h-[calc(100dvh-var(--header-height)*2-var(--mobile-bar-height))] md:h-[calc(100dvh-var(--header-height)*2-var(--controls-height)-2rem)] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-accent">
             <div className="flex items-start justify-between p-4 lg:p-6">
               <HStack>
                 {thumbnailPath && (
@@ -2543,6 +2547,246 @@ export const JobOperation = ({
               </div>
             </div>
           </Times>
+        )}
+        {!["chat", "procedure"].includes(activeTab) && (
+          <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t">
+            <div className="flex flex-row max-[360px]:flex-col items-stretch">
+              {(!operation.assignee || operation.assignee === userId) && (
+                <div className="flex flex-row items-center gap-2 px-3 py-2 shrink-0 border-r max-[360px]:border-r-0 max-[360px]:border-b">
+                  {[
+                    operation.setupDuration > 0,
+                    operation.laborDuration > 0,
+                    operation.machineDuration > 0
+                  ].filter(Boolean).length > 1 && (
+                    <div className="flex flex-col gap-1">
+                      {operation.setupDuration > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => setEventType("Setup")}
+                          className={cn(
+                            "text-xs px-2 py-0.5 rounded border transition-colors relative",
+                            eventType === "Setup"
+                              ? "bg-foreground text-background border-foreground"
+                              : "border-border text-muted-foreground"
+                          )}
+                        >
+                          {active.setup && (
+                            <span className="absolute -top-1 -right-1 h-2 w-2 bg-emerald-500 rounded-full" />
+                          )}
+                          <Trans>Setup</Trans>
+                        </button>
+                      )}
+                      {operation.laborDuration > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => setEventType("Labor")}
+                          className={cn(
+                            "text-xs px-2 py-0.5 rounded border transition-colors relative",
+                            eventType === "Labor"
+                              ? "bg-foreground text-background border-foreground"
+                              : "border-border text-muted-foreground"
+                          )}
+                        >
+                          {active.labor && (
+                            <span className="absolute -top-1 -right-1 h-2 w-2 bg-emerald-500 rounded-full" />
+                          )}
+                          <Trans>Labor</Trans>
+                        </button>
+                      )}
+                      {operation.machineDuration > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => setEventType("Machine")}
+                          className={cn(
+                            "text-xs px-2 py-0.5 rounded border transition-colors relative",
+                            eventType === "Machine"
+                              ? "bg-foreground text-background border-foreground"
+                              : "border-border text-muted-foreground"
+                          )}
+                        >
+                          {active.machine && (
+                            <span className="absolute -top-1 -right-1 h-2 w-2 bg-emerald-500 rounded-full" />
+                          )}
+                          <Trans>Machine</Trans>
+                        </button>
+                      )}
+                    </div>
+                  )}
+                  <StartStopButton
+                    compact
+                    eventType={
+                      eventType as (typeof productionEventType)[number]
+                    }
+                    job={job}
+                    operation={operation}
+                    setupProductionEvent={setupProductionEvent}
+                    laborProductionEvent={laborProductionEvent}
+                    machineProductionEvent={machineProductionEvent}
+                    isTrackedActivity={
+                      method?.requiresSerialTracking === true ||
+                      method?.requiresBatchTracking === true
+                    }
+                    trackedEntityId={trackedEntityId}
+                  />
+                  <IconButtonWithTooltip
+                    compact
+                    disabled={
+                      parentIsSerial &&
+                      trackedEntities.some(
+                        (entity) =>
+                          entity.id === trackedEntityId &&
+                          `Operation ${operationId}` in
+                            (entity.attributes as TrackedEntityAttributes)
+                      )
+                    }
+                    icon={<FaPlus className="text-accent-foreground" />}
+                    tooltip={t`Log Completed`}
+                    onClick={completeModal.onOpen}
+                  />
+                  <IconButtonWithTooltip
+                    compact
+                    icon={
+                      <LuEllipsisVertical className="text-accent-foreground" />
+                    }
+                    tooltip={t`More Actions`}
+                    onClick={actionsSheet.onOpen}
+                  />
+                </div>
+              )}
+              <TooltipProvider>
+                <div className="flex-1 flex flex-col justify-center gap-1.5 px-3 py-2 min-w-0">
+                  {(operation.setupDuration > 0 ||
+                    operation.laborDuration > 0 ||
+                    operation.machineDuration > 0) && (
+                    <div className="flex flex-row gap-2">
+                      {operation.setupDuration > 0 && (
+                        <div className="flex-1 flex flex-col gap-0.5 min-w-0">
+                          <span className="text-xs text-muted-foreground font-mono truncate">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <LuTimer className="inline h-3 w-3 mr-0.5" />
+                              </TooltipTrigger>
+                              <TooltipContent side="top">
+                                <Trans>Setup</Trans>
+                              </TooltipContent>
+                            </Tooltip>
+                            {formatDurationMilliseconds(progress.setup, {
+                              style: "short"
+                            })}
+                            /
+                            {formatDurationMilliseconds(
+                              operation.setupDuration,
+                              { style: "short" }
+                            )}
+                          </span>
+                          <BarProgress
+                            gradient
+                            invertGradient
+                            progress={
+                              (progress.setup / operation.setupDuration) * 100
+                            }
+                            activeClassName={
+                              progress.setup > operation.setupDuration
+                                ? "bg-red-500"
+                                : "bg-emerald-500"
+                            }
+                          />
+                        </div>
+                      )}
+                      {operation.laborDuration > 0 && (
+                        <div className="flex-1 flex flex-col gap-0.5 min-w-0">
+                          <span className="text-xs text-muted-foreground font-mono truncate">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <LuHardHat className="inline h-3 w-3 mr-0.5" />
+                              </TooltipTrigger>
+                              <TooltipContent side="top">
+                                <Trans>Labor</Trans>
+                              </TooltipContent>
+                            </Tooltip>
+                            {formatDurationMilliseconds(progress.labor, {
+                              style: "short"
+                            })}
+                            /
+                            {formatDurationMilliseconds(
+                              operation.laborDuration,
+                              { style: "short" }
+                            )}
+                          </span>
+                          <BarProgress
+                            gradient
+                            invertGradient
+                            progress={
+                              (progress.labor / operation.laborDuration) * 100
+                            }
+                            activeClassName={
+                              progress.labor > operation.laborDuration
+                                ? "bg-red-500"
+                                : "bg-emerald-500"
+                            }
+                          />
+                        </div>
+                      )}
+                      {operation.machineDuration > 0 && (
+                        <div className="flex-1 flex flex-col gap-0.5 min-w-0">
+                          <span className="text-xs text-muted-foreground font-mono truncate">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <LuHammer className="inline h-3 w-3 mr-0.5" />
+                              </TooltipTrigger>
+                              <TooltipContent side="top">
+                                <Trans>Machine</Trans>
+                              </TooltipContent>
+                            </Tooltip>
+                            {formatDurationMilliseconds(progress.machine, {
+                              style: "short"
+                            })}
+                            /
+                            {formatDurationMilliseconds(
+                              operation.machineDuration,
+                              { style: "short" }
+                            )}
+                          </span>
+                          <BarProgress
+                            gradient
+                            invertGradient
+                            progress={
+                              (progress.machine / operation.machineDuration) *
+                              100
+                            }
+                            activeClassName={
+                              progress.machine > operation.machineDuration
+                                ? "bg-red-500"
+                                : "bg-emerald-500"
+                            }
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-xs text-muted-foreground font-mono">
+                      <FaTasks className="inline h-3 w-3 mr-0.5" />
+                      {operation.quantityComplete}/{operation.targetQuantity}
+                    </span>
+                    <BarProgress
+                      activeClassName={
+                        operation.operationStatus === "Paused" &&
+                        operation.quantityComplete < operation.targetQuantity
+                          ? "bg-yellow-500"
+                          : "bg-emerald-500"
+                      }
+                      progress={
+                        (operation.quantityComplete /
+                          operation.targetQuantity) *
+                        100
+                      }
+                    />
+                  </div>
+                </div>
+              </TooltipProvider>
+            </div>
+          </div>
         )}
       </Tabs>
       <BottomSheet
