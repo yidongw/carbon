@@ -22,6 +22,7 @@ import {
   LuActivity,
   LuBadgeCheck,
   LuBanknote,
+  LuBoxes,
   LuCalendarDays,
   LuCirclePlay,
   LuCircleStop,
@@ -29,6 +30,7 @@ import {
   LuGitBranchPlus,
   LuGitPullRequestCreateArrow,
   LuHistory,
+  LuLayers,
   LuPackageCheck,
   LuWrench
 } from "react-icons/lu";
@@ -54,7 +56,9 @@ const MES_SECTIONS: { key: string; label: string; icon: IconType }[] = [
   { key: "active", label: "Active", icon: LuActivity },
   { key: "recent", label: "Recent", icon: LuHistory },
   { key: "jobs", label: "Jobs", icon: LuCirclePlay },
-  { key: "reportApprovals", label: "Report Approvals", icon: LuBadgeCheck },
+  { key: "masterWorkOrders", label: "Master Work Orders", icon: LuLayers },
+  { key: "bundleWorkOrders", label: "Bundle Work Orders", icon: LuBoxes },
+  { key: "productionReports", label: "Report Approvals", icon: LuBadgeCheck },
   { key: "salary", label: "My Salary", icon: LuBanknote },
   { key: "maintenance", label: "Maintenance", icon: LuWrench },
   { key: "picking", label: "Picking", icon: LuPackageCheck },
