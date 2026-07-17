@@ -158,8 +158,23 @@ msgstr "Blocked by {0}"
 msgid "Blocking"
 msgstr "Blocking"
 
+msgid "Browse bundles and print bundle tickets"
+msgstr "Browse bundles and print bundle tickets"
+
+msgid "Browse cutting work orders and their bundles"
+msgstr "Browse cutting work orders and their bundles"
+
 msgid "Browse released jobs on the floor"
 msgstr "Browse released jobs on the floor"
+
+msgid "Bundle"
+msgstr "Bundle"
+
+msgid "Bundle Work Orders"
+msgstr "Bundle Work Orders"
+
+msgid "Bundles"
+msgstr "Bundles"
 
 msgid "But don't worry. You can use the forgot password flow to request a new magic link."
 msgstr "But don't worry. You can use the forgot password flow to request a new magic link."
@@ -197,6 +212,9 @@ msgstr "Clear filters"
 msgid "Clear Filters"
 msgstr "Clear Filters"
 
+msgid "Clear master order filter"
+msgstr "Clear master order filter"
+
 msgid "Clear Search"
 msgstr "Clear Search"
 
@@ -218,6 +236,9 @@ msgstr "Clocked in since {0}"
 
 msgid "Collapse"
 msgstr "Collapse"
+
+msgid "Color"
+msgstr "Color"
 
 #. placeholder {0}: active.data.current.column.title
 #. placeholder {1}: overColumnPosition + 1
@@ -658,6 +679,12 @@ msgstr "Manually remove items from inventory"
 msgid "Mark Short"
 msgstr "Mark Short"
 
+msgid "Master Order"
+msgstr "Master Order"
+
+msgid "Master Work Orders"
+msgstr "Master Work Orders"
+
 msgid "matches"
 msgstr "matches"
 
@@ -755,6 +782,9 @@ msgstr "No available serial numbers found"
 msgid "No available tracked entities found"
 msgstr "No available tracked entities found"
 
+msgid "No bundle work orders"
+msgstr "No bundle work orders"
+
 msgid "No dispatches assigned to you"
 msgstr "No dispatches assigned to you"
 
@@ -766,6 +796,9 @@ msgstr "No Impact"
 
 msgid "No maintenance scheduled for today"
 msgstr "No maintenance scheduled for today"
+
+msgid "No master work orders"
+msgstr "No master work orders"
 
 msgid "No materials"
 msgstr "No materials"
@@ -1063,6 +1096,9 @@ msgstr "Record step"
 msgid "Redirecting to verification page..."
 msgstr "Redirecting to verification page..."
 
+msgid "Remaining"
+msgstr "Remaining"
+
 msgid "Remove"
 msgstr "Remove"
 
@@ -1093,8 +1129,8 @@ msgstr "Reported"
 msgid "Reset zoom"
 msgstr "Reset zoom"
 
-msgid "Review and approve production reports"
-msgstr "Review and approve production reports"
+msgid "Review and approve reported production quantities"
+msgstr "Review and approve reported production quantities"
 
 msgid "Review your earnings and payment history"
 msgstr "Review your earnings and payment history"
@@ -1147,11 +1183,17 @@ msgstr "Scrapped"
 msgid "Search"
 msgstr "Search"
 
+msgid "Search by bundle or style"
+msgstr "Search by bundle or style"
+
 msgid "Search by employee or job"
 msgstr "Search by employee or job"
 
 msgid "Search by job or item ID"
 msgstr "Search by job or item ID"
+
+msgid "Search by WO or style"
+msgstr "Search by WO or style"
 
 msgid "Search operators..."
 msgstr "Search operators..."
@@ -1312,6 +1354,9 @@ msgstr "Stop all your active operations"
 
 msgid "Storage Unit"
 msgstr "Storage Unit"
+
+msgid "Style"
+msgstr "Style"
 
 msgid "Submit anonymously"
 msgstr "Submit anonymously"
@@ -1481,6 +1526,9 @@ msgstr "WIP"
 
 msgid "Work Center"
 msgstr "Work Center"
+
+msgid "Work Order"
+msgstr "Work Order"
 
 msgid "Work scheduled at your work centers"
 msgstr "Work scheduled at your work centers"

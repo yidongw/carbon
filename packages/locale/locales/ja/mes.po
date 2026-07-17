@@ -158,8 +158,23 @@ msgstr "{0} によりブロック中"
 msgid "Blocking"
 msgstr "ブロック中"
 
+msgid "Browse bundles and print bundle tickets"
+msgstr "バンドルを閲覧し、バンドル切符を印刷します"
+
+msgid "Browse cutting work orders and their bundles"
+msgstr "切削加工の仕事票とその束を検索"
+
 msgid "Browse released jobs on the floor"
 msgstr "フロアでリリースされたジョブを閲覧"
+
+msgid "Bundle"
+msgstr "バンドル"
+
+msgid "Bundle Work Orders"
+msgstr "バッチ作業注文"
+
+msgid "Bundles"
+msgstr "バンドル"
 
 msgid "But don't worry. You can use the forgot password flow to request a new magic link."
 msgstr "ご心配なく。パスワード忘却フローを使用して新しいマジックリンクをリクエストできます。"
@@ -197,6 +212,9 @@ msgstr "フィルターをクリア"
 msgid "Clear Filters"
 msgstr "フィルターをクリア"
 
+msgid "Clear master order filter"
+msgstr "マスターオーダーのフィルターをクリア"
+
 msgid "Clear Search"
 msgstr "検索をクリア"
 
@@ -218,6 +236,9 @@ msgstr "{0} から出勤中"
 
 msgid "Collapse"
 msgstr "折りたたむ"
+
+msgid "Color"
+msgstr "色"
 
 #. placeholder {0}: active.data.current.column.title
 #. placeholder {1}: overColumnPosition + 1
@@ -658,6 +679,12 @@ msgstr "手動で在庫から品目を削除"
 msgid "Mark Short"
 msgstr "不足としてマーク"
 
+msgid "Master Order"
+msgstr "マスターオーダー"
+
+msgid "Master Work Orders"
+msgstr "マスターワークオーダーズ"
+
 msgid "matches"
 msgstr "が一致"
 
@@ -755,6 +782,9 @@ msgstr "利用可能なシリアル番号が見つかりません"
 msgid "No available tracked entities found"
 msgstr "追跡可能なエンティティが見つかりません"
 
+msgid "No bundle work orders"
+msgstr "バンドル仕事指示書なし"
+
 msgid "No dispatches assigned to you"
 msgstr "あなたに割り当てられたディスパッチはありません"
 
@@ -766,6 +796,9 @@ msgstr "影響なし"
 
 msgid "No maintenance scheduled for today"
 msgstr "本日のメンテナンス予定はありません"
+
+msgid "No master work orders"
+msgstr "マスターワークオーダーがありません"
 
 msgid "No materials"
 msgstr "材料なし"
@@ -1063,6 +1096,9 @@ msgstr "レコードステップ"
 msgid "Redirecting to verification page..."
 msgstr "確認ページにリダイレクト中..."
 
+msgid "Remaining"
+msgstr "残り"
+
 msgid "Remove"
 msgstr "削除"
 
@@ -1093,8 +1129,8 @@ msgstr "報告済み"
 msgid "Reset zoom"
 msgstr "ズームをリセット"
 
-msgid "Review and approve production reports"
-msgstr "生産報告を確認し承認します"
+msgid "Review and approve reported production quantities"
+msgstr "報告された生産数量を確認し、承認します"
 
 msgid "Review your earnings and payment history"
 msgstr "収入と支払いの履歴を確認してください"
@@ -1147,11 +1183,17 @@ msgstr "スクラップ済み"
 msgid "Search"
 msgstr "検索"
 
+msgid "Search by bundle or style"
+msgstr "バンドルまたはスタイルで検索"
+
 msgid "Search by employee or job"
 msgstr "従業員または仕事で検索"
 
 msgid "Search by job or item ID"
 msgstr "ジョブIDまたはアイテムIDで検索"
+
+msgid "Search by WO or style"
+msgstr "WOやスタイルで検索"
 
 msgid "Search operators..."
 msgstr "オペレーターを検索..."
@@ -1312,6 +1354,9 @@ msgstr "すべてのアクティブな操作を停止します"
 
 msgid "Storage Unit"
 msgstr "保管場所"
+
+msgid "Style"
+msgstr "スタイル"
 
 msgid "Submit anonymously"
 msgstr "匿名で送信"
@@ -1481,6 +1526,9 @@ msgstr "仕掛品"
 
 msgid "Work Center"
 msgstr "ワークセンター"
+
+msgid "Work Order"
+msgstr "作業指示書"
 
 msgid "Work scheduled at your work centers"
 msgstr "あなたの作業センタで予定された作業"

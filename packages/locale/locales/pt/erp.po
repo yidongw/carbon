@@ -83,6 +83,9 @@ msgstr "{0} entidades não amostradas serão liberadas para Disponível. Passes 
 msgid "{0} values missing"
 msgstr "Valores {0} faltantes"
 
+msgid "{credentialName} registered"
+msgstr "{credentialName} registado"
+
 msgid "{days} days ({formatted})"
 msgstr "{days} dias ({formatted})"
 
@@ -4254,6 +4257,9 @@ msgstr "Falha ao buscar riscos"
 msgid "Failed to fetch suggestions"
 msgstr "Falha ao buscar sugestões"
 
+msgid "Failed to get options"
+msgstr "Falha ao obter opções"
+
 msgid "Failed to initialize Carbon client"
 msgstr "Falha ao inicializar cliente Carbon"
 
@@ -4319,6 +4325,9 @@ msgstr "Falha ao carregar detalhes da peça do fornecedor"
 
 msgid "Failed to load tracked entities"
 msgstr "Falha ao carregar entidades rastreadas"
+
+msgid "Failed to register passkey"
+msgstr "Falha ao registar a chave de acesso"
 
 msgid "Failed to remove image: {errorMessage}"
 msgstr "Falha ao remover imagem: {errorMessage}"
@@ -4719,6 +4728,9 @@ msgstr "Boa noite, {0}"
 #. placeholder {0}: user.firstName
 msgid "Good morning, {0}"
 msgstr "Bom dia, {0}"
+
+msgid "Google"
+msgstr "Google"
 
 msgid "Google Places API key not configured"
 msgstr "Chave da API do Google Places não configurada"
@@ -7054,6 +7066,9 @@ msgstr "Onça"
 msgid "Outgoing"
 msgstr "Saída"
 
+msgid "Outlook"
+msgstr "Outlook"
+
 msgid "Output"
 msgstr "Saída"
 
@@ -7192,8 +7207,14 @@ msgstr "Peças"
 msgid "Pass"
 msgstr "Passar"
 
+msgid "Passkey"
+msgstr "Chave de acesso"
+
 msgid "Passkey name"
 msgstr "Nome do Passkey"
+
+msgid "Passkeys are disabled"
+msgstr "As chaves de acesso estão desativadas"
 
 msgid "Password is too short"
 msgstr "A senha é muito curta"
@@ -11288,24 +11309,3 @@ msgstr "ZPL (Etiqueta Térmica)"
 
 msgid "ZPL Label Preview"
 msgstr "Pré-visualização de Rótulo ZPL"
-
-msgid "{credentialName} registered"
-msgstr "{credentialName} registado"
-
-msgid "Failed to get options"
-msgstr "Falha ao obter opções"
-
-msgid "Failed to register passkey"
-msgstr "Falha ao registar a chave de acesso"
-
-msgid "Google"
-msgstr "Google"
-
-msgid "Outlook"
-msgstr "Outlook"
-
-msgid "Passkey"
-msgstr "Chave de acesso"
-
-msgid "Passkeys are disabled"
-msgstr "As chaves de acesso estão desativadas"

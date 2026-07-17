@@ -83,6 +83,9 @@ msgstr "{0} необследованных объектов будут отпу�
 msgid "{0} values missing"
 msgstr "Отсутствуют значения {0}"
 
+msgid "{credentialName} registered"
+msgstr "{credentialName} зарегистрирован"
+
 msgid "{days} days ({formatted})"
 msgstr "{days} дней ({formatted})"
 
@@ -4254,6 +4257,9 @@ msgstr "Ошибка при получении рисков"
 msgid "Failed to fetch suggestions"
 msgstr "Не удалось получить предложения"
 
+msgid "Failed to get options"
+msgstr "Не удалось получить параметры"
+
 msgid "Failed to initialize Carbon client"
 msgstr "Не удалось инициализировать клиент Carbon"
 
@@ -4319,6 +4325,9 @@ msgstr "Не удалось загрузить детали поставщика
 
 msgid "Failed to load tracked entities"
 msgstr "Не удалось загрузить отслеживаемые сущности"
+
+msgid "Failed to register passkey"
+msgstr "Не удалось зарегистрировать ключ доступа"
 
 msgid "Failed to remove image: {errorMessage}"
 msgstr "Не удалось удалить изображение: {errorMessage}"
@@ -4719,6 +4728,9 @@ msgstr "Добрый вечер, {0}"
 #. placeholder {0}: user.firstName
 msgid "Good morning, {0}"
 msgstr "Доброе утро, {0}"
+
+msgid "Google"
+msgstr "Google"
 
 msgid "Google Places API key not configured"
 msgstr "Ключ API Google Places не настроен"
@@ -7054,6 +7066,9 @@ msgstr "Унция"
 msgid "Outgoing"
 msgstr "Исходящие"
 
+msgid "Outlook"
+msgstr "Outlook"
+
 msgid "Output"
 msgstr "Выход"
 
@@ -7192,8 +7207,14 @@ msgstr "Детали"
 msgid "Pass"
 msgstr "Пройти"
 
+msgid "Passkey"
+msgstr "Ключ доступа"
+
 msgid "Passkey name"
 msgstr "Название Passkey"
+
+msgid "Passkeys are disabled"
+msgstr "Ключи доступа отключены"
 
 msgid "Password is too short"
 msgstr "Пароль слишком короткий"
@@ -11288,24 +11309,3 @@ msgstr "ZPL (Тепловая этикетка)"
 
 msgid "ZPL Label Preview"
 msgstr "Предварительный просмотр метки ZPL"
-
-msgid "{credentialName} registered"
-msgstr "{credentialName} зарегистрирован"
-
-msgid "Failed to get options"
-msgstr "Не удалось получить параметры"
-
-msgid "Failed to register passkey"
-msgstr "Не удалось зарегистрировать ключ доступа"
-
-msgid "Google"
-msgstr "Google"
-
-msgid "Outlook"
-msgstr "Outlook"
-
-msgid "Passkey"
-msgstr "Ключ доступа"
-
-msgid "Passkeys are disabled"
-msgstr "Ключи доступа отключены"
