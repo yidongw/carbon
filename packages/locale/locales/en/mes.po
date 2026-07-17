@@ -54,6 +54,9 @@ msgstr "Account Settings"
 msgid "Action Menu"
 msgstr "Action Menu"
 
+msgid "Actions"
+msgstr "Actions"
+
 msgid "Active"
 msgstr "Active"
 
@@ -80,6 +83,15 @@ msgstr "Add Spare Part"
 
 msgid "All"
 msgstr "All"
+
+msgid "Approve"
+msgstr "Approve"
+
+msgid "Approve report"
+msgstr "Approve report"
+
+msgid "Approve this reported production quantity."
+msgstr "Approve this reported production quantity."
 
 msgid "approved"
 msgstr "approved"
@@ -169,6 +181,9 @@ msgstr "Check your email"
 
 msgid "Clear"
 msgstr "Clear"
+
+msgid "Clear filters"
+msgstr "Clear filters"
 
 msgid "Clear Filters"
 msgstr "Clear Filters"
@@ -278,6 +293,9 @@ msgstr "Date"
 msgid "Deadline"
 msgstr "Deadline"
 
+msgid "Decrease"
+msgstr "Decrease"
+
 msgid "Default"
 msgstr "Default"
 
@@ -311,6 +329,12 @@ msgstr "Details"
 
 msgid "Dimensions"
 msgstr "Dimensions"
+
+msgid "Disapprove"
+msgstr "Disapprove"
+
+msgid "Disapprove report"
+msgstr "Disapprove report"
 
 msgid "Dispatch not found"
 msgstr "Dispatch not found"
@@ -366,6 +390,12 @@ msgstr "Email"
 
 msgid "Email Address"
 msgstr "Email Address"
+
+msgid "Employee"
+msgstr "Employee"
+
+msgid "Employees"
+msgstr "Employees"
 
 msgid "Empty work centers"
 msgstr "Empty work centers"
@@ -487,6 +517,9 @@ msgstr "Imperial"
 msgid "In Progress"
 msgstr "In Progress"
 
+msgid "Increase"
+msgstr "Increase"
+
 msgid "Insufficient quantity"
 msgstr "Insufficient quantity"
 
@@ -517,6 +550,9 @@ msgstr "Item"
 msgid "Item Master"
 msgstr "Item Master"
 
+msgid "Items"
+msgstr "Items"
+
 msgid "Job"
 msgstr "Job"
 
@@ -528,6 +564,9 @@ msgstr "Job Traveler"
 
 msgid "Jobs"
 msgstr "Jobs"
+
+msgid "Keep the completed quantity and give a reason for the rest."
+msgstr "Keep the completed quantity and give a reason for the rest."
 
 msgid "Kit"
 msgstr "Kit"
@@ -743,6 +782,9 @@ msgstr "No production logs"
 msgid "No recent operations"
 msgstr "No recent operations"
 
+msgid "No reports awaiting approval"
+msgstr "No reports awaiting approval"
+
 msgid "No results"
 msgstr "No results"
 
@@ -781,6 +823,9 @@ msgstr "No work centers are blocked"
 
 msgid "No work centers exist"
 msgstr "No work centers exist"
+
+msgid "Not finished yet"
+msgstr "Not finished yet"
 
 msgid "Notes"
 msgstr "Notes"
@@ -972,6 +1017,9 @@ msgstr "Reason for issuing expired stock"
 msgid "Reason for rework"
 msgstr "Reason for rework"
 
+msgid "Reason for the remaining {shortfall}"
+msgstr "Reason for the remaining {shortfall}"
+
 msgid "Recent"
 msgstr "Recent"
 
@@ -1011,6 +1059,12 @@ msgstr "Remove part"
 
 msgid "Remove Serial Number"
 msgstr "Remove Serial Number"
+
+msgid "Report Approvals"
+msgstr "Report Approvals"
+
+msgid "Reported"
+msgstr "Reported"
 
 msgid "Reset zoom"
 msgstr "Reset zoom"
@@ -1062,6 +1116,9 @@ msgstr "Scrapped"
 
 msgid "Search"
 msgstr "Search"
+
+msgid "Search by employee or job"
+msgstr "Search by employee or job"
 
 msgid "Search by job or item ID"
 msgstr "Search by job or item ID"

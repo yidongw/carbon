@@ -54,6 +54,9 @@ msgstr "Configuración de cuenta"
 msgid "Action Menu"
 msgstr "Menú de Acciones"
 
+msgid "Actions"
+msgstr "Acciones"
+
 msgid "Active"
 msgstr "Activo"
 
@@ -80,6 +83,15 @@ msgstr "Agregar repuesto"
 
 msgid "All"
 msgstr "Todos"
+
+msgid "Approve"
+msgstr "Aprobar"
+
+msgid "Approve report"
+msgstr "Aprobar informe"
+
+msgid "Approve this reported production quantity."
+msgstr "Aprobar esta cantidad de producción reportada."
 
 msgid "approved"
 msgstr "Aprobado"
@@ -169,6 +181,9 @@ msgstr "Revise su correo electrónico"
 
 msgid "Clear"
 msgstr "Limpiar"
+
+msgid "Clear filters"
+msgstr "Limpiar filtros"
 
 msgid "Clear Filters"
 msgstr "Limpiar filtros"
@@ -278,6 +293,9 @@ msgstr "Fecha"
 msgid "Deadline"
 msgstr "Fecha límite"
 
+msgid "Decrease"
+msgstr "Disminuir"
+
 msgid "Default"
 msgstr "Predeterminado"
 
@@ -311,6 +329,12 @@ msgstr "Detalles"
 
 msgid "Dimensions"
 msgstr "Dimensiones"
+
+msgid "Disapprove"
+msgstr "Rechazar"
+
+msgid "Disapprove report"
+msgstr "Rechazar informe"
 
 msgid "Dispatch not found"
 msgstr "Despacho no encontrado"
@@ -366,6 +390,12 @@ msgstr "Correo electrónico"
 
 msgid "Email Address"
 msgstr "Correo electrónico"
+
+msgid "Employee"
+msgstr "Empleado"
+
+msgid "Employees"
+msgstr "Empleados"
 
 msgid "Empty work centers"
 msgstr "Centros de trabajo vacíos"
@@ -487,6 +517,9 @@ msgstr "Inglés"
 msgid "In Progress"
 msgstr "En progreso"
 
+msgid "Increase"
+msgstr "Incrementar"
+
 msgid "Insufficient quantity"
 msgstr "Cantidad insuficiente"
 
@@ -517,6 +550,9 @@ msgstr "Artículo"
 msgid "Item Master"
 msgstr "Maestro de artículos"
 
+msgid "Items"
+msgstr "Artículos"
+
 msgid "Job"
 msgstr "Trabajo"
 
@@ -528,6 +564,9 @@ msgstr "Viajero de trabajo"
 
 msgid "Jobs"
 msgstr "Trabajos"
+
+msgid "Keep the completed quantity and give a reason for the rest."
+msgstr "Mantenga la cantidad completada y proporcione un motivo para el resto."
 
 msgid "Kit"
 msgstr "Kit"
@@ -743,6 +782,9 @@ msgstr "Sin registros de producción"
 msgid "No recent operations"
 msgstr "No hay operaciones recientes"
 
+msgid "No reports awaiting approval"
+msgstr "Sin informes pendientes de aprobación"
+
 msgid "No results"
 msgstr "Sin resultados"
 
@@ -781,6 +823,9 @@ msgstr "No hay centros de trabajo bloqueados"
 
 msgid "No work centers exist"
 msgstr "No existen centros de trabajo"
+
+msgid "Not finished yet"
+msgstr "Aún no terminado"
 
 msgid "Notes"
 msgstr "Notas"
@@ -972,6 +1017,9 @@ msgstr "Razón para emitir mercancía vencida"
 msgid "Reason for rework"
 msgstr "Razón para el retrabajo"
 
+msgid "Reason for the remaining {shortfall}"
+msgstr "Motivo de las {shortfall} restantes"
+
 msgid "Recent"
 msgstr "Recientes"
 
@@ -1011,6 +1059,12 @@ msgstr "Eliminar pieza"
 
 msgid "Remove Serial Number"
 msgstr "Eliminar Número de Serie"
+
+msgid "Report Approvals"
+msgstr "Aprobaciones de Reportes"
+
+msgid "Reported"
+msgstr "Reportado"
 
 msgid "Reset zoom"
 msgstr "Restablecer el acercamiento"
@@ -1062,6 +1116,9 @@ msgstr "Descartado"
 
 msgid "Search"
 msgstr "Buscar"
+
+msgid "Search by employee or job"
+msgstr "Buscar por empleado o trabajo"
 
 msgid "Search by job or item ID"
 msgstr "Buscar por número de trabajo u ID de artículo"

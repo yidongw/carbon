@@ -54,6 +54,9 @@ msgstr "账户设置"
 msgid "Action Menu"
 msgstr "操作菜单"
 
+msgid "Actions"
+msgstr "操作"
+
 msgid "Active"
 msgstr "活跃"
 
@@ -80,6 +83,15 @@ msgstr "添加备件"
 
 msgid "All"
 msgstr "全部"
+
+msgid "Approve"
+msgstr "批准"
+
+msgid "Approve report"
+msgstr "批准报工"
+
+msgid "Approve this reported production quantity."
+msgstr "批准此报工数量。"
 
 msgid "approved"
 msgstr "已批准"
@@ -169,6 +181,9 @@ msgstr "请查收邮件"
 
 msgid "Clear"
 msgstr "清除"
+
+msgid "Clear filters"
+msgstr "清除筛选"
 
 msgid "Clear Filters"
 msgstr "清除筛选"
@@ -278,6 +293,9 @@ msgstr "日期"
 msgid "Deadline"
 msgstr "截止日期"
 
+msgid "Decrease"
+msgstr "减少"
+
 msgid "Default"
 msgstr "默认"
 
@@ -311,6 +329,12 @@ msgstr "详情"
 
 msgid "Dimensions"
 msgstr "尺寸"
+
+msgid "Disapprove"
+msgstr "驳回"
+
+msgid "Disapprove report"
+msgstr "驳回报工"
 
 msgid "Dispatch not found"
 msgstr "未找到工单"
@@ -366,6 +390,12 @@ msgstr "电子邮件"
 
 msgid "Email Address"
 msgstr "电子邮箱"
+
+msgid "Employee"
+msgstr "员工"
+
+msgid "Employees"
+msgstr "员工"
 
 msgid "Empty work centers"
 msgstr "空的工作中心"
@@ -487,6 +517,9 @@ msgstr "英制"
 msgid "In Progress"
 msgstr "进行中"
 
+msgid "Increase"
+msgstr "增加"
+
 msgid "Insufficient quantity"
 msgstr "数量不足"
 
@@ -517,6 +550,9 @@ msgstr "物品"
 msgid "Item Master"
 msgstr "物品主数据"
 
+msgid "Items"
+msgstr "物品"
+
 msgid "Job"
 msgstr "工单"
 
@@ -528,6 +564,9 @@ msgstr "工单流转卡"
 
 msgid "Jobs"
 msgstr "任务"
+
+msgid "Keep the completed quantity and give a reason for the rest."
+msgstr "保持已完成的数量，并说明剩余部分的原因。"
 
 msgid "Kit"
 msgstr "套件"
@@ -743,6 +782,9 @@ msgstr "无生产日志"
 msgid "No recent operations"
 msgstr "无近期工序"
 
+msgid "No reports awaiting approval"
+msgstr "没有待批准的报工"
+
 msgid "No results"
 msgstr "无结果"
 
@@ -781,6 +823,9 @@ msgstr "无工作中心被阻塞"
 
 msgid "No work centers exist"
 msgstr "无工作中心"
+
+msgid "Not finished yet"
+msgstr "还未完成"
 
 msgid "Notes"
 msgstr "备注"
@@ -972,6 +1017,9 @@ msgstr "发出过期库存的原因"
 msgid "Reason for rework"
 msgstr "返工原因"
 
+msgid "Reason for the remaining {shortfall}"
+msgstr "剩余 {shortfall} 件的原因"
+
 msgid "Recent"
 msgstr "最近"
 
@@ -1011,6 +1059,12 @@ msgstr "移除产品"
 
 msgid "Remove Serial Number"
 msgstr "移除序列号"
+
+msgid "Report Approvals"
+msgstr "报工审批"
+
+msgid "Reported"
+msgstr "报工时间"
 
 msgid "Reset zoom"
 msgstr "重置缩放"
@@ -1062,6 +1116,9 @@ msgstr "已报废"
 
 msgid "Search"
 msgstr "搜索"
+
+msgid "Search by employee or job"
+msgstr "按员工或工单搜索"
 
 msgid "Search by job or item ID"
 msgstr "按任务或项目ID搜索"

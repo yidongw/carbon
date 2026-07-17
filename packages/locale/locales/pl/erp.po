@@ -4534,7 +4534,7 @@ msgid "Finish To"
 msgstr "Zakończyć do"
 
 msgid "Finished {complete} of {target} units, {unassigned} unassigned"
-msgstr ""
+msgstr "Zakończone {complete} z {target} jednostek, {unassigned} nieprzypisane"
 
 msgid "Finished Goods"
 msgstr "Produkty gotowe"

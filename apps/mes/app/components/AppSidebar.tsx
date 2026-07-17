@@ -40,6 +40,7 @@ import { Suspense, useRef } from "react";
 import { BsFillHexagonFill } from "react-icons/bs";
 import {
   LuActivity,
+  LuBadgeCheck,
   LuBanknote,
   LuBuilding,
   LuCalendarDays,
@@ -222,6 +223,11 @@ export function OperationsNav({
       title: t`Jobs`,
       icon: LuCirclePlay,
       to: path.to.jobs
+    },
+    {
+      title: t`Report Approvals`,
+      icon: LuBadgeCheck,
+      to: path.to.productionReports
     },
     {
       title: t`My Salary`,

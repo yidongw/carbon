@@ -54,6 +54,9 @@ msgstr "Impostazioni Account"
 msgid "Action Menu"
 msgstr "Menu Azioni"
 
+msgid "Actions"
+msgstr "Azioni"
+
 msgid "Active"
 msgstr "Attivo"
 
@@ -80,6 +83,15 @@ msgstr "Aggiungi Ricambio"
 
 msgid "All"
 msgstr "Tutti"
+
+msgid "Approve"
+msgstr "Approva"
+
+msgid "Approve report"
+msgstr "Approva rapporto"
+
+msgid "Approve this reported production quantity."
+msgstr "Approva questa quantità di produzione riportata."
 
 msgid "approved"
 msgstr "Accettato"
@@ -169,6 +181,9 @@ msgstr "Controlla la tua email"
 
 msgid "Clear"
 msgstr "Cancella"
+
+msgid "Clear filters"
+msgstr "Pulisci filtri"
 
 msgid "Clear Filters"
 msgstr "Cancella Filtri"
@@ -278,6 +293,9 @@ msgstr "Data"
 msgid "Deadline"
 msgstr "Scadenza"
 
+msgid "Decrease"
+msgstr "Diminuire"
+
 msgid "Default"
 msgstr "Predefinito"
 
@@ -311,6 +329,12 @@ msgstr "Dettagli"
 
 msgid "Dimensions"
 msgstr "Dimensioni"
+
+msgid "Disapprove"
+msgstr "Non approvare"
+
+msgid "Disapprove report"
+msgstr "Rifiuta rapporto"
 
 msgid "Dispatch not found"
 msgstr "Intervento non trovato"
@@ -366,6 +390,12 @@ msgstr "Email"
 
 msgid "Email Address"
 msgstr "Indirizzo Email"
+
+msgid "Employee"
+msgstr "Dipendente"
+
+msgid "Employees"
+msgstr "Dipendenti"
 
 msgid "Empty work centers"
 msgstr "Centri di lavoro vuoti"
@@ -487,6 +517,9 @@ msgstr "Imperiale"
 msgid "In Progress"
 msgstr "In Corso"
 
+msgid "Increase"
+msgstr "Incrementa"
+
 msgid "Insufficient quantity"
 msgstr "Quantità insufficiente"
 
@@ -517,6 +550,9 @@ msgstr "Articolo"
 msgid "Item Master"
 msgstr "Anagrafica Articolo"
 
+msgid "Items"
+msgstr "Elementi"
+
 msgid "Job"
 msgstr "Commessa"
 
@@ -528,6 +564,9 @@ msgstr "Foglio di Lavorazione"
 
 msgid "Jobs"
 msgstr "Impieghi"
+
+msgid "Keep the completed quantity and give a reason for the rest."
+msgstr "Mantieni la quantità completata e fornisci una ragione per il resto."
 
 msgid "Kit"
 msgstr "Kit"
@@ -743,6 +782,9 @@ msgstr "NESSUN LOG DI PRODUZIONE"
 msgid "No recent operations"
 msgstr "Nessuna operazione recente"
 
+msgid "No reports awaiting approval"
+msgstr "Nessun rapporto in attesa di approvazione"
+
 msgid "No results"
 msgstr "Nessun risultato"
 
@@ -781,6 +823,9 @@ msgstr "Nessun centro di lavoro bloccato"
 
 msgid "No work centers exist"
 msgstr "Nessun centro di lavoro esistente"
+
+msgid "Not finished yet"
+msgstr "Non finito ancora"
 
 msgid "Notes"
 msgstr "Note"
@@ -972,6 +1017,9 @@ msgstr "Motivo emissione magazzino scaduto"
 msgid "Reason for rework"
 msgstr "Motivo della rilavorazione"
 
+msgid "Reason for the remaining {shortfall}"
+msgstr "Motivo per il rimanente {shortfall}"
+
 msgid "Recent"
 msgstr "Recenti"
 
@@ -1011,6 +1059,12 @@ msgstr "Rimuovi componente"
 
 msgid "Remove Serial Number"
 msgstr "Rimuovi numero di serie"
+
+msgid "Report Approvals"
+msgstr "Approvazioni Rapporto"
+
+msgid "Reported"
+msgstr "Rapportato"
 
 msgid "Reset zoom"
 msgstr "Ripeti lo zoom"
@@ -1062,6 +1116,9 @@ msgstr "Scartato"
 
 msgid "Search"
 msgstr "Cerca"
+
+msgid "Search by employee or job"
+msgstr "Cerca per dipendente o lavoro"
 
 msgid "Search by job or item ID"
 msgstr "Cerca per numero di lavoro o ID articolo"

@@ -4534,7 +4534,7 @@ msgid "Finish To"
 msgstr "समाप्त करने के लिए"
 
 msgid "Finished {complete} of {target} units, {unassigned} unassigned"
-msgstr ""
+msgstr "पूरा विकसित {complete} में {target} इकाइयों, {unassigned} अवस्थापित नहीं किए गए"
 
 msgid "Finished Goods"
 msgstr "तैयार सामान"

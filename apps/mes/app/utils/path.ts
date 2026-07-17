@@ -114,6 +114,7 @@ export const path = {
     inventoryAdjustment: `${x}/adjustment`,
     jobDag: (id: string) => generatePath(`${x}/job/${id}`),
     jobs: `${x}/jobs`,
+    productionReports: `${x}/production-reports`,
     issue: `${x}/issue`,
     issueTrackedEntity: `${x}/issue-tracked-entity`,
     qualityIssueNew: `${x}/quality-issue/new`,

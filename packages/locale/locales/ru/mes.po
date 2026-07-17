@@ -54,6 +54,9 @@ msgstr "Настройки аккаунта"
 msgid "Action Menu"
 msgstr "Меню действий"
 
+msgid "Actions"
+msgstr "Действия"
+
 msgid "Active"
 msgstr "Активные"
 
@@ -80,6 +83,15 @@ msgstr "Добавить запасную часть"
 
 msgid "All"
 msgstr "Все"
+
+msgid "Approve"
+msgstr "Утвердить"
+
+msgid "Approve report"
+msgstr "Утвердить отчет"
+
+msgid "Approve this reported production quantity."
+msgstr "Утвердите эту отчетную производственную величину."
 
 msgid "approved"
 msgstr "одобрено"
@@ -169,6 +181,9 @@ msgstr "Проверьте вашу электронную почту"
 
 msgid "Clear"
 msgstr "Очистить"
+
+msgid "Clear filters"
+msgstr "Очистить фильтры"
 
 msgid "Clear Filters"
 msgstr "Сбросить фильтры"
@@ -278,6 +293,9 @@ msgstr "Дата"
 msgid "Deadline"
 msgstr "Срок"
 
+msgid "Decrease"
+msgstr "Уменьшить"
+
 msgid "Default"
 msgstr "По умолчанию"
 
@@ -311,6 +329,12 @@ msgstr "Детали"
 
 msgid "Dimensions"
 msgstr "Размеры"
+
+msgid "Disapprove"
+msgstr "Отклонить"
+
+msgid "Disapprove report"
+msgstr "Отклонить отчет"
 
 msgid "Dispatch not found"
 msgstr "Наряд не найден"
@@ -366,6 +390,12 @@ msgstr "Электронная почта"
 
 msgid "Email Address"
 msgstr "Электронная почта"
+
+msgid "Employee"
+msgstr "Сотрудник"
+
+msgid "Employees"
+msgstr "Сотрудники"
 
 msgid "Empty work centers"
 msgstr "Пустые рабочие центры"
@@ -487,6 +517,9 @@ msgstr "Имперская"
 msgid "In Progress"
 msgstr "В работе"
 
+msgid "Increase"
+msgstr "Увеличить"
+
 msgid "Insufficient quantity"
 msgstr "Недостаточное количество"
 
@@ -517,6 +550,9 @@ msgstr "Номенклатура"
 msgid "Item Master"
 msgstr "Карточка номенклатуры"
 
+msgid "Items"
+msgstr "Позиции"
+
 msgid "Job"
 msgstr "Задание"
 
@@ -528,6 +564,9 @@ msgstr "Маршрутный лист"
 
 msgid "Jobs"
 msgstr "Задания"
+
+msgid "Keep the completed quantity and give a reason for the rest."
+msgstr "Сохраните выполненную величину и укажите причину оставшейся части."
 
 msgid "Kit"
 msgstr "Комплект"
@@ -743,6 +782,9 @@ msgstr "Нет производственных логов"
 msgid "No recent operations"
 msgstr "Нет недавних операций"
 
+msgid "No reports awaiting approval"
+msgstr "Нет отчетов для одобрения"
+
 msgid "No results"
 msgstr "Нет результатов"
 
@@ -781,6 +823,9 @@ msgstr "Нет заблокированных рабочих центров"
 
 msgid "No work centers exist"
 msgstr "Рабочие центры отсутствуют"
+
+msgid "Not finished yet"
+msgstr "Не завершено еще"
 
 msgid "Notes"
 msgstr "Примечания"
@@ -972,6 +1017,9 @@ msgstr "Причина выпуска истекшего товара"
 msgid "Reason for rework"
 msgstr "Причина возврата"
 
+msgid "Reason for the remaining {shortfall}"
+msgstr "Причина для оставшихся {shortfall}"
+
 msgid "Recent"
 msgstr "Недавние"
 
@@ -1011,6 +1059,12 @@ msgstr "Удалить деталь"
 
 msgid "Remove Serial Number"
 msgstr "Удалить серийный номер"
+
+msgid "Report Approvals"
+msgstr "Подтверждение отчетов"
+
+msgid "Reported"
+msgstr "Отправлено"
 
 msgid "Reset zoom"
 msgstr "Сбросить масштаб"
@@ -1062,6 +1116,9 @@ msgstr "Списано в брак"
 
 msgid "Search"
 msgstr "Поиск"
+
+msgid "Search by employee or job"
+msgstr "Поиск по сотруднику или работе"
 
 msgid "Search by job or item ID"
 msgstr "Поиск по номеру работы или статье"
