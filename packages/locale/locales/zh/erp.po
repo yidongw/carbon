@@ -11282,3 +11282,24 @@ msgstr "ZPL（热敏标签）"
 
 msgid "ZPL Label Preview"
 msgstr "ZPL标签预览"
+
+msgid "{credentialName} registered"
+msgstr "{credentialName} 已注册"
+
+msgid "Failed to get options"
+msgstr "获取选项失败"
+
+msgid "Failed to register passkey"
+msgstr "注册通行密钥失败"
+
+msgid "Google"
+msgstr "Google"
+
+msgid "Outlook"
+msgstr "Outlook"
+
+msgid "Passkey"
+msgstr "通行密钥"
+
+msgid "Passkeys are disabled"
+msgstr "通行密钥已禁用"
