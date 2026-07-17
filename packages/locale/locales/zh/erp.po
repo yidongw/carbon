@@ -4534,7 +4534,7 @@ msgid "Finish To"
 msgstr "完成"
 
 msgid "Finished {complete} of {target} units, {unassigned} unassigned"
-msgstr ""
+msgstr "已完成 {complete}/{target} 个单位，{unassigned} 未分配"
 
 msgid "Finished Goods"
 msgstr "成品"

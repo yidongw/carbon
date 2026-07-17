@@ -54,6 +54,9 @@ msgstr "アカウント設定"
 msgid "Action Menu"
 msgstr "アクションメニュー"
 
+msgid "Actions"
+msgstr "アクション"
+
 msgid "Active"
 msgstr "アクティブ"
 
@@ -80,6 +83,15 @@ msgstr "スペアパーツを追加"
 
 msgid "All"
 msgstr "すべて"
+
+msgid "Approve"
+msgstr "承認"
+
+msgid "Approve report"
+msgstr "報告書を承認する"
+
+msgid "Approve this reported production quantity."
+msgstr "この報告された生産数量を承認します。"
 
 msgid "approved"
 msgstr "承認"
@@ -169,6 +181,9 @@ msgstr "メールを確認してください"
 
 msgid "Clear"
 msgstr "クリア"
+
+msgid "Clear filters"
+msgstr "フィルターをクリア"
 
 msgid "Clear Filters"
 msgstr "フィルターをクリア"
@@ -278,6 +293,9 @@ msgstr "日付"
 msgid "Deadline"
 msgstr "期限"
 
+msgid "Decrease"
+msgstr "減少"
+
 msgid "Default"
 msgstr "デフォルト"
 
@@ -311,6 +329,12 @@ msgstr "詳細"
 
 msgid "Dimensions"
 msgstr "寸法"
+
+msgid "Disapprove"
+msgstr "否認"
+
+msgid "Disapprove report"
+msgstr "不承認報告"
 
 msgid "Dispatch not found"
 msgstr "ディスパッチが見つかりません"
@@ -366,6 +390,12 @@ msgstr "メール"
 
 msgid "Email Address"
 msgstr "メールアドレス"
+
+msgid "Employee"
+msgstr "従業員"
+
+msgid "Employees"
+msgstr "従業員"
 
 msgid "Empty work centers"
 msgstr "空の作業センター"
@@ -487,6 +517,9 @@ msgstr "英単位"
 msgid "In Progress"
 msgstr "進行中"
 
+msgid "Increase"
+msgstr "増加"
+
 msgid "Insufficient quantity"
 msgstr "数量が不足しています"
 
@@ -517,6 +550,9 @@ msgstr "品目"
 msgid "Item Master"
 msgstr "品目マスター"
 
+msgid "Items"
+msgstr "項目"
+
 msgid "Job"
 msgstr "ジョブ"
 
@@ -528,6 +564,9 @@ msgstr "ジョブトラベラー"
 
 msgid "Jobs"
 msgstr "ジョブズ"
+
+msgid "Keep the completed quantity and give a reason for the rest."
+msgstr "完了数量を保持し、残りの理由を記入してください。"
 
 msgid "Kit"
 msgstr "キット"
@@ -743,6 +782,9 @@ msgstr "生産ログがありません"
 msgid "No recent operations"
 msgstr "最近の工程はありません"
 
+msgid "No reports awaiting approval"
+msgstr "承認待ちのレポートはありません"
+
 msgid "No results"
 msgstr "結果なし"
 
@@ -781,6 +823,9 @@ msgstr "ブロックされているワークセンターはありません"
 
 msgid "No work centers exist"
 msgstr "ワークセンターがありません"
+
+msgid "Not finished yet"
+msgstr "まだ完了していません"
 
 msgid "Notes"
 msgstr "備考"
@@ -972,6 +1017,9 @@ msgstr "有効期限切れの在庫発出理由"
 msgid "Reason for rework"
 msgstr "再加工理由"
 
+msgid "Reason for the remaining {shortfall}"
+msgstr "残り {shortfall} 件の理由"
+
 msgid "Recent"
 msgstr "最近"
 
@@ -1011,6 +1059,12 @@ msgstr "パーツを削除"
 
 msgid "Remove Serial Number"
 msgstr "シリアル番号を削除"
+
+msgid "Report Approvals"
+msgstr "報告承認"
+
+msgid "Reported"
+msgstr "報告済み"
 
 msgid "Reset zoom"
 msgstr "ズームをリセット"
@@ -1062,6 +1116,9 @@ msgstr "スクラップ済み"
 
 msgid "Search"
 msgstr "検索"
+
+msgid "Search by employee or job"
+msgstr "従業員または仕事で検索"
 
 msgid "Search by job or item ID"
 msgstr "ジョブIDまたはアイテムIDで検索"

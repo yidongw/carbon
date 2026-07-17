@@ -54,6 +54,9 @@ msgstr "खाता सेटिंग्स"
 msgid "Action Menu"
 msgstr "अनुप्रयोग सूची"
 
+msgid "Actions"
+msgstr "अनुप्रयोग"
+
 msgid "Active"
 msgstr "सक्रिय"
 
@@ -80,6 +83,15 @@ msgstr "स्पेयर पार्ट जोड़ें"
 
 msgid "All"
 msgstr "सभी"
+
+msgid "Approve"
+msgstr "सीकरण करें"
+
+msgid "Approve report"
+msgstr "सम्मानित रिपोर्ट"
+
+msgid "Approve this reported production quantity."
+msgstr "इस रिपोर्टेड उत्पादन की मात्रा को प्रमुखतः है।"
 
 msgid "approved"
 msgstr "स्वीकृत"
@@ -169,6 +181,9 @@ msgstr "अपना ईमेल जांचें"
 
 msgid "Clear"
 msgstr "साफ़ करें"
+
+msgid "Clear filters"
+msgstr "फिल्टर खाली करें"
 
 msgid "Clear Filters"
 msgstr "फ़िल्टर साफ़ करें"
@@ -278,6 +293,9 @@ msgstr "तारीख"
 msgid "Deadline"
 msgstr "समय सीमा"
 
+msgid "Decrease"
+msgstr "कम करें"
+
 msgid "Default"
 msgstr "प्रतिरूप"
 
@@ -311,6 +329,12 @@ msgstr "विवरण"
 
 msgid "Dimensions"
 msgstr "आयाम"
+
+msgid "Disapprove"
+msgstr "नहीं अनुमोदन करें"
+
+msgid "Disapprove report"
+msgstr "नहीं दाखिल करें_report_"
 
 msgid "Dispatch not found"
 msgstr "डिस्पैच नहीं मिला"
@@ -366,6 +390,12 @@ msgstr "ईमेल"
 
 msgid "Email Address"
 msgstr "ईमेल पता"
+
+msgid "Employee"
+msgstr "बल्लेवार्ड"
+
+msgid "Employees"
+msgstr "तैयारकर्ता"
 
 msgid "Empty work centers"
 msgstr "खाली कार्य केंद्र"
@@ -487,6 +517,9 @@ msgstr "इंग्लिश"
 msgid "In Progress"
 msgstr "प्रगति में"
 
+msgid "Increase"
+msgstr "वृद्धि"
+
 msgid "Insufficient quantity"
 msgstr "अपर्याप्त मात्रा"
 
@@ -517,6 +550,9 @@ msgstr "वस्तु"
 msgid "Item Master"
 msgstr "आइटम मास्टर"
 
+msgid "Items"
+msgstr "आइ템्स"
+
 msgid "Job"
 msgstr "नौकरी"
 
@@ -528,6 +564,9 @@ msgstr "जॉब ट्रैवलर"
 
 msgid "Jobs"
 msgstr "कार्य"
+
+msgid "Keep the completed quantity and give a reason for the rest."
+msgstr "पूरी तरह से पूरा मात्रा दें और शेष के लिए कारण दें।"
 
 msgid "Kit"
 msgstr "किट"
@@ -743,6 +782,9 @@ msgstr "कोई उत्पादन लॉग नहीं"
 msgid "No recent operations"
 msgstr "कोई हाल के संचालन नहीं"
 
+msgid "No reports awaiting approval"
+msgstr "कोई अनुमोदन की तलाकत में रिपोर्ट नहीं है"
+
 msgid "No results"
 msgstr "कोई परिणाम नहीं"
 
@@ -781,6 +823,9 @@ msgstr "कोई कार्य केंद्र अवरुद्ध न�
 
 msgid "No work centers exist"
 msgstr "कोई कार्य केंद्र मौजूद नहीं है"
+
+msgid "Not finished yet"
+msgstr "निर्माण अभी खत्म नहीं है"
 
 msgid "Notes"
 msgstr "नोट्स"
@@ -972,6 +1017,9 @@ msgstr "समाप्त हो गया स्टॉक के लिए क
 msgid "Reason for rework"
 msgstr "रिउपर्क की वजह"
 
+msgid "Reason for the remaining {shortfall}"
+msgstr "रहमाना की वजह से शेष {shortfall}"
+
 msgid "Recent"
 msgstr "हाल ही में"
 
@@ -1011,6 +1059,12 @@ msgstr "भाग हटाएं"
 
 msgid "Remove Serial Number"
 msgstr "रिमॉव सीरियल नंबर"
+
+msgid "Report Approvals"
+msgstr "रिपोर्ट अनुमोदन"
+
+msgid "Reported"
+msgstr "रिपोर्टेड"
 
 msgid "Reset zoom"
 msgstr "रीसेट फोकस"
@@ -1062,6 +1116,9 @@ msgstr "स्क्रैप किया गया"
 
 msgid "Search"
 msgstr "खोजें"
+
+msgid "Search by employee or job"
+msgstr "तैयारी करें अधिकारी या काम पर"
 
 msgid "Search by job or item ID"
 msgstr "जोब या आइटम इड द्वारा खोजें"
