@@ -203,6 +203,9 @@ msgstr "चैट"
 msgid "Check your email"
 msgstr "अपना ईमेल जांचें"
 
+msgid "Choose a company"
+msgstr "कंपनी चुनें"
+
 msgid "Clear"
 msgstr "साफ़ करें"
 
@@ -559,6 +562,12 @@ msgstr "इन्वेंटरी समायोजन पूर्ण हु
 msgid "Inventory Adjustments"
 msgstr "इन्वेंटरी समायोजन"
 
+msgid "Invitation"
+msgstr "आमंत्रण"
+
+msgid "Invitations"
+msgstr "आमंत्रण"
+
 msgid "is"
 msgstr "है"
 
@@ -594,6 +603,12 @@ msgstr "जॉब ट्रैवलर"
 
 msgid "Jobs"
 msgstr "कार्य"
+
+msgid "Join"
+msgstr "डालें"
+
+msgid "Join a company you've been invited to, or pick one."
+msgstr "आविष्कार की ओर से कंपनी में शामिल हो जा, या एक चुनें।"
 
 msgid "Keep the completed quantity and give a reason for the rest."
 msgstr "पूरी तरह से पूरा मात्रा दें और शेष के लिए कारण दें।"
@@ -871,6 +886,9 @@ msgstr "कोई कार्य केंद्र मौजूद नही�
 
 msgid "Not finished yet"
 msgstr "निर्माण अभी खत्म नहीं है"
+
+msgid "Not you?"
+msgstr "नहीं तुम?"
 
 msgid "Notes"
 msgstr "नोट्स"
@@ -1532,6 +1550,9 @@ msgstr "कार्य अनुसंधान"
 
 msgid "Work scheduled at your work centers"
 msgstr "आपके कार्य संस्थानों पर अनुमानित कार्य"
+
+msgid "You belong to more than one company. Pick where to work."
+msgstr "आपको एक से अधिक कंपनी में साझा है। काम करने वाली कंपनी चुनें।"
 
 #. placeholder {0}: new Date(openClockEntry.clockIn).toLocaleString(locale)
 msgid "You clocked in at {0}. You can edit your clock-out time below or acknowledge that you're still working."

@@ -384,6 +384,9 @@ msgstr "Añade un comentario..."
 msgid "Add a printer in the printing settings to print labels directly."
 msgstr "Añade una impresora en las configuraciones de impresión para imprimir etiquetas directamente."
 
+msgid "Add Account"
+msgstr "Agregar Cuenta"
+
 msgid "Add Actions"
 msgstr "Agregar Acciones"
 
@@ -419,6 +422,9 @@ msgstr "Agregar Operador de Consola"
 
 msgid "Add Contractor"
 msgstr "Agregar Contratista"
+
+msgid "Add Employee"
+msgstr "Agregar Empleado"
 
 msgid "Add Entry"
 msgstr "Agregar entrada"
@@ -2304,6 +2310,9 @@ msgstr "Crear {0}"
 msgid "Create {0} values"
 msgstr "Crea {0} valores"
 
+msgid "Create a company"
+msgstr "Crea una empresa"
+
 msgid "Create a new kanban card for scan-based replenishment."
 msgstr "Crea una nueva tarjeta kanban para reabastecimiento basado en escaneo."
 
@@ -3728,6 +3737,9 @@ msgstr "El enlace de correo electrónico es inválido o ha expirado"
 msgid "Email notifications not configured"
 msgstr "Notificaciones por correo electrónico no configuradas"
 
+msgid "Email or Phone"
+msgstr "Correo electrónico o teléfono"
+
 msgid "Emails"
 msgstr "Correos electrónicos"
 
@@ -5110,6 +5122,12 @@ msgstr "Unidad de Medida de Inventario"
 msgid "Investments in Subsidiaries"
 msgstr "Inversión en Sociedades Menoritarias"
 
+msgid "Invitation"
+msgstr "Invitación"
+
+msgid "Invitations"
+msgstr "Invitaciones"
+
 msgid "Invite"
 msgstr "Invitar"
 
@@ -5320,10 +5338,16 @@ msgstr "Trabajos en progreso"
 msgid "Jobs Required"
 msgstr "Trabajos Requeridos"
 
+msgid "Join"
+msgstr "Únete"
+
 #. placeholder {0}: company?.name ?? "Company"
 #. placeholder {0}: data.companyName
 msgid "Join {0}"
 msgstr "Unirse a {0}"
+
+msgid "Join a company you've been invited to, or pick one."
+msgstr "Únete a una compañía a la que te hayan invitado, o elige una."
 
 msgid "Journal Entries"
 msgstr "Entradas de diario"
@@ -9707,9 +9731,6 @@ msgstr "Presupuesto copiado exitosamente"
 
 msgid "Successfully created a new revision"
 msgstr "Se creó exitosamente una nueva revisión"
-
-msgid "Successfully invited employee"
-msgstr "Invitación exitosa al empleado"
 
 msgid "Suffix"
 msgstr "Sufijo"

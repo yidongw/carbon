@@ -384,6 +384,9 @@ msgstr "Aggiungi un commento..."
 msgid "Add a printer in the printing settings to print labels directly."
 msgstr "Aggiungi una stampante nelle impostazioni di stampa per stampare etichette direttamente."
 
+msgid "Add Account"
+msgstr "Aggiungi Conto"
+
 msgid "Add Actions"
 msgstr "Aggiungi Azioni"
 
@@ -419,6 +422,9 @@ msgstr "Aggiungi Operatore Console"
 
 msgid "Add Contractor"
 msgstr "Aggiungi Appaltatore"
+
+msgid "Add Employee"
+msgstr "Aggiungi Impiegato"
 
 msgid "Add Entry"
 msgstr "Aggiungi Voce"
@@ -2304,6 +2310,9 @@ msgstr "Crea {0}"
 msgid "Create {0} values"
 msgstr "Crea {0} valori"
 
+msgid "Create a company"
+msgstr "Crea una compagnia"
+
 msgid "Create a new kanban card for scan-based replenishment."
 msgstr "Crea una nuova scheda kanban per il rifornimento basato su scansione."
 
@@ -3728,6 +3737,9 @@ msgstr "Il collegamento email è invalido o scaduto"
 msgid "Email notifications not configured"
 msgstr "Notifiche email non configurate"
 
+msgid "Email or Phone"
+msgstr "Email o telefono"
+
 msgid "Emails"
 msgstr "Email"
 
@@ -5110,6 +5122,12 @@ msgstr "Unità di Misura Inventario"
 msgid "Investments in Subsidiaries"
 msgstr "Investimenti nelle Società Controllate"
 
+msgid "Invitation"
+msgstr "Invito"
+
+msgid "Invitations"
+msgstr "Inviti"
+
 msgid "Invite"
 msgstr "Invita"
 
@@ -5320,10 +5338,16 @@ msgstr "Lavori in corso"
 msgid "Jobs Required"
 msgstr "Lavori Richiesti"
 
+msgid "Join"
+msgstr "Unisciti"
+
 #. placeholder {0}: company?.name ?? "Company"
 #. placeholder {0}: data.companyName
 msgid "Join {0}"
 msgstr "Unisciti a {0}"
+
+msgid "Join a company you've been invited to, or pick one."
+msgstr "Unisciti a una compagnia a cui sei stato invitato, o ne scegli una."
 
 msgid "Journal Entries"
 msgstr "Entrate di giornata"
@@ -9707,9 +9731,6 @@ msgstr "Preventivo copiato con successo"
 
 msgid "Successfully created a new revision"
 msgstr "Revisione creata con successo"
-
-msgid "Successfully invited employee"
-msgstr "Invito all'impiegato riuscito"
 
 msgid "Suffix"
 msgstr "Suffisso"

@@ -384,6 +384,9 @@ msgstr "コメントを追加..."
 msgid "Add a printer in the printing settings to print labels directly."
 msgstr "印刷設定にプリンターを追加してラベルを直接印刷します。"
 
+msgid "Add Account"
+msgstr "アカウント追加"
+
 msgid "Add Actions"
 msgstr "アクションを追加"
 
@@ -419,6 +422,9 @@ msgstr "コンソールオペレータ追加"
 
 msgid "Add Contractor"
 msgstr "契約業者を追加"
+
+msgid "Add Employee"
+msgstr "従業員を追加"
 
 msgid "Add Entry"
 msgstr "エントリを追加"
@@ -2304,6 +2310,9 @@ msgstr "{0}を作成"
 msgid "Create {0} values"
 msgstr "{0}の値を作成"
 
+msgid "Create a company"
+msgstr "会社を作成する"
+
 msgid "Create a new kanban card for scan-based replenishment."
 msgstr "スキャンベースの補充用に新しいかんばんカードを作成します。"
 
@@ -3728,6 +3737,9 @@ msgstr "メールリンクが無効または期限切れです"
 msgid "Email notifications not configured"
 msgstr "メール通知が設定されていません"
 
+msgid "Email or Phone"
+msgstr "メールまたは電話"
+
 msgid "Emails"
 msgstr "メール"
 
@@ -5110,6 +5122,12 @@ msgstr "在庫単位"
 msgid "Investments in Subsidiaries"
 msgstr "投資子会社への投資"
 
+msgid "Invitation"
+msgstr "招待"
+
+msgid "Invitations"
+msgstr "招待"
+
 msgid "Invite"
 msgstr "招待"
 
@@ -5320,10 +5338,16 @@ msgstr "進行中のジョブ"
 msgid "Jobs Required"
 msgstr "ジョブが必要です"
 
+msgid "Join"
+msgstr "参加"
+
 #. placeholder {0}: company?.name ?? "Company"
 #. placeholder {0}: data.companyName
 msgid "Join {0}"
 msgstr "{0}に参加"
+
+msgid "Join a company you've been invited to, or pick one."
+msgstr "招待を受けた会社に加入するか、選択してください。"
 
 msgid "Journal Entries"
 msgstr "日記帳"
@@ -9707,9 +9731,6 @@ msgstr "見積書を正常にコピーしました"
 
 msgid "Successfully created a new revision"
 msgstr "新しいリビジョンが正常に作成されました"
-
-msgid "Successfully invited employee"
-msgstr "成功して社員を招待しました"
 
 msgid "Suffix"
 msgstr "サフィックス"

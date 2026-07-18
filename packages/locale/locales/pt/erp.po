@@ -384,6 +384,9 @@ msgstr "Adicione um comentário..."
 msgid "Add a printer in the printing settings to print labels directly."
 msgstr "Adicione uma impressora nas configurações de impressão para imprimir rótulos diretamente."
 
+msgid "Add Account"
+msgstr "Adicionar Conta"
+
 msgid "Add Actions"
 msgstr "Adicionar Ações"
 
@@ -419,6 +422,9 @@ msgstr "Adicionar Operador de Consola"
 
 msgid "Add Contractor"
 msgstr "Adicionar Contratante"
+
+msgid "Add Employee"
+msgstr "Adicionar Funcionário"
 
 msgid "Add Entry"
 msgstr "Adicionar Entrada"
@@ -2304,6 +2310,9 @@ msgstr "Criar {0}"
 msgid "Create {0} values"
 msgstr "Crie {0} valores"
 
+msgid "Create a company"
+msgstr "Crie uma empresa"
+
 msgid "Create a new kanban card for scan-based replenishment."
 msgstr "Crie um novo cartão kanban para reabastecimento baseado em varredura."
 
@@ -3728,6 +3737,9 @@ msgstr "O link do email é inválido ou expirou"
 msgid "Email notifications not configured"
 msgstr "Notificações de email não configuradas"
 
+msgid "Email or Phone"
+msgstr "E-mail ou telefone"
+
 msgid "Emails"
 msgstr "E-mails"
 
@@ -5110,6 +5122,12 @@ msgstr "Unidade de Medida do Inventário"
 msgid "Investments in Subsidiaries"
 msgstr "Investimentos em Sociedades Filiais"
 
+msgid "Invitation"
+msgstr "Convite"
+
+msgid "Invitations"
+msgstr "Convites"
+
 msgid "Invite"
 msgstr "Convidar"
 
@@ -5320,10 +5338,16 @@ msgstr "Trabalhos em andamento"
 msgid "Jobs Required"
 msgstr "Trabalhos Necessários"
 
+msgid "Join"
+msgstr "Junte-se"
+
 #. placeholder {0}: company?.name ?? "Company"
 #. placeholder {0}: data.companyName
 msgid "Join {0}"
 msgstr "Juntar-se a {0}"
+
+msgid "Join a company you've been invited to, or pick one."
+msgstr "Junte-se à uma empresa em que você foi convidado ou escolha uma."
 
 msgid "Journal Entries"
 msgstr "Registros de Diário"
@@ -9707,9 +9731,6 @@ msgstr "Cotação copiada com sucesso"
 
 msgid "Successfully created a new revision"
 msgstr "Revisão criada com sucesso"
-
-msgid "Successfully invited employee"
-msgstr "Convidado com sucesso"
 
 msgid "Suffix"
 msgstr "Sufixo"

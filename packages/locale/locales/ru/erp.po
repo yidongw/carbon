@@ -384,6 +384,9 @@ msgstr "Добавить комментарий..."
 msgid "Add a printer in the printing settings to print labels directly."
 msgstr "Добавьте принтер в настройках печати для прямой печати этикеток."
 
+msgid "Add Account"
+msgstr "Добавить счет"
+
 msgid "Add Actions"
 msgstr "Добавить действия"
 
@@ -419,6 +422,9 @@ msgstr "Добавить консольного оператора"
 
 msgid "Add Contractor"
 msgstr "Добавить подрядчика"
+
+msgid "Add Employee"
+msgstr "Добавить сотрудника"
 
 msgid "Add Entry"
 msgstr "Добавить запись"
@@ -2304,6 +2310,9 @@ msgstr "Создать {0}"
 msgid "Create {0} values"
 msgstr "Создать {0} значения"
 
+msgid "Create a company"
+msgstr "Создать компанию"
+
 msgid "Create a new kanban card for scan-based replenishment."
 msgstr "Создайте новую карточку канбана для пополнения на основе сканирования."
 
@@ -3728,6 +3737,9 @@ msgstr "Ссылка на электронную почту недействит
 msgid "Email notifications not configured"
 msgstr "Уведомления по электронной почте не настроены"
 
+msgid "Email or Phone"
+msgstr "Электронная почта или телефон"
+
 msgid "Emails"
 msgstr "Письма"
 
@@ -5110,6 +5122,12 @@ msgstr "Единица измерения запасов"
 msgid "Investments in Subsidiaries"
 msgstr "Investirovki в подотчетных компаниях"
 
+msgid "Invitation"
+msgstr "Приглашение"
+
+msgid "Invitations"
+msgstr "Приглашения"
+
 msgid "Invite"
 msgstr "Пригласить"
 
@@ -5320,10 +5338,16 @@ msgstr "Задания в процессе"
 msgid "Jobs Required"
 msgstr "Требуются работы"
 
+msgid "Join"
+msgstr "Присоединиться"
+
 #. placeholder {0}: company?.name ?? "Company"
 #. placeholder {0}: data.companyName
 msgid "Join {0}"
 msgstr "Присоединиться к {0}"
+
+msgid "Join a company you've been invited to, or pick one."
+msgstr "Присоединитесь к компании, в которую вас пригласили, или выберите другую."
 
 msgid "Journal Entries"
 msgstr "Дневники"
@@ -9707,9 +9731,6 @@ msgstr "Предложение успешно скопировано"
 
 msgid "Successfully created a new revision"
 msgstr "Успешно создана новая редакция"
-
-msgid "Successfully invited employee"
-msgstr "Успешно пригласили сотрудника"
 
 msgid "Suffix"
 msgstr "Суффикс"

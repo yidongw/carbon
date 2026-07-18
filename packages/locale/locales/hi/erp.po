@@ -384,6 +384,9 @@ msgstr "एक टिप्पणी जोड़ें..."
 msgid "Add a printer in the printing settings to print labels directly."
 msgstr "प्रिंटिंग सेटTINGS में एक प्रिंटर जोड़ें ताकि इलेबल्स का प्रिंट अवश्यकता ही उपलब्ध हो।"
 
+msgid "Add Account"
+msgstr "काउंट जोड़ें"
+
 msgid "Add Actions"
 msgstr "कार्य जोड़ें"
 
@@ -419,6 +422,9 @@ msgstr "कन्सोल ऑपरेटर जोड़ें"
 
 msgid "Add Contractor"
 msgstr "ठेकेदार जोड़ें"
+
+msgid "Add Employee"
+msgstr "कर्मचारी जोड़ें"
 
 msgid "Add Entry"
 msgstr "प्रविष्टि जोड़ें"
@@ -2304,6 +2310,9 @@ msgstr "{0} बनाएं"
 msgid "Create {0} values"
 msgstr "सूचकांक {0} बनाएं"
 
+msgid "Create a company"
+msgstr "कंपनी बनाएँ"
+
 msgid "Create a new kanban card for scan-based replenishment."
 msgstr "स्कैन-आधारित पुनःपूर्ति के लिए एक नया कानबन कार्ड बनाएं।"
 
@@ -3728,6 +3737,9 @@ msgstr "ईमेल लिंक कैसे है या समाप्त 
 msgid "Email notifications not configured"
 msgstr "ईमेल सूचनाएं कॉन्फ़िगर नहीं की गई हैं"
 
+msgid "Email or Phone"
+msgstr "ईमेल या फ़ोन"
+
 msgid "Emails"
 msgstr "ईमेल"
 
@@ -5110,6 +5122,12 @@ msgstr "इन्वेंटरी माप की इकाई"
 msgid "Investments in Subsidiaries"
 msgstr "निवेश विस्तार"
 
+msgid "Invitation"
+msgstr "आमंत्रण"
+
+msgid "Invitations"
+msgstr "आमंत्रण"
+
 msgid "Invite"
 msgstr "आमंत्रित करें"
 
@@ -5320,10 +5338,16 @@ msgstr "चल रहे कार्य"
 msgid "Jobs Required"
 msgstr "नौकरियां आवश्यक हैं"
 
+msgid "Join"
+msgstr "डालें"
+
 #. placeholder {0}: company?.name ?? "Company"
 #. placeholder {0}: data.companyName
 msgid "Join {0}"
 msgstr "{0} में शामिल हों"
+
+msgid "Join a company you've been invited to, or pick one."
+msgstr "आविष्कार की ओर से कंपनी में प्राथमिकता दे या एक चुनें।"
 
 msgid "Journal Entries"
 msgstr "नकली प्रवाह"
@@ -9707,9 +9731,6 @@ msgstr "सफलतापूर्वक उद्धरण की प्रत
 
 msgid "Successfully created a new revision"
 msgstr "सफलतापूर्वक एक नया संशोधन बनाया गया"
-
-msgid "Successfully invited employee"
-msgstr "सफलतापूर्वक कर्मचारी इंवेटिड"
 
 msgid "Suffix"
 msgstr "प्रत्यय"

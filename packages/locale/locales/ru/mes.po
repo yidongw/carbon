@@ -203,6 +203,9 @@ msgstr "Чат"
 msgid "Check your email"
 msgstr "Проверьте вашу электронную почту"
 
+msgid "Choose a company"
+msgstr "Выберите компанию"
+
 msgid "Clear"
 msgstr "Очистить"
 
@@ -559,6 +562,12 @@ msgstr "Корректировка запасов выполнена"
 msgid "Inventory Adjustments"
 msgstr "Корректировка запасов"
 
+msgid "Invitation"
+msgstr "Приглашение"
+
+msgid "Invitations"
+msgstr "Приглашения"
+
 msgid "is"
 msgstr "равно"
 
@@ -594,6 +603,12 @@ msgstr "Маршрутный лист"
 
 msgid "Jobs"
 msgstr "Задания"
+
+msgid "Join"
+msgstr "Присоединиться"
+
+msgid "Join a company you've been invited to, or pick one."
+msgstr "Присоединитесь к компании, в которую вас пригласили, или выберите другую."
 
 msgid "Keep the completed quantity and give a reason for the rest."
 msgstr "Сохраните выполненную величину и укажите причину оставшейся части."
@@ -871,6 +886,9 @@ msgstr "Рабочие центры отсутствуют"
 
 msgid "Not finished yet"
 msgstr "Не завершено еще"
+
+msgid "Not you?"
+msgstr "Не вы?"
 
 msgid "Notes"
 msgstr "Примечания"
@@ -1532,6 +1550,9 @@ msgstr "Заказ производства"
 
 msgid "Work scheduled at your work centers"
 msgstr "Запланировано для выполнения на ваших рабочих центрах"
+
+msgid "You belong to more than one company. Pick where to work."
+msgstr "Вы относитесь к нескольким компаниям. Выберите, где работать."
 
 #. placeholder {0}: new Date(openClockEntry.clockIn).toLocaleString(locale)
 msgid "You clocked in at {0}. You can edit your clock-out time below or acknowledge that you're still working."
