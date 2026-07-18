@@ -10,10 +10,12 @@ import {
   LuBoxes,
   LuCalendarDays,
   LuCirclePlay,
+  LuClipboardCheck,
   LuClipboardList,
   LuHistory,
   LuLayers,
   LuPackageCheck,
+  LuScanLine,
   LuWrench
 } from "react-icons/lu";
 import type { LoaderFunctionArgs } from "react-router";
@@ -66,6 +68,20 @@ export default function MesIndexRoute() {
   };
 
   const sections: HomeSection[] = [
+    {
+      key: "pickup",
+      title: t`Pickup Bundle Job`,
+      description: t`Scan a bundle ticket to take the job and start working`,
+      to: path.to.pickup,
+      icon: LuScanLine
+    },
+    {
+      key: "report",
+      title: t`Report Quantities`,
+      description: t`Scan a finished bundle to report the quantity you completed`,
+      to: path.to.report,
+      icon: LuClipboardCheck
+    },
     {
       key: "schedule",
       title: t`Schedule`,

@@ -64,6 +64,7 @@ import { FaTasks } from "react-icons/fa";
 import { FaCheck, FaPlus, FaTrash } from "react-icons/fa6";
 import {
   LuArrowLeft,
+  LuArrowRight,
   LuAxis3D,
   LuBarcode,
   LuCheck,
@@ -78,8 +79,10 @@ import {
   LuGitPullRequest,
   LuHammer,
   LuHardHat,
+  LuHourglass,
   LuPackageCheck,
   LuQrCode,
+  LuRotateCcw,
   LuSquareUser,
   LuTimer,
   LuTriangleAlert,
@@ -93,6 +96,7 @@ import {
   OperationStatusIcon,
   PrintButton
 } from "~/components";
+import EmployeeAvatar from "~/components/EmployeeAvatar";
 import {
   MethodIcon,
   MethodItemTypeIcon,
@@ -125,6 +129,7 @@ import { useItems } from "~/stores";
 import { path } from "~/utils/path";
 import ItemThumbnail from "../ItemThumbnail";
 import { OperationChat } from "./components/Chat";
+import { ConfirmPickupModal } from "./components/ConfirmPickupModal";
 import {
   Controls,
   IconButtonWithTooltip,
@@ -134,9 +139,11 @@ import {
 } from "./components/Controls";
 import { IssueMaterialModal } from "./components/IssueMaterialModal";
 import { MaintenanceDispatch } from "./components/MaintenanceDispatch";
+import { MarkReworkFixedModal } from "./components/MarkReworkFixedModal";
 import { ParametersListItem } from "./components/Parameter";
 import { QualityIssueModal } from "./components/QualityIssueModal";
 import { QuantityModal } from "./components/QuantityModal";
+import { ReportQuantityModal } from "./components/ReportQuantityModal";
 import { ReworkModal } from "./components/ReworkModal";
 import { SerialSelectorModal } from "./components/SerialSelectorModal";
 import {
@@ -149,6 +156,13 @@ import { useFiles } from "./hooks/useFiles";
 import { useOperation } from "./hooks/useOperation";
 
 type JobOperationProps = {
+  assignee?: string | null;
+  bundle?: {
+    colorCode: string | null;
+    colorName: string | null;
+    sizeCode: string | null;
+  } | null;
+  canManageProduction?: boolean;
   events: ProductionEvent[];
   expiredEntityPolicy?: "Warn" | "Block" | "BlockWithOverride";
   files: Promise<StorageItem[]>;
@@ -193,6 +207,35 @@ type JobOperationProps = {
  * lineside). Picking is optional, so this renders nothing unless something has actually
  * been picked — orange while partial, green once the full requirement is staged.
  */
+// Colour + label for each production-quantity type shown in the Production Logs.
+const quantityLogMeta: Record<
+  string,
+  { label: JSX.Element; tone: "green" | "yellow" | "red" }
+> = {
+  Production: { label: <Trans>production</Trans>, tone: "green" },
+  Rework: { label: <Trans>rework</Trans>, tone: "yellow" },
+  Scrap: { label: <Trans>scrap</Trans>, tone: "red" }
+};
+
+/**
+ * Mirror a transient overlay in the page URL WITHOUT a navigation — use
+ * history.replaceState (never navigate/pushState), like the ERP overlay
+ * system's writeOverlayTokens. Opening/closing an overlay this way keeps it
+ * URL-addressable (deep links, reload) but never revalidates the route loader
+ * or pushes a browser history entry.
+ */
+function setUrlOverlayParam(name: string, value: string | null) {
+  if (typeof window === "undefined") return;
+  const url = new URL(window.location.href);
+  if (value == null) url.searchParams.delete(name);
+  else url.searchParams.set(name, value);
+  window.history.replaceState(
+    window.history.state,
+    "",
+    `${url.pathname}${url.search}${url.hash}`
+  );
+}
+
 function PickedBadge({
   quantityPicked,
   quantityToPick
@@ -218,6 +261,9 @@ function PickedBadge({
 }
 
 export const JobOperation = ({
+  assignee,
+  bundle,
+  canManageProduction = false,
   events,
   expiredEntityPolicy = "Block",
   files,
@@ -305,6 +351,59 @@ export const JobOperation = ({
     pauseInterval: isModalOpen,
     procedure
   });
+
+  // Record-quantity and confirm-pickup are URL-addressable overlays, but — like
+  // the ERP overlay system — open/close mirrors the URL via history.replaceState
+  // (see setUrlOverlayParam), NOT navigation. So deep links (scanning a bundle to
+  // report / pick up) and reload still work, without revalidating the route
+  // loader or pushing a history entry. Client state is the source of truth.
+  const pickupModal = useDisclosure();
+  const openRecordOverlay = () => {
+    completeModal.onOpen();
+    setUrlOverlayParam("record", "complete");
+  };
+  const closeRecordOverlay = () => {
+    setUrlOverlayParam("record", null);
+    completeModal.onClose();
+  };
+  const openPickupOverlay = () => {
+    pickupModal.onOpen();
+    setUrlOverlayParam("pickup", "confirm");
+  };
+  const closePickupOverlay = () => {
+    setUrlOverlayParam("pickup", null);
+    pickupModal.onClose();
+  };
+  // Restore overlays from the URL once on mount (deep links / reload).
+  // biome-ignore lint/correctness/useExhaustiveDependencies: mount-only URL restore
+  useEffect(() => {
+    const sp = new URLSearchParams(window.location.search);
+    if (sp.get("record") === "complete") completeModal.onOpen();
+    if (sp.get("pickup") === "confirm") pickupModal.onOpen();
+  }, []);
+
+  // Finished (Production) quantity reported against this operation but not yet
+  // approved for payroll (paymentYear still null). Surfaced as a clickable card
+  // that opens the Report Approvals page.
+  const pendingFinished = quantities
+    .filter((q) => q.type === "Production" && q.paymentYear == null)
+    .reduce((sum, q) => sum + Number(q.quantity), 0);
+
+  // Summary cards read the same live (non-invalidated) productionQuantity rows
+  // as the Production Logs below. The stored jobOperation.quantity* columns can
+  // drift high because the quantity trigger doesn't decrement when a row is
+  // invalidated (cancelled), so summing live rows keeps the whole page
+  // consistent and correct.
+  const sumLiveQuantity = (type: string) =>
+    quantities
+      .filter((q) => q.type === type)
+      .reduce((sum, q) => sum + Number(q.quantity), 0);
+  const completedQuantity = sumLiveQuantity("Production");
+  const reworkedQuantity = sumLiveQuantity("Rework");
+  const scrappedQuantity = sumLiveQuantity("Scrap");
+
+  // Managers can mark some rework as fixed (moved back into production).
+  const markFixedModal = useDisclosure();
 
   const controlsHeight = useMemo(() => {
     let operations = 1;
@@ -649,7 +748,7 @@ export const JobOperation = ({
             </div>
             <Separator />
             <div className="flex items-start p-4 lg:p-6">
-              <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-3 w-full">
+              <div className="grid gap-4 w-full grid-cols-1 min-[480px]:grid-cols-2 lg:grid-cols-3">
                 <Card>
                   <CardHeader className="flex flex-row items-center gap-2 justify-between">
                     <CardTitle>
@@ -661,10 +760,30 @@ export const JobOperation = ({
                   <CardContent>
                     <Heading size="h1">
                       <Trans>
-                        {operation.quantityComplete} of{" "}
-                        {operation.targetQuantity}
+                        {completedQuantity} of {operation.targetQuantity}
                       </Trans>
                     </Heading>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader className="flex flex-row items-center gap-2 justify-between">
+                    <CardTitle>
+                      <Trans>Rework</Trans>
+                    </CardTitle>
+                    <LuRotateCcw className="h-3 w-3 text-amber-500" />
+                  </CardHeader>
+                  <CardContent className="flex flex-row items-center justify-between gap-2">
+                    <Heading size="h1">{reworkedQuantity}</Heading>
+                    {canManageProduction && reworkedQuantity > 0 && (
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        leftIcon={<LuCheck />}
+                        onClick={markFixedModal.onOpen}
+                      >
+                        <Trans>Mark fixed</Trans>
+                      </Button>
+                    )}
                   </CardContent>
                 </Card>
                 <Card>
@@ -675,7 +794,61 @@ export const JobOperation = ({
                     <FaTrash className="h-3 w-3 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <Heading size="h1">{operation.quantityScrapped}</Heading>
+                    <Heading size="h1">{scrappedQuantity}</Heading>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader className="flex flex-row items-center gap-2 justify-between">
+                    <CardTitle>
+                      <Trans>Pending approval</Trans>
+                    </CardTitle>
+                    <LuHourglass className="h-3 w-3 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent className="flex flex-row items-center justify-between gap-2">
+                    <Heading size="h1">{pendingFinished}</Heading>
+                    <Button
+                      asChild
+                      variant="secondary"
+                      size="sm"
+                      rightIcon={<LuArrowRight />}
+                    >
+                      <Link
+                        to={`${path.to.productionReports}?jobOperationId=${operationId}`}
+                      >
+                        <Trans>Review</Trans>
+                      </Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader className="flex flex-row items-center gap-2 justify-between">
+                    <CardTitle>
+                      <Trans>Assignee</Trans>
+                    </CardTitle>
+                    <LuSquareUser className="h-3 w-3 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent className="flex flex-row items-center justify-between gap-2">
+                    {assignee ? (
+                      <EmployeeAvatar employeeId={assignee} />
+                    ) : (
+                      <span className="text-muted-foreground">
+                        <Trans>Unassigned</Trans>
+                      </span>
+                    )}
+                    {assignee !== userId && (
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        leftIcon={<LuHardHat />}
+                        onClick={openPickupOverlay}
+                      >
+                        {assignee ? (
+                          <Trans>Take over</Trans>
+                        ) : (
+                          <Trans>Pick up</Trans>
+                        )}
+                      </Button>
+                    )}
                   </CardContent>
                 </Card>
                 <Card>
@@ -1484,7 +1657,7 @@ export const JobOperation = ({
                       aria-label={t`Record Quantity`}
                       leftIcon={<LuCirclePlus />}
                       variant="secondary"
-                      onClick={completeModal.onOpen}
+                      onClick={openRecordOverlay}
                     >
                       <Trans>Record Quantity</Trans>
                     </Button>
@@ -1570,133 +1743,73 @@ export const JobOperation = ({
                     }
 
                     return employees.map((emp) => {
+                      const entries = [
+                        ...emp.production,
+                        ...emp.rework,
+                        ...emp.scrap
+                      ].sort((a, b) =>
+                        (b.createdAt ?? "").localeCompare(a.createdAt ?? "")
+                      );
+
                       return (
-                        <Card key={emp.employeeId} className="w-full">
-                          <CardContent className="p-4">
-                            <div className="flex flex-col gap-2">
-                              {/* Employee Header */}
-                              <div className="flex items-center justify-between">
-                                <div className="font-medium">
-                                  {emp.employeeName}
-                                </div>
-                              </div>
+                        <Card
+                          key={emp.employeeId}
+                          className="w-full overflow-hidden"
+                        >
+                          <CardContent className="p-0">
+                            <div className="flex items-center gap-2 border-b border-border px-4 py-2.5">
+                              <EmployeeAvatar employeeId={emp.employeeId} />
+                            </div>
+                            <div className="flex flex-col">
+                              {entries.map((quantity) => {
+                                const meta =
+                                  quantityLogMeta[quantity.type] ??
+                                  quantityLogMeta.Production;
+                                const recordedByOther =
+                                  quantity.createdBy !== quantity.employeeId &&
+                                  quantity.createdByUser;
+                                const configText = quantity.configuration
+                                  ? Object.values(
+                                      quantity.configuration as Record<
+                                        string,
+                                        unknown
+                                      >
+                                    )
+                                      .filter(
+                                        (v) =>
+                                          typeof v === "string" ||
+                                          typeof v === "number"
+                                      )
+                                      .join(" · ")
+                                  : "";
 
-                              {/* Production Quantities */}
-                              {emp.production.map((quantity) => (
-                                <div
-                                  key={quantity.id}
-                                  className="flex flex-col gap-1"
-                                >
-                                  <div className="flex items-center justify-between bg-background">
-                                    <div className="text-sm">
-                                      {quantity.createdBy !==
-                                        quantity.employeeId &&
-                                        quantity.createdByUser && (
-                                          <span className="text-muted-foreground mr-2">
-                                            (
-                                            {formatPersonName(
-                                              quantity.createdByUser as {
-                                                firstName: string;
-                                                lastName: string;
-                                              }
-                                            )}
-                                            )
-                                          </span>
-                                        )}
-                                      <span className="font-medium">
+                                return (
+                                  <div
+                                    key={quantity.id}
+                                    className="flex items-center justify-between gap-3 border-t border-border px-4 py-2.5 first:border-t-0"
+                                  >
+                                    <div className="flex min-w-0 items-baseline gap-2">
+                                      <span className="text-base font-semibold tabular-nums">
                                         {quantity.quantity}
-                                      </span>{" "}
-                                      | {formatDate(quantity.createdAt)}
+                                      </span>
+                                      <span className="truncate text-xs text-muted-foreground">
+                                        {formatDate(quantity.createdAt)}
+                                        {configText ? ` · ${configText}` : ""}
+                                        {recordedByOther &&
+                                          ` · ${formatPersonName(
+                                            quantity.createdByUser as {
+                                              firstName: string;
+                                              lastName: string;
+                                            }
+                                          )}`}
+                                      </span>
                                     </div>
-                                    <span className="text-xs text-right">
-                                      <Trans>production</Trans>
-                                    </span>
+                                    <Badge variant={meta.tone}>
+                                      {meta.label}
+                                    </Badge>
                                   </div>
-                                  {quantity.configuration && (
-                                    <div className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
-                                      {JSON.stringify(quantity.configuration)}
-                                    </div>
-                                  )}
-                                </div>
-                              ))}
-
-                              {/* Rework */}
-                              {emp.rework.map((quantity) => (
-                                <div
-                                  key={quantity.id}
-                                  className="flex flex-col gap-1"
-                                >
-                                  <div className="flex items-center justify-between bg-background">
-                                    <div className="text-sm">
-                                      {quantity.createdBy !==
-                                        quantity.employeeId &&
-                                        quantity.createdByUser && (
-                                          <span className="text-muted-foreground mr-2">
-                                            (
-                                            {formatPersonName(
-                                              quantity.createdByUser as {
-                                                firstName: string;
-                                                lastName: string;
-                                              }
-                                            )}
-                                            )
-                                          </span>
-                                        )}
-                                      <span className="font-medium">
-                                        {quantity.quantity}
-                                      </span>{" "}
-                                      | {formatDate(quantity.createdAt)}
-                                    </div>
-                                    <span className="text-xs text-right">
-                                      <Trans>rework</Trans>
-                                    </span>
-                                  </div>
-                                  {quantity.configuration && (
-                                    <div className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
-                                      {JSON.stringify(quantity.configuration)}
-                                    </div>
-                                  )}
-                                </div>
-                              ))}
-
-                              {/* Scrap */}
-                              {emp.scrap.map((quantity) => (
-                                <div
-                                  key={quantity.id}
-                                  className="flex flex-col gap-1"
-                                >
-                                  <div className="flex items-center justify-between bg-background">
-                                    <div className="text-sm">
-                                      {quantity.createdBy !==
-                                        quantity.employeeId &&
-                                        quantity.createdByUser && (
-                                          <span className="text-muted-foreground mr-2">
-                                            (
-                                            {formatPersonName(
-                                              quantity.createdByUser as {
-                                                firstName: string;
-                                                lastName: string;
-                                              }
-                                            )}
-                                            )
-                                          </span>
-                                        )}
-                                      <span className="font-medium">
-                                        {quantity.quantity}
-                                      </span>{" "}
-                                      | {formatDate(quantity.createdAt)}
-                                    </div>
-                                    <span className="text-xs text-right">
-                                      <Trans>scrap</Trans>
-                                    </span>
-                                  </div>
-                                  {quantity.configuration && (
-                                    <div className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
-                                      {JSON.stringify(quantity.configuration)}
-                                    </div>
-                                  )}
-                                </div>
-                              ))}
+                                );
+                              })}
                             </div>
                           </CardContent>
                         </Card>
@@ -2400,7 +2513,7 @@ export const JobOperation = ({
                     <FaPlus className="text-accent-foreground group-hover:text-accent-foreground/80" />
                   }
                   tooltip={t`Log Completed`}
-                  onClick={completeModal.onOpen}
+                  onClick={openRecordOverlay}
                 />
                 <IconButtonWithTooltip
                   icon={
@@ -2551,7 +2664,7 @@ export const JobOperation = ({
         {!["chat", "procedure"].includes(activeTab) && (
           <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t">
             <div className="flex flex-row max-[360px]:flex-col items-stretch">
-              {(!operation.assignee || operation.assignee === userId) && (
+              {(!assignee || assignee === userId) && (
                 <div className="flex flex-row items-center gap-2 px-3 py-2 shrink-0 border-r max-[360px]:border-r-0 max-[360px]:border-b">
                   {[
                     operation.setupDuration > 0,
@@ -2641,7 +2754,7 @@ export const JobOperation = ({
                     }
                     icon={<FaPlus className="text-accent-foreground" />}
                     tooltip={t`Log Completed`}
-                    onClick={completeModal.onOpen}
+                    onClick={openRecordOverlay}
                   />
                   <IconButtonWithTooltip
                     compact
@@ -2901,28 +3014,53 @@ export const JobOperation = ({
           onClose={scrapModal.onClose}
         />
       )}
-      {completeModal.isOpen && (
-        <Suspense key={`complete-modal-${operationId}`}>
-          <Await resolve={materials}>
-            {(resolvedMaterials) => {
-              return (
-                <QuantityModal
-                  type="complete"
-                  laborProductionEvent={laborProductionEvent}
-                  machineProductionEvent={machineProductionEvent}
-                  materials={resolvedMaterials.materials}
-                  operation={operation}
-                  parentIsSerial={parentIsSerial}
-                  parentIsBatch={parentIsBatch}
-                  productionQuantities={productionQuantities}
-                  setupProductionEvent={setupProductionEvent}
-                  trackedEntityId={trackedEntityId}
-                  onClose={completeModal.onClose}
-                />
-              );
-            }}
-          </Await>
-        </Suspense>
+      {completeModal.isOpen &&
+        (parentIsSerial || parentIsBatch ? (
+          <Suspense key={`complete-modal-${operationId}`}>
+            <Await resolve={materials}>
+              {(resolvedMaterials) => {
+                return (
+                  <QuantityModal
+                    type="complete"
+                    laborProductionEvent={laborProductionEvent}
+                    machineProductionEvent={machineProductionEvent}
+                    materials={resolvedMaterials.materials}
+                    operation={operation}
+                    parentIsSerial={parentIsSerial}
+                    parentIsBatch={parentIsBatch}
+                    productionQuantities={productionQuantities}
+                    setupProductionEvent={setupProductionEvent}
+                    trackedEntityId={trackedEntityId}
+                    onClose={closeRecordOverlay}
+                  />
+                );
+              }}
+            </Await>
+          </Suspense>
+        ) : (
+          // Non-tracked garment report: full form with the shortfall
+          // (rework / scrap / not finished) breakdown.
+          <ReportQuantityModal
+            operation={operation}
+            bundle={bundle ?? null}
+            defaultEmployeeId={assignee ?? userId}
+            onClose={closeRecordOverlay}
+          />
+        ))}
+      {markFixedModal.isOpen && (
+        <MarkReworkFixedModal
+          jobOperationId={operationId ?? ""}
+          reworkQuantity={reworkedQuantity}
+          onClose={markFixedModal.onClose}
+        />
+      )}
+      {pickupModal.isOpen && (
+        <ConfirmPickupModal
+          operation={operation}
+          assignee={assignee ?? null}
+          currentUserId={userId}
+          onClose={closePickupOverlay}
+        />
       )}
       {/* @ts-ignore */}
       {finishModal.isOpen && (

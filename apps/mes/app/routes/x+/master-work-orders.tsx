@@ -247,7 +247,7 @@ export default function MasterWorkOrdersRoute() {
   const clearAll = () => setParams({ filter: undefined, search: undefined });
 
   return (
-    <div className="flex flex-col flex-1 min-h-0">
+    <div className="flex flex-col flex-1 min-h-0 h-svh overflow-hidden">
       <header className="sticky top-0 z-10 flex h-[var(--header-height)] shrink-0 items-center gap-2 border-b bg-background">
         <div className="flex items-center gap-2 px-2">
           <SidebarTrigger className="md:hidden" />
@@ -270,7 +270,7 @@ export default function MasterWorkOrdersRoute() {
         </div>
       )}
 
-      <main className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-accent scrollbar-track-transparent">
+      <main className="flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-accent scrollbar-track-transparent">
         {filtered.length > 0 ? (
           <>
             {/* Mobile card view */}

@@ -33,7 +33,7 @@ import {
   LuX
 } from "react-icons/lu";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { Link, useFetcher, useLoaderData } from "react-router";
+import { Link, redirect, useFetcher, useLoaderData } from "react-router";
 import EmployeeAvatar from "~/components/EmployeeAvatar";
 import type { ColumnFilter } from "~/components/Filter";
 import { ActiveFilters, Filter, useFilters } from "~/components/Filter";
@@ -71,13 +71,75 @@ export async function loader({ request }: LoaderFunctionArgs) {
   }
 
   const serviceRole = getCarbonServiceRole();
+
+  // A deep link from the operation page ("待审批" card) arrives as
+  // ?jobOperationId=X. Translate it into the page's own job + process filters so
+  // it appears as normal, clearable filter chips (handled by dev's Filter UI)
+  // rather than a one-off banner.
+  const jobOperationId =
+    new URL(request.url).searchParams.get("jobOperationId") ?? undefined;
+  if (jobOperationId) {
+    const op = await serviceRole
+      .from("jobOperation")
+      .select("jobId, process:processId(name)")
+      .eq("id", jobOperationId)
+      .eq("companyId", companyId)
+      .maybeSingle();
+    const filters = new URLSearchParams();
+    if (op.data?.jobId) filters.append("filter", `jobId:eq:${op.data.jobId}`);
+    const processName = (
+      op.data as { process?: { name?: string | null } } | null
+    )?.process?.name;
+    if (processName) filters.append("filter", `process:eq:${processName}`);
+    const qs = filters.toString();
+    return redirect(
+      qs ? `${path.to.productionReports}?${qs}` : path.to.productionReports
+    );
+  }
+
   const reports = await getPendingProductionQuantities(serviceRole, companyId);
 
   if (reports.error) {
     console.error("getPendingProductionQuantities error:", reports.error);
   }
 
-  return { reports: reports.data ?? [], canApprove };
+  // Resolve labels for any active job/process filters so their chips render
+  // even when no pending reports match (the filter options are otherwise
+  // derived from the rows, which are empty then). Process values are already
+  // the readable name; jobId values are the internal id → look up the job.
+  const filterParams = new URL(request.url).searchParams.getAll("filter");
+  const jobIds = new Set<string>();
+  const processNames = new Set<string>();
+  for (const f of filterParams) {
+    const [key, op, value] = f.split(":");
+    if (!value) continue;
+    const values = op === "in" ? value.split(",") : [value];
+    if (key === "jobId") for (const v of values) jobIds.add(v);
+    if (key === "process") for (const v of values) processNames.add(v);
+  }
+
+  let jobFilterOptions: { value: string; label: string }[] = [];
+  if (jobIds.size > 0) {
+    const jobs = await serviceRole
+      .from("job")
+      .select("id, jobId")
+      .eq("companyId", companyId)
+      .in("id", Array.from(jobIds));
+    jobFilterOptions = (jobs.data ?? []).map((j) => ({
+      value: j.id,
+      label: j.jobId ?? j.id
+    }));
+  }
+  const processFilterOptions = Array.from(processNames).map((n) => ({
+    value: n,
+    label: n
+  }));
+
+  return {
+    reports: reports.data ?? [],
+    canApprove,
+    filterOptions: { jobId: jobFilterOptions, process: processFilterOptions }
+  };
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -95,12 +157,17 @@ export async function action({ request }: ActionFunctionArgs) {
 
   if (intent === "approve") {
     const now = new Date();
+    // Optionally correct the quantity while approving.
+    const raw = Number(formData.get("quantity"));
+    const quantity =
+      Number.isFinite(raw) && raw > 0 ? Math.floor(raw) : undefined;
     const res = await approveProductionQuantity(serviceRole, {
       id,
       companyId,
       year: now.getFullYear(),
       month: now.getMonth() + 1,
-      userId
+      userId,
+      quantity
     });
     return { success: !res.error };
   }
@@ -464,7 +531,7 @@ function ReasonField({
 
 export default function ProductionReportsRoute() {
   const { t } = useLingui();
-  const { reports, canApprove } = useLoaderData<typeof loader>();
+  const { reports, canApprove, filterOptions } = useLoaderData<typeof loader>();
   const rows = reports as PendingReport[];
   const [people] = usePeople();
   const [params] = useUrlParams();
@@ -495,16 +562,23 @@ export default function ProductionReportsRoute() {
   }, [rows, employeeName]);
 
   const processOptions = useMemo(() => {
-    const names = new Set(
-      rows
-        .map((r) => r.jobOperation?.process?.name)
-        .filter((n): n is string => Boolean(n))
-    );
-    return Array.from(names).map((n) => ({ label: n, value: n }));
-  }, [rows]);
+    // Seed with loader-resolved options so an active filter chip labels even
+    // when no rows match, then add whatever the current rows contribute.
+    const map = new Map<string, string>();
+    for (const o of filterOptions.process) map.set(o.value, o.label);
+    for (const r of rows) {
+      const n = r.jobOperation?.process?.name;
+      if (n) map.set(n, n);
+    }
+    return Array.from(map.entries()).map(([value, label]) => ({
+      label,
+      value
+    }));
+  }, [rows, filterOptions]);
 
   const jobOptions = useMemo(() => {
     const seen = new Map<string, string>();
+    for (const o of filterOptions.jobId) seen.set(o.value, o.label);
     for (const r of rows) {
       const job = r.jobOperation?.job;
       if (job?.id) seen.set(job.id, job.jobId);
@@ -513,7 +587,7 @@ export default function ProductionReportsRoute() {
       label,
       value
     }));
-  }, [rows]);
+  }, [rows, filterOptions]);
 
   const itemOptions = useMemo(() => {
     const names = new Set(
@@ -614,7 +688,7 @@ export default function ProductionReportsRoute() {
   const isFiltering = hasFilters || search.length > 0;
 
   return (
-    <div className="flex flex-col flex-1">
+    <div className="flex flex-col flex-1 min-h-0 h-svh overflow-hidden">
       <header className="sticky top-0 z-10 flex h-[var(--header-height)] shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 border-b bg-background">
         <div className="flex items-center gap-2 px-2">
           <SidebarTrigger className="md:hidden" />
@@ -641,7 +715,7 @@ export default function ProductionReportsRoute() {
         </div>
       )}
 
-      <main className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-accent scrollbar-track-transparent">
+      <main className="flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-accent scrollbar-track-transparent">
         <div className="p-4">
           {filteredRows.length > 0 ? (
             <Table>

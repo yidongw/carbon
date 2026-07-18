@@ -32,6 +32,15 @@ import { path } from "~/utils/path";
 export async function loader({ request, params }: LoaderFunctionArgs) {
   const { userId, companyId } = await requirePermissions(request, {});
 
+  // Managers (production_update) can approve reports and reclassify rework.
+  let canManageProduction = false;
+  try {
+    await requirePermissions(request, { update: "production" });
+    canManageProduction = true;
+  } catch {
+    canManageProduction = false;
+  }
+
   const { operationId } = params;
   if (!operationId) throw new Error("Operation ID is required");
 
@@ -90,6 +99,22 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     getCompanySettings(serviceRole, companyId)
   ]);
 
+  // The operation RPC doesn't return the assignee; fetch it separately.
+  const operationAssignee = await serviceRole
+    .from("jobOperation")
+    .select("assignee")
+    .eq("id", operationId)
+    .maybeSingle();
+
+  // Garment bundles carry a color/size — surface it in the report modal.
+  const bundle = job.data?.id
+    ? await serviceRole
+        .from("bundleWorkOrders")
+        .select("colorCode, colorName, sizeCode")
+        .eq("jobId", job.data.id)
+        .maybeSingle()
+    : { data: null };
+
   const inventoryShelfLife = (companySettings.data?.inventoryShelfLife ??
     null) as { expiredEntityPolicy?: ExpiredEntityPolicy } | null;
   const expiredEntityPolicy: ExpiredEntityPolicy =
@@ -117,6 +142,9 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   return {
     bomIdMap: Object.fromEntries(bomIdMap),
     events: events.data ?? [],
+    assignee: operationAssignee.data?.assignee ?? null,
+    bundle: bundle.data ?? null,
+    canManageProduction,
     productionQuantities: quantities.data ?? [],
     quantities: quantities.data ?? [],
     job: job.data,
@@ -159,6 +187,9 @@ export default function OperationRoute() {
   if (!operationId) throw new Error("Operation ID is required");
 
   const {
+    assignee,
+    bundle,
+    canManageProduction,
     events,
     expiredEntityPolicy,
     files,
@@ -179,6 +210,9 @@ export default function OperationRoute() {
   return (
     <JobOperation
       key={`job-operation-${operationId}`}
+      assignee={assignee}
+      bundle={bundle}
+      canManageProduction={canManageProduction}
       events={events}
       expiredEntityPolicy={expiredEntityPolicy}
       files={files}
