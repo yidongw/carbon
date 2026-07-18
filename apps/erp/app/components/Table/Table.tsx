@@ -1277,9 +1277,7 @@ const Table = <T extends object>({
                       isEditing={isEditing}
                       isEditMode={editMode}
                       isRowExpanded={!!isRowExpanded}
-                      isRowSelected={
-                        row.index in rowSelection && !!rowSelection[row.index]
-                      }
+                      isRowSelected={row.getIsSelected()}
                       pinnedColumns={pinnedColumnsKey}
                       selectedCell={selectedCell}
                       row={row}
