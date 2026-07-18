@@ -1,13 +1,34 @@
 import { Drawer, DrawerContent, Modal, ModalContent } from "@carbon/react";
 import { useLingui } from "@lingui/react/macro";
 import { useCallback, useEffect, useRef } from "react";
-import { useFetcher, useFetchers } from "react-router";
+import { useFetcher, useFetchers, useRevalidator } from "react-router";
 import { configParamsModalContentClassName } from "~/modules/production/ui/Jobs/configTableShared";
 import { completeOverlayConfirm } from "./completeOverlayConfirm";
+import { buildOverlayTarget, type OverlayTarget } from "./overlay";
 import { getOverlayRegistryEntry } from "./overlay.registry";
+import { useOverlay } from "./OverlayProvider";
 import type { OverlayConfirmMode, OverlayInstance } from "./types";
 
 const overlayModalContentClassName = configParamsModalContentClassName;
+
+/** A successful confirm response can request opening a follow-up overlay via a
+ * generic `nextOverlay: { id, params }` signal (e.g. a master cutting report →
+ * Split Batch). Resolved only for a successful (ok:true) response so we never
+ * chain off a failed submit; unknown ids resolve to null and are ignored. */
+function readNextOverlay(data: unknown): OverlayTarget | null {
+  if (!data || typeof data !== "object") return null;
+  if (!("ok" in data) || (data as { ok?: unknown }).ok !== true) return null;
+  const next = (data as { nextOverlay?: unknown }).nextOverlay;
+  if (!next || typeof next !== "object" || !("id" in next)) return null;
+  const id = (next as { id?: unknown }).id;
+  if (typeof id !== "string") return null;
+  const rawParams = (next as { params?: unknown }).params;
+  const params =
+    rawParams && typeof rawParams === "object"
+      ? (rawParams as Record<string, unknown>)
+      : undefined;
+  return buildOverlayTarget(id, params);
+}
 
 type RegisteredOverlayProps = {
   instance: OverlayInstance;
@@ -21,6 +42,8 @@ export function RegisteredOverlay({
   onClose
 }: RegisteredOverlayProps) {
   const { i18n } = useLingui();
+  const { openOverlay } = useOverlay();
+  const { revalidate } = useRevalidator();
   const entry = getOverlayRegistryEntry(instance.overlayId);
   const confirmMode: OverlayConfirmMode = entry?.confirmMode ?? "server";
   const loadFetcher = useFetcher({ key: `overlay-load-${instance.id}` });
@@ -38,8 +61,20 @@ export function RegisteredOverlay({
         onClose,
         i18n
       });
+
+      // An action can chain a follow-up overlay via a `nextOverlay` signal (e.g.
+      // a master cutting report → Split Batch). The opener that requested this
+      // overlay may already chain via onCreated (the Report-Cutting button); when
+      // it was opened from a deep link (no onCreated), honour the signal here so
+      // the flow still works either way.
+      if (!instance.onCreated) {
+        const next = readNextOverlay(data);
+        if (next) {
+          openOverlay(next, { onCreated: () => revalidate() });
+        }
+      }
     },
-    [confirmMode, instance, onClose, i18n]
+    [confirmMode, instance, onClose, i18n, openOverlay, revalidate]
   );
 
   useEffect(() => {

@@ -23,7 +23,10 @@ import {
   buildProductionConfigTableReferenceContext,
   type ConfigReferenceSource
 } from "../../configParamsTableColumns";
-import { computeJobConfigTableTotal } from "../../jobConfiguration";
+import {
+  computeConfigRemaining,
+  computeJobConfigTableTotal
+} from "../../jobConfiguration";
 import type { productionActorKinds } from "../../production.models";
 import {
   productionQuantityCreateFormValidator,
@@ -39,6 +42,7 @@ import {
 } from "./ProductionActorFields";
 import {
   type EditableProductionQuantityLine,
+  getConfigFromEditableLine,
   normalizeUniqueLineTypes,
   ProductionQuantityLinesEditor
 } from "./ProductionQuantityLinesEditor";
@@ -230,14 +234,37 @@ const ProductionQuantityForm = ({
   const formBodyRef = useRef<HTMLDivElement>(null);
 
   const [lines, setLines] = useState<EditableProductionQuantityLine[]>(() => {
-    if (isCreateMultiLineInitial(initialValues)) {
-      return normalizeUniqueLineTypes(
-        toEditableLines(
-          (initialValues as ProductionQuantityCreateInitialValues).lines
-        )
-      );
+    if (!isCreateMultiLineInitial(initialValues)) return [];
+    const editable = normalizeUniqueLineTypes(
+      toEditableLines(
+        (initialValues as ProductionQuantityCreateInitialValues).lines
+      )
+    );
+
+    // For a color/size-configured item, seed the Production line with the
+    // remaining plan per cell (instead of only a bare prefilled quantity with an
+    // empty config). This makes the report valid out of the box — Save is
+    // enabled and the config table is prefilled/editable — rather than showing a
+    // filled quantity next to a disabled Save. Falls through (empty config,
+    // Save gated by hasUnconfiguredLine) when there's no plan to seed from.
+    if (!configurationParameters?.length || !configReferenceSource) {
+      return editable;
     }
-    return [];
+    const remaining = computeConfigRemaining(
+      configReferenceSource.jobConfiguration as Parameters<
+        typeof computeConfigRemaining
+      >[0],
+      configReferenceSource.reportedConfigurations as Parameters<
+        typeof computeConfigRemaining
+      >[1]
+    );
+    if (remaining.configTable.length === 0) return editable;
+    const remainingTotal = computeJobConfigTableTotal(remaining);
+    return editable.map((line) =>
+      line.type === "Production" && !getConfigFromEditableLine(line)
+        ? { ...line, configuration: remaining, quantity: remainingTotal }
+        : line
+    );
   });
 
   const hasConfigurationParameters =
@@ -245,6 +272,18 @@ const ProductionQuantityForm = ({
 
   const hasZeroQuantityLine =
     isCreateMultiLine && lines.some((line) => line.quantity <= 0);
+
+  // A color/size-configured report must enter its quantity through the config
+  // table. The line seeds a prefilled quantity (the operation's remaining) with
+  // an empty configuration, so `hasZeroQuantityLine` alone wouldn't catch it —
+  // block submit until every line carries a non-empty configuration, otherwise
+  // the prefilled quantity would post with configuration = NULL.
+  const hasUnconfiguredLine =
+    isCreateMultiLine &&
+    hasConfigurationParameters &&
+    lines.some(
+      (line) => computeJobConfigTableTotal(getConfigFromEditableLine(line)) <= 0
+    );
 
   const linesJsonForForm = useMemo(() => {
     if (!isCreateMultiLine) return "";
@@ -500,7 +539,8 @@ const ProductionQuantityForm = ({
     actorSelection,
     permissionDisabled: isDisabled
   });
-  const canSubmitCreate = canSubmitDetails && !hasZeroQuantityLine;
+  const canSubmitCreate =
+    canSubmitDetails && !hasZeroQuantityLine && !hasUnconfiguredLine;
 
   // Configured reports (e.g. master cutting) enter their quantity through the
   // config-table modal, and opening it only needs the job/item + operation —

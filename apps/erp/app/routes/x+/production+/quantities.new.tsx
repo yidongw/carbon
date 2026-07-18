@@ -382,8 +382,22 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   if (isOverlay) {
+    // A master work order's cutting report leads into Split Batch. Return a
+    // generic "open this overlay next" signal (resolved by the report service)
+    // so the overlay host can chain it even when the report was opened from a
+    // deep link (which carries no onCreated callback).
+    const splitBatchMasterWorkOrderId =
+      "splitBatchMasterWorkOrderId" in result
+        ? result.splitBatchMasterWorkOrderId
+        : null;
+    const nextOverlay = splitBatchMasterWorkOrderId
+      ? {
+          id: "masterWorkOrderSplitBatch",
+          params: { masterWorkOrderId: splitBatchMasterWorkOrderId }
+        }
+      : null;
     return data(
-      { ok: true as const },
+      { ok: true as const, nextOverlay },
       await flash(request, success("Process completion created"))
     );
   }

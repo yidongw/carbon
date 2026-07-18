@@ -260,13 +260,11 @@ function extractCuttingCells(
       if (sizeIsPrimary) {
         sizeCode = key;
         colorCode = colorParam
-          ? (String(row[colorParam.key] ?? "") || null)
+          ? String(row[colorParam.key] ?? "") || null
           : null;
       } else {
         colorCode = key;
-        sizeCode = sizeParam
-          ? (String(row[sizeParam.key] ?? "") || null)
-          : null;
+        sizeCode = sizeParam ? String(row[sizeParam.key] ?? "") || null : null;
       }
 
       cells.push({
@@ -403,23 +401,57 @@ export async function getCuttingSplitProposal(
     companyId
   );
   const cutByCell = new Map<string, number>();
+  // Cut reported as a bare quantity with no color/size config table carries no
+  // per-cell breakdown; accumulate it here and spread it over the plan below.
+  let aggregateOnlyCut = 0;
   if (cuttingOperationId) {
     const cuts = await client
       .from("productionQuantity")
-      .select("configuration")
+      .select("quantity, configuration")
       .eq("jobOperationId", cuttingOperationId)
       .eq("companyId", companyId)
       .eq("type", "Production")
       .is("invalidatedAt", null);
     for (const row of cuts.data ?? []) {
-      for (const cell of extractCuttingCells(
+      const rowCells = extractCuttingCells(
         row.configuration,
         colorParam,
         sizeParam
-      )) {
+      );
+      if (rowCells.length === 0) {
+        aggregateOnlyCut += Number(row.quantity) || 0;
+        continue;
+      }
+      for (const cell of rowCells) {
         const k = cellKey(cell.colorCode, cell.sizeCode);
         cutByCell.set(k, (cutByCell.get(k) ?? 0) + cell.quantity);
       }
+    }
+  }
+
+  // Attribute aggregate-only cut (no per-cell config) to the planned cells so it
+  // is still splittable: fill each cell up to its plan, in config-param order.
+  if (aggregateOnlyCut > 0) {
+    for (const cell of plannedCells) {
+      if (aggregateOnlyCut <= 0) break;
+      const k = cellKey(cell.colorCode, cell.sizeCode);
+      const already = cutByCell.get(k) ?? 0;
+      const add = Math.min(
+        Math.max(0, cell.quantity - already),
+        aggregateOnlyCut
+      );
+      if (add > 0) {
+        cutByCell.set(k, already + add);
+        aggregateOnlyCut -= add;
+      }
+    }
+    // Aggregate cut beyond the total plan (over-cut, or no plan to map onto) has
+    // no color/size to attribute to, so it's capped at plan and left out of the
+    // split. Surface it rather than dropping silently.
+    if (aggregateOnlyCut > 0) {
+      console.warn(
+        `getCuttingSplitProposal: ${aggregateOnlyCut} aggregate cut unit(s) for master ${masterWorkOrderId} exceed the plan and are not splittable.`
+      );
     }
   }
 
@@ -437,7 +469,8 @@ export async function getCuttingSplitProposal(
     .eq("companyId", companyId);
   const colorNameByCode = new Map<string, string>();
   for (const c of styleColors.data ?? []) {
-    if (c.colorCode) colorNameByCode.set(c.colorCode, c.colorName ?? c.colorCode);
+    if (c.colorCode)
+      colorNameByCode.set(c.colorCode, c.colorName ?? c.colorCode);
   }
   const colorName = (code: string | null) =>
     code ? (colorNameByCode.get(code) ?? code) : null;
@@ -531,7 +564,8 @@ export async function saveBundleSplit(
     .eq("id", input.masterWorkOrderId)
     .eq("companyId", input.companyId)
     .maybeSingle();
-  if (master.error) return { data: { created: 0, updated: 0 }, error: master.error };
+  if (master.error)
+    return { data: { created: 0, updated: 0 }, error: master.error };
   if (!master.data?.jobId) {
     return {
       data: { created: 0, updated: 0 },
@@ -637,7 +671,9 @@ export async function saveBundleSplit(
       // Update an existing bundle's target quantity — it lives on the backing
       // job (the bundleWorkOrders view reads job.quantity); the bundle row
       // itself carries no quantity/configuration to update.
-      const backingJobId = op.bundle.id ? bundleJobById.get(op.bundle.id) : null;
+      const backingJobId = op.bundle.id
+        ? bundleJobById.get(op.bundle.id)
+        : null;
       if (!backingJobId) return { created: 0, updated: 0, error: null };
       const jobUpdate = await client
         .from("job")
@@ -717,7 +753,11 @@ export async function replaceMasterCuttingSplitRows(
     productionQuantityReportId: string;
     companyId: string;
     createdBy: string;
-    rows: { colorCode: string | null; sizeCode: string | null; quantity: number }[];
+    rows: {
+      colorCode: string | null;
+      sizeCode: string | null;
+      quantity: number;
+    }[];
   }
 ): Promise<{ error: Error | null }> {
   const c = client as SupabaseClient<any>;
