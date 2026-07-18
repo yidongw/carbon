@@ -8,6 +8,7 @@ import {
 } from "@carbon/auth";
 import { checkSmsVerifyCode } from "@carbon/auth/aliyun-sms.server";
 import { signInWithUserIdViaAdmin } from "@carbon/auth/auth.server";
+import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { setCompanyId } from "@carbon/auth/company.server";
 import {
   findOrCreatePhoneUser,
@@ -18,6 +19,7 @@ import {
   getAuthSession,
   setAuthSession
 } from "@carbon/auth/session.server";
+import { getPendingInvitesForUser } from "@carbon/auth/users.server";
 import { Hidden, InputOTP, ValidatedForm, validator } from "@carbon/form";
 import { Ratelimit, redis } from "@carbon/kv";
 import {
@@ -132,11 +134,19 @@ export async function action({ request }: ActionFunctionArgs) {
   const sessionCookie = await setAuthSession(request, { authSession });
   const companyIdCookie = setCompanyId(authSession.companyId);
 
-  // Users with no company yet go through onboarding (mirrors the email signup
-  // path) rather than landing on an empty authenticated screen.
-  const destination = authSession.companyId
-    ? safeRedirect(redirectTo, path.to.authenticatedRoot)
-    : path.to.onboarding;
+  // A user with pending invitations chooses which company to join on the
+  // select-company screen; otherwise they land in their company, or onboard if
+  // they have neither a company nor an invite.
+  const pendingInvites = await getPendingInvitesForUser(
+    getCarbonServiceRole(),
+    user.id
+  );
+  const destination =
+    (pendingInvites.data?.length ?? 0) > 0
+      ? path.to.selectCompany
+      : authSession.companyId
+        ? safeRedirect(redirectTo, path.to.authenticatedRoot)
+        : path.to.onboarding;
 
   return redirect(destination, {
     headers: [
