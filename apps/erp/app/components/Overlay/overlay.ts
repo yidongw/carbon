@@ -50,6 +50,14 @@ export const overlay = {
       };
     },
 
+    newEmployee(): OverlayTarget {
+      return {
+        id: "newEmployee",
+        url: `${path.to.newEmployee}?overlay=true`,
+        params: {}
+      };
+    },
+
     newMasterWorkOrder(): OverlayTarget {
       return {
         id: "newMasterWorkOrder",

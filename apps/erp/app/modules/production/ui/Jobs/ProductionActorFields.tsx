@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Avatar from "~/components/Avatar";
 import { Hidden } from "~/components/Form";
 import { useSupplierProcesses } from "~/components/Form/SupplierProcess";
+import { overlay, useOverlay } from "~/components/Overlay";
 import {
   allowsSupplierQuantityActor,
   defaultActorKindFromOperationType,
@@ -13,7 +14,6 @@ import {
 } from "~/modules/production/operationType";
 import type { productionActorKinds } from "~/modules/production/production.models";
 import { SupplierProcessForm } from "~/modules/purchasing/ui/Supplier";
-import { CreateEmployeeModal } from "~/modules/users/ui/Employees";
 import { usePeople, useSuppliers } from "~/stores";
 
 type ActorKind = (typeof productionActorKinds)[number];
@@ -86,9 +86,14 @@ export function ProductionActorFields({
   onSelectionChange?: (selection: string) => void;
 }) {
   const { t } = useLingui();
+  const { openOverlay } = useOverlay();
   const newSupplierProcessModal = useDisclosure();
-  const newEmployeeModal = useDisclosure();
   const triggerRef = useRef<HTMLButtonElement>(null);
+  // Set below once applySelection exists; the overlay's onSuccess reads it at click
+  // time, keeping `openCreateEmployee` referentially stable for the options memo.
+  const onEmployeeCreatedRef = useRef<
+    (data: { userId: string; firstName: string; lastName: string }) => void
+  >(() => {});
 
   const resolvedDefault =
     defaultActorKind ??
@@ -128,8 +133,13 @@ export function ProductionActorFields({
   }, [newSupplierProcessModal.onOpen]);
 
   const openCreateEmployee = useCallback(() => {
-    newEmployeeModal.onOpen();
-  }, [newEmployeeModal.onOpen]);
+    openOverlay(overlay.to.newEmployee(), {
+      onSuccess: (data) =>
+        onEmployeeCreatedRef.current(
+          data as { userId: string; firstName: string; lastName: string }
+        )
+    });
+  }, [openOverlay]);
 
   useEffect(() => {
     setSelection(initialSelection);
@@ -373,6 +383,20 @@ export function ProductionActorFields({
     }
   };
 
+  // A newly created employee is added to the local people list and selected.
+  onEmployeeCreatedRef.current = ({ userId, firstName, lastName }) => {
+    const name = `${firstName} ${lastName}`.trim();
+    setPeople((current) => {
+      if (current.some((person) => person.id === userId)) {
+        return current;
+      }
+      return [...current, { id: userId, name, avatarUrl: null }].sort((a, b) =>
+        a.name.localeCompare(b.name)
+      );
+    });
+    applySelection(encodeActorSelection("employee", userId));
+  };
+
   const handleChange = (
     option: { value: string; label: string | React.ReactNode } | null
   ) => {
@@ -407,27 +431,6 @@ export function ProductionActorFields({
             minimumCost: 0,
             unitCost: 0,
             leadTime: 0
-          }}
-        />
-      )}
-      {newEmployeeModal.isOpen && (
-        <CreateEmployeeModal
-          type="modal"
-          onClose={() => {
-            newEmployeeModal.onClose();
-            triggerRef.current?.click();
-          }}
-          onSuccess={({ userId, firstName, lastName }) => {
-            const name = `${firstName} ${lastName}`.trim();
-            setPeople((current) => {
-              if (current.some((person) => person.id === userId)) {
-                return current;
-              }
-              return [...current, { id: userId, name, avatarUrl: null }].sort(
-                (a, b) => a.name.localeCompare(b.name)
-              );
-            });
-            applySelection(encodeActorSelection("employee", userId));
           }}
         />
       )}

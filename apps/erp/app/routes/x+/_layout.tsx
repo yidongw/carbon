@@ -4,12 +4,14 @@ import {
   getCarbon,
   getMESUrl
 } from "@carbon/auth";
+import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { getCompanyId, setCompanyId } from "@carbon/auth/company.server";
 import {
   destroyAuthSession,
   requireAuthSession,
   updateCompanySession
 } from "@carbon/auth/session.server";
+import { getPendingInvitesForUser } from "@carbon/auth/users.server";
 import { isAuditLogEnabled } from "@carbon/database/audit";
 import type { PrintingSettings } from "@carbon/printing";
 import { getPrinterRoutes } from "@carbon/printing";
@@ -208,6 +210,16 @@ export async function loader({ request }: LoaderFunctionArgs) {
   // (basic setup) is required.
   const requiresOnboarding = !company?.name;
   if (requiresOnboarding) {
+    // A company-less user who has pending invites is sent to the select-company
+    // hub to join (or create their own); a user with none is a brand-new signup
+    // and goes straight to onboarding.
+    const pendingInvites = await getPendingInvitesForUser(
+      getCarbonServiceRole(),
+      userId
+    );
+    if ((pendingInvites.data?.length ?? 0) > 0) {
+      throw redirectToPicker();
+    }
     throw redirect(path.to.onboarding.root);
   }
 

@@ -1,9 +1,17 @@
-import { Badge, Checkbox, HStack, MenuIcon, MenuItem } from "@carbon/react";
+import {
+  Badge,
+  Button,
+  Checkbox,
+  HStack,
+  MenuIcon,
+  MenuItem
+} from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useLocale } from "@react-aria/i18n";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useMemo } from "react";
 import {
+  LuCirclePlus,
   LuMail,
   LuMapPin,
   LuNetwork,
@@ -12,11 +20,12 @@ import {
   LuUser,
   LuUserCheck
 } from "react-icons/lu";
-import { useNavigate } from "react-router";
-import { Avatar, EmployeeAvatar, Hyperlink, New, Table } from "~/components";
+import { useNavigate, useRevalidator } from "react-router";
+import { Avatar, EmployeeAvatar, Hyperlink, Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { useLocations } from "~/components/Form/Location";
 import { editableCell } from "~/components/InlineEditor";
+import { overlay, useOverlay } from "~/components/Overlay";
 import { useFormatPersonName, usePermissions, useUrlParams } from "~/hooks";
 import { DataType } from "~/modules/shared";
 import { path } from "~/utils/path";
@@ -51,6 +60,14 @@ const EmployeesTable = memo(
     const permissions = usePermissions();
     const locations = useLocations();
     const [params] = useUrlParams();
+    const { openOverlay } = useOverlay();
+    const revalidator = useRevalidator();
+
+    const openNewEmployee = useCallback(() => {
+      openOverlay(overlay.to.newEmployee(), {
+        onCreated: () => revalidator.revalidate()
+      });
+    }, [openOverlay, revalidator]);
 
     const renderGenericAttribute = useCallback(
       (
@@ -151,8 +168,13 @@ const EmployeesTable = memo(
         },
         {
           accessorKey: "email",
-          header: t`Email`,
-          cell: (item) => item.getValue(),
+          header: t`Email or Phone`,
+          // Phone-only invitees have no email — show their phone so they aren't
+          // blank. `phone` isn't in the generated view types until db:types runs.
+          cell: (item) =>
+            item.getValue<string | null>() ||
+            (item.row.original as { phone?: string | null }).phone ||
+            "",
           meta: {
             icon: <LuMail />
           }
@@ -281,10 +303,14 @@ const EmployeesTable = memo(
           }}
           primaryAction={
             permissions.can("create", "users") && (
-              <New
-                label={t`Employee`}
-                to={`${path.to.newEmployee}?${params.toString()}`}
-              />
+              <Button
+                type="button"
+                variant="primary"
+                leftIcon={<LuCirclePlus />}
+                onClick={openNewEmployee}
+              >
+                <Trans>Add Employee</Trans>
+              </Button>
             )
           }
           renderContextMenu={renderContextMenu}

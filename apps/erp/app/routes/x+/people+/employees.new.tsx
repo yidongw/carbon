@@ -17,36 +17,39 @@ import type {
   ClientActionFunctionArgs,
   LoaderFunctionArgs
 } from "react-router";
-import { data, redirect, useLoaderData } from "react-router";
-import { checkSeatAvailability } from "~/modules/settings";
+import { data, redirect } from "react-router";
 import {
-  CreateEmployeeModal,
-  createEmployeeValidator,
-  getInvitable
-} from "~/modules/users";
+  OVERLAY_PARAM,
+  overlay,
+  overlayToken,
+  serializeSearch
+} from "~/components/Overlay/overlay";
+import { checkSeatAvailability } from "~/modules/settings";
+import { createEmployeeValidator } from "~/modules/users";
 import { createEmployeeAccount } from "~/modules/users/users.server";
 import { path } from "~/utils/path";
 import { getCompanyId } from "~/utils/react-query";
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const { client, companyId } = await requirePermissions(request, {
-    create: "users"
-  });
+  const isOverlay = new URL(request.url).searchParams.get("overlay") === "true";
 
-  const invitable = await getInvitable(client, companyId);
-  if (invitable.error) {
+  // Bare URL (deep link / direct nav / Create menu): redirect to the list with the
+  // overlay open, so the form always renders as an overlay rather than a full page.
+  if (!isOverlay) {
+    const token = overlayToken(overlay.to.newEmployee());
+    const redirectParams = new URLSearchParams();
+    if (token) redirectParams.append(OVERLAY_PARAM, token);
+    const query = serializeSearch(redirectParams);
     throw redirect(
-      path.to.employeeAccounts,
-      await flash(
-        request,
-        error(invitable.error, "Failed to load invitable users")
-      )
+      query ? `${path.to.employeeAccounts}?${query}` : path.to.employeeAccounts
     );
   }
 
-  return {
-    invitable: invitable.data ?? []
-  };
+  // The form self-loads employee types and seeds location from the session; the
+  // loader only gates permission and signals the overlay to render.
+  await requirePermissions(request, { create: "users" });
+
+  return {};
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -55,8 +58,9 @@ export async function action({ request }: ActionFunctionArgs) {
     create: "users"
   });
 
+  const isOverlay = new URL(request.url).searchParams.get("overlay") === "true";
+
   const formData = await request.formData();
-  const modal = formData.get("type") === "modal";
 
   const validation = await validator(createEmployeeValidator).validate(
     formData
@@ -66,15 +70,22 @@ export async function action({ request }: ActionFunctionArgs) {
     return validationError(validation.error);
   }
 
-  const { email, firstName, lastName, locationId, employeeType, number } =
-    validation.data;
+  const {
+    email,
+    phone,
+    firstName,
+    lastName,
+    locationId,
+    employeeType,
+    number
+  } = validation.data;
 
   // One-time annual plans have a hard seat cap — block adds beyond it.
   const seat = await checkSeatAvailability(client, companyId, 1);
   if (!seat.ok) {
-    if (modal) {
+    if (isOverlay) {
       return data(
-        { success: false as const, message: seat.message },
+        { ok: false as const, error: seat.message },
         await flash(request, error(null, seat.message))
       );
     }
@@ -85,7 +96,8 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   const result = await createEmployeeAccount(client, {
-    email: email.toLowerCase(),
+    email: email?.toLowerCase(),
+    phone,
     firstName,
     lastName,
     employeeType,
@@ -98,9 +110,9 @@ export async function action({ request }: ActionFunctionArgs) {
   if (!result.success) {
     console.error(result);
     const message = result.message ?? "Failed to create employee account";
-    if (modal) {
+    if (isOverlay) {
       return data(
-        { success: false as const, message },
+        { ok: false as const, error: message },
         await flash(request, error(result, message))
       );
     }
@@ -110,42 +122,46 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
-  const location = request.headers.get("x-vercel-ip-city") ?? "Unknown";
-  const ip = request.headers.get("x-forwarded-for") ?? "127.0.0.1";
-  const [company, user] = await Promise.all([
-    client.from("company").select("name").eq("id", companyId).single(),
-    client.from("user").select("email, fullName").eq("id", userId).single()
-  ]);
+  // Phone invites carry no email link — Aliyun's SMS template is verify-code-only, so
+  // there is nothing to send. The invitee is activated when they log in via phone OTP.
+  if (email) {
+    const location = request.headers.get("x-vercel-ip-city") ?? "Unknown";
+    const ip = request.headers.get("x-forwarded-for") ?? "127.0.0.1";
+    const [company, user] = await Promise.all([
+      client.from("company").select("name").eq("id", companyId).single(),
+      client.from("user").select("email, fullName").eq("id", userId).single()
+    ]);
 
-  if (!company.data || !user.data) {
-    throw new Error("Failed to load company or user");
+    if (!company.data || !user.data) {
+      throw new Error("Failed to load company or user");
+    }
+
+    await sendEmail({
+      from: `Carbon <no-reply@${RESEND_DOMAIN}>`,
+      to: email,
+      subject: `You have been invited to join ${company.data?.name} on Carbon`,
+      headers: {
+        "X-Entity-Ref-ID": nanoid()
+      },
+      html: await render(
+        InviteEmail({
+          invitedByEmail: user.data.email ?? "",
+          invitedByName: user.data.fullName ?? "",
+          email,
+          name: `${firstName} ${lastName}`.trim(),
+          companyName: company.data.name,
+          inviteLink: `${getAppUrl()}/invite/${result.code}`,
+          ip,
+          location
+        })
+      )
+    });
   }
 
-  await sendEmail({
-    from: `Carbon <no-reply@${RESEND_DOMAIN}>`,
-    to: email,
-    subject: `You have been invited to join ${company.data?.name} on Carbon`,
-    headers: {
-      "X-Entity-Ref-ID": nanoid()
-    },
-    html: await render(
-      InviteEmail({
-        invitedByEmail: user.data.email ?? "",
-        invitedByName: user.data.fullName ?? "",
-        email,
-        name: `${firstName} ${lastName}`.trim(),
-        companyName: company.data.name,
-        inviteLink: `${getAppUrl()}/invite/${result.code}`,
-        ip,
-        location
-      })
-    )
-  });
-
-  if (modal) {
+  if (isOverlay) {
     return data(
       {
-        success: true as const,
+        ok: true as const,
         userId: result.userId,
         firstName,
         lastName
@@ -171,8 +187,7 @@ export async function clientAction({ serverAction }: ClientActionFunctionArgs) {
   return await serverAction();
 }
 
+// Rendered as a registry overlay (see overlay.registry.tsx `newEmployee`), not a page.
 export default function () {
-  const { invitable } = useLoaderData<typeof loader>();
-
-  return <CreateEmployeeModal invitable={invitable} />;
+  return null;
 }

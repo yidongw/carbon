@@ -1,6 +1,11 @@
 import { error, isValidCachedClaims, success } from "@carbon/auth";
 import { deleteAuthAccount } from "@carbon/auth/auth.server";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
+import {
+  findOrCreatePhoneUser,
+  findPhoneUser,
+  toE164Phone
+} from "@carbon/auth/phone.server";
 import { flash, requireAuthSession } from "@carbon/auth/session.server";
 import {
   deactivateCustomer,
@@ -43,13 +48,32 @@ export async function acceptInvite(
 
   if (invite.error) return invite;
 
-  if (email && invite.data.email !== email) {
+  // Only enforce the email-match guard for email invites (phone invites have a
+  // null email, so `invite.data.email` may be null after the phone migration).
+  if (email && invite.data.email && invite.data.email !== email) {
     throw new Error(
       "Invite code does not match email. Please logout and try again."
     );
   }
 
-  const user = await getUserByEmail(invite.data.email);
+  // Resolve the invitee by email, or by phone for phone invites (null email).
+  // `phone` isn't in the generated types until db:types runs.
+  const invitePhone = (invite.data as { phone?: string | null }).phone ?? null;
+  const user = invite.data.email
+    ? await getUserByEmail(invite.data.email)
+    : invitePhone
+      ? await getCarbonServiceRole()
+          .from("user")
+          .select("*")
+          .eq("phone", invitePhone)
+          .single()
+      : null;
+  if (!user) {
+    return {
+      data: null,
+      error: { message: "Invite has no email or phone recipient" }
+    };
+  }
   if (user.error) return user;
 
   const activationFunction =
@@ -449,6 +473,7 @@ export async function createEmployeeAccount(
   client: SupabaseClient<Database>,
   {
     email,
+    phone,
     firstName,
     lastName,
     employeeType,
@@ -457,7 +482,8 @@ export async function createEmployeeAccount(
     createdBy,
     number
   }: {
-    email: string;
+    email?: string;
+    phone?: string;
     firstName: string;
     lastName: string;
     employeeType: string;
@@ -470,6 +496,10 @@ export async function createEmployeeAccount(
   | { success: false; message: string }
   | { success: true; code: string; userId: string }
 > {
+  if (!email && !phone) {
+    return { success: false, message: "Email or phone number is required" };
+  }
+
   const employeeTypePermissions = await getPermissionsByEmployeeType(
     client,
     employeeType
@@ -480,65 +510,110 @@ export async function createEmployeeAccount(
 
   const permissions = makePermissionsFromEmployeeType(employeeTypePermissions);
   const serviceRole = getCarbonServiceRole();
-  const user = await getUserByEmail(email);
   let userId = "";
   let isNewUser = false;
 
-  if (user.data) {
-    userId = user.data.id;
+  // Auto-generate an ID number if the admin didn't provide one.
+  const resolveUserNumber = async () => {
+    if (number) return number;
+    const nextSequence = await client.rpc("get_next_sequence", {
+      sequence_name: "user",
+      company_id: companyId
+    });
+    return nextSequence.data ?? undefined;
+  };
 
+  const existingEmployeeGuard = async () => {
     const existingEmployee = await client
       .from("employee")
       .select("id")
       .eq("id", userId)
       .eq("companyId", companyId)
       .maybeSingle();
+    return !!existingEmployee.data;
+  };
 
-    if (existingEmployee.data) {
-      return {
-        success: false,
-        message: "This user is already an employee in this company"
-      };
-    }
-  } else {
-    isNewUser = true;
-    const createSupabaseUser = await serviceRole.auth.admin.createUser({
-      email: email.toLowerCase(),
-      password: crypto.randomUUID(),
-      email_confirm: true
-    });
+  if (phone) {
+    // Phone invite: reuse the SMS-OTP identity. An existing phone user keeps their
+    // profile; a new one is created (blank name) and we fill in the admin's details.
+    const existing = await findPhoneUser(phone);
+    if (existing) {
+      userId = existing.id;
+      if (await existingEmployeeGuard()) {
+        return {
+          success: false,
+          message: "This user is already an employee in this company"
+        };
+      }
+      // A phone user created via OTP sign-in has a blank profile; fill in the
+      // name/number the admin entered rather than discarding it — but never
+      // clobber a name they already have.
+      if (!existing.firstName && !existing.lastName) {
+        const updateUser = await serviceRole
+          .from("user")
+          .update({ firstName, lastName, ...(number ? { number } : {}) })
+          .eq("id", userId);
+        if (updateUser.error) {
+          console.error(
+            "[invite] failed to set name for existing phone user",
+            updateUser.error
+          );
+        }
+      }
+    } else {
+      isNewUser = true;
+      const created = await findOrCreatePhoneUser(phone);
+      if (!created) {
+        return { success: false, message: "Failed to create phone account" };
+      }
+      userId = created.id;
 
-    if (createSupabaseUser.error) {
-      return { success: false, message: createSupabaseUser.error.message };
-    }
-
-    userId = createSupabaseUser.data.user.id;
-
-    // Auto-generate number if not provided
-    let userNumber = number;
-    if (!userNumber) {
-      const nextSequence = await client.rpc("get_next_sequence", {
-        sequence_name: "user",
-        company_id: companyId
-      });
-
-      if (nextSequence.data) {
-        userNumber = nextSequence.data;
+      const updateUser = await serviceRole
+        .from("user")
+        .update({ firstName, lastName, number: await resolveUserNumber() })
+        .eq("id", userId);
+      if (updateUser.error) {
+        await deleteAuthAccount(serviceRole, userId);
+        return { success: false, message: updateUser.error.message };
       }
     }
+  } else {
+    const user = await getUserByEmail(email!);
+    if (user.data) {
+      userId = user.data.id;
+      if (await existingEmployeeGuard()) {
+        return {
+          success: false,
+          message: "This user is already an employee in this company"
+        };
+      }
+    } else {
+      isNewUser = true;
+      const createSupabaseUser = await serviceRole.auth.admin.createUser({
+        email: email!.toLowerCase(),
+        password: crypto.randomUUID(),
+        email_confirm: true
+      });
 
-    const createCarbonUser = await createUser(serviceRole, {
-      id: userId,
-      email: email.toLowerCase(),
-      firstName,
-      lastName,
-      avatarUrl: null,
-      number: userNumber
-    });
+      if (createSupabaseUser.error) {
+        return { success: false, message: createSupabaseUser.error.message };
+      }
 
-    if (createCarbonUser.error) {
-      await deleteAuthAccount(serviceRole, userId);
-      return { success: false, message: createCarbonUser.error.message };
+      userId = createSupabaseUser.data.user.id;
+
+      const createCarbonUser = await createUser(serviceRole, {
+        id: userId,
+        email: email!.toLowerCase(),
+        firstName,
+        lastName,
+        avatarUrl: null,
+        number: await resolveUserNumber()
+      });
+
+      if (createCarbonUser.error) {
+        await deleteAuthAccount(serviceRole, userId);
+        return { success: false, message: createCarbonUser.error.message };
+      }
     }
   }
 
@@ -558,10 +633,10 @@ export async function createEmployeeAccount(
     insertInvite(serviceRole, {
       role: "employee",
       permissions,
-      email,
       companyId,
       createdBy,
-      code
+      code,
+      ...(phone ? { phone: toE164Phone(phone), email: null } : { email })
     })
   ]);
 
@@ -908,11 +983,33 @@ export async function insertEmployee(
 
 export async function insertInvite(
   client: SupabaseClient<Database>,
-  invite: InviteInsert
+  // `phone` and a nullable `email` aren't in the generated types until db:types runs.
+  invite: Omit<InviteInsert, "email"> & {
+    email?: string | null;
+    phone?: string | null;
+  }
 ) {
+  // Phone invites can't use the (email, companyId) upsert target, so delete any
+  // existing invite for this phone+company first, then insert fresh. This must
+  // remove ACCEPTED rows too — the (phone, companyId) partial unique index covers
+  // them, so leaving one would make the insert violate the constraint (mirrors the
+  // email upsert, which resets an accepted row).
+  if (invite.phone) {
+    await client
+      .from("invite")
+      .delete()
+      .eq("phone" as any, invite.phone)
+      .eq("companyId", invite.companyId);
+    return client
+      .from("invite")
+      .insert([{ ...invite, acceptedAt: null } as any])
+      .select("*")
+      .single();
+  }
+
   return client
     .from("invite")
-    .upsert([{ ...invite, acceptedAt: null }], {
+    .upsert([{ ...invite, acceptedAt: null } as any], {
       onConflict: "email, companyId",
       ignoreDuplicates: false
     })
