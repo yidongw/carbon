@@ -680,6 +680,7 @@ export function ConfigParamsTableLocalModal({
             referenceByRowIndex={referenceByRowIndex}
             splitMode={splitMode}
             jobDisplayId={jobDisplayId ?? data.itemReadableId}
+            optionLabels={data.colorNames}
             isEditingReport={isEditingReport}
             confirmMode="client"
             onConfirmSuccess={onConfirm}
