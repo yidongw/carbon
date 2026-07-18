@@ -1,5 +1,6 @@
 import {
   Badge,
+  Button,
   Checkbox,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -13,6 +14,7 @@ import { memo, useCallback, useMemo, useState } from "react";
 import {
   LuBan,
   LuBriefcase,
+  LuCirclePlus,
   LuMail,
   LuMailCheck,
   LuPencil,
@@ -21,9 +23,10 @@ import {
   LuUser,
   LuUserCheck
 } from "react-icons/lu";
-import { useNavigate } from "react-router";
-import { EmployeeAvatar, Hyperlink, New, Table } from "~/components";
+import { useNavigate, useRevalidator } from "react-router";
+import { EmployeeAvatar, Hyperlink, Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
+import { overlay, useOverlay } from "~/components/Overlay";
 import { usePermissions, useUrlParams, useUser } from "~/hooks";
 import { useSettings } from "~/hooks/useSettings";
 import type { Employee } from "~/modules/users";
@@ -40,7 +43,6 @@ type PermissionsTableProps = {
   data: Employee[];
   count: number;
   employeeTypes: ListItem[];
-  unrevokedInviteEmails: string[];
 };
 
 const defaultColumnVisibility = {
@@ -49,18 +51,21 @@ const defaultColumnVisibility = {
 };
 
 const PermissionsTable = memo(
-  ({
-    data,
-    count,
-    employeeTypes,
-    unrevokedInviteEmails
-  }: PermissionsTableProps) => {
+  ({ data, count, employeeTypes }: PermissionsTableProps) => {
     const { t } = useLingui();
     const navigate = useNavigate();
     const permissions = usePermissions();
     const settings = useSettings();
     const [params] = useUrlParams();
     const { id: currentUserId } = useUser();
+    const { openOverlay } = useOverlay();
+    const revalidator = useRevalidator();
+
+    const openNewEmployee = useCallback(() => {
+      openOverlay(overlay.to.newEmployee(), {
+        onCreated: () => revalidator.revalidate()
+      });
+    }, [openOverlay, revalidator]);
 
     const employeeTypesById = useMemo(
       () =>
@@ -69,11 +74,6 @@ const PermissionsTable = memo(
           return acc;
         }, {}),
       [employeeTypes]
-    );
-
-    const unrevokedInviteSet = useMemo(
-      () => new Set(unrevokedInviteEmails),
-      [unrevokedInviteEmails]
     );
 
     const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
@@ -133,7 +133,7 @@ const PermissionsTable = memo(
         },
         {
           accessorKey: "email",
-          header: t`Email`,
+          header: t`Email or Phone`,
           cell: (item) => {
             const email = item.getValue<string>();
             if (email?.endsWith("@console.internal")) {
@@ -143,7 +143,13 @@ const PermissionsTable = memo(
                 </Badge>
               );
             }
-            return email;
+            // Phone-only invitees have no email — show their phone instead.
+            // `phone` isn't in the generated view types until db:types runs.
+            return (
+              email ||
+              (item.row.original as { phone?: string | null }).phone ||
+              ""
+            );
           },
           meta: {
             icon: <LuMail />
@@ -237,7 +243,7 @@ const PermissionsTable = memo(
                       (row) =>
                         row.active === false &&
                         !!row.email &&
-                        !unrevokedInviteSet.has(row.email)
+                        row.status !== "Invited"
                     )
                     .map((row) => row.id!)
                 );
@@ -249,7 +255,7 @@ const PermissionsTable = memo(
                   (row) =>
                     row.active === false &&
                     !!row.email &&
-                    !unrevokedInviteSet.has(row.email)
+                    row.status !== "Invited"
                 )
               }
             >
@@ -289,15 +295,13 @@ const PermissionsTable = memo(
         bulkEditDrawer,
         deactivateEmployeeModal,
         resendInviteModal,
-        unrevokedInviteSet,
         currentUserId
       ]
     );
 
     const renderContextMenu = useCallback(
       (row: (typeof data)[number]) => {
-        const hasUnrevokedInvite =
-          !!row.email && unrevokedInviteSet.has(row.email);
+        const hasUnrevokedInvite = row.status === "Invited";
         const isSelf = row.id === currentUserId;
         return (
           <>
@@ -373,8 +377,7 @@ const PermissionsTable = memo(
         permissions,
         resendInviteModal,
         revokeInviteModal,
-        settings.consoleEnabled,
-        unrevokedInviteSet
+        settings.consoleEnabled
       ]
     );
 
@@ -387,10 +390,14 @@ const PermissionsTable = memo(
           defaultColumnVisibility={defaultColumnVisibility}
           primaryAction={
             permissions.can("create", "users") && (
-              <New
-                label={t`Account`}
-                to={`${path.to.newEmployee}?${params.toString()}`}
-              />
+              <Button
+                type="button"
+                variant="primary"
+                leftIcon={<LuCirclePlus />}
+                onClick={openNewEmployee}
+              >
+                <Trans>Add Account</Trans>
+              </Button>
             )
           }
           renderActions={renderActions}

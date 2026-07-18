@@ -203,6 +203,9 @@ msgstr "チャット"
 msgid "Check your email"
 msgstr "メールを確認してください"
 
+msgid "Choose a company"
+msgstr "会社を選択してください"
+
 msgid "Clear"
 msgstr "クリア"
 
@@ -559,6 +562,12 @@ msgstr "在庫調整が完了しました"
 msgid "Inventory Adjustments"
 msgstr "在庫調整"
 
+msgid "Invitation"
+msgstr "招待"
+
+msgid "Invitations"
+msgstr "招待"
+
 msgid "is"
 msgstr "が次と等しい"
 
@@ -594,6 +603,12 @@ msgstr "ジョブトラベラー"
 
 msgid "Jobs"
 msgstr "ジョブズ"
+
+msgid "Join"
+msgstr "参加"
+
+msgid "Join a company you've been invited to, or pick one."
+msgstr "招待を受けた会社に加入するか、選択してください。"
 
 msgid "Keep the completed quantity and give a reason for the rest."
 msgstr "完了数量を保持し、残りの理由を記入してください。"
@@ -871,6 +886,9 @@ msgstr "ワークセンターがありません"
 
 msgid "Not finished yet"
 msgstr "まだ完了していません"
+
+msgid "Not you?"
+msgstr "あなたではありません？"
 
 msgid "Notes"
 msgstr "備考"
@@ -1532,6 +1550,9 @@ msgstr "作業指示書"
 
 msgid "Work scheduled at your work centers"
 msgstr "あなたの作業センタで予定された作業"
+
+msgid "You belong to more than one company. Pick where to work."
+msgstr "あなたは複数の会社に所属しています。働く場所を選んでください。"
 
 #. placeholder {0}: new Date(openClockEntry.clockIn).toLocaleString(locale)
 msgid "You clocked in at {0}. You can edit your clock-out time below or acknowledge that you're still working."

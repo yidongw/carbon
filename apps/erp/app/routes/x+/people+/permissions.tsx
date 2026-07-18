@@ -8,7 +8,6 @@ import { redirect, useLoaderData } from "react-router";
 import {
   getEmployees,
   getEmployeeTypes,
-  getUnrevokedInviteEmails,
   PermissionsTable
 } from "~/modules/users";
 import type { Handle } from "~/utils/handle";
@@ -34,10 +33,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const { limit, offset, sorts, filters } =
     getGenericQueryFilters(searchParams);
 
-  const [employees, employeeTypes, invites] = await Promise.all([
+  const [employees, employeeTypes] = await Promise.all([
     getEmployees(client, companyId, { search, limit, offset, sorts, filters }),
-    getEmployeeTypes(client, companyId),
-    getUnrevokedInviteEmails(client, companyId)
+    getEmployeeTypes(client, companyId)
   ]);
 
   if (employees.error) {
@@ -76,14 +74,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
       admin: userFlagsById[e.id!]?.admin ?? false,
       developer: userFlagsById[e.id!]?.developer ?? false
     })),
-    employeeTypes: employeeTypes.data,
-    unrevokedInviteEmails: invites.data?.map((i) => i.email) ?? []
+    employeeTypes: employeeTypes.data
   };
 }
 
 export default function PeoplePermissionsRoute() {
-  const { count, employees, employeeTypes, unrevokedInviteEmails } =
-    useLoaderData<typeof loader>();
+  const { count, employees, employeeTypes } = useLoaderData<typeof loader>();
 
   return (
     <VStack spacing={0} className="h-full">
@@ -91,7 +87,6 @@ export default function PeoplePermissionsRoute() {
         data={employees}
         count={count}
         employeeTypes={employeeTypes}
-        unrevokedInviteEmails={unrevokedInviteEmails}
       />
     </VStack>
   );

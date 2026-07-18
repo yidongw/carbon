@@ -6,7 +6,6 @@ import { updateCompanySession } from "@carbon/auth/session.server";
 import { ValidatedForm, validationError, validator } from "@carbon/form";
 import { trigger } from "@carbon/jobs";
 import { resolveLanguage } from "@carbon/locale";
-import { getPreferenceHeaders } from "@carbon/utils";
 import {
   Button,
   Card,
@@ -17,7 +16,7 @@ import {
   HStack,
   VStack
 } from "@carbon/react";
-import { Edition } from "@carbon/utils";
+import { Edition, getPreferenceHeaders } from "@carbon/utils";
 import { getLocalTimeZone } from "@internationalized/date";
 import { Trans, useLingui } from "@lingui/react/macro";
 import type { ActionFunctionArgs } from "react-router";
@@ -29,11 +28,13 @@ import { getLocationsList, upsertLocation } from "~/modules/resources";
 import {
   getCompanies,
   getCompany,
+  getEmployeeCompanies,
   insertCompany,
   onboardingCompanyValidator,
   seedCompany,
   updateCompany
 } from "~/modules/settings";
+import { path } from "~/utils/path";
 
 export async function loader({ request }: ActionFunctionArgs) {
   const { client, companyId } = await requirePermissions(request, {});
@@ -52,6 +53,13 @@ export async function loader({ request }: ActionFunctionArgs) {
 export async function action({ request }: ActionFunctionArgs) {
   assertIsPost(request);
   const { client, userId } = await requirePermissions(request, {});
+
+  // One created company per user: a user who is already an employee of a company
+  // cannot create (or re-onboard) another — they can only join via invitations.
+  const existingCompanies = await getEmployeeCompanies(client, userId);
+  if ((existingCompanies.data?.length ?? 0) > 0) {
+    throw redirect(path.to.authenticatedRoot);
+  }
 
   // there are no entries in the userToCompany table which
   // dictates RLS for the company table

@@ -203,6 +203,9 @@ msgstr "聊天"
 msgid "Check your email"
 msgstr "请查收邮件"
 
+msgid "Choose a company"
+msgstr "选择公司"
+
 msgid "Clear"
 msgstr "清除"
 
@@ -559,6 +562,12 @@ msgstr "库存调整已完成"
 msgid "Inventory Adjustments"
 msgstr "库存调整"
 
+msgid "Invitation"
+msgstr "邀请"
+
+msgid "Invitations"
+msgstr "邀请"
+
 msgid "is"
 msgstr "是"
 
@@ -594,6 +603,12 @@ msgstr "工单流转卡"
 
 msgid "Jobs"
 msgstr "任务"
+
+msgid "Join"
+msgstr "加入"
+
+msgid "Join a company you've been invited to, or pick one."
+msgstr "加入邀请您加入的公司，或选择一家。"
 
 msgid "Keep the completed quantity and give a reason for the rest."
 msgstr "保持已完成的数量，并说明剩余部分的原因。"
@@ -871,6 +886,9 @@ msgstr "无工作中心"
 
 msgid "Not finished yet"
 msgstr "还未完成"
+
+msgid "Not you?"
+msgstr "不是你？"
 
 msgid "Notes"
 msgstr "备注"
@@ -1532,6 +1550,9 @@ msgstr "工单"
 
 msgid "Work scheduled at your work centers"
 msgstr "您的工作中心已排程工作"
+
+msgid "You belong to more than one company. Pick where to work."
+msgstr "您属于多个公司。请选择工作所在的公司。"
 
 #. placeholder {0}: new Date(openClockEntry.clockIn).toLocaleString(locale)
 msgid "You clocked in at {0}. You can edit your clock-out time below or acknowledge that you're still working."

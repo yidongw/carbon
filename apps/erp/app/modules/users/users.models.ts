@@ -17,20 +17,38 @@ export const createCustomerAccountValidator = z.object({
   customer: z.string().min(1, { message: "Customer is required" })
 });
 
-export const createEmployeeValidator = z.object({
-  email: z
-    .string()
-    .min(1, { message: "Email is required" })
-    .email("Must be a valid email"),
-  firstName: z.string().min(1, { message: "First name is required" }),
-  lastName: z.string().min(1, { message: "Last name is required" }),
-  employeeType: z.string().min(1, { message: "Employee type is required" }),
-  locationId: z.string().min(1, { message: "Location is required" }),
-  number: z
-    .string()
-    .optional()
-    .transform((val) => (val === "" ? undefined : val))
-});
+export const createEmployeeValidator = z
+  .object({
+    // Invite by email OR phone (mainland-China mobile) — exactly one, enforced below.
+    email: zfd.text(z.string().email("Must be a valid email").optional()),
+    phone: zfd.text(
+      z
+        .string()
+        .regex(/^1[3-9]\d{9}$/, "Must be a valid phone number")
+        .optional()
+    ),
+    firstName: z.string().min(1, { message: "First name is required" }),
+    lastName: z.string().min(1, { message: "Last name is required" }),
+    employeeType: z.string().min(1, { message: "Employee type is required" }),
+    locationId: z.string().min(1, { message: "Location is required" }),
+    number: z
+      .string()
+      .optional()
+      .transform((val) => (val === "" ? undefined : val))
+  })
+  .superRefine((data, ctx) => {
+    if (!data.email && !data.phone) {
+      // Only one of the two fields is shown at a time, so surface the error on both
+      // paths — the visible field then displays it.
+      for (const path of ["email", "phone"] as const) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Email or phone number is required",
+          path: [path]
+        });
+      }
+    }
+  });
 
 export const createOperatorValidator = z.object({
   firstName: z.string().min(1, { message: "First name is required" }),

@@ -13,7 +13,7 @@ import { getGenericQueryFilters } from "~/utils/query";
 
 export const handle: Handle = {
   breadcrumb: msg`Employees`,
-  to: `${path.to.people}?filter=${encodeURIComponent("status:eq:Active")}`
+  to: path.to.people
 };
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -33,13 +33,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   const searchParams = new URLSearchParams(url.search);
 
-  // Default to active on first visit only. Once filters are cleared or removed,
-  // keep showing all employees instead of re-applying the default.
-  if (isEmployeesIndex && searchParams.toString() === "") {
-    throw redirect(
-      `${path.to.people}?filter=${encodeURIComponent("status:eq:Active")}`
-    );
-  }
+  // Show all statuses (Active + Invited + Inactive) by default; picking a value
+  // in the status filter narrows it.
 
   const search = searchParams.get("name");
 

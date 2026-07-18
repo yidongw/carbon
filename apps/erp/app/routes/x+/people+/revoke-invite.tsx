@@ -30,7 +30,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const usersToRevoke = await serviceRole
     .from("user")
-    .select("id, email")
+    .select("id, email, phone")
     .in("id", users);
 
   if (usersToRevoke.error) {
@@ -72,22 +72,48 @@ export async function action({ request }: ActionFunctionArgs) {
     await batchTrigger("user-admin", batchPayload);
   }
 
-  const revokeInvites = await serviceRole
-    .from("invite")
-    .update({ revokedAt: new Date().toISOString() })
-    .in(
-      "email",
-      usersToRevoke.data.map((user) => user.email ?? "")
-    )
-    .eq("companyId", companyId)
-    .is("revokedAt", null);
+  // Invites link to a person by email OR phone (phone invites have no email), so
+  // revoke by whichever identifier each user carries. `phone` isn't in the generated
+  // types until db:types runs.
+  const now = new Date().toISOString();
+  const emails = usersToRevoke.data
+    .map((user) => user.email)
+    .filter((email): email is string => !!email);
+  const phones = usersToRevoke.data
+    .map((user) => user.phone)
+    .filter((phone): phone is string => !!phone);
 
-  if (revokeInvites.error) {
+  const revokeOps = [];
+  if (emails.length > 0) {
+    revokeOps.push(
+      serviceRole
+        .from("invite")
+        .update({ revokedAt: now })
+        .in("email", emails)
+        .eq("companyId", companyId)
+        .is("revokedAt", null)
+    );
+  }
+  if (phones.length > 0) {
+    revokeOps.push(
+      serviceRole
+        .from("invite")
+        .update({ revokedAt: now })
+        .in("phone" as any, phones)
+        .eq("companyId", companyId)
+        .is("revokedAt", null)
+    );
+  }
+
+  const revokeResults = await Promise.all(revokeOps);
+  const revokeError = revokeResults.find((result) => result.error)?.error;
+
+  if (revokeError) {
     return data(
       { success: false },
       await flash(
         request,
-        error(revokeInvites.error.message, "Failed to revoke invites")
+        error(revokeError.message, "Failed to revoke invites")
       )
     );
   }

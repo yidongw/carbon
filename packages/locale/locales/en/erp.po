@@ -384,6 +384,9 @@ msgstr "Add a comment..."
 msgid "Add a printer in the printing settings to print labels directly."
 msgstr "Add a printer in the printing settings to print labels directly."
 
+msgid "Add Account"
+msgstr "Add Account"
+
 msgid "Add Actions"
 msgstr "Add Actions"
 
@@ -419,6 +422,9 @@ msgstr "Add Console Operator"
 
 msgid "Add Contractor"
 msgstr "Add Contractor"
+
+msgid "Add Employee"
+msgstr "Add Employee"
 
 msgid "Add Entry"
 msgstr "Add Entry"
@@ -2304,6 +2310,9 @@ msgstr "Create {0}"
 msgid "Create {0} values"
 msgstr "Create {0} values"
 
+msgid "Create a company"
+msgstr "Create a company"
+
 msgid "Create a new kanban card for scan-based replenishment."
 msgstr "Create a new kanban card for scan-based replenishment."
 
@@ -3728,6 +3737,9 @@ msgstr "Email link is invalid or has expired"
 msgid "Email notifications not configured"
 msgstr "Email notifications not configured"
 
+msgid "Email or Phone"
+msgstr "Email or Phone"
+
 msgid "Emails"
 msgstr "Emails"
 
@@ -5110,6 +5122,12 @@ msgstr "Inventory Unit of Measure"
 msgid "Investments in Subsidiaries"
 msgstr "Investments in Subsidiaries"
 
+msgid "Invitation"
+msgstr "Invitation"
+
+msgid "Invitations"
+msgstr "Invitations"
+
 msgid "Invite"
 msgstr "Invite"
 
@@ -5320,10 +5338,16 @@ msgstr "Jobs in progress"
 msgid "Jobs Required"
 msgstr "Jobs Required"
 
+msgid "Join"
+msgstr "Join"
+
 #. placeholder {0}: company?.name ?? "Company"
 #. placeholder {0}: data.companyName
 msgid "Join {0}"
 msgstr "Join {0}"
+
+msgid "Join a company you've been invited to, or pick one."
+msgstr "Join a company you've been invited to, or pick one."
 
 msgid "Journal Entries"
 msgstr "Journal Entries"
@@ -9707,9 +9731,6 @@ msgstr "Successfully copied quote"
 
 msgid "Successfully created a new revision"
 msgstr "Successfully created a new revision"
-
-msgid "Successfully invited employee"
-msgstr "Successfully invited employee"
 
 msgid "Suffix"
 msgstr "Suffix"

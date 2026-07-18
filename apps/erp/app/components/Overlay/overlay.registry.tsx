@@ -36,6 +36,15 @@ export const overlayRegistry = {
         import("~/modules/production/ui/MasterWorkOrders/MasterWorkOrderForm")
     )
   },
+  newEmployee: {
+    type: "drawer",
+    render: renderLazyOverlay(
+      // The form self-loads employee types and seeds location from the session, so
+      // the loader only gates permissions; any (non-undefined) data means "render".
+      (ctx) => (ctx.loaderData ? {} : null),
+      () => import("~/modules/users/ui/Employees/CreateEmployeeForm")
+    )
+  },
   newProductionQuantity: {
     type: "drawer",
     render: renderLazyOverlay(

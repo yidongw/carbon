@@ -384,6 +384,9 @@ msgstr "添加评论..."
 msgid "Add a printer in the printing settings to print labels directly."
 msgstr "在打印设置中添加打印机以直接打印标签。"
 
+msgid "Add Account"
+msgstr "添加账户"
+
 msgid "Add Actions"
 msgstr "添加操作"
 
@@ -419,6 +422,9 @@ msgstr "添加控制台操作员"
 
 msgid "Add Contractor"
 msgstr "添加承包商"
+
+msgid "Add Employee"
+msgstr "添加员工"
 
 msgid "Add Entry"
 msgstr "添加条目"
@@ -2304,6 +2310,9 @@ msgstr "创建{0}"
 msgid "Create {0} values"
 msgstr "创建{0}个值"
 
+msgid "Create a company"
+msgstr "创建公司"
+
 msgid "Create a new kanban card for scan-based replenishment."
 msgstr "创建基于扫描的补货看板卡片"
 
@@ -3728,6 +3737,9 @@ msgstr "邮件链接无效或已过期"
 msgid "Email notifications not configured"
 msgstr "电子邮件通知未配置"
 
+msgid "Email or Phone"
+msgstr "电子邮件或电话"
+
 msgid "Emails"
 msgstr "电子邮件"
 
@@ -5110,6 +5122,12 @@ msgstr "库存单位"
 msgid "Investments in Subsidiaries"
 msgstr "子公司投资"
 
+msgid "Invitation"
+msgstr "邀请"
+
+msgid "Invitations"
+msgstr "邀请"
+
 msgid "Invite"
 msgstr "邀请"
 
@@ -5320,10 +5338,16 @@ msgstr "进行中的工作"
 msgid "Jobs Required"
 msgstr "所需工作数量"
 
+msgid "Join"
+msgstr "加入"
+
 #. placeholder {0}: company?.name ?? "Company"
 #. placeholder {0}: data.companyName
 msgid "Join {0}"
 msgstr "加入{0}"
+
+msgid "Join a company you've been invited to, or pick one."
+msgstr "加入您被邀请的公司，或选择一家。"
 
 msgid "Journal Entries"
 msgstr "日记账目"
@@ -9707,9 +9731,6 @@ msgstr "成功复制报价"
 
 msgid "Successfully created a new revision"
 msgstr "成功创建新版本"
-
-msgid "Successfully invited employee"
-msgstr "已成功邀请员工"
 
 msgid "Suffix"
 msgstr "后缀"

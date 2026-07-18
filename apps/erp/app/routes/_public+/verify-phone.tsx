@@ -8,6 +8,7 @@ import {
 } from "@carbon/auth";
 import { checkSmsVerifyCode } from "@carbon/auth/aliyun-sms.server";
 import { signInWithUserIdViaAdmin } from "@carbon/auth/auth.server";
+import { getCarbonServiceRole } from "@carbon/auth/client.server";
 import { setCompanyId } from "@carbon/auth/company.server";
 import {
   findOrCreatePhoneUser,
@@ -18,6 +19,7 @@ import {
   getAuthSession,
   setAuthSession
 } from "@carbon/auth/session.server";
+import { getPendingInvitesForUser } from "@carbon/auth/users.server";
 import { Hidden, InputOTP, ValidatedForm, validator } from "@carbon/form";
 import { Ratelimit, redis } from "@carbon/kv";
 import {
@@ -135,11 +137,17 @@ export async function action({ request }: ActionFunctionArgs) {
   const sessionCookie = await setAuthSession(request, { authSession });
   const companyIdCookie = setCompanyId(authSession.companyId);
 
-  // Users with no company yet go through onboarding (mirrors the email signup
-  // path) rather than landing on an empty authenticated screen.
-  const destination = authSession.companyId
-    ? safeRedirect(redirectTo, path.to.authenticatedRoot)
-    : path.to.onboarding.root;
+  // A user with a pending invitation goes to the chooser to accept it — even if
+  // they already belong to a company (phone invites carry no /invite link). Others
+  // land on the authenticated root, where the layout handles the company-less case.
+  const pendingInvites = await getPendingInvitesForUser(
+    getCarbonServiceRole(),
+    user.id
+  );
+  const destination =
+    (pendingInvites.data?.length ?? 0) > 0
+      ? path.to.selectCompany
+      : safeRedirect(redirectTo, path.to.authenticatedRoot);
 
   return redirect(destination, {
     headers: [

@@ -7,10 +7,13 @@ import {
   getUser
 } from "@carbon/auth";
 import { getCarbonServiceRole } from "@carbon/auth/client.server";
+import { setCompanyId } from "@carbon/auth/company.server";
 import {
   destroyAuthSession,
-  requireAuthSession
+  requireAuthSession,
+  updateCompanySession
 } from "@carbon/auth/session.server";
+import { getPendingInvitesForUser } from "@carbon/auth/users.server";
 import type { PrintingSettings } from "@carbon/printing";
 import { getPrinterRoutes } from "@carbon/printing";
 import { PrintingProvider } from "@carbon/printing/ui";
@@ -90,6 +93,40 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
   const company = companies.data?.find((c) => c.companyId === companyId);
   if (!company) {
+    // No valid session company. A user who can pick one — belongs to more than one
+    // company, or has a pending invitation — goes to the MES chooser instead of
+    // bouncing to the ERP app.
+    const userCompanies = companies.data ?? [];
+    const pendingInvites = await getPendingInvitesForUser(
+      getCarbonServiceRole(),
+      userId
+    );
+    const hasChoice =
+      userCompanies.length > 1 || (pendingInvites.data?.length ?? 0) > 0;
+
+    if (hasChoice) {
+      throw redirect(path.to.selectCompany);
+    }
+
+    // Exactly one company and no invite — enter it directly (set the cookies)
+    // rather than looping through the chooser.
+    const only = userCompanies[0];
+    if (only) {
+      const sessionCookie = await updateCompanySession(
+        request,
+        only.companyId!,
+        only.companyGroupId ?? ""
+      );
+      const companyIdCookie = setCompanyId(only.companyId!);
+      throw redirect(path.to.authenticatedRoot, {
+        headers: [
+          ["Set-Cookie", sessionCookie],
+          ["Set-Cookie", companyIdCookie]
+        ]
+      });
+    }
+
+    // No company and no invitation — nothing to do in MES.
     throw redirect(path.to.accountSettings);
   }
 

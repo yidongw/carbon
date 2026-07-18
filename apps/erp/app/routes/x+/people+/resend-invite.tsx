@@ -36,7 +36,7 @@ export async function action({ request }: ActionFunctionArgs) {
       serviceRole.from("company").select("name").eq("id", companyId).single(),
       serviceRole
         .from("user")
-        .select("email, fullName")
+        .select("email, phone, fullName")
         .eq("id", userId)
         .single()
     ]);
@@ -45,11 +45,32 @@ export async function action({ request }: ActionFunctionArgs) {
       throw new Error("Failed to load company or user");
     }
 
+    // Invites link to a person by email OR phone (phone invites have no email).
+    // `phone` isn't in the generated types until db:types runs.
+    const inviteEmail = user.data.email;
+    const invitePhone = user.data.phone;
+    const orFilter = [
+      inviteEmail ? `email.eq.${inviteEmail}` : null,
+      invitePhone ? `phone.eq.${invitePhone}` : null
+    ]
+      .filter(Boolean)
+      .join(",");
+
+    if (!orFilter) {
+      return data(
+        {},
+        await flash(request, error(null, "No invite record found for user"))
+      );
+    }
+
+    // Match by email OR phone, but limit to one row — a user could carry both an
+    // email and a phone invite in the same company, which would break `.single()`.
     const existingInvite = await serviceRole
       .from("invite")
-      .select("createdBy")
-      .eq("email", user.data.email ?? "")
+      .select("id, createdBy")
+      .or(orFilter)
       .eq("companyId", companyId)
+      .limit(1)
       .maybeSingle();
 
     if (existingInvite.error || !existingInvite.data) {
@@ -66,8 +87,7 @@ export async function action({ request }: ActionFunctionArgs) {
     const refreshed = await serviceRole
       .from("invite")
       .update({ code: newCode, acceptedAt: null, revokedAt: null })
-      .eq("email", user.data.email ?? "")
-      .eq("companyId", companyId)
+      .eq("id", existingInvite.data.id)
       .select("code")
       .single();
 
@@ -78,32 +98,36 @@ export async function action({ request }: ActionFunctionArgs) {
       );
     }
 
-    const inviter = await serviceRole
-      .from("user")
-      .select("email, fullName")
-      .eq("id", existingInvite.data.createdBy)
-      .single();
+    // Phone invites carry no link to deliver (Aliyun's SMS template is code-only);
+    // the invite is accepted on phone login, so there's nothing to resend by email.
+    if (inviteEmail) {
+      const inviter = await serviceRole
+        .from("user")
+        .select("email, fullName")
+        .eq("id", existingInvite.data.createdBy)
+        .single();
 
-    await sendEmail({
-      from: `Carbon <no-reply@${RESEND_DOMAIN}>`,
-      to: user.data.email ?? "",
-      subject: `You have been invited to join ${company.data?.name} on Carbon`,
-      headers: {
-        "X-Entity-Ref-ID": nanoid()
-      },
-      html: await render(
-        InviteEmail({
-          invitedByEmail: inviter.data?.email ?? user.data.email ?? "",
-          invitedByName: inviter.data?.fullName ?? "",
-          email: user.data.email ?? "",
-          name: user.data.fullName ?? "",
-          companyName: company.data.name,
-          inviteLink: `${getAppUrl()}/invite/${refreshed.data.code}`,
-          ip,
-          location
-        })
-      )
-    });
+      await sendEmail({
+        from: `Carbon <no-reply@${RESEND_DOMAIN}>`,
+        to: inviteEmail,
+        subject: `You have been invited to join ${company.data?.name} on Carbon`,
+        headers: {
+          "X-Entity-Ref-ID": nanoid()
+        },
+        html: await render(
+          InviteEmail({
+            invitedByEmail: inviter.data?.email ?? inviteEmail,
+            invitedByName: inviter.data?.fullName ?? "",
+            email: inviteEmail,
+            name: user.data.fullName ?? "",
+            companyName: company.data.name,
+            inviteLink: `${getAppUrl()}/invite/${refreshed.data.code}`,
+            ip,
+            location
+          })
+        )
+      });
+    }
 
     return data(
       {},

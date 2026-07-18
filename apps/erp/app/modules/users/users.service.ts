@@ -109,16 +109,8 @@ export async function getEmployees(
     query = query.ilike("name", `%${args.search}%`);
   }
 
-  // Default to active employees when the user hasn't explicitly filtered on
-  // active status. The status/active dropdown still works because picking
-  // a value puts an `active:eq:...` or `status:eq:...` filter in the URL,
-  // which overrides this default.
-  const hasStatusFilter = args.filters?.some(
-    (f) => f.column === "status" || f.column === "active"
-  );
-  if (!hasStatusFilter) {
-    query = query.eq("active", true);
-  }
+  // Show all statuses (Active + Invited + Inactive) by default so pending invites
+  // are visible; the status/active filter narrows it when the user picks a value.
 
   query = setGenericQueryFilters(query, args, [
     { column: "lastName", ascending: true }
@@ -190,18 +182,6 @@ export async function getEmployeeTypes(
   }
 
   return query;
-}
-
-export async function getInvitable(
-  client: SupabaseClient<Database>,
-  companyId: string
-) {
-  return client
-    .from("employeesAcrossCompanies")
-    .select("*")
-    .eq("active", true)
-    .not("companyId", "cs", `{"${companyId}"}`)
-    .order("lastName");
 }
 
 export async function getModules(client: SupabaseClient<Database>) {

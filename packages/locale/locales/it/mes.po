@@ -203,6 +203,9 @@ msgstr "Chat"
 msgid "Check your email"
 msgstr "Controlla la tua email"
 
+msgid "Choose a company"
+msgstr "Scegli una compagnia"
+
 msgid "Clear"
 msgstr "Cancella"
 
@@ -559,6 +562,12 @@ msgstr "Rettifica inventario completata"
 msgid "Inventory Adjustments"
 msgstr "Rettifiche Inventario"
 
+msgid "Invitation"
+msgstr "Invito"
+
+msgid "Invitations"
+msgstr "Inviti"
+
 msgid "is"
 msgstr "è"
 
@@ -594,6 +603,12 @@ msgstr "Foglio di Lavorazione"
 
 msgid "Jobs"
 msgstr "Impieghi"
+
+msgid "Join"
+msgstr "Unisciti"
+
+msgid "Join a company you've been invited to, or pick one."
+msgstr "Unisciti a una compagnia a cui sei stato invitato, o ne scegli una."
 
 msgid "Keep the completed quantity and give a reason for the rest."
 msgstr "Mantieni la quantità completata e fornisci una ragione per il resto."
@@ -871,6 +886,9 @@ msgstr "Nessun centro di lavoro esistente"
 
 msgid "Not finished yet"
 msgstr "Non finito ancora"
+
+msgid "Not you?"
+msgstr "Non sei tu?"
 
 msgid "Notes"
 msgstr "Note"
@@ -1532,6 +1550,9 @@ msgstr "Ordine di Produzione"
 
 msgid "Work scheduled at your work centers"
 msgstr "Piano di lavoro nei vostri centri lavori"
+
+msgid "You belong to more than one company. Pick where to work."
+msgstr "Appartieni a più di una compagnia. Scegli dove lavorare."
 
 #. placeholder {0}: new Date(openClockEntry.clockIn).toLocaleString(locale)
 msgid "You clocked in at {0}. You can edit your clock-out time below or acknowledge that you're still working."
