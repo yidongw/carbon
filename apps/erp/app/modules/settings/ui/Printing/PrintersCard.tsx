@@ -59,12 +59,17 @@ export function PrintersCard({
     name: string;
   } | null>(null);
 
-  // ZPL printers can only print thermal sizes; PDF printers can print any size
+  // ZPL printers can only print thermal sizes. Bundle-tag sizes are chosen at
+  // print time (browser print), not baked into a printer, so they're excluded.
   const [selectedFormat, setSelectedFormat] = useState<"zpl" | "pdf">("zpl");
   const mediaSizeOptions = useMemo(
     () =>
       labelSizes
-        .filter((s) => (selectedFormat === "zpl" ? Boolean(s.zpl) : true))
+        .filter((s) =>
+          selectedFormat === "zpl"
+            ? Boolean(s.zpl)
+            : !s.id.startsWith("bundleTag")
+        )
         .map((s) => ({ value: s.id, label: getLabelSizeLabel(s) })),
     [selectedFormat]
   );

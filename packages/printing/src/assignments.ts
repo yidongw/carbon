@@ -18,7 +18,8 @@ const sourceDocumentContexts: Record<string, PrinterContext> = {
   Shipment: "shipping",
   Receipt: "receiving",
   StockTransfer: "inventory",
-  StorageUnit: "inventory"
+  StorageUnit: "inventory",
+  BundleWorkOrder: "workCenter"
 };
 
 /**

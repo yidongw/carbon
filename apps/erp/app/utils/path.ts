@@ -302,6 +302,25 @@ export const path = {
       },
       kanbanQrCode: (id: string, action: "order" | "start" | "complete") =>
         generatePath(`${file}/kanban/${id}/${action}.png`),
+      bundleWorkOrderQrCode: (id: string) =>
+        generatePath(`${file}/bundle-work-order/${id}.png`),
+      bundleWorkOrderLabelsPdf: (ids: string | string[]) => {
+        const idString = Array.isArray(ids) ? ids.join(",") : ids;
+        return generatePath(
+          `${file}/bundle-work-order/labels.pdf?ids=${idString}`
+        );
+      },
+      bundleWorkOrderLabelsHtml: (
+        ids: string | string[],
+        { labelSize }: { labelSize?: string } = {}
+      ) => {
+        const idString = Array.isArray(ids) ? ids.join(",") : ids;
+        const params = new URLSearchParams({ ids: idString });
+        if (labelSize) params.set("labelSize", labelSize);
+        return generatePath(
+          `${file}/bundle-work-order/labels.html?${params.toString()}`
+        );
+      },
       jobTraveler: (id: string) => generatePath(`${file}/traveler/${id}.pdf`),
       jobTravelerByJobId: (jobId: string) =>
         generatePath(`${file}/job/${jobId}/traveler.pdf`),

@@ -39,6 +39,14 @@ export const documentTypeRegistry = [
     builtInRenderer: "zpl" as const,
     defaultFormat: "zpl" as const,
     description: "Labels for shelves, bins, and storage locations"
+  },
+  {
+    id: "bundleWorkOrderLabel",
+    displayName: "Bundle Work Order Ticket",
+    sourceDocuments: ["BundleWorkOrder"],
+    builtInRenderer: "pdf" as const,
+    defaultFormat: "pdf" as const,
+    description: "QR bundle tickets for garment work orders"
   }
 ] as const satisfies readonly DocumentTypeDefinition[];
 

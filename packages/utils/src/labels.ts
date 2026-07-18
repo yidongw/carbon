@@ -42,6 +42,37 @@ export function getLabelSizeLabel(size: LabelSize): string {
   return size.zpl ? dimensions : `${size.name} ${dimensions}`;
 }
 
+const MM_PER_IN = 25.4;
+
+/**
+ * Garment bundle tag (扎标) sizes in millimetres (width × height, portrait).
+ * PDF-only (no ZPL) — the bundle work-order ticket prints one ticket per tag.
+ */
+const BUNDLE_TAG_MM: [number, number][] = [
+  [30, 65],
+  [30, 70],
+  [35, 65],
+  [35, 70],
+  [35, 80],
+  [40, 60],
+  [40, 65],
+  [40, 80],
+  [40, 90],
+  [40, 100],
+  [50, 65],
+  [50, 80],
+  [50, 90],
+  [50, 100]
+];
+
+const bundleTagSizes: LabelSize[] = BUNDLE_TAG_MM.map(([w, h]) => ({
+  id: `bundleTag${w}x${h}mm`,
+  name: `Bundle Tag ${w}x${h}mm`,
+  width: w / MM_PER_IN,
+  height: h / MM_PER_IN,
+  metric: true
+}));
+
 export const labelSizes: LabelSize[] = [
   {
     id: "avery5163",
@@ -94,5 +125,6 @@ export const labelSizes: LabelSize[] = [
       width: 1.969,
       height: 0.984
     }
-  }
+  },
+  ...bundleTagSizes
 ];
