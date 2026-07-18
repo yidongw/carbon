@@ -215,6 +215,26 @@ export const overlay = {
 };
 
 /**
+ * Build an {@link OverlayTarget} from an overlay id + params, e.g. a `nextOverlay`
+ * signal an action returns so the host can chain a follow-up overlay generically.
+ * Returns null for an unknown id or if the builder rejects the params.
+ */
+export function buildOverlayTarget(
+  id: string,
+  params?: Record<string, unknown>
+): OverlayTarget | null {
+  const builder = (
+    overlay.to as Record<string, (args?: unknown) => OverlayTarget>
+  )[id];
+  if (!builder) return null;
+  try {
+    return builder(params ?? {});
+  } catch {
+    return null;
+  }
+}
+
+/**
  * URL state for overlays.
  *
  * URL-addressable overlays are mirrored on the *current page* URL as a stack,
