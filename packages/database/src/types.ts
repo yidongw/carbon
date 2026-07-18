@@ -31713,6 +31713,13 @@ export type Database = {
             referencedColumns: ["companyId"]
           },
           {
+            foreignKeyName: "productionQuantity_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "productionQuantity_employeeId_fkey"
             columns: ["employeeId"]
             isOneToOne: false
@@ -70384,6 +70391,7 @@ export type Database = {
           parentMaterialId: string
           processId: string
           quantityComplete: number
+          quantityReworked: number
           quantityScrapped: number
           salesOrderId: string
           salesOrderLineId: string
@@ -70466,6 +70474,7 @@ export type Database = {
           parentMaterialId: string
           processId: string
           quantityComplete: number
+          quantityReworked: number
           quantityScrapped: number
           salesOrderId: string
           salesOrderLineId: string
@@ -71712,6 +71721,7 @@ export type Database = {
           parentMaterialId: string
           processId: string
           quantityComplete: number
+          quantityReworked: number
           quantityScrapped: number
           salesOrderId: string
           salesOrderLineId: string
