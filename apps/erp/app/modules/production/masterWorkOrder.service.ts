@@ -331,6 +331,34 @@ export async function getMasterCuttingOperationId(
   return cutting?.id ?? operations.data[0]?.id ?? null;
 }
 
+/**
+ * If `jobOperationId` is a Master Work Order's cutting operation, return that
+ * master's id — used to open Split Batch right after a cutting report. Returns
+ * null for any other job/operation. Mirrors the master-cutting check in
+ * `storeMasterCuttingSplitRows`.
+ */
+export async function getMasterCuttingReportSplitTarget(
+  client: SupabaseClient<Database>,
+  jobId: string,
+  jobOperationId: string,
+  companyId: string
+): Promise<string | null> {
+  const master = await client
+    .from("masterWorkOrder")
+    .select("id")
+    .eq("jobId", jobId)
+    .eq("companyId", companyId)
+    .maybeSingle();
+  if (!master.data?.id) return null;
+  const cuttingOpId = await getMasterCuttingOperationId(
+    client,
+    jobId,
+    companyId
+  );
+  if (!cuttingOpId || cuttingOpId !== jobOperationId) return null;
+  return master.data.id;
+}
+
 export type MasterWorkOrder = NonNullable<
   Awaited<ReturnType<typeof getMasterWorkOrders>>["data"]
 >[number];

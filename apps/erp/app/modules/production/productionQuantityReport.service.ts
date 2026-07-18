@@ -10,7 +10,7 @@ import {
   computeJobConfigTableTotal,
   reportsExceedConfigPlan
 } from "./jobConfiguration";
-import { getMasterCuttingOperationId } from "./masterWorkOrder.service";
+import { getMasterCuttingReportSplitTarget } from "./masterWorkOrder.service";
 import { computeProductionQuantityReportEarnedAmount } from "./productionQuantityList.service";
 import type { ProductionQuantityLineInput } from "./productionQuantityReport.models";
 
@@ -44,43 +44,6 @@ function splitConfigAndRows(configuration: unknown): {
       })
     : [];
   return { config, rows };
-}
-
-/**
- * When a report is the master WO's cutting operation, persist the Production
- * line's raw cut rows so Split Batch can prefill one bundle per row.
- */
-async function storeMasterCuttingSplitRows(
-  client: SupabaseClient<Database>,
-  args: {
-    companyId: string;
-    jobId: string;
-    jobOperationId: string;
-    userId: string;
-    productionQuantityReportId: string;
-    rows: { colorCode: string | null; sizeCode: string | null; quantity: number }[];
-  }
-) {
-  const master = await client
-    .from("masterWorkOrder")
-    .select("id")
-    .eq("jobId", args.jobId)
-    .eq("companyId", args.companyId)
-    .maybeSingle();
-  if (!master.data?.id) return;
-  const cuttingOpId = await getMasterCuttingOperationId(
-    client,
-    args.jobId,
-    args.companyId
-  );
-  if (!cuttingOpId || cuttingOpId !== args.jobOperationId) return;
-  await replaceMasterCuttingSplitRows(client, {
-    masterWorkOrderId: master.data.id,
-    productionQuantityReportId: args.productionQuantityReportId,
-    companyId: args.companyId,
-    createdBy: args.userId,
-    rows: args.rows
-  });
 }
 
 export type ProductionQuantityReportLine =
@@ -139,6 +102,70 @@ export function validateProductionQuantityLines(
           )
         };
       }
+    }
+  }
+  return { error: null };
+}
+
+/**
+ * A color/size-configured (config-param) item must report per cell: every line
+ * for such a job has to carry a configuration whose total > 0. The report editor
+ * gates all line types (Production/Scrap/Rework) through the config table, so the
+ * guard covers them all. Bundle jobs are excluded — they have a fixed color/size
+ * and report a plain quantity. This guards the write layer so a configured report
+ * can never be saved as a bare aggregate (configuration = NULL), regardless of
+ * entry point (report form, edit, external API, import). Mirrors the report
+ * form's config-table gate (item has config params AND the job is not a bundle).
+ */
+async function validateConfiguredLinesHaveConfiguration(
+  client: SupabaseClient<Database>,
+  args: {
+    companyId: string;
+    jobId: string;
+    lines: ProductionQuantityLineInput[];
+  }
+): Promise<{ error: Error | null }> {
+  const linesToCheck = args.lines.filter((l) => l.quantity > 0);
+  if (linesToCheck.length === 0) return { error: null };
+
+  // job (for itemId) and the bundle exclusion are independent — fetch together.
+  const [job, bundle] = await Promise.all([
+    client
+      .from("job")
+      .select("itemId")
+      .eq("id", args.jobId)
+      .eq("companyId", args.companyId)
+      .single(),
+    client
+      .from("bundleWorkOrder")
+      .select("id")
+      .eq("jobId", args.jobId)
+      .eq("companyId", args.companyId)
+      .maybeSingle()
+  ]);
+  const itemId = job.data?.itemId;
+  if (!itemId) return { error: null };
+  // Bundle jobs carry a fixed color/size and report a plain quantity.
+  if (bundle.data) return { error: null };
+
+  const params = await client
+    .from("configurationParameter")
+    .select("id")
+    .eq("itemId", itemId)
+    .eq("companyId", args.companyId)
+    .limit(1);
+  if (!params.data || params.data.length === 0) return { error: null };
+
+  for (const line of linesToCheck) {
+    const configTotal = line.configuration
+      ? computeJobConfigTableTotal(line.configuration as Json)
+      : 0;
+    if (configTotal <= 0) {
+      return {
+        error: new Error(
+          "This item is configured by color/size — enter the per color/size breakdown before reporting."
+        )
+      };
     }
   }
   return { error: null };
@@ -247,6 +274,15 @@ export async function createProductionQuantityReport(
     return { data: null, error: lineValidation.error };
   }
 
+  const configCheck = await validateConfiguredLinesHaveConfiguration(client, {
+    companyId: args.companyId,
+    jobId: args.jobId,
+    lines: args.lines
+  });
+  if (configCheck.error) {
+    return { data: null, error: configCheck.error };
+  }
+
   const remainingCheck = await validateProductionQuantityRemaining(client, {
     companyId: args.companyId,
     jobId: args.jobId,
@@ -334,15 +370,26 @@ export async function createProductionQuantityReport(
       .eq("companyId", args.companyId);
   }
 
-  // Persist the Production line's raw cut rows (master WO cutting reports only).
+  // A master WO cutting report leads into Split Batch: resolve the master once
+  // and reuse it for both the persisted cut rows and the follow-up signal the
+  // caller returns to the overlay host.
+  const splitBatchMasterWorkOrderId = await getMasterCuttingReportSplitTarget(
+    client,
+    args.jobId,
+    args.jobOperationId,
+    args.companyId
+  );
   const productionRows = prepared.find((p) => p.line.type === "Production")?.rows;
-  if (productionRows && productionRows.length > 0) {
-    await storeMasterCuttingSplitRows(client, {
-      companyId: args.companyId,
-      jobId: args.jobId,
-      jobOperationId: args.jobOperationId,
-      userId: args.userId,
+  if (
+    splitBatchMasterWorkOrderId &&
+    productionRows &&
+    productionRows.length > 0
+  ) {
+    await replaceMasterCuttingSplitRows(client, {
+      masterWorkOrderId: splitBatchMasterWorkOrderId,
       productionQuantityReportId: report.id,
+      companyId: args.companyId,
+      createdBy: args.userId,
       rows: productionRows
     });
   }
@@ -353,7 +400,8 @@ export async function createProductionQuantityReport(
       activeLines: lines ?? [],
       hasHistory: false
     } satisfies ProductionQuantityReportWithLines,
-    error: null
+    error: null,
+    splitBatchMasterWorkOrderId
   };
 }
 
@@ -372,6 +420,28 @@ export async function replaceProductionQuantityReportLines(
   const lineValidation = validateProductionQuantityLines(args.lines);
   if (lineValidation.error) {
     return { data: null, error: lineValidation.error };
+  }
+
+  // Fetch the report first so the config guard can run BEFORE we invalidate the
+  // existing lines — a rejected edit must not wipe the current report.
+  const report = await client
+    .from("productionQuantityReport")
+    .select("*")
+    .eq("id", args.reportId)
+    .eq("companyId", args.companyId)
+    .single();
+
+  if (report.error || !report.data) {
+    return { data: null, error: report.error };
+  }
+
+  const configCheck = await validateConfiguredLinesHaveConfiguration(client, {
+    companyId: args.companyId,
+    jobId: report.data.jobId,
+    lines: args.lines
+  });
+  if (configCheck.error) {
+    return { data: null, error: configCheck.error };
   }
 
   const now = new Date().toISOString();
@@ -403,17 +473,6 @@ export async function replaceProductionQuantityReportLines(
     if (invalidateError) {
       return { data: null, error: invalidateError };
     }
-  }
-
-  const report = await client
-    .from("productionQuantityReport")
-    .select("*")
-    .eq("id", args.reportId)
-    .eq("companyId", args.companyId)
-    .single();
-
-  if (report.error || !report.data) {
-    return { data: null, error: report.error };
   }
 
   if (args.notes !== undefined) {
@@ -457,17 +516,25 @@ export async function replaceProductionQuantityReportLines(
     return { data: null, error: insertError };
   }
 
-  // Re-reporting replaces this report's still-pending cut rows (master cutting).
+  // Re-reporting replaces this report's still-pending cut rows (master cutting);
+  // an empty set clears them.
   const productionRows = prepared.find((p) => p.line.type === "Production")?.rows;
   if (productionRows) {
-    await storeMasterCuttingSplitRows(client, {
-      companyId: args.companyId,
-      jobId: report.data.jobId,
-      jobOperationId: report.data.jobOperationId,
-      userId: args.userId,
-      productionQuantityReportId: args.reportId,
-      rows: productionRows
-    });
+    const masterWorkOrderId = await getMasterCuttingReportSplitTarget(
+      client,
+      report.data.jobId,
+      report.data.jobOperationId,
+      args.companyId
+    );
+    if (masterWorkOrderId) {
+      await replaceMasterCuttingSplitRows(client, {
+        masterWorkOrderId,
+        productionQuantityReportId: args.reportId,
+        companyId: args.companyId,
+        createdBy: args.userId,
+        rows: productionRows
+      });
+    }
   }
 
   const { count: historyCount } = await client
