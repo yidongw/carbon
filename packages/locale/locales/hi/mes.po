@@ -21,10 +21,8 @@ msgstr "{0} - सेट {1}"
 msgid "{0} Active"
 msgstr "{0} सक्रिय"
 
-#. placeholder {0}: operation.quantityComplete
 #. placeholder {0}: serialIndex + 1
 #. placeholder {1}: operation.operationQuantity
-#. placeholder {1}: operation.targetQuantity
 msgid "{0} of {1}"
 msgstr "{0} में से {1}"
 
@@ -41,6 +39,14 @@ msgstr "{0} में से {1} पूर्ण"
 #. placeholder {0}: item.quantityScrapped
 msgid "{0} Scrapped"
 msgstr "{0} स्क्रैप किया गया"
+
+#. placeholder {0}: operation.targetQuantity
+msgid "{completedQuantity} of {0}"
+msgstr ""
+
+#. placeholder {0}: checkedIds.length
+msgid "{failed} of {0} tickets failed"
+msgstr ""
 
 msgid "A consumed batch or serial is now past its expiry date."
 msgstr "एक खपत की बच्चा या सैरियल अब अपने समाप्ति तारीख से पास हो गया है।"
@@ -151,12 +157,24 @@ msgstr "बैच नंबर {0}"
 msgid "Batch number is required"
 msgstr "बैच नंबर आवश्यक है"
 
+msgid "Beige"
+msgstr ""
+
+msgid "Black"
+msgstr ""
+
 #. placeholder {0}: column.blockingDispatchReadableId
 msgid "Blocked by {0}"
 msgstr "{0} द्वारा अवरुद्ध"
 
 msgid "Blocking"
 msgstr "अवरुद्ध"
+
+msgid "Blue"
+msgstr ""
+
+msgid "Brown"
+msgstr ""
 
 msgid "Browse bundles and print bundle tickets"
 msgstr "बन्ड खोजें और बन्ड टिकट प्रिंट करें"
@@ -166,6 +184,9 @@ msgstr "काटने के कार्य अर्डर और उनक�
 
 msgid "Browse released jobs on the floor"
 msgstr "फर्से पर जारी जोब्स का खोजना"
+
+msgid "Browser"
+msgstr ""
 
 msgid "Bundle"
 msgstr "बंडल"
@@ -182,8 +203,17 @@ msgstr "लेकिन चिंता न करें। आप नया ज
 msgid "By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy Policy.</1>"
 msgstr "साइन इन करके, आप <0>सेवा की शर्तें</0> और <1>गोपनीयता नीति</1> से सहमत हैं।"
 
+msgid "Camera unavailable — use manual selection below."
+msgstr ""
+
+msgid "Can't scan? Select a released bundle"
+msgstr ""
+
 msgid "Cancel"
 msgstr "रद्द करें"
+
+msgid "Canceled"
+msgstr ""
 
 msgid "Cancelled"
 msgstr "रद्द किया गया"
@@ -314,6 +344,12 @@ msgstr "कीलटा समस्या तैयार करें"
 msgid "Create Rework"
 msgstr "रिकार्वर की तैयारी"
 
+msgid "Current process"
+msgstr ""
+
+msgid "Currently"
+msgstr ""
+
 msgid "Customer"
 msgstr "ग्राहक"
 
@@ -374,6 +410,9 @@ msgstr "डिस्पैच नहीं मिला"
 
 msgid "Display"
 msgstr "प्रदर्शन"
+
+msgid "Done"
+msgstr ""
 
 msgid "Down"
 msgstr "डाउन"
@@ -508,11 +547,23 @@ msgstr "पूरा {0}"
 msgid "Finish Anyways"
 msgstr "किसी तरह से पूरा करें"
 
+msgid "Fixed"
+msgstr ""
+
 msgid "Forgot to Clock Out?"
 msgstr "घड़ी से बाहर निकलना भूल गए?"
 
 msgid "Go back to operation"
 msgstr "प्रणाली में पुनः वापस जाएं"
+
+msgid "Gold"
+msgstr ""
+
+msgid "Gray"
+msgstr ""
+
+msgid "Green"
+msgstr ""
 
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "क्या आपको कोई तकनीकी समस्या है? <0>Carbon Support</0> से संपर्क करें।"
@@ -613,11 +664,17 @@ msgstr "आविष्कार की ओर से कंपनी में 
 msgid "Keep the completed quantity and give a reason for the rest."
 msgstr "पूरी तरह से पूरा मात्रा दें और शेष के लिए कारण दें।"
 
+msgid "Khaki"
+msgstr ""
+
 msgid "Kit"
 msgstr "किट"
 
 msgid "Labor"
 msgstr "श्रम"
+
+msgid "Language"
+msgstr ""
 
 msgid "Leave this page"
 msgstr "इस पेज से निकलना"
@@ -691,6 +748,12 @@ msgstr "इन्वेंटरी में आइटम मैन्युअ
 msgid "Manually remove items from inventory"
 msgstr "इन्वेंटरी से आइटम को मैन्युअली हटाएं"
 
+msgid "Mark fixed"
+msgstr ""
+
+msgid "Mark rework as fixed"
+msgstr ""
+
 msgid "Mark Short"
 msgstr "कमी चिह्नित करें"
 
@@ -734,6 +797,9 @@ msgstr "अधिक विकल्प"
 msgid "Move column: {0}"
 msgstr "कॉलम को स्थानांतरित करें: {0}"
 
+msgid "Move reworked units back into finished production."
+msgstr ""
+
 msgid "Must be < {maxValue} {unitOfMeasureCode}"
 msgstr "{maxValue} {unitOfMeasureCode} से कम होना चाहिए"
 
@@ -751,6 +817,9 @@ msgstr "मेरी वेतन"
 
 msgid "Name"
 msgstr "नाम"
+
+msgid "Navy"
+msgstr ""
 
 msgid "New"
 msgstr "नया"
@@ -939,6 +1008,12 @@ msgstr "ऑपरेटर द्वारा निष्पादित"
 msgid "Optional"
 msgstr "वैकल्पिक"
 
+msgid "Orange"
+msgstr ""
+
+msgid "Other"
+msgstr ""
+
 msgid "Owed"
 msgstr "देय"
 
@@ -960,8 +1035,14 @@ msgstr "पेस्ट एक लिंक"
 msgid "Pause"
 msgstr "रोकें"
 
+msgid "Paused"
+msgstr ""
+
 msgid "Pending"
 msgstr "अपूर्ण"
+
+msgid "Pending approval"
+msgstr ""
 
 msgid "Pending Approval"
 msgstr "अनुमोदन की प्रतीक्षा में है"
@@ -981,6 +1062,13 @@ msgstr "पकड़ें"
 msgid "Pick tracked item"
 msgstr "चिह्नित वस्तु पकड़ें"
 
+msgid "Pick up"
+msgstr ""
+
+#. placeholder {0}: operation.itemReadableId
+msgid "Pick up {0}"
+msgstr ""
+
 msgid "Picked"
 msgstr "पकड़ा गया"
 
@@ -999,8 +1087,14 @@ msgstr "पीकिंग"
 msgid "Picking lists to fulfill"
 msgstr "पूरा करने वाले पिकिंग लिस्ट"
 
+msgid "Pickup Bundle Job"
+msgstr ""
+
 msgid "Pin Out"
 msgstr "पिन आउट"
+
+msgid "Pink"
+msgstr ""
 
 msgid "Planned"
 msgstr "नियोजित"
@@ -1010,6 +1104,9 @@ msgstr "कृपया बंद करने से पहले इस ऑप
 
 msgid "Please select an item"
 msgstr "कृपया एक आइटम चुनें"
+
+msgid "Point the camera at the bundle ticket QR code"
+msgstr ""
 
 msgid "Prev"
 msgstr "पिछला"
@@ -1035,6 +1132,19 @@ msgstr "पिछला वर्ष"
 msgid "Print"
 msgstr "प्रिंट"
 
+#. placeholder {0}: checkedIds.length
+msgid "Print ({0})"
+msgstr ""
+
+msgid "Print from this device"
+msgstr ""
+
+msgid "Print Tickets"
+msgstr ""
+
+msgid "Print to"
+msgstr ""
+
 msgid "Printer Settings"
 msgstr "प्रिंटर सेट्टिङ्स"
 
@@ -1053,6 +1163,9 @@ msgstr "प्रक्रिया पैरामीटर"
 msgid "Processes"
 msgstr "प्रक्रियाएं"
 
+msgid "Produced"
+msgstr ""
+
 msgid "production"
 msgstr "उत्पादन"
 
@@ -1064,6 +1177,9 @@ msgstr "प्रगति"
 
 msgid "Properties"
 msgstr "प्रज्याति"
+
+msgid "Purple"
+msgstr ""
 
 msgid "Qty"
 msgstr "क्वांटिटी"
@@ -1082,6 +1198,13 @@ msgstr "मात्रा 0 से अधिक होनी चाहिए"
 
 msgid "Quantity picked to lineside"
 msgstr "लाइन साइड तक पहचानी गई मात्रा"
+
+#. placeholder {0}: checkedIds.length
+msgid "Queued {0} tickets for printing"
+msgstr ""
+
+msgid "Ready"
+msgstr ""
 
 msgid "Reason for issuing expired stock"
 msgstr "समाप्त हो गया स्टॉक के लिए कारण"
@@ -1105,11 +1228,18 @@ msgstr "रिकॉर्ड"
 msgid "Record {0}"
 msgstr "रिकॉर्ड {0}"
 
+#. placeholder {0}: operation.itemReadableId
+msgid "Record completed quantity for {0}"
+msgstr ""
+
 msgid "Record Quantity"
 msgstr "रिकॉर्ड गुणता"
 
 msgid "Record step"
 msgstr "रिकॉर्ड चरण"
+
+msgid "Red"
+msgstr ""
 
 msgid "Redirecting to verification page..."
 msgstr "सत्यापन पृष्ठ पर पुनर्निर्देशित हो रहा है..."
@@ -1138,14 +1268,23 @@ msgstr "भाग हटाएं"
 msgid "Remove Serial Number"
 msgstr "रिमॉव सीरियल नंबर"
 
+msgid "Report"
+msgstr ""
+
 msgid "Report Approvals"
 msgstr "रिपोर्ट अनुमोदन"
+
+msgid "Report Quantities"
+msgstr ""
 
 msgid "Reported"
 msgstr "रिपोर्टेड"
 
 msgid "Reset zoom"
 msgstr "रीसेट फोकस"
+
+msgid "Review"
+msgstr ""
 
 msgid "Review and approve reported production quantities"
 msgstr "परीक्षण और मानने वाली उत्पादन की मात्रा पर"
@@ -1170,6 +1309,18 @@ msgstr "सहेजें"
 
 msgid "Scan"
 msgstr "स्कैन करें"
+
+msgid "Scan a bundle ticket to take the job and start working"
+msgstr ""
+
+msgid "Scan a bundle ticket to take the job and start working."
+msgstr ""
+
+msgid "Scan a finished bundle to report the quantity you completed"
+msgstr ""
+
+msgid "Scan a finished bundle to report the quantity you completed."
+msgstr ""
 
 msgid "Scan batch number"
 msgstr "बच्चे क्रम संख्या अस्पर्श करें"
@@ -1200,6 +1351,9 @@ msgstr "स्क्रैप किया गया"
 
 msgid "Search"
 msgstr "खोजें"
+
+msgid "Search bundles…"
+msgstr ""
 
 msgid "Search by bundle or style"
 msgstr "बंडल या स्टाइल में परीक्षण करें"
@@ -1234,6 +1388,10 @@ msgstr "स्क्रैप मात्रा और कारण चुन�
 msgid "Select a serial number to continue with this operation"
 msgstr "इस ऑपरेशन को जारी रखने के लिए एक सीरियल नंबर चुनें"
 
+#. placeholder {0}: printable.length
+msgid "Select all ({0})"
+msgstr ""
+
 msgid "Select an item and specify the quantity to issue"
 msgstr "एक आइटम चुनें और जारी करने के लिए मात्रा निर्दिष्ट करें"
 
@@ -1249,6 +1407,9 @@ msgstr "बैच संख्या चुनें"
 
 msgid "Select batch to unconsume"
 msgstr "बचत का चयन करें जो अपकार्य है"
+
+msgid "Select employee"
+msgstr ""
 
 msgid "Select Printer"
 msgstr "चयन करें"
@@ -1331,6 +1492,9 @@ msgstr "साइन आउट"
 msgid "Signed in as {stationName}"
 msgstr "के रूप में साइन इन किया गया {stationName}"
 
+msgid "Silver"
+msgstr ""
+
 msgid "Size"
 msgstr "आकार"
 
@@ -1394,6 +1558,19 @@ msgstr "ऑपरेटर स्विच करें"
 msgid "Tag"
 msgstr "टैग"
 
+msgid "Tag size"
+msgstr ""
+
+msgid "Take over"
+msgstr ""
+
+#. placeholder {0}: operation.itemReadableId
+msgid "Take over {0}"
+msgstr ""
+
+msgid "That QR code isn't a bundle ticket"
+msgstr ""
+
 #. placeholder {0}: operation.operationQuantity
 msgid "The completed quantity for this operation is less than the required quantity of {0}."
 msgstr "इस ऑपरेशन के लिए पूर्ण मात्रा आवश्यक मात्रा {0} से कम है।"
@@ -1410,6 +1587,9 @@ msgstr "इस ऑपरेशन को हटाया गया है"
 msgid "This Period"
 msgstr "यह अवधि"
 
+msgid "This process is assigned to someone else. Taking over stops their running clock."
+msgstr ""
+
 msgid "Thumbnail"
 msgstr "थंबनेल"
 
@@ -1422,6 +1602,9 @@ msgstr "समय काम किया: {0}"
 
 msgid "Today"
 msgstr "आज"
+
+msgid "Todo"
+msgstr ""
 
 msgid "Toggle"
 msgstr "बदलें"
@@ -1466,6 +1649,9 @@ msgstr "अनुसंधान"
 
 msgid "Type a message..."
 msgstr "एक संदेश लिखें..."
+
+msgid "Unassigned"
+msgstr ""
 
 msgid "Unissued serial/batch materials"
 msgstr "अजारी सीरीज़/बैच सामग्री"
@@ -1524,6 +1710,9 @@ msgstr "रखरखाव डिस्पैच देखें"
 msgid "Volume:"
 msgstr "आयतन:"
 
+msgid "Waiting"
+msgstr ""
+
 msgid "We've sent a verification code to {email}"
 msgstr "हमने {email} पर एक सत्यापन कोड भेजा है"
 
@@ -1539,6 +1728,9 @@ msgstr "हमने आपके खाते में साइन इन क
 msgid "Welcome"
 msgstr "पाठ्यक्रम स्वागत करता है"
 
+msgid "White"
+msgstr ""
+
 msgid "WIP"
 msgstr "WIP"
 
@@ -1550,6 +1742,9 @@ msgstr "कार्य अनुसंधान"
 
 msgid "Work scheduled at your work centers"
 msgstr "आपके कार्य संस्थानों पर अनुमानित कार्य"
+
+msgid "Yellow"
+msgstr ""
 
 msgid "You belong to more than one company. Pick where to work."
 msgstr "आपको एक से अधिक कंपनी में साझा है। काम करने वाली कंपनी चुनें।"

@@ -89,6 +89,10 @@ msgstr "{credentialName} registrado"
 msgid "{days} days ({formatted})"
 msgstr "{days} días ({formatted})"
 
+#. placeholder {0}: checkedIds.length
+msgid "{failed} of {0} tickets failed"
+msgstr ""
+
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB límite"
 
@@ -474,6 +478,9 @@ msgstr "Agregar Parámetro"
 msgid "Add Partner"
 msgstr "Agregar Socio"
 
+msgid "Add Passkey"
+msgstr ""
+
 msgid "Add Permissions"
 msgstr "Agregar Permisos"
 
@@ -542,6 +549,13 @@ msgstr "Complemento"
 
 msgid "Add-On Cost"
 msgstr "Costo Adicional"
+
+#. placeholder {0}: new Date(selectedPasskey.createdAt).toLocaleDateString( undefined, { year: "numeric", month: "long", day: "numeric" } )
+msgid "Added {0}"
+msgstr ""
+
+msgid "Added {createdAt}"
+msgstr ""
 
 msgid "Adding..."
 msgstr "Añadiendo..."
@@ -1059,6 +1073,9 @@ msgstr "¿Estás seguro de que deseas eliminar esta tarjeta kanban? Esto no se p
 msgid "Are you sure you want to delete this maintenance dispatch? This cannot be undone."
 msgstr "¿Estás seguro de que deseas eliminar este despacho de mantenimiento? Esto no se puede deshacer."
 
+msgid "Are you sure you want to delete this passkey? You won't be able to use it to sign in anymore."
+msgstr ""
+
 msgid "Are you sure you want to delete this process completion? This action cannot be undone."
 msgstr "¿Estás seguro de que quieres eliminar este proceso de finalización? Esta acción no se puede deshacer."
 
@@ -1438,6 +1455,9 @@ msgstr "Migas de pan"
 
 msgid "Browse library"
 msgstr "Buscar biblioteca"
+
+msgid "Browser"
+msgstr ""
 
 msgid "Bucket"
 msgstr "Depósito"
@@ -2967,6 +2987,9 @@ msgstr "Eliminar Socio"
 msgid "Delete passkey"
 msgstr "Eliminar Passkey"
 
+msgid "Delete Passkey"
+msgstr ""
+
 msgid "Delete Payment Term"
 msgstr "Eliminar Término de Pago"
 
@@ -3571,6 +3594,9 @@ msgstr "Editar Parte"
 
 msgid "Edit Partner"
 msgstr "Editar Socio"
+
+msgid "Edit Passkey"
+msgstr ""
 
 msgid "Edit Payment Term"
 msgstr "Editar Término de Pago"
@@ -5447,6 +5473,13 @@ msgstr "Última sincronización: {0}"
 msgid "Last updated: {formattedDate}"
 msgstr "Última actualización: {formattedDate}"
 
+#. placeholder {0}: new Date( selectedPasskey.lastUsedAt ).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })
+msgid "Last used {0}"
+msgstr ""
+
+msgid "Last used {lastUsedAt}"
+msgstr ""
+
 msgid "Layout spacing"
 msgstr "Espaciado del diseño"
 
@@ -6686,6 +6719,9 @@ msgstr "Sin ID de pieza"
 msgid "No parts added yet"
 msgstr "No hay piezas añadidas aún"
 
+msgid "No passkeys registered yet."
+msgstr ""
+
 msgid "No planning data"
 msgstr "Sin datos de planificación"
 
@@ -7237,6 +7273,9 @@ msgstr "Clave de acceso"
 msgid "Passkey name"
 msgstr "Nombre del Passkey"
 
+msgid "Passkeys"
+msgstr ""
+
 msgid "Passkeys are disabled"
 msgstr "Las claves de acceso están desactivadas"
 
@@ -7642,9 +7681,23 @@ msgstr "Seguimiento de Precios"
 msgid "Print"
 msgstr "Imprimir"
 
+#. placeholder {0}: checkedIds.length
+msgid "Print ({0})"
+msgstr ""
+
 #. placeholder {0}: selectedIds.size
 msgid "Print {0} Labels"
 msgstr "Imprimir {0} Etiquetas"
+
+#. placeholder {0}: selectedRows.length
+msgid "Print {0} Tickets"
+msgstr ""
+
+msgid "Print Bundle Tickets"
+msgstr ""
+
+msgid "Print from this device"
+msgstr ""
 
 msgid "Print Jobs"
 msgstr "Tareas de impresión"
@@ -7655,6 +7708,12 @@ msgstr "Imprimir Etiqueta"
 #. placeholder {0}: viewContent.contentType?.toUpperCase()
 msgid "Print Output ({0})"
 msgstr "Imprimir Salida ({0})"
+
+msgid "Print Tickets"
+msgstr ""
+
+msgid "Print to"
+msgstr ""
 
 msgid "Printer Settings"
 msgstr "Configuración del Impresor"
@@ -7954,6 +8013,10 @@ msgstr "Trimestral"
 
 msgid "Question"
 msgstr "Pregunta"
+
+#. placeholder {0}: checkedIds.length
+msgid "Queued {0} tickets for printing"
+msgstr ""
 
 msgid "Quote"
 msgstr "Cotización"
@@ -8933,6 +8996,10 @@ msgstr "Seleccionar cuenta"
 msgid "Select all"
 msgstr "Seleccionar todo"
 
+#. placeholder {0}: printable.length
+msgid "Select all ({0})"
+msgstr ""
+
 msgid "Select an assignee"
 msgstr "Seleccionar un asignado"
 
@@ -9350,6 +9417,9 @@ msgstr "Mostrado al usuario cuando esta regla falla."
 
 msgid "Sign In to Request Access"
 msgstr "Iniciar sesión para solicitar acceso"
+
+msgid "Sign in with biometrics instead of a magic link. Passkeys are secured by Face ID, Touch ID, or your device PIN."
+msgstr ""
 
 msgid "Sign in with Email"
 msgstr "Iniciar sesión con correo electrónico"
@@ -9883,6 +9953,9 @@ msgstr "Sincronizar"
 msgid "Sync Procedure"
 msgstr "Procedimiento de sincronización"
 
+msgid "Synced"
+msgstr ""
+
 msgid "Syncing the procedure will update the operation with the new work instructions, steps, and parameters. Any steps that are not part of the procedure will be removed."
 msgstr "Al sincronizar el procedimiento se actualizará la operación con las instrucciones de trabajo nuevas, pasos y parámetros. Cualquier paso que no forme parte del procedimiento será eliminado."
 
@@ -9894,6 +9967,9 @@ msgstr "Tabla"
 
 msgid "Table actions"
 msgstr "Acciones de tabla"
+
+msgid "Tag size"
+msgstr ""
 
 msgid "Tags"
 msgstr "Etiquetas"

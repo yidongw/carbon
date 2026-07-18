@@ -21,10 +21,8 @@ msgstr "{0} - セット {1}"
 msgid "{0} Active"
 msgstr "{0} アクティブ"
 
-#. placeholder {0}: operation.quantityComplete
 #. placeholder {0}: serialIndex + 1
 #. placeholder {1}: operation.operationQuantity
-#. placeholder {1}: operation.targetQuantity
 msgid "{0} of {1}"
 msgstr "{0} / {1}"
 
@@ -41,6 +39,14 @@ msgstr "{0} / {1} 完了済み"
 #. placeholder {0}: item.quantityScrapped
 msgid "{0} Scrapped"
 msgstr "{0} スクラップ"
+
+#. placeholder {0}: operation.targetQuantity
+msgid "{completedQuantity} of {0}"
+msgstr ""
+
+#. placeholder {0}: checkedIds.length
+msgid "{failed} of {0} tickets failed"
+msgstr ""
 
 msgid "A consumed batch or serial is now past its expiry date."
 msgstr "消費期限を過ぎたバッチまたはシリアルが使用されています。"
@@ -151,12 +157,24 @@ msgstr "バッチ番号 {0}"
 msgid "Batch number is required"
 msgstr "バッチ番号は必須です"
 
+msgid "Beige"
+msgstr ""
+
+msgid "Black"
+msgstr ""
+
 #. placeholder {0}: column.blockingDispatchReadableId
 msgid "Blocked by {0}"
 msgstr "{0} によりブロック中"
 
 msgid "Blocking"
 msgstr "ブロック中"
+
+msgid "Blue"
+msgstr ""
+
+msgid "Brown"
+msgstr ""
 
 msgid "Browse bundles and print bundle tickets"
 msgstr "バンドルを閲覧し、バンドル切符を印刷します"
@@ -166,6 +184,9 @@ msgstr "切削加工の仕事票とその束を検索"
 
 msgid "Browse released jobs on the floor"
 msgstr "フロアでリリースされたジョブを閲覧"
+
+msgid "Browser"
+msgstr ""
 
 msgid "Bundle"
 msgstr "バンドル"
@@ -182,8 +203,17 @@ msgstr "ご心配なく。パスワード忘却フローを使用して新しい
 msgid "By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy Policy.</1>"
 msgstr "サインインすることにより、<0>利用規約</0>および<1>プライバシーポリシー</1>に同意したものとみなされます。"
 
+msgid "Camera unavailable — use manual selection below."
+msgstr ""
+
+msgid "Can't scan? Select a released bundle"
+msgstr ""
+
 msgid "Cancel"
 msgstr "キャンセル"
+
+msgid "Canceled"
+msgstr ""
 
 msgid "Cancelled"
 msgstr "キャンセルされました"
@@ -314,6 +344,12 @@ msgstr "品質問題を作成"
 msgid "Create Rework"
 msgstr "再加工を作成"
 
+msgid "Current process"
+msgstr ""
+
+msgid "Currently"
+msgstr ""
+
 msgid "Customer"
 msgstr "顧客"
 
@@ -374,6 +410,9 @@ msgstr "ディスパッチが見つかりません"
 
 msgid "Display"
 msgstr "表示"
+
+msgid "Done"
+msgstr ""
 
 msgid "Down"
 msgstr "停止"
@@ -508,11 +547,23 @@ msgstr "Finish {0}"
 msgid "Finish Anyways"
 msgstr "完了する"
 
+msgid "Fixed"
+msgstr ""
+
 msgid "Forgot to Clock Out?"
 msgstr "退勤打刻を忘れましたか？"
 
 msgid "Go back to operation"
 msgstr "作業に戻る"
+
+msgid "Gold"
+msgstr ""
+
+msgid "Gray"
+msgstr ""
+
+msgid "Green"
+msgstr ""
 
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "技術的な問題がありますか？<0>Carbonサポート</0>にお問い合わせください。"
@@ -613,11 +664,17 @@ msgstr "招待を受けた会社に加入するか、選択してください。
 msgid "Keep the completed quantity and give a reason for the rest."
 msgstr "完了数量を保持し、残りの理由を記入してください。"
 
+msgid "Khaki"
+msgstr ""
+
 msgid "Kit"
 msgstr "キット"
 
 msgid "Labor"
 msgstr "作業"
+
+msgid "Language"
+msgstr ""
 
 msgid "Leave this page"
 msgstr "このページを離れる"
@@ -691,6 +748,12 @@ msgstr "手動で在庫に品目を追加"
 msgid "Manually remove items from inventory"
 msgstr "手動で在庫から品目を削除"
 
+msgid "Mark fixed"
+msgstr ""
+
+msgid "Mark rework as fixed"
+msgstr ""
+
 msgid "Mark Short"
 msgstr "不足としてマーク"
 
@@ -734,6 +797,9 @@ msgstr "その他のオプション"
 msgid "Move column: {0}"
 msgstr "カラムを移動: {0}"
 
+msgid "Move reworked units back into finished production."
+msgstr ""
+
 msgid "Must be < {maxValue} {unitOfMeasureCode}"
 msgstr "{maxValue} {unitOfMeasureCode} 未満である必要があります"
 
@@ -751,6 +817,9 @@ msgstr "My Salary"
 
 msgid "Name"
 msgstr "名前"
+
+msgid "Navy"
+msgstr ""
 
 msgid "New"
 msgstr "新規"
@@ -939,6 +1008,12 @@ msgstr "オペレーター実施"
 msgid "Optional"
 msgstr "オプション"
 
+msgid "Orange"
+msgstr ""
+
+msgid "Other"
+msgstr ""
+
 msgid "Owed"
 msgstr "負け"
 
@@ -960,8 +1035,14 @@ msgstr "ペーストするリンクを貼り付けてください"
 msgid "Pause"
 msgstr "一時停止"
 
+msgid "Paused"
+msgstr ""
+
 msgid "Pending"
 msgstr "(待ち中)"
+
+msgid "Pending approval"
+msgstr ""
 
 msgid "Pending Approval"
 msgstr "(待り approvals )"
@@ -981,6 +1062,13 @@ msgstr "選択"
 msgid "Pick tracked item"
 msgstr "追跡可能な項目を選択"
 
+msgid "Pick up"
+msgstr ""
+
+#. placeholder {0}: operation.itemReadableId
+msgid "Pick up {0}"
+msgstr ""
+
 msgid "Picked"
 msgstr "選択しました"
 
@@ -999,8 +1087,14 @@ msgstr "ピッキング"
 msgid "Picking lists to fulfill"
 msgstr "注文先のリスト"
 
+msgid "Pickup Bundle Job"
+msgstr ""
+
 msgid "Pin Out"
 msgstr "ピンアウト"
+
+msgid "Pink"
+msgstr ""
 
 msgid "Planned"
 msgstr "計画済み"
@@ -1010,6 +1104,9 @@ msgstr "クローズする前にこの工程のすべてのステップを記録
 
 msgid "Please select an item"
 msgstr "品目を選択してください"
+
+msgid "Point the camera at the bundle ticket QR code"
+msgstr ""
 
 msgid "Prev"
 msgstr "前へ"
@@ -1035,6 +1132,19 @@ msgstr "前年"
 msgid "Print"
 msgstr "印刷"
 
+#. placeholder {0}: checkedIds.length
+msgid "Print ({0})"
+msgstr ""
+
+msgid "Print from this device"
+msgstr ""
+
+msgid "Print Tickets"
+msgstr ""
+
+msgid "Print to"
+msgstr ""
+
 msgid "Printer Settings"
 msgstr "プリンタ設定"
 
@@ -1053,6 +1163,9 @@ msgstr "プロセスパラメーター"
 msgid "Processes"
 msgstr "プロセス一覧"
 
+msgid "Produced"
+msgstr ""
+
 msgid "production"
 msgstr "生産"
 
@@ -1064,6 +1177,9 @@ msgstr "進捗"
 
 msgid "Properties"
 msgstr "プロパティーズ"
+
+msgid "Purple"
+msgstr ""
 
 msgid "Qty"
 msgstr "量"
@@ -1082,6 +1198,13 @@ msgstr "数量は0より大きい値を入力してください"
 
 msgid "Quantity picked to lineside"
 msgstr "ラインサイドにピックされた数量"
+
+#. placeholder {0}: checkedIds.length
+msgid "Queued {0} tickets for printing"
+msgstr ""
+
+msgid "Ready"
+msgstr ""
 
 msgid "Reason for issuing expired stock"
 msgstr "有効期限切れの在庫発出理由"
@@ -1105,11 +1228,18 @@ msgstr "記録"
 msgid "Record {0}"
 msgstr "レコード {0}"
 
+#. placeholder {0}: operation.itemReadableId
+msgid "Record completed quantity for {0}"
+msgstr ""
+
 msgid "Record Quantity"
 msgstr "レコード数量"
 
 msgid "Record step"
 msgstr "レコードステップ"
+
+msgid "Red"
+msgstr ""
 
 msgid "Redirecting to verification page..."
 msgstr "確認ページにリダイレクト中..."
@@ -1138,14 +1268,23 @@ msgstr "パーツを削除"
 msgid "Remove Serial Number"
 msgstr "シリアル番号を削除"
 
+msgid "Report"
+msgstr ""
+
 msgid "Report Approvals"
 msgstr "報告承認"
+
+msgid "Report Quantities"
+msgstr ""
 
 msgid "Reported"
 msgstr "報告済み"
 
 msgid "Reset zoom"
 msgstr "ズームをリセット"
+
+msgid "Review"
+msgstr ""
 
 msgid "Review and approve reported production quantities"
 msgstr "報告された生産数量を確認し、承認します"
@@ -1170,6 +1309,18 @@ msgstr "保存"
 
 msgid "Scan"
 msgstr "スキャン"
+
+msgid "Scan a bundle ticket to take the job and start working"
+msgstr ""
+
+msgid "Scan a bundle ticket to take the job and start working."
+msgstr ""
+
+msgid "Scan a finished bundle to report the quantity you completed"
+msgstr ""
+
+msgid "Scan a finished bundle to report the quantity you completed."
+msgstr ""
 
 msgid "Scan batch number"
 msgstr "バッチ番号をスキャンします"
@@ -1200,6 +1351,9 @@ msgstr "スクラップ済み"
 
 msgid "Search"
 msgstr "検索"
+
+msgid "Search bundles…"
+msgstr ""
 
 msgid "Search by bundle or style"
 msgstr "バンドルまたはスタイルで検索"
@@ -1234,6 +1388,10 @@ msgstr "スクラップ数量と理由を選択"
 msgid "Select a serial number to continue with this operation"
 msgstr "この工程を続行するシリアル番号を選択してください"
 
+#. placeholder {0}: printable.length
+msgid "Select all ({0})"
+msgstr ""
+
 msgid "Select an item and specify the quantity to issue"
 msgstr "品目を選択し、払出数量を指定してください"
 
@@ -1249,6 +1407,9 @@ msgstr "バッチ番号を選択してください"
 
 msgid "Select batch to unconsume"
 msgstr "バッチを選択して取り消しを解除します"
+
+msgid "Select employee"
+msgstr ""
 
 msgid "Select Printer"
 msgstr "プリンターを選択してください"
@@ -1331,6 +1492,9 @@ msgstr "サインアウト"
 msgid "Signed in as {stationName}"
 msgstr "{stationName} としてサインイン中"
 
+msgid "Silver"
+msgstr ""
+
 msgid "Size"
 msgstr "サイズ"
 
@@ -1394,6 +1558,19 @@ msgstr "オペレーターを切替"
 msgid "Tag"
 msgstr "タグ"
 
+msgid "Tag size"
+msgstr ""
+
+msgid "Take over"
+msgstr ""
+
+#. placeholder {0}: operation.itemReadableId
+msgid "Take over {0}"
+msgstr ""
+
+msgid "That QR code isn't a bundle ticket"
+msgstr ""
+
 #. placeholder {0}: operation.operationQuantity
 msgid "The completed quantity for this operation is less than the required quantity of {0}."
 msgstr "この工程の完了数量が必要数量 {0} を下回っています。"
@@ -1410,6 +1587,9 @@ msgstr "この操作は削除されました"
 msgid "This Period"
 msgstr "この期間"
 
+msgid "This process is assigned to someone else. Taking over stops their running clock."
+msgstr ""
+
 msgid "Thumbnail"
 msgstr "サムネイル"
 
@@ -1422,6 +1602,9 @@ msgstr "作業時間: {0}"
 
 msgid "Today"
 msgstr "今日"
+
+msgid "Todo"
+msgstr ""
 
 msgid "Toggle"
 msgstr "切り替え"
@@ -1466,6 +1649,9 @@ msgstr "追跡"
 
 msgid "Type a message..."
 msgstr "メッセージを入力..."
+
+msgid "Unassigned"
+msgstr ""
 
 msgid "Unissued serial/batch materials"
 msgstr "未払出のシリアル/バッチ材料"
@@ -1524,6 +1710,9 @@ msgstr "メンテナンスディスパッチを表示"
 msgid "Volume:"
 msgstr "ボリューム："
 
+msgid "Waiting"
+msgstr ""
+
 msgid "We've sent a verification code to {email}"
 msgstr "{email} に確認コードを送信しました"
 
@@ -1539,6 +1728,9 @@ msgstr "アカウントにサインインするためのマジックリンクを
 msgid "Welcome"
 msgstr "ようこそ"
 
+msgid "White"
+msgstr ""
+
 msgid "WIP"
 msgstr "仕掛品"
 
@@ -1550,6 +1742,9 @@ msgstr "作業指示書"
 
 msgid "Work scheduled at your work centers"
 msgstr "あなたの作業センタで予定された作業"
+
+msgid "Yellow"
+msgstr ""
 
 msgid "You belong to more than one company. Pick where to work."
 msgstr "あなたは複数の会社に所属しています。働く場所を選んでください。"

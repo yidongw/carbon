@@ -21,10 +21,8 @@ msgstr "{0} — Набор {1}"
 msgid "{0} Active"
 msgstr "{0} Активных"
 
-#. placeholder {0}: operation.quantityComplete
 #. placeholder {0}: serialIndex + 1
 #. placeholder {1}: operation.operationQuantity
-#. placeholder {1}: operation.targetQuantity
 msgid "{0} of {1}"
 msgstr "{0} из {1}"
 
@@ -41,6 +39,14 @@ msgstr "{0} из {1} завершено"
 #. placeholder {0}: item.quantityScrapped
 msgid "{0} Scrapped"
 msgstr "{0} Списано"
+
+#. placeholder {0}: operation.targetQuantity
+msgid "{completedQuantity} of {0}"
+msgstr ""
+
+#. placeholder {0}: checkedIds.length
+msgid "{failed} of {0} tickets failed"
+msgstr ""
 
 msgid "A consumed batch or serial is now past its expiry date."
 msgstr "Затраченная партия или серия теперь вышла за дату истечения срока годности."
@@ -151,12 +157,24 @@ msgstr "Номер партии {0}"
 msgid "Batch number is required"
 msgstr "Номер партии обязателен"
 
+msgid "Beige"
+msgstr ""
+
+msgid "Black"
+msgstr ""
+
 #. placeholder {0}: column.blockingDispatchReadableId
 msgid "Blocked by {0}"
 msgstr "Заблокировано {0}"
 
 msgid "Blocking"
 msgstr "Блокирующие"
+
+msgid "Blue"
+msgstr ""
+
+msgid "Brown"
+msgstr ""
 
 msgid "Browse bundles and print bundle tickets"
 msgstr "Обзор пакетов и печать чеков на пакеты"
@@ -166,6 +184,9 @@ msgstr "Обзор заказов на резку и их пакеты"
 
 msgid "Browse released jobs on the floor"
 msgstr "Обзор выпущенных задач на производстве"
+
+msgid "Browser"
+msgstr ""
 
 msgid "Bundle"
 msgstr "Пакет"
@@ -182,8 +203,17 @@ msgstr "Но не волнуйтесь. Вы можете использоват
 msgid "By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy Policy.</1>"
 msgstr "Выполняя вход, вы соглашаетесь с <0>Условиями использования</0> и <1>Политикой конфиденциальности.</1>"
 
+msgid "Camera unavailable — use manual selection below."
+msgstr ""
+
+msgid "Can't scan? Select a released bundle"
+msgstr ""
+
 msgid "Cancel"
 msgstr "Отмена"
+
+msgid "Canceled"
+msgstr ""
 
 msgid "Cancelled"
 msgstr "Отменено"
@@ -314,6 +344,12 @@ msgstr "Создать质量问题"
 msgid "Create Rework"
 msgstr "Создать повторную обработку"
 
+msgid "Current process"
+msgstr ""
+
+msgid "Currently"
+msgstr ""
+
 msgid "Customer"
 msgstr "Заказчик"
 
@@ -374,6 +410,9 @@ msgstr "Наряд не найден"
 
 msgid "Display"
 msgstr "Отображение"
+
+msgid "Done"
+msgstr ""
 
 msgid "Down"
 msgstr "Простой"
@@ -508,11 +547,23 @@ msgstr "Завершить {0}"
 msgid "Finish Anyways"
 msgstr "Завершить всё равно"
 
+msgid "Fixed"
+msgstr ""
+
 msgid "Forgot to Clock Out?"
 msgstr "Забыли отметить уход?"
 
 msgid "Go back to operation"
 msgstr "Вернуться к операции"
+
+msgid "Gold"
+msgstr ""
+
+msgid "Gray"
+msgstr ""
+
+msgid "Green"
+msgstr ""
 
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "Возникла техническая проблема? Обратитесь в <0>службу поддержки Carbon.</0>"
@@ -613,11 +664,17 @@ msgstr "Присоединитесь к компании, в которую ва
 msgid "Keep the completed quantity and give a reason for the rest."
 msgstr "Сохраните выполненную величину и укажите причину оставшейся части."
 
+msgid "Khaki"
+msgstr ""
+
 msgid "Kit"
 msgstr "Комплект"
 
 msgid "Labor"
 msgstr "Трудозатраты"
+
+msgid "Language"
+msgstr ""
 
 msgid "Leave this page"
 msgstr "Оставить эту страницу"
@@ -691,6 +748,12 @@ msgstr "Добавить номенклатуру на склад вручную
 msgid "Manually remove items from inventory"
 msgstr "Списать номенклатуру со склада вручную"
 
+msgid "Mark fixed"
+msgstr ""
+
+msgid "Mark rework as fixed"
+msgstr ""
+
 msgid "Mark Short"
 msgstr "Отметить нехватку"
 
@@ -734,6 +797,9 @@ msgstr "Дополнительные действия"
 msgid "Move column: {0}"
 msgstr "Переместить столбец: {0}"
 
+msgid "Move reworked units back into finished production."
+msgstr ""
+
 msgid "Must be < {maxValue} {unitOfMeasureCode}"
 msgstr "Должно быть < {maxValue} {unitOfMeasureCode}"
 
@@ -751,6 +817,9 @@ msgstr "Мой заработок"
 
 msgid "Name"
 msgstr "Имя"
+
+msgid "Navy"
+msgstr ""
 
 msgid "New"
 msgstr "Новое"
@@ -939,6 +1008,12 @@ msgstr "Выполнено оператором"
 msgid "Optional"
 msgstr "Опционально"
 
+msgid "Orange"
+msgstr ""
+
+msgid "Other"
+msgstr ""
+
 msgid "Owed"
 msgstr "Совершенствован"
 
@@ -960,8 +1035,14 @@ msgstr "Вставьте ссылку"
 msgid "Pause"
 msgstr "Пауза"
 
+msgid "Paused"
+msgstr ""
+
 msgid "Pending"
 msgstr "Ожидание"
+
+msgid "Pending approval"
+msgstr ""
 
 msgid "Pending Approval"
 msgstr "Отсроченная оценка"
@@ -981,6 +1062,13 @@ msgstr "Выбрать"
 msgid "Pick tracked item"
 msgstr "Выберите отслеживаемый элемент"
 
+msgid "Pick up"
+msgstr ""
+
+#. placeholder {0}: operation.itemReadableId
+msgid "Pick up {0}"
+msgstr ""
+
 msgid "Picked"
 msgstr "Выбрано"
 
@@ -999,8 +1087,14 @@ msgstr "Выборка"
 msgid "Picking lists to fulfill"
 msgstr "Списки выборки для выполнения"
 
+msgid "Pickup Bundle Job"
+msgstr ""
+
 msgid "Pin Out"
 msgstr "Выход по PIN"
+
+msgid "Pink"
+msgstr ""
 
 msgid "Planned"
 msgstr "Плановое"
@@ -1010,6 +1104,9 @@ msgstr "Пожалуйста, зафиксируйте все шаги этой 
 
 msgid "Please select an item"
 msgstr "Пожалуйста, выберите номенклатуру"
+
+msgid "Point the camera at the bundle ticket QR code"
+msgstr ""
 
 msgid "Prev"
 msgstr "Назад"
@@ -1035,6 +1132,19 @@ msgstr "Предыдущий год"
 msgid "Print"
 msgstr "Печать"
 
+#. placeholder {0}: checkedIds.length
+msgid "Print ({0})"
+msgstr ""
+
+msgid "Print from this device"
+msgstr ""
+
+msgid "Print Tickets"
+msgstr ""
+
+msgid "Print to"
+msgstr ""
+
 msgid "Printer Settings"
 msgstr "Настройки принтера"
 
@@ -1053,6 +1163,9 @@ msgstr "Параметры процесса"
 msgid "Processes"
 msgstr "Процессы"
 
+msgid "Produced"
+msgstr ""
+
 msgid "production"
 msgstr "производство"
 
@@ -1064,6 +1177,9 @@ msgstr "Прогресс"
 
 msgid "Properties"
 msgstr "Свойства"
+
+msgid "Purple"
+msgstr ""
 
 msgid "Qty"
 msgstr "Количество"
@@ -1082,6 +1198,13 @@ msgstr "Количество должно быть больше 0"
 
 msgid "Quantity picked to lineside"
 msgstr "Количество взято на линию"
+
+#. placeholder {0}: checkedIds.length
+msgid "Queued {0} tickets for printing"
+msgstr ""
+
+msgid "Ready"
+msgstr ""
 
 msgid "Reason for issuing expired stock"
 msgstr "Причина выпуска истекшего товара"
@@ -1105,11 +1228,18 @@ msgstr "Записать"
 msgid "Record {0}"
 msgstr "Запись {0}"
 
+#. placeholder {0}: operation.itemReadableId
+msgid "Record completed quantity for {0}"
+msgstr ""
+
 msgid "Record Quantity"
 msgstr "Записать количество"
 
 msgid "Record step"
 msgstr "Записать шаг"
+
+msgid "Red"
+msgstr ""
 
 msgid "Redirecting to verification page..."
 msgstr "Перенаправление на страницу верификации..."
@@ -1138,14 +1268,23 @@ msgstr "Удалить деталь"
 msgid "Remove Serial Number"
 msgstr "Удалить серийный номер"
 
+msgid "Report"
+msgstr ""
+
 msgid "Report Approvals"
 msgstr "Подтверждение отчетов"
+
+msgid "Report Quantities"
+msgstr ""
 
 msgid "Reported"
 msgstr "Отправлено"
 
 msgid "Reset zoom"
 msgstr "Сбросить масштаб"
+
+msgid "Review"
+msgstr ""
 
 msgid "Review and approve reported production quantities"
 msgstr "Проверьте и одобрите отчетные производственные количества"
@@ -1170,6 +1309,18 @@ msgstr "Сохранить"
 
 msgid "Scan"
 msgstr "Сканировать"
+
+msgid "Scan a bundle ticket to take the job and start working"
+msgstr ""
+
+msgid "Scan a bundle ticket to take the job and start working."
+msgstr ""
+
+msgid "Scan a finished bundle to report the quantity you completed"
+msgstr ""
+
+msgid "Scan a finished bundle to report the quantity you completed."
+msgstr ""
 
 msgid "Scan batch number"
 msgstr "Сканирование номера лота"
@@ -1200,6 +1351,9 @@ msgstr "Списано в брак"
 
 msgid "Search"
 msgstr "Поиск"
+
+msgid "Search bundles…"
+msgstr ""
 
 msgid "Search by bundle or style"
 msgstr "Поиск по набору или стилю"
@@ -1234,6 +1388,10 @@ msgstr "Выберите количество брака и причину"
 msgid "Select a serial number to continue with this operation"
 msgstr "Выберите серийный номер для продолжения операции"
 
+#. placeholder {0}: printable.length
+msgid "Select all ({0})"
+msgstr ""
+
 msgid "Select an item and specify the quantity to issue"
 msgstr "Выберите номенклатуру и укажите количество для выдачи"
 
@@ -1249,6 +1407,9 @@ msgstr "Выберите номер лота"
 
 msgid "Select batch to unconsume"
 msgstr "Выберите лот для снятия с учета"
+
+msgid "Select employee"
+msgstr ""
 
 msgid "Select Printer"
 msgstr "Выберите принтер"
@@ -1331,6 +1492,9 @@ msgstr "Выйти"
 msgid "Signed in as {stationName}"
 msgstr "Вход выполнен как {stationName}"
 
+msgid "Silver"
+msgstr ""
+
 msgid "Size"
 msgstr "Размер"
 
@@ -1394,6 +1558,19 @@ msgstr "Сменить оператора"
 msgid "Tag"
 msgstr "Тег"
 
+msgid "Tag size"
+msgstr ""
+
+msgid "Take over"
+msgstr ""
+
+#. placeholder {0}: operation.itemReadableId
+msgid "Take over {0}"
+msgstr ""
+
+msgid "That QR code isn't a bundle ticket"
+msgstr ""
+
 #. placeholder {0}: operation.operationQuantity
 msgid "The completed quantity for this operation is less than the required quantity of {0}."
 msgstr "Количество готовой продукции по этой операции меньше требуемого количества {0}."
@@ -1410,6 +1587,9 @@ msgstr "Эта операция была удалена"
 msgid "This Period"
 msgstr "Эта период"
 
+msgid "This process is assigned to someone else. Taking over stops their running clock."
+msgstr ""
+
 msgid "Thumbnail"
 msgstr "Миниатюра"
 
@@ -1422,6 +1602,9 @@ msgstr "Отработанное время: {0}"
 
 msgid "Today"
 msgstr "Сегодня"
+
+msgid "Todo"
+msgstr ""
 
 msgid "Toggle"
 msgstr "Переключить"
@@ -1466,6 +1649,9 @@ msgstr "Отслеживание"
 
 msgid "Type a message..."
 msgstr "Введите сообщение..."
+
+msgid "Unassigned"
+msgstr ""
 
 msgid "Unissued serial/batch materials"
 msgstr "Невыданные серийные/партионные материалы"
@@ -1524,6 +1710,9 @@ msgstr "Просмотреть наряд на обслуживание"
 msgid "Volume:"
 msgstr "Объем:"
 
+msgid "Waiting"
+msgstr ""
+
 msgid "We've sent a verification code to {email}"
 msgstr "Мы отправили код подтверждения на {email}"
 
@@ -1539,6 +1728,9 @@ msgstr "Мы отправили вам ссылку для входа в ваш 
 msgid "Welcome"
 msgstr "Добро пожаловать"
 
+msgid "White"
+msgstr ""
+
 msgid "WIP"
 msgstr "НЗП"
 
@@ -1550,6 +1742,9 @@ msgstr "Заказ производства"
 
 msgid "Work scheduled at your work centers"
 msgstr "Запланировано для выполнения на ваших рабочих центрах"
+
+msgid "Yellow"
+msgstr ""
 
 msgid "You belong to more than one company. Pick where to work."
 msgstr "Вы относитесь к нескольким компаниям. Выберите, где работать."

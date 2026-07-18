@@ -21,10 +21,8 @@ msgstr "{0} - Set {1}"
 msgid "{0} Active"
 msgstr "{0} Attivi"
 
-#. placeholder {0}: operation.quantityComplete
 #. placeholder {0}: serialIndex + 1
 #. placeholder {1}: operation.operationQuantity
-#. placeholder {1}: operation.targetQuantity
 msgid "{0} of {1}"
 msgstr "{0} di {1}"
 
@@ -41,6 +39,14 @@ msgstr "{0} di {1} completati"
 #. placeholder {0}: item.quantityScrapped
 msgid "{0} Scrapped"
 msgstr "{0} Scartati"
+
+#. placeholder {0}: operation.targetQuantity
+msgid "{completedQuantity} of {0}"
+msgstr ""
+
+#. placeholder {0}: checkedIds.length
+msgid "{failed} of {0} tickets failed"
+msgstr ""
 
 msgid "A consumed batch or serial is now past its expiry date."
 msgstr "Un lote o serie consumato è ora scaduto."
@@ -151,12 +157,24 @@ msgstr "Numero Lotto {0}"
 msgid "Batch number is required"
 msgstr "Il numero di lotto è obbligatorio"
 
+msgid "Beige"
+msgstr ""
+
+msgid "Black"
+msgstr ""
+
 #. placeholder {0}: column.blockingDispatchReadableId
 msgid "Blocked by {0}"
 msgstr "Bloccato da {0}"
 
 msgid "Blocking"
 msgstr "Bloccante"
+
+msgid "Blue"
+msgstr ""
+
+msgid "Brown"
+msgstr ""
 
 msgid "Browse bundles and print bundle tickets"
 msgstr "Esplora i bundle e stampa i biglietti del bundle"
@@ -166,6 +184,9 @@ msgstr "Esplora i ordini di taglio e le loro unità"
 
 msgid "Browse released jobs on the floor"
 msgstr "Esplora i lavori rilasciati sul pavimento"
+
+msgid "Browser"
+msgstr ""
 
 msgid "Bundle"
 msgstr "Pacco"
@@ -182,8 +203,17 @@ msgstr "Ma non preoccuparti. Puoi utilizzare il flusso password dimenticata per 
 msgid "By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy Policy.</1>"
 msgstr "Effettuando l'accesso, accetti i <0>Termini di Servizio</0> e l'<1>Informativa sulla Privacy.</1>"
 
+msgid "Camera unavailable — use manual selection below."
+msgstr ""
+
+msgid "Can't scan? Select a released bundle"
+msgstr ""
+
 msgid "Cancel"
 msgstr "Annulla"
+
+msgid "Canceled"
+msgstr ""
 
 msgid "Cancelled"
 msgstr "Annullato"
@@ -314,6 +344,12 @@ msgstr "Crea problema di qualità"
 msgid "Create Rework"
 msgstr "Crea Rework"
 
+msgid "Current process"
+msgstr ""
+
+msgid "Currently"
+msgstr ""
+
 msgid "Customer"
 msgstr "Cliente"
 
@@ -374,6 +410,9 @@ msgstr "Intervento non trovato"
 
 msgid "Display"
 msgstr "Visualizzazione"
+
+msgid "Done"
+msgstr ""
 
 msgid "Down"
 msgstr "Fermo"
@@ -508,11 +547,23 @@ msgstr "Finisci {0}"
 msgid "Finish Anyways"
 msgstr "Fine comunque"
 
+msgid "Fixed"
+msgstr ""
+
 msgid "Forgot to Clock Out?"
 msgstr "Hai dimenticato di timbrare l'uscita?"
 
 msgid "Go back to operation"
 msgstr "Torna all'operazione"
+
+msgid "Gold"
+msgstr ""
+
+msgid "Gray"
+msgstr ""
+
+msgid "Green"
+msgstr ""
 
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "Hai un problema tecnico? Contatta il <0>Supporto Carbon.</0>"
@@ -613,11 +664,17 @@ msgstr "Unisciti a una compagnia a cui sei stato invitato, o ne scegli una."
 msgid "Keep the completed quantity and give a reason for the rest."
 msgstr "Mantieni la quantità completata e fornisci una ragione per il resto."
 
+msgid "Khaki"
+msgstr ""
+
 msgid "Kit"
 msgstr "Kit"
 
 msgid "Labor"
 msgstr "Manodopera"
+
+msgid "Language"
+msgstr ""
 
 msgid "Leave this page"
 msgstr "Chiudi questa pagina"
@@ -691,6 +748,12 @@ msgstr "Aggiungi manualmente articoli all'inventario"
 msgid "Manually remove items from inventory"
 msgstr "Rimuovi manualmente articoli dall'inventario"
 
+msgid "Mark fixed"
+msgstr ""
+
+msgid "Mark rework as fixed"
+msgstr ""
+
 msgid "Mark Short"
 msgstr "Segna come mancante"
 
@@ -734,6 +797,9 @@ msgstr "Altre opzioni"
 msgid "Move column: {0}"
 msgstr "Sposta colonna: {0}"
 
+msgid "Move reworked units back into finished production."
+msgstr ""
+
 msgid "Must be < {maxValue} {unitOfMeasureCode}"
 msgstr "Deve essere < {maxValue} {unitOfMeasureCode}"
 
@@ -751,6 +817,9 @@ msgstr "Il mio stipendio"
 
 msgid "Name"
 msgstr "Nome"
+
+msgid "Navy"
+msgstr ""
 
 msgid "New"
 msgstr "Nuovo"
@@ -939,6 +1008,12 @@ msgstr "Eseguito dall'Operatore"
 msgid "Optional"
 msgstr "Facoltativo"
 
+msgid "Orange"
+msgstr ""
+
+msgid "Other"
+msgstr ""
+
 msgid "Owed"
 msgstr "Debito"
 
@@ -960,8 +1035,14 @@ msgstr "Incolla un link"
 msgid "Pause"
 msgstr "Pausa"
 
+msgid "Paused"
+msgstr ""
+
 msgid "Pending"
 msgstr "Aspettivo"
+
+msgid "Pending approval"
+msgstr ""
 
 msgid "Pending Approval"
 msgstr "Aspettativa di approvazione"
@@ -981,6 +1062,13 @@ msgstr "Seleziona"
 msgid "Pick tracked item"
 msgstr "Seleziona articolo tracciato"
 
+msgid "Pick up"
+msgstr ""
+
+#. placeholder {0}: operation.itemReadableId
+msgid "Pick up {0}"
+msgstr ""
+
 msgid "Picked"
 msgstr "Selezionato"
 
@@ -999,8 +1087,14 @@ msgstr "Picking"
 msgid "Picking lists to fulfill"
 msgstr "Elenco di picking per la consegna"
 
+msgid "Pickup Bundle Job"
+msgstr ""
+
 msgid "Pin Out"
 msgstr "Disconnetti"
+
+msgid "Pink"
+msgstr ""
 
 msgid "Planned"
 msgstr "Pianificato"
@@ -1010,6 +1104,9 @@ msgstr "Registrare tutte le fasi di questa operazione prima di chiuderla."
 
 msgid "Please select an item"
 msgstr "Selezionare un articolo"
+
+msgid "Point the camera at the bundle ticket QR code"
+msgstr ""
 
 msgid "Prev"
 msgstr "Precedente"
@@ -1035,6 +1132,19 @@ msgstr "Anno precedente"
 msgid "Print"
 msgstr "Stampa"
 
+#. placeholder {0}: checkedIds.length
+msgid "Print ({0})"
+msgstr ""
+
+msgid "Print from this device"
+msgstr ""
+
+msgid "Print Tickets"
+msgstr ""
+
+msgid "Print to"
+msgstr ""
+
 msgid "Printer Settings"
 msgstr "Impostazioni stampante"
 
@@ -1053,6 +1163,9 @@ msgstr "Parametri di Processo"
 msgid "Processes"
 msgstr "Processi"
 
+msgid "Produced"
+msgstr ""
+
 msgid "production"
 msgstr "produzione"
 
@@ -1064,6 +1177,9 @@ msgstr "Avanzamento"
 
 msgid "Properties"
 msgstr "Proprietà"
+
+msgid "Purple"
+msgstr ""
 
 msgid "Qty"
 msgstr "Quantità"
@@ -1082,6 +1198,13 @@ msgstr "La quantità deve essere maggiore di 0"
 
 msgid "Quantity picked to lineside"
 msgstr "Quantità raccolta alle linee"
+
+#. placeholder {0}: checkedIds.length
+msgid "Queued {0} tickets for printing"
+msgstr ""
+
+msgid "Ready"
+msgstr ""
 
 msgid "Reason for issuing expired stock"
 msgstr "Motivo emissione magazzino scaduto"
@@ -1105,11 +1228,18 @@ msgstr "Registra"
 msgid "Record {0}"
 msgstr "Registrazione {0}"
 
+#. placeholder {0}: operation.itemReadableId
+msgid "Record completed quantity for {0}"
+msgstr ""
+
 msgid "Record Quantity"
 msgstr "Quantità registrata"
 
 msgid "Record step"
 msgstr "Registra passo"
+
+msgid "Red"
+msgstr ""
 
 msgid "Redirecting to verification page..."
 msgstr "Reindirizzamento alla pagina di verifica..."
@@ -1138,14 +1268,23 @@ msgstr "Rimuovi componente"
 msgid "Remove Serial Number"
 msgstr "Rimuovi numero di serie"
 
+msgid "Report"
+msgstr ""
+
 msgid "Report Approvals"
 msgstr "Approvazioni Rapporto"
+
+msgid "Report Quantities"
+msgstr ""
 
 msgid "Reported"
 msgstr "Rapportato"
 
 msgid "Reset zoom"
 msgstr "Ripeti lo zoom"
+
+msgid "Review"
+msgstr ""
 
 msgid "Review and approve reported production quantities"
 msgstr "Revisione e approvazione delle quantità prodotte reportate"
@@ -1170,6 +1309,18 @@ msgstr "Salva"
 
 msgid "Scan"
 msgstr "Scansiona"
+
+msgid "Scan a bundle ticket to take the job and start working"
+msgstr ""
+
+msgid "Scan a bundle ticket to take the job and start working."
+msgstr ""
+
+msgid "Scan a finished bundle to report the quantity you completed"
+msgstr ""
+
+msgid "Scan a finished bundle to report the quantity you completed."
+msgstr ""
 
 msgid "Scan batch number"
 msgstr "Scani il numero di lote"
@@ -1200,6 +1351,9 @@ msgstr "Scartato"
 
 msgid "Search"
 msgstr "Cerca"
+
+msgid "Search bundles…"
+msgstr ""
 
 msgid "Search by bundle or style"
 msgstr "Cerca per fascicolo o stile"
@@ -1234,6 +1388,10 @@ msgstr "Seleziona una quantità di scarto e il motivo"
 msgid "Select a serial number to continue with this operation"
 msgstr "Seleziona un numero di serie per continuare con questa operazione"
 
+#. placeholder {0}: printable.length
+msgid "Select all ({0})"
+msgstr ""
+
 msgid "Select an item and specify the quantity to issue"
 msgstr "Seleziona un articolo e specifica la quantità da prelevare"
 
@@ -1249,6 +1407,9 @@ msgstr "Seleziona il numero di lote"
 
 msgid "Select batch to unconsume"
 msgstr "Seleziona l'bulk da deallocare"
+
+msgid "Select employee"
+msgstr ""
 
 msgid "Select Printer"
 msgstr "Seleziona Stampa"
@@ -1331,6 +1492,9 @@ msgstr "Esci"
 msgid "Signed in as {stationName}"
 msgstr "Connesso come {stationName}"
 
+msgid "Silver"
+msgstr ""
+
 msgid "Size"
 msgstr "Dimensione"
 
@@ -1394,6 +1558,19 @@ msgstr "Cambia Operatore"
 msgid "Tag"
 msgstr "Etichetta"
 
+msgid "Tag size"
+msgstr ""
+
+msgid "Take over"
+msgstr ""
+
+#. placeholder {0}: operation.itemReadableId
+msgid "Take over {0}"
+msgstr ""
+
+msgid "That QR code isn't a bundle ticket"
+msgstr ""
+
 #. placeholder {0}: operation.operationQuantity
 msgid "The completed quantity for this operation is less than the required quantity of {0}."
 msgstr "La quantità completata per questa operazione è inferiore alla quantità richiesta di {0}."
@@ -1410,6 +1587,9 @@ msgstr "Questa operazione è stata eliminata"
 msgid "This Period"
 msgstr "Periodo attuale"
 
+msgid "This process is assigned to someone else. Taking over stops their running clock."
+msgstr ""
+
 msgid "Thumbnail"
 msgstr "Miniatura"
 
@@ -1422,6 +1602,9 @@ msgstr "Tempo Lavorato: {0}"
 
 msgid "Today"
 msgstr "Oggi"
+
+msgid "Todo"
+msgstr ""
 
 msgid "Toggle"
 msgstr "Attiva/disattiva"
@@ -1466,6 +1649,9 @@ msgstr "Tracciamento"
 
 msgid "Type a message..."
 msgstr "Scrivi un messaggio..."
+
+msgid "Unassigned"
+msgstr ""
 
 msgid "Unissued serial/batch materials"
 msgstr "Materiali seriali/lotto non prelevati"
@@ -1524,6 +1710,9 @@ msgstr "Visualizza intervento di manutenzione"
 msgid "Volume:"
 msgstr "Volume:"
 
+msgid "Waiting"
+msgstr ""
+
 msgid "We've sent a verification code to {email}"
 msgstr "Abbiamo inviato un codice di verifica a {email}"
 
@@ -1539,6 +1728,9 @@ msgstr "Ti abbiamo inviato un link di accesso al tuo account."
 msgid "Welcome"
 msgstr "Benvenuto"
 
+msgid "White"
+msgstr ""
+
 msgid "WIP"
 msgstr "WIP"
 
@@ -1550,6 +1742,9 @@ msgstr "Ordine di Produzione"
 
 msgid "Work scheduled at your work centers"
 msgstr "Piano di lavoro nei vostri centri lavori"
+
+msgid "Yellow"
+msgstr ""
 
 msgid "You belong to more than one company. Pick where to work."
 msgstr "Appartieni a più di una compagnia. Scegli dove lavorare."
