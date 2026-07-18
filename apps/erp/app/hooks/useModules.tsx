@@ -69,7 +69,7 @@ function useModuleDefinitions(): ModuleDefinition[] {
       key: "parts",
       permission: "parts",
       name: t`Items`,
-      to: path.to.parts,
+      to: path.to.styles,
       icon: LuSquareStack
     },
     {

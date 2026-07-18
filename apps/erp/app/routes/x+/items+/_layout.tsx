@@ -14,7 +14,7 @@ export const meta: MetaFunction = () => {
 
 export const handle: Handle = {
   breadcrumb: msg`Items`,
-  to: path.to.parts,
+  to: path.to.styles,
   module: "items"
 };
 

@@ -21,9 +21,7 @@ import { useSavedViews } from "~/hooks/useSavedViews";
 import type { AuthenticatedRouteGroup, Role } from "~/types";
 import { path } from "~/utils/path";
 
-export default function useItemsSubmodules(opts?: {
-  includeHidden?: boolean;
-}) {
+export default function useItemsSubmodules(opts?: { includeHidden?: boolean }) {
   const { t } = useLingui();
   const permissions = usePermissions();
   const companySettings = useCompanySettings();
@@ -33,6 +31,11 @@ export default function useItemsSubmodules(opts?: {
     {
       name: t`Manage`,
       routes: [
+        {
+          name: t`Styles`,
+          to: path.to.styles,
+          icon: <LuShirt />
+        },
         {
           name: t`Parts`,
           to: path.to.parts,
