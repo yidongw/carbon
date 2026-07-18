@@ -64,11 +64,6 @@ export default function useItemsSubmodules(opts?: { includeHidden?: boolean }) {
           name: t`Templates`,
           to: path.to.templates,
           icon: <LuLayoutTemplate />
-        },
-        {
-          name: t`Styles`,
-          to: path.to.styles,
-          icon: <LuShirt />
         }
       ]
     },
