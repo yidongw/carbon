@@ -89,6 +89,10 @@ msgstr "{credentialName} が登録されました"
 msgid "{days} days ({formatted})"
 msgstr "{days}日（{formatted}）"
 
+#. placeholder {0}: checkedIds.length
+msgid "{failed} of {0} tickets failed"
+msgstr "{0} 枚中 {failed} 枚の印刷に失敗しました"
+
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB制限"
 
@@ -474,6 +478,9 @@ msgstr "パラメータを追加"
 msgid "Add Partner"
 msgstr "パートナーを追加"
 
+msgid "Add Passkey"
+msgstr "パスキーを追加"
+
 msgid "Add Permissions"
 msgstr "権限を追加"
 
@@ -542,6 +549,13 @@ msgstr "アドオン"
 
 msgid "Add-On Cost"
 msgstr "アドオンコスト"
+
+#. placeholder {0}: new Date(selectedPasskey.createdAt).toLocaleDateString( undefined, { year: "numeric", month: "long", day: "numeric" } )
+msgid "Added {0}"
+msgstr "追加日時 {0}"
+
+msgid "Added {createdAt}"
+msgstr "追加日時 {createdAt}"
 
 msgid "Adding..."
 msgstr "追加中..."
@@ -1059,6 +1073,9 @@ msgstr "このカンバンカードを削除してもよろしいですか？こ
 msgid "Are you sure you want to delete this maintenance dispatch? This cannot be undone."
 msgstr "このメンテナンスディスパッチを削除してもよろしいですか？この操作は取り消せません。"
 
+msgid "Are you sure you want to delete this passkey? You won't be able to use it to sign in anymore."
+msgstr "このパスキーを削除してもよろしいですか？削除後はこのパスキーでサインインできなくなります。"
+
 msgid "Are you sure you want to delete this process completion? This action cannot be undone."
 msgstr "この工程完了を削除 REALLY WANT TO KNOW IF YOU ARE SURE という行動は取り消せません"
 
@@ -1438,6 +1455,9 @@ msgstr "パンくずリスト"
 
 msgid "Browse library"
 msgstr "検索ライブラリ"
+
+msgid "Browser"
+msgstr "ブラウザ"
 
 msgid "Bucket"
 msgstr "バケット"
@@ -2967,6 +2987,9 @@ msgstr "パートナーを削除"
 msgid "Delete passkey"
 msgstr "Passkeyを削除"
 
+msgid "Delete Passkey"
+msgstr "パスキーを削除"
+
 msgid "Delete Payment Term"
 msgstr "支払い条件を削除"
 
@@ -3571,6 +3594,9 @@ msgstr "パーツを編集"
 
 msgid "Edit Partner"
 msgstr "パートナーを編集"
+
+msgid "Edit Passkey"
+msgstr "パスキーを編集"
 
 msgid "Edit Payment Term"
 msgstr "支払い条件を編集"
@@ -5447,6 +5473,13 @@ msgstr "最後に同期: {0}"
 msgid "Last updated: {formattedDate}"
 msgstr "最終更新: {formattedDate}"
 
+#. placeholder {0}: new Date( selectedPasskey.lastUsedAt ).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })
+msgid "Last used {0}"
+msgstr "最終使用 {0}"
+
+msgid "Last used {lastUsedAt}"
+msgstr "最終使用 {lastUsedAt}"
+
 msgid "Layout spacing"
 msgstr "レイアウトの間隔"
 
@@ -6686,6 +6719,9 @@ msgstr "パーツIDなし"
 msgid "No parts added yet"
 msgstr "まだパーツが追加されていません"
 
+msgid "No passkeys registered yet."
+msgstr "登録済みのパスキーはまだありません。"
+
 msgid "No planning data"
 msgstr "計画データなし"
 
@@ -7237,6 +7273,9 @@ msgstr "パスキー"
 msgid "Passkey name"
 msgstr "Passkey名"
 
+msgid "Passkeys"
+msgstr "パスキー"
+
 msgid "Passkeys are disabled"
 msgstr "パスキーは無効になっています"
 
@@ -7642,9 +7681,23 @@ msgstr "価格トレース"
 msgid "Print"
 msgstr "印刷"
 
+#. placeholder {0}: checkedIds.length
+msgid "Print ({0})"
+msgstr "印刷（{0}）"
+
 #. placeholder {0}: selectedIds.size
 msgid "Print {0} Labels"
 msgstr "印刷 {0} ラベル"
+
+#. placeholder {0}: selectedRows.length
+msgid "Print {0} Tickets"
+msgstr "{0} 枚のチケットを印刷"
+
+msgid "Print Bundle Tickets"
+msgstr "バンドルチケットを印刷"
+
+msgid "Print from this device"
+msgstr "このデバイスから印刷"
 
 msgid "Print Jobs"
 msgstr "印刷ジョブ"
@@ -7655,6 +7708,12 @@ msgstr "ラベルを印刷"
 #. placeholder {0}: viewContent.contentType?.toUpperCase()
 msgid "Print Output ({0})"
 msgstr "出力を印刷 ({0})"
+
+msgid "Print Tickets"
+msgstr "チケットを印刷"
+
+msgid "Print to"
+msgstr "印刷先"
 
 msgid "Printer Settings"
 msgstr "プリンタ設定"
@@ -7954,6 +8013,10 @@ msgstr "四半期"
 
 msgid "Question"
 msgstr "質問"
+
+#. placeholder {0}: checkedIds.length
+msgid "Queued {0} tickets for printing"
+msgstr "{0} 枚のチケットを印刷キューに追加しました"
 
 msgid "Quote"
 msgstr "見積"
@@ -8933,6 +8996,10 @@ msgstr "アカウントを選択してください"
 msgid "Select all"
 msgstr "全選択"
 
+#. placeholder {0}: printable.length
+msgid "Select all ({0})"
+msgstr "すべて選択（{0}）"
+
 msgid "Select an assignee"
 msgstr "担当者を選択"
 
@@ -9350,6 +9417,9 @@ msgstr "このルールが失敗した場合に表示されます。"
 
 msgid "Sign In to Request Access"
 msgstr "サインインしてアクセスを要求してください"
+
+msgid "Sign in with biometrics instead of a magic link. Passkeys are secured by Face ID, Touch ID, or your device PIN."
+msgstr "マジックリンクの代わりに生体認証でサインインします。パスキーは Face ID、Touch ID、またはデバイスの PIN で保護されます。"
 
 msgid "Sign in with Email"
 msgstr "メールでサインイン"
@@ -9883,6 +9953,9 @@ msgstr "同期"
 msgid "Sync Procedure"
 msgstr "sync gyōjutsu"
 
+msgid "Synced"
+msgstr "同期済み"
+
 msgid "Syncing the procedure will update the operation with the new work instructions, steps, and parameters. Any steps that are not part of the procedure will be removed."
 msgstr "Syncing the procedure will update the operation with the new work instructions, steps, and parameters. Any steps that are not part of the procedure will be removed."
 
@@ -9894,6 +9967,9 @@ msgstr "テーブル"
 
 msgid "Table actions"
 msgstr "テーブルアクション"
+
+msgid "Tag size"
+msgstr "タグサイズ"
 
 msgid "Tags"
 msgstr "タグ"

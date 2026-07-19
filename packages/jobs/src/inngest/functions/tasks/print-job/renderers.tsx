@@ -7,7 +7,9 @@ import { resolveLabelLogo } from "@carbon/documents/labels";
 import {
   KanbanLabelPDF,
   ProductLabelPDF,
-  StorageUnitLabelPDF
+  renderBundleTicketsToBuffer,
+  StorageUnitLabelPDF,
+  tagPageSizeFromInches
 } from "@carbon/documents/pdf";
 import { toDocumentTemplate } from "@carbon/documents/template";
 import {
@@ -21,7 +23,11 @@ import { labelSizes } from "@carbon/utils";
 import { renderToStream } from "@react-pdf/renderer";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ReactElement } from "react";
-import type { KanbanCardItem, StorageUnitItem } from "./resolvers";
+import type {
+  BundleTicketItem,
+  KanbanCardItem,
+  StorageUnitItem
+} from "./resolvers";
 
 export type GeneratedContent = {
   content: string;
@@ -32,7 +38,8 @@ export type GeneratedContent = {
 export type PrintableDocumentItem =
   | { type: "productLabel"; item: ProductLabelItem }
   | { type: "kanbanCard"; item: KanbanCardItem }
-  | { type: "storageUnitLabel"; item: StorageUnitItem };
+  | { type: "storageUnitLabel"; item: StorageUnitItem }
+  | { type: "bundleWorkOrderLabel"; item: BundleTicketItem };
 
 export async function renderItemWithTemplate(
   doc: PrintableDocumentItem,
@@ -89,6 +96,22 @@ export async function renderItemBuiltIn(
     }
     case "kanbanCard":
       return renderKanbanCardPDF(client, doc.item, format);
+    case "bundleWorkOrderLabel": {
+      if (format === "zpl") {
+        throw new Error(
+          "Built-in bundle ticket generation only supports PDF printers."
+        );
+      }
+      // Honor a portrait document media size (e.g. the 40×80mm bundle tag);
+      // ignore ZPL thermal sizes (they're landscape and drive the default tag).
+      const size = labelSizes.find((s) => s.id === mediaSizeId);
+      const pageSize =
+        size && !size.zpl
+          ? tagPageSizeFromInches(size.width, size.height)
+          : undefined;
+      const buffer = await renderBundleTicketsToBuffer([doc.item], pageSize);
+      return { content: buffer.toString("base64"), contentType: "pdf" };
+    }
     case "storageUnitLabel": {
       const mediaSize = requireMediaSize(mediaSizeId);
       if (format === "pdf") {

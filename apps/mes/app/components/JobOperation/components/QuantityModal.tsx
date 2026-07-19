@@ -1,15 +1,11 @@
-import {
-  Hidden,
-  NumberControlled,
-  TextArea,
-  ValidatedForm
-} from "@carbon/form";
+import { Hidden, TextArea, ValidatedForm } from "@carbon/form";
 import {
   Alert,
   AlertDescription,
   AlertTitle,
   Button,
   Checkbox,
+  IconButton,
   Modal,
   ModalBody,
   ModalContent,
@@ -21,7 +17,7 @@ import {
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { LuTriangleAlert } from "react-icons/lu";
+import { LuMinus, LuPlus, LuTriangleAlert } from "react-icons/lu";
 import { useFetcher } from "react-router";
 import {
   finishValidator,
@@ -68,9 +64,28 @@ export function QuantityModal({
 }) {
   const { t } = useLingui();
   const fetcher = useFetcher<ProductionQuantity>();
+
+  // Remaining quantity still to complete on this operation — the "Completed"
+  // stepper defaults to it and can't exceed it.
+  const operationTotal =
+    operation.targetQuantity > 0
+      ? operation.targetQuantity
+      : operation.operationQuantity;
+  const remaining = Math.max(0, operationTotal - operation.quantityComplete);
+
   const [quantity, setQuantity] = useState(
-    parentIsSerial ? 1 : (suggestedQuantity ?? 0)
+    parentIsSerial
+      ? 1
+      : type === "complete"
+        ? (suggestedQuantity ?? remaining)
+        : (suggestedQuantity ?? 0)
   );
+
+  // Clamp to a whole number ≥ 0; "complete" is additionally capped at remaining.
+  const clampQuantity = (n: number) => {
+    const floored = Math.max(0, Number.isFinite(n) ? Math.floor(n) : 0);
+    return type === "complete" ? Math.min(remaining, floored) : floored;
+  };
   const [confirmedUnissued, setConfirmedUnissued] = useState(false);
   const submitted = useRef(false);
   const isSubmitting = fetcher.state !== "idle";
@@ -110,6 +125,13 @@ export function QuantityModal({
     rework: t`Log Rework`,
     complete: t`Log Completed`,
     finish: isOperationComplete ? t`Finish` : t`Finish Anyways`
+  };
+
+  const quantityLabelMap = {
+    scrap: t`Scrap`,
+    rework: t`Rework`,
+    complete: t`Completed`,
+    finish: ""
   };
 
   const validatorMap = {
@@ -246,14 +268,55 @@ export function QuantityModal({
               )}
               {type !== "finish" && (
                 <>
-                  <NumberControlled
-                    name="quantity"
-                    label={t`Quantity`}
-                    value={quantity}
-                    onChange={setQuantity}
-                    isReadOnly={parentIsSerial}
-                    minValue={0}
-                  />
+                  <Hidden name="quantity" value={quantity} />
+                  <div className="flex w-full flex-col gap-2">
+                    <div className="flex items-baseline justify-between">
+                      <span className="text-sm font-medium">
+                        {quantityLabelMap[type]}
+                      </span>
+                      {type === "complete" && (
+                        <span className="text-xs text-muted-foreground tabular-nums">
+                          / {remaining}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <IconButton
+                        aria-label={t`Decrease`}
+                        icon={<LuMinus />}
+                        variant="secondary"
+                        size="lg"
+                        onClick={() => setQuantity(clampQuantity(quantity - 1))}
+                        isDisabled={parentIsSerial || quantity <= 0}
+                      />
+                      <input
+                        type="number"
+                        inputMode="numeric"
+                        min={0}
+                        value={quantity}
+                        readOnly={parentIsSerial}
+                        onChange={(e) =>
+                          setQuantity(
+                            clampQuantity(
+                              Number.parseInt(e.target.value, 10) || 0
+                            )
+                          )
+                        }
+                        className="min-w-0 flex-1 rounded-lg border border-input bg-background shadow-xs px-3 py-2 text-center text-2xl font-semibold tabular-nums outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                      />
+                      <IconButton
+                        aria-label={t`Increase`}
+                        icon={<LuPlus />}
+                        variant="secondary"
+                        size="lg"
+                        onClick={() => setQuantity(clampQuantity(quantity + 1))}
+                        isDisabled={
+                          parentIsSerial ||
+                          (type === "complete" && quantity >= remaining)
+                        }
+                      />
+                    </div>
+                  </div>
                 </>
               )}
               {type === "scrap" ? (
@@ -266,20 +329,17 @@ export function QuantityModal({
                   <TextArea label={t`Notes`} name="notes" size="lg" />
                 </>
               ) : (
-                <>
-                  <NumberControlled
-                    name="totalQuantity"
-                    label={t`Total Quantity`}
-                    size="lg"
-                    value={
-                      quantity +
+                <div className="flex items-center justify-between border-t border-border pt-3 text-sm">
+                  <span className="text-muted-foreground">
+                    <Trans>Total Quantity</Trans>
+                  </span>
+                  <span className="font-medium tabular-nums">
+                    {quantity +
                       (type === "rework"
                         ? operation.quantityReworked
-                        : operation.quantityComplete)
-                    }
-                    isReadOnly
-                  />
-                </>
+                        : operation.quantityComplete)}
+                  </span>
+                </div>
               )}
             </VStack>
           </ModalBody>
@@ -299,6 +359,7 @@ export function QuantityModal({
               isLoading={isSubmitting}
               disabled={
                 isSubmitting ||
+                (type !== "finish" && quantity <= 0) ||
                 (type === "complete" &&
                   hasUnissuedTrackedMaterials &&
                   !confirmedUnissued)

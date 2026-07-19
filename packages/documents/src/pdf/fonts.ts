@@ -49,6 +49,70 @@ export async function ensureFont(family: string): Promise<void> {
   return pending;
 }
 
+/**
+ * Chinese (Simplified) support for react-pdf. The standard PDF fonts and the
+ * Google web fonts above cover Latin only, so any CJK text (garment bundle
+ * tickets carry Chinese color/customer/work-center values) renders as blank
+ * boxes without a CJK face registered.
+ *
+ * react-pdf embeds only the glyphs actually used, so registering a full CJK TTF
+ * once per process is affordable. The source is overridable via
+ * `CJK_FONT_URL_REGULAR` / `CJK_FONT_URL_BOLD` so deployments can self-host the
+ * font instead of depending on the public CDN at print time.
+ */
+const CJK_FAMILY = "Noto Sans SC";
+// A single Simplified-Chinese variable TrueType (TrueType outlines subset well
+// in react-pdf; the CFF/OTF CJK builds do not). Both weights point at the same
+// file — the default (regular) instance is embedded either way. Overridable so
+// deployments can self-host instead of depending on the CDN at print time.
+const CJK_FONT_URL_REGULAR =
+  process.env.CJK_FONT_URL_REGULAR ??
+  "https://cdn.jsdelivr.net/gh/googlefonts/noto-cjk@main/Sans/Variable/TTF/Subset/NotoSansSC-VF.ttf";
+const CJK_FONT_URL_BOLD = process.env.CJK_FONT_URL_BOLD ?? CJK_FONT_URL_REGULAR;
+
+let cjkResult: string | null = null;
+let cjkInFlight: Promise<string> | null = null;
+
+/**
+ * Ensure the CJK font is registered, returning the family name to use for text
+ * that may contain Chinese — the registered CJK family when the font is
+ * reachable, or `"Helvetica"` otherwise (so callers never register an
+ * unreachable face). A HEAD check avoids a render-time fetch failure; callers
+ * should still guard the render (fall back to Helvetica) in case the font
+ * fails to parse.
+ */
+export async function ensureCJKFont(): Promise<string> {
+  if (cjkResult) return cjkResult;
+  if (cjkInFlight) return cjkInFlight;
+
+  cjkInFlight = (async () => {
+    try {
+      const res = await fetch(CJK_FONT_URL_REGULAR, { method: "HEAD" });
+      if (!res.ok) {
+        cjkResult = "Helvetica";
+        return cjkResult;
+      }
+      Font.register({
+        family: CJK_FAMILY,
+        fonts: [
+          { src: CJK_FONT_URL_REGULAR },
+          { src: CJK_FONT_URL_BOLD, fontWeight: 700 }
+        ]
+      });
+      // Disable hyphenation so CJK runs aren't broken mid-character.
+      Font.registerHyphenationCallback((word) => [word]);
+      cjkResult = CJK_FAMILY;
+    } catch {
+      cjkResult = "Helvetica";
+    } finally {
+      cjkInFlight = null;
+    }
+    return cjkResult ?? "Helvetica";
+  })();
+
+  return cjkInFlight;
+}
+
 async function registerGoogleFont(meta: {
   family: string;
   weights: number[];

@@ -89,6 +89,10 @@ msgstr "{credentialName} zarejestrowany"
 msgid "{days} days ({formatted})"
 msgstr "{days} dni ({formatted})"
 
+#. placeholder {0}: checkedIds.length
+msgid "{failed} of {0} tickets failed"
+msgstr "Nie udało się {failed} z {0} etykiet"
+
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB limit"
 
@@ -474,6 +478,9 @@ msgstr "Dodaj parametr"
 msgid "Add Partner"
 msgstr "Dodaj partnera"
 
+msgid "Add Passkey"
+msgstr "Dodaj Passkey"
+
 msgid "Add Permissions"
 msgstr "Dodaj uprawnienia"
 
@@ -542,6 +549,13 @@ msgstr "Dodatek"
 
 msgid "Add-On Cost"
 msgstr "Koszt dodatku"
+
+#. placeholder {0}: new Date(selectedPasskey.createdAt).toLocaleDateString( undefined, { year: "numeric", month: "long", day: "numeric" } )
+msgid "Added {0}"
+msgstr "Dodano {0}"
+
+msgid "Added {createdAt}"
+msgstr "Dodano {createdAt}"
 
 msgid "Adding..."
 msgstr "Dodawanie..."
@@ -1059,6 +1073,9 @@ msgstr "Czy na pewno chcesz usunąć tę kartę kanban? Tej operacji nie można 
 msgid "Are you sure you want to delete this maintenance dispatch? This cannot be undone."
 msgstr "Czy na pewno chcesz usunąć tę dyspozycję konserwacji? Tej operacji nie można cofnąć."
 
+msgid "Are you sure you want to delete this passkey? You won't be able to use it to sign in anymore."
+msgstr "Czy na pewno chcesz usunąć ten passkey? Nie będzie można go już użyć do logowania."
+
 msgid "Are you sure you want to delete this process completion? This action cannot be undone."
 msgstr "Czy na pewno chcesz usunąć zakończenie procesu? Ta operacja nie może być odczytała."
 
@@ -1438,6 +1455,9 @@ msgstr "Nawigacja"
 
 msgid "Browse library"
 msgstr "Przeglądaj bibliotekę"
+
+msgid "Browser"
+msgstr "Przeglądarka"
 
 msgid "Bucket"
 msgstr "Zasobnik"
@@ -2967,6 +2987,9 @@ msgstr "Usuń partnera"
 msgid "Delete passkey"
 msgstr "Usuń Passkey"
 
+msgid "Delete Passkey"
+msgstr "Usuń Passkey"
+
 msgid "Delete Payment Term"
 msgstr "Usuń Warunki Płatności"
 
@@ -3571,6 +3594,9 @@ msgstr "Edytuj Część"
 
 msgid "Edit Partner"
 msgstr "Edytuj Partnera"
+
+msgid "Edit Passkey"
+msgstr "Edytuj Passkey"
 
 msgid "Edit Payment Term"
 msgstr "Edytuj Warunki Płatności"
@@ -5447,6 +5473,13 @@ msgstr "Ostatnia synchronizacja: {0}"
 msgid "Last updated: {formattedDate}"
 msgstr "Ostatnia aktualizacja: {formattedDate}"
 
+#. placeholder {0}: new Date( selectedPasskey.lastUsedAt ).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })
+msgid "Last used {0}"
+msgstr "Ostatnio użyto {0}"
+
+msgid "Last used {lastUsedAt}"
+msgstr "Ostatnio użyto {lastUsedAt}"
+
 msgid "Layout spacing"
 msgstr "Przestrzeń układu"
 
@@ -6686,6 +6719,9 @@ msgstr "Brak identyfikatora części"
 msgid "No parts added yet"
 msgstr "Nie dodano jeszcze żadnych części"
 
+msgid "No passkeys registered yet."
+msgstr "Nie zarejestrowano jeszcze żadnych kluczy Passkey."
+
 msgid "No planning data"
 msgstr "Brak danych planowania"
 
@@ -7237,6 +7273,9 @@ msgstr "Klucz dostępu"
 msgid "Passkey name"
 msgstr "Nazwa Passkey"
 
+msgid "Passkeys"
+msgstr "Passkeys"
+
 msgid "Passkeys are disabled"
 msgstr "Klucze dostępu są wyłączone"
 
@@ -7642,9 +7681,23 @@ msgstr "Śledzenie cen"
 msgid "Print"
 msgstr "Drukuj"
 
+#. placeholder {0}: checkedIds.length
+msgid "Print ({0})"
+msgstr "Drukuj ({0})"
+
 #. placeholder {0}: selectedIds.size
 msgid "Print {0} Labels"
 msgstr "Drukuj {0} etykiet"
+
+#. placeholder {0}: selectedRows.length
+msgid "Print {0} Tickets"
+msgstr "Drukuj {0} etykiet"
+
+msgid "Print Bundle Tickets"
+msgstr "Drukuj etykiety pakietów"
+
+msgid "Print from this device"
+msgstr "Drukuj z tego urządzenia"
 
 msgid "Print Jobs"
 msgstr "Zadania drukowe"
@@ -7655,6 +7708,12 @@ msgstr "Drukuj etykietę"
 #. placeholder {0}: viewContent.contentType?.toUpperCase()
 msgid "Print Output ({0})"
 msgstr "Drukuj Wyjście ({0})"
+
+msgid "Print Tickets"
+msgstr "Drukuj etykiety"
+
+msgid "Print to"
+msgstr "Drukuj na"
 
 msgid "Printer Settings"
 msgstr "Ustawienia drukarki"
@@ -7954,6 +8013,10 @@ msgstr "Kwartalnie"
 
 msgid "Question"
 msgstr "Pytanie"
+
+#. placeholder {0}: checkedIds.length
+msgid "Queued {0} tickets for printing"
+msgstr "Dodano {0} etykiet do kolejki druku"
 
 msgid "Quote"
 msgstr "Oferta"
@@ -8933,6 +8996,10 @@ msgstr "Wybierz konto"
 msgid "Select all"
 msgstr "Zaznacz wszystko"
 
+#. placeholder {0}: printable.length
+msgid "Select all ({0})"
+msgstr "Zaznacz wszystko ({0})"
+
 msgid "Select an assignee"
 msgstr "Wybierz osobę przydzieloną"
 
@@ -9350,6 +9417,9 @@ msgstr "Pokaż userowi, gdy reguła nie powiedzie się."
 
 msgid "Sign In to Request Access"
 msgstr "Zaloguj się, aby zaprosić do dostępu"
+
+msgid "Sign in with biometrics instead of a magic link. Passkeys are secured by Face ID, Touch ID, or your device PIN."
+msgstr "Loguj się biometrią zamiast linku magicznego. Passkeys są zabezpieczone przez Face ID, Touch ID lub PIN urządzenia."
 
 msgid "Sign in with Email"
 msgstr "Zaloguj się za pomocą poczty e-mail"
@@ -9883,6 +9953,9 @@ msgstr "Synchronizuj"
 msgid "Sync Procedure"
 msgstr "Procedura synchronizacji"
 
+msgid "Synced"
+msgstr "Zsynchronizowano"
+
 msgid "Syncing the procedure will update the operation with the new work instructions, steps, and parameters. Any steps that are not part of the procedure will be removed."
 msgstr "Podłączanie procedury aktualizuje operację z nowymi instrukcjami pracy, krokami i parametrami. Każdy krok, który nie jest częścią procedury, zostanie usunięty."
 
@@ -9894,6 +9967,9 @@ msgstr "Tabela"
 
 msgid "Table actions"
 msgstr "Akcje tabeli"
+
+msgid "Tag size"
+msgstr "Rozmiar etykiety"
 
 msgid "Tags"
 msgstr "Tagi"

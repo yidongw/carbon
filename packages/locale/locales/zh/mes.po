@@ -1,16 +1,17 @@
+#
 msgid ""
 msgstr ""
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: @lingui/cli\n"
-"Language: zh\n"
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
+"X-Generator: @lingui/cli\n"
 
 #. placeholder {0}: attribute.name
 #. placeholder {1}: activeStep + 1
@@ -21,19 +22,19 @@ msgstr "{0} - 组 {1}"
 msgid "{0} Active"
 msgstr "{0} 个活跃"
 
-#. placeholder {0}: operation.quantityComplete
 #. placeholder {0}: serialIndex + 1
 #. placeholder {1}: operation.operationQuantity
-#. placeholder {1}: operation.targetQuantity
 msgid "{0} of {1}"
 msgstr "{0} / {1}"
 
-#. placeholder {0}: attributes.filter((a) => a.jobOperationStepRecord.some( (r) => r.index === activeStep ) ).length
+#. placeholder {0}: attributes.filter((a) => a.jobOperationStepRecord.some(
+#. (r) => r.index === activeStep ) ).length
 #. placeholder {1}: attributes.length
 msgid "{0} of {1} complete"
 msgstr "{0} / {1} 已完成"
 
-#. placeholder {0}: attributes.filter((a) => a.jobOperationStepRecord.some( (r) => r.index === activeStep ) ).length
+#. placeholder {0}: attributes.filter((a) => a.jobOperationStepRecord.some(
+#. (r) => r.index === activeStep ) ).length
 #. placeholder {1}: attributes.length
 msgid "{0} of {1} completed"
 msgstr "{0} / {1} 已完成"
@@ -41,6 +42,14 @@ msgstr "{0} / {1} 已完成"
 #. placeholder {0}: item.quantityScrapped
 msgid "{0} Scrapped"
 msgstr "{0} 已报废"
+
+#. placeholder {0}: operation.targetQuantity
+msgid "{completedQuantity} of {0}"
+msgstr "{completedQuantity} / {0}"
+
+#. placeholder {0}: checkedIds.length
+msgid "{failed} of {0} tickets failed"
+msgstr "{0} 个吊牌中有 {failed} 个失败"
 
 msgid "A consumed batch or serial is now past its expiry date."
 msgstr "已过有效期的批次或序列号已被使用。"
@@ -111,10 +120,14 @@ msgstr "确定要删除此步骤吗？"
 msgid "Are you sure you want to delete this timecard? This cannot be undone."
 msgstr "确定要删除此考勤记录吗？此操作无法撤销。"
 
-msgid "Are you sure you want to end all production events? This will end all active operations without completing or finishing them."
+msgid ""
+"Are you sure you want to end all production events? This will end all active"
+" operations without completing or finishing them."
 msgstr "确定要结束所有生产事件吗？这将终止所有活跃工序，而不会完成它们。"
 
-msgid "Are you sure you want to finish this operation? This will end all active production events for this operation."
+msgid ""
+"Are you sure you want to finish this operation? This will end all active "
+"production events for this operation."
 msgstr "您确定要完成此操作吗？这将结束此操作的所有正在进行的生产事件。"
 
 msgid "Are you sure you want to leave this page?"
@@ -151,12 +164,24 @@ msgstr "批次号 {0}"
 msgid "Batch number is required"
 msgstr "批次号为必填项"
 
+msgid "Beige"
+msgstr "米色"
+
+msgid "Black"
+msgstr "黑色"
+
 #. placeholder {0}: column.blockingDispatchReadableId
 msgid "Blocked by {0}"
 msgstr "被 {0} 阻塞"
 
 msgid "Blocking"
 msgstr "阻塞中"
+
+msgid "Blue"
+msgstr "蓝色"
+
+msgid "Brown"
+msgstr "棕色"
 
 msgid "Browse bundles and print bundle tickets"
 msgstr "浏览捆包并打印捆包标签"
@@ -167,6 +192,9 @@ msgstr "浏览切削工单及其分包"
 msgid "Browse released jobs on the floor"
 msgstr "查看车间已发布的工作订单"
 
+msgid "Browser"
+msgstr "浏览器"
+
 msgid "Bundle"
 msgstr "分包"
 
@@ -176,14 +204,27 @@ msgstr "分包工单"
 msgid "Bundles"
 msgstr "分包"
 
-msgid "But don't worry. You can use the forgot password flow to request a new magic link."
+msgid ""
+"But don't worry. You can use the forgot password flow to request a new magic"
+" link."
 msgstr "但别担心。您可以使用忘记密码流程来请求新的魔法链接。"
 
-msgid "By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy Policy.</1>"
+msgid ""
+"By signing in, you agree to the <0>Terms of Service</0> and <1>Privacy "
+"Policy.</1>"
 msgstr "登录即表示您同意<0>服务条款</0>和<1>隐私政策。</1>"
+
+msgid "Camera unavailable — use manual selection below."
+msgstr "相机不可用 — 请使用下方手动选择。"
+
+msgid "Can't scan? Select a released bundle"
+msgstr "无法扫码？选择已下达的分包"
 
 msgid "Cancel"
 msgstr "取消"
+
+msgid "Canceled"
+msgstr "已取消"
 
 msgid "Cancelled"
 msgstr "取消"
@@ -314,6 +355,12 @@ msgstr "创建质量issue"
 msgid "Create Rework"
 msgstr "创建返工"
 
+msgid "Current process"
+msgstr "当前工序"
+
+msgid "Currently"
+msgstr "当前"
+
 msgid "Customer"
 msgstr "客户"
 
@@ -375,6 +422,9 @@ msgstr "未找到工单"
 msgid "Display"
 msgstr "显示"
 
+msgid "Done"
+msgstr "已完成"
+
 msgid "Down"
 msgstr "停机"
 
@@ -394,9 +444,12 @@ msgstr "拖放文件到此处，或点击选择文件"
 msgid "Dragging {0} cancelled."
 msgstr "拖拽 {0} 已取消。"
 
-#. placeholder {0}: formatRelativeTime( convertDateStringToIsoString( operation.operationDueDate ) )
-#. placeholder {0}: formatRelativeTime( convertDateStringToIsoString(operation.jobDueDate) )
-#. placeholder {0}: formatRelativeTime( convertDateStringToIsoString(item.dueDate) )
+#. placeholder {0}: formatRelativeTime( convertDateStringToIsoString(
+#. operation.operationDueDate ) )
+#. placeholder {0}: formatRelativeTime(
+#. convertDateStringToIsoString(operation.jobDueDate) )
+#. placeholder {0}: formatRelativeTime(
+#. convertDateStringToIsoString(item.dueDate) )
 msgid "Due {0}"
 msgstr "截止 {0}"
 
@@ -508,11 +561,23 @@ msgstr "完成 {0}"
 msgid "Finish Anyways"
 msgstr "继续完成"
 
+msgid "Fixed"
+msgstr "已修复"
+
 msgid "Forgot to Clock Out?"
 msgstr "忘记打卡下班了？"
 
 msgid "Go back to operation"
 msgstr "返回操作"
+
+msgid "Gold"
+msgstr "金色"
+
+msgid "Gray"
+msgstr "灰色"
+
+msgid "Green"
+msgstr "绿色"
 
 msgid "Have a technical issue? Contact <0>Carbon Support.</0>"
 msgstr "遇到技术问题？联系<0>Carbon 支持。</0>"
@@ -613,11 +678,17 @@ msgstr "加入邀请您加入的公司，或选择一家。"
 msgid "Keep the completed quantity and give a reason for the rest."
 msgstr "保持已完成的数量，并说明剩余部分的原因。"
 
+msgid "Khaki"
+msgstr "卡其色"
+
 msgid "Kit"
 msgstr "套件"
 
 msgid "Labor"
 msgstr "人工"
+
+msgid "Language"
+msgstr "语言"
 
 msgid "Leave this page"
 msgstr "离开此页"
@@ -691,6 +762,12 @@ msgstr "手动添加物品到库存"
 msgid "Manually remove items from inventory"
 msgstr "手动从库存中移除物品"
 
+msgid "Mark fixed"
+msgstr "标记已修复"
+
+msgid "Mark rework as fixed"
+msgstr "标记返工为已修复"
+
 msgid "Mark Short"
 msgstr "标记短缺"
 
@@ -734,6 +811,9 @@ msgstr "更多选项"
 msgid "Move column: {0}"
 msgstr "移动列：{0}"
 
+msgid "Move reworked units back into finished production."
+msgstr "将返工件重新计入完成产量。"
+
 msgid "Must be < {maxValue} {unitOfMeasureCode}"
 msgstr "必须小于 {maxValue} {unitOfMeasureCode}"
 
@@ -751,6 +831,9 @@ msgstr "我的薪水"
 
 msgid "Name"
 msgstr "名称"
+
+msgid "Navy"
+msgstr "藏青色"
 
 msgid "New"
 msgstr "新建"
@@ -875,7 +958,9 @@ msgstr "没有库存"
 msgid "No time entries for this week"
 msgstr "本周无考勤记录"
 
-msgid "No warehouse stock is on record for this item. You can still pick it — on-hand will go negative until the count is reconciled."
+msgid ""
+"No warehouse stock is on record for this item. You can still pick it — on-"
+"hand will go negative until the count is reconciled."
 msgstr "此项目没有记录仓库库存。您仍然可以领用——实际库存会暂时为负，直到完成盘点。"
 
 msgid "No work centers are blocked"
@@ -906,7 +991,8 @@ msgstr "最旧"
 msgid "Only {0} available"
 msgstr "仅 {0} 可用"
 
-msgid "Oops. You shouldn't see this page. Eventually it will be a landing page."
+msgid ""
+"Oops. You shouldn't see this page. Eventually it will be a landing page."
 msgstr "抱歉，您不应该看到此页面。此页面最终将成为首页。"
 
 msgid "Open"
@@ -939,6 +1025,12 @@ msgstr "操作员执行"
 msgid "Optional"
 msgstr "可选"
 
+msgid "Orange"
+msgstr "橙色"
+
+msgid "Other"
+msgstr "其他"
+
 msgid "Owed"
 msgstr "欠款"
 
@@ -960,7 +1052,13 @@ msgstr "粘贴链接"
 msgid "Pause"
 msgstr "暂停"
 
+msgid "Paused"
+msgstr "已暂停"
+
 msgid "Pending"
+msgstr "待审批"
+
+msgid "Pending approval"
 msgstr "待审批"
 
 msgid "Pending Approval"
@@ -981,6 +1079,13 @@ msgstr "选择"
 msgid "Pick tracked item"
 msgstr "选择跟踪项"
 
+msgid "Pick up"
+msgstr "领取"
+
+#. placeholder {0}: operation.itemReadableId
+msgid "Pick up {0}"
+msgstr "领取 {0}"
+
 msgid "Picked"
 msgstr "拣选"
 
@@ -999,8 +1104,14 @@ msgstr "拣货"
 msgid "Picking lists to fulfill"
 msgstr "履行的拣货单"
 
+msgid "Pickup Bundle Job"
+msgstr "领取分包工单"
+
 msgid "Pin Out"
 msgstr "退出登录"
+
+msgid "Pink"
+msgstr "粉色"
 
 msgid "Planned"
 msgstr "已计划"
@@ -1010,6 +1121,9 @@ msgstr "请在关闭前记录此工序的所有步骤。"
 
 msgid "Please select an item"
 msgstr "请选择一个物品"
+
+msgid "Point the camera at the bundle ticket QR code"
+msgstr "将相机对准分包标签二维码"
 
 msgid "Prev"
 msgstr "上一个"
@@ -1035,6 +1149,19 @@ msgstr "上一年度"
 msgid "Print"
 msgstr "打印"
 
+#. placeholder {0}: checkedIds.length
+msgid "Print ({0})"
+msgstr "打印（{0}）"
+
+msgid "Print from this device"
+msgstr "从本设备打印"
+
+msgid "Print Tickets"
+msgstr "打印吊牌"
+
+msgid "Print to"
+msgstr "打印到"
+
 msgid "Printer Settings"
 msgstr "打印机设置"
 
@@ -1053,6 +1180,9 @@ msgstr "工序参数"
 msgid "Processes"
 msgstr "工序"
 
+msgid "Produced"
+msgstr "已生产"
+
 msgid "production"
 msgstr "生产"
 
@@ -1064,6 +1194,9 @@ msgstr "进度"
 
 msgid "Properties"
 msgstr "属性"
+
+msgid "Purple"
+msgstr "紫色"
 
 msgid "Qty"
 msgstr "数量"
@@ -1082,6 +1215,13 @@ msgstr "数量必须大于 0"
 
 msgid "Quantity picked to lineside"
 msgstr "拣入选线数量"
+
+#. placeholder {0}: checkedIds.length
+msgid "Queued {0} tickets for printing"
+msgstr "已将 {0} 个吊牌加入打印队列"
+
+msgid "Ready"
+msgstr "就绪"
 
 msgid "Reason for issuing expired stock"
 msgstr "发出过期库存的原因"
@@ -1105,11 +1245,18 @@ msgstr "记录"
 msgid "Record {0}"
 msgstr "记录 {0}"
 
+#. placeholder {0}: operation.itemReadableId
+msgid "Record completed quantity for {0}"
+msgstr "记录 {0} 的完成数量"
+
 msgid "Record Quantity"
 msgstr "记录数量"
 
 msgid "Record step"
 msgstr "记录步骤"
+
+msgid "Red"
+msgstr "红色"
 
 msgid "Redirecting to verification page..."
 msgstr "正在跳转到验证页面..."
@@ -1138,14 +1285,23 @@ msgstr "移除产品"
 msgid "Remove Serial Number"
 msgstr "移除序列号"
 
+msgid "Report"
+msgstr "报工"
+
 msgid "Report Approvals"
 msgstr "报工审批"
 
+msgid "Report Quantities"
+msgstr "报工数量"
+
 msgid "Reported"
-msgstr "报工时间"
+msgstr "已报"
 
 msgid "Reset zoom"
 msgstr "重置缩放"
+
+msgid "Review"
+msgstr "审核"
 
 msgid "Review and approve reported production quantities"
 msgstr "审核并批准上报的生产数量"
@@ -1170,6 +1326,18 @@ msgstr "保存"
 
 msgid "Scan"
 msgstr "扫描"
+
+msgid "Scan a bundle ticket to take the job and start working"
+msgstr "扫描分包标签以领取工单并开始工作"
+
+msgid "Scan a bundle ticket to take the job and start working."
+msgstr "扫描分包标签以领取工单并开始工作。"
+
+msgid "Scan a finished bundle to report the quantity you completed"
+msgstr "扫描已完成的分包以报告你完成的数量"
+
+msgid "Scan a finished bundle to report the quantity you completed."
+msgstr "扫描已完成的分包以报告你完成的数量。"
 
 msgid "Scan batch number"
 msgstr "扫描批次号"
@@ -1200,6 +1368,9 @@ msgstr "已报废"
 
 msgid "Search"
 msgstr "搜索"
+
+msgid "Search bundles…"
+msgstr "搜索分包…"
 
 msgid "Search by bundle or style"
 msgstr "按分包或款式搜索"
@@ -1234,6 +1405,10 @@ msgstr "选择报废数量和原因"
 msgid "Select a serial number to continue with this operation"
 msgstr "选择一个序列号以继续此工序"
 
+#. placeholder {0}: printable.length
+msgid "Select all ({0})"
+msgstr "全选（{0}）"
+
 msgid "Select an item and specify the quantity to issue"
 msgstr "选择物品并指定要发放的数量"
 
@@ -1250,6 +1425,9 @@ msgstr "选择批号"
 msgid "Select batch to unconsume"
 msgstr "选择批次进行反消费"
 
+msgid "Select employee"
+msgstr "选择员工"
+
 msgid "Select Printer"
 msgstr "选择打印机"
 
@@ -1264,7 +1442,9 @@ msgstr "选择序列号"
 msgid "Select Serial Number {0}"
 msgstr "选择序列号 {0}"
 
-msgid "Select the operation to go back to. All operations from that point to the current operation will be redone."
+msgid ""
+"Select the operation to go back to. All operations from that point to the "
+"current operation will be redone."
 msgstr "选择要返回的操作。从该操作到当前操作的所有操作都将重新执行。"
 
 msgid "Send"
@@ -1331,6 +1511,9 @@ msgstr "退出登录"
 msgid "Signed in as {stationName}"
 msgstr "已登录为 {stationName}"
 
+msgid "Silver"
+msgstr "银色"
+
 msgid "Size"
 msgstr "大小"
 
@@ -1394,11 +1577,29 @@ msgstr "切换操作员"
 msgid "Tag"
 msgstr "标签"
 
+msgid "Tag size"
+msgstr "标签尺寸"
+
+msgid "Take over"
+msgstr "接管"
+
+#. placeholder {0}: operation.itemReadableId
+msgid "Take over {0}"
+msgstr "接手 {0}"
+
+msgid "That QR code isn't a bundle ticket"
+msgstr "该二维码不是分包标签"
+
 #. placeholder {0}: operation.operationQuantity
-msgid "The completed quantity for this operation is less than the required quantity of {0}."
+msgid ""
+"The completed quantity for this operation is less than the required quantity"
+" of {0}."
 msgstr "此工序的完成数量小于所需数量 {0}。"
 
-msgid "There are serial or batch tracked materials on the bill of material that have not been fully issued. Completing without issuing may result in incorrect traceability records."
+msgid ""
+"There are serial or batch tracked materials on the bill of material that "
+"have not been fully issued. Completing without issuing may result in "
+"incorrect traceability records."
 msgstr "物料清单中有序列号或批次追踪的材料尚未完全发放。不发放即完成可能导致追溯记录不正确。"
 
 msgid "This lot is expired and can't be picked."
@@ -1409,6 +1610,11 @@ msgstr "此操作已被删除"
 
 msgid "This Period"
 msgstr "本期"
+
+msgid ""
+"This process is assigned to someone else. Taking over stops their running "
+"clock."
+msgstr "该工序已分配给他人。接手将停止其正在计时的工时。"
 
 msgid "Thumbnail"
 msgstr "缩略图"
@@ -1422,6 +1628,9 @@ msgstr "工作时间：{0}"
 
 msgid "Today"
 msgstr "今天"
+
+msgid "Todo"
+msgstr "待处理"
 
 msgid "Toggle"
 msgstr "切换"
@@ -1466,6 +1675,9 @@ msgstr "跟踪"
 
 msgid "Type a message..."
 msgstr "输入消息..."
+
+msgid "Unassigned"
+msgstr "未分配"
 
 msgid "Unissued serial/batch materials"
 msgstr "未发放的序列号/批次材料"
@@ -1524,6 +1736,9 @@ msgstr "查看维护工单"
 msgid "Volume:"
 msgstr "体积："
 
+msgid "Waiting"
+msgstr "等待中"
+
 msgid "We've sent a verification code to {email}"
 msgstr "我们已向 {email} 发送了验证码"
 
@@ -1539,6 +1754,9 @@ msgstr "我们已向您发送了登录链接，请查收。"
 msgid "Welcome"
 msgstr "欢迎"
 
+msgid "White"
+msgstr "白色"
+
 msgid "WIP"
 msgstr "在制品"
 
@@ -1551,12 +1769,19 @@ msgstr "工单"
 msgid "Work scheduled at your work centers"
 msgstr "您的工作中心已排程工作"
 
+msgid "Yellow"
+msgstr "黄色"
+
 msgid "You belong to more than one company. Pick where to work."
 msgstr "您属于多个公司。请选择工作所在的公司。"
 
 #. placeholder {0}: new Date(openClockEntry.clockIn).toLocaleString(locale)
-msgid "You clocked in at {0}. You can edit your clock-out time below or acknowledge that you're still working."
+msgid ""
+"You clocked in at {0}. You can edit your clock-out time below or acknowledge"
+" that you're still working."
 msgstr "您于 {0} 打卡上班。您可以在下方编辑下班时间，或确认您仍在工作。"
 
-msgid "You've been clocked in for {hoursElapsed} hours. Did you forget to clock out?"
+msgid ""
+"You've been clocked in for {hoursElapsed} hours. Did you forget to clock "
+"out?"
 msgstr "您已打卡上班 {hoursElapsed} 小时。您是否忘记打卡下班了？"

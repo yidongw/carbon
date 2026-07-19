@@ -690,9 +690,10 @@ export async function getProductionQuantitiesForJobOperation(
  */
 export async function getPendingProductionQuantities(
   client: SupabaseClient<Database>,
-  companyId: string
+  companyId: string,
+  jobOperationId?: string
 ) {
-  return (client as any)
+  let query = (client as any)
     .from("productionQuantity")
     .select(
       `id, quantity, type, createdAt, employeeId, createdBy, notes, jobOperationId,
@@ -704,8 +705,13 @@ export async function getPendingProductionQuantities(
     .eq("companyId", companyId)
     .eq("type", "Production")
     .is("paymentYear", null)
-    .is("invalidatedAt", null)
-    .order("createdAt", { ascending: false });
+    .is("invalidatedAt", null);
+
+  if (jobOperationId) {
+    query = query.eq("jobOperationId", jobOperationId);
+  }
+
+  return query.order("createdAt", { ascending: false });
 }
 
 /**
@@ -738,6 +744,83 @@ export async function approveProductionQuantity(
     .eq("companyId", args.companyId)
     .is("paymentYear", null)
     .is("invalidatedAt", null);
+}
+
+/**
+ * Move some rework quantity back into production ("mark fixed"). Flips the
+ * oldest Rework rows to Production first, splitting the last partial row when
+ * the requested amount lands mid-row (the quantity trigger keeps the
+ * operation's stored totals in sync).
+ */
+export async function markReworkFixed(
+  client: SupabaseClient<Database>,
+  args: {
+    jobOperationId: string;
+    companyId: string;
+    userId: string;
+    quantity: number;
+  }
+) {
+  const now = new Date().toISOString();
+
+  const { data: rows, error } = await (client as any)
+    .from("productionQuantity")
+    .select("id, quantity, employeeId, paymentYear, paymentMonth")
+    .eq("jobOperationId", args.jobOperationId)
+    .eq("companyId", args.companyId)
+    .eq("type", "Rework")
+    .is("invalidatedAt", null)
+    .order("createdAt", { ascending: true });
+  if (error) return { error };
+
+  let remaining = Math.max(0, Math.floor(args.quantity));
+  for (const row of (rows ?? []) as Array<{
+    id: string;
+    quantity: number;
+    employeeId: string;
+    paymentYear: number | null;
+    paymentMonth: number | null;
+  }>) {
+    if (remaining <= 0) break;
+    const q = Number(row.quantity);
+
+    if (q <= remaining) {
+      // Whole row is fixed — flip it to Production.
+      const upd = await client
+        .from("productionQuantity")
+        .update({ type: "Production", updatedBy: args.userId, updatedAt: now })
+        .eq("id", row.id)
+        .eq("companyId", args.companyId);
+      if (upd.error) return upd;
+      remaining -= q;
+    } else {
+      // Only part of this row is fixed — shrink it and add a Production row.
+      const upd = await client
+        .from("productionQuantity")
+        .update({
+          quantity: q - remaining,
+          updatedBy: args.userId,
+          updatedAt: now
+        })
+        .eq("id", row.id)
+        .eq("companyId", args.companyId);
+      if (upd.error) return upd;
+
+      const ins = await insertProductionQuantity(client, {
+        jobOperationId: args.jobOperationId,
+        quantity: remaining,
+        employeeId: row.employeeId,
+        companyId: args.companyId,
+        createdBy: args.userId,
+        paymentYear: row.paymentYear,
+        paymentMonth: row.paymentMonth
+      });
+      if (ins.error) return ins;
+      remaining = 0;
+    }
+  }
+
+  return { error: null };
 }
 
 /**

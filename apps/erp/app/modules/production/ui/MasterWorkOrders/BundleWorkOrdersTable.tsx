@@ -3,7 +3,7 @@ import { useLingui } from "@lingui/react/macro";
 import { useDateFormatter } from "@react-aria/i18n";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { MouseEvent } from "react";
-import { memo, useCallback, useMemo } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import {
   LuCirclePlay,
   LuClipboardList,
@@ -11,6 +11,7 @@ import {
   LuHash,
   LuPackageOpen,
   LuPalette,
+  LuPrinter,
   LuRuler,
   LuScissors,
   LuShirt,
@@ -28,6 +29,7 @@ import { jobStatus } from "../../production.models";
 import type { Job } from "../../types";
 import JobStatus from "../Jobs/JobStatus";
 import JobStatusMenu from "../Jobs/JobStatusMenu";
+import PrintBundleTicketsModal from "./PrintBundleTicketsModal";
 
 type BundleWorkOrdersTableProps = {
   data: BundleWorkOrder[];
@@ -61,6 +63,17 @@ const BundleWorkOrdersTable = memo(
     });
 
     const rows = useMemo(() => data, [data]);
+
+    // Selection is lifted so the persistent Print button can print the selected
+    // rows, or — when nothing is selected — everything shown on the page.
+    const [selectedRows, setSelectedRows] = useState<BundleWorkOrder[]>([]);
+    const [printCandidates, setPrintCandidates] = useState<
+      BundleWorkOrder[] | null
+    >(null);
+
+    const openPrint = useCallback(() => {
+      setPrintCandidates(selectedRows.length > 0 ? selectedRows : data);
+    }, [selectedRows, data]);
 
     const openReportCutting = useCallback(() => {
       if (!masterJobId || !cuttingOperationId) return;
@@ -239,43 +252,63 @@ const BundleWorkOrdersTable = memo(
     }, [t, people, styles, dateFormatter, openProcesses]);
 
     return (
-      <Table<(typeof rows)[number]>
-        data={data}
-        columns={columns}
-        count={count}
-        defaultColumnPinning={{ left: ["jobReadableId"] }}
-        getRowHref={(row) =>
-          row.id ? path.to.bundleWorkOrder(row.id) : undefined
-        }
-        primaryAction={
-          cuttingOperationId &&
-          permissions.can("update", "production") ? (
+      <>
+        <Table<(typeof rows)[number]>
+          data={data}
+          columns={columns}
+          count={count}
+          defaultColumnPinning={{ left: ["jobReadableId"] }}
+          getRowHref={(row) =>
+            row.id ? path.to.bundleWorkOrder(row.id) : undefined
+          }
+          onSelectedRowsChange={setSelectedRows}
+          primaryAction={
             <HStack spacing={2}>
               <Button
-                leftIcon={<LuScissors />}
+                leftIcon={<LuPrinter />}
                 variant="secondary"
-                onClick={openReportCutting}
+                onClick={openPrint}
+                isDisabled={data.length === 0}
               >
-                {t`Report Cutting`}
+                {selectedRows.length > 0
+                  ? t`Print ${selectedRows.length} Tickets`
+                  : t`Print Tickets`}
               </Button>
-              {masterWorkOrderId ? (
-                <Button
-                  leftIcon={<LuSplit />}
-                  variant="secondary"
-                  onClick={openSplitBatch}
-                >
-                  {t`Split Batch`}
-                </Button>
+              {cuttingOperationId && permissions.can("update", "production") ? (
+                <>
+                  <Button
+                    leftIcon={<LuScissors />}
+                    variant="secondary"
+                    onClick={openReportCutting}
+                  >
+                    {t`Report Cutting`}
+                  </Button>
+                  {masterWorkOrderId ? (
+                    <Button
+                      leftIcon={<LuSplit />}
+                      variant="secondary"
+                      onClick={openSplitBatch}
+                    >
+                      {t`Split Batch`}
+                    </Button>
+                  ) : null}
+                </>
               ) : null}
             </HStack>
-          ) : undefined
-        }
-        title={t`Bundle Work Orders`}
-        table="bundleWorkOrder"
-        withHeader={withHeader}
-        withSavedView
-        withSelectableRows
-      />
+          }
+          title={t`Bundle Work Orders`}
+          table="bundleWorkOrder"
+          withHeader={withHeader}
+          withSavedView
+          withSelectableRows
+        />
+        {printCandidates ? (
+          <PrintBundleTicketsModal
+            bundles={printCandidates}
+            onClose={() => setPrintCandidates(null)}
+          />
+        ) : null}
+      </>
     );
   }
 );

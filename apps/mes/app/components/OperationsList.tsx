@@ -18,6 +18,7 @@ import {
 import { useLingui } from "@lingui/react/macro";
 import { cva } from "class-variance-authority";
 import {
+  LuBoxes,
   LuCalendarDays,
   LuCirclePlay,
   LuClipboardCheck,
@@ -153,6 +154,18 @@ function OperationCard({
               </span>
             </HStack>
           )}
+          <HStack className="justify-start space-x-2">
+            <LuBoxes className="text-muted-foreground" />
+            <span className="text-sm tabular-nums">
+              {t`Produced`} {operation.quantityComplete ?? 0} /{" "}
+              {operation.targetQuantity ?? operation.operationQuantity ?? 0}
+            </span>
+            {(operation.quantityReworked ?? 0) > 0 && (
+              <span className="text-sm text-amber-600 tabular-nums">
+                · {t`Rework`} {operation.quantityReworked}
+              </span>
+            )}
+          </HStack>
           {showStatus && operation.operationStatus && (
             <HStack className="justify-start space-x-2">
               <OperationStatusIcon status={operation.operationStatus} />

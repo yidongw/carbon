@@ -1,5 +1,5 @@
 import type { Database } from "@carbon/database";
-import { ERP_URL } from "@carbon/env";
+import { ERP_URL, MES_URL } from "@carbon/env";
 import type { ProductLabelItem } from "@carbon/utils";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
@@ -21,6 +21,145 @@ export type StorageUnitItem = {
   id: string;
   name: string;
 };
+
+export type BundleTicketItem = {
+  id: string;
+  readableId: string;
+  bundleUrl: string;
+  styleReadableId: string;
+  colorName: string | null;
+  sizeCode: string | null;
+  quantity: number;
+  sequence: number | null;
+  totalBundles: number | null;
+  totalCut: number | null;
+  customerName: string | null;
+  workCenterName: string | null;
+};
+
+/**
+ * Enrich a single bundle work order into a printable garment ticket: the bundle
+ * row (via the `bundleWorkOrders` view), its master's totals (total cut / total
+ * bundles), the order customer, and the current operation's work center. Shared
+ * shape with the ERP label routes. Uses the service-role client.
+ */
+export async function buildBundleTicketItem(
+  client: SupabaseClient<Database>,
+  bundleWorkOrderId: string
+): Promise<BundleTicketItem | null> {
+  const { data: bundle } = await client
+    .from("bundleWorkOrders")
+    .select(
+      "id, jobId, masterWorkOrderId, sequence, colorCode, colorName, sizeCode, quantity, jobReadableId, readableIdWithRevision, itemName"
+    )
+    .eq("id", bundleWorkOrderId)
+    .single();
+
+  if (!bundle) return null;
+
+  const [masterTotals, totalBundles, customerName, workCenterName] =
+    await Promise.all([
+      resolveMasterTotalCut(client, bundle.masterWorkOrderId),
+      resolveTotalBundles(client, bundle.masterWorkOrderId),
+      resolveBundleCustomer(client, bundle.jobId, bundle.masterWorkOrderId),
+      resolveCurrentWorkCenter(client, bundle.jobId)
+    ]);
+
+  return {
+    id: bundle.id!,
+    readableId: bundle.jobReadableId ?? bundle.id!,
+    bundleUrl: `${MES_URL ?? ""}/x/bundle/${bundle.id}`,
+    styleReadableId:
+      bundle.readableIdWithRevision ||
+      bundle.itemName ||
+      bundle.jobReadableId ||
+      "",
+    colorName: bundle.colorName ?? bundle.colorCode ?? null,
+    sizeCode: bundle.sizeCode ?? null,
+    quantity: bundle.quantity ?? 0,
+    sequence: bundle.sequence ?? null,
+    totalBundles,
+    totalCut: masterTotals,
+    customerName,
+    workCenterName
+  };
+}
+
+async function resolveMasterTotalCut(
+  client: SupabaseClient<Database>,
+  masterWorkOrderId: string | null
+): Promise<number | null> {
+  if (!masterWorkOrderId) return null;
+  const { data: master } = await client
+    .from("masterWorkOrder")
+    .select("jobId")
+    .eq("id", masterWorkOrderId)
+    .maybeSingle();
+  if (!master?.jobId) return null;
+  const { data: job } = await client
+    .from("job")
+    .select("quantity")
+    .eq("id", master.jobId)
+    .maybeSingle();
+  return job?.quantity ?? null;
+}
+
+async function resolveTotalBundles(
+  client: SupabaseClient<Database>,
+  masterWorkOrderId: string | null
+): Promise<number | null> {
+  if (!masterWorkOrderId) return null;
+  const { count } = await client
+    .from("bundleWorkOrder")
+    .select("id", { count: "exact", head: true })
+    .eq("masterWorkOrderId", masterWorkOrderId);
+  return count ?? null;
+}
+
+async function resolveBundleCustomer(
+  client: SupabaseClient<Database>,
+  bundleJobId: string | null,
+  masterWorkOrderId: string | null
+): Promise<string | null> {
+  // Prefer the bundle's own job customer; fall back to the master job's.
+  const jobIds: string[] = [];
+  if (bundleJobId) jobIds.push(bundleJobId);
+  if (masterWorkOrderId) {
+    const { data: master } = await client
+      .from("masterWorkOrder")
+      .select("jobId")
+      .eq("id", masterWorkOrderId)
+      .maybeSingle();
+    if (master?.jobId) jobIds.push(master.jobId);
+  }
+  for (const jobId of jobIds) {
+    const { data: job } = await client
+      .from("job")
+      .select("customer(name)")
+      .eq("id", jobId)
+      .maybeSingle();
+    const name = (job?.customer as { name?: string } | null)?.name;
+    if (name) return name;
+  }
+  return null;
+}
+
+async function resolveCurrentWorkCenter(
+  client: SupabaseClient<Database>,
+  bundleJobId: string | null
+): Promise<string | null> {
+  if (!bundleJobId) return null;
+  const { data: op } = await client
+    .from("jobOperation")
+    .select("workCenter(name)")
+    .eq("jobId", bundleJobId)
+    .neq("status", "Done")
+    .not("workCenterId", "is", null)
+    .order("order", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+  return (op?.workCenter as { name?: string } | null)?.name ?? null;
+}
 
 export type ResolvedData<T> = {
   items: T[];
@@ -100,6 +239,15 @@ export async function resolveStorageUnitData(
     items: [{ name: unit.name, id: unit.id }],
     readableId: unit.name
   };
+}
+
+export async function resolveBundleWorkOrderData(
+  client: SupabaseClient<Database>,
+  sourceDocumentId: string
+): Promise<ResolvedData<BundleTicketItem> | null> {
+  const item = await buildBundleTicketItem(client, sourceDocumentId);
+  if (!item) return null;
+  return { items: [item], readableId: item.readableId };
 }
 
 async function queryTrackedEntities(

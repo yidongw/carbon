@@ -45,7 +45,7 @@ import {
   VStack
 } from "@carbon/react";
 import { msg } from "@lingui/core/macro";
-import { useLingui } from "@lingui/react/macro";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { startRegistration } from "@simplewebauthn/browser";
 import { useEffect, useState } from "react";
 import { LuFingerprint, LuTrash2 } from "react-icons/lu";
@@ -570,47 +570,47 @@ export default function AccountProfile() {
                     : null;
 
                   return (
-                  <HStack
-                    key={pk.id}
-                    className="justify-between p-3 rounded-md border border-border space-x-4 cursor-pointer hover:bg-muted/40 transition-colors"
-                    onClick={() => openPasskeyDrawer(pk)}
-                  >
-                    <HStack spacing={3} className="items-start">
-                      <LuFingerprint className="size-4 text-muted-foreground shrink-0 mt-1" />
-                      <VStack spacing={0}>
-                        <p className="text-sm font-medium">
-                          {pk.credentialName}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          <Trans>Added {createdAt}</Trans>
-                          {pk.lastUsedAt && (
-                            <>
-                              {" · "}
-                              <Trans>Last used {lastUsedAt}</Trans>
-                            </>
-                          )}
-                          {pk.backedUp && (
-                            <>
-                              {" · "}
-                              <Trans>Synced</Trans>
-                            </>
-                          )}
-                        </p>
-                      </VStack>
-                    </HStack>
+                    <HStack
+                      key={pk.id}
+                      className="justify-between p-3 rounded-md border border-border space-x-4 cursor-pointer hover:bg-muted/40 transition-colors"
+                      onClick={() => openPasskeyDrawer(pk)}
+                    >
+                      <HStack spacing={3} className="items-start">
+                        <LuFingerprint className="size-4 text-muted-foreground shrink-0 mt-1" />
+                        <VStack spacing={0}>
+                          <p className="text-sm font-medium">
+                            {pk.credentialName}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            <Trans>Added {createdAt}</Trans>
+                            {pk.lastUsedAt && (
+                              <>
+                                {" · "}
+                                <Trans>Last used {lastUsedAt}</Trans>
+                              </>
+                            )}
+                            {pk.backedUp && (
+                              <>
+                                {" · "}
+                                <Trans>Synced</Trans>
+                              </>
+                            )}
+                          </p>
+                        </VStack>
+                      </HStack>
 
-                    <IconButton
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setConfirmDeleteId(pk.id);
-                      }}
-                      aria-label={t`Delete passkey`}
-                      type="button"
-                      variant="ghost"
-                      icon={<LuTrash2 />}
-                      className="cursor-pointer"
-                    />
-                  </HStack>
+                      <IconButton
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setConfirmDeleteId(pk.id);
+                        }}
+                        aria-label={t`Delete passkey`}
+                        type="button"
+                        variant="ghost"
+                        icon={<LuTrash2 />}
+                        className="cursor-pointer"
+                      />
+                    </HStack>
                   );
                 })}
               </HStack>
@@ -713,8 +713,8 @@ export default function AccountProfile() {
           </ModalHeader>
           <ModalBody>
             <Trans>
-              Are you sure you want to delete this passkey? You won't be able
-              to use it to sign in anymore.
+              Are you sure you want to delete this passkey? You won't be able to
+              use it to sign in anymore.
             </Trans>
           </ModalBody>
           <ModalFooter>

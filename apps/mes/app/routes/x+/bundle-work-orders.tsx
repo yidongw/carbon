@@ -14,8 +14,8 @@ import {
   VStack
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
-import { useMemo } from "react";
-import { LuTriangleAlert, LuX } from "react-icons/lu";
+import { useMemo, useState } from "react";
+import { LuPrinter, LuTriangleAlert, LuX } from "react-icons/lu";
 import type { LoaderFunctionArgs } from "react-router";
 import { Link, useLoaderData, useNavigate } from "react-router";
 import EmployeeAvatar from "~/components/EmployeeAvatar";
@@ -25,6 +25,10 @@ import {
   Filter,
   useFilters
 } from "~/components/Filter";
+import {
+  type PrintableBundle,
+  PrintTicketsModal
+} from "~/components/PrintTicketsModal";
 import SearchFilter from "~/components/SearchFilter";
 import { TopbarActions } from "~/components/TopbarActions";
 import { useLocalizeColor, useUrlParams } from "~/hooks";
@@ -255,8 +259,25 @@ export default function BundleWorkOrdersRoute() {
   const isFiltering = hasFilters || searchTerm.length > 0;
   const clearAll = () => setParams({ filter: undefined, search: undefined });
 
+  const [printOpen, setPrintOpen] = useState(false);
+  const printableBundles = useMemo<PrintableBundle[]>(
+    () =>
+      filtered
+        .filter((r): r is BundleWorkOrder & { id: string } => Boolean(r.id))
+        .map((r) => ({
+          id: r.id,
+          jobReadableId: r.jobReadableId,
+          colorCode: r.colorCode,
+          colorName: r.colorName,
+          sizeCode: r.sizeCode,
+          quantity: r.quantity,
+          locationId: null
+        })),
+    [filtered]
+  );
+
   return (
-    <div className="flex flex-col flex-1 min-h-0">
+    <div className="flex flex-col flex-1 min-h-0 h-svh overflow-hidden">
       <header className="sticky top-0 z-10 flex h-[var(--header-height)] shrink-0 items-center gap-2 border-b bg-background">
         <div className="flex items-center gap-2 px-2">
           <SidebarTrigger className="md:hidden" />
@@ -264,7 +285,15 @@ export default function BundleWorkOrdersRoute() {
             <Trans>Bundle Work Orders</Trans>
           </Heading>
         </div>
-        <div className="ml-auto flex items-center px-2">
+        <div className="ml-auto flex items-center gap-2 px-2">
+          <Button
+            variant="secondary"
+            leftIcon={<LuPrinter />}
+            onClick={() => setPrintOpen(true)}
+            isDisabled={printableBundles.length === 0}
+          >
+            <Trans>Print Tickets</Trans>
+          </Button>
           <TopbarActions />
         </div>
       </header>
@@ -296,7 +325,7 @@ export default function BundleWorkOrdersRoute() {
         </div>
       )}
 
-      <main className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-accent scrollbar-track-transparent">
+      <main className="flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-accent scrollbar-track-transparent">
         {filtered.length > 0 ? (
           <>
             {/* Mobile card view */}
@@ -310,7 +339,7 @@ export default function BundleWorkOrdersRoute() {
                     <div className="min-w-0">
                       {row.id ? (
                         <Link
-                          to={path.to.bundle(row.jobId ?? row.id ?? "")}
+                          to={path.to.jobDag(row.jobId ?? "")}
                           className="font-medium text-foreground hover:underline"
                         >
                           {row.jobReadableId ?? row.id}
@@ -399,7 +428,7 @@ export default function BundleWorkOrdersRoute() {
                       <Td>
                         {row.id ? (
                           <Link
-                            to={path.to.bundle(row.jobId ?? row.id ?? "")}
+                            to={path.to.jobDag(row.jobId ?? "")}
                             className="font-medium text-foreground hover:underline"
                           >
                             {row.jobReadableId ?? row.id}
@@ -464,6 +493,12 @@ export default function BundleWorkOrdersRoute() {
           </div>
         )}
       </main>
+      {printOpen && (
+        <PrintTicketsModal
+          bundles={printableBundles}
+          onClose={() => setPrintOpen(false)}
+        />
+      )}
     </div>
   );
 }

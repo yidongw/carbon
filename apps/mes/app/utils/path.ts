@@ -14,6 +14,7 @@ export const path = {
       batchNumbers: (itemId: string) =>
         generatePath(`${api}/batch-numbers?itemId=${itemId}`),
       failureModes: `${api}/failure-modes`,
+      locale: `${api}/locale`,
       qualityIssueTypes: `${api}/quality-issue-types`,
       serialNumbers: (itemId: string) =>
         generatePath(`${api}/serial-numbers?itemId=${itemId}`)
@@ -87,9 +88,14 @@ export const path = {
 
         return generatePath(url);
       },
-      bundleWorkOrderLabelsPdf: (ids: string | string[]) => {
+      bundleWorkOrderLabelsPdf: (
+        ids: string | string[],
+        { labelSize }: { labelSize?: string } = {}
+      ) => {
         const idString = Array.isArray(ids) ? ids.join(",") : ids;
-        return `${file}/bundle-work-order/labels.pdf?ids=${idString}`;
+        const params = new URLSearchParams({ ids: idString });
+        if (labelSize) params.set("labelSize", labelSize);
+        return `${file}/bundle-work-order/labels.pdf?${params.toString()}`;
       }
     },
     accountSettings: `${ERP_URL}/x/account`,
@@ -116,7 +122,6 @@ export const path = {
     kanbanComplete: (id: string) => `${ERP_URL}/api/kanban/complete/${id}`,
     inspectionSteps: `${x}/steps/inspection`,
     inventoryAdjustment: `${x}/adjustment`,
-    bundle: (id: string) => generatePath(`${x}/job/${id}`),
     jobDag: (id: string) => generatePath(`${x}/job/${id}`),
     jobs: `${x}/jobs`,
     masterWorkOrders: `${x}/master-work-orders`,
@@ -124,6 +129,9 @@ export const path = {
     bundleWorkOrdersForMaster: (masterWorkOrderId: string) =>
       `${x}/bundle-work-orders?masterWorkOrderId=${masterWorkOrderId}`,
     productionReports: `${x}/production-reports`,
+    reworkToProduction: `${x}/rework-to-production`,
+    reportQuantity: `${x}/report-quantity`,
+    pickupOperation: `${x}/pickup-operation`,
     issue: `${x}/issue`,
     issueTrackedEntity: `${x}/issue-tracked-entity`,
     qualityIssueNew: `${x}/quality-issue/new`,
@@ -146,6 +154,10 @@ export const path = {
     printingSettings: `${ERP_URL}/x/settings/printing`,
     operation: (id: string) => generatePath(`${x}/operation/${id}`),
     operations: `${x}/operations?saved=1`,
+    home: x,
+    pickup: `${x}/pickup`,
+    report: `${x}/report`,
+    bundle: (id: string) => generatePath(`${x}/bundle/${id}`),
     productionEvent: `${x}/event`,
     recent: `${x}/recent`,
     record: `${x}/record`,

@@ -17,6 +17,7 @@ import { inngest } from "../../../client";
 import type { GeneratedContent, PrintableDocumentItem } from "./renderers";
 import { renderItemBuiltIn, renderItemWithTemplate } from "./renderers";
 import {
+  resolveBundleWorkOrderData,
   resolveKanbanData,
   resolveStorageUnitData,
   resolveTrackedEntityData
@@ -168,6 +169,20 @@ async function resolveDocumentItems(
         readableId: resolved?.readableId ?? null
       };
     }
+    case "bundleWorkOrderLabel": {
+      const resolved = await resolveBundleWorkOrderData(
+        client,
+        sourceDocumentId
+      );
+      return {
+        docs:
+          resolved?.items.map((item) => ({
+            type: "bundleWorkOrderLabel" as const,
+            item
+          })) ?? [],
+        readableId: resolved?.readableId ?? null
+      };
+    }
   }
 }
 
@@ -187,6 +202,10 @@ function describeDocument(
       if (doc.item.itemId) parts.push(doc.item.itemId);
       break;
     case "storageUnitLabel":
+      break;
+    case "bundleWorkOrderLabel":
+      if (doc.item.colorName) parts.push(doc.item.colorName);
+      if (doc.item.sizeCode) parts.push(doc.item.sizeCode);
       break;
   }
 

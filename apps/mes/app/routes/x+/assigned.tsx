@@ -23,6 +23,8 @@ import {
 import type { Operation } from "~/services/types";
 import { makeDurations } from "~/utils/durations";
 
+const NO_WORK_CENTER = "__none__";
+
 export async function loader({ context, request }: LoaderFunctionArgs) {
   const { companyId, userId } = await requirePermissions(request, {});
 
@@ -72,8 +74,9 @@ export default function AssignedRoute() {
   const filteredOperationsByWorkCenter = useMemo(() => {
     return filteredOperations.reduce<Record<string, Operation[]>>(
       (acc, operation) => {
-        const workCenter = operation.workCenterId;
-        if (!workCenter) return acc;
+        // Garment/bundle operations have no work center — keep them under a
+        // fallback group instead of dropping them from the page.
+        const workCenter = operation.workCenterId || NO_WORK_CENTER;
         acc[workCenter] = [...(acc[workCenter] || []), operation];
         return acc;
       },
@@ -119,7 +122,10 @@ export default function AssignedRoute() {
                 <div key={workCenterId} className="flex flex-col">
                   <div className="bg-muted px-4 py-2 border-y">
                     <h3 className="font-medium">
-                      {workCenters.find((wc) => wc.id === workCenterId)?.name}
+                      {workCenterId === NO_WORK_CENTER
+                        ? t`Other`
+                        : workCenters.find((wc) => wc.id === workCenterId)
+                            ?.name}
                     </h3>
                   </div>
                   <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,330px),1fr))] p-4 gap-4">

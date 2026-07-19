@@ -3,6 +3,10 @@
 import type { Company } from "@carbon/auth";
 import { CONTROLLED_ENVIRONMENT } from "@carbon/auth";
 import {
+  getSortedLanguageSelectOptions,
+  resolveLanguage
+} from "@carbon/locale";
+import {
   Avatar,
   cn,
   DropdownMenu,
@@ -35,6 +39,7 @@ import {
   useSidebar
 } from "@carbon/react";
 import { Trans, useLingui } from "@lingui/react/macro";
+import { useLocale } from "@react-aria/i18n";
 import type { ComponentProps } from "react";
 import { Suspense, useRef } from "react";
 import { BsFillHexagonFill } from "react-icons/bs";
@@ -45,16 +50,20 @@ import {
   LuBoxes,
   LuBuilding,
   LuCalendarDays,
+  LuCheck,
   LuChevronDown,
   LuCirclePlay,
+  LuClipboardCheck,
   LuClipboardList,
   LuHistory,
+  LuLanguages,
   LuLayers,
   LuLogOut,
   LuMapPin,
   LuMonitor,
   LuMoon,
   LuPackageCheck,
+  LuScanLine,
   LuShieldCheck,
   LuSun,
   LuUser,
@@ -185,6 +194,18 @@ export function OperationsNav({
   const { t } = useLingui();
   const links = [
     {
+      key: "pickup",
+      title: t`Pickup Bundle Job`,
+      icon: LuScanLine,
+      to: path.to.pickup
+    },
+    {
+      key: "report",
+      title: t`Report Quantities`,
+      icon: LuClipboardCheck,
+      to: path.to.report
+    },
+    {
       key: "schedule",
       title: t`Schedule`,
       icon: LuCalendarDays,
@@ -228,7 +249,7 @@ export function OperationsNav({
       to: path.to.bundleWorkOrders
     },
     {
-      key: "productionReports",
+      key: "reportApprovals",
       title: t`Report Approvals`,
       icon: LuBadgeCheck,
       to: path.to.productionReports
@@ -394,6 +415,11 @@ export function UserNav({
   const optimisticLocation =
     (fetcher.formData?.get("location") as string | undefined) ?? location;
 
+  const localeFetcher = useFetcher<{ ok?: boolean }>();
+  const { locale } = useLocale();
+  const resolvedLocale = resolveLanguage(locale);
+  const languageOptions = getSortedLanguageSelectOptions(locale);
+
   const itarDisclosure = useDisclosure();
 
   // useUser().id returns the effective (operator) ID — read the original station user ID directly
@@ -553,6 +579,42 @@ export function UserNav({
             ) : null}
           </>
         )}
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger disabled={localeFetcher.state !== "idle"}>
+            <DropdownMenuIcon icon={<LuLanguages />} />
+            <Trans>Language</Trans>
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent>
+            <localeFetcher.Form method="post" action={path.to.api.locale}>
+              {languageOptions.map((opt) => (
+                <DropdownMenuItem key={opt.value} asChild>
+                  <button
+                    type="submit"
+                    name="locale"
+                    value={opt.value}
+                    disabled={
+                      localeFetcher.state !== "idle" ||
+                      opt.value === resolvedLocale
+                    }
+                    className="flex w-full cursor-default items-center rounded-sm px-2 py-1.5 text-left text-sm outline-none focus:bg-accent data-[highlighted]:bg-accent"
+                  >
+                    <span
+                      className={
+                        opt.value === resolvedLocale ? "font-medium" : undefined
+                      }
+                    >
+                      {opt.label}
+                    </span>
+                    {opt.value === resolvedLocale ? (
+                      <LuCheck className="ml-auto h-4 w-4 shrink-0" />
+                    ) : null}
+                  </button>
+                </DropdownMenuItem>
+              ))}
+            </localeFetcher.Form>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+        <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center justify-start">
