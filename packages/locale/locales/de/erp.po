@@ -91,7 +91,7 @@ msgstr "{days} Tage ({formatted})"
 
 #. placeholder {0}: checkedIds.length
 msgid "{failed} of {0} tickets failed"
-msgstr ""
+msgstr "{failed} von {0} Tickets fehlgeschlagen"
 
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB-Limit"
@@ -479,7 +479,7 @@ msgid "Add Partner"
 msgstr "Partner hinzufügen"
 
 msgid "Add Passkey"
-msgstr ""
+msgstr "Passkey hinzufügen"
 
 msgid "Add Permissions"
 msgstr "Berechtigungen hinzufügen"
@@ -552,10 +552,10 @@ msgstr "Add-On-Kosten"
 
 #. placeholder {0}: new Date(selectedPasskey.createdAt).toLocaleDateString( undefined, { year: "numeric", month: "long", day: "numeric" } )
 msgid "Added {0}"
-msgstr ""
+msgstr "Hinzugefügt {0}"
 
 msgid "Added {createdAt}"
-msgstr ""
+msgstr "Hinzugefügt {createdAt}"
 
 msgid "Adding..."
 msgstr "Wird hinzugefügt..."
@@ -1074,7 +1074,7 @@ msgid "Are you sure you want to delete this maintenance dispatch? This cannot be
 msgstr "Sind Sie sicher, dass Sie diesen Wartungseinsatz löschen möchten? Dies kann nicht rückgängig gemacht werden."
 
 msgid "Are you sure you want to delete this passkey? You won't be able to use it to sign in anymore."
-msgstr ""
+msgstr "Möchtest du diesen Passkey wirklich löschen? Du kannst dich damit dann nicht mehr anmelden."
 
 msgid "Are you sure you want to delete this process completion? This action cannot be undone."
 msgstr "Sind Sie sicher, dass Sie diesen Prozessabschluss löschen wollen? Diese Aktion kann nicht rückgängig gemacht werden."
@@ -1457,7 +1457,7 @@ msgid "Browse library"
 msgstr "Bibliothek durchsuchen"
 
 msgid "Browser"
-msgstr ""
+msgstr "Browser"
 
 msgid "Bucket"
 msgstr "Bucket"
@@ -2988,7 +2988,7 @@ msgid "Delete passkey"
 msgstr "Löschen des Passkeys"
 
 msgid "Delete Passkey"
-msgstr ""
+msgstr "Passkey löschen"
 
 msgid "Delete Payment Term"
 msgstr "Zahlungsbedingung löschen"
@@ -3596,7 +3596,7 @@ msgid "Edit Partner"
 msgstr "Partner bearbeiten"
 
 msgid "Edit Passkey"
-msgstr ""
+msgstr "Passkey bearbeiten"
 
 msgid "Edit Payment Term"
 msgstr "Zahlungsbedingung bearbeiten"
@@ -5475,10 +5475,10 @@ msgstr "Zuletzt aktualisiert: {formattedDate}"
 
 #. placeholder {0}: new Date( selectedPasskey.lastUsedAt ).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })
 msgid "Last used {0}"
-msgstr ""
+msgstr "Zuletzt verwendet {0}"
 
 msgid "Last used {lastUsedAt}"
-msgstr ""
+msgstr "Zuletzt verwendet {lastUsedAt}"
 
 msgid "Layout spacing"
 msgstr "Abstandsfestlegung"
@@ -6720,7 +6720,7 @@ msgid "No parts added yet"
 msgstr "Noch keine Teile hinzugefügt"
 
 msgid "No passkeys registered yet."
-msgstr ""
+msgstr "Noch keine Passkeys registriert."
 
 msgid "No planning data"
 msgstr "Keine Planungsdaten"
@@ -7274,7 +7274,7 @@ msgid "Passkey name"
 msgstr "Name des Passkeys"
 
 msgid "Passkeys"
-msgstr ""
+msgstr "Passkeys"
 
 msgid "Passkeys are disabled"
 msgstr "Passkeys sind deaktiviert"
@@ -7683,7 +7683,7 @@ msgstr "Drucken"
 
 #. placeholder {0}: checkedIds.length
 msgid "Print ({0})"
-msgstr ""
+msgstr "Drucken ({0})"
 
 #. placeholder {0}: selectedIds.size
 msgid "Print {0} Labels"
@@ -7691,13 +7691,13 @@ msgstr "Drucke {0} Etiketten"
 
 #. placeholder {0}: selectedRows.length
 msgid "Print {0} Tickets"
-msgstr ""
+msgstr "{0} Tickets drucken"
 
 msgid "Print Bundle Tickets"
-msgstr ""
+msgstr "Bündeltickets drucken"
 
 msgid "Print from this device"
-msgstr ""
+msgstr "Von diesem Gerät drucken"
 
 msgid "Print Jobs"
 msgstr "Druckjobs"
@@ -7710,10 +7710,10 @@ msgid "Print Output ({0})"
 msgstr "Drucken ({0})"
 
 msgid "Print Tickets"
-msgstr ""
+msgstr "Tickets drucken"
 
 msgid "Print to"
-msgstr ""
+msgstr "Drucken auf"
 
 msgid "Printer Settings"
 msgstr "Drucker-Einstellungen"
@@ -8016,7 +8016,7 @@ msgstr "Frage"
 
 #. placeholder {0}: checkedIds.length
 msgid "Queued {0} tickets for printing"
-msgstr ""
+msgstr "{0} Tickets zum Drucken eingereiht"
 
 msgid "Quote"
 msgstr "Angebot"
@@ -8998,7 +8998,7 @@ msgstr "Selektiere alle"
 
 #. placeholder {0}: printable.length
 msgid "Select all ({0})"
-msgstr ""
+msgstr "Alle auswählen ({0})"
 
 msgid "Select an assignee"
 msgstr "Wählen Sie einen Verantwortlichen aus"
@@ -9419,7 +9419,7 @@ msgid "Sign In to Request Access"
 msgstr "Anmelden, um den Zugriff anzufragen"
 
 msgid "Sign in with biometrics instead of a magic link. Passkeys are secured by Face ID, Touch ID, or your device PIN."
-msgstr ""
+msgstr "Mit Biometrie statt Magic-Link anmelden. Passkeys werden durch Face ID, Touch ID oder deine Geräte-PIN geschützt."
 
 msgid "Sign in with Email"
 msgstr "Mit E-Mail anmelden"
@@ -9954,7 +9954,7 @@ msgid "Sync Procedure"
 msgstr "Synchronisierungsverfahren"
 
 msgid "Synced"
-msgstr ""
+msgstr "Synchronisiert"
 
 msgid "Syncing the procedure will update the operation with the new work instructions, steps, and parameters. Any steps that are not part of the procedure will be removed."
 msgstr "Synchronisierung der Verfahrensabfolge aktualisiert die Betriebsanleitung mit den neuen Arbeitsanweisungen, Schritten und Parametern. Alle Schritte, die nicht zur Verfahrensabfolge gehören, werden entfernt."
@@ -9969,7 +9969,7 @@ msgid "Table actions"
 msgstr "Tabellenaktionen"
 
 msgid "Tag size"
-msgstr ""
+msgstr "Etikettengröße"
 
 msgid "Tags"
 msgstr "Tags"

@@ -91,7 +91,7 @@ msgstr "{days} दिन ({formatted})"
 
 #. placeholder {0}: checkedIds.length
 msgid "{failed} of {0} tickets failed"
-msgstr ""
+msgstr "{0} टिकटों में से {failed} विफल रहे"
 
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}MB सीमा"
@@ -479,7 +479,7 @@ msgid "Add Partner"
 msgstr "पार्टनर जोड़ें"
 
 msgid "Add Passkey"
-msgstr ""
+msgstr "Passkey जोड़ें"
 
 msgid "Add Permissions"
 msgstr "अनुमतियां जोड़ें"
@@ -552,10 +552,10 @@ msgstr "ऐड-ऑन लागत"
 
 #. placeholder {0}: new Date(selectedPasskey.createdAt).toLocaleDateString( undefined, { year: "numeric", month: "long", day: "numeric" } )
 msgid "Added {0}"
-msgstr ""
+msgstr "{0} को जोड़ा गया"
 
 msgid "Added {createdAt}"
-msgstr ""
+msgstr "{createdAt} को जोड़ा गया"
 
 msgid "Adding..."
 msgstr "जोड़ा जा रहा है..."
@@ -1074,7 +1074,7 @@ msgid "Are you sure you want to delete this maintenance dispatch? This cannot be
 msgstr "क्या आप सुनिश्चित हैं कि आप इस रखरखाव प्रेषण को हटाना चाहते हैं? यह पूर्ववत नहीं किया जा सकता।"
 
 msgid "Are you sure you want to delete this passkey? You won't be able to use it to sign in anymore."
-msgstr ""
+msgstr "क्या आप वाकई यह passkey हटाना चाहते हैं? इसके बाद आप इससे साइन इन नहीं कर पाएँगे।"
 
 msgid "Are you sure you want to delete this process completion? This action cannot be undone."
 msgstr "आपने यह प्रक्रिया पूरण को हटाने की इच्छा किया है? यह चलने में वापस नहीं आ सकता है।"
@@ -1457,7 +1457,7 @@ msgid "Browse library"
 msgstr "खोज़ किताब"
 
 msgid "Browser"
-msgstr ""
+msgstr "Browser"
 
 msgid "Bucket"
 msgstr "बकेट"
@@ -2988,7 +2988,7 @@ msgid "Delete passkey"
 msgstr "Passkey हटाएं"
 
 msgid "Delete Passkey"
-msgstr ""
+msgstr "Passkey हटाएँ"
 
 msgid "Delete Payment Term"
 msgstr "भुगतान अवधि हटाएं"
@@ -3596,7 +3596,7 @@ msgid "Edit Partner"
 msgstr "पार्टनर संपादित करें"
 
 msgid "Edit Passkey"
-msgstr ""
+msgstr "Passkey संपादित करें"
 
 msgid "Edit Payment Term"
 msgstr "भुगतान शर्त संपादित करें"
@@ -5475,10 +5475,10 @@ msgstr "अंतिम अपडेट: {formattedDate}"
 
 #. placeholder {0}: new Date( selectedPasskey.lastUsedAt ).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })
 msgid "Last used {0}"
-msgstr ""
+msgstr "अंतिम बार उपयोग {0}"
 
 msgid "Last used {lastUsedAt}"
-msgstr ""
+msgstr "अंतिम बार उपयोग {lastUsedAt}"
 
 msgid "Layout spacing"
 msgstr "रॉयल्टी स्पेसिंग"
@@ -6720,7 +6720,7 @@ msgid "No parts added yet"
 msgstr "अभी तक कोई पार्ट जोड़ा नहीं गया"
 
 msgid "No passkeys registered yet."
-msgstr ""
+msgstr "अभी तक कोई passkey पंजीकृत नहीं है।"
 
 msgid "No planning data"
 msgstr "कोई योजना डेटा नहीं"
@@ -7274,7 +7274,7 @@ msgid "Passkey name"
 msgstr "Passkey का नाम"
 
 msgid "Passkeys"
-msgstr ""
+msgstr "Passkeys"
 
 msgid "Passkeys are disabled"
 msgstr "पासकी अक्षम हैं"
@@ -7683,7 +7683,7 @@ msgstr "प्रिंट"
 
 #. placeholder {0}: checkedIds.length
 msgid "Print ({0})"
-msgstr ""
+msgstr "प्रिंट करें ({0})"
 
 #. placeholder {0}: selectedIds.size
 msgid "Print {0} Labels"
@@ -7691,13 +7691,13 @@ msgstr "प्रिंट {0} लेबल्स"
 
 #. placeholder {0}: selectedRows.length
 msgid "Print {0} Tickets"
-msgstr ""
+msgstr "{0} टिकट प्रिंट करें"
 
 msgid "Print Bundle Tickets"
-msgstr ""
+msgstr "बंडल टिकट प्रिंट करें"
 
 msgid "Print from this device"
-msgstr ""
+msgstr "इस डिवाइस से प्रिंट करें"
 
 msgid "Print Jobs"
 msgstr "प्रिंट जॉब्स"
@@ -7710,10 +7710,10 @@ msgid "Print Output ({0})"
 msgstr "प्रिंट आउटपुट ({0})"
 
 msgid "Print Tickets"
-msgstr ""
+msgstr "टिकट प्रिंट करें"
 
 msgid "Print to"
-msgstr ""
+msgstr "इस पर प्रिंट करें"
 
 msgid "Printer Settings"
 msgstr "प्रिंटर सेट्टिङ्स"
@@ -8016,7 +8016,7 @@ msgstr "प्रश्न"
 
 #. placeholder {0}: checkedIds.length
 msgid "Queued {0} tickets for printing"
-msgstr ""
+msgstr "{0} टिकट प्रिंटिंग के लिए कतारबद्ध किए गए"
 
 msgid "Quote"
 msgstr "उद्धरण"
@@ -8998,7 +8998,7 @@ msgstr "सब कुछ चयन करें"
 
 #. placeholder {0}: printable.length
 msgid "Select all ({0})"
-msgstr ""
+msgstr "सभी चुनें ({0})"
 
 msgid "Select an assignee"
 msgstr "एक असाइनी चुनें"
@@ -9419,7 +9419,7 @@ msgid "Sign In to Request Access"
 msgstr "साइन इन करके पहुंच शपथ करें"
 
 msgid "Sign in with biometrics instead of a magic link. Passkeys are secured by Face ID, Touch ID, or your device PIN."
-msgstr ""
+msgstr "मैजिक लिंक के बजाय बायोमेट्रिक्स से साइन इन करें। Passkeys को Face ID, Touch ID या आपके डिवाइस PIN द्वारा सुरक्षित किया जाता है।"
 
 msgid "Sign in with Email"
 msgstr "ईमेल के साथ साइन इन करें"
@@ -9954,7 +9954,7 @@ msgid "Sync Procedure"
 msgstr "सिंक प्रक्रिया"
 
 msgid "Synced"
-msgstr ""
+msgstr "समन्वयित"
 
 msgid "Syncing the procedure will update the operation with the new work instructions, steps, and parameters. Any steps that are not part of the procedure will be removed."
 msgstr "सिंक्रोनाइज़ करने की प्रक्रिया संचालन को नए कार्य निर्देशों, चरणों और मापदंडों के साथ अपडेट करेगी। केवल प्रक्रिया का हिस्सा नहीं होने वाले कोई भी चरण हटा दिए जाएंगे।"
@@ -9969,7 +9969,7 @@ msgid "Table actions"
 msgstr "तालिका क्रियाएं"
 
 msgid "Tag size"
-msgstr ""
+msgstr "टैग आकार"
 
 msgid "Tags"
 msgstr "टैग"

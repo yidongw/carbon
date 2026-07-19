@@ -91,7 +91,7 @@ msgstr "{days} дней ({formatted})"
 
 #. placeholder {0}: checkedIds.length
 msgid "{failed} of {0} tickets failed"
-msgstr ""
+msgstr "Не удалось напечатать {failed} из {0} ярлыков"
 
 msgid "{maxSizeMB}MB limit"
 msgstr "{maxSizeMB}МБ максимум"
@@ -479,7 +479,7 @@ msgid "Add Partner"
 msgstr "Добавить партнера"
 
 msgid "Add Passkey"
-msgstr ""
+msgstr "Добавить Passkey"
 
 msgid "Add Permissions"
 msgstr "Добавить разрешения"
@@ -552,10 +552,10 @@ msgstr "Дополнительная стоимость"
 
 #. placeholder {0}: new Date(selectedPasskey.createdAt).toLocaleDateString( undefined, { year: "numeric", month: "long", day: "numeric" } )
 msgid "Added {0}"
-msgstr ""
+msgstr "Добавлено {0}"
 
 msgid "Added {createdAt}"
-msgstr ""
+msgstr "Добавлено {createdAt}"
 
 msgid "Adding..."
 msgstr "Добавление..."
@@ -1074,7 +1074,7 @@ msgid "Are you sure you want to delete this maintenance dispatch? This cannot be
 msgstr "Вы уверены, что хотите удалить эту заявку на техническое обслуживание? Это действие невозможно отменить."
 
 msgid "Are you sure you want to delete this passkey? You won't be able to use it to sign in anymore."
-msgstr ""
+msgstr "Вы уверены, что хотите удалить этот passkey? Вы больше не сможете использовать его для входа."
 
 msgid "Are you sure you want to delete this process completion? This action cannot be undone."
 msgstr "Вы действительно хотите удалить завершение процесса? Эта операция не может быть отменена."
@@ -1457,7 +1457,7 @@ msgid "Browse library"
 msgstr "Просматривать библиотеку"
 
 msgid "Browser"
-msgstr ""
+msgstr "Browser"
 
 msgid "Bucket"
 msgstr "Хранилище"
@@ -2988,7 +2988,7 @@ msgid "Delete passkey"
 msgstr "Удалить Passkey"
 
 msgid "Delete Passkey"
-msgstr ""
+msgstr "Удалить Passkey"
 
 msgid "Delete Payment Term"
 msgstr "Удалить условие платежа"
@@ -3596,7 +3596,7 @@ msgid "Edit Partner"
 msgstr "Редактировать партнера"
 
 msgid "Edit Passkey"
-msgstr ""
+msgstr "Изменить Passkey"
 
 msgid "Edit Payment Term"
 msgstr "Редактировать условие платежа"
@@ -5475,10 +5475,10 @@ msgstr "Последнее обновление: {formattedDate}"
 
 #. placeholder {0}: new Date( selectedPasskey.lastUsedAt ).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })
 msgid "Last used {0}"
-msgstr ""
+msgstr "Последнее использование {0}"
 
 msgid "Last used {lastUsedAt}"
-msgstr ""
+msgstr "Последнее использование {lastUsedAt}"
 
 msgid "Layout spacing"
 msgstr "Промежуточное пространство布局间距（已替换为符合俄语文本的表述）"
@@ -6720,7 +6720,7 @@ msgid "No parts added yet"
 msgstr "Части еще не добавлены"
 
 msgid "No passkeys registered yet."
-msgstr ""
+msgstr "Ещё не зарегистрировано ни одного passkey."
 
 msgid "No planning data"
 msgstr "Нет данных планирования"
@@ -7274,7 +7274,7 @@ msgid "Passkey name"
 msgstr "Название Passkey"
 
 msgid "Passkeys"
-msgstr ""
+msgstr "Passkeys"
 
 msgid "Passkeys are disabled"
 msgstr "Ключи доступа отключены"
@@ -7683,7 +7683,7 @@ msgstr "Печать"
 
 #. placeholder {0}: checkedIds.length
 msgid "Print ({0})"
-msgstr ""
+msgstr "Печать ({0})"
 
 #. placeholder {0}: selectedIds.size
 msgid "Print {0} Labels"
@@ -7691,13 +7691,13 @@ msgstr "Печать {0} этикеток"
 
 #. placeholder {0}: selectedRows.length
 msgid "Print {0} Tickets"
-msgstr ""
+msgstr "Печать {0} ярлыков"
 
 msgid "Print Bundle Tickets"
-msgstr ""
+msgstr "Печать ярлыков пачек"
 
 msgid "Print from this device"
-msgstr ""
+msgstr "Печать с этого устройства"
 
 msgid "Print Jobs"
 msgstr "Задания печати"
@@ -7710,10 +7710,10 @@ msgid "Print Output ({0})"
 msgstr "Печать вывода ({0})"
 
 msgid "Print Tickets"
-msgstr ""
+msgstr "Печать ярлыков"
 
 msgid "Print to"
-msgstr ""
+msgstr "Печатать на"
 
 msgid "Printer Settings"
 msgstr "Настройки принтера"
@@ -8016,7 +8016,7 @@ msgstr "Вопрос"
 
 #. placeholder {0}: checkedIds.length
 msgid "Queued {0} tickets for printing"
-msgstr ""
+msgstr "{0} ярлыков поставлено в очередь на печать"
 
 msgid "Quote"
 msgstr "Предложение"
@@ -8998,7 +8998,7 @@ msgstr "Выбрать все"
 
 #. placeholder {0}: printable.length
 msgid "Select all ({0})"
-msgstr ""
+msgstr "Выбрать все ({0})"
 
 msgid "Select an assignee"
 msgstr "Выберите исполнителя"
@@ -9419,7 +9419,7 @@ msgid "Sign In to Request Access"
 msgstr "Войдите, чтобы запросить доступ"
 
 msgid "Sign in with biometrics instead of a magic link. Passkeys are secured by Face ID, Touch ID, or your device PIN."
-msgstr ""
+msgstr "Входите с помощью биометрии вместо magic-ссылки. Passkeys защищены Face ID, Touch ID или PIN-кодом устройства."
 
 msgid "Sign in with Email"
 msgstr "Войти с помощью электронной почты"
@@ -9954,7 +9954,7 @@ msgid "Sync Procedure"
 msgstr "Синхронизация процедуры"
 
 msgid "Synced"
-msgstr ""
+msgstr "Синхронизировано"
 
 msgid "Syncing the procedure will update the operation with the new work instructions, steps, and parameters. Any steps that are not part of the procedure will be removed."
 msgstr "Синхронизация процедуры обновит операцию с новыми инструкциями, шагами и параметрами. Все шаги, не входящие в процедуру, будут удалены."
@@ -9969,7 +9969,7 @@ msgid "Table actions"
 msgstr "Действия таблицы"
 
 msgid "Tag size"
-msgstr ""
+msgstr "Размер ярлыка"
 
 msgid "Tags"
 msgstr "Теги"
