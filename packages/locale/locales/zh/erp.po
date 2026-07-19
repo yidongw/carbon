@@ -3545,6 +3545,9 @@ msgstr "编辑假期"
 msgid "Edit Inspection Document"
 msgstr "编辑检验文件"
 
+msgid "Edit Invite"
+msgstr ""
+
 msgid "Edit Item Group"
 msgstr "编辑物品组"
 

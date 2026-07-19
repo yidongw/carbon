@@ -3544,6 +3544,9 @@ msgstr "Feiertag bearbeiten"
 msgid "Edit Inspection Document"
 msgstr "Bearbeiten Sie das Prüfungsdocument"
 
+msgid "Edit Invite"
+msgstr ""
+
 msgid "Edit Item Group"
 msgstr "Artikelgruppe bearbeiten"
 

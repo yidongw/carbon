@@ -45,6 +45,31 @@ export const overlayRegistry = {
       () => import("~/modules/users/ui/Employees/CreateEmployeeForm")
     )
   },
+  editInvite: {
+    type: "drawer",
+    render: renderLazyOverlay(
+      (ctx) => {
+        const data = ctx.loaderData as
+          | {
+              userId: string;
+              email: string | null;
+              phone: string | null;
+              employeeTypeId: string;
+            }
+          | undefined;
+        if (!data) return null;
+        return {
+          userId: data.userId,
+          initialValues: {
+            email: data.email ?? undefined,
+            phone: data.phone ?? undefined,
+            employeeType: data.employeeTypeId
+          }
+        };
+      },
+      () => import("~/modules/users/ui/Employees/EditInviteForm")
+    )
+  },
   newProductionQuantity: {
     type: "drawer",
     render: renderLazyOverlay(

@@ -3544,6 +3544,9 @@ msgstr "Modifica Festività"
 msgid "Edit Inspection Document"
 msgstr "Modifica documento di verifica"
 
+msgid "Edit Invite"
+msgstr ""
+
 msgid "Edit Item Group"
 msgstr "Modifica Gruppo Articoli"
 

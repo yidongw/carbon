@@ -58,6 +58,14 @@ export const overlay = {
       };
     },
 
+    editInvite({ userId }: { userId: string }): OverlayTarget {
+      return {
+        id: "editInvite",
+        url: `${path.to.editInvite(userId)}?overlay=true`,
+        params: { userId }
+      };
+    },
+
     newMasterWorkOrder(): OverlayTarget {
       return {
         id: "newMasterWorkOrder",

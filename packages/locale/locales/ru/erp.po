@@ -3544,6 +3544,9 @@ msgstr "Редактировать праздник"
 msgid "Edit Inspection Document"
 msgstr "Редактировать документ проверки"
 
+msgid "Edit Invite"
+msgstr ""
+
 msgid "Edit Item Group"
 msgstr "Редактировать группу товаров"
 

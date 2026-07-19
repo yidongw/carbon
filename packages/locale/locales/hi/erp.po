@@ -3544,6 +3544,9 @@ msgstr "छुट्टी संपादित करें"
 msgid "Edit Inspection Document"
 msgstr "संपादन तर्कसंगति प्रदर्शनी"
 
+msgid "Edit Invite"
+msgstr ""
+
 msgid "Edit Item Group"
 msgstr "आइटम ग्रुप संपादित करें"
 

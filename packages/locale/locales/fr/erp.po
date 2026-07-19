@@ -3544,6 +3544,9 @@ msgstr "Modifier le congé"
 msgid "Edit Inspection Document"
 msgstr "Modifier le document d'inspection"
 
+msgid "Edit Invite"
+msgstr ""
+
 msgid "Edit Item Group"
 msgstr "Modifier le groupe d'articles"
 

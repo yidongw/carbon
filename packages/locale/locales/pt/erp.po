@@ -3544,6 +3544,9 @@ msgstr "Editar Feriado"
 msgid "Edit Inspection Document"
 msgstr "Edite o Documento de Inspeção"
 
+msgid "Edit Invite"
+msgstr ""
+
 msgid "Edit Item Group"
 msgstr "Editar Grupo de Itens"
 

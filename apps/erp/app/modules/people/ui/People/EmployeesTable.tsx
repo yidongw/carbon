@@ -19,7 +19,8 @@ import {
   LuPhone,
   LuToggleRight,
   LuUser,
-  LuUserCheck
+  LuUserCheck,
+  LuUserPen
 } from "react-icons/lu";
 import { useNavigate, useRevalidator } from "react-router";
 import { Avatar, EmployeeAvatar, Hyperlink, Table } from "~/components";
@@ -285,21 +286,40 @@ const EmployeesTable = memo(
     const renderContextMenu = useMemo(() => {
       return permissions.can("update", "people")
         ? (row: (typeof data)[number]) => {
+            const status = row.status as
+              | "Active"
+              | "Invited"
+              | "Inactive"
+              | null;
             return (
-              <MenuItem
-                onClick={() =>
-                  navigate(
-                    `${path.to.personDetails(row.id!)}?${params.toString()}`
-                  )
-                }
-              >
-                <MenuIcon icon={<LuPencil />} />
-                <Trans>Edit Employee</Trans>
-              </MenuItem>
+              <>
+                <MenuItem
+                  onClick={() =>
+                    navigate(
+                      `${path.to.personDetails(row.id!)}?${params.toString()}`
+                    )
+                  }
+                >
+                  <MenuIcon icon={<LuPencil />} />
+                  <Trans>Edit Employee</Trans>
+                </MenuItem>
+                {status === "Invited" && (
+                  <MenuItem
+                    onClick={() =>
+                      openOverlay(overlay.to.editInvite({ userId: row.id! }), {
+                        onCreated: () => revalidator.revalidate()
+                      })
+                    }
+                  >
+                    <MenuIcon icon={<LuUserPen />} />
+                    <Trans>Edit Invite</Trans>
+                  </MenuItem>
+                )}
+              </>
             );
           }
         : undefined;
-    }, [navigate, params, permissions]);
+    }, [navigate, openOverlay, params, permissions, revalidator]);
 
     return (
       <>

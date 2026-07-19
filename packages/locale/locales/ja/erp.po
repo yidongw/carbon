@@ -3544,6 +3544,9 @@ msgstr "休日を編集"
 msgid "Edit Inspection Document"
 msgstr "検査文書編集"
 
+msgid "Edit Invite"
+msgstr ""
+
 msgid "Edit Item Group"
 msgstr "アイテムグループを編集"
 

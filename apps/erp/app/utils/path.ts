@@ -1330,6 +1330,8 @@ export const path = {
     newDemandProjection: `${x}/production/projections/new`,
     newDepartment: `${x}/people/departments/new`,
     newDocument: `${x}/documents/new`,
+    editInvite: (userId: string) =>
+      generatePath(`${x}/people/employees/${userId}/edit-invite`),
     newEmployee: `${x}/people/employees/new`,
     newOperator: `${x}/people/operators/new`,
     newEmployeeAbility: (id: string) =>
