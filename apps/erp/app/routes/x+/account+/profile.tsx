@@ -289,7 +289,8 @@ export async function action({ request }: ActionFunctionArgs) {
     if (!(await checkSmsVerifyCode(phone, code))) {
       return data({ success: false, message: "Invalid or expired code" });
     }
-    const link = await linkIdentity(userId, "phone", toE164Phone(phone));
+    const e164 = toE164Phone(phone);
+    const link = await linkIdentity(userId, "phone", e164);
     if (!link.success) {
       return data(
         {},
@@ -304,6 +305,12 @@ export async function action({ request }: ActionFunctionArgs) {
         )
       );
     }
+    // Mirror the email path: keep the `user.phone` contact field in sync with the
+    // linked phone auth method so the People table reflects it.
+    await getCarbonServiceRole()
+      .from("user")
+      .update({ phone: e164 })
+      .eq("id", userId);
     return data(
       { linked: true },
       await flash(request, success("Linked phone"))
