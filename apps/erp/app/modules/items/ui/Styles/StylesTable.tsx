@@ -49,7 +49,7 @@ type StylesTableProps = {
 
 const StylesTable = memo(
   ({ data, tags, count, itemPostingGroups }: StylesTableProps) => {
-    const { t } = useLingui();
+    const { t, i18n } = useLingui();
     const navigate = useNavigate();
     const permissions = usePermissions();
     const { formatDate } = useDateFormatter();
@@ -109,7 +109,8 @@ const StylesTable = memo(
         formatDate,
         translateReplenishment,
         translateMethodType,
-        translateTrackingType
+        translateTrackingType,
+        i18n
       });
       return [...defaultColumns, ...customColumns];
     }, [
@@ -121,7 +122,8 @@ const StylesTable = memo(
       formatDate,
       translateReplenishment,
       translateMethodType,
-      translateTrackingType
+      translateTrackingType,
+      i18n
     ]);
 
     const fetcher = useFetcher<typeof action>();

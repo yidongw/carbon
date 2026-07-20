@@ -47,7 +47,13 @@ describe("defaultStylesTableSharedColumnKeys", () => {
       formatDate: (value) => value,
       translateReplenishment: (value) => value,
       translateMethodType: (value) => value,
-      translateTrackingType: (value) => value
+      translateTrackingType: (value) => value,
+      i18n: {
+        _: (descriptor: string | { id?: string; message?: string }) =>
+          typeof descriptor === "string"
+            ? descriptor
+            : (descriptor.message ?? descriptor.id ?? "")
+      } as never
     });
 
     const headers = columns.map((column) => column.header);

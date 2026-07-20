@@ -1,4 +1,6 @@
 import { Badge, HStack, VStack } from "@carbon/react";
+import type { I18n } from "@lingui/core";
+import { msg } from "@lingui/core/macro";
 import type { ColumnDef } from "@tanstack/react-table";
 import {
   LuAlignJustify,
@@ -53,6 +55,7 @@ export type BuildStylesTableColumnsArgs = {
   translateReplenishment: (value: string) => string;
   translateMethodType: (value: string) => string;
   translateTrackingType: (value: string) => string;
+  i18n: I18n;
 };
 
 export function buildDefaultStylesTableColumns({
@@ -63,7 +66,8 @@ export function buildDefaultStylesTableColumns({
   formatDate,
   translateReplenishment,
   translateMethodType,
-  translateTrackingType
+  translateTrackingType,
+  i18n
 }: BuildStylesTableColumnsArgs): ColumnDef<Style>[] {
   const itemPostingGroupOptions = itemPostingGroups.map((group) => ({
     value: group.id,
@@ -73,7 +77,7 @@ export function buildDefaultStylesTableColumns({
   const columns: ColumnDef<Style>[] = [
     {
       accessorKey: "id",
-      header: "Style ID",
+      header: i18n._(msg`Style ID`),
       cell: ({ row }) => (
         <HStack className="py-1 w-full min-w-0 max-w-[200px]" spacing={2}>
           <ItemThumbnail
@@ -99,7 +103,7 @@ export function buildDefaultStylesTableColumns({
     },
     {
       accessorKey: "templateName",
-      header: "Template",
+      header: i18n._(msg`Template`),
       cell: editableCell<Style>({
         kind: "picker",
         field: "templateId",
@@ -115,7 +119,7 @@ export function buildDefaultStylesTableColumns({
     },
     {
       accessorKey: "description",
-      header: "Description",
+      header: i18n._(msg`Description`),
       cell: (item) => (
         <div className="max-w-[320px] truncate">{item.getValue<string>()}</div>
       ),
@@ -125,7 +129,7 @@ export function buildDefaultStylesTableColumns({
     },
     {
       accessorKey: "replenishmentSystem",
-      header: "Replenishment",
+      header: i18n._(msg`Replenishment`),
       cell: editableCell<Style>({
         kind: "enum",
         field: "replenishmentSystem",
@@ -165,7 +169,7 @@ export function buildDefaultStylesTableColumns({
     },
     {
       accessorKey: "defaultMethodType",
-      header: "Default Method",
+      header: i18n._(msg`Default Method`),
       cell: editableCell<Style>({
         kind: "enum",
         field: "defaultMethodType",
@@ -213,7 +217,7 @@ export function buildDefaultStylesTableColumns({
     },
     {
       accessorKey: "itemTrackingType",
-      header: "Tracking",
+      header: i18n._(msg`Tracking`),
       cell: editableCell<Style>({
         kind: "enum",
         field: "itemTrackingType",
@@ -253,7 +257,7 @@ export function buildDefaultStylesTableColumns({
     },
     {
       accessorKey: "itemPostingGroupId",
-      header: "Item Group",
+      header: i18n._(msg`Item Group`),
       cell: editableCell<Style>({
         kind: "enum",
         field: "itemPostingGroupId",
@@ -275,7 +279,7 @@ export function buildDefaultStylesTableColumns({
     },
     {
       accessorKey: "colors",
-      header: "Color",
+      header: i18n._(msg`Color`),
       cell: ({ row }) => {
         const colors = (row.original.colors ?? []) as Array<{
           id: string;
@@ -303,7 +307,7 @@ export function buildDefaultStylesTableColumns({
     },
     {
       accessorKey: "sizes",
-      header: "Size",
+      header: i18n._(msg`Size`),
       cell: ({ row }) => {
         const sizes = (row.original.sizes ?? []) as Array<{
           id: string;
@@ -332,7 +336,7 @@ export function buildDefaultStylesTableColumns({
     },
     {
       accessorKey: "tags",
-      header: "Tags",
+      header: i18n._(msg`Tags`),
       cell: ({ row }) => (
         <TagsCell row={row.original} table="style" availableTags={tags} />
       ),
@@ -350,7 +354,7 @@ export function buildDefaultStylesTableColumns({
     },
     {
       accessorKey: "active",
-      header: "Active",
+      header: i18n._(msg`Active`),
       cell: editableCell<Style>({
         kind: "boolean",
         field: "active",
@@ -361,17 +365,17 @@ export function buildDefaultStylesTableColumns({
         filter: {
           type: "static",
           options: [
-            { value: "true", label: "Active" },
-            { value: "false", label: "Inactive" }
+            { value: "true", label: i18n._(msg`Active`) },
+            { value: "false", label: i18n._(msg`Inactive`) }
           ]
         },
-        pluralHeader: "Active Statuses",
+        pluralHeader: i18n._(msg`Active Statuses`),
         icon: <LuCheck />
       }
     },
     {
       id: "createdBy",
-      header: "Created By",
+      header: i18n._(msg`Created By`),
       cell: ({ row }) => <EmployeeAvatar employeeId={row.original.createdBy} />,
       meta: {
         filter: {
@@ -386,7 +390,7 @@ export function buildDefaultStylesTableColumns({
     },
     {
       accessorKey: "createdAt",
-      header: "Created At",
+      header: i18n._(msg`Created At`),
       cell: (item) => formatDate(item.getValue<string>()),
       meta: {
         icon: <LuCalendar />
@@ -394,7 +398,7 @@ export function buildDefaultStylesTableColumns({
     },
     {
       id: "updatedBy",
-      header: "Updated By",
+      header: i18n._(msg`Updated By`),
       cell: ({ row }) => <EmployeeAvatar employeeId={row.original.updatedBy} />,
       meta: {
         filter: {
@@ -409,7 +413,7 @@ export function buildDefaultStylesTableColumns({
     },
     {
       accessorKey: "updatedAt",
-      header: "Updated At",
+      header: i18n._(msg`Updated At`),
       cell: (item) => formatDate(item.getValue<string>()),
       meta: {
         icon: <LuCalendar />
