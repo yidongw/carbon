@@ -28,7 +28,7 @@ import {
 import { Edition, themes } from "@carbon/utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useLocale } from "@react-aria/i18n";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   LuBuilding2,
   LuCheck,
@@ -85,7 +85,25 @@ const AvatarMenu = () => {
       fetcher.submit(formData, { method: "post", action: path.to.root });
     });
   };
-  const localeFetcher = useFetcher<{ ok?: boolean }>();
+  // The UI language is derived from the server-loaded Lingui catalog in the
+  // root loader (keyed on the locale cookie). Setting the cookie alone doesn't
+  // re-render the already-loaded catalog, and React Router's fetcher
+  // revalidation doesn't reliably re-run the root loader on every route (it
+  // silently no-ops on data-heavy routes like /x/items/styles), which left the
+  // UI stuck on the old language until a manual refresh. Set the cookie with a
+  // plain POST and hard-reload once it resolves so the new language always takes
+  // effect immediately, regardless of the current route.
+  const [switchingLocale, setSwitchingLocale] = useState<string | null>(null);
+  const switchLanguage = useCallback((nextLocale: string) => {
+    const body = new FormData();
+    body.set("locale", nextLocale);
+    setSwitchingLocale(nextLocale);
+    fetch("/api/locale", {
+      method: "post",
+      body,
+      credentials: "same-origin"
+    }).finally(() => window.location.reload());
+  }, []);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
 
@@ -193,40 +211,34 @@ const AvatarMenu = () => {
           </DropdownMenuSub>
           <DropdownMenuSeparator />
           <DropdownMenuSub>
-            <DropdownMenuSubTrigger disabled={localeFetcher.state !== "idle"}>
+            <DropdownMenuSubTrigger disabled={switchingLocale !== null}>
               <DropdownMenuIcon icon={<LuLanguages />} />
               <Trans>Language</Trans>
             </DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
-              <localeFetcher.Form method="post" action="/api/locale">
-                {languageOptions.map((opt) => (
-                  <DropdownMenuItem key={opt.value} asChild>
-                    <button
-                      type="submit"
-                      name="locale"
-                      value={opt.value}
-                      disabled={
-                        localeFetcher.state !== "idle" ||
-                        opt.value === resolvedLocale
-                      }
-                      className="flex w-full cursor-default items-center rounded-sm px-2 py-1.5 text-left text-sm outline-none focus:bg-accent data-[highlighted]:bg-accent"
-                    >
-                      <span
-                        className={
-                          opt.value === resolvedLocale
-                            ? "font-medium"
-                            : undefined
-                        }
-                      >
-                        {opt.label}
-                      </span>
-                      {opt.value === resolvedLocale ? (
-                        <LuCheck className="ml-auto h-4 w-4 shrink-0" />
-                      ) : null}
-                    </button>
-                  </DropdownMenuItem>
-                ))}
-              </localeFetcher.Form>
+              {languageOptions.map((opt) => (
+                <DropdownMenuItem
+                  key={opt.value}
+                  disabled={
+                    switchingLocale !== null || opt.value === resolvedLocale
+                  }
+                  onSelect={(event) => {
+                    event.preventDefault();
+                    switchLanguage(opt.value);
+                  }}
+                >
+                  <span
+                    className={
+                      opt.value === resolvedLocale ? "font-medium" : undefined
+                    }
+                  >
+                    {opt.label}
+                  </span>
+                  {opt.value === resolvedLocale ? (
+                    <LuCheck className="ml-auto h-4 w-4 shrink-0" />
+                  ) : null}
+                </DropdownMenuItem>
+              ))}
             </DropdownMenuSubContent>
           </DropdownMenuSub>
           <DropdownMenuSeparator />
